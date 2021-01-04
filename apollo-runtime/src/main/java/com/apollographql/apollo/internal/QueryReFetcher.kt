@@ -29,6 +29,7 @@ class QueryReFetcher(builder: Builder) {
   private val callTracker: ApolloCallTracker?
   private val executed = AtomicBoolean()
   var onCompleteCallback: OnCompleteCallback? = null
+
   fun refetch() {
     check(executed.compareAndSet(false, true)) { "Already Executed" }
     refetchQueryWatchers()
@@ -74,7 +75,7 @@ class QueryReFetcher(builder: Builder) {
     }
   }
 
-  internal class Builder {
+  class Builder {
     var queries: List<Query<*>> = emptyList()
     var queryWatchers: List<OperationName> = emptyList()
     var serverUrl: HttpUrl? = null
@@ -152,7 +153,7 @@ class QueryReFetcher(builder: Builder) {
     }
   }
 
-  internal interface OnCompleteCallback {
+  interface OnCompleteCallback {
     fun onFetchComplete()
   }
 

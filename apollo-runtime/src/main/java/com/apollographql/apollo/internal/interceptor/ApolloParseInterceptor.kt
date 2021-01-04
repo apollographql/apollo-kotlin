@@ -38,7 +38,7 @@ class ApolloParseInterceptor(private val httpCache: HttpCache?,
       override fun onResponse(response: InterceptorResponse) {
         try {
           if (disposed) return
-          val result = parse(request.operation, response.httpResponse.get())
+          val result = parse(request.operation as Operation<Operation.Data>, response.httpResponse.get())
           callBack.onResponse(result)
           callBack.onCompleted()
         } catch (e: ApolloException) {
@@ -70,7 +70,7 @@ class ApolloParseInterceptor(private val httpCache: HttpCache?,
     val cacheKey = httpResponse.request().header(HttpCache.CACHE_KEY_HEADER)
     return if (httpResponse.isSuccessful) {
       try {
-        val parser: OperationResponseParser<Operation.Data> = OperationResponseParser(operation, customScalarAdapters, normalizer)
+        val parser: OperationResponseParser<Operation.Data> = OperationResponseParser(operation, customScalarAdapters, normalizer as ResponseNormalizer<Map<String, Any?>?>)
         val httpExecutionContext = OkHttpExecutionContext(httpResponse)
         var parsedResponse = parser.parse(httpResponse.body()!!.source())
         parsedResponse = parsedResponse

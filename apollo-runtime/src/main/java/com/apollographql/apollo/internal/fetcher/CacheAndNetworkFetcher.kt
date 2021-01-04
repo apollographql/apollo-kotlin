@@ -21,7 +21,7 @@ import java.util.concurrent.Executor
  * first.
  */
 class CacheAndNetworkFetcher : ResponseFetcher {
-  override fun provideInterceptor(apolloLogger: ApolloLogger?): ApolloInterceptor? {
+  override fun provideInterceptor(apolloLogger: ApolloLogger?): ApolloInterceptor {
     return CacheAndNetworkInterceptor()
   }
 
@@ -50,7 +50,7 @@ class CacheAndNetworkFetcher : ResponseFetcher {
         }
 
         override fun onCompleted() {}
-        override fun onFetch(sourceType: FetchSourceType?) {
+        override fun onFetch(sourceType: FetchSourceType) {
           callBack.onFetch(sourceType)
         }
       })
@@ -65,7 +65,7 @@ class CacheAndNetworkFetcher : ResponseFetcher {
         }
 
         override fun onCompleted() {}
-        override fun onFetch(sourceType: FetchSourceType?) {
+        override fun onFetch(sourceType: FetchSourceType) {
           callBack.onFetch(sourceType)
         }
       })

@@ -80,9 +80,8 @@ class RealApolloSubscriptionCall<D : Operation.Data>(
     return RealApolloSubscriptionCall(subscription, subscriptionManager, apolloStore, cachePolicy, dispatcher, logger)
   }
 
-  override fun isCanceled(): Boolean {
-    return state.get() === CallState.CANCELED
-  }
+  override val isCanceled: Boolean
+    get() = state.get() === CallState.CANCELED
 
   override fun cachePolicy(cachePolicy: ApolloSubscriptionCall.CachePolicy): ApolloSubscriptionCall<D> {
     __checkNotNull(cachePolicy, "cachePolicy is null")

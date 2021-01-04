@@ -5,7 +5,9 @@ import com.apollographql.apollo.api.Error
 import com.apollographql.apollo.api.Operation
 import com.apollographql.apollo.api.Response
 import com.apollographql.apollo.api.Response.Companion.builder
+import com.apollographql.apollo.api.internal.FieldValueResolver
 import com.apollographql.apollo.api.internal.RealResponseReader
+import com.apollographql.apollo.api.internal.ResolveDelegate
 import com.apollographql.apollo.api.internal.Utils.__checkNotNull
 import com.apollographql.apollo.api.internal.json.BufferedSourceJsonReader
 import com.apollographql.apollo.api.internal.json.Utils.readRecursively
@@ -16,19 +18,25 @@ import java.io.IOException
 import java.util.ArrayList
 import java.util.HashMap
 
-class OperationResponseParser<D : Operation.Data> @JvmOverloads constructor(val operation: Operation<D>,
-                                                                             val customScalarAdapters: CustomScalarAdapters, val responseNormalizer: ResponseNormalizer<Map<String?, Any?>?> = ResponseNormalizer.NO_OP_NORMALIZER as ResponseNormalizer<Map<String?, Any?>?>) {
-  fun parse(payload: Map<String?, Any?>): Response<D> {
-    __checkNotNull<Map<String, Any>>(payload, "payload == null")
+class OperationResponseParser<D : Operation.Data> @JvmOverloads constructor(
+    val operation: Operation<D>,
+    val customScalarAdapters: CustomScalarAdapters,
+    val responseNormalizer: ResponseNormalizer<Map<String, Any?>?> = ResponseNormalizer.NO_OP_NORMALIZER as ResponseNormalizer<Map<String, Any?>?>) {
+  fun parse(payload: Map<String, Any?>): Response<D> {
     responseNormalizer.willResolveRootQuery(operation)
     var data: D? = null
-    val buffer = payload["data"] as Map<String, Any>?
+    val buffer = payload["data"] as Map<String, Any?>?
     if (buffer != null) {
-      val realResponseReader: RealResponseReader<Map<String, Any>?> = RealResponseReader(operation.variables(),
-          buffer, MapFieldValueResolver(), customScalarAdapters, responseNormalizer)
+      val realResponseReader = RealResponseReader(
+          operation.variables(),
+          buffer,
+          MapFieldValueResolver() as FieldValueResolver<Map<String, Any?>>,
+          customScalarAdapters,
+          responseNormalizer as ResolveDelegate<Map<String, Any?>>
+      )
       data = operation.adapter().fromResponse(realResponseReader, null)
     }
-    var errors: MutableList<Error?>? = null
+    var errors: MutableList<Error>? = null
     if (payload.containsKey("errors")) {
       val errorPayloads = payload["errors"] as List<Map<String, Any?>>?
       if (errorPayloads != null) {
@@ -42,7 +50,7 @@ class OperationResponseParser<D : Operation.Data> @JvmOverloads constructor(val 
         .data(data)
         .errors(errors)
         .dependentKeys(responseNormalizer.dependentKeys())
-        .extensions(payload["extensions"] as Map<String?, Any?>?)
+        .extensions(payload["extensions"] as Map<String, Any?>?)
         .build()
   }
 
@@ -51,7 +59,7 @@ class OperationResponseParser<D : Operation.Data> @JvmOverloads constructor(val 
     var jsonReader: BufferedSourceJsonReader? = null
     return try {
       jsonReader = BufferedSourceJsonReader(source!!)
-      parse((jsonReader.readRecursively() as Map<String?, Any?>?)!!)
+      parse((jsonReader.readRecursively() as Map<String, Any?>?)!!)
     } finally {
       jsonReader?.close()
     }

@@ -114,9 +114,8 @@ class RealApolloPrefetch(val operation: Operation<*>, val serverUrl: HttpUrl, va
     }
   }
 
-  override fun isCanceled(): Boolean {
-    return state.get() === CallState.CANCELED
-  }
+  override val isCanceled: Boolean
+    get() = state.get() === CallState.CANCELED
 
   @Synchronized
   @Throws(ApolloCanceledException::class)

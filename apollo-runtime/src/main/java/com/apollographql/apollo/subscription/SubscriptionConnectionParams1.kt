@@ -7,6 +7,6 @@ import java.util.HashMap
  * Note: provided connection parameters will be sent as JSON string.
  */
 class SubscriptionConnectionParams : HashMap<String?, Any?> {
-  constructor() : super() {}
-  constructor(m: Map<out String?, *>?) : super(m) {}
+  constructor() : super()
+  constructor(m: Map<out String?, *>?) : super(m)
 }

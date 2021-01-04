@@ -37,5 +37,5 @@ interface ApolloQueryWatcher<D : Operation.Data> : Cancelable {
    *
    * @return The cloned ApolloQueryWatcher object.
    */
-  override fun clone(): ApolloQueryWatcher<D>
+  fun clone(): ApolloQueryWatcher<D>
 }

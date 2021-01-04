@@ -4,6 +4,7 @@ import com.apollographql.apollo.api.Error
 import com.apollographql.apollo.api.Mutation
 import com.apollographql.apollo.api.Operation
 import com.apollographql.apollo.api.Query
+import com.apollographql.apollo.api.Response
 import com.apollographql.apollo.api.internal.ApolloLogger
 import com.apollographql.apollo.api.internal.Function
 import com.apollographql.apollo.api.internal.Optional
@@ -37,7 +38,7 @@ class ApolloAutoPersistedOperationInterceptor(private val logger: ApolloLogger,
         }
       }
 
-      override fun onFetch(sourceType: FetchSourceType?) {
+      override fun onFetch(sourceType: FetchSourceType) {
         callBack.onFetch(sourceType)
       }
 
@@ -57,24 +58,26 @@ class ApolloAutoPersistedOperationInterceptor(private val logger: ApolloLogger,
 
   fun handleProtocolNegotiation(request: InterceptorRequest,
                                 response: InterceptorResponse): Optional<InterceptorRequest> {
-    return response.parsedResponse.flatMap(Function { response ->
-      if (response.hasErrors()) {
-        if (isPersistedQueryNotFound(response.errors)) {
-          logger.w("GraphQL server couldn't find Automatic Persisted Query for operation name: "
-              + request.operation.name().name() + " id: " + request.operation.operationId())
-          val retryRequest = request.toBuilder()
-              .autoPersistQueries(true)
-              .sendQueryDocument(true)
-              .build()
-          return@Function Optional.of(retryRequest)
+    return (response.parsedResponse as Optional<Response<Operation.Data>>).flatMap(object: Function<Response<Operation.Data>, Optional<InterceptorRequest>> {
+      override fun apply(response: Response<Operation.Data>): Optional<InterceptorRequest> {
+        if (response.hasErrors()) {
+          if (isPersistedQueryNotFound(response.errors)) {
+            logger.w("GraphQL server couldn't find Automatic Persisted Query for operation name: "
+                + request.operation.name().name() + " id: " + request.operation.operationId())
+            val retryRequest = request.toBuilder()
+                .autoPersistQueries(true)
+                .sendQueryDocument(true)
+                .build()
+            return Optional.of(retryRequest)
+          }
+          if (isPersistedQueryNotSupported(response.errors)) {
+            // TODO how to disable Automatic Persisted Queries in future and how to notify user about this
+            logger.e("GraphQL server doesn't support Automatic Persisted Queries")
+            return Optional.of(request)
+          }
         }
-        if (isPersistedQueryNotSupported(response.errors)) {
-          // TODO how to disable Automatic Persisted Queries in future and how to notify user about this
-          logger.e("GraphQL server doesn't support Automatic Persisted Queries")
-          return@Function Optional.of(request)
-        }
+        return Optional.absent()
       }
-      Optional.absent()
     })
   }
 

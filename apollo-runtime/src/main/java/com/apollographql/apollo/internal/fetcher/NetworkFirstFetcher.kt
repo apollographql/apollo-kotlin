@@ -17,11 +17,11 @@ import java.util.concurrent.Executor
  * to the network request failure is rethrown.
  */
 class NetworkFirstFetcher : ResponseFetcher {
-  override fun provideInterceptor(logger: ApolloLogger?): ApolloInterceptor? {
+  override fun provideInterceptor(logger: ApolloLogger?): ApolloInterceptor {
     return NetworkFirstInterceptor(logger)
   }
 
-  private class NetworkFirstInterceptor internal constructor(val logger: ApolloLogger?) : ApolloInterceptor {
+  private class NetworkFirstInterceptor(val logger: ApolloLogger?) : ApolloInterceptor {
     @Volatile
     var disposed = false
     override fun interceptAsync(request: InterceptorRequest, chain: ApolloInterceptorChain,
@@ -42,7 +42,7 @@ class NetworkFirstFetcher : ResponseFetcher {
                 callBack.onResponse(response)
               }
 
-              override fun onFetch(sourceType: FetchSourceType?) {
+              override fun onFetch(sourceType: FetchSourceType) {
                 callBack.onFetch(sourceType)
               }
 
@@ -61,7 +61,7 @@ class NetworkFirstFetcher : ResponseFetcher {
           callBack.onCompleted()
         }
 
-        override fun onFetch(sourceType: FetchSourceType?) {
+        override fun onFetch(sourceType: FetchSourceType) {
           callBack.onFetch(sourceType)
         }
       })

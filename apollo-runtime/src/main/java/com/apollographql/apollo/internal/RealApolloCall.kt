@@ -11,6 +11,7 @@ import com.apollographql.apollo.api.Query
 import com.apollographql.apollo.api.Response
 import com.apollographql.apollo.api.cache.http.HttpCache
 import com.apollographql.apollo.api.cache.http.HttpCachePolicy
+import com.apollographql.apollo.api.internal.Action
 import com.apollographql.apollo.api.internal.ApolloLogger
 import com.apollographql.apollo.api.internal.Optional
 import com.apollographql.apollo.api.internal.Utils.__checkNotNull
@@ -145,9 +146,8 @@ class RealApolloCall<D : Operation.Data> internal constructor(builder: Builder<D
     }
   }
 
-  override fun isCanceled(): Boolean {
-    return state.get() == CallState.CANCELED
-  }
+  override val isCanceled: Boolean
+    get() = state.get() == CallState.CANCELED
 
   override fun clone(): RealApolloCall<D> {
     return toBuilder().build()
@@ -212,12 +212,14 @@ class RealApolloCall<D : Operation.Data> internal constructor(builder: Builder<D
       }
 
       override fun onFetch(sourceType: FetchSourceType) {
-        responseCallback().apply { callback ->
-          when (sourceType) {
-            FetchSourceType.CACHE -> callback.onStatusEvent(ApolloCall.StatusEvent.FETCH_CACHE)
-            FetchSourceType.NETWORK -> callback.onStatusEvent(ApolloCall.StatusEvent.FETCH_NETWORK)
+        responseCallback().apply(object : Action<ApolloCall.Callback<D>> {
+          override fun apply(t: ApolloCall.Callback<D>) {
+            when (sourceType) {
+              FetchSourceType.CACHE -> t.onStatusEvent(ApolloCall.StatusEvent.FETCH_CACHE)
+              FetchSourceType.NETWORK -> t.onStatusEvent(ApolloCall.StatusEvent.FETCH_NETWORK)
+            }
           }
-        }
+        })
       }
     }
   }
@@ -255,7 +257,11 @@ class RealApolloCall<D : Operation.Data> internal constructor(builder: Builder<D
       CallState.IDLE -> {
         originalCallback.set(callback.orNull())
         tracker!!.registerCall(this)
-        callback.apply { callback -> callback.onStatusEvent(ApolloCall.StatusEvent.SCHEDULED) }
+        callback.apply(object : Action<ApolloCall.Callback<D>> {
+          override fun apply(t: ApolloCall.Callback<D>) {
+            t.onStatusEvent(ApolloCall.StatusEvent.SCHEDULED)
+          }
+        })
       }
       CallState.CANCELED -> throw ApolloCanceledException()
       CallState.TERMINATED, CallState.ACTIVE -> throw IllegalStateException("Already Executed")
@@ -322,7 +328,7 @@ class RealApolloCall<D : Operation.Data> internal constructor(builder: Builder<D
         apolloStore.networkResponseNormalizer(),
         customScalarAdapters!!,
         logger))
-    interceptors.add(ApolloServerInterceptor(serverUrl!!, httpCallFactory!!, httpCachePolicy, false, customScalarAdapters!!,
+    interceptors.add(ApolloServerInterceptor(serverUrl!!, httpCallFactory!!, httpCachePolicy, false, customScalarAdapters,
         logger))
     return RealApolloInterceptorChain(interceptors)
   }

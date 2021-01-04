@@ -21,9 +21,7 @@ import com.apollographql.apollo.api.internal.Utils.__checkNotNull
  * Implementation of an [Optional] not containing a reference.
  */
 internal class Absent<T> private constructor() : Optional<T>() {
-  override fun isPresent(): Boolean {
-    return false
-  }
+  override val isPresent = false
 
   override fun get(): T {
     throw IllegalStateException("Optional.get() cannot be called on an absent value")

@@ -52,7 +52,6 @@ import java.util.concurrent.Executor
 import java.util.concurrent.SynchronousQueue
 import java.util.concurrent.ThreadPoolExecutor
 import java.util.concurrent.TimeUnit
-import kotlin.jvm.functions.Function0
 
 /**
  * ApolloClient class represents the abstraction for the graphQL client that will be used to execute queries and read the responses back.
@@ -197,7 +196,7 @@ class ApolloClient internal constructor(
    *
    * @param callback to be notified when operation is completed
    */
-  fun clearNormalizedCache(callback: ApolloStoreOperation.Callback<Boolean?>) {
+  fun clearNormalizedCache(callback: ApolloStoreOperation.Callback<Boolean>) {
     __checkNotNull<ApolloStoreOperation.Callback<Boolean>>(callback, "callback == null")
     apolloStore.clearAll().enqueue(callback)
   }
@@ -305,7 +304,7 @@ class ApolloClient internal constructor(
     var useHttpGetMethodForPersistedQueries = false
     var writeToNormalizedCacheAsynchronously = false
 
-    internal constructor() {}
+    internal constructor()
     constructor(apolloClient: ApolloClient) {
       callFactory = apolloClient.httpCallFactory
       serverUrl = apolloClient.serverUrl

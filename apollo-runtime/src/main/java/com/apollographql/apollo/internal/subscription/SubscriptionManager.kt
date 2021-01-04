@@ -22,19 +22,11 @@ interface SubscriptionManager {
   fun unsubscribe(subscription: Subscription<*>)
 
   /**
- * Returns the current state of subscription manager.
- *
- * @return current state
- */
-  /**
    * Returns the current state of subscription manager.
    *
    * @return current state
    */
-  val subscriptionManagerState: SubscriptionManagerState
-get() {
-        return subscriptionManager.state
-    }
+  val state: SubscriptionManagerState
 
   /**
    * Adds new listener for subscription manager state changes.

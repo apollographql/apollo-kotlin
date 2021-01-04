@@ -341,7 +341,7 @@ class RealApolloStore(normalizedCache: NormalizedCache, cacheKeyResolver: CacheK
       cacheHeaders: CacheHeaders): Response<D> {
     return readTransaction(object : Transaction<ReadableStore, Response<D>> {
       override fun execute(cache: ReadableStore): Response<D> {
-        val rootRecord = cache.read(rootKeyForOperation(operation).key, cacheHeaders!!)
+        val rootRecord = cache.read(rootKeyForOperation(operation).key, cacheHeaders)
             ?: return builder<D>(operation).fromCache(true).build()
         val fieldValueResolver = CacheFieldValueResolver(
             cache,
@@ -372,7 +372,7 @@ class RealApolloStore(normalizedCache: NormalizedCache, cacheKeyResolver: CacheK
     return readTransaction(object : Transaction<ReadableStore, F> {
       override fun execute(cache: ReadableStore): F? {
         val rootRecord = cache.read(cacheKey.key, CacheHeaders.NONE) ?: return null
-        val fieldValueResolver = CacheFieldValueResolver(cache, variables!!,
+        val fieldValueResolver = CacheFieldValueResolver(cache, variables,
             cacheKeyResolver(), CacheHeaders.NONE, cacheKeyBuilder)
         val responseReader = RealResponseReader<Record>(variables, rootRecord,
             fieldValueResolver, customScalarAdapters, ResponseNormalizer.NO_OP_NORMALIZER as ResolveDelegate<Record>)
@@ -393,8 +393,8 @@ class RealApolloStore(normalizedCache: NormalizedCache, cacheKeyResolver: CacheK
         responseWriter.resolveFields(responseNormalizer as ResolveDelegate<Map<String, Any>?>)
         return if (optimistic) {
           val updatedRecords: MutableList<Record> = ArrayList()
-          for (record in responseNormalizer.records()!!) {
-            updatedRecords.add(record!!.toBuilder().mutationId(mutationId).build())
+          for (record in responseNormalizer.records()) {
+            updatedRecords.add(record.toBuilder().mutationId(mutationId).build())
           }
           optimisticCache.mergeOptimisticUpdates(updatedRecords)
         } else {
@@ -407,10 +407,10 @@ class RealApolloStore(normalizedCache: NormalizedCache, cacheKeyResolver: CacheK
   fun doWrite(adaptable: Adaptable<*>, cacheKey: CacheKey, variables: Operation.Variables): Set<String> {
     return writeTransaction(object : Transaction<WriteableStore, Set<String>> {
       override fun execute(cache: WriteableStore): Set<String>? {
-        val responseWriter = RealResponseWriter(variables!!, customScalarAdapters)
+        val responseWriter = RealResponseWriter(variables, customScalarAdapters)
         (adaptable as Adaptable<Any>).adapter().toResponse(responseWriter, adaptable)
         val responseNormalizer = networkResponseNormalizer()
-        responseNormalizer.willResolveRecord(cacheKey!!)
+        responseNormalizer.willResolveRecord(cacheKey)
         responseWriter.resolveFields(responseNormalizer as ResolveDelegate<Map<String, Any>?>)
         return merge(responseNormalizer.records(), CacheHeaders.NONE)
       }

@@ -38,7 +38,7 @@ interface ApolloPrefetch : Cancelable {
    *
    * @return The cloned ApolloPrefetch object
    */
-  override fun clone(): ApolloPrefetch?
+  fun clone(): ApolloPrefetch?
 
   /**
    * Returns GraphQL operation this call executes

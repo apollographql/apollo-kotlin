@@ -50,7 +50,7 @@ interface ApolloCall<D : Operation.Data> : Cancelable {
    * @return The cloned ApolloCall object.
    */
   @Deprecated("")
-  override fun clone(): ApolloCall<D>
+  fun clone(): ApolloCall<D>
 
   /**
    * Returns GraphQL operation this call executes

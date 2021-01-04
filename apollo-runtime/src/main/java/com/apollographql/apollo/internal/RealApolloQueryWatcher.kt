@@ -76,9 +76,8 @@ class RealApolloQueryWatcher<D : Operation.Data>(
     }
   }
 
-  override fun isCanceled(): Boolean {
-    return state.get() === CallState.CANCELED
-  }
+  override val isCanceled: Boolean
+    get() = state.get() == CallState.CANCELED
 
   override fun operation(): Operation<*> {
     return activeCall.operation()

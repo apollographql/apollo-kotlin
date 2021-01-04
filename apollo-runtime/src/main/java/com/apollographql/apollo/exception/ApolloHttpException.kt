@@ -4,7 +4,7 @@ import okhttp3.Response
 
 class ApolloHttpException(rawResponse: Response?) : ApolloException(formatMessage(rawResponse)) {
   private val code: Int
-  private override val message: String
+  override val message: String
 
   @Transient
   private val rawResponse: Response?

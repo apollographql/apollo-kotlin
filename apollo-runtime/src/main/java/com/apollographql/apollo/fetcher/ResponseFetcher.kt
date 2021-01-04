@@ -14,5 +14,5 @@ interface ResponseFetcher {
    * @param logger A [ApolloLogger] to log relevant fetch information.
    * @return The [ApolloInterceptor] that executes the fetch logic.
    */
-  fun provideInterceptor(logger: ApolloLogger?): ApolloInterceptor?
+  fun provideInterceptor(logger: ApolloLogger?): ApolloInterceptor
 }

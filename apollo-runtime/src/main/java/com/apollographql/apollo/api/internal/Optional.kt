@@ -135,7 +135,7 @@ abstract class Optional<T> internal constructor() : Serializable {
    * **Comparison to `java.util.Optional`:** this method has no equivalent in Java 8's `Optional`
    * class; write `thisOptional.isPresent() ? thisOptional : secondChoice` instead.
    */
-  abstract fun or(secondChoice: Optional<out T>?): Optional<T>?
+  abstract fun or(secondChoice: Optional<out T>): Optional<T>
 
   /**
    * Returns the contained instance if it is present; `null` otherwise. If the instance is known to be present,
@@ -169,10 +169,10 @@ abstract class Optional<T> internal constructor() : Serializable {
    * @throws NullPointerException if the function returns `null`
    * @since 12.0
    */
-  abstract fun <V> transform(function: Function<in T, V>?): Optional<V>?
-  abstract fun <V> map(function: Function<in T, V>?): Optional<V>?
-  abstract fun <V> flatMap(function: Function<in T, Optional<V>?>?): Optional<V>?
-  abstract fun apply(action: Action<T>?): Optional<T>?
+  abstract fun <V> transform(function: Function<in T, V>): Optional<V>
+  abstract fun <V> map(function: Function<in T, V>): Optional<V>
+  abstract fun <V> flatMap(function: Function<in T, Optional<V>>): Optional<V>
+  abstract fun apply(action: Action<T>): Optional<T>
 
   /**
    * Returns `true` if `object` is an `Optional` instance, and either the contained references are

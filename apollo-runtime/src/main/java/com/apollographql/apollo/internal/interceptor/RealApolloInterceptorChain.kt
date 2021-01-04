@@ -17,7 +17,7 @@ class RealApolloInterceptorChain private constructor(interceptors: List<ApolloIn
   private val interceptors: List<ApolloInterceptor>
   private val interceptorIndex: Int
 
-  constructor(interceptors: List<ApolloInterceptor>) : this(interceptors, 0) {}
+  constructor(interceptors: List<ApolloInterceptor>) : this(interceptors, 0)
 
   override fun proceedAsync(request: InterceptorRequest,
                             dispatcher: Executor, callBack: CallBack) {

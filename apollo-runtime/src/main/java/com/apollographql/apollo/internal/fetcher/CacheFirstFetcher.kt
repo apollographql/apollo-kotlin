@@ -17,7 +17,7 @@ import java.util.concurrent.Executor
  * from the network.
  */
 class CacheFirstFetcher : ResponseFetcher {
-  override fun provideInterceptor(apolloLogger: ApolloLogger?): ApolloInterceptor? {
+  override fun provideInterceptor(apolloLogger: ApolloLogger?): ApolloInterceptor {
     return CacheFirstInterceptor()
   }
 
@@ -43,7 +43,7 @@ class CacheFirstFetcher : ResponseFetcher {
           callBack.onCompleted()
         }
 
-        override fun onFetch(sourceType: FetchSourceType?) {
+        override fun onFetch(sourceType: FetchSourceType) {
           callBack.onFetch(sourceType)
         }
       })

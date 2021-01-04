@@ -83,9 +83,8 @@ class RealSubscriptionManager(customScalarAdapters: CustomScalarAdapters,
     dispatcher.execute { doStop() }
   }
 
-  override fun getState(): SubscriptionManagerState {
-    return state
-  }
+  override val subscriptionManagerState: SubscriptionManagerState
+    get() = state
 
   override fun addOnStateChangeListener(onStateChangeListener: OnSubscriptionManagerStateChangeListener) {
     onStateChangeListeners.add(__checkNotNull(onStateChangeListener, "onStateChangeListener == null"))
@@ -336,7 +335,7 @@ class RealSubscriptionManager(customScalarAdapters: CustomScalarAdapters,
 
   private fun onErrorServerMessage(message: OperationServerMessage.Error) {
     val subscriptionId = message.id ?: ""
-    val subscriptionRecord = removeSubscriptionById(subscriptionId) ?: return
+    val subscriptionRecord = removeSubscriptionById(subscriptionId)
     val resendSubscriptionWithDocument: Boolean
     resendSubscriptionWithDocument = if (autoPersistSubscription) {
       val error = OperationResponseParser.parseError(message.payload)

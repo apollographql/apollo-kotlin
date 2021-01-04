@@ -13,7 +13,7 @@ import java.util.concurrent.Executor
  * exception is thrown.
  */
 class NetworkOnlyFetcher : ResponseFetcher {
-  override fun provideInterceptor(apolloLogger: ApolloLogger?): ApolloInterceptor? {
+  override fun provideInterceptor(apolloLogger: ApolloLogger?): ApolloInterceptor {
     return NetworkOnlyInterceptor()
   }
 

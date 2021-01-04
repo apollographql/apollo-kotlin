@@ -69,7 +69,7 @@ interface ApolloMutationCall<D : Operation.Data> : ApolloCall<D> {
      * @param operationNames array of [OperationName] query names to be re-fetched
      * @return The Builder
      */
-    fun refetchQueryNames(operationNames: List<OperationName?>): Builder<D>
+    fun refetchQueryNames(operationNames: List<OperationName>): Builder<D>
 
     /**
      *
@@ -78,7 +78,7 @@ interface ApolloMutationCall<D : Operation.Data> : ApolloCall<D> {
      * @param queries array of [Query] to be re-fetched
      * @return The Builder
      */
-    fun refetchQueries(queries: List<Query<*>?>): Builder<D>
+    fun refetchQueries(queries: List<Query<*>>): Builder<D>
 
     /**
      * Sets the [RequestHeaders] to use for this call. These headers will be added to the HTTP request when

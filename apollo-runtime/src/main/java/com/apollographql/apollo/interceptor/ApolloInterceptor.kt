@@ -55,7 +55,7 @@ interface ApolloInterceptor {
      *
      * @param sourceType type of source been used to fetch response from
      */
-    fun onFetch(sourceType: FetchSourceType?)
+    fun onFetch(sourceType: FetchSourceType)
 
     /**
      * Gets called when an unexpected exception occurs while performing operations on the request or processing the

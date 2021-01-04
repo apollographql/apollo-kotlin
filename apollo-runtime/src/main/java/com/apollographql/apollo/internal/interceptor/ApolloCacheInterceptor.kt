@@ -85,7 +85,7 @@ class ApolloCacheInterceptor(
   @Throws(ApolloException::class)
   fun resolveFromCache(request: InterceptorRequest): InterceptorResponse {
     val responseNormalizer = apolloStore.cacheResponseNormalizer()
-    val apolloStoreOperation: ApolloStoreOperation<Response<Operation.Data>> = apolloStore.read(
+    val apolloStoreOperation = apolloStore.read(
         request.operation,
         responseNormalizer,
         request.cacheHeaders)
@@ -101,23 +101,23 @@ class ApolloCacheInterceptor(
   fun cacheResponse(networkResponse: InterceptorResponse,
                     request: InterceptorRequest): Set<String> {
     if (networkResponse.parsedResponse.isPresent
-        && networkResponse.parsedResponse.get().hasErrors()
+        && networkResponse.parsedResponse.get()!!.hasErrors()
         && !request.cacheHeaders.hasHeader(ApolloCacheHeaders.STORE_PARTIAL_RESPONSES)) {
       return emptySet()
     }
-    val records = networkResponse.cacheRecords.map<List<Record>> { records ->
+    val records = networkResponse.cacheRecords.orNull()?.let { records ->
       val result: MutableList<Record> = ArrayList(records.size)
       for (record in records) {
         result.add(record.toBuilder().mutationId(request.uniqueId).build())
       }
       result
     }
-    return if (!records.isPresent) {
+    return if (records == null) {
       emptySet()
     } else try {
       apolloStore.writeTransaction(object : Transaction<WriteableStore, Set<String>> {
         override fun execute(cache: WriteableStore): Set<String>? {
-          return cache.merge(records.get(), request.cacheHeaders)
+          return cache.merge(records, request.cacheHeaders)
         }
       })
     } catch (e: Exception) {
@@ -153,7 +153,7 @@ class ApolloCacheInterceptor(
       try {
         if (request.optimisticUpdates.isPresent) {
           val optimisticUpdates = request.optimisticUpdates.get()
-          apolloStore.writeOptimisticUpdatesAndPublish(request.operation, optimisticUpdates, request.uniqueId)
+          apolloStore.writeOptimisticUpdatesAndPublish(request.operation as Operation<Operation.Data>, optimisticUpdates, request.uniqueId)
               .execute()
         }
       } catch (e: Exception) {
