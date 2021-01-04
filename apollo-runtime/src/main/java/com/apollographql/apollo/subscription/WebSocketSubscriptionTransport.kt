@@ -45,11 +45,11 @@ class WebSocketSubscriptionTransport @JvmOverloads constructor(
     callback.onConnected()
   }
 
-  internal fun onMessage(message: OperationServerMessage?) {
+  internal fun onMessage(message: OperationServerMessage) {
     callback.onMessage(message)
   }
 
-  internal fun onFailure(t: Throwable?) {
+  internal fun onFailure(t: Throwable) {
     try {
       callback.onFailure(t)
     } finally {

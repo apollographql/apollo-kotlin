@@ -48,7 +48,7 @@ class ResponseFetcherTest {
         .defaultResponseFetcher(ApolloResponseFetchers.NETWORK_ONLY)
         .build()
     val realApolloCall = apolloClient.query(emptyQuery) as RealApolloCall<*>
-    Truth.assertThat(realApolloCall.httpCachePolicy.fetchStrategy).isEqualTo(FetchStrategy.CACHE_ONLY)
+    Truth.assertThat(realApolloCall.httpCachePolicy!!.fetchStrategy).isEqualTo(FetchStrategy.CACHE_ONLY)
     Truth.assertThat(realApolloCall.responseFetcher).isEqualTo(ApolloResponseFetchers.NETWORK_ONLY)
   }
 
@@ -59,7 +59,7 @@ class ResponseFetcherTest {
         .okHttpClient(OkHttpClient())
         .build()
     val realApolloCall = apolloClient.query<Operation.Data>(emptyQuery) as RealApolloCall<*>
-    Truth.assertThat(realApolloCall.httpCachePolicy.fetchStrategy).isEqualTo(FetchStrategy.NETWORK_ONLY)
+    Truth.assertThat(realApolloCall.httpCachePolicy!!.fetchStrategy).isEqualTo(FetchStrategy.NETWORK_ONLY)
     Truth.assertThat(realApolloCall.responseFetcher).isEqualTo(ApolloResponseFetchers.CACHE_FIRST)
   }
 }

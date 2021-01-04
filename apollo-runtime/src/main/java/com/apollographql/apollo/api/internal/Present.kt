@@ -33,28 +33,28 @@ internal class Present<T>(private val reference: T) : Optional<T>() {
     return reference
   }
 
-  override fun or(secondChoice: Optional<out T>?): Optional<T>? {
+  override fun or(secondChoice: Optional<out T>): Optional<T> {
     __checkNotNull(secondChoice)
     return this
   }
 
-  override fun <V> transform(function: Function<in T, V>?): Optional<V>? {
+  override fun <V> transform(function: Function<in T, V>): Optional<V> {
     return Present(__checkNotNull(function!!.apply(reference),
         "the Function passed to Optional.transform() must not return null."))
   }
 
-  override fun <V> map(function: Function<in T, V>?): Optional<V>? {
+  override fun <V> map(function: Function<in T, V>): Optional<V> {
     return Present(__checkNotNull(function!!.apply(reference),
         "the Function passed to Optional.map() must not return null."))
   }
 
-  override fun <V> flatMap(function: Function<in T, Optional<V>?>?): Optional<V>? {
+  override fun <V> flatMap(function: Function<in T, Optional<V>>): Optional<V> {
     __checkNotNull(function)
     return __checkNotNull(function!!.apply(reference),
         "the Function passed to Optional.flatMap() must not return null.")
   }
 
-  override fun apply(action: Action<T>?): Optional<T>? {
+  override fun apply(action: Action<T>): Optional<T> {
     __checkNotNull(action)
     return map(object : Function<T, T> {
       override fun apply(t: T): T {
@@ -68,7 +68,7 @@ internal class Present<T>(private val reference: T) : Optional<T>() {
     return reference
   }
 
-  override fun asSet(): Set<T>? {
+  override fun asSet(): Set<T> {
     return setOf(reference)
   }
 

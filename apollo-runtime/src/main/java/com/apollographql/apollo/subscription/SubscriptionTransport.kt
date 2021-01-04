@@ -18,14 +18,14 @@ interface SubscriptionTransport {
    *
    * @param message to be sent as terminal event.
    */
-  fun disconnect(message: OperationClientMessage?)
+  fun disconnect(message: OperationClientMessage)
 
   /**
    * Sends [OperationClientMessage] message to the subscription server.
    *
    * @param message to be sent to the server
    */
-  fun send(message: OperationClientMessage?)
+  fun send(message: OperationClientMessage)
 
   /**
    * Communicates responses from a subscription server.
@@ -41,14 +41,14 @@ interface SubscriptionTransport {
      *
      * @param t exception occurred during communication.
      */
-    fun onFailure(t: Throwable?)
+    fun onFailure(t: Throwable)
 
     /**
      * Gets called when subscription server pushed new updates.
      *
      * @param message new message received from the server.
      */
-    fun onMessage(message: OperationServerMessage?)
+    fun onMessage(message: OperationServerMessage)
 
     /**
      * Gets called when connection with subscription server is closed.
@@ -66,6 +66,6 @@ interface SubscriptionTransport {
      * @param callback which will handle the transport communication events.
      * @return prepared [SubscriptionTransport]
      */
-    fun create(callback: Callback): SubscriptionTransport?
+    fun create(callback: Callback): SubscriptionTransport
   }
 }

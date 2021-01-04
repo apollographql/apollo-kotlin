@@ -3,7 +3,4 @@ package com.apollographql.apollo.internal.subscription
 import com.apollographql.apollo.api.internal.Utils.__checkNotNull
 import java.util.Collections
 
-class ApolloSubscriptionServerException(errorPayload: Map<String, Any>) : ApolloSubscriptionException("Subscription failed") {
-  @JvmField
-  val errorPayload: Map<String, Any> = Collections.unmodifiableMap(__checkNotNull(errorPayload, "errorPayload == null"))
-}
+class ApolloSubscriptionServerException(val errorPayload: Map<String, Any?>) : ApolloSubscriptionException("Subscription failed")

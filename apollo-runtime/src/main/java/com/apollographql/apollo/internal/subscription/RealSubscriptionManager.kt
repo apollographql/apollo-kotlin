@@ -31,9 +31,9 @@ class RealSubscriptionManager(customScalarAdapters: CustomScalarAdapters,
   @JvmField
   var subscriptions: MutableMap<UUID, SubscriptionRecord> = LinkedHashMap()
 
-  @JvmField
   @Volatile
-  var state = SubscriptionManagerState.DISCONNECTED
+  override var state: SubscriptionManagerState = SubscriptionManagerState.DISCONNECTED
+
   val timer = AutoReleaseTimer()
   private val customScalarAdapters: CustomScalarAdapters
   private val transport: SubscriptionTransport
@@ -82,9 +82,6 @@ class RealSubscriptionManager(customScalarAdapters: CustomScalarAdapters,
   override fun stop() {
     dispatcher.execute { doStop() }
   }
-
-  override val subscriptionManagerState: SubscriptionManagerState
-    get() = state
 
   override fun addOnStateChangeListener(onStateChangeListener: OnSubscriptionManagerStateChangeListener) {
     onStateChangeListeners.add(__checkNotNull(onStateChangeListener, "onStateChangeListener == null"))
@@ -299,7 +296,8 @@ class RealSubscriptionManager(customScalarAdapters: CustomScalarAdapters,
       val normalizer = responseNormalizer.invoke()
       val parser = OperationResponseParser<Operation.Data>(
           subscriptionRecord!!.subscription,
-          customScalarAdapters, normalizer
+          customScalarAdapters,
+          normalizer as ResponseNormalizer<Map<String, Any?>?>
       )
       val response: Response<*>
       try {
@@ -387,8 +385,8 @@ class RealSubscriptionManager(customScalarAdapters: CustomScalarAdapters,
   }
 
   class SubscriptionRecord internal constructor(val id: UUID, val subscription: Subscription<Operation.Data>, val callback: SubscriptionManager.Callback<Operation.Data>) {
-    fun notifyOnResponse(response: Response<*>?, cacheRecords: Collection<Record?>?) {
-      callback.onResponse(SubscriptionResponse(subscription, response as Response<Operation.Data>, cacheRecords!!))
+    fun notifyOnResponse(response: Response<*>?, cacheRecords: Collection<Record>) {
+      callback.onResponse(SubscriptionResponse(subscription, response as Response<Operation.Data>, cacheRecords))
     }
 
     fun notifyOnError(error: ApolloSubscriptionException?) {
