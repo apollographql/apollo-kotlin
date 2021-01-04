@@ -1,27 +1,24 @@
-package com.apollographql.apollo.internal;
+package com.apollographql.apollo.internal
 
-enum CallState {
+internal enum class CallState {
   IDLE, ACTIVE, TERMINATED, CANCELED;
 
-  static class IllegalStateMessage {
-    private final CallState callState;
-
-    private IllegalStateMessage(CallState callState) {
-      this.callState = callState;
-    }
-
-    static IllegalStateMessage forCurrentState(CallState callState) {
-      return new IllegalStateMessage(callState);
-    }
-
-    String expected(CallState... acceptableStates) {
-      StringBuilder stringBuilder = new StringBuilder("Found: " + callState.name() + ", but expected [");
-      String deliminator = "";
-      for (CallState state : acceptableStates) {
-        stringBuilder.append(deliminator).append(state.name());
-        deliminator = ", ";
+  internal class IllegalStateMessage private constructor(private val callState: CallState) {
+    fun expected(vararg acceptableStates: CallState): String {
+      val stringBuilder = StringBuilder("Found: " + callState.name + ", but expected [")
+      var deliminator = ""
+      for (state in acceptableStates) {
+        stringBuilder.append(deliminator).append(state.name)
+        deliminator = ", "
       }
-      return stringBuilder.append("]").toString();
+      return stringBuilder.append("]").toString()
+    }
+
+    companion object {
+      @JvmStatic
+      fun forCurrentState(callState: CallState): IllegalStateMessage {
+        return IllegalStateMessage(callState)
+      }
     }
   }
 }
