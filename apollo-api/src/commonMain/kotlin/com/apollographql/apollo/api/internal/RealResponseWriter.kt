@@ -6,7 +6,6 @@ import com.apollographql.apollo.api.ResponseField
 import com.apollographql.apollo.api.CustomScalar
 import com.apollographql.apollo.api.CustomScalarAdapters
 import com.apollographql.apollo.api.internal.ResolveDelegate
-import com.apollographql.apollo.api.internal.ResponseFieldMarshaller
 import com.apollographql.apollo.api.internal.ResponseWriter
 
 class RealResponseWriter(
@@ -41,14 +40,14 @@ class RealResponseWriter(
     writeScalarFieldValue(field, if (value != null) typeAdapter.encode(value).toRawValue() else null)
   }
 
-  override fun writeObject(field: ResponseField, marshaller: ResponseFieldMarshaller?) {
-    checkFieldValue(field, marshaller)
-    if (marshaller == null) {
+  override fun writeObject(field: ResponseField, block: ((ResponseWriter) -> Unit)?) {
+    checkFieldValue(field, block)
+    if (block == null) {
       buffer[field.responseName] = FieldDescriptor(field, null)
       return
     }
     val nestedResponseWriter = RealResponseWriter(operationVariables, customScalarAdapters)
-    marshaller.marshal(nestedResponseWriter)
+    block.invoke(nestedResponseWriter)
     buffer[field.responseName] = FieldDescriptor(field, nestedResponseWriter.buffer)
   }
 
@@ -202,9 +201,9 @@ class RealResponseWriter(
       accumulator.add(if (value != null) typeAdapter.encode(value).toRawValue() else null)
     }
 
-    override fun writeObject(marshaller: ResponseFieldMarshaller?) {
+    override fun writeObject(block: ((ResponseWriter) -> Unit)?) {
       val nestedResponseWriter = RealResponseWriter(operationVariables, customScalarAdapters)
-      marshaller!!.marshal(nestedResponseWriter)
+      block?.invoke(nestedResponseWriter)
       accumulator.add(nestedResponseWriter.buffer)
     }
 

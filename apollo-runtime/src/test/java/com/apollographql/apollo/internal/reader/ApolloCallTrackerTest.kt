@@ -5,7 +5,6 @@ import com.apollographql.apollo.IdleResourceCallback
 import com.apollographql.apollo.api.Operation
 import com.apollographql.apollo.api.OperationName
 import com.apollographql.apollo.api.Query
-import com.apollographql.apollo.api.internal.ResponseFieldMarshaller
 import com.apollographql.apollo.rx2.Rx2Apollo
 import com.google.common.truth.Truth
 import okhttp3.Interceptor

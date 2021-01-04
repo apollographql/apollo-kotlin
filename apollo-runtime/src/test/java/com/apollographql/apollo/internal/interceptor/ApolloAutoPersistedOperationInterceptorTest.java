@@ -5,7 +5,6 @@ import com.apollographql.apollo.api.Operation;
 import com.apollographql.apollo.api.OperationName;
 import com.apollographql.apollo.api.internal.ApolloLogger;
 import com.apollographql.apollo.api.internal.ResponseAdapter;
-import com.apollographql.apollo.api.internal.ResponseFieldMarshaller;
 import com.apollographql.apollo.cache.normalized.Record;
 import com.apollographql.apollo.interceptor.ApolloAutoPersistedOperationInterceptor;
 import com.apollographql.apollo.interceptor.ApolloInterceptor;
