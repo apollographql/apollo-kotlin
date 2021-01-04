@@ -68,7 +68,7 @@ abstract class ApolloGenerateSourcesTask : DefaultTask() {
 
   @get:Input
   @get:Optional
-  abstract val customTypeMapping: MapProperty<String, String>
+  abstract val customScalarsMapping: MapProperty<String, String>
 
   @get:Input
   @get:Optional
@@ -123,7 +123,7 @@ abstract class ApolloGenerateSourcesTask : DefaultTask() {
 
         rootPackageName = rootPackageName.getOrElse(""),
 
-        customTypeMap = customTypeMapping.getOrElse(emptyMap()),
+        customScalarsMapping = customScalarsMapping.getOrElse(emptyMap()),
         useSemanticNaming = useSemanticNaming.getOrElse(true),
         generateKotlinModels = generateKotlinModels.getOrElse(false),
         warnOnDeprecatedUsages = warnOnDeprecatedUsages.getOrElse(true),

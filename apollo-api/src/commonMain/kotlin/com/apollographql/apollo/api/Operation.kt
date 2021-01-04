@@ -89,19 +89,19 @@ interface Operation<D : Operation.Data, V : Operation.Variables> {
      */
     @Throws(IOException::class)
     fun marshal(): String {
-      return marshal(ScalarTypeAdapters.DEFAULT)
+      return marshal(CustomScalarAdapters.DEFAULT)
     }
 
     /**
-     * Serializes variables with provided scalarTypeAdapters [scalarTypeAdapters] as JSON string to be sent to the GraphQL server.
+     * Serializes variables with provided scalarTypeAdapters [customScalarAdapters] as JSON string to be sent to the GraphQL server.
      */
     @Throws(IOException::class)
-    fun marshal(scalarTypeAdapters: ScalarTypeAdapters): String {
+    fun marshal(customScalarAdapters: CustomScalarAdapters): String {
       return Buffer().apply {
         JsonWriter.of(this).use { jsonWriter ->
           jsonWriter.serializeNulls = true
           jsonWriter.beginObject()
-          marshaller().marshal(InputFieldJsonWriter(jsonWriter, scalarTypeAdapters))
+          marshaller().marshal(InputFieldJsonWriter(jsonWriter, customScalarAdapters))
           jsonWriter.endObject()
         }
       }.readUtf8()

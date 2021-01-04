@@ -1,12 +1,11 @@
 package com.apollographql.apollo
 
-import com.apollographql.apollo.FaultyHttpCacheStore
 import com.apollographql.apollo.Utils.immediateExecutor
 import com.apollographql.apollo.Utils.immediateExecutorService
 import com.apollographql.apollo.Utils.readFileToString
-import com.apollographql.apollo.api.CustomTypeAdapter
-import com.apollographql.apollo.api.CustomTypeValue
-import com.apollographql.apollo.api.CustomTypeValue.GraphQLString
+import com.apollographql.apollo.api.CustomScalarAdapter
+import com.apollographql.apollo.api.JsonElement
+import com.apollographql.apollo.api.JsonString
 import com.apollographql.apollo.api.cache.http.HttpCache
 import com.apollographql.apollo.api.cache.http.HttpCachePolicy
 import com.apollographql.apollo.cache.ApolloCacheHeaders
@@ -19,22 +18,26 @@ import com.apollographql.apollo.exception.ApolloHttpException
 import com.apollographql.apollo.integration.httpcache.AllFilmsQuery
 import com.apollographql.apollo.integration.httpcache.AllPlanetsQuery
 import com.apollographql.apollo.integration.httpcache.DroidDetailsQuery
-import com.apollographql.apollo.integration.httpcache.type.CustomType
+import com.apollographql.apollo.integration.httpcache.type.CustomScalars
 import com.apollographql.apollo.rx2.Rx2Apollo
 import com.google.common.truth.Truth
-import okhttp3.*
+import okhttp3.Dispatcher
+import okhttp3.Interceptor
+import okhttp3.OkHttpClient
+import okhttp3.Request
+import okhttp3.Response
 import okhttp3.mockwebserver.MockResponse
 import okhttp3.mockwebserver.MockWebServer
 import okio.Buffer
 import org.junit.After
 import org.junit.Before
-import org.junit.Rule
 import org.junit.Test
 import java.io.File
 import java.io.IOException
 import java.text.ParseException
 import java.text.SimpleDateFormat
-import java.util.*
+import java.util.Date
+import java.util.Locale
 import java.util.concurrent.TimeUnit
 
 class HttpCacheTest {
@@ -50,22 +53,22 @@ class HttpCacheTest {
 
   @Before
   fun setUp() {
-    val dateCustomTypeAdapter: CustomTypeAdapter<Date> = object : CustomTypeAdapter<Date> {
-      override fun decode(value: CustomTypeValue<*>): Date {
+    val dateCustomScalarAdapter: CustomScalarAdapter<Date> = object : CustomScalarAdapter<Date> {
+      override fun decode(jsonElement: JsonElement): Date {
         return try {
-          DATE_FORMAT.parse(value.value.toString())
+          DATE_FORMAT.parse(jsonElement.toRawValue().toString())
         } catch (e: ParseException) {
           throw RuntimeException(e)
         }
       }
 
-      override fun encode(value: Date): CustomTypeValue<*> {
-        return GraphQLString(DATE_FORMAT.format(value))
+      override fun encode(value: Date): JsonElement {
+        return JsonString(DATE_FORMAT.format(value))
       }
     }
     cacheStore = MockHttpCacheStore()
-    cacheStore!!.delegate = DiskLruHttpCacheStore(inMemoryFileSystem, File("/cache/"), Int.MAX_VALUE.toLong())
-    val cache: HttpCache = ApolloHttpCache(cacheStore!!, null)
+    cacheStore.delegate = DiskLruHttpCacheStore(inMemoryFileSystem, File("/cache/"), Int.MAX_VALUE.toLong())
+    val cache: HttpCache = ApolloHttpCache(cacheStore, null)
     okHttpClient = OkHttpClient.Builder()
         .addInterceptor(TrackingInterceptor())
         .addInterceptor(cache.interceptor())
@@ -77,7 +80,7 @@ class HttpCacheTest {
         .serverUrl(server.url("/"))
         .okHttpClient(okHttpClient)
         .dispatcher(immediateExecutor())
-        .addCustomTypeAdapter(CustomType.Date, dateCustomTypeAdapter)
+        .addCustomScalarAdapter(CustomScalars.Date, dateCustomScalarAdapter)
         .httpCache(cache)
         .build()
   }
@@ -85,7 +88,7 @@ class HttpCacheTest {
   @After
   fun tearDown() {
     try {
-      apolloClient!!.clearHttpCache()
+      apolloClient.clearHttpCache()
       server.shutdown()
     } catch (ignore: Exception) {
     }
@@ -263,7 +266,7 @@ class HttpCacheTest {
         .query(AllPlanetsQuery()))
         .test()
     checkCachedResponse("/HttpCacheTestAllPlanets.json")
-    cacheStore!!.delegate?.delete()
+    cacheStore.delegate?.delete()
     enqueueResponse("/HttpCacheTestAllPlanets.json")
     Rx2Apollo.from(apolloClient
         .query(AllPlanetsQuery())
@@ -359,7 +362,7 @@ class HttpCacheTest {
   @Test
   @Throws(IOException::class, ApolloException::class)
   fun fileSystemUnavailable() {
-    cacheStore!!.delegate = DiskLruHttpCacheStore(NoFileSystem(), File("/cache/"), Int.MAX_VALUE.toLong())
+    cacheStore.delegate = DiskLruHttpCacheStore(NoFileSystem(), File("/cache/"), Int.MAX_VALUE.toLong())
     enqueueResponse("/HttpCacheTestAllPlanets.json")
     Rx2Apollo.from(apolloClient
         .query(AllPlanetsQuery()))
@@ -372,7 +375,7 @@ class HttpCacheTest {
   @Throws(IOException::class, ApolloException::class)
   fun fileSystemWriteFailure() {
     val faultyCacheStore = FaultyHttpCacheStore(FileSystem.SYSTEM)
-    cacheStore!!.delegate = faultyCacheStore
+    cacheStore.delegate = faultyCacheStore
     enqueueResponse("/HttpCacheTestAllPlanets.json")
     faultyCacheStore.failStrategy(FaultyHttpCacheStore.FailStrategy.FAIL_HEADER_WRITE)
     Rx2Apollo.from(apolloClient
@@ -393,7 +396,7 @@ class HttpCacheTest {
   @Throws(IOException::class, ApolloException::class)
   fun fileSystemReadFailure() {
     val faultyCacheStore = FaultyHttpCacheStore(inMemoryFileSystem)
-    cacheStore!!.delegate = faultyCacheStore
+    cacheStore.delegate = faultyCacheStore
     enqueueResponse("/HttpCacheTestAllPlanets.json")
     Rx2Apollo.from(apolloClient
         .query(AllPlanetsQuery()))
@@ -439,7 +442,7 @@ class HttpCacheTest {
         .test()
         .assertError(Exception::class.java)
     enqueueResponse("/HttpCacheTestAllPlanets.json")
-    Rx2Apollo.from(apolloClient!!.query(AllPlanetsQuery()))
+    Rx2Apollo.from(apolloClient.query(AllPlanetsQuery()))
         .test()
         .assertValue { response -> !response.hasErrors() }
     checkCachedResponse("/HttpCacheTestAllPlanets.json")
@@ -536,7 +539,7 @@ class HttpCacheTest {
   @Throws(IOException::class)
   private fun checkCachedResponse(fileName: String) {
     val cacheKey = lastHttRequest!!.headers(HttpCache.CACHE_KEY_HEADER)[0]
-    val response = apolloClient!!.cachedHttpResponse(cacheKey)
+    val response = apolloClient.cachedHttpResponse(cacheKey)
     Truth.assertThat(response).isNotNull()
     Truth.assertThat(response.body()!!.source().readUtf8()).isEqualTo(readFileToString(javaClass, fileName))
     response.body()!!.source().close()
@@ -545,7 +548,7 @@ class HttpCacheTest {
   @Throws(IOException::class)
   private fun checkNoCachedResponse() {
     val cacheKey = lastHttRequest!!.header(HttpCache.CACHE_KEY_HEADER)
-    val cachedResponse = apolloClient!!.cachedHttpResponse(cacheKey)
+    val cachedResponse = apolloClient.cachedHttpResponse(cacheKey)
     Truth.assertThat(cachedResponse).isNull()
   }
 

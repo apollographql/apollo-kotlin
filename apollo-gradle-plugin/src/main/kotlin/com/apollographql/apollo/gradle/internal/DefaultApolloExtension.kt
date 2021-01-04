@@ -83,7 +83,7 @@ abstract class DefaultApolloExtension(private val project: Project, private val 
             && defaultService.sourceFolder.isPresent.not()
             && defaultService.schemaFile.isPresent.not()
             && defaultService.alwaysGenerateTypesMatching.isPresent.not()
-            && defaultService.customTypeMapping.isPresent.not()
+            && defaultService.customScalarsMapping.isPresent.not()
             && defaultService.exclude.isPresent.not()
             && defaultService.include.isPresent.not()
             && defaultService.failOnWarnings.isPresent.not()
@@ -296,7 +296,7 @@ abstract class DefaultApolloExtension(private val project: Project, private val 
       task.generateKotlinModels.set(true)
       task.warnOnDeprecatedUsages.set(service.warnOnDeprecatedUsages)
       task.failOnWarnings.set(service.failOnWarnings)
-      task.customTypeMapping.set(service.customTypeMapping)
+      task.customScalarsMapping.set(service.customScalarsMapping)
       task.outputDir.apply {
         set(BuildDirLayout.sources(project, service))
         disallowChanges()

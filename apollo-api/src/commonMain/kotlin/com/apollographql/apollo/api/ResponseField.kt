@@ -1,6 +1,5 @@
 package com.apollographql.apollo.api
 
-import kotlin.js.JsName
 import kotlin.jvm.JvmStatic
 
 /**
@@ -80,13 +79,13 @@ open class ResponseField internal constructor(
   /**
    * Abstraction for a Field representing a custom GraphQL scalar type.
    */
-  class CustomTypeField internal constructor(
+  class CustomScalarField internal constructor(
       responseName: String,
       fieldName: String,
       arguments: Map<String, Any?>?,
       optional: Boolean,
       conditions: List<Condition>?,
-      val scalarType: ScalarType
+      val customScalar: CustomScalar
   ) : ResponseField(
       type = Type.CUSTOM,
       responseName = responseName,
@@ -98,17 +97,17 @@ open class ResponseField internal constructor(
 
     override fun equals(other: Any?): Boolean {
       if (this === other) return true
-      if (other !is CustomTypeField) return false
+      if (other !is CustomScalarField) return false
       if (!super.equals(other)) return false
 
-      if (scalarType != other.scalarType) return false
+      if (customScalar != other.customScalar) return false
 
       return true
     }
 
     override fun hashCode(): Int {
       var result = super.hashCode()
-      result = 31 * result + scalarType.hashCode()
+      result = 31 * result + customScalar.hashCode()
       return result
     }
   }
@@ -344,25 +343,25 @@ open class ResponseField internal constructor(
      * @param fieldName name of the field in the GraphQL operation
      * @param arguments arguments to be passed along with the field
      * @param optional whether the arguments passed along are optional or required
-     * @param scalarType the custom scalar type of the field
+     * @param customScalar the custom scalar type of the field
      * @param conditions list of conditions for this field
      * @return Field instance representing [Type.CUSTOM]
      */
     @JvmStatic
-    fun forCustomType(
+    fun forCustomScalar(
         responseName: String,
         fieldName: String,
         arguments: Map<String, Any?>?,
         optional: Boolean,
-        scalarType: ScalarType,
+        customScalar: CustomScalar,
         conditions: List<Condition>?
-    ): CustomTypeField {
-      return CustomTypeField(
+    ): CustomScalarField {
+      return CustomScalarField(
           responseName = responseName,
           fieldName = fieldName,
           arguments = arguments.orEmpty(),
           optional = optional,
-          scalarType = scalarType,
+          customScalar = customScalar,
           conditions = conditions.orEmpty()
       )
     }

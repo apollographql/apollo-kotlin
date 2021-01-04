@@ -1,6 +1,6 @@
 package com.apollographql.apollo.subscription
 
-import com.apollographql.apollo.api.ScalarTypeAdapters
+import com.apollographql.apollo.api.CustomScalarAdapters
 import com.apollographql.apollo.api.internal.json.BufferedSourceJsonReader
 import com.apollographql.apollo.api.internal.json.ResponseJsonStreamReader
 import com.google.common.truth.Truth.assertThat
@@ -32,7 +32,7 @@ class AppSyncOperationMessageSerializerTest {
             queryDocument = "subscription{commentAdded{id  name}",
             name = "SomeSubscription"
         ),
-        scalarTypeAdapters = ScalarTypeAdapters.DEFAULT,
+        customScalarAdapters = CustomScalarAdapters.DEFAULT,
         autoPersistSubscription = false,
         sendSubscriptionDocument = true
     )

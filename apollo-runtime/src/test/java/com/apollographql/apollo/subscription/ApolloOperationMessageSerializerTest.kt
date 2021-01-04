@@ -1,7 +1,7 @@
 package com.apollographql.apollo.subscription
 
 import com.apollographql.apollo.api.BigDecimal
-import com.apollographql.apollo.api.ScalarTypeAdapters
+import com.apollographql.apollo.api.CustomScalarAdapters
 import com.apollographql.apollo.api.internal.json.BufferedSourceJsonReader
 import com.apollographql.apollo.api.internal.json.ResponseJsonStreamReader
 import com.google.common.truth.Truth.assertThat
@@ -33,21 +33,21 @@ class ApolloOperationMessageSerializerTest {
     val regularQuery = OperationClientMessage.Start(
         subscriptionId = "subscription-id",
         subscription = subscription,
-        scalarTypeAdapters = ScalarTypeAdapters.DEFAULT,
+        customScalarAdapters = CustomScalarAdapters.DEFAULT,
         autoPersistSubscription = false,
         sendSubscriptionDocument = true
     )
     val persistedQueryWithoutDocument = OperationClientMessage.Start(
         subscriptionId = "subscription-id",
         subscription = subscription,
-        scalarTypeAdapters = ScalarTypeAdapters.DEFAULT,
+        customScalarAdapters = CustomScalarAdapters.DEFAULT,
         autoPersistSubscription = true,
         sendSubscriptionDocument = false
     )
     val persistedQueryWithDocument = OperationClientMessage.Start(
         subscriptionId = "subscription-id",
         subscription = subscription,
-        scalarTypeAdapters = ScalarTypeAdapters.DEFAULT,
+        customScalarAdapters = CustomScalarAdapters.DEFAULT,
         autoPersistSubscription = true,
         sendSubscriptionDocument = true
     )

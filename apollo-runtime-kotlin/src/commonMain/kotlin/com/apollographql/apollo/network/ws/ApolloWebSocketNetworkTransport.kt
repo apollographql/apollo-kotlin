@@ -106,7 +106,7 @@ class ApolloWebSocketNetworkTransport(
           val response = try {
             request.operation.parse(
                 source = buffer,
-                scalarTypeAdapters = request.scalarTypeAdapters
+                customScalarAdapters = request.customScalarAdapters
             )
           } catch (e: Exception) {
             throw ApolloParseException(

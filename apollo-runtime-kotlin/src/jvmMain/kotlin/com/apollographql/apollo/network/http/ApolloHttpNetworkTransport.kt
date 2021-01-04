@@ -126,7 +126,7 @@ actual class ApolloHttpNetworkTransport(
 
     val response = request.operation.parse(
         source = responseBody.source(),
-        scalarTypeAdapters = request.scalarTypeAdapters
+        customScalarAdapters = request.customScalarAdapters
     )
     return ApolloResponse(
         requestUuid = request.requestUuid,
@@ -157,7 +157,7 @@ actual class ApolloHttpNetworkTransport(
         .addQueryParameter("query", operation.queryDocument())
         .addQueryParameter("operationName", operation.name().name())
         .apply {
-          operation.variables().marshal(scalarTypeAdapters).let { variables ->
+          operation.variables().marshal(customScalarAdapters).let { variables ->
             if (variables.isNotEmpty()) addQueryParameter("variables", variables)
           }
         }
@@ -174,7 +174,7 @@ actual class ApolloHttpNetworkTransport(
   }
 
   private fun <D : Operation.Data> ApolloRequest<D>.toHttpPostRequest(httpExecutionContext: HttpExecutionContext.Request?): Request {
-    val requestBody = operation.composeRequestBody(scalarTypeAdapters).toRequestBody(contentType = MEDIA_TYPE.toMediaType())
+    val requestBody = operation.composeRequestBody(customScalarAdapters).toRequestBody(contentType = MEDIA_TYPE.toMediaType())
     return Request.Builder()
         .url(serverUrl)
         .headers(headers)
