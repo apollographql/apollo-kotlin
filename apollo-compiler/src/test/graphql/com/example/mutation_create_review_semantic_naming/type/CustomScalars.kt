@@ -7,6 +7,9 @@ package com.example.mutation_create_review_semantic_naming.type
 
 import com.apollographql.apollo.api.CustomScalar
 
+/**
+ * Auto generated constants for custom scalars. Use them to register your [CustomScalarAdapter]s
+ */
 object CustomScalars {
   val Date: CustomScalar = CustomScalar("Date", "kotlin.Any")
 

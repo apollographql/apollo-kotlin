@@ -7,6 +7,9 @@ package com.example.mutation_create_review.type
 
 import com.apollographql.apollo.api.CustomScalar
 
+/**
+ * Auto generated constants for custom scalars. Use them to register your [CustomScalarAdapter]s
+ */
 internal object CustomScalars {
   val Date: CustomScalar = CustomScalar("Date", "java.util.Date")
 

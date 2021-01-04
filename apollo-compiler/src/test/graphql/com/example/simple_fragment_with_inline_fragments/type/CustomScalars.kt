@@ -7,6 +7,9 @@ package com.example.simple_fragment_with_inline_fragments.type
 
 import com.apollographql.apollo.api.CustomScalar
 
+/**
+ * Auto generated constants for custom scalars. Use them to register your [CustomScalarAdapter]s
+ */
 object CustomScalars {
   val Date: CustomScalar = CustomScalar("Date", "kotlin.Any")
 

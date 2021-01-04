@@ -7,6 +7,9 @@ package com.example.inline_frgament_intersection.type
 
 import com.apollographql.apollo.api.CustomScalar
 
+/**
+ * Auto generated constants for custom scalars. Use them to register your [CustomScalarAdapter]s
+ */
 object CustomScalars {
   val Long: CustomScalar = CustomScalar("Long", "kotlin.Any")
 }
