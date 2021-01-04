@@ -14,7 +14,7 @@ interface ResponseWriter {
 
   fun writeBoolean(field: ResponseField, value: Boolean?)
 
-  fun writeCustom(field: ResponseField.CustomTypeField, value: Any?)
+  fun writeCustom(field: ResponseField.CustomScalarField, value: Any?)
 
   fun writeObject(field: ResponseField, marshaller: ResponseFieldMarshaller?)
 

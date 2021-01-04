@@ -20,7 +20,7 @@ class UpToDateTests {
     withSimpleProject { dir ->
       `builds successfully and generates expected outputs`(dir)
       `nothing changed, task up to date`(dir)
-      `adding a custom type to the build script re-generates the CustomType class`(dir)
+      `adding a custom scalar type to the build script re-generates the CustomScalar class`(dir)
     }
   }
 
@@ -34,8 +34,8 @@ class UpToDateTests {
     assertTrue(dir.generatedChild("service/com/example/FilmsQuery.kt").isFile)
     assertTrue(dir.generatedChild("service/com/example/fragment/SpeciesInformation.kt").isFile)
 
-    // verify that the custom type generated was Any because no customType mapping was specified
-    TestUtils.assertFileContains(dir, "service/com/example/type/CustomType.kt", "= \"kotlin.Any\"")
+    // verify that the custom type generated was Any because no customScalarsMapping was specified
+    TestUtils.assertFileContains(dir, "service/com/example/type/CustomScalar.kt", "= \"kotlin.Any\"")
   }
 
   fun `nothing changed, task up to date`(dir: File) {
@@ -49,11 +49,11 @@ class UpToDateTests {
     assertTrue(dir.generatedChild("service/com/example/fragment/SpeciesInformation.kt").isFile)
   }
 
-  fun `adding a custom type to the build script re-generates the CustomType class`(dir: File) {
+  fun `adding a custom scalar type to the build script re-generates the CustomScalar class`(dir: File) {
     val apolloBlock = """
       
       apollo {
-        customTypeMapping = ["DateTime": "java.util.Date"]
+        customScalarsMapping = ["DateTime": "java.util.Date"]
       }
     """.trimIndent()
 
@@ -61,11 +61,11 @@ class UpToDateTests {
 
     val result = TestUtils.executeTask("generateApolloSources", dir)
 
-    // modifying the customTypeMapping should cause the task to be out of date
+    // modifying the customScalarsMapping should cause the task to be out of date
     // and the task should run again
     assertEquals(TaskOutcome.SUCCESS, result.task(":generateApolloSources")!!.outcome)
 
-    TestUtils.assertFileContains(dir, "service/com/example/type/CustomType.kt", "= \"java.util.Date\"")
+    TestUtils.assertFileContains(dir, "service/com/example/type/CustomScalar.kt", "= \"java.util.Date\"")
 
     val text = File(dir, "build.gradle").readText()
     File(dir, "build.gradle").writeText(text.replace(apolloBlock, ""))

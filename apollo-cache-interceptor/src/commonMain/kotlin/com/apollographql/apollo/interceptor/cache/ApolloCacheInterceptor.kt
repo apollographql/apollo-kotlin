@@ -19,7 +19,7 @@ import com.apollographql.apollo.interceptor.ApolloInterceptorChain
 import com.apollographql.apollo.interceptor.ApolloRequest
 import com.apollographql.apollo.interceptor.ApolloRequestInterceptor
 import com.apollographql.apollo.interceptor.ApolloResponse
-import com.apollographql.apollo.internal.response.RealResponseReader
+import com.apollographql.apollo.api.internal.RealResponseReader
 import com.apollographql.apollo.internal.response.RealResponseWriter
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.collect

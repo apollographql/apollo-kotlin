@@ -121,7 +121,7 @@ private val CodeGenerationAst.Field.responseFieldInitializerCode: CodeBlock
         is CodeGenerationAst.FieldType.Scalar.Boolean -> "forBoolean"
         is CodeGenerationAst.FieldType.Scalar.Float -> "forDouble"
         is CodeGenerationAst.FieldType.Scalar.Enum -> "forEnum"
-        is CodeGenerationAst.FieldType.Scalar.Custom -> "forCustomType"
+        is CodeGenerationAst.FieldType.Scalar.Custom -> "forCustomScalar"
       }
       is CodeGenerationAst.FieldType.Object -> "forObject"
       is CodeGenerationAst.FieldType.Array -> "forList"

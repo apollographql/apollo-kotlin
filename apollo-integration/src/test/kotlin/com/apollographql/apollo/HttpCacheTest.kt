@@ -4,9 +4,9 @@ import com.apollographql.apollo.FaultyHttpCacheStore
 import com.apollographql.apollo.Utils.immediateExecutor
 import com.apollographql.apollo.Utils.immediateExecutorService
 import com.apollographql.apollo.Utils.readFileToString
-import com.apollographql.apollo.api.CustomTypeAdapter
-import com.apollographql.apollo.api.CustomTypeValue
-import com.apollographql.apollo.api.CustomTypeValue.GraphQLString
+import com.apollographql.apollo.api.CustomScalarAdapter
+import com.apollographql.apollo.api.JsonElement
+import com.apollographql.apollo.api.JsonElement.JsonString
 import com.apollographql.apollo.api.cache.http.HttpCache
 import com.apollographql.apollo.api.cache.http.HttpCachePolicy
 import com.apollographql.apollo.cache.ApolloCacheHeaders
@@ -19,7 +19,7 @@ import com.apollographql.apollo.exception.ApolloHttpException
 import com.apollographql.apollo.integration.httpcache.AllFilmsQuery
 import com.apollographql.apollo.integration.httpcache.AllPlanetsQuery
 import com.apollographql.apollo.integration.httpcache.DroidDetailsQuery
-import com.apollographql.apollo.integration.httpcache.type.CustomType
+import com.apollographql.apollo.integration.httpcache.type.CustomScalar
 import com.apollographql.apollo.rx2.Rx2Apollo
 import com.google.common.truth.Truth
 import okhttp3.*
@@ -50,17 +50,17 @@ class HttpCacheTest {
 
   @Before
   fun setUp() {
-    val dateCustomTypeAdapter: CustomTypeAdapter<Date> = object : CustomTypeAdapter<Date> {
-      override fun decode(value: CustomTypeValue<*>): Date {
+    val dateCustomScalarAdapter: CustomScalarAdapter<Date> = object : CustomScalarAdapter<Date> {
+      override fun decode(jsonElement: JsonElement): Date {
         return try {
-          DATE_FORMAT.parse(value.value.toString())
+          DATE_FORMAT.parse(jsonElement.toRawValue().toString())
         } catch (e: ParseException) {
           throw RuntimeException(e)
         }
       }
 
-      override fun encode(value: Date): CustomTypeValue<*> {
-        return GraphQLString(DATE_FORMAT.format(value))
+      override fun encode(value: Date): JsonElement {
+        return JsonString(DATE_FORMAT.format(value))
       }
     }
     cacheStore = MockHttpCacheStore()
@@ -77,7 +77,7 @@ class HttpCacheTest {
         .serverUrl(server.url("/"))
         .okHttpClient(okHttpClient)
         .dispatcher(immediateExecutor())
-        .addCustomTypeAdapter(CustomType.Date, dateCustomTypeAdapter)
+        .addCustomScalarAdapter(CustomScalar.Date, dateCustomScalarAdapter)
         .httpCache(cache)
         .build()
   }

@@ -21,42 +21,42 @@ import java.nio.file.Files
 
 class ServiceTests {
   @Test
-  fun `customTypeMapping is working`() {
+  fun `customScalarsMapping is working`() {
     withSimpleProject("""
       apollo {
-        customTypeMapping = ["DateTime": "java.util.Date"]
+        customScalarsMapping = ["DateTime": "java.util.Date"]
       }
     """.trimIndent()) { dir ->
       TestUtils.executeTask("generateApolloSources", dir)
-      TestUtils.assertFileContains(dir, "service/com/example/type/CustomType.kt", "= \"java.util.Date\"")
+      TestUtils.assertFileContains(dir, "service/com/example/type/CustomScalar.kt", "= \"java.util.Date\"")
     }
   }
 
   @Test
-  fun `customTypeMapping put is working`() {
+  fun `customScalarsMapping put is working`() {
     withSimpleProject("""
       apollo {
-        customTypeMapping.put("DateTime", "java.util.Date")
+        customScalarsMapping.put("DateTime", "java.util.Date")
       }
     """.trimIndent()) { dir ->
       TestUtils.executeTask("generateApolloSources", dir)
-      TestUtils.assertFileContains(dir, "service/com/example/type/CustomType.kt", "= \"java.util.Date\"")
+      TestUtils.assertFileContains(dir, "service/com/example/type/CustomScalar.kt", "= \"java.util.Date\"")
     }
   }
 
   @Test
-  fun `customTypeMapping can be applied from a service block`() {
+  fun `customScalarsMapping can be applied from a service block`() {
     withSimpleProject("""
       apollo {
         service("other") {
         }
         service("api") {
-          customTypeMapping = ["DateTime": "java.util.Date"]
+          customScalarsMapping = ["DateTime": "java.util.Date"]
         }
       }
     """.trimIndent()) { dir ->
       TestUtils.executeTask("generateApolloSources", dir)
-      TestUtils.assertFileContains(dir, "api/com/example/type/CustomType.kt", "= \"java.util.Date\"")
+      TestUtils.assertFileContains(dir, "api/com/example/type/CustomScalar.kt", "= \"java.util.Date\"")
     }
   }
 
@@ -91,7 +91,7 @@ class ServiceTests {
     """.trimIndent()) { dir ->
       TestUtils.executeTask("generateApolloSources", dir)
       assertTrue(dir.generatedChild("service/com/starwars/com/example/DroidDetailsQuery.kt").isFile)
-      assertTrue(dir.generatedChild("service/com/starwars/com/example/type/CustomType.kt").isFile)
+      assertTrue(dir.generatedChild("service/com/starwars/com/example/type/CustomScalar.kt").isFile)
       assertTrue(dir.generatedChild("service/com/starwars/com/example/fragment/SpeciesInformation.kt").isFile)
     }
   }
@@ -110,7 +110,7 @@ class ServiceTests {
 
       TestUtils.executeTask("generateApolloSources", dir)
       assertTrue(dir.generatedChild("starwars/DroidDetailsQuery.kt").isFile)
-      assertTrue(dir.generatedChild("starwars/type/CustomType.kt").isFile)
+      assertTrue(dir.generatedChild("starwars/type/CustomScalar.kt").isFile)
       assertTrue(dir.generatedChild("starwars/fragment/SpeciesInformation.kt").isFile)
     }
   }
@@ -146,7 +146,7 @@ class ServiceTests {
       println(dir.absolutePath)
       dir.list()?.forEach(::println)
       assertTrue(dir.generatedChild("starwars/DroidDetailsQuery.kt").isFile)
-      assertTrue(dir.generatedChild("starwars/type/CustomType.kt").isFile)
+      assertTrue(dir.generatedChild("starwars/type/CustomScalar.kt").isFile)
       assertTrue(dir.generatedChild("starwars/fragment/SpeciesInformation.kt").isFile)
     }
   }
@@ -376,8 +376,8 @@ class ServiceTests {
       assertTrue(dir.generatedChild("service/com/example/DroidDetailsQuery.kt").isFile)
       assertThat(dir.generatedChild("service/com/example/DroidDetailsQuery.kt").readText(), containsString("internal class"))
 
-      assertTrue(dir.generatedChild("service/com/example/type/CustomType.kt").isFile)
-      assertThat(dir.generatedChild("service/com/example/type/CustomType.kt").readText(), containsString("internal enum class"))
+      assertTrue(dir.generatedChild("service/com/example/type/CustomScalar.kt").isFile)
+      assertThat(dir.generatedChild("service/com/example/type/CustomScalar.kt").readText(), containsString("internal enum class"))
 
       assertTrue(dir.generatedChild("service/com/example/fragment/SpeciesInformation.kt").isFile)
       assertThat(dir.generatedChild("service/com/example/fragment/SpeciesInformation.kt").readText(), containsString("internal interface"))

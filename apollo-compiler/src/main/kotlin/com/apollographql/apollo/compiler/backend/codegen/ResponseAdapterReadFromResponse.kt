@@ -162,11 +162,11 @@ private fun CodeGenerationAst.FieldType.fromResponseCode(field: String): CodeBlo
         CodeBlock.of("%T.safeValueOf(readString(%L)!!)", typeRef.asTypeName().copy(nullable = false), field)
       }
       is CodeGenerationAst.FieldType.Scalar.Custom -> if (field.isNotEmpty()) {
-        CodeBlock.of("readCustomType<%T>(%L·as·%T)%L", ClassName.bestGuess(type), field, ResponseField.CustomTypeField::class,
+        CodeBlock.of("readCustomScalar<%T>(%L·as·%T)%L", ClassName.bestGuess(type), field, ResponseField.CustomScalarField::class,
             notNullOperator)
       } else {
         CodeBlock.of(
-            "readCustomType<%T>(%T)%L", ClassName.bestGuess(type), customEnumType.asTypeName().copy(nullable = false), notNullOperator
+            "readCustomScalar<%T>(%T)%L", ClassName.bestGuess(type), customEnumType.asTypeName().copy(nullable = false), notNullOperator
         )
       }
     }
@@ -211,7 +211,7 @@ private fun CodeGenerationAst.FieldType.readListItemCode(): CodeBlock {
           "%T.safeValueOf(reader.readString())", typeRef.asTypeName().copy(nullable = false)
       )
       is CodeGenerationAst.FieldType.Scalar.Custom -> CodeBlock.of(
-          "reader.readCustomType<%T>(%T)", ClassName.bestGuess(type), customEnumType.asTypeName()
+          "reader.readCustomScalar<%T>(%T)", ClassName.bestGuess(type), customEnumType.asTypeName()
       )
     }
     is CodeGenerationAst.FieldType.Object -> {

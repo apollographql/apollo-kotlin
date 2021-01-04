@@ -25,15 +25,15 @@ abstract class DefaultService @Inject constructor(val objects: ObjectFactory, ov
 
   init {
     if (GradleVersion.current().compareTo(GradleVersion.version("6.2")) >= 0) {
-      // This allows users to call customTypeMapping.put("Date", "java.util.Date")
+      // This allows users to call customScalarsMapping.put("Date", "java.util.Date")
       // see https://github.com/gradle/gradle/issues/7485
-      customTypeMapping.convention(null as Map<String, String>?)
+      customScalarsMapping.convention(null as Map<String, String>?)
       sealedClassesForEnumsMatching.convention(null as List<String>?)
       include.convention(null as List<String>?)
       exclude.convention(null as List<String>?)
       alwaysGenerateTypesMatching.convention(null as Set<String>?)
     } else {
-      customTypeMapping.set(null as Map<String, String>?)
+      customScalarsMapping.set(null as Map<String, String>?)
       sealedClassesForEnumsMatching.set(null as List<String>?)
       include.set(null as List<String>?)
       exclude.set(null as List<String>?)
@@ -53,7 +53,7 @@ abstract class DefaultService @Inject constructor(val objects: ObjectFactory, ov
 
   abstract override val failOnWarnings: Property<Boolean>
 
-  abstract override val customTypeMapping: MapProperty<String, String>
+  abstract override val customScalarsMapping: MapProperty<String, String>
 
   abstract override val operationIdGenerator: Property<OperationIdGenerator>
 

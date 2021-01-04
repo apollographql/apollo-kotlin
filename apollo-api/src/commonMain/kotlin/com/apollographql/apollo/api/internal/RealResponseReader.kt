@@ -1,14 +1,12 @@
-package com.apollographql.apollo.internal.response
+package com.apollographql.apollo.api.internal
 
 import com.apollographql.apollo.api.BigDecimal
-import com.apollographql.apollo.api.CustomTypeAdapter
-import com.apollographql.apollo.api.CustomTypeValue.Companion.fromRawValue
+import com.apollographql.apollo.api.CustomScalarAdapter
+import com.apollographql.apollo.api.JsonElement.Companion.fromRawValue
 import com.apollographql.apollo.api.Operation
 import com.apollographql.apollo.api.ResponseField
 import com.apollographql.apollo.api.ScalarType
 import com.apollographql.apollo.api.ScalarTypeAdapters
-import com.apollographql.apollo.api.internal.FieldValueResolver
-import com.apollographql.apollo.api.internal.ResolveDelegate
 import com.apollographql.apollo.api.internal.ResponseReader
 import com.apollographql.apollo.api.toNumber
 
@@ -122,7 +120,7 @@ class RealResponseReader<R : Map<String, Any?>>(
     return result
   }
 
-  override fun <T : Any> readCustomType(field: ResponseField.CustomTypeField): T? {
+  override fun <T : Any> readCustomScalar(field: ResponseField.CustomScalarField): T? {
     val value = fieldValueResolver.valueFor<Any>(recordSet, field)
     checkValue(field, value)
     willResolve(field, value)
@@ -131,8 +129,8 @@ class RealResponseReader<R : Map<String, Any?>>(
       resolveDelegate.didResolveNull()
       result = null
     } else {
-      val typeAdapter: CustomTypeAdapter<T> = scalarTypeAdapters.adapterFor(field.scalarType)
-      result = typeAdapter.decode(fromRawValue(value))
+      val scalarTypeAdapter: CustomScalarAdapter<T> = scalarTypeAdapters.adapterFor(field.scalarType)
+      result = scalarTypeAdapter.decode(fromRawValue(value))
       checkValue(field, result)
       resolveDelegate.didResolveScalar(value)
     }
@@ -199,10 +197,10 @@ class RealResponseReader<R : Map<String, Any?>>(
       return value as Boolean
     }
 
-    override fun <T : Any> readCustomType(scalarType: ScalarType): T {
-      val typeAdapter: CustomTypeAdapter<T> = scalarTypeAdapters.adapterFor(scalarType)
+    override fun <T : Any> readCustomScalar(scalarType: ScalarType): T {
+      val scalarTypeAdapter: CustomScalarAdapter<T> = scalarTypeAdapters.adapterFor(scalarType)
       resolveDelegate.didResolveScalar(value)
-      return typeAdapter.decode(fromRawValue(value))
+      return scalarTypeAdapter.decode(fromRawValue(value))
     }
 
     @Suppress("UNCHECKED_CAST")

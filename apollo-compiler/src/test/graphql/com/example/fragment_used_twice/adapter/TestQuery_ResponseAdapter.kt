@@ -10,7 +10,7 @@ import com.apollographql.apollo.api.internal.ResponseAdapter
 import com.apollographql.apollo.api.internal.ResponseReader
 import com.apollographql.apollo.api.internal.ResponseWriter
 import com.example.fragment_used_twice.TestQuery
-import com.example.fragment_used_twice.type.CustomType
+import com.example.fragment_used_twice.type.CustomScalar
 import kotlin.Any
 import kotlin.Array
 import kotlin.String
@@ -113,7 +113,7 @@ object TestQuery_ResponseAdapter : ResponseAdapter<TestQuery.Data> {
           private val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
             ResponseField.forString("__typename", "__typename", null, false, null),
             ResponseField.forString("name", "name", null, false, null),
-            ResponseField.forCustomType("birthDate", "birthDate", null, false, CustomType.Date, null)
+            ResponseField.forCustomScalar("birthDate", "birthDate", null, false, CustomScalar.Date, null)
           )
 
           override fun fromResponse(reader: ResponseReader, __typename: String?):
@@ -126,7 +126,7 @@ object TestQuery_ResponseAdapter : ResponseAdapter<TestQuery.Data> {
                 when (selectField(RESPONSE_FIELDS)) {
                   0 -> __typename = readString(RESPONSE_FIELDS[0])
                   1 -> name = readString(RESPONSE_FIELDS[1])
-                  2 -> birthDate = readCustomType<Any>(RESPONSE_FIELDS[2] as ResponseField.CustomTypeField)
+                  2 -> birthDate = readCustomScalar<Any>(RESPONSE_FIELDS[2] as ResponseField.CustomScalarField)
                   else -> break
                 }
               }
@@ -142,7 +142,7 @@ object TestQuery_ResponseAdapter : ResponseAdapter<TestQuery.Data> {
               value: TestQuery.Data.Hero.CharacterHero.CharacterCharacterHero) {
             writer.writeString(RESPONSE_FIELDS[0], value.__typename)
             writer.writeString(RESPONSE_FIELDS[1], value.name)
-            writer.writeCustom(RESPONSE_FIELDS[2] as ResponseField.CustomTypeField, value.birthDate)
+            writer.writeCustom(RESPONSE_FIELDS[2] as ResponseField.CustomScalarField, value.birthDate)
           }
         }
 
@@ -208,7 +208,7 @@ object TestQuery_ResponseAdapter : ResponseAdapter<TestQuery.Data> {
           private val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
             ResponseField.forString("__typename", "__typename", null, false, null),
             ResponseField.forString("name", "name", null, false, null),
-            ResponseField.forCustomType("birthDate", "birthDate", null, false, CustomType.Date, null)
+            ResponseField.forCustomScalar("birthDate", "birthDate", null, false, CustomScalar.Date, null)
           )
 
           override fun fromResponse(reader: ResponseReader, __typename: String?):
@@ -221,7 +221,7 @@ object TestQuery_ResponseAdapter : ResponseAdapter<TestQuery.Data> {
                 when (selectField(RESPONSE_FIELDS)) {
                   0 -> __typename = readString(RESPONSE_FIELDS[0])
                   1 -> name = readString(RESPONSE_FIELDS[1])
-                  2 -> birthDate = readCustomType<Any>(RESPONSE_FIELDS[2] as ResponseField.CustomTypeField)
+                  2 -> birthDate = readCustomScalar<Any>(RESPONSE_FIELDS[2] as ResponseField.CustomScalarField)
                   else -> break
                 }
               }
@@ -237,7 +237,7 @@ object TestQuery_ResponseAdapter : ResponseAdapter<TestQuery.Data> {
               value: TestQuery.Data.Hero.CharacterHumanHero.CharacterCharacterHumanHero) {
             writer.writeString(RESPONSE_FIELDS[0], value.__typename)
             writer.writeString(RESPONSE_FIELDS[1], value.name)
-            writer.writeCustom(RESPONSE_FIELDS[2] as ResponseField.CustomTypeField, value.birthDate)
+            writer.writeCustom(RESPONSE_FIELDS[2] as ResponseField.CustomScalarField, value.birthDate)
           }
         }
 

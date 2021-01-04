@@ -12,7 +12,7 @@ You first need to define the mapping in your `build.gradle` file. This maps from
 
 ```groovy
 apollo {
-  customTypeMapping = [
+  customScalarsMapping = [
     "Date" : "java.util.Date"
   ]
 }
@@ -20,7 +20,7 @@ apollo {
 
 ```kotlin
 apollo {
-  customTypeMapping.set(mapOf(
+  customScalarsMapping.set(mapOf(
     "Date" to "java.util.Date"
   ))
 }
@@ -31,8 +31,8 @@ apollo {
 Next, register your custom adapter and add it to your `ApolloClient` builder:
 
 ```kotlin
-val dateCustomTypeAdapter = object : CustomTypeAdapter<Date> {
-  override fun decode(value: CustomTypeValue<*>): Date {
+val dateCustomScalarAdapter = object : CustomScalarAdapter<Date> {
+  override fun decode(jsonElement: JsonElement): Date {
     return try {
       DATE_FORMAT.parse(value.value.toString())
     } catch (e: ParseException) {
@@ -40,13 +40,13 @@ val dateCustomTypeAdapter = object : CustomTypeAdapter<Date> {
     }
   }
 
-  override fun encode(value: Date): CustomTypeValue<*> {
+  override fun encode(value: Date): JsonElement {
     return GraphQLString(DATE_FORMAT.format(value))
   }
 }
 
 ApolloClient.builder()
   .serverUrl(serverUrl)
-  .addCustomTypeAdapter(CustomType.DATE, dateCustomTypeAdapter)
+  .addCustomScalarAdapter(CustomScalar.DATE, dateCustomScalarAdapter)
   .build()
 ```

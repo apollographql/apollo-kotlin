@@ -78,11 +78,11 @@ interface Service  {
   val failOnWarnings: Property<Boolean>
 
   /**
-   * For custom scalar types like Date, map from the GraphQL type to the jvm/kotlin type.
+   * For custom scalar types like Date, map from the GraphQL type to the java/kotlin type.
    *
    * Default value: the empty map
    */
-  val customTypeMapping: MapProperty<String, String>
+  val customScalarsMapping: MapProperty<String, String>
 
   /**
    * By default, Apollo uses `Sha256` hashing algorithm to generate an ID for the query.

@@ -22,7 +22,7 @@ interface ResponseReader {
 
   fun <T : Any> readList(field: ResponseField, block: (ListItemReader) -> T): List<T?>?
 
-  fun <T : Any> readCustomType(field: ResponseField.CustomTypeField): T?
+  fun <T : Any> readCustomScalar(field: ResponseField.CustomScalarField): T?
 
   interface ObjectReader<T : Any> {
     fun read(reader: ResponseReader): T
@@ -42,7 +42,7 @@ interface ResponseReader {
 
     fun readBoolean(): Boolean
 
-    fun <T : Any> readCustomType(scalarType: ScalarType): T
+    fun <T : Any> readCustomScalar(scalarType: ScalarType): T
 
     fun <T : Any> readObject(block: (ResponseReader) -> T): T
 

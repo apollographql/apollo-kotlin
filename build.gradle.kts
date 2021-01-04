@@ -326,3 +326,11 @@ tasks.register("bintrayPublish") {
   }
 }
 
+tasks.register("rmbuild") {
+  doLast {
+    projectDir.walk().filter { it.isDirectory && it.name == "build" }
+        .forEach {
+          it.deleteRecursively()
+        }
+  }
+}

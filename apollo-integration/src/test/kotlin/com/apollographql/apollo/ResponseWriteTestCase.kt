@@ -4,9 +4,9 @@ import com.apollographql.apollo.Utils.assertResponse
 import com.apollographql.apollo.Utils.enqueueAndAssertResponse
 import com.apollographql.apollo.Utils.immediateExecutor
 import com.apollographql.apollo.Utils.immediateExecutorService
-import com.apollographql.apollo.api.CustomTypeAdapter
-import com.apollographql.apollo.api.CustomTypeValue
-import com.apollographql.apollo.api.CustomTypeValue.GraphQLString
+import com.apollographql.apollo.api.CustomScalarAdapter
+import com.apollographql.apollo.api.JsonElement
+import com.apollographql.apollo.api.JsonElement.JsonString
 import com.apollographql.apollo.api.Input.Companion.fromNullable
 import com.apollographql.apollo.api.Query
 import com.apollographql.apollo.api.Operation
@@ -21,7 +21,7 @@ import com.apollographql.apollo.integration.normalizer.fragment.HeroWithFriendsF
 import com.apollographql.apollo.integration.normalizer.fragment.HumanWithIdFragment
 import com.apollographql.apollo.integration.normalizer.fragment.HumanWithIdFragmentImpl
 import com.apollographql.apollo.integration.normalizer.fragment.HeroWithFriendsFragmentImpl
-import com.apollographql.apollo.integration.normalizer.type.CustomType
+import com.apollographql.apollo.integration.normalizer.type.CustomScalar
 import com.apollographql.apollo.integration.normalizer.type.Episode
 import com.google.common.truth.Truth
 import com.google.common.truth.Truth.assertThat
@@ -52,17 +52,17 @@ class ResponseWriteTestCase {
         .okHttpClient(okHttpClient)
         .normalizedCache(LruNormalizedCacheFactory(EvictionPolicy.NO_EVICTION), IdFieldCacheKeyResolver())
         .dispatcher(immediateExecutor())
-        .addCustomTypeAdapter(CustomType.Date, object : CustomTypeAdapter<Date> {
-          override fun decode(value: CustomTypeValue<*>): Date {
+        .addCustomScalarAdapter(CustomScalar.Date, object : CustomScalarAdapter<Date> {
+          override fun decode(jsonElement: JsonElement): Date {
             return try {
-              DATE_TIME_FORMAT.parse(value.value.toString())
+              DATE_TIME_FORMAT.parse(jsonElement.toRawValue().toString())
             } catch (e: ParseException) {
               throw RuntimeException(e)
             }
           }
 
-          override fun encode(value: Date): CustomTypeValue<*> {
-            return GraphQLString(DATE_TIME_FORMAT.format(value))
+          override fun encode(value: Date): JsonElement {
+            return JsonString(DATE_TIME_FORMAT.format(value))
           }
         })
         .build()
@@ -70,7 +70,7 @@ class ResponseWriteTestCase {
 
   @Test
   @Throws(Exception::class)
-  fun customType() {
+  fun customScalar() {
     val query = EpisodeHeroWithDatesQuery(fromNullable(Episode.JEDI))
     enqueueAndAssertResponse(
         server,

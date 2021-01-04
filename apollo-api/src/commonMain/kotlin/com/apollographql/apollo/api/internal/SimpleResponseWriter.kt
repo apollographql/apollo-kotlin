@@ -45,13 +45,13 @@ class SimpleResponseWriter(private val scalarTypeAdapters: ScalarTypeAdapters) :
     data[field.responseName] = value
   }
 
-  override fun writeCustom(field: ResponseField.CustomTypeField, value: Any?) {
+  override fun writeCustom(field: ResponseField.CustomScalarField, value: Any?) {
     if (value == null) {
       data[field.responseName] = null
     } else {
       val typeAdapter = scalarTypeAdapters.adapterFor<Any>(field.scalarType)
-      val customTypeValue = typeAdapter.encode(value)
-      data[field.responseName] = customTypeValue.value
+      val jsonElement = typeAdapter.encode(value)
+      data[field.responseName] = jsonElement.toRawValue()
     }
   }
 
@@ -107,8 +107,8 @@ class SimpleResponseWriter(private val scalarTypeAdapters: ScalarTypeAdapters) :
         data.add(null)
       } else {
         val typeAdapter = scalarTypeAdapters.adapterFor<Any>(scalarType)
-        val customTypeValue = typeAdapter.encode(value)
-        data.add(customTypeValue.value)
+        val jsonElement = typeAdapter.encode(value)
+        data.add(jsonElement.toRawValue())
       }
     }
 

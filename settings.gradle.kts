@@ -17,6 +17,6 @@ include("apollo-testing-support")
 include("apollo-normalized-cache-sqlite")
 
 if (System.getProperty("idea.sync.active") == null) {
-  include("apollo-idling-resource")
   include("apollo-android-support")
+  include("apollo-idling-resource")
 }
