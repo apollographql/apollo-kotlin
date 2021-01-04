@@ -37,7 +37,7 @@ import kotlin.jvm.JvmOverloads
  * param is not provided.
  */
 @JvmOverloads
-fun <D : Operation.Data> Operation<D, *>.toJson(value: D, indent: String = "", customScalarAdapters: CustomScalarAdapters = DEFAULT): String {
+fun <D : Operation.Data> Operation<D>.toJson(value: D, indent: String = "", customScalarAdapters: CustomScalarAdapters = DEFAULT): String {
   return try {
     SimpleResponseWriter(customScalarAdapters).let { writer ->
       adapter().toResponse(writer, value)
@@ -73,7 +73,7 @@ fun <D : Operation.Data> Operation<D, *>.toJson(value: D, indent: String = "", c
  * ```
  */
 @JvmOverloads
-fun Operation<*, *>.composeRequestBody(
+fun Operation<*>.composeRequestBody(
     autoPersistQueries: Boolean,
     withQueryDocument: Boolean,
     customScalarAdapters: CustomScalarAdapters = DEFAULT
@@ -99,7 +99,7 @@ fun Operation<*, *>.composeRequestBody(
  * ```
  */
 @JvmOverloads
-fun Operation<*, *>.composeRequestBody(
+fun Operation<*>.composeRequestBody(
     customScalarAdapters: CustomScalarAdapters = DEFAULT
 ): ByteString {
   return OperationRequestBodyComposer.compose(
@@ -114,7 +114,7 @@ fun Operation<*, *>.composeRequestBody(
  * Parses GraphQL operation raw response from the [source] with provided [customScalarAdapters] and returns result [Response]
  */
 @JvmOverloads
-fun <D : Operation.Data> Operation<D, *>.parse(
+fun <D : Operation.Data> Operation<D>.parse(
     source: BufferedSource,
     customScalarAdapters: CustomScalarAdapters = DEFAULT
 ): Response<D> {
@@ -124,7 +124,7 @@ fun <D : Operation.Data> Operation<D, *>.parse(
 /**
  * Parses GraphQL operation raw response from the [byteString] with provided [customScalarAdapters] and returns result [Response]
  */
-fun <D : Operation.Data> Operation<D, *>.parse(
+fun <D : Operation.Data> Operation<D>.parse(
     byteString: ByteString,
     customScalarAdapters: CustomScalarAdapters = DEFAULT
 ): Response<D> {

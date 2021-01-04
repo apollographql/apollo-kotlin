@@ -26,7 +26,7 @@ import kotlin.jvm.Transient
 data class TestQuery(
   val includeName: Boolean,
   val skipFriends: Boolean
-) : Query<TestQuery.Data, Operation.Variables> {
+) : Query<TestQuery.Data> {
   @Transient
   private val variables: Operation.Variables = object : Operation.Variables() {
     override fun valueMap(): Map<String, Any?> = mutableMapOf<String, Any?>().apply {

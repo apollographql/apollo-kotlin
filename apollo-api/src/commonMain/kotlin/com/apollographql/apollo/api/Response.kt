@@ -9,7 +9,7 @@ data class Response<D : Operation.Data>(
     /**
      * GraphQL operation this response represents of
      */
-    val operation: Operation<*, *>,
+    val operation: Operation<*>,
 
     /**
      * Parsed response of GraphQL [operation] execution.
@@ -90,7 +90,7 @@ data class Response<D : Operation.Data>(
     return result
   }
 
-  class Builder<D : Operation.Data> internal constructor(internal val operation: Operation<*, *>) {
+  class Builder<D : Operation.Data> internal constructor(internal val operation: Operation<*>) {
     internal var data: D? = null
     internal var errors: List<Error>? = null
     internal var dependentKeys: Set<String>? = null
@@ -128,6 +128,6 @@ data class Response<D : Operation.Data>(
   companion object {
 
     @JvmStatic
-    fun <D : Operation.Data> builder(operation: Operation<*, *>): Builder<D> = Builder(operation)
+    fun <D : Operation.Data> builder(operation: Operation<*>): Builder<D> = Builder(operation)
   }
 }

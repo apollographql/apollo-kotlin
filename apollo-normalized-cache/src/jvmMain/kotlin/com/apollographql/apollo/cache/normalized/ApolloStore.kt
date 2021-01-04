@@ -120,8 +120,8 @@ interface ApolloStore {
    * @param <V>       type of operation variables
    * @return {@ApolloStoreOperation} to be performed, that will be resolved with cached data for specified operation
   </V></T></D> */
-  fun <D : Operation.Data, V : Operation.Variables> read(
-      operation: Operation<D, V>
+  fun <D : Operation.Data> read(
+      operation: Operation<D>
   ): ApolloStoreOperation<D>
 
   /**
@@ -135,8 +135,8 @@ interface ApolloStore {
    * @param <V>                 type of operation variables
    * @return {@ApolloStoreOperation} to be performed, that will be resolved with cached response for specified operation
   </V></T></D> */
-  fun <D : Operation.Data, V : Operation.Variables> read(
-      operation: Operation<D, V>,
+  fun <D : Operation.Data> read(
+      operation: Operation<D>,
       responseNormalizer: ResponseNormalizer<Record>,
       cacheHeaders: CacheHeaders
   ): ApolloStoreOperation<Response<D>>
@@ -166,8 +166,8 @@ interface ApolloStore {
    * @return {@ApolloStoreOperation} to be performed, that will be resolved with set of keys of [Record] which
    * have changed
   </V></T></D> */
-  fun <D : Operation.Data, V : Operation.Variables> write(
-      operation: Operation<D, V>,
+  fun <D : Operation.Data> write(
+      operation: Operation<D>,
       operationData: D
   ): ApolloStoreOperation<Set<String>>
 
@@ -181,8 +181,8 @@ interface ApolloStore {
    * @param <V>           type of operation variables
    * @return {@ApolloStoreOperation} to be performed
   </V></T></D> */
-  fun <D : Operation.Data, V : Operation.Variables> writeAndPublish(
-      operation: Operation<D, V>,
+  fun <D : Operation.Data> writeAndPublish(
+      operation: Operation<D>,
       operationData: D
   ): ApolloStoreOperation<Boolean>
 
@@ -225,8 +225,8 @@ interface ApolloStore {
    * @return {@ApolloStoreOperation} to be performed, that will be resolved with set of keys of [Record] which
    * have changed
    */
-  fun <D : Operation.Data, V : Operation.Variables> writeOptimisticUpdates(
-      operation: Operation<D, V>,
+  fun <D : Operation.Data> writeOptimisticUpdates(
+      operation: Operation<D>,
       operationData: D,
       mutationId: UUID
   ): ApolloStoreOperation<Set<String>>
@@ -240,8 +240,8 @@ interface ApolloStore {
    * @param mutationId    mutation unique identifier
    * @return {@ApolloStoreOperation} to be performed
    */
-  fun <D : Operation.Data, V : Operation.Variables> writeOptimisticUpdatesAndPublish(
-      operation: Operation<D, V>,
+  fun <D : Operation.Data> writeOptimisticUpdatesAndPublish(
+      operation: Operation<D>,
       operationData: D,
       mutationId: UUID
   ): ApolloStoreOperation<Boolean>

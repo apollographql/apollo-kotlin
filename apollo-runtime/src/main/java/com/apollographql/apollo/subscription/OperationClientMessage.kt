@@ -34,7 +34,7 @@ sealed class OperationClientMessage {
       @JvmField
       val subscriptionId: String,
       @JvmField
-      val subscription: Subscription<*, *>,
+      val subscription: Subscription<*>,
       @JvmField
       val customScalarAdapters: CustomScalarAdapters,
       @JvmField

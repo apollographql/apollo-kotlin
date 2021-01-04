@@ -92,7 +92,7 @@ public final class RealSubscriptionManager implements SubscriptionManager {
   }
 
   @Override
-  public <D extends Operation.Data> void subscribe(@NotNull final Subscription<D, ?> subscription, @NotNull final SubscriptionManager.Callback<D> callback) {
+  public <D extends Operation.Data> void subscribe(@NotNull final Subscription<D> subscription, @NotNull final SubscriptionManager.Callback<D> callback) {
     checkNotNull(subscription, "subscription == null");
     checkNotNull(callback, "callback == null");
     dispatcher.execute(new Runnable() {
@@ -506,10 +506,10 @@ public final class RealSubscriptionManager implements SubscriptionManager {
 
   private static class SubscriptionRecord {
     final UUID id;
-    final Subscription<?, ?> subscription;
+    final Subscription<?> subscription;
     final SubscriptionManager.Callback<?> callback;
 
-    SubscriptionRecord(UUID id, Subscription<?, ?> subscription, SubscriptionManager.Callback<?> callback) {
+    SubscriptionRecord(UUID id, Subscription<?> subscription, SubscriptionManager.Callback<?> callback) {
       this.id = id;
       this.subscription = subscription;
       this.callback = callback;

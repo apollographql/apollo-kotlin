@@ -31,7 +31,7 @@ import static com.apollographql.apollo.internal.CallState.IDLE;
 import static com.apollographql.apollo.internal.CallState.TERMINATED;
 
 public class RealApolloSubscriptionCall<D extends Operation.Data> implements ApolloSubscriptionCall<D> {
-  private final Subscription<D, ?> subscription;
+  private final Subscription<D> subscription;
   private final SubscriptionManager subscriptionManager;
   private final ApolloStore apolloStore;
   private final CachePolicy cachePolicy;
@@ -41,7 +41,7 @@ public class RealApolloSubscriptionCall<D extends Operation.Data> implements Apo
   private SubscriptionManagerCallback<D> subscriptionCallback;
 
   public RealApolloSubscriptionCall(
-      @NotNull Subscription<D, ?> subscription,
+      @NotNull Subscription<D> subscription,
       @NotNull SubscriptionManager subscriptionManager,
       @NotNull ApolloStore apolloStore,
       @NotNull CachePolicy cachePolicy,

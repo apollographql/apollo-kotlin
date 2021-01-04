@@ -121,6 +121,6 @@ public interface ApolloQueryCall<D extends Operation.Data> extends ApolloCall<D>
      * @param query the operation which needs to be performed
      * @return prepared {@link ApolloQueryCall} call to be executed at some point in the future
      */
-    <D extends Query.Data, V extends Query.Variables> ApolloQueryCall<D> query(@NotNull Query<D, V> query);
+    <D extends Query.Data> ApolloQueryCall<D> query(@NotNull Query<D> query);
   }
 }

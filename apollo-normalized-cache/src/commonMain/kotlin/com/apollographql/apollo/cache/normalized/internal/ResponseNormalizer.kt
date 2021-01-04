@@ -28,7 +28,7 @@ abstract class ResponseNormalizer<R> : ResolveDelegate<R> {
     return dependentKeys
   }
 
-  override fun willResolveRootQuery(operation: Operation<*, *>) {
+  override fun willResolveRootQuery(operation: Operation<*>) {
     willResolveRecord(rootKeyForOperation(operation))
   }
 
@@ -131,7 +131,7 @@ abstract class ResponseNormalizer<R> : ResolveDelegate<R> {
   companion object {
     @JvmField
     val NO_OP_NORMALIZER: ResponseNormalizer<*> = object : ResponseNormalizer<Any?>() {
-      override fun willResolveRootQuery(operation: Operation<*, *>) {}
+      override fun willResolveRootQuery(operation: Operation<*>) {}
       override fun willResolve(field: ResponseField, variables: Operation.Variables, value: Any?) {}
       override fun didResolve(field: ResponseField, variables: Operation.Variables) {}
       override fun didResolveScalar(value: Any?) {}

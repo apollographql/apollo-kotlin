@@ -8,11 +8,11 @@ import org.jetbrains.annotations.NotNull;
 import java.util.Collection;
 
 public final class SubscriptionResponse<D extends Subscription.Data> {
-  @NotNull public final Subscription<D, ?> subscription;
+  @NotNull public final Subscription<D> subscription;
   @NotNull public final Response<D> response;
   @NotNull public final Collection<Record> cacheRecords;
 
-  public SubscriptionResponse(@NotNull Subscription<D, ?> subscription, @NotNull Response<D> response,
+  public SubscriptionResponse(@NotNull Subscription<D> subscription, @NotNull Response<D> response,
       @NotNull Collection<Record> cacheRecords) {
     this.subscription = subscription;
     this.response = response;

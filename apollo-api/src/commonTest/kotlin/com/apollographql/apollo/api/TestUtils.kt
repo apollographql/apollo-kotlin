@@ -2,7 +2,7 @@ package com.apollographql.apollo.api
 
 import com.apollographql.apollo.api.internal.ResponseAdapter
 
-val EMPTY_OPERATION: Operation<*, *> = object : Operation<Operation.Data, Operation.Variables> {
+val EMPTY_OPERATION: Operation<*> = object : Operation<Operation.Data> {
   override fun variables(): Operation.Variables {
     return Operation.EMPTY_VARIABLES
   }

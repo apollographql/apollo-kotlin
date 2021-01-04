@@ -345,7 +345,7 @@ class SubscriptionManagerTest {
     }
   }
 
-  private class MockSubscription(val operationId: String) : Subscription<Operation.Data, Operation.Variables> {
+  private class MockSubscription(val operationId: String) : Subscription<Operation.Data> {
     override fun queryDocument(): String {
       return "subscription {\n  commentAdded(repoFullName: \"repo\") {\n    __typename\n    id\n    content\n  }\n}"
     }

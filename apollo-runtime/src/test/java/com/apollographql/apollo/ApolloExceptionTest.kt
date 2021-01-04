@@ -25,7 +25,7 @@ class ApolloExceptionTest {
   
   private lateinit var apolloClient: ApolloClient
 
-  private val emptyQuery = object : Query<Operation.Data, Operation.Variables> {
+  private val emptyQuery = object : Query<Operation.Data> {
     var operationName: OperationName = object : OperationName {
       override fun name(): String {
         return "emptyQuery"
@@ -90,7 +90,7 @@ class ApolloExceptionTest {
   fun httpExceptionPrefetch() {
     server.enqueue(MockResponse().setResponseCode(401).setBody("Unauthorized request!"))
     Rx2Apollo
-        .from(apolloClient.prefetch<Operation.Data, Operation.Variables>(emptyQuery))
+        .from(apolloClient.prefetch<Operation.Data>(emptyQuery))
         .test()
         .awaitDone(timeoutSeconds, TimeUnit.SECONDS)
         .assertNoValues()
@@ -101,7 +101,7 @@ class ApolloExceptionTest {
   @Throws(Exception::class)
   fun testTimeoutException() {
     Rx2Apollo
-        .from(apolloClient.query<Operation.Data, Operation.Variables>(emptyQuery))
+        .from(apolloClient.query<Operation.Data>(emptyQuery))
         .test()
         .awaitDone(timeoutSeconds * 2, TimeUnit.SECONDS)
         .assertNoValues()
@@ -117,7 +117,7 @@ class ApolloExceptionTest {
   @Throws(Exception::class)
   fun testTimeoutExceptionPrefetch() {
     Rx2Apollo
-        .from(apolloClient.prefetch<Operation.Data, Operation.Variables>(emptyQuery))
+        .from(apolloClient.prefetch<Operation.Data>(emptyQuery))
         .test()
         .awaitDone(timeoutSeconds * 2, TimeUnit.SECONDS)
         .assertNoValues()
@@ -134,7 +134,7 @@ class ApolloExceptionTest {
   fun testParseException() {
     server.enqueue(MockResponse().setBody("Noise"))
     Rx2Apollo
-        .from(apolloClient.query<Operation.Data, Operation.Variables>(emptyQuery))
+        .from(apolloClient.query<Operation.Data>(emptyQuery))
         .test()
         .awaitDone(timeoutSeconds, TimeUnit.SECONDS)
         .assertNoValues()

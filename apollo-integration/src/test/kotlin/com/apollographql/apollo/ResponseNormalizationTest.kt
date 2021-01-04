@@ -241,7 +241,7 @@ class ResponseNormalizationTest {
   }
 
   @Throws(Exception::class)
-  private fun <D: Operation.Data> assertHasNoErrors(mockResponse: String, query: Query<D, *>) {
+  private fun <D: Operation.Data> assertHasNoErrors(mockResponse: String, query: Query<D>) {
     enqueueAndAssertResponse(
         server,
         mockResponse,

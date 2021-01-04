@@ -20,7 +20,7 @@ import kotlin.collections.List
 @Suppress("NAME_SHADOWING", "UNUSED_ANONYMOUS_PARAMETER", "LocalVariableName",
     "RemoveExplicitTypeArguments", "NestedLambdaShadowedImplicitParameter", "PropertyName",
     "RemoveRedundantQualifierName")
-class HeroDetail : Query<HeroDetail.Data, Operation.Variables> {
+class HeroDetail : Query<HeroDetail.Data> {
   override fun operationId(): String = OPERATION_ID
 
   override fun queryDocument(): String = QUERY_DOCUMENT

@@ -58,7 +58,7 @@ public interface ApolloCall<D extends Operation.Data> extends Cancelable {
    *
    * @return {@link Operation}
    */
-  @NotNull Operation<D, ?> operation();
+  @NotNull Operation<D> operation();
 
   /**
    * Cancels this {@link ApolloCall}. If the call was started with {@link #enqueue(Callback)}, the

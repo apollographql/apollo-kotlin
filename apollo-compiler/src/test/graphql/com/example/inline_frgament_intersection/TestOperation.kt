@@ -21,7 +21,7 @@ import kotlin.collections.List
 @Suppress("NAME_SHADOWING", "UNUSED_ANONYMOUS_PARAMETER", "LocalVariableName",
     "RemoveExplicitTypeArguments", "NestedLambdaShadowedImplicitParameter", "PropertyName",
     "RemoveRedundantQualifierName")
-class TestOperation : Query<TestOperation.Data, Operation.Variables> {
+class TestOperation : Query<TestOperation.Data> {
   override fun operationId(): String = OPERATION_ID
 
   override fun queryDocument(): String = QUERY_DOCUMENT

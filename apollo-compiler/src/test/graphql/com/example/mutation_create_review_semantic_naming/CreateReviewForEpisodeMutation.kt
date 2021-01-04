@@ -27,7 +27,7 @@ import kotlin.jvm.Transient
 data class CreateReviewForEpisodeMutation(
   val ep: Episode,
   val review: ReviewInput
-) : Mutation<CreateReviewForEpisodeMutation.Data, Operation.Variables> {
+) : Mutation<CreateReviewForEpisodeMutation.Data> {
   @Transient
   private val variables: Operation.Variables = object : Operation.Variables() {
     override fun valueMap(): Map<String, Any?> = mutableMapOf<String, Any?>().apply {

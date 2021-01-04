@@ -12,7 +12,7 @@ object OperationRequestBodyComposer {
 
   @JvmStatic
   fun compose(
-      operation: Operation<*, *>,
+      operation: Operation<*>,
       autoPersistQueries: Boolean,
       withQueryDocument: Boolean,
       customScalarAdapters: CustomScalarAdapters

@@ -24,7 +24,7 @@ import kotlin.jvm.Transient
     "RemoveRedundantQualifierName")
 data class TestSubscription(
   val repo: String
-) : Subscription<TestSubscription.Data, Operation.Variables> {
+) : Subscription<TestSubscription.Data> {
   @Transient
   private val variables: Operation.Variables = object : Operation.Variables() {
     override fun valueMap(): Map<String, Any?> = mutableMapOf<String, Any?>().apply {

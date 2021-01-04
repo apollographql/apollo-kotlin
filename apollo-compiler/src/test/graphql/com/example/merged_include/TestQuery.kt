@@ -17,7 +17,7 @@ import kotlin.Suppress
 @Suppress("NAME_SHADOWING", "UNUSED_ANONYMOUS_PARAMETER", "LocalVariableName",
     "RemoveExplicitTypeArguments", "NestedLambdaShadowedImplicitParameter", "PropertyName",
     "RemoveRedundantQualifierName")
-class TestQuery : Query<TestQuery.Data, Operation.Variables> {
+class TestQuery : Query<TestQuery.Data> {
   override fun operationId(): String = OPERATION_ID
 
   override fun queryDocument(): String = QUERY_DOCUMENT

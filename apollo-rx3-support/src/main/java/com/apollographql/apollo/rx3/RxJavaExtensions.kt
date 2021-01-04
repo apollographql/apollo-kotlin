@@ -57,8 +57,8 @@ inline fun <D : Operation.Data> ApolloSubscriptionCall<D>.rx(
  */
 @JvmSynthetic
 @CheckReturnValue
-inline fun <D : Operation.Data, V : Operation.Variables> ApolloClient.rxQuery(
-    query: Query<D, V>,
+inline fun <D : Operation.Data> ApolloClient.rxQuery(
+    query: Query<D>,
     configure: ApolloQueryCall<D>.() -> ApolloQueryCall<D> = { this }
 ): Observable<Response<D>> = query(query).configure().rx()
 
@@ -67,8 +67,8 @@ inline fun <D : Operation.Data, V : Operation.Variables> ApolloClient.rxQuery(
  */
 @JvmSynthetic
 @CheckReturnValue
-inline fun <D : Operation.Data, V : Operation.Variables> ApolloClient.rxMutate(
-    mutation: Mutation<D, V>,
+inline fun <D : Operation.Data> ApolloClient.rxMutate(
+    mutation: Mutation<D>,
     configure: ApolloMutationCall<D>.() -> ApolloMutationCall<D> = { this }
 ): Single<Response<D>> = mutate(mutation).configure().rx().singleOrError()
 
@@ -81,8 +81,8 @@ inline fun <D : Operation.Data, V : Operation.Variables> ApolloClient.rxMutate(
  */
 @JvmSynthetic
 @CheckReturnValue
-inline fun <D : Operation.Data, V : Operation.Variables> ApolloClient.rxMutate(
-    mutation: Mutation<D, V>,
+inline fun <D : Operation.Data> ApolloClient.rxMutate(
+    mutation: Mutation<D>,
     withOptimisticUpdates: D,
     configure: ApolloMutationCall<D>.() -> ApolloMutationCall<D> = { this }
 ): Single<Response<D>> = mutate(mutation, withOptimisticUpdates).configure().rx().singleOrError()
@@ -92,8 +92,8 @@ inline fun <D : Operation.Data, V : Operation.Variables> ApolloClient.rxMutate(
  */
 @JvmSynthetic
 @CheckReturnValue
-inline fun <D : Operation.Data, V : Operation.Variables> ApolloClient.rxPrefetch(
-    operation: Operation<D, V>
+inline fun <D : Operation.Data> ApolloClient.rxPrefetch(
+    operation: Operation<D>
 ): Completable = prefetch(operation).rx()
 
 /**
@@ -103,7 +103,7 @@ inline fun <D : Operation.Data, V : Operation.Variables> ApolloClient.rxPrefetch
  */
 @JvmSynthetic
 @CheckReturnValue
-inline fun <D : Operation.Data, V : Operation.Variables> ApolloClient.rxSubscribe(
-    subscription: Subscription<D, V>,
+inline fun <D : Operation.Data> ApolloClient.rxSubscribe(
+    subscription: Subscription<D>,
     backpressureStrategy: BackpressureStrategy = BackpressureStrategy.LATEST
 ): Flowable<Response<D>> = subscribe(subscription).rx(backpressureStrategy)

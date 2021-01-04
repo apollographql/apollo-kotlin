@@ -14,14 +14,14 @@ public interface SubscriptionManager {
    * @param subscription to start
    * @param callback to be called on result
    */
-  <D extends Operation.Data> void subscribe(@NotNull Subscription<D, ?> subscription, @NotNull RealSubscriptionManager.Callback<D> callback);
+  <D extends Operation.Data> void subscribe(@NotNull Subscription<D> subscription, @NotNull RealSubscriptionManager.Callback<D> callback);
 
   /**
    * Stops provided subscription. If there are no active subscriptions left, disconnects from the subscription server.
    *
    * @param subscription to stop
    */
-  void unsubscribe(@NotNull Subscription<?, ?> subscription);
+  void unsubscribe(@NotNull Subscription<?> subscription);
 
   /**
    * Returns the current state of subscription manager.

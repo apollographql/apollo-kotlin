@@ -101,8 +101,8 @@ public interface ApolloMutationCall<D extends Operation.Data> extends ApolloCall
      * @param mutation the {@link Mutation} which needs to be performed
      * @return prepared {@link ApolloMutationCall} call to be executed at some point in the future
      */
-    <D extends Mutation.Data, V extends Mutation.Variables> ApolloMutationCall<D> mutate(
-        @NotNull Mutation<D, V> mutation);
+    <D extends Mutation.Data> ApolloMutationCall<D> mutate(
+        @NotNull Mutation<D> mutation);
 
     /**
      * <p>Creates and prepares a new {@link ApolloMutationCall} call with optimistic updates.</p>
@@ -115,7 +115,7 @@ public interface ApolloMutationCall<D extends Operation.Data> extends ApolloCall
      * @param withOptimisticUpdates optimistic updates for this mutation
      * @return prepared {@link ApolloMutationCall} call to be executed at some point in the future
      */
-    <D extends Mutation.Data, V extends Mutation.Variables> ApolloMutationCall<D> mutate(
-        @NotNull Mutation<D, V> mutation, @NotNull D withOptimisticUpdates);
+    <D extends Mutation.Data> ApolloMutationCall<D> mutate(
+        @NotNull Mutation<D> mutation, @NotNull D withOptimisticUpdates);
   }
 }
