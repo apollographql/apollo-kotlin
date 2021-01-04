@@ -71,7 +71,7 @@ internal fun CodeGenerationAst.FragmentType.implementationTypeSpec(generateAsInt
       .addFunction(
           FunSpec.builder("adapter")
               .addModifiers(KModifier.OVERRIDE)
-              .returns(ResponseAdapter::class.asTypeName().parameterizedBy(defaultImplementationType.typeRef.asTypeName()))
+              .returns(defaultImplementationType.typeRef.asAdapterTypeName())
               .addCode("return·%T", this.defaultImplementationType.typeRef.asAdapterTypeName())
               .build()
       )
