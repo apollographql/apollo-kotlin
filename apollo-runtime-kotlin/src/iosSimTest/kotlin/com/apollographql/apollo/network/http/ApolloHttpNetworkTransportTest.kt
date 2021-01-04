@@ -4,12 +4,8 @@ import com.apollographql.apollo.ApolloHttpException
 import com.apollographql.apollo.ApolloNetworkException
 import com.apollographql.apollo.api.ApolloExperimental
 import com.apollographql.apollo.api.ExecutionContext
-<<<<<<< HEAD
-import com.apollographql.apollo.api.ScalarTypeAdapters
-import com.apollographql.apollo.api.composeRequestBody
-=======
 import com.apollographql.apollo.api.CustomScalarAdapters
->>>>>>> dev-3.x
+import com.apollographql.apollo.api.composeRequestBody
 import com.apollographql.apollo.interceptor.ApolloRequest
 import com.apollographql.apollo.testing.MockQuery
 import com.apollographql.apollo.network.HttpExecutionContext
