@@ -10,7 +10,9 @@ import com.apollographql.apollo.api.Query
 import com.apollographql.apollo.api.Response
 import com.apollographql.apollo.api.CustomScalarAdapters
 import com.apollographql.apollo.api.internal.OperationRequestBodyComposer.compose
-import com.apollographql.apollo.api.internal.ResponseFieldMapper
+import com.apollographql.apollo.api.internal.ResponseAdapter
+import com.apollographql.apollo.api.internal.ResponseReader
+import com.apollographql.apollo.api.internal.ResponseWriter
 import com.apollographql.apollo.api.internal.ResponseFieldMarshaller
 import com.apollographql.apollo.exception.ApolloException
 import com.apollographql.apollo.rx2.Rx2Apollo
@@ -158,14 +160,17 @@ class ApolloIdlingResourceTest {
         return EMPTY_VARIABLES
       }
 
-      override fun responseFieldMapper(): ResponseFieldMapper<Operation.Data> {
-        return ResponseFieldMapper {
-          object : Operation.Data {
-            override fun marshaller(): ResponseFieldMarshaller {
-              return ResponseFieldMarshaller {
-
-              }
+      override fun adapter(): ResponseAdapter<Operation.Data> {
+        return object: ResponseAdapter<Operation.Data> {
+          override fun fromResponse(reader: ResponseReader, __typename: String?): Operation.Data {
+            while (reader.selectField(emptyArray()) != -1) {
+              // consume the json stream
             }
+            return object: Operation.Data {}
+          }
+
+          override fun toResponse(writer: ResponseWriter, value: Operation.Data) {
+            TODO("Not yet implemented")
           }
         }
       }
