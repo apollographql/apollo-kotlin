@@ -1,11 +1,10 @@
 package com.apollographql.apollo.internal.subscription;
 
+import com.apollographql.apollo.api.CustomScalar;
 import com.apollographql.apollo.api.CustomScalarAdapter;
+import com.apollographql.apollo.api.CustomScalarAdapters;
 import com.apollographql.apollo.api.Operation;
 import com.apollographql.apollo.api.OperationName;
-import com.apollographql.apollo.api.Response;
-import com.apollographql.apollo.api.CustomScalar;
-import com.apollographql.apollo.api.CustomScalarAdapters;
 import com.apollographql.apollo.api.Subscription;
 import com.apollographql.apollo.api.internal.ResponseFieldMapper;
 import com.apollographql.apollo.api.internal.ResponseFieldMarshaller;
@@ -19,8 +18,6 @@ import com.apollographql.apollo.subscription.SubscriptionConnectionParamsProvide
 import com.apollographql.apollo.subscription.SubscriptionManagerState;
 import com.apollographql.apollo.subscription.SubscriptionTransport;
 import kotlin.jvm.functions.Function0;
-import okio.BufferedSource;
-import okio.ByteString;
 import org.jetbrains.annotations.NotNull;
 import org.junit.Before;
 import org.junit.Test;
@@ -193,37 +190,6 @@ public class SubscriptionAutoPersistTest {
 
     @NotNull @Override public String operationId() {
       return operationId;
-    }
-
-    @NotNull @Override public Response<Data> parse(@NotNull BufferedSource source) {
-      throw new UnsupportedOperationException();
-    }
-
-    @NotNull @Override public Response<Data> parse(@NotNull BufferedSource source, @NotNull CustomScalarAdapters customScalarAdapters) {
-      throw new UnsupportedOperationException();
-    }
-
-    @NotNull @Override public Response parse(@NotNull ByteString byteString) {
-      throw new UnsupportedOperationException();
-    }
-
-    @NotNull @Override public Response parse(@NotNull ByteString byteString, @NotNull CustomScalarAdapters customScalarAdapters) {
-      throw new UnsupportedOperationException();
-    }
-
-    @NotNull @Override public ByteString composeRequestBody(
-        boolean autoPersistQueries,
-        boolean withQueryDocument,
-        @NotNull CustomScalarAdapters customScalarAdapters) {
-      throw new UnsupportedOperationException();
-    }
-
-    @NotNull @Override public ByteString composeRequestBody(@NotNull CustomScalarAdapters customScalarAdapters) {
-      throw new UnsupportedOperationException();
-    }
-
-    @NotNull @Override public ByteString composeRequestBody() {
-      throw new UnsupportedOperationException();
     }
   }
 

@@ -64,38 +64,6 @@ class ApolloExceptionTest {
     override fun operationId(): String {
       return ""
     }
-
-    override fun parse(source: BufferedSource): Response<Operation.Data> {
-      throw UnsupportedOperationException()
-    }
-
-    override fun parse(source: BufferedSource, customScalarAdapters: CustomScalarAdapters): Response<Operation.Data> {
-      throw UnsupportedOperationException()
-    }
-
-    override fun parse(byteString: ByteString): Response<Operation.Data> {
-      throw UnsupportedOperationException()
-    }
-
-    override fun parse(byteString: ByteString, customScalarAdapters: CustomScalarAdapters): Response<Operation.Data> {
-      throw UnsupportedOperationException()
-    }
-
-    override fun composeRequestBody(
-        autoPersistQueries: Boolean,
-        withQueryDocument: Boolean,
-        customScalarAdapters: CustomScalarAdapters
-    ): ByteString {
-      return compose(this, autoPersistQueries, withQueryDocument, customScalarAdapters)
-    }
-
-    override fun composeRequestBody(customScalarAdapters: CustomScalarAdapters): ByteString {
-      return compose(this, false, true, customScalarAdapters)
-    }
-
-    override fun composeRequestBody(): ByteString {
-      return compose(this, false, true, CustomScalarAdapters.DEFAULT)
-    }
   }
 
 
@@ -117,7 +85,7 @@ class ApolloExceptionTest {
     val errorRef = AtomicReference<Throwable>()
     val errorResponse = AtomicReference<String>()
     Rx2Apollo
-        .from(apolloClient.query<Operation.Data, Operation.Variables>(emptyQuery))
+        .from(apolloClient.query(emptyQuery))
         .doOnError { throwable ->
           errorRef.set(throwable)
           errorResponse.set((throwable as ApolloHttpException).rawResponse()!!.body()!!.string())

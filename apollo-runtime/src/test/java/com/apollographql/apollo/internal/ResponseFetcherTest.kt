@@ -52,38 +52,6 @@ class ResponseFetcherTest {
     override fun operationId(): String {
       return ""
     }
-
-    override fun parse(source: BufferedSource): Response<Operation.Data> {
-      throw UnsupportedOperationException()
-    }
-
-    override fun parse(source: BufferedSource, customScalarAdapters: CustomScalarAdapters): Response<Operation.Data> {
-      throw UnsupportedOperationException()
-    }
-
-    override fun parse(byteString: ByteString): Response<Operation.Data> {
-      throw UnsupportedOperationException()
-    }
-
-    override fun parse(byteString: ByteString, customScalarAdapters: CustomScalarAdapters): Response<Operation.Data> {
-      throw UnsupportedOperationException()
-    }
-
-    override fun composeRequestBody(
-        autoPersistQueries: Boolean,
-        withQueryDocument: Boolean,
-        customScalarAdapters: CustomScalarAdapters
-    ): ByteString {
-      return compose(this, autoPersistQueries, withQueryDocument, customScalarAdapters)
-    }
-
-    override fun composeRequestBody(customScalarAdapters: CustomScalarAdapters): ByteString {
-      return compose(this, false, true, customScalarAdapters)
-    }
-
-    override fun composeRequestBody(): ByteString {
-      return compose(this, false, true, CustomScalarAdapters.DEFAULT)
-    }
   }
 
   @Test

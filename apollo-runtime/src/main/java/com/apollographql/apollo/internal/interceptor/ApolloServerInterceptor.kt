@@ -8,6 +8,7 @@ import com.apollographql.apollo.api.Query
 import com.apollographql.apollo.api.CustomScalarAdapters
 import com.apollographql.apollo.api.cache.http.HttpCache
 import com.apollographql.apollo.api.cache.http.HttpCachePolicy
+import com.apollographql.apollo.api.composeRequestBody
 import com.apollographql.apollo.api.internal.ApolloLogger
 import com.apollographql.apollo.api.internal.json.InputFieldJsonWriter
 import com.apollographql.apollo.api.internal.json.JsonWriter.Companion.of

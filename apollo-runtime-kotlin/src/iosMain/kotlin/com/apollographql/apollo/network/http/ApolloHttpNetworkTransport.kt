@@ -8,6 +8,8 @@ import com.apollographql.apollo.ApolloSerializationException
 import com.apollographql.apollo.api.ApolloExperimental
 import com.apollographql.apollo.api.ExecutionContext
 import com.apollographql.apollo.api.Operation
+import com.apollographql.apollo.api.composeRequestBody
+import com.apollographql.apollo.api.parse
 import com.apollographql.apollo.interceptor.ApolloRequest
 import com.apollographql.apollo.interceptor.ApolloResponse
 import com.apollographql.apollo.network.HttpExecutionContext
@@ -82,7 +84,7 @@ actual class ApolloHttpNetworkTransport(
 
   private class DefaultDataTaskFactory(readTimeoutMillis: Long) : DataTaskFactory {
     private val nsurlSession = NSURLSession.sessionWithConfiguration(NSURLSessionConfiguration.defaultSessionConfiguration().apply {
-      timeoutIntervalForRequest = readTimeoutMillis.toDouble()/1000
+      timeoutIntervalForRequest = readTimeoutMillis.toDouble() / 1000
     })
 
     override fun dataTask(request: NSURLRequest, completionHandler: UrlSessionDataTaskCompletionHandler): NSURLSessionDataTask {
@@ -90,6 +92,7 @@ actual class ApolloHttpNetworkTransport(
     }
 
   }
+
   @Suppress("UNCHECKED_CAST")
   override fun <D : Operation.Data> execute(request: ApolloRequest<D>, executionContext: ExecutionContext): Flow<ApolloResponse<D>> {
     return flow {

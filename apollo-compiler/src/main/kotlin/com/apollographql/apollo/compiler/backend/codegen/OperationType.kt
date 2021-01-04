@@ -9,10 +9,8 @@ import com.apollographql.apollo.api.Response
 import com.apollographql.apollo.api.CustomScalarAdapters
 import com.apollographql.apollo.api.Subscription
 import com.apollographql.apollo.api.internal.InputFieldMarshaller
-import com.apollographql.apollo.api.internal.OperationRequestBodyComposer
 import com.apollographql.apollo.api.internal.QueryDocumentMinifier
 import com.apollographql.apollo.api.internal.ResponseFieldMapper
-import com.apollographql.apollo.api.internal.SimpleOperationResponseParser
 import com.apollographql.apollo.compiler.applyIf
 import com.apollographql.apollo.compiler.backend.ast.CodeGenerationAst
 import com.apollographql.apollo.compiler.escapeKotlinReservedWord
@@ -20,20 +18,13 @@ import com.squareup.kotlinpoet.ClassName
 import com.squareup.kotlinpoet.CodeBlock
 import com.squareup.kotlinpoet.FunSpec
 import com.squareup.kotlinpoet.KModifier
-import com.squareup.kotlinpoet.MemberName
 import com.squareup.kotlinpoet.ParameterSpec
 import com.squareup.kotlinpoet.ParameterizedTypeName.Companion.parameterizedBy
 import com.squareup.kotlinpoet.PropertySpec
 import com.squareup.kotlinpoet.TypeName
 import com.squareup.kotlinpoet.TypeSpec
 import com.squareup.kotlinpoet.asClassName
-import com.squareup.kotlinpoet.asTypeName
 import com.squareup.kotlinpoet.joinToCode
-import okio.Buffer
-import okio.BufferedSource
-import okio.ByteString
-
-private val DEFAULT_CUSTOM_SCALAR_ADAPTERS = MemberName(CustomScalarAdapters.Companion::class.asClassName(), "DEFAULT")
 
 internal fun CodeGenerationAst.OperationType.typeSpec(targetPackage: String, generateAsInternal: Boolean = false): TypeSpec {
   val operationResponseAdapter = CodeGenerationAst.TypeRef(name = name, packageName = targetPackage).asAdapterTypeName()
@@ -88,13 +79,6 @@ internal fun CodeGenerationAst.OperationType.typeSpec(targetPackage: String, gen
               .endControlFlow()
               .build()
       )
-      .addFunction(parseWithAdaptersFunSpec())
-      .addFunction(parseByteStringWithAdaptersFunSpec())
-      .addFunction(parseFunSpec())
-      .addFunction(parseByteStringFunSpec())
-      .addFunction(composeRequestBodyFunSpec())
-      .addFunction(composeRequestBodyWithDefaultAdaptersFunSpec())
-      .addFunction(composeRequestBodyFunSpecForQuery())
       .addType(this.dataType.typeSpec())
       .addType(TypeSpec.companionObjectBuilder()
           .addProperty(PropertySpec.builder("OPERATION_ID", String::class)
@@ -226,113 +210,6 @@ private fun List<CodeGenerationAst.InputField>.variablesMarshallerSpec(thisRef: 
           .apply { forEach { field -> add(field.writeCodeBlock(thisRef)) } }
           .endControlFlow()
           .build()
-      )
-      .build()
-}
-
-private fun CodeGenerationAst.OperationType.parseWithAdaptersFunSpec(): FunSpec {
-  return FunSpec.builder("parse")
-      .addModifiers(KModifier.OVERRIDE)
-      .addParameter(ParameterSpec("source", BufferedSource::class.asTypeName()))
-      .addParameter(ParameterSpec("customScalarAdapters", CustomScalarAdapters::class.asTypeName()))
-      .throwsMultiplatformIOException()
-      .returns(responseReturnType())
-      .addStatement("return·%T.parse(source,·this,·customScalarAdapters)", SimpleOperationResponseParser::class)
-      .build()
-}
-
-private fun CodeGenerationAst.OperationType.parseByteStringWithAdaptersFunSpec(): FunSpec {
-  return FunSpec.builder("parse")
-      .addModifiers(KModifier.OVERRIDE)
-      .addParameter(ParameterSpec("byteString", ByteString::class.asTypeName()))
-      .addParameter(ParameterSpec("customScalarAdapters", CustomScalarAdapters::class.asTypeName()))
-      .throwsMultiplatformIOException()
-      .returns(responseReturnType())
-      .addStatement("return·parse(%T().write(byteString),·customScalarAdapters)", Buffer::class)
-      .build()
-}
-
-private fun CodeGenerationAst.OperationType.parseFunSpec(): FunSpec {
-  return FunSpec.builder("parse")
-      .addModifiers(KModifier.OVERRIDE)
-      .addParameter(ParameterSpec("source", BufferedSource::class.asTypeName()))
-      .throwsMultiplatformIOException()
-      .returns(responseReturnType())
-      .addStatement("return·parse(source,·%M)", DEFAULT_CUSTOM_SCALAR_ADAPTERS)
-      .build()
-}
-
-private fun CodeGenerationAst.OperationType.parseByteStringFunSpec(): FunSpec {
-  return FunSpec.builder("parse")
-      .addModifiers(KModifier.OVERRIDE)
-      .addParameter(ParameterSpec("byteString", ByteString::class.asTypeName()))
-      .throwsMultiplatformIOException()
-      .returns(responseReturnType())
-      .addStatement("return·parse(byteString,·%M)", DEFAULT_CUSTOM_SCALAR_ADAPTERS)
-      .build()
-}
-
-private fun CodeGenerationAst.OperationType.responseReturnType(): TypeName {
-  return Response::class.asClassName().parameterizedBy(ClassName(packageName = "", "Data"))
-}
-
-private fun composeRequestBodyFunSpec(): FunSpec {
-  return FunSpec.builder("composeRequestBody")
-      .addModifiers(KModifier.OVERRIDE)
-      .addParameter(ParameterSpec("customScalarAdapters", CustomScalarAdapters::class.asTypeName()))
-      .returns(ByteString::class)
-      .addCode(
-          CodeBlock.builder()
-              .add("return·%T.compose(\n", OperationRequestBodyComposer::class)
-              .indent()
-              .addStatement("operation = this,")
-              .addStatement("autoPersistQueries = false,")
-              .addStatement("withQueryDocument = true,")
-              .addStatement("customScalarAdapters = customScalarAdapters")
-              .unindent()
-              .add(")\n")
-              .build()
-      )
-      .build()
-}
-
-private fun composeRequestBodyWithDefaultAdaptersFunSpec(): FunSpec {
-  return FunSpec.builder("composeRequestBody")
-      .addModifiers(KModifier.OVERRIDE)
-      .returns(ByteString::class)
-      .addCode(
-          CodeBlock.builder()
-              .add("return %T.compose(\n", OperationRequestBodyComposer::class)
-              .indent()
-              .addStatement("operation = this,")
-              .addStatement("autoPersistQueries = false,")
-              .addStatement("withQueryDocument = true,")
-              .addStatement("customScalarAdapters = %M", DEFAULT_CUSTOM_SCALAR_ADAPTERS)
-              .unindent()
-              .add(")\n")
-              .build()
-      )
-      .build()
-}
-
-private fun composeRequestBodyFunSpecForQuery(): FunSpec {
-  return FunSpec.builder("composeRequestBody")
-      .addModifiers(KModifier.OVERRIDE)
-      .addParameter(ParameterSpec("autoPersistQueries", Boolean::class.asTypeName()))
-      .addParameter(ParameterSpec("withQueryDocument", Boolean::class.asTypeName()))
-      .addParameter(ParameterSpec("customScalarAdapters", CustomScalarAdapters::class.asTypeName()))
-      .returns(ByteString::class)
-      .addCode(
-          CodeBlock.builder()
-              .add("return %T.compose(\n", OperationRequestBodyComposer::class)
-              .indent()
-              .addStatement("operation = this,")
-              .addStatement("autoPersistQueries = autoPersistQueries,")
-              .addStatement("withQueryDocument = withQueryDocument,")
-              .addStatement("customScalarAdapters = customScalarAdapters")
-              .unindent()
-              .add(")\n")
-              .build()
       )
       .build()
 }

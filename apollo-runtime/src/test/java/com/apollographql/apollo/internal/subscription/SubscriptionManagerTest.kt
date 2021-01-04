@@ -367,19 +367,6 @@ class SubscriptionManagerTest {
     }
 
     override fun operationId() = operationId
-
-    override fun parse(source: BufferedSource) = throw UnsupportedOperationException()
-    override fun parse(source: BufferedSource, customScalarAdapters: CustomScalarAdapters) = throw UnsupportedOperationException()
-    override fun parse(byteString: ByteString) = throw UnsupportedOperationException()
-    override fun parse(byteString: ByteString, customScalarAdapters: CustomScalarAdapters) = throw UnsupportedOperationException()
-    override fun composeRequestBody(
-        autoPersistQueries: Boolean,
-        withQueryDocument: Boolean,
-        customScalarAdapters: CustomScalarAdapters
-    ): ByteString = throw UnsupportedOperationException()
-
-    override fun composeRequestBody(customScalarAdapters: CustomScalarAdapters) = throw UnsupportedOperationException()
-    override fun composeRequestBody() = throw UnsupportedOperationException()
   }
 
   private class SubscriptionManagerCallbackAdapter<D : Operation.Data> : SubscriptionManager.Callback<D> {

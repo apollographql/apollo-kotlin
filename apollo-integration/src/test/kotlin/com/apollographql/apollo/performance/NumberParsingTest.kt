@@ -1,5 +1,6 @@
 package com.apollographql.apollo.performance
 
+import com.apollographql.apollo.api.parse
 import com.apollographql.apollo.ApolloClient
 import com.apollographql.apollo.Utils.immediateExecutor
 import com.apollographql.apollo.Utils.immediateExecutorService

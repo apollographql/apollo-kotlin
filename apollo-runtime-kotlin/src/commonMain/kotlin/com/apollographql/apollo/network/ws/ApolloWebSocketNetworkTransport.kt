@@ -8,6 +8,7 @@ import com.apollographql.apollo.api.ExecutionContext
 import com.apollographql.apollo.api.Operation
 import com.apollographql.apollo.api.internal.json.JsonWriter
 import com.apollographql.apollo.api.internal.json.Utils
+import com.apollographql.apollo.api.parse
 import com.apollographql.apollo.dispatcher.ApolloCoroutineDispatcherContext
 import com.apollographql.apollo.interceptor.ApolloRequest
 import com.apollographql.apollo.interceptor.ApolloResponse

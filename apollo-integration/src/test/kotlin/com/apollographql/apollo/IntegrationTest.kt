@@ -12,6 +12,7 @@ import com.apollographql.apollo.api.JsonElement
 import com.apollographql.apollo.api.JsonString
 import com.apollographql.apollo.api.Operation
 import com.apollographql.apollo.api.Response
+import com.apollographql.apollo.api.parse
 import com.apollographql.apollo.api.toJson
 import com.apollographql.apollo.cache.normalized.lru.EvictionPolicy
 import com.apollographql.apollo.cache.normalized.lru.LruNormalizedCacheFactory
