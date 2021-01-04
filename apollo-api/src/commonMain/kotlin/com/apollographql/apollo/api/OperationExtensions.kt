@@ -114,19 +114,19 @@ fun Operation<*, *>.composeRequestBody(
  * Parses GraphQL operation raw response from the [source] with provided [customScalarAdapters] and returns result [Response]
  */
 @JvmOverloads
-fun <DATA : Operation.Data> Operation<DATA, *>.parse(
+fun <D : Operation.Data> Operation<D, *>.parse(
     source: BufferedSource,
     customScalarAdapters: CustomScalarAdapters = DEFAULT
-): Response<DATA> {
+): Response<D> {
   return SimpleOperationResponseParser.parse(source, this, customScalarAdapters)
 }
 
 /**
  * Parses GraphQL operation raw response from the [byteString] with provided [customScalarAdapters] and returns result [Response]
  */
-fun <DATA : Operation.Data> Operation<DATA, *>.parse(
+fun <D : Operation.Data> Operation<D, *>.parse(
     byteString: ByteString,
     customScalarAdapters: CustomScalarAdapters = DEFAULT
-): Response<DATA> {
+): Response<D> {
   return SimpleOperationResponseParser.parse(Buffer().write(byteString), this, customScalarAdapters)
 }
