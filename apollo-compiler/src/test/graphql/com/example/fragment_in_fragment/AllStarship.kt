@@ -189,58 +189,6 @@ class AllStarship : Query<AllStarship.Data, Operation.Variables> {
                     StarshipFragment.PilotConnection.Edge.Node {
                   override val __typename: String
 
-<<<<<<< HEAD
-                  override fun marshaller(): ResponseFieldMarshaller
-=======
-                  interface Person : Starship.PilotConnection.Edge.Node,
-                      Starship.PilotConnection.Edge.Node.Person, PilotFragment,
-                      StarshipFragment.PilotConnection.Edge.Node.Person,
-                      StarshipFragment.PilotConnection.Edge.Node, Node {
-                    override val __typename: String
-
-                    /**
-                     * The name of this person.
-                     */
-                    override val name: String?
-
-                    /**
-                     * A planet that this person was born on or inhabits.
-                     */
-                    override val homeworld: Homeworld?
-
-                    /**
-                     * A large mass, planet or planetoid in the Star Wars Universe, at the time of
-                     * 0 ABY.
-                     */
-                    interface Homeworld : Starship.PilotConnection.Edge.Node.Person.Homeworld,
-                        PilotFragment.Homeworld,
-                        StarshipFragment.PilotConnection.Edge.Node.Person.Homeworld {
-                      override val __typename: String
-
-                      interface Planet : Starship.PilotConnection.Edge.Node.Person.Homeworld,
-                          Starship.PilotConnection.Edge.Node.Person.Homeworld.Planet,
-                          PlanetFragment, PilotFragment.Homeworld.Planet, PilotFragment.Homeworld,
-                          StarshipFragment.PilotConnection.Edge.Node.Person.Homeworld.Planet,
-                          StarshipFragment.PilotConnection.Edge.Node.Person.Homeworld, Homeworld {
-                        override val __typename: String
-
-                        /**
-                         * The name of this planet.
-                         */
-                        override val name: String?
-                      }
-
-                      companion object {
-                        fun Homeworld.asPlanet():
-                            Starship.PilotConnection.Edge.Node.Person.Homeworld.Planet? = this as?
-                            Starship.PilotConnection.Edge.Node.Person.Homeworld.Planet
-
-                        fun Homeworld.planetFragment(): PlanetFragment? = this as? PlanetFragment
-                      }
-                    }
-                  }
->>>>>>> 7fb58f43... remove ResponseFieldMapper
-
                   data class PersonNode(
                     override val __typename: String,
                     /**
@@ -253,17 +201,7 @@ class AllStarship : Query<AllStarship.Data, Operation.Variables> {
                     override val homeworld: Homeworld?
                   ) : Starship.PilotConnection.Edge.Node, Starship.PilotConnection.Edge.Node.Person,
                       PilotFragment, StarshipFragment.PilotConnection.Edge.Node.Person,
-<<<<<<< HEAD
                       StarshipFragment.PilotConnection.Edge.Node, Node {
-                    override fun marshaller(): ResponseFieldMarshaller {
-                      return ResponseFieldMarshaller { writer ->
-                        AllStarship_ResponseAdapter.Data.AllStarship.Edge.Node.StarshipNode.PilotConnection.Edge.Node.PersonNode.toResponse(writer, this)
-                      }
-                    }
-
-=======
-                      StarshipFragment.PilotConnection.Edge.Node, Node, Person {
->>>>>>> 7fb58f43... remove ResponseFieldMapper
                     /**
                      * A large mass, planet or planetoid in the Star Wars Universe, at the time of
                      * 0 ABY.
@@ -272,24 +210,6 @@ class AllStarship : Query<AllStarship.Data, Operation.Variables> {
                         PilotFragment.Homeworld,
                         StarshipFragment.PilotConnection.Edge.Node.Person.Homeworld {
                       override val __typename: String
-
-<<<<<<< HEAD
-                      override fun marshaller(): ResponseFieldMarshaller
-=======
-                      interface Planet : Starship.PilotConnection.Edge.Node.Person.Homeworld,
-                          Starship.PilotConnection.Edge.Node.Person.Homeworld.Planet,
-                          PlanetFragment, PilotFragment.Homeworld.Planet, PilotFragment.Homeworld,
-                          StarshipFragment.PilotConnection.Edge.Node.Person.Homeworld.Planet,
-                          StarshipFragment.PilotConnection.Edge.Node.Person.Homeworld,
-                          Person.Homeworld, Person.Homeworld.Planet, Homeworld {
-                        override val __typename: String
-
-                        /**
-                         * The name of this planet.
-                         */
-                        override val name: String?
-                      }
->>>>>>> 7fb58f43... remove ResponseFieldMapper
 
                       data class PlanetHomeworld(
                         override val __typename: String,
@@ -301,67 +221,20 @@ class AllStarship : Query<AllStarship.Data, Operation.Variables> {
                           Starship.PilotConnection.Edge.Node.Person.Homeworld.Planet,
                           PlanetFragment, PilotFragment.Homeworld.Planet, PilotFragment.Homeworld,
                           StarshipFragment.PilotConnection.Edge.Node.Person.Homeworld.Planet,
-<<<<<<< HEAD
-                          StarshipFragment.PilotConnection.Edge.Node.Person.Homeworld, Homeworld {
-                        override fun marshaller(): ResponseFieldMarshaller {
-                          return ResponseFieldMarshaller { writer ->
-                            AllStarship_ResponseAdapter.Data.AllStarship.Edge.Node.StarshipNode.PilotConnection.Edge.Node.PersonNode.Homeworld.PlanetHomeworld.toResponse(writer, this)
-                          }
-                        }
-                      }
-=======
-                          StarshipFragment.PilotConnection.Edge.Node.Person.Homeworld,
-                          Person.Homeworld, Person.Homeworld.Planet, Homeworld, Planet
->>>>>>> 7fb58f43... remove ResponseFieldMapper
+                          StarshipFragment.PilotConnection.Edge.Node.Person.Homeworld, Homeworld
 
                       data class OtherHomeworld(
                         override val __typename: String
                       ) : Starship.PilotConnection.Edge.Node.Person.Homeworld,
                           PilotFragment.Homeworld,
-<<<<<<< HEAD
-                          StarshipFragment.PilotConnection.Edge.Node.Person.Homeworld, Homeworld {
-                        override fun marshaller(): ResponseFieldMarshaller {
-                          return ResponseFieldMarshaller { writer ->
-                            AllStarship_ResponseAdapter.Data.AllStarship.Edge.Node.StarshipNode.PilotConnection.Edge.Node.PersonNode.Homeworld.OtherHomeworld.toResponse(writer, this)
-                          }
-                        }
-=======
-                          StarshipFragment.PilotConnection.Edge.Node.Person.Homeworld,
-                          Person.Homeworld, Homeworld
-
-                      companion object {
-                        fun Homeworld.asHomeworld(): Person.Homeworld? = this as? Person.Homeworld
-
-                        fun Homeworld.asPlanet(): Planet? = this as? Planet
-
-                        fun Homeworld.planetFragment(): PlanetFragment? = this as? PlanetFragment
->>>>>>> 7fb58f43... remove ResponseFieldMapper
-                      }
+                          StarshipFragment.PilotConnection.Edge.Node.Person.Homeworld, Homeworld
                     }
                   }
 
                   data class OtherNode(
                     override val __typename: String
                   ) : Starship.PilotConnection.Edge.Node,
-<<<<<<< HEAD
-                      StarshipFragment.PilotConnection.Edge.Node, Node {
-                    override fun marshaller(): ResponseFieldMarshaller {
-                      return ResponseFieldMarshaller { writer ->
-                        AllStarship_ResponseAdapter.Data.AllStarship.Edge.Node.StarshipNode.PilotConnection.Edge.Node.OtherNode.toResponse(writer, this)
-                      }
-                    }
-=======
                       StarshipFragment.PilotConnection.Edge.Node, Node
-
-                  companion object {
-                    fun Node.asNode(): StarshipFragment.PilotConnection.Edge.Node? = this as?
-                        StarshipFragment.PilotConnection.Edge.Node
-
-                    fun Node.asPerson(): Person? = this as? Person
-
-                    fun Node.pilotFragment(): PilotFragment? = this as? PilotFragment
->>>>>>> 7fb58f43... remove ResponseFieldMapper
-                  }
                 }
               }
             }

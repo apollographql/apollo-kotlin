@@ -5,27 +5,21 @@
 //
 package com.example.simple_fragment.fragment
 
+import com.apollographql.apollo.api.Adaptable
 import com.apollographql.apollo.api.GraphqlFragment
+import com.apollographql.apollo.api.internal.ResponseAdapter
+import com.example.simple_fragment.fragment.adapter.HeroDetailsImpl_ResponseAdapter
 import kotlin.String
 
 /**
  * A character from the Star Wars universe
  */
-internal interface HeroDetailsImpl : HeroDetail, GraphqlFragment {
+internal interface HeroDetailsImpl : HeroDetail, GraphqlFragment, Adaptable<HeroDetailsImpl> {
   override val __typename: String
 
-<<<<<<< HEAD
-  override fun marshaller(): ResponseFieldMarshaller
-=======
-  interface Human : HeroDetail, HeroDetail.Human, HumanDetail, HeroDetailsImpl {
-    override val __typename: String
-
-    /**
-     * What this human calls themselves
-     */
-    override val name: String
+  override fun adapter(): ResponseAdapter<HeroDetailsImpl> {
+    return HeroDetailsImpl_ResponseAdapter
   }
->>>>>>> 7fb58f43... remove ResponseFieldMapper
 
   data class HumanHeroDetailsImpl(
     override val __typename: String,
@@ -33,17 +27,7 @@ internal interface HeroDetailsImpl : HeroDetail, GraphqlFragment {
      * What this human calls themselves
      */
     override val name: String
-<<<<<<< HEAD
-  ) : HeroDetail, HeroDetail.Human, HumanDetail, HeroDetailsImpl {
-    override fun marshaller(): ResponseFieldMarshaller {
-      return ResponseFieldMarshaller { writer ->
-        HeroDetailsImpl_ResponseAdapter.HumanHeroDetailsImpl.toResponse(writer, this)
-      }
-    }
-  }
-=======
-  ) : HeroDetail, HeroDetail.Human, HumanDetail, HeroDetailsImpl, Human
->>>>>>> 7fb58f43... remove ResponseFieldMapper
+  ) : HeroDetail, HeroDetail.Human, HumanDetail, HeroDetailsImpl
 
   data class OtherHeroDetailsImpl(
     override val __typename: String

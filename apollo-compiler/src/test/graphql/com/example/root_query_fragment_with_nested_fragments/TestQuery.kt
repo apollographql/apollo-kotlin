@@ -133,20 +133,6 @@ class TestQuery : Query<TestQuery.Data, Operation.Variables> {
       interface Hero : Query.Hero, QueryFragment.Hero {
         override val __typename: String
 
-<<<<<<< HEAD
-        override fun marshaller(): ResponseFieldMarshaller
-=======
-        interface Character : Query.Hero, Query.Hero.Character, HeroFragment,
-            QueryFragment.Hero.Character, QueryFragment.Hero, Hero {
-          override val __typename: String
-
-          /**
-           * The name of the character
-           */
-          override val name: String
-        }
->>>>>>> 7fb58f43... remove ResponseFieldMapper
-
         data class CharacterHero(
           override val __typename: String,
           /**
@@ -154,38 +140,11 @@ class TestQuery : Query<TestQuery.Data, Operation.Variables> {
            */
           override val name: String
         ) : Query.Hero, Query.Hero.Character, HeroFragment, QueryFragment.Hero.Character,
-<<<<<<< HEAD
-            QueryFragment.Hero, Hero {
-          override fun marshaller(): ResponseFieldMarshaller {
-            return ResponseFieldMarshaller { writer ->
-              TestQuery_ResponseAdapter.Data.QueryDatum.Hero.CharacterHero.toResponse(writer, this)
-            }
-          }
-        }
-
-        data class OtherHero(
-          override val __typename: String
-        ) : Query.Hero, QueryFragment.Hero, Hero {
-          override fun marshaller(): ResponseFieldMarshaller {
-            return ResponseFieldMarshaller { writer ->
-              TestQuery_ResponseAdapter.Data.QueryDatum.Hero.OtherHero.toResponse(writer, this)
-            }
-          }
-=======
-            QueryFragment.Hero, Hero, Character
+            QueryFragment.Hero, Hero
 
         data class OtherHero(
           override val __typename: String
         ) : Query.Hero, QueryFragment.Hero, Hero
-
-        companion object {
-          fun Hero.asHero(): QueryFragment.Hero? = this as? QueryFragment.Hero
-
-          fun Hero.asCharacter(): Character? = this as? Character
-
-          fun Hero.heroFragment(): HeroFragment? = this as? HeroFragment
->>>>>>> 7fb58f43... remove ResponseFieldMapper
-        }
       }
 
       /**
@@ -193,25 +152,6 @@ class TestQuery : Query<TestQuery.Data, Operation.Variables> {
        */
       interface Droid : Query.Droid, QueryFragment.Droid {
         override val __typename: String
-
-<<<<<<< HEAD
-        override fun marshaller(): ResponseFieldMarshaller
-=======
-        interface Droid : Query.Droid, Query.Droid.Droid, DroidFragment, QueryFragment.Droid.Droid,
-            QueryFragment.Droid, QueryDatum.Droid {
-          override val __typename: String
-
-          /**
-           * What others call this droid
-           */
-          override val name: String
-
-          /**
-           * This droid's primary function
-           */
-          override val primaryFunction: String?
-        }
->>>>>>> 7fb58f43... remove ResponseFieldMapper
 
         data class DroidDroid(
           override val __typename: String,
@@ -224,36 +164,11 @@ class TestQuery : Query<TestQuery.Data, Operation.Variables> {
            */
           override val primaryFunction: String?
         ) : Query.Droid, Query.Droid.Droid, DroidFragment, QueryFragment.Droid.Droid,
-<<<<<<< HEAD
-            QueryFragment.Droid, Droid {
-          override fun marshaller(): ResponseFieldMarshaller {
-            return ResponseFieldMarshaller { writer ->
-              TestQuery_ResponseAdapter.Data.QueryDatum.Droid.DroidDroid.toResponse(writer, this)
-            }
-          }
-        }
+            QueryFragment.Droid, Droid
 
         data class OtherDroid(
           override val __typename: String
-        ) : Query.Droid, QueryFragment.Droid, Droid {
-          override fun marshaller(): ResponseFieldMarshaller {
-            return ResponseFieldMarshaller { writer ->
-              TestQuery_ResponseAdapter.Data.QueryDatum.Droid.OtherDroid.toResponse(writer, this)
-            }
-          }
-=======
-            QueryFragment.Droid, QueryDatum.Droid, Droid
-
-        data class OtherDroid(
-          override val __typename: String
-        ) : Query.Droid, QueryFragment.Droid, QueryDatum.Droid
-
-        companion object {
-          fun QueryDatum.Droid.asDroid(): Droid? = this as? Droid
-
-          fun QueryDatum.Droid.droidFragment(): DroidFragment? = this as? DroidFragment
->>>>>>> 7fb58f43... remove ResponseFieldMapper
-        }
+        ) : Query.Droid, QueryFragment.Droid, Droid
       }
 
       /**
@@ -261,25 +176,6 @@ class TestQuery : Query<TestQuery.Data, Operation.Variables> {
        */
       interface Human : Query.Human, QueryFragment.Human {
         override val __typename: String
-
-<<<<<<< HEAD
-        override fun marshaller(): ResponseFieldMarshaller
-=======
-        interface Human : Query.Human, Query.Human.Human, QueryFragment.Human.Human,
-            QueryFragment.Human, QueryDatum.Human {
-          override val __typename: String
-
-          /**
-           * What this human calls themselves
-           */
-          override val name: String
-
-          /**
-           * The home planet of the human, or null if unknown
-           */
-          override val homePlanet: String?
-        }
->>>>>>> 7fb58f43... remove ResponseFieldMapper
 
         data class HumanHuman(
           override val __typename: String,
@@ -291,35 +187,11 @@ class TestQuery : Query<TestQuery.Data, Operation.Variables> {
            * The home planet of the human, or null if unknown
            */
           override val homePlanet: String?
-<<<<<<< HEAD
-        ) : Query.Human, Query.Human.Human, QueryFragment.Human.Human, QueryFragment.Human, Human {
-          override fun marshaller(): ResponseFieldMarshaller {
-            return ResponseFieldMarshaller { writer ->
-              TestQuery_ResponseAdapter.Data.QueryDatum.Human.HumanHuman.toResponse(writer, this)
-            }
-          }
-        }
+        ) : Query.Human, Query.Human.Human, QueryFragment.Human.Human, QueryFragment.Human, Human
 
         data class OtherHuman(
           override val __typename: String
-        ) : Query.Human, QueryFragment.Human, Human {
-          override fun marshaller(): ResponseFieldMarshaller {
-            return ResponseFieldMarshaller { writer ->
-              TestQuery_ResponseAdapter.Data.QueryDatum.Human.OtherHuman.toResponse(writer, this)
-            }
-          }
-=======
-        ) : Query.Human, Query.Human.Human, QueryFragment.Human.Human, QueryFragment.Human,
-            QueryDatum.Human, Human
-
-        data class OtherHuman(
-          override val __typename: String
-        ) : Query.Human, QueryFragment.Human, QueryDatum.Human
-
-        companion object {
-          fun QueryDatum.Human.asHuman(): Human? = this as? Human
->>>>>>> 7fb58f43... remove ResponseFieldMapper
-        }
+        ) : Query.Human, QueryFragment.Human, Human
       }
     }
 

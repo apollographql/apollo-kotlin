@@ -71,55 +71,16 @@ class GetPage : Query<GetPage.Data, Operation.Variables> {
         interface Item : Collection.Item, ParticularCollection.Item {
           override val __typename: String
 
-<<<<<<< HEAD
-          override fun marshaller(): ResponseFieldMarshaller
-=======
-          interface ParticularItem : ParticularCollection.Item,
-              ParticularCollection.Item.ParticularItem, Item {
-            override val __typename: String
-
-            override val image: String
-
-            override val title: String
-          }
->>>>>>> 7fb58f43... remove ResponseFieldMapper
-
           data class ParticularItemItem(
             override val title: String,
             override val __typename: String,
             override val image: String
-<<<<<<< HEAD
-          ) : ParticularCollection.Item, ParticularCollection.Item.ParticularItem, Item {
-            override fun marshaller(): ResponseFieldMarshaller {
-              return ResponseFieldMarshaller { writer ->
-                GetPage_ResponseAdapter.Data.Collection.ParticularCollectionCollection.Item.ParticularItemItem.toResponse(writer, this)
-              }
-            }
-          }
-=======
-          ) : ParticularCollection.Item, ParticularCollection.Item.ParticularItem, Item,
-              ParticularItem
->>>>>>> 7fb58f43... remove ResponseFieldMapper
+          ) : ParticularCollection.Item, ParticularCollection.Item.ParticularItem, Item
 
           data class OtherItem(
             override val title: String,
             override val __typename: String
-<<<<<<< HEAD
-          ) : Collection.Item, ParticularCollection.Item, Item {
-            override fun marshaller(): ResponseFieldMarshaller {
-              return ResponseFieldMarshaller { writer ->
-                GetPage_ResponseAdapter.Data.Collection.ParticularCollectionCollection.Item.OtherItem.toResponse(writer, this)
-              }
-            }
-=======
-          ) : Collection.Item, Item, ParticularCollection.Item
-
-          companion object {
-            fun Item.asItems(): ParticularCollection.Item? = this as? ParticularCollection.Item
-
-            fun Item.asParticularItem(): ParticularItem? = this as? ParticularItem
->>>>>>> 7fb58f43... remove ResponseFieldMapper
-          }
+          ) : Collection.Item, ParticularCollection.Item, Item
         }
       }
 

@@ -5,38 +5,22 @@
 //
 package com.example.fragment_used_twice.fragment
 
+import com.apollographql.apollo.api.Adaptable
 import com.apollographql.apollo.api.GraphqlFragment
+import com.apollographql.apollo.api.internal.ResponseAdapter
+import com.example.fragment_used_twice.fragment.adapter.HumanDetailsImpl_ResponseAdapter
 import kotlin.Any
 import kotlin.String
 
 /**
  * A humanoid creature from the Star Wars universe
  */
-interface HumanDetailsImpl : HumanDetail, GraphqlFragment {
+interface HumanDetailsImpl : HumanDetail, GraphqlFragment, Adaptable<HumanDetailsImpl> {
   override val __typename: String
 
-<<<<<<< HEAD
-  override fun marshaller(): ResponseFieldMarshaller
-=======
-  /**
-   * What this human calls themselves
-   */
-  override val name: String
-
-  interface Character : HumanDetail, HumanDetail.Character, CharacterDetail, HumanDetailsImpl {
-    override val __typename: String
-
-    /**
-     * What this human calls themselves
-     */
-    override val name: String
-
-    /**
-     * The date character was born.
-     */
-    override val birthDate: Any
+  override fun adapter(): ResponseAdapter<HumanDetailsImpl> {
+    return HumanDetailsImpl_ResponseAdapter
   }
->>>>>>> 7fb58f43... remove ResponseFieldMapper
 
   data class CharacterHumanDetailsImpl(
     override val __typename: String,
@@ -48,17 +32,7 @@ interface HumanDetailsImpl : HumanDetail, GraphqlFragment {
      * The date character was born.
      */
     override val birthDate: Any
-<<<<<<< HEAD
-  ) : HumanDetail, HumanDetail.Character, CharacterDetail, HumanDetailsImpl {
-    override fun marshaller(): ResponseFieldMarshaller {
-      return ResponseFieldMarshaller { writer ->
-        HumanDetailsImpl_ResponseAdapter.CharacterHumanDetailsImpl.toResponse(writer, this)
-      }
-    }
-  }
-=======
-  ) : HumanDetail, HumanDetail.Character, CharacterDetail, HumanDetailsImpl, Character
->>>>>>> 7fb58f43... remove ResponseFieldMapper
+  ) : HumanDetail, HumanDetail.Character, CharacterDetail, HumanDetailsImpl
 
   data class OtherHumanDetailsImpl(
     override val __typename: String,

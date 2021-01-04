@@ -5,7 +5,10 @@
 //
 package com.example.fragments_with_type_condition.fragment
 
+import com.apollographql.apollo.api.Adaptable
 import com.apollographql.apollo.api.GraphqlFragment
+import com.apollographql.apollo.api.internal.ResponseAdapter
+import com.example.fragments_with_type_condition.fragment.adapter.DroidDetailsImpl_ResponseAdapter
 import kotlin.String
 
 /**
@@ -21,4 +24,8 @@ data class DroidDetailsImpl(
    * This droid's primary function
    */
   override val primaryFunction: String?
-) : DroidDetail, GraphqlFragment
+) : DroidDetail, GraphqlFragment, Adaptable<DroidDetailsImpl> {
+  override fun adapter(): ResponseAdapter<DroidDetailsImpl> {
+    return DroidDetailsImpl_ResponseAdapter
+  }
+}

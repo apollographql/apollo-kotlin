@@ -5,7 +5,10 @@
 //
 package com.example.fragment_in_fragment.fragment
 
+import com.apollographql.apollo.api.Adaptable
 import com.apollographql.apollo.api.GraphqlFragment
+import com.apollographql.apollo.api.internal.ResponseAdapter
+import com.example.fragment_in_fragment.fragment.adapter.PlanetFragmentImpl_ResponseAdapter
 import kotlin.String
 
 /**
@@ -18,4 +21,8 @@ data class PlanetFragmentImpl(
    * The name of this planet.
    */
   override val name: String?
-) : PlanetFragment, GraphqlFragment
+) : PlanetFragment, GraphqlFragment, Adaptable<PlanetFragmentImpl> {
+  override fun adapter(): ResponseAdapter<PlanetFragmentImpl> {
+    return PlanetFragmentImpl_ResponseAdapter
+  }
+}

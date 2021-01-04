@@ -77,46 +77,7 @@ internal class TestQuery : Query<TestQuery.Data, Operation.Variables> {
          * What this human calls themselves
          */
         override val name: String
-<<<<<<< HEAD
-      ) : Hero, Character, HeroDetail, Character.Human, HeroDetail.Human, Human, HumanDetail {
-        override fun marshaller(): ResponseFieldMarshaller {
-          return ResponseFieldMarshaller { writer ->
-            TestQuery_ResponseAdapter.Data.Hero.CharacterHumanHero.toResponse(writer, this)
-          }
-=======
-
-        interface Human : Character, Character.Human, HeroDetail.Human, CharacterHumanHero {
-          override val __typename: String
-
-          /**
-           * What this human calls themselves
-           */
-          override val name: String
-        }
-
-        data class HumanCharacterHumanHero(
-          override val __typename: String,
-          /**
-           * What this human calls themselves
-           */
-          override val name: String
-        ) : Character, Character.Human, HeroDetail.Human, CharacterHumanHero, Human
-
-        data class OtherCharacterHumanHero(
-          override val __typename: String,
-          /**
-           * What this human calls themselves
-           */
-          override val name: String
-        ) : Hero, Character, HeroDetail, Hero.Human, HumanDetail, CharacterHumanHero
-
-        companion object {
-          fun CharacterHumanHero.asCharacter(): Character? = this as? Character
-
-          fun CharacterHumanHero.asHuman(): Human? = this as? Human
->>>>>>> 7fb58f43... remove ResponseFieldMapper
-        }
-      }
+      ) : Hero, Character, HeroDetail, Character.Human, HeroDetail.Human, Human, HumanDetail
 
       data class OtherHero(
         override val __typename: String

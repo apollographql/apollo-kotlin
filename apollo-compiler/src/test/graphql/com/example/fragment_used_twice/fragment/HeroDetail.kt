@@ -6,7 +6,6 @@
 package com.example.fragment_used_twice.fragment
 
 import com.apollographql.apollo.api.GraphqlFragment
-import com.apollographql.apollo.api.internal.ResponseFieldMapper
 import com.apollographql.apollo.api.internal.ResponseReader
 import com.example.fragment_used_twice.fragment.adapter.HeroDetailsImpl_ResponseAdapter
 import kotlin.Any
@@ -49,12 +48,6 @@ interface HeroDetail : GraphqlFragment {
 
     operator fun invoke(reader: ResponseReader): HeroDetail {
       return HeroDetailsImpl_ResponseAdapter.fromResponse(reader)
-    }
-
-    fun Mapper(): ResponseFieldMapper<HeroDetail> {
-      return ResponseFieldMapper { reader ->
-        HeroDetailsImpl_ResponseAdapter.fromResponse(reader)
-      }
     }
 
     fun HeroDetail.asCharacter(): Character? = this as? Character

@@ -93,125 +93,25 @@ class TestQuery : Query<TestQuery.Data, Operation.Variables> {
         /**
          * The name of the character
          */
-<<<<<<< HEAD
         override val name: String,
         /**
          * The date character was born.
          */
         override val birthDate: Any
-      ) : Hero, Character, HeroDetail, Character.Character, HeroDetail.Character {
-        override fun marshaller(): ResponseFieldMarshaller {
-          return ResponseFieldMarshaller { writer ->
-            TestQuery_ResponseAdapter.Data.Hero.CharacterHero.toResponse(writer, this)
-          }
-=======
-        override val name: String
-
-        interface Character : Hero.Character, Hero.Character.Character, HeroDetail.Character,
-            CharacterHero {
-          override val __typename: String
-
-          /**
-           * The name of the character
-           */
-          override val name: String
-
-          /**
-           * The date character was born.
-           */
-          override val birthDate: Any
-        }
-
-        data class CharacterCharacterHero(
-          override val __typename: String,
-          /**
-           * The name of the character
-           */
-          override val name: String,
-          /**
-           * The date character was born.
-           */
-          override val birthDate: Any
-        ) : Hero.Character, Hero.Character.Character, HeroDetail.Character, CharacterHero, Character
-
-        data class OtherCharacterHero(
-          override val __typename: String,
-          /**
-           * The name of the character
-           */
-          override val name: String
-        ) : Hero, Hero.Character, HeroDetail, CharacterHero
-
-        companion object {
-          fun CharacterHero.asCharacter(): Character? = this as? Character
->>>>>>> 7fb58f43... remove ResponseFieldMapper
-        }
-      }
+      ) : Hero, Character, HeroDetail, Character.Character, HeroDetail.Character
 
       data class CharacterHumanHero(
         override val __typename: String,
         /**
          * The name of the character
          */
-<<<<<<< HEAD
         override val name: String,
         /**
          * The date character was born.
          */
         override val birthDate: Any
       ) : Hero, Character, HeroDetail, Character.Character, HeroDetail.Character, Human,
-          HumanDetail, Human.Character, HumanDetail.Character {
-        override fun marshaller(): ResponseFieldMarshaller {
-          return ResponseFieldMarshaller { writer ->
-            TestQuery_ResponseAdapter.Data.Hero.CharacterHumanHero.toResponse(writer, this)
-          }
-=======
-        override val name: String
-
-        interface Character : Hero.Character, Hero.Character.Character, HeroDetail.Character,
-            CharacterHumanHero, Human, Human.Character, HumanDetail.Character {
-          override val __typename: String
-
-          /**
-           * The name of the character
-           */
-          override val name: String
-
-          /**
-           * The date character was born.
-           */
-          override val birthDate: Any
-        }
-
-        data class CharacterCharacterHumanHero(
-          override val __typename: String,
-          /**
-           * The name of the character
-           */
-          override val name: String,
-          /**
-           * The date character was born.
-           */
-          override val birthDate: Any
-        ) : Hero.Character, Hero.Character.Character, HeroDetail.Character, CharacterHumanHero,
-            Character, Human, Human.Character, HumanDetail.Character
-
-        data class OtherCharacterHumanHero(
-          override val __typename: String,
-          /**
-           * The name of the character
-           */
-          override val name: String
-        ) : Hero, Hero.Character, HeroDetail, Human, HumanDetail, CharacterHumanHero
-
-        companion object {
-          fun CharacterHumanHero.asCharacter(): HumanDetail.Character? = this as?
-              HumanDetail.Character
-
-          fun CharacterHumanHero.asHuman(): Human? = this as? Human
->>>>>>> 7fb58f43... remove ResponseFieldMapper
-        }
-      }
+          HumanDetail, Human.Character, HumanDetail.Character
 
       data class OtherHero(
         override val __typename: String

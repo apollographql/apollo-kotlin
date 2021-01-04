@@ -5,7 +5,10 @@
 //
 package com.example.fragment_in_fragment.fragment
 
+import com.apollographql.apollo.api.Adaptable
 import com.apollographql.apollo.api.GraphqlFragment
+import com.apollographql.apollo.api.internal.ResponseAdapter
+import com.example.fragment_in_fragment.fragment.adapter.PilotFragmentImpl_ResponseAdapter
 import kotlin.String
 
 /**
@@ -21,7 +24,11 @@ data class PilotFragmentImpl(
    * A planet that this person was born on or inhabits.
    */
   override val homeworld: Homeworld?
-) : PilotFragment, GraphqlFragment {
+) : PilotFragment, GraphqlFragment, Adaptable<PilotFragmentImpl> {
+  override fun adapter(): ResponseAdapter<PilotFragmentImpl> {
+    return PilotFragmentImpl_ResponseAdapter
+  }
+
   /**
    * A large mass, planet or planetoid in the Star Wars Universe, at the time of
    * 0 ABY.
@@ -29,57 +36,16 @@ data class PilotFragmentImpl(
   interface Homeworld : PilotFragment.Homeworld {
     override val __typename: String
 
-<<<<<<< HEAD
-    override fun marshaller(): ResponseFieldMarshaller
-=======
-    interface Planet : PilotFragment.Homeworld, PilotFragment.Homeworld.Planet, PlanetFragment,
-        Homeworld {
-      override val __typename: String
-
-      /**
-       * The name of this planet.
-       */
-      override val name: String?
-    }
->>>>>>> 7fb58f43... remove ResponseFieldMapper
-
     data class PlanetHomeworld(
       override val __typename: String,
       /**
        * The name of this planet.
        */
       override val name: String?
-<<<<<<< HEAD
-    ) : PilotFragment.Homeworld, PilotFragment.Homeworld.Planet, PlanetFragment, Homeworld {
-      override fun marshaller(): ResponseFieldMarshaller {
-        return ResponseFieldMarshaller { writer ->
-          PilotFragmentImpl_ResponseAdapter.Homeworld.PlanetHomeworld.toResponse(writer, this)
-        }
-      }
-    }
-
-    data class OtherHomeworld(
-      override val __typename: String
-    ) : PilotFragment.Homeworld, Homeworld {
-      override fun marshaller(): ResponseFieldMarshaller {
-        return ResponseFieldMarshaller { writer ->
-          PilotFragmentImpl_ResponseAdapter.Homeworld.OtherHomeworld.toResponse(writer, this)
-        }
-      }
-=======
-    ) : PilotFragment.Homeworld, PilotFragment.Homeworld.Planet, PlanetFragment, Homeworld, Planet
+    ) : PilotFragment.Homeworld, PilotFragment.Homeworld.Planet, PlanetFragment, Homeworld
 
     data class OtherHomeworld(
       override val __typename: String
     ) : PilotFragment.Homeworld, Homeworld
-
-    companion object {
-      fun Homeworld.asHomeworld(): PilotFragment.Homeworld? = this as? PilotFragment.Homeworld
-
-      fun Homeworld.asPlanet(): Planet? = this as? Planet
-
-      fun Homeworld.planetFragment(): PlanetFragment? = this as? PlanetFragment
->>>>>>> 7fb58f43... remove ResponseFieldMapper
-    }
   }
 }

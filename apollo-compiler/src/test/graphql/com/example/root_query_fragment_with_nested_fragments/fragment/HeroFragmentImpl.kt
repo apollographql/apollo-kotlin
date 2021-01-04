@@ -5,7 +5,10 @@
 //
 package com.example.root_query_fragment_with_nested_fragments.fragment
 
+import com.apollographql.apollo.api.Adaptable
 import com.apollographql.apollo.api.GraphqlFragment
+import com.apollographql.apollo.api.internal.ResponseAdapter
+import com.example.root_query_fragment_with_nested_fragments.fragment.adapter.HeroFragmentImpl_ResponseAdapter
 import kotlin.String
 
 /**
@@ -17,4 +20,8 @@ data class HeroFragmentImpl(
    * The name of the character
    */
   override val name: String
-) : HeroFragment, GraphqlFragment
+) : HeroFragment, GraphqlFragment, Adaptable<HeroFragmentImpl> {
+  override fun adapter(): ResponseAdapter<HeroFragmentImpl> {
+    return HeroFragmentImpl_ResponseAdapter
+  }
+}

@@ -5,7 +5,10 @@
 //
 package com.example.fragment_with_inline_fragment.fragment
 
+import com.apollographql.apollo.api.Adaptable
 import com.apollographql.apollo.api.GraphqlFragment
+import com.apollographql.apollo.api.internal.ResponseAdapter
+import com.example.fragment_with_inline_fragment.fragment.adapter.HumanDetailsImpl_ResponseAdapter
 import kotlin.String
 
 /**
@@ -17,4 +20,8 @@ data class HumanDetailsImpl(
    * What this human calls themselves
    */
   override val name: String
-) : HumanDetail, GraphqlFragment
+) : HumanDetail, GraphqlFragment, Adaptable<HumanDetailsImpl> {
+  override fun adapter(): ResponseAdapter<HumanDetailsImpl> {
+    return HumanDetailsImpl_ResponseAdapter
+  }
+}

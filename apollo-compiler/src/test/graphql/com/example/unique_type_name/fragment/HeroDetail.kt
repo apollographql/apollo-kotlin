@@ -6,7 +6,6 @@
 package com.example.unique_type_name.fragment
 
 import com.apollographql.apollo.api.GraphqlFragment
-import com.apollographql.apollo.api.internal.ResponseFieldMapper
 import com.apollographql.apollo.api.internal.ResponseReader
 import com.example.unique_type_name.fragment.adapter.HeroDetailsImpl_ResponseAdapter
 import kotlin.Int
@@ -83,12 +82,6 @@ interface HeroDetail : GraphqlFragment {
 
     operator fun invoke(reader: ResponseReader): HeroDetail {
       return HeroDetailsImpl_ResponseAdapter.fromResponse(reader)
-    }
-
-    fun Mapper(): ResponseFieldMapper<HeroDetail> {
-      return ResponseFieldMapper { reader ->
-        HeroDetailsImpl_ResponseAdapter.fromResponse(reader)
-      }
     }
   }
 }

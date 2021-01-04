@@ -81,19 +81,12 @@ class TestQuery : Query<TestQuery.Data, Operation.Variables> {
         /**
          * The name of the character
          */
-<<<<<<< HEAD
         override val name: String,
         /**
          * This droid's primary function
          */
         override val primaryFunction: String?
-      ) : Search, Character, Character.Droid {
-        override fun marshaller(): ResponseFieldMarshaller {
-          return ResponseFieldMarshaller { writer ->
-            TestQuery_ResponseAdapter.Data.Search.CharacterDroidSearch.toResponse(writer, this)
-          }
-        }
-      }
+      ) : Search, Character, Character.Droid
 
       data class CharacterHumanSearch(
         override val __typename: String,
@@ -105,83 +98,7 @@ class TestQuery : Query<TestQuery.Data, Operation.Variables> {
          * The home planet of the human, or null if unknown
          */
         override val homePlanet: String?
-      ) : Search, Character, Character.Human {
-        override fun marshaller(): ResponseFieldMarshaller {
-          return ResponseFieldMarshaller { writer ->
-            TestQuery_ResponseAdapter.Data.Search.CharacterHumanSearch.toResponse(writer, this)
-          }
-=======
-        override val name: String
-
-        interface Human : Character, Character.Human, CharacterSearch {
-          override val __typename: String
-
-          /**
-           * The name of the character
-           */
-          override val name: String
-
-          /**
-           * The home planet of the human, or null if unknown
-           */
-          override val homePlanet: String?
-        }
-
-        interface Droid : Character, Character.Droid, CharacterSearch {
-          override val __typename: String
-
-          /**
-           * The name of the character
-           */
-          override val name: String
-
-          /**
-           * This droid's primary function
-           */
-          override val primaryFunction: String?
-        }
-
-        data class HumanCharacterSearch(
-          override val __typename: String,
-          /**
-           * The name of the character
-           */
-          override val name: String,
-          /**
-           * The home planet of the human, or null if unknown
-           */
-          override val homePlanet: String?
-        ) : Character, Character.Human, CharacterSearch, Human
-
-        data class DroidCharacterSearch(
-          override val __typename: String,
-          /**
-           * The name of the character
-           */
-          override val name: String,
-          /**
-           * This droid's primary function
-           */
-          override val primaryFunction: String?
-        ) : Character, Character.Droid, CharacterSearch, Droid
-
-        data class OtherCharacterSearch(
-          override val __typename: String,
-          /**
-           * The name of the character
-           */
-          override val name: String
-        ) : Search, Character, CharacterSearch
-
-        companion object {
-          fun CharacterSearch.asCharacter(): Character? = this as? Character
-
-          fun CharacterSearch.asHuman(): Human? = this as? Human
-
-          fun CharacterSearch.asDroid(): Droid? = this as? Droid
->>>>>>> 7fb58f43... remove ResponseFieldMapper
-        }
-      }
+      ) : Search, Character, Character.Human
 
       data class OtherSearch(
         override val __typename: String

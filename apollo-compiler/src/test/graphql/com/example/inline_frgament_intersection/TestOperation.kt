@@ -109,48 +109,14 @@ class TestOperation : Query<TestOperation.Data, Operation.Variables> {
         }
       }
 
-<<<<<<< HEAD
       data class BeingHumanRandom(
         override val __typename: String,
         override val name: String,
         override val friends: List<Friend>,
         override val profilePictureUrl: String?
       ) : Random, Being, Being.Human {
-        override fun marshaller(): ResponseFieldMarshaller {
-          return ResponseFieldMarshaller { writer ->
-            TestOperation_ResponseAdapter.Data.Random.BeingHumanRandom.toResponse(writer, this)
-=======
-      interface BeingRandom : Random, Being {
-        override val __typename: String
-
-        override val name: String
-
-        override val friends: List<Friend>
-
-        interface Friend : Being.Friend {
-          override val __typename: String
-
-          override val name: String
-
-          interface Wookie : Being.Friend, Being.Friend.Wookie, Friend {
-            override val __typename: String
-
-            override val name: String
-
-            override val lifeExpectancy: Double?
-          }
-
-          companion object {
-            fun Friend.asWookie(): Being.Friend.Wookie? = this as? Being.Friend.Wookie
->>>>>>> 7fb58f43... remove ResponseFieldMapper
-          }
-        }
-
         interface Friend : Being.Friend, Being.Human.Friend {
           override val __typename: String
-
-<<<<<<< HEAD
-          override fun marshaller(): ResponseFieldMarshaller
 
           data class WookieFriend(
             override val __typename: String,
@@ -159,145 +125,13 @@ class TestOperation : Query<TestOperation.Data, Operation.Variables> {
             override val lifeExpectancy: Double?,
             override val race: Race
           ) : Being.Friend, Being.Friend.Wookie, Being.Human.Friend.Wookie, Being.Human.Friend,
-              Friend {
-            override fun marshaller(): ResponseFieldMarshaller {
-              return ResponseFieldMarshaller { writer ->
-                TestOperation_ResponseAdapter.Data.Random.BeingHumanRandom.Friend.WookieFriend.toResponse(writer, this)
-              }
-            }
-          }
+              Friend
 
           data class OtherFriend(
             override val __typename: String,
             override val name: String,
             override val isFamous: Boolean?
-          ) : Being.Friend, Being.Human.Friend, Friend {
-            override fun marshaller(): ResponseFieldMarshaller {
-              return ResponseFieldMarshaller { writer ->
-                TestOperation_ResponseAdapter.Data.Random.BeingHumanRandom.Friend.OtherFriend.toResponse(writer, this)
-              }
-=======
-          override val name: String
-
-          override val friends: List<Friend>
-
-          override val profilePictureUrl: String?
-
-          interface Friend : Being.Friend, Being.Human.Friend, BeingRandom.Friend {
-            override val __typename: String
-
-            override val name: String
-
-            override val isFamous: Boolean?
-
-            interface Wookie : Being.Friend, Being.Friend.Wookie, Being.Human.Friend.Wookie,
-                Being.Human.Friend, BeingRandom.Friend, BeingRandom.Friend.Wookie, Friend {
-              override val __typename: String
-
-              override val name: String
-
-              override val lifeExpectancy: Double?
-
-              override val isFamous: Boolean?
-
-              override val race: Race
-            }
-
-            companion object {
-              fun Friend.asWookie(): Being.Human.Friend.Wookie? = this as? Being.Human.Friend.Wookie
-            }
-          }
-        }
-
-        data class HumanBeingRandom(
-          override val __typename: String,
-          override val name: String,
-          override val friends: List<Friend>,
-          override val profilePictureUrl: String?
-        ) : Being, Being.Human, BeingRandom, Human {
-          interface Friend : Being.Friend, BeingRandom.Friend, Being.Human.Friend, Human.Friend {
-            override val __typename: String
-
-            override val name: String
-
-            override val isFamous: Boolean?
-
-            interface Wookie : Being.Friend, Being.Friend.Wookie, BeingRandom.Friend,
-                BeingRandom.Friend.Wookie, Friend, Being.Human.Friend.Wookie, Being.Human.Friend,
-                Human.Friend.Wookie, Human.Friend {
-              override val __typename: String
-
-              override val name: String
-
-              override val lifeExpectancy: Double?
-
-              override val isFamous: Boolean?
-
-              override val race: Race
-            }
-
-            data class WookieFriend(
-              override val __typename: String,
-              override val name: String,
-              override val isFamous: Boolean?,
-              override val lifeExpectancy: Double?,
-              override val race: Race
-            ) : Being.Friend, Being.Friend.Wookie, BeingRandom.Friend, BeingRandom.Friend.Wookie,
-                Friend, Wookie, Being.Human.Friend.Wookie, Being.Human.Friend, Human.Friend.Wookie,
-                Human.Friend
-
-            data class OtherFriend(
-              override val __typename: String,
-              override val name: String,
-              override val isFamous: Boolean?
-            ) : Being.Friend, BeingRandom.Friend, Friend, Being.Human.Friend, Human.Friend
-
-            companion object {
-              fun Friend.asFriends(): Human.Friend? = this as? Human.Friend
-
-              fun Friend.asWookie(): Human.Friend.Wookie? = this as? Human.Friend.Wookie
-            }
-          }
-        }
-
-        data class OtherBeingRandom(
-          override val __typename: String,
-          override val name: String,
-          override val friends: List<Friend>
-        ) : Random, Being, BeingRandom {
-          interface Friend : Being.Friend, BeingRandom.Friend {
-            override val __typename: String
-
-            override val name: String
-
-            interface Wookie : Being.Friend, Being.Friend.Wookie, BeingRandom.Friend,
-                BeingRandom.Friend.Wookie, Friend {
-              override val __typename: String
-
-              override val name: String
-
-              override val lifeExpectancy: Double?
-            }
-
-            data class WookieFriend(
-              override val __typename: String,
-              override val name: String,
-              override val lifeExpectancy: Double?
-            ) : Being.Friend, Being.Friend.Wookie, BeingRandom.Friend, BeingRandom.Friend.Wookie,
-                Wookie, Friend
-
-            data class OtherFriend(
-              override val __typename: String,
-              override val name: String
-            ) : Being.Friend, BeingRandom.Friend, Friend
-
-            companion object {
-              fun Friend.asFriends(): BeingRandom.Friend? = this as? BeingRandom.Friend
-
-              fun Friend.asWookie(): Wookie? = this as? Wookie
->>>>>>> 7fb58f43... remove ResponseFieldMapper
-            }
-          }
+          ) : Being.Friend, Being.Human.Friend, Friend
         }
       }
 
@@ -310,58 +144,17 @@ class TestOperation : Query<TestOperation.Data, Operation.Variables> {
         interface Friend : Being.Friend, Wookie.Friend {
           override val __typename: String
 
-<<<<<<< HEAD
-          override fun marshaller(): ResponseFieldMarshaller
-=======
-          override val name: String
-
-          override val lifeExpectancy: Double?
-
-          interface Wookie : Being.Friend, Being.Friend.Wookie, Friend {
-            override val __typename: String
-
-            override val name: String
-
-            override val lifeExpectancy: Double?
-          }
->>>>>>> 7fb58f43... remove ResponseFieldMapper
-
           data class WookieFriend(
             override val __typename: String,
             override val name: String,
             override val lifeExpectancy: Double?
-<<<<<<< HEAD
-          ) : Being.Friend, Being.Friend.Wookie, Friend {
-            override fun marshaller(): ResponseFieldMarshaller {
-              return ResponseFieldMarshaller { writer ->
-                TestOperation_ResponseAdapter.Data.Random.BeingWookieRandom.Friend.WookieFriend.toResponse(writer, this)
-              }
-            }
-          }
-=======
-          ) : Being.Friend, Being.Friend.Wookie, Friend, Wookie
->>>>>>> 7fb58f43... remove ResponseFieldMapper
+          ) : Being.Friend, Being.Friend.Wookie, Friend
 
           data class OtherFriend(
             override val __typename: String,
             override val name: String,
             override val lifeExpectancy: Double?
-<<<<<<< HEAD
-          ) : Being.Friend, Wookie.Friend, Friend {
-            override fun marshaller(): ResponseFieldMarshaller {
-              return ResponseFieldMarshaller { writer ->
-                TestOperation_ResponseAdapter.Data.Random.BeingWookieRandom.Friend.OtherFriend.toResponse(writer, this)
-              }
-            }
-=======
-          ) : Being.Friend, Friend, Random.Wookie.Friend
-
-          companion object {
-            fun Friend.asFriends(): Being.Friend? = this as? Being.Friend
-
-            fun Friend.asWookie(): Wookie? = this as? Wookie
->>>>>>> 7fb58f43... remove ResponseFieldMapper
-          }
+          ) : Being.Friend, Wookie.Friend, Friend
         }
       }
 

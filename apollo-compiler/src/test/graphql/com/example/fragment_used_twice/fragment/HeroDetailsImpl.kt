@@ -5,38 +5,22 @@
 //
 package com.example.fragment_used_twice.fragment
 
+import com.apollographql.apollo.api.Adaptable
 import com.apollographql.apollo.api.GraphqlFragment
+import com.apollographql.apollo.api.internal.ResponseAdapter
+import com.example.fragment_used_twice.fragment.adapter.HeroDetailsImpl_ResponseAdapter
 import kotlin.Any
 import kotlin.String
 
 /**
  * A character from the Star Wars universe
  */
-interface HeroDetailsImpl : HeroDetail, GraphqlFragment {
+interface HeroDetailsImpl : HeroDetail, GraphqlFragment, Adaptable<HeroDetailsImpl> {
   override val __typename: String
 
-<<<<<<< HEAD
-  override fun marshaller(): ResponseFieldMarshaller
-=======
-  /**
-   * The name of the character
-   */
-  override val name: String
-
-  interface Character : HeroDetail, HeroDetail.Character, CharacterDetail, HeroDetailsImpl {
-    override val __typename: String
-
-    /**
-     * The name of the character
-     */
-    override val name: String
-
-    /**
-     * The date character was born.
-     */
-    override val birthDate: Any
+  override fun adapter(): ResponseAdapter<HeroDetailsImpl> {
+    return HeroDetailsImpl_ResponseAdapter
   }
->>>>>>> 7fb58f43... remove ResponseFieldMapper
 
   data class CharacterHeroDetailsImpl(
     override val __typename: String,
@@ -48,17 +32,7 @@ interface HeroDetailsImpl : HeroDetail, GraphqlFragment {
      * The date character was born.
      */
     override val birthDate: Any
-<<<<<<< HEAD
-  ) : HeroDetail, HeroDetail.Character, CharacterDetail, HeroDetailsImpl {
-    override fun marshaller(): ResponseFieldMarshaller {
-      return ResponseFieldMarshaller { writer ->
-        HeroDetailsImpl_ResponseAdapter.CharacterHeroDetailsImpl.toResponse(writer, this)
-      }
-    }
-  }
-=======
-  ) : HeroDetail, HeroDetail.Character, CharacterDetail, HeroDetailsImpl, Character
->>>>>>> 7fb58f43... remove ResponseFieldMapper
+  ) : HeroDetail, HeroDetail.Character, CharacterDetail, HeroDetailsImpl
 
   data class OtherHeroDetailsImpl(
     override val __typename: String,
