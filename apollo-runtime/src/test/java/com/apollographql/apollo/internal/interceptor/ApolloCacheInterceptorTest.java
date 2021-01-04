@@ -60,7 +60,7 @@ public class ApolloCacheInterceptorTest {
 
   @Test
   public void testDoesNotCacheErrorResponse() {
-    Operation<?,?> operation = mock(Operation.class);
+    Operation<?> operation = mock(Operation.class);
     Error error = new Error("Error", Collections.emptyList(), Collections.emptyMap());
     ApolloInterceptor.InterceptorResponse networkResponse = new ApolloInterceptor.InterceptorResponse(
         okHttpResponse,
