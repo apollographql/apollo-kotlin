@@ -65,8 +65,14 @@ class CodegenTest(private val folder: File) {
 
   companion object {
     fun arguments(folder: File): GraphQLCompiler.Arguments {
-      val customScalarsMapping = if (folder.name in listOf("custom_scalar_type", "input_object_type", "mutation_create_review")) {
-        mapOf("Date" to "java.util.Date", "URL" to "java.lang.String", "ID" to "java.lang.Integer")
+      val customScalarsMapping = if (folder.name in listOf(
+              "custom_scalar_type",
+              "input_object_type",
+              "mutation_create_review")) {
+        mapOf(
+            "Date" to "java.util.Date",
+            "URL" to "java.lang.String",
+        )
       } else {
         emptyMap()
       }
