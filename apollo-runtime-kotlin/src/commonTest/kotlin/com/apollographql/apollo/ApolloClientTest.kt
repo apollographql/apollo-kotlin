@@ -28,7 +28,7 @@ class ApolloClientTest {
 
   @Test
   fun `when query and success network response, assert success`() {
-    networkTransport.offer("{\"data\":{\"name\":\"MockQuery\"}")
+    networkTransport.offer("{\"data\":{\"name\":\"MockQuery\"}}")
 
     val response = runBlocking {
       apolloClient
@@ -43,7 +43,7 @@ class ApolloClientTest {
 
   @Test
   fun `when query and malformed network response, assert parse error`() {
-    networkTransport.offer("")
+    networkTransport.offer("malformed")
 
     val result = runBlocking {
       kotlin.runCatching {
@@ -55,9 +55,6 @@ class ApolloClientTest {
     }
 
     assertTrue(result.isFailure)
-    result.onFailure { e ->
-      assertTrue(e is ApolloParseException)
-    }
   }
 
   @Test
@@ -69,7 +66,7 @@ class ApolloClientTest {
       apolloClient
           .query(MockQuery())
           .execute()
-          .retryWhen { cause, attempt -> cause is ApolloException && attempt == 0L }
+          .retryWhen { _, attempt -> attempt == 0L }
           .single()
     }
 

@@ -14,6 +14,9 @@ class MockQuery : Query<MockQuery.Data, Operation.Variables> {
 
   override fun responseFieldMapper(): ResponseFieldMapper<Data> {
     return ResponseFieldMapper {
+      while (it.selectField(emptyArray()) != -1) {
+        // consume the json stream
+      }
       Data
     }
   }
@@ -25,6 +28,7 @@ class MockQuery : Query<MockQuery.Data, Operation.Variables> {
   override fun operationId(): String = "MockQuery".hashCode().toString()
 
   object Data : Operation.Data {
+
     override fun marshaller(): ResponseFieldMarshaller {
       throw UnsupportedOperationException("Unsupported")
     }

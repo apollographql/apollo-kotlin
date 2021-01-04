@@ -97,9 +97,6 @@ class OauthInterceptorTest {
     }
 
     assertTrue(result.isFailure)
-    result.onFailure { e ->
-      assertTrue(e is ApolloException)
-    }
   }
 
   @Test
