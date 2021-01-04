@@ -40,7 +40,7 @@ class ApolloExceptionTest {
       return Operation.EMPTY_VARIABLES
     }
 
-    override fun adapter() = UnsupportedOperationException()
+    override fun adapter() = throw UnsupportedOperationException()
 
     override fun name(): OperationName {
       return operationName

@@ -52,7 +52,6 @@ public class ApolloCacheInterceptorTest {
 
     interceptor = new ApolloCacheInterceptor(
         apolloStore,
-        mock(ResponseFieldMapper.class),
         mock(Executor.class),
         new ApolloLogger(logger),
         false
