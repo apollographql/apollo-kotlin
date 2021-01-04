@@ -1,6 +1,11 @@
 // Signature format: 3.0
 package com.apollographql.apollo {
 
+  public final class ApolloAndroidLogger implements com.apollographql.apollo.Logger {
+    ctor public ApolloAndroidLogger();
+    method public void log(int priority, String message, Throwable? t, java.lang.Object... args);
+  }
+
   public final class ApolloCallback<T> extends com.apollographql.apollo.ApolloCall.Callback<T> {
     ctor public ApolloCallback(com.apollographql.apollo.ApolloCall.Callback<T!>, android.os.Handler);
     method public void onFailure(com.apollographql.apollo.exception.ApolloException);

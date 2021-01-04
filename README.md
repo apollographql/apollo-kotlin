@@ -69,6 +69,8 @@ dependencies {
   implementation("com.apollographql.apollo:apollo-coroutines-support:x.y.z")
   // optional: for RxJava3 support  
   implementation("com.apollographql.apollo:apollo-rx3-support:x.y.z")
+  // optional: Most of apollo-android does not depend on Android in practice and runs on any JVM or on Kotlin native. apollo-android-support contains a few Android-only helper classes. For an example to send logs to logcat or run callbacks on the main thread.
+  implementation("com.apollographql.apollo:apollo-android-support:x.y.z")
   // optional: if you just want the generated models and parsers and write your own HTTP code/cache code, you can remove apollo-runtime
   // and use apollo-api instead  
   implementation("com.apollographql.apollo:apollo-api:x.y.z")
@@ -107,4 +109,3 @@ If you'd like to contribute, please see [Contributing.md](https://github.com/apo
 - [apollographql.com](http://www.apollographql.com/) to learn about Apollo open-source and commercial tools.
 - [The Apollo blog](https://www.apollographql.com/blog/) for long-form articles about GraphQL, feature announcements for Apollo, and guest articles from the community.
 - [The Apollo Twitter account](https://twitter.com/apollographql) for in-the-moment news.
-

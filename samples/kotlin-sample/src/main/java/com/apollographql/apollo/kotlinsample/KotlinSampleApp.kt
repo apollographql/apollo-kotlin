@@ -2,6 +2,7 @@ package com.apollographql.apollo.kotlinsample
 
 import android.app.Application
 import android.util.Log
+import com.apollographql.apollo.ApolloAndroidLogger
 import com.apollographql.apollo.ApolloClient
 import com.apollographql.apollo.api.Operation
 import com.apollographql.apollo.api.ResponseField
@@ -59,11 +60,12 @@ class KotlinSampleApp : Application() {
 
     // Create the http response cache store
     val cacheStore = DiskLruHttpCacheStore(File(cacheDir, "apolloCache"), 1024 * 1024)
+    val logger = ApolloAndroidLogger()
 
     ApolloClient.builder()
         .serverUrl(baseUrl)
         .normalizedCache(sqlNormalizedCacheFactory, cacheKeyResolver)
-        .httpCache(ApolloHttpCache(cacheStore))
+        .httpCache(ApolloHttpCache(cacheStore, logger))
         .defaultHttpCachePolicy(HttpCachePolicy.CACHE_FIRST)
         .okHttpClient(okHttpClient)
         .build()
