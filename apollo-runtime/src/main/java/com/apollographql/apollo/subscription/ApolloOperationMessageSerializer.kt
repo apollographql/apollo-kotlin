@@ -4,8 +4,8 @@ import com.apollographql.apollo.api.internal.json.BufferedSourceJsonReader
 import com.apollographql.apollo.api.internal.json.JsonEncodingException
 import com.apollographql.apollo.api.internal.json.JsonReader
 import com.apollographql.apollo.api.internal.json.JsonWriter
-import com.apollographql.apollo.api.internal.json.ResponseJsonStreamReader
 import com.apollographql.apollo.api.internal.json.Utils
+import com.apollographql.apollo.api.internal.json.Utils.readRecursively
 import com.apollographql.apollo.api.internal.json.writeObject
 import okio.BufferedSink
 import okio.BufferedSource
@@ -106,8 +106,7 @@ object ApolloOperationMessageSerializer : OperationMessageSerializer {
   }
 
   private fun JsonReader.readServerMessage(): OperationServerMessage {
-    val responseJsonStreamReader = ResponseJsonStreamReader(this)
-    val messageData = requireNotNull(responseJsonStreamReader.toMap())
+    val messageData = requireNotNull(this.readRecursively()) as Map<String, Any?>
     val id = messageData[OperationServerMessage.JSON_KEY_ID] as String?
     return when (val type = messageData[OperationServerMessage.JSON_KEY_TYPE] as String?) {
       OperationServerMessage.ConnectionError.TYPE -> OperationServerMessage.ConnectionError(messageData.getMessagePayload())
