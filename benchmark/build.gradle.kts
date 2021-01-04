@@ -5,12 +5,10 @@ buildscript {
     google()
     mavenCentral()
     jcenter()
-    repositories {
-      maven {
-        url = uri("https://oss.sonatype.org/content/repositories/snapshots/")
-      }
-    }
     mavenLocal()
+    maven {
+      url = uri("https://oss.sonatype.org/content/repositories/snapshots/")
+    }
   }
   dependencies {
     classpath(groovy.util.Eval.x(project, "x.dep.android.plugin"))
@@ -30,16 +28,17 @@ repositories {
   google()
   mavenCentral()
   jcenter()
-  repositories {
-    maven {
-      url = uri("https://oss.sonatype.org/content/repositories/snapshots/")
-    }
-  }
   mavenLocal()
+  maven {
+    url = uri("https://oss.sonatype.org/content/repositories/snapshots/")
+  }
 }
 
 dependencies {
+  // For OperationResponseParser
+  add("implementation", "com.apollographql.apollo:apollo-runtime:3.0.0-SNAPSHOT")
   add("implementation", "com.apollographql.apollo:apollo-api:3.0.0-SNAPSHOT")
+
   add("implementation", groovy.util.Eval.x(project, "x.dep.moshi.moshi"))
   add("kapt", groovy.util.Eval.x(project, "x.dep.moshi.kotlinCodegen"))
 
