@@ -45,7 +45,6 @@ final class QueryReFetcher {
           .operation(query)
           .serverUrl(builder.serverUrl)
           .httpCallFactory(builder.httpCallFactory)
-          .responseFieldMapperFactory(builder.responseFieldMapperFactory)
           .scalarTypeAdapters(builder.customScalarAdapters)
           .apolloStore(builder.apolloStore)
           .httpCachePolicy(HttpCachePolicy.NETWORK_ONLY)
@@ -120,7 +119,6 @@ final class QueryReFetcher {
     List<OperationName> queryWatchers = Collections.emptyList();
     HttpUrl serverUrl;
     Call.Factory httpCallFactory;
-    ResponseFieldMapperFactory responseFieldMapperFactory;
     CustomScalarAdapters customScalarAdapters;
     ApolloStore apolloStore;
     Executor dispatcher;
@@ -147,11 +145,6 @@ final class QueryReFetcher {
 
     Builder httpCallFactory(Call.Factory httpCallFactory) {
       this.httpCallFactory = httpCallFactory;
-      return this;
-    }
-
-    Builder responseFieldMapperFactory(ResponseFieldMapperFactory responseFieldMapperFactory) {
-      this.responseFieldMapperFactory = responseFieldMapperFactory;
       return this;
     }
 

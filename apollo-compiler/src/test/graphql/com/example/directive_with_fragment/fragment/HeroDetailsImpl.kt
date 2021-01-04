@@ -6,8 +6,6 @@
 package com.example.directive_with_fragment.fragment
 
 import com.apollographql.apollo.api.GraphqlFragment
-import com.apollographql.apollo.api.internal.ResponseFieldMarshaller
-import com.example.directive_with_fragment.fragment.adapter.HeroDetailsImpl_ResponseAdapter
 import kotlin.String
 
 /**
@@ -19,10 +17,4 @@ data class HeroDetailsImpl(
    * The name of the character
    */
   override val name: String
-) : HeroDetail, GraphqlFragment {
-  override fun marshaller(): ResponseFieldMarshaller {
-    return ResponseFieldMarshaller { writer ->
-      HeroDetailsImpl_ResponseAdapter.toResponse(writer, this)
-    }
-  }
-}
+) : HeroDetail, GraphqlFragment

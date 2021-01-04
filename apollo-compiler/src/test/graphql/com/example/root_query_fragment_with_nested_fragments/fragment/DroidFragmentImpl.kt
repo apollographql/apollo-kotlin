@@ -6,8 +6,6 @@
 package com.example.root_query_fragment_with_nested_fragments.fragment
 
 import com.apollographql.apollo.api.GraphqlFragment
-import com.apollographql.apollo.api.internal.ResponseFieldMarshaller
-import com.example.root_query_fragment_with_nested_fragments.fragment.adapter.DroidFragmentImpl_ResponseAdapter
 import kotlin.String
 
 /**
@@ -23,10 +21,4 @@ data class DroidFragmentImpl(
    * This droid's primary function
    */
   override val primaryFunction: String?
-) : DroidFragment, GraphqlFragment {
-  override fun marshaller(): ResponseFieldMarshaller {
-    return ResponseFieldMarshaller { writer ->
-      DroidFragmentImpl_ResponseAdapter.toResponse(writer, this)
-    }
-  }
-}
+) : DroidFragment, GraphqlFragment

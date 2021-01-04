@@ -7,7 +7,6 @@ package com.example.fragment_in_fragment.fragment
 
 import com.apollographql.apollo.api.GraphqlFragment
 import com.apollographql.apollo.api.internal.ResponseFieldMapper
-import com.apollographql.apollo.api.internal.ResponseFieldMarshaller
 import com.apollographql.apollo.api.internal.ResponseReader
 import com.example.fragment_in_fragment.fragment.adapter.PilotFragmentImpl_ResponseAdapter
 import kotlin.String
@@ -36,8 +35,6 @@ interface PilotFragment : GraphqlFragment {
   interface Homeworld {
     val __typename: String
 
-    fun marshaller(): ResponseFieldMarshaller
-
     interface Planet : Homeworld, PlanetFragment {
       override val __typename: String
 
@@ -45,8 +42,6 @@ interface PilotFragment : GraphqlFragment {
        * The name of this planet.
        */
       override val name: String?
-
-      override fun marshaller(): ResponseFieldMarshaller
     }
 
     companion object {

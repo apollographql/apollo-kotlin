@@ -5,7 +5,6 @@ import com.apollographql.apollo.api.Operation;
 import com.apollographql.apollo.api.Response;
 import com.apollographql.apollo.api.Subscription;
 import com.apollographql.apollo.api.internal.ApolloLogger;
-import com.apollographql.apollo.api.internal.ResponseFieldMapper;
 import com.apollographql.apollo.cache.CacheHeaders;
 import com.apollographql.apollo.cache.normalized.ApolloStore;
 import com.apollographql.apollo.cache.normalized.ApolloStoreOperation;
@@ -37,20 +36,22 @@ public class RealApolloSubscriptionCall<D extends Operation.Data> implements Apo
   private final ApolloStore apolloStore;
   private final CachePolicy cachePolicy;
   private final Executor dispatcher;
-  private final ResponseFieldMapperFactory responseFieldMapperFactory;
   private final ApolloLogger logger;
   private final AtomicReference<CallState> state = new AtomicReference<>(IDLE);
   private SubscriptionManagerCallback<D> subscriptionCallback;
 
-  public RealApolloSubscriptionCall(@NotNull Subscription<D, ?> subscription, @NotNull SubscriptionManager subscriptionManager,
-      @NotNull ApolloStore apolloStore, @NotNull CachePolicy cachePolicy, @NotNull Executor dispatcher,
-      @NotNull ResponseFieldMapperFactory responseFieldMapperFactory, @NotNull ApolloLogger logger) {
+  public RealApolloSubscriptionCall(
+      @NotNull Subscription<D, ?> subscription,
+      @NotNull SubscriptionManager subscriptionManager,
+      @NotNull ApolloStore apolloStore,
+      @NotNull CachePolicy cachePolicy,
+      @NotNull Executor dispatcher,
+      @NotNull ApolloLogger logger) {
     this.subscription = subscription;
     this.subscriptionManager = subscriptionManager;
     this.apolloStore = apolloStore;
     this.cachePolicy = cachePolicy;
     this.dispatcher = dispatcher;
-    this.responseFieldMapperFactory = responseFieldMapperFactory;
     this.logger = logger;
   }
 
@@ -124,8 +125,7 @@ public class RealApolloSubscriptionCall<D extends Operation.Data> implements Apo
   @SuppressWarnings("MethodDoesntCallSuperMethod")
   @Override
   public ApolloSubscriptionCall<D> clone() {
-    return new RealApolloSubscriptionCall<>(subscription, subscriptionManager, apolloStore, cachePolicy, dispatcher,
-        responseFieldMapperFactory, logger);
+    return new RealApolloSubscriptionCall<>(subscription, subscriptionManager, apolloStore, cachePolicy, dispatcher, logger);
   }
 
   @Override public boolean isCanceled() {
@@ -134,8 +134,7 @@ public class RealApolloSubscriptionCall<D extends Operation.Data> implements Apo
 
   @NotNull @Override public ApolloSubscriptionCall<D> cachePolicy(@NotNull CachePolicy cachePolicy) {
     checkNotNull(cachePolicy, "cachePolicy is null");
-    return new RealApolloSubscriptionCall<>(subscription, subscriptionManager, apolloStore, cachePolicy, dispatcher,
-        responseFieldMapperFactory, logger);
+    return new RealApolloSubscriptionCall<>(subscription, subscriptionManager, apolloStore, cachePolicy, dispatcher, logger);
   }
 
   private void terminate() {
@@ -164,9 +163,10 @@ public class RealApolloSubscriptionCall<D extends Operation.Data> implements Apo
   @SuppressWarnings("unchecked")
   private Response<D> resolveFromCache() {
     final ResponseNormalizer<Record> responseNormalizer = apolloStore.cacheResponseNormalizer();
-    final ResponseFieldMapper responseFieldMapper = responseFieldMapperFactory.create(subscription);
 
-    final ApolloStoreOperation<Response> apolloStoreOperation = apolloStore.read(subscription, responseFieldMapper, responseNormalizer,
+    final ApolloStoreOperation<Response<D>> apolloStoreOperation = apolloStore.read(
+        subscription,
+        responseNormalizer,
         CacheHeaders.NONE);
 
     Response<D> cachedResponse = null;

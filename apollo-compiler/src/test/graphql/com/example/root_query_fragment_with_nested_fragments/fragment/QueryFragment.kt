@@ -7,7 +7,6 @@ package com.example.root_query_fragment_with_nested_fragments.fragment
 
 import com.apollographql.apollo.api.GraphqlFragment
 import com.apollographql.apollo.api.internal.ResponseFieldMapper
-import com.apollographql.apollo.api.internal.ResponseFieldMarshaller
 import com.apollographql.apollo.api.internal.ResponseReader
 import com.example.root_query_fragment_with_nested_fragments.fragment.adapter.QueryFragmentImpl_ResponseAdapter
 import kotlin.String
@@ -31,8 +30,6 @@ interface QueryFragment : GraphqlFragment {
   interface Hero {
     val __typename: String
 
-    fun marshaller(): ResponseFieldMarshaller
-
     interface Character : Hero, HeroFragment {
       override val __typename: String
 
@@ -40,8 +37,6 @@ interface QueryFragment : GraphqlFragment {
        * The name of the character
        */
       override val name: String
-
-      override fun marshaller(): ResponseFieldMarshaller
     }
 
     companion object {
@@ -57,8 +52,6 @@ interface QueryFragment : GraphqlFragment {
   interface Droid {
     val __typename: String
 
-    fun marshaller(): ResponseFieldMarshaller
-
     interface Droid : QueryFragment.Droid, DroidFragment {
       override val __typename: String
 
@@ -71,8 +64,6 @@ interface QueryFragment : GraphqlFragment {
        * This droid's primary function
        */
       override val primaryFunction: String?
-
-      override fun marshaller(): ResponseFieldMarshaller
     }
 
     companion object {
@@ -88,8 +79,6 @@ interface QueryFragment : GraphqlFragment {
   interface Human {
     val __typename: String
 
-    fun marshaller(): ResponseFieldMarshaller
-
     interface Human : QueryFragment.Human {
       override val __typename: String
 
@@ -102,8 +91,6 @@ interface QueryFragment : GraphqlFragment {
        * The home planet of the human, or null if unknown
        */
       val homePlanet: String?
-
-      override fun marshaller(): ResponseFieldMarshaller
     }
 
     companion object {

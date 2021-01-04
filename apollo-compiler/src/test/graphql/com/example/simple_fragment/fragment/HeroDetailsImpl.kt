@@ -6,8 +6,6 @@
 package com.example.simple_fragment.fragment
 
 import com.apollographql.apollo.api.GraphqlFragment
-import com.apollographql.apollo.api.internal.ResponseFieldMarshaller
-import com.example.simple_fragment.fragment.adapter.HeroDetailsImpl_ResponseAdapter
 import kotlin.String
 
 /**
@@ -16,7 +14,18 @@ import kotlin.String
 internal interface HeroDetailsImpl : HeroDetail, GraphqlFragment {
   override val __typename: String
 
+<<<<<<< HEAD
   override fun marshaller(): ResponseFieldMarshaller
+=======
+  interface Human : HeroDetail, HeroDetail.Human, HumanDetail, HeroDetailsImpl {
+    override val __typename: String
+
+    /**
+     * What this human calls themselves
+     */
+    override val name: String
+  }
+>>>>>>> 7fb58f43... remove ResponseFieldMapper
 
   data class HumanHeroDetailsImpl(
     override val __typename: String,
@@ -24,6 +33,7 @@ internal interface HeroDetailsImpl : HeroDetail, GraphqlFragment {
      * What this human calls themselves
      */
     override val name: String
+<<<<<<< HEAD
   ) : HeroDetail, HeroDetail.Human, HumanDetail, HeroDetailsImpl {
     override fun marshaller(): ResponseFieldMarshaller {
       return ResponseFieldMarshaller { writer ->
@@ -31,14 +41,11 @@ internal interface HeroDetailsImpl : HeroDetail, GraphqlFragment {
       }
     }
   }
+=======
+  ) : HeroDetail, HeroDetail.Human, HumanDetail, HeroDetailsImpl, Human
+>>>>>>> 7fb58f43... remove ResponseFieldMapper
 
   data class OtherHeroDetailsImpl(
     override val __typename: String
-  ) : HeroDetail, HeroDetailsImpl {
-    override fun marshaller(): ResponseFieldMarshaller {
-      return ResponseFieldMarshaller { writer ->
-        HeroDetailsImpl_ResponseAdapter.OtherHeroDetailsImpl.toResponse(writer, this)
-      }
-    }
-  }
+  ) : HeroDetail, HeroDetailsImpl
 }

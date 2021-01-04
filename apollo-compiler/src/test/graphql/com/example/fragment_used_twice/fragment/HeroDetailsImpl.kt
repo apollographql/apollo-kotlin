@@ -6,8 +6,6 @@
 package com.example.fragment_used_twice.fragment
 
 import com.apollographql.apollo.api.GraphqlFragment
-import com.apollographql.apollo.api.internal.ResponseFieldMarshaller
-import com.example.fragment_used_twice.fragment.adapter.HeroDetailsImpl_ResponseAdapter
 import kotlin.Any
 import kotlin.String
 
@@ -17,7 +15,28 @@ import kotlin.String
 interface HeroDetailsImpl : HeroDetail, GraphqlFragment {
   override val __typename: String
 
+<<<<<<< HEAD
   override fun marshaller(): ResponseFieldMarshaller
+=======
+  /**
+   * The name of the character
+   */
+  override val name: String
+
+  interface Character : HeroDetail, HeroDetail.Character, CharacterDetail, HeroDetailsImpl {
+    override val __typename: String
+
+    /**
+     * The name of the character
+     */
+    override val name: String
+
+    /**
+     * The date character was born.
+     */
+    override val birthDate: Any
+  }
+>>>>>>> 7fb58f43... remove ResponseFieldMapper
 
   data class CharacterHeroDetailsImpl(
     override val __typename: String,
@@ -29,6 +48,7 @@ interface HeroDetailsImpl : HeroDetail, GraphqlFragment {
      * The date character was born.
      */
     override val birthDate: Any
+<<<<<<< HEAD
   ) : HeroDetail, HeroDetail.Character, CharacterDetail, HeroDetailsImpl {
     override fun marshaller(): ResponseFieldMarshaller {
       return ResponseFieldMarshaller { writer ->
@@ -36,6 +56,9 @@ interface HeroDetailsImpl : HeroDetail, GraphqlFragment {
       }
     }
   }
+=======
+  ) : HeroDetail, HeroDetail.Character, CharacterDetail, HeroDetailsImpl, Character
+>>>>>>> 7fb58f43... remove ResponseFieldMapper
 
   data class OtherHeroDetailsImpl(
     override val __typename: String,
@@ -43,11 +66,5 @@ interface HeroDetailsImpl : HeroDetail, GraphqlFragment {
      * The name of the character
      */
     override val name: String
-  ) : HeroDetail, HeroDetailsImpl {
-    override fun marshaller(): ResponseFieldMarshaller {
-      return ResponseFieldMarshaller { writer ->
-        HeroDetailsImpl_ResponseAdapter.OtherHeroDetailsImpl.toResponse(writer, this)
-      }
-    }
-  }
+  ) : HeroDetail, HeroDetailsImpl
 }

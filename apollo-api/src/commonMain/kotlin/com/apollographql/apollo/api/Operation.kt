@@ -2,8 +2,7 @@ package com.apollographql.apollo.api
 
 import com.apollographql.apollo.api.internal.InputFieldMarshaller
 import com.apollographql.apollo.api.internal.InputFieldWriter
-import com.apollographql.apollo.api.internal.ResponseFieldMapper
-import com.apollographql.apollo.api.internal.ResponseFieldMarshaller
+import com.apollographql.apollo.api.internal.ResponseAdapter
 import com.apollographql.apollo.api.internal.Throws
 import com.apollographql.apollo.api.internal.json.InputFieldJsonWriter
 import com.apollographql.apollo.api.internal.json.JsonWriter
@@ -27,9 +26,9 @@ interface Operation<D : Operation.Data, V : Operation.Variables> {
   fun variables(): V
 
   /**
-   * Returns a mapper that maps the server response data to generated model class [D].
+   * Returns an Adapter that maps the server response data to/from generated model class [D].
    */
-  fun responseFieldMapper(): ResponseFieldMapper<D>
+  fun adapter(): ResponseAdapter<D>
 
   /**
    * Returns GraphQL operation name [OperationName].
@@ -42,15 +41,9 @@ interface Operation<D : Operation.Data, V : Operation.Variables> {
   fun operationId(): String
 
   /**
-   * Abstraction for data returned by the server in response to this operation.
+   * Marker interface for generated model built from data returned by the server in response to this operation.
    */
-  interface Data {
-
-    /**
-     * Returns marshaller [ResponseFieldMarshaller] to serialize operation data
-     */
-    fun marshaller(): ResponseFieldMarshaller
-  }
+  interface Data
 
   /**
    * Abstraction for the variables which are a part of the GraphQL operation.

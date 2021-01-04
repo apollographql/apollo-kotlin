@@ -5,12 +5,10 @@ import com.apollographql.apollo.api.Mutation
 import com.apollographql.apollo.api.Operation
 import com.apollographql.apollo.api.OperationName
 import com.apollographql.apollo.api.Query
-import com.apollographql.apollo.api.Response
-import com.apollographql.apollo.api.CustomScalarAdapters
 import com.apollographql.apollo.api.Subscription
 import com.apollographql.apollo.api.internal.InputFieldMarshaller
 import com.apollographql.apollo.api.internal.QueryDocumentMinifier
-import com.apollographql.apollo.api.internal.ResponseFieldMapper
+import com.apollographql.apollo.api.internal.ResponseAdapter
 import com.apollographql.apollo.compiler.applyIf
 import com.apollographql.apollo.compiler.backend.ast.CodeGenerationAst
 import com.apollographql.apollo.compiler.escapeKotlinReservedWord
@@ -71,12 +69,10 @@ internal fun CodeGenerationAst.OperationType.typeSpec(targetPackage: String, gen
           .build()
       )
       .addFunction(
-          FunSpec.builder("responseFieldMapper")
+          FunSpec.builder("adapter")
               .addModifiers(KModifier.OVERRIDE)
-              .returns(ResponseFieldMapper::class.asClassName().parameterizedBy(ClassName(packageName = "", "Data")))
-              .beginControlFlow("return·%T·{·reader·->", ResponseFieldMapper::class)
-              .addStatement("%T.fromResponse(reader)", operationResponseAdapter)
-              .endControlFlow()
+              .returns(ResponseAdapter::class.asClassName().parameterizedBy(ClassName(packageName = "", "Data")))
+              .addCode("return %T", operationResponseAdapter)
               .build()
       )
       .addType(this.dataType.typeSpec())

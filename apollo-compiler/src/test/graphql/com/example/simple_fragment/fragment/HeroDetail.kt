@@ -7,7 +7,6 @@ package com.example.simple_fragment.fragment
 
 import com.apollographql.apollo.api.GraphqlFragment
 import com.apollographql.apollo.api.internal.ResponseFieldMapper
-import com.apollographql.apollo.api.internal.ResponseFieldMarshaller
 import com.apollographql.apollo.api.internal.ResponseReader
 import com.example.simple_fragment.fragment.adapter.HeroDetailsImpl_ResponseAdapter
 import kotlin.String
@@ -30,8 +29,6 @@ internal interface HeroDetail : GraphqlFragment {
      * What this human calls themselves
      */
     override val name: String
-
-    override fun marshaller(): ResponseFieldMarshaller
   }
 
   companion object {

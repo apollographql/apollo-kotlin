@@ -6,8 +6,6 @@
 package com.example.fragment_used_twice.fragment
 
 import com.apollographql.apollo.api.GraphqlFragment
-import com.apollographql.apollo.api.internal.ResponseFieldMarshaller
-import com.example.fragment_used_twice.fragment.adapter.HumanDetailsImpl_ResponseAdapter
 import kotlin.Any
 import kotlin.String
 
@@ -17,7 +15,28 @@ import kotlin.String
 interface HumanDetailsImpl : HumanDetail, GraphqlFragment {
   override val __typename: String
 
+<<<<<<< HEAD
   override fun marshaller(): ResponseFieldMarshaller
+=======
+  /**
+   * What this human calls themselves
+   */
+  override val name: String
+
+  interface Character : HumanDetail, HumanDetail.Character, CharacterDetail, HumanDetailsImpl {
+    override val __typename: String
+
+    /**
+     * What this human calls themselves
+     */
+    override val name: String
+
+    /**
+     * The date character was born.
+     */
+    override val birthDate: Any
+  }
+>>>>>>> 7fb58f43... remove ResponseFieldMapper
 
   data class CharacterHumanDetailsImpl(
     override val __typename: String,
@@ -29,6 +48,7 @@ interface HumanDetailsImpl : HumanDetail, GraphqlFragment {
      * The date character was born.
      */
     override val birthDate: Any
+<<<<<<< HEAD
   ) : HumanDetail, HumanDetail.Character, CharacterDetail, HumanDetailsImpl {
     override fun marshaller(): ResponseFieldMarshaller {
       return ResponseFieldMarshaller { writer ->
@@ -36,6 +56,9 @@ interface HumanDetailsImpl : HumanDetail, GraphqlFragment {
       }
     }
   }
+=======
+  ) : HumanDetail, HumanDetail.Character, CharacterDetail, HumanDetailsImpl, Character
+>>>>>>> 7fb58f43... remove ResponseFieldMapper
 
   data class OtherHumanDetailsImpl(
     override val __typename: String,
@@ -43,11 +66,5 @@ interface HumanDetailsImpl : HumanDetail, GraphqlFragment {
      * What this human calls themselves
      */
     override val name: String
-  ) : HumanDetail, HumanDetailsImpl {
-    override fun marshaller(): ResponseFieldMarshaller {
-      return ResponseFieldMarshaller { writer ->
-        HumanDetailsImpl_ResponseAdapter.OtherHumanDetailsImpl.toResponse(writer, this)
-      }
-    }
-  }
+  ) : HumanDetail, HumanDetailsImpl
 }

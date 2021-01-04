@@ -9,8 +9,7 @@ import com.apollographql.apollo.api.Operation
 import com.apollographql.apollo.api.OperationName
 import com.apollographql.apollo.api.Query
 import com.apollographql.apollo.api.internal.QueryDocumentMinifier
-import com.apollographql.apollo.api.internal.ResponseFieldMapper
-import com.apollographql.apollo.api.internal.ResponseFieldMarshaller
+import com.apollographql.apollo.api.internal.ResponseAdapter
 import com.example.typename_always_first.adapter.TestQuery_ResponseAdapter
 import kotlin.Double
 import kotlin.String
@@ -28,12 +27,7 @@ class TestQuery : Query<TestQuery.Data, Operation.Variables> {
 
   override fun name(): OperationName = OPERATION_NAME
 
-  override fun responseFieldMapper(): ResponseFieldMapper<Data> {
-    return ResponseFieldMapper { reader ->
-      TestQuery_ResponseAdapter.fromResponse(reader)
-    }
-  }
-
+  override fun adapter(): ResponseAdapter<Data> = TestQuery_ResponseAdapter
   /**
    * The query type, represents all of the entry points into our object graph
    */
@@ -41,19 +35,11 @@ class TestQuery : Query<TestQuery.Data, Operation.Variables> {
     val hero: Hero?,
     val __typename: String = "Query"
   ) : Operation.Data {
-    override fun marshaller(): ResponseFieldMarshaller {
-      return ResponseFieldMarshaller { writer ->
-        TestQuery_ResponseAdapter.Data.toResponse(writer, this)
-      }
-    }
-
     /**
      * A character from the Star Wars universe
      */
     interface Hero {
       val __typename: String
-
-      fun marshaller(): ResponseFieldMarshaller
 
       interface Human : Hero {
         override val __typename: String
@@ -62,8 +48,6 @@ class TestQuery : Query<TestQuery.Data, Operation.Variables> {
          * Height in the preferred unit, default is meters
          */
         val height: Double?
-
-        override fun marshaller(): ResponseFieldMarshaller
       }
 
       interface Droid : Hero {
@@ -78,8 +62,6 @@ class TestQuery : Query<TestQuery.Data, Operation.Variables> {
          * This droid's primary function
          */
         val primaryFunction: String?
-
-        override fun marshaller(): ResponseFieldMarshaller
       }
 
       data class HumanHero(
@@ -88,13 +70,7 @@ class TestQuery : Query<TestQuery.Data, Operation.Variables> {
          * Height in the preferred unit, default is meters
          */
         override val height: Double?
-      ) : Hero, Human {
-        override fun marshaller(): ResponseFieldMarshaller {
-          return ResponseFieldMarshaller { writer ->
-            TestQuery_ResponseAdapter.Data.Hero.HumanHero.toResponse(writer, this)
-          }
-        }
-      }
+      ) : Hero, Human
 
       data class DroidHero(
         override val __typename: String,
@@ -106,23 +82,11 @@ class TestQuery : Query<TestQuery.Data, Operation.Variables> {
          * This droid's primary function
          */
         override val primaryFunction: String?
-      ) : Hero, Droid {
-        override fun marshaller(): ResponseFieldMarshaller {
-          return ResponseFieldMarshaller { writer ->
-            TestQuery_ResponseAdapter.Data.Hero.DroidHero.toResponse(writer, this)
-          }
-        }
-      }
+      ) : Hero, Droid
 
       data class OtherHero(
         override val __typename: String
-      ) : Hero {
-        override fun marshaller(): ResponseFieldMarshaller {
-          return ResponseFieldMarshaller { writer ->
-            TestQuery_ResponseAdapter.Data.Hero.OtherHero.toResponse(writer, this)
-          }
-        }
-      }
+      ) : Hero
 
       companion object {
         fun Hero.asHuman(): Human? = this as? Human

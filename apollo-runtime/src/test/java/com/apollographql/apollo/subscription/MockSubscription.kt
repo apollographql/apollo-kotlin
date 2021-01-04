@@ -4,7 +4,6 @@ import com.apollographql.apollo.api.Operation
 import com.apollographql.apollo.api.OperationName
 import com.apollographql.apollo.api.Subscription
 import com.apollographql.apollo.api.internal.InputFieldMarshaller
-import com.apollographql.apollo.api.internal.ResponseFieldMapper
 
 class MockSubscription(
     private val queryDocument: String = "subscription{commentAdded{id  name}",
@@ -29,7 +28,7 @@ class MockSubscription(
         }
   }
 
-  override fun responseFieldMapper(): ResponseFieldMapper<Operation.Data> = throw UnsupportedOperationException()
+  override fun adapter() = throw UnsupportedOperationException()
 
   override fun name(): OperationName =
       object : OperationName {

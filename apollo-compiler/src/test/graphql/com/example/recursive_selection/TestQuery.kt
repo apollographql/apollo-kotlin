@@ -9,8 +9,7 @@ import com.apollographql.apollo.api.Operation
 import com.apollographql.apollo.api.OperationName
 import com.apollographql.apollo.api.Query
 import com.apollographql.apollo.api.internal.QueryDocumentMinifier
-import com.apollographql.apollo.api.internal.ResponseFieldMapper
-import com.apollographql.apollo.api.internal.ResponseFieldMarshaller
+import com.apollographql.apollo.api.internal.ResponseAdapter
 import com.example.recursive_selection.adapter.TestQuery_ResponseAdapter
 import kotlin.String
 import kotlin.Suppress
@@ -28,24 +27,13 @@ class TestQuery : Query<TestQuery.Data, Operation.Variables> {
 
   override fun name(): OperationName = OPERATION_NAME
 
-  override fun responseFieldMapper(): ResponseFieldMapper<Data> {
-    return ResponseFieldMapper { reader ->
-      TestQuery_ResponseAdapter.fromResponse(reader)
-    }
-  }
-
+  override fun adapter(): ResponseAdapter<Data> = TestQuery_ResponseAdapter
   /**
    * The query type, represents all of the entry points into our object graph
    */
   data class Data(
     val tree: Tree?
   ) : Operation.Data {
-    override fun marshaller(): ResponseFieldMarshaller {
-      return ResponseFieldMarshaller { writer ->
-        TestQuery_ResponseAdapter.Data.toResponse(writer, this)
-      }
-    }
-
     /**
      * To test recursive structures
      */
@@ -54,37 +42,19 @@ class TestQuery : Query<TestQuery.Data, Operation.Variables> {
       val children: List<Child>,
       val parent: Parent?
     ) {
-      fun marshaller(): ResponseFieldMarshaller {
-        return ResponseFieldMarshaller { writer ->
-          TestQuery_ResponseAdapter.Data.Tree.toResponse(writer, this)
-        }
-      }
-
       /**
        * To test recursive structures
        */
       data class Child(
         val name: String
-      ) {
-        fun marshaller(): ResponseFieldMarshaller {
-          return ResponseFieldMarshaller { writer ->
-            TestQuery_ResponseAdapter.Data.Tree.Child.toResponse(writer, this)
-          }
-        }
-      }
+      )
 
       /**
        * To test recursive structures
        */
       data class Parent(
         val name: String
-      ) {
-        fun marshaller(): ResponseFieldMarshaller {
-          return ResponseFieldMarshaller { writer ->
-            TestQuery_ResponseAdapter.Data.Tree.Parent.toResponse(writer, this)
-          }
-        }
-      }
+      )
     }
   }
 

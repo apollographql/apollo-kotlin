@@ -11,8 +11,7 @@ import com.apollographql.apollo.api.OperationName
 import com.apollographql.apollo.api.Query
 import com.apollographql.apollo.api.internal.InputFieldMarshaller
 import com.apollographql.apollo.api.internal.QueryDocumentMinifier
-import com.apollographql.apollo.api.internal.ResponseFieldMapper
-import com.apollographql.apollo.api.internal.ResponseFieldMarshaller
+import com.apollographql.apollo.api.internal.ResponseAdapter
 import com.example.arguments_simple.adapter.TestQuery_ResponseAdapter
 import com.example.arguments_simple.fragment.HeroDetail
 import com.example.arguments_simple.type.Episode
@@ -73,12 +72,7 @@ data class TestQuery(
 
   override fun name(): OperationName = OPERATION_NAME
 
-  override fun responseFieldMapper(): ResponseFieldMapper<Data> {
-    return ResponseFieldMapper { reader ->
-      TestQuery_ResponseAdapter.fromResponse(reader)
-    }
-  }
-
+  override fun adapter(): ResponseAdapter<Data> = TestQuery_ResponseAdapter
   /**
    * The query type, represents all of the entry points into our object graph
    */
@@ -86,12 +80,6 @@ data class TestQuery(
     val hero: Hero?,
     val heroWithReview: HeroWithReview?
   ) : Operation.Data {
-    override fun marshaller(): ResponseFieldMarshaller {
-      return ResponseFieldMarshaller { writer ->
-        TestQuery_ResponseAdapter.Data.toResponse(writer, this)
-      }
-    }
-
     /**
      * A character from the Star Wars universe
      */
@@ -102,8 +90,6 @@ data class TestQuery(
        * The name of the character
        */
       val name: String?
-
-      fun marshaller(): ResponseFieldMarshaller
 
       interface Character : Hero, HeroDetail {
         override val __typename: String
@@ -117,8 +103,6 @@ data class TestQuery(
          * The friends of the character exposed as a connection with edges
          */
         override val friendsConnection: FriendsConnection
-
-        override fun marshaller(): ResponseFieldMarshaller
 
         /**
          * A connection object for a character's friends
@@ -134,8 +118,6 @@ data class TestQuery(
            */
           override val edges: List<Edge?>?
 
-          override fun marshaller(): ResponseFieldMarshaller
-
           /**
            * An edge object for a character's friends
            */
@@ -145,8 +127,6 @@ data class TestQuery(
              */
             override val node: Node?
 
-            override fun marshaller(): ResponseFieldMarshaller
-
             /**
              * A character from the Star Wars universe
              */
@@ -155,8 +135,6 @@ data class TestQuery(
                * The name of the character
                */
               override val name: String?
-
-              override fun marshaller(): ResponseFieldMarshaller
             }
           }
         }
@@ -173,12 +151,6 @@ data class TestQuery(
          */
         override val friendsConnection: FriendsConnection
       ) : Hero, Character, HeroDetail {
-        override fun marshaller(): ResponseFieldMarshaller {
-          return ResponseFieldMarshaller { writer ->
-            TestQuery_ResponseAdapter.Data.Hero.CharacterHero.toResponse(writer, this)
-          }
-        }
-
         /**
          * A connection object for a character's friends
          */
@@ -192,12 +164,6 @@ data class TestQuery(
            */
           override val edges: List<Edge?>?
         ) : Character.FriendsConnection, HeroDetail.FriendsConnection {
-          override fun marshaller(): ResponseFieldMarshaller {
-            return ResponseFieldMarshaller { writer ->
-              TestQuery_ResponseAdapter.Data.Hero.CharacterHero.FriendsConnection.toResponse(writer, this)
-            }
-          }
-
           /**
            * An edge object for a character's friends
            */
@@ -207,12 +173,6 @@ data class TestQuery(
              */
             override val node: Node?
           ) : Character.FriendsConnection.Edge, HeroDetail.FriendsConnection.Edge {
-            override fun marshaller(): ResponseFieldMarshaller {
-              return ResponseFieldMarshaller { writer ->
-                TestQuery_ResponseAdapter.Data.Hero.CharacterHero.FriendsConnection.Edge.toResponse(writer, this)
-              }
-            }
-
             /**
              * A character from the Star Wars universe
              */
@@ -221,13 +181,7 @@ data class TestQuery(
                * The name of the character
                */
               override val name: String?
-            ) : Character.FriendsConnection.Edge.Node, HeroDetail.FriendsConnection.Edge.Node {
-              override fun marshaller(): ResponseFieldMarshaller {
-                return ResponseFieldMarshaller { writer ->
-                  TestQuery_ResponseAdapter.Data.Hero.CharacterHero.FriendsConnection.Edge.Node.toResponse(writer, this)
-                }
-              }
-            }
+            ) : Character.FriendsConnection.Edge.Node, HeroDetail.FriendsConnection.Edge.Node
           }
         }
       }
@@ -238,13 +192,7 @@ data class TestQuery(
          * The name of the character
          */
         override val name: String?
-      ) : Hero {
-        override fun marshaller(): ResponseFieldMarshaller {
-          return ResponseFieldMarshaller { writer ->
-            TestQuery_ResponseAdapter.Data.Hero.OtherHero.toResponse(writer, this)
-          }
-        }
-      }
+      ) : Hero
 
       companion object {
         fun Hero.asCharacter(): Character? = this as? Character
@@ -261,13 +209,7 @@ data class TestQuery(
        * What this human calls themselves
        */
       val name: String
-    ) {
-      fun marshaller(): ResponseFieldMarshaller {
-        return ResponseFieldMarshaller { writer ->
-          TestQuery_ResponseAdapter.Data.HeroWithReview.toResponse(writer, this)
-        }
-      }
-    }
+    )
   }
 
   companion object {

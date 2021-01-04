@@ -11,8 +11,7 @@ import com.apollographql.apollo.api.OperationName
 import com.apollographql.apollo.api.Query
 import com.apollographql.apollo.api.internal.InputFieldMarshaller
 import com.apollographql.apollo.api.internal.QueryDocumentMinifier
-import com.apollographql.apollo.api.internal.ResponseFieldMapper
-import com.apollographql.apollo.api.internal.ResponseFieldMarshaller
+import com.apollographql.apollo.api.internal.ResponseAdapter
 import com.example.arguments_complex.adapter.TestQuery_ResponseAdapter
 import com.example.arguments_complex.type.Episode
 import kotlin.Any
@@ -60,24 +59,13 @@ data class TestQuery(
 
   override fun name(): OperationName = OPERATION_NAME
 
-  override fun responseFieldMapper(): ResponseFieldMapper<Data> {
-    return ResponseFieldMapper { reader ->
-      TestQuery_ResponseAdapter.fromResponse(reader)
-    }
-  }
-
+  override fun adapter(): ResponseAdapter<Data> = TestQuery_ResponseAdapter
   /**
    * The query type, represents all of the entry points into our object graph
    */
   data class Data(
     val heroWithReview: HeroWithReview?
   ) : Operation.Data {
-    override fun marshaller(): ResponseFieldMarshaller {
-      return ResponseFieldMarshaller { writer ->
-        TestQuery_ResponseAdapter.Data.toResponse(writer, this)
-      }
-    }
-
     /**
      * A humanoid creature from the Star Wars universe
      */
@@ -90,13 +78,7 @@ data class TestQuery(
        * Height in the preferred unit, default is meters
        */
       val height: Double?
-    ) {
-      fun marshaller(): ResponseFieldMarshaller {
-        return ResponseFieldMarshaller { writer ->
-          TestQuery_ResponseAdapter.Data.HeroWithReview.toResponse(writer, this)
-        }
-      }
-    }
+    )
   }
 
   companion object {

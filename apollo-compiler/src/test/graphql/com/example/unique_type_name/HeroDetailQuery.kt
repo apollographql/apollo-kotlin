@@ -9,8 +9,7 @@ import com.apollographql.apollo.api.Operation
 import com.apollographql.apollo.api.OperationName
 import com.apollographql.apollo.api.Query
 import com.apollographql.apollo.api.internal.QueryDocumentMinifier
-import com.apollographql.apollo.api.internal.ResponseFieldMapper
-import com.apollographql.apollo.api.internal.ResponseFieldMarshaller
+import com.apollographql.apollo.api.internal.ResponseAdapter
 import com.example.unique_type_name.adapter.HeroDetailQuery_ResponseAdapter
 import com.example.unique_type_name.fragment.HeroDetail
 import com.example.unique_type_name.type.Episode
@@ -32,24 +31,13 @@ class HeroDetailQuery : Query<HeroDetailQuery.Data, Operation.Variables> {
 
   override fun name(): OperationName = OPERATION_NAME
 
-  override fun responseFieldMapper(): ResponseFieldMapper<Data> {
-    return ResponseFieldMapper { reader ->
-      HeroDetailQuery_ResponseAdapter.fromResponse(reader)
-    }
-  }
-
+  override fun adapter(): ResponseAdapter<Data> = HeroDetailQuery_ResponseAdapter
   /**
    * The query type, represents all of the entry points into our object graph
    */
   data class Data(
     val heroDetailQuery: HeroDetailQuery?
   ) : Operation.Data {
-    override fun marshaller(): ResponseFieldMarshaller {
-      return ResponseFieldMarshaller { writer ->
-        HeroDetailQuery_ResponseAdapter.Data.toResponse(writer, this)
-      }
-    }
-
     /**
      * A character from the Star Wars universe
      */
@@ -66,8 +54,6 @@ class HeroDetailQuery : Query<HeroDetailQuery.Data, Operation.Variables> {
        */
       val friends: List<Friend?>?
 
-      fun marshaller(): ResponseFieldMarshaller
-
       /**
        * A character from the Star Wars universe
        */
@@ -76,8 +62,6 @@ class HeroDetailQuery : Query<HeroDetailQuery.Data, Operation.Variables> {
          * The name of the character
          */
         val name: String
-
-        fun marshaller(): ResponseFieldMarshaller
       }
 
       interface Human : HeroDetailQuery {
@@ -98,8 +82,6 @@ class HeroDetailQuery : Query<HeroDetailQuery.Data, Operation.Variables> {
          */
         val height: Double?
 
-        override fun marshaller(): ResponseFieldMarshaller
-
         /**
          * A character from the Star Wars universe
          */
@@ -119,15 +101,11 @@ class HeroDetailQuery : Query<HeroDetailQuery.Data, Operation.Variables> {
            */
           val friends: List<Friend?>?
 
-          override fun marshaller(): ResponseFieldMarshaller
-
           /**
            * A character from the Star Wars universe
            */
           interface Friend {
             val __typename: String
-
-            fun marshaller(): ResponseFieldMarshaller
 
             interface Character : Friend, HeroDetail {
               override val __typename: String
@@ -141,8 +119,6 @@ class HeroDetailQuery : Query<HeroDetailQuery.Data, Operation.Variables> {
                * The friends of the character exposed as a connection with edges
                */
               override val friendsConnection: FriendsConnection
-
-              override fun marshaller(): ResponseFieldMarshaller
 
               /**
                * A connection object for a character's friends
@@ -158,8 +134,6 @@ class HeroDetailQuery : Query<HeroDetailQuery.Data, Operation.Variables> {
                  */
                 override val edges: List<Edge?>?
 
-                override fun marshaller(): ResponseFieldMarshaller
-
                 /**
                  * An edge object for a character's friends
                  */
@@ -169,8 +143,6 @@ class HeroDetailQuery : Query<HeroDetailQuery.Data, Operation.Variables> {
                    */
                   override val node: Node?
 
-                  override fun marshaller(): ResponseFieldMarshaller
-
                   /**
                    * A character from the Star Wars universe
                    */
@@ -179,8 +151,6 @@ class HeroDetailQuery : Query<HeroDetailQuery.Data, Operation.Variables> {
                      * The name of the character
                      */
                     override val name: String
-
-                    override fun marshaller(): ResponseFieldMarshaller
                   }
                 }
               }
@@ -210,12 +180,6 @@ class HeroDetailQuery : Query<HeroDetailQuery.Data, Operation.Variables> {
          */
         override val height: Double?
       ) : HeroDetailQuery, Human {
-        override fun marshaller(): ResponseFieldMarshaller {
-          return ResponseFieldMarshaller { writer ->
-            HeroDetailQuery_ResponseAdapter.Data.HeroDetailQuery.HumanHeroDetailQuery.toResponse(writer, this)
-          }
-        }
-
         /**
          * A character from the Star Wars universe
          */
@@ -233,19 +197,68 @@ class HeroDetailQuery : Query<HeroDetailQuery.Data, Operation.Variables> {
            */
           override val friends: List<Friend?>?
         ) : HeroDetailQuery.Friend, Human.Friend {
-          override fun marshaller(): ResponseFieldMarshaller {
-            return ResponseFieldMarshaller { writer ->
-              HeroDetailQuery_ResponseAdapter.Data.HeroDetailQuery.HumanHeroDetailQuery.Friend.toResponse(writer, this)
-            }
-          }
-
           /**
            * A character from the Star Wars universe
            */
           interface Friend : Human.Friend.Friend {
             override val __typename: String
 
+<<<<<<< HEAD
             override fun marshaller(): ResponseFieldMarshaller
+=======
+            interface Character : Human.Friend.Friend, Human.Friend.Friend.Character, HeroDetail,
+                Friend {
+              override val __typename: String
+
+              /**
+               * The name of the character
+               */
+              override val name: String
+
+              /**
+               * The friends of the character exposed as a connection with edges
+               */
+              override val friendsConnection: FriendsConnection
+
+              /**
+               * A connection object for a character's friends
+               */
+              interface FriendsConnection : Human.Friend.Friend.Character.FriendsConnection,
+                  HeroDetail.FriendsConnection {
+                /**
+                 * The total number of friends
+                 */
+                override val totalCount: Int?
+
+                /**
+                 * The edges for each of the character's friends.
+                 */
+                override val edges: List<Edge?>?
+
+                /**
+                 * An edge object for a character's friends
+                 */
+                interface Edge : Human.Friend.Friend.Character.FriendsConnection.Edge,
+                    HeroDetail.FriendsConnection.Edge {
+                  /**
+                   * The character represented by this friendship edge
+                   */
+                  override val node: Node?
+
+                  /**
+                   * A character from the Star Wars universe
+                   */
+                  interface Node : Human.Friend.Friend.Character.FriendsConnection.Edge.Node,
+                      HeroDetail.FriendsConnection.Edge.Node {
+                    /**
+                     * The name of the character
+                     */
+                    override val name: String
+                  }
+                }
+              }
+            }
+>>>>>>> 7fb58f43... remove ResponseFieldMapper
 
             data class CharacterFriend(
               override val __typename: String,
@@ -257,6 +270,7 @@ class HeroDetailQuery : Query<HeroDetailQuery.Data, Operation.Variables> {
                * The friends of the character exposed as a connection with edges
                */
               override val friendsConnection: FriendsConnection
+<<<<<<< HEAD
             ) : Human.Friend.Friend, Human.Friend.Friend.Character, HeroDetail, Friend {
               override fun marshaller(): ResponseFieldMarshaller {
                 return ResponseFieldMarshaller { writer ->
@@ -264,6 +278,9 @@ class HeroDetailQuery : Query<HeroDetailQuery.Data, Operation.Variables> {
                 }
               }
 
+=======
+            ) : Human.Friend.Friend, Human.Friend.Friend.Character, HeroDetail, Friend, Character {
+>>>>>>> 7fb58f43... remove ResponseFieldMapper
               /**
                * A connection object for a character's friends
                */
@@ -276,6 +293,7 @@ class HeroDetailQuery : Query<HeroDetailQuery.Data, Operation.Variables> {
                  * The edges for each of the character's friends.
                  */
                 override val edges: List<Edge?>?
+<<<<<<< HEAD
               ) : Human.Friend.Friend.Character.FriendsConnection, HeroDetail.FriendsConnection {
                 override fun marshaller(): ResponseFieldMarshaller {
                   return ResponseFieldMarshaller { writer ->
@@ -283,6 +301,10 @@ class HeroDetailQuery : Query<HeroDetailQuery.Data, Operation.Variables> {
                   }
                 }
 
+=======
+              ) : Human.Friend.Friend.Character.FriendsConnection, HeroDetail.FriendsConnection,
+                  Character.FriendsConnection {
+>>>>>>> 7fb58f43... remove ResponseFieldMapper
                 /**
                  * An edge object for a character's friends
                  */
@@ -292,6 +314,7 @@ class HeroDetailQuery : Query<HeroDetailQuery.Data, Operation.Variables> {
                    */
                   override val node: Node?
                 ) : Human.Friend.Friend.Character.FriendsConnection.Edge,
+<<<<<<< HEAD
                     HeroDetail.FriendsConnection.Edge {
                   override fun marshaller(): ResponseFieldMarshaller {
                     return ResponseFieldMarshaller { writer ->
@@ -299,6 +322,9 @@ class HeroDetailQuery : Query<HeroDetailQuery.Data, Operation.Variables> {
                     }
                   }
 
+=======
+                    HeroDetail.FriendsConnection.Edge, Character.FriendsConnection.Edge {
+>>>>>>> 7fb58f43... remove ResponseFieldMapper
                   /**
                    * A character from the Star Wars universe
                    */
@@ -308,6 +334,7 @@ class HeroDetailQuery : Query<HeroDetailQuery.Data, Operation.Variables> {
                      */
                     override val name: String
                   ) : Human.Friend.Friend.Character.FriendsConnection.Edge.Node,
+<<<<<<< HEAD
                       HeroDetail.FriendsConnection.Edge.Node {
                     override fun marshaller(): ResponseFieldMarshaller {
                       return ResponseFieldMarshaller { writer ->
@@ -315,18 +342,32 @@ class HeroDetailQuery : Query<HeroDetailQuery.Data, Operation.Variables> {
                       }
                     }
                   }
+=======
+                      HeroDetail.FriendsConnection.Edge.Node, Character.FriendsConnection.Edge.Node
+>>>>>>> 7fb58f43... remove ResponseFieldMapper
                 }
               }
             }
 
             data class OtherFriend(
               override val __typename: String
+<<<<<<< HEAD
             ) : Human.Friend.Friend, Friend {
               override fun marshaller(): ResponseFieldMarshaller {
                 return ResponseFieldMarshaller { writer ->
                   HeroDetailQuery_ResponseAdapter.Data.HeroDetailQuery.HumanHeroDetailQuery.Friend.Friend.OtherFriend.toResponse(writer, this)
                 }
               }
+=======
+            ) : Human.Friend.Friend, Friend
+
+            companion object {
+              fun Friend.asFriends(): Human.Friend.Friend? = this as? Human.Friend.Friend
+
+              fun Friend.asCharacter(): Character? = this as? Character
+
+              fun Friend.heroDetails(): HeroDetail? = this as? HeroDetail
+>>>>>>> 7fb58f43... remove ResponseFieldMapper
             }
           }
         }
@@ -343,12 +384,6 @@ class HeroDetailQuery : Query<HeroDetailQuery.Data, Operation.Variables> {
          */
         override val friends: List<Friend?>?
       ) : HeroDetailQuery {
-        override fun marshaller(): ResponseFieldMarshaller {
-          return ResponseFieldMarshaller { writer ->
-            HeroDetailQuery_ResponseAdapter.Data.HeroDetailQuery.OtherHeroDetailQuery.toResponse(writer, this)
-          }
-        }
-
         /**
          * A character from the Star Wars universe
          */
@@ -357,13 +392,7 @@ class HeroDetailQuery : Query<HeroDetailQuery.Data, Operation.Variables> {
            * The name of the character
            */
           override val name: String
-        ) : HeroDetailQuery.Friend {
-          override fun marshaller(): ResponseFieldMarshaller {
-            return ResponseFieldMarshaller { writer ->
-              HeroDetailQuery_ResponseAdapter.Data.HeroDetailQuery.OtherHeroDetailQuery.Friend.toResponse(writer, this)
-            }
-          }
-        }
+        ) : HeroDetailQuery.Friend
       }
 
       companion object {

@@ -7,7 +7,6 @@ package com.example.fragment_used_twice.fragment
 
 import com.apollographql.apollo.api.GraphqlFragment
 import com.apollographql.apollo.api.internal.ResponseFieldMapper
-import com.apollographql.apollo.api.internal.ResponseFieldMarshaller
 import com.apollographql.apollo.api.internal.ResponseReader
 import com.example.fragment_used_twice.fragment.adapter.HumanDetailsImpl_ResponseAdapter
 import kotlin.Any
@@ -37,8 +36,6 @@ interface HumanDetail : GraphqlFragment {
      * The date character was born.
      */
     override val birthDate: Any
-
-    override fun marshaller(): ResponseFieldMarshaller
   }
 
   companion object {

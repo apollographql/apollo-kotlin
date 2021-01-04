@@ -1,5 +1,7 @@
 package com.apollographql.apollo.api
 
+import com.apollographql.apollo.api.internal.ResponseAdapter
+
 val EMPTY_OPERATION: Operation<*, *> = object : Operation<Operation.Data, Operation.Variables> {
   override fun variables(): Operation.Variables {
     return Operation.EMPTY_VARIABLES
@@ -12,5 +14,5 @@ val EMPTY_OPERATION: Operation<*, *> = object : Operation<Operation.Data, Operat
   override fun operationId() = ""
 
   override fun queryDocument() = throw UnsupportedOperationException()
-  override fun responseFieldMapper() = throw UnsupportedOperationException()
+  override fun adapter() = throw UnsupportedOperationException()
 }

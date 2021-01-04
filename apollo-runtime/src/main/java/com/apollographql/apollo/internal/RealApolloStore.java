@@ -1,5 +1,6 @@
 package com.apollographql.apollo.internal;
 
+import com.apollographql.apollo.api.Adaptable;
 import com.apollographql.apollo.api.GraphqlFragment;
 import com.apollographql.apollo.api.Operation;
 import com.apollographql.apollo.api.Response;
@@ -7,7 +8,7 @@ import com.apollographql.apollo.api.ResponseField;
 import com.apollographql.apollo.api.CustomScalarAdapters;
 import com.apollographql.apollo.api.internal.ApolloLogger;
 import com.apollographql.apollo.api.internal.ResolveDelegate;
-import com.apollographql.apollo.api.internal.ResponseFieldMapper;
+import com.apollographql.apollo.api.internal.ResponseAdapter;
 import com.apollographql.apollo.cache.CacheHeaders;
 import com.apollographql.apollo.cache.normalized.ApolloStore;
 import com.apollographql.apollo.cache.normalized.ApolloStoreOperation;
@@ -224,27 +225,28 @@ public final class RealApolloStore implements ApolloStore, ReadableStore, Writea
   }
 
   @Override @NotNull public <D extends Operation.Data, V extends Operation.Variables>
-  ApolloStoreOperation<Response<D>> read(@NotNull final Operation<D, V> operation,
-      @NotNull final ResponseFieldMapper<D> responseFieldMapper,
-      @NotNull final ResponseNormalizer<Record> responseNormalizer, @NotNull final CacheHeaders cacheHeaders) {
+  ApolloStoreOperation<Response<D>> read(
+      @NotNull final Operation<D, V> operation,
+      @NotNull final ResponseNormalizer<Record> responseNormalizer,
+      @NotNull final CacheHeaders cacheHeaders) {
     checkNotNull(operation, "operation == null");
     checkNotNull(responseNormalizer, "responseNormalizer == null");
     return new ApolloStoreOperation<Response<D>>(dispatcher) {
       @Override protected Response<D> perform() {
-        return doRead(operation, responseFieldMapper, responseNormalizer, cacheHeaders);
+        return doRead(operation, responseNormalizer, cacheHeaders);
       }
     };
   }
 
-  @Override @NotNull public <F extends GraphqlFragment> ApolloStoreOperation<F> read(
-      @NotNull final ResponseFieldMapper<F> responseFieldMapper, @NotNull final CacheKey cacheKey,
+  @Override @NotNull public <F> ApolloStoreOperation<F> read(
+      @NotNull final ResponseAdapter<F> adapter,
+      @NotNull final CacheKey cacheKey,
       @NotNull final Operation.Variables variables) {
-    checkNotNull(responseFieldMapper, "responseFieldMapper == null");
     checkNotNull(cacheKey, "cacheKey == null");
     checkNotNull(variables, "variables == null");
     return new ApolloStoreOperation<F>(dispatcher) {
       @Override protected F perform() {
-        return doRead(responseFieldMapper, cacheKey, variables);
+        return doRead(adapter, cacheKey, variables);
       }
     };
   }
@@ -271,9 +273,9 @@ public final class RealApolloStore implements ApolloStore, ReadableStore, Writea
     };
   }
 
-  @Override @NotNull public ApolloStoreOperation<Set<String>> write(@NotNull final GraphqlFragment fragment,
+  @Override @NotNull public ApolloStoreOperation<Set<String>> write(@NotNull final Adaptable adaptable,
       @NotNull final CacheKey cacheKey, @NotNull final Operation.Variables variables) {
-    checkNotNull(fragment, "fragment == null");
+    checkNotNull(adaptable, "adaptable == null");
     checkNotNull(cacheKey, "cacheKey == null");
     checkNotNull(variables, "operation == null");
 
@@ -285,18 +287,18 @@ public final class RealApolloStore implements ApolloStore, ReadableStore, Writea
       @Override protected Set<String> perform() {
         return writeTransaction(new Transaction<WriteableStore, Set<String>>() {
           @Override public Set<String> execute(WriteableStore cache) {
-            return doWrite(fragment, cacheKey, variables);
+            return doWrite(adaptable, cacheKey, variables);
           }
         });
       }
     };
   }
 
-  @Override @NotNull public ApolloStoreOperation<Boolean> writeAndPublish(@NotNull final GraphqlFragment fragment,
+  @Override @NotNull public ApolloStoreOperation<Boolean> writeAndPublish(@NotNull final Adaptable adaptable,
       @NotNull final CacheKey cacheKey, @NotNull final Operation.Variables variables) {
     return new ApolloStoreOperation<Boolean>(dispatcher) {
       @Override protected Boolean perform() {
-        Set<String> changedKeys = doWrite(fragment, cacheKey, variables);
+        Set<String> changedKeys = doWrite(adaptable, cacheKey, variables);
         publish(changedKeys);
         return Boolean.TRUE;
       }
@@ -363,20 +365,20 @@ public final class RealApolloStore implements ApolloStore, ReadableStore, Writea
           return null;
         }
 
-        ResponseFieldMapper<D> responseFieldMapper = operation.responseFieldMapper();
         CacheFieldValueResolver fieldValueResolver = new CacheFieldValueResolver(cache, operation.variables(),
             cacheKeyResolver(), CacheHeaders.NONE, cacheKeyBuilder);
         //noinspection unchecked
         RealResponseReader<Record> responseReader = new RealResponseReader<Record>(operation.variables(), rootRecord,
             fieldValueResolver, customScalarAdapters, (ResolveDelegate<Record>) ResponseNormalizer.NO_OP_NORMALIZER);
-        return responseFieldMapper.map(responseReader);
+        return operation.adapter().fromResponse(responseReader, null);
       }
     });
   }
 
   <D extends Operation.Data, V extends Operation.Variables> Response<D> doRead(
-      final Operation<D, V> operation, final ResponseFieldMapper<D> responseFieldMapper,
-      final ResponseNormalizer<Record> responseNormalizer, final CacheHeaders cacheHeaders) {
+      final Operation<D, V> operation,
+      final ResponseNormalizer<Record> responseNormalizer,
+      final CacheHeaders cacheHeaders) {
     return readTransaction(new Transaction<ReadableStore, Response<D>>() {
       @NotNull @Override public Response<D> execute(ReadableStore cache) {
         Record rootRecord = cache.read(CacheKeyResolver.rootKeyForOperation(operation).getKey(), cacheHeaders);
@@ -390,7 +392,7 @@ public final class RealApolloStore implements ApolloStore, ReadableStore, Writea
             fieldValueResolver, customScalarAdapters, responseNormalizer);
         try {
           responseNormalizer.willResolveRootQuery(operation);
-          D data = responseFieldMapper.map(responseReader);
+          D data = operation.adapter().fromResponse(responseReader, null);
           return Response.<D>builder(operation)
               .data(data)
               .fromCache(true)
@@ -404,7 +406,7 @@ public final class RealApolloStore implements ApolloStore, ReadableStore, Writea
     });
   }
 
-  <F extends GraphqlFragment> F doRead(final ResponseFieldMapper<F> responseFieldMapper,
+  <F> F doRead(final ResponseAdapter<F> adapter,
       final CacheKey cacheKey, final Operation.Variables variables) {
     return readTransaction(new Transaction<ReadableStore, F>() {
       @Nullable @Override public F execute(ReadableStore cache) {
@@ -418,7 +420,7 @@ public final class RealApolloStore implements ApolloStore, ReadableStore, Writea
         //noinspection unchecked
         RealResponseReader<Record> responseReader = new RealResponseReader<Record>(variables, rootRecord,
             fieldValueResolver, customScalarAdapters, (ResolveDelegate<Record>) ResponseNormalizer.NO_OP_NORMALIZER);
-        return responseFieldMapper.map(responseReader);
+        return adapter.fromResponse(responseReader, null);
       }
     });
   }
@@ -429,7 +431,7 @@ public final class RealApolloStore implements ApolloStore, ReadableStore, Writea
     return writeTransaction(new Transaction<WriteableStore, Set<String>>() {
       @Override public Set<String> execute(WriteableStore cache) {
         RealResponseWriter responseWriter = new RealResponseWriter(operation.variables(), customScalarAdapters);
-        operationData.marshaller().marshal(responseWriter);
+        operation.adapter().toResponse(responseWriter, operationData);
 
         ResponseNormalizer<Map<String, Object>> responseNormalizer = networkResponseNormalizer();
         responseNormalizer.willResolveRootQuery(operation);
@@ -447,11 +449,11 @@ public final class RealApolloStore implements ApolloStore, ReadableStore, Writea
     });
   }
 
-  Set<String> doWrite(final GraphqlFragment fragment, final CacheKey cacheKey, final Operation.Variables variables) {
+  Set<String> doWrite(final Adaptable adaptable, final CacheKey cacheKey, final Operation.Variables variables) {
     return writeTransaction(new Transaction<WriteableStore, Set<String>>() {
       @Override public Set<String> execute(WriteableStore cache) {
         RealResponseWriter responseWriter = new RealResponseWriter(variables, customScalarAdapters);
-        fragment.marshaller().marshal(responseWriter);
+        adaptable.adapter().toResponse(responseWriter, adaptable);
 
         ResponseNormalizer<Map<String, Object>> responseNormalizer = networkResponseNormalizer();
         responseNormalizer.willResolveRecord(cacheKey);

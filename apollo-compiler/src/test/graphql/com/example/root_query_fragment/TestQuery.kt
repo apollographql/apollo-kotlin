@@ -9,8 +9,7 @@ import com.apollographql.apollo.api.Operation
 import com.apollographql.apollo.api.OperationName
 import com.apollographql.apollo.api.Query
 import com.apollographql.apollo.api.internal.QueryDocumentMinifier
-import com.apollographql.apollo.api.internal.ResponseFieldMapper
-import com.apollographql.apollo.api.internal.ResponseFieldMarshaller
+import com.apollographql.apollo.api.internal.ResponseAdapter
 import com.example.root_query_fragment.adapter.TestQuery_ResponseAdapter
 import com.example.root_query_fragment.fragment.QueryFragment
 import kotlin.String
@@ -28,26 +27,17 @@ class TestQuery : Query<TestQuery.Data, Operation.Variables> {
 
   override fun name(): OperationName = OPERATION_NAME
 
-  override fun responseFieldMapper(): ResponseFieldMapper<Data> {
-    return ResponseFieldMapper { reader ->
-      TestQuery_ResponseAdapter.fromResponse(reader)
-    }
-  }
-
+  override fun adapter(): ResponseAdapter<Data> = TestQuery_ResponseAdapter
   /**
    * The query type, represents all of the entry points into our object graph
    */
   interface Data : Operation.Data {
     val __typename: String
 
-    override fun marshaller(): ResponseFieldMarshaller
-
     interface Query : Data, QueryFragment {
       override val __typename: String
 
       override val hero: Hero?
-
-      override fun marshaller(): ResponseFieldMarshaller
 
       /**
        * A character from the Star Wars universe
@@ -57,8 +47,6 @@ class TestQuery : Query<TestQuery.Data, Operation.Variables> {
          * The name of the character
          */
         override val name: String
-
-        override fun marshaller(): ResponseFieldMarshaller
       }
     }
 
@@ -66,12 +54,6 @@ class TestQuery : Query<TestQuery.Data, Operation.Variables> {
       override val __typename: String,
       override val hero: Hero?
     ) : Data, Query, QueryFragment {
-      override fun marshaller(): ResponseFieldMarshaller {
-        return ResponseFieldMarshaller { writer ->
-          TestQuery_ResponseAdapter.Data.QueryDatum.toResponse(writer, this)
-        }
-      }
-
       /**
        * A character from the Star Wars universe
        */
@@ -80,24 +62,12 @@ class TestQuery : Query<TestQuery.Data, Operation.Variables> {
          * The name of the character
          */
         override val name: String
-      ) : Query.Hero, QueryFragment.Hero {
-        override fun marshaller(): ResponseFieldMarshaller {
-          return ResponseFieldMarshaller { writer ->
-            TestQuery_ResponseAdapter.Data.QueryDatum.Hero.toResponse(writer, this)
-          }
-        }
-      }
+      ) : Query.Hero, QueryFragment.Hero
     }
 
     data class OtherDatum(
       override val __typename: String
-    ) : Data {
-      override fun marshaller(): ResponseFieldMarshaller {
-        return ResponseFieldMarshaller { writer ->
-          TestQuery_ResponseAdapter.Data.OtherDatum.toResponse(writer, this)
-        }
-      }
-    }
+    ) : Data
 
     companion object {
       fun Data.asQuery(): Query? = this as? Query

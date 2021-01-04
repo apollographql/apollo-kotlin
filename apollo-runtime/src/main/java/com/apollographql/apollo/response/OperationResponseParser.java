@@ -4,7 +4,6 @@ import com.apollographql.apollo.api.Error;
 import com.apollographql.apollo.api.Operation;
 import com.apollographql.apollo.api.Response;
 import com.apollographql.apollo.api.CustomScalarAdapters;
-import com.apollographql.apollo.api.internal.ResponseFieldMapper;
 import com.apollographql.apollo.api.internal.json.BufferedSourceJsonReader;
 import com.apollographql.apollo.api.internal.json.ResponseJsonStreamReader;
 import com.apollographql.apollo.cache.normalized.internal.ResponseNormalizer;
@@ -24,19 +23,16 @@ import static com.apollographql.apollo.api.internal.Utils.checkNotNull;
 @SuppressWarnings("WeakerAccess")
 public final class OperationResponseParser<D extends Operation.Data> {
   final Operation<D, ?> operation;
-  final ResponseFieldMapper responseFieldMapper;
   final CustomScalarAdapters customScalarAdapters;
   final ResponseNormalizer<Map<String, Object>> responseNormalizer;
 
-  @SuppressWarnings("unchecked") public OperationResponseParser(Operation<D, ?> operation,
-      ResponseFieldMapper responseFieldMapper, CustomScalarAdapters customScalarAdapters) {
-    this(operation, responseFieldMapper, customScalarAdapters, (ResponseNormalizer<Map<String, Object>>) ResponseNormalizer.NO_OP_NORMALIZER);
+  @SuppressWarnings("unchecked") public OperationResponseParser(Operation<D, ?> operation, CustomScalarAdapters customScalarAdapters) {
+    this(operation, customScalarAdapters, (ResponseNormalizer<Map<String, Object>>) ResponseNormalizer.NO_OP_NORMALIZER);
   }
 
-  public OperationResponseParser(Operation<D, ?> operation, ResponseFieldMapper responseFieldMapper,
+  public OperationResponseParser(Operation<D, ?> operation,
       CustomScalarAdapters customScalarAdapters, ResponseNormalizer<Map<String, Object>> responseNormalizer) {
     this.operation = operation;
-    this.responseFieldMapper = responseFieldMapper;
     this.customScalarAdapters = customScalarAdapters;
     this.responseNormalizer = responseNormalizer;
   }
@@ -52,7 +48,7 @@ public final class OperationResponseParser<D extends Operation.Data> {
     if (buffer != null) {
       RealResponseReader<Map<String, Object>> realResponseReader = new RealResponseReader<>(operation.variables(),
           buffer, new MapFieldValueResolver(), customScalarAdapters, responseNormalizer);
-      data = (D) responseFieldMapper.map(realResponseReader);
+      data = (D) operation.adapter().fromResponse(realResponseReader, null);
     }
 
     List<Error> errors = null;
@@ -94,7 +90,7 @@ public final class OperationResponseParser<D extends Operation.Data> {
               Map<String, Object> buffer = reader.toMap();
               RealResponseReader<Map<String, Object>> realResponseReader = new RealResponseReader<>(
                   operation.variables(), buffer, new MapFieldValueResolver(), customScalarAdapters, responseNormalizer);
-              return responseFieldMapper.map(realResponseReader);
+              return operation.adapter().fromResponse(realResponseReader, null);
             }
           });
         } else if ("errors".equals(name)) {

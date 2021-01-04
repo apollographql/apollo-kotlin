@@ -6,8 +6,6 @@
 package com.example.fragments_with_type_condition.fragment
 
 import com.apollographql.apollo.api.GraphqlFragment
-import com.apollographql.apollo.api.internal.ResponseFieldMarshaller
-import com.example.fragments_with_type_condition.fragment.adapter.DroidDetailsImpl_ResponseAdapter
 import kotlin.String
 
 /**
@@ -23,10 +21,4 @@ data class DroidDetailsImpl(
    * This droid's primary function
    */
   override val primaryFunction: String?
-) : DroidDetail, GraphqlFragment {
-  override fun marshaller(): ResponseFieldMarshaller {
-    return ResponseFieldMarshaller { writer ->
-      DroidDetailsImpl_ResponseAdapter.toResponse(writer, this)
-    }
-  }
-}
+) : DroidDetail, GraphqlFragment

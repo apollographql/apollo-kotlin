@@ -6,8 +6,6 @@
 package com.example.fragment_in_fragment.fragment
 
 import com.apollographql.apollo.api.GraphqlFragment
-import com.apollographql.apollo.api.internal.ResponseFieldMarshaller
-import com.example.fragment_in_fragment.fragment.adapter.PilotFragmentImpl_ResponseAdapter
 import kotlin.String
 
 /**
@@ -24,12 +22,6 @@ data class PilotFragmentImpl(
    */
   override val homeworld: Homeworld?
 ) : PilotFragment, GraphqlFragment {
-  override fun marshaller(): ResponseFieldMarshaller {
-    return ResponseFieldMarshaller { writer ->
-      PilotFragmentImpl_ResponseAdapter.toResponse(writer, this)
-    }
-  }
-
   /**
    * A large mass, planet or planetoid in the Star Wars Universe, at the time of
    * 0 ABY.
@@ -37,7 +29,19 @@ data class PilotFragmentImpl(
   interface Homeworld : PilotFragment.Homeworld {
     override val __typename: String
 
+<<<<<<< HEAD
     override fun marshaller(): ResponseFieldMarshaller
+=======
+    interface Planet : PilotFragment.Homeworld, PilotFragment.Homeworld.Planet, PlanetFragment,
+        Homeworld {
+      override val __typename: String
+
+      /**
+       * The name of this planet.
+       */
+      override val name: String?
+    }
+>>>>>>> 7fb58f43... remove ResponseFieldMapper
 
     data class PlanetHomeworld(
       override val __typename: String,
@@ -45,6 +49,7 @@ data class PilotFragmentImpl(
        * The name of this planet.
        */
       override val name: String?
+<<<<<<< HEAD
     ) : PilotFragment.Homeworld, PilotFragment.Homeworld.Planet, PlanetFragment, Homeworld {
       override fun marshaller(): ResponseFieldMarshaller {
         return ResponseFieldMarshaller { writer ->
@@ -61,6 +66,20 @@ data class PilotFragmentImpl(
           PilotFragmentImpl_ResponseAdapter.Homeworld.OtherHomeworld.toResponse(writer, this)
         }
       }
+=======
+    ) : PilotFragment.Homeworld, PilotFragment.Homeworld.Planet, PlanetFragment, Homeworld, Planet
+
+    data class OtherHomeworld(
+      override val __typename: String
+    ) : PilotFragment.Homeworld, Homeworld
+
+    companion object {
+      fun Homeworld.asHomeworld(): PilotFragment.Homeworld? = this as? PilotFragment.Homeworld
+
+      fun Homeworld.asPlanet(): Planet? = this as? Planet
+
+      fun Homeworld.planetFragment(): PlanetFragment? = this as? PlanetFragment
+>>>>>>> 7fb58f43... remove ResponseFieldMapper
     }
   }
 }

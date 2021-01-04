@@ -10,8 +10,7 @@ import com.apollographql.apollo.api.OperationName
 import com.apollographql.apollo.api.Subscription
 import com.apollographql.apollo.api.internal.InputFieldMarshaller
 import com.apollographql.apollo.api.internal.QueryDocumentMinifier
-import com.apollographql.apollo.api.internal.ResponseFieldMapper
-import com.apollographql.apollo.api.internal.ResponseFieldMarshaller
+import com.apollographql.apollo.api.internal.ResponseAdapter
 import com.example.subscriptions.adapter.TestSubscription_ResponseAdapter
 import kotlin.Any
 import kotlin.Int
@@ -47,24 +46,13 @@ data class TestSubscription(
 
   override fun name(): OperationName = OPERATION_NAME
 
-  override fun responseFieldMapper(): ResponseFieldMapper<Data> {
-    return ResponseFieldMapper { reader ->
-      TestSubscription_ResponseAdapter.fromResponse(reader)
-    }
-  }
-
+  override fun adapter(): ResponseAdapter<Data> = TestSubscription_ResponseAdapter
   data class Data(
     /**
      * Subscription fires on every comment added
      */
     val commentAdded: CommentAdded?
   ) : Operation.Data {
-    override fun marshaller(): ResponseFieldMarshaller {
-      return ResponseFieldMarshaller { writer ->
-        TestSubscription_ResponseAdapter.Data.toResponse(writer, this)
-      }
-    }
-
     /**
      * A comment about an entry, submitted by a user
      */
@@ -77,13 +65,7 @@ data class TestSubscription(
        * The text of the comment
        */
       val content: String
-    ) {
-      fun marshaller(): ResponseFieldMarshaller {
-        return ResponseFieldMarshaller { writer ->
-          TestSubscription_ResponseAdapter.Data.CommentAdded.toResponse(writer, this)
-        }
-      }
-    }
+    )
   }
 
   companion object {

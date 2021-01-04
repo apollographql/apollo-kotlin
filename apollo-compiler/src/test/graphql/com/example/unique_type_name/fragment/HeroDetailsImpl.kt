@@ -6,8 +6,6 @@
 package com.example.unique_type_name.fragment
 
 import com.apollographql.apollo.api.GraphqlFragment
-import com.apollographql.apollo.api.internal.ResponseFieldMarshaller
-import com.example.unique_type_name.fragment.adapter.HeroDetailsImpl_ResponseAdapter
 import kotlin.Int
 import kotlin.String
 import kotlin.collections.List
@@ -26,12 +24,6 @@ data class HeroDetailsImpl(
    */
   override val friendsConnection: FriendsConnection
 ) : HeroDetail, GraphqlFragment {
-  override fun marshaller(): ResponseFieldMarshaller {
-    return ResponseFieldMarshaller { writer ->
-      HeroDetailsImpl_ResponseAdapter.toResponse(writer, this)
-    }
-  }
-
   /**
    * A connection object for a character's friends
    */
@@ -45,12 +37,6 @@ data class HeroDetailsImpl(
      */
     override val edges: List<Edge?>?
   ) : HeroDetail.FriendsConnection {
-    override fun marshaller(): ResponseFieldMarshaller {
-      return ResponseFieldMarshaller { writer ->
-        HeroDetailsImpl_ResponseAdapter.FriendsConnection.toResponse(writer, this)
-      }
-    }
-
     /**
      * An edge object for a character's friends
      */
@@ -60,12 +46,6 @@ data class HeroDetailsImpl(
        */
       override val node: Node?
     ) : HeroDetail.FriendsConnection.Edge {
-      override fun marshaller(): ResponseFieldMarshaller {
-        return ResponseFieldMarshaller { writer ->
-          HeroDetailsImpl_ResponseAdapter.FriendsConnection.Edge.toResponse(writer, this)
-        }
-      }
-
       /**
        * A character from the Star Wars universe
        */
@@ -74,13 +54,7 @@ data class HeroDetailsImpl(
          * The name of the character
          */
         override val name: String
-      ) : HeroDetail.FriendsConnection.Edge.Node {
-        override fun marshaller(): ResponseFieldMarshaller {
-          return ResponseFieldMarshaller { writer ->
-            HeroDetailsImpl_ResponseAdapter.FriendsConnection.Edge.Node.toResponse(writer, this)
-          }
-        }
-      }
+      ) : HeroDetail.FriendsConnection.Edge.Node
     }
   }
 }

@@ -6,8 +6,6 @@
 package com.example.directive_with_fragment.fragment
 
 import com.apollographql.apollo.api.GraphqlFragment
-import com.apollographql.apollo.api.internal.ResponseFieldMarshaller
-import com.example.directive_with_fragment.fragment.adapter.HumanDetailsImpl_ResponseAdapter
 import kotlin.String
 
 /**
@@ -19,10 +17,4 @@ data class HumanDetailsImpl(
    * The home planet of the human, or null if unknown
    */
   override val homePlanet: String?
-) : HumanDetail, GraphqlFragment {
-  override fun marshaller(): ResponseFieldMarshaller {
-    return ResponseFieldMarshaller { writer ->
-      HumanDetailsImpl_ResponseAdapter.toResponse(writer, this)
-    }
-  }
-}
+) : HumanDetail, GraphqlFragment

@@ -6,8 +6,6 @@
 package com.example.simple_fragment_with_inline_fragments.fragment
 
 import com.apollographql.apollo.api.GraphqlFragment
-import com.apollographql.apollo.api.internal.ResponseFieldMarshaller
-import com.example.simple_fragment_with_inline_fragments.fragment.adapter.HeroDetailsImpl_ResponseAdapter
 import kotlin.Double
 import kotlin.String
 import kotlin.collections.List
@@ -26,19 +24,48 @@ data class HeroDetailsImpl(
    */
   override val friends: List<Friend?>?
 ) : HeroDetail, GraphqlFragment {
-  override fun marshaller(): ResponseFieldMarshaller {
-    return ResponseFieldMarshaller { writer ->
-      HeroDetailsImpl_ResponseAdapter.toResponse(writer, this)
-    }
-  }
-
   /**
    * A character from the Star Wars universe
    */
   interface Friend : HeroDetail.Friend {
     override val __typename: String
 
+<<<<<<< HEAD
     override fun marshaller(): ResponseFieldMarshaller
+=======
+    /**
+     * The name of the character
+     */
+    override val name: String
+
+    interface Human : HeroDetail.Friend, HeroDetail.Friend.Human, Friend {
+      override val __typename: String
+
+      /**
+       * The name of the character
+       */
+      override val name: String
+
+      /**
+       * Height in the preferred unit, default is meters
+       */
+      override val height: Double?
+    }
+
+    interface Droid : HeroDetail.Friend, HeroDetail.Friend.Droid, Friend {
+      override val __typename: String
+
+      /**
+       * The name of the character
+       */
+      override val name: String
+
+      /**
+       * This droid's primary function
+       */
+      override val primaryFunction: String?
+    }
+>>>>>>> 7fb58f43... remove ResponseFieldMapper
 
     data class HumanFriend(
       override val __typename: String,
@@ -50,6 +77,7 @@ data class HeroDetailsImpl(
        * Height in the preferred unit, default is meters
        */
       override val height: Double?
+<<<<<<< HEAD
     ) : HeroDetail.Friend, HeroDetail.Friend.Human, Friend {
       override fun marshaller(): ResponseFieldMarshaller {
         return ResponseFieldMarshaller { writer ->
@@ -57,6 +85,9 @@ data class HeroDetailsImpl(
         }
       }
     }
+=======
+    ) : HeroDetail.Friend, HeroDetail.Friend.Human, Friend, Human
+>>>>>>> 7fb58f43... remove ResponseFieldMapper
 
     data class DroidFriend(
       override val __typename: String,
@@ -68,6 +99,7 @@ data class HeroDetailsImpl(
        * This droid's primary function
        */
       override val primaryFunction: String?
+<<<<<<< HEAD
     ) : HeroDetail.Friend, HeroDetail.Friend.Droid, Friend {
       override fun marshaller(): ResponseFieldMarshaller {
         return ResponseFieldMarshaller { writer ->
@@ -75,6 +107,9 @@ data class HeroDetailsImpl(
         }
       }
     }
+=======
+    ) : HeroDetail.Friend, HeroDetail.Friend.Droid, Friend, Droid
+>>>>>>> 7fb58f43... remove ResponseFieldMapper
 
     data class OtherFriend(
       override val __typename: String,
@@ -82,12 +117,23 @@ data class HeroDetailsImpl(
        * The name of the character
        */
       override val name: String
+<<<<<<< HEAD
     ) : HeroDetail.Friend, Friend {
       override fun marshaller(): ResponseFieldMarshaller {
         return ResponseFieldMarshaller { writer ->
           HeroDetailsImpl_ResponseAdapter.Friend.OtherFriend.toResponse(writer, this)
         }
       }
+=======
+    ) : HeroDetail.Friend, Friend
+
+    companion object {
+      fun Friend.asFriends(): HeroDetail.Friend? = this as? HeroDetail.Friend
+
+      fun Friend.asHuman(): Human? = this as? Human
+
+      fun Friend.asDroid(): Droid? = this as? Droid
+>>>>>>> 7fb58f43... remove ResponseFieldMapper
     }
   }
 }

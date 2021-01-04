@@ -6,8 +6,6 @@
 package com.example.fragment_in_fragment.fragment
 
 import com.apollographql.apollo.api.GraphqlFragment
-import com.apollographql.apollo.api.internal.ResponseFieldMarshaller
-import com.example.fragment_in_fragment.fragment.adapter.PlanetFragmentImpl_ResponseAdapter
 import kotlin.String
 
 /**
@@ -20,10 +18,4 @@ data class PlanetFragmentImpl(
    * The name of this planet.
    */
   override val name: String?
-) : PlanetFragment, GraphqlFragment {
-  override fun marshaller(): ResponseFieldMarshaller {
-    return ResponseFieldMarshaller { writer ->
-      PlanetFragmentImpl_ResponseAdapter.toResponse(writer, this)
-    }
-  }
-}
+) : PlanetFragment, GraphqlFragment

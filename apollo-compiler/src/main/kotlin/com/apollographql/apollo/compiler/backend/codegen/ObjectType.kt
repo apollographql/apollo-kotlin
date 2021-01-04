@@ -36,26 +36,6 @@ private fun CodeGenerationAst.ObjectType.objectTypeSpec(): TypeSpec {
             )
           }
       )
-      .applyIf(!abstract) {
-        addFunction(
-            FunSpec.builder("marshaller")
-                .applyIf(implements.isNotEmpty()) { addModifiers(KModifier.OVERRIDE) }
-                .returns(ResponseFieldMarshaller::class)
-                .beginControlFlow("return·%T·{·writer·->", ResponseFieldMarshaller::class)
-                .addStatement("%T.toResponse(writer,·this)", this@objectTypeSpec.typeRef.asAdapterTypeName())
-                .endControlFlow()
-                .build()
-        )
-      }
-      .applyIf(abstract) {
-        addFunction(
-            FunSpec.builder("marshaller")
-                .addModifiers(KModifier.ABSTRACT)
-                .applyIf(implements.isNotEmpty()) { addModifiers(KModifier.OVERRIDE) }
-                .returns(ResponseFieldMarshaller::class)
-                .build()
-        )
-      }
       .addTypes(
           this.nestedObjects
               .map { nestedObject -> nestedObject.objectTypeSpec() }

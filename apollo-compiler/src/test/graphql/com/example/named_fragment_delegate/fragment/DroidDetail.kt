@@ -7,7 +7,6 @@ package com.example.named_fragment_delegate.fragment
 
 import com.apollographql.apollo.api.GraphqlFragment
 import com.apollographql.apollo.api.internal.ResponseFieldMapper
-import com.apollographql.apollo.api.internal.ResponseFieldMarshaller
 import com.apollographql.apollo.api.internal.ResponseReader
 import com.example.named_fragment_delegate.fragment.adapter.DroidDetailsImpl_ResponseAdapter
 import kotlin.String
@@ -43,8 +42,6 @@ interface DroidDetail : GraphqlFragment {
      * The name of the character
      */
     val name: String
-
-    fun marshaller(): ResponseFieldMarshaller
   }
 
   companion object {

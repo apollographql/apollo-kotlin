@@ -3,11 +3,6 @@ package com.apollographql.apollo
 import com.apollographql.apollo.api.Operation
 import com.apollographql.apollo.api.OperationName
 import com.apollographql.apollo.api.Query
-import com.apollographql.apollo.api.Response
-import com.apollographql.apollo.api.CustomScalarAdapters
-import com.apollographql.apollo.api.internal.OperationRequestBodyComposer.compose
-import com.apollographql.apollo.api.internal.ResponseFieldMapper
-import com.apollographql.apollo.api.internal.ResponseFieldMarshaller
 import com.apollographql.apollo.api.internal.json.JsonEncodingException
 import com.apollographql.apollo.exception.ApolloHttpException
 import com.apollographql.apollo.exception.ApolloNetworkException
@@ -17,8 +12,6 @@ import com.google.common.truth.Truth.assertThat
 import okhttp3.OkHttpClient
 import okhttp3.mockwebserver.MockResponse
 import okhttp3.mockwebserver.MockWebServer
-import okio.BufferedSource
-import okio.ByteString
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
@@ -47,15 +40,7 @@ class ApolloExceptionTest {
       return Operation.EMPTY_VARIABLES
     }
 
-    override fun responseFieldMapper(): ResponseFieldMapper<Operation.Data> {
-      return ResponseFieldMapper {
-        object : Operation.Data {
-          override fun marshaller(): ResponseFieldMarshaller {
-            throw UnsupportedOperationException()
-          }
-        }
-      }
-    }
+    override fun adapter() = UnsupportedOperationException()
 
     override fun name(): OperationName {
       return operationName
