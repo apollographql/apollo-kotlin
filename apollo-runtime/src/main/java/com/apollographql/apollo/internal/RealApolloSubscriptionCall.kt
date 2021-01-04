@@ -1,290 +1,201 @@
-package com.apollographql.apollo.internal;
+package com.apollographql.apollo.internal
 
-import com.apollographql.apollo.ApolloSubscriptionCall;
-import com.apollographql.apollo.api.Operation;
-import com.apollographql.apollo.api.Response;
-import com.apollographql.apollo.api.Subscription;
-import com.apollographql.apollo.api.internal.ApolloLogger;
-import com.apollographql.apollo.cache.CacheHeaders;
-import com.apollographql.apollo.cache.normalized.ApolloStore;
-import com.apollographql.apollo.cache.normalized.ApolloStoreOperation;
-import com.apollographql.apollo.cache.normalized.Record;
-import com.apollographql.apollo.exception.ApolloCanceledException;
-import com.apollographql.apollo.exception.ApolloNetworkException;
-import com.apollographql.apollo.cache.normalized.internal.ResponseNormalizer;
-import com.apollographql.apollo.cache.normalized.internal.Transaction;
-import com.apollographql.apollo.cache.normalized.internal.WriteableStore;
-import com.apollographql.apollo.internal.subscription.ApolloSubscriptionException;
-import com.apollographql.apollo.internal.subscription.SubscriptionManager;
-import com.apollographql.apollo.internal.subscription.SubscriptionResponse;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import com.apollographql.apollo.ApolloSubscriptionCall
+import com.apollographql.apollo.api.Operation
+import com.apollographql.apollo.api.Response
+import com.apollographql.apollo.api.Subscription
+import com.apollographql.apollo.api.internal.ApolloLogger
+import com.apollographql.apollo.api.internal.Utils.__checkNotNull
+import com.apollographql.apollo.cache.CacheHeaders
+import com.apollographql.apollo.cache.normalized.ApolloStore
+import com.apollographql.apollo.cache.normalized.ApolloStoreOperation
+import com.apollographql.apollo.cache.normalized.internal.Transaction
+import com.apollographql.apollo.cache.normalized.internal.WriteableStore
+import com.apollographql.apollo.exception.ApolloCanceledException
+import com.apollographql.apollo.exception.ApolloNetworkException
+import com.apollographql.apollo.internal.CallState.IllegalStateMessage.Companion.forCurrentState
+import com.apollographql.apollo.internal.subscription.ApolloSubscriptionException
+import com.apollographql.apollo.internal.subscription.SubscriptionManager
+import com.apollographql.apollo.internal.subscription.SubscriptionResponse
+import java.lang.Runnable
+import java.util.concurrent.Executor
+import java.util.concurrent.atomic.AtomicReference
 
-import java.util.Set;
-import java.util.concurrent.Executor;
-import java.util.concurrent.atomic.AtomicReference;
-
-import static com.apollographql.apollo.api.internal.Utils.checkNotNull;
-import static com.apollographql.apollo.internal.CallState.ACTIVE;
-import static com.apollographql.apollo.internal.CallState.CANCELED;
-import static com.apollographql.apollo.internal.CallState.IDLE;
-import static com.apollographql.apollo.internal.CallState.TERMINATED;
-
-public class RealApolloSubscriptionCall<D extends Operation.Data> implements ApolloSubscriptionCall<D> {
-  private final Subscription<D> subscription;
-  private final SubscriptionManager subscriptionManager;
-  private final ApolloStore apolloStore;
-  private final CachePolicy cachePolicy;
-  private final Executor dispatcher;
-  private final ApolloLogger logger;
-  private final AtomicReference<CallState> state = new AtomicReference<>(IDLE);
-  private SubscriptionManagerCallback<D> subscriptionCallback;
-
-  public RealApolloSubscriptionCall(
-      @NotNull Subscription<D> subscription,
-      @NotNull SubscriptionManager subscriptionManager,
-      @NotNull ApolloStore apolloStore,
-      @NotNull CachePolicy cachePolicy,
-      @NotNull Executor dispatcher,
-      @NotNull ApolloLogger logger) {
-    this.subscription = subscription;
-    this.subscriptionManager = subscriptionManager;
-    this.apolloStore = apolloStore;
-    this.cachePolicy = cachePolicy;
-    this.dispatcher = dispatcher;
-    this.logger = logger;
-  }
-
-  @Override
-  public void execute(@NotNull final Callback<D> callback) throws ApolloCanceledException {
-    checkNotNull(callback, "callback == null");
-    synchronized (this) {
-      switch (state.get()) {
-        case IDLE: {
-          state.set(ACTIVE);
-
-          if (cachePolicy == CachePolicy.CACHE_AND_NETWORK) {
-            dispatcher.execute(new Runnable() {
-              @Override public void run() {
-                final Response<D> cachedResponse = resolveFromCache();
-                if (cachedResponse != null) {
-                  callback.onResponse(cachedResponse);
-                }
+class RealApolloSubscriptionCall<D : Operation.Data>(
+    private val subscription: Subscription<D>,
+    private val subscriptionManager: SubscriptionManager,
+    private val apolloStore: ApolloStore,
+    private val cachePolicy: ApolloSubscriptionCall.CachePolicy,
+    private val dispatcher: Executor,
+    private val logger: ApolloLogger) : ApolloSubscriptionCall<D> {
+  private val state = AtomicReference(CallState.IDLE)
+  private var subscriptionCallback: SubscriptionManagerCallback<D>? = null
+  @Throws(ApolloCanceledException::class)
+  override fun execute(callback: ApolloSubscriptionCall.Callback<D>) {
+    __checkNotNull(callback, "callback == null")
+    synchronized(this) {
+      when (state.get()) {
+        CallState.IDLE -> {
+          state.set(CallState.ACTIVE)
+          if (cachePolicy == ApolloSubscriptionCall.CachePolicy.CACHE_AND_NETWORK) {
+            dispatcher.execute {
+              val cachedResponse = resolveFromCache()
+              if (cachedResponse != null) {
+                callback.onResponse(cachedResponse)
               }
-            });
+            }
           }
-
-          subscriptionCallback = new SubscriptionManagerCallback<>(callback, this);
-          subscriptionManager.subscribe(subscription, subscriptionCallback);
-          break;
+          subscriptionCallback = SubscriptionManagerCallback(callback, this)
+          subscriptionManager.subscribe(subscription, subscriptionCallback!!)
         }
-
-        case CANCELED:
-          throw new ApolloCanceledException();
-
-        case TERMINATED:
-        case ACTIVE:
-          throw new IllegalStateException("Already Executed");
-
-        default:
-          throw new IllegalStateException("Unknown state");
+        CallState.CANCELED -> throw ApolloCanceledException()
+        CallState.TERMINATED, CallState.ACTIVE -> throw IllegalStateException("Already Executed")
+        else -> throw IllegalStateException("Unknown state")
       }
     }
   }
 
-  @Override
-  public void cancel() {
-    synchronized (this) {
-      switch (state.get()) {
-        case IDLE: {
-          state.set(CANCELED);
-          break;
+  override fun cancel() {
+    synchronized(this) {
+      when (state.get()) {
+        CallState.IDLE -> {
+          state.set(CallState.CANCELED)
         }
-
-        case ACTIVE: {
+        CallState.ACTIVE -> {
           try {
-            subscriptionManager.unsubscribe(subscription);
+            subscriptionManager.unsubscribe(subscription)
           } finally {
-            state.set(CANCELED);
-            subscriptionCallback.release();
+            state.set(CallState.CANCELED)
+            subscriptionCallback!!.release()
           }
-          break;
         }
-
-        case CANCELED:
-        case TERMINATED:
-          // These are not illegal states, but cancelling does nothing
-          break;
-
-        default:
-          throw new IllegalStateException("Unknown state");
+        CallState.CANCELED, CallState.TERMINATED -> {
+        }
+        else -> throw IllegalStateException("Unknown state")
       }
     }
   }
 
-  @SuppressWarnings("MethodDoesntCallSuperMethod")
-  @Override
-  public ApolloSubscriptionCall<D> clone() {
-    return new RealApolloSubscriptionCall<>(subscription, subscriptionManager, apolloStore, cachePolicy, dispatcher, logger);
+  override fun clone(): ApolloSubscriptionCall<D> {
+    return RealApolloSubscriptionCall(subscription, subscriptionManager, apolloStore, cachePolicy, dispatcher, logger)
   }
 
-  @Override public boolean isCanceled() {
-    return state.get() == CANCELED;
+  override fun isCanceled(): Boolean {
+    return state.get() === CallState.CANCELED
   }
 
-  @NotNull @Override public ApolloSubscriptionCall<D> cachePolicy(@NotNull CachePolicy cachePolicy) {
-    checkNotNull(cachePolicy, "cachePolicy is null");
-    return new RealApolloSubscriptionCall<>(subscription, subscriptionManager, apolloStore, cachePolicy, dispatcher, logger);
+  override fun cachePolicy(cachePolicy: ApolloSubscriptionCall.CachePolicy): ApolloSubscriptionCall<D> {
+    __checkNotNull(cachePolicy, "cachePolicy is null")
+    return RealApolloSubscriptionCall(subscription, subscriptionManager, apolloStore, cachePolicy, dispatcher, logger)
   }
 
-  private void terminate() {
-    synchronized (this) {
-      switch (state.get()) {
-        case ACTIVE: {
-          state.set(TERMINATED);
-          subscriptionCallback.release();
-          break;
+  private fun terminate() {
+    synchronized(this) {
+      when (state.get()) {
+        CallState.ACTIVE -> {
+          state.set(CallState.TERMINATED)
+          subscriptionCallback!!.release()
         }
-
-        case CANCELED:
-          break;
-
-        case IDLE:
-        case TERMINATED:
-          throw new IllegalStateException(
-              CallState.IllegalStateMessage.forCurrentState(state.get()).expected(ACTIVE, CANCELED));
-
-        default:
-          throw new IllegalStateException("Unknown state");
+        CallState.CANCELED -> {
+        }
+        CallState.IDLE, CallState.TERMINATED -> throw IllegalStateException(
+            forCurrentState(state.get()).expected(CallState.ACTIVE, CallState.CANCELED))
+        else -> throw IllegalStateException("Unknown state")
       }
     }
   }
 
-  @SuppressWarnings("unchecked")
-  private Response<D> resolveFromCache() {
-    final ResponseNormalizer<Record> responseNormalizer = apolloStore.cacheResponseNormalizer();
-
-    final ApolloStoreOperation<Response<D>> apolloStoreOperation = apolloStore.read(
+  private fun resolveFromCache(): Response<D>? {
+    val responseNormalizer = apolloStore.cacheResponseNormalizer()
+    val apolloStoreOperation: ApolloStoreOperation<Response<D>> = apolloStore.read(
         subscription,
         responseNormalizer,
-        CacheHeaders.NONE);
-
-    Response<D> cachedResponse = null;
+        CacheHeaders.NONE)
+    var cachedResponse: Response<D>? = null
     try {
-      cachedResponse = apolloStoreOperation.execute();
-    } catch (Exception e) {
-      logger.e(e, "Failed to fetch subscription `%s` from the store", subscription);
+      cachedResponse = apolloStoreOperation.execute()
+    } catch (e: Exception) {
+      logger.e(e, "Failed to fetch subscription `%s` from the store", subscription)
     }
-
-    if (cachedResponse != null && cachedResponse.getData() != null) {
-      logger.d("Cache HIT for subscription `%s`", subscription);
-      return cachedResponse;
+    return if (cachedResponse != null && cachedResponse.data != null) {
+      logger.d("Cache HIT for subscription `%s`", subscription)
+      cachedResponse
     } else {
-      logger.d("Cache MISS for subscription `%s`", subscription);
-      return null;
+      logger.d("Cache MISS for subscription `%s`", subscription)
+      null
     }
   }
 
-  private void cacheResponse(final SubscriptionResponse<D> networkResponse) {
-    if (networkResponse.cacheRecords.isEmpty() || cachePolicy == CachePolicy.NO_CACHE) {
-      return;
+  private fun cacheResponse(networkResponse: SubscriptionResponse<D>) {
+    if (networkResponse.cacheRecords.isEmpty() || cachePolicy == ApolloSubscriptionCall.CachePolicy.NO_CACHE) {
+      return
     }
-
-    dispatcher.execute(new Runnable() {
-      @Override public void run() {
-        final Set<String> cacheKeys;
-        try {
-          cacheKeys = apolloStore.writeTransaction(new Transaction<WriteableStore, Set<String>>() {
-            @Nullable @Override public Set<String> execute(WriteableStore cache) {
-              return cache.merge(networkResponse.cacheRecords, CacheHeaders.NONE);
-            }
-          });
-        } catch (Exception e) {
-          logger.e(e, "Failed to cache response for subscription `%s`", subscription);
-          return;
-        }
-
-        try {
-          apolloStore.publish(cacheKeys);
-        } catch (Exception e) {
-          logger.e(e, "Failed to publish cache changes for subscription `%s`", subscription);
-        }
+    dispatcher.execute(Runnable {
+      val cacheKeys: Set<String>
+      cacheKeys = try {
+        apolloStore.writeTransaction(object : Transaction<WriteableStore, Set<String>> {
+          override fun execute(cache: WriteableStore): Set<String>? {
+            return cache.merge(networkResponse.cacheRecords, CacheHeaders.NONE)
+          }
+        })
+      } catch (e: Exception) {
+        logger.e(e, "Failed to cache response for subscription `%s`", subscription)
+        return@Runnable
       }
-    });
+      try {
+        apolloStore.publish(cacheKeys)
+      } catch (e: Exception) {
+        logger.e(e, "Failed to publish cache changes for subscription `%s`", subscription)
+      }
+    })
   }
 
-  private static final class SubscriptionManagerCallback<D extends Operation.Data> implements SubscriptionManager.Callback<D> {
-    private Callback<D> originalCallback;
-    private RealApolloSubscriptionCall<D> delegate;
-
-    SubscriptionManagerCallback(Callback<D> originalCallback, RealApolloSubscriptionCall<D> delegate) {
-      this.originalCallback = originalCallback;
-      this.delegate = delegate;
-    }
-
-    @Override
-    public void onResponse(@NotNull SubscriptionResponse<D> response) {
-      Callback<D> callback = this.originalCallback;
+  private class SubscriptionManagerCallback<D : Operation.Data>(private var originalCallback: ApolloSubscriptionCall.Callback<D>?, private var delegate: RealApolloSubscriptionCall<D>?) : SubscriptionManager.Callback<D> {
+    override fun onResponse(response: SubscriptionResponse<D>) {
+      val callback = originalCallback
       if (callback != null) {
-        delegate.cacheResponse(response);
-        callback.onResponse(response.response);
+        delegate!!.cacheResponse(response)
+        callback.onResponse(response.response)
       }
     }
 
-    @Override
-    public void onError(@NotNull ApolloSubscriptionException error) {
-      Callback<D> callback = this.originalCallback;
-      if (callback != null) {
-        callback.onFailure(error);
-      }
-      terminate();
+    override fun onError(error: ApolloSubscriptionException) {
+      val callback = originalCallback
+      callback?.onFailure(error)
+      terminate()
     }
 
-    @Override
-    public void onNetworkError(@NotNull Throwable t) {
-      Callback<D> callback = this.originalCallback;
-      if (callback != null) {
-        callback.onFailure(new ApolloNetworkException("Subscription failed", t));
-      }
-      terminate();
+    override fun onNetworkError(t: Throwable) {
+      val callback = originalCallback
+      callback?.onFailure(ApolloNetworkException("Subscription failed", t))
+      terminate()
     }
 
-    @Override
-    public void onCompleted() {
-      Callback<D> callback = this.originalCallback;
-      if (callback != null) {
-        callback.onCompleted();
-      }
-      terminate();
+    override fun onCompleted() {
+      val callback = originalCallback
+      callback?.onCompleted()
+      terminate()
     }
 
-    @Override
-    public void onTerminated() {
-      Callback<D> callback = this.originalCallback;
-      if (callback != null) {
-        callback.onTerminated();
-      }
-      terminate();
+    override fun onTerminated() {
+      val callback = originalCallback
+      callback?.onTerminated()
+      terminate()
     }
 
-    @Override
-    public void onConnected() {
-      Callback<D> callback = this.originalCallback;
-      if (callback != null) {
-        callback.onConnected();
-      }
+    override fun onConnected() {
+      val callback = originalCallback
+      callback?.onConnected()
     }
 
-    void terminate() {
-      RealApolloSubscriptionCall<D> delegate = this.delegate;
-      if (delegate != null) {
-        delegate.terminate();
-      }
+    fun terminate() {
+      val delegate = delegate
+      delegate?.terminate()
     }
 
-    void release() {
-      originalCallback = null;
-      delegate = null;
+    fun release() {
+      originalCallback = null
+      delegate = null
     }
   }
 }

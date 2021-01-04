@@ -1,6 +1,6 @@
 package com.apollographql.apollo.internal
 
-internal enum class CallState {
+enum class CallState {
   IDLE, ACTIVE, TERMINATED, CANCELED;
 
   internal class IllegalStateMessage private constructor(private val callState: CallState) {

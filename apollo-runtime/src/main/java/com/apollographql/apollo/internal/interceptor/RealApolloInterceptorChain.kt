@@ -1,45 +1,42 @@
-package com.apollographql.apollo.internal.interceptor;
+package com.apollographql.apollo.internal.interceptor
 
-import com.apollographql.apollo.interceptor.ApolloInterceptor;
-import com.apollographql.apollo.interceptor.ApolloInterceptorChain;
-
-import java.util.ArrayList;
-import java.util.List;
-import java.util.concurrent.Executor;
-
-import org.jetbrains.annotations.NotNull;
-
-import static com.apollographql.apollo.api.internal.Utils.checkNotNull;
+import com.apollographql.apollo.api.internal.Utils.__checkNotNull
+import com.apollographql.apollo.interceptor.ApolloInterceptor
+import com.apollographql.apollo.interceptor.ApolloInterceptor.InterceptorRequest
+import com.apollographql.apollo.interceptor.ApolloInterceptor.CallBack
+import com.apollographql.apollo.interceptor.ApolloInterceptorChain
+import java.lang.IllegalStateException
+import com.apollographql.apollo.internal.interceptor.RealApolloInterceptorChain
+import java.util.ArrayList
+import java.util.concurrent.Executor
 
 /**
  * RealApolloInterceptorChain is responsible for building the entire interceptor chain. Based on the task at hand, the
  * chain may contain interceptors which fetch responses from the normalized cache, make network calls to fetch data if
  * needed or parse the http responses to inflate models.
  */
-public final class RealApolloInterceptorChain implements ApolloInterceptorChain {
-  private final List<ApolloInterceptor> interceptors;
-  private final int interceptorIndex;
+class RealApolloInterceptorChain private constructor(interceptors: List<ApolloInterceptor>, interceptorIndex: Int) : ApolloInterceptorChain {
+  private val interceptors: List<ApolloInterceptor>
+  private val interceptorIndex: Int
 
-  public RealApolloInterceptorChain(@NotNull List<ApolloInterceptor> interceptors) {
-    this(interceptors, 0);
+  constructor(interceptors: List<ApolloInterceptor>) : this(interceptors, 0) {}
+
+  override fun proceedAsync(request: InterceptorRequest,
+                            dispatcher: Executor, callBack: CallBack) {
+    check(interceptorIndex < interceptors.size)
+    interceptors[interceptorIndex].interceptAsync(request, RealApolloInterceptorChain(interceptors,
+        interceptorIndex + 1), dispatcher, callBack)
   }
 
-  private RealApolloInterceptorChain(List<ApolloInterceptor> interceptors, int interceptorIndex) {
-    if (interceptorIndex > interceptors.size()) throw new IllegalArgumentException();
-    this.interceptors = new ArrayList<>(checkNotNull(interceptors, "interceptors == null"));
-    this.interceptorIndex = interceptorIndex;
-  }
-
-  @Override public void proceedAsync(@NotNull ApolloInterceptor.InterceptorRequest request,
-      @NotNull Executor dispatcher, @NotNull ApolloInterceptor.CallBack callBack) {
-    if (interceptorIndex >= interceptors.size()) throw new IllegalStateException();
-    interceptors.get(interceptorIndex).interceptAsync(request, new RealApolloInterceptorChain(interceptors,
-        interceptorIndex + 1), dispatcher, callBack);
-  }
-
-  @Override public void dispose() {
-    for (ApolloInterceptor interceptor : interceptors) {
-      interceptor.dispose();
+  override fun dispose() {
+    for (interceptor in interceptors) {
+      interceptor.dispose()
     }
+  }
+
+  init {
+    require(interceptorIndex <= interceptors.size)
+    this.interceptors = ArrayList(__checkNotNull(interceptors, "interceptors == null"))
+    this.interceptorIndex = interceptorIndex
   }
 }

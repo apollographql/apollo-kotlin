@@ -1,14 +1,10 @@
-package com.apollographql.apollo.internal.field;
+package com.apollographql.apollo.internal.field
 
-import com.apollographql.apollo.api.ResponseField;
-import com.apollographql.apollo.api.internal.FieldValueResolver;
+import com.apollographql.apollo.api.ResponseField
+import com.apollographql.apollo.api.internal.FieldValueResolver
 
-import java.util.Map;
-
-public final class MapFieldValueResolver implements FieldValueResolver<Map<String, Object>> {
-
-  @SuppressWarnings({"unchecked", "TypeParameterUnusedInFormals"})
-  @Override public <T> T valueFor(Map<String, Object> map, ResponseField field) {
-    return (T) map.get(field.getResponseName());
+class MapFieldValueResolver : FieldValueResolver<Map<String, Any>> {
+  override fun <T> valueFor(map: Map<String, Any>, field: ResponseField): T? {
+    return map[field.responseName] as T?
   }
 }

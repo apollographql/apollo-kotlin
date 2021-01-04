@@ -1,630 +1,484 @@
-package com.apollographql.apollo.internal.subscription;
+package com.apollographql.apollo.internal.subscription
 
-import com.apollographql.apollo.api.Error;
-import com.apollographql.apollo.api.Operation;
-import com.apollographql.apollo.api.Response;
-import com.apollographql.apollo.api.CustomScalarAdapters;
-import com.apollographql.apollo.api.Subscription;
-import com.apollographql.apollo.cache.normalized.Record;
-import com.apollographql.apollo.exception.ApolloNetworkException;
-import com.apollographql.apollo.cache.normalized.internal.ResponseNormalizer;
-import com.apollographql.apollo.response.OperationResponseParser;
-import com.apollographql.apollo.subscription.OnSubscriptionManagerStateChangeListener;
-import com.apollographql.apollo.subscription.OperationClientMessage;
-import com.apollographql.apollo.subscription.OperationServerMessage;
-import com.apollographql.apollo.subscription.SubscriptionConnectionParamsProvider;
-import com.apollographql.apollo.subscription.SubscriptionManagerState;
-import com.apollographql.apollo.subscription.SubscriptionTransport;
-import kotlin.jvm.functions.Function0;
-import org.jetbrains.annotations.NotNull;
+import com.apollographql.apollo.api.CustomScalarAdapters
+import com.apollographql.apollo.api.Operation
+import com.apollographql.apollo.api.Response
+import com.apollographql.apollo.api.Subscription
+import com.apollographql.apollo.api.internal.Utils.__checkNotNull
+import com.apollographql.apollo.cache.normalized.Record
+import com.apollographql.apollo.cache.normalized.internal.ResponseNormalizer
+import com.apollographql.apollo.exception.ApolloNetworkException
+import com.apollographql.apollo.response.OperationResponseParser
+import com.apollographql.apollo.subscription.OnSubscriptionManagerStateChangeListener
+import com.apollographql.apollo.subscription.OperationClientMessage
+import com.apollographql.apollo.subscription.OperationServerMessage
+import com.apollographql.apollo.subscription.SubscriptionConnectionParamsProvider
+import com.apollographql.apollo.subscription.SubscriptionManagerState
+import com.apollographql.apollo.subscription.SubscriptionTransport
+import java.util.ArrayList
+import java.util.LinkedHashMap
+import java.util.Timer
+import java.util.TimerTask
+import java.util.UUID
+import java.util.concurrent.CopyOnWriteArrayList
+import java.util.concurrent.Executor
+import java.util.concurrent.TimeUnit
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Timer;
-import java.util.TimerTask;
-import java.util.UUID;
-import java.util.concurrent.CopyOnWriteArrayList;
-import java.util.concurrent.Executor;
-import java.util.concurrent.TimeUnit;
+class RealSubscriptionManager(customScalarAdapters: CustomScalarAdapters,
+                              transportFactory: SubscriptionTransport.Factory, connectionParams: SubscriptionConnectionParamsProvider,
+                              dispatcher: Executor, connectionHeartbeatTimeoutMs: Long,
+                              responseNormalizer: Function0<ResponseNormalizer<Map<String, Any>>>, autoPersistSubscription: Boolean) : SubscriptionManager {
+  @JvmField
+  var subscriptions: MutableMap<UUID, SubscriptionRecord> = LinkedHashMap()
 
-import static com.apollographql.apollo.api.internal.Utils.checkNotNull;
-
-@SuppressWarnings("WeakerAccess")
-public final class RealSubscriptionManager implements SubscriptionManager {
-  static final int CONNECTION_ACKNOWLEDGE_TIMEOUT_TIMER_TASK_ID = 1;
-  static final int INACTIVITY_TIMEOUT_TIMER_TASK_ID = 2;
-  static final int CONNECTION_KEEP_ALIVE_TIMEOUT_TIMER_TASK_ID = 3;
-  static final long CONNECTION_ACKNOWLEDGE_TIMEOUT = TimeUnit.SECONDS.toMillis(5);
-  static final long INACTIVITY_TIMEOUT = TimeUnit.SECONDS.toMillis(10);
-  static final String PROTOCOL_NEGOTIATION_ERROR_NOT_FOUND = "PersistedQueryNotFound";
-  static final String PROTOCOL_NEGOTIATION_ERROR_NOT_SUPPORTED = "PersistedQueryNotSupported";
-
-  Map<UUID, SubscriptionRecord> subscriptions = new LinkedHashMap<>();
-  volatile SubscriptionManagerState state = SubscriptionManagerState.DISCONNECTED;
-  final AutoReleaseTimer timer = new AutoReleaseTimer();
-
-  private final CustomScalarAdapters customScalarAdapters;
-  private final SubscriptionTransport transport;
-  private final SubscriptionConnectionParamsProvider connectionParams;
-  private final Executor dispatcher;
-  private final long connectionHeartbeatTimeoutMs;
-  private final Function0<ResponseNormalizer<Map<String, Object>>> responseNormalizer;
-  private final Runnable connectionAcknowledgeTimeoutTimerTask = new Runnable() {
-    @Override
-    public void run() {
-      onConnectionAcknowledgeTimeout();
-    }
-  };
-  private final Runnable inactivityTimeoutTimerTask = new Runnable() {
-    @Override
-    public void run() {
-      onInactivityTimeout();
-    }
-  };
-  private final Runnable connectionHeartbeatTimeoutTimerTask = new Runnable() {
-    @Override
-    public void run() {
-      onConnectionHeartbeatTimeout();
-    }
-  };
-  private final List<OnSubscriptionManagerStateChangeListener> onStateChangeListeners = new CopyOnWriteArrayList<>();
-  private final boolean autoPersistSubscription;
-
-  public RealSubscriptionManager(@NotNull CustomScalarAdapters customScalarAdapters,
-      @NotNull final SubscriptionTransport.Factory transportFactory, @NotNull SubscriptionConnectionParamsProvider connectionParams,
-      @NotNull final Executor dispatcher, long connectionHeartbeatTimeoutMs,
-      @NotNull Function0<ResponseNormalizer<Map<String, Object>>> responseNormalizer, boolean autoPersistSubscription) {
-    checkNotNull(customScalarAdapters, "scalarTypeAdapters == null");
-    checkNotNull(transportFactory, "transportFactory == null");
-    checkNotNull(dispatcher, "dispatcher == null");
-    checkNotNull(responseNormalizer, "responseNormalizer == null");
-
-    this.customScalarAdapters = checkNotNull(customScalarAdapters, "scalarTypeAdapters == null");
-    this.connectionParams = checkNotNull(connectionParams, "connectionParams == null");
-    this.transport = transportFactory.create(new SubscriptionTransportCallback(this, dispatcher));
-    this.dispatcher = dispatcher;
-    this.connectionHeartbeatTimeoutMs = connectionHeartbeatTimeoutMs;
-    this.responseNormalizer = responseNormalizer;
-    this.autoPersistSubscription = autoPersistSubscription;
+  @JvmField
+  @Volatile
+  var state = SubscriptionManagerState.DISCONNECTED
+  val timer = AutoReleaseTimer()
+  private val customScalarAdapters: CustomScalarAdapters
+  private val transport: SubscriptionTransport
+  private val connectionParams: SubscriptionConnectionParamsProvider
+  private val dispatcher: Executor
+  private val connectionHeartbeatTimeoutMs: Long
+  private val responseNormalizer: Function0<ResponseNormalizer<Map<String, Any>>>
+  private val connectionAcknowledgeTimeoutTimerTask = Runnable { onConnectionAcknowledgeTimeout() }
+  private val inactivityTimeoutTimerTask = Runnable { onInactivityTimeout() }
+  private val connectionHeartbeatTimeoutTimerTask = Runnable { onConnectionHeartbeatTimeout() }
+  private val onStateChangeListeners: MutableList<OnSubscriptionManagerStateChangeListener> = CopyOnWriteArrayList()
+  private val autoPersistSubscription: Boolean
+  override fun <D : Operation.Data> subscribe(subscription: Subscription<D>, callback: SubscriptionManager.Callback<D>) {
+    __checkNotNull(subscription, "subscription == null")
+    __checkNotNull(callback, "callback == null")
+    dispatcher.execute { doSubscribe(subscription, callback) }
   }
 
-  @Override
-  public <D extends Operation.Data> void subscribe(@NotNull final Subscription<D> subscription, @NotNull final SubscriptionManager.Callback<D> callback) {
-    checkNotNull(subscription, "subscription == null");
-    checkNotNull(callback, "callback == null");
-    dispatcher.execute(new Runnable() {
-      @Override
-      public void run() {
-        doSubscribe(subscription, callback);
-      }
-    });
-  }
-
-  @Override
-  public void unsubscribe(@NotNull final Subscription subscription) {
-    checkNotNull(subscription, "subscription == null");
-    dispatcher.execute(new Runnable() {
-      @Override
-      public void run() {
-        doUnsubscribe(subscription);
-      }
-    });
+  override fun unsubscribe(subscription: Subscription<*>) {
+    __checkNotNull(subscription, "subscription == null")
+    dispatcher.execute { doUnsubscribe(subscription) }
   }
 
   /**
-   * Set the {@link RealSubscriptionManager} to a connectible state. It is safe to call this method
+   * Set the [RealSubscriptionManager] to a connectible state. It is safe to call this method
    * at any time.  Does nothing unless we are in the stopped state.
    */
-  @Override
-  public void start() {
-    final SubscriptionManagerState oldState;
-    synchronized (this) {
-      oldState = state;
+  override fun start() {
+    var oldState: SubscriptionManagerState
+    synchronized(this) {
+      oldState = state
       if (state == SubscriptionManagerState.STOPPED) {
-        state = SubscriptionManagerState.DISCONNECTED;
+        state = SubscriptionManagerState.DISCONNECTED
       }
     }
-
-    notifyStateChanged(oldState, state);
+    notifyStateChanged(oldState, state)
   }
 
   /**
    * Unsubscribe from all active subscriptions, and disconnect the web socket.  It will not be
-   * possible to add new subscriptions while the {@link SubscriptionManager} is stopping
-   * because we check the state in {@link #doSubscribe(Subscription, Callback)}.  We pass true to
-   * {@link #disconnect(boolean)} because we want to disconnect even if, somehow, a new subscription
-   * is added while or after we are doing the {@link #doUnsubscribe(Subscription)} loop.
+   * possible to add new subscriptions while the [SubscriptionManager] is stopping
+   * because we check the state in [.doSubscribe].  We pass true to
+   * [.disconnect] because we want to disconnect even if, somehow, a new subscription
+   * is added while or after we are doing the [.doUnsubscribe] loop.
    */
-  @Override
-  public void stop() {
-    dispatcher.execute(new Runnable() {
-      @Override public void run() {
-        doStop();
-      }
-    });
+  override fun stop() {
+    dispatcher.execute { doStop() }
   }
 
-  @Override public SubscriptionManagerState getState() {
-    return state;
+  override fun getState(): SubscriptionManagerState {
+    return state
   }
 
-  @Override public void addOnStateChangeListener(@NotNull OnSubscriptionManagerStateChangeListener onStateChangeListener) {
-    onStateChangeListeners.add(checkNotNull(onStateChangeListener, "onStateChangeListener == null"));
+  override fun addOnStateChangeListener(onStateChangeListener: OnSubscriptionManagerStateChangeListener) {
+    onStateChangeListeners.add(__checkNotNull(onStateChangeListener, "onStateChangeListener == null"))
   }
 
-  @Override public void removeOnStateChangeListener(@NotNull OnSubscriptionManagerStateChangeListener onStateChangeListener) {
-    onStateChangeListeners.remove(checkNotNull(onStateChangeListener, "onStateChangeListener == null"));
+  override fun removeOnStateChangeListener(onStateChangeListener: OnSubscriptionManagerStateChangeListener) {
+    onStateChangeListeners.remove(__checkNotNull(onStateChangeListener, "onStateChangeListener == null"))
   }
 
-  void doSubscribe(Subscription subscription, SubscriptionManager.Callback callback) {
-    final SubscriptionManagerState oldState;
-    synchronized (this) {
-      oldState = state;
-
+  fun doSubscribe(subscription: Subscription<*>, callback: SubscriptionManager.Callback<*>) {
+    var oldState: SubscriptionManagerState
+    synchronized(this) {
+      oldState = state
       if (state != SubscriptionManagerState.STOPPING && state != SubscriptionManagerState.STOPPED) {
-        timer.cancelTask(INACTIVITY_TIMEOUT_TIMER_TASK_ID);
-
-        final UUID subscriptionId = UUID.randomUUID();
-        subscriptions.put(subscriptionId, new SubscriptionRecord(subscriptionId, subscription, callback));
-
+        timer.cancelTask(INACTIVITY_TIMEOUT_TIMER_TASK_ID)
+        val subscriptionId = UUID.randomUUID()
+        subscriptions[subscriptionId] = SubscriptionRecord(subscriptionId, subscription as Subscription<Operation.Data>, callback as SubscriptionManager.Callback<Operation.Data>)
         if (state == SubscriptionManagerState.DISCONNECTED) {
-          state = SubscriptionManagerState.CONNECTING;
-          transport.connect();
+          state = SubscriptionManagerState.CONNECTING
+          transport.connect()
         } else if (state == SubscriptionManagerState.ACTIVE) {
           transport.send(
-              new OperationClientMessage.Start(subscriptionId.toString(), subscription, customScalarAdapters, autoPersistSubscription, false)
-          );
+              OperationClientMessage.Start(subscriptionId.toString(), subscription, customScalarAdapters, autoPersistSubscription, false)
+          )
         }
       }
     }
-
     if (oldState == SubscriptionManagerState.STOPPING || oldState == SubscriptionManagerState.STOPPED) {
-      callback.onError(new ApolloSubscriptionException(
-          "Illegal state: " + state.name() + " for subscriptions to be created."
-              + " SubscriptionManager.start() must be called to re-enable subscriptions."));
+      callback.onError(ApolloSubscriptionException(
+          "Illegal state: " + state.name + " for subscriptions to be created."
+              + " SubscriptionManager.start() must be called to re-enable subscriptions."))
     } else if (oldState == SubscriptionManagerState.CONNECTED) {
-      callback.onConnected();
+      callback.onConnected()
     }
-
-    notifyStateChanged(oldState, state);
+    notifyStateChanged(oldState, state)
   }
 
-  void doUnsubscribe(Subscription subscription) {
-    synchronized (this) {
-      SubscriptionRecord subscriptionRecord = null;
-      for (SubscriptionRecord record : subscriptions.values()) {
-        if (record.subscription == subscription) {
-          subscriptionRecord = record;
+  fun doUnsubscribe(subscription: Subscription<*>) {
+    synchronized(this) {
+      var subscriptionRecord: SubscriptionRecord? = null
+      for (record in subscriptions.values) {
+        if (record.subscription === subscription) {
+          subscriptionRecord = record
         }
       }
-
       if (subscriptionRecord != null) {
-        subscriptions.remove(subscriptionRecord.id);
+        subscriptions.remove(subscriptionRecord.id)
         if (state == SubscriptionManagerState.ACTIVE || state == SubscriptionManagerState.STOPPING) {
-          transport.send(new OperationClientMessage.Stop(subscriptionRecord.id.toString()));
+          transport.send(OperationClientMessage.Stop(subscriptionRecord.id.toString()))
         }
       }
-
       if (subscriptions.isEmpty() && state != SubscriptionManagerState.STOPPING) {
-        startInactivityTimer();
+        startInactivityTimer()
       }
     }
   }
 
-  void doStop() {
-    final Collection<SubscriptionRecord> subscriptionRecords;
-    final SubscriptionManagerState oldState;
-    synchronized (this) {
-      oldState = state;
-      state = SubscriptionManagerState.STOPPING;
-
-      subscriptionRecords = subscriptions.values();
-
+  fun doStop() {
+    var subscriptionRecords: Collection<SubscriptionRecord>
+    var oldState: SubscriptionManagerState
+    synchronized(this) {
+      oldState = state
+      state = SubscriptionManagerState.STOPPING
+      subscriptionRecords = subscriptions.values
       if (oldState == SubscriptionManagerState.ACTIVE) {
-        for (SubscriptionRecord subscriptionRecord : subscriptionRecords) {
-          transport.send(new OperationClientMessage.Stop(subscriptionRecord.id.toString()));
+        for (subscriptionRecord in subscriptionRecords) {
+          transport.send(OperationClientMessage.Stop(subscriptionRecord.id.toString()))
         }
       }
-
-      state = SubscriptionManagerState.STOPPED;
-
-      transport.disconnect(new OperationClientMessage.Terminate());
-      subscriptions = new LinkedHashMap<>();
+      state = SubscriptionManagerState.STOPPED
+      transport.disconnect(OperationClientMessage.Terminate())
+      subscriptions = LinkedHashMap()
     }
-
-    for (SubscriptionRecord record : subscriptionRecords) {
-      record.notifyOnCompleted();
+    for (record in subscriptionRecords) {
+      record.notifyOnCompleted()
     }
-
-    notifyStateChanged(oldState, SubscriptionManagerState.STOPPING);
-    notifyStateChanged(SubscriptionManagerState.STOPPING, state);
+    notifyStateChanged(oldState, SubscriptionManagerState.STOPPING)
+    notifyStateChanged(SubscriptionManagerState.STOPPING, state)
   }
 
-  void onTransportConnected() {
-    final Collection<SubscriptionRecord> subscriptionRecords = new ArrayList<>();
-
-    final SubscriptionManagerState oldState;
-    synchronized (this) {
-      oldState = state;
-
+  fun onTransportConnected() {
+    val subscriptionRecords: MutableCollection<SubscriptionRecord> = ArrayList()
+    var oldState: SubscriptionManagerState
+    synchronized(this) {
+      oldState = state
       if (state == SubscriptionManagerState.CONNECTING) {
-        subscriptionRecords.addAll(subscriptions.values());
-        state = SubscriptionManagerState.CONNECTED;
-        transport.send(new OperationClientMessage.Init(connectionParams.provide()));
+        subscriptionRecords.addAll(subscriptions.values)
+        state = SubscriptionManagerState.CONNECTED
+        transport.send(OperationClientMessage.Init(connectionParams.provide()))
       }
-
       if (state == SubscriptionManagerState.CONNECTED) {
-        timer.schedule(CONNECTION_ACKNOWLEDGE_TIMEOUT_TIMER_TASK_ID, connectionAcknowledgeTimeoutTimerTask, CONNECTION_ACKNOWLEDGE_TIMEOUT);
+        timer.schedule(CONNECTION_ACKNOWLEDGE_TIMEOUT_TIMER_TASK_ID, connectionAcknowledgeTimeoutTimerTask, CONNECTION_ACKNOWLEDGE_TIMEOUT)
       }
     }
-
-    for (SubscriptionRecord record : subscriptionRecords) {
-      record.callback.onConnected();
+    for (record in subscriptionRecords) {
+      record.callback.onConnected()
     }
-
-    notifyStateChanged(oldState, state);
+    notifyStateChanged(oldState, state)
   }
 
-  void onConnectionAcknowledgeTimeout() {
-    timer.cancelTask(CONNECTION_ACKNOWLEDGE_TIMEOUT_TIMER_TASK_ID);
-    dispatcher.execute(new Runnable() {
-      @Override
-      public void run() {
-        onTransportFailure(new ApolloNetworkException("Subscription server is not responding"));
-      }
-    });
+  fun onConnectionAcknowledgeTimeout() {
+    timer.cancelTask(CONNECTION_ACKNOWLEDGE_TIMEOUT_TIMER_TASK_ID)
+    dispatcher.execute { onTransportFailure(ApolloNetworkException("Subscription server is not responding")) }
   }
 
-  void onInactivityTimeout() {
-    timer.cancelTask(INACTIVITY_TIMEOUT_TIMER_TASK_ID);
-    dispatcher.execute(new Runnable() {
-      @Override
-      public void run() {
-        disconnect(false);
-      }
-    });
+  fun onInactivityTimeout() {
+    timer.cancelTask(INACTIVITY_TIMEOUT_TIMER_TASK_ID)
+    dispatcher.execute { disconnect(false) }
   }
 
-  void onTransportFailure(Throwable t) {
-    Collection<SubscriptionRecord> subscriptionRecords = disconnect(true);
-    for (SubscriptionRecord record : subscriptionRecords) {
-      record.notifyOnNetworkError(t);
+  fun onTransportFailure(t: Throwable?) {
+    val subscriptionRecords = disconnect(true)
+    for (record in subscriptionRecords) {
+      record.notifyOnNetworkError(t)
     }
   }
 
-  void onOperationServerMessage(OperationServerMessage message) {
-    if (message instanceof OperationServerMessage.ConnectionAcknowledge) {
-      onConnectionAcknowledgeServerMessage();
-    } else if (message instanceof OperationServerMessage.Data) {
-      onOperationDataServerMessage((OperationServerMessage.Data) message);
-    } else if (message instanceof OperationServerMessage.Error) {
-      onErrorServerMessage((OperationServerMessage.Error) message);
-    } else if (message instanceof OperationServerMessage.Complete) {
-      onCompleteServerMessage((OperationServerMessage.Complete) message);
-    } else if (message instanceof OperationServerMessage.ConnectionError) {
-      disconnect(true);
-    } else if (message instanceof OperationServerMessage.ConnectionKeepAlive) {
-      resetConnectionKeepAliveTimerTask();
+  fun onOperationServerMessage(message: OperationServerMessage?) {
+    if (message is OperationServerMessage.ConnectionAcknowledge) {
+      onConnectionAcknowledgeServerMessage()
+    } else if (message is OperationServerMessage.Data) {
+      onOperationDataServerMessage(message)
+    } else if (message is OperationServerMessage.Error) {
+      onErrorServerMessage(message)
+    } else if (message is OperationServerMessage.Complete) {
+      onCompleteServerMessage(message)
+    } else if (message is OperationServerMessage.ConnectionError) {
+      disconnect(true)
+    } else if (message is OperationServerMessage.ConnectionKeepAlive) {
+      resetConnectionKeepAliveTimerTask()
     }
   }
 
   /**
    * Disconnect the web socket and update the state.  If we are stopping, set the state to
-   * {@link State#STOPPED} so that new subscription requests will <b>not</b> automatically re-open
-   * the web socket.  If we are not stopping, set the state to {@link State#DISCONNECTED} so that
-   * new subscription requests <b>will</b> automatically re-open the web socket.
+   * [State.STOPPED] so that new subscription requests will **not** automatically re-open
+   * the web socket.  If we are not stopping, set the state to [State.DISCONNECTED] so that
+   * new subscription requests **will** automatically re-open the web socket.
    *
-   * @param force if true, always disconnect web socket, regardless of the status of {@link #subscriptions}
+   * @param force if true, always disconnect web socket, regardless of the status of [.subscriptions]
    */
-  Collection<SubscriptionRecord> disconnect(boolean force) {
-    final SubscriptionManagerState oldState;
-    final Collection<SubscriptionRecord> subscriptionRecords;
-    synchronized (this) {
-      oldState = state;
-      subscriptionRecords = subscriptions.values();
+  fun disconnect(force: Boolean): Collection<SubscriptionRecord> {
+    var oldState: SubscriptionManagerState
+    var subscriptionRecords: Collection<SubscriptionRecord>
+    synchronized(this) {
+      oldState = state
+      subscriptionRecords = subscriptions.values
       if (force || subscriptions.isEmpty()) {
-        transport.disconnect(new OperationClientMessage.Terminate());
-        state = (state == SubscriptionManagerState.STOPPING) ? SubscriptionManagerState.STOPPED : SubscriptionManagerState.DISCONNECTED;
-        subscriptions = new LinkedHashMap<>();
+        transport.disconnect(OperationClientMessage.Terminate())
+        state = if (state == SubscriptionManagerState.STOPPING) SubscriptionManagerState.STOPPED else SubscriptionManagerState.DISCONNECTED
+        subscriptions = LinkedHashMap()
       }
     }
-
-    notifyStateChanged(oldState, state);
-
-    return subscriptionRecords;
+    notifyStateChanged(oldState, state)
+    return subscriptionRecords
   }
 
-  @Override
-  public void reconnect() {
-    final SubscriptionManagerState oldState;
-    synchronized (this) {
-      oldState = state;
-      state = SubscriptionManagerState.DISCONNECTED;
-      transport.disconnect(new OperationClientMessage.Terminate());
-      state = SubscriptionManagerState.CONNECTING;
-      transport.connect();
+  override fun reconnect() {
+    var oldState: SubscriptionManagerState
+    synchronized(this) {
+      oldState = state
+      state = SubscriptionManagerState.DISCONNECTED
+      transport.disconnect(OperationClientMessage.Terminate())
+      state = SubscriptionManagerState.CONNECTING
+      transport.connect()
     }
-
-    notifyStateChanged(oldState, SubscriptionManagerState.DISCONNECTED);
-    notifyStateChanged(SubscriptionManagerState.DISCONNECTED, SubscriptionManagerState.CONNECTING);
+    notifyStateChanged(oldState, SubscriptionManagerState.DISCONNECTED)
+    notifyStateChanged(SubscriptionManagerState.DISCONNECTED, SubscriptionManagerState.CONNECTING)
   }
 
-  void onConnectionHeartbeatTimeout() {
-    reconnect();
+  fun onConnectionHeartbeatTimeout() {
+    reconnect()
   }
 
-  void onConnectionClosed() {
-    Collection<SubscriptionRecord> subscriptionRecords;
-    final SubscriptionManagerState oldState;
-    synchronized (this) {
-      oldState = state;
-
-      subscriptionRecords = subscriptions.values();
-      state = SubscriptionManagerState.DISCONNECTED;
-      subscriptions = new LinkedHashMap<>();
+  fun onConnectionClosed() {
+    var subscriptionRecords: Collection<SubscriptionRecord>
+    var oldState: SubscriptionManagerState
+    synchronized(this) {
+      oldState = state
+      subscriptionRecords = subscriptions.values
+      state = SubscriptionManagerState.DISCONNECTED
+      subscriptions = LinkedHashMap()
     }
-
-    for (SubscriptionRecord record : subscriptionRecords) {
-      record.callback.onTerminated();
+    for (record in subscriptionRecords) {
+      record.callback.onTerminated()
     }
-
-    notifyStateChanged(oldState, state);
+    notifyStateChanged(oldState, state)
   }
 
-  private void resetConnectionKeepAliveTimerTask() {
+  private fun resetConnectionKeepAliveTimerTask() {
     if (connectionHeartbeatTimeoutMs <= 0) {
-      return;
+      return
     }
-    synchronized (this) {
-      timer.schedule(CONNECTION_KEEP_ALIVE_TIMEOUT_TIMER_TASK_ID, connectionHeartbeatTimeoutTimerTask, connectionHeartbeatTimeoutMs);
-    }
+    synchronized(this) { timer.schedule(CONNECTION_KEEP_ALIVE_TIMEOUT_TIMER_TASK_ID, connectionHeartbeatTimeoutTimerTask, connectionHeartbeatTimeoutMs) }
   }
 
-  private void startInactivityTimer() {
-    timer.schedule(INACTIVITY_TIMEOUT_TIMER_TASK_ID, inactivityTimeoutTimerTask, INACTIVITY_TIMEOUT);
+  private fun startInactivityTimer() {
+    timer.schedule(INACTIVITY_TIMEOUT_TIMER_TASK_ID, inactivityTimeoutTimerTask, INACTIVITY_TIMEOUT)
   }
 
-  @SuppressWarnings("unchecked")
-  private void onOperationDataServerMessage(OperationServerMessage.Data message) {
-    String subscriptionId = message.id != null ? message.id : "";
-    SubscriptionRecord subscriptionRecord;
-    synchronized (this) {
-      try {
-        subscriptionRecord = subscriptions.get(UUID.fromString(subscriptionId));
-      } catch (IllegalArgumentException e) {
-        subscriptionRecord = null;
+  private fun onOperationDataServerMessage(message: OperationServerMessage.Data) {
+    val subscriptionId = message.id ?: ""
+    var subscriptionRecord: SubscriptionRecord?
+    synchronized(this) {
+      subscriptionRecord = try {
+        subscriptions[UUID.fromString(subscriptionId)]
+      } catch (e: IllegalArgumentException) {
+        null
       }
     }
-
     if (subscriptionRecord != null) {
-      ResponseNormalizer<Map<String, Object>> normalizer = responseNormalizer.invoke();
-      OperationResponseParser parser = new OperationResponseParser(
-          subscriptionRecord.subscription,
+      val normalizer = responseNormalizer.invoke()
+      val parser = OperationResponseParser<Operation.Data>(
+          subscriptionRecord!!.subscription,
           customScalarAdapters, normalizer
-      );
-
-      Response response;
+      )
+      val response: Response<*>
       try {
-        response = parser.parse(message.payload);
-      } catch (Exception e) {
-        subscriptionRecord = removeSubscriptionById(subscriptionId);
+        response = parser.parse(message.payload)
+      } catch (e: Exception) {
+        subscriptionRecord = removeSubscriptionById(subscriptionId)
         if (subscriptionRecord != null) {
-          subscriptionRecord.notifyOnError(new ApolloSubscriptionException("Failed to parse server message", e));
+          subscriptionRecord!!.notifyOnError(ApolloSubscriptionException("Failed to parse server message", e))
         }
-        return;
+        return
       }
-
-      subscriptionRecord.notifyOnResponse(response, normalizer.records());
+      subscriptionRecord!!.notifyOnResponse(response, normalizer.records())
     }
   }
 
-  private void onConnectionAcknowledgeServerMessage() {
-    final SubscriptionManagerState oldState;
-    synchronized (this) {
-      oldState = state;
-
-      timer.cancelTask(CONNECTION_ACKNOWLEDGE_TIMEOUT_TIMER_TASK_ID);
-
+  private fun onConnectionAcknowledgeServerMessage() {
+    var oldState: SubscriptionManagerState
+    synchronized(this) {
+      oldState = state
+      timer.cancelTask(CONNECTION_ACKNOWLEDGE_TIMEOUT_TIMER_TASK_ID)
       if (state == SubscriptionManagerState.CONNECTED) {
-        state = SubscriptionManagerState.ACTIVE;
-        for (SubscriptionRecord subscriptionRecord : subscriptions.values()) {
+        state = SubscriptionManagerState.ACTIVE
+        for (subscriptionRecord in subscriptions.values) {
           transport.send(
-              new OperationClientMessage.Start(subscriptionRecord.id.toString(), subscriptionRecord.subscription, customScalarAdapters,
+              OperationClientMessage.Start(subscriptionRecord.id.toString(), subscriptionRecord.subscription, customScalarAdapters,
                   autoPersistSubscription, false)
-          );
+          )
         }
       }
     }
-
-    notifyStateChanged(oldState, state);
+    notifyStateChanged(oldState, state)
   }
 
-  private void onErrorServerMessage(OperationServerMessage.Error message) {
-    final String subscriptionId = message.id != null ? message.id : "";
-    final SubscriptionRecord subscriptionRecord = removeSubscriptionById(subscriptionId);
-    if (subscriptionRecord == null) {
-      return;
-    }
-
-    final boolean resendSubscriptionWithDocument;
-    if (autoPersistSubscription) {
-      Error error = OperationResponseParser.parseError(message.payload);
-      resendSubscriptionWithDocument = PROTOCOL_NEGOTIATION_ERROR_NOT_FOUND.equalsIgnoreCase(error.getMessage())
-          || PROTOCOL_NEGOTIATION_ERROR_NOT_SUPPORTED.equalsIgnoreCase(error.getMessage());
+  private fun onErrorServerMessage(message: OperationServerMessage.Error) {
+    val subscriptionId = message.id ?: ""
+    val subscriptionRecord = removeSubscriptionById(subscriptionId) ?: return
+    val resendSubscriptionWithDocument: Boolean
+    resendSubscriptionWithDocument = if (autoPersistSubscription) {
+      val error = OperationResponseParser.parseError(message.payload)
+      (PROTOCOL_NEGOTIATION_ERROR_NOT_FOUND.equals(error.message, ignoreCase = true)
+          || PROTOCOL_NEGOTIATION_ERROR_NOT_SUPPORTED.equals(error.message, ignoreCase = true))
     } else {
-      resendSubscriptionWithDocument = false;
+      false
     }
-
     if (resendSubscriptionWithDocument) {
-      synchronized (this) {
-        subscriptions.put(subscriptionRecord.id, subscriptionRecord);
-        transport.send(new OperationClientMessage.Start(
+      synchronized(this) {
+        subscriptions[subscriptionRecord.id] = subscriptionRecord
+        transport.send(OperationClientMessage.Start(
             subscriptionRecord.id.toString(), subscriptionRecord.subscription, customScalarAdapters, true, true
-        ));
+        ))
       }
     } else {
-      subscriptionRecord.notifyOnError(new ApolloSubscriptionServerException(message.payload));
+      subscriptionRecord.notifyOnError(ApolloSubscriptionServerException(message.payload))
     }
   }
 
-  private void onCompleteServerMessage(OperationServerMessage.Complete message) {
-    String subscriptionId = message.id != null ? message.id : "";
-    SubscriptionRecord subscriptionRecord = removeSubscriptionById(subscriptionId);
-    if (subscriptionRecord != null) {
-      subscriptionRecord.notifyOnCompleted();
-    }
+  private fun onCompleteServerMessage(message: OperationServerMessage.Complete) {
+    val subscriptionId = message.id ?: ""
+    val subscriptionRecord = removeSubscriptionById(subscriptionId)
+    subscriptionRecord.notifyOnCompleted()
   }
 
-  private SubscriptionRecord removeSubscriptionById(String subscriptionId) {
-    SubscriptionRecord subscriptionRecord;
-    synchronized (this) {
-      try {
-        subscriptionRecord = subscriptions.remove(UUID.fromString(subscriptionId));
-      } catch (IllegalArgumentException e) {
-        subscriptionRecord = null;
+  private fun removeSubscriptionById(subscriptionId: String?): SubscriptionRecord {
+    var subscriptionRecord: SubscriptionRecord?
+    synchronized(this) {
+      subscriptionRecord = try {
+        subscriptions.remove(UUID.fromString(subscriptionId))
+      } catch (e: IllegalArgumentException) {
+        null
       }
-
       if (subscriptions.isEmpty()) {
-        startInactivityTimer();
+        startInactivityTimer()
       }
     }
-    return subscriptionRecord;
+    return subscriptionRecord!!
   }
 
-  private void notifyStateChanged(SubscriptionManagerState oldState, SubscriptionManagerState newState) {
+  private fun notifyStateChanged(oldState: SubscriptionManagerState, newState: SubscriptionManagerState) {
     if (oldState == newState) {
-      return;
+      return
     }
-
-    for (OnSubscriptionManagerStateChangeListener onStateChangeListener : onStateChangeListeners) {
-      onStateChangeListener.onStateChange(oldState, newState);
-    }
-  }
-
-  private static class SubscriptionRecord {
-    final UUID id;
-    final Subscription<?> subscription;
-    final SubscriptionManager.Callback<?> callback;
-
-    SubscriptionRecord(UUID id, Subscription<?> subscription, SubscriptionManager.Callback<?> callback) {
-      this.id = id;
-      this.subscription = subscription;
-      this.callback = callback;
-    }
-
-    @SuppressWarnings("unchecked")
-    void notifyOnResponse(Response response, Collection<Record> cacheRecords) {
-      callback.onResponse(new SubscriptionResponse(subscription, response, cacheRecords));
-    }
-
-    void notifyOnError(ApolloSubscriptionException error) {
-      callback.onError(error);
-    }
-
-    void notifyOnNetworkError(Throwable t) {
-      callback.onNetworkError(t);
-    }
-
-    void notifyOnCompleted() {
-      callback.onCompleted();
+    for (onStateChangeListener in onStateChangeListeners) {
+      onStateChangeListener.onStateChange(oldState, newState)
     }
   }
 
-  private static final class SubscriptionTransportCallback implements SubscriptionTransport.Callback {
-    private final RealSubscriptionManager delegate;
-    private final Executor dispatcher;
-
-    SubscriptionTransportCallback(RealSubscriptionManager delegate, Executor dispatcher) {
-      this.delegate = delegate;
-      this.dispatcher = dispatcher;
+  class SubscriptionRecord internal constructor(val id: UUID, val subscription: Subscription<Operation.Data>, val callback: SubscriptionManager.Callback<Operation.Data>) {
+    fun notifyOnResponse(response: Response<*>?, cacheRecords: Collection<Record?>?) {
+      callback.onResponse(SubscriptionResponse(subscription, response as Response<Operation.Data>, cacheRecords!!))
     }
 
-    @Override
-    public void onConnected() {
-      dispatcher.execute(new Runnable() {
-        @Override
-        public void run() {
-          delegate.onTransportConnected();
-        }
-      });
+    fun notifyOnError(error: ApolloSubscriptionException?) {
+      callback.onError(error!!)
     }
 
-    @Override
-    public void onFailure(final Throwable t) {
-      dispatcher.execute(new Runnable() {
-        @Override
-        public void run() {
-          delegate.onTransportFailure(t);
-        }
-      });
+    fun notifyOnNetworkError(t: Throwable?) {
+      callback.onNetworkError(t!!)
     }
 
-    @Override
-    public void onMessage(final OperationServerMessage message) {
-      dispatcher.execute(new Runnable() {
-        @Override
-        public void run() {
-          delegate.onOperationServerMessage(message);
-        }
-      });
-    }
-
-    @Override
-    public void onClosed() {
-      dispatcher.execute(new Runnable() {
-        @Override
-        public void run() {
-          delegate.onConnectionClosed();
-        }
-      });
+    fun notifyOnCompleted() {
+      callback.onCompleted()
     }
   }
 
-  static final class AutoReleaseTimer {
-    final Map<Integer, TimerTask> tasks = new LinkedHashMap<>();
-    Timer timer;
+  private class SubscriptionTransportCallback(private val delegate: RealSubscriptionManager, private val dispatcher: Executor) : SubscriptionTransport.Callback {
+    override fun onConnected() {
+      dispatcher.execute { delegate.onTransportConnected() }
+    }
 
-    void schedule(final int taskId, final Runnable task, long delay) {
-      TimerTask timerTask = new TimerTask() {
-        @Override
-        public void run() {
+    override fun onFailure(t: Throwable) {
+      dispatcher.execute { delegate.onTransportFailure(t) }
+    }
+
+    override fun onMessage(message: OperationServerMessage) {
+      dispatcher.execute { delegate.onOperationServerMessage(message) }
+    }
+
+    override fun onClosed() {
+      dispatcher.execute { delegate.onConnectionClosed() }
+    }
+  }
+
+  class AutoReleaseTimer {
+    val tasks: MutableMap<Int, TimerTask> = LinkedHashMap()
+    var timer: Timer? = null
+    fun schedule(taskId: Int, task: Runnable, delay: Long) {
+      val timerTask: TimerTask = object : TimerTask() {
+        override fun run() {
           try {
-            task.run();
+            task.run()
           } finally {
-            cancelTask(taskId);
+            cancelTask(taskId)
           }
         }
-      };
-
-      synchronized (this) {
-        TimerTask previousTimerTask = tasks.put(taskId, timerTask);
-        if (previousTimerTask != null) {
-          previousTimerTask.cancel();
-        }
-
+      }
+      synchronized(this) {
+        val previousTimerTask = tasks.put(taskId, timerTask)
+        previousTimerTask?.cancel()
         if (timer == null) {
-          timer = new Timer("Subscription SmartTimer", true);
+          timer = Timer("Subscription SmartTimer", true)
         }
-
-        timer.schedule(timerTask, delay);
+        timer!!.schedule(timerTask, delay)
       }
     }
 
-    void cancelTask(int taskId) {
-      synchronized (this) {
-        TimerTask timerTask = tasks.remove(taskId);
-        if (timerTask != null) {
-          timerTask.cancel();
-        }
-
+    fun cancelTask(taskId: Int) {
+      synchronized(this) {
+        val timerTask = tasks.remove(taskId)
+        timerTask?.cancel()
         if (tasks.isEmpty() && timer != null) {
-          timer.cancel();
-          timer = null;
+          timer!!.cancel()
+          timer = null
         }
       }
     }
+  }
+
+  companion object {
+    const val CONNECTION_ACKNOWLEDGE_TIMEOUT_TIMER_TASK_ID = 1
+    const val INACTIVITY_TIMEOUT_TIMER_TASK_ID = 2
+    const val CONNECTION_KEEP_ALIVE_TIMEOUT_TIMER_TASK_ID = 3
+    val CONNECTION_ACKNOWLEDGE_TIMEOUT = TimeUnit.SECONDS.toMillis(5)
+    val INACTIVITY_TIMEOUT = TimeUnit.SECONDS.toMillis(10)
+    const val PROTOCOL_NEGOTIATION_ERROR_NOT_FOUND = "PersistedQueryNotFound"
+    const val PROTOCOL_NEGOTIATION_ERROR_NOT_SUPPORTED = "PersistedQueryNotSupported"
+  }
+
+  init {
+    __checkNotNull(customScalarAdapters, "scalarTypeAdapters == null")
+    __checkNotNull(transportFactory, "transportFactory == null")
+    __checkNotNull(dispatcher, "dispatcher == null")
+    __checkNotNull(responseNormalizer, "responseNormalizer == null")
+    this.customScalarAdapters = __checkNotNull(customScalarAdapters, "scalarTypeAdapters == null")
+    this.connectionParams = __checkNotNull(connectionParams, "connectionParams == null")
+    transport = transportFactory.create(SubscriptionTransportCallback(this, dispatcher))
+    this.dispatcher = dispatcher
+    this.connectionHeartbeatTimeoutMs = connectionHeartbeatTimeoutMs
+    this.responseNormalizer = responseNormalizer
+    this.autoPersistSubscription = autoPersistSubscription
   }
 }
