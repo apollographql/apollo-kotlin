@@ -22,15 +22,15 @@ import static com.apollographql.apollo.api.internal.Utils.checkNotNull;
 
 @SuppressWarnings("WeakerAccess")
 public final class OperationResponseParser<D extends Operation.Data> {
-  final Operation<D, ?> operation;
+  final Operation<D> operation;
   final CustomScalarAdapters customScalarAdapters;
   final ResponseNormalizer<Map<String, Object>> responseNormalizer;
 
-  @SuppressWarnings("unchecked") public OperationResponseParser(Operation<D, ?> operation, CustomScalarAdapters customScalarAdapters) {
+  @SuppressWarnings("unchecked") public OperationResponseParser(Operation<D> operation, CustomScalarAdapters customScalarAdapters) {
     this(operation, customScalarAdapters, (ResponseNormalizer<Map<String, Object>>) ResponseNormalizer.NO_OP_NORMALIZER);
   }
 
-  public OperationResponseParser(Operation<D, ?> operation,
+  public OperationResponseParser(Operation<D> operation,
       CustomScalarAdapters customScalarAdapters, ResponseNormalizer<Map<String, Object>> responseNormalizer) {
     this.operation = operation;
     this.customScalarAdapters = customScalarAdapters;

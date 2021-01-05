@@ -25,7 +25,7 @@ import kotlin.jvm.Transient
     "RemoveRedundantQualifierName")
 data class TestQuery(
   val id: String
-) : Query<TestQuery.Data, Operation.Variables> {
+) : Query<TestQuery.Data> {
   @Transient
   private val variables: Operation.Variables = object : Operation.Variables() {
     override fun valueMap(): Map<String, Any?> = mutableMapOf<String, Any?>().apply {

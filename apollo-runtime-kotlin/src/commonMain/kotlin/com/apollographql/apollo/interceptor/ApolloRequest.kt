@@ -8,7 +8,7 @@ import com.benasher44.uuid.uuid4
 
 @ApolloExperimental
 class ApolloRequest<D : Operation.Data>(
-    val operation: Operation<D, *>,
+    val operation: Operation<D>,
     val customScalarAdapters: CustomScalarAdapters,
     val executionContext: ExecutionContext
 ) {

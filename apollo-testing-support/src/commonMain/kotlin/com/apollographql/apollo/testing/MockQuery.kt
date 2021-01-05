@@ -7,7 +7,7 @@ import com.apollographql.apollo.api.internal.ResponseAdapter
 import com.apollographql.apollo.api.internal.ResponseReader
 import com.apollographql.apollo.api.internal.ResponseWriter
 
-class MockQuery : Query<MockQuery.Data, Operation.Variables> {
+class MockQuery : Query<MockQuery.Data> {
 
   override fun queryDocument(): String = "query MockQuery { name }"
 

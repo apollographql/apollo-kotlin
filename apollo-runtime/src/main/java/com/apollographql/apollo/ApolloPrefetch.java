@@ -112,8 +112,8 @@ public interface ApolloPrefetch extends Cancelable {
      * @param operation the operation which needs to be performed
      * @return The ApolloPrefetch object with the wrapped operation object
      */
-    <D extends Operation.Data, V extends Operation.Variables> ApolloPrefetch prefetch(
-        @NotNull Operation<D, V> operation);
+    <D extends Operation.Data> ApolloPrefetch prefetch(
+        @NotNull Operation<D> operation);
 
   }
 }

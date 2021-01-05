@@ -14,7 +14,7 @@ import kotlin.jvm.JvmField
 /**
  * Represents a GraphQL operation (mutation or query).
  */
-interface Operation<D : Operation.Data, V : Operation.Variables> {
+interface Operation<D : Operation.Data> {
   /**
    * Returns the raw GraphQL operation String.
    */
@@ -23,7 +23,7 @@ interface Operation<D : Operation.Data, V : Operation.Variables> {
   /**
    * Returns the variables associated with this GraphQL operation.
    */
-  fun variables(): V
+  fun variables(): Operation.Variables
 
   /**
    * Returns an Adapter that maps the server response data to/from generated model class [D].

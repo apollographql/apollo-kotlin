@@ -29,7 +29,7 @@ data class TestQuery(
   val episode: Input<Episode> = Input.absent(),
   val stars: Int,
   val greenValue: Double
-) : Query<TestQuery.Data, Operation.Variables> {
+) : Query<TestQuery.Data> {
   @Transient
   private val variables: Operation.Variables = object : Operation.Variables() {
     override fun valueMap(): Map<String, Any?> = mutableMapOf<String, Any?>().apply {

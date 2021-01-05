@@ -50,7 +50,7 @@ import static java.util.Collections.emptyList;
 
 @SuppressWarnings("WeakerAccess")
 public final class RealApolloCall<D extends Query.Data> implements ApolloQueryCall<D>, ApolloMutationCall<D> {
-  final Operation<D, ?> operation;
+  final Operation<D> operation;
   final HttpUrl serverUrl;
   final Call.Factory httpCallFactory;
   final HttpCache httpCache;
@@ -230,7 +230,7 @@ public final class RealApolloCall<D extends Query.Data> implements ApolloQueryCa
         .build();
   }
 
-  @NotNull @Override public Operation<D, ?> operation() {
+  @NotNull @Override public Operation<D> operation() {
     return operation;
   }
 

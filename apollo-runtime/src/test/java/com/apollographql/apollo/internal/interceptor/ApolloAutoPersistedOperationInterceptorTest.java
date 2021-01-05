@@ -270,7 +270,7 @@ public class ApolloAutoPersistedOperationInterceptorTest {
         .build();
   }
 
-  static class MockOperation implements Operation<MockOperation.Data, Operation.Variables> {
+  static class MockOperation implements Operation<MockOperation.Data> {
 
     @Override public String queryDocument() {
       throw new UnsupportedOperationException();

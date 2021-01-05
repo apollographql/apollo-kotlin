@@ -444,7 +444,7 @@ class ResponseWriteTestCase {
   }
 
   @Throws(Exception::class)
-  private fun <D: Operation.Data> assertCachedQueryResponse(query: Query<D, *>, predicate: Predicate<Response<D>>) {
+  private fun <D: Operation.Data> assertCachedQueryResponse(query: Query<D>, predicate: Predicate<Response<D>>) {
     assertResponse(
         apolloClient!!.query(query).responseFetcher(ApolloResponseFetchers.CACHE_ONLY),
         predicate

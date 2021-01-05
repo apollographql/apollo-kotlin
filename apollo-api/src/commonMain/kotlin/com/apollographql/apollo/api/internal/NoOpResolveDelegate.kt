@@ -4,7 +4,7 @@ import com.apollographql.apollo.api.Operation
 import com.apollographql.apollo.api.ResponseField
 
 class NoOpResolveDelegate<T>: ResolveDelegate<T> {
-  override fun willResolveRootQuery(operation: Operation<*, *>) {
+  override fun willResolveRootQuery(operation: Operation<*>) {
   }
 
   override fun willResolve(field: ResponseField, variables: Operation.Variables, value: Any?) {

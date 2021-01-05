@@ -31,19 +31,19 @@ class ApolloClient private constructor(
   private val coroutineDispatcherContext = executionContext[ApolloCoroutineDispatcherContext]
       ?: ApolloCoroutineDispatcherContext(Dispatchers.Default)
 
-  fun <D : Operation.Data, V : Operation.Variables> mutate(mutation: Mutation<D, V>): ApolloMutationCall<D> {
+  fun <D : Operation.Data> mutate(mutation: Mutation<D>): ApolloMutationCall<D> {
     return mutation.prepareCall()
   }
 
-  fun <D : Operation.Data, V : Operation.Variables> query(query: Query<D, V>): ApolloQueryCall<D> {
+  fun <D : Operation.Data> query(query: Query<D>): ApolloQueryCall<D> {
     return query.prepareCall()
   }
 
-  fun <D : Operation.Data, V : Operation.Variables> subscribe(query: Subscription<D, V>): ApolloQueryCall<D> {
+  fun <D : Operation.Data> subscribe(query: Subscription<D>): ApolloQueryCall<D> {
     return query.prepareCall()
   }
 
-  private fun <D : Operation.Data, V : Operation.Variables> Operation<D, V>.prepareCall(): RealApolloCall<D> {
+  private fun <D : Operation.Data> Operation<D>.prepareCall(): RealApolloCall<D> {
     return RealApolloCall(
         operation = this,
         customScalarAdapters = customScalarAdapters,

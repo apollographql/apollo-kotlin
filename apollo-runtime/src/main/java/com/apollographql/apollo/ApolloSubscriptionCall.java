@@ -53,8 +53,8 @@ public interface ApolloSubscriptionCall<D extends Subscription.Data> extends Can
      * @param subscription to be sent to the subscription server to start listening pushed updates
      * @return prepared {@link ApolloSubscriptionCall} call to be executed
      */
-    <D extends Subscription.Data, V extends Subscription.Variables> ApolloSubscriptionCall<D> subscribe(
-        @NotNull Subscription<D, V> subscription);
+    <D extends Subscription.Data> ApolloSubscriptionCall<D> subscribe(
+        @NotNull Subscription<D> subscription);
   }
 
   /**

@@ -18,7 +18,7 @@ object SimpleOperationResponseParser {
   @Throws(IOException::class)
   fun <D : Operation.Data> parse(
       source: BufferedSource,
-      operation: Operation<D, *>,
+      operation: Operation<D>,
       customScalarAdapters: CustomScalarAdapters
   ): Response<D> {
     return BufferedSourceJsonReader(source).use { jsonReader ->

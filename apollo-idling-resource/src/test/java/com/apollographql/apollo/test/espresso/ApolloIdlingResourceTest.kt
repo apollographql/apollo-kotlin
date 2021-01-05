@@ -144,7 +144,7 @@ class ApolloIdlingResourceTest {
   companion object {
     private const val TIME_OUT_SECONDS: Long = 3
     private const val IDLING_RESOURCE_NAME = "apolloIdlingResource"
-    private val EMPTY_QUERY: Query<Operation.Data, Operation.Variables> = object : Query<Operation.Data, Operation.Variables> {
+    private val EMPTY_QUERY: Query<Operation.Data> = object : Query<Operation.Data> {
       var operationName: OperationName = object : OperationName {
         override fun name(): String {
           return "EmptyQuery"

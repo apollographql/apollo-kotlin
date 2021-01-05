@@ -8,7 +8,7 @@ import com.apollographql.apollo.api.internal.ResponseAdapter
 import com.apollographql.apollo.api.internal.ResponseReader
 import com.apollographql.apollo.api.internal.ResponseWriter
 
-class MockSubscription : Subscription<MockSubscription.Data, Operation.Variables> {
+class MockSubscription : Subscription<MockSubscription.Data> {
 
   override fun queryDocument(): String = "subscription MockSubscription { name }"
 

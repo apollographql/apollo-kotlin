@@ -74,7 +74,7 @@ class ApolloServerInterceptor(
     callBack.onFetch(FetchSourceType.NETWORK)
     val httpCall: Call
     httpCall = try {
-      if (request.useHttpGetMethodForQueries && request.operation is Query<*, *>) {
+      if (request.useHttpGetMethodForQueries && request.operation is Query<*>) {
         httpGetCall(request.operation, request.cacheHeaders, request.requestHeaders,
             request.sendQueryDocument, request.autoPersistQueries)
       } else {
@@ -112,7 +112,7 @@ class ApolloServerInterceptor(
   }
 
   @Throws(IOException::class)
-  fun httpGetCall(operation: Operation<*, *>, cacheHeaders: CacheHeaders, requestHeaders: RequestHeaders,
+  fun httpGetCall(operation: Operation<*>, cacheHeaders: CacheHeaders, requestHeaders: RequestHeaders,
                   writeQueryDocument: Boolean, autoPersistQueries: Boolean): Call {
     val requestBuilder = Request.Builder()
         .url(httpGetUrl(serverUrl, operation, customScalarAdapters, writeQueryDocument, autoPersistQueries))
@@ -122,7 +122,7 @@ class ApolloServerInterceptor(
   }
 
   @Throws(IOException::class)
-  fun httpPostCall(operation: Operation<*, *>, cacheHeaders: CacheHeaders, requestHeaders: RequestHeaders,
+  fun httpPostCall(operation: Operation<*>, cacheHeaders: CacheHeaders, requestHeaders: RequestHeaders,
                    writeQueryDocument: Boolean, autoPersistQueries: Boolean): Call {
     var requestBody = RequestBody.create(MEDIA_TYPE, httpPostRequestBody(operation, customScalarAdapters,
         writeQueryDocument, autoPersistQueries))
@@ -136,7 +136,7 @@ class ApolloServerInterceptor(
   }
 
   @Throws(IOException::class)
-  fun decorateRequest(requestBuilder: Request.Builder, operation: Operation<*, *>, cacheHeaders: CacheHeaders,
+  fun decorateRequest(requestBuilder: Request.Builder, operation: Operation<*>, cacheHeaders: CacheHeaders,
                       requestHeaders: RequestHeaders) {
     requestBuilder
         .header(HEADER_ACCEPT_TYPE, ACCEPT_TYPE)
@@ -172,18 +172,18 @@ class ApolloServerInterceptor(
     val MEDIA_TYPE = MediaType.parse("application/json; charset=utf-8")
 
     @Throws(IOException::class)
-    fun cacheKey(operation: Operation<*, *>, customScalarAdapters: CustomScalarAdapters?): String {
+    fun cacheKey(operation: Operation<*>, customScalarAdapters: CustomScalarAdapters?): String {
       return httpPostRequestBody(operation, customScalarAdapters, true, true).md5().hex()
     }
 
     @Throws(IOException::class)
-    fun httpPostRequestBody(operation: Operation<*, *>, customScalarAdapters: CustomScalarAdapters?,
+    fun httpPostRequestBody(operation: Operation<*>, customScalarAdapters: CustomScalarAdapters?,
                             writeQueryDocument: Boolean, autoPersistQueries: Boolean): ByteString {
       return operation.composeRequestBody(autoPersistQueries, writeQueryDocument, customScalarAdapters!!)
     }
 
     @Throws(IOException::class)
-    fun httpGetUrl(serverUrl: HttpUrl, operation: Operation<*, *>,
+    fun httpGetUrl(serverUrl: HttpUrl, operation: Operation<*>,
                    customScalarAdapters: CustomScalarAdapters?, writeQueryDocument: Boolean,
                    autoPersistQueries: Boolean): HttpUrl {
       val urlBuilder = serverUrl.newBuilder()
@@ -201,7 +201,7 @@ class ApolloServerInterceptor(
     }
 
     @Throws(IOException::class)
-    fun addVariablesUrlQueryParameter(urlBuilder: HttpUrl.Builder, operation: Operation<*, *>,
+    fun addVariablesUrlQueryParameter(urlBuilder: HttpUrl.Builder, operation: Operation<*>,
                                       customScalarAdapters: CustomScalarAdapters?) {
       val buffer = Buffer()
       val jsonWriter = of(buffer)
@@ -214,7 +214,7 @@ class ApolloServerInterceptor(
     }
 
     @Throws(IOException::class)
-    fun addExtensionsUrlQueryParameter(urlBuilder: HttpUrl.Builder, operation: Operation<*, *>) {
+    fun addExtensionsUrlQueryParameter(urlBuilder: HttpUrl.Builder, operation: Operation<*>) {
       val buffer = Buffer()
       val jsonWriter = of(buffer)
       jsonWriter.serializeNulls = true
@@ -272,7 +272,7 @@ class ApolloServerInterceptor(
     }
 
     @Throws(IOException::class)
-    fun transformToMultiPartIfUploadExists(originalBody: RequestBody?, operation: Operation<*, *>): RequestBody? {
+    fun transformToMultiPartIfUploadExists(originalBody: RequestBody?, operation: Operation<*>): RequestBody? {
       val allUploads = ArrayList<FileUploadMeta>()
       for (variableName in operation.variables().valueMap().keys) {
         val value = operation.variables().valueMap()[variableName]

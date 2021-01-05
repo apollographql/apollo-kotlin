@@ -119,7 +119,7 @@ class ApolloCallTrackerTest {
   companion object {
     private const val SERVER_URL = "http://localhost:1234"
     private const val TIMEOUT_SECONDS = 2
-    private val EMPTY_QUERY: Query<QueryData, Operation.Variables> = object : Query<QueryData, Operation.Variables> {
+    private val EMPTY_QUERY: Query<QueryData> = object : Query<QueryData> {
       var operationName: OperationName = object : OperationName {
         override fun name(): String {
           return "EmptyQuery"

@@ -151,7 +151,7 @@ public class SubscriptionAutoPersistTest {
     }
   }
 
-  private static final class MockSubscription implements Subscription<Operation.Data, Operation.Variables> {
+  private static final class MockSubscription implements Subscription<Operation.Data> {
     final String operationId;
 
     MockSubscription(String operationId) {

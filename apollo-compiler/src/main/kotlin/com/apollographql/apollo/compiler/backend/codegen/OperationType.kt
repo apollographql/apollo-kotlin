@@ -120,7 +120,7 @@ private fun CodeGenerationAst.OperationType.superInterfaceType(targetPackage: St
     CodeGenerationAst.OperationType.Type.QUERY -> Query::class.asClassName()
     CodeGenerationAst.OperationType.Type.MUTATION -> Mutation::class.asClassName()
     CodeGenerationAst.OperationType.Type.SUBSCRIPTION -> Subscription::class.asClassName()
-  }.parameterizedBy(dataTypeName, Operation.Variables::class.asClassName())
+  }.parameterizedBy(dataTypeName)
 }
 
 private val CodeGenerationAst.OperationType.primaryConstructorSpec: FunSpec
