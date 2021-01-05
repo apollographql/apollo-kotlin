@@ -35,6 +35,9 @@ object Utils {
     responseNormalizer.records()
   }
 
+  /**
+   * Contrary to [parseWithInlinedNormalizer], this normalizes after parsing, using the generated models
+   */
   fun <D : Operation.Data> parseAndNormalizeAfter(operation: Operation<D>, bufferedSource: BufferedSource) {
     val response = OperationResponseParser(
         operation,
