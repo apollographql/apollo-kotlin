@@ -127,6 +127,8 @@ interface ApolloStore {
   /**
    * Read GraphQL operation response from store.
    *
+   * This is an internal API
+   *
    * @param operation           response of which should be read
    * @param responseNormalizer  [ResponseNormalizer] to be used when reading cached response
    * @param cacheHeaders        [CacheHeaders] to be used when reading cached response
@@ -142,15 +144,14 @@ interface ApolloStore {
   ): ApolloStoreOperation<Response<D>>
 
   /**
-   * Read from store.
+   * Read a GraphQL fragment from the store.
    *
    * @param cacheKey    [CacheKey] to be used to find cache record for the fragment
-   * @param variables   [Operation.Variables] required for fragment arguments resolving
    * @param <F>         type of fragment to be read
    * @return {@ApolloStoreOperation} to be performed, that will be resolved with cached fragment data
   </F> */
   fun <F> read(
-      adapter: ResponseAdapter<F>,
+      fragment: ResponseAdapter<F>,
       cacheKey: CacheKey,
       variables: Operation.Variables
   ): ApolloStoreOperation<F>

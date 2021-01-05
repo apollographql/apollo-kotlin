@@ -23,7 +23,7 @@ interface Operation<D : Operation.Data> {
   /**
    * Returns the variables associated with this GraphQL operation.
    */
-  fun variables(): Operation.Variables
+  fun variables(): Variables
 
   /**
    * Returns an Adapter that maps the server response data to/from generated model class [D].
@@ -41,7 +41,7 @@ interface Operation<D : Operation.Data> {
   fun operationId(): String
 
   /**
-   * Marker interface for generated model built from data returned by the server in response to this operation.
+   * Marker interface for generated models built from data returned by the server in response to this operation.
    */
   interface Data
 
