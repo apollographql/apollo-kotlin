@@ -1,12 +1,10 @@
 package com.apollographql.apollo.internal.interceptor
 
 import com.apollographql.apollo.api.Operation
-import com.apollographql.apollo.api.Response
 import com.apollographql.apollo.api.internal.ApolloLogger
 import com.apollographql.apollo.api.internal.Utils.__checkNotNull
 import com.apollographql.apollo.cache.ApolloCacheHeaders
 import com.apollographql.apollo.cache.normalized.ApolloStore
-import com.apollographql.apollo.cache.normalized.ApolloStoreOperation
 import com.apollographql.apollo.cache.normalized.Record
 import com.apollographql.apollo.cache.normalized.internal.Transaction
 import com.apollographql.apollo.cache.normalized.internal.WriteableStore
@@ -85,7 +83,7 @@ class ApolloCacheInterceptor(
   @Throws(ApolloException::class)
   fun resolveFromCache(request: InterceptorRequest): InterceptorResponse {
     val responseNormalizer = apolloStore.cacheResponseNormalizer()
-    val apolloStoreOperation = apolloStore.read(
+    val apolloStoreOperation = apolloStore.readOperationInternal(
         request.operation,
         responseNormalizer,
         request.cacheHeaders)

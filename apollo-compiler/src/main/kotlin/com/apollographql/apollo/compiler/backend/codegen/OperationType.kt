@@ -32,12 +32,7 @@ internal fun CodeGenerationAst.OperationType.typeSpec(targetPackage: String, gen
       .addSuperinterface(superInterfaceType(targetPackage))
       .applyIf(generateAsInternal) { addModifiers(KModifier.INTERNAL) }
       .applyIf(description.isNotBlank()) { addKdoc("%L", description) }
-      .applyIf(variables.isNotEmpty()) {
-        addModifiers(KModifier.DATA)
-        primaryConstructor(primaryConstructorSpec)
-        addProperties(variables.map { variable -> variable.asPropertySpec(CodeBlock.of(variable.name.escapeKotlinReservedWord())) })
-        addProperty(variablePropertySpec)
-      }
+      .addVariablesIfNeeded(variables, name)
       .addFunction(FunSpec.builder("operationId")
           .addModifiers(KModifier.OVERRIDE)
           .returns(String::class)
@@ -50,18 +45,7 @@ internal fun CodeGenerationAst.OperationType.typeSpec(targetPackage: String, gen
           .addStatement("return QUERY_DOCUMENT")
           .build()
       )
-      .addFunction(FunSpec.builder("variables")
-          .addModifiers(KModifier.OVERRIDE)
-          .returns(Operation.Variables::class.asClassName())
-          .apply {
-            if (variables.isNotEmpty()) {
-              addStatement("return variables")
-            } else {
-              addStatement("return %T.EMPTY_VARIABLES", Operation::class)
-            }
-          }
-          .build()
-      )
+      .addFunction(variables.variablesFunSpec())
       .addFunction(FunSpec.builder("name")
           .addModifiers(KModifier.OVERRIDE)
           .returns(OperationName::class)
@@ -123,89 +107,3 @@ private fun CodeGenerationAst.OperationType.superInterfaceType(targetPackage: St
   }.parameterizedBy(dataTypeName)
 }
 
-private val CodeGenerationAst.OperationType.primaryConstructorSpec: FunSpec
-  get() {
-    return FunSpec
-        .constructorBuilder()
-        .addParameters(variables.map { variable ->
-          ParameterSpec
-              .builder(
-                  name = variable.name.escapeKotlinReservedWord(),
-                  type = variable.type.asTypeName().let { type ->
-                    if (type.isNullable) Input::class.asClassName().parameterizedBy(type.copy(nullable = false)) else type
-                  }
-              )
-              .applyIf(variable.type.nullable) { defaultValue("%T.absent()", Input::class.asClassName()) }
-              .build()
-        })
-        .build()
-  }
-
-private val CodeGenerationAst.OperationType.variablePropertySpec: PropertySpec
-  get() {
-    return PropertySpec
-        .builder("variables", Operation.Variables::class)
-        .addModifiers(KModifier.PRIVATE)
-        .addAnnotation(Transient::class)
-        .initializer("%L", TypeSpec.anonymousClassBuilder()
-            .superclass(Operation.Variables::class)
-            .addFunction(variables.variablesValueMapSpec(this))
-            .addFunction(variables.variablesMarshallerSpec(name.escapeKotlinReservedWord()))
-            .build()
-        )
-        .build()
-  }
-
-private fun List<CodeGenerationAst.InputField>.variablesValueMapSpec(operationType: CodeGenerationAst.OperationType): FunSpec {
-  return FunSpec
-      .builder("valueMap")
-      .addModifiers(KModifier.OVERRIDE)
-      .returns(Map::class.asClassName().parameterizedBy(String::class.asClassName(), Any::class.asClassName().copy(nullable = true)))
-      .beginControlFlow("return mutableMapOf<%T, %T>().apply", String::class, Any::class.asClassName().copy(nullable = true))
-      .addCode(
-          map { field ->
-            if (field.type.nullable) {
-              CodeBlock.builder()
-                  .addStatement(
-                      "if·(this@%L.%L.defined)·{",
-                      operationType.name.escapeKotlinReservedWord(),
-                      field.name.escapeKotlinReservedWord()
-                  )
-                  .indent()
-                  .addStatement(
-                      "this[%S]·=·this@%L.%L.value",
-                      field.schemaName,
-                      operationType.name.escapeKotlinReservedWord(),
-                      field.name.escapeKotlinReservedWord()
-                  )
-                  .unindent()
-                  .addStatement("}")
-                  .build()
-            } else {
-              CodeBlock.of(
-                  "this[%S]·=·this@%L.%L\n",
-                  field.schemaName,
-                  operationType.name.escapeKotlinReservedWord(),
-                  field.name.escapeKotlinReservedWord()
-              )
-            }
-          }.joinToCode(separator = "")
-      )
-      .endControlFlow()
-      .build()
-}
-
-private fun List<CodeGenerationAst.InputField>.variablesMarshallerSpec(thisRef: String): FunSpec {
-  return FunSpec
-      .builder("marshaller")
-      .returns(InputFieldMarshaller::class)
-      .addModifiers(KModifier.OVERRIDE)
-      .addCode(CodeBlock
-          .builder()
-          .beginControlFlow("return·%T.invoke·{ writer ->", InputFieldMarshaller::class)
-          .apply { forEach { field -> add(field.writeCodeBlock(thisRef)) } }
-          .endControlFlow()
-          .build()
-      )
-      .build()
-}

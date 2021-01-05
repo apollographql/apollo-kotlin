@@ -2,6 +2,7 @@ package com.apollographql.apollo.internal
 
 import com.apollographql.apollo.api.Adaptable
 import com.apollographql.apollo.api.CustomScalarAdapters
+import com.apollographql.apollo.api.Fragment
 import com.apollographql.apollo.api.Operation
 import com.apollographql.apollo.api.Response
 import com.apollographql.apollo.api.Response.Companion.builder
@@ -188,22 +189,19 @@ class RealApolloStore(normalizedCache: NormalizedCache, cacheKeyResolver: CacheK
     return cacheKeyResolver
   }
 
-  override fun <D : Operation.Data> read(
+  override fun <D : Operation.Data> readOperation(
       operation: Operation<D>): ApolloStoreOperation<D> {
-    __checkNotNull(operation, "operation == null")
     return object : ApolloStoreOperation<D>(dispatcher) {
       override fun perform(): D {
-        return doRead(operation)
+        return doRead(operation, ResponseNormalizer.NO_OP_NORMALIZER as ResponseNormalizer<Record>, CacheHeaders.NONE).data!!
       }
     }
   }
 
-  override fun <D : Operation.Data> read(
+  override fun <D : Operation.Data> readOperationInternal(
       operation: Operation<D>,
       responseNormalizer: ResponseNormalizer<Record>,
       cacheHeaders: CacheHeaders): ApolloStoreOperation<Response<D>> {
-    __checkNotNull(operation, "operation == null")
-    __checkNotNull(responseNormalizer, "responseNormalizer == null")
     return object : ApolloStoreOperation<Response<D>>(dispatcher) {
       override fun perform(): Response<D> {
         return doRead(operation, responseNormalizer, cacheHeaders)
@@ -211,69 +209,59 @@ class RealApolloStore(normalizedCache: NormalizedCache, cacheKeyResolver: CacheK
     }
   }
 
-  override fun <F> read(
-      adapter: ResponseAdapter<F>,
+  override fun <D : Fragment.Data> readFragment(
+      fragment: Fragment<D>,
       cacheKey: CacheKey,
-      variables: Operation.Variables): ApolloStoreOperation<F> {
-    __checkNotNull(cacheKey, "cacheKey == null")
-    __checkNotNull(variables, "variables == null")
-    return object : ApolloStoreOperation<F>(dispatcher) {
-      override fun perform(): F {
-        return doRead(adapter, cacheKey, variables)
+  ): ApolloStoreOperation<D> {
+    return object : ApolloStoreOperation<D>(dispatcher) {
+      override fun perform(): D {
+        return doRead(fragment.adapter(), cacheKey, fragment.variables())
       }
     }
   }
 
-  override fun <D : Operation.Data> write(operation: Operation<D>, operationData: D): ApolloStoreOperation<Set<String>> {
-    __checkNotNull(operation, "operation == null")
-    __checkNotNull(operationData, "operationData == null")
+  override fun <D : Operation.Data> writeOperation(
+      operation: Operation<D>,
+      operationData: D,
+      publish: Boolean
+  ): ApolloStoreOperation<Set<String>> {
     return object : ApolloStoreOperation<Set<String>>(dispatcher) {
       override fun perform(): Set<String> {
-        return doWrite(operation, operationData, false, null)
-      }
-    }
-  }
-
-  override fun <D : Operation.Data> writeAndPublish(operation: Operation<D>, operationData: D): ApolloStoreOperation<Boolean> {
-    return object : ApolloStoreOperation<Boolean>(dispatcher) {
-      override fun perform(): Boolean {
         val changedKeys = doWrite(operation, operationData, false, null)
-        publish(changedKeys)
-        return java.lang.Boolean.TRUE
+        if (publish) {
+          publish(changedKeys)
+        }
+        return changedKeys
       }
     }
   }
 
-  override fun write(adaptable: Adaptable<*>,
-                     cacheKey: CacheKey, variables: Operation.Variables): ApolloStoreOperation<Set<String>> {
-    __checkNotNull(adaptable, "adaptable == null")
-    __checkNotNull(cacheKey, "cacheKey == null")
-    __checkNotNull(variables, "operation == null")
-    require(!cacheKey.equals(CacheKey.NO_KEY)) { "undefined cache key" }
+  override fun <D : Fragment.Data> writeFragment(
+      fragment: Fragment<D>,
+      cacheKey: CacheKey,
+      fragmentData: D,
+      publish: Boolean
+  ): ApolloStoreOperation<Set<String>> {
+
+    require(cacheKey != CacheKey.NO_KEY) { "undefined cache key" }
+
     return object : ApolloStoreOperation<Set<String>>(dispatcher) {
       override fun perform(): Set<String> {
         return writeTransaction(object : Transaction<WriteableStore, Set<String>> {
           override fun execute(cache: WriteableStore): Set<String>? {
-            return doWrite(adaptable, cacheKey, variables)
+            val changedKeys =  doWrite(fragment.adapter(), cacheKey, fragment.variables(), fragmentData)
+            if (publish) {
+              publish(changedKeys)
+            }
+            return changedKeys
           }
         })
       }
     }
   }
 
-  override fun writeAndPublish(adaptable: Adaptable<*>,
-                               cacheKey: CacheKey, variables: Operation.Variables): ApolloStoreOperation<Boolean> {
-    return object : ApolloStoreOperation<Boolean>(dispatcher) {
-      override fun perform(): Boolean {
-        val changedKeys = doWrite(adaptable, cacheKey, variables)
-        publish(changedKeys)
-        return java.lang.Boolean.TRUE
-      }
-    }
-  }
-
   override fun <D : Operation.Data> writeOptimisticUpdates(operation: Operation<D>, operationData: D,
-                                                            mutationId: UUID): ApolloStoreOperation<Set<String>> {
+                                                           mutationId: UUID): ApolloStoreOperation<Set<String>> {
     return object : ApolloStoreOperation<Set<String>>(dispatcher) {
       override fun perform(): Set<String> {
         return doWrite(operation, operationData, true, mutationId)
@@ -282,7 +270,7 @@ class RealApolloStore(normalizedCache: NormalizedCache, cacheKeyResolver: CacheK
   }
 
   override fun <D : Operation.Data> writeOptimisticUpdatesAndPublish(operation: Operation<D>, operationData: D,
-                                                                      mutationId: UUID): ApolloStoreOperation<Boolean> {
+                                                                     mutationId: UUID): ApolloStoreOperation<Boolean> {
     return object : ApolloStoreOperation<Boolean>(dispatcher) {
       override fun perform(): Boolean {
         val changedKeys = doWrite(operation, operationData, true, mutationId)
@@ -404,11 +392,11 @@ class RealApolloStore(normalizedCache: NormalizedCache, cacheKeyResolver: CacheK
     })
   }
 
-  fun doWrite(adaptable: Adaptable<*>, cacheKey: CacheKey, variables: Operation.Variables): Set<String> {
+  fun <D> doWrite(adapter: ResponseAdapter<D>, cacheKey: CacheKey, variables: Operation.Variables, value: D): Set<String> {
     return writeTransaction(object : Transaction<WriteableStore, Set<String>> {
       override fun execute(cache: WriteableStore): Set<String>? {
         val responseWriter = RealResponseWriter(variables, customScalarAdapters)
-        (adaptable as Adaptable<Any>).adapter().toResponse(responseWriter, adaptable)
+        adapter.toResponse(responseWriter, value)
         val responseNormalizer = networkResponseNormalizer()
         responseNormalizer.willResolveRecord(cacheKey)
         responseWriter.resolveFields(responseNormalizer as ResolveDelegate<Map<String, Any>?>)

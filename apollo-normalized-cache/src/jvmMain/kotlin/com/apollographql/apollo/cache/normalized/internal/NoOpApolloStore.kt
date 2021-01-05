@@ -1,6 +1,7 @@
 package com.apollographql.apollo.cache.normalized.internal
 
 import com.apollographql.apollo.api.Adaptable
+import com.apollographql.apollo.api.Fragment
 import com.apollographql.apollo.api.Operation
 import com.apollographql.apollo.api.Response
 import com.apollographql.apollo.api.Response.Companion.builder
@@ -80,12 +81,12 @@ class NoOpApolloStore : ApolloStore, ReadableStore, WriteableStore {
     error("Cannot get cacheKeyResolver: no cache configured")
   }
 
-  override fun <D : Operation.Data> read(
+  override fun <D : Operation.Data> readOperation(
       operation: Operation<D>): ApolloStoreOperation<D> {
     error("Cannot read operation: no cache configured")
   }
 
-  override fun <D : Operation.Data> read(
+  override fun <D : Operation.Data> readOperationInternal(
       operation: Operation<D>,
       responseNormalizer: ResponseNormalizer<Record>,
       cacheHeaders: CacheHeaders
@@ -95,36 +96,33 @@ class NoOpApolloStore : ApolloStore, ReadableStore, WriteableStore {
     return emptyOperation(builder<D>(operation).build())
   }
 
-  override fun <F> read(
-      adapter: ResponseAdapter<F>,
+  override fun <D : Fragment.Data> readFragment(
+      fragment: Fragment<D>,
       cacheKey: CacheKey,
-      variables: Operation.Variables): ApolloStoreOperation<F> {
+  ): ApolloStoreOperation<D> {
     error("Cannot read fragment: no cache configured")
   }
 
-  override fun <D : Operation.Data> write(
-      operation: Operation<D>, operationData: D): ApolloStoreOperation<Set<String>> {
+  override fun <D : Operation.Data> writeOperation(
+      operation: Operation<D>,
+      operationData: D,
+      publish: Boolean
+  ): ApolloStoreOperation<Set<String>> {
     // Should we throw here instead?
     return emptyOperation(emptySet())
   }
 
-  override fun <D : Operation.Data> writeAndPublish(
-      operation: Operation<D>, operationData: D): ApolloStoreOperation<Boolean> {
-    // Should we throw here instead?
-    return emptyOperation(false)
-  }
-
-  override fun write(adaptable: Adaptable<*>, cacheKey: CacheKey,
-                     variables: Operation.Variables): ApolloStoreOperation<Set<String>> {
+  override fun <D: Fragment.Data> writeFragment(
+      fragment: Fragment<D>,
+      cacheKey: CacheKey,
+      fragmentData: D,
+      publish: Boolean
+  ): ApolloStoreOperation<Set<String>> {
     // Should we throw here instead?
     return emptyOperation(emptySet())
   }
 
-  override fun writeAndPublish(adaptable: Adaptable<*>, cacheKey: CacheKey,
-                               variables: Operation.Variables): ApolloStoreOperation<Boolean> {
-    // Should we throw here instead?
-    return emptyOperation(false)
-  }
+
 
   override fun <D : Operation.Data> writeOptimisticUpdates(operation: Operation<D>, operationData: D, mutationId: UUID): ApolloStoreOperation<Set<String>> {
     // Should we throw here instead?
@@ -132,7 +130,7 @@ class NoOpApolloStore : ApolloStore, ReadableStore, WriteableStore {
   }
 
   override fun <D : Operation.Data> writeOptimisticUpdatesAndPublish(operation: Operation<D>, operationData: D,
-                                                                                              mutationId: UUID): ApolloStoreOperation<Boolean> {
+                                                                     mutationId: UUID): ApolloStoreOperation<Boolean> {
     // Should we throw here instead?
     return emptyOperation(java.lang.Boolean.FALSE)
   }

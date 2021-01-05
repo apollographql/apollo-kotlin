@@ -18,9 +18,11 @@ import com.apollographql.apollo.fetcher.ApolloResponseFetchers
 import com.apollographql.apollo.integration.normalizer.*
 import com.apollographql.apollo.integration.normalizer.StarshipByIdQuery.Data.Starship
 import com.apollographql.apollo.integration.normalizer.fragment.HeroWithFriendsFragment
+import com.apollographql.apollo.integration.normalizer.fragment.HeroWithFriendsFragmentFragment
 import com.apollographql.apollo.integration.normalizer.fragment.HumanWithIdFragment
 import com.apollographql.apollo.integration.normalizer.fragment.HumanWithIdFragmentImpl
 import com.apollographql.apollo.integration.normalizer.fragment.HeroWithFriendsFragmentImpl
+import com.apollographql.apollo.integration.normalizer.fragment.HumanWithIdFragmentFragment
 import com.apollographql.apollo.integration.normalizer.type.CustomScalars
 import com.apollographql.apollo.integration.normalizer.type.Episode
 import com.google.common.truth.Truth
@@ -77,42 +79,42 @@ class ResponseWriteTestCase {
         apolloClient!!.query(query)
     ) { (_, data) ->
       assertThat(data!!.hero?.heroName).isEqualTo("R2-D2")
-      Truth.assertThat(DATE_TIME_FORMAT.format(data.hero?.birthDate)).isEqualTo("1984-04-16")
+      assertThat(DATE_TIME_FORMAT.format(data.hero?.birthDate)).isEqualTo("1984-04-16")
       assertThat(data.hero?.showUpDates).hasSize(3)
-      Truth.assertThat(DATE_TIME_FORMAT.format(data.hero?.showUpDates?.get(0))).isEqualTo("2017-01-16")
-      Truth.assertThat(DATE_TIME_FORMAT.format(data.hero?.showUpDates?.get(1))).isEqualTo("2017-02-16")
-      Truth.assertThat(DATE_TIME_FORMAT.format(data.hero?.showUpDates?.get(2))).isEqualTo("2017-03-16")
+      assertThat(DATE_TIME_FORMAT.format(data.hero?.showUpDates?.get(0))).isEqualTo("2017-01-16")
+      assertThat(DATE_TIME_FORMAT.format(data.hero?.showUpDates?.get(1))).isEqualTo("2017-02-16")
+      assertThat(DATE_TIME_FORMAT.format(data.hero?.showUpDates?.get(2))).isEqualTo("2017-03-16")
       true
     }
     var hero = EpisodeHeroWithDatesQuery.Data.Hero(
         "R222-D222",
         DATE_TIME_FORMAT.parse("1985-04-16"), emptyList())
-    apolloClient!!.apolloStore.write(query, EpisodeHeroWithDatesQuery.Data(hero)).execute()
+    apolloClient!!.apolloStore.writeOperation(query, EpisodeHeroWithDatesQuery.Data(hero)).execute()
     assertCachedQueryResponse(
         query
     ) { (_, data) ->
       assertThat(data!!.hero?.heroName).isEqualTo("R222-D222")
-      Truth.assertThat(DATE_TIME_FORMAT.format(data.hero?.birthDate)).isEqualTo("1985-04-16")
+      assertThat(DATE_TIME_FORMAT.format(data.hero?.birthDate)).isEqualTo("1985-04-16")
       assertThat(data.hero?.showUpDates).hasSize(0)
       true
     }
     hero = EpisodeHeroWithDatesQuery.Data.Hero(
         "R22-D22",
         DATE_TIME_FORMAT.parse("1986-04-16"),
-        Arrays.asList(
+        listOf(
             DATE_TIME_FORMAT.parse("2017-04-16"),
             DATE_TIME_FORMAT.parse("2017-05-16")
         )
     )
-    apolloClient!!.apolloStore.write(query, EpisodeHeroWithDatesQuery.Data(hero)).execute()
+    apolloClient!!.apolloStore.writeOperation(query, EpisodeHeroWithDatesQuery.Data(hero)).execute()
     assertCachedQueryResponse(
         query
     ) { (_, data) ->
       assertThat(data!!.hero?.heroName).isEqualTo("R22-D22")
-      Truth.assertThat(DATE_TIME_FORMAT.format(data.hero?.birthDate)).isEqualTo("1986-04-16")
+      assertThat(DATE_TIME_FORMAT.format(data.hero?.birthDate)).isEqualTo("1986-04-16")
       assertThat(data.hero?.showUpDates).hasSize(2)
-      Truth.assertThat(DATE_TIME_FORMAT.format(data.hero?.showUpDates?.get(0))).isEqualTo("2017-04-16")
-      Truth.assertThat(DATE_TIME_FORMAT.format(data.hero?.showUpDates?.get(1))).isEqualTo("2017-05-16")
+      assertThat(DATE_TIME_FORMAT.format(data.hero?.showUpDates?.get(0))).isEqualTo("2017-04-16")
+      assertThat(DATE_TIME_FORMAT.format(data.hero?.showUpDates?.get(1))).isEqualTo("2017-05-16")
       true
     }
   }
@@ -137,7 +139,7 @@ class ResponseWriteTestCase {
     var hero = HeroNameWithEnumsQuery.Data.Hero(
         "R222-D222",
         Episode.JEDI, emptyList<Episode>())
-    apolloClient!!.apolloStore.write(query, HeroNameWithEnumsQuery.Data(hero)).execute()
+    apolloClient!!.apolloStore.writeOperation(query, HeroNameWithEnumsQuery.Data(hero)).execute()
     assertCachedQueryResponse(
         query
     ) { (_, data) ->
@@ -151,7 +153,7 @@ class ResponseWriteTestCase {
         Episode.JEDI,
         Arrays.asList(Episode.EMPIRE)
     )
-    apolloClient!!.apolloStore.write(query, HeroNameWithEnumsQuery.Data(hero)).execute()
+    apolloClient!!.apolloStore.writeOperation(query, HeroNameWithEnumsQuery.Data(hero)).execute()
     assertCachedQueryResponse(
         query
     ) { (_, data) ->
@@ -188,7 +190,7 @@ class ResponseWriteTestCase {
         "R222-D222",
         null
     )
-    apolloClient!!.apolloStore.write(query, HeroAndFriendsNamesWithIDsQuery.Data(hero)).execute()
+    apolloClient!!.apolloStore.writeOperation(query, HeroAndFriendsNamesWithIDsQuery.Data(hero)).execute()
     assertCachedQueryResponse(
         query
     ) { (_, data) ->
@@ -206,7 +208,7 @@ class ResponseWriteTestCase {
         "R222-D222",
         listOf(friend)
     )
-    apolloClient!!.apolloStore.write(query, HeroAndFriendsNamesWithIDsQuery.Data(hero)).execute()
+    apolloClient!!.apolloStore.writeOperation(query, HeroAndFriendsNamesWithIDsQuery.Data(hero)).execute()
     assertCachedQueryResponse(
         query
     ) { (_, data) ->
@@ -261,7 +263,7 @@ class ResponseWriteTestCase {
             )
         )
     )
-    apolloClient!!.apolloStore.write(query, HeroAndFriendsWithFragmentsQuery.Data(hero)).execute()
+    apolloClient!!.apolloStore.writeOperation(query, HeroAndFriendsWithFragmentsQuery.Data(hero)).execute()
     assertCachedQueryResponse(
         query
     ) { (_, data) ->
@@ -322,7 +324,7 @@ class ResponseWriteTestCase {
             ),
         )
     )
-    apolloClient!!.apolloStore.write(query, EpisodeHeroWithInlineFragmentQuery.Data(hero)).execute()
+    apolloClient!!.apolloStore.writeOperation(query, EpisodeHeroWithInlineFragmentQuery.Data(hero)).execute()
     assertCachedQueryResponse(
         query
     ) { (_, data) ->
@@ -366,7 +368,10 @@ class ResponseWriteTestCase {
       assertThat(((data.hero as HeroWithFriendsFragment).friends?.get(2) as HumanWithIdFragment).name).isEqualTo("Leia Organa")
       true
     }
-    apolloClient!!.apolloStore.write(
+
+    apolloClient!!.apolloStore.writeFragment(
+        HeroWithFriendsFragmentFragment(),
+        from("2001"),
         HeroWithFriendsFragmentImpl(
             __typename = "Droid",
             id = "2001",
@@ -383,16 +388,16 @@ class ResponseWriteTestCase {
                     name = "Han Solo"
                 ),
             )
-        ), from("2001"), query.variables()
+        )
     ).execute()
-    apolloClient!!.apolloStore.write(
+    apolloClient!!.apolloStore.writeFragment(
+        HumanWithIdFragmentFragment(),
+        from("1002"),
         HumanWithIdFragmentImpl(
             __typename = "Human",
             id = "1002",
             name = "Beast"
-        ),
-        from("1002"),
-        query.variables()
+        )
     ).execute()
     assertCachedQueryResponse(
         query
@@ -432,7 +437,7 @@ class ResponseWriteTestCase {
         "SuperRocket",
         Arrays.asList(Arrays.asList(900.0, 800.0), Arrays.asList(700.0, 600.0))
     )
-    apolloClient!!.apolloStore.write(query, StarshipByIdQuery.Data(starship)).execute()
+    apolloClient!!.apolloStore.writeOperation(query, StarshipByIdQuery.Data(starship)).execute()
     assertCachedQueryResponse(
         query
     ) { (_, data) ->
