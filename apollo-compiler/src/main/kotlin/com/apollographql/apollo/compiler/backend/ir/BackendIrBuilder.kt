@@ -210,6 +210,12 @@ internal class BackendIrBuilder constructor(
         comment = this.description ?: "",
         selectionSet = selectionSet,
         defaultImplementationSelectionSet = defaultImplementationSelectionSet,
+        variables = this.variables.map { variable ->
+          BackendIr.Variable(
+              name = variable.name,
+              type = variable.type.toSchemaType()
+          )
+        }
     )
   }
 

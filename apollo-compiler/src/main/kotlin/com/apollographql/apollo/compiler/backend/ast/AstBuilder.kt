@@ -3,6 +3,7 @@ package com.apollographql.apollo.compiler.backend.ast
 import com.apollographql.apollo.api.Operation
 import com.apollographql.apollo.compiler.backend.ir.BackendIr
 import com.apollographql.apollo.compiler.backend.ir.SelectionKey
+import com.apollographql.apollo.compiler.frontend.ir.FrontendIr
 import com.apollographql.apollo.compiler.introspection.IntrospectionSchema
 import com.apollographql.apollo.compiler.introspection.resolveType
 import com.apollographql.apollo.compiler.operationoutput.OperationOutput
@@ -263,20 +264,7 @@ internal class AstBuilder private constructor(
         description = this.comment,
         operationId = operationId,
         queryDocument = this.definition,
-        variables = this.variables.map { variable ->
-          val fieldType = variable.type.resolveInputFieldType(
-              typesPackageName = typesPackageName,
-
-              )
-          CodeGenerationAst.InputField(
-              name = variable.name.normalizeFieldName(),
-              schemaName = variable.name,
-              deprecationReason = null,
-              type = fieldType,
-              description = "",
-              defaultValue = null,
-          )
-        },
+        variables = this.variables.map { it.toAst() },
         dataType = operationDataType,
     )
   }
@@ -336,7 +324,22 @@ internal class AstBuilder private constructor(
         typeRef = CodeGenerationAst.TypeRef(
             name = this.name.normalizeTypeName(),
             packageName = fragmentsPackage,
-        )
+        ),
+        variables = this.variables.map { it.toAst() },
+    )
+  }
+
+  private fun BackendIr.Variable.toAst(): CodeGenerationAst.InputField {
+    val fieldType = type.resolveInputFieldType(
+        typesPackageName = typesPackageName,
+    )
+    return CodeGenerationAst.InputField(
+        name = name.normalizeFieldName(),
+        schemaName = name,
+        deprecationReason = null,
+        type = fieldType,
+        description = "",
+        defaultValue = null,
     )
   }
 

@@ -52,6 +52,7 @@ internal data class CodeGenerationAst(
       val defaultImplementationType: ObjectType,
       val fragmentDefinition: String,
       val typeRef: TypeRef,
+      val variables: List<InputField>,
   )
 
   data class ObjectType(

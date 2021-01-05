@@ -126,7 +126,8 @@ internal data class BackendIr(
       val selectionSet: SelectionSet,
       val defaultImplementationSelectionKey: SelectionKey,
       val defaultImplementationSelectionSet: SelectionSet,
-  ) {
+      val variables: List<Variable>,
+      ) {
     data class SelectionSet(
         val fields: List<Field>,
         val fragments: Fragments,
