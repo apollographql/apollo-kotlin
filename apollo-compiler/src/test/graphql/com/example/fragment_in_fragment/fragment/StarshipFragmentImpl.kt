@@ -5,9 +5,7 @@
 //
 package com.example.fragment_in_fragment.fragment
 
-import com.apollographql.apollo.api.GraphqlFragment
-import com.apollographql.apollo.api.internal.ResponseAdapter
-import com.example.fragment_in_fragment.fragment.adapter.StarshipFragmentImpl_ResponseAdapter
+import com.apollographql.apollo.api.Fragment
 import kotlin.String
 import kotlin.collections.List
 
@@ -25,11 +23,7 @@ data class StarshipFragmentImpl(
    */
   override val name: String?,
   override val pilotConnection: PilotConnection?
-) : StarshipFragment, GraphqlFragment, Adaptable<StarshipFragmentImpl> {
-  override fun adapter(): ResponseAdapter<StarshipFragmentImpl> {
-    return StarshipFragmentImpl_ResponseAdapter
-  }
-
+) : StarshipFragment, Fragment.Data {
   /**
    * A connection to a list of items.
    */

@@ -5,9 +5,7 @@
 //
 package com.example.union_fragment.fragment
 
-import com.apollographql.apollo.api.GraphqlFragment
-import com.apollographql.apollo.api.internal.ResponseAdapter
-import com.example.union_fragment.fragment.adapter.StarshipImpl_ResponseAdapter
+import com.apollographql.apollo.api.Fragment
 import kotlin.String
 
 data class StarshipImpl(
@@ -16,8 +14,4 @@ data class StarshipImpl(
    * The name of the starship
    */
   override val name: String
-) : Starship, GraphqlFragment, Adaptable<StarshipImpl> {
-  override fun adapter(): ResponseAdapter<StarshipImpl> {
-    return StarshipImpl_ResponseAdapter
-  }
-}
+) : Starship, Fragment.Data

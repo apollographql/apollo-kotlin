@@ -5,21 +5,15 @@
 //
 package com.example.fragment_used_twice.fragment
 
-import com.apollographql.apollo.api.GraphqlFragment
-import com.apollographql.apollo.api.internal.ResponseAdapter
-import com.example.fragment_used_twice.fragment.adapter.HumanDetailsImpl_ResponseAdapter
+import com.apollographql.apollo.api.Fragment
 import kotlin.Any
 import kotlin.String
 
 /**
  * A humanoid creature from the Star Wars universe
  */
-interface HumanDetailsImpl : HumanDetail, GraphqlFragment, Adaptable<HumanDetailsImpl> {
+interface HumanDetailsImpl : HumanDetail, Fragment.Data {
   override val __typename: String
-
-  override fun adapter(): ResponseAdapter<HumanDetailsImpl> {
-    return HumanDetailsImpl_ResponseAdapter
-  }
 
   data class CharacterHumanDetailsImpl(
     override val __typename: String,

@@ -5,9 +5,7 @@
 //
 package com.example.directive_with_fragment.fragment
 
-import com.apollographql.apollo.api.GraphqlFragment
-import com.apollographql.apollo.api.internal.ResponseAdapter
-import com.example.directive_with_fragment.fragment.adapter.HumanDetailsImpl_ResponseAdapter
+import com.apollographql.apollo.api.Fragment
 import kotlin.String
 
 /**
@@ -19,8 +17,4 @@ data class HumanDetailsImpl(
    * The home planet of the human, or null if unknown
    */
   override val homePlanet: String?
-) : HumanDetail, GraphqlFragment, Adaptable<HumanDetailsImpl> {
-  override fun adapter(): ResponseAdapter<HumanDetailsImpl> {
-    return HumanDetailsImpl_ResponseAdapter
-  }
-}
+) : HumanDetail, Fragment.Data

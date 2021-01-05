@@ -5,9 +5,7 @@
 //
 package com.example.directive_with_fragment.fragment
 
-import com.apollographql.apollo.api.GraphqlFragment
-import com.apollographql.apollo.api.internal.ResponseAdapter
-import com.example.directive_with_fragment.fragment.adapter.HeroDetailsImpl_ResponseAdapter
+import com.apollographql.apollo.api.Fragment
 import kotlin.String
 
 /**
@@ -19,8 +17,4 @@ data class HeroDetailsImpl(
    * The name of the character
    */
   override val name: String
-) : HeroDetail, GraphqlFragment, Adaptable<HeroDetailsImpl> {
-  override fun adapter(): ResponseAdapter<HeroDetailsImpl> {
-    return HeroDetailsImpl_ResponseAdapter
-  }
-}
+) : HeroDetail, Fragment.Data

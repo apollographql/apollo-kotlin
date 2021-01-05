@@ -5,9 +5,7 @@
 //
 package com.example.fragment_used_twice.fragment
 
-import com.apollographql.apollo.api.GraphqlFragment
-import com.apollographql.apollo.api.internal.ResponseAdapter
-import com.example.fragment_used_twice.fragment.adapter.CharacterDetailsImpl_ResponseAdapter
+import com.apollographql.apollo.api.Fragment
 import kotlin.Any
 import kotlin.String
 
@@ -24,8 +22,4 @@ data class CharacterDetailsImpl(
    * The date character was born.
    */
   override val birthDate: Any
-) : CharacterDetail, GraphqlFragment, Adaptable<CharacterDetailsImpl> {
-  override fun adapter(): ResponseAdapter<CharacterDetailsImpl> {
-    return CharacterDetailsImpl_ResponseAdapter
-  }
-}
+) : CharacterDetail, Fragment.Data

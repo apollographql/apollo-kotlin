@@ -5,9 +5,7 @@
 //
 package com.example.fragment_with_inline_fragment.fragment
 
-import com.apollographql.apollo.api.GraphqlFragment
-import com.apollographql.apollo.api.internal.ResponseAdapter
-import com.example.fragment_with_inline_fragment.fragment.adapter.HeroDetailsImpl_ResponseAdapter
+import com.apollographql.apollo.api.Fragment
 import kotlin.Int
 import kotlin.String
 import kotlin.collections.List
@@ -15,12 +13,8 @@ import kotlin.collections.List
 /**
  * A character from the Star Wars universe
  */
-interface HeroDetailsImpl : HeroDetail, GraphqlFragment, Adaptable<HeroDetailsImpl> {
+interface HeroDetailsImpl : HeroDetail, Fragment.Data {
   override val __typename: String
-
-  override fun adapter(): ResponseAdapter<HeroDetailsImpl> {
-    return HeroDetailsImpl_ResponseAdapter
-  }
 
   data class DroidHeroDetailsImpl(
     override val __typename: String,

@@ -5,9 +5,7 @@
 //
 package com.example.root_query_fragment_with_nested_fragments.fragment
 
-import com.apollographql.apollo.api.GraphqlFragment
-import com.apollographql.apollo.api.internal.ResponseAdapter
-import com.example.root_query_fragment_with_nested_fragments.fragment.adapter.QueryFragmentImpl_ResponseAdapter
+import com.apollographql.apollo.api.Fragment
 import kotlin.String
 
 /**
@@ -18,11 +16,7 @@ data class QueryFragmentImpl(
   override val hero: Hero?,
   override val droid: Droid?,
   override val human: Human?
-) : QueryFragment, GraphqlFragment, Adaptable<QueryFragmentImpl> {
-  override fun adapter(): ResponseAdapter<QueryFragmentImpl> {
-    return QueryFragmentImpl_ResponseAdapter
-  }
-
+) : QueryFragment, Fragment.Data {
   /**
    * A character from the Star Wars universe
    */

@@ -5,9 +5,7 @@
 //
 package com.example.fragment_in_fragment.fragment
 
-import com.apollographql.apollo.api.GraphqlFragment
-import com.apollographql.apollo.api.internal.ResponseAdapter
-import com.example.fragment_in_fragment.fragment.adapter.PilotFragmentImpl_ResponseAdapter
+import com.apollographql.apollo.api.Fragment
 import kotlin.String
 
 /**
@@ -23,11 +21,7 @@ data class PilotFragmentImpl(
    * A planet that this person was born on or inhabits.
    */
   override val homeworld: Homeworld?
-) : PilotFragment, GraphqlFragment, Adaptable<PilotFragmentImpl> {
-  override fun adapter(): ResponseAdapter<PilotFragmentImpl> {
-    return PilotFragmentImpl_ResponseAdapter
-  }
-
+) : PilotFragment, Fragment.Data {
   /**
    * A large mass, planet or planetoid in the Star Wars Universe, at the time of
    * 0 ABY.

@@ -5,9 +5,7 @@
 //
 package com.example.named_fragment_delegate.fragment
 
-import com.apollographql.apollo.api.GraphqlFragment
-import com.apollographql.apollo.api.internal.ResponseAdapter
-import com.example.named_fragment_delegate.fragment.adapter.HumanDetailsImpl_ResponseAdapter
+import com.apollographql.apollo.api.Fragment
 import kotlin.Any
 import kotlin.String
 import kotlin.collections.List
@@ -29,11 +27,7 @@ data class HumanDetailsImpl(
    * The friends of the human exposed as a connection with edges
    */
   override val friendsConnection: FriendsConnection
-) : HumanDetail, GraphqlFragment, Adaptable<HumanDetailsImpl> {
-  override fun adapter(): ResponseAdapter<HumanDetailsImpl> {
-    return HumanDetailsImpl_ResponseAdapter
-  }
-
+) : HumanDetail, Fragment.Data {
   /**
    * A connection object for a character's friends
    */

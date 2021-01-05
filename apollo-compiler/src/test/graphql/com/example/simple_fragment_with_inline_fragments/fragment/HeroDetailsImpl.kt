@@ -5,9 +5,7 @@
 //
 package com.example.simple_fragment_with_inline_fragments.fragment
 
-import com.apollographql.apollo.api.GraphqlFragment
-import com.apollographql.apollo.api.internal.ResponseAdapter
-import com.example.simple_fragment_with_inline_fragments.fragment.adapter.HeroDetailsImpl_ResponseAdapter
+import com.apollographql.apollo.api.Fragment
 import kotlin.Double
 import kotlin.String
 import kotlin.collections.List
@@ -25,11 +23,7 @@ data class HeroDetailsImpl(
    * The friends of the character, or an empty list if they have none
    */
   override val friends: List<Friend?>?
-) : HeroDetail, GraphqlFragment, Adaptable<HeroDetailsImpl> {
-  override fun adapter(): ResponseAdapter<HeroDetailsImpl> {
-    return HeroDetailsImpl_ResponseAdapter
-  }
-
+) : HeroDetail, Fragment.Data {
   /**
    * A character from the Star Wars universe
    */

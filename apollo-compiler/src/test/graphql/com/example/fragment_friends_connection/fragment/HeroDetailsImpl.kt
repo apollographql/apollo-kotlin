@@ -5,9 +5,7 @@
 //
 package com.example.fragment_friends_connection.fragment
 
-import com.apollographql.apollo.api.GraphqlFragment
-import com.apollographql.apollo.api.internal.ResponseAdapter
-import com.example.fragment_friends_connection.fragment.adapter.HeroDetailsImpl_ResponseAdapter
+import com.apollographql.apollo.api.Fragment
 import kotlin.Int
 import kotlin.String
 import kotlin.collections.List
@@ -25,11 +23,7 @@ data class HeroDetailsImpl(
    * The friends of the character exposed as a connection with edges
    */
   override val friendsConnection: FriendsConnection
-) : HeroDetail, GraphqlFragment, Adaptable<HeroDetailsImpl> {
-  override fun adapter(): ResponseAdapter<HeroDetailsImpl> {
-    return HeroDetailsImpl_ResponseAdapter
-  }
-
+) : HeroDetail, Fragment.Data {
   /**
    * A connection object for a character's friends
    */
