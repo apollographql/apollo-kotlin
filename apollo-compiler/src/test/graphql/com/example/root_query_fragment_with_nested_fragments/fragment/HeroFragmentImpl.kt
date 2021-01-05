@@ -5,7 +5,6 @@
 //
 package com.example.root_query_fragment_with_nested_fragments.fragment
 
-import com.apollographql.apollo.api.Adaptable
 import com.apollographql.apollo.api.GraphqlFragment
 import com.apollographql.apollo.api.internal.ResponseAdapter
 import com.example.root_query_fragment_with_nested_fragments.fragment.adapter.HeroFragmentImpl_ResponseAdapter

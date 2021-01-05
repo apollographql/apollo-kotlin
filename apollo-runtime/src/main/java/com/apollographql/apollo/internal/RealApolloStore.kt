@@ -1,6 +1,5 @@
 package com.apollographql.apollo.internal
 
-import com.apollographql.apollo.api.Adaptable
 import com.apollographql.apollo.api.CustomScalarAdapters
 import com.apollographql.apollo.api.Fragment
 import com.apollographql.apollo.api.Operation

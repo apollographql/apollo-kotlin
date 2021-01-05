@@ -1,6 +1,5 @@
 package com.apollographql.apollo.compiler.backend.codegen
 
-import com.apollographql.apollo.api.Adaptable
 import com.apollographql.apollo.api.Fragment
 import com.apollographql.apollo.api.GraphqlFragment
 import com.apollographql.apollo.api.Input

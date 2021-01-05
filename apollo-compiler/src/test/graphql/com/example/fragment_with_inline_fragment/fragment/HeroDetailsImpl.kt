@@ -5,7 +5,6 @@
 //
 package com.example.fragment_with_inline_fragment.fragment
 
-import com.apollographql.apollo.api.Adaptable
 import com.apollographql.apollo.api.GraphqlFragment
 import com.apollographql.apollo.api.internal.ResponseAdapter
 import com.example.fragment_with_inline_fragment.fragment.adapter.HeroDetailsImpl_ResponseAdapter

@@ -1,11 +1,9 @@
 package com.apollographql.apollo.cache.normalized.internal
 
-import com.apollographql.apollo.api.Adaptable
 import com.apollographql.apollo.api.Fragment
 import com.apollographql.apollo.api.Operation
 import com.apollographql.apollo.api.Response
 import com.apollographql.apollo.api.Response.Companion.builder
-import com.apollographql.apollo.api.internal.ResponseAdapter
 import com.apollographql.apollo.cache.CacheHeaders
 import com.apollographql.apollo.cache.normalized.ApolloStore
 import com.apollographql.apollo.cache.normalized.ApolloStoreOperation
