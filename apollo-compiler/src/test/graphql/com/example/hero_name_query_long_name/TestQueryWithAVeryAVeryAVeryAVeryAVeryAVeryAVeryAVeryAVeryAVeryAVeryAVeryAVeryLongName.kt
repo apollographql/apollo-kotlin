@@ -27,8 +27,8 @@ data class TestQueryWithAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryA
   val episodeAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryLongName:
       Input<Episode> = Input.absent()
 ) :
-    Query<TestQueryWithAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryLongName.Data,
-    Operation.Variables> {
+    Query<TestQueryWithAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryLongName.Data>
+    {
   @Transient
   private val variables: Operation.Variables = object : Operation.Variables() {
     override fun valueMap(): Map<String, Any?> = mutableMapOf<String, Any?>().apply {
