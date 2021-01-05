@@ -1,8 +1,8 @@
 package com.apollographql.apollo.benchmark
 
 import Utils.bufferedSource
-import Utils.computeRecordsAfterParsing
-import Utils.computeRecordsDuringParsing
+import Utils.parseAndNormalizeAfter
+import Utils.parseWithInlinedNormalizer
 import androidx.benchmark.junit4.BenchmarkRule
 import androidx.benchmark.junit4.measureRepeated
 import com.apollographql.apollo.api.CustomScalarAdapters
@@ -57,7 +57,7 @@ class Benchmark {
       bufferedSource()
     }
 
-    computeRecordsDuringParsing(operation, bufferedSource)
+    parseWithInlinedNormalizer(operation, bufferedSource)
   }
 
   @Test
@@ -66,6 +66,6 @@ class Benchmark {
       bufferedSource()
     }
 
-    computeRecordsAfterParsing(operation, bufferedSource)
+    parseAndNormalizeAfter(operation, bufferedSource)
   }
 }

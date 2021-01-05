@@ -25,17 +25,17 @@ object Utils {
     override fun resolveCacheKey(field: ResponseField, record: Map<String, Any?>) = CacheKey.NO_KEY
   }
 
-  fun <D : Operation.Data> computeRecordsDuringParsing(operation: Operation<D>, bufferedSource: BufferedSource): Collection<Record?>? {
+  fun <D : Operation.Data> parseWithInlinedNormalizer(operation: Operation<D>, bufferedSource: BufferedSource) {
     OperationResponseParser(
         operation,
         CustomScalarAdapters.DEFAULT,
         responseNormalizer
     ).parse(bufferedSource)
 
-    return responseNormalizer.records()
+    responseNormalizer.records()
   }
 
-  fun <D : Operation.Data> computeRecordsAfterParsing(operation: Operation<D>, bufferedSource: BufferedSource): Collection<Record?>? {
+  fun <D : Operation.Data> parseAndNormalizeAfter(operation: Operation<D>, bufferedSource: BufferedSource) {
     val response = OperationResponseParser(
         operation,
         CustomScalarAdapters.DEFAULT,
@@ -46,6 +46,6 @@ object Utils {
     operation.adapter().toResponse(writer, response.data!!)
     responseNormalizer.willResolveRootQuery(operation);
     writer.resolveFields(responseNormalizer as ResolveDelegate<Map<String, Any>?>)
-    return responseNormalizer.records()
+    responseNormalizer.records()
   }
 }
