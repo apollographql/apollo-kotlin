@@ -541,7 +541,7 @@ class HttpCacheTest {
     val cacheKey = lastHttRequest!!.headers(HttpCache.CACHE_KEY_HEADER)[0]
     val response = apolloClient.cachedHttpResponse(cacheKey)
     Truth.assertThat(response).isNotNull()
-    Truth.assertThat(response.body()!!.source().readUtf8()).isEqualTo(readFileToString(javaClass, fileName))
+    Truth.assertThat(response!!.body()!!.source().readUtf8()).isEqualTo(readFileToString(javaClass, fileName))
     response.body()!!.source().close()
   }
 

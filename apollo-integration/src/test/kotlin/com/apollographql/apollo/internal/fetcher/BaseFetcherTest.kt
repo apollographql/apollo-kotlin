@@ -34,7 +34,7 @@ open class BaseFetcherTest {
         .dispatcher(Dispatcher(immediateExecutorService()))
         .build()
     apolloClient = ApolloClient.builder()
-        .serverUrl(server!!.url("/"))
+        .serverUrl(server.url("/"))
         .okHttpClient(okHttpClient)
         .normalizedCache(LruNormalizedCacheFactory(EvictionPolicy.NO_EVICTION), IdFieldCacheKeyResolver())
         .dispatcher(immediateExecutor())
@@ -44,7 +44,7 @@ open class BaseFetcherTest {
   @After
   @Throws(IOException::class)
   fun shutdown() {
-    server!!.shutdown()
+    server.shutdown()
   }
 
   internal class TrackingCallback : ApolloCall.Callback<EpisodeHeroNameQuery.Data>() {

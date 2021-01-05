@@ -156,9 +156,9 @@ class ResponseWriteTestCase {
         query
     ) { (_, data) ->
       assertThat(data!!.hero?.name).isEqualTo("R22-D22")
-      assertThat(data!!.hero?.firstAppearsIn).isEqualTo(Episode.JEDI)
-      assertThat(data!!.hero?.appearsIn).hasSize(1)
-      assertThat(data!!.hero?.appearsIn?.get(0)).isEqualTo(Episode.EMPIRE)
+      assertThat(data.hero?.firstAppearsIn).isEqualTo(Episode.JEDI)
+      assertThat(data.hero?.appearsIn).hasSize(1)
+      assertThat(data.hero?.appearsIn?.get(0)).isEqualTo(Episode.EMPIRE)
       true
     }
   }
@@ -230,7 +230,7 @@ class ResponseWriteTestCase {
     ) { (_, data) ->
       assertThat(data!!.hero?.__typename).isEqualTo("Droid")
       assertThat((data.hero as? HeroWithFriendsFragment)?.__typename).isEqualTo("Droid")
-      assertThat((data!!.hero as? HeroWithFriendsFragment)?.id).isEqualTo("2001")
+      assertThat((data.hero as? HeroWithFriendsFragment)?.id).isEqualTo("2001")
       assertThat((data.hero as? HeroWithFriendsFragment)?.name).isEqualTo("R2-D2")
       assertThat((data.hero as? HeroWithFriendsFragment)?.friends).hasSize(3)
       assertThat(((data.hero as? HeroWithFriendsFragment)?.friends?.get(0) as? HumanWithIdFragment)?.__typename).isEqualTo("Human")

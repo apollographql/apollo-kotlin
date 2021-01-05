@@ -87,7 +87,7 @@ class IntegrationTest {
         apolloClient.query(AllPlanetsQuery())
     ) { (_, data) ->
       assertThat(data!!.allPlanets?.planets?.size).isEqualTo(60)
-      val planets = data!!.allPlanets?.planets?.mapNotNull {
+      val planets = data.allPlanets?.planets?.mapNotNull {
         (it as PlanetFragment).name
       }
       assertThat(planets).isEqualTo(("Tatooine, Alderaan, Yavin IV, Hoth, Dagobah, Bespin, Endor, Naboo, "
@@ -99,13 +99,13 @@ class IntegrationTest {
           .split(",")
           .map { it.trim() }
       )
-      val firstPlanet = data!!.allPlanets?.planets?.get(0)
+      val firstPlanet = data.allPlanets?.planets?.get(0)
       assertThat((firstPlanet as PlanetFragment).climates).isEqualTo(listOf("arid"))
       assertThat((firstPlanet as PlanetFragment).surfaceWater).isWithin(1.0)
       assertThat(firstPlanet.filmConnection?.totalCount).isEqualTo(5)
       assertThat(firstPlanet.filmConnection?.films?.size).isEqualTo(5)
-      assertThat((firstPlanet.filmConnection?.films?.get(0) as FilmFragment)?.title).isEqualTo("A New Hope")
-      assertThat((firstPlanet.filmConnection?.films?.get(0) as FilmFragment)?.producers).isEqualTo(listOf("Gary Kurtz", "Rick McCallum"))
+      assertThat((firstPlanet.filmConnection?.films?.get(0) as FilmFragment).title).isEqualTo("A New Hope")
+      assertThat((firstPlanet.filmConnection?.films?.get(0) as FilmFragment).producers).isEqualTo(listOf("Gary Kurtz", "Rick McCallum"))
       true
     }
     val body = server.takeRequest().body.readString(Charsets.UTF_8)
@@ -187,8 +187,8 @@ class IntegrationTest {
       assertThat(response.hasErrors()).isFalse()
       assertThat(response.data!!.allFilms?.films).hasSize(6)
       val dates = response.data!!.allFilms?.films?.mapNotNull {
-        val releaseDate = it!!.releaseDate!!
-        dateCustomScalarAdapter!!.encode(releaseDate).toRawValue().toString()
+        val releaseDate = it!!.releaseDate
+        dateCustomScalarAdapter.encode(releaseDate).toRawValue().toString()
       }
       assertThat(dates).isEqualTo(Arrays.asList("1977-05-25", "1980-05-17", "1983-05-25", "1999-05-19",
           "2002-05-16", "2005-05-19"))
@@ -279,7 +279,7 @@ class IntegrationTest {
     )
     assertThat(data).isNotNull()
     assertThat(data!!.hero).isNotNull()
-    assertThat(data!!.hero?.name).isEqualTo("R2-D2")
+    assertThat(data.hero?.name).isEqualTo("R2-D2")
     assertThat(errors).containsExactly(
         Error(
             "Cannot query field \"names\" on type \"Species\".", listOf(Error.Location(3, 5)), emptyMap<String, Any>())
@@ -338,7 +338,7 @@ class IntegrationTest {
               )
           assertThat(response.executionContext[OkHttpExecutionContext.KEY]!!.response.body()).isNull()
           true
-        } as Predicate<Response<AllPlanetsQuery.Data>>
+        }
     )
   }
 

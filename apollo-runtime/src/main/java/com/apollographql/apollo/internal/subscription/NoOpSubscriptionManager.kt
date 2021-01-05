@@ -6,7 +6,7 @@ import com.apollographql.apollo.subscription.OnSubscriptionManagerStateChangeLis
 import com.apollographql.apollo.subscription.SubscriptionManagerState
 
 class NoOpSubscriptionManager : SubscriptionManager {
-  val errorMessage = "No `SubscriptionTransport.Factory` found, please add one to your `ApolloClient` with `ApolloClient.Builder.subscriptionTransportFactory`"
+  private val errorMessage = "No `SubscriptionTransport.Factory` found, please add one to your `ApolloClient` with `ApolloClient.Builder.subscriptionTransportFactory`"
 
   override fun <D : Operation.Data> subscribe(subscription: Subscription<D>, callback: SubscriptionManager.Callback<D>) {
     throw IllegalStateException(errorMessage)
@@ -27,9 +27,7 @@ class NoOpSubscriptionManager : SubscriptionManager {
   override fun reconnect() {
   }
 
-  override fun getState(): SubscriptionManagerState {
-    return SubscriptionManagerState.DISCONNECTED
-  }
+  override val state: SubscriptionManagerState = SubscriptionManagerState.DISCONNECTED
 
   override fun addOnStateChangeListener(onStateChangeListener: OnSubscriptionManagerStateChangeListener) {
     throw IllegalStateException(errorMessage)

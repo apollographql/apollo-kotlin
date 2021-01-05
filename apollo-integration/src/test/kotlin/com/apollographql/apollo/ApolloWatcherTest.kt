@@ -1,7 +1,6 @@
 package com.apollographql.apollo
 
 import com.apollographql.apollo.ApolloCall.Callback
-import com.apollographql.apollo.ApolloCall.StatusEvent
 import com.apollographql.apollo.api.Input
 import com.apollographql.apollo.api.Response
 import com.apollographql.apollo.cache.CacheHeaders
@@ -11,9 +10,6 @@ import com.apollographql.apollo.cache.normalized.internal.WriteableStore
 import com.apollographql.apollo.cache.normalized.lru.EvictionPolicy
 import com.apollographql.apollo.cache.normalized.lru.LruNormalizedCacheFactory
 import com.apollographql.apollo.coroutines.await
-import kotlinx.coroutines.flow.collect
-import kotlinx.coroutines.channels.Channel
-import kotlinx.coroutines.yield
 import com.apollographql.apollo.coroutines.toFlow
 import com.apollographql.apollo.exception.ApolloException
 import com.apollographql.apollo.fetcher.ApolloResponseFetchers
@@ -24,7 +20,8 @@ import com.apollographql.apollo.integration.normalizer.type.Episode
 import com.google.common.truth.Truth
 import com.google.common.truth.Truth.assertThat
 import junit.framework.Assert
-import kotlinx.coroutines.delay
+import kotlinx.coroutines.channels.Channel
+import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
 import okhttp3.Dispatcher
@@ -33,11 +30,8 @@ import okhttp3.mockwebserver.MockWebServer
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
-import org.mockito.InOrder
-import org.mockito.Mockito
-import org.mockito.Mockito.inOrder
 import java.io.IOException
-import java.util.*
+import java.util.ArrayList
 import java.util.concurrent.TimeoutException
 
 class ApolloWatcherTest {
@@ -117,7 +111,7 @@ class ApolloWatcherTest {
     Truth.assertThat(heroNameList[0]).isEqualTo("R2-D2")
 
     // Someone writes to the store directly
-    val changedKeys: Set<String> = apolloClient.getApolloStore().writeTransaction(object : Transaction<WriteableStore, Set<String>> {
+    val changedKeys: Set<String> = apolloClient.apolloStore.writeTransaction(object : Transaction<WriteableStore, Set<String>> {
       override fun execute(cache: WriteableStore): Set<String>? {
         val record: Record = Record.builder("2001")
             .addField("name", "Artoo")
@@ -125,7 +119,7 @@ class ApolloWatcherTest {
         return cache.merge(listOf(record), CacheHeaders.NONE)
       }
     })
-    apolloClient.getApolloStore().publish(changedKeys)
+    apolloClient.apolloStore.publish(changedKeys)
     Truth.assertThat(heroNameList[1]).isEqualTo("Artoo")
     watcher.cancel()
   }
@@ -328,20 +322,6 @@ class ApolloWatcherTest {
     })
     Truth.assertThat(watchedHeroes).hasSize(1)
     assertThat(watchedHeroes[0]?.name).isEqualTo("R2-D2")
-  }
-
-  @Test
-  fun queryWatcher_onStatusEvent_properlyCalled() {
-    val query = EpisodeHeroNameQuery(Input.fromNullable(Episode.EMPIRE))
-    server.enqueue(Utils.mockResponse("EpisodeHeroNameResponseWithId.json"))
-    val watcher = apolloClient.query(query).watcher()
-    val callback = Mockito.mock(ApolloCall.Callback::class.java) as ApolloCall.Callback<EpisodeHeroNameQuery.Data>
-    watcher.enqueueAndWatch(callback)
-    val inOrder: InOrder = inOrder(callback)
-    inOrder.verify(callback).onStatusEvent(StatusEvent.SCHEDULED)
-    inOrder.verify(callback).onStatusEvent(StatusEvent.FETCH_CACHE)
-    inOrder.verify(callback).onStatusEvent(StatusEvent.FETCH_NETWORK)
-    inOrder.verify(callback).onStatusEvent(StatusEvent.COMPLETED)
   }
 
   @Test

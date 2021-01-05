@@ -178,10 +178,10 @@ class NormalizedCacheTestCase {
       assertThat(response.data!!.hero?.name).isEqualTo("R2-D2")
       assertThat(response.data!!.hero?.name).isEqualTo("R2-D2")
       val hero = response.data!!.hero as HeroParentTypeDependentFieldQuery.Data.Hero.Droid
-      assertThat(hero?.friends).hasSize(3)
-      assertThat(hero?.friends?.get(0)?.name).isEqualTo("Luke Skywalker")
-      assertThat(hero?.friends?.get(0)?.name).isEqualTo("Luke Skywalker")
-      assertThat((hero?.friends?.get(0) as HeroParentTypeDependentFieldQuery.Data.Hero.Droid.Friend.Human).height).isWithin(1.72)
+      assertThat(hero.friends).hasSize(3)
+      assertThat(hero.friends?.get(0)?.name).isEqualTo("Luke Skywalker")
+      assertThat(hero.friends?.get(0)?.name).isEqualTo("Luke Skywalker")
+      assertThat((hero.friends?.get(0) as HeroParentTypeDependentFieldQuery.Data.Hero.Droid.Friend.Human).height).isWithin(1.72)
       true
     }
   }
@@ -243,7 +243,7 @@ class NormalizedCacheTestCase {
         apolloClient.query(CharacterNameByIdQuery("1002")).responseFetcher(ApolloResponseFetchers.CACHE_ONLY)
     ) { (_, data) ->
       assertThat(data!!.character).isNotNull()
-      assertThat(data!!.character!!.name).isEqualTo("Han Solo")
+      assertThat(data.character!!.name).isEqualTo("Han Solo")
       true
     }
   }
@@ -331,14 +331,14 @@ class NormalizedCacheTestCase {
         apolloClient.query(HeroAndFriendsNamesWithIDsQuery(fromNullable(Episode.NEWHOPE)))
     ) { (_, data) ->
       assertThat(data!!.hero?.id).isEqualTo("2001")
-      assertThat(data!!.hero?.name).isEqualTo("R2-D2")
-      assertThat(data!!.hero?.friends).hasSize(3)
-      assertThat(data!!.hero?.friends?.get(0)?.id).isEqualTo("1000")
-      assertThat(data!!.hero?.friends?.get(0)?.name).isEqualTo("Luke Skywalker")
-      assertThat(data!!.hero?.friends?.get(1)?.id).isEqualTo("1002")
-      assertThat(data!!.hero?.friends?.get(1)?.name).isEqualTo("Han Solo")
-      assertThat(data!!.hero?.friends?.get(2)?.id).isEqualTo("1003")
-      assertThat(data!!.hero?.friends?.get(2)?.name).isEqualTo("Leia Organa")
+      assertThat(data.hero?.name).isEqualTo("R2-D2")
+      assertThat(data.hero?.friends).hasSize(3)
+      assertThat(data.hero?.friends?.get(0)?.id).isEqualTo("1000")
+      assertThat(data.hero?.friends?.get(0)?.name).isEqualTo("Luke Skywalker")
+      assertThat(data.hero?.friends?.get(1)?.id).isEqualTo("1002")
+      assertThat(data.hero?.friends?.get(1)?.name).isEqualTo("Han Solo")
+      assertThat(data.hero?.friends?.get(2)?.id).isEqualTo("1003")
+      assertThat(data.hero?.friends?.get(2)?.name).isEqualTo("Leia Organa")
       true
     }
   }
@@ -359,15 +359,15 @@ class NormalizedCacheTestCase {
         HeroWithFriendsFragmentImpl_ResponseAdapter,
         from("2001"),
         Operation.EMPTY_VARIABLES).execute()
-    assertThat(heroWithFriendsFragment?.id).isEqualTo("2001")
-    assertThat(heroWithFriendsFragment?.name).isEqualTo("R2-D2")
-    assertThat(heroWithFriendsFragment?.friends).hasSize(3)
-    assertThat((heroWithFriendsFragment?.friends?.get(0) as HumanWithIdFragment)?.id).isEqualTo("1000")
-    assertThat((heroWithFriendsFragment?.friends?.get(0) as HumanWithIdFragment)?.name).isEqualTo("Luke Skywalker")
-    assertThat((heroWithFriendsFragment?.friends?.get(1) as HumanWithIdFragment)?.id).isEqualTo("1002")
-    assertThat((heroWithFriendsFragment?.friends?.get(1) as HumanWithIdFragment)?.name).isEqualTo("Han Solo")
-    assertThat((heroWithFriendsFragment?.friends?.get(2) as HumanWithIdFragment)?.id).isEqualTo("1003")
-    assertThat((heroWithFriendsFragment?.friends?.get(2) as HumanWithIdFragment)?.name).isEqualTo("Leia Organa")
+    assertThat(heroWithFriendsFragment.id).isEqualTo("2001")
+    assertThat(heroWithFriendsFragment.name).isEqualTo("R2-D2")
+    assertThat(heroWithFriendsFragment.friends).hasSize(3)
+    assertThat((heroWithFriendsFragment.friends?.get(0) as HumanWithIdFragment).id).isEqualTo("1000")
+    assertThat((heroWithFriendsFragment.friends?.get(0) as HumanWithIdFragment).name).isEqualTo("Luke Skywalker")
+    assertThat((heroWithFriendsFragment.friends?.get(1) as HumanWithIdFragment).id).isEqualTo("1002")
+    assertThat((heroWithFriendsFragment.friends?.get(1) as HumanWithIdFragment).name).isEqualTo("Han Solo")
+    assertThat((heroWithFriendsFragment.friends?.get(2) as HumanWithIdFragment).id).isEqualTo("1003")
+    assertThat((heroWithFriendsFragment.friends?.get(2) as HumanWithIdFragment).name).isEqualTo("Leia Organa")
 
     var fragment: HumanWithIdFragment = apolloClient.apolloStore.read(
         HumanWithIdFragmentImpl_ResponseAdapter,
@@ -375,24 +375,24 @@ class NormalizedCacheTestCase {
         Operation.EMPTY_VARIABLES
     ).execute()
 
-    assertThat(fragment?.id).isEqualTo("1000")
-    assertThat(fragment?.name).isEqualTo("Luke Skywalker")
+    assertThat(fragment.id).isEqualTo("1000")
+    assertThat(fragment.name).isEqualTo("Luke Skywalker")
 
     fragment = apolloClient.apolloStore.read(
         HumanWithIdFragmentImpl_ResponseAdapter,
         from("1002"),
         Operation.EMPTY_VARIABLES
     ).execute()
-    assertThat(fragment?.id).isEqualTo("1002")
-    assertThat(fragment?.name).isEqualTo("Han Solo")
+    assertThat(fragment.id).isEqualTo("1002")
+    assertThat(fragment.name).isEqualTo("Han Solo")
 
     fragment = apolloClient.apolloStore.read(
         HumanWithIdFragmentImpl_ResponseAdapter,
         from("1003"),
         Operation.EMPTY_VARIABLES
     ).execute()
-    assertThat(fragment?.id).isEqualTo("1003")
-    assertThat(fragment?.name).isEqualTo("Leia Organa")
+    assertThat(fragment.id).isEqualTo("1003")
+    assertThat(fragment.name).isEqualTo("Leia Organa")
   }
 
   @Test
@@ -434,7 +434,7 @@ class NormalizedCacheTestCase {
             .responseFetcher(ApolloResponseFetchers.NETWORK_ONLY)
     ) { (_, data) ->
       assertThat(data!!.hero?.name).isEqualTo("R2-D2")
-      assertThat(data!!.hero?.friends).hasSize(3)
+      assertThat(data.hero?.friends).hasSize(3)
       true
     }
     assertResponse(
@@ -507,7 +507,7 @@ class NormalizedCacheTestCase {
             .responseFetcher(ApolloResponseFetchers.NETWORK_ONLY)
     ) { (_, data) ->
       assertThat(data!!.hero?.name).isEqualTo("R2-D2")
-      assertThat(data!!.hero?.friends).hasSize(3)
+      assertThat(data.hero?.friends).hasSize(3)
       true
     }
     assertResponse(
@@ -571,10 +571,10 @@ class NormalizedCacheTestCase {
         apolloClient.query(HeroAndFriendsDirectivesQuery(episode = Input.fromNullable(Episode.JEDI), includeName = true, skipFriends = false)).responseFetcher(ApolloResponseFetchers.CACHE_ONLY),
         Predicate<Response<HeroAndFriendsDirectivesQuery.Data>> { (_, data) ->
           assertThat(data!!.hero?.name).isEqualTo("R2-D2")
-          assertThat(data!!.hero?.friends).hasSize(3)
-          assertThat(data!!.hero?.friends?.get(0)?.name).isEqualTo("Luke Skywalker")
-          assertThat(data!!.hero?.friends?.get(1)?.name).isEqualTo("Han Solo")
-          assertThat(data!!.hero?.friends?.get(2)?.name).isEqualTo("Leia Organa")
+          assertThat(data.hero?.friends).hasSize(3)
+          assertThat(data.hero?.friends?.get(0)?.name).isEqualTo("Luke Skywalker")
+          assertThat(data.hero?.friends?.get(1)?.name).isEqualTo("Han Solo")
+          assertThat(data.hero?.friends?.get(2)?.name).isEqualTo("Leia Organa")
           true
         }
     )
@@ -582,10 +582,10 @@ class NormalizedCacheTestCase {
         apolloClient.query(HeroAndFriendsDirectivesQuery( episode = Input.fromNullable(Episode.JEDI), includeName = false, skipFriends = false)).responseFetcher(ApolloResponseFetchers.CACHE_ONLY),
         Predicate<Response<HeroAndFriendsDirectivesQuery.Data>> { (_, data) ->
           assertThat(data!!.hero?.name).isNull()
-          assertThat(data!!.hero?.friends).hasSize(3)
-          assertThat(data!!.hero?.friends?.get(0)?.name).isEqualTo("Luke Skywalker")
-          assertThat(data!!.hero?.friends?.get(1)?.name).isEqualTo("Han Solo")
-          assertThat(data!!.hero?.friends?.get(2)?.name).isEqualTo("Leia Organa")
+          assertThat(data.hero?.friends).hasSize(3)
+          assertThat(data.hero?.friends?.get(0)?.name).isEqualTo("Luke Skywalker")
+          assertThat(data.hero?.friends?.get(1)?.name).isEqualTo("Han Solo")
+          assertThat(data.hero?.friends?.get(2)?.name).isEqualTo("Leia Organa")
           true
         }
     )
@@ -593,7 +593,7 @@ class NormalizedCacheTestCase {
         apolloClient.query(HeroAndFriendsDirectivesQuery( episode = Input.fromNullable(Episode.JEDI), includeName = true, skipFriends = true)).responseFetcher(ApolloResponseFetchers.CACHE_ONLY),
         Predicate<Response<HeroAndFriendsDirectivesQuery.Data>> { (_, data) ->
           assertThat(data!!.hero?.name).isEqualTo("R2-D2")
-          assertThat(data!!.hero?.friends).isNull()
+          assertThat(data.hero?.friends).isNull()
           true
         }
     )
@@ -612,7 +612,7 @@ class NormalizedCacheTestCase {
         apolloClient.query(HeroAndFriendsDirectivesQuery(episode = Input.fromNullable(Episode.JEDI), includeName = true, skipFriends = true)).responseFetcher(ApolloResponseFetchers.CACHE_ONLY),
         Predicate<Response<HeroAndFriendsDirectivesQuery.Data>> { (_, data) ->
           assertThat(data!!.hero?.name).isEqualTo("R2-D2")
-          assertThat(data!!.hero?.friends).isNull()
+          assertThat(data.hero?.friends).isNull()
           true
         }
     )
@@ -704,7 +704,7 @@ LruNormalizedCache {
             .responseFetcher(ApolloResponseFetchers.NETWORK_ONLY)
     ) { (_, data) ->
       assertThat(data!!.hero?.name).isEqualTo("R2-D2")
-      assertThat(data!!.hero?.friends).hasSize(3)
+      assertThat(data.hero?.friends).hasSize(3)
       true
     }
     assertResponse(

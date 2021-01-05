@@ -80,7 +80,6 @@ class ApolloExceptionTest {
         .assertError(ApolloHttpException::class.java)
     val e = errorRef.get() as ApolloHttpException
     assertThat(e.code()).isEqualTo(401)
-    assertThat(e.message()).isEqualTo("Client Error")
     assertThat(errorResponse.get()).isEqualTo("Unauthorized request!")
     assertThat(e.message).isEqualTo("HTTP 401 Client Error")
   }

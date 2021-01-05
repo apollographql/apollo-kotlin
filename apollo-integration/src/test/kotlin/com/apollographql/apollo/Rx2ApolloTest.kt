@@ -78,7 +78,7 @@ class Rx2ApolloTest {
         .subscribeWith(testObserver)
     disposable.dispose()
     testObserver.assertComplete()
-    Truth.assertThat(testObserver.isDisposed()).isTrue()
+    Truth.assertThat(testObserver.isDisposed).isTrue()
   }
 
   @Test
@@ -103,7 +103,7 @@ class Rx2ApolloTest {
         .subscribeWith(testObserver)
     disposable.dispose()
     testObserver.assertNotComplete()
-    Truth.assertThat(testObserver.isDisposed()).isTrue()
+    Truth.assertThat(testObserver.isDisposed).isTrue()
   }
 
   @Test
@@ -119,7 +119,7 @@ class Rx2ApolloTest {
         .subscribeWith(observer)
     observer.assertValueCount(1)
         .assertValueAt(0) { data ->
-          assertThat(data?.hero?.name).isEqualTo("R2-D2")
+          assertThat(data.hero?.name).isEqualTo("R2-D2")
           true
         }
   }
@@ -139,11 +139,11 @@ class Rx2ApolloTest {
         .enqueue(null)
     observer.assertValueCount(2)
         .assertValueAt(0) { data ->
-          assertThat(data?.hero?.name).isEqualTo("R2-D2")
+          assertThat(data.hero?.name).isEqualTo("R2-D2")
           true
         }
         .assertValueAt(1) { data ->
-          assertThat(data?.hero?.name).isEqualTo("Artoo")
+          assertThat(data.hero?.name).isEqualTo("Artoo")
           true
         }
   }
@@ -163,7 +163,7 @@ class Rx2ApolloTest {
     observer
         .assertValueCount(1)
         .assertValueAt(0) { data ->
-          assertThat(data?.hero?.name).isEqualTo("R2-D2")
+          assertThat(data.hero?.name).isEqualTo("R2-D2")
           true
         }
   }
@@ -182,11 +182,11 @@ class Rx2ApolloTest {
     observer
         .assertValueCount(2)
         .assertValueAt(0) { data ->
-          assertThat(data?.hero?.name).isEqualTo("R2-D2")
+          assertThat(data.hero?.name).isEqualTo("R2-D2")
           true
         }
         .assertValueAt(1) { data ->
-          assertThat(data?.hero?.name).isEqualTo("Artoo")
+          assertThat(data.hero?.name).isEqualTo("Artoo")
           true
         }
   }
@@ -211,7 +211,7 @@ class Rx2ApolloTest {
     testObserver
         .assertValueCount(1)
         .assertValueAt(0) { data ->
-          assertThat(data?.hero?.name).isEqualTo("R2-D2")
+          assertThat(data.hero?.name).isEqualTo("R2-D2")
           true
         }
   }

@@ -14,7 +14,6 @@ def versions = [
     kotlin                : '1.4.10',
     kotlinCoroutines      : '1.4.2',
     kotlinPoet            : '1.6.0',
-    mockito               : '1.9.5',
     moshi                 : '1.11.0',
     okHttp4               : '4.9.0',
     okHttp                : '3.12.11', // Keep this to keep supporting older Android devices
@@ -64,7 +63,6 @@ ext.dep = [
         coroutinesAndroid  : "org.jetbrains.kotlinx:kotlinx-coroutines-android:$versions.kotlinCoroutines",
         reflect            : "org.jetbrains.kotlin:kotlin-reflect:$versions.kotlin"
     ],
-    mockito               : "org.mockito:mockito-all:$versions.mockito",
     moshi                 : [
         adapters     : "com.squareup.moshi:moshi-adapters:$versions.moshi",
         kotlinCodegen: "com.squareup.moshi:moshi-kotlin-codegen:$versions.moshi",
