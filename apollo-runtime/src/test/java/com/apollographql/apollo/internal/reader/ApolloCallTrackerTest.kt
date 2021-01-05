@@ -5,19 +5,12 @@ import com.apollographql.apollo.IdleResourceCallback
 import com.apollographql.apollo.api.Operation
 import com.apollographql.apollo.api.OperationName
 import com.apollographql.apollo.api.Query
-import com.apollographql.apollo.api.Response
-import com.apollographql.apollo.api.CustomScalarAdapters
-import com.apollographql.apollo.api.internal.OperationRequestBodyComposer.compose
-import com.apollographql.apollo.api.internal.ResponseFieldMapper
-import com.apollographql.apollo.api.internal.ResponseFieldMarshaller
 import com.apollographql.apollo.rx2.Rx2Apollo
 import com.google.common.truth.Truth
 import okhttp3.Interceptor
 import okhttp3.OkHttpClient
 import okhttp3.mockwebserver.MockResponse
 import okhttp3.mockwebserver.MockWebServer
-import okio.BufferedSource
-import okio.ByteString
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
@@ -27,9 +20,6 @@ import java.util.concurrent.atomic.AtomicBoolean
 
 class ApolloCallTrackerTest {
   internal class QueryData : Operation.Data {
-    override fun marshaller(): ResponseFieldMarshaller {
-      throw UnsupportedOperationException()
-    }
   }
 
   @get:Rule
@@ -144,9 +134,7 @@ class ApolloCallTrackerTest {
         return Operation.EMPTY_VARIABLES
       }
 
-      override fun responseFieldMapper(): ResponseFieldMapper<QueryData> {
-        return ResponseFieldMapper { throw UnsupportedOperationException() }
-      }
+      override fun adapter() = throw UnsupportedOperationException()
 
       override fun name(): OperationName {
         return operationName

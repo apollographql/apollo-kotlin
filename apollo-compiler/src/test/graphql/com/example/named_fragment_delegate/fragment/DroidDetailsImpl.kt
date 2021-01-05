@@ -5,8 +5,9 @@
 //
 package com.example.named_fragment_delegate.fragment
 
+import com.apollographql.apollo.api.Adaptable
 import com.apollographql.apollo.api.GraphqlFragment
-import com.apollographql.apollo.api.internal.ResponseFieldMarshaller
+import com.apollographql.apollo.api.internal.ResponseAdapter
 import com.example.named_fragment_delegate.fragment.adapter.DroidDetailsImpl_ResponseAdapter
 import kotlin.String
 import kotlin.collections.List
@@ -28,11 +29,9 @@ data class DroidDetailsImpl(
    * This droid's friends, or an empty list if they have none
    */
   override val friends: List<Friend?>?
-) : DroidDetail, GraphqlFragment {
-  override fun marshaller(): ResponseFieldMarshaller {
-    return ResponseFieldMarshaller { writer ->
-      DroidDetailsImpl_ResponseAdapter.toResponse(writer, this)
-    }
+) : DroidDetail, GraphqlFragment, Adaptable<DroidDetailsImpl> {
+  override fun adapter(): ResponseAdapter<DroidDetailsImpl> {
+    return DroidDetailsImpl_ResponseAdapter
   }
 
   /**
@@ -43,11 +42,5 @@ data class DroidDetailsImpl(
      * The name of the character
      */
     override val name: String
-  ) : DroidDetail.Friend {
-    override fun marshaller(): ResponseFieldMarshaller {
-      return ResponseFieldMarshaller { writer ->
-        DroidDetailsImpl_ResponseAdapter.Friend.toResponse(writer, this)
-      }
-    }
-  }
+  ) : DroidDetail.Friend
 }

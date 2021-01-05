@@ -55,12 +55,12 @@ class SimpleResponseWriter(private val customScalarAdapters: CustomScalarAdapter
     }
   }
 
-  override fun writeObject(field: ResponseField, marshaller: ResponseFieldMarshaller?) {
-    if (marshaller == null) {
+  override fun writeObject(field: ResponseField, block: ((ResponseWriter) -> Unit)?) {
+    if (block == null) {
       data[field.responseName] = null
     } else {
       val objectResponseWriter = SimpleResponseWriter(customScalarAdapters)
-      marshaller.marshal(objectResponseWriter)
+      block.invoke(objectResponseWriter)
       data[field.responseName] = objectResponseWriter.data
     }
   }
@@ -112,12 +112,12 @@ class SimpleResponseWriter(private val customScalarAdapters: CustomScalarAdapter
       }
     }
 
-    override fun writeObject(marshaller: ResponseFieldMarshaller?) {
-      if (marshaller == null) {
+    override fun writeObject(block: ((ResponseWriter) -> Unit)?) {
+      if (block == null) {
         data.add(null)
       } else {
         val objectResponseWriter = SimpleResponseWriter(customScalarAdapters)
-        marshaller.marshal(objectResponseWriter)
+        block.invoke(objectResponseWriter)
         data.add(objectResponseWriter.data)
       }
     }

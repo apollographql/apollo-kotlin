@@ -6,8 +6,6 @@
 package com.example.root_query_fragment.fragment
 
 import com.apollographql.apollo.api.GraphqlFragment
-import com.apollographql.apollo.api.internal.ResponseFieldMapper
-import com.apollographql.apollo.api.internal.ResponseFieldMarshaller
 import com.apollographql.apollo.api.internal.ResponseReader
 import com.example.root_query_fragment.fragment.adapter.QueryFragmentImpl_ResponseAdapter
 import kotlin.String
@@ -29,8 +27,6 @@ interface QueryFragment : GraphqlFragment {
      * The name of the character
      */
     val name: String
-
-    fun marshaller(): ResponseFieldMarshaller
   }
 
   companion object {
@@ -45,12 +41,6 @@ interface QueryFragment : GraphqlFragment {
 
     operator fun invoke(reader: ResponseReader): QueryFragment {
       return QueryFragmentImpl_ResponseAdapter.fromResponse(reader)
-    }
-
-    fun Mapper(): ResponseFieldMapper<QueryFragment> {
-      return ResponseFieldMapper { reader ->
-        QueryFragmentImpl_ResponseAdapter.fromResponse(reader)
-      }
     }
   }
 }

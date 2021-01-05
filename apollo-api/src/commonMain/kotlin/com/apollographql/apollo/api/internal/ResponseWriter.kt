@@ -2,6 +2,7 @@ package com.apollographql.apollo.api.internal
 
 import com.apollographql.apollo.api.ResponseField
 import com.apollographql.apollo.api.CustomScalar
+import com.apollographql.apollo.api.Response
 
 interface ResponseWriter {
   fun writeString(field: ResponseField, value: String?)
@@ -16,7 +17,7 @@ interface ResponseWriter {
 
   fun writeCustom(field: ResponseField.CustomScalarField, value: Any?)
 
-  fun writeObject(field: ResponseField, marshaller: ResponseFieldMarshaller?)
+  fun writeObject(field: ResponseField, block: ((ResponseWriter) -> Unit)?)
 
   fun <T> writeList(field: ResponseField, values: List<T>?, block: (items: List<T>?, listItemWriter: ListItemWriter) -> Unit)
 
@@ -37,7 +38,7 @@ interface ResponseWriter {
 
     fun writeCustom(customScalar: CustomScalar, value: Any?)
 
-    fun writeObject(marshaller: ResponseFieldMarshaller?)
+    fun writeObject(block: ((ResponseWriter) ->Unit)?)
 
     fun <T> writeList(items: List<T>?, block: (items: List<T>?, listItemWriter: ListItemWriter) -> Unit)
   }

@@ -6,8 +6,6 @@
 package com.example.fragment_in_fragment.fragment
 
 import com.apollographql.apollo.api.GraphqlFragment
-import com.apollographql.apollo.api.internal.ResponseFieldMapper
-import com.apollographql.apollo.api.internal.ResponseFieldMarshaller
 import com.apollographql.apollo.api.internal.ResponseReader
 import com.example.fragment_in_fragment.fragment.adapter.StarshipFragmentImpl_ResponseAdapter
 import kotlin.String
@@ -41,8 +39,6 @@ interface StarshipFragment : GraphqlFragment {
      */
     val edges: List<Edge?>?
 
-    fun marshaller(): ResponseFieldMarshaller
-
     /**
      * An edge in a connection.
      */
@@ -52,15 +48,11 @@ interface StarshipFragment : GraphqlFragment {
        */
       val node: Node?
 
-      fun marshaller(): ResponseFieldMarshaller
-
       /**
        * An individual person or character within the Star Wars universe.
        */
       interface Node {
         val __typename: String
-
-        fun marshaller(): ResponseFieldMarshaller
 
         interface Person : Node, PilotFragment {
           override val __typename: String
@@ -75,16 +67,12 @@ interface StarshipFragment : GraphqlFragment {
            */
           override val homeworld: Homeworld?
 
-          override fun marshaller(): ResponseFieldMarshaller
-
           /**
            * A large mass, planet or planetoid in the Star Wars Universe, at the time of
            * 0 ABY.
            */
           interface Homeworld : PilotFragment.Homeworld {
             override val __typename: String
-
-            override fun marshaller(): ResponseFieldMarshaller
 
             interface Planet : Homeworld, PlanetFragment, PilotFragment.Homeworld.Planet,
                 PilotFragment.Homeworld {
@@ -94,8 +82,6 @@ interface StarshipFragment : GraphqlFragment {
                * The name of this planet.
                */
               override val name: String?
-
-              override fun marshaller(): ResponseFieldMarshaller
             }
 
             companion object {
@@ -134,12 +120,6 @@ interface StarshipFragment : GraphqlFragment {
 
     operator fun invoke(reader: ResponseReader): StarshipFragment {
       return StarshipFragmentImpl_ResponseAdapter.fromResponse(reader)
-    }
-
-    fun Mapper(): ResponseFieldMapper<StarshipFragment> {
-      return ResponseFieldMapper { reader ->
-        StarshipFragmentImpl_ResponseAdapter.fromResponse(reader)
-      }
     }
   }
 }

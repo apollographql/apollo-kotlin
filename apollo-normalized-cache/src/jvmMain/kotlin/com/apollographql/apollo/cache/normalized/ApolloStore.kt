@@ -1,9 +1,9 @@
 package com.apollographql.apollo.cache.normalized
 
-import com.apollographql.apollo.api.GraphqlFragment
+import com.apollographql.apollo.api.Adaptable
 import com.apollographql.apollo.api.Operation
 import com.apollographql.apollo.api.Response
-import com.apollographql.apollo.api.internal.ResponseFieldMapper
+import com.apollographql.apollo.api.internal.ResponseAdapter
 import com.apollographql.apollo.cache.CacheHeaders
 import com.apollographql.apollo.cache.normalized.ApolloStore.RecordChangeSubscriber
 import com.apollographql.apollo.cache.normalized.internal.NoOpApolloStore
@@ -128,7 +128,6 @@ interface ApolloStore {
    * Read GraphQL operation response from store.
    *
    * @param operation           response of which should be read
-   * @param responseFieldMapper [ResponseFieldMapper] to be used for field mapping
    * @param responseNormalizer  [ResponseNormalizer] to be used when reading cached response
    * @param cacheHeaders        [CacheHeaders] to be used when reading cached response
    * @param <D>                 type of GraphQL operation data
@@ -138,22 +137,20 @@ interface ApolloStore {
   </V></T></D> */
   fun <D : Operation.Data, V : Operation.Variables> read(
       operation: Operation<D, V>,
-      responseFieldMapper: ResponseFieldMapper<D>,
       responseNormalizer: ResponseNormalizer<Record>,
       cacheHeaders: CacheHeaders
   ): ApolloStoreOperation<Response<D>>
 
   /**
-   * Read GraphQL fragment from store.
+   * Read from store.
    *
-   * @param fieldMapper [ResponseFieldMapper] to be used for field mapping
    * @param cacheKey    [CacheKey] to be used to find cache record for the fragment
    * @param variables   [Operation.Variables] required for fragment arguments resolving
    * @param <F>         type of fragment to be read
    * @return {@ApolloStoreOperation} to be performed, that will be resolved with cached fragment data
   </F> */
-  fun <F : GraphqlFragment> read(
-      fieldMapper: ResponseFieldMapper<F>,
+  fun <F> read(
+      adapter: ResponseAdapter<F>,
       cacheKey: CacheKey,
       variables: Operation.Variables
   ): ApolloStoreOperation<F>
@@ -199,7 +196,7 @@ interface ApolloStore {
    * have changed
    */
   fun write(
-      fragment: GraphqlFragment,
+      adaptable: Adaptable<*>,
       cacheKey: CacheKey,
       variables: Operation.Variables
   ): ApolloStoreOperation<Set<String>>
@@ -214,7 +211,7 @@ interface ApolloStore {
    * @return [ApolloStoreOperation] to be performed
    */
   fun writeAndPublish(
-      fragment: GraphqlFragment,
+      adaptable: Adaptable<*>,
       cacheKey: CacheKey,
       variables: Operation.Variables
   ): ApolloStoreOperation<Boolean>

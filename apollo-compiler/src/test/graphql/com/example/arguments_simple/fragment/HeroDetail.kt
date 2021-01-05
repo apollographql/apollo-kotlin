@@ -6,8 +6,6 @@
 package com.example.arguments_simple.fragment
 
 import com.apollographql.apollo.api.GraphqlFragment
-import com.apollographql.apollo.api.internal.ResponseFieldMapper
-import com.apollographql.apollo.api.internal.ResponseFieldMarshaller
 import com.apollographql.apollo.api.internal.ResponseReader
 import com.example.arguments_simple.fragment.adapter.HeroDetailsImpl_ResponseAdapter
 import kotlin.Int
@@ -40,8 +38,6 @@ interface HeroDetail : GraphqlFragment {
      */
     val edges: List<Edge?>?
 
-    fun marshaller(): ResponseFieldMarshaller
-
     /**
      * An edge object for a character's friends
      */
@@ -51,8 +47,6 @@ interface HeroDetail : GraphqlFragment {
        */
       val node: Node?
 
-      fun marshaller(): ResponseFieldMarshaller
-
       /**
        * A character from the Star Wars universe
        */
@@ -61,8 +55,6 @@ interface HeroDetail : GraphqlFragment {
          * The name of the character
          */
         val name: String?
-
-        fun marshaller(): ResponseFieldMarshaller
       }
     }
   }
@@ -84,12 +76,6 @@ interface HeroDetail : GraphqlFragment {
 
     operator fun invoke(reader: ResponseReader): HeroDetail {
       return HeroDetailsImpl_ResponseAdapter.fromResponse(reader)
-    }
-
-    fun Mapper(): ResponseFieldMapper<HeroDetail> {
-      return ResponseFieldMapper { reader ->
-        HeroDetailsImpl_ResponseAdapter.fromResponse(reader)
-      }
     }
   }
 }

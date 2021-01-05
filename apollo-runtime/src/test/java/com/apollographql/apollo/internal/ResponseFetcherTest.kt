@@ -4,18 +4,11 @@ import com.apollographql.apollo.ApolloClient
 import com.apollographql.apollo.api.Operation
 import com.apollographql.apollo.api.OperationName
 import com.apollographql.apollo.api.Query
-import com.apollographql.apollo.api.Response
-import com.apollographql.apollo.api.CustomScalarAdapters
 import com.apollographql.apollo.api.cache.http.HttpCachePolicy
 import com.apollographql.apollo.api.cache.http.HttpCachePolicy.FetchStrategy
-import com.apollographql.apollo.api.internal.OperationRequestBodyComposer.compose
-import com.apollographql.apollo.api.internal.ResponseFieldMapper
-import com.apollographql.apollo.api.internal.ResponseFieldMarshaller
 import com.apollographql.apollo.fetcher.ApolloResponseFetchers
 import com.google.common.truth.Truth
 import okhttp3.OkHttpClient
-import okio.BufferedSource
-import okio.ByteString
 import org.junit.Test
 
 class ResponseFetcherTest {
@@ -35,15 +28,7 @@ class ResponseFetcherTest {
       return Operation.EMPTY_VARIABLES
     }
 
-    override fun responseFieldMapper(): ResponseFieldMapper<Operation.Data> {
-      return ResponseFieldMapper {
-        object : Operation.Data {
-          override fun marshaller(): ResponseFieldMarshaller {
-            throw UnsupportedOperationException()
-          }
-        }
-      }
-    }
+    override fun adapter() = throw UnsupportedOperationException()
     
     override fun name(): OperationName {
       return operationName

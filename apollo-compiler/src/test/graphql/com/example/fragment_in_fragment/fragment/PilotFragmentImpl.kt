@@ -5,8 +5,9 @@
 //
 package com.example.fragment_in_fragment.fragment
 
+import com.apollographql.apollo.api.Adaptable
 import com.apollographql.apollo.api.GraphqlFragment
-import com.apollographql.apollo.api.internal.ResponseFieldMarshaller
+import com.apollographql.apollo.api.internal.ResponseAdapter
 import com.example.fragment_in_fragment.fragment.adapter.PilotFragmentImpl_ResponseAdapter
 import kotlin.String
 
@@ -23,11 +24,9 @@ data class PilotFragmentImpl(
    * A planet that this person was born on or inhabits.
    */
   override val homeworld: Homeworld?
-) : PilotFragment, GraphqlFragment {
-  override fun marshaller(): ResponseFieldMarshaller {
-    return ResponseFieldMarshaller { writer ->
-      PilotFragmentImpl_ResponseAdapter.toResponse(writer, this)
-    }
+) : PilotFragment, GraphqlFragment, Adaptable<PilotFragmentImpl> {
+  override fun adapter(): ResponseAdapter<PilotFragmentImpl> {
+    return PilotFragmentImpl_ResponseAdapter
   }
 
   /**
@@ -37,30 +36,16 @@ data class PilotFragmentImpl(
   interface Homeworld : PilotFragment.Homeworld {
     override val __typename: String
 
-    override fun marshaller(): ResponseFieldMarshaller
-
     data class PlanetHomeworld(
       override val __typename: String,
       /**
        * The name of this planet.
        */
       override val name: String?
-    ) : PilotFragment.Homeworld, PilotFragment.Homeworld.Planet, PlanetFragment, Homeworld {
-      override fun marshaller(): ResponseFieldMarshaller {
-        return ResponseFieldMarshaller { writer ->
-          PilotFragmentImpl_ResponseAdapter.Homeworld.PlanetHomeworld.toResponse(writer, this)
-        }
-      }
-    }
+    ) : PilotFragment.Homeworld, PilotFragment.Homeworld.Planet, PlanetFragment, Homeworld
 
     data class OtherHomeworld(
       override val __typename: String
-    ) : PilotFragment.Homeworld, Homeworld {
-      override fun marshaller(): ResponseFieldMarshaller {
-        return ResponseFieldMarshaller { writer ->
-          PilotFragmentImpl_ResponseAdapter.Homeworld.OtherHomeworld.toResponse(writer, this)
-        }
-      }
-    }
+    ) : PilotFragment.Homeworld, Homeworld
   }
 }

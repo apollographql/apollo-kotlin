@@ -9,8 +9,7 @@ import com.apollographql.apollo.api.Operation
 import com.apollographql.apollo.api.OperationName
 import com.apollographql.apollo.api.Query
 import com.apollographql.apollo.api.internal.QueryDocumentMinifier
-import com.apollographql.apollo.api.internal.ResponseFieldMapper
-import com.apollographql.apollo.api.internal.ResponseFieldMarshaller
+import com.apollographql.apollo.api.internal.ResponseAdapter
 import com.example.fragments_with_type_condition.adapter.TestQuery_ResponseAdapter
 import com.example.fragments_with_type_condition.fragment.DroidDetail
 import com.example.fragments_with_type_condition.fragment.HumanDetail
@@ -30,12 +29,7 @@ class TestQuery : Query<TestQuery.Data, Operation.Variables> {
 
   override fun name(): OperationName = OPERATION_NAME
 
-  override fun responseFieldMapper(): ResponseFieldMapper<Data> {
-    return ResponseFieldMapper { reader ->
-      TestQuery_ResponseAdapter.fromResponse(reader)
-    }
-  }
-
+  override fun adapter(): ResponseAdapter<Data> = TestQuery_ResponseAdapter
   /**
    * The query type, represents all of the entry points into our object graph
    */
@@ -43,19 +37,11 @@ class TestQuery : Query<TestQuery.Data, Operation.Variables> {
     val r2: R2?,
     val luke: Luke?
   ) : Operation.Data {
-    override fun marshaller(): ResponseFieldMarshaller {
-      return ResponseFieldMarshaller { writer ->
-        TestQuery_ResponseAdapter.Data.toResponse(writer, this)
-      }
-    }
-
     /**
      * A character from the Star Wars universe
      */
     interface R2 {
       val __typename: String
-
-      fun marshaller(): ResponseFieldMarshaller
 
       interface Human : R2, HumanDetail {
         override val __typename: String
@@ -69,8 +55,6 @@ class TestQuery : Query<TestQuery.Data, Operation.Variables> {
          * Height in the preferred unit, default is meters
          */
         override val height: Double?
-
-        override fun marshaller(): ResponseFieldMarshaller
       }
 
       interface Droid : R2, DroidDetail {
@@ -85,8 +69,6 @@ class TestQuery : Query<TestQuery.Data, Operation.Variables> {
          * This droid's primary function
          */
         override val primaryFunction: String?
-
-        override fun marshaller(): ResponseFieldMarshaller
       }
 
       data class HumanR2(
@@ -99,13 +81,7 @@ class TestQuery : Query<TestQuery.Data, Operation.Variables> {
          * Height in the preferred unit, default is meters
          */
         override val height: Double?
-      ) : R2, Human, HumanDetail {
-        override fun marshaller(): ResponseFieldMarshaller {
-          return ResponseFieldMarshaller { writer ->
-            TestQuery_ResponseAdapter.Data.R2.HumanR2.toResponse(writer, this)
-          }
-        }
-      }
+      ) : R2, Human, HumanDetail
 
       data class DroidR2(
         override val __typename: String,
@@ -117,23 +93,11 @@ class TestQuery : Query<TestQuery.Data, Operation.Variables> {
          * This droid's primary function
          */
         override val primaryFunction: String?
-      ) : R2, Droid, DroidDetail {
-        override fun marshaller(): ResponseFieldMarshaller {
-          return ResponseFieldMarshaller { writer ->
-            TestQuery_ResponseAdapter.Data.R2.DroidR2.toResponse(writer, this)
-          }
-        }
-      }
+      ) : R2, Droid, DroidDetail
 
       data class OtherR2(
         override val __typename: String
-      ) : R2 {
-        override fun marshaller(): ResponseFieldMarshaller {
-          return ResponseFieldMarshaller { writer ->
-            TestQuery_ResponseAdapter.Data.R2.OtherR2.toResponse(writer, this)
-          }
-        }
-      }
+      ) : R2
 
       companion object {
         fun R2.asHuman(): Human? = this as? Human
@@ -152,8 +116,6 @@ class TestQuery : Query<TestQuery.Data, Operation.Variables> {
     interface Luke {
       val __typename: String
 
-      fun marshaller(): ResponseFieldMarshaller
-
       interface Human : Luke, HumanDetail {
         override val __typename: String
 
@@ -166,8 +128,6 @@ class TestQuery : Query<TestQuery.Data, Operation.Variables> {
          * Height in the preferred unit, default is meters
          */
         override val height: Double?
-
-        override fun marshaller(): ResponseFieldMarshaller
       }
 
       interface Droid : Luke, DroidDetail {
@@ -182,8 +142,6 @@ class TestQuery : Query<TestQuery.Data, Operation.Variables> {
          * This droid's primary function
          */
         override val primaryFunction: String?
-
-        override fun marshaller(): ResponseFieldMarshaller
       }
 
       data class HumanLuke(
@@ -196,13 +154,7 @@ class TestQuery : Query<TestQuery.Data, Operation.Variables> {
          * Height in the preferred unit, default is meters
          */
         override val height: Double?
-      ) : Luke, Human, HumanDetail {
-        override fun marshaller(): ResponseFieldMarshaller {
-          return ResponseFieldMarshaller { writer ->
-            TestQuery_ResponseAdapter.Data.Luke.HumanLuke.toResponse(writer, this)
-          }
-        }
-      }
+      ) : Luke, Human, HumanDetail
 
       data class DroidLuke(
         override val __typename: String,
@@ -214,23 +166,11 @@ class TestQuery : Query<TestQuery.Data, Operation.Variables> {
          * This droid's primary function
          */
         override val primaryFunction: String?
-      ) : Luke, Droid, DroidDetail {
-        override fun marshaller(): ResponseFieldMarshaller {
-          return ResponseFieldMarshaller { writer ->
-            TestQuery_ResponseAdapter.Data.Luke.DroidLuke.toResponse(writer, this)
-          }
-        }
-      }
+      ) : Luke, Droid, DroidDetail
 
       data class OtherLuke(
         override val __typename: String
-      ) : Luke {
-        override fun marshaller(): ResponseFieldMarshaller {
-          return ResponseFieldMarshaller { writer ->
-            TestQuery_ResponseAdapter.Data.Luke.OtherLuke.toResponse(writer, this)
-          }
-        }
-      }
+      ) : Luke
 
       companion object {
         fun Luke.asHuman(): Human? = this as? Human

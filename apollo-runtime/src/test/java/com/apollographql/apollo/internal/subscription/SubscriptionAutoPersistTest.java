@@ -6,9 +6,7 @@ import com.apollographql.apollo.api.CustomScalarAdapters;
 import com.apollographql.apollo.api.Operation;
 import com.apollographql.apollo.api.OperationName;
 import com.apollographql.apollo.api.Subscription;
-import com.apollographql.apollo.api.internal.ResponseFieldMapper;
-import com.apollographql.apollo.api.internal.ResponseFieldMarshaller;
-import com.apollographql.apollo.api.internal.ResponseReader;
+import com.apollographql.apollo.api.internal.ResponseAdapter;
 import com.apollographql.apollo.cache.normalized.ApolloStore;
 import com.apollographql.apollo.cache.normalized.internal.ResponseNormalizer;
 import com.apollographql.apollo.subscription.OperationClientMessage;
@@ -168,16 +166,8 @@ public class SubscriptionAutoPersistTest {
       return EMPTY_VARIABLES;
     }
 
-    @Override public ResponseFieldMapper<Data> responseFieldMapper() {
-      return new ResponseFieldMapper<Data>() {
-        @Override public Data map(ResponseReader responseReader) {
-          return new Data() {
-            @Override public ResponseFieldMarshaller marshaller() {
-              throw new UnsupportedOperationException();
-            }
-          };
-        }
-      };
+    @Override public ResponseAdapter<Data> adapter() {
+      throw new UnsupportedOperationException();
     }
 
     @NotNull @Override public OperationName name() {

@@ -30,7 +30,7 @@ object SimpleOperationResponseParser {
       while (jsonReader.hasNext()) {
         when (jsonReader.nextName()) {
           "data" -> data = jsonReader.readData(
-              mapper = operation.responseFieldMapper(),
+              adapter = operation.adapter(),
               variables = operation.variables(),
               customScalarAdapters = customScalarAdapters,
           )
@@ -52,12 +52,12 @@ object SimpleOperationResponseParser {
   }
 
   private fun <D : Operation.Data> JsonReader.readData(
-      mapper: ResponseFieldMapper<D>,
+      adapter: ResponseAdapter<D>,
       variables: Operation.Variables,
       customScalarAdapters: CustomScalarAdapters,
   ): D {
     beginObject()
-    val data = mapper.map(
+    val data = adapter.fromResponse(
         StreamResponseReader(
             jsonReader = this,
             variables = variables,

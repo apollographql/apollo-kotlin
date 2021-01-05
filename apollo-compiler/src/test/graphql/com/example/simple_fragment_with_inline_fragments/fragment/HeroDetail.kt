@@ -6,8 +6,6 @@
 package com.example.simple_fragment_with_inline_fragments.fragment
 
 import com.apollographql.apollo.api.GraphqlFragment
-import com.apollographql.apollo.api.internal.ResponseFieldMapper
-import com.apollographql.apollo.api.internal.ResponseFieldMarshaller
 import com.apollographql.apollo.api.internal.ResponseReader
 import com.example.simple_fragment_with_inline_fragments.fragment.adapter.HeroDetailsImpl_ResponseAdapter
 import kotlin.Double
@@ -42,8 +40,6 @@ interface HeroDetail : GraphqlFragment {
      */
     val name: String
 
-    fun marshaller(): ResponseFieldMarshaller
-
     interface Human : Friend {
       override val __typename: String
 
@@ -56,8 +52,6 @@ interface HeroDetail : GraphqlFragment {
        * Height in the preferred unit, default is meters
        */
       val height: Double?
-
-      override fun marshaller(): ResponseFieldMarshaller
     }
 
     interface Droid : Friend {
@@ -72,8 +66,6 @@ interface HeroDetail : GraphqlFragment {
        * This droid's primary function
        */
       val primaryFunction: String?
-
-      override fun marshaller(): ResponseFieldMarshaller
     }
 
     companion object {
@@ -103,12 +95,6 @@ interface HeroDetail : GraphqlFragment {
 
     operator fun invoke(reader: ResponseReader): HeroDetail {
       return HeroDetailsImpl_ResponseAdapter.fromResponse(reader)
-    }
-
-    fun Mapper(): ResponseFieldMapper<HeroDetail> {
-      return ResponseFieldMapper { reader ->
-        HeroDetailsImpl_ResponseAdapter.fromResponse(reader)
-      }
     }
   }
 }

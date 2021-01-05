@@ -6,7 +6,6 @@
 package com.example.fragments_with_type_condition.fragment
 
 import com.apollographql.apollo.api.GraphqlFragment
-import com.apollographql.apollo.api.internal.ResponseFieldMapper
 import com.apollographql.apollo.api.internal.ResponseReader
 import com.example.fragments_with_type_condition.fragment.adapter.HumanDetailsImpl_ResponseAdapter
 import kotlin.Double
@@ -40,12 +39,6 @@ interface HumanDetail : GraphqlFragment {
 
     operator fun invoke(reader: ResponseReader): HumanDetail {
       return HumanDetailsImpl_ResponseAdapter.fromResponse(reader)
-    }
-
-    fun Mapper(): ResponseFieldMapper<HumanDetail> {
-      return ResponseFieldMapper { reader ->
-        HumanDetailsImpl_ResponseAdapter.fromResponse(reader)
-      }
     }
   }
 }

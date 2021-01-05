@@ -1,13 +1,11 @@
 package com.apollographql.apollo.internal.subscription
 
+import com.apollographql.apollo.api.CustomScalar
 import com.apollographql.apollo.api.CustomScalarAdapter
+import com.apollographql.apollo.api.CustomScalarAdapters
 import com.apollographql.apollo.api.Operation
 import com.apollographql.apollo.api.OperationName
-import com.apollographql.apollo.api.CustomScalar
-import com.apollographql.apollo.api.CustomScalarAdapters
 import com.apollographql.apollo.api.Subscription
-import com.apollographql.apollo.api.internal.ResponseFieldMapper
-import com.apollographql.apollo.api.internal.ResponseReader
 import com.apollographql.apollo.cache.normalized.ApolloStore
 import com.apollographql.apollo.subscription.OperationClientMessage
 import com.apollographql.apollo.subscription.OperationServerMessage
@@ -16,8 +14,6 @@ import com.apollographql.apollo.subscription.SubscriptionConnectionParamsProvide
 import com.apollographql.apollo.subscription.SubscriptionManagerState
 import com.apollographql.apollo.subscription.SubscriptionTransport
 import com.google.common.truth.Truth.assertThat
-import okio.BufferedSource
-import okio.ByteString
 import org.junit.Before
 import org.junit.Test
 import java.util.ArrayList
@@ -356,11 +352,7 @@ class SubscriptionManagerTest {
 
     override fun variables() = Operation.EMPTY_VARIABLES
 
-    override fun responseFieldMapper() = object : ResponseFieldMapper<Operation.Data> {
-      override fun map(responseReader: ResponseReader) = object : Operation.Data {
-        override fun marshaller() = throw UnsupportedOperationException()
-      }
-    }
+    override fun adapter() = throw UnsupportedOperationException()
 
     override fun name() = object : OperationName {
       override fun name(): String = "SomeSubscription"

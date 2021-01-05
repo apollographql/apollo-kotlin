@@ -10,8 +10,7 @@ import com.apollographql.apollo.api.OperationName
 import com.apollographql.apollo.api.Query
 import com.apollographql.apollo.api.internal.InputFieldMarshaller
 import com.apollographql.apollo.api.internal.QueryDocumentMinifier
-import com.apollographql.apollo.api.internal.ResponseFieldMapper
-import com.apollographql.apollo.api.internal.ResponseFieldMarshaller
+import com.apollographql.apollo.api.internal.ResponseAdapter
 import com.example.directive_with_inline_fragment.adapter.TestQuery_ResponseAdapter
 import kotlin.Any
 import kotlin.Boolean
@@ -50,24 +49,13 @@ data class TestQuery(
 
   override fun name(): OperationName = OPERATION_NAME
 
-  override fun responseFieldMapper(): ResponseFieldMapper<Data> {
-    return ResponseFieldMapper { reader ->
-      TestQuery_ResponseAdapter.fromResponse(reader)
-    }
-  }
-
+  override fun adapter(): ResponseAdapter<Data> = TestQuery_ResponseAdapter
   /**
    * The query type, represents all of the entry points into our object graph
    */
   data class Data(
     val hero: Hero?
   ) : Operation.Data {
-    override fun marshaller(): ResponseFieldMarshaller {
-      return ResponseFieldMarshaller { writer ->
-        TestQuery_ResponseAdapter.Data.toResponse(writer, this)
-      }
-    }
-
     /**
      * A character from the Star Wars universe
      */
@@ -78,8 +66,6 @@ data class TestQuery(
        * The ID of the character
        */
       val id: String
-
-      fun marshaller(): ResponseFieldMarshaller
 
       interface Human : Hero {
         override val __typename: String
@@ -98,8 +84,6 @@ data class TestQuery(
          * The home planet of the human, or null if unknown
          */
         val homePlanet: String?
-
-        override fun marshaller(): ResponseFieldMarshaller
       }
 
       interface Droid : Hero {
@@ -119,8 +103,6 @@ data class TestQuery(
          * This droid's primary function
          */
         val primaryFunction: String?
-
-        override fun marshaller(): ResponseFieldMarshaller
       }
 
       interface Character : Hero {
@@ -135,8 +117,6 @@ data class TestQuery(
          * The name of the character
          */
         val name: String
-
-        override fun marshaller(): ResponseFieldMarshaller
       }
 
       data class HumanCharacterHero(
@@ -153,13 +133,7 @@ data class TestQuery(
          * The home planet of the human, or null if unknown
          */
         override val homePlanet: String?
-      ) : Hero, Human, Character {
-        override fun marshaller(): ResponseFieldMarshaller {
-          return ResponseFieldMarshaller { writer ->
-            TestQuery_ResponseAdapter.Data.Hero.HumanCharacterHero.toResponse(writer, this)
-          }
-        }
-      }
+      ) : Hero, Human, Character
 
       data class DroidCharacterHero(
         override val __typename: String,
@@ -175,13 +149,7 @@ data class TestQuery(
          * This droid's primary function
          */
         override val primaryFunction: String?
-      ) : Hero, Droid, Character {
-        override fun marshaller(): ResponseFieldMarshaller {
-          return ResponseFieldMarshaller { writer ->
-            TestQuery_ResponseAdapter.Data.Hero.DroidCharacterHero.toResponse(writer, this)
-          }
-        }
-      }
+      ) : Hero, Droid, Character
 
       data class OtherHero(
         override val __typename: String,
@@ -189,13 +157,7 @@ data class TestQuery(
          * The ID of the character
          */
         override val id: String
-      ) : Hero {
-        override fun marshaller(): ResponseFieldMarshaller {
-          return ResponseFieldMarshaller { writer ->
-            TestQuery_ResponseAdapter.Data.Hero.OtherHero.toResponse(writer, this)
-          }
-        }
-      }
+      ) : Hero
 
       companion object {
         fun Hero.asHuman(): Human? = this as? Human

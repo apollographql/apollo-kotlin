@@ -5,8 +5,9 @@
 //
 package com.example.root_query_fragment.fragment
 
+import com.apollographql.apollo.api.Adaptable
 import com.apollographql.apollo.api.GraphqlFragment
-import com.apollographql.apollo.api.internal.ResponseFieldMarshaller
+import com.apollographql.apollo.api.internal.ResponseAdapter
 import com.example.root_query_fragment.fragment.adapter.QueryFragmentImpl_ResponseAdapter
 import kotlin.String
 
@@ -16,11 +17,9 @@ import kotlin.String
 data class QueryFragmentImpl(
   override val __typename: String = "Query",
   override val hero: Hero?
-) : QueryFragment, GraphqlFragment {
-  override fun marshaller(): ResponseFieldMarshaller {
-    return ResponseFieldMarshaller { writer ->
-      QueryFragmentImpl_ResponseAdapter.toResponse(writer, this)
-    }
+) : QueryFragment, GraphqlFragment, Adaptable<QueryFragmentImpl> {
+  override fun adapter(): ResponseAdapter<QueryFragmentImpl> {
+    return QueryFragmentImpl_ResponseAdapter
   }
 
   /**
@@ -31,11 +30,5 @@ data class QueryFragmentImpl(
      * The name of the character
      */
     override val name: String
-  ) : QueryFragment.Hero {
-    override fun marshaller(): ResponseFieldMarshaller {
-      return ResponseFieldMarshaller { writer ->
-        QueryFragmentImpl_ResponseAdapter.Hero.toResponse(writer, this)
-      }
-    }
-  }
+  ) : QueryFragment.Hero
 }

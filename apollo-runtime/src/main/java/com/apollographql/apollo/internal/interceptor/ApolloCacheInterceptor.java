@@ -5,7 +5,6 @@ import com.apollographql.apollo.api.Response;
 import com.apollographql.apollo.api.internal.ApolloLogger;
 import com.apollographql.apollo.api.internal.Function;
 import com.apollographql.apollo.api.internal.Optional;
-import com.apollographql.apollo.api.internal.ResponseFieldMapper;
 import com.apollographql.apollo.cache.ApolloCacheHeaders;
 import com.apollographql.apollo.cache.normalized.ApolloStore;
 import com.apollographql.apollo.cache.normalized.ApolloStoreOperation;
@@ -35,16 +34,16 @@ import static com.apollographql.apollo.api.internal.Utils.checkNotNull;
  */
 public final class ApolloCacheInterceptor implements ApolloInterceptor {
   final ApolloStore apolloStore;
-  private final ResponseFieldMapper responseFieldMapper;
   private final Executor dispatcher;
   private final boolean writeToCacheAsynchronously;
   final ApolloLogger logger;
   volatile boolean disposed;
 
-  public ApolloCacheInterceptor(@NotNull ApolloStore apolloStore, @NotNull ResponseFieldMapper responseFieldMapper,
-      @NotNull Executor dispatcher, @NotNull ApolloLogger logger, boolean writeToCacheAsynchronously) {
+  public ApolloCacheInterceptor(
+      @NotNull ApolloStore apolloStore,
+      @NotNull Executor dispatcher,
+      @NotNull ApolloLogger logger, boolean writeToCacheAsynchronously) {
     this.apolloStore = checkNotNull(apolloStore, "cache == null");
-    this.responseFieldMapper = checkNotNull(responseFieldMapper, "responseFieldMapper == null");
     this.dispatcher = checkNotNull(dispatcher, "dispatcher == null");
     this.logger = checkNotNull(logger, "logger == null");
     this.writeToCacheAsynchronously = writeToCacheAsynchronously;
@@ -101,8 +100,10 @@ public final class ApolloCacheInterceptor implements ApolloInterceptor {
   InterceptorResponse resolveFromCache(InterceptorRequest request) throws ApolloException {
     ResponseNormalizer<Record> responseNormalizer = apolloStore.cacheResponseNormalizer();
     //noinspection unchecked
-    ApolloStoreOperation<Response> apolloStoreOperation = apolloStore.read(request.operation, responseFieldMapper,
-        responseNormalizer, request.cacheHeaders);
+    ApolloStoreOperation<Response> apolloStoreOperation = apolloStore.read(
+        request.operation,
+        responseNormalizer,
+        request.cacheHeaders);
     Response cachedResponse = apolloStoreOperation.execute();
     if (cachedResponse.getData() != null) {
       logger.d("Cache HIT for operation %s", request.operation.name().name());

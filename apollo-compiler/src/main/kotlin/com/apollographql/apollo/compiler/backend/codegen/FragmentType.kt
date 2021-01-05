@@ -1,12 +1,12 @@
 package com.apollographql.apollo.compiler.backend.codegen
 
+import com.apollographql.apollo.api.Adaptable
 import com.apollographql.apollo.api.GraphqlFragment
-import com.apollographql.apollo.api.internal.ResponseFieldMapper
+import com.apollographql.apollo.api.internal.ResponseAdapter
 import com.apollographql.apollo.api.internal.ResponseReader
 import com.apollographql.apollo.compiler.applyIf
 import com.apollographql.apollo.compiler.backend.ast.CodeGenerationAst
 import com.apollographql.apollo.compiler.escapeKotlinReservedWord
-import com.squareup.kotlinpoet.ClassName
 import com.squareup.kotlinpoet.CodeBlock
 import com.squareup.kotlinpoet.FunSpec
 import com.squareup.kotlinpoet.KModifier
@@ -45,20 +45,6 @@ internal fun CodeGenerationAst.FragmentType.interfaceTypeSpec(generateAsInternal
                       )
                       .build()
               )
-              .addFunction(
-                  FunSpec.builder("Mapper")
-                      .returns(
-                          ResponseFieldMapper::class.asTypeName()
-                              .parameterizedBy(this.interfaceType.typeRef.asTypeName())
-                      )
-                      .beginControlFlow("return·%T·{·reader·->", ResponseFieldMapper::class)
-                      .addStatement(
-                          "%T.fromResponse(reader)",
-                          this.defaultImplementationType.typeRef.asAdapterTypeName()
-                      )
-                      .endControlFlow()
-                      .build()
-              )
               .addFunctions(
                   this@interfaceTypeSpec.interfaceType.fragmentAccessors.map { accessor ->
                     FunSpec
@@ -81,6 +67,14 @@ internal fun CodeGenerationAst.FragmentType.implementationTypeSpec(generateAsInt
       .typeSpec()
       .toBuilder()
       .addSuperinterface(GraphqlFragment::class)
+      .addSuperinterface(Adaptable::class.asTypeName().parameterizedBy(defaultImplementationType.typeRef.asTypeName()))
+      .addFunction(
+          FunSpec.builder("adapter")
+              .addModifiers(KModifier.OVERRIDE)
+              .returns(ResponseAdapter::class.asTypeName().parameterizedBy(defaultImplementationType.typeRef.asTypeName()))
+              .addCode("return·%T", this.defaultImplementationType.typeRef.asAdapterTypeName())
+              .build()
+      )
       .applyIf(generateAsInternal) { addModifiers(KModifier.INTERNAL) }
       .build()
 }

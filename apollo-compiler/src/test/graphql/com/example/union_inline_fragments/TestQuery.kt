@@ -9,8 +9,7 @@ import com.apollographql.apollo.api.Operation
 import com.apollographql.apollo.api.OperationName
 import com.apollographql.apollo.api.Query
 import com.apollographql.apollo.api.internal.QueryDocumentMinifier
-import com.apollographql.apollo.api.internal.ResponseFieldMapper
-import com.apollographql.apollo.api.internal.ResponseFieldMarshaller
+import com.apollographql.apollo.api.internal.ResponseAdapter
 import com.example.union_inline_fragments.adapter.TestQuery_ResponseAdapter
 import com.example.union_inline_fragments.type.Episode
 import kotlin.String
@@ -29,30 +28,17 @@ class TestQuery : Query<TestQuery.Data, Operation.Variables> {
 
   override fun name(): OperationName = OPERATION_NAME
 
-  override fun responseFieldMapper(): ResponseFieldMapper<Data> {
-    return ResponseFieldMapper { reader ->
-      TestQuery_ResponseAdapter.fromResponse(reader)
-    }
-  }
-
+  override fun adapter(): ResponseAdapter<Data> = TestQuery_ResponseAdapter
   /**
    * The query type, represents all of the entry points into our object graph
    */
   data class Data(
     val search: List<Search?>?
   ) : Operation.Data {
-    override fun marshaller(): ResponseFieldMarshaller {
-      return ResponseFieldMarshaller { writer ->
-        TestQuery_ResponseAdapter.Data.toResponse(writer, this)
-      }
-    }
-
     fun searchFilterNotNull(): List<Search>? = search?.filterNotNull()
 
     interface Search {
       val __typename: String
-
-      fun marshaller(): ResponseFieldMarshaller
 
       interface Character : Search {
         override val __typename: String
@@ -72,15 +58,11 @@ class TestQuery : Query<TestQuery.Data, Operation.Variables> {
          */
         val friends: List<Friend?>?
 
-        override fun marshaller(): ResponseFieldMarshaller
-
         /**
          * A character from the Star Wars universe
          */
         interface Friend {
           val __typename: String
-
-          fun marshaller(): ResponseFieldMarshaller
 
           interface Character : Friend {
             override val __typename: String
@@ -89,8 +71,6 @@ class TestQuery : Query<TestQuery.Data, Operation.Variables> {
              * The name of the character
              */
             val name: String
-
-            override fun marshaller(): ResponseFieldMarshaller
           }
 
           interface Human : Friend {
@@ -106,15 +86,11 @@ class TestQuery : Query<TestQuery.Data, Operation.Variables> {
              */
             val friends: List<Friend?>?
 
-            override fun marshaller(): ResponseFieldMarshaller
-
             /**
              * A character from the Star Wars universe
              */
             interface Friend {
               val __typename: String
-
-              fun marshaller(): ResponseFieldMarshaller
 
               interface Character : Friend {
                 override val __typename: String
@@ -123,8 +99,6 @@ class TestQuery : Query<TestQuery.Data, Operation.Variables> {
                  * The movie this character first appears in
                  */
                 val firstAppearsIn: Episode
-
-                override fun marshaller(): ResponseFieldMarshaller
               }
 
               companion object {
@@ -146,8 +120,6 @@ class TestQuery : Query<TestQuery.Data, Operation.Variables> {
              */
             val friends: List<Friend?>?
 
-            override fun marshaller(): ResponseFieldMarshaller
-
             /**
              * A character from the Star Wars universe
              */
@@ -156,8 +128,6 @@ class TestQuery : Query<TestQuery.Data, Operation.Variables> {
                * The ID of the character
                */
               val id: String
-
-              fun marshaller(): ResponseFieldMarshaller
             }
           }
 
@@ -178,8 +148,6 @@ class TestQuery : Query<TestQuery.Data, Operation.Variables> {
          * The name of the starship
          */
         val name: String
-
-        override fun marshaller(): ResponseFieldMarshaller
       }
 
       data class CharacterSearch(
@@ -197,19 +165,11 @@ class TestQuery : Query<TestQuery.Data, Operation.Variables> {
          */
         override val friends: List<Friend?>?
       ) : Search, Character {
-        override fun marshaller(): ResponseFieldMarshaller {
-          return ResponseFieldMarshaller { writer ->
-            TestQuery_ResponseAdapter.Data.Search.CharacterSearch.toResponse(writer, this)
-          }
-        }
-
         /**
          * A character from the Star Wars universe
          */
         interface Friend : Character.Friend {
           override val __typename: String
-
-          override fun marshaller(): ResponseFieldMarshaller
 
           data class CharacterDroidFriend(
             override val __typename: String,
@@ -226,12 +186,6 @@ class TestQuery : Query<TestQuery.Data, Operation.Variables> {
              */
             override val friends: List<Friend?>?
           ) : Character.Friend, Character.Friend.Character, Character.Friend.Droid, Friend {
-            override fun marshaller(): ResponseFieldMarshaller {
-              return ResponseFieldMarshaller { writer ->
-                TestQuery_ResponseAdapter.Data.Search.CharacterSearch.Friend.CharacterDroidFriend.toResponse(writer, this)
-              }
-            }
-
             /**
              * A character from the Star Wars universe
              */
@@ -240,13 +194,7 @@ class TestQuery : Query<TestQuery.Data, Operation.Variables> {
                * The ID of the character
                */
               override val id: String
-            ) : Character.Friend.Droid.Friend {
-              override fun marshaller(): ResponseFieldMarshaller {
-                return ResponseFieldMarshaller { writer ->
-                  TestQuery_ResponseAdapter.Data.Search.CharacterSearch.Friend.CharacterDroidFriend.Friend.toResponse(writer, this)
-                }
-              }
-            }
+            ) : Character.Friend.Droid.Friend
           }
 
           data class CharacterHumanFriend(
@@ -264,19 +212,11 @@ class TestQuery : Query<TestQuery.Data, Operation.Variables> {
              */
             override val friends: List<Friend?>?
           ) : Character.Friend, Character.Friend.Character, Character.Friend.Human, Friend {
-            override fun marshaller(): ResponseFieldMarshaller {
-              return ResponseFieldMarshaller { writer ->
-                TestQuery_ResponseAdapter.Data.Search.CharacterSearch.Friend.CharacterHumanFriend.toResponse(writer, this)
-              }
-            }
-
             /**
              * A character from the Star Wars universe
              */
             interface Friend : Character.Friend.Human.Friend {
               override val __typename: String
-
-              override fun marshaller(): ResponseFieldMarshaller
 
               data class CharacterFriend(
                 override val __typename: String,
@@ -284,35 +224,17 @@ class TestQuery : Query<TestQuery.Data, Operation.Variables> {
                  * The movie this character first appears in
                  */
                 override val firstAppearsIn: Episode
-              ) : Character.Friend.Human.Friend, Character.Friend.Human.Friend.Character, Friend {
-                override fun marshaller(): ResponseFieldMarshaller {
-                  return ResponseFieldMarshaller { writer ->
-                    TestQuery_ResponseAdapter.Data.Search.CharacterSearch.Friend.CharacterHumanFriend.Friend.CharacterFriend.toResponse(writer, this)
-                  }
-                }
-              }
+              ) : Character.Friend.Human.Friend, Character.Friend.Human.Friend.Character, Friend
 
               data class OtherFriend(
                 override val __typename: String
-              ) : Character.Friend.Human.Friend, Friend {
-                override fun marshaller(): ResponseFieldMarshaller {
-                  return ResponseFieldMarshaller { writer ->
-                    TestQuery_ResponseAdapter.Data.Search.CharacterSearch.Friend.CharacterHumanFriend.Friend.OtherFriend.toResponse(writer, this)
-                  }
-                }
-              }
+              ) : Character.Friend.Human.Friend, Friend
             }
           }
 
           data class OtherFriend(
             override val __typename: String
-          ) : Character.Friend, Friend {
-            override fun marshaller(): ResponseFieldMarshaller {
-              return ResponseFieldMarshaller { writer ->
-                TestQuery_ResponseAdapter.Data.Search.CharacterSearch.Friend.OtherFriend.toResponse(writer, this)
-              }
-            }
-          }
+          ) : Character.Friend, Friend
         }
       }
 
@@ -322,23 +244,11 @@ class TestQuery : Query<TestQuery.Data, Operation.Variables> {
          * The name of the starship
          */
         override val name: String
-      ) : Search, Starship {
-        override fun marshaller(): ResponseFieldMarshaller {
-          return ResponseFieldMarshaller { writer ->
-            TestQuery_ResponseAdapter.Data.Search.StarshipSearch.toResponse(writer, this)
-          }
-        }
-      }
+      ) : Search, Starship
 
       data class OtherSearch(
         override val __typename: String
-      ) : Search {
-        override fun marshaller(): ResponseFieldMarshaller {
-          return ResponseFieldMarshaller { writer ->
-            TestQuery_ResponseAdapter.Data.Search.OtherSearch.toResponse(writer, this)
-          }
-        }
-      }
+      ) : Search
 
       companion object {
         fun Search.asCharacter(): Character? = this as? Character

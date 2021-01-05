@@ -5,8 +5,9 @@
 //
 package com.example.fragment_used_twice.fragment
 
+import com.apollographql.apollo.api.Adaptable
 import com.apollographql.apollo.api.GraphqlFragment
-import com.apollographql.apollo.api.internal.ResponseFieldMarshaller
+import com.apollographql.apollo.api.internal.ResponseAdapter
 import com.example.fragment_used_twice.fragment.adapter.HeroDetailsImpl_ResponseAdapter
 import kotlin.Any
 import kotlin.String
@@ -14,10 +15,12 @@ import kotlin.String
 /**
  * A character from the Star Wars universe
  */
-interface HeroDetailsImpl : HeroDetail, GraphqlFragment {
+interface HeroDetailsImpl : HeroDetail, GraphqlFragment, Adaptable<HeroDetailsImpl> {
   override val __typename: String
 
-  override fun marshaller(): ResponseFieldMarshaller
+  override fun adapter(): ResponseAdapter<HeroDetailsImpl> {
+    return HeroDetailsImpl_ResponseAdapter
+  }
 
   data class CharacterHeroDetailsImpl(
     override val __typename: String,
@@ -29,13 +32,7 @@ interface HeroDetailsImpl : HeroDetail, GraphqlFragment {
      * The date character was born.
      */
     override val birthDate: Any
-  ) : HeroDetail, HeroDetail.Character, CharacterDetail, HeroDetailsImpl {
-    override fun marshaller(): ResponseFieldMarshaller {
-      return ResponseFieldMarshaller { writer ->
-        HeroDetailsImpl_ResponseAdapter.CharacterHeroDetailsImpl.toResponse(writer, this)
-      }
-    }
-  }
+  ) : HeroDetail, HeroDetail.Character, CharacterDetail, HeroDetailsImpl
 
   data class OtherHeroDetailsImpl(
     override val __typename: String,
@@ -43,11 +40,5 @@ interface HeroDetailsImpl : HeroDetail, GraphqlFragment {
      * The name of the character
      */
     override val name: String
-  ) : HeroDetail, HeroDetailsImpl {
-    override fun marshaller(): ResponseFieldMarshaller {
-      return ResponseFieldMarshaller { writer ->
-        HeroDetailsImpl_ResponseAdapter.OtherHeroDetailsImpl.toResponse(writer, this)
-      }
-    }
-  }
+  ) : HeroDetail, HeroDetailsImpl
 }

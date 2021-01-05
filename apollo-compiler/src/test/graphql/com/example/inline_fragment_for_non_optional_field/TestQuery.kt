@@ -9,8 +9,7 @@ import com.apollographql.apollo.api.Operation
 import com.apollographql.apollo.api.OperationName
 import com.apollographql.apollo.api.Query
 import com.apollographql.apollo.api.internal.QueryDocumentMinifier
-import com.apollographql.apollo.api.internal.ResponseFieldMapper
-import com.apollographql.apollo.api.internal.ResponseFieldMarshaller
+import com.apollographql.apollo.api.internal.ResponseAdapter
 import com.example.inline_fragment_for_non_optional_field.adapter.TestQuery_ResponseAdapter
 import kotlin.Double
 import kotlin.String
@@ -28,24 +27,13 @@ class TestQuery : Query<TestQuery.Data, Operation.Variables> {
 
   override fun name(): OperationName = OPERATION_NAME
 
-  override fun responseFieldMapper(): ResponseFieldMapper<Data> {
-    return ResponseFieldMapper { reader ->
-      TestQuery_ResponseAdapter.fromResponse(reader)
-    }
-  }
-
+  override fun adapter(): ResponseAdapter<Data> = TestQuery_ResponseAdapter
   /**
    * The query type, represents all of the entry points into our object graph
    */
   data class Data(
     val nonOptionalHero: NonOptionalHero
   ) : Operation.Data {
-    override fun marshaller(): ResponseFieldMarshaller {
-      return ResponseFieldMarshaller { writer ->
-        TestQuery_ResponseAdapter.Data.toResponse(writer, this)
-      }
-    }
-
     /**
      * A character from the Star Wars universe
      */
@@ -56,8 +44,6 @@ class TestQuery : Query<TestQuery.Data, Operation.Variables> {
        * The name of the character
        */
       val name: String
-
-      fun marshaller(): ResponseFieldMarshaller
 
       interface Human : NonOptionalHero {
         override val __typename: String
@@ -71,8 +57,6 @@ class TestQuery : Query<TestQuery.Data, Operation.Variables> {
          * Height in the preferred unit, default is meters
          */
         val height: Double?
-
-        override fun marshaller(): ResponseFieldMarshaller
       }
 
       data class HumanNonOptionalHero(
@@ -85,13 +69,7 @@ class TestQuery : Query<TestQuery.Data, Operation.Variables> {
          * Height in the preferred unit, default is meters
          */
         override val height: Double?
-      ) : NonOptionalHero, Human {
-        override fun marshaller(): ResponseFieldMarshaller {
-          return ResponseFieldMarshaller { writer ->
-            TestQuery_ResponseAdapter.Data.NonOptionalHero.HumanNonOptionalHero.toResponse(writer, this)
-          }
-        }
-      }
+      ) : NonOptionalHero, Human
 
       data class OtherNonOptionalHero(
         override val __typename: String,
@@ -99,13 +77,7 @@ class TestQuery : Query<TestQuery.Data, Operation.Variables> {
          * The name of the character
          */
         override val name: String
-      ) : NonOptionalHero {
-        override fun marshaller(): ResponseFieldMarshaller {
-          return ResponseFieldMarshaller { writer ->
-            TestQuery_ResponseAdapter.Data.NonOptionalHero.OtherNonOptionalHero.toResponse(writer, this)
-          }
-        }
-      }
+      ) : NonOptionalHero
 
       companion object {
         fun NonOptionalHero.asHuman(): Human? = this as? Human

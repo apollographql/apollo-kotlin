@@ -9,8 +9,7 @@ import com.apollographql.apollo.api.Operation
 import com.apollographql.apollo.api.OperationName
 import com.apollographql.apollo.api.Query
 import com.apollographql.apollo.api.internal.QueryDocumentMinifier
-import com.apollographql.apollo.api.internal.ResponseFieldMapper
-import com.apollographql.apollo.api.internal.ResponseFieldMarshaller
+import com.apollographql.apollo.api.internal.ResponseAdapter
 import com.example.test_inline.adapter.GetPage_ResponseAdapter
 import kotlin.String
 import kotlin.Suppress
@@ -28,32 +27,17 @@ class GetPage : Query<GetPage.Data, Operation.Variables> {
 
   override fun name(): OperationName = OPERATION_NAME
 
-  override fun responseFieldMapper(): ResponseFieldMapper<Data> {
-    return ResponseFieldMapper { reader ->
-      GetPage_ResponseAdapter.fromResponse(reader)
-    }
-  }
-
+  override fun adapter(): ResponseAdapter<Data> = GetPage_ResponseAdapter
   data class Data(
     val collection: Collection
   ) : Operation.Data {
-    override fun marshaller(): ResponseFieldMarshaller {
-      return ResponseFieldMarshaller { writer ->
-        GetPage_ResponseAdapter.Data.toResponse(writer, this)
-      }
-    }
-
     interface Collection {
       val __typename: String
 
       val items: List<Item>
 
-      fun marshaller(): ResponseFieldMarshaller
-
       interface Item {
         val title: String
-
-        fun marshaller(): ResponseFieldMarshaller
       }
 
       interface ParticularCollection : Collection {
@@ -61,14 +45,10 @@ class GetPage : Query<GetPage.Data, Operation.Variables> {
 
         override val items: List<Item>
 
-        override fun marshaller(): ResponseFieldMarshaller
-
         interface Item : Collection.Item {
           override val title: String
 
           val __typename: String
-
-          override fun marshaller(): ResponseFieldMarshaller
 
           interface ParticularItem : Item {
             override val __typename: String
@@ -76,8 +56,6 @@ class GetPage : Query<GetPage.Data, Operation.Variables> {
             val image: String
 
             override val title: String
-
-            override fun marshaller(): ResponseFieldMarshaller
           }
 
           companion object {
@@ -90,39 +68,19 @@ class GetPage : Query<GetPage.Data, Operation.Variables> {
         override val __typename: String,
         override val items: List<Item>
       ) : Collection, ParticularCollection {
-        override fun marshaller(): ResponseFieldMarshaller {
-          return ResponseFieldMarshaller { writer ->
-            GetPage_ResponseAdapter.Data.Collection.ParticularCollectionCollection.toResponse(writer, this)
-          }
-        }
-
         interface Item : Collection.Item, ParticularCollection.Item {
           override val __typename: String
-
-          override fun marshaller(): ResponseFieldMarshaller
 
           data class ParticularItemItem(
             override val title: String,
             override val __typename: String,
             override val image: String
-          ) : ParticularCollection.Item, ParticularCollection.Item.ParticularItem, Item {
-            override fun marshaller(): ResponseFieldMarshaller {
-              return ResponseFieldMarshaller { writer ->
-                GetPage_ResponseAdapter.Data.Collection.ParticularCollectionCollection.Item.ParticularItemItem.toResponse(writer, this)
-              }
-            }
-          }
+          ) : ParticularCollection.Item, ParticularCollection.Item.ParticularItem, Item
 
           data class OtherItem(
             override val title: String,
             override val __typename: String
-          ) : Collection.Item, ParticularCollection.Item, Item {
-            override fun marshaller(): ResponseFieldMarshaller {
-              return ResponseFieldMarshaller { writer ->
-                GetPage_ResponseAdapter.Data.Collection.ParticularCollectionCollection.Item.OtherItem.toResponse(writer, this)
-              }
-            }
-          }
+          ) : Collection.Item, ParticularCollection.Item, Item
         }
       }
 
@@ -130,21 +88,9 @@ class GetPage : Query<GetPage.Data, Operation.Variables> {
         override val __typename: String,
         override val items: List<Item>
       ) : Collection {
-        override fun marshaller(): ResponseFieldMarshaller {
-          return ResponseFieldMarshaller { writer ->
-            GetPage_ResponseAdapter.Data.Collection.OtherCollection.toResponse(writer, this)
-          }
-        }
-
         data class Item(
           override val title: String
-        ) : Collection.Item {
-          override fun marshaller(): ResponseFieldMarshaller {
-            return ResponseFieldMarshaller { writer ->
-              GetPage_ResponseAdapter.Data.Collection.OtherCollection.Item.toResponse(writer, this)
-            }
-          }
-        }
+        ) : Collection.Item
       }
 
       companion object {

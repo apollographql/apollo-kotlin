@@ -9,8 +9,7 @@ import com.apollographql.apollo.api.Operation
 import com.apollographql.apollo.api.OperationName
 import com.apollographql.apollo.api.Query
 import com.apollographql.apollo.api.internal.QueryDocumentMinifier
-import com.apollographql.apollo.api.internal.ResponseFieldMapper
-import com.apollographql.apollo.api.internal.ResponseFieldMarshaller
+import com.apollographql.apollo.api.internal.ResponseAdapter
 import com.example.union_fragment.adapter.TestQuery_ResponseAdapter
 import kotlin.String
 import kotlin.Suppress
@@ -28,30 +27,17 @@ class TestQuery : Query<TestQuery.Data, Operation.Variables> {
 
   override fun name(): OperationName = OPERATION_NAME
 
-  override fun responseFieldMapper(): ResponseFieldMapper<Data> {
-    return ResponseFieldMapper { reader ->
-      TestQuery_ResponseAdapter.fromResponse(reader)
-    }
-  }
-
+  override fun adapter(): ResponseAdapter<Data> = TestQuery_ResponseAdapter
   /**
    * The query type, represents all of the entry points into our object graph
    */
   data class Data(
     val search: List<Search?>?
   ) : Operation.Data {
-    override fun marshaller(): ResponseFieldMarshaller {
-      return ResponseFieldMarshaller { writer ->
-        TestQuery_ResponseAdapter.Data.toResponse(writer, this)
-      }
-    }
-
     fun searchFilterNotNull(): List<Search>? = search?.filterNotNull()
 
     interface Search {
       val __typename: String
-
-      fun marshaller(): ResponseFieldMarshaller
 
       interface Starship : Search, com.example.union_fragment.fragment.Starship {
         override val __typename: String
@@ -65,8 +51,6 @@ class TestQuery : Query<TestQuery.Data, Operation.Variables> {
          * The name of the starship
          */
         override val name: String
-
-        override fun marshaller(): ResponseFieldMarshaller
       }
 
       data class StarshipSearch(
@@ -79,23 +63,11 @@ class TestQuery : Query<TestQuery.Data, Operation.Variables> {
          * The name of the starship
          */
         override val name: String
-      ) : Search, Starship, com.example.union_fragment.fragment.Starship {
-        override fun marshaller(): ResponseFieldMarshaller {
-          return ResponseFieldMarshaller { writer ->
-            TestQuery_ResponseAdapter.Data.Search.StarshipSearch.toResponse(writer, this)
-          }
-        }
-      }
+      ) : Search, Starship, com.example.union_fragment.fragment.Starship
 
       data class OtherSearch(
         override val __typename: String
-      ) : Search {
-        override fun marshaller(): ResponseFieldMarshaller {
-          return ResponseFieldMarshaller { writer ->
-            TestQuery_ResponseAdapter.Data.Search.OtherSearch.toResponse(writer, this)
-          }
-        }
-      }
+      ) : Search
 
       companion object {
         fun Search.asStarship(): Starship? = this as? Starship

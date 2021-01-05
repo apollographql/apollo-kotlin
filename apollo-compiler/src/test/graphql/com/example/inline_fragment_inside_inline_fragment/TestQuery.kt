@@ -9,8 +9,7 @@ import com.apollographql.apollo.api.Operation
 import com.apollographql.apollo.api.OperationName
 import com.apollographql.apollo.api.Query
 import com.apollographql.apollo.api.internal.QueryDocumentMinifier
-import com.apollographql.apollo.api.internal.ResponseFieldMapper
-import com.apollographql.apollo.api.internal.ResponseFieldMarshaller
+import com.apollographql.apollo.api.internal.ResponseAdapter
 import com.example.inline_fragment_inside_inline_fragment.adapter.TestQuery_ResponseAdapter
 import kotlin.String
 import kotlin.Suppress
@@ -28,30 +27,17 @@ class TestQuery : Query<TestQuery.Data, Operation.Variables> {
 
   override fun name(): OperationName = OPERATION_NAME
 
-  override fun responseFieldMapper(): ResponseFieldMapper<Data> {
-    return ResponseFieldMapper { reader ->
-      TestQuery_ResponseAdapter.fromResponse(reader)
-    }
-  }
-
+  override fun adapter(): ResponseAdapter<Data> = TestQuery_ResponseAdapter
   /**
    * The query type, represents all of the entry points into our object graph
    */
   data class Data(
     val search: List<Search?>?
   ) : Operation.Data {
-    override fun marshaller(): ResponseFieldMarshaller {
-      return ResponseFieldMarshaller { writer ->
-        TestQuery_ResponseAdapter.Data.toResponse(writer, this)
-      }
-    }
-
     fun searchFilterNotNull(): List<Search>? = search?.filterNotNull()
 
     interface Search {
       val __typename: String
-
-      fun marshaller(): ResponseFieldMarshaller
 
       interface Character : Search {
         override val __typename: String
@@ -60,8 +46,6 @@ class TestQuery : Query<TestQuery.Data, Operation.Variables> {
          * The name of the character
          */
         val name: String
-
-        override fun marshaller(): ResponseFieldMarshaller
 
         interface Human : Character {
           override val __typename: String
@@ -75,8 +59,6 @@ class TestQuery : Query<TestQuery.Data, Operation.Variables> {
            * The home planet of the human, or null if unknown
            */
           val homePlanet: String?
-
-          override fun marshaller(): ResponseFieldMarshaller
         }
 
         interface Droid : Character {
@@ -91,8 +73,6 @@ class TestQuery : Query<TestQuery.Data, Operation.Variables> {
            * This droid's primary function
            */
           val primaryFunction: String?
-
-          override fun marshaller(): ResponseFieldMarshaller
         }
       }
 
@@ -106,13 +86,7 @@ class TestQuery : Query<TestQuery.Data, Operation.Variables> {
          * This droid's primary function
          */
         override val primaryFunction: String?
-      ) : Search, Character, Character.Droid {
-        override fun marshaller(): ResponseFieldMarshaller {
-          return ResponseFieldMarshaller { writer ->
-            TestQuery_ResponseAdapter.Data.Search.CharacterDroidSearch.toResponse(writer, this)
-          }
-        }
-      }
+      ) : Search, Character, Character.Droid
 
       data class CharacterHumanSearch(
         override val __typename: String,
@@ -124,23 +98,11 @@ class TestQuery : Query<TestQuery.Data, Operation.Variables> {
          * The home planet of the human, or null if unknown
          */
         override val homePlanet: String?
-      ) : Search, Character, Character.Human {
-        override fun marshaller(): ResponseFieldMarshaller {
-          return ResponseFieldMarshaller { writer ->
-            TestQuery_ResponseAdapter.Data.Search.CharacterHumanSearch.toResponse(writer, this)
-          }
-        }
-      }
+      ) : Search, Character, Character.Human
 
       data class OtherSearch(
         override val __typename: String
-      ) : Search {
-        override fun marshaller(): ResponseFieldMarshaller {
-          return ResponseFieldMarshaller { writer ->
-            TestQuery_ResponseAdapter.Data.Search.OtherSearch.toResponse(writer, this)
-          }
-        }
-      }
+      ) : Search
 
       companion object {
         fun Search.asCharacter(): Character? = this as? Character

@@ -4,7 +4,6 @@ import com.apollographql.apollo.Logger;
 import com.apollographql.apollo.api.Error;
 import com.apollographql.apollo.api.Operation;
 import com.apollographql.apollo.api.internal.ApolloLogger;
-import com.apollographql.apollo.api.internal.ResponseFieldMapper;
 import com.apollographql.apollo.cache.ApolloCacheHeaders;
 import com.apollographql.apollo.cache.CacheHeaders;
 import com.apollographql.apollo.cache.normalized.ApolloStore;
@@ -53,7 +52,6 @@ public class ApolloCacheInterceptorTest {
 
     interceptor = new ApolloCacheInterceptor(
         apolloStore,
-        mock(ResponseFieldMapper.class),
         mock(Executor.class),
         new ApolloLogger(logger),
         false

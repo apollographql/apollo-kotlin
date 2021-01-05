@@ -5,8 +5,9 @@
 //
 package com.example.fragments_with_type_condition.fragment
 
+import com.apollographql.apollo.api.Adaptable
 import com.apollographql.apollo.api.GraphqlFragment
-import com.apollographql.apollo.api.internal.ResponseFieldMarshaller
+import com.apollographql.apollo.api.internal.ResponseAdapter
 import com.example.fragments_with_type_condition.fragment.adapter.HumanDetailsImpl_ResponseAdapter
 import kotlin.Double
 import kotlin.String
@@ -24,10 +25,8 @@ data class HumanDetailsImpl(
    * Height in the preferred unit, default is meters
    */
   override val height: Double?
-) : HumanDetail, GraphqlFragment {
-  override fun marshaller(): ResponseFieldMarshaller {
-    return ResponseFieldMarshaller { writer ->
-      HumanDetailsImpl_ResponseAdapter.toResponse(writer, this)
-    }
+) : HumanDetail, GraphqlFragment, Adaptable<HumanDetailsImpl> {
+  override fun adapter(): ResponseAdapter<HumanDetailsImpl> {
+    return HumanDetailsImpl_ResponseAdapter
   }
 }

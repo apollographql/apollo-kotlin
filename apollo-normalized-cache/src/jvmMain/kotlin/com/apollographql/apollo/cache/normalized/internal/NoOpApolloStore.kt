@@ -1,10 +1,10 @@
 package com.apollographql.apollo.cache.normalized.internal
 
-import com.apollographql.apollo.api.GraphqlFragment
+import com.apollographql.apollo.api.Adaptable
 import com.apollographql.apollo.api.Operation
 import com.apollographql.apollo.api.Response
 import com.apollographql.apollo.api.Response.Companion.builder
-import com.apollographql.apollo.api.internal.ResponseFieldMapper
+import com.apollographql.apollo.api.internal.ResponseAdapter
 import com.apollographql.apollo.cache.CacheHeaders
 import com.apollographql.apollo.cache.normalized.ApolloStore
 import com.apollographql.apollo.cache.normalized.ApolloStoreOperation
@@ -86,15 +86,19 @@ class NoOpApolloStore : ApolloStore, ReadableStore, WriteableStore {
   }
 
   override fun <D : Operation.Data, V : Operation.Variables> read(
-      operation: Operation<D, V>, responseFieldMapper: ResponseFieldMapper<D>,
-      responseNormalizer: ResponseNormalizer<Record>, cacheHeaders: CacheHeaders): ApolloStoreOperation<Response<D>> {
+      operation: Operation<D, V>,
+      responseNormalizer: ResponseNormalizer<Record>,
+      cacheHeaders: CacheHeaders
+  ): ApolloStoreOperation<Response<D>> {
     // This is called in the default path when no cache is configured, do not trigger an error
     // Instead return an empty response. This will be seen as a cache MISS and the request will go to the network.
     return emptyOperation(builder<D>(operation).build())
   }
 
-  override fun <F : GraphqlFragment> read(fieldMapper: ResponseFieldMapper<F>,
-                                           cacheKey: CacheKey, variables: Operation.Variables): ApolloStoreOperation<F> {
+  override fun <F> read(
+      adapter: ResponseAdapter<F>,
+      cacheKey: CacheKey,
+      variables: Operation.Variables): ApolloStoreOperation<F> {
     error("Cannot read fragment: no cache configured")
   }
 
@@ -110,13 +114,13 @@ class NoOpApolloStore : ApolloStore, ReadableStore, WriteableStore {
     return emptyOperation(false)
   }
 
-  override fun write(fragment: GraphqlFragment, cacheKey: CacheKey,
+  override fun write(adaptable: Adaptable<*>, cacheKey: CacheKey,
                      variables: Operation.Variables): ApolloStoreOperation<Set<String>> {
     // Should we throw here instead?
     return emptyOperation(emptySet())
   }
 
-  override fun writeAndPublish(fragment: GraphqlFragment, cacheKey: CacheKey,
+  override fun writeAndPublish(adaptable: Adaptable<*>, cacheKey: CacheKey,
                                variables: Operation.Variables): ApolloStoreOperation<Boolean> {
     // Should we throw here instead?
     return emptyOperation(false)
@@ -128,7 +132,7 @@ class NoOpApolloStore : ApolloStore, ReadableStore, WriteableStore {
   }
 
   override fun <D : Operation.Data, V : Operation.Variables> writeOptimisticUpdatesAndPublish(operation: Operation<D, V>, operationData: D,
-                                                                                                 mutationId: UUID): ApolloStoreOperation<Boolean> {
+                                                                                              mutationId: UUID): ApolloStoreOperation<Boolean> {
     // Should we throw here instead?
     return emptyOperation(java.lang.Boolean.FALSE)
   }

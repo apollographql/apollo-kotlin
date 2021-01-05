@@ -12,7 +12,6 @@ import com.apollographql.apollo.api.cache.http.HttpCachePolicy;
 import com.apollographql.apollo.api.internal.Action;
 import com.apollographql.apollo.api.internal.ApolloLogger;
 import com.apollographql.apollo.api.internal.Optional;
-import com.apollographql.apollo.api.internal.ResponseFieldMapper;
 import com.apollographql.apollo.cache.CacheHeaders;
 import com.apollographql.apollo.cache.normalized.ApolloStore;
 import com.apollographql.apollo.exception.ApolloCanceledException;
@@ -56,7 +55,6 @@ public final class RealApolloCall<D extends Query.Data> implements ApolloQueryCa
   final Call.Factory httpCallFactory;
   final HttpCache httpCache;
   final HttpCachePolicy.Policy httpCachePolicy;
-  final ResponseFieldMapperFactory responseFieldMapperFactory;
   final CustomScalarAdapters customScalarAdapters;
   final ApolloStore apolloStore;
   final CacheHeaders cacheHeaders;
@@ -90,7 +88,6 @@ public final class RealApolloCall<D extends Query.Data> implements ApolloQueryCa
     httpCallFactory = builder.httpCallFactory;
     httpCache = builder.httpCache;
     httpCachePolicy = builder.httpCachePolicy;
-    responseFieldMapperFactory = builder.responseFieldMapperFactory;
     customScalarAdapters = builder.customScalarAdapters;
     apolloStore = builder.apolloStore;
     responseFetcher = builder.responseFetcher;
@@ -113,7 +110,6 @@ public final class RealApolloCall<D extends Query.Data> implements ApolloQueryCa
           .queryWatchers(refetchQueryNames)
           .serverUrl(builder.serverUrl)
           .httpCallFactory(builder.httpCallFactory)
-          .responseFieldMapperFactory(builder.responseFieldMapperFactory)
           .scalarTypeAdapters(builder.customScalarAdapters)
           .apolloStore(builder.apolloStore)
           .dispatcher(builder.dispatcher)
@@ -308,7 +304,6 @@ public final class RealApolloCall<D extends Query.Data> implements ApolloQueryCa
         .httpCallFactory(httpCallFactory)
         .httpCache(httpCache)
         .httpCachePolicy(httpCachePolicy)
-        .responseFieldMapperFactory(responseFieldMapperFactory)
         .scalarTypeAdapters(customScalarAdapters)
         .apolloStore(apolloStore)
         .cacheHeaders(cacheHeaders)
@@ -385,7 +380,6 @@ public final class RealApolloCall<D extends Query.Data> implements ApolloQueryCa
 
   private ApolloInterceptorChain prepareInterceptorChain(Operation operation) {
     HttpCachePolicy.Policy httpCachePolicy = operation instanceof Query ? this.httpCachePolicy : null;
-    ResponseFieldMapper responseFieldMapper = responseFieldMapperFactory.create(operation);
 
     List<ApolloInterceptor> interceptors = new ArrayList<>();
 
@@ -400,7 +394,6 @@ public final class RealApolloCall<D extends Query.Data> implements ApolloQueryCa
     interceptors.add(responseFetcher.provideInterceptor(logger));
     interceptors.add(new ApolloCacheInterceptor(
         apolloStore,
-        responseFieldMapper,
         dispatcher,
         logger,
         writeToNormalizedCacheAsynchronously));
@@ -416,8 +409,11 @@ public final class RealApolloCall<D extends Query.Data> implements ApolloQueryCa
             useHttpGetMethodForPersistedQueries && !(operation instanceof Mutation)));
       }
     }
-    interceptors.add(new ApolloParseInterceptor(httpCache, apolloStore.networkResponseNormalizer(), responseFieldMapper,
-        customScalarAdapters, logger));
+    interceptors.add(new ApolloParseInterceptor(
+        httpCache,
+        apolloStore.networkResponseNormalizer(),
+        customScalarAdapters,
+        logger));
     interceptors.add(new ApolloServerInterceptor(serverUrl, httpCallFactory, httpCachePolicy, false, customScalarAdapters,
         logger));
 
@@ -430,7 +426,6 @@ public final class RealApolloCall<D extends Query.Data> implements ApolloQueryCa
     Call.Factory httpCallFactory;
     HttpCache httpCache;
     HttpCachePolicy.Policy httpCachePolicy;
-    ResponseFieldMapperFactory responseFieldMapperFactory;
     CustomScalarAdapters customScalarAdapters;
     ApolloStore apolloStore;
     ResponseFetcher responseFetcher;
@@ -467,11 +462,6 @@ public final class RealApolloCall<D extends Query.Data> implements ApolloQueryCa
 
     public Builder<D> httpCache(HttpCache httpCache) {
       this.httpCache = httpCache;
-      return this;
-    }
-
-    public Builder<D> responseFieldMapperFactory(ResponseFieldMapperFactory responseFieldMapperFactory) {
-      this.responseFieldMapperFactory = responseFieldMapperFactory;
       return this;
     }
 

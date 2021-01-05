@@ -5,8 +5,9 @@
 //
 package com.example.named_fragment_delegate.fragment
 
+import com.apollographql.apollo.api.Adaptable
 import com.apollographql.apollo.api.GraphqlFragment
-import com.apollographql.apollo.api.internal.ResponseFieldMarshaller
+import com.apollographql.apollo.api.internal.ResponseAdapter
 import com.example.named_fragment_delegate.fragment.adapter.HumanDetailsImpl_ResponseAdapter
 import kotlin.Any
 import kotlin.String
@@ -29,11 +30,9 @@ data class HumanDetailsImpl(
    * The friends of the human exposed as a connection with edges
    */
   override val friendsConnection: FriendsConnection
-) : HumanDetail, GraphqlFragment {
-  override fun marshaller(): ResponseFieldMarshaller {
-    return ResponseFieldMarshaller { writer ->
-      HumanDetailsImpl_ResponseAdapter.toResponse(writer, this)
-    }
+) : HumanDetail, GraphqlFragment, Adaptable<HumanDetailsImpl> {
+  override fun adapter(): ResponseAdapter<HumanDetailsImpl> {
+    return HumanDetailsImpl_ResponseAdapter
   }
 
   /**
@@ -45,12 +44,6 @@ data class HumanDetailsImpl(
      */
     override val edges: List<Edge?>?
   ) : HumanDetail.FriendsConnection {
-    override fun marshaller(): ResponseFieldMarshaller {
-      return ResponseFieldMarshaller { writer ->
-        HumanDetailsImpl_ResponseAdapter.FriendsConnection.toResponse(writer, this)
-      }
-    }
-
     /**
      * An edge object for a character's friends
      */
@@ -60,12 +53,6 @@ data class HumanDetailsImpl(
        */
       override val node: Node?
     ) : HumanDetail.FriendsConnection.Edge {
-      override fun marshaller(): ResponseFieldMarshaller {
-        return ResponseFieldMarshaller { writer ->
-          HumanDetailsImpl_ResponseAdapter.FriendsConnection.Edge.toResponse(writer, this)
-        }
-      }
-
       /**
        * A character from the Star Wars universe
        */
@@ -74,13 +61,7 @@ data class HumanDetailsImpl(
          * The name of the character
          */
         override val name: String
-      ) : HumanDetail.FriendsConnection.Edge.Node {
-        override fun marshaller(): ResponseFieldMarshaller {
-          return ResponseFieldMarshaller { writer ->
-            HumanDetailsImpl_ResponseAdapter.FriendsConnection.Edge.Node.toResponse(writer, this)
-          }
-        }
-      }
+      ) : HumanDetail.FriendsConnection.Edge.Node
     }
   }
 }

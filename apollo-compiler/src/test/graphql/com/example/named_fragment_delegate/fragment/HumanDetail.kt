@@ -6,8 +6,6 @@
 package com.example.named_fragment_delegate.fragment
 
 import com.apollographql.apollo.api.GraphqlFragment
-import com.apollographql.apollo.api.internal.ResponseFieldMapper
-import com.apollographql.apollo.api.internal.ResponseFieldMarshaller
 import com.apollographql.apollo.api.internal.ResponseReader
 import com.example.named_fragment_delegate.fragment.adapter.HumanDetailsImpl_ResponseAdapter
 import kotlin.Any
@@ -45,8 +43,6 @@ interface HumanDetail : GraphqlFragment {
      */
     val edges: List<Edge?>?
 
-    fun marshaller(): ResponseFieldMarshaller
-
     /**
      * An edge object for a character's friends
      */
@@ -56,8 +52,6 @@ interface HumanDetail : GraphqlFragment {
        */
       val node: Node?
 
-      fun marshaller(): ResponseFieldMarshaller
-
       /**
        * A character from the Star Wars universe
        */
@@ -66,8 +60,6 @@ interface HumanDetail : GraphqlFragment {
          * The name of the character
          */
         val name: String
-
-        fun marshaller(): ResponseFieldMarshaller
       }
     }
   }
@@ -90,12 +82,6 @@ interface HumanDetail : GraphqlFragment {
 
     operator fun invoke(reader: ResponseReader): HumanDetail {
       return HumanDetailsImpl_ResponseAdapter.fromResponse(reader)
-    }
-
-    fun Mapper(): ResponseFieldMapper<HumanDetail> {
-      return ResponseFieldMapper { reader ->
-        HumanDetailsImpl_ResponseAdapter.fromResponse(reader)
-      }
     }
   }
 }

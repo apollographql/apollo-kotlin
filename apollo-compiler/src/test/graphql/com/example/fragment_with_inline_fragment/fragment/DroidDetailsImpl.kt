@@ -5,8 +5,9 @@
 //
 package com.example.fragment_with_inline_fragment.fragment
 
+import com.apollographql.apollo.api.Adaptable
 import com.apollographql.apollo.api.GraphqlFragment
-import com.apollographql.apollo.api.internal.ResponseFieldMarshaller
+import com.apollographql.apollo.api.internal.ResponseAdapter
 import com.example.fragment_with_inline_fragment.fragment.adapter.DroidDetailsImpl_ResponseAdapter
 import kotlin.String
 
@@ -23,10 +24,8 @@ data class DroidDetailsImpl(
    * This droid's primary function
    */
   override val primaryFunction: String?
-) : DroidDetail, GraphqlFragment {
-  override fun marshaller(): ResponseFieldMarshaller {
-    return ResponseFieldMarshaller { writer ->
-      DroidDetailsImpl_ResponseAdapter.toResponse(writer, this)
-    }
+) : DroidDetail, GraphqlFragment, Adaptable<DroidDetailsImpl> {
+  override fun adapter(): ResponseAdapter<DroidDetailsImpl> {
+    return DroidDetailsImpl_ResponseAdapter
   }
 }

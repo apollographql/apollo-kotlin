@@ -27,7 +27,6 @@ import com.apollographql.apollo.internal.ApolloCallTracker;
 import com.apollographql.apollo.internal.RealApolloCall;
 import com.apollographql.apollo.internal.RealApolloPrefetch;
 import com.apollographql.apollo.internal.RealApolloSubscriptionCall;
-import com.apollographql.apollo.internal.ResponseFieldMapperFactory;
 import com.apollographql.apollo.internal.RealApolloStore;
 import com.apollographql.apollo.cache.normalized.internal.ResponseNormalizer;
 import com.apollographql.apollo.internal.subscription.NoOpSubscriptionManager;
@@ -85,7 +84,6 @@ public final class ApolloClient implements ApolloQueryCall.Factory, ApolloMutati
   private final HttpCache httpCache;
   private final ApolloStore apolloStore;
   private final CustomScalarAdapters customScalarAdapters;
-  private final ResponseFieldMapperFactory responseFieldMapperFactory = new ResponseFieldMapperFactory();
   private final Executor dispatcher;
   private final HttpCachePolicy.Policy defaultHttpCachePolicy;
   private final ResponseFetcher defaultResponseFetcher;
@@ -173,7 +171,7 @@ public final class ApolloClient implements ApolloQueryCall.Factory, ApolloMutati
   public <D extends Subscription.Data, V extends Subscription.Variables> ApolloSubscriptionCall<D> subscribe(
       @NotNull Subscription<D, V> subscription) {
     return new RealApolloSubscriptionCall<>(subscription, subscriptionManager, apolloStore, ApolloSubscriptionCall.CachePolicy.NO_CACHE,
-        dispatcher, responseFieldMapperFactory, logger);
+        dispatcher, logger);
   }
 
   /**
@@ -350,7 +348,6 @@ public final class ApolloClient implements ApolloQueryCall.Factory, ApolloMutati
         .httpCallFactory(httpCallFactory)
         .httpCache(httpCache)
         .httpCachePolicy(defaultHttpCachePolicy)
-        .responseFieldMapperFactory(responseFieldMapperFactory)
         .scalarTypeAdapters(customScalarAdapters)
         .apolloStore(apolloStore)
         .responseFetcher(defaultResponseFetcher)

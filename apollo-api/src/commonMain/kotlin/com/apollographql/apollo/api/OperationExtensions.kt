@@ -37,10 +37,10 @@ import kotlin.jvm.JvmOverloads
  * param is not provided.
  */
 @JvmOverloads
-fun Operation.Data.toJson(indent: String = "", customScalarAdapters: CustomScalarAdapters = DEFAULT): String {
+fun <D : Operation.Data> Operation<D, *>.toJson(value: D, indent: String = "", customScalarAdapters: CustomScalarAdapters = DEFAULT): String {
   return try {
     SimpleResponseWriter(customScalarAdapters).let { writer ->
-      marshaller().marshal(writer)
+      adapter().toResponse(writer, value)
       writer.toJson(indent)
     }
   } catch (e: IOException) {

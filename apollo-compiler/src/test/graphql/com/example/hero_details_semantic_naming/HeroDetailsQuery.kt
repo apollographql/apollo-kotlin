@@ -9,8 +9,7 @@ import com.apollographql.apollo.api.Operation
 import com.apollographql.apollo.api.OperationName
 import com.apollographql.apollo.api.Query
 import com.apollographql.apollo.api.internal.QueryDocumentMinifier
-import com.apollographql.apollo.api.internal.ResponseFieldMapper
-import com.apollographql.apollo.api.internal.ResponseFieldMarshaller
+import com.apollographql.apollo.api.internal.ResponseAdapter
 import com.example.hero_details_semantic_naming.adapter.HeroDetailsQuery_ResponseAdapter
 import kotlin.Int
 import kotlin.String
@@ -29,24 +28,13 @@ class HeroDetailsQuery : Query<HeroDetailsQuery.Data, Operation.Variables> {
 
   override fun name(): OperationName = OPERATION_NAME
 
-  override fun responseFieldMapper(): ResponseFieldMapper<Data> {
-    return ResponseFieldMapper { reader ->
-      HeroDetailsQuery_ResponseAdapter.fromResponse(reader)
-    }
-  }
-
+  override fun adapter(): ResponseAdapter<Data> = HeroDetailsQuery_ResponseAdapter
   /**
    * The query type, represents all of the entry points into our object graph
    */
   data class Data(
     val hero: Hero?
   ) : Operation.Data {
-    override fun marshaller(): ResponseFieldMarshaller {
-      return ResponseFieldMarshaller { writer ->
-        HeroDetailsQuery_ResponseAdapter.Data.toResponse(writer, this)
-      }
-    }
-
     /**
      * A character from the Star Wars universe
      */
@@ -60,12 +48,6 @@ class HeroDetailsQuery : Query<HeroDetailsQuery.Data, Operation.Variables> {
        */
       val friendsConnection: FriendsConnection
     ) {
-      fun marshaller(): ResponseFieldMarshaller {
-        return ResponseFieldMarshaller { writer ->
-          HeroDetailsQuery_ResponseAdapter.Data.Hero.toResponse(writer, this)
-        }
-      }
-
       /**
        * A connection object for a character's friends
        */
@@ -79,12 +61,6 @@ class HeroDetailsQuery : Query<HeroDetailsQuery.Data, Operation.Variables> {
          */
         val edges: List<Edge?>?
       ) {
-        fun marshaller(): ResponseFieldMarshaller {
-          return ResponseFieldMarshaller { writer ->
-            HeroDetailsQuery_ResponseAdapter.Data.Hero.FriendsConnection.toResponse(writer, this)
-          }
-        }
-
         fun edgesFilterNotNull(): List<Edge>? = edges?.filterNotNull()
 
         /**
@@ -96,12 +72,6 @@ class HeroDetailsQuery : Query<HeroDetailsQuery.Data, Operation.Variables> {
            */
           val node: Node?
         ) {
-          fun marshaller(): ResponseFieldMarshaller {
-            return ResponseFieldMarshaller { writer ->
-              HeroDetailsQuery_ResponseAdapter.Data.Hero.FriendsConnection.Edge.toResponse(writer, this)
-            }
-          }
-
           /**
            * A character from the Star Wars universe
            */
@@ -110,13 +80,7 @@ class HeroDetailsQuery : Query<HeroDetailsQuery.Data, Operation.Variables> {
              * The name of the character
              */
             val name: String
-          ) {
-            fun marshaller(): ResponseFieldMarshaller {
-              return ResponseFieldMarshaller { writer ->
-                HeroDetailsQuery_ResponseAdapter.Data.Hero.FriendsConnection.Edge.Node.toResponse(writer, this)
-              }
-            }
-          }
+          )
         }
       }
     }

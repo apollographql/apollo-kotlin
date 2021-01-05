@@ -9,8 +9,7 @@ import com.apollographql.apollo.api.Operation
 import com.apollographql.apollo.api.OperationName
 import com.apollographql.apollo.api.Query
 import com.apollographql.apollo.api.internal.QueryDocumentMinifier
-import com.apollographql.apollo.api.internal.ResponseFieldMapper
-import com.apollographql.apollo.api.internal.ResponseFieldMarshaller
+import com.apollographql.apollo.api.internal.ResponseAdapter
 import com.example.inline_frgament_intersection.adapter.TestOperation_ResponseAdapter
 import com.example.inline_frgament_intersection.type.Race
 import kotlin.Boolean
@@ -31,25 +30,12 @@ class TestOperation : Query<TestOperation.Data, Operation.Variables> {
 
   override fun name(): OperationName = OPERATION_NAME
 
-  override fun responseFieldMapper(): ResponseFieldMapper<Data> {
-    return ResponseFieldMapper { reader ->
-      TestOperation_ResponseAdapter.fromResponse(reader)
-    }
-  }
-
+  override fun adapter(): ResponseAdapter<Data> = TestOperation_ResponseAdapter
   data class Data(
     val random: Random
   ) : Operation.Data {
-    override fun marshaller(): ResponseFieldMarshaller {
-      return ResponseFieldMarshaller { writer ->
-        TestOperation_ResponseAdapter.Data.toResponse(writer, this)
-      }
-    }
-
     interface Random {
       val __typename: String
-
-      fun marshaller(): ResponseFieldMarshaller
 
       interface Being : Random {
         override val __typename: String
@@ -58,14 +44,10 @@ class TestOperation : Query<TestOperation.Data, Operation.Variables> {
 
         val friends: List<Friend>
 
-        override fun marshaller(): ResponseFieldMarshaller
-
         interface Friend {
           val __typename: String
 
           val name: String
-
-          fun marshaller(): ResponseFieldMarshaller
 
           interface Wookie : Friend {
             override val __typename: String
@@ -73,8 +55,6 @@ class TestOperation : Query<TestOperation.Data, Operation.Variables> {
             override val name: String
 
             val lifeExpectancy: Double?
-
-            override fun marshaller(): ResponseFieldMarshaller
           }
 
           companion object {
@@ -91,16 +71,12 @@ class TestOperation : Query<TestOperation.Data, Operation.Variables> {
 
           val profilePictureUrl: String?
 
-          override fun marshaller(): ResponseFieldMarshaller
-
           interface Friend : Being.Friend {
             override val __typename: String
 
             override val name: String
 
             val isFamous: Boolean?
-
-            override fun marshaller(): ResponseFieldMarshaller
 
             interface Wookie : Being.Friend, Being.Friend.Wookie, Friend {
               override val __typename: String
@@ -112,8 +88,6 @@ class TestOperation : Query<TestOperation.Data, Operation.Variables> {
               override val isFamous: Boolean?
 
               val race: Race
-
-              override fun marshaller(): ResponseFieldMarshaller
             }
 
             companion object {
@@ -130,12 +104,8 @@ class TestOperation : Query<TestOperation.Data, Operation.Variables> {
 
         val friends: List<Friend>
 
-        override fun marshaller(): ResponseFieldMarshaller
-
         interface Friend {
           val lifeExpectancy: Double?
-
-          fun marshaller(): ResponseFieldMarshaller
         }
       }
 
@@ -145,16 +115,8 @@ class TestOperation : Query<TestOperation.Data, Operation.Variables> {
         override val friends: List<Friend>,
         override val profilePictureUrl: String?
       ) : Random, Being, Being.Human {
-        override fun marshaller(): ResponseFieldMarshaller {
-          return ResponseFieldMarshaller { writer ->
-            TestOperation_ResponseAdapter.Data.Random.BeingHumanRandom.toResponse(writer, this)
-          }
-        }
-
         interface Friend : Being.Friend, Being.Human.Friend {
           override val __typename: String
-
-          override fun marshaller(): ResponseFieldMarshaller
 
           data class WookieFriend(
             override val __typename: String,
@@ -163,25 +125,13 @@ class TestOperation : Query<TestOperation.Data, Operation.Variables> {
             override val lifeExpectancy: Double?,
             override val race: Race
           ) : Being.Friend, Being.Friend.Wookie, Being.Human.Friend.Wookie, Being.Human.Friend,
-              Friend {
-            override fun marshaller(): ResponseFieldMarshaller {
-              return ResponseFieldMarshaller { writer ->
-                TestOperation_ResponseAdapter.Data.Random.BeingHumanRandom.Friend.WookieFriend.toResponse(writer, this)
-              }
-            }
-          }
+              Friend
 
           data class OtherFriend(
             override val __typename: String,
             override val name: String,
             override val isFamous: Boolean?
-          ) : Being.Friend, Being.Human.Friend, Friend {
-            override fun marshaller(): ResponseFieldMarshaller {
-              return ResponseFieldMarshaller { writer ->
-                TestOperation_ResponseAdapter.Data.Random.BeingHumanRandom.Friend.OtherFriend.toResponse(writer, this)
-              }
-            }
-          }
+          ) : Being.Friend, Being.Human.Friend, Friend
         }
       }
 
@@ -191,52 +141,26 @@ class TestOperation : Query<TestOperation.Data, Operation.Variables> {
         override val friends: List<Friend>,
         override val race: Race
       ) : Random, Being, Wookie {
-        override fun marshaller(): ResponseFieldMarshaller {
-          return ResponseFieldMarshaller { writer ->
-            TestOperation_ResponseAdapter.Data.Random.BeingWookieRandom.toResponse(writer, this)
-          }
-        }
-
         interface Friend : Being.Friend, Wookie.Friend {
           override val __typename: String
-
-          override fun marshaller(): ResponseFieldMarshaller
 
           data class WookieFriend(
             override val __typename: String,
             override val name: String,
             override val lifeExpectancy: Double?
-          ) : Being.Friend, Being.Friend.Wookie, Friend {
-            override fun marshaller(): ResponseFieldMarshaller {
-              return ResponseFieldMarshaller { writer ->
-                TestOperation_ResponseAdapter.Data.Random.BeingWookieRandom.Friend.WookieFriend.toResponse(writer, this)
-              }
-            }
-          }
+          ) : Being.Friend, Being.Friend.Wookie, Friend
 
           data class OtherFriend(
             override val __typename: String,
             override val name: String,
             override val lifeExpectancy: Double?
-          ) : Being.Friend, Wookie.Friend, Friend {
-            override fun marshaller(): ResponseFieldMarshaller {
-              return ResponseFieldMarshaller { writer ->
-                TestOperation_ResponseAdapter.Data.Random.BeingWookieRandom.Friend.OtherFriend.toResponse(writer, this)
-              }
-            }
-          }
+          ) : Being.Friend, Wookie.Friend, Friend
         }
       }
 
       data class OtherRandom(
         override val __typename: String
-      ) : Random {
-        override fun marshaller(): ResponseFieldMarshaller {
-          return ResponseFieldMarshaller { writer ->
-            TestOperation_ResponseAdapter.Data.Random.OtherRandom.toResponse(writer, this)
-          }
-        }
-      }
+      ) : Random
 
       companion object {
         fun Random.asBeing(): Being? = this as? Being

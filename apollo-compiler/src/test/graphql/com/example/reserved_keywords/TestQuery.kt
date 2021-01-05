@@ -9,8 +9,7 @@ import com.apollographql.apollo.api.Operation
 import com.apollographql.apollo.api.OperationName
 import com.apollographql.apollo.api.Query
 import com.apollographql.apollo.api.internal.QueryDocumentMinifier
-import com.apollographql.apollo.api.internal.ResponseFieldMapper
-import com.apollographql.apollo.api.internal.ResponseFieldMarshaller
+import com.apollographql.apollo.api.internal.ResponseAdapter
 import com.example.reserved_keywords.adapter.TestQuery_ResponseAdapter
 import kotlin.String
 import kotlin.Suppress
@@ -28,12 +27,7 @@ class TestQuery : Query<TestQuery.Data, Operation.Variables> {
 
   override fun name(): OperationName = OPERATION_NAME
 
-  override fun responseFieldMapper(): ResponseFieldMapper<Data> {
-    return ResponseFieldMapper { reader ->
-      TestQuery_ResponseAdapter.fromResponse(reader)
-    }
-  }
-
+  override fun adapter(): ResponseAdapter<Data> = TestQuery_ResponseAdapter
   /**
    * The query type, represents all of the entry points into our object graph
    */
@@ -41,12 +35,6 @@ class TestQuery : Query<TestQuery.Data, Operation.Variables> {
     val yield_: Yield?,
     val objects: List<Object?>?
   ) : Operation.Data {
-    override fun marshaller(): ResponseFieldMarshaller {
-      return ResponseFieldMarshaller { writer ->
-        TestQuery_ResponseAdapter.Data.toResponse(writer, this)
-      }
-    }
-
     fun objectsFilterNotNull(): List<Object>? = objects?.filterNotNull()
 
     /**
@@ -61,18 +49,10 @@ class TestQuery : Query<TestQuery.Data, Operation.Variables> {
        * The name of the character
        */
       val name: String
-    ) {
-      fun marshaller(): ResponseFieldMarshaller {
-        return ResponseFieldMarshaller { writer ->
-          TestQuery_ResponseAdapter.Data.Yield.toResponse(writer, this)
-        }
-      }
-    }
+    )
 
     interface Object {
       val __typename: String
-
-      fun marshaller(): ResponseFieldMarshaller
 
       interface Character : Object {
         override val __typename: String
@@ -81,8 +61,6 @@ class TestQuery : Query<TestQuery.Data, Operation.Variables> {
          * The name of the character
          */
         val name: String
-
-        override fun marshaller(): ResponseFieldMarshaller
       }
 
       data class CharacterObject(
@@ -91,23 +69,11 @@ class TestQuery : Query<TestQuery.Data, Operation.Variables> {
          * The name of the character
          */
         override val name: String
-      ) : Object, Character {
-        override fun marshaller(): ResponseFieldMarshaller {
-          return ResponseFieldMarshaller { writer ->
-            TestQuery_ResponseAdapter.Data.Object.CharacterObject.toResponse(writer, this)
-          }
-        }
-      }
+      ) : Object, Character
 
       data class OtherObject(
         override val __typename: String
-      ) : Object {
-        override fun marshaller(): ResponseFieldMarshaller {
-          return ResponseFieldMarshaller { writer ->
-            TestQuery_ResponseAdapter.Data.Object.OtherObject.toResponse(writer, this)
-          }
-        }
-      }
+      ) : Object
 
       companion object {
         fun Object.asCharacter(): Character? = this as? Character
