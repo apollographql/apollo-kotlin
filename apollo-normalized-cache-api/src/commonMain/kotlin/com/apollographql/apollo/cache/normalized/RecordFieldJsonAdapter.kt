@@ -3,13 +3,12 @@ package com.apollographql.apollo.cache.normalized
 import com.apollographql.apollo.api.internal.Throws
 import com.apollographql.apollo.api.internal.json.BufferedSourceJsonReader
 import com.apollographql.apollo.api.internal.json.JsonWriter
+import com.apollographql.apollo.api.internal.json.Utils.readRecursively
 import com.apollographql.apollo.api.internal.json.use
-import com.apollographql.apollo.cache.normalized.internal.CacheJsonStreamReader
 import okio.Buffer
 import okio.BufferedSource
 import okio.ByteString.Companion.encodeUtf8
 import okio.IOException
-import kotlin.jvm.JvmStatic
 
 /**
  * An adapter used to serialize and deserialize Record fields. Record object types will be serialized to
@@ -39,8 +38,22 @@ class RecordFieldJsonAdapter {
 
   @Throws(IOException::class)
   private fun fromBufferSource(bufferedFieldSource: BufferedSource): Map<String, Any?>? {
-    val cacheJsonStreamReader = CacheJsonStreamReader(BufferedSourceJsonReader(bufferedFieldSource))
-    return cacheJsonStreamReader.toMap()
+    return BufferedSourceJsonReader(bufferedFieldSource).readRecursively()?.deserializeCacheReferences() as Map<String, Any?>?
+ }
+
+  private fun Any?.deserializeCacheReferences(): Any? {
+    return when (this) {
+      is String -> if (CacheReference.canDeserialize(this)) {
+        CacheReference.deserialize(this)
+      } else {
+        this
+      }
+      is Map<*, *> -> mapValues {
+        it.value.deserializeCacheReferences()
+      }
+      is List<*> -> map { it.deserializeCacheReferences() }
+      else -> this
+    }
   }
 
   @Throws(IOException::class)

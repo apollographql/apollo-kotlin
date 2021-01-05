@@ -2,7 +2,7 @@ package com.apollographql.apollo.subscription
 
 import com.apollographql.apollo.api.CustomScalarAdapters
 import com.apollographql.apollo.api.internal.json.BufferedSourceJsonReader
-import com.apollographql.apollo.api.internal.json.ResponseJsonStreamReader
+import com.apollographql.apollo.api.internal.json.Utils.readRecursively
 import com.google.common.truth.Truth.assertThat
 import okio.Buffer
 import org.junit.Test
@@ -133,10 +133,9 @@ class AppSyncOperationMessageSerializerTest {
           .writeUtf8(json)
           .let { readServerMessage(it) }
 
-  private fun parseJson(json: String): Map<String, Any?>? =
+  private fun parseJson(json: String): Any? =
       Buffer()
           .writeUtf8(json)
           .let(::BufferedSourceJsonReader)
-          .let(::ResponseJsonStreamReader)
-          .toMap()
+          .readRecursively()
 }

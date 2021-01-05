@@ -2,7 +2,7 @@ package com.apollographql.apollo.network.ws
 
 import com.apollographql.apollo.ApolloWebSocketException
 import com.apollographql.apollo.api.internal.json.BufferedSourceJsonReader
-import com.apollographql.apollo.api.internal.json.ResponseJsonStreamReader
+import com.apollographql.apollo.api.internal.json.Utils.readRecursively
 import okio.Buffer
 import okio.ByteString
 
@@ -46,8 +46,7 @@ sealed class ApolloGraphQLServerMessage {
     fun ByteString.parse(): ApolloGraphQLServerMessage {
       val message = try {
         val jsonReader = BufferedSourceJsonReader(Buffer().write(this))
-        val responseJsonReader = ResponseJsonStreamReader(jsonReader)
-        val messageData = responseJsonReader.toMap() ?: emptyMap()
+        val messageData = jsonReader.readRecursively() as? Map<String, Any?> ?: emptyMap()
         object {
           val id = messageData["id"] as String?
           val type = messageData["type"] as String?

@@ -5,7 +5,7 @@ import com.apollographql.apollo.api.Operation;
 import com.apollographql.apollo.api.Response;
 import com.apollographql.apollo.api.CustomScalarAdapters;
 import com.apollographql.apollo.api.internal.json.BufferedSourceJsonReader;
-import com.apollographql.apollo.api.internal.json.ResponseJsonStreamReader;
+import com.apollographql.apollo.api.internal.json.Utils;
 import com.apollographql.apollo.cache.normalized.internal.ResponseNormalizer;
 import com.apollographql.apollo.internal.field.MapFieldValueResolver;
 import com.apollographql.apollo.api.internal.RealResponseReader;
@@ -71,47 +71,10 @@ public final class OperationResponseParser<D extends Operation.Data> {
   }
 
   public Response<D> parse(BufferedSource source) throws IOException {
-    responseNormalizer.willResolveRootQuery(operation);
     BufferedSourceJsonReader jsonReader = null;
     try {
       jsonReader = new BufferedSourceJsonReader(source);
-      jsonReader.beginObject();
-
-      D data = null;
-      List<Error> errors = null;
-      Map<String, Object> extensions = null;
-      ResponseJsonStreamReader responseStreamReader = new ResponseJsonStreamReader(jsonReader);
-      while (responseStreamReader.hasNext()) {
-        String name = responseStreamReader.nextName();
-        if ("data".equals(name)) {
-          //noinspection unchecked
-          data = (D) responseStreamReader.nextObject(true, new ResponseJsonStreamReader.ObjectReader<Object>() {
-            @Override public Object read(ResponseJsonStreamReader reader) throws IOException {
-              Map<String, Object> buffer = reader.toMap();
-              RealResponseReader<Map<String, Object>> realResponseReader = new RealResponseReader<>(
-                  operation.variables(), buffer, new MapFieldValueResolver(), customScalarAdapters, responseNormalizer);
-              return operation.adapter().fromResponse(realResponseReader, null);
-            }
-          });
-        } else if ("errors".equals(name)) {
-          errors = readResponseErrors(responseStreamReader);
-        } else if ("extensions".equals(name)) {
-          extensions = responseStreamReader.nextObject(true, new ResponseJsonStreamReader.ObjectReader<Map<String, Object>>() {
-            @Override public Map<String, Object> read(ResponseJsonStreamReader reader) throws IOException {
-              return reader.toMap();
-            }
-          });
-        } else {
-          responseStreamReader.skipNext();
-        }
-      }
-      jsonReader.endObject();
-      return Response.<D>builder(operation)
-          .data(data)
-          .errors(errors)
-          .dependentKeys(responseNormalizer.dependentKeys())
-          .extensions(extensions)
-          .build();
+      return parse((Map<String, Object>) Utils.INSTANCE.readRecursively(jsonReader));
     } finally {
       if (jsonReader != null) {
         jsonReader.close();
@@ -119,17 +82,6 @@ public final class OperationResponseParser<D extends Operation.Data> {
     }
   }
 
-  private List<Error> readResponseErrors(ResponseJsonStreamReader reader) throws IOException {
-    return reader.nextList(true, new ResponseJsonStreamReader.ListReader<Error>() {
-      @Override public Error read(ResponseJsonStreamReader reader) throws IOException {
-        return reader.nextObject(true, new ResponseJsonStreamReader.ObjectReader<Error>() {
-          @Override public Error read(ResponseJsonStreamReader reader) throws IOException {
-            return parseError(reader.toMap());
-          }
-        });
-      }
-    });
-  }
 
   @SuppressWarnings("unchecked")
   public static Error parseError(Map<String, Object> payload) {

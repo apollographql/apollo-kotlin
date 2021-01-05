@@ -12,5 +12,8 @@ You can run the tests from Android Studio by clicking the "run" icon in the gutt
 
 Run on a Pixel 3 XL. Feel free to update/commit new results and we can get the history using `git annotate`
 
-benchmark:    14,700,418 ns Benchmark.apollo
-benchmark:    12,862,032 ns Benchmark.moshi
+benchmark:    13,642,293 ns Benchmark.moshi
+benchmark:    14,921,928 ns Benchmark.apollo
+benchmark:    24,562,346 ns Benchmark.apolloParsingWithMapParser
+benchmark:    37,406,150 ns Benchmark.apolloComputeRecordsDuringParsing
+benchmark:    41,032,713 ns Benchmark.apolloComputeRecordsAfterParsing
