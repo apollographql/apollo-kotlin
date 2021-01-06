@@ -55,7 +55,11 @@ object SimpleOperationResponseParser {
       adapter: ResponseAdapter<D>,
       variables: Operation.Variables,
       customScalarAdapters: CustomScalarAdapters,
-  ): D {
+  ): D? {
+    if (peek() == JsonReader.Token.NULL) {
+      return nextNull<D>()
+    }
+
     beginObject()
     val data = adapter.fromResponse(
         StreamResponseReader(
