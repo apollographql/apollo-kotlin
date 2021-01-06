@@ -54,17 +54,6 @@ class OperationResponseParser<D : Operation.Data> @JvmOverloads constructor(
         .build()
   }
 
-  @Throws(IOException::class)
-  fun parse(source: BufferedSource): Response<D> {
-    var jsonReader: BufferedSourceJsonReader? = null
-    return try {
-      jsonReader = BufferedSourceJsonReader(source!!)
-      parse((jsonReader.readRecursively() as Map<String, Any?>?)!!)
-    } finally {
-      jsonReader?.close()
-    }
-  }
-
   companion object {
     fun parseError(payload: Map<String, Any?>): Error {
       var message = ""
