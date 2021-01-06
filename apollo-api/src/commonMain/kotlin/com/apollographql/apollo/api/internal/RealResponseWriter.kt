@@ -1,4 +1,4 @@
-package com.apollographql.apollo.internal.response
+package com.apollographql.apollo.api.internal.response
 
 import com.apollographql.apollo.api.BigDecimal
 import com.apollographql.apollo.api.Operation
@@ -7,6 +7,7 @@ import com.apollographql.apollo.api.CustomScalar
 import com.apollographql.apollo.api.CustomScalarAdapters
 import com.apollographql.apollo.api.internal.ResolveDelegate
 import com.apollographql.apollo.api.internal.ResponseWriter
+import com.apollographql.apollo.api.internal.Utils.shouldSkip
 
 class RealResponseWriter(
     private val operationVariables: Operation.Variables,
@@ -41,7 +42,11 @@ class RealResponseWriter(
   }
 
   override fun writeObject(field: ResponseField, block: ((ResponseWriter) -> Unit)?) {
+    if (field.shouldSkip(variableValues = operationVariables.valueMap())) {
+      return
+    }
     checkFieldValue(field, block)
+
     if (block == null) {
       buffer[field.responseName] = FieldDescriptor(field, null)
       return
@@ -55,7 +60,11 @@ class RealResponseWriter(
       field: ResponseField, values: List<T>?,
       block: (items: List<T>?, listItemWriter: ResponseWriter.ListItemWriter) -> Unit
   ) {
+    if (field.shouldSkip(variableValues = operationVariables.valueMap())) {
+      return
+    }
     checkFieldValue(field, values)
+
     if (values == null) {
       buffer[field.responseName] = FieldDescriptor(field, null)
       return
@@ -70,6 +79,9 @@ class RealResponseWriter(
   }
 
   private fun writeScalarFieldValue(field: ResponseField, value: Any?) {
+    if (field.shouldSkip(variableValues = operationVariables.valueMap())) {
+      return
+    }
     checkFieldValue(field, value)
     buffer[field.responseName] = FieldDescriptor(field, value)
   }

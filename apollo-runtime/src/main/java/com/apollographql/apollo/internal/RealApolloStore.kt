@@ -28,7 +28,7 @@ import com.apollographql.apollo.cache.normalized.internal.RealCacheKeyBuilder
 import com.apollographql.apollo.cache.normalized.internal.ResponseNormalizer
 import com.apollographql.apollo.cache.normalized.internal.Transaction
 import com.apollographql.apollo.cache.normalized.internal.WriteableStore
-import com.apollographql.apollo.internal.response.RealResponseWriter
+import com.apollographql.apollo.api.internal.response.RealResponseWriter
 import java.util.ArrayList
 import java.util.Collections
 import java.util.LinkedHashSet

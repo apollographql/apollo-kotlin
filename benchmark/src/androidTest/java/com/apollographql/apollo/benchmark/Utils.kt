@@ -8,7 +8,7 @@ import com.apollographql.apollo.cache.normalized.CacheKey
 import com.apollographql.apollo.cache.normalized.Record
 import com.apollographql.apollo.cache.normalized.internal.RealCacheKeyBuilder
 import com.apollographql.apollo.cache.normalized.internal.ResponseNormalizer
-import com.apollographql.apollo.internal.response.RealResponseWriter
+import com.apollographql.apollo.api.internal.response.RealResponseWriter
 import com.apollographql.apollo.response.OperationResponseParser
 import okio.BufferedSource
 import okio.buffer

@@ -3,7 +3,7 @@ package com.apollographql.apollo.cache.normalized.internal
 import com.apollographql.apollo.api.CustomScalarAdapters
 import com.apollographql.apollo.api.Operation
 import com.apollographql.apollo.cache.normalized.Record
-import com.apollographql.apollo.internal.response.RealResponseWriter
+import com.apollographql.apollo.api.internal.response.RealResponseWriter
 
 fun <D: Operation.Data> Operation<D>.normalize(
     data: D,
