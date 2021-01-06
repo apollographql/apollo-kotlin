@@ -263,20 +263,7 @@ internal class AstBuilder private constructor(
         description = this.comment,
         operationId = operationId,
         queryDocument = this.definition,
-        variables = this.variables.map { variable ->
-          val fieldType = variable.type.resolveInputFieldType(
-              typesPackageName = typesPackageName,
-
-              )
-          CodeGenerationAst.InputField(
-              name = variable.name.normalizeFieldName(),
-              schemaName = variable.name,
-              deprecationReason = null,
-              type = fieldType,
-              description = "",
-              defaultValue = null,
-          )
-        },
+        variables = this.variables.map { it.toAst() },
         dataType = operationDataType,
     )
   }
@@ -300,43 +287,62 @@ internal class AstBuilder private constructor(
   private fun BackendIr.NamedFragment.buildFragmentType(): CodeGenerationAst.FragmentType {
     val schemaType = schema.resolveType(this.selectionSet.typeCondition)
     val interfaceType = buildObjectType(
-        name = name,
+        name = this.selectionSet.name,
         description = schemaType.description,
         schemaTypename = schemaType.name,
         fields = selectionSet.fields,
         fragments = selectionSet.fragments,
         targetPackageName = fragmentsPackage,
         abstract = true,
-
-        currentSelectionKey = SelectionKey(
-            root = name,
-            keys = listOf(name),
-            type = SelectionKey.Type.Fragment,
-        ),
+        currentSelectionKey = this.selectionSet.defaultSelectionKey,
         alternativeSelectionKeys = selectionSet.selectionKeys,
     )
-    val implementationType = buildObjectType(
-        name = this.defaultImplementationSelectionKey.root,
+    val implementationDataType = buildObjectType(
+        name = this.implementationSelectionSet.defaultSelectionKey.keys.last(),
         description = schemaType.description,
         schemaTypename = schemaType.name,
-        fields = defaultImplementationSelectionSet.fields,
-        fragments = defaultImplementationSelectionSet.fragments,
+        fields = implementationSelectionSet.fields,
+        fragments = implementationSelectionSet.fragments,
         targetPackageName = fragmentsPackage,
         abstract = false,
-        currentSelectionKey = defaultImplementationSelectionKey,
-        alternativeSelectionKeys = defaultImplementationSelectionSet.selectionKeys,
+        currentSelectionKey = this.implementationSelectionSet.defaultSelectionKey,
+        alternativeSelectionKeys = implementationSelectionSet.selectionKeys,
+    )
+    val implementationTypeRef = CodeGenerationAst.TypeRef(
+        name = this.implementationSelectionSet.name.normalizeTypeName(),
+        packageName = fragmentsPackage,
     )
     return CodeGenerationAst.FragmentType(
-        name = this.name.normalizeTypeName(),
-        graphqlName = this.name,
         description = this.comment,
         interfaceType = interfaceType,
-        defaultImplementationType = implementationType.copy(fragmentAccessors = emptyList()),
+        implementationType = CodeGenerationAst.ObjectType(
+            name = implementationTypeRef.name,
+            description = "",
+            deprecationReason = null,
+            fields = emptyList(),
+            nestedObjects = listOf(implementationDataType),
+            implements = emptySet(),
+            kind = CodeGenerationAst.ObjectType.Kind.Object,
+            typeRef = implementationTypeRef,
+            schemaTypename = null,
+            fragmentAccessors = emptyList(),
+        ),
         fragmentDefinition = this.source,
-        typeRef = CodeGenerationAst.TypeRef(
-            name = this.name.normalizeTypeName(),
-            packageName = fragmentsPackage,
-        )
+        variables = this.variables.map { it.toAst() },
+    )
+  }
+
+  private fun BackendIr.Variable.toAst(): CodeGenerationAst.InputField {
+    val fieldType = type.resolveInputFieldType(
+        typesPackageName = typesPackageName,
+    )
+    return CodeGenerationAst.InputField(
+        name = name.normalizeFieldName(),
+        schemaName = name,
+        deprecationReason = null,
+        type = fieldType,
+        description = "",
+        defaultValue = null,
     )
   }
 

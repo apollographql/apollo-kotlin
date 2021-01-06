@@ -5,23 +5,27 @@
 //
 package com.example.fragments_same_type_condition.fragment
 
-import com.apollographql.apollo.api.Adaptable
-import com.apollographql.apollo.api.GraphqlFragment
+import com.apollographql.apollo.api.Fragment
+import com.apollographql.apollo.api.Operation
 import com.apollographql.apollo.api.internal.ResponseAdapter
 import com.example.fragments_same_type_condition.fragment.adapter.DroidDetails2Impl_ResponseAdapter
 import kotlin.String
 
-/**
- * An autonomous mechanical character in the Star Wars universe
- */
-data class DroidDetails2Impl(
-  override val __typename: String = "Droid",
-  /**
-   * This droid's primary function
-   */
-  override val primaryFunction: String?
-) : DroidDetails2, GraphqlFragment, Adaptable<DroidDetails2Impl> {
-  override fun adapter(): ResponseAdapter<DroidDetails2Impl> {
+class DroidDetails2Impl : Fragment<DroidDetails2Impl.Data> {
+  override fun adapter(): ResponseAdapter<Data> {
     return DroidDetails2Impl_ResponseAdapter
   }
+
+  override fun variables(): Operation.Variables = Operation.EMPTY_VARIABLES
+
+  /**
+   * An autonomous mechanical character in the Star Wars universe
+   */
+  data class Data(
+    override val __typename: String = "Droid",
+    /**
+     * This droid's primary function
+     */
+    override val primaryFunction: String?
+  ) : DroidDetails2, Fragment.Data
 }

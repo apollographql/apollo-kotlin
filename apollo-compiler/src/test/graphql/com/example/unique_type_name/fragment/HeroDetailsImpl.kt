@@ -5,63 +5,67 @@
 //
 package com.example.unique_type_name.fragment
 
-import com.apollographql.apollo.api.Adaptable
-import com.apollographql.apollo.api.GraphqlFragment
+import com.apollographql.apollo.api.Fragment
+import com.apollographql.apollo.api.Operation
 import com.apollographql.apollo.api.internal.ResponseAdapter
 import com.example.unique_type_name.fragment.adapter.HeroDetailsImpl_ResponseAdapter
 import kotlin.Int
 import kotlin.String
 import kotlin.collections.List
 
-/**
- * A character from the Star Wars universe
- */
-data class HeroDetailsImpl(
-  override val __typename: String = "Character",
-  /**
-   * The name of the character
-   */
-  override val name: String,
-  /**
-   * The friends of the character exposed as a connection with edges
-   */
-  override val friendsConnection: FriendsConnection
-) : HeroDetail, GraphqlFragment, Adaptable<HeroDetailsImpl> {
-  override fun adapter(): ResponseAdapter<HeroDetailsImpl> {
+class HeroDetailsImpl : Fragment<HeroDetailsImpl.Data> {
+  override fun adapter(): ResponseAdapter<Data> {
     return HeroDetailsImpl_ResponseAdapter
   }
 
+  override fun variables(): Operation.Variables = Operation.EMPTY_VARIABLES
+
   /**
-   * A connection object for a character's friends
+   * A character from the Star Wars universe
    */
-  data class FriendsConnection(
+  data class Data(
+    override val __typename: String = "Character",
     /**
-     * The total number of friends
+     * The name of the character
      */
-    override val totalCount: Int?,
+    override val name: String,
     /**
-     * The edges for each of the character's friends.
+     * The friends of the character exposed as a connection with edges
      */
-    override val edges: List<Edge?>?
-  ) : HeroDetail.FriendsConnection {
+    override val friendsConnection: FriendsConnection
+  ) : HeroDetail, Fragment.Data {
     /**
-     * An edge object for a character's friends
+     * A connection object for a character's friends
      */
-    data class Edge(
+    data class FriendsConnection(
       /**
-       * The character represented by this friendship edge
+       * The total number of friends
        */
-      override val node: Node?
-    ) : HeroDetail.FriendsConnection.Edge {
+      override val totalCount: Int?,
       /**
-       * A character from the Star Wars universe
+       * The edges for each of the character's friends.
        */
-      data class Node(
+      override val edges: List<Edge?>?
+    ) : HeroDetail.FriendsConnection {
+      /**
+       * An edge object for a character's friends
+       */
+      data class Edge(
         /**
-         * The name of the character
+         * The character represented by this friendship edge
          */
-        override val name: String
-      ) : HeroDetail.FriendsConnection.Edge.Node
+        override val node: Node?
+      ) : HeroDetail.FriendsConnection.Edge {
+        /**
+         * A character from the Star Wars universe
+         */
+        data class Node(
+          /**
+           * The name of the character
+           */
+          override val name: String
+        ) : HeroDetail.FriendsConnection.Edge.Node
+      }
     }
   }
 }

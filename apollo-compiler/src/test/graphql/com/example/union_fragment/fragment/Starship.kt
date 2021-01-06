@@ -6,8 +6,6 @@
 package com.example.union_fragment.fragment
 
 import com.apollographql.apollo.api.GraphqlFragment
-import com.apollographql.apollo.api.internal.ResponseReader
-import com.example.union_fragment.fragment.adapter.StarshipImpl_ResponseAdapter
 import kotlin.String
 import kotlin.Suppress
 
@@ -29,9 +27,5 @@ interface Starship : GraphqlFragment {
         |  name
         |}
         """.trimMargin()
-
-    operator fun invoke(reader: ResponseReader): Starship {
-      return StarshipImpl_ResponseAdapter.fromResponse(reader)
-    }
   }
 }

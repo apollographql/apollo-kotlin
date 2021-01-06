@@ -5,63 +5,67 @@
 //
 package com.example.named_fragment_delegate.fragment
 
-import com.apollographql.apollo.api.Adaptable
-import com.apollographql.apollo.api.GraphqlFragment
+import com.apollographql.apollo.api.Fragment
+import com.apollographql.apollo.api.Operation
 import com.apollographql.apollo.api.internal.ResponseAdapter
 import com.example.named_fragment_delegate.fragment.adapter.HumanDetailsImpl_ResponseAdapter
 import kotlin.Any
 import kotlin.String
 import kotlin.collections.List
 
-/**
- * A humanoid creature from the Star Wars universe
- */
-data class HumanDetailsImpl(
-  override val __typename: String = "Human",
-  /**
-   * What this human calls themselves
-   */
-  override val name: String,
-  /**
-   * Profile link
-   */
-  override val profileLink: Any,
-  /**
-   * The friends of the human exposed as a connection with edges
-   */
-  override val friendsConnection: FriendsConnection
-) : HumanDetail, GraphqlFragment, Adaptable<HumanDetailsImpl> {
-  override fun adapter(): ResponseAdapter<HumanDetailsImpl> {
+class HumanDetailsImpl : Fragment<HumanDetailsImpl.Data> {
+  override fun adapter(): ResponseAdapter<Data> {
     return HumanDetailsImpl_ResponseAdapter
   }
 
+  override fun variables(): Operation.Variables = Operation.EMPTY_VARIABLES
+
   /**
-   * A connection object for a character's friends
+   * A humanoid creature from the Star Wars universe
    */
-  data class FriendsConnection(
+  data class Data(
+    override val __typename: String = "Human",
     /**
-     * The edges for each of the character's friends.
+     * What this human calls themselves
      */
-    override val edges: List<Edge?>?
-  ) : HumanDetail.FriendsConnection {
+    override val name: String,
     /**
-     * An edge object for a character's friends
+     * Profile link
      */
-    data class Edge(
+    override val profileLink: Any,
+    /**
+     * The friends of the human exposed as a connection with edges
+     */
+    override val friendsConnection: FriendsConnection
+  ) : HumanDetail, Fragment.Data {
+    /**
+     * A connection object for a character's friends
+     */
+    data class FriendsConnection(
       /**
-       * The character represented by this friendship edge
+       * The edges for each of the character's friends.
        */
-      override val node: Node?
-    ) : HumanDetail.FriendsConnection.Edge {
+      override val edges: List<Edge?>?
+    ) : HumanDetail.FriendsConnection {
       /**
-       * A character from the Star Wars universe
+       * An edge object for a character's friends
        */
-      data class Node(
+      data class Edge(
         /**
-         * The name of the character
+         * The character represented by this friendship edge
          */
-        override val name: String
-      ) : HumanDetail.FriendsConnection.Edge.Node
+        override val node: Node?
+      ) : HumanDetail.FriendsConnection.Edge {
+        /**
+         * A character from the Star Wars universe
+         */
+        data class Node(
+          /**
+           * The name of the character
+           */
+          override val name: String
+        ) : HumanDetail.FriendsConnection.Edge.Node
+      }
     }
   }
 }

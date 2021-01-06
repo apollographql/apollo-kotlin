@@ -31,6 +31,11 @@ internal data class FrontendIr(
       val name: String,
       val description: String?,
       val selections: List<Selection>,
+      /**
+       * Fragments do not have variables per-se but we can infer them from the document
+       * Default values will always be null for those
+       */
+      val variables: List<Variable>,
       val typeCondition: GQLTypeDefinition,
       val source: String,
       val gqlFragmentDefinition: GQLFragmentDefinition

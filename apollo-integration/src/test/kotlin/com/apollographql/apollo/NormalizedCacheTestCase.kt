@@ -17,11 +17,9 @@ import com.apollographql.apollo.cache.normalized.lru.LruNormalizedCacheFactory
 import com.apollographql.apollo.fetcher.ApolloResponseFetchers
 import com.apollographql.apollo.integration.httpcache.AllPlanetsQuery
 import com.apollographql.apollo.integration.normalizer.*
-import com.apollographql.apollo.integration.normalizer.fragment.HeroWithFriendsFragment
 import com.apollographql.apollo.integration.normalizer.fragment.HeroWithFriendsFragmentImpl
 import com.apollographql.apollo.integration.normalizer.fragment.HumanWithIdFragment
-import com.apollographql.apollo.integration.normalizer.fragment.adapter.HeroWithFriendsFragmentImpl_ResponseAdapter
-import com.apollographql.apollo.integration.normalizer.fragment.adapter.HumanWithIdFragmentImpl_ResponseAdapter
+import com.apollographql.apollo.integration.normalizer.fragment.HumanWithIdFragmentImpl
 import com.apollographql.apollo.integration.normalizer.type.Episode
 import com.google.common.truth.Truth
 import com.google.common.truth.Truth.assertThat
@@ -30,7 +28,6 @@ import okhttp3.Dispatcher
 import okhttp3.OkHttpClient
 import okhttp3.mockwebserver.MockWebServer
 import org.junit.Before
-import org.junit.Rule
 import org.junit.Test
 import org.junit.Ignore
 import java.util.*
@@ -355,10 +352,10 @@ class NormalizedCacheTestCase {
         apolloClient.query(HeroAndFriendsNamesWithIDsQuery(fromNullable(Episode.NEWHOPE))),
         Predicate<Response<HeroAndFriendsNamesWithIDsQuery.Data>> { response -> !response.hasErrors() }
     )
-    val heroWithFriendsFragment = apolloClient.apolloStore.read(
-        HeroWithFriendsFragmentImpl_ResponseAdapter,
+    val heroWithFriendsFragment = apolloClient.apolloStore.readFragment(
+        HeroWithFriendsFragmentImpl(),
         from("2001"),
-        Operation.EMPTY_VARIABLES).execute()
+        ).execute()
     assertThat(heroWithFriendsFragment.id).isEqualTo("2001")
     assertThat(heroWithFriendsFragment.name).isEqualTo("R2-D2")
     assertThat(heroWithFriendsFragment.friends).hasSize(3)
@@ -369,27 +366,24 @@ class NormalizedCacheTestCase {
     assertThat((heroWithFriendsFragment.friends?.get(2) as HumanWithIdFragment).id).isEqualTo("1003")
     assertThat((heroWithFriendsFragment.friends?.get(2) as HumanWithIdFragment).name).isEqualTo("Leia Organa")
 
-    var fragment: HumanWithIdFragment = apolloClient.apolloStore.read(
-        HumanWithIdFragmentImpl_ResponseAdapter,
+    var fragment: HumanWithIdFragment = apolloClient.apolloStore.readFragment(
+        HumanWithIdFragmentImpl(),
         from("1000"),
-        Operation.EMPTY_VARIABLES
     ).execute()
 
     assertThat(fragment.id).isEqualTo("1000")
     assertThat(fragment.name).isEqualTo("Luke Skywalker")
 
-    fragment = apolloClient.apolloStore.read(
-        HumanWithIdFragmentImpl_ResponseAdapter,
+    fragment = apolloClient.apolloStore.readFragment(
+        HumanWithIdFragmentImpl(),
         from("1002"),
-        Operation.EMPTY_VARIABLES
     ).execute()
     assertThat(fragment.id).isEqualTo("1002")
     assertThat(fragment.name).isEqualTo("Han Solo")
 
-    fragment = apolloClient.apolloStore.read(
-        HumanWithIdFragmentImpl_ResponseAdapter,
+    fragment = apolloClient.apolloStore.readFragment(
+        HumanWithIdFragmentImpl(),
         from("1003"),
-        Operation.EMPTY_VARIABLES
     ).execute()
     assertThat(fragment.id).isEqualTo("1003")
     assertThat(fragment.name).isEqualTo("Leia Organa")

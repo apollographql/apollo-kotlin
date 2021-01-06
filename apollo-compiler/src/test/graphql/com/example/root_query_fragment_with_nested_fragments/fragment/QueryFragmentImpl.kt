@@ -5,87 +5,91 @@
 //
 package com.example.root_query_fragment_with_nested_fragments.fragment
 
-import com.apollographql.apollo.api.Adaptable
-import com.apollographql.apollo.api.GraphqlFragment
+import com.apollographql.apollo.api.Fragment
+import com.apollographql.apollo.api.Operation
 import com.apollographql.apollo.api.internal.ResponseAdapter
 import com.example.root_query_fragment_with_nested_fragments.fragment.adapter.QueryFragmentImpl_ResponseAdapter
 import kotlin.String
 
-/**
- * The query type, represents all of the entry points into our object graph
- */
-data class QueryFragmentImpl(
-  override val __typename: String = "Query",
-  override val hero: Hero?,
-  override val droid: Droid?,
-  override val human: Human?
-) : QueryFragment, GraphqlFragment, Adaptable<QueryFragmentImpl> {
-  override fun adapter(): ResponseAdapter<QueryFragmentImpl> {
+class QueryFragmentImpl : Fragment<QueryFragmentImpl.Data> {
+  override fun adapter(): ResponseAdapter<Data> {
     return QueryFragmentImpl_ResponseAdapter
   }
 
-  /**
-   * A character from the Star Wars universe
-   */
-  interface Hero : QueryFragment.Hero {
-    override val __typename: String
-
-    data class CharacterHero(
-      override val __typename: String,
-      /**
-       * The name of the character
-       */
-      override val name: String
-    ) : QueryFragment.Hero, QueryFragment.Hero.Character, HeroFragment, Hero
-
-    data class OtherHero(
-      override val __typename: String
-    ) : QueryFragment.Hero, Hero
-  }
+  override fun variables(): Operation.Variables = Operation.EMPTY_VARIABLES
 
   /**
-   * An autonomous mechanical character in the Star Wars universe
+   * The query type, represents all of the entry points into our object graph
    */
-  interface Droid : QueryFragment.Droid {
-    override val __typename: String
-
-    data class DroidDroid(
-      override val __typename: String,
-      /**
-       * What others call this droid
-       */
-      override val name: String,
-      /**
-       * This droid's primary function
-       */
-      override val primaryFunction: String?
-    ) : QueryFragment.Droid, QueryFragment.Droid.Droid, DroidFragment, Droid
-
-    data class OtherDroid(
+  data class Data(
+    override val __typename: String = "Query",
+    override val hero: Hero?,
+    override val droid: Droid?,
+    override val human: Human?
+  ) : QueryFragment, Fragment.Data {
+    /**
+     * A character from the Star Wars universe
+     */
+    interface Hero : QueryFragment.Hero {
       override val __typename: String
-    ) : QueryFragment.Droid, Droid
-  }
 
-  /**
-   * A humanoid creature from the Star Wars universe
-   */
-  interface Human : QueryFragment.Human {
-    override val __typename: String
+      data class CharacterHero(
+        override val __typename: String,
+        /**
+         * The name of the character
+         */
+        override val name: String
+      ) : QueryFragment.Hero, QueryFragment.Hero.Character, HeroFragment, Hero
 
-    data class HumanHuman(
-      override val __typename: String,
-      /**
-       * What this human calls themselves
-       */
-      override val name: String,
-      /**
-       * The home planet of the human, or null if unknown
-       */
-      override val homePlanet: String?
-    ) : QueryFragment.Human, QueryFragment.Human.Human, Human
+      data class OtherHero(
+        override val __typename: String
+      ) : QueryFragment.Hero, Hero
+    }
 
-    data class OtherHuman(
+    /**
+     * An autonomous mechanical character in the Star Wars universe
+     */
+    interface Droid : QueryFragment.Droid {
       override val __typename: String
-    ) : QueryFragment.Human, Human
+
+      data class DroidDroid(
+        override val __typename: String,
+        /**
+         * What others call this droid
+         */
+        override val name: String,
+        /**
+         * This droid's primary function
+         */
+        override val primaryFunction: String?
+      ) : QueryFragment.Droid, QueryFragment.Droid.Droid, DroidFragment, Droid
+
+      data class OtherDroid(
+        override val __typename: String
+      ) : QueryFragment.Droid, Droid
+    }
+
+    /**
+     * A humanoid creature from the Star Wars universe
+     */
+    interface Human : QueryFragment.Human {
+      override val __typename: String
+
+      data class HumanHuman(
+        override val __typename: String,
+        /**
+         * What this human calls themselves
+         */
+        override val name: String,
+        /**
+         * The home planet of the human, or null if unknown
+         */
+        override val homePlanet: String?
+      ) : QueryFragment.Human, QueryFragment.Human.Human, Human
+
+      data class OtherHuman(
+        override val __typename: String
+      ) : QueryFragment.Human, Human
+    }
   }
 }

@@ -14,38 +14,60 @@ import com.example.fragment_used_twice.type.CustomScalars
 import kotlin.Any
 import kotlin.Array
 import kotlin.String
+import kotlin.Suppress
 
-object CharacterDetailsImpl_ResponseAdapter : ResponseAdapter<CharacterDetailsImpl> {
+@Suppress("NAME_SHADOWING", "UNUSED_ANONYMOUS_PARAMETER", "LocalVariableName",
+    "RemoveExplicitTypeArguments", "NestedLambdaShadowedImplicitParameter", "PropertyName",
+    "RemoveRedundantQualifierName")
+object CharacterDetailsImpl_ResponseAdapter : ResponseAdapter<CharacterDetailsImpl.Data> {
   private val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
     ResponseField.forString("__typename", "__typename", null, false, null),
     ResponseField.forString("name", "name", null, false, null),
     ResponseField.forCustomScalar("birthDate", "birthDate", null, false, CustomScalars.Date, null)
   )
 
-  override fun fromResponse(reader: ResponseReader, __typename: String?): CharacterDetailsImpl {
-    return reader.run {
-      var __typename: String? = __typename
-      var name: String? = null
-      var birthDate: Any? = null
-      while(true) {
-        when (selectField(RESPONSE_FIELDS)) {
-          0 -> __typename = readString(RESPONSE_FIELDS[0])
-          1 -> name = readString(RESPONSE_FIELDS[1])
-          2 -> birthDate = readCustomScalar<Any>(RESPONSE_FIELDS[2] as ResponseField.CustomScalarField)
-          else -> break
-        }
-      }
-      CharacterDetailsImpl(
-        __typename = __typename!!,
-        name = name!!,
-        birthDate = birthDate!!
-      )
-    }
+  override fun fromResponse(reader: ResponseReader, __typename: String?):
+      CharacterDetailsImpl.Data {
+    return Data.fromResponse(reader, __typename)
   }
 
-  override fun toResponse(writer: ResponseWriter, value: CharacterDetailsImpl) {
-    writer.writeString(RESPONSE_FIELDS[0], value.__typename)
-    writer.writeString(RESPONSE_FIELDS[1], value.name)
-    writer.writeCustom(RESPONSE_FIELDS[2] as ResponseField.CustomScalarField, value.birthDate)
+  override fun toResponse(writer: ResponseWriter, value: CharacterDetailsImpl.Data) {
+    Data.toResponse(writer, value)
+  }
+
+  object Data : ResponseAdapter<CharacterDetailsImpl.Data> {
+    private val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
+      ResponseField.forString("__typename", "__typename", null, false, null),
+      ResponseField.forString("name", "name", null, false, null),
+      ResponseField.forCustomScalar("birthDate", "birthDate", null, false, CustomScalars.Date, null)
+    )
+
+    override fun fromResponse(reader: ResponseReader, __typename: String?):
+        CharacterDetailsImpl.Data {
+      return reader.run {
+        var __typename: String? = __typename
+        var name: String? = null
+        var birthDate: Any? = null
+        while(true) {
+          when (selectField(RESPONSE_FIELDS)) {
+            0 -> __typename = readString(RESPONSE_FIELDS[0])
+            1 -> name = readString(RESPONSE_FIELDS[1])
+            2 -> birthDate = readCustomScalar<Any>(RESPONSE_FIELDS[2] as ResponseField.CustomScalarField)
+            else -> break
+          }
+        }
+        CharacterDetailsImpl.Data(
+          __typename = __typename!!,
+          name = name!!,
+          birthDate = birthDate!!
+        )
+      }
+    }
+
+    override fun toResponse(writer: ResponseWriter, value: CharacterDetailsImpl.Data) {
+      writer.writeString(RESPONSE_FIELDS[0], value.__typename)
+      writer.writeString(RESPONSE_FIELDS[1], value.name)
+      writer.writeCustom(RESPONSE_FIELDS[2] as ResponseField.CustomScalarField, value.birthDate)
+    }
   }
 }

@@ -6,8 +6,6 @@
 package com.example.fragment_used_twice.fragment
 
 import com.apollographql.apollo.api.GraphqlFragment
-import com.apollographql.apollo.api.internal.ResponseReader
-import com.example.fragment_used_twice.fragment.adapter.HeroDetailsImpl_ResponseAdapter
 import kotlin.Any
 import kotlin.String
 import kotlin.Suppress
@@ -45,10 +43,6 @@ interface HeroDetail : GraphqlFragment {
         |  ...CharacterDetails
         |}
         """.trimMargin()
-
-    operator fun invoke(reader: ResponseReader): HeroDetail {
-      return HeroDetailsImpl_ResponseAdapter.fromResponse(reader)
-    }
 
     fun HeroDetail.asCharacter(): Character? = this as? Character
 

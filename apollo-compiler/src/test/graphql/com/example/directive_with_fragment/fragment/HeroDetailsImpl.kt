@@ -5,23 +5,27 @@
 //
 package com.example.directive_with_fragment.fragment
 
-import com.apollographql.apollo.api.Adaptable
-import com.apollographql.apollo.api.GraphqlFragment
+import com.apollographql.apollo.api.Fragment
+import com.apollographql.apollo.api.Operation
 import com.apollographql.apollo.api.internal.ResponseAdapter
 import com.example.directive_with_fragment.fragment.adapter.HeroDetailsImpl_ResponseAdapter
 import kotlin.String
 
-/**
- * A character from the Star Wars universe
- */
-data class HeroDetailsImpl(
-  override val __typename: String = "Character",
-  /**
-   * The name of the character
-   */
-  override val name: String
-) : HeroDetail, GraphqlFragment, Adaptable<HeroDetailsImpl> {
-  override fun adapter(): ResponseAdapter<HeroDetailsImpl> {
+class HeroDetailsImpl : Fragment<HeroDetailsImpl.Data> {
+  override fun adapter(): ResponseAdapter<Data> {
     return HeroDetailsImpl_ResponseAdapter
   }
+
+  override fun variables(): Operation.Variables = Operation.EMPTY_VARIABLES
+
+  /**
+   * A character from the Star Wars universe
+   */
+  data class Data(
+    override val __typename: String = "Character",
+    /**
+     * The name of the character
+     */
+    override val name: String
+  ) : HeroDetail, Fragment.Data
 }

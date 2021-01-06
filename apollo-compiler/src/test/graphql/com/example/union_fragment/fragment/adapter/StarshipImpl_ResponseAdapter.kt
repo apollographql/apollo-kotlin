@@ -12,33 +12,52 @@ import com.apollographql.apollo.api.internal.ResponseWriter
 import com.example.union_fragment.fragment.StarshipImpl
 import kotlin.Array
 import kotlin.String
+import kotlin.Suppress
 
-object StarshipImpl_ResponseAdapter : ResponseAdapter<StarshipImpl> {
+@Suppress("NAME_SHADOWING", "UNUSED_ANONYMOUS_PARAMETER", "LocalVariableName",
+    "RemoveExplicitTypeArguments", "NestedLambdaShadowedImplicitParameter", "PropertyName",
+    "RemoveRedundantQualifierName")
+object StarshipImpl_ResponseAdapter : ResponseAdapter<StarshipImpl.Data> {
   private val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
     ResponseField.forString("__typename", "__typename", null, false, null),
     ResponseField.forString("name", "name", null, false, null)
   )
 
-  override fun fromResponse(reader: ResponseReader, __typename: String?): StarshipImpl {
-    return reader.run {
-      var __typename: String? = __typename
-      var name: String? = null
-      while(true) {
-        when (selectField(RESPONSE_FIELDS)) {
-          0 -> __typename = readString(RESPONSE_FIELDS[0])
-          1 -> name = readString(RESPONSE_FIELDS[1])
-          else -> break
-        }
-      }
-      StarshipImpl(
-        __typename = __typename!!,
-        name = name!!
-      )
-    }
+  override fun fromResponse(reader: ResponseReader, __typename: String?): StarshipImpl.Data {
+    return Data.fromResponse(reader, __typename)
   }
 
-  override fun toResponse(writer: ResponseWriter, value: StarshipImpl) {
-    writer.writeString(RESPONSE_FIELDS[0], value.__typename)
-    writer.writeString(RESPONSE_FIELDS[1], value.name)
+  override fun toResponse(writer: ResponseWriter, value: StarshipImpl.Data) {
+    Data.toResponse(writer, value)
+  }
+
+  object Data : ResponseAdapter<StarshipImpl.Data> {
+    private val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
+      ResponseField.forString("__typename", "__typename", null, false, null),
+      ResponseField.forString("name", "name", null, false, null)
+    )
+
+    override fun fromResponse(reader: ResponseReader, __typename: String?): StarshipImpl.Data {
+      return reader.run {
+        var __typename: String? = __typename
+        var name: String? = null
+        while(true) {
+          when (selectField(RESPONSE_FIELDS)) {
+            0 -> __typename = readString(RESPONSE_FIELDS[0])
+            1 -> name = readString(RESPONSE_FIELDS[1])
+            else -> break
+          }
+        }
+        StarshipImpl.Data(
+          __typename = __typename!!,
+          name = name!!
+        )
+      }
+    }
+
+    override fun toResponse(writer: ResponseWriter, value: StarshipImpl.Data) {
+      writer.writeString(RESPONSE_FIELDS[0], value.__typename)
+      writer.writeString(RESPONSE_FIELDS[1], value.name)
+    }
   }
 }

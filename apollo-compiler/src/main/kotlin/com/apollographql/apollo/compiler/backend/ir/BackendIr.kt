@@ -120,18 +120,19 @@ internal data class BackendIr(
   }
 
   data class NamedFragment(
-      val name: String,
       val source: String,
       val comment: String,
       val selectionSet: SelectionSet,
-      val defaultImplementationSelectionKey: SelectionKey,
-      val defaultImplementationSelectionSet: SelectionSet,
+      val implementationSelectionSet: SelectionSet,
+      val variables: List<Variable>,
   ) {
     data class SelectionSet(
+        val name: String,
         val fields: List<Field>,
         val fragments: Fragments,
         val typeCondition: IntrospectionSchema.TypeRef,
         val possibleTypes: Set<IntrospectionSchema.TypeRef>,
+        val defaultSelectionKey: SelectionKey,
         val selectionKeys: Set<SelectionKey>,
     )
   }

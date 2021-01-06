@@ -1,7 +1,5 @@
 package com.apollographql.apollo.compiler.backend.ast
 
-import com.squareup.kotlinpoet.TypeName
-
 internal typealias CustomScalarTypes = Map<String, CodeGenerationAst.CustomScalarType>
 
 /**
@@ -45,13 +43,11 @@ internal data class CodeGenerationAst(
   }
 
   data class FragmentType(
-      val name: String,
-      val graphqlName: String,
       val description: String,
       val interfaceType: ObjectType,
-      val defaultImplementationType: ObjectType,
+      val implementationType: ObjectType,
       val fragmentDefinition: String,
-      val typeRef: TypeRef,
+      val variables: List<InputField>,
   )
 
   data class ObjectType(
@@ -208,13 +204,6 @@ internal data class CodeGenerationAst(
   )
 
   companion object {
-    fun customTypeRef(typesPackageName: String): TypeRef {
-      return TypeRef(
-          name = "CustomScalar",
-          packageName = typesPackageName
-      )
-    }
-
     val typenameField = Field(
         name = "__typename",
         responseName = "__typename",

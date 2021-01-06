@@ -5,40 +5,44 @@
 //
 package com.example.fragment_used_twice.fragment
 
-import com.apollographql.apollo.api.Adaptable
-import com.apollographql.apollo.api.GraphqlFragment
+import com.apollographql.apollo.api.Fragment
+import com.apollographql.apollo.api.Operation
 import com.apollographql.apollo.api.internal.ResponseAdapter
 import com.example.fragment_used_twice.fragment.adapter.HumanDetailsImpl_ResponseAdapter
 import kotlin.Any
 import kotlin.String
 
-/**
- * A humanoid creature from the Star Wars universe
- */
-interface HumanDetailsImpl : HumanDetail, GraphqlFragment, Adaptable<HumanDetailsImpl> {
-  override val __typename: String
-
-  override fun adapter(): ResponseAdapter<HumanDetailsImpl> {
+class HumanDetailsImpl : Fragment<HumanDetailsImpl.Data> {
+  override fun adapter(): ResponseAdapter<Data> {
     return HumanDetailsImpl_ResponseAdapter
   }
 
-  data class CharacterHumanDetailsImpl(
-    override val __typename: String,
-    /**
-     * What this human calls themselves
-     */
-    override val name: String,
-    /**
-     * The date character was born.
-     */
-    override val birthDate: Any
-  ) : HumanDetail, HumanDetail.Character, CharacterDetail, HumanDetailsImpl
+  override fun variables(): Operation.Variables = Operation.EMPTY_VARIABLES
 
-  data class OtherHumanDetailsImpl(
-    override val __typename: String,
-    /**
-     * What this human calls themselves
-     */
-    override val name: String
-  ) : HumanDetail, HumanDetailsImpl
+  /**
+   * A humanoid creature from the Star Wars universe
+   */
+  interface Data : HumanDetail, Fragment.Data {
+    override val __typename: String
+
+    data class CharacterDatum(
+      override val __typename: String,
+      /**
+       * What this human calls themselves
+       */
+      override val name: String,
+      /**
+       * The date character was born.
+       */
+      override val birthDate: Any
+    ) : HumanDetail, HumanDetail.Character, CharacterDetail, Data
+
+    data class OtherDatum(
+      override val __typename: String,
+      /**
+       * What this human calls themselves
+       */
+      override val name: String
+    ) : HumanDetail, Data
+  }
 }

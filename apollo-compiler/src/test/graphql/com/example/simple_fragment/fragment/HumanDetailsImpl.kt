@@ -5,23 +5,27 @@
 //
 package com.example.simple_fragment.fragment
 
-import com.apollographql.apollo.api.Adaptable
-import com.apollographql.apollo.api.GraphqlFragment
+import com.apollographql.apollo.api.Fragment
+import com.apollographql.apollo.api.Operation
 import com.apollographql.apollo.api.internal.ResponseAdapter
 import com.example.simple_fragment.fragment.adapter.HumanDetailsImpl_ResponseAdapter
 import kotlin.String
 
-/**
- * A humanoid creature from the Star Wars universe
- */
-internal data class HumanDetailsImpl(
-  override val __typename: String = "Human",
-  /**
-   * What this human calls themselves
-   */
-  override val name: String
-) : HumanDetail, GraphqlFragment, Adaptable<HumanDetailsImpl> {
-  override fun adapter(): ResponseAdapter<HumanDetailsImpl> {
+internal class HumanDetailsImpl : Fragment<HumanDetailsImpl.Data> {
+  override fun adapter(): ResponseAdapter<Data> {
     return HumanDetailsImpl_ResponseAdapter
   }
+
+  override fun variables(): Operation.Variables = Operation.EMPTY_VARIABLES
+
+  /**
+   * A humanoid creature from the Star Wars universe
+   */
+  data class Data(
+    override val __typename: String = "Human",
+    /**
+     * What this human calls themselves
+     */
+    override val name: String
+  ) : HumanDetail, Fragment.Data
 }

@@ -1,6 +1,6 @@
 package com.apollographql.apollo.cache.normalized
 
-import com.apollographql.apollo.api.Adaptable
+import com.apollographql.apollo.api.Fragment
 import com.apollographql.apollo.api.Operation
 import com.apollographql.apollo.api.Response
 import com.apollographql.apollo.api.internal.ResponseAdapter
@@ -11,6 +11,7 @@ import com.apollographql.apollo.cache.normalized.internal.ReadableStore
 import com.apollographql.apollo.cache.normalized.internal.ResponseNormalizer
 import com.apollographql.apollo.cache.normalized.internal.Transaction
 import com.apollographql.apollo.cache.normalized.internal.WriteableStore
+import com.sun.org.apache.xpath.internal.operations.Bool
 import java.util.UUID
 
 /**
@@ -115,90 +116,50 @@ interface ApolloStore {
    * Read GraphQL operation from store.
    *
    * @param operation to be read
-   * @param <D>       type of GraphQL operation data
-   * @param <T>       type operation cached data will be wrapped with
-   * @param <V>       type of operation variables
    * @return {@ApolloStoreOperation} to be performed, that will be resolved with cached data for specified operation
-  </V></T></D> */
-  fun <D : Operation.Data> read(
+   */
+  fun <D : Operation.Data> readOperation(
       operation: Operation<D>
   ): ApolloStoreOperation<D>
 
   /**
-   * Read GraphQL operation response from store.
-   *
-   * @param operation           response of which should be read
-   * @param responseNormalizer  [ResponseNormalizer] to be used when reading cached response
-   * @param cacheHeaders        [CacheHeaders] to be used when reading cached response
-   * @param <D>                 type of GraphQL operation data
-   * @param <T>                 type operation cached data will be wrapped with
-   * @param <V>                 type of operation variables
-   * @return {@ApolloStoreOperation} to be performed, that will be resolved with cached response for specified operation
-  </V></T></D> */
-  fun <D : Operation.Data> read(
+   * A specialized version of readOperation that also returns dependentKeys. Do not use
+   */
+  fun <D : Operation.Data> readOperationInternal(
       operation: Operation<D>,
       responseNormalizer: ResponseNormalizer<Record>,
       cacheHeaders: CacheHeaders
-  ): ApolloStoreOperation<Response<D>>
+  ): ApolloStoreOperation<Response<D>> {
+    // This is called in the default path when no cache is configured, do not trigger an error
+    // Instead return an empty response. This will be seen as a cache MISS and the request will go to the network.
+    return ApolloStoreOperation.emptyOperation(Response.builder<D>(operation).build())
+  }
 
   /**
-   * Read from store.
+   * Read a GraphQL fragment from the store.
    *
    * @param cacheKey    [CacheKey] to be used to find cache record for the fragment
-   * @param variables   [Operation.Variables] required for fragment arguments resolving
    * @param <F>         type of fragment to be read
    * @return {@ApolloStoreOperation} to be performed, that will be resolved with cached fragment data
   </F> */
-  fun <F> read(
-      adapter: ResponseAdapter<F>,
+  fun <D: Fragment.Data> readFragment(
+      fragment: Fragment<D>,
       cacheKey: CacheKey,
-      variables: Operation.Variables
-  ): ApolloStoreOperation<F>
+  ): ApolloStoreOperation<D>
 
-  /**
-   * Write operation to the store.
-   *
-   * @param operation     [Operation] response data of which should be written to the store
-   * @param operationData [Operation.Data] operation response data to be written to the store
-   * @param <D>           type of GraphQL operation data
-   * @param <T>           type operation cached data will be wrapped with
-   * @param <V>           type of operation variables
-   * @return {@ApolloStoreOperation} to be performed, that will be resolved with set of keys of [Record] which
-   * have changed
-  </V></T></D> */
-  fun <D : Operation.Data> write(
-      operation: Operation<D>,
-      operationData: D
-  ): ApolloStoreOperation<Set<String>>
 
   /**
    * Write operation to the store and publish changes of [Record] which have changed, that will notify any [com.apollographql.apollo.ApolloQueryWatcher] that depends on these [Record] to re-fetch.
    *
    * @param operation     [Operation] response data of which should be written to the store
    * @param operationData [Operation.Data] operation response data to be written to the store
-   * @param <D>           type of GraphQL operation data
-   * @param <T>           type operation cached data will be wrapped with
-   * @param <V>           type of operation variables
-   * @return {@ApolloStoreOperation} to be performed
+   * @param publish       whether or not to publish the changed keys to listeners
+   * @return {@ApolloStoreOperation} to be performed returning the changed keys
   </V></T></D> */
-  fun <D : Operation.Data> writeAndPublish(
+  fun <D : Operation.Data> writeOperation(
       operation: Operation<D>,
-      operationData: D
-  ): ApolloStoreOperation<Boolean>
-
-  /**
-   * Write fragment to the store.
-   *
-   * @param fragment data to be written to the store
-   * @param cacheKey [CacheKey] to be used as root record key
-   * @param variables [Operation.Variables] required for fragment arguments resolving
-   * @return {@ApolloStoreOperation} to be performed, that will be resolved with set of keys of [Record] which
-   * have changed
-   */
-  fun write(
-      adaptable: Adaptable<*>,
-      cacheKey: CacheKey,
-      variables: Operation.Variables
+      operationData: D,
+      publish: Boolean = true
   ): ApolloStoreOperation<Set<String>>
 
   /**
@@ -207,14 +168,16 @@ interface ApolloStore {
    *
    * @param fragment data to be written to the store
    * @param cacheKey [CacheKey] to be used as root record key
-   * @param variables [Operation.Variables] required for fragment arguments resolving
-   * @return [ApolloStoreOperation] to be performed
+   * @param fragmentData [Fragment.Data] to be written to the store
+   * @param publish whether or not to publish the changed keys to listeners
+   * @return [ApolloStoreOperation] to be performed the changed keys
    */
-  fun writeAndPublish(
-      adaptable: Adaptable<*>,
+  fun <D: Fragment.Data> writeFragment(
+      fragment: Fragment<D>,
       cacheKey: CacheKey,
-      variables: Operation.Variables
-  ): ApolloStoreOperation<Boolean>
+      fragmentData: D,
+      publish: Boolean = true
+  ): ApolloStoreOperation<Set<String>>
 
   /**
    * Write operation data to the optimistic store.

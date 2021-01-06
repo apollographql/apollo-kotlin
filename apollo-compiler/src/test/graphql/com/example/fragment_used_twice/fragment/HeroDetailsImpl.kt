@@ -5,40 +5,44 @@
 //
 package com.example.fragment_used_twice.fragment
 
-import com.apollographql.apollo.api.Adaptable
-import com.apollographql.apollo.api.GraphqlFragment
+import com.apollographql.apollo.api.Fragment
+import com.apollographql.apollo.api.Operation
 import com.apollographql.apollo.api.internal.ResponseAdapter
 import com.example.fragment_used_twice.fragment.adapter.HeroDetailsImpl_ResponseAdapter
 import kotlin.Any
 import kotlin.String
 
-/**
- * A character from the Star Wars universe
- */
-interface HeroDetailsImpl : HeroDetail, GraphqlFragment, Adaptable<HeroDetailsImpl> {
-  override val __typename: String
-
-  override fun adapter(): ResponseAdapter<HeroDetailsImpl> {
+class HeroDetailsImpl : Fragment<HeroDetailsImpl.Data> {
+  override fun adapter(): ResponseAdapter<Data> {
     return HeroDetailsImpl_ResponseAdapter
   }
 
-  data class CharacterHeroDetailsImpl(
-    override val __typename: String,
-    /**
-     * The name of the character
-     */
-    override val name: String,
-    /**
-     * The date character was born.
-     */
-    override val birthDate: Any
-  ) : HeroDetail, HeroDetail.Character, CharacterDetail, HeroDetailsImpl
+  override fun variables(): Operation.Variables = Operation.EMPTY_VARIABLES
 
-  data class OtherHeroDetailsImpl(
-    override val __typename: String,
-    /**
-     * The name of the character
-     */
-    override val name: String
-  ) : HeroDetail, HeroDetailsImpl
+  /**
+   * A character from the Star Wars universe
+   */
+  interface Data : HeroDetail, Fragment.Data {
+    override val __typename: String
+
+    data class CharacterDatum(
+      override val __typename: String,
+      /**
+       * The name of the character
+       */
+      override val name: String,
+      /**
+       * The date character was born.
+       */
+      override val birthDate: Any
+    ) : HeroDetail, HeroDetail.Character, CharacterDetail, Data
+
+    data class OtherDatum(
+      override val __typename: String,
+      /**
+       * The name of the character
+       */
+      override val name: String
+    ) : HeroDetail, Data
+  }
 }
