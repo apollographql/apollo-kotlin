@@ -6,8 +6,6 @@
 package com.example.simple_fragment_with_inline_fragments.fragment
 
 import com.apollographql.apollo.api.GraphqlFragment
-import com.apollographql.apollo.api.internal.ResponseReader
-import com.example.simple_fragment_with_inline_fragments.fragment.adapter.HeroDetailsImpl_ResponseAdapter
 import kotlin.Double
 import kotlin.String
 import kotlin.Suppress
@@ -92,9 +90,5 @@ interface HeroDetail : GraphqlFragment {
         |  }
         |}
         """.trimMargin()
-
-    operator fun invoke(reader: ResponseReader): HeroDetail {
-      return HeroDetailsImpl_ResponseAdapter.fromResponse(reader)
-    }
   }
 }

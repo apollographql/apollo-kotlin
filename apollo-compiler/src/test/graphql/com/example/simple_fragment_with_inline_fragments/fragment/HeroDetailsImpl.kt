@@ -6,60 +6,71 @@
 package com.example.simple_fragment_with_inline_fragments.fragment
 
 import com.apollographql.apollo.api.Fragment
+import com.apollographql.apollo.api.Operation
+import com.apollographql.apollo.api.internal.ResponseAdapter
+import com.example.simple_fragment_with_inline_fragments.fragment.adapter.HeroDetailsImpl_ResponseAdapter
 import kotlin.Double
 import kotlin.String
 import kotlin.collections.List
 
-/**
- * A character from the Star Wars universe
- */
-data class HeroDetailsImpl(
-  override val __typename: String = "Character",
-  /**
-   * The name of the character
-   */
-  override val name: String,
-  /**
-   * The friends of the character, or an empty list if they have none
-   */
-  override val friends: List<Friend?>?
-) : HeroDetail, Fragment.Data {
+class HeroDetailsImpl : Fragment<HeroDetailsImpl.Data> {
+  override fun adapter(): ResponseAdapter<Data> {
+    return HeroDetailsImpl_ResponseAdapter
+  }
+
+  override fun variables(): Operation.Variables = Operation.EMPTY_VARIABLES
+
   /**
    * A character from the Star Wars universe
    */
-  interface Friend : HeroDetail.Friend {
-    override val __typename: String
+  data class Data(
+    override val __typename: String = "Character",
+    /**
+     * The name of the character
+     */
+    override val name: String,
+    /**
+     * The friends of the character, or an empty list if they have none
+     */
+    override val friends: List<Friend?>?
+  ) : HeroDetail, Fragment.Data {
+    /**
+     * A character from the Star Wars universe
+     */
+    interface Friend : HeroDetail.Friend {
+      override val __typename: String
 
-    data class HumanFriend(
-      override val __typename: String,
-      /**
-       * The name of the character
-       */
-      override val name: String,
-      /**
-       * Height in the preferred unit, default is meters
-       */
-      override val height: Double?
-    ) : HeroDetail.Friend, HeroDetail.Friend.Human, Friend
+      data class HumanFriend(
+        override val __typename: String,
+        /**
+         * The name of the character
+         */
+        override val name: String,
+        /**
+         * Height in the preferred unit, default is meters
+         */
+        override val height: Double?
+      ) : HeroDetail.Friend, HeroDetail.Friend.Human, Friend
 
-    data class DroidFriend(
-      override val __typename: String,
-      /**
-       * The name of the character
-       */
-      override val name: String,
-      /**
-       * This droid's primary function
-       */
-      override val primaryFunction: String?
-    ) : HeroDetail.Friend, HeroDetail.Friend.Droid, Friend
+      data class DroidFriend(
+        override val __typename: String,
+        /**
+         * The name of the character
+         */
+        override val name: String,
+        /**
+         * This droid's primary function
+         */
+        override val primaryFunction: String?
+      ) : HeroDetail.Friend, HeroDetail.Friend.Droid, Friend
 
-    data class OtherFriend(
-      override val __typename: String,
-      /**
-       * The name of the character
-       */
-      override val name: String
-    ) : HeroDetail.Friend, Friend
+      data class OtherFriend(
+        override val __typename: String,
+        /**
+         * The name of the character
+         */
+        override val name: String
+      ) : HeroDetail.Friend, Friend
+    }
   }
 }

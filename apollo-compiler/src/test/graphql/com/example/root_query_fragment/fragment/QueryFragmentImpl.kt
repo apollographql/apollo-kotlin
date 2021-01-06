@@ -6,22 +6,33 @@
 package com.example.root_query_fragment.fragment
 
 import com.apollographql.apollo.api.Fragment
+import com.apollographql.apollo.api.Operation
+import com.apollographql.apollo.api.internal.ResponseAdapter
+import com.example.root_query_fragment.fragment.adapter.QueryFragmentImpl_ResponseAdapter
 import kotlin.String
 
-/**
- * The query type, represents all of the entry points into our object graph
- */
-data class QueryFragmentImpl(
-  override val __typename: String = "Query",
-  override val hero: Hero?
-) : QueryFragment, Fragment.Data {
+class QueryFragmentImpl : Fragment<QueryFragmentImpl.Data> {
+  override fun adapter(): ResponseAdapter<Data> {
+    return QueryFragmentImpl_ResponseAdapter
+  }
+
+  override fun variables(): Operation.Variables = Operation.EMPTY_VARIABLES
+
   /**
-   * A character from the Star Wars universe
+   * The query type, represents all of the entry points into our object graph
    */
-  data class Hero(
+  data class Data(
+    override val __typename: String = "Query",
+    override val hero: Hero?
+  ) : QueryFragment, Fragment.Data {
     /**
-     * The name of the character
+     * A character from the Star Wars universe
      */
-    override val name: String
-  ) : QueryFragment.Hero
+    data class Hero(
+      /**
+       * The name of the character
+       */
+      override val name: String
+    ) : QueryFragment.Hero
+  }
 }

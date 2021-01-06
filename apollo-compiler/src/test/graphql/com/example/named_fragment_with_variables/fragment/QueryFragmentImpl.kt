@@ -6,30 +6,69 @@
 package com.example.named_fragment_with_variables.fragment
 
 import com.apollographql.apollo.api.Fragment
+import com.apollographql.apollo.api.Operation
+import com.apollographql.apollo.api.internal.InputFieldMarshaller
+import com.apollographql.apollo.api.internal.ResponseAdapter
+import com.example.named_fragment_with_variables.fragment.adapter.QueryFragmentImpl_ResponseAdapter
+import com.example.named_fragment_with_variables.type.UserQuery
+import kotlin.Any
+import kotlin.Int
 import kotlin.String
 import kotlin.collections.List
+import kotlin.collections.Map
+import kotlin.jvm.Transient
 
 data class QueryFragmentImpl(
-  override val __typename: String = "Query",
-  override val organization: Organization?
-) : QueryFragment, Fragment.Data {
-  data class Organization(
-    override val id: String,
-    override val user: List<User>
-  ) : QueryFragment.Organization {
-    interface User : QueryFragment.Organization.User {
-      override val __typename: String
+  val id: String,
+  val query: UserQuery,
+  val size: Int
+) : Fragment<QueryFragmentImpl.Data> {
+  @Transient
+  private val variables: Operation.Variables = object : Operation.Variables() {
+    override fun valueMap(): Map<String, Any?> = mutableMapOf<String, Any?>().apply {
+      this["id"] = this@QueryFragmentImpl.id
+      this["query"] = this@QueryFragmentImpl.query
+      this["size"] = this@QueryFragmentImpl.size
+    }
 
-      data class UserUser(
-        override val __typename: String,
-        override val firstName: String,
-        override val lastName: String,
-        override val avatar: String
-      ) : QueryFragment.Organization.User, QueryFragment.Organization.User.User, UserFragment, User
+    override fun marshaller(): InputFieldMarshaller {
+      return InputFieldMarshaller.invoke { writer ->
+        writer.writeString("id", this@QueryFragmentImpl.id)
+        writer.writeObject("query", this@QueryFragmentImpl.query.marshaller())
+        writer.writeInt("size", this@QueryFragmentImpl.size)
+      }
+    }
+  }
 
-      data class OtherUser(
+  override fun adapter(): ResponseAdapter<Data> {
+    return QueryFragmentImpl_ResponseAdapter
+  }
+
+  override fun variables(): Operation.Variables = variables
+
+  data class Data(
+    override val __typename: String = "Query",
+    override val organization: Organization?
+  ) : QueryFragment, Fragment.Data {
+    data class Organization(
+      override val id: String,
+      override val user: List<User>
+    ) : QueryFragment.Organization {
+      interface User : QueryFragment.Organization.User {
         override val __typename: String
-      ) : QueryFragment.Organization.User, User
+
+        data class UserUser(
+          override val __typename: String,
+          override val firstName: String,
+          override val lastName: String,
+          override val avatar: String
+        ) : QueryFragment.Organization.User, QueryFragment.Organization.User.User, UserFragment,
+            User
+
+        data class OtherUser(
+          override val __typename: String
+        ) : QueryFragment.Organization.User, User
+      }
     }
   }
 }

@@ -6,11 +6,42 @@
 package com.example.named_fragment_with_variables.fragment
 
 import com.apollographql.apollo.api.Fragment
+import com.apollographql.apollo.api.Operation
+import com.apollographql.apollo.api.internal.InputFieldMarshaller
+import com.apollographql.apollo.api.internal.ResponseAdapter
+import com.example.named_fragment_with_variables.fragment.adapter.UserFragmentImpl_ResponseAdapter
+import kotlin.Any
+import kotlin.Int
 import kotlin.String
+import kotlin.collections.Map
+import kotlin.jvm.Transient
 
 data class UserFragmentImpl(
-  override val __typename: String = "User",
-  override val firstName: String,
-  override val lastName: String,
-  override val avatar: String
-) : UserFragment, Fragment.Data
+  val size: Int
+) : Fragment<UserFragmentImpl.Data> {
+  @Transient
+  private val variables: Operation.Variables = object : Operation.Variables() {
+    override fun valueMap(): Map<String, Any?> = mutableMapOf<String, Any?>().apply {
+      this["size"] = this@UserFragmentImpl.size
+    }
+
+    override fun marshaller(): InputFieldMarshaller {
+      return InputFieldMarshaller.invoke { writer ->
+        writer.writeInt("size", this@UserFragmentImpl.size)
+      }
+    }
+  }
+
+  override fun adapter(): ResponseAdapter<Data> {
+    return UserFragmentImpl_ResponseAdapter
+  }
+
+  override fun variables(): Operation.Variables = variables
+
+  data class Data(
+    override val __typename: String = "User",
+    override val firstName: String,
+    override val lastName: String,
+    override val avatar: String
+  ) : UserFragment, Fragment.Data
+}

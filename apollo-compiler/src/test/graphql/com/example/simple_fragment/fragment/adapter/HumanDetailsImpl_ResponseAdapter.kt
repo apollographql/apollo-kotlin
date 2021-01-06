@@ -12,33 +12,52 @@ import com.apollographql.apollo.api.internal.ResponseWriter
 import com.example.simple_fragment.fragment.HumanDetailsImpl
 import kotlin.Array
 import kotlin.String
+import kotlin.Suppress
 
-internal object HumanDetailsImpl_ResponseAdapter : ResponseAdapter<HumanDetailsImpl> {
+@Suppress("NAME_SHADOWING", "UNUSED_ANONYMOUS_PARAMETER", "LocalVariableName",
+    "RemoveExplicitTypeArguments", "NestedLambdaShadowedImplicitParameter", "PropertyName",
+    "RemoveRedundantQualifierName")
+internal object HumanDetailsImpl_ResponseAdapter : ResponseAdapter<HumanDetailsImpl.Data> {
   private val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
     ResponseField.forString("__typename", "__typename", null, false, null),
     ResponseField.forString("name", "name", null, false, null)
   )
 
-  override fun fromResponse(reader: ResponseReader, __typename: String?): HumanDetailsImpl {
-    return reader.run {
-      var __typename: String? = __typename
-      var name: String? = null
-      while(true) {
-        when (selectField(RESPONSE_FIELDS)) {
-          0 -> __typename = readString(RESPONSE_FIELDS[0])
-          1 -> name = readString(RESPONSE_FIELDS[1])
-          else -> break
-        }
-      }
-      HumanDetailsImpl(
-        __typename = __typename!!,
-        name = name!!
-      )
-    }
+  override fun fromResponse(reader: ResponseReader, __typename: String?): HumanDetailsImpl.Data {
+    return Data.fromResponse(reader, __typename)
   }
 
-  override fun toResponse(writer: ResponseWriter, value: HumanDetailsImpl) {
-    writer.writeString(RESPONSE_FIELDS[0], value.__typename)
-    writer.writeString(RESPONSE_FIELDS[1], value.name)
+  override fun toResponse(writer: ResponseWriter, value: HumanDetailsImpl.Data) {
+    Data.toResponse(writer, value)
+  }
+
+  object Data : ResponseAdapter<HumanDetailsImpl.Data> {
+    private val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
+      ResponseField.forString("__typename", "__typename", null, false, null),
+      ResponseField.forString("name", "name", null, false, null)
+    )
+
+    override fun fromResponse(reader: ResponseReader, __typename: String?): HumanDetailsImpl.Data {
+      return reader.run {
+        var __typename: String? = __typename
+        var name: String? = null
+        while(true) {
+          when (selectField(RESPONSE_FIELDS)) {
+            0 -> __typename = readString(RESPONSE_FIELDS[0])
+            1 -> name = readString(RESPONSE_FIELDS[1])
+            else -> break
+          }
+        }
+        HumanDetailsImpl.Data(
+          __typename = __typename!!,
+          name = name!!
+        )
+      }
+    }
+
+    override fun toResponse(writer: ResponseWriter, value: HumanDetailsImpl.Data) {
+      writer.writeString(RESPONSE_FIELDS[0], value.__typename)
+      writer.writeString(RESPONSE_FIELDS[1], value.name)
+    }
   }
 }

@@ -6,16 +6,27 @@
 package com.example.fragment_in_fragment.fragment
 
 import com.apollographql.apollo.api.Fragment
+import com.apollographql.apollo.api.Operation
+import com.apollographql.apollo.api.internal.ResponseAdapter
+import com.example.fragment_in_fragment.fragment.adapter.PlanetFragmentImpl_ResponseAdapter
 import kotlin.String
 
-/**
- * A large mass, planet or planetoid in the Star Wars Universe, at the time of
- * 0 ABY.
- */
-data class PlanetFragmentImpl(
-  override val __typename: String = "Planet",
+class PlanetFragmentImpl : Fragment<PlanetFragmentImpl.Data> {
+  override fun adapter(): ResponseAdapter<Data> {
+    return PlanetFragmentImpl_ResponseAdapter
+  }
+
+  override fun variables(): Operation.Variables = Operation.EMPTY_VARIABLES
+
   /**
-   * The name of this planet.
+   * A large mass, planet or planetoid in the Star Wars Universe, at the time of
+   * 0 ABY.
    */
-  override val name: String?
-) : PlanetFragment, Fragment.Data
+  data class Data(
+    override val __typename: String = "Planet",
+    /**
+     * The name of this planet.
+     */
+    override val name: String?
+  ) : PlanetFragment, Fragment.Data
+}

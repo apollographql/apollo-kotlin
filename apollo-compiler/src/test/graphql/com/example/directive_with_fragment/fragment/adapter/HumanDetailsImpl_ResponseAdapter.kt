@@ -12,33 +12,52 @@ import com.apollographql.apollo.api.internal.ResponseWriter
 import com.example.directive_with_fragment.fragment.HumanDetailsImpl
 import kotlin.Array
 import kotlin.String
+import kotlin.Suppress
 
-object HumanDetailsImpl_ResponseAdapter : ResponseAdapter<HumanDetailsImpl> {
+@Suppress("NAME_SHADOWING", "UNUSED_ANONYMOUS_PARAMETER", "LocalVariableName",
+    "RemoveExplicitTypeArguments", "NestedLambdaShadowedImplicitParameter", "PropertyName",
+    "RemoveRedundantQualifierName")
+object HumanDetailsImpl_ResponseAdapter : ResponseAdapter<HumanDetailsImpl.Data> {
   private val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
     ResponseField.forString("__typename", "__typename", null, false, null),
     ResponseField.forString("homePlanet", "homePlanet", null, true, null)
   )
 
-  override fun fromResponse(reader: ResponseReader, __typename: String?): HumanDetailsImpl {
-    return reader.run {
-      var __typename: String? = __typename
-      var homePlanet: String? = null
-      while(true) {
-        when (selectField(RESPONSE_FIELDS)) {
-          0 -> __typename = readString(RESPONSE_FIELDS[0])
-          1 -> homePlanet = readString(RESPONSE_FIELDS[1])
-          else -> break
-        }
-      }
-      HumanDetailsImpl(
-        __typename = __typename!!,
-        homePlanet = homePlanet
-      )
-    }
+  override fun fromResponse(reader: ResponseReader, __typename: String?): HumanDetailsImpl.Data {
+    return Data.fromResponse(reader, __typename)
   }
 
-  override fun toResponse(writer: ResponseWriter, value: HumanDetailsImpl) {
-    writer.writeString(RESPONSE_FIELDS[0], value.__typename)
-    writer.writeString(RESPONSE_FIELDS[1], value.homePlanet)
+  override fun toResponse(writer: ResponseWriter, value: HumanDetailsImpl.Data) {
+    Data.toResponse(writer, value)
+  }
+
+  object Data : ResponseAdapter<HumanDetailsImpl.Data> {
+    private val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
+      ResponseField.forString("__typename", "__typename", null, false, null),
+      ResponseField.forString("homePlanet", "homePlanet", null, true, null)
+    )
+
+    override fun fromResponse(reader: ResponseReader, __typename: String?): HumanDetailsImpl.Data {
+      return reader.run {
+        var __typename: String? = __typename
+        var homePlanet: String? = null
+        while(true) {
+          when (selectField(RESPONSE_FIELDS)) {
+            0 -> __typename = readString(RESPONSE_FIELDS[0])
+            1 -> homePlanet = readString(RESPONSE_FIELDS[1])
+            else -> break
+          }
+        }
+        HumanDetailsImpl.Data(
+          __typename = __typename!!,
+          homePlanet = homePlanet
+        )
+      }
+    }
+
+    override fun toResponse(writer: ResponseWriter, value: HumanDetailsImpl.Data) {
+      writer.writeString(RESPONSE_FIELDS[0], value.__typename)
+      writer.writeString(RESPONSE_FIELDS[1], value.homePlanet)
+    }
   }
 }

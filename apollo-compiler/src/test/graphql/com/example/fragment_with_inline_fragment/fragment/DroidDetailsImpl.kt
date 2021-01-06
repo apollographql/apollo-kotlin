@@ -6,19 +6,30 @@
 package com.example.fragment_with_inline_fragment.fragment
 
 import com.apollographql.apollo.api.Fragment
+import com.apollographql.apollo.api.Operation
+import com.apollographql.apollo.api.internal.ResponseAdapter
+import com.example.fragment_with_inline_fragment.fragment.adapter.DroidDetailsImpl_ResponseAdapter
 import kotlin.String
 
-/**
- * An autonomous mechanical character in the Star Wars universe
- */
-data class DroidDetailsImpl(
-  override val __typename: String = "Droid",
+class DroidDetailsImpl : Fragment<DroidDetailsImpl.Data> {
+  override fun adapter(): ResponseAdapter<Data> {
+    return DroidDetailsImpl_ResponseAdapter
+  }
+
+  override fun variables(): Operation.Variables = Operation.EMPTY_VARIABLES
+
   /**
-   * What others call this droid
+   * An autonomous mechanical character in the Star Wars universe
    */
-  override val name: String,
-  /**
-   * This droid's primary function
-   */
-  override val primaryFunction: String?
-) : DroidDetail, Fragment.Data
+  data class Data(
+    override val __typename: String = "Droid",
+    /**
+     * What others call this droid
+     */
+    override val name: String,
+    /**
+     * This droid's primary function
+     */
+    override val primaryFunction: String?
+  ) : DroidDetail, Fragment.Data
+}

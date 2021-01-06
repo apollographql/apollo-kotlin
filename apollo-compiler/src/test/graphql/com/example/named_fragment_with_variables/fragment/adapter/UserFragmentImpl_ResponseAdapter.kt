@@ -12,8 +12,12 @@ import com.apollographql.apollo.api.internal.ResponseWriter
 import com.example.named_fragment_with_variables.fragment.UserFragmentImpl
 import kotlin.Array
 import kotlin.String
+import kotlin.Suppress
 
-object UserFragmentImpl_ResponseAdapter : ResponseAdapter<UserFragmentImpl> {
+@Suppress("NAME_SHADOWING", "UNUSED_ANONYMOUS_PARAMETER", "LocalVariableName",
+    "RemoveExplicitTypeArguments", "NestedLambdaShadowedImplicitParameter", "PropertyName",
+    "RemoveRedundantQualifierName")
+object UserFragmentImpl_ResponseAdapter : ResponseAdapter<UserFragmentImpl.Data> {
   private val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
     ResponseField.forString("__typename", "__typename", null, false, null),
     ResponseField.forString("firstName", "firstName", null, false, null),
@@ -24,34 +28,54 @@ object UserFragmentImpl_ResponseAdapter : ResponseAdapter<UserFragmentImpl> {
         "variableName" to "size")), false, null)
   )
 
-  override fun fromResponse(reader: ResponseReader, __typename: String?): UserFragmentImpl {
-    return reader.run {
-      var __typename: String? = __typename
-      var firstName: String? = null
-      var lastName: String? = null
-      var avatar: String? = null
-      while(true) {
-        when (selectField(RESPONSE_FIELDS)) {
-          0 -> __typename = readString(RESPONSE_FIELDS[0])
-          1 -> firstName = readString(RESPONSE_FIELDS[1])
-          2 -> lastName = readString(RESPONSE_FIELDS[2])
-          3 -> avatar = readString(RESPONSE_FIELDS[3])
-          else -> break
-        }
-      }
-      UserFragmentImpl(
-        __typename = __typename!!,
-        firstName = firstName!!,
-        lastName = lastName!!,
-        avatar = avatar!!
-      )
-    }
+  override fun fromResponse(reader: ResponseReader, __typename: String?): UserFragmentImpl.Data {
+    return Data.fromResponse(reader, __typename)
   }
 
-  override fun toResponse(writer: ResponseWriter, value: UserFragmentImpl) {
-    writer.writeString(RESPONSE_FIELDS[0], value.__typename)
-    writer.writeString(RESPONSE_FIELDS[1], value.firstName)
-    writer.writeString(RESPONSE_FIELDS[2], value.lastName)
-    writer.writeString(RESPONSE_FIELDS[3], value.avatar)
+  override fun toResponse(writer: ResponseWriter, value: UserFragmentImpl.Data) {
+    Data.toResponse(writer, value)
+  }
+
+  object Data : ResponseAdapter<UserFragmentImpl.Data> {
+    private val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
+      ResponseField.forString("__typename", "__typename", null, false, null),
+      ResponseField.forString("firstName", "firstName", null, false, null),
+      ResponseField.forString("lastName", "lastName", null, false, null),
+      ResponseField.forString("avatar", "avatar", mapOf<String, Any?>(
+        "size" to mapOf<String, Any?>(
+          "kind" to "Variable",
+          "variableName" to "size")), false, null)
+    )
+
+    override fun fromResponse(reader: ResponseReader, __typename: String?): UserFragmentImpl.Data {
+      return reader.run {
+        var __typename: String? = __typename
+        var firstName: String? = null
+        var lastName: String? = null
+        var avatar: String? = null
+        while(true) {
+          when (selectField(RESPONSE_FIELDS)) {
+            0 -> __typename = readString(RESPONSE_FIELDS[0])
+            1 -> firstName = readString(RESPONSE_FIELDS[1])
+            2 -> lastName = readString(RESPONSE_FIELDS[2])
+            3 -> avatar = readString(RESPONSE_FIELDS[3])
+            else -> break
+          }
+        }
+        UserFragmentImpl.Data(
+          __typename = __typename!!,
+          firstName = firstName!!,
+          lastName = lastName!!,
+          avatar = avatar!!
+        )
+      }
+    }
+
+    override fun toResponse(writer: ResponseWriter, value: UserFragmentImpl.Data) {
+      writer.writeString(RESPONSE_FIELDS[0], value.__typename)
+      writer.writeString(RESPONSE_FIELDS[1], value.firstName)
+      writer.writeString(RESPONSE_FIELDS[2], value.lastName)
+      writer.writeString(RESPONSE_FIELDS[3], value.avatar)
+    }
   }
 }

@@ -3,7 +3,6 @@ package com.apollographql.apollo.compiler.backend.ast
 import com.apollographql.apollo.api.Operation
 import com.apollographql.apollo.compiler.backend.ir.BackendIr
 import com.apollographql.apollo.compiler.backend.ir.SelectionKey
-import com.apollographql.apollo.compiler.frontend.ir.FrontendIr
 import com.apollographql.apollo.compiler.introspection.IntrospectionSchema
 import com.apollographql.apollo.compiler.introspection.resolveType
 import com.apollographql.apollo.compiler.operationoutput.OperationOutput
@@ -288,43 +287,47 @@ internal class AstBuilder private constructor(
   private fun BackendIr.NamedFragment.buildFragmentType(): CodeGenerationAst.FragmentType {
     val schemaType = schema.resolveType(this.selectionSet.typeCondition)
     val interfaceType = buildObjectType(
-        name = name,
+        name = this.selectionSet.name,
         description = schemaType.description,
         schemaTypename = schemaType.name,
         fields = selectionSet.fields,
         fragments = selectionSet.fragments,
         targetPackageName = fragmentsPackage,
         abstract = true,
-
-        currentSelectionKey = SelectionKey(
-            root = name,
-            keys = listOf(name),
-            type = SelectionKey.Type.Fragment,
-        ),
+        currentSelectionKey = this.selectionSet.defaultSelectionKey,
         alternativeSelectionKeys = selectionSet.selectionKeys,
     )
-    val implementationType = buildObjectType(
-        name = this.defaultImplementationSelectionKey.root,
+    val implementationDataType = buildObjectType(
+        name = this.implementationSelectionSet.defaultSelectionKey.keys.last(),
         description = schemaType.description,
         schemaTypename = schemaType.name,
-        fields = defaultImplementationSelectionSet.fields,
-        fragments = defaultImplementationSelectionSet.fragments,
+        fields = implementationSelectionSet.fields,
+        fragments = implementationSelectionSet.fragments,
         targetPackageName = fragmentsPackage,
         abstract = false,
-        currentSelectionKey = defaultImplementationSelectionKey,
-        alternativeSelectionKeys = defaultImplementationSelectionSet.selectionKeys,
+        currentSelectionKey = this.implementationSelectionSet.defaultSelectionKey,
+        alternativeSelectionKeys = implementationSelectionSet.selectionKeys,
+    )
+    val implementationTypeRef = CodeGenerationAst.TypeRef(
+        name = this.implementationSelectionSet.name.normalizeTypeName(),
+        packageName = fragmentsPackage,
     )
     return CodeGenerationAst.FragmentType(
-        name = this.name.normalizeTypeName(),
-        graphqlName = this.name,
         description = this.comment,
         interfaceType = interfaceType,
-        defaultImplementationType = implementationType.copy(fragmentAccessors = emptyList()),
-        fragmentDefinition = this.source,
-        typeRef = CodeGenerationAst.TypeRef(
-            name = this.name.normalizeTypeName(),
-            packageName = fragmentsPackage,
+        implementationType = CodeGenerationAst.ObjectType(
+            name = implementationTypeRef.name,
+            description = "",
+            deprecationReason = null,
+            fields = emptyList(),
+            nestedObjects = listOf(implementationDataType),
+            implements = emptySet(),
+            kind = CodeGenerationAst.ObjectType.Kind.Object,
+            typeRef = implementationTypeRef,
+            schemaTypename = null,
+            fragmentAccessors = emptyList(),
         ),
+        fragmentDefinition = this.source,
         variables = this.variables.map { it.toAst() },
     )
   }

@@ -6,157 +6,168 @@
 package com.example.fragment_with_inline_fragment.fragment
 
 import com.apollographql.apollo.api.Fragment
+import com.apollographql.apollo.api.Operation
+import com.apollographql.apollo.api.internal.ResponseAdapter
+import com.example.fragment_with_inline_fragment.fragment.adapter.HeroDetailsImpl_ResponseAdapter
 import kotlin.Int
 import kotlin.String
 import kotlin.collections.List
 
-/**
- * A character from the Star Wars universe
- */
-interface HeroDetailsImpl : HeroDetail, Fragment.Data {
-  override val __typename: String
-
-  data class DroidHeroDetailsImpl(
-    override val __typename: String,
-    /**
-     * The name of the character
-     */
-    override val name: String,
-    /**
-     * The friends of the character exposed as a connection with edges
-     */
-    override val friendsConnection: FriendsConnection,
-    /**
-     * This droid's primary function
-     */
-    override val primaryFunction: String?
-  ) : HeroDetail, HeroDetail.Droid, HeroDetail.Droid.Droid, HeroDetailsImpl {
-    /**
-     * A connection object for a character's friends
-     */
-    data class FriendsConnection(
-      /**
-       * The total number of friends
-       */
-      override val totalCount: Int?,
-      /**
-       * The edges for each of the character's friends.
-       */
-      override val edges: List<Edge?>?
-    ) : HeroDetail.FriendsConnection, HeroDetail.Droid.FriendsConnection,
-        HeroDetail.Droid.Droid.FriendsConnection {
-      /**
-       * An edge object for a character's friends
-       */
-      data class Edge(
-        /**
-         * The character represented by this friendship edge
-         */
-        override val node: Node?
-      ) : HeroDetail.FriendsConnection.Edge, HeroDetail.Droid.FriendsConnection.Edge,
-          HeroDetail.Droid.Droid.FriendsConnection.Edge {
-        /**
-         * A character from the Star Wars universe
-         */
-        data class Node(
-          /**
-           * The name of the character
-           */
-          override val name: String
-        ) : HeroDetail.FriendsConnection.Edge.Node, HeroDetail.Droid.FriendsConnection.Edge.Node,
-            HeroDetail.Droid.Droid.FriendsConnection.Edge.Node
-      }
-    }
+class HeroDetailsImpl : Fragment<HeroDetailsImpl.Data> {
+  override fun adapter(): ResponseAdapter<Data> {
+    return HeroDetailsImpl_ResponseAdapter
   }
 
-  data class HumanHeroDetailsImpl(
-    override val __typename: String,
-    /**
-     * The name of the character
-     */
-    override val name: String,
-    /**
-     * The friends of the character exposed as a connection with edges
-     */
-    override val friendsConnection: FriendsConnection
-  ) : HeroDetail, HeroDetail.Human, HumanDetail, HeroDetailsImpl {
-    /**
-     * A connection object for a character's friends
-     */
-    data class FriendsConnection(
+  override fun variables(): Operation.Variables = Operation.EMPTY_VARIABLES
+
+  /**
+   * A character from the Star Wars universe
+   */
+  interface Data : HeroDetail, Fragment.Data {
+    override val __typename: String
+
+    data class DroidDatum(
+      override val __typename: String,
       /**
-       * The total number of friends
+       * The name of the character
        */
-      override val totalCount: Int?,
+      override val name: String,
       /**
-       * The edges for each of the character's friends.
+       * The friends of the character exposed as a connection with edges
        */
-      override val edges: List<Edge?>?
-    ) : HeroDetail.FriendsConnection, HeroDetail.Human.FriendsConnection {
+      override val friendsConnection: FriendsConnection,
       /**
-       * An edge object for a character's friends
+       * This droid's primary function
        */
-      data class Edge(
+      override val primaryFunction: String?
+    ) : HeroDetail, HeroDetail.Droid, HeroDetail.Droid.Droid, Data {
+      /**
+       * A connection object for a character's friends
+       */
+      data class FriendsConnection(
         /**
-         * The character represented by this friendship edge
+         * The total number of friends
          */
-        override val node: Node?
-      ) : HeroDetail.FriendsConnection.Edge, HeroDetail.Human.FriendsConnection.Edge {
+        override val totalCount: Int?,
         /**
-         * A character from the Star Wars universe
+         * The edges for each of the character's friends.
          */
-        data class Node(
+        override val edges: List<Edge?>?
+      ) : HeroDetail.FriendsConnection, HeroDetail.Droid.FriendsConnection,
+          HeroDetail.Droid.Droid.FriendsConnection {
+        /**
+         * An edge object for a character's friends
+         */
+        data class Edge(
           /**
-           * The name of the character
+           * The character represented by this friendship edge
            */
-          override val name: String
-        ) : HeroDetail.FriendsConnection.Edge.Node, HeroDetail.Human.FriendsConnection.Edge.Node
+          override val node: Node?
+        ) : HeroDetail.FriendsConnection.Edge, HeroDetail.Droid.FriendsConnection.Edge,
+            HeroDetail.Droid.Droid.FriendsConnection.Edge {
+          /**
+           * A character from the Star Wars universe
+           */
+          data class Node(
+            /**
+             * The name of the character
+             */
+            override val name: String
+          ) : HeroDetail.FriendsConnection.Edge.Node, HeroDetail.Droid.FriendsConnection.Edge.Node,
+              HeroDetail.Droid.Droid.FriendsConnection.Edge.Node
+        }
       }
     }
-  }
 
-  data class OtherHeroDetailsImpl(
-    override val __typename: String,
-    /**
-     * The name of the character
-     */
-    override val name: String,
-    /**
-     * The friends of the character exposed as a connection with edges
-     */
-    override val friendsConnection: FriendsConnection
-  ) : HeroDetail, HeroDetailsImpl {
-    /**
-     * A connection object for a character's friends
-     */
-    data class FriendsConnection(
+    data class HumanDatum(
+      override val __typename: String,
       /**
-       * The total number of friends
+       * The name of the character
        */
-      override val totalCount: Int?,
+      override val name: String,
       /**
-       * The edges for each of the character's friends.
+       * The friends of the character exposed as a connection with edges
        */
-      override val edges: List<Edge?>?
-    ) : HeroDetail.FriendsConnection {
+      override val friendsConnection: FriendsConnection
+    ) : HeroDetail, HeroDetail.Human, HumanDetail, Data {
       /**
-       * An edge object for a character's friends
+       * A connection object for a character's friends
        */
-      data class Edge(
+      data class FriendsConnection(
         /**
-         * The character represented by this friendship edge
+         * The total number of friends
          */
-        override val node: Node?
-      ) : HeroDetail.FriendsConnection.Edge {
+        override val totalCount: Int?,
         /**
-         * A character from the Star Wars universe
+         * The edges for each of the character's friends.
          */
-        data class Node(
+        override val edges: List<Edge?>?
+      ) : HeroDetail.FriendsConnection, HeroDetail.Human.FriendsConnection {
+        /**
+         * An edge object for a character's friends
+         */
+        data class Edge(
           /**
-           * The name of the character
+           * The character represented by this friendship edge
            */
-          override val name: String
-        ) : HeroDetail.FriendsConnection.Edge.Node
+          override val node: Node?
+        ) : HeroDetail.FriendsConnection.Edge, HeroDetail.Human.FriendsConnection.Edge {
+          /**
+           * A character from the Star Wars universe
+           */
+          data class Node(
+            /**
+             * The name of the character
+             */
+            override val name: String
+          ) : HeroDetail.FriendsConnection.Edge.Node, HeroDetail.Human.FriendsConnection.Edge.Node
+        }
+      }
+    }
+
+    data class OtherDatum(
+      override val __typename: String,
+      /**
+       * The name of the character
+       */
+      override val name: String,
+      /**
+       * The friends of the character exposed as a connection with edges
+       */
+      override val friendsConnection: FriendsConnection
+    ) : HeroDetail, Data {
+      /**
+       * A connection object for a character's friends
+       */
+      data class FriendsConnection(
+        /**
+         * The total number of friends
+         */
+        override val totalCount: Int?,
+        /**
+         * The edges for each of the character's friends.
+         */
+        override val edges: List<Edge?>?
+      ) : HeroDetail.FriendsConnection {
+        /**
+         * An edge object for a character's friends
+         */
+        data class Edge(
+          /**
+           * The character represented by this friendship edge
+           */
+          override val node: Node?
+        ) : HeroDetail.FriendsConnection.Edge {
+          /**
+           * A character from the Star Wars universe
+           */
+          data class Node(
+            /**
+             * The name of the character
+             */
+            override val name: String
+          ) : HeroDetail.FriendsConnection.Edge.Node
+        }
       }
     }
   }

@@ -6,8 +6,6 @@
 package com.example.simple_fragment.fragment
 
 import com.apollographql.apollo.api.GraphqlFragment
-import com.apollographql.apollo.api.internal.ResponseReader
-import com.example.simple_fragment.fragment.adapter.HumanDetailsImpl_ResponseAdapter
 import kotlin.String
 import kotlin.Suppress
 
@@ -32,9 +30,5 @@ internal interface HumanDetail : GraphqlFragment {
         |  name
         |}
         """.trimMargin()
-
-    operator fun invoke(reader: ResponseReader): HumanDetail {
-      return HumanDetailsImpl_ResponseAdapter.fromResponse(reader)
-    }
   }
 }
