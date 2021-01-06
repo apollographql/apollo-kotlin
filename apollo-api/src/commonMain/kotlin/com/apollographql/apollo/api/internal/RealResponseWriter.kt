@@ -8,6 +8,7 @@ import com.apollographql.apollo.api.CustomScalarAdapters
 import com.apollographql.apollo.api.internal.ResolveDelegate
 import com.apollographql.apollo.api.internal.ResponseWriter
 import com.apollographql.apollo.api.internal.Utils.shouldSkip
+import com.apollographql.apollo.api.internal.json.JsonWriter.Companion.of
 
 class RealResponseWriter(
     private val operationVariables: Operation.Variables,
@@ -21,15 +22,15 @@ class RealResponseWriter(
   }
 
   override fun writeInt(field: ResponseField, value: Int?) {
-    writeScalarFieldValue(field, if (value != null) BigDecimal(value.toLong()) else null)
+    writeScalarFieldValue(field, if (value != null) BigDecimal(value.toString()) else null)
   }
 
   override fun writeLong(field: ResponseField, value: Long?) {
-    writeScalarFieldValue(field, if (value != null) BigDecimal(value) else null)
+    writeScalarFieldValue(field, if (value != null) BigDecimal(value.toString()) else null)
   }
 
   override fun writeDouble(field: ResponseField, value: Double?) {
-    writeScalarFieldValue(field, if (value != null) BigDecimal(value) else null)
+    writeScalarFieldValue(field, if (value != null) BigDecimal(value.toString()) else null)
   }
 
   override fun writeBoolean(field: ResponseField, value: Boolean?) {
@@ -193,15 +194,15 @@ class RealResponseWriter(
     }
 
     override fun writeInt(value: Int?) {
-      accumulator.add(if (value != null) BigDecimal(value.toLong()) else null)
+      accumulator.add(if (value != null) BigDecimal(value.toString()) else null)
     }
 
     override fun writeLong(value: Long?) {
-      accumulator.add(if (value != null) BigDecimal(value) else null)
+      accumulator.add(if (value != null) BigDecimal(value.toString()) else null)
     }
 
     override fun writeDouble(value: Double?) {
-      accumulator.add(if (value != null) BigDecimal(value) else null)
+      accumulator.add(if (value != null) BigDecimal(value.toString()) else null)
     }
 
     override fun writeBoolean(value: Boolean?) {
