@@ -20,10 +20,8 @@ import java.util.HashMap
 
 class OperationResponseParser<D : Operation.Data> @JvmOverloads constructor(
     val operation: Operation<D>,
-    val customScalarAdapters: CustomScalarAdapters,
-    val responseNormalizer: ResponseNormalizer<Map<String, Any?>?> = ResponseNormalizer.NO_OP_NORMALIZER as ResponseNormalizer<Map<String, Any?>?>) {
+    val customScalarAdapters: CustomScalarAdapters) {
   fun parse(payload: Map<String, Any?>): Response<D> {
-    responseNormalizer.willResolveRootQuery(operation)
     var data: D? = null
     val buffer = payload["data"] as Map<String, Any?>?
     if (buffer != null) {
@@ -32,7 +30,6 @@ class OperationResponseParser<D : Operation.Data> @JvmOverloads constructor(
           buffer,
           MapFieldValueResolver() as FieldValueResolver<Map<String, Any?>>,
           customScalarAdapters,
-          responseNormalizer as ResolveDelegate<Map<String, Any?>>
       )
       data = operation.adapter().fromResponse(realResponseReader, null)
     }
@@ -49,7 +46,6 @@ class OperationResponseParser<D : Operation.Data> @JvmOverloads constructor(
     return builder<D>(operation)
         .data(data)
         .errors(errors)
-        .dependentKeys(responseNormalizer.dependentKeys())
         .extensions(payload["extensions"] as Map<String, Any?>?)
         .build()
   }

@@ -69,7 +69,7 @@ class ApolloCacheInterceptor<S>(private val store: S) : ApolloRequestInterceptor
     responseNormalizer.willResolveRootQuery(operation);
     writer.resolveFields(responseNormalizer)
 
-    store.merge(responseNormalizer.records()?.filterNotNull() ?: emptySet(), CacheHeaders.NONE)
+    store.merge(responseNormalizer.records().toList(), CacheHeaders.NONE)
   }
 
   private fun <D : Operation.Data> readFromCache(request: ApolloRequest<D>): Response<D>? {
@@ -82,7 +82,7 @@ class ApolloCacheInterceptor<S>(private val store: S) : ApolloRequestInterceptor
         CacheHeaders.NONE,
         RealCacheKeyBuilder()
     )
-    val responseReader = RealResponseReader(operation.variables(), rootRecord, fieldValueResolver, request.customScalarAdapters, NoOpResolveDelegate())
+    val responseReader = RealResponseReader(operation.variables(), rootRecord, fieldValueResolver, request.customScalarAdapters)
     val data = operation.adapter().fromResponse(responseReader)
     return builder<D>(operation)
         .data(data)
