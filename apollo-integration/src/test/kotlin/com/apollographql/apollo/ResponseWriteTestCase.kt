@@ -5,27 +5,29 @@ import com.apollographql.apollo.Utils.enqueueAndAssertResponse
 import com.apollographql.apollo.Utils.immediateExecutor
 import com.apollographql.apollo.Utils.immediateExecutorService
 import com.apollographql.apollo.api.CustomScalarAdapter
+import com.apollographql.apollo.api.Input.Companion.fromNullable
 import com.apollographql.apollo.api.JsonElement
 import com.apollographql.apollo.api.JsonString
-import com.apollographql.apollo.api.Input.Companion.fromNullable
-import com.apollographql.apollo.api.Query
 import com.apollographql.apollo.api.Operation
+import com.apollographql.apollo.api.Query
 import com.apollographql.apollo.api.Response
 import com.apollographql.apollo.cache.normalized.CacheKey.Companion.from
 import com.apollographql.apollo.cache.normalized.lru.EvictionPolicy
 import com.apollographql.apollo.cache.normalized.lru.LruNormalizedCacheFactory
 import com.apollographql.apollo.fetcher.ApolloResponseFetchers
-import com.apollographql.apollo.integration.normalizer.*
+import com.apollographql.apollo.integration.normalizer.EpisodeHeroWithDatesQuery
+import com.apollographql.apollo.integration.normalizer.EpisodeHeroWithInlineFragmentQuery
+import com.apollographql.apollo.integration.normalizer.HeroAndFriendsNamesWithIDsQuery
+import com.apollographql.apollo.integration.normalizer.HeroAndFriendsWithFragmentsQuery
+import com.apollographql.apollo.integration.normalizer.HeroNameWithEnumsQuery
+import com.apollographql.apollo.integration.normalizer.StarshipByIdQuery
 import com.apollographql.apollo.integration.normalizer.StarshipByIdQuery.Data.Starship
 import com.apollographql.apollo.integration.normalizer.fragment.HeroWithFriendsFragment
-import com.apollographql.apollo.integration.normalizer.fragment.HeroWithFriendsFragmentFragment
+import com.apollographql.apollo.integration.normalizer.fragment.HeroWithFriendsFragmentImpl
 import com.apollographql.apollo.integration.normalizer.fragment.HumanWithIdFragment
 import com.apollographql.apollo.integration.normalizer.fragment.HumanWithIdFragmentImpl
-import com.apollographql.apollo.integration.normalizer.fragment.HeroWithFriendsFragmentImpl
-import com.apollographql.apollo.integration.normalizer.fragment.HumanWithIdFragmentFragment
 import com.apollographql.apollo.integration.normalizer.type.CustomScalars
 import com.apollographql.apollo.integration.normalizer.type.Episode
-import com.google.common.truth.Truth
 import com.google.common.truth.Truth.assertThat
 import io.reactivex.functions.Predicate
 import okhttp3.Dispatcher
@@ -35,7 +37,9 @@ import org.junit.Before
 import org.junit.Test
 import java.text.ParseException
 import java.text.SimpleDateFormat
-import java.util.*
+import java.util.Arrays
+import java.util.Date
+import java.util.Locale
 
 class ResponseWriteTestCase {
   private var apolloClient: ApolloClient? = null
@@ -370,19 +374,19 @@ class ResponseWriteTestCase {
     }
 
     apolloClient!!.apolloStore.writeFragment(
-        HeroWithFriendsFragmentFragment(),
+        HeroWithFriendsFragmentImpl(),
         from("2001"),
-        HeroWithFriendsFragmentImpl(
+        HeroWithFriendsFragmentImpl.Data(
             __typename = "Droid",
             id = "2001",
             name = "R222-D222",
             friends = listOf(
-                HeroWithFriendsFragmentImpl.Friend.HumanFriend(
+                HeroWithFriendsFragmentImpl.Data.Friend.HumanFriend(
                     __typename = "Human",
                     id = "1000",
                     name = "SuperMan"
                 ),
-                HeroWithFriendsFragmentImpl.Friend.HumanFriend(
+                HeroWithFriendsFragmentImpl.Data.Friend.HumanFriend(
                     __typename = "Human",
                     id = "1002",
                     name = "Han Solo"
@@ -391,9 +395,9 @@ class ResponseWriteTestCase {
         )
     ).execute()
     apolloClient!!.apolloStore.writeFragment(
-        HumanWithIdFragmentFragment(),
+        HumanWithIdFragmentImpl(),
         from("1002"),
-        HumanWithIdFragmentImpl(
+        HumanWithIdFragmentImpl.Data(
             __typename = "Human",
             id = "1002",
             name = "Beast"

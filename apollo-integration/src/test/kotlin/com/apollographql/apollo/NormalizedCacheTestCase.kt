@@ -17,9 +17,9 @@ import com.apollographql.apollo.cache.normalized.lru.LruNormalizedCacheFactory
 import com.apollographql.apollo.fetcher.ApolloResponseFetchers
 import com.apollographql.apollo.integration.httpcache.AllPlanetsQuery
 import com.apollographql.apollo.integration.normalizer.*
-import com.apollographql.apollo.integration.normalizer.fragment.HeroWithFriendsFragmentFragment
+import com.apollographql.apollo.integration.normalizer.fragment.HeroWithFriendsFragmentImpl
 import com.apollographql.apollo.integration.normalizer.fragment.HumanWithIdFragment
-import com.apollographql.apollo.integration.normalizer.fragment.HumanWithIdFragmentFragment
+import com.apollographql.apollo.integration.normalizer.fragment.HumanWithIdFragmentImpl
 import com.apollographql.apollo.integration.normalizer.type.Episode
 import com.google.common.truth.Truth
 import com.google.common.truth.Truth.assertThat
@@ -353,7 +353,7 @@ class NormalizedCacheTestCase {
         Predicate<Response<HeroAndFriendsNamesWithIDsQuery.Data>> { response -> !response.hasErrors() }
     )
     val heroWithFriendsFragment = apolloClient.apolloStore.readFragment(
-        HeroWithFriendsFragmentFragment(),
+        HeroWithFriendsFragmentImpl(),
         from("2001"),
         ).execute()
     assertThat(heroWithFriendsFragment.id).isEqualTo("2001")
@@ -367,7 +367,7 @@ class NormalizedCacheTestCase {
     assertThat((heroWithFriendsFragment.friends?.get(2) as HumanWithIdFragment).name).isEqualTo("Leia Organa")
 
     var fragment: HumanWithIdFragment = apolloClient.apolloStore.readFragment(
-        HumanWithIdFragmentFragment(),
+        HumanWithIdFragmentImpl(),
         from("1000"),
     ).execute()
 
@@ -375,14 +375,14 @@ class NormalizedCacheTestCase {
     assertThat(fragment.name).isEqualTo("Luke Skywalker")
 
     fragment = apolloClient.apolloStore.readFragment(
-        HumanWithIdFragmentFragment(),
+        HumanWithIdFragmentImpl(),
         from("1002"),
     ).execute()
     assertThat(fragment.id).isEqualTo("1002")
     assertThat(fragment.name).isEqualTo("Han Solo")
 
     fragment = apolloClient.apolloStore.readFragment(
-        HumanWithIdFragmentFragment(),
+        HumanWithIdFragmentImpl(),
         from("1003"),
     ).execute()
     assertThat(fragment.id).isEqualTo("1003")
