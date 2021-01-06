@@ -209,9 +209,9 @@ class ResponseNormalizationTest {
     Truth.assertThat(lukeRecord.field("height({\"unit\":\"METER\"})")).isEqualTo(BigDecimal.valueOf(1.72))
     val friends = normalizedCache
         .loadRecord(TEST_FIELD_KEY_JEDI, CacheHeaders.NONE)!!.field("friends") as List<Any>?
-    Truth.assertThat(friends!![0]).isEqualTo(CacheReference(TEST_FIELD_KEY_JEDI + ".friends.0"))
-    Truth.assertThat(friends[1]).isEqualTo(CacheReference(TEST_FIELD_KEY_JEDI + ".friends.1"))
-    Truth.assertThat(friends[2]).isEqualTo(CacheReference(TEST_FIELD_KEY_JEDI + ".friends.2"))
+    Truth.assertThat(friends!![0]).isEqualTo(CacheReference("$TEST_FIELD_KEY_JEDI.friends.0"))
+    Truth.assertThat(friends[1]).isEqualTo(CacheReference("$TEST_FIELD_KEY_JEDI.friends.1"))
+    Truth.assertThat(friends[2]).isEqualTo(CacheReference("$TEST_FIELD_KEY_JEDI.friends.2"))
   }
 
   @Test
