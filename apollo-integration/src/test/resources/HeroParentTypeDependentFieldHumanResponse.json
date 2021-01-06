@@ -1,8 +1,8 @@
 {
   "data": {
     "hero": {
-      "name": "Luke Skywalker",
       "__typename": "Human",
+      "name": "Luke Skywalker",
       "friends": [
         {
           "__typename": "Human",

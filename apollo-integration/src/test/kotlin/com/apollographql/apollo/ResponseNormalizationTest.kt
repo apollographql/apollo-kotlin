@@ -217,10 +217,12 @@ class ResponseNormalizationTest {
   @Test
   @Throws(Exception::class)
   fun testHeroParentTypeDependentFieldHuman() {
-    assertHasNoErrors("HeroParentTypeDependentFieldHumanResponse.json",
-        HeroParentTypeDependentFieldQuery(fromNullable(Episode.EMPIRE)))
+    assertHasNoErrors(
+        "HeroParentTypeDependentFieldHumanResponse.json",
+        HeroParentTypeDependentFieldQuery(fromNullable(Episode.EMPIRE))
+    )
     val lukeRecord = normalizedCache
-        .loadRecord(TEST_FIELD_KEY_EMPIRE + ".friends.0", CacheHeaders.NONE)
+        .loadRecord("$TEST_FIELD_KEY_EMPIRE.friends.0", CacheHeaders.NONE)
     Truth.assertThat(lukeRecord!!.field("name")).isEqualTo("Han Solo")
     Truth.assertThat(lukeRecord.field("height({\"unit\":\"FOOT\"})")).isEqualTo(BigDecimal.valueOf(5.905512))
   }
