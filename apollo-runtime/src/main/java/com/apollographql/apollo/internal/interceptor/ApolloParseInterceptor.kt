@@ -4,7 +4,11 @@ import com.apollographql.apollo.api.CustomScalarAdapters
 import com.apollographql.apollo.api.Operation
 import com.apollographql.apollo.api.cache.http.HttpCache
 import com.apollographql.apollo.api.internal.ApolloLogger
+import com.apollographql.apollo.api.internal.ResolveDelegate
+import com.apollographql.apollo.api.parse
 import com.apollographql.apollo.cache.normalized.internal.ResponseNormalizer
+import com.apollographql.apollo.cache.normalized.internal.dependentKeys
+import com.apollographql.apollo.cache.normalized.internal.normalize
 import com.apollographql.apollo.exception.ApolloException
 import com.apollographql.apollo.exception.ApolloHttpException
 import com.apollographql.apollo.exception.ApolloParseException
@@ -70,18 +74,21 @@ class ApolloParseInterceptor(private val httpCache: HttpCache?,
     val cacheKey = httpResponse.request().header(HttpCache.CACHE_KEY_HEADER)
     return if (httpResponse.isSuccessful) {
       try {
-        val parser: OperationResponseParser<Operation.Data> = OperationResponseParser(operation, customScalarAdapters, normalizer as ResponseNormalizer<Map<String, Any?>?>)
         val httpExecutionContext = OkHttpExecutionContext(httpResponse)
-        var parsedResponse = parser.parse(httpResponse.body()!!.source())
+        var parsedResponse = operation.parse(httpResponse.body()!!.source(), customScalarAdapters)
+
+        val records = parsedResponse.data?.let { operation.normalize(it, customScalarAdapters, normalizer as ResponseNormalizer<Map<String, Any>?>) }
         parsedResponse = parsedResponse
             .toBuilder()
             .fromCache(httpResponse.cacheResponse() != null)
+            .dependentKeys(records.dependentKeys())
             .executionContext(parsedResponse.executionContext.plus(httpExecutionContext))
             .build()
         if (parsedResponse.hasErrors() && httpCache != null) {
           httpCache.removeQuietly(cacheKey!!)
         }
-        InterceptorResponse(httpResponse, parsedResponse, normalizer.records())
+
+        InterceptorResponse(httpResponse, parsedResponse, records)
       } catch (rethrown: Exception) {
         logger.e(rethrown, "Failed to parse network response for operation: %s", operation.name().name())
         closeQuietly(httpResponse)

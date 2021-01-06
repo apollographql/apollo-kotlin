@@ -55,7 +55,7 @@ class OperationResponseParser<D : Operation.Data> @JvmOverloads constructor(
   }
 
   @Throws(IOException::class)
-  fun parse(source: BufferedSource?): Response<D> {
+  fun parse(source: BufferedSource): Response<D> {
     var jsonReader: BufferedSourceJsonReader? = null
     return try {
       jsonReader = BufferedSourceJsonReader(source!!)
