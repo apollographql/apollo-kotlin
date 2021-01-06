@@ -6,51 +6,86 @@
 package com.example.arguments_simple.fragment
 
 import com.apollographql.apollo.api.Fragment
+import com.apollographql.apollo.api.Input
+import com.apollographql.apollo.api.Operation
+import com.apollographql.apollo.api.internal.InputFieldMarshaller
+import com.apollographql.apollo.api.internal.ResponseAdapter
+import com.example.arguments_simple.fragment.adapter.HeroDetailsImpl_ResponseAdapter
+import kotlin.Any
 import kotlin.Int
 import kotlin.String
 import kotlin.collections.List
+import kotlin.collections.Map
+import kotlin.jvm.Transient
 
-/**
- * A character from the Star Wars universe
- */
 data class HeroDetailsImpl(
-  override val __typename: String = "Character",
+  val first: Input<Int> = Input.absent()
+) : Fragment<HeroDetailsImpl.Data> {
+  @Transient
+  private val variables: Operation.Variables = object : Operation.Variables() {
+    override fun valueMap(): Map<String, Any?> = mutableMapOf<String, Any?>().apply {
+      if (this@HeroDetailsImpl.first.defined) {
+        this["first"] = this@HeroDetailsImpl.first.value
+      }
+    }
+
+    override fun marshaller(): InputFieldMarshaller {
+      return InputFieldMarshaller.invoke { writer ->
+        if (this@HeroDetailsImpl.first.defined) {
+          writer.writeInt("first", this@HeroDetailsImpl.first.value)
+        }
+      }
+    }
+  }
+
+  override fun adapter(): ResponseAdapter<Data> {
+    return HeroDetailsImpl_ResponseAdapter
+  }
+
+  override fun variables(): Operation.Variables = variables
+
   /**
-   * The friends of the character exposed as a connection with edges
+   * A character from the Star Wars universe
    */
-  override val friendsConnection: FriendsConnection
-) : HeroDetail, Fragment.Data {
-  /**
-   * A connection object for a character's friends
-   */
-  data class FriendsConnection(
+  data class Data(
+    override val __typename: String = "Character",
     /**
-     * The total number of friends
+     * The friends of the character exposed as a connection with edges
      */
-    override val totalCount: Int?,
+    override val friendsConnection: FriendsConnection
+  ) : HeroDetail, Fragment.Data {
     /**
-     * The edges for each of the character's friends.
+     * A connection object for a character's friends
      */
-    override val edges: List<Edge?>?
-  ) : HeroDetail.FriendsConnection {
-    /**
-     * An edge object for a character's friends
-     */
-    data class Edge(
+    data class FriendsConnection(
       /**
-       * The character represented by this friendship edge
+       * The total number of friends
        */
-      override val node: Node?
-    ) : HeroDetail.FriendsConnection.Edge {
+      override val totalCount: Int?,
       /**
-       * A character from the Star Wars universe
+       * The edges for each of the character's friends.
        */
-      data class Node(
+      override val edges: List<Edge?>?
+    ) : HeroDetail.FriendsConnection {
+      /**
+       * An edge object for a character's friends
+       */
+      data class Edge(
         /**
-         * The name of the character
+         * The character represented by this friendship edge
          */
-        override val name: String?
-      ) : HeroDetail.FriendsConnection.Edge.Node
+        override val node: Node?
+      ) : HeroDetail.FriendsConnection.Edge {
+        /**
+         * A character from the Star Wars universe
+         */
+        data class Node(
+          /**
+           * The name of the character
+           */
+          override val name: String?
+        ) : HeroDetail.FriendsConnection.Edge.Node
+      }
     }
   }
 }

@@ -6,88 +6,99 @@
 package com.example.fragment_in_fragment.fragment
 
 import com.apollographql.apollo.api.Fragment
+import com.apollographql.apollo.api.Operation
+import com.apollographql.apollo.api.internal.ResponseAdapter
+import com.example.fragment_in_fragment.fragment.adapter.StarshipFragmentImpl_ResponseAdapter
 import kotlin.String
 import kotlin.collections.List
 
-/**
- * A single transport craft that has hyperdrive capability.
- */
-data class StarshipFragmentImpl(
-  override val __typename: String = "Starship",
+class StarshipFragmentImpl : Fragment<StarshipFragmentImpl.Data> {
+  override fun adapter(): ResponseAdapter<Data> {
+    return StarshipFragmentImpl_ResponseAdapter
+  }
+
+  override fun variables(): Operation.Variables = Operation.EMPTY_VARIABLES
+
   /**
-   * The ID of an object
+   * A single transport craft that has hyperdrive capability.
    */
-  override val id: String,
-  /**
-   * The name of this starship. The common name, such as "Death Star".
-   */
-  override val name: String?,
-  override val pilotConnection: PilotConnection?
-) : StarshipFragment, Fragment.Data {
-  /**
-   * A connection to a list of items.
-   */
-  data class PilotConnection(
+  data class Data(
+    override val __typename: String = "Starship",
     /**
-     * A list of edges.
+     * The ID of an object
      */
-    override val edges: List<Edge?>?
-  ) : StarshipFragment.PilotConnection {
+    override val id: String,
     /**
-     * An edge in a connection.
+     * The name of this starship. The common name, such as "Death Star".
      */
-    data class Edge(
+    override val name: String?,
+    override val pilotConnection: PilotConnection?
+  ) : StarshipFragment, Fragment.Data {
+    /**
+     * A connection to a list of items.
+     */
+    data class PilotConnection(
       /**
-       * The item at the end of the edge
+       * A list of edges.
        */
-      override val node: Node?
-    ) : StarshipFragment.PilotConnection.Edge {
+      override val edges: List<Edge?>?
+    ) : StarshipFragment.PilotConnection {
       /**
-       * An individual person or character within the Star Wars universe.
+       * An edge in a connection.
        */
-      interface Node : StarshipFragment.PilotConnection.Edge.Node {
-        override val __typename: String
-
-        data class PersonNode(
-          override val __typename: String,
-          /**
-           * The name of this person.
-           */
-          override val name: String?,
-          /**
-           * A planet that this person was born on or inhabits.
-           */
-          override val homeworld: Homeworld?
-        ) : StarshipFragment.PilotConnection.Edge.Node,
-            StarshipFragment.PilotConnection.Edge.Node.Person, PilotFragment, Node {
-          /**
-           * A large mass, planet or planetoid in the Star Wars Universe, at the time of
-           * 0 ABY.
-           */
-          interface Homeworld : StarshipFragment.PilotConnection.Edge.Node.Person.Homeworld,
-              PilotFragment.Homeworld {
-            override val __typename: String
-
-            data class PlanetHomeworld(
-              override val __typename: String,
-              /**
-               * The name of this planet.
-               */
-              override val name: String?
-            ) : StarshipFragment.PilotConnection.Edge.Node.Person.Homeworld,
-                StarshipFragment.PilotConnection.Edge.Node.Person.Homeworld.Planet, PlanetFragment,
-                PilotFragment.Homeworld.Planet, PilotFragment.Homeworld, Homeworld
-
-            data class OtherHomeworld(
-              override val __typename: String
-            ) : StarshipFragment.PilotConnection.Edge.Node.Person.Homeworld,
-                PilotFragment.Homeworld, Homeworld
-          }
-        }
-
-        data class OtherNode(
+      data class Edge(
+        /**
+         * The item at the end of the edge
+         */
+        override val node: Node?
+      ) : StarshipFragment.PilotConnection.Edge {
+        /**
+         * An individual person or character within the Star Wars universe.
+         */
+        interface Node : StarshipFragment.PilotConnection.Edge.Node {
           override val __typename: String
-        ) : StarshipFragment.PilotConnection.Edge.Node, Node
+
+          data class PersonNode(
+            override val __typename: String,
+            /**
+             * The name of this person.
+             */
+            override val name: String?,
+            /**
+             * A planet that this person was born on or inhabits.
+             */
+            override val homeworld: Homeworld?
+          ) : StarshipFragment.PilotConnection.Edge.Node,
+              StarshipFragment.PilotConnection.Edge.Node.Person, PilotFragment, Node {
+            /**
+             * A large mass, planet or planetoid in the Star Wars Universe, at the time of
+             * 0 ABY.
+             */
+            interface Homeworld : StarshipFragment.PilotConnection.Edge.Node.Person.Homeworld,
+                PilotFragment.Homeworld {
+              override val __typename: String
+
+              data class PlanetHomeworld(
+                override val __typename: String,
+                /**
+                 * The name of this planet.
+                 */
+                override val name: String?
+              ) : StarshipFragment.PilotConnection.Edge.Node.Person.Homeworld,
+                  StarshipFragment.PilotConnection.Edge.Node.Person.Homeworld.Planet,
+                  PlanetFragment, PilotFragment.Homeworld.Planet, PilotFragment.Homeworld, Homeworld
+
+              data class OtherHomeworld(
+                override val __typename: String
+              ) : StarshipFragment.PilotConnection.Edge.Node.Person.Homeworld,
+                  PilotFragment.Homeworld, Homeworld
+            }
+          }
+
+          data class OtherNode(
+            override val __typename: String
+          ) : StarshipFragment.PilotConnection.Edge.Node, Node
+        }
       }
     }
   }

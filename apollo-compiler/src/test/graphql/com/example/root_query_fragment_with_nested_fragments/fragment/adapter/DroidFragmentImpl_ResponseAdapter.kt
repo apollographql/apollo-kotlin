@@ -12,38 +12,58 @@ import com.apollographql.apollo.api.internal.ResponseWriter
 import com.example.root_query_fragment_with_nested_fragments.fragment.DroidFragmentImpl
 import kotlin.Array
 import kotlin.String
+import kotlin.Suppress
 
-object DroidFragmentImpl_ResponseAdapter : ResponseAdapter<DroidFragmentImpl> {
+@Suppress("NAME_SHADOWING", "UNUSED_ANONYMOUS_PARAMETER", "LocalVariableName",
+    "RemoveExplicitTypeArguments", "NestedLambdaShadowedImplicitParameter", "PropertyName",
+    "RemoveRedundantQualifierName")
+object DroidFragmentImpl_ResponseAdapter : ResponseAdapter<DroidFragmentImpl.Data> {
   private val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
     ResponseField.forString("__typename", "__typename", null, false, null),
     ResponseField.forString("name", "name", null, false, null),
     ResponseField.forString("primaryFunction", "primaryFunction", null, true, null)
   )
 
-  override fun fromResponse(reader: ResponseReader, __typename: String?): DroidFragmentImpl {
-    return reader.run {
-      var __typename: String? = __typename
-      var name: String? = null
-      var primaryFunction: String? = null
-      while(true) {
-        when (selectField(RESPONSE_FIELDS)) {
-          0 -> __typename = readString(RESPONSE_FIELDS[0])
-          1 -> name = readString(RESPONSE_FIELDS[1])
-          2 -> primaryFunction = readString(RESPONSE_FIELDS[2])
-          else -> break
-        }
-      }
-      DroidFragmentImpl(
-        __typename = __typename!!,
-        name = name!!,
-        primaryFunction = primaryFunction
-      )
-    }
+  override fun fromResponse(reader: ResponseReader, __typename: String?): DroidFragmentImpl.Data {
+    return Data.fromResponse(reader, __typename)
   }
 
-  override fun toResponse(writer: ResponseWriter, value: DroidFragmentImpl) {
-    writer.writeString(RESPONSE_FIELDS[0], value.__typename)
-    writer.writeString(RESPONSE_FIELDS[1], value.name)
-    writer.writeString(RESPONSE_FIELDS[2], value.primaryFunction)
+  override fun toResponse(writer: ResponseWriter, value: DroidFragmentImpl.Data) {
+    Data.toResponse(writer, value)
+  }
+
+  object Data : ResponseAdapter<DroidFragmentImpl.Data> {
+    private val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
+      ResponseField.forString("__typename", "__typename", null, false, null),
+      ResponseField.forString("name", "name", null, false, null),
+      ResponseField.forString("primaryFunction", "primaryFunction", null, true, null)
+    )
+
+    override fun fromResponse(reader: ResponseReader, __typename: String?): DroidFragmentImpl.Data {
+      return reader.run {
+        var __typename: String? = __typename
+        var name: String? = null
+        var primaryFunction: String? = null
+        while(true) {
+          when (selectField(RESPONSE_FIELDS)) {
+            0 -> __typename = readString(RESPONSE_FIELDS[0])
+            1 -> name = readString(RESPONSE_FIELDS[1])
+            2 -> primaryFunction = readString(RESPONSE_FIELDS[2])
+            else -> break
+          }
+        }
+        DroidFragmentImpl.Data(
+          __typename = __typename!!,
+          name = name!!,
+          primaryFunction = primaryFunction
+        )
+      }
+    }
+
+    override fun toResponse(writer: ResponseWriter, value: DroidFragmentImpl.Data) {
+      writer.writeString(RESPONSE_FIELDS[0], value.__typename)
+      writer.writeString(RESPONSE_FIELDS[1], value.name)
+      writer.writeString(RESPONSE_FIELDS[2], value.primaryFunction)
+    }
   }
 }

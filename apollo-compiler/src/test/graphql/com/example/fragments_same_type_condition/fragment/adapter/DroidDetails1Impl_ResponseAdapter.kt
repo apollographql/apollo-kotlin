@@ -12,33 +12,52 @@ import com.apollographql.apollo.api.internal.ResponseWriter
 import com.example.fragments_same_type_condition.fragment.DroidDetails1Impl
 import kotlin.Array
 import kotlin.String
+import kotlin.Suppress
 
-object DroidDetails1Impl_ResponseAdapter : ResponseAdapter<DroidDetails1Impl> {
+@Suppress("NAME_SHADOWING", "UNUSED_ANONYMOUS_PARAMETER", "LocalVariableName",
+    "RemoveExplicitTypeArguments", "NestedLambdaShadowedImplicitParameter", "PropertyName",
+    "RemoveRedundantQualifierName")
+object DroidDetails1Impl_ResponseAdapter : ResponseAdapter<DroidDetails1Impl.Data> {
   private val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
     ResponseField.forString("__typename", "__typename", null, false, null),
     ResponseField.forString("name", "name", null, false, null)
   )
 
-  override fun fromResponse(reader: ResponseReader, __typename: String?): DroidDetails1Impl {
-    return reader.run {
-      var __typename: String? = __typename
-      var name: String? = null
-      while(true) {
-        when (selectField(RESPONSE_FIELDS)) {
-          0 -> __typename = readString(RESPONSE_FIELDS[0])
-          1 -> name = readString(RESPONSE_FIELDS[1])
-          else -> break
-        }
-      }
-      DroidDetails1Impl(
-        __typename = __typename!!,
-        name = name!!
-      )
-    }
+  override fun fromResponse(reader: ResponseReader, __typename: String?): DroidDetails1Impl.Data {
+    return Data.fromResponse(reader, __typename)
   }
 
-  override fun toResponse(writer: ResponseWriter, value: DroidDetails1Impl) {
-    writer.writeString(RESPONSE_FIELDS[0], value.__typename)
-    writer.writeString(RESPONSE_FIELDS[1], value.name)
+  override fun toResponse(writer: ResponseWriter, value: DroidDetails1Impl.Data) {
+    Data.toResponse(writer, value)
+  }
+
+  object Data : ResponseAdapter<DroidDetails1Impl.Data> {
+    private val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
+      ResponseField.forString("__typename", "__typename", null, false, null),
+      ResponseField.forString("name", "name", null, false, null)
+    )
+
+    override fun fromResponse(reader: ResponseReader, __typename: String?): DroidDetails1Impl.Data {
+      return reader.run {
+        var __typename: String? = __typename
+        var name: String? = null
+        while(true) {
+          when (selectField(RESPONSE_FIELDS)) {
+            0 -> __typename = readString(RESPONSE_FIELDS[0])
+            1 -> name = readString(RESPONSE_FIELDS[1])
+            else -> break
+          }
+        }
+        DroidDetails1Impl.Data(
+          __typename = __typename!!,
+          name = name!!
+        )
+      }
+    }
+
+    override fun toResponse(writer: ResponseWriter, value: DroidDetails1Impl.Data) {
+      writer.writeString(RESPONSE_FIELDS[0], value.__typename)
+      writer.writeString(RESPONSE_FIELDS[1], value.name)
+    }
   }
 }

@@ -1,6 +1,5 @@
 package com.apollographql.apollo.compiler.backend.codegen
 
-import com.apollographql.apollo.api.CustomScalar
 import com.apollographql.apollo.api.ResponseField
 import com.apollographql.apollo.api.internal.ResponseAdapter
 import com.apollographql.apollo.api.internal.ResponseReader
@@ -21,48 +20,38 @@ import com.squareup.kotlinpoet.asTypeName
 import com.squareup.kotlinpoet.joinToCode
 
 internal fun CodeGenerationAst.OperationType.responseAdapterTypeSpec(generateAsInternal: Boolean = false): TypeSpec {
-  return TypeSpec.objectBuilder("${this.name.escapeKotlinReservedWord()}_ResponseAdapter")
+  return this.dataType.rootResponseAdapterTypeSpec(generateAsInternal)
+}
+
+internal fun CodeGenerationAst.FragmentType.responseAdapterTypeSpec(generateAsInternal: Boolean = false): TypeSpec {
+  val dataType = this.implementationType.nestedObjects.single()
+  return dataType.rootResponseAdapterTypeSpec(generateAsInternal)
+}
+
+private fun CodeGenerationAst.ObjectType.rootResponseAdapterTypeSpec(generateAsInternal: Boolean = false): TypeSpec {
+  return TypeSpec.objectBuilder("${this.typeRef.enclosingType!!.name.escapeKotlinReservedWord()}_ResponseAdapter")
       .applyIf(generateAsInternal) { addModifiers(KModifier.INTERNAL) }
       .addAnnotation(suppressWarningsAnnotation)
-      .addSuperinterface(ResponseAdapter::class.asTypeName().parameterizedBy(this.dataType.typeRef.asTypeName()))
-      .addProperty(responseFieldsPropertySpec(this.dataType.fields))
+      .addSuperinterface(ResponseAdapter::class.asTypeName().parameterizedBy(this.typeRef.asTypeName()))
+      .addProperty(responseFieldsPropertySpec(this.fields))
       .addFunction(
           FunSpec.builder("fromResponse")
               .addModifiers(KModifier.OVERRIDE)
-              .returns(this.dataType.typeRef.asTypeName())
+              .returns(this.typeRef.asTypeName())
               .addParameter(ParameterSpec.builder("reader", ResponseReader::class).build())
               .addParameter(CodeGenerationAst.typenameField.asOptionalParameterSpec(withDefaultValue = false))
-              .addCode("return·%T.fromResponse(reader, __typename)", this.dataType.typeRef.asAdapterTypeName())
+              .addCode("return·%T.fromResponse(reader, __typename)", this.typeRef.asAdapterTypeName())
               .build()
       )
       .addFunction(
           FunSpec.builder("toResponse")
               .addModifiers(KModifier.OVERRIDE)
               .addParameter(ParameterSpec(name = "writer", type = ResponseWriter::class.asTypeName()))
-              .addParameter(ParameterSpec(name = "value", type = this.dataType.typeRef.asTypeName()))
-              .addCode("%T.toResponse(writer, value)", this.dataType.typeRef.asAdapterTypeName())
+              .addParameter(ParameterSpec(name = "value", type = this.typeRef.asTypeName()))
+              .addCode("%T.toResponse(writer, value)", this.typeRef.asAdapterTypeName())
               .build()
       )
-      .addType(this.dataType.responseAdapterTypeSpec())
-      .build()
-}
-
-internal fun CodeGenerationAst.FragmentType.responseAdapterTypeSpec(generateAsInternal: Boolean = false): TypeSpec {
-  return TypeSpec.objectBuilder("${this.defaultImplementationType.name.escapeKotlinReservedWord()}_ResponseAdapter")
-      .addSuperinterface(ResponseAdapter::class.asTypeName().parameterizedBy(this.defaultImplementationType.typeRef.asTypeName()))
-      .applyIf(generateAsInternal) { addModifiers(KModifier.INTERNAL) }
-      .applyIf(this.defaultImplementationType.fields.isNotEmpty()) {
-        addProperty(responseFieldsPropertySpec(this@responseAdapterTypeSpec.defaultImplementationType.fields))
-      }
-      .addFunction(this.defaultImplementationType.readFromResponseFunSpec())
-      .addFunction(this.defaultImplementationType.writeToResponseFunSpec())
-      .addTypes(
-          this.defaultImplementationType.nestedObjects.mapNotNull { nestedObject ->
-            nestedObject
-                .takeUnless { it.kind is CodeGenerationAst.ObjectType.Kind.Interface }
-                ?.responseAdapterTypeSpec()
-          }
-      )
+      .addType(this.responseAdapterTypeSpec())
       .build()
 }
 

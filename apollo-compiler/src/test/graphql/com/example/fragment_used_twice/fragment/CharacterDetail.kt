@@ -6,8 +6,6 @@
 package com.example.fragment_used_twice.fragment
 
 import com.apollographql.apollo.api.GraphqlFragment
-import com.apollographql.apollo.api.internal.ResponseReader
-import com.example.fragment_used_twice.fragment.adapter.CharacterDetailsImpl_ResponseAdapter
 import kotlin.Any
 import kotlin.String
 import kotlin.Suppress
@@ -36,9 +34,5 @@ interface CharacterDetail : GraphqlFragment {
         |  birthDate
         |}
         """.trimMargin()
-
-    operator fun invoke(reader: ResponseReader): CharacterDetail {
-      return CharacterDetailsImpl_ResponseAdapter.fromResponse(reader)
-    }
   }
 }

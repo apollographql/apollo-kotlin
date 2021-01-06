@@ -74,11 +74,6 @@ internal class GraphQLCodeGenerator(
               .writeTo(outputDir)
 
           fragmentType
-              .typeSpec(generateAsInternal = generateAsInternal)
-              .fileSpec(fragmentsPackageName)
-              .writeTo(outputDir)
-
-          fragmentType
               .implementationTypeSpec(generateAsInternal = generateAsInternal)
               .fileSpec(fragmentsPackageName)
               .writeTo(outputDir)

@@ -6,15 +6,26 @@
 package com.example.fragment_with_inline_fragment.fragment
 
 import com.apollographql.apollo.api.Fragment
+import com.apollographql.apollo.api.Operation
+import com.apollographql.apollo.api.internal.ResponseAdapter
+import com.example.fragment_with_inline_fragment.fragment.adapter.HumanDetailsImpl_ResponseAdapter
 import kotlin.String
 
-/**
- * A humanoid creature from the Star Wars universe
- */
-data class HumanDetailsImpl(
-  override val __typename: String = "Human",
+class HumanDetailsImpl : Fragment<HumanDetailsImpl.Data> {
+  override fun adapter(): ResponseAdapter<Data> {
+    return HumanDetailsImpl_ResponseAdapter
+  }
+
+  override fun variables(): Operation.Variables = Operation.EMPTY_VARIABLES
+
   /**
-   * What this human calls themselves
+   * A humanoid creature from the Star Wars universe
    */
-  override val name: String
-) : HumanDetail, Fragment.Data
+  data class Data(
+    override val __typename: String = "Human",
+    /**
+     * What this human calls themselves
+     */
+    override val name: String
+  ) : HumanDetail, Fragment.Data
+}

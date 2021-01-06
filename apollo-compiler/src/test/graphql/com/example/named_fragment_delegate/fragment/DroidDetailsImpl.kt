@@ -6,34 +6,45 @@
 package com.example.named_fragment_delegate.fragment
 
 import com.apollographql.apollo.api.Fragment
+import com.apollographql.apollo.api.Operation
+import com.apollographql.apollo.api.internal.ResponseAdapter
+import com.example.named_fragment_delegate.fragment.adapter.DroidDetailsImpl_ResponseAdapter
 import kotlin.String
 import kotlin.collections.List
 
-/**
- * An autonomous mechanical character in the Star Wars universe
- */
-data class DroidDetailsImpl(
-  override val __typename: String = "Droid",
+class DroidDetailsImpl : Fragment<DroidDetailsImpl.Data> {
+  override fun adapter(): ResponseAdapter<Data> {
+    return DroidDetailsImpl_ResponseAdapter
+  }
+
+  override fun variables(): Operation.Variables = Operation.EMPTY_VARIABLES
+
   /**
-   * What others call this droid
+   * An autonomous mechanical character in the Star Wars universe
    */
-  override val name: String,
-  /**
-   * This droid's primary function
-   */
-  override val primaryFunction: String?,
-  /**
-   * This droid's friends, or an empty list if they have none
-   */
-  override val friends: List<Friend?>?
-) : DroidDetail, Fragment.Data {
-  /**
-   * A character from the Star Wars universe
-   */
-  data class Friend(
+  data class Data(
+    override val __typename: String = "Droid",
     /**
-     * The name of the character
+     * What others call this droid
      */
-    override val name: String
-  ) : DroidDetail.Friend
+    override val name: String,
+    /**
+     * This droid's primary function
+     */
+    override val primaryFunction: String?,
+    /**
+     * This droid's friends, or an empty list if they have none
+     */
+    override val friends: List<Friend?>?
+  ) : DroidDetail, Fragment.Data {
+    /**
+     * A character from the Star Wars universe
+     */
+    data class Friend(
+      /**
+       * The name of the character
+       */
+      override val name: String
+    ) : DroidDetail.Friend
+  }
 }

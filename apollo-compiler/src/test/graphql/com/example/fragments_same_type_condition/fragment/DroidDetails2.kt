@@ -6,8 +6,6 @@
 package com.example.fragments_same_type_condition.fragment
 
 import com.apollographql.apollo.api.GraphqlFragment
-import com.apollographql.apollo.api.internal.ResponseReader
-import com.example.fragments_same_type_condition.fragment.adapter.DroidDetails2Impl_ResponseAdapter
 import kotlin.String
 import kotlin.Suppress
 
@@ -29,9 +27,5 @@ interface DroidDetails2 : GraphqlFragment {
         |  primaryFunction
         |}
         """.trimMargin()
-
-    operator fun invoke(reader: ResponseReader): DroidDetails2 {
-      return DroidDetails2Impl_ResponseAdapter.fromResponse(reader)
-    }
   }
 }

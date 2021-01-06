@@ -6,8 +6,6 @@
 package com.example.named_fragment_with_variables.fragment
 
 import com.apollographql.apollo.api.GraphqlFragment
-import com.apollographql.apollo.api.internal.ResponseReader
-import com.example.named_fragment_with_variables.fragment.adapter.QueryFragmentImpl_ResponseAdapter
 import kotlin.String
 import kotlin.Suppress
 import kotlin.collections.List
@@ -59,9 +57,5 @@ interface QueryFragment : GraphqlFragment {
         |  }
         |}
         """.trimMargin()
-
-    operator fun invoke(reader: ResponseReader): QueryFragment {
-      return QueryFragmentImpl_ResponseAdapter.fromResponse(reader)
-    }
   }
 }

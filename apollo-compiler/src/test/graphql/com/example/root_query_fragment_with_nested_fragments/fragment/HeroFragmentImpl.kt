@@ -6,15 +6,26 @@
 package com.example.root_query_fragment_with_nested_fragments.fragment
 
 import com.apollographql.apollo.api.Fragment
+import com.apollographql.apollo.api.Operation
+import com.apollographql.apollo.api.internal.ResponseAdapter
+import com.example.root_query_fragment_with_nested_fragments.fragment.adapter.HeroFragmentImpl_ResponseAdapter
 import kotlin.String
 
-/**
- * A character from the Star Wars universe
- */
-data class HeroFragmentImpl(
-  override val __typename: String = "Character",
+class HeroFragmentImpl : Fragment<HeroFragmentImpl.Data> {
+  override fun adapter(): ResponseAdapter<Data> {
+    return HeroFragmentImpl_ResponseAdapter
+  }
+
+  override fun variables(): Operation.Variables = Operation.EMPTY_VARIABLES
+
   /**
-   * The name of the character
+   * A character from the Star Wars universe
    */
-  override val name: String
-) : HeroFragment, Fragment.Data
+  data class Data(
+    override val __typename: String = "Character",
+    /**
+     * The name of the character
+     */
+    override val name: String
+  ) : HeroFragment, Fragment.Data
+}

@@ -6,8 +6,6 @@
 package com.example.named_fragment_with_variables.fragment
 
 import com.apollographql.apollo.api.GraphqlFragment
-import com.apollographql.apollo.api.internal.ResponseReader
-import com.example.named_fragment_with_variables.fragment.adapter.UserFragmentImpl_ResponseAdapter
 import kotlin.String
 import kotlin.Suppress
 
@@ -32,9 +30,5 @@ interface UserFragment : GraphqlFragment {
         |  avatar(size: ${'$'}size)
         |}
         """.trimMargin()
-
-    operator fun invoke(reader: ResponseReader): UserFragment {
-      return UserFragmentImpl_ResponseAdapter.fromResponse(reader)
-    }
   }
 }

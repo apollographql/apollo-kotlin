@@ -6,15 +6,26 @@
 package com.example.fragments_same_type_condition.fragment
 
 import com.apollographql.apollo.api.Fragment
+import com.apollographql.apollo.api.Operation
+import com.apollographql.apollo.api.internal.ResponseAdapter
+import com.example.fragments_same_type_condition.fragment.adapter.DroidDetails1Impl_ResponseAdapter
 import kotlin.String
 
-/**
- * An autonomous mechanical character in the Star Wars universe
- */
-data class DroidDetails1Impl(
-  override val __typename: String = "Droid",
+class DroidDetails1Impl : Fragment<DroidDetails1Impl.Data> {
+  override fun adapter(): ResponseAdapter<Data> {
+    return DroidDetails1Impl_ResponseAdapter
+  }
+
+  override fun variables(): Operation.Variables = Operation.EMPTY_VARIABLES
+
   /**
-   * What others call this droid
+   * An autonomous mechanical character in the Star Wars universe
    */
-  override val name: String
-) : DroidDetails1, Fragment.Data
+  data class Data(
+    override val __typename: String = "Droid",
+    /**
+     * What others call this droid
+     */
+    override val name: String
+  ) : DroidDetails1, Fragment.Data
+}
