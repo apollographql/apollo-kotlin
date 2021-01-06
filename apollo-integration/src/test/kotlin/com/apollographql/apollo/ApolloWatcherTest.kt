@@ -86,9 +86,9 @@ class ApolloWatcherTest {
         { response -> !response.hasErrors() }
     )
     watcher.cancel()
-    Truth.assertThat(heroNameList[0]).isEqualTo("R2-D2")
-    Truth.assertThat(heroNameList[1]).isEqualTo("Artoo")
-    Truth.assertThat(heroNameList.size).isEqualTo(2)
+    assertThat(heroNameList[0]).isEqualTo("R2-D2")
+    assertThat(heroNameList[1]).isEqualTo("Artoo")
+    assertThat(heroNameList.size).isEqualTo(2)
   }
 
   @Test
@@ -108,7 +108,7 @@ class ApolloWatcherTest {
             Assert.fail(e.message)
           }
         })
-    Truth.assertThat(heroNameList[0]).isEqualTo("R2-D2")
+    assertThat(heroNameList[0]).isEqualTo("R2-D2")
 
     // Someone writes to the store directly
     val changedKeys: Set<String> = apolloClient.apolloStore.writeTransaction(object : Transaction<WriteableStore, Set<String>> {
@@ -120,7 +120,7 @@ class ApolloWatcherTest {
       }
     })
     apolloClient.apolloStore.publish(changedKeys)
-    Truth.assertThat(heroNameList[1]).isEqualTo("Artoo")
+    assertThat(heroNameList[1]).isEqualTo("Artoo")
     watcher.cancel()
   }
 
@@ -143,8 +143,8 @@ class ApolloWatcherTest {
     server.enqueue(Utils.mockResponse("EpisodeHeroNameResponseWithId.json"))
     apolloClient.query(query).responseFetcher(ApolloResponseFetchers.NETWORK_ONLY).enqueue(null)
     watcher.cancel()
-    Truth.assertThat(heroNameList[0]).isEqualTo("R2-D2")
-    Truth.assertThat(heroNameList.size).isEqualTo(1)
+    assertThat(heroNameList[0]).isEqualTo("R2-D2")
+    assertThat(heroNameList.size).isEqualTo(1)
   }
 
   @Test
@@ -172,8 +172,8 @@ class ApolloWatcherTest {
         { response -> !response.hasErrors() }
     )
     watcher.cancel()
-    Truth.assertThat(heroNameList[0]).isEqualTo("R2-D2")
-    Truth.assertThat(heroNameList[1]).isEqualTo("Artoo")
+    assertThat(heroNameList[0]).isEqualTo("R2-D2")
+    assertThat(heroNameList[1]).isEqualTo("Artoo")
   }
 
   @Test
@@ -196,15 +196,15 @@ class ApolloWatcherTest {
     server.enqueue(Utils.mockResponse("HeroAndFriendsNameWithIdsResponse.json"))
     apolloClient.query(friendsQuery).responseFetcher(ApolloResponseFetchers.NETWORK_ONLY).enqueue(null)
     watcher.cancel()
-    Truth.assertThat(heroNameList[0]).isEqualTo("R2-D2")
-    Truth.assertThat(heroNameList.size).isEqualTo(1)
+    assertThat(heroNameList[0]).isEqualTo("R2-D2")
+    assertThat(heroNameList.size).isEqualTo(1)
   }
 
   @Test
   fun testRefetchCacheControl() {
     val heroNameList: MutableList<String> = ArrayList()
     server.enqueue(Utils.mockResponse("EpisodeHeroNameResponseWithId.json"))
-    val query: EpisodeHeroNameQuery = EpisodeHeroNameQuery(Input.fromNullable(Episode.EMPIRE))
+    val query = EpisodeHeroNameQuery(Input.fromNullable(Episode.EMPIRE))
     val watcher: ApolloQueryWatcher<EpisodeHeroNameQuery.Data> = apolloClient.query(query).watcher()
     watcher.refetchResponseFetcher(ApolloResponseFetchers.NETWORK_ONLY) //Force network instead of CACHE_FIRST default
         .enqueueAndWatch(
@@ -226,15 +226,15 @@ class ApolloWatcherTest {
     server.enqueue(Utils.mockResponse("EpisodeHeroNameResponseNameChangeTwo.json"))
     apolloClient.query(query).responseFetcher(ApolloResponseFetchers.NETWORK_ONLY).enqueue(null)
     watcher.cancel()
-    Truth.assertThat(heroNameList[0]).isEqualTo("R2-D2")
-    Truth.assertThat(heroNameList[1]).isEqualTo("ArTwo")
-    Truth.assertThat(heroNameList.size).isEqualTo(2)
+    assertThat(heroNameList[0]).isEqualTo("R2-D2")
+    assertThat(heroNameList[1]).isEqualTo("ArTwo")
+    assertThat(heroNameList.size).isEqualTo(2)
   }
 
   @Test
   fun testQueryWatcherUpdated_SameQuery_DifferentResults_cacheOnly() {
     val heroNameList: MutableList<String> = ArrayList()
-    val query: EpisodeHeroNameQuery = EpisodeHeroNameQuery(Input.fromNullable(Episode.EMPIRE))
+    val query = EpisodeHeroNameQuery(Input.fromNullable(Episode.EMPIRE))
     server.enqueue(Utils.mockResponse("EpisodeHeroNameResponseWithId.json"))
     apolloClient.query(query).enqueue(object : Callback<EpisodeHeroNameQuery.Data>() {
       override fun onResponse(response: Response<EpisodeHeroNameQuery.Data>) {}
@@ -259,9 +259,9 @@ class ApolloWatcherTest {
     server.enqueue(Utils.mockResponse("EpisodeHeroNameResponseNameChange.json"))
     apolloClient.query(query).responseFetcher(ApolloResponseFetchers.NETWORK_ONLY).enqueue(null)
     watcher.cancel()
-    Truth.assertThat(heroNameList[0]).isEqualTo("R2-D2")
-    Truth.assertThat(heroNameList[1]).isEqualTo("Artoo")
-    Truth.assertThat(heroNameList.size).isEqualTo(2)
+    assertThat(heroNameList[0]).isEqualTo("R2-D2")
+    assertThat(heroNameList[1]).isEqualTo("Artoo")
+    assertThat(heroNameList.size).isEqualTo(2)
   }
 
   @Test
@@ -287,8 +287,8 @@ class ApolloWatcherTest {
         apolloClient.query(query).responseFetcher(ApolloResponseFetchers.NETWORK_ONLY),
         { response -> !response.hasErrors() }
     )
-    Truth.assertThat(heroNameList[0]).isEqualTo("R2-D2")
-    Truth.assertThat(heroNameList.size).isEqualTo(1)
+    assertThat(heroNameList[0]).isEqualTo("R2-D2")
+    assertThat(heroNameList.size).isEqualTo(1)
   }
 
   @Test

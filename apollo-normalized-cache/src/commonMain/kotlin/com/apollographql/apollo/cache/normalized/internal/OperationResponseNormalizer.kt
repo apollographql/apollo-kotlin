@@ -12,6 +12,7 @@ fun <D: Operation.Data> Operation<D>.normalize(
 ): Set<Record> {
   val writer = RealResponseWriter(variables(), customScalarAdapters)
   adapter().toResponse(writer, data)
+  normalizer.willResolveRootQuery(this)
   writer.resolveFields(normalizer)
   return normalizer.records().toSet()
 }

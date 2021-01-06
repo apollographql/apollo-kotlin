@@ -201,13 +201,12 @@ class IntegrationTest {
   fun dataNull() {
     server.enqueue(mockResponse("ResponseDataNull.json"))
     assertResponse(
-        apolloClient.query(HeroNameQuery()),
-        Predicate<Response<HeroNameQuery.Data>> { response ->
-          assertThat(response.data).isNull()
-          assertThat(response.hasErrors()).isFalse()
-          true
-        }
-    )
+        apolloClient.query(HeroNameQuery())
+    ) { response ->
+      assertThat(response.data).isNull()
+      assertThat(response.hasErrors()).isFalse()
+      true
+    }
   }
 
   @Test
@@ -239,8 +238,7 @@ class IntegrationTest {
   fun operationResponseParser() {
     val json = readFileToString(javaClass, "/HeroNameResponse.json")
     val query = HeroNameQuery()
-    val (_, data) = OperationResponseParser(query, CustomScalarAdapters(emptyMap()))
-        .parse(Buffer().writeUtf8(json))
+    val data = query.parse(json).data
     assertThat(data!!.hero?.name).isEqualTo("R2-D2")
   }
 
@@ -249,8 +247,7 @@ class IntegrationTest {
   fun operationJsonWriter() {
     val expected = readFileToString(javaClass, "/OperationJsonWriter.json")
     val query = AllPlanetsQuery()
-    val (_, data) = OperationResponseParser(query, CustomScalarAdapters.DEFAULT)
-        .parse(Buffer().writeUtf8(expected))
+    val data = query.parse(expected).data
     val actual = query.toJson(data!!, "  ")
     assertThat(actual).isEqualTo(expected)
   }
@@ -303,7 +300,7 @@ class IntegrationTest {
   fun operationResponseParserParseResponseWithExtensions() {
     val source = Buffer().readFrom(javaClass.getResourceAsStream("/HeroNameResponse.json"))
     val query = HeroNameQuery()
-    val (_, _, _, _, _, extensions) = OperationResponseParser(query, CustomScalarAdapters(emptyMap())).parse(source)
+    val extensions = query.parse(source).extensions
     assertThat(extensions.toString()).isEqualTo("{cost={requestedQueryCost=3, actualQueryCost=3, throttleStatus={maximumAvailable=1000, currentlyAvailable=997, restoreRate=50}}}")
   }
 
