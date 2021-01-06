@@ -1,14 +1,13 @@
 package com.apollographql.apollo.benchmark
 
+import Utils
 import Utils.bufferedSource
-import Utils.parseAndNormalizeAfter
-import Utils.parseWithInlinedNormalizer
 import androidx.benchmark.junit4.BenchmarkRule
 import androidx.benchmark.junit4.measureRepeated
 import com.apollographql.apollo.api.CustomScalarAdapters
 import com.apollographql.apollo.api.parse
 import com.apollographql.apollo.benchmark.moshi.Query
-import com.apollographql.apollo.response.OperationResponseParser
+import com.apollographql.apollo.cache.normalized.internal.normalize
 import com.squareup.moshi.Moshi
 import org.junit.Rule
 import org.junit.Test
@@ -39,33 +38,14 @@ class Benchmark {
     moshiAdapter.fromJson(bufferedSource)
   }
 
+
   @Test
-  fun apolloParsingWithMapParser() = benchmarkRule.measureRepeated {
+  fun apolloParseAndNormalize() = benchmarkRule.measureRepeated {
     val bufferedSource = runWithTimingDisabled {
       bufferedSource()
     }
 
-    OperationResponseParser(
-        operation,
-        CustomScalarAdapters.DEFAULT
-    ).parse(bufferedSource)
-  }
-
-  @Test
-  fun apolloComputeRecordsDuringParsing() = benchmarkRule.measureRepeated {
-    val bufferedSource = runWithTimingDisabled {
-      bufferedSource()
-    }
-
-    parseWithInlinedNormalizer(operation, bufferedSource)
-  }
-
-  @Test
-  fun apolloComputeRecordsAfterParsing() = benchmarkRule.measureRepeated {
-    val bufferedSource = runWithTimingDisabled {
-      bufferedSource()
-    }
-
-    parseAndNormalizeAfter(operation, bufferedSource)
+    val data = operation.parse(bufferedSource).data!!
+    val records = operation.normalize(data, CustomScalarAdapters.DEFAULT, Utils.responseNormalizer)
   }
 }

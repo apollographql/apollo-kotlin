@@ -8,9 +8,6 @@ import com.apollographql.apollo.cache.normalized.CacheKey
 import com.apollographql.apollo.cache.normalized.Record
 import com.apollographql.apollo.cache.normalized.internal.RealCacheKeyBuilder
 import com.apollographql.apollo.cache.normalized.internal.ResponseNormalizer
-import com.apollographql.apollo.api.internal.response.RealResponseWriter
-import com.apollographql.apollo.response.OperationResponseParser
-import okio.BufferedSource
 import okio.buffer
 import okio.source
 
@@ -19,36 +16,9 @@ object Utils {
       .source()
       .buffer()
 
-  private val responseNormalizer = object : ResponseNormalizer<Map<String, Any?>>() {
+  val responseNormalizer = object : ResponseNormalizer<Map<String, Any>?>() {
     override fun cacheKeyBuilder() = RealCacheKeyBuilder()
 
-    override fun resolveCacheKey(field: ResponseField, record: Map<String, Any?>) = CacheKey.NO_KEY
-  }
-
-  fun <D : Operation.Data> parseWithInlinedNormalizer(operation: Operation<D>, bufferedSource: BufferedSource) {
-    OperationResponseParser(
-        operation,
-        CustomScalarAdapters.DEFAULT,
-        responseNormalizer
-    ).parse(bufferedSource)
-
-    responseNormalizer.records()
-  }
-
-  /**
-   * Contrary to [parseWithInlinedNormalizer], this normalizes after parsing, using the generated models
-   */
-  fun <D : Operation.Data> parseAndNormalizeAfter(operation: Operation<D>, bufferedSource: BufferedSource) {
-    val response = OperationResponseParser(
-        operation,
-        CustomScalarAdapters.DEFAULT,
-        ResponseNormalizer.NO_OP_NORMALIZER as ResponseNormalizer<MutableMap<String, Any>>?
-    ).parse(bufferedSource)
-
-    val writer = RealResponseWriter(operation.variables(), CustomScalarAdapters.DEFAULT)
-    operation.adapter().toResponse(writer, response.data!!)
-    responseNormalizer.willResolveRootQuery(operation);
-    writer.resolveFields(responseNormalizer as ResolveDelegate<Map<String, Any>?>)
-    responseNormalizer.records()
+    override fun resolveCacheKey(field: ResponseField, record: Map<String, Any>?) = CacheKey.NO_KEY
   }
 }
