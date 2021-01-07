@@ -80,11 +80,6 @@ interface ApolloStore {
   fun networkResponseNormalizer(): ResponseNormalizer<Map<String, Any>>
 
   /**
-   * @return The [ResponseNormalizer] used to generate normalized records from the cache.
-   */
-  fun cacheResponseNormalizer(): ResponseNormalizer<Record>
-
-  /**
    * Run a operation inside a read-lock. Blocks until read-lock is acquired.
    *
    * @param transaction A code block to run once the read lock is acquired.
@@ -127,7 +122,6 @@ interface ApolloStore {
    */
   fun <D : Operation.Data> readOperationInternal(
       operation: Operation<D>,
-      responseNormalizer: ResponseNormalizer<Record>,
       cacheHeaders: CacheHeaders
   ): ApolloStoreOperation<Response<D>> {
     // This is called in the default path when no cache is configured, do not trigger an error

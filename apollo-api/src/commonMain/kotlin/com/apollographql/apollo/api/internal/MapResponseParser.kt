@@ -6,6 +6,7 @@ import com.apollographql.apollo.api.Operation
 import com.apollographql.apollo.api.Response
 import com.apollographql.apollo.api.Response.Companion.builder
 import com.apollographql.apollo.api.ResponseField
+import com.apollographql.apollo.api.parseData
 
 /**
  * [MapResponseParser] parses network responses, including data, errors and extensions from a regular Map<String, Any?>.
@@ -13,32 +14,27 @@ import com.apollographql.apollo.api.ResponseField
  * That will avoid the cost of having to create an entire Map in memory
  */
 object MapResponseParser {
+  /**
+   * @param payload, the root of the response
+   *
+   */
   fun <D : Operation.Data> parse(
       payload: Map<String, Any?>,
       operation: Operation<D>,
-      customScalarAdapters: CustomScalarAdapters
+      customScalarAdapters: CustomScalarAdapters,
   ): Response<D> {
-    var data: D? = null
-    val buffer = payload["data"] as Map<String, Any?>?
-    if (buffer != null) {
-      val realResponseReader = RandomAccessResponseReader(
-          operation.variables(),
-          buffer,
-          MapValueResolver() as ValueResolver<Map<String, Any?>>,
-          customScalarAdapters,
-      )
-      data = operation.adapter().fromResponse(realResponseReader, null)
+    val data = (payload["data"] as Map<String, Any?>?)?.let {
+      operation.parseData(it, customScalarAdapters, MapValueResolver())
     }
-    var errors: MutableList<Error>? = null
-    if (payload.containsKey("errors")) {
-      val errorPayloads = payload["errors"] as List<Map<String, Any?>>?
-      if (errorPayloads != null) {
-        errors = mutableListOf()
-        for (errorPayload in errorPayloads) {
-          errors.add(parseError(errorPayload))
-        }
+
+    val errors = if (payload.containsKey("errors")) {
+      (payload["errors"] as List<Map<String, Any?>>?)?.map {
+        parseError(it)
       }
+    } else {
+      null
     }
+
     return builder<D>(operation)
         .data(data)
         .errors(errors)
@@ -84,8 +80,8 @@ object MapResponseParser {
     return Error.Location(line, column)
   }
 
-  class MapValueResolver : ValueResolver<Map<String, Any>> {
-    override fun <T> valueFor(map: Map<String, Any>, field: ResponseField): T? {
+  private class MapValueResolver : ValueResolver<Map<String, Any?>> {
+    override fun <T> valueFor(map: Map<String, Any?>, field: ResponseField): T? {
       return map[field.responseName] as T?
     }
   }

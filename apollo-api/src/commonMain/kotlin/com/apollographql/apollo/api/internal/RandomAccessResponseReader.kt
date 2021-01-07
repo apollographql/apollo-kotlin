@@ -7,6 +7,7 @@ import com.apollographql.apollo.api.Operation
 import com.apollographql.apollo.api.ResponseField
 import com.apollographql.apollo.api.CustomScalar
 import com.apollographql.apollo.api.CustomScalarAdapters
+import com.apollographql.apollo.api.internal.Utils.shouldSkip
 import com.apollographql.apollo.api.toNumber
 
 /**
@@ -31,9 +32,11 @@ class RandomAccessResponseReader<M : Map<String, Any?>>(
      * Since we can read any field, just return all fields asked
      */
     while (++selectedFieldIndex < fields.size) {
-      if (!fields[selectedFieldIndex].shouldSkip(variableValues)) {
-        return selectedFieldIndex
+      if (fields[selectedFieldIndex].shouldSkip(variableValues)) {
+        // The ResponseAdapter does not check for skippable fields so we're doing it here..
+        continue
       }
+      return selectedFieldIndex
     }
     return -1
   }
@@ -68,29 +71,23 @@ class RandomAccessResponseReader<M : Map<String, Any?>>(
   override fun <T : Any> readObject(field: ResponseField, block: (ResponseReader) -> T): T? {
     val value: M? = valueResolver.valueFor(root, field)
     checkValue(field, value)
-    val parsedValue: T? = if (value == null) {
+    return if (value == null) {
       null
     } else {
       block(RandomAccessResponseReader(variable, value, valueResolver, customScalarAdapters))
     }
-    return parsedValue
   }
 
   override fun <T : Any> readList(field: ResponseField, block: (ResponseReader.ListItemReader) -> T): List<T?>? {
     val values = valueResolver.valueFor<List<*>>(root, field)
     checkValue(field, values)
-    val result = if (values == null) {
-      null
-    } else {
-      values.mapIndexed { _, value ->
-        if (value == null) {
-          null
-        } else {
-          block(ListItemReader(field, value))
-        }
+    return values?.mapIndexed { _, value ->
+      if (value == null) {
+        null
+      } else {
+        block(ListItemReader(field, value))
       }
     }
-    return result
   }
 
   override fun <T : Any> readCustomScalar(field: ResponseField.CustomScalarField): T? {
@@ -111,26 +108,6 @@ class RandomAccessResponseReader<M : Map<String, Any?>>(
     check(field.optional || value != null) {
       "corrupted response reader, expected non null value for ${field.fieldName}"
     }
-  }
-
-  private fun ResponseField.shouldSkip(variableValues: Map<String, Any?>): Boolean {
-    for (condition in conditions) {
-      if (condition is ResponseField.BooleanCondition) {
-        val conditionValue = variableValues[condition.variableName] as Boolean
-        if (condition.isInverted) {
-          // means it's a skip directive
-          if (conditionValue) {
-            return true
-          }
-        } else {
-          // means it's an include directive
-          if (!conditionValue) {
-            return true
-          }
-        }
-      }
-    }
-    return false
   }
 
   private inner class ListItemReader(
@@ -168,14 +145,13 @@ class RandomAccessResponseReader<M : Map<String, Any?>>(
 
     override fun <T : Any> readList(block: (ResponseReader.ListItemReader) -> T): List<T?> {
       val values = value as List<*>
-      val result = values.mapIndexed { _, value ->
+      return values.mapIndexed { _, value ->
         if (value == null) {
           null
         } else {
           block(ListItemReader(field, value))
         }
       }
-      return result
     }
   }
 }

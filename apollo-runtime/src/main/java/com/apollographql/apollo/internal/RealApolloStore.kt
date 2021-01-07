@@ -7,6 +7,7 @@ import com.apollographql.apollo.api.Response
 import com.apollographql.apollo.api.Response.Companion.builder
 import com.apollographql.apollo.api.ResponseField
 import com.apollographql.apollo.api.internal.ApolloLogger
+import com.apollographql.apollo.api.internal.MapResponseParser
 import com.apollographql.apollo.api.internal.RandomAccessResponseReader
 import com.apollographql.apollo.api.internal.ResolveDelegate
 import com.apollographql.apollo.api.internal.ResponseAdapter
@@ -28,6 +29,7 @@ import com.apollographql.apollo.cache.normalized.internal.ResponseNormalizer
 import com.apollographql.apollo.cache.normalized.internal.Transaction
 import com.apollographql.apollo.cache.normalized.internal.WriteableStore
 import com.apollographql.apollo.api.internal.response.RealResponseWriter
+import com.apollographql.apollo.api.parseData
 import com.apollographql.apollo.cache.normalized.internal.dependentKeys
 import com.apollographql.apollo.cache.normalized.internal.normalize
 import java.util.ArrayList
@@ -39,34 +41,21 @@ import java.util.concurrent.Executor
 import java.util.concurrent.locks.ReadWriteLock
 import java.util.concurrent.locks.ReentrantReadWriteLock
 
-class RealApolloStore(normalizedCache: NormalizedCache, cacheKeyResolver: CacheKeyResolver,
-                      customScalarAdapters: CustomScalarAdapters, dispatcher: Executor,
-                      logger: ApolloLogger) : ApolloStore, ReadableStore, WriteableStore {
-  val optimisticCache: OptimisticNormalizedCache
-  val cacheKeyResolver: CacheKeyResolver
-  val customScalarAdapters: CustomScalarAdapters
+class RealApolloStore(normalizedCache: NormalizedCache,
+                      val cacheKeyResolver: CacheKeyResolver,
+                      val customScalarAdapters: CustomScalarAdapters,
+                      private val dispatcher: Executor,
+                      val logger: ApolloLogger) : ApolloStore, ReadableStore, WriteableStore {
+  private val optimisticCache = OptimisticNormalizedCache().chain(normalizedCache) as OptimisticNormalizedCache
   private val lock: ReadWriteLock
   private val subscribers: MutableSet<RecordChangeSubscriber>
-  private val dispatcher: Executor
   private val cacheKeyBuilder: CacheKeyBuilder
-  val logger: ApolloLogger
+
   override fun networkResponseNormalizer(): ResponseNormalizer<Map<String, Any>> {
     return object : ResponseNormalizer<Map<String, Any>>() {
       override fun resolveCacheKey(field: ResponseField,
                                    record: Map<String, Any>): CacheKey {
         return cacheKeyResolver.fromFieldRecordSet(field, record)
-      }
-
-      override fun cacheKeyBuilder(): CacheKeyBuilder {
-        return cacheKeyBuilder
-      }
-    }
-  }
-
-  override fun cacheResponseNormalizer(): ResponseNormalizer<Record> {
-    return object : ResponseNormalizer<Record>() {
-      override fun resolveCacheKey(field: ResponseField, record: Record): CacheKey {
-        return CacheKey(record.key)
       }
 
       override fun cacheKeyBuilder(): CacheKeyBuilder {
@@ -190,18 +179,17 @@ class RealApolloStore(normalizedCache: NormalizedCache, cacheKeyResolver: CacheK
       operation: Operation<D>): ApolloStoreOperation<D> {
     return object : ApolloStoreOperation<D>(dispatcher) {
       override fun perform(): D {
-        return doRead(operation, ResponseNormalizer.NO_OP_NORMALIZER as ResponseNormalizer<Record>, CacheHeaders.NONE).data!!
+        return doRead(operation, CacheHeaders.NONE).data!!
       }
     }
   }
 
   override fun <D : Operation.Data> readOperationInternal(
       operation: Operation<D>,
-      responseNormalizer: ResponseNormalizer<Record>,
       cacheHeaders: CacheHeaders): ApolloStoreOperation<Response<D>> {
     return object : ApolloStoreOperation<Response<D>>(dispatcher) {
       override fun perform(): Response<D> {
-        return doRead(operation, responseNormalizer, cacheHeaders)
+        return doRead(operation, cacheHeaders)
       }
     }
   }
@@ -313,39 +301,27 @@ class RealApolloStore(normalizedCache: NormalizedCache, cacheKeyResolver: CacheK
             cacheKeyResolver(),
             CacheHeaders.NONE,
             cacheKeyBuilder)
-        val responseReader = RandomAccessResponseReader(
-            operation.variables(),
-            rootRecord,
-            fieldValueResolver,
-            customScalarAdapters
-        )
-        return operation.adapter().fromResponse(responseReader, null)
+
+        return operation.parseData(rootRecord, customScalarAdapters, fieldValueResolver)
       }
     })
   }
 
   fun <D : Operation.Data> doRead(
       operation: Operation<D>,
-      responseNormalizer: ResponseNormalizer<Record>,
       cacheHeaders: CacheHeaders): Response<D> {
     return readTransaction(object : Transaction<ReadableStore, Response<D>> {
       override fun execute(cache: ReadableStore): Response<D> {
         val rootRecord = cache.read(rootKeyForOperation(operation).key, cacheHeaders)
             ?: return builder<D>(operation).fromCache(true).build()
-        val fieldValueResolver = CacheValueResolver(
-            cache,
-            operation.variables(),
-            cacheKeyResolver(),
-            cacheHeaders,
-            cacheKeyBuilder)
-        val responseReader = RandomAccessResponseReader(
-            operation.variables(),
-            rootRecord,
-            fieldValueResolver,
-            customScalarAdapters
-        )
         return try {
-          val data = operation.adapter().fromResponse(responseReader, null)
+          val fieldValueResolver = CacheValueResolver(
+              cache,
+              operation.variables(),
+              cacheKeyResolver(),
+              cacheHeaders,
+              cacheKeyBuilder)
+          val data = operation.parseData(rootRecord, customScalarAdapters, fieldValueResolver)
           val records = operation.normalize(data, customScalarAdapters, networkResponseNormalizer() as ResponseNormalizer<Map<String, Any>?>)
           builder<D>(operation)
               .data(data)
@@ -361,7 +337,8 @@ class RealApolloStore(normalizedCache: NormalizedCache, cacheKeyResolver: CacheK
   }
 
   fun <F> doRead(adapter: ResponseAdapter<F>,
-                 cacheKey: CacheKey, variables: Operation.Variables): F {
+                 cacheKey: CacheKey,
+                 variables: Operation.Variables): F {
     return readTransaction(object : Transaction<ReadableStore, F> {
       override fun execute(cache: ReadableStore): F? {
         val rootRecord = cache.read(cacheKey.key, CacheHeaders.NONE) ?: return null
@@ -384,7 +361,7 @@ class RealApolloStore(normalizedCache: NormalizedCache, cacheKeyResolver: CacheK
       optimistic: Boolean,
       mutationId: UUID?): Set<String> {
     return writeTransaction(object : Transaction<WriteableStore, Set<String>> {
-      override fun execute(cache: WriteableStore): Set<String>? {
+      override fun execute(cache: WriteableStore): Set<String> {
         val responseWriter = RealResponseWriter(operation.variables(), customScalarAdapters)
         operation.adapter().toResponse(responseWriter, operationData)
         val responseNormalizer = networkResponseNormalizer()
@@ -416,12 +393,17 @@ class RealApolloStore(normalizedCache: NormalizedCache, cacheKeyResolver: CacheK
     })
   }
 
+  /**
+   * Parses GraphQL operation raw response from [string] with provided [customScalarAdapters] and returns result [Response]
+   */
+  private fun <D : Operation.Data> Operation<D>.parse(
+      rootRecord: Record,
+      customScalarAdapters: CustomScalarAdapters
+  ): Response<D> {
+    return MapResponseParser.parse(rootRecord, this, customScalarAdapters)
+  }
+
   init {
-    optimisticCache = OptimisticNormalizedCache().chain(normalizedCache) as OptimisticNormalizedCache
-    this.cacheKeyResolver = cacheKeyResolver
-    this.customScalarAdapters = customScalarAdapters
-    this.dispatcher = dispatcher
-    this.logger = logger
     lock = ReentrantReadWriteLock()
     subscribers = Collections.newSetFromMap(WeakHashMap())
     cacheKeyBuilder = RealCacheKeyBuilder()

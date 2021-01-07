@@ -4,7 +4,9 @@ import com.apollographql.apollo.api.CustomScalarAdapters.Companion.DEFAULT
 import com.apollographql.apollo.api.internal.MapResponseParser
 import com.apollographql.apollo.api.internal.OperationRequestBodyComposer
 import com.apollographql.apollo.api.internal.BufferedSourceResponseParser
+import com.apollographql.apollo.api.internal.RandomAccessResponseReader
 import com.apollographql.apollo.api.internal.SimpleResponseWriter
+import com.apollographql.apollo.api.internal.ValueResolver
 import okio.Buffer
 import okio.BufferedSource
 import okio.ByteString
@@ -145,11 +147,33 @@ fun <D : Operation.Data> Operation<D>.parse(
 }
 
 /**
- * Parses GraphQL operation raw response from [string] with provided [customScalarAdapters] and returns result [Response]
+ * Parses GraphQL operation raw response from [map] with provided [customScalarAdapters] and returns result [Response]
+ *
+ * @param map: a [Map] representing the response. It typically include a "data" field
  */
 fun <D : Operation.Data> Operation<D>.parse(
-    root: Map<String, Any?>,
+    map: Map<String, Any?>,
     customScalarAdapters: CustomScalarAdapters = DEFAULT
 ): Response<D> {
-  return MapResponseParser.parse(root, this, customScalarAdapters)
+  return MapResponseParser.parse(map, this, customScalarAdapters)
+}
+
+/**
+ * Parses GraphQL operation raw response from [map] with provided [customScalarAdapters] and returns result [Response]
+ *
+ * @param map: a [Map] representing the response. It typically include a "data" field
+ */
+fun <D : Operation.Data, M: Map<String, Any?>> Operation<D>.parseData(
+    map: M,
+    customScalarAdapters: CustomScalarAdapters = DEFAULT,
+    valueResolver: ValueResolver<M>
+): D {
+  return RandomAccessResponseReader(
+      variables(),
+      map,
+      valueResolver,
+      customScalarAdapters,
+  ).let {
+    adapter().fromResponse(it)
+  }
 }

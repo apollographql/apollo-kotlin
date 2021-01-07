@@ -18,8 +18,8 @@ import com.apollographql.apollo.interceptor.ApolloInterceptorChain
 import com.apollographql.apollo.interceptor.ApolloRequest
 import com.apollographql.apollo.interceptor.ApolloRequestInterceptor
 import com.apollographql.apollo.interceptor.ApolloResponse
-import com.apollographql.apollo.api.internal.RandomAccessResponseReader
 import com.apollographql.apollo.api.internal.response.RealResponseWriter
+import com.apollographql.apollo.api.parseData
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.flow
@@ -81,8 +81,8 @@ class ApolloCacheInterceptor<S>(private val store: S) : ApolloRequestInterceptor
         CacheHeaders.NONE,
         RealCacheKeyBuilder()
     )
-    val responseReader = RandomAccessResponseReader(operation.variables(), rootRecord, fieldValueResolver, request.customScalarAdapters)
-    val data = operation.adapter().fromResponse(responseReader)
+    val data = operation.parseData(rootRecord, request.customScalarAdapters, fieldValueResolver)
+
     return builder<D>(operation)
         .data(data)
         .build()

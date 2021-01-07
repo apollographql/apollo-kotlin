@@ -81,15 +81,13 @@ class ApolloCacheInterceptor(
 
   @Throws(ApolloException::class)
   fun resolveFromCache(request: InterceptorRequest): InterceptorResponse {
-    val responseNormalizer = apolloStore.cacheResponseNormalizer()
     val apolloStoreOperation = apolloStore.readOperationInternal(
         request.operation,
-        responseNormalizer,
         request.cacheHeaders)
     val cachedResponse = apolloStoreOperation.execute()
     if (cachedResponse.data != null) {
       logger.d("Cache HIT for operation %s", request.operation.name().name())
-      return InterceptorResponse(null, cachedResponse, responseNormalizer.records())
+      return InterceptorResponse(null, cachedResponse, emptySet())
     }
     logger.d("Cache MISS for operation %s", request.operation.name().name())
     throw ApolloException(String.format("Cache miss for operation %s", request.operation.name().name()))
