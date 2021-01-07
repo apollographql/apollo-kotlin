@@ -9,7 +9,7 @@ import com.apollographql.apollo.cache.normalized.internal.ResponseNormalizer
 import com.apollographql.apollo.cache.normalized.internal.dependentKeys
 import com.apollographql.apollo.cache.normalized.internal.normalize
 import com.apollographql.apollo.exception.ApolloNetworkException
-import com.apollographql.apollo.response.OperationResponseParser
+import com.apollographql.apollo.api.internal.MapResponseParser
 import com.apollographql.apollo.subscription.OnSubscriptionManagerStateChangeListener
 import com.apollographql.apollo.subscription.OperationClientMessage
 import com.apollographql.apollo.subscription.OperationServerMessage
@@ -25,12 +25,12 @@ import java.util.concurrent.CopyOnWriteArrayList
 import java.util.concurrent.Executor
 import java.util.concurrent.TimeUnit
 
-class RealSubscriptionManager(customScalarAdapters: CustomScalarAdapters,
+class RealSubscriptionManager(private val customScalarAdapters: CustomScalarAdapters,
                               transportFactory: SubscriptionTransport.Factory,
-                              connectionParams: SubscriptionConnectionParamsProvider,
-                              dispatcher: Executor, connectionHeartbeatTimeoutMs: Long,
-                              responseNormalizer: Function0<ResponseNormalizer<Map<String, Any>>>,
-                              autoPersistSubscription: Boolean
+                              private val connectionParams: SubscriptionConnectionParamsProvider,
+                              private val dispatcher: Executor, private val connectionHeartbeatTimeoutMs: Long,
+                              private val responseNormalizer: Function0<ResponseNormalizer<Map<String, Any>>>,
+                              private val autoPersistSubscription: Boolean
 ) : SubscriptionManager {
   @JvmField
   var subscriptions: MutableMap<UUID, SubscriptionRecord> = LinkedHashMap()
@@ -39,17 +39,12 @@ class RealSubscriptionManager(customScalarAdapters: CustomScalarAdapters,
   override var state: SubscriptionManagerState = SubscriptionManagerState.DISCONNECTED
 
   val timer = AutoReleaseTimer()
-  private val customScalarAdapters: CustomScalarAdapters
-  private val transport: SubscriptionTransport
-  private val connectionParams: SubscriptionConnectionParamsProvider
-  private val dispatcher: Executor
-  private val connectionHeartbeatTimeoutMs: Long
-  private val responseNormalizer: Function0<ResponseNormalizer<Map<String, Any>>>
+  private val transport: SubscriptionTransport = transportFactory.create(SubscriptionTransportCallback(this, dispatcher))
   private val connectionAcknowledgeTimeoutTimerTask = Runnable { onConnectionAcknowledgeTimeout() }
   private val inactivityTimeoutTimerTask = Runnable { onInactivityTimeout() }
   private val connectionHeartbeatTimeoutTimerTask = Runnable { onConnectionHeartbeatTimeout() }
   private val onStateChangeListeners: MutableList<OnSubscriptionManagerStateChangeListener> = CopyOnWriteArrayList()
-  private val autoPersistSubscription: Boolean
+
   override fun <D : Operation.Data> subscribe(subscription: Subscription<D>, callback: SubscriptionManager.Callback<D>) {
     dispatcher.execute { doSubscribe(subscription, callback) }
   }
@@ -303,17 +298,11 @@ class RealSubscriptionManager(customScalarAdapters: CustomScalarAdapters,
     if (subscriptionRecord != null) {
       val normalizer = responseNormalizer.invoke()
       val subscription = subscriptionRecord!!.subscription
-      val parser = OperationResponseParser(
-          subscription,
-          customScalarAdapters,
-      )
-      val response: Response<*>
-      try {
-        response = parser.parse(message.payload).let {
+      val response = try {
+        MapResponseParser.parse(message.payload, subscription, customScalarAdapters).let {
           val records = it.data?.let { subscription.normalize(it, customScalarAdapters, normalizer as ResponseNormalizer<Map<String, Any>?>) }
           it.copy(dependentKeys = records.dependentKeys())
         }
-
       } catch (e: Exception) {
         subscriptionRecord = removeSubscriptionById(subscriptionId)
         if (subscriptionRecord != null) {
@@ -348,7 +337,7 @@ class RealSubscriptionManager(customScalarAdapters: CustomScalarAdapters,
     val subscriptionRecord = removeSubscriptionById(subscriptionId)
     val resendSubscriptionWithDocument: Boolean
     resendSubscriptionWithDocument = if (autoPersistSubscription) {
-      val error = OperationResponseParser.parseError(message.payload)
+      val error = MapResponseParser.parseError(message.payload)
       (PROTOCOL_NEGOTIATION_ERROR_NOT_FOUND.equals(error.message, ignoreCase = true)
           || PROTOCOL_NEGOTIATION_ERROR_NOT_SUPPORTED.equals(error.message, ignoreCase = true))
     } else {
@@ -477,13 +466,4 @@ class RealSubscriptionManager(customScalarAdapters: CustomScalarAdapters,
     const val PROTOCOL_NEGOTIATION_ERROR_NOT_SUPPORTED = "PersistedQueryNotSupported"
   }
 
-  init {
-    this.customScalarAdapters = customScalarAdapters
-    this.connectionParams = connectionParams
-    transport = transportFactory.create(SubscriptionTransportCallback(this, dispatcher))
-    this.dispatcher = dispatcher
-    this.connectionHeartbeatTimeoutMs = connectionHeartbeatTimeoutMs
-    this.responseNormalizer = responseNormalizer
-    this.autoPersistSubscription = autoPersistSubscription
-  }
 }

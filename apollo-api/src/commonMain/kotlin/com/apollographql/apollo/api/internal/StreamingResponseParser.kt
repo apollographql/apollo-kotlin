@@ -12,7 +12,7 @@ import okio.BufferedSource
 import okio.IOException
 import kotlin.jvm.JvmStatic
 
-object SimpleOperationResponseParser {
+object StreamingResponseParser {
 
   @JvmStatic
   @Throws(IOException::class)
@@ -35,7 +35,7 @@ object SimpleOperationResponseParser {
               customScalarAdapters = customScalarAdapters,
           )
           "errors" -> errors = jsonReader.readErrors()
-          "extensions" -> extensions = jsonReader.readExtensions()
+          "extensions" -> extensions = jsonReader.readRecursively() as Map<String, Any?>
           else -> jsonReader.skipValue()
         }
       }
@@ -110,10 +110,5 @@ object SimpleOperationResponseParser {
       }
     }
     return Error.Location(line, column)
-  }
-
-  @Suppress("UNCHECKED_CAST")
-  private fun JsonReader.readExtensions(): Map<String, Any?> {
-    return readRecursively() as Map<String, Any?>
   }
 }

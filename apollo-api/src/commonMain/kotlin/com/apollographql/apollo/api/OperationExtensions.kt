@@ -1,8 +1,9 @@
 package com.apollographql.apollo.api
 
 import com.apollographql.apollo.api.CustomScalarAdapters.Companion.DEFAULT
+import com.apollographql.apollo.api.internal.MapResponseParser
 import com.apollographql.apollo.api.internal.OperationRequestBodyComposer
-import com.apollographql.apollo.api.internal.SimpleOperationResponseParser
+import com.apollographql.apollo.api.internal.StreamingResponseParser
 import com.apollographql.apollo.api.internal.SimpleResponseWriter
 import okio.Buffer
 import okio.BufferedSource
@@ -120,11 +121,11 @@ fun <D : Operation.Data> Operation<D>.parse(
     source: BufferedSource,
     customScalarAdapters: CustomScalarAdapters = DEFAULT
 ): Response<D> {
-  return SimpleOperationResponseParser.parse(source, this, customScalarAdapters)
+  return StreamingResponseParser.parse(source, this, customScalarAdapters)
 }
 
 /**
- * Parses GraphQL operation raw response from the [byteString] with provided [customScalarAdapters] and returns result [Response]
+ * Parses GraphQL operation raw response from [byteString] with provided [customScalarAdapters] and returns result [Response]
  */
 fun <D : Operation.Data> Operation<D>.parse(
     byteString: ByteString,
@@ -134,11 +135,21 @@ fun <D : Operation.Data> Operation<D>.parse(
 }
 
 /**
- * Parses GraphQL operation raw response from the [byteString] with provided [customScalarAdapters] and returns result [Response]
+ * Parses GraphQL operation raw response from [string] with provided [customScalarAdapters] and returns result [Response]
  */
 fun <D : Operation.Data> Operation<D>.parse(
     string: String,
     customScalarAdapters: CustomScalarAdapters = DEFAULT
 ): Response<D> {
   return parse(Buffer().writeUtf8(string), customScalarAdapters)
+}
+
+/**
+ * Parses GraphQL operation raw response from [string] with provided [customScalarAdapters] and returns result [Response]
+ */
+fun <D : Operation.Data> Operation<D>.parse(
+    root: Map<String, Any?>,
+    customScalarAdapters: CustomScalarAdapters = DEFAULT
+): Response<D> {
+  return MapResponseParser.parse(root, this, customScalarAdapters)
 }

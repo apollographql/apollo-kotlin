@@ -379,7 +379,9 @@ class RealApolloStore(normalizedCache: NormalizedCache, cacheKeyResolver: CacheK
   }
 
   fun <D : Operation.Data> doWrite(
-      operation: Operation<D>, operationData: D, optimistic: Boolean,
+      operation: Operation<D>,
+      operationData: D,
+      optimistic: Boolean,
       mutationId: UUID?): Set<String> {
     return writeTransaction(object : Transaction<WriteableStore, Set<String>> {
       override fun execute(cache: WriteableStore): Set<String>? {
