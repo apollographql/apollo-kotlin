@@ -5,14 +5,13 @@
 //
 package com.example.union_fragment.fragment
 
-import com.apollographql.apollo.api.GraphqlFragment
 import kotlin.String
 import kotlin.Suppress
 
 @Suppress("NAME_SHADOWING", "UNUSED_ANONYMOUS_PARAMETER", "LocalVariableName",
     "RemoveExplicitTypeArguments", "NestedLambdaShadowedImplicitParameter", "PropertyName",
     "RemoveRedundantQualifierName")
-interface Starship : GraphqlFragment {
+interface Starship {
   val __typename: String
 
   /**

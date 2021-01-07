@@ -5,14 +5,13 @@
 //
 package com.example.fragments_same_type_condition.fragment
 
-import com.apollographql.apollo.api.GraphqlFragment
 import kotlin.String
 import kotlin.Suppress
 
 @Suppress("NAME_SHADOWING", "UNUSED_ANONYMOUS_PARAMETER", "LocalVariableName",
     "RemoveExplicitTypeArguments", "NestedLambdaShadowedImplicitParameter", "PropertyName",
     "RemoveRedundantQualifierName")
-interface DroidDetails1 : GraphqlFragment {
+interface DroidDetails1 {
   val __typename: String
 
   /**

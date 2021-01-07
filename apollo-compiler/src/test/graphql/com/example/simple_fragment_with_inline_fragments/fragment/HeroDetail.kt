@@ -5,7 +5,6 @@
 //
 package com.example.simple_fragment_with_inline_fragments.fragment
 
-import com.apollographql.apollo.api.GraphqlFragment
 import kotlin.Double
 import kotlin.String
 import kotlin.Suppress
@@ -14,7 +13,7 @@ import kotlin.collections.List
 @Suppress("NAME_SHADOWING", "UNUSED_ANONYMOUS_PARAMETER", "LocalVariableName",
     "RemoveExplicitTypeArguments", "NestedLambdaShadowedImplicitParameter", "PropertyName",
     "RemoveRedundantQualifierName")
-interface HeroDetail : GraphqlFragment {
+interface HeroDetail {
   val __typename: String
 
   /**

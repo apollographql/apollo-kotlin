@@ -1,7 +1,6 @@
 package com.apollographql.apollo.compiler.backend.codegen
 
 import com.apollographql.apollo.api.Fragment
-import com.apollographql.apollo.api.GraphqlFragment
 import com.apollographql.apollo.api.internal.ResponseAdapter
 import com.apollographql.apollo.compiler.applyIf
 import com.apollographql.apollo.compiler.backend.ast.CodeGenerationAst
@@ -21,7 +20,6 @@ internal fun CodeGenerationAst.FragmentType.interfaceTypeSpec(generateAsInternal
       .interfaceBuilder((this.interfaceType.name).escapeKotlinReservedWord())
       .addAnnotation(suppressWarningsAnnotation)
       .applyIf(generateAsInternal) { addModifiers(KModifier.INTERNAL) }
-      .addSuperinterface(GraphqlFragment::class)
       .applyIf(this.description.isNotBlank()) { addKdoc("%L\n", this@interfaceTypeSpec.description) }
       .addProperties(this.interfaceType.fields.map { field -> field.asPropertySpec() })
       .addTypes(
@@ -50,7 +48,6 @@ internal fun CodeGenerationAst.FragmentType.interfaceTypeSpec(generateAsInternal
       )
       .build()
 }
-
 
 internal fun CodeGenerationAst.FragmentType.implementationTypeSpec(generateAsInternal: Boolean): TypeSpec {
   val dataTypeName = this.implementationType.nestedObjects.single().typeRef.asTypeName()

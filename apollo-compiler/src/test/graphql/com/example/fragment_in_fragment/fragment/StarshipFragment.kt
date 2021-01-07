@@ -5,7 +5,6 @@
 //
 package com.example.fragment_in_fragment.fragment
 
-import com.apollographql.apollo.api.GraphqlFragment
 import kotlin.String
 import kotlin.Suppress
 import kotlin.collections.List
@@ -13,7 +12,7 @@ import kotlin.collections.List
 @Suppress("NAME_SHADOWING", "UNUSED_ANONYMOUS_PARAMETER", "LocalVariableName",
     "RemoveExplicitTypeArguments", "NestedLambdaShadowedImplicitParameter", "PropertyName",
     "RemoveRedundantQualifierName")
-interface StarshipFragment : GraphqlFragment {
+interface StarshipFragment {
   val __typename: String
 
   /**
