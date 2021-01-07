@@ -82,7 +82,7 @@ class RandomAccessResponseReader<M : Map<String, Any?>>(
     val result = if (values == null) {
       null
     } else {
-      values.mapIndexed { index, value ->
+      values.mapIndexed { _, value ->
         if (value == null) {
           null
         } else {
@@ -168,7 +168,7 @@ class RandomAccessResponseReader<M : Map<String, Any?>>(
 
     override fun <T : Any> readList(block: (ResponseReader.ListItemReader) -> T): List<T?> {
       val values = value as List<*>
-      val result = values.mapIndexed { index, value ->
+      val result = values.mapIndexed { _, value ->
         if (value == null) {
           null
         } else {
