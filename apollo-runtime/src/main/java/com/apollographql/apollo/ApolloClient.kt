@@ -14,7 +14,6 @@ import com.apollographql.apollo.api.internal.ApolloLogger
 import com.apollographql.apollo.api.internal.Optional.Companion.absent
 import com.apollographql.apollo.api.internal.Optional.Companion.fromNullable
 import com.apollographql.apollo.api.internal.Optional.Companion.of
-import com.apollographql.apollo.api.internal.Utils.__checkNotNull
 import com.apollographql.apollo.cache.CacheHeaders
 import com.apollographql.apollo.cache.normalized.ApolloStore
 import com.apollographql.apollo.cache.normalized.ApolloStoreOperation
@@ -122,7 +121,6 @@ class ApolloClient internal constructor(
 
   override fun <D : Operation.Data> mutate(
       mutation: Mutation<D>, withOptimisticUpdates: D): ApolloMutationCall<D> {
-    __checkNotNull(withOptimisticUpdates, "withOptimisticUpdate == null")
     return newCall(mutation).toBuilder().responseFetcher(ApolloResponseFetchers.NETWORK_ONLY)
         .optimisticUpdates(fromNullable(withOptimisticUpdates)).build()
   }
@@ -149,7 +147,7 @@ class ApolloClient internal constructor(
    * @param onStateChangeListener to be called when state changed
    */
   fun addOnSubscriptionManagerStateChangeListener(onStateChangeListener: OnSubscriptionManagerStateChangeListener) {
-    subscriptionManager.addOnStateChangeListener(__checkNotNull(onStateChangeListener, "onStateChangeListener is null"))
+    subscriptionManager.addOnStateChangeListener(onStateChangeListener)
   }
 
   /**
@@ -158,7 +156,7 @@ class ApolloClient internal constructor(
    * @param onStateChangeListener to remove
    */
   fun removeOnSubscriptionManagerStateChangeListener(onStateChangeListener: OnSubscriptionManagerStateChangeListener) {
-    subscriptionManager.removeOnStateChangeListener(__checkNotNull(onStateChangeListener, "onStateChangeListener is null"))
+    subscriptionManager.removeOnStateChangeListener(onStateChangeListener)
   }
 
   /**
@@ -197,7 +195,6 @@ class ApolloClient internal constructor(
    * @param callback to be notified when operation is completed
    */
   fun clearNormalizedCache(callback: ApolloStoreOperation.Callback<Boolean>) {
-    __checkNotNull<ApolloStoreOperation.Callback<Boolean>>(callback, "callback == null")
     apolloStore.clearAll().enqueue(callback)
   }
 
@@ -333,7 +330,7 @@ class ApolloClient internal constructor(
      * @return The [Builder] object to be used for chaining method calls
      */
     fun okHttpClient(okHttpClient: OkHttpClient): Builder {
-      return callFactory(__checkNotNull(okHttpClient, "okHttpClient is null"))
+      return callFactory(okHttpClient)
     }
 
     /**
@@ -343,7 +340,7 @@ class ApolloClient internal constructor(
      * sets this value.
      */
     fun callFactory(factory: Call.Factory): Builder {
-      callFactory = __checkNotNull(factory, "factory == null")
+      callFactory = factory
       return this
     }
 
@@ -355,7 +352,7 @@ class ApolloClient internal constructor(
      * @return The [Builder] object to be used for chaining method calls
      */
     fun serverUrl(serverUrl: HttpUrl): Builder {
-      this.serverUrl = __checkNotNull(serverUrl, "serverUrl is null")
+      this.serverUrl = serverUrl
       return this
     }
 
@@ -367,7 +364,7 @@ class ApolloClient internal constructor(
      * @return The [Builder] object to be used for chaining method calls
      */
     fun serverUrl(serverUrl: String): Builder {
-      this.serverUrl = HttpUrl.parse(__checkNotNull(serverUrl, "serverUrl == null"))
+      this.serverUrl = HttpUrl.parse(serverUrl)
       return this
     }
 
@@ -378,7 +375,7 @@ class ApolloClient internal constructor(
      * @return The [Builder] object to be used for chaining method calls
      */
     fun httpCache(httpCache: HttpCache): Builder {
-      this.httpCache = __checkNotNull(httpCache, "httpCache == null")
+      this.httpCache = httpCache
       return this
     }
     /**
@@ -407,8 +404,8 @@ class ApolloClient internal constructor(
     @JvmOverloads
     fun normalizedCache(normalizedCacheFactory: NormalizedCacheFactory<*>,
                         keyResolver: CacheKeyResolver = CacheKeyResolver.DEFAULT, writeToCacheAsynchronously: Boolean = false): Builder {
-      cacheFactory = fromNullable(__checkNotNull(normalizedCacheFactory, "normalizedCacheFactory == null"))
-      cacheKeyResolver = fromNullable(__checkNotNull(keyResolver, "cacheKeyResolver == null"))
+      cacheFactory = fromNullable(normalizedCacheFactory)
+      cacheKeyResolver = fromNullable(keyResolver)
       writeToNormalizedCacheAsynchronously = writeToCacheAsynchronously
       return this
     }
@@ -433,7 +430,7 @@ class ApolloClient internal constructor(
      * @return The [Builder] object to be used for chaining method calls
      */
     fun dispatcher(dispatcher: Executor): Builder {
-      this.dispatcher = __checkNotNull(dispatcher, "dispatcher == null")
+      this.dispatcher = dispatcher
       return this
     }
 
@@ -444,7 +441,7 @@ class ApolloClient internal constructor(
      * @return The [Builder] object to be used for chaining method calls
      */
     fun defaultHttpCachePolicy(cachePolicy: HttpCachePolicy.Policy): Builder {
-      defaultHttpCachePolicy = __checkNotNull(cachePolicy, "cachePolicy == null")
+      defaultHttpCachePolicy = cachePolicy
       return this
     }
 
@@ -455,7 +452,7 @@ class ApolloClient internal constructor(
      * @return The [Builder] object to be used for chaining method calls
      */
     fun defaultCacheHeaders(cacheHeaders: CacheHeaders): Builder {
-      defaultCacheHeaders = __checkNotNull(cacheHeaders, "cacheHeaders == null")
+      defaultCacheHeaders = cacheHeaders
       return this
     }
 
@@ -465,7 +462,7 @@ class ApolloClient internal constructor(
      * @return The [Builder] object to be used for chaining method calls
      */
     fun defaultResponseFetcher(defaultResponseFetcher: ResponseFetcher): Builder {
-      this.defaultResponseFetcher = __checkNotNull(defaultResponseFetcher, "defaultResponseFetcher == null")
+      this.defaultResponseFetcher = defaultResponseFetcher
       return this
     }
 
@@ -547,8 +544,7 @@ class ApolloClient internal constructor(
      * @return The [Builder] object to be used for chaining method calls
      */
     fun subscriptionTransportFactory(subscriptionTransportFactory: SubscriptionTransport.Factory): Builder {
-      this.subscriptionTransportFactory = of(__checkNotNull(subscriptionTransportFactory,
-          "subscriptionTransportFactory is null"))
+      this.subscriptionTransportFactory = of(subscriptionTransportFactory)
       return this
     }
 
@@ -560,8 +556,7 @@ class ApolloClient internal constructor(
      * @return The [Builder] object to be used for chaining method calls
      */
     fun subscriptionConnectionParams(connectionParams: SubscriptionConnectionParams): Builder {
-      subscriptionConnectionParams = SubscriptionConnectionParamsProvider.Const(__checkNotNull(connectionParams,
-          "connectionParams is null"))
+      subscriptionConnectionParams = SubscriptionConnectionParamsProvider.Const(connectionParams)
       return this
     }
 
@@ -573,7 +568,7 @@ class ApolloClient internal constructor(
      * @return The [Builder] object to be used for chaining method calls
      */
     fun subscriptionConnectionParams(provider: SubscriptionConnectionParamsProvider): Builder {
-      subscriptionConnectionParams = __checkNotNull(provider, "provider is null")
+      subscriptionConnectionParams = provider
       return this
     }
 
@@ -588,7 +583,6 @@ class ApolloClient internal constructor(
      * @return The [Builder] object to be used for chaining method calls
      */
     fun subscriptionHeartbeatTimeout(timeout: Long, timeUnit: TimeUnit): Builder {
-      __checkNotNull(timeUnit, "timeUnit is null")
       subscriptionHeartbeatTimeout = Math.max(timeUnit.toMillis(timeout), TimeUnit.SECONDS.toMillis(10))
       return this
     }
@@ -634,7 +628,6 @@ class ApolloClient internal constructor(
      * @return The configured [ApolloClient]
      */
     fun build(): ApolloClient {
-      __checkNotNull(serverUrl, "serverUrl is null")
       val apolloLogger = ApolloLogger(logger)
       var callFactory = callFactory
       if (callFactory == null) {

@@ -15,7 +15,6 @@
  */
 package com.apollographql.apollo.api.internal
 
-import com.apollographql.apollo.api.internal.Utils.__checkNotNull
 
 /**
  * Implementation of an [Optional] containing a reference.
@@ -29,36 +28,29 @@ internal class Present<T>(private val reference: T) : Optional<T>() {
   }
 
   override fun or(defaultValue: T): T {
-    __checkNotNull(defaultValue, "use Optional.orNull() instead of Optional.or(null)")
     return reference
   }
 
   override fun or(secondChoice: Optional<out T>): Optional<T> {
-    __checkNotNull(secondChoice)
     return this
   }
 
   override fun <V> transform(function: Function<in T, V>): Optional<V> {
-    return Present(__checkNotNull(function!!.apply(reference),
-        "the Function passed to Optional.transform() must not return null."))
+    return Present(function.apply(reference))
   }
 
   override fun <V> map(function: Function<in T, V>): Optional<V> {
-    return Present(__checkNotNull(function!!.apply(reference),
-        "the Function passed to Optional.map() must not return null."))
+    return Present(function.apply(reference))
   }
 
   override fun <V> flatMap(function: Function<in T, Optional<V>>): Optional<V> {
-    __checkNotNull(function)
-    return __checkNotNull(function!!.apply(reference),
-        "the Function passed to Optional.flatMap() must not return null.")
+    return function.apply(reference)
   }
 
   override fun apply(action: Action<T>): Optional<T> {
-    __checkNotNull(action)
     return map(object : Function<T, T> {
       override fun apply(t: T): T {
-        action!!.apply(t)
+        action.apply(t)
         return t
       }
     })

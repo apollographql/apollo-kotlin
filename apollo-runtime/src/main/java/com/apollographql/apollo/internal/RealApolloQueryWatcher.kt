@@ -6,7 +6,6 @@ import com.apollographql.apollo.api.Operation
 import com.apollographql.apollo.api.Response
 import com.apollographql.apollo.api.internal.ApolloLogger
 import com.apollographql.apollo.api.internal.Optional
-import com.apollographql.apollo.api.internal.Utils.__checkNotNull
 import com.apollographql.apollo.cache.normalized.ApolloStore
 import com.apollographql.apollo.cache.normalized.ApolloStore.RecordChangeSubscriber
 import com.apollographql.apollo.exception.ApolloCanceledException
@@ -49,7 +48,6 @@ class RealApolloQueryWatcher<D : Operation.Data>(
   @Synchronized
   override fun refetchResponseFetcher(fetcher: ResponseFetcher): RealApolloQueryWatcher<D> {
     check(!(state.get() !== CallState.IDLE)) { "Already Executed" }
-    __checkNotNull(fetcher, "responseFetcher == null")
     refetchResponseFetcher = fetcher
     return this
   }

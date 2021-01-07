@@ -2,7 +2,6 @@ package com.apollographql.apollo.interceptor
 
 import com.apollographql.apollo.api.Operation
 import com.apollographql.apollo.api.internal.Optional
-import com.apollographql.apollo.api.internal.Utils.__checkNotNull
 import com.apollographql.apollo.cache.CacheHeaders
 import com.apollographql.apollo.cache.normalized.Record
 import com.apollographql.apollo.exception.ApolloException
@@ -129,12 +128,12 @@ interface ApolloInterceptor {
       private var useHttpGetMethodForQueries = false
       private var autoPersistQueries = false
       fun cacheHeaders(cacheHeaders: CacheHeaders): Builder {
-        this.cacheHeaders = __checkNotNull(cacheHeaders, "cacheHeaders == null")
+        this.cacheHeaders = cacheHeaders
         return this
       }
 
       fun requestHeaders(requestHeaders: RequestHeaders): Builder {
-        this.requestHeaders = __checkNotNull(requestHeaders, "requestHeaders == null")
+        this.requestHeaders = requestHeaders
         return this
       }
 
@@ -149,7 +148,7 @@ interface ApolloInterceptor {
       }
 
       fun optimisticUpdates(optimisticUpdates: Optional<Operation.Data>): Builder {
-        this.optimisticUpdates = __checkNotNull(optimisticUpdates, "optimisticUpdates == null")
+        this.optimisticUpdates = optimisticUpdates
         return this
       }
 
@@ -174,7 +173,7 @@ interface ApolloInterceptor {
       }
 
       init {
-        this.operation = __checkNotNull(operation, "operation == null")
+        this.operation = operation
       }
     }
 

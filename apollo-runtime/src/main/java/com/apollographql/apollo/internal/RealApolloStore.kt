@@ -10,7 +10,6 @@ import com.apollographql.apollo.api.internal.ApolloLogger
 import com.apollographql.apollo.api.internal.RealResponseReader
 import com.apollographql.apollo.api.internal.ResolveDelegate
 import com.apollographql.apollo.api.internal.ResponseAdapter
-import com.apollographql.apollo.api.internal.Utils.__checkNotNull
 import com.apollographql.apollo.cache.CacheHeaders
 import com.apollographql.apollo.cache.normalized.ApolloStore
 import com.apollographql.apollo.cache.normalized.ApolloStore.RecordChangeSubscriber
@@ -87,7 +86,6 @@ class RealApolloStore(normalizedCache: NormalizedCache, cacheKeyResolver: CacheK
   }
 
   override fun publish(changedKeys: Set<String>) {
-    __checkNotNull(changedKeys, "changedKeys == null")
     if (changedKeys.isEmpty()) {
       return
     }
@@ -117,7 +115,6 @@ class RealApolloStore(normalizedCache: NormalizedCache, cacheKeyResolver: CacheK
 
   override fun remove(cacheKey: CacheKey,
                       cascade: Boolean): ApolloStoreOperation<Boolean> {
-    __checkNotNull(cacheKey, "cacheKey == null")
     return object : ApolloStoreOperation<Boolean>(dispatcher) {
       override fun perform(): Boolean {
         return writeTransaction(object : Transaction<WriteableStore, Boolean> {
@@ -130,7 +127,6 @@ class RealApolloStore(normalizedCache: NormalizedCache, cacheKeyResolver: CacheK
   }
 
   override fun remove(cacheKeys: List<CacheKey>): ApolloStoreOperation<Int> {
-    __checkNotNull(cacheKeys, "cacheKey == null")
     return object : ApolloStoreOperation<Int>(dispatcher) {
       override fun perform(): Int {
         return writeTransaction(object : Transaction<WriteableStore, Int> {
@@ -171,19 +167,19 @@ class RealApolloStore(normalizedCache: NormalizedCache, cacheKeyResolver: CacheK
   }
 
   override fun read(key: String, cacheHeaders: CacheHeaders): Record? {
-    return optimisticCache.loadRecord(__checkNotNull(key, "key == null"), cacheHeaders)
+    return optimisticCache.loadRecord(key, cacheHeaders)
   }
 
   override fun read(keys: Collection<String>, cacheHeaders: CacheHeaders): Collection<Record> {
-    return optimisticCache.loadRecords(__checkNotNull(keys, "keys == null"), cacheHeaders)
+    return optimisticCache.loadRecords(keys, cacheHeaders)
   }
 
   override fun merge(recordSet: Collection<Record>, cacheHeaders: CacheHeaders): Set<String> {
-    return optimisticCache.merge(__checkNotNull(recordSet, "recordSet == null"), cacheHeaders)
+    return optimisticCache.merge(recordSet, cacheHeaders)
   }
 
   override fun merge(record: Record, cacheHeaders: CacheHeaders): Set<String> {
-    return optimisticCache.merge(__checkNotNull(record, "record == null"), cacheHeaders)
+    return optimisticCache.merge(record, cacheHeaders)
   }
 
   override fun cacheKeyResolver(): CacheKeyResolver {
@@ -419,12 +415,11 @@ class RealApolloStore(normalizedCache: NormalizedCache, cacheKeyResolver: CacheK
   }
 
   init {
-    __checkNotNull(normalizedCache, "cacheStore == null")
     optimisticCache = OptimisticNormalizedCache().chain(normalizedCache) as OptimisticNormalizedCache
-    this.cacheKeyResolver = __checkNotNull(cacheKeyResolver, "cacheKeyResolver == null")
-    this.customScalarAdapters = __checkNotNull(customScalarAdapters, "scalarTypeAdapters == null")
-    this.dispatcher = __checkNotNull(dispatcher, "dispatcher == null")
-    this.logger = __checkNotNull(logger, "logger == null")
+    this.cacheKeyResolver = cacheKeyResolver
+    this.customScalarAdapters = customScalarAdapters
+    this.dispatcher = dispatcher
+    this.logger = logger
     lock = ReentrantReadWriteLock()
     subscribers = Collections.newSetFromMap(WeakHashMap())
     cacheKeyBuilder = RealCacheKeyBuilder()

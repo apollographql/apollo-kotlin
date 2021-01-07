@@ -2,7 +2,6 @@ package com.apollographql.apollo.internal.interceptor
 
 import com.apollographql.apollo.api.Operation
 import com.apollographql.apollo.api.internal.ApolloLogger
-import com.apollographql.apollo.api.internal.Utils.__checkNotNull
 import com.apollographql.apollo.cache.ApolloCacheHeaders
 import com.apollographql.apollo.cache.normalized.ApolloStore
 import com.apollographql.apollo.cache.normalized.Record
@@ -190,9 +189,9 @@ class ApolloCacheInterceptor(
   }
 
   init {
-    this.apolloStore = __checkNotNull(apolloStore, "cache == null")
-    this.dispatcher = __checkNotNull(dispatcher, "dispatcher == null")
-    this.logger = __checkNotNull(logger, "logger == null")
+    this.apolloStore = apolloStore
+    this.dispatcher = dispatcher
+    this.logger = logger
     this.writeToCacheAsynchronously = writeToCacheAsynchronously
   }
 }

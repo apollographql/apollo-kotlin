@@ -5,7 +5,6 @@ import com.apollographql.apollo.api.Operation
 import com.apollographql.apollo.api.Response
 import com.apollographql.apollo.api.Subscription
 import com.apollographql.apollo.api.internal.ApolloLogger
-import com.apollographql.apollo.api.internal.Utils.__checkNotNull
 import com.apollographql.apollo.cache.CacheHeaders
 import com.apollographql.apollo.cache.normalized.ApolloStore
 import com.apollographql.apollo.cache.normalized.ApolloStoreOperation
@@ -32,7 +31,6 @@ class RealApolloSubscriptionCall<D : Operation.Data>(
   private var subscriptionCallback: SubscriptionManagerCallback<D>? = null
   @Throws(ApolloCanceledException::class)
   override fun execute(callback: ApolloSubscriptionCall.Callback<D>) {
-    __checkNotNull(callback, "callback == null")
     synchronized(this) {
       when (state.get()) {
         CallState.IDLE -> {
@@ -84,7 +82,6 @@ class RealApolloSubscriptionCall<D : Operation.Data>(
     get() = state.get() === CallState.CANCELED
 
   override fun cachePolicy(cachePolicy: ApolloSubscriptionCall.CachePolicy): ApolloSubscriptionCall<D> {
-    __checkNotNull(cachePolicy, "cachePolicy is null")
     return RealApolloSubscriptionCall(subscription, subscriptionManager, apolloStore, cachePolicy, dispatcher, logger)
   }
 

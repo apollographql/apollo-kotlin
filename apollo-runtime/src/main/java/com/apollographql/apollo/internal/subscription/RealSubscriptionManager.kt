@@ -4,7 +4,6 @@ import com.apollographql.apollo.api.CustomScalarAdapters
 import com.apollographql.apollo.api.Operation
 import com.apollographql.apollo.api.Response
 import com.apollographql.apollo.api.Subscription
-import com.apollographql.apollo.api.internal.Utils.__checkNotNull
 import com.apollographql.apollo.cache.normalized.Record
 import com.apollographql.apollo.cache.normalized.internal.ResponseNormalizer
 import com.apollographql.apollo.cache.normalized.internal.dependentKeys
@@ -27,9 +26,12 @@ import java.util.concurrent.Executor
 import java.util.concurrent.TimeUnit
 
 class RealSubscriptionManager(customScalarAdapters: CustomScalarAdapters,
-                              transportFactory: SubscriptionTransport.Factory, connectionParams: SubscriptionConnectionParamsProvider,
+                              transportFactory: SubscriptionTransport.Factory,
+                              connectionParams: SubscriptionConnectionParamsProvider,
                               dispatcher: Executor, connectionHeartbeatTimeoutMs: Long,
-                              responseNormalizer: Function0<ResponseNormalizer<Map<String, Any>>>, autoPersistSubscription: Boolean) : SubscriptionManager {
+                              responseNormalizer: Function0<ResponseNormalizer<Map<String, Any>>>,
+                              autoPersistSubscription: Boolean
+) : SubscriptionManager {
   @JvmField
   var subscriptions: MutableMap<UUID, SubscriptionRecord> = LinkedHashMap()
 
@@ -49,13 +51,10 @@ class RealSubscriptionManager(customScalarAdapters: CustomScalarAdapters,
   private val onStateChangeListeners: MutableList<OnSubscriptionManagerStateChangeListener> = CopyOnWriteArrayList()
   private val autoPersistSubscription: Boolean
   override fun <D : Operation.Data> subscribe(subscription: Subscription<D>, callback: SubscriptionManager.Callback<D>) {
-    __checkNotNull(subscription, "subscription == null")
-    __checkNotNull(callback, "callback == null")
     dispatcher.execute { doSubscribe(subscription, callback) }
   }
 
   override fun unsubscribe(subscription: Subscription<*>) {
-    __checkNotNull(subscription, "subscription == null")
     dispatcher.execute { doUnsubscribe(subscription) }
   }
 
@@ -86,11 +85,11 @@ class RealSubscriptionManager(customScalarAdapters: CustomScalarAdapters,
   }
 
   override fun addOnStateChangeListener(onStateChangeListener: OnSubscriptionManagerStateChangeListener) {
-    onStateChangeListeners.add(__checkNotNull(onStateChangeListener, "onStateChangeListener == null"))
+    onStateChangeListeners.add(onStateChangeListener)
   }
 
   override fun removeOnStateChangeListener(onStateChangeListener: OnSubscriptionManagerStateChangeListener) {
-    onStateChangeListeners.remove(__checkNotNull(onStateChangeListener, "onStateChangeListener == null"))
+    onStateChangeListeners.remove(onStateChangeListener)
   }
 
   fun doSubscribe(subscription: Subscription<*>, callback: SubscriptionManager.Callback<*>) {
@@ -202,18 +201,25 @@ class RealSubscriptionManager(customScalarAdapters: CustomScalarAdapters,
   }
 
   fun onOperationServerMessage(message: OperationServerMessage?) {
-    if (message is OperationServerMessage.ConnectionAcknowledge) {
-      onConnectionAcknowledgeServerMessage()
-    } else if (message is OperationServerMessage.Data) {
-      onOperationDataServerMessage(message)
-    } else if (message is OperationServerMessage.Error) {
-      onErrorServerMessage(message)
-    } else if (message is OperationServerMessage.Complete) {
-      onCompleteServerMessage(message)
-    } else if (message is OperationServerMessage.ConnectionError) {
-      disconnect(true)
-    } else if (message is OperationServerMessage.ConnectionKeepAlive) {
-      resetConnectionKeepAliveTimerTask()
+    when (message) {
+      is OperationServerMessage.ConnectionAcknowledge -> {
+        onConnectionAcknowledgeServerMessage()
+      }
+      is OperationServerMessage.Data -> {
+        onOperationDataServerMessage(message)
+      }
+      is OperationServerMessage.Error -> {
+        onErrorServerMessage(message)
+      }
+      is OperationServerMessage.Complete -> {
+        onCompleteServerMessage(message)
+      }
+      is OperationServerMessage.ConnectionError -> {
+        disconnect(true)
+      }
+      is OperationServerMessage.ConnectionKeepAlive -> {
+        resetConnectionKeepAliveTimerTask()
+      }
     }
   }
 
@@ -472,12 +478,8 @@ class RealSubscriptionManager(customScalarAdapters: CustomScalarAdapters,
   }
 
   init {
-    __checkNotNull(customScalarAdapters, "scalarTypeAdapters == null")
-    __checkNotNull(transportFactory, "transportFactory == null")
-    __checkNotNull(dispatcher, "dispatcher == null")
-    __checkNotNull(responseNormalizer, "responseNormalizer == null")
-    this.customScalarAdapters = __checkNotNull(customScalarAdapters, "scalarTypeAdapters == null")
-    this.connectionParams = __checkNotNull(connectionParams, "connectionParams == null")
+    this.customScalarAdapters = customScalarAdapters
+    this.connectionParams = connectionParams
     transport = transportFactory.create(SubscriptionTransportCallback(this, dispatcher))
     this.dispatcher = dispatcher
     this.connectionHeartbeatTimeoutMs = connectionHeartbeatTimeoutMs

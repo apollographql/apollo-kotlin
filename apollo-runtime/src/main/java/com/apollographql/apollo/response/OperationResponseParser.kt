@@ -8,7 +8,6 @@ import com.apollographql.apollo.api.Response.Companion.builder
 import com.apollographql.apollo.api.internal.FieldValueResolver
 import com.apollographql.apollo.api.internal.RealResponseReader
 import com.apollographql.apollo.api.internal.ResolveDelegate
-import com.apollographql.apollo.api.internal.Utils.__checkNotNull
 import com.apollographql.apollo.api.internal.json.BufferedSourceJsonReader
 import com.apollographql.apollo.api.internal.json.Utils.readRecursively
 import com.apollographql.apollo.cache.normalized.internal.ResponseNormalizer

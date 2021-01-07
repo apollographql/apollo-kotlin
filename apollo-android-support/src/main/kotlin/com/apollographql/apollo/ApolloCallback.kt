@@ -1,7 +1,6 @@
 package com.apollographql.apollo
 
 import android.os.Handler
-import com.apollographql.apollo.api.internal.Utils.__checkNotNull
 import android.os.Looper
 import com.apollographql.apollo.ApolloCallback
 import com.apollographql.apollo.api.Response
@@ -67,7 +66,7 @@ class ApolloCallback<D: Operation.Data>(callback: ApolloCall.Callback<D>, handle
    * @param handler  the callback will be run on the thread to which this handler is attached
    */
   init {
-    delegate = __checkNotNull(callback, "callback == null")
-    this.handler = __checkNotNull(handler, "handler == null")
+    delegate = callback
+    this.handler = handler
   }
 }
