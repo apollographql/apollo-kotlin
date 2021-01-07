@@ -9,16 +9,27 @@ import com.apollographql.apollo.api.CustomScalar
 import com.apollographql.apollo.api.CustomScalarAdapters
 import com.apollographql.apollo.api.toNumber
 
-class RealResponseReader<R : Map<String, Any?>>(
-    val operationVariables: Operation.Variables,
-    private val recordSet: R,
-    internal val fieldValueResolver: FieldValueResolver<R>,
+/**
+ * [RandomAccessResponseReader] is a [ResponseReader] that can read arbitrary fields from a root object
+ *
+ * @param M a map-like type
+ * @param root the root object
+ * @param a [ValueResolver] that can retrieve a given field from the map-like type M
+ *
+ */
+class RandomAccessResponseReader<M : Map<String, Any?>>(
+    private val variable: Operation.Variables,
+    private val root: M,
+    internal val valueResolver: ValueResolver<M>,
     internal val customScalarAdapters: CustomScalarAdapters,
 ) : ResponseReader {
-  private val variableValues: Map<String, Any?> = operationVariables.valueMap()
+  private val variableValues: Map<String, Any?> = variable.valueMap()
   private var selectedFieldIndex = -1
 
   override fun selectField(fields: Array<ResponseField>): Int {
+    /**
+     * Since we can read any field, just return all fields asked
+     */
     while (++selectedFieldIndex < fields.size) {
       if (!fields[selectedFieldIndex].shouldSkip(variableValues)) {
         return selectedFieldIndex
@@ -28,45 +39,45 @@ class RealResponseReader<R : Map<String, Any?>>(
   }
 
   override fun readString(field: ResponseField): String? {
-    val value = fieldValueResolver.valueFor<String>(recordSet, field)
+    val value = valueResolver.valueFor<String>(root, field)
     checkValue(field, value)
     return value
   }
 
   override fun readInt(field: ResponseField): Int? {
-    val value = fieldValueResolver.valueFor<BigDecimal>(recordSet, field)
+    val value = valueResolver.valueFor<BigDecimal>(root, field)
     checkValue(field, value)
     
     return value?.toNumber()?.toInt()
   }
 
   override fun readDouble(field: ResponseField): Double? {
-    val value = fieldValueResolver.valueFor<BigDecimal>(recordSet, field)
+    val value = valueResolver.valueFor<BigDecimal>(root, field)
     checkValue(field, value)
     
     return value?.toNumber()?.toDouble()
   }
 
   override fun readBoolean(field: ResponseField): Boolean? {
-    val value = fieldValueResolver.valueFor<Boolean>(recordSet, field)
+    val value = valueResolver.valueFor<Boolean>(root, field)
     checkValue(field, value)
     
     return value
   }
 
   override fun <T : Any> readObject(field: ResponseField, block: (ResponseReader) -> T): T? {
-    val value: R? = fieldValueResolver.valueFor(recordSet, field)
+    val value: M? = valueResolver.valueFor(root, field)
     checkValue(field, value)
     val parsedValue: T? = if (value == null) {
       null
     } else {
-      block(RealResponseReader(operationVariables, value, fieldValueResolver, customScalarAdapters))
+      block(RandomAccessResponseReader(variable, value, valueResolver, customScalarAdapters))
     }
     return parsedValue
   }
 
   override fun <T : Any> readList(field: ResponseField, block: (ResponseReader.ListItemReader) -> T): List<T?>? {
-    val values = fieldValueResolver.valueFor<List<*>>(recordSet, field)
+    val values = valueResolver.valueFor<List<*>>(root, field)
     checkValue(field, values)
     val result = if (values == null) {
       null
@@ -83,7 +94,7 @@ class RealResponseReader<R : Map<String, Any?>>(
   }
 
   override fun <T : Any> readCustomScalar(field: ResponseField.CustomScalarField): T? {
-    val value = fieldValueResolver.valueFor<Any>(recordSet, field)
+    val value = valueResolver.valueFor<Any>(root, field)
     checkValue(field, value)
     val result: T?
     if (value == null) {
@@ -150,8 +161,8 @@ class RealResponseReader<R : Map<String, Any?>>(
 
     @Suppress("UNCHECKED_CAST")
     override fun <T : Any> readObject(block: (ResponseReader) -> T): T {
-      val value = value as R
-      val item = block(RealResponseReader(operationVariables, value, fieldValueResolver, customScalarAdapters))
+      val value = value as M
+      val item = block(RandomAccessResponseReader(variable, value, valueResolver, customScalarAdapters))
       return item
     }
 

@@ -21,10 +21,10 @@ object MapResponseParser {
     var data: D? = null
     val buffer = payload["data"] as Map<String, Any?>?
     if (buffer != null) {
-      val realResponseReader = RealResponseReader(
+      val realResponseReader = RandomAccessResponseReader(
           operation.variables(),
           buffer,
-          MapFieldValueResolver() as FieldValueResolver<Map<String, Any?>>,
+          MapValueResolver() as ValueResolver<Map<String, Any?>>,
           customScalarAdapters,
       )
       data = operation.adapter().fromResponse(realResponseReader, null)
@@ -84,7 +84,7 @@ object MapResponseParser {
     return Error.Location(line, column)
   }
 
-  class MapFieldValueResolver : FieldValueResolver<Map<String, Any>> {
+  class MapValueResolver : ValueResolver<Map<String, Any>> {
     override fun <T> valueFor(map: Map<String, Any>, field: ResponseField): T? {
       return map[field.responseName] as T?
     }

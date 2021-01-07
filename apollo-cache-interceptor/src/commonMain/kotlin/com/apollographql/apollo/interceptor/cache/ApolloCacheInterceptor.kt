@@ -5,11 +5,10 @@ import com.apollographql.apollo.api.Operation
 import com.apollographql.apollo.api.Response
 import com.apollographql.apollo.api.Response.Companion.builder
 import com.apollographql.apollo.api.ResponseField
-import com.apollographql.apollo.api.internal.NoOpResolveDelegate
 import com.apollographql.apollo.cache.CacheHeaders
 import com.apollographql.apollo.cache.normalized.CacheKey
 import com.apollographql.apollo.cache.normalized.CacheKeyResolver
-import com.apollographql.apollo.cache.normalized.internal.CacheFieldValueResolver
+import com.apollographql.apollo.cache.normalized.internal.CacheValueResolver
 import com.apollographql.apollo.cache.normalized.internal.CacheKeyBuilder
 import com.apollographql.apollo.cache.normalized.internal.ReadableStore
 import com.apollographql.apollo.cache.normalized.internal.RealCacheKeyBuilder
@@ -19,7 +18,7 @@ import com.apollographql.apollo.interceptor.ApolloInterceptorChain
 import com.apollographql.apollo.interceptor.ApolloRequest
 import com.apollographql.apollo.interceptor.ApolloRequestInterceptor
 import com.apollographql.apollo.interceptor.ApolloResponse
-import com.apollographql.apollo.api.internal.RealResponseReader
+import com.apollographql.apollo.api.internal.RandomAccessResponseReader
 import com.apollographql.apollo.api.internal.response.RealResponseWriter
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.collect
@@ -76,13 +75,13 @@ class ApolloCacheInterceptor<S>(private val store: S) : ApolloRequestInterceptor
     val operation = request.operation
     val rootRecord = store.read(CacheKeyResolver.rootKeyForOperation(operation).key, CacheHeaders.NONE) ?: return null
 
-    val fieldValueResolver = CacheFieldValueResolver(store,
+    val fieldValueResolver = CacheValueResolver(store,
         operation.variables(),
         CacheKeyResolver.DEFAULT,
         CacheHeaders.NONE,
         RealCacheKeyBuilder()
     )
-    val responseReader = RealResponseReader(operation.variables(), rootRecord, fieldValueResolver, request.customScalarAdapters)
+    val responseReader = RandomAccessResponseReader(operation.variables(), rootRecord, fieldValueResolver, request.customScalarAdapters)
     val data = operation.adapter().fromResponse(responseReader)
     return builder<D>(operation)
         .data(data)

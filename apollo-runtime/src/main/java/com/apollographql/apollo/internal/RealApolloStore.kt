@@ -7,7 +7,7 @@ import com.apollographql.apollo.api.Response
 import com.apollographql.apollo.api.Response.Companion.builder
 import com.apollographql.apollo.api.ResponseField
 import com.apollographql.apollo.api.internal.ApolloLogger
-import com.apollographql.apollo.api.internal.RealResponseReader
+import com.apollographql.apollo.api.internal.RandomAccessResponseReader
 import com.apollographql.apollo.api.internal.ResolveDelegate
 import com.apollographql.apollo.api.internal.ResponseAdapter
 import com.apollographql.apollo.cache.CacheHeaders
@@ -20,7 +20,7 @@ import com.apollographql.apollo.cache.normalized.CacheKeyResolver.Companion.root
 import com.apollographql.apollo.cache.normalized.NormalizedCache
 import com.apollographql.apollo.cache.normalized.OptimisticNormalizedCache
 import com.apollographql.apollo.cache.normalized.Record
-import com.apollographql.apollo.cache.normalized.internal.CacheFieldValueResolver
+import com.apollographql.apollo.cache.normalized.internal.CacheValueResolver
 import com.apollographql.apollo.cache.normalized.internal.CacheKeyBuilder
 import com.apollographql.apollo.cache.normalized.internal.ReadableStore
 import com.apollographql.apollo.cache.normalized.internal.RealCacheKeyBuilder
@@ -307,13 +307,13 @@ class RealApolloStore(normalizedCache: NormalizedCache, cacheKeyResolver: CacheK
     return readTransaction(object : Transaction<ReadableStore, D> {
       override fun execute(cache: ReadableStore): D? {
         val rootRecord = cache.read(rootKeyForOperation(operation).key, CacheHeaders.NONE) ?: return null
-        val fieldValueResolver = CacheFieldValueResolver(
+        val fieldValueResolver = CacheValueResolver(
             cache,
             operation.variables(),
             cacheKeyResolver(),
             CacheHeaders.NONE,
             cacheKeyBuilder)
-        val responseReader = RealResponseReader(
+        val responseReader = RandomAccessResponseReader(
             operation.variables(),
             rootRecord,
             fieldValueResolver,
@@ -332,13 +332,13 @@ class RealApolloStore(normalizedCache: NormalizedCache, cacheKeyResolver: CacheK
       override fun execute(cache: ReadableStore): Response<D> {
         val rootRecord = cache.read(rootKeyForOperation(operation).key, cacheHeaders)
             ?: return builder<D>(operation).fromCache(true).build()
-        val fieldValueResolver = CacheFieldValueResolver(
+        val fieldValueResolver = CacheValueResolver(
             cache,
             operation.variables(),
             cacheKeyResolver(),
             cacheHeaders,
             cacheKeyBuilder)
-        val responseReader = RealResponseReader(
+        val responseReader = RandomAccessResponseReader(
             operation.variables(),
             rootRecord,
             fieldValueResolver,
@@ -365,9 +365,9 @@ class RealApolloStore(normalizedCache: NormalizedCache, cacheKeyResolver: CacheK
     return readTransaction(object : Transaction<ReadableStore, F> {
       override fun execute(cache: ReadableStore): F? {
         val rootRecord = cache.read(cacheKey.key, CacheHeaders.NONE) ?: return null
-        val fieldValueResolver = CacheFieldValueResolver(cache, variables,
+        val fieldValueResolver = CacheValueResolver(cache, variables,
             cacheKeyResolver(), CacheHeaders.NONE, cacheKeyBuilder)
-        val responseReader = RealResponseReader(
+        val responseReader = RandomAccessResponseReader(
             variables,
             rootRecord,
             fieldValueResolver,

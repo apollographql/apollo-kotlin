@@ -4,20 +4,20 @@ import com.apollographql.apollo.api.Operation
 import com.apollographql.apollo.api.ResponseField
 import com.apollographql.apollo.api.ResponseField.Type.LIST
 import com.apollographql.apollo.api.ResponseField.Type.OBJECT
-import com.apollographql.apollo.api.internal.FieldValueResolver
+import com.apollographql.apollo.api.internal.ValueResolver
 import com.apollographql.apollo.cache.CacheHeaders
 import com.apollographql.apollo.cache.normalized.CacheKey.Companion.NO_KEY
 import com.apollographql.apollo.cache.normalized.CacheKeyResolver
 import com.apollographql.apollo.cache.normalized.CacheReference
 import com.apollographql.apollo.cache.normalized.Record
 
-class CacheFieldValueResolver(
+class CacheValueResolver(
     private val readableCache: ReadableStore,
     private val variables: Operation.Variables,
     private val cacheKeyResolver: CacheKeyResolver,
     private val cacheHeaders: CacheHeaders,
     private val cacheKeyBuilder: CacheKeyBuilder
-) : FieldValueResolver<Record> {
+) : ValueResolver<Record> {
 
   @Suppress("UNCHECKED_CAST")
   override fun <T> valueFor(recordSet: Record, field: ResponseField): T? {
