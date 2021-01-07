@@ -12,7 +12,7 @@ import okio.BufferedSource
 import okio.IOException
 import kotlin.jvm.JvmStatic
 
-object StreamingResponseParser {
+object BufferedSourceResponseParser {
 
   @JvmStatic
   @Throws(IOException::class)

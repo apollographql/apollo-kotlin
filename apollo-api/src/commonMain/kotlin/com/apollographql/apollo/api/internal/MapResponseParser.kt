@@ -7,13 +7,12 @@ import com.apollographql.apollo.api.Response
 import com.apollographql.apollo.api.Response.Companion.builder
 import com.apollographql.apollo.api.ResponseField
 
+/**
+ * [MapResponseParser] parses network responses, including data, errors and extensions from a regular Map<String, Any?>.
+ * For better performance, you can parse a response from a [okio.BufferedSource] directly with [BufferedSourceResponseParser].
+ * That will avoid the cost of having to create an entire Map in memory
+ */
 object MapResponseParser {
-  class MapFieldValueResolver : FieldValueResolver<Map<String, Any>> {
-    override fun <T> valueFor(map: Map<String, Any>, field: ResponseField): T? {
-      return map[field.responseName] as T?
-    }
-  }
-
   fun <D : Operation.Data> parse(
       payload: Map<String, Any?>,
       operation: Operation<D>,
@@ -83,5 +82,11 @@ object MapResponseParser {
       }
     }
     return Error.Location(line, column)
+  }
+
+  class MapFieldValueResolver : FieldValueResolver<Map<String, Any>> {
+    override fun <T> valueFor(map: Map<String, Any>, field: ResponseField): T? {
+      return map[field.responseName] as T?
+    }
   }
 }
