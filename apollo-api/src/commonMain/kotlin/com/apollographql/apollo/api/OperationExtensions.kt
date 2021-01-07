@@ -112,6 +112,8 @@ fun Operation<*>.composeRequestBody(
 
 /**
  * Parses GraphQL operation raw response from the [source] with provided [customScalarAdapters] and returns result [Response]
+ *
+ * This will consume [source] so you don't need to close it. Also, you cannot reuse it
  */
 @JvmOverloads
 fun <D : Operation.Data> Operation<D>.parse(
@@ -128,5 +130,15 @@ fun <D : Operation.Data> Operation<D>.parse(
     byteString: ByteString,
     customScalarAdapters: CustomScalarAdapters = DEFAULT
 ): Response<D> {
-  return SimpleOperationResponseParser.parse(Buffer().write(byteString), this, customScalarAdapters)
+  return parse(Buffer().write(byteString), customScalarAdapters)
+}
+
+/**
+ * Parses GraphQL operation raw response from the [byteString] with provided [customScalarAdapters] and returns result [Response]
+ */
+fun <D : Operation.Data> Operation<D>.parse(
+    string: String,
+    customScalarAdapters: CustomScalarAdapters = DEFAULT
+): Response<D> {
+  return parse(Buffer().writeUtf8(string), customScalarAdapters)
 }

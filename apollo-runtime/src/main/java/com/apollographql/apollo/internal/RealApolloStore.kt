@@ -28,7 +28,9 @@ import com.apollographql.apollo.cache.normalized.internal.RealCacheKeyBuilder
 import com.apollographql.apollo.cache.normalized.internal.ResponseNormalizer
 import com.apollographql.apollo.cache.normalized.internal.Transaction
 import com.apollographql.apollo.cache.normalized.internal.WriteableStore
-import com.apollographql.apollo.internal.response.RealResponseWriter
+import com.apollographql.apollo.api.internal.response.RealResponseWriter
+import com.apollographql.apollo.cache.normalized.internal.dependentKeys
+import com.apollographql.apollo.cache.normalized.internal.normalize
 import java.util.ArrayList
 import java.util.Collections
 import java.util.LinkedHashSet
@@ -315,8 +317,12 @@ class RealApolloStore(normalizedCache: NormalizedCache, cacheKeyResolver: CacheK
             cacheKeyResolver(),
             CacheHeaders.NONE,
             cacheKeyBuilder)
-        val responseReader = RealResponseReader<Record>(operation.variables(), rootRecord,
-            fieldValueResolver, customScalarAdapters, ResponseNormalizer.NO_OP_NORMALIZER as ResolveDelegate<Record>)
+        val responseReader = RealResponseReader(
+            operation.variables(),
+            rootRecord,
+            fieldValueResolver,
+            customScalarAdapters
+        )
         return operation.adapter().fromResponse(responseReader, null)
       }
     })
@@ -336,15 +342,19 @@ class RealApolloStore(normalizedCache: NormalizedCache, cacheKeyResolver: CacheK
             cacheKeyResolver(),
             cacheHeaders,
             cacheKeyBuilder)
-        val responseReader = RealResponseReader(operation.variables(), rootRecord,
-            fieldValueResolver, customScalarAdapters, responseNormalizer)
+        val responseReader = RealResponseReader(
+            operation.variables(),
+            rootRecord,
+            fieldValueResolver,
+            customScalarAdapters
+        )
         return try {
-          responseNormalizer.willResolveRootQuery(operation)
           val data = operation.adapter().fromResponse(responseReader, null)
+          val records = operation.normalize(data, customScalarAdapters, networkResponseNormalizer() as ResponseNormalizer<Map<String, Any>?>)
           builder<D>(operation)
               .data(data)
               .fromCache(true)
-              .dependentKeys(responseNormalizer.dependentKeys())
+              .dependentKeys(records.dependentKeys()) // Do we need the dependentKeys here?
               .build()
         } catch (e: Exception) {
           logger.e(e, "Failed to read cache response")
@@ -361,8 +371,12 @@ class RealApolloStore(normalizedCache: NormalizedCache, cacheKeyResolver: CacheK
         val rootRecord = cache.read(cacheKey.key, CacheHeaders.NONE) ?: return null
         val fieldValueResolver = CacheFieldValueResolver(cache, variables,
             cacheKeyResolver(), CacheHeaders.NONE, cacheKeyBuilder)
-        val responseReader = RealResponseReader<Record>(variables, rootRecord,
-            fieldValueResolver, customScalarAdapters, ResponseNormalizer.NO_OP_NORMALIZER as ResolveDelegate<Record>)
+        val responseReader = RealResponseReader(
+            variables,
+            rootRecord,
+            fieldValueResolver,
+            customScalarAdapters,
+        )
         return adapter.fromResponse(responseReader, null)
       }
     })

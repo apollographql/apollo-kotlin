@@ -7,6 +7,8 @@ import com.apollographql.apollo.api.Subscription
 import com.apollographql.apollo.api.internal.Utils.__checkNotNull
 import com.apollographql.apollo.cache.normalized.Record
 import com.apollographql.apollo.cache.normalized.internal.ResponseNormalizer
+import com.apollographql.apollo.cache.normalized.internal.dependentKeys
+import com.apollographql.apollo.cache.normalized.internal.normalize
 import com.apollographql.apollo.exception.ApolloNetworkException
 import com.apollographql.apollo.response.OperationResponseParser
 import com.apollographql.apollo.subscription.OnSubscriptionManagerStateChangeListener
@@ -294,14 +296,18 @@ class RealSubscriptionManager(customScalarAdapters: CustomScalarAdapters,
     }
     if (subscriptionRecord != null) {
       val normalizer = responseNormalizer.invoke()
-      val parser = OperationResponseParser<Operation.Data>(
-          subscriptionRecord!!.subscription,
+      val subscription = subscriptionRecord!!.subscription
+      val parser = OperationResponseParser(
+          subscription,
           customScalarAdapters,
-          normalizer as ResponseNormalizer<Map<String, Any?>?>
       )
       val response: Response<*>
       try {
-        response = parser.parse(message.payload)
+        response = parser.parse(message.payload).let {
+          val records = it.data?.let { subscription.normalize(it, customScalarAdapters, normalizer as ResponseNormalizer<Map<String, Any>?>) }
+          it.copy(dependentKeys = records.dependentKeys())
+        }
+
       } catch (e: Exception) {
         subscriptionRecord = removeSubscriptionById(subscriptionId)
         if (subscriptionRecord != null) {

@@ -15,6 +15,7 @@ import com.apollographql.apollo.cache.normalized.lru.LruNormalizedCacheFactory
 import com.apollographql.apollo.cache.normalized.NormalizedCacheFactory
 import com.apollographql.apollo.fetcher.ApolloResponseFetchers.NETWORK_ONLY
 import com.apollographql.apollo.integration.normalizer.EpisodeHeroNameQuery
+import com.apollographql.apollo.integration.normalizer.EpisodeHeroNameWithIdQuery
 import com.apollographql.apollo.integration.normalizer.HeroAndFriendsNamesWithIDsQuery
 import com.apollographql.apollo.integration.normalizer.type.Episode.EMPIRE
 import com.apollographql.apollo.integration.normalizer.type.Episode.NEWHOPE
@@ -112,13 +113,13 @@ class Rx3ApolloTest {
   @Throws(Exception::class)
   fun queryWatcherUpdatedSameQueryDifferentResults() {
     server.enqueue(mockResponse(FILE_EPISODE_HERO_NAME_WITH_ID))
-    val observer: TestObserver<EpisodeHeroNameQuery.Data> = TestObserver<EpisodeHeroNameQuery.Data>()
+    val observer = TestObserver<EpisodeHeroNameWithIdQuery.Data>()
     Rx3Apollo
-        .from(apolloClient.query(EpisodeHeroNameQuery(Input.fromNullable(EMPIRE))).watcher())
-        .map({ response -> response.data })
+        .from(apolloClient.query(EpisodeHeroNameWithIdQuery(Input.fromNullable(EMPIRE))).watcher())
+        .map { response -> response.data }
         .subscribeWith(observer)
     server.enqueue(mockResponse(FILE_EPISODE_HERO_NAME_CHANGE))
-    apolloClient.query(EpisodeHeroNameQuery(Input.fromNullable(EMPIRE)))
+    apolloClient.query(EpisodeHeroNameWithIdQuery(Input.fromNullable(EMPIRE)))
         .responseFetcher(NETWORK_ONLY)
         .enqueue(null)
     observer.assertValueCount(2)
@@ -174,10 +175,10 @@ class Rx3ApolloTest {
   @Throws(Exception::class)
   fun queryWatcherUpdatedDifferentQueryDifferentResults() {
     server.enqueue(mockResponse(FILE_EPISODE_HERO_NAME_WITH_ID))
-    val observer: TestObserver<EpisodeHeroNameQuery.Data> = TestObserver<EpisodeHeroNameQuery.Data>()
+    val observer = TestObserver<EpisodeHeroNameWithIdQuery.Data>()
     Rx3Apollo
-        .from(apolloClient.query(EpisodeHeroNameQuery(Input.fromNullable(EMPIRE))).watcher())
-        .map({ response -> response.data })
+        .from(apolloClient.query(EpisodeHeroNameWithIdQuery(Input.fromNullable(EMPIRE))).watcher())
+        .map { response -> response.data }
         .subscribeWith(observer)
     server.enqueue(mockResponse("HeroAndFriendsNameWithIdsNameChange.json"))
     apolloClient.query(HeroAndFriendsNamesWithIDsQuery(Input.fromNullable(NEWHOPE))).enqueue(null)

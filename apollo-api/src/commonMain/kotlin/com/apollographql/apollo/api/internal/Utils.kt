@@ -1,5 +1,6 @@
 package com.apollographql.apollo.api.internal
 
+import com.apollographql.apollo.api.ResponseField
 import kotlin.jvm.JvmName
 import kotlin.jvm.JvmStatic
 
@@ -43,5 +44,25 @@ object Utils {
       throw NullPointerException()
     }
     return reference
+  }
+
+  internal fun ResponseField.shouldSkip(variableValues: Map<String, Any?>): Boolean {
+    for (condition in conditions) {
+      if (condition is ResponseField.BooleanCondition) {
+        val conditionValue = variableValues[condition.variableName] as Boolean
+        if (condition.isInverted) {
+          // means it's a skip directive
+          if (conditionValue) {
+            return true
+          }
+        } else {
+          // means it's an include directive
+          if (!conditionValue) {
+            return true
+          }
+        }
+      }
+    }
+    return false
   }
 }

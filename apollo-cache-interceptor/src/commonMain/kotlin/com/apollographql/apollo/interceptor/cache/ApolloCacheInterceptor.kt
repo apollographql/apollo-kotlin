@@ -20,7 +20,7 @@ import com.apollographql.apollo.interceptor.ApolloRequest
 import com.apollographql.apollo.interceptor.ApolloRequestInterceptor
 import com.apollographql.apollo.interceptor.ApolloResponse
 import com.apollographql.apollo.api.internal.RealResponseReader
-import com.apollographql.apollo.internal.response.RealResponseWriter
+import com.apollographql.apollo.api.internal.response.RealResponseWriter
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.flow
@@ -69,7 +69,7 @@ class ApolloCacheInterceptor<S>(private val store: S) : ApolloRequestInterceptor
     responseNormalizer.willResolveRootQuery(operation);
     writer.resolveFields(responseNormalizer)
 
-    store.merge(responseNormalizer.records()?.filterNotNull() ?: emptySet(), CacheHeaders.NONE)
+    store.merge(responseNormalizer.records().toList(), CacheHeaders.NONE)
   }
 
   private fun <D : Operation.Data> readFromCache(request: ApolloRequest<D>): Response<D>? {
@@ -82,7 +82,7 @@ class ApolloCacheInterceptor<S>(private val store: S) : ApolloRequestInterceptor
         CacheHeaders.NONE,
         RealCacheKeyBuilder()
     )
-    val responseReader = RealResponseReader(operation.variables(), rootRecord, fieldValueResolver, request.customScalarAdapters, NoOpResolveDelegate())
+    val responseReader = RealResponseReader(operation.variables(), rootRecord, fieldValueResolver, request.customScalarAdapters)
     val data = operation.adapter().fromResponse(responseReader)
     return builder<D>(operation)
         .data(data)

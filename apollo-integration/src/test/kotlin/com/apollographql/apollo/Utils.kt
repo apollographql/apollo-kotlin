@@ -7,6 +7,8 @@ import com.apollographql.apollo.fetcher.ApolloResponseFetchers.NETWORK_ONLY
 import com.apollographql.apollo.rx2.Rx2Apollo
 import com.google.common.io.CharStreams
 import io.reactivex.functions.Predicate
+import kotlinx.coroutines.channels.Channel
+import kotlinx.coroutines.withTimeout
 import okhttp3.mockwebserver.MockResponse
 import okhttp3.mockwebserver.MockWebServer
 import java.io.File
@@ -129,5 +131,9 @@ object Utils {
         }
       }
     }
+  }
+
+  suspend fun <T> Channel<T>.receiveOrTimeout(timeoutMillis: Long = 500) = withTimeout(timeoutMillis) {
+    receive()
   }
 }
