@@ -14,7 +14,6 @@ import com.apollographql.apollo.api.cache.http.HttpCachePolicy
 import com.apollographql.apollo.api.internal.Action
 import com.apollographql.apollo.api.internal.ApolloLogger
 import com.apollographql.apollo.api.internal.Optional
-import com.apollographql.apollo.api.internal.Utils.__checkNotNull
 import com.apollographql.apollo.cache.CacheHeaders
 import com.apollographql.apollo.cache.normalized.ApolloStore
 import com.apollographql.apollo.exception.ApolloCanceledException
@@ -99,28 +98,28 @@ class RealApolloCall<D : Operation.Data> internal constructor(builder: Builder<D
   override fun httpCachePolicy(httpCachePolicy: HttpCachePolicy.Policy): RealApolloCall<D> {
     check(state.get() == CallState.IDLE) { "Already Executed" }
     return toBuilder()
-        .httpCachePolicy(__checkNotNull(httpCachePolicy, "httpCachePolicy == null"))
+        .httpCachePolicy(httpCachePolicy)
         .build()
   }
 
   override fun responseFetcher(fetcher: ResponseFetcher): RealApolloCall<D> {
     check(state.get() == CallState.IDLE) { "Already Executed" }
     return toBuilder()
-        .responseFetcher(__checkNotNull(fetcher, "responseFetcher == null"))
+        .responseFetcher(fetcher)
         .build()
   }
 
   override fun cacheHeaders(cacheHeaders: CacheHeaders): RealApolloCall<D> {
     check(state.get() == CallState.IDLE) { "Already Executed" }
     return toBuilder()
-        .cacheHeaders(__checkNotNull(cacheHeaders, "cacheHeaders == null"))
+        .cacheHeaders(cacheHeaders)
         .build()
   }
 
   override fun requestHeaders(requestHeaders: RequestHeaders): RealApolloCall<D> {
     check(state.get() == CallState.IDLE) { "Already Executed" }
     return toBuilder()
-        .requestHeaders(__checkNotNull(requestHeaders, "requestHeaders == null"))
+        .requestHeaders(requestHeaders)
         .build()
   }
 

@@ -1,6 +1,5 @@
 package com.apollographql.apollo.internal.interceptor
 
-import com.apollographql.apollo.api.internal.Utils.__checkNotNull
 import com.apollographql.apollo.interceptor.ApolloInterceptor
 import com.apollographql.apollo.interceptor.ApolloInterceptor.CallBack
 import com.apollographql.apollo.interceptor.ApolloInterceptor.InterceptorRequest
@@ -34,7 +33,7 @@ class RealApolloInterceptorChain private constructor(interceptors: List<ApolloIn
 
   init {
     require(interceptorIndex <= interceptors.size)
-    this.interceptors = ArrayList(__checkNotNull(interceptors, "interceptors == null"))
+    this.interceptors = ArrayList(interceptors)
     this.interceptorIndex = interceptorIndex
   }
 }

@@ -1,7 +1,6 @@
 package com.apollographql.apollo
 
 import android.os.Handler
-import com.apollographql.apollo.api.internal.Utils.__checkNotNull
 import com.apollographql.apollo.exception.ApolloException
 import com.apollographql.apollo.exception.ApolloHttpException
 import com.apollographql.apollo.exception.ApolloNetworkException
@@ -45,7 +44,7 @@ class ApolloPrefetchCallback(callback: ApolloPrefetch.Callback, handler: Handler
    * @param handler  the callback will be run on the thread to which this handler is attached
    */
   init {
-    delegate = __checkNotNull(callback, "callback == null")
-    this.handler = __checkNotNull(handler, "handler == null")
+    delegate = callback
+    this.handler = handler
   }
 }

@@ -16,7 +16,6 @@
 package com.apollographql.apollo.api.internal
 
 import com.apollographql.apollo.api.internal.Absent.Companion.withType
-import com.apollographql.apollo.api.internal.Utils.__checkNotNull
 import java.io.Serializable
 
 /**
@@ -225,7 +224,7 @@ abstract class Optional<T> internal constructor() : Serializable {
      */
     @JvmStatic
     fun <T> of(reference: T): Optional<T> {
-      return Present(__checkNotNull(reference))
+      return Present(reference)
     }
 
     /**

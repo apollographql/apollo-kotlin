@@ -9,7 +9,6 @@ import com.apollographql.apollo.IdleResourceCallback
 import com.apollographql.apollo.api.Mutation
 import com.apollographql.apollo.api.OperationName
 import com.apollographql.apollo.api.Query
-import com.apollographql.apollo.api.internal.Utils.__checkNotNull
 import java.util.HashMap
 import java.util.HashSet
 import java.util.concurrent.atomic.AtomicInteger
@@ -34,7 +33,6 @@ class ApolloCallTracker {
    * **Note**: This method needs to be called right before an apolloCall is executed.
    */
   fun registerCall(call: ApolloCall<*>) {
-    __checkNotNull(call, "call == null")
     val operation = call.operation()
     if (operation is Query<*>) {
       registerQueryCall(call as ApolloQueryCall<*>)
@@ -59,7 +57,6 @@ class ApolloCallTracker {
    * failed).
    */
   fun unregisterCall(call: ApolloCall<*>) {
-    __checkNotNull(call, "call == null")
     val operation = call.operation()
     if (operation is Query<*>) {
       unregisterQueryCall(call as ApolloQueryCall<*>)
@@ -78,7 +75,6 @@ class ApolloCallTracker {
    * **Note**: This method needs to be called right before a prefetch call is executed.
    */
   fun registerPrefetchCall(apolloPrefetch: ApolloPrefetch) {
-    __checkNotNull(apolloPrefetch, "apolloPrefetch == null")
     val operationName = apolloPrefetch.operation().name()
     registerCall(activePrefetchCalls, operationName, apolloPrefetch)
     activeCallCount.incrementAndGet()
@@ -98,7 +94,6 @@ class ApolloCallTracker {
    * failed).
    */
   fun unregisterPrefetchCall(apolloPrefetch: ApolloPrefetch) {
-    __checkNotNull(apolloPrefetch, "apolloPrefetch == null")
     val operationName = apolloPrefetch.operation().name()
     unregisterCall(activePrefetchCalls, operationName, apolloPrefetch)
     decrementActiveCallCountAndNotify()
@@ -122,7 +117,6 @@ class ApolloCallTracker {
    * **Note**: This method needs to be called right before an apolloCall is executed.
    */
   fun registerQueryCall(apolloQueryCall: ApolloQueryCall<*>) {
-    __checkNotNull(apolloQueryCall, "apolloQueryCall == null")
     val operationName = apolloQueryCall.operation().name()
     registerCall(activeQueryCalls, operationName, apolloQueryCall)
     activeCallCount.incrementAndGet()
@@ -142,7 +136,6 @@ class ApolloCallTracker {
    * failed).
    */
   fun unregisterQueryCall(apolloQueryCall: ApolloQueryCall<*>) {
-    __checkNotNull(apolloQueryCall, "apolloQueryCall == null")
     val operationName = apolloQueryCall.operation().name()
     unregisterCall(activeQueryCalls, operationName, apolloQueryCall)
     decrementActiveCallCountAndNotify()
@@ -166,7 +159,6 @@ class ApolloCallTracker {
    * **Note**: This method needs to be called right before an apolloCall is executed.
    */
   fun registerMutationCall(apolloMutationCall: ApolloMutationCall<*>) {
-    __checkNotNull(apolloMutationCall, "apolloMutationCall == null")
     val operationName = apolloMutationCall.operation().name()
     registerCall(activeMutationCalls, operationName, apolloMutationCall)
     activeCallCount.incrementAndGet()
@@ -186,7 +178,6 @@ class ApolloCallTracker {
    * failed).
    */
   fun unregisterMutationCall(apolloMutationCall: ApolloMutationCall<*>) {
-    __checkNotNull(apolloMutationCall, "apolloMutationCall == null")
     val operationName = apolloMutationCall.operation().name()
     unregisterCall(activeMutationCalls, operationName, apolloMutationCall)
     decrementActiveCallCountAndNotify()
@@ -211,7 +202,6 @@ class ApolloCallTracker {
    * [ApolloQueryWatcher.enqueueAndWatch].
    */
   fun registerQueryWatcher(queryWatcher: ApolloQueryWatcher<*>) {
-    __checkNotNull(queryWatcher, "queryWatcher == null")
     val operationName = queryWatcher.operation().name()
     registerCall(activeQueryWatchers, operationName, queryWatcher)
   }
@@ -230,7 +220,6 @@ class ApolloCallTracker {
    * failed).
    */
   fun unregisterQueryWatcher(queryWatcher: ApolloQueryWatcher<*>) {
-    __checkNotNull(queryWatcher, "queryWatcher == null")
     val operationName = queryWatcher.operation().name()
     unregisterCall(activeQueryWatchers, operationName, queryWatcher)
   }
@@ -284,7 +273,6 @@ class ApolloCallTracker {
   }
 
   private fun <CALL> activeCalls(registry: Map<OperationName, MutableSet<CALL>>, operationName: OperationName): Set<CALL> {
-    __checkNotNull(operationName, "operationName == null")
     synchronized(registry) {
       val calls: Set<CALL>? = registry[operationName]
       return if (calls != null) HashSet(calls) else emptySet()

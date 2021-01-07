@@ -15,7 +15,6 @@
  */
 package com.apollographql.apollo.api.internal
 
-import com.apollographql.apollo.api.internal.Utils.__checkNotNull
 
 /**
  * Implementation of an [Optional] not containing a reference.
@@ -28,11 +27,11 @@ internal class Absent<T> private constructor() : Optional<T>() {
   }
 
   override fun or(defaultValue: T): T {
-    return __checkNotNull(defaultValue, "use Optional.orNull() instead of Optional.or(null)")
+    return defaultValue
   }
 
   override fun or(secondChoice: Optional<out T>): Optional<T> {
-    return __checkNotNull(secondChoice) as Optional<T>
+    return secondChoice as Optional<T>
   }
 
   override fun orNull(): T? {
@@ -40,22 +39,18 @@ internal class Absent<T> private constructor() : Optional<T>() {
   }
 
   override fun <V> transform(function: Function<in T, V>): Optional<V> {
-    __checkNotNull(function)
     return absent()
   }
 
   override fun <V> map(function: Function<in T, V>): Optional<V> {
-    __checkNotNull(function)
     return absent()
   }
 
   override fun <V> flatMap(function: Function<in T, Optional<V>>): Optional<V> {
-    __checkNotNull(function)
     return absent()
   }
 
   override fun apply(action: Action<T>): Optional<T> {
-    __checkNotNull(action)
     return absent()
   }
 
