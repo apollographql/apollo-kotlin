@@ -1,5 +1,6 @@
 type Query {
   human: Human!
+  node: Node!
 }
 
 interface Node {
@@ -11,7 +12,7 @@ interface Character implements Node {
   name: String!
 }
 
-interface Human implements Character {
+type Human implements Character {
   id: ID!
   name: String!
   height: Float!

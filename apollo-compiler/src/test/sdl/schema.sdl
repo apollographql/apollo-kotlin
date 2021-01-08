@@ -424,3 +424,24 @@ schema {
   query: Query
   mutation: Mutation
 }
+
+interface Node {
+  id: ID!
+}
+
+interface Organization implements Node {
+  id: ID!
+  name: String!
+}
+
+type Empire implements Organization {
+  id: ID!
+  name: String!
+  emperor: String!
+}
+
+type Rebellion implements Organization {
+  id: ID!
+  name: String!
+  emperor: String!
+}

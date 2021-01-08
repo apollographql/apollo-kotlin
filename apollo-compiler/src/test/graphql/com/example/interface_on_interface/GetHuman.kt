@@ -29,18 +29,42 @@ class GetHuman : Query<GetHuman.Data> {
 
   override fun adapter(): ResponseAdapter<Data> = GetHuman_ResponseAdapter
   data class Data(
-    val human: Human
+    val human: Human,
+    val node: Node
   ) : Operation.Data {
     data class Human(
       val id: String,
       val name: String,
       val height: Double
     )
+
+    interface Node {
+      val __typename: String
+
+      interface Human : Node {
+        override val __typename: String
+
+        val height: Double
+      }
+
+      data class HumanNode(
+        override val __typename: String,
+        override val height: Double
+      ) : Node, Human
+
+      data class OtherNode(
+        override val __typename: String
+      ) : Node
+
+      companion object {
+        fun Node.asHuman(): Human? = this as? Human
+      }
+    }
   }
 
   companion object {
     const val OPERATION_ID: String =
-        "f8a2ffbc03bef06b809dd5202d7ffa577ab03b0798a94ed1abba2db6c4251de8"
+        "b5ec6431463438b91c2cf1c33eb4b6a1f9e2580b51fcf5150ef3685b9108a12c"
 
     val QUERY_DOCUMENT: String = QueryDocumentMinifier.minify(
           """
@@ -49,6 +73,12 @@ class GetHuman : Query<GetHuman.Data> {
           |    id
           |    name
           |    height
+          |  }
+          |  node {
+          |    __typename
+          |    ... on Human {
+          |      height
+          |    }
           |  }
           |}
           """.trimMargin()

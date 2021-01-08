@@ -25,3 +25,4 @@ internal fun GQLTypeDefinition.possibleTypes(typeDefinitions: Map<String, GQLTyp
     }
   }
 }
+

@@ -4,4 +4,9 @@ query GetHuman {
     name
     height
   }
+  node {
+    ... on Human {
+      height
+    }
+  }
 }
