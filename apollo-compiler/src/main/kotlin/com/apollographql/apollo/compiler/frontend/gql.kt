@@ -184,7 +184,11 @@ data class GQLInterfaceTypeDefinition(
   override fun write(bufferedSink: BufferedSink) {
     with(bufferedSink) {
       if (description != null) writeUtf8("\"\"\"${GraphQLString.encodeTripleQuoted(description)}\"\"\"\n")
-      writeUtf8("interface $name ${implementsInterfaces.joinToString(" ")}")
+      writeUtf8("interface $name")
+      if (implementsInterfaces.isNotEmpty()) {
+        writeUtf8(" implements ")
+        writeUtf8(implementsInterfaces.joinToString(" "))
+      }
       if (directives.isNotEmpty()) {
         writeUtf8(" ")
         directives.join(bufferedSink)

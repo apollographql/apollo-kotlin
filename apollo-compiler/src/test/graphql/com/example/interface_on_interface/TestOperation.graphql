@@ -1,0 +1,12 @@
+query GetHuman {
+  human {
+    id
+    name
+    height
+  }
+  node {
+    ... on Human {
+      height
+    }
+  }
+}
