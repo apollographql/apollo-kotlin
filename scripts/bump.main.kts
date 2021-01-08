@@ -110,4 +110,8 @@ val snapshot = "${getNextPatch(tagVersion)}-SNAPSHOT"
 setCurrentVersion(snapshot)
 runCommand("git", "commit", "-a", "-m", "version is now $snapshot")
 
-println("Everything is done. Verify everything is ok and type `git push origin master` to trigger the new version.")
+println("""
+    Everything is done. Verify everything is ok and type `git push origin main`. That will trigger a build on CI and upload artifacts to Sonatype/Bintray.
+    
+    The final promoting step (release in bintray terms, close in sonatype terms) is manual. Go to their respective websites to do the release.
+    """.trimIndent())
