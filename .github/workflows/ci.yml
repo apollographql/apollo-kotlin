@@ -4,7 +4,7 @@ on:
   push:
     branches: [ main, dev-3.x ]
     tags:
-      - *
+      - '*'
   pull_request:
     paths-ignore:
       - 'docs/**'
