@@ -13,6 +13,6 @@ class PossibleTypesTest {
 
     val possibleTypes = schema.typeDefinition("Node").possibleTypes(schema.typeDefinitions)
 
-    assertThat(possibleTypes).isEqualTo(listOf("Empire", "Rebellion"))
+    assertThat(possibleTypes).isEqualTo(setOf("Empire", "Rebellion"))
   }
 }
