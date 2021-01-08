@@ -4,7 +4,7 @@ import com.apollographql.apollo.api.CustomScalarAdapters.Companion.DEFAULT
 import com.apollographql.apollo.api.internal.MapResponseParser
 import com.apollographql.apollo.api.internal.OperationRequestBodyComposer
 import com.apollographql.apollo.api.internal.BufferedSourceResponseParser
-import com.apollographql.apollo.api.internal.RandomAccessResponseReader
+import com.apollographql.apollo.api.internal.MapResponseReader
 import com.apollographql.apollo.api.internal.SimpleResponseWriter
 import com.apollographql.apollo.api.internal.ValueResolver
 import okio.Buffer
@@ -168,7 +168,7 @@ fun <D : Operation.Data, M: Map<String, Any?>> Operation<D>.parseData(
     customScalarAdapters: CustomScalarAdapters = DEFAULT,
     valueResolver: ValueResolver<M>
 ): D {
-  return RandomAccessResponseReader(
+  return MapResponseReader(
       variables(),
       map,
       valueResolver,

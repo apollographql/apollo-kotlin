@@ -11,14 +11,14 @@ import com.apollographql.apollo.api.internal.Utils.shouldSkip
 import com.apollographql.apollo.api.toNumber
 
 /**
- * [RandomAccessResponseReader] is a [ResponseReader] that can read arbitrary fields from a root object
+ * [MapResponseReader] is a [ResponseReader] that can read arbitrary fields from a map-like object
  *
  * @param M a map-like type
  * @param root the root object
  * @param a [ValueResolver] that can retrieve a given field from the map-like type M
  *
  */
-class RandomAccessResponseReader<M : Map<String, Any?>>(
+class MapResponseReader<M : Map<String, Any?>>(
     private val variable: Operation.Variables,
     private val root: M,
     internal val valueResolver: ValueResolver<M>,
@@ -74,7 +74,7 @@ class RandomAccessResponseReader<M : Map<String, Any?>>(
     return if (value == null) {
       null
     } else {
-      block(RandomAccessResponseReader(variable, value, valueResolver, customScalarAdapters))
+      block(MapResponseReader(variable, value, valueResolver, customScalarAdapters))
     }
   }
 
@@ -139,7 +139,7 @@ class RandomAccessResponseReader<M : Map<String, Any?>>(
     @Suppress("UNCHECKED_CAST")
     override fun <T : Any> readObject(block: (ResponseReader) -> T): T {
       val value = value as M
-      val item = block(RandomAccessResponseReader(variable, value, valueResolver, customScalarAdapters))
+      val item = block(MapResponseReader(variable, value, valueResolver, customScalarAdapters))
       return item
     }
 

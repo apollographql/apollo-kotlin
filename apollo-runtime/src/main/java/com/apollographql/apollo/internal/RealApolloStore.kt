@@ -7,8 +7,7 @@ import com.apollographql.apollo.api.Response
 import com.apollographql.apollo.api.Response.Companion.builder
 import com.apollographql.apollo.api.ResponseField
 import com.apollographql.apollo.api.internal.ApolloLogger
-import com.apollographql.apollo.api.internal.MapResponseParser
-import com.apollographql.apollo.api.internal.RandomAccessResponseReader
+import com.apollographql.apollo.api.internal.MapResponseReader
 import com.apollographql.apollo.api.internal.ResolveDelegate
 import com.apollographql.apollo.api.internal.ResponseAdapter
 import com.apollographql.apollo.cache.CacheHeaders
@@ -38,7 +37,6 @@ import java.util.LinkedHashSet
 import java.util.UUID
 import java.util.WeakHashMap
 import java.util.concurrent.Executor
-import java.util.concurrent.locks.ReadWriteLock
 import java.util.concurrent.locks.ReentrantReadWriteLock
 
 class RealApolloStore(normalizedCache: NormalizedCache,
@@ -314,7 +312,7 @@ class RealApolloStore(normalizedCache: NormalizedCache,
         val rootRecord = cache.read(cacheKey.key, CacheHeaders.NONE) ?: return null
         val fieldValueResolver = CacheValueResolver(cache, variables,
             cacheKeyResolver(), CacheHeaders.NONE, cacheKeyBuilder)
-        val responseReader = RandomAccessResponseReader(
+        val responseReader = MapResponseReader(
             variables,
             rootRecord,
             fieldValueResolver,
