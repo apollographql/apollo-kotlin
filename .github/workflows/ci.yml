@@ -2,7 +2,10 @@ name: CI
 
 on:
   push:
-    branches: [ main ]
+    branches:
+      - main
+    tags:
+      - *
   pull_request:
     paths-ignore:
       - 'docs/**'
@@ -11,7 +14,7 @@ on:
 jobs:
   build:
 
-    runs-on: macOS-latest
+    runs-on: macos-latest
 
     steps:
       - uses: actions/checkout@v2
