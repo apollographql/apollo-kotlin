@@ -102,10 +102,8 @@ class RealApolloSubscriptionCall<D : Operation.Data>(
   }
 
   private fun resolveFromCache(): Response<D>? {
-    val responseNormalizer = apolloStore.cacheResponseNormalizer()
     val apolloStoreOperation: ApolloStoreOperation<Response<D>> = apolloStore.readOperationInternal(
         subscription,
-        responseNormalizer,
         CacheHeaders.NONE)
     var cachedResponse: Response<D>? = null
     try {

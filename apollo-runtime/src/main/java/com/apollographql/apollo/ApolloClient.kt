@@ -653,9 +653,15 @@ class ApolloClient internal constructor(
       val subscriptionTransportFactory = subscriptionTransportFactory
       if (subscriptionTransportFactory.isPresent) {
         val finalApolloStore = apolloStore
-        val responseNormalizer: Function0<ResponseNormalizer<Map<String, Any>>> = { finalApolloStore.networkResponseNormalizer() }
-        subscriptionManager = RealSubscriptionManager(customScalarAdapters, subscriptionTransportFactory.get(),
-            subscriptionConnectionParams, dispatcher, subscriptionHeartbeatTimeout, responseNormalizer, enableAutoPersistedSubscriptions)
+        val responseNormalizer = { finalApolloStore.networkResponseNormalizer() }
+        subscriptionManager = RealSubscriptionManager(
+            customScalarAdapters,
+            subscriptionTransportFactory.get(),
+            subscriptionConnectionParams,
+            dispatcher,
+            subscriptionHeartbeatTimeout,
+            responseNormalizer,
+            enableAutoPersistedSubscriptions)
       }
       return ApolloClient(serverUrl,
           callFactory,

@@ -27,9 +27,14 @@ class SubscriptionAutoPersistTest {
   @Before
   fun setUp() {
     subscriptionTransportFactory = MockSubscriptionTransportFactory()
-    subscriptionManager = RealSubscriptionManager(CustomScalarAdapters(emptyMap()),
-        subscriptionTransportFactory!!, SubscriptionConnectionParamsProvider.Const(SubscriptionConnectionParams()),
-        MockExecutor(), -1, { ApolloStore.NO_APOLLO_STORE.networkResponseNormalizer() }, true)
+    subscriptionManager = RealSubscriptionManager(
+        CustomScalarAdapters(emptyMap()),
+        subscriptionTransportFactory!!,
+        SubscriptionConnectionParamsProvider.Const(SubscriptionConnectionParams()),
+        MockExecutor(),
+        -1,
+        { ApolloStore.NO_APOLLO_STORE.networkResponseNormalizer() },
+        true)
     Truth.assertThat(subscriptionTransportFactory!!.subscriptionTransport).isNotNull()
     Truth.assertThat(subscriptionManager!!.state).isEqualTo(SubscriptionManagerState.DISCONNECTED)
     callbackAdapter = SubscriptionManagerCallbackAdapter()

@@ -58,11 +58,6 @@ class NoOpApolloStore : ApolloStore, ReadableStore, WriteableStore {
     return ResponseNormalizer.NO_OP_NORMALIZER as ResponseNormalizer<Map<String, Any>>
   }
 
-  @Suppress("UNCHECKED_CAST")
-  override fun cacheResponseNormalizer(): ResponseNormalizer<Record> {
-    return ResponseNormalizer.NO_OP_NORMALIZER as ResponseNormalizer<Record>
-  }
-
   override fun <R> readTransaction(transaction: Transaction<ReadableStore, R>): R {
     return transaction.execute(this)!!
   }
@@ -86,7 +81,6 @@ class NoOpApolloStore : ApolloStore, ReadableStore, WriteableStore {
 
   override fun <D : Operation.Data> readOperationInternal(
       operation: Operation<D>,
-      responseNormalizer: ResponseNormalizer<Record>,
       cacheHeaders: CacheHeaders
   ): ApolloStoreOperation<Response<D>> {
     // This is called in the default path when no cache is configured, do not trigger an error

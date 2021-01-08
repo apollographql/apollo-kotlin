@@ -30,9 +30,14 @@ class SubscriptionManagerTest {
   private val onStateChangeListener = SubscriptionManagerOnStateChangeListener()
 
   init {
-    subscriptionManager = RealSubscriptionManager(CustomScalarAdapters(emptyMap<CustomScalar, CustomScalarAdapter<*>>()),
-        subscriptionTransportFactory, SubscriptionConnectionParamsProvider.Const(SubscriptionConnectionParams()),
-        MockExecutor(), connectionHeartbeatTimeoutMs, { ApolloStore.NO_APOLLO_STORE.networkResponseNormalizer() }, false)
+    subscriptionManager = RealSubscriptionManager(
+        CustomScalarAdapters(emptyMap()),
+        subscriptionTransportFactory,
+        SubscriptionConnectionParamsProvider.Const(SubscriptionConnectionParams()),
+        MockExecutor(),
+        connectionHeartbeatTimeoutMs,
+        { ApolloStore.NO_APOLLO_STORE.networkResponseNormalizer() },
+        false)
     subscriptionManager.addOnStateChangeListener(onStateChangeListener)
   }
 

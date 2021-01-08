@@ -27,7 +27,6 @@ import com.apollographql.apollo.integration.httpcache.type.CustomScalars
 import com.apollographql.apollo.integration.normalizer.EpisodeHeroNameQuery
 import com.apollographql.apollo.integration.normalizer.HeroNameQuery
 import com.apollographql.apollo.integration.normalizer.type.Episode
-import com.apollographql.apollo.response.OperationResponseParser
 import com.apollographql.apollo.rx2.Rx2Apollo
 import com.google.common.base.Charsets
 import com.google.common.truth.Truth.assertThat

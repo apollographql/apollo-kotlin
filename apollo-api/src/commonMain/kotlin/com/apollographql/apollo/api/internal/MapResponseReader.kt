@@ -7,83 +7,91 @@ import com.apollographql.apollo.api.Operation
 import com.apollographql.apollo.api.ResponseField
 import com.apollographql.apollo.api.CustomScalar
 import com.apollographql.apollo.api.CustomScalarAdapters
+import com.apollographql.apollo.api.internal.Utils.shouldSkip
 import com.apollographql.apollo.api.toNumber
 
-class RealResponseReader<R : Map<String, Any?>>(
-    val operationVariables: Operation.Variables,
-    private val recordSet: R,
-    internal val fieldValueResolver: FieldValueResolver<R>,
+/**
+ * [MapResponseReader] is a [ResponseReader] that can read arbitrary fields from a map-like object
+ *
+ * @param M a map-like type
+ * @param root the root object
+ * @param a [ValueResolver] that can retrieve a given field from the map-like type M
+ *
+ */
+class MapResponseReader<M : Map<String, Any?>>(
+    private val variable: Operation.Variables,
+    private val root: M,
+    internal val valueResolver: ValueResolver<M>,
     internal val customScalarAdapters: CustomScalarAdapters,
 ) : ResponseReader {
-  private val variableValues: Map<String, Any?> = operationVariables.valueMap()
+  private val variableValues: Map<String, Any?> = variable.valueMap()
   private var selectedFieldIndex = -1
 
   override fun selectField(fields: Array<ResponseField>): Int {
+    /**
+     * Since we can read any field, just return all fields asked
+     */
     while (++selectedFieldIndex < fields.size) {
-      if (!fields[selectedFieldIndex].shouldSkip(variableValues)) {
-        return selectedFieldIndex
+      if (fields[selectedFieldIndex].shouldSkip(variableValues)) {
+        // The ResponseAdapter does not check for skippable fields so we're doing it here..
+        continue
       }
+      return selectedFieldIndex
     }
     return -1
   }
 
   override fun readString(field: ResponseField): String? {
-    val value = fieldValueResolver.valueFor<String>(recordSet, field)
+    val value = valueResolver.valueFor<String>(root, field)
     checkValue(field, value)
     return value
   }
 
   override fun readInt(field: ResponseField): Int? {
-    val value = fieldValueResolver.valueFor<BigDecimal>(recordSet, field)
+    val value = valueResolver.valueFor<BigDecimal>(root, field)
     checkValue(field, value)
     
     return value?.toNumber()?.toInt()
   }
 
   override fun readDouble(field: ResponseField): Double? {
-    val value = fieldValueResolver.valueFor<BigDecimal>(recordSet, field)
+    val value = valueResolver.valueFor<BigDecimal>(root, field)
     checkValue(field, value)
     
     return value?.toNumber()?.toDouble()
   }
 
   override fun readBoolean(field: ResponseField): Boolean? {
-    val value = fieldValueResolver.valueFor<Boolean>(recordSet, field)
+    val value = valueResolver.valueFor<Boolean>(root, field)
     checkValue(field, value)
     
     return value
   }
 
   override fun <T : Any> readObject(field: ResponseField, block: (ResponseReader) -> T): T? {
-    val value: R? = fieldValueResolver.valueFor(recordSet, field)
+    val value: M? = valueResolver.valueFor(root, field)
     checkValue(field, value)
-    val parsedValue: T? = if (value == null) {
+    return if (value == null) {
       null
     } else {
-      block(RealResponseReader(operationVariables, value, fieldValueResolver, customScalarAdapters))
+      block(MapResponseReader(variable, value, valueResolver, customScalarAdapters))
     }
-    return parsedValue
   }
 
   override fun <T : Any> readList(field: ResponseField, block: (ResponseReader.ListItemReader) -> T): List<T?>? {
-    val values = fieldValueResolver.valueFor<List<*>>(recordSet, field)
+    val values = valueResolver.valueFor<List<*>>(root, field)
     checkValue(field, values)
-    val result = if (values == null) {
-      null
-    } else {
-      values.mapIndexed { index, value ->
-        if (value == null) {
-          null
-        } else {
-          block(ListItemReader(field, value))
-        }
+    return values?.mapIndexed { _, value ->
+      if (value == null) {
+        null
+      } else {
+        block(ListItemReader(field, value))
       }
     }
-    return result
   }
 
   override fun <T : Any> readCustomScalar(field: ResponseField.CustomScalarField): T? {
-    val value = fieldValueResolver.valueFor<Any>(recordSet, field)
+    val value = valueResolver.valueFor<Any>(root, field)
     checkValue(field, value)
     val result: T?
     if (value == null) {
@@ -100,26 +108,6 @@ class RealResponseReader<R : Map<String, Any?>>(
     check(field.optional || value != null) {
       "corrupted response reader, expected non null value for ${field.fieldName}"
     }
-  }
-
-  private fun ResponseField.shouldSkip(variableValues: Map<String, Any?>): Boolean {
-    for (condition in conditions) {
-      if (condition is ResponseField.BooleanCondition) {
-        val conditionValue = variableValues[condition.variableName] as Boolean
-        if (condition.isInverted) {
-          // means it's a skip directive
-          if (conditionValue) {
-            return true
-          }
-        } else {
-          // means it's an include directive
-          if (!conditionValue) {
-            return true
-          }
-        }
-      }
-    }
-    return false
   }
 
   private inner class ListItemReader(
@@ -150,21 +138,20 @@ class RealResponseReader<R : Map<String, Any?>>(
 
     @Suppress("UNCHECKED_CAST")
     override fun <T : Any> readObject(block: (ResponseReader) -> T): T {
-      val value = value as R
-      val item = block(RealResponseReader(operationVariables, value, fieldValueResolver, customScalarAdapters))
+      val value = value as M
+      val item = block(MapResponseReader(variable, value, valueResolver, customScalarAdapters))
       return item
     }
 
     override fun <T : Any> readList(block: (ResponseReader.ListItemReader) -> T): List<T?> {
       val values = value as List<*>
-      val result = values.mapIndexed { index, value ->
+      return values.mapIndexed { _, value ->
         if (value == null) {
           null
         } else {
           block(ListItemReader(field, value))
         }
       }
-      return result
     }
   }
 }

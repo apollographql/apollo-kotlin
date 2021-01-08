@@ -1,9 +1,12 @@
 package com.apollographql.apollo.api
 
 import com.apollographql.apollo.api.CustomScalarAdapters.Companion.DEFAULT
+import com.apollographql.apollo.api.internal.MapResponseParser
 import com.apollographql.apollo.api.internal.OperationRequestBodyComposer
-import com.apollographql.apollo.api.internal.SimpleOperationResponseParser
+import com.apollographql.apollo.api.internal.StreamResponseParser
+import com.apollographql.apollo.api.internal.MapResponseReader
 import com.apollographql.apollo.api.internal.SimpleResponseWriter
+import com.apollographql.apollo.api.internal.ValueResolver
 import okio.Buffer
 import okio.BufferedSource
 import okio.ByteString
@@ -120,11 +123,11 @@ fun <D : Operation.Data> Operation<D>.parse(
     source: BufferedSource,
     customScalarAdapters: CustomScalarAdapters = DEFAULT
 ): Response<D> {
-  return SimpleOperationResponseParser.parse(source, this, customScalarAdapters)
+  return StreamResponseParser.parse(source, this, customScalarAdapters)
 }
 
 /**
- * Parses GraphQL operation raw response from the [byteString] with provided [customScalarAdapters] and returns result [Response]
+ * Parses GraphQL operation raw response from [byteString] with provided [customScalarAdapters] and returns result [Response]
  */
 fun <D : Operation.Data> Operation<D>.parse(
     byteString: ByteString,
@@ -134,11 +137,43 @@ fun <D : Operation.Data> Operation<D>.parse(
 }
 
 /**
- * Parses GraphQL operation raw response from the [byteString] with provided [customScalarAdapters] and returns result [Response]
+ * Parses GraphQL operation raw response from [string] with provided [customScalarAdapters] and returns result [Response]
  */
 fun <D : Operation.Data> Operation<D>.parse(
     string: String,
     customScalarAdapters: CustomScalarAdapters = DEFAULT
 ): Response<D> {
   return parse(Buffer().writeUtf8(string), customScalarAdapters)
+}
+
+/**
+ * Parses GraphQL operation raw response from [map] with provided [customScalarAdapters] and returns result [Response]
+ *
+ * @param map: a [Map] representing the response. It typically include a "data" field
+ */
+fun <D : Operation.Data> Operation<D>.parse(
+    map: Map<String, Any?>,
+    customScalarAdapters: CustomScalarAdapters = DEFAULT
+): Response<D> {
+  return MapResponseParser.parse(map, this, customScalarAdapters)
+}
+
+/**
+ * Parses GraphQL operation raw response from [map] with provided [customScalarAdapters] and returns result [Response]
+ *
+ * @param map: a [Map] representing the response. It typically include a "data" field
+ */
+fun <D : Operation.Data, M: Map<String, Any?>> Operation<D>.parseData(
+    map: M,
+    customScalarAdapters: CustomScalarAdapters = DEFAULT,
+    valueResolver: ValueResolver<M>
+): D {
+  return MapResponseReader(
+      variables(),
+      map,
+      valueResolver,
+      customScalarAdapters,
+  ).let {
+    adapter().fromResponse(it)
+  }
 }
