@@ -5,7 +5,6 @@
 //
 package com.example.fragments_with_type_condition.fragment
 
-import com.apollographql.apollo.api.GraphqlFragment
 import kotlin.Double
 import kotlin.String
 import kotlin.Suppress
@@ -13,7 +12,7 @@ import kotlin.Suppress
 @Suppress("NAME_SHADOWING", "UNUSED_ANONYMOUS_PARAMETER", "LocalVariableName",
     "RemoveExplicitTypeArguments", "NestedLambdaShadowedImplicitParameter", "PropertyName",
     "RemoveRedundantQualifierName")
-interface HumanDetail : GraphqlFragment {
+interface HumanDetail {
   val __typename: String
 
   /**

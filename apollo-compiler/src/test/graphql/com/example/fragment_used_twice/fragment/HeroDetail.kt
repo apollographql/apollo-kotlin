@@ -5,7 +5,6 @@
 //
 package com.example.fragment_used_twice.fragment
 
-import com.apollographql.apollo.api.GraphqlFragment
 import kotlin.Any
 import kotlin.String
 import kotlin.Suppress
@@ -13,7 +12,7 @@ import kotlin.Suppress
 @Suppress("NAME_SHADOWING", "UNUSED_ANONYMOUS_PARAMETER", "LocalVariableName",
     "RemoveExplicitTypeArguments", "NestedLambdaShadowedImplicitParameter", "PropertyName",
     "RemoveRedundantQualifierName")
-interface HeroDetail : GraphqlFragment {
+interface HeroDetail {
   val __typename: String
 
   /**

@@ -5,14 +5,13 @@
 //
 package com.example.named_fragment_with_variables.fragment
 
-import com.apollographql.apollo.api.GraphqlFragment
 import kotlin.String
 import kotlin.Suppress
 
 @Suppress("NAME_SHADOWING", "UNUSED_ANONYMOUS_PARAMETER", "LocalVariableName",
     "RemoveExplicitTypeArguments", "NestedLambdaShadowedImplicitParameter", "PropertyName",
     "RemoveRedundantQualifierName")
-interface UserFragment : GraphqlFragment {
+interface UserFragment {
   val __typename: String
 
   val firstName: String

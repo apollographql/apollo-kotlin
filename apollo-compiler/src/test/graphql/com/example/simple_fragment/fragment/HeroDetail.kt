@@ -5,7 +5,6 @@
 //
 package com.example.simple_fragment.fragment
 
-import com.apollographql.apollo.api.GraphqlFragment
 import kotlin.String
 import kotlin.Suppress
 
@@ -16,7 +15,7 @@ import kotlin.Suppress
 @Suppress("NAME_SHADOWING", "UNUSED_ANONYMOUS_PARAMETER", "LocalVariableName",
     "RemoveExplicitTypeArguments", "NestedLambdaShadowedImplicitParameter", "PropertyName",
     "RemoveRedundantQualifierName")
-internal interface HeroDetail : GraphqlFragment {
+internal interface HeroDetail {
   val __typename: String
 
   interface Human : HeroDetail, HumanDetail {
