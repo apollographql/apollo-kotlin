@@ -2,7 +2,6 @@ package com.apollographql.apollo.subscription
 
 import okio.BufferedSink
 import okio.BufferedSource
-import java.io.IOException
 
 /**
  * An operation message serializer is responsible for converting to and from the transport format used for web socket subscriptions.
@@ -19,7 +18,6 @@ interface OperationMessageSerializer {
    * @param message The message to write.
    * @param sink The sink to write to.
    */
-  @Throws(IOException::class)
   fun writeClientMessage(message: OperationClientMessage, sink: BufferedSink)
 
   /**
@@ -31,6 +29,5 @@ interface OperationMessageSerializer {
    * @param source The source to read from
    * @return The read message.
    */
-  @Throws(IOException::class)
   fun readServerMessage(source: BufferedSource): OperationServerMessage
 }

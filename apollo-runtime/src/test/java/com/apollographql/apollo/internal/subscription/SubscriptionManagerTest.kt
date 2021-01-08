@@ -1,7 +1,5 @@
 package com.apollographql.apollo.internal.subscription
 
-import com.apollographql.apollo.api.CustomScalar
-import com.apollographql.apollo.api.CustomScalarAdapter
 import com.apollographql.apollo.api.CustomScalarAdapters
 import com.apollographql.apollo.api.Operation
 import com.apollographql.apollo.api.OperationName

@@ -8,8 +8,9 @@ metalava {
 
 dependencies {
   api(project(":apollo-api"))
-  api(project(":apollo-normalized-cache"))
   api(project(":apollo-http-cache-api"))
+  api(project(":apollo-normalized-cache"))
+  api(project(":apollo-runtime-common"))
   api(groovy.util.Eval.x(project, "x.dep.okHttp.okHttp"))
 
   testImplementation(groovy.util.Eval.x(project, "x.dep.junit"))

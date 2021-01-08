@@ -1,6 +1,7 @@
 package com.apollographql.apollo.gradle.internal
 
 import com.apollographql.apollo.gradle.api.ApolloExtension
+import okio.ByteString.Companion.toByteString
 import org.gradle.api.Plugin
 import org.gradle.api.Project
 

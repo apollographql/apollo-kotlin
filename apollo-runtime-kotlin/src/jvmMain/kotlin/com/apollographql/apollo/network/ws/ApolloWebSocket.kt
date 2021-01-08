@@ -5,6 +5,7 @@ import kotlinx.coroutines.CompletableDeferred
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.channels.ReceiveChannel
+import okhttp3.Headers
 import okhttp3.Headers.Companion.toHeaders
 import okhttp3.HttpUrl
 import okhttp3.HttpUrl.Companion.toHttpUrl
@@ -13,6 +14,7 @@ import okhttp3.Request
 import okhttp3.Response
 import okhttp3.WebSocket
 import okhttp3.WebSocketListener
+import okhttp3.internal.http.HttpHeaders
 import okio.ByteString
 import okio.ByteString.Companion.toByteString
 import okio.internal.commonAsUtf8ToByteArray
@@ -28,7 +30,7 @@ actual class ApolloWebSocketFactory(
       serverUrl: String,
       headers: Map<String, String>
   ) : this(
-      serverUrl = serverUrl.toHttpUrl(),
+      serverUrl = HttpUrl.parse(serverUrl)!!,
       headers = headers,
       webSocketFactory = OkHttpClient()
   )
@@ -39,10 +41,10 @@ actual class ApolloWebSocketFactory(
 
     val request = Request.Builder()
         .url(serverUrl)
-        .headers(this.headers.plus(headers).toHeaders())
+        .headers(Headers.of(this.headers.plus(headers)))
         .build()
 
-    val webSocket = webSocketFactory.newWebSocket(request = request, listener = object : WebSocketListener() {
+    val webSocket = webSocketFactory.newWebSocket(request, object : WebSocketListener() {
       override fun onOpen(webSocket: WebSocket, response: Response) {
         if (!webSocketConnectionDeferred.complete(webSocket)) {
           webSocket.cancel()
@@ -51,7 +53,7 @@ actual class ApolloWebSocketFactory(
 
       override fun onMessage(webSocket: WebSocket, text: String) {
         try {
-          messageChannel.offer(text.commonAsUtf8ToByteArray().toByteString())
+          messageChannel.offer(ByteString.of(text.toByteArray(), 0, text.toByteArray().size))
         } catch (e: Exception) {
           webSocket.cancel()
         }
@@ -94,7 +96,7 @@ private class WebSocketConnectionImpl(
 
   init {
     messageChannel.invokeOnClose {
-      webSocket.close(code = 1000, reason = null)
+      webSocket.close(1000, null)
     }
   }
 
