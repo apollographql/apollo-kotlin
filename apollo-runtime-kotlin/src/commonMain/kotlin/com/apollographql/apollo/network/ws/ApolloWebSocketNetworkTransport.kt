@@ -1,8 +1,7 @@
 package com.apollographql.apollo.network.ws
 
-import com.apollographql.apollo.ApolloParseException
-import com.apollographql.apollo.ApolloWebSocketException
-import com.apollographql.apollo.ApolloWebSocketServerException
+import com.apollographql.apollo.exception.ApolloWebSocketException
+import com.apollographql.apollo.exception.ApolloWebSocketServerException
 import com.apollographql.apollo.api.ApolloExperimental
 import com.apollographql.apollo.api.ExecutionContext
 import com.apollographql.apollo.api.Operation
@@ -10,6 +9,7 @@ import com.apollographql.apollo.api.internal.json.JsonWriter
 import com.apollographql.apollo.api.internal.json.Utils
 import com.apollographql.apollo.api.parse
 import com.apollographql.apollo.dispatcher.ApolloCoroutineDispatcherContext
+import com.apollographql.apollo.exception.ApolloParseException
 import com.apollographql.apollo.interceptor.ApolloRequest
 import com.apollographql.apollo.interceptor.ApolloResponse
 import com.apollographql.apollo.network.NetworkTransport

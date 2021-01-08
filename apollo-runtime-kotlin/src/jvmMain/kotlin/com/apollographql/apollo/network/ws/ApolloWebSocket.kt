@@ -1,23 +1,19 @@
 package com.apollographql.apollo.network.ws
 
-import com.apollographql.apollo.ApolloWebSocketException
+import com.apollographql.apollo.exception.ApolloWebSocketException
 import kotlinx.coroutines.CompletableDeferred
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.channels.ReceiveChannel
 import okhttp3.Headers
-import okhttp3.Headers.Companion.toHeaders
 import okhttp3.HttpUrl
-import okhttp3.HttpUrl.Companion.toHttpUrl
 import okhttp3.OkHttpClient
 import okhttp3.Request
 import okhttp3.Response
 import okhttp3.WebSocket
 import okhttp3.WebSocketListener
-import okhttp3.internal.http.HttpHeaders
 import okio.ByteString
 import okio.ByteString.Companion.toByteString
-import okio.internal.commonAsUtf8ToByteArray
 
 @ExperimentalCoroutinesApi
 actual class ApolloWebSocketFactory(
@@ -53,7 +49,7 @@ actual class ApolloWebSocketFactory(
 
       override fun onMessage(webSocket: WebSocket, text: String) {
         try {
-          messageChannel.offer(ByteString.of(text.toByteArray(), 0, text.toByteArray().size))
+          messageChannel.offer(text.toByteArray().toByteString())
         } catch (e: Exception) {
           webSocket.cancel()
         }

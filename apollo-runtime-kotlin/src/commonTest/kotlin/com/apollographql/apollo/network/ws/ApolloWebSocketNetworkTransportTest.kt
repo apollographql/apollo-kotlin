@@ -1,7 +1,7 @@
 package com.apollographql.apollo.network.ws
 
-import com.apollographql.apollo.ApolloWebSocketException
-import com.apollographql.apollo.ApolloWebSocketServerException
+import com.apollographql.apollo.exception.ApolloWebSocketException
+import com.apollographql.apollo.exception.ApolloWebSocketServerException
 import com.apollographql.apollo.api.ApolloExperimental
 import com.apollographql.apollo.api.ExecutionContext
 import com.apollographql.apollo.api.CustomScalarAdapters

@@ -4,6 +4,7 @@ import com.apollographql.apollo.Utils.immediateExecutor
 import com.apollographql.apollo.api.Input
 import com.apollographql.apollo.api.Response.Companion.builder
 import com.apollographql.apollo.exception.ApolloException
+import com.apollographql.apollo.exception.ApolloGenericException
 import com.apollographql.apollo.integration.normalizer.EpisodeHeroNameQuery
 import com.apollographql.apollo.integration.normalizer.type.Episode
 import com.apollographql.apollo.interceptor.ApolloInterceptor
@@ -93,7 +94,7 @@ class ApolloInterceptorChainTest {
       override fun interceptAsync(request: InterceptorRequest, chain: ApolloInterceptorChain,
                                   dispatcher: Executor, callBack: CallBack) {
         dispatcher.execute {
-          val apolloException = ApolloException(message)
+          val apolloException = ApolloGenericException(message)
           callBack.onFailure(apolloException)
         }
       }

@@ -1,6 +1,6 @@
 package com.apollographql.apollo.network.ws
 
-import com.apollographql.apollo.ApolloWebSocketException
+import com.apollographql.apollo.exception.ApolloWebSocketException
 import com.apollographql.apollo.api.internal.json.BufferedSourceJsonReader
 import com.apollographql.apollo.api.internal.json.Utils.readRecursively
 import okio.Buffer
