@@ -29,7 +29,7 @@ class RealSubscriptionManager(private val customScalarAdapters: CustomScalarAdap
                               transportFactory: SubscriptionTransport.Factory,
                               private val connectionParams: SubscriptionConnectionParamsProvider,
                               private val dispatcher: Executor, private val connectionHeartbeatTimeoutMs: Long,
-                              private val responseNormalizer: Function0<ResponseNormalizer<Map<String, Any>>>,
+                              private val responseNormalizer: () -> ResponseNormalizer<Map<String, Any>>,
                               private val autoPersistSubscription: Boolean
 ) : SubscriptionManager {
   @JvmField
