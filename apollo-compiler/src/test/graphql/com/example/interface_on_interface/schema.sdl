@@ -1,0 +1,18 @@
+type Query {
+  human: Human!
+}
+
+interface Node {
+  id: ID!
+}
+
+interface Character implements Node {
+  id: ID!
+  name: String!
+}
+
+interface Human implements Character {
+  id: ID!
+  name: String!
+  height: Float!
+}
