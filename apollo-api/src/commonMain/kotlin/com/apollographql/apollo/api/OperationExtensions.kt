@@ -3,7 +3,7 @@ package com.apollographql.apollo.api
 import com.apollographql.apollo.api.CustomScalarAdapters.Companion.DEFAULT
 import com.apollographql.apollo.api.internal.MapResponseParser
 import com.apollographql.apollo.api.internal.OperationRequestBodyComposer
-import com.apollographql.apollo.api.internal.BufferedSourceResponseParser
+import com.apollographql.apollo.api.internal.StreamResponseParser
 import com.apollographql.apollo.api.internal.MapResponseReader
 import com.apollographql.apollo.api.internal.SimpleResponseWriter
 import com.apollographql.apollo.api.internal.ValueResolver
@@ -123,7 +123,7 @@ fun <D : Operation.Data> Operation<D>.parse(
     source: BufferedSource,
     customScalarAdapters: CustomScalarAdapters = DEFAULT
 ): Response<D> {
-  return BufferedSourceResponseParser.parse(source, this, customScalarAdapters)
+  return StreamResponseParser.parse(source, this, customScalarAdapters)
 }
 
 /**
