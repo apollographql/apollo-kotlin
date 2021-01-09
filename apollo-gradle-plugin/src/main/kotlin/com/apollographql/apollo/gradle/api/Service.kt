@@ -21,7 +21,7 @@ import org.gradle.api.tasks.TaskProvider
  *
  * The queries will be compiled and verified against the schema to generate the models.
  */
-interface Service  {
+interface Service {
   val name: String
 
   /**
@@ -196,6 +196,15 @@ interface Service  {
    */
   @ApolloExperimental
   val alwaysGenerateTypesMatching: SetProperty<String>
+
+  /**
+   * Whether or not generate default implementation classes for GraphQL fragments.
+   * Default value is `false`, means only interfaces are been generated.
+   *
+   * One of the use cases where generated implementation models are useful, is writing fragment response data directly to the Apollo store.
+   * To perform this operation you need fragment implementation class.
+   */
+  val generateFragmentImplementations: Property<Boolean>
 
   /**
    * Configures the [Introspection]

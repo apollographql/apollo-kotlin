@@ -1,0 +1,15 @@
+query TestQuery {
+  hero {
+    name
+    ...HumanDetails
+    ...DroidDetails
+  }
+}
+
+fragment HumanDetails on Human {
+  height
+}
+
+fragment DroidDetails on Droid {
+  primaryFunction
+}

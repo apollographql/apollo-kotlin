@@ -103,6 +103,11 @@ class CodegenTest(private val folder: File) {
         else -> emptySet()
       }
 
+      val generateFragmentImplementations = when (folder.name) {
+        "named_fragment_without_implementation" -> false
+        else -> true
+      }
+
       val schemaFile = folder.listFiles()!!.find { it.isFile && it.name == "schema.sdl" }
           ?: File("src/test/graphql/schema.sdl")
 
@@ -124,7 +129,7 @@ class CodegenTest(private val folder: File) {
           enumAsSealedClassPatternFilters = enumAsSealedClassPatternFilters,
           metadataOutputFile = File("build/generated/test/${folder.name}/metadata"),
           dumpIR = false,
-
+          generateFragmentImplementations = generateFragmentImplementations,
       )
     }
 

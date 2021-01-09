@@ -161,6 +161,7 @@ class GraphQLCompiler(val logger: Logger = NoOpLogger) {
         enumAsSealedClassPatternFilters = args.enumAsSealedClassPatternFilters.map { it.toRegex() },
         typesPackageName = "$schemaPackageName.type".removePrefix("."),
         fragmentsPackageName = "$schemaPackageName.fragment".removePrefix("."),
+        generateFragmentImplementations = args.generateFragmentImplementations,
     ).write(args.outputDir)
 
     args.metadataOutputFile.parentFile.mkdirs()
@@ -296,6 +297,7 @@ class GraphQLCompiler(val logger: Logger = NoOpLogger) {
       val useSemanticNaming: Boolean = true,
       val warnOnDeprecatedUsages: Boolean = true,
       val failOnWarnings: Boolean = false,
+      val generateFragmentImplementations: Boolean = false,
 
       //========== Kotlin codegen options ============
 
