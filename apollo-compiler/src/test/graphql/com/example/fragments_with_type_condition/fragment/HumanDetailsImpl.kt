@@ -32,5 +32,5 @@ class HumanDetailsImpl : Fragment<HumanDetailsImpl.Data> {
      * Height in the preferred unit, default is meters
      */
     override val height: Double?
-  ) : HumanDetail, Fragment.Data
+  ) : HumanDetails, Fragment.Data
 }

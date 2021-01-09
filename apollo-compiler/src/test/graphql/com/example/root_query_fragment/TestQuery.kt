@@ -50,7 +50,7 @@ class TestQuery : Query<TestQuery.Data> {
       }
     }
 
-    data class QueryDatum(
+    data class QueryData(
       override val __typename: String,
       override val hero: Hero?
     ) : Data, Query, QueryFragment {
@@ -65,7 +65,7 @@ class TestQuery : Query<TestQuery.Data> {
       ) : Query.Hero, QueryFragment.Hero
     }
 
-    data class OtherDatum(
+    data class OtherData(
       override val __typename: String
     ) : Data
 

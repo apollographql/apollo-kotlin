@@ -58,6 +58,7 @@ internal data class BackendIr(
       val name: String,
       val alias: String?,
       val type: IntrospectionSchema.TypeRef,
+      val normalizedTypeName: String,
       val args: List<Argument>,
       val fields: List<Field>,
       val fragments: Fragments,

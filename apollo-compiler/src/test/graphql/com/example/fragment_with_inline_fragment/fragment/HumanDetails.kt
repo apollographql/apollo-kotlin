@@ -11,25 +11,19 @@ import kotlin.Suppress
 @Suppress("NAME_SHADOWING", "UNUSED_ANONYMOUS_PARAMETER", "LocalVariableName",
     "RemoveExplicitTypeArguments", "NestedLambdaShadowedImplicitParameter", "PropertyName",
     "RemoveRedundantQualifierName")
-interface DroidDetail {
+interface HumanDetails {
   val __typename: String
 
   /**
-   * What others call this droid
+   * What this human calls themselves
    */
   val name: String
 
-  /**
-   * This droid's primary function
-   */
-  val primaryFunction: String?
-
   companion object {
     val FRAGMENT_DEFINITION: String = """
-        |fragment DroidDetails on Droid {
+        |fragment HumanDetails on Human {
         |  __typename
         |  name
-        |  primaryFunction
         |}
         """.trimMargin()
   }

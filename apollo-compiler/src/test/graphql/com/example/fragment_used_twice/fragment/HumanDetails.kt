@@ -12,19 +12,19 @@ import kotlin.Suppress
 @Suppress("NAME_SHADOWING", "UNUSED_ANONYMOUS_PARAMETER", "LocalVariableName",
     "RemoveExplicitTypeArguments", "NestedLambdaShadowedImplicitParameter", "PropertyName",
     "RemoveRedundantQualifierName")
-interface HeroDetail {
+interface HumanDetails {
   val __typename: String
 
   /**
-   * The name of the character
+   * What this human calls themselves
    */
   val name: String
 
-  interface Character : HeroDetail, CharacterDetail {
+  interface Character : HumanDetails, CharacterDetails {
     override val __typename: String
 
     /**
-     * The name of the character
+     * What this human calls themselves
      */
     override val name: String
 
@@ -36,15 +36,15 @@ interface HeroDetail {
 
   companion object {
     val FRAGMENT_DEFINITION: String = """
-        |fragment HeroDetails on Character {
+        |fragment HumanDetails on Human {
         |  __typename
         |  name
         |  ...CharacterDetails
         |}
         """.trimMargin()
 
-    fun HeroDetail.asCharacter(): Character? = this as? Character
+    fun HumanDetails.asCharacter(): Character? = this as? Character
 
-    fun HeroDetail.characterDetails(): CharacterDetail? = this as? CharacterDetail
+    fun HumanDetails.characterDetails(): CharacterDetails? = this as? CharacterDetails
   }
 }

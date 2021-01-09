@@ -9,7 +9,7 @@ import com.apollographql.apollo.api.ResponseField
 import com.apollographql.apollo.api.internal.ResponseAdapter
 import com.apollographql.apollo.api.internal.ResponseReader
 import com.apollographql.apollo.api.internal.ResponseWriter
-import com.example.hero_details.HeroDetail
+import com.example.hero_details.HeroDetails
 import com.example.hero_details.type.Hero_type
 import kotlin.Array
 import kotlin.Int
@@ -20,42 +20,42 @@ import kotlin.collections.List
 @Suppress("NAME_SHADOWING", "UNUSED_ANONYMOUS_PARAMETER", "LocalVariableName",
     "RemoveExplicitTypeArguments", "NestedLambdaShadowedImplicitParameter", "PropertyName",
     "RemoveRedundantQualifierName")
-object HeroDetail_ResponseAdapter : ResponseAdapter<HeroDetail.Data> {
+object HeroDetails_ResponseAdapter : ResponseAdapter<HeroDetails.Data> {
   private val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
     ResponseField.forObject("hero", "hero", null, true, null)
   )
 
-  override fun fromResponse(reader: ResponseReader, __typename: String?): HeroDetail.Data {
+  override fun fromResponse(reader: ResponseReader, __typename: String?): HeroDetails.Data {
     return Data.fromResponse(reader, __typename)
   }
 
-  override fun toResponse(writer: ResponseWriter, value: HeroDetail.Data) {
+  override fun toResponse(writer: ResponseWriter, value: HeroDetails.Data) {
     Data.toResponse(writer, value)
   }
 
-  object Data : ResponseAdapter<HeroDetail.Data> {
+  object Data : ResponseAdapter<HeroDetails.Data> {
     private val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
       ResponseField.forObject("hero", "hero", null, true, null)
     )
 
-    override fun fromResponse(reader: ResponseReader, __typename: String?): HeroDetail.Data {
+    override fun fromResponse(reader: ResponseReader, __typename: String?): HeroDetails.Data {
       return reader.run {
-        var hero: HeroDetail.Data.Hero? = null
+        var hero: HeroDetails.Data.Hero? = null
         while(true) {
           when (selectField(RESPONSE_FIELDS)) {
-            0 -> hero = readObject<HeroDetail.Data.Hero>(RESPONSE_FIELDS[0]) { reader ->
+            0 -> hero = readObject<HeroDetails.Data.Hero>(RESPONSE_FIELDS[0]) { reader ->
               Hero.fromResponse(reader)
             }
             else -> break
           }
         }
-        HeroDetail.Data(
+        HeroDetails.Data(
           hero = hero
         )
       }
     }
 
-    override fun toResponse(writer: ResponseWriter, value: HeroDetail.Data) {
+    override fun toResponse(writer: ResponseWriter, value: HeroDetails.Data) {
       if(value.hero == null) {
         writer.writeObject(RESPONSE_FIELDS[0], null)
       } else {
@@ -65,29 +65,30 @@ object HeroDetail_ResponseAdapter : ResponseAdapter<HeroDetail.Data> {
       }
     }
 
-    object Hero : ResponseAdapter<HeroDetail.Data.Hero> {
+    object Hero : ResponseAdapter<HeroDetails.Data.Hero> {
       private val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
         ResponseField.forEnum("type", "type", null, false, null),
         ResponseField.forString("name", "name", null, false, null),
         ResponseField.forObject("friendsConnection", "friendsConnection", null, false, null)
       )
 
-      override fun fromResponse(reader: ResponseReader, __typename: String?): HeroDetail.Data.Hero {
+      override fun fromResponse(reader: ResponseReader, __typename: String?):
+          HeroDetails.Data.Hero {
         return reader.run {
           var type: Hero_type? = null
           var name: String? = null
-          var friendsConnection: HeroDetail.Data.Hero.FriendsConnection? = null
+          var friendsConnection: HeroDetails.Data.Hero.FriendsConnection? = null
           while(true) {
             when (selectField(RESPONSE_FIELDS)) {
               0 -> type = readString(RESPONSE_FIELDS[0])?.let { Hero_type.safeValueOf(it) }
               1 -> name = readString(RESPONSE_FIELDS[1])
-              2 -> friendsConnection = readObject<HeroDetail.Data.Hero.FriendsConnection>(RESPONSE_FIELDS[2]) { reader ->
+              2 -> friendsConnection = readObject<HeroDetails.Data.Hero.FriendsConnection>(RESPONSE_FIELDS[2]) { reader ->
                 FriendsConnection.fromResponse(reader)
               }
               else -> break
             }
           }
-          HeroDetail.Data.Hero(
+          HeroDetails.Data.Hero(
             type = type!!,
             name = name!!,
             friendsConnection = friendsConnection!!
@@ -95,7 +96,7 @@ object HeroDetail_ResponseAdapter : ResponseAdapter<HeroDetail.Data> {
         }
       }
 
-      override fun toResponse(writer: ResponseWriter, value: HeroDetail.Data.Hero) {
+      override fun toResponse(writer: ResponseWriter, value: HeroDetails.Data.Hero) {
         writer.writeString(RESPONSE_FIELDS[0], value.type.rawValue)
         writer.writeString(RESPONSE_FIELDS[1], value.name)
         writer.writeObject(RESPONSE_FIELDS[2]) { writer ->
@@ -103,29 +104,29 @@ object HeroDetail_ResponseAdapter : ResponseAdapter<HeroDetail.Data> {
         }
       }
 
-      object FriendsConnection : ResponseAdapter<HeroDetail.Data.Hero.FriendsConnection> {
+      object FriendsConnection : ResponseAdapter<HeroDetails.Data.Hero.FriendsConnection> {
         private val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
           ResponseField.forInt("totalCount", "totalCount", null, true, null),
           ResponseField.forList("edges", "edges", null, true, null)
         )
 
         override fun fromResponse(reader: ResponseReader, __typename: String?):
-            HeroDetail.Data.Hero.FriendsConnection {
+            HeroDetails.Data.Hero.FriendsConnection {
           return reader.run {
             var totalCount: Int? = null
-            var edges: List<HeroDetail.Data.Hero.FriendsConnection.Edge?>? = null
+            var edges: List<HeroDetails.Data.Hero.FriendsConnection.Edge?>? = null
             while(true) {
               when (selectField(RESPONSE_FIELDS)) {
                 0 -> totalCount = readInt(RESPONSE_FIELDS[0])
-                1 -> edges = readList<HeroDetail.Data.Hero.FriendsConnection.Edge>(RESPONSE_FIELDS[1]) { reader ->
-                  reader.readObject<HeroDetail.Data.Hero.FriendsConnection.Edge> { reader ->
+                1 -> edges = readList<HeroDetails.Data.Hero.FriendsConnection.Edge>(RESPONSE_FIELDS[1]) { reader ->
+                  reader.readObject<HeroDetails.Data.Hero.FriendsConnection.Edge> { reader ->
                     Edge.fromResponse(reader)
                   }
                 }
                 else -> break
               }
             }
-            HeroDetail.Data.Hero.FriendsConnection(
+            HeroDetails.Data.Hero.FriendsConnection(
               totalCount = totalCount,
               edges = edges
             )
@@ -133,7 +134,7 @@ object HeroDetail_ResponseAdapter : ResponseAdapter<HeroDetail.Data> {
         }
 
         override fun toResponse(writer: ResponseWriter,
-            value: HeroDetail.Data.Hero.FriendsConnection) {
+            value: HeroDetails.Data.Hero.FriendsConnection) {
           writer.writeInt(RESPONSE_FIELDS[0], value.totalCount)
           writer.writeList(RESPONSE_FIELDS[1], value.edges) { value, listItemWriter ->
             listItemWriter.writeObject { writer ->
@@ -142,31 +143,31 @@ object HeroDetail_ResponseAdapter : ResponseAdapter<HeroDetail.Data> {
           }
         }
 
-        object Edge : ResponseAdapter<HeroDetail.Data.Hero.FriendsConnection.Edge> {
+        object Edge : ResponseAdapter<HeroDetails.Data.Hero.FriendsConnection.Edge> {
           private val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
             ResponseField.forObject("node", "node", null, true, null)
           )
 
           override fun fromResponse(reader: ResponseReader, __typename: String?):
-              HeroDetail.Data.Hero.FriendsConnection.Edge {
+              HeroDetails.Data.Hero.FriendsConnection.Edge {
             return reader.run {
-              var node: HeroDetail.Data.Hero.FriendsConnection.Edge.Node? = null
+              var node: HeroDetails.Data.Hero.FriendsConnection.Edge.Node? = null
               while(true) {
                 when (selectField(RESPONSE_FIELDS)) {
-                  0 -> node = readObject<HeroDetail.Data.Hero.FriendsConnection.Edge.Node>(RESPONSE_FIELDS[0]) { reader ->
+                  0 -> node = readObject<HeroDetails.Data.Hero.FriendsConnection.Edge.Node>(RESPONSE_FIELDS[0]) { reader ->
                     Node.fromResponse(reader)
                   }
                   else -> break
                 }
               }
-              HeroDetail.Data.Hero.FriendsConnection.Edge(
+              HeroDetails.Data.Hero.FriendsConnection.Edge(
                 node = node
               )
             }
           }
 
           override fun toResponse(writer: ResponseWriter,
-              value: HeroDetail.Data.Hero.FriendsConnection.Edge) {
+              value: HeroDetails.Data.Hero.FriendsConnection.Edge) {
             if(value.node == null) {
               writer.writeObject(RESPONSE_FIELDS[0], null)
             } else {
@@ -176,13 +177,13 @@ object HeroDetail_ResponseAdapter : ResponseAdapter<HeroDetail.Data> {
             }
           }
 
-          object Node : ResponseAdapter<HeroDetail.Data.Hero.FriendsConnection.Edge.Node> {
+          object Node : ResponseAdapter<HeroDetails.Data.Hero.FriendsConnection.Edge.Node> {
             private val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
               ResponseField.forString("name", "name", null, false, null)
             )
 
             override fun fromResponse(reader: ResponseReader, __typename: String?):
-                HeroDetail.Data.Hero.FriendsConnection.Edge.Node {
+                HeroDetails.Data.Hero.FriendsConnection.Edge.Node {
               return reader.run {
                 var name: String? = null
                 while(true) {
@@ -191,14 +192,14 @@ object HeroDetail_ResponseAdapter : ResponseAdapter<HeroDetail.Data> {
                     else -> break
                   }
                 }
-                HeroDetail.Data.Hero.FriendsConnection.Edge.Node(
+                HeroDetails.Data.Hero.FriendsConnection.Edge.Node(
                   name = name!!
                 )
               }
             }
 
             override fun toResponse(writer: ResponseWriter,
-                value: HeroDetail.Data.Hero.FriendsConnection.Edge.Node) {
+                value: HeroDetails.Data.Hero.FriendsConnection.Edge.Node) {
               writer.writeString(RESPONSE_FIELDS[0], value.name)
             }
           }

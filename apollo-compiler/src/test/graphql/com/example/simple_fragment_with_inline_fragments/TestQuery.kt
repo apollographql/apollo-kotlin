@@ -11,7 +11,7 @@ import com.apollographql.apollo.api.Query
 import com.apollographql.apollo.api.internal.QueryDocumentMinifier
 import com.apollographql.apollo.api.internal.ResponseAdapter
 import com.example.simple_fragment_with_inline_fragments.adapter.TestQuery_ResponseAdapter
-import com.example.simple_fragment_with_inline_fragments.fragment.HeroDetail
+import com.example.simple_fragment_with_inline_fragments.fragment.HeroDetails
 import kotlin.Double
 import kotlin.String
 import kotlin.Suppress
@@ -42,7 +42,7 @@ class TestQuery : Query<TestQuery.Data> {
     interface Hero {
       val __typename: String
 
-      interface Character : Hero, HeroDetail {
+      interface Character : Hero, HeroDetails {
         override val __typename: String
 
         /**
@@ -58,7 +58,7 @@ class TestQuery : Query<TestQuery.Data> {
         /**
          * A character from the Star Wars universe
          */
-        interface Friend : HeroDetail.Friend {
+        interface Friend : HeroDetails.Friend {
           override val __typename: String
 
           /**
@@ -66,7 +66,7 @@ class TestQuery : Query<TestQuery.Data> {
            */
           override val name: String
 
-          interface Human : Friend, HeroDetail.Friend.Human, HeroDetail.Friend {
+          interface Human : Friend, HeroDetails.Friend.Human, HeroDetails.Friend {
             override val __typename: String
 
             /**
@@ -80,7 +80,7 @@ class TestQuery : Query<TestQuery.Data> {
             override val height: Double?
           }
 
-          interface Droid : Friend, HeroDetail.Friend.Droid, HeroDetail.Friend {
+          interface Droid : Friend, HeroDetails.Friend.Droid, HeroDetails.Friend {
             override val __typename: String
 
             /**
@@ -112,11 +112,11 @@ class TestQuery : Query<TestQuery.Data> {
          * The friends of the character, or an empty list if they have none
          */
         override val friends: List<Friend?>?
-      ) : Hero, Character, HeroDetail {
+      ) : Hero, Character, HeroDetails {
         /**
          * A character from the Star Wars universe
          */
-        interface Friend : Character.Friend, HeroDetail.Friend {
+        interface Friend : Character.Friend, HeroDetails.Friend {
           override val __typename: String
 
           data class HumanFriend(
@@ -129,8 +129,8 @@ class TestQuery : Query<TestQuery.Data> {
              * Height in the preferred unit, default is meters
              */
             override val height: Double?
-          ) : Character.Friend, Character.Friend.Human, HeroDetail.Friend.Human, HeroDetail.Friend,
-              Friend
+          ) : Character.Friend, Character.Friend.Human, HeroDetails.Friend.Human,
+              HeroDetails.Friend, Friend
 
           data class DroidFriend(
             override val __typename: String,
@@ -142,8 +142,8 @@ class TestQuery : Query<TestQuery.Data> {
              * This droid's primary function
              */
             override val primaryFunction: String?
-          ) : Character.Friend, Character.Friend.Droid, HeroDetail.Friend.Droid, HeroDetail.Friend,
-              Friend
+          ) : Character.Friend, Character.Friend.Droid, HeroDetails.Friend.Droid,
+              HeroDetails.Friend, Friend
 
           data class OtherFriend(
             override val __typename: String,
@@ -151,7 +151,7 @@ class TestQuery : Query<TestQuery.Data> {
              * The name of the character
              */
             override val name: String
-          ) : Character.Friend, HeroDetail.Friend, Friend
+          ) : Character.Friend, HeroDetails.Friend, Friend
         }
       }
 
@@ -162,7 +162,7 @@ class TestQuery : Query<TestQuery.Data> {
       companion object {
         fun Hero.asCharacter(): Character? = this as? Character
 
-        fun Hero.heroDetails(): HeroDetail? = this as? HeroDetail
+        fun Hero.heroDetails(): HeroDetails? = this as? HeroDetails
       }
     }
   }

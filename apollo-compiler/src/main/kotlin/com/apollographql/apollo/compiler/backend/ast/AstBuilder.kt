@@ -7,7 +7,6 @@ import com.apollographql.apollo.compiler.introspection.IntrospectionSchema
 import com.apollographql.apollo.compiler.introspection.resolveType
 import com.apollographql.apollo.compiler.operationoutput.OperationOutput
 import com.apollographql.apollo.compiler.operationoutput.findOperationId
-import com.apollographql.apollo.compiler.singularize
 
 internal class AstBuilder private constructor(
     private val backendIr: BackendIr,
@@ -241,10 +240,7 @@ internal class AstBuilder private constructor(
         name = this.operationName,
         packageName = this.targetPackageName,
     )
-    val operationDataType = this.astOperationDataObjectType(
-        targetPackageName = this.targetPackageName,
-
-        ).run {
+    val operationDataType = this.astOperationDataObjectType(this.targetPackageName).run {
       copy(
           implements = implements + CodeGenerationAst.TypeRef(
               name = "Data",
@@ -268,9 +264,7 @@ internal class AstBuilder private constructor(
     )
   }
 
-  private fun BackendIr.Operation.astOperationDataObjectType(
-      targetPackageName: String,
-  ): CodeGenerationAst.ObjectType {
+  private fun BackendIr.Operation.astOperationDataObjectType(targetPackageName: String): CodeGenerationAst.ObjectType {
     return this.dataField.asAstObjectType(
         targetPackageName = targetPackageName,
         abstract = false,
@@ -353,14 +347,13 @@ internal class AstBuilder private constructor(
   ): CodeGenerationAst.ObjectType {
     val schemaType = schema.resolveType(schema.resolveType(this.type.rawType.name!!))
     return buildObjectType(
-        name = responseName,
+        name = normalizedTypeName,
         description = schemaType.description,
         schemaTypename = this.type.rawType.name,
         fields = fields,
         fragments = fragments,
         targetPackageName = targetPackageName,
         abstract = abstract,
-
         currentSelectionKey = currentSelectionKey,
         alternativeSelectionKeys = selectionKeys,
     )
@@ -385,7 +378,6 @@ internal class AstBuilder private constructor(
           fields = fields,
           targetPackageName = targetPackageName,
           abstract = abstract,
-
           currentSelectionKey = currentSelectionKey,
           alternativeSelectionKeys = alternativeSelectionKeys,
       )
@@ -398,7 +390,6 @@ internal class AstBuilder private constructor(
           fragments = fragments,
           targetPackageName = targetPackageName,
           abstract = abstract,
-
           selectionKey = currentSelectionKey,
           alternativeSelectionKeys = alternativeSelectionKeys,
       )
@@ -418,8 +409,7 @@ internal class AstBuilder private constructor(
     val astFields = fields.map { field ->
       field.buildField(
           targetPackageName = targetPackageName,
-
-          selectionKey = currentSelectionKey + field.responseName,
+          selectionKey = currentSelectionKey + field.normalizedTypeName,
       )
     }
     val implements = alternativeSelectionKeys.mapNotNull { keys ->
@@ -434,9 +424,8 @@ internal class AstBuilder private constructor(
           field.asAstObjectType(
               targetPackageName = targetPackageName,
               abstract = abstract,
-              currentSelectionKey = currentSelectionKey + field.responseName,
-
-              )
+              currentSelectionKey = currentSelectionKey + field.normalizedTypeName,
+          )
         }
     return CodeGenerationAst.ObjectType(
         name = name.normalizeTypeName(),
@@ -478,8 +467,7 @@ internal class AstBuilder private constructor(
     val astFields = fields.map { field ->
       field.buildField(
           targetPackageName = targetPackageName,
-
-          selectionKey = selectionKey + field.responseName,
+          selectionKey = selectionKey + field.normalizedTypeName,
       )
     }
     val implements = alternativeSelectionKeys.mapNotNull { keys ->
@@ -538,7 +526,7 @@ internal class AstBuilder private constructor(
           field.asAstObjectType(
               targetPackageName = targetPackageName,
               abstract = abstract || fragmentObjectTypes.isNotEmpty(),
-              currentSelectionKey = selectionKey + field.responseName,
+              currentSelectionKey = selectionKey + field.normalizedTypeName,
           )
         }
     return fieldNestedObjects.plus(fragmentObjectTypes)
@@ -557,7 +545,6 @@ internal class AstBuilder private constructor(
           fields = this.fields,
           targetPackageName = targetPackageName,
           abstract = true,
-
           currentSelectionKey = selectionKey + this.name,
           alternativeSelectionKeys = this.selectionKeys,
       )
@@ -599,7 +586,6 @@ internal class AstBuilder private constructor(
         type = this.resolveFieldType(
             targetPackageName = targetPackageName,
             schemaTypeRef = this.type,
-
             selectionKey = selectionKey,
         ),
         description = this.description,
@@ -682,7 +668,6 @@ internal class AstBuilder private constructor(
       IntrospectionSchema.Kind.NON_NULL -> this.resolveFieldType(
           targetPackageName = targetPackageName,
           schemaTypeRef = schemaTypeRef.ofType!!,
-
           selectionKey = selectionKey,
       ).nonNullable()
 
@@ -730,6 +715,6 @@ internal class AstBuilder private constructor(
 
   private fun String.normalizeTypeName(): String {
     val firstLetterIndex = this.indexOfFirst { it.isLetter() }
-    return this.substring(0, firstLetterIndex) + this.substring(firstLetterIndex, this.length).singularize().capitalize()
+    return this.substring(0, firstLetterIndex) + this.substring(firstLetterIndex, this.length).capitalize()
   }
 }

@@ -10,7 +10,7 @@ import com.apollographql.apollo.api.OperationName
 import com.apollographql.apollo.api.Query
 import com.apollographql.apollo.api.internal.QueryDocumentMinifier
 import com.apollographql.apollo.api.internal.ResponseAdapter
-import com.example.fragment_in_fragment.adapter.AllStarship_ResponseAdapter
+import com.example.fragment_in_fragment.adapter.AllStarships_ResponseAdapter
 import com.example.fragment_in_fragment.fragment.PilotFragment
 import com.example.fragment_in_fragment.fragment.PlanetFragment
 import com.example.fragment_in_fragment.fragment.StarshipFragment
@@ -21,7 +21,7 @@ import kotlin.collections.List
 @Suppress("NAME_SHADOWING", "UNUSED_ANONYMOUS_PARAMETER", "LocalVariableName",
     "RemoveExplicitTypeArguments", "NestedLambdaShadowedImplicitParameter", "PropertyName",
     "RemoveRedundantQualifierName")
-class AllStarship : Query<AllStarship.Data> {
+class AllStarships : Query<AllStarships.Data> {
   override fun operationId(): String = OPERATION_ID
 
   override fun queryDocument(): String = QUERY_DOCUMENT
@@ -30,14 +30,14 @@ class AllStarship : Query<AllStarship.Data> {
 
   override fun name(): OperationName = OPERATION_NAME
 
-  override fun adapter(): ResponseAdapter<Data> = AllStarship_ResponseAdapter
+  override fun adapter(): ResponseAdapter<Data> = AllStarships_ResponseAdapter
   data class Data(
-    val allStarships: AllStarship?
+    val allStarships: AllStarships?
   ) : Operation.Data {
     /**
      * A connection to a list of items.
      */
-    data class AllStarship(
+    data class AllStarships(
       /**
        * A list of edges.
        */

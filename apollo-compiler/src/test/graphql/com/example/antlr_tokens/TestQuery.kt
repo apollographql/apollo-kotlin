@@ -55,9 +55,9 @@ data class TestQuery(
    * The query type, represents all of the entry points into our object graph
    */
   data class Data(
-    val typeWithGraphQLKeywords: TypeWithGraphQLKeyword?
+    val typeWithGraphQLKeywords: TypeWithGraphQLKeywords?
   ) : Operation.Data {
-    data class TypeWithGraphQLKeyword(
+    data class TypeWithGraphQLKeywords(
       val on: String?,
       val null_: String?,
       val alias: String?

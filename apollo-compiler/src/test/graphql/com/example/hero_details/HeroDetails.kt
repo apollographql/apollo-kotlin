@@ -10,7 +10,7 @@ import com.apollographql.apollo.api.OperationName
 import com.apollographql.apollo.api.Query
 import com.apollographql.apollo.api.internal.QueryDocumentMinifier
 import com.apollographql.apollo.api.internal.ResponseAdapter
-import com.example.hero_details.adapter.HeroDetail_ResponseAdapter
+import com.example.hero_details.adapter.HeroDetails_ResponseAdapter
 import com.example.hero_details.type.Hero_type
 import kotlin.Int
 import kotlin.String
@@ -20,7 +20,7 @@ import kotlin.collections.List
 @Suppress("NAME_SHADOWING", "UNUSED_ANONYMOUS_PARAMETER", "LocalVariableName",
     "RemoveExplicitTypeArguments", "NestedLambdaShadowedImplicitParameter", "PropertyName",
     "RemoveRedundantQualifierName")
-class HeroDetail : Query<HeroDetail.Data> {
+class HeroDetails : Query<HeroDetails.Data> {
   override fun operationId(): String = OPERATION_ID
 
   override fun queryDocument(): String = QUERY_DOCUMENT
@@ -29,7 +29,7 @@ class HeroDetail : Query<HeroDetail.Data> {
 
   override fun name(): OperationName = OPERATION_NAME
 
-  override fun adapter(): ResponseAdapter<Data> = HeroDetail_ResponseAdapter
+  override fun adapter(): ResponseAdapter<Data> = HeroDetails_ResponseAdapter
   /**
    * The query type, represents all of the entry points into our object graph
    */

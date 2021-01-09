@@ -40,19 +40,19 @@ object HumanDetailsImpl_ResponseAdapter : ResponseAdapter<HumanDetailsImpl.Data>
     override fun fromResponse(reader: ResponseReader, __typename: String?): HumanDetailsImpl.Data {
       val typename = __typename ?: reader.readString(RESPONSE_FIELDS[0])
       return when(typename) {
-        "Human" -> CharacterDatum.fromResponse(reader, typename)
-        else -> OtherDatum.fromResponse(reader, typename)
+        "Human" -> CharacterData.fromResponse(reader, typename)
+        else -> OtherData.fromResponse(reader, typename)
       }
     }
 
     override fun toResponse(writer: ResponseWriter, value: HumanDetailsImpl.Data) {
       when(value) {
-        is HumanDetailsImpl.Data.CharacterDatum -> CharacterDatum.toResponse(writer, value)
-        is HumanDetailsImpl.Data.OtherDatum -> OtherDatum.toResponse(writer, value)
+        is HumanDetailsImpl.Data.CharacterData -> CharacterData.toResponse(writer, value)
+        is HumanDetailsImpl.Data.OtherData -> OtherData.toResponse(writer, value)
       }
     }
 
-    object CharacterDatum : ResponseAdapter<HumanDetailsImpl.Data.CharacterDatum> {
+    object CharacterData : ResponseAdapter<HumanDetailsImpl.Data.CharacterData> {
       private val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
         ResponseField.forString("__typename", "__typename", null, false, null),
         ResponseField.forString("name", "name", null, false, null),
@@ -60,7 +60,7 @@ object HumanDetailsImpl_ResponseAdapter : ResponseAdapter<HumanDetailsImpl.Data>
       )
 
       override fun fromResponse(reader: ResponseReader, __typename: String?):
-          HumanDetailsImpl.Data.CharacterDatum {
+          HumanDetailsImpl.Data.CharacterData {
         return reader.run {
           var __typename: String? = __typename
           var name: String? = null
@@ -73,7 +73,7 @@ object HumanDetailsImpl_ResponseAdapter : ResponseAdapter<HumanDetailsImpl.Data>
               else -> break
             }
           }
-          HumanDetailsImpl.Data.CharacterDatum(
+          HumanDetailsImpl.Data.CharacterData(
             __typename = __typename!!,
             name = name!!,
             birthDate = birthDate!!
@@ -81,21 +81,21 @@ object HumanDetailsImpl_ResponseAdapter : ResponseAdapter<HumanDetailsImpl.Data>
         }
       }
 
-      override fun toResponse(writer: ResponseWriter, value: HumanDetailsImpl.Data.CharacterDatum) {
+      override fun toResponse(writer: ResponseWriter, value: HumanDetailsImpl.Data.CharacterData) {
         writer.writeString(RESPONSE_FIELDS[0], value.__typename)
         writer.writeString(RESPONSE_FIELDS[1], value.name)
         writer.writeCustom(RESPONSE_FIELDS[2] as ResponseField.CustomScalarField, value.birthDate)
       }
     }
 
-    object OtherDatum : ResponseAdapter<HumanDetailsImpl.Data.OtherDatum> {
+    object OtherData : ResponseAdapter<HumanDetailsImpl.Data.OtherData> {
       private val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
         ResponseField.forString("__typename", "__typename", null, false, null),
         ResponseField.forString("name", "name", null, false, null)
       )
 
       override fun fromResponse(reader: ResponseReader, __typename: String?):
-          HumanDetailsImpl.Data.OtherDatum {
+          HumanDetailsImpl.Data.OtherData {
         return reader.run {
           var __typename: String? = __typename
           var name: String? = null
@@ -106,14 +106,14 @@ object HumanDetailsImpl_ResponseAdapter : ResponseAdapter<HumanDetailsImpl.Data>
               else -> break
             }
           }
-          HumanDetailsImpl.Data.OtherDatum(
+          HumanDetailsImpl.Data.OtherData(
             __typename = __typename!!,
             name = name!!
           )
         }
       }
 
-      override fun toResponse(writer: ResponseWriter, value: HumanDetailsImpl.Data.OtherDatum) {
+      override fun toResponse(writer: ResponseWriter, value: HumanDetailsImpl.Data.OtherData) {
         writer.writeString(RESPONSE_FIELDS[0], value.__typename)
         writer.writeString(RESPONSE_FIELDS[1], value.name)
       }

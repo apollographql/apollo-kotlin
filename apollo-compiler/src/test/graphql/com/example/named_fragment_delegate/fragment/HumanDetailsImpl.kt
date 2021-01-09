@@ -37,7 +37,7 @@ class HumanDetailsImpl : Fragment<HumanDetailsImpl.Data> {
      * The friends of the human exposed as a connection with edges
      */
     override val friendsConnection: FriendsConnection
-  ) : HumanDetail, Fragment.Data {
+  ) : HumanDetails, Fragment.Data {
     /**
      * A connection object for a character's friends
      */
@@ -46,7 +46,7 @@ class HumanDetailsImpl : Fragment<HumanDetailsImpl.Data> {
        * The edges for each of the character's friends.
        */
       override val edges: List<Edge?>?
-    ) : HumanDetail.FriendsConnection {
+    ) : HumanDetails.FriendsConnection {
       /**
        * An edge object for a character's friends
        */
@@ -55,7 +55,7 @@ class HumanDetailsImpl : Fragment<HumanDetailsImpl.Data> {
          * The character represented by this friendship edge
          */
         override val node: Node?
-      ) : HumanDetail.FriendsConnection.Edge {
+      ) : HumanDetails.FriendsConnection.Edge {
         /**
          * A character from the Star Wars universe
          */
@@ -64,7 +64,7 @@ class HumanDetailsImpl : Fragment<HumanDetailsImpl.Data> {
            * The name of the character
            */
           override val name: String
-        ) : HumanDetail.FriendsConnection.Edge.Node
+        ) : HumanDetails.FriendsConnection.Edge.Node
       }
     }
   }
