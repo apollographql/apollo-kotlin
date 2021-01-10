@@ -6,6 +6,7 @@ import com.apollographql.apollo.api.OperationName
 import com.apollographql.apollo.api.Subscription
 import com.apollographql.apollo.api.internal.ResponseAdapter
 import com.apollographql.apollo.cache.normalized.ApolloStore
+import com.apollographql.apollo.subscription.ApolloOperationMessageSerializer
 import com.apollographql.apollo.subscription.OperationClientMessage
 import com.apollographql.apollo.subscription.OperationServerMessage
 import com.apollographql.apollo.subscription.SubscriptionConnectionParams
@@ -13,6 +14,7 @@ import com.apollographql.apollo.subscription.SubscriptionConnectionParamsProvide
 import com.apollographql.apollo.subscription.SubscriptionManagerState
 import com.apollographql.apollo.subscription.SubscriptionTransport
 import com.google.common.truth.Truth
+import okio.Buffer
 import org.junit.Before
 import org.junit.Test
 import java.util.ArrayList
@@ -40,7 +42,7 @@ class SubscriptionAutoPersistTest {
     callbackAdapter = SubscriptionManagerCallbackAdapter()
     subscriptionManager!!.subscribe(subscription, callbackAdapter!!)
     subscriptionTransportFactory!!.callback!!.onConnected()
-    subscriptionTransportFactory!!.callback!!.onMessage(OperationServerMessage.ConnectionAcknowledge())
+    subscriptionTransportFactory!!.callback!!.onMessage(OperationServerMessage.ConnectionAcknowledge)
     assertStartMessage(false)
   }
 
@@ -90,9 +92,15 @@ class SubscriptionAutoPersistTest {
     Truth.assertThat((callbackAdapter!!.error as ApolloSubscriptionServerException?)!!.errorPayload).containsEntry("meh", "¯\\_(ツ)_/¯")
   }
 
+  private fun OperationClientMessage.toJsonString(): String {
+    return Buffer().also {
+      ApolloOperationMessageSerializer.writeClientMessage(this, it)
+    }.readUtf8()
+  }
   private fun assertStartMessage(isWriteDocument: Boolean) {
     val subscriptionId = ArrayList(subscriptionManager!!.subscriptions.keys)[0]
     if (isWriteDocument) {
+
       Truth.assertThat(subscriptionTransportFactory!!.subscriptionTransport!!.lastSentMessage!!.toJsonString()).isEqualTo(
           ""
               + "{\"id\":\"" + subscriptionId.toString() + "\","

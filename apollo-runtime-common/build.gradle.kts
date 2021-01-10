@@ -46,6 +46,7 @@ kotlin {
 
     val commonTest by getting {
       dependencies {
+        implementation(project(":apollo-testing-support"))
         implementation(kotlin("test-common"))
         implementation(kotlin("test-annotations-common"))
       }

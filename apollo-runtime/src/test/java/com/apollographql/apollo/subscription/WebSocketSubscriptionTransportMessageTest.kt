@@ -38,11 +38,14 @@ class WebSocketSubscriptionTransportMessageTest {
 
   @Test
   fun startSubscriptionAutoPersistSubscriptionDisabled() {
-    subscriptionTransport.send(OperationClientMessage.Start(subscriptionId = "subscriptionId",
-        subscription = MockSubscription(),
-        customScalarAdapters = CustomScalarAdapters(emptyMap()),
-        autoPersistSubscription = false,
-        sendSubscriptionDocument = false))
+    subscriptionTransport.send(
+        OperationClientMessage.Start(
+            subscriptionId = "subscriptionId",
+            subscription = MockSubscription(),
+            customScalarAdapters = CustomScalarAdapters(emptyMap()),
+            autoPersistSubscription = false,
+            sendSubscriptionDocument = false)
+    )
     val expected = """{"id":"subscriptionId","type":"start","payload":{"variables":{},"operationName":"SomeSubscription","query":"subscription{commentAdded{id  name}"}}"""
     assertThat(webSocketFactory.webSocket.lastSentMessage).isEqualTo(expected)
   }
@@ -126,7 +129,9 @@ class WebSocketSubscriptionTransportMessageTest {
   @Test
   fun complete() {
     webSocketFactory.webSocket.listener.onMessage(webSocketFactory.webSocket, """{"type":"complete", "id":"subscriptionId"}""")
-    assertThat(transportCallback.lastMessage).isEqualTo(OperationServerMessage.Complete("subscriptionId"))
+    assertThat(
+        transportCallback.lastMessage
+    ).isEqualTo(OperationServerMessage.Complete("subscriptionId"))
   }
 
   @Test

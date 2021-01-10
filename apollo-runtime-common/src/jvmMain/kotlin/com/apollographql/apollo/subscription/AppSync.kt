@@ -6,6 +6,11 @@ import okhttp3.HttpUrl
 import okio.Buffer
 import java.util.Base64
 
+/**
+ * TODO: move to commonMain.
+ * We're missing Base64, which is easy to replace with expect/actual and also
+ * OkHttp HttpUrl, which seems harder to replace
+ */
 object AppSync {
 
   /**

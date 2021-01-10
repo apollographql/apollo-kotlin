@@ -33,14 +33,15 @@ kotlin {
     }
 
     val jvmMain by getting {
+      dependsOn(commonMain)
       dependencies {
         api(groovy.util.Eval.x(project, "x.dep.okHttp.okHttp"))
       }
     }
 
     val iosMain by getting {
-      dependsOn(commonMain)
       dependencies {
+        api(project(":apollo-runtime-common"))
       }
     }
 

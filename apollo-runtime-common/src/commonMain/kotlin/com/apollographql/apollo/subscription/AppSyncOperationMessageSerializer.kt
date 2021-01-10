@@ -22,7 +22,6 @@ import okio.use as okioUse
 class AppSyncOperationMessageSerializer(
     private val authorization: Map<String, Any?>
 ) : OperationMessageSerializer {
-  @Throws(IOException::class)
   override fun writeClientMessage(message: OperationClientMessage, sink: BufferedSink) {
     when (message) {
       is OperationClientMessage.Start -> JsonWriter.of(sink).use { message.writeTo(it) }
@@ -32,7 +31,6 @@ class AppSyncOperationMessageSerializer(
     }
   }
 
-  @Throws(IOException::class)
   override fun readServerMessage(source: BufferedSource): OperationServerMessage =
       ApolloOperationMessageSerializer.readServerMessage(source)
 

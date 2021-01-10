@@ -1,6 +1,5 @@
 package com.apollographql.apollo.exception
 
-// TODO: Make this a sealed class
 abstract class ApolloException(message: String? = null, cause: Throwable? = null) : RuntimeException(message, cause)
 
 class ApolloSerializationException(message: String? = null, cause: Throwable? = null) : ApolloException(message = message, cause = cause)

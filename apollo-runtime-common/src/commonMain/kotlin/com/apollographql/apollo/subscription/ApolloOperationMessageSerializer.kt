@@ -109,11 +109,11 @@ object ApolloOperationMessageSerializer : OperationMessageSerializer {
     val id = messageData[OperationServerMessage.JSON_KEY_ID] as String?
     return when (val type = messageData[OperationServerMessage.JSON_KEY_TYPE] as String?) {
       OperationServerMessage.ConnectionError.TYPE -> OperationServerMessage.ConnectionError(messageData.getMessagePayload())
-      OperationServerMessage.ConnectionAcknowledge.TYPE -> OperationServerMessage.ConnectionAcknowledge()
+      OperationServerMessage.ConnectionAcknowledge.TYPE -> OperationServerMessage.ConnectionAcknowledge
       OperationServerMessage.Data.TYPE -> OperationServerMessage.Data(id, messageData.getMessagePayload())
       OperationServerMessage.Error.TYPE -> OperationServerMessage.Error(id, messageData.getMessagePayload())
       OperationServerMessage.Complete.TYPE -> OperationServerMessage.Complete(id)
-      OperationServerMessage.ConnectionKeepAlive.TYPE -> OperationServerMessage.ConnectionKeepAlive()
+      OperationServerMessage.ConnectionKeepAlive.TYPE -> OperationServerMessage.ConnectionKeepAlive
       else -> throw IllegalArgumentException("Unsupported message type $type")
     }
   }

@@ -20,11 +20,11 @@ class CacheValueResolver(
 ) : ValueResolver<Record> {
 
   @Suppress("UNCHECKED_CAST")
-  override fun <T> valueFor(recordSet: Record, field: ResponseField): T? {
+  override fun <T> valueFor(map: Record, field: ResponseField): T? {
     return when (field.type) {
-      OBJECT -> valueForObject(recordSet, field) as T?
-      LIST -> valueForList(fieldValue(recordSet, field)) as T?
-      else -> fieldValue(recordSet, field)
+      OBJECT -> valueForObject(map, field) as T?
+      LIST -> valueForList(fieldValue(map, field)) as T?
+      else -> fieldValue(map, field)
     }
   }
 

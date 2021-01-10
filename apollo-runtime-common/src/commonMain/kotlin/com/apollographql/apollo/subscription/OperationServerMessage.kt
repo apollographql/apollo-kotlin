@@ -9,43 +9,39 @@ sealed class OperationServerMessage {
     const val JSON_KEY_PAYLOAD = "payload"
   }
 
-  class ConnectionError(val payload: Map<String, Any?>) : OperationServerMessage() {
+  data class ConnectionError(val payload: Map<String, Any?>) : OperationServerMessage() {
     companion object {
       const val TYPE = "connection_error"
     }
   }
 
-  class ConnectionAcknowledge : OperationServerMessage() {
-    companion object {
-      const val TYPE = "connection_ack"
-    }
+  object ConnectionAcknowledge : OperationServerMessage() {
+    const val TYPE = "connection_ack"
   }
 
-  class Data(val id: String?, val payload: Map<String, Any?>) : OperationServerMessage() {
+  data class Data(val id: String?, val payload: Map<String, Any?>) : OperationServerMessage() {
     companion object {
       const val TYPE = "data"
     }
   }
 
-  class Error(val id: String?, val payload: Map<String, Any?>) : OperationServerMessage() {
+  data class Error(val id: String?, val payload: Map<String, Any?>) : OperationServerMessage() {
     companion object {
       const val TYPE = "error"
     }
   }
 
-  class Complete(val id: String?) : OperationServerMessage() {
+  data class Complete(val id: String?) : OperationServerMessage() {
     companion object {
       const val TYPE = "complete"
     }
   }
 
-  class ConnectionKeepAlive : OperationServerMessage() {
-    companion object {
-      const val TYPE = "ka"
-    }
+  object ConnectionKeepAlive : OperationServerMessage() {
+    const val TYPE = "ka"
   }
 
-  class Unsupported(val rawMessage: String) : OperationServerMessage() {
+  data class Unsupported(val rawMessage: String) : OperationServerMessage() {
     override fun equals(other: Any?): Boolean = other is Unsupported && other.rawMessage == rawMessage
     override fun hashCode(): Int = rawMessage.hashCode()
   }
