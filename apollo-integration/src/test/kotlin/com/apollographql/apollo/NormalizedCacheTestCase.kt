@@ -69,6 +69,21 @@ class NormalizedCacheTestCase {
 
   @Test
   @Throws(Exception::class)
+  fun episodeHeroName() {
+    cacheAndAssertCachedResponse(
+        server,
+        "HeroNameResponse.json",
+        apolloClient.query(EpisodeHeroNameQuery(fromNullable(Episode.EMPIRE)))
+    ) { response ->
+      assertThat(response.hasErrors()).isFalse()
+      assertThat(response.data!!.hero?.name).isEqualTo("R2-D2")
+      true
+    }
+  }
+
+
+  @Test
+  @Throws(Exception::class)
   fun heroAndFriendsNameResponse() {
     cacheAndAssertCachedResponse(
         server,
