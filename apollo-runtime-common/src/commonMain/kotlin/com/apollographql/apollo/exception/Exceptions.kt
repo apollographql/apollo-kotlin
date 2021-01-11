@@ -1,7 +1,5 @@
 package com.apollographql.apollo.exception
 
-abstract class ApolloException(message: String? = null, cause: Throwable? = null) : RuntimeException(message, cause)
-
 class ApolloSerializationException(message: String? = null, cause: Throwable? = null) : ApolloException(message = message, cause = cause)
 
 class ApolloParseException(message: String? = null, cause: Throwable? = null) : ApolloException(message = message, cause = cause)
