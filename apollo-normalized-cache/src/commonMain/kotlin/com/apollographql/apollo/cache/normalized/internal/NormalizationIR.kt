@@ -23,7 +23,15 @@ fun NormalizationIR.Element.mergeWith(other: NormalizationIR.Element): Normaliza
       check(this.value == other.value)
       this
     }
-    this is NormalizationIR.Element.List && other is NormalizationIR.Element.List -> throw UnsupportedOperationException()
+    this is NormalizationIR.Element.List && other is NormalizationIR.Element.List -> {
+      check(this.elements.size == other.elements.size)
+
+      NormalizationIR.Element.List(
+          elements = elements.mapIndexed { index, element ->
+            element.mergeWith(other.elements[index])
+          }
+      )
+    }
     this is NormalizationIR.Element.Object && other is NormalizationIR.Element.Object -> {
       val newFields = fields.toMutableList()
 
