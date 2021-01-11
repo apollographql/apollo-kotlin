@@ -12,6 +12,7 @@ class StreamResponseReader private constructor(
     private val jsonReader: JsonReader,
     private val variableValues: Map<String, Any?>,
     private val customScalarAdapters: CustomScalarAdapters,
+    private val fieldKey: (ResponseField) -> String = {it.responseName}
 ) : ResponseReader {
   private var selectedFieldIndex: Int = -1
   private var selectedField: ResponseField? = null
@@ -19,7 +20,8 @@ class StreamResponseReader private constructor(
   constructor(
       jsonReader: JsonReader,
       variables: Operation.Variables,
-      customScalarAdapters: CustomScalarAdapters
+      customScalarAdapters: CustomScalarAdapters,
+      fieldKey: (ResponseField) -> String = {it.responseName}
   ) : this(jsonReader, variables.valueMap(), customScalarAdapters)
 
   override fun selectField(fields: Array<ResponseField>): Int {
@@ -31,7 +33,7 @@ class StreamResponseReader private constructor(
 
       if (selectedFieldIndex >= fields.size || fields[selectedFieldIndex].responseName != nextFieldName) {
         // our guess failed, fallback to full scan
-        selectedFieldIndex = fields.indexOfFirst { field -> field.responseName == nextFieldName }
+        selectedFieldIndex = fields.indexOfFirst { field -> fieldKey(field) == nextFieldName }
       }
 
       if (selectedFieldIndex == -1) {

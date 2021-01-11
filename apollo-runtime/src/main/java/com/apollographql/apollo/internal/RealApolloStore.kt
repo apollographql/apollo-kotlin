@@ -8,6 +8,7 @@ import com.apollographql.apollo.api.Response.Companion.builder
 import com.apollographql.apollo.api.internal.ApolloLogger
 import com.apollographql.apollo.api.internal.MapResponseReader
 import com.apollographql.apollo.api.internal.ResponseAdapter
+import com.apollographql.apollo.api.internal.json.JsonReader
 import com.apollographql.apollo.api.parseData
 import com.apollographql.apollo.cache.CacheHeaders
 import com.apollographql.apollo.cache.normalized.ApolloStore
@@ -129,6 +130,10 @@ class RealApolloStore(normalizedCache: NormalizedCache,
 
   override fun read(key: String, cacheHeaders: CacheHeaders): Record? {
     return optimisticCache.loadRecord(key, cacheHeaders)
+  }
+
+  override fun stream(key: String, cacheHeaders: CacheHeaders): JsonReader? {
+    return optimisticCache.stream(key, cacheHeaders)
   }
 
   override fun read(keys: Collection<String>, cacheHeaders: CacheHeaders): Collection<Record> {
