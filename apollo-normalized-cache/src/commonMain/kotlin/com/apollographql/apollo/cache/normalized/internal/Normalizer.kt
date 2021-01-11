@@ -9,12 +9,12 @@ import com.apollographql.apollo.cache.normalized.Record
 /**
  * Takes a AJObject and returns a list of [Record]
  */
-class Normalizer(private val cacheKeyResolver: CacheKeyResolver) {
+internal class Normalizer(private val cacheKeyResolver: CacheKeyResolver) {
 
   private val records = mutableMapOf<String, Record>()
 
-  fun normalize(`object`: NormalizationIR.Element.Object, rootKey: String?): Map<String, Record> {
-    `object`.normalize(rootKey, null)
+  fun normalize(obj: NormalizationIR.Element.Object, rootKey: String?): Map<String, Record> {
+    obj.normalize(rootKey, null)
     return records
   }
 

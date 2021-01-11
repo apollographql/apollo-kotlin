@@ -6,7 +6,7 @@ import com.apollographql.apollo.api.ResponseField
 /**
  * A hierarchy of Json object with their fields attached used for normalization
  */
-object NormalizationIR {
+internal object NormalizationIR {
   sealed class Element {
     class Object(val fields: kotlin.collections.List<Field>) : Element() {
       data class Field(val fieldKey: String, val field: ResponseField, val element: Element)
@@ -17,7 +17,7 @@ object NormalizationIR {
   }
 }
 
-fun NormalizationIR.Element.mergeWith(other: NormalizationIR.Element): NormalizationIR.Element {
+internal fun NormalizationIR.Element.mergeWith(other: NormalizationIR.Element): NormalizationIR.Element {
   return when {
     this is NormalizationIR.Element.Scalar && other is NormalizationIR.Element.Scalar -> {
       check(this.value == other.value)
@@ -50,4 +50,4 @@ fun NormalizationIR.Element.mergeWith(other: NormalizationIR.Element): Normaliza
   }
 }
 
-fun NormalizationIR.Element.Object.Field.mergeWith(other: NormalizationIR.Element.Object.Field) = copy(element = element.mergeWith(other.element))
+internal fun NormalizationIR.Element.Object.Field.mergeWith(other: NormalizationIR.Element.Object.Field) = copy(element = element.mergeWith(other.element))

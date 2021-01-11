@@ -11,7 +11,7 @@ import com.apollographql.apollo.api.internal.Utils.shouldSkip
 /**
  *
  */
-class NormalizationIRResponseWriter(
+internal class NormalizationIRResponseWriter(
     private val operationVariables: Operation.Variables,
     private val customScalarAdapters: CustomScalarAdapters,
 ) : ResponseWriter, ResponseWriter.ListItemWriter {
