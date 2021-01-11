@@ -1,6 +1,5 @@
 package com.apollographql.apollo.benchmark
 
-import Utils
 import Utils.bufferedSource
 import androidx.benchmark.junit4.BenchmarkRule
 import androidx.benchmark.junit4.measureRepeated

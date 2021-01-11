@@ -6,7 +6,6 @@ import com.apollographql.apollo.api.cache.http.HttpCache
 import com.apollographql.apollo.api.internal.ApolloLogger
 import com.apollographql.apollo.api.parse
 import com.apollographql.apollo.cache.normalized.CacheKeyResolver
-import com.apollographql.apollo.cache.normalized.internal.ResponseNormalizer
 import com.apollographql.apollo.cache.normalized.internal.dependentKeys
 import com.apollographql.apollo.cache.normalized.internal.normalize
 import com.apollographql.apollo.exception.ApolloException

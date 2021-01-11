@@ -4,28 +4,24 @@ import com.apollographql.apollo.api.ApolloExperimental
 import com.apollographql.apollo.api.Operation
 import com.apollographql.apollo.api.Response
 import com.apollographql.apollo.api.Response.Companion.builder
-import com.apollographql.apollo.api.ResponseField
 import com.apollographql.apollo.cache.CacheHeaders
-import com.apollographql.apollo.cache.normalized.CacheKey
 import com.apollographql.apollo.cache.normalized.CacheKeyResolver
 import com.apollographql.apollo.cache.normalized.internal.CacheValueResolver
-import com.apollographql.apollo.cache.normalized.internal.CacheKeyBuilder
 import com.apollographql.apollo.cache.normalized.internal.ReadableStore
 import com.apollographql.apollo.cache.normalized.internal.RealCacheKeyBuilder
-import com.apollographql.apollo.cache.normalized.internal.ResponseNormalizer
 import com.apollographql.apollo.cache.normalized.internal.WriteableStore
 import com.apollographql.apollo.interceptor.ApolloInterceptorChain
 import com.apollographql.apollo.interceptor.ApolloRequest
 import com.apollographql.apollo.interceptor.ApolloRequestInterceptor
 import com.apollographql.apollo.interceptor.ApolloResponse
-import com.apollographql.apollo.api.internal.response.RealResponseWriter
 import com.apollographql.apollo.api.parseData
+import com.apollographql.apollo.cache.normalized.internal.normalize
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.flow
 
 @ApolloExperimental
-class ApolloCacheInterceptor<S>(private val store: S) : ApolloRequestInterceptor where S: WriteableStore, S: ReadableStore{
+class ApolloCacheInterceptor<S>(private val store: S) : ApolloRequestInterceptor where S : WriteableStore, S : ReadableStore {
 
   override fun <D : Operation.Data> intercept(request: ApolloRequest<D>, chain: ApolloInterceptorChain): Flow<ApolloResponse<D>> {
     return flow {
@@ -51,24 +47,9 @@ class ApolloCacheInterceptor<S>(private val store: S) : ApolloRequestInterceptor
 
   private fun <D : Operation.Data> writeToCache(request: ApolloRequest<D>, data: D) {
     val operation = request.operation
-    val writer = RealResponseWriter(operation.variables(), request.customScalarAdapters)
-    operation.adapter().toResponse(writer, data)
+    val records = operation.normalize(data, request.customScalarAdapters, CacheKeyResolver.DEFAULT)
 
-    val responseNormalizer = object : ResponseNormalizer<Map<String, Any>?>() {
-      override fun resolveCacheKey(field: ResponseField,
-                                   record: Map<String, Any>?): CacheKey {
-        return CacheKeyResolver.DEFAULT.fromFieldRecordSet(field, record!!)
-      }
-
-      override fun cacheKeyBuilder(): CacheKeyBuilder {
-        return RealCacheKeyBuilder()
-      }
-    }
-
-    responseNormalizer.willResolveRootQuery(operation);
-    writer.resolveFields(responseNormalizer)
-
-    store.merge(responseNormalizer.records().toList(), CacheHeaders.NONE)
+    store.merge(records.toList(), CacheHeaders.NONE)
   }
 
   private fun <D : Operation.Data> readFromCache(request: ApolloRequest<D>): Response<D>? {

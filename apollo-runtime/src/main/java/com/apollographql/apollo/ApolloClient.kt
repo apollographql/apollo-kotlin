@@ -21,7 +21,6 @@ import com.apollographql.apollo.cache.normalized.CacheKeyResolver
 import com.apollographql.apollo.cache.normalized.NormalizedCache
 import com.apollographql.apollo.cache.normalized.NormalizedCacheFactory
 import com.apollographql.apollo.cache.normalized.RecordFieldJsonAdapter
-import com.apollographql.apollo.cache.normalized.internal.ResponseNormalizer
 import com.apollographql.apollo.fetcher.ApolloResponseFetchers
 import com.apollographql.apollo.fetcher.ResponseFetcher
 import com.apollographql.apollo.interceptor.ApolloInterceptor
@@ -653,7 +652,6 @@ class ApolloClient internal constructor(
       val subscriptionTransportFactory = subscriptionTransportFactory
       if (subscriptionTransportFactory.isPresent) {
         val finalApolloStore = apolloStore
-        val responseNormalizer = { finalApolloStore.networkResponseNormalizer() }
         subscriptionManager = RealSubscriptionManager(
             customScalarAdapters,
             subscriptionTransportFactory.get(),

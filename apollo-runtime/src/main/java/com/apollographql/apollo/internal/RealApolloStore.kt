@@ -21,14 +21,13 @@ import com.apollographql.apollo.cache.normalized.NormalizedCache
 import com.apollographql.apollo.cache.normalized.OptimisticNormalizedCache
 import com.apollographql.apollo.cache.normalized.Record
 import com.apollographql.apollo.cache.normalized.internal.CacheValueResolver
-import com.apollographql.apollo.cache.normalized.internal.CacheKeyBuilder
 import com.apollographql.apollo.cache.normalized.internal.ReadableStore
 import com.apollographql.apollo.cache.normalized.internal.RealCacheKeyBuilder
-import com.apollographql.apollo.cache.normalized.internal.ResponseNormalizer
 import com.apollographql.apollo.cache.normalized.internal.Transaction
 import com.apollographql.apollo.cache.normalized.internal.WriteableStore
-import com.apollographql.apollo.api.internal.response.RealResponseWriter
 import com.apollographql.apollo.api.parseData
+import com.apollographql.apollo.cache.normalized.internal.AJNormalizer
+import com.apollographql.apollo.cache.normalized.internal.AJResponseWriter
 import com.apollographql.apollo.cache.normalized.internal.dependentKeys
 import com.apollographql.apollo.cache.normalized.internal.normalize
 import java.util.ArrayList
@@ -48,19 +47,6 @@ class RealApolloStore(normalizedCache: NormalizedCache,
   private val lock = ReentrantReadWriteLock()
   private val subscribers : MutableSet<RecordChangeSubscriber> = Collections.newSetFromMap(WeakHashMap())
   private val cacheKeyBuilder = RealCacheKeyBuilder()
-
-  override fun networkResponseNormalizer(): ResponseNormalizer<Map<String, Any>> {
-    return object : ResponseNormalizer<Map<String, Any>>() {
-      override fun resolveCacheKey(field: ResponseField,
-                                   record: Map<String, Any>): CacheKey {
-        return cacheKeyResolver.fromFieldRecordSet(field, record)
-      }
-
-      override fun cacheKeyBuilder(): CacheKeyBuilder {
-        return cacheKeyBuilder
-      }
-    }
-  }
 
   @Synchronized
   override fun subscribe(subscriber: RecordChangeSubscriber) {
@@ -328,30 +314,23 @@ class RealApolloStore(normalizedCache: NormalizedCache,
       operationData: D,
       optimistic: Boolean,
       mutationId: UUID?): Set<String> = writeTransaction {
-    val responseWriter = RealResponseWriter(operation.variables(), customScalarAdapters)
-    operation.adapter().toResponse(responseWriter, operationData)
-    val responseNormalizer = networkResponseNormalizer()
-    responseNormalizer.willResolveRootQuery(operation)
-    responseWriter.resolveFields(responseNormalizer as ResolveDelegate<Map<String, Any>?>)
+    val records = operation.normalize(operationData, customScalarAdapters, cacheKeyResolver)
     if (optimistic) {
       val updatedRecords: MutableList<Record> = ArrayList()
-      for (record in responseNormalizer.records()) {
+      for (record in records) {
         updatedRecords.add(record.toBuilder().mutationId(mutationId).build())
       }
       optimisticCache.mergeOptimisticUpdates(updatedRecords)
     } else {
-      optimisticCache.merge(responseNormalizer.records(), CacheHeaders.NONE)
+      optimisticCache.merge(records, CacheHeaders.NONE)
     }
 
   }
 
   fun <D> doWrite(adapter: ResponseAdapter<D>, cacheKey: CacheKey, variables: Operation.Variables, value: D): Set<String> = writeTransaction {
-      val responseWriter = RealResponseWriter(variables, customScalarAdapters)
-      adapter.toResponse(responseWriter, value)
-      val responseNormalizer = networkResponseNormalizer()
-      responseNormalizer.willResolveRecord(cacheKey)
-      responseWriter.resolveFields(responseNormalizer as ResolveDelegate<Map<String, Any>?>)
-      merge(responseNormalizer.records(), CacheHeaders.NONE)
-    }
-
+    val writer = AJResponseWriter(variables, customScalarAdapters)
+    adapter.toResponse(writer, value)
+    val records = AJNormalizer(cacheKeyResolver).normalize(writer.root(), cacheKey.key).values.toSet()
+    merge(records, CacheHeaders.NONE)
+  }
 }
