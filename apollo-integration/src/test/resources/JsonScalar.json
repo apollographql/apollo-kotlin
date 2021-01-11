@@ -4,10 +4,7 @@
       "obj": {
         "key": "value"
       },
-      "list": [0, 1, 2],
-      "listOfObj": [
-        {"key2": "value2"}
-      ]
+      "list": [0, 1, 2]
     }
   }
 }

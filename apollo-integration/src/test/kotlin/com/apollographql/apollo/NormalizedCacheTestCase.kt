@@ -6,6 +6,7 @@ import com.apollographql.apollo.Utils.enqueueAndAssertResponse
 import com.apollographql.apollo.Utils.immediateExecutor
 import com.apollographql.apollo.Utils.immediateExecutorService
 import com.apollographql.apollo.Utils.mockResponse
+import com.apollographql.apollo.api.BigDecimal
 import com.apollographql.apollo.api.CustomScalarAdapter
 import com.apollographql.apollo.api.Input
 import com.apollographql.apollo.api.Input.Companion.fromNullable
@@ -13,6 +14,7 @@ import com.apollographql.apollo.api.JsonElement
 import com.apollographql.apollo.api.Operation
 import com.apollographql.apollo.api.Response
 import com.apollographql.apollo.cache.normalized.CacheKey.Companion.from
+import com.apollographql.apollo.cache.normalized.NormalizedCache
 import com.apollographql.apollo.cache.normalized.NormalizedCache.Companion.prettifyDump
 import com.apollographql.apollo.cache.normalized.lru.EvictionPolicy
 import com.apollographql.apollo.cache.normalized.lru.LruNormalizedCacheFactory
@@ -63,7 +65,7 @@ class NormalizedCacheTestCase {
     apolloClient = ApolloClient.builder()
         .serverUrl(server.url("/"))
         .okHttpClient(okHttpClient)
-        .normalizedCache(LruNormalizedCacheFactory(EvictionPolicy.NO_EVICTION), IdFieldCacheKeyResolver())
+        .normalizedCache(LruNormalizedCacheFactory(EvictionPolicy.builder().maxSizeBytes(10*1024*1024).build()), IdFieldCacheKeyResolver())
         .dispatcher(immediateExecutor())
         .build()
   }
@@ -91,17 +93,25 @@ class NormalizedCacheTestCase {
         apolloClient.query(GetJsonScalarQuery())
     ) { response ->
       assertThat(response.hasErrors()).isFalse()
-      assertThat(response.data!!.json).isEqualTo(
-          mapOf(
-              "obj" to mapOf(
-                  "key" to "value"
-              ),
-              "list" to listOf(0, 1, 2),
-              "listOfObj" to mapOf(
-                  "key2" to "value2"
-              )
-          )
+      val expectedMap  = mapOf(
+          "obj" to mapOf( "key" to "value"),
+          "list" to listOf(BigDecimal(0), BigDecimal(1), BigDecimal(2))
       )
+      assertThat(response.data!!.json).isEqualTo(expectedMap)
+      true
+    }
+
+    // Trigger a merge
+    cacheAndAssertCachedResponse(
+        server,
+        "JsonScalarModified.json",
+        apolloClient.query(GetJsonScalarQuery())
+    ) { response ->
+      assertThat(response.hasErrors()).isFalse()
+      val expectedMap  = mapOf(
+          "obj" to mapOf( "key2" to "value2"),
+      )
+      assertThat(response.data!!.json).isEqualTo(expectedMap)
       true
     }
   }

@@ -66,7 +66,7 @@ class NoOpApolloStore : ApolloStore, ReadableStore, WriteableStore {
   }
 
   override fun cacheKeyResolver(): CacheKeyResolver {
-    error("Cannot get cacheKeyResolver: no cache configured")
+    return CacheKeyResolver.DEFAULT
   }
 
   override fun <D : Operation.Data> readOperation(
