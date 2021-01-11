@@ -54,26 +54,24 @@ class RealApolloStore(normalizedCache: NormalizedCache,
     subscribers.remove(subscriber)
   }
 
-  override fun publish(changedKeys: Set<String>) {
-    if (changedKeys.isEmpty()) {
+  override fun publish(keys: Set<String>) {
+    if (keys.isEmpty()) {
       return
     }
     var iterableSubscribers: Set<RecordChangeSubscriber>
     synchronized(this) { iterableSubscribers = LinkedHashSet(subscribers) }
     for (subscriber in iterableSubscribers) {
-      subscriber.onCacheRecordsChanged(changedKeys)
+      subscriber.onCacheRecordsChanged(keys)
     }
   }
 
   override fun clearAll(): ApolloStoreOperation<Boolean> {
     return object : ApolloStoreOperation<Boolean>(dispatcher) {
       public override fun perform(): Boolean {
-        return writeTransaction(object : Transaction<WriteableStore, Boolean> {
-          override fun execute(cache: WriteableStore): Boolean {
-            optimisticCache.clearAll()
-            return java.lang.Boolean.TRUE
-          }
-        })
+        return writeTransaction {
+          optimisticCache.clearAll()
+          java.lang.Boolean.TRUE
+        }
       }
     }
   }
@@ -86,11 +84,7 @@ class RealApolloStore(normalizedCache: NormalizedCache,
                       cascade: Boolean): ApolloStoreOperation<Boolean> {
     return object : ApolloStoreOperation<Boolean>(dispatcher) {
       override fun perform(): Boolean {
-        return writeTransaction(object : Transaction<WriteableStore, Boolean> {
-          override fun execute(cache: WriteableStore): Boolean {
-            return optimisticCache.remove(cacheKey, cascade)
-          }
-        })
+        return writeTransaction { optimisticCache.remove(cacheKey, cascade) }
       }
     }
   }
@@ -141,8 +135,8 @@ class RealApolloStore(normalizedCache: NormalizedCache,
     return optimisticCache.loadRecords(keys, cacheHeaders)
   }
 
-  override fun merge(recordSet: Collection<Record>, cacheHeaders: CacheHeaders): Set<String> {
-    return optimisticCache.merge(recordSet, cacheHeaders)
+  override fun merge(recordCollection: Collection<Record>, cacheHeaders: CacheHeaders): Set<String> {
+    return optimisticCache.merge(recordCollection, cacheHeaders)
   }
 
   override fun merge(record: Record, cacheHeaders: CacheHeaders): Set<String> {
