@@ -65,16 +65,22 @@ class SimpleResponseWriter(private val customScalarAdapters: CustomScalarAdapter
     }
   }
 
-  override fun <T> writeList(
+  override fun <T: Any> writeList(
       field: ResponseField,
-      values: List<T>?,
-      block: (items: List<T>?, listItemWriter: ResponseWriter.ListItemWriter) -> Unit
+      values: List<T?>?,
+      block: (item: T, listItemWriter: ResponseWriter.ListItemWriter) -> Unit
   ) {
     if (values == null) {
       data[field.responseName] = null
     } else {
       val listItemWriter = CustomListItemWriter(customScalarAdapters)
-      block(values, listItemWriter)
+      values.forEach {
+        if (it == null) {
+          listItemWriter.writeNull()
+        } else {
+          block(it, listItemWriter)
+        }
+      }
       data[field.responseName] = listItemWriter.data
     }
   }
@@ -82,54 +88,52 @@ class SimpleResponseWriter(private val customScalarAdapters: CustomScalarAdapter
   private class CustomListItemWriter(private val customScalarAdapters: CustomScalarAdapters) : ResponseWriter.ListItemWriter {
     val data = ArrayList<Any?>()
 
-    override fun writeString(value: String?) {
+    override fun writeString(value: String) {
       data.add(value)
     }
 
-    override fun writeInt(value: Int?) {
+    override fun writeInt(value: Int) {
       data.add(value)
     }
 
-    override fun writeLong(value: Long?) {
+    override fun writeLong(value: Long) {
       data.add(value)
     }
 
-    override fun writeDouble(value: Double?) {
+    override fun writeDouble(value: Double) {
       data.add(value)
     }
 
-    override fun writeBoolean(value: Boolean?) {
+    override fun writeBoolean(value: Boolean) {
       data.add(value)
     }
 
-    override fun writeCustom(customScalar: CustomScalar, value: Any?) {
-      if (value == null) {
-        data.add(null)
-      } else {
-        val typeAdapter = customScalarAdapters.adapterFor<Any>(customScalar)
-        val jsonElement = typeAdapter.encode(value)
-        data.add(jsonElement.toRawValue())
+    override fun writeCustom(customScalar: CustomScalar, value: Any) {
+      val typeAdapter = customScalarAdapters.adapterFor<Any>(customScalar)
+      val jsonElement = typeAdapter.encode(value)
+      data.add(jsonElement.toRawValue())
+    }
+
+    override fun writeObject(block: ((ResponseWriter) -> Unit)) {
+      val objectResponseWriter = SimpleResponseWriter(customScalarAdapters)
+      block.invoke(objectResponseWriter)
+      data.add(objectResponseWriter.data)
+    }
+
+    override fun <T: Any> writeList(items: List<T?>, block: (item: T, listItemWriter: ResponseWriter.ListItemWriter) -> Unit) {
+      val listItemWriter = CustomListItemWriter(customScalarAdapters)
+      items.forEach {
+        if (it == null) {
+          listItemWriter.writeNull()
+        } else {
+          block(it, listItemWriter)
+        }
       }
+      data.add(listItemWriter.data)
     }
 
-    override fun writeObject(block: ((ResponseWriter) -> Unit)?) {
-      if (block == null) {
-        data.add(null)
-      } else {
-        val objectResponseWriter = SimpleResponseWriter(customScalarAdapters)
-        block.invoke(objectResponseWriter)
-        data.add(objectResponseWriter.data)
-      }
-    }
-
-    override fun <T> writeList(items: List<T>?, block: (items: List<T>?, listItemWriter: ResponseWriter.ListItemWriter) -> Unit) {
-      if (items == null) {
-        data.add(null)
-      } else {
-        val listItemWriter = CustomListItemWriter(customScalarAdapters)
-        block(items, listItemWriter)
-        data.add(listItemWriter.data)
-      }
+    fun writeNull() {
+      data.add(null)
     }
   }
 }

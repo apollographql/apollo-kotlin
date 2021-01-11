@@ -73,7 +73,7 @@ class ApolloCacheInterceptor<S>(private val store: S) : ApolloRequestInterceptor
 
   private fun <D : Operation.Data> readFromCache(request: ApolloRequest<D>): Response<D>? {
     val operation = request.operation
-    val rootRecord = store.read(CacheKeyResolver.rootKeyForOperation(operation).key, CacheHeaders.NONE) ?: return null
+    val rootRecord = store.read(CacheKeyResolver.rootKey().key, CacheHeaders.NONE) ?: return null
 
     val fieldValueResolver = CacheValueResolver(store,
         operation.variables(),

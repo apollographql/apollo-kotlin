@@ -1,14 +1,13 @@
 package com.apollographql.apollo.api.internal.response
 
 import com.apollographql.apollo.api.BigDecimal
-import com.apollographql.apollo.api.Operation
-import com.apollographql.apollo.api.ResponseField
 import com.apollographql.apollo.api.CustomScalar
 import com.apollographql.apollo.api.CustomScalarAdapters
+import com.apollographql.apollo.api.Operation
+import com.apollographql.apollo.api.ResponseField
 import com.apollographql.apollo.api.internal.ResolveDelegate
 import com.apollographql.apollo.api.internal.ResponseWriter
 import com.apollographql.apollo.api.internal.Utils.shouldSkip
-import com.apollographql.apollo.api.internal.json.JsonWriter.Companion.of
 
 class RealResponseWriter(
     private val operationVariables: Operation.Variables,
@@ -57,9 +56,10 @@ class RealResponseWriter(
     buffer[field.responseName] = FieldDescriptor(field, nestedResponseWriter.buffer)
   }
 
-  override fun <T> writeList(
-      field: ResponseField, values: List<T>?,
-      block: (items: List<T>?, listItemWriter: ResponseWriter.ListItemWriter) -> Unit
+  override fun <T: Any> writeList(
+      field: ResponseField,
+      values: List<T?>?,
+      block: (item: T, listItemWriter: ResponseWriter.ListItemWriter) -> Unit
   ) {
     if (field.shouldSkip(variableValues = operationVariables.valueMap())) {
       return
@@ -71,7 +71,14 @@ class RealResponseWriter(
       return
     }
     val accumulated = ArrayList<Any?>()
-    block(values, ListItemWriter(operationVariables, customScalarAdapters, accumulated))
+    val nestedListItemWriter = ListItemWriter(operationVariables, customScalarAdapters, accumulated)
+    values.forEach {
+      if (it == null) {
+        nestedListItemWriter.writeNull()
+      } else {
+        block(it, nestedListItemWriter)
+      }
+    }
     buffer[field.responseName] = FieldDescriptor(field, accumulated)
   }
 
@@ -189,47 +196,56 @@ class RealResponseWriter(
       private val customScalarAdapters: CustomScalarAdapters,
       private val accumulator: MutableList<Any?>
   ) : ResponseWriter.ListItemWriter {
-    override fun writeString(value: String?) {
+    override fun writeString(value: String) {
       accumulator.add(value)
     }
 
-    override fun writeInt(value: Int?) {
-      accumulator.add(if (value != null) BigDecimal(value.toString()) else null)
+    override fun writeInt(value: Int) {
+      accumulator.add(BigDecimal(value.toString()))
     }
 
-    override fun writeLong(value: Long?) {
-      accumulator.add(if (value != null) BigDecimal(value.toString()) else null)
+    override fun writeLong(value: Long) {
+      accumulator.add(BigDecimal(value.toString()))
     }
 
-    override fun writeDouble(value: Double?) {
-      accumulator.add(if (value != null) BigDecimal(value.toString()) else null)
+    override fun writeDouble(value: Double) {
+      accumulator.add(BigDecimal(value.toString()))
     }
 
-    override fun writeBoolean(value: Boolean?) {
+    override fun writeBoolean(value: Boolean) {
       accumulator.add(value)
     }
 
-    override fun writeCustom(customScalar: CustomScalar, value: Any?) {
+    override fun writeCustom(customScalar: CustomScalar, value: Any) {
       val typeAdapter = customScalarAdapters.adapterFor<Any>(customScalar)
-      accumulator.add(if (value != null) typeAdapter.encode(value).toRawValue() else null)
+      accumulator.add(typeAdapter.encode(value).toRawValue())
     }
 
-    override fun writeObject(block: ((ResponseWriter) -> Unit)?) {
+    override fun writeObject(block: ((ResponseWriter) -> Unit)) {
       val nestedResponseWriter = RealResponseWriter(operationVariables, customScalarAdapters)
-      block?.invoke(nestedResponseWriter)
+      block.invoke(nestedResponseWriter)
       accumulator.add(nestedResponseWriter.buffer)
     }
 
-    override fun <T> writeList(items: List<T>?, block: (items: List<T>?, listItemWriter: ResponseWriter.ListItemWriter) -> Unit) {
-      if (items == null) {
-        accumulator.add(null)
-      } else {
-        val nestedAccumulated = ArrayList<Any?>()
-        block(items, ListItemWriter(operationVariables, customScalarAdapters, nestedAccumulated))
-        accumulator.add(nestedAccumulated)
+    override fun <T: Any> writeList(items: List<T?>, block: (item: T, listItemWriter: ResponseWriter.ListItemWriter) -> Unit) {
+      val nestedAccumulated = ArrayList<Any?>()
+
+      val nestedListItemWriter = ListItemWriter(operationVariables, customScalarAdapters, nestedAccumulated)
+      items.forEach {
+        if (it == null) {
+          nestedListItemWriter.writeNull()
+        } else {
+          block(it, nestedListItemWriter)
+        }
       }
+      accumulator.add(nestedAccumulated)
+    }
+
+    fun writeNull() {
+      accumulator.add(null)
     }
   }
+
 
   class FieldDescriptor internal constructor(val field: ResponseField, val value: Any?)
 

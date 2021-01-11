@@ -4,7 +4,7 @@ import com.apollographql.apollo.api.Operation
 import com.apollographql.apollo.api.ResponseField
 import com.apollographql.apollo.api.internal.ResolveDelegate
 import com.apollographql.apollo.cache.normalized.CacheKey
-import com.apollographql.apollo.cache.normalized.CacheKeyResolver.Companion.rootKeyForOperation
+import com.apollographql.apollo.cache.normalized.CacheKeyResolver.Companion.rootKey
 import com.apollographql.apollo.cache.normalized.CacheReference
 import com.apollographql.apollo.cache.normalized.Record
 import com.apollographql.apollo.cache.normalized.Record.Companion.builder
@@ -29,7 +29,7 @@ abstract class ResponseNormalizer<R> : ResolveDelegate<R> {
   }
 
   override fun willResolveRootQuery(operation: Operation<*>) {
-    willResolveRecord(rootKeyForOperation(operation))
+    willResolveRecord(rootKey())
   }
 
   override fun willResolve(field: ResponseField, variables: Operation.Variables, value: Any?) {

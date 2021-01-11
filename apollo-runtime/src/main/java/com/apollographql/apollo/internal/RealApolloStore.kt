@@ -16,7 +16,7 @@ import com.apollographql.apollo.cache.normalized.ApolloStore.RecordChangeSubscri
 import com.apollographql.apollo.cache.normalized.ApolloStoreOperation
 import com.apollographql.apollo.cache.normalized.CacheKey
 import com.apollographql.apollo.cache.normalized.CacheKeyResolver
-import com.apollographql.apollo.cache.normalized.CacheKeyResolver.Companion.rootKeyForOperation
+import com.apollographql.apollo.cache.normalized.CacheKeyResolver.Companion.rootKey
 import com.apollographql.apollo.cache.normalized.NormalizedCache
 import com.apollographql.apollo.cache.normalized.OptimisticNormalizedCache
 import com.apollographql.apollo.cache.normalized.Record
@@ -281,7 +281,7 @@ class RealApolloStore(normalizedCache: NormalizedCache,
       operation: Operation<D>,
       cacheHeaders: CacheHeaders
   ): Response<D> = readTransaction { cache ->
-    val rootRecord = cache.read(rootKeyForOperation(operation).key, cacheHeaders)
+    val rootRecord = cache.read(rootKey().key, cacheHeaders)
         ?: return@readTransaction builder<D>(operation).fromCache(true).build()
     try {
       val fieldValueResolver = CacheValueResolver(
