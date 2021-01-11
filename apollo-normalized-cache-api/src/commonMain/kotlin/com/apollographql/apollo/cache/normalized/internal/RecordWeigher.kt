@@ -10,7 +10,6 @@ object RecordWeigher {
   private const val SIZE_OF_BOOLEAN = 16
   private const val SIZE_OF_BIG_DECIMAL = 32
   private const val SIZE_OF_ARRAY_OVERHEAD = 16
-  private const val SIZE_OF_MAP_OVERHEAD = 16
   private const val SIZE_OF_RECORD_OVERHEAD = 16
   private const val SIZE_OF_CACHE_REFERENCE_OVERHEAD = 16
   private const val SIZE_OF_NULL = 4
@@ -40,9 +39,6 @@ object RecordWeigher {
       }
       is CacheReference -> {
         SIZE_OF_CACHE_REFERENCE_OVERHEAD + field.key.commonAsUtf8ToByteArray().size
-      }
-      is Map<*, *> -> {
-        SIZE_OF_MAP_OVERHEAD + field.keys.sumBy { weighField(it) } + field.values.sumBy { weighField(it) }
       }
       else -> error("Unknown field type in Record. ${field::class.qualifiedName}")
     }
