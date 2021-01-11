@@ -106,15 +106,9 @@ object HumanDetailsImpl_ResponseAdapter : ResponseAdapter<HumanDetailsImpl.Data>
 
       override fun toResponse(writer: ResponseWriter,
           value: HumanDetailsImpl.Data.FriendsConnection) {
-        writer.writeList(RESPONSE_FIELDS[0], value.edges) { values, listItemWriter ->
-          values?.forEach { value ->
-            if(value == null) {
-              listItemWriter.writeObject(null)
-            } else {
-              listItemWriter.writeObject { writer ->
-                Edge.toResponse(writer, value)
-              }
-            }
+        writer.writeList(RESPONSE_FIELDS[0], value.edges) { value, listItemWriter ->
+          listItemWriter.writeObject { writer ->
+            Edge.toResponse(writer, value)
           }
         }
       }

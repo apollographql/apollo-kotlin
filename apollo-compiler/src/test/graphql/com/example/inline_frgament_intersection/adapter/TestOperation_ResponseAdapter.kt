@@ -126,11 +126,9 @@ object TestOperation_ResponseAdapter : ResponseAdapter<TestOperation.Data> {
             value: TestOperation.Data.Random.BeingHumanRandom) {
           writer.writeString(RESPONSE_FIELDS[0], value.__typename)
           writer.writeString(RESPONSE_FIELDS[1], value.name)
-          writer.writeList(RESPONSE_FIELDS[2], value.friends) { values, listItemWriter ->
-            values?.forEach { value ->
-              listItemWriter.writeObject { writer ->
-                Friend.toResponse(writer, value)
-              }
+          writer.writeList(RESPONSE_FIELDS[2], value.friends) { value, listItemWriter ->
+            listItemWriter.writeObject { writer ->
+              Friend.toResponse(writer, value)
             }
           }
           writer.writeString(RESPONSE_FIELDS[3], value.profilePictureUrl)
@@ -287,11 +285,9 @@ object TestOperation_ResponseAdapter : ResponseAdapter<TestOperation.Data> {
             value: TestOperation.Data.Random.BeingWookieRandom) {
           writer.writeString(RESPONSE_FIELDS[0], value.__typename)
           writer.writeString(RESPONSE_FIELDS[1], value.name)
-          writer.writeList(RESPONSE_FIELDS[2], value.friends) { values, listItemWriter ->
-            values?.forEach { value ->
-              listItemWriter.writeObject { writer ->
-                Friend.toResponse(writer, value)
-              }
+          writer.writeList(RESPONSE_FIELDS[2], value.friends) { value, listItemWriter ->
+            listItemWriter.writeObject { writer ->
+              Friend.toResponse(writer, value)
             }
           }
           writer.writeString(RESPONSE_FIELDS[3], value.race.rawValue)

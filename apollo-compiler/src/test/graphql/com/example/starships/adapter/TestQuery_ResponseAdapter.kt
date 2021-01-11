@@ -106,13 +106,9 @@ object TestQuery_ResponseAdapter : ResponseAdapter<TestQuery.Data> {
       override fun toResponse(writer: ResponseWriter, value: TestQuery.Data.Starship) {
         writer.writeString(RESPONSE_FIELDS[0], value.id)
         writer.writeString(RESPONSE_FIELDS[1], value.name)
-        writer.writeList(RESPONSE_FIELDS[2], value.coordinates) { values, listItemWriter ->
-          values?.forEach { value ->
-            listItemWriter.writeList(value) { value, listItemWriter ->
-              value?.forEach { value ->
-                listItemWriter.writeDouble(value)}
-            }
-          }
+        writer.writeList(RESPONSE_FIELDS[2], value.coordinates) { value, listItemWriter ->
+          listItemWriter.writeList(value) { value, listItemWriter ->
+            listItemWriter.writeDouble(value)}
         }
       }
     }

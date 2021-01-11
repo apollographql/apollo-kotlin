@@ -95,15 +95,9 @@ object AllStarship_ResponseAdapter : ResponseAdapter<AllStarship.Data> {
 
       override fun toResponse(writer: ResponseWriter,
           value: com.example.fragment_in_fragment.AllStarship.Data.AllStarship) {
-        writer.writeList(RESPONSE_FIELDS[0], value.edges) { values, listItemWriter ->
-          values?.forEach { value ->
-            if(value == null) {
-              listItemWriter.writeObject(null)
-            } else {
-              listItemWriter.writeObject { writer ->
-                Edge.toResponse(writer, value)
-              }
-            }
+        writer.writeList(RESPONSE_FIELDS[0], value.edges) { value, listItemWriter ->
+          listItemWriter.writeObject { writer ->
+            Edge.toResponse(writer, value)
           }
         }
       }
@@ -247,15 +241,9 @@ object AllStarship_ResponseAdapter : ResponseAdapter<AllStarship.Data> {
 
               override fun toResponse(writer: ResponseWriter,
                   value: com.example.fragment_in_fragment.AllStarship.Data.AllStarship.Edge.Node.StarshipNode.PilotConnection) {
-                writer.writeList(RESPONSE_FIELDS[0], value.edges) { values, listItemWriter ->
-                  values?.forEach { value ->
-                    if(value == null) {
-                      listItemWriter.writeObject(null)
-                    } else {
-                      listItemWriter.writeObject { writer ->
-                        Edge.toResponse(writer, value)
-                      }
-                    }
+                writer.writeList(RESPONSE_FIELDS[0], value.edges) { value, listItemWriter ->
+                  listItemWriter.writeObject { writer ->
+                    Edge.toResponse(writer, value)
                   }
                 }
               }

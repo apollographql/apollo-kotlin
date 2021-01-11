@@ -82,15 +82,9 @@ object TestQuery_ResponseAdapter : ResponseAdapter<TestQuery.Data> {
     }
 
     override fun toResponse(writer: ResponseWriter, value: TestQuery.Data) {
-      writer.writeList(RESPONSE_FIELDS[0], value.reviews) { values, listItemWriter ->
-        values?.forEach { value ->
-          if(value == null) {
-            listItemWriter.writeObject(null)
-          } else {
-            listItemWriter.writeObject { writer ->
-              Review.toResponse(writer, value)
-            }
-          }
+      writer.writeList(RESPONSE_FIELDS[0], value.reviews) { value, listItemWriter ->
+        listItemWriter.writeObject { writer ->
+          Review.toResponse(writer, value)
         }
       }
       writer.writeInt(RESPONSE_FIELDS[1], value.testNullableArguments)

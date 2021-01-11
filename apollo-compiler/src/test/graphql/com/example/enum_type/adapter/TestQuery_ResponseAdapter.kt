@@ -96,10 +96,8 @@ object TestQuery_ResponseAdapter : ResponseAdapter<TestQuery.Data> {
 
       override fun toResponse(writer: ResponseWriter, value: TestQuery.Data.Hero) {
         writer.writeString(RESPONSE_FIELDS[0], value.name)
-        writer.writeList(RESPONSE_FIELDS[1], value.appearsIn) { values, listItemWriter ->
-          values?.forEach { value ->
-            listItemWriter.writeString(value?.rawValue)}
-        }
+        writer.writeList(RESPONSE_FIELDS[1], value.appearsIn) { value, listItemWriter ->
+          listItemWriter.writeString(value?.rawValue)}
         writer.writeString(RESPONSE_FIELDS[2], value.firstAppearsIn.rawValue)
       }
     }

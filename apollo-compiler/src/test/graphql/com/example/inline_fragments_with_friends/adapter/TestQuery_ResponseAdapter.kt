@@ -129,15 +129,9 @@ object TestQuery_ResponseAdapter : ResponseAdapter<TestQuery.Data> {
           writer.writeString(RESPONSE_FIELDS[0], value.__typename)
           writer.writeString(RESPONSE_FIELDS[1], value.name)
           writer.writeDouble(RESPONSE_FIELDS[2], value.height)
-          writer.writeList(RESPONSE_FIELDS[3], value.friends) { values, listItemWriter ->
-            values?.forEach { value ->
-              if(value == null) {
-                listItemWriter.writeObject(null)
-              } else {
-                listItemWriter.writeObject { writer ->
-                  Friend.toResponse(writer, value)
-                }
-              }
+          writer.writeList(RESPONSE_FIELDS[3], value.friends) { value, listItemWriter ->
+            listItemWriter.writeObject { writer ->
+              Friend.toResponse(writer, value)
             }
           }
         }
@@ -167,10 +161,8 @@ object TestQuery_ResponseAdapter : ResponseAdapter<TestQuery.Data> {
 
           override fun toResponse(writer: ResponseWriter,
               value: TestQuery.Data.Hero.HumanHero.Friend) {
-            writer.writeList(RESPONSE_FIELDS[0], value.appearsIn) { values, listItemWriter ->
-              values?.forEach { value ->
-                listItemWriter.writeString(value?.rawValue)}
-            }
+            writer.writeList(RESPONSE_FIELDS[0], value.appearsIn) { value, listItemWriter ->
+              listItemWriter.writeString(value?.rawValue)}
           }
         }
       }
@@ -216,15 +208,9 @@ object TestQuery_ResponseAdapter : ResponseAdapter<TestQuery.Data> {
           writer.writeString(RESPONSE_FIELDS[0], value.__typename)
           writer.writeString(RESPONSE_FIELDS[1], value.name)
           writer.writeString(RESPONSE_FIELDS[2], value.primaryFunction)
-          writer.writeList(RESPONSE_FIELDS[3], value.friends) { values, listItemWriter ->
-            values?.forEach { value ->
-              if(value == null) {
-                listItemWriter.writeObject(null)
-              } else {
-                listItemWriter.writeObject { writer ->
-                  Friend.toResponse(writer, value)
-                }
-              }
+          writer.writeList(RESPONSE_FIELDS[3], value.friends) { value, listItemWriter ->
+            listItemWriter.writeObject { writer ->
+              Friend.toResponse(writer, value)
             }
           }
         }
