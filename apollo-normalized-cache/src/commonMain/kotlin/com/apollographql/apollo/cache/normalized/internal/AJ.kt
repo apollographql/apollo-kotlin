@@ -7,9 +7,6 @@ import com.apollographql.apollo.api.ResponseField
  */
 sealed class AJElement
 
-/**
- * field might be null for the root object
- */
 class AJObject(val fields: List<Field>) : AJElement() {
   data class Field(val fieldKey: String, val field: ResponseField, val element: AJElement)
 }
