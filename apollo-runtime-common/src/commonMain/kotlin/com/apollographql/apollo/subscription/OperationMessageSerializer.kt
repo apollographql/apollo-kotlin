@@ -1,7 +1,9 @@
 package com.apollographql.apollo.subscription
 
+import okio.Buffer
 import okio.BufferedSink
 import okio.BufferedSource
+import okio.ByteString
 
 /**
  * An operation message serializer is responsible for converting to and from the transport format used for web socket subscriptions.
@@ -30,4 +32,12 @@ interface OperationMessageSerializer {
    * @return The read message.
    */
   fun readServerMessage(source: BufferedSource): OperationServerMessage
+
+  companion object {
+    fun OperationClientMessage.toByteString(serializer: OperationMessageSerializer): ByteString {
+      return Buffer().also {
+        serializer.writeClientMessage(this, it)
+      }.readByteString()
+    }
+  }
 }

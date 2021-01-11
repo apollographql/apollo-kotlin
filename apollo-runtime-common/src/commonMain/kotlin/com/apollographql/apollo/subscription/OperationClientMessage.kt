@@ -17,6 +17,9 @@ sealed class OperationClientMessage {
       val subscription: Subscription<*>,
       val customScalarAdapters: CustomScalarAdapters,
       val autoPersistSubscription: Boolean,
+      /**
+       * whether or not to send the document. Only valid if [autoPersistSubscription] is true
+       */
       val sendSubscriptionDocument: Boolean
   ) : OperationClientMessage() {
     companion object {

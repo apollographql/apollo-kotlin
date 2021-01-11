@@ -5,8 +5,12 @@ import com.apollographql.apollo.exception.ApolloWebSocketServerException
 import com.apollographql.apollo.api.ApolloExperimental
 import com.apollographql.apollo.api.ExecutionContext
 import com.apollographql.apollo.api.CustomScalarAdapters
+import com.apollographql.apollo.api.Subscription
 import com.apollographql.apollo.dispatcher.ApolloCoroutineDispatcherContext
 import com.apollographql.apollo.interceptor.ApolloRequest
+import com.apollographql.apollo.subscription.ApolloOperationMessageSerializer
+import com.apollographql.apollo.subscription.OperationClientMessage
+import com.apollographql.apollo.subscription.OperationMessageSerializer.Companion.toByteString
 import com.apollographql.apollo.testing.MockSubscription
 import com.apollographql.apollo.testing.runBlocking
 import kotlinx.coroutines.CompletableDeferred
@@ -210,13 +214,21 @@ private class WebSocketConnectionMock(
 ) : WebSocketConnection, ReceiveChannel<ByteString> by receivedMessageChannel {
   val isClosed = CompletableDeferred<Boolean>()
 
+  private fun OperationClientMessage.utf8() = toByteString(ApolloOperationMessageSerializer).utf8()
+
   override fun send(data: ByteString) {
     when (data.utf8()) {
-      ApolloGraphQLClientMessage.Init(emptyMap()).serialize().utf8() -> {
+      OperationClientMessage.Init(emptyMap()).utf8() -> {
         receivedMessageChannel.offer("{\"type\": \"connection_ack\"}".encodeUtf8())
       }
 
-      ApolloGraphQLClientMessage.Start(expectedRequest).serialize().utf8() -> {
+      OperationClientMessage.Start(
+          subscriptionId =  expectedRequest.requestUuid.toString(),
+          subscription = expectedRequest.operation as Subscription<*>,
+          customScalarAdapters = expectedRequest.customScalarAdapters,
+          autoPersistSubscription = false,
+          sendSubscriptionDocument = true
+      ).utf8() -> {
         enqueueResponse(expectedOnStartResponse)
       }
     }

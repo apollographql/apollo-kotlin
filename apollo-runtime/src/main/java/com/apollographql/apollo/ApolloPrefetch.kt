@@ -76,8 +76,6 @@ interface ApolloPrefetch : Cancelable {
      */
     open fun onHttpError(e: ApolloHttpException) {
       onFailure(e)
-      val response = e.rawResponse()
-      response?.close()
     }
 
     /**

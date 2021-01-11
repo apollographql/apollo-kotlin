@@ -5,6 +5,7 @@ import com.apollographql.apollo.exception.ApolloWebSocketServerException
 import com.apollographql.apollo.api.ApolloExperimental
 import com.apollographql.apollo.api.ExecutionContext
 import com.apollographql.apollo.api.Operation
+import com.apollographql.apollo.api.Subscription
 import com.apollographql.apollo.api.internal.json.JsonWriter
 import com.apollographql.apollo.api.internal.json.Utils
 import com.apollographql.apollo.api.parse
@@ -13,7 +14,11 @@ import com.apollographql.apollo.exception.ApolloParseException
 import com.apollographql.apollo.interceptor.ApolloRequest
 import com.apollographql.apollo.interceptor.ApolloResponse
 import com.apollographql.apollo.network.NetworkTransport
-import com.apollographql.apollo.network.ws.ApolloGraphQLServerMessage.Companion.parse
+import com.apollographql.apollo.subscription.ApolloOperationMessageSerializer
+import com.apollographql.apollo.subscription.OperationClientMessage
+import com.apollographql.apollo.subscription.OperationMessageSerializer
+import com.apollographql.apollo.subscription.OperationMessageSerializer.Companion.toByteString
+import com.apollographql.apollo.subscription.OperationServerMessage
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.ExperimentalCoroutinesApi
@@ -54,7 +59,8 @@ class ApolloWebSocketNetworkTransport(
     private val connectionParams: Map<String, Any?> = emptyMap(),
     private val connectionAcknowledgeTimeoutMs: Long = 10_000,
     private val idleTimeoutMs: Long = 60_000,
-    private val connectionKeepAliveTimeoutMs: Long = -1
+    private val connectionKeepAliveTimeoutMs: Long = -1,
+    private val serializer: OperationMessageSerializer = ApolloOperationMessageSerializer
 ) : NetworkTransport {
   private val mutex = Mutex()
   private var graphQLWebsocketConnection: GraphQLWebsocketConnection? = null
@@ -66,26 +72,32 @@ class ApolloWebSocketNetworkTransport(
     return getServerConnection(dispatcherContext).flatMapLatest { serverConnection ->
       serverConnection
           .subscribe()
-          .filter { message -> message !is ApolloGraphQLServerMessage.ConnectionAcknowledge }
-          .takeWhile { message -> message !is ApolloGraphQLServerMessage.Complete || message.id != request.requestUuid.toString() }
+          .filter { message -> message !is OperationServerMessage.ConnectionAcknowledge }
+          .takeWhile { message -> message !is OperationServerMessage.Complete || message.id != request.requestUuid.toString() }
           .mapNotNull { message -> message.process(request) }
           .onStart {
             serverConnection.send(
-                ApolloGraphQLClientMessage.Start(request)
+                OperationClientMessage.Start(
+                    subscriptionId = request.requestUuid.toString(),
+                    subscription = request.operation as Subscription<*>,
+                    customScalarAdapters = request.customScalarAdapters,
+                    autoPersistSubscription = false,
+                    sendSubscriptionDocument = true
+                )
             )
           }.onCompletion { cause ->
             if (cause == null) {
               serverConnection.send(
-                  ApolloGraphQLClientMessage.Stop(request.requestUuid)
+                  OperationClientMessage.Stop(request.requestUuid.toString())
               )
             }
           }
     }
   }
 
-  private fun <D : Operation.Data> ApolloGraphQLServerMessage.process(request: ApolloRequest<D>): ApolloResponse<D>? {
+  private fun <D : Operation.Data> OperationServerMessage.process(request: ApolloRequest<D>): ApolloResponse<D>? {
     return when (this) {
-      is ApolloGraphQLServerMessage.Error -> {
+      is OperationServerMessage.Error -> {
         if (id == request.requestUuid.toString()) {
           throw ApolloWebSocketServerException(
               message = "Failed to execute GraphQL operation",
@@ -95,7 +107,7 @@ class ApolloWebSocketNetworkTransport(
         null
       }
 
-      is ApolloGraphQLServerMessage.Data -> {
+      is OperationServerMessage.Data -> {
         if (id == request.requestUuid.toString()) {
           val buffer = Buffer().apply {
             JsonWriter.of(buffer)
@@ -147,15 +159,17 @@ class ApolloWebSocketNetworkTransport(
                 "Sec-WebSocket-Protocol" to "graphql-ws"
             )
         )
-        webSocketConnection.send(ApolloGraphQLClientMessage.Init(connectionParams).serialize())
-        while (webSocketConnection.receive().parse() !is ApolloGraphQLServerMessage.ConnectionAcknowledge) {
+        webSocketConnection.send(OperationClientMessage.Init(connectionParams).toByteString(serializer))
+        while (serializer.readServerMessage(Buffer().write(webSocketConnection.receive()))
+                !is OperationServerMessage.ConnectionAcknowledge) {
           // await for connection acknowledgement
         }
         GraphQLWebsocketConnection(
             webSocketConnection = webSocketConnection,
             idleTimeoutMs = idleTimeoutMs,
             connectionKeepAliveTimeoutMs = connectionKeepAliveTimeoutMs,
-            defaultDispatcher = dispatcherContext.default
+            defaultDispatcher = dispatcherContext.default,
+            serializer = serializer
         )
       }
     } catch (e: TimeoutCancellationException) {
@@ -175,6 +189,7 @@ class ApolloWebSocketNetworkTransport(
       val webSocketConnection: WebSocketConnection,
       val idleTimeoutMs: Long,
       val connectionKeepAliveTimeoutMs: Long,
+      private val serializer: OperationMessageSerializer,
       defaultDispatcher: CoroutineDispatcher
   ) {
     private val messageChannel: BroadcastChannel<ByteString> = webSocketConnection.broadcast(Channel.CONFLATED)
@@ -190,18 +205,18 @@ class ApolloWebSocketNetworkTransport(
       }
     }
 
-    fun send(message: ApolloGraphQLClientMessage) {
-      webSocketConnection.send(message.serialize())
+    fun send(message: OperationClientMessage) {
+      webSocketConnection.send(message.toByteString(serializer))
     }
 
-    fun subscribe(): Flow<ApolloGraphQLServerMessage> {
+    fun subscribe(): Flow<OperationServerMessage> {
       return messageChannel.openSubscription()
           .consumeAsFlow()
           .onStart { onSubscribed() }
           .onCompletion { onUnsubscribed() }
-          .map { data -> data.parse() }
+          .map { data -> serializer.readServerMessage(Buffer().write(data)) }
           .onEach { message ->
-            if (message is ApolloGraphQLServerMessage.ConnectionKeepAlive) onConnectionKeepAlive()
+            if (message is OperationServerMessage.ConnectionKeepAlive) onConnectionKeepAlive()
           }
     }
 

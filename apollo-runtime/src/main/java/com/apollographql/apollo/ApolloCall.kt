@@ -111,13 +111,9 @@ interface ApolloCall<D : Operation.Data> : Cancelable {
      *
      * Gets called when an http request error takes place. This is the case when the returned http status code
      * doesn't lie in the range 200 (inclusive) and 300 (exclusive).
-     *
-     * **NOTE:** by overriding this callback you must call [okhttp3.Response.close] on [ ][ApolloHttpException.rawResponse] to close the network connection.
      */
     open fun onHttpError(e: ApolloHttpException) {
       onFailure(e)
-      val response = e.rawResponse()
-      response?.close()
     }
 
     /**
