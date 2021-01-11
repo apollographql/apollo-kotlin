@@ -20,17 +20,12 @@ class AJResponseWriter(
     private val customScalarAdapters: CustomScalarAdapters,
 ) : ResponseWriter, ResponseWriter.ListItemWriter {
 
-  private var rootObject: AJObject? = null
-  fun root(): AJObject {
-    if (rootObject == null) {
-      /**
-       * close the root object  if needed
-       */
-      check(objectStack.size == 1)
-      rootObject = AJObject(fields = objectStack.removeLast())
-    }
-
-    return rootObject!!
+  val root by lazy {
+    /**
+     * close the root object  if needed
+     */
+    check(objectStack.size == 1)
+    AJObject(fields = objectStack.removeLast())
   }
 
   /**
