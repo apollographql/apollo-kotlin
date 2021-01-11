@@ -44,7 +44,7 @@ class KotlinSampleApp : Application() {
 
     val sqlNormalizedCacheFactory = SqlNormalizedCacheFactory(this, "github_cache")
     val cacheKeyResolver = object : CacheKeyResolver() {
-      override fun fromFieldRecordSet(field: ResponseField, recordSet: Map<String, Any>): CacheKey {
+      override fun fromFieldRecordSet(field: ResponseField, recordSet: Map<String, Any?>): CacheKey {
         return if (recordSet["__typename"] == "Repository") {
           CacheKey(recordSet["id"] as String)
         } else {
