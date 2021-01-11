@@ -9,22 +9,22 @@ import com.apollographql.apollo.cache.normalized.Record
 /**
  * Takes a AJObject and returns a list of [Record]
  */
-class AJNormalizer(private val cacheKeyResolver: CacheKeyResolver) {
+class Normalizer(private val cacheKeyResolver: CacheKeyResolver) {
 
   private val records = mutableMapOf<String, Record>()
 
-  fun normalize(ajObject: AJObject, rootKey: String?): Map<String, Record> {
-    ajObject.normalize(rootKey, null)
+  fun normalize(`object`: NormalizationIR.Element.Object, rootKey: String?): Map<String, Record> {
+    `object`.normalize(rootKey, null)
     return records
   }
 
-  private fun AJElement.unwrap(): Any? = when (this) {
-    is AJObject -> fields.map { it.element.unwrap() }
-    is AJList -> elements.map { it.unwrap() }
-    is AJScalar -> value
+  private fun NormalizationIR.Element.unwrap(): Any? = when (this) {
+    is NormalizationIR.Element.Object -> fields.map { it.element.unwrap() }
+    is NormalizationIR.Element.List -> elements.map { it.unwrap() }
+    is NormalizationIR.Element.AJScalar -> value
   }
 
-  private fun AJObject.normalize(path: String?, field: ResponseField?): CacheReference {
+  private fun NormalizationIR.Element.Object.normalize(path: String?, field: ResponseField?): CacheReference {
     val key = if (field == null) {
       path
     } else {
@@ -34,7 +34,7 @@ class AJNormalizer(private val cacheKeyResolver: CacheKeyResolver) {
             /**
              * do not recurse in objects for now. This means users won't be able to use sub-fields to compute cache keys
              */
-            it.element !is AJObject
+            it.element !is NormalizationIR.Element.Object
           }.map {
             it.fieldKey to it.element.unwrap()
           }.toMap()
@@ -51,9 +51,9 @@ class AJNormalizer(private val cacheKeyResolver: CacheKeyResolver) {
 
     val fields = fields.map {
       it.fieldKey to when (val element = it.element) {
-        is AJObject -> element.normalize(key.append(it.fieldKey), it.field)
-        is AJScalar -> element.value
-        is AJList -> element.normalize(key.append(it.fieldKey), it.field)
+        is NormalizationIR.Element.Object -> element.normalize(key.append(it.fieldKey), it.field)
+        is NormalizationIR.Element.AJScalar -> element.value
+        is NormalizationIR.Element.List -> element.normalize(key.append(it.fieldKey), it.field)
       }
     }.toMap()
 
@@ -72,12 +72,12 @@ class AJNormalizer(private val cacheKeyResolver: CacheKeyResolver) {
   // The receiver can be null for the root query to save some space in the cache by not storing QUERY_ROOT all over the place
   private fun String?.append(next: String) = if (this == null) next else "$this.$next"
 
-  private fun AJList.normalize(path: String, field: ResponseField): List<Any?> {
+  private fun NormalizationIR.Element.List.normalize(path: String, field: ResponseField): List<Any?> {
     return elements.mapIndexed { index, element ->
       when (element) {
-        is AJScalar -> element.value
-        is AJList -> element.normalize(path.append(index.toString()), field)
-        is AJObject -> element.normalize(path.append(index.toString()), field)
+        is NormalizationIR.Element.AJScalar -> element.value
+        is NormalizationIR.Element.List -> element.normalize(path.append(index.toString()), field)
+        is NormalizationIR.Element.Object -> element.normalize(path.append(index.toString()), field)
       }
     }
   }

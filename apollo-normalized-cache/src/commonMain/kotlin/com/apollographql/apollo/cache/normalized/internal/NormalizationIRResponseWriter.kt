@@ -4,18 +4,14 @@ import com.apollographql.apollo.api.BigDecimal
 import com.apollographql.apollo.api.CustomScalar
 import com.apollographql.apollo.api.CustomScalarAdapters
 import com.apollographql.apollo.api.Operation
-import com.apollographql.apollo.api.Response
 import com.apollographql.apollo.api.ResponseField
 import com.apollographql.apollo.api.internal.ResponseWriter
 import com.apollographql.apollo.api.internal.Utils.shouldSkip
-import com.apollographql.apollo.cache.normalized.CacheKey
-import com.apollographql.apollo.cache.normalized.CacheKeyResolver
-import com.apollographql.apollo.cache.normalized.Record
 
 /**
  *
  */
-class AJResponseWriter(
+class NormalizationIRResponseWriter(
     private val operationVariables: Operation.Variables,
     private val customScalarAdapters: CustomScalarAdapters,
 ) : ResponseWriter, ResponseWriter.ListItemWriter {
@@ -25,15 +21,15 @@ class AJResponseWriter(
      * close the root object  if needed
      */
     check(objectStack.size == 1)
-    AJObject(fields = objectStack.removeLast())
+    NormalizationIR.Element.Object(fields = objectStack.removeLast())
   }
 
   /**
    * Might be null if we're in a list
    */
   private val fieldStack = mutableListOf<ResponseField?>()
-  private val objectStack = mutableListOf<MutableList<AJObject.Field>>()
-  private val listStack = mutableListOf<MutableList<AJElement>>()
+  private val objectStack = mutableListOf<MutableList<NormalizationIR.Element.Object.Field>>()
+  private val listStack = mutableListOf<MutableList<NormalizationIR.Element>>()
 
   private val cacheKeyBuilder = RealCacheKeyBuilder()
 
@@ -78,7 +74,7 @@ class AJResponseWriter(
     writeScalar(field, if (value != null) typeAdapter.encode(value).toRawValue() else null)
   }
 
-  private fun outputElement(element: AJElement) {
+  private fun outputElement(element: NormalizationIR.Element) {
     val field = fieldStack.last()
     if (field == null) {
       listStack.last().add(element)
@@ -106,7 +102,7 @@ class AJResponseWriter(
          */
         oldField.copy(element = oldField.element.mergeWith(element))
       } else {
-        AJObject.Field(field = field, fieldKey = fieldKey, element = element)
+        NormalizationIR.Element.Object.Field(field = field, fieldKey = fieldKey, element = element)
       }
 
       fields.add(newField)
@@ -119,7 +115,7 @@ class AJResponseWriter(
     }
 
     fieldStack.add(field)
-    outputElement(AJScalar(value))
+    outputElement(NormalizationIR.Element.AJScalar(value))
     fieldStack.removeLast()
   }
 
@@ -135,7 +131,7 @@ class AJResponseWriter(
 
   private fun outputObject(block: ((ResponseWriter) -> Unit)?) {
     if (block == null) {
-      outputElement(AJScalar(null))
+      outputElement(NormalizationIR.Element.AJScalar(null))
       return
     }
     objectStack.add(mutableListOf())
@@ -144,7 +140,7 @@ class AJResponseWriter(
 
     val fields = objectStack.removeLast()
 
-    outputElement(AJObject(fields = fields))
+    outputElement(NormalizationIR.Element.Object(fields = fields))
 
   }
 
@@ -166,14 +162,14 @@ class AJResponseWriter(
 
   private fun <T : Any> outputList(items: List<T?>?, block: (item: T, listItemWriter: ResponseWriter.ListItemWriter) -> Unit) {
     if (items == null) {
-      outputElement(AJScalar(null))
+      outputElement(NormalizationIR.Element.AJScalar(null))
       return
     }
     fieldStack.add(null)
     listStack.add(mutableListOf())
     items.forEach { item ->
       if (item == null) {
-        outputElement(AJScalar(null))
+        outputElement(NormalizationIR.Element.AJScalar(null))
       } else {
         block(item, this)
       }
@@ -181,33 +177,33 @@ class AJResponseWriter(
     val list = listStack.removeLast()
     fieldStack.removeLast()
 
-    outputElement(AJList(list))
+    outputElement(NormalizationIR.Element.List(list))
   }
 
 
   override fun writeString(value: String) {
-    outputElement(AJScalar(value))
+    outputElement(NormalizationIR.Element.AJScalar(value))
   }
 
   override fun writeInt(value: Int) {
-    outputElement(AJScalar(BigDecimal(value.toString())))
+    outputElement(NormalizationIR.Element.AJScalar(BigDecimal(value.toString())))
   }
 
   override fun writeLong(value: Long) {
-    outputElement(AJScalar(BigDecimal(value.toString())))
+    outputElement(NormalizationIR.Element.AJScalar(BigDecimal(value.toString())))
   }
 
   override fun writeDouble(value: Double) {
-    outputElement(AJScalar(BigDecimal(value.toString())))
+    outputElement(NormalizationIR.Element.AJScalar(BigDecimal(value.toString())))
   }
 
   override fun writeBoolean(value: Boolean) {
-    outputElement(AJScalar(value))
+    outputElement(NormalizationIR.Element.AJScalar(value))
   }
 
   override fun writeCustom(customScalar: CustomScalar, value: Any) {
     val typeAdapter = customScalarAdapters.adapterFor<Any>(customScalar)
-    outputElement(AJScalar(typeAdapter.encode(value).toRawValue()))
+    outputElement(NormalizationIR.Element.AJScalar(typeAdapter.encode(value).toRawValue()))
   }
 
   override fun writeObject(block: ((ResponseWriter) -> Unit)) {

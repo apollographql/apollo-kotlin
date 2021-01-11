@@ -5,10 +5,8 @@ import com.apollographql.apollo.api.Fragment
 import com.apollographql.apollo.api.Operation
 import com.apollographql.apollo.api.Response
 import com.apollographql.apollo.api.Response.Companion.builder
-import com.apollographql.apollo.api.ResponseField
 import com.apollographql.apollo.api.internal.ApolloLogger
 import com.apollographql.apollo.api.internal.MapResponseReader
-import com.apollographql.apollo.api.internal.ResolveDelegate
 import com.apollographql.apollo.api.internal.ResponseAdapter
 import com.apollographql.apollo.cache.CacheHeaders
 import com.apollographql.apollo.cache.normalized.ApolloStore
@@ -26,8 +24,8 @@ import com.apollographql.apollo.cache.normalized.internal.RealCacheKeyBuilder
 import com.apollographql.apollo.cache.normalized.internal.Transaction
 import com.apollographql.apollo.cache.normalized.internal.WriteableStore
 import com.apollographql.apollo.api.parseData
-import com.apollographql.apollo.cache.normalized.internal.AJNormalizer
-import com.apollographql.apollo.cache.normalized.internal.AJResponseWriter
+import com.apollographql.apollo.cache.normalized.internal.Normalizer
+import com.apollographql.apollo.cache.normalized.internal.NormalizationIRResponseWriter
 import com.apollographql.apollo.cache.normalized.internal.dependentKeys
 import com.apollographql.apollo.cache.normalized.internal.normalize
 import java.util.ArrayList
@@ -328,9 +326,9 @@ class RealApolloStore(normalizedCache: NormalizedCache,
   }
 
   fun <D> doWrite(adapter: ResponseAdapter<D>, cacheKey: CacheKey, variables: Operation.Variables, value: D): Set<String> = writeTransaction {
-    val writer = AJResponseWriter(variables, customScalarAdapters)
+    val writer = NormalizationIRResponseWriter(variables, customScalarAdapters)
     adapter.toResponse(writer, value)
-    val records = AJNormalizer(cacheKeyResolver).normalize(writer.root, cacheKey.key).values.toSet()
+    val records = Normalizer(cacheKeyResolver).normalize(writer.root, cacheKey.key).values.toSet()
     merge(records, CacheHeaders.NONE)
   }
 }
