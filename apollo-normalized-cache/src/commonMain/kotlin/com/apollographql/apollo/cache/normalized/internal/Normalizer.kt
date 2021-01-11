@@ -21,7 +21,7 @@ class Normalizer(private val cacheKeyResolver: CacheKeyResolver) {
   private fun NormalizationIR.Element.unwrap(): Any? = when (this) {
     is NormalizationIR.Element.Object -> fields.map { it.element.unwrap() }
     is NormalizationIR.Element.List -> elements.map { it.unwrap() }
-    is NormalizationIR.Element.AJScalar -> value
+    is NormalizationIR.Element.Scalar -> value
   }
 
   private fun NormalizationIR.Element.Object.normalize(path: String?, field: ResponseField?): CacheReference {
@@ -52,7 +52,7 @@ class Normalizer(private val cacheKeyResolver: CacheKeyResolver) {
     val fields = fields.map {
       it.fieldKey to when (val element = it.element) {
         is NormalizationIR.Element.Object -> element.normalize(key.append(it.fieldKey), it.field)
-        is NormalizationIR.Element.AJScalar -> element.value
+        is NormalizationIR.Element.Scalar -> element.value
         is NormalizationIR.Element.List -> element.normalize(key.append(it.fieldKey), it.field)
       }
     }.toMap()
@@ -75,7 +75,7 @@ class Normalizer(private val cacheKeyResolver: CacheKeyResolver) {
   private fun NormalizationIR.Element.List.normalize(path: String, field: ResponseField): List<Any?> {
     return elements.mapIndexed { index, element ->
       when (element) {
-        is NormalizationIR.Element.AJScalar -> element.value
+        is NormalizationIR.Element.Scalar -> element.value
         is NormalizationIR.Element.List -> element.normalize(path.append(index.toString()), field)
         is NormalizationIR.Element.Object -> element.normalize(path.append(index.toString()), field)
       }

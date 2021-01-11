@@ -13,13 +13,13 @@ object NormalizationIR {
     }
     class List(val elements: kotlin.collections.List<Element>) : Element()
 
-    class AJScalar(val value: Any?) : Element()
+    class Scalar(val value: Any?) : Element()
   }
 }
 
 fun NormalizationIR.Element.mergeWith(other: NormalizationIR.Element): NormalizationIR.Element {
   return when {
-    this is NormalizationIR.Element.AJScalar && other is NormalizationIR.Element.AJScalar -> {
+    this is NormalizationIR.Element.Scalar && other is NormalizationIR.Element.Scalar -> {
       check(this.value == other.value)
       this
     }

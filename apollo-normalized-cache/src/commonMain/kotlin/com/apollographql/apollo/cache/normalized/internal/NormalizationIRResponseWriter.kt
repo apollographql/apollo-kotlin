@@ -115,7 +115,7 @@ class NormalizationIRResponseWriter(
     }
 
     fieldStack.add(field)
-    outputElement(NormalizationIR.Element.AJScalar(value))
+    outputElement(NormalizationIR.Element.Scalar(value))
     fieldStack.removeLast()
   }
 
@@ -131,7 +131,7 @@ class NormalizationIRResponseWriter(
 
   private fun outputObject(block: ((ResponseWriter) -> Unit)?) {
     if (block == null) {
-      outputElement(NormalizationIR.Element.AJScalar(null))
+      outputElement(NormalizationIR.Element.Scalar(null))
       return
     }
     objectStack.add(mutableListOf())
@@ -162,14 +162,14 @@ class NormalizationIRResponseWriter(
 
   private fun <T : Any> outputList(items: List<T?>?, block: (item: T, listItemWriter: ResponseWriter.ListItemWriter) -> Unit) {
     if (items == null) {
-      outputElement(NormalizationIR.Element.AJScalar(null))
+      outputElement(NormalizationIR.Element.Scalar(null))
       return
     }
     fieldStack.add(null)
     listStack.add(mutableListOf())
     items.forEach { item ->
       if (item == null) {
-        outputElement(NormalizationIR.Element.AJScalar(null))
+        outputElement(NormalizationIR.Element.Scalar(null))
       } else {
         block(item, this)
       }
@@ -182,28 +182,28 @@ class NormalizationIRResponseWriter(
 
 
   override fun writeString(value: String) {
-    outputElement(NormalizationIR.Element.AJScalar(value))
+    outputElement(NormalizationIR.Element.Scalar(value))
   }
 
   override fun writeInt(value: Int) {
-    outputElement(NormalizationIR.Element.AJScalar(BigDecimal(value.toString())))
+    outputElement(NormalizationIR.Element.Scalar(BigDecimal(value.toString())))
   }
 
   override fun writeLong(value: Long) {
-    outputElement(NormalizationIR.Element.AJScalar(BigDecimal(value.toString())))
+    outputElement(NormalizationIR.Element.Scalar(BigDecimal(value.toString())))
   }
 
   override fun writeDouble(value: Double) {
-    outputElement(NormalizationIR.Element.AJScalar(BigDecimal(value.toString())))
+    outputElement(NormalizationIR.Element.Scalar(BigDecimal(value.toString())))
   }
 
   override fun writeBoolean(value: Boolean) {
-    outputElement(NormalizationIR.Element.AJScalar(value))
+    outputElement(NormalizationIR.Element.Scalar(value))
   }
 
   override fun writeCustom(customScalar: CustomScalar, value: Any) {
     val typeAdapter = customScalarAdapters.adapterFor<Any>(customScalar)
-    outputElement(NormalizationIR.Element.AJScalar(typeAdapter.encode(value).toRawValue()))
+    outputElement(NormalizationIR.Element.Scalar(typeAdapter.encode(value).toRawValue()))
   }
 
   override fun writeObject(block: ((ResponseWriter) -> Unit)) {
