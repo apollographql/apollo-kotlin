@@ -6,8 +6,10 @@ import com.apollographql.apollo.Utils.enqueueAndAssertResponse
 import com.apollographql.apollo.Utils.immediateExecutor
 import com.apollographql.apollo.Utils.immediateExecutorService
 import com.apollographql.apollo.Utils.mockResponse
+import com.apollographql.apollo.api.CustomScalarAdapter
 import com.apollographql.apollo.api.Input
 import com.apollographql.apollo.api.Input.Companion.fromNullable
+import com.apollographql.apollo.api.JsonElement
 import com.apollographql.apollo.api.Operation
 import com.apollographql.apollo.api.Response
 import com.apollographql.apollo.cache.normalized.CacheKey.Companion.from
@@ -16,13 +18,26 @@ import com.apollographql.apollo.cache.normalized.lru.EvictionPolicy
 import com.apollographql.apollo.cache.normalized.lru.LruNormalizedCacheFactory
 import com.apollographql.apollo.fetcher.ApolloResponseFetchers
 import com.apollographql.apollo.integration.httpcache.AllPlanetsQuery
-import com.apollographql.apollo.integration.normalizer.*
+import com.apollographql.apollo.integration.normalizer.CharacterDetailsQuery
+import com.apollographql.apollo.integration.normalizer.CharacterNameByIdQuery
+import com.apollographql.apollo.integration.normalizer.EpisodeHeroNameQuery
+import com.apollographql.apollo.integration.normalizer.GetJsonScalarQuery
+import com.apollographql.apollo.integration.normalizer.HeroAndFriendsDirectivesQuery
+import com.apollographql.apollo.integration.normalizer.HeroAndFriendsNamesQuery
+import com.apollographql.apollo.integration.normalizer.HeroAndFriendsNamesWithIDForParentOnlyQuery
+import com.apollographql.apollo.integration.normalizer.HeroAndFriendsNamesWithIDsQuery
+import com.apollographql.apollo.integration.normalizer.HeroAppearsInQuery
+import com.apollographql.apollo.integration.normalizer.HeroParentTypeDependentFieldQuery
+import com.apollographql.apollo.integration.normalizer.HeroTypeDependentAliasedFieldQuery
+import com.apollographql.apollo.integration.normalizer.SameHeroTwiceQuery
+import com.apollographql.apollo.integration.normalizer.StarshipByIdQuery
 import com.apollographql.apollo.integration.normalizer.fragment.HeroWithFriendsFragmentImpl
 import com.apollographql.apollo.integration.normalizer.fragment.HumanWithIdFragment
 import com.apollographql.apollo.integration.normalizer.fragment.HumanWithIdFragmentImpl
 import com.apollographql.apollo.integration.normalizer.type.Episode
 import com.google.common.truth.Truth
 import com.google.common.truth.Truth.assertThat
+import com.squareup.moshi.JsonReader
 import io.reactivex.functions.Predicate
 import okhttp3.Dispatcher
 import okhttp3.OkHttpClient
@@ -69,14 +84,24 @@ class NormalizedCacheTestCase {
 
   @Test
   @Throws(Exception::class)
-  fun episodeHeroName() {
+  fun jsonScalar() {
     cacheAndAssertCachedResponse(
         server,
-        "HeroNameResponse.json",
-        apolloClient.query(EpisodeHeroNameQuery(fromNullable(Episode.EMPIRE)))
+        "JsonScalar.json",
+        apolloClient.query(GetJsonScalarQuery())
     ) { response ->
       assertThat(response.hasErrors()).isFalse()
-      assertThat(response.data!!.hero?.name).isEqualTo("R2-D2")
+      assertThat(response.data!!.json).isEqualTo(
+          mapOf(
+              "obj" to mapOf(
+                  "key" to "value"
+              ),
+              "list" to listOf(0, 1, 2),
+              "listOfObj" to mapOf(
+                  "key2" to "value2"
+              )
+          )
+      )
       true
     }
   }
@@ -370,7 +395,7 @@ class NormalizedCacheTestCase {
     val heroWithFriendsFragment = apolloClient.apolloStore.readFragment(
         HeroWithFriendsFragmentImpl(),
         from("2001"),
-        ).execute()
+    ).execute()
     assertThat(heroWithFriendsFragment.id).isEqualTo("2001")
     assertThat(heroWithFriendsFragment.name).isEqualTo("R2-D2")
     assertThat(heroWithFriendsFragment.friends).hasSize(3)
@@ -573,7 +598,7 @@ class NormalizedCacheTestCase {
     enqueueAndAssertResponse(
         server,
         "HeroAndFriendsNameResponse.json",
-        apolloClient.query(HeroAndFriendsDirectivesQuery(episode = Input.fromNullable(Episode.JEDI), includeName = true, skipFriends = false)),
+        apolloClient.query(HeroAndFriendsDirectivesQuery(episode = fromNullable(Episode.JEDI), includeName = true, skipFriends = false)),
         Predicate<Response<HeroAndFriendsDirectivesQuery.Data>> { response -> !response.hasErrors() }
     )
     assertResponse(
@@ -588,7 +613,7 @@ class NormalizedCacheTestCase {
         }
     )
     assertResponse(
-        apolloClient.query(HeroAndFriendsDirectivesQuery( episode = Input.fromNullable(Episode.JEDI), includeName = false, skipFriends = false)).responseFetcher(ApolloResponseFetchers.CACHE_ONLY),
+        apolloClient.query(HeroAndFriendsDirectivesQuery(episode = Input.fromNullable(Episode.JEDI), includeName = false, skipFriends = false)).responseFetcher(ApolloResponseFetchers.CACHE_ONLY),
         Predicate<Response<HeroAndFriendsDirectivesQuery.Data>> { (_, data) ->
           assertThat(data!!.hero?.name).isNull()
           assertThat(data.hero?.friends).hasSize(3)
@@ -599,7 +624,7 @@ class NormalizedCacheTestCase {
         }
     )
     assertResponse(
-        apolloClient.query(HeroAndFriendsDirectivesQuery( episode = Input.fromNullable(Episode.JEDI), includeName = true, skipFriends = true)).responseFetcher(ApolloResponseFetchers.CACHE_ONLY),
+        apolloClient.query(HeroAndFriendsDirectivesQuery(episode = Input.fromNullable(Episode.JEDI), includeName = true, skipFriends = true)).responseFetcher(ApolloResponseFetchers.CACHE_ONLY),
         Predicate<Response<HeroAndFriendsDirectivesQuery.Data>> { (_, data) ->
           assertThat(data!!.hero?.name).isEqualTo("R2-D2")
           assertThat(data.hero?.friends).isNull()
@@ -626,7 +651,7 @@ class NormalizedCacheTestCase {
         }
     )
     assertResponse(
-        apolloClient.query(HeroAndFriendsDirectivesQuery( episode = Input.fromNullable(Episode.JEDI), includeName = true, skipFriends = false)).responseFetcher(ApolloResponseFetchers.CACHE_ONLY),
+        apolloClient.query(HeroAndFriendsDirectivesQuery(episode = Input.fromNullable(Episode.JEDI), includeName = true, skipFriends = false)).responseFetcher(ApolloResponseFetchers.CACHE_ONLY),
         Predicate<Response<HeroAndFriendsDirectivesQuery.Data>> { (_, data) ->
           assertThat(data).isNull()
           true

@@ -20,6 +20,7 @@ type Query {
   human ("""""" id: ID!): Human
   """"""
   starship ("""""" id: ID!): Starship
+  json: Json
 }
 
 """
@@ -332,3 +333,5 @@ schema {
   query: Query
   mutation: Mutation
 }
+
+scalar Json
