@@ -330,7 +330,7 @@ class RealApolloStore(normalizedCache: NormalizedCache,
   fun <D> doWrite(adapter: ResponseAdapter<D>, cacheKey: CacheKey, variables: Operation.Variables, value: D): Set<String> = writeTransaction {
     val writer = AJResponseWriter(variables, customScalarAdapters)
     adapter.toResponse(writer, value)
-    val records = AJNormalizer(cacheKeyResolver).normalize(writer.root(), cacheKey.key).values.toSet()
+    val records = AJNormalizer(cacheKeyResolver).normalize(writer.root, cacheKey.key).values.toSet()
     merge(records, CacheHeaders.NONE)
   }
 }
