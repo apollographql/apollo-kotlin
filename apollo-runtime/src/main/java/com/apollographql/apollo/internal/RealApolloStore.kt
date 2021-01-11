@@ -291,7 +291,7 @@ class RealApolloStore(normalizedCache: NormalizedCache,
           cacheHeaders,
           cacheKeyBuilder)
       val data = operation.parseData(rootRecord, customScalarAdapters, fieldValueResolver)
-      val records = operation.normalize(data, customScalarAdapters, networkResponseNormalizer() as ResponseNormalizer<Map<String, Any>?>)
+      val records = operation.normalize(data, customScalarAdapters, cacheKeyResolver)
       builder<D>(operation)
           .data(data)
           .fromCache(true)

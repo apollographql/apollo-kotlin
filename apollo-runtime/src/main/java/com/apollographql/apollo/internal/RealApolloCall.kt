@@ -324,7 +324,7 @@ class RealApolloCall<D : Operation.Data> internal constructor(builder: Builder<D
     }
     interceptors.add(ApolloParseInterceptor(
         httpCache,
-        apolloStore.networkResponseNormalizer(),
+        apolloStore.cacheKeyResolver(),
         customScalarAdapters!!,
         logger))
     interceptors.add(ApolloServerInterceptor(serverUrl!!, httpCallFactory!!, httpCachePolicy, false, customScalarAdapters,

@@ -660,7 +660,7 @@ class ApolloClient internal constructor(
             subscriptionConnectionParams,
             dispatcher,
             subscriptionHeartbeatTimeout,
-            responseNormalizer,
+            cacheKeyResolver.get(),
             enableAutoPersistedSubscriptions)
       }
       return ApolloClient(serverUrl,

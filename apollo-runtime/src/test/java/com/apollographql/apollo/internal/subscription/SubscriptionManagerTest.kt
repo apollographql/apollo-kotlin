@@ -5,6 +5,7 @@ import com.apollographql.apollo.api.Operation
 import com.apollographql.apollo.api.OperationName
 import com.apollographql.apollo.api.Subscription
 import com.apollographql.apollo.cache.normalized.ApolloStore
+import com.apollographql.apollo.cache.normalized.CacheKeyResolver
 import com.apollographql.apollo.subscription.OperationClientMessage
 import com.apollographql.apollo.subscription.OperationServerMessage
 import com.apollographql.apollo.subscription.SubscriptionConnectionParams
@@ -34,7 +35,7 @@ class SubscriptionManagerTest {
         SubscriptionConnectionParamsProvider.Const(SubscriptionConnectionParams()),
         MockExecutor(),
         connectionHeartbeatTimeoutMs,
-        { ApolloStore.NO_APOLLO_STORE.networkResponseNormalizer() },
+        CacheKeyResolver.DEFAULT,
         false)
     subscriptionManager.addOnStateChangeListener(onStateChangeListener)
   }

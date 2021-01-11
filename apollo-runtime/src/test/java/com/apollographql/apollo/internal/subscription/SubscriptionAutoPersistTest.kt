@@ -6,6 +6,7 @@ import com.apollographql.apollo.api.OperationName
 import com.apollographql.apollo.api.Subscription
 import com.apollographql.apollo.api.internal.ResponseAdapter
 import com.apollographql.apollo.cache.normalized.ApolloStore
+import com.apollographql.apollo.cache.normalized.CacheKeyResolver
 import com.apollographql.apollo.subscription.ApolloOperationMessageSerializer
 import com.apollographql.apollo.subscription.OperationClientMessage
 import com.apollographql.apollo.subscription.OperationServerMessage
@@ -35,7 +36,7 @@ class SubscriptionAutoPersistTest {
         SubscriptionConnectionParamsProvider.Const(SubscriptionConnectionParams()),
         MockExecutor(),
         -1,
-        { ApolloStore.NO_APOLLO_STORE.networkResponseNormalizer() },
+        CacheKeyResolver.DEFAULT,
         true)
     Truth.assertThat(subscriptionTransportFactory!!.subscriptionTransport).isNotNull()
     Truth.assertThat(subscriptionManager!!.state).isEqualTo(SubscriptionManagerState.DISCONNECTED)
