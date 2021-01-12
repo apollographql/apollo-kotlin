@@ -94,23 +94,10 @@ object AllStarships_ResponseAdapter : ResponseAdapter<AllStarships.Data> {
       }
 
       override fun toResponse(writer: ResponseWriter,
-<<<<<<< HEAD:apollo-compiler/src/test/graphql/com/example/fragment_in_fragment/adapter/AllStarship_ResponseAdapter.kt
-          value: com.example.fragment_in_fragment.AllStarship.Data.AllStarship) {
+          value: com.example.fragment_in_fragment.AllStarships.Data.AllStarships) {
         writer.writeList(RESPONSE_FIELDS[0], value.edges) { value, listItemWriter ->
           listItemWriter.writeObject { writer ->
             Edge.toResponse(writer, value)
-=======
-          value: com.example.fragment_in_fragment.AllStarships.Data.AllStarships) {
-        writer.writeList(RESPONSE_FIELDS[0], value.edges) { values, listItemWriter ->
-          values?.forEach { value ->
-            if(value == null) {
-              listItemWriter.writeObject(null)
-            } else {
-              listItemWriter.writeObject { writer ->
-                Edge.toResponse(writer, value)
-              }
-            }
->>>>>>> 24ebdf4a... Fix object type singularization:apollo-compiler/src/test/graphql/com/example/fragment_in_fragment/adapter/AllStarships_ResponseAdapter.kt
           }
         }
       }
@@ -253,23 +240,10 @@ object AllStarships_ResponseAdapter : ResponseAdapter<AllStarships.Data> {
               }
 
               override fun toResponse(writer: ResponseWriter,
-<<<<<<< HEAD:apollo-compiler/src/test/graphql/com/example/fragment_in_fragment/adapter/AllStarship_ResponseAdapter.kt
-                  value: com.example.fragment_in_fragment.AllStarship.Data.AllStarship.Edge.Node.StarshipNode.PilotConnection) {
+                  value: com.example.fragment_in_fragment.AllStarships.Data.AllStarships.Edge.Node.StarshipNode.PilotConnection) {
                 writer.writeList(RESPONSE_FIELDS[0], value.edges) { value, listItemWriter ->
                   listItemWriter.writeObject { writer ->
                     Edge.toResponse(writer, value)
-=======
-                  value: com.example.fragment_in_fragment.AllStarships.Data.AllStarships.Edge.Node.StarshipNode.PilotConnection) {
-                writer.writeList(RESPONSE_FIELDS[0], value.edges) { values, listItemWriter ->
-                  values?.forEach { value ->
-                    if(value == null) {
-                      listItemWriter.writeObject(null)
-                    } else {
-                      listItemWriter.writeObject { writer ->
-                        Edge.toResponse(writer, value)
-                      }
-                    }
->>>>>>> 24ebdf4a... Fix object type singularization:apollo-compiler/src/test/graphql/com/example/fragment_in_fragment/adapter/AllStarships_ResponseAdapter.kt
                   }
                 }
               }

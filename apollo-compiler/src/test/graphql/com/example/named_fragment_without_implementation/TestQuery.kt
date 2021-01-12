@@ -11,8 +11,8 @@ import com.apollographql.apollo.api.Query
 import com.apollographql.apollo.api.internal.QueryDocumentMinifier
 import com.apollographql.apollo.api.internal.ResponseAdapter
 import com.example.named_fragment_without_implementation.adapter.TestQuery_ResponseAdapter
-import com.example.named_fragment_without_implementation.fragment.DroidDetail
-import com.example.named_fragment_without_implementation.fragment.HumanDetail
+import com.example.named_fragment_without_implementation.fragment.DroidDetails
+import com.example.named_fragment_without_implementation.fragment.HumanDetails
 import kotlin.Double
 import kotlin.String
 import kotlin.Suppress
@@ -47,7 +47,7 @@ class TestQuery : Query<TestQuery.Data> {
        */
       val name: String
 
-      interface Human : Hero, HumanDetail {
+      interface Human : Hero, HumanDetails {
         override val __typename: String
 
         /**
@@ -61,7 +61,7 @@ class TestQuery : Query<TestQuery.Data> {
         override val height: Double?
       }
 
-      interface Droid : Hero, DroidDetail {
+      interface Droid : Hero, DroidDetails {
         override val __typename: String
 
         /**
@@ -85,7 +85,7 @@ class TestQuery : Query<TestQuery.Data> {
          * Height in the preferred unit, default is meters
          */
         override val height: Double?
-      ) : Hero, Human, HumanDetail
+      ) : Hero, Human, HumanDetails
 
       data class DroidHero(
         override val __typename: String,
@@ -97,7 +97,7 @@ class TestQuery : Query<TestQuery.Data> {
          * This droid's primary function
          */
         override val primaryFunction: String?
-      ) : Hero, Droid, DroidDetail
+      ) : Hero, Droid, DroidDetails
 
       data class OtherHero(
         override val __typename: String,
@@ -110,11 +110,11 @@ class TestQuery : Query<TestQuery.Data> {
       companion object {
         fun Hero.asHuman(): Human? = this as? Human
 
-        fun Hero.humanDetails(): HumanDetail? = this as? HumanDetail
+        fun Hero.humanDetails(): HumanDetails? = this as? HumanDetails
 
         fun Hero.asDroid(): Droid? = this as? Droid
 
-        fun Hero.droidDetails(): DroidDetail? = this as? DroidDetail
+        fun Hero.droidDetails(): DroidDetails? = this as? DroidDetails
       }
     }
   }
