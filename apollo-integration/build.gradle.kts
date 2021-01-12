@@ -24,43 +24,34 @@ dependencies {
 }
 
 configure<ApolloExtension> {
-  service("httpcache") {
-    withOperationOutput {}
-    customScalarsMapping.set(mapOf(
-        "Date" to "java.util.Date"
-    ))
-    sourceFolder.set("com/apollographql/apollo/integration/httpcache")
-    rootPackageName.set("com.apollographql.apollo.integration.httpcache")
-  }
-  service("interceptor") {
-    sourceFolder.set("com/apollographql/apollo/integration/interceptor")
-    rootPackageName.set("com.apollographql.apollo.integration.interceptor")
-  }
-  service("normalizer") {
-    generateFragmentImplementations.set(true)
-    sourceFolder.set("com/apollographql/apollo/integration/normalizer")
-    rootPackageName.set("com.apollographql.apollo.integration.normalizer")
-  }
-  service("upload") {
-    customScalarsMapping.set(mapOf(
-        "Upload" to "com.apollographql.apollo.api.FileUpload"
-    ))
-    sourceFolder.set("com/apollographql/apollo/integration/upload")
-    rootPackageName.set("com.apollographql.apollo.integration.upload")
-  }
-  service("subscription") {
-    sourceFolder.set("com/apollographql/apollo/integration/subscription")
-    rootPackageName.set("com.apollographql.apollo.integration.subscription")
-  }
-  service("performance") {
-    sourceFolder.set("com/apollographql/apollo/integration/performance")
-    rootPackageName.set("com.apollographql.apollo.integration.performance")
-  }
-  service("sealedclasses") {
-    sealedClassesForEnumsMatching.set(listOf(".*"))
-    sourceFolder.set("com/apollographql/apollo/integration/sealedclasses")
-    rootPackageName.set("com.apollographql.apollo.integration.sealedclasses")
-  }
+  file("src/main/graphql/com/apollographql/apollo/integration").listFiles()
+      .filter { it.isDirectory }
+      .forEach {
+        service(it.name) {
+          when (it.name) {
+            "httpcache" -> {
+              withOperationOutput {}
+              customScalarsMapping.set(mapOf(
+                  "Date" to "java.util.Date"
+              ))
+            }
+            "upload" -> {
+              customScalarsMapping.set(mapOf(
+                  "Upload" to "com.apollographql.apollo.api.FileUpload"
+              ))
+            }
+            "sealedclasses" -> {
+              sealedClassesForEnumsMatching.set(listOf(".*"))
+            }
+            "normalizer" -> {
+              generateFragmentImplementations.set(true)
+            }
+          }
+
+          sourceFolder.set("com/apollographql/apollo/integration/${it.name}")
+          rootPackageName.set("com.apollographql.apollo.integration.${it.name}")
+        }
+      }
 }
 
 tasks.withType(org.jetbrains.kotlin.gradle.tasks.KotlinCompile::class.java) {

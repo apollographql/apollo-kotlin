@@ -1,0 +1,48 @@
+type Query {
+    users: [User!]!
+    status: String!
+    is_real_json: Boolean!
+}
+
+type User {
+    _id: String!,
+    index: Int!,
+    guid: String!,
+    is_active: Boolean!,
+    balance: String!,
+    picture: String!,
+    age: Int!,
+    name: Name!,
+    company: String!,
+    email: String!,
+    address: String!,
+    about: String!,
+    registered: String!,
+    latitude: Float!,
+    longitude: Float!,
+    tags: [String!]!,
+    range: [Int!]!,
+    friends: [Friend!]!,
+    images: [Image!]!,
+    greeting: String!,
+    favorite_fruit: String!,
+    eye_color: String!,
+    phone: String!,
+}
+
+type Name {
+    first: String!,
+    last: String!,
+}
+
+type Friend {
+    id: Int!,
+    name: String!,
+}
+
+type Image {
+    id: String!,
+    format: String!,
+    url: String!,
+    description: String!,
+}

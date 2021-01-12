@@ -6,15 +6,31 @@ import com.apollographql.apollo.Utils.enqueueAndAssertResponse
 import com.apollographql.apollo.Utils.immediateExecutor
 import com.apollographql.apollo.Utils.immediateExecutorService
 import com.apollographql.apollo.Utils.mockResponse
+import com.apollographql.apollo.api.CustomScalarAdapters
 import com.apollographql.apollo.api.Input
 import com.apollographql.apollo.api.Input.Companion.fromNullable
 import com.apollographql.apollo.api.Operation
 import com.apollographql.apollo.api.Response
+import com.apollographql.apollo.api.ResponseField
+import com.apollographql.apollo.api.internal.json.JsonReader
+import com.apollographql.apollo.api.parse
+import com.apollographql.apollo.cache.CacheHeaders
+import com.apollographql.apollo.cache.normalized.CacheKey
 import com.apollographql.apollo.cache.normalized.CacheKey.Companion.from
+import com.apollographql.apollo.cache.normalized.CacheKeyResolver
 import com.apollographql.apollo.cache.normalized.NormalizedCache.Companion.prettifyDump
+import com.apollographql.apollo.cache.normalized.Record
+import com.apollographql.apollo.cache.normalized.RecordFieldJsonAdapter
+import com.apollographql.apollo.cache.normalized.internal.ReadableStore
+import com.apollographql.apollo.cache.normalized.internal.RealCacheKeyBuilder
+import com.apollographql.apollo.cache.normalized.internal.ResponseNormalizer
+import com.apollographql.apollo.cache.normalized.internal.normalize
+import com.apollographql.apollo.cache.normalized.internal.readDataFromCache
 import com.apollographql.apollo.cache.normalized.lru.EvictionPolicy
 import com.apollographql.apollo.cache.normalized.lru.LruNormalizedCacheFactory
+import com.apollographql.apollo.cache.normalized.sql.SqlNormalizedCacheFactory
 import com.apollographql.apollo.fetcher.ApolloResponseFetchers
+import com.apollographql.apollo.integration.benchmark.GetResponseQuery
 import com.apollographql.apollo.integration.httpcache.AllPlanetsQuery
 import com.apollographql.apollo.integration.normalizer.*
 import com.apollographql.apollo.integration.normalizer.fragment.HeroWithFriendsFragmentImpl
@@ -27,6 +43,7 @@ import io.reactivex.functions.Predicate
 import okhttp3.Dispatcher
 import okhttp3.OkHttpClient
 import okhttp3.mockwebserver.MockWebServer
+import okio.Buffer
 import org.junit.Before
 import org.junit.Test
 import org.junit.Ignore
@@ -66,6 +83,42 @@ class NormalizedCacheTestCase {
       true
     }
   }
+
+  val responseNormalizer = object : ResponseNormalizer<Map<String, Any>?>() {
+    override fun cacheKeyBuilder() = RealCacheKeyBuilder()
+
+    override fun resolveCacheKey(field: ResponseField, record: Map<String, Any>?) = CacheKey.NO_KEY
+  }
+
+  @Test
+  fun apolloReadCache() {
+    val operation = GetResponseQuery()
+    val cache = SqlNormalizedCacheFactory("jdbc:sqlite:").create(RecordFieldJsonAdapter())
+
+    val bufferedSource = Buffer().writeUtf8(Utils.readFileToString(Utils::class.java, "/largesample.json"))
+
+    val data1 = operation.parse(bufferedSource).data!!
+
+    val records = operation.normalize(data1, CustomScalarAdapters.DEFAULT, responseNormalizer)
+    cache.merge(records, CacheHeaders.NONE)
+
+    val readableStore = object : ReadableStore {
+      override fun read(key: String, cacheHeaders: CacheHeaders): Record? {
+        TODO("Not yet implemented")
+      }
+
+      override fun read(keys: Collection<String>, cacheHeaders: CacheHeaders): Collection<Record> {
+        TODO("Not yet implemented")
+      }
+
+      override fun stream(key: String, cacheHeaders: CacheHeaders): JsonReader? {
+        return cache.stream(key, cacheHeaders)
+      }
+    }
+    val data2 = operation.readDataFromCache(CustomScalarAdapters.DEFAULT, readableStore, CacheKeyResolver.DEFAULT, CacheHeaders.NONE)
+    println(data2)
+  }
+
 
   @Test
   @Throws(Exception::class)
