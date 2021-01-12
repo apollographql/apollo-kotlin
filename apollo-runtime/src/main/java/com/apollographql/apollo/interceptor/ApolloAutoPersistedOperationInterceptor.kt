@@ -63,7 +63,7 @@ class ApolloAutoPersistedOperationInterceptor(private val logger: ApolloLogger,
         if (response.hasErrors()) {
           if (isPersistedQueryNotFound(response.errors)) {
             logger.w("GraphQL server couldn't find Automatic Persisted Query for operation name: "
-                + request.operation.name().name() + " id: " + request.operation.operationId())
+                + request.operation.name() + " id: " + request.operation.operationId())
             val retryRequest = request.toBuilder()
                 .autoPersistQueries(true)
                 .sendQueryDocument(true)

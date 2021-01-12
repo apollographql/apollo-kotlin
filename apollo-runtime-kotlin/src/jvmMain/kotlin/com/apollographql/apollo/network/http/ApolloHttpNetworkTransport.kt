@@ -158,7 +158,7 @@ actual class ApolloHttpNetworkTransport(
   private fun <D : Operation.Data> ApolloRequest<D>.toHttpGetRequest(httpExecutionContext: HttpExecutionContext.Request?): Request {
     val url = serverUrl.newBuilder()
         .addQueryParameter("query", operation.queryDocument())
-        .addQueryParameter("operationName", operation.name().name())
+        .addQueryParameter("operationName", operation.name())
         .apply {
           operation.variables().marshal(customScalarAdapters).let { variables ->
             if (variables.isNotEmpty()) addQueryParameter("variables", variables)

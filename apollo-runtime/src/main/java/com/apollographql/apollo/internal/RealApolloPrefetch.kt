@@ -44,7 +44,7 @@ class RealApolloPrefetch(
       if (callback != null) {
         callback.onFailure(e)
       } else {
-        logger.e(e, "Operation: %s was canceled", operation().name().name())
+        logger.e(e, "Operation: %s was canceled", operation().name())
       }
       return
     }
@@ -63,7 +63,7 @@ class RealApolloPrefetch(
         try {
           val callback = terminate()
           if (!callback.isPresent) {
-            logger.d("onResponse for prefetch operation: %s. No callback present.", operation().name().name())
+            logger.d("onResponse for prefetch operation: %s. No callback present.", operation().name())
             return
           }
           if (httpResponse.isSuccessful) {
@@ -88,7 +88,7 @@ class RealApolloPrefetch(
       override fun onFailure(e: ApolloException) {
         val callback = terminate()
         if (!callback.isPresent) {
-          logger.e(e, "onFailure for prefetch operation: %s. No callback present.", operation().name().name())
+          logger.e(e, "onFailure for prefetch operation: %s. No callback present.", operation().name())
           return
         }
         if (e is ApolloHttpException) {

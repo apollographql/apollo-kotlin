@@ -3,7 +3,6 @@ package com.apollographql.apollo.internal.reader
 import com.apollographql.apollo.ApolloClient
 import com.apollographql.apollo.IdleResourceCallback
 import com.apollographql.apollo.api.Operation
-import com.apollographql.apollo.api.OperationName
 import com.apollographql.apollo.api.Query
 import com.apollographql.apollo.rx2.Rx2Apollo
 import com.google.common.truth.Truth
@@ -120,11 +119,7 @@ class ApolloCallTrackerTest {
     private const val SERVER_URL = "http://localhost:1234"
     private const val TIMEOUT_SECONDS = 2
     private val EMPTY_QUERY: Query<QueryData> = object : Query<QueryData> {
-      var operationName: OperationName = object : OperationName {
-        override fun name(): String {
-          return "EmptyQuery"
-        }
-      }
+      var operationName: String  = "EmptyQuery"
 
       override fun queryDocument(): String {
         return ""
@@ -136,7 +131,7 @@ class ApolloCallTrackerTest {
 
       override fun adapter() = throw UnsupportedOperationException()
 
-      override fun name(): OperationName {
+      override fun name(): String {
         return operationName
       }
 

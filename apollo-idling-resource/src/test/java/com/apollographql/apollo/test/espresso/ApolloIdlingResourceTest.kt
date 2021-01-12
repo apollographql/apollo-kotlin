@@ -5,7 +5,6 @@ import com.apollographql.apollo.ApolloCall
 import com.apollographql.apollo.ApolloClient
 import com.apollographql.apollo.api.Operation
 import com.apollographql.apollo.api.Operation.Companion.EMPTY_VARIABLES
-import com.apollographql.apollo.api.OperationName
 import com.apollographql.apollo.api.Query
 import com.apollographql.apollo.api.Response
 import com.apollographql.apollo.api.CustomScalarAdapters
@@ -145,11 +144,7 @@ class ApolloIdlingResourceTest {
     private const val TIME_OUT_SECONDS: Long = 3
     private const val IDLING_RESOURCE_NAME = "apolloIdlingResource"
     private val EMPTY_QUERY: Query<Operation.Data> = object : Query<Operation.Data> {
-      var operationName: OperationName = object : OperationName {
-        override fun name(): String {
-          return "EmptyQuery"
-        }
-      }
+      var operationName: String = "EmptyQuery"
 
       override fun queryDocument(): String {
         return ""

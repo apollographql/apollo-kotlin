@@ -2,7 +2,6 @@ package com.apollographql.apollo.internal.subscription
 
 import com.apollographql.apollo.api.CustomScalarAdapters
 import com.apollographql.apollo.api.Operation
-import com.apollographql.apollo.api.OperationName
 import com.apollographql.apollo.api.Subscription
 import com.apollographql.apollo.api.internal.ResponseAdapter
 import com.apollographql.apollo.cache.normalized.ApolloStore
@@ -163,12 +162,8 @@ class SubscriptionAutoPersistTest {
       throw UnsupportedOperationException()
     }
 
-    override fun name(): OperationName {
-      return object : OperationName {
-        override fun name(): String {
-          return "SomeSubscription"
-        }
-      }
+    override fun name(): String {
+      return "SomeSubscription"
     }
 
     override fun operationId(): String {

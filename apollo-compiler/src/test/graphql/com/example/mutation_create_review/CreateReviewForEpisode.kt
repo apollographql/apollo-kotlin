@@ -7,7 +7,6 @@ package com.example.mutation_create_review
 
 import com.apollographql.apollo.api.Mutation
 import com.apollographql.apollo.api.Operation
-import com.apollographql.apollo.api.OperationName
 import com.apollographql.apollo.api.internal.InputFieldMarshaller
 import com.apollographql.apollo.api.internal.QueryDocumentMinifier
 import com.apollographql.apollo.api.internal.ResponseAdapter
@@ -51,7 +50,7 @@ internal data class CreateReviewForEpisode(
 
   override fun variables(): Operation.Variables = variables
 
-  override fun name(): OperationName = OPERATION_NAME
+  override fun name(): String = OPERATION_NAME
 
   override fun adapter(): ResponseAdapter<Data> = CreateReviewForEpisode_ResponseAdapter
   /**
@@ -122,10 +121,6 @@ internal data class CreateReviewForEpisode(
           """.trimMargin()
         )
 
-    val OPERATION_NAME: OperationName = object : OperationName {
-      override fun name(): String {
-        return "CreateReviewForEpisode"
-      }
-    }
+    val OPERATION_NAME: String = "CreateReviewForEpisode"
   }
 }

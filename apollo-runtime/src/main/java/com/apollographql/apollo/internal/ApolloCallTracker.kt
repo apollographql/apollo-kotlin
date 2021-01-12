@@ -7,7 +7,6 @@ import com.apollographql.apollo.ApolloQueryCall
 import com.apollographql.apollo.ApolloQueryWatcher
 import com.apollographql.apollo.IdleResourceCallback
 import com.apollographql.apollo.api.Mutation
-import com.apollographql.apollo.api.OperationName
 import com.apollographql.apollo.api.Query
 import java.util.HashMap
 import java.util.HashSet
@@ -18,10 +17,10 @@ import java.util.concurrent.atomic.AtomicInteger
  * & [ApolloMutationCall] & [ApolloQueryWatcher] calls.
  */
 class ApolloCallTracker {
-  private val activePrefetchCalls: MutableMap<OperationName, MutableSet<ApolloPrefetch>> = HashMap()
-  private val activeQueryCalls: MutableMap<OperationName, MutableSet<ApolloQueryCall<*>>> = HashMap()
-  private val activeMutationCalls: MutableMap<OperationName, MutableSet<ApolloMutationCall<*>>> = HashMap()
-  private val activeQueryWatchers: MutableMap<OperationName, MutableSet<ApolloQueryWatcher<*>>> = HashMap()
+  private val activePrefetchCalls: MutableMap<String, MutableSet<ApolloPrefetch>> = HashMap()
+  private val activeQueryCalls: MutableMap<String, MutableSet<ApolloQueryCall<*>>> = HashMap()
+  private val activeMutationCalls: MutableMap<String, MutableSet<ApolloMutationCall<*>>> = HashMap()
+  private val activeQueryWatchers: MutableMap<String, MutableSet<ApolloQueryWatcher<*>>> = HashMap()
   private val activeCallCount = AtomicInteger()
   private var idleResourceCallback: IdleResourceCallback? = null
 
@@ -105,7 +104,7 @@ class ApolloCallTracker {
    * @param operationName prefetch operation name
    * @return set of active prefetch calls
    */
-  fun activePrefetchCalls(operationName: OperationName): Set<ApolloPrefetch> {
+  fun activePrefetchCalls(operationName: String): Set<ApolloPrefetch> {
     return activeCalls(activePrefetchCalls, operationName)
   }
 
@@ -147,7 +146,7 @@ class ApolloCallTracker {
    * @param operationName query operation name
    * @return set of active query calls
    */
-  fun activeQueryCalls(operationName: OperationName): Set<ApolloQueryCall<*>> {
+  fun activeQueryCalls(operationName: String): Set<ApolloQueryCall<*>> {
     return activeCalls(activeQueryCalls, operationName)
   }
 
@@ -189,7 +188,7 @@ class ApolloCallTracker {
    * @param operationName query operation name
    * @return set of active mutation calls
    */
-  fun activeMutationCalls(operationName: OperationName): Set<ApolloMutationCall<*>> {
+  fun activeMutationCalls(operationName: String): Set<ApolloMutationCall<*>> {
     return activeCalls(activeMutationCalls, operationName)
   }
 
@@ -230,7 +229,7 @@ class ApolloCallTracker {
    * @param operationName query watcher operation name
    * @return set of active query watchers
    */
-  fun activeQueryWatchers(operationName: OperationName): Set<ApolloQueryWatcher<*>> {
+  fun activeQueryWatchers(operationName: String): Set<ApolloQueryWatcher<*>> {
     return activeCalls(activeQueryWatchers, operationName)
   }
 
@@ -249,7 +248,7 @@ class ApolloCallTracker {
     return activeCallCount.get()
   }
 
-  private fun <CALL> registerCall(registry: MutableMap<OperationName, MutableSet<CALL>>, operationName: OperationName, call: CALL) {
+  private fun <CALL> registerCall(registry: MutableMap<String, MutableSet<CALL>>, operationName: String, call: CALL) {
     synchronized(registry) {
       var calls = registry[operationName]
       if (calls == null) {
@@ -260,7 +259,7 @@ class ApolloCallTracker {
     }
   }
 
-  private fun <CALL> unregisterCall(registry: MutableMap<OperationName, MutableSet<CALL>>, operationName: OperationName, call: CALL) {
+  private fun <CALL> unregisterCall(registry: MutableMap<String, MutableSet<CALL>>, operationName: String, call: CALL) {
     synchronized(registry) {
       val calls = registry[operationName]
       if (calls == null || !calls.remove(call)) {
@@ -272,7 +271,7 @@ class ApolloCallTracker {
     }
   }
 
-  private fun <CALL> activeCalls(registry: Map<OperationName, MutableSet<CALL>>, operationName: OperationName): Set<CALL> {
+  private fun <CALL> activeCalls(registry: Map<String, MutableSet<CALL>>, operationName: String): Set<CALL> {
     synchronized(registry) {
       val calls: Set<CALL>? = registry[operationName]
       return if (calls != null) HashSet(calls) else emptySet()

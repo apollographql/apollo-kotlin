@@ -6,7 +6,6 @@
 package com.example.fragment_in_fragment
 
 import com.apollographql.apollo.api.Operation
-import com.apollographql.apollo.api.OperationName
 import com.apollographql.apollo.api.Query
 import com.apollographql.apollo.api.internal.QueryDocumentMinifier
 import com.apollographql.apollo.api.internal.ResponseAdapter
@@ -28,7 +27,7 @@ class AllStarships : Query<AllStarships.Data> {
 
   override fun variables(): Operation.Variables = Operation.EMPTY_VARIABLES
 
-  override fun name(): OperationName = OPERATION_NAME
+  override fun name(): String = OPERATION_NAME
 
   override fun adapter(): ResponseAdapter<Data> = AllStarships_ResponseAdapter
   data class Data(
@@ -298,10 +297,6 @@ class AllStarships : Query<AllStarships.Data> {
           """.trimMargin()
         )
 
-    val OPERATION_NAME: OperationName = object : OperationName {
-      override fun name(): String {
-        return "AllStarships"
-      }
-    }
+    val OPERATION_NAME: String = "AllStarships"
   }
 }

@@ -131,7 +131,7 @@ class ApolloServerInterceptorTest {
       Truth.assertThat(request.header(HttpCache.CACHE_EXPIRE_AFTER_READ_HEADER)).isNull()
       Truth.assertThat(request.header(HttpCache.CACHE_PREFETCH_HEADER)).isNull()
       Truth.assertThat(request.url().queryParameter("query")).isEqualTo(query.queryDocument().replace("\n", ""))
-      Truth.assertThat(request.url().queryParameter("operationName")).isEqualTo(query.name().name())
+      Truth.assertThat(request.url().queryParameter("operationName")).isEqualTo(query.name())
       Truth.assertThat(request.url().queryParameter("variables")).isEqualTo("{\"after\":\"some cursor\",\"first\":null,\"last\":100}")
       Truth.assertThat(request.url().queryParameter("extensions")).isEqualTo("{\"persistedQuery\":{\"version\":1," +
           "\"sha256Hash\":\"" + query.operationId() + "\"}}")
@@ -147,7 +147,7 @@ class ApolloServerInterceptorTest {
   private fun assertDefaultRequestHeaders(request: Request?) {
     Truth.assertThat(request!!.header(ApolloServerInterceptor.HEADER_ACCEPT_TYPE)).isEqualTo(ApolloServerInterceptor.ACCEPT_TYPE)
     Truth.assertThat(request.header(ApolloServerInterceptor.HEADER_APOLLO_OPERATION_ID)).isEqualTo(query.operationId())
-    Truth.assertThat(request.header(ApolloServerInterceptor.HEADER_APOLLO_OPERATION_NAME)).isEqualTo(query.name().name())
+    Truth.assertThat(request.header(ApolloServerInterceptor.HEADER_APOLLO_OPERATION_NAME)).isEqualTo(query.name())
     Truth.assertThat(request.tag()).isEqualTo(query.operationId())
   }
 

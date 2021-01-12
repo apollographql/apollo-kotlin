@@ -7,7 +7,6 @@ package com.example.mutation_create_review_semantic_naming
 
 import com.apollographql.apollo.api.Mutation
 import com.apollographql.apollo.api.Operation
-import com.apollographql.apollo.api.OperationName
 import com.apollographql.apollo.api.internal.InputFieldMarshaller
 import com.apollographql.apollo.api.internal.QueryDocumentMinifier
 import com.apollographql.apollo.api.internal.ResponseAdapter
@@ -49,7 +48,7 @@ data class CreateReviewForEpisodeMutation(
 
   override fun variables(): Operation.Variables = variables
 
-  override fun name(): OperationName = OPERATION_NAME
+  override fun name(): String = OPERATION_NAME
 
   override fun adapter(): ResponseAdapter<Data> = CreateReviewForEpisodeMutation_ResponseAdapter
   /**
@@ -88,10 +87,6 @@ data class CreateReviewForEpisodeMutation(
           """.trimMargin()
         )
 
-    val OPERATION_NAME: OperationName = object : OperationName {
-      override fun name(): String {
-        return "CreateReviewForEpisode"
-      }
-    }
+    val OPERATION_NAME: String = "CreateReviewForEpisode"
   }
 }

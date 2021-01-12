@@ -1,12 +1,8 @@
 package com.apollographql.apollo.compiler.backend.codegen
 
-import com.apollographql.apollo.api.Input
 import com.apollographql.apollo.api.Mutation
-import com.apollographql.apollo.api.Operation
-import com.apollographql.apollo.api.OperationName
 import com.apollographql.apollo.api.Query
 import com.apollographql.apollo.api.Subscription
-import com.apollographql.apollo.api.internal.InputFieldMarshaller
 import com.apollographql.apollo.api.internal.QueryDocumentMinifier
 import com.apollographql.apollo.api.internal.ResponseAdapter
 import com.apollographql.apollo.compiler.applyIf
@@ -16,13 +12,11 @@ import com.squareup.kotlinpoet.ClassName
 import com.squareup.kotlinpoet.CodeBlock
 import com.squareup.kotlinpoet.FunSpec
 import com.squareup.kotlinpoet.KModifier
-import com.squareup.kotlinpoet.ParameterSpec
 import com.squareup.kotlinpoet.ParameterizedTypeName.Companion.parameterizedBy
 import com.squareup.kotlinpoet.PropertySpec
 import com.squareup.kotlinpoet.TypeName
 import com.squareup.kotlinpoet.TypeSpec
 import com.squareup.kotlinpoet.asClassName
-import com.squareup.kotlinpoet.joinToCode
 
 internal fun CodeGenerationAst.OperationType.typeSpec(targetPackage: String, generateAsInternal: Boolean = false): TypeSpec {
   val operationResponseAdapter = CodeGenerationAst.TypeRef(name = name, packageName = targetPackage).asAdapterTypeName()
@@ -48,7 +42,7 @@ internal fun CodeGenerationAst.OperationType.typeSpec(targetPackage: String, gen
       .addFunction(variables.variablesFunSpec())
       .addFunction(FunSpec.builder("name")
           .addModifiers(KModifier.OVERRIDE)
-          .returns(OperationName::class)
+          .returns(String::class)
           .addStatement("return OPERATION_NAME")
           .build()
       )
@@ -79,18 +73,8 @@ internal fun CodeGenerationAst.OperationType.typeSpec(targetPackage: String, gen
               .build()
           )
           .addProperty(PropertySpec
-              .builder("OPERATION_NAME", OperationName::class)
-              .initializer("%L", TypeSpec.anonymousClassBuilder()
-                  .addSuperinterface(OperationName::class)
-                  .addFunction(FunSpec
-                      .builder("name")
-                      .addModifiers(KModifier.OVERRIDE)
-                      .returns(String::class)
-                      .addStatement("return·%S", operationName)
-                      .build()
-                  )
-                  .build()
-              )
+              .builder("OPERATION_NAME", String::class)
+              .initializer("%S", operationName)
               .build()
           )
           .build()

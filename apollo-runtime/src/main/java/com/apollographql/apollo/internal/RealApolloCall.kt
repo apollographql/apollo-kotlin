@@ -6,7 +6,6 @@ import com.apollographql.apollo.ApolloQueryCall
 import com.apollographql.apollo.api.CustomScalarAdapters
 import com.apollographql.apollo.api.Mutation
 import com.apollographql.apollo.api.Operation
-import com.apollographql.apollo.api.OperationName
 import com.apollographql.apollo.api.Query
 import com.apollographql.apollo.api.Response
 import com.apollographql.apollo.api.cache.http.HttpCache
@@ -60,7 +59,7 @@ class RealApolloCall<D : Operation.Data> internal constructor(builder: Builder<D
   val applicationInterceptors: List<ApolloInterceptor>?
   val applicationInterceptorFactories: List<ApolloInterceptorFactory>?
   val autoPersistedOperationsInterceptorFactory: ApolloInterceptorFactory?
-  val refetchQueryNames: List<OperationName>
+  val refetchQueryNames: List<String>
   val refetchQueries: List<Query<*>>
   var queryReFetcher: Optional<QueryReFetcher>? = null
   val enableAutoPersistedQueries: Boolean
@@ -77,7 +76,7 @@ class RealApolloCall<D : Operation.Data> internal constructor(builder: Builder<D
       if (responseCallback != null) {
         responseCallback.onCanceledError(e)
       } else {
-        logger!!.e(e, "Operation: %s was canceled", operation().name().name())
+        logger!!.e(e, "Operation: %s was canceled", operation().name())
       }
       return
     }
@@ -152,7 +151,7 @@ class RealApolloCall<D : Operation.Data> internal constructor(builder: Builder<D
     return toBuilder().build()
   }
 
-  override fun refetchQueries(vararg operationNames: OperationName): ApolloMutationCall<D> {
+  override fun refetchQueries(vararg operationNames: String): ApolloMutationCall<D> {
     check(state.get() == CallState.IDLE) { "Already Executed" }
     return toBuilder()
         .refetchQueryNames(operationNames.toList())
@@ -175,7 +174,7 @@ class RealApolloCall<D : Operation.Data> internal constructor(builder: Builder<D
       override fun onResponse(response: InterceptorResponse) {
         val callback = responseCallback()
         if (!callback.isPresent) {
-          logger!!.d("onResponse for operation: %s. No callback present.", operation().name().name())
+          logger!!.d("onResponse for operation: %s. No callback present.", operation().name())
           return
         }
         callback.get().onResponse(response.parsedResponse.get() as Response<D>)
@@ -184,7 +183,7 @@ class RealApolloCall<D : Operation.Data> internal constructor(builder: Builder<D
       override fun onFailure(e: ApolloException) {
         val callback = terminate()
         if (!callback.isPresent) {
-          logger!!.d(e, "onFailure for operation: %s. No callback present.", operation().name().name())
+          logger!!.d(e, "onFailure for operation: %s. No callback present.", operation().name())
           return
         }
         if (e is ApolloHttpException) {
@@ -204,7 +203,7 @@ class RealApolloCall<D : Operation.Data> internal constructor(builder: Builder<D
           queryReFetcher!!.get().refetch()
         }
         if (!callback.isPresent) {
-          logger!!.d("onCompleted for operation: %s. No callback present.", operation().name().name())
+          logger!!.d("onCompleted for operation: %s. No callback present.", operation().name())
           return
         }
         callback.get().onStatusEvent(ApolloCall.StatusEvent.COMPLETED)
@@ -348,7 +347,7 @@ class RealApolloCall<D : Operation.Data> internal constructor(builder: Builder<D
     var applicationInterceptors: List<ApolloInterceptor>? = null
     var applicationInterceptorFactories: List<ApolloInterceptorFactory>? = null
     var autoPersistedOperationsInterceptorFactory: ApolloInterceptorFactory? = null
-    var refetchQueryNames: List<OperationName> = emptyList()
+    var refetchQueryNames: List<String> = emptyList()
     var refetchQueries: List<Query<*>> = emptyList()
     var tracker: ApolloCallTracker? = null
     var enableAutoPersistedQueries = false
@@ -406,7 +405,7 @@ class RealApolloCall<D : Operation.Data> internal constructor(builder: Builder<D
       return this
     }
 
-    override fun refetchQueryNames(refetchQueryNames: List<OperationName>): Builder<D> {
+    override fun refetchQueryNames(refetchQueryNames: List<String>): Builder<D> {
       this.refetchQueryNames = ArrayList(refetchQueryNames)
       return this
     }

@@ -87,11 +87,11 @@ class ApolloCacheInterceptor(
         request.cacheHeaders)
     val cachedResponse = apolloStoreOperation.execute()
     if (cachedResponse.data != null) {
-      logger.d("Cache HIT for operation %s", request.operation.name().name())
+      logger.d("Cache HIT for operation %s", request.operation.name())
       return InterceptorResponse(null, cachedResponse, emptySet())
     }
-    logger.d("Cache MISS for operation %s", request.operation.name().name())
-    throw ApolloGenericException(String.format("Cache miss for operation %s", request.operation.name().name()))
+    logger.d("Cache MISS for operation %s", request.operation.name())
+    throw ApolloGenericException(String.format("Cache miss for operation %s", request.operation.name()))
   }
 
   fun cacheResponse(networkResponse: InterceptorResponse,

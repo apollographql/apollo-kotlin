@@ -2,7 +2,6 @@ package com.apollographql.apollo.internal
 
 import com.apollographql.apollo.ApolloClient
 import com.apollographql.apollo.api.Operation
-import com.apollographql.apollo.api.OperationName
 import com.apollographql.apollo.api.Query
 import com.apollographql.apollo.api.cache.http.HttpCachePolicy
 import com.apollographql.apollo.api.cache.http.HttpCachePolicy.FetchStrategy
@@ -14,11 +13,7 @@ import org.junit.Test
 class ResponseFetcherTest {
 
   private val emptyQuery = object : Query<Operation.Data> {
-    var operationName: OperationName = object : OperationName {
-      override fun name(): String {
-        return "emptyQuery"
-      }
-    }
+    var operationName: String  ="emptyQuery"
 
     override fun queryDocument(): String {
       return ""
@@ -29,8 +24,8 @@ class ResponseFetcherTest {
     }
 
     override fun adapter() = throw UnsupportedOperationException()
-    
-    override fun name(): OperationName {
+
+    override fun name(): String {
       return operationName
     }
 

@@ -6,7 +6,6 @@
 package com.example.hero_details_semantic_naming
 
 import com.apollographql.apollo.api.Operation
-import com.apollographql.apollo.api.OperationName
 import com.apollographql.apollo.api.Query
 import com.apollographql.apollo.api.internal.QueryDocumentMinifier
 import com.apollographql.apollo.api.internal.ResponseAdapter
@@ -26,7 +25,7 @@ class HeroDetailsQuery : Query<HeroDetailsQuery.Data> {
 
   override fun variables(): Operation.Variables = Operation.EMPTY_VARIABLES
 
-  override fun name(): OperationName = OPERATION_NAME
+  override fun name(): String = OPERATION_NAME
 
   override fun adapter(): ResponseAdapter<Data> = HeroDetailsQuery_ResponseAdapter
   /**
@@ -108,10 +107,6 @@ class HeroDetailsQuery : Query<HeroDetailsQuery.Data> {
           """.trimMargin()
         )
 
-    val OPERATION_NAME: OperationName = object : OperationName {
-      override fun name(): String {
-        return "HeroDetails"
-      }
-    }
+    val OPERATION_NAME: String = "HeroDetails"
   }
 }

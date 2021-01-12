@@ -2,7 +2,6 @@ package com.apollographql.apollo
 
 import com.apollographql.apollo.api.Mutation
 import com.apollographql.apollo.api.Operation
-import com.apollographql.apollo.api.OperationName
 import com.apollographql.apollo.api.Query
 import com.apollographql.apollo.cache.CacheHeaders
 import com.apollographql.apollo.fetcher.ResponseFetcher
@@ -29,11 +28,11 @@ interface ApolloMutationCall<D : Operation.Data> : ApolloCall<D> {
    *
    * Sets a list of [ApolloQueryWatcher] query names to be re-fetched once this mutation completed.
    *
-   * @param operationNames array of [OperationName] query names to be re-fetched
+   * @param operationNames array of query names to be re-fetched
    * @return [ApolloMutationCall] that will trigger re-fetching provided queries
    */
   @Deprecated("")
-  fun refetchQueries(vararg operationNames: OperationName): ApolloMutationCall<D>
+  fun refetchQueries(vararg operationNames: String): ApolloMutationCall<D>
 
   /**
    *
@@ -71,7 +70,7 @@ interface ApolloMutationCall<D : Operation.Data> : ApolloCall<D> {
      * @param operationNames array of [OperationName] query names to be re-fetched
      * @return The Builder
      */
-    fun refetchQueryNames(operationNames: List<OperationName>): Builder<D>
+    fun refetchQueryNames(operationNames: List<String>): Builder<D>
 
     /**
      *
