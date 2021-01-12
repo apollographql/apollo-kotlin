@@ -5,6 +5,8 @@ import com.apollographql.apollo.api.Fragment
 import com.apollographql.apollo.api.Operation
 import com.apollographql.apollo.cache.normalized.Record
 import com.apollographql.apollo.api.ResponseField
+import com.apollographql.apollo.api.internal.MapResponseParser
+import com.apollographql.apollo.api.internal.MapResponseReader
 import com.apollographql.apollo.api.internal.StreamResponseReader
 import com.apollographql.apollo.cache.CacheHeaders
 import com.apollographql.apollo.cache.normalized.CacheKey
@@ -39,29 +41,21 @@ fun <D : Operation.Data> Operation<D>.readDataFromCache(
 ): D? {
   return try {
     val cacheKeyBuilder = RealCacheKeyBuilder()
-    val jsonReader = CacheJsonReader(
-        rootKey = CacheKeyResolver.rootKey().key,
-        readableCache = readableStore,
-        cacheHeaders = cacheHeaders,
-    )
-    val reader = StreamResponseReader(
-        jsonReader = jsonReader,
-        variables = variables(),
-        customScalarAdapters = customScalarAdapters,
-    ) { field ->
-      var cacheKey = CacheKey.NO_KEY
-      if (field.type == ResponseField.Type.OBJECT) {
-        // this could be a CacheReference,
-        cacheKey = cacheKeyResolver.fromFieldArguments(field, variables())
-      }
-      if (cacheKey != CacheKey.NO_KEY) {
-        cacheKey.key
-      } else {
-        cacheKeyBuilder.build(field, variables())
-      }
-    }
+    val rootRecord = readableStore.read(CacheKeyResolver.rootKey().key, CacheHeaders.NONE) ?: return null
+    val fieldValueResolver = CacheValueResolver(
+        readableStore,
+        variables(),
+        cacheKeyResolver,
+        cacheHeaders,
+        cacheKeyBuilder)
 
-    jsonReader.beginObject()
+    val reader = MapResponseReader(
+        root = rootRecord,
+        variable = variables(),
+        valueResolver = fieldValueResolver,
+        customScalarAdapters = customScalarAdapters,
+    )
+
     adapter().fromResponse(reader)
   } catch (e: Exception) {
     e.printStackTrace()

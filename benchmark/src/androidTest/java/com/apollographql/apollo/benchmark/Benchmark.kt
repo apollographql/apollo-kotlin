@@ -87,11 +87,11 @@ class Benchmark {
 
     readableStore = object : ReadableStore {
       override fun read(key: String, cacheHeaders: CacheHeaders): Record? {
-        TODO("Not yet implemented")
+        return cache.loadRecord(key, cacheHeaders)
       }
 
       override fun read(keys: Collection<String>, cacheHeaders: CacheHeaders): Collection<Record> {
-        TODO("Not yet implemented")
+        return cache.loadRecords(keys, cacheHeaders)
       }
 
       override fun stream(key: String, cacheHeaders: CacheHeaders): JsonReader? {
