@@ -8,7 +8,6 @@ import com.apollographql.apollo.api.Response
 import com.apollographql.apollo.cache.normalized.NormalizedCache
 import com.apollographql.apollo.interceptor.ApolloQueryRequest
 import kotlinx.coroutines.ExperimentalCoroutinesApi
-import kotlin.jvm.JvmField
 
 @ApolloExperimental
 data class CacheResponseExecutionContext(
@@ -19,7 +18,7 @@ data class CacheResponseExecutionContext(
   companion object Key : ExecutionContext.Key<CacheResponseExecutionContext>
 }
 
-enum class NormalizedCachePolicy {
+enum class FetchPolicy {
   CACHE_ONLY,
   NETWORK_ONLY,
   CACHE_FIRST,
@@ -29,7 +28,7 @@ enum class NormalizedCachePolicy {
 
 @ApolloExperimental
 data class CacheRequestExecutionContext(
-    val policy: NormalizedCachePolicy
+    val policy: FetchPolicy
 ) : ExecutionContext.Element {
   override val key: ExecutionContext.Key<*> = Key
 
@@ -37,7 +36,7 @@ data class CacheRequestExecutionContext(
 }
 
 @ApolloExperimental
-fun <D : Operation.Data> ApolloQueryRequest.Builder<D>.normalizedCachePolicy(policy: NormalizedCachePolicy) = apply {
+fun <D : Operation.Data> ApolloQueryRequest.Builder<D>.fetchPolicy(policy: FetchPolicy) = apply {
   addExecutionContext(CacheRequestExecutionContext(policy))
 }
 

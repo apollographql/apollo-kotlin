@@ -4,12 +4,10 @@ import HeroNameQuery
 import com.apollographql.apollo.ApolloClient
 import com.apollographql.apollo.cache.normalized.simple.MapNormalizedCache
 import com.apollographql.apollo.interceptor.ApolloQueryRequest
-import com.apollographql.apollo.interceptor.cache.ApolloCacheInterceptor
-import com.apollographql.apollo.interceptor.cache.ApolloStore
-import com.apollographql.apollo.interceptor.cache.NormalizedCachePolicy
+import com.apollographql.apollo.interceptor.cache.FetchPolicy
 import com.apollographql.apollo.interceptor.cache.fromCache
 import com.apollographql.apollo.interceptor.cache.normalizedCache
-import com.apollographql.apollo.interceptor.cache.normalizedCachePolicy
+import com.apollographql.apollo.interceptor.cache.fetchPolicy
 import com.apollographql.apollo.testing.MockNetworkTransport
 import com.apollographql.apollo.testing.TestLoggerExecutor
 import com.apollographql.apollo.testing.runBlocking
@@ -65,7 +63,7 @@ class CacheInterceptorTest {
   fun `network_first test`() {
     runBlocking {
       val request = ApolloQueryRequest.Builder(query = HeroNameQuery())
-          .normalizedCachePolicy(NormalizedCachePolicy.NETWORK_FIRST)
+          .fetchPolicy(FetchPolicy.NETWORK_FIRST)
           .build()
 
       networkTransport.offer(fixtureResponse("HeroNameResponse.json"))
@@ -121,7 +119,7 @@ class CacheInterceptorTest {
 
       // Now make the request cache only
       request = request.newBuilder()
-          .normalizedCachePolicy(NormalizedCachePolicy.CACHE_ONLY)
+          .fetchPolicy(FetchPolicy.CACHE_ONLY)
           .build()
 
       networkTransport.offer(fixtureResponse("HeroNameResponse.json"))
@@ -141,7 +139,7 @@ class CacheInterceptorTest {
   fun `network_only test`() {
     runBlocking {
       val request = ApolloQueryRequest.Builder(query = HeroNameQuery())
-          .normalizedCachePolicy(NormalizedCachePolicy.NETWORK_ONLY)
+          .fetchPolicy(FetchPolicy.NETWORK_ONLY)
           .build()
 
       // cache the response
@@ -173,7 +171,7 @@ class CacheInterceptorTest {
   fun `cache_and_network test`() {
     runBlocking {
       var request = ApolloQueryRequest.Builder(query = HeroNameQuery())
-          .normalizedCachePolicy(NormalizedCachePolicy.CACHE_FIRST)
+          .fetchPolicy(FetchPolicy.CACHE_FIRST)
           .build()
 
       // cache the response
@@ -189,7 +187,7 @@ class CacheInterceptorTest {
 
       // Now make the request cache and network
       request = request.newBuilder()
-          .normalizedCachePolicy(NormalizedCachePolicy.CACHE_AND_NETWORK)
+          .fetchPolicy(FetchPolicy.CACHE_AND_NETWORK)
           .build()
 
       networkTransport.offer(fixtureResponse("HeroNameResponse.json"))

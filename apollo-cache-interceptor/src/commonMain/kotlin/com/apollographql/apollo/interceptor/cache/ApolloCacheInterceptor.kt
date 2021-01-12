@@ -36,10 +36,10 @@ class ApolloCacheInterceptor<S>(private val store: S) : ApolloRequestInterceptor
 
   override fun <D : Operation.Data> intercept(request: ApolloRequest<D>, chain: ApolloInterceptorChain): Flow<ApolloResponse<D>> {
     return flow {
-      val policy = request.executionContext[CacheRequestExecutionContext]?.policy ?: NormalizedCachePolicy.CACHE_FIRST
+      val policy = request.executionContext[CacheRequestExecutionContext]?.policy ?: FetchPolicy.CACHE_FIRST
 
       when (policy) {
-        NormalizedCachePolicy.CACHE_FIRST -> {
+        FetchPolicy.CACHE_FIRST -> {
           val response = readFromCache(request, chain.customScalarAdapters)
           if (response != null) {
             emit(response)
@@ -47,7 +47,7 @@ class ApolloCacheInterceptor<S>(private val store: S) : ApolloRequestInterceptor
             proceed(request, chain).collect { emit(it) }
           }
         }
-        NormalizedCachePolicy.NETWORK_FIRST -> {
+        FetchPolicy.NETWORK_FIRST -> {
           proceed(request, chain)
               .catch {
                 val response = readFromCache(request, chain.customScalarAdapters)
@@ -59,19 +59,19 @@ class ApolloCacheInterceptor<S>(private val store: S) : ApolloRequestInterceptor
                 emit(it)
               }
         }
-        NormalizedCachePolicy.CACHE_ONLY -> {
+        FetchPolicy.CACHE_ONLY -> {
           val response = readFromCache(request, chain.customScalarAdapters)
           if (response != null) {
             emit(response)
           }
         }
-        NormalizedCachePolicy.NETWORK_ONLY -> {
+        FetchPolicy.NETWORK_ONLY -> {
           proceed(request, chain)
               .collect {
                 emit(it)
               }
         }
-        NormalizedCachePolicy.CACHE_AND_NETWORK -> {
+        FetchPolicy.CACHE_AND_NETWORK -> {
           val response = readFromCache(request, chain.customScalarAdapters)
           if (response != null) {
             emit(response)
