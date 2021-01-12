@@ -84,42 +84,6 @@ class NormalizedCacheTestCase {
     }
   }
 
-  val responseNormalizer = object : ResponseNormalizer<Map<String, Any>?>() {
-    override fun cacheKeyBuilder() = RealCacheKeyBuilder()
-
-    override fun resolveCacheKey(field: ResponseField, record: Map<String, Any>?) = CacheKey.NO_KEY
-  }
-
-  @Test
-  fun apolloReadCache() {
-    val operation = GetResponseQuery()
-    val cache = SqlNormalizedCacheFactory("jdbc:sqlite:").create(RecordFieldJsonAdapter())
-
-    val bufferedSource = Buffer().writeUtf8(Utils.readFileToString(Utils::class.java, "/largesample.json"))
-
-    val data1 = operation.parse(bufferedSource).data!!
-
-    val records = operation.normalize(data1, CustomScalarAdapters.DEFAULT, responseNormalizer)
-    cache.merge(records, CacheHeaders.NONE)
-
-    val readableStore = object : ReadableStore {
-      override fun read(key: String, cacheHeaders: CacheHeaders): Record? {
-        return cache.loadRecord(key, cacheHeaders)
-      }
-
-      override fun read(keys: Collection<String>, cacheHeaders: CacheHeaders): Collection<Record> {
-        return cache.loadRecords(keys, cacheHeaders)
-      }
-
-      override fun stream(key: String, cacheHeaders: CacheHeaders): JsonReader? {
-        return cache.stream(key, cacheHeaders)
-      }
-    }
-    val data2 = operation.readDataFromCache(CustomScalarAdapters.DEFAULT, readableStore, CacheKeyResolver.DEFAULT, CacheHeaders.NONE)
-    println(data2)
-  }
-
-
   @Test
   @Throws(Exception::class)
   fun heroAndFriendsNameResponse() {
