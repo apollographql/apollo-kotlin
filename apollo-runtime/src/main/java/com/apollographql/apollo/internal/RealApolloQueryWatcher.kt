@@ -9,9 +9,8 @@ import com.apollographql.apollo.api.internal.ApolloLogger
 import com.apollographql.apollo.api.internal.Optional
 import com.apollographql.apollo.cache.normalized.ApolloStore
 import com.apollographql.apollo.cache.normalized.ApolloStore.RecordChangeSubscriber
-import com.apollographql.apollo.cache.normalized.internal.ResponseNormalizer
+import com.apollographql.apollo.cache.normalized.Record
 import com.apollographql.apollo.cache.normalized.internal.dependentKeys
-import com.apollographql.apollo.cache.normalized.internal.normalize
 import com.apollographql.apollo.exception.ApolloCanceledException
 import com.apollographql.apollo.exception.ApolloException
 import com.apollographql.apollo.exception.ApolloHttpException
@@ -110,13 +109,17 @@ class RealApolloQueryWatcher<D : Operation.Data>(
           logger.d("onResponse for watched operation: %s. No callback present.", operation().name().name())
           return
         }
-        response.data?.let {
-          val normalizedRecords = (response.operation as Operation<Operation.Data>)
-              .normalize(it, customScalarAdapters, apolloStore.networkResponseNormalizer() as ResponseNormalizer<Map<String, Any>?>)
-          dependentKeys = normalizedRecords.dependentKeys()
-        }
-        apolloStore.subscribe(recordChangeSubscriber)
         callback.get().onResponse(response)
+      }
+
+      override fun onCached(records: Set<Record>) {
+        val callback = responseCallback()
+        if (!callback.isPresent) {
+          logger.d("onResponse for watched operation: %s. No callback present.", operation().name().name())
+          return
+        }
+        dependentKeys = records.dependentKeys()
+        apolloStore.subscribe(recordChangeSubscriber)
       }
 
       override fun onFailure(e: ApolloException) {

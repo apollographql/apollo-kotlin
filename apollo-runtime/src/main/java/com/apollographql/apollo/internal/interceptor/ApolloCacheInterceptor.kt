@@ -1,8 +1,10 @@
 package com.apollographql.apollo.internal.interceptor
 
+import com.apollographql.apollo.ApolloCall
 import com.apollographql.apollo.api.CustomScalarAdapters
 import com.apollographql.apollo.api.Operation
 import com.apollographql.apollo.api.internal.ApolloLogger
+import com.apollographql.apollo.api.internal.Optional
 import com.apollographql.apollo.cache.ApolloCacheHeaders
 import com.apollographql.apollo.cache.normalized.ApolloStore
 import com.apollographql.apollo.cache.normalized.internal.ResponseNormalizer
@@ -24,11 +26,12 @@ import java.util.concurrent.Executor
  * ApolloCacheInterceptor is a concrete [ApolloInterceptor] responsible for serving requests from the normalized
  * cache if [InterceptorRequest.fetchFromCache] is true. Saves all network responses to cache.
  */
-class ApolloCacheInterceptor(
+class ApolloCacheInterceptor<D : Operation.Data>(
     val apolloStore: ApolloStore,
     private val customScalarAdapters: CustomScalarAdapters,
     private val dispatcher: Executor,
     val logger: ApolloLogger,
+    private val responseCallback: Optional<ApolloCall.Callback<D>>,
     private val writeToCacheAsynchronously: Boolean
 ) : ApolloInterceptor {
 
@@ -101,19 +104,24 @@ class ApolloCacheInterceptor(
       return emptySet()
     }
 
-    val records = networkResponse.parsedResponse.get()?.data?.let {
+    val rawRecords = networkResponse.parsedResponse.get()?.data?.let {
       (request.operation as Operation<Operation.Data>)
           .normalize(it, customScalarAdapters, apolloStore.networkResponseNormalizer() as ResponseNormalizer<Map<String, Any>?>)
-    }?.map {
+    }
+    val mergeRecords = rawRecords?.map {
       it.toBuilder().mutationId(request.uniqueId).build()
     }
 
-    return if (records == null) {
+    return if (rawRecords == null || mergeRecords == null) {
       emptySet()
     } else try {
       apolloStore.writeTransaction(object : Transaction<WriteableStore, Set<String>> {
         override fun execute(cache: WriteableStore): Set<String>? {
-          return cache.merge(records, request.cacheHeaders)
+          val changedKeys = cache.merge(mergeRecords, request.cacheHeaders)
+          if (responseCallback.isPresent) {
+            responseCallback.get().onCached(rawRecords)
+          }
+          return changedKeys
         }
       })
     } catch (e: Exception) {
