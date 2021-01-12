@@ -1,5 +1,6 @@
 package com.apollographql.apollo.interceptor.cache
 
+import com.apollographql.apollo.api.internal.json.JsonReader
 import com.apollographql.apollo.cache.CacheHeaders
 import com.apollographql.apollo.cache.normalized.NormalizedCache
 import com.apollographql.apollo.cache.normalized.Record
@@ -13,6 +14,10 @@ class ApolloStore(private val normalizedCache: NormalizedCache): ReadableStore, 
 
   override fun merge(record: Record, cacheHeaders: CacheHeaders): Set<String> {
     return normalizedCache.merge(record, cacheHeaders)
+  }
+
+  override fun stream(key: String, cacheHeaders: CacheHeaders): JsonReader? {
+    return normalizedCache.stream(key, cacheHeaders)
   }
 
   override fun read(key: String, cacheHeaders: CacheHeaders): Record? {

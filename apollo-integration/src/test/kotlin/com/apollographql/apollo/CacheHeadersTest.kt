@@ -4,6 +4,7 @@ import com.apollographql.apollo.Utils.immediateExecutor
 import com.apollographql.apollo.Utils.immediateExecutorService
 import com.apollographql.apollo.Utils.readFileToString
 import com.apollographql.apollo.api.Input.Companion.fromNullable
+import com.apollographql.apollo.api.internal.json.JsonReader
 import com.apollographql.apollo.cache.ApolloCacheHeaders
 import com.apollographql.apollo.cache.CacheHeaders
 import com.apollographql.apollo.cache.CacheHeaders.Companion.builder
@@ -31,6 +32,10 @@ class CacheHeadersTest {
     val normalizedCache: NormalizedCache = object : NormalizedCache() {
       override fun loadRecord(key: String, cacheHeaders: CacheHeaders): Record? {
         hasHeader.set(cacheHeaders.hasHeader(ApolloCacheHeaders.DO_NOT_STORE))
+        return null
+      }
+
+      override fun stream(key: String, cacheHeaders: CacheHeaders): JsonReader? {
         return null
       }
 
@@ -74,6 +79,10 @@ class CacheHeadersTest {
     val normalizedCache: NormalizedCache = object : NormalizedCache() {
       override fun loadRecord(key: String, cacheHeaders: CacheHeaders): Record? {
         hasHeader.set(cacheHeaders.hasHeader(ApolloCacheHeaders.DO_NOT_STORE))
+        return null
+      }
+
+      override fun stream(key: String, cacheHeaders: CacheHeaders): JsonReader? {
         return null
       }
 
