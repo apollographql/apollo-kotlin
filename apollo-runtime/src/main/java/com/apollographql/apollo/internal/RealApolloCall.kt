@@ -92,7 +92,7 @@ class RealApolloCall<D : Operation.Data> internal constructor(builder: Builder<D
   }
 
   override fun watcher(): RealApolloQueryWatcher<D> {
-    return RealApolloQueryWatcher(clone(), apolloStore!!, logger!!, tracker!!, ApolloResponseFetchers.CACHE_FIRST)
+    return RealApolloQueryWatcher(clone(), apolloStore!!, customScalarAdapters!!, logger!!, tracker!!, ApolloResponseFetchers.CACHE_FIRST)
   }
 
   override fun httpCachePolicy(httpCachePolicy: HttpCachePolicy.Policy): RealApolloCall<D> {
@@ -307,7 +307,6 @@ class RealApolloCall<D : Operation.Data> internal constructor(builder: Builder<D
     interceptors.add(responseFetcher!!.provideInterceptor(logger))
     interceptors.add(ApolloCacheInterceptor(
         apolloStore!!,
-        apolloStore.networkResponseNormalizer(),
         customScalarAdapters!!,
         dispatcher!!,
         logger!!,

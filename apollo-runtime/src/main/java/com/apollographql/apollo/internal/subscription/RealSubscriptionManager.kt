@@ -299,10 +299,7 @@ class RealSubscriptionManager(private val customScalarAdapters: CustomScalarAdap
       val normalizer = responseNormalizer.invoke()
       val subscription = subscriptionRecord!!.subscription
       val response = try {
-        MapResponseParser.parse(message.payload, subscription, customScalarAdapters).let {
-          val records = it.data?.let { subscription.normalize(it, customScalarAdapters, normalizer as ResponseNormalizer<Map<String, Any>?>) }
-          it.copy(dependentKeys = records.dependentKeys())
-        }
+        MapResponseParser.parse(message.payload, subscription, customScalarAdapters)
       } catch (e: Exception) {
         subscriptionRecord = removeSubscriptionById(subscriptionId)
         if (subscriptionRecord != null) {

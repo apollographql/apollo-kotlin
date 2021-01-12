@@ -2,12 +2,16 @@ package com.apollographql.apollo.internal
 
 import com.apollographql.apollo.ApolloCall
 import com.apollographql.apollo.ApolloQueryWatcher
+import com.apollographql.apollo.api.CustomScalarAdapters
 import com.apollographql.apollo.api.Operation
 import com.apollographql.apollo.api.Response
 import com.apollographql.apollo.api.internal.ApolloLogger
 import com.apollographql.apollo.api.internal.Optional
 import com.apollographql.apollo.cache.normalized.ApolloStore
 import com.apollographql.apollo.cache.normalized.ApolloStore.RecordChangeSubscriber
+import com.apollographql.apollo.cache.normalized.internal.ResponseNormalizer
+import com.apollographql.apollo.cache.normalized.internal.dependentKeys
+import com.apollographql.apollo.cache.normalized.internal.normalize
 import com.apollographql.apollo.exception.ApolloCanceledException
 import com.apollographql.apollo.exception.ApolloException
 import com.apollographql.apollo.exception.ApolloHttpException
@@ -20,6 +24,7 @@ import java.util.concurrent.atomic.AtomicReference
 class RealApolloQueryWatcher<D : Operation.Data>(
     private var activeCall: RealApolloCall<D>,
     val apolloStore: ApolloStore,
+    private val customScalarAdapters: CustomScalarAdapters,
     val logger: ApolloLogger,
     private val tracker: ApolloCallTracker,
     private var refetchResponseFetcher: ResponseFetcher
@@ -94,7 +99,7 @@ class RealApolloQueryWatcher<D : Operation.Data>(
   }
 
   override fun clone(): ApolloQueryWatcher<D> {
-    return RealApolloQueryWatcher(activeCall.clone(), apolloStore, logger, tracker, refetchResponseFetcher)
+    return RealApolloQueryWatcher(activeCall.clone(), apolloStore, customScalarAdapters, logger, tracker, refetchResponseFetcher)
   }
 
   private fun callbackProxy(): ApolloCall.Callback<D> {
@@ -105,7 +110,11 @@ class RealApolloQueryWatcher<D : Operation.Data>(
           logger.d("onResponse for watched operation: %s. No callback present.", operation().name().name())
           return
         }
-        dependentKeys = response.dependentKeys
+        response.data?.let {
+          val normalizedRecords = (response.operation as Operation<Operation.Data>)
+              .normalize(it, customScalarAdapters, apolloStore.networkResponseNormalizer() as ResponseNormalizer<Map<String, Any>?>)
+          dependentKeys = normalizedRecords.dependentKeys()
+        }
         apolloStore.subscribe(recordChangeSubscriber)
         callback.get().onResponse(response)
       }

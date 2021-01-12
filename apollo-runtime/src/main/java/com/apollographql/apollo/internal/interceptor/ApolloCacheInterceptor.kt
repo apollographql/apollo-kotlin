@@ -26,7 +26,6 @@ import java.util.concurrent.Executor
  */
 class ApolloCacheInterceptor(
     val apolloStore: ApolloStore,
-    private val normalizer: ResponseNormalizer<Map<String, Any>>,
     private val customScalarAdapters: CustomScalarAdapters,
     private val dispatcher: Executor,
     val logger: ApolloLogger,
@@ -103,12 +102,11 @@ class ApolloCacheInterceptor(
     }
 
     val records = networkResponse.parsedResponse.get()?.data?.let {
-      (request.operation as Operation<Operation.Data>).normalize(it, customScalarAdapters, normalizer as ResponseNormalizer<Map<String, Any>?>)
+      (request.operation as Operation<Operation.Data>)
+          .normalize(it, customScalarAdapters, apolloStore.networkResponseNormalizer() as ResponseNormalizer<Map<String, Any>?>)
     }?.map {
       it.toBuilder().mutationId(request.uniqueId).build()
     }
-
-    // TODO parsedResponse.dependentKeys(records.dependentKeys()) that was part of ApolloParseInterceptor. This might be async.
 
     return if (records == null) {
       emptySet()
