@@ -8,7 +8,7 @@ import kotlinx.coroutines.flow.Flow
 
 interface ApolloCall<D: Operation.Data> {
   @ApolloExperimental
-  fun execute(executionContext: ExecutionContext = ExecutionContext.Empty): Flow<Response<D>>
+  fun execute(): Flow<Response<D>>
 }
 
 interface ApolloQueryCall<D: Operation.Data> : ApolloCall<D>

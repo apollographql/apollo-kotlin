@@ -6,7 +6,6 @@ import com.apollographql.apollo.api.ExecutionContext
 import com.apollographql.apollo.api.Operation
 import com.apollographql.apollo.api.Response
 import com.apollographql.apollo.cache.normalized.NormalizedCache
-import com.apollographql.apollo.cache.normalized.simple.MapNormalizedCache
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 
 @ApolloExperimental

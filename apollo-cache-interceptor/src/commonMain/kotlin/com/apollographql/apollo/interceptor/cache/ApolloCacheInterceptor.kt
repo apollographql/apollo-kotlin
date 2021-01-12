@@ -1,6 +1,7 @@
 package com.apollographql.apollo.interceptor.cache
 
 import com.apollographql.apollo.api.ApolloExperimental
+import com.apollographql.apollo.api.CustomScalarAdapters
 import com.apollographql.apollo.api.Operation
 import com.apollographql.apollo.api.Response
 import com.apollographql.apollo.api.Response.Companion.builder
@@ -25,7 +26,7 @@ class ApolloCacheInterceptor<S>(private val store: S) : ApolloRequestInterceptor
 
   override fun <D : Operation.Data> intercept(request: ApolloRequest<D>, chain: ApolloInterceptorChain): Flow<ApolloResponse<D>> {
     return flow {
-      val response = readFromCache(request)
+      val response = readFromCache(request, chain.customScalarAdapters)
       if (response != null) {
         emit(
             ApolloResponse(
@@ -37,7 +38,7 @@ class ApolloCacheInterceptor<S>(private val store: S) : ApolloRequestInterceptor
       } else {
         chain.proceed(request).collect {
           if (it.response.data != null) {
-            writeToCache(request, it.response.data!!)
+            writeToCache(request, it.response.data!!, chain.customScalarAdapters)
           }
           emit(it.copy(executionContext = it.executionContext + CacheExecutionContext(false)))
         }
@@ -45,14 +46,14 @@ class ApolloCacheInterceptor<S>(private val store: S) : ApolloRequestInterceptor
     }
   }
 
-  private fun <D : Operation.Data> writeToCache(request: ApolloRequest<D>, data: D) {
+  private fun <D : Operation.Data> writeToCache(request: ApolloRequest<D>, data: D, customScalarAdapters: CustomScalarAdapters) {
     val operation = request.operation
-    val records = operation.normalize(data, request.customScalarAdapters, CacheKeyResolver.DEFAULT)
+    val records = operation.normalize(data, customScalarAdapters, CacheKeyResolver.DEFAULT)
 
     store.merge(records.toList(), CacheHeaders.NONE)
   }
 
-  private fun <D : Operation.Data> readFromCache(request: ApolloRequest<D>): Response<D>? {
+  private fun <D : Operation.Data> readFromCache(request: ApolloRequest<D>, customScalarAdapters: CustomScalarAdapters): Response<D>? {
     val operation = request.operation
     val rootRecord = store.read(CacheKeyResolver.rootKey().key, CacheHeaders.NONE) ?: return null
 
@@ -62,7 +63,7 @@ class ApolloCacheInterceptor<S>(private val store: S) : ApolloRequestInterceptor
         CacheHeaders.NONE,
         RealCacheKeyBuilder()
     )
-    val data = operation.parseData(rootRecord, request.customScalarAdapters, fieldValueResolver)
+    val data = operation.parseData(rootRecord, customScalarAdapters, fieldValueResolver)
 
     return builder<D>(operation)
         .data(data)

@@ -20,21 +20,21 @@ import kotlinx.coroutines.flow.map
 @ApolloExperimental
 @OptIn(ExperimentalCoroutinesApi::class)
 class RealApolloCall<D : Operation.Data> constructor(
-    private val operation: Operation<D>,
-    private val customScalarAdapters: CustomScalarAdapters,
+    val request: ApolloRequest<D>,
     private val interceptors: List<ApolloRequestInterceptor>,
-    private val executionContext: ExecutionContext
+    private val customScalarAdapters: CustomScalarAdapters
 ) : ApolloQueryCall<D>, ApolloMutationCall<D>, ApolloSubscriptionCall<D> {
 
   @ApolloExperimental
-  override fun execute(executionContext: ExecutionContext): Flow<Response<D>> {
-    val request = ApolloRequest(
-        operation = operation,
-        customScalarAdapters = customScalarAdapters,
-        executionContext = this.executionContext + executionContext
-    )
+  override fun execute(): Flow<Response<D>> {
     return flow {
-      emit(RealInterceptorChain(interceptors))
+      emit(
+          RealInterceptorChain(
+              interceptors,
+              0,
+              customScalarAdapters
+          )
+      )
     }.flatMapLatest { interceptorChain ->
       interceptorChain.proceed(request)
     }.map { apolloResponse ->

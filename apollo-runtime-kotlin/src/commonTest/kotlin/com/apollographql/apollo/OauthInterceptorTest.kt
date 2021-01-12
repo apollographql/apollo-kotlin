@@ -1,6 +1,7 @@
 package com.apollographql.apollo
 
 import com.apollographql.apollo.api.ApolloExperimental
+import com.apollographql.apollo.api.CustomScalarAdapters
 import com.apollographql.apollo.api.ExecutionContext
 import com.apollographql.apollo.api.Operation
 import com.apollographql.apollo.api.parse
@@ -33,7 +34,7 @@ class OauthInterceptorTest {
       const val INVALID_ACCESS_TOKEN = "INVALID_ACCESS_TOKEN"
     }
 
-    override fun <D : Operation.Data> execute(request: ApolloRequest<D>, executionContext: ExecutionContext): Flow<ApolloResponse<D>> {
+    override fun <D : Operation.Data> execute(request: ApolloRequest<D>, customScalarAdapters: CustomScalarAdapters, executionContext: ExecutionContext): Flow<ApolloResponse<D>> {
       val authorization = executionContext[HttpExecutionContext.Request]?.headers?.get("Authorization")
 
       return flow {
