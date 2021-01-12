@@ -38,46 +38,46 @@ object TestQuery_ResponseAdapter : ResponseAdapter<TestQuery.Data> {
     override fun fromResponse(reader: ResponseReader, __typename: String?): TestQuery.Data {
       val typename = __typename ?: reader.readString(RESPONSE_FIELDS[0])
       return when(typename) {
-        "Query" -> QueryDatum.fromResponse(reader, typename)
-        else -> OtherDatum.fromResponse(reader, typename)
+        "Query" -> QueryData.fromResponse(reader, typename)
+        else -> OtherData.fromResponse(reader, typename)
       }
     }
 
     override fun toResponse(writer: ResponseWriter, value: TestQuery.Data) {
       when(value) {
-        is TestQuery.Data.QueryDatum -> QueryDatum.toResponse(writer, value)
-        is TestQuery.Data.OtherDatum -> OtherDatum.toResponse(writer, value)
+        is TestQuery.Data.QueryData -> QueryData.toResponse(writer, value)
+        is TestQuery.Data.OtherData -> OtherData.toResponse(writer, value)
       }
     }
 
-    object QueryDatum : ResponseAdapter<TestQuery.Data.QueryDatum> {
+    object QueryData : ResponseAdapter<TestQuery.Data.QueryData> {
       private val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
         ResponseField.forString("__typename", "__typename", null, false, null),
         ResponseField.forObject("hero", "hero", null, true, null)
       )
 
       override fun fromResponse(reader: ResponseReader, __typename: String?):
-          TestQuery.Data.QueryDatum {
+          TestQuery.Data.QueryData {
         return reader.run {
           var __typename: String? = __typename
-          var hero: TestQuery.Data.QueryDatum.Hero? = null
+          var hero: TestQuery.Data.QueryData.Hero? = null
           while(true) {
             when (selectField(RESPONSE_FIELDS)) {
               0 -> __typename = readString(RESPONSE_FIELDS[0])
-              1 -> hero = readObject<TestQuery.Data.QueryDatum.Hero>(RESPONSE_FIELDS[1]) { reader ->
+              1 -> hero = readObject<TestQuery.Data.QueryData.Hero>(RESPONSE_FIELDS[1]) { reader ->
                 Hero.fromResponse(reader)
               }
               else -> break
             }
           }
-          TestQuery.Data.QueryDatum(
+          TestQuery.Data.QueryData(
             __typename = __typename!!,
             hero = hero
           )
         }
       }
 
-      override fun toResponse(writer: ResponseWriter, value: TestQuery.Data.QueryDatum) {
+      override fun toResponse(writer: ResponseWriter, value: TestQuery.Data.QueryData) {
         writer.writeString(RESPONSE_FIELDS[0], value.__typename)
         if(value.hero == null) {
           writer.writeObject(RESPONSE_FIELDS[1], null)
@@ -88,13 +88,13 @@ object TestQuery_ResponseAdapter : ResponseAdapter<TestQuery.Data> {
         }
       }
 
-      object Hero : ResponseAdapter<TestQuery.Data.QueryDatum.Hero> {
+      object Hero : ResponseAdapter<TestQuery.Data.QueryData.Hero> {
         private val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
           ResponseField.forString("name", "name", null, false, null)
         )
 
         override fun fromResponse(reader: ResponseReader, __typename: String?):
-            TestQuery.Data.QueryDatum.Hero {
+            TestQuery.Data.QueryData.Hero {
           return reader.run {
             var name: String? = null
             while(true) {
@@ -103,25 +103,25 @@ object TestQuery_ResponseAdapter : ResponseAdapter<TestQuery.Data> {
                 else -> break
               }
             }
-            TestQuery.Data.QueryDatum.Hero(
+            TestQuery.Data.QueryData.Hero(
               name = name!!
             )
           }
         }
 
-        override fun toResponse(writer: ResponseWriter, value: TestQuery.Data.QueryDatum.Hero) {
+        override fun toResponse(writer: ResponseWriter, value: TestQuery.Data.QueryData.Hero) {
           writer.writeString(RESPONSE_FIELDS[0], value.name)
         }
       }
     }
 
-    object OtherDatum : ResponseAdapter<TestQuery.Data.OtherDatum> {
+    object OtherData : ResponseAdapter<TestQuery.Data.OtherData> {
       private val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
         ResponseField.forString("__typename", "__typename", null, false, null)
       )
 
       override fun fromResponse(reader: ResponseReader, __typename: String?):
-          TestQuery.Data.OtherDatum {
+          TestQuery.Data.OtherData {
         return reader.run {
           var __typename: String? = __typename
           while(true) {
@@ -130,13 +130,13 @@ object TestQuery_ResponseAdapter : ResponseAdapter<TestQuery.Data> {
               else -> break
             }
           }
-          TestQuery.Data.OtherDatum(
+          TestQuery.Data.OtherData(
             __typename = __typename!!
           )
         }
       }
 
-      override fun toResponse(writer: ResponseWriter, value: TestQuery.Data.OtherDatum) {
+      override fun toResponse(writer: ResponseWriter, value: TestQuery.Data.OtherData) {
         writer.writeString(RESPONSE_FIELDS[0], value.__typename)
       }
     }

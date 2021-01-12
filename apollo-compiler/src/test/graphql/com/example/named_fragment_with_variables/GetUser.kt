@@ -93,7 +93,7 @@ data class GetUser(
       }
     }
 
-    data class QueryDatum(
+    data class QueryData(
       override val __typename: String,
       override val organization: Organization?
     ) : Data, Query, QueryFragment {
@@ -119,7 +119,7 @@ data class GetUser(
       }
     }
 
-    data class OtherDatum(
+    data class OtherData(
       override val __typename: String
     ) : Data
 

@@ -94,7 +94,7 @@ class ServiceTests {
       }
     """.trimIndent()) { dir ->
       TestUtils.executeTask("generateApolloSources", dir)
-      TestUtils.assertFileContains(dir, "service/com/example/DroidDetail.kt", "class DroidDetail ")
+      TestUtils.assertFileContains(dir, "service/com/example/DroidDetails.kt", "class DroidDetails ")
     }
   }
 

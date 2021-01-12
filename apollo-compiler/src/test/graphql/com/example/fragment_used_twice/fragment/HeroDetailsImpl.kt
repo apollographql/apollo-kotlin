@@ -22,10 +22,10 @@ class HeroDetailsImpl : Fragment<HeroDetailsImpl.Data> {
   /**
    * A character from the Star Wars universe
    */
-  interface Data : HeroDetail, Fragment.Data {
+  interface Data : HeroDetails, Fragment.Data {
     override val __typename: String
 
-    data class CharacterDatum(
+    data class CharacterData(
       override val __typename: String,
       /**
        * The name of the character
@@ -35,14 +35,14 @@ class HeroDetailsImpl : Fragment<HeroDetailsImpl.Data> {
        * The date character was born.
        */
       override val birthDate: Any
-    ) : HeroDetail, HeroDetail.Character, CharacterDetail, Data
+    ) : HeroDetails, HeroDetails.Character, CharacterDetails, Data
 
-    data class OtherDatum(
+    data class OtherData(
       override val __typename: String,
       /**
        * The name of the character
        */
       override val name: String
-    ) : HeroDetail, Data
+    ) : HeroDetails, Data
   }
 }

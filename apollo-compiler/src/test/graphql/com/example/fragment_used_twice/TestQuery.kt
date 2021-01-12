@@ -11,8 +11,8 @@ import com.apollographql.apollo.api.Query
 import com.apollographql.apollo.api.internal.QueryDocumentMinifier
 import com.apollographql.apollo.api.internal.ResponseAdapter
 import com.example.fragment_used_twice.adapter.TestQuery_ResponseAdapter
-import com.example.fragment_used_twice.fragment.HeroDetail
-import com.example.fragment_used_twice.fragment.HumanDetail
+import com.example.fragment_used_twice.fragment.HeroDetails
+import com.example.fragment_used_twice.fragment.HumanDetails
 import kotlin.Any
 import kotlin.String
 import kotlin.Suppress
@@ -42,7 +42,7 @@ class TestQuery : Query<TestQuery.Data> {
     interface Hero {
       val __typename: String
 
-      interface Character : Hero, HeroDetail {
+      interface Character : Hero, HeroDetails {
         override val __typename: String
 
         /**
@@ -50,7 +50,7 @@ class TestQuery : Query<TestQuery.Data> {
          */
         override val name: String
 
-        interface Character : Hero.Character, HeroDetail.Character {
+        interface Character : Hero.Character, HeroDetails.Character {
           override val __typename: String
 
           /**
@@ -65,7 +65,7 @@ class TestQuery : Query<TestQuery.Data> {
         }
       }
 
-      interface Human : Hero, HumanDetail {
+      interface Human : Hero, HumanDetails {
         override val __typename: String
 
         /**
@@ -73,7 +73,7 @@ class TestQuery : Query<TestQuery.Data> {
          */
         override val name: String
 
-        interface Character : Human, HumanDetail.Character {
+        interface Character : Human, HumanDetails.Character {
           override val __typename: String
 
           /**
@@ -98,7 +98,7 @@ class TestQuery : Query<TestQuery.Data> {
          * The date character was born.
          */
         override val birthDate: Any
-      ) : Hero, Character, HeroDetail, Character.Character, HeroDetail.Character
+      ) : Hero, Character, HeroDetails, Character.Character, HeroDetails.Character
 
       data class CharacterHumanHero(
         override val __typename: String,
@@ -110,8 +110,8 @@ class TestQuery : Query<TestQuery.Data> {
          * The date character was born.
          */
         override val birthDate: Any
-      ) : Hero, Character, HeroDetail, Character.Character, HeroDetail.Character, Human,
-          HumanDetail, Human.Character, HumanDetail.Character
+      ) : Hero, Character, HeroDetails, Character.Character, HeroDetails.Character, Human,
+          HumanDetails, Human.Character, HumanDetails.Character
 
       data class OtherHero(
         override val __typename: String
@@ -120,11 +120,11 @@ class TestQuery : Query<TestQuery.Data> {
       companion object {
         fun Hero.asCharacter(): Character? = this as? Character
 
-        fun Hero.heroDetails(): HeroDetail? = this as? HeroDetail
+        fun Hero.heroDetails(): HeroDetails? = this as? HeroDetails
 
         fun Hero.asHuman(): Human? = this as? Human
 
-        fun Hero.humanDetails(): HumanDetail? = this as? HumanDetail
+        fun Hero.humanDetails(): HumanDetails? = this as? HumanDetails
       }
     }
   }

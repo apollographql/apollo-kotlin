@@ -21,19 +21,19 @@ internal class HeroDetailsImpl : Fragment<HeroDetailsImpl.Data> {
   /**
    * A character from the Star Wars universe
    */
-  interface Data : HeroDetail, Fragment.Data {
+  interface Data : HeroDetails, Fragment.Data {
     override val __typename: String
 
-    data class HumanDatum(
+    data class HumanData(
       override val __typename: String,
       /**
        * What this human calls themselves
        */
       override val name: String
-    ) : HeroDetail, HeroDetail.Human, HumanDetail, Data
+    ) : HeroDetails, HeroDetails.Human, HumanDetails, Data
 
-    data class OtherDatum(
+    data class OtherData(
       override val __typename: String
-    ) : HeroDetail, Data
+    ) : HeroDetails, Data
   }
 }

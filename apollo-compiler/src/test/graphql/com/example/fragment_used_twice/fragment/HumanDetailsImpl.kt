@@ -22,10 +22,10 @@ class HumanDetailsImpl : Fragment<HumanDetailsImpl.Data> {
   /**
    * A humanoid creature from the Star Wars universe
    */
-  interface Data : HumanDetail, Fragment.Data {
+  interface Data : HumanDetails, Fragment.Data {
     override val __typename: String
 
-    data class CharacterDatum(
+    data class CharacterData(
       override val __typename: String,
       /**
        * What this human calls themselves
@@ -35,14 +35,14 @@ class HumanDetailsImpl : Fragment<HumanDetailsImpl.Data> {
        * The date character was born.
        */
       override val birthDate: Any
-    ) : HumanDetail, HumanDetail.Character, CharacterDetail, Data
+    ) : HumanDetails, HumanDetails.Character, CharacterDetails, Data
 
-    data class OtherDatum(
+    data class OtherData(
       override val __typename: String,
       /**
        * What this human calls themselves
        */
       override val name: String
-    ) : HumanDetail, Data
+    ) : HumanDetails, Data
   }
 }

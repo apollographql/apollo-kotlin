@@ -12,8 +12,8 @@ import com.apollographql.apollo.api.internal.InputFieldMarshaller
 import com.apollographql.apollo.api.internal.QueryDocumentMinifier
 import com.apollographql.apollo.api.internal.ResponseAdapter
 import com.example.directive_with_fragment.adapter.TestQuery_ResponseAdapter
-import com.example.directive_with_fragment.fragment.HeroDetail
-import com.example.directive_with_fragment.fragment.HumanDetail
+import com.example.directive_with_fragment.fragment.HeroDetails
+import com.example.directive_with_fragment.fragment.HumanDetails
 import kotlin.Any
 import kotlin.Boolean
 import kotlin.String
@@ -69,7 +69,7 @@ data class TestQuery(
        */
       val id: String
 
-      interface Character : Hero, HeroDetail {
+      interface Character : Hero, HeroDetails {
         override val __typename: String
 
         /**
@@ -83,7 +83,7 @@ data class TestQuery(
         override val name: String
       }
 
-      interface Human : Hero, HumanDetail {
+      interface Human : Hero, HumanDetails {
         override val __typename: String
 
         /**
@@ -107,7 +107,7 @@ data class TestQuery(
          * The name of the character
          */
         override val name: String
-      ) : Hero, Character, HeroDetail
+      ) : Hero, Character, HeroDetails
 
       data class CharacterHumanHero(
         override val __typename: String,
@@ -123,7 +123,7 @@ data class TestQuery(
          * The home planet of the human, or null if unknown
          */
         override val homePlanet: String?
-      ) : Hero, Character, HeroDetail, Human, HumanDetail
+      ) : Hero, Character, HeroDetails, Human, HumanDetails
 
       data class OtherHero(
         override val __typename: String,
@@ -136,11 +136,11 @@ data class TestQuery(
       companion object {
         fun Hero.asCharacter(): Character? = this as? Character
 
-        fun Hero.heroDetails(): HeroDetail? = this as? HeroDetail
+        fun Hero.heroDetails(): HeroDetails? = this as? HeroDetails
 
         fun Hero.asHuman(): Human? = this as? Human
 
-        fun Hero.humanDetails(): HumanDetail? = this as? HumanDetail
+        fun Hero.humanDetails(): HumanDetails? = this as? HumanDetails
       }
     }
   }

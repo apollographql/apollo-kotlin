@@ -11,7 +11,7 @@ import com.apollographql.apollo.api.Query
 import com.apollographql.apollo.api.internal.QueryDocumentMinifier
 import com.apollographql.apollo.api.internal.ResponseAdapter
 import com.example.fragment_with_inline_fragment.adapter.TestQuery_ResponseAdapter
-import com.example.fragment_with_inline_fragment.fragment.HeroDetail
+import com.example.fragment_with_inline_fragment.fragment.HeroDetails
 import com.example.fragment_with_inline_fragment.type.Episode
 import kotlin.Int
 import kotlin.String
@@ -53,7 +53,7 @@ class TestQuery : Query<TestQuery.Data> {
        */
       val appearsIn: List<Episode?>
 
-      interface Character : Hero, HeroDetail {
+      interface Character : Hero, HeroDetails {
         override val __typename: String
 
         /**
@@ -74,7 +74,7 @@ class TestQuery : Query<TestQuery.Data> {
         /**
          * A connection object for a character's friends
          */
-        interface FriendsConnection : HeroDetail.FriendsConnection {
+        interface FriendsConnection : HeroDetails.FriendsConnection {
           /**
            * The total number of friends
            */
@@ -88,7 +88,7 @@ class TestQuery : Query<TestQuery.Data> {
           /**
            * An edge object for a character's friends
            */
-          interface Edge : HeroDetail.FriendsConnection.Edge {
+          interface Edge : HeroDetails.FriendsConnection.Edge {
             /**
              * The character represented by this friendship edge
              */
@@ -97,7 +97,7 @@ class TestQuery : Query<TestQuery.Data> {
             /**
              * A character from the Star Wars universe
              */
-            interface Node : HeroDetail.FriendsConnection.Edge.Node {
+            interface Node : HeroDetails.FriendsConnection.Edge.Node {
               /**
                * The name of the character
                */
@@ -106,7 +106,7 @@ class TestQuery : Query<TestQuery.Data> {
           }
         }
 
-        interface Droid : Character, HeroDetail.Droid {
+        interface Droid : Character, HeroDetails.Droid {
           override val __typename: String
 
           /**
@@ -127,8 +127,8 @@ class TestQuery : Query<TestQuery.Data> {
           /**
            * A connection object for a character's friends
            */
-          interface FriendsConnection : Character.FriendsConnection, HeroDetail.FriendsConnection,
-              HeroDetail.Droid.FriendsConnection {
+          interface FriendsConnection : Character.FriendsConnection, HeroDetails.FriendsConnection,
+              HeroDetails.Droid.FriendsConnection {
             /**
              * The total number of friends
              */
@@ -142,8 +142,8 @@ class TestQuery : Query<TestQuery.Data> {
             /**
              * An edge object for a character's friends
              */
-            interface Edge : Character.FriendsConnection.Edge, HeroDetail.FriendsConnection.Edge,
-                HeroDetail.Droid.FriendsConnection.Edge {
+            interface Edge : Character.FriendsConnection.Edge, HeroDetails.FriendsConnection.Edge,
+                HeroDetails.Droid.FriendsConnection.Edge {
               /**
                * The character represented by this friendship edge
                */
@@ -153,8 +153,8 @@ class TestQuery : Query<TestQuery.Data> {
                * A character from the Star Wars universe
                */
               interface Node : Character.FriendsConnection.Edge.Node,
-                  HeroDetail.FriendsConnection.Edge.Node,
-                  HeroDetail.Droid.FriendsConnection.Edge.Node {
+                  HeroDetails.FriendsConnection.Edge.Node,
+                  HeroDetails.Droid.FriendsConnection.Edge.Node {
                 /**
                  * The name of the character
                  */
@@ -163,7 +163,7 @@ class TestQuery : Query<TestQuery.Data> {
             }
           }
 
-          interface Droid : Character.Droid, HeroDetail.Droid.Droid {
+          interface Droid : Character.Droid, HeroDetails.Droid.Droid {
             override val __typename: String
 
             /**
@@ -189,9 +189,9 @@ class TestQuery : Query<TestQuery.Data> {
             /**
              * A connection object for a character's friends
              */
-            interface FriendsConnection : Character.FriendsConnection, HeroDetail.FriendsConnection,
-                HeroDetail.Droid.FriendsConnection, Character.Droid.FriendsConnection,
-                HeroDetail.Droid.Droid.FriendsConnection {
+            interface FriendsConnection : Character.FriendsConnection,
+                HeroDetails.FriendsConnection, HeroDetails.Droid.FriendsConnection,
+                Character.Droid.FriendsConnection, HeroDetails.Droid.Droid.FriendsConnection {
               /**
                * The total number of friends
                */
@@ -205,9 +205,9 @@ class TestQuery : Query<TestQuery.Data> {
               /**
                * An edge object for a character's friends
                */
-              interface Edge : Character.FriendsConnection.Edge, HeroDetail.FriendsConnection.Edge,
-                  HeroDetail.Droid.FriendsConnection.Edge, Character.Droid.FriendsConnection.Edge,
-                  HeroDetail.Droid.Droid.FriendsConnection.Edge {
+              interface Edge : Character.FriendsConnection.Edge, HeroDetails.FriendsConnection.Edge,
+                  HeroDetails.Droid.FriendsConnection.Edge, Character.Droid.FriendsConnection.Edge,
+                  HeroDetails.Droid.Droid.FriendsConnection.Edge {
                 /**
                  * The character represented by this friendship edge
                  */
@@ -217,10 +217,10 @@ class TestQuery : Query<TestQuery.Data> {
                  * A character from the Star Wars universe
                  */
                 interface Node : Character.FriendsConnection.Edge.Node,
-                    HeroDetail.FriendsConnection.Edge.Node,
-                    HeroDetail.Droid.FriendsConnection.Edge.Node,
+                    HeroDetails.FriendsConnection.Edge.Node,
+                    HeroDetails.Droid.FriendsConnection.Edge.Node,
                     Character.Droid.FriendsConnection.Edge.Node,
-                    HeroDetail.Droid.Droid.FriendsConnection.Edge.Node {
+                    HeroDetails.Droid.Droid.FriendsConnection.Edge.Node {
                   /**
                    * The name of the character
                    */
@@ -231,7 +231,7 @@ class TestQuery : Query<TestQuery.Data> {
           }
         }
 
-        interface Human : Character, HeroDetail.Human {
+        interface Human : Character, HeroDetails.Human {
           override val __typename: String
 
           /**
@@ -252,8 +252,8 @@ class TestQuery : Query<TestQuery.Data> {
           /**
            * A connection object for a character's friends
            */
-          interface FriendsConnection : Character.FriendsConnection, HeroDetail.FriendsConnection,
-              HeroDetail.Human.FriendsConnection {
+          interface FriendsConnection : Character.FriendsConnection, HeroDetails.FriendsConnection,
+              HeroDetails.Human.FriendsConnection {
             /**
              * The total number of friends
              */
@@ -267,8 +267,8 @@ class TestQuery : Query<TestQuery.Data> {
             /**
              * An edge object for a character's friends
              */
-            interface Edge : Character.FriendsConnection.Edge, HeroDetail.FriendsConnection.Edge,
-                HeroDetail.Human.FriendsConnection.Edge {
+            interface Edge : Character.FriendsConnection.Edge, HeroDetails.FriendsConnection.Edge,
+                HeroDetails.Human.FriendsConnection.Edge {
               /**
                * The character represented by this friendship edge
                */
@@ -278,8 +278,8 @@ class TestQuery : Query<TestQuery.Data> {
                * A character from the Star Wars universe
                */
               interface Node : Character.FriendsConnection.Edge.Node,
-                  HeroDetail.FriendsConnection.Edge.Node,
-                  HeroDetail.Human.FriendsConnection.Edge.Node {
+                  HeroDetails.FriendsConnection.Edge.Node,
+                  HeroDetails.Human.FriendsConnection.Edge.Node {
                 /**
                  * The name of the character
                  */
@@ -308,8 +308,8 @@ class TestQuery : Query<TestQuery.Data> {
          * This droid's primary function
          */
         override val primaryFunction: String?
-      ) : Hero, Character, HeroDetail, Character.Droid, HeroDetail.Droid, Character.Droid.Droid,
-          HeroDetail.Droid.Droid {
+      ) : Hero, Character, HeroDetails, Character.Droid, HeroDetails.Droid, Character.Droid.Droid,
+          HeroDetails.Droid.Droid {
         /**
          * A connection object for a character's friends
          */
@@ -322,9 +322,9 @@ class TestQuery : Query<TestQuery.Data> {
            * The edges for each of the character's friends.
            */
           override val edges: List<Edge?>?
-        ) : Character.FriendsConnection, HeroDetail.FriendsConnection,
-            HeroDetail.Droid.FriendsConnection, Character.Droid.FriendsConnection,
-            HeroDetail.Droid.Droid.FriendsConnection, Character.Droid.Droid.FriendsConnection {
+        ) : Character.FriendsConnection, HeroDetails.FriendsConnection,
+            HeroDetails.Droid.FriendsConnection, Character.Droid.FriendsConnection,
+            HeroDetails.Droid.Droid.FriendsConnection, Character.Droid.Droid.FriendsConnection {
           /**
            * An edge object for a character's friends
            */
@@ -333,9 +333,9 @@ class TestQuery : Query<TestQuery.Data> {
              * The character represented by this friendship edge
              */
             override val node: Node?
-          ) : Character.FriendsConnection.Edge, HeroDetail.FriendsConnection.Edge,
-              HeroDetail.Droid.FriendsConnection.Edge, Character.Droid.FriendsConnection.Edge,
-              HeroDetail.Droid.Droid.FriendsConnection.Edge,
+          ) : Character.FriendsConnection.Edge, HeroDetails.FriendsConnection.Edge,
+              HeroDetails.Droid.FriendsConnection.Edge, Character.Droid.FriendsConnection.Edge,
+              HeroDetails.Droid.Droid.FriendsConnection.Edge,
               Character.Droid.Droid.FriendsConnection.Edge {
             /**
              * A character from the Star Wars universe
@@ -345,10 +345,10 @@ class TestQuery : Query<TestQuery.Data> {
                * The name of the character
                */
               override val name: String
-            ) : Character.FriendsConnection.Edge.Node, HeroDetail.FriendsConnection.Edge.Node,
-                HeroDetail.Droid.FriendsConnection.Edge.Node,
+            ) : Character.FriendsConnection.Edge.Node, HeroDetails.FriendsConnection.Edge.Node,
+                HeroDetails.Droid.FriendsConnection.Edge.Node,
                 Character.Droid.FriendsConnection.Edge.Node,
-                HeroDetail.Droid.Droid.FriendsConnection.Edge.Node,
+                HeroDetails.Droid.Droid.FriendsConnection.Edge.Node,
                 Character.Droid.Droid.FriendsConnection.Edge.Node
           }
         }
@@ -368,7 +368,7 @@ class TestQuery : Query<TestQuery.Data> {
          * The friends of the character exposed as a connection with edges
          */
         override val friendsConnection: FriendsConnection
-      ) : Hero, Character, HeroDetail, Character.Human, HeroDetail.Human {
+      ) : Hero, Character, HeroDetails, Character.Human, HeroDetails.Human {
         /**
          * A connection object for a character's friends
          */
@@ -381,8 +381,8 @@ class TestQuery : Query<TestQuery.Data> {
            * The edges for each of the character's friends.
            */
           override val edges: List<Edge?>?
-        ) : Character.FriendsConnection, HeroDetail.FriendsConnection,
-            HeroDetail.Human.FriendsConnection, Character.Human.FriendsConnection {
+        ) : Character.FriendsConnection, HeroDetails.FriendsConnection,
+            HeroDetails.Human.FriendsConnection, Character.Human.FriendsConnection {
           /**
            * An edge object for a character's friends
            */
@@ -391,8 +391,8 @@ class TestQuery : Query<TestQuery.Data> {
              * The character represented by this friendship edge
              */
             override val node: Node?
-          ) : Character.FriendsConnection.Edge, HeroDetail.FriendsConnection.Edge,
-              HeroDetail.Human.FriendsConnection.Edge, Character.Human.FriendsConnection.Edge {
+          ) : Character.FriendsConnection.Edge, HeroDetails.FriendsConnection.Edge,
+              HeroDetails.Human.FriendsConnection.Edge, Character.Human.FriendsConnection.Edge {
             /**
              * A character from the Star Wars universe
              */
@@ -401,8 +401,8 @@ class TestQuery : Query<TestQuery.Data> {
                * The name of the character
                */
               override val name: String
-            ) : Character.FriendsConnection.Edge.Node, HeroDetail.FriendsConnection.Edge.Node,
-                HeroDetail.Human.FriendsConnection.Edge.Node,
+            ) : Character.FriendsConnection.Edge.Node, HeroDetails.FriendsConnection.Edge.Node,
+                HeroDetails.Human.FriendsConnection.Edge.Node,
                 Character.Human.FriendsConnection.Edge.Node
           }
         }
@@ -423,7 +423,7 @@ class TestQuery : Query<TestQuery.Data> {
       companion object {
         fun Hero.asCharacter(): Character? = this as? Character
 
-        fun Hero.heroDetails(): HeroDetail? = this as? HeroDetail
+        fun Hero.heroDetails(): HeroDetails? = this as? HeroDetails
       }
     }
   }

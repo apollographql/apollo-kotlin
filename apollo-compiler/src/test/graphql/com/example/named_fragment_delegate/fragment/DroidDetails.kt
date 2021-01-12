@@ -12,7 +12,7 @@ import kotlin.collections.List
 @Suppress("NAME_SHADOWING", "UNUSED_ANONYMOUS_PARAMETER", "LocalVariableName",
     "RemoveExplicitTypeArguments", "NestedLambdaShadowedImplicitParameter", "PropertyName",
     "RemoveRedundantQualifierName")
-interface DroidDetail {
+interface DroidDetails {
   val __typename: String
 
   /**

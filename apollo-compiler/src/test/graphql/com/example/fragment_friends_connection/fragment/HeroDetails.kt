@@ -13,7 +13,7 @@ import kotlin.collections.List
 @Suppress("NAME_SHADOWING", "UNUSED_ANONYMOUS_PARAMETER", "LocalVariableName",
     "RemoveExplicitTypeArguments", "NestedLambdaShadowedImplicitParameter", "PropertyName",
     "RemoveRedundantQualifierName")
-interface HeroDetail {
+interface HeroDetails {
   val __typename: String
 
   /**

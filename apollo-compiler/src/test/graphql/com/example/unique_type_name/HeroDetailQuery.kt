@@ -11,7 +11,7 @@ import com.apollographql.apollo.api.Query
 import com.apollographql.apollo.api.internal.QueryDocumentMinifier
 import com.apollographql.apollo.api.internal.ResponseAdapter
 import com.example.unique_type_name.adapter.HeroDetailQuery_ResponseAdapter
-import com.example.unique_type_name.fragment.HeroDetail
+import com.example.unique_type_name.fragment.HeroDetails
 import com.example.unique_type_name.type.Episode
 import kotlin.Double
 import kotlin.Int
@@ -107,7 +107,7 @@ class HeroDetailQuery : Query<HeroDetailQuery.Data> {
           interface Friend {
             val __typename: String
 
-            interface Character : Friend, HeroDetail {
+            interface Character : Friend, HeroDetails {
               override val __typename: String
 
               /**
@@ -123,7 +123,7 @@ class HeroDetailQuery : Query<HeroDetailQuery.Data> {
               /**
                * A connection object for a character's friends
                */
-              interface FriendsConnection : HeroDetail.FriendsConnection {
+              interface FriendsConnection : HeroDetails.FriendsConnection {
                 /**
                  * The total number of friends
                  */
@@ -137,7 +137,7 @@ class HeroDetailQuery : Query<HeroDetailQuery.Data> {
                 /**
                  * An edge object for a character's friends
                  */
-                interface Edge : HeroDetail.FriendsConnection.Edge {
+                interface Edge : HeroDetails.FriendsConnection.Edge {
                   /**
                    * The character represented by this friendship edge
                    */
@@ -146,7 +146,7 @@ class HeroDetailQuery : Query<HeroDetailQuery.Data> {
                   /**
                    * A character from the Star Wars universe
                    */
-                  interface Node : HeroDetail.FriendsConnection.Edge.Node {
+                  interface Node : HeroDetails.FriendsConnection.Edge.Node {
                     /**
                      * The name of the character
                      */
@@ -159,7 +159,7 @@ class HeroDetailQuery : Query<HeroDetailQuery.Data> {
             companion object {
               fun Friend.asCharacter(): Character? = this as? Character
 
-              fun Friend.heroDetails(): HeroDetail? = this as? HeroDetail
+              fun Friend.heroDetails(): HeroDetails? = this as? HeroDetails
             }
           }
         }
@@ -213,7 +213,7 @@ class HeroDetailQuery : Query<HeroDetailQuery.Data> {
                * The friends of the character exposed as a connection with edges
                */
               override val friendsConnection: FriendsConnection
-            ) : Human.Friend.Friend, Human.Friend.Friend.Character, HeroDetail, Friend {
+            ) : Human.Friend.Friend, Human.Friend.Friend.Character, HeroDetails, Friend {
               /**
                * A connection object for a character's friends
                */
@@ -226,7 +226,7 @@ class HeroDetailQuery : Query<HeroDetailQuery.Data> {
                  * The edges for each of the character's friends.
                  */
                 override val edges: List<Edge?>?
-              ) : Human.Friend.Friend.Character.FriendsConnection, HeroDetail.FriendsConnection {
+              ) : Human.Friend.Friend.Character.FriendsConnection, HeroDetails.FriendsConnection {
                 /**
                  * An edge object for a character's friends
                  */
@@ -236,7 +236,7 @@ class HeroDetailQuery : Query<HeroDetailQuery.Data> {
                    */
                   override val node: Node?
                 ) : Human.Friend.Friend.Character.FriendsConnection.Edge,
-                    HeroDetail.FriendsConnection.Edge {
+                    HeroDetails.FriendsConnection.Edge {
                   /**
                    * A character from the Star Wars universe
                    */
@@ -246,7 +246,7 @@ class HeroDetailQuery : Query<HeroDetailQuery.Data> {
                      */
                     override val name: String
                   ) : Human.Friend.Friend.Character.FriendsConnection.Edge.Node,
-                      HeroDetail.FriendsConnection.Edge.Node
+                      HeroDetails.FriendsConnection.Edge.Node
                 }
               }
             }

@@ -13,7 +13,7 @@ import kotlin.collections.List
 @Suppress("NAME_SHADOWING", "UNUSED_ANONYMOUS_PARAMETER", "LocalVariableName",
     "RemoveExplicitTypeArguments", "NestedLambdaShadowedImplicitParameter", "PropertyName",
     "RemoveRedundantQualifierName")
-interface HeroDetail {
+interface HeroDetails {
   val __typename: String
 
   /**
@@ -61,7 +61,7 @@ interface HeroDetail {
     }
   }
 
-  interface Droid : HeroDetail {
+  interface Droid : HeroDetails {
     override val __typename: String
 
     /**
@@ -77,7 +77,7 @@ interface HeroDetail {
     /**
      * A connection object for a character's friends
      */
-    interface FriendsConnection : HeroDetail.FriendsConnection {
+    interface FriendsConnection : HeroDetails.FriendsConnection {
       /**
        * The total number of friends
        */
@@ -91,7 +91,7 @@ interface HeroDetail {
       /**
        * An edge object for a character's friends
        */
-      interface Edge : HeroDetail.FriendsConnection.Edge {
+      interface Edge : HeroDetails.FriendsConnection.Edge {
         /**
          * The character represented by this friendship edge
          */
@@ -100,7 +100,7 @@ interface HeroDetail {
         /**
          * A character from the Star Wars universe
          */
-        interface Node : HeroDetail.FriendsConnection.Edge.Node {
+        interface Node : HeroDetails.FriendsConnection.Edge.Node {
           /**
            * The name of the character
            */
@@ -109,7 +109,7 @@ interface HeroDetail {
       }
     }
 
-    interface Droid : HeroDetail.Droid {
+    interface Droid : HeroDetails.Droid {
       override val __typename: String
 
       /**
@@ -130,8 +130,8 @@ interface HeroDetail {
       /**
        * A connection object for a character's friends
        */
-      interface FriendsConnection : HeroDetail.FriendsConnection, HeroDetail.Droid.FriendsConnection
-          {
+      interface FriendsConnection : HeroDetails.FriendsConnection,
+          HeroDetails.Droid.FriendsConnection {
         /**
          * The total number of friends
          */
@@ -145,8 +145,8 @@ interface HeroDetail {
         /**
          * An edge object for a character's friends
          */
-        interface Edge : HeroDetail.FriendsConnection.Edge, HeroDetail.Droid.FriendsConnection.Edge
-            {
+        interface Edge : HeroDetails.FriendsConnection.Edge,
+            HeroDetails.Droid.FriendsConnection.Edge {
           /**
            * The character represented by this friendship edge
            */
@@ -155,8 +155,8 @@ interface HeroDetail {
           /**
            * A character from the Star Wars universe
            */
-          interface Node : HeroDetail.FriendsConnection.Edge.Node,
-              HeroDetail.Droid.FriendsConnection.Edge.Node {
+          interface Node : HeroDetails.FriendsConnection.Edge.Node,
+              HeroDetails.Droid.FriendsConnection.Edge.Node {
             /**
              * The name of the character
              */
@@ -167,7 +167,7 @@ interface HeroDetail {
     }
   }
 
-  interface Human : HeroDetail, HumanDetail {
+  interface Human : HeroDetails, HumanDetails {
     override val __typename: String
 
     /**
@@ -183,7 +183,7 @@ interface HeroDetail {
     /**
      * A connection object for a character's friends
      */
-    interface FriendsConnection : HeroDetail.FriendsConnection {
+    interface FriendsConnection : HeroDetails.FriendsConnection {
       /**
        * The total number of friends
        */
@@ -197,7 +197,7 @@ interface HeroDetail {
       /**
        * An edge object for a character's friends
        */
-      interface Edge : HeroDetail.FriendsConnection.Edge {
+      interface Edge : HeroDetails.FriendsConnection.Edge {
         /**
          * The character represented by this friendship edge
          */
@@ -206,7 +206,7 @@ interface HeroDetail {
         /**
          * A character from the Star Wars universe
          */
-        interface Node : HeroDetail.FriendsConnection.Edge.Node {
+        interface Node : HeroDetails.FriendsConnection.Edge.Node {
           /**
            * The name of the character
            */
@@ -237,10 +237,10 @@ interface HeroDetail {
         |}
         """.trimMargin()
 
-    fun HeroDetail.asDroid(): Droid? = this as? Droid
+    fun HeroDetails.asDroid(): Droid? = this as? Droid
 
-    fun HeroDetail.asHuman(): Human? = this as? Human
+    fun HeroDetails.asHuman(): Human? = this as? Human
 
-    fun HeroDetail.humanDetails(): HumanDetail? = this as? HumanDetail
+    fun HeroDetails.humanDetails(): HumanDetails? = this as? HumanDetails
   }
 }

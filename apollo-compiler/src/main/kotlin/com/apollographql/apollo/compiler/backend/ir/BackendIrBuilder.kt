@@ -12,6 +12,7 @@ import com.apollographql.apollo.compiler.frontend.schemaKind
 import com.apollographql.apollo.compiler.frontend.toKotlinValue
 import com.apollographql.apollo.compiler.frontend.toSchemaType
 import com.apollographql.apollo.compiler.introspection.IntrospectionSchema
+import com.apollographql.apollo.compiler.singularize
 
 internal class BackendIrBuilder constructor(
     private val schema: Schema,
@@ -153,7 +154,8 @@ internal class BackendIrBuilder constructor(
     return BackendIr.Field(
         name = this.name,
         alias = this.alias,
-        type = type.toSchemaType(),
+        schemaTypeRef = this.type.toSchemaType(),
+        typeName = this.typeName,
         args = arguments,
         fields = fields,
         fragments = fragments,
@@ -177,7 +179,7 @@ internal class BackendIrBuilder constructor(
   private fun List<FrontendIr.Selection.Field>.buildBackendIrFields(selectionKey: SelectionKey): List<BackendIr.Field> {
     return this.map { field ->
       field.buildBackendIrField(
-          selectionKey = selectionKey + field.responseName,
+          selectionKey = selectionKey + field.typeName,
       )
     }
   }
@@ -254,7 +256,7 @@ internal class BackendIrBuilder constructor(
           name = defaultSelectionKey.root,
           fields = this.fields.map { field ->
             field.buildFragmentImplementations(
-                selectionKey = defaultSelectionKey + field.responseName,
+                selectionKey = defaultSelectionKey + field.typeName,
                 keepInterfaces = false,
             )
           },
@@ -283,7 +285,7 @@ internal class BackendIrBuilder constructor(
 
     val fields = this.fields.map { field ->
       field.buildFragmentImplementations(
-          selectionKey = defaultSelectionKey + field.responseName,
+          selectionKey = defaultSelectionKey + field.typeName,
           keepInterfaces = true,
       )
     }
@@ -352,7 +354,7 @@ internal class BackendIrBuilder constructor(
     if (this.fragments.isEmpty()) {
       val fields = this.fields.map { field ->
         field.buildFragmentImplementations(
-            selectionKey = selectionKey + field.responseName,
+            selectionKey = selectionKey + field.typeName,
             keepInterfaces = keepInterfaces,
         )
       }
@@ -361,7 +363,7 @@ internal class BackendIrBuilder constructor(
       )
     }
 
-    val fieldPossibleSchemaTypes = schema.typeDefinition(this.type.rawType.name!!)
+    val fieldPossibleSchemaTypes = schema.typeDefinition(this.schemaTypeRef.rawType.name!!)
         .possibleTypes(schema.typeDefinitions)
         .map { GQLNamedType(sourceLocation = SourceLocation.UNKNOWN, it).toSchemaType(schema) }
         .toSet()
@@ -372,7 +374,7 @@ internal class BackendIrBuilder constructor(
     val fragmentImplementations = fragmentInterfaces
         .flattenFragments()
         .buildFragmentImplementations(
-            parentName = this.responseName,
+            parentName = this.typeName,
             parentFields = this.fields,
             parentPossibleSchemaTypes = fieldPossibleSchemaTypes,
             parentSelectionKeys = this.selectionKeys,
@@ -410,7 +412,7 @@ internal class BackendIrBuilder constructor(
 
     val fallbackImplementationFields = parentFields.map { field ->
       field.buildFragmentImplementations(
-          selectionKey = selectionKey + "Other${parentName.capitalize()}" + field.responseName,
+          selectionKey = selectionKey + "Other${parentName.capitalize()}" + field.typeName,
           keepInterfaces = false,
       )
     }.addFieldSelectionKey(
@@ -450,7 +452,7 @@ internal class BackendIrBuilder constructor(
     }.run {
       this.map { field ->
         field.buildFragmentImplementations(
-            selectionKey = selectionKey + fragmentName + field.responseName,
+            selectionKey = selectionKey + fragmentName + field.typeName,
             keepInterfaces = false,
         )
       }
@@ -754,4 +756,15 @@ internal class BackendIrBuilder constructor(
       val condition: BackendIr.Condition,
       val selectionKeys: Set<SelectionKey>,
   )
+
+  private val FrontendIr.Selection.Field.typeName: String
+    get() {
+      val isListType = if (this.type is FrontendIr.Type.NonNull) {
+        this.type.ofType is FrontendIr.Type.List
+      } else {
+        this.type is FrontendIr.Type.List
+      }
+      val isObjectType = this.selections.isNotEmpty()
+      return if (isListType && isObjectType) this.responseName.singularize().capitalize() else this.responseName
+    }
 }
