@@ -154,8 +154,8 @@ internal class BackendIrBuilder constructor(
     return BackendIr.Field(
         name = this.name,
         alias = this.alias,
-        type = this.type.toSchemaType(),
-        normalizedTypeName = this.normalizedTypeName,
+        schemaTypeRef = this.type.toSchemaType(),
+        typeName = this.typeName,
         args = arguments,
         fields = fields,
         fragments = fragments,
@@ -179,7 +179,7 @@ internal class BackendIrBuilder constructor(
   private fun List<FrontendIr.Selection.Field>.buildBackendIrFields(selectionKey: SelectionKey): List<BackendIr.Field> {
     return this.map { field ->
       field.buildBackendIrField(
-          selectionKey = selectionKey + field.normalizedTypeName,
+          selectionKey = selectionKey + field.typeName,
       )
     }
   }
@@ -256,7 +256,7 @@ internal class BackendIrBuilder constructor(
           name = defaultSelectionKey.root,
           fields = this.fields.map { field ->
             field.buildFragmentImplementations(
-                selectionKey = defaultSelectionKey + field.normalizedTypeName,
+                selectionKey = defaultSelectionKey + field.typeName,
                 keepInterfaces = false,
             )
           },
@@ -285,7 +285,7 @@ internal class BackendIrBuilder constructor(
 
     val fields = this.fields.map { field ->
       field.buildFragmentImplementations(
-          selectionKey = defaultSelectionKey + field.normalizedTypeName,
+          selectionKey = defaultSelectionKey + field.typeName,
           keepInterfaces = true,
       )
     }
@@ -354,7 +354,7 @@ internal class BackendIrBuilder constructor(
     if (this.fragments.isEmpty()) {
       val fields = this.fields.map { field ->
         field.buildFragmentImplementations(
-            selectionKey = selectionKey + field.normalizedTypeName,
+            selectionKey = selectionKey + field.typeName,
             keepInterfaces = keepInterfaces,
         )
       }
@@ -363,7 +363,7 @@ internal class BackendIrBuilder constructor(
       )
     }
 
-    val fieldPossibleSchemaTypes = schema.typeDefinition(this.type.rawType.name!!)
+    val fieldPossibleSchemaTypes = schema.typeDefinition(this.schemaTypeRef.rawType.name!!)
         .possibleTypes(schema.typeDefinitions)
         .map { GQLNamedType(sourceLocation = SourceLocation.UNKNOWN, it).toSchemaType(schema) }
         .toSet()
@@ -374,7 +374,7 @@ internal class BackendIrBuilder constructor(
     val fragmentImplementations = fragmentInterfaces
         .flattenFragments()
         .buildFragmentImplementations(
-            parentName = this.normalizedTypeName,
+            parentName = this.typeName,
             parentFields = this.fields,
             parentPossibleSchemaTypes = fieldPossibleSchemaTypes,
             parentSelectionKeys = this.selectionKeys,
@@ -412,7 +412,7 @@ internal class BackendIrBuilder constructor(
 
     val fallbackImplementationFields = parentFields.map { field ->
       field.buildFragmentImplementations(
-          selectionKey = selectionKey + "Other${parentName.capitalize()}" + field.normalizedTypeName,
+          selectionKey = selectionKey + "Other${parentName.capitalize()}" + field.typeName,
           keepInterfaces = false,
       )
     }.addFieldSelectionKey(
@@ -452,7 +452,7 @@ internal class BackendIrBuilder constructor(
     }.run {
       this.map { field ->
         field.buildFragmentImplementations(
-            selectionKey = selectionKey + fragmentName + field.normalizedTypeName,
+            selectionKey = selectionKey + fragmentName + field.typeName,
             keepInterfaces = false,
         )
       }
@@ -757,7 +757,7 @@ internal class BackendIrBuilder constructor(
       val selectionKeys: Set<SelectionKey>,
   )
 
-  private val FrontendIr.Selection.Field.normalizedTypeName: String
+  private val FrontendIr.Selection.Field.typeName: String
     get() {
       val isListType = if (this.type is FrontendIr.Type.NonNull) {
         this.type.ofType is FrontendIr.Type.List
