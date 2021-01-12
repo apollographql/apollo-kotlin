@@ -114,11 +114,9 @@ object GetPage_ResponseAdapter : ResponseAdapter<GetPage.Data> {
         override fun toResponse(writer: ResponseWriter,
             value: GetPage.Data.Collection.ParticularCollectionCollection) {
           writer.writeString(RESPONSE_FIELDS[0], value.__typename)
-          writer.writeList(RESPONSE_FIELDS[1], value.items) { values, listItemWriter ->
-            values?.forEach { value ->
-              listItemWriter.writeObject { writer ->
-                Item.toResponse(writer, value)
-              }
+          writer.writeList(RESPONSE_FIELDS[1], value.items) { value, listItemWriter ->
+            listItemWriter.writeObject { writer ->
+              Item.toResponse(writer, value)
             }
           }
         }
@@ -252,11 +250,9 @@ object GetPage_ResponseAdapter : ResponseAdapter<GetPage.Data> {
         override fun toResponse(writer: ResponseWriter,
             value: GetPage.Data.Collection.OtherCollection) {
           writer.writeString(RESPONSE_FIELDS[0], value.__typename)
-          writer.writeList(RESPONSE_FIELDS[1], value.items) { values, listItemWriter ->
-            values?.forEach { value ->
-              listItemWriter.writeObject { writer ->
-                Item.toResponse(writer, value)
-              }
+          writer.writeList(RESPONSE_FIELDS[1], value.items) { value, listItemWriter ->
+            listItemWriter.writeObject { writer ->
+              Item.toResponse(writer, value)
             }
           }
         }

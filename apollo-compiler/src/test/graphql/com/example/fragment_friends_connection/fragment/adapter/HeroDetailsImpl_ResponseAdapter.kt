@@ -104,15 +104,9 @@ object HeroDetailsImpl_ResponseAdapter : ResponseAdapter<HeroDetailsImpl.Data> {
       override fun toResponse(writer: ResponseWriter,
           value: HeroDetailsImpl.Data.FriendsConnection) {
         writer.writeInt(RESPONSE_FIELDS[0], value.totalCount)
-        writer.writeList(RESPONSE_FIELDS[1], value.edges) { values, listItemWriter ->
-          values?.forEach { value ->
-            if(value == null) {
-              listItemWriter.writeObject(null)
-            } else {
-              listItemWriter.writeObject { writer ->
-                Edge.toResponse(writer, value)
-              }
-            }
+        writer.writeList(RESPONSE_FIELDS[1], value.edges) { value, listItemWriter ->
+          listItemWriter.writeObject { writer ->
+            Edge.toResponse(writer, value)
           }
         }
       }

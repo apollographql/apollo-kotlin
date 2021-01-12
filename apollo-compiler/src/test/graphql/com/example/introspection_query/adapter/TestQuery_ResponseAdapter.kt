@@ -106,11 +106,9 @@ object TestQuery_ResponseAdapter : ResponseAdapter<TestQuery.Data> {
         writer.writeObject(RESPONSE_FIELDS[0]) { writer ->
           QueryType.toResponse(writer, value.queryType)
         }
-        writer.writeList(RESPONSE_FIELDS[1], value.types) { values, listItemWriter ->
-          values?.forEach { value ->
-            listItemWriter.writeObject { writer ->
-              Type.toResponse(writer, value)
-            }
+        writer.writeList(RESPONSE_FIELDS[1], value.types) { value, listItemWriter ->
+          listItemWriter.writeObject { writer ->
+            Type.toResponse(writer, value)
           }
         }
       }

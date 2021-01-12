@@ -134,10 +134,8 @@ object TestQuery_ResponseAdapter : ResponseAdapter<TestQuery.Data> {
             value: TestQuery.Data.Hero.CharacterDroidHero) {
           writer.writeString(RESPONSE_FIELDS[0], value.__typename)
           writer.writeString(RESPONSE_FIELDS[1], value.name)
-          writer.writeList(RESPONSE_FIELDS[2], value.appearsIn) { values, listItemWriter ->
-            values?.forEach { value ->
-              listItemWriter.writeString(value?.rawValue)}
-          }
+          writer.writeList(RESPONSE_FIELDS[2], value.appearsIn) { value, listItemWriter ->
+            listItemWriter.writeString(value?.rawValue)}
           writer.writeObject(RESPONSE_FIELDS[3]) { writer ->
             FriendsConnection.toResponse(writer, value.friendsConnection)
           }
@@ -177,15 +175,9 @@ object TestQuery_ResponseAdapter : ResponseAdapter<TestQuery.Data> {
           override fun toResponse(writer: ResponseWriter,
               value: TestQuery.Data.Hero.CharacterDroidHero.FriendsConnection) {
             writer.writeInt(RESPONSE_FIELDS[0], value.totalCount)
-            writer.writeList(RESPONSE_FIELDS[1], value.edges) { values, listItemWriter ->
-              values?.forEach { value ->
-                if(value == null) {
-                  listItemWriter.writeObject(null)
-                } else {
-                  listItemWriter.writeObject { writer ->
-                    Edge.toResponse(writer, value)
-                  }
-                }
+            writer.writeList(RESPONSE_FIELDS[1], value.edges) { value, listItemWriter ->
+              listItemWriter.writeObject { writer ->
+                Edge.toResponse(writer, value)
               }
             }
           }
@@ -298,10 +290,8 @@ object TestQuery_ResponseAdapter : ResponseAdapter<TestQuery.Data> {
             value: TestQuery.Data.Hero.CharacterHumanHero) {
           writer.writeString(RESPONSE_FIELDS[0], value.__typename)
           writer.writeString(RESPONSE_FIELDS[1], value.name)
-          writer.writeList(RESPONSE_FIELDS[2], value.appearsIn) { values, listItemWriter ->
-            values?.forEach { value ->
-              listItemWriter.writeString(value?.rawValue)}
-          }
+          writer.writeList(RESPONSE_FIELDS[2], value.appearsIn) { value, listItemWriter ->
+            listItemWriter.writeString(value?.rawValue)}
           writer.writeObject(RESPONSE_FIELDS[3]) { writer ->
             FriendsConnection.toResponse(writer, value.friendsConnection)
           }
@@ -340,15 +330,9 @@ object TestQuery_ResponseAdapter : ResponseAdapter<TestQuery.Data> {
           override fun toResponse(writer: ResponseWriter,
               value: TestQuery.Data.Hero.CharacterHumanHero.FriendsConnection) {
             writer.writeInt(RESPONSE_FIELDS[0], value.totalCount)
-            writer.writeList(RESPONSE_FIELDS[1], value.edges) { values, listItemWriter ->
-              values?.forEach { value ->
-                if(value == null) {
-                  listItemWriter.writeObject(null)
-                } else {
-                  listItemWriter.writeObject { writer ->
-                    Edge.toResponse(writer, value)
-                  }
-                }
+            writer.writeList(RESPONSE_FIELDS[1], value.edges) { value, listItemWriter ->
+              listItemWriter.writeObject { writer ->
+                Edge.toResponse(writer, value)
               }
             }
           }
@@ -454,10 +438,8 @@ object TestQuery_ResponseAdapter : ResponseAdapter<TestQuery.Data> {
         override fun toResponse(writer: ResponseWriter, value: TestQuery.Data.Hero.OtherHero) {
           writer.writeString(RESPONSE_FIELDS[0], value.__typename)
           writer.writeString(RESPONSE_FIELDS[1], value.name)
-          writer.writeList(RESPONSE_FIELDS[2], value.appearsIn) { values, listItemWriter ->
-            values?.forEach { value ->
-              listItemWriter.writeString(value?.rawValue)}
-          }
+          writer.writeList(RESPONSE_FIELDS[2], value.appearsIn) { value, listItemWriter ->
+            listItemWriter.writeString(value?.rawValue)}
         }
       }
     }

@@ -12,7 +12,7 @@ import kotlin.jvm.JvmSuppressWildcards
 abstract class CacheKeyResolver {
   abstract fun fromFieldRecordSet(
       field: ResponseField,
-      recordSet: Map<String, @JvmSuppressWildcards Any>
+      recordSet: Map<String, @JvmSuppressWildcards Any?>
   ): CacheKey
 
   abstract fun fromFieldArguments(
@@ -25,14 +25,14 @@ abstract class CacheKeyResolver {
 
     @JvmField
     val DEFAULT: CacheKeyResolver = object : CacheKeyResolver() {
-      override fun fromFieldRecordSet(field: ResponseField, recordSet: Map<String, Any>) = CacheKey.NO_KEY
+      override fun fromFieldRecordSet(field: ResponseField, recordSet: Map<String, Any?>) = CacheKey.NO_KEY
 
       override fun fromFieldArguments(field: ResponseField, variables: Operation.Variables) = CacheKey.NO_KEY
     }
 
     @JvmStatic
     @Suppress("UNUSED_PARAMETER")
-    fun rootKeyForOperation(operation: Operation<*>): CacheKey {
+    fun rootKey(): CacheKey {
       return ROOT_CACHE_KEY
     }
   }

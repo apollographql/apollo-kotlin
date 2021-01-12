@@ -109,11 +109,9 @@ object QueryFragmentImpl_ResponseAdapter : ResponseAdapter<QueryFragmentImpl.Dat
 
       override fun toResponse(writer: ResponseWriter, value: QueryFragmentImpl.Data.Organization) {
         writer.writeString(RESPONSE_FIELDS[0], value.id)
-        writer.writeList(RESPONSE_FIELDS[1], value.user) { values, listItemWriter ->
-          values?.forEach { value ->
-            listItemWriter.writeObject { writer ->
-              User.toResponse(writer, value)
-            }
+        writer.writeList(RESPONSE_FIELDS[1], value.user) { value, listItemWriter ->
+          listItemWriter.writeObject { writer ->
+            User.toResponse(writer, value)
           }
         }
       }

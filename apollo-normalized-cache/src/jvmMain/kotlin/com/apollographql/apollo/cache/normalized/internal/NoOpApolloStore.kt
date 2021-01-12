@@ -53,11 +53,6 @@ class NoOpApolloStore : ApolloStore, ReadableStore, WriteableStore {
     return emptyOperation(0)
   }
 
-  @Suppress("UNCHECKED_CAST")
-  override fun networkResponseNormalizer(): ResponseNormalizer<Map<String, Any>> {
-    return ResponseNormalizer.NO_OP_NORMALIZER as ResponseNormalizer<Map<String, Any>>
-  }
-
   override fun <R> readTransaction(transaction: Transaction<ReadableStore, R>): R {
     return transaction.execute(this)!!
   }
@@ -71,7 +66,7 @@ class NoOpApolloStore : ApolloStore, ReadableStore, WriteableStore {
   }
 
   override fun cacheKeyResolver(): CacheKeyResolver {
-    error("Cannot get cacheKeyResolver: no cache configured")
+    return CacheKeyResolver.DEFAULT
   }
 
   override fun <D : Operation.Data> readOperation(

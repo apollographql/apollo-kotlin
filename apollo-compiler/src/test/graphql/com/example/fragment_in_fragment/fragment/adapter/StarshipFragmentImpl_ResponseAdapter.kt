@@ -110,15 +110,9 @@ object StarshipFragmentImpl_ResponseAdapter : ResponseAdapter<StarshipFragmentIm
 
       override fun toResponse(writer: ResponseWriter,
           value: StarshipFragmentImpl.Data.PilotConnection) {
-        writer.writeList(RESPONSE_FIELDS[0], value.edges) { values, listItemWriter ->
-          values?.forEach { value ->
-            if(value == null) {
-              listItemWriter.writeObject(null)
-            } else {
-              listItemWriter.writeObject { writer ->
-                Edge.toResponse(writer, value)
-              }
-            }
+        writer.writeList(RESPONSE_FIELDS[0], value.edges) { value, listItemWriter ->
+          listItemWriter.writeObject { writer ->
+            Edge.toResponse(writer, value)
           }
         }
       }

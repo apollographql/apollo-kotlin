@@ -165,10 +165,8 @@ object TestQuery_ResponseAdapter : ResponseAdapter<TestQuery.Data> {
               value: TestQuery.Data.QueryDatum.Hero.HumanHero) {
             writer.writeString(RESPONSE_FIELDS[0], value.__typename)
             writer.writeString(RESPONSE_FIELDS[1], value.name)
-            writer.writeList(RESPONSE_FIELDS[2], value.appearsIn) { values, listItemWriter ->
-              values?.forEach { value ->
-                listItemWriter.writeString(value?.rawValue)}
-            }
+            writer.writeList(RESPONSE_FIELDS[2], value.appearsIn) { value, listItemWriter ->
+              listItemWriter.writeString(value?.rawValue)}
             writer.writeDouble(RESPONSE_FIELDS[3], value.height)
           }
         }
@@ -208,10 +206,8 @@ object TestQuery_ResponseAdapter : ResponseAdapter<TestQuery.Data> {
               value: TestQuery.Data.QueryDatum.Hero.OtherHero) {
             writer.writeString(RESPONSE_FIELDS[0], value.__typename)
             writer.writeString(RESPONSE_FIELDS[1], value.name)
-            writer.writeList(RESPONSE_FIELDS[2], value.appearsIn) { values, listItemWriter ->
-              values?.forEach { value ->
-                listItemWriter.writeString(value?.rawValue)}
-            }
+            writer.writeList(RESPONSE_FIELDS[2], value.appearsIn) { value, listItemWriter ->
+              listItemWriter.writeString(value?.rawValue)}
           }
         }
       }

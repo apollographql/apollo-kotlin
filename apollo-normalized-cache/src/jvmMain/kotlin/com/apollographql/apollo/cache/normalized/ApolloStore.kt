@@ -3,15 +3,12 @@ package com.apollographql.apollo.cache.normalized
 import com.apollographql.apollo.api.Fragment
 import com.apollographql.apollo.api.Operation
 import com.apollographql.apollo.api.Response
-import com.apollographql.apollo.api.internal.ResponseAdapter
 import com.apollographql.apollo.cache.CacheHeaders
 import com.apollographql.apollo.cache.normalized.ApolloStore.RecordChangeSubscriber
 import com.apollographql.apollo.cache.normalized.internal.NoOpApolloStore
 import com.apollographql.apollo.cache.normalized.internal.ReadableStore
-import com.apollographql.apollo.cache.normalized.internal.ResponseNormalizer
 import com.apollographql.apollo.cache.normalized.internal.Transaction
 import com.apollographql.apollo.cache.normalized.internal.WriteableStore
-import com.sun.org.apache.xpath.internal.operations.Bool
 import java.util.UUID
 
 /**
@@ -73,11 +70,6 @@ interface ApolloStore {
    * @return {@ApolloStoreOperation} to be performed, that will be resolved with the count of records been removed
    */
   fun remove(cacheKeys: List<CacheKey>): ApolloStoreOperation<Int>
-
-  /**
-   * @return The [ResponseNormalizer] used to generate normalized records from the network.
-   */
-  fun networkResponseNormalizer(): ResponseNormalizer<Map<String, Any>>
 
   /**
    * Run a operation inside a read-lock. Blocks until read-lock is acquired.

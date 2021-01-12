@@ -113,16 +113,12 @@ object TestQuery_ResponseAdapter : ResponseAdapter<TestQuery.Data> {
       override fun toResponse(writer: ResponseWriter, value: TestQuery.Data.Hero) {
         writer.writeString(RESPONSE_FIELDS[0], value.name)
         writer.writeCustom(RESPONSE_FIELDS[1] as ResponseField.CustomScalarField, value.birthDate)
-        writer.writeList(RESPONSE_FIELDS[2], value.appearanceDates) { values, listItemWriter ->
-          values?.forEach { value ->
-            listItemWriter.writeCustom(CustomScalars.Date, value)}
-        }
+        writer.writeList(RESPONSE_FIELDS[2], value.appearanceDates) { value, listItemWriter ->
+          listItemWriter.writeCustom(CustomScalars.Date, value)}
         writer.writeCustom(RESPONSE_FIELDS[3] as ResponseField.CustomScalarField, value.fieldWithUnsupportedType)
         writer.writeCustom(RESPONSE_FIELDS[4] as ResponseField.CustomScalarField, value.profileLink)
-        writer.writeList(RESPONSE_FIELDS[5], value.links) { values, listItemWriter ->
-          values?.forEach { value ->
-            listItemWriter.writeCustom(CustomScalars.URL, value)}
-        }
+        writer.writeList(RESPONSE_FIELDS[5], value.links) { value, listItemWriter ->
+          listItemWriter.writeCustom(CustomScalars.URL, value)}
       }
     }
   }
