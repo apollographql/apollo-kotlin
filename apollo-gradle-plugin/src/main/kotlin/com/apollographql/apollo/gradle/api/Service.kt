@@ -21,7 +21,7 @@ import org.gradle.api.tasks.TaskProvider
  *
  * The queries will be compiled and verified against the schema to generate the models.
  */
-interface Service  {
+interface Service {
   val name: String
 
   /**
@@ -196,6 +196,14 @@ interface Service  {
    */
   @ApolloExperimental
   val alwaysGenerateTypesMatching: SetProperty<String>
+
+  /**
+   * Whether or not generate default implementation classes for GraphQL fragments.
+   * Default value is `false`, means only interfaces are been generated.
+   *
+   * Most the the times, fragment implementations are not needed because you can easily access fragments interfaces and read all data from your queries. They are needed if you want to be able to build fragments outside of an operation. For an exemple to programmatically build a fragment that is reused in another part of your code or to read and write fragments to the cache.
+   */
+  val generateFragmentImplementations: Property<Boolean>
 
   /**
    * Configures the [Introspection]

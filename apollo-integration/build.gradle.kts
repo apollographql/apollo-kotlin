@@ -37,6 +37,7 @@ configure<ApolloExtension> {
     rootPackageName.set("com.apollographql.apollo.integration.interceptor")
   }
   service("normalizer") {
+    generateFragmentImplementations.set(true)
     sourceFolder.set("com/apollographql/apollo/integration/normalizer")
     rootPackageName.set("com.apollographql.apollo.integration.normalizer")
   }

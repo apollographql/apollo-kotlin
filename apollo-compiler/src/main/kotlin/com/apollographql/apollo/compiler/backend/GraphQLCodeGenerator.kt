@@ -27,6 +27,7 @@ internal class GraphQLCodeGenerator(
     private val generateScalarMapping: Boolean,
     private val typesPackageName: String,
     private val fragmentsPackageName: String,
+    private val generateFragmentImplementations: Boolean,
 ) {
   fun write(outputDir: File) {
 
@@ -73,18 +74,17 @@ internal class GraphQLCodeGenerator(
               .fileSpec(fragmentsPackageName)
               .writeTo(outputDir)
 
-          fragmentType
-              .implementationTypeSpec(generateAsInternal = generateAsInternal)
-              .fileSpec(fragmentsPackageName)
-              .writeTo(outputDir)
-        }
+          if (generateFragmentImplementations) {
+            fragmentType
+                .implementationTypeSpec(generateAsInternal = generateAsInternal)
+                .fileSpec(fragmentsPackageName)
+                .writeTo(outputDir)
 
-    ast.fragmentTypes
-        .forEach { fragmentType ->
-          fragmentType
-              .responseAdapterTypeSpec(generateAsInternal)
-              .fileSpec("${fragmentsPackageName}.adapter")
-              .writeTo(outputDir)
+            fragmentType
+                .responseAdapterTypeSpec(generateAsInternal)
+                .fileSpec("${fragmentsPackageName}.adapter")
+                .writeTo(outputDir)
+          }
         }
 
     ast.operationTypes.forEach { operationType ->

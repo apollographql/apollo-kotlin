@@ -322,6 +322,7 @@ abstract class DefaultApolloExtension(private val project: Project, private val 
       task.sealedClassesForEnumsMatching.set(service.sealedClassesForEnumsMatching)
       task.alwaysGenerateTypesMatching.set(service.alwaysGenerateTypesMatching)
       task.projectName.set(project.name)
+      task.generateFragmentImplementations.set(service.generateFragmentImplementations)
     }
   }
 

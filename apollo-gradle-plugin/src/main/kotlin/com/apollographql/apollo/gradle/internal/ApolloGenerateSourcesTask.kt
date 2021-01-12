@@ -99,6 +99,10 @@ abstract class ApolloGenerateSourcesTask : DefaultTask() {
   @get:Optional
   abstract val sealedClassesForEnumsMatching: ListProperty<String>
 
+  @get:Input
+  @get:Optional
+  abstract val generateFragmentImplementations: Property<Boolean>
+
   @get:Inject
   abstract val objectFactory: ObjectFactory
 
@@ -131,6 +135,7 @@ abstract class ApolloGenerateSourcesTask : DefaultTask() {
         generateAsInternal = generateAsInternal.getOrElse(false),
         generateFilterNotNull = generateFilterNotNull.getOrElse(false),
         enumAsSealedClassPatternFilters = sealedClassesForEnumsMatching.getOrElse(emptyList()).toSet(),
+        generateFragmentImplementations = generateFragmentImplementations.getOrElse(false),
     )
 
     val logger = object :GraphQLCompiler.Logger {
