@@ -48,6 +48,19 @@ class ApolloClient private constructor(
     return ApolloSubscriptionRequest.Builder(query).build().prepareCall()
   }
 
+  fun <D : Operation.Data> query(queryRequest: ApolloQueryRequest<D>): ApolloQueryCall<D> {
+    return queryRequest.prepareCall()
+  }
+
+  fun <D : Operation.Data> mutate(mutationRequest: ApolloMutationRequest<D>): ApolloMutationCall<D> {
+    return mutationRequest.prepareCall()
+  }
+
+
+  fun <D : Operation.Data> subscribe(subscriptionRequest: ApolloSubscriptionRequest<D>): ApolloQueryCall<D> {
+    return subscriptionRequest.prepareCall()
+  }
+
   private fun <D : Operation.Data> ApolloRequest<D>.prepareCall(): RealApolloCall<D> {
     return RealApolloCall(
         request = this,

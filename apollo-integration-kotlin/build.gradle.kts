@@ -41,6 +41,7 @@ kotlin {
     }
 
     val jvmTest by getting {
+      dependsOn(jvmMain)
       dependencies {
         implementation(kotlin("test-junit"))
       }
