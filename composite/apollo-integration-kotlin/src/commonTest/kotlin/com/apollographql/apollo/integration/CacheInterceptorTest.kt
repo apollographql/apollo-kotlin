@@ -64,7 +64,7 @@ class CacheInterceptorTest {
   fun `network_first test`() {
     runBlocking {
       val request = ApolloQueryRequest.Builder(query = HeroNameQuery())
-          .normalizedCachePolicy(NormalizedCachePolicy.NETWORK_FIRST)
+          //.normalizedCachePolicy(NormalizedCachePolicy.NETWORK_FIRST)
           .build()
 
       networkTransport.offer(fixtureResponse("HeroNameResponse.json"))
