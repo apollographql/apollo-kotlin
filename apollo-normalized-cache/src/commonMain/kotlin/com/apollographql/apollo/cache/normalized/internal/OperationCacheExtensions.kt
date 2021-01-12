@@ -41,7 +41,7 @@ fun <D : Operation.Data> Operation<D>.readDataFromCache(
 ): D? {
   return try {
     val cacheKeyBuilder = RealCacheKeyBuilder()
-    val rootRecord = readableStore.read(CacheKeyResolver.rootKey().key, CacheHeaders.NONE) ?: return null
+    val rootRecord = readableStore.read(CacheKeyResolver.rootKey().key, cacheHeaders) ?: return null
     val fieldValueResolver = CacheValueResolver(
         readableStore,
         variables(),
@@ -72,7 +72,7 @@ fun <D : Operation.Data> Operation<D>.streamDataFromCache(
   return try {
     val cacheKeyBuilder = RealCacheKeyBuilder()
     val jsonReader = CacheJsonReader(
-        rootKey = CacheKeyResolver.rootKeyForOperation(this).key,
+        rootKey = CacheKeyResolver.rootKey().key,
         readableCache = readableStore,
         cacheHeaders = cacheHeaders,
     )

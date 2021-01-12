@@ -9,11 +9,13 @@ import com.apollographql.apollo.cache.ApolloCacheHeaders
 import com.apollographql.apollo.cache.CacheHeaders
 import com.apollographql.apollo.cache.CacheHeaders.Companion.builder
 import com.apollographql.apollo.cache.normalized.*
+import com.apollographql.apollo.coroutines.await
 import com.apollographql.apollo.exception.ApolloException
 import com.apollographql.apollo.integration.normalizer.HeroAndFriendsNamesQuery
 import com.apollographql.apollo.integration.normalizer.type.Episode
 import com.apollographql.apollo.rx2.Rx2Apollo
 import com.google.common.truth.Truth
+import kotlinx.coroutines.runBlocking
 import okhttp3.Dispatcher
 import okhttp3.OkHttpClient
 import okhttp3.mockwebserver.MockResponse
@@ -114,9 +116,12 @@ class CacheHeadersTest {
         .defaultCacheHeaders(cacheHeaders)
         .build()
     server.enqueue(mockResponse("HeroAndFriendsNameResponse.json"))
-    Rx2Apollo.from(apolloClient.query(HeroAndFriendsNamesQuery(fromNullable(Episode.NEWHOPE)))
-        .cacheHeaders(cacheHeaders))
-        .test()
+
+    runBlocking {
+      apolloClient.query(HeroAndFriendsNamesQuery(fromNullable(Episode.NEWHOPE)))
+          .cacheHeaders(cacheHeaders)
+          .await()
+    }
     Truth.assertThat(hasHeader.get()).isTrue()
   }
 
