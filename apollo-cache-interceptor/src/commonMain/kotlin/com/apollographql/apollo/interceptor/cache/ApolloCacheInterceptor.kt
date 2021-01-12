@@ -36,7 +36,7 @@ class ApolloCacheInterceptor<S>(private val store: S) : ApolloRequestInterceptor
 
   override fun <D : Operation.Data> intercept(request: ApolloRequest<D>, chain: ApolloInterceptorChain): Flow<ApolloResponse<D>> {
     return flow {
-      val policy = request.executionContext[CacheRequestExecutionContext] ?: NormalizedCachePolicy.CACHE_FIRST
+      val policy = request.executionContext[CacheRequestExecutionContext]?.policy ?: NormalizedCachePolicy.CACHE_FIRST
 
       when (policy) {
         NormalizedCachePolicy.CACHE_FIRST -> {
