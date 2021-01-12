@@ -6,18 +6,18 @@ import com.apollographql.apollo.api.internal.json.JsonReader
 import com.apollographql.apollo.api.internal.json.JsonWriter
 import com.apollographql.apollo.api.internal.json.Utils
 import com.apollographql.apollo.api.internal.json.Utils.readRecursively
+import com.apollographql.apollo.api.internal.json.use
 import com.apollographql.apollo.api.internal.json.writeObject
 import okio.BufferedSink
 import okio.BufferedSource
-import java.io.IOException
-import java.util.Collections
+import okio.IOException
+import okio.use as okioUse
 
 /**
  * An [OperationMessageSerializer] that uses the standard
  * [Apollo format][https://github.com/apollographql/subscriptions-transport-ws/blob/master/PROTOCOL.md].
  */
 object ApolloOperationMessageSerializer : OperationMessageSerializer {
-  @Throws(IOException::class)
   override fun writeClientMessage(message: OperationClientMessage, sink: BufferedSink) {
     JsonWriter.of(sink).use { writer ->
       writer.writeObject {
@@ -26,10 +26,9 @@ object ApolloOperationMessageSerializer : OperationMessageSerializer {
     }
   }
 
-  @Throws(IOException::class)
   override fun readServerMessage(source: BufferedSource): OperationServerMessage =
       try {
-        source.peek().use {
+        source.peek().okioUse {
           BufferedSourceJsonReader(it).use { reader ->
             reader.readServerMessage()
           }
@@ -110,11 +109,11 @@ object ApolloOperationMessageSerializer : OperationMessageSerializer {
     val id = messageData[OperationServerMessage.JSON_KEY_ID] as String?
     return when (val type = messageData[OperationServerMessage.JSON_KEY_TYPE] as String?) {
       OperationServerMessage.ConnectionError.TYPE -> OperationServerMessage.ConnectionError(messageData.getMessagePayload())
-      OperationServerMessage.ConnectionAcknowledge.TYPE -> OperationServerMessage.ConnectionAcknowledge()
+      OperationServerMessage.ConnectionAcknowledge.TYPE -> OperationServerMessage.ConnectionAcknowledge
       OperationServerMessage.Data.TYPE -> OperationServerMessage.Data(id, messageData.getMessagePayload())
       OperationServerMessage.Error.TYPE -> OperationServerMessage.Error(id, messageData.getMessagePayload())
       OperationServerMessage.Complete.TYPE -> OperationServerMessage.Complete(id)
-      OperationServerMessage.ConnectionKeepAlive.TYPE -> OperationServerMessage.ConnectionKeepAlive()
+      OperationServerMessage.ConnectionKeepAlive.TYPE -> OperationServerMessage.ConnectionKeepAlive
       else -> throw IllegalArgumentException("Unsupported message type $type")
     }
   }
@@ -122,7 +121,6 @@ object ApolloOperationMessageSerializer : OperationMessageSerializer {
   private fun Map<String, Any?>.getMessagePayload(): Map<String, Any> =
       @Suppress("UNCHECKED_CAST")
       (this[OperationServerMessage.JSON_KEY_PAYLOAD] as Map<String, Any>?)
-          ?.let { Collections.unmodifiableMap(it) }
           ?: emptyMap()
 
   internal const val JSON_KEY_ID = "id"

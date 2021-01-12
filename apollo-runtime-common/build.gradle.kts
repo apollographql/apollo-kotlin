@@ -1,4 +1,5 @@
 plugins {
+  `java-library`
   kotlin("multiplatform")
 }
 
@@ -20,15 +21,11 @@ kotlin {
   }
 
   jvm()
-
+  
   sourceSets {
     val commonMain by getting {
       dependencies {
         api(project(":apollo-api"))
-        api(project(":apollo-runtime-common"))
-        api(groovy.util.Eval.x(project, "x.dep.okio"))
-        api(groovy.util.Eval.x(project, "x.dep.uuid"))
-        api(groovy.util.Eval.x(project, "x.dep.kotlin.coroutines"))
       }
     }
 
@@ -40,9 +37,7 @@ kotlin {
     }
 
     val iosMain by getting {
-      dependencies {
-        api(project(":apollo-runtime-common"))
-      }
+      dependsOn(commonMain)
     }
 
     val iosSimMain by getting {
@@ -51,32 +46,17 @@ kotlin {
 
     val commonTest by getting {
       dependencies {
+        implementation(project(":apollo-testing-support"))
         implementation(kotlin("test-common"))
         implementation(kotlin("test-annotations-common"))
-        implementation(project(":apollo-testing-support"))
       }
     }
 
     val jvmTest by getting {
+      dependsOn(jvmMain)
       dependencies {
         implementation(kotlin("test-junit"))
-        implementation(groovy.util.Eval.x(project, "x.dep.truth"))
-        implementation(groovy.util.Eval.x(project, "x.dep.okHttp.okHttp"))
       }
-    }
-
-    val iosSimTest by getting {
-      dependsOn(commonTest)
-    }
-  }
-}
-
-tasks.register("iOSSimTest") {
-  dependsOn("iosSimTestBinaries")
-  doLast {
-    val binary = kotlin.targets.getByName<org.jetbrains.kotlin.gradle.plugin.mpp.KotlinNativeTarget>("iosSim").binaries.getTest("DEBUG").outputFile
-    exec {
-      commandLine = listOf("xcrun", "simctl", "spawn", "iPhone 8", binary.absolutePath)
     }
   }
 }

@@ -56,7 +56,7 @@ class SubscriptionNormalizedCacheTest {
 
     with(subscriptionTransportFactory.callback!!) {
       onConnected()
-      onMessage(OperationServerMessage.ConnectionAcknowledge())
+      onMessage(OperationServerMessage.ConnectionAcknowledge)
     }
 
     val uuid = (apolloClient.subscriptionManager as RealSubscriptionManager).subscriptions.keys.first()
@@ -92,7 +92,7 @@ class SubscriptionNormalizedCacheTest {
 
     with(subscriptionTransportFactory.callback!!) {
       onConnected()
-      onMessage(OperationServerMessage.ConnectionAcknowledge())
+      onMessage(OperationServerMessage.ConnectionAcknowledge)
     }
 
     val uuid = (apolloClient.subscriptionManager as RealSubscriptionManager).subscriptions.keys.first()
@@ -146,7 +146,7 @@ class SubscriptionNormalizedCacheTest {
     )
 
     subscriptionTransportFactory.callback?.onConnected()
-    subscriptionTransportFactory.callback?.onMessage(OperationServerMessage.ConnectionAcknowledge())
+    subscriptionTransportFactory.callback?.onMessage(OperationServerMessage.ConnectionAcknowledge)
 
     val uuid = (apolloClient.subscriptionManager as RealSubscriptionManager).subscriptions.keys.first()
     subscriptionTransportFactory.callback?.onMessage(

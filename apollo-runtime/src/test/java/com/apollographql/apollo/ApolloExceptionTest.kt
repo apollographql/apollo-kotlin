@@ -73,15 +73,15 @@ class ApolloExceptionTest {
         .from(apolloClient.query(emptyQuery))
         .doOnError { throwable ->
           errorRef.set(throwable)
-          errorResponse.set((throwable as ApolloHttpException).rawResponse()!!.body()!!.string())
+          errorResponse.set((throwable as ApolloHttpException).message)
         }
         .test()
         .awaitDone(timeoutSeconds, TimeUnit.SECONDS)
         .assertError(ApolloHttpException::class.java)
     val e = errorRef.get() as ApolloHttpException
-    assertThat(e.code()).isEqualTo(401)
+    assertThat(e.statusCode).isEqualTo(401)
     assertThat(errorResponse.get()).isEqualTo("Unauthorized request!")
-    assertThat(e.message).isEqualTo("HTTP 401 Client Error")
+    assertThat(e.message).isEqualTo("Unauthorized request!")
   }
 
   @Test

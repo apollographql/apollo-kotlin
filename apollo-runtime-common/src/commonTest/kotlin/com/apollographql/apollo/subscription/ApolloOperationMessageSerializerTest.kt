@@ -2,11 +2,16 @@ package com.apollographql.apollo.subscription
 
 import com.apollographql.apollo.api.BigDecimal
 import com.apollographql.apollo.api.CustomScalarAdapters
+import com.apollographql.apollo.api.Operation
+import com.apollographql.apollo.api.OperationName
+import com.apollographql.apollo.api.Subscription
+import com.apollographql.apollo.api.internal.ResponseAdapter
 import com.apollographql.apollo.api.internal.json.BufferedSourceJsonReader
 import com.apollographql.apollo.api.internal.json.Utils.readRecursively
-import com.google.common.truth.Truth.assertThat
+import com.apollographql.apollo.testing.MockSubscription
 import okio.Buffer
-import org.junit.Test
+import kotlin.test.Test
+import kotlin.test.assertEquals
 
 class ApolloOperationMessageSerializerTest {
   private val serializer = ApolloOperationMessageSerializer
@@ -17,7 +22,7 @@ class ApolloOperationMessageSerializerTest {
         "param1" to "value1",
         "param2" to "value2"
     ))
-    assertThat(parseJson(serializer.writeClientMessage(message))).isEqualTo(mapOf(
+    assertEquals(parseJson(serializer.writeClientMessage(message)), mapOf(
         "type" to "connection_init",
         "payload" to message.connectionParams
     ))
@@ -25,11 +30,8 @@ class ApolloOperationMessageSerializerTest {
 
   @Test
   fun writeClientMessage_start() {
-    val subscription = MockSubscription(
-        variables = mapOf("variable" to "value"),
-        queryDocument = "subscription{commentAdded{id  name}",
-        name = "SomeSubscription"
-    )
+    val subscription = MockSubscription()
+
     val regularQuery = OperationClientMessage.Start(
         subscriptionId = "subscription-id",
         subscription = subscription,
@@ -51,7 +53,7 @@ class ApolloOperationMessageSerializerTest {
         autoPersistSubscription = true,
         sendSubscriptionDocument = true
     )
-    assertThat(parseJson(serializer.writeClientMessage(regularQuery))).isEqualTo(mapOf(
+    assertEquals(parseJson(serializer.writeClientMessage(regularQuery)), mapOf(
         "id" to regularQuery.subscriptionId,
         "type" to "start",
         "payload" to mapOf(
@@ -60,7 +62,7 @@ class ApolloOperationMessageSerializerTest {
             "query" to subscription.queryDocument()
         )
     ))
-    assertThat(parseJson(serializer.writeClientMessage(persistedQueryWithoutDocument))).isEqualTo(mapOf(
+    assertEquals(parseJson(serializer.writeClientMessage(persistedQueryWithoutDocument)), mapOf(
         "id" to persistedQueryWithoutDocument.subscriptionId,
         "type" to "start",
         "payload" to mapOf(
@@ -74,7 +76,7 @@ class ApolloOperationMessageSerializerTest {
             )
         )
     ))
-    assertThat(parseJson(serializer.writeClientMessage(persistedQueryWithDocument))).isEqualTo(mapOf(
+    assertEquals(parseJson(serializer.writeClientMessage(persistedQueryWithDocument)), mapOf(
         "id" to persistedQueryWithDocument.subscriptionId,
         "type" to "start",
         "payload" to mapOf(
@@ -94,69 +96,88 @@ class ApolloOperationMessageSerializerTest {
   @Test
   fun writeClientMessage_stop() {
     val message = OperationClientMessage.Stop("subscription-id")
-    assertThat(parseJson(serializer.writeClientMessage(message))).isEqualTo(mapOf(
-        "type" to "stop",
-        "id" to "subscription-id"
-    ))
+    assertEquals(parseJson(serializer.writeClientMessage(message)),
+        mapOf(
+            "type" to "stop",
+            "id" to "subscription-id"
+        ))
   }
 
   @Test
   fun writeClientMessage_terminate() {
     val message = OperationClientMessage.Terminate()
-    assertThat(parseJson(serializer.writeClientMessage(message))).isEqualTo(mapOf(
-        "type" to "connection_terminate"
-    ))
+    assertEquals(parseJson(serializer.writeClientMessage(message)),
+        mapOf(
+            "type" to "connection_terminate"
+        ))
   }
 
   @Test
   fun readServerMessage_connectionAcknowledge() {
-    assertThat(serializer.readServerMessage("""{"type":"connection_ack"}"""))
-        .isEqualTo(OperationServerMessage.ConnectionAcknowledge())
+    assertEquals(
+        serializer.readServerMessage("""{"type":"connection_ack"}"""),
+        OperationServerMessage.ConnectionAcknowledge
+    )
   }
 
   @Test
   fun readServerMessage_data() {
-    assertThat(serializer.readServerMessage("""{"type":"data","id":"some-id","payload":{"key":"value"}}""")).isEqualTo(OperationServerMessage.Data(
-        id = "some-id",
-        payload = mapOf("key" to "value")
-    ))
+    assertEquals(
+        serializer.readServerMessage("""{"type":"data","id":"some-id","payload":{"key":"value"}}"""),
+        OperationServerMessage.Data(
+            id = "some-id",
+            payload = mapOf("key" to "value")
+        ))
   }
 
   @Test
   fun readServerMessage_keepAlive() {
-    assertThat(serializer.readServerMessage("""{"type":"ka"}""")).isEqualTo(OperationServerMessage.ConnectionKeepAlive())
+    assertEquals(serializer.readServerMessage("""{"type":"ka"}"""),
+        OperationServerMessage.ConnectionKeepAlive)
   }
 
   @Test
   fun readServerMessage_error() {
-    assertThat(serializer.readServerMessage("""{"type":"error","id":"some-id","payload":{"key":"value"}}""")).isEqualTo(OperationServerMessage.Error(
-        id = "some-id",
-        payload = mapOf("key" to "value")
-    ))
+    assertEquals(serializer.readServerMessage("""{"type":"error","id":"some-id","payload":{"key":"value"}}"""),
+        OperationServerMessage.Error(
+            id = "some-id",
+            payload = mapOf("key" to "value")
+        )
+    )
   }
 
   @Test
   fun readServerMessage_connectionError() {
-    assertThat(serializer.readServerMessage("""{"type":"connection_error","payload":{"key":"value"}}""")).isEqualTo(OperationServerMessage.ConnectionError(
-        payload = mapOf("key" to "value")
-    ))
+    assertEquals(serializer.readServerMessage("""{"type":"connection_error","payload":{"key":"value"}}"""),
+        OperationServerMessage.ConnectionError(
+            payload = mapOf("key" to "value")
+        )
+    )
   }
 
   @Test
   fun readServerMessage_complete() {
-    assertThat(serializer.readServerMessage("""{"type":"complete","id":"some-id"}""")).isEqualTo(OperationServerMessage.Complete(
-        id = "some-id"
-    ))
+    assertEquals(serializer.readServerMessage("""{"type":"complete","id":"some-id"}"""),
+        OperationServerMessage.Complete(
+            id = "some-id"
+        )
+    )
   }
 
   @Test
   fun readServerMessage_unknown() {
-    assertThat(serializer.readServerMessage("invalid json"))
-        .isEqualTo(OperationServerMessage.Unsupported("invalid json"))
-    assertThat(serializer.readServerMessage("{}"))
-        .isEqualTo(OperationServerMessage.Unsupported("{}"))
-    assertThat(serializer.readServerMessage("""{"type":"unknown"}"""))
-        .isEqualTo(OperationServerMessage.Unsupported("""{"type":"unknown"}"""))
+    assertEquals(
+        serializer.readServerMessage("invalid json"),
+        OperationServerMessage.Unsupported("invalid json")
+    )
+    assertEquals(
+        serializer.readServerMessage("{}"),
+        OperationServerMessage.Unsupported("{}")
+    )
+    assertEquals(
+        serializer.readServerMessage("""{"type":"unknown"}"""),
+        OperationServerMessage.Unsupported("""{"type":"unknown"}""")
+    )
   }
 
   private fun OperationMessageSerializer.writeClientMessage(message: OperationClientMessage): String =

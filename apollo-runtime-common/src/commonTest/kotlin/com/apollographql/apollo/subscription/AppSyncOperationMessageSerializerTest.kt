@@ -3,9 +3,10 @@ package com.apollographql.apollo.subscription
 import com.apollographql.apollo.api.CustomScalarAdapters
 import com.apollographql.apollo.api.internal.json.BufferedSourceJsonReader
 import com.apollographql.apollo.api.internal.json.Utils.readRecursively
-import com.google.common.truth.Truth.assertThat
+import com.apollographql.apollo.testing.MockSubscription
 import okio.Buffer
-import org.junit.Test
+import kotlin.test.Test
+import kotlin.test.assertEquals
 
 class AppSyncOperationMessageSerializerTest {
   private val authorization = mapOf(
@@ -20,7 +21,10 @@ class AppSyncOperationMessageSerializerTest {
         "param1" to "value1",
         "param2" to "value2"
     ))
-    assertThat(serializer.writeClientMessage(message)).isEqualTo(ApolloOperationMessageSerializer.writeClientMessage(message))
+    assertEquals(
+        serializer.writeClientMessage(message),
+        ApolloOperationMessageSerializer.writeClientMessage(message)
+    )
   }
 
   @Test
@@ -39,7 +43,7 @@ class AppSyncOperationMessageSerializerTest {
     ApolloOperationMessageSerializer.JSON_KEY_VARIABLES
     ApolloOperationMessageSerializer.JSON_KEY_OPERATION_NAME
     ApolloOperationMessageSerializer.JSON_KEY_QUERY
-    assertThat(parseJson(serializer.writeClientMessage(message))).isEqualTo(mapOf(
+    assertEquals(parseJson(serializer.writeClientMessage(message)), mapOf(
         "id" to message.subscriptionId,
         "type" to "start",
         "payload" to mapOf(
@@ -54,37 +58,42 @@ class AppSyncOperationMessageSerializerTest {
   @Test
   fun writeClientMessage_stop() {
     val message = OperationClientMessage.Stop("subscription-id")
-    assertThat(serializer.writeClientMessage(message)).isEqualTo(ApolloOperationMessageSerializer.writeClientMessage(message))
+    assertEquals(serializer.writeClientMessage(message), ApolloOperationMessageSerializer.writeClientMessage(message))
   }
 
   @Test
   fun writeClientMessage_terminate() {
     val message = OperationClientMessage.Terminate()
-    assertThat(serializer.writeClientMessage(message)).isEqualTo(ApolloOperationMessageSerializer.writeClientMessage(message))
+    assertEquals(serializer.writeClientMessage(message), ApolloOperationMessageSerializer.writeClientMessage(message))
   }
 
   @Test
   fun readServerMessage_connectionAcknowledge() {
-    assertThat(serializer.readServerMessage("""{"type":"connection_ack","payload":{"connectionTimeoutMs":300000}}"""))
-        .isEqualTo(OperationServerMessage.ConnectionAcknowledge())
+    assertEquals(
+        serializer.readServerMessage("""{"type":"connection_ack","payload":{"connectionTimeoutMs":300000}}"""),
+        OperationServerMessage.ConnectionAcknowledge
+    )
   }
 
   @Test
   fun readServerMessage_data() {
-    assertThat(serializer.readServerMessage("""{"type":"data","id":"some-id","payload":{"key":"value"}}""")).isEqualTo(OperationServerMessage.Data(
-        id = "some-id",
-        payload = mapOf("key" to "value")
-    ))
+    assertEquals(
+        serializer.readServerMessage("""{"type":"data","id":"some-id","payload":{"key":"value"}}"""),
+        OperationServerMessage.Data(
+            id = "some-id",
+            payload = mapOf("key" to "value")
+        )
+    )
   }
 
   @Test
   fun readServerMessage_keepAlive() {
-    assertThat(serializer.readServerMessage("""{"type":"ka"}""")).isEqualTo(OperationServerMessage.ConnectionKeepAlive())
+    assertEquals(serializer.readServerMessage("""{"type":"ka"}"""), OperationServerMessage.ConnectionKeepAlive)
   }
 
   @Test
   fun readServerMessage_error() {
-    assertThat(serializer.readServerMessage("""{"type":"error","id":"some-id","payload":{"key":"value"}}""")).isEqualTo(OperationServerMessage.Error(
+    assertEquals(serializer.readServerMessage("""{"type":"error","id":"some-id","payload":{"key":"value"}}"""), OperationServerMessage.Error(
         id = "some-id",
         payload = mapOf("key" to "value")
     ))
@@ -92,35 +101,32 @@ class AppSyncOperationMessageSerializerTest {
 
   @Test
   fun readServerMessage_connectionError() {
-    assertThat(serializer.readServerMessage("""{"type":"connection_error","payload":{"key":"value"}}""")).isEqualTo(OperationServerMessage.ConnectionError(
+    assertEquals(serializer.readServerMessage("""{"type":"connection_error","payload":{"key":"value"}}"""), OperationServerMessage.ConnectionError(
         payload = mapOf("key" to "value")
     ))
   }
 
   @Test
   fun readServerMessage_complete() {
-    assertThat(serializer.readServerMessage("""{"type":"complete","id":"some-id"}""")).isEqualTo(OperationServerMessage.Complete(
+    assertEquals(serializer.readServerMessage("""{"type":"complete","id":"some-id"}"""), OperationServerMessage.Complete(
         id = "some-id"
     ))
   }
 
   @Test
   fun readServerMessage_unknown() {
-    assertThat(serializer.readServerMessage("invalid json"))
-        .isEqualTo(OperationServerMessage.Unsupported("invalid json"))
-    assertThat(serializer.readServerMessage("{}"))
-        .isEqualTo(OperationServerMessage.Unsupported("{}"))
-    assertThat(serializer.readServerMessage("""{"type":"unknown"}"""))
-        .isEqualTo(OperationServerMessage.Unsupported("""{"type":"unknown"}"""))
-  }
-
-  @Test
-  fun buildWebSocketUrl() {
-    val url = AppSyncOperationMessageSerializer.buildWebSocketUrl(
-        baseWebSocketUrl = "wss://example1234567890000.appsync-realtime-api.us-east-1.amazonaws.com/graphql",
-        authorization = authorization
+    assertEquals(
+        serializer.readServerMessage("invalid json"),
+        OperationServerMessage.Unsupported("invalid json")
     )
-    assertThat(url).isEqualTo("wss://example1234567890000.appsync-realtime-api.us-east-1.amazonaws.com/graphql?header=eyJob3N0IjoiZXhhbXBsZTEyMzQ1Njc4OTAwMDAuYXBwc3luYy1hcGkudXMtZWFzdC0xLmFtYXpvbmF3cy5jb20iLCJ4LWFwaS1rZXkiOiJkYTItMTIzNDU2Nzg5MDEyMzQ1Njc4OTAxMjM0NTYifQ%3D%3D&payload=e30%3D")
+    assertEquals(
+        serializer.readServerMessage("{}"),
+        OperationServerMessage.Unsupported("{}")
+    )
+    assertEquals(
+        serializer.readServerMessage("""{"type":"unknown"}"""),
+        OperationServerMessage.Unsupported("""{"type":"unknown"}""")
+    )
   }
 
   private fun OperationMessageSerializer.writeClientMessage(message: OperationClientMessage): String =

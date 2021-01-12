@@ -2,14 +2,14 @@ package com.apollographql.apollo.subscription
 
 import com.apollographql.apollo.api.internal.json.JsonWriter
 import com.apollographql.apollo.api.internal.json.Utils
+import com.apollographql.apollo.api.internal.json.use
 import com.apollographql.apollo.api.internal.json.writeObject
 import com.apollographql.apollo.subscription.ApolloOperationMessageSerializer.writePayloadContentsTo
-import okhttp3.HttpUrl
 import okio.Buffer
 import okio.BufferedSink
 import okio.BufferedSource
 import okio.IOException
-import java.util.Base64
+import okio.use as okioUse
 
 /**
  * An [OperationMessageSerializer] that uses the format used by
@@ -22,7 +22,6 @@ import java.util.Base64
 class AppSyncOperationMessageSerializer(
     private val authorization: Map<String, Any?>
 ) : OperationMessageSerializer {
-  @Throws(IOException::class)
   override fun writeClientMessage(message: OperationClientMessage, sink: BufferedSink) {
     when (message) {
       is OperationClientMessage.Start -> JsonWriter.of(sink).use { message.writeTo(it) }
@@ -32,7 +31,6 @@ class AppSyncOperationMessageSerializer(
     }
   }
 
-  @Throws(IOException::class)
   override fun readServerMessage(source: BufferedSource): OperationServerMessage =
       ApolloOperationMessageSerializer.readServerMessage(source)
 
@@ -50,8 +48,9 @@ class AppSyncOperationMessageSerializer(
     }
   }
 
+
   private fun OperationClientMessage.Start.serializePayload(): String =
-      Buffer().use { buffer ->
+      Buffer().okioUse { buffer ->
         JsonWriter.of(buffer).use { dataWriter ->
           dataWriter.writeObject { writePayloadContentsTo(dataWriter) }
         }
@@ -60,59 +59,5 @@ class AppSyncOperationMessageSerializer(
 
   companion object {
     private const val JSON_KEY_DATA = "data"
-
-    /**
-     * Helper method that builds the final web socket URL. It will append the authorization and payload arguments as query parameters.
-     *
-     * Example:
-     * ```
-     * buildWebSocketUrl(
-     *   baseWebSocketUrl = "wss://example1234567890000.appsync-realtime-api.us-east-1.amazonaws.com/graphql",
-     *   // This example uses an API key. See the AppSync documentation for information on what to pass
-     *   authorization = mapOf(
-     *     "host" to "example1234567890000.appsync-api.us-east-1.amazonaws.com",
-     *     "x-api-key" to "da2-12345678901234567890123456"
-     *   )
-     * )
-     * ```
-     *
-     * @param baseWebSocketUrl The base web socket URL.
-     * @param authorization The authorization as per the AppSync documentation.
-     * @param payload An optional payload. Defaults to an empty object.
-     */
-    @JvmOverloads
-    @JvmStatic
-    fun buildWebSocketUrl(
-        baseWebSocketUrl: String,
-        authorization: Map<String, Any?>,
-        payload: Map<String, Any?> = emptyMap(),
-    ): String =
-        baseWebSocketUrl
-            .let { url ->
-              when {
-                url.startsWith("ws://", ignoreCase = true) -> "http" + url.drop(2)
-                url.startsWith("wss://", ignoreCase = true) -> "https" + url.drop(3)
-                else -> url
-              }
-            }
-            .let { HttpUrl.get(it) }
-            .newBuilder()
-            .setQueryParameter("header", authorization.base64Encode())
-            .setQueryParameter("payload", payload.base64Encode())
-            .build()
-            .toString()
-            .let { url ->
-              when {
-                url.startsWith("http://", ignoreCase = true) -> "ws" + url.drop(4)
-                url.startsWith("https://", ignoreCase = true) -> "wss" + url.drop(5)
-                else -> url
-              }
-            }
-
-    private fun Map<String, Any?>.base64Encode(): String {
-      val buffer = Buffer()
-      Utils.writeToJson(this, JsonWriter.of(buffer))
-      return Base64.getUrlEncoder().encodeToString(buffer.readByteArray())
-    }
   }
 }
