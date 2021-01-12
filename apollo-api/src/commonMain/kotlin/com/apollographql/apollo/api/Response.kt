@@ -23,12 +23,6 @@ data class Response<D : Operation.Data>(
     val errors: List<Error>? = null,
 
     /**
-     * Set of request object keys to identify cache records to invalidate.
-     * Used by normalized cache implementation.
-     */
-    val dependentKeys: Set<String> = emptySet(),
-
-    /**
      * Indicates if response is resolved from the cache.
      * // TODO remove as it is now in the ExecutionContext
      */
@@ -49,7 +43,6 @@ data class Response<D : Operation.Data>(
       operation = builder.operation,
       data = builder.data,
       errors = builder.errors,
-      dependentKeys = builder.dependentKeys.orEmpty(),
       isFromCache = builder.fromCache,
       extensions = builder.extensions.orEmpty(),
       executionContext = builder.executionContext
@@ -60,7 +53,6 @@ data class Response<D : Operation.Data>(
   fun toBuilder(): Builder<D> = Builder<D>(operation)
       .data(data)
       .errors(errors)
-      .dependentKeys(dependentKeys)
       .fromCache(isFromCache)
       .extensions(extensions)
       .executionContext(executionContext)
@@ -72,7 +64,6 @@ data class Response<D : Operation.Data>(
     if (operation != other.operation) return false
     if (data != other.data) return false
     if (errors != other.errors) return false
-    if (dependentKeys != other.dependentKeys) return false
     if (isFromCache != other.isFromCache) return false
     if (extensions != other.extensions) return false
     if (executionContext != other.executionContext) return false
@@ -84,7 +75,6 @@ data class Response<D : Operation.Data>(
     var result = operation.hashCode()
     result = 31 * result + (data?.hashCode() ?: 0)
     result = 31 * result + (errors?.hashCode() ?: 0)
-    result = 31 * result + dependentKeys.hashCode()
     result = 31 * result + isFromCache.hashCode()
     result = 31 * result + extensions.hashCode()
     return result
@@ -93,7 +83,6 @@ data class Response<D : Operation.Data>(
   class Builder<D : Operation.Data> internal constructor(internal val operation: Operation<*>) {
     internal var data: D? = null
     internal var errors: List<Error>? = null
-    internal var dependentKeys: Set<String>? = null
     internal var fromCache: Boolean = false
     internal var extensions: Map<String, Any?>? = null
     internal var executionContext: ExecutionContext = ExecutionContext.Empty
@@ -104,10 +93,6 @@ data class Response<D : Operation.Data>(
 
     fun errors(errors: List<Error>?) = apply {
       this.errors = errors
-    }
-
-    fun dependentKeys(dependentKeys: Set<String>?) = apply {
-      this.dependentKeys = dependentKeys
     }
 
     fun fromCache(fromCache: Boolean) = apply {
