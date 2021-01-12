@@ -3,7 +3,6 @@ package com.apollographql.apollo.interceptor
 import com.apollographql.apollo.api.Operation
 import com.apollographql.apollo.api.internal.Optional
 import com.apollographql.apollo.cache.CacheHeaders
-import com.apollographql.apollo.cache.normalized.Record
 import com.apollographql.apollo.exception.ApolloException
 import com.apollographql.apollo.request.RequestHeaders
 import okhttp3.Response
@@ -86,17 +85,14 @@ interface ApolloInterceptor {
   /**
    * InterceptorResponse class represents the response returned by the [ApolloInterceptor].
    */
-  class InterceptorResponse @JvmOverloads constructor(httpResponse: Response?, parsedResponse: com.apollographql.apollo.api.Response<*>? = null,
-                                                      cacheRecords: Collection<Record>? = null) {
+  class InterceptorResponse @JvmOverloads constructor(httpResponse: Response?, parsedResponse: com.apollographql.apollo.api.Response<*>? = null) {
     val httpResponse: Optional<Response>
     @JvmField
     val parsedResponse: Optional<com.apollographql.apollo.api.Response<*>?>
-    val cacheRecords: Optional<Collection<Record>?>
 
     init {
       this.httpResponse = Optional.fromNullable(httpResponse)
       this.parsedResponse = Optional.fromNullable(parsedResponse)
-      this.cacheRecords = Optional.fromNullable(cacheRecords)
     }
   }
 
