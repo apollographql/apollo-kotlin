@@ -27,6 +27,7 @@ import com.apollographql.apollo.cache.normalized.internal.Transaction
 import com.apollographql.apollo.cache.normalized.internal.WriteableStore
 import com.apollographql.apollo.cache.normalized.internal.dependentKeys
 import com.apollographql.apollo.cache.normalized.internal.normalize
+import com.apollographql.apollo.cache.normalized.internal.readDataFromCache
 import java.util.ArrayList
 import java.util.Collections
 import java.util.LinkedHashSet
@@ -42,7 +43,7 @@ class RealApolloStore(normalizedCache: NormalizedCache,
                       val logger: ApolloLogger) : ApolloStore, ReadableStore, WriteableStore {
   private val optimisticCache = OptimisticNormalizedCache().chain(normalizedCache) as OptimisticNormalizedCache
   private val lock = ReentrantReadWriteLock()
-  private val subscribers : MutableSet<RecordChangeSubscriber> = Collections.newSetFromMap(WeakHashMap())
+  private val subscribers: MutableSet<RecordChangeSubscriber> = Collections.newSetFromMap(WeakHashMap())
   private val cacheKeyBuilder = RealCacheKeyBuilder()
 
   @Synchronized
@@ -262,17 +263,14 @@ class RealApolloStore(normalizedCache: NormalizedCache,
       operation: Operation<D>,
       cacheHeaders: CacheHeaders
   ): Response<D> = readTransaction { cache ->
-    val rootRecord = cache.read(rootKey().key, cacheHeaders)
-        ?: return@readTransaction builder<D>(operation).fromCache(true).build()
     try {
-      val fieldValueResolver = CacheValueResolver(
+      val data = operation.readDataFromCache(
+          customScalarAdapters,
           cache,
-          operation.variables(),
           cacheKeyResolver(),
-          cacheHeaders,
-          cacheKeyBuilder)
-      val data = operation.parseData(rootRecord, customScalarAdapters, fieldValueResolver)
-      val records = operation.normalize(data, customScalarAdapters, cacheKeyResolver)
+          cacheHeaders
+      )
+      val records = operation.normalize(data!!, customScalarAdapters, cacheKeyResolver())
       builder<D>(operation)
           .data(data)
           .fromCache(true)
@@ -322,7 +320,7 @@ class RealApolloStore(normalizedCache: NormalizedCache,
 
   }
 
-  fun <D: Fragment.Data> doWriteFragment(fragment: Fragment<D>, cacheKey: CacheKey, data: D): Set<String> = writeTransaction {
+  fun <D : Fragment.Data> doWriteFragment(fragment: Fragment<D>, cacheKey: CacheKey, data: D): Set<String> = writeTransaction {
     val records = fragment.normalize(data, customScalarAdapters, cacheKeyResolver, cacheKey.key)
     merge(records, CacheHeaders.NONE)
   }

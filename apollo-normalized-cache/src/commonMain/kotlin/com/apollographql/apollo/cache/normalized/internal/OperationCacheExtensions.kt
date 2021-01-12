@@ -39,12 +39,13 @@ fun <D : Operation.Data> Operation<D>.readDataFromCache(
 ): D? {
   return try {
     val cacheKeyBuilder = RealCacheKeyBuilder()
+    val jsonReader = CacheJsonReader(
+        rootKey = CacheKeyResolver.rootKey().key,
+        readableCache = readableStore,
+        cacheHeaders = cacheHeaders,
+    )
     val reader = StreamResponseReader(
-        jsonReader = CacheJsonReader(
-            rootKey = CacheKeyResolver.rootKey().key,
-            readableCache = readableStore,
-            cacheHeaders = cacheHeaders,
-        ),
+        jsonReader = jsonReader,
         variables = variables(),
         customScalarAdapters = customScalarAdapters,
     ) { field ->
@@ -60,8 +61,10 @@ fun <D : Operation.Data> Operation<D>.readDataFromCache(
       }
     }
 
+    jsonReader.beginObject()
     adapter().fromResponse(reader)
   } catch (e: Exception) {
+    e.printStackTrace()
     null
   }
 }

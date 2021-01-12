@@ -22,7 +22,7 @@ class StreamResponseReader private constructor(
       variables: Operation.Variables,
       customScalarAdapters: CustomScalarAdapters,
       fieldKey: (ResponseField) -> String = {it.responseName}
-  ) : this(jsonReader, variables.valueMap(), customScalarAdapters)
+  ) : this(jsonReader, variables.valueMap(), customScalarAdapters, fieldKey)
 
   override fun selectField(fields: Array<ResponseField>): Int {
     while (jsonReader.hasNext()) {

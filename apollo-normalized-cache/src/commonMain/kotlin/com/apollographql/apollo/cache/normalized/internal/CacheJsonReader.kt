@@ -11,7 +11,7 @@ class CacheJsonReader(
     private val readableCache: ReadableStore,
     private val cacheHeaders: CacheHeaders,
 ): JsonReader {
-  private var currentReader: JsonReader = BufferedSourceJsonReader(Buffer().writeUtf8("\"$rootKey\""))
+  private var currentReader: JsonReader = BufferedSourceJsonReader(Buffer().writeUtf8("\"ApolloCacheReference{$rootKey}\""))
   private var currentDepth = 0
 
   private val readerStack = ArrayList<JsonReader>()
@@ -22,6 +22,7 @@ class CacheJsonReader(
     depthStack.add(currentDepth)
 
     currentReader = reader
+    currentReader.beginObject()
     currentDepth = 0
   }
 
