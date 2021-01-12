@@ -287,7 +287,7 @@ open class ApolloPlugin : Plugin<Project> {
     data class Dep(val name: String, val version: String?)
 
     fun getDeps(configurations: ConfigurationContainer): List<Dep> {
-      return configurations.flatMap { configuration ->
+      return configurations.toList().flatMap { configuration ->
         configuration.incoming.dependencies
             .filter {
               it.group == "com.apollographql.apollo"
