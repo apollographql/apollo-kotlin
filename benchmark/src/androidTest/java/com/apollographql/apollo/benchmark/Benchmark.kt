@@ -63,13 +63,12 @@ class Benchmark {
 
     val data = operation.parse(bufferedSource()).data!!
 
-    apolloClient.apolloStore.writeOperation(operation, data)
+    apolloClient.apolloStore.writeOperation(operation, data).execute()
   }
 
   @Test
   fun apolloReadCache() = benchmarkRule.measureRepeated {
 
     val data = apolloClient.apolloStore.readOperation(operation).execute()
-    println(data)
   }
 }
