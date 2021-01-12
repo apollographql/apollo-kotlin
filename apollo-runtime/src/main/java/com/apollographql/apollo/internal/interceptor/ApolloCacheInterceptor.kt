@@ -1,12 +1,14 @@
 package com.apollographql.apollo.internal.interceptor
 
+import com.apollographql.apollo.api.CustomScalarAdapters
 import com.apollographql.apollo.api.Operation
 import com.apollographql.apollo.api.internal.ApolloLogger
 import com.apollographql.apollo.cache.ApolloCacheHeaders
 import com.apollographql.apollo.cache.normalized.ApolloStore
-import com.apollographql.apollo.cache.normalized.Record
+import com.apollographql.apollo.cache.normalized.internal.ResponseNormalizer
 import com.apollographql.apollo.cache.normalized.internal.Transaction
 import com.apollographql.apollo.cache.normalized.internal.WriteableStore
+import com.apollographql.apollo.cache.normalized.internal.normalize
 import com.apollographql.apollo.exception.ApolloException
 import com.apollographql.apollo.interceptor.ApolloInterceptor
 import com.apollographql.apollo.interceptor.ApolloInterceptor.CallBack
@@ -15,7 +17,6 @@ import com.apollographql.apollo.interceptor.ApolloInterceptor.InterceptorRequest
 import com.apollographql.apollo.interceptor.ApolloInterceptor.InterceptorResponse
 import com.apollographql.apollo.interceptor.ApolloInterceptorChain
 import java.lang.Runnable
-import java.util.ArrayList
 import java.util.HashSet
 import java.util.concurrent.Executor
 
@@ -24,13 +25,13 @@ import java.util.concurrent.Executor
  * cache if [InterceptorRequest.fetchFromCache] is true. Saves all network responses to cache.
  */
 class ApolloCacheInterceptor(
-    apolloStore: ApolloStore,
-    dispatcher: Executor,
-    logger: ApolloLogger, writeToCacheAsynchronously: Boolean) : ApolloInterceptor {
-  val apolloStore: ApolloStore
-  private val dispatcher: Executor
-  private val writeToCacheAsynchronously: Boolean
-  val logger: ApolloLogger
+    val apolloStore: ApolloStore,
+    private val normalizer: ResponseNormalizer<Map<String, Any>>,
+    private val customScalarAdapters: CustomScalarAdapters,
+    private val dispatcher: Executor,
+    val logger: ApolloLogger,
+    private val writeToCacheAsynchronously: Boolean
+) : ApolloInterceptor {
 
   @Volatile
   var disposed = false
@@ -87,7 +88,7 @@ class ApolloCacheInterceptor(
     val cachedResponse = apolloStoreOperation.execute()
     if (cachedResponse.data != null) {
       logger.d("Cache HIT for operation %s", request.operation.name().name())
-      return InterceptorResponse(null, cachedResponse, emptySet())
+      return InterceptorResponse(null, cachedResponse)
     }
     logger.d("Cache MISS for operation %s", request.operation.name().name())
     throw ApolloException(String.format("Cache miss for operation %s", request.operation.name().name()))
@@ -100,13 +101,15 @@ class ApolloCacheInterceptor(
         && !request.cacheHeaders.hasHeader(ApolloCacheHeaders.STORE_PARTIAL_RESPONSES)) {
       return emptySet()
     }
-    val records = networkResponse.cacheRecords.orNull()?.let { records ->
-      val result: MutableList<Record> = ArrayList(records.size)
-      for (record in records) {
-        result.add(record.toBuilder().mutationId(request.uniqueId).build())
-      }
-      result
+
+    val records = networkResponse.parsedResponse.get()?.data?.let {
+      (request.operation as Operation<Operation.Data>).normalize(it, customScalarAdapters, normalizer as ResponseNormalizer<Map<String, Any>?>)
+    }?.map {
+      it.toBuilder().mutationId(request.uniqueId).build()
     }
+
+    // TODO parsedResponse.dependentKeys(records.dependentKeys()) that was part of ApolloParseInterceptor. This might be async.
+
     return if (records == null) {
       emptySet()
     } else try {
@@ -184,12 +187,5 @@ class ApolloCacheInterceptor(
         logger.e(e, "Failed to publish cache changes")
       }
     }
-  }
-
-  init {
-    this.apolloStore = apolloStore
-    this.dispatcher = dispatcher
-    this.logger = logger
-    this.writeToCacheAsynchronously = writeToCacheAsynchronously
   }
 }
