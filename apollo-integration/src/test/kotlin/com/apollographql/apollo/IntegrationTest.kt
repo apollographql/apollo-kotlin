@@ -307,7 +307,7 @@ class IntegrationTest {
   @Throws(Exception::class)
   fun operationParseResponseWithExtensions() {
     val source = Buffer().readFrom(javaClass.getResourceAsStream("/HeroNameResponse.json"))
-    val (_, _, _, _, _, extensions) = HeroNameQuery().parse(source)
+    val (_, _, _, _, extensions) = HeroNameQuery().parse(source)
     assertThat(extensions.toString()).isEqualTo("{cost={requestedQueryCost=3, actualQueryCost=3, throttleStatus={maximumAvailable=1000, currentlyAvailable=997, restoreRate=50}}}")
   }
 
