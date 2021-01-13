@@ -145,38 +145,22 @@ internal object CreateReviewForEpisode_ResponseAdapter :
           value: CreateReviewForEpisode.Data.CreateReview) {
         writer.writeInt(RESPONSE_FIELDS[0], value.stars)
         writer.writeString(RESPONSE_FIELDS[1], value.commentary)
-        writer.writeList(RESPONSE_FIELDS[2], value.listOfListOfString) { values, listItemWriter ->
-          values?.forEach { value ->
-            listItemWriter.writeList(value) { value, listItemWriter ->
-              value?.forEach { value ->
-                listItemWriter.writeString(value)}
-            }
-          }
+        writer.writeList(RESPONSE_FIELDS[2], value.listOfListOfString) { value, listItemWriter ->
+          listItemWriter.writeList(value) { value, listItemWriter ->
+            listItemWriter.writeString(value)}
         }
-        writer.writeList(RESPONSE_FIELDS[3], value.listOfListOfEnum) { values, listItemWriter ->
-          values?.forEach { value ->
-            listItemWriter.writeList(value) { value, listItemWriter ->
-              value?.forEach { value ->
-                listItemWriter.writeString(value.rawValue)}
-            }
-          }
+        writer.writeList(RESPONSE_FIELDS[3], value.listOfListOfEnum) { value, listItemWriter ->
+          listItemWriter.writeList(value) { value, listItemWriter ->
+            listItemWriter.writeString(value.rawValue)}
         }
-        writer.writeList(RESPONSE_FIELDS[4], value.listOfListOfCustom) { values, listItemWriter ->
-          values?.forEach { value ->
-            listItemWriter.writeList(value) { value, listItemWriter ->
-              value?.forEach { value ->
-                listItemWriter.writeCustom(CustomScalars.Date, value)}
-            }
-          }
+        writer.writeList(RESPONSE_FIELDS[4], value.listOfListOfCustom) { value, listItemWriter ->
+          listItemWriter.writeList(value) { value, listItemWriter ->
+            listItemWriter.writeCustom(CustomScalars.Date, value)}
         }
-        writer.writeList(RESPONSE_FIELDS[5], value.listOfListOfObject) { values, listItemWriter ->
-          values?.forEach { value ->
-            listItemWriter.writeList(value) { value, listItemWriter ->
-              value?.forEach { value ->
-                listItemWriter.writeObject { writer ->
-                  ListOfListOfObject.toResponse(writer, value)
-                }
-              }
+        writer.writeList(RESPONSE_FIELDS[5], value.listOfListOfObject) { value, listItemWriter ->
+          listItemWriter.writeList(value) { value, listItemWriter ->
+            listItemWriter.writeObject { writer ->
+              ListOfListOfObject.toResponse(writer, value)
             }
           }
         }

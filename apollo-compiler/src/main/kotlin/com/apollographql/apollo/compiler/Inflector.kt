@@ -8,7 +8,7 @@ import java.util.regex.Pattern
  * The singularization methods were heavily based off ruby on rails <link>https://github.com/rails/rails/blob/master/activesupport/lib/active_support/inflections.rb</link>
  */
 
-fun String.singularize(): String {
+internal fun String.singularize(): String {
   if (uncountable.contains(this.toLowerCase())) return this
 
   if (exclude.contains(this.toLowerCase())) return this

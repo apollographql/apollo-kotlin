@@ -5,7 +5,7 @@ internal object SelectionKeyUtils {
   fun List<BackendIr.Field>.addFieldSelectionKey(selectionKey: SelectionKey?): List<BackendIr.Field> {
     if (selectionKey == null) return this
     return this.map { field ->
-      field.addFieldSelectionKey(selectionKey + field.responseName)
+      field.addFieldSelectionKey(selectionKey + field.typeName)
     }
   }
 

@@ -27,5 +27,5 @@ internal class HumanDetailsImpl : Fragment<HumanDetailsImpl.Data> {
      * What this human calls themselves
      */
     override val name: String
-  ) : HumanDetail, Fragment.Data
+  ) : HumanDetails, Fragment.Data
 }

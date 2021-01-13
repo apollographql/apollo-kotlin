@@ -121,7 +121,7 @@ class TestQuery : Query<TestQuery.Data> {
       }
     }
 
-    data class QueryDatum(
+    data class QueryData(
       override val __typename: String,
       override val hero: Hero?,
       override val droid: Droid?,
@@ -195,7 +195,7 @@ class TestQuery : Query<TestQuery.Data> {
       }
     }
 
-    data class OtherDatum(
+    data class OtherData(
       override val __typename: String
     ) : Data
 

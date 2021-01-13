@@ -27,5 +27,5 @@ class HeroDetailsImpl : Fragment<HeroDetailsImpl.Data> {
      * The name of the character
      */
     override val name: String
-  ) : HeroDetail, Fragment.Data
+  ) : HeroDetails, Fragment.Data
 }

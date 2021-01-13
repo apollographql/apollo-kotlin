@@ -53,7 +53,7 @@ data class HeroDetailsImpl(
      * The friends of the character exposed as a connection with edges
      */
     override val friendsConnection: FriendsConnection
-  ) : HeroDetail, Fragment.Data {
+  ) : HeroDetails, Fragment.Data {
     /**
      * A connection object for a character's friends
      */
@@ -66,7 +66,7 @@ data class HeroDetailsImpl(
        * The edges for each of the character's friends.
        */
       override val edges: List<Edge?>?
-    ) : HeroDetail.FriendsConnection {
+    ) : HeroDetails.FriendsConnection {
       /**
        * An edge object for a character's friends
        */
@@ -75,7 +75,7 @@ data class HeroDetailsImpl(
          * The character represented by this friendship edge
          */
         override val node: Node?
-      ) : HeroDetail.FriendsConnection.Edge {
+      ) : HeroDetails.FriendsConnection.Edge {
         /**
          * A character from the Star Wars universe
          */
@@ -84,7 +84,7 @@ data class HeroDetailsImpl(
            * The name of the character
            */
           override val name: String?
-        ) : HeroDetail.FriendsConnection.Edge.Node
+        ) : HeroDetails.FriendsConnection.Edge.Node
       }
     }
   }

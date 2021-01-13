@@ -99,11 +99,9 @@ object TestQuery_ResponseAdapter : ResponseAdapter<TestQuery.Data> {
 
       override fun toResponse(writer: ResponseWriter, value: TestQuery.Data.Tree) {
         writer.writeString(RESPONSE_FIELDS[0], value.name)
-        writer.writeList(RESPONSE_FIELDS[1], value.children) { values, listItemWriter ->
-          values?.forEach { value ->
-            listItemWriter.writeObject { writer ->
-              Child.toResponse(writer, value)
-            }
+        writer.writeList(RESPONSE_FIELDS[1], value.children) { value, listItemWriter ->
+          listItemWriter.writeObject { writer ->
+            Child.toResponse(writer, value)
           }
         }
         if(value.parent == null) {

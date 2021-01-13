@@ -13,7 +13,7 @@ import com.apollographql.apollo.api.internal.InputFieldMarshaller
 import com.apollographql.apollo.api.internal.QueryDocumentMinifier
 import com.apollographql.apollo.api.internal.ResponseAdapter
 import com.example.arguments_simple.adapter.TestQuery_ResponseAdapter
-import com.example.arguments_simple.fragment.HeroDetail
+import com.example.arguments_simple.fragment.HeroDetails
 import com.example.arguments_simple.type.Episode
 import kotlin.Any
 import kotlin.Boolean
@@ -91,7 +91,7 @@ data class TestQuery(
        */
       val name: String?
 
-      interface Character : Hero, HeroDetail {
+      interface Character : Hero, HeroDetails {
         override val __typename: String
 
         /**
@@ -107,7 +107,7 @@ data class TestQuery(
         /**
          * A connection object for a character's friends
          */
-        interface FriendsConnection : HeroDetail.FriendsConnection {
+        interface FriendsConnection : HeroDetails.FriendsConnection {
           /**
            * The total number of friends
            */
@@ -121,7 +121,7 @@ data class TestQuery(
           /**
            * An edge object for a character's friends
            */
-          interface Edge : HeroDetail.FriendsConnection.Edge {
+          interface Edge : HeroDetails.FriendsConnection.Edge {
             /**
              * The character represented by this friendship edge
              */
@@ -130,7 +130,7 @@ data class TestQuery(
             /**
              * A character from the Star Wars universe
              */
-            interface Node : HeroDetail.FriendsConnection.Edge.Node {
+            interface Node : HeroDetails.FriendsConnection.Edge.Node {
               /**
                * The name of the character
                */
@@ -150,7 +150,7 @@ data class TestQuery(
          * The friends of the character exposed as a connection with edges
          */
         override val friendsConnection: FriendsConnection
-      ) : Hero, Character, HeroDetail {
+      ) : Hero, Character, HeroDetails {
         /**
          * A connection object for a character's friends
          */
@@ -163,7 +163,7 @@ data class TestQuery(
            * The edges for each of the character's friends.
            */
           override val edges: List<Edge?>?
-        ) : Character.FriendsConnection, HeroDetail.FriendsConnection {
+        ) : Character.FriendsConnection, HeroDetails.FriendsConnection {
           /**
            * An edge object for a character's friends
            */
@@ -172,7 +172,7 @@ data class TestQuery(
              * The character represented by this friendship edge
              */
             override val node: Node?
-          ) : Character.FriendsConnection.Edge, HeroDetail.FriendsConnection.Edge {
+          ) : Character.FriendsConnection.Edge, HeroDetails.FriendsConnection.Edge {
             /**
              * A character from the Star Wars universe
              */
@@ -181,7 +181,7 @@ data class TestQuery(
                * The name of the character
                */
               override val name: String?
-            ) : Character.FriendsConnection.Edge.Node, HeroDetail.FriendsConnection.Edge.Node
+            ) : Character.FriendsConnection.Edge.Node, HeroDetails.FriendsConnection.Edge.Node
           }
         }
       }
@@ -197,7 +197,7 @@ data class TestQuery(
       companion object {
         fun Hero.asCharacter(): Character? = this as? Character
 
-        fun Hero.heroDetails(): HeroDetail? = this as? HeroDetail
+        fun Hero.heroDetails(): HeroDetails? = this as? HeroDetails
       }
     }
 

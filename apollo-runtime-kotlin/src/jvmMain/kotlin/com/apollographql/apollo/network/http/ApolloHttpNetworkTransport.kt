@@ -1,10 +1,10 @@
 package com.apollographql.apollo.network.http
 
-import com.apollographql.apollo.ApolloException
-import com.apollographql.apollo.ApolloHttpException
-import com.apollographql.apollo.ApolloNetworkException
-import com.apollographql.apollo.ApolloParseException
-import com.apollographql.apollo.ApolloSerializationException
+import com.apollographql.apollo.exception.ApolloException
+import com.apollographql.apollo.exception.ApolloHttpException
+import com.apollographql.apollo.exception.ApolloNetworkException
+import com.apollographql.apollo.exception.ApolloParseException
+import com.apollographql.apollo.exception.ApolloSerializationException
 import com.apollographql.apollo.api.ApolloExperimental
 import com.apollographql.apollo.api.ExecutionContext
 import com.apollographql.apollo.api.Operation
@@ -22,15 +22,12 @@ import kotlinx.coroutines.suspendCancellableCoroutine
 import okhttp3.Call
 import okhttp3.Callback
 import okhttp3.Headers
-import okhttp3.Headers.Companion.toHeaders
 import okhttp3.HttpUrl
-import okhttp3.HttpUrl.Companion.toHttpUrl
-import okhttp3.MediaType.Companion.toMediaType
+import okhttp3.MediaType
 import okhttp3.OkHttpClient
 import okhttp3.Request
-import okhttp3.RequestBody.Companion.toRequestBody
+import okhttp3.RequestBody
 import okhttp3.Response
-import okhttp3.internal.closeQuietly
 import java.io.IOException
 import java.util.concurrent.TimeUnit
 import kotlin.coroutines.resume
@@ -54,8 +51,8 @@ actual class ApolloHttpNetworkTransport(
       connectTimeoutMillis: Long,
       readTimeoutMillis: Long
   ) : this(
-      serverUrl = serverUrl.toHttpUrl(),
-      headers = headers.toHeaders(),
+      serverUrl = HttpUrl.parse(serverUrl)!!,
+      headers = Headers.of(headers),
       httpCallFactory = OkHttpClient.Builder()
           .connectTimeout(connectTimeoutMillis, TimeUnit.MILLISECONDS)
           .readTimeout(readTimeoutMillis, TimeUnit.MILLISECONDS)
@@ -90,7 +87,7 @@ actual class ApolloHttpNetworkTransport(
                     runCatching { response.parse(request) }
                         .onSuccess { graphQlResponse -> continuation.resume(graphQlResponse) }
                         .onFailure { e ->
-                          response.closeQuietly()
+                          response.close()
                           if (e is ApolloException) {
                             continuation.resumeWithException(e)
                           } else {
@@ -110,16 +107,22 @@ actual class ApolloHttpNetworkTransport(
     }
   }
 
+  private fun Headers.toMap(): Map<String, String> {
+    return names().map {
+      it to get(it)!!
+    }.toMap()
+  }
+
   @Suppress("UNCHECKED_CAST")
   private fun <D : Operation.Data> Response.parse(request: ApolloRequest<D>): ApolloResponse<D> {
     if (!isSuccessful) throw ApolloHttpException(
-        statusCode = code,
+        statusCode = code(),
         headers = headers.toMap(),
-        message = "Http request failed with status code `$code ($message)`"
+        message = "Http request failed with status code `${code()} (${message()})`"
     )
 
-    val responseBody = body ?: throw ApolloHttpException(
-        statusCode = code,
+    val responseBody = body() ?: throw ApolloHttpException(
+        statusCode = code(),
         headers = headers.toMap(),
         message = "Failed to parse GraphQL http network response: EOF"
     )
@@ -132,7 +135,7 @@ actual class ApolloHttpNetworkTransport(
         requestUuid = request.requestUuid,
         response = response,
         executionContext = request.executionContext + HttpExecutionContext.Response(
-            statusCode = code,
+            statusCode = code(),
             headers = headers.toMap()
         )
     )
@@ -167,20 +170,27 @@ actual class ApolloHttpNetworkTransport(
         .headers(headers)
         .apply {
           httpExecutionContext?.headers?.forEach { (name, value) ->
-            header(name = name, value = value)
+            header(name, value)
           }
         }
         .build()
   }
 
   private fun <D : Operation.Data> ApolloRequest<D>.toHttpPostRequest(httpExecutionContext: HttpExecutionContext.Request?): Request {
-    val requestBody = operation.composeRequestBody(customScalarAdapters).toRequestBody(contentType = MEDIA_TYPE.toMediaType())
+    val requestBody = operation.composeRequestBody(customScalarAdapters)
+        .let {
+          RequestBody.create(
+              MediaType.parse(MEDIA_TYPE),
+              it
+          )
+        }
+
     return Request.Builder()
         .url(serverUrl)
         .headers(headers)
         .apply {
           httpExecutionContext?.headers?.forEach { (name, value) ->
-            header(name = name, value = value)
+            header(name, value)
           }
         }
         .post(requestBody)

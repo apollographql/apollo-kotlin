@@ -36,7 +36,7 @@ class DroidDetailsImpl : Fragment<DroidDetailsImpl.Data> {
      * This droid's friends, or an empty list if they have none
      */
     override val friends: List<Friend?>?
-  ) : DroidDetail, Fragment.Data {
+  ) : DroidDetails, Fragment.Data {
     /**
      * A character from the Star Wars universe
      */
@@ -45,6 +45,6 @@ class DroidDetailsImpl : Fragment<DroidDetailsImpl.Data> {
        * The name of the character
        */
       override val name: String
-    ) : DroidDetail.Friend
+    ) : DroidDetails.Friend
   }
 }

@@ -72,15 +72,9 @@ object TestQuery_ResponseAdapter : ResponseAdapter<TestQuery.Data> {
           Yield.toResponse(writer, value.yield_)
         }
       }
-      writer.writeList(RESPONSE_FIELDS[1], value.objects) { values, listItemWriter ->
-        values?.forEach { value ->
-          if(value == null) {
-            listItemWriter.writeObject(null)
-          } else {
-            listItemWriter.writeObject { writer ->
-              Object.toResponse(writer, value)
-            }
-          }
+      writer.writeList(RESPONSE_FIELDS[1], value.objects) { value, listItemWriter ->
+        listItemWriter.writeObject { writer ->
+          Object.toResponse(writer, value)
         }
       }
     }

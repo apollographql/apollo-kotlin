@@ -11,6 +11,7 @@ import com.apollographql.apollo.cache.normalized.internal.Transaction
 import com.apollographql.apollo.cache.normalized.internal.WriteableStore
 import com.apollographql.apollo.cache.normalized.internal.normalize
 import com.apollographql.apollo.exception.ApolloException
+import com.apollographql.apollo.exception.ApolloGenericException
 import com.apollographql.apollo.interceptor.ApolloInterceptor
 import com.apollographql.apollo.interceptor.ApolloInterceptor.CallBack
 import com.apollographql.apollo.interceptor.ApolloInterceptor.FetchSourceType
@@ -93,7 +94,7 @@ class ApolloCacheInterceptor<D : Operation.Data>(
       return InterceptorResponse(null, cachedResponse)
     }
     logger.d("Cache MISS for operation %s", request.operation.name().name())
-    throw ApolloException(String.format("Cache miss for operation %s", request.operation.name().name()))
+    throw ApolloGenericException(String.format("Cache miss for operation %s", request.operation.name().name()))
   }
 
   fun cacheResponse(networkResponse: InterceptorResponse,

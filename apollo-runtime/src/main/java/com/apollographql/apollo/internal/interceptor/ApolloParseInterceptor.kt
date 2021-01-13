@@ -15,6 +15,7 @@ import com.apollographql.apollo.interceptor.ApolloInterceptor.FetchSourceType
 import com.apollographql.apollo.interceptor.ApolloInterceptor.InterceptorRequest
 import com.apollographql.apollo.interceptor.ApolloInterceptor.InterceptorResponse
 import com.apollographql.apollo.interceptor.ApolloInterceptorChain
+import okhttp3.Headers
 import okhttp3.Response
 import java.io.Closeable
 import java.util.concurrent.Executor
@@ -89,11 +90,20 @@ class ApolloParseInterceptor(private val httpCache: HttpCache?,
       }
     } else {
       logger.e("Failed to parse network response: %s", httpResponse)
-      throw ApolloHttpException(httpResponse)
+      throw ApolloHttpException(
+          statusCode = httpResponse.code(),
+          headers = httpResponse.headers().toMap(),
+          message = httpResponse.body()?.string() ?: "",
+          cause = null
+      )
     }
   }
 
   companion object {
+    private fun Headers.toMap(): Map<String, String> = this.names().map {
+      it to get(it)!!
+    }.toMap()
+
     private fun closeQuietly(closeable: Closeable?) {
       if (closeable != null) {
         try {

@@ -27,5 +27,5 @@ class HumanDetailsImpl : Fragment<HumanDetailsImpl.Data> {
      * The home planet of the human, or null if unknown
      */
     override val homePlanet: String?
-  ) : HumanDetail, Fragment.Data
+  ) : HumanDetails, Fragment.Data
 }

@@ -177,13 +177,11 @@ private fun CodeGenerationAst.Field.writeCode(responseField: String): CodeBlock 
     is CodeGenerationAst.FieldType.Array -> {
       CodeBlock.builder()
           .beginControlFlow(
-              "writer.writeList(%L,·value.%L)·{·values,·listItemWriter·->",
+              "writer.writeList(%L,·value.%L)·{·value,·listItemWriter·->",
               responseField.escapeKotlinReservedWord(),
               this.name.escapeKotlinReservedWord(),
           )
-          .beginControlFlow("values?.forEach·{·value·->")
           .add(type.writeListItemCode)
-          .endControlFlow()
           .endControlFlow()
           .build()
     }
@@ -206,30 +204,17 @@ private val CodeGenerationAst.FieldType.Array.writeListItemCode: CodeBlock
         )
       }
       is CodeGenerationAst.FieldType.Object -> {
-        if (rawType.nullable) {
-          CodeBlock.builder()
-              .beginControlFlow("if(value == null)")
-              .addStatement("listItemWriter.writeObject(null)")
-              .nextControlFlow("else")
-              .beginControlFlow("listItemWriter.writeObject·{·writer·->")
-              .addStatement("%T.toResponse(writer,·value)", this.rawType.typeRef.asAdapterTypeName())
-              .endControlFlow()
-              .endControlFlow()
-              .build()
-        } else {
-          CodeBlock.builder()
-              .beginControlFlow("listItemWriter.writeObject·{·writer·->")
-              .addStatement("%T.toResponse(writer,·value)", this.rawType.typeRef.asAdapterTypeName())
-              .endControlFlow()
-              .build()
-        }
+
+        CodeBlock.builder()
+            .beginControlFlow("listItemWriter.writeObject·{·writer·->")
+            .addStatement("%T.toResponse(writer,·value)", this.rawType.typeRef.asAdapterTypeName())
+            .endControlFlow()
+            .build()
       }
       is CodeGenerationAst.FieldType.Array -> {
         CodeBlock.builder()
             .beginControlFlow("listItemWriter.writeList(value)·{·value,·listItemWriter·->")
-            .beginControlFlow("value?.forEach·{·value·->") // value always nullable in ListItemWriter
             .add(rawType.writeListItemCode)
-            .endControlFlow()
             .endControlFlow()
             .build()
       }

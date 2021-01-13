@@ -39,19 +39,19 @@ object GetUser_ResponseAdapter : ResponseAdapter<GetUser.Data> {
     override fun fromResponse(reader: ResponseReader, __typename: String?): GetUser.Data {
       val typename = __typename ?: reader.readString(RESPONSE_FIELDS[0])
       return when(typename) {
-        "Query" -> QueryDatum.fromResponse(reader, typename)
-        else -> OtherDatum.fromResponse(reader, typename)
+        "Query" -> QueryData.fromResponse(reader, typename)
+        else -> OtherData.fromResponse(reader, typename)
       }
     }
 
     override fun toResponse(writer: ResponseWriter, value: GetUser.Data) {
       when(value) {
-        is GetUser.Data.QueryDatum -> QueryDatum.toResponse(writer, value)
-        is GetUser.Data.OtherDatum -> OtherDatum.toResponse(writer, value)
+        is GetUser.Data.QueryData -> QueryData.toResponse(writer, value)
+        is GetUser.Data.OtherData -> OtherData.toResponse(writer, value)
       }
     }
 
-    object QueryDatum : ResponseAdapter<GetUser.Data.QueryDatum> {
+    object QueryData : ResponseAdapter<GetUser.Data.QueryData> {
       private val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
         ResponseField.forString("__typename", "__typename", null, false, null),
         ResponseField.forObject("organization", "organization", mapOf<String, Any?>(
@@ -61,27 +61,27 @@ object GetUser_ResponseAdapter : ResponseAdapter<GetUser.Data> {
       )
 
       override fun fromResponse(reader: ResponseReader, __typename: String?):
-          GetUser.Data.QueryDatum {
+          GetUser.Data.QueryData {
         return reader.run {
           var __typename: String? = __typename
-          var organization: GetUser.Data.QueryDatum.Organization? = null
+          var organization: GetUser.Data.QueryData.Organization? = null
           while(true) {
             when (selectField(RESPONSE_FIELDS)) {
               0 -> __typename = readString(RESPONSE_FIELDS[0])
-              1 -> organization = readObject<GetUser.Data.QueryDatum.Organization>(RESPONSE_FIELDS[1]) { reader ->
+              1 -> organization = readObject<GetUser.Data.QueryData.Organization>(RESPONSE_FIELDS[1]) { reader ->
                 Organization.fromResponse(reader)
               }
               else -> break
             }
           }
-          GetUser.Data.QueryDatum(
+          GetUser.Data.QueryData(
             __typename = __typename!!,
             organization = organization
           )
         }
       }
 
-      override fun toResponse(writer: ResponseWriter, value: GetUser.Data.QueryDatum) {
+      override fun toResponse(writer: ResponseWriter, value: GetUser.Data.QueryData) {
         writer.writeString(RESPONSE_FIELDS[0], value.__typename)
         if(value.organization == null) {
           writer.writeObject(RESPONSE_FIELDS[1], null)
@@ -92,7 +92,7 @@ object GetUser_ResponseAdapter : ResponseAdapter<GetUser.Data> {
         }
       }
 
-      object Organization : ResponseAdapter<GetUser.Data.QueryDatum.Organization> {
+      object Organization : ResponseAdapter<GetUser.Data.QueryData.Organization> {
         private val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
           ResponseField.forString("id", "id", null, false, null),
           ResponseField.forList("user", "user", mapOf<String, Any?>(
@@ -102,22 +102,22 @@ object GetUser_ResponseAdapter : ResponseAdapter<GetUser.Data> {
         )
 
         override fun fromResponse(reader: ResponseReader, __typename: String?):
-            GetUser.Data.QueryDatum.Organization {
+            GetUser.Data.QueryData.Organization {
           return reader.run {
             var id: String? = null
-            var user: List<GetUser.Data.QueryDatum.Organization.User>? = null
+            var user: List<GetUser.Data.QueryData.Organization.User>? = null
             while(true) {
               when (selectField(RESPONSE_FIELDS)) {
                 0 -> id = readString(RESPONSE_FIELDS[0])
-                1 -> user = readList<GetUser.Data.QueryDatum.Organization.User>(RESPONSE_FIELDS[1]) { reader ->
-                  reader.readObject<GetUser.Data.QueryDatum.Organization.User> { reader ->
+                1 -> user = readList<GetUser.Data.QueryData.Organization.User>(RESPONSE_FIELDS[1]) { reader ->
+                  reader.readObject<GetUser.Data.QueryData.Organization.User> { reader ->
                     User.fromResponse(reader)
                   }
                 }?.map { it!! }
                 else -> break
               }
             }
-            GetUser.Data.QueryDatum.Organization(
+            GetUser.Data.QueryData.Organization(
               id = id!!,
               user = user!!
             )
@@ -125,24 +125,22 @@ object GetUser_ResponseAdapter : ResponseAdapter<GetUser.Data> {
         }
 
         override fun toResponse(writer: ResponseWriter,
-            value: GetUser.Data.QueryDatum.Organization) {
+            value: GetUser.Data.QueryData.Organization) {
           writer.writeString(RESPONSE_FIELDS[0], value.id)
-          writer.writeList(RESPONSE_FIELDS[1], value.user) { values, listItemWriter ->
-            values?.forEach { value ->
-              listItemWriter.writeObject { writer ->
-                User.toResponse(writer, value)
-              }
+          writer.writeList(RESPONSE_FIELDS[1], value.user) { value, listItemWriter ->
+            listItemWriter.writeObject { writer ->
+              User.toResponse(writer, value)
             }
           }
         }
 
-        object User : ResponseAdapter<GetUser.Data.QueryDatum.Organization.User> {
+        object User : ResponseAdapter<GetUser.Data.QueryData.Organization.User> {
           private val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
             ResponseField.forString("__typename", "__typename", null, false, null)
           )
 
           override fun fromResponse(reader: ResponseReader, __typename: String?):
-              GetUser.Data.QueryDatum.Organization.User {
+              GetUser.Data.QueryData.Organization.User {
             val typename = __typename ?: reader.readString(RESPONSE_FIELDS[0])
             return when(typename) {
               "User" -> UserUser.fromResponse(reader, typename)
@@ -151,14 +149,14 @@ object GetUser_ResponseAdapter : ResponseAdapter<GetUser.Data> {
           }
 
           override fun toResponse(writer: ResponseWriter,
-              value: GetUser.Data.QueryDatum.Organization.User) {
+              value: GetUser.Data.QueryData.Organization.User) {
             when(value) {
-              is GetUser.Data.QueryDatum.Organization.User.UserUser -> UserUser.toResponse(writer, value)
-              is GetUser.Data.QueryDatum.Organization.User.OtherUser -> OtherUser.toResponse(writer, value)
+              is GetUser.Data.QueryData.Organization.User.UserUser -> UserUser.toResponse(writer, value)
+              is GetUser.Data.QueryData.Organization.User.OtherUser -> OtherUser.toResponse(writer, value)
             }
           }
 
-          object UserUser : ResponseAdapter<GetUser.Data.QueryDatum.Organization.User.UserUser> {
+          object UserUser : ResponseAdapter<GetUser.Data.QueryData.Organization.User.UserUser> {
             private val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
               ResponseField.forString("__typename", "__typename", null, false, null),
               ResponseField.forString("firstName", "firstName", null, false, null),
@@ -170,7 +168,7 @@ object GetUser_ResponseAdapter : ResponseAdapter<GetUser.Data> {
             )
 
             override fun fromResponse(reader: ResponseReader, __typename: String?):
-                GetUser.Data.QueryDatum.Organization.User.UserUser {
+                GetUser.Data.QueryData.Organization.User.UserUser {
               return reader.run {
                 var __typename: String? = __typename
                 var firstName: String? = null
@@ -185,7 +183,7 @@ object GetUser_ResponseAdapter : ResponseAdapter<GetUser.Data> {
                     else -> break
                   }
                 }
-                GetUser.Data.QueryDatum.Organization.User.UserUser(
+                GetUser.Data.QueryData.Organization.User.UserUser(
                   __typename = __typename!!,
                   firstName = firstName!!,
                   lastName = lastName!!,
@@ -195,7 +193,7 @@ object GetUser_ResponseAdapter : ResponseAdapter<GetUser.Data> {
             }
 
             override fun toResponse(writer: ResponseWriter,
-                value: GetUser.Data.QueryDatum.Organization.User.UserUser) {
+                value: GetUser.Data.QueryData.Organization.User.UserUser) {
               writer.writeString(RESPONSE_FIELDS[0], value.__typename)
               writer.writeString(RESPONSE_FIELDS[1], value.firstName)
               writer.writeString(RESPONSE_FIELDS[2], value.lastName)
@@ -203,13 +201,13 @@ object GetUser_ResponseAdapter : ResponseAdapter<GetUser.Data> {
             }
           }
 
-          object OtherUser : ResponseAdapter<GetUser.Data.QueryDatum.Organization.User.OtherUser> {
+          object OtherUser : ResponseAdapter<GetUser.Data.QueryData.Organization.User.OtherUser> {
             private val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
               ResponseField.forString("__typename", "__typename", null, false, null)
             )
 
             override fun fromResponse(reader: ResponseReader, __typename: String?):
-                GetUser.Data.QueryDatum.Organization.User.OtherUser {
+                GetUser.Data.QueryData.Organization.User.OtherUser {
               return reader.run {
                 var __typename: String? = __typename
                 while(true) {
@@ -218,14 +216,14 @@ object GetUser_ResponseAdapter : ResponseAdapter<GetUser.Data> {
                     else -> break
                   }
                 }
-                GetUser.Data.QueryDatum.Organization.User.OtherUser(
+                GetUser.Data.QueryData.Organization.User.OtherUser(
                   __typename = __typename!!
                 )
               }
             }
 
             override fun toResponse(writer: ResponseWriter,
-                value: GetUser.Data.QueryDatum.Organization.User.OtherUser) {
+                value: GetUser.Data.QueryData.Organization.User.OtherUser) {
               writer.writeString(RESPONSE_FIELDS[0], value.__typename)
             }
           }
@@ -233,13 +231,13 @@ object GetUser_ResponseAdapter : ResponseAdapter<GetUser.Data> {
       }
     }
 
-    object OtherDatum : ResponseAdapter<GetUser.Data.OtherDatum> {
+    object OtherData : ResponseAdapter<GetUser.Data.OtherData> {
       private val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
         ResponseField.forString("__typename", "__typename", null, false, null)
       )
 
       override fun fromResponse(reader: ResponseReader, __typename: String?):
-          GetUser.Data.OtherDatum {
+          GetUser.Data.OtherData {
         return reader.run {
           var __typename: String? = __typename
           while(true) {
@@ -248,13 +246,13 @@ object GetUser_ResponseAdapter : ResponseAdapter<GetUser.Data> {
               else -> break
             }
           }
-          GetUser.Data.OtherDatum(
+          GetUser.Data.OtherData(
             __typename = __typename!!
           )
         }
       }
 
-      override fun toResponse(writer: ResponseWriter, value: GetUser.Data.OtherDatum) {
+      override fun toResponse(writer: ResponseWriter, value: GetUser.Data.OtherData) {
         writer.writeString(RESPONSE_FIELDS[0], value.__typename)
       }
     }

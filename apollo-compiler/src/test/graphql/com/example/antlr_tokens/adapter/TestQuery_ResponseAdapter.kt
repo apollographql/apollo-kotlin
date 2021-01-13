@@ -37,11 +37,11 @@ object TestQuery_ResponseAdapter : ResponseAdapter<TestQuery.Data> {
 
     override fun fromResponse(reader: ResponseReader, __typename: String?): TestQuery.Data {
       return reader.run {
-        var typeWithGraphQLKeywords: TestQuery.Data.TypeWithGraphQLKeyword? = null
+        var typeWithGraphQLKeywords: TestQuery.Data.TypeWithGraphQLKeywords? = null
         while(true) {
           when (selectField(RESPONSE_FIELDS)) {
-            0 -> typeWithGraphQLKeywords = readObject<TestQuery.Data.TypeWithGraphQLKeyword>(RESPONSE_FIELDS[0]) { reader ->
-              TypeWithGraphQLKeyword.fromResponse(reader)
+            0 -> typeWithGraphQLKeywords = readObject<TestQuery.Data.TypeWithGraphQLKeywords>(RESPONSE_FIELDS[0]) { reader ->
+              TypeWithGraphQLKeywords.fromResponse(reader)
             }
             else -> break
           }
@@ -57,12 +57,12 @@ object TestQuery_ResponseAdapter : ResponseAdapter<TestQuery.Data> {
         writer.writeObject(RESPONSE_FIELDS[0], null)
       } else {
         writer.writeObject(RESPONSE_FIELDS[0]) { writer ->
-          TypeWithGraphQLKeyword.toResponse(writer, value.typeWithGraphQLKeywords)
+          TypeWithGraphQLKeywords.toResponse(writer, value.typeWithGraphQLKeywords)
         }
       }
     }
 
-    object TypeWithGraphQLKeyword : ResponseAdapter<TestQuery.Data.TypeWithGraphQLKeyword> {
+    object TypeWithGraphQLKeywords : ResponseAdapter<TestQuery.Data.TypeWithGraphQLKeywords> {
       private val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
         ResponseField.forString("on", "on", null, true, null),
         ResponseField.forString("null", "null", mapOf<String, Any?>(
@@ -77,7 +77,7 @@ object TestQuery_ResponseAdapter : ResponseAdapter<TestQuery.Data> {
       )
 
       override fun fromResponse(reader: ResponseReader, __typename: String?):
-          TestQuery.Data.TypeWithGraphQLKeyword {
+          TestQuery.Data.TypeWithGraphQLKeywords {
         return reader.run {
           var on: String? = null
           var null_: String? = null
@@ -90,7 +90,7 @@ object TestQuery_ResponseAdapter : ResponseAdapter<TestQuery.Data> {
               else -> break
             }
           }
-          TestQuery.Data.TypeWithGraphQLKeyword(
+          TestQuery.Data.TypeWithGraphQLKeywords(
             on = on,
             null_ = null_,
             alias = alias
@@ -99,7 +99,7 @@ object TestQuery_ResponseAdapter : ResponseAdapter<TestQuery.Data> {
       }
 
       override fun toResponse(writer: ResponseWriter,
-          value: TestQuery.Data.TypeWithGraphQLKeyword) {
+          value: TestQuery.Data.TypeWithGraphQLKeywords) {
         writer.writeString(RESPONSE_FIELDS[0], value.on)
         writer.writeString(RESPONSE_FIELDS[1], value.null_)
         writer.writeString(RESPONSE_FIELDS[2], value.alias)

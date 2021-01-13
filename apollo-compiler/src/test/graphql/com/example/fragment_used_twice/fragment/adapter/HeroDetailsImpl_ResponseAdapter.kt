@@ -40,20 +40,20 @@ object HeroDetailsImpl_ResponseAdapter : ResponseAdapter<HeroDetailsImpl.Data> {
     override fun fromResponse(reader: ResponseReader, __typename: String?): HeroDetailsImpl.Data {
       val typename = __typename ?: reader.readString(RESPONSE_FIELDS[0])
       return when(typename) {
-        "Droid" -> CharacterDatum.fromResponse(reader, typename)
-        "Human" -> CharacterDatum.fromResponse(reader, typename)
-        else -> OtherDatum.fromResponse(reader, typename)
+        "Droid" -> CharacterData.fromResponse(reader, typename)
+        "Human" -> CharacterData.fromResponse(reader, typename)
+        else -> OtherData.fromResponse(reader, typename)
       }
     }
 
     override fun toResponse(writer: ResponseWriter, value: HeroDetailsImpl.Data) {
       when(value) {
-        is HeroDetailsImpl.Data.CharacterDatum -> CharacterDatum.toResponse(writer, value)
-        is HeroDetailsImpl.Data.OtherDatum -> OtherDatum.toResponse(writer, value)
+        is HeroDetailsImpl.Data.CharacterData -> CharacterData.toResponse(writer, value)
+        is HeroDetailsImpl.Data.OtherData -> OtherData.toResponse(writer, value)
       }
     }
 
-    object CharacterDatum : ResponseAdapter<HeroDetailsImpl.Data.CharacterDatum> {
+    object CharacterData : ResponseAdapter<HeroDetailsImpl.Data.CharacterData> {
       private val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
         ResponseField.forString("__typename", "__typename", null, false, null),
         ResponseField.forString("name", "name", null, false, null),
@@ -61,7 +61,7 @@ object HeroDetailsImpl_ResponseAdapter : ResponseAdapter<HeroDetailsImpl.Data> {
       )
 
       override fun fromResponse(reader: ResponseReader, __typename: String?):
-          HeroDetailsImpl.Data.CharacterDatum {
+          HeroDetailsImpl.Data.CharacterData {
         return reader.run {
           var __typename: String? = __typename
           var name: String? = null
@@ -74,7 +74,7 @@ object HeroDetailsImpl_ResponseAdapter : ResponseAdapter<HeroDetailsImpl.Data> {
               else -> break
             }
           }
-          HeroDetailsImpl.Data.CharacterDatum(
+          HeroDetailsImpl.Data.CharacterData(
             __typename = __typename!!,
             name = name!!,
             birthDate = birthDate!!
@@ -82,21 +82,21 @@ object HeroDetailsImpl_ResponseAdapter : ResponseAdapter<HeroDetailsImpl.Data> {
         }
       }
 
-      override fun toResponse(writer: ResponseWriter, value: HeroDetailsImpl.Data.CharacterDatum) {
+      override fun toResponse(writer: ResponseWriter, value: HeroDetailsImpl.Data.CharacterData) {
         writer.writeString(RESPONSE_FIELDS[0], value.__typename)
         writer.writeString(RESPONSE_FIELDS[1], value.name)
         writer.writeCustom(RESPONSE_FIELDS[2] as ResponseField.CustomScalarField, value.birthDate)
       }
     }
 
-    object OtherDatum : ResponseAdapter<HeroDetailsImpl.Data.OtherDatum> {
+    object OtherData : ResponseAdapter<HeroDetailsImpl.Data.OtherData> {
       private val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
         ResponseField.forString("__typename", "__typename", null, false, null),
         ResponseField.forString("name", "name", null, false, null)
       )
 
       override fun fromResponse(reader: ResponseReader, __typename: String?):
-          HeroDetailsImpl.Data.OtherDatum {
+          HeroDetailsImpl.Data.OtherData {
         return reader.run {
           var __typename: String? = __typename
           var name: String? = null
@@ -107,14 +107,14 @@ object HeroDetailsImpl_ResponseAdapter : ResponseAdapter<HeroDetailsImpl.Data> {
               else -> break
             }
           }
-          HeroDetailsImpl.Data.OtherDatum(
+          HeroDetailsImpl.Data.OtherData(
             __typename = __typename!!,
             name = name!!
           )
         }
       }
 
-      override fun toResponse(writer: ResponseWriter, value: HeroDetailsImpl.Data.OtherDatum) {
+      override fun toResponse(writer: ResponseWriter, value: HeroDetailsImpl.Data.OtherData) {
         writer.writeString(RESPONSE_FIELDS[0], value.__typename)
         writer.writeString(RESPONSE_FIELDS[1], value.name)
       }

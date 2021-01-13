@@ -88,10 +88,8 @@ object TestQuery_ResponseAdapter : ResponseAdapter<TestQuery.Data> {
       }
 
       override fun toResponse(writer: ResponseWriter, value: TestQuery.Data.Hero) {
-        writer.writeList(RESPONSE_FIELDS[0], value.links) { values, listItemWriter ->
-          values?.forEach { value ->
-            listItemWriter.writeCustom(CustomScalars.URL, value)}
-        }
+        writer.writeList(RESPONSE_FIELDS[0], value.links) { value, listItemWriter ->
+          listItemWriter.writeCustom(CustomScalars.URL, value)}
       }
     }
   }

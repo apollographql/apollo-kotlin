@@ -209,15 +209,9 @@ object TestQuery_ResponseAdapter : ResponseAdapter<TestQuery.Data> {
           override fun toResponse(writer: ResponseWriter,
               value: TestQuery.Data.Hero.CharacterHero.FriendsConnection) {
             writer.writeInt(RESPONSE_FIELDS[0], value.totalCount)
-            writer.writeList(RESPONSE_FIELDS[1], value.edges) { values, listItemWriter ->
-              values?.forEach { value ->
-                if(value == null) {
-                  listItemWriter.writeObject(null)
-                } else {
-                  listItemWriter.writeObject { writer ->
-                    Edge.toResponse(writer, value)
-                  }
-                }
+            writer.writeList(RESPONSE_FIELDS[1], value.edges) { value, listItemWriter ->
+              listItemWriter.writeObject { writer ->
+                Edge.toResponse(writer, value)
               }
             }
           }

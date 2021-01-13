@@ -58,15 +58,9 @@ object TestQuery_ResponseAdapter : ResponseAdapter<TestQuery.Data> {
     }
 
     override fun toResponse(writer: ResponseWriter, value: TestQuery.Data) {
-      writer.writeList(RESPONSE_FIELDS[0], value.search) { values, listItemWriter ->
-        values?.forEach { value ->
-          if(value == null) {
-            listItemWriter.writeObject(null)
-          } else {
-            listItemWriter.writeObject { writer ->
-              Search.toResponse(writer, value)
-            }
-          }
+      writer.writeList(RESPONSE_FIELDS[0], value.search) { value, listItemWriter ->
+        listItemWriter.writeObject { writer ->
+          Search.toResponse(writer, value)
         }
       }
     }

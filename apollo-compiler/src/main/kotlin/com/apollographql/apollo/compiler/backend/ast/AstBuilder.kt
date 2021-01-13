@@ -7,7 +7,6 @@ import com.apollographql.apollo.compiler.introspection.IntrospectionSchema
 import com.apollographql.apollo.compiler.introspection.resolveType
 import com.apollographql.apollo.compiler.operationoutput.OperationOutput
 import com.apollographql.apollo.compiler.operationoutput.findOperationId
-import com.apollographql.apollo.compiler.singularize
 
 internal class AstBuilder private constructor(
     private val backendIr: BackendIr,
@@ -57,7 +56,7 @@ internal class AstBuilder private constructor(
         .filter { type -> type.kind == IntrospectionSchema.Kind.ENUM }
         .map { type ->
           val enumSchemaType = type as IntrospectionSchema.Type.Enum
-          val name = enumSchemaType.name.normalizeTypeName()
+          val name = enumSchemaType.name.toUpperCamelCase()
           CodeGenerationAst.EnumType(
               graphqlName = enumSchemaType.name,
               name = name,
@@ -79,7 +78,7 @@ internal class AstBuilder private constructor(
   private fun buildCustomTypes(): CustomScalarTypes {
     return customScalarsMapping.mapValues { (schemaType, mappedType) ->
       CodeGenerationAst.CustomScalarType(
-          name = schemaType.normalizeTypeName(),
+          name = schemaType.toUpperCamelCase(),
           schemaType = schemaType,
           mappedType = mappedType,
       )
@@ -99,7 +98,7 @@ internal class AstBuilder private constructor(
         .filter { type -> type.kind == IntrospectionSchema.Kind.INPUT_OBJECT }
         .map { type ->
           val inputSchemaType = type as IntrospectionSchema.Type.InputObject
-          val name = inputSchemaType.name.normalizeTypeName()
+          val name = inputSchemaType.name.toUpperCamelCase()
           CodeGenerationAst.InputType(
               graphqlName = inputSchemaType.name,
               name = name,
@@ -107,7 +106,7 @@ internal class AstBuilder private constructor(
               deprecationReason = null,
               fields = inputSchemaType.inputFields.map { field ->
                 val fieldSchemaTypeRef = inputSchemaType.resolveInputField(field.name).type
-                val fieldName = field.name.normalizeFieldName()
+                val fieldName = field.name.toLowerCamelCase()
                 val fieldType = fieldSchemaTypeRef.resolveInputFieldType(
                     typesPackageName = typesPackageName,
                 )
@@ -153,15 +152,12 @@ internal class AstBuilder private constructor(
     }
   }
 
-  private fun IntrospectionSchema.TypeRef.resolveInputFieldType(
-      typesPackageName: String,
-
-      ): CodeGenerationAst.FieldType {
+  private fun IntrospectionSchema.TypeRef.resolveInputFieldType(typesPackageName: String): CodeGenerationAst.FieldType {
     return when (this.kind) {
       IntrospectionSchema.Kind.ENUM -> CodeGenerationAst.FieldType.Scalar.Enum(
           nullable = true,
           typeRef = CodeGenerationAst.TypeRef(
-              name = this.name!!.normalizeTypeName(),
+              name = this.name!!.toUpperCamelCase(),
               packageName = typesPackageName,
           )
       )
@@ -209,7 +205,7 @@ internal class AstBuilder private constructor(
         CodeGenerationAst.FieldType.Object(
             nullable = true,
             typeRef = CodeGenerationAst.TypeRef(
-                name = this.name!!.normalizeTypeName(),
+                name = this.name!!.toUpperCamelCase(),
                 packageName = typesPackageName,
             )
         )
@@ -241,10 +237,7 @@ internal class AstBuilder private constructor(
         name = this.operationName,
         packageName = this.targetPackageName,
     )
-    val operationDataType = this.astOperationDataObjectType(
-        targetPackageName = this.targetPackageName,
-
-        ).run {
+    val operationDataType = this.astOperationDataObjectType(this.targetPackageName).run {
       copy(
           implements = implements + CodeGenerationAst.TypeRef(
               name = "Data",
@@ -256,7 +249,7 @@ internal class AstBuilder private constructor(
       )
     }
     return CodeGenerationAst.OperationType(
-        name = this.name.normalizeTypeName(),
+        name = this.name.toUpperCamelCase(),
         packageName = this.targetPackageName,
         type = operationType,
         operationName = this.operationName,
@@ -268,9 +261,7 @@ internal class AstBuilder private constructor(
     )
   }
 
-  private fun BackendIr.Operation.astOperationDataObjectType(
-      targetPackageName: String,
-  ): CodeGenerationAst.ObjectType {
+  private fun BackendIr.Operation.astOperationDataObjectType(targetPackageName: String): CodeGenerationAst.ObjectType {
     return this.dataField.asAstObjectType(
         targetPackageName = targetPackageName,
         abstract = false,
@@ -309,7 +300,7 @@ internal class AstBuilder private constructor(
         alternativeSelectionKeys = implementationSelectionSet.selectionKeys,
     )
     val implementationTypeRef = CodeGenerationAst.TypeRef(
-        name = this.implementationSelectionSet.name.normalizeTypeName(),
+        name = this.implementationSelectionSet.name.toUpperCamelCase(),
         packageName = fragmentsPackage,
     )
     return CodeGenerationAst.FragmentType(
@@ -337,7 +328,7 @@ internal class AstBuilder private constructor(
         typesPackageName = typesPackageName,
     )
     return CodeGenerationAst.InputField(
-        name = name.normalizeFieldName(),
+        name = name.toLowerCamelCase(),
         schemaName = name,
         deprecationReason = null,
         type = fieldType,
@@ -351,16 +342,15 @@ internal class AstBuilder private constructor(
       abstract: Boolean,
       currentSelectionKey: SelectionKey,
   ): CodeGenerationAst.ObjectType {
-    val schemaType = schema.resolveType(schema.resolveType(this.type.rawType.name!!))
+    val schemaType = schema.resolveType(schema.resolveType(this.schemaTypeRef.rawType.name!!))
     return buildObjectType(
-        name = responseName,
+        name = typeName,
         description = schemaType.description,
-        schemaTypename = this.type.rawType.name,
+        schemaTypename = this.schemaTypeRef.rawType.name,
         fields = fields,
         fragments = fragments,
         targetPackageName = targetPackageName,
         abstract = abstract,
-
         currentSelectionKey = currentSelectionKey,
         alternativeSelectionKeys = selectionKeys,
     )
@@ -385,7 +375,6 @@ internal class AstBuilder private constructor(
           fields = fields,
           targetPackageName = targetPackageName,
           abstract = abstract,
-
           currentSelectionKey = currentSelectionKey,
           alternativeSelectionKeys = alternativeSelectionKeys,
       )
@@ -398,7 +387,6 @@ internal class AstBuilder private constructor(
           fragments = fragments,
           targetPackageName = targetPackageName,
           abstract = abstract,
-
           selectionKey = currentSelectionKey,
           alternativeSelectionKeys = alternativeSelectionKeys,
       )
@@ -418,8 +406,7 @@ internal class AstBuilder private constructor(
     val astFields = fields.map { field ->
       field.buildField(
           targetPackageName = targetPackageName,
-
-          selectionKey = currentSelectionKey + field.responseName,
+          selectionKey = currentSelectionKey + field.typeName,
       )
     }
     val implements = alternativeSelectionKeys.mapNotNull { keys ->
@@ -434,12 +421,11 @@ internal class AstBuilder private constructor(
           field.asAstObjectType(
               targetPackageName = targetPackageName,
               abstract = abstract,
-              currentSelectionKey = currentSelectionKey + field.responseName,
-
-              )
+              currentSelectionKey = currentSelectionKey + field.typeName,
+          )
         }
     return CodeGenerationAst.ObjectType(
-        name = name.normalizeTypeName(),
+        name = name.toUpperCamelCase(),
         description = description ?: "",
         deprecationReason = null,
         fields = astFields,
@@ -472,14 +458,13 @@ internal class AstBuilder private constructor(
         .toMap()
 
     val kind = CodeGenerationAst.ObjectType.Kind.Fragment(
-        defaultImplementation = (selectionKey + "Other${parentTypeName.normalizeTypeName()}").asTypeRef(targetPackageName),
+        defaultImplementation = (selectionKey + "Other${parentTypeName.toUpperCamelCase()}").asTypeRef(targetPackageName),
         possibleImplementations = possibleImplementations,
     )
     val astFields = fields.map { field ->
       field.buildField(
           targetPackageName = targetPackageName,
-
-          selectionKey = selectionKey + field.responseName,
+          selectionKey = selectionKey + field.typeName,
       )
     }
     val implements = alternativeSelectionKeys.mapNotNull { keys ->
@@ -499,13 +484,13 @@ internal class AstBuilder private constructor(
     val fragmentAccessors = fragments.accessors
         .map { (name, selectionKey) ->
           CodeGenerationAst.ObjectType.FragmentAccessor(
-              name = name.normalizeFieldName(),
+              name = name.toLowerCamelCase(),
               typeRef = selectionKey.asTypeRef(targetPackageName),
           )
         }
 
     return CodeGenerationAst.ObjectType(
-        name = parentTypeName.normalizeTypeName(),
+        name = parentTypeName.toUpperCamelCase(),
         description = description ?: "",
         deprecationReason = null,
         fields = astFields,
@@ -538,7 +523,7 @@ internal class AstBuilder private constructor(
           field.asAstObjectType(
               targetPackageName = targetPackageName,
               abstract = abstract || fragmentObjectTypes.isNotEmpty(),
-              currentSelectionKey = selectionKey + field.responseName,
+              currentSelectionKey = selectionKey + field.typeName,
           )
         }
     return fieldNestedObjects.plus(fragmentObjectTypes)
@@ -557,7 +542,6 @@ internal class AstBuilder private constructor(
           fields = this.fields,
           targetPackageName = targetPackageName,
           abstract = true,
-
           currentSelectionKey = selectionKey + this.name,
           alternativeSelectionKeys = this.selectionKeys,
       )
@@ -593,13 +577,12 @@ internal class AstBuilder private constructor(
       selectionKey: SelectionKey,
   ): CodeGenerationAst.Field {
     return CodeGenerationAst.Field(
-        name = this.responseName.normalizeFieldName(),
+        name = this.responseName.toLowerCamelCase(),
         schemaName = this.name,
         responseName = this.responseName,
         type = this.resolveFieldType(
             targetPackageName = targetPackageName,
-            schemaTypeRef = this.type,
-
+            schemaTypeRef = this.schemaTypeRef,
             selectionKey = selectionKey,
         ),
         description = this.description,
@@ -637,7 +620,7 @@ internal class AstBuilder private constructor(
       IntrospectionSchema.Kind.ENUM -> CodeGenerationAst.FieldType.Scalar.Enum(
           nullable = true,
           typeRef = CodeGenerationAst.TypeRef(
-              name = schemaTypeRef.name!!.normalizeTypeName(),
+              name = schemaTypeRef.name!!.toUpperCamelCase(),
               packageName = typesPackageName
           )
       )
@@ -682,7 +665,6 @@ internal class AstBuilder private constructor(
       IntrospectionSchema.Kind.NON_NULL -> this.resolveFieldType(
           targetPackageName = targetPackageName,
           schemaTypeRef = schemaTypeRef.ofType!!,
-
           selectionKey = selectionKey,
       ).nonNullable()
 
@@ -710,26 +692,26 @@ internal class AstBuilder private constructor(
       SelectionKey.Type.Fragment -> fragmentsPackage
     }
     val rootTypeRef = CodeGenerationAst.TypeRef(
-        name = this.keys.first().normalizeTypeName(),
+        name = this.keys.first().toUpperCamelCase(),
         packageName = packageName,
         enclosingType = null
     )
     return this.keys.drop(1).fold(rootTypeRef) { enclosingType, key ->
       CodeGenerationAst.TypeRef(
-          name = key.normalizeTypeName(),
+          name = key.toUpperCamelCase(),
           packageName = packageName,
           enclosingType = enclosingType
       )
     }
   }
 
-  private fun String.normalizeFieldName(): String {
+  private fun String.toLowerCamelCase(): String {
     val firstLetterIndex = this.indexOfFirst { it.isLetter() }
     return this.substring(0, firstLetterIndex) + this.substring(firstLetterIndex, this.length).decapitalize()
   }
 
-  private fun String.normalizeTypeName(): String {
+  private fun String.toUpperCamelCase(): String {
     val firstLetterIndex = this.indexOfFirst { it.isLetter() }
-    return this.substring(0, firstLetterIndex) + this.substring(firstLetterIndex, this.length).singularize().capitalize()
+    return this.substring(0, firstLetterIndex) + this.substring(firstLetterIndex, this.length).capitalize()
   }
 }

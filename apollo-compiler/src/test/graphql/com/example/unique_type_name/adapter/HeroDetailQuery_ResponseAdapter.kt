@@ -136,15 +136,9 @@ object HeroDetailQuery_ResponseAdapter : ResponseAdapter<HeroDetailQuery.Data> {
             value: com.example.unique_type_name.HeroDetailQuery.Data.HeroDetailQuery.HumanHeroDetailQuery) {
           writer.writeString(RESPONSE_FIELDS[0], value.__typename)
           writer.writeString(RESPONSE_FIELDS[1], value.name)
-          writer.writeList(RESPONSE_FIELDS[2], value.friends) { values, listItemWriter ->
-            values?.forEach { value ->
-              if(value == null) {
-                listItemWriter.writeObject(null)
-              } else {
-                listItemWriter.writeObject { writer ->
-                  Friend.toResponse(writer, value)
-                }
-              }
+          writer.writeList(RESPONSE_FIELDS[2], value.friends) { value, listItemWriter ->
+            listItemWriter.writeObject { writer ->
+              Friend.toResponse(writer, value)
             }
           }
           writer.writeDouble(RESPONSE_FIELDS[3], value.height)
@@ -190,19 +184,11 @@ object HeroDetailQuery_ResponseAdapter : ResponseAdapter<HeroDetailQuery.Data> {
           override fun toResponse(writer: ResponseWriter,
               value: com.example.unique_type_name.HeroDetailQuery.Data.HeroDetailQuery.HumanHeroDetailQuery.Friend) {
             writer.writeString(RESPONSE_FIELDS[0], value.name)
-            writer.writeList(RESPONSE_FIELDS[1], value.appearsIn) { values, listItemWriter ->
-              values?.forEach { value ->
-                listItemWriter.writeString(value?.rawValue)}
-            }
-            writer.writeList(RESPONSE_FIELDS[2], value.friends) { values, listItemWriter ->
-              values?.forEach { value ->
-                if(value == null) {
-                  listItemWriter.writeObject(null)
-                } else {
-                  listItemWriter.writeObject { writer ->
-                    Friend.toResponse(writer, value)
-                  }
-                }
+            writer.writeList(RESPONSE_FIELDS[1], value.appearsIn) { value, listItemWriter ->
+              listItemWriter.writeString(value?.rawValue)}
+            writer.writeList(RESPONSE_FIELDS[2], value.friends) { value, listItemWriter ->
+              listItemWriter.writeObject { writer ->
+                Friend.toResponse(writer, value)
               }
             }
           }
@@ -308,15 +294,9 @@ object HeroDetailQuery_ResponseAdapter : ResponseAdapter<HeroDetailQuery.Data> {
                 override fun toResponse(writer: ResponseWriter,
                     value: com.example.unique_type_name.HeroDetailQuery.Data.HeroDetailQuery.HumanHeroDetailQuery.Friend.Friend.CharacterFriend.FriendsConnection) {
                   writer.writeInt(RESPONSE_FIELDS[0], value.totalCount)
-                  writer.writeList(RESPONSE_FIELDS[1], value.edges) { values, listItemWriter ->
-                    values?.forEach { value ->
-                      if(value == null) {
-                        listItemWriter.writeObject(null)
-                      } else {
-                        listItemWriter.writeObject { writer ->
-                          Edge.toResponse(writer, value)
-                        }
-                      }
+                  writer.writeList(RESPONSE_FIELDS[1], value.edges) { value, listItemWriter ->
+                    listItemWriter.writeObject { writer ->
+                      Edge.toResponse(writer, value)
                     }
                   }
                 }
@@ -460,15 +440,9 @@ object HeroDetailQuery_ResponseAdapter : ResponseAdapter<HeroDetailQuery.Data> {
             value: com.example.unique_type_name.HeroDetailQuery.Data.HeroDetailQuery.OtherHeroDetailQuery) {
           writer.writeString(RESPONSE_FIELDS[0], value.__typename)
           writer.writeString(RESPONSE_FIELDS[1], value.name)
-          writer.writeList(RESPONSE_FIELDS[2], value.friends) { values, listItemWriter ->
-            values?.forEach { value ->
-              if(value == null) {
-                listItemWriter.writeObject(null)
-              } else {
-                listItemWriter.writeObject { writer ->
-                  Friend.toResponse(writer, value)
-                }
-              }
+          writer.writeList(RESPONSE_FIELDS[2], value.friends) { value, listItemWriter ->
+            listItemWriter.writeObject { writer ->
+              Friend.toResponse(writer, value)
             }
           }
         }

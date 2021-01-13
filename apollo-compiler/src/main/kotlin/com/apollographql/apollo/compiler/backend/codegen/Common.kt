@@ -105,23 +105,6 @@ private fun Number.castTo(type: TypeName): Number {
   }
 }
 
-internal fun Collection<CodeGenerationAst.TypeRef>.accessorProperties(): List<PropertySpec> {
-  return map { type ->
-    PropertySpec.builder("as${type.name.escapeKotlinReservedWord()}", type.asTypeName().copy(nullable = true))
-        .getter(FunSpec.getterBuilder().addStatement("return this as? %T", type.asTypeName()).build())
-        .build()
-  }
-}
-
-internal fun String.normalizeGraphQLType(): String {
-  val normalizedType = removeSuffix("!").removeSurrounding(prefix = "[", suffix = "]").removeSuffix("!")
-  return if (normalizedType != this) {
-    normalizedType.normalizeGraphQLType()
-  } else {
-    normalizedType
-  }
-}
-
 internal val suppressWarningsAnnotation = AnnotationSpec
     .builder(Suppress::class)
     .addMember("%S, %S, %S, %S, %S, %S, %S", "NAME_SHADOWING", "UNUSED_ANONYMOUS_PARAMETER", "LocalVariableName",
@@ -165,17 +148,6 @@ internal fun TypeSpec.patchKotlinNativeOptionalArrayProperties(): TypeSpec {
 }
 
 private val MULTIPLATFORM_THROWS = ClassName("com.apollographql.apollo.api.internal", "Throws")
-private val MULTIPLATFORM_IO_EXCEPTION = ClassName("okio", "IOException")
-
-internal fun FunSpec.Builder.throwsMultiplatformIOException() = throws(MULTIPLATFORM_IO_EXCEPTION)
-
-/**
- * User instead of Kotlin poet throws since we have our own Throws class for Kotlin Multiplatform
- */
-internal fun FunSpec.Builder.throws(vararg exceptionClasses: ClassName) = addAnnotation(
-    AnnotationSpec.builder(MULTIPLATFORM_THROWS)
-        .apply { exceptionClasses.forEach { addMember("%T::class", it) } }
-        .build())
 
 internal fun CodeGenerationAst.Field.asOptionalParameterSpec(withDefaultValue: Boolean = true): ParameterSpec {
   return ParameterSpec

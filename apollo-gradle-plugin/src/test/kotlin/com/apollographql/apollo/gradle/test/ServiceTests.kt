@@ -1,7 +1,5 @@
 package com.apollographql.apollo.gradle.test
 
-
-import com.apollographql.apollo.gradle.internal.DefaultApolloExtension
 import com.apollographql.apollo.gradle.util.TestUtils
 import com.apollographql.apollo.gradle.util.TestUtils.fixturesDirectory
 import com.apollographql.apollo.gradle.util.TestUtils.withSimpleProject
@@ -9,11 +7,9 @@ import com.apollographql.apollo.gradle.util.TestUtils.withTestProject
 import com.apollographql.apollo.gradle.util.generatedChild
 import com.apollographql.apollo.gradle.util.replaceInText
 import com.google.common.truth.Truth
-import org.gradle.api.tasks.TaskExecutionException
 import org.gradle.testkit.runner.TaskOutcome
 import org.gradle.testkit.runner.UnexpectedBuildFailure
 import org.hamcrest.CoreMatchers.containsString
-import org.junit.Assert
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertNotNull
 import org.junit.Assert.assertThat
@@ -81,7 +77,6 @@ class ServiceTests {
     }
   }
 
-
   @Test
   fun `useSemanticNaming defaults to true`() {
     withSimpleProject("""
@@ -99,7 +94,7 @@ class ServiceTests {
       }
     """.trimIndent()) { dir ->
       TestUtils.executeTask("generateApolloSources", dir)
-      TestUtils.assertFileContains(dir, "service/com/example/DroidDetail.kt", "class DroidDetail ")
+      TestUtils.assertFileContains(dir, "service/com/example/DroidDetails.kt", "class DroidDetails ")
     }
   }
 
@@ -367,7 +362,7 @@ class ServiceTests {
 
   @Test
   fun `withOutputDir can rewire to the test source set`() {
-    withTestProject("testSourceSet") {dir ->
+    withTestProject("testSourceSet") { dir ->
       TestUtils.executeTask("build", dir)
 
       assertTrue(dir.generatedChild("service/com/example/GreetingQuery.kt").isFile)
@@ -431,6 +426,26 @@ class ServiceTests {
 
       assertTrue(dir.generatedChild("githunt/type/FeedType.kt").isFile)
       assertThat(dir.generatedChild("githunt/type/FeedType.kt").readText(), containsString("sealed class"))
+    }
+  }
+
+  @Test
+  fun `when generateFragmentImplementations is not set, it defaults to false`() {
+    withSimpleProject { dir ->
+      TestUtils.executeTask("generateApolloSources", dir)
+      assertTrue(!dir.generatedChild("service/com/example/fragment/SpeciesInformationImpl.kt").exists())
+    }
+  }
+
+  @Test
+  fun `when generateFragmentImplementations set to true, it generates default fragment implementation`() {
+    withSimpleProject("""
+      apollo {
+        generateFragmentImplementations = true
+      }
+    """.trimIndent()) { dir ->
+      TestUtils.executeTask("generateApolloSources", dir)
+      assertTrue(dir.generatedChild("service/com/example/fragment/SpeciesInformationImpl.kt").isFile)
     }
   }
 }

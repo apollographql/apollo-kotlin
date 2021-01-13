@@ -19,27 +19,27 @@ interface ResponseWriter {
 
   fun writeObject(field: ResponseField, block: ((ResponseWriter) -> Unit)?)
 
-  fun <T> writeList(field: ResponseField, values: List<T>?, block: (items: List<T>?, listItemWriter: ListItemWriter) -> Unit)
+  fun <T: Any> writeList(field: ResponseField, values: List<T?>?, block: (item: T, listItemWriter: ListItemWriter) -> Unit)
 
   interface ListWriter<T> {
     fun write(items: List<T>?, listItemWriter: ListItemWriter)
   }
 
   interface ListItemWriter {
-    fun writeString(value: String?)
+    fun writeString(value: String)
 
-    fun writeInt(value: Int?)
+    fun writeInt(value: Int)
 
-    fun writeLong(value: Long?)
+    fun writeLong(value: Long)
 
-    fun writeDouble(value: Double?)
+    fun writeDouble(value: Double)
 
-    fun writeBoolean(value: Boolean?)
+    fun writeBoolean(value: Boolean)
 
-    fun writeCustom(customScalar: CustomScalar, value: Any?)
+    fun writeCustom(customScalar: CustomScalar, value: Any)
 
-    fun writeObject(block: ((ResponseWriter) ->Unit)?)
+    fun writeObject(block: ((ResponseWriter) ->Unit))
 
-    fun <T> writeList(items: List<T>?, block: (items: List<T>?, listItemWriter: ListItemWriter) -> Unit)
+    fun <T: Any> writeList(items: List<T?>, block: (item: T, listItemWriter: ListItemWriter) -> Unit)
   }
 }

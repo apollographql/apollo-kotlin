@@ -1,10 +1,10 @@
 package com.apollographql.apollo.network.http
 
-import com.apollographql.apollo.ApolloException
-import com.apollographql.apollo.ApolloHttpException
-import com.apollographql.apollo.ApolloNetworkException
-import com.apollographql.apollo.ApolloParseException
-import com.apollographql.apollo.ApolloSerializationException
+import com.apollographql.apollo.exception.ApolloException
+import com.apollographql.apollo.exception.ApolloHttpException
+import com.apollographql.apollo.exception.ApolloNetworkException
+import com.apollographql.apollo.exception.ApolloParseException
+import com.apollographql.apollo.exception.ApolloSerializationException
 import com.apollographql.apollo.api.ApolloExperimental
 import com.apollographql.apollo.api.ExecutionContext
 import com.apollographql.apollo.api.Operation

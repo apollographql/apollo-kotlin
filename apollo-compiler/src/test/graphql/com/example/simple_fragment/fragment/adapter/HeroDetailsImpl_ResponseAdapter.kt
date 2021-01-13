@@ -38,26 +38,26 @@ internal object HeroDetailsImpl_ResponseAdapter : ResponseAdapter<HeroDetailsImp
     override fun fromResponse(reader: ResponseReader, __typename: String?): HeroDetailsImpl.Data {
       val typename = __typename ?: reader.readString(RESPONSE_FIELDS[0])
       return when(typename) {
-        "Human" -> HumanDatum.fromResponse(reader, typename)
-        else -> OtherDatum.fromResponse(reader, typename)
+        "Human" -> HumanData.fromResponse(reader, typename)
+        else -> OtherData.fromResponse(reader, typename)
       }
     }
 
     override fun toResponse(writer: ResponseWriter, value: HeroDetailsImpl.Data) {
       when(value) {
-        is HeroDetailsImpl.Data.HumanDatum -> HumanDatum.toResponse(writer, value)
-        is HeroDetailsImpl.Data.OtherDatum -> OtherDatum.toResponse(writer, value)
+        is HeroDetailsImpl.Data.HumanData -> HumanData.toResponse(writer, value)
+        is HeroDetailsImpl.Data.OtherData -> OtherData.toResponse(writer, value)
       }
     }
 
-    object HumanDatum : ResponseAdapter<HeroDetailsImpl.Data.HumanDatum> {
+    object HumanData : ResponseAdapter<HeroDetailsImpl.Data.HumanData> {
       private val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
         ResponseField.forString("__typename", "__typename", null, false, null),
         ResponseField.forString("name", "name", null, false, null)
       )
 
       override fun fromResponse(reader: ResponseReader, __typename: String?):
-          HeroDetailsImpl.Data.HumanDatum {
+          HeroDetailsImpl.Data.HumanData {
         return reader.run {
           var __typename: String? = __typename
           var name: String? = null
@@ -68,26 +68,26 @@ internal object HeroDetailsImpl_ResponseAdapter : ResponseAdapter<HeroDetailsImp
               else -> break
             }
           }
-          HeroDetailsImpl.Data.HumanDatum(
+          HeroDetailsImpl.Data.HumanData(
             __typename = __typename!!,
             name = name!!
           )
         }
       }
 
-      override fun toResponse(writer: ResponseWriter, value: HeroDetailsImpl.Data.HumanDatum) {
+      override fun toResponse(writer: ResponseWriter, value: HeroDetailsImpl.Data.HumanData) {
         writer.writeString(RESPONSE_FIELDS[0], value.__typename)
         writer.writeString(RESPONSE_FIELDS[1], value.name)
       }
     }
 
-    object OtherDatum : ResponseAdapter<HeroDetailsImpl.Data.OtherDatum> {
+    object OtherData : ResponseAdapter<HeroDetailsImpl.Data.OtherData> {
       private val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
         ResponseField.forString("__typename", "__typename", null, false, null)
       )
 
       override fun fromResponse(reader: ResponseReader, __typename: String?):
-          HeroDetailsImpl.Data.OtherDatum {
+          HeroDetailsImpl.Data.OtherData {
         return reader.run {
           var __typename: String? = __typename
           while(true) {
@@ -96,13 +96,13 @@ internal object HeroDetailsImpl_ResponseAdapter : ResponseAdapter<HeroDetailsImp
               else -> break
             }
           }
-          HeroDetailsImpl.Data.OtherDatum(
+          HeroDetailsImpl.Data.OtherData(
             __typename = __typename!!
           )
         }
       }
 
-      override fun toResponse(writer: ResponseWriter, value: HeroDetailsImpl.Data.OtherDatum) {
+      override fun toResponse(writer: ResponseWriter, value: HeroDetailsImpl.Data.OtherData) {
         writer.writeString(RESPONSE_FIELDS[0], value.__typename)
       }
     }

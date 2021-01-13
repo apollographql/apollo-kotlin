@@ -32,5 +32,5 @@ class CharacterDetailsImpl : Fragment<CharacterDetailsImpl.Data> {
      * The date character was born.
      */
     override val birthDate: Any
-  ) : CharacterDetail, Fragment.Data
+  ) : CharacterDetails, Fragment.Data
 }

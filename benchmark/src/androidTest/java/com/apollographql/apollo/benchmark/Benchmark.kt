@@ -1,12 +1,12 @@
 package com.apollographql.apollo.benchmark
 
-import Utils
 import Utils.bufferedSource
 import androidx.benchmark.junit4.BenchmarkRule
 import androidx.benchmark.junit4.measureRepeated
 import com.apollographql.apollo.api.CustomScalarAdapters
 import com.apollographql.apollo.api.parse
 import com.apollographql.apollo.benchmark.moshi.Query
+import com.apollographql.apollo.cache.normalized.CacheKeyResolver
 import com.apollographql.apollo.cache.normalized.internal.normalize
 import com.squareup.moshi.Moshi
 import org.junit.Rule
@@ -46,6 +46,6 @@ class Benchmark {
     }
 
     val data = operation.parse(bufferedSource).data!!
-    val records = operation.normalize(data, CustomScalarAdapters.DEFAULT, Utils.responseNormalizer)
+    val records = operation.normalize(data, CustomScalarAdapters.DEFAULT, CacheKeyResolver.DEFAULT)
   }
 }

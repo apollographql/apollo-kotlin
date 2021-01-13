@@ -5,30 +5,27 @@ import com.apollographql.apollo.api.Fragment
 import com.apollographql.apollo.api.Operation
 import com.apollographql.apollo.api.Response
 import com.apollographql.apollo.api.Response.Companion.builder
-import com.apollographql.apollo.api.ResponseField
 import com.apollographql.apollo.api.internal.ApolloLogger
 import com.apollographql.apollo.api.internal.MapResponseReader
-import com.apollographql.apollo.api.internal.ResolveDelegate
 import com.apollographql.apollo.api.internal.ResponseAdapter
+import com.apollographql.apollo.api.parseData
 import com.apollographql.apollo.cache.CacheHeaders
 import com.apollographql.apollo.cache.normalized.ApolloStore
 import com.apollographql.apollo.cache.normalized.ApolloStore.RecordChangeSubscriber
 import com.apollographql.apollo.cache.normalized.ApolloStoreOperation
 import com.apollographql.apollo.cache.normalized.CacheKey
 import com.apollographql.apollo.cache.normalized.CacheKeyResolver
-import com.apollographql.apollo.cache.normalized.CacheKeyResolver.Companion.rootKeyForOperation
+import com.apollographql.apollo.cache.normalized.CacheKeyResolver.Companion.rootKey
 import com.apollographql.apollo.cache.normalized.NormalizedCache
 import com.apollographql.apollo.cache.normalized.OptimisticNormalizedCache
 import com.apollographql.apollo.cache.normalized.Record
 import com.apollographql.apollo.cache.normalized.internal.CacheValueResolver
-import com.apollographql.apollo.cache.normalized.internal.CacheKeyBuilder
 import com.apollographql.apollo.cache.normalized.internal.ReadableStore
 import com.apollographql.apollo.cache.normalized.internal.RealCacheKeyBuilder
-import com.apollographql.apollo.cache.normalized.internal.ResponseNormalizer
 import com.apollographql.apollo.cache.normalized.internal.Transaction
 import com.apollographql.apollo.cache.normalized.internal.WriteableStore
-import com.apollographql.apollo.api.internal.response.RealResponseWriter
-import com.apollographql.apollo.api.parseData
+import com.apollographql.apollo.cache.normalized.internal.dependentKeys
+import com.apollographql.apollo.cache.normalized.internal.normalize
 import java.util.ArrayList
 import java.util.Collections
 import java.util.LinkedHashSet
@@ -46,19 +43,6 @@ class RealApolloStore(normalizedCache: NormalizedCache,
   private val lock = ReentrantReadWriteLock()
   private val subscribers : MutableSet<RecordChangeSubscriber> = Collections.newSetFromMap(WeakHashMap())
   private val cacheKeyBuilder = RealCacheKeyBuilder()
-
-  override fun networkResponseNormalizer(): ResponseNormalizer<Map<String, Any>> {
-    return object : ResponseNormalizer<Map<String, Any>>() {
-      override fun resolveCacheKey(field: ResponseField,
-                                   record: Map<String, Any>): CacheKey {
-        return cacheKeyResolver.fromFieldRecordSet(field, record)
-      }
-
-      override fun cacheKeyBuilder(): CacheKeyBuilder {
-        return cacheKeyBuilder
-      }
-    }
-  }
 
   @Synchronized
   override fun subscribe(subscriber: RecordChangeSubscriber) {
@@ -206,7 +190,7 @@ class RealApolloStore(normalizedCache: NormalizedCache,
   ): ApolloStoreOperation<Set<String>> {
     return object : ApolloStoreOperation<Set<String>>(dispatcher) {
       override fun perform(): Set<String> {
-        val changedKeys = doWrite(operation, operationData, false, null)
+        val changedKeys = doWriteOperation(operation, operationData, false, null)
         if (publish) {
           publish(changedKeys)
         }
@@ -227,7 +211,7 @@ class RealApolloStore(normalizedCache: NormalizedCache,
     return object : ApolloStoreOperation<Set<String>>(dispatcher) {
       override fun perform(): Set<String> {
         return writeTransaction {
-          val changedKeys = doWrite(fragment.adapter(), cacheKey, fragment.variables(), fragmentData)
+          val changedKeys = doWriteFragment(fragment, cacheKey, fragmentData)
           if (publish) {
             publish(changedKeys)
           }
@@ -241,7 +225,7 @@ class RealApolloStore(normalizedCache: NormalizedCache,
                                                            mutationId: UUID): ApolloStoreOperation<Set<String>> {
     return object : ApolloStoreOperation<Set<String>>(dispatcher) {
       override fun perform(): Set<String> {
-        return doWrite(operation, operationData, true, mutationId)
+        return doWriteOperation(operation, operationData, true, mutationId)
       }
     }
   }
@@ -250,7 +234,7 @@ class RealApolloStore(normalizedCache: NormalizedCache,
                                                                      mutationId: UUID): ApolloStoreOperation<Boolean> {
     return object : ApolloStoreOperation<Boolean>(dispatcher) {
       override fun perform(): Boolean {
-        val changedKeys = doWrite(operation, operationData, true, mutationId)
+        val changedKeys = doWriteOperation(operation, operationData, true, mutationId)
         publish(changedKeys)
         return java.lang.Boolean.TRUE
       }
@@ -279,7 +263,7 @@ class RealApolloStore(normalizedCache: NormalizedCache,
       operation: Operation<D>,
       cacheHeaders: CacheHeaders
   ): Response<D> = readTransaction { cache ->
-    val rootRecord = cache.read(rootKeyForOperation(operation).key, cacheHeaders)
+    val rootRecord = cache.read(rootKey().key, cacheHeaders)
         ?: return@readTransaction builder<D>(operation).fromCache(true).build()
     try {
       val fieldValueResolver = CacheValueResolver(
@@ -319,35 +303,26 @@ class RealApolloStore(normalizedCache: NormalizedCache,
     })
   }
 
-  fun <D : Operation.Data> doWrite(
+  fun <D : Operation.Data> doWriteOperation(
       operation: Operation<D>,
       operationData: D,
       optimistic: Boolean,
       mutationId: UUID?): Set<String> = writeTransaction {
-    val responseWriter = RealResponseWriter(operation.variables(), customScalarAdapters)
-    operation.adapter().toResponse(responseWriter, operationData)
-    val responseNormalizer = networkResponseNormalizer()
-    responseNormalizer.willResolveRootQuery(operation)
-    responseWriter.resolveFields(responseNormalizer as ResolveDelegate<Map<String, Any>?>)
+    val records = operation.normalize(operationData, customScalarAdapters, cacheKeyResolver)
     if (optimistic) {
       val updatedRecords: MutableList<Record> = ArrayList()
-      for (record in responseNormalizer.records()) {
+      for (record in records) {
         updatedRecords.add(record.toBuilder().mutationId(mutationId).build())
       }
       optimisticCache.mergeOptimisticUpdates(updatedRecords)
     } else {
-      optimisticCache.merge(responseNormalizer.records(), CacheHeaders.NONE)
+      optimisticCache.merge(records, CacheHeaders.NONE)
     }
 
   }
 
-  fun <D> doWrite(adapter: ResponseAdapter<D>, cacheKey: CacheKey, variables: Operation.Variables, value: D): Set<String> = writeTransaction {
-      val responseWriter = RealResponseWriter(variables, customScalarAdapters)
-      adapter.toResponse(responseWriter, value)
-      val responseNormalizer = networkResponseNormalizer()
-      responseNormalizer.willResolveRecord(cacheKey)
-      responseWriter.resolveFields(responseNormalizer as ResolveDelegate<Map<String, Any>?>)
-      merge(responseNormalizer.records(), CacheHeaders.NONE)
-    }
-
+  fun <D: Fragment.Data> doWriteFragment(fragment: Fragment<D>, cacheKey: CacheKey, data: D): Set<String> = writeTransaction {
+    val records = fragment.normalize(data, customScalarAdapters, cacheKeyResolver, cacheKey.key)
+    merge(records, CacheHeaders.NONE)
+  }
 }

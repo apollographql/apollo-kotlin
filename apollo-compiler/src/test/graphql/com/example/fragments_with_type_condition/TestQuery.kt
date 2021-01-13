@@ -11,8 +11,8 @@ import com.apollographql.apollo.api.Query
 import com.apollographql.apollo.api.internal.QueryDocumentMinifier
 import com.apollographql.apollo.api.internal.ResponseAdapter
 import com.example.fragments_with_type_condition.adapter.TestQuery_ResponseAdapter
-import com.example.fragments_with_type_condition.fragment.DroidDetail
-import com.example.fragments_with_type_condition.fragment.HumanDetail
+import com.example.fragments_with_type_condition.fragment.DroidDetails
+import com.example.fragments_with_type_condition.fragment.HumanDetails
 import kotlin.Double
 import kotlin.String
 import kotlin.Suppress
@@ -43,7 +43,7 @@ class TestQuery : Query<TestQuery.Data> {
     interface R2 {
       val __typename: String
 
-      interface Human : R2, HumanDetail {
+      interface Human : R2, HumanDetails {
         override val __typename: String
 
         /**
@@ -57,7 +57,7 @@ class TestQuery : Query<TestQuery.Data> {
         override val height: Double?
       }
 
-      interface Droid : R2, DroidDetail {
+      interface Droid : R2, DroidDetails {
         override val __typename: String
 
         /**
@@ -81,7 +81,7 @@ class TestQuery : Query<TestQuery.Data> {
          * Height in the preferred unit, default is meters
          */
         override val height: Double?
-      ) : R2, Human, HumanDetail
+      ) : R2, Human, HumanDetails
 
       data class DroidR2(
         override val __typename: String,
@@ -93,7 +93,7 @@ class TestQuery : Query<TestQuery.Data> {
          * This droid's primary function
          */
         override val primaryFunction: String?
-      ) : R2, Droid, DroidDetail
+      ) : R2, Droid, DroidDetails
 
       data class OtherR2(
         override val __typename: String
@@ -102,11 +102,11 @@ class TestQuery : Query<TestQuery.Data> {
       companion object {
         fun R2.asHuman(): Human? = this as? Human
 
-        fun R2.humanDetails(): HumanDetail? = this as? HumanDetail
+        fun R2.humanDetails(): HumanDetails? = this as? HumanDetails
 
         fun R2.asDroid(): Droid? = this as? Droid
 
-        fun R2.droidDetails(): DroidDetail? = this as? DroidDetail
+        fun R2.droidDetails(): DroidDetails? = this as? DroidDetails
       }
     }
 
@@ -116,7 +116,7 @@ class TestQuery : Query<TestQuery.Data> {
     interface Luke {
       val __typename: String
 
-      interface Human : Luke, HumanDetail {
+      interface Human : Luke, HumanDetails {
         override val __typename: String
 
         /**
@@ -130,7 +130,7 @@ class TestQuery : Query<TestQuery.Data> {
         override val height: Double?
       }
 
-      interface Droid : Luke, DroidDetail {
+      interface Droid : Luke, DroidDetails {
         override val __typename: String
 
         /**
@@ -154,7 +154,7 @@ class TestQuery : Query<TestQuery.Data> {
          * Height in the preferred unit, default is meters
          */
         override val height: Double?
-      ) : Luke, Human, HumanDetail
+      ) : Luke, Human, HumanDetails
 
       data class DroidLuke(
         override val __typename: String,
@@ -166,7 +166,7 @@ class TestQuery : Query<TestQuery.Data> {
          * This droid's primary function
          */
         override val primaryFunction: String?
-      ) : Luke, Droid, DroidDetail
+      ) : Luke, Droid, DroidDetails
 
       data class OtherLuke(
         override val __typename: String
@@ -175,11 +175,11 @@ class TestQuery : Query<TestQuery.Data> {
       companion object {
         fun Luke.asHuman(): Human? = this as? Human
 
-        fun Luke.humanDetails(): HumanDetail? = this as? HumanDetail
+        fun Luke.humanDetails(): HumanDetails? = this as? HumanDetails
 
         fun Luke.asDroid(): Droid? = this as? Droid
 
-        fun Luke.droidDetails(): DroidDetail? = this as? DroidDetail
+        fun Luke.droidDetails(): DroidDetails? = this as? DroidDetails
       }
     }
   }

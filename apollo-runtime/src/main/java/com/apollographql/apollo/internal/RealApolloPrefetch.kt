@@ -20,6 +20,7 @@ import com.apollographql.apollo.internal.CallState.IllegalStateMessage.Companion
 import com.apollographql.apollo.internal.interceptor.ApolloServerInterceptor
 import com.apollographql.apollo.internal.interceptor.RealApolloInterceptorChain
 import okhttp3.Call
+import okhttp3.Headers
 import okhttp3.HttpUrl
 import java.util.concurrent.Executor
 import java.util.concurrent.atomic.AtomicReference
@@ -68,12 +69,21 @@ class RealApolloPrefetch(
           if (httpResponse.isSuccessful) {
             callback.get().onSuccess()
           } else {
-            callback.get().onHttpError(ApolloHttpException(httpResponse))
+            callback.get().onHttpError(ApolloHttpException(
+                statusCode = httpResponse.code(),
+                headers = httpResponse.headers().toMap(),
+                message = httpResponse.body()?.string() ?: "",
+                cause = null
+            ))
           }
         } finally {
           httpResponse.close()
         }
       }
+
+      private fun Headers.toMap(): Map<String, String> = this.names().map {
+        it to get(it)!!
+      }.toMap()
 
       override fun onFailure(e: ApolloException) {
         val callback = terminate()

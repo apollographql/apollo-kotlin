@@ -46,7 +46,7 @@ object Utils {
     return reference
   }
 
-  internal fun ResponseField.shouldSkip(variableValues: Map<String, Any?>): Boolean {
+  fun ResponseField.shouldSkip(variableValues: Map<String, Any?>): Boolean {
     for (condition in conditions) {
       if (condition is ResponseField.BooleanCondition) {
         val conditionValue = variableValues[condition.variableName] as Boolean

@@ -5,7 +5,6 @@ import androidx.sqlite.db.SupportSQLiteOpenHelper
 import androidx.sqlite.db.framework.FrameworkSQLiteOpenHelperFactory
 import com.apollographql.apollo.cache.normalized.NormalizedCacheFactory
 import com.apollographql.apollo.cache.normalized.RecordFieldJsonAdapter
-import com.apollographql.apollo.cache.normalized.sql.apollonormalizedcachesqlite.newInstance
 import com.squareup.sqldelight.android.AndroidSqliteDriver
 import com.squareup.sqldelight.db.SqlDriver
 
@@ -30,7 +29,7 @@ actual class SqlNormalizedCacheFactory internal actual constructor(
       )
   )
 
-  private val apolloDatabase = ApolloDatabase::class.newInstance(driver)
+  private val apolloDatabase = ApolloDatabase(driver)
 
   override fun create(recordFieldAdapter: RecordFieldJsonAdapter) =
       SqlNormalizedCache(recordFieldAdapter, apolloDatabase, apolloDatabase.cacheQueries)

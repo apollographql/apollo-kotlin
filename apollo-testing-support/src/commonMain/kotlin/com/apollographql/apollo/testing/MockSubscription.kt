@@ -4,15 +4,33 @@ import com.apollographql.apollo.api.Operation
 import com.apollographql.apollo.api.OperationName
 import com.apollographql.apollo.api.ResponseField
 import com.apollographql.apollo.api.Subscription
+import com.apollographql.apollo.api.internal.InputFieldMarshaller
 import com.apollographql.apollo.api.internal.ResponseAdapter
 import com.apollographql.apollo.api.internal.ResponseReader
 import com.apollographql.apollo.api.internal.ResponseWriter
 
-class MockSubscription : Subscription<MockSubscription.Data> {
+class MockSubscription(
+    private val queryDocument: String = "subscription MockSubscription { name }",
+    private val variables: Map<String, Any?> = emptyMap(),
+    private val name: String = "MockSubscription",
+) : Subscription<MockSubscription.Data> {
 
-  override fun queryDocument(): String = "subscription MockSubscription { name }"
+  override fun queryDocument(): String = queryDocument
 
-  override fun variables(): Operation.Variables = Operation.EMPTY_VARIABLES
+  override fun variables(): Operation.Variables = object: Operation.Variables() {
+    override fun valueMap() = variables
+
+    override fun marshaller(): InputFieldMarshaller =
+        InputFieldMarshaller { writer ->
+          for ((name, value) in variables.entries) {
+            when (value) {
+              is Number -> writer.writeNumber(name, value)
+              is Boolean -> writer.writeBoolean(name, value)
+              else -> writer.writeString(name, value.toString())
+            }
+          }
+        }
+  }
 
   override fun adapter(): ResponseAdapter<Data> {
     return object: ResponseAdapter<Data> {
@@ -37,10 +55,10 @@ class MockSubscription : Subscription<MockSubscription.Data> {
   }
 
   override fun name(): OperationName = object : OperationName {
-    override fun name(): String = "MockSubscription"
+    override fun name(): String = name
   }
 
-  override fun operationId(): String = "MockSubscription".hashCode().toString()
+  override fun operationId(): String = name.hashCode().toString()
 
   data class Data(val name: String) : Operation.Data
 }
