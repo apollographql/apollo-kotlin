@@ -20,7 +20,7 @@ fun <D: Operation.Data> Operation<D>.normalize(
   return normalizer.records().toSet()
 }
 
-fun Set<Record>?.dependentKeys(): Set<String> {
+fun Collection<Record>?.dependentKeys(): Set<String> {
   return this?.flatMap {
     it.keys() + it.key
   }?.toSet() ?: emptySet()

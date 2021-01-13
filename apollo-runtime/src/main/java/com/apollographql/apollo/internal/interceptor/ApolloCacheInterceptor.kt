@@ -104,21 +104,20 @@ class ApolloCacheInterceptor<D : Operation.Data>(
       return emptySet()
     }
 
-    val rawRecords = networkResponse.parsedResponse.get()?.data?.let {
+    val records = networkResponse.parsedResponse.get()?.data?.let {
       (request.operation as Operation<Operation.Data>)
           .normalize(it, customScalarAdapters, apolloStore.networkResponseNormalizer() as ResponseNormalizer<Map<String, Any>?>)
-    }
-    val mergeRecords = rawRecords?.map {
+    }?.map {
       it.toBuilder().mutationId(request.uniqueId).build()
     }
 
-    return if (rawRecords == null || mergeRecords == null) {
+    return if (records == null) {
       emptySet()
     } else try {
       apolloStore.writeTransaction(object : Transaction<WriteableStore, Set<String>> {
         override fun execute(cache: WriteableStore): Set<String>? {
-          val changedKeys = cache.merge(mergeRecords, request.cacheHeaders)
-          responseCallback.get()?.onCached(rawRecords)
+          val changedKeys = cache.merge(records, request.cacheHeaders)
+          responseCallback.get()?.onCached(records)
           return changedKeys
         }
       })

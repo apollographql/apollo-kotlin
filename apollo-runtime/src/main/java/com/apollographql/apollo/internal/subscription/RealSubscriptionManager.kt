@@ -6,8 +6,6 @@ import com.apollographql.apollo.api.Response
 import com.apollographql.apollo.api.Subscription
 import com.apollographql.apollo.cache.normalized.Record
 import com.apollographql.apollo.cache.normalized.internal.ResponseNormalizer
-import com.apollographql.apollo.cache.normalized.internal.dependentKeys
-import com.apollographql.apollo.cache.normalized.internal.normalize
 import com.apollographql.apollo.exception.ApolloNetworkException
 import com.apollographql.apollo.api.internal.MapResponseParser
 import com.apollographql.apollo.subscription.OnSubscriptionManagerStateChangeListener

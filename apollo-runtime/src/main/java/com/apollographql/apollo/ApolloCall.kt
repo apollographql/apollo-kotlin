@@ -99,9 +99,9 @@ interface ApolloCall<D : Operation.Data> : Cancelable {
      * It should be called only once from the cache.
      * This is used internally by watchers to retrieve the list of dependentKeys they have to watch.
      *
-     * @param records the [Set] of [Record] that was merged in cache.
+     * @param records the [List] of [Record] that was merged in cache.
      */
-    open fun onCached(records: Set<Record>) {}
+    open fun onCached(records: List<Record>) {}
 
     /**
      * Gets called when an unexpected exception occurs while creating the request or processing the response.
