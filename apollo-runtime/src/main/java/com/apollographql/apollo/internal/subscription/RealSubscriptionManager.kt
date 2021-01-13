@@ -8,6 +8,7 @@ import com.apollographql.apollo.cache.normalized.Record
 import com.apollographql.apollo.cache.normalized.internal.ResponseNormalizer
 import com.apollographql.apollo.exception.ApolloNetworkException
 import com.apollographql.apollo.api.internal.MapResponseParser
+import com.apollographql.apollo.cache.normalized.internal.normalize
 import com.apollographql.apollo.subscription.OnSubscriptionManagerStateChangeListener
 import com.apollographql.apollo.subscription.OperationClientMessage
 import com.apollographql.apollo.subscription.OperationServerMessage
@@ -297,7 +298,9 @@ class RealSubscriptionManager(private val customScalarAdapters: CustomScalarAdap
       val normalizer = responseNormalizer.invoke()
       val subscription = subscriptionRecord!!.subscription
       val response = try {
-        MapResponseParser.parse(message.payload, subscription, customScalarAdapters)
+        MapResponseParser.parse(message.payload, subscription, customScalarAdapters).apply {
+          this.data?.let { subscription.normalize(it, customScalarAdapters, normalizer as ResponseNormalizer<Map<String, Any>?>) }
+        }
       } catch (e: Exception) {
         subscriptionRecord = removeSubscriptionById(subscriptionId)
         if (subscriptionRecord != null) {
