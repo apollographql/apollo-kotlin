@@ -151,7 +151,6 @@ class ApolloInterceptorChainTest {
         .body(ResponseBody.create(MediaType.parse("text/plain; charset=utf-8"), "fakeResponse"))
         .build()
     val apolloResponse = builder<EpisodeHeroNameQuery.Data>(query).build()
-    return InterceptorResponse(okHttpResponse,
-        apolloResponse, emptyList())
+    return InterceptorResponse(okHttpResponse, apolloResponse)
   }
 }
