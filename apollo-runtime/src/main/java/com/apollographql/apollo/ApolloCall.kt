@@ -97,6 +97,7 @@ interface ApolloCall<D : Operation.Data> : Cancelable {
     /**
      * Gets called when the GraphQL response has been cached successfully.
      * It should be called only once from the cache.
+     * This is used internally by watchers to retrieve the list of dependentKeys they have to watch.
      *
      * @param records the [Set] of [Record] that was merged in cache.
      */
