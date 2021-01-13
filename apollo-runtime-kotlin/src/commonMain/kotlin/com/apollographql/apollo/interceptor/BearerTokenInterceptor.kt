@@ -1,5 +1,6 @@
 package com.apollographql.apollo.interceptor
 
+import com.apollographql.apollo.ApolloRequest
 import com.apollographql.apollo.exception.ApolloHttpException
 import com.apollographql.apollo.exception.ApolloBearerTokenException
 import com.apollographql.apollo.api.ApolloExperimental

@@ -6,9 +6,8 @@ import com.apollographql.apollo.api.ExecutionContext
 import com.apollographql.apollo.api.Operation
 import com.apollographql.apollo.api.Response
 import com.apollographql.apollo.cache.normalized.NormalizedCache
-import com.apollographql.apollo.interceptor.ApolloQueryRequest
+import com.apollographql.apollo.ApolloQueryRequest
 import kotlinx.coroutines.ExperimentalCoroutinesApi
-import kotlin.jvm.JvmField
 
 @ApolloExperimental
 data class CacheResponseExecutionContext(

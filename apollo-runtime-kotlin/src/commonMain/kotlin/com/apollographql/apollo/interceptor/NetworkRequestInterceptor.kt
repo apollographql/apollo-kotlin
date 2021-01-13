@@ -1,14 +1,13 @@
 package com.apollographql.apollo.interceptor
 
+import com.apollographql.apollo.ApolloMutationRequest
+import com.apollographql.apollo.ApolloQueryRequest
+import com.apollographql.apollo.ApolloRequest
+import com.apollographql.apollo.ApolloSubscriptionRequest
 import com.apollographql.apollo.api.ApolloExperimental
-import com.apollographql.apollo.api.CustomScalarAdapters
-import com.apollographql.apollo.api.Mutation
 import com.apollographql.apollo.api.Operation
-import com.apollographql.apollo.api.Query
-import com.apollographql.apollo.api.Subscription
 import com.apollographql.apollo.dispatcher.ApolloCoroutineDispatcherContext
 import com.apollographql.apollo.network.NetworkTransport
-import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.emptyFlow
 

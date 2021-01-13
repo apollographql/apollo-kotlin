@@ -12,7 +12,7 @@ import com.apollographql.apollo.api.internal.json.Utils
 import com.apollographql.apollo.api.parse
 import com.apollographql.apollo.dispatcher.ApolloCoroutineDispatcherContext
 import com.apollographql.apollo.exception.ApolloParseException
-import com.apollographql.apollo.interceptor.ApolloRequest
+import com.apollographql.apollo.ApolloRequest
 import com.apollographql.apollo.interceptor.ApolloResponse
 import com.apollographql.apollo.network.NetworkTransport
 import com.apollographql.apollo.subscription.ApolloOperationMessageSerializer

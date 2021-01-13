@@ -10,11 +10,7 @@ import com.apollographql.apollo.api.CustomScalar
 import com.apollographql.apollo.api.CustomScalarAdapters
 import com.apollographql.apollo.api.Subscription
 import com.apollographql.apollo.dispatcher.ApolloCoroutineDispatcherContext
-import com.apollographql.apollo.interceptor.ApolloMutationRequest
-import com.apollographql.apollo.interceptor.ApolloQueryRequest
-import com.apollographql.apollo.interceptor.ApolloRequest
 import com.apollographql.apollo.interceptor.ApolloRequestInterceptor
-import com.apollographql.apollo.interceptor.ApolloSubscriptionRequest
 import com.apollographql.apollo.interceptor.NetworkRequestInterceptor
 import com.apollographql.apollo.internal.RealApolloCall
 import com.apollographql.apollo.network.NetworkTransport

@@ -11,7 +11,7 @@ import com.apollographql.apollo.cache.normalized.internal.ReadableStore
 import com.apollographql.apollo.cache.normalized.internal.RealCacheKeyBuilder
 import com.apollographql.apollo.cache.normalized.internal.WriteableStore
 import com.apollographql.apollo.interceptor.ApolloInterceptorChain
-import com.apollographql.apollo.interceptor.ApolloRequest
+import com.apollographql.apollo.ApolloRequest
 import com.apollographql.apollo.interceptor.ApolloRequestInterceptor
 import com.apollographql.apollo.interceptor.ApolloResponse
 import com.apollographql.apollo.api.parseData

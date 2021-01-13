@@ -7,8 +7,8 @@ import com.apollographql.apollo.api.ExecutionContext
 import com.apollographql.apollo.api.CustomScalarAdapters
 import com.apollographql.apollo.api.Subscription
 import com.apollographql.apollo.dispatcher.ApolloCoroutineDispatcherContext
-import com.apollographql.apollo.interceptor.ApolloRequest
-import com.apollographql.apollo.interceptor.ApolloSubscriptionRequest
+import com.apollographql.apollo.ApolloRequest
+import com.apollographql.apollo.ApolloSubscriptionRequest
 import com.apollographql.apollo.subscription.ApolloOperationMessageSerializer
 import com.apollographql.apollo.subscription.OperationClientMessage
 import com.apollographql.apollo.subscription.OperationMessageSerializer.Companion.toByteString

@@ -11,7 +11,7 @@ import com.apollographql.apollo.api.ExecutionContext
 import com.apollographql.apollo.api.Operation
 import com.apollographql.apollo.api.composeRequestBody
 import com.apollographql.apollo.api.parse
-import com.apollographql.apollo.interceptor.ApolloRequest
+import com.apollographql.apollo.ApolloRequest
 import com.apollographql.apollo.interceptor.ApolloResponse
 import com.apollographql.apollo.network.HttpExecutionContext
 import com.apollographql.apollo.network.HttpMethod

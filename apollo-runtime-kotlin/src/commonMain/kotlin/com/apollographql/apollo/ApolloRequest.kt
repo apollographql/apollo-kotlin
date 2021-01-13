@@ -1,9 +1,8 @@
-package com.apollographql.apollo.interceptor
+package com.apollographql.apollo
 
 import com.apollographql.apollo.api.ApolloExperimental
 import com.apollographql.apollo.api.ExecutionContext
 import com.apollographql.apollo.api.Operation
-import com.apollographql.apollo.api.CustomScalarAdapters
 import com.apollographql.apollo.api.Mutation
 import com.apollographql.apollo.api.Query
 import com.apollographql.apollo.api.Subscription

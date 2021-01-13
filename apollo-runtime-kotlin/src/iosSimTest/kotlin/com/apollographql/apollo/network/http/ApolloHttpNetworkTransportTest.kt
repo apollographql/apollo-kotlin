@@ -6,8 +6,8 @@ import com.apollographql.apollo.api.ApolloExperimental
 import com.apollographql.apollo.api.ExecutionContext
 import com.apollographql.apollo.api.CustomScalarAdapters
 import com.apollographql.apollo.api.composeRequestBody
-import com.apollographql.apollo.interceptor.ApolloQueryRequest
-import com.apollographql.apollo.interceptor.ApolloRequest
+import com.apollographql.apollo.ApolloQueryRequest
+import com.apollographql.apollo.ApolloRequest
 import com.apollographql.apollo.testing.MockQuery
 import com.apollographql.apollo.network.HttpExecutionContext
 import com.apollographql.apollo.network.HttpMethod
