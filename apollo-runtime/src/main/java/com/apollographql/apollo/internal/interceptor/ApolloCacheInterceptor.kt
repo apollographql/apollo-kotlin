@@ -6,7 +6,6 @@ import com.apollographql.apollo.api.Operation
 import com.apollographql.apollo.api.internal.ApolloLogger
 import com.apollographql.apollo.cache.ApolloCacheHeaders
 import com.apollographql.apollo.cache.normalized.ApolloStore
-import com.apollographql.apollo.cache.normalized.internal.ResponseNormalizer
 import com.apollographql.apollo.cache.normalized.internal.Transaction
 import com.apollographql.apollo.cache.normalized.internal.WriteableStore
 import com.apollographql.apollo.cache.normalized.internal.normalize
@@ -106,8 +105,7 @@ class ApolloCacheInterceptor<D : Operation.Data>(
     }
 
     val records = networkResponse.parsedResponse.get()?.data?.let {
-      (request.operation as Operation<Operation.Data>)
-          .normalize(it, customScalarAdapters, apolloStore.networkResponseNormalizer() as ResponseNormalizer<Map<String, Any>?>)
+      (request.operation as Operation<Operation.Data>).normalize(it, customScalarAdapters, apolloStore.cacheKeyResolver())
     }?.map {
       it.toBuilder().mutationId(request.uniqueId).build()
     }
