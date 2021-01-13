@@ -11,12 +11,12 @@ import com.benasher44.uuid.Uuid
 import com.benasher44.uuid.uuid4
 
 @ApolloExperimental
-interface ApolloRequest<D : Operation.Data> {
-  val requestUuid: Uuid
-  val operation: Operation<D>
-  val executionContext: ExecutionContext
+sealed class ApolloRequest<D : Operation.Data> {
+  abstract val requestUuid: Uuid
+  abstract val operation: Operation<D>
+  abstract val executionContext: ExecutionContext
 
-  fun newBuilder(): Builder<D>
+  abstract fun newBuilder(): Builder<D>
 
   interface Builder<D : Operation.Data> {
     fun addExecutionContext(executionContext: ExecutionContext): Builder<D>
@@ -28,7 +28,7 @@ interface ApolloRequest<D : Operation.Data> {
 class ApolloQueryRequest<D : Operation.Data> internal constructor(
     val query: Query<D>,
     override val executionContext: ExecutionContext
-) : ApolloRequest<D> {
+) : ApolloRequest<D>() {
   override val requestUuid = uuid4()
   override val operation = query
 
@@ -53,7 +53,7 @@ class ApolloQueryRequest<D : Operation.Data> internal constructor(
 class ApolloMutationRequest<D : Operation.Data> internal constructor(
     val mutation: Mutation<D>,
     override val executionContext: ExecutionContext
-) : ApolloRequest<D> {
+) : ApolloRequest<D>() {
   override val requestUuid = uuid4()
   override val operation = mutation
 
@@ -78,7 +78,7 @@ class ApolloMutationRequest<D : Operation.Data> internal constructor(
 class ApolloSubscriptionRequest<D : Operation.Data> internal constructor(
     val subscription: Subscription<D>,
     override val executionContext: ExecutionContext
-) : ApolloRequest<D> {
+) : ApolloRequest<D>() {
   override val requestUuid = uuid4()
   override val operation = subscription
 
