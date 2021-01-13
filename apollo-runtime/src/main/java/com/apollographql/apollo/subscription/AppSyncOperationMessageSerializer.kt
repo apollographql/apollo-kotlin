@@ -9,7 +9,6 @@ import okio.Buffer
 import okio.BufferedSink
 import okio.BufferedSource
 import okio.IOException
-import java.util.Base64
 
 /**
  * An [OperationMessageSerializer] that uses the format used by
@@ -112,7 +111,7 @@ class AppSyncOperationMessageSerializer(
     private fun Map<String, Any?>.base64Encode(): String {
       val buffer = Buffer()
       Utils.writeToJson(this, JsonWriter.of(buffer))
-      return Base64.getUrlEncoder().encodeToString(buffer.readByteArray())
+      return buffer.readByteString().base64Url()
     }
   }
 }
