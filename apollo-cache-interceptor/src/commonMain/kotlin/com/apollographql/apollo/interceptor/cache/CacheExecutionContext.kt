@@ -8,6 +8,7 @@ import com.apollographql.apollo.api.Response
 import com.apollographql.apollo.cache.normalized.NormalizedCache
 import com.apollographql.apollo.interceptor.ApolloQueryRequest
 import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlin.jvm.JvmField
 
 @ApolloExperimental
 data class CacheResponseExecutionContext(
@@ -19,10 +20,37 @@ data class CacheResponseExecutionContext(
 }
 
 enum class FetchPolicy {
-  CACHE_ONLY,
-  NETWORK_ONLY,
+  /**
+   * Fetch the data from the normalized cache first. If it's not present in the
+   * normalized cache or if an exception occurs while trying to fetch it from the normalized cache, then the data is
+   * instead fetched from the network. If an exception happens while fetching from the network, this exception will
+   * be thrown
+   *
+   * This is the default behaviour
+   */
   CACHE_FIRST,
+  /**
+   * Only fetch the data from the normalized cache.
+   */
+  CACHE_ONLY,
+  /**
+   * Fetch the data from the network firsts. If network request fails, then the
+   * data is fetched from the normalized cache. If the data is not present in the normalized cache, then the
+   * exception which led to the network request failure is rethrown.
+   */
   NETWORK_FIRST,
+  /**
+   * Only etch the GraphQL data from the network. If network request fails, an
+   * exception is thrown.
+   */
+  NETWORK_ONLY,
+  /**
+   * Signal the apollo client to fetch the data from both the network and the cache. If cached data is not
+   * present, only network data will be returned. If cached data is available, but network experiences an error,
+   * cached data is first returned, followed by the network error. If cache data is not available, and network
+   * data is not available, the error of the network request will be propagated. If both network and cache
+   * are available, both will be returned. Cache data is guaranteed to be returned first.
+   */
   CACHE_AND_NETWORK
 }
 

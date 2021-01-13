@@ -53,6 +53,10 @@ class ApolloCacheInterceptor<S>(private val store: S) : ApolloRequestInterceptor
                 val response = readFromCache(request, chain.customScalarAdapters)
                 if (response != null) {
                   emit(response)
+                } else {
+                  // If we didn't get something in the cache, we need to signal callers that something went
+                  // wrong and rethrow the network error
+                  throw it
                 }
               }
               .collect {

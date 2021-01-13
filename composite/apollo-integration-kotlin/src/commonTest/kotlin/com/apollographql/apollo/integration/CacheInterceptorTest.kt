@@ -2,6 +2,7 @@ package com.apollographql.apollo.integration
 
 import HeroNameQuery
 import com.apollographql.apollo.ApolloClient
+import com.apollographql.apollo.cache.normalized.NormalizedCache
 import com.apollographql.apollo.cache.normalized.simple.MapNormalizedCache
 import com.apollographql.apollo.interceptor.ApolloQueryRequest
 import com.apollographql.apollo.interceptor.cache.FetchPolicy
@@ -25,19 +26,21 @@ import kotlin.test.fail
 class CacheInterceptorTest {
   private lateinit var networkTransport: MockNetworkTransport
   private lateinit var apolloClient: ApolloClient
+  private lateinit var cache: NormalizedCache
 
   @BeforeTest
   fun setUp() {
+    cache = MapNormalizedCache()
     networkTransport = MockNetworkTransport()
     apolloClient = ApolloClient.Builder()
         .networkTransport(networkTransport)
         .addInterceptor(TestLoggerExecutor)
-        .normalizedCache(MapNormalizedCache())
+        .normalizedCache(cache)
         .build()
   }
 
   @Test
-  fun `cache_first test`() {
+  fun `CACHE_FIRST test`() {
     networkTransport.offer(fixtureResponse("HeroNameResponse.json"))
 
     runBlocking {
@@ -60,7 +63,7 @@ class CacheInterceptorTest {
   }
 
   @Test
-  fun `network_first test`() {
+  fun `NETWORK_FIRST test`() {
     runBlocking {
       val request = ApolloQueryRequest.Builder(query = HeroNameQuery())
           .fetchPolicy(FetchPolicy.NETWORK_FIRST)
@@ -87,7 +90,7 @@ class CacheInterceptorTest {
       assertNotNull(responses[0].data)
       assertFalse(responses[0].fromCache)
 
-      // Do not offer a response and we should hit the cache
+      // Network error -> we should hit the cache
       networkTransport.offer("malformed")
       responses = apolloClient
           .query(request)
@@ -97,11 +100,24 @@ class CacheInterceptorTest {
       assertEquals(1, responses.size)
       assertNotNull(responses[0].data)
       assertTrue(responses[0].fromCache)
+
+      // Network error and no cache -> we should get an error
+      networkTransport.offer("malformed")
+      cache.clearAll()
+      try {
+        responses = apolloClient
+            .query(request)
+            .execute()
+            .toList()
+        fail("NETWORK_FIRST should throw the network exception if nothing is in the cache")
+      } catch (e: Exception) {
+
+      }
     }
   }
 
   @Test
-  fun `cache_only test`() {
+  fun `CACHE_ONLY test`() {
     runBlocking {
       var request = ApolloQueryRequest.Builder(query = HeroNameQuery())
           .build()
@@ -136,7 +152,7 @@ class CacheInterceptorTest {
   }
 
   @Test
-  fun `network_only test`() {
+  fun `NETWORK_ONLY test`() {
     runBlocking {
       val request = ApolloQueryRequest.Builder(query = HeroNameQuery())
           .fetchPolicy(FetchPolicy.NETWORK_ONLY)
