@@ -310,7 +310,7 @@ class RealApolloCall<D : Operation.Data> internal constructor(builder: Builder<D
         customScalarAdapters!!,
         dispatcher!!,
         logger!!,
-        responseCallback(),
+        originalCallback,
         writeToNormalizedCacheAsynchronously))
     if (autoPersistedOperationsInterceptorFactory != null) {
       val interceptor = autoPersistedOperationsInterceptorFactory.newInterceptor(logger, operation)

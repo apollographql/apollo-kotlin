@@ -4,7 +4,6 @@ import com.apollographql.apollo.ApolloCall
 import com.apollographql.apollo.api.CustomScalarAdapters
 import com.apollographql.apollo.api.Operation
 import com.apollographql.apollo.api.internal.ApolloLogger
-import com.apollographql.apollo.api.internal.Optional
 import com.apollographql.apollo.cache.ApolloCacheHeaders
 import com.apollographql.apollo.cache.normalized.ApolloStore
 import com.apollographql.apollo.cache.normalized.internal.ResponseNormalizer
@@ -21,6 +20,7 @@ import com.apollographql.apollo.interceptor.ApolloInterceptorChain
 import java.lang.Runnable
 import java.util.HashSet
 import java.util.concurrent.Executor
+import java.util.concurrent.atomic.AtomicReference
 
 /**
  * ApolloCacheInterceptor is a concrete [ApolloInterceptor] responsible for serving requests from the normalized
@@ -31,7 +31,7 @@ class ApolloCacheInterceptor<D : Operation.Data>(
     private val customScalarAdapters: CustomScalarAdapters,
     private val dispatcher: Executor,
     val logger: ApolloLogger,
-    private val responseCallback: Optional<ApolloCall.Callback<D>>,
+    private val responseCallback: AtomicReference<ApolloCall.Callback<D>?>,
     private val writeToCacheAsynchronously: Boolean
 ) : ApolloInterceptor {
 
@@ -118,9 +118,7 @@ class ApolloCacheInterceptor<D : Operation.Data>(
       apolloStore.writeTransaction(object : Transaction<WriteableStore, Set<String>> {
         override fun execute(cache: WriteableStore): Set<String>? {
           val changedKeys = cache.merge(mergeRecords, request.cacheHeaders)
-          if (responseCallback.isPresent) {
-            responseCallback.get().onCached(rawRecords)
-          }
+          responseCallback.get()?.onCached(rawRecords)
           return changedKeys
         }
       })
