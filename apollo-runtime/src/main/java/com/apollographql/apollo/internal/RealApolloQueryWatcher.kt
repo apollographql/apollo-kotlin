@@ -109,6 +109,7 @@ class RealApolloQueryWatcher<D : Operation.Data>(
           logger.d("onResponse for watched operation: %s. No callback present.", operation().name().name())
           return
         }
+        apolloStore.subscribe(recordChangeSubscriber)
         callback.get().onResponse(response)
       }
 
@@ -119,7 +120,6 @@ class RealApolloQueryWatcher<D : Operation.Data>(
           return
         }
         dependentKeys = records.dependentKeys()
-        apolloStore.subscribe(recordChangeSubscriber)
       }
 
       override fun onFailure(e: ApolloException) {
