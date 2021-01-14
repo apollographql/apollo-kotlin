@@ -4,7 +4,7 @@ import HeroNameQuery
 import com.apollographql.apollo.ApolloClient
 import com.apollographql.apollo.cache.normalized.NormalizedCache
 import com.apollographql.apollo.cache.normalized.simple.MapNormalizedCache
-import com.apollographql.apollo.interceptor.ApolloQueryRequest
+import com.apollographql.apollo.ApolloQueryRequest
 import com.apollographql.apollo.interceptor.cache.FetchPolicy
 import com.apollographql.apollo.interceptor.cache.fromCache
 import com.apollographql.apollo.interceptor.cache.normalizedCache
