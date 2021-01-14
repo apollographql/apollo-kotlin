@@ -41,6 +41,15 @@ subprojects {
       freeCompilerArgs += "-Xopt-in=kotlin.RequiresOptIn"
     }
   }
+  (project.extensions.findByName("kotlin")
+   as? org.jetbrains.kotlin.gradle.dsl.KotlinMultiplatformExtension)?.run {
+    sourceSets.all {
+      languageSettings.apply {
+        apiVersion = "1.3"
+        this.useExperimentalAnnotation("kotlin.RequiresOptIn")
+      }
+    }
+  }
 
   tasks.withType<Test> {
     testLogging {
