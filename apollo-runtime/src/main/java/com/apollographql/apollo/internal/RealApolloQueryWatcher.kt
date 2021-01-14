@@ -116,7 +116,7 @@ class RealApolloQueryWatcher<D : Operation.Data>(
       override fun onCached(records: List<Record>) {
         val callback = responseCallback()
         if (!callback.isPresent) {
-          logger.d("onCached for watched operation: %s. No callback present.", operation().name().name())
+          logger.d("onCached for watched operation: %s. No callback present.", operation().name())
           return
         }
         dependentKeys = records.dependentKeys()
