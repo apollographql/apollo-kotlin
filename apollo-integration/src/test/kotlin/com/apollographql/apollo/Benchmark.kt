@@ -1,17 +1,13 @@
 package com.apollographql.apollo
 
 import com.apollographql.apollo.api.CustomScalarAdapters
-import com.apollographql.apollo.api.ResponseField
 import com.apollographql.apollo.api.internal.json.JsonReader
 import com.apollographql.apollo.api.parse
 import com.apollographql.apollo.cache.CacheHeaders
-import com.apollographql.apollo.cache.normalized.CacheKey
 import com.apollographql.apollo.cache.normalized.CacheKeyResolver
 import com.apollographql.apollo.cache.normalized.Record
 import com.apollographql.apollo.cache.normalized.RecordFieldJsonAdapter
 import com.apollographql.apollo.cache.normalized.internal.ReadableStore
-import com.apollographql.apollo.cache.normalized.internal.RealCacheKeyBuilder
-import com.apollographql.apollo.cache.normalized.internal.ResponseNormalizer
 import com.apollographql.apollo.cache.normalized.internal.normalize
 import com.apollographql.apollo.cache.normalized.internal.readDataFromCache
 import com.apollographql.apollo.cache.normalized.internal.streamDataFromCache
@@ -29,11 +25,7 @@ import kotlin.test.assertEquals
  * Proper measurements should be done in the `benchmark` project ultimately
  */
 class BenchmarkTest {
-  private val responseNormalizer = object : ResponseNormalizer<Map<String, Any>?>() {
-    override fun cacheKeyBuilder() = RealCacheKeyBuilder()
 
-    override fun resolveCacheKey(field: ResponseField, record: Map<String, Any>?) = CacheKey.NO_KEY
-  }
   
   @Test
   fun apolloReadCache() {
@@ -44,7 +36,7 @@ class BenchmarkTest {
 
     val data1 = operation.parse(bufferedSource).data!!
 
-    val records = operation.normalize(data1, CustomScalarAdapters.DEFAULT, responseNormalizer)
+    val records = operation.normalize(data1, CustomScalarAdapters.DEFAULT, CacheKeyResolver.DEFAULT)
     cache.merge(records, CacheHeaders.NONE)
 
     val readableStore = object : ReadableStore {
