@@ -1,12 +1,14 @@
 package com.apollographql.apollo.internal.interceptor
 
+import com.apollographql.apollo.ApolloCall
+import com.apollographql.apollo.api.CustomScalarAdapters
 import com.apollographql.apollo.api.Operation
 import com.apollographql.apollo.api.internal.ApolloLogger
 import com.apollographql.apollo.cache.ApolloCacheHeaders
 import com.apollographql.apollo.cache.normalized.ApolloStore
-import com.apollographql.apollo.cache.normalized.Record
 import com.apollographql.apollo.cache.normalized.internal.Transaction
 import com.apollographql.apollo.cache.normalized.internal.WriteableStore
+import com.apollographql.apollo.cache.normalized.internal.normalize
 import com.apollographql.apollo.exception.ApolloException
 import com.apollographql.apollo.exception.ApolloGenericException
 import com.apollographql.apollo.interceptor.ApolloInterceptor
@@ -16,22 +18,22 @@ import com.apollographql.apollo.interceptor.ApolloInterceptor.InterceptorRequest
 import com.apollographql.apollo.interceptor.ApolloInterceptor.InterceptorResponse
 import com.apollographql.apollo.interceptor.ApolloInterceptorChain
 import java.lang.Runnable
-import java.util.ArrayList
 import java.util.HashSet
 import java.util.concurrent.Executor
+import java.util.concurrent.atomic.AtomicReference
 
 /**
  * ApolloCacheInterceptor is a concrete [ApolloInterceptor] responsible for serving requests from the normalized
  * cache if [InterceptorRequest.fetchFromCache] is true. Saves all network responses to cache.
  */
-class ApolloCacheInterceptor(
-    apolloStore: ApolloStore,
-    dispatcher: Executor,
-    logger: ApolloLogger, writeToCacheAsynchronously: Boolean) : ApolloInterceptor {
-  val apolloStore: ApolloStore
-  private val dispatcher: Executor
-  private val writeToCacheAsynchronously: Boolean
-  val logger: ApolloLogger
+class ApolloCacheInterceptor<D : Operation.Data>(
+    val apolloStore: ApolloStore,
+    private val customScalarAdapters: CustomScalarAdapters,
+    private val dispatcher: Executor,
+    val logger: ApolloLogger,
+    private val responseCallback: AtomicReference<ApolloCall.Callback<D>?>,
+    private val writeToCacheAsynchronously: Boolean
+) : ApolloInterceptor {
 
   @Volatile
   var disposed = false
@@ -88,7 +90,7 @@ class ApolloCacheInterceptor(
     val cachedResponse = apolloStoreOperation.execute()
     if (cachedResponse.data != null) {
       logger.d("Cache HIT for operation %s", request.operation.name())
-      return InterceptorResponse(null, cachedResponse, emptySet())
+      return InterceptorResponse(null, cachedResponse)
     }
     logger.d("Cache MISS for operation %s", request.operation.name())
     throw ApolloGenericException(String.format("Cache miss for operation %s", request.operation.name()))
@@ -101,19 +103,21 @@ class ApolloCacheInterceptor(
         && !request.cacheHeaders.hasHeader(ApolloCacheHeaders.STORE_PARTIAL_RESPONSES)) {
       return emptySet()
     }
-    val records = networkResponse.cacheRecords.orNull()?.let { records ->
-      val result: MutableList<Record> = ArrayList(records.size)
-      for (record in records) {
-        result.add(record.toBuilder().mutationId(request.uniqueId).build())
-      }
-      result
+
+    val records = networkResponse.parsedResponse.get()?.data?.let {
+      (request.operation as Operation<Operation.Data>).normalize(it, customScalarAdapters, apolloStore.cacheKeyResolver())
+    }?.map {
+      it.toBuilder().mutationId(request.uniqueId).build()
     }
+
     return if (records == null) {
       emptySet()
     } else try {
       apolloStore.writeTransaction(object : Transaction<WriteableStore, Set<String>> {
         override fun execute(cache: WriteableStore): Set<String>? {
-          return cache.merge(records, request.cacheHeaders)
+          val changedKeys = cache.merge(records, request.cacheHeaders)
+          responseCallback.get()?.onCached(records)
+          return changedKeys
         }
       })
     } catch (e: Exception) {
@@ -185,12 +189,5 @@ class ApolloCacheInterceptor(
         logger.e(e, "Failed to publish cache changes")
       }
     }
-  }
-
-  init {
-    this.apolloStore = apolloStore
-    this.dispatcher = dispatcher
-    this.logger = logger
-    this.writeToCacheAsynchronously = writeToCacheAsynchronously
   }
 }

@@ -2,12 +2,15 @@ package com.apollographql.apollo.internal
 
 import com.apollographql.apollo.ApolloCall
 import com.apollographql.apollo.ApolloQueryWatcher
+import com.apollographql.apollo.api.CustomScalarAdapters
 import com.apollographql.apollo.api.Operation
 import com.apollographql.apollo.api.Response
 import com.apollographql.apollo.api.internal.ApolloLogger
 import com.apollographql.apollo.api.internal.Optional
 import com.apollographql.apollo.cache.normalized.ApolloStore
 import com.apollographql.apollo.cache.normalized.ApolloStore.RecordChangeSubscriber
+import com.apollographql.apollo.cache.normalized.Record
+import com.apollographql.apollo.cache.normalized.internal.dependentKeys
 import com.apollographql.apollo.exception.ApolloCanceledException
 import com.apollographql.apollo.exception.ApolloException
 import com.apollographql.apollo.exception.ApolloHttpException
@@ -20,6 +23,7 @@ import java.util.concurrent.atomic.AtomicReference
 class RealApolloQueryWatcher<D : Operation.Data>(
     private var activeCall: RealApolloCall<D>,
     val apolloStore: ApolloStore,
+    private val customScalarAdapters: CustomScalarAdapters,
     val logger: ApolloLogger,
     private val tracker: ApolloCallTracker,
     private var refetchResponseFetcher: ResponseFetcher
@@ -94,7 +98,7 @@ class RealApolloQueryWatcher<D : Operation.Data>(
   }
 
   override fun clone(): ApolloQueryWatcher<D> {
-    return RealApolloQueryWatcher(activeCall.clone(), apolloStore, logger, tracker, refetchResponseFetcher)
+    return RealApolloQueryWatcher(activeCall.clone(), apolloStore, customScalarAdapters, logger, tracker, refetchResponseFetcher)
   }
 
   private fun callbackProxy(): ApolloCall.Callback<D> {
@@ -105,9 +109,17 @@ class RealApolloQueryWatcher<D : Operation.Data>(
           logger.d("onResponse for watched operation: %s. No callback present.", operation().name())
           return
         }
-        dependentKeys = response.dependentKeys
         apolloStore.subscribe(recordChangeSubscriber)
         callback.get().onResponse(response)
+      }
+
+      override fun onCached(records: List<Record>) {
+        val callback = responseCallback()
+        if (!callback.isPresent) {
+          logger.d("onCached for watched operation: %s. No callback present.", operation().name())
+          return
+        }
+        dependentKeys = records.dependentKeys()
       }
 
       override fun onFailure(e: ApolloException) {

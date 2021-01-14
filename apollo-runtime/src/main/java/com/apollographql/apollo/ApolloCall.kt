@@ -3,6 +3,7 @@ package com.apollographql.apollo
 import com.apollographql.apollo.api.Operation
 import com.apollographql.apollo.api.Response
 import com.apollographql.apollo.cache.CacheHeaders
+import com.apollographql.apollo.cache.normalized.Record
 import com.apollographql.apollo.exception.ApolloCanceledException
 import com.apollographql.apollo.exception.ApolloException
 import com.apollographql.apollo.exception.ApolloHttpException
@@ -81,7 +82,7 @@ interface ApolloCall<D : Operation.Data> : Cancelable {
   }
 
   /**
-   * Communicates responses from a server or offline requests.
+   * Communicates responses from a server, cached or offline requests.
    */
   abstract class Callback<D : Operation.Data> {
     /**
@@ -92,6 +93,15 @@ interface ApolloCall<D : Operation.Data> : Cancelable {
      * @param response the GraphQL response
      */
     abstract fun onResponse(response: Response<D>)
+
+    /**
+     * Gets called when the GraphQL response has been cached successfully.
+     * It should be called only once from the cache.
+     * This is used internally by watchers to retrieve the list of dependentKeys they have to watch.
+     *
+     * @param records the [List] of [Record] that was merged in cache.
+     */
+    open fun onCached(records: List<Record>) {}
 
     /**
      * Gets called when an unexpected exception occurs while creating the request or processing the response.

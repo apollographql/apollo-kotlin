@@ -157,7 +157,7 @@ class RealApolloStore(normalizedCache: NormalizedCache,
       operation: Operation<D>): ApolloStoreOperation<D> {
     return object : ApolloStoreOperation<D>(dispatcher) {
       override fun perform(): D {
-        return doReadAndNormalize(operation, CacheHeaders.NONE).data!!
+        return doReadOperation(operation, CacheHeaders.NONE).data!!
       }
     }
   }
@@ -167,7 +167,7 @@ class RealApolloStore(normalizedCache: NormalizedCache,
       cacheHeaders: CacheHeaders): ApolloStoreOperation<Response<D>> {
     return object : ApolloStoreOperation<Response<D>>(dispatcher) {
       override fun perform(): Response<D> {
-        return doReadAndNormalize(operation, cacheHeaders)
+        return doReadOperation(operation, cacheHeaders)
       }
     }
   }
@@ -259,7 +259,7 @@ class RealApolloStore(normalizedCache: NormalizedCache,
     }
   }
 
-  fun <D : Operation.Data> doReadAndNormalize(
+  fun <D : Operation.Data> doReadOperation(
       operation: Operation<D>,
       cacheHeaders: CacheHeaders
   ): Response<D> = readTransaction { cache ->
@@ -270,11 +270,9 @@ class RealApolloStore(normalizedCache: NormalizedCache,
           cacheKeyResolver(),
           cacheHeaders
       )
-      val records = operation.normalize(data!!, customScalarAdapters, cacheKeyResolver())
       builder<D>(operation)
           .data(data)
           .fromCache(true)
-          .dependentKeys(records.dependentKeys()) // Do we need the dependentKeys here?
           .build()
     } catch (e: Exception) {
       logger.e(e, "Failed to read cache response")

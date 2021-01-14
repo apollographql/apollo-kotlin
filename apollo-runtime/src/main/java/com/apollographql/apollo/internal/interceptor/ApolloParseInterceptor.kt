@@ -5,9 +5,6 @@ import com.apollographql.apollo.api.Operation
 import com.apollographql.apollo.api.cache.http.HttpCache
 import com.apollographql.apollo.api.internal.ApolloLogger
 import com.apollographql.apollo.api.parse
-import com.apollographql.apollo.cache.normalized.CacheKeyResolver
-import com.apollographql.apollo.cache.normalized.internal.dependentKeys
-import com.apollographql.apollo.cache.normalized.internal.normalize
 import com.apollographql.apollo.exception.ApolloException
 import com.apollographql.apollo.exception.ApolloHttpException
 import com.apollographql.apollo.exception.ApolloParseException
@@ -29,7 +26,6 @@ import java.util.concurrent.Executor
  * then parse the returned response.
  */
 class ApolloParseInterceptor(private val httpCache: HttpCache?,
-                             private val cacheKeyResolver: CacheKeyResolver,
                              private val customScalarAdapters: CustomScalarAdapters,
                              private val logger: ApolloLogger) : ApolloInterceptor {
   @Volatile
@@ -76,18 +72,16 @@ class ApolloParseInterceptor(private val httpCache: HttpCache?,
         val httpExecutionContext = OkHttpExecutionContext(httpResponse)
         var parsedResponse = operation.parse(httpResponse.body()!!.source(), customScalarAdapters)
 
-        val records = parsedResponse.data?.let { operation.normalize(it, customScalarAdapters, cacheKeyResolver) }
         parsedResponse = parsedResponse
             .toBuilder()
             .fromCache(httpResponse.cacheResponse() != null)
-            .dependentKeys(records.dependentKeys())
             .executionContext(parsedResponse.executionContext.plus(httpExecutionContext))
             .build()
         if (parsedResponse.hasErrors() && httpCache != null) {
           httpCache.removeQuietly(cacheKey!!)
         }
 
-        InterceptorResponse(httpResponse, parsedResponse, records)
+        InterceptorResponse(httpResponse, parsedResponse)
       } catch (rethrown: Exception) {
         logger.e(rethrown, "Failed to parse network response for operation: %s", operation.name())
         closeQuietly(httpResponse)

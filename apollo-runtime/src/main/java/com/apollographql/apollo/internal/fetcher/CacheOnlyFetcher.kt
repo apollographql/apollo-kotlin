@@ -53,7 +53,7 @@ class CacheOnlyFetcher : ResponseFetcher {
     }
 
     fun cacheMissResponse(operation: Operation<*>?): InterceptorResponse {
-      return InterceptorResponse(null, builder<Operation.Data>(operation!!).fromCache(true).build(), null)
+      return InterceptorResponse(null, builder<Operation.Data>(operation!!).fromCache(true).build())
     }
   }
 }

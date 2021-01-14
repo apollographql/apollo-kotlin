@@ -100,7 +100,8 @@ fun <D : Operation.Data> Operation<D>.streamDataFromCache(
     null
   }
 }
-fun Set<Record>?.dependentKeys(): Set<String> {
+
+fun Collection<Record>?.dependentKeys(): Set<String> {
   return this?.flatMap {
     it.keys() + it.key
   }?.toSet() ?: emptySet()
