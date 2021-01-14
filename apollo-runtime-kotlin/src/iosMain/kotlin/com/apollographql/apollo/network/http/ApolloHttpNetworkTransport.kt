@@ -152,7 +152,7 @@ actual class ApolloHttpNetworkTransport(
     val urlComponents = NSURLComponents(uRL = serverUrl, resolvingAgainstBaseURL = false)
     urlComponents.queryItems = listOfNotNull(
         NSURLQueryItem(name = "query", value = operation.queryDocument()),
-        NSURLQueryItem(name = "operationName", value = operation.name().name()),
+        NSURLQueryItem(name = "operationName", value = operation.name()),
         operation.variables().marshal(customScalarAdapters).let { variables ->
           if (variables.isNotEmpty()) NSURLQueryItem(name = "variables", value = variables) else null
         }

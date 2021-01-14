@@ -6,7 +6,6 @@
 package com.example.inline_frgament_intersection
 
 import com.apollographql.apollo.api.Operation
-import com.apollographql.apollo.api.OperationName
 import com.apollographql.apollo.api.Query
 import com.apollographql.apollo.api.internal.QueryDocumentMinifier
 import com.apollographql.apollo.api.internal.ResponseAdapter
@@ -28,7 +27,7 @@ class TestOperation : Query<TestOperation.Data> {
 
   override fun variables(): Operation.Variables = Operation.EMPTY_VARIABLES
 
-  override fun name(): OperationName = OPERATION_NAME
+  override fun name(): String = OPERATION_NAME
 
   override fun adapter(): ResponseAdapter<Data> = TestOperation_ResponseAdapter
   data class Data(
@@ -219,10 +218,6 @@ class TestOperation : Query<TestOperation.Data> {
           """.trimMargin()
         )
 
-    val OPERATION_NAME: OperationName = object : OperationName {
-      override fun name(): String {
-        return "TestOperation"
-      }
-    }
+    val OPERATION_NAME: String = "TestOperation"
   }
 }

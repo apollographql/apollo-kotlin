@@ -1,15 +1,11 @@
 package com.apollographql.apollo.api
 
-import com.apollographql.apollo.api.internal.ResponseAdapter
-
 val EMPTY_OPERATION: Operation<*> = object : Operation<Operation.Data> {
   override fun variables(): Operation.Variables {
     return Operation.EMPTY_VARIABLES
   }
 
-  override fun name(): OperationName = object : OperationName {
-    override fun name() = "test"
-  }
+  override fun name(): String = "test"
 
   override fun operationId() = ""
 

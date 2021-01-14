@@ -22,7 +22,7 @@ object OperationRequestBodyComposer {
       with(writer) {
         serializeNulls = true
         beginObject()
-        name("operationName").value(operation.name().name())
+        name("operationName").value(operation.name())
         name("variables").jsonValue(operation.variables().marshal(customScalarAdapters))
         if (autoPersistQueries) {
           name("extensions")

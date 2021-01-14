@@ -6,7 +6,6 @@
 package com.example.subscriptions
 
 import com.apollographql.apollo.api.Operation
-import com.apollographql.apollo.api.OperationName
 import com.apollographql.apollo.api.Subscription
 import com.apollographql.apollo.api.internal.InputFieldMarshaller
 import com.apollographql.apollo.api.internal.QueryDocumentMinifier
@@ -44,7 +43,7 @@ data class TestSubscription(
 
   override fun variables(): Operation.Variables = variables
 
-  override fun name(): OperationName = OPERATION_NAME
+  override fun name(): String = OPERATION_NAME
 
   override fun adapter(): ResponseAdapter<Data> = TestSubscription_ResponseAdapter
   data class Data(
@@ -83,10 +82,6 @@ data class TestSubscription(
           """.trimMargin()
         )
 
-    val OPERATION_NAME: OperationName = object : OperationName {
-      override fun name(): String {
-        return "TestSubscription"
-      }
-    }
+    val OPERATION_NAME: String = "TestSubscription"
   }
 }

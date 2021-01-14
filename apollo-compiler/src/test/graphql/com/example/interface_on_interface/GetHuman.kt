@@ -6,7 +6,6 @@
 package com.example.interface_on_interface
 
 import com.apollographql.apollo.api.Operation
-import com.apollographql.apollo.api.OperationName
 import com.apollographql.apollo.api.Query
 import com.apollographql.apollo.api.internal.QueryDocumentMinifier
 import com.apollographql.apollo.api.internal.ResponseAdapter
@@ -25,7 +24,7 @@ class GetHuman : Query<GetHuman.Data> {
 
   override fun variables(): Operation.Variables = Operation.EMPTY_VARIABLES
 
-  override fun name(): OperationName = OPERATION_NAME
+  override fun name(): String = OPERATION_NAME
 
   override fun adapter(): ResponseAdapter<Data> = GetHuman_ResponseAdapter
   data class Data(
@@ -84,10 +83,6 @@ class GetHuman : Query<GetHuman.Data> {
           """.trimMargin()
         )
 
-    val OPERATION_NAME: OperationName = object : OperationName {
-      override fun name(): String {
-        return "GetHuman"
-      }
-    }
+    val OPERATION_NAME: String = "GetHuman"
   }
 }

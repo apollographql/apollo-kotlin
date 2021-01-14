@@ -2,7 +2,6 @@ package com.apollographql.apollo.internal.subscription
 
 import com.apollographql.apollo.api.CustomScalarAdapters
 import com.apollographql.apollo.api.Operation
-import com.apollographql.apollo.api.OperationName
 import com.apollographql.apollo.api.Subscription
 import com.apollographql.apollo.cache.normalized.ApolloStore
 import com.apollographql.apollo.cache.normalized.CacheKeyResolver
@@ -358,9 +357,7 @@ class SubscriptionManagerTest {
 
     override fun adapter() = throw UnsupportedOperationException()
 
-    override fun name() = object : OperationName {
-      override fun name(): String = "SomeSubscription"
-    }
+    override fun name(): String = "SomeSubscription"
 
     override fun operationId() = operationId
   }

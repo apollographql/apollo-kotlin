@@ -89,7 +89,7 @@ class ApolloParseInterceptor(private val httpCache: HttpCache?,
 
         InterceptorResponse(httpResponse, parsedResponse, records)
       } catch (rethrown: Exception) {
-        logger.e(rethrown, "Failed to parse network response for operation: %s", operation.name().name())
+        logger.e(rethrown, "Failed to parse network response for operation: %s", operation.name())
         closeQuietly(httpResponse)
         httpCache?.removeQuietly(cacheKey!!)
         throw ApolloParseException("Failed to parse http response", rethrown)

@@ -52,16 +52,16 @@ class ApolloCacheInterceptor(
       } else {
         writeOptimisticUpdatesAndPublish(request)
         chain.proceedAsync(request, dispatcher, object : CallBack {
-          override fun onResponse(networkResponse: InterceptorResponse) {
+          override fun onResponse(response: InterceptorResponse) {
             if (disposed) return
-            cacheResponseAndPublish(request, networkResponse, writeToCacheAsynchronously)
-            callBack.onResponse(networkResponse)
+            cacheResponseAndPublish(request, response, writeToCacheAsynchronously)
+            callBack.onResponse(response)
             callBack.onCompleted()
           }
 
-          override fun onFailure(t: ApolloException) {
+          override fun onFailure(e: ApolloException) {
             rollbackOptimisticUpdatesAndPublish(request)
-            callBack.onFailure(t)
+            callBack.onFailure(e)
           }
 
           override fun onCompleted() {
@@ -87,11 +87,11 @@ class ApolloCacheInterceptor(
         request.cacheHeaders)
     val cachedResponse = apolloStoreOperation.execute()
     if (cachedResponse.data != null) {
-      logger.d("Cache HIT for operation %s", request.operation.name().name())
+      logger.d("Cache HIT for operation %s", request.operation.name())
       return InterceptorResponse(null, cachedResponse, emptySet())
     }
-    logger.d("Cache MISS for operation %s", request.operation.name().name())
-    throw ApolloGenericException(String.format("Cache miss for operation %s", request.operation.name().name()))
+    logger.d("Cache MISS for operation %s", request.operation.name())
+    throw ApolloGenericException(String.format("Cache miss for operation %s", request.operation.name()))
   }
 
   fun cacheResponse(networkResponse: InterceptorResponse,

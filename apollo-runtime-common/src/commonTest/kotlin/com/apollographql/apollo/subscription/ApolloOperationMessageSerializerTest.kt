@@ -2,10 +2,6 @@ package com.apollographql.apollo.subscription
 
 import com.apollographql.apollo.api.BigDecimal
 import com.apollographql.apollo.api.CustomScalarAdapters
-import com.apollographql.apollo.api.Operation
-import com.apollographql.apollo.api.OperationName
-import com.apollographql.apollo.api.Subscription
-import com.apollographql.apollo.api.internal.ResponseAdapter
 import com.apollographql.apollo.api.internal.json.BufferedSourceJsonReader
 import com.apollographql.apollo.api.internal.json.Utils.readRecursively
 import com.apollographql.apollo.testing.MockSubscription
@@ -58,7 +54,7 @@ class ApolloOperationMessageSerializerTest {
         "type" to "start",
         "payload" to mapOf(
             "variables" to subscription.variables().valueMap(),
-            "operationName" to subscription.name().name(),
+            "operationName" to subscription.name(),
             "query" to subscription.queryDocument()
         )
     ))
@@ -67,7 +63,7 @@ class ApolloOperationMessageSerializerTest {
         "type" to "start",
         "payload" to mapOf(
             "variables" to subscription.variables().valueMap(),
-            "operationName" to subscription.name().name(),
+            "operationName" to subscription.name(),
             "extensions" to mapOf(
                 "persistedQuery" to mapOf(
                     "version" to BigDecimal(1),
@@ -81,7 +77,7 @@ class ApolloOperationMessageSerializerTest {
         "type" to "start",
         "payload" to mapOf(
             "variables" to subscription.variables().valueMap(),
-            "operationName" to subscription.name().name(),
+            "operationName" to subscription.name(),
             "query" to subscription.queryDocument(),
             "extensions" to mapOf(
                 "persistedQuery" to mapOf(

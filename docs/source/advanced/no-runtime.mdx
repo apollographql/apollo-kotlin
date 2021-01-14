@@ -80,7 +80,7 @@ okhttp3.Response httpResponse = ...;
 ScalarTypeAdapters scalarTypeAdapters = new ScalarTypeAdapters(<provide your custom scalar type adapters>);
 
 Response<Operation.Data> response = new Query().parse(httpResponse.body().source(), scalarTypeAdapters);
-```        
+```
 
 With Kotlin Multiplatform support, you can use Swift's `NSData` type to parse the response
 
@@ -88,7 +88,7 @@ With Kotlin Multiplatform support, you can use Swift's `NSData` type to parse th
 val data: NSData = ...;
 
 val response = query.parse(data.toByteString())
-``` 
+```
 
 ## Converting Query.Data back to JSON
 
@@ -113,14 +113,14 @@ val json = data.toJson(indent = "  ")
 
 ## Creating request payload for POST request
 
-To compose a GraphQL POST request along with operation variables to be sent to the server, you can use `Operation.Variables#marshal()` API: 
+To compose a GraphQL POST request along with operation variables to be sent to the server, you can use `Operation.Variables#marshal()` API:
 
 ```java
 // Generated GraphQL query, mutation, subscription
 Query query = ...;
 
 String requestPayload = "{" +
-    "\"operationName\": " + query.name().name() + ", " +
+    "\"operationName\": " + query.name() + ", " +
     "\"query\": " + query.queryDocument() + ", " +
     "\"variables\": " + query.variables().marshal() +
     "}";
@@ -135,7 +135,7 @@ Query query = ...;
 ScalarTypeAdapters scalarTypeAdapters = new ScalarTypeAdapters(<provide your custom scalar type adapters>);
 
 String requestPayload = "{" +
-    "\"operationName\": " + query.name().name() + ", " +
+    "\"operationName\": " + query.name() + ", " +
     "\"query\": " + query.queryDocument() + ", " +
     "\"variables\": " + query.variables().marshal(scalarTypeAdapters) +
     "}";
