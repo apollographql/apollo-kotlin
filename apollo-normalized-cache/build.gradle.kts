@@ -1,6 +1,7 @@
 plugins {
   `java-library`
   kotlin("multiplatform")
+  id("kotlinx-atomicfu")
 }
 
 kotlin {
@@ -27,6 +28,7 @@ kotlin {
       dependencies {
         api(project(":apollo-api"))
         api(project(":apollo-normalized-cache-api"))
+        implementation(groovy.util.Eval.x(project, "x.dep.kotlin.atomic"))
       }
     }
 
@@ -35,6 +37,14 @@ kotlin {
       dependencies {
         implementation(groovy.util.Eval.x(project, "x.dep.cache"))
       }
+    }
+
+    val iosMain by getting {
+      dependsOn(commonMain)
+    }
+
+    val iosSimMain by getting {
+      dependsOn(iosMain)
     }
 
     val commonTest by getting {
@@ -52,10 +62,5 @@ kotlin {
         implementation(groovy.util.Eval.x(project, "x.dep.truth"))
       }
     }
-
   }
-}
-
-metalava {
-  hiddenPackages += setOf("com.apollographql.apollo.cache.normalized.internal")
 }

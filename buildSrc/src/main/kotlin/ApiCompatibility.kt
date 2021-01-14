@@ -14,6 +14,10 @@ object ApiCompatibility {
           // apollo-runtime-kotlin is still under development. Include the check once it is stable enough.
           return@subprojects
         }
+        "apollo-normalized-cache" -> {
+          // is still under development. Include the check once it is stable enough.
+          return@subprojects
+        }
         else -> {
           it.configureJapiCmp()
           MetalavaPlugin().apply(it)
