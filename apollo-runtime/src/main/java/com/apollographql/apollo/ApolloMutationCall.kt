@@ -67,7 +67,7 @@ interface ApolloMutationCall<D : Operation.Data> : ApolloCall<D> {
      *
      * Sets a list of [ApolloQueryWatcher] query names to be re-fetched once this mutation completed.
      *
-     * @param operationNames array of [OperationName] query names to be re-fetched
+     * @param operationNames array of query names to be re-fetched
      * @return The Builder
      */
     fun refetchQueryNames(operationNames: List<String>): Builder<D>
