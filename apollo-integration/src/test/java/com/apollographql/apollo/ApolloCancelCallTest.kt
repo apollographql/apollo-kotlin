@@ -83,7 +83,7 @@ class ApolloCancelCallTest {
       val start = System.currentTimeMillis()
       while (true) {
         val timeoutMillis = TimeUnit.MILLISECONDS.convert(timeoutDuration, unit) - (System.currentTimeMillis() - start)
-        if (timeoutMillis < 0) {
+        if (timeoutMillis <= 0) {
           throw TimeoutException("Timeout reached")
         }
         if (completed) {
@@ -127,7 +127,7 @@ class ApolloCancelCallTest {
       val start = System.currentTimeMillis()
       while (true) {
         val timeoutMillis = TimeUnit.MILLISECONDS.convert(timeoutDuration, unit) - (System.currentTimeMillis() - start)
-        if (timeoutMillis < 0) {
+        if (timeoutMillis <= 0) {
           throw TimeoutException("Timeout reached")
         }
         if (completed) {
