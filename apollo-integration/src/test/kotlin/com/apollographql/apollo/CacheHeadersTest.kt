@@ -4,15 +4,18 @@ import com.apollographql.apollo.Utils.immediateExecutor
 import com.apollographql.apollo.Utils.immediateExecutorService
 import com.apollographql.apollo.Utils.readFileToString
 import com.apollographql.apollo.api.Input.Companion.fromNullable
+import com.apollographql.apollo.api.internal.json.JsonReader
 import com.apollographql.apollo.cache.ApolloCacheHeaders
 import com.apollographql.apollo.cache.CacheHeaders
 import com.apollographql.apollo.cache.CacheHeaders.Companion.builder
 import com.apollographql.apollo.cache.normalized.*
+import com.apollographql.apollo.coroutines.await
 import com.apollographql.apollo.exception.ApolloException
 import com.apollographql.apollo.integration.normalizer.HeroAndFriendsNamesQuery
 import com.apollographql.apollo.integration.normalizer.type.Episode
 import com.apollographql.apollo.rx2.Rx2Apollo
 import com.google.common.truth.Truth
+import kotlinx.coroutines.runBlocking
 import okhttp3.Dispatcher
 import okhttp3.OkHttpClient
 import okhttp3.mockwebserver.MockResponse
@@ -31,6 +34,10 @@ class CacheHeadersTest {
     val normalizedCache: NormalizedCache = object : NormalizedCache() {
       override fun loadRecord(key: String, cacheHeaders: CacheHeaders): Record? {
         hasHeader.set(cacheHeaders.hasHeader(ApolloCacheHeaders.DO_NOT_STORE))
+        return null
+      }
+
+      override fun stream(key: String, cacheHeaders: CacheHeaders): JsonReader? {
         return null
       }
 
@@ -77,6 +84,10 @@ class CacheHeadersTest {
         return null
       }
 
+      override fun stream(key: String, cacheHeaders: CacheHeaders): JsonReader? {
+        return null
+      }
+
       override fun merge(record: Record, cacheHeaders: CacheHeaders): Set<String> {
         hasHeader.set(cacheHeaders.hasHeader(ApolloCacheHeaders.DO_NOT_STORE))
         return emptySet<String>()
@@ -105,9 +116,12 @@ class CacheHeadersTest {
         .defaultCacheHeaders(cacheHeaders)
         .build()
     server.enqueue(mockResponse("HeroAndFriendsNameResponse.json"))
-    Rx2Apollo.from(apolloClient.query(HeroAndFriendsNamesQuery(fromNullable(Episode.NEWHOPE)))
-        .cacheHeaders(cacheHeaders))
-        .test()
+
+    runBlocking {
+      apolloClient.query(HeroAndFriendsNamesQuery(fromNullable(Episode.NEWHOPE)))
+          .cacheHeaders(cacheHeaders)
+          .await()
+    }
     Truth.assertThat(hasHeader.get()).isTrue()
   }
 

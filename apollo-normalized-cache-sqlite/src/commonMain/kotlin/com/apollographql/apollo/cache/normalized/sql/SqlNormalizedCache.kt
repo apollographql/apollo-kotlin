@@ -1,11 +1,14 @@
 package com.apollographql.apollo.cache.normalized.sql
 
+import com.apollographql.apollo.api.internal.json.BufferedSourceJsonReader
+import com.apollographql.apollo.api.internal.json.JsonReader
 import com.apollographql.apollo.cache.ApolloCacheHeaders.EVICT_AFTER_READ
 import com.apollographql.apollo.cache.CacheHeaders
 import com.apollographql.apollo.cache.normalized.CacheKey
 import com.apollographql.apollo.cache.normalized.NormalizedCache
 import com.apollographql.apollo.cache.normalized.Record
 import com.apollographql.apollo.cache.normalized.RecordFieldJsonAdapter
+import okio.Buffer
 import okio.IOException
 import kotlin.reflect.KClass
 
@@ -25,6 +28,19 @@ class SqlNormalizedCache internal constructor(
       return record
     }
     return nextCache?.loadRecord(key, cacheHeaders)
+  }
+
+  override fun stream(key: String, cacheHeaders: CacheHeaders): JsonReader? {
+    return try {
+      cacheQueries.recordForKey(key)
+          .executeAsList()
+          .firstOrNull()
+          ?.let {
+            BufferedSourceJsonReader(Buffer().writeUtf8(it.record))
+          }
+    } catch (e: IOException) {
+      null
+    }
   }
 
   override fun loadRecords(keys: Collection<String>, cacheHeaders: CacheHeaders): Collection<Record> {

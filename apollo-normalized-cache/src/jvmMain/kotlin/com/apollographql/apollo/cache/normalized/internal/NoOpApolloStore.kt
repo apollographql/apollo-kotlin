@@ -4,6 +4,7 @@ import com.apollographql.apollo.api.Fragment
 import com.apollographql.apollo.api.Operation
 import com.apollographql.apollo.api.Response
 import com.apollographql.apollo.api.Response.Companion.builder
+import com.apollographql.apollo.api.internal.json.JsonReader
 import com.apollographql.apollo.cache.CacheHeaders
 import com.apollographql.apollo.cache.normalized.ApolloStore
 import com.apollographql.apollo.cache.normalized.ApolloStoreOperation
@@ -24,6 +25,10 @@ class NoOpApolloStore : ApolloStore, ReadableStore, WriteableStore {
 
   override fun merge(record: Record, cacheHeaders: CacheHeaders): Set<String> {
     return emptySet()
+  }
+
+  override fun stream(key: String, cacheHeaders: CacheHeaders): JsonReader? {
+    return null
   }
 
   override fun read(key: String, cacheHeaders: CacheHeaders): Record? {

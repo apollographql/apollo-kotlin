@@ -8,7 +8,6 @@ import com.apollographql.apollo.Utils.immediateExecutorService
 import com.apollographql.apollo.Utils.mockResponse
 import com.apollographql.apollo.api.Input
 import com.apollographql.apollo.api.Input.Companion.fromNullable
-import com.apollographql.apollo.api.Operation
 import com.apollographql.apollo.api.Response
 import com.apollographql.apollo.cache.normalized.CacheKey.Companion.from
 import com.apollographql.apollo.cache.normalized.NormalizedCache.Companion.prettifyDump
@@ -16,7 +15,18 @@ import com.apollographql.apollo.cache.normalized.lru.EvictionPolicy
 import com.apollographql.apollo.cache.normalized.lru.LruNormalizedCacheFactory
 import com.apollographql.apollo.fetcher.ApolloResponseFetchers
 import com.apollographql.apollo.integration.httpcache.AllPlanetsQuery
-import com.apollographql.apollo.integration.normalizer.*
+import com.apollographql.apollo.integration.normalizer.CharacterDetailsQuery
+import com.apollographql.apollo.integration.normalizer.CharacterNameByIdQuery
+import com.apollographql.apollo.integration.normalizer.EpisodeHeroNameQuery
+import com.apollographql.apollo.integration.normalizer.HeroAndFriendsDirectivesQuery
+import com.apollographql.apollo.integration.normalizer.HeroAndFriendsNamesQuery
+import com.apollographql.apollo.integration.normalizer.HeroAndFriendsNamesWithIDForParentOnlyQuery
+import com.apollographql.apollo.integration.normalizer.HeroAndFriendsNamesWithIDsQuery
+import com.apollographql.apollo.integration.normalizer.HeroAppearsInQuery
+import com.apollographql.apollo.integration.normalizer.HeroParentTypeDependentFieldQuery
+import com.apollographql.apollo.integration.normalizer.HeroTypeDependentAliasedFieldQuery
+import com.apollographql.apollo.integration.normalizer.SameHeroTwiceQuery
+import com.apollographql.apollo.integration.normalizer.StarshipByIdQuery
 import com.apollographql.apollo.integration.normalizer.fragment.HeroWithFriendsFragmentImpl
 import com.apollographql.apollo.integration.normalizer.fragment.HumanWithIdFragment
 import com.apollographql.apollo.integration.normalizer.fragment.HumanWithIdFragmentImpl
@@ -28,9 +38,9 @@ import okhttp3.Dispatcher
 import okhttp3.OkHttpClient
 import okhttp3.mockwebserver.MockWebServer
 import org.junit.Before
-import org.junit.Test
 import org.junit.Ignore
-import java.util.*
+import org.junit.Test
+import java.util.Arrays
 import java.util.concurrent.TimeUnit
 
 class NormalizedCacheTestCase {

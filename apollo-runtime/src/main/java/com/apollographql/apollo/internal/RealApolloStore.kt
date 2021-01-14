@@ -8,6 +8,7 @@ import com.apollographql.apollo.api.Response.Companion.builder
 import com.apollographql.apollo.api.internal.ApolloLogger
 import com.apollographql.apollo.api.internal.MapResponseReader
 import com.apollographql.apollo.api.internal.ResponseAdapter
+import com.apollographql.apollo.api.internal.json.JsonReader
 import com.apollographql.apollo.api.parseData
 import com.apollographql.apollo.cache.CacheHeaders
 import com.apollographql.apollo.cache.normalized.ApolloStore
@@ -26,6 +27,7 @@ import com.apollographql.apollo.cache.normalized.internal.Transaction
 import com.apollographql.apollo.cache.normalized.internal.WriteableStore
 import com.apollographql.apollo.cache.normalized.internal.dependentKeys
 import com.apollographql.apollo.cache.normalized.internal.normalize
+import com.apollographql.apollo.cache.normalized.internal.readDataFromCache
 import java.util.ArrayList
 import java.util.Collections
 import java.util.LinkedHashSet
@@ -41,7 +43,7 @@ class RealApolloStore(normalizedCache: NormalizedCache,
                       val logger: ApolloLogger) : ApolloStore, ReadableStore, WriteableStore {
   private val optimisticCache = OptimisticNormalizedCache().chain(normalizedCache) as OptimisticNormalizedCache
   private val lock = ReentrantReadWriteLock()
-  private val subscribers : MutableSet<RecordChangeSubscriber> = Collections.newSetFromMap(WeakHashMap())
+  private val subscribers: MutableSet<RecordChangeSubscriber> = Collections.newSetFromMap(WeakHashMap())
   private val cacheKeyBuilder = RealCacheKeyBuilder()
 
   @Synchronized
@@ -54,26 +56,24 @@ class RealApolloStore(normalizedCache: NormalizedCache,
     subscribers.remove(subscriber)
   }
 
-  override fun publish(changedKeys: Set<String>) {
-    if (changedKeys.isEmpty()) {
+  override fun publish(keys: Set<String>) {
+    if (keys.isEmpty()) {
       return
     }
     var iterableSubscribers: Set<RecordChangeSubscriber>
     synchronized(this) { iterableSubscribers = LinkedHashSet(subscribers) }
     for (subscriber in iterableSubscribers) {
-      subscriber.onCacheRecordsChanged(changedKeys)
+      subscriber.onCacheRecordsChanged(keys)
     }
   }
 
   override fun clearAll(): ApolloStoreOperation<Boolean> {
     return object : ApolloStoreOperation<Boolean>(dispatcher) {
       public override fun perform(): Boolean {
-        return writeTransaction(object : Transaction<WriteableStore, Boolean> {
-          override fun execute(cache: WriteableStore): Boolean {
-            optimisticCache.clearAll()
-            return java.lang.Boolean.TRUE
-          }
-        })
+        return writeTransaction {
+          optimisticCache.clearAll()
+          java.lang.Boolean.TRUE
+        }
       }
     }
   }
@@ -86,11 +86,7 @@ class RealApolloStore(normalizedCache: NormalizedCache,
                       cascade: Boolean): ApolloStoreOperation<Boolean> {
     return object : ApolloStoreOperation<Boolean>(dispatcher) {
       override fun perform(): Boolean {
-        return writeTransaction(object : Transaction<WriteableStore, Boolean> {
-          override fun execute(cache: WriteableStore): Boolean {
-            return optimisticCache.remove(cacheKey, cascade)
-          }
-        })
+        return writeTransaction { optimisticCache.remove(cacheKey, cascade) }
       }
     }
   }
@@ -137,12 +133,16 @@ class RealApolloStore(normalizedCache: NormalizedCache,
     return optimisticCache.loadRecord(key, cacheHeaders)
   }
 
+  override fun stream(key: String, cacheHeaders: CacheHeaders): JsonReader? {
+    return optimisticCache.stream(key, cacheHeaders)
+  }
+
   override fun read(keys: Collection<String>, cacheHeaders: CacheHeaders): Collection<Record> {
     return optimisticCache.loadRecords(keys, cacheHeaders)
   }
 
-  override fun merge(recordSet: Collection<Record>, cacheHeaders: CacheHeaders): Set<String> {
-    return optimisticCache.merge(recordSet, cacheHeaders)
+  override fun merge(recordCollection: Collection<Record>, cacheHeaders: CacheHeaders): Set<String> {
+    return optimisticCache.merge(recordCollection, cacheHeaders)
   }
 
   override fun merge(record: Record, cacheHeaders: CacheHeaders): Set<String> {
@@ -263,17 +263,14 @@ class RealApolloStore(normalizedCache: NormalizedCache,
       operation: Operation<D>,
       cacheHeaders: CacheHeaders
   ): Response<D> = readTransaction { cache ->
-    val rootRecord = cache.read(rootKey().key, cacheHeaders)
-        ?: return@readTransaction builder<D>(operation).fromCache(true).build()
     try {
-      val fieldValueResolver = CacheValueResolver(
+      val data = operation.readDataFromCache(
+          customScalarAdapters,
           cache,
-          operation.variables(),
           cacheKeyResolver(),
-          cacheHeaders,
-          cacheKeyBuilder)
-      val data = operation.parseData(rootRecord, customScalarAdapters, fieldValueResolver)
-      val records = operation.normalize(data, customScalarAdapters, cacheKeyResolver)
+          cacheHeaders
+      )
+      val records = operation.normalize(data!!, customScalarAdapters, cacheKeyResolver())
       builder<D>(operation)
           .data(data)
           .fromCache(true)
@@ -323,7 +320,7 @@ class RealApolloStore(normalizedCache: NormalizedCache,
 
   }
 
-  fun <D: Fragment.Data> doWriteFragment(fragment: Fragment<D>, cacheKey: CacheKey, data: D): Set<String> = writeTransaction {
+  fun <D : Fragment.Data> doWriteFragment(fragment: Fragment<D>, cacheKey: CacheKey, data: D): Set<String> = writeTransaction {
     val records = fragment.normalize(data, customScalarAdapters, cacheKeyResolver, cacheKey.key)
     merge(records, CacheHeaders.NONE)
   }

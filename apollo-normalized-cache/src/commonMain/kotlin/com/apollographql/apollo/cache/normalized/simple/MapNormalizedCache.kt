@@ -1,9 +1,11 @@
 package com.apollographql.apollo.cache.normalized.simple
 
+import com.apollographql.apollo.api.internal.json.JsonReader
 import com.apollographql.apollo.cache.CacheHeaders
 import com.apollographql.apollo.cache.normalized.CacheKey
 import com.apollographql.apollo.cache.normalized.NormalizedCache
 import com.apollographql.apollo.cache.normalized.Record
+import com.apollographql.apollo.cache.normalized.internal.MapJsonReader
 
 /**
  * A simple normalized cache backed by a [MutableMap].
@@ -20,6 +22,10 @@ class MapNormalizedCache : NormalizedCache() {
     }
 
     return map.get(key)
+  }
+
+  override fun stream(key: String, cacheHeaders: CacheHeaders): JsonReader? {
+    return map.get(key)?.let { MapJsonReader(it) }
   }
 
   override fun performMerge(apolloRecord: Record, oldRecord: Record?, cacheHeaders: CacheHeaders): Set<String> {
