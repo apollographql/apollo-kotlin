@@ -1,7 +1,6 @@
 package com.apollographql.apollo.testing
 
 import com.apollographql.apollo.api.Operation
-import com.apollographql.apollo.api.OperationName
 import com.apollographql.apollo.api.ResponseField
 import com.apollographql.apollo.api.Subscription
 import com.apollographql.apollo.api.internal.InputFieldMarshaller
@@ -33,7 +32,7 @@ class MockSubscription(
   }
 
   override fun adapter(): ResponseAdapter<Data> {
-    return object: ResponseAdapter<Data> {
+    return object : ResponseAdapter<Data> {
       override fun fromResponse(reader: ResponseReader, __typename: String?): Data {
         return Data(
             name = reader.readString(
@@ -54,9 +53,7 @@ class MockSubscription(
     }
   }
 
-  override fun name(): OperationName = object : OperationName {
-    override fun name(): String = name
-  }
+  override fun name(): String = name
 
   override fun operationId(): String = name.hashCode().toString()
 

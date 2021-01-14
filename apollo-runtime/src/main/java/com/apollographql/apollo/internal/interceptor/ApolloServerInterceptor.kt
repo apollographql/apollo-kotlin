@@ -82,7 +82,7 @@ class ApolloServerInterceptor(
             request.sendQueryDocument, request.autoPersistQueries)
       }
     } catch (e: IOException) {
-      logger.e(e, "Failed to prepare http call for operation %s", request.operation.name().name())
+      logger.e(e, "Failed to prepare http call for operation %s", request.operation.name())
       callBack.onFailure(ApolloNetworkException("Failed to prepare http call", e))
       return
     }
@@ -96,7 +96,7 @@ class ApolloServerInterceptor(
       override fun onFailure(call: Call, e: IOException) {
         if (disposed) return
         if (httpCallRef.compareAndSet(httpCall, null)) {
-          logger.e(e, "Failed to execute http call for operation %s", request.operation.name().name())
+          logger.e(e, "Failed to execute http call for operation %s", request.operation.name())
           callBack.onFailure(ApolloNetworkException("Failed to execute http call", e))
         }
       }
@@ -141,7 +141,7 @@ class ApolloServerInterceptor(
     requestBuilder
         .header(HEADER_ACCEPT_TYPE, ACCEPT_TYPE)
         .header(HEADER_APOLLO_OPERATION_ID, operation.operationId())
-        .header(HEADER_APOLLO_OPERATION_NAME, operation.name().name())
+        .header(HEADER_APOLLO_OPERATION_NAME, operation.name())
         .tag(operation.operationId())
     for (header in requestHeaders.headers()) {
       val value = requestHeaders.headerValue(header)
@@ -193,7 +193,7 @@ class ApolloServerInterceptor(
       if (operation.variables() !== Operation.EMPTY_VARIABLES) {
         addVariablesUrlQueryParameter(urlBuilder, operation, customScalarAdapters)
       }
-      urlBuilder.addQueryParameter("operationName", operation.name().name())
+      urlBuilder.addQueryParameter("operationName", operation.name())
       if (autoPersistQueries) {
         addExtensionsUrlQueryParameter(urlBuilder, operation)
       }

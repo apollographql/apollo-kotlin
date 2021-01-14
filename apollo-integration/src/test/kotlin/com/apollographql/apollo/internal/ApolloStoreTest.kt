@@ -3,6 +3,7 @@ package com.apollographql.apollo.internal
 import com.apollographql.apollo.NamedCountDownLatch
 import com.apollographql.apollo.api.CustomScalarAdapters
 import com.apollographql.apollo.api.internal.ApolloLogger
+import com.apollographql.apollo.api.internal.json.JsonReader
 import com.apollographql.apollo.cache.CacheHeaders
 import com.apollographql.apollo.cache.normalized.CacheKey
 import com.apollographql.apollo.cache.normalized.CacheKeyResolver
@@ -21,6 +22,10 @@ class ApolloStoreTest {
     val realApolloStore = RealApolloStore(
         object : NormalizedCache() {
           override fun loadRecord(key: String, cacheHeaders: CacheHeaders): Record? {
+            return null
+          }
+
+          override fun stream(key: String, cacheHeaders: CacheHeaders): JsonReader? {
             return null
           }
 

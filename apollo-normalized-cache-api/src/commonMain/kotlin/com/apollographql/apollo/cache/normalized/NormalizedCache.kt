@@ -1,5 +1,6 @@
 package com.apollographql.apollo.cache.normalized
 
+import com.apollographql.apollo.api.internal.json.JsonReader
 import com.apollographql.apollo.cache.ApolloCacheHeaders
 import com.apollographql.apollo.cache.CacheHeaders
 import kotlin.jvm.JvmStatic
@@ -31,6 +32,8 @@ abstract class NormalizedCache {
    * @return The [Record] for key. If not present return null.
    */
   abstract fun loadRecord(key: String, cacheHeaders: CacheHeaders): Record?
+
+  abstract fun stream(key: String, cacheHeaders: CacheHeaders): JsonReader?
 
   /**
    * Calls through to [NormalizedCache.loadRecord]. Implementations should override this

@@ -34,7 +34,7 @@ class NetworkFirstFetcher : ResponseFetcher {
 
         override fun onFailure(networkException: ApolloException) {
           logger!!.d(networkException, "Failed to fetch network response for operation %s, trying to return cached one",
-              request.operation.name().name())
+              request.operation.name())
           if (!disposed) {
             val cacheRequest = request.toBuilder().fetchFromCache(true).build()
             chain.proceedAsync(cacheRequest, dispatcher, object : CallBack {

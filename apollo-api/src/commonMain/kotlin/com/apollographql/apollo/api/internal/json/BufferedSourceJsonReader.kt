@@ -55,9 +55,9 @@ class BufferedSourceJsonReader(private val source: BufferedSource) : JsonReader 
   private val pathNames = arrayOfNulls<String>(32)
   private val pathIndices = IntArray(32)
 
-  override var lenient = false
+  private var lenient = false
 
-  override var failOnUnknown = false
+  private var failOnUnknown = false
 
   @Throws(IOException::class)
   override fun beginArray(): JsonReader = apply {
@@ -852,7 +852,7 @@ class BufferedSourceJsonReader(private val source: BufferedSource) : JsonReader 
     return false
   }
 
-  override fun getPath(): String = JsonScope.getPath(stackSize, stack, pathNames, pathIndices)
+  private fun getPath(): String = JsonScope.getPath(stackSize, stack, pathNames, pathIndices)
 
   /**
    * Unescapes the character identified by the character or characters that immediately follow a backslash. The backslash '\' should have
@@ -904,14 +904,6 @@ class BufferedSourceJsonReader(private val source: BufferedSource) : JsonReader 
    */
   private fun syntaxError(message: String): JsonEncodingException =
       JsonEncodingException(message + " at path " + getPath())
-
-  @Throws(IOException::class)
-  override fun promoteNameToValue() {
-    if (hasNext()) {
-      peekedString = nextName()
-      peeked = PEEKED_BUFFERED
-    }
-  }
 
   companion object {
     private const val MIN_INCOMPLETE_INTEGER = Long.MIN_VALUE / 10

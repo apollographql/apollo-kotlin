@@ -1,7 +1,6 @@
 package com.apollographql.apollo.subscription
 
 import com.apollographql.apollo.api.Operation
-import com.apollographql.apollo.api.OperationName
 import com.apollographql.apollo.api.Subscription
 import com.apollographql.apollo.api.internal.InputFieldMarshaller
 
@@ -30,10 +29,7 @@ class MockSubscription(
 
   override fun adapter() = throw UnsupportedOperationException()
 
-  override fun name(): OperationName =
-      object : OperationName {
-        override fun name(): String = name
-      }
+  override fun name(): String = name
 
   override fun operationId(): String = operationId
 }

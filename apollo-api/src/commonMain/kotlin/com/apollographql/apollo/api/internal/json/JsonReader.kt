@@ -32,24 +32,6 @@ import okio.IOException
 interface JsonReader : Closeable {
 
   /**
-   * Configure this parser to be liberal in what it accepts.
-   *
-   * By default this parser is strict and only accepts JSON as specified by [RFC 7159](http://www.ietf.org/rfc/rfc7159.txt)
-   */
-  var lenient: Boolean
-
-  /**
-   * Configure whether this parser throws a [JsonDataException] when [skipValue] is called.
-   *
-   * By default this parser permits values to be skipped.
-   *
-   * Forbid skipping to prevent unrecognized values from being silently ignored. This option is useful in development and debugging
-   * because it means a typo like "locatiom" will be detected early. It's potentially harmful in production because it complicates
-   * revising a JSON schema.
-   */
-  var failOnUnknown: Boolean
-
-  /**
    * Consumes the next token from the JSON stream and asserts that it is the beginning of a new array.
    */
   @Throws(IOException::class)
@@ -163,18 +145,6 @@ interface JsonReader : Closeable {
    */
   @Throws(IOException::class)
   fun skipValue()
-
-  /**
-   * Returns a [JsonPath](http://goessner.net/articles/JsonPath/) to the current location in the JSON value.
-   */
-  fun getPath(): String
-
-  /**
-   * Changes the reader to treat the next name as a string value. This is useful for map adapters so that arbitrary type adapters can
-   * use [nextString] to read a name value.
-   */
-  @Throws(IOException::class)
-  fun promoteNameToValue()
 
   /**
    * A structure, name, or value type in a JSON-encoded string.

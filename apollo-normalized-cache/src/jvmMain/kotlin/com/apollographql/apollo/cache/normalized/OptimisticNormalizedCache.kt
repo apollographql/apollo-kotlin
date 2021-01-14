@@ -1,5 +1,6 @@
 package com.apollographql.apollo.cache.normalized
 
+import com.apollographql.apollo.api.internal.json.JsonReader
 import com.apollographql.apollo.cache.CacheHeaders
 import com.nytimes.android.external.cache.CacheBuilder
 import java.util.UUID
@@ -14,6 +15,15 @@ class OptimisticNormalizedCache : NormalizedCache() {
     return try {
       val nonOptimisticRecord = nextCache?.loadRecord(key, cacheHeaders)
       nonOptimisticRecord.mergeJournalRecord(key)
+    } catch (ignore: Exception) {
+      null
+    }
+  }
+
+  override fun stream(key: String, cacheHeaders: CacheHeaders): JsonReader? {
+    return try {
+      // XXX: fix optimistic updates
+      nextCache?.stream(key, cacheHeaders)
     } catch (ignore: Exception) {
       null
     }

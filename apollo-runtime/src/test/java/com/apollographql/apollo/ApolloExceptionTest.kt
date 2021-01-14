@@ -1,7 +1,6 @@
 package com.apollographql.apollo
 
 import com.apollographql.apollo.api.Operation
-import com.apollographql.apollo.api.OperationName
 import com.apollographql.apollo.api.Query
 import com.apollographql.apollo.api.internal.json.JsonEncodingException
 import com.apollographql.apollo.exception.ApolloHttpException
@@ -22,15 +21,11 @@ import java.util.concurrent.atomic.AtomicReference
 class ApolloExceptionTest {
   @get:Rule
   val server = MockWebServer()
-  
+
   private lateinit var apolloClient: ApolloClient
 
   private val emptyQuery = object : Query<Operation.Data> {
-    var operationName: OperationName = object : OperationName {
-      override fun name(): String {
-        return "emptyQuery"
-      }
-    }
+    var operationName: String = "emptyQuery"
 
     override fun queryDocument(): String {
       return ""
@@ -42,7 +37,7 @@ class ApolloExceptionTest {
 
     override fun adapter() = throw UnsupportedOperationException()
 
-    override fun name(): OperationName {
+    override fun name(): String {
       return operationName
     }
 

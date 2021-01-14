@@ -17,12 +17,12 @@ import kotlinx.coroutines.flow.onStart
 object TestLoggerExecutor : ApolloRequestInterceptor {
 
   override fun <D : Operation.Data> intercept(request: ApolloRequest<D>, chain: ApolloInterceptorChain): Flow<ApolloResponse<D>> {
-    println("Preparing `${request.operation.name().name()}` GraphQL operation for execution ...")
+    println("Preparing `${request.operation.name()}` GraphQL operation for execution ...")
     return chain.proceed(request)
-        .onStart { println("Started `${request.operation.name().name()}` GraphQL operation execution ...") }
-        .onEach { response -> println("Finished `${request.operation.name().name()}` GraphQL operation execution, response: $response") }
+        .onStart { println("Started `${request.operation.name()}` GraphQL operation execution ...") }
+        .onEach { response -> println("Finished `${request.operation.name()}` GraphQL operation execution, response: $response") }
         .catch { e ->
-          println("Failed `${request.operation.name().name()}` GraphQL operation execution due to error: $e")
+          println("Failed `${request.operation.name()}` GraphQL operation execution due to error: $e")
           throw e
         }
   }

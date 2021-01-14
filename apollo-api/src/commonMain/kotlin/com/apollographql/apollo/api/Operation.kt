@@ -31,9 +31,9 @@ interface Operation<D : Operation.Data> {
   fun adapter(): ResponseAdapter<D>
 
   /**
-   * Returns GraphQL operation name [OperationName].
+   * Returns GraphQL operation name
    */
-  fun name(): OperationName
+  fun name(): String
 
   /**
    * Returns a unique identifier for this operation.

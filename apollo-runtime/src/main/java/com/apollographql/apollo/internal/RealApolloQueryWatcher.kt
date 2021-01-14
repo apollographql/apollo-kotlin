@@ -106,7 +106,7 @@ class RealApolloQueryWatcher<D : Operation.Data>(
       override fun onResponse(response: Response<D>) {
         val callback = responseCallback()
         if (!callback.isPresent) {
-          logger.d("onResponse for watched operation: %s. No callback present.", operation().name().name())
+          logger.d("onResponse for watched operation: %s. No callback present.", operation().name())
           return
         }
         apolloStore.subscribe(recordChangeSubscriber)
@@ -125,7 +125,7 @@ class RealApolloQueryWatcher<D : Operation.Data>(
       override fun onFailure(e: ApolloException) {
         val callback = terminate()
         if (!callback.isPresent) {
-          logger.d(e, "onFailure for operation: %s. No callback present.", operation().name().name())
+          logger.d(e, "onFailure for operation: %s. No callback present.", operation().name())
           return
         }
         if (e is ApolloHttpException) {
@@ -142,7 +142,7 @@ class RealApolloQueryWatcher<D : Operation.Data>(
       override fun onStatusEvent(event: ApolloCall.StatusEvent) {
         val callback = originalCallback.get()
         if (callback == null) {
-          logger.d("onStatusEvent for operation: %s. No callback present.", operation().name().name())
+          logger.d("onStatusEvent for operation: %s. No callback present.", operation().name())
           return
         }
         callback.onStatusEvent(event)

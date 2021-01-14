@@ -287,7 +287,7 @@ class IntegrationTest {
   fun writeOperationRawRequest() {
     val query = EpisodeHeroNameQuery(fromNullable(Episode.EMPIRE))
     val payload = "{" +
-        "\"operationName\": " + query.name().name() + ", " +
+        "\"operationName\": " + query.name() + ", " +
         "\"query\": " + query.queryDocument() + ", " +
         "\"variables\": " + query.variables().marshal() +
         "}"

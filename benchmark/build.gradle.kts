@@ -35,9 +35,9 @@ repositories {
 }
 
 dependencies {
-  // For OperationResponseParser
   add("implementation", "com.apollographql.apollo:apollo-runtime:3.0.0-SNAPSHOT")
   add("implementation", "com.apollographql.apollo:apollo-api:3.0.0-SNAPSHOT")
+  add("implementation", "com.apollographql.apollo:apollo-normalized-cache-sqlite:3.0.0-SNAPSHOT")
 
   add("implementation", groovy.util.Eval.x(project, "x.dep.moshi.moshi"))
   add("kapt", groovy.util.Eval.x(project, "x.dep.moshi.kotlinCodegen"))

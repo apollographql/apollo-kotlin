@@ -3,7 +3,6 @@ package com.apollographql.apollo.internal
 import com.apollographql.apollo.ApolloCall
 import com.apollographql.apollo.api.CustomScalarAdapters
 import com.apollographql.apollo.api.Operation
-import com.apollographql.apollo.api.OperationName
 import com.apollographql.apollo.api.Query
 import com.apollographql.apollo.api.Response
 import com.apollographql.apollo.api.cache.http.HttpCachePolicy
@@ -25,7 +24,7 @@ import java.util.concurrent.atomic.AtomicInteger
 class QueryReFetcher(builder: Builder) {
   val logger: ApolloLogger?
   private val calls: MutableList<RealApolloCall<Operation.Data>>
-  private val queryWatchers: List<OperationName>
+  private val queryWatchers: List<String>
   private val callTracker: ApolloCallTracker?
   private val executed = AtomicBoolean()
   var onCompleteCallback: OnCompleteCallback? = null
@@ -77,7 +76,7 @@ class QueryReFetcher(builder: Builder) {
 
   class Builder {
     var queries: List<Query<*>> = emptyList()
-    var queryWatchers: List<OperationName> = emptyList()
+    var queryWatchers: List<String> = emptyList()
     var serverUrl: HttpUrl? = null
     var httpCallFactory: Call.Factory? = null
     var customScalarAdapters: CustomScalarAdapters? = null
@@ -93,7 +92,7 @@ class QueryReFetcher(builder: Builder) {
       return this
     }
 
-    fun queryWatchers(queryWatchers: List<OperationName>?): Builder {
+    fun queryWatchers(queryWatchers: List<String>?): Builder {
       this.queryWatchers = queryWatchers ?: emptyList()
       return this
     }
