@@ -7,7 +7,8 @@ import com.apollographql.apollo.api.ExecutionContext
 import com.apollographql.apollo.api.CustomScalarAdapters
 import com.apollographql.apollo.api.Subscription
 import com.apollographql.apollo.dispatcher.ApolloCoroutineDispatcherContext
-import com.apollographql.apollo.interceptor.ApolloRequest
+import com.apollographql.apollo.ApolloRequest
+import com.apollographql.apollo.ApolloSubscriptionRequest
 import com.apollographql.apollo.subscription.ApolloOperationMessageSerializer
 import com.apollographql.apollo.subscription.OperationClientMessage
 import com.apollographql.apollo.subscription.OperationMessageSerializer.Companion.toByteString
@@ -36,9 +37,8 @@ class ApolloWebSocketNetworkTransportTest {
   @Test
   fun `when multiple responses, assert all delivered and completed`() {
     runBlocking {
-      val expectedRequest = ApolloRequest(
-          operation = MockSubscription(),
-          customScalarAdapters = CustomScalarAdapters.DEFAULT,
+      val expectedRequest = ApolloSubscriptionRequest(
+          subscription = MockSubscription(),
           executionContext = ApolloCoroutineDispatcherContext(Dispatchers.Unconfined)
       )
       val expectedResponses = listOf(
@@ -48,6 +48,7 @@ class ApolloWebSocketNetworkTransportTest {
       )
       val webSocketConnection = WebSocketConnectionMock(
           expectedRequest = expectedRequest,
+          customScalarAdapters = CustomScalarAdapters.DEFAULT,
           expectedOnStartResponse = expectedResponses.first()
       )
 
@@ -58,6 +59,7 @@ class ApolloWebSocketNetworkTransportTest {
           idleTimeoutMs = -1
       ).execute(
           request = expectedRequest,
+          customScalarAdapters = CustomScalarAdapters.DEFAULT,
           executionContext = ExecutionContext.Empty
       ).collectIndexed { index, actualResponse ->
         assertEquals("MockQuery${index + 1}", actualResponse.response.data?.name)
@@ -73,9 +75,8 @@ class ApolloWebSocketNetworkTransportTest {
   @Test
   fun `when connection ack timeout, assert completed with exception`() {
     runBlocking {
-      val expectedRequest = ApolloRequest(
-          operation = MockSubscription(),
-          customScalarAdapters = CustomScalarAdapters.DEFAULT,
+      val expectedRequest = ApolloSubscriptionRequest(
+          subscription = MockSubscription(),
           executionContext = ApolloCoroutineDispatcherContext(Dispatchers.Unconfined)
       )
 
@@ -88,6 +89,7 @@ class ApolloWebSocketNetworkTransportTest {
             idleTimeoutMs = -1
         ).execute(
             request = expectedRequest,
+            customScalarAdapters = CustomScalarAdapters.DEFAULT,
             executionContext = ApolloCoroutineDispatcherContext(Dispatchers.Unconfined)
         ).toList()
       }
@@ -100,14 +102,14 @@ class ApolloWebSocketNetworkTransportTest {
   @Test
   fun `when subscription error, assert completed with exception and payload`() {
     val result = runBlocking {
-      val expectedRequest = ApolloRequest(
-          operation = MockSubscription(),
-          customScalarAdapters = CustomScalarAdapters.DEFAULT,
+      val expectedRequest = ApolloSubscriptionRequest(
+          subscription = MockSubscription(),
           executionContext = ApolloCoroutineDispatcherContext(Dispatchers.Unconfined)
       )
       val expectedOnStartResponse = "{\"data\":{\"name\":\"MockQuery\"}}"
       val webSocketConnection = WebSocketConnectionMock(
           expectedRequest = expectedRequest,
+          customScalarAdapters = CustomScalarAdapters.DEFAULT,
           expectedOnStartResponse = expectedOnStartResponse
       )
 
@@ -119,6 +121,7 @@ class ApolloWebSocketNetworkTransportTest {
             idleTimeoutMs = -1
         ).execute(
             request = expectedRequest,
+            customScalarAdapters = CustomScalarAdapters.DEFAULT,
             executionContext = ExecutionContext.Empty
         ).collect { actualResponse ->
           assertEquals("MockQuery", actualResponse.response.data?.name)
@@ -136,14 +139,14 @@ class ApolloWebSocketNetworkTransportTest {
   @Test
   fun `when no active subscriptions, assert web socket connection closed`() {
     runBlocking {
-      val expectedRequest = ApolloRequest(
-          operation = MockSubscription(),
-          customScalarAdapters = CustomScalarAdapters.DEFAULT,
+      val expectedRequest = ApolloSubscriptionRequest(
+          subscription = MockSubscription(),
           executionContext = ApolloCoroutineDispatcherContext(Dispatchers.Unconfined)
       )
       val expectedOnStartResponse = "{\"data\":{\"name\":\"MockQuery\"}}"
       val webSocketConnection = WebSocketConnectionMock(
           expectedRequest = expectedRequest,
+          customScalarAdapters = CustomScalarAdapters.DEFAULT,
           expectedOnStartResponse = expectedOnStartResponse
       )
 
@@ -154,6 +157,7 @@ class ApolloWebSocketNetworkTransportTest {
           idleTimeoutMs = 1_000
       ).execute(
           request = expectedRequest,
+          customScalarAdapters = CustomScalarAdapters.DEFAULT,
           executionContext = ExecutionContext.Empty
       ).collect { actualResponse ->
         assertEquals("MockQuery", actualResponse.response.data?.name)
@@ -167,14 +171,14 @@ class ApolloWebSocketNetworkTransportTest {
   @Test
   fun `when connection keep alive timeout, assert web socket connection closed`() {
     runBlocking {
-      val expectedRequest = ApolloRequest(
-          operation = MockSubscription(),
-          customScalarAdapters = CustomScalarAdapters.DEFAULT,
+      val expectedRequest = ApolloSubscriptionRequest(
+          subscription = MockSubscription(),
           executionContext = ApolloCoroutineDispatcherContext(Dispatchers.Unconfined)
       )
       val expectedOnStartResponse = "{\"data\":{\"name\":\"MockQuery\"}}"
       val webSocketConnection = WebSocketConnectionMock(
           expectedRequest = expectedRequest,
+          customScalarAdapters = CustomScalarAdapters.DEFAULT,
           expectedOnStartResponse = expectedOnStartResponse
       )
 
@@ -186,6 +190,7 @@ class ApolloWebSocketNetworkTransportTest {
           connectionKeepAliveTimeoutMs = 1_000
       ).execute(
           request = expectedRequest,
+          customScalarAdapters = CustomScalarAdapters.DEFAULT,
           executionContext = ExecutionContext.Empty
       ).collect { actualResponse ->
         assertEquals("MockQuery", actualResponse.response.data?.name)
@@ -209,6 +214,7 @@ private class FrozenWebSocketConnection(
 
 private class WebSocketConnectionMock(
     val expectedRequest: ApolloRequest<MockSubscription.Data>,
+    val customScalarAdapters: CustomScalarAdapters,
     val expectedOnStartResponse: String,
     private val receivedMessageChannel: Channel<ByteString> = Channel(Channel.BUFFERED)
 ) : WebSocketConnection, ReceiveChannel<ByteString> by receivedMessageChannel {
@@ -225,7 +231,7 @@ private class WebSocketConnectionMock(
       OperationClientMessage.Start(
           subscriptionId =  expectedRequest.requestUuid.toString(),
           subscription = expectedRequest.operation as Subscription<*>,
-          customScalarAdapters = expectedRequest.customScalarAdapters,
+          customScalarAdapters = customScalarAdapters,
           autoPersistSubscription = false,
           sendSubscriptionDocument = true
       ).utf8() -> {

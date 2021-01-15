@@ -31,27 +31,41 @@ class ApolloClient private constructor(
   private val coroutineDispatcherContext = executionContext[ApolloCoroutineDispatcherContext]
       ?: ApolloCoroutineDispatcherContext(Dispatchers.Default)
 
-  fun <D : Operation.Data> mutate(mutation: Mutation<D>): ApolloMutationCall<D> {
-    return mutation.prepareCall()
+  fun <D : Operation.Data> query(query: Query<D>): ApolloQueryCall<D> {
+    return ApolloQueryRequest.Builder(query).build().prepareCall()
   }
 
-  fun <D : Operation.Data> query(query: Query<D>): ApolloQueryCall<D> {
-    return query.prepareCall()
+  fun <D : Operation.Data> mutate(mutation: Mutation<D>): ApolloMutationCall<D> {
+    return ApolloMutationRequest.Builder(mutation).build().prepareCall()
   }
+
 
   fun <D : Operation.Data> subscribe(query: Subscription<D>): ApolloQueryCall<D> {
-    return query.prepareCall()
+    return ApolloSubscriptionRequest.Builder(query).build().prepareCall()
   }
 
-  private fun <D : Operation.Data> Operation<D>.prepareCall(): RealApolloCall<D> {
+  fun <D : Operation.Data> query(queryRequest: ApolloQueryRequest<D>): ApolloQueryCall<D> {
+    return queryRequest.prepareCall()
+  }
+
+  fun <D : Operation.Data> mutate(mutationRequest: ApolloMutationRequest<D>): ApolloMutationCall<D> {
+    return mutationRequest.prepareCall()
+  }
+
+
+  fun <D : Operation.Data> subscribe(subscriptionRequest: ApolloSubscriptionRequest<D>): ApolloQueryCall<D> {
+    return subscriptionRequest.prepareCall()
+  }
+
+  private fun <D : Operation.Data> ApolloRequest<D>.prepareCall(): RealApolloCall<D> {
     return RealApolloCall(
-        operation = this,
-        customScalarAdapters = customScalarAdapters,
+        request = this,
         interceptors = interceptors + NetworkRequestInterceptor(
             networkTransport = networkTransport,
-            subscriptionNetworkTransport = subscriptionNetworkTransport
+            subscriptionNetworkTransport = subscriptionNetworkTransport,
+            coroutineDispatcherContext = coroutineDispatcherContext
         ),
-        executionContext = executionContext + coroutineDispatcherContext
+        customScalarAdapters = customScalarAdapters
     )
   }
 
@@ -65,7 +79,7 @@ class ApolloClient private constructor(
   }
 
   class Builder {
-    private var scalarTypeAdapters = emptyMap<CustomScalar, CustomScalarAdapter<*>>()
+    private var customScalarAdapters = emptyMap<CustomScalar, CustomScalarAdapter<*>>()
 
     private var networkTransport: NetworkTransport? = null
     private var subscriptionNetworkTransport: NetworkTransport? = null
@@ -77,7 +91,7 @@ class ApolloClient private constructor(
     }
 
     fun addScalarTypeAdapter(customScalar: CustomScalar, customScalarAdapter: CustomScalarAdapter<*>) = apply {
-      this.scalarTypeAdapters = this.scalarTypeAdapters + (customScalar to customScalarAdapter)
+      this.customScalarAdapters = this.customScalarAdapters + (customScalar to customScalarAdapter)
     }
 
     fun networkTransport(networkTransport: NetworkTransport) = apply {
@@ -109,7 +123,7 @@ class ApolloClient private constructor(
       return ApolloClient(
           networkTransport = transport,
           subscriptionNetworkTransport = subscriptionTransport,
-          customScalarAdapters = CustomScalarAdapters(scalarTypeAdapters),
+          customScalarAdapters = CustomScalarAdapters(customScalarAdapters),
           interceptors = interceptors,
           executionContext = executionContext
       )
@@ -146,7 +160,7 @@ class ApolloClient private constructor(
      * internal because only used from tests
      */
     fun scalarTypeAdapters(customScalarAdapters: Map<CustomScalar, CustomScalarAdapter<*>>) = apply {
-      this.scalarTypeAdapters = customScalarAdapters
+      this.customScalarAdapters = customScalarAdapters
     }
   }
 }

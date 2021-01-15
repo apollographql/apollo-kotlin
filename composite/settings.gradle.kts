@@ -6,7 +6,6 @@ include(":apollo-integration")
 project(":apollo-integration").projectDir = file("../apollo-integration")
 
 include(":apollo-integration-kotlin")
-project(":apollo-integration-kotlin").projectDir = file("../apollo-integration-kotlin")
 
 // Samples
 include(":multiplatform")

@@ -1,5 +1,6 @@
 package com.apollographql.apollo.interceptor
 
+import com.apollographql.apollo.ApolloRequest
 import com.apollographql.apollo.exception.ApolloHttpException
 import com.apollographql.apollo.exception.ApolloBearerTokenException
 import com.apollographql.apollo.api.ApolloExperimental
@@ -26,11 +27,9 @@ class BearerTokenInterceptor(private val tokenProvider: TokenProvider) : ApolloR
           it.copy(headers = it.headers + (name to value))
         }
 
-    return ApolloRequest(
-        operation = operation,
-        customScalarAdapters = customScalarAdapters,
-        executionContext = executionContext + httpRequestContext
-    )
+    return newBuilder()
+        .addExecutionContext(httpRequestContext)
+        .build()
   }
 
   private fun <D : Operation.Data> proceedWithToken(

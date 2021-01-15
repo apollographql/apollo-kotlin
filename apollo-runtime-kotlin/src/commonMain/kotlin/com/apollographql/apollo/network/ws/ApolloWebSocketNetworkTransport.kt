@@ -3,6 +3,7 @@ package com.apollographql.apollo.network.ws
 import com.apollographql.apollo.exception.ApolloWebSocketException
 import com.apollographql.apollo.exception.ApolloWebSocketServerException
 import com.apollographql.apollo.api.ApolloExperimental
+import com.apollographql.apollo.api.CustomScalarAdapters
 import com.apollographql.apollo.api.ExecutionContext
 import com.apollographql.apollo.api.Operation
 import com.apollographql.apollo.api.Subscription
@@ -11,7 +12,7 @@ import com.apollographql.apollo.api.internal.json.Utils
 import com.apollographql.apollo.api.parse
 import com.apollographql.apollo.dispatcher.ApolloCoroutineDispatcherContext
 import com.apollographql.apollo.exception.ApolloParseException
-import com.apollographql.apollo.interceptor.ApolloRequest
+import com.apollographql.apollo.ApolloRequest
 import com.apollographql.apollo.interceptor.ApolloResponse
 import com.apollographql.apollo.network.NetworkTransport
 import com.apollographql.apollo.subscription.ApolloOperationMessageSerializer
@@ -65,7 +66,11 @@ class ApolloWebSocketNetworkTransport(
   private val mutex = Mutex()
   private var graphQLWebsocketConnection: GraphQLWebsocketConnection? = null
 
-  override fun <D : Operation.Data> execute(request: ApolloRequest<D>, executionContext: ExecutionContext): Flow<ApolloResponse<D>> {
+  override fun <D : Operation.Data> execute(
+      request: ApolloRequest<D>,
+      customScalarAdapters: CustomScalarAdapters,
+      executionContext: ExecutionContext
+  ): Flow<ApolloResponse<D>> {
     val dispatcherContext = requireNotNull(
         executionContext[ApolloCoroutineDispatcherContext] ?: request.executionContext[ApolloCoroutineDispatcherContext]
     )
@@ -74,13 +79,13 @@ class ApolloWebSocketNetworkTransport(
           .subscribe()
           .filter { message -> message !is OperationServerMessage.ConnectionAcknowledge }
           .takeWhile { message -> message !is OperationServerMessage.Complete || message.id != request.requestUuid.toString() }
-          .mapNotNull { message -> message.process(request) }
+          .mapNotNull { message -> message.process(request, customScalarAdapters) }
           .onStart {
             serverConnection.send(
                 OperationClientMessage.Start(
                     subscriptionId = request.requestUuid.toString(),
                     subscription = request.operation as Subscription<*>,
-                    customScalarAdapters = request.customScalarAdapters,
+                    customScalarAdapters = customScalarAdapters,
                     autoPersistSubscription = false,
                     sendSubscriptionDocument = true
                 )
@@ -95,7 +100,10 @@ class ApolloWebSocketNetworkTransport(
     }
   }
 
-  private fun <D : Operation.Data> OperationServerMessage.process(request: ApolloRequest<D>): ApolloResponse<D>? {
+  private fun <D : Operation.Data> OperationServerMessage.process(
+      request: ApolloRequest<D>,
+      customScalarAdapters: CustomScalarAdapters
+  ): ApolloResponse<D>? {
     return when (this) {
       is OperationServerMessage.Error -> {
         if (id == request.requestUuid.toString()) {
@@ -118,7 +126,7 @@ class ApolloWebSocketNetworkTransport(
           val response = try {
             request.operation.parse(
                 source = buffer,
-                customScalarAdapters = request.customScalarAdapters
+                customScalarAdapters = customScalarAdapters
             )
           } catch (e: Exception) {
             throw ApolloParseException(
