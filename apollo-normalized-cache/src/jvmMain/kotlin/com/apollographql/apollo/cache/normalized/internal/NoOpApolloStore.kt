@@ -110,4 +110,8 @@ class NoOpApolloStore : ApolloStore, ReadableStore, WriteableStore {
   ): Set<String> {
     return emptySet()
   }
+
+  override fun <D : Operation.Data> writeOperationWithRecords(operation: Operation<D>, operationData: D, cacheHeaders: CacheHeaders, publish: Boolean): Pair<Set<Record>, Set<String>> {
+    return emptySet<Record>() to emptySet()
+  }
 }

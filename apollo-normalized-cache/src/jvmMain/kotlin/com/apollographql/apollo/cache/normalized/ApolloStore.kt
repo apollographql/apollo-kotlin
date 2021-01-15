@@ -163,6 +163,11 @@ interface ApolloStore {
       publish: Boolean = true
   ): Set<String>
 
+  /**
+   * Used internally to get the records. Do not use from outside the apollo libs
+   */
+  fun <D : Operation.Data> writeOperationWithRecords(operation: Operation<D>, operationData: D, cacheHeaders: CacheHeaders, publish: Boolean): Pair<Set<Record>, Set<String>>
+
   companion object {
     @JvmField
     val NO_APOLLO_STORE: ApolloStore = NoOpApolloStore()

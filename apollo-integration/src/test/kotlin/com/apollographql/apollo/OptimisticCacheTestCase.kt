@@ -102,14 +102,15 @@ class OptimisticCacheTestCase {
   fun two_optimistic_two_rollback() {
     val query1 = HeroAndFriendsNamesWithIDsQuery(fromNullable(Episode.JEDI))
     val mutationId1 = UUID.randomUUID()
-    val query2 = HeroNameWithIdQuery()
-    val mutationId2 = UUID.randomUUID()
+
+    // execute query1 from the network
     enqueueAndAssertResponse(
         server,
         "HeroAndFriendsNameWithIdsResponse.json",
-        apolloClient!!.query(query1),
-        Predicate<Response<HeroAndFriendsNamesWithIDsQuery.Data>> { response -> !response.hasErrors() }
-    )
+        apolloClient!!.query(query1)
+    ) { response -> !response.hasErrors() }
+
+    // now write some optimistic updates for query1
     val data1 = HeroAndFriendsNamesWithIDsQuery.Data(
         HeroAndFriendsNamesWithIDsQuery.Data.Hero(
             "2001",
@@ -141,19 +142,26 @@ class OptimisticCacheTestCase {
       assertThat(data.hero?.friends?.get(1)?.name).isEqualTo("Batman")
       true
     }
+
+    // execute query2
+    val query2 = HeroNameWithIdQuery()
+    val mutationId2 = UUID.randomUUID()
     enqueueAndAssertResponse(
         server,
         "HeroNameWithIdResponse.json",
-        apolloClient!!.query(query2),
-        Predicate<Response<HeroNameWithIdQuery.Data>> { response -> !response.hasErrors() }
-    )
+        apolloClient!!.query(query2)
+    ) {
+      response -> !response.hasErrors()
+    }
+
+    // write optimistic data2
     val data2 = HeroNameWithIdQuery.Data(HeroNameWithIdQuery.Data.Hero(
         "1000",
         "Beast"
     ))
     apolloClient!!.apolloStore.writeOptimisticUpdates(query2, data2, mutationId2, true)
 
-    // check if query1 see the latest optimistic updates
+    // check if query1 sees data2
     assertResponse(
         apolloClient!!.query(query1).responseFetcher(ApolloResponseFetchers.CACHE_ONLY)
     ) { (_, data) ->
@@ -167,7 +175,7 @@ class OptimisticCacheTestCase {
       true
     }
 
-    // check if query2 see the latest optimistic updates
+    // check if query2 sees data2
     assertResponse(
         apolloClient!!.query(query2).responseFetcher(ApolloResponseFetchers.CACHE_ONLY)
     ) { (_, data) ->
@@ -176,10 +184,10 @@ class OptimisticCacheTestCase {
       true
     }
 
-    // rollback query1 optimistic updates
+    // rollback data1
     apolloClient!!.apolloStore.rollbackOptimisticUpdates(mutationId1, false)
 
-    // check if query1 see the latest optimistic updates
+    // check if query2 sees the rollback
     assertResponse(
         apolloClient!!.query(query1).responseFetcher(ApolloResponseFetchers.CACHE_ONLY)
     ) { (_, data) ->

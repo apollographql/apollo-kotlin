@@ -108,11 +108,12 @@ class ApolloCacheInterceptor<D : Operation.Data>(
 
     val data = networkResponse.parsedResponse.get()!!.data
     return if (data != null) {
-      val (records, changedKeys) = (apolloStore as RealApolloStore).writeOperationWithRecords(
+      val (records, changedKeys) = apolloStore.writeOperationWithRecords(
           request.operation as Operation<Operation.Data>,
           data,
           request.cacheHeaders,
-          true)
+          false // don't publish here, it's done later
+      )
       responseCallback.get()?.onCached(records.toList())
       changedKeys
     } else {
@@ -132,10 +133,8 @@ class ApolloCacheInterceptor<D : Operation.Data>(
     try {
       val networkResponseCacheKeys = cacheResponse(networkResponse, request)
       val rolledBackCacheKeys = rollbackOptimisticUpdates(request, false)
-      val changedCacheKeys: MutableSet<String> = HashSet()
-      changedCacheKeys.addAll(rolledBackCacheKeys)
-      changedCacheKeys.addAll(networkResponseCacheKeys)
-      publishCacheKeys(changedCacheKeys)
+
+      publishCacheKeys(rolledBackCacheKeys + networkResponseCacheKeys)
     } catch (rethrow: Exception) {
       rollbackOptimisticUpdates(request, true)
       throw rethrow

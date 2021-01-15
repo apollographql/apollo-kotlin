@@ -121,8 +121,10 @@ class RealApolloSubscriptionCall<D : Operation.Data>(
     override fun onResponse(response: SubscriptionResponse<D>) {
       val callback = originalCallback
       val data = response.response.data
-      if (callback != null && data != null && delegate!!.cachePolicy != ApolloSubscriptionCall.CachePolicy.NO_CACHE) {
-        delegate!!.apolloStore.writeOperation(response.subscription, data)
+      if (callback != null) {
+        if(data != null && delegate!!.cachePolicy != ApolloSubscriptionCall.CachePolicy.NO_CACHE) {
+          delegate!!.apolloStore.writeOperation(response.subscription, data)
+        }
         callback.onResponse(response.response)
       }
     }

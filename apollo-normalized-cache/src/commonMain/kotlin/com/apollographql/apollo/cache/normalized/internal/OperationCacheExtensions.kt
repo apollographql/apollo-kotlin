@@ -58,7 +58,6 @@ fun <D : Operation.Data> Operation<D>.readDataFromCache(
 
     adapter().fromResponse(reader)
   } catch (e: Exception) {
-    e.printStackTrace()
     null
   }
 }

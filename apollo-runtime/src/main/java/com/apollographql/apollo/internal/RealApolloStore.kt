@@ -171,7 +171,7 @@ class RealApolloStore(normalizedCache: NormalizedCache,
     }
   }
 
-  internal fun <D : Operation.Data> writeOperationWithRecords(
+  override fun <D : Operation.Data> writeOperationWithRecords(
       operation: Operation<D>,
       operationData: D,
       cacheHeaders: CacheHeaders,
@@ -224,7 +224,11 @@ class RealApolloStore(normalizedCache: NormalizedCache,
     /**
      * TODO: should we forward the cache headers to the optimistic store?
      */
-    return merge(records, CacheHeaders.NONE)
+    val changedKeys = optimisticCache.mergeOptimisticUpdates(records)
+    if (publish) {
+      publish(changedKeys)
+    }
+    return changedKeys
   }
 
   override fun rollbackOptimisticUpdates(

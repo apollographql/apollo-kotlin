@@ -13,6 +13,7 @@ import com.apollographql.apollo.cache.CacheHeaders.Companion.builder
 import com.apollographql.apollo.cache.http.ApolloHttpCache
 import com.apollographql.apollo.cache.http.DiskLruHttpCacheStore
 import com.apollographql.apollo.cache.http.internal.FileSystem
+import com.apollographql.apollo.coroutines.await
 import com.apollographql.apollo.exception.ApolloException
 import com.apollographql.apollo.exception.ApolloHttpException
 import com.apollographql.apollo.integration.httpcache.AllFilmsQuery
@@ -21,6 +22,7 @@ import com.apollographql.apollo.integration.httpcache.DroidDetailsQuery
 import com.apollographql.apollo.integration.httpcache.type.CustomScalars
 import com.apollographql.apollo.rx2.Rx2Apollo
 import com.google.common.truth.Truth
+import kotlinx.coroutines.runBlocking
 import okhttp3.Dispatcher
 import okhttp3.Interceptor
 import okhttp3.OkHttpClient
@@ -39,6 +41,7 @@ import java.text.SimpleDateFormat
 import java.util.Date
 import java.util.Locale
 import java.util.concurrent.TimeUnit
+import kotlin.test.assertTrue
 
 class HttpCacheTest {
   private lateinit var apolloClient: ApolloClient
@@ -472,12 +475,12 @@ class HttpCacheTest {
 
   @Test
   @Throws(Exception::class)
-  fun networkFirst() {
+  fun networkFirst() = runBlocking {
     enqueueResponse("/HttpCacheTestAllPlanets.json")
-    Rx2Apollo.from(apolloClient
-        .query(AllPlanetsQuery()))
-        .test()
-        .assertValue { response -> !response.hasErrors() }
+
+    val response = apolloClient.query(AllPlanetsQuery()).await()
+    Truth.assertThat(response.hasErrors()).isFalse()
+
     Truth.assertThat(server.requestCount).isEqualTo(1)
     Truth.assertThat(lastHttResponse!!.networkResponse()).isNotNull()
     Truth.assertThat(lastHttResponse!!.cacheResponse()).isNull()

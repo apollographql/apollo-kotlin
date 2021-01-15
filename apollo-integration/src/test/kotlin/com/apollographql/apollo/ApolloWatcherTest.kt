@@ -67,7 +67,7 @@ class ApolloWatcherTest {
   @Test
   fun testQueryWatcherUpdated_SameQuery_DifferentResults() {
     val heroNameList: MutableList<String> = ArrayList()
-    val query: EpisodeHeroNameQuery = EpisodeHeroNameQuery(Input.fromNullable(Episode.EMPIRE))
+    val query = EpisodeHeroNameQuery(Input.fromNullable(Episode.EMPIRE))
     server.enqueue(Utils.mockResponse("EpisodeHeroNameResponseWithId.json"))
     val watcher = apolloClient.query(query).watcher()
     watcher.enqueueAndWatch(
@@ -321,7 +321,7 @@ class ApolloWatcherTest {
         Assert.fail(e.message)
       }
     })
-    Truth.assertThat(watchedHeroes).hasSize(1)
+    assertThat(watchedHeroes).hasSize(1)
     assertThat(watchedHeroes[0]?.name).isEqualTo("R2-D2")
   }
 
