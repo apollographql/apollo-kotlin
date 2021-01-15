@@ -15,7 +15,6 @@ import com.apollographql.apollo.api.Operation
 import com.apollographql.apollo.api.Query
 import com.apollographql.apollo.api.Response
 import com.apollographql.apollo.api.Subscription
-import com.apollographql.apollo.cache.normalized.ApolloStoreOperation
 import io.reactivex.rxjava3.annotations.CheckReturnValue
 import io.reactivex.rxjava3.core.BackpressureStrategy
 import io.reactivex.rxjava3.core.Completable
@@ -26,11 +25,6 @@ import io.reactivex.rxjava3.core.Single
 @JvmSynthetic
 @CheckReturnValue
 inline fun ApolloPrefetch.rx(): Completable =
-    Rx3Apollo.from(this)
-
-@JvmSynthetic
-@CheckReturnValue
-inline fun <D : Operation.Data> ApolloStoreOperation<D>.rx(): Single<D> =
     Rx3Apollo.from(this)
 
 @JvmSynthetic

@@ -6,7 +6,6 @@ import com.apollographql.apollo.ApolloQueryWatcher;
 import com.apollographql.apollo.ApolloSubscriptionCall;
 import com.apollographql.apollo.api.Operation;
 import com.apollographql.apollo.api.Response;
-import com.apollographql.apollo.cache.normalized.ApolloStoreOperation;
 import com.apollographql.apollo.exception.ApolloException;
 import com.apollographql.apollo.internal.subscription.ApolloSubscriptionTerminatedException;
 import com.apollographql.apollo.internal.util.Cancelable;
@@ -20,9 +19,6 @@ import io.reactivex.FlowableOnSubscribe;
 import io.reactivex.Observable;
 import io.reactivex.ObservableEmitter;
 import io.reactivex.ObservableOnSubscribe;
-import io.reactivex.Single;
-import io.reactivex.SingleEmitter;
-import io.reactivex.SingleOnSubscribe;
 import io.reactivex.annotations.CheckReturnValue;
 import io.reactivex.disposables.Disposable;
 import io.reactivex.exceptions.Exceptions;
@@ -200,39 +196,6 @@ public class Rx2Apollo {
         );
       }
     }, backpressureStrategy);
-  }
-
-  /**
-   * Converts an {@link ApolloStoreOperation} to a Single.
-   *
-   * @param operation the ApolloStoreOperation to convert
-   * @param <D>       the value type
-   * @return the converted Single
-   */
-  @NotNull
-  @CheckReturnValue
-  public static <D extends Operation.Data> Single<D> from(@NotNull final ApolloStoreOperation<D> operation) {
-    checkNotNull(operation, "operation == null");
-    return Single.create(new SingleOnSubscribe<D>() {
-      @Override
-      public void subscribe(final SingleEmitter<D> emitter) {
-        operation.enqueue(new ApolloStoreOperation.Callback<D>() {
-          @Override
-          public void onSuccess(D result) {
-            if (!emitter.isDisposed()) {
-              emitter.onSuccess(result);
-            }
-          }
-
-          @Override
-          public void onFailure(Throwable t) {
-            if (!emitter.isDisposed()) {
-              emitter.onError(t);
-            }
-          }
-        });
-      }
-    });
   }
 
   private static void cancelOnCompletableDisposed(CompletableEmitter emitter, final Cancelable cancelable) {

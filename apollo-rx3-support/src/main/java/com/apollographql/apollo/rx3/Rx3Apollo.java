@@ -6,11 +6,9 @@ import com.apollographql.apollo.ApolloQueryWatcher;
 import com.apollographql.apollo.ApolloSubscriptionCall;
 import com.apollographql.apollo.api.Operation;
 import com.apollographql.apollo.api.Response;
-import com.apollographql.apollo.cache.normalized.ApolloStoreOperation;
 import com.apollographql.apollo.exception.ApolloException;
 import com.apollographql.apollo.internal.subscription.ApolloSubscriptionTerminatedException;
 import com.apollographql.apollo.internal.util.Cancelable;
-import org.jetbrains.annotations.NotNull;
 import io.reactivex.rxjava3.annotations.CheckReturnValue;
 import io.reactivex.rxjava3.core.BackpressureStrategy;
 import io.reactivex.rxjava3.core.Completable;
@@ -22,11 +20,10 @@ import io.reactivex.rxjava3.core.FlowableOnSubscribe;
 import io.reactivex.rxjava3.core.Observable;
 import io.reactivex.rxjava3.core.ObservableEmitter;
 import io.reactivex.rxjava3.core.ObservableOnSubscribe;
-import io.reactivex.rxjava3.core.Single;
-import io.reactivex.rxjava3.core.SingleEmitter;
-import io.reactivex.rxjava3.core.SingleOnSubscribe;
 import io.reactivex.rxjava3.disposables.Disposable;
 import io.reactivex.rxjava3.exceptions.Exceptions;
+import org.jetbrains.annotations.NotNull;
+
 import static com.apollographql.apollo.api.internal.Utils.checkNotNull;
 
 /**
@@ -198,39 +195,6 @@ public class Rx3Apollo {
         );
       }
     }, backpressureStrategy);
-  }
-
-  /**
-   * Converts an {@link ApolloStoreOperation} to a Single.
-   *
-   * @param operation the ApolloStoreOperation to convert
-   * @param <D>       the value type
-   * @return the converted Single
-   */
-  @NotNull
-  @CheckReturnValue
-  public static <D extends Operation.Data> Single<D> from(@NotNull final ApolloStoreOperation<D> operation) {
-    checkNotNull(operation, "operation == null");
-    return Single.create(new SingleOnSubscribe<D>() {
-      @Override
-      public void subscribe(final SingleEmitter<D> emitter) {
-        operation.enqueue(new ApolloStoreOperation.Callback<D>() {
-          @Override
-          public void onSuccess(D result) {
-            if (!emitter.isDisposed()) {
-              emitter.onSuccess(result);
-            }
-          }
-
-          @Override
-          public void onFailure(Throwable t) {
-            if (!emitter.isDisposed()) {
-              emitter.onError(t);
-            }
-          }
-        });
-      }
-    });
   }
 
   private static void cancelOnCompletableDisposed(CompletableEmitter emitter, final Cancelable cancelable) {
