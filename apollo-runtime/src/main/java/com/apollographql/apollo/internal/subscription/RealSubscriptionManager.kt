@@ -4,11 +4,9 @@ import com.apollographql.apollo.api.CustomScalarAdapters
 import com.apollographql.apollo.api.Operation
 import com.apollographql.apollo.api.Response
 import com.apollographql.apollo.api.Subscription
-import com.apollographql.apollo.cache.normalized.Record
-import com.apollographql.apollo.cache.normalized.internal.normalize
-import com.apollographql.apollo.exception.ApolloNetworkException
 import com.apollographql.apollo.api.internal.MapResponseParser
 import com.apollographql.apollo.cache.normalized.CacheKeyResolver
+import com.apollographql.apollo.exception.ApolloNetworkException
 import com.apollographql.apollo.subscription.OnSubscriptionManagerStateChangeListener
 import com.apollographql.apollo.subscription.OperationClientMessage
 import com.apollographql.apollo.subscription.OperationServerMessage
@@ -298,12 +296,8 @@ class RealSubscriptionManager(private val customScalarAdapters: CustomScalarAdap
     if (subscriptionRecord != null) {
       val subscription = subscriptionRecord!!.subscription
       try {
-        var response = MapResponseParser.parse(message.payload, subscription, customScalarAdapters)
-        var records = emptySet<Record>()
-        if (response.data != null) {
-          records = subscription.normalize(response.data!!, customScalarAdapters, cacheKeyResolver)
-        }
-        subscriptionRecord!!.notifyOnResponse(response, records)
+        val response = MapResponseParser.parse(message.payload, subscription, customScalarAdapters)
+        subscriptionRecord!!.notifyOnResponse(response)
       } catch (e: Exception) {
         subscriptionRecord = removeSubscriptionById(subscriptionId)
         if (subscriptionRecord != null) {
@@ -386,8 +380,8 @@ class RealSubscriptionManager(private val customScalarAdapters: CustomScalarAdap
   }
 
   class SubscriptionRecord internal constructor(val id: UUID, val subscription: Subscription<Operation.Data>, val callback: SubscriptionManager.Callback<Operation.Data>) {
-    fun notifyOnResponse(response: Response<*>?, cacheRecords: Collection<Record>) {
-      callback.onResponse(SubscriptionResponse(subscription, response as Response<Operation.Data>, cacheRecords))
+    fun notifyOnResponse(response: Response<*>?) {
+      callback.onResponse(SubscriptionResponse(subscription, response as Response<Operation.Data>))
     }
 
     fun notifyOnError(error: ApolloSubscriptionException?) {

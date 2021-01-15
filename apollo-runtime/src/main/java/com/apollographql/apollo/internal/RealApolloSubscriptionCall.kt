@@ -104,7 +104,7 @@ class RealApolloSubscriptionCall<D : Operation.Data>(
   private fun resolveFromCache(): Response<D>? {
     val data = apolloStore.readOperation(
         subscription,
-        CacheHeaders.NONE).executeOrNull()
+        CacheHeaders.NONE)
     return if (data != null) {
       logger.d("Cache HIT for subscription `%s`", subscription)
       Response.builder<D>(subscription)
@@ -117,30 +117,12 @@ class RealApolloSubscriptionCall<D : Operation.Data>(
     }
   }
 
-  private fun cacheResponse(networkResponse: SubscriptionResponse<D>) {
-    if (networkResponse.cacheRecords.isEmpty() || cachePolicy == ApolloSubscriptionCall.CachePolicy.NO_CACHE) {
-      return
-    }
-    dispatcher.execute(Runnable {
-      val cacheKeys: Set<String> = try {
-        apolloStore.writeTransaction { cache -> cache.merge(networkResponse.cacheRecords, CacheHeaders.NONE) }
-      } catch (e: Exception) {
-        logger.e(e, "Failed to cache response for subscription `%s`", subscription)
-        return@Runnable
-      }
-      try {
-        apolloStore.publish(cacheKeys)
-      } catch (e: Exception) {
-        logger.e(e, "Failed to publish cache changes for subscription `%s`", subscription)
-      }
-    })
-  }
-
   private class SubscriptionManagerCallback<D : Operation.Data>(private var originalCallback: ApolloSubscriptionCall.Callback<D>?, private var delegate: RealApolloSubscriptionCall<D>?) : SubscriptionManager.Callback<D> {
     override fun onResponse(response: SubscriptionResponse<D>) {
       val callback = originalCallback
-      if (callback != null) {
-        delegate!!.cacheResponse(response)
+      val data = response.response.data
+      if (callback != null && data != null && delegate!!.cachePolicy != ApolloSubscriptionCall.CachePolicy.NO_CACHE) {
+        delegate!!.apolloStore.writeOperation(response.subscription, data)
         callback.onResponse(response.response)
       }
     }

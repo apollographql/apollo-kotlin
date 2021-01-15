@@ -11,7 +11,6 @@ import com.apollographql.apollo.cache.normalized.NormalizedCache
 import com.apollographql.apollo.cache.normalized.Record
 import org.junit.Test
 import java.util.*
-import java.util.concurrent.Executors
 import java.util.concurrent.TimeUnit
 
 class ApolloStoreTest {
@@ -47,10 +46,9 @@ class ApolloStoreTest {
         },
         CacheKeyResolver.DEFAULT,
         CustomScalarAdapters(emptyMap()),
-        Executors.newSingleThreadExecutor(),
         ApolloLogger(null)
     )
-    realApolloStore.clearAll().execute()
+    realApolloStore.clearAll()
     latch.awaitOrThrowWithTimeout(3, TimeUnit.SECONDS)
   }
 }

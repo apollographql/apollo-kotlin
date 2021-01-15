@@ -74,7 +74,7 @@ class OptimisticCacheTestCase {
             )
         )
     ))
-    apolloClient!!.apolloStore.writeOptimisticUpdatesAndPublish(query, data, mutationId).execute()
+    apolloClient!!.apolloStore.writeOptimisticUpdates(query, data, mutationId, true)
     assertResponse(
         apolloClient!!.query(query).responseFetcher(ApolloResponseFetchers.CACHE_ONLY)
     ) { (_, data1) ->
@@ -84,7 +84,7 @@ class OptimisticCacheTestCase {
       assertThat(data1.hero?.friends?.get(1)?.name).isEqualTo("Batman")
       true
     }
-    apolloClient!!.apolloStore.rollbackOptimisticUpdates(mutationId).execute()
+    apolloClient!!.apolloStore.rollbackOptimisticUpdates(mutationId, false)
     assertResponse(
         apolloClient!!.query(query).responseFetcher(ApolloResponseFetchers.CACHE_ONLY)
     ) { (_, data1) ->
@@ -126,7 +126,7 @@ class OptimisticCacheTestCase {
             )
         )
     )
-    apolloClient!!.apolloStore.writeOptimisticUpdatesAndPublish(query1, data1, mutationId1).execute()
+    apolloClient!!.apolloStore.writeOptimisticUpdates(query1, data1, mutationId1, true)
 
     // check if query1 see optimistic updates
     assertResponse(
@@ -151,7 +151,7 @@ class OptimisticCacheTestCase {
         "1000",
         "Beast"
     ))
-    apolloClient!!.apolloStore.writeOptimisticUpdatesAndPublish(query2, data2, mutationId2).execute()
+    apolloClient!!.apolloStore.writeOptimisticUpdates(query2, data2, mutationId2, true)
 
     // check if query1 see the latest optimistic updates
     assertResponse(
@@ -177,7 +177,7 @@ class OptimisticCacheTestCase {
     }
 
     // rollback query1 optimistic updates
-    apolloClient!!.apolloStore.rollbackOptimisticUpdates(mutationId1).execute()
+    apolloClient!!.apolloStore.rollbackOptimisticUpdates(mutationId1, false)
 
     // check if query1 see the latest optimistic updates
     assertResponse(
@@ -205,7 +205,7 @@ class OptimisticCacheTestCase {
     }
 
     // rollback query2 optimistic updates
-    apolloClient!!.apolloStore.rollbackOptimisticUpdates(mutationId2).execute()
+    apolloClient!!.apolloStore.rollbackOptimisticUpdates(mutationId2, false)
 
     // check if query2 see the latest optimistic updates
     assertResponse(
@@ -230,8 +230,9 @@ class OptimisticCacheTestCase {
     apolloClient!!.apolloStore.writeOptimisticUpdates(
         HeroNameQuery(),
         HeroNameQuery.Data(HeroNameQuery.Data.Hero("R22-D22")),
-        mutationId
-    ).execute()
+        mutationId,
+        false
+    )
     assertResponse(
         apolloClient!!.query(HeroNameWithEnumsQuery()).responseFetcher(ApolloResponseFetchers.CACHE_ONLY)
     ) { (_, data) ->
@@ -240,7 +241,7 @@ class OptimisticCacheTestCase {
       assertThat(data.hero?.appearsIn).isEqualTo(Arrays.asList(Episode.NEWHOPE, Episode.EMPIRE, Episode.JEDI))
       true
     }
-    apolloClient!!.apolloStore.rollbackOptimisticUpdates(mutationId).execute()
+    apolloClient!!.apolloStore.rollbackOptimisticUpdates(mutationId, false)
     assertResponse(
         apolloClient!!.query(HeroNameWithEnumsQuery()).responseFetcher(ApolloResponseFetchers.CACHE_ONLY)
     ) { (_, data) ->
@@ -269,7 +270,7 @@ class OptimisticCacheTestCase {
     val updateReviewMutation = UpdateReviewMutation(
         "empireReview2",
         ReviewInput(
-            commentary = Input.fromNullable("Great"),
+            commentary = fromNullable("Great"),
             stars = 5,
             favoriteColor = ColorInput()
         )
@@ -281,7 +282,7 @@ class OptimisticCacheTestCase {
           override fun onFailure(e: ApolloException) {}
         }
     )
-    Truth.assertThat(watcherData).hasSize(3)
+    assertThat(watcherData).hasSize(3)
 
     // before mutation and optimistic updates
     assertThat(watcherData[0].reviews).hasSize(3)
@@ -355,12 +356,12 @@ class OptimisticCacheTestCase {
             )
         )
     )
-    apolloClient!!.apolloStore.writeOptimisticUpdatesAndPublish(query1, data1, mutationId1).execute()
+    apolloClient!!.apolloStore.writeOptimisticUpdates(query1, data1, mutationId1, true)
     val data2 = HeroNameWithIdQuery.Data(HeroNameWithIdQuery.Data.Hero(
         "1000",
         "Spiderman"
     ))
-    apolloClient!!.apolloStore.writeOptimisticUpdatesAndPublish(query2, data2, mutationId2).execute()
+    apolloClient!!.apolloStore.writeOptimisticUpdates(query2, data2, mutationId2, true)
 
     // check if query1 see optimistic updates
     assertResponse(
@@ -386,7 +387,7 @@ class OptimisticCacheTestCase {
     }
 
     // rollback query2 optimistic updates
-    apolloClient!!.apolloStore.rollbackOptimisticUpdates(mutationId2).execute()
+    apolloClient!!.apolloStore.rollbackOptimisticUpdates(mutationId2, false)
 
     // check if query1 see the latest optimistic updates
     assertResponse(
@@ -412,7 +413,7 @@ class OptimisticCacheTestCase {
     }
 
     // rollback query1 optimistic updates
-    apolloClient!!.apolloStore.rollbackOptimisticUpdates(mutationId1).execute()
+    apolloClient!!.apolloStore.rollbackOptimisticUpdates(mutationId1, false)
 
     // check if query1 see the latest non-optimistic updates
     assertResponse(

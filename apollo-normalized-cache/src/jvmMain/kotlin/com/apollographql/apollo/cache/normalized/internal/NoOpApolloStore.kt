@@ -2,14 +2,9 @@ package com.apollographql.apollo.cache.normalized.internal
 
 import com.apollographql.apollo.api.Fragment
 import com.apollographql.apollo.api.Operation
-import com.apollographql.apollo.api.Response
-import com.apollographql.apollo.api.Response.Companion.builder
 import com.apollographql.apollo.api.internal.json.JsonReader
 import com.apollographql.apollo.cache.CacheHeaders
 import com.apollographql.apollo.cache.normalized.ApolloStore
-import com.apollographql.apollo.cache.normalized.ApolloStoreOperation
-import com.apollographql.apollo.cache.normalized.ApolloStoreOperation.Companion.emptyOperation
-import com.apollographql.apollo.cache.normalized.ApolloStoreOperation.Companion.errorOperation
 import com.apollographql.apollo.cache.normalized.CacheKey
 import com.apollographql.apollo.cache.normalized.CacheKeyResolver
 import com.apollographql.apollo.cache.normalized.NormalizedCache
@@ -43,28 +38,16 @@ class NoOpApolloStore : ApolloStore, ReadableStore, WriteableStore {
   override fun subscribe(subscriber: ApolloStore.RecordChangeSubscriber) {}
   override fun unsubscribe(subscriber: ApolloStore.RecordChangeSubscriber) {}
   override fun publish(keys: Set<String>) {}
-  override fun clearAll(): ApolloStoreOperation<Boolean> {
-    return emptyOperation(java.lang.Boolean.FALSE)
+  override fun clearAll(): Boolean {
+    return false
   }
 
-  override fun remove(cacheKey: CacheKey, cascade: Boolean): ApolloStoreOperation<Boolean> {
-    return emptyOperation(java.lang.Boolean.FALSE)
+  override fun remove(cacheKey: CacheKey, cascade: Boolean): Boolean {
+    return false
   }
 
-  override fun remove(cacheKey: CacheKey): ApolloStoreOperation<Boolean> {
-    return emptyOperation(java.lang.Boolean.FALSE)
-  }
-
-  override fun remove(cacheKeys: List<CacheKey>): ApolloStoreOperation<Int> {
-    return emptyOperation(0)
-  }
-
-  override fun <R> readTransaction(transaction: Transaction<ReadableStore, R>): R {
-    return transaction.execute(this)!!
-  }
-
-  override fun <R> writeTransaction(transaction: Transaction<WriteableStore, R>): R {
-    return transaction.execute(this)!!
+  override fun remove(cacheKeys: List<CacheKey>, cascade: Boolean): Int {
+    return 0
   }
 
   override fun normalizedCache(): NormalizedCache {
@@ -78,9 +61,9 @@ class NoOpApolloStore : ApolloStore, ReadableStore, WriteableStore {
   override fun <D : Operation.Data> readOperation(
       operation: Operation<D>,
       cacheHeaders: CacheHeaders
-  ): ApolloStoreOperation<D> {
+  ): D? {
     // This will be seen as a cache MISS and the request will go to the network.
-    return errorOperation()
+    return null
   }
 
 
@@ -88,49 +71,43 @@ class NoOpApolloStore : ApolloStore, ReadableStore, WriteableStore {
       fragment: Fragment<D>,
       cacheKey: CacheKey,
       cacheHeaders: CacheHeaders,
-  ): ApolloStoreOperation<D> {
-    error("Cannot read fragment: no cache configured")
+  ): D? {
+    return null
   }
 
   override fun <D : Operation.Data> writeOperation(
       operation: Operation<D>,
       operationData: D,
+      cacheHeaders: CacheHeaders,
       publish: Boolean
-  ): ApolloStoreOperation<Set<String>> {
-    // Should we throw here instead?
-    return emptyOperation(emptySet())
+  ): Set<String> {
+    return emptySet()
   }
 
-  override fun <D: Fragment.Data> writeFragment(
+  override fun <D : Fragment.Data> writeFragment(
       fragment: Fragment<D>,
       cacheKey: CacheKey,
       fragmentData: D,
+      cacheHeaders: CacheHeaders,
       publish: Boolean
-  ): ApolloStoreOperation<Set<String>> {
-    // Should we throw here instead?
-    return emptyOperation(emptySet())
+  ): Set<String> {
+    return emptySet()
   }
 
 
-
-  override fun <D : Operation.Data> writeOptimisticUpdates(operation: Operation<D>, operationData: D, mutationId: UUID): ApolloStoreOperation<Set<String>> {
-    // Should we throw here instead?
-    return emptyOperation(emptySet())
+  override fun <D : Operation.Data> writeOptimisticUpdates(
+      operation: Operation<D>,
+      operationData: D,
+      mutationId: UUID,
+      publish: Boolean
+  ): Set<String> {
+    return emptySet()
   }
 
-  override fun <D : Operation.Data> writeOptimisticUpdatesAndPublish(operation: Operation<D>, operationData: D,
-                                                                     mutationId: UUID): ApolloStoreOperation<Boolean> {
-    // Should we throw here instead?
-    return emptyOperation(java.lang.Boolean.FALSE)
-  }
-
-  override fun rollbackOptimisticUpdatesAndPublish(mutationId: UUID): ApolloStoreOperation<Boolean> {
-    // Should we throw here instead?
-    return emptyOperation(java.lang.Boolean.FALSE)
-  }
-
-  override fun rollbackOptimisticUpdates(mutationId: UUID): ApolloStoreOperation<Set<String>> {
-    // Should we throw here instead?
-    return emptyOperation(emptySet())
+  override fun rollbackOptimisticUpdates(
+      mutationId: UUID,
+      publish: Boolean
+  ): Set<String> {
+    return emptySet()
   }
 }

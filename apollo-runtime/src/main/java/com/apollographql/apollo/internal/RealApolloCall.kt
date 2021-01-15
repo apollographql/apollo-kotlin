@@ -37,6 +37,7 @@ import com.apollographql.apollo.internal.interceptor.RealApolloInterceptorChain
 import com.apollographql.apollo.request.RequestHeaders
 import okhttp3.Call
 import okhttp3.HttpUrl
+import java.lang.IllegalArgumentException
 import java.util.ArrayList
 import java.util.concurrent.Executor
 import java.util.concurrent.atomic.AtomicReference
@@ -47,7 +48,7 @@ class RealApolloCall<D : Operation.Data> internal constructor(builder: Builder<D
   val httpCallFactory: Call.Factory?
   val httpCache: HttpCache?
   val httpCachePolicy: HttpCachePolicy.Policy?
-  val customScalarAdapters: CustomScalarAdapters?
+  val customScalarAdapters: CustomScalarAdapters
   val apolloStore: ApolloStore?
   val cacheHeaders: CacheHeaders?
   val requestHeaders: RequestHeaders
@@ -306,7 +307,6 @@ class RealApolloCall<D : Operation.Data> internal constructor(builder: Builder<D
     interceptors.add(responseFetcher!!.provideInterceptor(logger))
     interceptors.add(ApolloCacheInterceptor(
         apolloStore!!,
-        customScalarAdapters!!,
         dispatcher!!,
         logger!!,
         originalCallback,
@@ -489,7 +489,7 @@ class RealApolloCall<D : Operation.Data> internal constructor(builder: Builder<D
     httpCallFactory = builder.httpCallFactory
     httpCache = builder.httpCache
     httpCachePolicy = builder.httpCachePolicy
-    customScalarAdapters = builder.customScalarAdapters
+    customScalarAdapters = builder.customScalarAdapters ?: throw IllegalArgumentException()
     apolloStore = builder.apolloStore
     responseFetcher = builder.responseFetcher
     cacheHeaders = builder.cacheHeaders
