@@ -3,6 +3,7 @@ package com.apollographql.apollo.internal.interceptor
 import com.apollographql.apollo.ApolloCall
 import com.apollographql.apollo.api.CustomScalarAdapters
 import com.apollographql.apollo.api.Operation
+import com.apollographql.apollo.api.Response
 import com.apollographql.apollo.api.internal.ApolloLogger
 import com.apollographql.apollo.cache.ApolloCacheHeaders
 import com.apollographql.apollo.cache.normalized.ApolloStore
@@ -84,20 +85,22 @@ class ApolloCacheInterceptor<D : Operation.Data>(
 
   @Throws(ApolloException::class)
   fun resolveFromCache(request: InterceptorRequest): InterceptorResponse {
-    val apolloStoreOperation = apolloStore.readOperationInternal(
+    val data = apolloStore.readOperation(
         request.operation,
-        request.cacheHeaders)
-    val cachedResponse = apolloStoreOperation.execute()
-    if (cachedResponse.data != null) {
+        request.cacheHeaders).executeOrNull()
+    if (data != null) {
       logger.d("Cache HIT for operation %s", request.operation.name())
-      return InterceptorResponse(null, cachedResponse)
+      return InterceptorResponse(null, Response.builder<Operation.Data>(request.operation)
+          .data(data)
+          .fromCache(true)
+          .build())
     }
     logger.d("Cache MISS for operation %s", request.operation.name())
     throw ApolloGenericException(String.format("Cache miss for operation %s", request.operation.name()))
   }
 
-  fun cacheResponse(networkResponse: InterceptorResponse,
-                    request: InterceptorRequest): Set<String> {
+  private fun cacheResponse(networkResponse: InterceptorResponse,
+                            request: InterceptorRequest): Set<String> {
     if (networkResponse.parsedResponse.isPresent
         && networkResponse.parsedResponse.get()!!.hasErrors()
         && !request.cacheHeaders.hasHeader(ApolloCacheHeaders.STORE_PARTIAL_RESPONSES)) {

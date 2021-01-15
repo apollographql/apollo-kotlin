@@ -16,7 +16,7 @@ import java.util.concurrent.atomic.AtomicReference
  *
  * @param <T> result type for this operation
 </T> */
-abstract class ApolloStoreOperation<T> protected constructor(private val dispatcher: Executor) {
+abstract class ApolloStoreOperation<T: Any> protected constructor(private val dispatcher: Executor) {
   private val callback = AtomicReference<Callback<T>?>()
   private val executed = AtomicBoolean()
 
@@ -42,6 +42,19 @@ abstract class ApolloStoreOperation<T> protected constructor(private val dispatc
   }
 
   /**
+   * Execute store operation and return null if it fails
+   */
+  fun executeOrNull(): T? {
+    checkIfExecuted()
+    return try {
+      perform()
+    } catch (e: Exception) {
+      null
+    }
+  }
+
+
+  /**
    * Schedules operation to be executed in dispatcher
    *
    * @param callback to be notified about operation result
@@ -50,8 +63,7 @@ abstract class ApolloStoreOperation<T> protected constructor(private val dispatc
     checkIfExecuted()
     this.callback.set(callback)
     dispatcher.execute(Runnable {
-      val result: T
-      result = try {
+      val result: T = try {
         perform()
       } catch (e: Exception) {
         notifyFailure(ApolloException("Failed to perform store operation", e))
@@ -61,12 +73,12 @@ abstract class ApolloStoreOperation<T> protected constructor(private val dispatc
     })
   }
 
-  fun notifySuccess(result: T) {
+  private fun notifySuccess(result: T) {
     val callback = callback.getAndSet(null) ?: return
     callback.onSuccess(result)
   }
 
-  fun notifyFailure(t: Throwable) {
+  private fun notifyFailure(t: Throwable) {
     val callback = callback.getAndSet(null) ?: return
     callback.onFailure(t)
   }
@@ -87,7 +99,7 @@ abstract class ApolloStoreOperation<T> protected constructor(private val dispatc
 
   companion object {
     @JvmStatic
-    fun <T> emptyOperation(result: T): ApolloStoreOperation<T> {
+    fun <T: Any> emptyOperation(result: T): ApolloStoreOperation<T> {
       return object : ApolloStoreOperation<T>(emptyExecutor()) {
         override fun perform(): T {
           return result
@@ -95,6 +107,18 @@ abstract class ApolloStoreOperation<T> protected constructor(private val dispatc
 
         override fun enqueue(callback: Callback<T>?) {
           callback?.onSuccess(result)
+        }
+      }
+    }
+
+    fun <T: Any> errorOperation(): ApolloStoreOperation<T> {
+      return object : ApolloStoreOperation<T>(emptyExecutor()) {
+        override fun perform(): T {
+          throw Exception()
+        }
+
+        override fun enqueue(callback: Callback<T>?) {
+          callback?.onFailure(Exception())
         }
       }
     }

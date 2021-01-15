@@ -102,18 +102,15 @@ class RealApolloSubscriptionCall<D : Operation.Data>(
   }
 
   private fun resolveFromCache(): Response<D>? {
-    val apolloStoreOperation: ApolloStoreOperation<Response<D>> = apolloStore.readOperationInternal(
+    val data = apolloStore.readOperation(
         subscription,
-        CacheHeaders.NONE)
-    var cachedResponse: Response<D>? = null
-    try {
-      cachedResponse = apolloStoreOperation.execute()
-    } catch (e: Exception) {
-      logger.e(e, "Failed to fetch subscription `%s` from the store", subscription)
-    }
-    return if (cachedResponse != null && cachedResponse.data != null) {
+        CacheHeaders.NONE).executeOrNull()
+    return if (data != null) {
       logger.d("Cache HIT for subscription `%s`", subscription)
-      cachedResponse
+      Response.builder<D>(subscription)
+          .data(data)
+          .fromCache(true)
+          .build()
     } else {
       logger.d("Cache MISS for subscription `%s`", subscription)
       null
@@ -125,13 +122,8 @@ class RealApolloSubscriptionCall<D : Operation.Data>(
       return
     }
     dispatcher.execute(Runnable {
-      val cacheKeys: Set<String>
-      cacheKeys = try {
-        apolloStore.writeTransaction(object : Transaction<WriteableStore, Set<String>> {
-          override fun execute(cache: WriteableStore): Set<String>? {
-            return cache.merge(networkResponse.cacheRecords, CacheHeaders.NONE)
-          }
-        })
+      val cacheKeys: Set<String> = try {
+        apolloStore.writeTransaction { cache -> cache.merge(networkResponse.cacheRecords, CacheHeaders.NONE) }
       } catch (e: Exception) {
         logger.e(e, "Failed to cache response for subscription `%s`", subscription)
         return@Runnable

@@ -3,20 +3,16 @@ package com.apollographql.apollo.internal
 import com.apollographql.apollo.api.CustomScalarAdapters
 import com.apollographql.apollo.api.Fragment
 import com.apollographql.apollo.api.Operation
-import com.apollographql.apollo.api.Response
-import com.apollographql.apollo.api.Response.Companion.builder
 import com.apollographql.apollo.api.internal.ApolloLogger
 import com.apollographql.apollo.api.internal.MapResponseReader
 import com.apollographql.apollo.api.internal.ResponseAdapter
 import com.apollographql.apollo.api.internal.json.JsonReader
-import com.apollographql.apollo.api.parseData
 import com.apollographql.apollo.cache.CacheHeaders
 import com.apollographql.apollo.cache.normalized.ApolloStore
 import com.apollographql.apollo.cache.normalized.ApolloStore.RecordChangeSubscriber
 import com.apollographql.apollo.cache.normalized.ApolloStoreOperation
 import com.apollographql.apollo.cache.normalized.CacheKey
 import com.apollographql.apollo.cache.normalized.CacheKeyResolver
-import com.apollographql.apollo.cache.normalized.CacheKeyResolver.Companion.rootKey
 import com.apollographql.apollo.cache.normalized.NormalizedCache
 import com.apollographql.apollo.cache.normalized.OptimisticNormalizedCache
 import com.apollographql.apollo.cache.normalized.Record
@@ -25,7 +21,6 @@ import com.apollographql.apollo.cache.normalized.internal.ReadableStore
 import com.apollographql.apollo.cache.normalized.internal.RealCacheKeyBuilder
 import com.apollographql.apollo.cache.normalized.internal.Transaction
 import com.apollographql.apollo.cache.normalized.internal.WriteableStore
-import com.apollographql.apollo.cache.normalized.internal.dependentKeys
 import com.apollographql.apollo.cache.normalized.internal.normalize
 import com.apollographql.apollo.cache.normalized.internal.readDataFromCache
 import java.util.ArrayList
@@ -37,7 +32,7 @@ import java.util.concurrent.Executor
 import java.util.concurrent.locks.ReentrantReadWriteLock
 
 class RealApolloStore(normalizedCache: NormalizedCache,
-                      val cacheKeyResolver: CacheKeyResolver,
+                      private val cacheKeyResolver: CacheKeyResolver,
                       val customScalarAdapters: CustomScalarAdapters,
                       private val dispatcher: Executor,
                       val logger: ApolloLogger) : ApolloStore, ReadableStore, WriteableStore {
@@ -154,20 +149,24 @@ class RealApolloStore(normalizedCache: NormalizedCache,
   }
 
   override fun <D : Operation.Data> readOperation(
-      operation: Operation<D>): ApolloStoreOperation<D> {
+      operation: Operation<D>,
+      cacheHeaders: CacheHeaders
+  ): ApolloStoreOperation<D> {
     return object : ApolloStoreOperation<D>(dispatcher) {
       override fun perform(): D {
-        return doReadOperation(operation, CacheHeaders.NONE).data!!
-      }
-    }
-  }
-
-  override fun <D : Operation.Data> readOperationInternal(
-      operation: Operation<D>,
-      cacheHeaders: CacheHeaders): ApolloStoreOperation<Response<D>> {
-    return object : ApolloStoreOperation<Response<D>>(dispatcher) {
-      override fun perform(): Response<D> {
-        return doReadOperation(operation, cacheHeaders)
+        return readTransaction { cache ->
+          try {
+            operation.readDataFromCache(
+                customScalarAdapters,
+                cache,
+                cacheKeyResolver(),
+                cacheHeaders
+            )
+          } catch (e: Exception) {
+            logger.e(e, "Failed to read cache response")
+            null
+          }
+        }
       }
     }
   }
@@ -175,10 +174,24 @@ class RealApolloStore(normalizedCache: NormalizedCache,
   override fun <D : Fragment.Data> readFragment(
       fragment: Fragment<D>,
       cacheKey: CacheKey,
+      cacheHeaders: CacheHeaders
   ): ApolloStoreOperation<D> {
     return object : ApolloStoreOperation<D>(dispatcher) {
       override fun perform(): D {
-        return doRead(fragment.adapter(), cacheKey, fragment.variables())
+        return readTransaction { cache ->
+          try {
+            fragment.readDataFromCache(
+                customScalarAdapters,
+                cache,
+                cacheKeyResolver(),
+                cacheHeaders,
+                cacheKey
+            )
+          } catch (e: Exception) {
+            logger.e(e, "Failed to read cache response")
+            null
+          }
+        }
       }
     }
   }
@@ -259,46 +272,6 @@ class RealApolloStore(normalizedCache: NormalizedCache,
     }
   }
 
-  fun <D : Operation.Data> doReadOperation(
-      operation: Operation<D>,
-      cacheHeaders: CacheHeaders
-  ): Response<D> = readTransaction { cache ->
-    try {
-      val data = operation.readDataFromCache(
-          customScalarAdapters,
-          cache,
-          cacheKeyResolver(),
-          cacheHeaders
-      )
-      builder<D>(operation)
-          .data(data)
-          .fromCache(true)
-          .build()
-    } catch (e: Exception) {
-      logger.e(e, "Failed to read cache response")
-      builder<D>(operation).fromCache(true).build()
-    }
-  }
-
-
-  fun <F> doRead(adapter: ResponseAdapter<F>,
-                 cacheKey: CacheKey,
-                 variables: Operation.Variables): F {
-    return readTransaction(object : Transaction<ReadableStore, F> {
-      override fun execute(cache: ReadableStore): F? {
-        val rootRecord = cache.read(cacheKey.key, CacheHeaders.NONE) ?: return null
-        val fieldValueResolver = CacheValueResolver(cache, variables,
-            cacheKeyResolver(), CacheHeaders.NONE, cacheKeyBuilder)
-        val responseReader = MapResponseReader(
-            variables,
-            rootRecord,
-            fieldValueResolver,
-            customScalarAdapters,
-        )
-        return adapter.fromResponse(responseReader, null)
-      }
-    })
-  }
 
   fun <D : Operation.Data> doWriteOperation(
       operation: Operation<D>,

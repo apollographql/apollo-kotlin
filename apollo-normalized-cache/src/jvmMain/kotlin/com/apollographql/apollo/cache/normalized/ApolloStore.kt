@@ -106,20 +106,9 @@ interface ApolloStore {
    * @return {@ApolloStoreOperation} to be performed, that will be resolved with cached data for specified operation
    */
   fun <D : Operation.Data> readOperation(
-      operation: Operation<D>
-  ): ApolloStoreOperation<D>
-
-  /**
-   * A specialized version of readOperation that also returns dependentKeys. Do not use
-   */
-  fun <D : Operation.Data> readOperationInternal(
       operation: Operation<D>,
-      cacheHeaders: CacheHeaders
-  ): ApolloStoreOperation<Response<D>> {
-    // This is called in the default path when no cache is configured, do not trigger an error
-    // Instead return an empty response. This will be seen as a cache MISS and the request will go to the network.
-    return ApolloStoreOperation.emptyOperation(Response.builder<D>(operation).build())
-  }
+      cacheHeaders: CacheHeaders = CacheHeaders.NONE
+  ): ApolloStoreOperation<D>
 
   /**
    * Read a GraphQL fragment from the store.
@@ -131,6 +120,7 @@ interface ApolloStore {
   fun <D: Fragment.Data> readFragment(
       fragment: Fragment<D>,
       cacheKey: CacheKey,
+      cacheHeaders: CacheHeaders = CacheHeaders.NONE
   ): ApolloStoreOperation<D>
 
 

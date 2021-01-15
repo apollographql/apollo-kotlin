@@ -9,6 +9,7 @@ import com.apollographql.apollo.cache.CacheHeaders
 import com.apollographql.apollo.cache.normalized.ApolloStore
 import com.apollographql.apollo.cache.normalized.ApolloStoreOperation
 import com.apollographql.apollo.cache.normalized.ApolloStoreOperation.Companion.emptyOperation
+import com.apollographql.apollo.cache.normalized.ApolloStoreOperation.Companion.errorOperation
 import com.apollographql.apollo.cache.normalized.CacheKey
 import com.apollographql.apollo.cache.normalized.CacheKeyResolver
 import com.apollographql.apollo.cache.normalized.NormalizedCache
@@ -75,22 +76,18 @@ class NoOpApolloStore : ApolloStore, ReadableStore, WriteableStore {
   }
 
   override fun <D : Operation.Data> readOperation(
-      operation: Operation<D>): ApolloStoreOperation<D> {
-    error("Cannot read operation: no cache configured")
-  }
-
-  override fun <D : Operation.Data> readOperationInternal(
       operation: Operation<D>,
       cacheHeaders: CacheHeaders
-  ): ApolloStoreOperation<Response<D>> {
-    // This is called in the default path when no cache is configured, do not trigger an error
-    // Instead return an empty response. This will be seen as a cache MISS and the request will go to the network.
-    return emptyOperation(builder<D>(operation).build())
+  ): ApolloStoreOperation<D> {
+    // This will be seen as a cache MISS and the request will go to the network.
+    return errorOperation()
   }
+
 
   override fun <D : Fragment.Data> readFragment(
       fragment: Fragment<D>,
       cacheKey: CacheKey,
+      cacheHeaders: CacheHeaders,
   ): ApolloStoreOperation<D> {
     error("Cannot read fragment: no cache configured")
   }
