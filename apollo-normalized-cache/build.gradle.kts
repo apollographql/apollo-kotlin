@@ -33,14 +33,12 @@ kotlin {
     }
 
     val jvmMain by getting {
-      dependsOn(commonMain)
       dependencies {
         implementation(groovy.util.Eval.x(project, "x.dep.cache"))
       }
     }
 
     val iosMain by getting {
-      dependsOn(commonMain)
     }
 
     val iosSimMain by getting {
@@ -55,7 +53,6 @@ kotlin {
     }
 
     val jvmTest by getting {
-      dependsOn(jvmMain)
       dependencies {
         implementation(kotlin("test-junit"))
         implementation(groovy.util.Eval.x(project, "x.dep.junit"))

@@ -13,7 +13,7 @@ internal class LruCache<Key, Value>(
   private var headNode: Node<Key, Value>? = null
   private var tailNode: Node<Key, Value>? = null
   private val lock = reentrantLock()
-  private var size: Long = 0
+  private var size: Int = 0
 
   operator fun get(key: Key): Value? {
     return lock.withLock {
@@ -26,7 +26,7 @@ internal class LruCache<Key, Value>(
   }
 
   operator fun set(key: Key, value: Value) {
-    return lock.withLock {
+    lock.withLock {
       val node = cache[key]
       if (node == null) {
         cache[key] = addNode(key, value)
@@ -59,7 +59,7 @@ internal class LruCache<Key, Value>(
     }
   }
 
-  fun size(): Long {
+  fun size(): Int {
     return lock.withLock {
       size
     }
