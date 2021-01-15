@@ -4,8 +4,6 @@ import com.apollographql.apollo.api.CustomScalarAdapters
 import com.apollographql.apollo.api.Fragment
 import com.apollographql.apollo.api.Operation
 import com.apollographql.apollo.api.internal.ApolloLogger
-import com.apollographql.apollo.api.internal.MapResponseReader
-import com.apollographql.apollo.api.internal.ResponseAdapter
 import com.apollographql.apollo.api.internal.json.JsonReader
 import com.apollographql.apollo.cache.CacheHeaders
 import com.apollographql.apollo.cache.normalized.ApolloStore
@@ -16,9 +14,7 @@ import com.apollographql.apollo.cache.normalized.CacheKeyResolver
 import com.apollographql.apollo.cache.normalized.NormalizedCache
 import com.apollographql.apollo.cache.normalized.OptimisticNormalizedCache
 import com.apollographql.apollo.cache.normalized.Record
-import com.apollographql.apollo.cache.normalized.internal.CacheValueResolver
 import com.apollographql.apollo.cache.normalized.internal.ReadableStore
-import com.apollographql.apollo.cache.normalized.internal.RealCacheKeyBuilder
 import com.apollographql.apollo.cache.normalized.internal.Transaction
 import com.apollographql.apollo.cache.normalized.internal.WriteableStore
 import com.apollographql.apollo.cache.normalized.internal.normalize
@@ -39,7 +35,6 @@ class RealApolloStore(normalizedCache: NormalizedCache,
   private val optimisticCache = OptimisticNormalizedCache().chain(normalizedCache) as OptimisticNormalizedCache
   private val lock = ReentrantReadWriteLock()
   private val subscribers: MutableSet<RecordChangeSubscriber> = Collections.newSetFromMap(WeakHashMap())
-  private val cacheKeyBuilder = RealCacheKeyBuilder()
 
   @Synchronized
   override fun subscribe(subscriber: RecordChangeSubscriber) {
@@ -224,7 +219,8 @@ class RealApolloStore(normalizedCache: NormalizedCache,
     return object : ApolloStoreOperation<Set<String>>(dispatcher) {
       override fun perform(): Set<String> {
         return writeTransaction {
-          val changedKeys = doWriteFragment(fragment, cacheKey, fragmentData)
+          val records = fragment.normalize(fragmentData, customScalarAdapters, cacheKeyResolver, cacheKey.key)
+          val changedKeys = merge(records, CacheHeaders.NONE)
           if (publish) {
             publish(changedKeys)
           }
@@ -288,11 +284,5 @@ class RealApolloStore(normalizedCache: NormalizedCache,
     } else {
       optimisticCache.merge(records, CacheHeaders.NONE)
     }
-
-  }
-
-  fun <D : Fragment.Data> doWriteFragment(fragment: Fragment<D>, cacheKey: CacheKey, data: D): Set<String> = writeTransaction {
-    val records = fragment.normalize(data, customScalarAdapters, cacheKeyResolver, cacheKey.key)
-    merge(records, CacheHeaders.NONE)
   }
 }
