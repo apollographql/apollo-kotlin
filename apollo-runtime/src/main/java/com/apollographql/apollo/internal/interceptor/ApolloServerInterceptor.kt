@@ -13,6 +13,7 @@ import com.apollographql.apollo.api.internal.Optional
 import com.apollographql.apollo.api.internal.Utils.__checkNotNull
 import com.apollographql.apollo.api.internal.json.InputFieldJsonWriter
 import com.apollographql.apollo.api.internal.json.JsonWriter.Companion.of
+import com.apollographql.apollo.api.network.ApolloMediaType
 import com.apollographql.apollo.cache.ApolloCacheHeaders
 import com.apollographql.apollo.cache.CacheHeaders
 import com.apollographql.apollo.exception.ApolloNetworkException
@@ -170,9 +171,9 @@ class ApolloServerInterceptor(serverUrl: HttpUrl, httpCallFactory: Call.Factory,
     const val HEADER_CONTENT_TYPE = "Content-Type"
     const val HEADER_APOLLO_OPERATION_ID = "X-APOLLO-OPERATION-ID"
     const val HEADER_APOLLO_OPERATION_NAME = "X-APOLLO-OPERATION-NAME"
-    const val ACCEPT_TYPE = "application/json"
-    const val CONTENT_TYPE = "application/json"
-    val MEDIA_TYPE = MediaType.parse("application/json; charset=utf-8")
+    const val ACCEPT_TYPE = ApolloMediaType.APPLICATION_JSON
+    const val CONTENT_TYPE = ApolloMediaType.APPLICATION_JSON
+    val MEDIA_TYPE = MediaType.parse(ApolloMediaType.APPLICATION_JSON_UTF8)
     @Throws(IOException::class)
     fun cacheKey(operation: Operation<*, *, *>, scalarTypeAdapters: ScalarTypeAdapters?): String {
       return httpPostRequestBody(operation, scalarTypeAdapters, true, true).md5().hex()

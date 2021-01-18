@@ -15,6 +15,7 @@
  */
 package com.apollographql.apollo.cache.http;
 
+import com.apollographql.apollo.api.network.ApolloMediaType;
 import com.apollographql.apollo.cache.http.internal.StatusLine;
 import java.io.IOException;
 import java.security.cert.Certificate;
@@ -272,7 +273,7 @@ final class ResponseHeaderRecord {
   Response response() {
     RequestBody body = null;
     if (HttpMethod.permitsRequestBody(requestMethod)) {
-      body = RequestBody.create(MediaType.parse("application/json; charset=utf-8"), "");
+      body = RequestBody.create(MediaType.parse(ApolloMediaType.APPLICATION_JSON_UTF8), "");
     }
 
     Request cacheRequest = new Request.Builder()
