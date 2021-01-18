@@ -5,6 +5,20 @@ import kotlinx.atomicfu.locks.withLock
 
 internal typealias Weigher<Key, Value> = (Key, Value?) -> Int
 
+/**
+ * Multiplatform LRU cache implementation.
+ *
+ * Implementation is based on usage of [LinkedHashMap] as a container for the cache and custom
+ * double linked queue to track LRU property.
+ *
+ * [maxSize] - maximum size of the cache, can be anything bytes, number of entries etc. By default is number o entries.
+ * [weigher] - to be called to calculate the estimated size (weight) of the cache entry defined by its [Key] and [Value].
+ *             By default it returns 1.
+ *
+ * This implementation is thread safe guaranteed by global lock used for both read / write operations.
+ *
+ * Cache trim performed only on new entry insertion.
+ */
 internal class LruCache<Key, Value>(
     private val maxSize: Int,
     private val weigher: Weigher<Key, Value> = { _, _ -> 1 }
