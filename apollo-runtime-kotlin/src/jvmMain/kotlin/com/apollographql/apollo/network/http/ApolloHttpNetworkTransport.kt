@@ -35,7 +35,7 @@ import java.util.concurrent.TimeUnit
 import kotlin.coroutines.resume
 import kotlin.coroutines.resumeWithException
 
-private const val MEDIA_TYPE = "application/json; charset=utf-8"
+private const val MEDIA_TYPE = "application/json"
 
 @ApolloExperimental
 @ExperimentalCoroutinesApi

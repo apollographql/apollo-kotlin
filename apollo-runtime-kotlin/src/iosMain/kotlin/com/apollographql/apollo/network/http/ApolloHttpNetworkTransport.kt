@@ -50,6 +50,8 @@ import kotlin.coroutines.resume
 import kotlin.coroutines.resumeWithException
 import kotlin.native.concurrent.freeze
 
+private const val MEDIA_TYPE = "application/json"
+
 typealias UrlSessionDataTaskCompletionHandler = (NSData?, NSURLResponse?, NSError?) -> Unit
 
 fun interface DataTaskFactory {
@@ -171,7 +173,7 @@ actual class ApolloHttpNetworkTransport(
       val postBody = operation.composeRequestBody(scalarTypeAdapters).toByteArray().toNSData()
       setHTTPMethod("POST")
       headers
-          .plus("Content-Type" to "application/json; charset=utf-8")
+          .plus("Content-Type" to MEDIA_TYPE)
           .plus(httpExecutionContext?.headers ?: emptyMap())
           .forEach { (key, value) -> setValue(value, forHTTPHeaderField = key) }
       setCachePolicy(NSURLRequestReloadIgnoringCacheData)
