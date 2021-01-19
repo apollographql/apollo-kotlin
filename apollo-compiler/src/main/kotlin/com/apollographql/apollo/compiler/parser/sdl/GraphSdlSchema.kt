@@ -51,7 +51,8 @@ data class GraphSdlSchema(
         override val name: String,
         override val description: String,
         override val directives: List<Directive>,
-        val fields: List<Field>
+        val fields: List<Field>,
+        val interfaces: List<TypeRef.Named>
     ) : TypeDefinition()
 
     data class Field(

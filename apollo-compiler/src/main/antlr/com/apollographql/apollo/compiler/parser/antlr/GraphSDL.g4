@@ -62,7 +62,7 @@ implementsInterface
   ;
 
 interfaceTypeDefinition
-  : description? INTERFACE name directives? fieldsDefinition
+  : description? INTERFACE name implementsInterfaces? directives? fieldsDefinition
   ;
 
 fieldsDefinition

@@ -5,7 +5,6 @@ import com.apollographql.apollo.compiler.parser.antlr.GraphSDLLexer
 import com.apollographql.apollo.compiler.parser.antlr.GraphSDLParser
 import com.apollographql.apollo.compiler.parser.error.DocumentParseException
 import com.apollographql.apollo.compiler.parser.error.ParseException
-import com.apollographql.apollo.compiler.parser.sdl.GraphSDLSchemaParser.parse
 import org.antlr.v4.runtime.ANTLRInputStream
 import org.antlr.v4.runtime.BaseErrorListener
 import org.antlr.v4.runtime.CommonTokenStream
@@ -100,7 +99,8 @@ object GraphSDLSchemaParser {
         schema = GraphSdlSchema.Schema(
             description = schemaDefinition?.description()?.parse(),
             directives = schemaDefinition?.directives().parse(),
-            queryRootOperationType = rootOperationType(operationRootTypes, "query", typeDefinitions) ?: throw IllegalStateException("No query root operation type found"),
+            queryRootOperationType = rootOperationType(operationRootTypes, "query", typeDefinitions)
+                ?: throw IllegalStateException("No query root operation type found"),
             mutationRootOperationType = rootOperationType(operationRootTypes, "mutation", typeDefinitions),
             subscriptionRootOperationType = rootOperationType(operationRootTypes, "subscription", typeDefinitions)),
         typeDefinitions = typeDefinitions ?: emptyMap()
@@ -126,6 +126,7 @@ object GraphSDLSchemaParser {
       null
     }
   }
+
   private fun List<GraphSDLParser.TypeSystemExtensionContext>.parse(
       typeDefinitions: Map<String, GraphSdlSchema.TypeDefinition>
   ): Map<String, GraphSdlSchema.TypeDefinition> {
@@ -386,7 +387,8 @@ object GraphSDLSchemaParser {
         name = name().text,
         description = description().parse(),
         directives = directives().parse(),
-        fields = fieldsDefinition().parse()
+        fields = fieldsDefinition().parse(),
+        interfaces = implementsInterfaces().parse()
     )
   }
 
