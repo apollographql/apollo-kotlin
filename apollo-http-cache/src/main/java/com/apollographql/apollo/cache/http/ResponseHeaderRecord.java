@@ -273,7 +273,7 @@ final class ResponseHeaderRecord {
   Response response() {
     RequestBody body = null;
     if (HttpMethod.permitsRequestBody(requestMethod)) {
-      body = RequestBody.create(MediaType.parse(ApolloMediaType.APPLICATION_JSON_UTF8), "");
+      body = RequestBody.create(MediaType.parse(ApolloMediaType.APPLICATION_JSON), "");
     }
 
     Request cacheRequest = new Request.Builder()
