@@ -3,12 +3,10 @@ package com.apollographql.apollo.internal.interceptor
 import com.apollographql.apollo.ApolloCall
 import com.apollographql.apollo.api.CustomScalarAdapters
 import com.apollographql.apollo.api.Operation
+import com.apollographql.apollo.api.Response
 import com.apollographql.apollo.api.internal.ApolloLogger
 import com.apollographql.apollo.cache.ApolloCacheHeaders
 import com.apollographql.apollo.cache.normalized.ApolloStore
-import com.apollographql.apollo.cache.normalized.internal.Transaction
-import com.apollographql.apollo.cache.normalized.internal.WriteableStore
-import com.apollographql.apollo.cache.normalized.internal.normalize
 import com.apollographql.apollo.exception.ApolloException
 import com.apollographql.apollo.exception.ApolloGenericException
 import com.apollographql.apollo.interceptor.ApolloInterceptor
@@ -17,6 +15,7 @@ import com.apollographql.apollo.interceptor.ApolloInterceptor.FetchSourceType
 import com.apollographql.apollo.interceptor.ApolloInterceptor.InterceptorRequest
 import com.apollographql.apollo.interceptor.ApolloInterceptor.InterceptorResponse
 import com.apollographql.apollo.interceptor.ApolloInterceptorChain
+import com.apollographql.apollo.internal.RealApolloStore
 import java.lang.Runnable
 import java.util.HashSet
 import java.util.concurrent.Executor
@@ -28,7 +27,6 @@ import java.util.concurrent.atomic.AtomicReference
  */
 class ApolloCacheInterceptor<D : Operation.Data>(
     val apolloStore: ApolloStore,
-    private val customScalarAdapters: CustomScalarAdapters,
     private val dispatcher: Executor,
     val logger: ApolloLogger,
     private val responseCallback: AtomicReference<ApolloCall.Callback<D>?>,
@@ -62,7 +60,7 @@ class ApolloCacheInterceptor<D : Operation.Data>(
           }
 
           override fun onFailure(e: ApolloException) {
-            rollbackOptimisticUpdatesAndPublish(request)
+            rollbackOptimisticUpdates(request, true)
             callBack.onFailure(e)
           }
 
@@ -84,44 +82,41 @@ class ApolloCacheInterceptor<D : Operation.Data>(
 
   @Throws(ApolloException::class)
   fun resolveFromCache(request: InterceptorRequest): InterceptorResponse {
-    val apolloStoreOperation = apolloStore.readOperationInternal(
+    val data = apolloStore.readOperation(
         request.operation,
         request.cacheHeaders)
-    val cachedResponse = apolloStoreOperation.execute()
-    if (cachedResponse.data != null) {
+    if (data != null) {
       logger.d("Cache HIT for operation %s", request.operation.name())
-      return InterceptorResponse(null, cachedResponse)
+      return InterceptorResponse(null, Response.builder<Operation.Data>(request.operation)
+          .data(data)
+          .fromCache(true)
+          .build())
     }
     logger.d("Cache MISS for operation %s", request.operation.name())
     throw ApolloGenericException(String.format("Cache miss for operation %s", request.operation.name()))
   }
 
-  fun cacheResponse(networkResponse: InterceptorResponse,
-                    request: InterceptorRequest): Set<String> {
+  private fun cacheResponse(
+      networkResponse: InterceptorResponse,
+      request: InterceptorRequest
+  ): Set<String> {
     if (networkResponse.parsedResponse.isPresent
         && networkResponse.parsedResponse.get()!!.hasErrors()
         && !request.cacheHeaders.hasHeader(ApolloCacheHeaders.STORE_PARTIAL_RESPONSES)) {
       return emptySet()
     }
 
-    val records = networkResponse.parsedResponse.get()?.data?.let {
-      (request.operation as Operation<Operation.Data>).normalize(it, customScalarAdapters, apolloStore.cacheKeyResolver())
-    }?.map {
-      it.toBuilder().mutationId(request.uniqueId).build()
-    }
-
-    return if (records == null) {
-      emptySet()
-    } else try {
-      apolloStore.writeTransaction(object : Transaction<WriteableStore, Set<String>> {
-        override fun execute(cache: WriteableStore): Set<String>? {
-          val changedKeys = cache.merge(records, request.cacheHeaders)
-          responseCallback.get()?.onCached(records)
-          return changedKeys
-        }
-      })
-    } catch (e: Exception) {
-      logger.e("Failed to cache operation response", e)
+    val data = networkResponse.parsedResponse.get()!!.data
+    return if (data != null) {
+      val (records, changedKeys) = apolloStore.writeOperationWithRecords(
+          request.operation as Operation<Operation.Data>,
+          data,
+          request.cacheHeaders,
+          false // don't publish here, it's done later
+      )
+      responseCallback.get()?.onCached(records.toList())
+      changedKeys
+    } else {
       emptySet()
     }
   }
@@ -134,27 +129,27 @@ class ApolloCacheInterceptor<D : Operation.Data>(
     }
   }
 
-  fun cacheResponseAndPublishSynchronously(request: InterceptorRequest, networkResponse: InterceptorResponse) {
+  private fun cacheResponseAndPublishSynchronously(request: InterceptorRequest, networkResponse: InterceptorResponse) {
     try {
       val networkResponseCacheKeys = cacheResponse(networkResponse, request)
-      val rolledBackCacheKeys = rollbackOptimisticUpdates(request)
-      val changedCacheKeys: MutableSet<String> = HashSet()
-      changedCacheKeys.addAll(rolledBackCacheKeys)
-      changedCacheKeys.addAll(networkResponseCacheKeys)
-      publishCacheKeys(changedCacheKeys)
+      val rolledBackCacheKeys = rollbackOptimisticUpdates(request, false)
+
+      publishCacheKeys(rolledBackCacheKeys + networkResponseCacheKeys)
     } catch (rethrow: Exception) {
-      rollbackOptimisticUpdatesAndPublish(request)
+      rollbackOptimisticUpdates(request, true)
       throw rethrow
     }
   }
 
-  fun writeOptimisticUpdatesAndPublish(request: InterceptorRequest) {
+  private fun writeOptimisticUpdatesAndPublish(request: InterceptorRequest) {
     dispatcher.execute {
       try {
         if (request.optimisticUpdates.isPresent) {
           val optimisticUpdates = request.optimisticUpdates.get()
-          apolloStore.writeOptimisticUpdatesAndPublish(request.operation as Operation<Operation.Data>, optimisticUpdates, request.uniqueId)
-              .execute()
+          apolloStore.writeOptimisticUpdates(
+              request.operation as Operation<Operation.Data>,
+              optimisticUpdates,
+              request.uniqueId)
         }
       } catch (e: Exception) {
         logger.e(e, "failed to write operation optimistic updates, for: %s", request.operation)
@@ -162,19 +157,9 @@ class ApolloCacheInterceptor<D : Operation.Data>(
     }
   }
 
-  fun rollbackOptimisticUpdatesAndPublish(request: InterceptorRequest) {
-    dispatcher.execute {
-      try {
-        apolloStore.rollbackOptimisticUpdatesAndPublish(request.uniqueId).execute()
-      } catch (e: Exception) {
-        logger.e(e, "failed to rollback operation optimistic updates, for: %s", request.operation)
-      }
-    }
-  }
-
-  fun rollbackOptimisticUpdates(request: InterceptorRequest): Set<String> {
+  fun rollbackOptimisticUpdates(request: InterceptorRequest, publish: Boolean): Set<String> {
     return try {
-      apolloStore.rollbackOptimisticUpdates(request.uniqueId).execute()
+      apolloStore.rollbackOptimisticUpdates(request.uniqueId, publish)
     } catch (e: Exception) {
       logger.e(e, "failed to rollback operation optimistic updates, for: %s", request.operation)
       emptySet()

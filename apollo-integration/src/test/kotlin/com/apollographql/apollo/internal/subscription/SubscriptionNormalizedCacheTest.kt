@@ -85,7 +85,7 @@ class SubscriptionNormalizedCacheTest {
             100, "Cached comment content", NewRepoCommentSubscription.Data.CommentAdded.PostedBy("user@user.com")
         )
     )
-    apolloClient.apolloStore.writeOperation(operation, data).execute()
+    apolloClient.apolloStore.writeOperation(operation, data)
 
     val callback = SubscriptionManagerCallbackAdapter<NewRepoCommentSubscription.Data>()
     subscriptionCall.cachePolicy(ApolloSubscriptionCall.CachePolicy.NETWORK_ONLY).execute(callback)
@@ -135,7 +135,7 @@ class SubscriptionNormalizedCacheTest {
             100, "Cached comment content", NewRepoCommentSubscription.Data.CommentAdded.PostedBy("user@user.com")
         )
     )
-    apolloClient.apolloStore.writeOperation(operation, data).execute()
+    apolloClient.apolloStore.writeOperation(operation, data)
 
     val callback = SubscriptionManagerCallbackAdapter<NewRepoCommentSubscription.Data>()
     subscriptionCall.cachePolicy(ApolloSubscriptionCall.CachePolicy.CACHE_AND_NETWORK).execute(callback)

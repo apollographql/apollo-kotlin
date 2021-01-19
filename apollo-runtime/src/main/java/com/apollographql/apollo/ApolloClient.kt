@@ -16,7 +16,6 @@ import com.apollographql.apollo.api.internal.Optional.Companion.fromNullable
 import com.apollographql.apollo.api.internal.Optional.Companion.of
 import com.apollographql.apollo.cache.CacheHeaders
 import com.apollographql.apollo.cache.normalized.ApolloStore
-import com.apollographql.apollo.cache.normalized.ApolloStoreOperation
 import com.apollographql.apollo.cache.normalized.CacheKeyResolver
 import com.apollographql.apollo.cache.normalized.NormalizedCache
 import com.apollographql.apollo.cache.normalized.NormalizedCacheFactory
@@ -41,7 +40,6 @@ import okhttp3.Call
 import okhttp3.HttpUrl
 import okhttp3.Interceptor
 import okhttp3.OkHttpClient
-import okhttp3.Request
 import okhttp3.Response
 import java.io.IOException
 import java.util.ArrayList
@@ -187,24 +185,6 @@ class ApolloClient internal constructor(
    */
   fun clearHttpCache() {
     httpCache?.clear()
-  }
-
-  /**
-   * Clear all entries from the normalized cache. This is asynchronous operation and will be scheduled on the dispatcher
-   *
-   * @param callback to be notified when operation is completed
-   */
-  fun clearNormalizedCache(callback: ApolloStoreOperation.Callback<Boolean>) {
-    apolloStore.clearAll().enqueue(callback)
-  }
-
-  /**
-   * Clear all entries from the normalized cache. This is synchronous operation and will be executed int the current thread
-   *
-   * @return `true` if operation succeed, `false` otherwise
-   */
-  fun clearNormalizedCache(): Boolean {
-    return apolloStore.clearAll().execute()
   }
 
   /**
@@ -647,7 +627,7 @@ class ApolloClient internal constructor(
       val cacheKeyResolver = cacheKeyResolver
       if (cacheFactory.isPresent && cacheKeyResolver.isPresent) {
         val normalizedCache = cacheFactory.get().createChain(RecordFieldJsonAdapter())
-        apolloStore = RealApolloStore(normalizedCache, cacheKeyResolver.get(), customScalarAdapters, dispatcher, apolloLogger)
+        apolloStore = RealApolloStore(normalizedCache, cacheKeyResolver.get(), customScalarAdapters, apolloLogger)
       }
       var subscriptionManager = subscriptionManager
       val subscriptionTransportFactory = subscriptionTransportFactory

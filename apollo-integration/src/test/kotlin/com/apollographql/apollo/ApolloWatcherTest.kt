@@ -19,6 +19,7 @@ import com.apollographql.apollo.integration.normalizer.EpisodeHeroNameWithIdQuer
 import com.apollographql.apollo.integration.normalizer.HeroAndFriendsNamesWithIDsQuery
 import com.apollographql.apollo.integration.normalizer.StarshipByIdQuery
 import com.apollographql.apollo.integration.normalizer.type.Episode
+import com.apollographql.apollo.internal.RealApolloStore
 import com.google.common.truth.Truth
 import com.google.common.truth.Truth.assertThat
 import junit.framework.Assert
@@ -66,7 +67,7 @@ class ApolloWatcherTest {
   @Test
   fun testQueryWatcherUpdated_SameQuery_DifferentResults() {
     val heroNameList: MutableList<String> = ArrayList()
-    val query: EpisodeHeroNameQuery = EpisodeHeroNameQuery(Input.fromNullable(Episode.EMPIRE))
+    val query = EpisodeHeroNameQuery(Input.fromNullable(Episode.EMPIRE))
     server.enqueue(Utils.mockResponse("EpisodeHeroNameResponseWithId.json"))
     val watcher = apolloClient.query(query).watcher()
     watcher.enqueueAndWatch(
@@ -112,14 +113,13 @@ class ApolloWatcherTest {
     assertThat(channel.receiveOrTimeout()?.hero?.name).isEqualTo("R2-D2")
 
     // Someone writes to the store directly
-    val changedKeys: Set<String> = apolloClient.apolloStore.writeTransaction(object : Transaction<WriteableStore, Set<String>> {
-      override fun execute(cache: WriteableStore): Set<String> {
+    val changedKeys: Set<String> = (apolloClient.apolloStore as RealApolloStore).writeTransaction {
         val record: Record = Record.builder("2001")
             .addField("name", "Artoo")
             .build()
-        return cache.merge(listOf(record), CacheHeaders.NONE)
-      }
-    })
+        it.merge(listOf(record), CacheHeaders.NONE)
+    }
+
     apolloClient.apolloStore.publish(changedKeys)
     assertThat(channel.receiveOrTimeout()?.hero?.name).isEqualTo("Artoo")
 
@@ -321,7 +321,7 @@ class ApolloWatcherTest {
         Assert.fail(e.message)
       }
     })
-    Truth.assertThat(watchedHeroes).hasSize(1)
+    assertThat(watchedHeroes).hasSize(1)
     assertThat(watchedHeroes[0]?.name).isEqualTo("R2-D2")
   }
 

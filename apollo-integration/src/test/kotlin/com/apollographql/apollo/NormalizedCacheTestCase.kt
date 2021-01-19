@@ -365,7 +365,7 @@ class NormalizedCacheTestCase {
     val heroWithFriendsFragment = apolloClient.apolloStore.readFragment(
         HeroWithFriendsFragmentImpl(),
         from("2001"),
-        ).execute()
+        )!!
     assertThat(heroWithFriendsFragment.id).isEqualTo("2001")
     assertThat(heroWithFriendsFragment.name).isEqualTo("R2-D2")
     assertThat(heroWithFriendsFragment.friends).hasSize(3)
@@ -379,7 +379,7 @@ class NormalizedCacheTestCase {
     var fragment: HumanWithIdFragment = apolloClient.apolloStore.readFragment(
         HumanWithIdFragmentImpl(),
         from("1000"),
-    ).execute()
+    )!!
 
     assertThat(fragment.id).isEqualTo("1000")
     assertThat(fragment.name).isEqualTo("Luke Skywalker")
@@ -387,14 +387,14 @@ class NormalizedCacheTestCase {
     fragment = apolloClient.apolloStore.readFragment(
         HumanWithIdFragmentImpl(),
         from("1002"),
-    ).execute()
+    )!!
     assertThat(fragment.id).isEqualTo("1002")
     assertThat(fragment.name).isEqualTo("Han Solo")
 
     fragment = apolloClient.apolloStore.readFragment(
         HumanWithIdFragmentImpl(),
         from("1003"),
-    ).execute()
+    )!!
     assertThat(fragment.id).isEqualTo("1003")
     assertThat(fragment.name).isEqualTo("Leia Organa")
   }
@@ -450,7 +450,7 @@ class NormalizedCacheTestCase {
     }
 
     // test remove root query object
-    Truth.assertThat(apolloClient.apolloStore.remove(from("2001")).execute()).isTrue()
+    Truth.assertThat(apolloClient.apolloStore.remove(from("2001"))).isTrue()
     assertResponse(
         apolloClient.query(HeroAndFriendsNamesWithIDsQuery(fromNullable(Episode.NEWHOPE)))
             .responseFetcher(ApolloResponseFetchers.CACHE_ONLY), Predicate<Response<HeroAndFriendsNamesWithIDsQuery.Data>> { response ->
@@ -474,7 +474,7 @@ class NormalizedCacheTestCase {
     }
 
     // test remove object from the list
-    Truth.assertThat(apolloClient.apolloStore.remove(from("1002")).execute()).isTrue()
+    Truth.assertThat(apolloClient.apolloStore.remove(from("1002"))).isTrue()
     assertResponse(
         apolloClient.query(HeroAndFriendsNamesWithIDsQuery(fromNullable(Episode.NEWHOPE)))
             .responseFetcher(ApolloResponseFetchers.CACHE_ONLY), Predicate<Response<HeroAndFriendsNamesWithIDsQuery.Data>> { response ->
@@ -535,8 +535,7 @@ class NormalizedCacheTestCase {
       assertThat(response.data!!.character!!.name).isEqualTo("Leia Organa")
       true
     }
-    Truth.assertThat(apolloClient.apolloStore.remove(Arrays.asList(from("1002"), from("1000")))
-        .execute()).isEqualTo(2)
+    Truth.assertThat(apolloClient.apolloStore.remove(Arrays.asList(from("1002"), from("1000")))).isEqualTo(2)
     assertResponse(
         apolloClient.query(CharacterNameByIdQuery("1000")).responseFetcher(ApolloResponseFetchers.CACHE_ONLY),
         Predicate<Response<CharacterNameByIdQuery.Data>> { response ->
@@ -734,7 +733,7 @@ LruNormalizedCache {
     }
 
     // test remove root query object
-    assertThat(apolloClient.apolloStore.remove(from("2001"), true).execute()).isTrue()
+    assertThat(apolloClient.apolloStore.remove(from("2001"), true)).isTrue()
     assertResponse(
         apolloClient.query(HeroAndFriendsNamesWithIDsQuery(fromNullable(Episode.NEWHOPE)))
             .responseFetcher(ApolloResponseFetchers.CACHE_ONLY), Predicate<Response<HeroAndFriendsNamesWithIDsQuery.Data>> { response ->

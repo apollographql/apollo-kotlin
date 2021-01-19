@@ -132,7 +132,7 @@ class OptimisticNormalizedCache : NormalizedCache() {
       if (recordIndex == -1) {
         return emptySet()
       }
-      return buildSet<String> {
+      return buildSet {
         add(history.removeAt(recordIndex).key)
 
         for (i in max(0, recordIndex - 1) until history.size) {

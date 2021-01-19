@@ -38,56 +38,31 @@ interface ApolloStore {
 
   /**
    * Clear all records from this [ApolloStore].
+   * This is a synchronous operation that might block if the underlying cache is doing IO
    *
-   * @return {@ApolloStoreOperation} to be performed, that will be resolved with `true` if all records was
-   * successfully removed, `false` otherwise
+   * @return `true` if all records were successfully removed, `false` otherwise
    */
-  fun clearAll(): ApolloStoreOperation<Boolean>
+  fun clearAll(): Boolean
 
   /**
    * Remove cache record by the key
-   *
-   * @param cacheKey of record to be removed
-   * @return {@ApolloStoreOperation} to be performed, that will be resolved with `true` if record with such key
-   * was successfully removed, `false` otherwise
-   */
-  fun remove(cacheKey: CacheKey): ApolloStoreOperation<Boolean>
-
-  /**
-   * Remove cache record by the key
+   * This is a synchronous operation that might block if the underlying cache is doing IO
    *
    * @param cacheKey of record to be removed
    * @param cascade defines if remove operation is propagated to the referenced entities
-   * @return {@ApolloStoreOperation} to be performed, that will be resolved with `true` if record with such key
-   * was successfully removed, `false` otherwise
+   * @return `true` if the record was successfully removed, `false` otherwise
    */
-  fun remove(cacheKey: CacheKey, cascade: Boolean): ApolloStoreOperation<Boolean>
+  fun remove(cacheKey: CacheKey, cascade: Boolean = true): Boolean
 
   /**
-   * Remove cache records by the list of keys
+   * Remove a list of cache records
+   * This is an optimized version of [remove] for caches that can batch operations
+   * This is a synchronous operation that might block if the underlying cache is doing IO
    *
    * @param cacheKeys keys of records to be removed
-   * @return {@ApolloStoreOperation} to be performed, that will be resolved with the count of records been removed
+   * @return the number of records that have been removed
    */
-  fun remove(cacheKeys: List<CacheKey>): ApolloStoreOperation<Int>
-
-  /**
-   * Run a operation inside a read-lock. Blocks until read-lock is acquired.
-   *
-   * @param transaction A code block to run once the read lock is acquired.
-   * @param <R>         The result type of this read operation.
-   * @return A result from the read operation.
-  </R> */
-  fun <R> readTransaction(transaction: Transaction<ReadableStore, R>): R
-
-  /**
-   * Run a operation inside a write-lock. Blocks until write-lock is acquired.
-   *
-   * @param transaction A code block to run once the write lock is acquired.
-   * @param <R>         The result type of this write operation.
-   * @return A result from the write operation.
-  </R> */
-  fun <R> writeTransaction(transaction: Transaction<WriteableStore, R>): R
+  fun remove(cacheKeys: List<CacheKey>, cascade: Boolean = true): Int
 
   /**
    * @return The [NormalizedCache] which backs this ApolloStore.
@@ -101,69 +76,66 @@ interface ApolloStore {
 
   /**
    * Read GraphQL operation from store.
+   * This is a synchronous operation that might block if the underlying cache is doing IO
    *
    * @param operation to be read
    * @return {@ApolloStoreOperation} to be performed, that will be resolved with cached data for specified operation
    */
   fun <D : Operation.Data> readOperation(
-      operation: Operation<D>
-  ): ApolloStoreOperation<D>
-
-  /**
-   * A specialized version of readOperation that also returns dependentKeys. Do not use
-   */
-  fun <D : Operation.Data> readOperationInternal(
       operation: Operation<D>,
-      cacheHeaders: CacheHeaders
-  ): ApolloStoreOperation<Response<D>> {
-    // This is called in the default path when no cache is configured, do not trigger an error
-    // Instead return an empty response. This will be seen as a cache MISS and the request will go to the network.
-    return ApolloStoreOperation.emptyOperation(Response.builder<D>(operation).build())
-  }
+      cacheHeaders: CacheHeaders = CacheHeaders.NONE
+  ): D?
 
   /**
    * Read a GraphQL fragment from the store.
+   * This is a synchronous operation that might block if the underlying cache is doing IO
    *
    * @param cacheKey    [CacheKey] to be used to find cache record for the fragment
    * @param <F>         type of fragment to be read
-   * @return {@ApolloStoreOperation} to be performed, that will be resolved with cached fragment data
-  </F> */
+   * @return the fragment's data or null if it's a cache miss
+   */
   fun <D: Fragment.Data> readFragment(
       fragment: Fragment<D>,
       cacheKey: CacheKey,
-  ): ApolloStoreOperation<D>
+      cacheHeaders: CacheHeaders = CacheHeaders.NONE,
+  ): D?
 
 
   /**
-   * Write operation to the store and publish changes of [Record] which have changed, that will notify any [com.apollographql.apollo.ApolloQueryWatcher] that depends on these [Record] to re-fetch.
+   * Write operation to the store and optionally publish changes of [Record] which have changed,
+   * that will notify any [com.apollographql.apollo.ApolloQueryWatcher] that depends on these [Record] to re-fetch.
+   * This is a synchronous operation that might block if the underlying cache is doing IO
    *
    * @param operation     [Operation] response data of which should be written to the store
    * @param operationData [Operation.Data] operation response data to be written to the store
    * @param publish       whether or not to publish the changed keys to listeners
-   * @return {@ApolloStoreOperation} to be performed returning the changed keys
-  </V></T></D> */
+   * @return the changed keys
+   */
   fun <D : Operation.Data> writeOperation(
       operation: Operation<D>,
       operationData: D,
+      cacheHeaders: CacheHeaders = CacheHeaders.NONE,
       publish: Boolean = true
-  ): ApolloStoreOperation<Set<String>>
+  ): Set<String>
 
   /**
-   * Write fragment to the store and publish changes of [Record] which have changed, that will notify any ApolloQueryWatcher that
-   * depends on these [Record] to re-fetch.
+   * Write fragment to the store and optionally publish changes of [Record] which have changed,
+   * that will notify any [com.apollographql.apollo.ApolloQueryWatcher] that depends on these [Record] to re-fetch.
+   * This is a synchronous operation that might block if the underlying cache is doing IO
    *
    * @param fragment data to be written to the store
    * @param cacheKey [CacheKey] to be used as root record key
    * @param fragmentData [Fragment.Data] to be written to the store
    * @param publish whether or not to publish the changed keys to listeners
-   * @return [ApolloStoreOperation] to be performed the changed keys
+   * @return the changed keys
    */
   fun <D: Fragment.Data> writeFragment(
       fragment: Fragment<D>,
       cacheKey: CacheKey,
       fragmentData: D,
+      cacheHeaders: CacheHeaders = CacheHeaders.NONE,
       publish: Boolean = true
-  ): ApolloStoreOperation<Set<String>>
+  ): Set<String>
 
   /**
    * Write operation data to the optimistic store.
@@ -171,47 +143,30 @@ interface ApolloStore {
    * @param operation     [Operation] response data of which should be written to the store
    * @param operationData [Operation.Data] operation response data to be written to the store
    * @param mutationId    mutation unique identifier
-   * @return {@ApolloStoreOperation} to be performed, that will be resolved with set of keys of [Record] which
-   * have changed
+   * @return the changed keys
    */
   fun <D : Operation.Data> writeOptimisticUpdates(
       operation: Operation<D>,
       operationData: D,
-      mutationId: UUID
-  ): ApolloStoreOperation<Set<String>>
-
-  /**
-   * Write operation data to the optimistic store and publish changes of [Record]s which have changed, that will
-   * notify any [com.apollographql.apollo.ApolloQueryWatcher] that depends on these [Record] to re-fetch.
-   *
-   * @param operation     [Operation] response data of which should be written to the store
-   * @param operationData [Operation.Data] operation response data to be written to the store
-   * @param mutationId    mutation unique identifier
-   * @return {@ApolloStoreOperation} to be performed
-   */
-  fun <D : Operation.Data> writeOptimisticUpdatesAndPublish(
-      operation: Operation<D>,
-      operationData: D,
-      mutationId: UUID
-  ): ApolloStoreOperation<Boolean>
+      mutationId: UUID,
+      publish: Boolean = true
+  ): Set<String>
 
   /**
    * Rollback operation data optimistic updates.
    *
    * @param mutationId mutation unique identifier
-   * @return {@ApolloStoreOperation} to be performed
+   * @return the changed keys
    */
-  fun rollbackOptimisticUpdates(mutationId: UUID): ApolloStoreOperation<Set<String>>
+  fun rollbackOptimisticUpdates(
+      mutationId: UUID,
+      publish: Boolean = true
+  ): Set<String>
 
   /**
-   * Rollback operation data optimistic updates and publish changes of [Record]s which have changed, that will
-   * notify any [com.apollographql.apollo.ApolloQueryWatcher] that depends on these [Record] to re-fetch.
-   *
-   * @param mutationId mutation unique identifier
-   * @return {@ApolloStoreOperation} to be performed, that will be resolved with set of keys of [Record] which
-   * have changed
+   * Used internally to get the records. Do not use from outside the apollo libs
    */
-  fun rollbackOptimisticUpdatesAndPublish(mutationId: UUID): ApolloStoreOperation<Boolean>
+  fun <D : Operation.Data> writeOperationWithRecords(operation: Operation<D>, operationData: D, cacheHeaders: CacheHeaders, publish: Boolean): Pair<Set<Record>, Set<String>>
 
   companion object {
     @JvmField

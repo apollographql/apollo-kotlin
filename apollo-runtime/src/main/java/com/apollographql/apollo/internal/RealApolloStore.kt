@@ -3,48 +3,33 @@ package com.apollographql.apollo.internal
 import com.apollographql.apollo.api.CustomScalarAdapters
 import com.apollographql.apollo.api.Fragment
 import com.apollographql.apollo.api.Operation
-import com.apollographql.apollo.api.Response
-import com.apollographql.apollo.api.Response.Companion.builder
 import com.apollographql.apollo.api.internal.ApolloLogger
-import com.apollographql.apollo.api.internal.MapResponseReader
-import com.apollographql.apollo.api.internal.ResponseAdapter
 import com.apollographql.apollo.api.internal.json.JsonReader
-import com.apollographql.apollo.api.parseData
 import com.apollographql.apollo.cache.CacheHeaders
 import com.apollographql.apollo.cache.normalized.ApolloStore
 import com.apollographql.apollo.cache.normalized.ApolloStore.RecordChangeSubscriber
-import com.apollographql.apollo.cache.normalized.ApolloStoreOperation
 import com.apollographql.apollo.cache.normalized.CacheKey
 import com.apollographql.apollo.cache.normalized.CacheKeyResolver
-import com.apollographql.apollo.cache.normalized.CacheKeyResolver.Companion.rootKey
 import com.apollographql.apollo.cache.normalized.NormalizedCache
 import com.apollographql.apollo.cache.normalized.OptimisticNormalizedCache
 import com.apollographql.apollo.cache.normalized.Record
-import com.apollographql.apollo.cache.normalized.internal.CacheValueResolver
 import com.apollographql.apollo.cache.normalized.internal.ReadableStore
-import com.apollographql.apollo.cache.normalized.internal.RealCacheKeyBuilder
-import com.apollographql.apollo.cache.normalized.internal.Transaction
 import com.apollographql.apollo.cache.normalized.internal.WriteableStore
-import com.apollographql.apollo.cache.normalized.internal.dependentKeys
 import com.apollographql.apollo.cache.normalized.internal.normalize
 import com.apollographql.apollo.cache.normalized.internal.readDataFromCache
-import java.util.ArrayList
 import java.util.Collections
 import java.util.LinkedHashSet
 import java.util.UUID
 import java.util.WeakHashMap
-import java.util.concurrent.Executor
 import java.util.concurrent.locks.ReentrantReadWriteLock
 
 class RealApolloStore(normalizedCache: NormalizedCache,
-                      val cacheKeyResolver: CacheKeyResolver,
+                      private val cacheKeyResolver: CacheKeyResolver,
                       val customScalarAdapters: CustomScalarAdapters,
-                      private val dispatcher: Executor,
                       val logger: ApolloLogger) : ApolloStore, ReadableStore, WriteableStore {
   private val optimisticCache = OptimisticNormalizedCache().chain(normalizedCache) as OptimisticNormalizedCache
   private val lock = ReentrantReadWriteLock()
   private val subscribers: MutableSet<RecordChangeSubscriber> = Collections.newSetFromMap(WeakHashMap())
-  private val cacheKeyBuilder = RealCacheKeyBuilder()
 
   @Synchronized
   override fun subscribe(subscriber: RecordChangeSubscriber) {
@@ -67,59 +52,52 @@ class RealApolloStore(normalizedCache: NormalizedCache,
     }
   }
 
-  override fun clearAll(): ApolloStoreOperation<Boolean> {
-    return object : ApolloStoreOperation<Boolean>(dispatcher) {
-      public override fun perform(): Boolean {
-        return writeTransaction {
-          optimisticCache.clearAll()
-          java.lang.Boolean.TRUE
+  override fun clearAll(): Boolean {
+    return writeTransaction {
+      optimisticCache.clearAll()
+      true
+    }
+  }
+
+  override fun remove(
+      cacheKey: CacheKey,
+      cascade: Boolean
+  ) = writeTransaction { optimisticCache.remove(cacheKey, cascade) }
+
+  override fun remove(
+      cacheKeys: List<CacheKey>,
+      cascade: Boolean
+  ): Int {
+    return writeTransaction {
+      var count = 0
+      for (cacheKey in cacheKeys) {
+        if (optimisticCache.remove(cacheKey)) {
+          count++
         }
       }
+      count
     }
   }
 
-  override fun remove(cacheKey: CacheKey): ApolloStoreOperation<Boolean> {
-    return remove(cacheKey, false)
-  }
-
-  override fun remove(cacheKey: CacheKey,
-                      cascade: Boolean): ApolloStoreOperation<Boolean> {
-    return object : ApolloStoreOperation<Boolean>(dispatcher) {
-      override fun perform(): Boolean {
-        return writeTransaction { optimisticCache.remove(cacheKey, cascade) }
-      }
-    }
-  }
-
-  override fun remove(cacheKeys: List<CacheKey>): ApolloStoreOperation<Int> {
-    return object : ApolloStoreOperation<Int>(dispatcher) {
-      override fun perform(): Int {
-        return writeTransaction {
-          var count = 0
-          for (cacheKey in cacheKeys) {
-            if (optimisticCache.remove(cacheKey)) {
-              count++
-            }
-          }
-          count
-        }
-      }
-    }
-  }
-
-  override fun <R> readTransaction(transaction: Transaction<ReadableStore, R>): R {
+  /**
+   * not private because tests use it
+   */
+  fun <R> readTransaction(block: (ReadableStore) -> R): R {
     lock.readLock().lock()
     return try {
-      transaction.execute(this@RealApolloStore)!!
+      block(this@RealApolloStore)
     } finally {
       lock.readLock().unlock()
     }
   }
 
-  override fun <R> writeTransaction(transaction: Transaction<WriteableStore, R>): R {
+  /**
+   * not private because tests use it
+   */
+  fun <R> writeTransaction(block: (WriteableStore) -> R): R {
     lock.writeLock().lock()
     return try {
-      transaction.execute(this@RealApolloStore)!!
+      block(this@RealApolloStore)
     } finally {
       lock.writeLock().unlock()
     }
@@ -154,20 +132,20 @@ class RealApolloStore(normalizedCache: NormalizedCache,
   }
 
   override fun <D : Operation.Data> readOperation(
-      operation: Operation<D>): ApolloStoreOperation<D> {
-    return object : ApolloStoreOperation<D>(dispatcher) {
-      override fun perform(): D {
-        return doReadOperation(operation, CacheHeaders.NONE).data!!
-      }
-    }
-  }
-
-  override fun <D : Operation.Data> readOperationInternal(
       operation: Operation<D>,
-      cacheHeaders: CacheHeaders): ApolloStoreOperation<Response<D>> {
-    return object : ApolloStoreOperation<Response<D>>(dispatcher) {
-      override fun perform(): Response<D> {
-        return doReadOperation(operation, cacheHeaders)
+      cacheHeaders: CacheHeaders
+  ): D? {
+    return readTransaction { cache ->
+      try {
+        operation.readDataFromCache(
+            customScalarAdapters,
+            cache,
+            cacheKeyResolver(),
+            cacheHeaders
+        )
+      } catch (e: Exception) {
+        logger.e(e, "Failed to read cache response")
+        null
       }
     }
   }
@@ -175,151 +153,92 @@ class RealApolloStore(normalizedCache: NormalizedCache,
   override fun <D : Fragment.Data> readFragment(
       fragment: Fragment<D>,
       cacheKey: CacheKey,
-  ): ApolloStoreOperation<D> {
-    return object : ApolloStoreOperation<D>(dispatcher) {
-      override fun perform(): D {
-        return doRead(fragment.adapter(), cacheKey, fragment.variables())
+      cacheHeaders: CacheHeaders
+  ): D? {
+    return readTransaction { cache ->
+      try {
+        fragment.readDataFromCache(
+            customScalarAdapters,
+            cache,
+            cacheKeyResolver(),
+            cacheHeaders,
+            cacheKey
+        )
+      } catch (e: Exception) {
+        logger.e(e, "Failed to read cache response")
+        null
       }
     }
+  }
+
+  override fun <D : Operation.Data> writeOperationWithRecords(
+      operation: Operation<D>,
+      operationData: D,
+      cacheHeaders: CacheHeaders,
+      publish: Boolean
+  ): Pair<Set<Record>, Set<String>> {
+    val records = operation.normalize(operationData, customScalarAdapters, cacheKeyResolver)
+    val changedKeys = optimisticCache.merge(records, cacheHeaders)
+
+    if (publish) {
+      publish(changedKeys)
+    }
+    return records to changedKeys
   }
 
   override fun <D : Operation.Data> writeOperation(
       operation: Operation<D>,
       operationData: D,
+      cacheHeaders: CacheHeaders,
       publish: Boolean
-  ): ApolloStoreOperation<Set<String>> {
-    return object : ApolloStoreOperation<Set<String>>(dispatcher) {
-      override fun perform(): Set<String> {
-        val changedKeys = doWriteOperation(operation, operationData, false, null)
-        if (publish) {
-          publish(changedKeys)
-        }
-        return changedKeys
-      }
-    }
-  }
+  ) = writeOperationWithRecords(operation, operationData, cacheHeaders, publish).second
 
   override fun <D : Fragment.Data> writeFragment(
       fragment: Fragment<D>,
       cacheKey: CacheKey,
       fragmentData: D,
+      cacheHeaders: CacheHeaders,
       publish: Boolean
-  ): ApolloStoreOperation<Set<String>> {
+  ): Set<String> {
 
-    require(cacheKey != CacheKey.NO_KEY) { "undefined cache key" }
+    require(cacheKey != CacheKey.NO_KEY) { "ApolloGraphQL: writing a fragment requires a valid cache key" }
 
-    return object : ApolloStoreOperation<Set<String>>(dispatcher) {
-      override fun perform(): Set<String> {
-        return writeTransaction {
-          val changedKeys = doWriteFragment(fragment, cacheKey, fragmentData)
-          if (publish) {
-            publish(changedKeys)
-          }
-          changedKeys
-        }
-      }
-    }
-  }
-
-  override fun <D : Operation.Data> writeOptimisticUpdates(operation: Operation<D>, operationData: D,
-                                                           mutationId: UUID): ApolloStoreOperation<Set<String>> {
-    return object : ApolloStoreOperation<Set<String>>(dispatcher) {
-      override fun perform(): Set<String> {
-        return doWriteOperation(operation, operationData, true, mutationId)
-      }
-    }
-  }
-
-  override fun <D : Operation.Data> writeOptimisticUpdatesAndPublish(operation: Operation<D>, operationData: D,
-                                                                     mutationId: UUID): ApolloStoreOperation<Boolean> {
-    return object : ApolloStoreOperation<Boolean>(dispatcher) {
-      override fun perform(): Boolean {
-        val changedKeys = doWriteOperation(operation, operationData, true, mutationId)
+    return writeTransaction {
+      val records = fragment.normalize(fragmentData, customScalarAdapters, cacheKeyResolver, cacheKey.key)
+      val changedKeys = merge(records, cacheHeaders)
+      if (publish) {
         publish(changedKeys)
-        return java.lang.Boolean.TRUE
       }
+      changedKeys
     }
   }
 
-  override fun rollbackOptimisticUpdates(mutationId: UUID): ApolloStoreOperation<Set<String>> {
-    return object : ApolloStoreOperation<Set<String>>(dispatcher) {
-      override fun perform(): Set<String> {
-        return writeTransaction { optimisticCache.removeOptimisticUpdates(mutationId) }
-      }
+  override fun <D : Operation.Data> writeOptimisticUpdates(
+      operation: Operation<D>, operationData: D,
+      mutationId: UUID,
+      publish: Boolean
+  ): Set<String> {
+    val records = operation.normalize(operationData, customScalarAdapters, cacheKeyResolver).map {
+      it.toBuilder().mutationId(mutationId).build()
     }
-  }
-
-  override fun rollbackOptimisticUpdatesAndPublish(mutationId: UUID): ApolloStoreOperation<Boolean> {
-    return object : ApolloStoreOperation<Boolean>(dispatcher) {
-      override fun perform(): Boolean {
-        val changedKeys = writeTransaction { optimisticCache.removeOptimisticUpdates(mutationId) }
-        publish(changedKeys)
-        return java.lang.Boolean.TRUE
-      }
+    /**
+     * TODO: should we forward the cache headers to the optimistic store?
+     */
+    val changedKeys = optimisticCache.mergeOptimisticUpdates(records)
+    if (publish) {
+      publish(changedKeys)
     }
+    return changedKeys
   }
 
-  fun <D : Operation.Data> doReadOperation(
-      operation: Operation<D>,
-      cacheHeaders: CacheHeaders
-  ): Response<D> = readTransaction { cache ->
-    try {
-      val data = operation.readDataFromCache(
-          customScalarAdapters,
-          cache,
-          cacheKeyResolver(),
-          cacheHeaders
-      )
-      builder<D>(operation)
-          .data(data)
-          .fromCache(true)
-          .build()
-    } catch (e: Exception) {
-      logger.e(e, "Failed to read cache response")
-      builder<D>(operation).fromCache(true).build()
+  override fun rollbackOptimisticUpdates(
+      mutationId: UUID,
+      publish: Boolean
+  ): Set<String> {
+    val changedKeys = writeTransaction { optimisticCache.removeOptimisticUpdates(mutationId) }
+    if (publish) {
+      publish(changedKeys)
     }
-  }
-
-
-  fun <F> doRead(adapter: ResponseAdapter<F>,
-                 cacheKey: CacheKey,
-                 variables: Operation.Variables): F {
-    return readTransaction(object : Transaction<ReadableStore, F> {
-      override fun execute(cache: ReadableStore): F? {
-        val rootRecord = cache.read(cacheKey.key, CacheHeaders.NONE) ?: return null
-        val fieldValueResolver = CacheValueResolver(cache, variables,
-            cacheKeyResolver(), CacheHeaders.NONE, cacheKeyBuilder)
-        val responseReader = MapResponseReader(
-            variables,
-            rootRecord,
-            fieldValueResolver,
-            customScalarAdapters,
-        )
-        return adapter.fromResponse(responseReader, null)
-      }
-    })
-  }
-
-  fun <D : Operation.Data> doWriteOperation(
-      operation: Operation<D>,
-      operationData: D,
-      optimistic: Boolean,
-      mutationId: UUID?): Set<String> = writeTransaction {
-    val records = operation.normalize(operationData, customScalarAdapters, cacheKeyResolver)
-    if (optimistic) {
-      val updatedRecords: MutableList<Record> = ArrayList()
-      for (record in records) {
-        updatedRecords.add(record.toBuilder().mutationId(mutationId).build())
-      }
-      optimisticCache.mergeOptimisticUpdates(updatedRecords)
-    } else {
-      optimisticCache.merge(records, CacheHeaders.NONE)
-    }
-
-  }
-
-  fun <D : Fragment.Data> doWriteFragment(fragment: Fragment<D>, cacheKey: CacheKey, data: D): Set<String> = writeTransaction {
-    val records = fragment.normalize(data, customScalarAdapters, cacheKeyResolver, cacheKey.key)
-    merge(records, CacheHeaders.NONE)
+    return changedKeys
   }
 }

@@ -188,7 +188,7 @@ class CoroutinesApolloTest {
         .toFlow()
         .first() // Cancels the flow after first response
 
-    apolloClient.clearNormalizedCache()
+    apolloClient.apolloStore.clearAll()
     apolloClient.clearHttpCache()
 
     server.enqueue(mockResponse("HeroNameResponse.json"))

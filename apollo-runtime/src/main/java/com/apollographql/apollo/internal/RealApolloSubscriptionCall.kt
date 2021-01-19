@@ -7,16 +7,12 @@ import com.apollographql.apollo.api.Subscription
 import com.apollographql.apollo.api.internal.ApolloLogger
 import com.apollographql.apollo.cache.CacheHeaders
 import com.apollographql.apollo.cache.normalized.ApolloStore
-import com.apollographql.apollo.cache.normalized.ApolloStoreOperation
-import com.apollographql.apollo.cache.normalized.internal.Transaction
-import com.apollographql.apollo.cache.normalized.internal.WriteableStore
 import com.apollographql.apollo.exception.ApolloCanceledException
 import com.apollographql.apollo.exception.ApolloNetworkException
 import com.apollographql.apollo.internal.CallState.IllegalStateMessage.Companion.forCurrentState
 import com.apollographql.apollo.internal.subscription.ApolloSubscriptionException
 import com.apollographql.apollo.internal.subscription.SubscriptionManager
 import com.apollographql.apollo.internal.subscription.SubscriptionResponse
-import java.lang.Runnable
 import java.util.concurrent.Executor
 import java.util.concurrent.atomic.AtomicReference
 
@@ -102,53 +98,29 @@ class RealApolloSubscriptionCall<D : Operation.Data>(
   }
 
   private fun resolveFromCache(): Response<D>? {
-    val apolloStoreOperation: ApolloStoreOperation<Response<D>> = apolloStore.readOperationInternal(
+    val data = apolloStore.readOperation(
         subscription,
         CacheHeaders.NONE)
-    var cachedResponse: Response<D>? = null
-    try {
-      cachedResponse = apolloStoreOperation.execute()
-    } catch (e: Exception) {
-      logger.e(e, "Failed to fetch subscription `%s` from the store", subscription)
-    }
-    return if (cachedResponse != null && cachedResponse.data != null) {
+    return if (data != null) {
       logger.d("Cache HIT for subscription `%s`", subscription)
-      cachedResponse
+      Response.builder<D>(subscription)
+          .data(data)
+          .fromCache(true)
+          .build()
     } else {
       logger.d("Cache MISS for subscription `%s`", subscription)
       null
     }
   }
 
-  private fun cacheResponse(networkResponse: SubscriptionResponse<D>) {
-    if (networkResponse.cacheRecords.isEmpty() || cachePolicy == ApolloSubscriptionCall.CachePolicy.NO_CACHE) {
-      return
-    }
-    dispatcher.execute(Runnable {
-      val cacheKeys: Set<String>
-      cacheKeys = try {
-        apolloStore.writeTransaction(object : Transaction<WriteableStore, Set<String>> {
-          override fun execute(cache: WriteableStore): Set<String>? {
-            return cache.merge(networkResponse.cacheRecords, CacheHeaders.NONE)
-          }
-        })
-      } catch (e: Exception) {
-        logger.e(e, "Failed to cache response for subscription `%s`", subscription)
-        return@Runnable
-      }
-      try {
-        apolloStore.publish(cacheKeys)
-      } catch (e: Exception) {
-        logger.e(e, "Failed to publish cache changes for subscription `%s`", subscription)
-      }
-    })
-  }
-
   private class SubscriptionManagerCallback<D : Operation.Data>(private var originalCallback: ApolloSubscriptionCall.Callback<D>?, private var delegate: RealApolloSubscriptionCall<D>?) : SubscriptionManager.Callback<D> {
     override fun onResponse(response: SubscriptionResponse<D>) {
       val callback = originalCallback
+      val data = response.response.data
       if (callback != null) {
-        delegate!!.cacheResponse(response)
+        if(data != null && delegate!!.cachePolicy != ApolloSubscriptionCall.CachePolicy.NO_CACHE) {
+          delegate!!.apolloStore.writeOperation(response.subscription, data)
+        }
         callback.onResponse(response.response)
       }
     }

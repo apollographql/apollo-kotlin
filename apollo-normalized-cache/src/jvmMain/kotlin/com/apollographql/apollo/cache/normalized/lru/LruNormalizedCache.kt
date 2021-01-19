@@ -25,11 +25,9 @@ class LruNormalizedCache internal constructor(evictionPolicy: EvictionPolicy) : 
   private val lruCache: Cache<String, Record> =
       CacheBuilder.newBuilder().apply {
         if (evictionPolicy.maxSizeBytes != null) {
-          maximumWeight(evictionPolicy.maxSizeBytes).weigher(
-              Weigher { key: String, value: Record ->
-                key.toByteArray(Charset.defaultCharset()).size + value.sizeEstimateBytes()
-              }
-          )
+          maximumWeight(evictionPolicy.maxSizeBytes).weigher { key: String, value: Record ->
+            key.toByteArray(Charset.defaultCharset()).size + value.sizeEstimateBytes()
+          }
         }
         if (evictionPolicy.maxEntries != null) {
           maximumSize(evictionPolicy.maxEntries)
@@ -44,9 +42,9 @@ class LruNormalizedCache internal constructor(evictionPolicy: EvictionPolicy) : 
 
   override fun loadRecord(key: String, cacheHeaders: CacheHeaders): Record? {
     return try {
-      lruCache.get(key, Callable {
+      lruCache.get(key) {
         nextCache?.loadRecord(key, cacheHeaders)
-      })
+      }
     } catch (ignored: Exception) { // Thrown when the nextCache's value is null
       return null
     }.also {
@@ -95,7 +93,7 @@ class LruNormalizedCache internal constructor(evictionPolicy: EvictionPolicy) : 
     return result
   }
 
-  internal fun clearCurrentCache() {
+  private fun clearCurrentCache() {
     lruCache.invalidateAll()
   }
 

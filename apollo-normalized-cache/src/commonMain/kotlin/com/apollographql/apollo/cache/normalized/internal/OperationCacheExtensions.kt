@@ -58,7 +58,6 @@ fun <D : Operation.Data> Operation<D>.readDataFromCache(
 
     adapter().fromResponse(reader)
   } catch (e: Exception) {
-    e.printStackTrace()
     null
   }
 }
@@ -94,6 +93,37 @@ fun <D : Operation.Data> Operation<D>.streamDataFromCache(
     }
 
     jsonReader.beginObject()
+    adapter().fromResponse(reader)
+  } catch (e: Exception) {
+    e.printStackTrace()
+    null
+  }
+}
+
+fun <D : Fragment.Data> Fragment<D>.readDataFromCache(
+    customScalarAdapters: CustomScalarAdapters,
+    readableStore: ReadableStore,
+    cacheKeyResolver: CacheKeyResolver,
+    cacheHeaders: CacheHeaders,
+    cacheKey: CacheKey
+): D? {
+  return try {
+    val cacheKeyBuilder = RealCacheKeyBuilder()
+    val rootRecord = readableStore.read(cacheKey.key, cacheHeaders) ?: return null
+    val fieldValueResolver = CacheValueResolver(
+        readableStore,
+        variables(),
+        cacheKeyResolver,
+        cacheHeaders,
+        cacheKeyBuilder)
+
+    val reader = MapResponseReader(
+        root = rootRecord,
+        variable = variables(),
+        valueResolver = fieldValueResolver,
+        customScalarAdapters = customScalarAdapters,
+    )
+
     adapter().fromResponse(reader)
   } catch (e: Exception) {
     e.printStackTrace()
