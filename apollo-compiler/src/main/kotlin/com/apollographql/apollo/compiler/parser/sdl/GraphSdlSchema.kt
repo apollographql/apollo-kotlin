@@ -304,8 +304,8 @@ internal fun GraphSdlSchema.TypeDefinition.possibleTypes(schema: GraphSdlSchema)
   return when (this) {
     is GraphSdlSchema.TypeDefinition.Union -> this.typeRefs.map { it.toIntrospectionType(schema) }
     is GraphSdlSchema.TypeDefinition.Interface -> schema.typeDefinitions.values.filter { typeDefinition ->
-      typeDefinition is GraphSdlSchema.TypeDefinition.Object && typeDefinition.interfaces.map { it.typeName }.contains(typeDefinition.name)
-          || typeDefinition is GraphSdlSchema.TypeDefinition.Interface && typeDefinition.interfaces.map { it.typeName }.contains(typeDefinition.name)
+      typeDefinition is GraphSdlSchema.TypeDefinition.Object && typeDefinition.interfaces.map { it.typeName }.contains(name)
+          || typeDefinition is GraphSdlSchema.TypeDefinition.Interface && typeDefinition.interfaces.map { it.typeName }.contains(name)
     }.flatMap {
       it.possibleTypes(schema)
     }
