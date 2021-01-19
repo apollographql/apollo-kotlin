@@ -1,8 +1,10 @@
 package com.apollographql.apollo.cache.normalized
 
+import com.apollographql.apollo.api.internal.json.JsonReader
 import com.apollographql.apollo.cache.ApolloCacheHeaders
 import com.apollographql.apollo.cache.CacheHeaders
 import com.apollographql.apollo.cache.normalized.internal.LruCache
+import com.apollographql.apollo.cache.normalized.internal.MapJsonReader
 import com.apollographql.apollo.cache.normalized.internal.Platform
 import okio.internal.commonAsUtf8ToByteArray
 import kotlin.reflect.KClass
@@ -86,6 +88,10 @@ class MemoryCache(
 
   internal fun clearCurrentCache() {
     lruCache.clear()
+  }
+
+  override fun stream(key: String, cacheHeaders: CacheHeaders): JsonReader? {
+    return loadRecord(key, cacheHeaders)?.let { MapJsonReader(it) }
   }
 
   private class CacheEntry(
