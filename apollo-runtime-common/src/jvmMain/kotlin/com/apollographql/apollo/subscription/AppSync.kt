@@ -4,12 +4,12 @@ import com.apollographql.apollo.api.internal.json.JsonWriter
 import com.apollographql.apollo.api.internal.json.Utils
 import okhttp3.HttpUrl
 import okio.Buffer
+import okio.ByteString
 import java.util.Base64
 
 /**
  * TODO: move to commonMain.
- * We're missing Base64, which is easy to replace with expect/actual and also
- * OkHttp HttpUrl, which seems harder to replace
+ * We're missing OkHttp HttpUrl
  */
 object AppSync {
 
@@ -62,6 +62,6 @@ object AppSync {
   private fun Map<String, Any?>.base64Encode(): String {
     val buffer = Buffer()
     Utils.writeToJson(this, JsonWriter.of(buffer))
-    return Base64.getUrlEncoder().encodeToString(buffer.readByteArray())
+    return buffer.readByteString().base64()
   }
 }
