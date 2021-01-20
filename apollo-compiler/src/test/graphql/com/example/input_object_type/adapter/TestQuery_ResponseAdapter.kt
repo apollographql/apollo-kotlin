@@ -30,80 +30,60 @@ object TestQuery_ResponseAdapter : ResponseAdapter<TestQuery.Data> {
   )
 
   override fun fromResponse(reader: ResponseReader, __typename: String?): TestQuery.Data {
-    return Data.fromResponse(reader, __typename)
+    return reader.run {
+      var createReview: TestQuery.Data.CreateReview? = null
+      while(true) {
+        when (selectField(RESPONSE_FIELDS)) {
+          0 -> createReview = readObject<TestQuery.Data.CreateReview>(RESPONSE_FIELDS[0]) { reader ->
+            CreateReview.fromResponse(reader)
+          }
+          else -> break
+        }
+      }
+      TestQuery.Data(
+        createReview = createReview
+      )
+    }
   }
 
   override fun toResponse(writer: ResponseWriter, value: TestQuery.Data) {
-    Data.toResponse(writer, value)
+    if(value.createReview == null) {
+      writer.writeObject(RESPONSE_FIELDS[0], null)
+    } else {
+      writer.writeObject(RESPONSE_FIELDS[0]) { writer ->
+        CreateReview.toResponse(writer, value.createReview)
+      }
+    }
   }
 
-  object Data : ResponseAdapter<TestQuery.Data> {
+  object CreateReview : ResponseAdapter<TestQuery.Data.CreateReview> {
     private val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
-      ResponseField.forObject("createReview", "createReview", mapOf<String, Any?>(
-        "episode" to mapOf<String, Any?>(
-          "kind" to "Variable",
-          "variableName" to "ep"),
-        "review" to mapOf<String, Any?>(
-          "kind" to "Variable",
-          "variableName" to "review")), true, null)
+      ResponseField.forInt("stars", "stars", null, false, null),
+      ResponseField.forString("commentary", "commentary", null, true, null)
     )
 
-    override fun fromResponse(reader: ResponseReader, __typename: String?): TestQuery.Data {
+    override fun fromResponse(reader: ResponseReader, __typename: String?):
+        TestQuery.Data.CreateReview {
       return reader.run {
-        var createReview: TestQuery.Data.CreateReview? = null
+        var stars: Int? = null
+        var commentary: String? = null
         while(true) {
           when (selectField(RESPONSE_FIELDS)) {
-            0 -> createReview = readObject<TestQuery.Data.CreateReview>(RESPONSE_FIELDS[0]) { reader ->
-              CreateReview.fromResponse(reader)
-            }
+            0 -> stars = readInt(RESPONSE_FIELDS[0])
+            1 -> commentary = readString(RESPONSE_FIELDS[1])
             else -> break
           }
         }
-        TestQuery.Data(
-          createReview = createReview
+        TestQuery.Data.CreateReview(
+          stars = stars!!,
+          commentary = commentary
         )
       }
     }
 
-    override fun toResponse(writer: ResponseWriter, value: TestQuery.Data) {
-      if(value.createReview == null) {
-        writer.writeObject(RESPONSE_FIELDS[0], null)
-      } else {
-        writer.writeObject(RESPONSE_FIELDS[0]) { writer ->
-          CreateReview.toResponse(writer, value.createReview)
-        }
-      }
-    }
-
-    object CreateReview : ResponseAdapter<TestQuery.Data.CreateReview> {
-      private val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
-        ResponseField.forInt("stars", "stars", null, false, null),
-        ResponseField.forString("commentary", "commentary", null, true, null)
-      )
-
-      override fun fromResponse(reader: ResponseReader, __typename: String?):
-          TestQuery.Data.CreateReview {
-        return reader.run {
-          var stars: Int? = null
-          var commentary: String? = null
-          while(true) {
-            when (selectField(RESPONSE_FIELDS)) {
-              0 -> stars = readInt(RESPONSE_FIELDS[0])
-              1 -> commentary = readString(RESPONSE_FIELDS[1])
-              else -> break
-            }
-          }
-          TestQuery.Data.CreateReview(
-            stars = stars!!,
-            commentary = commentary
-          )
-        }
-      }
-
-      override fun toResponse(writer: ResponseWriter, value: TestQuery.Data.CreateReview) {
-        writer.writeInt(RESPONSE_FIELDS[0], value.stars)
-        writer.writeString(RESPONSE_FIELDS[1], value.commentary)
-      }
+    override fun toResponse(writer: ResponseWriter, value: TestQuery.Data.CreateReview) {
+      writer.writeInt(RESPONSE_FIELDS[0], value.stars)
+      writer.writeString(RESPONSE_FIELDS[1], value.commentary)
     }
   }
 }

@@ -25,98 +25,84 @@ object HumanDetailsImpl_ResponseAdapter : ResponseAdapter<HumanDetailsImpl.Data>
   )
 
   override fun fromResponse(reader: ResponseReader, __typename: String?): HumanDetailsImpl.Data {
-    return Data.fromResponse(reader, __typename)
+    val typename = __typename ?: reader.readString(RESPONSE_FIELDS[0])
+    return when(typename) {
+      "Human" -> CharacterData.fromResponse(reader, typename)
+      else -> OtherData.fromResponse(reader, typename)
+    }
   }
 
   override fun toResponse(writer: ResponseWriter, value: HumanDetailsImpl.Data) {
-    Data.toResponse(writer, value)
+    when(value) {
+      is HumanDetailsImpl.Data.CharacterData -> CharacterData.toResponse(writer, value)
+      is HumanDetailsImpl.Data.OtherData -> OtherData.toResponse(writer, value)
+    }
   }
 
-  object Data : ResponseAdapter<HumanDetailsImpl.Data> {
+  object CharacterData : ResponseAdapter<HumanDetailsImpl.Data.CharacterData> {
     private val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
-      ResponseField.forString("__typename", "__typename", null, false, null)
+      ResponseField.forString("__typename", "__typename", null, false, null),
+      ResponseField.forString("name", "name", null, false, null),
+      ResponseField.forCustomScalar("birthDate", "birthDate", null, false, CustomScalars.Date, null)
     )
 
-    override fun fromResponse(reader: ResponseReader, __typename: String?): HumanDetailsImpl.Data {
-      val typename = __typename ?: reader.readString(RESPONSE_FIELDS[0])
-      return when(typename) {
-        "Human" -> CharacterData.fromResponse(reader, typename)
-        else -> OtherData.fromResponse(reader, typename)
-      }
-    }
-
-    override fun toResponse(writer: ResponseWriter, value: HumanDetailsImpl.Data) {
-      when(value) {
-        is HumanDetailsImpl.Data.CharacterData -> CharacterData.toResponse(writer, value)
-        is HumanDetailsImpl.Data.OtherData -> OtherData.toResponse(writer, value)
-      }
-    }
-
-    object CharacterData : ResponseAdapter<HumanDetailsImpl.Data.CharacterData> {
-      private val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
-        ResponseField.forString("__typename", "__typename", null, false, null),
-        ResponseField.forString("name", "name", null, false, null),
-        ResponseField.forCustomScalar("birthDate", "birthDate", null, false, CustomScalars.Date, null)
-      )
-
-      override fun fromResponse(reader: ResponseReader, __typename: String?):
-          HumanDetailsImpl.Data.CharacterData {
-        return reader.run {
-          var __typename: String? = __typename
-          var name: String? = null
-          var birthDate: Any? = null
-          while(true) {
-            when (selectField(RESPONSE_FIELDS)) {
-              0 -> __typename = readString(RESPONSE_FIELDS[0])
-              1 -> name = readString(RESPONSE_FIELDS[1])
-              2 -> birthDate = readCustomScalar<Any>(RESPONSE_FIELDS[2] as ResponseField.CustomScalarField)
-              else -> break
-            }
+    override fun fromResponse(reader: ResponseReader, __typename: String?):
+        HumanDetailsImpl.Data.CharacterData {
+      return reader.run {
+        var __typename: String? = __typename
+        var name: String? = null
+        var birthDate: Any? = null
+        while(true) {
+          when (selectField(RESPONSE_FIELDS)) {
+            0 -> __typename = readString(RESPONSE_FIELDS[0])
+            1 -> name = readString(RESPONSE_FIELDS[1])
+            2 -> birthDate = readCustomScalar<Any>(RESPONSE_FIELDS[2] as ResponseField.CustomScalarField)
+            else -> break
           }
-          HumanDetailsImpl.Data.CharacterData(
-            __typename = __typename!!,
-            name = name!!,
-            birthDate = birthDate!!
-          )
         }
-      }
-
-      override fun toResponse(writer: ResponseWriter, value: HumanDetailsImpl.Data.CharacterData) {
-        writer.writeString(RESPONSE_FIELDS[0], value.__typename)
-        writer.writeString(RESPONSE_FIELDS[1], value.name)
-        writer.writeCustom(RESPONSE_FIELDS[2] as ResponseField.CustomScalarField, value.birthDate)
+        HumanDetailsImpl.Data.CharacterData(
+          __typename = __typename!!,
+          name = name!!,
+          birthDate = birthDate!!
+        )
       }
     }
 
-    object OtherData : ResponseAdapter<HumanDetailsImpl.Data.OtherData> {
-      private val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
-        ResponseField.forString("__typename", "__typename", null, false, null),
-        ResponseField.forString("name", "name", null, false, null)
-      )
+    override fun toResponse(writer: ResponseWriter, value: HumanDetailsImpl.Data.CharacterData) {
+      writer.writeString(RESPONSE_FIELDS[0], value.__typename)
+      writer.writeString(RESPONSE_FIELDS[1], value.name)
+      writer.writeCustom(RESPONSE_FIELDS[2] as ResponseField.CustomScalarField, value.birthDate)
+    }
+  }
 
-      override fun fromResponse(reader: ResponseReader, __typename: String?):
-          HumanDetailsImpl.Data.OtherData {
-        return reader.run {
-          var __typename: String? = __typename
-          var name: String? = null
-          while(true) {
-            when (selectField(RESPONSE_FIELDS)) {
-              0 -> __typename = readString(RESPONSE_FIELDS[0])
-              1 -> name = readString(RESPONSE_FIELDS[1])
-              else -> break
-            }
+  object OtherData : ResponseAdapter<HumanDetailsImpl.Data.OtherData> {
+    private val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
+      ResponseField.forString("__typename", "__typename", null, false, null),
+      ResponseField.forString("name", "name", null, false, null)
+    )
+
+    override fun fromResponse(reader: ResponseReader, __typename: String?):
+        HumanDetailsImpl.Data.OtherData {
+      return reader.run {
+        var __typename: String? = __typename
+        var name: String? = null
+        while(true) {
+          when (selectField(RESPONSE_FIELDS)) {
+            0 -> __typename = readString(RESPONSE_FIELDS[0])
+            1 -> name = readString(RESPONSE_FIELDS[1])
+            else -> break
           }
-          HumanDetailsImpl.Data.OtherData(
-            __typename = __typename!!,
-            name = name!!
-          )
         }
+        HumanDetailsImpl.Data.OtherData(
+          __typename = __typename!!,
+          name = name!!
+        )
       }
+    }
 
-      override fun toResponse(writer: ResponseWriter, value: HumanDetailsImpl.Data.OtherData) {
-        writer.writeString(RESPONSE_FIELDS[0], value.__typename)
-        writer.writeString(RESPONSE_FIELDS[1], value.name)
-      }
+    override fun toResponse(writer: ResponseWriter, value: HumanDetailsImpl.Data.OtherData) {
+      writer.writeString(RESPONSE_FIELDS[0], value.__typename)
+      writer.writeString(RESPONSE_FIELDS[1], value.name)
     }
   }
 }

@@ -25,45 +25,29 @@ object DroidDetailsImpl_ResponseAdapter : ResponseAdapter<DroidDetailsImpl.Data>
   )
 
   override fun fromResponse(reader: ResponseReader, __typename: String?): DroidDetailsImpl.Data {
-    return Data.fromResponse(reader, __typename)
+    return reader.run {
+      var __typename: String? = __typename
+      var name: String? = null
+      var primaryFunction: String? = null
+      while(true) {
+        when (selectField(RESPONSE_FIELDS)) {
+          0 -> __typename = readString(RESPONSE_FIELDS[0])
+          1 -> name = readString(RESPONSE_FIELDS[1])
+          2 -> primaryFunction = readString(RESPONSE_FIELDS[2])
+          else -> break
+        }
+      }
+      DroidDetailsImpl.Data(
+        __typename = __typename!!,
+        name = name!!,
+        primaryFunction = primaryFunction
+      )
+    }
   }
 
   override fun toResponse(writer: ResponseWriter, value: DroidDetailsImpl.Data) {
-    Data.toResponse(writer, value)
-  }
-
-  object Data : ResponseAdapter<DroidDetailsImpl.Data> {
-    private val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
-      ResponseField.forString("__typename", "__typename", null, false, null),
-      ResponseField.forString("name", "name", null, false, null),
-      ResponseField.forString("primaryFunction", "primaryFunction", null, true, null)
-    )
-
-    override fun fromResponse(reader: ResponseReader, __typename: String?): DroidDetailsImpl.Data {
-      return reader.run {
-        var __typename: String? = __typename
-        var name: String? = null
-        var primaryFunction: String? = null
-        while(true) {
-          when (selectField(RESPONSE_FIELDS)) {
-            0 -> __typename = readString(RESPONSE_FIELDS[0])
-            1 -> name = readString(RESPONSE_FIELDS[1])
-            2 -> primaryFunction = readString(RESPONSE_FIELDS[2])
-            else -> break
-          }
-        }
-        DroidDetailsImpl.Data(
-          __typename = __typename!!,
-          name = name!!,
-          primaryFunction = primaryFunction
-        )
-      }
-    }
-
-    override fun toResponse(writer: ResponseWriter, value: DroidDetailsImpl.Data) {
-      writer.writeString(RESPONSE_FIELDS[0], value.__typename)
-      writer.writeString(RESPONSE_FIELDS[1], value.name)
-      writer.writeString(RESPONSE_FIELDS[2], value.primaryFunction)
-    }
+    writer.writeString(RESPONSE_FIELDS[0], value.__typename)
+    writer.writeString(RESPONSE_FIELDS[1], value.name)
+    writer.writeString(RESPONSE_FIELDS[2], value.primaryFunction)
   }
 }

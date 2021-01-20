@@ -26,71 +26,57 @@ object TestQuery_ResponseAdapter : ResponseAdapter<TestQuery.Data> {
   )
 
   override fun fromResponse(reader: ResponseReader, __typename: String?): TestQuery.Data {
-    return Data.fromResponse(reader, __typename)
+    return reader.run {
+      var hero: TestQuery.Data.Hero? = null
+      while(true) {
+        when (selectField(RESPONSE_FIELDS)) {
+          0 -> hero = readObject<TestQuery.Data.Hero>(RESPONSE_FIELDS[0]) { reader ->
+            Hero.fromResponse(reader)
+          }
+          else -> break
+        }
+      }
+      TestQuery.Data(
+        hero = hero
+      )
+    }
   }
 
   override fun toResponse(writer: ResponseWriter, value: TestQuery.Data) {
-    Data.toResponse(writer, value)
+    if(value.hero == null) {
+      writer.writeObject(RESPONSE_FIELDS[0], null)
+    } else {
+      writer.writeObject(RESPONSE_FIELDS[0]) { writer ->
+        Hero.toResponse(writer, value.hero)
+      }
+    }
   }
 
-  object Data : ResponseAdapter<TestQuery.Data> {
+  object Hero : ResponseAdapter<TestQuery.Data.Hero> {
     private val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
-      ResponseField.forObject("hero", "hero", null, true, null)
+      ResponseField.forList("links", "links", null, false, null)
     )
 
-    override fun fromResponse(reader: ResponseReader, __typename: String?): TestQuery.Data {
+    override fun fromResponse(reader: ResponseReader, __typename: String?): TestQuery.Data.Hero {
       return reader.run {
-        var hero: TestQuery.Data.Hero? = null
+        var links: List<Any>? = null
         while(true) {
           when (selectField(RESPONSE_FIELDS)) {
-            0 -> hero = readObject<TestQuery.Data.Hero>(RESPONSE_FIELDS[0]) { reader ->
-              Hero.fromResponse(reader)
-            }
+            0 -> links = readList<Any>(RESPONSE_FIELDS[0]) { reader ->
+              reader.readCustomScalar<Any>(CustomScalars.URL)
+            }?.map { it!! }
             else -> break
           }
         }
-        TestQuery.Data(
-          hero = hero
+        TestQuery.Data.Hero(
+          links = links!!
         )
       }
     }
 
-    override fun toResponse(writer: ResponseWriter, value: TestQuery.Data) {
-      if(value.hero == null) {
-        writer.writeObject(RESPONSE_FIELDS[0], null)
-      } else {
-        writer.writeObject(RESPONSE_FIELDS[0]) { writer ->
-          Hero.toResponse(writer, value.hero)
-        }
-      }
-    }
-
-    object Hero : ResponseAdapter<TestQuery.Data.Hero> {
-      private val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
-        ResponseField.forList("links", "links", null, false, null)
-      )
-
-      override fun fromResponse(reader: ResponseReader, __typename: String?): TestQuery.Data.Hero {
-        return reader.run {
-          var links: List<Any>? = null
-          while(true) {
-            when (selectField(RESPONSE_FIELDS)) {
-              0 -> links = readList<Any>(RESPONSE_FIELDS[0]) { reader ->
-                reader.readCustomScalar<Any>(CustomScalars.URL)
-              }?.map { it!! }
-              else -> break
-            }
-          }
-          TestQuery.Data.Hero(
-            links = links!!
-          )
-        }
-      }
-
-      override fun toResponse(writer: ResponseWriter, value: TestQuery.Data.Hero) {
-        writer.writeList(RESPONSE_FIELDS[0], value.links) { value, listItemWriter ->
-          listItemWriter.writeCustom(CustomScalars.URL, value)}
-      }
+    override fun toResponse(writer: ResponseWriter, value: TestQuery.Data.Hero) {
+      writer.writeList(RESPONSE_FIELDS[0], value.links) { value, listItemWriter ->
+        listItemWriter.writeCustom(CustomScalars.URL, value)}
     }
   }
 }

@@ -24,40 +24,25 @@ object HumanDetailsImpl_ResponseAdapter : ResponseAdapter<HumanDetailsImpl.Data>
   )
 
   override fun fromResponse(reader: ResponseReader, __typename: String?): HumanDetailsImpl.Data {
-    return Data.fromResponse(reader, __typename)
+    return reader.run {
+      var __typename: String? = __typename
+      var homePlanet: String? = null
+      while(true) {
+        when (selectField(RESPONSE_FIELDS)) {
+          0 -> __typename = readString(RESPONSE_FIELDS[0])
+          1 -> homePlanet = readString(RESPONSE_FIELDS[1])
+          else -> break
+        }
+      }
+      HumanDetailsImpl.Data(
+        __typename = __typename!!,
+        homePlanet = homePlanet
+      )
+    }
   }
 
   override fun toResponse(writer: ResponseWriter, value: HumanDetailsImpl.Data) {
-    Data.toResponse(writer, value)
-  }
-
-  object Data : ResponseAdapter<HumanDetailsImpl.Data> {
-    private val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
-      ResponseField.forString("__typename", "__typename", null, false, null),
-      ResponseField.forString("homePlanet", "homePlanet", null, true, null)
-    )
-
-    override fun fromResponse(reader: ResponseReader, __typename: String?): HumanDetailsImpl.Data {
-      return reader.run {
-        var __typename: String? = __typename
-        var homePlanet: String? = null
-        while(true) {
-          when (selectField(RESPONSE_FIELDS)) {
-            0 -> __typename = readString(RESPONSE_FIELDS[0])
-            1 -> homePlanet = readString(RESPONSE_FIELDS[1])
-            else -> break
-          }
-        }
-        HumanDetailsImpl.Data(
-          __typename = __typename!!,
-          homePlanet = homePlanet
-        )
-      }
-    }
-
-    override fun toResponse(writer: ResponseWriter, value: HumanDetailsImpl.Data) {
-      writer.writeString(RESPONSE_FIELDS[0], value.__typename)
-      writer.writeString(RESPONSE_FIELDS[1], value.homePlanet)
-    }
+    writer.writeString(RESPONSE_FIELDS[0], value.__typename)
+    writer.writeString(RESPONSE_FIELDS[1], value.homePlanet)
   }
 }
