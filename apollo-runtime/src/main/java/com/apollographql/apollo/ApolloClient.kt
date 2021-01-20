@@ -20,6 +20,7 @@ import com.apollographql.apollo.cache.normalized.CacheKeyResolver
 import com.apollographql.apollo.cache.normalized.NormalizedCache
 import com.apollographql.apollo.cache.normalized.NormalizedCacheFactory
 import com.apollographql.apollo.cache.normalized.RecordFieldJsonAdapter
+import com.apollographql.apollo.cache.normalized.internal.NoOpApolloStore
 import com.apollographql.apollo.fetcher.ApolloResponseFetchers
 import com.apollographql.apollo.fetcher.ResponseFetcher
 import com.apollographql.apollo.interceptor.ApolloInterceptor
@@ -258,7 +259,7 @@ class ApolloClient internal constructor(
     var callFactory: Call.Factory? = null
     var serverUrl: HttpUrl? = null
     var httpCache: HttpCache? = null
-    var apolloStore = ApolloStore.NO_APOLLO_STORE
+    var apolloStore:ApolloStore = NoOpApolloStore()
     var cacheFactory = absent<NormalizedCacheFactory<*>>()
     var cacheKeyResolver = absent<CacheKeyResolver>()
     var defaultHttpCachePolicy = HttpCachePolicy.NETWORK_ONLY

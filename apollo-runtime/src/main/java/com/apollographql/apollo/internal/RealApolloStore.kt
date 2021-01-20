@@ -221,6 +221,7 @@ class RealApolloStore(normalizedCache: NormalizedCache,
     val records = operation.normalize(operationData, customScalarAdapters, cacheKeyResolver).map {
       it.toBuilder().mutationId(mutationId).build()
     }
+
     /**
      * TODO: should we forward the cache headers to the optimistic store?
      */
