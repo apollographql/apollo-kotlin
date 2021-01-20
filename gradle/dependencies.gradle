@@ -12,6 +12,7 @@ def versions = [
     jetbrainsAnnotations  : '13.0',
     junit                 : '4.13.1',
     kotlin                : '1.4.20',
+    kotlinAtomic          : '0.15.1',
     kotlinCoroutines      : '1.4.2',
     kotlinPoet            : '1.6.0',
     moshi                 : '1.11.0',
@@ -57,6 +58,8 @@ ext.dep = [
     jetbrainsAnnotations  : "org.jetbrains:annotations:$versions.jetbrainsAnnotations",
     junit                 : "junit:junit:$versions.junit",
     kotlin                : [
+        atomic             : "org.jetbrains.kotlinx:atomicfu:$versions.kotlinAtomic",
+        atomicGradle       : "org.jetbrains.kotlinx:atomicfu-gradle-plugin:$versions.kotlinAtomic",
         plugin             : "org.jetbrains.kotlin:kotlin-gradle-plugin:$versions.kotlin",
         coroutines         : "org.jetbrains.kotlinx:kotlinx-coroutines-core:$versions.kotlinCoroutines",
         coroutinesAndroid  : "org.jetbrains.kotlinx:kotlinx-coroutines-android:$versions.kotlinCoroutines",

@@ -3,7 +3,7 @@ package com.apollographql.apollo.integration
 import HeroNameQuery
 import com.apollographql.apollo.ApolloClient
 import com.apollographql.apollo.cache.normalized.NormalizedCache
-import com.apollographql.apollo.cache.normalized.simple.MapNormalizedCache
+import com.apollographql.apollo.cache.normalized.MemoryCache
 import com.apollographql.apollo.ApolloQueryRequest
 import com.apollographql.apollo.interceptor.cache.FetchPolicy
 import com.apollographql.apollo.interceptor.cache.fromCache
@@ -30,7 +30,7 @@ class CacheInterceptorTest {
 
   @BeforeTest
   fun setUp() {
-    cache = MapNormalizedCache()
+    cache = MemoryCache(maxSizeBytes = Int.MAX_VALUE)
     networkTransport = MockNetworkTransport()
     apolloClient = ApolloClient.Builder()
         .networkTransport(networkTransport)
