@@ -62,44 +62,6 @@ fun <D : Operation.Data> Operation<D>.readDataFromCache(
   }
 }
 
-fun <D : Operation.Data> Operation<D>.streamDataFromCache(
-    customScalarAdapters: CustomScalarAdapters,
-    readableStore: ReadableStore,
-    cacheKeyResolver: CacheKeyResolver,
-    cacheHeaders: CacheHeaders,
-): D? {
-  return try {
-    val cacheKeyBuilder = RealCacheKeyBuilder()
-    val jsonReader = CacheJsonReader(
-        rootKey = CacheKeyResolver.rootKey().key,
-        readableCache = readableStore,
-        cacheHeaders = cacheHeaders,
-    )
-    val reader = StreamResponseReader(
-        jsonReader = jsonReader,
-        variables = variables(),
-        customScalarAdapters = customScalarAdapters,
-    ) { field ->
-      var cacheKey = CacheKey.NO_KEY
-      if (field.type == ResponseField.Type.OBJECT) {
-        // this could be a CacheReference,
-        cacheKey = cacheKeyResolver.fromFieldArguments(field, variables())
-      }
-      if (cacheKey != CacheKey.NO_KEY) {
-        cacheKey.key
-      } else {
-        cacheKeyBuilder.build(field, variables())
-      }
-    }
-
-    jsonReader.beginObject()
-    adapter().fromResponse(reader)
-  } catch (e: Exception) {
-    e.printStackTrace()
-    null
-  }
-}
-
 fun <D : Fragment.Data> Fragment<D>.readDataFromCache(
     customScalarAdapters: CustomScalarAdapters,
     readableStore: ReadableStore,

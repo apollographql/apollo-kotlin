@@ -20,15 +20,6 @@ class OptimisticCache : NormalizedCache() {
     }
   }
 
-  override fun stream(key: String, cacheHeaders: CacheHeaders): JsonReader? {
-    return try {
-      // XXX: fix optimistic updates
-      nextCache?.stream(key, cacheHeaders)
-    } catch (ignore: Exception) {
-      null
-    }
-  }
-
   override fun loadRecords(keys: Collection<String>, cacheHeaders: CacheHeaders): Collection<Record> {
     val nonOptimisticRecords = nextCache?.loadRecords(keys, cacheHeaders)?.associateBy { it.key } ?: emptyMap()
     return keys.mapNotNull { key ->

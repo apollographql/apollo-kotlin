@@ -30,19 +30,6 @@ class SqlNormalizedCache internal constructor(
     return nextCache?.loadRecord(key, cacheHeaders)
   }
 
-  override fun stream(key: String, cacheHeaders: CacheHeaders): JsonReader? {
-    return try {
-      cacheQueries.recordForKey(key)
-          .executeAsList()
-          .firstOrNull()
-          ?.let {
-            BufferedSourceJsonReader(Buffer().writeUtf8(it.record))
-          }
-    } catch (e: IOException) {
-      null
-    }
-  }
-
   override fun loadRecords(keys: Collection<String>, cacheHeaders: CacheHeaders): Collection<Record> {
     val records = selectRecordsForKey(keys)
     if (cacheHeaders.hasHeader(EVICT_AFTER_READ)) {

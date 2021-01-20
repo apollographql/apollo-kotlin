@@ -111,10 +111,6 @@ class RealApolloStore(normalizedCache: NormalizedCache,
     return optimisticCache.loadRecord(key, cacheHeaders)
   }
 
-  override fun stream(key: String, cacheHeaders: CacheHeaders): JsonReader? {
-    return optimisticCache.stream(key, cacheHeaders)
-  }
-
   override fun read(keys: Collection<String>, cacheHeaders: CacheHeaders): Collection<Record> {
     return optimisticCache.loadRecords(keys, cacheHeaders)
   }

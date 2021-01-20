@@ -53,24 +53,6 @@ class LruNormalizedCache internal constructor(evictionPolicy: EvictionPolicy) : 
     }
   }
 
-  override fun stream(key: String, cacheHeaders: CacheHeaders): JsonReader? {
-    return try {
-      val record = lruCache.getIfPresent(key)
-      if (record != null) {
-        return MapJsonReader(record)
-      } else {
-        nextCache?.stream(key, cacheHeaders)
-      }
-    } catch (ignored: Exception) { // Thrown when the nextCache's value is null
-      return null
-    }.also {
-      if (cacheHeaders.hasHeader(ApolloCacheHeaders.EVICT_AFTER_READ)) {
-        lruCache.invalidate(key)
-      }
-    }
-  }
-
-
   override fun clearAll() {
     nextCache?.clearAll()
     clearCurrentCache()

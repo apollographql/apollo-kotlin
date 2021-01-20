@@ -82,21 +82,12 @@ class Benchmark {
       override fun read(keys: Collection<String>, cacheHeaders: CacheHeaders): Collection<Record> {
         return cache.loadRecords(keys, cacheHeaders)
       }
-
-      override fun stream(key: String, cacheHeaders: CacheHeaders): JsonReader? {
-        return cache.stream(key, cacheHeaders)
-      }
     }
   }
 
   @Test
   fun apolloReadCache() = benchmarkRule.measureRepeated {
     val data2 = operation.readDataFromCache(CustomScalarAdapters.DEFAULT, readableStore, CacheKeyResolver.DEFAULT, CacheHeaders.NONE)
-    //println(data2)
-  }
-  @Test
-  fun apolloStreamCache() = benchmarkRule.measureRepeated {
-    val data2 = operation.streamDataFromCache(CustomScalarAdapters.DEFAULT, readableStore, CacheKeyResolver.DEFAULT, CacheHeaders.NONE)
     //println(data2)
   }
 }

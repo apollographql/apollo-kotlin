@@ -33,8 +33,6 @@ abstract class NormalizedCache {
    */
   abstract fun loadRecord(key: String, cacheHeaders: CacheHeaders): Record?
 
-  abstract fun stream(key: String, cacheHeaders: CacheHeaders): JsonReader?
-
   /**
    * Calls through to [NormalizedCache.loadRecord]. Implementations should override this
    * method if the underlying storage technology can offer an optimized manner to read multiple records.

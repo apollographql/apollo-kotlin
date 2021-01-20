@@ -37,10 +37,6 @@ class CacheHeadersTest {
         return null
       }
 
-      override fun stream(key: String, cacheHeaders: CacheHeaders): JsonReader? {
-        return null
-      }
-
       override fun merge(record: Record, cacheHeaders: CacheHeaders): Set<String> {
         hasHeader.set(cacheHeaders.hasHeader(ApolloCacheHeaders.DO_NOT_STORE))
         return emptySet<String>()
@@ -81,10 +77,6 @@ class CacheHeadersTest {
     val normalizedCache: NormalizedCache = object : NormalizedCache() {
       override fun loadRecord(key: String, cacheHeaders: CacheHeaders): Record? {
         hasHeader.set(cacheHeaders.hasHeader(ApolloCacheHeaders.DO_NOT_STORE))
-        return null
-      }
-
-      override fun stream(key: String, cacheHeaders: CacheHeaders): JsonReader? {
         return null
       }
 

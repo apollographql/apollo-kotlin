@@ -1,7 +1,6 @@
 package com.apollographql.apollo
 
 import com.apollographql.apollo.api.CustomScalarAdapters
-import com.apollographql.apollo.api.internal.json.JsonReader
 import com.apollographql.apollo.api.parse
 import com.apollographql.apollo.cache.CacheHeaders
 import com.apollographql.apollo.cache.normalized.CacheKeyResolver
@@ -10,12 +9,10 @@ import com.apollographql.apollo.cache.normalized.RecordFieldJsonAdapter
 import com.apollographql.apollo.cache.normalized.internal.ReadableStore
 import com.apollographql.apollo.cache.normalized.internal.normalize
 import com.apollographql.apollo.cache.normalized.internal.readDataFromCache
-import com.apollographql.apollo.cache.normalized.internal.streamDataFromCache
 import com.apollographql.apollo.cache.normalized.sql.SqlNormalizedCacheFactory
 import com.apollographql.apollo.integration.benchmark.GetResponseQuery
 import okio.Buffer
 import org.junit.Test
-import kotlin.test.assertEquals
 
 
 /**
@@ -47,14 +44,7 @@ class BenchmarkTest {
       override fun read(keys: Collection<String>, cacheHeaders: CacheHeaders): Collection<Record> {
         return cache.loadRecords(keys, cacheHeaders)
       }
-
-      override fun stream(key: String, cacheHeaders: CacheHeaders): JsonReader? {
-        return cache.stream(key, cacheHeaders)
-      }
     }
     val data2 = operation.readDataFromCache(CustomScalarAdapters.DEFAULT, readableStore, CacheKeyResolver.DEFAULT, CacheHeaders.NONE)
-    val data3 = operation.streamDataFromCache(CustomScalarAdapters.DEFAULT, readableStore, CacheKeyResolver.DEFAULT, CacheHeaders.NONE)
-
-    assertEquals(data2, data3)
   }
 }
