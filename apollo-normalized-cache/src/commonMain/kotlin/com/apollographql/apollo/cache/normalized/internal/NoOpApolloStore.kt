@@ -9,12 +9,12 @@ import com.apollographql.apollo.cache.normalized.CacheKey
 import com.apollographql.apollo.cache.normalized.CacheKeyResolver
 import com.apollographql.apollo.cache.normalized.NormalizedCache
 import com.apollographql.apollo.cache.normalized.Record
-import java.util.UUID
+import com.benasher44.uuid.Uuid
 
 /**
  * An alternative to RealApolloStore for when a no-operation cache is needed.
  */
-class NoOpApolloStore : ApolloStore, ReadableStore, WriteableStore {
+internal class NoOpApolloStore : ApolloStore, ReadableStore, WriteableStore {
   override fun merge(recordCollection: Collection<Record>, cacheHeaders: CacheHeaders): Set<String> {
     return emptySet()
   }
@@ -98,20 +98,25 @@ class NoOpApolloStore : ApolloStore, ReadableStore, WriteableStore {
   override fun <D : Operation.Data> writeOptimisticUpdates(
       operation: Operation<D>,
       operationData: D,
-      mutationId: UUID,
+      mutationId: Uuid,
       publish: Boolean
   ): Set<String> {
     return emptySet()
   }
 
   override fun rollbackOptimisticUpdates(
-      mutationId: UUID,
+      mutationId: Uuid,
       publish: Boolean
   ): Set<String> {
     return emptySet()
   }
 
-  override fun <D : Operation.Data> writeOperationWithRecords(operation: Operation<D>, operationData: D, cacheHeaders: CacheHeaders, publish: Boolean): Pair<Set<Record>, Set<String>> {
+  override fun <D : Operation.Data> writeOperationWithRecords(
+      operation: Operation<D>,
+      operationData: D,
+      cacheHeaders: CacheHeaders,
+      publish: Boolean
+  ): Pair<Set<Record>, Set<String>> {
     return emptySet<Record>() to emptySet()
   }
 }

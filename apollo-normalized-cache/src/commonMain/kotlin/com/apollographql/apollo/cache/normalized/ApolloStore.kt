@@ -2,14 +2,10 @@ package com.apollographql.apollo.cache.normalized
 
 import com.apollographql.apollo.api.Fragment
 import com.apollographql.apollo.api.Operation
-import com.apollographql.apollo.api.Response
 import com.apollographql.apollo.cache.CacheHeaders
 import com.apollographql.apollo.cache.normalized.ApolloStore.RecordChangeSubscriber
 import com.apollographql.apollo.cache.normalized.internal.NoOpApolloStore
-import com.apollographql.apollo.cache.normalized.internal.ReadableStore
-import com.apollographql.apollo.cache.normalized.internal.Transaction
-import com.apollographql.apollo.cache.normalized.internal.WriteableStore
-import java.util.UUID
+import com.benasher44.uuid.Uuid
 
 /**
  * ApolloStore exposes a thread-safe api to access a [com.apollographql.apollo.cache.normalized.NormalizedCache].
@@ -94,7 +90,7 @@ interface ApolloStore {
    * @param <F>         type of fragment to be read
    * @return the fragment's data or null if it's a cache miss
    */
-  fun <D: Fragment.Data> readFragment(
+  fun <D : Fragment.Data> readFragment(
       fragment: Fragment<D>,
       cacheKey: CacheKey,
       cacheHeaders: CacheHeaders = CacheHeaders.NONE,
@@ -129,7 +125,7 @@ interface ApolloStore {
    * @param publish whether or not to publish the changed keys to listeners
    * @return the changed keys
    */
-  fun <D: Fragment.Data> writeFragment(
+  fun <D : Fragment.Data> writeFragment(
       fragment: Fragment<D>,
       cacheKey: CacheKey,
       fragmentData: D,
@@ -148,7 +144,7 @@ interface ApolloStore {
   fun <D : Operation.Data> writeOptimisticUpdates(
       operation: Operation<D>,
       operationData: D,
-      mutationId: UUID,
+      mutationId: Uuid,
       publish: Boolean = true
   ): Set<String>
 
@@ -159,17 +155,21 @@ interface ApolloStore {
    * @return the changed keys
    */
   fun rollbackOptimisticUpdates(
-      mutationId: UUID,
+      mutationId: Uuid,
       publish: Boolean = true
   ): Set<String>
 
   /**
    * Used internally to get the records. Do not use from outside the apollo libs
    */
-  fun <D : Operation.Data> writeOperationWithRecords(operation: Operation<D>, operationData: D, cacheHeaders: CacheHeaders, publish: Boolean): Pair<Set<Record>, Set<String>>
+  fun <D : Operation.Data> writeOperationWithRecords(
+      operation: Operation<D>,
+      operationData: D,
+      cacheHeaders: CacheHeaders,
+      publish: Boolean
+  ): Pair<Set<Record>, Set<String>>
 
   companion object {
-    @JvmField
-    val NO_APOLLO_STORE: ApolloStore = NoOpApolloStore()
+    val emptyApolloStore: ApolloStore = NoOpApolloStore()
   }
 }

@@ -258,7 +258,7 @@ class ApolloClient internal constructor(
     var callFactory: Call.Factory? = null
     var serverUrl: HttpUrl? = null
     var httpCache: HttpCache? = null
-    var apolloStore = ApolloStore.NO_APOLLO_STORE
+    var apolloStore: ApolloStore = ApolloStore.emptyApolloStore
     var cacheFactory = absent<NormalizedCacheFactory<*>>()
     var cacheKeyResolver = absent<CacheKeyResolver>()
     var defaultHttpCachePolicy = HttpCachePolicy.NETWORK_ONLY

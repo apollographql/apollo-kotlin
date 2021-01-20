@@ -6,6 +6,7 @@ import java.util.concurrent.TimeUnit
  * Controls how long a [com.apollographql.apollo.cache.normalized.Record] will
  * stay in a [LruNormalizedCache].
  */
+@Deprecated("Will be removed soon")
 class EvictionPolicy internal constructor(
     val maxSizeBytes: Long? = null,
     val maxEntries: Long? = null,
