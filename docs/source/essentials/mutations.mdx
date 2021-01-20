@@ -98,11 +98,11 @@ apolloClient
     .mutate(upvotePostMutation)
     .enqueue(object: ApolloCall.Callback<UpvotePost.Data>() {
             override fun onFailure(e: ApolloException) {
-                Log.i(TAG, response.data.upvotePost.fragments.postDetails);
+                Log.e(TAG, e.getMessage(), e);
             }
 
             override fun onResponse(response: Response<UpvotePost.Data>) {
-                Log.e(TAG, e.getMessage(), e);
+                Log.i(TAG, response.data.upvotePost.fragments.postDetails);              
             }
         }
     )

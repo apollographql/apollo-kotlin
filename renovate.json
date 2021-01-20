@@ -1,4 +1,5 @@
 {
+  "dependencyDashboard": true,
   "packageFiles": ["docs/package.json"],
   "extends": [
     "apollo-docs"

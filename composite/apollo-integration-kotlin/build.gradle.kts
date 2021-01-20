@@ -52,7 +52,7 @@ kotlin {
 
 apollo {
   service("default")  {
-    schemaFile.set(file("../../apollo-integration/src/main/graphql/com/apollographql/apollo/integration/normalizer/schema.json"))
+    schemaFile.set(file("../../apollo-integration/src/main/graphql/com/apollographql/apollo/integration/normalizer/schema.sdl"))
     addGraphqlDirectory(file("../../apollo-integration/src/main/graphql/com/apollographql/apollo/integration/normalizer/"))
     withOutputDir {
       val kotlinMultiplatformExtension = project.kotlinMultiplatformExtension!!
