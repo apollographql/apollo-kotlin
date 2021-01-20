@@ -4,6 +4,7 @@ import com.apollographql.apollo.api.Fragment
 import com.apollographql.apollo.api.Operation
 import com.apollographql.apollo.cache.CacheHeaders
 import com.apollographql.apollo.cache.normalized.ApolloStore.RecordChangeSubscriber
+import com.apollographql.apollo.cache.normalized.internal.NoOpApolloStore
 import com.benasher44.uuid.Uuid
 
 /**
@@ -167,4 +168,8 @@ interface ApolloStore {
       cacheHeaders: CacheHeaders,
       publish: Boolean
   ): Pair<Set<Record>, Set<String>>
+
+  companion object {
+    val emptyApolloStore: ApolloStore = NoOpApolloStore()
+  }
 }

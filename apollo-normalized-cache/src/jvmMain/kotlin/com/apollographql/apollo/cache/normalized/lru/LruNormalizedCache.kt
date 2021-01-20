@@ -9,9 +9,7 @@ import com.apollographql.apollo.cache.normalized.Record
 import com.apollographql.apollo.cache.normalized.internal.MapJsonReader
 import com.nytimes.android.external.cache.Cache
 import com.nytimes.android.external.cache.CacheBuilder
-import com.nytimes.android.external.cache.Weigher
 import java.nio.charset.Charset
-import java.util.concurrent.Callable
 import kotlin.reflect.KClass
 
 /**
@@ -20,6 +18,7 @@ import kotlin.reflect.KClass
  *
  * A common configuration is to have secondary SQL cache.
  */
+@Deprecated("Will be removed soon", replaceWith = ReplaceWith("MemoryCache", "com.apollographql.apollo.cache.normalized.MemoryCache"))
 class LruNormalizedCache internal constructor(evictionPolicy: EvictionPolicy) : NormalizedCache() {
 
   private val lruCache: Cache<String, Record> =
