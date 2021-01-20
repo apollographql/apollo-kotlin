@@ -8,6 +8,7 @@ import com.apollographql.apollo.ApolloSerializationException
 import com.apollographql.apollo.api.ApolloExperimental
 import com.apollographql.apollo.api.ExecutionContext
 import com.apollographql.apollo.api.Operation
+import com.apollographql.apollo.api.internal.network.ContentType
 import com.apollographql.apollo.interceptor.ApolloRequest
 import com.apollographql.apollo.interceptor.ApolloResponse
 import com.apollographql.apollo.network.HttpExecutionContext
@@ -171,7 +172,7 @@ actual class ApolloHttpNetworkTransport(
       val postBody = operation.composeRequestBody(scalarTypeAdapters).toByteArray().toNSData()
       setHTTPMethod("POST")
       headers
-          .plus("Content-Type" to "application/json; charset=utf-8")
+          .plus("Content-Type" to ContentType.APPLICATION_JSON)
           .plus(httpExecutionContext?.headers ?: emptyMap())
           .forEach { (key, value) -> setValue(value, forHTTPHeaderField = key) }
       setCachePolicy(NSURLRequestReloadIgnoringCacheData)

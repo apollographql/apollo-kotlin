@@ -8,6 +8,7 @@ import com.apollographql.apollo.ApolloSerializationException
 import com.apollographql.apollo.api.ApolloExperimental
 import com.apollographql.apollo.api.ExecutionContext
 import com.apollographql.apollo.api.Operation
+import com.apollographql.apollo.api.internal.network.ContentType
 import com.apollographql.apollo.interceptor.ApolloRequest
 import com.apollographql.apollo.interceptor.ApolloResponse
 import com.apollographql.apollo.network.HttpExecutionContext
@@ -30,12 +31,9 @@ import okhttp3.RequestBody.Companion.toRequestBody
 import okhttp3.Response
 import okhttp3.internal.closeQuietly
 import java.io.IOException
-import java.time.Duration
 import java.util.concurrent.TimeUnit
 import kotlin.coroutines.resume
 import kotlin.coroutines.resumeWithException
-
-private const val MEDIA_TYPE = "application/json; charset=utf-8"
 
 @ApolloExperimental
 @ExperimentalCoroutinesApi
@@ -173,7 +171,7 @@ actual class ApolloHttpNetworkTransport(
   }
 
   private fun <D : Operation.Data> ApolloRequest<D>.toHttpPostRequest(httpExecutionContext: HttpExecutionContext.Request?): Request {
-    val requestBody = operation.composeRequestBody(scalarTypeAdapters).toRequestBody(contentType = MEDIA_TYPE.toMediaType())
+    val requestBody = operation.composeRequestBody(scalarTypeAdapters).toRequestBody(contentType = ContentType.APPLICATION_JSON.toMediaType())
     return Request.Builder()
         .url(serverUrl)
         .headers(headers)
