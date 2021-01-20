@@ -11,8 +11,8 @@ import com.apollographql.apollo.cache.normalized.ApolloStore.RecordChangeSubscri
 import com.apollographql.apollo.cache.normalized.CacheKey
 import com.apollographql.apollo.cache.normalized.CacheKeyResolver
 import com.apollographql.apollo.cache.normalized.NormalizedCache
-import com.apollographql.apollo.cache.normalized.OptimisticNormalizedCache
 import com.apollographql.apollo.cache.normalized.Record
+import com.apollographql.apollo.cache.normalized.internal.OptimisticCache
 import com.apollographql.apollo.cache.normalized.internal.ReadableStore
 import com.apollographql.apollo.cache.normalized.internal.WriteableStore
 import com.apollographql.apollo.cache.normalized.internal.normalize
@@ -27,7 +27,7 @@ class RealApolloStore(normalizedCache: NormalizedCache,
                       private val cacheKeyResolver: CacheKeyResolver,
                       val customScalarAdapters: CustomScalarAdapters,
                       val logger: ApolloLogger) : ApolloStore, ReadableStore, WriteableStore {
-  private val optimisticCache = OptimisticNormalizedCache().chain(normalizedCache) as OptimisticNormalizedCache
+  private val optimisticCache = OptimisticCache().chain(normalizedCache) as OptimisticCache
   private val lock = ReentrantReadWriteLock()
   private val subscribers: MutableSet<RecordChangeSubscriber> = Collections.newSetFromMap(WeakHashMap())
 

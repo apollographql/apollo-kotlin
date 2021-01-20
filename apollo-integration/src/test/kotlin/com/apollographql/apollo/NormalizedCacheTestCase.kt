@@ -663,7 +663,7 @@ class NormalizedCacheTestCase {
             .responseFetcher(ApolloResponseFetchers.NETWORK_ONLY), Predicate<Response<HeroAndFriendsNamesWithIDsQuery.Data>> { response -> !response.hasErrors() }
     )
     val dump = apolloClient.apolloStore.normalizedCache().dump()
-    Truth.assertThat(prettifyDump(dump)).isEqualTo("""OptimisticNormalizedCache {}
+    Truth.assertThat(prettifyDump(dump)).isEqualTo("""OptimisticCache {}
 LruNormalizedCache {
   "1002" : {
     "id" : 1002
@@ -766,7 +766,7 @@ LruNormalizedCache {
           true
         }
     )
-    Truth.assertThat(prettifyDump(apolloClient.apolloStore.normalizedCache().dump())).isEqualTo("""OptimisticNormalizedCache {}
+    Truth.assertThat(prettifyDump(apolloClient.apolloStore.normalizedCache().dump())).isEqualTo("""OptimisticCache {}
 LruNormalizedCache {
   "QUERY_ROOT" : {
     "hero({"episode":"NEWHOPE"})" : CacheRecordRef(2001)

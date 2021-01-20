@@ -1,15 +1,15 @@
-package com.apollographql.apollo.cache.normalized
+package com.apollographql.apollo.cache.normalized.internal
 
 import com.apollographql.apollo.api.internal.json.JsonReader
 import com.apollographql.apollo.cache.CacheHeaders
-import com.nytimes.android.external.cache.CacheBuilder
-import java.util.UUID
-import kotlin.math.max
+import com.apollographql.apollo.cache.normalized.CacheKey
+import com.apollographql.apollo.cache.normalized.NormalizedCache
+import com.apollographql.apollo.cache.normalized.Record
+import com.benasher44.uuid.Uuid
 import kotlin.reflect.KClass
 
-class OptimisticNormalizedCache : NormalizedCache() {
-
-  private val lruCache = CacheBuilder.newBuilder().build<String, RecordJournal>()
+class OptimisticCache : NormalizedCache() {
+  private val lruCache = LruCache<String, RecordJournal>(maxSize = Int.MAX_VALUE)
 
   override fun loadRecord(key: String, cacheHeaders: CacheHeaders): Record? {
     return try {
@@ -37,16 +37,16 @@ class OptimisticNormalizedCache : NormalizedCache() {
   }
 
   override fun clearAll() {
-    lruCache.invalidateAll()
+    lruCache.clear()
     nextCache?.clearAll()
   }
 
   override fun remove(cacheKey: CacheKey, cascade: Boolean): Boolean {
     var result: Boolean = nextCache?.remove(cacheKey, cascade) ?: false
 
-    val recordJournal = lruCache.getIfPresent(cacheKey.key)
+    val recordJournal = lruCache[cacheKey.key]
     if (recordJournal != null) {
-      lruCache.invalidate(cacheKey.key)
+      lruCache.remove(cacheKey.key)
       result = true
       if (cascade) {
         for (cacheReference in recordJournal.snapshot.referencedFields()) {
@@ -64,25 +64,25 @@ class OptimisticNormalizedCache : NormalizedCache() {
   }
 
   fun mergeOptimisticUpdate(record: Record): Set<String> {
-    val journal = lruCache.getIfPresent(record.key)
+    val journal = lruCache[record.key]
     return if (journal == null) {
-      lruCache.put(record.key, RecordJournal(record))
+      lruCache[record.key] = RecordJournal(record)
       setOf(record.key)
     } else {
       journal.commit(record)
     }
   }
 
-  fun removeOptimisticUpdates(mutationId: UUID): Set<String> {
+  fun removeOptimisticUpdates(mutationId: Uuid): Set<String> {
     val changedCacheKeys = mutableSetOf<String>()
     val removedKeys = mutableSetOf<String>()
-    lruCache.asMap().forEach { (cacheKey, journal) ->
+    lruCache.dump().forEach { (cacheKey, journal) ->
       changedCacheKeys.addAll(journal.revert(mutationId))
       if (journal.history.isEmpty()) {
         removedKeys.add(cacheKey)
       }
     }
-    lruCache.invalidateAll(removedKeys)
+    lruCache.remove(removedKeys)
     return changedCacheKeys
   }
 
@@ -92,15 +92,12 @@ class OptimisticNormalizedCache : NormalizedCache() {
 
   @OptIn(ExperimentalStdlibApi::class)
   override fun dump() = buildMap<KClass<*>, Map<String, Record>> {
-    put(
-        this@OptimisticNormalizedCache::class,
-        lruCache.asMap().mapValues { it.value.snapshot }
-    )
+    put(this@OptimisticCache::class, lruCache.dump().mapValues { (_, journal) -> journal.snapshot })
     putAll(nextCache?.dump().orEmpty())
   }
 
   private fun Record?.mergeJournalRecord(key: String): Record? {
-    val journal = lruCache.getIfPresent(key)
+    val journal = lruCache[key]
     return if (journal != null) {
       this?.toBuilder()?.build()?.apply {
         mergeWith(journal.snapshot)
@@ -127,7 +124,7 @@ class OptimisticNormalizedCache : NormalizedCache() {
      * superposition of all record versions in the history.
      */
     @OptIn(ExperimentalStdlibApi::class)
-    fun revert(mutationId: UUID): Set<String> {
+    fun revert(mutationId: Uuid): Set<String> {
       val recordIndex = history.indexOfFirst { mutationId == it.mutationId }
       if (recordIndex == -1) {
         return emptySet()
@@ -135,9 +132,9 @@ class OptimisticNormalizedCache : NormalizedCache() {
       return buildSet {
         add(history.removeAt(recordIndex).key)
 
-        for (i in max(0, recordIndex - 1) until history.size) {
+        for (i in kotlin.math.max(0, recordIndex - 1) until history.size) {
           val record = history[i]
-          if (i == max(0, recordIndex - 1)) {
+          if (i == kotlin.math.max(0, recordIndex - 1)) {
             snapshot = record.toBuilder().build()
           } else {
             addAll(snapshot.mergeWith(record))

@@ -71,7 +71,7 @@ class SubscriptionNormalizedCacheTest {
 
     val cacheDump = apolloClient.apolloStore.normalizedCache().dump()
     assertThat(NormalizedCache.prettifyDump(cacheDump)).isEqualTo("""
-      OptimisticNormalizedCache {}
+      OptimisticCache {}
       LruNormalizedCache {}
       
     """.trimIndent())
@@ -107,7 +107,7 @@ class SubscriptionNormalizedCacheTest {
 
     val cacheDump = apolloClient.apolloStore.normalizedCache().dump()
     assertThat(NormalizedCache.prettifyDump(cacheDump)).isEqualTo("""
-      OptimisticNormalizedCache {}
+      OptimisticCache {}
       LruNormalizedCache {
         "100" : {
           "id" : 100
@@ -160,7 +160,7 @@ class SubscriptionNormalizedCacheTest {
 
     val cacheDump = apolloClient.apolloStore.normalizedCache().dump()
     assertThat(NormalizedCache.prettifyDump(cacheDump)).isEqualTo("""
-      OptimisticNormalizedCache {}
+      OptimisticCache {}
       LruNormalizedCache {
         "100" : {
           "id" : 100
