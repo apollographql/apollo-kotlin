@@ -90,10 +90,6 @@ class MemoryCache(
     lruCache.clear()
   }
 
-  override fun stream(key: String, cacheHeaders: CacheHeaders): JsonReader? {
-    return loadRecord(key, cacheHeaders)?.let { MapJsonReader(it) }
-  }
-
   private class CacheEntry(
       val record: Record,
       val expireAfterMillis: Long

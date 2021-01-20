@@ -16,10 +16,6 @@ class ApolloStore(private val normalizedCache: NormalizedCache): ReadableStore, 
     return normalizedCache.merge(record, cacheHeaders)
   }
 
-  override fun stream(key: String, cacheHeaders: CacheHeaders): JsonReader? {
-    return normalizedCache.stream(key, cacheHeaders)
-  }
-
   override fun read(key: String, cacheHeaders: CacheHeaders): Record? {
     return normalizedCache.loadRecord(key, cacheHeaders)
   }

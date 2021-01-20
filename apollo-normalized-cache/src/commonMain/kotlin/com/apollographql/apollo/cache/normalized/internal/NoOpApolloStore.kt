@@ -23,10 +23,6 @@ internal class NoOpApolloStore : ApolloStore, ReadableStore, WriteableStore {
     return emptySet()
   }
 
-  override fun stream(key: String, cacheHeaders: CacheHeaders): JsonReader? {
-    return null
-  }
-
   override fun read(key: String, cacheHeaders: CacheHeaders): Record? {
     return null
   }
