@@ -39,7 +39,7 @@ class JsonScalarTest {
           "obj" to mapOf("key" to "value"),
           "list" to listOf(BigDecimal(0), BigDecimal(1), BigDecimal(2))
       )
-      assertThat(response.data!!.json()).isEqualTo(expectedMap)
+      assertThat(response.data!!.json).isEqualTo(expectedMap)
       true
     }
 
@@ -53,7 +53,7 @@ class JsonScalarTest {
       val expectedMap = mapOf(
           "obj" to mapOf("key2" to "value2"),
       )
-      assertThat(response.data!!.json()).isEqualTo(expectedMap)
+      assertThat(response.data!!.json).isEqualTo(expectedMap)
       true
     }
   }
