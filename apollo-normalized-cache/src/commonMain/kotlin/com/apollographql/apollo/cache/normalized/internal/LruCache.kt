@@ -55,12 +55,22 @@ internal class LruCache<Key, Value>(
 
   fun remove(key: Key): Value? {
     return lock.withLock {
-      val nodeToRemove = cache.remove(key)
-      val value = nodeToRemove?.value
-      if (nodeToRemove != null) {
-        unlinkNode(nodeToRemove)
-      }
-      value
+      removeUnsafe(key)
+    }
+  }
+
+  private fun removeUnsafe(key: Key): Value? {
+    val nodeToRemove = cache.remove(key)
+    val value = nodeToRemove?.value
+    if (nodeToRemove != null) {
+      unlinkNode(nodeToRemove)
+    }
+    return value
+  }
+
+  fun remove(keys: Collection<Key>) {
+    lock.withLock {
+      keys.forEach { key -> removeUnsafe(key) }
     }
   }
 
