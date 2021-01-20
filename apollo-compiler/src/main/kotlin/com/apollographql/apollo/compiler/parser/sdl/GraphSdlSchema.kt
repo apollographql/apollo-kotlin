@@ -5,6 +5,7 @@ import com.apollographql.apollo.compiler.parser.error.ParseException
 import com.apollographql.apollo.compiler.parser.introspection.IntrospectionSchema
 import com.apollographql.apollo.compiler.parser.sdl.GraphSDLSchemaParser.parse
 import java.io.File
+import java.lang.IllegalStateException
 
 data class GraphSdlSchema(
     val schema: Schema,
@@ -51,7 +52,8 @@ data class GraphSdlSchema(
         override val name: String,
         override val description: String,
         override val directives: List<Directive>,
-        val fields: List<Field>
+        val fields: List<Field>,
+        val interfaces: List<TypeRef.Named>
     ) : TypeDefinition()
 
     data class Field(
@@ -298,17 +300,23 @@ private fun List<GraphSdlSchema.Directive>.findDeprecatedDirective(): DeprecateD
   }
 }
 
-private fun GraphSdlSchema.TypeDefinition.Interface.possibleTypes(schema: GraphSdlSchema): List<IntrospectionSchema.TypeRef> {
-  return schema.typeDefinitions.values
-      .filter { typeDefinition ->
-        typeDefinition is GraphSdlSchema.TypeDefinition.Object && typeDefinition.interfaces.firstOrNull { interfaceTypeRef ->
-          interfaceTypeRef.typeName == name
-        } != null
-      }
-      .map { typeDefinition ->
+internal fun GraphSdlSchema.TypeDefinition.possibleTypes(schema: GraphSdlSchema): List<IntrospectionSchema.TypeRef> {
+  return when (this) {
+    is GraphSdlSchema.TypeDefinition.Union -> this.typeRefs.map { it.toIntrospectionType(schema) }
+    is GraphSdlSchema.TypeDefinition.Interface -> schema.typeDefinitions.values.filter { typeDefinition ->
+      typeDefinition is GraphSdlSchema.TypeDefinition.Object && typeDefinition.interfaces.map { it.typeName }.contains(name)
+          || typeDefinition is GraphSdlSchema.TypeDefinition.Interface && typeDefinition.interfaces.map { it.typeName }.contains(name)
+    }.flatMap {
+      it.possibleTypes(schema)
+    }
+    is GraphSdlSchema.TypeDefinition.Object -> listOf(
         IntrospectionSchema.TypeRef(
             kind = IntrospectionSchema.Kind.OBJECT,
-            name = typeDefinition.name
+            name = name
         )
-      }
+    )
+    else -> {
+      throw IllegalStateException("Cannot determine possibleTypes of $name")
+    }
+  }
 }
