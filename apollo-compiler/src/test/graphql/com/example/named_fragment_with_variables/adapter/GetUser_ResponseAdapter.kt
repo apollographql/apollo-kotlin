@@ -24,237 +24,220 @@ object GetUser_ResponseAdapter : ResponseAdapter<GetUser.Data> {
   )
 
   override fun fromResponse(reader: ResponseReader, __typename: String?): GetUser.Data {
-    return Data.fromResponse(reader, __typename)
+    val typename = __typename ?: reader.readString(RESPONSE_FIELDS[0])
+    return when(typename) {
+      "Query" -> QueryData.fromResponse(reader, typename)
+      else -> OtherData.fromResponse(reader, typename)
+    }
   }
 
   override fun toResponse(writer: ResponseWriter, value: GetUser.Data) {
-    Data.toResponse(writer, value)
+    when(value) {
+      is GetUser.Data.QueryData -> QueryData.toResponse(writer, value)
+      is GetUser.Data.OtherData -> OtherData.toResponse(writer, value)
+    }
   }
 
-  object Data : ResponseAdapter<GetUser.Data> {
+  object QueryData : ResponseAdapter<GetUser.Data.QueryData> {
     private val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
-      ResponseField.forString("__typename", "__typename", null, false, null)
+      ResponseField.forString("__typename", "__typename", null, false, null),
+      ResponseField.forObject("organization", "organization", mapOf<String, Any?>(
+        "id" to mapOf<String, Any?>(
+          "kind" to "Variable",
+          "variableName" to "organizationId")), true, null)
     )
 
-    override fun fromResponse(reader: ResponseReader, __typename: String?): GetUser.Data {
-      val typename = __typename ?: reader.readString(RESPONSE_FIELDS[0])
-      return when(typename) {
-        "Query" -> QueryData.fromResponse(reader, typename)
-        else -> OtherData.fromResponse(reader, typename)
+    override fun fromResponse(reader: ResponseReader, __typename: String?): GetUser.Data.QueryData {
+      return reader.run {
+        var __typename: String? = __typename
+        var organization: GetUser.Data.QueryData.Organization? = null
+        while(true) {
+          when (selectField(RESPONSE_FIELDS)) {
+            0 -> __typename = readString(RESPONSE_FIELDS[0])
+            1 -> organization = readObject<GetUser.Data.QueryData.Organization>(RESPONSE_FIELDS[1]) { reader ->
+              Organization.fromResponse(reader)
+            }
+            else -> break
+          }
+        }
+        GetUser.Data.QueryData(
+          __typename = __typename!!,
+          organization = organization
+        )
       }
     }
 
-    override fun toResponse(writer: ResponseWriter, value: GetUser.Data) {
-      when(value) {
-        is GetUser.Data.QueryData -> QueryData.toResponse(writer, value)
-        is GetUser.Data.OtherData -> OtherData.toResponse(writer, value)
+    override fun toResponse(writer: ResponseWriter, value: GetUser.Data.QueryData) {
+      writer.writeString(RESPONSE_FIELDS[0], value.__typename)
+      if(value.organization == null) {
+        writer.writeObject(RESPONSE_FIELDS[1], null)
+      } else {
+        writer.writeObject(RESPONSE_FIELDS[1]) { writer ->
+          Organization.toResponse(writer, value.organization)
+        }
       }
     }
 
-    object QueryData : ResponseAdapter<GetUser.Data.QueryData> {
+    object Organization : ResponseAdapter<GetUser.Data.QueryData.Organization> {
       private val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
-        ResponseField.forString("__typename", "__typename", null, false, null),
-        ResponseField.forObject("organization", "organization", mapOf<String, Any?>(
-          "id" to mapOf<String, Any?>(
+        ResponseField.forString("id", "id", null, false, null),
+        ResponseField.forList("user", "user", mapOf<String, Any?>(
+          "query" to mapOf<String, Any?>(
             "kind" to "Variable",
-            "variableName" to "organizationId")), true, null)
+            "variableName" to "query")), false, null)
       )
 
       override fun fromResponse(reader: ResponseReader, __typename: String?):
-          GetUser.Data.QueryData {
+          GetUser.Data.QueryData.Organization {
         return reader.run {
-          var __typename: String? = __typename
-          var organization: GetUser.Data.QueryData.Organization? = null
+          var id: String? = null
+          var user: List<GetUser.Data.QueryData.Organization.User>? = null
           while(true) {
             when (selectField(RESPONSE_FIELDS)) {
-              0 -> __typename = readString(RESPONSE_FIELDS[0])
-              1 -> organization = readObject<GetUser.Data.QueryData.Organization>(RESPONSE_FIELDS[1]) { reader ->
-                Organization.fromResponse(reader)
-              }
+              0 -> id = readString(RESPONSE_FIELDS[0])
+              1 -> user = readList<GetUser.Data.QueryData.Organization.User>(RESPONSE_FIELDS[1]) { reader ->
+                reader.readObject<GetUser.Data.QueryData.Organization.User> { reader ->
+                  User.fromResponse(reader)
+                }
+              }?.map { it!! }
               else -> break
             }
           }
-          GetUser.Data.QueryData(
-            __typename = __typename!!,
-            organization = organization
+          GetUser.Data.QueryData.Organization(
+            id = id!!,
+            user = user!!
           )
         }
       }
 
-      override fun toResponse(writer: ResponseWriter, value: GetUser.Data.QueryData) {
-        writer.writeString(RESPONSE_FIELDS[0], value.__typename)
-        if(value.organization == null) {
-          writer.writeObject(RESPONSE_FIELDS[1], null)
-        } else {
-          writer.writeObject(RESPONSE_FIELDS[1]) { writer ->
-            Organization.toResponse(writer, value.organization)
+      override fun toResponse(writer: ResponseWriter, value: GetUser.Data.QueryData.Organization) {
+        writer.writeString(RESPONSE_FIELDS[0], value.id)
+        writer.writeList(RESPONSE_FIELDS[1], value.user) { value, listItemWriter ->
+          listItemWriter.writeObject { writer ->
+            User.toResponse(writer, value)
           }
         }
       }
 
-      object Organization : ResponseAdapter<GetUser.Data.QueryData.Organization> {
+      object User : ResponseAdapter<GetUser.Data.QueryData.Organization.User> {
         private val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
-          ResponseField.forString("id", "id", null, false, null),
-          ResponseField.forList("user", "user", mapOf<String, Any?>(
-            "query" to mapOf<String, Any?>(
-              "kind" to "Variable",
-              "variableName" to "query")), false, null)
+          ResponseField.forString("__typename", "__typename", null, false, null)
         )
 
         override fun fromResponse(reader: ResponseReader, __typename: String?):
-            GetUser.Data.QueryData.Organization {
-          return reader.run {
-            var id: String? = null
-            var user: List<GetUser.Data.QueryData.Organization.User>? = null
-            while(true) {
-              when (selectField(RESPONSE_FIELDS)) {
-                0 -> id = readString(RESPONSE_FIELDS[0])
-                1 -> user = readList<GetUser.Data.QueryData.Organization.User>(RESPONSE_FIELDS[1]) { reader ->
-                  reader.readObject<GetUser.Data.QueryData.Organization.User> { reader ->
-                    User.fromResponse(reader)
-                  }
-                }?.map { it!! }
-                else -> break
-              }
-            }
-            GetUser.Data.QueryData.Organization(
-              id = id!!,
-              user = user!!
-            )
+            GetUser.Data.QueryData.Organization.User {
+          val typename = __typename ?: reader.readString(RESPONSE_FIELDS[0])
+          return when(typename) {
+            "User" -> UserUser.fromResponse(reader, typename)
+            else -> OtherUser.fromResponse(reader, typename)
           }
         }
 
         override fun toResponse(writer: ResponseWriter,
-            value: GetUser.Data.QueryData.Organization) {
-          writer.writeString(RESPONSE_FIELDS[0], value.id)
-          writer.writeList(RESPONSE_FIELDS[1], value.user) { value, listItemWriter ->
-            listItemWriter.writeObject { writer ->
-              User.toResponse(writer, value)
-            }
+            value: GetUser.Data.QueryData.Organization.User) {
+          when(value) {
+            is GetUser.Data.QueryData.Organization.User.UserUser -> UserUser.toResponse(writer, value)
+            is GetUser.Data.QueryData.Organization.User.OtherUser -> OtherUser.toResponse(writer, value)
           }
         }
 
-        object User : ResponseAdapter<GetUser.Data.QueryData.Organization.User> {
+        object UserUser : ResponseAdapter<GetUser.Data.QueryData.Organization.User.UserUser> {
+          private val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
+            ResponseField.forString("__typename", "__typename", null, false, null),
+            ResponseField.forString("firstName", "firstName", null, false, null),
+            ResponseField.forString("lastName", "lastName", null, false, null),
+            ResponseField.forString("avatar", "avatar", mapOf<String, Any?>(
+              "size" to mapOf<String, Any?>(
+                "kind" to "Variable",
+                "variableName" to "size")), false, null)
+          )
+
+          override fun fromResponse(reader: ResponseReader, __typename: String?):
+              GetUser.Data.QueryData.Organization.User.UserUser {
+            return reader.run {
+              var __typename: String? = __typename
+              var firstName: String? = null
+              var lastName: String? = null
+              var avatar: String? = null
+              while(true) {
+                when (selectField(RESPONSE_FIELDS)) {
+                  0 -> __typename = readString(RESPONSE_FIELDS[0])
+                  1 -> firstName = readString(RESPONSE_FIELDS[1])
+                  2 -> lastName = readString(RESPONSE_FIELDS[2])
+                  3 -> avatar = readString(RESPONSE_FIELDS[3])
+                  else -> break
+                }
+              }
+              GetUser.Data.QueryData.Organization.User.UserUser(
+                __typename = __typename!!,
+                firstName = firstName!!,
+                lastName = lastName!!,
+                avatar = avatar!!
+              )
+            }
+          }
+
+          override fun toResponse(writer: ResponseWriter,
+              value: GetUser.Data.QueryData.Organization.User.UserUser) {
+            writer.writeString(RESPONSE_FIELDS[0], value.__typename)
+            writer.writeString(RESPONSE_FIELDS[1], value.firstName)
+            writer.writeString(RESPONSE_FIELDS[2], value.lastName)
+            writer.writeString(RESPONSE_FIELDS[3], value.avatar)
+          }
+        }
+
+        object OtherUser : ResponseAdapter<GetUser.Data.QueryData.Organization.User.OtherUser> {
           private val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
             ResponseField.forString("__typename", "__typename", null, false, null)
           )
 
           override fun fromResponse(reader: ResponseReader, __typename: String?):
-              GetUser.Data.QueryData.Organization.User {
-            val typename = __typename ?: reader.readString(RESPONSE_FIELDS[0])
-            return when(typename) {
-              "User" -> UserUser.fromResponse(reader, typename)
-              else -> OtherUser.fromResponse(reader, typename)
+              GetUser.Data.QueryData.Organization.User.OtherUser {
+            return reader.run {
+              var __typename: String? = __typename
+              while(true) {
+                when (selectField(RESPONSE_FIELDS)) {
+                  0 -> __typename = readString(RESPONSE_FIELDS[0])
+                  else -> break
+                }
+              }
+              GetUser.Data.QueryData.Organization.User.OtherUser(
+                __typename = __typename!!
+              )
             }
           }
 
           override fun toResponse(writer: ResponseWriter,
-              value: GetUser.Data.QueryData.Organization.User) {
-            when(value) {
-              is GetUser.Data.QueryData.Organization.User.UserUser -> UserUser.toResponse(writer, value)
-              is GetUser.Data.QueryData.Organization.User.OtherUser -> OtherUser.toResponse(writer, value)
-            }
-          }
-
-          object UserUser : ResponseAdapter<GetUser.Data.QueryData.Organization.User.UserUser> {
-            private val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
-              ResponseField.forString("__typename", "__typename", null, false, null),
-              ResponseField.forString("firstName", "firstName", null, false, null),
-              ResponseField.forString("lastName", "lastName", null, false, null),
-              ResponseField.forString("avatar", "avatar", mapOf<String, Any?>(
-                "size" to mapOf<String, Any?>(
-                  "kind" to "Variable",
-                  "variableName" to "size")), false, null)
-            )
-
-            override fun fromResponse(reader: ResponseReader, __typename: String?):
-                GetUser.Data.QueryData.Organization.User.UserUser {
-              return reader.run {
-                var __typename: String? = __typename
-                var firstName: String? = null
-                var lastName: String? = null
-                var avatar: String? = null
-                while(true) {
-                  when (selectField(RESPONSE_FIELDS)) {
-                    0 -> __typename = readString(RESPONSE_FIELDS[0])
-                    1 -> firstName = readString(RESPONSE_FIELDS[1])
-                    2 -> lastName = readString(RESPONSE_FIELDS[2])
-                    3 -> avatar = readString(RESPONSE_FIELDS[3])
-                    else -> break
-                  }
-                }
-                GetUser.Data.QueryData.Organization.User.UserUser(
-                  __typename = __typename!!,
-                  firstName = firstName!!,
-                  lastName = lastName!!,
-                  avatar = avatar!!
-                )
-              }
-            }
-
-            override fun toResponse(writer: ResponseWriter,
-                value: GetUser.Data.QueryData.Organization.User.UserUser) {
-              writer.writeString(RESPONSE_FIELDS[0], value.__typename)
-              writer.writeString(RESPONSE_FIELDS[1], value.firstName)
-              writer.writeString(RESPONSE_FIELDS[2], value.lastName)
-              writer.writeString(RESPONSE_FIELDS[3], value.avatar)
-            }
-          }
-
-          object OtherUser : ResponseAdapter<GetUser.Data.QueryData.Organization.User.OtherUser> {
-            private val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
-              ResponseField.forString("__typename", "__typename", null, false, null)
-            )
-
-            override fun fromResponse(reader: ResponseReader, __typename: String?):
-                GetUser.Data.QueryData.Organization.User.OtherUser {
-              return reader.run {
-                var __typename: String? = __typename
-                while(true) {
-                  when (selectField(RESPONSE_FIELDS)) {
-                    0 -> __typename = readString(RESPONSE_FIELDS[0])
-                    else -> break
-                  }
-                }
-                GetUser.Data.QueryData.Organization.User.OtherUser(
-                  __typename = __typename!!
-                )
-              }
-            }
-
-            override fun toResponse(writer: ResponseWriter,
-                value: GetUser.Data.QueryData.Organization.User.OtherUser) {
-              writer.writeString(RESPONSE_FIELDS[0], value.__typename)
-            }
+              value: GetUser.Data.QueryData.Organization.User.OtherUser) {
+            writer.writeString(RESPONSE_FIELDS[0], value.__typename)
           }
         }
       }
     }
+  }
 
-    object OtherData : ResponseAdapter<GetUser.Data.OtherData> {
-      private val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
-        ResponseField.forString("__typename", "__typename", null, false, null)
-      )
+  object OtherData : ResponseAdapter<GetUser.Data.OtherData> {
+    private val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
+      ResponseField.forString("__typename", "__typename", null, false, null)
+    )
 
-      override fun fromResponse(reader: ResponseReader, __typename: String?):
-          GetUser.Data.OtherData {
-        return reader.run {
-          var __typename: String? = __typename
-          while(true) {
-            when (selectField(RESPONSE_FIELDS)) {
-              0 -> __typename = readString(RESPONSE_FIELDS[0])
-              else -> break
-            }
+    override fun fromResponse(reader: ResponseReader, __typename: String?): GetUser.Data.OtherData {
+      return reader.run {
+        var __typename: String? = __typename
+        while(true) {
+          when (selectField(RESPONSE_FIELDS)) {
+            0 -> __typename = readString(RESPONSE_FIELDS[0])
+            else -> break
           }
-          GetUser.Data.OtherData(
-            __typename = __typename!!
-          )
         }
+        GetUser.Data.OtherData(
+          __typename = __typename!!
+        )
       }
+    }
 
-      override fun toResponse(writer: ResponseWriter, value: GetUser.Data.OtherData) {
-        writer.writeString(RESPONSE_FIELDS[0], value.__typename)
-      }
+    override fun toResponse(writer: ResponseWriter, value: GetUser.Data.OtherData) {
+      writer.writeString(RESPONSE_FIELDS[0], value.__typename)
     }
   }
 }

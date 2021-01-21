@@ -24,41 +24,25 @@ object PlanetFragmentImpl_ResponseAdapter : ResponseAdapter<PlanetFragmentImpl.D
   )
 
   override fun fromResponse(reader: ResponseReader, __typename: String?): PlanetFragmentImpl.Data {
-    return Data.fromResponse(reader, __typename)
+    return reader.run {
+      var __typename: String? = __typename
+      var name: String? = null
+      while(true) {
+        when (selectField(RESPONSE_FIELDS)) {
+          0 -> __typename = readString(RESPONSE_FIELDS[0])
+          1 -> name = readString(RESPONSE_FIELDS[1])
+          else -> break
+        }
+      }
+      PlanetFragmentImpl.Data(
+        __typename = __typename!!,
+        name = name
+      )
+    }
   }
 
   override fun toResponse(writer: ResponseWriter, value: PlanetFragmentImpl.Data) {
-    Data.toResponse(writer, value)
-  }
-
-  object Data : ResponseAdapter<PlanetFragmentImpl.Data> {
-    private val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
-      ResponseField.forString("__typename", "__typename", null, false, null),
-      ResponseField.forString("name", "name", null, true, null)
-    )
-
-    override fun fromResponse(reader: ResponseReader, __typename: String?):
-        PlanetFragmentImpl.Data {
-      return reader.run {
-        var __typename: String? = __typename
-        var name: String? = null
-        while(true) {
-          when (selectField(RESPONSE_FIELDS)) {
-            0 -> __typename = readString(RESPONSE_FIELDS[0])
-            1 -> name = readString(RESPONSE_FIELDS[1])
-            else -> break
-          }
-        }
-        PlanetFragmentImpl.Data(
-          __typename = __typename!!,
-          name = name
-        )
-      }
-    }
-
-    override fun toResponse(writer: ResponseWriter, value: PlanetFragmentImpl.Data) {
-      writer.writeString(RESPONSE_FIELDS[0], value.__typename)
-      writer.writeString(RESPONSE_FIELDS[1], value.name)
-    }
+    writer.writeString(RESPONSE_FIELDS[0], value.__typename)
+    writer.writeString(RESPONSE_FIELDS[1], value.name)
   }
 }

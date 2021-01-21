@@ -2,16 +2,12 @@ package com.apollographql.apollo.compiler.backend.codegen
 
 import com.apollographql.apollo.api.ResponseField
 import com.apollographql.apollo.api.internal.ResponseAdapter
-import com.apollographql.apollo.api.internal.ResponseReader
-import com.apollographql.apollo.api.internal.ResponseWriter
 import com.apollographql.apollo.compiler.applyIf
 import com.apollographql.apollo.compiler.backend.ast.CodeGenerationAst
 import com.apollographql.apollo.compiler.escapeKotlinReservedWord
 import com.squareup.kotlinpoet.ClassName
 import com.squareup.kotlinpoet.CodeBlock
-import com.squareup.kotlinpoet.FunSpec
 import com.squareup.kotlinpoet.KModifier
-import com.squareup.kotlinpoet.ParameterSpec
 import com.squareup.kotlinpoet.ParameterizedTypeName.Companion.parameterizedBy
 import com.squareup.kotlinpoet.PropertySpec
 import com.squareup.kotlinpoet.TypeSpec
@@ -20,38 +16,23 @@ import com.squareup.kotlinpoet.asTypeName
 import com.squareup.kotlinpoet.joinToCode
 
 internal fun CodeGenerationAst.OperationType.responseAdapterTypeSpec(generateAsInternal: Boolean = false): TypeSpec {
-  return this.dataType.rootResponseAdapterTypeSpec(generateAsInternal)
+  return this.dataType
+      .copy(name = "${this.name.escapeKotlinReservedWord()}_ResponseAdapter")
+      .rootResponseAdapterTypeSpec(generateAsInternal)
 }
 
 internal fun CodeGenerationAst.FragmentType.responseAdapterTypeSpec(generateAsInternal: Boolean = false): TypeSpec {
   val dataType = this.implementationType.nestedObjects.single()
-  return dataType.rootResponseAdapterTypeSpec(generateAsInternal)
+  return dataType
+      .copy(name = "${this.implementationType.name.escapeKotlinReservedWord()}_ResponseAdapter")
+      .rootResponseAdapterTypeSpec(generateAsInternal)
 }
 
 private fun CodeGenerationAst.ObjectType.rootResponseAdapterTypeSpec(generateAsInternal: Boolean = false): TypeSpec {
-  return TypeSpec.objectBuilder("${this.typeRef.enclosingType!!.name.escapeKotlinReservedWord()}_ResponseAdapter")
+  return this.responseAdapterTypeSpec()
+      .toBuilder()
       .applyIf(generateAsInternal) { addModifiers(KModifier.INTERNAL) }
       .addAnnotation(suppressWarningsAnnotation)
-      .addSuperinterface(ResponseAdapter::class.asTypeName().parameterizedBy(this.typeRef.asTypeName()))
-      .addProperty(responseFieldsPropertySpec(this.fields))
-      .addFunction(
-          FunSpec.builder("fromResponse")
-              .addModifiers(KModifier.OVERRIDE)
-              .returns(this.typeRef.asTypeName())
-              .addParameter(ParameterSpec.builder("reader", ResponseReader::class).build())
-              .addParameter(CodeGenerationAst.typenameField.asOptionalParameterSpec(withDefaultValue = false))
-              .addCode("return·%T.fromResponse(reader, __typename)", this.typeRef.asAdapterTypeName())
-              .build()
-      )
-      .addFunction(
-          FunSpec.builder("toResponse")
-              .addModifiers(KModifier.OVERRIDE)
-              .addParameter(ParameterSpec(name = "writer", type = ResponseWriter::class.asTypeName()))
-              .addParameter(ParameterSpec(name = "value", type = this.typeRef.asTypeName()))
-              .addCode("%T.toResponse(writer, value)", this.typeRef.asAdapterTypeName())
-              .build()
-      )
-      .addType(this.responseAdapterTypeSpec())
       .build()
 }
 
@@ -74,12 +55,22 @@ private fun CodeGenerationAst.ObjectType.responseAdapterTypeSpec(): TypeSpec {
 }
 
 internal fun CodeGenerationAst.TypeRef.asAdapterTypeName(): ClassName {
-  return if (enclosingType == null) {
-    ClassName(packageName = "$packageName.adapter", "${this.name.escapeKotlinReservedWord()}_ResponseAdapter")
-  } else {
-    ClassName(packageName = "$packageName.adapter", enclosingType.asAdapterTypeName().simpleNames + this.name.escapeKotlinReservedWord())
+
+  return when {
+    // We are called on a root typeRef such as TestQuery, just add '_ResponseAdapter'
+    enclosingType == null -> {
+      ClassName(packageName = "$packageName.adapter", "${this.name.escapeKotlinReservedWord()}_ResponseAdapter")
+    }
+    // We are called on a data typeRef such as TestQuery.Data, skip Data
+    enclosingType.enclosingType == null -> {
+      ClassName(packageName = "$packageName.adapter", "${this.enclosingType.name.escapeKotlinReservedWord()}_ResponseAdapter")
+    }
+    else -> {
+      ClassName(packageName = "$packageName.adapter", enclosingType.asAdapterTypeName().simpleNames + this.name.escapeKotlinReservedWord())
+    }
   }
 }
+
 
 private fun responseFieldsPropertySpec(fields: List<CodeGenerationAst.Field>): PropertySpec {
   val initializer = CodeBlock.builder()

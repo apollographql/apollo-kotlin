@@ -27,77 +27,60 @@ object TestSubscription_ResponseAdapter : ResponseAdapter<TestSubscription.Data>
   )
 
   override fun fromResponse(reader: ResponseReader, __typename: String?): TestSubscription.Data {
-    return Data.fromResponse(reader, __typename)
+    return reader.run {
+      var commentAdded: TestSubscription.Data.CommentAdded? = null
+      while(true) {
+        when (selectField(RESPONSE_FIELDS)) {
+          0 -> commentAdded = readObject<TestSubscription.Data.CommentAdded>(RESPONSE_FIELDS[0]) { reader ->
+            CommentAdded.fromResponse(reader)
+          }
+          else -> break
+        }
+      }
+      TestSubscription.Data(
+        commentAdded = commentAdded
+      )
+    }
   }
 
   override fun toResponse(writer: ResponseWriter, value: TestSubscription.Data) {
-    Data.toResponse(writer, value)
+    if(value.commentAdded == null) {
+      writer.writeObject(RESPONSE_FIELDS[0], null)
+    } else {
+      writer.writeObject(RESPONSE_FIELDS[0]) { writer ->
+        CommentAdded.toResponse(writer, value.commentAdded)
+      }
+    }
   }
 
-  object Data : ResponseAdapter<TestSubscription.Data> {
+  object CommentAdded : ResponseAdapter<TestSubscription.Data.CommentAdded> {
     private val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
-      ResponseField.forObject("commentAdded", "commentAdded", mapOf<String, Any?>(
-        "repoFullName" to mapOf<String, Any?>(
-          "kind" to "Variable",
-          "variableName" to "repo")), true, null)
+      ResponseField.forInt("id", "id", null, false, null),
+      ResponseField.forString("content", "content", null, false, null)
     )
 
-    override fun fromResponse(reader: ResponseReader, __typename: String?): TestSubscription.Data {
+    override fun fromResponse(reader: ResponseReader, __typename: String?):
+        TestSubscription.Data.CommentAdded {
       return reader.run {
-        var commentAdded: TestSubscription.Data.CommentAdded? = null
+        var id: Int? = null
+        var content: String? = null
         while(true) {
           when (selectField(RESPONSE_FIELDS)) {
-            0 -> commentAdded = readObject<TestSubscription.Data.CommentAdded>(RESPONSE_FIELDS[0]) { reader ->
-              CommentAdded.fromResponse(reader)
-            }
+            0 -> id = readInt(RESPONSE_FIELDS[0])
+            1 -> content = readString(RESPONSE_FIELDS[1])
             else -> break
           }
         }
-        TestSubscription.Data(
-          commentAdded = commentAdded
+        TestSubscription.Data.CommentAdded(
+          id = id!!,
+          content = content!!
         )
       }
     }
 
-    override fun toResponse(writer: ResponseWriter, value: TestSubscription.Data) {
-      if(value.commentAdded == null) {
-        writer.writeObject(RESPONSE_FIELDS[0], null)
-      } else {
-        writer.writeObject(RESPONSE_FIELDS[0]) { writer ->
-          CommentAdded.toResponse(writer, value.commentAdded)
-        }
-      }
-    }
-
-    object CommentAdded : ResponseAdapter<TestSubscription.Data.CommentAdded> {
-      private val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
-        ResponseField.forInt("id", "id", null, false, null),
-        ResponseField.forString("content", "content", null, false, null)
-      )
-
-      override fun fromResponse(reader: ResponseReader, __typename: String?):
-          TestSubscription.Data.CommentAdded {
-        return reader.run {
-          var id: Int? = null
-          var content: String? = null
-          while(true) {
-            when (selectField(RESPONSE_FIELDS)) {
-              0 -> id = readInt(RESPONSE_FIELDS[0])
-              1 -> content = readString(RESPONSE_FIELDS[1])
-              else -> break
-            }
-          }
-          TestSubscription.Data.CommentAdded(
-            id = id!!,
-            content = content!!
-          )
-        }
-      }
-
-      override fun toResponse(writer: ResponseWriter, value: TestSubscription.Data.CommentAdded) {
-        writer.writeInt(RESPONSE_FIELDS[0], value.id)
-        writer.writeString(RESPONSE_FIELDS[1], value.content)
-      }
+    override fun toResponse(writer: ResponseWriter, value: TestSubscription.Data.CommentAdded) {
+      writer.writeInt(RESPONSE_FIELDS[0], value.id)
+      writer.writeString(RESPONSE_FIELDS[1], value.content)
     }
   }
 }

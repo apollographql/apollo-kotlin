@@ -24,111 +24,97 @@ object TestQuery_ResponseAdapter : ResponseAdapter<TestQuery.Data> {
   )
 
   override fun fromResponse(reader: ResponseReader, __typename: String?): TestQuery.Data {
-    return Data.fromResponse(reader, __typename)
+    return reader.run {
+      var hero: TestQuery.Data.Hero? = null
+      while(true) {
+        when (selectField(RESPONSE_FIELDS)) {
+          0 -> hero = readObject<TestQuery.Data.Hero>(RESPONSE_FIELDS[0]) { reader ->
+            Hero.fromResponse(reader)
+          }
+          else -> break
+        }
+      }
+      TestQuery.Data(
+        hero = hero
+      )
+    }
   }
 
   override fun toResponse(writer: ResponseWriter, value: TestQuery.Data) {
-    Data.toResponse(writer, value)
+    if(value.hero == null) {
+      writer.writeObject(RESPONSE_FIELDS[0], null)
+    } else {
+      writer.writeObject(RESPONSE_FIELDS[0]) { writer ->
+        Hero.toResponse(writer, value.hero)
+      }
+    }
   }
 
-  object Data : ResponseAdapter<TestQuery.Data> {
+  object Hero : ResponseAdapter<TestQuery.Data.Hero> {
     private val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
-      ResponseField.forObject("hero", "hero", null, true, null)
+      ResponseField.forString("name", "name", null, true, listOf(
+        ResponseField.Condition.booleanCondition("includeName", false)
+      )),
+      ResponseField.forObject("friendsConnection", "friendsConnection", null, true, listOf(
+        ResponseField.Condition.booleanCondition("skipFriends", true)
+      ))
     )
 
-    override fun fromResponse(reader: ResponseReader, __typename: String?): TestQuery.Data {
+    override fun fromResponse(reader: ResponseReader, __typename: String?): TestQuery.Data.Hero {
       return reader.run {
-        var hero: TestQuery.Data.Hero? = null
+        var name: String? = null
+        var friendsConnection: TestQuery.Data.Hero.FriendsConnection? = null
         while(true) {
           when (selectField(RESPONSE_FIELDS)) {
-            0 -> hero = readObject<TestQuery.Data.Hero>(RESPONSE_FIELDS[0]) { reader ->
-              Hero.fromResponse(reader)
+            0 -> name = readString(RESPONSE_FIELDS[0])
+            1 -> friendsConnection = readObject<TestQuery.Data.Hero.FriendsConnection>(RESPONSE_FIELDS[1]) { reader ->
+              FriendsConnection.fromResponse(reader)
             }
             else -> break
           }
         }
-        TestQuery.Data(
-          hero = hero
+        TestQuery.Data.Hero(
+          name = name,
+          friendsConnection = friendsConnection
         )
       }
     }
 
-    override fun toResponse(writer: ResponseWriter, value: TestQuery.Data) {
-      if(value.hero == null) {
-        writer.writeObject(RESPONSE_FIELDS[0], null)
+    override fun toResponse(writer: ResponseWriter, value: TestQuery.Data.Hero) {
+      writer.writeString(RESPONSE_FIELDS[0], value.name)
+      if(value.friendsConnection == null) {
+        writer.writeObject(RESPONSE_FIELDS[1], null)
       } else {
-        writer.writeObject(RESPONSE_FIELDS[0]) { writer ->
-          Hero.toResponse(writer, value.hero)
+        writer.writeObject(RESPONSE_FIELDS[1]) { writer ->
+          FriendsConnection.toResponse(writer, value.friendsConnection)
         }
       }
     }
 
-    object Hero : ResponseAdapter<TestQuery.Data.Hero> {
+    object FriendsConnection : ResponseAdapter<TestQuery.Data.Hero.FriendsConnection> {
       private val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
-        ResponseField.forString("name", "name", null, true, listOf(
-          ResponseField.Condition.booleanCondition("includeName", false)
-        )),
-        ResponseField.forObject("friendsConnection", "friendsConnection", null, true, listOf(
-          ResponseField.Condition.booleanCondition("skipFriends", true)
-        ))
+        ResponseField.forInt("totalCount", "totalCount", null, true, null)
       )
 
-      override fun fromResponse(reader: ResponseReader, __typename: String?): TestQuery.Data.Hero {
+      override fun fromResponse(reader: ResponseReader, __typename: String?):
+          TestQuery.Data.Hero.FriendsConnection {
         return reader.run {
-          var name: String? = null
-          var friendsConnection: TestQuery.Data.Hero.FriendsConnection? = null
+          var totalCount: Int? = null
           while(true) {
             when (selectField(RESPONSE_FIELDS)) {
-              0 -> name = readString(RESPONSE_FIELDS[0])
-              1 -> friendsConnection = readObject<TestQuery.Data.Hero.FriendsConnection>(RESPONSE_FIELDS[1]) { reader ->
-                FriendsConnection.fromResponse(reader)
-              }
+              0 -> totalCount = readInt(RESPONSE_FIELDS[0])
               else -> break
             }
           }
-          TestQuery.Data.Hero(
-            name = name,
-            friendsConnection = friendsConnection
+          TestQuery.Data.Hero.FriendsConnection(
+            totalCount = totalCount
           )
         }
       }
 
-      override fun toResponse(writer: ResponseWriter, value: TestQuery.Data.Hero) {
-        writer.writeString(RESPONSE_FIELDS[0], value.name)
-        if(value.friendsConnection == null) {
-          writer.writeObject(RESPONSE_FIELDS[1], null)
-        } else {
-          writer.writeObject(RESPONSE_FIELDS[1]) { writer ->
-            FriendsConnection.toResponse(writer, value.friendsConnection)
-          }
-        }
-      }
-
-      object FriendsConnection : ResponseAdapter<TestQuery.Data.Hero.FriendsConnection> {
-        private val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
-          ResponseField.forInt("totalCount", "totalCount", null, true, null)
-        )
-
-        override fun fromResponse(reader: ResponseReader, __typename: String?):
-            TestQuery.Data.Hero.FriendsConnection {
-          return reader.run {
-            var totalCount: Int? = null
-            while(true) {
-              when (selectField(RESPONSE_FIELDS)) {
-                0 -> totalCount = readInt(RESPONSE_FIELDS[0])
-                else -> break
-              }
-            }
-            TestQuery.Data.Hero.FriendsConnection(
-              totalCount = totalCount
-            )
-          }
-        }
-
-        override fun toResponse(writer: ResponseWriter,
-            value: TestQuery.Data.Hero.FriendsConnection) {
-          writer.writeInt(RESPONSE_FIELDS[0], value.totalCount)
-        }
+      override fun toResponse(writer: ResponseWriter,
+          value: TestQuery.Data.Hero.FriendsConnection) {
+        writer.writeInt(RESPONSE_FIELDS[0], value.totalCount)
       }
     }
   }

@@ -32,82 +32,61 @@ object CreateReviewForEpisodeMutation_ResponseAdapter :
 
   override fun fromResponse(reader: ResponseReader, __typename: String?):
       CreateReviewForEpisodeMutation.Data {
-    return Data.fromResponse(reader, __typename)
+    return reader.run {
+      var createReview: CreateReviewForEpisodeMutation.Data.CreateReview? = null
+      while(true) {
+        when (selectField(RESPONSE_FIELDS)) {
+          0 -> createReview = readObject<CreateReviewForEpisodeMutation.Data.CreateReview>(RESPONSE_FIELDS[0]) { reader ->
+            CreateReview.fromResponse(reader)
+          }
+          else -> break
+        }
+      }
+      CreateReviewForEpisodeMutation.Data(
+        createReview = createReview
+      )
+    }
   }
 
   override fun toResponse(writer: ResponseWriter, value: CreateReviewForEpisodeMutation.Data) {
-    Data.toResponse(writer, value)
+    if(value.createReview == null) {
+      writer.writeObject(RESPONSE_FIELDS[0], null)
+    } else {
+      writer.writeObject(RESPONSE_FIELDS[0]) { writer ->
+        CreateReview.toResponse(writer, value.createReview)
+      }
+    }
   }
 
-  object Data : ResponseAdapter<CreateReviewForEpisodeMutation.Data> {
+  object CreateReview : ResponseAdapter<CreateReviewForEpisodeMutation.Data.CreateReview> {
     private val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
-      ResponseField.forObject("createReview", "createReview", mapOf<String, Any?>(
-        "episode" to mapOf<String, Any?>(
-          "kind" to "Variable",
-          "variableName" to "ep"),
-        "review" to mapOf<String, Any?>(
-          "kind" to "Variable",
-          "variableName" to "review")), true, null)
+      ResponseField.forInt("stars", "stars", null, false, null),
+      ResponseField.forString("commentary", "commentary", null, true, null)
     )
 
     override fun fromResponse(reader: ResponseReader, __typename: String?):
-        CreateReviewForEpisodeMutation.Data {
+        CreateReviewForEpisodeMutation.Data.CreateReview {
       return reader.run {
-        var createReview: CreateReviewForEpisodeMutation.Data.CreateReview? = null
+        var stars: Int? = null
+        var commentary: String? = null
         while(true) {
           when (selectField(RESPONSE_FIELDS)) {
-            0 -> createReview = readObject<CreateReviewForEpisodeMutation.Data.CreateReview>(RESPONSE_FIELDS[0]) { reader ->
-              CreateReview.fromResponse(reader)
-            }
+            0 -> stars = readInt(RESPONSE_FIELDS[0])
+            1 -> commentary = readString(RESPONSE_FIELDS[1])
             else -> break
           }
         }
-        CreateReviewForEpisodeMutation.Data(
-          createReview = createReview
+        CreateReviewForEpisodeMutation.Data.CreateReview(
+          stars = stars!!,
+          commentary = commentary
         )
       }
     }
 
-    override fun toResponse(writer: ResponseWriter, value: CreateReviewForEpisodeMutation.Data) {
-      if(value.createReview == null) {
-        writer.writeObject(RESPONSE_FIELDS[0], null)
-      } else {
-        writer.writeObject(RESPONSE_FIELDS[0]) { writer ->
-          CreateReview.toResponse(writer, value.createReview)
-        }
-      }
-    }
-
-    object CreateReview : ResponseAdapter<CreateReviewForEpisodeMutation.Data.CreateReview> {
-      private val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
-        ResponseField.forInt("stars", "stars", null, false, null),
-        ResponseField.forString("commentary", "commentary", null, true, null)
-      )
-
-      override fun fromResponse(reader: ResponseReader, __typename: String?):
-          CreateReviewForEpisodeMutation.Data.CreateReview {
-        return reader.run {
-          var stars: Int? = null
-          var commentary: String? = null
-          while(true) {
-            when (selectField(RESPONSE_FIELDS)) {
-              0 -> stars = readInt(RESPONSE_FIELDS[0])
-              1 -> commentary = readString(RESPONSE_FIELDS[1])
-              else -> break
-            }
-          }
-          CreateReviewForEpisodeMutation.Data.CreateReview(
-            stars = stars!!,
-            commentary = commentary
-          )
-        }
-      }
-
-      override fun toResponse(writer: ResponseWriter,
-          value: CreateReviewForEpisodeMutation.Data.CreateReview) {
-        writer.writeInt(RESPONSE_FIELDS[0], value.stars)
-        writer.writeString(RESPONSE_FIELDS[1], value.commentary)
-      }
+    override fun toResponse(writer: ResponseWriter,
+        value: CreateReviewForEpisodeMutation.Data.CreateReview) {
+      writer.writeInt(RESPONSE_FIELDS[0], value.stars)
+      writer.writeString(RESPONSE_FIELDS[1], value.commentary)
     }
   }
 }

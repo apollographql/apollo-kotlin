@@ -23,87 +23,72 @@ object TestQuery_ResponseAdapter : ResponseAdapter<TestQuery.Data> {
   )
 
   override fun fromResponse(reader: ResponseReader, __typename: String?): TestQuery.Data {
-    return Data.fromResponse(reader, __typename)
+    return reader.run {
+      var typeWithGraphQLKeywords: TestQuery.Data.TypeWithGraphQLKeywords? = null
+      while(true) {
+        when (selectField(RESPONSE_FIELDS)) {
+          0 -> typeWithGraphQLKeywords = readObject<TestQuery.Data.TypeWithGraphQLKeywords>(RESPONSE_FIELDS[0]) { reader ->
+            TypeWithGraphQLKeywords.fromResponse(reader)
+          }
+          else -> break
+        }
+      }
+      TestQuery.Data(
+        typeWithGraphQLKeywords = typeWithGraphQLKeywords
+      )
+    }
   }
 
   override fun toResponse(writer: ResponseWriter, value: TestQuery.Data) {
-    Data.toResponse(writer, value)
+    if(value.typeWithGraphQLKeywords == null) {
+      writer.writeObject(RESPONSE_FIELDS[0], null)
+    } else {
+      writer.writeObject(RESPONSE_FIELDS[0]) { writer ->
+        TypeWithGraphQLKeywords.toResponse(writer, value.typeWithGraphQLKeywords)
+      }
+    }
   }
 
-  object Data : ResponseAdapter<TestQuery.Data> {
+  object TypeWithGraphQLKeywords : ResponseAdapter<TestQuery.Data.TypeWithGraphQLKeywords> {
     private val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
-      ResponseField.forObject("typeWithGraphQLKeywords", "typeWithGraphQLKeywords", null, true, null)
+      ResponseField.forString("on", "on", null, true, null),
+      ResponseField.forString("null", "null", mapOf<String, Any?>(
+        "fragment" to mapOf<String, Any?>(
+          "kind" to "Variable",
+          "variableName" to "operation")), true, null),
+      ResponseField.forString("alias", "null", mapOf<String, Any?>(
+        "fragment" to """
+        |A string
+        |with a new line
+        """.trimMargin()), true, null)
     )
 
-    override fun fromResponse(reader: ResponseReader, __typename: String?): TestQuery.Data {
+    override fun fromResponse(reader: ResponseReader, __typename: String?):
+        TestQuery.Data.TypeWithGraphQLKeywords {
       return reader.run {
-        var typeWithGraphQLKeywords: TestQuery.Data.TypeWithGraphQLKeywords? = null
+        var on: String? = null
+        var null_: String? = null
+        var alias: String? = null
         while(true) {
           when (selectField(RESPONSE_FIELDS)) {
-            0 -> typeWithGraphQLKeywords = readObject<TestQuery.Data.TypeWithGraphQLKeywords>(RESPONSE_FIELDS[0]) { reader ->
-              TypeWithGraphQLKeywords.fromResponse(reader)
-            }
+            0 -> on = readString(RESPONSE_FIELDS[0])
+            1 -> null_ = readString(RESPONSE_FIELDS[1])
+            2 -> alias = readString(RESPONSE_FIELDS[2])
             else -> break
           }
         }
-        TestQuery.Data(
-          typeWithGraphQLKeywords = typeWithGraphQLKeywords
+        TestQuery.Data.TypeWithGraphQLKeywords(
+          on = on,
+          null_ = null_,
+          alias = alias
         )
       }
     }
 
-    override fun toResponse(writer: ResponseWriter, value: TestQuery.Data) {
-      if(value.typeWithGraphQLKeywords == null) {
-        writer.writeObject(RESPONSE_FIELDS[0], null)
-      } else {
-        writer.writeObject(RESPONSE_FIELDS[0]) { writer ->
-          TypeWithGraphQLKeywords.toResponse(writer, value.typeWithGraphQLKeywords)
-        }
-      }
-    }
-
-    object TypeWithGraphQLKeywords : ResponseAdapter<TestQuery.Data.TypeWithGraphQLKeywords> {
-      private val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
-        ResponseField.forString("on", "on", null, true, null),
-        ResponseField.forString("null", "null", mapOf<String, Any?>(
-          "fragment" to mapOf<String, Any?>(
-            "kind" to "Variable",
-            "variableName" to "operation")), true, null),
-        ResponseField.forString("alias", "null", mapOf<String, Any?>(
-          "fragment" to """
-          |A string
-          |with a new line
-          """.trimMargin()), true, null)
-      )
-
-      override fun fromResponse(reader: ResponseReader, __typename: String?):
-          TestQuery.Data.TypeWithGraphQLKeywords {
-        return reader.run {
-          var on: String? = null
-          var null_: String? = null
-          var alias: String? = null
-          while(true) {
-            when (selectField(RESPONSE_FIELDS)) {
-              0 -> on = readString(RESPONSE_FIELDS[0])
-              1 -> null_ = readString(RESPONSE_FIELDS[1])
-              2 -> alias = readString(RESPONSE_FIELDS[2])
-              else -> break
-            }
-          }
-          TestQuery.Data.TypeWithGraphQLKeywords(
-            on = on,
-            null_ = null_,
-            alias = alias
-          )
-        }
-      }
-
-      override fun toResponse(writer: ResponseWriter,
-          value: TestQuery.Data.TypeWithGraphQLKeywords) {
-        writer.writeString(RESPONSE_FIELDS[0], value.on)
-        writer.writeString(RESPONSE_FIELDS[1], value.null_)
-        writer.writeString(RESPONSE_FIELDS[2], value.alias)
-      }
+    override fun toResponse(writer: ResponseWriter, value: TestQuery.Data.TypeWithGraphQLKeywords) {
+      writer.writeString(RESPONSE_FIELDS[0], value.on)
+      writer.writeString(RESPONSE_FIELDS[1], value.null_)
+      writer.writeString(RESPONSE_FIELDS[2], value.alias)
     }
   }
 }

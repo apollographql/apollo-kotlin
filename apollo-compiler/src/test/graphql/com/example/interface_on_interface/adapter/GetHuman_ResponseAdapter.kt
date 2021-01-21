@@ -25,160 +25,145 @@ object GetHuman_ResponseAdapter : ResponseAdapter<GetHuman.Data> {
   )
 
   override fun fromResponse(reader: ResponseReader, __typename: String?): GetHuman.Data {
-    return Data.fromResponse(reader, __typename)
+    return reader.run {
+      var human: GetHuman.Data.Human? = null
+      var node: GetHuman.Data.Node? = null
+      while(true) {
+        when (selectField(RESPONSE_FIELDS)) {
+          0 -> human = readObject<GetHuman.Data.Human>(RESPONSE_FIELDS[0]) { reader ->
+            Human.fromResponse(reader)
+          }
+          1 -> node = readObject<GetHuman.Data.Node>(RESPONSE_FIELDS[1]) { reader ->
+            Node.fromResponse(reader)
+          }
+          else -> break
+        }
+      }
+      GetHuman.Data(
+        human = human!!,
+        node = node!!
+      )
+    }
   }
 
   override fun toResponse(writer: ResponseWriter, value: GetHuman.Data) {
-    Data.toResponse(writer, value)
+    writer.writeObject(RESPONSE_FIELDS[0]) { writer ->
+      Human.toResponse(writer, value.human)
+    }
+    writer.writeObject(RESPONSE_FIELDS[1]) { writer ->
+      Node.toResponse(writer, value.node)
+    }
   }
 
-  object Data : ResponseAdapter<GetHuman.Data> {
+  object Human : ResponseAdapter<GetHuman.Data.Human> {
     private val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
-      ResponseField.forObject("human", "human", null, false, null),
-      ResponseField.forObject("node", "node", null, false, null)
+      ResponseField.forString("id", "id", null, false, null),
+      ResponseField.forString("name", "name", null, false, null),
+      ResponseField.forDouble("height", "height", null, false, null)
     )
 
-    override fun fromResponse(reader: ResponseReader, __typename: String?): GetHuman.Data {
+    override fun fromResponse(reader: ResponseReader, __typename: String?): GetHuman.Data.Human {
       return reader.run {
-        var human: GetHuman.Data.Human? = null
-        var node: GetHuman.Data.Node? = null
+        var id: String? = null
+        var name: String? = null
+        var height: Double? = null
         while(true) {
           when (selectField(RESPONSE_FIELDS)) {
-            0 -> human = readObject<GetHuman.Data.Human>(RESPONSE_FIELDS[0]) { reader ->
-              Human.fromResponse(reader)
-            }
-            1 -> node = readObject<GetHuman.Data.Node>(RESPONSE_FIELDS[1]) { reader ->
-              Node.fromResponse(reader)
-            }
+            0 -> id = readString(RESPONSE_FIELDS[0])
+            1 -> name = readString(RESPONSE_FIELDS[1])
+            2 -> height = readDouble(RESPONSE_FIELDS[2])
             else -> break
           }
         }
-        GetHuman.Data(
-          human = human!!,
-          node = node!!
+        GetHuman.Data.Human(
+          id = id!!,
+          name = name!!,
+          height = height!!
         )
       }
     }
 
-    override fun toResponse(writer: ResponseWriter, value: GetHuman.Data) {
-      writer.writeObject(RESPONSE_FIELDS[0]) { writer ->
-        Human.toResponse(writer, value.human)
-      }
-      writer.writeObject(RESPONSE_FIELDS[1]) { writer ->
-        Node.toResponse(writer, value.node)
+    override fun toResponse(writer: ResponseWriter, value: GetHuman.Data.Human) {
+      writer.writeString(RESPONSE_FIELDS[0], value.id)
+      writer.writeString(RESPONSE_FIELDS[1], value.name)
+      writer.writeDouble(RESPONSE_FIELDS[2], value.height)
+    }
+  }
+
+  object Node : ResponseAdapter<GetHuman.Data.Node> {
+    private val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
+      ResponseField.forString("__typename", "__typename", null, false, null)
+    )
+
+    override fun fromResponse(reader: ResponseReader, __typename: String?): GetHuman.Data.Node {
+      val typename = __typename ?: reader.readString(RESPONSE_FIELDS[0])
+      return when(typename) {
+        "Human" -> HumanNode.fromResponse(reader, typename)
+        else -> OtherNode.fromResponse(reader, typename)
       }
     }
 
-    object Human : ResponseAdapter<GetHuman.Data.Human> {
+    override fun toResponse(writer: ResponseWriter, value: GetHuman.Data.Node) {
+      when(value) {
+        is GetHuman.Data.Node.HumanNode -> HumanNode.toResponse(writer, value)
+        is GetHuman.Data.Node.OtherNode -> OtherNode.toResponse(writer, value)
+      }
+    }
+
+    object HumanNode : ResponseAdapter<GetHuman.Data.Node.HumanNode> {
       private val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
-        ResponseField.forString("id", "id", null, false, null),
-        ResponseField.forString("name", "name", null, false, null),
+        ResponseField.forString("__typename", "__typename", null, false, null),
         ResponseField.forDouble("height", "height", null, false, null)
       )
 
-      override fun fromResponse(reader: ResponseReader, __typename: String?): GetHuman.Data.Human {
+      override fun fromResponse(reader: ResponseReader, __typename: String?):
+          GetHuman.Data.Node.HumanNode {
         return reader.run {
-          var id: String? = null
-          var name: String? = null
+          var __typename: String? = __typename
           var height: Double? = null
           while(true) {
             when (selectField(RESPONSE_FIELDS)) {
-              0 -> id = readString(RESPONSE_FIELDS[0])
-              1 -> name = readString(RESPONSE_FIELDS[1])
-              2 -> height = readDouble(RESPONSE_FIELDS[2])
+              0 -> __typename = readString(RESPONSE_FIELDS[0])
+              1 -> height = readDouble(RESPONSE_FIELDS[1])
               else -> break
             }
           }
-          GetHuman.Data.Human(
-            id = id!!,
-            name = name!!,
+          GetHuman.Data.Node.HumanNode(
+            __typename = __typename!!,
             height = height!!
           )
         }
       }
 
-      override fun toResponse(writer: ResponseWriter, value: GetHuman.Data.Human) {
-        writer.writeString(RESPONSE_FIELDS[0], value.id)
-        writer.writeString(RESPONSE_FIELDS[1], value.name)
-        writer.writeDouble(RESPONSE_FIELDS[2], value.height)
+      override fun toResponse(writer: ResponseWriter, value: GetHuman.Data.Node.HumanNode) {
+        writer.writeString(RESPONSE_FIELDS[0], value.__typename)
+        writer.writeDouble(RESPONSE_FIELDS[1], value.height)
       }
     }
 
-    object Node : ResponseAdapter<GetHuman.Data.Node> {
+    object OtherNode : ResponseAdapter<GetHuman.Data.Node.OtherNode> {
       private val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
         ResponseField.forString("__typename", "__typename", null, false, null)
       )
 
-      override fun fromResponse(reader: ResponseReader, __typename: String?): GetHuman.Data.Node {
-        val typename = __typename ?: reader.readString(RESPONSE_FIELDS[0])
-        return when(typename) {
-          "Human" -> HumanNode.fromResponse(reader, typename)
-          else -> OtherNode.fromResponse(reader, typename)
-        }
-      }
-
-      override fun toResponse(writer: ResponseWriter, value: GetHuman.Data.Node) {
-        when(value) {
-          is GetHuman.Data.Node.HumanNode -> HumanNode.toResponse(writer, value)
-          is GetHuman.Data.Node.OtherNode -> OtherNode.toResponse(writer, value)
-        }
-      }
-
-      object HumanNode : ResponseAdapter<GetHuman.Data.Node.HumanNode> {
-        private val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
-          ResponseField.forString("__typename", "__typename", null, false, null),
-          ResponseField.forDouble("height", "height", null, false, null)
-        )
-
-        override fun fromResponse(reader: ResponseReader, __typename: String?):
-            GetHuman.Data.Node.HumanNode {
-          return reader.run {
-            var __typename: String? = __typename
-            var height: Double? = null
-            while(true) {
-              when (selectField(RESPONSE_FIELDS)) {
-                0 -> __typename = readString(RESPONSE_FIELDS[0])
-                1 -> height = readDouble(RESPONSE_FIELDS[1])
-                else -> break
-              }
+      override fun fromResponse(reader: ResponseReader, __typename: String?):
+          GetHuman.Data.Node.OtherNode {
+        return reader.run {
+          var __typename: String? = __typename
+          while(true) {
+            when (selectField(RESPONSE_FIELDS)) {
+              0 -> __typename = readString(RESPONSE_FIELDS[0])
+              else -> break
             }
-            GetHuman.Data.Node.HumanNode(
-              __typename = __typename!!,
-              height = height!!
-            )
           }
-        }
-
-        override fun toResponse(writer: ResponseWriter, value: GetHuman.Data.Node.HumanNode) {
-          writer.writeString(RESPONSE_FIELDS[0], value.__typename)
-          writer.writeDouble(RESPONSE_FIELDS[1], value.height)
+          GetHuman.Data.Node.OtherNode(
+            __typename = __typename!!
+          )
         }
       }
 
-      object OtherNode : ResponseAdapter<GetHuman.Data.Node.OtherNode> {
-        private val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
-          ResponseField.forString("__typename", "__typename", null, false, null)
-        )
-
-        override fun fromResponse(reader: ResponseReader, __typename: String?):
-            GetHuman.Data.Node.OtherNode {
-          return reader.run {
-            var __typename: String? = __typename
-            while(true) {
-              when (selectField(RESPONSE_FIELDS)) {
-                0 -> __typename = readString(RESPONSE_FIELDS[0])
-                else -> break
-              }
-            }
-            GetHuman.Data.Node.OtherNode(
-              __typename = __typename!!
-            )
-          }
-        }
-
-        override fun toResponse(writer: ResponseWriter, value: GetHuman.Data.Node.OtherNode) {
-          writer.writeString(RESPONSE_FIELDS[0], value.__typename)
-        }
+      override fun toResponse(writer: ResponseWriter, value: GetHuman.Data.Node.OtherNode) {
+        writer.writeString(RESPONSE_FIELDS[0], value.__typename)
       }
     }
   }
