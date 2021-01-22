@@ -22,7 +22,7 @@ import kotlin.collections.List
 object TestQuery_ResponseAdapter : ResponseAdapter<TestQuery.Data> {
   private val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
     ResponseField(
-      type = ResponseField.Type.List(ResponseField.Type.Named("Review")),
+      type = ResponseField.Type.List(ResponseField.Type.Named("Review", ResponseField.Kind.OBJECT)),
       responseName = "reviews",
       fieldName = "reviews",
       arguments = mapOf<String, Any?>(
@@ -32,7 +32,7 @@ object TestQuery_ResponseAdapter : ResponseAdapter<TestQuery.Data> {
       conditions = emptyList(),
     ),
     ResponseField(
-      type = ResponseField.Type.NotNull(ResponseField.Type.Named("Int")),
+      type = ResponseField.Type.NotNull(ResponseField.Type.Named("Int", ResponseField.Kind.OTHER)),
       responseName = "testNullableArguments",
       fieldName = "testNullableArguments",
       arguments = mapOf<String, Any?>(
@@ -81,14 +81,15 @@ object TestQuery_ResponseAdapter : ResponseAdapter<TestQuery.Data> {
   object Review : ResponseAdapter<TestQuery.Data.Review> {
     private val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
       ResponseField(
-        type = ResponseField.Type.NotNull(ResponseField.Type.Named("Int")),
+        type = ResponseField.Type.NotNull(ResponseField.Type.Named("Int",
+            ResponseField.Kind.OTHER)),
         responseName = "stars",
         fieldName = "stars",
         arguments = emptyMap(),
         conditions = emptyList(),
       ),
       ResponseField(
-        type = ResponseField.Type.Named("String"),
+        type = ResponseField.Type.Named("String", ResponseField.Kind.OTHER),
         responseName = "commentary",
         fieldName = "commentary",
         arguments = emptyMap(),

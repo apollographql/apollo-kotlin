@@ -22,28 +22,31 @@ import kotlin.collections.List
 object HumanDetailsImpl_ResponseAdapter : ResponseAdapter<HumanDetailsImpl.Data> {
   private val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
     ResponseField(
-      type = ResponseField.Type.NotNull(ResponseField.Type.Named("String")),
+      type = ResponseField.Type.NotNull(ResponseField.Type.Named("String",
+          ResponseField.Kind.OTHER)),
       responseName = "__typename",
       fieldName = "__typename",
       arguments = emptyMap(),
       conditions = emptyList(),
     ),
     ResponseField(
-      type = ResponseField.Type.NotNull(ResponseField.Type.Named("String")),
+      type = ResponseField.Type.NotNull(ResponseField.Type.Named("String",
+          ResponseField.Kind.OTHER)),
       responseName = "name",
       fieldName = "name",
       arguments = emptyMap(),
       conditions = emptyList(),
     ),
     ResponseField(
-      type = ResponseField.Type.NotNull(ResponseField.Type.Named("URL")),
+      type = ResponseField.Type.NotNull(ResponseField.Type.Named("URL", ResponseField.Kind.OTHER)),
       responseName = "profileLink",
       fieldName = "profileLink",
       arguments = emptyMap(),
       conditions = emptyList(),
     ),
     ResponseField(
-      type = ResponseField.Type.NotNull(ResponseField.Type.Named("FriendsConnection")),
+      type = ResponseField.Type.NotNull(ResponseField.Type.Named("FriendsConnection",
+          ResponseField.Kind.OBJECT)),
       responseName = "friendsConnection",
       fieldName = "friendsConnection",
       arguments = emptyMap(),
@@ -89,7 +92,8 @@ object HumanDetailsImpl_ResponseAdapter : ResponseAdapter<HumanDetailsImpl.Data>
   object FriendsConnection : ResponseAdapter<HumanDetailsImpl.Data.FriendsConnection> {
     private val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
       ResponseField(
-        type = ResponseField.Type.List(ResponseField.Type.Named("FriendsEdge")),
+        type = ResponseField.Type.List(ResponseField.Type.Named("FriendsEdge",
+            ResponseField.Kind.OBJECT)),
         responseName = "edges",
         fieldName = "edges",
         arguments = emptyMap(),
@@ -129,7 +133,7 @@ object HumanDetailsImpl_ResponseAdapter : ResponseAdapter<HumanDetailsImpl.Data>
     object Edge : ResponseAdapter<HumanDetailsImpl.Data.FriendsConnection.Edge> {
       private val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
         ResponseField(
-          type = ResponseField.Type.Named("Character"),
+          type = ResponseField.Type.Named("Character", ResponseField.Kind.OBJECT),
           responseName = "node",
           fieldName = "node",
           arguments = emptyMap(),
@@ -169,7 +173,8 @@ object HumanDetailsImpl_ResponseAdapter : ResponseAdapter<HumanDetailsImpl.Data>
       object Node : ResponseAdapter<HumanDetailsImpl.Data.FriendsConnection.Edge.Node> {
         private val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
           ResponseField(
-            type = ResponseField.Type.NotNull(ResponseField.Type.Named("String")),
+            type = ResponseField.Type.NotNull(ResponseField.Type.Named("String",
+                ResponseField.Kind.OTHER)),
             responseName = "name",
             fieldName = "name",
             arguments = emptyMap(),

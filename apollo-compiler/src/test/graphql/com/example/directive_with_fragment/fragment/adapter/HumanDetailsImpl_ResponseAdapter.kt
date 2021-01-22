@@ -20,14 +20,15 @@ import kotlin.Suppress
 object HumanDetailsImpl_ResponseAdapter : ResponseAdapter<HumanDetailsImpl.Data> {
   private val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
     ResponseField(
-      type = ResponseField.Type.NotNull(ResponseField.Type.Named("String")),
+      type = ResponseField.Type.NotNull(ResponseField.Type.Named("String",
+          ResponseField.Kind.OTHER)),
       responseName = "__typename",
       fieldName = "__typename",
       arguments = emptyMap(),
       conditions = emptyList(),
     ),
     ResponseField(
-      type = ResponseField.Type.Named("String"),
+      type = ResponseField.Type.Named("String", ResponseField.Kind.OTHER),
       responseName = "homePlanet",
       fieldName = "homePlanet",
       arguments = emptyMap(),

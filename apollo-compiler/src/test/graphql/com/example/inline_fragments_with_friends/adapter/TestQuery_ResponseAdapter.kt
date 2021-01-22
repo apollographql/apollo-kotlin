@@ -23,7 +23,7 @@ import kotlin.collections.List
 object TestQuery_ResponseAdapter : ResponseAdapter<TestQuery.Data> {
   private val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
     ResponseField(
-      type = ResponseField.Type.Named("Character"),
+      type = ResponseField.Type.Named("Character", ResponseField.Kind.OBJECT),
       responseName = "hero",
       fieldName = "hero",
       arguments = emptyMap(),
@@ -61,14 +61,16 @@ object TestQuery_ResponseAdapter : ResponseAdapter<TestQuery.Data> {
   object Hero : ResponseAdapter<TestQuery.Data.Hero> {
     private val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
       ResponseField(
-        type = ResponseField.Type.NotNull(ResponseField.Type.Named("String")),
+        type = ResponseField.Type.NotNull(ResponseField.Type.Named("String",
+            ResponseField.Kind.OTHER)),
         responseName = "__typename",
         fieldName = "__typename",
         arguments = emptyMap(),
         conditions = emptyList(),
       ),
       ResponseField(
-        type = ResponseField.Type.NotNull(ResponseField.Type.Named("String")),
+        type = ResponseField.Type.NotNull(ResponseField.Type.Named("String",
+            ResponseField.Kind.OTHER)),
         responseName = "name",
         fieldName = "name",
         arguments = emptyMap(),
@@ -96,28 +98,31 @@ object TestQuery_ResponseAdapter : ResponseAdapter<TestQuery.Data> {
     object HumanHero : ResponseAdapter<TestQuery.Data.Hero.HumanHero> {
       private val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
         ResponseField(
-          type = ResponseField.Type.NotNull(ResponseField.Type.Named("String")),
+          type = ResponseField.Type.NotNull(ResponseField.Type.Named("String",
+              ResponseField.Kind.OTHER)),
           responseName = "__typename",
           fieldName = "__typename",
           arguments = emptyMap(),
           conditions = emptyList(),
         ),
         ResponseField(
-          type = ResponseField.Type.NotNull(ResponseField.Type.Named("String")),
+          type = ResponseField.Type.NotNull(ResponseField.Type.Named("String",
+              ResponseField.Kind.OTHER)),
           responseName = "name",
           fieldName = "name",
           arguments = emptyMap(),
           conditions = emptyList(),
         ),
         ResponseField(
-          type = ResponseField.Type.Named("Float"),
+          type = ResponseField.Type.Named("Float", ResponseField.Kind.OTHER),
           responseName = "height",
           fieldName = "height",
           arguments = emptyMap(),
           conditions = emptyList(),
         ),
         ResponseField(
-          type = ResponseField.Type.List(ResponseField.Type.Named("Character")),
+          type = ResponseField.Type.List(ResponseField.Type.Named("Character",
+              ResponseField.Kind.OBJECT)),
           responseName = "friends",
           fieldName = "friends",
           arguments = emptyMap(),
@@ -169,7 +174,8 @@ object TestQuery_ResponseAdapter : ResponseAdapter<TestQuery.Data> {
         private val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
           ResponseField(
             type =
-                ResponseField.Type.NotNull(ResponseField.Type.List(ResponseField.Type.Named("Episode"))),
+                ResponseField.Type.NotNull(ResponseField.Type.List(ResponseField.Type.Named("Episode",
+                ResponseField.Kind.OTHER))),
             responseName = "appearsIn",
             fieldName = "appearsIn",
             arguments = emptyMap(),
@@ -206,28 +212,31 @@ object TestQuery_ResponseAdapter : ResponseAdapter<TestQuery.Data> {
     object DroidHero : ResponseAdapter<TestQuery.Data.Hero.DroidHero> {
       private val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
         ResponseField(
-          type = ResponseField.Type.NotNull(ResponseField.Type.Named("String")),
+          type = ResponseField.Type.NotNull(ResponseField.Type.Named("String",
+              ResponseField.Kind.OTHER)),
           responseName = "__typename",
           fieldName = "__typename",
           arguments = emptyMap(),
           conditions = emptyList(),
         ),
         ResponseField(
-          type = ResponseField.Type.NotNull(ResponseField.Type.Named("String")),
+          type = ResponseField.Type.NotNull(ResponseField.Type.Named("String",
+              ResponseField.Kind.OTHER)),
           responseName = "name",
           fieldName = "name",
           arguments = emptyMap(),
           conditions = emptyList(),
         ),
         ResponseField(
-          type = ResponseField.Type.Named("String"),
+          type = ResponseField.Type.Named("String", ResponseField.Kind.OTHER),
           responseName = "primaryFunction",
           fieldName = "primaryFunction",
           arguments = emptyMap(),
           conditions = emptyList(),
         ),
         ResponseField(
-          type = ResponseField.Type.List(ResponseField.Type.Named("Character")),
+          type = ResponseField.Type.List(ResponseField.Type.Named("Character",
+              ResponseField.Kind.OBJECT)),
           responseName = "friends",
           fieldName = "friends",
           arguments = emptyMap(),
@@ -278,7 +287,8 @@ object TestQuery_ResponseAdapter : ResponseAdapter<TestQuery.Data> {
       object Friend : ResponseAdapter<TestQuery.Data.Hero.DroidHero.Friend> {
         private val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
           ResponseField(
-            type = ResponseField.Type.NotNull(ResponseField.Type.Named("String")),
+            type = ResponseField.Type.NotNull(ResponseField.Type.Named("String",
+                ResponseField.Kind.OTHER)),
             responseName = "id",
             fieldName = "id",
             arguments = emptyMap(),
@@ -312,14 +322,16 @@ object TestQuery_ResponseAdapter : ResponseAdapter<TestQuery.Data> {
     object OtherHero : ResponseAdapter<TestQuery.Data.Hero.OtherHero> {
       private val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
         ResponseField(
-          type = ResponseField.Type.NotNull(ResponseField.Type.Named("String")),
+          type = ResponseField.Type.NotNull(ResponseField.Type.Named("String",
+              ResponseField.Kind.OTHER)),
           responseName = "__typename",
           fieldName = "__typename",
           arguments = emptyMap(),
           conditions = emptyList(),
         ),
         ResponseField(
-          type = ResponseField.Type.NotNull(ResponseField.Type.Named("String")),
+          type = ResponseField.Type.NotNull(ResponseField.Type.Named("String",
+              ResponseField.Kind.OTHER)),
           responseName = "name",
           fieldName = "name",
           arguments = emptyMap(),

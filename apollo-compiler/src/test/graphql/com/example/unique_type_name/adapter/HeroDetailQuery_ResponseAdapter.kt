@@ -24,7 +24,7 @@ import kotlin.collections.List
 object HeroDetailQuery_ResponseAdapter : ResponseAdapter<HeroDetailQuery.Data> {
   private val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
     ResponseField(
-      type = ResponseField.Type.Named("Character"),
+      type = ResponseField.Type.Named("Character", ResponseField.Kind.OBJECT),
       responseName = "heroDetailQuery",
       fieldName = "heroDetailQuery",
       arguments = emptyMap(),
@@ -65,21 +65,24 @@ object HeroDetailQuery_ResponseAdapter : ResponseAdapter<HeroDetailQuery.Data> {
       ResponseAdapter<com.example.unique_type_name.HeroDetailQuery.Data.HeroDetailQuery> {
     private val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
       ResponseField(
-        type = ResponseField.Type.NotNull(ResponseField.Type.Named("String")),
+        type = ResponseField.Type.NotNull(ResponseField.Type.Named("String",
+            ResponseField.Kind.OTHER)),
         responseName = "__typename",
         fieldName = "__typename",
         arguments = emptyMap(),
         conditions = emptyList(),
       ),
       ResponseField(
-        type = ResponseField.Type.NotNull(ResponseField.Type.Named("String")),
+        type = ResponseField.Type.NotNull(ResponseField.Type.Named("String",
+            ResponseField.Kind.OTHER)),
         responseName = "name",
         fieldName = "name",
         arguments = emptyMap(),
         conditions = emptyList(),
       ),
       ResponseField(
-        type = ResponseField.Type.List(ResponseField.Type.Named("Character")),
+        type = ResponseField.Type.List(ResponseField.Type.Named("Character",
+            ResponseField.Kind.OBJECT)),
         responseName = "friends",
         fieldName = "friends",
         arguments = emptyMap(),
@@ -109,28 +112,31 @@ object HeroDetailQuery_ResponseAdapter : ResponseAdapter<HeroDetailQuery.Data> {
         {
       private val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
         ResponseField(
-          type = ResponseField.Type.NotNull(ResponseField.Type.Named("String")),
+          type = ResponseField.Type.NotNull(ResponseField.Type.Named("String",
+              ResponseField.Kind.OTHER)),
           responseName = "__typename",
           fieldName = "__typename",
           arguments = emptyMap(),
           conditions = emptyList(),
         ),
         ResponseField(
-          type = ResponseField.Type.NotNull(ResponseField.Type.Named("String")),
+          type = ResponseField.Type.NotNull(ResponseField.Type.Named("String",
+              ResponseField.Kind.OTHER)),
           responseName = "name",
           fieldName = "name",
           arguments = emptyMap(),
           conditions = emptyList(),
         ),
         ResponseField(
-          type = ResponseField.Type.List(ResponseField.Type.Named("Character")),
+          type = ResponseField.Type.List(ResponseField.Type.Named("Character",
+              ResponseField.Kind.OBJECT)),
           responseName = "friends",
           fieldName = "friends",
           arguments = emptyMap(),
           conditions = emptyList(),
         ),
         ResponseField(
-          type = ResponseField.Type.Named("Float"),
+          type = ResponseField.Type.Named("Float", ResponseField.Kind.OTHER),
           responseName = "height",
           fieldName = "height",
           arguments = emptyMap(),
@@ -184,7 +190,8 @@ object HeroDetailQuery_ResponseAdapter : ResponseAdapter<HeroDetailQuery.Data> {
           {
         private val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
           ResponseField(
-            type = ResponseField.Type.NotNull(ResponseField.Type.Named("String")),
+            type = ResponseField.Type.NotNull(ResponseField.Type.Named("String",
+                ResponseField.Kind.OTHER)),
             responseName = "name",
             fieldName = "name",
             arguments = emptyMap(),
@@ -192,14 +199,16 @@ object HeroDetailQuery_ResponseAdapter : ResponseAdapter<HeroDetailQuery.Data> {
           ),
           ResponseField(
             type =
-                ResponseField.Type.NotNull(ResponseField.Type.List(ResponseField.Type.Named("Episode"))),
+                ResponseField.Type.NotNull(ResponseField.Type.List(ResponseField.Type.Named("Episode",
+                ResponseField.Kind.OTHER))),
             responseName = "appearsIn",
             fieldName = "appearsIn",
             arguments = emptyMap(),
             conditions = emptyList(),
           ),
           ResponseField(
-            type = ResponseField.Type.List(ResponseField.Type.Named("Character")),
+            type = ResponseField.Type.List(ResponseField.Type.Named("Character",
+                ResponseField.Kind.OBJECT)),
             responseName = "friends",
             fieldName = "friends",
             arguments = emptyMap(),
@@ -252,7 +261,8 @@ object HeroDetailQuery_ResponseAdapter : ResponseAdapter<HeroDetailQuery.Data> {
             {
           private val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
             ResponseField(
-              type = ResponseField.Type.NotNull(ResponseField.Type.Named("String")),
+              type = ResponseField.Type.NotNull(ResponseField.Type.Named("String",
+                  ResponseField.Kind.OTHER)),
               responseName = "__typename",
               fieldName = "__typename",
               arguments = emptyMap(),
@@ -283,21 +293,24 @@ object HeroDetailQuery_ResponseAdapter : ResponseAdapter<HeroDetailQuery.Data> {
               {
             private val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
               ResponseField(
-                type = ResponseField.Type.NotNull(ResponseField.Type.Named("String")),
+                type = ResponseField.Type.NotNull(ResponseField.Type.Named("String",
+                    ResponseField.Kind.OTHER)),
                 responseName = "__typename",
                 fieldName = "__typename",
                 arguments = emptyMap(),
                 conditions = emptyList(),
               ),
               ResponseField(
-                type = ResponseField.Type.NotNull(ResponseField.Type.Named("String")),
+                type = ResponseField.Type.NotNull(ResponseField.Type.Named("String",
+                    ResponseField.Kind.OTHER)),
                 responseName = "name",
                 fieldName = "name",
                 arguments = emptyMap(),
                 conditions = emptyList(),
               ),
               ResponseField(
-                type = ResponseField.Type.NotNull(ResponseField.Type.Named("FriendsConnection")),
+                type = ResponseField.Type.NotNull(ResponseField.Type.Named("FriendsConnection",
+                    ResponseField.Kind.OBJECT)),
                 responseName = "friendsConnection",
                 fieldName = "friendsConnection",
                 arguments = emptyMap(),
@@ -343,14 +356,15 @@ object HeroDetailQuery_ResponseAdapter : ResponseAdapter<HeroDetailQuery.Data> {
                 {
               private val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
                 ResponseField(
-                  type = ResponseField.Type.Named("Int"),
+                  type = ResponseField.Type.Named("Int", ResponseField.Kind.OTHER),
                   responseName = "totalCount",
                   fieldName = "totalCount",
                   arguments = emptyMap(),
                   conditions = emptyList(),
                 ),
                 ResponseField(
-                  type = ResponseField.Type.List(ResponseField.Type.Named("FriendsEdge")),
+                  type = ResponseField.Type.List(ResponseField.Type.Named("FriendsEdge",
+                      ResponseField.Kind.OBJECT)),
                   responseName = "edges",
                   fieldName = "edges",
                   arguments = emptyMap(),
@@ -396,7 +410,7 @@ object HeroDetailQuery_ResponseAdapter : ResponseAdapter<HeroDetailQuery.Data> {
                   {
                 private val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
                   ResponseField(
-                    type = ResponseField.Type.Named("Character"),
+                    type = ResponseField.Type.Named("Character", ResponseField.Kind.OBJECT),
                     responseName = "node",
                     fieldName = "node",
                     arguments = emptyMap(),
@@ -438,7 +452,8 @@ object HeroDetailQuery_ResponseAdapter : ResponseAdapter<HeroDetailQuery.Data> {
                     {
                   private val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
                     ResponseField(
-                      type = ResponseField.Type.NotNull(ResponseField.Type.Named("String")),
+                      type = ResponseField.Type.NotNull(ResponseField.Type.Named("String",
+                          ResponseField.Kind.OTHER)),
                       responseName = "name",
                       fieldName = "name",
                       arguments = emptyMap(),
@@ -476,7 +491,8 @@ object HeroDetailQuery_ResponseAdapter : ResponseAdapter<HeroDetailQuery.Data> {
               {
             private val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
               ResponseField(
-                type = ResponseField.Type.NotNull(ResponseField.Type.Named("String")),
+                type = ResponseField.Type.NotNull(ResponseField.Type.Named("String",
+                    ResponseField.Kind.OTHER)),
                 responseName = "__typename",
                 fieldName = "__typename",
                 arguments = emptyMap(),
@@ -514,21 +530,24 @@ object HeroDetailQuery_ResponseAdapter : ResponseAdapter<HeroDetailQuery.Data> {
         {
       private val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
         ResponseField(
-          type = ResponseField.Type.NotNull(ResponseField.Type.Named("String")),
+          type = ResponseField.Type.NotNull(ResponseField.Type.Named("String",
+              ResponseField.Kind.OTHER)),
           responseName = "__typename",
           fieldName = "__typename",
           arguments = emptyMap(),
           conditions = emptyList(),
         ),
         ResponseField(
-          type = ResponseField.Type.NotNull(ResponseField.Type.Named("String")),
+          type = ResponseField.Type.NotNull(ResponseField.Type.Named("String",
+              ResponseField.Kind.OTHER)),
           responseName = "name",
           fieldName = "name",
           arguments = emptyMap(),
           conditions = emptyList(),
         ),
         ResponseField(
-          type = ResponseField.Type.List(ResponseField.Type.Named("Character")),
+          type = ResponseField.Type.List(ResponseField.Type.Named("Character",
+              ResponseField.Kind.OBJECT)),
           responseName = "friends",
           fieldName = "friends",
           arguments = emptyMap(),
@@ -578,7 +597,8 @@ object HeroDetailQuery_ResponseAdapter : ResponseAdapter<HeroDetailQuery.Data> {
           {
         private val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
           ResponseField(
-            type = ResponseField.Type.NotNull(ResponseField.Type.Named("String")),
+            type = ResponseField.Type.NotNull(ResponseField.Type.Named("String",
+                ResponseField.Kind.OTHER)),
             responseName = "name",
             fieldName = "name",
             arguments = emptyMap(),

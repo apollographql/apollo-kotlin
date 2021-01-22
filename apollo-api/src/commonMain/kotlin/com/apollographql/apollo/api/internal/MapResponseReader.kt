@@ -7,6 +7,7 @@ import com.apollographql.apollo.api.Operation
 import com.apollographql.apollo.api.ResponseField
 import com.apollographql.apollo.api.CustomScalar
 import com.apollographql.apollo.api.CustomScalarAdapters
+import com.apollographql.apollo.api.ResponseField.Companion.customScalarName
 import com.apollographql.apollo.api.internal.Utils.shouldSkip
 import com.apollographql.apollo.api.toNumber
 
@@ -97,7 +98,7 @@ class MapResponseReader<M : Map<String, Any?>>(
     if (value == null) {
       result = null
     } else {
-      val scalarTypeAdapter: CustomScalarAdapter<T> = customScalarAdapters.adapterFor((field.type as ResponseField.Type.Named).name)
+      val scalarTypeAdapter: CustomScalarAdapter<T> = customScalarAdapters.adapterFor(field.type.customScalarName())
       result = scalarTypeAdapter.decode(fromRawValue(value))
       checkValue(field, result)
     }

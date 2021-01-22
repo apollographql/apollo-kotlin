@@ -21,7 +21,7 @@ import kotlin.Suppress
 object TestQuery_ResponseAdapter : ResponseAdapter<TestQuery.Data> {
   private val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
     ResponseField(
-      type = ResponseField.Type.Named("Character"),
+      type = ResponseField.Type.Named("Character", ResponseField.Kind.OBJECT),
       responseName = "hero",
       fieldName = "hero",
       arguments = emptyMap(),
@@ -59,7 +59,7 @@ object TestQuery_ResponseAdapter : ResponseAdapter<TestQuery.Data> {
   object Hero : ResponseAdapter<TestQuery.Data.Hero> {
     private val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
       ResponseField(
-        type = ResponseField.Type.Named("String"),
+        type = ResponseField.Type.Named("String", ResponseField.Kind.OTHER),
         responseName = "name",
         fieldName = "name",
         arguments = emptyMap(),
@@ -68,7 +68,7 @@ object TestQuery_ResponseAdapter : ResponseAdapter<TestQuery.Data> {
         ),
       ),
       ResponseField(
-        type = ResponseField.Type.Named("FriendsConnection"),
+        type = ResponseField.Type.Named("FriendsConnection", ResponseField.Kind.OBJECT),
         responseName = "friendsConnection",
         fieldName = "friendsConnection",
         arguments = emptyMap(),
@@ -112,7 +112,7 @@ object TestQuery_ResponseAdapter : ResponseAdapter<TestQuery.Data> {
     object FriendsConnection : ResponseAdapter<TestQuery.Data.Hero.FriendsConnection> {
       private val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
         ResponseField(
-          type = ResponseField.Type.Named("Int"),
+          type = ResponseField.Type.Named("Int", ResponseField.Kind.OTHER),
           responseName = "totalCount",
           fieldName = "totalCount",
           arguments = emptyMap(),

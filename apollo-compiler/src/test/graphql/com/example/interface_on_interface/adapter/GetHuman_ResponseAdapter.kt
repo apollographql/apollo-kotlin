@@ -21,14 +21,16 @@ import kotlin.Suppress
 object GetHuman_ResponseAdapter : ResponseAdapter<GetHuman.Data> {
   private val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
     ResponseField(
-      type = ResponseField.Type.NotNull(ResponseField.Type.Named("Human")),
+      type = ResponseField.Type.NotNull(ResponseField.Type.Named("Human",
+          ResponseField.Kind.OBJECT)),
       responseName = "human",
       fieldName = "human",
       arguments = emptyMap(),
       conditions = emptyList(),
     ),
     ResponseField(
-      type = ResponseField.Type.NotNull(ResponseField.Type.Named("Node")),
+      type = ResponseField.Type.NotNull(ResponseField.Type.Named("Node",
+          ResponseField.Kind.OBJECT)),
       responseName = "node",
       fieldName = "node",
       arguments = emptyMap(),
@@ -70,21 +72,24 @@ object GetHuman_ResponseAdapter : ResponseAdapter<GetHuman.Data> {
   object Human : ResponseAdapter<GetHuman.Data.Human> {
     private val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
       ResponseField(
-        type = ResponseField.Type.NotNull(ResponseField.Type.Named("String")),
+        type = ResponseField.Type.NotNull(ResponseField.Type.Named("String",
+            ResponseField.Kind.OTHER)),
         responseName = "id",
         fieldName = "id",
         arguments = emptyMap(),
         conditions = emptyList(),
       ),
       ResponseField(
-        type = ResponseField.Type.NotNull(ResponseField.Type.Named("String")),
+        type = ResponseField.Type.NotNull(ResponseField.Type.Named("String",
+            ResponseField.Kind.OTHER)),
         responseName = "name",
         fieldName = "name",
         arguments = emptyMap(),
         conditions = emptyList(),
       ),
       ResponseField(
-        type = ResponseField.Type.NotNull(ResponseField.Type.Named("Float")),
+        type = ResponseField.Type.NotNull(ResponseField.Type.Named("Float",
+            ResponseField.Kind.OTHER)),
         responseName = "height",
         fieldName = "height",
         arguments = emptyMap(),
@@ -123,7 +128,8 @@ object GetHuman_ResponseAdapter : ResponseAdapter<GetHuman.Data> {
   object Node : ResponseAdapter<GetHuman.Data.Node> {
     private val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
       ResponseField(
-        type = ResponseField.Type.NotNull(ResponseField.Type.Named("String")),
+        type = ResponseField.Type.NotNull(ResponseField.Type.Named("String",
+            ResponseField.Kind.OTHER)),
         responseName = "__typename",
         fieldName = "__typename",
         arguments = emptyMap(),
@@ -149,14 +155,16 @@ object GetHuman_ResponseAdapter : ResponseAdapter<GetHuman.Data> {
     object HumanNode : ResponseAdapter<GetHuman.Data.Node.HumanNode> {
       private val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
         ResponseField(
-          type = ResponseField.Type.NotNull(ResponseField.Type.Named("String")),
+          type = ResponseField.Type.NotNull(ResponseField.Type.Named("String",
+              ResponseField.Kind.OTHER)),
           responseName = "__typename",
           fieldName = "__typename",
           arguments = emptyMap(),
           conditions = emptyList(),
         ),
         ResponseField(
-          type = ResponseField.Type.NotNull(ResponseField.Type.Named("Float")),
+          type = ResponseField.Type.NotNull(ResponseField.Type.Named("Float",
+              ResponseField.Kind.OTHER)),
           responseName = "height",
           fieldName = "height",
           arguments = emptyMap(),
@@ -192,7 +200,8 @@ object GetHuman_ResponseAdapter : ResponseAdapter<GetHuman.Data> {
     object OtherNode : ResponseAdapter<GetHuman.Data.Node.OtherNode> {
       private val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
         ResponseField(
-          type = ResponseField.Type.NotNull(ResponseField.Type.Named("String")),
+          type = ResponseField.Type.NotNull(ResponseField.Type.Named("String",
+              ResponseField.Kind.OTHER)),
           responseName = "__typename",
           fieldName = "__typename",
           arguments = emptyMap(),

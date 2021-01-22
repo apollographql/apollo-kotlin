@@ -22,7 +22,7 @@ import kotlin.collections.List
 object TestQuery_ResponseAdapter : ResponseAdapter<TestQuery.Data> {
   private val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
     ResponseField(
-      type = ResponseField.Type.Named("Starship"),
+      type = ResponseField.Type.Named("Starship", ResponseField.Kind.OBJECT),
       responseName = "starship",
       fieldName = "starship",
       arguments = mapOf<String, Any?>(
@@ -63,14 +63,16 @@ object TestQuery_ResponseAdapter : ResponseAdapter<TestQuery.Data> {
   object Starship : ResponseAdapter<TestQuery.Data.Starship> {
     private val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
       ResponseField(
-        type = ResponseField.Type.NotNull(ResponseField.Type.Named("String")),
+        type = ResponseField.Type.NotNull(ResponseField.Type.Named("String",
+            ResponseField.Kind.OTHER)),
         responseName = "id",
         fieldName = "id",
         arguments = emptyMap(),
         conditions = emptyList(),
       ),
       ResponseField(
-        type = ResponseField.Type.NotNull(ResponseField.Type.Named("String")),
+        type = ResponseField.Type.NotNull(ResponseField.Type.Named("String",
+            ResponseField.Kind.OTHER)),
         responseName = "name",
         fieldName = "name",
         arguments = emptyMap(),
@@ -78,7 +80,8 @@ object TestQuery_ResponseAdapter : ResponseAdapter<TestQuery.Data> {
       ),
       ResponseField(
         type =
-            ResponseField.Type.List(ResponseField.Type.NotNull(ResponseField.Type.List(ResponseField.Type.NotNull(ResponseField.Type.Named("Float"))))),
+            ResponseField.Type.List(ResponseField.Type.NotNull(ResponseField.Type.List(ResponseField.Type.NotNull(ResponseField.Type.Named("Float",
+            ResponseField.Kind.OTHER))))),
         responseName = "coordinates",
         fieldName = "coordinates",
         arguments = emptyMap(),

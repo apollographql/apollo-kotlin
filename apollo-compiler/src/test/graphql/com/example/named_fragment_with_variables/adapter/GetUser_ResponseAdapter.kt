@@ -21,7 +21,8 @@ import kotlin.collections.List
 object GetUser_ResponseAdapter : ResponseAdapter<GetUser.Data> {
   private val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
     ResponseField(
-      type = ResponseField.Type.NotNull(ResponseField.Type.Named("String")),
+      type = ResponseField.Type.NotNull(ResponseField.Type.Named("String",
+          ResponseField.Kind.OTHER)),
       responseName = "__typename",
       fieldName = "__typename",
       arguments = emptyMap(),
@@ -47,14 +48,15 @@ object GetUser_ResponseAdapter : ResponseAdapter<GetUser.Data> {
   object QueryData : ResponseAdapter<GetUser.Data.QueryData> {
     private val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
       ResponseField(
-        type = ResponseField.Type.NotNull(ResponseField.Type.Named("String")),
+        type = ResponseField.Type.NotNull(ResponseField.Type.Named("String",
+            ResponseField.Kind.OTHER)),
         responseName = "__typename",
         fieldName = "__typename",
         arguments = emptyMap(),
         conditions = emptyList(),
       ),
       ResponseField(
-        type = ResponseField.Type.Named("Organization"),
+        type = ResponseField.Type.Named("Organization", ResponseField.Kind.OBJECT),
         responseName = "organization",
         fieldName = "organization",
         arguments = mapOf<String, Any?>(
@@ -99,7 +101,8 @@ object GetUser_ResponseAdapter : ResponseAdapter<GetUser.Data> {
     object Organization : ResponseAdapter<GetUser.Data.QueryData.Organization> {
       private val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
         ResponseField(
-          type = ResponseField.Type.NotNull(ResponseField.Type.Named("String")),
+          type = ResponseField.Type.NotNull(ResponseField.Type.Named("String",
+              ResponseField.Kind.OTHER)),
           responseName = "id",
           fieldName = "id",
           arguments = emptyMap(),
@@ -107,7 +110,8 @@ object GetUser_ResponseAdapter : ResponseAdapter<GetUser.Data> {
         ),
         ResponseField(
           type =
-              ResponseField.Type.NotNull(ResponseField.Type.List(ResponseField.Type.NotNull(ResponseField.Type.Named("User")))),
+              ResponseField.Type.NotNull(ResponseField.Type.List(ResponseField.Type.NotNull(ResponseField.Type.Named("User",
+              ResponseField.Kind.OBJECT)))),
           responseName = "user",
           fieldName = "user",
           arguments = mapOf<String, Any?>(
@@ -153,7 +157,8 @@ object GetUser_ResponseAdapter : ResponseAdapter<GetUser.Data> {
       object User : ResponseAdapter<GetUser.Data.QueryData.Organization.User> {
         private val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
           ResponseField(
-            type = ResponseField.Type.NotNull(ResponseField.Type.Named("String")),
+            type = ResponseField.Type.NotNull(ResponseField.Type.Named("String",
+                ResponseField.Kind.OTHER)),
             responseName = "__typename",
             fieldName = "__typename",
             arguments = emptyMap(),
@@ -181,28 +186,32 @@ object GetUser_ResponseAdapter : ResponseAdapter<GetUser.Data> {
         object UserUser : ResponseAdapter<GetUser.Data.QueryData.Organization.User.UserUser> {
           private val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
             ResponseField(
-              type = ResponseField.Type.NotNull(ResponseField.Type.Named("String")),
+              type = ResponseField.Type.NotNull(ResponseField.Type.Named("String",
+                  ResponseField.Kind.OTHER)),
               responseName = "__typename",
               fieldName = "__typename",
               arguments = emptyMap(),
               conditions = emptyList(),
             ),
             ResponseField(
-              type = ResponseField.Type.NotNull(ResponseField.Type.Named("String")),
+              type = ResponseField.Type.NotNull(ResponseField.Type.Named("String",
+                  ResponseField.Kind.OTHER)),
               responseName = "firstName",
               fieldName = "firstName",
               arguments = emptyMap(),
               conditions = emptyList(),
             ),
             ResponseField(
-              type = ResponseField.Type.NotNull(ResponseField.Type.Named("String")),
+              type = ResponseField.Type.NotNull(ResponseField.Type.Named("String",
+                  ResponseField.Kind.OTHER)),
               responseName = "lastName",
               fieldName = "lastName",
               arguments = emptyMap(),
               conditions = emptyList(),
             ),
             ResponseField(
-              type = ResponseField.Type.NotNull(ResponseField.Type.Named("String")),
+              type = ResponseField.Type.NotNull(ResponseField.Type.Named("String",
+                  ResponseField.Kind.OTHER)),
               responseName = "avatar",
               fieldName = "avatar",
               arguments = mapOf<String, Any?>(
@@ -250,7 +259,8 @@ object GetUser_ResponseAdapter : ResponseAdapter<GetUser.Data> {
         object OtherUser : ResponseAdapter<GetUser.Data.QueryData.Organization.User.OtherUser> {
           private val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
             ResponseField(
-              type = ResponseField.Type.NotNull(ResponseField.Type.Named("String")),
+              type = ResponseField.Type.NotNull(ResponseField.Type.Named("String",
+                  ResponseField.Kind.OTHER)),
               responseName = "__typename",
               fieldName = "__typename",
               arguments = emptyMap(),
@@ -286,7 +296,8 @@ object GetUser_ResponseAdapter : ResponseAdapter<GetUser.Data> {
   object OtherData : ResponseAdapter<GetUser.Data.OtherData> {
     private val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
       ResponseField(
-        type = ResponseField.Type.NotNull(ResponseField.Type.Named("String")),
+        type = ResponseField.Type.NotNull(ResponseField.Type.Named("String",
+            ResponseField.Kind.OTHER)),
         responseName = "__typename",
         fieldName = "__typename",
         arguments = emptyMap(),

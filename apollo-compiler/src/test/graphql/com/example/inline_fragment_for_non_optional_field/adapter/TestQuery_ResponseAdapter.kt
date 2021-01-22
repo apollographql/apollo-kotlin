@@ -21,7 +21,8 @@ import kotlin.Suppress
 object TestQuery_ResponseAdapter : ResponseAdapter<TestQuery.Data> {
   private val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
     ResponseField(
-      type = ResponseField.Type.NotNull(ResponseField.Type.Named("Character")),
+      type = ResponseField.Type.NotNull(ResponseField.Type.Named("Character",
+          ResponseField.Kind.OBJECT)),
       responseName = "nonOptionalHero",
       fieldName = "nonOptionalHero",
       arguments = mapOf<String, Any?>(
@@ -56,14 +57,16 @@ object TestQuery_ResponseAdapter : ResponseAdapter<TestQuery.Data> {
   object NonOptionalHero : ResponseAdapter<TestQuery.Data.NonOptionalHero> {
     private val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
       ResponseField(
-        type = ResponseField.Type.NotNull(ResponseField.Type.Named("String")),
+        type = ResponseField.Type.NotNull(ResponseField.Type.Named("String",
+            ResponseField.Kind.OTHER)),
         responseName = "__typename",
         fieldName = "__typename",
         arguments = emptyMap(),
         conditions = emptyList(),
       ),
       ResponseField(
-        type = ResponseField.Type.NotNull(ResponseField.Type.Named("String")),
+        type = ResponseField.Type.NotNull(ResponseField.Type.Named("String",
+            ResponseField.Kind.OTHER)),
         responseName = "name",
         fieldName = "name",
         arguments = emptyMap(),
@@ -91,21 +94,23 @@ object TestQuery_ResponseAdapter : ResponseAdapter<TestQuery.Data> {
         ResponseAdapter<TestQuery.Data.NonOptionalHero.HumanNonOptionalHero> {
       private val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
         ResponseField(
-          type = ResponseField.Type.NotNull(ResponseField.Type.Named("String")),
+          type = ResponseField.Type.NotNull(ResponseField.Type.Named("String",
+              ResponseField.Kind.OTHER)),
           responseName = "__typename",
           fieldName = "__typename",
           arguments = emptyMap(),
           conditions = emptyList(),
         ),
         ResponseField(
-          type = ResponseField.Type.NotNull(ResponseField.Type.Named("String")),
+          type = ResponseField.Type.NotNull(ResponseField.Type.Named("String",
+              ResponseField.Kind.OTHER)),
           responseName = "name",
           fieldName = "name",
           arguments = emptyMap(),
           conditions = emptyList(),
         ),
         ResponseField(
-          type = ResponseField.Type.Named("Float"),
+          type = ResponseField.Type.Named("Float", ResponseField.Kind.OTHER),
           responseName = "height",
           fieldName = "height",
           arguments = emptyMap(),
@@ -147,14 +152,16 @@ object TestQuery_ResponseAdapter : ResponseAdapter<TestQuery.Data> {
         ResponseAdapter<TestQuery.Data.NonOptionalHero.OtherNonOptionalHero> {
       private val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
         ResponseField(
-          type = ResponseField.Type.NotNull(ResponseField.Type.Named("String")),
+          type = ResponseField.Type.NotNull(ResponseField.Type.Named("String",
+              ResponseField.Kind.OTHER)),
           responseName = "__typename",
           fieldName = "__typename",
           arguments = emptyMap(),
           conditions = emptyList(),
         ),
         ResponseField(
-          type = ResponseField.Type.NotNull(ResponseField.Type.Named("String")),
+          type = ResponseField.Type.NotNull(ResponseField.Type.Named("String",
+              ResponseField.Kind.OTHER)),
           responseName = "name",
           fieldName = "name",
           arguments = emptyMap(),

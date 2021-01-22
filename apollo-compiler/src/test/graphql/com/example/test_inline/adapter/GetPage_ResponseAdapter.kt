@@ -21,7 +21,8 @@ import kotlin.collections.List
 object GetPage_ResponseAdapter : ResponseAdapter<GetPage.Data> {
   private val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
     ResponseField(
-      type = ResponseField.Type.NotNull(ResponseField.Type.Named("Collection")),
+      type = ResponseField.Type.NotNull(ResponseField.Type.Named("Collection",
+          ResponseField.Kind.OBJECT)),
       responseName = "collection",
       fieldName = "collection",
       arguments = emptyMap(),
@@ -55,7 +56,8 @@ object GetPage_ResponseAdapter : ResponseAdapter<GetPage.Data> {
   object Collection : ResponseAdapter<GetPage.Data.Collection> {
     private val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
       ResponseField(
-        type = ResponseField.Type.NotNull(ResponseField.Type.Named("String")),
+        type = ResponseField.Type.NotNull(ResponseField.Type.Named("String",
+            ResponseField.Kind.OTHER)),
         responseName = "__typename",
         fieldName = "__typename",
         arguments = emptyMap(),
@@ -63,7 +65,8 @@ object GetPage_ResponseAdapter : ResponseAdapter<GetPage.Data> {
       ),
       ResponseField(
         type =
-            ResponseField.Type.NotNull(ResponseField.Type.List(ResponseField.Type.NotNull(ResponseField.Type.Named("Item")))),
+            ResponseField.Type.NotNull(ResponseField.Type.List(ResponseField.Type.NotNull(ResponseField.Type.Named("Item",
+            ResponseField.Kind.OBJECT)))),
         responseName = "items",
         fieldName = "items",
         arguments = emptyMap(),
@@ -91,7 +94,8 @@ object GetPage_ResponseAdapter : ResponseAdapter<GetPage.Data> {
         ResponseAdapter<GetPage.Data.Collection.ParticularCollectionCollection> {
       private val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
         ResponseField(
-          type = ResponseField.Type.NotNull(ResponseField.Type.Named("String")),
+          type = ResponseField.Type.NotNull(ResponseField.Type.Named("String",
+              ResponseField.Kind.OTHER)),
           responseName = "__typename",
           fieldName = "__typename",
           arguments = emptyMap(),
@@ -99,7 +103,8 @@ object GetPage_ResponseAdapter : ResponseAdapter<GetPage.Data> {
         ),
         ResponseField(
           type =
-              ResponseField.Type.NotNull(ResponseField.Type.List(ResponseField.Type.NotNull(ResponseField.Type.Named("Item")))),
+              ResponseField.Type.NotNull(ResponseField.Type.List(ResponseField.Type.NotNull(ResponseField.Type.Named("Item",
+              ResponseField.Kind.OBJECT)))),
           responseName = "items",
           fieldName = "items",
           arguments = emptyMap(),
@@ -143,7 +148,8 @@ object GetPage_ResponseAdapter : ResponseAdapter<GetPage.Data> {
       object Item : ResponseAdapter<GetPage.Data.Collection.ParticularCollectionCollection.Item> {
         private val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
           ResponseField(
-            type = ResponseField.Type.NotNull(ResponseField.Type.Named("String")),
+            type = ResponseField.Type.NotNull(ResponseField.Type.Named("String",
+                ResponseField.Kind.OTHER)),
             responseName = "__typename",
             fieldName = "__typename",
             arguments = emptyMap(),
@@ -173,21 +179,24 @@ object GetPage_ResponseAdapter : ResponseAdapter<GetPage.Data> {
             {
           private val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
             ResponseField(
-              type = ResponseField.Type.NotNull(ResponseField.Type.Named("String")),
+              type = ResponseField.Type.NotNull(ResponseField.Type.Named("String",
+                  ResponseField.Kind.OTHER)),
               responseName = "title",
               fieldName = "title",
               arguments = emptyMap(),
               conditions = emptyList(),
             ),
             ResponseField(
-              type = ResponseField.Type.NotNull(ResponseField.Type.Named("String")),
+              type = ResponseField.Type.NotNull(ResponseField.Type.Named("String",
+                  ResponseField.Kind.OTHER)),
               responseName = "__typename",
               fieldName = "__typename",
               arguments = emptyMap(),
               conditions = emptyList(),
             ),
             ResponseField(
-              type = ResponseField.Type.NotNull(ResponseField.Type.Named("String")),
+              type = ResponseField.Type.NotNull(ResponseField.Type.Named("String",
+                  ResponseField.Kind.OTHER)),
               responseName = "image",
               fieldName = "image",
               arguments = emptyMap(),
@@ -229,14 +238,16 @@ object GetPage_ResponseAdapter : ResponseAdapter<GetPage.Data> {
             ResponseAdapter<GetPage.Data.Collection.ParticularCollectionCollection.Item.OtherItem> {
           private val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
             ResponseField(
-              type = ResponseField.Type.NotNull(ResponseField.Type.Named("String")),
+              type = ResponseField.Type.NotNull(ResponseField.Type.Named("String",
+                  ResponseField.Kind.OTHER)),
               responseName = "title",
               fieldName = "title",
               arguments = emptyMap(),
               conditions = emptyList(),
             ),
             ResponseField(
-              type = ResponseField.Type.NotNull(ResponseField.Type.Named("String")),
+              type = ResponseField.Type.NotNull(ResponseField.Type.Named("String",
+                  ResponseField.Kind.OTHER)),
               responseName = "__typename",
               fieldName = "__typename",
               arguments = emptyMap(),
@@ -275,7 +286,8 @@ object GetPage_ResponseAdapter : ResponseAdapter<GetPage.Data> {
     object OtherCollection : ResponseAdapter<GetPage.Data.Collection.OtherCollection> {
       private val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
         ResponseField(
-          type = ResponseField.Type.NotNull(ResponseField.Type.Named("String")),
+          type = ResponseField.Type.NotNull(ResponseField.Type.Named("String",
+              ResponseField.Kind.OTHER)),
           responseName = "__typename",
           fieldName = "__typename",
           arguments = emptyMap(),
@@ -283,7 +295,8 @@ object GetPage_ResponseAdapter : ResponseAdapter<GetPage.Data> {
         ),
         ResponseField(
           type =
-              ResponseField.Type.NotNull(ResponseField.Type.List(ResponseField.Type.NotNull(ResponseField.Type.Named("Item")))),
+              ResponseField.Type.NotNull(ResponseField.Type.List(ResponseField.Type.NotNull(ResponseField.Type.Named("Item",
+              ResponseField.Kind.OBJECT)))),
           responseName = "items",
           fieldName = "items",
           arguments = emptyMap(),
@@ -327,7 +340,8 @@ object GetPage_ResponseAdapter : ResponseAdapter<GetPage.Data> {
       object Item : ResponseAdapter<GetPage.Data.Collection.OtherCollection.Item> {
         private val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
           ResponseField(
-            type = ResponseField.Type.NotNull(ResponseField.Type.Named("String")),
+            type = ResponseField.Type.NotNull(ResponseField.Type.Named("String",
+                ResponseField.Kind.OTHER)),
             responseName = "title",
             fieldName = "title",
             arguments = emptyMap(),

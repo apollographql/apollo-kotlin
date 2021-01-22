@@ -21,7 +21,7 @@ import kotlin.Suppress
 object TestQuery_ResponseAdapter : ResponseAdapter<TestQuery.Data> {
   private val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
     ResponseField(
-      type = ResponseField.Type.Named("Human"),
+      type = ResponseField.Type.Named("Human", ResponseField.Kind.OBJECT),
       responseName = "heroWithReview",
       fieldName = "heroWithReview",
       arguments = mapOf<String, Any?>(
@@ -81,14 +81,15 @@ object TestQuery_ResponseAdapter : ResponseAdapter<TestQuery.Data> {
   object HeroWithReview : ResponseAdapter<TestQuery.Data.HeroWithReview> {
     private val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
       ResponseField(
-        type = ResponseField.Type.NotNull(ResponseField.Type.Named("String")),
+        type = ResponseField.Type.NotNull(ResponseField.Type.Named("String",
+            ResponseField.Kind.OTHER)),
         responseName = "name",
         fieldName = "name",
         arguments = emptyMap(),
         conditions = emptyList(),
       ),
       ResponseField(
-        type = ResponseField.Type.Named("Float"),
+        type = ResponseField.Type.Named("Float", ResponseField.Kind.OTHER),
         responseName = "height",
         fieldName = "height",
         arguments = mapOf<String, Any?>(

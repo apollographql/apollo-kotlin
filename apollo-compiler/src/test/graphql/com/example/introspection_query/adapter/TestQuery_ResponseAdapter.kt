@@ -21,14 +21,16 @@ import kotlin.collections.List
 object TestQuery_ResponseAdapter : ResponseAdapter<TestQuery.Data> {
   private val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
     ResponseField(
-      type = ResponseField.Type.NotNull(ResponseField.Type.Named("__Schema")),
+      type = ResponseField.Type.NotNull(ResponseField.Type.Named("__Schema",
+          ResponseField.Kind.OBJECT)),
       responseName = "__schema",
       fieldName = "__schema",
       arguments = emptyMap(),
       conditions = emptyList(),
     ),
     ResponseField(
-      type = ResponseField.Type.NotNull(ResponseField.Type.Named("__Type")),
+      type = ResponseField.Type.NotNull(ResponseField.Type.Named("__Type",
+          ResponseField.Kind.OBJECT)),
       responseName = "__type",
       fieldName = "__type",
       arguments = mapOf<String, Any?>(
@@ -71,7 +73,8 @@ object TestQuery_ResponseAdapter : ResponseAdapter<TestQuery.Data> {
   object __Schema : ResponseAdapter<TestQuery.Data.__Schema> {
     private val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
       ResponseField(
-        type = ResponseField.Type.NotNull(ResponseField.Type.Named("__Type")),
+        type = ResponseField.Type.NotNull(ResponseField.Type.Named("__Type",
+            ResponseField.Kind.OBJECT)),
         responseName = "queryType",
         fieldName = "queryType",
         arguments = emptyMap(),
@@ -79,7 +82,8 @@ object TestQuery_ResponseAdapter : ResponseAdapter<TestQuery.Data> {
       ),
       ResponseField(
         type =
-            ResponseField.Type.NotNull(ResponseField.Type.List(ResponseField.Type.NotNull(ResponseField.Type.Named("__Type")))),
+            ResponseField.Type.NotNull(ResponseField.Type.List(ResponseField.Type.NotNull(ResponseField.Type.Named("__Type",
+            ResponseField.Kind.OBJECT)))),
         responseName = "types",
         fieldName = "types",
         arguments = emptyMap(),
@@ -126,7 +130,7 @@ object TestQuery_ResponseAdapter : ResponseAdapter<TestQuery.Data> {
     object QueryType : ResponseAdapter<TestQuery.Data.__Schema.QueryType> {
       private val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
         ResponseField(
-          type = ResponseField.Type.Named("String"),
+          type = ResponseField.Type.Named("String", ResponseField.Kind.OTHER),
           responseName = "name",
           fieldName = "name",
           arguments = emptyMap(),
@@ -158,7 +162,7 @@ object TestQuery_ResponseAdapter : ResponseAdapter<TestQuery.Data> {
     object Type : ResponseAdapter<TestQuery.Data.__Schema.Type> {
       private val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
         ResponseField(
-          type = ResponseField.Type.Named("String"),
+          type = ResponseField.Type.Named("String", ResponseField.Kind.OTHER),
           responseName = "name",
           fieldName = "name",
           arguments = emptyMap(),
@@ -191,7 +195,7 @@ object TestQuery_ResponseAdapter : ResponseAdapter<TestQuery.Data> {
   object __Type : ResponseAdapter<TestQuery.Data.__Type> {
     private val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
       ResponseField(
-        type = ResponseField.Type.Named("String"),
+        type = ResponseField.Type.Named("String", ResponseField.Kind.OTHER),
         responseName = "name",
         fieldName = "name",
         arguments = emptyMap(),
