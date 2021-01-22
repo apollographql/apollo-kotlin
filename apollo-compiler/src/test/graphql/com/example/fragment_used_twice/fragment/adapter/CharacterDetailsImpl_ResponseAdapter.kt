@@ -26,7 +26,7 @@ object CharacterDetailsImpl_ResponseAdapter : ResponseAdapter<CharacterDetailsIm
       fieldName = "__typename",
       arguments = emptyMap(),
       conditions = emptyList(),
-      fields = emptyArray(),
+      possibleFieldSets = emptyMap(),
     ),
     ResponseField(
       type = ResponseField.Type.NotNull(ResponseField.Type.Named.Other("String")),
@@ -34,7 +34,7 @@ object CharacterDetailsImpl_ResponseAdapter : ResponseAdapter<CharacterDetailsIm
       fieldName = "name",
       arguments = emptyMap(),
       conditions = emptyList(),
-      fields = emptyArray(),
+      possibleFieldSets = emptyMap(),
     ),
     ResponseField(
       type = ResponseField.Type.NotNull(ResponseField.Type.Named.Other("Date")),
@@ -42,7 +42,7 @@ object CharacterDetailsImpl_ResponseAdapter : ResponseAdapter<CharacterDetailsIm
       fieldName = "birthDate",
       arguments = emptyMap(),
       conditions = emptyList(),
-      fields = emptyArray(),
+      possibleFieldSets = emptyMap(),
     )
   )
 

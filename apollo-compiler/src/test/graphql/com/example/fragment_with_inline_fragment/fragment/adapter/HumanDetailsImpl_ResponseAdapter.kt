@@ -25,7 +25,7 @@ object HumanDetailsImpl_ResponseAdapter : ResponseAdapter<HumanDetailsImpl.Data>
       fieldName = "__typename",
       arguments = emptyMap(),
       conditions = emptyList(),
-      fields = emptyArray(),
+      possibleFieldSets = emptyMap(),
     ),
     ResponseField(
       type = ResponseField.Type.NotNull(ResponseField.Type.Named.Other("String")),
@@ -33,7 +33,7 @@ object HumanDetailsImpl_ResponseAdapter : ResponseAdapter<HumanDetailsImpl.Data>
       fieldName = "name",
       arguments = emptyMap(),
       conditions = emptyList(),
-      fields = emptyArray(),
+      possibleFieldSets = emptyMap(),
     )
   )
 

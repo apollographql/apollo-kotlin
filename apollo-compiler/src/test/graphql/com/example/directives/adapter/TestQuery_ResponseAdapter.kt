@@ -26,7 +26,9 @@ object TestQuery_ResponseAdapter : ResponseAdapter<TestQuery.Data> {
       fieldName = "hero",
       arguments = emptyMap(),
       conditions = emptyList(),
-      fields = Hero.RESPONSE_FIELDS,
+      possibleFieldSets = mapOf(
+        "" to Hero.RESPONSE_FIELDS
+      ),
     )
   )
 
@@ -67,7 +69,7 @@ object TestQuery_ResponseAdapter : ResponseAdapter<TestQuery.Data> {
         conditions = listOf(
           ResponseField.Condition.booleanCondition("includeName", false)
         ),
-        fields = emptyArray(),
+        possibleFieldSets = emptyMap(),
       ),
       ResponseField(
         type = ResponseField.Type.Named.Object("FriendsConnection"),
@@ -77,7 +79,9 @@ object TestQuery_ResponseAdapter : ResponseAdapter<TestQuery.Data> {
         conditions = listOf(
           ResponseField.Condition.booleanCondition("skipFriends", true)
         ),
-        fields = FriendsConnection.RESPONSE_FIELDS,
+        possibleFieldSets = mapOf(
+          "" to FriendsConnection.RESPONSE_FIELDS
+        ),
       )
     )
 
@@ -120,7 +124,7 @@ object TestQuery_ResponseAdapter : ResponseAdapter<TestQuery.Data> {
           fieldName = "totalCount",
           arguments = emptyMap(),
           conditions = emptyList(),
-          fields = emptyArray(),
+          possibleFieldSets = emptyMap(),
         )
       )
 

@@ -25,7 +25,7 @@ object HumanDetailsImpl_ResponseAdapter : ResponseAdapter<HumanDetailsImpl.Data>
       fieldName = "__typename",
       arguments = emptyMap(),
       conditions = emptyList(),
-      fields = emptyArray(),
+      possibleFieldSets = emptyMap(),
     ),
     ResponseField(
       type = ResponseField.Type.Named.Other("String"),
@@ -33,7 +33,7 @@ object HumanDetailsImpl_ResponseAdapter : ResponseAdapter<HumanDetailsImpl.Data>
       fieldName = "homePlanet",
       arguments = emptyMap(),
       conditions = emptyList(),
-      fields = emptyArray(),
+      possibleFieldSets = emptyMap(),
     )
   )
 

@@ -38,8 +38,18 @@ class TestQuery : Query<TestQuery.Data> {
     interface Hero {
       val __typename: String
 
+      /**
+       * The name of the character
+       */
+      val name: String
+
       interface Droid : Hero {
         override val __typename: String
+
+        /**
+         * The name of the character
+         */
+        override val name: String
 
         /**
          * This droid's primary function
@@ -47,57 +57,44 @@ class TestQuery : Query<TestQuery.Data> {
         val primaryFunction: String?
       }
 
-      interface Human : Hero {
-        override val __typename: String
-
-        /**
-         * What this human calls themselves
-         */
-        val name: String
-      }
-
       data class DroidHero(
         override val __typename: String,
+        /**
+         * The name of the character
+         */
+        override val name: String,
         /**
          * This droid's primary function
          */
         override val primaryFunction: String?
       ) : Hero, Droid
 
-      data class HumanHero(
+      data class OtherHero(
         override val __typename: String,
         /**
-         * What this human calls themselves
+         * The name of the character
          */
         override val name: String
-      ) : Hero, Human
-
-      data class OtherHero(
-        override val __typename: String
       ) : Hero
 
       companion object {
         fun Hero.asDroid(): Droid? = this as? Droid
-
-        fun Hero.asHuman(): Human? = this as? Human
       }
     }
   }
 
   companion object {
     const val OPERATION_ID: String =
-        "a1ac9cf596f6f987346e5ad4063e220eb9923b39825b3b20d6f32f0623776b9f"
+        "726f5fd3f4648f4ae21ce47a45020e326e693a3a9c521a08e76ef8cb1e791f3b"
 
     val QUERY_DOCUMENT: String = QueryDocumentMinifier.minify(
           """
           |query TestQuery {
           |  hero {
           |    __typename
+          |    name
           |    ... on Droid {
           |      primaryFunction
-          |    }
-          |    ... on Human {
-          |      name
           |    }
           |  }
           |}

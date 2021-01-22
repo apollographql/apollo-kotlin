@@ -33,7 +33,9 @@ object CreateReviewForEpisodeMutation_ResponseAdapter :
           "kind" to "Variable",
           "variableName" to "review")),
       conditions = emptyList(),
-      fields = CreateReview.RESPONSE_FIELDS,
+      possibleFieldSets = mapOf(
+        "" to CreateReview.RESPONSE_FIELDS
+      ),
     )
   )
 
@@ -73,7 +75,7 @@ object CreateReviewForEpisodeMutation_ResponseAdapter :
         fieldName = "stars",
         arguments = emptyMap(),
         conditions = emptyList(),
-        fields = emptyArray(),
+        possibleFieldSets = emptyMap(),
       ),
       ResponseField(
         type = ResponseField.Type.Named.Other("String"),
@@ -81,7 +83,7 @@ object CreateReviewForEpisodeMutation_ResponseAdapter :
         fieldName = "commentary",
         arguments = emptyMap(),
         conditions = emptyList(),
-        fields = emptyArray(),
+        possibleFieldSets = emptyMap(),
       )
     )
 

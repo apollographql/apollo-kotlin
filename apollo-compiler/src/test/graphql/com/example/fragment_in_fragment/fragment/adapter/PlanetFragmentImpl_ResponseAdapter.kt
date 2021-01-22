@@ -25,7 +25,7 @@ object PlanetFragmentImpl_ResponseAdapter : ResponseAdapter<PlanetFragmentImpl.D
       fieldName = "__typename",
       arguments = emptyMap(),
       conditions = emptyList(),
-      fields = emptyArray(),
+      possibleFieldSets = emptyMap(),
     ),
     ResponseField(
       type = ResponseField.Type.Named.Other("String"),
@@ -33,7 +33,7 @@ object PlanetFragmentImpl_ResponseAdapter : ResponseAdapter<PlanetFragmentImpl.D
       fieldName = "name",
       arguments = emptyMap(),
       conditions = emptyList(),
-      fields = emptyArray(),
+      possibleFieldSets = emptyMap(),
     )
   )
 

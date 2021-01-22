@@ -18,6 +18,7 @@ import kotlin.Suppress
     "RemoveExplicitTypeArguments", "NestedLambdaShadowedImplicitParameter", "PropertyName",
     "RemoveRedundantQualifierName")
 object TestQuery_ResponseAdapter : ResponseAdapter<TestQuery.Data> {
+<<<<<<< HEAD
   val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
     ResponseField(
       type = ResponseField.Type.NotNull(ResponseField.Type.Named.Other("String")),
@@ -29,8 +30,10 @@ object TestQuery_ResponseAdapter : ResponseAdapter<TestQuery.Data> {
     )
   )
 
+=======
+>>>>>>> 59f0461fb... fix field sets for types with multiple implementations
   override fun fromResponse(reader: ResponseReader, __typename: String?): TestQuery.Data {
-    val typename = __typename ?: reader.readString(RESPONSE_FIELDS[0])
+    val typename = __typename ?: reader.readString(ResponseField.Typename)
     return when(typename) {
       "Query" -> QueryData.fromResponse(reader, typename)
       else -> OtherData.fromResponse(reader, typename)
@@ -52,7 +55,7 @@ object TestQuery_ResponseAdapter : ResponseAdapter<TestQuery.Data> {
         fieldName = "__typename",
         arguments = emptyMap(),
         conditions = emptyList(),
-        fields = emptyArray(),
+        possibleFieldSets = emptyMap(),
       ),
       ResponseField(
         type = ResponseField.Type.Named.Object("Character"),
@@ -60,7 +63,9 @@ object TestQuery_ResponseAdapter : ResponseAdapter<TestQuery.Data> {
         fieldName = "hero",
         arguments = emptyMap(),
         conditions = emptyList(),
-        fields = Hero.RESPONSE_FIELDS,
+        possibleFieldSets = mapOf(
+          "" to Hero.RESPONSE_FIELDS
+        ),
       )
     )
 
@@ -104,7 +109,7 @@ object TestQuery_ResponseAdapter : ResponseAdapter<TestQuery.Data> {
           fieldName = "name",
           arguments = emptyMap(),
           conditions = emptyList(),
-          fields = emptyArray(),
+          possibleFieldSets = emptyMap(),
         )
       )
 
@@ -138,7 +143,7 @@ object TestQuery_ResponseAdapter : ResponseAdapter<TestQuery.Data> {
         fieldName = "__typename",
         arguments = emptyMap(),
         conditions = emptyList(),
-        fields = emptyArray(),
+        possibleFieldSets = emptyMap(),
       )
     )
 

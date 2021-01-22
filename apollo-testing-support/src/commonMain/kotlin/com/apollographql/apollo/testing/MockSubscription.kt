@@ -42,7 +42,7 @@ class MockSubscription(
                     fieldName = "name",
                     arguments = emptyMap(),
                     conditions = emptyList(),
-                    fields = emptyArray()
+                    possibleFieldSets = emptyMap()
                 )
             )!!
         )

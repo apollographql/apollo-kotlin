@@ -29,7 +29,10 @@ object TestOperation_ResponseAdapter : ResponseAdapter<TestOperation.Data> {
       fieldName = "random",
       arguments = emptyMap(),
       conditions = emptyList(),
-      fields = Random.RESPONSE_FIELDS,
+      possibleFieldSets = mapOf(
+        "Human" to Random.BeingHumanRandom.RESPONSE_FIELDS,
+        "Wookie" to Random.BeingWookieRandom.RESPONSE_FIELDS,
+      ),
     )
   )
 
@@ -57,6 +60,7 @@ object TestOperation_ResponseAdapter : ResponseAdapter<TestOperation.Data> {
   }
 
   object Random : ResponseAdapter<TestOperation.Data.Random> {
+<<<<<<< HEAD
     val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
       ResponseField(
         type = ResponseField.Type.NotNull(ResponseField.Type.Named.Other("String")),
@@ -68,9 +72,11 @@ object TestOperation_ResponseAdapter : ResponseAdapter<TestOperation.Data> {
       )
     )
 
+=======
+>>>>>>> 59f0461fb... fix field sets for types with multiple implementations
     override fun fromResponse(reader: ResponseReader, __typename: String?):
         TestOperation.Data.Random {
-      val typename = __typename ?: reader.readString(RESPONSE_FIELDS[0])
+      val typename = __typename ?: reader.readString(ResponseField.Typename)
       return when(typename) {
         "Human" -> BeingHumanRandom.fromResponse(reader, typename)
         "Wookie" -> BeingWookieRandom.fromResponse(reader, typename)
@@ -94,7 +100,7 @@ object TestOperation_ResponseAdapter : ResponseAdapter<TestOperation.Data> {
           fieldName = "__typename",
           arguments = emptyMap(),
           conditions = emptyList(),
-          fields = emptyArray(),
+          possibleFieldSets = emptyMap(),
         ),
         ResponseField(
           type = ResponseField.Type.NotNull(ResponseField.Type.Named.Other("String")),
@@ -102,7 +108,7 @@ object TestOperation_ResponseAdapter : ResponseAdapter<TestOperation.Data> {
           fieldName = "name",
           arguments = emptyMap(),
           conditions = emptyList(),
-          fields = emptyArray(),
+          possibleFieldSets = emptyMap(),
         ),
         ResponseField(
           type =
@@ -111,7 +117,9 @@ object TestOperation_ResponseAdapter : ResponseAdapter<TestOperation.Data> {
           fieldName = "friends",
           arguments = emptyMap(),
           conditions = emptyList(),
-          fields = Friend.RESPONSE_FIELDS,
+          possibleFieldSets = mapOf(
+            "Wookie" to Friend.WookieFriend.RESPONSE_FIELDS,
+          ),
         ),
         ResponseField(
           type = ResponseField.Type.Named.Other("String"),
@@ -119,7 +127,7 @@ object TestOperation_ResponseAdapter : ResponseAdapter<TestOperation.Data> {
           fieldName = "profilePictureUrl",
           arguments = emptyMap(),
           conditions = emptyList(),
-          fields = emptyArray(),
+          possibleFieldSets = emptyMap(),
         )
       )
 
@@ -165,6 +173,7 @@ object TestOperation_ResponseAdapter : ResponseAdapter<TestOperation.Data> {
       }
 
       object Friend : ResponseAdapter<TestOperation.Data.Random.BeingHumanRandom.Friend> {
+<<<<<<< HEAD
         val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
           ResponseField(
             type = ResponseField.Type.NotNull(ResponseField.Type.Named.Other("String")),
@@ -176,9 +185,11 @@ object TestOperation_ResponseAdapter : ResponseAdapter<TestOperation.Data> {
           )
         )
 
+=======
+>>>>>>> 59f0461fb... fix field sets for types with multiple implementations
         override fun fromResponse(reader: ResponseReader, __typename: String?):
             TestOperation.Data.Random.BeingHumanRandom.Friend {
-          val typename = __typename ?: reader.readString(RESPONSE_FIELDS[0])
+          val typename = __typename ?: reader.readString(ResponseField.Typename)
           return when(typename) {
             "Wookie" -> WookieFriend.fromResponse(reader, typename)
             else -> OtherFriend.fromResponse(reader, typename)
@@ -202,7 +213,7 @@ object TestOperation_ResponseAdapter : ResponseAdapter<TestOperation.Data> {
               fieldName = "__typename",
               arguments = emptyMap(),
               conditions = emptyList(),
-              fields = emptyArray(),
+              possibleFieldSets = emptyMap(),
             ),
             ResponseField(
               type = ResponseField.Type.NotNull(ResponseField.Type.Named.Other("String")),
@@ -210,7 +221,7 @@ object TestOperation_ResponseAdapter : ResponseAdapter<TestOperation.Data> {
               fieldName = "name",
               arguments = emptyMap(),
               conditions = emptyList(),
-              fields = emptyArray(),
+              possibleFieldSets = emptyMap(),
             ),
             ResponseField(
               type = ResponseField.Type.Named.Other("Boolean"),
@@ -218,7 +229,7 @@ object TestOperation_ResponseAdapter : ResponseAdapter<TestOperation.Data> {
               fieldName = "isFamous",
               arguments = emptyMap(),
               conditions = emptyList(),
-              fields = emptyArray(),
+              possibleFieldSets = emptyMap(),
             ),
             ResponseField(
               type = ResponseField.Type.Named.Other("Float"),
@@ -226,7 +237,7 @@ object TestOperation_ResponseAdapter : ResponseAdapter<TestOperation.Data> {
               fieldName = "lifeExpectancy",
               arguments = emptyMap(),
               conditions = emptyList(),
-              fields = emptyArray(),
+              possibleFieldSets = emptyMap(),
             ),
             ResponseField(
               type = ResponseField.Type.NotNull(ResponseField.Type.Named.Other("Race")),
@@ -234,7 +245,7 @@ object TestOperation_ResponseAdapter : ResponseAdapter<TestOperation.Data> {
               fieldName = "race",
               arguments = emptyMap(),
               conditions = emptyList(),
-              fields = emptyArray(),
+              possibleFieldSets = emptyMap(),
             )
           )
 
@@ -285,7 +296,7 @@ object TestOperation_ResponseAdapter : ResponseAdapter<TestOperation.Data> {
               fieldName = "__typename",
               arguments = emptyMap(),
               conditions = emptyList(),
-              fields = emptyArray(),
+              possibleFieldSets = emptyMap(),
             ),
             ResponseField(
               type = ResponseField.Type.NotNull(ResponseField.Type.Named.Other("String")),
@@ -293,7 +304,7 @@ object TestOperation_ResponseAdapter : ResponseAdapter<TestOperation.Data> {
               fieldName = "name",
               arguments = emptyMap(),
               conditions = emptyList(),
-              fields = emptyArray(),
+              possibleFieldSets = emptyMap(),
             ),
             ResponseField(
               type = ResponseField.Type.Named.Other("Boolean"),
@@ -301,7 +312,7 @@ object TestOperation_ResponseAdapter : ResponseAdapter<TestOperation.Data> {
               fieldName = "isFamous",
               arguments = emptyMap(),
               conditions = emptyList(),
-              fields = emptyArray(),
+              possibleFieldSets = emptyMap(),
             )
           )
 
@@ -345,7 +356,7 @@ object TestOperation_ResponseAdapter : ResponseAdapter<TestOperation.Data> {
           fieldName = "__typename",
           arguments = emptyMap(),
           conditions = emptyList(),
-          fields = emptyArray(),
+          possibleFieldSets = emptyMap(),
         ),
         ResponseField(
           type = ResponseField.Type.NotNull(ResponseField.Type.Named.Other("String")),
@@ -353,7 +364,7 @@ object TestOperation_ResponseAdapter : ResponseAdapter<TestOperation.Data> {
           fieldName = "name",
           arguments = emptyMap(),
           conditions = emptyList(),
-          fields = emptyArray(),
+          possibleFieldSets = emptyMap(),
         ),
         ResponseField(
           type =
@@ -362,7 +373,9 @@ object TestOperation_ResponseAdapter : ResponseAdapter<TestOperation.Data> {
           fieldName = "friends",
           arguments = emptyMap(),
           conditions = emptyList(),
-          fields = Friend.RESPONSE_FIELDS,
+          possibleFieldSets = mapOf(
+            "Wookie" to Friend.WookieFriend.RESPONSE_FIELDS,
+          ),
         ),
         ResponseField(
           type = ResponseField.Type.NotNull(ResponseField.Type.Named.Other("Race")),
@@ -370,7 +383,7 @@ object TestOperation_ResponseAdapter : ResponseAdapter<TestOperation.Data> {
           fieldName = "race",
           arguments = emptyMap(),
           conditions = emptyList(),
-          fields = emptyArray(),
+          possibleFieldSets = emptyMap(),
         )
       )
 
@@ -416,6 +429,7 @@ object TestOperation_ResponseAdapter : ResponseAdapter<TestOperation.Data> {
       }
 
       object Friend : ResponseAdapter<TestOperation.Data.Random.BeingWookieRandom.Friend> {
+<<<<<<< HEAD
         val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
           ResponseField(
             type = ResponseField.Type.NotNull(ResponseField.Type.Named.Other("String")),
@@ -427,9 +441,11 @@ object TestOperation_ResponseAdapter : ResponseAdapter<TestOperation.Data> {
           )
         )
 
+=======
+>>>>>>> 59f0461fb... fix field sets for types with multiple implementations
         override fun fromResponse(reader: ResponseReader, __typename: String?):
             TestOperation.Data.Random.BeingWookieRandom.Friend {
-          val typename = __typename ?: reader.readString(RESPONSE_FIELDS[0])
+          val typename = __typename ?: reader.readString(ResponseField.Typename)
           return when(typename) {
             "Wookie" -> WookieFriend.fromResponse(reader, typename)
             else -> OtherFriend.fromResponse(reader, typename)
@@ -453,7 +469,7 @@ object TestOperation_ResponseAdapter : ResponseAdapter<TestOperation.Data> {
               fieldName = "__typename",
               arguments = emptyMap(),
               conditions = emptyList(),
-              fields = emptyArray(),
+              possibleFieldSets = emptyMap(),
             ),
             ResponseField(
               type = ResponseField.Type.NotNull(ResponseField.Type.Named.Other("String")),
@@ -461,7 +477,7 @@ object TestOperation_ResponseAdapter : ResponseAdapter<TestOperation.Data> {
               fieldName = "name",
               arguments = emptyMap(),
               conditions = emptyList(),
-              fields = emptyArray(),
+              possibleFieldSets = emptyMap(),
             ),
             ResponseField(
               type = ResponseField.Type.Named.Other("Float"),
@@ -469,7 +485,7 @@ object TestOperation_ResponseAdapter : ResponseAdapter<TestOperation.Data> {
               fieldName = "lifeExpectancy",
               arguments = emptyMap(),
               conditions = emptyList(),
-              fields = emptyArray(),
+              possibleFieldSets = emptyMap(),
             )
           )
 
@@ -512,7 +528,7 @@ object TestOperation_ResponseAdapter : ResponseAdapter<TestOperation.Data> {
               fieldName = "__typename",
               arguments = emptyMap(),
               conditions = emptyList(),
-              fields = emptyArray(),
+              possibleFieldSets = emptyMap(),
             ),
             ResponseField(
               type = ResponseField.Type.NotNull(ResponseField.Type.Named.Other("String")),
@@ -520,7 +536,7 @@ object TestOperation_ResponseAdapter : ResponseAdapter<TestOperation.Data> {
               fieldName = "name",
               arguments = emptyMap(),
               conditions = emptyList(),
-              fields = emptyArray(),
+              possibleFieldSets = emptyMap(),
             ),
             ResponseField(
               type = ResponseField.Type.Named.Other("Float"),
@@ -528,7 +544,7 @@ object TestOperation_ResponseAdapter : ResponseAdapter<TestOperation.Data> {
               fieldName = "lifeExpectancy",
               arguments = emptyMap(),
               conditions = emptyList(),
-              fields = emptyArray(),
+              possibleFieldSets = emptyMap(),
             )
           )
 
@@ -572,7 +588,7 @@ object TestOperation_ResponseAdapter : ResponseAdapter<TestOperation.Data> {
           fieldName = "__typename",
           arguments = emptyMap(),
           conditions = emptyList(),
-          fields = emptyArray(),
+          possibleFieldSets = emptyMap(),
         )
       )
 

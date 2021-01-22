@@ -25,7 +25,9 @@ object TestQuery_ResponseAdapter : ResponseAdapter<TestQuery.Data> {
       fieldName = "typeWithGraphQLKeywords",
       arguments = emptyMap(),
       conditions = emptyList(),
-      fields = TypeWithGraphQLKeywords.RESPONSE_FIELDS,
+      possibleFieldSets = mapOf(
+        "" to TypeWithGraphQLKeywords.RESPONSE_FIELDS
+      ),
     )
   )
 
@@ -64,7 +66,7 @@ object TestQuery_ResponseAdapter : ResponseAdapter<TestQuery.Data> {
         fieldName = "on",
         arguments = emptyMap(),
         conditions = emptyList(),
-        fields = emptyArray(),
+        possibleFieldSets = emptyMap(),
       ),
       ResponseField(
         type = ResponseField.Type.Named.Other("String"),
@@ -75,7 +77,7 @@ object TestQuery_ResponseAdapter : ResponseAdapter<TestQuery.Data> {
             "kind" to "Variable",
             "variableName" to "operation")),
         conditions = emptyList(),
-        fields = emptyArray(),
+        possibleFieldSets = emptyMap(),
       ),
       ResponseField(
         type = ResponseField.Type.Named.Other("String"),
@@ -87,7 +89,7 @@ object TestQuery_ResponseAdapter : ResponseAdapter<TestQuery.Data> {
           |with a new line
           """.trimMargin()),
         conditions = emptyList(),
-        fields = emptyArray(),
+        possibleFieldSets = emptyMap(),
       )
     )
 

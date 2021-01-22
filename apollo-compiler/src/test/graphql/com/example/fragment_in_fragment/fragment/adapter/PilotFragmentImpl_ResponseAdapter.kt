@@ -25,7 +25,7 @@ object PilotFragmentImpl_ResponseAdapter : ResponseAdapter<PilotFragmentImpl.Dat
       fieldName = "__typename",
       arguments = emptyMap(),
       conditions = emptyList(),
-      fields = emptyArray(),
+      possibleFieldSets = emptyMap(),
     ),
     ResponseField(
       type = ResponseField.Type.Named.Other("String"),
@@ -33,7 +33,7 @@ object PilotFragmentImpl_ResponseAdapter : ResponseAdapter<PilotFragmentImpl.Dat
       fieldName = "name",
       arguments = emptyMap(),
       conditions = emptyList(),
-      fields = emptyArray(),
+      possibleFieldSets = emptyMap(),
     ),
     ResponseField(
       type = ResponseField.Type.Named.Object("Planet"),
@@ -41,7 +41,9 @@ object PilotFragmentImpl_ResponseAdapter : ResponseAdapter<PilotFragmentImpl.Dat
       fieldName = "homeworld",
       arguments = emptyMap(),
       conditions = emptyList(),
-      fields = Homeworld.RESPONSE_FIELDS,
+      possibleFieldSets = mapOf(
+        "Planet" to Homeworld.PlanetHomeworld.RESPONSE_FIELDS,
+      ),
     )
   )
 
@@ -81,6 +83,7 @@ object PilotFragmentImpl_ResponseAdapter : ResponseAdapter<PilotFragmentImpl.Dat
   }
 
   object Homeworld : ResponseAdapter<PilotFragmentImpl.Data.Homeworld> {
+<<<<<<< HEAD
     val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
       ResponseField(
         type = ResponseField.Type.NotNull(ResponseField.Type.Named.Other("String")),
@@ -92,9 +95,11 @@ object PilotFragmentImpl_ResponseAdapter : ResponseAdapter<PilotFragmentImpl.Dat
       )
     )
 
+=======
+>>>>>>> 59f0461fb... fix field sets for types with multiple implementations
     override fun fromResponse(reader: ResponseReader, __typename: String?):
         PilotFragmentImpl.Data.Homeworld {
-      val typename = __typename ?: reader.readString(RESPONSE_FIELDS[0])
+      val typename = __typename ?: reader.readString(ResponseField.Typename)
       return when(typename) {
         "Planet" -> PlanetHomeworld.fromResponse(reader, typename)
         else -> OtherHomeworld.fromResponse(reader, typename)
@@ -116,7 +121,7 @@ object PilotFragmentImpl_ResponseAdapter : ResponseAdapter<PilotFragmentImpl.Dat
           fieldName = "__typename",
           arguments = emptyMap(),
           conditions = emptyList(),
-          fields = emptyArray(),
+          possibleFieldSets = emptyMap(),
         ),
         ResponseField(
           type = ResponseField.Type.Named.Other("String"),
@@ -124,7 +129,7 @@ object PilotFragmentImpl_ResponseAdapter : ResponseAdapter<PilotFragmentImpl.Dat
           fieldName = "name",
           arguments = emptyMap(),
           conditions = emptyList(),
-          fields = emptyArray(),
+          possibleFieldSets = emptyMap(),
         )
       )
 
@@ -162,7 +167,7 @@ object PilotFragmentImpl_ResponseAdapter : ResponseAdapter<PilotFragmentImpl.Dat
           fieldName = "__typename",
           arguments = emptyMap(),
           conditions = emptyList(),
-          fields = emptyArray(),
+          possibleFieldSets = emptyMap(),
         )
       )
 

@@ -26,7 +26,9 @@ object GetHuman_ResponseAdapter : ResponseAdapter<GetHuman.Data> {
       fieldName = "human",
       arguments = emptyMap(),
       conditions = emptyList(),
-      fields = Human.RESPONSE_FIELDS,
+      possibleFieldSets = mapOf(
+        "" to Human.RESPONSE_FIELDS
+      ),
     ),
     ResponseField(
       type = ResponseField.Type.NotNull(ResponseField.Type.Named.Object("Node")),
@@ -34,7 +36,9 @@ object GetHuman_ResponseAdapter : ResponseAdapter<GetHuman.Data> {
       fieldName = "node",
       arguments = emptyMap(),
       conditions = emptyList(),
-      fields = Node.RESPONSE_FIELDS,
+      possibleFieldSets = mapOf(
+        "Human" to Node.HumanNode.RESPONSE_FIELDS,
+      ),
     )
   )
 
@@ -77,7 +81,7 @@ object GetHuman_ResponseAdapter : ResponseAdapter<GetHuman.Data> {
         fieldName = "id",
         arguments = emptyMap(),
         conditions = emptyList(),
-        fields = emptyArray(),
+        possibleFieldSets = emptyMap(),
       ),
       ResponseField(
         type = ResponseField.Type.NotNull(ResponseField.Type.Named.Other("String")),
@@ -85,7 +89,7 @@ object GetHuman_ResponseAdapter : ResponseAdapter<GetHuman.Data> {
         fieldName = "name",
         arguments = emptyMap(),
         conditions = emptyList(),
-        fields = emptyArray(),
+        possibleFieldSets = emptyMap(),
       ),
       ResponseField(
         type = ResponseField.Type.NotNull(ResponseField.Type.Named.Other("Float")),
@@ -93,7 +97,7 @@ object GetHuman_ResponseAdapter : ResponseAdapter<GetHuman.Data> {
         fieldName = "height",
         arguments = emptyMap(),
         conditions = emptyList(),
-        fields = emptyArray(),
+        possibleFieldSets = emptyMap(),
       )
     )
 
@@ -126,6 +130,7 @@ object GetHuman_ResponseAdapter : ResponseAdapter<GetHuman.Data> {
   }
 
   object Node : ResponseAdapter<GetHuman.Data.Node> {
+<<<<<<< HEAD
     val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
       ResponseField(
         type = ResponseField.Type.NotNull(ResponseField.Type.Named.Other("String")),
@@ -137,8 +142,10 @@ object GetHuman_ResponseAdapter : ResponseAdapter<GetHuman.Data> {
       )
     )
 
+=======
+>>>>>>> 59f0461fb... fix field sets for types with multiple implementations
     override fun fromResponse(reader: ResponseReader, __typename: String?): GetHuman.Data.Node {
-      val typename = __typename ?: reader.readString(RESPONSE_FIELDS[0])
+      val typename = __typename ?: reader.readString(ResponseField.Typename)
       return when(typename) {
         "Human" -> HumanNode.fromResponse(reader, typename)
         else -> OtherNode.fromResponse(reader, typename)
@@ -160,7 +167,7 @@ object GetHuman_ResponseAdapter : ResponseAdapter<GetHuman.Data> {
           fieldName = "__typename",
           arguments = emptyMap(),
           conditions = emptyList(),
-          fields = emptyArray(),
+          possibleFieldSets = emptyMap(),
         ),
         ResponseField(
           type = ResponseField.Type.NotNull(ResponseField.Type.Named.Other("Float")),
@@ -168,7 +175,7 @@ object GetHuman_ResponseAdapter : ResponseAdapter<GetHuman.Data> {
           fieldName = "height",
           arguments = emptyMap(),
           conditions = emptyList(),
-          fields = emptyArray(),
+          possibleFieldSets = emptyMap(),
         )
       )
 
@@ -205,7 +212,7 @@ object GetHuman_ResponseAdapter : ResponseAdapter<GetHuman.Data> {
           fieldName = "__typename",
           arguments = emptyMap(),
           conditions = emptyList(),
-          fields = emptyArray(),
+          possibleFieldSets = emptyMap(),
         )
       )
 

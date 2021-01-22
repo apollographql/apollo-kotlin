@@ -26,7 +26,9 @@ object TestQuery_ResponseAdapter : ResponseAdapter<TestQuery.Data> {
       fieldName = "hero",
       arguments = emptyMap(),
       conditions = emptyList(),
-      fields = Yield.RESPONSE_FIELDS,
+      possibleFieldSets = mapOf(
+        "" to Yield.RESPONSE_FIELDS
+      ),
     ),
     ResponseField(
       type = ResponseField.Type.List(ResponseField.Type.Named.Object("SearchResult")),
@@ -35,7 +37,10 @@ object TestQuery_ResponseAdapter : ResponseAdapter<TestQuery.Data> {
       arguments = mapOf<String, Any?>(
         "text" to "abc"),
       conditions = emptyList(),
-      fields = Object.RESPONSE_FIELDS,
+      possibleFieldSets = mapOf(
+        "Human" to Object.CharacterObject.RESPONSE_FIELDS,
+        "Droid" to Object.CharacterObject.RESPONSE_FIELDS,
+      ),
     )
   )
 
@@ -86,7 +91,7 @@ object TestQuery_ResponseAdapter : ResponseAdapter<TestQuery.Data> {
         fieldName = "id",
         arguments = emptyMap(),
         conditions = emptyList(),
-        fields = emptyArray(),
+        possibleFieldSets = emptyMap(),
       ),
       ResponseField(
         type = ResponseField.Type.NotNull(ResponseField.Type.Named.Other("String")),
@@ -94,7 +99,7 @@ object TestQuery_ResponseAdapter : ResponseAdapter<TestQuery.Data> {
         fieldName = "name",
         arguments = emptyMap(),
         conditions = emptyList(),
-        fields = emptyArray(),
+        possibleFieldSets = emptyMap(),
       )
     )
 
@@ -123,6 +128,7 @@ object TestQuery_ResponseAdapter : ResponseAdapter<TestQuery.Data> {
   }
 
   object Object : ResponseAdapter<TestQuery.Data.Object> {
+<<<<<<< HEAD
     val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
       ResponseField(
         type = ResponseField.Type.NotNull(ResponseField.Type.Named.Other("String")),
@@ -134,8 +140,10 @@ object TestQuery_ResponseAdapter : ResponseAdapter<TestQuery.Data> {
       )
     )
 
+=======
+>>>>>>> 59f0461fb... fix field sets for types with multiple implementations
     override fun fromResponse(reader: ResponseReader, __typename: String?): TestQuery.Data.Object {
-      val typename = __typename ?: reader.readString(RESPONSE_FIELDS[0])
+      val typename = __typename ?: reader.readString(ResponseField.Typename)
       return when(typename) {
         "Human" -> CharacterObject.fromResponse(reader, typename)
         "Droid" -> CharacterObject.fromResponse(reader, typename)
@@ -158,7 +166,7 @@ object TestQuery_ResponseAdapter : ResponseAdapter<TestQuery.Data> {
           fieldName = "__typename",
           arguments = emptyMap(),
           conditions = emptyList(),
-          fields = emptyArray(),
+          possibleFieldSets = emptyMap(),
         ),
         ResponseField(
           type = ResponseField.Type.NotNull(ResponseField.Type.Named.Other("String")),
@@ -166,7 +174,7 @@ object TestQuery_ResponseAdapter : ResponseAdapter<TestQuery.Data> {
           fieldName = "name",
           arguments = emptyMap(),
           conditions = emptyList(),
-          fields = emptyArray(),
+          possibleFieldSets = emptyMap(),
         )
       )
 
@@ -204,7 +212,7 @@ object TestQuery_ResponseAdapter : ResponseAdapter<TestQuery.Data> {
           fieldName = "__typename",
           arguments = emptyMap(),
           conditions = emptyList(),
-          fields = emptyArray(),
+          possibleFieldSets = emptyMap(),
         )
       )
 

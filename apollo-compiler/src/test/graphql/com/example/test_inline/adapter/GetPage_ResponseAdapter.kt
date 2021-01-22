@@ -26,7 +26,9 @@ object GetPage_ResponseAdapter : ResponseAdapter<GetPage.Data> {
       fieldName = "collection",
       arguments = emptyMap(),
       conditions = emptyList(),
-      fields = Collection.RESPONSE_FIELDS,
+      possibleFieldSets = mapOf(
+        "ParticularCollection" to Collection.ParticularCollectionCollection.RESPONSE_FIELDS,
+      ),
     )
   )
 
@@ -54,6 +56,7 @@ object GetPage_ResponseAdapter : ResponseAdapter<GetPage.Data> {
   }
 
   object Collection : ResponseAdapter<GetPage.Data.Collection> {
+<<<<<<< HEAD
     val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
       ResponseField(
         type = ResponseField.Type.NotNull(ResponseField.Type.Named.Other("String")),
@@ -74,9 +77,11 @@ object GetPage_ResponseAdapter : ResponseAdapter<GetPage.Data> {
       )
     )
 
+=======
+>>>>>>> 59f0461fb... fix field sets for types with multiple implementations
     override fun fromResponse(reader: ResponseReader, __typename: String?):
         GetPage.Data.Collection {
-      val typename = __typename ?: reader.readString(RESPONSE_FIELDS[0])
+      val typename = __typename ?: reader.readString(ResponseField.Typename)
       return when(typename) {
         "ParticularCollection" -> ParticularCollectionCollection.fromResponse(reader, typename)
         else -> OtherCollection.fromResponse(reader, typename)
@@ -99,7 +104,7 @@ object GetPage_ResponseAdapter : ResponseAdapter<GetPage.Data> {
           fieldName = "__typename",
           arguments = emptyMap(),
           conditions = emptyList(),
-          fields = emptyArray(),
+          possibleFieldSets = emptyMap(),
         ),
         ResponseField(
           type =
@@ -108,7 +113,9 @@ object GetPage_ResponseAdapter : ResponseAdapter<GetPage.Data> {
           fieldName = "items",
           arguments = emptyMap(),
           conditions = emptyList(),
-          fields = Item.RESPONSE_FIELDS,
+          possibleFieldSets = mapOf(
+            "ParticularItem" to Item.ParticularItemItem.RESPONSE_FIELDS,
+          ),
         )
       )
 
@@ -146,6 +153,7 @@ object GetPage_ResponseAdapter : ResponseAdapter<GetPage.Data> {
       }
 
       object Item : ResponseAdapter<GetPage.Data.Collection.ParticularCollectionCollection.Item> {
+<<<<<<< HEAD
         val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
           ResponseField(
             type = ResponseField.Type.NotNull(ResponseField.Type.Named.Other("String")),
@@ -157,9 +165,11 @@ object GetPage_ResponseAdapter : ResponseAdapter<GetPage.Data> {
           )
         )
 
+=======
+>>>>>>> 59f0461fb... fix field sets for types with multiple implementations
         override fun fromResponse(reader: ResponseReader, __typename: String?):
             GetPage.Data.Collection.ParticularCollectionCollection.Item {
-          val typename = __typename ?: reader.readString(RESPONSE_FIELDS[0])
+          val typename = __typename ?: reader.readString(ResponseField.Typename)
           return when(typename) {
             "ParticularItem" -> ParticularItemItem.fromResponse(reader, typename)
             else -> OtherItem.fromResponse(reader, typename)
@@ -184,7 +194,7 @@ object GetPage_ResponseAdapter : ResponseAdapter<GetPage.Data> {
               fieldName = "title",
               arguments = emptyMap(),
               conditions = emptyList(),
-              fields = emptyArray(),
+              possibleFieldSets = emptyMap(),
             ),
             ResponseField(
               type = ResponseField.Type.NotNull(ResponseField.Type.Named.Other("String")),
@@ -192,7 +202,7 @@ object GetPage_ResponseAdapter : ResponseAdapter<GetPage.Data> {
               fieldName = "__typename",
               arguments = emptyMap(),
               conditions = emptyList(),
-              fields = emptyArray(),
+              possibleFieldSets = emptyMap(),
             ),
             ResponseField(
               type = ResponseField.Type.NotNull(ResponseField.Type.Named.Other("String")),
@@ -200,7 +210,7 @@ object GetPage_ResponseAdapter : ResponseAdapter<GetPage.Data> {
               fieldName = "image",
               arguments = emptyMap(),
               conditions = emptyList(),
-              fields = emptyArray(),
+              possibleFieldSets = emptyMap(),
             )
           )
 
@@ -243,7 +253,7 @@ object GetPage_ResponseAdapter : ResponseAdapter<GetPage.Data> {
               fieldName = "title",
               arguments = emptyMap(),
               conditions = emptyList(),
-              fields = emptyArray(),
+              possibleFieldSets = emptyMap(),
             ),
             ResponseField(
               type = ResponseField.Type.NotNull(ResponseField.Type.Named.Other("String")),
@@ -251,7 +261,7 @@ object GetPage_ResponseAdapter : ResponseAdapter<GetPage.Data> {
               fieldName = "__typename",
               arguments = emptyMap(),
               conditions = emptyList(),
-              fields = emptyArray(),
+              possibleFieldSets = emptyMap(),
             )
           )
 
@@ -291,7 +301,7 @@ object GetPage_ResponseAdapter : ResponseAdapter<GetPage.Data> {
           fieldName = "__typename",
           arguments = emptyMap(),
           conditions = emptyList(),
-          fields = emptyArray(),
+          possibleFieldSets = emptyMap(),
         ),
         ResponseField(
           type =
@@ -300,7 +310,9 @@ object GetPage_ResponseAdapter : ResponseAdapter<GetPage.Data> {
           fieldName = "items",
           arguments = emptyMap(),
           conditions = emptyList(),
-          fields = Item.RESPONSE_FIELDS,
+          possibleFieldSets = mapOf(
+            "" to Item.RESPONSE_FIELDS
+          ),
         )
       )
 
@@ -345,7 +357,7 @@ object GetPage_ResponseAdapter : ResponseAdapter<GetPage.Data> {
             fieldName = "title",
             arguments = emptyMap(),
             conditions = emptyList(),
-            fields = emptyArray(),
+            possibleFieldSets = emptyMap(),
           )
         )
 

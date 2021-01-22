@@ -27,7 +27,7 @@ object HeroDetailsImpl_ResponseAdapter : ResponseAdapter<HeroDetailsImpl.Data> {
       fieldName = "__typename",
       arguments = emptyMap(),
       conditions = emptyList(),
-      fields = emptyArray(),
+      possibleFieldSets = emptyMap(),
     ),
     ResponseField(
       type = ResponseField.Type.NotNull(ResponseField.Type.Named.Object("FriendsConnection")),
@@ -38,7 +38,9 @@ object HeroDetailsImpl_ResponseAdapter : ResponseAdapter<HeroDetailsImpl.Data> {
           "kind" to "Variable",
           "variableName" to "friendsCount")),
       conditions = emptyList(),
-      fields = FriendsConnection.RESPONSE_FIELDS,
+      possibleFieldSets = mapOf(
+        "" to FriendsConnection.RESPONSE_FIELDS
+      ),
     )
   )
 
@@ -77,7 +79,7 @@ object HeroDetailsImpl_ResponseAdapter : ResponseAdapter<HeroDetailsImpl.Data> {
         fieldName = "totalCount",
         arguments = emptyMap(),
         conditions = emptyList(),
-        fields = emptyArray(),
+        possibleFieldSets = emptyMap(),
       ),
       ResponseField(
         type = ResponseField.Type.List(ResponseField.Type.Named.Object("FriendsEdge")),
@@ -85,7 +87,9 @@ object HeroDetailsImpl_ResponseAdapter : ResponseAdapter<HeroDetailsImpl.Data> {
         fieldName = "edges",
         arguments = emptyMap(),
         conditions = emptyList(),
-        fields = Edge.RESPONSE_FIELDS,
+        possibleFieldSets = mapOf(
+          "" to Edge.RESPONSE_FIELDS
+        ),
       )
     )
 
@@ -129,7 +133,9 @@ object HeroDetailsImpl_ResponseAdapter : ResponseAdapter<HeroDetailsImpl.Data> {
           fieldName = "node",
           arguments = emptyMap(),
           conditions = emptyList(),
-          fields = Node.RESPONSE_FIELDS,
+          possibleFieldSets = mapOf(
+            "" to Node.RESPONSE_FIELDS
+          ),
         )
       )
 
@@ -172,7 +178,7 @@ object HeroDetailsImpl_ResponseAdapter : ResponseAdapter<HeroDetailsImpl.Data> {
             conditions = listOf(
               ResponseField.Condition.booleanCondition("IncludeName", false)
             ),
-            fields = emptyArray(),
+            possibleFieldSets = emptyMap(),
           )
         )
 

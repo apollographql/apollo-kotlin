@@ -25,7 +25,7 @@ object QueryFragmentImpl_ResponseAdapter : ResponseAdapter<QueryFragmentImpl.Dat
       fieldName = "__typename",
       arguments = emptyMap(),
       conditions = emptyList(),
-      fields = emptyArray(),
+      possibleFieldSets = emptyMap(),
     ),
     ResponseField(
       type = ResponseField.Type.Named.Object("Character"),
@@ -33,7 +33,9 @@ object QueryFragmentImpl_ResponseAdapter : ResponseAdapter<QueryFragmentImpl.Dat
       fieldName = "hero",
       arguments = emptyMap(),
       conditions = emptyList(),
-      fields = Hero.RESPONSE_FIELDS,
+      possibleFieldSets = mapOf(
+        "" to Hero.RESPONSE_FIELDS
+      ),
     )
   )
 
@@ -76,7 +78,7 @@ object QueryFragmentImpl_ResponseAdapter : ResponseAdapter<QueryFragmentImpl.Dat
         fieldName = "name",
         arguments = emptyMap(),
         conditions = emptyList(),
-        fields = emptyArray(),
+        possibleFieldSets = emptyMap(),
       )
     )
 

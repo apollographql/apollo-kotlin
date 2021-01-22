@@ -33,7 +33,9 @@ object
           "variableName" to
               "episodeAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryLongName")),
       conditions = emptyList(),
-      fields = HeroAVeryAVeryAVeryAVeryAVeryAVeryAV.RESPONSE_FIELDS,
+      possibleFieldSets = mapOf(
+        "" to HeroAVeryAVeryAVeryAVeryAVeryAVeryAV.RESPONSE_FIELDS
+      ),
     )
   )
 
@@ -77,7 +79,7 @@ object
         fieldName = "name",
         arguments = emptyMap(),
         conditions = emptyList(),
-        fields = emptyArray(),
+        possibleFieldSets = emptyMap(),
       )
     )
 

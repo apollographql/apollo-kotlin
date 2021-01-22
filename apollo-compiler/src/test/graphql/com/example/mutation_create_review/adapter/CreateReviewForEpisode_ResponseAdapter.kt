@@ -37,7 +37,9 @@ internal object CreateReviewForEpisode_ResponseAdapter :
           "kind" to "Variable",
           "variableName" to "review")),
       conditions = emptyList(),
-      fields = CreateReview.RESPONSE_FIELDS,
+      possibleFieldSets = mapOf(
+        "" to CreateReview.RESPONSE_FIELDS
+      ),
     )
   )
 
@@ -77,7 +79,7 @@ internal object CreateReviewForEpisode_ResponseAdapter :
         fieldName = "stars",
         arguments = emptyMap(),
         conditions = emptyList(),
-        fields = emptyArray(),
+        possibleFieldSets = emptyMap(),
       ),
       ResponseField(
         type = ResponseField.Type.Named.Other("String"),
@@ -85,7 +87,7 @@ internal object CreateReviewForEpisode_ResponseAdapter :
         fieldName = "commentary",
         arguments = emptyMap(),
         conditions = emptyList(),
-        fields = emptyArray(),
+        possibleFieldSets = emptyMap(),
       ),
       ResponseField(
         type =
@@ -94,7 +96,7 @@ internal object CreateReviewForEpisode_ResponseAdapter :
         fieldName = "listOfListOfString",
         arguments = emptyMap(),
         conditions = emptyList(),
-        fields = emptyArray(),
+        possibleFieldSets = emptyMap(),
       ),
       ResponseField(
         type =
@@ -103,7 +105,7 @@ internal object CreateReviewForEpisode_ResponseAdapter :
         fieldName = "listOfListOfEnum",
         arguments = emptyMap(),
         conditions = emptyList(),
-        fields = emptyArray(),
+        possibleFieldSets = emptyMap(),
       ),
       ResponseField(
         type =
@@ -112,7 +114,7 @@ internal object CreateReviewForEpisode_ResponseAdapter :
         fieldName = "listOfListOfCustom",
         arguments = emptyMap(),
         conditions = emptyList(),
-        fields = emptyArray(),
+        possibleFieldSets = emptyMap(),
       ),
       ResponseField(
         type =
@@ -121,7 +123,9 @@ internal object CreateReviewForEpisode_ResponseAdapter :
         fieldName = "listOfListOfObject",
         arguments = emptyMap(),
         conditions = emptyList(),
-        fields = ListOfListOfObject.RESPONSE_FIELDS,
+        possibleFieldSets = mapOf(
+          "" to ListOfListOfObject.RESPONSE_FIELDS
+        ),
       )
     )
 
@@ -208,7 +212,7 @@ internal object CreateReviewForEpisode_ResponseAdapter :
           fieldName = "name",
           arguments = emptyMap(),
           conditions = emptyList(),
-          fields = emptyArray(),
+          possibleFieldSets = emptyMap(),
         )
       )
 

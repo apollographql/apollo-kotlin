@@ -26,7 +26,7 @@ object StarshipFragmentImpl_ResponseAdapter : ResponseAdapter<StarshipFragmentIm
       fieldName = "__typename",
       arguments = emptyMap(),
       conditions = emptyList(),
-      fields = emptyArray(),
+      possibleFieldSets = emptyMap(),
     ),
     ResponseField(
       type = ResponseField.Type.NotNull(ResponseField.Type.Named.Other("String")),
@@ -34,7 +34,7 @@ object StarshipFragmentImpl_ResponseAdapter : ResponseAdapter<StarshipFragmentIm
       fieldName = "id",
       arguments = emptyMap(),
       conditions = emptyList(),
-      fields = emptyArray(),
+      possibleFieldSets = emptyMap(),
     ),
     ResponseField(
       type = ResponseField.Type.Named.Other("String"),
@@ -42,7 +42,7 @@ object StarshipFragmentImpl_ResponseAdapter : ResponseAdapter<StarshipFragmentIm
       fieldName = "name",
       arguments = emptyMap(),
       conditions = emptyList(),
-      fields = emptyArray(),
+      possibleFieldSets = emptyMap(),
     ),
     ResponseField(
       type = ResponseField.Type.Named.Object("StarshipPilotsConnection"),
@@ -50,7 +50,9 @@ object StarshipFragmentImpl_ResponseAdapter : ResponseAdapter<StarshipFragmentIm
       fieldName = "pilotConnection",
       arguments = emptyMap(),
       conditions = emptyList(),
-      fields = PilotConnection.RESPONSE_FIELDS,
+      possibleFieldSets = mapOf(
+        "" to PilotConnection.RESPONSE_FIELDS
+      ),
     )
   )
 
@@ -102,7 +104,9 @@ object StarshipFragmentImpl_ResponseAdapter : ResponseAdapter<StarshipFragmentIm
         fieldName = "edges",
         arguments = emptyMap(),
         conditions = emptyList(),
-        fields = Edge.RESPONSE_FIELDS,
+        possibleFieldSets = mapOf(
+          "" to Edge.RESPONSE_FIELDS
+        ),
       )
     )
 
@@ -143,7 +147,9 @@ object StarshipFragmentImpl_ResponseAdapter : ResponseAdapter<StarshipFragmentIm
           fieldName = "node",
           arguments = emptyMap(),
           conditions = emptyList(),
-          fields = Node.RESPONSE_FIELDS,
+          possibleFieldSets = mapOf(
+            "Person" to Node.PersonNode.RESPONSE_FIELDS,
+          ),
         )
       )
 
@@ -177,6 +183,7 @@ object StarshipFragmentImpl_ResponseAdapter : ResponseAdapter<StarshipFragmentIm
       }
 
       object Node : ResponseAdapter<StarshipFragmentImpl.Data.PilotConnection.Edge.Node> {
+<<<<<<< HEAD
         val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
           ResponseField(
             type = ResponseField.Type.NotNull(ResponseField.Type.Named.Other("String")),
@@ -188,9 +195,11 @@ object StarshipFragmentImpl_ResponseAdapter : ResponseAdapter<StarshipFragmentIm
           )
         )
 
+=======
+>>>>>>> 59f0461fb... fix field sets for types with multiple implementations
         override fun fromResponse(reader: ResponseReader, __typename: String?):
             StarshipFragmentImpl.Data.PilotConnection.Edge.Node {
-          val typename = __typename ?: reader.readString(RESPONSE_FIELDS[0])
+          val typename = __typename ?: reader.readString(ResponseField.Typename)
           return when(typename) {
             "Person" -> PersonNode.fromResponse(reader, typename)
             else -> OtherNode.fromResponse(reader, typename)
@@ -214,7 +223,7 @@ object StarshipFragmentImpl_ResponseAdapter : ResponseAdapter<StarshipFragmentIm
               fieldName = "__typename",
               arguments = emptyMap(),
               conditions = emptyList(),
-              fields = emptyArray(),
+              possibleFieldSets = emptyMap(),
             ),
             ResponseField(
               type = ResponseField.Type.Named.Other("String"),
@@ -222,7 +231,7 @@ object StarshipFragmentImpl_ResponseAdapter : ResponseAdapter<StarshipFragmentIm
               fieldName = "name",
               arguments = emptyMap(),
               conditions = emptyList(),
-              fields = emptyArray(),
+              possibleFieldSets = emptyMap(),
             ),
             ResponseField(
               type = ResponseField.Type.Named.Object("Planet"),
@@ -230,7 +239,9 @@ object StarshipFragmentImpl_ResponseAdapter : ResponseAdapter<StarshipFragmentIm
               fieldName = "homeworld",
               arguments = emptyMap(),
               conditions = emptyList(),
-              fields = Homeworld.RESPONSE_FIELDS,
+              possibleFieldSets = mapOf(
+                "Planet" to Homeworld.PlanetHomeworld.RESPONSE_FIELDS,
+              ),
             )
           )
 
@@ -274,6 +285,7 @@ object StarshipFragmentImpl_ResponseAdapter : ResponseAdapter<StarshipFragmentIm
           object Homeworld :
               ResponseAdapter<StarshipFragmentImpl.Data.PilotConnection.Edge.Node.PersonNode.Homeworld>
               {
+<<<<<<< HEAD
             val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
               ResponseField(
                 type = ResponseField.Type.NotNull(ResponseField.Type.Named.Other("String")),
@@ -285,9 +297,11 @@ object StarshipFragmentImpl_ResponseAdapter : ResponseAdapter<StarshipFragmentIm
               )
             )
 
+=======
+>>>>>>> 59f0461fb... fix field sets for types with multiple implementations
             override fun fromResponse(reader: ResponseReader, __typename: String?):
                 StarshipFragmentImpl.Data.PilotConnection.Edge.Node.PersonNode.Homeworld {
-              val typename = __typename ?: reader.readString(RESPONSE_FIELDS[0])
+              val typename = __typename ?: reader.readString(ResponseField.Typename)
               return when(typename) {
                 "Planet" -> PlanetHomeworld.fromResponse(reader, typename)
                 else -> OtherHomeworld.fromResponse(reader, typename)
@@ -312,7 +326,7 @@ object StarshipFragmentImpl_ResponseAdapter : ResponseAdapter<StarshipFragmentIm
                   fieldName = "__typename",
                   arguments = emptyMap(),
                   conditions = emptyList(),
-                  fields = emptyArray(),
+                  possibleFieldSets = emptyMap(),
                 ),
                 ResponseField(
                   type = ResponseField.Type.Named.Other("String"),
@@ -320,7 +334,7 @@ object StarshipFragmentImpl_ResponseAdapter : ResponseAdapter<StarshipFragmentIm
                   fieldName = "name",
                   arguments = emptyMap(),
                   conditions = emptyList(),
-                  fields = emptyArray(),
+                  possibleFieldSets = emptyMap(),
                 )
               )
 
@@ -360,7 +374,7 @@ object StarshipFragmentImpl_ResponseAdapter : ResponseAdapter<StarshipFragmentIm
                   fieldName = "__typename",
                   arguments = emptyMap(),
                   conditions = emptyList(),
-                  fields = emptyArray(),
+                  possibleFieldSets = emptyMap(),
                 )
               )
 
@@ -397,7 +411,7 @@ object StarshipFragmentImpl_ResponseAdapter : ResponseAdapter<StarshipFragmentIm
               fieldName = "__typename",
               arguments = emptyMap(),
               conditions = emptyList(),
-              fields = emptyArray(),
+              possibleFieldSets = emptyMap(),
             )
           )
 

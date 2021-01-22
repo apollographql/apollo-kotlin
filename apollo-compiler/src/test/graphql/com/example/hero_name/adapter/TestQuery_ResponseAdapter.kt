@@ -25,7 +25,9 @@ object TestQuery_ResponseAdapter : ResponseAdapter<TestQuery.Data> {
       fieldName = "hero",
       arguments = emptyMap(),
       conditions = emptyList(),
-      fields = Hero.RESPONSE_FIELDS,
+      possibleFieldSets = mapOf(
+        "Droid" to Hero.DroidHero.RESPONSE_FIELDS,
+      ),
     )
   )
 
@@ -57,6 +59,7 @@ object TestQuery_ResponseAdapter : ResponseAdapter<TestQuery.Data> {
   }
 
   object Hero : ResponseAdapter<TestQuery.Data.Hero> {
+<<<<<<< HEAD
     val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
       ResponseField(
 <<<<<<< HEAD
@@ -82,11 +85,12 @@ object TestQuery_ResponseAdapter : ResponseAdapter<TestQuery.Data> {
       )
     )
 
+=======
+>>>>>>> 59f0461fb... fix field sets for types with multiple implementations
     override fun fromResponse(reader: ResponseReader, __typename: String?): TestQuery.Data.Hero {
-      val typename = __typename ?: reader.readString(RESPONSE_FIELDS[0])
+      val typename = __typename ?: reader.readString(ResponseField.Typename)
       return when(typename) {
         "Droid" -> DroidHero.fromResponse(reader, typename)
-        "Human" -> HumanHero.fromResponse(reader, typename)
         else -> OtherHero.fromResponse(reader, typename)
       }
     }
@@ -94,7 +98,6 @@ object TestQuery_ResponseAdapter : ResponseAdapter<TestQuery.Data> {
     override fun toResponse(writer: ResponseWriter, value: TestQuery.Data.Hero) {
       when(value) {
         is TestQuery.Data.Hero.DroidHero -> DroidHero.toResponse(writer, value)
-        is TestQuery.Data.Hero.HumanHero -> HumanHero.toResponse(writer, value)
         is TestQuery.Data.Hero.OtherHero -> OtherHero.toResponse(writer, value)
       }
     }
@@ -108,53 +111,7 @@ object TestQuery_ResponseAdapter : ResponseAdapter<TestQuery.Data> {
           fieldName = "__typename",
           arguments = emptyMap(),
           conditions = emptyList(),
-          fields = emptyArray(),
-        ),
-        ResponseField(
-          type = ResponseField.Type.Named("String", ResponseField.Kind.OTHER),
-          responseName = "primaryFunction",
-          fieldName = "primaryFunction",
-          arguments = emptyMap(),
-          conditions = emptyList(),
-          fields = emptyArray(),
-        )
-      )
-
-      override fun fromResponse(reader: ResponseReader, __typename: String?):
-          TestQuery.Data.Hero.DroidHero {
-        return reader.run {
-          var __typename: String? = __typename
-          var primaryFunction: String? = null
-          while(true) {
-            when (selectField(RESPONSE_FIELDS)) {
-              0 -> __typename = readString(RESPONSE_FIELDS[0])
-              1 -> primaryFunction = readString(RESPONSE_FIELDS[1])
-              else -> break
-            }
-          }
-          TestQuery.Data.Hero.DroidHero(
-            __typename = __typename!!,
-            primaryFunction = primaryFunction
-          )
-        }
-      }
-
-      override fun toResponse(writer: ResponseWriter, value: TestQuery.Data.Hero.DroidHero) {
-        writer.writeString(RESPONSE_FIELDS[0], value.__typename)
-        writer.writeString(RESPONSE_FIELDS[1], value.primaryFunction)
-      }
-    }
-
-    object HumanHero : ResponseAdapter<TestQuery.Data.Hero.HumanHero> {
-      val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
-        ResponseField(
-          type = ResponseField.Type.NotNull(ResponseField.Type.Named("String",
-              ResponseField.Kind.OTHER)),
-          responseName = "__typename",
-          fieldName = "__typename",
-          arguments = emptyMap(),
-          conditions = emptyList(),
-          fields = emptyArray(),
+          possibleFieldSets = emptyMap(),
         ),
         ResponseField(
           type = ResponseField.Type.NotNull(ResponseField.Type.Named("String",
@@ -163,32 +120,44 @@ object TestQuery_ResponseAdapter : ResponseAdapter<TestQuery.Data> {
           fieldName = "name",
           arguments = emptyMap(),
           conditions = emptyList(),
-          fields = emptyArray(),
+          possibleFieldSets = emptyMap(),
+        ),
+        ResponseField(
+          type = ResponseField.Type.Named("String", ResponseField.Kind.OTHER),
+          responseName = "primaryFunction",
+          fieldName = "primaryFunction",
+          arguments = emptyMap(),
+          conditions = emptyList(),
+          possibleFieldSets = emptyMap(),
         )
       )
 
       override fun fromResponse(reader: ResponseReader, __typename: String?):
-          TestQuery.Data.Hero.HumanHero {
+          TestQuery.Data.Hero.DroidHero {
         return reader.run {
           var __typename: String? = __typename
           var name: String? = null
+          var primaryFunction: String? = null
           while(true) {
             when (selectField(RESPONSE_FIELDS)) {
               0 -> __typename = readString(RESPONSE_FIELDS[0])
               1 -> name = readString(RESPONSE_FIELDS[1])
+              2 -> primaryFunction = readString(RESPONSE_FIELDS[2])
               else -> break
             }
           }
-          TestQuery.Data.Hero.HumanHero(
+          TestQuery.Data.Hero.DroidHero(
             __typename = __typename!!,
-            name = name!!
+            name = name!!,
+            primaryFunction = primaryFunction
           )
         }
       }
 
-      override fun toResponse(writer: ResponseWriter, value: TestQuery.Data.Hero.HumanHero) {
+      override fun toResponse(writer: ResponseWriter, value: TestQuery.Data.Hero.DroidHero) {
         writer.writeString(RESPONSE_FIELDS[0], value.__typename)
         writer.writeString(RESPONSE_FIELDS[1], value.name)
+        writer.writeString(RESPONSE_FIELDS[2], value.primaryFunction)
       }
     }
 
@@ -201,7 +170,16 @@ object TestQuery_ResponseAdapter : ResponseAdapter<TestQuery.Data> {
           fieldName = "__typename",
           arguments = emptyMap(),
           conditions = emptyList(),
-          fields = emptyArray(),
+          possibleFieldSets = emptyMap(),
+        ),
+        ResponseField(
+          type = ResponseField.Type.NotNull(ResponseField.Type.Named("String",
+              ResponseField.Kind.OTHER)),
+          responseName = "name",
+          fieldName = "name",
+          arguments = emptyMap(),
+          conditions = emptyList(),
+          possibleFieldSets = emptyMap(),
         )
       )
 
@@ -209,20 +187,24 @@ object TestQuery_ResponseAdapter : ResponseAdapter<TestQuery.Data> {
           TestQuery.Data.Hero.OtherHero {
         return reader.run {
           var __typename: String? = __typename
+          var name: String? = null
           while(true) {
             when (selectField(RESPONSE_FIELDS)) {
               0 -> __typename = readString(RESPONSE_FIELDS[0])
+              1 -> name = readString(RESPONSE_FIELDS[1])
               else -> break
             }
           }
           TestQuery.Data.Hero.OtherHero(
-            __typename = __typename!!
+            __typename = __typename!!,
+            name = name!!
           )
         }
       }
 
       override fun toResponse(writer: ResponseWriter, value: TestQuery.Data.Hero.OtherHero) {
         writer.writeString(RESPONSE_FIELDS[0], value.__typename)
+        writer.writeString(RESPONSE_FIELDS[1], value.name)
       }
     }
   }

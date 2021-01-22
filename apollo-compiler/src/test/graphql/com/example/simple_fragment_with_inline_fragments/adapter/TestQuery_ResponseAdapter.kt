@@ -27,7 +27,10 @@ object TestQuery_ResponseAdapter : ResponseAdapter<TestQuery.Data> {
       fieldName = "hero",
       arguments = emptyMap(),
       conditions = emptyList(),
-      fields = Hero.RESPONSE_FIELDS,
+      possibleFieldSets = mapOf(
+        "Droid" to Hero.CharacterHero.RESPONSE_FIELDS,
+        "Human" to Hero.CharacterHero.RESPONSE_FIELDS,
+      ),
     )
   )
 
@@ -59,6 +62,7 @@ object TestQuery_ResponseAdapter : ResponseAdapter<TestQuery.Data> {
   }
 
   object Hero : ResponseAdapter<TestQuery.Data.Hero> {
+<<<<<<< HEAD
     val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
       ResponseField(
         type = ResponseField.Type.NotNull(ResponseField.Type.Named.Other("String")),
@@ -70,8 +74,10 @@ object TestQuery_ResponseAdapter : ResponseAdapter<TestQuery.Data> {
       )
     )
 
+=======
+>>>>>>> 59f0461fb... fix field sets for types with multiple implementations
     override fun fromResponse(reader: ResponseReader, __typename: String?): TestQuery.Data.Hero {
-      val typename = __typename ?: reader.readString(RESPONSE_FIELDS[0])
+      val typename = __typename ?: reader.readString(ResponseField.Typename)
       return when(typename) {
         "Droid" -> CharacterHero.fromResponse(reader, typename)
         "Human" -> CharacterHero.fromResponse(reader, typename)
@@ -94,7 +100,7 @@ object TestQuery_ResponseAdapter : ResponseAdapter<TestQuery.Data> {
           fieldName = "__typename",
           arguments = emptyMap(),
           conditions = emptyList(),
-          fields = emptyArray(),
+          possibleFieldSets = emptyMap(),
         ),
         ResponseField(
           type = ResponseField.Type.NotNull(ResponseField.Type.Named.Other("String")),
@@ -102,7 +108,7 @@ object TestQuery_ResponseAdapter : ResponseAdapter<TestQuery.Data> {
           fieldName = "name",
           arguments = emptyMap(),
           conditions = emptyList(),
-          fields = emptyArray(),
+          possibleFieldSets = emptyMap(),
         ),
         ResponseField(
           type = ResponseField.Type.List(ResponseField.Type.Named.Object("Character")),
@@ -110,7 +116,10 @@ object TestQuery_ResponseAdapter : ResponseAdapter<TestQuery.Data> {
           fieldName = "friends",
           arguments = emptyMap(),
           conditions = emptyList(),
-          fields = Friend.RESPONSE_FIELDS,
+          possibleFieldSets = mapOf(
+            "Human" to Friend.HumanFriend.RESPONSE_FIELDS,
+            "Droid" to Friend.DroidFriend.RESPONSE_FIELDS,
+          ),
         )
       )
 
@@ -151,6 +160,7 @@ object TestQuery_ResponseAdapter : ResponseAdapter<TestQuery.Data> {
       }
 
       object Friend : ResponseAdapter<TestQuery.Data.Hero.CharacterHero.Friend> {
+<<<<<<< HEAD
         val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
           ResponseField(
             type = ResponseField.Type.NotNull(ResponseField.Type.Named.Other("String")),
@@ -162,9 +172,11 @@ object TestQuery_ResponseAdapter : ResponseAdapter<TestQuery.Data> {
           )
         )
 
+=======
+>>>>>>> 59f0461fb... fix field sets for types with multiple implementations
         override fun fromResponse(reader: ResponseReader, __typename: String?):
             TestQuery.Data.Hero.CharacterHero.Friend {
-          val typename = __typename ?: reader.readString(RESPONSE_FIELDS[0])
+          val typename = __typename ?: reader.readString(ResponseField.Typename)
           return when(typename) {
             "Human" -> HumanFriend.fromResponse(reader, typename)
             "Droid" -> DroidFriend.fromResponse(reader, typename)
@@ -189,7 +201,7 @@ object TestQuery_ResponseAdapter : ResponseAdapter<TestQuery.Data> {
               fieldName = "__typename",
               arguments = emptyMap(),
               conditions = emptyList(),
-              fields = emptyArray(),
+              possibleFieldSets = emptyMap(),
             ),
             ResponseField(
               type = ResponseField.Type.NotNull(ResponseField.Type.Named.Other("String")),
@@ -197,7 +209,7 @@ object TestQuery_ResponseAdapter : ResponseAdapter<TestQuery.Data> {
               fieldName = "name",
               arguments = emptyMap(),
               conditions = emptyList(),
-              fields = emptyArray(),
+              possibleFieldSets = emptyMap(),
             ),
             ResponseField(
               type = ResponseField.Type.Named.Other("Float"),
@@ -205,7 +217,7 @@ object TestQuery_ResponseAdapter : ResponseAdapter<TestQuery.Data> {
               fieldName = "height",
               arguments = emptyMap(),
               conditions = emptyList(),
-              fields = emptyArray(),
+              possibleFieldSets = emptyMap(),
             )
           )
 
@@ -247,7 +259,7 @@ object TestQuery_ResponseAdapter : ResponseAdapter<TestQuery.Data> {
               fieldName = "__typename",
               arguments = emptyMap(),
               conditions = emptyList(),
-              fields = emptyArray(),
+              possibleFieldSets = emptyMap(),
             ),
             ResponseField(
               type = ResponseField.Type.NotNull(ResponseField.Type.Named.Other("String")),
@@ -255,7 +267,7 @@ object TestQuery_ResponseAdapter : ResponseAdapter<TestQuery.Data> {
               fieldName = "name",
               arguments = emptyMap(),
               conditions = emptyList(),
-              fields = emptyArray(),
+              possibleFieldSets = emptyMap(),
             ),
             ResponseField(
               type = ResponseField.Type.Named.Other("String"),
@@ -263,7 +275,7 @@ object TestQuery_ResponseAdapter : ResponseAdapter<TestQuery.Data> {
               fieldName = "primaryFunction",
               arguments = emptyMap(),
               conditions = emptyList(),
-              fields = emptyArray(),
+              possibleFieldSets = emptyMap(),
             )
           )
 
@@ -305,7 +317,7 @@ object TestQuery_ResponseAdapter : ResponseAdapter<TestQuery.Data> {
               fieldName = "__typename",
               arguments = emptyMap(),
               conditions = emptyList(),
-              fields = emptyArray(),
+              possibleFieldSets = emptyMap(),
             ),
             ResponseField(
               type = ResponseField.Type.NotNull(ResponseField.Type.Named.Other("String")),
@@ -313,7 +325,7 @@ object TestQuery_ResponseAdapter : ResponseAdapter<TestQuery.Data> {
               fieldName = "name",
               arguments = emptyMap(),
               conditions = emptyList(),
-              fields = emptyArray(),
+              possibleFieldSets = emptyMap(),
             )
           )
 
@@ -353,7 +365,7 @@ object TestQuery_ResponseAdapter : ResponseAdapter<TestQuery.Data> {
           fieldName = "__typename",
           arguments = emptyMap(),
           conditions = emptyList(),
-          fields = emptyArray(),
+          possibleFieldSets = emptyMap(),
         )
       )
 
