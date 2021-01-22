@@ -7,9 +7,11 @@ package com.example.hero_details_semantic_naming
 
 import com.apollographql.apollo.api.Operation
 import com.apollographql.apollo.api.Query
+import com.apollographql.apollo.api.ResponseField
 import com.apollographql.apollo.api.internal.QueryDocumentMinifier
 import com.apollographql.apollo.api.internal.ResponseAdapter
 import com.example.hero_details_semantic_naming.adapter.HeroDetailsQuery_ResponseAdapter
+import kotlin.Array
 import kotlin.Int
 import kotlin.String
 import kotlin.Suppress
@@ -28,6 +30,8 @@ class HeroDetailsQuery : Query<HeroDetailsQuery.Data> {
   override fun name(): String = OPERATION_NAME
 
   override fun adapter(): ResponseAdapter<Data> = HeroDetailsQuery_ResponseAdapter
+  override fun responseFields(): Array<ResponseField> =
+      HeroDetailsQuery_ResponseAdapter.RESPONSE_FIELDS
   /**
    * The query type, represents all of the entry points into our object graph
    */

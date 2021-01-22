@@ -36,6 +36,7 @@ object QueryFragmentImpl_ResponseAdapter : ResponseAdapter<QueryFragmentImpl.Dat
       possibleFieldSets = mapOf(
         "Droid" to Hero.CharacterHero.RESPONSE_FIELDS,
         "Human" to Hero.CharacterHero.RESPONSE_FIELDS,
+        "" to Hero.OtherHero.RESPONSE_FIELDS,
       ),
     ),
     ResponseField(
@@ -47,6 +48,7 @@ object QueryFragmentImpl_ResponseAdapter : ResponseAdapter<QueryFragmentImpl.Dat
       conditions = emptyList(),
       possibleFieldSets = mapOf(
         "Droid" to Droid.DroidDroid.RESPONSE_FIELDS,
+        "" to Droid.OtherDroid.RESPONSE_FIELDS,
       ),
     ),
     ResponseField(
@@ -58,6 +60,7 @@ object QueryFragmentImpl_ResponseAdapter : ResponseAdapter<QueryFragmentImpl.Dat
       conditions = emptyList(),
       possibleFieldSets = mapOf(
         "Human" to Human.HumanHuman.RESPONSE_FIELDS,
+        "" to Human.OtherHuman.RESPONSE_FIELDS,
       ),
     )
   )

@@ -6,12 +6,14 @@
 package com.example.subscriptions
 
 import com.apollographql.apollo.api.Operation
+import com.apollographql.apollo.api.ResponseField
 import com.apollographql.apollo.api.Subscription
 import com.apollographql.apollo.api.internal.InputFieldMarshaller
 import com.apollographql.apollo.api.internal.QueryDocumentMinifier
 import com.apollographql.apollo.api.internal.ResponseAdapter
 import com.example.subscriptions.adapter.TestSubscription_ResponseAdapter
 import kotlin.Any
+import kotlin.Array
 import kotlin.Int
 import kotlin.String
 import kotlin.Suppress
@@ -46,6 +48,8 @@ data class TestSubscription(
   override fun name(): String = OPERATION_NAME
 
   override fun adapter(): ResponseAdapter<Data> = TestSubscription_ResponseAdapter
+  override fun responseFields(): Array<ResponseField> =
+      TestSubscription_ResponseAdapter.RESPONSE_FIELDS
   data class Data(
     /**
      * Subscription fires on every comment added

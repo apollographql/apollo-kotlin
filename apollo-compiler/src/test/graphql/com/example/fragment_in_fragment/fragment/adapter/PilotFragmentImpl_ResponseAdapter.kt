@@ -43,6 +43,7 @@ object PilotFragmentImpl_ResponseAdapter : ResponseAdapter<PilotFragmentImpl.Dat
       conditions = emptyList(),
       possibleFieldSets = mapOf(
         "Planet" to Homeworld.PlanetHomeworld.RESPONSE_FIELDS,
+        "" to Homeworld.OtherHomeworld.RESPONSE_FIELDS,
       ),
     )
   )

@@ -29,6 +29,7 @@ object TestQuery_ResponseAdapter : ResponseAdapter<TestQuery.Data> {
       possibleFieldSets = mapOf(
         "Human" to R2.HumanR2.RESPONSE_FIELDS,
         "Droid" to R2.DroidR2.RESPONSE_FIELDS,
+        "" to R2.OtherR2.RESPONSE_FIELDS,
       ),
     ),
     ResponseField(
@@ -40,6 +41,7 @@ object TestQuery_ResponseAdapter : ResponseAdapter<TestQuery.Data> {
       possibleFieldSets = mapOf(
         "Human" to Luke.HumanLuke.RESPONSE_FIELDS,
         "Droid" to Luke.DroidLuke.RESPONSE_FIELDS,
+        "" to Luke.OtherLuke.RESPONSE_FIELDS,
       ),
     )
   )

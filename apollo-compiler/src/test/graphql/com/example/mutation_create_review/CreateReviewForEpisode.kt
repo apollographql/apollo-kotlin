@@ -7,6 +7,7 @@ package com.example.mutation_create_review
 
 import com.apollographql.apollo.api.Mutation
 import com.apollographql.apollo.api.Operation
+import com.apollographql.apollo.api.ResponseField
 import com.apollographql.apollo.api.internal.InputFieldMarshaller
 import com.apollographql.apollo.api.internal.QueryDocumentMinifier
 import com.apollographql.apollo.api.internal.ResponseAdapter
@@ -15,6 +16,7 @@ import com.example.mutation_create_review.type.Episode
 import com.example.mutation_create_review.type.ReviewInput
 import java.util.Date
 import kotlin.Any
+import kotlin.Array
 import kotlin.Int
 import kotlin.String
 import kotlin.Suppress
@@ -53,6 +55,8 @@ internal data class CreateReviewForEpisode(
   override fun name(): String = OPERATION_NAME
 
   override fun adapter(): ResponseAdapter<Data> = CreateReviewForEpisode_ResponseAdapter
+  override fun responseFields(): Array<ResponseField> =
+      CreateReviewForEpisode_ResponseAdapter.RESPONSE_FIELDS
   /**
    * The mutation type, represents all updates we can make to our data
    */

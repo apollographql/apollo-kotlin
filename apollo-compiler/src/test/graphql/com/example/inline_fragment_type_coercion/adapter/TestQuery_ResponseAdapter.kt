@@ -27,6 +27,7 @@ object TestQuery_ResponseAdapter : ResponseAdapter<TestQuery.Data> {
       conditions = emptyList(),
       possibleFieldSets = mapOf(
         "FooBar" to Foo.BarFoo.RESPONSE_FIELDS,
+        "" to Foo.OtherFoo.RESPONSE_FIELDS,
       ),
     )
   )

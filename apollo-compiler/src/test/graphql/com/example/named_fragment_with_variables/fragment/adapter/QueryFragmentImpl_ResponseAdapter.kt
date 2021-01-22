@@ -96,6 +96,7 @@ object QueryFragmentImpl_ResponseAdapter : ResponseAdapter<QueryFragmentImpl.Dat
         conditions = emptyList(),
         possibleFieldSets = mapOf(
           "User" to User.UserUser.RESPONSE_FIELDS,
+          "" to User.OtherUser.RESPONSE_FIELDS,
         ),
       )
     )

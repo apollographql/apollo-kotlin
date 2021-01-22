@@ -8,12 +8,14 @@ package com.example.deprecation
 import com.apollographql.apollo.api.Input
 import com.apollographql.apollo.api.Operation
 import com.apollographql.apollo.api.Query
+import com.apollographql.apollo.api.ResponseField
 import com.apollographql.apollo.api.internal.InputFieldMarshaller
 import com.apollographql.apollo.api.internal.QueryDocumentMinifier
 import com.apollographql.apollo.api.internal.ResponseAdapter
 import com.example.deprecation.adapter.TestQuery_ResponseAdapter
 import com.example.deprecation.type.Episode
 import kotlin.Any
+import kotlin.Array
 import kotlin.Boolean
 import kotlin.Deprecated
 import kotlin.String
@@ -53,6 +55,7 @@ data class TestQuery(
   override fun name(): String = OPERATION_NAME
 
   override fun adapter(): ResponseAdapter<Data> = TestQuery_ResponseAdapter
+  override fun responseFields(): Array<ResponseField> = TestQuery_ResponseAdapter.RESPONSE_FIELDS
   /**
    * The query type, represents all of the entry points into our object graph
    */

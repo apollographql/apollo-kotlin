@@ -7,6 +7,7 @@ package com.example.named_fragment_with_variables
 
 import com.apollographql.apollo.api.Operation
 import com.apollographql.apollo.api.Query
+import com.apollographql.apollo.api.ResponseField
 import com.apollographql.apollo.api.internal.InputFieldMarshaller
 import com.apollographql.apollo.api.internal.QueryDocumentMinifier
 import com.apollographql.apollo.api.internal.ResponseAdapter
@@ -15,6 +16,7 @@ import com.example.named_fragment_with_variables.fragment.QueryFragment
 import com.example.named_fragment_with_variables.fragment.UserFragment
 import com.example.named_fragment_with_variables.type.UserQuery
 import kotlin.Any
+import kotlin.Array
 import kotlin.Int
 import kotlin.String
 import kotlin.Suppress
@@ -56,6 +58,7 @@ data class GetUser(
   override fun name(): String = OPERATION_NAME
 
   override fun adapter(): ResponseAdapter<Data> = GetUser_ResponseAdapter
+  override fun responseFields(): Array<ResponseField> = GetUser_ResponseAdapter.RESPONSE_FIELDS
   interface Data : Operation.Data {
     val __typename: String
 

@@ -29,6 +29,7 @@ object TestQuery_ResponseAdapter : ResponseAdapter<TestQuery.Data> {
       conditions = emptyList(),
       possibleFieldSets = mapOf(
         "Human" to NonOptionalHero.HumanNonOptionalHero.RESPONSE_FIELDS,
+        "" to NonOptionalHero.OtherNonOptionalHero.RESPONSE_FIELDS,
       ),
     )
   )

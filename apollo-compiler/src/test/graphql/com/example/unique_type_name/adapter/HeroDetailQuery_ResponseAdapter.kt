@@ -31,6 +31,7 @@ object HeroDetailQuery_ResponseAdapter : ResponseAdapter<HeroDetailQuery.Data> {
       conditions = emptyList(),
       possibleFieldSets = mapOf(
         "Human" to HeroDetailQuery.HumanHeroDetailQuery.RESPONSE_FIELDS,
+        "" to HeroDetailQuery.OtherHeroDetailQuery.RESPONSE_FIELDS,
       ),
     )
   )
@@ -224,6 +225,7 @@ object HeroDetailQuery_ResponseAdapter : ResponseAdapter<HeroDetailQuery.Data> {
             possibleFieldSets = mapOf(
               "Droid" to Friend.CharacterFriend.RESPONSE_FIELDS,
               "Human" to Friend.CharacterFriend.RESPONSE_FIELDS,
+              "" to Friend.OtherFriend.RESPONSE_FIELDS,
             ),
           )
         )

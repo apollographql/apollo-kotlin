@@ -7,10 +7,12 @@ package com.example.union_inline_fragments
 
 import com.apollographql.apollo.api.Operation
 import com.apollographql.apollo.api.Query
+import com.apollographql.apollo.api.ResponseField
 import com.apollographql.apollo.api.internal.QueryDocumentMinifier
 import com.apollographql.apollo.api.internal.ResponseAdapter
 import com.example.union_inline_fragments.adapter.TestQuery_ResponseAdapter
 import com.example.union_inline_fragments.type.Episode
+import kotlin.Array
 import kotlin.String
 import kotlin.Suppress
 import kotlin.collections.List
@@ -28,6 +30,7 @@ class TestQuery : Query<TestQuery.Data> {
   override fun name(): String = OPERATION_NAME
 
   override fun adapter(): ResponseAdapter<Data> = TestQuery_ResponseAdapter
+  override fun responseFields(): Array<ResponseField> = TestQuery_ResponseAdapter.RESPONSE_FIELDS
   /**
    * The query type, represents all of the entry points into our object graph
    */

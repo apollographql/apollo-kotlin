@@ -126,6 +126,7 @@ object GetUser_ResponseAdapter : ResponseAdapter<GetUser.Data> {
           conditions = emptyList(),
           possibleFieldSets = mapOf(
             "User" to User.UserUser.RESPONSE_FIELDS,
+            "" to User.OtherUser.RESPONSE_FIELDS,
           ),
         )
       )

@@ -117,6 +117,7 @@ object AllStarships_ResponseAdapter : ResponseAdapter<AllStarships.Data> {
           conditions = emptyList(),
           possibleFieldSets = mapOf(
             "Starship" to Node.StarshipNode.RESPONSE_FIELDS,
+            "" to Node.OtherNode.RESPONSE_FIELDS,
           ),
         )
       )
@@ -323,6 +324,7 @@ object AllStarships_ResponseAdapter : ResponseAdapter<AllStarships.Data> {
                   conditions = emptyList(),
                   possibleFieldSets = mapOf(
                     "Person" to Node.PersonNode.RESPONSE_FIELDS,
+                    "" to Node.OtherNode.RESPONSE_FIELDS,
                   ),
                 )
               )
@@ -418,6 +420,7 @@ object AllStarships_ResponseAdapter : ResponseAdapter<AllStarships.Data> {
                       conditions = emptyList(),
                       possibleFieldSets = mapOf(
                         "Planet" to Homeworld.PlanetHomeworld.RESPONSE_FIELDS,
+                        "" to Homeworld.OtherHomeworld.RESPONSE_FIELDS,
                       ),
                     )
                   )

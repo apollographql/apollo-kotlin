@@ -7,12 +7,14 @@ package com.example.hero_with_review
 
 import com.apollographql.apollo.api.Mutation
 import com.apollographql.apollo.api.Operation
+import com.apollographql.apollo.api.ResponseField
 import com.apollographql.apollo.api.internal.InputFieldMarshaller
 import com.apollographql.apollo.api.internal.QueryDocumentMinifier
 import com.apollographql.apollo.api.internal.ResponseAdapter
 import com.example.hero_with_review.adapter.TestQuery_ResponseAdapter
 import com.example.hero_with_review.type.Episode
 import kotlin.Any
+import kotlin.Array
 import kotlin.Int
 import kotlin.String
 import kotlin.Suppress
@@ -47,6 +49,7 @@ data class TestQuery(
   override fun name(): String = OPERATION_NAME
 
   override fun adapter(): ResponseAdapter<Data> = TestQuery_ResponseAdapter
+  override fun responseFields(): Array<ResponseField> = TestQuery_ResponseAdapter.RESPONSE_FIELDS
   /**
    * The mutation type, represents all updates we can make to our data
    */

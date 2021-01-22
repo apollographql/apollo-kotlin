@@ -7,9 +7,11 @@ package com.example.test_inline
 
 import com.apollographql.apollo.api.Operation
 import com.apollographql.apollo.api.Query
+import com.apollographql.apollo.api.ResponseField
 import com.apollographql.apollo.api.internal.QueryDocumentMinifier
 import com.apollographql.apollo.api.internal.ResponseAdapter
 import com.example.test_inline.adapter.GetPage_ResponseAdapter
+import kotlin.Array
 import kotlin.String
 import kotlin.Suppress
 import kotlin.collections.List
@@ -27,6 +29,7 @@ class GetPage : Query<GetPage.Data> {
   override fun name(): String = OPERATION_NAME
 
   override fun adapter(): ResponseAdapter<Data> = GetPage_ResponseAdapter
+  override fun responseFields(): Array<ResponseField> = GetPage_ResponseAdapter.RESPONSE_FIELDS
   data class Data(
     val collection: Collection
   ) : Operation.Data {

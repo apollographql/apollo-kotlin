@@ -32,6 +32,7 @@ object TestQuery_ResponseAdapter : ResponseAdapter<TestQuery.Data> {
         "Human" to Search.CharacterSearch.RESPONSE_FIELDS,
         "Droid" to Search.CharacterSearch.RESPONSE_FIELDS,
         "Starship" to Search.StarshipSearch.RESPONSE_FIELDS,
+        "" to Search.OtherSearch.RESPONSE_FIELDS,
       ),
     )
   )
@@ -131,6 +132,7 @@ object TestQuery_ResponseAdapter : ResponseAdapter<TestQuery.Data> {
           possibleFieldSets = mapOf(
             "Droid" to Friend.CharacterDroidFriend.RESPONSE_FIELDS,
             "Human" to Friend.CharacterHumanFriend.RESPONSE_FIELDS,
+            "" to Friend.OtherFriend.RESPONSE_FIELDS,
           ),
         )
       )
@@ -363,6 +365,7 @@ object TestQuery_ResponseAdapter : ResponseAdapter<TestQuery.Data> {
               possibleFieldSets = mapOf(
                 "Droid" to Friend.CharacterFriend.RESPONSE_FIELDS,
                 "Human" to Friend.CharacterFriend.RESPONSE_FIELDS,
+                "" to Friend.OtherFriend.RESPONSE_FIELDS,
               ),
             )
           )

@@ -46,6 +46,7 @@ object HeroDetailsImpl_ResponseAdapter : ResponseAdapter<HeroDetailsImpl.Data> {
       possibleFieldSets = mapOf(
         "Human" to Friend.HumanFriend.RESPONSE_FIELDS,
         "Droid" to Friend.DroidFriend.RESPONSE_FIELDS,
+        "" to Friend.OtherFriend.RESPONSE_FIELDS,
       ),
     )
   )

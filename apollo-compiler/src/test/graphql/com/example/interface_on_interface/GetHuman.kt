@@ -7,9 +7,11 @@ package com.example.interface_on_interface
 
 import com.apollographql.apollo.api.Operation
 import com.apollographql.apollo.api.Query
+import com.apollographql.apollo.api.ResponseField
 import com.apollographql.apollo.api.internal.QueryDocumentMinifier
 import com.apollographql.apollo.api.internal.ResponseAdapter
 import com.example.interface_on_interface.adapter.GetHuman_ResponseAdapter
+import kotlin.Array
 import kotlin.Double
 import kotlin.String
 import kotlin.Suppress
@@ -27,6 +29,7 @@ class GetHuman : Query<GetHuman.Data> {
   override fun name(): String = OPERATION_NAME
 
   override fun adapter(): ResponseAdapter<Data> = GetHuman_ResponseAdapter
+  override fun responseFields(): Array<ResponseField> = GetHuman_ResponseAdapter.RESPONSE_FIELDS
   data class Data(
     val human: Human,
     val node: Node
