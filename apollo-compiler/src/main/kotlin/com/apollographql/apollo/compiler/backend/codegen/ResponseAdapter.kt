@@ -96,11 +96,11 @@ private fun CodeGenerationAst.FieldType.toTypeCode(): CodeBlock {
 
   when (this) {
     is CodeGenerationAst.FieldType.Object -> {
-      builder.add("%T(%S)", ResponseField.Type.Named::class.java, schemaTypeName)
+      builder.add("%T(%S, %T.OBJECT)", ResponseField.Type.Named::class.java, schemaTypeName, ResponseField.Kind::class.java)
     }
     is CodeGenerationAst.FieldType.Scalar -> {
       // same code as Object but in a separate branch so that type inference can find schemaTypeName
-      builder.add("%T(%S)", ResponseField.Type.Named::class.java, schemaTypeName)
+      builder.add("%T(%S, %T.OTHER)", ResponseField.Type.Named::class.java, schemaTypeName, ResponseField.Kind::class.java)
     }
     is CodeGenerationAst.FieldType.Array -> {
       builder.add("%T(", ResponseField.Type.List::class.java)

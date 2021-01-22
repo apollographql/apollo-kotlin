@@ -47,9 +47,18 @@ class ResponseField(
   sealed class Type {
     class NotNull(val ofType: Type): Type()
     class List(val ofType: Type): Type()
-    class Named(val name: String): Type()
+
+    /**
+     * a Named GraphQL type
+     *
+     * @param kind: whether this is an object or not. This is currently required by the CacheKeyResolver API
+     * In a typical server scenario, the resolvers would have access to the schema and would look up the complete typ
+     * but we want to stay lightweight so for now we add this information
+     */
+    class Named(val name: String, val kind: Kind): Type()
   }
 
+  enum class Kind { OBJECT, OTHER }
   /**
    * Abstraction for condition to be associated with field
    */

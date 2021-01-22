@@ -2,8 +2,6 @@ package com.apollographql.apollo.cache.normalized.internal
 
 import com.apollographql.apollo.api.Operation
 import com.apollographql.apollo.api.ResponseField
-import com.apollographql.apollo.api.ResponseField.Type.LIST
-import com.apollographql.apollo.api.ResponseField.Type.OBJECT
 import com.apollographql.apollo.api.internal.ValueResolver
 import com.apollographql.apollo.cache.CacheHeaders
 import com.apollographql.apollo.cache.normalized.CacheKey.Companion.NO_KEY
@@ -21,12 +19,23 @@ class CacheValueResolver(
 
   @Suppress("UNCHECKED_CAST")
   override fun <T> valueFor(map: Record, field: ResponseField): T? {
-    return when (field.type) {
-      OBJECT -> valueForObject(map, field) as T?
-      LIST -> valueForList(fieldValue(map, field)) as T?
-      else -> fieldValue(map, field)
+    return valueFor(map, field, field.type)
+  }
+
+  private fun <T> valueFor(map: Record, field: ResponseField, type: ResponseField.Type): T? {
+    return when (type) {
+      is ResponseField.Type.List -> valueForList(fieldValue(map, field)) as T?
+      is ResponseField.Type.NotNull -> valueFor(map, field, type.ofType)
+      is ResponseField.Type.Named -> {
+        if (type.kind == ResponseField.Kind.OBJECT) {
+          valueForObject(map, field) as T?
+        } else {
+          fieldValue(record = map, field)
+        }
+      }
     }
   }
+
 
   private fun valueForObject(record: Record, field: ResponseField): Record? {
     val cacheReference: CacheReference? =
