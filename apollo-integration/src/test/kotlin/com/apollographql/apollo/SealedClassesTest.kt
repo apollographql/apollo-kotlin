@@ -27,7 +27,7 @@ class SealedClassesTest {
         "path",
         arguments,
         emptyList(),
-        emptyArray())
+        emptyMap())
 
 
     val variables = object : Operation.Variables() {

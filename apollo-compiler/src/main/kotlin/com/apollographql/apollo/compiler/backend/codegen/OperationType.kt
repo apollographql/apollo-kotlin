@@ -2,6 +2,7 @@ package com.apollographql.apollo.compiler.backend.codegen
 
 import com.apollographql.apollo.api.Mutation
 import com.apollographql.apollo.api.Query
+import com.apollographql.apollo.api.ResponseField
 import com.apollographql.apollo.api.Subscription
 import com.apollographql.apollo.api.internal.QueryDocumentMinifier
 import com.apollographql.apollo.api.internal.ResponseAdapter
@@ -51,6 +52,17 @@ internal fun CodeGenerationAst.OperationType.typeSpec(targetPackage: String, gen
               .addModifiers(KModifier.OVERRIDE)
               .returns(ResponseAdapter::class.asClassName().parameterizedBy(ClassName(packageName = "", "Data")))
               .addCode("return %T", operationResponseAdapter)
+              .build()
+      )
+      .addFunction(
+          FunSpec.builder(
+              "responseFields",
+          )
+              .addModifiers(KModifier.OVERRIDE)
+              .returns(
+                  Array<ResponseField>::class.asClassName().parameterizedBy(ResponseField::class.asClassName())
+              )
+              .addCode("return %T.RESPONSE_FIELDS", operationResponseAdapter)
               .build()
       )
       .addType(this.dataType.typeSpec())

@@ -158,12 +158,13 @@ private fun fieldsCode(type: CodeGenerationAst.FieldType, objectType: CodeGenera
       builder.indent()
       when (val kind = nestedObjectType.kind) {
         is CodeGenerationAst.ObjectType.Kind.Object -> {
-          builder.add("\"\" to %T.RESPONSE_FIELDS\n", leafType.typeRef.asAdapterTypeName())
+          builder.add("%S to %T.RESPONSE_FIELDS\n", "", leafType.typeRef.asAdapterTypeName())
         }
         is CodeGenerationAst.ObjectType.Kind.Fragment -> {
           kind.possibleImplementations.forEach {
             builder.add("%S to %T.RESPONSE_FIELDS,\n", it.key, it.value.asAdapterTypeName())
           }
+          builder.add("%S to %T.RESPONSE_FIELDS,\n", "", kind.defaultImplementation.asAdapterTypeName())
         }
       }
       builder.unindent()

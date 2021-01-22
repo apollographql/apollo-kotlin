@@ -8,11 +8,13 @@ package com.example.antlr_tokens
 import com.apollographql.apollo.api.Input
 import com.apollographql.apollo.api.Operation
 import com.apollographql.apollo.api.Query
+import com.apollographql.apollo.api.ResponseField
 import com.apollographql.apollo.api.internal.InputFieldMarshaller
 import com.apollographql.apollo.api.internal.QueryDocumentMinifier
 import com.apollographql.apollo.api.internal.ResponseAdapter
 import com.example.antlr_tokens.adapter.TestQuery_ResponseAdapter
 import kotlin.Any
+import kotlin.Array
 import kotlin.String
 import kotlin.Suppress
 import kotlin.collections.Map
@@ -50,6 +52,7 @@ data class TestQuery(
   override fun name(): String = OPERATION_NAME
 
   override fun adapter(): ResponseAdapter<Data> = TestQuery_ResponseAdapter
+  override fun responseFields(): Array<ResponseField> = TestQuery_ResponseAdapter.RESPONSE_FIELDS
   /**
    * The query type, represents all of the entry points into our object graph
    */
