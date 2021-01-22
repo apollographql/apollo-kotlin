@@ -1,68 +1,72 @@
-package com.apollographql.apollo.internal
+package com.apollographql.apollo.cache.normalized.internal
 
 import com.apollographql.apollo.api.CustomScalarAdapters
 import com.apollographql.apollo.api.Fragment
 import com.apollographql.apollo.api.Operation
 import com.apollographql.apollo.api.internal.ApolloLogger
-import com.apollographql.apollo.api.internal.json.JsonReader
 import com.apollographql.apollo.cache.CacheHeaders
 import com.apollographql.apollo.cache.normalized.ApolloStore
-import com.apollographql.apollo.cache.normalized.ApolloStore.RecordChangeSubscriber
 import com.apollographql.apollo.cache.normalized.CacheKey
 import com.apollographql.apollo.cache.normalized.CacheKeyResolver
 import com.apollographql.apollo.cache.normalized.NormalizedCache
 import com.apollographql.apollo.cache.normalized.Record
-import com.apollographql.apollo.cache.normalized.internal.OptimisticCache
-import com.apollographql.apollo.cache.normalized.internal.ReadableStore
-import com.apollographql.apollo.cache.normalized.internal.WriteableStore
-import com.apollographql.apollo.cache.normalized.internal.normalize
-import com.apollographql.apollo.cache.normalized.internal.readDataFromCache
-import java.util.Collections
-import java.util.LinkedHashSet
-import java.util.UUID
-import java.util.WeakHashMap
-import java.util.concurrent.locks.ReentrantReadWriteLock
+import com.benasher44.uuid.Uuid
+import kotlinx.atomicfu.locks.reentrantLock
+import kotlinx.atomicfu.locks.withLock
 
-class RealApolloStore(normalizedCache: NormalizedCache,
-                      private val cacheKeyResolver: CacheKeyResolver,
-                      val customScalarAdapters: CustomScalarAdapters,
-                      val logger: ApolloLogger) : ApolloStore, ReadableStore, WriteableStore {
+class RealApolloStore(
+    normalizedCache: NormalizedCache,
+    private val cacheKeyResolver: CacheKeyResolver,
+    val customScalarAdapters: CustomScalarAdapters,
+    val logger: ApolloLogger
+) : ApolloStore, ReadableStore, WriteableStore {
+  private val transactionLock = ReentrantReadWriteLock()
   private val optimisticCache = OptimisticCache().chain(normalizedCache) as OptimisticCache
-  private val lock = ReentrantReadWriteLock()
-  private val subscribers: MutableSet<RecordChangeSubscriber> = Collections.newSetFromMap(WeakHashMap())
 
-  @Synchronized
-  override fun subscribe(subscriber: RecordChangeSubscriber) {
-    subscribers.add(subscriber)
+  private val subscribersLock = reentrantLock()
+  private val subscribers = mutableSetOf<ApolloStore.RecordChangeSubscriber>()
+
+  override fun subscribe(subscriber: ApolloStore.RecordChangeSubscriber) {
+    subscribersLock.withLock {
+      subscribers.add(subscriber)
+    }
   }
 
-  @Synchronized
-  override fun unsubscribe(subscriber: RecordChangeSubscriber) {
-    subscribers.remove(subscriber)
+  override fun unsubscribe(subscriber: ApolloStore.RecordChangeSubscriber) {
+    subscribersLock.withLock {
+      subscribers.remove(subscriber)
+    }
   }
 
   override fun publish(keys: Set<String>) {
     if (keys.isEmpty()) {
       return
     }
-    var iterableSubscribers: Set<RecordChangeSubscriber>
-    synchronized(this) { iterableSubscribers = LinkedHashSet(subscribers) }
-    for (subscriber in iterableSubscribers) {
+
+    val subscribers = subscribersLock.withLock {
+      subscribers.toList()
+    }
+
+    subscribers.forEach { subscriber ->
       subscriber.onCacheRecordsChanged(keys)
     }
   }
 
   override fun clearAll(): Boolean {
-    return writeTransaction {
+    writeTransaction {
       optimisticCache.clearAll()
-      true
     }
+    return true
   }
 
   override fun remove(
       cacheKey: CacheKey,
       cascade: Boolean
-  ) = writeTransaction { optimisticCache.remove(cacheKey, cascade) }
+  ): Boolean {
+    return writeTransaction {
+      optimisticCache.remove(cacheKey, cascade)
+    }
+  }
 
   override fun remove(
       cacheKeys: List<CacheKey>,
@@ -83,11 +87,8 @@ class RealApolloStore(normalizedCache: NormalizedCache,
    * not private because tests use it
    */
   fun <R> readTransaction(block: (ReadableStore) -> R): R {
-    lock.readLock().lock()
-    return try {
+    return transactionLock.read {
       block(this@RealApolloStore)
-    } finally {
-      lock.readLock().unlock()
     }
   }
 
@@ -95,11 +96,8 @@ class RealApolloStore(normalizedCache: NormalizedCache,
    * not private because tests use it
    */
   fun <R> writeTransaction(block: (WriteableStore) -> R): R {
-    lock.writeLock().lock()
-    return try {
+    return transactionLock.write {
       block(this@RealApolloStore)
-    } finally {
-      lock.writeLock().unlock()
     }
   }
 
@@ -134,10 +132,10 @@ class RealApolloStore(normalizedCache: NormalizedCache,
     return readTransaction { cache ->
       try {
         operation.readDataFromCache(
-            customScalarAdapters,
-            cache,
-            cacheKeyResolver(),
-            cacheHeaders
+            customScalarAdapters = customScalarAdapters,
+            readableStore = cache,
+            cacheKeyResolver = cacheKeyResolver(),
+            cacheHeaders = cacheHeaders
         )
       } catch (e: Exception) {
         logger.e(e, "Failed to read cache response")
@@ -154,11 +152,11 @@ class RealApolloStore(normalizedCache: NormalizedCache,
     return readTransaction { cache ->
       try {
         fragment.readDataFromCache(
-            customScalarAdapters,
-            cache,
-            cacheKeyResolver(),
-            cacheHeaders,
-            cacheKey
+            customScalarAdapters = customScalarAdapters,
+            readableStore = cache,
+            cacheKeyResolver = cacheKeyResolver(),
+            cacheHeaders = cacheHeaders,
+            cacheKey = cacheKey
         )
       } catch (e: Exception) {
         logger.e(e, "Failed to read cache response")
@@ -173,12 +171,18 @@ class RealApolloStore(normalizedCache: NormalizedCache,
       cacheHeaders: CacheHeaders,
       publish: Boolean
   ): Pair<Set<Record>, Set<String>> {
-    val records = operation.normalize(operationData, customScalarAdapters, cacheKeyResolver)
+    val records = operation.normalize(
+        data = operationData,
+        customScalarAdapters = customScalarAdapters,
+        cacheKeyResolver = cacheKeyResolver
+    )
+
     val changedKeys = optimisticCache.merge(records, cacheHeaders)
 
     if (publish) {
       publish(changedKeys)
     }
+
     return records to changedKeys
   }
 
@@ -187,7 +191,14 @@ class RealApolloStore(normalizedCache: NormalizedCache,
       operationData: D,
       cacheHeaders: CacheHeaders,
       publish: Boolean
-  ) = writeOperationWithRecords(operation, operationData, cacheHeaders, publish).second
+  ): Set<String> {
+    return writeOperationWithRecords(
+        operation = operation,
+        operationData = operationData,
+        cacheHeaders = cacheHeaders,
+        publish = publish,
+    ).second
+  }
 
   override fun <D : Fragment.Data> writeFragment(
       fragment: Fragment<D>,
@@ -196,25 +207,37 @@ class RealApolloStore(normalizedCache: NormalizedCache,
       cacheHeaders: CacheHeaders,
       publish: Boolean
   ): Set<String> {
-
-    require(cacheKey != CacheKey.NO_KEY) { "ApolloGraphQL: writing a fragment requires a valid cache key" }
+    require(cacheKey != CacheKey.NO_KEY) {
+      "ApolloGraphQL: writing a fragment requires a valid cache key"
+    }
 
     return writeTransaction {
-      val records = fragment.normalize(fragmentData, customScalarAdapters, cacheKeyResolver, cacheKey.key)
+      val records = fragment.normalize(
+          data = fragmentData,
+          customScalarAdapters = customScalarAdapters,
+          cacheKeyResolver = cacheKeyResolver,
+          rootKey = cacheKey.key
+      )
+
       val changedKeys = merge(records, cacheHeaders)
       if (publish) {
         publish(changedKeys)
       }
+
       changedKeys
     }
   }
 
   override fun <D : Operation.Data> writeOptimisticUpdates(
       operation: Operation<D>, operationData: D,
-      mutationId: UUID,
+      mutationId: Uuid,
       publish: Boolean
   ): Set<String> {
-    val records = operation.normalize(operationData, customScalarAdapters, cacheKeyResolver).map {
+    val records = operation.normalize(
+        data = operationData,
+        customScalarAdapters = customScalarAdapters,
+        cacheKeyResolver = cacheKeyResolver
+    ).map {
       it.toBuilder().mutationId(mutationId).build()
     }
 
@@ -225,17 +248,22 @@ class RealApolloStore(normalizedCache: NormalizedCache,
     if (publish) {
       publish(changedKeys)
     }
+
     return changedKeys
   }
 
   override fun rollbackOptimisticUpdates(
-      mutationId: UUID,
+      mutationId: Uuid,
       publish: Boolean
   ): Set<String> {
-    val changedKeys = writeTransaction { optimisticCache.removeOptimisticUpdates(mutationId) }
+    val changedKeys = writeTransaction {
+      optimisticCache.removeOptimisticUpdates(mutationId)
+    }
+
     if (publish) {
       publish(changedKeys)
     }
+
     return changedKeys
   }
 }
