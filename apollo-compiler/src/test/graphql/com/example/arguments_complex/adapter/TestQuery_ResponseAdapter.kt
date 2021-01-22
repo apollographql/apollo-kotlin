@@ -19,7 +19,7 @@ import kotlin.Suppress
     "RemoveExplicitTypeArguments", "NestedLambdaShadowedImplicitParameter", "PropertyName",
     "RemoveRedundantQualifierName")
 object TestQuery_ResponseAdapter : ResponseAdapter<TestQuery.Data> {
-  private val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
+  val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
     ResponseField(
       type = ResponseField.Type.Named.Object("Human"),
       responseName = "heroWithReview",
@@ -48,6 +48,7 @@ object TestQuery_ResponseAdapter : ResponseAdapter<TestQuery.Data> {
             "kind" to "Variable",
             "variableName" to "stars"))),
       conditions = emptyList(),
+      fields = HeroWithReview.RESPONSE_FIELDS,
     )
   )
 
@@ -79,13 +80,14 @@ object TestQuery_ResponseAdapter : ResponseAdapter<TestQuery.Data> {
   }
 
   object HeroWithReview : ResponseAdapter<TestQuery.Data.HeroWithReview> {
-    private val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
+    val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
       ResponseField(
         type = ResponseField.Type.NotNull(ResponseField.Type.Named.Other("String")),
         responseName = "name",
         fieldName = "name",
         arguments = emptyMap(),
         conditions = emptyList(),
+        fields = emptyArray(),
       ),
       ResponseField(
         type = ResponseField.Type.Named.Other("Float"),
@@ -94,6 +96,7 @@ object TestQuery_ResponseAdapter : ResponseAdapter<TestQuery.Data> {
         arguments = mapOf<String, Any?>(
           "unit" to "FOOT"),
         conditions = emptyList(),
+        fields = emptyArray(),
       )
     )
 

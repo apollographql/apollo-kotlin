@@ -142,9 +142,6 @@ class CodegenTest(private val folder: File) {
           .sortedBy {
             it.name
           }
-//          .filter {
-//            it.name == "hero_name"
-//          }
           .filter { file ->
             /**
              * This allows to run a specific test from the command line by using something like:

@@ -17,7 +17,8 @@ class ResponseField(
     val responseName: String,
     val fieldName: String,
     val arguments: Map<String, Any?>,
-    val conditions: List<Condition>
+    val conditions: List<Condition>,
+    val fields: Array<ResponseField>,
 ) {
 
   /**

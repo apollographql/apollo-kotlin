@@ -10,6 +10,7 @@ import com.squareup.kotlinpoet.CodeBlock
 import com.squareup.kotlinpoet.KModifier
 import com.squareup.kotlinpoet.ParameterizedTypeName.Companion.parameterizedBy
 import com.squareup.kotlinpoet.PropertySpec
+import com.squareup.kotlinpoet.TypeName
 import com.squareup.kotlinpoet.TypeSpec
 import com.squareup.kotlinpoet.asClassName
 import com.squareup.kotlinpoet.asTypeName
@@ -85,7 +86,6 @@ private fun responseFieldsPropertySpec(fields: List<CodeGenerationAst.Field>): P
       .builder(
           name = "RESPONSE_FIELDS",
           type = Array<ResponseField>::class.asClassName().parameterizedBy(ResponseField::class.asClassName()),
-          modifiers = arrayOf(KModifier.PRIVATE)
       )
       .initializer(initializer)
       .build()
@@ -124,6 +124,7 @@ private fun CodeBlock.toNonNullable(): CodeBlock {
   builder.add(")")
   return builder.build()
 }
+
 private val CodeGenerationAst.Field.responseFieldInitializerCode: CodeBlock
   get() {
     val builder = CodeBlock.builder().add("%T(\n", ResponseField::class)
@@ -133,12 +134,26 @@ private val CodeGenerationAst.Field.responseFieldInitializerCode: CodeBlock
     builder.add("fieldName = %S,\n", schemaName)
     builder.add("arguments = %L,\n", arguments.takeIf { it.isNotEmpty() }?.let { anyToCode(it) } ?: "emptyMap()")
     builder.add("conditions = %L,\n", conditionsListCode(conditions))
+    builder.add("fields = %L,\n", fieldsCode(this.type))
     builder.unindent()
     builder.add(")")
 
     return builder.build()
   }
 
+private fun fieldsCode(type: CodeGenerationAst.FieldType): CodeBlock {
+  return when (val leafType = type.leafType()) {
+    is CodeGenerationAst.FieldType.Scalar -> CodeBlock.of("emptyArray()")
+    is CodeGenerationAst.FieldType.Object -> CodeBlock.of("%T.RESPONSE_FIELDS", leafType.typeRef.asAdapterTypeName())
+    else -> error("should not happen")
+  }
+}
+
+private fun CodeGenerationAst.FieldType.leafType(): CodeGenerationAst.FieldType = when(this) {
+  is CodeGenerationAst.FieldType.Scalar -> this
+  is CodeGenerationAst.FieldType.Object -> this
+  is CodeGenerationAst.FieldType.Array -> rawType.leafType()
+}
 private fun conditionsListCode(conditions: Set<CodeGenerationAst.Field.Condition>): CodeBlock {
   return conditions
       .map { condition ->

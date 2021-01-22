@@ -41,7 +41,8 @@ class MockSubscription(
                     responseName = "name",
                     fieldName = "name",
                     arguments = emptyMap(),
-                    conditions = emptyList()
+                    conditions = emptyList(),
+                    fields = emptyArray()
                 )
             )!!
         )

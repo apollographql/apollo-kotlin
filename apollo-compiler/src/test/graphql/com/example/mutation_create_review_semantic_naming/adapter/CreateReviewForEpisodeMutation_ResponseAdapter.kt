@@ -20,7 +20,7 @@ import kotlin.Suppress
     "RemoveRedundantQualifierName")
 object CreateReviewForEpisodeMutation_ResponseAdapter :
     ResponseAdapter<CreateReviewForEpisodeMutation.Data> {
-  private val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
+  val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
     ResponseField(
       type = ResponseField.Type.Named.Object("Review"),
       responseName = "createReview",
@@ -33,6 +33,7 @@ object CreateReviewForEpisodeMutation_ResponseAdapter :
           "kind" to "Variable",
           "variableName" to "review")),
       conditions = emptyList(),
+      fields = CreateReview.RESPONSE_FIELDS,
     )
   )
 
@@ -65,13 +66,14 @@ object CreateReviewForEpisodeMutation_ResponseAdapter :
   }
 
   object CreateReview : ResponseAdapter<CreateReviewForEpisodeMutation.Data.CreateReview> {
-    private val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
+    val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
       ResponseField(
         type = ResponseField.Type.NotNull(ResponseField.Type.Named.Other("Int")),
         responseName = "stars",
         fieldName = "stars",
         arguments = emptyMap(),
         conditions = emptyList(),
+        fields = emptyArray(),
       ),
       ResponseField(
         type = ResponseField.Type.Named.Other("String"),
@@ -79,6 +81,7 @@ object CreateReviewForEpisodeMutation_ResponseAdapter :
         fieldName = "commentary",
         arguments = emptyMap(),
         conditions = emptyList(),
+        fields = emptyArray(),
       )
     )
 

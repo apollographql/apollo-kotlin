@@ -19,13 +19,14 @@ import kotlin.collections.List
     "RemoveExplicitTypeArguments", "NestedLambdaShadowedImplicitParameter", "PropertyName",
     "RemoveRedundantQualifierName")
 object QueryFragmentImpl_ResponseAdapter : ResponseAdapter<QueryFragmentImpl.Data> {
-  private val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
+  val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
     ResponseField(
       type = ResponseField.Type.NotNull(ResponseField.Type.Named.Other("String")),
       responseName = "__typename",
       fieldName = "__typename",
       arguments = emptyMap(),
       conditions = emptyList(),
+      fields = emptyArray(),
     ),
     ResponseField(
       type = ResponseField.Type.Named.Object("Organization"),
@@ -36,6 +37,7 @@ object QueryFragmentImpl_ResponseAdapter : ResponseAdapter<QueryFragmentImpl.Dat
           "kind" to "Variable",
           "variableName" to "organizationId")),
       conditions = emptyList(),
+      fields = Organization.RESPONSE_FIELDS,
     )
   )
 
@@ -71,13 +73,14 @@ object QueryFragmentImpl_ResponseAdapter : ResponseAdapter<QueryFragmentImpl.Dat
   }
 
   object Organization : ResponseAdapter<QueryFragmentImpl.Data.Organization> {
-    private val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
+    val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
       ResponseField(
         type = ResponseField.Type.NotNull(ResponseField.Type.Named.Other("String")),
         responseName = "id",
         fieldName = "id",
         arguments = emptyMap(),
         conditions = emptyList(),
+        fields = emptyArray(),
       ),
       ResponseField(
         type =
@@ -89,6 +92,7 @@ object QueryFragmentImpl_ResponseAdapter : ResponseAdapter<QueryFragmentImpl.Dat
             "kind" to "Variable",
             "variableName" to "query")),
         conditions = emptyList(),
+        fields = User.RESPONSE_FIELDS,
       )
     )
 
@@ -125,13 +129,14 @@ object QueryFragmentImpl_ResponseAdapter : ResponseAdapter<QueryFragmentImpl.Dat
     }
 
     object User : ResponseAdapter<QueryFragmentImpl.Data.Organization.User> {
-      private val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
+      val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
         ResponseField(
           type = ResponseField.Type.NotNull(ResponseField.Type.Named.Other("String")),
           responseName = "__typename",
           fieldName = "__typename",
           arguments = emptyMap(),
           conditions = emptyList(),
+          fields = emptyArray(),
         )
       )
 
@@ -153,13 +158,14 @@ object QueryFragmentImpl_ResponseAdapter : ResponseAdapter<QueryFragmentImpl.Dat
       }
 
       object UserUser : ResponseAdapter<QueryFragmentImpl.Data.Organization.User.UserUser> {
-        private val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
+        val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
           ResponseField(
             type = ResponseField.Type.NotNull(ResponseField.Type.Named.Other("String")),
             responseName = "__typename",
             fieldName = "__typename",
             arguments = emptyMap(),
             conditions = emptyList(),
+            fields = emptyArray(),
           ),
           ResponseField(
             type = ResponseField.Type.NotNull(ResponseField.Type.Named.Other("String")),
@@ -167,6 +173,7 @@ object QueryFragmentImpl_ResponseAdapter : ResponseAdapter<QueryFragmentImpl.Dat
             fieldName = "firstName",
             arguments = emptyMap(),
             conditions = emptyList(),
+            fields = emptyArray(),
           ),
           ResponseField(
             type = ResponseField.Type.NotNull(ResponseField.Type.Named.Other("String")),
@@ -174,6 +181,7 @@ object QueryFragmentImpl_ResponseAdapter : ResponseAdapter<QueryFragmentImpl.Dat
             fieldName = "lastName",
             arguments = emptyMap(),
             conditions = emptyList(),
+            fields = emptyArray(),
           ),
           ResponseField(
             type = ResponseField.Type.NotNull(ResponseField.Type.Named.Other("String")),
@@ -184,6 +192,7 @@ object QueryFragmentImpl_ResponseAdapter : ResponseAdapter<QueryFragmentImpl.Dat
                 "kind" to "Variable",
                 "variableName" to "size")),
             conditions = emptyList(),
+            fields = emptyArray(),
           )
         )
 
@@ -222,13 +231,14 @@ object QueryFragmentImpl_ResponseAdapter : ResponseAdapter<QueryFragmentImpl.Dat
       }
 
       object OtherUser : ResponseAdapter<QueryFragmentImpl.Data.Organization.User.OtherUser> {
-        private val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
+        val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
           ResponseField(
             type = ResponseField.Type.NotNull(ResponseField.Type.Named.Other("String")),
             responseName = "__typename",
             fieldName = "__typename",
             arguments = emptyMap(),
             conditions = emptyList(),
+            fields = emptyArray(),
           )
         )
 

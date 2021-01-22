@@ -35,31 +35,70 @@ class TestQuery : Query<TestQuery.Data> {
     /**
      * A character from the Star Wars universe
      */
-    data class Hero(
-      /**
-       * The name of the character
-       */
-      val name: String,
-      /**
-       * The ID of the character
-       */
-      val id: String
-    )
+    interface Hero {
+      val __typename: String
+
+      interface Droid : Hero {
+        override val __typename: String
+
+        /**
+         * This droid's primary function
+         */
+        val primaryFunction: String?
+      }
+
+      interface Human : Hero {
+        override val __typename: String
+
+        /**
+         * What this human calls themselves
+         */
+        val name: String
+      }
+
+      data class DroidHero(
+        override val __typename: String,
+        /**
+         * This droid's primary function
+         */
+        override val primaryFunction: String?
+      ) : Hero, Droid
+
+      data class HumanHero(
+        override val __typename: String,
+        /**
+         * What this human calls themselves
+         */
+        override val name: String
+      ) : Hero, Human
+
+      data class OtherHero(
+        override val __typename: String
+      ) : Hero
+
+      companion object {
+        fun Hero.asDroid(): Droid? = this as? Droid
+
+        fun Hero.asHuman(): Human? = this as? Human
+      }
+    }
   }
 
   companion object {
     const val OPERATION_ID: String =
-        "65397ddaca19455aa5c39253adcd047619e1474bee8c5a3d7c796439ee9535be"
+        "a1ac9cf596f6f987346e5ad4063e220eb9923b39825b3b20d6f32f0623776b9f"
 
     val QUERY_DOCUMENT: String = QueryDocumentMinifier.minify(
           """
           |query TestQuery {
           |  hero {
-          |    name
-          |  }
-          |  hero {
-          |    id
-          |    name
+          |    __typename
+          |    ... on Droid {
+          |      primaryFunction
+          |    }
+          |    ... on Human {
+          |      name
+          |    }
           |  }
           |}
           """.trimMargin()

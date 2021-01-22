@@ -19,13 +19,14 @@ import kotlin.collections.List
     "RemoveExplicitTypeArguments", "NestedLambdaShadowedImplicitParameter", "PropertyName",
     "RemoveRedundantQualifierName")
 object StarshipFragmentImpl_ResponseAdapter : ResponseAdapter<StarshipFragmentImpl.Data> {
-  private val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
+  val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
     ResponseField(
       type = ResponseField.Type.NotNull(ResponseField.Type.Named.Other("String")),
       responseName = "__typename",
       fieldName = "__typename",
       arguments = emptyMap(),
       conditions = emptyList(),
+      fields = emptyArray(),
     ),
     ResponseField(
       type = ResponseField.Type.NotNull(ResponseField.Type.Named.Other("String")),
@@ -33,6 +34,7 @@ object StarshipFragmentImpl_ResponseAdapter : ResponseAdapter<StarshipFragmentIm
       fieldName = "id",
       arguments = emptyMap(),
       conditions = emptyList(),
+      fields = emptyArray(),
     ),
     ResponseField(
       type = ResponseField.Type.Named.Other("String"),
@@ -40,6 +42,7 @@ object StarshipFragmentImpl_ResponseAdapter : ResponseAdapter<StarshipFragmentIm
       fieldName = "name",
       arguments = emptyMap(),
       conditions = emptyList(),
+      fields = emptyArray(),
     ),
     ResponseField(
       type = ResponseField.Type.Named.Object("StarshipPilotsConnection"),
@@ -47,6 +50,7 @@ object StarshipFragmentImpl_ResponseAdapter : ResponseAdapter<StarshipFragmentIm
       fieldName = "pilotConnection",
       arguments = emptyMap(),
       conditions = emptyList(),
+      fields = PilotConnection.RESPONSE_FIELDS,
     )
   )
 
@@ -91,13 +95,14 @@ object StarshipFragmentImpl_ResponseAdapter : ResponseAdapter<StarshipFragmentIm
   }
 
   object PilotConnection : ResponseAdapter<StarshipFragmentImpl.Data.PilotConnection> {
-    private val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
+    val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
       ResponseField(
         type = ResponseField.Type.List(ResponseField.Type.Named.Object("StarshipPilotsEdge")),
         responseName = "edges",
         fieldName = "edges",
         arguments = emptyMap(),
         conditions = emptyList(),
+        fields = Edge.RESPONSE_FIELDS,
       )
     )
 
@@ -131,13 +136,14 @@ object StarshipFragmentImpl_ResponseAdapter : ResponseAdapter<StarshipFragmentIm
     }
 
     object Edge : ResponseAdapter<StarshipFragmentImpl.Data.PilotConnection.Edge> {
-      private val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
+      val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
         ResponseField(
           type = ResponseField.Type.Named.Object("Person"),
           responseName = "node",
           fieldName = "node",
           arguments = emptyMap(),
           conditions = emptyList(),
+          fields = Node.RESPONSE_FIELDS,
         )
       )
 
@@ -171,13 +177,14 @@ object StarshipFragmentImpl_ResponseAdapter : ResponseAdapter<StarshipFragmentIm
       }
 
       object Node : ResponseAdapter<StarshipFragmentImpl.Data.PilotConnection.Edge.Node> {
-        private val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
+        val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
           ResponseField(
             type = ResponseField.Type.NotNull(ResponseField.Type.Named.Other("String")),
             responseName = "__typename",
             fieldName = "__typename",
             arguments = emptyMap(),
             conditions = emptyList(),
+            fields = emptyArray(),
           )
         )
 
@@ -200,13 +207,14 @@ object StarshipFragmentImpl_ResponseAdapter : ResponseAdapter<StarshipFragmentIm
 
         object PersonNode :
             ResponseAdapter<StarshipFragmentImpl.Data.PilotConnection.Edge.Node.PersonNode> {
-          private val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
+          val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
             ResponseField(
               type = ResponseField.Type.NotNull(ResponseField.Type.Named.Other("String")),
               responseName = "__typename",
               fieldName = "__typename",
               arguments = emptyMap(),
               conditions = emptyList(),
+              fields = emptyArray(),
             ),
             ResponseField(
               type = ResponseField.Type.Named.Other("String"),
@@ -214,6 +222,7 @@ object StarshipFragmentImpl_ResponseAdapter : ResponseAdapter<StarshipFragmentIm
               fieldName = "name",
               arguments = emptyMap(),
               conditions = emptyList(),
+              fields = emptyArray(),
             ),
             ResponseField(
               type = ResponseField.Type.Named.Object("Planet"),
@@ -221,6 +230,7 @@ object StarshipFragmentImpl_ResponseAdapter : ResponseAdapter<StarshipFragmentIm
               fieldName = "homeworld",
               arguments = emptyMap(),
               conditions = emptyList(),
+              fields = Homeworld.RESPONSE_FIELDS,
             )
           )
 
@@ -264,13 +274,14 @@ object StarshipFragmentImpl_ResponseAdapter : ResponseAdapter<StarshipFragmentIm
           object Homeworld :
               ResponseAdapter<StarshipFragmentImpl.Data.PilotConnection.Edge.Node.PersonNode.Homeworld>
               {
-            private val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
+            val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
               ResponseField(
                 type = ResponseField.Type.NotNull(ResponseField.Type.Named.Other("String")),
                 responseName = "__typename",
                 fieldName = "__typename",
                 arguments = emptyMap(),
                 conditions = emptyList(),
+                fields = emptyArray(),
               )
             )
 
@@ -294,13 +305,14 @@ object StarshipFragmentImpl_ResponseAdapter : ResponseAdapter<StarshipFragmentIm
             object PlanetHomeworld :
                 ResponseAdapter<StarshipFragmentImpl.Data.PilotConnection.Edge.Node.PersonNode.Homeworld.PlanetHomeworld>
                 {
-              private val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
+              val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
                 ResponseField(
                   type = ResponseField.Type.NotNull(ResponseField.Type.Named.Other("String")),
                   responseName = "__typename",
                   fieldName = "__typename",
                   arguments = emptyMap(),
                   conditions = emptyList(),
+                  fields = emptyArray(),
                 ),
                 ResponseField(
                   type = ResponseField.Type.Named.Other("String"),
@@ -308,6 +320,7 @@ object StarshipFragmentImpl_ResponseAdapter : ResponseAdapter<StarshipFragmentIm
                   fieldName = "name",
                   arguments = emptyMap(),
                   conditions = emptyList(),
+                  fields = emptyArray(),
                 )
               )
 
@@ -340,13 +353,14 @@ object StarshipFragmentImpl_ResponseAdapter : ResponseAdapter<StarshipFragmentIm
             object OtherHomeworld :
                 ResponseAdapter<StarshipFragmentImpl.Data.PilotConnection.Edge.Node.PersonNode.Homeworld.OtherHomeworld>
                 {
-              private val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
+              val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
                 ResponseField(
                   type = ResponseField.Type.NotNull(ResponseField.Type.Named.Other("String")),
                   responseName = "__typename",
                   fieldName = "__typename",
                   arguments = emptyMap(),
                   conditions = emptyList(),
+                  fields = emptyArray(),
                 )
               )
 
@@ -376,13 +390,14 @@ object StarshipFragmentImpl_ResponseAdapter : ResponseAdapter<StarshipFragmentIm
 
         object OtherNode :
             ResponseAdapter<StarshipFragmentImpl.Data.PilotConnection.Edge.Node.OtherNode> {
-          private val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
+          val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
             ResponseField(
               type = ResponseField.Type.NotNull(ResponseField.Type.Named.Other("String")),
               responseName = "__typename",
               fieldName = "__typename",
               arguments = emptyMap(),
               conditions = emptyList(),
+              fields = emptyArray(),
             )
           )
 

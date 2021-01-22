@@ -22,13 +22,14 @@ import kotlin.collections.List
     "RemoveExplicitTypeArguments", "NestedLambdaShadowedImplicitParameter", "PropertyName",
     "RemoveRedundantQualifierName")
 object TestQuery_ResponseAdapter : ResponseAdapter<TestQuery.Data> {
-  private val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
+  val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
     ResponseField(
       type = ResponseField.Type.Named.Object("Character"),
       responseName = "hero",
       fieldName = "hero",
       arguments = emptyMap(),
       conditions = emptyList(),
+      fields = Hero.RESPONSE_FIELDS,
     )
   )
 
@@ -60,13 +61,14 @@ object TestQuery_ResponseAdapter : ResponseAdapter<TestQuery.Data> {
   }
 
   object Hero : ResponseAdapter<TestQuery.Data.Hero> {
-    private val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
+    val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
       ResponseField(
         type = ResponseField.Type.NotNull(ResponseField.Type.Named.Other("String")),
         responseName = "name",
         fieldName = "name",
         arguments = emptyMap(),
         conditions = emptyList(),
+        fields = emptyArray(),
       ),
       ResponseField(
         type = ResponseField.Type.NotNull(ResponseField.Type.Named.Other("Date")),
@@ -74,6 +76,7 @@ object TestQuery_ResponseAdapter : ResponseAdapter<TestQuery.Data> {
         fieldName = "birthDate",
         arguments = emptyMap(),
         conditions = emptyList(),
+        fields = emptyArray(),
       ),
       ResponseField(
         type =
@@ -82,6 +85,7 @@ object TestQuery_ResponseAdapter : ResponseAdapter<TestQuery.Data> {
         fieldName = "appearanceDates",
         arguments = emptyMap(),
         conditions = emptyList(),
+        fields = emptyArray(),
       ),
       ResponseField(
         type = ResponseField.Type.NotNull(ResponseField.Type.Named.Other("UnsupportedType")),
@@ -89,6 +93,7 @@ object TestQuery_ResponseAdapter : ResponseAdapter<TestQuery.Data> {
         fieldName = "fieldWithUnsupportedType",
         arguments = emptyMap(),
         conditions = emptyList(),
+        fields = emptyArray(),
       ),
       ResponseField(
         type = ResponseField.Type.NotNull(ResponseField.Type.Named.Other("URL")),
@@ -96,6 +101,7 @@ object TestQuery_ResponseAdapter : ResponseAdapter<TestQuery.Data> {
         fieldName = "profileLink",
         arguments = emptyMap(),
         conditions = emptyList(),
+        fields = emptyArray(),
       ),
       ResponseField(
         type =
@@ -104,6 +110,7 @@ object TestQuery_ResponseAdapter : ResponseAdapter<TestQuery.Data> {
         fieldName = "links",
         arguments = emptyMap(),
         conditions = emptyList(),
+        fields = emptyArray(),
       )
     )
 

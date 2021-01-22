@@ -18,13 +18,14 @@ import kotlin.Suppress
     "RemoveExplicitTypeArguments", "NestedLambdaShadowedImplicitParameter", "PropertyName",
     "RemoveRedundantQualifierName")
 object StarshipImpl_ResponseAdapter : ResponseAdapter<StarshipImpl.Data> {
-  private val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
+  val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
     ResponseField(
       type = ResponseField.Type.NotNull(ResponseField.Type.Named.Other("String")),
       responseName = "__typename",
       fieldName = "__typename",
       arguments = emptyMap(),
       conditions = emptyList(),
+      fields = emptyArray(),
     ),
     ResponseField(
       type = ResponseField.Type.NotNull(ResponseField.Type.Named.Other("String")),
@@ -32,6 +33,7 @@ object StarshipImpl_ResponseAdapter : ResponseAdapter<StarshipImpl.Data> {
       fieldName = "name",
       arguments = emptyMap(),
       conditions = emptyList(),
+      fields = emptyArray(),
     )
   )
 

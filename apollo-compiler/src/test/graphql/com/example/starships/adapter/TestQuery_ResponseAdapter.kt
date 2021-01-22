@@ -20,7 +20,7 @@ import kotlin.collections.List
     "RemoveExplicitTypeArguments", "NestedLambdaShadowedImplicitParameter", "PropertyName",
     "RemoveRedundantQualifierName")
 object TestQuery_ResponseAdapter : ResponseAdapter<TestQuery.Data> {
-  private val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
+  val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
     ResponseField(
       type = ResponseField.Type.Named.Object("Starship"),
       responseName = "starship",
@@ -30,6 +30,7 @@ object TestQuery_ResponseAdapter : ResponseAdapter<TestQuery.Data> {
           "kind" to "Variable",
           "variableName" to "id")),
       conditions = emptyList(),
+      fields = Starship.RESPONSE_FIELDS,
     )
   )
 
@@ -61,13 +62,14 @@ object TestQuery_ResponseAdapter : ResponseAdapter<TestQuery.Data> {
   }
 
   object Starship : ResponseAdapter<TestQuery.Data.Starship> {
-    private val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
+    val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
       ResponseField(
         type = ResponseField.Type.NotNull(ResponseField.Type.Named.Other("String")),
         responseName = "id",
         fieldName = "id",
         arguments = emptyMap(),
         conditions = emptyList(),
+        fields = emptyArray(),
       ),
       ResponseField(
         type = ResponseField.Type.NotNull(ResponseField.Type.Named.Other("String")),
@@ -75,6 +77,7 @@ object TestQuery_ResponseAdapter : ResponseAdapter<TestQuery.Data> {
         fieldName = "name",
         arguments = emptyMap(),
         conditions = emptyList(),
+        fields = emptyArray(),
       ),
       ResponseField(
         type =
@@ -83,6 +86,7 @@ object TestQuery_ResponseAdapter : ResponseAdapter<TestQuery.Data> {
         fieldName = "coordinates",
         arguments = emptyMap(),
         conditions = emptyList(),
+        fields = emptyArray(),
       )
     )
 

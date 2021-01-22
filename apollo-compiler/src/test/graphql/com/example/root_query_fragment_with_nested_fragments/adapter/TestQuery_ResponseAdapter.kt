@@ -18,13 +18,14 @@ import kotlin.Suppress
     "RemoveExplicitTypeArguments", "NestedLambdaShadowedImplicitParameter", "PropertyName",
     "RemoveRedundantQualifierName")
 object TestQuery_ResponseAdapter : ResponseAdapter<TestQuery.Data> {
-  private val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
+  val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
     ResponseField(
       type = ResponseField.Type.NotNull(ResponseField.Type.Named.Other("String")),
       responseName = "__typename",
       fieldName = "__typename",
       arguments = emptyMap(),
       conditions = emptyList(),
+      fields = emptyArray(),
     )
   )
 
@@ -44,13 +45,14 @@ object TestQuery_ResponseAdapter : ResponseAdapter<TestQuery.Data> {
   }
 
   object QueryData : ResponseAdapter<TestQuery.Data.QueryData> {
-    private val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
+    val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
       ResponseField(
         type = ResponseField.Type.NotNull(ResponseField.Type.Named.Other("String")),
         responseName = "__typename",
         fieldName = "__typename",
         arguments = emptyMap(),
         conditions = emptyList(),
+        fields = emptyArray(),
       ),
       ResponseField(
         type = ResponseField.Type.Named.Object("Character"),
@@ -58,6 +60,7 @@ object TestQuery_ResponseAdapter : ResponseAdapter<TestQuery.Data> {
         fieldName = "hero",
         arguments = emptyMap(),
         conditions = emptyList(),
+        fields = Hero.RESPONSE_FIELDS,
       ),
       ResponseField(
         type = ResponseField.Type.Named.Object("Droid"),
@@ -66,6 +69,7 @@ object TestQuery_ResponseAdapter : ResponseAdapter<TestQuery.Data> {
         arguments = mapOf<String, Any?>(
           "id" to 1),
         conditions = emptyList(),
+        fields = Droid.RESPONSE_FIELDS,
       ),
       ResponseField(
         type = ResponseField.Type.Named.Object("Human"),
@@ -74,6 +78,7 @@ object TestQuery_ResponseAdapter : ResponseAdapter<TestQuery.Data> {
         arguments = mapOf<String, Any?>(
           "id" to 1),
         conditions = emptyList(),
+        fields = Human.RESPONSE_FIELDS,
       )
     )
 
@@ -134,13 +139,14 @@ object TestQuery_ResponseAdapter : ResponseAdapter<TestQuery.Data> {
     }
 
     object Hero : ResponseAdapter<TestQuery.Data.QueryData.Hero> {
-      private val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
+      val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
         ResponseField(
           type = ResponseField.Type.NotNull(ResponseField.Type.Named.Other("String")),
           responseName = "__typename",
           fieldName = "__typename",
           arguments = emptyMap(),
           conditions = emptyList(),
+          fields = emptyArray(),
         )
       )
 
@@ -162,13 +168,14 @@ object TestQuery_ResponseAdapter : ResponseAdapter<TestQuery.Data> {
       }
 
       object CharacterHero : ResponseAdapter<TestQuery.Data.QueryData.Hero.CharacterHero> {
-        private val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
+        val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
           ResponseField(
             type = ResponseField.Type.NotNull(ResponseField.Type.Named.Other("String")),
             responseName = "__typename",
             fieldName = "__typename",
             arguments = emptyMap(),
             conditions = emptyList(),
+            fields = emptyArray(),
           ),
           ResponseField(
             type = ResponseField.Type.NotNull(ResponseField.Type.Named.Other("String")),
@@ -176,6 +183,7 @@ object TestQuery_ResponseAdapter : ResponseAdapter<TestQuery.Data> {
             fieldName = "name",
             arguments = emptyMap(),
             conditions = emptyList(),
+            fields = emptyArray(),
           )
         )
 
@@ -206,13 +214,14 @@ object TestQuery_ResponseAdapter : ResponseAdapter<TestQuery.Data> {
       }
 
       object OtherHero : ResponseAdapter<TestQuery.Data.QueryData.Hero.OtherHero> {
-        private val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
+        val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
           ResponseField(
             type = ResponseField.Type.NotNull(ResponseField.Type.Named.Other("String")),
             responseName = "__typename",
             fieldName = "__typename",
             arguments = emptyMap(),
             conditions = emptyList(),
+            fields = emptyArray(),
           )
         )
 
@@ -240,13 +249,14 @@ object TestQuery_ResponseAdapter : ResponseAdapter<TestQuery.Data> {
     }
 
     object Droid : ResponseAdapter<TestQuery.Data.QueryData.Droid> {
-      private val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
+      val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
         ResponseField(
           type = ResponseField.Type.NotNull(ResponseField.Type.Named.Other("String")),
           responseName = "__typename",
           fieldName = "__typename",
           arguments = emptyMap(),
           conditions = emptyList(),
+          fields = emptyArray(),
         )
       )
 
@@ -267,13 +277,14 @@ object TestQuery_ResponseAdapter : ResponseAdapter<TestQuery.Data> {
       }
 
       object DroidDroid : ResponseAdapter<TestQuery.Data.QueryData.Droid.DroidDroid> {
-        private val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
+        val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
           ResponseField(
             type = ResponseField.Type.NotNull(ResponseField.Type.Named.Other("String")),
             responseName = "__typename",
             fieldName = "__typename",
             arguments = emptyMap(),
             conditions = emptyList(),
+            fields = emptyArray(),
           ),
           ResponseField(
             type = ResponseField.Type.NotNull(ResponseField.Type.Named.Other("String")),
@@ -281,6 +292,7 @@ object TestQuery_ResponseAdapter : ResponseAdapter<TestQuery.Data> {
             fieldName = "name",
             arguments = emptyMap(),
             conditions = emptyList(),
+            fields = emptyArray(),
           ),
           ResponseField(
             type = ResponseField.Type.Named.Other("String"),
@@ -288,6 +300,7 @@ object TestQuery_ResponseAdapter : ResponseAdapter<TestQuery.Data> {
             fieldName = "primaryFunction",
             arguments = emptyMap(),
             conditions = emptyList(),
+            fields = emptyArray(),
           )
         )
 
@@ -322,13 +335,14 @@ object TestQuery_ResponseAdapter : ResponseAdapter<TestQuery.Data> {
       }
 
       object OtherDroid : ResponseAdapter<TestQuery.Data.QueryData.Droid.OtherDroid> {
-        private val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
+        val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
           ResponseField(
             type = ResponseField.Type.NotNull(ResponseField.Type.Named.Other("String")),
             responseName = "__typename",
             fieldName = "__typename",
             arguments = emptyMap(),
             conditions = emptyList(),
+            fields = emptyArray(),
           )
         )
 
@@ -356,13 +370,14 @@ object TestQuery_ResponseAdapter : ResponseAdapter<TestQuery.Data> {
     }
 
     object Human : ResponseAdapter<TestQuery.Data.QueryData.Human> {
-      private val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
+      val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
         ResponseField(
           type = ResponseField.Type.NotNull(ResponseField.Type.Named.Other("String")),
           responseName = "__typename",
           fieldName = "__typename",
           arguments = emptyMap(),
           conditions = emptyList(),
+          fields = emptyArray(),
         )
       )
 
@@ -383,13 +398,14 @@ object TestQuery_ResponseAdapter : ResponseAdapter<TestQuery.Data> {
       }
 
       object HumanHuman : ResponseAdapter<TestQuery.Data.QueryData.Human.HumanHuman> {
-        private val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
+        val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
           ResponseField(
             type = ResponseField.Type.NotNull(ResponseField.Type.Named.Other("String")),
             responseName = "__typename",
             fieldName = "__typename",
             arguments = emptyMap(),
             conditions = emptyList(),
+            fields = emptyArray(),
           ),
           ResponseField(
             type = ResponseField.Type.NotNull(ResponseField.Type.Named.Other("String")),
@@ -397,6 +413,7 @@ object TestQuery_ResponseAdapter : ResponseAdapter<TestQuery.Data> {
             fieldName = "name",
             arguments = emptyMap(),
             conditions = emptyList(),
+            fields = emptyArray(),
           ),
           ResponseField(
             type = ResponseField.Type.Named.Other("String"),
@@ -404,6 +421,7 @@ object TestQuery_ResponseAdapter : ResponseAdapter<TestQuery.Data> {
             fieldName = "homePlanet",
             arguments = emptyMap(),
             conditions = emptyList(),
+            fields = emptyArray(),
           )
         )
 
@@ -438,13 +456,14 @@ object TestQuery_ResponseAdapter : ResponseAdapter<TestQuery.Data> {
       }
 
       object OtherHuman : ResponseAdapter<TestQuery.Data.QueryData.Human.OtherHuman> {
-        private val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
+        val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
           ResponseField(
             type = ResponseField.Type.NotNull(ResponseField.Type.Named.Other("String")),
             responseName = "__typename",
             fieldName = "__typename",
             arguments = emptyMap(),
             conditions = emptyList(),
+            fields = emptyArray(),
           )
         )
 
@@ -473,13 +492,14 @@ object TestQuery_ResponseAdapter : ResponseAdapter<TestQuery.Data> {
   }
 
   object OtherData : ResponseAdapter<TestQuery.Data.OtherData> {
-    private val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
+    val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
       ResponseField(
         type = ResponseField.Type.NotNull(ResponseField.Type.Named.Other("String")),
         responseName = "__typename",
         fieldName = "__typename",
         arguments = emptyMap(),
         conditions = emptyList(),
+        fields = emptyArray(),
       )
     )
 

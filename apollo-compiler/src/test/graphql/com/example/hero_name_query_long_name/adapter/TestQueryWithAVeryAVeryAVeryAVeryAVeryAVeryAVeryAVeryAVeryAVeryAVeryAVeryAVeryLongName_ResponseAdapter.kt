@@ -22,7 +22,7 @@ object
     :
     ResponseAdapter<TestQueryWithAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryLongName.Data>
     {
-  private val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
+  val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
     ResponseField(
       type = ResponseField.Type.Named.Object("Character"),
       responseName = "heroAVeryAVeryAVeryAVeryAVeryAVeryAV",
@@ -33,6 +33,7 @@ object
           "variableName" to
               "episodeAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryLongName")),
       conditions = emptyList(),
+      fields = HeroAVeryAVeryAVeryAVeryAVeryAVeryAV.RESPONSE_FIELDS,
     )
   )
 
@@ -68,7 +69,7 @@ object
   object HeroAVeryAVeryAVeryAVeryAVeryAVeryAV :
       ResponseAdapter<TestQueryWithAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryLongName.Data.HeroAVeryAVeryAVeryAVeryAVeryAVeryAV>
       {
-    private val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
+    val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
       ResponseField(
         type = ResponseField.Type.NotNull(ResponseField.Type.Named.Other("String")),
         responseName =
@@ -76,6 +77,7 @@ object
         fieldName = "name",
         arguments = emptyMap(),
         conditions = emptyList(),
+        fields = emptyArray(),
       )
     )
 

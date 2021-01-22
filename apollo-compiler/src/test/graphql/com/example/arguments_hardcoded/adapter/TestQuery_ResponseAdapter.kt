@@ -20,7 +20,7 @@ import kotlin.collections.List
     "RemoveExplicitTypeArguments", "NestedLambdaShadowedImplicitParameter", "PropertyName",
     "RemoveRedundantQualifierName")
 object TestQuery_ResponseAdapter : ResponseAdapter<TestQuery.Data> {
-  private val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
+  val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
     ResponseField(
       type = ResponseField.Type.List(ResponseField.Type.Named.Object("Review")),
       responseName = "reviews",
@@ -30,6 +30,7 @@ object TestQuery_ResponseAdapter : ResponseAdapter<TestQuery.Data> {
         "starsInt" to 10,
         "starsFloat" to 9.9),
       conditions = emptyList(),
+      fields = Review.RESPONSE_FIELDS,
     ),
     ResponseField(
       type = ResponseField.Type.NotNull(ResponseField.Type.Named.Other("Int")),
@@ -44,6 +45,7 @@ object TestQuery_ResponseAdapter : ResponseAdapter<TestQuery.Data> {
         "boolean" to null,
         "list" to null),
       conditions = emptyList(),
+      fields = emptyArray(),
     )
   )
 
@@ -79,13 +81,14 @@ object TestQuery_ResponseAdapter : ResponseAdapter<TestQuery.Data> {
   }
 
   object Review : ResponseAdapter<TestQuery.Data.Review> {
-    private val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
+    val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
       ResponseField(
         type = ResponseField.Type.NotNull(ResponseField.Type.Named.Other("Int")),
         responseName = "stars",
         fieldName = "stars",
         arguments = emptyMap(),
         conditions = emptyList(),
+        fields = emptyArray(),
       ),
       ResponseField(
         type = ResponseField.Type.Named.Other("String"),
@@ -93,6 +96,7 @@ object TestQuery_ResponseAdapter : ResponseAdapter<TestQuery.Data> {
         fieldName = "commentary",
         arguments = emptyMap(),
         conditions = emptyList(),
+        fields = emptyArray(),
       )
     )
 

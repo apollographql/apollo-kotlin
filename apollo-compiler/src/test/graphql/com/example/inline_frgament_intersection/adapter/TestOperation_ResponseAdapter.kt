@@ -22,13 +22,14 @@ import kotlin.collections.List
     "RemoveExplicitTypeArguments", "NestedLambdaShadowedImplicitParameter", "PropertyName",
     "RemoveRedundantQualifierName")
 object TestOperation_ResponseAdapter : ResponseAdapter<TestOperation.Data> {
-  private val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
+  val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
     ResponseField(
       type = ResponseField.Type.NotNull(ResponseField.Type.Named.Object("Anything")),
       responseName = "random",
       fieldName = "random",
       arguments = emptyMap(),
       conditions = emptyList(),
+      fields = Random.RESPONSE_FIELDS,
     )
   )
 
@@ -56,13 +57,14 @@ object TestOperation_ResponseAdapter : ResponseAdapter<TestOperation.Data> {
   }
 
   object Random : ResponseAdapter<TestOperation.Data.Random> {
-    private val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
+    val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
       ResponseField(
         type = ResponseField.Type.NotNull(ResponseField.Type.Named.Other("String")),
         responseName = "__typename",
         fieldName = "__typename",
         arguments = emptyMap(),
         conditions = emptyList(),
+        fields = emptyArray(),
       )
     )
 
@@ -85,13 +87,14 @@ object TestOperation_ResponseAdapter : ResponseAdapter<TestOperation.Data> {
     }
 
     object BeingHumanRandom : ResponseAdapter<TestOperation.Data.Random.BeingHumanRandom> {
-      private val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
+      val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
         ResponseField(
           type = ResponseField.Type.NotNull(ResponseField.Type.Named.Other("String")),
           responseName = "__typename",
           fieldName = "__typename",
           arguments = emptyMap(),
           conditions = emptyList(),
+          fields = emptyArray(),
         ),
         ResponseField(
           type = ResponseField.Type.NotNull(ResponseField.Type.Named.Other("String")),
@@ -99,6 +102,7 @@ object TestOperation_ResponseAdapter : ResponseAdapter<TestOperation.Data> {
           fieldName = "name",
           arguments = emptyMap(),
           conditions = emptyList(),
+          fields = emptyArray(),
         ),
         ResponseField(
           type =
@@ -107,6 +111,7 @@ object TestOperation_ResponseAdapter : ResponseAdapter<TestOperation.Data> {
           fieldName = "friends",
           arguments = emptyMap(),
           conditions = emptyList(),
+          fields = Friend.RESPONSE_FIELDS,
         ),
         ResponseField(
           type = ResponseField.Type.Named.Other("String"),
@@ -114,6 +119,7 @@ object TestOperation_ResponseAdapter : ResponseAdapter<TestOperation.Data> {
           fieldName = "profilePictureUrl",
           arguments = emptyMap(),
           conditions = emptyList(),
+          fields = emptyArray(),
         )
       )
 
@@ -159,13 +165,14 @@ object TestOperation_ResponseAdapter : ResponseAdapter<TestOperation.Data> {
       }
 
       object Friend : ResponseAdapter<TestOperation.Data.Random.BeingHumanRandom.Friend> {
-        private val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
+        val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
           ResponseField(
             type = ResponseField.Type.NotNull(ResponseField.Type.Named.Other("String")),
             responseName = "__typename",
             fieldName = "__typename",
             arguments = emptyMap(),
             conditions = emptyList(),
+            fields = emptyArray(),
           )
         )
 
@@ -188,13 +195,14 @@ object TestOperation_ResponseAdapter : ResponseAdapter<TestOperation.Data> {
 
         object WookieFriend :
             ResponseAdapter<TestOperation.Data.Random.BeingHumanRandom.Friend.WookieFriend> {
-          private val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
+          val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
             ResponseField(
               type = ResponseField.Type.NotNull(ResponseField.Type.Named.Other("String")),
               responseName = "__typename",
               fieldName = "__typename",
               arguments = emptyMap(),
               conditions = emptyList(),
+              fields = emptyArray(),
             ),
             ResponseField(
               type = ResponseField.Type.NotNull(ResponseField.Type.Named.Other("String")),
@@ -202,6 +210,7 @@ object TestOperation_ResponseAdapter : ResponseAdapter<TestOperation.Data> {
               fieldName = "name",
               arguments = emptyMap(),
               conditions = emptyList(),
+              fields = emptyArray(),
             ),
             ResponseField(
               type = ResponseField.Type.Named.Other("Boolean"),
@@ -209,6 +218,7 @@ object TestOperation_ResponseAdapter : ResponseAdapter<TestOperation.Data> {
               fieldName = "isFamous",
               arguments = emptyMap(),
               conditions = emptyList(),
+              fields = emptyArray(),
             ),
             ResponseField(
               type = ResponseField.Type.Named.Other("Float"),
@@ -216,6 +226,7 @@ object TestOperation_ResponseAdapter : ResponseAdapter<TestOperation.Data> {
               fieldName = "lifeExpectancy",
               arguments = emptyMap(),
               conditions = emptyList(),
+              fields = emptyArray(),
             ),
             ResponseField(
               type = ResponseField.Type.NotNull(ResponseField.Type.Named.Other("Race")),
@@ -223,6 +234,7 @@ object TestOperation_ResponseAdapter : ResponseAdapter<TestOperation.Data> {
               fieldName = "race",
               arguments = emptyMap(),
               conditions = emptyList(),
+              fields = emptyArray(),
             )
           )
 
@@ -266,13 +278,14 @@ object TestOperation_ResponseAdapter : ResponseAdapter<TestOperation.Data> {
 
         object OtherFriend :
             ResponseAdapter<TestOperation.Data.Random.BeingHumanRandom.Friend.OtherFriend> {
-          private val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
+          val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
             ResponseField(
               type = ResponseField.Type.NotNull(ResponseField.Type.Named.Other("String")),
               responseName = "__typename",
               fieldName = "__typename",
               arguments = emptyMap(),
               conditions = emptyList(),
+              fields = emptyArray(),
             ),
             ResponseField(
               type = ResponseField.Type.NotNull(ResponseField.Type.Named.Other("String")),
@@ -280,6 +293,7 @@ object TestOperation_ResponseAdapter : ResponseAdapter<TestOperation.Data> {
               fieldName = "name",
               arguments = emptyMap(),
               conditions = emptyList(),
+              fields = emptyArray(),
             ),
             ResponseField(
               type = ResponseField.Type.Named.Other("Boolean"),
@@ -287,6 +301,7 @@ object TestOperation_ResponseAdapter : ResponseAdapter<TestOperation.Data> {
               fieldName = "isFamous",
               arguments = emptyMap(),
               conditions = emptyList(),
+              fields = emptyArray(),
             )
           )
 
@@ -323,13 +338,14 @@ object TestOperation_ResponseAdapter : ResponseAdapter<TestOperation.Data> {
     }
 
     object BeingWookieRandom : ResponseAdapter<TestOperation.Data.Random.BeingWookieRandom> {
-      private val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
+      val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
         ResponseField(
           type = ResponseField.Type.NotNull(ResponseField.Type.Named.Other("String")),
           responseName = "__typename",
           fieldName = "__typename",
           arguments = emptyMap(),
           conditions = emptyList(),
+          fields = emptyArray(),
         ),
         ResponseField(
           type = ResponseField.Type.NotNull(ResponseField.Type.Named.Other("String")),
@@ -337,6 +353,7 @@ object TestOperation_ResponseAdapter : ResponseAdapter<TestOperation.Data> {
           fieldName = "name",
           arguments = emptyMap(),
           conditions = emptyList(),
+          fields = emptyArray(),
         ),
         ResponseField(
           type =
@@ -345,6 +362,7 @@ object TestOperation_ResponseAdapter : ResponseAdapter<TestOperation.Data> {
           fieldName = "friends",
           arguments = emptyMap(),
           conditions = emptyList(),
+          fields = Friend.RESPONSE_FIELDS,
         ),
         ResponseField(
           type = ResponseField.Type.NotNull(ResponseField.Type.Named.Other("Race")),
@@ -352,6 +370,7 @@ object TestOperation_ResponseAdapter : ResponseAdapter<TestOperation.Data> {
           fieldName = "race",
           arguments = emptyMap(),
           conditions = emptyList(),
+          fields = emptyArray(),
         )
       )
 
@@ -397,13 +416,14 @@ object TestOperation_ResponseAdapter : ResponseAdapter<TestOperation.Data> {
       }
 
       object Friend : ResponseAdapter<TestOperation.Data.Random.BeingWookieRandom.Friend> {
-        private val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
+        val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
           ResponseField(
             type = ResponseField.Type.NotNull(ResponseField.Type.Named.Other("String")),
             responseName = "__typename",
             fieldName = "__typename",
             arguments = emptyMap(),
             conditions = emptyList(),
+            fields = emptyArray(),
           )
         )
 
@@ -426,13 +446,14 @@ object TestOperation_ResponseAdapter : ResponseAdapter<TestOperation.Data> {
 
         object WookieFriend :
             ResponseAdapter<TestOperation.Data.Random.BeingWookieRandom.Friend.WookieFriend> {
-          private val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
+          val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
             ResponseField(
               type = ResponseField.Type.NotNull(ResponseField.Type.Named.Other("String")),
               responseName = "__typename",
               fieldName = "__typename",
               arguments = emptyMap(),
               conditions = emptyList(),
+              fields = emptyArray(),
             ),
             ResponseField(
               type = ResponseField.Type.NotNull(ResponseField.Type.Named.Other("String")),
@@ -440,6 +461,7 @@ object TestOperation_ResponseAdapter : ResponseAdapter<TestOperation.Data> {
               fieldName = "name",
               arguments = emptyMap(),
               conditions = emptyList(),
+              fields = emptyArray(),
             ),
             ResponseField(
               type = ResponseField.Type.Named.Other("Float"),
@@ -447,6 +469,7 @@ object TestOperation_ResponseAdapter : ResponseAdapter<TestOperation.Data> {
               fieldName = "lifeExpectancy",
               arguments = emptyMap(),
               conditions = emptyList(),
+              fields = emptyArray(),
             )
           )
 
@@ -482,13 +505,14 @@ object TestOperation_ResponseAdapter : ResponseAdapter<TestOperation.Data> {
 
         object OtherFriend :
             ResponseAdapter<TestOperation.Data.Random.BeingWookieRandom.Friend.OtherFriend> {
-          private val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
+          val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
             ResponseField(
               type = ResponseField.Type.NotNull(ResponseField.Type.Named.Other("String")),
               responseName = "__typename",
               fieldName = "__typename",
               arguments = emptyMap(),
               conditions = emptyList(),
+              fields = emptyArray(),
             ),
             ResponseField(
               type = ResponseField.Type.NotNull(ResponseField.Type.Named.Other("String")),
@@ -496,6 +520,7 @@ object TestOperation_ResponseAdapter : ResponseAdapter<TestOperation.Data> {
               fieldName = "name",
               arguments = emptyMap(),
               conditions = emptyList(),
+              fields = emptyArray(),
             ),
             ResponseField(
               type = ResponseField.Type.Named.Other("Float"),
@@ -503,6 +528,7 @@ object TestOperation_ResponseAdapter : ResponseAdapter<TestOperation.Data> {
               fieldName = "lifeExpectancy",
               arguments = emptyMap(),
               conditions = emptyList(),
+              fields = emptyArray(),
             )
           )
 
@@ -539,13 +565,14 @@ object TestOperation_ResponseAdapter : ResponseAdapter<TestOperation.Data> {
     }
 
     object OtherRandom : ResponseAdapter<TestOperation.Data.Random.OtherRandom> {
-      private val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
+      val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
         ResponseField(
           type = ResponseField.Type.NotNull(ResponseField.Type.Named.Other("String")),
           responseName = "__typename",
           fieldName = "__typename",
           arguments = emptyMap(),
           conditions = emptyList(),
+          fields = emptyArray(),
         )
       )
 
