@@ -20,7 +20,13 @@ import kotlin.collections.List
     "RemoveRedundantQualifierName")
 object TestQuery_ResponseAdapter : ResponseAdapter<TestQuery.Data> {
   private val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
-    ResponseField.forObject("tree", "tree", null, true, null)
+    ResponseField(
+      type = ResponseField.Type.Named("Tree"),
+      responseName = "tree",
+      fieldName = "tree",
+      arguments = emptyMap(),
+      conditions = emptyList(),
+    )
   )
 
   override fun fromResponse(reader: ResponseReader, __typename: String?): TestQuery.Data {
@@ -52,9 +58,28 @@ object TestQuery_ResponseAdapter : ResponseAdapter<TestQuery.Data> {
 
   object Tree : ResponseAdapter<TestQuery.Data.Tree> {
     private val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
-      ResponseField.forString("name", "name", null, false, null),
-      ResponseField.forList("children", "children", null, false, null),
-      ResponseField.forObject("parent", "parent", null, true, null)
+      ResponseField(
+        type = ResponseField.Type.NotNull(ResponseField.Type.Named("String")),
+        responseName = "name",
+        fieldName = "name",
+        arguments = emptyMap(),
+        conditions = emptyList(),
+      ),
+      ResponseField(
+        type =
+            ResponseField.Type.NotNull(ResponseField.Type.List(ResponseField.Type.NotNull(ResponseField.Type.Named("Tree")))),
+        responseName = "children",
+        fieldName = "children",
+        arguments = emptyMap(),
+        conditions = emptyList(),
+      ),
+      ResponseField(
+        type = ResponseField.Type.Named("Tree"),
+        responseName = "parent",
+        fieldName = "parent",
+        arguments = emptyMap(),
+        conditions = emptyList(),
+      )
     )
 
     override fun fromResponse(reader: ResponseReader, __typename: String?): TestQuery.Data.Tree {
@@ -102,7 +127,13 @@ object TestQuery_ResponseAdapter : ResponseAdapter<TestQuery.Data> {
 
     object Child : ResponseAdapter<TestQuery.Data.Tree.Child> {
       private val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
-        ResponseField.forString("name", "name", null, false, null)
+        ResponseField(
+          type = ResponseField.Type.NotNull(ResponseField.Type.Named("String")),
+          responseName = "name",
+          fieldName = "name",
+          arguments = emptyMap(),
+          conditions = emptyList(),
+        )
       )
 
       override fun fromResponse(reader: ResponseReader, __typename: String?):
@@ -128,7 +159,13 @@ object TestQuery_ResponseAdapter : ResponseAdapter<TestQuery.Data> {
 
     object Parent : ResponseAdapter<TestQuery.Data.Tree.Parent> {
       private val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
-        ResponseField.forString("name", "name", null, false, null)
+        ResponseField(
+          type = ResponseField.Type.NotNull(ResponseField.Type.Named("String")),
+          responseName = "name",
+          fieldName = "name",
+          arguments = emptyMap(),
+          conditions = emptyList(),
+        )
       )
 
       override fun fromResponse(reader: ResponseReader, __typename: String?):

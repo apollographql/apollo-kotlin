@@ -19,8 +19,20 @@ import kotlin.Suppress
     "RemoveRedundantQualifierName")
 object PlanetFragmentImpl_ResponseAdapter : ResponseAdapter<PlanetFragmentImpl.Data> {
   private val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
-    ResponseField.forString("__typename", "__typename", null, false, null),
-    ResponseField.forString("name", "name", null, true, null)
+    ResponseField(
+      type = ResponseField.Type.NotNull(ResponseField.Type.Named("String")),
+      responseName = "__typename",
+      fieldName = "__typename",
+      arguments = emptyMap(),
+      conditions = emptyList(),
+    ),
+    ResponseField(
+      type = ResponseField.Type.Named("String"),
+      responseName = "name",
+      fieldName = "name",
+      arguments = emptyMap(),
+      conditions = emptyList(),
+    )
   )
 
   override fun fromResponse(reader: ResponseReader, __typename: String?): PlanetFragmentImpl.Data {

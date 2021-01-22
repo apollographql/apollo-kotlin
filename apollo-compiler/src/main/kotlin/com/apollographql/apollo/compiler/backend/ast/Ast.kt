@@ -158,29 +158,50 @@ internal data class CodeGenerationAst(
       }
     }
 
+    /**
+     * A Scalar Kotlin type. For the purpose of codegen, scalar has a slightly different meaning than in GraphQL.
+     * Kotlin scalars include enums for which we will not generate a query-scoped class.
+     */
     sealed class Scalar : FieldType() {
+      /**
+       * The GraphQL type name as it appears in the schema.
+       * Example: for a 'friend: Character' field, schemaTypeName will be "Character"
+       */
+      abstract val schemaTypeName: kotlin.String
+
+      data class String(override val nullable: kotlin.Boolean) : Scalar() {
+        override val schemaTypeName = "String"
+      }
+
+      data class Int(override val nullable: kotlin.Boolean) : Scalar(){
+        override val schemaTypeName = "Int"
+      }
+
+      data class Float(override val nullable: kotlin.Boolean) : Scalar(){
+        override val schemaTypeName = "Float"
+      }
+
+      data class Boolean(override val nullable: kotlin.Boolean) : Scalar(){
+        override val schemaTypeName = "Boolean"
+      }
+
       data class ID(
           override val nullable: kotlin.Boolean,
           val type: kotlin.String,
           val customEnumType: TypeRef
-      ) : Scalar()
-
-      data class String(override val nullable: kotlin.Boolean) : Scalar()
-
-      data class Int(override val nullable: kotlin.Boolean) : Scalar()
-
-      data class Boolean(override val nullable: kotlin.Boolean) : Scalar()
-
-      data class Float(override val nullable: kotlin.Boolean) : Scalar()
+      ) : Scalar() {
+        override val schemaTypeName = "ID"
+      }
 
       data class Enum(
           override val nullable: kotlin.Boolean,
+          override val schemaTypeName: kotlin.String,
           val typeRef: TypeRef
       ) : Scalar()
 
       data class Custom(
           override val nullable: kotlin.Boolean,
-          val schemaType: kotlin.String,
+          override val schemaTypeName: kotlin.String,
           val type: kotlin.String,
           val typeRef: TypeRef,
       ) : Scalar()
@@ -188,6 +209,7 @@ internal data class CodeGenerationAst(
 
     data class Object(
         override val nullable: Boolean,
+        val schemaTypeName: kotlin.String,
         val typeRef: TypeRef
     ) : FieldType()
 
@@ -197,10 +219,24 @@ internal data class CodeGenerationAst(
     ) : FieldType()
   }
 
+  /**
+   * A type reference
+   */
   data class TypeRef(
-      val name: String,
+      /**
+       * The package name
+       */
       val packageName: String = "",
-      val enclosingType: TypeRef? = null
+      /**
+       * The enclosing type reference if it exists or null if it is a top level type
+       */
+      val enclosingType: TypeRef? = null,
+      /**
+       * The Kotlin name, this is usually the responseName from the query in upper camel case
+       * but can escaped for keywords/invalid chars if needed.
+       * Example: for a 'friend: Character' field, name will be "Friend"
+       */
+      val name: String,
   )
 
   companion object {

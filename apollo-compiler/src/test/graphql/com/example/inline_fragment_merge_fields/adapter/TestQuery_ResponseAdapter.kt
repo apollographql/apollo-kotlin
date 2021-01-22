@@ -10,7 +10,6 @@ import com.apollographql.apollo.api.internal.ResponseAdapter
 import com.apollographql.apollo.api.internal.ResponseReader
 import com.apollographql.apollo.api.internal.ResponseWriter
 import com.example.inline_fragment_merge_fields.TestQuery
-import com.example.inline_fragment_merge_fields.type.CustomScalars
 import kotlin.Any
 import kotlin.Array
 import kotlin.String
@@ -22,7 +21,13 @@ import kotlin.collections.List
     "RemoveRedundantQualifierName")
 object TestQuery_ResponseAdapter : ResponseAdapter<TestQuery.Data> {
   private val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
-    ResponseField.forObject("hero", "hero", null, true, null)
+    ResponseField(
+      type = ResponseField.Type.Named("Character"),
+      responseName = "hero",
+      fieldName = "hero",
+      arguments = emptyMap(),
+      conditions = emptyList(),
+    )
   )
 
   override fun fromResponse(reader: ResponseReader, __typename: String?): TestQuery.Data {
@@ -54,9 +59,27 @@ object TestQuery_ResponseAdapter : ResponseAdapter<TestQuery.Data> {
 
   object Hero : ResponseAdapter<TestQuery.Data.Hero> {
     private val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
-      ResponseField.forString("__typename", "__typename", null, false, null),
-      ResponseField.forString("name", "name", null, false, null),
-      ResponseField.forObject("friendsConnection", "friendsConnection", null, false, null)
+      ResponseField(
+        type = ResponseField.Type.NotNull(ResponseField.Type.Named("String")),
+        responseName = "__typename",
+        fieldName = "__typename",
+        arguments = emptyMap(),
+        conditions = emptyList(),
+      ),
+      ResponseField(
+        type = ResponseField.Type.NotNull(ResponseField.Type.Named("String")),
+        responseName = "name",
+        fieldName = "name",
+        arguments = emptyMap(),
+        conditions = emptyList(),
+      ),
+      ResponseField(
+        type = ResponseField.Type.NotNull(ResponseField.Type.Named("FriendsConnection")),
+        responseName = "friendsConnection",
+        fieldName = "friendsConnection",
+        arguments = emptyMap(),
+        conditions = emptyList(),
+      )
     )
 
     override fun fromResponse(reader: ResponseReader, __typename: String?): TestQuery.Data.Hero {
@@ -77,10 +100,34 @@ object TestQuery_ResponseAdapter : ResponseAdapter<TestQuery.Data> {
 
     object CharacterHero : ResponseAdapter<TestQuery.Data.Hero.CharacterHero> {
       private val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
-        ResponseField.forString("__typename", "__typename", null, false, null),
-        ResponseField.forString("name", "name", null, false, null),
-        ResponseField.forObject("friendsConnection", "friendsConnection", null, false, null),
-        ResponseField.forCustomScalar("profileLink", "profileLink", null, false, CustomScalars.URL, null)
+        ResponseField(
+          type = ResponseField.Type.NotNull(ResponseField.Type.Named("String")),
+          responseName = "__typename",
+          fieldName = "__typename",
+          arguments = emptyMap(),
+          conditions = emptyList(),
+        ),
+        ResponseField(
+          type = ResponseField.Type.NotNull(ResponseField.Type.Named("String")),
+          responseName = "name",
+          fieldName = "name",
+          arguments = emptyMap(),
+          conditions = emptyList(),
+        ),
+        ResponseField(
+          type = ResponseField.Type.NotNull(ResponseField.Type.Named("FriendsConnection")),
+          responseName = "friendsConnection",
+          fieldName = "friendsConnection",
+          arguments = emptyMap(),
+          conditions = emptyList(),
+        ),
+        ResponseField(
+          type = ResponseField.Type.NotNull(ResponseField.Type.Named("URL")),
+          responseName = "profileLink",
+          fieldName = "profileLink",
+          arguments = emptyMap(),
+          conditions = emptyList(),
+        )
       )
 
       override fun fromResponse(reader: ResponseReader, __typename: String?):
@@ -97,7 +144,7 @@ object TestQuery_ResponseAdapter : ResponseAdapter<TestQuery.Data> {
               2 -> friendsConnection = readObject<TestQuery.Data.Hero.CharacterHero.FriendsConnection>(RESPONSE_FIELDS[2]) { reader ->
                 FriendsConnection.fromResponse(reader)
               }
-              3 -> profileLink = readCustomScalar<Any>(RESPONSE_FIELDS[3] as ResponseField.CustomScalarField)
+              3 -> profileLink = readCustomScalar<Any>(RESPONSE_FIELDS[3])
               else -> break
             }
           }
@@ -116,13 +163,19 @@ object TestQuery_ResponseAdapter : ResponseAdapter<TestQuery.Data> {
         writer.writeObject(RESPONSE_FIELDS[2]) { writer ->
           FriendsConnection.toResponse(writer, value.friendsConnection)
         }
-        writer.writeCustom(RESPONSE_FIELDS[3] as ResponseField.CustomScalarField, value.profileLink)
+        writer.writeCustom(RESPONSE_FIELDS[3], value.profileLink)
       }
 
       object FriendsConnection :
           ResponseAdapter<TestQuery.Data.Hero.CharacterHero.FriendsConnection> {
         private val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
-          ResponseField.forList("edges", "edges", null, true, null)
+          ResponseField(
+            type = ResponseField.Type.List(ResponseField.Type.Named("FriendsEdge")),
+            responseName = "edges",
+            fieldName = "edges",
+            arguments = emptyMap(),
+            conditions = emptyList(),
+          )
         )
 
         override fun fromResponse(reader: ResponseReader, __typename: String?):
@@ -156,7 +209,13 @@ object TestQuery_ResponseAdapter : ResponseAdapter<TestQuery.Data> {
 
         object Edge : ResponseAdapter<TestQuery.Data.Hero.CharacterHero.FriendsConnection.Edge> {
           private val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
-            ResponseField.forObject("node", "node", null, true, null)
+            ResponseField(
+              type = ResponseField.Type.Named("Character"),
+              responseName = "node",
+              fieldName = "node",
+              arguments = emptyMap(),
+              conditions = emptyList(),
+            )
           )
 
           override fun fromResponse(reader: ResponseReader, __typename: String?):
@@ -191,7 +250,13 @@ object TestQuery_ResponseAdapter : ResponseAdapter<TestQuery.Data> {
           object Node :
               ResponseAdapter<TestQuery.Data.Hero.CharacterHero.FriendsConnection.Edge.Node> {
             private val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
-              ResponseField.forString("name", "name", null, false, null)
+              ResponseField(
+                type = ResponseField.Type.NotNull(ResponseField.Type.Named("String")),
+                responseName = "name",
+                fieldName = "name",
+                arguments = emptyMap(),
+                conditions = emptyList(),
+              )
             )
 
             override fun fromResponse(reader: ResponseReader, __typename: String?):
@@ -221,9 +286,27 @@ object TestQuery_ResponseAdapter : ResponseAdapter<TestQuery.Data> {
 
     object OtherHero : ResponseAdapter<TestQuery.Data.Hero.OtherHero> {
       private val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
-        ResponseField.forString("__typename", "__typename", null, false, null),
-        ResponseField.forString("name", "name", null, false, null),
-        ResponseField.forObject("friendsConnection", "friendsConnection", null, false, null)
+        ResponseField(
+          type = ResponseField.Type.NotNull(ResponseField.Type.Named("String")),
+          responseName = "__typename",
+          fieldName = "__typename",
+          arguments = emptyMap(),
+          conditions = emptyList(),
+        ),
+        ResponseField(
+          type = ResponseField.Type.NotNull(ResponseField.Type.Named("String")),
+          responseName = "name",
+          fieldName = "name",
+          arguments = emptyMap(),
+          conditions = emptyList(),
+        ),
+        ResponseField(
+          type = ResponseField.Type.NotNull(ResponseField.Type.Named("FriendsConnection")),
+          responseName = "friendsConnection",
+          fieldName = "friendsConnection",
+          arguments = emptyMap(),
+          conditions = emptyList(),
+        )
       )
 
       override fun fromResponse(reader: ResponseReader, __typename: String?):
@@ -260,7 +343,13 @@ object TestQuery_ResponseAdapter : ResponseAdapter<TestQuery.Data> {
 
       object FriendsConnection : ResponseAdapter<TestQuery.Data.Hero.OtherHero.FriendsConnection> {
         private val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
-          ResponseField.forList("edges", "edges", null, true, null)
+          ResponseField(
+            type = ResponseField.Type.List(ResponseField.Type.Named("FriendsEdge")),
+            responseName = "edges",
+            fieldName = "edges",
+            arguments = emptyMap(),
+            conditions = emptyList(),
+          )
         )
 
         override fun fromResponse(reader: ResponseReader, __typename: String?):
@@ -294,7 +383,13 @@ object TestQuery_ResponseAdapter : ResponseAdapter<TestQuery.Data> {
 
         object Edge : ResponseAdapter<TestQuery.Data.Hero.OtherHero.FriendsConnection.Edge> {
           private val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
-            ResponseField.forObject("node", "node", null, true, null)
+            ResponseField(
+              type = ResponseField.Type.Named("Character"),
+              responseName = "node",
+              fieldName = "node",
+              arguments = emptyMap(),
+              conditions = emptyList(),
+            )
           )
 
           override fun fromResponse(reader: ResponseReader, __typename: String?):
@@ -328,7 +423,13 @@ object TestQuery_ResponseAdapter : ResponseAdapter<TestQuery.Data> {
 
           object Node : ResponseAdapter<TestQuery.Data.Hero.OtherHero.FriendsConnection.Edge.Node> {
             private val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
-              ResponseField.forString("name", "name", null, false, null)
+              ResponseField(
+                type = ResponseField.Type.NotNull(ResponseField.Type.Named("String")),
+                responseName = "name",
+                fieldName = "name",
+                arguments = emptyMap(),
+                conditions = emptyList(),
+              )
             )
 
             override fun fromResponse(reader: ResponseReader, __typename: String?):

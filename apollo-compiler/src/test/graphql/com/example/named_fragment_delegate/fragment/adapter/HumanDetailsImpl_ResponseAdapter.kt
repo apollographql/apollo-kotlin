@@ -10,7 +10,6 @@ import com.apollographql.apollo.api.internal.ResponseAdapter
 import com.apollographql.apollo.api.internal.ResponseReader
 import com.apollographql.apollo.api.internal.ResponseWriter
 import com.example.named_fragment_delegate.fragment.HumanDetailsImpl
-import com.example.named_fragment_delegate.type.CustomScalars
 import kotlin.Any
 import kotlin.Array
 import kotlin.String
@@ -22,10 +21,34 @@ import kotlin.collections.List
     "RemoveRedundantQualifierName")
 object HumanDetailsImpl_ResponseAdapter : ResponseAdapter<HumanDetailsImpl.Data> {
   private val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
-    ResponseField.forString("__typename", "__typename", null, false, null),
-    ResponseField.forString("name", "name", null, false, null),
-    ResponseField.forCustomScalar("profileLink", "profileLink", null, false, CustomScalars.URL, null),
-    ResponseField.forObject("friendsConnection", "friendsConnection", null, false, null)
+    ResponseField(
+      type = ResponseField.Type.NotNull(ResponseField.Type.Named("String")),
+      responseName = "__typename",
+      fieldName = "__typename",
+      arguments = emptyMap(),
+      conditions = emptyList(),
+    ),
+    ResponseField(
+      type = ResponseField.Type.NotNull(ResponseField.Type.Named("String")),
+      responseName = "name",
+      fieldName = "name",
+      arguments = emptyMap(),
+      conditions = emptyList(),
+    ),
+    ResponseField(
+      type = ResponseField.Type.NotNull(ResponseField.Type.Named("URL")),
+      responseName = "profileLink",
+      fieldName = "profileLink",
+      arguments = emptyMap(),
+      conditions = emptyList(),
+    ),
+    ResponseField(
+      type = ResponseField.Type.NotNull(ResponseField.Type.Named("FriendsConnection")),
+      responseName = "friendsConnection",
+      fieldName = "friendsConnection",
+      arguments = emptyMap(),
+      conditions = emptyList(),
+    )
   )
 
   override fun fromResponse(reader: ResponseReader, __typename: String?): HumanDetailsImpl.Data {
@@ -38,7 +61,7 @@ object HumanDetailsImpl_ResponseAdapter : ResponseAdapter<HumanDetailsImpl.Data>
         when (selectField(RESPONSE_FIELDS)) {
           0 -> __typename = readString(RESPONSE_FIELDS[0])
           1 -> name = readString(RESPONSE_FIELDS[1])
-          2 -> profileLink = readCustomScalar<Any>(RESPONSE_FIELDS[2] as ResponseField.CustomScalarField)
+          2 -> profileLink = readCustomScalar<Any>(RESPONSE_FIELDS[2])
           3 -> friendsConnection = readObject<HumanDetailsImpl.Data.FriendsConnection>(RESPONSE_FIELDS[3]) { reader ->
             FriendsConnection.fromResponse(reader)
           }
@@ -57,7 +80,7 @@ object HumanDetailsImpl_ResponseAdapter : ResponseAdapter<HumanDetailsImpl.Data>
   override fun toResponse(writer: ResponseWriter, value: HumanDetailsImpl.Data) {
     writer.writeString(RESPONSE_FIELDS[0], value.__typename)
     writer.writeString(RESPONSE_FIELDS[1], value.name)
-    writer.writeCustom(RESPONSE_FIELDS[2] as ResponseField.CustomScalarField, value.profileLink)
+    writer.writeCustom(RESPONSE_FIELDS[2], value.profileLink)
     writer.writeObject(RESPONSE_FIELDS[3]) { writer ->
       FriendsConnection.toResponse(writer, value.friendsConnection)
     }
@@ -65,7 +88,13 @@ object HumanDetailsImpl_ResponseAdapter : ResponseAdapter<HumanDetailsImpl.Data>
 
   object FriendsConnection : ResponseAdapter<HumanDetailsImpl.Data.FriendsConnection> {
     private val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
-      ResponseField.forList("edges", "edges", null, true, null)
+      ResponseField(
+        type = ResponseField.Type.List(ResponseField.Type.Named("FriendsEdge")),
+        responseName = "edges",
+        fieldName = "edges",
+        arguments = emptyMap(),
+        conditions = emptyList(),
+      )
     )
 
     override fun fromResponse(reader: ResponseReader, __typename: String?):
@@ -99,7 +128,13 @@ object HumanDetailsImpl_ResponseAdapter : ResponseAdapter<HumanDetailsImpl.Data>
 
     object Edge : ResponseAdapter<HumanDetailsImpl.Data.FriendsConnection.Edge> {
       private val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
-        ResponseField.forObject("node", "node", null, true, null)
+        ResponseField(
+          type = ResponseField.Type.Named("Character"),
+          responseName = "node",
+          fieldName = "node",
+          arguments = emptyMap(),
+          conditions = emptyList(),
+        )
       )
 
       override fun fromResponse(reader: ResponseReader, __typename: String?):
@@ -133,7 +168,13 @@ object HumanDetailsImpl_ResponseAdapter : ResponseAdapter<HumanDetailsImpl.Data>
 
       object Node : ResponseAdapter<HumanDetailsImpl.Data.FriendsConnection.Edge.Node> {
         private val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
-          ResponseField.forString("name", "name", null, false, null)
+          ResponseField(
+            type = ResponseField.Type.NotNull(ResponseField.Type.Named("String")),
+            responseName = "name",
+            fieldName = "name",
+            arguments = emptyMap(),
+            conditions = emptyList(),
+          )
         )
 
         override fun fromResponse(reader: ResponseReader, __typename: String?):

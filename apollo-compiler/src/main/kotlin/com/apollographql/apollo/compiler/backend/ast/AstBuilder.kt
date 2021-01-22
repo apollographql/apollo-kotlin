@@ -159,7 +159,8 @@ internal class AstBuilder private constructor(
           typeRef = CodeGenerationAst.TypeRef(
               name = this.name!!.toUpperCamelCase(),
               packageName = typesPackageName,
-          )
+          ),
+          schemaTypeName = name
       )
 
       IntrospectionSchema.Kind.SCALAR -> {
@@ -175,7 +176,7 @@ internal class AstBuilder private constructor(
             }
             CodeGenerationAst.FieldType.Scalar.Custom(
                 nullable = true,
-                schemaType = this.name,
+                schemaTypeName = this.name,
                 type = className,
                 typeRef = CodeGenerationAst.TypeRef(
                     name = this.name.capitalize(),
@@ -198,7 +199,7 @@ internal class AstBuilder private constructor(
           nullable = true,
           rawType = this.ofType!!.resolveInputFieldType(
               typesPackageName = typesPackageName,
-          )
+          ),
       )
 
       IntrospectionSchema.Kind.INPUT_OBJECT -> {
@@ -207,7 +208,8 @@ internal class AstBuilder private constructor(
             typeRef = CodeGenerationAst.TypeRef(
                 name = this.name!!.toUpperCamelCase(),
                 packageName = typesPackageName,
-            )
+            ),
+            schemaTypeName = this.name
         )
       }
 
@@ -622,7 +624,8 @@ internal class AstBuilder private constructor(
           typeRef = CodeGenerationAst.TypeRef(
               name = schemaTypeRef.name!!.toUpperCamelCase(),
               packageName = typesPackageName
-          )
+          ),
+          schemaTypeName = schemaTypeRef.name
       )
 
       IntrospectionSchema.Kind.INTERFACE,
@@ -630,7 +633,8 @@ internal class AstBuilder private constructor(
       IntrospectionSchema.Kind.UNION -> {
         CodeGenerationAst.FieldType.Object(
             nullable = true,
-            typeRef = (selectionKey).asTypeRef(targetPackageName)
+            typeRef = (selectionKey).asTypeRef(targetPackageName),
+            schemaTypeName = schemaTypeRef.name!!
         )
       }
 
@@ -647,7 +651,7 @@ internal class AstBuilder private constructor(
             }
             CodeGenerationAst.FieldType.Scalar.Custom(
                 nullable = true,
-                schemaType = schemaTypeRef.name,
+                schemaTypeName = schemaTypeRef.name,
                 type = className,
                 typeRef = CodeGenerationAst.TypeRef(
                     name = schemaTypeRef.name.capitalize(),

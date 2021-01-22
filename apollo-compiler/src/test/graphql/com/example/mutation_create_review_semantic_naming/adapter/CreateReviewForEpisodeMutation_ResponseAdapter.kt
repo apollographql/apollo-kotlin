@@ -21,13 +21,19 @@ import kotlin.Suppress
 object CreateReviewForEpisodeMutation_ResponseAdapter :
     ResponseAdapter<CreateReviewForEpisodeMutation.Data> {
   private val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
-    ResponseField.forObject("createReview", "createReview", mapOf<String, Any?>(
-      "episode" to mapOf<String, Any?>(
-        "kind" to "Variable",
-        "variableName" to "ep"),
-      "review" to mapOf<String, Any?>(
-        "kind" to "Variable",
-        "variableName" to "review")), true, null)
+    ResponseField(
+      type = ResponseField.Type.Named("Review"),
+      responseName = "createReview",
+      fieldName = "createReview",
+      arguments = mapOf<String, Any?>(
+        "episode" to mapOf<String, Any?>(
+          "kind" to "Variable",
+          "variableName" to "ep"),
+        "review" to mapOf<String, Any?>(
+          "kind" to "Variable",
+          "variableName" to "review")),
+      conditions = emptyList(),
+    )
   )
 
   override fun fromResponse(reader: ResponseReader, __typename: String?):
@@ -60,8 +66,20 @@ object CreateReviewForEpisodeMutation_ResponseAdapter :
 
   object CreateReview : ResponseAdapter<CreateReviewForEpisodeMutation.Data.CreateReview> {
     private val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
-      ResponseField.forInt("stars", "stars", null, false, null),
-      ResponseField.forString("commentary", "commentary", null, true, null)
+      ResponseField(
+        type = ResponseField.Type.NotNull(ResponseField.Type.Named("Int")),
+        responseName = "stars",
+        fieldName = "stars",
+        arguments = emptyMap(),
+        conditions = emptyList(),
+      ),
+      ResponseField(
+        type = ResponseField.Type.Named("String"),
+        responseName = "commentary",
+        fieldName = "commentary",
+        arguments = emptyMap(),
+        conditions = emptyList(),
+      )
     )
 
     override fun fromResponse(reader: ResponseReader, __typename: String?):

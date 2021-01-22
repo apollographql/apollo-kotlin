@@ -90,14 +90,14 @@ class MapResponseReader<M : Map<String, Any?>>(
     }
   }
 
-  override fun <T : Any> readCustomScalar(field: ResponseField.CustomScalarField): T? {
+  override fun <T : Any> readCustomScalar(field: ResponseField): T? {
     val value = valueResolver.valueFor<Any>(root, field)
     checkValue(field, value)
     val result: T?
     if (value == null) {
       result = null
     } else {
-      val scalarTypeAdapter: CustomScalarAdapter<T> = customScalarAdapters.adapterFor(field.customScalar)
+      val scalarTypeAdapter: CustomScalarAdapter<T> = customScalarAdapters.adapterFor((field.type as ResponseField.Type.Named).name)
       result = scalarTypeAdapter.decode(fromRawValue(value))
       checkValue(field, result)
     }
@@ -105,7 +105,7 @@ class MapResponseReader<M : Map<String, Any?>>(
   }
 
   private fun checkValue(field: ResponseField, value: Any?) {
-    check(field.optional || value != null) {
+    check(field.type !is ResponseField.Type.NotNull || value != null) {
       "corrupted response reader, expected non null value for ${field.fieldName}"
     }
   }

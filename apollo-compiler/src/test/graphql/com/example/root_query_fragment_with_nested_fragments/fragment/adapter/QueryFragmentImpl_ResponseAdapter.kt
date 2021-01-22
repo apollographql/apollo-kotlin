@@ -19,12 +19,36 @@ import kotlin.Suppress
     "RemoveRedundantQualifierName")
 object QueryFragmentImpl_ResponseAdapter : ResponseAdapter<QueryFragmentImpl.Data> {
   private val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
-    ResponseField.forString("__typename", "__typename", null, false, null),
-    ResponseField.forObject("hero", "hero", null, true, null),
-    ResponseField.forObject("droid", "droid", mapOf<String, Any?>(
-      "id" to 1), true, null),
-    ResponseField.forObject("human", "human", mapOf<String, Any?>(
-      "id" to 1), true, null)
+    ResponseField(
+      type = ResponseField.Type.NotNull(ResponseField.Type.Named("String")),
+      responseName = "__typename",
+      fieldName = "__typename",
+      arguments = emptyMap(),
+      conditions = emptyList(),
+    ),
+    ResponseField(
+      type = ResponseField.Type.Named("Character"),
+      responseName = "hero",
+      fieldName = "hero",
+      arguments = emptyMap(),
+      conditions = emptyList(),
+    ),
+    ResponseField(
+      type = ResponseField.Type.Named("Droid"),
+      responseName = "droid",
+      fieldName = "droid",
+      arguments = mapOf<String, Any?>(
+        "id" to 1),
+      conditions = emptyList(),
+    ),
+    ResponseField(
+      type = ResponseField.Type.Named("Human"),
+      responseName = "human",
+      fieldName = "human",
+      arguments = mapOf<String, Any?>(
+        "id" to 1),
+      conditions = emptyList(),
+    )
   )
 
   override fun fromResponse(reader: ResponseReader, __typename: String?): QueryFragmentImpl.Data {
@@ -84,7 +108,13 @@ object QueryFragmentImpl_ResponseAdapter : ResponseAdapter<QueryFragmentImpl.Dat
 
   object Hero : ResponseAdapter<QueryFragmentImpl.Data.Hero> {
     private val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
-      ResponseField.forString("__typename", "__typename", null, false, null)
+      ResponseField(
+        type = ResponseField.Type.NotNull(ResponseField.Type.Named("String")),
+        responseName = "__typename",
+        fieldName = "__typename",
+        arguments = emptyMap(),
+        conditions = emptyList(),
+      )
     )
 
     override fun fromResponse(reader: ResponseReader, __typename: String?):
@@ -106,8 +136,20 @@ object QueryFragmentImpl_ResponseAdapter : ResponseAdapter<QueryFragmentImpl.Dat
 
     object CharacterHero : ResponseAdapter<QueryFragmentImpl.Data.Hero.CharacterHero> {
       private val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
-        ResponseField.forString("__typename", "__typename", null, false, null),
-        ResponseField.forString("name", "name", null, false, null)
+        ResponseField(
+          type = ResponseField.Type.NotNull(ResponseField.Type.Named("String")),
+          responseName = "__typename",
+          fieldName = "__typename",
+          arguments = emptyMap(),
+          conditions = emptyList(),
+        ),
+        ResponseField(
+          type = ResponseField.Type.NotNull(ResponseField.Type.Named("String")),
+          responseName = "name",
+          fieldName = "name",
+          arguments = emptyMap(),
+          conditions = emptyList(),
+        )
       )
 
       override fun fromResponse(reader: ResponseReader, __typename: String?):
@@ -138,7 +180,13 @@ object QueryFragmentImpl_ResponseAdapter : ResponseAdapter<QueryFragmentImpl.Dat
 
     object OtherHero : ResponseAdapter<QueryFragmentImpl.Data.Hero.OtherHero> {
       private val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
-        ResponseField.forString("__typename", "__typename", null, false, null)
+        ResponseField(
+          type = ResponseField.Type.NotNull(ResponseField.Type.Named("String")),
+          responseName = "__typename",
+          fieldName = "__typename",
+          arguments = emptyMap(),
+          conditions = emptyList(),
+        )
       )
 
       override fun fromResponse(reader: ResponseReader, __typename: String?):
@@ -166,7 +214,13 @@ object QueryFragmentImpl_ResponseAdapter : ResponseAdapter<QueryFragmentImpl.Dat
 
   object Droid : ResponseAdapter<QueryFragmentImpl.Data.Droid> {
     private val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
-      ResponseField.forString("__typename", "__typename", null, false, null)
+      ResponseField(
+        type = ResponseField.Type.NotNull(ResponseField.Type.Named("String")),
+        responseName = "__typename",
+        fieldName = "__typename",
+        arguments = emptyMap(),
+        conditions = emptyList(),
+      )
     )
 
     override fun fromResponse(reader: ResponseReader, __typename: String?):
@@ -187,9 +241,27 @@ object QueryFragmentImpl_ResponseAdapter : ResponseAdapter<QueryFragmentImpl.Dat
 
     object DroidDroid : ResponseAdapter<QueryFragmentImpl.Data.Droid.DroidDroid> {
       private val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
-        ResponseField.forString("__typename", "__typename", null, false, null),
-        ResponseField.forString("name", "name", null, false, null),
-        ResponseField.forString("primaryFunction", "primaryFunction", null, true, null)
+        ResponseField(
+          type = ResponseField.Type.NotNull(ResponseField.Type.Named("String")),
+          responseName = "__typename",
+          fieldName = "__typename",
+          arguments = emptyMap(),
+          conditions = emptyList(),
+        ),
+        ResponseField(
+          type = ResponseField.Type.NotNull(ResponseField.Type.Named("String")),
+          responseName = "name",
+          fieldName = "name",
+          arguments = emptyMap(),
+          conditions = emptyList(),
+        ),
+        ResponseField(
+          type = ResponseField.Type.Named("String"),
+          responseName = "primaryFunction",
+          fieldName = "primaryFunction",
+          arguments = emptyMap(),
+          conditions = emptyList(),
+        )
       )
 
       override fun fromResponse(reader: ResponseReader, __typename: String?):
@@ -224,7 +296,13 @@ object QueryFragmentImpl_ResponseAdapter : ResponseAdapter<QueryFragmentImpl.Dat
 
     object OtherDroid : ResponseAdapter<QueryFragmentImpl.Data.Droid.OtherDroid> {
       private val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
-        ResponseField.forString("__typename", "__typename", null, false, null)
+        ResponseField(
+          type = ResponseField.Type.NotNull(ResponseField.Type.Named("String")),
+          responseName = "__typename",
+          fieldName = "__typename",
+          arguments = emptyMap(),
+          conditions = emptyList(),
+        )
       )
 
       override fun fromResponse(reader: ResponseReader, __typename: String?):
@@ -252,7 +330,13 @@ object QueryFragmentImpl_ResponseAdapter : ResponseAdapter<QueryFragmentImpl.Dat
 
   object Human : ResponseAdapter<QueryFragmentImpl.Data.Human> {
     private val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
-      ResponseField.forString("__typename", "__typename", null, false, null)
+      ResponseField(
+        type = ResponseField.Type.NotNull(ResponseField.Type.Named("String")),
+        responseName = "__typename",
+        fieldName = "__typename",
+        arguments = emptyMap(),
+        conditions = emptyList(),
+      )
     )
 
     override fun fromResponse(reader: ResponseReader, __typename: String?):
@@ -273,9 +357,27 @@ object QueryFragmentImpl_ResponseAdapter : ResponseAdapter<QueryFragmentImpl.Dat
 
     object HumanHuman : ResponseAdapter<QueryFragmentImpl.Data.Human.HumanHuman> {
       private val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
-        ResponseField.forString("__typename", "__typename", null, false, null),
-        ResponseField.forString("name", "name", null, false, null),
-        ResponseField.forString("homePlanet", "homePlanet", null, true, null)
+        ResponseField(
+          type = ResponseField.Type.NotNull(ResponseField.Type.Named("String")),
+          responseName = "__typename",
+          fieldName = "__typename",
+          arguments = emptyMap(),
+          conditions = emptyList(),
+        ),
+        ResponseField(
+          type = ResponseField.Type.NotNull(ResponseField.Type.Named("String")),
+          responseName = "name",
+          fieldName = "name",
+          arguments = emptyMap(),
+          conditions = emptyList(),
+        ),
+        ResponseField(
+          type = ResponseField.Type.Named("String"),
+          responseName = "homePlanet",
+          fieldName = "homePlanet",
+          arguments = emptyMap(),
+          conditions = emptyList(),
+        )
       )
 
       override fun fromResponse(reader: ResponseReader, __typename: String?):
@@ -310,7 +412,13 @@ object QueryFragmentImpl_ResponseAdapter : ResponseAdapter<QueryFragmentImpl.Dat
 
     object OtherHuman : ResponseAdapter<QueryFragmentImpl.Data.Human.OtherHuman> {
       private val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
-        ResponseField.forString("__typename", "__typename", null, false, null)
+        ResponseField(
+          type = ResponseField.Type.NotNull(ResponseField.Type.Named("String")),
+          responseName = "__typename",
+          fieldName = "__typename",
+          arguments = emptyMap(),
+          conditions = emptyList(),
+        )
       )
 
       override fun fromResponse(reader: ResponseReader, __typename: String?):

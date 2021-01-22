@@ -19,8 +19,20 @@ import kotlin.Suppress
     "RemoveRedundantQualifierName")
 object QueryFragmentImpl_ResponseAdapter : ResponseAdapter<QueryFragmentImpl.Data> {
   private val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
-    ResponseField.forString("__typename", "__typename", null, false, null),
-    ResponseField.forObject("hero", "hero", null, true, null)
+    ResponseField(
+      type = ResponseField.Type.NotNull(ResponseField.Type.Named("String")),
+      responseName = "__typename",
+      fieldName = "__typename",
+      arguments = emptyMap(),
+      conditions = emptyList(),
+    ),
+    ResponseField(
+      type = ResponseField.Type.Named("Character"),
+      responseName = "hero",
+      fieldName = "hero",
+      arguments = emptyMap(),
+      conditions = emptyList(),
+    )
   )
 
   override fun fromResponse(reader: ResponseReader, __typename: String?): QueryFragmentImpl.Data {
@@ -56,7 +68,13 @@ object QueryFragmentImpl_ResponseAdapter : ResponseAdapter<QueryFragmentImpl.Dat
 
   object Hero : ResponseAdapter<QueryFragmentImpl.Data.Hero> {
     private val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
-      ResponseField.forString("name", "name", null, false, null)
+      ResponseField(
+        type = ResponseField.Type.NotNull(ResponseField.Type.Named("String")),
+        responseName = "name",
+        fieldName = "name",
+        arguments = emptyMap(),
+        conditions = emptyList(),
+      )
     )
 
     override fun fromResponse(reader: ResponseReader, __typename: String?):

@@ -45,9 +45,9 @@ class ResponseField(
   }
 
   sealed class Type {
-    class NotNull(ofType: Type): Type()
-    class List(ofType: Type): Type()
-    class Named(name: String): Type()
+    class NotNull(val ofType: Type): Type()
+    class List(val ofType: Type): Type()
+    class Named(val name: String): Type()
   }
 
   /**

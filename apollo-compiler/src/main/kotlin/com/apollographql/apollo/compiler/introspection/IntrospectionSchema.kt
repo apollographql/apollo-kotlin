@@ -102,6 +102,9 @@ data class IntrospectionSchema(
     )
   }
 
+  /**
+   * An introspection TypeRef
+   */
   @JsonClass(generateAdapter = true)
   data class TypeRef(
       val kind: Kind,

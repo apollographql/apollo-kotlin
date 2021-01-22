@@ -20,10 +20,16 @@ import kotlin.Suppress
     "RemoveRedundantQualifierName")
 object TestSubscription_ResponseAdapter : ResponseAdapter<TestSubscription.Data> {
   private val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
-    ResponseField.forObject("commentAdded", "commentAdded", mapOf<String, Any?>(
-      "repoFullName" to mapOf<String, Any?>(
-        "kind" to "Variable",
-        "variableName" to "repo")), true, null)
+    ResponseField(
+      type = ResponseField.Type.Named("Comment"),
+      responseName = "commentAdded",
+      fieldName = "commentAdded",
+      arguments = mapOf<String, Any?>(
+        "repoFullName" to mapOf<String, Any?>(
+          "kind" to "Variable",
+          "variableName" to "repo")),
+      conditions = emptyList(),
+    )
   )
 
   override fun fromResponse(reader: ResponseReader, __typename: String?): TestSubscription.Data {
@@ -55,8 +61,20 @@ object TestSubscription_ResponseAdapter : ResponseAdapter<TestSubscription.Data>
 
   object CommentAdded : ResponseAdapter<TestSubscription.Data.CommentAdded> {
     private val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
-      ResponseField.forInt("id", "id", null, false, null),
-      ResponseField.forString("content", "content", null, false, null)
+      ResponseField(
+        type = ResponseField.Type.NotNull(ResponseField.Type.Named("Int")),
+        responseName = "id",
+        fieldName = "id",
+        arguments = emptyMap(),
+        conditions = emptyList(),
+      ),
+      ResponseField(
+        type = ResponseField.Type.NotNull(ResponseField.Type.Named("String")),
+        responseName = "content",
+        fieldName = "content",
+        arguments = emptyMap(),
+        conditions = emptyList(),
+      )
     )
 
     override fun fromResponse(reader: ResponseReader, __typename: String?):

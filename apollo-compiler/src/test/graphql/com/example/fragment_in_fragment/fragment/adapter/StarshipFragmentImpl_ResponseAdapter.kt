@@ -20,10 +20,34 @@ import kotlin.collections.List
     "RemoveRedundantQualifierName")
 object StarshipFragmentImpl_ResponseAdapter : ResponseAdapter<StarshipFragmentImpl.Data> {
   private val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
-    ResponseField.forString("__typename", "__typename", null, false, null),
-    ResponseField.forString("id", "id", null, false, null),
-    ResponseField.forString("name", "name", null, true, null),
-    ResponseField.forObject("pilotConnection", "pilotConnection", null, true, null)
+    ResponseField(
+      type = ResponseField.Type.NotNull(ResponseField.Type.Named("String")),
+      responseName = "__typename",
+      fieldName = "__typename",
+      arguments = emptyMap(),
+      conditions = emptyList(),
+    ),
+    ResponseField(
+      type = ResponseField.Type.NotNull(ResponseField.Type.Named("String")),
+      responseName = "id",
+      fieldName = "id",
+      arguments = emptyMap(),
+      conditions = emptyList(),
+    ),
+    ResponseField(
+      type = ResponseField.Type.Named("String"),
+      responseName = "name",
+      fieldName = "name",
+      arguments = emptyMap(),
+      conditions = emptyList(),
+    ),
+    ResponseField(
+      type = ResponseField.Type.Named("StarshipPilotsConnection"),
+      responseName = "pilotConnection",
+      fieldName = "pilotConnection",
+      arguments = emptyMap(),
+      conditions = emptyList(),
+    )
   )
 
   override fun fromResponse(reader: ResponseReader, __typename: String?):
@@ -68,7 +92,13 @@ object StarshipFragmentImpl_ResponseAdapter : ResponseAdapter<StarshipFragmentIm
 
   object PilotConnection : ResponseAdapter<StarshipFragmentImpl.Data.PilotConnection> {
     private val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
-      ResponseField.forList("edges", "edges", null, true, null)
+      ResponseField(
+        type = ResponseField.Type.List(ResponseField.Type.Named("StarshipPilotsEdge")),
+        responseName = "edges",
+        fieldName = "edges",
+        arguments = emptyMap(),
+        conditions = emptyList(),
+      )
     )
 
     override fun fromResponse(reader: ResponseReader, __typename: String?):
@@ -102,7 +132,13 @@ object StarshipFragmentImpl_ResponseAdapter : ResponseAdapter<StarshipFragmentIm
 
     object Edge : ResponseAdapter<StarshipFragmentImpl.Data.PilotConnection.Edge> {
       private val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
-        ResponseField.forObject("node", "node", null, true, null)
+        ResponseField(
+          type = ResponseField.Type.Named("Person"),
+          responseName = "node",
+          fieldName = "node",
+          arguments = emptyMap(),
+          conditions = emptyList(),
+        )
       )
 
       override fun fromResponse(reader: ResponseReader, __typename: String?):
@@ -136,7 +172,13 @@ object StarshipFragmentImpl_ResponseAdapter : ResponseAdapter<StarshipFragmentIm
 
       object Node : ResponseAdapter<StarshipFragmentImpl.Data.PilotConnection.Edge.Node> {
         private val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
-          ResponseField.forString("__typename", "__typename", null, false, null)
+          ResponseField(
+            type = ResponseField.Type.NotNull(ResponseField.Type.Named("String")),
+            responseName = "__typename",
+            fieldName = "__typename",
+            arguments = emptyMap(),
+            conditions = emptyList(),
+          )
         )
 
         override fun fromResponse(reader: ResponseReader, __typename: String?):
@@ -159,9 +201,27 @@ object StarshipFragmentImpl_ResponseAdapter : ResponseAdapter<StarshipFragmentIm
         object PersonNode :
             ResponseAdapter<StarshipFragmentImpl.Data.PilotConnection.Edge.Node.PersonNode> {
           private val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
-            ResponseField.forString("__typename", "__typename", null, false, null),
-            ResponseField.forString("name", "name", null, true, null),
-            ResponseField.forObject("homeworld", "homeworld", null, true, null)
+            ResponseField(
+              type = ResponseField.Type.NotNull(ResponseField.Type.Named("String")),
+              responseName = "__typename",
+              fieldName = "__typename",
+              arguments = emptyMap(),
+              conditions = emptyList(),
+            ),
+            ResponseField(
+              type = ResponseField.Type.Named("String"),
+              responseName = "name",
+              fieldName = "name",
+              arguments = emptyMap(),
+              conditions = emptyList(),
+            ),
+            ResponseField(
+              type = ResponseField.Type.Named("Planet"),
+              responseName = "homeworld",
+              fieldName = "homeworld",
+              arguments = emptyMap(),
+              conditions = emptyList(),
+            )
           )
 
           override fun fromResponse(reader: ResponseReader, __typename: String?):
@@ -205,7 +265,13 @@ object StarshipFragmentImpl_ResponseAdapter : ResponseAdapter<StarshipFragmentIm
               ResponseAdapter<StarshipFragmentImpl.Data.PilotConnection.Edge.Node.PersonNode.Homeworld>
               {
             private val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
-              ResponseField.forString("__typename", "__typename", null, false, null)
+              ResponseField(
+                type = ResponseField.Type.NotNull(ResponseField.Type.Named("String")),
+                responseName = "__typename",
+                fieldName = "__typename",
+                arguments = emptyMap(),
+                conditions = emptyList(),
+              )
             )
 
             override fun fromResponse(reader: ResponseReader, __typename: String?):
@@ -229,8 +295,20 @@ object StarshipFragmentImpl_ResponseAdapter : ResponseAdapter<StarshipFragmentIm
                 ResponseAdapter<StarshipFragmentImpl.Data.PilotConnection.Edge.Node.PersonNode.Homeworld.PlanetHomeworld>
                 {
               private val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
-                ResponseField.forString("__typename", "__typename", null, false, null),
-                ResponseField.forString("name", "name", null, true, null)
+                ResponseField(
+                  type = ResponseField.Type.NotNull(ResponseField.Type.Named("String")),
+                  responseName = "__typename",
+                  fieldName = "__typename",
+                  arguments = emptyMap(),
+                  conditions = emptyList(),
+                ),
+                ResponseField(
+                  type = ResponseField.Type.Named("String"),
+                  responseName = "name",
+                  fieldName = "name",
+                  arguments = emptyMap(),
+                  conditions = emptyList(),
+                )
               )
 
               override fun fromResponse(reader: ResponseReader, __typename: String?):
@@ -263,7 +341,13 @@ object StarshipFragmentImpl_ResponseAdapter : ResponseAdapter<StarshipFragmentIm
                 ResponseAdapter<StarshipFragmentImpl.Data.PilotConnection.Edge.Node.PersonNode.Homeworld.OtherHomeworld>
                 {
               private val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
-                ResponseField.forString("__typename", "__typename", null, false, null)
+                ResponseField(
+                  type = ResponseField.Type.NotNull(ResponseField.Type.Named("String")),
+                  responseName = "__typename",
+                  fieldName = "__typename",
+                  arguments = emptyMap(),
+                  conditions = emptyList(),
+                )
               )
 
               override fun fromResponse(reader: ResponseReader, __typename: String?):
@@ -293,7 +377,13 @@ object StarshipFragmentImpl_ResponseAdapter : ResponseAdapter<StarshipFragmentIm
         object OtherNode :
             ResponseAdapter<StarshipFragmentImpl.Data.PilotConnection.Edge.Node.OtherNode> {
           private val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
-            ResponseField.forString("__typename", "__typename", null, false, null)
+            ResponseField(
+              type = ResponseField.Type.NotNull(ResponseField.Type.Named("String")),
+              responseName = "__typename",
+              fieldName = "__typename",
+              arguments = emptyMap(),
+              conditions = emptyList(),
+            )
           )
 
           override fun fromResponse(reader: ResponseReader, __typename: String?):

@@ -164,8 +164,7 @@ private fun CodeGenerationAst.FieldType.fromResponseCode(field: String): CodeBlo
         CodeBlock.of("%T.safeValueOf(readString(%L)!!)", typeRef.asTypeName().copy(nullable = false), field)
       }
       is CodeGenerationAst.FieldType.Scalar.Custom -> if (field.isNotEmpty()) {
-        CodeBlock.of("readCustomScalar<%T>(%L·as·%T)%L", ClassName.bestGuess(type), field, ResponseField.CustomScalarField::class,
-            notNullOperator)
+        CodeBlock.of("readCustomScalar<%T>(%L)%L", ClassName.bestGuess(type), field, notNullOperator)
       } else {
         CodeBlock.of(
             "readCustomScalar<%T>(%T)%L", ClassName.bestGuess(type), typeRef.asTypeName(), notNullOperator

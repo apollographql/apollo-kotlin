@@ -19,13 +19,37 @@ import kotlin.Suppress
     "RemoveRedundantQualifierName")
 object UserFragmentImpl_ResponseAdapter : ResponseAdapter<UserFragmentImpl.Data> {
   private val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
-    ResponseField.forString("__typename", "__typename", null, false, null),
-    ResponseField.forString("firstName", "firstName", null, false, null),
-    ResponseField.forString("lastName", "lastName", null, false, null),
-    ResponseField.forString("avatar", "avatar", mapOf<String, Any?>(
-      "size" to mapOf<String, Any?>(
-        "kind" to "Variable",
-        "variableName" to "size")), false, null)
+    ResponseField(
+      type = ResponseField.Type.NotNull(ResponseField.Type.Named("String")),
+      responseName = "__typename",
+      fieldName = "__typename",
+      arguments = emptyMap(),
+      conditions = emptyList(),
+    ),
+    ResponseField(
+      type = ResponseField.Type.NotNull(ResponseField.Type.Named("String")),
+      responseName = "firstName",
+      fieldName = "firstName",
+      arguments = emptyMap(),
+      conditions = emptyList(),
+    ),
+    ResponseField(
+      type = ResponseField.Type.NotNull(ResponseField.Type.Named("String")),
+      responseName = "lastName",
+      fieldName = "lastName",
+      arguments = emptyMap(),
+      conditions = emptyList(),
+    ),
+    ResponseField(
+      type = ResponseField.Type.NotNull(ResponseField.Type.Named("String")),
+      responseName = "avatar",
+      fieldName = "avatar",
+      arguments = mapOf<String, Any?>(
+        "size" to mapOf<String, Any?>(
+          "kind" to "Variable",
+          "variableName" to "size")),
+      conditions = emptyList(),
+    )
   )
 
   override fun fromResponse(reader: ResponseReader, __typename: String?): UserFragmentImpl.Data {

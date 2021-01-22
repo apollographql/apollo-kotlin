@@ -91,33 +91,51 @@ private fun responseFieldsPropertySpec(fields: List<CodeGenerationAst.Field>): P
       .build()
 }
 
+private fun CodeGenerationAst.FieldType.toTypeCode(): CodeBlock {
+  val builder = CodeBlock.Builder()
+
+  when (this) {
+    is CodeGenerationAst.FieldType.Object -> {
+      builder.add("%T(%S)", ResponseField.Type.Named::class.java, schemaTypeName)
+    }
+    is CodeGenerationAst.FieldType.Scalar -> {
+      // same code as Object but in a separate branch so that type inference can find schemaTypeName
+      builder.add("%T(%S)", ResponseField.Type.Named::class.java, schemaTypeName)
+    }
+    is CodeGenerationAst.FieldType.Array -> {
+      builder.add("%T(", ResponseField.Type.List::class.java)
+      builder.add(this.rawType.toTypeCode())
+      builder.add(")")
+    }
+  }
+
+  val block = builder.build()
+
+  return if (!nullable) {
+    block.toNonNullable()
+  } else
+    block
+}
+
+private fun CodeBlock.toNonNullable(): CodeBlock {
+  val builder =  CodeBlock.builder()
+  builder.add("%T(", ResponseField.Type.NotNull::class.java)
+  builder.add(this)
+  builder.add(")")
+  return builder.build()
+}
 private val CodeGenerationAst.Field.responseFieldInitializerCode: CodeBlock
   get() {
-    val factoryMethod = when (type) {
-      is CodeGenerationAst.FieldType.Scalar -> when (type) {
-        is CodeGenerationAst.FieldType.Scalar.ID -> "forString"
-        is CodeGenerationAst.FieldType.Scalar.String -> "forString"
-        is CodeGenerationAst.FieldType.Scalar.Int -> "forInt"
-        is CodeGenerationAst.FieldType.Scalar.Boolean -> "forBoolean"
-        is CodeGenerationAst.FieldType.Scalar.Float -> "forDouble"
-        is CodeGenerationAst.FieldType.Scalar.Enum -> "forEnum"
-        is CodeGenerationAst.FieldType.Scalar.Custom -> "forCustomScalar"
-      }
-      is CodeGenerationAst.FieldType.Object -> "forObject"
-      is CodeGenerationAst.FieldType.Array -> "forList"
-    }
+    val builder = CodeBlock.builder().add("%T(\n", ResponseField::class)
+    builder.indent()
+    builder.add("type = %L,\n", type.toTypeCode())
+    builder.add("responseName = %S,\n", responseName)
+    builder.add("fieldName = %S,\n", schemaName)
+    builder.add("arguments = %L,\n", arguments.takeIf { it.isNotEmpty() }?.let { anyToCode(it) } ?: "emptyMap()")
+    builder.add("conditions = %L,\n", conditionsListCode(conditions))
+    builder.unindent()
+    builder.add(")")
 
-    val builder = CodeBlock.builder().add("%T.%L", ResponseField::class, factoryMethod)
-    when {
-      type is CodeGenerationAst.FieldType.Scalar && type is CodeGenerationAst.FieldType.Scalar.Custom -> {
-        builder.add("(%S,·%S,·%L,·%L,·%T,·%L)", responseName, schemaName, arguments.takeIf { it.isNotEmpty() }.toCode(), type.nullable,
-            type.typeRef.asTypeName(), conditionsListCode(conditions))
-      }
-      else -> {
-        builder.add("(%S,·%S,·%L,·%L,·%L)", responseName, schemaName, arguments.takeIf { it.isNotEmpty() }.toCode(), type.nullable,
-            conditionsListCode(conditions))
-      }
-    }
     return builder.build()
   }
 
@@ -132,7 +150,7 @@ private fun conditionsListCode(conditions: Set<CodeGenerationAst.Field.Condition
       .joinToCode(separator = ",\n")
       .let {
         if (conditions.isEmpty()) {
-          CodeBlock.of("null")
+          CodeBlock.of("emptyList()")
         } else {
           CodeBlock.builder()
               .add("listOf(\n")
@@ -143,28 +161,30 @@ private fun conditionsListCode(conditions: Set<CodeGenerationAst.Field.Condition
       }
 }
 
-private fun Any?.toCode(): CodeBlock {
-  return when {
-    this == null -> CodeBlock.of("null")
-    this is Map<*, *> && this.isEmpty() -> CodeBlock.of("emptyMap<%T,·Any?>()", String::class.asTypeName())
-    this is Map<*, *> -> CodeBlock.builder()
-        .add("mapOf<%T,·Any?>(\n", String::class.asTypeName())
-        .indent()
-        .add(map { CodeBlock.of("%S to %L", it.key, it.value.toCode()) }.joinToCode(separator = ",\n"))
-        .unindent()
-        .add(")")
-        .build()
-    this is List<*> && this.isEmpty() -> CodeBlock.of("emptyList<Any?>()")
-    this is List<*> -> CodeBlock.builder()
-        .add("listOf<Any?>(\n")
-        .indent()
-        .add(map { it.toCode() }.joinToCode(separator = ",\n"))
-        .unindent()
-        .add(")")
-        .build()
-    this is String -> CodeBlock.of("%S", this)
-    this is Number -> CodeBlock.of("%L", this)
-    this is Boolean -> CodeBlock.of("%L", this)
-    else -> throw IllegalStateException("Cannot generate code for $this")
+private fun anyToCode(any: Any?): CodeBlock {
+  return with(any) {
+    when {
+      this == null -> CodeBlock.of("null")
+      this is Map<*, *> && this.isEmpty() -> CodeBlock.of("emptyMap<%T,·Any?>()", String::class.asTypeName())
+      this is Map<*, *> -> CodeBlock.builder()
+          .add("mapOf<%T,·Any?>(\n", String::class.asTypeName())
+          .indent()
+          .add(map { CodeBlock.of("%S to %L", it.key, anyToCode(it.value)) }.joinToCode(separator = ",\n"))
+          .unindent()
+          .add(")")
+          .build()
+      this is List<*> && this.isEmpty() -> CodeBlock.of("emptyList<Any?>()")
+      this is List<*> -> CodeBlock.builder()
+          .add("listOf<Any?>(\n")
+          .indent()
+          .add(map { anyToCode(it) }.joinToCode(separator = ",\n"))
+          .unindent()
+          .add(")")
+          .build()
+      this is String -> CodeBlock.of("%S", this)
+      this is Number -> CodeBlock.of("%L", this)
+      this is Boolean -> CodeBlock.of("%L", this)
+      else -> throw IllegalStateException("Cannot generate code for $this")
+    }
   }
 }

@@ -23,7 +23,13 @@ import kotlin.collections.List
     "RemoveRedundantQualifierName")
 object TestOperation_ResponseAdapter : ResponseAdapter<TestOperation.Data> {
   private val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
-    ResponseField.forObject("random", "random", null, false, null)
+    ResponseField(
+      type = ResponseField.Type.NotNull(ResponseField.Type.Named("Anything")),
+      responseName = "random",
+      fieldName = "random",
+      arguments = emptyMap(),
+      conditions = emptyList(),
+    )
   )
 
   override fun fromResponse(reader: ResponseReader, __typename: String?): TestOperation.Data {
@@ -51,7 +57,13 @@ object TestOperation_ResponseAdapter : ResponseAdapter<TestOperation.Data> {
 
   object Random : ResponseAdapter<TestOperation.Data.Random> {
     private val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
-      ResponseField.forString("__typename", "__typename", null, false, null)
+      ResponseField(
+        type = ResponseField.Type.NotNull(ResponseField.Type.Named("String")),
+        responseName = "__typename",
+        fieldName = "__typename",
+        arguments = emptyMap(),
+        conditions = emptyList(),
+      )
     )
 
     override fun fromResponse(reader: ResponseReader, __typename: String?):
@@ -74,10 +86,35 @@ object TestOperation_ResponseAdapter : ResponseAdapter<TestOperation.Data> {
 
     object BeingHumanRandom : ResponseAdapter<TestOperation.Data.Random.BeingHumanRandom> {
       private val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
-        ResponseField.forString("__typename", "__typename", null, false, null),
-        ResponseField.forString("name", "name", null, false, null),
-        ResponseField.forList("friends", "friends", null, false, null),
-        ResponseField.forString("profilePictureUrl", "profilePictureUrl", null, true, null)
+        ResponseField(
+          type = ResponseField.Type.NotNull(ResponseField.Type.Named("String")),
+          responseName = "__typename",
+          fieldName = "__typename",
+          arguments = emptyMap(),
+          conditions = emptyList(),
+        ),
+        ResponseField(
+          type = ResponseField.Type.NotNull(ResponseField.Type.Named("String")),
+          responseName = "name",
+          fieldName = "name",
+          arguments = emptyMap(),
+          conditions = emptyList(),
+        ),
+        ResponseField(
+          type =
+              ResponseField.Type.NotNull(ResponseField.Type.List(ResponseField.Type.NotNull(ResponseField.Type.Named("Being")))),
+          responseName = "friends",
+          fieldName = "friends",
+          arguments = emptyMap(),
+          conditions = emptyList(),
+        ),
+        ResponseField(
+          type = ResponseField.Type.Named("String"),
+          responseName = "profilePictureUrl",
+          fieldName = "profilePictureUrl",
+          arguments = emptyMap(),
+          conditions = emptyList(),
+        )
       )
 
       override fun fromResponse(reader: ResponseReader, __typename: String?):
@@ -123,7 +160,13 @@ object TestOperation_ResponseAdapter : ResponseAdapter<TestOperation.Data> {
 
       object Friend : ResponseAdapter<TestOperation.Data.Random.BeingHumanRandom.Friend> {
         private val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
-          ResponseField.forString("__typename", "__typename", null, false, null)
+          ResponseField(
+            type = ResponseField.Type.NotNull(ResponseField.Type.Named("String")),
+            responseName = "__typename",
+            fieldName = "__typename",
+            arguments = emptyMap(),
+            conditions = emptyList(),
+          )
         )
 
         override fun fromResponse(reader: ResponseReader, __typename: String?):
@@ -146,11 +189,41 @@ object TestOperation_ResponseAdapter : ResponseAdapter<TestOperation.Data> {
         object WookieFriend :
             ResponseAdapter<TestOperation.Data.Random.BeingHumanRandom.Friend.WookieFriend> {
           private val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
-            ResponseField.forString("__typename", "__typename", null, false, null),
-            ResponseField.forString("name", "name", null, false, null),
-            ResponseField.forBoolean("isFamous", "isFamous", null, true, null),
-            ResponseField.forDouble("lifeExpectancy", "lifeExpectancy", null, true, null),
-            ResponseField.forEnum("race", "race", null, false, null)
+            ResponseField(
+              type = ResponseField.Type.NotNull(ResponseField.Type.Named("String")),
+              responseName = "__typename",
+              fieldName = "__typename",
+              arguments = emptyMap(),
+              conditions = emptyList(),
+            ),
+            ResponseField(
+              type = ResponseField.Type.NotNull(ResponseField.Type.Named("String")),
+              responseName = "name",
+              fieldName = "name",
+              arguments = emptyMap(),
+              conditions = emptyList(),
+            ),
+            ResponseField(
+              type = ResponseField.Type.Named("Boolean"),
+              responseName = "isFamous",
+              fieldName = "isFamous",
+              arguments = emptyMap(),
+              conditions = emptyList(),
+            ),
+            ResponseField(
+              type = ResponseField.Type.Named("Float"),
+              responseName = "lifeExpectancy",
+              fieldName = "lifeExpectancy",
+              arguments = emptyMap(),
+              conditions = emptyList(),
+            ),
+            ResponseField(
+              type = ResponseField.Type.NotNull(ResponseField.Type.Named("Race")),
+              responseName = "race",
+              fieldName = "race",
+              arguments = emptyMap(),
+              conditions = emptyList(),
+            )
           )
 
           override fun fromResponse(reader: ResponseReader, __typename: String?):
@@ -194,9 +267,27 @@ object TestOperation_ResponseAdapter : ResponseAdapter<TestOperation.Data> {
         object OtherFriend :
             ResponseAdapter<TestOperation.Data.Random.BeingHumanRandom.Friend.OtherFriend> {
           private val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
-            ResponseField.forString("__typename", "__typename", null, false, null),
-            ResponseField.forString("name", "name", null, false, null),
-            ResponseField.forBoolean("isFamous", "isFamous", null, true, null)
+            ResponseField(
+              type = ResponseField.Type.NotNull(ResponseField.Type.Named("String")),
+              responseName = "__typename",
+              fieldName = "__typename",
+              arguments = emptyMap(),
+              conditions = emptyList(),
+            ),
+            ResponseField(
+              type = ResponseField.Type.NotNull(ResponseField.Type.Named("String")),
+              responseName = "name",
+              fieldName = "name",
+              arguments = emptyMap(),
+              conditions = emptyList(),
+            ),
+            ResponseField(
+              type = ResponseField.Type.Named("Boolean"),
+              responseName = "isFamous",
+              fieldName = "isFamous",
+              arguments = emptyMap(),
+              conditions = emptyList(),
+            )
           )
 
           override fun fromResponse(reader: ResponseReader, __typename: String?):
@@ -233,10 +324,35 @@ object TestOperation_ResponseAdapter : ResponseAdapter<TestOperation.Data> {
 
     object BeingWookieRandom : ResponseAdapter<TestOperation.Data.Random.BeingWookieRandom> {
       private val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
-        ResponseField.forString("__typename", "__typename", null, false, null),
-        ResponseField.forString("name", "name", null, false, null),
-        ResponseField.forList("friends", "friends", null, false, null),
-        ResponseField.forEnum("race", "race", null, false, null)
+        ResponseField(
+          type = ResponseField.Type.NotNull(ResponseField.Type.Named("String")),
+          responseName = "__typename",
+          fieldName = "__typename",
+          arguments = emptyMap(),
+          conditions = emptyList(),
+        ),
+        ResponseField(
+          type = ResponseField.Type.NotNull(ResponseField.Type.Named("String")),
+          responseName = "name",
+          fieldName = "name",
+          arguments = emptyMap(),
+          conditions = emptyList(),
+        ),
+        ResponseField(
+          type =
+              ResponseField.Type.NotNull(ResponseField.Type.List(ResponseField.Type.NotNull(ResponseField.Type.Named("Being")))),
+          responseName = "friends",
+          fieldName = "friends",
+          arguments = emptyMap(),
+          conditions = emptyList(),
+        ),
+        ResponseField(
+          type = ResponseField.Type.NotNull(ResponseField.Type.Named("Race")),
+          responseName = "race",
+          fieldName = "race",
+          arguments = emptyMap(),
+          conditions = emptyList(),
+        )
       )
 
       override fun fromResponse(reader: ResponseReader, __typename: String?):
@@ -282,7 +398,13 @@ object TestOperation_ResponseAdapter : ResponseAdapter<TestOperation.Data> {
 
       object Friend : ResponseAdapter<TestOperation.Data.Random.BeingWookieRandom.Friend> {
         private val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
-          ResponseField.forString("__typename", "__typename", null, false, null)
+          ResponseField(
+            type = ResponseField.Type.NotNull(ResponseField.Type.Named("String")),
+            responseName = "__typename",
+            fieldName = "__typename",
+            arguments = emptyMap(),
+            conditions = emptyList(),
+          )
         )
 
         override fun fromResponse(reader: ResponseReader, __typename: String?):
@@ -305,9 +427,27 @@ object TestOperation_ResponseAdapter : ResponseAdapter<TestOperation.Data> {
         object WookieFriend :
             ResponseAdapter<TestOperation.Data.Random.BeingWookieRandom.Friend.WookieFriend> {
           private val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
-            ResponseField.forString("__typename", "__typename", null, false, null),
-            ResponseField.forString("name", "name", null, false, null),
-            ResponseField.forDouble("lifeExpectancy", "lifeExpectancy", null, true, null)
+            ResponseField(
+              type = ResponseField.Type.NotNull(ResponseField.Type.Named("String")),
+              responseName = "__typename",
+              fieldName = "__typename",
+              arguments = emptyMap(),
+              conditions = emptyList(),
+            ),
+            ResponseField(
+              type = ResponseField.Type.NotNull(ResponseField.Type.Named("String")),
+              responseName = "name",
+              fieldName = "name",
+              arguments = emptyMap(),
+              conditions = emptyList(),
+            ),
+            ResponseField(
+              type = ResponseField.Type.Named("Float"),
+              responseName = "lifeExpectancy",
+              fieldName = "lifeExpectancy",
+              arguments = emptyMap(),
+              conditions = emptyList(),
+            )
           )
 
           override fun fromResponse(reader: ResponseReader, __typename: String?):
@@ -343,9 +483,27 @@ object TestOperation_ResponseAdapter : ResponseAdapter<TestOperation.Data> {
         object OtherFriend :
             ResponseAdapter<TestOperation.Data.Random.BeingWookieRandom.Friend.OtherFriend> {
           private val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
-            ResponseField.forString("__typename", "__typename", null, false, null),
-            ResponseField.forString("name", "name", null, false, null),
-            ResponseField.forDouble("lifeExpectancy", "lifeExpectancy", null, true, null)
+            ResponseField(
+              type = ResponseField.Type.NotNull(ResponseField.Type.Named("String")),
+              responseName = "__typename",
+              fieldName = "__typename",
+              arguments = emptyMap(),
+              conditions = emptyList(),
+            ),
+            ResponseField(
+              type = ResponseField.Type.NotNull(ResponseField.Type.Named("String")),
+              responseName = "name",
+              fieldName = "name",
+              arguments = emptyMap(),
+              conditions = emptyList(),
+            ),
+            ResponseField(
+              type = ResponseField.Type.Named("Float"),
+              responseName = "lifeExpectancy",
+              fieldName = "lifeExpectancy",
+              arguments = emptyMap(),
+              conditions = emptyList(),
+            )
           )
 
           override fun fromResponse(reader: ResponseReader, __typename: String?):
@@ -382,7 +540,13 @@ object TestOperation_ResponseAdapter : ResponseAdapter<TestOperation.Data> {
 
     object OtherRandom : ResponseAdapter<TestOperation.Data.Random.OtherRandom> {
       private val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
-        ResponseField.forString("__typename", "__typename", null, false, null)
+        ResponseField(
+          type = ResponseField.Type.NotNull(ResponseField.Type.Named("String")),
+          responseName = "__typename",
+          fieldName = "__typename",
+          arguments = emptyMap(),
+          conditions = emptyList(),
+        )
       )
 
       override fun fromResponse(reader: ResponseReader, __typename: String?):

@@ -21,7 +21,13 @@ import kotlin.collections.List
     "RemoveRedundantQualifierName")
 object HeroDetailsQuery_ResponseAdapter : ResponseAdapter<HeroDetailsQuery.Data> {
   private val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
-    ResponseField.forObject("hero", "hero", null, true, null)
+    ResponseField(
+      type = ResponseField.Type.Named("Character"),
+      responseName = "hero",
+      fieldName = "hero",
+      arguments = emptyMap(),
+      conditions = emptyList(),
+    )
   )
 
   override fun fromResponse(reader: ResponseReader, __typename: String?): HeroDetailsQuery.Data {
@@ -53,8 +59,20 @@ object HeroDetailsQuery_ResponseAdapter : ResponseAdapter<HeroDetailsQuery.Data>
 
   object Hero : ResponseAdapter<HeroDetailsQuery.Data.Hero> {
     private val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
-      ResponseField.forString("name", "name", null, false, null),
-      ResponseField.forObject("friendsConnection", "friendsConnection", null, false, null)
+      ResponseField(
+        type = ResponseField.Type.NotNull(ResponseField.Type.Named("String")),
+        responseName = "name",
+        fieldName = "name",
+        arguments = emptyMap(),
+        conditions = emptyList(),
+      ),
+      ResponseField(
+        type = ResponseField.Type.NotNull(ResponseField.Type.Named("FriendsConnection")),
+        responseName = "friendsConnection",
+        fieldName = "friendsConnection",
+        arguments = emptyMap(),
+        conditions = emptyList(),
+      )
     )
 
     override fun fromResponse(reader: ResponseReader, __typename: String?):
@@ -87,8 +105,20 @@ object HeroDetailsQuery_ResponseAdapter : ResponseAdapter<HeroDetailsQuery.Data>
 
     object FriendsConnection : ResponseAdapter<HeroDetailsQuery.Data.Hero.FriendsConnection> {
       private val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
-        ResponseField.forInt("totalCount", "totalCount", null, true, null),
-        ResponseField.forList("edges", "edges", null, true, null)
+        ResponseField(
+          type = ResponseField.Type.Named("Int"),
+          responseName = "totalCount",
+          fieldName = "totalCount",
+          arguments = emptyMap(),
+          conditions = emptyList(),
+        ),
+        ResponseField(
+          type = ResponseField.Type.List(ResponseField.Type.Named("FriendsEdge")),
+          responseName = "edges",
+          fieldName = "edges",
+          arguments = emptyMap(),
+          conditions = emptyList(),
+        )
       )
 
       override fun fromResponse(reader: ResponseReader, __typename: String?):
@@ -126,7 +156,13 @@ object HeroDetailsQuery_ResponseAdapter : ResponseAdapter<HeroDetailsQuery.Data>
 
       object Edge : ResponseAdapter<HeroDetailsQuery.Data.Hero.FriendsConnection.Edge> {
         private val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
-          ResponseField.forObject("node", "node", null, true, null)
+          ResponseField(
+            type = ResponseField.Type.Named("Character"),
+            responseName = "node",
+            fieldName = "node",
+            arguments = emptyMap(),
+            conditions = emptyList(),
+          )
         )
 
         override fun fromResponse(reader: ResponseReader, __typename: String?):
@@ -160,7 +196,13 @@ object HeroDetailsQuery_ResponseAdapter : ResponseAdapter<HeroDetailsQuery.Data>
 
         object Node : ResponseAdapter<HeroDetailsQuery.Data.Hero.FriendsConnection.Edge.Node> {
           private val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
-            ResponseField.forString("name", "name", null, false, null)
+            ResponseField(
+              type = ResponseField.Type.NotNull(ResponseField.Type.Named("String")),
+              responseName = "name",
+              fieldName = "name",
+              arguments = emptyMap(),
+              conditions = emptyList(),
+            )
           )
 
           override fun fromResponse(reader: ResponseReader, __typename: String?):

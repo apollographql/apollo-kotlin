@@ -21,18 +21,30 @@ import kotlin.collections.List
     "RemoveRedundantQualifierName")
 object TestQuery_ResponseAdapter : ResponseAdapter<TestQuery.Data> {
   private val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
-    ResponseField.forList("reviews", "reviews", mapOf<String, Any?>(
-      "episode" to "JEDI",
-      "starsInt" to 10,
-      "starsFloat" to 9.9), true, null),
-    ResponseField.forInt("testNullableArguments", "testNullableArguments", mapOf<String, Any?>(
-      "int" to null,
-      "string" to null,
-      "float" to null,
-      "review" to null,
-      "episode" to null,
-      "boolean" to null,
-      "list" to null), false, null)
+    ResponseField(
+      type = ResponseField.Type.List(ResponseField.Type.Named("Review")),
+      responseName = "reviews",
+      fieldName = "reviews",
+      arguments = mapOf<String, Any?>(
+        "episode" to "JEDI",
+        "starsInt" to 10,
+        "starsFloat" to 9.9),
+      conditions = emptyList(),
+    ),
+    ResponseField(
+      type = ResponseField.Type.NotNull(ResponseField.Type.Named("Int")),
+      responseName = "testNullableArguments",
+      fieldName = "testNullableArguments",
+      arguments = mapOf<String, Any?>(
+        "int" to null,
+        "string" to null,
+        "float" to null,
+        "review" to null,
+        "episode" to null,
+        "boolean" to null,
+        "list" to null),
+      conditions = emptyList(),
+    )
   )
 
   override fun fromResponse(reader: ResponseReader, __typename: String?): TestQuery.Data {
@@ -68,8 +80,20 @@ object TestQuery_ResponseAdapter : ResponseAdapter<TestQuery.Data> {
 
   object Review : ResponseAdapter<TestQuery.Data.Review> {
     private val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
-      ResponseField.forInt("stars", "stars", null, false, null),
-      ResponseField.forString("commentary", "commentary", null, true, null)
+      ResponseField(
+        type = ResponseField.Type.NotNull(ResponseField.Type.Named("Int")),
+        responseName = "stars",
+        fieldName = "stars",
+        arguments = emptyMap(),
+        conditions = emptyList(),
+      ),
+      ResponseField(
+        type = ResponseField.Type.Named("String"),
+        responseName = "commentary",
+        fieldName = "commentary",
+        arguments = emptyMap(),
+        conditions = emptyList(),
+      )
     )
 
     override fun fromResponse(reader: ResponseReader, __typename: String?): TestQuery.Data.Review {

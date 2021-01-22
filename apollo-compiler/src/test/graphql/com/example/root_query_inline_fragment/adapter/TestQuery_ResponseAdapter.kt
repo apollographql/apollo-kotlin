@@ -22,7 +22,13 @@ import kotlin.collections.List
     "RemoveRedundantQualifierName")
 object TestQuery_ResponseAdapter : ResponseAdapter<TestQuery.Data> {
   private val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
-    ResponseField.forString("__typename", "__typename", null, false, null)
+    ResponseField(
+      type = ResponseField.Type.NotNull(ResponseField.Type.Named("String")),
+      responseName = "__typename",
+      fieldName = "__typename",
+      arguments = emptyMap(),
+      conditions = emptyList(),
+    )
   )
 
   override fun fromResponse(reader: ResponseReader, __typename: String?): TestQuery.Data {
@@ -42,10 +48,28 @@ object TestQuery_ResponseAdapter : ResponseAdapter<TestQuery.Data> {
 
   object QueryData : ResponseAdapter<TestQuery.Data.QueryData> {
     private val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
-      ResponseField.forString("__typename", "__typename", null, false, null),
-      ResponseField.forObject("hero", "hero", null, true, null),
-      ResponseField.forObject("droid", "droid", mapOf<String, Any?>(
-        "id" to 1), true, null)
+      ResponseField(
+        type = ResponseField.Type.NotNull(ResponseField.Type.Named("String")),
+        responseName = "__typename",
+        fieldName = "__typename",
+        arguments = emptyMap(),
+        conditions = emptyList(),
+      ),
+      ResponseField(
+        type = ResponseField.Type.Named("Character"),
+        responseName = "hero",
+        fieldName = "hero",
+        arguments = emptyMap(),
+        conditions = emptyList(),
+      ),
+      ResponseField(
+        type = ResponseField.Type.Named("Droid"),
+        responseName = "droid",
+        fieldName = "droid",
+        arguments = mapOf<String, Any?>(
+          "id" to 1),
+        conditions = emptyList(),
+      )
     )
 
     override fun fromResponse(reader: ResponseReader, __typename: String?):
@@ -94,7 +118,13 @@ object TestQuery_ResponseAdapter : ResponseAdapter<TestQuery.Data> {
 
     object Hero : ResponseAdapter<TestQuery.Data.QueryData.Hero> {
       private val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
-        ResponseField.forString("__typename", "__typename", null, false, null)
+        ResponseField(
+          type = ResponseField.Type.NotNull(ResponseField.Type.Named("String")),
+          responseName = "__typename",
+          fieldName = "__typename",
+          arguments = emptyMap(),
+          conditions = emptyList(),
+        )
       )
 
       override fun fromResponse(reader: ResponseReader, __typename: String?):
@@ -115,10 +145,35 @@ object TestQuery_ResponseAdapter : ResponseAdapter<TestQuery.Data> {
 
       object HumanHero : ResponseAdapter<TestQuery.Data.QueryData.Hero.HumanHero> {
         private val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
-          ResponseField.forString("__typename", "__typename", null, false, null),
-          ResponseField.forString("name", "name", null, false, null),
-          ResponseField.forList("appearsIn", "appearsIn", null, false, null),
-          ResponseField.forDouble("height", "height", null, true, null)
+          ResponseField(
+            type = ResponseField.Type.NotNull(ResponseField.Type.Named("String")),
+            responseName = "__typename",
+            fieldName = "__typename",
+            arguments = emptyMap(),
+            conditions = emptyList(),
+          ),
+          ResponseField(
+            type = ResponseField.Type.NotNull(ResponseField.Type.Named("String")),
+            responseName = "name",
+            fieldName = "name",
+            arguments = emptyMap(),
+            conditions = emptyList(),
+          ),
+          ResponseField(
+            type =
+                ResponseField.Type.NotNull(ResponseField.Type.List(ResponseField.Type.Named("Episode"))),
+            responseName = "appearsIn",
+            fieldName = "appearsIn",
+            arguments = emptyMap(),
+            conditions = emptyList(),
+          ),
+          ResponseField(
+            type = ResponseField.Type.Named("Float"),
+            responseName = "height",
+            fieldName = "height",
+            arguments = emptyMap(),
+            conditions = emptyList(),
+          )
         )
 
         override fun fromResponse(reader: ResponseReader, __typename: String?):
@@ -160,9 +215,28 @@ object TestQuery_ResponseAdapter : ResponseAdapter<TestQuery.Data> {
 
       object OtherHero : ResponseAdapter<TestQuery.Data.QueryData.Hero.OtherHero> {
         private val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
-          ResponseField.forString("__typename", "__typename", null, false, null),
-          ResponseField.forString("name", "name", null, false, null),
-          ResponseField.forList("appearsIn", "appearsIn", null, false, null)
+          ResponseField(
+            type = ResponseField.Type.NotNull(ResponseField.Type.Named("String")),
+            responseName = "__typename",
+            fieldName = "__typename",
+            arguments = emptyMap(),
+            conditions = emptyList(),
+          ),
+          ResponseField(
+            type = ResponseField.Type.NotNull(ResponseField.Type.Named("String")),
+            responseName = "name",
+            fieldName = "name",
+            arguments = emptyMap(),
+            conditions = emptyList(),
+          ),
+          ResponseField(
+            type =
+                ResponseField.Type.NotNull(ResponseField.Type.List(ResponseField.Type.Named("Episode"))),
+            responseName = "appearsIn",
+            fieldName = "appearsIn",
+            arguments = emptyMap(),
+            conditions = emptyList(),
+          )
         )
 
         override fun fromResponse(reader: ResponseReader, __typename: String?):
@@ -201,7 +275,13 @@ object TestQuery_ResponseAdapter : ResponseAdapter<TestQuery.Data> {
 
     object Droid : ResponseAdapter<TestQuery.Data.QueryData.Droid> {
       private val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
-        ResponseField.forString("__typename", "__typename", null, false, null)
+        ResponseField(
+          type = ResponseField.Type.NotNull(ResponseField.Type.Named("String")),
+          responseName = "__typename",
+          fieldName = "__typename",
+          arguments = emptyMap(),
+          conditions = emptyList(),
+        )
       )
 
       override fun fromResponse(reader: ResponseReader, __typename: String?):
@@ -222,9 +302,27 @@ object TestQuery_ResponseAdapter : ResponseAdapter<TestQuery.Data> {
 
       object DroidDroid : ResponseAdapter<TestQuery.Data.QueryData.Droid.DroidDroid> {
         private val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
-          ResponseField.forString("__typename", "__typename", null, false, null),
-          ResponseField.forString("name", "name", null, false, null),
-          ResponseField.forString("primaryFunction", "primaryFunction", null, true, null)
+          ResponseField(
+            type = ResponseField.Type.NotNull(ResponseField.Type.Named("String")),
+            responseName = "__typename",
+            fieldName = "__typename",
+            arguments = emptyMap(),
+            conditions = emptyList(),
+          ),
+          ResponseField(
+            type = ResponseField.Type.NotNull(ResponseField.Type.Named("String")),
+            responseName = "name",
+            fieldName = "name",
+            arguments = emptyMap(),
+            conditions = emptyList(),
+          ),
+          ResponseField(
+            type = ResponseField.Type.Named("String"),
+            responseName = "primaryFunction",
+            fieldName = "primaryFunction",
+            arguments = emptyMap(),
+            conditions = emptyList(),
+          )
         )
 
         override fun fromResponse(reader: ResponseReader, __typename: String?):
@@ -259,7 +357,13 @@ object TestQuery_ResponseAdapter : ResponseAdapter<TestQuery.Data> {
 
       object OtherDroid : ResponseAdapter<TestQuery.Data.QueryData.Droid.OtherDroid> {
         private val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
-          ResponseField.forString("__typename", "__typename", null, false, null)
+          ResponseField(
+            type = ResponseField.Type.NotNull(ResponseField.Type.Named("String")),
+            responseName = "__typename",
+            fieldName = "__typename",
+            arguments = emptyMap(),
+            conditions = emptyList(),
+          )
         )
 
         override fun fromResponse(reader: ResponseReader, __typename: String?):
@@ -288,7 +392,13 @@ object TestQuery_ResponseAdapter : ResponseAdapter<TestQuery.Data> {
 
   object OtherData : ResponseAdapter<TestQuery.Data.OtherData> {
     private val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
-      ResponseField.forString("__typename", "__typename", null, false, null)
+      ResponseField(
+        type = ResponseField.Type.NotNull(ResponseField.Type.Named("String")),
+        responseName = "__typename",
+        fieldName = "__typename",
+        arguments = emptyMap(),
+        conditions = emptyList(),
+      )
     )
 
     override fun fromResponse(reader: ResponseReader, __typename: String?):

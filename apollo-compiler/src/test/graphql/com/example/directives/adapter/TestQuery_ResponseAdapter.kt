@@ -20,7 +20,13 @@ import kotlin.Suppress
     "RemoveRedundantQualifierName")
 object TestQuery_ResponseAdapter : ResponseAdapter<TestQuery.Data> {
   private val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
-    ResponseField.forObject("hero", "hero", null, true, null)
+    ResponseField(
+      type = ResponseField.Type.Named("Character"),
+      responseName = "hero",
+      fieldName = "hero",
+      arguments = emptyMap(),
+      conditions = emptyList(),
+    )
   )
 
   override fun fromResponse(reader: ResponseReader, __typename: String?): TestQuery.Data {
@@ -52,12 +58,24 @@ object TestQuery_ResponseAdapter : ResponseAdapter<TestQuery.Data> {
 
   object Hero : ResponseAdapter<TestQuery.Data.Hero> {
     private val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
-      ResponseField.forString("name", "name", null, true, listOf(
-        ResponseField.Condition.booleanCondition("includeName", false)
-      )),
-      ResponseField.forObject("friendsConnection", "friendsConnection", null, true, listOf(
-        ResponseField.Condition.booleanCondition("skipFriends", true)
-      ))
+      ResponseField(
+        type = ResponseField.Type.Named("String"),
+        responseName = "name",
+        fieldName = "name",
+        arguments = emptyMap(),
+        conditions = listOf(
+          ResponseField.Condition.booleanCondition("includeName", false)
+        ),
+      ),
+      ResponseField(
+        type = ResponseField.Type.Named("FriendsConnection"),
+        responseName = "friendsConnection",
+        fieldName = "friendsConnection",
+        arguments = emptyMap(),
+        conditions = listOf(
+          ResponseField.Condition.booleanCondition("skipFriends", true)
+        ),
+      )
     )
 
     override fun fromResponse(reader: ResponseReader, __typename: String?): TestQuery.Data.Hero {
@@ -93,7 +111,13 @@ object TestQuery_ResponseAdapter : ResponseAdapter<TestQuery.Data> {
 
     object FriendsConnection : ResponseAdapter<TestQuery.Data.Hero.FriendsConnection> {
       private val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
-        ResponseField.forInt("totalCount", "totalCount", null, true, null)
+        ResponseField(
+          type = ResponseField.Type.Named("Int"),
+          responseName = "totalCount",
+          fieldName = "totalCount",
+          arguments = emptyMap(),
+          conditions = emptyList(),
+        )
       )
 
       override fun fromResponse(reader: ResponseReader, __typename: String?):

@@ -19,7 +19,13 @@ import kotlin.Suppress
     "RemoveRedundantQualifierName")
 object TestQuery_ResponseAdapter : ResponseAdapter<TestQuery.Data> {
   private val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
-    ResponseField.forObject("typeWithGraphQLKeywords", "typeWithGraphQLKeywords", null, true, null)
+    ResponseField(
+      type = ResponseField.Type.Named("TypeWithGraphQLKeywords"),
+      responseName = "typeWithGraphQLKeywords",
+      fieldName = "typeWithGraphQLKeywords",
+      arguments = emptyMap(),
+      conditions = emptyList(),
+    )
   )
 
   override fun fromResponse(reader: ResponseReader, __typename: String?): TestQuery.Data {
@@ -51,16 +57,34 @@ object TestQuery_ResponseAdapter : ResponseAdapter<TestQuery.Data> {
 
   object TypeWithGraphQLKeywords : ResponseAdapter<TestQuery.Data.TypeWithGraphQLKeywords> {
     private val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
-      ResponseField.forString("on", "on", null, true, null),
-      ResponseField.forString("null", "null", mapOf<String, Any?>(
-        "fragment" to mapOf<String, Any?>(
-          "kind" to "Variable",
-          "variableName" to "operation")), true, null),
-      ResponseField.forString("alias", "null", mapOf<String, Any?>(
-        "fragment" to """
-        |A string
-        |with a new line
-        """.trimMargin()), true, null)
+      ResponseField(
+        type = ResponseField.Type.Named("String"),
+        responseName = "on",
+        fieldName = "on",
+        arguments = emptyMap(),
+        conditions = emptyList(),
+      ),
+      ResponseField(
+        type = ResponseField.Type.Named("String"),
+        responseName = "null",
+        fieldName = "null",
+        arguments = mapOf<String, Any?>(
+          "fragment" to mapOf<String, Any?>(
+            "kind" to "Variable",
+            "variableName" to "operation")),
+        conditions = emptyList(),
+      ),
+      ResponseField(
+        type = ResponseField.Type.Named("String"),
+        responseName = "alias",
+        fieldName = "null",
+        arguments = mapOf<String, Any?>(
+          "fragment" to """
+          |A string
+          |with a new line
+          """.trimMargin()),
+        conditions = emptyList(),
+      )
     )
 
     override fun fromResponse(reader: ResponseReader, __typename: String?):

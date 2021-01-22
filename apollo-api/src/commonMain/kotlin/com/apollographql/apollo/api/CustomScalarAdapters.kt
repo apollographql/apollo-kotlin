@@ -26,6 +26,11 @@ class CustomScalarAdapters(val customScalarAdapters: Map<CustomScalar, CustomSca
     } as CustomScalarAdapter<T>
   }
 
+  @Suppress("UNCHECKED_CAST")
+  fun <T : Any> adapterFor(graphqlName: String): CustomScalarAdapter<T> {
+    return adapterByGraphQLName[graphqlName] as CustomScalarAdapter<T>
+  }
+
   companion object {
     val DEFAULT = CustomScalarAdapters(emptyMap())
 

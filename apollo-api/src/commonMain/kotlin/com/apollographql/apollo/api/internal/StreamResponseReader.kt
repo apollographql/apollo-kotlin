@@ -106,8 +106,8 @@ class StreamResponseReader private constructor(
     }
   }
 
-  override fun <T : Any> readCustomScalar(field: ResponseField.CustomScalarField): T? {
-    val typeAdapter = customScalarAdapters.adapterFor<T>(field.customScalar)
+  override fun <T : Any> readCustomScalar(field: ResponseField): T? {
+    val typeAdapter = customScalarAdapters.adapterFor<T>((field.type as ResponseField.Type.Named).name)
     val value = readValue(field) {
       readRecursively()
     }
@@ -131,7 +131,7 @@ class StreamResponseReader private constructor(
     }
 
     return when (jsonReader.peek()) {
-      JsonReader.Token.NULL -> if (field.optional) jsonReader.nextNull() else throw NullPointerException(
+      JsonReader.Token.NULL -> if (field.type !is ResponseField.Type.NotNull ) jsonReader.nextNull() else throw NullPointerException(
         "Couldn't read `${field.responseName}` field value, expected non null value"
       )
       else -> readValue(jsonReader)
