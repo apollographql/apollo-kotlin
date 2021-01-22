@@ -8,6 +8,7 @@ import com.apollographql.apollo.api.ResponseField
 import com.apollographql.apollo.api.internal.MapResponseParser
 import com.apollographql.apollo.api.internal.MapResponseReader
 import com.apollographql.apollo.api.internal.StreamResponseReader
+import com.apollographql.apollo.api.internal.ValueResolver
 import com.apollographql.apollo.cache.CacheHeaders
 import com.apollographql.apollo.cache.normalized.CacheKey
 import com.apollographql.apollo.cache.normalized.CacheKeyResolver
@@ -86,6 +87,40 @@ fun <D : Fragment.Data> Fragment<D>.readDataFromCache(
         customScalarAdapters = customScalarAdapters,
     )
 
+    adapter().fromResponse(reader)
+  } catch (e: Exception) {
+    e.printStackTrace()
+    null
+  }
+}
+
+fun <D : Operation.Data> Operation<D>.batchDataFromCache(
+    customScalarAdapters: CustomScalarAdapters,
+    readableStore: ReadableStore,
+    cacheKeyResolver: CacheKeyResolver,
+    cacheHeaders: CacheHeaders,
+): D? {
+  return try {
+    val map = CacheMapBuilder(
+        readableStore = readableStore,
+        cacheHeaders = cacheHeaders,
+        cacheKeyResolver = cacheKeyResolver,
+        variables = variables(),
+        rootKey = CacheKeyResolver.rootKey().key,
+        rootResponseFields = responseFields()
+    ).toMap()
+
+    val cacheKeyBuilder = RealCacheKeyBuilder()
+    val reader = MapResponseReader(
+        root = map,
+        valueResolver = object: ValueResolver<Map<String, Any?>> {
+          override fun <T> valueFor(map: Map<String, Any?>, field: ResponseField): T? {
+            return map[cacheKeyBuilder.build(field, variables())] as T?
+          }
+        },
+        variable = variables(),
+        customScalarAdapters = customScalarAdapters,
+    )
     adapter().fromResponse(reader)
   } catch (e: Exception) {
     e.printStackTrace()

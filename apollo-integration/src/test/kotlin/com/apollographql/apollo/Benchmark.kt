@@ -7,6 +7,7 @@ import com.apollographql.apollo.cache.normalized.CacheKeyResolver
 import com.apollographql.apollo.cache.normalized.Record
 import com.apollographql.apollo.cache.normalized.RecordFieldJsonAdapter
 import com.apollographql.apollo.cache.normalized.internal.ReadableStore
+import com.apollographql.apollo.cache.normalized.internal.batchDataFromCache
 import com.apollographql.apollo.cache.normalized.internal.normalize
 import com.apollographql.apollo.cache.normalized.internal.readDataFromCache
 import com.apollographql.apollo.cache.normalized.sql.SqlNormalizedCacheFactory
@@ -45,6 +46,6 @@ class BenchmarkTest {
         return cache.loadRecords(keys, cacheHeaders)
       }
     }
-    val data2 = operation.readDataFromCache(CustomScalarAdapters.DEFAULT, readableStore, CacheKeyResolver.DEFAULT, CacheHeaders.NONE)
+    val data2 = operation.batchDataFromCache(CustomScalarAdapters.DEFAULT, readableStore, CacheKeyResolver.DEFAULT, CacheHeaders.NONE)
   }
 }
