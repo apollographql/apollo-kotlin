@@ -71,5 +71,4 @@ class CacheValueResolver(
     }
     return record.field(fieldKey) as T?
   }
-
 }
