@@ -26,13 +26,8 @@ class CacheValueResolver(
     return when (type) {
       is ResponseField.Type.List -> valueForList(fieldValue(map, field)) as T?
       is ResponseField.Type.NotNull -> valueFor(map, field, type.ofType)
-      is ResponseField.Type.Named -> {
-        if (type.kind == ResponseField.Kind.OBJECT) {
-          valueForObject(map, field) as T?
-        } else {
-          fieldValue(record = map, field)
-        }
-      }
+      is ResponseField.Type.Named.Object -> valueForObject(map, field) as T?
+      is ResponseField.Type.Named.Other -> fieldValue(record = map, field)
     }
   }
 

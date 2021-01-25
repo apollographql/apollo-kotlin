@@ -37,7 +37,7 @@ class MockSubscription(
         return Data(
             name = reader.readString(
                 ResponseField(
-                    type = ResponseField.Type.Named("String", ResponseField.Kind.OTHER),
+                    type = ResponseField.Type.Named.Other("String"),
                     responseName = "name",
                     fieldName = "name",
                     arguments = emptyMap(),
