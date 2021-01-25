@@ -20,14 +20,14 @@ import kotlin.Suppress
 object TestQuery_ResponseAdapter : ResponseAdapter<TestQuery.Data> {
   private val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
     ResponseField(
-      type = ResponseField.Type.Named("Character", ResponseField.Kind.OBJECT),
+      type = ResponseField.Type.Named.Object("Character"),
       responseName = "r2",
       fieldName = "hero",
       arguments = emptyMap(),
       conditions = emptyList(),
     ),
     ResponseField(
-      type = ResponseField.Type.Named("Character", ResponseField.Kind.OBJECT),
+      type = ResponseField.Type.Named.Object("Character"),
       responseName = "luke",
       fieldName = "hero",
       arguments = mapOf<String, Any?>(
@@ -78,8 +78,7 @@ object TestQuery_ResponseAdapter : ResponseAdapter<TestQuery.Data> {
   object R2 : ResponseAdapter<TestQuery.Data.R2> {
     private val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
       ResponseField(
-        type = ResponseField.Type.NotNull(ResponseField.Type.Named("String",
-            ResponseField.Kind.OTHER)),
+        type = ResponseField.Type.NotNull(ResponseField.Type.Named.Other("String")),
         responseName = "name",
         fieldName = "name",
         arguments = emptyMap(),
@@ -110,16 +109,14 @@ object TestQuery_ResponseAdapter : ResponseAdapter<TestQuery.Data> {
   object Luke : ResponseAdapter<TestQuery.Data.Luke> {
     private val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
       ResponseField(
-        type = ResponseField.Type.NotNull(ResponseField.Type.Named("String",
-            ResponseField.Kind.OTHER)),
+        type = ResponseField.Type.NotNull(ResponseField.Type.Named.Other("String")),
         responseName = "id",
         fieldName = "id",
         arguments = emptyMap(),
         conditions = emptyList(),
       ),
       ResponseField(
-        type = ResponseField.Type.NotNull(ResponseField.Type.Named("String",
-            ResponseField.Kind.OTHER)),
+        type = ResponseField.Type.NotNull(ResponseField.Type.Named.Other("String")),
         responseName = "name",
         fieldName = "name",
         arguments = emptyMap(),

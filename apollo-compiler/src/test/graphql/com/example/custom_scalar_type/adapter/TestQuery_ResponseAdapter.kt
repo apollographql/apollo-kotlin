@@ -24,7 +24,7 @@ import kotlin.collections.List
 object TestQuery_ResponseAdapter : ResponseAdapter<TestQuery.Data> {
   private val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
     ResponseField(
-      type = ResponseField.Type.Named("Character", ResponseField.Kind.OBJECT),
+      type = ResponseField.Type.Named.Object("Character"),
       responseName = "hero",
       fieldName = "hero",
       arguments = emptyMap(),
@@ -62,16 +62,14 @@ object TestQuery_ResponseAdapter : ResponseAdapter<TestQuery.Data> {
   object Hero : ResponseAdapter<TestQuery.Data.Hero> {
     private val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
       ResponseField(
-        type = ResponseField.Type.NotNull(ResponseField.Type.Named("String",
-            ResponseField.Kind.OTHER)),
+        type = ResponseField.Type.NotNull(ResponseField.Type.Named.Other("String")),
         responseName = "name",
         fieldName = "name",
         arguments = emptyMap(),
         conditions = emptyList(),
       ),
       ResponseField(
-        type = ResponseField.Type.NotNull(ResponseField.Type.Named("Date",
-            ResponseField.Kind.OTHER)),
+        type = ResponseField.Type.NotNull(ResponseField.Type.Named.Other("Date")),
         responseName = "birthDate",
         fieldName = "birthDate",
         arguments = emptyMap(),
@@ -79,24 +77,21 @@ object TestQuery_ResponseAdapter : ResponseAdapter<TestQuery.Data> {
       ),
       ResponseField(
         type =
-            ResponseField.Type.NotNull(ResponseField.Type.List(ResponseField.Type.NotNull(ResponseField.Type.Named("Date",
-            ResponseField.Kind.OTHER)))),
+            ResponseField.Type.NotNull(ResponseField.Type.List(ResponseField.Type.NotNull(ResponseField.Type.Named.Other("Date")))),
         responseName = "appearanceDates",
         fieldName = "appearanceDates",
         arguments = emptyMap(),
         conditions = emptyList(),
       ),
       ResponseField(
-        type = ResponseField.Type.NotNull(ResponseField.Type.Named("UnsupportedType",
-            ResponseField.Kind.OTHER)),
+        type = ResponseField.Type.NotNull(ResponseField.Type.Named.Other("UnsupportedType")),
         responseName = "fieldWithUnsupportedType",
         fieldName = "fieldWithUnsupportedType",
         arguments = emptyMap(),
         conditions = emptyList(),
       ),
       ResponseField(
-        type = ResponseField.Type.NotNull(ResponseField.Type.Named("URL",
-            ResponseField.Kind.OTHER)),
+        type = ResponseField.Type.NotNull(ResponseField.Type.Named.Other("URL")),
         responseName = "profileLink",
         fieldName = "profileLink",
         arguments = emptyMap(),
@@ -104,8 +99,7 @@ object TestQuery_ResponseAdapter : ResponseAdapter<TestQuery.Data> {
       ),
       ResponseField(
         type =
-            ResponseField.Type.NotNull(ResponseField.Type.List(ResponseField.Type.NotNull(ResponseField.Type.Named("URL",
-            ResponseField.Kind.OTHER)))),
+            ResponseField.Type.NotNull(ResponseField.Type.List(ResponseField.Type.NotNull(ResponseField.Type.Named.Other("URL")))),
         responseName = "links",
         fieldName = "links",
         arguments = emptyMap(),

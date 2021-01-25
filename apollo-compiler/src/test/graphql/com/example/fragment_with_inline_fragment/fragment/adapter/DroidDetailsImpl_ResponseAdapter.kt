@@ -20,23 +20,21 @@ import kotlin.Suppress
 object DroidDetailsImpl_ResponseAdapter : ResponseAdapter<DroidDetailsImpl.Data> {
   private val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
     ResponseField(
-      type = ResponseField.Type.NotNull(ResponseField.Type.Named("String",
-          ResponseField.Kind.OTHER)),
+      type = ResponseField.Type.NotNull(ResponseField.Type.Named.Other("String")),
       responseName = "__typename",
       fieldName = "__typename",
       arguments = emptyMap(),
       conditions = emptyList(),
     ),
     ResponseField(
-      type = ResponseField.Type.NotNull(ResponseField.Type.Named("String",
-          ResponseField.Kind.OTHER)),
+      type = ResponseField.Type.NotNull(ResponseField.Type.Named.Other("String")),
       responseName = "name",
       fieldName = "name",
       arguments = emptyMap(),
       conditions = emptyList(),
     ),
     ResponseField(
-      type = ResponseField.Type.Named("String", ResponseField.Kind.OTHER),
+      type = ResponseField.Type.Named.Other("String"),
       responseName = "primaryFunction",
       fieldName = "primaryFunction",
       arguments = emptyMap(),

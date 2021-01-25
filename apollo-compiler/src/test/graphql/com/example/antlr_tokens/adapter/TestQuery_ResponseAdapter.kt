@@ -20,7 +20,7 @@ import kotlin.Suppress
 object TestQuery_ResponseAdapter : ResponseAdapter<TestQuery.Data> {
   private val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
     ResponseField(
-      type = ResponseField.Type.Named("TypeWithGraphQLKeywords", ResponseField.Kind.OBJECT),
+      type = ResponseField.Type.Named.Object("TypeWithGraphQLKeywords"),
       responseName = "typeWithGraphQLKeywords",
       fieldName = "typeWithGraphQLKeywords",
       arguments = emptyMap(),
@@ -58,14 +58,14 @@ object TestQuery_ResponseAdapter : ResponseAdapter<TestQuery.Data> {
   object TypeWithGraphQLKeywords : ResponseAdapter<TestQuery.Data.TypeWithGraphQLKeywords> {
     private val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
       ResponseField(
-        type = ResponseField.Type.Named("String", ResponseField.Kind.OTHER),
+        type = ResponseField.Type.Named.Other("String"),
         responseName = "on",
         fieldName = "on",
         arguments = emptyMap(),
         conditions = emptyList(),
       ),
       ResponseField(
-        type = ResponseField.Type.Named("String", ResponseField.Kind.OTHER),
+        type = ResponseField.Type.Named.Other("String"),
         responseName = "null",
         fieldName = "null",
         arguments = mapOf<String, Any?>(
@@ -75,7 +75,7 @@ object TestQuery_ResponseAdapter : ResponseAdapter<TestQuery.Data> {
         conditions = emptyList(),
       ),
       ResponseField(
-        type = ResponseField.Type.Named("String", ResponseField.Kind.OTHER),
+        type = ResponseField.Type.Named.Other("String"),
         responseName = "alias",
         fieldName = "null",
         arguments = mapOf<String, Any?>(

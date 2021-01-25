@@ -21,7 +21,7 @@ import kotlin.collections.List
 object TestQuery_ResponseAdapter : ResponseAdapter<TestQuery.Data> {
   private val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
     ResponseField(
-      type = ResponseField.Type.Named("Tree", ResponseField.Kind.OBJECT),
+      type = ResponseField.Type.Named.Object("Tree"),
       responseName = "tree",
       fieldName = "tree",
       arguments = emptyMap(),
@@ -59,8 +59,7 @@ object TestQuery_ResponseAdapter : ResponseAdapter<TestQuery.Data> {
   object Tree : ResponseAdapter<TestQuery.Data.Tree> {
     private val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
       ResponseField(
-        type = ResponseField.Type.NotNull(ResponseField.Type.Named("String",
-            ResponseField.Kind.OTHER)),
+        type = ResponseField.Type.NotNull(ResponseField.Type.Named.Other("String")),
         responseName = "name",
         fieldName = "name",
         arguments = emptyMap(),
@@ -68,15 +67,14 @@ object TestQuery_ResponseAdapter : ResponseAdapter<TestQuery.Data> {
       ),
       ResponseField(
         type =
-            ResponseField.Type.NotNull(ResponseField.Type.List(ResponseField.Type.NotNull(ResponseField.Type.Named("Tree",
-            ResponseField.Kind.OBJECT)))),
+            ResponseField.Type.NotNull(ResponseField.Type.List(ResponseField.Type.NotNull(ResponseField.Type.Named.Object("Tree")))),
         responseName = "children",
         fieldName = "children",
         arguments = emptyMap(),
         conditions = emptyList(),
       ),
       ResponseField(
-        type = ResponseField.Type.Named("Tree", ResponseField.Kind.OBJECT),
+        type = ResponseField.Type.Named.Object("Tree"),
         responseName = "parent",
         fieldName = "parent",
         arguments = emptyMap(),
@@ -130,8 +128,7 @@ object TestQuery_ResponseAdapter : ResponseAdapter<TestQuery.Data> {
     object Child : ResponseAdapter<TestQuery.Data.Tree.Child> {
       private val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
         ResponseField(
-          type = ResponseField.Type.NotNull(ResponseField.Type.Named("String",
-              ResponseField.Kind.OTHER)),
+          type = ResponseField.Type.NotNull(ResponseField.Type.Named.Other("String")),
           responseName = "name",
           fieldName = "name",
           arguments = emptyMap(),
@@ -163,8 +160,7 @@ object TestQuery_ResponseAdapter : ResponseAdapter<TestQuery.Data> {
     object Parent : ResponseAdapter<TestQuery.Data.Tree.Parent> {
       private val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
         ResponseField(
-          type = ResponseField.Type.NotNull(ResponseField.Type.Named("String",
-              ResponseField.Kind.OTHER)),
+          type = ResponseField.Type.NotNull(ResponseField.Type.Named.Other("String")),
           responseName = "name",
           fieldName = "name",
           arguments = emptyMap(),

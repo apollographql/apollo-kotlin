@@ -22,7 +22,7 @@ import kotlin.collections.List
 object TestQuery_ResponseAdapter : ResponseAdapter<TestQuery.Data> {
   private val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
     ResponseField(
-      type = ResponseField.Type.Named("Character", ResponseField.Kind.OBJECT),
+      type = ResponseField.Type.Named.Object("Character"),
       responseName = "hero",
       fieldName = "hero",
       arguments = emptyMap(),
@@ -60,8 +60,7 @@ object TestQuery_ResponseAdapter : ResponseAdapter<TestQuery.Data> {
   object Hero : ResponseAdapter<TestQuery.Data.Hero> {
     private val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
       ResponseField(
-        type = ResponseField.Type.NotNull(ResponseField.Type.Named("String",
-            ResponseField.Kind.OTHER)),
+        type = ResponseField.Type.NotNull(ResponseField.Type.Named.Other("String")),
         responseName = "name",
         fieldName = "name",
         arguments = emptyMap(),
@@ -69,16 +68,14 @@ object TestQuery_ResponseAdapter : ResponseAdapter<TestQuery.Data> {
       ),
       ResponseField(
         type =
-            ResponseField.Type.NotNull(ResponseField.Type.List(ResponseField.Type.Named("Episode",
-            ResponseField.Kind.OTHER))),
+            ResponseField.Type.NotNull(ResponseField.Type.List(ResponseField.Type.Named.Other("Episode"))),
         responseName = "appearsIn",
         fieldName = "appearsIn",
         arguments = emptyMap(),
         conditions = emptyList(),
       ),
       ResponseField(
-        type = ResponseField.Type.NotNull(ResponseField.Type.Named("Episode",
-            ResponseField.Kind.OTHER)),
+        type = ResponseField.Type.NotNull(ResponseField.Type.Named.Other("Episode")),
         responseName = "firstAppearsIn",
         fieldName = "firstAppearsIn",
         arguments = emptyMap(),

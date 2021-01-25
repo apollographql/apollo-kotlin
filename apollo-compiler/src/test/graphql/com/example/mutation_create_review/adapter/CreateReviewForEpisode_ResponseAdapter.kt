@@ -26,7 +26,7 @@ internal object CreateReviewForEpisode_ResponseAdapter :
     ResponseAdapter<CreateReviewForEpisode.Data> {
   private val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
     ResponseField(
-      type = ResponseField.Type.Named("Review", ResponseField.Kind.OBJECT),
+      type = ResponseField.Type.Named.Object("Review"),
       responseName = "createReview",
       fieldName = "createReview",
       arguments = mapOf<String, Any?>(
@@ -71,15 +71,14 @@ internal object CreateReviewForEpisode_ResponseAdapter :
   object CreateReview : ResponseAdapter<CreateReviewForEpisode.Data.CreateReview> {
     private val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
       ResponseField(
-        type = ResponseField.Type.NotNull(ResponseField.Type.Named("Int",
-            ResponseField.Kind.OTHER)),
+        type = ResponseField.Type.NotNull(ResponseField.Type.Named.Other("Int")),
         responseName = "stars",
         fieldName = "stars",
         arguments = emptyMap(),
         conditions = emptyList(),
       ),
       ResponseField(
-        type = ResponseField.Type.Named("String", ResponseField.Kind.OTHER),
+        type = ResponseField.Type.Named.Other("String"),
         responseName = "commentary",
         fieldName = "commentary",
         arguments = emptyMap(),
@@ -87,8 +86,7 @@ internal object CreateReviewForEpisode_ResponseAdapter :
       ),
       ResponseField(
         type =
-            ResponseField.Type.List(ResponseField.Type.NotNull(ResponseField.Type.List(ResponseField.Type.NotNull(ResponseField.Type.Named("String",
-            ResponseField.Kind.OTHER))))),
+            ResponseField.Type.List(ResponseField.Type.NotNull(ResponseField.Type.List(ResponseField.Type.NotNull(ResponseField.Type.Named.Other("String"))))),
         responseName = "listOfListOfString",
         fieldName = "listOfListOfString",
         arguments = emptyMap(),
@@ -96,8 +94,7 @@ internal object CreateReviewForEpisode_ResponseAdapter :
       ),
       ResponseField(
         type =
-            ResponseField.Type.List(ResponseField.Type.NotNull(ResponseField.Type.List(ResponseField.Type.NotNull(ResponseField.Type.Named("Episode",
-            ResponseField.Kind.OTHER))))),
+            ResponseField.Type.List(ResponseField.Type.NotNull(ResponseField.Type.List(ResponseField.Type.NotNull(ResponseField.Type.Named.Other("Episode"))))),
         responseName = "listOfListOfEnum",
         fieldName = "listOfListOfEnum",
         arguments = emptyMap(),
@@ -105,8 +102,7 @@ internal object CreateReviewForEpisode_ResponseAdapter :
       ),
       ResponseField(
         type =
-            ResponseField.Type.List(ResponseField.Type.NotNull(ResponseField.Type.List(ResponseField.Type.NotNull(ResponseField.Type.Named("Date",
-            ResponseField.Kind.OTHER))))),
+            ResponseField.Type.List(ResponseField.Type.NotNull(ResponseField.Type.List(ResponseField.Type.NotNull(ResponseField.Type.Named.Other("Date"))))),
         responseName = "listOfListOfCustom",
         fieldName = "listOfListOfCustom",
         arguments = emptyMap(),
@@ -114,8 +110,7 @@ internal object CreateReviewForEpisode_ResponseAdapter :
       ),
       ResponseField(
         type =
-            ResponseField.Type.List(ResponseField.Type.NotNull(ResponseField.Type.List(ResponseField.Type.NotNull(ResponseField.Type.Named("Character",
-            ResponseField.Kind.OBJECT))))),
+            ResponseField.Type.List(ResponseField.Type.NotNull(ResponseField.Type.List(ResponseField.Type.NotNull(ResponseField.Type.Named.Object("Character"))))),
         responseName = "listOfListOfObject",
         fieldName = "listOfListOfObject",
         arguments = emptyMap(),
@@ -201,8 +196,7 @@ internal object CreateReviewForEpisode_ResponseAdapter :
         ResponseAdapter<CreateReviewForEpisode.Data.CreateReview.ListOfListOfObject> {
       private val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
         ResponseField(
-          type = ResponseField.Type.NotNull(ResponseField.Type.Named("String",
-              ResponseField.Kind.OTHER)),
+          type = ResponseField.Type.NotNull(ResponseField.Type.Named.Other("String")),
           responseName = "name",
           fieldName = "name",
           arguments = emptyMap(),

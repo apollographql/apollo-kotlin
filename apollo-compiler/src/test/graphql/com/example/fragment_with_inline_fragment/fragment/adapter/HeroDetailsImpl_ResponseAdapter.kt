@@ -22,8 +22,7 @@ import kotlin.collections.List
 object HeroDetailsImpl_ResponseAdapter : ResponseAdapter<HeroDetailsImpl.Data> {
   private val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
     ResponseField(
-      type = ResponseField.Type.NotNull(ResponseField.Type.Named("String",
-          ResponseField.Kind.OTHER)),
+      type = ResponseField.Type.NotNull(ResponseField.Type.Named.Other("String")),
       responseName = "__typename",
       fieldName = "__typename",
       arguments = emptyMap(),
@@ -51,31 +50,28 @@ object HeroDetailsImpl_ResponseAdapter : ResponseAdapter<HeroDetailsImpl.Data> {
   object DroidData : ResponseAdapter<HeroDetailsImpl.Data.DroidData> {
     private val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
       ResponseField(
-        type = ResponseField.Type.NotNull(ResponseField.Type.Named("String",
-            ResponseField.Kind.OTHER)),
+        type = ResponseField.Type.NotNull(ResponseField.Type.Named.Other("String")),
         responseName = "__typename",
         fieldName = "__typename",
         arguments = emptyMap(),
         conditions = emptyList(),
       ),
       ResponseField(
-        type = ResponseField.Type.NotNull(ResponseField.Type.Named("String",
-            ResponseField.Kind.OTHER)),
+        type = ResponseField.Type.NotNull(ResponseField.Type.Named.Other("String")),
         responseName = "name",
         fieldName = "name",
         arguments = emptyMap(),
         conditions = emptyList(),
       ),
       ResponseField(
-        type = ResponseField.Type.NotNull(ResponseField.Type.Named("FriendsConnection",
-            ResponseField.Kind.OBJECT)),
+        type = ResponseField.Type.NotNull(ResponseField.Type.Named.Object("FriendsConnection")),
         responseName = "friendsConnection",
         fieldName = "friendsConnection",
         arguments = emptyMap(),
         conditions = emptyList(),
       ),
       ResponseField(
-        type = ResponseField.Type.Named("String", ResponseField.Kind.OTHER),
+        type = ResponseField.Type.Named.Other("String"),
         responseName = "primaryFunction",
         fieldName = "primaryFunction",
         arguments = emptyMap(),
@@ -122,15 +118,14 @@ object HeroDetailsImpl_ResponseAdapter : ResponseAdapter<HeroDetailsImpl.Data> {
     object FriendsConnection : ResponseAdapter<HeroDetailsImpl.Data.DroidData.FriendsConnection> {
       private val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
         ResponseField(
-          type = ResponseField.Type.Named("Int", ResponseField.Kind.OTHER),
+          type = ResponseField.Type.Named.Other("Int"),
           responseName = "totalCount",
           fieldName = "totalCount",
           arguments = emptyMap(),
           conditions = emptyList(),
         ),
         ResponseField(
-          type = ResponseField.Type.List(ResponseField.Type.Named("FriendsEdge",
-              ResponseField.Kind.OBJECT)),
+          type = ResponseField.Type.List(ResponseField.Type.Named.Object("FriendsEdge")),
           responseName = "edges",
           fieldName = "edges",
           arguments = emptyMap(),
@@ -174,7 +169,7 @@ object HeroDetailsImpl_ResponseAdapter : ResponseAdapter<HeroDetailsImpl.Data> {
       object Edge : ResponseAdapter<HeroDetailsImpl.Data.DroidData.FriendsConnection.Edge> {
         private val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
           ResponseField(
-            type = ResponseField.Type.Named("Character", ResponseField.Kind.OBJECT),
+            type = ResponseField.Type.Named.Object("Character"),
             responseName = "node",
             fieldName = "node",
             arguments = emptyMap(),
@@ -214,8 +209,7 @@ object HeroDetailsImpl_ResponseAdapter : ResponseAdapter<HeroDetailsImpl.Data> {
         object Node : ResponseAdapter<HeroDetailsImpl.Data.DroidData.FriendsConnection.Edge.Node> {
           private val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
             ResponseField(
-              type = ResponseField.Type.NotNull(ResponseField.Type.Named("String",
-                  ResponseField.Kind.OTHER)),
+              type = ResponseField.Type.NotNull(ResponseField.Type.Named.Other("String")),
               responseName = "name",
               fieldName = "name",
               arguments = emptyMap(),
@@ -251,24 +245,21 @@ object HeroDetailsImpl_ResponseAdapter : ResponseAdapter<HeroDetailsImpl.Data> {
   object HumanData : ResponseAdapter<HeroDetailsImpl.Data.HumanData> {
     private val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
       ResponseField(
-        type = ResponseField.Type.NotNull(ResponseField.Type.Named("String",
-            ResponseField.Kind.OTHER)),
+        type = ResponseField.Type.NotNull(ResponseField.Type.Named.Other("String")),
         responseName = "__typename",
         fieldName = "__typename",
         arguments = emptyMap(),
         conditions = emptyList(),
       ),
       ResponseField(
-        type = ResponseField.Type.NotNull(ResponseField.Type.Named("String",
-            ResponseField.Kind.OTHER)),
+        type = ResponseField.Type.NotNull(ResponseField.Type.Named.Other("String")),
         responseName = "name",
         fieldName = "name",
         arguments = emptyMap(),
         conditions = emptyList(),
       ),
       ResponseField(
-        type = ResponseField.Type.NotNull(ResponseField.Type.Named("FriendsConnection",
-            ResponseField.Kind.OBJECT)),
+        type = ResponseField.Type.NotNull(ResponseField.Type.Named.Object("FriendsConnection")),
         responseName = "friendsConnection",
         fieldName = "friendsConnection",
         arguments = emptyMap(),
@@ -311,15 +302,14 @@ object HeroDetailsImpl_ResponseAdapter : ResponseAdapter<HeroDetailsImpl.Data> {
     object FriendsConnection : ResponseAdapter<HeroDetailsImpl.Data.HumanData.FriendsConnection> {
       private val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
         ResponseField(
-          type = ResponseField.Type.Named("Int", ResponseField.Kind.OTHER),
+          type = ResponseField.Type.Named.Other("Int"),
           responseName = "totalCount",
           fieldName = "totalCount",
           arguments = emptyMap(),
           conditions = emptyList(),
         ),
         ResponseField(
-          type = ResponseField.Type.List(ResponseField.Type.Named("FriendsEdge",
-              ResponseField.Kind.OBJECT)),
+          type = ResponseField.Type.List(ResponseField.Type.Named.Object("FriendsEdge")),
           responseName = "edges",
           fieldName = "edges",
           arguments = emptyMap(),
@@ -363,7 +353,7 @@ object HeroDetailsImpl_ResponseAdapter : ResponseAdapter<HeroDetailsImpl.Data> {
       object Edge : ResponseAdapter<HeroDetailsImpl.Data.HumanData.FriendsConnection.Edge> {
         private val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
           ResponseField(
-            type = ResponseField.Type.Named("Character", ResponseField.Kind.OBJECT),
+            type = ResponseField.Type.Named.Object("Character"),
             responseName = "node",
             fieldName = "node",
             arguments = emptyMap(),
@@ -403,8 +393,7 @@ object HeroDetailsImpl_ResponseAdapter : ResponseAdapter<HeroDetailsImpl.Data> {
         object Node : ResponseAdapter<HeroDetailsImpl.Data.HumanData.FriendsConnection.Edge.Node> {
           private val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
             ResponseField(
-              type = ResponseField.Type.NotNull(ResponseField.Type.Named("String",
-                  ResponseField.Kind.OTHER)),
+              type = ResponseField.Type.NotNull(ResponseField.Type.Named.Other("String")),
               responseName = "name",
               fieldName = "name",
               arguments = emptyMap(),
@@ -440,24 +429,21 @@ object HeroDetailsImpl_ResponseAdapter : ResponseAdapter<HeroDetailsImpl.Data> {
   object OtherData : ResponseAdapter<HeroDetailsImpl.Data.OtherData> {
     private val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
       ResponseField(
-        type = ResponseField.Type.NotNull(ResponseField.Type.Named("String",
-            ResponseField.Kind.OTHER)),
+        type = ResponseField.Type.NotNull(ResponseField.Type.Named.Other("String")),
         responseName = "__typename",
         fieldName = "__typename",
         arguments = emptyMap(),
         conditions = emptyList(),
       ),
       ResponseField(
-        type = ResponseField.Type.NotNull(ResponseField.Type.Named("String",
-            ResponseField.Kind.OTHER)),
+        type = ResponseField.Type.NotNull(ResponseField.Type.Named.Other("String")),
         responseName = "name",
         fieldName = "name",
         arguments = emptyMap(),
         conditions = emptyList(),
       ),
       ResponseField(
-        type = ResponseField.Type.NotNull(ResponseField.Type.Named("FriendsConnection",
-            ResponseField.Kind.OBJECT)),
+        type = ResponseField.Type.NotNull(ResponseField.Type.Named.Object("FriendsConnection")),
         responseName = "friendsConnection",
         fieldName = "friendsConnection",
         arguments = emptyMap(),
@@ -500,15 +486,14 @@ object HeroDetailsImpl_ResponseAdapter : ResponseAdapter<HeroDetailsImpl.Data> {
     object FriendsConnection : ResponseAdapter<HeroDetailsImpl.Data.OtherData.FriendsConnection> {
       private val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
         ResponseField(
-          type = ResponseField.Type.Named("Int", ResponseField.Kind.OTHER),
+          type = ResponseField.Type.Named.Other("Int"),
           responseName = "totalCount",
           fieldName = "totalCount",
           arguments = emptyMap(),
           conditions = emptyList(),
         ),
         ResponseField(
-          type = ResponseField.Type.List(ResponseField.Type.Named("FriendsEdge",
-              ResponseField.Kind.OBJECT)),
+          type = ResponseField.Type.List(ResponseField.Type.Named.Object("FriendsEdge")),
           responseName = "edges",
           fieldName = "edges",
           arguments = emptyMap(),
@@ -552,7 +537,7 @@ object HeroDetailsImpl_ResponseAdapter : ResponseAdapter<HeroDetailsImpl.Data> {
       object Edge : ResponseAdapter<HeroDetailsImpl.Data.OtherData.FriendsConnection.Edge> {
         private val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
           ResponseField(
-            type = ResponseField.Type.Named("Character", ResponseField.Kind.OBJECT),
+            type = ResponseField.Type.Named.Object("Character"),
             responseName = "node",
             fieldName = "node",
             arguments = emptyMap(),
@@ -592,8 +577,7 @@ object HeroDetailsImpl_ResponseAdapter : ResponseAdapter<HeroDetailsImpl.Data> {
         object Node : ResponseAdapter<HeroDetailsImpl.Data.OtherData.FriendsConnection.Edge.Node> {
           private val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
             ResponseField(
-              type = ResponseField.Type.NotNull(ResponseField.Type.Named("String",
-                  ResponseField.Kind.OTHER)),
+              type = ResponseField.Type.NotNull(ResponseField.Type.Named.Other("String")),
               responseName = "name",
               fieldName = "name",
               arguments = emptyMap(),

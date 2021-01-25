@@ -21,7 +21,7 @@ import kotlin.collections.List
 object AllStarships_ResponseAdapter : ResponseAdapter<AllStarships.Data> {
   private val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
     ResponseField(
-      type = ResponseField.Type.Named("StarshipsConnection", ResponseField.Kind.OBJECT),
+      type = ResponseField.Type.Named.Object("StarshipsConnection"),
       responseName = "allStarships",
       fieldName = "allStarships",
       arguments = mapOf<String, Any?>(
@@ -63,8 +63,7 @@ object AllStarships_ResponseAdapter : ResponseAdapter<AllStarships.Data> {
       ResponseAdapter<com.example.fragment_in_fragment.AllStarships.Data.AllStarships> {
     private val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
       ResponseField(
-        type = ResponseField.Type.List(ResponseField.Type.Named("StarshipsEdge",
-            ResponseField.Kind.OBJECT)),
+        type = ResponseField.Type.List(ResponseField.Type.Named.Object("StarshipsEdge")),
         responseName = "edges",
         fieldName = "edges",
         arguments = emptyMap(),
@@ -105,7 +104,7 @@ object AllStarships_ResponseAdapter : ResponseAdapter<AllStarships.Data> {
         ResponseAdapter<com.example.fragment_in_fragment.AllStarships.Data.AllStarships.Edge> {
       private val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
         ResponseField(
-          type = ResponseField.Type.Named("Starship", ResponseField.Kind.OBJECT),
+          type = ResponseField.Type.Named.Object("Starship"),
           responseName = "node",
           fieldName = "node",
           arguments = emptyMap(),
@@ -147,8 +146,7 @@ object AllStarships_ResponseAdapter : ResponseAdapter<AllStarships.Data> {
           {
         private val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
           ResponseField(
-            type = ResponseField.Type.NotNull(ResponseField.Type.Named("String",
-                ResponseField.Kind.OTHER)),
+            type = ResponseField.Type.NotNull(ResponseField.Type.Named.Other("String")),
             responseName = "__typename",
             fieldName = "__typename",
             arguments = emptyMap(),
@@ -178,31 +176,28 @@ object AllStarships_ResponseAdapter : ResponseAdapter<AllStarships.Data> {
             {
           private val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
             ResponseField(
-              type = ResponseField.Type.NotNull(ResponseField.Type.Named("String",
-                  ResponseField.Kind.OTHER)),
+              type = ResponseField.Type.NotNull(ResponseField.Type.Named.Other("String")),
               responseName = "__typename",
               fieldName = "__typename",
               arguments = emptyMap(),
               conditions = emptyList(),
             ),
             ResponseField(
-              type = ResponseField.Type.NotNull(ResponseField.Type.Named("String",
-                  ResponseField.Kind.OTHER)),
+              type = ResponseField.Type.NotNull(ResponseField.Type.Named.Other("String")),
               responseName = "id",
               fieldName = "id",
               arguments = emptyMap(),
               conditions = emptyList(),
             ),
             ResponseField(
-              type = ResponseField.Type.Named("String", ResponseField.Kind.OTHER),
+              type = ResponseField.Type.Named.Other("String"),
               responseName = "name",
               fieldName = "name",
               arguments = emptyMap(),
               conditions = emptyList(),
             ),
             ResponseField(
-              type = ResponseField.Type.Named("StarshipPilotsConnection",
-                  ResponseField.Kind.OBJECT),
+              type = ResponseField.Type.Named.Object("StarshipPilotsConnection"),
               responseName = "pilotConnection",
               fieldName = "pilotConnection",
               arguments = emptyMap(),
@@ -256,8 +251,8 @@ object AllStarships_ResponseAdapter : ResponseAdapter<AllStarships.Data> {
               {
             private val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
               ResponseField(
-                type = ResponseField.Type.List(ResponseField.Type.Named("StarshipPilotsEdge",
-                    ResponseField.Kind.OBJECT)),
+                type =
+                    ResponseField.Type.List(ResponseField.Type.Named.Object("StarshipPilotsEdge")),
                 responseName = "edges",
                 fieldName = "edges",
                 arguments = emptyMap(),
@@ -299,7 +294,7 @@ object AllStarships_ResponseAdapter : ResponseAdapter<AllStarships.Data> {
                 {
               private val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
                 ResponseField(
-                  type = ResponseField.Type.Named("Person", ResponseField.Kind.OBJECT),
+                  type = ResponseField.Type.Named.Object("Person"),
                   responseName = "node",
                   fieldName = "node",
                   arguments = emptyMap(),
@@ -341,8 +336,7 @@ object AllStarships_ResponseAdapter : ResponseAdapter<AllStarships.Data> {
                   {
                 private val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
                   ResponseField(
-                    type = ResponseField.Type.NotNull(ResponseField.Type.Named("String",
-                        ResponseField.Kind.OTHER)),
+                    type = ResponseField.Type.NotNull(ResponseField.Type.Named.Other("String")),
                     responseName = "__typename",
                     fieldName = "__typename",
                     arguments = emptyMap(),
@@ -372,22 +366,21 @@ object AllStarships_ResponseAdapter : ResponseAdapter<AllStarships.Data> {
                     {
                   private val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
                     ResponseField(
-                      type = ResponseField.Type.NotNull(ResponseField.Type.Named("String",
-                          ResponseField.Kind.OTHER)),
+                      type = ResponseField.Type.NotNull(ResponseField.Type.Named.Other("String")),
                       responseName = "__typename",
                       fieldName = "__typename",
                       arguments = emptyMap(),
                       conditions = emptyList(),
                     ),
                     ResponseField(
-                      type = ResponseField.Type.Named("String", ResponseField.Kind.OTHER),
+                      type = ResponseField.Type.Named.Other("String"),
                       responseName = "name",
                       fieldName = "name",
                       arguments = emptyMap(),
                       conditions = emptyList(),
                     ),
                     ResponseField(
-                      type = ResponseField.Type.Named("Planet", ResponseField.Kind.OBJECT),
+                      type = ResponseField.Type.Named.Object("Planet"),
                       responseName = "homeworld",
                       fieldName = "homeworld",
                       arguments = emptyMap(),
@@ -437,8 +430,7 @@ object AllStarships_ResponseAdapter : ResponseAdapter<AllStarships.Data> {
                       {
                     private val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
                       ResponseField(
-                        type = ResponseField.Type.NotNull(ResponseField.Type.Named("String",
-                            ResponseField.Kind.OTHER)),
+                        type = ResponseField.Type.NotNull(ResponseField.Type.Named.Other("String")),
                         responseName = "__typename",
                         fieldName = "__typename",
                         arguments = emptyMap(),
@@ -468,15 +460,15 @@ object AllStarships_ResponseAdapter : ResponseAdapter<AllStarships.Data> {
                         {
                       private val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
                         ResponseField(
-                          type = ResponseField.Type.NotNull(ResponseField.Type.Named("String",
-                              ResponseField.Kind.OTHER)),
+                          type =
+                              ResponseField.Type.NotNull(ResponseField.Type.Named.Other("String")),
                           responseName = "__typename",
                           fieldName = "__typename",
                           arguments = emptyMap(),
                           conditions = emptyList(),
                         ),
                         ResponseField(
-                          type = ResponseField.Type.Named("String", ResponseField.Kind.OTHER),
+                          type = ResponseField.Type.Named.Other("String"),
                           responseName = "name",
                           fieldName = "name",
                           arguments = emptyMap(),
@@ -515,8 +507,8 @@ object AllStarships_ResponseAdapter : ResponseAdapter<AllStarships.Data> {
                         {
                       private val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
                         ResponseField(
-                          type = ResponseField.Type.NotNull(ResponseField.Type.Named("String",
-                              ResponseField.Kind.OTHER)),
+                          type =
+                              ResponseField.Type.NotNull(ResponseField.Type.Named.Other("String")),
                           responseName = "__typename",
                           fieldName = "__typename",
                           arguments = emptyMap(),
@@ -553,8 +545,7 @@ object AllStarships_ResponseAdapter : ResponseAdapter<AllStarships.Data> {
                     {
                   private val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
                     ResponseField(
-                      type = ResponseField.Type.NotNull(ResponseField.Type.Named("String",
-                          ResponseField.Kind.OTHER)),
+                      type = ResponseField.Type.NotNull(ResponseField.Type.Named.Other("String")),
                       responseName = "__typename",
                       fieldName = "__typename",
                       arguments = emptyMap(),
@@ -593,8 +584,7 @@ object AllStarships_ResponseAdapter : ResponseAdapter<AllStarships.Data> {
             {
           private val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
             ResponseField(
-              type = ResponseField.Type.NotNull(ResponseField.Type.Named("String",
-                  ResponseField.Kind.OTHER)),
+              type = ResponseField.Type.NotNull(ResponseField.Type.Named.Other("String")),
               responseName = "__typename",
               fieldName = "__typename",
               arguments = emptyMap(),

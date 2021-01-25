@@ -21,7 +21,7 @@ import kotlin.Suppress
 object TestSubscription_ResponseAdapter : ResponseAdapter<TestSubscription.Data> {
   private val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
     ResponseField(
-      type = ResponseField.Type.Named("Comment", ResponseField.Kind.OBJECT),
+      type = ResponseField.Type.Named.Object("Comment"),
       responseName = "commentAdded",
       fieldName = "commentAdded",
       arguments = mapOf<String, Any?>(
@@ -62,16 +62,14 @@ object TestSubscription_ResponseAdapter : ResponseAdapter<TestSubscription.Data>
   object CommentAdded : ResponseAdapter<TestSubscription.Data.CommentAdded> {
     private val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
       ResponseField(
-        type = ResponseField.Type.NotNull(ResponseField.Type.Named("Int",
-            ResponseField.Kind.OTHER)),
+        type = ResponseField.Type.NotNull(ResponseField.Type.Named.Other("Int")),
         responseName = "id",
         fieldName = "id",
         arguments = emptyMap(),
         conditions = emptyList(),
       ),
       ResponseField(
-        type = ResponseField.Type.NotNull(ResponseField.Type.Named("String",
-            ResponseField.Kind.OTHER)),
+        type = ResponseField.Type.NotNull(ResponseField.Type.Named.Other("String")),
         responseName = "content",
         fieldName = "content",
         arguments = emptyMap(),

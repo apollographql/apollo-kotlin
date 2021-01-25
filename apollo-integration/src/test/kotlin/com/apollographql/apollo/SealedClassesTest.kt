@@ -22,7 +22,7 @@ class SealedClassesTest {
     )
 
     val field = ResponseField(
-        ResponseField.Type.Named("String", ResponseField.Kind.OTHER),
+        ResponseField.Type.Named.Other("String"),
         "path",
         "path",
         arguments,
