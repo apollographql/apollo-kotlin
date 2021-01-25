@@ -27,7 +27,7 @@ import com.apollographql.apollo.interceptor.ApolloInterceptorFactory
 import com.apollographql.apollo.internal.ApolloCallTracker
 import com.apollographql.apollo.internal.RealApolloCall
 import com.apollographql.apollo.internal.RealApolloPrefetch
-import com.apollographql.apollo.internal.RealApolloStore
+import com.apollographql.apollo.cache.normalized.internal.RealApolloStore
 import com.apollographql.apollo.internal.RealApolloSubscriptionCall
 import com.apollographql.apollo.internal.subscription.NoOpSubscriptionManager
 import com.apollographql.apollo.internal.subscription.RealSubscriptionManager

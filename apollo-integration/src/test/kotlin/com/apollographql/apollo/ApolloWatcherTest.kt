@@ -19,7 +19,7 @@ import com.apollographql.apollo.integration.normalizer.EpisodeHeroNameWithIdQuer
 import com.apollographql.apollo.integration.normalizer.HeroAndFriendsNamesWithIDsQuery
 import com.apollographql.apollo.integration.normalizer.StarshipByIdQuery
 import com.apollographql.apollo.integration.normalizer.type.Episode
-import com.apollographql.apollo.internal.RealApolloStore
+import com.apollographql.apollo.cache.normalized.internal.RealApolloStore
 import com.google.common.truth.Truth
 import com.google.common.truth.Truth.assertThat
 import junit.framework.Assert

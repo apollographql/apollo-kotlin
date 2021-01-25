@@ -15,9 +15,7 @@ import com.apollographql.apollo.interceptor.ApolloInterceptor.FetchSourceType
 import com.apollographql.apollo.interceptor.ApolloInterceptor.InterceptorRequest
 import com.apollographql.apollo.interceptor.ApolloInterceptor.InterceptorResponse
 import com.apollographql.apollo.interceptor.ApolloInterceptorChain
-import com.apollographql.apollo.internal.RealApolloStore
 import java.lang.Runnable
-import java.util.HashSet
 import java.util.concurrent.Executor
 import java.util.concurrent.atomic.AtomicReference
 
