@@ -25,13 +25,19 @@ import kotlin.collections.List
 internal object CreateReviewForEpisode_ResponseAdapter :
     ResponseAdapter<CreateReviewForEpisode.Data> {
   private val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
-    ResponseField.forObject("createReview", "createReview", mapOf<String, Any?>(
-      "episode" to mapOf<String, Any?>(
-        "kind" to "Variable",
-        "variableName" to "ep"),
-      "review" to mapOf<String, Any?>(
-        "kind" to "Variable",
-        "variableName" to "review")), true, null)
+    ResponseField(
+      type = ResponseField.Type.Named.Object("Review"),
+      responseName = "createReview",
+      fieldName = "createReview",
+      arguments = mapOf<String, Any?>(
+        "episode" to mapOf<String, Any?>(
+          "kind" to "Variable",
+          "variableName" to "ep"),
+        "review" to mapOf<String, Any?>(
+          "kind" to "Variable",
+          "variableName" to "review")),
+      conditions = emptyList(),
+    )
   )
 
   override fun fromResponse(reader: ResponseReader, __typename: String?):
@@ -64,12 +70,52 @@ internal object CreateReviewForEpisode_ResponseAdapter :
 
   object CreateReview : ResponseAdapter<CreateReviewForEpisode.Data.CreateReview> {
     private val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
-      ResponseField.forInt("stars", "stars", null, false, null),
-      ResponseField.forString("commentary", "commentary", null, true, null),
-      ResponseField.forList("listOfListOfString", "listOfListOfString", null, true, null),
-      ResponseField.forList("listOfListOfEnum", "listOfListOfEnum", null, true, null),
-      ResponseField.forList("listOfListOfCustom", "listOfListOfCustom", null, true, null),
-      ResponseField.forList("listOfListOfObject", "listOfListOfObject", null, true, null)
+      ResponseField(
+        type = ResponseField.Type.NotNull(ResponseField.Type.Named.Other("Int")),
+        responseName = "stars",
+        fieldName = "stars",
+        arguments = emptyMap(),
+        conditions = emptyList(),
+      ),
+      ResponseField(
+        type = ResponseField.Type.Named.Other("String"),
+        responseName = "commentary",
+        fieldName = "commentary",
+        arguments = emptyMap(),
+        conditions = emptyList(),
+      ),
+      ResponseField(
+        type =
+            ResponseField.Type.List(ResponseField.Type.NotNull(ResponseField.Type.List(ResponseField.Type.NotNull(ResponseField.Type.Named.Other("String"))))),
+        responseName = "listOfListOfString",
+        fieldName = "listOfListOfString",
+        arguments = emptyMap(),
+        conditions = emptyList(),
+      ),
+      ResponseField(
+        type =
+            ResponseField.Type.List(ResponseField.Type.NotNull(ResponseField.Type.List(ResponseField.Type.NotNull(ResponseField.Type.Named.Other("Episode"))))),
+        responseName = "listOfListOfEnum",
+        fieldName = "listOfListOfEnum",
+        arguments = emptyMap(),
+        conditions = emptyList(),
+      ),
+      ResponseField(
+        type =
+            ResponseField.Type.List(ResponseField.Type.NotNull(ResponseField.Type.List(ResponseField.Type.NotNull(ResponseField.Type.Named.Other("Date"))))),
+        responseName = "listOfListOfCustom",
+        fieldName = "listOfListOfCustom",
+        arguments = emptyMap(),
+        conditions = emptyList(),
+      ),
+      ResponseField(
+        type =
+            ResponseField.Type.List(ResponseField.Type.NotNull(ResponseField.Type.List(ResponseField.Type.NotNull(ResponseField.Type.Named.Object("Character"))))),
+        responseName = "listOfListOfObject",
+        fieldName = "listOfListOfObject",
+        arguments = emptyMap(),
+        conditions = emptyList(),
+      )
     )
 
     override fun fromResponse(reader: ResponseReader, __typename: String?):
@@ -149,7 +195,13 @@ internal object CreateReviewForEpisode_ResponseAdapter :
     object ListOfListOfObject :
         ResponseAdapter<CreateReviewForEpisode.Data.CreateReview.ListOfListOfObject> {
       private val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
-        ResponseField.forString("name", "name", null, false, null)
+        ResponseField(
+          type = ResponseField.Type.NotNull(ResponseField.Type.Named.Other("String")),
+          responseName = "name",
+          fieldName = "name",
+          arguments = emptyMap(),
+          conditions = emptyList(),
+        )
       )
 
       override fun fromResponse(reader: ResponseReader, __typename: String?):

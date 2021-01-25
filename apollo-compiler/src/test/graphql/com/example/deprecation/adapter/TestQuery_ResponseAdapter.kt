@@ -20,10 +20,16 @@ import kotlin.Suppress
     "RemoveRedundantQualifierName")
 object TestQuery_ResponseAdapter : ResponseAdapter<TestQuery.Data> {
   private val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
-    ResponseField.forObject("hero", "hero", mapOf<String, Any?>(
-      "episode" to mapOf<String, Any?>(
-        "kind" to "Variable",
-        "variableName" to "episode")), true, null)
+    ResponseField(
+      type = ResponseField.Type.Named.Object("Character"),
+      responseName = "hero",
+      fieldName = "hero",
+      arguments = mapOf<String, Any?>(
+        "episode" to mapOf<String, Any?>(
+          "kind" to "Variable",
+          "variableName" to "episode")),
+      conditions = emptyList(),
+    )
   )
 
   override fun fromResponse(reader: ResponseReader, __typename: String?): TestQuery.Data {
@@ -55,9 +61,27 @@ object TestQuery_ResponseAdapter : ResponseAdapter<TestQuery.Data> {
 
   object Hero : ResponseAdapter<TestQuery.Data.Hero> {
     private val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
-      ResponseField.forString("name", "name", null, false, null),
-      ResponseField.forString("deprecated", "deprecated", null, false, null),
-      ResponseField.forBoolean("deprecatedBool", "deprecatedBool", null, false, null)
+      ResponseField(
+        type = ResponseField.Type.NotNull(ResponseField.Type.Named.Other("String")),
+        responseName = "name",
+        fieldName = "name",
+        arguments = emptyMap(),
+        conditions = emptyList(),
+      ),
+      ResponseField(
+        type = ResponseField.Type.NotNull(ResponseField.Type.Named.Other("String")),
+        responseName = "deprecated",
+        fieldName = "deprecated",
+        arguments = emptyMap(),
+        conditions = emptyList(),
+      ),
+      ResponseField(
+        type = ResponseField.Type.NotNull(ResponseField.Type.Named.Other("Boolean")),
+        responseName = "deprecatedBool",
+        fieldName = "deprecatedBool",
+        arguments = emptyMap(),
+        conditions = emptyList(),
+      )
     )
 
     override fun fromResponse(reader: ResponseReader, __typename: String?): TestQuery.Data.Hero {

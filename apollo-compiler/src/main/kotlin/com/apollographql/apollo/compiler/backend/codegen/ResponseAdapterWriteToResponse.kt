@@ -138,9 +138,8 @@ private fun CodeGenerationAst.Field.writeCode(responseField: String): CodeBlock 
 
       is CodeGenerationAst.FieldType.Scalar.Custom -> {
         CodeBlock.of(
-            "writer.writeCustom(%L·as·%T,·value.%L)\n",
+            "writer.writeCustom(%L,·value.%L)\n",
             responseField.escapeKotlinReservedWord(),
-            ResponseField.CustomScalarField::class,
             this.name.escapeKotlinReservedWord()
         )
       }

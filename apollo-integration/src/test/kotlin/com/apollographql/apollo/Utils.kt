@@ -67,7 +67,7 @@ object Utils {
     server.enqueue(mockResponse(mockResponse))
     assertResponse(
         call.responseFetcher(NETWORK_ONLY),
-        Predicate { response -> !response.hasErrors() }
+        { response -> !response.hasErrors() }
     )
 
     assertResponse(

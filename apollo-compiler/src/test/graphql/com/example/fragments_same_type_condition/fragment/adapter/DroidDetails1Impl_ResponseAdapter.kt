@@ -19,8 +19,20 @@ import kotlin.Suppress
     "RemoveRedundantQualifierName")
 object DroidDetails1Impl_ResponseAdapter : ResponseAdapter<DroidDetails1Impl.Data> {
   private val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
-    ResponseField.forString("__typename", "__typename", null, false, null),
-    ResponseField.forString("name", "name", null, false, null)
+    ResponseField(
+      type = ResponseField.Type.NotNull(ResponseField.Type.Named.Other("String")),
+      responseName = "__typename",
+      fieldName = "__typename",
+      arguments = emptyMap(),
+      conditions = emptyList(),
+    ),
+    ResponseField(
+      type = ResponseField.Type.NotNull(ResponseField.Type.Named.Other("String")),
+      responseName = "name",
+      fieldName = "name",
+      arguments = emptyMap(),
+      conditions = emptyList(),
+    )
   )
 
   override fun fromResponse(reader: ResponseReader, __typename: String?): DroidDetails1Impl.Data {

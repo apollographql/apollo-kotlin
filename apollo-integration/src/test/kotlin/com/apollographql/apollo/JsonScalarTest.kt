@@ -5,8 +5,10 @@ import com.apollographql.apollo.Utils.cacheAndAssertCachedResponse
 import com.apollographql.apollo.Utils.immediateExecutor
 import com.apollographql.apollo.Utils.immediateExecutorService
 import com.apollographql.apollo.api.BigDecimal
+import com.apollographql.apollo.api.BuiltinCustomScalarAdapters
 import com.apollographql.apollo.cache.normalized.lru.EvictionPolicy
 import com.apollographql.apollo.cache.normalized.lru.LruNormalizedCacheFactory
+import com.apollographql.apollo.integration.normalizer.type.CustomScalars
 import com.google.common.truth.Truth.assertThat
 import okhttp3.Dispatcher
 import okhttp3.OkHttpClient
@@ -25,6 +27,7 @@ class JsonScalarTest {
     val apolloClient = ApolloClient.builder()
         .serverUrl(server.url("/"))
         .okHttpClient(okHttpClient)
+        .addCustomScalarAdapter(CustomScalars.Json, BuiltinCustomScalarAdapters.MAP_ADAPTER)
         .normalizedCache(LruNormalizedCacheFactory(EvictionPolicy.NO_EVICTION), IdFieldCacheKeyResolver())
         .dispatcher(immediateExecutor())
         .build()

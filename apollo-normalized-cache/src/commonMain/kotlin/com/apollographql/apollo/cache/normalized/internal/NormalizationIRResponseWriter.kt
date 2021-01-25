@@ -5,6 +5,7 @@ import com.apollographql.apollo.api.CustomScalar
 import com.apollographql.apollo.api.CustomScalarAdapters
 import com.apollographql.apollo.api.Operation
 import com.apollographql.apollo.api.ResponseField
+import com.apollographql.apollo.api.ResponseField.Companion.leafType
 import com.apollographql.apollo.api.internal.ResponseWriter
 import com.apollographql.apollo.api.internal.Utils.shouldSkip
 
@@ -42,7 +43,7 @@ internal class NormalizationIRResponseWriter(
       return true
     }
 
-    if (!field.optional && value == null) {
+    if (field.type is ResponseField.Type.NotNull && value == null) {
       throw NullPointerException("Mandatory response field `${field.responseName}` resolved with null value")
     }
 
@@ -69,8 +70,8 @@ internal class NormalizationIRResponseWriter(
     writeScalar(field, value)
   }
 
-  override fun writeCustom(field: ResponseField.CustomScalarField, value: Any?) {
-    val typeAdapter = customScalarAdapters.adapterFor<Any>(field.customScalar)
+  override fun writeCustom(field: ResponseField, value: Any?) {
+    val typeAdapter = customScalarAdapters.adapterFor<Any>(field.type.leafType())
     writeScalar(field, if (value != null) typeAdapter.encode(value).toRawValue() else null)
   }
 

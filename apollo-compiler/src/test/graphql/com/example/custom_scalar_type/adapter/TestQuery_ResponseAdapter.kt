@@ -23,7 +23,13 @@ import kotlin.collections.List
     "RemoveRedundantQualifierName")
 object TestQuery_ResponseAdapter : ResponseAdapter<TestQuery.Data> {
   private val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
-    ResponseField.forObject("hero", "hero", null, true, null)
+    ResponseField(
+      type = ResponseField.Type.Named.Object("Character"),
+      responseName = "hero",
+      fieldName = "hero",
+      arguments = emptyMap(),
+      conditions = emptyList(),
+    )
   )
 
   override fun fromResponse(reader: ResponseReader, __typename: String?): TestQuery.Data {
@@ -55,12 +61,50 @@ object TestQuery_ResponseAdapter : ResponseAdapter<TestQuery.Data> {
 
   object Hero : ResponseAdapter<TestQuery.Data.Hero> {
     private val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
-      ResponseField.forString("name", "name", null, false, null),
-      ResponseField.forCustomScalar("birthDate", "birthDate", null, false, CustomScalars.Date, null),
-      ResponseField.forList("appearanceDates", "appearanceDates", null, false, null),
-      ResponseField.forCustomScalar("fieldWithUnsupportedType", "fieldWithUnsupportedType", null, false, CustomScalars.UnsupportedType, null),
-      ResponseField.forCustomScalar("profileLink", "profileLink", null, false, CustomScalars.URL, null),
-      ResponseField.forList("links", "links", null, false, null)
+      ResponseField(
+        type = ResponseField.Type.NotNull(ResponseField.Type.Named.Other("String")),
+        responseName = "name",
+        fieldName = "name",
+        arguments = emptyMap(),
+        conditions = emptyList(),
+      ),
+      ResponseField(
+        type = ResponseField.Type.NotNull(ResponseField.Type.Named.Other("Date")),
+        responseName = "birthDate",
+        fieldName = "birthDate",
+        arguments = emptyMap(),
+        conditions = emptyList(),
+      ),
+      ResponseField(
+        type =
+            ResponseField.Type.NotNull(ResponseField.Type.List(ResponseField.Type.NotNull(ResponseField.Type.Named.Other("Date")))),
+        responseName = "appearanceDates",
+        fieldName = "appearanceDates",
+        arguments = emptyMap(),
+        conditions = emptyList(),
+      ),
+      ResponseField(
+        type = ResponseField.Type.NotNull(ResponseField.Type.Named.Other("UnsupportedType")),
+        responseName = "fieldWithUnsupportedType",
+        fieldName = "fieldWithUnsupportedType",
+        arguments = emptyMap(),
+        conditions = emptyList(),
+      ),
+      ResponseField(
+        type = ResponseField.Type.NotNull(ResponseField.Type.Named.Other("URL")),
+        responseName = "profileLink",
+        fieldName = "profileLink",
+        arguments = emptyMap(),
+        conditions = emptyList(),
+      ),
+      ResponseField(
+        type =
+            ResponseField.Type.NotNull(ResponseField.Type.List(ResponseField.Type.NotNull(ResponseField.Type.Named.Other("URL")))),
+        responseName = "links",
+        fieldName = "links",
+        arguments = emptyMap(),
+        conditions = emptyList(),
+      )
     )
 
     override fun fromResponse(reader: ResponseReader, __typename: String?): TestQuery.Data.Hero {
@@ -74,12 +118,12 @@ object TestQuery_ResponseAdapter : ResponseAdapter<TestQuery.Data> {
         while(true) {
           when (selectField(RESPONSE_FIELDS)) {
             0 -> name = readString(RESPONSE_FIELDS[0])
-            1 -> birthDate = readCustomScalar<Date>(RESPONSE_FIELDS[1] as ResponseField.CustomScalarField)
+            1 -> birthDate = readCustomScalar<Date>(RESPONSE_FIELDS[1])
             2 -> appearanceDates = readList<Date>(RESPONSE_FIELDS[2]) { reader ->
               reader.readCustomScalar<Date>(CustomScalars.Date)
             }?.map { it!! }
-            3 -> fieldWithUnsupportedType = readCustomScalar<Any>(RESPONSE_FIELDS[3] as ResponseField.CustomScalarField)
-            4 -> profileLink = readCustomScalar<java.lang.String>(RESPONSE_FIELDS[4] as ResponseField.CustomScalarField)
+            3 -> fieldWithUnsupportedType = readCustomScalar<Any>(RESPONSE_FIELDS[3])
+            4 -> profileLink = readCustomScalar<java.lang.String>(RESPONSE_FIELDS[4])
             5 -> links = readList<java.lang.String>(RESPONSE_FIELDS[5]) { reader ->
               reader.readCustomScalar<java.lang.String>(CustomScalars.URL)
             }?.map { it!! }
@@ -99,11 +143,11 @@ object TestQuery_ResponseAdapter : ResponseAdapter<TestQuery.Data> {
 
     override fun toResponse(writer: ResponseWriter, value: TestQuery.Data.Hero) {
       writer.writeString(RESPONSE_FIELDS[0], value.name)
-      writer.writeCustom(RESPONSE_FIELDS[1] as ResponseField.CustomScalarField, value.birthDate)
+      writer.writeCustom(RESPONSE_FIELDS[1], value.birthDate)
       writer.writeList(RESPONSE_FIELDS[2], value.appearanceDates) { value, listItemWriter ->
         listItemWriter.writeCustom(CustomScalars.Date, value)}
-      writer.writeCustom(RESPONSE_FIELDS[3] as ResponseField.CustomScalarField, value.fieldWithUnsupportedType)
-      writer.writeCustom(RESPONSE_FIELDS[4] as ResponseField.CustomScalarField, value.profileLink)
+      writer.writeCustom(RESPONSE_FIELDS[3], value.fieldWithUnsupportedType)
+      writer.writeCustom(RESPONSE_FIELDS[4], value.profileLink)
       writer.writeList(RESPONSE_FIELDS[5], value.links) { value, listItemWriter ->
         listItemWriter.writeCustom(CustomScalars.URL, value)}
     }

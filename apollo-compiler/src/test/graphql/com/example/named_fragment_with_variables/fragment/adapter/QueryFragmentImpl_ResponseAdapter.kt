@@ -20,11 +20,23 @@ import kotlin.collections.List
     "RemoveRedundantQualifierName")
 object QueryFragmentImpl_ResponseAdapter : ResponseAdapter<QueryFragmentImpl.Data> {
   private val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
-    ResponseField.forString("__typename", "__typename", null, false, null),
-    ResponseField.forObject("organization", "organization", mapOf<String, Any?>(
-      "id" to mapOf<String, Any?>(
-        "kind" to "Variable",
-        "variableName" to "organizationId")), true, null)
+    ResponseField(
+      type = ResponseField.Type.NotNull(ResponseField.Type.Named.Other("String")),
+      responseName = "__typename",
+      fieldName = "__typename",
+      arguments = emptyMap(),
+      conditions = emptyList(),
+    ),
+    ResponseField(
+      type = ResponseField.Type.Named.Object("Organization"),
+      responseName = "organization",
+      fieldName = "organization",
+      arguments = mapOf<String, Any?>(
+        "id" to mapOf<String, Any?>(
+          "kind" to "Variable",
+          "variableName" to "organizationId")),
+      conditions = emptyList(),
+    )
   )
 
   override fun fromResponse(reader: ResponseReader, __typename: String?): QueryFragmentImpl.Data {
@@ -60,11 +72,24 @@ object QueryFragmentImpl_ResponseAdapter : ResponseAdapter<QueryFragmentImpl.Dat
 
   object Organization : ResponseAdapter<QueryFragmentImpl.Data.Organization> {
     private val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
-      ResponseField.forString("id", "id", null, false, null),
-      ResponseField.forList("user", "user", mapOf<String, Any?>(
-        "query" to mapOf<String, Any?>(
-          "kind" to "Variable",
-          "variableName" to "query")), false, null)
+      ResponseField(
+        type = ResponseField.Type.NotNull(ResponseField.Type.Named.Other("String")),
+        responseName = "id",
+        fieldName = "id",
+        arguments = emptyMap(),
+        conditions = emptyList(),
+      ),
+      ResponseField(
+        type =
+            ResponseField.Type.NotNull(ResponseField.Type.List(ResponseField.Type.NotNull(ResponseField.Type.Named.Object("User")))),
+        responseName = "user",
+        fieldName = "user",
+        arguments = mapOf<String, Any?>(
+          "query" to mapOf<String, Any?>(
+            "kind" to "Variable",
+            "variableName" to "query")),
+        conditions = emptyList(),
+      )
     )
 
     override fun fromResponse(reader: ResponseReader, __typename: String?):
@@ -101,7 +126,13 @@ object QueryFragmentImpl_ResponseAdapter : ResponseAdapter<QueryFragmentImpl.Dat
 
     object User : ResponseAdapter<QueryFragmentImpl.Data.Organization.User> {
       private val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
-        ResponseField.forString("__typename", "__typename", null, false, null)
+        ResponseField(
+          type = ResponseField.Type.NotNull(ResponseField.Type.Named.Other("String")),
+          responseName = "__typename",
+          fieldName = "__typename",
+          arguments = emptyMap(),
+          conditions = emptyList(),
+        )
       )
 
       override fun fromResponse(reader: ResponseReader, __typename: String?):
@@ -123,13 +154,37 @@ object QueryFragmentImpl_ResponseAdapter : ResponseAdapter<QueryFragmentImpl.Dat
 
       object UserUser : ResponseAdapter<QueryFragmentImpl.Data.Organization.User.UserUser> {
         private val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
-          ResponseField.forString("__typename", "__typename", null, false, null),
-          ResponseField.forString("firstName", "firstName", null, false, null),
-          ResponseField.forString("lastName", "lastName", null, false, null),
-          ResponseField.forString("avatar", "avatar", mapOf<String, Any?>(
-            "size" to mapOf<String, Any?>(
-              "kind" to "Variable",
-              "variableName" to "size")), false, null)
+          ResponseField(
+            type = ResponseField.Type.NotNull(ResponseField.Type.Named.Other("String")),
+            responseName = "__typename",
+            fieldName = "__typename",
+            arguments = emptyMap(),
+            conditions = emptyList(),
+          ),
+          ResponseField(
+            type = ResponseField.Type.NotNull(ResponseField.Type.Named.Other("String")),
+            responseName = "firstName",
+            fieldName = "firstName",
+            arguments = emptyMap(),
+            conditions = emptyList(),
+          ),
+          ResponseField(
+            type = ResponseField.Type.NotNull(ResponseField.Type.Named.Other("String")),
+            responseName = "lastName",
+            fieldName = "lastName",
+            arguments = emptyMap(),
+            conditions = emptyList(),
+          ),
+          ResponseField(
+            type = ResponseField.Type.NotNull(ResponseField.Type.Named.Other("String")),
+            responseName = "avatar",
+            fieldName = "avatar",
+            arguments = mapOf<String, Any?>(
+              "size" to mapOf<String, Any?>(
+                "kind" to "Variable",
+                "variableName" to "size")),
+            conditions = emptyList(),
+          )
         )
 
         override fun fromResponse(reader: ResponseReader, __typename: String?):
@@ -168,7 +223,13 @@ object QueryFragmentImpl_ResponseAdapter : ResponseAdapter<QueryFragmentImpl.Dat
 
       object OtherUser : ResponseAdapter<QueryFragmentImpl.Data.Organization.User.OtherUser> {
         private val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
-          ResponseField.forString("__typename", "__typename", null, false, null)
+          ResponseField(
+            type = ResponseField.Type.NotNull(ResponseField.Type.Named.Other("String")),
+            responseName = "__typename",
+            fieldName = "__typename",
+            arguments = emptyMap(),
+            conditions = emptyList(),
+          )
         )
 
         override fun fromResponse(reader: ResponseReader, __typename: String?):

@@ -22,7 +22,13 @@ import kotlin.collections.List
     "RemoveRedundantQualifierName")
 object HeroDetails_ResponseAdapter : ResponseAdapter<HeroDetails.Data> {
   private val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
-    ResponseField.forObject("hero", "hero", null, true, null)
+    ResponseField(
+      type = ResponseField.Type.Named.Object("Character"),
+      responseName = "hero",
+      fieldName = "hero",
+      arguments = emptyMap(),
+      conditions = emptyList(),
+    )
   )
 
   override fun fromResponse(reader: ResponseReader, __typename: String?): HeroDetails.Data {
@@ -54,9 +60,27 @@ object HeroDetails_ResponseAdapter : ResponseAdapter<HeroDetails.Data> {
 
   object Hero : ResponseAdapter<HeroDetails.Data.Hero> {
     private val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
-      ResponseField.forEnum("type", "type", null, false, null),
-      ResponseField.forString("name", "name", null, false, null),
-      ResponseField.forObject("friendsConnection", "friendsConnection", null, false, null)
+      ResponseField(
+        type = ResponseField.Type.NotNull(ResponseField.Type.Named.Other("hero_type")),
+        responseName = "type",
+        fieldName = "type",
+        arguments = emptyMap(),
+        conditions = emptyList(),
+      ),
+      ResponseField(
+        type = ResponseField.Type.NotNull(ResponseField.Type.Named.Other("String")),
+        responseName = "name",
+        fieldName = "name",
+        arguments = emptyMap(),
+        conditions = emptyList(),
+      ),
+      ResponseField(
+        type = ResponseField.Type.NotNull(ResponseField.Type.Named.Object("FriendsConnection")),
+        responseName = "friendsConnection",
+        fieldName = "friendsConnection",
+        arguments = emptyMap(),
+        conditions = emptyList(),
+      )
     )
 
     override fun fromResponse(reader: ResponseReader, __typename: String?): HeroDetails.Data.Hero {
@@ -92,8 +116,20 @@ object HeroDetails_ResponseAdapter : ResponseAdapter<HeroDetails.Data> {
 
     object FriendsConnection : ResponseAdapter<HeroDetails.Data.Hero.FriendsConnection> {
       private val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
-        ResponseField.forInt("totalCount", "totalCount", null, true, null),
-        ResponseField.forList("edges", "edges", null, true, null)
+        ResponseField(
+          type = ResponseField.Type.Named.Other("Int"),
+          responseName = "totalCount",
+          fieldName = "totalCount",
+          arguments = emptyMap(),
+          conditions = emptyList(),
+        ),
+        ResponseField(
+          type = ResponseField.Type.List(ResponseField.Type.Named.Object("FriendsEdge")),
+          responseName = "edges",
+          fieldName = "edges",
+          arguments = emptyMap(),
+          conditions = emptyList(),
+        )
       )
 
       override fun fromResponse(reader: ResponseReader, __typename: String?):
@@ -131,7 +167,13 @@ object HeroDetails_ResponseAdapter : ResponseAdapter<HeroDetails.Data> {
 
       object Edge : ResponseAdapter<HeroDetails.Data.Hero.FriendsConnection.Edge> {
         private val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
-          ResponseField.forObject("node", "node", null, true, null)
+          ResponseField(
+            type = ResponseField.Type.Named.Object("Character"),
+            responseName = "node",
+            fieldName = "node",
+            arguments = emptyMap(),
+            conditions = emptyList(),
+          )
         )
 
         override fun fromResponse(reader: ResponseReader, __typename: String?):
@@ -165,7 +207,13 @@ object HeroDetails_ResponseAdapter : ResponseAdapter<HeroDetails.Data> {
 
         object Node : ResponseAdapter<HeroDetails.Data.Hero.FriendsConnection.Edge.Node> {
           private val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
-            ResponseField.forString("name", "name", null, false, null)
+            ResponseField(
+              type = ResponseField.Type.NotNull(ResponseField.Type.Named.Other("String")),
+              responseName = "name",
+              fieldName = "name",
+              arguments = emptyMap(),
+              conditions = emptyList(),
+            )
           )
 
           override fun fromResponse(reader: ResponseReader, __typename: String?):

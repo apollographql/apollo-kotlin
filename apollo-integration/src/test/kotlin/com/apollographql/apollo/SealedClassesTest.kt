@@ -21,11 +21,11 @@ class SealedClassesTest {
         )
     )
 
-    val field = ResponseField.forString(
+    val field = ResponseField(
+        ResponseField.Type.Named.Other("String"),
         "path",
         "path",
         arguments,
-        false,
         emptyList())
 
 

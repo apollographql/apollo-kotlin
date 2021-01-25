@@ -20,7 +20,13 @@ import kotlin.collections.List
     "RemoveRedundantQualifierName")
 object GetPage_ResponseAdapter : ResponseAdapter<GetPage.Data> {
   private val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
-    ResponseField.forObject("collection", "collection", null, false, null)
+    ResponseField(
+      type = ResponseField.Type.NotNull(ResponseField.Type.Named.Object("Collection")),
+      responseName = "collection",
+      fieldName = "collection",
+      arguments = emptyMap(),
+      conditions = emptyList(),
+    )
   )
 
   override fun fromResponse(reader: ResponseReader, __typename: String?): GetPage.Data {
@@ -48,8 +54,21 @@ object GetPage_ResponseAdapter : ResponseAdapter<GetPage.Data> {
 
   object Collection : ResponseAdapter<GetPage.Data.Collection> {
     private val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
-      ResponseField.forString("__typename", "__typename", null, false, null),
-      ResponseField.forList("items", "items", null, false, null)
+      ResponseField(
+        type = ResponseField.Type.NotNull(ResponseField.Type.Named.Other("String")),
+        responseName = "__typename",
+        fieldName = "__typename",
+        arguments = emptyMap(),
+        conditions = emptyList(),
+      ),
+      ResponseField(
+        type =
+            ResponseField.Type.NotNull(ResponseField.Type.List(ResponseField.Type.NotNull(ResponseField.Type.Named.Object("Item")))),
+        responseName = "items",
+        fieldName = "items",
+        arguments = emptyMap(),
+        conditions = emptyList(),
+      )
     )
 
     override fun fromResponse(reader: ResponseReader, __typename: String?):
@@ -71,8 +90,21 @@ object GetPage_ResponseAdapter : ResponseAdapter<GetPage.Data> {
     object ParticularCollectionCollection :
         ResponseAdapter<GetPage.Data.Collection.ParticularCollectionCollection> {
       private val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
-        ResponseField.forString("__typename", "__typename", null, false, null),
-        ResponseField.forList("items", "items", null, false, null)
+        ResponseField(
+          type = ResponseField.Type.NotNull(ResponseField.Type.Named.Other("String")),
+          responseName = "__typename",
+          fieldName = "__typename",
+          arguments = emptyMap(),
+          conditions = emptyList(),
+        ),
+        ResponseField(
+          type =
+              ResponseField.Type.NotNull(ResponseField.Type.List(ResponseField.Type.NotNull(ResponseField.Type.Named.Object("Item")))),
+          responseName = "items",
+          fieldName = "items",
+          arguments = emptyMap(),
+          conditions = emptyList(),
+        )
       )
 
       override fun fromResponse(reader: ResponseReader, __typename: String?):
@@ -110,7 +142,13 @@ object GetPage_ResponseAdapter : ResponseAdapter<GetPage.Data> {
 
       object Item : ResponseAdapter<GetPage.Data.Collection.ParticularCollectionCollection.Item> {
         private val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
-          ResponseField.forString("__typename", "__typename", null, false, null)
+          ResponseField(
+            type = ResponseField.Type.NotNull(ResponseField.Type.Named.Other("String")),
+            responseName = "__typename",
+            fieldName = "__typename",
+            arguments = emptyMap(),
+            conditions = emptyList(),
+          )
         )
 
         override fun fromResponse(reader: ResponseReader, __typename: String?):
@@ -134,9 +172,27 @@ object GetPage_ResponseAdapter : ResponseAdapter<GetPage.Data> {
             ResponseAdapter<GetPage.Data.Collection.ParticularCollectionCollection.Item.ParticularItemItem>
             {
           private val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
-            ResponseField.forString("title", "title", null, false, null),
-            ResponseField.forString("__typename", "__typename", null, false, null),
-            ResponseField.forString("image", "image", null, false, null)
+            ResponseField(
+              type = ResponseField.Type.NotNull(ResponseField.Type.Named.Other("String")),
+              responseName = "title",
+              fieldName = "title",
+              arguments = emptyMap(),
+              conditions = emptyList(),
+            ),
+            ResponseField(
+              type = ResponseField.Type.NotNull(ResponseField.Type.Named.Other("String")),
+              responseName = "__typename",
+              fieldName = "__typename",
+              arguments = emptyMap(),
+              conditions = emptyList(),
+            ),
+            ResponseField(
+              type = ResponseField.Type.NotNull(ResponseField.Type.Named.Other("String")),
+              responseName = "image",
+              fieldName = "image",
+              arguments = emptyMap(),
+              conditions = emptyList(),
+            )
           )
 
           override fun fromResponse(reader: ResponseReader, __typename: String?):
@@ -172,8 +228,20 @@ object GetPage_ResponseAdapter : ResponseAdapter<GetPage.Data> {
         object OtherItem :
             ResponseAdapter<GetPage.Data.Collection.ParticularCollectionCollection.Item.OtherItem> {
           private val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
-            ResponseField.forString("title", "title", null, false, null),
-            ResponseField.forString("__typename", "__typename", null, false, null)
+            ResponseField(
+              type = ResponseField.Type.NotNull(ResponseField.Type.Named.Other("String")),
+              responseName = "title",
+              fieldName = "title",
+              arguments = emptyMap(),
+              conditions = emptyList(),
+            ),
+            ResponseField(
+              type = ResponseField.Type.NotNull(ResponseField.Type.Named.Other("String")),
+              responseName = "__typename",
+              fieldName = "__typename",
+              arguments = emptyMap(),
+              conditions = emptyList(),
+            )
           )
 
           override fun fromResponse(reader: ResponseReader, __typename: String?):
@@ -206,8 +274,21 @@ object GetPage_ResponseAdapter : ResponseAdapter<GetPage.Data> {
 
     object OtherCollection : ResponseAdapter<GetPage.Data.Collection.OtherCollection> {
       private val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
-        ResponseField.forString("__typename", "__typename", null, false, null),
-        ResponseField.forList("items", "items", null, false, null)
+        ResponseField(
+          type = ResponseField.Type.NotNull(ResponseField.Type.Named.Other("String")),
+          responseName = "__typename",
+          fieldName = "__typename",
+          arguments = emptyMap(),
+          conditions = emptyList(),
+        ),
+        ResponseField(
+          type =
+              ResponseField.Type.NotNull(ResponseField.Type.List(ResponseField.Type.NotNull(ResponseField.Type.Named.Object("Item")))),
+          responseName = "items",
+          fieldName = "items",
+          arguments = emptyMap(),
+          conditions = emptyList(),
+        )
       )
 
       override fun fromResponse(reader: ResponseReader, __typename: String?):
@@ -245,7 +326,13 @@ object GetPage_ResponseAdapter : ResponseAdapter<GetPage.Data> {
 
       object Item : ResponseAdapter<GetPage.Data.Collection.OtherCollection.Item> {
         private val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
-          ResponseField.forString("title", "title", null, false, null)
+          ResponseField(
+            type = ResponseField.Type.NotNull(ResponseField.Type.Named.Other("String")),
+            responseName = "title",
+            fieldName = "title",
+            arguments = emptyMap(),
+            conditions = emptyList(),
+          )
         )
 
         override fun fromResponse(reader: ResponseReader, __typename: String?):

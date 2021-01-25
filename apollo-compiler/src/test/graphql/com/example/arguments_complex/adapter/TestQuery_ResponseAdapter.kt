@@ -20,29 +20,35 @@ import kotlin.Suppress
     "RemoveRedundantQualifierName")
 object TestQuery_ResponseAdapter : ResponseAdapter<TestQuery.Data> {
   private val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
-    ResponseField.forObject("heroWithReview", "heroWithReview", mapOf<String, Any?>(
-      "episode" to mapOf<String, Any?>(
-        "kind" to "Variable",
-        "variableName" to "episode"),
-      "review" to mapOf<String, Any?>(
-        "stars" to mapOf<String, Any?>(
+    ResponseField(
+      type = ResponseField.Type.Named.Object("Human"),
+      responseName = "heroWithReview",
+      fieldName = "heroWithReview",
+      arguments = mapOf<String, Any?>(
+        "episode" to mapOf<String, Any?>(
           "kind" to "Variable",
-          "variableName" to "stars"),
-        "favoriteColor" to mapOf<String, Any?>(
-          "red" to 0,
-          "green" to mapOf<String, Any?>(
+          "variableName" to "episode"),
+        "review" to mapOf<String, Any?>(
+          "stars" to mapOf<String, Any?>(
             "kind" to "Variable",
-            "variableName" to "greenValue"),
-          "blue" to 0.0),
-        "booleanNonOptional" to false,
-        "listOfStringNonOptional" to emptyList<Any?>()),
-      "listOfInts" to listOf<Any?>(
-        mapOf<String, Any?>(
-          "kind" to "Variable",
-          "variableName" to "stars"),
-        mapOf<String, Any?>(
-          "kind" to "Variable",
-          "variableName" to "stars"))), true, null)
+            "variableName" to "stars"),
+          "favoriteColor" to mapOf<String, Any?>(
+            "red" to 0,
+            "green" to mapOf<String, Any?>(
+              "kind" to "Variable",
+              "variableName" to "greenValue"),
+            "blue" to 0.0),
+          "booleanNonOptional" to false,
+          "listOfStringNonOptional" to emptyList<Any?>()),
+        "listOfInts" to listOf<Any?>(
+          mapOf<String, Any?>(
+            "kind" to "Variable",
+            "variableName" to "stars"),
+          mapOf<String, Any?>(
+            "kind" to "Variable",
+            "variableName" to "stars"))),
+      conditions = emptyList(),
+    )
   )
 
   override fun fromResponse(reader: ResponseReader, __typename: String?): TestQuery.Data {
@@ -74,9 +80,21 @@ object TestQuery_ResponseAdapter : ResponseAdapter<TestQuery.Data> {
 
   object HeroWithReview : ResponseAdapter<TestQuery.Data.HeroWithReview> {
     private val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
-      ResponseField.forString("name", "name", null, false, null),
-      ResponseField.forDouble("height", "height", mapOf<String, Any?>(
-        "unit" to "FOOT"), true, null)
+      ResponseField(
+        type = ResponseField.Type.NotNull(ResponseField.Type.Named.Other("String")),
+        responseName = "name",
+        fieldName = "name",
+        arguments = emptyMap(),
+        conditions = emptyList(),
+      ),
+      ResponseField(
+        type = ResponseField.Type.Named.Other("Float"),
+        responseName = "height",
+        fieldName = "height",
+        arguments = mapOf<String, Any?>(
+          "unit" to "FOOT"),
+        conditions = emptyList(),
+      )
     )
 
     override fun fromResponse(reader: ResponseReader, __typename: String?):

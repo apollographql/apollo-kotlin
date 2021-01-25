@@ -36,12 +36,12 @@ class MockSubscription(
       override fun fromResponse(reader: ResponseReader, __typename: String?): Data {
         return Data(
             name = reader.readString(
-                ResponseField.forString(
+                ResponseField(
+                    type = ResponseField.Type.Named.Other("String"),
                     responseName = "name",
                     fieldName = "name",
-                    arguments = null,
-                    optional = false,
-                    conditions = null
+                    arguments = emptyMap(),
+                    conditions = emptyList()
                 )
             )!!
         )

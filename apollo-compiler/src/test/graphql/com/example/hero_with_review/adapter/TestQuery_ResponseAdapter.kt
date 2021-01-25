@@ -20,23 +20,29 @@ import kotlin.Suppress
     "RemoveRedundantQualifierName")
 object TestQuery_ResponseAdapter : ResponseAdapter<TestQuery.Data> {
   private val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
-    ResponseField.forObject("createReview", "createReview", mapOf<String, Any?>(
-      "episode" to mapOf<String, Any?>(
-        "kind" to "Variable",
-        "variableName" to "ep"),
-      "review" to mapOf<String, Any?>(
-        "stars" to 5,
-        "listOfEnums" to listOf<Any?>(
-          "JEDI",
-          "EMPIRE",
-          "NEWHOPE"),
-        "listOfStringNonOptional" to listOf<Any?>(
-          "1",
-          "2",
-          "3"),
-        "favoriteColor" to mapOf<String, Any?>(
-          "red" to 1,
-          "blue" to 1.0))), true, null)
+    ResponseField(
+      type = ResponseField.Type.Named.Object("Review"),
+      responseName = "createReview",
+      fieldName = "createReview",
+      arguments = mapOf<String, Any?>(
+        "episode" to mapOf<String, Any?>(
+          "kind" to "Variable",
+          "variableName" to "ep"),
+        "review" to mapOf<String, Any?>(
+          "stars" to 5,
+          "listOfEnums" to listOf<Any?>(
+            "JEDI",
+            "EMPIRE",
+            "NEWHOPE"),
+          "listOfStringNonOptional" to listOf<Any?>(
+            "1",
+            "2",
+            "3"),
+          "favoriteColor" to mapOf<String, Any?>(
+            "red" to 1,
+            "blue" to 1.0))),
+      conditions = emptyList(),
+    )
   )
 
   override fun fromResponse(reader: ResponseReader, __typename: String?): TestQuery.Data {
@@ -68,8 +74,20 @@ object TestQuery_ResponseAdapter : ResponseAdapter<TestQuery.Data> {
 
   object CreateReview : ResponseAdapter<TestQuery.Data.CreateReview> {
     private val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
-      ResponseField.forInt("stars", "stars", null, false, null),
-      ResponseField.forString("commentary", "commentary", null, true, null)
+      ResponseField(
+        type = ResponseField.Type.NotNull(ResponseField.Type.Named.Other("Int")),
+        responseName = "stars",
+        fieldName = "stars",
+        arguments = emptyMap(),
+        conditions = emptyList(),
+      ),
+      ResponseField(
+        type = ResponseField.Type.Named.Other("String"),
+        responseName = "commentary",
+        fieldName = "commentary",
+        arguments = emptyMap(),
+        conditions = emptyList(),
+      )
     )
 
     override fun fromResponse(reader: ResponseReader, __typename: String?):

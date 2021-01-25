@@ -5,6 +5,7 @@ import com.apollographql.apollo.api.Operation
 import com.apollographql.apollo.api.ResponseField
 import com.apollographql.apollo.api.CustomScalar
 import com.apollographql.apollo.api.CustomScalarAdapters
+import com.apollographql.apollo.api.ResponseField.Companion.leafType
 import com.apollographql.apollo.api.internal.json.JsonReader
 import com.apollographql.apollo.api.internal.json.Utils.readRecursively
 
@@ -106,8 +107,8 @@ class StreamResponseReader private constructor(
     }
   }
 
-  override fun <T : Any> readCustomScalar(field: ResponseField.CustomScalarField): T? {
-    val typeAdapter = customScalarAdapters.adapterFor<T>(field.customScalar)
+  override fun <T : Any> readCustomScalar(field: ResponseField): T? {
+    val typeAdapter = customScalarAdapters.adapterFor<T>(field.type.leafType())
     val value = readValue(field) {
       readRecursively()
     }
@@ -131,7 +132,7 @@ class StreamResponseReader private constructor(
     }
 
     return when (jsonReader.peek()) {
-      JsonReader.Token.NULL -> if (field.optional) jsonReader.nextNull() else throw NullPointerException(
+      JsonReader.Token.NULL -> if (field.type !is ResponseField.Type.NotNull ) jsonReader.nextNull() else throw NullPointerException(
         "Couldn't read `${field.responseName}` field value, expected non null value"
       )
       else -> readValue(jsonReader)

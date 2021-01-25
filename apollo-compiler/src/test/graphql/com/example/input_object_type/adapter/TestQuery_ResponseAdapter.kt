@@ -20,13 +20,19 @@ import kotlin.Suppress
     "RemoveRedundantQualifierName")
 object TestQuery_ResponseAdapter : ResponseAdapter<TestQuery.Data> {
   private val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
-    ResponseField.forObject("createReview", "createReview", mapOf<String, Any?>(
-      "episode" to mapOf<String, Any?>(
-        "kind" to "Variable",
-        "variableName" to "ep"),
-      "review" to mapOf<String, Any?>(
-        "kind" to "Variable",
-        "variableName" to "review")), true, null)
+    ResponseField(
+      type = ResponseField.Type.Named.Object("Review"),
+      responseName = "createReview",
+      fieldName = "createReview",
+      arguments = mapOf<String, Any?>(
+        "episode" to mapOf<String, Any?>(
+          "kind" to "Variable",
+          "variableName" to "ep"),
+        "review" to mapOf<String, Any?>(
+          "kind" to "Variable",
+          "variableName" to "review")),
+      conditions = emptyList(),
+    )
   )
 
   override fun fromResponse(reader: ResponseReader, __typename: String?): TestQuery.Data {
@@ -58,8 +64,20 @@ object TestQuery_ResponseAdapter : ResponseAdapter<TestQuery.Data> {
 
   object CreateReview : ResponseAdapter<TestQuery.Data.CreateReview> {
     private val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
-      ResponseField.forInt("stars", "stars", null, false, null),
-      ResponseField.forString("commentary", "commentary", null, true, null)
+      ResponseField(
+        type = ResponseField.Type.NotNull(ResponseField.Type.Named.Other("Int")),
+        responseName = "stars",
+        fieldName = "stars",
+        arguments = emptyMap(),
+        conditions = emptyList(),
+      ),
+      ResponseField(
+        type = ResponseField.Type.Named.Other("String"),
+        responseName = "commentary",
+        fieldName = "commentary",
+        arguments = emptyMap(),
+        conditions = emptyList(),
+      )
     )
 
     override fun fromResponse(reader: ResponseReader, __typename: String?):

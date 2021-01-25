@@ -20,8 +20,20 @@ import kotlin.Suppress
     "RemoveRedundantQualifierName")
 object GetHuman_ResponseAdapter : ResponseAdapter<GetHuman.Data> {
   private val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
-    ResponseField.forObject("human", "human", null, false, null),
-    ResponseField.forObject("node", "node", null, false, null)
+    ResponseField(
+      type = ResponseField.Type.NotNull(ResponseField.Type.Named.Object("Human")),
+      responseName = "human",
+      fieldName = "human",
+      arguments = emptyMap(),
+      conditions = emptyList(),
+    ),
+    ResponseField(
+      type = ResponseField.Type.NotNull(ResponseField.Type.Named.Object("Node")),
+      responseName = "node",
+      fieldName = "node",
+      arguments = emptyMap(),
+      conditions = emptyList(),
+    )
   )
 
   override fun fromResponse(reader: ResponseReader, __typename: String?): GetHuman.Data {
@@ -57,9 +69,27 @@ object GetHuman_ResponseAdapter : ResponseAdapter<GetHuman.Data> {
 
   object Human : ResponseAdapter<GetHuman.Data.Human> {
     private val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
-      ResponseField.forString("id", "id", null, false, null),
-      ResponseField.forString("name", "name", null, false, null),
-      ResponseField.forDouble("height", "height", null, false, null)
+      ResponseField(
+        type = ResponseField.Type.NotNull(ResponseField.Type.Named.Other("String")),
+        responseName = "id",
+        fieldName = "id",
+        arguments = emptyMap(),
+        conditions = emptyList(),
+      ),
+      ResponseField(
+        type = ResponseField.Type.NotNull(ResponseField.Type.Named.Other("String")),
+        responseName = "name",
+        fieldName = "name",
+        arguments = emptyMap(),
+        conditions = emptyList(),
+      ),
+      ResponseField(
+        type = ResponseField.Type.NotNull(ResponseField.Type.Named.Other("Float")),
+        responseName = "height",
+        fieldName = "height",
+        arguments = emptyMap(),
+        conditions = emptyList(),
+      )
     )
 
     override fun fromResponse(reader: ResponseReader, __typename: String?): GetHuman.Data.Human {
@@ -92,7 +122,13 @@ object GetHuman_ResponseAdapter : ResponseAdapter<GetHuman.Data> {
 
   object Node : ResponseAdapter<GetHuman.Data.Node> {
     private val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
-      ResponseField.forString("__typename", "__typename", null, false, null)
+      ResponseField(
+        type = ResponseField.Type.NotNull(ResponseField.Type.Named.Other("String")),
+        responseName = "__typename",
+        fieldName = "__typename",
+        arguments = emptyMap(),
+        conditions = emptyList(),
+      )
     )
 
     override fun fromResponse(reader: ResponseReader, __typename: String?): GetHuman.Data.Node {
@@ -112,8 +148,20 @@ object GetHuman_ResponseAdapter : ResponseAdapter<GetHuman.Data> {
 
     object HumanNode : ResponseAdapter<GetHuman.Data.Node.HumanNode> {
       private val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
-        ResponseField.forString("__typename", "__typename", null, false, null),
-        ResponseField.forDouble("height", "height", null, false, null)
+        ResponseField(
+          type = ResponseField.Type.NotNull(ResponseField.Type.Named.Other("String")),
+          responseName = "__typename",
+          fieldName = "__typename",
+          arguments = emptyMap(),
+          conditions = emptyList(),
+        ),
+        ResponseField(
+          type = ResponseField.Type.NotNull(ResponseField.Type.Named.Other("Float")),
+          responseName = "height",
+          fieldName = "height",
+          arguments = emptyMap(),
+          conditions = emptyList(),
+        )
       )
 
       override fun fromResponse(reader: ResponseReader, __typename: String?):
@@ -143,7 +191,13 @@ object GetHuman_ResponseAdapter : ResponseAdapter<GetHuman.Data> {
 
     object OtherNode : ResponseAdapter<GetHuman.Data.Node.OtherNode> {
       private val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
-        ResponseField.forString("__typename", "__typename", null, false, null)
+        ResponseField(
+          type = ResponseField.Type.NotNull(ResponseField.Type.Named.Other("String")),
+          responseName = "__typename",
+          fieldName = "__typename",
+          arguments = emptyMap(),
+          conditions = emptyList(),
+        )
       )
 
       override fun fromResponse(reader: ResponseReader, __typename: String?):
