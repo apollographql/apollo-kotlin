@@ -96,10 +96,10 @@ class ResponseField(
           && objectMap[VARIABLE_IDENTIFIER_KEY] == VARIABLE_IDENTIFIER_VALUE && objectMap.containsKey(VARIABLE_NAME_KEY))
     }
 
-    fun Type.customScalarName(): String = when(this) {
-      is Type.NotNull -> ofType.customScalarName()
+    fun Type.leafType(): String = when(this) {
+      is Type.NotNull -> ofType.leafType()
       is Type.Named -> name
-      else -> error("Type '$this' is not a scalar type, check codegen")
+      is Type.List -> ofType.leafType()
     }
   }
 }

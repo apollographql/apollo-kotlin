@@ -5,7 +5,7 @@ import com.apollographql.apollo.api.CustomScalar
 import com.apollographql.apollo.api.CustomScalarAdapters
 import com.apollographql.apollo.api.Operation
 import com.apollographql.apollo.api.ResponseField
-import com.apollographql.apollo.api.ResponseField.Companion.customScalarName
+import com.apollographql.apollo.api.ResponseField.Companion.leafType
 import com.apollographql.apollo.api.internal.ResponseWriter
 import com.apollographql.apollo.api.internal.Utils.shouldSkip
 
@@ -71,7 +71,7 @@ internal class NormalizationIRResponseWriter(
   }
 
   override fun writeCustom(field: ResponseField, value: Any?) {
-    val typeAdapter = customScalarAdapters.adapterFor<Any>(field.type.customScalarName())
+    val typeAdapter = customScalarAdapters.adapterFor<Any>(field.type.leafType())
     writeScalar(field, if (value != null) typeAdapter.encode(value).toRawValue() else null)
   }
 

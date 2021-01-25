@@ -3,7 +3,7 @@ package com.apollographql.apollo.api.internal
 import com.apollographql.apollo.api.ResponseField
 import com.apollographql.apollo.api.CustomScalar
 import com.apollographql.apollo.api.CustomScalarAdapters
-import com.apollographql.apollo.api.ResponseField.Companion.customScalarName
+import com.apollographql.apollo.api.ResponseField.Companion.leafType
 import com.apollographql.apollo.api.internal.json.JsonWriter
 import com.apollographql.apollo.api.internal.json.Utils.writeToJson
 import com.apollographql.apollo.api.internal.json.use
@@ -50,7 +50,7 @@ class SimpleResponseWriter(private val customScalarAdapters: CustomScalarAdapter
     if (value == null) {
       data[field.responseName] = null
     } else {
-      val typeAdapter = customScalarAdapters.adapterFor<Any>(field.type.customScalarName())
+      val typeAdapter = customScalarAdapters.adapterFor<Any>(field.type.leafType())
       val jsonElement = typeAdapter.encode(value)
       data[field.responseName] = jsonElement.toRawValue()
     }
