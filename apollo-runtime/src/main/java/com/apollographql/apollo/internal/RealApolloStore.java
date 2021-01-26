@@ -113,8 +113,18 @@ public final class RealApolloStore implements ApolloStore, ReadableStore, Writea
       iterableSubscribers = new LinkedHashSet<>(subscribers);
     }
 
+    RuntimeException firstException = null;
     for (RecordChangeSubscriber subscriber : iterableSubscribers) {
-      subscriber.onCacheRecordsChanged(changedKeys);
+      try {
+        subscriber.onCacheRecordsChanged(changedKeys);
+      } catch (RuntimeException e) {
+        if (firstException == null) {
+          firstException = e;
+        }
+      }
+    }
+    if (firstException != null) {
+      throw firstException;
     }
   }
 
