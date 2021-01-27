@@ -1,5 +1,6 @@
 package com.apollographql.apollo.cache.normalized.sql
 
+import com.apollographql.apollo.cache.ApolloCacheHeaders
 import com.apollographql.apollo.cache.ApolloCacheHeaders.EVICT_AFTER_READ
 import com.apollographql.apollo.cache.CacheHeaders
 import com.apollographql.apollo.cache.normalized.CacheKey
@@ -11,25 +12,21 @@ import com.apollographql.apollo.cache.normalized.sql.internal.RecordsetDataSourc
 import com.apollographql.apollo.cache.normalized.sql.internal.RecordsetDataSource.selectAllRecords
 import com.apollographql.apollo.cache.normalized.sql.internal.RecordsetDataSource.selectRecord
 import com.apollographql.apollo.cache.normalized.sql.internal.RecordsetDataSource.selectRecords
+import com.apollographql.apollo.cache.normalized.sql.internal.RecordsetDataSource.updateRecord
 import com.apollographql.apollo.cache.normalized.sql.internal.RecordsetDataSource.updateRecords
 import kotlin.reflect.KClass
 
 class SqlNormalizedCache internal constructor(
-    private val database: ApolloDatabase,
-    private val recordFieldAdapter: RecordFieldJsonAdapter,
+    private val cacheQueries: CacheQueries,
 ) : NormalizedCache() {
 
   override fun loadRecord(key: String, cacheHeaders: CacheHeaders): Record? {
-    val record = database.selectRecord(
-        key = key,
-        recordFieldAdapter = recordFieldAdapter,
-    )
+    val record = cacheQueries.selectRecord(key)
     if (record != null) {
       if (cacheHeaders.hasHeader(EVICT_AFTER_READ)) {
-        database.deleteRecord(
+        cacheQueries.deleteRecord(
             key = key,
             cascade = false,
-            recordFieldAdapter = recordFieldAdapter,
         )
       }
       return record
@@ -38,16 +35,12 @@ class SqlNormalizedCache internal constructor(
   }
 
   override fun loadRecords(keys: Collection<String>, cacheHeaders: CacheHeaders): Collection<Record> {
-    val records = database.selectRecords(
-        keys = keys,
-        recordFieldAdapter = recordFieldAdapter,
-    )
+    val records = cacheQueries.selectRecords(keys)
     if (cacheHeaders.hasHeader(EVICT_AFTER_READ)) {
       records.forEach { record ->
-        database.deleteRecord(
+        cacheQueries.deleteRecord(
             key = record.key,
             cascade = false,
-            recordFieldAdapter = recordFieldAdapter,
         )
       }
     }
@@ -56,21 +49,31 @@ class SqlNormalizedCache internal constructor(
 
   override fun clearAll() {
     nextCache?.clearAll()
-    database.deleteAllRecords()
+    cacheQueries.deleteAllRecords()
   }
 
   override fun remove(cacheKey: CacheKey, cascade: Boolean): Boolean {
-    return database.deleteRecord(
+    return cacheQueries.deleteRecord(
         key = cacheKey.key,
         cascade = cascade,
-        recordFieldAdapter = recordFieldAdapter,
     )
   }
 
   override fun merge(records: Collection<Record>, cacheHeaders: CacheHeaders): Set<String> {
-    return database.updateRecords(
+    if (cacheHeaders.hasHeader(ApolloCacheHeaders.DO_NOT_STORE)) {
+      return emptySet()
+    }
+    return cacheQueries.updateRecords(
         records = records,
-        recordFieldAdapter = recordFieldAdapter,
+    )
+  }
+
+  override fun merge(record: Record, cacheHeaders: CacheHeaders): Set<String> {
+    if (cacheHeaders.hasHeader(ApolloCacheHeaders.DO_NOT_STORE)) {
+      return emptySet()
+    }
+    return cacheQueries.updateRecord(
+        record = record,
     )
   }
 
@@ -80,9 +83,7 @@ class SqlNormalizedCache internal constructor(
 
   override fun dump(): Map<KClass<*>, Map<String, Record>> {
     return mapOf(
-        this@SqlNormalizedCache::class to database.selectAllRecords(
-            recordFieldAdapter = recordFieldAdapter,
-        )
+        this@SqlNormalizedCache::class to cacheQueries.selectAllRecords()
     ) + nextCache?.dump().orEmpty()
   }
 }

@@ -1,65 +1,56 @@
 package com.apollographql.apollo.cache.normalized.sql.internal
 
-import com.apollographql.apollo.cache.normalized.sql.ApolloDatabase
 import kotlinx.cinterop.COpaquePointer
 import kotlinx.cinterop.StableRef
 import kotlinx.cinterop.asStableRef
 import kotlinx.cinterop.autoreleasepool
+import kotlinx.cinterop.convert
 import kotlinx.cinterop.staticCFunction
 import platform.Foundation.NSThread
 import platform.darwin.dispatch_async_f
+import platform.darwin.dispatch_get_global_queue
 import platform.darwin.dispatch_get_main_queue
+import platform.posix.QOS_CLASS_DEFAULT
 import kotlin.coroutines.Continuation
 import kotlin.coroutines.suspendCoroutine
-import kotlin.native.concurrent.TransferMode
-import kotlin.native.concurrent.Worker
+import kotlin.native.concurrent.DetachedObjectGraph
+import kotlin.native.concurrent.attach
 import kotlin.native.concurrent.freeze
 
 /**
- * Performs database operation on background thread via [Worker] API.
+ * Performs IO operation on background thread by dispatching to global queue.
  * This executor requires caller thread to be main.
- * After database operation execution it resumes on main thread.
+ * After operation executed it resumes on the main queue.
  */
-internal actual class DatabaseRequestExecutor actual constructor(
-    private val database: ApolloDatabase
-) {
-  private val worker: Worker = Worker.start()
-
-  actual suspend fun <R> execute(operation: ApolloDatabase.() -> R): R {
+internal actual class IOTaskExecutor {
+  actual suspend fun <R> execute(operation: () -> R): R {
     return suspendCoroutine { continuation ->
-      Request(
-          worker = worker,
-          database = database,
-          operation = operation,
+      execute(
           continuation = continuation,
-      ).execute()
+          operation = operation,
+      )
     }
   }
 
-  private class Request<R>(
-      val worker: Worker,
-      val database: ApolloDatabase,
-      val operation: ApolloDatabase.() -> R,
-      val continuation: Continuation<R>
-  ) {
-    fun execute() {
+  companion object {
+    private fun <R> execute(continuation: Continuation<R>, operation: () -> R) {
       assert(NSThread.isMainThread())
       val continuationPtr = StableRef.create(continuation).asCPointer()
-      worker.execute(
-          mode = TransferMode.SAFE,
-          producer = { (continuationPtr to { operation(database) }).freeze() },
-          job = {
+      dispatch_async_f(
+          queue = dispatch_get_global_queue(QOS_CLASS_DEFAULT.convert(), 0.convert()),
+          context = DetachedObjectGraph { (continuationPtr to { operation() }) }.asCPointer(),
+          work = staticCFunction { ctxPtr ->
+            initRuntimeIfNeeded()
             autoreleasepool {
-              initRuntimeIfNeeded()
-              val execute = it.second
+              val (continuation, execute) = DetachedObjectGraph<Pair<COpaquePointer, () -> R>>(ctxPtr).attach()
               val result = kotlin.runCatching { execute() }
-              result.dispatchOnMain(continuationPtr)
+              result.dispatchOnMain(continuation)
             }
           }
       )
     }
 
-    private fun Result<R>.dispatchOnMain(continuationPtr: COpaquePointer) {
+    private fun <R> Result<R>.dispatchOnMain(continuationPtr: COpaquePointer) {
       val continuationWithResultRef = StableRef.create((continuationPtr to this).freeze())
       dispatch_async_f(
           queue = dispatch_get_main_queue(),
@@ -73,7 +64,7 @@ internal actual class DatabaseRequestExecutor actual constructor(
       )
     }
 
-    private fun Result<R>.resumeContinuation(continuationPtr: COpaquePointer) {
+    private fun <R> Result<R>.resumeContinuation(continuationPtr: COpaquePointer) {
       val continuationRef = continuationPtr.asStableRef<Continuation<R>>()
       val continuation = continuationRef.get()
       continuationRef.dispose()
