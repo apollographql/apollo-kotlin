@@ -145,6 +145,7 @@ package com.apollographql.apollo.api {
     method public int hashCode();
     method @Deprecated public java.util.List<com.apollographql.apollo.api.Error.Location> locations();
     method @Deprecated public String? message();
+    method public String toString();
   }
 
   public static final class Error.Location {
@@ -155,6 +156,7 @@ package com.apollographql.apollo.api {
     method public long getLine();
     method public int hashCode();
     method @Deprecated public long line();
+    method public String toString();
   }
 
   @com.apollographql.apollo.api.ApolloExperimental public interface ExecutionContext {

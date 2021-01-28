@@ -61,6 +61,10 @@ class Error(
     return result
   }
 
+  override fun toString(): String {
+    return "Error(message = $message, locations = $locations, customAttributes = $customAttributes)"
+  }
+
   /**
    * Represents the location of the error in the GraphQL operation sent to the server. This location is represented in
    * terms of the line and column number.
@@ -105,6 +109,10 @@ class Error(
       var result = line.hashCode()
       result = 31 * result + column.hashCode()
       return result
+    }
+
+    override fun toString(): String {
+      return "Location(line = $line, column = $column)"
     }
   }
 }
