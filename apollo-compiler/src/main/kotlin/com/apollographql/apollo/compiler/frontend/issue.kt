@@ -1,7 +1,15 @@
 package com.apollographql.apollo.compiler.frontend
 
-data class ParseResult<out T>(
-    val value: T,
+/**
+ * The result of a parsing operation.
+ *
+ * If value is null, issues will contain the parsing errors.
+ * It is valid to have both value != null and issues not empty, for an example in the case of warnings.
+ *
+ * Use [orThrow] to get a non-null value or throw the first issue
+ */
+data class ParseResult<out T: Any>(
+    val value: T?,
     val issues: List<Issue>
 ) {
   fun orThrow(): T {
@@ -9,21 +17,24 @@ data class ParseResult<out T>(
     if (firstError != null) {
       throw SourceAwareException(firstError.message, firstError.sourceLocation)
     }
+    check (value !=null) {
+      "null value and no issues"
+    }
     return value
   }
 
-  fun <R> mapValue(transform: (T) -> R): ParseResult<R> {
+  fun <R: Any> mapValue(transform: (T) -> R): ParseResult<R> {
     return ParseResult(
-        transform(value),
+        value?.let {transform(it)},
         issues
     )
   }
 
-  fun <R> flatMap(transform: (T) -> ParseResult<R>): ParseResult<R> {
-    val transformedResult = transform(value)
+  fun <R: Any> flatMap(transform: (T) -> ParseResult<R>): ParseResult<R> {
+    val transformedResult = value?.let {transform(it)}
     return ParseResult(
-        transformedResult.value,
-        issues + transformedResult.issues
+        transformedResult?.value,
+        issues + (transformedResult?.issues ?: emptyList())
     )
   }
 
@@ -31,7 +42,7 @@ data class ParseResult<out T>(
   fun appendIssues(newIssues: (T) -> List<Issue>): ParseResult<T> {
     return ParseResult(
         value,
-        issues + newIssues(value)
+        issues + (value?.let {newIssues(it)} ?: emptyList())
     )
   }
 }

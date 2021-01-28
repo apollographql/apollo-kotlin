@@ -50,9 +50,6 @@ object GraphQLParser {
 
   /**
    * Parses and validates the given SDL executable document, containing operations and/or fragments
-   *
-   * This voluntarily does not return a GQLDocument in order to explicitly distinguish between operations and schemas
-   * throws if the schema has errors or is not a schema file
    */
   fun parseOperations(source: BufferedSource, filePath: String? = null, schema: Schema): ParseResult<GQLDocument> {
     return parseDocument(source, filePath).appendIssues {
@@ -76,12 +73,12 @@ object GraphQLParser {
    * A specialized version that works on multiple files and can also inject fragments from another
    * compilation unit
    */
-  fun parseExecutableFiles(files: Set<File>, schema: Schema, injectedFragmentDefinitions: List<GQLFragmentDefinition>): ParseResult<List<GQLDocument>> {
+  fun parseExecutableFiles(files: Set<File>, schema: Schema, injectedFragmentDefinitions: List<GQLFragmentDefinition>): Pair<List<GQLDocument>, List<Issue>> {
     val (documents, parsingIssues) = files.map { parseDocument(it) }
-        .fold(ParseResult<List<GQLDocument>>(emptyList(), emptyList())) { acc, item ->
-          ParseResult(
-              acc.value + item.value,
-              acc.issues + item.issues
+        .fold(Pair<List<GQLDocument>, List<Issue>>(emptyList(), emptyList())) { acc, item ->
+          Pair(
+              acc.first + (item.value?.let { listOf(it) } ?: emptyList()),
+              acc.second + item.issues
           )
         }
 
@@ -92,7 +89,7 @@ object GraphQLParser {
     /**
      * Collect all fragments as operations might use fragments from different files
      */
-    val allFragments= allDefinitions.filterIsInstance<GQLFragmentDefinition>().associateBy {
+    val allFragments = allDefinitions.filterIsInstance<GQLFragmentDefinition>().associateBy {
       it.name
     }
 
@@ -118,22 +115,26 @@ object GraphQLParser {
       }
     }
 
-    return ParseResult(
-        documents,
-        parsingIssues + duplicateIssues + validationIssues
-    )
+    return documents to (parsingIssues + duplicateIssues + validationIssues)
   }
 
   /**
    * Parses a GraphQL document without doing any kind of validation besides the grammar parsing.
    *
    * Use [parseOperations] to parse operations and [parseSchema] to have proper validation
+   *
+   * @return a [ParseResult] with either a non-null [GQLDocument] or a list of issues
    */
   fun parseDocument(source: BufferedSource, filePath: String?): ParseResult<GQLDocument> = source.use { _ ->
-    antlrParse(source, filePath) {
+    val parseResult = antlrParse(source, filePath) {
       it.document()
-    }.mapValue {
-      it.toGQLDocument(filePath)
+    }
+
+    if (parseResult.issues.isNotEmpty()) {
+      // If there are issues, return now. We cannot parse a document with errors.
+      ParseResult(null, parseResult.issues)
+    } else {
+      ParseResult(parseResult.value!!.toGQLDocument(filePath), parseResult.issues)
     }
   }
 
@@ -171,13 +172,14 @@ object GraphQLParser {
           it.withBuiltinTypes()
         }
   }
+
   internal fun parseSchemaInternal(string: String) = parseSchemaInternal(string.byteInputStream().source().buffer())
   internal fun parseSchemaInternal(file: File) = parseSchemaInternal(file.source().buffer(), file.absolutePath)
 
   /**
    * Plain parsing, without validation or adding the builtin types
    */
-  private fun <T: ParserRuleContext> antlrParse(
+  private fun <T : ParserRuleContext> antlrParse(
       source: BufferedSource,
       filePath: String? = null,
       startRule: (AntlrGraphQLParser) -> T

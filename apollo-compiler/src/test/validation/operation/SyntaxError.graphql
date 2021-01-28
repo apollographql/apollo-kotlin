@@ -1,0 +1,4 @@
+# Invalid fragment (does not specify its type condition)
+fragment HumanFragment {
+  name
+}
