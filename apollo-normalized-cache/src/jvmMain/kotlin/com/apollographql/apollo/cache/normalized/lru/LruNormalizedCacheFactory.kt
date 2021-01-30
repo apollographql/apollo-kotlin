@@ -11,7 +11,5 @@ class LruNormalizedCacheFactory(
     private val evictionPolicy: EvictionPolicy
 ) : NormalizedCacheFactory<LruNormalizedCache>() {
 
-  override fun create(recordFieldAdapter: RecordFieldJsonAdapter): LruNormalizedCache =
-      LruNormalizedCache(evictionPolicy)
-
+  override fun create(): LruNormalizedCache = LruNormalizedCache(evictionPolicy)
 }
