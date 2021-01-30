@@ -626,13 +626,12 @@ class ApolloClient internal constructor(
       val cacheFactory = cacheFactory
       val cacheKeyResolver = cacheKeyResolver
       if (cacheFactory.isPresent && cacheKeyResolver.isPresent) {
-        val normalizedCache = cacheFactory.get().createChain(RecordFieldJsonAdapter())
+        val normalizedCache = cacheFactory.get().createChain()
         apolloStore = RealApolloStore(normalizedCache, cacheKeyResolver.get(), customScalarAdapters, apolloLogger)
       }
       var subscriptionManager = subscriptionManager
       val subscriptionTransportFactory = subscriptionTransportFactory
       if (subscriptionTransportFactory.isPresent) {
-        val finalApolloStore = apolloStore
         subscriptionManager = RealSubscriptionManager(
             customScalarAdapters,
             subscriptionTransportFactory.get(),

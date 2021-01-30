@@ -52,7 +52,7 @@ class CacheHeadersTest {
       }
     }
     val cacheFactory: NormalizedCacheFactory<NormalizedCache> = object : NormalizedCacheFactory<NormalizedCache>() {
-      override fun create(recordFieldAdapter: RecordFieldJsonAdapter): NormalizedCache {
+      override fun create(): NormalizedCache {
         return normalizedCache
       }
     }
@@ -95,7 +95,7 @@ class CacheHeadersTest {
       }
     }
     val cacheFactory: NormalizedCacheFactory<NormalizedCache> = object : NormalizedCacheFactory<NormalizedCache>() {
-      override fun create(recordFieldAdapter: RecordFieldJsonAdapter): NormalizedCache {
+      override fun create(): NormalizedCache {
         return normalizedCache
       }
     }
