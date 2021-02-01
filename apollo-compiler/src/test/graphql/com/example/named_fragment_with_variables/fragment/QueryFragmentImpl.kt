@@ -19,21 +19,21 @@ import kotlin.collections.Map
 import kotlin.jvm.Transient
 
 data class QueryFragmentImpl(
-  val id: String,
+  val organizationId: String,
   val query: UserQuery,
   val size: Int
 ) : Fragment<QueryFragmentImpl.Data> {
   @Transient
   private val variables: Operation.Variables = object : Operation.Variables() {
     override fun valueMap(): Map<String, Any?> = mutableMapOf<String, Any?>().apply {
-      this["id"] = this@QueryFragmentImpl.id
+      this["organizationId"] = this@QueryFragmentImpl.organizationId
       this["query"] = this@QueryFragmentImpl.query
       this["size"] = this@QueryFragmentImpl.size
     }
 
     override fun marshaller(): InputFieldMarshaller {
       return InputFieldMarshaller.invoke { writer ->
-        writer.writeString("id", this@QueryFragmentImpl.id)
+        writer.writeString("organizationId", this@QueryFragmentImpl.organizationId)
         writer.writeObject("query", this@QueryFragmentImpl.query.marshaller())
         writer.writeInt("size", this@QueryFragmentImpl.size)
       }
