@@ -53,6 +53,7 @@ sealed class Issue(
    * on introspection schemas that do not contain directives. If this happens, we pass them through without validation.
    */
   class UnknownDirective(message: String, sourceLocation: SourceLocation) : Issue(message, sourceLocation, Severity.WARNING)
+  class UnusedVariable(message: String, sourceLocation: SourceLocation) : Issue(message, sourceLocation, Severity.WARNING)
 
   enum class Severity {
     WARNING,
