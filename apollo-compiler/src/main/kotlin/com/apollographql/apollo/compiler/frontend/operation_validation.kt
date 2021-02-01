@@ -83,7 +83,7 @@ private class ExecutableDocumentValidator(val schema: Schema, val fragmentDefini
 
     if (directiveDefinition == null) {
       issues.add(
-          Issue.ValidationError(
+          Issue.UnknownDirective(
               message = "Unknown directive '$name'",
               sourceLocation = sourceLocation
           )
@@ -131,10 +131,12 @@ private class ExecutableDocumentValidator(val schema: Schema, val fragmentDefini
 
     val fragmentTypeDefinition = typeDefinitions[fragmentDefinition.typeCondition.name]
     if (fragmentTypeDefinition == null) {
-      issues.add(Issue.ValidationError(
-          message = "Cannot find type `${fragmentDefinition.typeCondition.name}` for fragment $name",
-          sourceLocation = fragmentDefinition.typeCondition.sourceLocation
-      ))
+      issues.add(
+          Issue.ValidationError(
+              message = "Cannot find type `${fragmentDefinition.typeCondition.name}` for fragment $name",
+              sourceLocation = fragmentDefinition.typeCondition.sourceLocation
+          )
+      )
       return
     }
 
