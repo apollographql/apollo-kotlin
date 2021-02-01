@@ -38,8 +38,18 @@ fun GQLDocument.withoutBuiltinTypes(): GQLDocument {
 }
 
 fun GQLDocument.withBuiltinTypes(): GQLDocument {
+  val mergedDefinitions = definitions.toMutableList()
+
+  GraphQLParser.builtinTypes().definitions.forEach { builtInTypeDefinition ->
+    if (builtInTypeDefinition is GQLNamed && mergedDefinitions.any { (it as? GQLNamed)?.name == builtInTypeDefinition.name }) {
+      println("ApolloGraphQL: definition '${builtInTypeDefinition.name}' is already in the schema, skip it")
+    } else {
+      mergedDefinitions.add(builtInTypeDefinition)
+    }
+  }
+
   return copy(
-      definitions = definitions + GraphQLParser.builtinTypes().definitions
+      definitions = mergedDefinitions
   )
 }
 
