@@ -33,7 +33,7 @@ fun GQLDocument.withoutBuiltinTypes(): GQLDocument {
   return copy(
       definitions = definitions.filter {
         (it as? GQLTypeDefinition)?.isBuiltIn() != true
-            || (it as? GQLDirectiveDefinition)?.isBuiltIn() != true
+            && (it as? GQLDirectiveDefinition)?.isBuiltIn() != true
       }
   )
 }
