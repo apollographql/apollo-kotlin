@@ -21,7 +21,7 @@ class Schema(
           rootOperationTypeDefinitions = rootOperationTypeDefinition()
       ),
       filePath = null
-  ).withoutBuiltinTypes()
+  ).withoutBuiltinDefinitions()
 
   private fun rootOperationTypeDefinition(): List<GQLOperationTypeDefinition> {
     val list = mutableListOf<GQLOperationTypeDefinition>()

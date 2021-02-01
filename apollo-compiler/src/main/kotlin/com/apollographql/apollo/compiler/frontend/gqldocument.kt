@@ -29,7 +29,7 @@ internal fun GQLDocument.rootOperationTypeDefinition(operationType: String): GQL
       }
 }
 
-fun GQLDocument.withoutBuiltinTypes(): GQLDocument {
+fun GQLDocument.withoutBuiltinDefinitions(): GQLDocument {
   return copy(
       definitions = definitions.filter {
         (it as? GQLTypeDefinition)?.isBuiltIn() != true
@@ -38,11 +38,30 @@ fun GQLDocument.withoutBuiltinTypes(): GQLDocument {
   )
 }
 
-fun GQLDocument.withBuiltinTypes(): GQLDocument {
+fun GQLDocument.withBuiltinDefinitions(): GQLDocument {
   val mergedDefinitions = definitions.toMutableList()
 
   GraphQLParser.builtinTypes().definitions.forEach { builtInTypeDefinition ->
     if (builtInTypeDefinition is GQLNamed && mergedDefinitions.any { (it as? GQLNamed)?.name == builtInTypeDefinition.name }) {
+      println("ApolloGraphQL: definition '${builtInTypeDefinition.name}' is already in the schema, skip it")
+    } else {
+      mergedDefinitions.add(builtInTypeDefinition)
+    }
+  }
+
+  return copy(
+      definitions = mergedDefinitions
+  )
+}
+
+
+fun GQLDocument.withBuiltinDirectives(): GQLDocument {
+  val mergedDefinitions = definitions.toMutableList()
+
+  GraphQLParser.builtinTypes().definitions
+      .filterIsInstance<GQLDirectiveDefinition>()
+      .forEach { builtInTypeDefinition ->
+    if (mergedDefinitions.any { (it as? GQLNamed)?.name == builtInTypeDefinition.name }) {
       println("ApolloGraphQL: definition '${builtInTypeDefinition.name}' is already in the schema, skip it")
     } else {
       mergedDefinitions.add(builtInTypeDefinition)

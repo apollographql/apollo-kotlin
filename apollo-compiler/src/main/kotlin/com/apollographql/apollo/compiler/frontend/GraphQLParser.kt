@@ -168,7 +168,7 @@ object GraphQLParser {
           // This means that it's impossible to add type extensions on built in types at the moment
           it.validateAsSchema()
         }.mapValue {
-          it.withBuiltinTypes()
+          it.withBuiltinDefinitions()
         }
   }
   internal fun parseSchemaInternal(string: String) = parseSchemaInternal(string.byteInputStream().source().buffer())
