@@ -41,7 +41,7 @@ private class ExecutableDocumentValidator(val schema: Schema, val fragmentDefini
     if (fieldDefinition.isDeprecated()) {
       issues.add(Issue.DeprecatedUsage(message = "Use of deprecated field `$name`", sourceLocation = sourceLocation))
     }
-    arguments?.validate(operation, fieldDefinition)
+    arguments?.validate(operation, fieldDefinition.arguments, "field `${fieldDefinition.name}`")
 
     val leafTypeDefinition = typeDefinitions[fieldDefinition.type.leafType().name]
 
@@ -72,6 +72,26 @@ private class ExecutableDocumentValidator(val schema: Schema, val fragmentDefini
         return
       }
     }
+
+    directives.forEach {
+      it.validate(operation)
+    }
+  }
+
+  private fun GQLDirective.validate(operation: GQLOperationDefinition?) {
+    val directiveDefinition = schema.directiveDefinitions[name]
+
+    if (directiveDefinition == null) {
+      issues.add(
+          Issue.ValidationError(
+              message = "Unknown directive '$name'",
+              sourceLocation = sourceLocation
+          )
+      )
+      return
+    }
+
+    arguments?.validate(operation, directiveDefinition.arguments, "directive '${directiveDefinition.name}'")
   }
 
   private fun GQLInlineFragment.validate(operation: GQLOperationDefinition?, typeDefinitionInScope: GQLTypeDefinition) {
@@ -93,6 +113,10 @@ private class ExecutableDocumentValidator(val schema: Schema, val fragmentDefini
     }
 
     selectionSet.validate(operation, inlineFragmentTypeDefinition)
+
+    directives.forEach {
+      it.validate(operation)
+    }
   }
 
   private fun GQLFragmentSpread.validate(operation: GQLOperationDefinition?, typeDefinitionInScope: GQLTypeDefinition) {
@@ -123,6 +147,10 @@ private class ExecutableDocumentValidator(val schema: Schema, val fragmentDefini
     }
 
     fragmentDefinition.selectionSet.validate(operation, fragmentTypeDefinition)
+
+    directives.forEach {
+      it.validate(operation)
+    }
   }
 
   private fun GQLDocument.validateExecutable() {
@@ -462,10 +490,10 @@ private class ExecutableDocumentValidator(val schema: Schema, val fragmentDefini
         .collectFields(fragmentDefinition.typeCondition.name)
   }
 
-  private fun GQLArgument.validate(operation: GQLOperationDefinition?, fieldDefinition: GQLFieldDefinition) {
-    val schemaArgument = fieldDefinition.arguments.firstOrNull { it.name == name }
+  private fun GQLArgument.validate(operation: GQLOperationDefinition?, inputValueDefinitions: List<GQLInputValueDefinition>, debug: String) {
+    val schemaArgument = inputValueDefinitions.firstOrNull { it.name == name }
     if (schemaArgument == null) {
-      issues.add(Issue.ValidationError(message = "Unknown argument `$name` on field `${fieldDefinition.name}`", sourceLocation = sourceLocation))
+      issues.add(Issue.ValidationError(message = "Unknown argument `$name` on $debug", sourceLocation = sourceLocation))
       return
     }
 
@@ -475,7 +503,7 @@ private class ExecutableDocumentValidator(val schema: Schema, val fragmentDefini
     issues.addAll(value.validateAndCoerce(schemaArgument.type, schema, operation).issues)
   }
 
-  private fun GQLArguments.validate(operation: GQLOperationDefinition?, field: GQLFieldDefinition) {
+  private fun GQLArguments.validate(operation: GQLOperationDefinition?, inputValueDefinitions: List<GQLInputValueDefinition>, debug: String) {
     // 5.4.2 Argument Uniqueness
     arguments.groupBy { it.name }.filter { it.value.size > 1 }.toList().firstOrNull()?.let {
       issues.add(Issue.ValidationError(message = "Argument `${it.first}` is defined multiple times", sourceLocation = it.second.first().sourceLocation))
@@ -483,7 +511,7 @@ private class ExecutableDocumentValidator(val schema: Schema, val fragmentDefini
     }
 
     // 5.4.2.1 Required arguments
-    field.arguments.forEach { inputValueDefinition ->
+    inputValueDefinitions.forEach { inputValueDefinition ->
       if (inputValueDefinition.type is GQLNonNullType && inputValueDefinition.defaultValue == null) {
         val argumentValue = arguments.firstOrNull { it.name == inputValueDefinition.name }?.value
         if (argumentValue is GQLNullValue) {
@@ -496,7 +524,7 @@ private class ExecutableDocumentValidator(val schema: Schema, val fragmentDefini
     }
 
     arguments.forEach {
-      it.validate(operation, field)
+      it.validate(operation, inputValueDefinitions, debug)
     }
   }
 

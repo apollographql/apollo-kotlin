@@ -1,0 +1,2 @@
+ERROR: ValidationError (3:22)
+Variable `condition` is not defined by operation `HeroName`

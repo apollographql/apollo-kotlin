@@ -32,7 +32,8 @@ internal fun GQLDocument.rootOperationTypeDefinition(operationType: String): GQL
 fun GQLDocument.withoutBuiltinTypes(): GQLDocument {
   return copy(
       definitions = definitions.filter {
-        ((it as? GQLTypeDefinition)?.isBuiltIn() == true).not()
+        (it as? GQLTypeDefinition)?.isBuiltIn() != true
+            || (it as? GQLDirectiveDefinition)?.isBuiltIn() != true
       }
   )
 }
@@ -58,11 +59,10 @@ fun GQLDocument.toSchema(): Schema {
       typeDefinitions = definitions.filterIsInstance<GQLTypeDefinition>().associateBy { it.name },
       queryTypeDefinition = rootOperationTypeDefinition("query") ?: throw SchemaValidationException("No query root type found"),
       mutationTypeDefinition = rootOperationTypeDefinition("mutation"),
-      subscriptionTypeDefinition = rootOperationTypeDefinition("subscription")
+      subscriptionTypeDefinition = rootOperationTypeDefinition("subscription"),
+      directiveDefinitions = definitions.filterIsInstance<GQLDirectiveDefinition>().associateBy { it.name }
   )
 }
-
-
 
 private fun String.withIndents(): String {
   var indent = 0

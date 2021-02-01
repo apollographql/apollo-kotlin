@@ -353,6 +353,16 @@ data class GQLDirectiveDefinition(
       writeUtf8(" on ${locations.joinToString("|")}")
     }
   }
+
+  fun isBuiltIn(): Boolean = builtInDirectives.contains(this.name)
+
+  companion object {
+    val builtInDirectives: Set<String> = setOf(
+        "include",
+        "skip",
+        "deprecated",
+    )
+  }
 }
 
 data class GQLSchemaExtension(
