@@ -8,7 +8,6 @@ import kotlin.test.assertNull
 import kotlin.test.assertTrue
 
 class RecordFieldJsonAdapterTest {
-  private val recordFieldAdapter = RecordFieldJsonAdapter()
 
   @Test
   fun testFieldsAdapterSerializationDeserialization() {
@@ -33,8 +32,8 @@ class RecordFieldJsonAdapterTest {
     recordBuilder.addField("listOfScalarList", expectedListOfScalarList)
     recordBuilder.addField("map", expectedMap)
     val record = recordBuilder.build()
-    val json = recordFieldAdapter.toJson(record.fields)
-    val deserializedMap = requireNotNull(recordFieldAdapter.from(json))
+    val json = RecordFieldJsonAdapter.toJson(record.fields)
+    val deserializedMap = requireNotNull(RecordFieldJsonAdapter.fromJson(json))
 
     assertEquals(actual = deserializedMap["bigDecimal"], expected = expectedBigDecimal)
     assertEquals(actual = deserializedMap["string"], expected = expectedStringValue)

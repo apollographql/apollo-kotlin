@@ -9,18 +9,17 @@ abstract class NormalizedCacheFactory<T : NormalizedCache> {
   private var nextFactory: NormalizedCacheFactory<out NormalizedCache>? = null
 
   /**
-   * @param recordFieldAdapter A [RecordFieldJsonAdapter] configured with the custom scalar adapters set in
    * ApolloClient.Builder#addCustomScalarAdapter(ScalarType, CustomScalarAdapter).
    * @return An implementation of [NormalizedCache].
    */
-  abstract fun create(recordFieldAdapter: RecordFieldJsonAdapter): T
+  abstract fun create(): T
 
-  fun createChain(recordFieldAdapter: RecordFieldJsonAdapter): NormalizedCache {
+  fun createChain(): NormalizedCache {
     val nextFactory = nextFactory
     return if (nextFactory != null) {
-      create(recordFieldAdapter).chain(nextFactory.createChain(recordFieldAdapter))
+      create().chain(nextFactory.createChain())
     } else {
-      create(recordFieldAdapter)
+      create()
     }
   }
 

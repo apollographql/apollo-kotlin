@@ -23,11 +23,11 @@ import org.junit.Test
  */
 class BenchmarkTest {
 
-  
+
   @Test
   fun apolloReadCache() {
     val operation = GetResponseQuery()
-    val cache = SqlNormalizedCacheFactory("jdbc:sqlite:").create(RecordFieldJsonAdapter())
+    val cache = SqlNormalizedCacheFactory("jdbc:sqlite:").create()
 
     val bufferedSource = Buffer().writeUtf8(Utils.readFileToString(Utils::class.java, "/largesample.json"))
 

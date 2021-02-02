@@ -14,7 +14,6 @@ import org.junit.Test
 import java.util.concurrent.TimeUnit
 
 class LruNormalizedCacheTest {
-  private val basicFieldAdapter = RecordFieldJsonAdapter()
 
   @Test
   fun testEvictionPolicyBuilder() {
@@ -80,8 +79,7 @@ class LruNormalizedCacheTest {
 
   @Test
   fun testEviction() {
-    val lruCache = LruNormalizedCacheFactory(EvictionPolicy.builder().maxSizeBytes(2000)
-        .build()).create(basicFieldAdapter)
+    val lruCache = LruNormalizedCacheFactory(EvictionPolicy.builder().maxSizeBytes(2000).build()).create()
     val testRecord1Builder = Record.builder("key1")
     testRecord1Builder.addField("a", String(ByteArray(1100)))
     val testRecord1 = testRecord1Builder.build()
@@ -103,8 +101,7 @@ class LruNormalizedCacheTest {
 
   @Test
   fun testEviction_recordChange() {
-    val lruCache = LruNormalizedCacheFactory(EvictionPolicy.builder().maxSizeBytes(2000)
-        .build()).create(basicFieldAdapter)
+    val lruCache = LruNormalizedCacheFactory(EvictionPolicy.builder().maxSizeBytes(2000).build()).create()
     val testRecord1Builder = Record.builder("key1")
     testRecord1Builder.addField("a", String(ByteArray(10)))
     val testRecord1 = testRecord1Builder.build()
@@ -135,7 +132,7 @@ class LruNormalizedCacheTest {
   fun testDualCacheSingleRecord() {
     val secondaryCacheFactory = LruNormalizedCacheFactory(EvictionPolicy.NO_EVICTION)
     val primaryCache = LruNormalizedCacheFactory(EvictionPolicy.NO_EVICTION)
-        .chain(secondaryCacheFactory).createChain(basicFieldAdapter)
+        .chain(secondaryCacheFactory).createChain()
     val recordBuilder = Record.builder("root")
     recordBuilder.addField("bar", "bar")
     val record = recordBuilder.build()
@@ -150,7 +147,7 @@ class LruNormalizedCacheTest {
   fun testDualCacheMultipleRecord() {
     val secondaryCacheFactory = LruNormalizedCacheFactory(EvictionPolicy.NO_EVICTION)
     val primaryCache = LruNormalizedCacheFactory(EvictionPolicy.NO_EVICTION)
-        .chain(secondaryCacheFactory).createChain(basicFieldAdapter)
+        .chain(secondaryCacheFactory).createChain()
 
     var recordBuilder = Record.builder("root1")
     recordBuilder.addField("bar", "bar")
@@ -175,7 +172,7 @@ class LruNormalizedCacheTest {
   fun testDualCache_recordNotPresent() {
     val secondaryCacheFactory = LruNormalizedCacheFactory(EvictionPolicy.NO_EVICTION)
     val primaryCacheStore = LruNormalizedCacheFactory(EvictionPolicy.NO_EVICTION)
-        .chain(secondaryCacheFactory).createChain(basicFieldAdapter)
+        .chain(secondaryCacheFactory).createChain()
 
     assertThat(primaryCacheStore.loadRecord("not_present_id", CacheHeaders.NONE)).isNull()
   }
@@ -184,7 +181,7 @@ class LruNormalizedCacheTest {
   fun testClearAll() {
     val secondaryCacheFactory = LruNormalizedCacheFactory(EvictionPolicy.NO_EVICTION)
     val primaryCacheStore = LruNormalizedCacheFactory(EvictionPolicy.NO_EVICTION)
-        .chain(secondaryCacheFactory).createChain(basicFieldAdapter)
+        .chain(secondaryCacheFactory).createChain()
     val record = Record.builder("key").build()
     primaryCacheStore.merge(record, CacheHeaders.NONE)
     primaryCacheStore.clearAll()
@@ -196,7 +193,7 @@ class LruNormalizedCacheTest {
   fun testClearPrimaryCache() {
     val secondaryCacheFactory = LruNormalizedCacheFactory(EvictionPolicy.NO_EVICTION)
     val primaryCache = LruNormalizedCacheFactory(EvictionPolicy.NO_EVICTION)
-        .chain(secondaryCacheFactory).createChain(basicFieldAdapter) as LruNormalizedCache
+        .chain(secondaryCacheFactory).createChain() as LruNormalizedCache
     val record = Record.builder("key").build()
     primaryCache.merge(record, CacheHeaders.NONE)
     primaryCache.clearCurrentCache()
@@ -210,7 +207,7 @@ class LruNormalizedCacheTest {
   fun testClearSecondaryCache() {
     val secondaryCacheFactory = LruNormalizedCacheFactory(EvictionPolicy.NO_EVICTION)
     val primaryCache = LruNormalizedCacheFactory(EvictionPolicy.NO_EVICTION)
-        .chain(secondaryCacheFactory).createChain(basicFieldAdapter)
+        .chain(secondaryCacheFactory).createChain()
     val record = Record.builder("key").build()
 
     val nextCache = requireNotNull(primaryCache.nextCache)
@@ -356,7 +353,7 @@ class LruNormalizedCacheTest {
   }
 
   private fun createLruNormalizedCache(policy: EvictionPolicy = EvictionPolicy.builder().maxSizeBytes(10 * 1024.toLong()).build()) =
-      LruNormalizedCacheFactory(policy).create(basicFieldAdapter)
+      LruNormalizedCacheFactory(policy).create()
 
   private fun assertTestRecordPresentAndAccurate(testRecord: Record, store: NormalizedCache) {
     val cacheRecord = requireNotNull(store.loadRecord(testRecord.key, CacheHeaders.NONE))

@@ -1,6 +1,5 @@
 package com.apollographql.apollo.cache.normalized
 
-import com.apollographql.apollo.api.internal.json.JsonReader
 import com.apollographql.apollo.cache.ApolloCacheHeaders
 import com.apollographql.apollo.cache.CacheHeaders
 import kotlin.jvm.JvmStatic
@@ -72,18 +71,18 @@ abstract class NormalizedCache {
    * Calls through to [NormalizedCache.merge]. Implementations should override this method
    * if the underlying storage technology can offer an optimized manner to store multiple records.
    *
-   * @param recordCollection The collection of Records to merge.
+   * @param records The collection of Records to merge.
    * @param cacheHeaders The [CacheHeaders] associated with the request which generated this record.
    * @return A set of record field keys that have changed. This set is returned by [Record.mergeWith].
    */
-  open fun merge(recordCollection: Collection<Record>, cacheHeaders: CacheHeaders): Set<String> {
+  open fun merge(records: Collection<Record>, cacheHeaders: CacheHeaders): Set<String> {
     if (cacheHeaders.hasHeader(ApolloCacheHeaders.DO_NOT_STORE)) {
       return emptySet()
     }
-    val nextCacheChangedKeys = nextCache?.merge(recordCollection, cacheHeaders).orEmpty()
+    val nextCacheChangedKeys = nextCache?.merge(records, cacheHeaders).orEmpty()
     val currentCacheChangedKeys: MutableSet<String> = HashSet()
-    val oldRecords = loadRecords(recordCollection.map { it.key }, cacheHeaders).associateBy { it.key }
-    for (record in recordCollection) {
+    val oldRecords = loadRecords(records.map { it.key }, cacheHeaders).associateBy { it.key }
+    for (record in records) {
       val oldRecord = oldRecords[record.key]
       currentCacheChangedKeys.addAll(performMerge(record, oldRecord, cacheHeaders))
     }
