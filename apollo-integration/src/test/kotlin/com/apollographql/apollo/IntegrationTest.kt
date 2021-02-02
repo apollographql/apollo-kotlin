@@ -14,8 +14,7 @@ import com.apollographql.apollo.api.Operation
 import com.apollographql.apollo.api.Response
 import com.apollographql.apollo.api.parse
 import com.apollographql.apollo.api.toJson
-import com.apollographql.apollo.cache.normalized.lru.EvictionPolicy
-import com.apollographql.apollo.cache.normalized.lru.LruNormalizedCacheFactory
+import com.apollographql.apollo.cache.normalized.MemoryCacheFactory
 import com.apollographql.apollo.exception.ApolloException
 import com.apollographql.apollo.fetcher.ApolloResponseFetchers
 import com.apollographql.apollo.http.OkHttpExecutionContext
@@ -72,7 +71,7 @@ class IntegrationTest {
         .serverUrl(server.url("/"))
         .okHttpClient(OkHttpClient.Builder().dispatcher(Dispatcher(immediateExecutorService())).build())
         .addCustomScalarAdapter(CustomScalars.Date, dateCustomScalarAdapter)
-        .normalizedCache(LruNormalizedCacheFactory(EvictionPolicy.NO_EVICTION), IdFieldCacheKeyResolver())
+        .normalizedCache(MemoryCacheFactory(maxSizeBytes = Int.MAX_VALUE), IdFieldCacheKeyResolver())
         .defaultResponseFetcher(ApolloResponseFetchers.NETWORK_ONLY)
         .dispatcher(immediateExecutor())
         .build()

@@ -13,6 +13,7 @@ import com.apollographql.apollo.cache.normalized.Record
 import org.junit.Test
 import java.util.*
 import java.util.concurrent.TimeUnit
+import kotlin.reflect.KClass
 
 class ApolloStoreTest {
   @Test
@@ -37,8 +38,16 @@ class ApolloStoreTest {
             return false
           }
 
-          override fun performMerge(apolloRecord: Record, oldRecord: Record?, cacheHeaders: CacheHeaders): Set<String> {
+          override fun loadRecords(keys: Collection<String>, cacheHeaders: CacheHeaders): Collection<Record> {
+            return emptyList()
+          }
+
+          override fun merge(records: Collection<Record>, cacheHeaders: CacheHeaders): Set<String> {
             return emptySet()
+          }
+
+          override fun dump(): Map<@JvmSuppressWildcards KClass<*>, Map<String, Record>> {
+            return emptyMap()
           }
         },
         CacheKeyResolver.DEFAULT,

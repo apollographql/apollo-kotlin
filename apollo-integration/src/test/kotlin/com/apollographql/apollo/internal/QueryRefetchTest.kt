@@ -10,8 +10,7 @@ import com.apollographql.apollo.Utils.immediateExecutorService
 import com.apollographql.apollo.Utils.mockResponse
 import com.apollographql.apollo.api.Input
 import com.apollographql.apollo.api.Response
-import com.apollographql.apollo.cache.normalized.lru.EvictionPolicy
-import com.apollographql.apollo.cache.normalized.lru.LruNormalizedCacheFactory
+import com.apollographql.apollo.cache.normalized.MemoryCacheFactory
 import com.apollographql.apollo.exception.ApolloException
 import com.apollographql.apollo.fetcher.ApolloResponseFetchers
 import com.apollographql.apollo.integration.normalizer.CreateReviewMutation
@@ -47,7 +46,7 @@ class QueryRefetchTest {
         .serverUrl(server.url("/"))
         .dispatcher(immediateExecutor())
         .okHttpClient(okHttpClient)
-        .normalizedCache(LruNormalizedCacheFactory(EvictionPolicy.NO_EVICTION), IdFieldCacheKeyResolver())
+        .normalizedCache(MemoryCacheFactory(maxSizeBytes = Int.MAX_VALUE), IdFieldCacheKeyResolver())
         .build()
   }
 

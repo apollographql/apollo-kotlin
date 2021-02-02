@@ -1,6 +1,5 @@
 package com.apollographql.apollo.cache.normalized
 
-import com.apollographql.apollo.cache.ApolloCacheHeaders
 import com.apollographql.apollo.cache.CacheHeaders
 import kotlin.jvm.JvmStatic
 import kotlin.jvm.JvmSuppressWildcards
@@ -18,8 +17,6 @@ import kotlin.reflect.KClass
  * A [NormalizedCache] is recommended to implement support for [CacheHeaders] specified in [ ].
  *
  * A [NormalizedCache] can choose to store records in any manner.
- *
- * See [com.apollographql.apollo.cache.normalized.lru.LruNormalizedCache] for a in memory cache.
  */
 abstract class NormalizedCache {
   var nextCache: NormalizedCache? = null
@@ -39,33 +36,14 @@ abstract class NormalizedCache {
    * @param keys         The set of [Record] keys to read.
    * @param cacheHeaders The cache headers associated with the request which generated this record.
    */
-  open fun loadRecords(keys: Collection<String>, cacheHeaders: CacheHeaders): Collection<Record> {
-    val records: MutableList<Record> = ArrayList(keys.size)
-    for (key in keys) {
-      val record = loadRecord(key, cacheHeaders)
-      if (record != null) {
-        records.add(record)
-      }
-    }
-    return records
-  }
+  abstract fun loadRecords(keys: Collection<String>, cacheHeaders: CacheHeaders): Collection<Record>
 
   /**
    * @param record       The [Record] to merge.
    * @param cacheHeaders The [CacheHeaders] associated with the request which generated this record.
    * @return A set of record field keys that have changed. This set is returned by [Record.mergeWith].
    */
-  open fun merge(record: Record, cacheHeaders: CacheHeaders): Set<String> {
-    if (cacheHeaders.hasHeader(ApolloCacheHeaders.DO_NOT_STORE)) {
-      return emptySet<String>()
-    }
-    val nextCacheChangedKeys = nextCache?.merge(record, cacheHeaders).orEmpty()
-    val currentCacheChangedKeys = performMerge(record, loadRecord(record.key, cacheHeaders), cacheHeaders)
-    val changedKeys: MutableSet<String> = HashSet()
-    changedKeys.addAll(nextCacheChangedKeys)
-    changedKeys.addAll(currentCacheChangedKeys)
-    return changedKeys
-  }
+  abstract fun merge(record: Record, cacheHeaders: CacheHeaders): Set<String>
 
   /**
    * Calls through to [NormalizedCache.merge]. Implementations should override this method
@@ -75,30 +53,7 @@ abstract class NormalizedCache {
    * @param cacheHeaders The [CacheHeaders] associated with the request which generated this record.
    * @return A set of record field keys that have changed. This set is returned by [Record.mergeWith].
    */
-  open fun merge(records: Collection<Record>, cacheHeaders: CacheHeaders): Set<String> {
-    if (cacheHeaders.hasHeader(ApolloCacheHeaders.DO_NOT_STORE)) {
-      return emptySet()
-    }
-    val nextCacheChangedKeys = nextCache?.merge(records, cacheHeaders).orEmpty()
-    val currentCacheChangedKeys: MutableSet<String> = HashSet()
-    val oldRecords = loadRecords(records.map { it.key }, cacheHeaders).associateBy { it.key }
-    for (record in records) {
-      val oldRecord = oldRecords[record.key]
-      currentCacheChangedKeys.addAll(performMerge(record, oldRecord, cacheHeaders))
-    }
-    val changedKeys: MutableSet<String> = HashSet()
-    changedKeys.addAll(nextCacheChangedKeys)
-    changedKeys.addAll(currentCacheChangedKeys)
-    return changedKeys
-  }
-
-  /**
-   * @param apolloRecord The new record to merge into [existingRecord]
-   * @param oldRecord The current record before merge. Null if no record exists.
-   *
-   * @return A set of record field keys that have changed. This set should be computed by [Record.mergeWith].
-   */
-  protected abstract fun performMerge(apolloRecord: Record, oldRecord: Record?, cacheHeaders: CacheHeaders): Set<String>
+  abstract fun merge(records: Collection<Record>, cacheHeaders: CacheHeaders): Set<String>
 
   /**
    * Clears all records from the cache.
@@ -106,16 +61,6 @@ abstract class NormalizedCache {
    * Clients should call ApolloClient#clearNormalizedCache() for a thread-safe access to this method.
    */
   abstract fun clearAll()
-
-  /**
-   * Remove cached record by the key
-   *
-   * @param cacheKey of record to be removed
-   * @return `true` if record with such key was successfully removed, `false` otherwise
-   */
-  fun remove(cacheKey: CacheKey): Boolean {
-    return remove(cacheKey, false)
-  }
 
   /**
    * Remove cached record by the key
@@ -134,9 +79,7 @@ abstract class NormalizedCache {
     leafCache.nextCache = cache
   }
 
-  open fun dump(): Map<@JvmSuppressWildcards KClass<*>, Map<String, Record>> {
-    return mapOf(this::class to emptyMap())
-  }
+  abstract fun dump(): Map<@JvmSuppressWildcards KClass<*>, Map<String, Record>>
 
   companion object {
 

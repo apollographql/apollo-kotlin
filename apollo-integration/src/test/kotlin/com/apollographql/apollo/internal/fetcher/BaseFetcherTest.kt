@@ -7,8 +7,7 @@ import com.apollographql.apollo.Utils.immediateExecutor
 import com.apollographql.apollo.Utils.immediateExecutorService
 import com.apollographql.apollo.Utils.readFileToString
 import com.apollographql.apollo.api.Response
-import com.apollographql.apollo.cache.normalized.lru.EvictionPolicy
-import com.apollographql.apollo.cache.normalized.lru.LruNormalizedCacheFactory
+import com.apollographql.apollo.cache.normalized.MemoryCacheFactory
 import com.apollographql.apollo.exception.ApolloException
 import com.apollographql.apollo.integration.normalizer.EpisodeHeroNameQuery
 import okhttp3.Dispatcher
@@ -36,7 +35,7 @@ open class BaseFetcherTest {
     apolloClient = ApolloClient.builder()
         .serverUrl(server.url("/"))
         .okHttpClient(okHttpClient)
-        .normalizedCache(LruNormalizedCacheFactory(EvictionPolicy.NO_EVICTION), IdFieldCacheKeyResolver())
+        .normalizedCache(MemoryCacheFactory(maxSizeBytes = Int.MAX_VALUE), IdFieldCacheKeyResolver())
         .dispatcher(immediateExecutor())
         .build()
   }

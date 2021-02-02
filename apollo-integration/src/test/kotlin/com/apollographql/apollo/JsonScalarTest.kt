@@ -6,8 +6,7 @@ import com.apollographql.apollo.Utils.immediateExecutor
 import com.apollographql.apollo.Utils.immediateExecutorService
 import com.apollographql.apollo.api.BigDecimal
 import com.apollographql.apollo.api.BuiltinCustomScalarAdapters
-import com.apollographql.apollo.cache.normalized.lru.EvictionPolicy
-import com.apollographql.apollo.cache.normalized.lru.LruNormalizedCacheFactory
+import com.apollographql.apollo.cache.normalized.MemoryCacheFactory
 import com.apollographql.apollo.integration.normalizer.type.CustomScalars
 import com.google.common.truth.Truth.assertThat
 import okhttp3.Dispatcher
@@ -28,7 +27,7 @@ class JsonScalarTest {
         .serverUrl(server.url("/"))
         .okHttpClient(okHttpClient)
         .addCustomScalarAdapter(CustomScalars.Json, BuiltinCustomScalarAdapters.MAP_ADAPTER)
-        .normalizedCache(LruNormalizedCacheFactory(EvictionPolicy.NO_EVICTION), IdFieldCacheKeyResolver())
+        .normalizedCache(MemoryCacheFactory(maxSizeBytes = Int.MAX_VALUE), IdFieldCacheKeyResolver())
         .dispatcher(immediateExecutor())
         .build()
 

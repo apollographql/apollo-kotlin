@@ -1,10 +1,8 @@
 package com.apollographql.apollo.cache.normalized
 
-import com.apollographql.apollo.api.internal.json.JsonReader
 import com.apollographql.apollo.cache.ApolloCacheHeaders
 import com.apollographql.apollo.cache.CacheHeaders
 import com.apollographql.apollo.cache.normalized.internal.LruCache
-import com.apollographql.apollo.cache.normalized.internal.MapJsonReader
 import com.apollographql.apollo.cache.normalized.internal.Platform
 import okio.internal.commonAsUtf8ToByteArray
 import kotlin.reflect.KClass
@@ -30,18 +28,22 @@ class MemoryCache(
     get() = lruCache.size()
 
   override fun loadRecord(key: String, cacheHeaders: CacheHeaders): Record? {
-    val cachedEntry = lruCache[key]
-    return if (cachedEntry == null || cachedEntry.isExpired) {
-      if (cachedEntry != null) {
+    val cacheEntry = lruCache[key]?.also { cacheEntry ->
+      if (cacheEntry.isExpired || cacheHeaders.hasHeader(ApolloCacheHeaders.EVICT_AFTER_READ)) {
         lruCache.remove(key)
       }
-      nextCache?.loadRecord(key, cacheHeaders)
-    } else {
-      if (cacheHeaders.hasHeader(ApolloCacheHeaders.EVICT_AFTER_READ)) {
-        lruCache.remove(key)
-      }
-      cachedEntry.record
     }
+
+    return cacheEntry?.takeUnless { it.isExpired }?.record ?: nextCache?.loadRecord(key, cacheHeaders)?.also { nextCachedRecord ->
+      lruCache[key] = CacheEntry(
+          record = nextCachedRecord,
+          expireAfterMillis = expireAfterMillis
+      )
+    }
+  }
+
+  override fun loadRecords(keys: Collection<String>, cacheHeaders: CacheHeaders): Collection<Record> {
+    return keys.mapNotNull { key -> loadRecord(key, cacheHeaders) }
   }
 
   override fun clearAll() {
@@ -50,40 +52,53 @@ class MemoryCache(
   }
 
   override fun remove(cacheKey: CacheKey, cascade: Boolean): Boolean {
-    val cachedEntry = lruCache.remove(cacheKey.key)
-    if (cascade && cachedEntry != null) {
-      for (cacheReference in cachedEntry.record.referencedFields()) {
+    val cacheEntry = lruCache.remove(cacheKey.key)
+
+    if (cascade && cacheEntry != null) {
+      for (cacheReference in cacheEntry.record.referencedFields()) {
         remove(CacheKey(cacheReference.key), true)
       }
     }
 
-    val removeFromNextCacheResult = nextCache?.remove(cacheKey, cascade) ?: false
-
-    return cachedEntry != null || removeFromNextCacheResult
+    return cacheEntry != null || nextCache?.remove(cacheKey, cascade) ?: false
   }
 
-  override fun performMerge(apolloRecord: Record, oldRecord: Record?, cacheHeaders: CacheHeaders): Set<String> {
-    return if (oldRecord == null) {
-      lruCache[apolloRecord.key] = CacheEntry(
-          record = apolloRecord,
+  override fun merge(record: Record, cacheHeaders: CacheHeaders): Set<String> {
+    if (cacheHeaders.hasHeader(ApolloCacheHeaders.DO_NOT_STORE)) {
+      return emptySet()
+    }
+
+    val oldRecord = loadRecord(record.key, cacheHeaders)
+    val changedKeys = if (oldRecord == null) {
+      lruCache[record.key] = CacheEntry(
+          record = record,
           expireAfterMillis = expireAfterMillis
       )
-      apolloRecord.keys()
+      record.keys()
     } else {
-      oldRecord.mergeWith(apolloRecord).also {
+      oldRecord.mergeWith(record).also {
         //re-insert to trigger new weight calculation
-        lruCache[apolloRecord.key] = CacheEntry(
+        lruCache[record.key] = CacheEntry(
             record = oldRecord,
             expireAfterMillis = expireAfterMillis
         )
       }
     }
+
+    return changedKeys + nextCache?.merge(record, cacheHeaders).orEmpty()
   }
 
-  @OptIn(ExperimentalStdlibApi::class)
-  override fun dump() = buildMap<KClass<*>, Map<String, Record>> {
-    put(this@MemoryCache::class, lruCache.dump().mapValues { (_, entry) -> entry.record })
-    putAll(nextCache?.dump().orEmpty())
+  override fun merge(records: Collection<Record>, cacheHeaders: CacheHeaders): Set<String> {
+    if (cacheHeaders.hasHeader(ApolloCacheHeaders.DO_NOT_STORE)) {
+      return emptySet()
+    }
+    return records.flatMap { record -> merge(record, cacheHeaders) }.toSet()
+  }
+
+  override fun dump(): Map<KClass<*>, Map<String, Record>> {
+    return mapOf(
+        this::class to lruCache.dump().mapValues { (_, entry) -> entry.record }
+    ) + nextCache?.dump().orEmpty()
   }
 
   internal fun clearCurrentCache() {
@@ -106,5 +121,18 @@ class MemoryCache(
           Platform.currentTimeMillis() - cachedAtMillis >= expireAfterMillis
         }
       }
+  }
+}
+
+class MemoryCacheFactory(
+    private val maxSizeBytes: Int,
+    private val expireAfterMillis: Long = -1,
+) : NormalizedCacheFactory<MemoryCache>() {
+
+  override fun create(): MemoryCache {
+    return MemoryCache(
+        maxSizeBytes = maxSizeBytes,
+        expireAfterMillis = expireAfterMillis,
+    )
   }
 }

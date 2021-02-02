@@ -6,8 +6,7 @@ import com.apollographql.apollo.IdFieldCacheKeyResolver
 import com.apollographql.apollo.api.Operation
 import com.apollographql.apollo.api.Response
 import com.apollographql.apollo.cache.normalized.NormalizedCache
-import com.apollographql.apollo.cache.normalized.lru.EvictionPolicy
-import com.apollographql.apollo.cache.normalized.lru.LruNormalizedCacheFactory
+import com.apollographql.apollo.cache.normalized.MemoryCacheFactory
 import com.apollographql.apollo.exception.ApolloException
 import com.apollographql.apollo.integration.subscription.NewRepoCommentSubscription
 import com.apollographql.apollo.subscription.OperationClientMessage
@@ -33,7 +32,7 @@ class SubscriptionNormalizedCacheTest {
         .serverUrl("http://google.com")
         .dispatcher(TrampolineExecutor())
         .subscriptionTransportFactory(subscriptionTransportFactory)
-        .normalizedCache(LruNormalizedCacheFactory(EvictionPolicy.NO_EVICTION), IdFieldCacheKeyResolver())
+        .normalizedCache(MemoryCacheFactory(maxSizeBytes = Int.MAX_VALUE), IdFieldCacheKeyResolver())
         .build()
     subscriptionCall = apolloClient.subscribe(NewRepoCommentSubscription("repo"))
     networkOperationData = mapOf(
@@ -72,7 +71,7 @@ class SubscriptionNormalizedCacheTest {
     val cacheDump = apolloClient.apolloStore.normalizedCache().dump()
     assertThat(NormalizedCache.prettifyDump(cacheDump)).isEqualTo("""
       OptimisticCache {}
-      LruNormalizedCache {}
+      MemoryCache {}
       
     """.trimIndent())
   }
@@ -108,7 +107,11 @@ class SubscriptionNormalizedCacheTest {
     val cacheDump = apolloClient.apolloStore.normalizedCache().dump()
     assertThat(NormalizedCache.prettifyDump(cacheDump)).isEqualTo("""
       OptimisticCache {}
-      LruNormalizedCache {
+      MemoryCache {
+        "100.postedBy" : {
+          "login" : user@user.com
+        }
+
         "100" : {
           "id" : 100
           "content" : Network comment content
@@ -117,10 +120,6 @@ class SubscriptionNormalizedCacheTest {
       
         "QUERY_ROOT" : {
           "commentAdded({"repoFullName":"repo"})" : CacheRecordRef(100)
-        }
-      
-        "100.postedBy" : {
-          "login" : user@user.com
         }
       }
       
@@ -161,7 +160,11 @@ class SubscriptionNormalizedCacheTest {
     val cacheDump = apolloClient.apolloStore.normalizedCache().dump()
     assertThat(NormalizedCache.prettifyDump(cacheDump)).isEqualTo("""
       OptimisticCache {}
-      LruNormalizedCache {
+      MemoryCache {
+        "100.postedBy" : {
+          "login" : user@user.com
+        }
+
         "100" : {
           "id" : 100
           "content" : Network comment content
@@ -170,10 +173,6 @@ class SubscriptionNormalizedCacheTest {
       
         "QUERY_ROOT" : {
           "commentAdded({"repoFullName":"repo"})" : CacheRecordRef(100)
-        }
-      
-        "100.postedBy" : {
-          "login" : user@user.com
         }
       }
       
