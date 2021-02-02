@@ -1,5 +1,7 @@
 package com.apollographql.apollo.compiler
 
+import com.apollographql.apollo.compiler.TestUtils.checkExpected
+import com.apollographql.apollo.compiler.TestUtils.testParametersForGraphQLFilesIn
 import com.apollographql.apollo.compiler.frontend.GraphQLParser
 import com.apollographql.apollo.compiler.frontend.Issue
 import com.apollographql.apollo.compiler.frontend.toSchema
@@ -19,44 +21,21 @@ class ValidationTest(name: String, private val graphQLFile: File) {
     "${it.severity}: ${it.javaClass.simpleName} (${it.sourceLocation.line}:${it.sourceLocation.position})\n${it.message}"
   }.joinToString(separator)
 
+
   @Test
-  fun testValidation() {
+  fun testValidation() = checkExpected(graphQLFile) { schema ->
     val issues = if (graphQLFile.parentFile.name == "operation") {
-      val schemaFile = File("src/test/validation/schema.json")
-      val schema = IntrospectionSchema(schemaFile).toSchema()
-      GraphQLParser.parseOperations(graphQLFile, schema).issues
+      GraphQLParser.parseOperations(graphQLFile, schema!!).issues
     } else {
+      // schema is unused there
       GraphQLParser.parseSchemaInternal(graphQLFile).issues
     }
-
-    val expectedIssuesFile = File(graphQLFile.parent, graphQLFile.nameWithoutExtension + ".issues")
-    val expectedIssues = try {
-      expectedIssuesFile.readText()
-    } catch (e: Exception) {
-      null
-    }
-
-    val actualIssues = issues.serialize()
-
-    if (TestUtils.shouldUpdateTestFixtures()) {
-      expectedIssuesFile.writeText(actualIssues)
-    } else {
-      assertThat(actualIssues).isEqualTo(expectedIssues)
-    }
+    issues.serialize()
   }
 
   companion object {
     @JvmStatic
     @Parameterized.Parameters(name = "{0}")
-    fun data(): Collection<Array<Any>> {
-      return File("src/test/validation/")
-          .walk()
-          .toList()
-          .filter { it.isFile }
-          .filter { it.extension == "graphql" }
-          .sortedBy { it.name }
-          //.filter { it.name.contains("InputObjectFieldType") }
-          .map { arrayOf(it.nameWithoutExtension, it) }
-    }
+    fun data() = testParametersForGraphQLFilesIn("src/test/validation/")
   }
 }

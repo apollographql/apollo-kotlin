@@ -3,6 +3,7 @@
 **/.idea/*
 !**/.idea/codeStyles
 !**/.idea/icon.png
+!**/.idea/runConfigurations
 *.iml
 build
 local.properties
