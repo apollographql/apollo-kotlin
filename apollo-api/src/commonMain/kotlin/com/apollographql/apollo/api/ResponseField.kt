@@ -61,8 +61,6 @@ class ResponseField(
       class Other(name: String): Named(name)
     }
   }
-
-  enum class Kind { OBJECT, OTHER }
   /**
    * Abstraction for condition to be associated with field
    */
@@ -104,7 +102,7 @@ class ResponseField(
     }
 
     val Typename = ResponseField(
-        type = Type.NotNull(Type.Named("String", Kind.OTHER)),
+        type = Type.NotNull(Type.Named.Other("String")),
         responseName = "__typename",
         fieldName = "__typename",
         arguments = emptyMap(),

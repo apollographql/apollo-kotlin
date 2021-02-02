@@ -15,6 +15,7 @@ import kotlin.Array
 import kotlin.Double
 import kotlin.String
 import kotlin.Suppress
+import kotlin.collections.Map
 
 @Suppress("NAME_SHADOWING", "UNUSED_ANONYMOUS_PARAMETER", "LocalVariableName",
     "RemoveExplicitTypeArguments", "NestedLambdaShadowedImplicitParameter", "PropertyName",
@@ -29,7 +30,9 @@ class GetHuman : Query<GetHuman.Data> {
   override fun name(): String = OPERATION_NAME
 
   override fun adapter(): ResponseAdapter<Data> = GetHuman_ResponseAdapter
-  override fun responseFields(): Array<ResponseField> = GetHuman_ResponseAdapter.RESPONSE_FIELDS
+  override fun responseFields(): Map<String, Array<ResponseField>> = mapOf(
+    "" to GetHuman_ResponseAdapter.RESPONSE_FIELDS
+  )
   data class Data(
     val human: Human,
     val node: Node

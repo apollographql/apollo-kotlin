@@ -60,28 +60,6 @@ object TestQuery_ResponseAdapter : ResponseAdapter<TestQuery.Data> {
   }
 
   object Foo : ResponseAdapter<TestQuery.Data.Foo> {
-<<<<<<< HEAD
-    val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
-      ResponseField(
-        type = ResponseField.Type.NotNull(ResponseField.Type.Named.Other("String")),
-        responseName = "__typename",
-        fieldName = "__typename",
-        arguments = emptyMap(),
-        conditions = emptyList(),
-        fields = emptyArray(),
-      ),
-      ResponseField(
-        type = ResponseField.Type.NotNull(ResponseField.Type.Named.Other("String")),
-        responseName = "foo",
-        fieldName = "foo",
-        arguments = emptyMap(),
-        conditions = emptyList(),
-        fields = emptyArray(),
-      )
-    )
-
-=======
->>>>>>> 59f0461fb... fix field sets for types with multiple implementations
     override fun fromResponse(reader: ResponseReader, __typename: String?): TestQuery.Data.Foo {
       val typename = __typename ?: reader.readString(ResponseField.Typename)
       return when(typename) {

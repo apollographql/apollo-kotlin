@@ -55,8 +55,9 @@ internal data class CreateReviewForEpisode(
   override fun name(): String = OPERATION_NAME
 
   override fun adapter(): ResponseAdapter<Data> = CreateReviewForEpisode_ResponseAdapter
-  override fun responseFields(): Array<ResponseField> =
-      CreateReviewForEpisode_ResponseAdapter.RESPONSE_FIELDS
+  override fun responseFields(): Map<String, Array<ResponseField>> = mapOf(
+    "" to CreateReviewForEpisode_ResponseAdapter.RESPONSE_FIELDS
+  )
   /**
    * The mutation type, represents all updates we can make to our data
    */

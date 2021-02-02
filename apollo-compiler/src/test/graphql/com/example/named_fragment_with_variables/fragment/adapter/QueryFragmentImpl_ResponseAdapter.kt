@@ -134,20 +134,6 @@ object QueryFragmentImpl_ResponseAdapter : ResponseAdapter<QueryFragmentImpl.Dat
     }
 
     object User : ResponseAdapter<QueryFragmentImpl.Data.Organization.User> {
-<<<<<<< HEAD
-      val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
-        ResponseField(
-          type = ResponseField.Type.NotNull(ResponseField.Type.Named.Other("String")),
-          responseName = "__typename",
-          fieldName = "__typename",
-          arguments = emptyMap(),
-          conditions = emptyList(),
-          fields = emptyArray(),
-        )
-      )
-
-=======
->>>>>>> 59f0461fb... fix field sets for types with multiple implementations
       override fun fromResponse(reader: ResponseReader, __typename: String?):
           QueryFragmentImpl.Data.Organization.User {
         val typename = __typename ?: reader.readString(ResponseField.Typename)

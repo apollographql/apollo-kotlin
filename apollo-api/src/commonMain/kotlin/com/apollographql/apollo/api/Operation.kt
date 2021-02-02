@@ -33,7 +33,7 @@ interface Operation<D : Operation.Data> {
   /**
    * Returns the array of root fields
    */
-  fun responseFields(): Array<ResponseField>
+  fun responseFields(): Map<String, Array<ResponseField>>
 
   /**
    * Returns GraphQL operation name

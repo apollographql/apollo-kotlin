@@ -53,7 +53,9 @@ data class TestQuery(
   override fun name(): String = OPERATION_NAME
 
   override fun adapter(): ResponseAdapter<Data> = TestQuery_ResponseAdapter
-  override fun responseFields(): Array<ResponseField> = TestQuery_ResponseAdapter.RESPONSE_FIELDS
+  override fun responseFields(): Map<String, Array<ResponseField>> = mapOf(
+    "" to TestQuery_ResponseAdapter.RESPONSE_FIELDS
+  )
   /**
    * The query type, represents all of the entry points into our object graph
    */

@@ -154,20 +154,6 @@ object AllStarships_ResponseAdapter : ResponseAdapter<AllStarships.Data> {
       object Node :
           ResponseAdapter<com.example.fragment_in_fragment.AllStarships.Data.AllStarships.Edge.Node>
           {
-<<<<<<< HEAD
-        val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
-          ResponseField(
-            type = ResponseField.Type.NotNull(ResponseField.Type.Named.Other("String")),
-            responseName = "__typename",
-            fieldName = "__typename",
-            arguments = emptyMap(),
-            conditions = emptyList(),
-            fields = emptyArray(),
-          )
-        )
-
-=======
->>>>>>> 59f0461fb... fix field sets for types with multiple implementations
         override fun fromResponse(reader: ResponseReader, __typename: String?):
             com.example.fragment_in_fragment.AllStarships.Data.AllStarships.Edge.Node {
           val typename = __typename ?: reader.readString(ResponseField.Typename)
@@ -361,20 +347,6 @@ object AllStarships_ResponseAdapter : ResponseAdapter<AllStarships.Data> {
               object Node :
                   ResponseAdapter<com.example.fragment_in_fragment.AllStarships.Data.AllStarships.Edge.Node.StarshipNode.PilotConnection.Edge.Node>
                   {
-<<<<<<< HEAD
-                val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
-                  ResponseField(
-                    type = ResponseField.Type.NotNull(ResponseField.Type.Named.Other("String")),
-                    responseName = "__typename",
-                    fieldName = "__typename",
-                    arguments = emptyMap(),
-                    conditions = emptyList(),
-                    fields = emptyArray(),
-                  )
-                )
-
-=======
->>>>>>> 59f0461fb... fix field sets for types with multiple implementations
                 override fun fromResponse(reader: ResponseReader, __typename: String?):
                     com.example.fragment_in_fragment.AllStarships.Data.AllStarships.Edge.Node.StarshipNode.PilotConnection.Edge.Node {
                   val typename = __typename ?: reader.readString(ResponseField.Typename)
@@ -465,20 +437,6 @@ object AllStarships_ResponseAdapter : ResponseAdapter<AllStarships.Data> {
                   object Homeworld :
                       ResponseAdapter<com.example.fragment_in_fragment.AllStarships.Data.AllStarships.Edge.Node.StarshipNode.PilotConnection.Edge.Node.PersonNode.Homeworld>
                       {
-<<<<<<< HEAD
-                    val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
-                      ResponseField(
-                        type = ResponseField.Type.NotNull(ResponseField.Type.Named.Other("String")),
-                        responseName = "__typename",
-                        fieldName = "__typename",
-                        arguments = emptyMap(),
-                        conditions = emptyList(),
-                        fields = emptyArray(),
-                      )
-                    )
-
-=======
->>>>>>> 59f0461fb... fix field sets for types with multiple implementations
                     override fun fromResponse(reader: ResponseReader, __typename: String?):
                         com.example.fragment_in_fragment.AllStarships.Data.AllStarships.Edge.Node.StarshipNode.PilotConnection.Edge.Node.PersonNode.Homeworld {
                       val typename = __typename ?: reader.readString(ResponseField.Typename)

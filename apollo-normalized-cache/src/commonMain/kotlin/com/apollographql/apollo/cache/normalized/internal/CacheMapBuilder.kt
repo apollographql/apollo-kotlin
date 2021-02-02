@@ -13,7 +13,7 @@ class CacheMapBuilder(
     private val variables: Operation.Variables,
     private val cacheKeyResolver: CacheKeyResolver,
     private val cacheHeaders: CacheHeaders,
-    private val rootResponseFields: Array<ResponseField>
+    private val rootResponseFields: Map<String, Array<ResponseField>>
 ) {
   private val cacheKeyBuilder = RealCacheKeyBuilder()
 
@@ -28,7 +28,7 @@ class CacheMapBuilder(
 
   private fun ResponseField.Type.isObject(): Boolean = when (this) {
     is ResponseField.Type.NotNull -> ofType.isObject()
-    is ResponseField.Type.Named -> kind == ResponseField.Kind.OBJECT
+    is ResponseField.Type.Named.Object -> true
     else -> false
   }
 
@@ -36,7 +36,7 @@ class CacheMapBuilder(
     pendingReferences.add(
         PendingReference(
             rootKey,
-            mapOf("" to rootResponseFields)
+            rootResponseFields
         )
     )
 

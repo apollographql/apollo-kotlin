@@ -61,20 +61,6 @@ object TestOperation_ResponseAdapter : ResponseAdapter<TestOperation.Data> {
   }
 
   object Random : ResponseAdapter<TestOperation.Data.Random> {
-<<<<<<< HEAD
-    val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
-      ResponseField(
-        type = ResponseField.Type.NotNull(ResponseField.Type.Named.Other("String")),
-        responseName = "__typename",
-        fieldName = "__typename",
-        arguments = emptyMap(),
-        conditions = emptyList(),
-        fields = emptyArray(),
-      )
-    )
-
-=======
->>>>>>> 59f0461fb... fix field sets for types with multiple implementations
     override fun fromResponse(reader: ResponseReader, __typename: String?):
         TestOperation.Data.Random {
       val typename = __typename ?: reader.readString(ResponseField.Typename)
@@ -175,20 +161,6 @@ object TestOperation_ResponseAdapter : ResponseAdapter<TestOperation.Data> {
       }
 
       object Friend : ResponseAdapter<TestOperation.Data.Random.BeingHumanRandom.Friend> {
-<<<<<<< HEAD
-        val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
-          ResponseField(
-            type = ResponseField.Type.NotNull(ResponseField.Type.Named.Other("String")),
-            responseName = "__typename",
-            fieldName = "__typename",
-            arguments = emptyMap(),
-            conditions = emptyList(),
-            fields = emptyArray(),
-          )
-        )
-
-=======
->>>>>>> 59f0461fb... fix field sets for types with multiple implementations
         override fun fromResponse(reader: ResponseReader, __typename: String?):
             TestOperation.Data.Random.BeingHumanRandom.Friend {
           val typename = __typename ?: reader.readString(ResponseField.Typename)
@@ -432,20 +404,6 @@ object TestOperation_ResponseAdapter : ResponseAdapter<TestOperation.Data> {
       }
 
       object Friend : ResponseAdapter<TestOperation.Data.Random.BeingWookieRandom.Friend> {
-<<<<<<< HEAD
-        val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
-          ResponseField(
-            type = ResponseField.Type.NotNull(ResponseField.Type.Named.Other("String")),
-            responseName = "__typename",
-            fieldName = "__typename",
-            arguments = emptyMap(),
-            conditions = emptyList(),
-            fields = emptyArray(),
-          )
-        )
-
-=======
->>>>>>> 59f0461fb... fix field sets for types with multiple implementations
         override fun fromResponse(reader: ResponseReader, __typename: String?):
             TestOperation.Data.Random.BeingWookieRandom.Friend {
           val typename = __typename ?: reader.readString(ResponseField.Typename)

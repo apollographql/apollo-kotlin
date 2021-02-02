@@ -58,7 +58,10 @@ data class GetUser(
   override fun name(): String = OPERATION_NAME
 
   override fun adapter(): ResponseAdapter<Data> = GetUser_ResponseAdapter
-  override fun responseFields(): Array<ResponseField> = GetUser_ResponseAdapter.RESPONSE_FIELDS
+  override fun responseFields(): Map<String, Array<ResponseField>> = mapOf(
+    "Query" to GetUser_ResponseAdapter.QueryData.RESPONSE_FIELDS,
+    "" to GetUser_ResponseAdapter.OtherData.RESPONSE_FIELDS,
+  )
   interface Data : Operation.Data {
     val __typename: String
 

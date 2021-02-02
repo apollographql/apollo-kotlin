@@ -15,6 +15,7 @@ import kotlin.Array
 import kotlin.String
 import kotlin.Suppress
 import kotlin.collections.List
+import kotlin.collections.Map
 
 @Suppress("NAME_SHADOWING", "UNUSED_ANONYMOUS_PARAMETER", "LocalVariableName",
     "RemoveExplicitTypeArguments", "NestedLambdaShadowedImplicitParameter", "PropertyName",
@@ -29,7 +30,9 @@ class GetPage : Query<GetPage.Data> {
   override fun name(): String = OPERATION_NAME
 
   override fun adapter(): ResponseAdapter<Data> = GetPage_ResponseAdapter
-  override fun responseFields(): Array<ResponseField> = GetPage_ResponseAdapter.RESPONSE_FIELDS
+  override fun responseFields(): Map<String, Array<ResponseField>> = mapOf(
+    "" to GetPage_ResponseAdapter.RESPONSE_FIELDS
+  )
   data class Data(
     val collection: Collection
   ) : Operation.Data {

@@ -18,20 +18,6 @@ import kotlin.Suppress
     "RemoveExplicitTypeArguments", "NestedLambdaShadowedImplicitParameter", "PropertyName",
     "RemoveRedundantQualifierName")
 object TestQuery_ResponseAdapter : ResponseAdapter<TestQuery.Data> {
-<<<<<<< HEAD
-  val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
-    ResponseField(
-      type = ResponseField.Type.NotNull(ResponseField.Type.Named.Other("String")),
-      responseName = "__typename",
-      fieldName = "__typename",
-      arguments = emptyMap(),
-      conditions = emptyList(),
-      fields = emptyArray(),
-    )
-  )
-
-=======
->>>>>>> 59f0461fb... fix field sets for types with multiple implementations
   override fun fromResponse(reader: ResponseReader, __typename: String?): TestQuery.Data {
     val typename = __typename ?: reader.readString(ResponseField.Typename)
     return when(typename) {
@@ -152,20 +138,6 @@ object TestQuery_ResponseAdapter : ResponseAdapter<TestQuery.Data> {
     }
 
     object Hero : ResponseAdapter<TestQuery.Data.QueryData.Hero> {
-<<<<<<< HEAD
-      val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
-        ResponseField(
-          type = ResponseField.Type.NotNull(ResponseField.Type.Named.Other("String")),
-          responseName = "__typename",
-          fieldName = "__typename",
-          arguments = emptyMap(),
-          conditions = emptyList(),
-          fields = emptyArray(),
-        )
-      )
-
-=======
->>>>>>> 59f0461fb... fix field sets for types with multiple implementations
       override fun fromResponse(reader: ResponseReader, __typename: String?):
           TestQuery.Data.QueryData.Hero {
         val typename = __typename ?: reader.readString(ResponseField.Typename)
@@ -265,20 +237,6 @@ object TestQuery_ResponseAdapter : ResponseAdapter<TestQuery.Data> {
     }
 
     object Droid : ResponseAdapter<TestQuery.Data.QueryData.Droid> {
-<<<<<<< HEAD
-      val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
-        ResponseField(
-          type = ResponseField.Type.NotNull(ResponseField.Type.Named.Other("String")),
-          responseName = "__typename",
-          fieldName = "__typename",
-          arguments = emptyMap(),
-          conditions = emptyList(),
-          fields = emptyArray(),
-        )
-      )
-
-=======
->>>>>>> 59f0461fb... fix field sets for types with multiple implementations
       override fun fromResponse(reader: ResponseReader, __typename: String?):
           TestQuery.Data.QueryData.Droid {
         val typename = __typename ?: reader.readString(ResponseField.Typename)
@@ -389,20 +347,6 @@ object TestQuery_ResponseAdapter : ResponseAdapter<TestQuery.Data> {
     }
 
     object Human : ResponseAdapter<TestQuery.Data.QueryData.Human> {
-<<<<<<< HEAD
-      val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
-        ResponseField(
-          type = ResponseField.Type.NotNull(ResponseField.Type.Named.Other("String")),
-          responseName = "__typename",
-          fieldName = "__typename",
-          arguments = emptyMap(),
-          conditions = emptyList(),
-          fields = emptyArray(),
-        )
-      )
-
-=======
->>>>>>> 59f0461fb... fix field sets for types with multiple implementations
       override fun fromResponse(reader: ResponseReader, __typename: String?):
           TestQuery.Data.QueryData.Human {
         val typename = __typename ?: reader.readString(ResponseField.Typename)

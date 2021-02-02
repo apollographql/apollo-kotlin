@@ -48,8 +48,9 @@ data class TestSubscription(
   override fun name(): String = OPERATION_NAME
 
   override fun adapter(): ResponseAdapter<Data> = TestSubscription_ResponseAdapter
-  override fun responseFields(): Array<ResponseField> =
-      TestSubscription_ResponseAdapter.RESPONSE_FIELDS
+  override fun responseFields(): Map<String, Array<ResponseField>> = mapOf(
+    "" to TestSubscription_ResponseAdapter.RESPONSE_FIELDS
+  )
   data class Data(
     /**
      * Subscription fires on every comment added

@@ -19,20 +19,6 @@ import kotlin.collections.List
     "RemoveExplicitTypeArguments", "NestedLambdaShadowedImplicitParameter", "PropertyName",
     "RemoveRedundantQualifierName")
 object GetUser_ResponseAdapter : ResponseAdapter<GetUser.Data> {
-<<<<<<< HEAD
-  val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
-    ResponseField(
-      type = ResponseField.Type.NotNull(ResponseField.Type.Named.Other("String")),
-      responseName = "__typename",
-      fieldName = "__typename",
-      arguments = emptyMap(),
-      conditions = emptyList(),
-      fields = emptyArray(),
-    )
-  )
-
-=======
->>>>>>> 59f0461fb... fix field sets for types with multiple implementations
   override fun fromResponse(reader: ResponseReader, __typename: String?): GetUser.Data {
     val typename = __typename ?: reader.readString(ResponseField.Typename)
     return when(typename) {
@@ -164,20 +150,6 @@ object GetUser_ResponseAdapter : ResponseAdapter<GetUser.Data> {
       }
 
       object User : ResponseAdapter<GetUser.Data.QueryData.Organization.User> {
-<<<<<<< HEAD
-        val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
-          ResponseField(
-            type = ResponseField.Type.NotNull(ResponseField.Type.Named.Other("String")),
-            responseName = "__typename",
-            fieldName = "__typename",
-            arguments = emptyMap(),
-            conditions = emptyList(),
-            fields = emptyArray(),
-          )
-        )
-
-=======
->>>>>>> 59f0461fb... fix field sets for types with multiple implementations
         override fun fromResponse(reader: ResponseReader, __typename: String?):
             GetUser.Data.QueryData.Organization.User {
           val typename = __typename ?: reader.readString(ResponseField.Typename)

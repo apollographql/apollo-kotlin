@@ -16,6 +16,7 @@ import kotlin.Int
 import kotlin.String
 import kotlin.Suppress
 import kotlin.collections.List
+import kotlin.collections.Map
 
 @Suppress("NAME_SHADOWING", "UNUSED_ANONYMOUS_PARAMETER", "LocalVariableName",
     "RemoveExplicitTypeArguments", "NestedLambdaShadowedImplicitParameter", "PropertyName",
@@ -30,8 +31,9 @@ class HeroDetailsQuery : Query<HeroDetailsQuery.Data> {
   override fun name(): String = OPERATION_NAME
 
   override fun adapter(): ResponseAdapter<Data> = HeroDetailsQuery_ResponseAdapter
-  override fun responseFields(): Array<ResponseField> =
-      HeroDetailsQuery_ResponseAdapter.RESPONSE_FIELDS
+  override fun responseFields(): Map<String, Array<ResponseField>> = mapOf(
+    "" to HeroDetailsQuery_ResponseAdapter.RESPONSE_FIELDS
+  )
   /**
    * The query type, represents all of the entry points into our object graph
    */

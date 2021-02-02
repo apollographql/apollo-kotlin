@@ -83,7 +83,7 @@ private fun responseFieldsPropertySpec(objectType: CodeGenerationAst.ObjectType)
   val initializer = CodeBlock.builder()
       .addStatement("arrayOf(")
       .indent()
-      .also { builder->
+      .also { builder ->
         builder.add(fields.map { field -> field.responseFieldInitializerCode(objectType) }.joinToCode(separator = ",\n"))
       }
       .unindent()
@@ -93,7 +93,9 @@ private fun responseFieldsPropertySpec(objectType: CodeGenerationAst.ObjectType)
   return PropertySpec
       .builder(
           name = "RESPONSE_FIELDS",
-          type = Array<ResponseField>::class.asClassName().parameterizedBy(ResponseField::class.asClassName()),
+          type = Array::class.asClassName().parameterizedBy(
+              ResponseField::class.asClassName(),
+          ),
       )
       .initializer(initializer)
       .build()
@@ -126,7 +128,7 @@ private fun CodeGenerationAst.FieldType.toTypeCode(): CodeBlock {
 }
 
 private fun CodeBlock.toNonNullable(): CodeBlock {
-  val builder =  CodeBlock.builder()
+  val builder = CodeBlock.builder()
   builder.add("%T(", ResponseField.Type.NotNull::class.java)
   builder.add(this)
   builder.add(")")
@@ -134,24 +136,25 @@ private fun CodeBlock.toNonNullable(): CodeBlock {
 }
 
 private fun CodeGenerationAst.Field.responseFieldInitializerCode(objectType: CodeGenerationAst.ObjectType): CodeBlock {
-    val builder = CodeBlock.builder().add("%T(\n", ResponseField::class)
-    builder.indent()
-    builder.add("type = %L,\n", type.toTypeCode())
-    builder.add("responseName = %S,\n", responseName)
-    builder.add("fieldName = %S,\n", schemaName)
-    builder.add("arguments = %L,\n", arguments.takeIf { it.isNotEmpty() }?.let { anyToCode(it) } ?: "emptyMap()")
-    builder.add("conditions = %L,\n", conditionsListCode(conditions))
-    builder.add("possibleFieldSets = %L,\n", fieldsCode(this.type, objectType))
-    builder.unindent()
-    builder.add(")")
+  val builder = CodeBlock.builder().add("%T(\n", ResponseField::class)
+  builder.indent()
+  builder.add("type = %L,\n", type.toTypeCode())
+  builder.add("responseName = %S,\n", responseName)
+  builder.add("fieldName = %S,\n", schemaName)
+  builder.add("arguments = %L,\n", arguments.takeIf { it.isNotEmpty() }?.let { anyToCode(it) } ?: "emptyMap()")
+  builder.add("conditions = %L,\n", conditionsListCode(conditions))
+  builder.add("possibleFieldSets = %L,\n", fieldsCode(this.type, objectType))
+  builder.unindent()
+  builder.add(")")
 
-    return builder.build()
-  }
+  return builder.build()
+}
 
 private fun fieldsCode(type: CodeGenerationAst.FieldType, objectType: CodeGenerationAst.ObjectType): CodeBlock {
   return when (val leafType = type.leafType()) {
     is CodeGenerationAst.FieldType.Scalar -> CodeBlock.of("emptyMap()")
     is CodeGenerationAst.FieldType.Object -> {
+      // Find the first nestedObject that has the type of this field.
       val nestedObjectType = objectType.nestedObjects.first { it.typeRef == leafType.typeRef }
       val builder = CodeBlock.Builder()
       builder.add("mapOf(\n")
@@ -175,11 +178,12 @@ private fun fieldsCode(type: CodeGenerationAst.FieldType, objectType: CodeGenera
   }
 }
 
-private fun CodeGenerationAst.FieldType.leafType(): CodeGenerationAst.FieldType = when(this) {
+private fun CodeGenerationAst.FieldType.leafType(): CodeGenerationAst.FieldType = when (this) {
   is CodeGenerationAst.FieldType.Scalar -> this
   is CodeGenerationAst.FieldType.Object -> this
   is CodeGenerationAst.FieldType.Array -> rawType.leafType()
 }
+
 private fun conditionsListCode(conditions: Set<CodeGenerationAst.Field.Condition>): CodeBlock {
   return conditions
       .map { condition ->

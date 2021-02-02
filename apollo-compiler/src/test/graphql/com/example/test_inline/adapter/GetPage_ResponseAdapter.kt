@@ -57,29 +57,6 @@ object GetPage_ResponseAdapter : ResponseAdapter<GetPage.Data> {
   }
 
   object Collection : ResponseAdapter<GetPage.Data.Collection> {
-<<<<<<< HEAD
-    val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
-      ResponseField(
-        type = ResponseField.Type.NotNull(ResponseField.Type.Named.Other("String")),
-        responseName = "__typename",
-        fieldName = "__typename",
-        arguments = emptyMap(),
-        conditions = emptyList(),
-        fields = emptyArray(),
-      ),
-      ResponseField(
-        type =
-            ResponseField.Type.NotNull(ResponseField.Type.List(ResponseField.Type.NotNull(ResponseField.Type.Named.Object("Item")))),
-        responseName = "items",
-        fieldName = "items",
-        arguments = emptyMap(),
-        conditions = emptyList(),
-        fields = Collection.Item.RESPONSE_FIELDS,
-      )
-    )
-
-=======
->>>>>>> 59f0461fb... fix field sets for types with multiple implementations
     override fun fromResponse(reader: ResponseReader, __typename: String?):
         GetPage.Data.Collection {
       val typename = __typename ?: reader.readString(ResponseField.Typename)
@@ -155,20 +132,6 @@ object GetPage_ResponseAdapter : ResponseAdapter<GetPage.Data> {
       }
 
       object Item : ResponseAdapter<GetPage.Data.Collection.ParticularCollectionCollection.Item> {
-<<<<<<< HEAD
-        val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
-          ResponseField(
-            type = ResponseField.Type.NotNull(ResponseField.Type.Named.Other("String")),
-            responseName = "__typename",
-            fieldName = "__typename",
-            arguments = emptyMap(),
-            conditions = emptyList(),
-            fields = emptyArray(),
-          )
-        )
-
-=======
->>>>>>> 59f0461fb... fix field sets for types with multiple implementations
         override fun fromResponse(reader: ResponseReader, __typename: String?):
             GetPage.Data.Collection.ParticularCollectionCollection.Item {
           val typename = __typename ?: reader.readString(ResponseField.Typename)
