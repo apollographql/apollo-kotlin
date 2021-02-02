@@ -2,6 +2,7 @@ package com.apollographql.apollo.internal.subscription
 
 import com.apollographql.apollo.api.CustomScalarAdapters
 import com.apollographql.apollo.api.Operation
+import com.apollographql.apollo.api.ResponseField
 import com.apollographql.apollo.api.Subscription
 import com.apollographql.apollo.api.internal.ResponseAdapter
 import com.apollographql.apollo.cache.normalized.ApolloStore
@@ -168,6 +169,10 @@ class SubscriptionAutoPersistTest {
 
     override fun operationId(): String {
       return operationId
+    }
+
+    override fun responseFields(): Map<String, Array<ResponseField>> {
+      return emptyMap()
     }
   }
 

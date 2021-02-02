@@ -1,6 +1,7 @@
 package com.apollographql.apollo.subscription
 
 import com.apollographql.apollo.api.Operation
+import com.apollographql.apollo.api.ResponseField
 import com.apollographql.apollo.api.Subscription
 import com.apollographql.apollo.api.internal.InputFieldMarshaller
 
@@ -32,4 +33,7 @@ class MockSubscription(
   override fun name(): String = name
 
   override fun operationId(): String = operationId
+  override fun responseFields(): Map<String, Array<ResponseField>> {
+    return emptyMap()
+  }
 }
