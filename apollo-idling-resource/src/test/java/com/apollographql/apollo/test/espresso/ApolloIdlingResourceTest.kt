@@ -172,6 +172,9 @@ class ApolloIdlingResourceTest {
       override fun operationId(): String {
         return ""
       }
+      override fun responseFields(): Map<String, Array<ResponseField>> {
+        return emptyMap()
+      }
     }
   }
 }
