@@ -59,4 +59,8 @@ class MockSubscription(
   override fun operationId(): String = name.hashCode().toString()
 
   data class Data(val name: String) : Operation.Data
+
+  override fun responseFields(): Map<String, Array<ResponseField>> {
+    return emptyMap()
+  }
 }

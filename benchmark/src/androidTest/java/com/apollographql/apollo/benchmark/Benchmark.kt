@@ -13,9 +13,9 @@ import com.apollographql.apollo.cache.CacheHeaders
 import com.apollographql.apollo.cache.normalized.CacheKeyResolver
 import com.apollographql.apollo.cache.normalized.Record
 import com.apollographql.apollo.cache.normalized.internal.ReadableStore
+import com.apollographql.apollo.cache.normalized.internal.batchDataFromCache
 import com.apollographql.apollo.cache.normalized.internal.normalize
 import com.apollographql.apollo.cache.normalized.internal.readDataFromCache
-import com.apollographql.apollo.cache.normalized.internal.streamDataFromCache
 import com.apollographql.apollo.cache.normalized.sql.SqlNormalizedCache
 import com.apollographql.apollo.cache.normalized.sql.SqlNormalizedCacheFactory
 import com.squareup.moshi.Moshi
@@ -60,7 +60,6 @@ class Benchmark {
   }
 
   lateinit var apolloClient: ApolloClient
-  lateinit var cache: SqlNormalizedCache
   lateinit var readableStore: ReadableStore
 
   @Before
@@ -72,6 +71,8 @@ class Benchmark {
     val data = operation.parse(bufferedSource()).data!!
 
     val records = operation.normalize(data, CustomScalarAdapters.DEFAULT, CacheKeyResolver.DEFAULT)
+
+    val cache = apolloClient.apolloStore.normalizedCache()
     cache.merge(records, CacheHeaders.NONE)
 
     readableStore = object : ReadableStore {
@@ -88,6 +89,10 @@ class Benchmark {
   @Test
   fun apolloReadCache() = benchmarkRule.measureRepeated {
     val data2 = operation.readDataFromCache(CustomScalarAdapters.DEFAULT, readableStore, CacheKeyResolver.DEFAULT, CacheHeaders.NONE)
-    //println(data2)
+  }
+
+  @Test
+  fun apolloBatchCache() = benchmarkRule.measureRepeated {
+    val data2 = operation.batchDataFromCache(CustomScalarAdapters.DEFAULT, readableStore, CacheKeyResolver.DEFAULT, CacheHeaders.NONE)
   }
 }

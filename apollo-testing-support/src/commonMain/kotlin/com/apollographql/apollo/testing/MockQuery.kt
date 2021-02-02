@@ -2,6 +2,7 @@ package com.apollographql.apollo.testing
 
 import com.apollographql.apollo.api.Operation
 import com.apollographql.apollo.api.Query
+import com.apollographql.apollo.api.ResponseField
 import com.apollographql.apollo.api.internal.ResponseAdapter
 import com.apollographql.apollo.api.internal.ResponseReader
 import com.apollographql.apollo.api.internal.ResponseWriter
@@ -32,4 +33,9 @@ class MockQuery : Query<MockQuery.Data> {
   override fun operationId(): String = "MockQuery".hashCode().toString()
 
   object Data : Operation.Data
+
+  override fun responseFields(): Map<String, Array<ResponseField>> {
+    return emptyMap()
+  }
+
 }
