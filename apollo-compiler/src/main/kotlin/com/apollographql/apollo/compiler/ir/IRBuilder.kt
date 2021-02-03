@@ -1,13 +1,14 @@
 package com.apollographql.apollo.compiler.ir
 
 import com.apollographql.apollo.compiler.ApolloMetadata
-import com.apollographql.apollo.compiler.applyIf
 import com.apollographql.apollo.compiler.ir.TypeDeclaration.Companion.KIND_ENUM
 import com.apollographql.apollo.compiler.ir.TypeDeclaration.Companion.KIND_INPUT_OBJECT_TYPE
 import com.apollographql.apollo.compiler.ir.TypeDeclaration.Companion.KIND_SCALAR_TYPE
+import com.apollographql.apollo.compiler.parser.antlr.GraphQLLexer
+import com.apollographql.apollo.compiler.parser.antlr.GraphQLParser
 import com.apollographql.apollo.compiler.parser.error.DocumentParseException
 import com.apollographql.apollo.compiler.parser.error.ParseException
-import com.apollographql.apollo.compiler.parser.graphql.DocumentParseResult
+import com.apollographql.apollo.compiler.parser.graphql.*
 import com.apollographql.apollo.compiler.parser.graphql.checkMultipleFragmentDefinitions
 import com.apollographql.apollo.compiler.parser.graphql.checkMultipleOperationDefinitions
 import com.apollographql.apollo.compiler.parser.graphql.validateArguments
@@ -15,6 +16,8 @@ import com.apollographql.apollo.compiler.parser.introspection.IntrospectionSchem
 import com.apollographql.apollo.compiler.parser.introspection.asGraphQLType
 import com.apollographql.apollo.compiler.parser.introspection.possibleTypes
 import com.apollographql.apollo.compiler.parser.introspection.rootTypeForOperationType
+import org.antlr.v4.runtime.*
+import org.antlr.v4.runtime.atn.PredictionMode
 
 class IRBuilder(private val schema: IntrospectionSchema,
                 private val schemaPackageName: String,
@@ -47,7 +50,7 @@ class IRBuilder(private val schema: IntrospectionSchema,
     val incomingTypes = incomingMetadata?.types ?: emptySet()
     val extraTypes = extraTypes()
 
-    val typeDeclarations = (documentParseResult.usedTypes + extraTypes) .usedTypeDeclarations()
+    val typeDeclarations = (documentParseResult.usedTypes + extraTypes).usedTypeDeclarations()
 
     val enumsToGenerate = typeDeclarations.filter { it.kind == KIND_ENUM }
         .map { it.name }
@@ -119,13 +122,63 @@ class IRBuilder(private val schema: IntrospectionSchema,
                 name = field.name,
                 description = field.description?.trim() ?: "",
                 type = field.type.asGraphQLType(),
-                defaultValue = field.defaultValue.normalizeValue(field.type)
+                defaultValue = field.defaultValue.normalizeDefaultValue(field.type)
             )
           } ?: emptyList()
       )
     }
   }
 
+  /**
+   * A special method to interpret the values coming from introspection json
+   * See https://github.com/apollographql/apollo-android/issues/2727
+   */
+  private fun Any?.normalizeDefaultValue(type: IntrospectionSchema.TypeRef): Any? {
+    if (this !is String) {
+      return normalizeValue(type)
+    }
+
+    return try {
+      antlrParse(this, "").value().toKotlin()
+    } catch (e: Exception) {
+      // seatbelt mode on, catch anything that can go wrong and use the previous behavour as fallback
+      normalizeValue(type)
+    }
+  }
+
+  /**
+   * This doesn't validate against the expected type, we're assuming the introspection schema is good
+   */
+  private fun GraphQLParser.ValueContext.toKotlin(): Any? {
+    return when(this) {
+      is GraphQLParser.StringValueContext -> this.STRING()?.text?.trimStart('\"')?.trimEnd('\"')
+      is GraphQLParser.BooleanValueContext -> this.BOOLEAN()?.text?.toBoolean()
+      is GraphQLParser.InlineInputTypeValueContext -> {
+        this.inlineInputType().inlineInputTypeField().map {
+          it.NAME() to it.valueOrVariable()?.value()?.toKotlin()
+        }.toMap()
+      }
+      is GraphQLParser.NumberValueContext -> if (
+          NUMBER().text.contains('.') ||
+          NUMBER().text.contains("e")) {
+        NUMBER().text.toDouble()
+      } else {
+        NUMBER().text.toInt()
+      }
+      is GraphQLParser.ArrayValueContext -> {
+        this.arrayValueType().valueOrVariable()?.map {
+          it.value()?.toKotlin()
+        } ?: emptyList<Any?>()
+      }
+      is GraphQLParser.LiteralValueContext -> {
+        this.NAME().text
+      }
+      else -> {
+        // Should never happen ?
+        text
+      }
+    }
+  }
   private fun Any?.normalizeValue(type: IntrospectionSchema.TypeRef): Any? {
     if (this == null) {
       return null
@@ -267,6 +320,44 @@ class IRBuilder(private val schema: IntrospectionSchema,
       }
 
       fragment
+    }
+  }
+
+  companion object {
+    fun antlrParse(document: String, absolutePath: String): GraphQLParser {
+      val tokenStream = GraphQLLexer(ANTLRInputStream(document))
+          .apply { removeErrorListeners() }
+          .let { CommonTokenStream(it) }
+
+      val parser = GraphQLParser(tokenStream).apply {
+        interpreter.predictionMode = PredictionMode.LL
+        removeErrorListeners()
+        addErrorListener(object : BaseErrorListener() {
+          override fun syntaxError(
+              recognizer: Recognizer<*, *>?, offendingSymbol: Any?, line: Int, position: Int, msg: String?,
+              e: RecognitionException?
+          ) {
+            throw DocumentParseException(
+                message = "Unsupported token `${(offendingSymbol as? Token)?.text ?: offendingSymbol.toString()}`",
+                filePath = absolutePath,
+                sourceLocation = SourceLocation(
+                    line = line,
+                    position = position
+                )
+            )
+          }
+        })
+      }
+
+      try {
+        return parser
+      } catch (e: ParseException) {
+        throw DocumentParseException(
+            parseException = e,
+            filePath = absolutePath
+        )
+
+      }
     }
   }
 }
