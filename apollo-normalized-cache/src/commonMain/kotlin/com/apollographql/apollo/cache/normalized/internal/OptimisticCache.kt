@@ -1,6 +1,5 @@
 package com.apollographql.apollo.cache.normalized.internal
 
-import com.apollographql.apollo.api.internal.json.JsonReader
 import com.apollographql.apollo.cache.CacheHeaders
 import com.apollographql.apollo.cache.normalized.CacheKey
 import com.apollographql.apollo.cache.normalized.NormalizedCache
@@ -25,6 +24,14 @@ class OptimisticCache : NormalizedCache() {
     return keys.mapNotNull { key ->
       nonOptimisticRecords[key].mergeJournalRecord(key)
     }
+  }
+
+  override fun merge(record: Record, cacheHeaders: CacheHeaders): Set<String> {
+    return nextCache?.merge(record, cacheHeaders) ?: emptySet()
+  }
+
+  override fun merge(records: Collection<Record>, cacheHeaders: CacheHeaders): Set<String> {
+    return nextCache?.merge(records, cacheHeaders) ?: emptySet()
   }
 
   override fun clearAll() {
@@ -77,14 +84,10 @@ class OptimisticCache : NormalizedCache() {
     return changedCacheKeys
   }
 
-  override fun performMerge(apolloRecord: Record, oldRecord: Record?, cacheHeaders: CacheHeaders): Set<String> {
-    return emptySet()
-  }
-
-  @OptIn(ExperimentalStdlibApi::class)
-  override fun dump() = buildMap<KClass<*>, Map<String, Record>> {
-    put(this@OptimisticCache::class, lruCache.dump().mapValues { (_, journal) -> journal.snapshot })
-    putAll(nextCache?.dump().orEmpty())
+  override fun dump(): Map<KClass<*>, Map<String, Record>> {
+    return mapOf(
+        this::class to lruCache.dump().mapValues { (_, journal) -> journal.snapshot }
+    ) + nextCache?.dump().orEmpty()
   }
 
   private fun Record?.mergeJournalRecord(key: String): Record? {
@@ -114,24 +117,25 @@ class OptimisticCache : NormalizedCache() {
      * Lookups record by mutation id, if it's found removes it from the history and invalidates snapshot record. Snapshot record is
      * superposition of all record versions in the history.
      */
-    @OptIn(ExperimentalStdlibApi::class)
     fun revert(mutationId: Uuid): Set<String> {
       val recordIndex = history.indexOfFirst { mutationId == it.mutationId }
       if (recordIndex == -1) {
         return emptySet()
       }
-      return buildSet {
-        add(history.removeAt(recordIndex).key)
 
-        for (i in kotlin.math.max(0, recordIndex - 1) until history.size) {
-          val record = history[i]
-          if (i == kotlin.math.max(0, recordIndex - 1)) {
-            snapshot = record.toBuilder().build()
-          } else {
-            addAll(snapshot.mergeWith(record))
-          }
+      val result = HashSet<String>()
+      result.add(history.removeAt(recordIndex).key)
+
+      for (i in kotlin.math.max(0, recordIndex - 1) until history.size) {
+        val record = history[i]
+        if (i == kotlin.math.max(0, recordIndex - 1)) {
+          snapshot = record.toBuilder().build()
+        } else {
+          result.addAll(snapshot.mergeWith(record))
         }
       }
+
+      return result
     }
   }
 }

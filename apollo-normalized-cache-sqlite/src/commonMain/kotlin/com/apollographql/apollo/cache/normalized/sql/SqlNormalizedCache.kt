@@ -77,10 +77,6 @@ class SqlNormalizedCache internal constructor(
     )
   }
 
-  override fun performMerge(apolloRecord: Record, oldRecord: Record?, cacheHeaders: CacheHeaders): Set<String> {
-    throw UnsupportedOperationException()
-  }
-
   override fun dump(): Map<KClass<*>, Map<String, Record>> {
     return mapOf(
         this@SqlNormalizedCache::class to cacheQueries.selectAllRecords()

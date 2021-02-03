@@ -75,7 +75,7 @@ class RealApolloStore(
     return writeTransaction {
       var count = 0
       for (cacheKey in cacheKeys) {
-        if (optimisticCache.remove(cacheKey)) {
+        if (optimisticCache.remove(cacheKey, cascade = cascade)) {
           count++
         }
       }

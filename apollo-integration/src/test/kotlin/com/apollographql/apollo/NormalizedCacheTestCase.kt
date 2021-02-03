@@ -11,8 +11,7 @@ import com.apollographql.apollo.api.Input.Companion.fromNullable
 import com.apollographql.apollo.api.Response
 import com.apollographql.apollo.cache.normalized.CacheKey.Companion.from
 import com.apollographql.apollo.cache.normalized.NormalizedCache.Companion.prettifyDump
-import com.apollographql.apollo.cache.normalized.lru.EvictionPolicy
-import com.apollographql.apollo.cache.normalized.lru.LruNormalizedCacheFactory
+import com.apollographql.apollo.cache.normalized.MemoryCacheFactory
 import com.apollographql.apollo.fetcher.ApolloResponseFetchers
 import com.apollographql.apollo.integration.httpcache.AllPlanetsQuery
 import com.apollographql.apollo.integration.normalizer.CharacterDetailsQuery
@@ -58,7 +57,7 @@ class NormalizedCacheTestCase {
     apolloClient = ApolloClient.builder()
         .serverUrl(server.url("/"))
         .okHttpClient(okHttpClient)
-        .normalizedCache(LruNormalizedCacheFactory(EvictionPolicy.NO_EVICTION), IdFieldCacheKeyResolver())
+        .normalizedCache(MemoryCacheFactory(maxSizeBytes = Int.MAX_VALUE), IdFieldCacheKeyResolver())
         .dispatcher(immediateExecutor())
         .build()
   }
@@ -663,38 +662,42 @@ class NormalizedCacheTestCase {
             .responseFetcher(ApolloResponseFetchers.NETWORK_ONLY), Predicate<Response<HeroAndFriendsNamesWithIDsQuery.Data>> { response -> !response.hasErrors() }
     )
     val dump = apolloClient.apolloStore.normalizedCache().dump()
-    Truth.assertThat(prettifyDump(dump)).isEqualTo("""OptimisticCache {}
-LruNormalizedCache {
-  "1002" : {
-    "id" : 1002
-    "name" : Han Solo
-  }
+    Truth.assertThat(prettifyDump(dump)).isEqualTo(
+        """
+          OptimisticCache {}
+          MemoryCache {
+            "1000" : {
+              "id" : 1000
+              "name" : Luke Skywalker
+            }
+          
+            "1002" : {
+              "id" : 1002
+              "name" : Han Solo
+            }
+          
+            "1003" : {
+              "id" : 1003
+              "name" : Leia Organa
+            }
+          
+            "2001" : {
+              "id" : 2001
+              "name" : R2-D2
+              "friends" : [
+                CacheRecordRef(1000)
+                CacheRecordRef(1002)
+                CacheRecordRef(1003)
+              ]
+            }
+          
+            "QUERY_ROOT" : {
+              "hero({"episode":"NEWHOPE"})" : CacheRecordRef(2001)
+            }
+          }
 
-  "QUERY_ROOT" : {
-    "hero({"episode":"NEWHOPE"})" : CacheRecordRef(2001)
-  }
-
-  "1003" : {
-    "id" : 1003
-    "name" : Leia Organa
-  }
-
-  "1000" : {
-    "id" : 1000
-    "name" : Luke Skywalker
-  }
-
-  "2001" : {
-    "id" : 2001
-    "name" : R2-D2
-    "friends" : [
-      CacheRecordRef(1000)
-      CacheRecordRef(1002)
-      CacheRecordRef(1003)
-    ]
-  }
-}
-""")
+        """.trimIndent()
+    )
   }
 
   @Test
@@ -767,7 +770,7 @@ LruNormalizedCache {
         }
     )
     Truth.assertThat(prettifyDump(apolloClient.apolloStore.normalizedCache().dump())).isEqualTo("""OptimisticCache {}
-LruNormalizedCache {
+MemoryCache {
   "QUERY_ROOT" : {
     "hero({"episode":"NEWHOPE"})" : CacheRecordRef(2001)
   }

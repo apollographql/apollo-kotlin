@@ -12,8 +12,7 @@ import com.apollographql.apollo.cache.normalized.CacheReference
 import com.apollographql.apollo.cache.normalized.NormalizedCache
 import com.apollographql.apollo.cache.normalized.Record
 import com.apollographql.apollo.cache.normalized.Record.Companion.builder
-import com.apollographql.apollo.cache.normalized.lru.EvictionPolicy
-import com.apollographql.apollo.cache.normalized.lru.LruNormalizedCacheFactory
+import com.apollographql.apollo.cache.normalized.MemoryCacheFactory
 import com.apollographql.apollo.integration.httpcache.AllPlanetsQuery
 import com.apollographql.apollo.integration.normalizer.*
 import com.apollographql.apollo.integration.normalizer.type.Episode
@@ -41,7 +40,7 @@ class ResponseNormalizationTest {
     apolloClient = ApolloClient.builder()
         .serverUrl(server.url("/"))
         .okHttpClient(okHttpClient)
-        .normalizedCache(LruNormalizedCacheFactory(EvictionPolicy.NO_EVICTION), IdFieldCacheKeyResolver())
+        .normalizedCache(MemoryCacheFactory(maxSizeBytes = Int.MAX_VALUE), IdFieldCacheKeyResolver())
         .dispatcher(immediateExecutor())
         .build()
     normalizedCache = apolloClient.apolloStore.normalizedCache()
@@ -71,7 +70,7 @@ class ResponseNormalizationTest {
     normalizedCache.merge(listOf(newRecord), CacheHeaders.NONE)
     val finalRecord = normalizedCache.loadRecord(record.key, CacheHeaders.NONE)
     Truth.assertThat(finalRecord!!.hasField("field2")).isTrue()
-    normalizedCache.remove(from(record.key))
+    normalizedCache.remove(from(record.key), false)
   }
 
   @Test

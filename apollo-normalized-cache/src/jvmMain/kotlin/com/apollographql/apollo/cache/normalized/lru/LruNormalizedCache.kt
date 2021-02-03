@@ -1,43 +1,34 @@
 package com.apollographql.apollo.cache.normalized.lru
 
-import com.apollographql.apollo.api.internal.json.JsonReader
 import com.apollographql.apollo.cache.ApolloCacheHeaders
 import com.apollographql.apollo.cache.CacheHeaders
 import com.apollographql.apollo.cache.normalized.CacheKey
 import com.apollographql.apollo.cache.normalized.NormalizedCache
 import com.apollographql.apollo.cache.normalized.Record
-import com.apollographql.apollo.cache.normalized.internal.MapJsonReader
 import com.nytimes.android.external.cache.Cache
 import com.nytimes.android.external.cache.CacheBuilder
 import java.nio.charset.Charset
 import kotlin.reflect.KClass
 
-/**
- * A [NormalizedCache] backed by an in memory [Cache]. Can be configured with an optional secondaryCache [ ], which will be used as a backup if a [Record] is not present in the primary cache.
- *
- *
- * A common configuration is to have secondary SQL cache.
- */
 @Deprecated("Will be removed soon", replaceWith = ReplaceWith("MemoryCache", "com.apollographql.apollo.cache.normalized.MemoryCache"))
 class LruNormalizedCache internal constructor(evictionPolicy: EvictionPolicy) : NormalizedCache() {
 
-  private val lruCache: Cache<String, Record> =
-      CacheBuilder.newBuilder().apply {
-        if (evictionPolicy.maxSizeBytes != null) {
-          maximumWeight(evictionPolicy.maxSizeBytes).weigher { key: String, value: Record ->
-            key.toByteArray(Charset.defaultCharset()).size + value.sizeEstimateBytes()
-          }
-        }
-        if (evictionPolicy.maxEntries != null) {
-          maximumSize(evictionPolicy.maxEntries)
-        }
-        if (evictionPolicy.expireAfterAccess != null) {
-          expireAfterAccess(evictionPolicy.expireAfterAccess, evictionPolicy.expireAfterAccessTimeUnit!!)
-        }
-        if (evictionPolicy.expireAfterWrite != null) {
-          expireAfterWrite(evictionPolicy.expireAfterWrite, evictionPolicy.expireAfterWriteTimeUnit!!)
-        }
-      }.build()
+  private val lruCache: Cache<String, Record> = CacheBuilder.newBuilder().apply {
+    if (evictionPolicy.maxSizeBytes != null) {
+      maximumWeight(evictionPolicy.maxSizeBytes).weigher { key: String, value: Record ->
+        key.toByteArray(Charset.defaultCharset()).size + value.sizeEstimateBytes()
+      }
+    }
+    if (evictionPolicy.maxEntries != null) {
+      maximumSize(evictionPolicy.maxEntries)
+    }
+    if (evictionPolicy.expireAfterAccess != null) {
+      expireAfterAccess(evictionPolicy.expireAfterAccess, evictionPolicy.expireAfterAccessTimeUnit!!)
+    }
+    if (evictionPolicy.expireAfterWrite != null) {
+      expireAfterWrite(evictionPolicy.expireAfterWrite, evictionPolicy.expireAfterWriteTimeUnit!!)
+    }
+  }.build()
 
   override fun loadRecord(key: String, cacheHeaders: CacheHeaders): Record? {
     return try {
@@ -51,6 +42,10 @@ class LruNormalizedCache internal constructor(evictionPolicy: EvictionPolicy) : 
         lruCache.invalidate(key)
       }
     }
+  }
+
+  override fun loadRecords(keys: Collection<String>, cacheHeaders: CacheHeaders): Collection<Record> {
+    return keys.mapNotNull { key -> loadRecord(key, cacheHeaders) }
   }
 
   override fun clearAll() {
@@ -74,20 +69,31 @@ class LruNormalizedCache internal constructor(evictionPolicy: EvictionPolicy) : 
     return result
   }
 
-  private fun clearCurrentCache() {
-    lruCache.invalidateAll()
-  }
+  override fun merge(record: Record, cacheHeaders: CacheHeaders): Set<String> {
+    if (cacheHeaders.hasHeader(ApolloCacheHeaders.DO_NOT_STORE)) {
+      return emptySet()
+    }
 
-  override fun performMerge(apolloRecord: Record, oldRecord: Record?, cacheHeaders: CacheHeaders): Set<String> {
-    return if (oldRecord == null) {
-      lruCache.put(apolloRecord.key, apolloRecord)
-      apolloRecord.keys()
+    val oldRecord = loadRecord(record.key, cacheHeaders)
+    val changedKeys = if (oldRecord == null) {
+      lruCache.put(record.key, record)
+      record.keys()
     } else {
-      oldRecord.mergeWith(apolloRecord).also {
+      oldRecord.mergeWith(record).also {
         //re-insert to trigger new weight calculation
-        lruCache.put(apolloRecord.key, oldRecord)
+        lruCache.put(record.key, oldRecord)
       }
     }
+
+    return changedKeys + nextCache?.merge(record, cacheHeaders).orEmpty()
+  }
+
+  override fun merge(records: Collection<Record>, cacheHeaders: CacheHeaders): Set<String> {
+    TODO("Not yet implemented")
+  }
+
+  private fun clearCurrentCache() {
+    lruCache.invalidateAll()
   }
 
   @OptIn(ExperimentalStdlibApi::class)

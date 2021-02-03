@@ -24,9 +24,11 @@ import org.junit.Rule
 import org.junit.Test
 import java.io.IOException
 import java.util.concurrent.atomic.AtomicBoolean
+import kotlin.reflect.KClass
 
 class CacheHeadersTest {
   val server = MockWebServer()
+
   @Test
   @Throws(ApolloException::class, IOException::class)
   fun testHeadersReceived() {
@@ -43,12 +45,23 @@ class CacheHeadersTest {
       }
 
       override fun clearAll() {}
+
       override fun remove(cacheKey: CacheKey, cascade: Boolean): Boolean {
         return false
       }
 
-      override fun performMerge(apolloRecord: Record, oldRecord: Record?, cacheHeaders: CacheHeaders): Set<String> {
+      override fun loadRecords(keys: Collection<String>, cacheHeaders: CacheHeaders): Collection<Record> {
+        hasHeader.set(cacheHeaders.hasHeader(ApolloCacheHeaders.DO_NOT_STORE))
+        return emptyList()
+      }
+
+      override fun merge(records: Collection<Record>, cacheHeaders: CacheHeaders): Set<String> {
+        hasHeader.set(cacheHeaders.hasHeader(ApolloCacheHeaders.DO_NOT_STORE))
         return emptySet()
+      }
+
+      override fun dump(): Map<@JvmSuppressWildcards KClass<*>, Map<String, Record>> {
+        return emptyMap()
       }
     }
     val cacheFactory: NormalizedCacheFactory<NormalizedCache> = object : NormalizedCacheFactory<NormalizedCache>() {
@@ -86,12 +99,23 @@ class CacheHeadersTest {
       }
 
       override fun clearAll() {}
+
       override fun remove(cacheKey: CacheKey, cascade: Boolean): Boolean {
         return false
       }
 
-      override fun performMerge(apolloRecord: Record, oldRecord: Record?, cacheHeaders: CacheHeaders): Set<String> {
+      override fun loadRecords(keys: Collection<String>, cacheHeaders: CacheHeaders): Collection<Record> {
+        hasHeader.set(cacheHeaders.hasHeader(ApolloCacheHeaders.DO_NOT_STORE))
+        return emptyList()
+      }
+
+      override fun merge(records: Collection<Record>, cacheHeaders: CacheHeaders): Set<String> {
+        hasHeader.set(cacheHeaders.hasHeader(ApolloCacheHeaders.DO_NOT_STORE))
         return emptySet()
+      }
+
+      override fun dump(): Map<@JvmSuppressWildcards KClass<*>, Map<String, Record>> {
+        return emptyMap()
       }
     }
     val cacheFactory: NormalizedCacheFactory<NormalizedCache> = object : NormalizedCacheFactory<NormalizedCache>() {

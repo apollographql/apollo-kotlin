@@ -10,8 +10,7 @@ import com.apollographql.apollo.cache.normalized.Record
 import com.apollographql.apollo.cache.normalized.CacheKey
 import com.apollographql.apollo.cache.normalized.NormalizedCache
 import com.apollographql.apollo.cache.normalized.RecordFieldJsonAdapter
-import com.apollographql.apollo.cache.normalized.lru.EvictionPolicy
-import com.apollographql.apollo.cache.normalized.lru.LruNormalizedCacheFactory
+import com.apollographql.apollo.cache.normalized.MemoryCacheFactory
 import com.apollographql.apollo.cache.normalized.NormalizedCacheFactory
 import com.apollographql.apollo.fetcher.ApolloResponseFetchers.NETWORK_ONLY
 import com.apollographql.apollo.integration.normalizer.EpisodeHeroNameQuery
@@ -34,7 +33,6 @@ import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
 
-
 class Rx2ApolloTest {
   private lateinit var apolloClient: ApolloClient
 
@@ -50,7 +48,7 @@ class Rx2ApolloTest {
         .serverUrl(server.url("/"))
         .dispatcher(immediateExecutor())
         .okHttpClient(okHttpClient)
-        .normalizedCache(LruNormalizedCacheFactory(EvictionPolicy.NO_EVICTION), IdFieldCacheKeyResolver())
+        .normalizedCache(MemoryCacheFactory(maxSizeBytes = Int.MAX_VALUE), IdFieldCacheKeyResolver())
         .build()
   }
 

@@ -81,7 +81,7 @@ class SqlNormalizedCacheTest {
     cache.merge(Record.builder(STANDARD_KEY)
         .addField("fieldKey", "valueUpdated")
         .addField("newFieldKey", true).build(), CacheHeaders.NONE)
-    cache.remove(CacheKey(STANDARD_KEY))
+    cache.remove(cacheKey = CacheKey(STANDARD_KEY), cascade = false)
     val record = cache.loadRecord(STANDARD_KEY, CacheHeaders.NONE)
     assertNull(record)
   }
