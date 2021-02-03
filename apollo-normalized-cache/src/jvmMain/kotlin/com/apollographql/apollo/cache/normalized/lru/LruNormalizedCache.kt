@@ -16,7 +16,7 @@ class LruNormalizedCache internal constructor(evictionPolicy: EvictionPolicy) : 
   private val lruCache: Cache<String, Record> = CacheBuilder.newBuilder().apply {
     if (evictionPolicy.maxSizeBytes != null) {
       maximumWeight(evictionPolicy.maxSizeBytes).weigher { key: String, value: Record ->
-        key.toByteArray(Charset.defaultCharset()).size + value.sizeEstimateBytes()
+        key.toByteArray(Charset.defaultCharset()).size + value.sizeInBytes
       }
     }
     if (evictionPolicy.maxEntries != null) {
@@ -79,10 +79,9 @@ class LruNormalizedCache internal constructor(evictionPolicy: EvictionPolicy) : 
       lruCache.put(record.key, record)
       record.keys()
     } else {
-      oldRecord.mergeWith(record).also {
-        //re-insert to trigger new weight calculation
-        lruCache.put(record.key, oldRecord)
-      }
+      val (mergedRecord, changedKeys) = oldRecord.mergeWith(record)
+      lruCache.put(record.key, mergedRecord)
+      changedKeys
     }
 
     return changedKeys + nextCache?.merge(record, cacheHeaders).orEmpty()
