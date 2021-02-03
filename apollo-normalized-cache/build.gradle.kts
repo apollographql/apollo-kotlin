@@ -33,6 +33,9 @@ kotlin {
     }
 
     val jvmMain by getting {
+      dependencies {
+        implementation(groovy.util.Eval.x(project, "x.dep.cache"))
+      }
     }
 
     val iosMain by getting {
