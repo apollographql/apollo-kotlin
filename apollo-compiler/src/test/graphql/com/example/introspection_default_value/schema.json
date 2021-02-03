@@ -14,11 +14,8 @@
             "description": "",
             "isDeprecated": false,
             "type": {
-              "kind": "NON_NULL",
-              "ofType": {
-                "kind": "SCALAR",
-                "name": "String"
-              }
+              "kind": "SCALAR",
+              "name": "String"
             },
             "defaultValue": "\"me\""
           }

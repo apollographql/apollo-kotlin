@@ -5,6 +5,7 @@
 //
 package com.example.introspection_default_value.type
 
+import com.apollographql.apollo.api.Input
 import com.apollographql.apollo.api.InputType
 import com.apollographql.apollo.api.internal.InputFieldMarshaller
 import kotlin.String
@@ -13,9 +14,11 @@ import kotlin.Suppress
 @Suppress("NAME_SHADOWING", "UNUSED_ANONYMOUS_PARAMETER", "LocalVariableName",
     "RemoveExplicitTypeArguments", "NestedLambdaShadowedImplicitParameter")
 data class SampleInput(
-  val user: String = "me"
+  val user: Input<String> = Input.optional("me")
 ) : InputType {
   override fun marshaller(): InputFieldMarshaller = InputFieldMarshaller.invoke { writer ->
-    writer.writeString("user", this@SampleInput.user)
+    if (this@SampleInput.user.defined) {
+      writer.writeString("user", this@SampleInput.user.value)
+    }
   }
 }

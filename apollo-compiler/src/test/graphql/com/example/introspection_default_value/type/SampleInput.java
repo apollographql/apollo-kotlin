@@ -5,6 +5,7 @@
 //
 package com.example.introspection_default_value.type;
 
+import com.apollographql.apollo.api.Input;
 import com.apollographql.apollo.api.InputType;
 import com.apollographql.apollo.api.internal.InputFieldMarshaller;
 import com.apollographql.apollo.api.internal.InputFieldWriter;
@@ -14,20 +15,21 @@ import java.lang.Object;
 import java.lang.Override;
 import java.lang.String;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 public final class SampleInput implements InputType {
-  private final @NotNull String user;
+  private final Input<String> user;
 
   private transient volatile int $hashCode;
 
   private transient volatile boolean $hashCodeMemoized;
 
-  SampleInput(@NotNull String user) {
+  SampleInput(Input<String> user) {
     this.user = user;
   }
 
-  public @NotNull String user() {
-    return this.user;
+  public @Nullable String user() {
+    return this.user.value;
   }
 
   public static Builder builder() {
@@ -39,7 +41,9 @@ public final class SampleInput implements InputType {
     return new InputFieldMarshaller() {
       @Override
       public void marshal(InputFieldWriter writer) throws IOException {
-        writer.writeString("user", user);
+        if (user.defined) {
+          writer.writeString("user", user.value);
+        }
       }
     };
   }
@@ -69,18 +73,22 @@ public final class SampleInput implements InputType {
   }
 
   public static final class Builder {
-    private @NotNull String user = "me";
+    private Input<String> user = Input.fromNullable("me");
 
     Builder() {
     }
 
-    public Builder user(@NotNull String user) {
-      this.user = user;
+    public Builder user(@Nullable String user) {
+      this.user = Input.fromNullable(user);
+      return this;
+    }
+
+    public Builder userInput(@NotNull Input<String> user) {
+      this.user = Utils.checkNotNull(user, "user == null");
       return this;
     }
 
     public SampleInput build() {
-      Utils.checkNotNull(user, "user == null");
       return new SampleInput(user);
     }
   }

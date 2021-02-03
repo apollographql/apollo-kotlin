@@ -171,7 +171,11 @@ class IRBuilder(private val schema: IntrospectionSchema,
         } ?: emptyList<Any?>()
       }
       is GraphQLParser.LiteralValueContext -> {
-        this.NAME().text
+        if (NAME().text == "null") {
+          null
+        } else {
+          NAME().text
+        }
       }
       else -> {
         // Should never happen ?
