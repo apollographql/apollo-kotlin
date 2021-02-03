@@ -7,7 +7,7 @@ import com.benasher44.uuid.Uuid
  * A normalized entry that corresponds to a response object. Object fields are stored if they are a GraphQL Scalars. If
  * a field is a GraphQL Object a [CacheReference] will be stored instead.
  */
-data class Record (
+class Record (
     val key: String,
     val fields: Map<String, Any?>,
     val mutationId: Uuid? = null,

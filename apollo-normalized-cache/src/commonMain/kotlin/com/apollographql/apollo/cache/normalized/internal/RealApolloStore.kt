@@ -237,8 +237,13 @@ class RealApolloStore(
         data = operationData,
         customScalarAdapters = customScalarAdapters,
         cacheKeyResolver = cacheKeyResolver
-    )
-        .map { record -> record.copy(mutationId = mutationId) }
+    ).map { record ->
+      Record(
+          key = record.key,
+          fields = record.fields,
+          mutationId = mutationId
+      )
+    }
 
     /**
      * TODO: should we forward the cache headers to the optimistic store?
