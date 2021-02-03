@@ -12,6 +12,7 @@ import com.apollographql.apollo.api.internal.InputFieldMarshaller
 import com.apollographql.apollo.api.internal.ResponseAdapter
 import com.example.arguments_simple.fragment.adapter.HeroDetailsImpl_ResponseAdapter
 import kotlin.Any
+import kotlin.Boolean
 import kotlin.Int
 import kotlin.String
 import kotlin.collections.List
@@ -19,21 +20,24 @@ import kotlin.collections.Map
 import kotlin.jvm.Transient
 
 data class HeroDetailsImpl(
-  val first: Input<Int> = Input.absent()
+  val friendsCount: Input<Int> = Input.absent(),
+  val includeName: Boolean
 ) : Fragment<HeroDetailsImpl.Data> {
   @Transient
   private val variables: Operation.Variables = object : Operation.Variables() {
     override fun valueMap(): Map<String, Any?> = mutableMapOf<String, Any?>().apply {
-      if (this@HeroDetailsImpl.first.defined) {
-        this["first"] = this@HeroDetailsImpl.first.value
+      if (this@HeroDetailsImpl.friendsCount.defined) {
+        this["friendsCount"] = this@HeroDetailsImpl.friendsCount.value
       }
+      this["IncludeName"] = this@HeroDetailsImpl.includeName
     }
 
     override fun marshaller(): InputFieldMarshaller {
       return InputFieldMarshaller.invoke { writer ->
-        if (this@HeroDetailsImpl.first.defined) {
-          writer.writeInt("first", this@HeroDetailsImpl.first.value)
+        if (this@HeroDetailsImpl.friendsCount.defined) {
+          writer.writeInt("friendsCount", this@HeroDetailsImpl.friendsCount.value)
         }
+        writer.writeBoolean("IncludeName", this@HeroDetailsImpl.includeName)
       }
     }
   }

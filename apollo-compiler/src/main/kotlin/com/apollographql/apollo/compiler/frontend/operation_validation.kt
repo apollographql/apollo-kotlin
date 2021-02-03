@@ -8,6 +8,11 @@ private class ExecutableDocumentValidator(val schema: Schema, val fragmentDefini
 
   private val issues = mutableListOf<Issue>()
 
+  /**
+   * As the tree is walked, variable references will be put here
+   */
+  private val variableReferences = mutableListOf<InputValueScope.VariableReference>()
+
   fun validateDocument(document: GQLDocument): List<Issue> {
     document.validateExecutable()
     document.validateFragments()
@@ -28,7 +33,15 @@ private class ExecutableDocumentValidator(val schema: Schema, val fragmentDefini
     return issues
   }
 
-  private fun GQLField.validate(operation: GQLOperationDefinition?, typeDefinitionInScope: GQLTypeDefinition) {
+  fun inferFragmentVariables(fragment: GQLFragmentDefinition): List<InputValueScope.VariableReference> {
+    variableReferences.clear()
+    fragment.validate()
+
+    return variableReferences
+  }
+
+
+  private fun GQLField.validate(typeDefinitionInScope: GQLTypeDefinition) {
     val fieldDefinition = definitionFromScope(schema, typeDefinitionInScope)
     if (fieldDefinition == null) {
       issues.add(Issue.ValidationError(
@@ -41,7 +54,7 @@ private class ExecutableDocumentValidator(val schema: Schema, val fragmentDefini
     if (fieldDefinition.isDeprecated()) {
       issues.add(Issue.DeprecatedUsage(message = "Use of deprecated field `$name`", sourceLocation = sourceLocation))
     }
-    arguments?.validate(operation, fieldDefinition)
+    arguments?.validate(fieldDefinition.arguments, "field `${fieldDefinition.name}`")
 
     val leafTypeDefinition = typeDefinitions[fieldDefinition.type.leafType().name]
 
@@ -62,7 +75,7 @@ private class ExecutableDocumentValidator(val schema: Schema, val fragmentDefini
         ))
         return
       }
-      selectionSet.validate(operation, leafTypeDefinition)
+      selectionSet.validate(leafTypeDefinition)
     } else {
       if (selectionSet != null) {
         issues.add(Issue.ValidationError(
@@ -72,9 +85,29 @@ private class ExecutableDocumentValidator(val schema: Schema, val fragmentDefini
         return
       }
     }
+
+    directives.forEach {
+      it.validate()
+    }
   }
 
-  private fun GQLInlineFragment.validate(operation: GQLOperationDefinition?, typeDefinitionInScope: GQLTypeDefinition) {
+  private fun GQLDirective.validate() {
+    val directiveDefinition = schema.directiveDefinitions[name]
+
+    if (directiveDefinition == null) {
+      issues.add(
+          Issue.UnknownDirective(
+              message = "Unknown directive '$name'",
+              sourceLocation = sourceLocation
+          )
+      )
+      return
+    }
+
+    arguments?.validate(directiveDefinition.arguments, "directive '${directiveDefinition.name}'")
+  }
+
+  private fun GQLInlineFragment.validate(typeDefinitionInScope: GQLTypeDefinition) {
     val inlineFragmentTypeDefinition = typeDefinitions[typeCondition.name]
     if (inlineFragmentTypeDefinition == null) {
       issues.add(Issue.ValidationError(
@@ -92,10 +125,14 @@ private class ExecutableDocumentValidator(val schema: Schema, val fragmentDefini
       return
     }
 
-    selectionSet.validate(operation, inlineFragmentTypeDefinition)
+    selectionSet.validate(inlineFragmentTypeDefinition)
+
+    directives.forEach {
+      it.validate()
+    }
   }
 
-  private fun GQLFragmentSpread.validate(operation: GQLOperationDefinition?, typeDefinitionInScope: GQLTypeDefinition) {
+  private fun GQLFragmentSpread.validate(typeDefinitionInScope: GQLTypeDefinition) {
     val fragmentDefinition = fragmentDefinitions[name]
     if (fragmentDefinition == null) {
       issues.add(Issue.ValidationError(
@@ -107,10 +144,12 @@ private class ExecutableDocumentValidator(val schema: Schema, val fragmentDefini
 
     val fragmentTypeDefinition = typeDefinitions[fragmentDefinition.typeCondition.name]
     if (fragmentTypeDefinition == null) {
-      issues.add(Issue.ValidationError(
-          message = "Cannot find type `${fragmentDefinition.typeCondition.name}` for fragment $name",
-          sourceLocation = fragmentDefinition.typeCondition.sourceLocation
-      ))
+      issues.add(
+          Issue.ValidationError(
+              message = "Cannot find type `${fragmentDefinition.typeCondition.name}` for fragment $name",
+              sourceLocation = fragmentDefinition.typeCondition.sourceLocation
+          )
+      )
       return
     }
 
@@ -122,7 +161,11 @@ private class ExecutableDocumentValidator(val schema: Schema, val fragmentDefini
       return
     }
 
-    fragmentDefinition.selectionSet.validate(operation, fragmentTypeDefinition)
+    fragmentDefinition.selectionSet.validate(fragmentTypeDefinition)
+
+    directives.forEach {
+      it.validate()
+    }
   }
 
   private fun GQLDocument.validateExecutable() {
@@ -161,12 +204,14 @@ private class ExecutableDocumentValidator(val schema: Schema, val fragmentDefini
      * This will not catch field merging conflicts and missing variables so ultimately, validation
      * against all fragments is required
      */
-    selectionSet.validate(null, fragmentRootTypeDefinition)
+    selectionSet.validate(fragmentRootTypeDefinition)
 
     fieldsInSetCanMerge(selectionSet.collectFields(fragmentRootTypeDefinition.name))
   }
 
   private fun GQLOperationDefinition.validate() {
+    variableReferences.clear()
+
     val rootTypeDefinition = rootTypeDefinition(schema)
 
     if (rootTypeDefinition == null) {
@@ -177,12 +222,25 @@ private class ExecutableDocumentValidator(val schema: Schema, val fragmentDefini
       return
     }
 
-    selectionSet.validate(this, rootTypeDefinition)
+    selectionSet.validate(rootTypeDefinition)
 
     fieldsInSetCanMerge(selectionSet.collectFields(rootTypeDefinition.name))
+
+    variableReferences.forEach {
+      validateVariable(this, it.variable, it.expectedType)
+    }
+    val foundVariables = variableReferences.map { it.variable.name }.toSet()
+    variableDefinitions.forEach {
+      if (!foundVariables.contains(it.name)) {
+        issues.add(Issue.UnusedVariable(
+            message = "Variable `${it.name}` is unused",
+            sourceLocation = it.sourceLocation
+        ))
+      }
+    }
   }
 
-  private fun GQLSelectionSet.validate(operation: GQLOperationDefinition?, typeDefinitionInScope: GQLTypeDefinition) {
+  private fun GQLSelectionSet.validate(typeDefinitionInScope: GQLTypeDefinition) {
     if (selections.isEmpty()) {
       // This will never happen from parsing documents but is kept for reference and to catch bad manual document modifications
       issues.add(Issue.ValidationError(
@@ -194,9 +252,9 @@ private class ExecutableDocumentValidator(val schema: Schema, val fragmentDefini
 
     selections.forEach {
       when (it) {
-        is GQLField -> it.validate(operation, typeDefinitionInScope)
-        is GQLInlineFragment -> it.validate(operation, typeDefinitionInScope)
-        is GQLFragmentSpread -> it.validate(operation, typeDefinitionInScope)
+        is GQLField -> it.validate(typeDefinitionInScope)
+        is GQLInlineFragment -> it.validate(typeDefinitionInScope)
+        is GQLFragmentSpread -> it.validate(typeDefinitionInScope)
       }
     }
   }
@@ -462,20 +520,22 @@ private class ExecutableDocumentValidator(val schema: Schema, val fragmentDefini
         .collectFields(fragmentDefinition.typeCondition.name)
   }
 
-  private fun GQLArgument.validate(operation: GQLOperationDefinition?, fieldDefinition: GQLFieldDefinition) {
-    val schemaArgument = fieldDefinition.arguments.firstOrNull { it.name == name }
+  private fun GQLArgument.validate(inputValueDefinitions: List<GQLInputValueDefinition>, debug: String) {
+    val schemaArgument = inputValueDefinitions.firstOrNull { it.name == name }
     if (schemaArgument == null) {
-      issues.add(Issue.ValidationError(message = "Unknown argument `$name` on field `${fieldDefinition.name}`", sourceLocation = sourceLocation))
+      issues.add(Issue.ValidationError(message = "Unknown argument `$name` on $debug", sourceLocation = sourceLocation))
       return
     }
 
     // 5.6.2 Input Object Field Names
-    // Note that this does not modify the document, it calls validateAndCoerce because it's easier
-    // to do both at the same time but the coerced resul is not used here
-    issues.addAll(value.validateAndCoerce(schemaArgument.type, schema, operation).issues)
+    // Note that this does not modify the document, it calls coerce because it's easier
+    // to validate at the same time but the coerced result is not used here
+    val coercionResult = value.coerce(schemaArgument.type, schema)
+    variableReferences.addAll(coercionResult.variableReferences)
+    issues.addAll(coercionResult.issues)
   }
 
-  private fun GQLArguments.validate(operation: GQLOperationDefinition?, field: GQLFieldDefinition) {
+  private fun GQLArguments.validate(inputValueDefinitions: List<GQLInputValueDefinition>, debug: String) {
     // 5.4.2 Argument Uniqueness
     arguments.groupBy { it.name }.filter { it.value.size > 1 }.toList().firstOrNull()?.let {
       issues.add(Issue.ValidationError(message = "Argument `${it.first}` is defined multiple times", sourceLocation = it.second.first().sourceLocation))
@@ -483,7 +543,7 @@ private class ExecutableDocumentValidator(val schema: Schema, val fragmentDefini
     }
 
     // 5.4.2.1 Required arguments
-    field.arguments.forEach { inputValueDefinition ->
+    inputValueDefinitions.forEach { inputValueDefinition ->
       if (inputValueDefinition.type is GQLNonNullType && inputValueDefinition.defaultValue == null) {
         val argumentValue = arguments.firstOrNull { it.name == inputValueDefinition.name }?.value
         if (argumentValue is GQLNullValue) {
@@ -496,194 +556,23 @@ private class ExecutableDocumentValidator(val schema: Schema, val fragmentDefini
     }
 
     arguments.forEach {
-      it.validate(operation, field)
+      it.validate(inputValueDefinitions, debug)
     }
   }
 
-}
-
-private fun GQLFieldDefinition.isDeprecated(): Boolean {
-  return directives.firstOrNull { it.name == "deprecated" } != null
-}
-
-private fun GQLEnumValueDefinition.isDeprecated(): Boolean {
-  return directives.firstOrNull { it.name == "deprecated" } != null
-}
-
-fun GQLValue.validateAndCoerce(expectedType: GQLType, schema: Schema, operation: GQLOperationDefinition?) = InputValueValidationScope(schema).validateAndCoerce(operation, this, expectedType)
-
-private class InputValueValidationScope(val schema: Schema) {
-  val issues = mutableListOf<Issue>()
-
-  fun registerIssue(value: GQLValue, expectedType: GQLType) {
-    issues.add(Issue.ValidationError(message = "Value `${value.toUtf8()}` cannot be used in position expecting `${expectedType.pretty()}`", sourceLocation = value.sourceLocation))
-  }
-
-  private fun validateAndCoerceInputObject(operation: GQLOperationDefinition?, value: GQLValue, expectedTypeDefinition: GQLInputObjectTypeDefinition): GQLValue {
-    val expectedType = GQLNamedType(name = expectedTypeDefinition.name)
-    if (value !is GQLObjectValue) {
-      registerIssue(value, expectedType)
-      return value
-    }
-
-    // 3.10 All required input fields must have a value
-    expectedTypeDefinition.inputFields.forEach { inputValueDefinition ->
-      if (inputValueDefinition.type is GQLNonNullType
-          && inputValueDefinition.defaultValue == null
-          && value.fields.firstOrNull { it.name == inputValueDefinition.name } == null
-      ) {
-        issues.add(Issue.ValidationError(message = "No value passed for required inputField ${inputValueDefinition.name}", sourceLocation = value.sourceLocation))
-      }
-    }
-
-    return GQLObjectValue(fields = value.fields.mapNotNull { field ->
-      val inputField = expectedTypeDefinition.inputFields.firstOrNull { it.name == field.name }
-      if (inputField == null) {
-        // 3.10 Input values coercion: extra values are errors
-        issues.add(Issue.ValidationError(message = "Field ${field.name} is not defined by ${expectedType.pretty()}", sourceLocation = field.sourceLocation))
-        return@mapNotNull null
-      }
-      GQLObjectField(
-          name = field.name,
-          value = validateAndCoerceInternal(operation, field.value, inputField.type)
-      )
-    })
-  }
-
-  private fun validateAndCoerceEnum(value: GQLValue, enumTypeDefinition: GQLEnumTypeDefinition): GQLValue {
-    val expectedType = GQLNamedType(name = enumTypeDefinition.name)
-    if (value !is GQLEnumValue) {
-      registerIssue(value, expectedType)
-      return value
-    }
-
-    val enumValue = enumTypeDefinition.enumValues.firstOrNull { it.name == value.value }
-    if (enumValue == null) {
-      issues.add(Issue.ValidationError(
-          message = "Cannot find enum value `${value.value}` of type `${enumTypeDefinition.name}`",
-          sourceLocation = value.sourceLocation
-      ))
-    } else if (enumValue.isDeprecated()) {
-      issues.add(Issue.DeprecatedUsage(
-          message = "Use of deprecated enum value `${value.value}` of type `${enumTypeDefinition.name}`",
-          sourceLocation = value.sourceLocation
-      ))
-    }
-    return value
-  }
-
-  private fun validateAndCoerceScalar(value: GQLValue, expectedType: GQLNamedType): GQLValue {
-    return when (expectedType.name) {
-      "Int" -> {
-        if (value !is GQLIntValue) {
-          registerIssue(value, expectedType)
-        }
-        value
-      }
-      "Float" -> {
-        when (value) {
-          is GQLFloatValue -> value
-          // Int get coerced to floats
-          is GQLIntValue -> GQLFloatValue(value = value.value.toDouble())
-          else -> {
-            registerIssue(value, expectedType)
-            value
-          }
-        }
-      }
-      "String" -> {
-        if (value !is GQLStringValue) {
-          registerIssue(value, expectedType)
-        }
-        value
-      }
-      "Boolean" -> {
-        if (value !is GQLBooleanValue) {
-          registerIssue(value, expectedType)
-        }
-        value
-      }
-      "ID" -> {
-        // 3.5.5 ID can be either string or int
-        if (value !is GQLStringValue && value !is GQLIntValue) {
-          registerIssue(value, expectedType)
-        }
-        value
-      }
-      else -> {
-        registerIssue(value, expectedType)
-        value
-      }
-    }
-  }
-
-  fun validateAndCoerce(operation: GQLOperationDefinition?, value: GQLValue, expectedType: GQLType) = ParseResult(
-      validateAndCoerceInternal(operation, value, expectedType),
-      issues
-  )
-
-  private fun validateAndCoerceInternal(operation: GQLOperationDefinition?, value: GQLValue, expectedType: GQLType): GQLValue {
-    if (value is GQLVariableValue) {
-      return validateAndCoerceVariable(operation, value, expectedType)
-    } else if (value is GQLNullValue) {
-      if (expectedType is GQLNonNullType) {
-        registerIssue(value, expectedType)
-        return value
-      }
-
-      // null is always valid in a nullable position
-      return value
-    }
-
-    when (expectedType) {
-      is GQLNonNullType -> {
-        return validateAndCoerceInternal(operation, value, expectedType.type)
-      }
-      is GQLListType -> {
-        if (value !is GQLListValue) {
-          registerIssue(value, expectedType)
-          return value
-        }
-        return GQLListValue(
-            values = value.values.map { validateAndCoerceInternal(operation, it, expectedType.type) }
-        )
-      }
-      is GQLNamedType -> {
-        when (val expectedTypeDefinition = schema.typeDefinition(expectedType.name)) {
-          is GQLInputObjectTypeDefinition -> {
-            return validateAndCoerceInputObject(operation, value, expectedTypeDefinition)
-          }
-          is GQLScalarTypeDefinition -> {
-            if (!expectedTypeDefinition.isBuiltIn()) {
-              // custom scalar types are passed through
-              return value
-            }
-            return validateAndCoerceScalar(value, expectedType)
-          }
-          is GQLEnumTypeDefinition -> {
-            return validateAndCoerceEnum(value, expectedTypeDefinition)
-          }
-          else -> {
-            issues.add(Issue.ValidationError("Value cannot be of non-input type ${expectedType.pretty()}", value.sourceLocation))
-            return value
-          }
-        }
-      }
-    }
-  }
-
-  private fun validateAndCoerceVariable(operation: GQLOperationDefinition?, value: GQLVariableValue, expectedType: GQLType): GQLValue {
+  private fun validateVariable(operation: GQLOperationDefinition?, value: GQLVariableValue, expectedType: GQLType) {
     if (operation == null) {
       // if operation is null, it means we're currently validating a fragment outside the context of an operation
-      return value
+      return
     }
+
     val variableDefinition = operation.variableDefinitions.firstOrNull { it.name == value.name }
     if (variableDefinition == null) {
       issues.add(Issue.ValidationError(
           message = "Variable `${value.name}` is not defined by operation `${operation.name}`",
           sourceLocation = value.sourceLocation
       ))
-      return value
+      return
     }
     if (!variableDefinition.type.canInputValueBeAssignedTo(target = expectedType)) {
       issues.add(Issue.ValidationError(
@@ -691,9 +580,19 @@ private class InputValueValidationScope(val schema: Schema) {
           sourceLocation = value.sourceLocation
       ))
     }
-    return value
   }
 }
+
+internal fun GQLFieldDefinition.isDeprecated(): Boolean {
+  return directives.firstOrNull { it.name == "deprecated" } != null
+}
+
+internal fun GQLEnumValueDefinition.isDeprecated(): Boolean {
+  return directives.firstOrNull { it.name == "deprecated" } != null
+}
+
+internal fun GQLValue.coerce(expectedType: GQLType, schema: Schema) = InputValueScope(schema).coerce(this, expectedType)
+
 
 private fun GQLDocument.checkSingleOperation(): List<Issue> {
   val operations = definitions.filterIsInstance<GQLOperationDefinition>()
@@ -749,6 +648,8 @@ internal fun List<GQLDefinition>.checkDuplicates(): List<Issue> {
 fun GQLOperationDefinition.validate(schema: Schema, fragments: Map<String, GQLFragmentDefinition>) = ExecutableDocumentValidator(schema, fragments).validateOperation(this)
 
 fun GQLFragmentDefinition.validate(schema: Schema, fragments: Map<String, GQLFragmentDefinition>) = ExecutableDocumentValidator(schema, fragments).validateFragment(this)
+
+internal fun GQLFragmentDefinition.inferVariables(schema: Schema, fragments: Map<String, GQLFragmentDefinition>) = ExecutableDocumentValidator(schema, fragments).inferFragmentVariables(this)
 
 fun GQLDocument.validateAsOperations(schema: Schema): List<Issue> {
   val fragments = definitions.filterIsInstance<GQLFragmentDefinition>().associateBy { it.name }

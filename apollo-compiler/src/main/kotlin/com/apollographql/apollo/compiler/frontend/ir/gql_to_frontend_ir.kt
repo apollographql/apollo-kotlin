@@ -18,14 +18,15 @@ import com.apollographql.apollo.compiler.frontend.GQLTypeDefinition
 import com.apollographql.apollo.compiler.frontend.GQLVariableDefinition
 import com.apollographql.apollo.compiler.frontend.GQLVariableValue
 import com.apollographql.apollo.compiler.frontend.Schema
+import com.apollographql.apollo.compiler.frontend.SourceAwareException
 import com.apollographql.apollo.compiler.frontend.definitionFromScope
 import com.apollographql.apollo.compiler.frontend.findDeprecationReason
-import com.apollographql.apollo.compiler.frontend.leafType
+import com.apollographql.apollo.compiler.frontend.inferVariables
 import com.apollographql.apollo.compiler.frontend.rootTypeDefinition
 import com.apollographql.apollo.compiler.frontend.toUtf8
 import com.apollographql.apollo.compiler.frontend.toUtf8WithIndents
 import com.apollographql.apollo.compiler.frontend.usedFragmentNames
-import com.apollographql.apollo.compiler.frontend.validateAndCoerce
+import com.apollographql.apollo.compiler.frontend.coerce
 
 internal class FrontendIrBuilder(
     private val schema: Schema,
@@ -100,43 +101,16 @@ internal class FrontendIrBuilder(
         typeCondition = typeDefinition,
         source = toUtf8WithIndents(),
         gqlFragmentDefinition = this,
-        variables = selectionSet.inferredVariables(typeDefinition).map { FrontendIr.Variable(it.key, null, it.value.toIr()) }
+        variables = inferVariables(schema, allGQLFragmentDefinitions).map {
+          FrontendIr.Variable(it.variable.name, null, it.expectedType.toIr())
+        }
     )
-  }
-
-  private fun GQLSelectionSet.inferredVariables(typeDefinitionInScope: GQLTypeDefinition): Map<String, GQLType> {
-    return selections.fold(emptyMap()) { acc, selection ->
-      acc + when(selection) {
-        is GQLField -> selection.inferredVariables(typeDefinitionInScope)
-        is GQLInlineFragment -> selection.inferredVariables()
-        is GQLFragmentSpread -> selection.inferredVariables()
-      }
-    }
-  }
-
-  private fun GQLInlineFragment.inferredVariables() = selectionSet.inferredVariables(schema.typeDefinition(typeCondition.name))
-
-  private fun GQLFragmentSpread.inferredVariables(): Map<String, GQLType> {
-    val fragmentDefinition = allGQLFragmentDefinitions[name]!!
-
-    return fragmentDefinition.selectionSet.inferredVariables(schema.typeDefinition(fragmentDefinition.typeCondition.name))
-  }
-
-  private fun GQLField.inferredVariables(typeDefinitionInScope: GQLTypeDefinition): Map<String, GQLType> {
-    val fieldDefinition = definitionFromScope(schema, typeDefinitionInScope)!!
-
-    return (arguments?.arguments?.mapNotNull { argument ->
-      (argument.value as? GQLVariableValue)?.let { value ->
-        val type = fieldDefinition.arguments.first { it.name == argument.name}.type
-        argument.name to type
-      }
-    }?.toMap() ?: emptyMap()) + (selectionSet?.inferredVariables(schema.typeDefinition(fieldDefinition.type.leafType().name)) ?: emptyMap())
   }
 
   private fun GQLVariableDefinition.toIr(): FrontendIr.Variable {
     return FrontendIr.Variable(
         name = name,
-        defaultValue = defaultValue?.validateAndCoerce(type, schema, null)?.orThrow(),
+        defaultValue = defaultValue?.coerce(type, schema)?.orThrow(),
         type = type.toIr(),
     )
   }
@@ -187,10 +161,9 @@ internal class FrontendIrBuilder(
 
     return FrontendIr.Argument(
         name = name,
-        value = value.validateAndCoerce(inputValueDefinition.type, schema, null).orThrow(),
-        defaultValue = inputValueDefinition.defaultValue?.validateAndCoerce(inputValueDefinition.type, schema, null)?.orThrow(),
+        value = value.coerce(inputValueDefinition.type, schema).orThrow(),
+        defaultValue = inputValueDefinition.defaultValue?.coerce(inputValueDefinition.type, schema)?.orThrow(),
         type = inputValueDefinition.type.toIr(),
-
         )
   }
 

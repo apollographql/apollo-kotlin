@@ -53,4 +53,8 @@ configure<org.jetbrains.kotlin.gradle.dsl.KotlinJvmProjectExtension> {
 // since test/graphql is not an input to Test tasks, they're not run with the changes made in there.
 tasks.withType<Test>().configureEach {
   inputs.dir("src/test/graphql")
+  inputs.dir("src/test/sdl")
+  inputs.dir("src/test/typename")
+  inputs.dir("src/test/usedtypes")
+  inputs.dir("src/test/validation")
 }

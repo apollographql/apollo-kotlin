@@ -59,6 +59,12 @@ sealed class Issue(
   class UnkownError(message: String, sourceLocation: SourceLocation) : Issue(message, sourceLocation, Severity.ERROR)
   class ParsingError(message: String, sourceLocation: SourceLocation) : Issue(message, sourceLocation, Severity.ERROR)
   class DeprecatedUsage(message: String, sourceLocation: SourceLocation) : Issue(message, sourceLocation, Severity.WARNING)
+  /**
+   * In a perfect world everyone uses SDL schemas and we can validate directives but in this world, a lot of users rely
+   * on introspection schemas that do not contain directives. If this happens, we pass them through without validation.
+   */
+  class UnknownDirective(message: String, sourceLocation: SourceLocation) : Issue(message, sourceLocation, Severity.WARNING)
+  class UnusedVariable(message: String, sourceLocation: SourceLocation) : Issue(message, sourceLocation, Severity.WARNING)
 
   enum class Severity {
     WARNING,

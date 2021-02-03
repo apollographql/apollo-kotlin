@@ -331,11 +331,11 @@ data class GQLUnionTypeDefinition(
 data class GQLDirectiveDefinition(
     override val sourceLocation: SourceLocation = SourceLocation.UNKNOWN,
     val description: String?,
-    val name: String,
+    override val name: String,
     val arguments: List<GQLInputValueDefinition>,
     val repeatable: Boolean,
     val locations: List<GQLDirectiveLocation>
-) : GQLDefinition {
+) : GQLDefinition, GQLNamed {
 
   override val children: List<GQLNode> = arguments
 
@@ -352,6 +352,16 @@ data class GQLDirectiveDefinition(
       }
       writeUtf8(" on ${locations.joinToString("|")}")
     }
+  }
+
+  fun isBuiltIn(): Boolean = builtInDirectives.contains(this.name)
+
+  companion object {
+    val builtInDirectives: Set<String> = setOf(
+        "include",
+        "skip",
+        "deprecated",
+    )
   }
 }
 

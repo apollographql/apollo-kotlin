@@ -9,18 +9,19 @@ package com.apollographql.apollo.compiler.frontend
  */
 class Schema(
     val typeDefinitions: Map<String, GQLTypeDefinition>,
+    val directiveDefinitions: Map<String, GQLDirectiveDefinition>,
     val queryTypeDefinition: GQLTypeDefinition,
     val mutationTypeDefinition: GQLTypeDefinition?,
     val subscriptionTypeDefinition: GQLTypeDefinition?,
 ) {
   fun toDocument(): GQLDocument = GQLDocument(
-      definitions = typeDefinitions.values.toList() + GQLSchemaDefinition(
+      definitions = typeDefinitions.values.toList() + directiveDefinitions.values.toList() + GQLSchemaDefinition(
           description = null,
           directives = emptyList(),
           rootOperationTypeDefinitions = rootOperationTypeDefinition()
       ),
       filePath = null
-  ).withoutBuiltinTypes()
+  ).withoutBuiltinDefinitions()
 
   private fun rootOperationTypeDefinition(): List<GQLOperationTypeDefinition> {
     val list = mutableListOf<GQLOperationTypeDefinition>()

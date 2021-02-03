@@ -169,7 +169,7 @@ object GraphQLParser {
           // This means that it's impossible to add type extensions on built in types at the moment
           it.validateAsSchema()
         }.mapValue {
-          it.withBuiltinTypes()
+          it.withBuiltinDefinitions()
         }
   }
 

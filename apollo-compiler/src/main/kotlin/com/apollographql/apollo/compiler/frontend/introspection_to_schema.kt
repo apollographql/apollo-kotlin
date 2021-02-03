@@ -222,7 +222,7 @@ private class GQLDocumentBuilder(private val introspectionSchema: IntrospectionS
 private fun IntrospectionSchema.toGQLDocument(): GQLDocument = GQLDocumentBuilder(this).toGQLDocument()
 
 fun IntrospectionSchema.toSchema(): Schema = toGQLDocument()
-    .withBuiltinTypes()
+    .withBuiltinDirectives() // no need to add the types, introspection already contains builtin types like Int, Boolean, etc...
     .toSchema()
 
 

@@ -1,0 +1,6 @@
+# condition is unused here and should trigger a warning
+query HeroName($condition: Boolean!) {
+  hero {
+    name
+  }
+}

@@ -7,7 +7,7 @@ import com.apollographql.apollo.compiler.frontend.mergeTypeExtensions
 import com.apollographql.apollo.compiler.frontend.toSchema
 import com.apollographql.apollo.compiler.frontend.usedTypeNames
 import com.apollographql.apollo.compiler.frontend.validateAsSchema
-import com.apollographql.apollo.compiler.frontend.withBuiltinTypes
+import com.apollographql.apollo.compiler.frontend.withBuiltinDefinitions
 import com.google.common.truth.Truth
 import org.junit.Test
 import org.junit.runner.RunWith
@@ -33,7 +33,7 @@ class UsedTypesTest(val name: String, val graphQLFile: File) {
           it.first.validateAsSchema()
         }
         .mapValue {
-          it.first.withBuiltinTypes().toSchema() to it.second
+          it.first.withBuiltinDefinitions().toSchema() to it.second
         }
         .orThrow()
 
