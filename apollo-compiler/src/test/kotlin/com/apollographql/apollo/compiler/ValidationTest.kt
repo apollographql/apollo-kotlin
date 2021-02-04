@@ -17,9 +17,9 @@ import java.io.File
 class ValidationTest(name: String, private val graphQLFile: File) {
   private val separator = "\n------------\n"
 
-  private fun List<Issue>.serialize() = map {
+  private fun List<Issue>.serialize() = joinToString(separator) {
     "${it.severity}: ${it.javaClass.simpleName} (${it.sourceLocation.line}:${it.sourceLocation.position})\n${it.message}"
-  }.joinToString(separator)
+  }
 
 
   @Test

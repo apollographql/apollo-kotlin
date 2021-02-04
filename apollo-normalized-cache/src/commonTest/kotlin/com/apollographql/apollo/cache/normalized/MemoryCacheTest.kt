@@ -90,7 +90,12 @@ class MemoryCacheTest {
     assertNotNull(lruCache.loadRecord(testRecord2.key, CacheHeaders.NONE))
     assertNotNull(lruCache.loadRecord(testRecord3.key, CacheHeaders.NONE))
 
-    val updatedRestRecord1 = testRecord1.copy(fields = testRecord1.fields.plus("field3" to "value3"))
+    val updatedRestRecord1 = Record(
+        fields = testRecord1.fields.plus("field3" to "value3"),
+        key = testRecord1.key,
+        mutationId = testRecord1.mutationId
+    )
+
     lruCache.merge(updatedRestRecord1, CacheHeaders.NONE)
 
     assertNotNull(lruCache.loadRecord(testRecord1.key, CacheHeaders.NONE))
