@@ -90,7 +90,7 @@ class MemoryCacheTest {
     assertNotNull(lruCache.loadRecord(testRecord2.key, CacheHeaders.NONE))
     assertNotNull(lruCache.loadRecord(testRecord3.key, CacheHeaders.NONE))
 
-    val updatedRestRecord1 = testRecord1.toBuilder().addField("field3", "value3").build()
+    val updatedRestRecord1 = testRecord1.copy(fields = testRecord1.fields.plus("field3" to "value3"))
     lruCache.merge(updatedRestRecord1, CacheHeaders.NONE)
 
     assertNotNull(lruCache.loadRecord(testRecord1.key, CacheHeaders.NONE))
@@ -226,14 +226,20 @@ class MemoryCacheTest {
   fun testRemove_cascadeFalse() {
     val lruCache = createCache()
 
-    val record1 = Record.builder("id_1")
-        .addField("a", "stringValueA")
-        .addField("b", "stringValueB")
-        .build()
+    val record1 = Record(
+        key = "id_1",
+        fields = mapOf(
+            "a" to "stringValueA",
+            "b" to "stringValueB"
+        )
+    )
 
-    val record2 = Record.builder("id_2")
-        .addField("a", CacheReference("id_1"))
-        .build()
+    val record2 = Record(
+        key = "id_2",
+        fields = mapOf(
+            "a" to CacheReference("id_1"),
+        )
+    )
 
     val records = listOf(record1, record2)
     lruCache.merge(records, CacheHeaders.NONE)
@@ -246,14 +252,20 @@ class MemoryCacheTest {
   fun testRemove_cascadeTrue() {
     val lruCache = createCache()
 
-    val record1 = Record.builder("id_1")
-        .addField("a", "stringValueA")
-        .addField("b", "stringValueB")
-        .build()
+    val record1 = Record(
+        key = "id_1",
+        fields = mapOf(
+            "a" to "stringValueA",
+            "b" to "stringValueB"
+        )
+    )
 
-    val record2 = Record.builder("id_2")
-        .addField("a", CacheReference("id_1"))
-        .build()
+    val record2 = Record(
+        key = "id_2",
+        fields = mapOf(
+            "a" to CacheReference("id_1"),
+        )
+    )
 
     val records = listOf(record1, record2)
     lruCache.merge(records, CacheHeaders.NONE)
@@ -276,9 +288,12 @@ class MemoryCacheTest {
   }
 
   private fun createTestRecord(id: String): Record {
-    return Record.builder("key$id")
-        .addField("field1", "stringValueA$id")
-        .addField("field2", "stringValueB$id")
-        .build()
+    return Record(
+        key = "key$id",
+        fields = mapOf(
+            "field1" to "stringValueA$id",
+            "field2" to "stringValueB$id"
+        )
+    )
   }
 }

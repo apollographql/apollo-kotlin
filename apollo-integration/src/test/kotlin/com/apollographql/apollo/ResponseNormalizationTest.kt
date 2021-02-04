@@ -11,7 +11,6 @@ import com.apollographql.apollo.cache.normalized.CacheKey.Companion.from
 import com.apollographql.apollo.cache.normalized.CacheReference
 import com.apollographql.apollo.cache.normalized.NormalizedCache
 import com.apollographql.apollo.cache.normalized.Record
-import com.apollographql.apollo.cache.normalized.Record.Companion.builder
 import com.apollographql.apollo.cache.normalized.MemoryCacheFactory
 import com.apollographql.apollo.integration.httpcache.AllPlanetsQuery
 import com.apollographql.apollo.integration.normalizer.*
@@ -51,25 +50,29 @@ class ResponseNormalizationTest {
   fun testHeroName() {
     assertHasNoErrors("HeroNameResponse.json", HeroNameQuery())
     val record = normalizedCache.loadRecord(QUERY_ROOT_KEY, CacheHeaders.NONE)
-    val reference = record!!.field("hero") as CacheReference?
+    val reference = record!!["hero"] as CacheReference?
     Truth.assertThat(reference).isEqualTo(CacheReference("hero"))
     val heroRecord = normalizedCache.loadRecord(reference!!.key, CacheHeaders.NONE)
-    Truth.assertThat(heroRecord!!.field("name")).isEqualTo("R2-D2")
+    Truth.assertThat(heroRecord!!["name"]).isEqualTo("R2-D2")
   }
 
   @Test
   @Throws(Exception::class)
   fun testMergeNull() {
-    val record = builder("Key")
-        .addField("field1", "value1")
-        .build()
+    val record = Record(
+        key = "Key",
+        fields = mapOf("field1" to "value1"),
+    )
     normalizedCache.merge(listOf(record), CacheHeaders.NONE)
-    val newRecord = record.toBuilder()
-        .addField("field2", null)
-        .build()
+
+    val newRecord = Record(
+        key = "Key",
+        fields = mapOf("field2" to null),
+    )
+
     normalizedCache.merge(listOf(newRecord), CacheHeaders.NONE)
     val finalRecord = normalizedCache.loadRecord(record.key, CacheHeaders.NONE)
-    Truth.assertThat(finalRecord!!.hasField("field2")).isTrue()
+    Truth.assertThat(finalRecord!!.containsKey("field2")).isTrue()
     normalizedCache.remove(from(record.key), false)
   }
 
@@ -78,10 +81,10 @@ class ResponseNormalizationTest {
   fun testHeroNameWithVariable() {
     assertHasNoErrors("EpisodeHeroNameResponse.json", EpisodeHeroNameQuery(fromNullable(Episode.JEDI)))
     val record = normalizedCache.loadRecord(QUERY_ROOT_KEY, CacheHeaders.NONE)
-    val reference = record!!.field(TEST_FIELD_KEY_JEDI) as CacheReference?
+    val reference = record!![TEST_FIELD_KEY_JEDI] as CacheReference?
     Truth.assertThat(reference).isEqualTo(CacheReference(TEST_FIELD_KEY_JEDI))
     val heroRecord = normalizedCache.loadRecord(reference!!.key, CacheHeaders.NONE)
-    Truth.assertThat(heroRecord!!.field("name")).isEqualTo("R2-D2")
+    Truth.assertThat(heroRecord!!["name"]).isEqualTo("R2-D2")
   }
 
   @Test
@@ -89,10 +92,10 @@ class ResponseNormalizationTest {
   fun testHeroAppearsInQuery() {
     assertHasNoErrors("HeroAppearsInResponse.json", HeroAppearsInQuery())
     val record = normalizedCache.loadRecord(QUERY_ROOT_KEY, CacheHeaders.NONE)
-    val heroReference = record!!.field("hero") as CacheReference?
+    val heroReference = record!!["hero"] as CacheReference?
     Truth.assertThat(heroReference).isEqualTo(CacheReference("hero"))
     val hero = normalizedCache.loadRecord(heroReference!!.key, CacheHeaders.NONE)
-    Truth.assertThat(hero!!.field("appearsIn")).isEqualTo(Arrays.asList("NEWHOPE", "EMPIRE", "JEDI"))
+    Truth.assertThat(hero!!["appearsIn"]).isEqualTo(Arrays.asList("NEWHOPE", "EMPIRE", "JEDI"))
   }
 
   @Test
@@ -100,17 +103,17 @@ class ResponseNormalizationTest {
   fun testHeroAndFriendsNamesQueryWithoutIDs() {
     assertHasNoErrors("HeroAndFriendsNameResponse.json", HeroAndFriendsNamesQuery(fromNullable(Episode.JEDI)))
     val record = normalizedCache.loadRecord(QUERY_ROOT_KEY, CacheHeaders.NONE)
-    val heroReference = record!!.field(TEST_FIELD_KEY_JEDI) as CacheReference?
+    val heroReference = record!![TEST_FIELD_KEY_JEDI] as CacheReference?
     Truth.assertThat(heroReference).isEqualTo(CacheReference(TEST_FIELD_KEY_JEDI))
     val heroRecord = normalizedCache.loadRecord(heroReference!!.key, CacheHeaders.NONE)
-    Truth.assertThat(heroRecord!!.field("name")).isEqualTo("R2-D2")
-    Truth.assertThat(heroRecord.field("friends")).isEqualTo(Arrays.asList(
+    Truth.assertThat(heroRecord!!["name"]).isEqualTo("R2-D2")
+    Truth.assertThat(heroRecord["friends"]).isEqualTo(Arrays.asList(
         CacheReference(TEST_FIELD_KEY_JEDI + ".friends.0"),
         CacheReference(TEST_FIELD_KEY_JEDI + ".friends.1"),
         CacheReference(TEST_FIELD_KEY_JEDI + ".friends.2")
     ))
     val luke = normalizedCache.loadRecord(TEST_FIELD_KEY_JEDI + ".friends.0", CacheHeaders.NONE)
-    Truth.assertThat(luke!!.field("name")).isEqualTo("Luke Skywalker")
+    Truth.assertThat(luke!!["name"]).isEqualTo("Luke Skywalker")
   }
 
   @Test
@@ -118,17 +121,17 @@ class ResponseNormalizationTest {
   fun testHeroAndFriendsNamesQueryWithIDs() {
     assertHasNoErrors("HeroAndFriendsNameWithIdsResponse.json", HeroAndFriendsNamesWithIDsQuery(fromNullable(Episode.JEDI)))
     val record = normalizedCache.loadRecord(QUERY_ROOT_KEY, CacheHeaders.NONE)
-    val heroReference = record!!.field(TEST_FIELD_KEY_JEDI) as CacheReference?
+    val heroReference = record!![TEST_FIELD_KEY_JEDI] as CacheReference?
     Truth.assertThat(heroReference).isEqualTo(CacheReference("2001"))
     val heroRecord = normalizedCache.loadRecord(heroReference!!.key, CacheHeaders.NONE)
-    Truth.assertThat(heroRecord!!.field("name")).isEqualTo("R2-D2")
-    Truth.assertThat(heroRecord.field("friends")).isEqualTo(Arrays.asList(
+    Truth.assertThat(heroRecord!!["name"]).isEqualTo("R2-D2")
+    Truth.assertThat(heroRecord["friends"]).isEqualTo(Arrays.asList(
         CacheReference("1000"),
         CacheReference("1002"),
         CacheReference("1003")
     ))
     val luke = normalizedCache.loadRecord("1000", CacheHeaders.NONE)
-    Truth.assertThat(luke!!.field("name")).isEqualTo("Luke Skywalker")
+    Truth.assertThat(luke!!["name"]).isEqualTo("Luke Skywalker")
   }
 
   @Test
@@ -137,17 +140,17 @@ class ResponseNormalizationTest {
     assertHasNoErrors("HeroAndFriendsNameWithIdsParentOnlyResponse.json",
         HeroAndFriendsNamesWithIDForParentOnlyQuery(fromNullable(Episode.JEDI)))
     val record = normalizedCache.loadRecord(QUERY_ROOT_KEY, CacheHeaders.NONE)
-    val heroReference = record!!.field(TEST_FIELD_KEY_JEDI) as CacheReference?
+    val heroReference = record!![TEST_FIELD_KEY_JEDI] as CacheReference?
     Truth.assertThat(heroReference).isEqualTo(CacheReference("2001"))
     val heroRecord = normalizedCache.loadRecord(heroReference!!.key, CacheHeaders.NONE)
-    Truth.assertThat(heroRecord!!.field("name")).isEqualTo("R2-D2")
-    Truth.assertThat(heroRecord.field("friends")).isEqualTo(Arrays.asList(
+    Truth.assertThat(heroRecord!!["name"]).isEqualTo("R2-D2")
+    Truth.assertThat(heroRecord["friends"]).isEqualTo(Arrays.asList(
         CacheReference("2001.friends.0"),
         CacheReference("2001.friends.1"),
         CacheReference("2001.friends.2")
     ))
     val luke = normalizedCache.loadRecord("2001.friends.0", CacheHeaders.NONE)
-    Truth.assertThat(luke!!.field("name")).isEqualTo("Luke Skywalker")
+    Truth.assertThat(luke!!["name"]).isEqualTo("Luke Skywalker")
   }
 
   @Test
@@ -155,10 +158,11 @@ class ResponseNormalizationTest {
   fun testSameHeroTwiceQuery() {
     assertHasNoErrors("SameHeroTwiceResponse.json", SameHeroTwiceQuery())
     val record = normalizedCache.loadRecord(QUERY_ROOT_KEY, CacheHeaders.NONE)
-    val heroReference = record!!.field("hero") as CacheReference?
+    val heroReference = record!!["hero"] as CacheReference?
     val hero = normalizedCache.loadRecord(heroReference!!.key, CacheHeaders.NONE)
-    Truth.assertThat(hero!!.field("name")).isEqualTo("R2-D2")
-    Truth.assertThat(hero.field("appearsIn")).isEqualTo(Arrays.asList("NEWHOPE", "EMPIRE", "JEDI"))
+
+    Truth.assertThat(hero!!["name"]).isEqualTo("R2-D2")
+    Truth.assertThat(hero["appearsIn"]).isEqualTo(Arrays.asList("NEWHOPE", "EMPIRE", "JEDI"))
   }
 
   @Test
@@ -167,10 +171,10 @@ class ResponseNormalizationTest {
     assertHasNoErrors("HeroTypeDependentAliasedFieldResponse.json",
         HeroTypeDependentAliasedFieldQuery(fromNullable(Episode.JEDI)))
     val record = normalizedCache.loadRecord(QUERY_ROOT_KEY, CacheHeaders.NONE)
-    val heroReference = record!!.field(TEST_FIELD_KEY_JEDI) as CacheReference?
+    val heroReference = record!![TEST_FIELD_KEY_JEDI] as CacheReference?
     val hero = normalizedCache.loadRecord(heroReference!!.key, CacheHeaders.NONE)
-    Truth.assertThat(hero!!.field("primaryFunction")).isEqualTo("Astromech")
-    Truth.assertThat(hero.field("__typename")).isEqualTo("Droid")
+    Truth.assertThat(hero!!["primaryFunction"]).isEqualTo("Astromech")
+    Truth.assertThat(hero["__typename"]).isEqualTo("Droid")
   }
 
   @Test
@@ -179,10 +183,10 @@ class ResponseNormalizationTest {
     assertHasNoErrors("HeroTypeDependentAliasedFieldResponseHuman.json",
         HeroTypeDependentAliasedFieldQuery(fromNullable(Episode.EMPIRE)))
     val record = normalizedCache.loadRecord(QUERY_ROOT_KEY, CacheHeaders.NONE)
-    val heroReference = record!!.field(TEST_FIELD_KEY_EMPIRE) as CacheReference?
+    val heroReference = record!![TEST_FIELD_KEY_EMPIRE] as CacheReference?
     val hero = normalizedCache.loadRecord(heroReference!!.key, CacheHeaders.NONE)
-    Truth.assertThat(hero!!.field("homePlanet")).isEqualTo("Tatooine")
-    Truth.assertThat(hero.field("__typename")).isEqualTo("Human")
+    Truth.assertThat(hero!!["homePlanet"]).isEqualTo("Tatooine")
+    Truth.assertThat(hero["__typename"]).isEqualTo("Human")
   }
 
   @Test
@@ -191,10 +195,10 @@ class ResponseNormalizationTest {
     assertHasNoErrors("HeroTypeDependentAliasedFieldResponseHuman.json",
         HeroTypeDependentAliasedFieldQuery(fromNullable(Episode.EMPIRE)))
     val record = normalizedCache.loadRecord(QUERY_ROOT_KEY, CacheHeaders.NONE)
-    val heroReference = record!!.field(TEST_FIELD_KEY_EMPIRE) as CacheReference?
+    val heroReference = record!![TEST_FIELD_KEY_EMPIRE] as CacheReference?
     val hero = normalizedCache.loadRecord(heroReference!!.key, CacheHeaders.NONE)
-    Truth.assertThat(hero!!.field("homePlanet")).isEqualTo("Tatooine")
-    Truth.assertThat(hero.field("__typename")).isEqualTo("Human")
+    Truth.assertThat(hero!!["homePlanet"]).isEqualTo("Tatooine")
+    Truth.assertThat(hero["__typename"]).isEqualTo("Human")
   }
 
   @Test
@@ -204,10 +208,10 @@ class ResponseNormalizationTest {
         HeroParentTypeDependentFieldQuery(fromNullable(Episode.JEDI)))
     val lukeRecord = normalizedCache
         .loadRecord(TEST_FIELD_KEY_JEDI + ".friends.0", CacheHeaders.NONE)
-    Truth.assertThat(lukeRecord!!.field("name")).isEqualTo("Luke Skywalker")
-    Truth.assertThat(lukeRecord.field("height({\"unit\":\"METER\"})")).isEqualTo(BigDecimal.valueOf(1.72))
+    Truth.assertThat(lukeRecord!!["name"]).isEqualTo("Luke Skywalker")
+    Truth.assertThat(lukeRecord["height({\"unit\":\"METER\"})"]).isEqualTo(BigDecimal.valueOf(1.72))
     val friends = normalizedCache
-        .loadRecord(TEST_FIELD_KEY_JEDI, CacheHeaders.NONE)!!.field("friends") as List<Any>?
+        .loadRecord(TEST_FIELD_KEY_JEDI, CacheHeaders.NONE)!!["friends"] as List<Any>?
     Truth.assertThat(friends!![0]).isEqualTo(CacheReference("$TEST_FIELD_KEY_JEDI.friends.0"))
     Truth.assertThat(friends[1]).isEqualTo(CacheReference("$TEST_FIELD_KEY_JEDI.friends.1"))
     Truth.assertThat(friends[2]).isEqualTo(CacheReference("$TEST_FIELD_KEY_JEDI.friends.2"))
@@ -222,8 +226,8 @@ class ResponseNormalizationTest {
     )
     val lukeRecord = normalizedCache
         .loadRecord("$TEST_FIELD_KEY_EMPIRE.friends.0", CacheHeaders.NONE)
-    Truth.assertThat(lukeRecord!!.field("name")).isEqualTo("Han Solo")
-    Truth.assertThat(lukeRecord.field("height({\"unit\":\"FOOT\"})")).isEqualTo(BigDecimal.valueOf(5.905512))
+    Truth.assertThat(lukeRecord!!["name"]).isEqualTo("Han Solo")
+    Truth.assertThat(lukeRecord["height({\"unit\":\"FOOT\"})"]).isEqualTo(BigDecimal.valueOf(5.905512))
   }
 
   @Test
@@ -234,7 +238,7 @@ class ResponseNormalizationTest {
     var record: Record?
 
     record = normalizedCache.loadRecord("$fieldKey.planets.0", CacheHeaders.NONE)
-    Truth.assertThat(record!!.field("filmConnection")).isNull()
+    Truth.assertThat(record!!["filmConnection"]).isNull()
     record = normalizedCache.loadRecord("$fieldKey.planets.0.filmConnection", CacheHeaders.NONE)
     Truth.assertThat(record).isNull()
     record = normalizedCache.loadRecord("$fieldKey.planets.1.filmConnection", CacheHeaders.NONE)

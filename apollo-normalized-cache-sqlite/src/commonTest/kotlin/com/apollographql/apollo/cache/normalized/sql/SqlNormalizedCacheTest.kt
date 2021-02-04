@@ -66,9 +66,16 @@ class SqlNormalizedCacheTest {
 
   @Test
   fun testRecordMerge() {
-    cache.merge(Record.builder(STANDARD_KEY)
-        .addField("fieldKey", "valueUpdated")
-        .addField("newFieldKey", true).build(), CacheHeaders.NONE)
+    cache.merge(
+        record = Record(
+            key = STANDARD_KEY,
+            fields = mapOf(
+                "fieldKey" to "valueUpdated",
+                "newFieldKey" to true,
+            ),
+        ),
+        cacheHeaders = CacheHeaders.NONE,
+    )
     val record = cache.loadRecord(STANDARD_KEY, CacheHeaders.NONE)
     assertNotNull(record)
     assertEquals(expected = "valueUpdated", actual = record.fields["fieldKey"])
@@ -78,9 +85,16 @@ class SqlNormalizedCacheTest {
   @Test
   fun testRecordDelete() {
     createRecord(STANDARD_KEY)
-    cache.merge(Record.builder(STANDARD_KEY)
-        .addField("fieldKey", "valueUpdated")
-        .addField("newFieldKey", true).build(), CacheHeaders.NONE)
+    cache.merge(
+        record = Record(
+            key = STANDARD_KEY,
+            fields = mapOf(
+                "fieldKey" to "valueUpdated",
+                "newFieldKey" to true,
+            ),
+        ),
+        cacheHeaders = CacheHeaders.NONE,
+    )
     cache.remove(cacheKey = CacheKey(STANDARD_KEY), cascade = false)
     val record = cache.loadRecord(STANDARD_KEY, CacheHeaders.NONE)
     assertNull(record)
@@ -122,17 +136,29 @@ class SqlNormalizedCacheTest {
 
   @Test
   fun testHeader_noCache() {
-    cache.merge(Record.builder(STANDARD_KEY).build(),
-        CacheHeaders.builder().addHeader(ApolloCacheHeaders.DO_NOT_STORE, "true").build())
+    cache.merge(
+        record = Record(
+            key = STANDARD_KEY,
+            fields = emptyMap(),
+        ),
+        cacheHeaders = CacheHeaders.builder().addHeader(ApolloCacheHeaders.DO_NOT_STORE, "true").build(),
+    )
     val record = cache.loadRecord(STANDARD_KEY, CacheHeaders.NONE)
     assertNull(record)
   }
 
   @Test
   fun testRecordMerge_noOldRecord() {
-    val changedKeys = cache.merge(Record.builder(STANDARD_KEY)
-        .addField("fieldKey", "valueUpdated")
-        .addField("newFieldKey", true).build(), CacheHeaders.NONE)
+    val changedKeys = cache.merge(
+        record = Record(
+            key = STANDARD_KEY,
+            fields = mapOf(
+                "fieldKey" to "valueUpdated",
+                "newFieldKey" to true,
+            ),
+        ),
+        cacheHeaders = CacheHeaders.NONE,
+    )
     val record = cache.loadRecord(STANDARD_KEY, CacheHeaders.NONE)
     assertNotNull(record)
     assertEquals(expected = setOf("$STANDARD_KEY.fieldKey", "$STANDARD_KEY.newFieldKey"), actual = changedKeys)
@@ -143,9 +169,16 @@ class SqlNormalizedCacheTest {
   @Test
   fun testRecordMerge_withOldRecord() {
     createRecord(STANDARD_KEY)
-    cache.merge(Record.builder(STANDARD_KEY)
-        .addField("fieldKey", "valueUpdated")
-        .addField("newFieldKey", true).build(), CacheHeaders.NONE)
+    cache.merge(
+        record = Record(
+            key = STANDARD_KEY,
+            fields = mapOf(
+                "fieldKey" to "valueUpdated",
+                "newFieldKey" to true,
+            ),
+        ),
+        cacheHeaders = CacheHeaders.NONE
+    )
     val record = cache.loadRecord(STANDARD_KEY, CacheHeaders.NONE)
     assertNotNull(record)
     assertEquals(expected = "valueUpdated", actual = record.fields["fieldKey"])
@@ -154,11 +187,14 @@ class SqlNormalizedCacheTest {
 
   private fun createRecord(key: String) {
     cache.merge(
-        Record.builder(key)
-            .addField("field1", "value1")
-            .addField("field2", "value2")
-            .build(),
-        CacheHeaders.NONE
+        record = Record(
+            key = key,
+            fields = mapOf(
+                "field1" to "value1",
+                "field2" to "value2",
+            ),
+        ),
+        cacheHeaders = CacheHeaders.NONE,
     )
   }
 

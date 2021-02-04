@@ -80,15 +80,24 @@ class LruNormalizedCacheTest {
   @Test
   fun testEviction() {
     val lruCache = LruNormalizedCacheFactory(EvictionPolicy.builder().maxSizeBytes(2000).build()).create()
-    val testRecord1Builder = Record.builder("key1")
-    testRecord1Builder.addField("a", String(ByteArray(1100)))
-    val testRecord1 = testRecord1Builder.build()
-    val testRecord2Builder = Record.builder("key2")
-    testRecord2Builder.addField("a", String(ByteArray(1100)))
-    val testRecord2 = testRecord2Builder.build()
-    val testRecord3Builder = Record.builder("key3")
-    testRecord3Builder.addField("a", String(ByteArray(10)))
-    val testRecord3 = testRecord3Builder.build()
+    val testRecord1 = Record(
+        key = "key1",
+        fields = mapOf(
+            "a" to String(ByteArray(1100)),
+        ),
+    )
+    val testRecord2 = Record(
+        key = "key2",
+        fields = mapOf(
+            "a" to String(ByteArray(1100)),
+        ),
+    )
+    val testRecord3 = Record(
+        key = "key3",
+        fields = mapOf(
+            "a" to String(ByteArray(10)),
+        ),
+    )
     val records = listOf(testRecord1, testRecord2, testRecord3)
     lruCache.merge(records, CacheHeaders.NONE)
 
@@ -102,15 +111,24 @@ class LruNormalizedCacheTest {
   @Test
   fun testEviction_recordChange() {
     val lruCache = LruNormalizedCacheFactory(EvictionPolicy.builder().maxSizeBytes(2000).build()).create()
-    val testRecord1Builder = Record.builder("key1")
-    testRecord1Builder.addField("a", String(ByteArray(10)))
-    val testRecord1 = testRecord1Builder.build()
-    val testRecord2Builder = Record.builder("key2")
-    testRecord2Builder.addField("a", String(ByteArray(10)))
-    val testRecord2 = testRecord2Builder.build()
-    val testRecord3Builder = Record.builder("key3")
-    testRecord3Builder.addField("a", String(ByteArray(10)))
-    val testRecord3 = testRecord3Builder.build()
+    val testRecord1 = Record(
+        key = "key1",
+        fields = mapOf(
+            "a" to String(ByteArray(10)),
+        ),
+    )
+    val testRecord2 = Record(
+        key = "key2",
+        fields = mapOf(
+            "a" to String(ByteArray(10)),
+        ),
+    )
+    val testRecord3 = Record(
+        key = "key3",
+        fields = mapOf(
+            "a" to String(ByteArray(10)),
+        ),
+    )
     val records = listOf(testRecord1, testRecord2, testRecord3)
     lruCache.merge(records, CacheHeaders.NONE)
 
@@ -118,9 +136,13 @@ class LruNormalizedCacheTest {
     assertThat(lruCache.loadRecord("key1", CacheHeaders.NONE)).isNotNull()
     assertThat(lruCache.loadRecord("key2", CacheHeaders.NONE)).isNotNull()
     assertThat(lruCache.loadRecord("key3", CacheHeaders.NONE)).isNotNull()
-    val largeTestRecordBuilder = Record.builder("key1")
-    largeTestRecordBuilder.addField("a", String(ByteArray(2000)))
-    val largeTestRecord = largeTestRecordBuilder.build()
+
+    val largeTestRecord = Record(
+        key = "key1",
+        fields = mapOf(
+            "a" to String(ByteArray(2000)),
+        ),
+    )
     lruCache.merge(largeTestRecord, CacheHeaders.NONE)
     //The large record (Record 1) should be evicted. the other small records should remain.
     assertThat(lruCache.loadRecord("key1", CacheHeaders.NONE)).isNull()
@@ -133,9 +155,12 @@ class LruNormalizedCacheTest {
     val secondaryCacheFactory = LruNormalizedCacheFactory(EvictionPolicy.NO_EVICTION)
     val primaryCache = LruNormalizedCacheFactory(EvictionPolicy.NO_EVICTION)
         .chain(secondaryCacheFactory).createChain()
-    val recordBuilder = Record.builder("root")
-    recordBuilder.addField("bar", "bar")
-    val record = recordBuilder.build()
+    val record = Record(
+        key = "root",
+        fields = mapOf(
+            "bar" to "bar",
+        ),
+    )
     primaryCache.merge(record, CacheHeaders.NONE)
 
     //verify write through behavior
@@ -149,15 +174,25 @@ class LruNormalizedCacheTest {
     val primaryCache = LruNormalizedCacheFactory(EvictionPolicy.NO_EVICTION)
         .chain(secondaryCacheFactory).createChain()
 
-    var recordBuilder = Record.builder("root1")
-    recordBuilder.addField("bar", "bar")
-    val record1 = recordBuilder.build()
-    recordBuilder = Record.builder("root2")
-    recordBuilder.addField("bar", "bar")
-    val record2 = recordBuilder.build()
-    recordBuilder = Record.builder("root3")
-    recordBuilder.addField("bar", "bar")
-    val record3 = recordBuilder.build()
+    val record1 = Record(
+        key = "root1",
+        fields = mapOf(
+            "bar" to "bar",
+        ),
+    )
+    val record2 = Record(
+        key = "root2",
+        fields = mapOf(
+            "bar" to "bar",
+        )
+    )
+    val record3 = Record(
+        key = "root3",
+        fields = mapOf(
+            "bar" to "bar",
+        )
+    )
+
     val records = listOf(record1, record2, record3)
     val keys = listOf(record1.key, record2.key, record3.key)
     primaryCache.merge(records, CacheHeaders.NONE)
@@ -182,7 +217,7 @@ class LruNormalizedCacheTest {
     val secondaryCacheFactory = LruNormalizedCacheFactory(EvictionPolicy.NO_EVICTION)
     val primaryCacheStore = LruNormalizedCacheFactory(EvictionPolicy.NO_EVICTION)
         .chain(secondaryCacheFactory).createChain()
-    val record = Record.builder("key").build()
+    val record = Record(key = "key", fields = emptyMap())
     primaryCacheStore.merge(record, CacheHeaders.NONE)
     primaryCacheStore.clearAll()
 
@@ -194,7 +229,7 @@ class LruNormalizedCacheTest {
     val secondaryCacheFactory = LruNormalizedCacheFactory(EvictionPolicy.NO_EVICTION)
     val primaryCache = LruNormalizedCacheFactory(EvictionPolicy.NO_EVICTION)
         .chain(secondaryCacheFactory).createChain() as LruNormalizedCache
-    val record = Record.builder("key").build()
+    val record = Record(key = "key", fields = emptyMap())
     primaryCache.merge(record, CacheHeaders.NONE)
     primaryCache.clearCurrentCache()
 
@@ -208,7 +243,7 @@ class LruNormalizedCacheTest {
     val secondaryCacheFactory = LruNormalizedCacheFactory(EvictionPolicy.NO_EVICTION)
     val primaryCache = LruNormalizedCacheFactory(EvictionPolicy.NO_EVICTION)
         .chain(secondaryCacheFactory).createChain()
-    val record = Record.builder("key").build()
+    val record = Record(key = "key", fields = emptyMap())
 
     val nextCache = requireNotNull(primaryCache.nextCache)
     primaryCache.merge(record, CacheHeaders.NONE)
@@ -313,14 +348,13 @@ class LruNormalizedCacheTest {
 
     val lruCache = createLruNormalizedCache()
 
-    val record1 = Record.builder("id_1")
-        .addField("a", "stringValueA")
-        .addField("b", "stringValueB")
-        .build()
-
-    val record2 = Record.builder("id_2")
-        .addField("a", CacheReference("id_1"))
-        .build()
+    val record1 = createTestRecord("id_1")
+    val record2 = Record(
+        key = "id_2",
+        fields = mapOf(
+            "a" to CacheReference("id_1"),
+        ),
+    )
 
     lruCache.merge(
         listOf(record1, record2), CacheHeaders.NONE
@@ -335,14 +369,13 @@ class LruNormalizedCacheTest {
 
     val lruCache = createLruNormalizedCache()
 
-    val record1 = Record.builder("id_1")
-        .addField("a", "stringValueA")
-        .addField("b", "stringValueB")
-        .build()
-
-    val record2 = Record.builder("id_2")
-        .addField("a", CacheReference("id_1"))
-        .build()
+    val record1 = createTestRecord("id_1")
+    val record2 = Record(
+        key = "id_2",
+        fields = mapOf(
+            "a" to CacheReference("id_1"),
+        ),
+    )
 
     lruCache.merge(
         listOf(record1, record2), CacheHeaders.NONE
@@ -363,9 +396,13 @@ class LruNormalizedCacheTest {
     assertThat(cacheRecord.field("b")).isEqualTo(testRecord.field("b"))
   }
 
-  private fun createTestRecord(id: String): Record =
-      Record.builder("key$id")
-          .addField("a", "stringValueA$id")
-          .addField("b", "stringValueB$id")
-          .build()
+  private fun createTestRecord(id: String): Record {
+    return Record(
+        key = "key$id",
+        fields = mapOf(
+            "a" to "stringValueA$id",
+            "b" to "stringValueB$id",
+        )
+    )
+  }
 }

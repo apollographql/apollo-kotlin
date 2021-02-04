@@ -76,13 +76,12 @@ class MemoryCache(
       )
       record.keys()
     } else {
-      oldRecord.mergeWith(record).also {
-        //re-insert to trigger new weight calculation
-        lruCache[record.key] = CacheEntry(
-            record = oldRecord,
-            expireAfterMillis = expireAfterMillis
-        )
-      }
+      val (mergedRecord, changedKeys) = oldRecord.mergeWith(record)
+      lruCache[record.key] = CacheEntry(
+          record = mergedRecord,
+          expireAfterMillis = expireAfterMillis
+      )
+      changedKeys
     }
 
     return changedKeys + nextCache?.merge(record, cacheHeaders).orEmpty()
@@ -111,7 +110,7 @@ class MemoryCache(
   ) {
     val cachedAtMillis: Long = Platform.currentTimeMillis()
 
-    val sizeInBytes: Int = record.sizeEstimateBytes() + 8
+    val sizeInBytes: Int = record.sizeInBytes + 8
 
     val isExpired: Boolean
       get() {

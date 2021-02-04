@@ -113,9 +113,10 @@ class ApolloWatcherTest {
 
     // Someone writes to the store directly
     val changedKeys: Set<String> = (apolloClient.apolloStore as RealApolloStore).writeTransaction {
-        val record: Record = Record.builder("2001")
-            .addField("name", "Artoo")
-            .build()
+        val record: Record = Record(
+            key = "2001",
+            fields = mapOf("name" to "Artoo")
+        )
         it.merge(listOf(record), CacheHeaders.NONE)
     }
 

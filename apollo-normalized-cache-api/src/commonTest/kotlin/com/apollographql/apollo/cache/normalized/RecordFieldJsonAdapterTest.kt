@@ -1,7 +1,6 @@
 package com.apollographql.apollo.cache.normalized
 
 import com.apollographql.apollo.api.BigDecimal
-import com.apollographql.apollo.cache.normalized.Record.Companion.builder
 import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertNull
@@ -11,7 +10,6 @@ class RecordFieldJsonAdapterTest {
 
   @Test
   fun testFieldsAdapterSerializationDeserialization() {
-    val recordBuilder = builder("root")
     val expectedBigDecimal = BigDecimal("1.23")
     val expectedStringValue = "StringValue"
     val expectedBooleanValue = true
@@ -22,16 +20,21 @@ class RecordFieldJsonAdapterTest {
     val expectedMapKey = "foo"
     val expectedMapValue = "bar"
     val expectedMap = mapOf(expectedMapKey to expectedMapValue)
-    recordBuilder.addField("bigDecimal", expectedBigDecimal)
-    recordBuilder.addField("string", expectedStringValue)
-    recordBuilder.addField("boolean", expectedBooleanValue)
-    recordBuilder.addField("cacheReference", expectedCacheReference)
-    recordBuilder.addField("scalarList", expectedScalarList)
-    recordBuilder.addField("referenceList", expectedCacheReferenceList)
-    recordBuilder.addField("nullValue", null)
-    recordBuilder.addField("listOfScalarList", expectedListOfScalarList)
-    recordBuilder.addField("map", expectedMap)
-    val record = recordBuilder.build()
+    val record = Record(
+        key = "root",
+        fields = mapOf(
+            "bigDecimal" to expectedBigDecimal,
+            "string" to expectedStringValue,
+            "boolean" to expectedBooleanValue,
+            "cacheReference" to expectedCacheReference,
+            "scalarList" to expectedScalarList,
+            "referenceList" to expectedCacheReferenceList,
+            "nullValue" to null,
+            "listOfScalarList" to expectedListOfScalarList,
+            "map" to expectedMap
+        )
+    )
+
     val json = RecordFieldJsonAdapter.toJson(record.fields)
     val deserializedMap = requireNotNull(RecordFieldJsonAdapter.fromJson(json))
 

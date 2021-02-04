@@ -113,8 +113,8 @@ class RealApolloStore(
     return optimisticCache.loadRecords(keys, cacheHeaders)
   }
 
-  override fun merge(recordCollection: Collection<Record>, cacheHeaders: CacheHeaders): Set<String> {
-    return optimisticCache.merge(recordCollection, cacheHeaders)
+  override fun merge(records: Collection<Record>, cacheHeaders: CacheHeaders): Set<String> {
+    return optimisticCache.merge(records, cacheHeaders)
   }
 
   override fun merge(record: Record, cacheHeaders: CacheHeaders): Set<String> {
@@ -237,8 +237,12 @@ class RealApolloStore(
         data = operationData,
         customScalarAdapters = customScalarAdapters,
         cacheKeyResolver = cacheKeyResolver
-    ).map {
-      it.toBuilder().mutationId(mutationId).build()
+    ).map { record ->
+      Record(
+          key = record.key,
+          fields = record.fields,
+          mutationId = mutationId
+      )
     }
 
     /**

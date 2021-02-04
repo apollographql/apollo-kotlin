@@ -57,11 +57,14 @@ internal class Normalizer(private val cacheKeyResolver: CacheKeyResolver) {
       }
     }.toMap()
 
-    val record = Record.builder(actualKey).addFields(fields).build()
+    val record = Record(
+        key = actualKey,
+        fields = fields
+    )
 
     val oldRecord = records[key]
     if (oldRecord != null) {
-      oldRecord.mergeWith(record)
+      records[key!!] = oldRecord.mergeWith(record).first
     } else {
       records[actualKey] = record
     }

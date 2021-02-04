@@ -93,24 +93,24 @@ class OptimisticCache : NormalizedCache() {
   private fun Record?.mergeJournalRecord(key: String): Record? {
     val journal = lruCache[key]
     return if (journal != null) {
-      this?.toBuilder()?.build()?.apply {
-        mergeWith(journal.snapshot)
-      } ?: journal.snapshot.toBuilder().build()
+      this?.mergeWith(journal.snapshot)?.first ?: journal.snapshot
     } else {
       this
     }
   }
 
   private class RecordJournal(mutationRecord: Record) {
-    var snapshot: Record = mutationRecord.toBuilder().build()
-    val history = mutableListOf<Record>(mutationRecord.toBuilder().build())
+    var snapshot: Record = mutationRecord
+    val history = mutableListOf(mutationRecord)
 
     /**
      * Commits new version of record to the history and invalidate snapshot version.
      */
     fun commit(record: Record): Set<String> {
-      history.add(history.size, record.toBuilder().build())
-      return snapshot.mergeWith(record)
+      val (mergedRecord, changedKeys) = snapshot.mergeWith(record)
+      snapshot = mergedRecord
+      history.add(history.size, mergedRecord)
+      return changedKeys
     }
 
     /**
@@ -129,9 +129,11 @@ class OptimisticCache : NormalizedCache() {
       for (i in kotlin.math.max(0, recordIndex - 1) until history.size) {
         val record = history[i]
         if (i == kotlin.math.max(0, recordIndex - 1)) {
-          snapshot = record.toBuilder().build()
+          snapshot = record
         } else {
-          result.addAll(snapshot.mergeWith(record))
+          val (mergedRecord, changedKeys) = snapshot.mergeWith(record)
+          snapshot = mergedRecord
+          result.addAll(changedKeys)
         }
       }
 

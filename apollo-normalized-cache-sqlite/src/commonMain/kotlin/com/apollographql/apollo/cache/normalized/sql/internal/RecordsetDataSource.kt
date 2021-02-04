@@ -11,9 +11,10 @@ internal object RecordsetDataSource {
         .executeAsList()
         .firstOrNull()
         ?.let {
-          Record.builder(it.key)
-              .addFields(RecordFieldJsonAdapter.fromJson(it.record)!!)
-              .build()
+          Record(
+              key = it.key,
+              fields = RecordFieldJsonAdapter.fromJson(it.record)!!,
+          )
         }
   }
 
@@ -22,9 +23,10 @@ internal object RecordsetDataSource {
       recordsForKeys(chunkedKeys)
           .executeAsList()
           .map {
-            Record.builder(it.key)
-                .addFields(RecordFieldJsonAdapter.fromJson(it.record)!!)
-                .build()
+            Record(
+                key = it.key,
+                fields = RecordFieldJsonAdapter.fromJson(it.record)!!,
+            )
           }
     }
   }
@@ -35,6 +37,7 @@ internal object RecordsetDataSource {
       val oldRecords = selectRecords(
           keys = records.map { it.key },
       ).associateBy { it.key }
+
       updatedRecordKeys = records.flatMap { record ->
         val oldRecord = oldRecords[record.key]
         if (oldRecord == null) {
@@ -44,14 +47,14 @@ internal object RecordsetDataSource {
           )
           record.keys()
         } else {
-          oldRecord.mergeWith(record).also {
-            if (it.isNotEmpty()) {
-              update(
-                  key = oldRecord.key,
-                  record = RecordFieldJsonAdapter.toJson(oldRecord.fields),
-              )
-            }
+          val (mergedRecord, changedKeys) = oldRecord.mergeWith(record)
+          if (mergedRecord.isNotEmpty()) {
+            update(
+                key = oldRecord.key,
+                record = RecordFieldJsonAdapter.toJson(oldRecord.fields),
+            )
           }
+          changedKeys
         }
       }.toSet()
     }
@@ -63,21 +66,21 @@ internal object RecordsetDataSource {
     transaction {
       val oldRecord = selectRecord(record.key)
 
-      if (oldRecord == null) {
+      updatedRecordKeys = if (oldRecord == null) {
         insert(
             key = record.key,
             record = RecordFieldJsonAdapter.toJson(record.fields),
         )
-        updatedRecordKeys = record.keys()
+        record.keys()
       } else {
-        updatedRecordKeys = oldRecord.mergeWith(record).also {
-          if (it.isNotEmpty()) {
-            update(
-                key = oldRecord.key,
-                record = RecordFieldJsonAdapter.toJson(oldRecord.fields),
-            )
-          }
+        val (mergedRecord, changedKeys) = oldRecord.mergeWith(record)
+        if (mergedRecord.isNotEmpty()) {
+          update(
+              key = oldRecord.key,
+              record = RecordFieldJsonAdapter.toJson(oldRecord.fields),
+          )
         }
+        changedKeys
       }
     }
     return updatedRecordKeys
@@ -112,9 +115,10 @@ internal object RecordsetDataSource {
 
   fun CacheQueries.selectAllRecords(): Map<String, Record> {
     return selectRecords().executeAsList().map {
-      it.key to Record.builder(it.key)
-          .addFields(RecordFieldJsonAdapter.fromJson(it.record)!!)
-          .build()
+      it.key to Record(
+          key = it.key,
+          fields = RecordFieldJsonAdapter.fromJson(it.record)!!,
+      )
     }.toMap()
   }
 }
