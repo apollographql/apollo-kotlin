@@ -77,7 +77,7 @@ internal object RecordsetDataSource {
         if (mergedRecord.isNotEmpty()) {
           update(
               key = oldRecord.key,
-              record = RecordFieldJsonAdapter.toJson(oldRecord.fields),
+              record = RecordFieldJsonAdapter.toJson(mergedRecord.fields),
           )
         }
         changedKeys
