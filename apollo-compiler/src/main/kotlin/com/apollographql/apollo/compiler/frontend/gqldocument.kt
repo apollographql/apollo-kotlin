@@ -87,6 +87,10 @@ private fun String.withIndents(): String {
   var indent = 0
   return lines().joinToString(separator = "\n") { line ->
     if (line.endsWith("}")) indent -= 2
+    if (indent < 0) {
+      // This happens if a description ends with '}'
+      indent = 0
+    }
     (" ".repeat(indent) + line).also {
       if (line.endsWith("{")) indent += 2
     }
