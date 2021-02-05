@@ -44,14 +44,14 @@ class AllStarships : Query<AllStarships.Data> {
       /**
        * A list of edges.
        */
-      val edges: List<Edge?>?
+      val edges: List<Edges?>?
     ) {
-      fun edgesFilterNotNull(): List<Edge>? = edges?.filterNotNull()
+      fun edgesFilterNotNull(): List<Edges>? = edges?.filterNotNull()
 
       /**
        * An edge in a connection.
        */
-      data class Edge(
+      data class Edges(
         /**
          * The item at the end of the edge
          */
@@ -85,12 +85,12 @@ class AllStarships : Query<AllStarships.Data> {
               /**
                * A list of edges.
                */
-              override val edges: List<Edge?>?
+              override val edges: List<Edges?>?
 
               /**
                * An edge in a connection.
                */
-              interface Edge : StarshipFragment.PilotConnection.Edge {
+              interface Edges : StarshipFragment.PilotConnection.Edges {
                 /**
                  * The item at the end of the edge
                  */
@@ -99,12 +99,12 @@ class AllStarships : Query<AllStarships.Data> {
                 /**
                  * An individual person or character within the Star Wars universe.
                  */
-                interface Node : StarshipFragment.PilotConnection.Edge.Node {
+                interface Node : StarshipFragment.PilotConnection.Edges.Node {
                   override val __typename: String
 
                   interface Person : Node, PilotFragment,
-                      StarshipFragment.PilotConnection.Edge.Node.Person,
-                      StarshipFragment.PilotConnection.Edge.Node {
+                      StarshipFragment.PilotConnection.Edges.Node.Person,
+                      StarshipFragment.PilotConnection.Edges.Node {
                     override val __typename: String
 
                     /**
@@ -122,13 +122,13 @@ class AllStarships : Query<AllStarships.Data> {
                      * 0 ABY.
                      */
                     interface Homeworld : PilotFragment.Homeworld,
-                        StarshipFragment.PilotConnection.Edge.Node.Person.Homeworld {
+                        StarshipFragment.PilotConnection.Edges.Node.Person.Homeworld {
                       override val __typename: String
 
                       interface Planet : Homeworld, PlanetFragment, PilotFragment.Homeworld.Planet,
                           PilotFragment.Homeworld,
-                          StarshipFragment.PilotConnection.Edge.Node.Person.Homeworld.Planet,
-                          StarshipFragment.PilotConnection.Edge.Node.Person.Homeworld {
+                          StarshipFragment.PilotConnection.Edges.Node.Person.Homeworld.Planet,
+                          StarshipFragment.PilotConnection.Edges.Node.Person.Homeworld {
                         override val __typename: String
 
                         /**
@@ -174,22 +174,22 @@ class AllStarships : Query<AllStarships.Data> {
               /**
                * A list of edges.
                */
-              override val edges: List<Edge?>?
+              override val edges: List<Edges?>?
             ) : Starship.PilotConnection, StarshipFragment.PilotConnection {
               /**
                * An edge in a connection.
                */
-              data class Edge(
+              data class Edges(
                 /**
                  * The item at the end of the edge
                  */
                 override val node: Node?
-              ) : Starship.PilotConnection.Edge, StarshipFragment.PilotConnection.Edge {
+              ) : Starship.PilotConnection.Edges, StarshipFragment.PilotConnection.Edges {
                 /**
                  * An individual person or character within the Star Wars universe.
                  */
-                interface Node : Starship.PilotConnection.Edge.Node,
-                    StarshipFragment.PilotConnection.Edge.Node {
+                interface Node : Starship.PilotConnection.Edges.Node,
+                    StarshipFragment.PilotConnection.Edges.Node {
                   override val __typename: String
 
                   data class PersonNode(
@@ -202,16 +202,17 @@ class AllStarships : Query<AllStarships.Data> {
                      * A planet that this person was born on or inhabits.
                      */
                     override val homeworld: Homeworld?
-                  ) : Starship.PilotConnection.Edge.Node, Starship.PilotConnection.Edge.Node.Person,
-                      PilotFragment, StarshipFragment.PilotConnection.Edge.Node.Person,
-                      StarshipFragment.PilotConnection.Edge.Node, Node {
+                  ) : Starship.PilotConnection.Edges.Node,
+                      Starship.PilotConnection.Edges.Node.Person, PilotFragment,
+                      StarshipFragment.PilotConnection.Edges.Node.Person,
+                      StarshipFragment.PilotConnection.Edges.Node, Node {
                     /**
                      * A large mass, planet or planetoid in the Star Wars Universe, at the time of
                      * 0 ABY.
                      */
-                    interface Homeworld : Starship.PilotConnection.Edge.Node.Person.Homeworld,
+                    interface Homeworld : Starship.PilotConnection.Edges.Node.Person.Homeworld,
                         PilotFragment.Homeworld,
-                        StarshipFragment.PilotConnection.Edge.Node.Person.Homeworld {
+                        StarshipFragment.PilotConnection.Edges.Node.Person.Homeworld {
                       override val __typename: String
 
                       data class PlanetHomeworld(
@@ -220,24 +221,24 @@ class AllStarships : Query<AllStarships.Data> {
                          * The name of this planet.
                          */
                         override val name: String?
-                      ) : Starship.PilotConnection.Edge.Node.Person.Homeworld,
-                          Starship.PilotConnection.Edge.Node.Person.Homeworld.Planet,
+                      ) : Starship.PilotConnection.Edges.Node.Person.Homeworld,
+                          Starship.PilotConnection.Edges.Node.Person.Homeworld.Planet,
                           PlanetFragment, PilotFragment.Homeworld.Planet, PilotFragment.Homeworld,
-                          StarshipFragment.PilotConnection.Edge.Node.Person.Homeworld.Planet,
-                          StarshipFragment.PilotConnection.Edge.Node.Person.Homeworld, Homeworld
+                          StarshipFragment.PilotConnection.Edges.Node.Person.Homeworld.Planet,
+                          StarshipFragment.PilotConnection.Edges.Node.Person.Homeworld, Homeworld
 
                       data class OtherHomeworld(
                         override val __typename: String
-                      ) : Starship.PilotConnection.Edge.Node.Person.Homeworld,
+                      ) : Starship.PilotConnection.Edges.Node.Person.Homeworld,
                           PilotFragment.Homeworld,
-                          StarshipFragment.PilotConnection.Edge.Node.Person.Homeworld, Homeworld
+                          StarshipFragment.PilotConnection.Edges.Node.Person.Homeworld, Homeworld
                     }
                   }
 
                   data class OtherNode(
                     override val __typename: String
-                  ) : Starship.PilotConnection.Edge.Node,
-                      StarshipFragment.PilotConnection.Edge.Node, Node
+                  ) : Starship.PilotConnection.Edges.Node,
+                      StarshipFragment.PilotConnection.Edges.Node, Node
                 }
               }
             }

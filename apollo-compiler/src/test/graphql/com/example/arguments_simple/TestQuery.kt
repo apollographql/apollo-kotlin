@@ -119,12 +119,12 @@ data class TestQuery(
           /**
            * The edges for each of the character's friends.
            */
-          override val edges: List<Edge?>?
+          override val edges: List<Edges?>?
 
           /**
            * An edge object for a character's friends
            */
-          interface Edge : HeroDetails.FriendsConnection.Edge {
+          interface Edges : HeroDetails.FriendsConnection.Edges {
             /**
              * The character represented by this friendship edge
              */
@@ -133,7 +133,7 @@ data class TestQuery(
             /**
              * A character from the Star Wars universe
              */
-            interface Node : HeroDetails.FriendsConnection.Edge.Node {
+            interface Node : HeroDetails.FriendsConnection.Edges.Node {
               /**
                * The name of the character
                */
@@ -165,17 +165,17 @@ data class TestQuery(
           /**
            * The edges for each of the character's friends.
            */
-          override val edges: List<Edge?>?
+          override val edges: List<Edges?>?
         ) : Character.FriendsConnection, HeroDetails.FriendsConnection {
           /**
            * An edge object for a character's friends
            */
-          data class Edge(
+          data class Edges(
             /**
              * The character represented by this friendship edge
              */
             override val node: Node?
-          ) : Character.FriendsConnection.Edge, HeroDetails.FriendsConnection.Edge {
+          ) : Character.FriendsConnection.Edges, HeroDetails.FriendsConnection.Edges {
             /**
              * A character from the Star Wars universe
              */
@@ -184,7 +184,7 @@ data class TestQuery(
                * The name of the character
                */
               override val name: String?
-            ) : Character.FriendsConnection.Edge.Node, HeroDetails.FriendsConnection.Edge.Node
+            ) : Character.FriendsConnection.Edges.Node, HeroDetails.FriendsConnection.Edges.Node
           }
         }
       }

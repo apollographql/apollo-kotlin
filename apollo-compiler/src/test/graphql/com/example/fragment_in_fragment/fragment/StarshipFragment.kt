@@ -34,12 +34,12 @@ interface StarshipFragment {
     /**
      * A list of edges.
      */
-    val edges: List<Edge?>?
+    val edges: List<Edges?>?
 
     /**
      * An edge in a connection.
      */
-    interface Edge {
+    interface Edges {
       /**
        * The item at the end of the edge
        */

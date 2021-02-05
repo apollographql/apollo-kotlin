@@ -24,12 +24,12 @@ interface HeroDetails {
   /**
    * The friends of the character, or an empty list if they have none
    */
-  val friends: List<Friend?>?
+  val friends: List<Friends?>?
 
   /**
    * A character from the Star Wars universe
    */
-  interface Friend {
+  interface Friends {
     val __typename: String
 
     /**
@@ -37,7 +37,7 @@ interface HeroDetails {
      */
     val name: String
 
-    interface Human : Friend {
+    interface Human : Friends {
       override val __typename: String
 
       /**
@@ -51,7 +51,7 @@ interface HeroDetails {
       val height: Double?
     }
 
-    interface Droid : Friend {
+    interface Droid : Friends {
       override val __typename: String
 
       /**
@@ -66,9 +66,9 @@ interface HeroDetails {
     }
 
     companion object {
-      fun Friend.asHuman(): Human? = this as? Human
+      fun Friends.asHuman(): Human? = this as? Human
 
-      fun Friend.asDroid(): Droid? = this as? Droid
+      fun Friends.asDroid(): Droid? = this as? Droid
     }
   }
 

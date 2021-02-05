@@ -411,11 +411,13 @@ internal class AstBuilder private constructor(
           selectionKey = currentSelectionKey + field.typeName,
       )
     }
-    val implements = alternativeSelectionKeys.mapNotNull { keys ->
-      if (keys != currentSelectionKey) {
-        keys.asTypeRef(targetPackageName)
-      } else null
-    }.toSet()
+
+    val currentObjectTypeRef = currentSelectionKey.asTypeRef(targetPackageName)
+    val implements = alternativeSelectionKeys
+        .map { keys -> keys.asTypeRef(targetPackageName) }
+        .filterNot { it == currentObjectTypeRef }
+        .toSet()
+
     val kind = CodeGenerationAst.ObjectType.Kind.Interface.takeIf { abstract } ?: CodeGenerationAst.ObjectType.Kind.Object
     val nestedObjects = fields
         .filter { field -> field.fields.isNotEmpty() || field.fragments.isNotEmpty() }
@@ -469,11 +471,13 @@ internal class AstBuilder private constructor(
           selectionKey = selectionKey + field.typeName,
       )
     }
-    val implements = alternativeSelectionKeys.mapNotNull { keys ->
-      keys
-          .takeIf { keys != selectionKey }
-          ?.asTypeRef(targetPackageName)
-    }.toSet()
+
+    val currentObjectTypeRef = selectionKey.asTypeRef(targetPackageName)
+    val implements = alternativeSelectionKeys
+        .map { keys -> keys.asTypeRef(targetPackageName) }
+        .filterNot { it == currentObjectTypeRef }
+        .toSet()
+
     val nestedObjects = buildFragmentNestedObjectTypes(
         fragments = fragments,
         abstract = abstract,

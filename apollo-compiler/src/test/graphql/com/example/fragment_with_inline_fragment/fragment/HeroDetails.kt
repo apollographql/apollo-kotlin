@@ -38,12 +38,12 @@ interface HeroDetails {
     /**
      * The edges for each of the character's friends.
      */
-    val edges: List<Edge?>?
+    val edges: List<Edges?>?
 
     /**
      * An edge object for a character's friends
      */
-    interface Edge {
+    interface Edges {
       /**
        * The character represented by this friendship edge
        */
@@ -86,12 +86,12 @@ interface HeroDetails {
       /**
        * The edges for each of the character's friends.
        */
-      override val edges: List<Edge?>?
+      override val edges: List<Edges?>?
 
       /**
        * An edge object for a character's friends
        */
-      interface Edge : HeroDetails.FriendsConnection.Edge {
+      interface Edges : HeroDetails.FriendsConnection.Edges {
         /**
          * The character represented by this friendship edge
          */
@@ -100,7 +100,7 @@ interface HeroDetails {
         /**
          * A character from the Star Wars universe
          */
-        interface Node : HeroDetails.FriendsConnection.Edge.Node {
+        interface Node : HeroDetails.FriendsConnection.Edges.Node {
           /**
            * The name of the character
            */
@@ -109,7 +109,7 @@ interface HeroDetails {
       }
     }
 
-    interface Droid : HeroDetails.Droid {
+    interface Droid : HeroDetails.Droid, DroidDetails {
       override val __typename: String
 
       /**
@@ -125,7 +125,7 @@ interface HeroDetails {
       /**
        * This droid's primary function
        */
-      val primaryFunction: String?
+      override val primaryFunction: String?
 
       /**
        * A connection object for a character's friends
@@ -140,13 +140,13 @@ interface HeroDetails {
         /**
          * The edges for each of the character's friends.
          */
-        override val edges: List<Edge?>?
+        override val edges: List<Edges?>?
 
         /**
          * An edge object for a character's friends
          */
-        interface Edge : HeroDetails.FriendsConnection.Edge,
-            HeroDetails.Droid.FriendsConnection.Edge {
+        interface Edges : HeroDetails.FriendsConnection.Edges,
+            HeroDetails.Droid.FriendsConnection.Edges {
           /**
            * The character represented by this friendship edge
            */
@@ -155,8 +155,8 @@ interface HeroDetails {
           /**
            * A character from the Star Wars universe
            */
-          interface Node : HeroDetails.FriendsConnection.Edge.Node,
-              HeroDetails.Droid.FriendsConnection.Edge.Node {
+          interface Node : HeroDetails.FriendsConnection.Edges.Node,
+              HeroDetails.Droid.FriendsConnection.Edges.Node {
             /**
              * The name of the character
              */
@@ -192,12 +192,12 @@ interface HeroDetails {
       /**
        * The edges for each of the character's friends.
        */
-      override val edges: List<Edge?>?
+      override val edges: List<Edges?>?
 
       /**
        * An edge object for a character's friends
        */
-      interface Edge : HeroDetails.FriendsConnection.Edge {
+      interface Edges : HeroDetails.FriendsConnection.Edges {
         /**
          * The character represented by this friendship edge
          */
@@ -206,7 +206,7 @@ interface HeroDetails {
         /**
          * A character from the Star Wars universe
          */
-        interface Node : HeroDetails.FriendsConnection.Edge.Node {
+        interface Node : HeroDetails.FriendsConnection.Edges.Node {
           /**
            * The name of the character
            */

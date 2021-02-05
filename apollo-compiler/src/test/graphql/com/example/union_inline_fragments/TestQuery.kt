@@ -59,15 +59,15 @@ class TestQuery : Query<TestQuery.Data> {
         /**
          * The friends of the character, or an empty list if they have none
          */
-        val friends: List<Friend?>?
+        val friends: List<Friends?>?
 
         /**
          * A character from the Star Wars universe
          */
-        interface Friend {
+        interface Friends {
           val __typename: String
 
-          interface Character : Friend {
+          interface Character : Friends {
             override val __typename: String
 
             /**
@@ -76,7 +76,7 @@ class TestQuery : Query<TestQuery.Data> {
             val name: String
           }
 
-          interface Human : Friend {
+          interface Human : Friends {
             override val __typename: String
 
             /**
@@ -87,15 +87,15 @@ class TestQuery : Query<TestQuery.Data> {
             /**
              * This human's friends, or an empty list if they have none
              */
-            val friends: List<Friend?>?
+            val friends: List<Friends?>?
 
             /**
              * A character from the Star Wars universe
              */
-            interface Friend {
+            interface Friends {
               val __typename: String
 
-              interface Character : Friend {
+              interface Character : Friends {
                 override val __typename: String
 
                 /**
@@ -105,12 +105,12 @@ class TestQuery : Query<TestQuery.Data> {
               }
 
               companion object {
-                fun Friend.asCharacter(): Character? = this as? Character
+                fun Friends.asCharacter(): Character? = this as? Character
               }
             }
           }
 
-          interface Droid : Friend {
+          interface Droid : Friends {
             override val __typename: String
 
             /**
@@ -121,12 +121,12 @@ class TestQuery : Query<TestQuery.Data> {
             /**
              * This droid's friends, or an empty list if they have none
              */
-            val friends: List<Friend?>?
+            val friends: List<Friends?>?
 
             /**
              * A character from the Star Wars universe
              */
-            interface Friend {
+            interface Friends {
               /**
                * The ID of the character
                */
@@ -135,11 +135,11 @@ class TestQuery : Query<TestQuery.Data> {
           }
 
           companion object {
-            fun Friend.asCharacter(): Character? = this as? Character
+            fun Friends.asCharacter(): Character? = this as? Character
 
-            fun Friend.asHuman(): Human? = this as? Human
+            fun Friends.asHuman(): Human? = this as? Human
 
-            fun Friend.asDroid(): Droid? = this as? Droid
+            fun Friends.asDroid(): Droid? = this as? Droid
           }
         }
       }
@@ -166,15 +166,15 @@ class TestQuery : Query<TestQuery.Data> {
         /**
          * The friends of the character, or an empty list if they have none
          */
-        override val friends: List<Friend?>?
+        override val friends: List<Friends?>?
       ) : Search, Character {
         /**
          * A character from the Star Wars universe
          */
-        interface Friend : Character.Friend {
+        interface Friends : Character.Friends {
           override val __typename: String
 
-          data class CharacterDroidFriend(
+          data class CharacterDroidFriends(
             override val __typename: String,
             /**
              * The name of the character
@@ -187,20 +187,20 @@ class TestQuery : Query<TestQuery.Data> {
             /**
              * This droid's friends, or an empty list if they have none
              */
-            override val friends: List<Friend?>?
-          ) : Character.Friend, Character.Friend.Character, Character.Friend.Droid, Friend {
+            override val friends: List<Friends?>?
+          ) : Character.Friends, Character.Friends.Character, Character.Friends.Droid, Friends {
             /**
              * A character from the Star Wars universe
              */
-            data class Friend(
+            data class Friends(
               /**
                * The ID of the character
                */
               override val id: String
-            ) : Character.Friend.Droid.Friend
+            ) : Character.Friends.Droid.Friends
           }
 
-          data class CharacterHumanFriend(
+          data class CharacterHumanFriends(
             override val __typename: String,
             /**
              * The name of the character
@@ -213,31 +213,32 @@ class TestQuery : Query<TestQuery.Data> {
             /**
              * This human's friends, or an empty list if they have none
              */
-            override val friends: List<Friend?>?
-          ) : Character.Friend, Character.Friend.Character, Character.Friend.Human, Friend {
+            override val friends: List<Friends?>?
+          ) : Character.Friends, Character.Friends.Character, Character.Friends.Human, Friends {
             /**
              * A character from the Star Wars universe
              */
-            interface Friend : Character.Friend.Human.Friend {
+            interface Friends : Character.Friends.Human.Friends {
               override val __typename: String
 
-              data class CharacterFriend(
+              data class CharacterFriends(
                 override val __typename: String,
                 /**
                  * The movie this character first appears in
                  */
                 override val firstAppearsIn: Episode
-              ) : Character.Friend.Human.Friend, Character.Friend.Human.Friend.Character, Friend
+              ) : Character.Friends.Human.Friends, Character.Friends.Human.Friends.Character,
+                  Friends
 
-              data class OtherFriend(
+              data class OtherFriends(
                 override val __typename: String
-              ) : Character.Friend.Human.Friend, Friend
+              ) : Character.Friends.Human.Friends, Friends
             }
           }
 
-          data class OtherFriend(
+          data class OtherFriends(
             override val __typename: String
-          ) : Character.Friend, Friend
+          ) : Character.Friends, Friends
         }
       }
 

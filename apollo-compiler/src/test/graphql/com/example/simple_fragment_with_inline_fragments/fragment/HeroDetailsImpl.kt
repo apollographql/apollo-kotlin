@@ -36,15 +36,15 @@ class HeroDetailsImpl : Fragment<HeroDetailsImpl.Data> {
     /**
      * The friends of the character, or an empty list if they have none
      */
-    override val friends: List<Friend?>?
+    override val friends: List<Friends?>?
   ) : HeroDetails, Fragment.Data {
     /**
      * A character from the Star Wars universe
      */
-    interface Friend : HeroDetails.Friend {
+    interface Friends : HeroDetails.Friends {
       override val __typename: String
 
-      data class HumanFriend(
+      data class HumanFriends(
         override val __typename: String,
         /**
          * The name of the character
@@ -54,9 +54,9 @@ class HeroDetailsImpl : Fragment<HeroDetailsImpl.Data> {
          * Height in the preferred unit, default is meters
          */
         override val height: Double?
-      ) : HeroDetails.Friend, HeroDetails.Friend.Human, Friend
+      ) : HeroDetails.Friends, HeroDetails.Friends.Human, Friends
 
-      data class DroidFriend(
+      data class DroidFriends(
         override val __typename: String,
         /**
          * The name of the character
@@ -66,15 +66,15 @@ class HeroDetailsImpl : Fragment<HeroDetailsImpl.Data> {
          * This droid's primary function
          */
         override val primaryFunction: String?
-      ) : HeroDetails.Friend, HeroDetails.Friend.Droid, Friend
+      ) : HeroDetails.Friends, HeroDetails.Friends.Droid, Friends
 
-      data class OtherFriend(
+      data class OtherFriends(
         override val __typename: String,
         /**
          * The name of the character
          */
         override val name: String
-      ) : HeroDetails.Friend, Friend
+      ) : HeroDetails.Friends, Friends
     }
   }
 }

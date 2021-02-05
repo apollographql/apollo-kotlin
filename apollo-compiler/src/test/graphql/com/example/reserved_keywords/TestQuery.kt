@@ -36,9 +36,9 @@ class TestQuery : Query<TestQuery.Data> {
    */
   data class Data(
     val yield_: Yield?,
-    val objects: List<Object?>?
+    val objects: List<Objects?>?
   ) : Operation.Data {
-    fun objectsFilterNotNull(): List<Object>? = objects?.filterNotNull()
+    fun objectsFilterNotNull(): List<Objects>? = objects?.filterNotNull()
 
     /**
      * A character from the Star Wars universe
@@ -54,10 +54,10 @@ class TestQuery : Query<TestQuery.Data> {
       val name: String
     )
 
-    interface Object {
+    interface Objects {
       val __typename: String
 
-      interface Character : Object {
+      interface Character : Objects {
         override val __typename: String
 
         /**
@@ -66,20 +66,20 @@ class TestQuery : Query<TestQuery.Data> {
         val name: String
       }
 
-      data class CharacterObject(
+      data class CharacterObjects(
         override val __typename: String,
         /**
          * The name of the character
          */
         override val name: String
-      ) : Object, Character
+      ) : Objects, Character
 
-      data class OtherObject(
+      data class OtherObjects(
         override val __typename: String
-      ) : Object
+      ) : Objects
 
       companion object {
-        fun Object.asCharacter(): Character? = this as? Character
+        fun Objects.asCharacter(): Character? = this as? Character
       }
     }
   }

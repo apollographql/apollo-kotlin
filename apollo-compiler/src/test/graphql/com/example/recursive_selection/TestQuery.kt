@@ -42,13 +42,13 @@ class TestQuery : Query<TestQuery.Data> {
      */
     data class Tree(
       val name: String,
-      val children: List<Child>,
+      val children: List<Children>,
       val parent: Parent?
     ) {
       /**
        * To test recursive structures
        */
-      data class Child(
+      data class Children(
         val name: String
       )
 

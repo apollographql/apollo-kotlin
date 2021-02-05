@@ -33,12 +33,12 @@ interface HeroDetails {
     /**
      * The edges for each of the character's friends.
      */
-    val edges: List<Edge?>?
+    val edges: List<Edges?>?
 
     /**
      * An edge object for a character's friends
      */
-    interface Edge {
+    interface Edges {
       /**
        * The character represented by this friendship edge
        */

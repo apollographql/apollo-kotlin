@@ -66,12 +66,12 @@ class TestQuery : Query<TestQuery.Data> {
         /**
          * This human's friends, or an empty list if they have none
          */
-        val friends: List<Friend?>?
+        val friends: List<Friends?>?
 
         /**
          * A character from the Star Wars universe
          */
-        interface Friend {
+        interface Friends {
           /**
            * The movies this character appears in
            */
@@ -95,12 +95,12 @@ class TestQuery : Query<TestQuery.Data> {
         /**
          * This droid's friends, or an empty list if they have none
          */
-        val friends: List<Friend?>?
+        val friends: List<Friends?>?
 
         /**
          * A character from the Star Wars universe
          */
-        interface Friend {
+        interface Friends {
           /**
            * The ID of the character
            */
@@ -121,17 +121,17 @@ class TestQuery : Query<TestQuery.Data> {
         /**
          * This human's friends, or an empty list if they have none
          */
-        override val friends: List<Friend?>?
+        override val friends: List<Friends?>?
       ) : Hero, Human {
         /**
          * A character from the Star Wars universe
          */
-        data class Friend(
+        data class Friends(
           /**
            * The movies this character appears in
            */
           override val appearsIn: List<Episode?>
-        ) : Human.Friend
+        ) : Human.Friends
       }
 
       data class DroidHero(
@@ -147,17 +147,17 @@ class TestQuery : Query<TestQuery.Data> {
         /**
          * This droid's friends, or an empty list if they have none
          */
-        override val friends: List<Friend?>?
+        override val friends: List<Friends?>?
       ) : Hero, Droid {
         /**
          * A character from the Star Wars universe
          */
-        data class Friend(
+        data class Friends(
           /**
            * The ID of the character
            */
           override val id: String
-        ) : Droid.Friend
+        ) : Droid.Friends
       }
 
       data class OtherHero(

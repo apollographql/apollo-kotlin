@@ -10,6 +10,8 @@ import com.apollographql.apollo.api.Query
 import com.apollographql.apollo.api.internal.QueryDocumentMinifier
 import com.apollographql.apollo.api.internal.ResponseAdapter
 import com.example.named_fragment_inside_inline_fragment.adapter.GetHero_ResponseAdapter
+import com.example.named_fragment_inside_inline_fragment.fragment.CharacterAppearsIn
+import com.example.named_fragment_inside_inline_fragment.fragment.CharacterName
 import com.example.named_fragment_inside_inline_fragment.type.Episode
 import kotlin.String
 import kotlin.Suppress
@@ -43,22 +45,18 @@ class GetHero : Query<GetHero.Data> {
       interface Character : Hero {
         override val __typename: String
 
-        interface Character : Hero.Character {
+        interface Character : Hero.Character, CharacterName, CharacterAppearsIn {
           override val __typename: String
 
           /**
            * The name of the character
            */
-          val name: String
-        }
-
-        interface Character : Hero.Character {
-          override val __typename: String
+          override val name: String
 
           /**
            * The movies this character appears in
            */
-          val appearsIn: List<Episode?>
+          override val appearsIn: List<Episode?>
         }
       }
 
@@ -72,7 +70,7 @@ class GetHero : Query<GetHero.Data> {
          * The movies this character appears in
          */
         override val appearsIn: List<Episode?>
-      ) : Hero, Character, Character.Character
+      ) : Hero, Character, Character.Character, CharacterName, CharacterAppearsIn
 
       data class OtherHero(
         override val __typename: String
