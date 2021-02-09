@@ -34,8 +34,8 @@ class ResponseFetcherTest {
       return ""
     }
 
-    override fun responseFields(): Map<String, Array<ResponseField>> {
-      return emptyMap()
+    override fun responseFields(): List<ResponseField.FieldSet> {
+      return emptyList()
     }
   }
 

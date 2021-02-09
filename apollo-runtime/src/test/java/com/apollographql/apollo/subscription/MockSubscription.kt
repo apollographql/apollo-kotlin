@@ -33,7 +33,7 @@ class MockSubscription(
   override fun name(): String = name
 
   override fun operationId(): String = operationId
-  override fun responseFields(): Map<String, Array<ResponseField>> {
-    return emptyMap()
+  override fun responseFields(): List<ResponseField.FieldSet> {
+    return emptyList()
   }
 }

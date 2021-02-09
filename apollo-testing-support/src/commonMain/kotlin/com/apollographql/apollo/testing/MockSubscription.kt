@@ -42,7 +42,7 @@ class MockSubscription(
                     fieldName = "name",
                     arguments = emptyMap(),
                     conditions = emptyList(),
-                    fieldSets = emptyMap()
+                    fieldSets = emptyList()
                 )
             )!!
         )
@@ -60,7 +60,7 @@ class MockSubscription(
 
   data class Data(val name: String) : Operation.Data
 
-  override fun responseFields(): Map<String, Array<ResponseField>> {
-    return emptyMap()
+  override fun responseFields(): List<ResponseField.FieldSet> {
+    return emptyList()
   }
 }

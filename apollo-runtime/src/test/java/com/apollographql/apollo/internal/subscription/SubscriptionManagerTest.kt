@@ -361,8 +361,8 @@ class SubscriptionManagerTest {
     override fun name(): String = "SomeSubscription"
 
     override fun operationId() = operationId
-    override fun responseFields(): Map<String, Array<ResponseField>> {
-      return emptyMap()
+    override fun responseFields(): List<ResponseField.FieldSet> {
+      return emptyList()
     }
   }
 

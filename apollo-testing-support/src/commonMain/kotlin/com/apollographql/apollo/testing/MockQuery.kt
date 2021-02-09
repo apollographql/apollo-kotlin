@@ -34,8 +34,8 @@ class MockQuery : Query<MockQuery.Data> {
 
   object Data : Operation.Data
 
-  override fun responseFields(): Map<String, Array<ResponseField>> {
-    return emptyMap()
+  override fun responseFields(): List<ResponseField.FieldSet> {
+    return emptyList()
   }
 
 }
