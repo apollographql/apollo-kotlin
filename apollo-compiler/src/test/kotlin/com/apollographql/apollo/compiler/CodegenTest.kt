@@ -2,13 +2,19 @@ package com.apollographql.apollo.compiler
 
 import com.apollographql.apollo.compiler.TestUtils.checkTestFixture
 import com.apollographql.apollo.compiler.TestUtils.shouldUpdateTestFixtures
+import org.junit.AfterClass
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.junit.runners.Parameterized
 import java.io.File
+import kotlin.time.Duration
+import kotlin.time.ExperimentalTime
+import kotlin.time.measureTime
 
 @RunWith(Parameterized::class)
+@OptIn(ExperimentalTime::class)
 class CodegenTest(private val folder: File) {
+  private class Measurement(val name: String, val codegenDuration: Duration, val compileDuration: Duration)
 
   @Test
   fun generateExpectedClasses() {
@@ -18,7 +24,10 @@ class CodegenTest(private val folder: File) {
 
   private fun generateExpectedClasses(args: GraphQLCompiler.Arguments) {
     args.outputDir.deleteRecursively()
-    GraphQLCompiler().write(args)
+
+    val codegenDuration = measureTime {
+      GraphQLCompiler().write(args)
+    }
 
     val expectedRoot = folder.parentFile.parentFile.parentFile
     val expectedFiles = folder.walk().filter { it.isFile && it.extension == "kt" }
@@ -60,10 +69,31 @@ class CodegenTest(private val folder: File) {
 
     // And that they compile
     val expectedWarnings = folder.name in listOf("deprecation", "custom_scalar_type_warnings", "arguments_complex", "arguments_simple")
-    KotlinCompiler.assertCompiles(actualFiles.toSet(), !expectedWarnings)
+    val compileDuration = measureTime {
+      KotlinCompiler.assertCompiles(actualFiles.toSet(), !expectedWarnings)
+    }
+    measurements.add(Measurement(args.rootFolders.first().name.substringAfterLast("."), codegenDuration, compileDuration))
   }
 
   companion object {
+    private val measurements = mutableListOf<Measurement>()
+
+    @AfterClass
+    @JvmStatic
+    fun dumpTimes() {
+      if (shouldUpdateTestFixtures()) {
+        File("src/test/graphql/com/example/measurements").writeText(
+            measurements
+                .sortedByDescending {
+                  it.codegenDuration
+                }
+                .map {
+                  String.format("%-50s %20s %20s", it.name, it.codegenDuration.toString(), it.compileDuration.toString())
+                }.joinToString("\n")
+        )
+      }
+    }
+
     fun arguments(folder: File): GraphQLCompiler.Arguments {
       val customScalarsMapping = if (folder.name in listOf(
               "custom_scalar_type",
@@ -142,9 +172,6 @@ class CodegenTest(private val folder: File) {
           .sortedBy {
             it.name
           }
-//          .filter {
-//            it.name == "hero_name"
-//          }
           .filter { file ->
             /**
              * This allows to run a specific test from the command line by using something like:
