@@ -1,6 +1,7 @@
 package com.apollographql.apollo.compiler.backend.codegen
 
 import com.apollographql.apollo.api.Fragment
+import com.apollographql.apollo.api.ResponseField
 import com.apollographql.apollo.api.internal.ResponseAdapter
 import com.apollographql.apollo.compiler.applyIf
 import com.apollographql.apollo.compiler.backend.ast.CodeGenerationAst
@@ -68,10 +69,46 @@ internal fun CodeGenerationAst.FragmentType.implementationTypeSpec(generateAsInt
               .addCode("return·%T", this.implementationType.typeRef.asAdapterTypeName())
               .build()
       )
+      .addFunction(
+          FunSpec.builder(
+              "responseFields",
+          )
+              .addModifiers(KModifier.OVERRIDE)
+              .returns(
+                  List::class.asClassName().parameterizedBy(
+                      ResponseField.FieldSet::class.asClassName(),
+                  )
+              )
+              .addCode("return %L", responseFieldsCode())
+              .build()
+      )
       .addFunction(variables.variablesFunSpec())
       .build()
 }
 
 private fun TypeSpec.addSuperinterface(superinterface: KClass<*>): TypeSpec {
   return toBuilder().addSuperinterface(superinterface).build()
+}
+
+private fun CodeGenerationAst.FragmentType.responseFieldsCode(): CodeBlock {
+  val builder = CodeBlock.builder()
+
+  builder.add("listOf(\n")
+  builder.indent()
+  val dataObject = implementationType.nestedObjects.first()
+  when (val kind = dataObject.kind) {
+    is CodeGenerationAst.ObjectType.Kind.Object -> {
+      builder.add("%T(null, %T.RESPONSE_FIELDS)\n", ResponseField.FieldSet::class, dataObject.typeRef.asAdapterTypeName())
+    }
+    is CodeGenerationAst.ObjectType.Kind.Fragment -> {
+      kind.possibleImplementations.forEach {
+        builder.add("%T(%S, %T.RESPONSE_FIELDS),\n", ResponseField.FieldSet::class, it.key, it.value.asAdapterTypeName())
+      }
+      builder.add("%T(null, %T.RESPONSE_FIELDS),\n", ResponseField.FieldSet::class, kind.defaultImplementation.asAdapterTypeName())
+    }
+  }
+  builder.unindent()
+  builder.add(")")
+
+  return builder.build()
 }

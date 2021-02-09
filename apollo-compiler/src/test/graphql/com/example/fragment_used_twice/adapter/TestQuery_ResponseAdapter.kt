@@ -26,10 +26,10 @@ object TestQuery_ResponseAdapter : ResponseAdapter<TestQuery.Data> {
       fieldName = "hero",
       arguments = emptyMap(),
       conditions = emptyList(),
-      possibleFieldSets = mapOf(
-        "Droid" to Hero.CharacterHero.RESPONSE_FIELDS,
-        "Human" to Hero.CharacterHumanHero.RESPONSE_FIELDS,
-        "" to Hero.OtherHero.RESPONSE_FIELDS,
+      fieldSets = listOf(
+        ResponseField.FieldSet("Droid", Hero.CharacterHero.RESPONSE_FIELDS),
+        ResponseField.FieldSet("Human", Hero.CharacterHumanHero.RESPONSE_FIELDS),
+        ResponseField.FieldSet(null, Hero.OtherHero.RESPONSE_FIELDS),
       ),
     )
   )
@@ -87,7 +87,7 @@ object TestQuery_ResponseAdapter : ResponseAdapter<TestQuery.Data> {
           fieldName = "__typename",
           arguments = emptyMap(),
           conditions = emptyList(),
-          possibleFieldSets = emptyMap(),
+          fieldSets = emptyList(),
         ),
         ResponseField(
           type = ResponseField.Type.NotNull(ResponseField.Type.Named.Other("String")),
@@ -95,7 +95,7 @@ object TestQuery_ResponseAdapter : ResponseAdapter<TestQuery.Data> {
           fieldName = "name",
           arguments = emptyMap(),
           conditions = emptyList(),
-          possibleFieldSets = emptyMap(),
+          fieldSets = emptyList(),
         ),
         ResponseField(
           type = ResponseField.Type.NotNull(ResponseField.Type.Named.Other("Date")),
@@ -103,7 +103,7 @@ object TestQuery_ResponseAdapter : ResponseAdapter<TestQuery.Data> {
           fieldName = "birthDate",
           arguments = emptyMap(),
           conditions = emptyList(),
-          possibleFieldSets = emptyMap(),
+          fieldSets = emptyList(),
         )
       )
 
@@ -144,7 +144,7 @@ object TestQuery_ResponseAdapter : ResponseAdapter<TestQuery.Data> {
           fieldName = "__typename",
           arguments = emptyMap(),
           conditions = emptyList(),
-          possibleFieldSets = emptyMap(),
+          fieldSets = emptyList(),
         ),
         ResponseField(
           type = ResponseField.Type.NotNull(ResponseField.Type.Named.Other("String")),
@@ -152,7 +152,7 @@ object TestQuery_ResponseAdapter : ResponseAdapter<TestQuery.Data> {
           fieldName = "name",
           arguments = emptyMap(),
           conditions = emptyList(),
-          possibleFieldSets = emptyMap(),
+          fieldSets = emptyList(),
         ),
         ResponseField(
           type = ResponseField.Type.NotNull(ResponseField.Type.Named.Other("Date")),
@@ -160,7 +160,7 @@ object TestQuery_ResponseAdapter : ResponseAdapter<TestQuery.Data> {
           fieldName = "birthDate",
           arguments = emptyMap(),
           conditions = emptyList(),
-          possibleFieldSets = emptyMap(),
+          fieldSets = emptyList(),
         )
       )
 
@@ -202,7 +202,7 @@ object TestQuery_ResponseAdapter : ResponseAdapter<TestQuery.Data> {
           fieldName = "__typename",
           arguments = emptyMap(),
           conditions = emptyList(),
-          possibleFieldSets = emptyMap(),
+          fieldSets = emptyList(),
         )
       )
 

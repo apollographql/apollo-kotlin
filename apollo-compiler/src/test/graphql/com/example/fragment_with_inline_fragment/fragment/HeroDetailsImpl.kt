@@ -7,6 +7,7 @@ package com.example.fragment_with_inline_fragment.fragment
 
 import com.apollographql.apollo.api.Fragment
 import com.apollographql.apollo.api.Operation
+import com.apollographql.apollo.api.ResponseField
 import com.apollographql.apollo.api.internal.ResponseAdapter
 import com.example.fragment_with_inline_fragment.fragment.adapter.HeroDetailsImpl_ResponseAdapter
 import kotlin.Int
@@ -18,6 +19,11 @@ class HeroDetailsImpl : Fragment<HeroDetailsImpl.Data> {
     return HeroDetailsImpl_ResponseAdapter
   }
 
+  override fun responseFields(): List<ResponseField.FieldSet> = listOf(
+    ResponseField.FieldSet("Droid", HeroDetailsImpl_ResponseAdapter.DroidData.RESPONSE_FIELDS),
+    ResponseField.FieldSet("Human", HeroDetailsImpl_ResponseAdapter.HumanData.RESPONSE_FIELDS),
+    ResponseField.FieldSet(null, HeroDetailsImpl_ResponseAdapter.OtherData.RESPONSE_FIELDS),
+  )
   override fun variables(): Operation.Variables = Operation.EMPTY_VARIABLES
 
   /**

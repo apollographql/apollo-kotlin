@@ -29,8 +29,8 @@ object TestSubscription_ResponseAdapter : ResponseAdapter<TestSubscription.Data>
           "kind" to "Variable",
           "variableName" to "repo")),
       conditions = emptyList(),
-      possibleFieldSets = mapOf(
-        "" to CommentAdded.RESPONSE_FIELDS
+      fieldSets = listOf(
+        ResponseField.FieldSet(null, CommentAdded.RESPONSE_FIELDS)
       ),
     )
   )
@@ -70,7 +70,7 @@ object TestSubscription_ResponseAdapter : ResponseAdapter<TestSubscription.Data>
         fieldName = "id",
         arguments = emptyMap(),
         conditions = emptyList(),
-        possibleFieldSets = emptyMap(),
+        fieldSets = emptyList(),
       ),
       ResponseField(
         type = ResponseField.Type.NotNull(ResponseField.Type.Named.Other("String")),
@@ -78,7 +78,7 @@ object TestSubscription_ResponseAdapter : ResponseAdapter<TestSubscription.Data>
         fieldName = "content",
         arguments = emptyMap(),
         conditions = emptyList(),
-        possibleFieldSets = emptyMap(),
+        fieldSets = emptyList(),
       )
     )
 

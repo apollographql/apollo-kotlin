@@ -25,8 +25,8 @@ object TestQuery_ResponseAdapter : ResponseAdapter<TestQuery.Data> {
       fieldName = "hero",
       arguments = emptyMap(),
       conditions = emptyList(),
-      possibleFieldSets = mapOf(
-        "" to Hero.RESPONSE_FIELDS
+      fieldSets = listOf(
+        ResponseField.FieldSet(null, Hero.RESPONSE_FIELDS)
       ),
     )
   )
@@ -66,7 +66,7 @@ object TestQuery_ResponseAdapter : ResponseAdapter<TestQuery.Data> {
         fieldName = "name",
         arguments = emptyMap(),
         conditions = emptyList(),
-        possibleFieldSets = emptyMap(),
+        fieldSets = emptyList(),
       )
     )
 

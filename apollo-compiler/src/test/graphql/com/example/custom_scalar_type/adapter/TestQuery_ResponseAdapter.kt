@@ -29,8 +29,8 @@ object TestQuery_ResponseAdapter : ResponseAdapter<TestQuery.Data> {
       fieldName = "hero",
       arguments = emptyMap(),
       conditions = emptyList(),
-      possibleFieldSets = mapOf(
-        "" to Hero.RESPONSE_FIELDS
+      fieldSets = listOf(
+        ResponseField.FieldSet(null, Hero.RESPONSE_FIELDS)
       ),
     )
   )
@@ -70,7 +70,7 @@ object TestQuery_ResponseAdapter : ResponseAdapter<TestQuery.Data> {
         fieldName = "name",
         arguments = emptyMap(),
         conditions = emptyList(),
-        possibleFieldSets = emptyMap(),
+        fieldSets = emptyList(),
       ),
       ResponseField(
         type = ResponseField.Type.NotNull(ResponseField.Type.Named.Other("Date")),
@@ -78,7 +78,7 @@ object TestQuery_ResponseAdapter : ResponseAdapter<TestQuery.Data> {
         fieldName = "birthDate",
         arguments = emptyMap(),
         conditions = emptyList(),
-        possibleFieldSets = emptyMap(),
+        fieldSets = emptyList(),
       ),
       ResponseField(
         type =
@@ -87,7 +87,7 @@ object TestQuery_ResponseAdapter : ResponseAdapter<TestQuery.Data> {
         fieldName = "appearanceDates",
         arguments = emptyMap(),
         conditions = emptyList(),
-        possibleFieldSets = emptyMap(),
+        fieldSets = emptyList(),
       ),
       ResponseField(
         type = ResponseField.Type.NotNull(ResponseField.Type.Named.Other("UnsupportedType")),
@@ -95,7 +95,7 @@ object TestQuery_ResponseAdapter : ResponseAdapter<TestQuery.Data> {
         fieldName = "fieldWithUnsupportedType",
         arguments = emptyMap(),
         conditions = emptyList(),
-        possibleFieldSets = emptyMap(),
+        fieldSets = emptyList(),
       ),
       ResponseField(
         type = ResponseField.Type.NotNull(ResponseField.Type.Named.Other("URL")),
@@ -103,7 +103,7 @@ object TestQuery_ResponseAdapter : ResponseAdapter<TestQuery.Data> {
         fieldName = "profileLink",
         arguments = emptyMap(),
         conditions = emptyList(),
-        possibleFieldSets = emptyMap(),
+        fieldSets = emptyList(),
       ),
       ResponseField(
         type =
@@ -112,7 +112,7 @@ object TestQuery_ResponseAdapter : ResponseAdapter<TestQuery.Data> {
         fieldName = "links",
         arguments = emptyMap(),
         conditions = emptyList(),
-        possibleFieldSets = emptyMap(),
+        fieldSets = emptyList(),
       )
     )
 

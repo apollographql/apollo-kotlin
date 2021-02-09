@@ -26,8 +26,8 @@ object GetHuman_ResponseAdapter : ResponseAdapter<GetHuman.Data> {
       fieldName = "human",
       arguments = emptyMap(),
       conditions = emptyList(),
-      possibleFieldSets = mapOf(
-        "" to Human.RESPONSE_FIELDS
+      fieldSets = listOf(
+        ResponseField.FieldSet(null, Human.RESPONSE_FIELDS)
       ),
     ),
     ResponseField(
@@ -36,9 +36,9 @@ object GetHuman_ResponseAdapter : ResponseAdapter<GetHuman.Data> {
       fieldName = "node",
       arguments = emptyMap(),
       conditions = emptyList(),
-      possibleFieldSets = mapOf(
-        "Human" to Node.HumanNode.RESPONSE_FIELDS,
-        "" to Node.OtherNode.RESPONSE_FIELDS,
+      fieldSets = listOf(
+        ResponseField.FieldSet("Human", Node.HumanNode.RESPONSE_FIELDS),
+        ResponseField.FieldSet(null, Node.OtherNode.RESPONSE_FIELDS),
       ),
     )
   )
@@ -82,7 +82,7 @@ object GetHuman_ResponseAdapter : ResponseAdapter<GetHuman.Data> {
         fieldName = "id",
         arguments = emptyMap(),
         conditions = emptyList(),
-        possibleFieldSets = emptyMap(),
+        fieldSets = emptyList(),
       ),
       ResponseField(
         type = ResponseField.Type.NotNull(ResponseField.Type.Named.Other("String")),
@@ -90,7 +90,7 @@ object GetHuman_ResponseAdapter : ResponseAdapter<GetHuman.Data> {
         fieldName = "name",
         arguments = emptyMap(),
         conditions = emptyList(),
-        possibleFieldSets = emptyMap(),
+        fieldSets = emptyList(),
       ),
       ResponseField(
         type = ResponseField.Type.NotNull(ResponseField.Type.Named.Other("Float")),
@@ -98,7 +98,7 @@ object GetHuman_ResponseAdapter : ResponseAdapter<GetHuman.Data> {
         fieldName = "height",
         arguments = emptyMap(),
         conditions = emptyList(),
-        possibleFieldSets = emptyMap(),
+        fieldSets = emptyList(),
       )
     )
 
@@ -154,7 +154,7 @@ object GetHuman_ResponseAdapter : ResponseAdapter<GetHuman.Data> {
           fieldName = "__typename",
           arguments = emptyMap(),
           conditions = emptyList(),
-          possibleFieldSets = emptyMap(),
+          fieldSets = emptyList(),
         ),
         ResponseField(
           type = ResponseField.Type.NotNull(ResponseField.Type.Named.Other("Float")),
@@ -162,7 +162,7 @@ object GetHuman_ResponseAdapter : ResponseAdapter<GetHuman.Data> {
           fieldName = "height",
           arguments = emptyMap(),
           conditions = emptyList(),
-          possibleFieldSets = emptyMap(),
+          fieldSets = emptyList(),
         )
       )
 
@@ -199,7 +199,7 @@ object GetHuman_ResponseAdapter : ResponseAdapter<GetHuman.Data> {
           fieldName = "__typename",
           arguments = emptyMap(),
           conditions = emptyList(),
-          possibleFieldSets = emptyMap(),
+          fieldSets = emptyList(),
         )
       )
 

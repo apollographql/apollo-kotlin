@@ -27,8 +27,8 @@ object AllStarships_ResponseAdapter : ResponseAdapter<AllStarships.Data> {
       arguments = mapOf<String, Any?>(
         "first" to 7),
       conditions = emptyList(),
-      possibleFieldSets = mapOf(
-        "" to AllStarships.RESPONSE_FIELDS
+      fieldSets = listOf(
+        ResponseField.FieldSet(null, AllStarships.RESPONSE_FIELDS)
       ),
     )
   )
@@ -71,8 +71,8 @@ object AllStarships_ResponseAdapter : ResponseAdapter<AllStarships.Data> {
         fieldName = "edges",
         arguments = emptyMap(),
         conditions = emptyList(),
-        possibleFieldSets = mapOf(
-          "" to Edge.RESPONSE_FIELDS
+        fieldSets = listOf(
+          ResponseField.FieldSet(null, Edge.RESPONSE_FIELDS)
         ),
       )
     )
@@ -115,9 +115,9 @@ object AllStarships_ResponseAdapter : ResponseAdapter<AllStarships.Data> {
           fieldName = "node",
           arguments = emptyMap(),
           conditions = emptyList(),
-          possibleFieldSets = mapOf(
-            "Starship" to Node.StarshipNode.RESPONSE_FIELDS,
-            "" to Node.OtherNode.RESPONSE_FIELDS,
+          fieldSets = listOf(
+            ResponseField.FieldSet("Starship", Node.StarshipNode.RESPONSE_FIELDS),
+            ResponseField.FieldSet(null, Node.OtherNode.RESPONSE_FIELDS),
           ),
         )
       )
@@ -181,7 +181,7 @@ object AllStarships_ResponseAdapter : ResponseAdapter<AllStarships.Data> {
               fieldName = "__typename",
               arguments = emptyMap(),
               conditions = emptyList(),
-              possibleFieldSets = emptyMap(),
+              fieldSets = emptyList(),
             ),
             ResponseField(
               type = ResponseField.Type.NotNull(ResponseField.Type.Named.Other("String")),
@@ -189,7 +189,7 @@ object AllStarships_ResponseAdapter : ResponseAdapter<AllStarships.Data> {
               fieldName = "id",
               arguments = emptyMap(),
               conditions = emptyList(),
-              possibleFieldSets = emptyMap(),
+              fieldSets = emptyList(),
             ),
             ResponseField(
               type = ResponseField.Type.Named.Other("String"),
@@ -197,7 +197,7 @@ object AllStarships_ResponseAdapter : ResponseAdapter<AllStarships.Data> {
               fieldName = "name",
               arguments = emptyMap(),
               conditions = emptyList(),
-              possibleFieldSets = emptyMap(),
+              fieldSets = emptyList(),
             ),
             ResponseField(
               type = ResponseField.Type.Named.Object("StarshipPilotsConnection"),
@@ -205,8 +205,8 @@ object AllStarships_ResponseAdapter : ResponseAdapter<AllStarships.Data> {
               fieldName = "pilotConnection",
               arguments = emptyMap(),
               conditions = emptyList(),
-              possibleFieldSets = mapOf(
-                "" to PilotConnection.RESPONSE_FIELDS
+              fieldSets = listOf(
+                ResponseField.FieldSet(null, PilotConnection.RESPONSE_FIELDS)
               ),
             )
           )
@@ -263,8 +263,8 @@ object AllStarships_ResponseAdapter : ResponseAdapter<AllStarships.Data> {
                 fieldName = "edges",
                 arguments = emptyMap(),
                 conditions = emptyList(),
-                possibleFieldSets = mapOf(
-                  "" to Edge.RESPONSE_FIELDS
+                fieldSets = listOf(
+                  ResponseField.FieldSet(null, Edge.RESPONSE_FIELDS)
                 ),
               )
             )
@@ -308,9 +308,9 @@ object AllStarships_ResponseAdapter : ResponseAdapter<AllStarships.Data> {
                   fieldName = "node",
                   arguments = emptyMap(),
                   conditions = emptyList(),
-                  possibleFieldSets = mapOf(
-                    "Person" to Node.PersonNode.RESPONSE_FIELDS,
-                    "" to Node.OtherNode.RESPONSE_FIELDS,
+                  fieldSets = listOf(
+                    ResponseField.FieldSet("Person", Node.PersonNode.RESPONSE_FIELDS),
+                    ResponseField.FieldSet(null, Node.OtherNode.RESPONSE_FIELDS),
                   ),
                 )
               )
@@ -374,7 +374,7 @@ object AllStarships_ResponseAdapter : ResponseAdapter<AllStarships.Data> {
                       fieldName = "__typename",
                       arguments = emptyMap(),
                       conditions = emptyList(),
-                      possibleFieldSets = emptyMap(),
+                      fieldSets = emptyList(),
                     ),
                     ResponseField(
                       type = ResponseField.Type.Named.Other("String"),
@@ -382,7 +382,7 @@ object AllStarships_ResponseAdapter : ResponseAdapter<AllStarships.Data> {
                       fieldName = "name",
                       arguments = emptyMap(),
                       conditions = emptyList(),
-                      possibleFieldSets = emptyMap(),
+                      fieldSets = emptyList(),
                     ),
                     ResponseField(
                       type = ResponseField.Type.Named.Object("Planet"),
@@ -390,9 +390,9 @@ object AllStarships_ResponseAdapter : ResponseAdapter<AllStarships.Data> {
                       fieldName = "homeworld",
                       arguments = emptyMap(),
                       conditions = emptyList(),
-                      possibleFieldSets = mapOf(
-                        "Planet" to Homeworld.PlanetHomeworld.RESPONSE_FIELDS,
-                        "" to Homeworld.OtherHomeworld.RESPONSE_FIELDS,
+                      fieldSets = listOf(
+                        ResponseField.FieldSet("Planet", Homeworld.PlanetHomeworld.RESPONSE_FIELDS),
+                        ResponseField.FieldSet(null, Homeworld.OtherHomeworld.RESPONSE_FIELDS),
                       ),
                     )
                   )
@@ -465,7 +465,7 @@ object AllStarships_ResponseAdapter : ResponseAdapter<AllStarships.Data> {
                           fieldName = "__typename",
                           arguments = emptyMap(),
                           conditions = emptyList(),
-                          possibleFieldSets = emptyMap(),
+                          fieldSets = emptyList(),
                         ),
                         ResponseField(
                           type = ResponseField.Type.Named.Other("String"),
@@ -473,7 +473,7 @@ object AllStarships_ResponseAdapter : ResponseAdapter<AllStarships.Data> {
                           fieldName = "name",
                           arguments = emptyMap(),
                           conditions = emptyList(),
-                          possibleFieldSets = emptyMap(),
+                          fieldSets = emptyList(),
                         )
                       )
 
@@ -514,7 +514,7 @@ object AllStarships_ResponseAdapter : ResponseAdapter<AllStarships.Data> {
                           fieldName = "__typename",
                           arguments = emptyMap(),
                           conditions = emptyList(),
-                          possibleFieldSets = emptyMap(),
+                          fieldSets = emptyList(),
                         )
                       )
 
@@ -552,7 +552,7 @@ object AllStarships_ResponseAdapter : ResponseAdapter<AllStarships.Data> {
                       fieldName = "__typename",
                       arguments = emptyMap(),
                       conditions = emptyList(),
-                      possibleFieldSets = emptyMap(),
+                      fieldSets = emptyList(),
                     )
                   )
 
@@ -592,7 +592,7 @@ object AllStarships_ResponseAdapter : ResponseAdapter<AllStarships.Data> {
               fieldName = "__typename",
               arguments = emptyMap(),
               conditions = emptyList(),
-              possibleFieldSets = emptyMap(),
+              fieldSets = emptyList(),
             )
           )
 

@@ -28,8 +28,8 @@ object HeroDetails_ResponseAdapter : ResponseAdapter<HeroDetails.Data> {
       fieldName = "hero",
       arguments = emptyMap(),
       conditions = emptyList(),
-      possibleFieldSets = mapOf(
-        "" to Hero.RESPONSE_FIELDS
+      fieldSets = listOf(
+        ResponseField.FieldSet(null, Hero.RESPONSE_FIELDS)
       ),
     )
   )
@@ -69,7 +69,7 @@ object HeroDetails_ResponseAdapter : ResponseAdapter<HeroDetails.Data> {
         fieldName = "type",
         arguments = emptyMap(),
         conditions = emptyList(),
-        possibleFieldSets = emptyMap(),
+        fieldSets = emptyList(),
       ),
       ResponseField(
         type = ResponseField.Type.NotNull(ResponseField.Type.Named.Other("String")),
@@ -77,7 +77,7 @@ object HeroDetails_ResponseAdapter : ResponseAdapter<HeroDetails.Data> {
         fieldName = "name",
         arguments = emptyMap(),
         conditions = emptyList(),
-        possibleFieldSets = emptyMap(),
+        fieldSets = emptyList(),
       ),
       ResponseField(
         type = ResponseField.Type.NotNull(ResponseField.Type.Named.Object("FriendsConnection")),
@@ -85,8 +85,8 @@ object HeroDetails_ResponseAdapter : ResponseAdapter<HeroDetails.Data> {
         fieldName = "friendsConnection",
         arguments = emptyMap(),
         conditions = emptyList(),
-        possibleFieldSets = mapOf(
-          "" to FriendsConnection.RESPONSE_FIELDS
+        fieldSets = listOf(
+          ResponseField.FieldSet(null, FriendsConnection.RESPONSE_FIELDS)
         ),
       )
     )
@@ -130,7 +130,7 @@ object HeroDetails_ResponseAdapter : ResponseAdapter<HeroDetails.Data> {
           fieldName = "totalCount",
           arguments = emptyMap(),
           conditions = emptyList(),
-          possibleFieldSets = emptyMap(),
+          fieldSets = emptyList(),
         ),
         ResponseField(
           type = ResponseField.Type.List(ResponseField.Type.Named.Object("FriendsEdge")),
@@ -138,8 +138,8 @@ object HeroDetails_ResponseAdapter : ResponseAdapter<HeroDetails.Data> {
           fieldName = "edges",
           arguments = emptyMap(),
           conditions = emptyList(),
-          possibleFieldSets = mapOf(
-            "" to Edge.RESPONSE_FIELDS
+          fieldSets = listOf(
+            ResponseField.FieldSet(null, Edge.RESPONSE_FIELDS)
           ),
         )
       )
@@ -185,8 +185,8 @@ object HeroDetails_ResponseAdapter : ResponseAdapter<HeroDetails.Data> {
             fieldName = "node",
             arguments = emptyMap(),
             conditions = emptyList(),
-            possibleFieldSets = mapOf(
-              "" to Node.RESPONSE_FIELDS
+            fieldSets = listOf(
+              ResponseField.FieldSet(null, Node.RESPONSE_FIELDS)
             ),
           )
         )
@@ -228,7 +228,7 @@ object HeroDetails_ResponseAdapter : ResponseAdapter<HeroDetails.Data> {
               fieldName = "name",
               arguments = emptyMap(),
               conditions = emptyList(),
-              possibleFieldSets = emptyMap(),
+              fieldSets = emptyList(),
             )
           )
 

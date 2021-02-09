@@ -25,7 +25,7 @@ object DroidDetails2Impl_ResponseAdapter : ResponseAdapter<DroidDetails2Impl.Dat
       fieldName = "__typename",
       arguments = emptyMap(),
       conditions = emptyList(),
-      possibleFieldSets = emptyMap(),
+      fieldSets = emptyList(),
     ),
     ResponseField(
       type = ResponseField.Type.Named.Other("String"),
@@ -33,7 +33,7 @@ object DroidDetails2Impl_ResponseAdapter : ResponseAdapter<DroidDetails2Impl.Dat
       fieldName = "primaryFunction",
       arguments = emptyMap(),
       conditions = emptyList(),
-      possibleFieldSets = emptyMap(),
+      fieldSets = emptyList(),
     )
   )
 

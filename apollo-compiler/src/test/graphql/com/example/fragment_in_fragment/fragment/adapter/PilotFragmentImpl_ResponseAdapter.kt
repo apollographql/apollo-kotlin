@@ -25,7 +25,7 @@ object PilotFragmentImpl_ResponseAdapter : ResponseAdapter<PilotFragmentImpl.Dat
       fieldName = "__typename",
       arguments = emptyMap(),
       conditions = emptyList(),
-      possibleFieldSets = emptyMap(),
+      fieldSets = emptyList(),
     ),
     ResponseField(
       type = ResponseField.Type.Named.Other("String"),
@@ -33,7 +33,7 @@ object PilotFragmentImpl_ResponseAdapter : ResponseAdapter<PilotFragmentImpl.Dat
       fieldName = "name",
       arguments = emptyMap(),
       conditions = emptyList(),
-      possibleFieldSets = emptyMap(),
+      fieldSets = emptyList(),
     ),
     ResponseField(
       type = ResponseField.Type.Named.Object("Planet"),
@@ -41,9 +41,9 @@ object PilotFragmentImpl_ResponseAdapter : ResponseAdapter<PilotFragmentImpl.Dat
       fieldName = "homeworld",
       arguments = emptyMap(),
       conditions = emptyList(),
-      possibleFieldSets = mapOf(
-        "Planet" to Homeworld.PlanetHomeworld.RESPONSE_FIELDS,
-        "" to Homeworld.OtherHomeworld.RESPONSE_FIELDS,
+      fieldSets = listOf(
+        ResponseField.FieldSet("Planet", Homeworld.PlanetHomeworld.RESPONSE_FIELDS),
+        ResponseField.FieldSet(null, Homeworld.OtherHomeworld.RESPONSE_FIELDS),
       ),
     )
   )
@@ -108,7 +108,7 @@ object PilotFragmentImpl_ResponseAdapter : ResponseAdapter<PilotFragmentImpl.Dat
           fieldName = "__typename",
           arguments = emptyMap(),
           conditions = emptyList(),
-          possibleFieldSets = emptyMap(),
+          fieldSets = emptyList(),
         ),
         ResponseField(
           type = ResponseField.Type.Named.Other("String"),
@@ -116,7 +116,7 @@ object PilotFragmentImpl_ResponseAdapter : ResponseAdapter<PilotFragmentImpl.Dat
           fieldName = "name",
           arguments = emptyMap(),
           conditions = emptyList(),
-          possibleFieldSets = emptyMap(),
+          fieldSets = emptyList(),
         )
       )
 
@@ -154,7 +154,7 @@ object PilotFragmentImpl_ResponseAdapter : ResponseAdapter<PilotFragmentImpl.Dat
           fieldName = "__typename",
           arguments = emptyMap(),
           conditions = emptyList(),
-          possibleFieldSets = emptyMap(),
+          fieldSets = emptyList(),
         )
       )
 

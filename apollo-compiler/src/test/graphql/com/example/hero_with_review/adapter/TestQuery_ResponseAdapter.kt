@@ -42,8 +42,8 @@ object TestQuery_ResponseAdapter : ResponseAdapter<TestQuery.Data> {
             "red" to 1,
             "blue" to 1.0))),
       conditions = emptyList(),
-      possibleFieldSets = mapOf(
-        "" to CreateReview.RESPONSE_FIELDS
+      fieldSets = listOf(
+        ResponseField.FieldSet(null, CreateReview.RESPONSE_FIELDS)
       ),
     )
   )
@@ -83,7 +83,7 @@ object TestQuery_ResponseAdapter : ResponseAdapter<TestQuery.Data> {
         fieldName = "stars",
         arguments = emptyMap(),
         conditions = emptyList(),
-        possibleFieldSets = emptyMap(),
+        fieldSets = emptyList(),
       ),
       ResponseField(
         type = ResponseField.Type.Named.Other("String"),
@@ -91,7 +91,7 @@ object TestQuery_ResponseAdapter : ResponseAdapter<TestQuery.Data> {
         fieldName = "commentary",
         arguments = emptyMap(),
         conditions = emptyList(),
-        possibleFieldSets = emptyMap(),
+        fieldSets = emptyList(),
       )
     )
 

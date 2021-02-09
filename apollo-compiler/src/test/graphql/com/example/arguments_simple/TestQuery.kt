@@ -16,7 +16,6 @@ import com.example.arguments_simple.adapter.TestQuery_ResponseAdapter
 import com.example.arguments_simple.fragment.HeroDetails
 import com.example.arguments_simple.type.Episode
 import kotlin.Any
-import kotlin.Array
 import kotlin.Boolean
 import kotlin.Int
 import kotlin.String
@@ -74,8 +73,8 @@ data class TestQuery(
   override fun name(): String = OPERATION_NAME
 
   override fun adapter(): ResponseAdapter<Data> = TestQuery_ResponseAdapter
-  override fun responseFields(): Map<String, Array<ResponseField>> = mapOf(
-    "" to TestQuery_ResponseAdapter.RESPONSE_FIELDS
+  override fun responseFields(): List<ResponseField.FieldSet> = listOf(
+    ResponseField.FieldSet(null, TestQuery_ResponseAdapter.RESPONSE_FIELDS)
   )
   /**
    * The query type, represents all of the entry points into our object graph

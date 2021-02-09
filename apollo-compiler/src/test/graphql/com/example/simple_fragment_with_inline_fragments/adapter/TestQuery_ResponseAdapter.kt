@@ -27,10 +27,10 @@ object TestQuery_ResponseAdapter : ResponseAdapter<TestQuery.Data> {
       fieldName = "hero",
       arguments = emptyMap(),
       conditions = emptyList(),
-      possibleFieldSets = mapOf(
-        "Droid" to Hero.CharacterHero.RESPONSE_FIELDS,
-        "Human" to Hero.CharacterHero.RESPONSE_FIELDS,
-        "" to Hero.OtherHero.RESPONSE_FIELDS,
+      fieldSets = listOf(
+        ResponseField.FieldSet("Droid", Hero.CharacterHero.RESPONSE_FIELDS),
+        ResponseField.FieldSet("Human", Hero.CharacterHero.RESPONSE_FIELDS),
+        ResponseField.FieldSet(null, Hero.OtherHero.RESPONSE_FIELDS),
       ),
     )
   )
@@ -87,7 +87,7 @@ object TestQuery_ResponseAdapter : ResponseAdapter<TestQuery.Data> {
           fieldName = "__typename",
           arguments = emptyMap(),
           conditions = emptyList(),
-          possibleFieldSets = emptyMap(),
+          fieldSets = emptyList(),
         ),
         ResponseField(
           type = ResponseField.Type.NotNull(ResponseField.Type.Named.Other("String")),
@@ -95,7 +95,7 @@ object TestQuery_ResponseAdapter : ResponseAdapter<TestQuery.Data> {
           fieldName = "name",
           arguments = emptyMap(),
           conditions = emptyList(),
-          possibleFieldSets = emptyMap(),
+          fieldSets = emptyList(),
         ),
         ResponseField(
           type = ResponseField.Type.List(ResponseField.Type.Named.Object("Character")),
@@ -103,10 +103,10 @@ object TestQuery_ResponseAdapter : ResponseAdapter<TestQuery.Data> {
           fieldName = "friends",
           arguments = emptyMap(),
           conditions = emptyList(),
-          possibleFieldSets = mapOf(
-            "Human" to Friend.HumanFriend.RESPONSE_FIELDS,
-            "Droid" to Friend.DroidFriend.RESPONSE_FIELDS,
-            "" to Friend.OtherFriend.RESPONSE_FIELDS,
+          fieldSets = listOf(
+            ResponseField.FieldSet("Human", Friend.HumanFriend.RESPONSE_FIELDS),
+            ResponseField.FieldSet("Droid", Friend.DroidFriend.RESPONSE_FIELDS),
+            ResponseField.FieldSet(null, Friend.OtherFriend.RESPONSE_FIELDS),
           ),
         )
       )
@@ -175,7 +175,7 @@ object TestQuery_ResponseAdapter : ResponseAdapter<TestQuery.Data> {
               fieldName = "__typename",
               arguments = emptyMap(),
               conditions = emptyList(),
-              possibleFieldSets = emptyMap(),
+              fieldSets = emptyList(),
             ),
             ResponseField(
               type = ResponseField.Type.NotNull(ResponseField.Type.Named.Other("String")),
@@ -183,7 +183,7 @@ object TestQuery_ResponseAdapter : ResponseAdapter<TestQuery.Data> {
               fieldName = "name",
               arguments = emptyMap(),
               conditions = emptyList(),
-              possibleFieldSets = emptyMap(),
+              fieldSets = emptyList(),
             ),
             ResponseField(
               type = ResponseField.Type.Named.Other("Float"),
@@ -191,7 +191,7 @@ object TestQuery_ResponseAdapter : ResponseAdapter<TestQuery.Data> {
               fieldName = "height",
               arguments = emptyMap(),
               conditions = emptyList(),
-              possibleFieldSets = emptyMap(),
+              fieldSets = emptyList(),
             )
           )
 
@@ -233,7 +233,7 @@ object TestQuery_ResponseAdapter : ResponseAdapter<TestQuery.Data> {
               fieldName = "__typename",
               arguments = emptyMap(),
               conditions = emptyList(),
-              possibleFieldSets = emptyMap(),
+              fieldSets = emptyList(),
             ),
             ResponseField(
               type = ResponseField.Type.NotNull(ResponseField.Type.Named.Other("String")),
@@ -241,7 +241,7 @@ object TestQuery_ResponseAdapter : ResponseAdapter<TestQuery.Data> {
               fieldName = "name",
               arguments = emptyMap(),
               conditions = emptyList(),
-              possibleFieldSets = emptyMap(),
+              fieldSets = emptyList(),
             ),
             ResponseField(
               type = ResponseField.Type.Named.Other("String"),
@@ -249,7 +249,7 @@ object TestQuery_ResponseAdapter : ResponseAdapter<TestQuery.Data> {
               fieldName = "primaryFunction",
               arguments = emptyMap(),
               conditions = emptyList(),
-              possibleFieldSets = emptyMap(),
+              fieldSets = emptyList(),
             )
           )
 
@@ -291,7 +291,7 @@ object TestQuery_ResponseAdapter : ResponseAdapter<TestQuery.Data> {
               fieldName = "__typename",
               arguments = emptyMap(),
               conditions = emptyList(),
-              possibleFieldSets = emptyMap(),
+              fieldSets = emptyList(),
             ),
             ResponseField(
               type = ResponseField.Type.NotNull(ResponseField.Type.Named.Other("String")),
@@ -299,7 +299,7 @@ object TestQuery_ResponseAdapter : ResponseAdapter<TestQuery.Data> {
               fieldName = "name",
               arguments = emptyMap(),
               conditions = emptyList(),
-              possibleFieldSets = emptyMap(),
+              fieldSets = emptyList(),
             )
           )
 
@@ -339,7 +339,7 @@ object TestQuery_ResponseAdapter : ResponseAdapter<TestQuery.Data> {
           fieldName = "__typename",
           arguments = emptyMap(),
           conditions = emptyList(),
-          possibleFieldSets = emptyMap(),
+          fieldSets = emptyList(),
         )
       )
 

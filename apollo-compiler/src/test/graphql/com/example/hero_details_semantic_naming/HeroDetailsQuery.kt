@@ -11,12 +11,10 @@ import com.apollographql.apollo.api.ResponseField
 import com.apollographql.apollo.api.internal.QueryDocumentMinifier
 import com.apollographql.apollo.api.internal.ResponseAdapter
 import com.example.hero_details_semantic_naming.adapter.HeroDetailsQuery_ResponseAdapter
-import kotlin.Array
 import kotlin.Int
 import kotlin.String
 import kotlin.Suppress
 import kotlin.collections.List
-import kotlin.collections.Map
 
 @Suppress("NAME_SHADOWING", "UNUSED_ANONYMOUS_PARAMETER", "LocalVariableName",
     "RemoveExplicitTypeArguments", "NestedLambdaShadowedImplicitParameter", "PropertyName",
@@ -31,8 +29,8 @@ class HeroDetailsQuery : Query<HeroDetailsQuery.Data> {
   override fun name(): String = OPERATION_NAME
 
   override fun adapter(): ResponseAdapter<Data> = HeroDetailsQuery_ResponseAdapter
-  override fun responseFields(): Map<String, Array<ResponseField>> = mapOf(
-    "" to HeroDetailsQuery_ResponseAdapter.RESPONSE_FIELDS
+  override fun responseFields(): List<ResponseField.FieldSet> = listOf(
+    ResponseField.FieldSet(null, HeroDetailsQuery_ResponseAdapter.RESPONSE_FIELDS)
   )
   /**
    * The query type, represents all of the entry points into our object graph

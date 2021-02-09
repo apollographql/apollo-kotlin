@@ -7,12 +7,14 @@ package com.example.named_fragment_with_variables.fragment
 
 import com.apollographql.apollo.api.Fragment
 import com.apollographql.apollo.api.Operation
+import com.apollographql.apollo.api.ResponseField
 import com.apollographql.apollo.api.internal.InputFieldMarshaller
 import com.apollographql.apollo.api.internal.ResponseAdapter
 import com.example.named_fragment_with_variables.fragment.adapter.UserFragmentImpl_ResponseAdapter
 import kotlin.Any
 import kotlin.Int
 import kotlin.String
+import kotlin.collections.List
 import kotlin.collections.Map
 import kotlin.jvm.Transient
 
@@ -36,6 +38,9 @@ data class UserFragmentImpl(
     return UserFragmentImpl_ResponseAdapter
   }
 
+  override fun responseFields(): List<ResponseField.FieldSet> = listOf(
+    ResponseField.FieldSet(null, UserFragmentImpl_ResponseAdapter.RESPONSE_FIELDS)
+  )
   override fun variables(): Operation.Variables = variables
 
   data class Data(

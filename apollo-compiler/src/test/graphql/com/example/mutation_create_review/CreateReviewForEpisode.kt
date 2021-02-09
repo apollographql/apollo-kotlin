@@ -16,7 +16,6 @@ import com.example.mutation_create_review.type.Episode
 import com.example.mutation_create_review.type.ReviewInput
 import java.util.Date
 import kotlin.Any
-import kotlin.Array
 import kotlin.Int
 import kotlin.String
 import kotlin.Suppress
@@ -55,8 +54,8 @@ internal data class CreateReviewForEpisode(
   override fun name(): String = OPERATION_NAME
 
   override fun adapter(): ResponseAdapter<Data> = CreateReviewForEpisode_ResponseAdapter
-  override fun responseFields(): Map<String, Array<ResponseField>> = mapOf(
-    "" to CreateReviewForEpisode_ResponseAdapter.RESPONSE_FIELDS
+  override fun responseFields(): List<ResponseField.FieldSet> = listOf(
+    ResponseField.FieldSet(null, CreateReviewForEpisode_ResponseAdapter.RESPONSE_FIELDS)
   )
   /**
    * The mutation type, represents all updates we can make to our data

@@ -31,9 +31,9 @@ interface Operation<D : Operation.Data> {
   fun adapter(): ResponseAdapter<D>
 
   /**
-   * Returns the array of root fields
+   *
    */
-  fun responseFields(): Map<String, Array<ResponseField>>
+  fun responseFields(): List<ResponseField.FieldSet>
 
   /**
    * Returns GraphQL operation name

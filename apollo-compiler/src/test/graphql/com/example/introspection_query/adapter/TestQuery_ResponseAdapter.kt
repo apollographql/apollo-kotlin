@@ -26,8 +26,8 @@ object TestQuery_ResponseAdapter : ResponseAdapter<TestQuery.Data> {
       fieldName = "__schema",
       arguments = emptyMap(),
       conditions = emptyList(),
-      possibleFieldSets = mapOf(
-        "" to __Schema.RESPONSE_FIELDS
+      fieldSets = listOf(
+        ResponseField.FieldSet(null, __Schema.RESPONSE_FIELDS)
       ),
     ),
     ResponseField(
@@ -37,8 +37,8 @@ object TestQuery_ResponseAdapter : ResponseAdapter<TestQuery.Data> {
       arguments = mapOf<String, Any?>(
         "name" to "Vehicle"),
       conditions = emptyList(),
-      possibleFieldSets = mapOf(
-        "" to __Type.RESPONSE_FIELDS
+      fieldSets = listOf(
+        ResponseField.FieldSet(null, __Type.RESPONSE_FIELDS)
       ),
     )
   )
@@ -82,8 +82,8 @@ object TestQuery_ResponseAdapter : ResponseAdapter<TestQuery.Data> {
         fieldName = "queryType",
         arguments = emptyMap(),
         conditions = emptyList(),
-        possibleFieldSets = mapOf(
-          "" to QueryType.RESPONSE_FIELDS
+        fieldSets = listOf(
+          ResponseField.FieldSet(null, QueryType.RESPONSE_FIELDS)
         ),
       ),
       ResponseField(
@@ -93,8 +93,8 @@ object TestQuery_ResponseAdapter : ResponseAdapter<TestQuery.Data> {
         fieldName = "types",
         arguments = emptyMap(),
         conditions = emptyList(),
-        possibleFieldSets = mapOf(
-          "" to Type.RESPONSE_FIELDS
+        fieldSets = listOf(
+          ResponseField.FieldSet(null, Type.RESPONSE_FIELDS)
         ),
       )
     )
@@ -143,7 +143,7 @@ object TestQuery_ResponseAdapter : ResponseAdapter<TestQuery.Data> {
           fieldName = "name",
           arguments = emptyMap(),
           conditions = emptyList(),
-          possibleFieldSets = emptyMap(),
+          fieldSets = emptyList(),
         )
       )
 
@@ -176,7 +176,7 @@ object TestQuery_ResponseAdapter : ResponseAdapter<TestQuery.Data> {
           fieldName = "name",
           arguments = emptyMap(),
           conditions = emptyList(),
-          possibleFieldSets = emptyMap(),
+          fieldSets = emptyList(),
         )
       )
 
@@ -210,7 +210,7 @@ object TestQuery_ResponseAdapter : ResponseAdapter<TestQuery.Data> {
         fieldName = "name",
         arguments = emptyMap(),
         conditions = emptyList(),
-        possibleFieldSets = emptyMap(),
+        fieldSets = emptyList(),
       )
     )
 

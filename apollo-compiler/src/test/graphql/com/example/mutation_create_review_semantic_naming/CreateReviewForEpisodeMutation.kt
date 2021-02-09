@@ -15,10 +15,10 @@ import com.example.mutation_create_review_semantic_naming.adapter.CreateReviewFo
 import com.example.mutation_create_review_semantic_naming.type.Episode
 import com.example.mutation_create_review_semantic_naming.type.ReviewInput
 import kotlin.Any
-import kotlin.Array
 import kotlin.Int
 import kotlin.String
 import kotlin.Suppress
+import kotlin.collections.List
 import kotlin.collections.Map
 import kotlin.jvm.Transient
 
@@ -53,8 +53,8 @@ data class CreateReviewForEpisodeMutation(
   override fun name(): String = OPERATION_NAME
 
   override fun adapter(): ResponseAdapter<Data> = CreateReviewForEpisodeMutation_ResponseAdapter
-  override fun responseFields(): Map<String, Array<ResponseField>> = mapOf(
-    "" to CreateReviewForEpisodeMutation_ResponseAdapter.RESPONSE_FIELDS
+  override fun responseFields(): List<ResponseField.FieldSet> = listOf(
+    ResponseField.FieldSet(null, CreateReviewForEpisodeMutation_ResponseAdapter.RESPONSE_FIELDS)
   )
   /**
    * The mutation type, represents all updates we can make to our data

@@ -29,10 +29,10 @@ object TestOperation_ResponseAdapter : ResponseAdapter<TestOperation.Data> {
       fieldName = "random",
       arguments = emptyMap(),
       conditions = emptyList(),
-      possibleFieldSets = mapOf(
-        "Human" to Random.BeingHumanRandom.RESPONSE_FIELDS,
-        "Wookie" to Random.BeingWookieRandom.RESPONSE_FIELDS,
-        "" to Random.OtherRandom.RESPONSE_FIELDS,
+      fieldSets = listOf(
+        ResponseField.FieldSet("Human", Random.BeingHumanRandom.RESPONSE_FIELDS),
+        ResponseField.FieldSet("Wookie", Random.BeingWookieRandom.RESPONSE_FIELDS),
+        ResponseField.FieldSet(null, Random.OtherRandom.RESPONSE_FIELDS),
       ),
     )
   )
@@ -87,7 +87,7 @@ object TestOperation_ResponseAdapter : ResponseAdapter<TestOperation.Data> {
           fieldName = "__typename",
           arguments = emptyMap(),
           conditions = emptyList(),
-          possibleFieldSets = emptyMap(),
+          fieldSets = emptyList(),
         ),
         ResponseField(
           type = ResponseField.Type.NotNull(ResponseField.Type.Named.Other("String")),
@@ -95,7 +95,7 @@ object TestOperation_ResponseAdapter : ResponseAdapter<TestOperation.Data> {
           fieldName = "name",
           arguments = emptyMap(),
           conditions = emptyList(),
-          possibleFieldSets = emptyMap(),
+          fieldSets = emptyList(),
         ),
         ResponseField(
           type =
@@ -104,9 +104,9 @@ object TestOperation_ResponseAdapter : ResponseAdapter<TestOperation.Data> {
           fieldName = "friends",
           arguments = emptyMap(),
           conditions = emptyList(),
-          possibleFieldSets = mapOf(
-            "Wookie" to Friend.WookieFriend.RESPONSE_FIELDS,
-            "" to Friend.OtherFriend.RESPONSE_FIELDS,
+          fieldSets = listOf(
+            ResponseField.FieldSet("Wookie", Friend.WookieFriend.RESPONSE_FIELDS),
+            ResponseField.FieldSet(null, Friend.OtherFriend.RESPONSE_FIELDS),
           ),
         ),
         ResponseField(
@@ -115,7 +115,7 @@ object TestOperation_ResponseAdapter : ResponseAdapter<TestOperation.Data> {
           fieldName = "profilePictureUrl",
           arguments = emptyMap(),
           conditions = emptyList(),
-          possibleFieldSets = emptyMap(),
+          fieldSets = emptyList(),
         )
       )
 
@@ -187,7 +187,7 @@ object TestOperation_ResponseAdapter : ResponseAdapter<TestOperation.Data> {
               fieldName = "__typename",
               arguments = emptyMap(),
               conditions = emptyList(),
-              possibleFieldSets = emptyMap(),
+              fieldSets = emptyList(),
             ),
             ResponseField(
               type = ResponseField.Type.NotNull(ResponseField.Type.Named.Other("String")),
@@ -195,7 +195,7 @@ object TestOperation_ResponseAdapter : ResponseAdapter<TestOperation.Data> {
               fieldName = "name",
               arguments = emptyMap(),
               conditions = emptyList(),
-              possibleFieldSets = emptyMap(),
+              fieldSets = emptyList(),
             ),
             ResponseField(
               type = ResponseField.Type.Named.Other("Boolean"),
@@ -203,7 +203,7 @@ object TestOperation_ResponseAdapter : ResponseAdapter<TestOperation.Data> {
               fieldName = "isFamous",
               arguments = emptyMap(),
               conditions = emptyList(),
-              possibleFieldSets = emptyMap(),
+              fieldSets = emptyList(),
             ),
             ResponseField(
               type = ResponseField.Type.Named.Other("Float"),
@@ -211,7 +211,7 @@ object TestOperation_ResponseAdapter : ResponseAdapter<TestOperation.Data> {
               fieldName = "lifeExpectancy",
               arguments = emptyMap(),
               conditions = emptyList(),
-              possibleFieldSets = emptyMap(),
+              fieldSets = emptyList(),
             ),
             ResponseField(
               type = ResponseField.Type.NotNull(ResponseField.Type.Named.Other("Race")),
@@ -219,7 +219,7 @@ object TestOperation_ResponseAdapter : ResponseAdapter<TestOperation.Data> {
               fieldName = "race",
               arguments = emptyMap(),
               conditions = emptyList(),
-              possibleFieldSets = emptyMap(),
+              fieldSets = emptyList(),
             )
           )
 
@@ -270,7 +270,7 @@ object TestOperation_ResponseAdapter : ResponseAdapter<TestOperation.Data> {
               fieldName = "__typename",
               arguments = emptyMap(),
               conditions = emptyList(),
-              possibleFieldSets = emptyMap(),
+              fieldSets = emptyList(),
             ),
             ResponseField(
               type = ResponseField.Type.NotNull(ResponseField.Type.Named.Other("String")),
@@ -278,7 +278,7 @@ object TestOperation_ResponseAdapter : ResponseAdapter<TestOperation.Data> {
               fieldName = "name",
               arguments = emptyMap(),
               conditions = emptyList(),
-              possibleFieldSets = emptyMap(),
+              fieldSets = emptyList(),
             ),
             ResponseField(
               type = ResponseField.Type.Named.Other("Boolean"),
@@ -286,7 +286,7 @@ object TestOperation_ResponseAdapter : ResponseAdapter<TestOperation.Data> {
               fieldName = "isFamous",
               arguments = emptyMap(),
               conditions = emptyList(),
-              possibleFieldSets = emptyMap(),
+              fieldSets = emptyList(),
             )
           )
 
@@ -330,7 +330,7 @@ object TestOperation_ResponseAdapter : ResponseAdapter<TestOperation.Data> {
           fieldName = "__typename",
           arguments = emptyMap(),
           conditions = emptyList(),
-          possibleFieldSets = emptyMap(),
+          fieldSets = emptyList(),
         ),
         ResponseField(
           type = ResponseField.Type.NotNull(ResponseField.Type.Named.Other("String")),
@@ -338,7 +338,7 @@ object TestOperation_ResponseAdapter : ResponseAdapter<TestOperation.Data> {
           fieldName = "name",
           arguments = emptyMap(),
           conditions = emptyList(),
-          possibleFieldSets = emptyMap(),
+          fieldSets = emptyList(),
         ),
         ResponseField(
           type =
@@ -347,9 +347,9 @@ object TestOperation_ResponseAdapter : ResponseAdapter<TestOperation.Data> {
           fieldName = "friends",
           arguments = emptyMap(),
           conditions = emptyList(),
-          possibleFieldSets = mapOf(
-            "Wookie" to Friend.WookieFriend.RESPONSE_FIELDS,
-            "" to Friend.OtherFriend.RESPONSE_FIELDS,
+          fieldSets = listOf(
+            ResponseField.FieldSet("Wookie", Friend.WookieFriend.RESPONSE_FIELDS),
+            ResponseField.FieldSet(null, Friend.OtherFriend.RESPONSE_FIELDS),
           ),
         ),
         ResponseField(
@@ -358,7 +358,7 @@ object TestOperation_ResponseAdapter : ResponseAdapter<TestOperation.Data> {
           fieldName = "race",
           arguments = emptyMap(),
           conditions = emptyList(),
-          possibleFieldSets = emptyMap(),
+          fieldSets = emptyList(),
         )
       )
 
@@ -430,7 +430,7 @@ object TestOperation_ResponseAdapter : ResponseAdapter<TestOperation.Data> {
               fieldName = "__typename",
               arguments = emptyMap(),
               conditions = emptyList(),
-              possibleFieldSets = emptyMap(),
+              fieldSets = emptyList(),
             ),
             ResponseField(
               type = ResponseField.Type.NotNull(ResponseField.Type.Named.Other("String")),
@@ -438,7 +438,7 @@ object TestOperation_ResponseAdapter : ResponseAdapter<TestOperation.Data> {
               fieldName = "name",
               arguments = emptyMap(),
               conditions = emptyList(),
-              possibleFieldSets = emptyMap(),
+              fieldSets = emptyList(),
             ),
             ResponseField(
               type = ResponseField.Type.Named.Other("Float"),
@@ -446,7 +446,7 @@ object TestOperation_ResponseAdapter : ResponseAdapter<TestOperation.Data> {
               fieldName = "lifeExpectancy",
               arguments = emptyMap(),
               conditions = emptyList(),
-              possibleFieldSets = emptyMap(),
+              fieldSets = emptyList(),
             )
           )
 
@@ -489,7 +489,7 @@ object TestOperation_ResponseAdapter : ResponseAdapter<TestOperation.Data> {
               fieldName = "__typename",
               arguments = emptyMap(),
               conditions = emptyList(),
-              possibleFieldSets = emptyMap(),
+              fieldSets = emptyList(),
             ),
             ResponseField(
               type = ResponseField.Type.NotNull(ResponseField.Type.Named.Other("String")),
@@ -497,7 +497,7 @@ object TestOperation_ResponseAdapter : ResponseAdapter<TestOperation.Data> {
               fieldName = "name",
               arguments = emptyMap(),
               conditions = emptyList(),
-              possibleFieldSets = emptyMap(),
+              fieldSets = emptyList(),
             ),
             ResponseField(
               type = ResponseField.Type.Named.Other("Float"),
@@ -505,7 +505,7 @@ object TestOperation_ResponseAdapter : ResponseAdapter<TestOperation.Data> {
               fieldName = "lifeExpectancy",
               arguments = emptyMap(),
               conditions = emptyList(),
-              possibleFieldSets = emptyMap(),
+              fieldSets = emptyList(),
             )
           )
 
@@ -549,7 +549,7 @@ object TestOperation_ResponseAdapter : ResponseAdapter<TestOperation.Data> {
           fieldName = "__typename",
           arguments = emptyMap(),
           conditions = emptyList(),
-          possibleFieldSets = emptyMap(),
+          fieldSets = emptyList(),
         )
       )
 

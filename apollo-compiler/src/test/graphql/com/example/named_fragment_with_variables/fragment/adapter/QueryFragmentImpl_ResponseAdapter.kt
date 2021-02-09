@@ -26,7 +26,7 @@ object QueryFragmentImpl_ResponseAdapter : ResponseAdapter<QueryFragmentImpl.Dat
       fieldName = "__typename",
       arguments = emptyMap(),
       conditions = emptyList(),
-      possibleFieldSets = emptyMap(),
+      fieldSets = emptyList(),
     ),
     ResponseField(
       type = ResponseField.Type.Named.Object("Organization"),
@@ -37,8 +37,8 @@ object QueryFragmentImpl_ResponseAdapter : ResponseAdapter<QueryFragmentImpl.Dat
           "kind" to "Variable",
           "variableName" to "organizationId")),
       conditions = emptyList(),
-      possibleFieldSets = mapOf(
-        "" to Organization.RESPONSE_FIELDS
+      fieldSets = listOf(
+        ResponseField.FieldSet(null, Organization.RESPONSE_FIELDS)
       ),
     )
   )
@@ -82,7 +82,7 @@ object QueryFragmentImpl_ResponseAdapter : ResponseAdapter<QueryFragmentImpl.Dat
         fieldName = "id",
         arguments = emptyMap(),
         conditions = emptyList(),
-        possibleFieldSets = emptyMap(),
+        fieldSets = emptyList(),
       ),
       ResponseField(
         type =
@@ -94,9 +94,9 @@ object QueryFragmentImpl_ResponseAdapter : ResponseAdapter<QueryFragmentImpl.Dat
             "kind" to "Variable",
             "variableName" to "query")),
         conditions = emptyList(),
-        possibleFieldSets = mapOf(
-          "User" to User.UserUser.RESPONSE_FIELDS,
-          "" to User.OtherUser.RESPONSE_FIELDS,
+        fieldSets = listOf(
+          ResponseField.FieldSet("User", User.UserUser.RESPONSE_FIELDS),
+          ResponseField.FieldSet(null, User.OtherUser.RESPONSE_FIELDS),
         ),
       )
     )
@@ -159,7 +159,7 @@ object QueryFragmentImpl_ResponseAdapter : ResponseAdapter<QueryFragmentImpl.Dat
             fieldName = "__typename",
             arguments = emptyMap(),
             conditions = emptyList(),
-            possibleFieldSets = emptyMap(),
+            fieldSets = emptyList(),
           ),
           ResponseField(
             type = ResponseField.Type.NotNull(ResponseField.Type.Named.Other("String")),
@@ -167,7 +167,7 @@ object QueryFragmentImpl_ResponseAdapter : ResponseAdapter<QueryFragmentImpl.Dat
             fieldName = "firstName",
             arguments = emptyMap(),
             conditions = emptyList(),
-            possibleFieldSets = emptyMap(),
+            fieldSets = emptyList(),
           ),
           ResponseField(
             type = ResponseField.Type.NotNull(ResponseField.Type.Named.Other("String")),
@@ -175,7 +175,7 @@ object QueryFragmentImpl_ResponseAdapter : ResponseAdapter<QueryFragmentImpl.Dat
             fieldName = "lastName",
             arguments = emptyMap(),
             conditions = emptyList(),
-            possibleFieldSets = emptyMap(),
+            fieldSets = emptyList(),
           ),
           ResponseField(
             type = ResponseField.Type.NotNull(ResponseField.Type.Named.Other("String")),
@@ -186,7 +186,7 @@ object QueryFragmentImpl_ResponseAdapter : ResponseAdapter<QueryFragmentImpl.Dat
                 "kind" to "Variable",
                 "variableName" to "size")),
             conditions = emptyList(),
-            possibleFieldSets = emptyMap(),
+            fieldSets = emptyList(),
           )
         )
 
@@ -232,7 +232,7 @@ object QueryFragmentImpl_ResponseAdapter : ResponseAdapter<QueryFragmentImpl.Dat
             fieldName = "__typename",
             arguments = emptyMap(),
             conditions = emptyList(),
-            possibleFieldSets = emptyMap(),
+            fieldSets = emptyList(),
           )
         )
 

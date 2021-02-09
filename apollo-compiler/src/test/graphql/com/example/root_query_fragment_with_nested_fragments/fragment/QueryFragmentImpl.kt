@@ -7,15 +7,20 @@ package com.example.root_query_fragment_with_nested_fragments.fragment
 
 import com.apollographql.apollo.api.Fragment
 import com.apollographql.apollo.api.Operation
+import com.apollographql.apollo.api.ResponseField
 import com.apollographql.apollo.api.internal.ResponseAdapter
 import com.example.root_query_fragment_with_nested_fragments.fragment.adapter.QueryFragmentImpl_ResponseAdapter
 import kotlin.String
+import kotlin.collections.List
 
 class QueryFragmentImpl : Fragment<QueryFragmentImpl.Data> {
   override fun adapter(): ResponseAdapter<Data> {
     return QueryFragmentImpl_ResponseAdapter
   }
 
+  override fun responseFields(): List<ResponseField.FieldSet> = listOf(
+    ResponseField.FieldSet(null, QueryFragmentImpl_ResponseAdapter.RESPONSE_FIELDS)
+  )
   override fun variables(): Operation.Variables = Operation.EMPTY_VARIABLES
 
   /**

@@ -7,22 +7,22 @@ import com.apollographql.apollo.cache.normalized.CacheKey
 import com.apollographql.apollo.cache.normalized.CacheKeyResolver
 import com.apollographql.apollo.cache.normalized.CacheReference
 
-class CacheMapBuilder(
+class CacheBatchReader(
     private val readableStore: ReadableStore,
     private val rootKey: String,
     private val variables: Operation.Variables,
     private val cacheKeyResolver: CacheKeyResolver,
     private val cacheHeaders: CacheHeaders,
-    private val rootResponseFields: Map<String, Array<ResponseField>>
+    private val rootFieldSets: List<ResponseField.FieldSet>
 ) {
   private val cacheKeyBuilder = RealCacheKeyBuilder()
 
   class PendingReference(
       val key: String,
-      val possibleResponseFields: Map<String, Array<ResponseField>>
+      val fieldSets: List<ResponseField.FieldSet>
   )
 
-  private val fieldSets = mutableMapOf<String, Map<String, Any?>>()
+  private val data = mutableMapOf<String, Map<String, Any?>>()
 
   private val pendingReferences = mutableListOf<PendingReference>()
 
@@ -36,7 +36,7 @@ class CacheMapBuilder(
     pendingReferences.add(
         PendingReference(
             rootKey,
-            rootResponseFields
+            rootFieldSets
         )
     )
 
@@ -48,10 +48,10 @@ class CacheMapBuilder(
       copy.forEach { pendingReference ->
         val record = records[pendingReference.key] ?: throw error("Cache miss on ${pendingReference.key}")
 
-        val responseFields = pendingReference.possibleResponseFields[record["__typename"]]
-            ?: pendingReference.possibleResponseFields[""]
+        val fieldSet = pendingReference.fieldSets.firstOrNull { it.typeCondition == record["__typename"] }
+            ?: pendingReference.fieldSets.first { it.typeCondition == null }
 
-        val fieldSet = responseFields!!.map {
+        val map = fieldSet.responseFields.map {
           val type = it.type
           val value: Any? = if (type.isObject()) {
             val cacheKey = cacheKeyResolver.fromFieldArguments(it, variables)
@@ -70,27 +70,27 @@ class CacheMapBuilder(
             record[fieldName]
           }
 
-          value.registerCacheReferences(it.possibleFieldSets)
+          value.registerCacheReferences(it.fieldSets)
 
           it.responseName to value
         }.toMap()
 
-        fieldSets[record.key] = fieldSet
+        data[record.key] = map
       }
     }
 
     @Suppress("UNCHECKED_CAST")
-    return fieldSets[rootKey].resolveCacheReferences() as Map<String, Any?>
+    return data[rootKey].resolveCacheReferences() as Map<String, Any?>
   }
 
-  private fun Any?.registerCacheReferences(possibleFieldSets: Map<String, Array<ResponseField>>) {
+  private fun Any?.registerCacheReferences(fieldSets: List<ResponseField.FieldSet>) {
     when (this) {
       is CacheReference -> {
-        pendingReferences.add(PendingReference(key, possibleFieldSets))
+        pendingReferences.add(PendingReference(key, fieldSets))
       }
       is List<*> -> {
         forEach {
-          it.registerCacheReferences(possibleFieldSets)
+          it.registerCacheReferences(fieldSets)
         }
       }
     }
@@ -99,7 +99,7 @@ class CacheMapBuilder(
   private fun Any?.resolveCacheReferences(): Any? {
     return when (this) {
       is CacheReference -> {
-        fieldSets[key].resolveCacheReferences()
+        data[key].resolveCacheReferences()
       }
       is List<*> -> {
         map {

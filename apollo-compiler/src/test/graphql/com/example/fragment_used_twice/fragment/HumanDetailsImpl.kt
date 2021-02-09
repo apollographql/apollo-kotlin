@@ -7,16 +7,22 @@ package com.example.fragment_used_twice.fragment
 
 import com.apollographql.apollo.api.Fragment
 import com.apollographql.apollo.api.Operation
+import com.apollographql.apollo.api.ResponseField
 import com.apollographql.apollo.api.internal.ResponseAdapter
 import com.example.fragment_used_twice.fragment.adapter.HumanDetailsImpl_ResponseAdapter
 import kotlin.Any
 import kotlin.String
+import kotlin.collections.List
 
 class HumanDetailsImpl : Fragment<HumanDetailsImpl.Data> {
   override fun adapter(): ResponseAdapter<Data> {
     return HumanDetailsImpl_ResponseAdapter
   }
 
+  override fun responseFields(): List<ResponseField.FieldSet> = listOf(
+    ResponseField.FieldSet("Human", HumanDetailsImpl_ResponseAdapter.CharacterData.RESPONSE_FIELDS),
+    ResponseField.FieldSet(null, HumanDetailsImpl_ResponseAdapter.OtherData.RESPONSE_FIELDS),
+  )
   override fun variables(): Operation.Variables = Operation.EMPTY_VARIABLES
 
   /**

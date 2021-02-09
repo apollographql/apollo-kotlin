@@ -15,11 +15,11 @@ import com.apollographql.apollo.api.internal.ResponseAdapter
 import com.example.arguments_complex.adapter.TestQuery_ResponseAdapter
 import com.example.arguments_complex.type.Episode
 import kotlin.Any
-import kotlin.Array
 import kotlin.Double
 import kotlin.Int
 import kotlin.String
 import kotlin.Suppress
+import kotlin.collections.List
 import kotlin.collections.Map
 import kotlin.jvm.Transient
 
@@ -61,8 +61,8 @@ data class TestQuery(
   override fun name(): String = OPERATION_NAME
 
   override fun adapter(): ResponseAdapter<Data> = TestQuery_ResponseAdapter
-  override fun responseFields(): Map<String, Array<ResponseField>> = mapOf(
-    "" to TestQuery_ResponseAdapter.RESPONSE_FIELDS
+  override fun responseFields(): List<ResponseField.FieldSet> = listOf(
+    ResponseField.FieldSet(null, TestQuery_ResponseAdapter.RESPONSE_FIELDS)
   )
   /**
    * The query type, represents all of the entry points into our object graph

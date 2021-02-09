@@ -42,7 +42,7 @@ object GetUser_ResponseAdapter : ResponseAdapter<GetUser.Data> {
         fieldName = "__typename",
         arguments = emptyMap(),
         conditions = emptyList(),
-        possibleFieldSets = emptyMap(),
+        fieldSets = emptyList(),
       ),
       ResponseField(
         type = ResponseField.Type.Named.Object("Organization"),
@@ -53,8 +53,8 @@ object GetUser_ResponseAdapter : ResponseAdapter<GetUser.Data> {
             "kind" to "Variable",
             "variableName" to "organizationId")),
         conditions = emptyList(),
-        possibleFieldSets = mapOf(
-          "" to Organization.RESPONSE_FIELDS
+        fieldSets = listOf(
+          ResponseField.FieldSet(null, Organization.RESPONSE_FIELDS)
         ),
       )
     )
@@ -98,7 +98,7 @@ object GetUser_ResponseAdapter : ResponseAdapter<GetUser.Data> {
           fieldName = "id",
           arguments = emptyMap(),
           conditions = emptyList(),
-          possibleFieldSets = emptyMap(),
+          fieldSets = emptyList(),
         ),
         ResponseField(
           type =
@@ -110,9 +110,9 @@ object GetUser_ResponseAdapter : ResponseAdapter<GetUser.Data> {
               "kind" to "Variable",
               "variableName" to "query")),
           conditions = emptyList(),
-          possibleFieldSets = mapOf(
-            "User" to User.UserUser.RESPONSE_FIELDS,
-            "" to User.OtherUser.RESPONSE_FIELDS,
+          fieldSets = listOf(
+            ResponseField.FieldSet("User", User.UserUser.RESPONSE_FIELDS),
+            ResponseField.FieldSet(null, User.OtherUser.RESPONSE_FIELDS),
           ),
         )
       )
@@ -175,7 +175,7 @@ object GetUser_ResponseAdapter : ResponseAdapter<GetUser.Data> {
               fieldName = "__typename",
               arguments = emptyMap(),
               conditions = emptyList(),
-              possibleFieldSets = emptyMap(),
+              fieldSets = emptyList(),
             ),
             ResponseField(
               type = ResponseField.Type.NotNull(ResponseField.Type.Named.Other("String")),
@@ -183,7 +183,7 @@ object GetUser_ResponseAdapter : ResponseAdapter<GetUser.Data> {
               fieldName = "firstName",
               arguments = emptyMap(),
               conditions = emptyList(),
-              possibleFieldSets = emptyMap(),
+              fieldSets = emptyList(),
             ),
             ResponseField(
               type = ResponseField.Type.NotNull(ResponseField.Type.Named.Other("String")),
@@ -191,7 +191,7 @@ object GetUser_ResponseAdapter : ResponseAdapter<GetUser.Data> {
               fieldName = "lastName",
               arguments = emptyMap(),
               conditions = emptyList(),
-              possibleFieldSets = emptyMap(),
+              fieldSets = emptyList(),
             ),
             ResponseField(
               type = ResponseField.Type.NotNull(ResponseField.Type.Named.Other("String")),
@@ -202,7 +202,7 @@ object GetUser_ResponseAdapter : ResponseAdapter<GetUser.Data> {
                   "kind" to "Variable",
                   "variableName" to "size")),
               conditions = emptyList(),
-              possibleFieldSets = emptyMap(),
+              fieldSets = emptyList(),
             )
           )
 
@@ -248,7 +248,7 @@ object GetUser_ResponseAdapter : ResponseAdapter<GetUser.Data> {
               fieldName = "__typename",
               arguments = emptyMap(),
               conditions = emptyList(),
-              possibleFieldSets = emptyMap(),
+              fieldSets = emptyList(),
             )
           )
 
@@ -285,7 +285,7 @@ object GetUser_ResponseAdapter : ResponseAdapter<GetUser.Data> {
         fieldName = "__typename",
         arguments = emptyMap(),
         conditions = emptyList(),
-        possibleFieldSets = emptyMap(),
+        fieldSets = emptyList(),
       )
     )
 

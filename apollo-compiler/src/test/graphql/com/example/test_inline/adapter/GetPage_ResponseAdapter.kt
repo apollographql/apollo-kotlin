@@ -26,9 +26,10 @@ object GetPage_ResponseAdapter : ResponseAdapter<GetPage.Data> {
       fieldName = "collection",
       arguments = emptyMap(),
       conditions = emptyList(),
-      possibleFieldSets = mapOf(
-        "ParticularCollection" to Collection.ParticularCollectionCollection.RESPONSE_FIELDS,
-        "" to Collection.OtherCollection.RESPONSE_FIELDS,
+      fieldSets = listOf(
+        ResponseField.FieldSet("ParticularCollection",
+            Collection.ParticularCollectionCollection.RESPONSE_FIELDS),
+        ResponseField.FieldSet(null, Collection.OtherCollection.RESPONSE_FIELDS),
       ),
     )
   )
@@ -82,7 +83,7 @@ object GetPage_ResponseAdapter : ResponseAdapter<GetPage.Data> {
           fieldName = "__typename",
           arguments = emptyMap(),
           conditions = emptyList(),
-          possibleFieldSets = emptyMap(),
+          fieldSets = emptyList(),
         ),
         ResponseField(
           type =
@@ -91,9 +92,9 @@ object GetPage_ResponseAdapter : ResponseAdapter<GetPage.Data> {
           fieldName = "items",
           arguments = emptyMap(),
           conditions = emptyList(),
-          possibleFieldSets = mapOf(
-            "ParticularItem" to Item.ParticularItemItem.RESPONSE_FIELDS,
-            "" to Item.OtherItem.RESPONSE_FIELDS,
+          fieldSets = listOf(
+            ResponseField.FieldSet("ParticularItem", Item.ParticularItemItem.RESPONSE_FIELDS),
+            ResponseField.FieldSet(null, Item.OtherItem.RESPONSE_FIELDS),
           ),
         )
       )
@@ -159,7 +160,7 @@ object GetPage_ResponseAdapter : ResponseAdapter<GetPage.Data> {
               fieldName = "title",
               arguments = emptyMap(),
               conditions = emptyList(),
-              possibleFieldSets = emptyMap(),
+              fieldSets = emptyList(),
             ),
             ResponseField(
               type = ResponseField.Type.NotNull(ResponseField.Type.Named.Other("String")),
@@ -167,7 +168,7 @@ object GetPage_ResponseAdapter : ResponseAdapter<GetPage.Data> {
               fieldName = "__typename",
               arguments = emptyMap(),
               conditions = emptyList(),
-              possibleFieldSets = emptyMap(),
+              fieldSets = emptyList(),
             ),
             ResponseField(
               type = ResponseField.Type.NotNull(ResponseField.Type.Named.Other("String")),
@@ -175,7 +176,7 @@ object GetPage_ResponseAdapter : ResponseAdapter<GetPage.Data> {
               fieldName = "image",
               arguments = emptyMap(),
               conditions = emptyList(),
-              possibleFieldSets = emptyMap(),
+              fieldSets = emptyList(),
             )
           )
 
@@ -218,7 +219,7 @@ object GetPage_ResponseAdapter : ResponseAdapter<GetPage.Data> {
               fieldName = "title",
               arguments = emptyMap(),
               conditions = emptyList(),
-              possibleFieldSets = emptyMap(),
+              fieldSets = emptyList(),
             ),
             ResponseField(
               type = ResponseField.Type.NotNull(ResponseField.Type.Named.Other("String")),
@@ -226,7 +227,7 @@ object GetPage_ResponseAdapter : ResponseAdapter<GetPage.Data> {
               fieldName = "__typename",
               arguments = emptyMap(),
               conditions = emptyList(),
-              possibleFieldSets = emptyMap(),
+              fieldSets = emptyList(),
             )
           )
 
@@ -266,7 +267,7 @@ object GetPage_ResponseAdapter : ResponseAdapter<GetPage.Data> {
           fieldName = "__typename",
           arguments = emptyMap(),
           conditions = emptyList(),
-          possibleFieldSets = emptyMap(),
+          fieldSets = emptyList(),
         ),
         ResponseField(
           type =
@@ -275,8 +276,8 @@ object GetPage_ResponseAdapter : ResponseAdapter<GetPage.Data> {
           fieldName = "items",
           arguments = emptyMap(),
           conditions = emptyList(),
-          possibleFieldSets = mapOf(
-            "" to Item.RESPONSE_FIELDS
+          fieldSets = listOf(
+            ResponseField.FieldSet(null, Item.RESPONSE_FIELDS)
           ),
         )
       )
@@ -322,7 +323,7 @@ object GetPage_ResponseAdapter : ResponseAdapter<GetPage.Data> {
             fieldName = "title",
             arguments = emptyMap(),
             conditions = emptyList(),
-            possibleFieldSets = emptyMap(),
+            fieldSets = emptyList(),
           )
         )
 

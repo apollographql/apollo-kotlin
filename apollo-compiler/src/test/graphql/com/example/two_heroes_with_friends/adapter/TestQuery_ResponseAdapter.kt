@@ -27,8 +27,8 @@ object TestQuery_ResponseAdapter : ResponseAdapter<TestQuery.Data> {
       fieldName = "hero",
       arguments = emptyMap(),
       conditions = emptyList(),
-      possibleFieldSets = mapOf(
-        "" to R2.RESPONSE_FIELDS
+      fieldSets = listOf(
+        ResponseField.FieldSet(null, R2.RESPONSE_FIELDS)
       ),
     ),
     ResponseField(
@@ -38,8 +38,8 @@ object TestQuery_ResponseAdapter : ResponseAdapter<TestQuery.Data> {
       arguments = mapOf<String, Any?>(
         "episode" to "EMPIRE"),
       conditions = emptyList(),
-      possibleFieldSets = mapOf(
-        "" to Luke.RESPONSE_FIELDS
+      fieldSets = listOf(
+        ResponseField.FieldSet(null, Luke.RESPONSE_FIELDS)
       ),
     )
   )
@@ -91,7 +91,7 @@ object TestQuery_ResponseAdapter : ResponseAdapter<TestQuery.Data> {
         fieldName = "name",
         arguments = emptyMap(),
         conditions = emptyList(),
-        possibleFieldSets = emptyMap(),
+        fieldSets = emptyList(),
       ),
       ResponseField(
         type = ResponseField.Type.NotNull(ResponseField.Type.Named.Object("FriendsConnection")),
@@ -99,8 +99,8 @@ object TestQuery_ResponseAdapter : ResponseAdapter<TestQuery.Data> {
         fieldName = "friendsConnection",
         arguments = emptyMap(),
         conditions = emptyList(),
-        possibleFieldSets = mapOf(
-          "" to FriendsConnection.RESPONSE_FIELDS
+        fieldSets = listOf(
+          ResponseField.FieldSet(null, FriendsConnection.RESPONSE_FIELDS)
         ),
       )
     )
@@ -140,7 +140,7 @@ object TestQuery_ResponseAdapter : ResponseAdapter<TestQuery.Data> {
           fieldName = "totalCount",
           arguments = emptyMap(),
           conditions = emptyList(),
-          possibleFieldSets = emptyMap(),
+          fieldSets = emptyList(),
         ),
         ResponseField(
           type = ResponseField.Type.List(ResponseField.Type.Named.Object("FriendsEdge")),
@@ -148,8 +148,8 @@ object TestQuery_ResponseAdapter : ResponseAdapter<TestQuery.Data> {
           fieldName = "edges",
           arguments = emptyMap(),
           conditions = emptyList(),
-          possibleFieldSets = mapOf(
-            "" to Edge.RESPONSE_FIELDS
+          fieldSets = listOf(
+            ResponseField.FieldSet(null, Edge.RESPONSE_FIELDS)
           ),
         )
       )
@@ -194,8 +194,8 @@ object TestQuery_ResponseAdapter : ResponseAdapter<TestQuery.Data> {
             fieldName = "node",
             arguments = emptyMap(),
             conditions = emptyList(),
-            possibleFieldSets = mapOf(
-              "" to Node.RESPONSE_FIELDS
+            fieldSets = listOf(
+              ResponseField.FieldSet(null, Node.RESPONSE_FIELDS)
             ),
           )
         )
@@ -237,7 +237,7 @@ object TestQuery_ResponseAdapter : ResponseAdapter<TestQuery.Data> {
               fieldName = "name",
               arguments = emptyMap(),
               conditions = emptyList(),
-              possibleFieldSets = emptyMap(),
+              fieldSets = emptyList(),
             )
           )
 
@@ -274,7 +274,7 @@ object TestQuery_ResponseAdapter : ResponseAdapter<TestQuery.Data> {
         fieldName = "id",
         arguments = emptyMap(),
         conditions = emptyList(),
-        possibleFieldSets = emptyMap(),
+        fieldSets = emptyList(),
       ),
       ResponseField(
         type = ResponseField.Type.NotNull(ResponseField.Type.Named.Other("String")),
@@ -282,7 +282,7 @@ object TestQuery_ResponseAdapter : ResponseAdapter<TestQuery.Data> {
         fieldName = "name",
         arguments = emptyMap(),
         conditions = emptyList(),
-        possibleFieldSets = emptyMap(),
+        fieldSets = emptyList(),
       ),
       ResponseField(
         type = ResponseField.Type.NotNull(ResponseField.Type.Named.Object("FriendsConnection")),
@@ -290,8 +290,8 @@ object TestQuery_ResponseAdapter : ResponseAdapter<TestQuery.Data> {
         fieldName = "friendsConnection",
         arguments = emptyMap(),
         conditions = emptyList(),
-        possibleFieldSets = mapOf(
-          "" to FriendsConnection.RESPONSE_FIELDS
+        fieldSets = listOf(
+          ResponseField.FieldSet(null, FriendsConnection.RESPONSE_FIELDS)
         ),
       )
     )
@@ -335,7 +335,7 @@ object TestQuery_ResponseAdapter : ResponseAdapter<TestQuery.Data> {
           fieldName = "totalCount",
           arguments = emptyMap(),
           conditions = emptyList(),
-          possibleFieldSets = emptyMap(),
+          fieldSets = emptyList(),
         ),
         ResponseField(
           type = ResponseField.Type.List(ResponseField.Type.Named.Object("FriendsEdge")),
@@ -343,8 +343,8 @@ object TestQuery_ResponseAdapter : ResponseAdapter<TestQuery.Data> {
           fieldName = "edges",
           arguments = emptyMap(),
           conditions = emptyList(),
-          possibleFieldSets = mapOf(
-            "" to Edge.RESPONSE_FIELDS
+          fieldSets = listOf(
+            ResponseField.FieldSet(null, Edge.RESPONSE_FIELDS)
           ),
         )
       )
@@ -390,8 +390,8 @@ object TestQuery_ResponseAdapter : ResponseAdapter<TestQuery.Data> {
             fieldName = "node",
             arguments = emptyMap(),
             conditions = emptyList(),
-            possibleFieldSets = mapOf(
-              "" to Node.RESPONSE_FIELDS
+            fieldSets = listOf(
+              ResponseField.FieldSet(null, Node.RESPONSE_FIELDS)
             ),
           )
         )
@@ -433,7 +433,7 @@ object TestQuery_ResponseAdapter : ResponseAdapter<TestQuery.Data> {
               fieldName = "name",
               arguments = emptyMap(),
               conditions = emptyList(),
-              possibleFieldSets = emptyMap(),
+              fieldSets = emptyList(),
             )
           )
 

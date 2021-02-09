@@ -26,7 +26,7 @@ object StarshipFragmentImpl_ResponseAdapter : ResponseAdapter<StarshipFragmentIm
       fieldName = "__typename",
       arguments = emptyMap(),
       conditions = emptyList(),
-      possibleFieldSets = emptyMap(),
+      fieldSets = emptyList(),
     ),
     ResponseField(
       type = ResponseField.Type.NotNull(ResponseField.Type.Named.Other("String")),
@@ -34,7 +34,7 @@ object StarshipFragmentImpl_ResponseAdapter : ResponseAdapter<StarshipFragmentIm
       fieldName = "id",
       arguments = emptyMap(),
       conditions = emptyList(),
-      possibleFieldSets = emptyMap(),
+      fieldSets = emptyList(),
     ),
     ResponseField(
       type = ResponseField.Type.Named.Other("String"),
@@ -42,7 +42,7 @@ object StarshipFragmentImpl_ResponseAdapter : ResponseAdapter<StarshipFragmentIm
       fieldName = "name",
       arguments = emptyMap(),
       conditions = emptyList(),
-      possibleFieldSets = emptyMap(),
+      fieldSets = emptyList(),
     ),
     ResponseField(
       type = ResponseField.Type.Named.Object("StarshipPilotsConnection"),
@@ -50,8 +50,8 @@ object StarshipFragmentImpl_ResponseAdapter : ResponseAdapter<StarshipFragmentIm
       fieldName = "pilotConnection",
       arguments = emptyMap(),
       conditions = emptyList(),
-      possibleFieldSets = mapOf(
-        "" to PilotConnection.RESPONSE_FIELDS
+      fieldSets = listOf(
+        ResponseField.FieldSet(null, PilotConnection.RESPONSE_FIELDS)
       ),
     )
   )
@@ -104,8 +104,8 @@ object StarshipFragmentImpl_ResponseAdapter : ResponseAdapter<StarshipFragmentIm
         fieldName = "edges",
         arguments = emptyMap(),
         conditions = emptyList(),
-        possibleFieldSets = mapOf(
-          "" to Edge.RESPONSE_FIELDS
+        fieldSets = listOf(
+          ResponseField.FieldSet(null, Edge.RESPONSE_FIELDS)
         ),
       )
     )
@@ -147,9 +147,9 @@ object StarshipFragmentImpl_ResponseAdapter : ResponseAdapter<StarshipFragmentIm
           fieldName = "node",
           arguments = emptyMap(),
           conditions = emptyList(),
-          possibleFieldSets = mapOf(
-            "Person" to Node.PersonNode.RESPONSE_FIELDS,
-            "" to Node.OtherNode.RESPONSE_FIELDS,
+          fieldSets = listOf(
+            ResponseField.FieldSet("Person", Node.PersonNode.RESPONSE_FIELDS),
+            ResponseField.FieldSet(null, Node.OtherNode.RESPONSE_FIELDS),
           ),
         )
       )
@@ -210,7 +210,7 @@ object StarshipFragmentImpl_ResponseAdapter : ResponseAdapter<StarshipFragmentIm
               fieldName = "__typename",
               arguments = emptyMap(),
               conditions = emptyList(),
-              possibleFieldSets = emptyMap(),
+              fieldSets = emptyList(),
             ),
             ResponseField(
               type = ResponseField.Type.Named.Other("String"),
@@ -218,7 +218,7 @@ object StarshipFragmentImpl_ResponseAdapter : ResponseAdapter<StarshipFragmentIm
               fieldName = "name",
               arguments = emptyMap(),
               conditions = emptyList(),
-              possibleFieldSets = emptyMap(),
+              fieldSets = emptyList(),
             ),
             ResponseField(
               type = ResponseField.Type.Named.Object("Planet"),
@@ -226,9 +226,9 @@ object StarshipFragmentImpl_ResponseAdapter : ResponseAdapter<StarshipFragmentIm
               fieldName = "homeworld",
               arguments = emptyMap(),
               conditions = emptyList(),
-              possibleFieldSets = mapOf(
-                "Planet" to Homeworld.PlanetHomeworld.RESPONSE_FIELDS,
-                "" to Homeworld.OtherHomeworld.RESPONSE_FIELDS,
+              fieldSets = listOf(
+                ResponseField.FieldSet("Planet", Homeworld.PlanetHomeworld.RESPONSE_FIELDS),
+                ResponseField.FieldSet(null, Homeworld.OtherHomeworld.RESPONSE_FIELDS),
               ),
             )
           )
@@ -300,7 +300,7 @@ object StarshipFragmentImpl_ResponseAdapter : ResponseAdapter<StarshipFragmentIm
                   fieldName = "__typename",
                   arguments = emptyMap(),
                   conditions = emptyList(),
-                  possibleFieldSets = emptyMap(),
+                  fieldSets = emptyList(),
                 ),
                 ResponseField(
                   type = ResponseField.Type.Named.Other("String"),
@@ -308,7 +308,7 @@ object StarshipFragmentImpl_ResponseAdapter : ResponseAdapter<StarshipFragmentIm
                   fieldName = "name",
                   arguments = emptyMap(),
                   conditions = emptyList(),
-                  possibleFieldSets = emptyMap(),
+                  fieldSets = emptyList(),
                 )
               )
 
@@ -348,7 +348,7 @@ object StarshipFragmentImpl_ResponseAdapter : ResponseAdapter<StarshipFragmentIm
                   fieldName = "__typename",
                   arguments = emptyMap(),
                   conditions = emptyList(),
-                  possibleFieldSets = emptyMap(),
+                  fieldSets = emptyList(),
                 )
               )
 
@@ -385,7 +385,7 @@ object StarshipFragmentImpl_ResponseAdapter : ResponseAdapter<StarshipFragmentIm
               fieldName = "__typename",
               arguments = emptyMap(),
               conditions = emptyList(),
-              possibleFieldSets = emptyMap(),
+              fieldSets = emptyList(),
             )
           )
 

@@ -27,7 +27,7 @@ object HeroDetailsImpl_ResponseAdapter : ResponseAdapter<HeroDetailsImpl.Data> {
       fieldName = "__typename",
       arguments = emptyMap(),
       conditions = emptyList(),
-      possibleFieldSets = emptyMap(),
+      fieldSets = emptyList(),
     ),
     ResponseField(
       type = ResponseField.Type.NotNull(ResponseField.Type.Named.Object("FriendsConnection")),
@@ -38,8 +38,8 @@ object HeroDetailsImpl_ResponseAdapter : ResponseAdapter<HeroDetailsImpl.Data> {
           "kind" to "Variable",
           "variableName" to "friendsCount")),
       conditions = emptyList(),
-      possibleFieldSets = mapOf(
-        "" to FriendsConnection.RESPONSE_FIELDS
+      fieldSets = listOf(
+        ResponseField.FieldSet(null, FriendsConnection.RESPONSE_FIELDS)
       ),
     )
   )
@@ -79,7 +79,7 @@ object HeroDetailsImpl_ResponseAdapter : ResponseAdapter<HeroDetailsImpl.Data> {
         fieldName = "totalCount",
         arguments = emptyMap(),
         conditions = emptyList(),
-        possibleFieldSets = emptyMap(),
+        fieldSets = emptyList(),
       ),
       ResponseField(
         type = ResponseField.Type.List(ResponseField.Type.Named.Object("FriendsEdge")),
@@ -87,8 +87,8 @@ object HeroDetailsImpl_ResponseAdapter : ResponseAdapter<HeroDetailsImpl.Data> {
         fieldName = "edges",
         arguments = emptyMap(),
         conditions = emptyList(),
-        possibleFieldSets = mapOf(
-          "" to Edge.RESPONSE_FIELDS
+        fieldSets = listOf(
+          ResponseField.FieldSet(null, Edge.RESPONSE_FIELDS)
         ),
       )
     )
@@ -133,8 +133,8 @@ object HeroDetailsImpl_ResponseAdapter : ResponseAdapter<HeroDetailsImpl.Data> {
           fieldName = "node",
           arguments = emptyMap(),
           conditions = emptyList(),
-          possibleFieldSets = mapOf(
-            "" to Node.RESPONSE_FIELDS
+          fieldSets = listOf(
+            ResponseField.FieldSet(null, Node.RESPONSE_FIELDS)
           ),
         )
       )
@@ -178,7 +178,7 @@ object HeroDetailsImpl_ResponseAdapter : ResponseAdapter<HeroDetailsImpl.Data> {
             conditions = listOf(
               ResponseField.Condition.booleanCondition("IncludeName", false)
             ),
-            possibleFieldSets = emptyMap(),
+            fieldSets = emptyList(),
           )
         )
 

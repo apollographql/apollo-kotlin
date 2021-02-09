@@ -143,31 +143,31 @@ private fun CodeGenerationAst.Field.responseFieldInitializerCode(objectType: Cod
   builder.add("fieldName = %S,\n", schemaName)
   builder.add("arguments = %L,\n", arguments.takeIf { it.isNotEmpty() }?.let { anyToCode(it) } ?: "emptyMap()")
   builder.add("conditions = %L,\n", conditionsListCode(conditions))
-  builder.add("possibleFieldSets = %L,\n", fieldsCode(this.type, objectType))
+  builder.add("fieldSets = %L,\n", fieldSetsCode(this.type, objectType))
   builder.unindent()
   builder.add(")")
 
   return builder.build()
 }
 
-private fun fieldsCode(type: CodeGenerationAst.FieldType, objectType: CodeGenerationAst.ObjectType): CodeBlock {
+private fun fieldSetsCode(type: CodeGenerationAst.FieldType, objectType: CodeGenerationAst.ObjectType): CodeBlock {
   return when (val leafType = type.leafType()) {
-    is CodeGenerationAst.FieldType.Scalar -> CodeBlock.of("emptyMap()")
+    is CodeGenerationAst.FieldType.Scalar -> CodeBlock.of("emptyList()")
     is CodeGenerationAst.FieldType.Object -> {
       // Find the first nestedObject that has the type of this field.
       val nestedObjectType = objectType.nestedObjects.first { it.typeRef == leafType.typeRef }
       val builder = CodeBlock.Builder()
-      builder.add("mapOf(\n")
+      builder.add("listOf(\n")
       builder.indent()
       when (val kind = nestedObjectType.kind) {
         is CodeGenerationAst.ObjectType.Kind.Object -> {
-          builder.add("%S to %T.RESPONSE_FIELDS\n", "", leafType.typeRef.asAdapterTypeName())
+          builder.add("%T(null, %T.RESPONSE_FIELDS)\n", ResponseField.FieldSet::class, leafType.typeRef.asAdapterTypeName())
         }
         is CodeGenerationAst.ObjectType.Kind.Fragment -> {
           kind.possibleImplementations.forEach {
-            builder.add("%S to %T.RESPONSE_FIELDS,\n", it.key, it.value.asAdapterTypeName())
+            builder.add("%T(%S, %T.RESPONSE_FIELDS),\n", ResponseField.FieldSet::class, it.key, it.value.asAdapterTypeName())
           }
-          builder.add("%S to %T.RESPONSE_FIELDS,\n", "", kind.defaultImplementation.asAdapterTypeName())
+          builder.add("%T(null, %T.RESPONSE_FIELDS),\n", ResponseField.FieldSet::class, kind.defaultImplementation.asAdapterTypeName())
         }
       }
       builder.unindent()

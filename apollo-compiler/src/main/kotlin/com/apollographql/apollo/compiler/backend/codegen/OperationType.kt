@@ -60,9 +60,8 @@ internal fun CodeGenerationAst.OperationType.typeSpec(targetPackage: String, gen
           )
               .addModifiers(KModifier.OVERRIDE)
               .returns(
-                  Map::class.asClassName().parameterizedBy(
-                      String::class.asClassName(),
-                      Array::class.asClassName().parameterizedBy(ResponseField::class.asClassName()),
+                  List::class.asClassName().parameterizedBy(
+                      ResponseField.FieldSet::class.asClassName(),
                   )
               )
               .addCode("return %L", responseFieldsCode())
@@ -109,17 +108,17 @@ private fun CodeGenerationAst.OperationType.superInterfaceType(targetPackage: St
 private fun CodeGenerationAst.OperationType.responseFieldsCode(): CodeBlock {
   val builder = CodeBlock.builder()
 
-  builder.add("mapOf(\n")
+  builder.add("listOf(\n")
   builder.indent()
   when (val kind = dataType.kind) {
     is CodeGenerationAst.ObjectType.Kind.Object -> {
-      builder.add("%S to %T.RESPONSE_FIELDS\n", "", dataType.typeRef.asAdapterTypeName())
+      builder.add("%T(null, %T.RESPONSE_FIELDS)\n", ResponseField.FieldSet::class, dataType.typeRef.asAdapterTypeName())
     }
     is CodeGenerationAst.ObjectType.Kind.Fragment -> {
       kind.possibleImplementations.forEach {
-        builder.add("%S to %T.RESPONSE_FIELDS,\n", it.key, it.value.asAdapterTypeName())
+        builder.add("%T(%S, %T.RESPONSE_FIELDS),\n", ResponseField.FieldSet::class, it.key, it.value.asAdapterTypeName())
       }
-      builder.add("%S to %T.RESPONSE_FIELDS,\n", "", kind.defaultImplementation.asAdapterTypeName())
+      builder.add("%T(null, %T.RESPONSE_FIELDS),\n", ResponseField.FieldSet::class, kind.defaultImplementation.asAdapterTypeName())
     }
   }
   builder.unindent()

@@ -12,12 +12,10 @@ import com.apollographql.apollo.api.internal.QueryDocumentMinifier
 import com.apollographql.apollo.api.internal.ResponseAdapter
 import com.example.root_query_inline_fragment.adapter.TestQuery_ResponseAdapter
 import com.example.root_query_inline_fragment.type.Episode
-import kotlin.Array
 import kotlin.Double
 import kotlin.String
 import kotlin.Suppress
 import kotlin.collections.List
-import kotlin.collections.Map
 
 @Suppress("NAME_SHADOWING", "UNUSED_ANONYMOUS_PARAMETER", "LocalVariableName",
     "RemoveExplicitTypeArguments", "NestedLambdaShadowedImplicitParameter", "PropertyName",
@@ -32,9 +30,9 @@ class TestQuery : Query<TestQuery.Data> {
   override fun name(): String = OPERATION_NAME
 
   override fun adapter(): ResponseAdapter<Data> = TestQuery_ResponseAdapter
-  override fun responseFields(): Map<String, Array<ResponseField>> = mapOf(
-    "Query" to TestQuery_ResponseAdapter.QueryData.RESPONSE_FIELDS,
-    "" to TestQuery_ResponseAdapter.OtherData.RESPONSE_FIELDS,
+  override fun responseFields(): List<ResponseField.FieldSet> = listOf(
+    ResponseField.FieldSet("Query", TestQuery_ResponseAdapter.QueryData.RESPONSE_FIELDS),
+    ResponseField.FieldSet(null, TestQuery_ResponseAdapter.OtherData.RESPONSE_FIELDS),
   )
   /**
    * The query type, represents all of the entry points into our object graph

@@ -16,7 +16,6 @@ import com.example.named_fragment_with_variables.fragment.QueryFragment
 import com.example.named_fragment_with_variables.fragment.UserFragment
 import com.example.named_fragment_with_variables.type.UserQuery
 import kotlin.Any
-import kotlin.Array
 import kotlin.Int
 import kotlin.String
 import kotlin.Suppress
@@ -58,9 +57,9 @@ data class GetUser(
   override fun name(): String = OPERATION_NAME
 
   override fun adapter(): ResponseAdapter<Data> = GetUser_ResponseAdapter
-  override fun responseFields(): Map<String, Array<ResponseField>> = mapOf(
-    "Query" to GetUser_ResponseAdapter.QueryData.RESPONSE_FIELDS,
-    "" to GetUser_ResponseAdapter.OtherData.RESPONSE_FIELDS,
+  override fun responseFields(): List<ResponseField.FieldSet> = listOf(
+    ResponseField.FieldSet("Query", GetUser_ResponseAdapter.QueryData.RESPONSE_FIELDS),
+    ResponseField.FieldSet(null, GetUser_ResponseAdapter.OtherData.RESPONSE_FIELDS),
   )
   interface Data : Operation.Data {
     val __typename: String

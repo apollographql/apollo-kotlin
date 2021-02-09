@@ -14,11 +14,9 @@ import com.example.fragment_in_fragment.adapter.AllStarships_ResponseAdapter
 import com.example.fragment_in_fragment.fragment.PilotFragment
 import com.example.fragment_in_fragment.fragment.PlanetFragment
 import com.example.fragment_in_fragment.fragment.StarshipFragment
-import kotlin.Array
 import kotlin.String
 import kotlin.Suppress
 import kotlin.collections.List
-import kotlin.collections.Map
 
 @Suppress("NAME_SHADOWING", "UNUSED_ANONYMOUS_PARAMETER", "LocalVariableName",
     "RemoveExplicitTypeArguments", "NestedLambdaShadowedImplicitParameter", "PropertyName",
@@ -33,8 +31,8 @@ class AllStarships : Query<AllStarships.Data> {
   override fun name(): String = OPERATION_NAME
 
   override fun adapter(): ResponseAdapter<Data> = AllStarships_ResponseAdapter
-  override fun responseFields(): Map<String, Array<ResponseField>> = mapOf(
-    "" to AllStarships_ResponseAdapter.RESPONSE_FIELDS
+  override fun responseFields(): List<ResponseField.FieldSet> = listOf(
+    ResponseField.FieldSet(null, AllStarships_ResponseAdapter.RESPONSE_FIELDS)
   )
   data class Data(
     val allStarships: AllStarships?

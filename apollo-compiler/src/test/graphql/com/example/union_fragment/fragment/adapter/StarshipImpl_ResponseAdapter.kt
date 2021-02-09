@@ -25,7 +25,7 @@ object StarshipImpl_ResponseAdapter : ResponseAdapter<StarshipImpl.Data> {
       fieldName = "__typename",
       arguments = emptyMap(),
       conditions = emptyList(),
-      possibleFieldSets = emptyMap(),
+      fieldSets = emptyList(),
     ),
     ResponseField(
       type = ResponseField.Type.NotNull(ResponseField.Type.Named.Other("String")),
@@ -33,7 +33,7 @@ object StarshipImpl_ResponseAdapter : ResponseAdapter<StarshipImpl.Data> {
       fieldName = "name",
       arguments = emptyMap(),
       conditions = emptyList(),
-      possibleFieldSets = emptyMap(),
+      fieldSets = emptyList(),
     )
   )
 

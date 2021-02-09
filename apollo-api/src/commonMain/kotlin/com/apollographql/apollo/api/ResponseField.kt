@@ -18,9 +18,10 @@ class ResponseField(
     val fieldName: String,
     val arguments: Map<String, Any?>,
     val conditions: List<Condition>,
-    val possibleFieldSets: Map<String, Array<ResponseField>>,
+    val fieldSets: List<FieldSet>,
 ) {
 
+  class FieldSet(val typeCondition: String?, val responseFields: Array<ResponseField>)
   /**
    * Resolves field argument value by [name]. If argument represents a references to the variable, it will be resolved from
    * provided operation [variables] values.
@@ -107,7 +108,7 @@ class ResponseField(
         fieldName = "__typename",
         arguments = emptyMap(),
         conditions = emptyList(),
-        possibleFieldSets = emptyMap(),
+        fieldSets = emptyList(),
     )
   }
 }

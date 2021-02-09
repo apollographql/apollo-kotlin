@@ -15,10 +15,10 @@ import com.example.input_object_type.adapter.TestQuery_ResponseAdapter
 import com.example.input_object_type.type.Episode
 import com.example.input_object_type.type.ReviewInput
 import kotlin.Any
-import kotlin.Array
 import kotlin.Int
 import kotlin.String
 import kotlin.Suppress
+import kotlin.collections.List
 import kotlin.collections.Map
 import kotlin.jvm.Transient
 
@@ -53,8 +53,8 @@ data class TestQuery(
   override fun name(): String = OPERATION_NAME
 
   override fun adapter(): ResponseAdapter<Data> = TestQuery_ResponseAdapter
-  override fun responseFields(): Map<String, Array<ResponseField>> = mapOf(
-    "" to TestQuery_ResponseAdapter.RESPONSE_FIELDS
+  override fun responseFields(): List<ResponseField.FieldSet> = listOf(
+    ResponseField.FieldSet(null, TestQuery_ResponseAdapter.RESPONSE_FIELDS)
   )
   /**
    * The mutation type, represents all updates we can make to our data

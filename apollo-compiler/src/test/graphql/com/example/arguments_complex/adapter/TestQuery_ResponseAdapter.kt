@@ -48,8 +48,8 @@ object TestQuery_ResponseAdapter : ResponseAdapter<TestQuery.Data> {
             "kind" to "Variable",
             "variableName" to "stars"))),
       conditions = emptyList(),
-      possibleFieldSets = mapOf(
-        "" to HeroWithReview.RESPONSE_FIELDS
+      fieldSets = listOf(
+        ResponseField.FieldSet(null, HeroWithReview.RESPONSE_FIELDS)
       ),
     )
   )
@@ -89,7 +89,7 @@ object TestQuery_ResponseAdapter : ResponseAdapter<TestQuery.Data> {
         fieldName = "name",
         arguments = emptyMap(),
         conditions = emptyList(),
-        possibleFieldSets = emptyMap(),
+        fieldSets = emptyList(),
       ),
       ResponseField(
         type = ResponseField.Type.Named.Other("Float"),
@@ -98,7 +98,7 @@ object TestQuery_ResponseAdapter : ResponseAdapter<TestQuery.Data> {
         arguments = mapOf<String, Any?>(
           "unit" to "FOOT"),
         conditions = emptyList(),
-        possibleFieldSets = emptyMap(),
+        fieldSets = emptyList(),
       )
     )
 
