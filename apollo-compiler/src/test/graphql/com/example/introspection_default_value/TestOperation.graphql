@@ -1,0 +1,3 @@
+query TestQuery($input: SampleInput!) {
+  random(input: $input)
+}

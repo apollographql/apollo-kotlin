@@ -157,7 +157,7 @@ class CodegenTest(private val folder: File, private val testLanguage: TestLangua
         else -> null
       }
 
-      val schemaFile = folder.listFiles()!!.find { it.isFile && it.name == "schema.sdl" }
+      val schemaFile = folder.listFiles()!!.find { it.isFile && (it.name == "schema.sdl" || it.name == "schema.json") }
           ?: File("src/test/graphql/schema.sdl")
       
       val graphqlFiles = setOf(File(folder, "TestOperation.graphql"))
