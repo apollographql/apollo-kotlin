@@ -69,7 +69,7 @@ fun <D : Fragment.Data> Fragment<D>.readDataFromCache(
     readableStore: ReadableStore,
     cacheKeyResolver: CacheKeyResolver,
     cacheHeaders: CacheHeaders,
-    mode: ReadMode
+    mode: ReadMode = ReadMode.SEQUENTIAL
 ) = readInternal(
     cacheKey = cacheKey,
     customScalarAdapters = customScalarAdapters,

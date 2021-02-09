@@ -104,7 +104,7 @@ class Benchmark {
 
   @Test
   fun apolloBatchCacheSql() = benchmarkRule.measureRepeated {
-    val data2 = operation.batchDataFromCache(CustomScalarAdapters.DEFAULT, sqlReadableStore, CacheKeyResolver.DEFAULT, CacheHeaders.NONE)
+    val data2 = operation.readDataFromCache(CustomScalarAdapters.DEFAULT, sqlReadableStore, CacheKeyResolver.DEFAULT, CacheHeaders.NONE, ReadMode.BATCH)
   }
 
   @Test
@@ -114,6 +114,6 @@ class Benchmark {
 
   @Test
   fun apolloBatchCacheMemory() = benchmarkRule.measureRepeated {
-    val data2 = operation.batchDataFromCache(CustomScalarAdapters.DEFAULT, memoryReadableStore, CacheKeyResolver.DEFAULT, CacheHeaders.NONE)
+    val data2 = operation.readDataFromCache(CustomScalarAdapters.DEFAULT, memoryReadableStore, CacheKeyResolver.DEFAULT, CacheHeaders.NONE, ReadMode.BATCH)
   }
 }
