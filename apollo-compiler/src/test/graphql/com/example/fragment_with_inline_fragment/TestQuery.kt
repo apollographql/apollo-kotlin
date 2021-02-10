@@ -57,18 +57,6 @@ class TestQuery : Query<TestQuery.Data> {
       val appearsIn: List<Episode?>
 
       interface Character : Hero, HeroDetails {
-        override val __typename: String
-
-        /**
-         * The name of the character
-         */
-        override val name: String
-
-        /**
-         * The movies this character appears in
-         */
-        override val appearsIn: List<Episode?>
-
         /**
          * The friends of the character exposed as a connection with edges
          */
@@ -78,11 +66,6 @@ class TestQuery : Query<TestQuery.Data> {
          * A connection object for a character's friends
          */
         interface FriendsConnection : HeroDetails.FriendsConnection {
-          /**
-           * The total number of friends
-           */
-          override val totalCount: Int?
-
           /**
            * The edges for each of the character's friends.
            */
@@ -100,28 +83,11 @@ class TestQuery : Query<TestQuery.Data> {
             /**
              * A character from the Star Wars universe
              */
-            interface Node : HeroDetails.FriendsConnection.Edges.Node {
-              /**
-               * The name of the character
-               */
-              override val name: String
-            }
+            interface Node : HeroDetails.FriendsConnection.Edges.Node
           }
         }
 
         interface Droid : Character, HeroDetails.Droid {
-          override val __typename: String
-
-          /**
-           * The name of the character
-           */
-          override val name: String
-
-          /**
-           * The movies this character appears in
-           */
-          override val appearsIn: List<Episode?>
-
           /**
            * The friends of the character exposed as a connection with edges
            */
@@ -132,11 +98,6 @@ class TestQuery : Query<TestQuery.Data> {
            */
           interface FriendsConnection : Character.FriendsConnection, HeroDetails.FriendsConnection,
               HeroDetails.Droid.FriendsConnection {
-            /**
-             * The total number of friends
-             */
-            override val totalCount: Int?
-
             /**
              * The edges for each of the character's friends.
              */
@@ -157,37 +118,15 @@ class TestQuery : Query<TestQuery.Data> {
                */
               interface Node : Character.FriendsConnection.Edges.Node,
                   HeroDetails.FriendsConnection.Edges.Node,
-                  HeroDetails.Droid.FriendsConnection.Edges.Node {
-                /**
-                 * The name of the character
-                 */
-                override val name: String
-              }
+                  HeroDetails.Droid.FriendsConnection.Edges.Node
             }
           }
 
           interface Droid : Character.Droid, HeroDetails.Droid.Droid {
-            override val __typename: String
-
-            /**
-             * The name of the character
-             */
-            override val name: String
-
-            /**
-             * The movies this character appears in
-             */
-            override val appearsIn: List<Episode?>
-
             /**
              * The friends of the character exposed as a connection with edges
              */
             override val friendsConnection: FriendsConnection
-
-            /**
-             * This droid's primary function
-             */
-            override val primaryFunction: String?
 
             /**
              * A connection object for a character's friends
@@ -195,11 +134,6 @@ class TestQuery : Query<TestQuery.Data> {
             interface FriendsConnection : Character.FriendsConnection,
                 HeroDetails.FriendsConnection, HeroDetails.Droid.FriendsConnection,
                 Character.Droid.FriendsConnection, HeroDetails.Droid.Droid.FriendsConnection {
-              /**
-               * The total number of friends
-               */
-              override val totalCount: Int?
-
               /**
                * The edges for each of the character's friends.
                */
@@ -224,30 +158,13 @@ class TestQuery : Query<TestQuery.Data> {
                     HeroDetails.FriendsConnection.Edges.Node,
                     HeroDetails.Droid.FriendsConnection.Edges.Node,
                     Character.Droid.FriendsConnection.Edges.Node,
-                    HeroDetails.Droid.Droid.FriendsConnection.Edges.Node {
-                  /**
-                   * The name of the character
-                   */
-                  override val name: String
-                }
+                    HeroDetails.Droid.Droid.FriendsConnection.Edges.Node
               }
             }
           }
         }
 
         interface Human : Character, HeroDetails.Human {
-          override val __typename: String
-
-          /**
-           * The name of the character
-           */
-          override val name: String
-
-          /**
-           * The movies this character appears in
-           */
-          override val appearsIn: List<Episode?>
-
           /**
            * The friends of the character exposed as a connection with edges
            */
@@ -258,11 +175,6 @@ class TestQuery : Query<TestQuery.Data> {
            */
           interface FriendsConnection : Character.FriendsConnection, HeroDetails.FriendsConnection,
               HeroDetails.Human.FriendsConnection {
-            /**
-             * The total number of friends
-             */
-            override val totalCount: Int?
-
             /**
              * The edges for each of the character's friends.
              */
@@ -283,12 +195,7 @@ class TestQuery : Query<TestQuery.Data> {
                */
               interface Node : Character.FriendsConnection.Edges.Node,
                   HeroDetails.FriendsConnection.Edges.Node,
-                  HeroDetails.Human.FriendsConnection.Edges.Node {
-                /**
-                 * The name of the character
-                 */
-                override val name: String
-              }
+                  HeroDetails.Human.FriendsConnection.Edges.Node
             }
           }
         }

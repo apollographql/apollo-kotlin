@@ -65,28 +65,14 @@ data class GetUser(
     val __typename: String
 
     interface Query : Data, QueryFragment {
-      override val __typename: String
-
       override val organization: Organization?
 
       interface Organization : QueryFragment.Organization {
-        override val id: String
-
         override val user: List<User>
 
         interface User : QueryFragment.Organization.User {
-          override val __typename: String
-
           interface User : Organization.User, UserFragment, QueryFragment.Organization.User.User,
-              QueryFragment.Organization.User {
-            override val __typename: String
-
-            override val firstName: String
-
-            override val lastName: String
-
-            override val avatar: String
-          }
+              QueryFragment.Organization.User
 
           companion object {
             fun Organization.User.asUser(): User? = this as? User
@@ -106,8 +92,6 @@ data class GetUser(
         override val user: List<User>
       ) : Query.Organization, QueryFragment.Organization {
         interface User : Query.Organization.User, QueryFragment.Organization.User {
-          override val __typename: String
-
           data class UserUser(
             override val __typename: String,
             override val firstName: String,

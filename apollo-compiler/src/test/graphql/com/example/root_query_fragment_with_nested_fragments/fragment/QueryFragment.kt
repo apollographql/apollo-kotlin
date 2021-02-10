@@ -26,14 +26,7 @@ interface QueryFragment {
   interface Hero {
     val __typename: String
 
-    interface Character : Hero, HeroFragment {
-      override val __typename: String
-
-      /**
-       * The name of the character
-       */
-      override val name: String
-    }
+    interface Character : Hero, HeroFragment
 
     companion object {
       fun Hero.asCharacter(): Character? = this as? Character
@@ -48,19 +41,7 @@ interface QueryFragment {
   interface Droid {
     val __typename: String
 
-    interface Droid : QueryFragment.Droid, DroidFragment {
-      override val __typename: String
-
-      /**
-       * What others call this droid
-       */
-      override val name: String
-
-      /**
-       * This droid's primary function
-       */
-      override val primaryFunction: String?
-    }
+    interface Droid : QueryFragment.Droid, DroidFragment
 
     companion object {
       fun QueryFragment.Droid.asDroid(): Droid? = this as? Droid
@@ -76,8 +57,6 @@ interface QueryFragment {
     val __typename: String
 
     interface Human : QueryFragment.Human {
-      override val __typename: String
-
       /**
        * What this human calls themselves
        */

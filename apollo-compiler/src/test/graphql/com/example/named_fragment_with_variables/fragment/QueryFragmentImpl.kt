@@ -59,8 +59,6 @@ data class QueryFragmentImpl(
       override val user: List<User>
     ) : QueryFragment.Organization {
       interface User : QueryFragment.Organization.User {
-        override val __typename: String
-
         data class UserUser(
           override val __typename: String,
           override val firstName: String,

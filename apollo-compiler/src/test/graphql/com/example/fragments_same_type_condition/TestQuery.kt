@@ -45,19 +45,7 @@ class TestQuery : Query<TestQuery.Data> {
     interface Hero {
       val __typename: String
 
-      interface Droid : Hero, DroidDetails1, DroidDetails2 {
-        override val __typename: String
-
-        /**
-         * What others call this droid
-         */
-        override val name: String
-
-        /**
-         * This droid's primary function
-         */
-        override val primaryFunction: String?
-      }
+      interface Droid : Hero, DroidDetails1, DroidDetails2
 
       data class DroidHero(
         override val __typename: String,

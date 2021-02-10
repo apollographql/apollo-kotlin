@@ -60,8 +60,6 @@ class StarshipFragmentImpl : Fragment<StarshipFragmentImpl.Data> {
          * An individual person or character within the Star Wars universe.
          */
         interface Node : StarshipFragment.PilotConnection.Edges.Node {
-          override val __typename: String
-
           data class PersonNode(
             override val __typename: String,
             /**
@@ -80,8 +78,6 @@ class StarshipFragmentImpl : Fragment<StarshipFragmentImpl.Data> {
              */
             interface Homeworld : StarshipFragment.PilotConnection.Edges.Node.Person.Homeworld,
                 PilotFragment.Homeworld {
-              override val __typename: String
-
               data class PlanetHomeworld(
                 override val __typename: String,
                 /**

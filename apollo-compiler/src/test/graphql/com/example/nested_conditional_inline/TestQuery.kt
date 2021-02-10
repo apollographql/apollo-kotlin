@@ -75,13 +75,6 @@ data class TestQuery(
       val name: String
 
       interface Human : Hero {
-        override val __typename: String
-
-        /**
-         * The name of the character
-         */
-        override val name: String
-
         /**
          * This human's friends, or an empty list if they have none
          */
@@ -99,13 +92,6 @@ data class TestQuery(
           val name: String
 
           interface Human : Friends {
-            override val __typename: String
-
-            /**
-             * The name of the character
-             */
-            override val name: String
-
             /**
              * Height in the preferred unit, default is meters
              */
@@ -119,13 +105,6 @@ data class TestQuery(
       }
 
       interface Droid : Hero {
-        override val __typename: String
-
-        /**
-         * The name of the character
-         */
-        override val name: String
-
         /**
          * This droid's friends, or an empty list if they have none
          */
@@ -143,13 +122,6 @@ data class TestQuery(
           val name: String
 
           interface Human : Friends {
-            override val __typename: String
-
-            /**
-             * The name of the character
-             */
-            override val name: String
-
             /**
              * Height in the preferred unit, default is meters
              */
@@ -177,8 +149,6 @@ data class TestQuery(
          * A character from the Star Wars universe
          */
         interface Friends : Human.Friends {
-          override val __typename: String
-
           data class HumanFriends(
             override val __typename: String,
             /**
@@ -216,8 +186,6 @@ data class TestQuery(
          * A character from the Star Wars universe
          */
         interface Friends : Droid.Friends {
-          override val __typename: String
-
           data class HumanFriends(
             override val __typename: String,
             /**

@@ -50,26 +50,10 @@ internal class TestQuery : Query<TestQuery.Data> {
       val __typename: String
 
       interface Character : Hero, HeroDetails {
-        override val __typename: String
-
-        interface Human : Character, HeroDetails.Human {
-          override val __typename: String
-
-          /**
-           * What this human calls themselves
-           */
-          override val name: String
-        }
+        interface Human : Character, HeroDetails.Human
       }
 
-      interface Human : Hero, HumanDetails {
-        override val __typename: String
-
-        /**
-         * What this human calls themselves
-         */
-        override val name: String
-      }
+      interface Human : Hero, HumanDetails
 
       data class CharacterHero(
         override val __typename: String

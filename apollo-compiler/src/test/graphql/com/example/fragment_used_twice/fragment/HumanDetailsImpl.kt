@@ -29,8 +29,6 @@ class HumanDetailsImpl : Fragment<HumanDetailsImpl.Data> {
    * A humanoid creature from the Star Wars universe
    */
   interface Data : HumanDetails, Fragment.Data {
-    override val __typename: String
-
     data class CharacterData(
       override val __typename: String,
       /**

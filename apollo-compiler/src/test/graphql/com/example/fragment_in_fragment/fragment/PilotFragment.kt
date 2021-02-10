@@ -31,14 +31,7 @@ interface PilotFragment {
   interface Homeworld {
     val __typename: String
 
-    interface Planet : Homeworld, PlanetFragment {
-      override val __typename: String
-
-      /**
-       * The name of this planet.
-       */
-      override val name: String?
-    }
+    interface Planet : Homeworld, PlanetFragment
 
     companion object {
       fun Homeworld.asPlanet(): Planet? = this as? Planet

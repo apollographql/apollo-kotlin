@@ -46,13 +46,6 @@ class TestQuery : Query<TestQuery.Data> {
       val __typename: String
 
       interface Character : Hero, HeroDetails {
-        override val __typename: String
-
-        /**
-         * The name of the character
-         */
-        override val name: String
-
         /**
          * The friends of the character, or an empty list if they have none
          */
@@ -62,40 +55,9 @@ class TestQuery : Query<TestQuery.Data> {
          * A character from the Star Wars universe
          */
         interface Friends : HeroDetails.Friends {
-          override val __typename: String
+          interface Human : Friends, HeroDetails.Friends.Human, HeroDetails.Friends
 
-          /**
-           * The name of the character
-           */
-          override val name: String
-
-          interface Human : Friends, HeroDetails.Friends.Human, HeroDetails.Friends {
-            override val __typename: String
-
-            /**
-             * The name of the character
-             */
-            override val name: String
-
-            /**
-             * Height in the preferred unit, default is meters
-             */
-            override val height: Double?
-          }
-
-          interface Droid : Friends, HeroDetails.Friends.Droid, HeroDetails.Friends {
-            override val __typename: String
-
-            /**
-             * The name of the character
-             */
-            override val name: String
-
-            /**
-             * This droid's primary function
-             */
-            override val primaryFunction: String?
-          }
+          interface Droid : Friends, HeroDetails.Friends.Droid, HeroDetails.Friends
 
           companion object {
             fun Friends.asHuman(): Human? = this as? Human
@@ -120,8 +82,6 @@ class TestQuery : Query<TestQuery.Data> {
          * A character from the Star Wars universe
          */
         interface Friends : Character.Friends, HeroDetails.Friends {
-          override val __typename: String
-
           data class HumanFriends(
             override val __typename: String,
             /**

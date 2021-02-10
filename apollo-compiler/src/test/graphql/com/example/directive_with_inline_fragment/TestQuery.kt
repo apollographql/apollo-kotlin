@@ -72,13 +72,6 @@ data class TestQuery(
       val id: String
 
       interface Human : Hero {
-        override val __typename: String
-
-        /**
-         * The ID of the character
-         */
-        override val id: String
-
         /**
          * What this human calls themselves
          */
@@ -91,13 +84,6 @@ data class TestQuery(
       }
 
       interface Droid : Hero {
-        override val __typename: String
-
-        /**
-         * The ID of the character
-         */
-        override val id: String
-
         /**
          * What others call this droid
          */
@@ -110,13 +96,6 @@ data class TestQuery(
       }
 
       interface Character : Hero {
-        override val __typename: String
-
-        /**
-         * The ID of the character
-         */
-        override val id: String
-
         /**
          * The name of the character
          */

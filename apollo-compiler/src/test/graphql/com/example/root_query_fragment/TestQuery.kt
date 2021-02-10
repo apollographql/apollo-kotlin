@@ -40,19 +40,12 @@ class TestQuery : Query<TestQuery.Data> {
     val __typename: String
 
     interface Query : Data, QueryFragment {
-      override val __typename: String
-
       override val hero: Hero?
 
       /**
        * A character from the Star Wars universe
        */
-      interface Hero : QueryFragment.Hero {
-        /**
-         * The name of the character
-         */
-        override val name: String
-      }
+      interface Hero : QueryFragment.Hero
     }
 
     data class QueryData(

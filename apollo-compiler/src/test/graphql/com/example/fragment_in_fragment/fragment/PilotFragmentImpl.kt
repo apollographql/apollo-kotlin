@@ -42,8 +42,6 @@ class PilotFragmentImpl : Fragment<PilotFragmentImpl.Data> {
      * 0 ABY.
      */
     interface Homeworld : PilotFragment.Homeworld {
-      override val __typename: String
-
       data class PlanetHomeworld(
         override val __typename: String,
         /**

@@ -85,13 +85,6 @@ class TestQuery : Query<TestQuery.Data> {
       }
 
       interface Character : Hero {
-        override val __typename: String
-
-        /**
-         * The name of the character
-         */
-        override val name: String
-
         /**
          * The friends of the character exposed as a connection with edges
          */
@@ -123,12 +116,7 @@ class TestQuery : Query<TestQuery.Data> {
             /**
              * A character from the Star Wars universe
              */
-            interface Node : Hero.FriendsConnection.Edges.Node {
-              /**
-               * The name of the character
-               */
-              override val name: String
-            }
+            interface Node : Hero.FriendsConnection.Edges.Node
           }
         }
       }

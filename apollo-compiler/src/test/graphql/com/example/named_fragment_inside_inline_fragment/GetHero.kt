@@ -43,21 +43,7 @@ class GetHero : Query<GetHero.Data> {
       val __typename: String
 
       interface Character : Hero {
-        override val __typename: String
-
-        interface Character : Hero.Character, CharacterName, CharacterAppearsIn {
-          override val __typename: String
-
-          /**
-           * The name of the character
-           */
-          override val name: String
-
-          /**
-           * The movies this character appears in
-           */
-          override val appearsIn: List<Episode?>
-        }
+        interface Character : Hero.Character, CharacterName, CharacterAppearsIn
       }
 
       data class CharacterHero(

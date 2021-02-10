@@ -44,21 +44,13 @@ class GetPage : Query<GetPage.Data> {
       }
 
       interface ParticularCollection : Collection {
-        override val __typename: String
-
         override val items: List<Items>
 
         interface Items : Collection.Items {
-          override val title: String
-
           val __typename: String
 
           interface ParticularItem : Items {
-            override val __typename: String
-
             val image: String
-
-            override val title: String
           }
 
           companion object {
@@ -72,8 +64,6 @@ class GetPage : Query<GetPage.Data> {
         override val items: List<Items>
       ) : Collection, ParticularCollection {
         interface Items : Collection.Items, ParticularCollection.Items {
-          override val __typename: String
-
           data class ParticularItemItems(
             override val title: String,
             override val __typename: String,

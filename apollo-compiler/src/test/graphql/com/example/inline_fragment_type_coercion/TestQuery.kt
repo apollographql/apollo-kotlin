@@ -49,10 +49,6 @@ class TestQuery : Query<TestQuery.Data> {
       val foo: String
 
       interface Bar : Foo {
-        override val __typename: String
-
-        override val foo: String
-
         val bar: String
       }
 

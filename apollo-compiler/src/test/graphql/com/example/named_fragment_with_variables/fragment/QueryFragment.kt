@@ -25,15 +25,7 @@ interface QueryFragment {
     interface User {
       val __typename: String
 
-      interface User : Organization.User, UserFragment {
-        override val __typename: String
-
-        override val firstName: String
-
-        override val lastName: String
-
-        override val avatar: String
-      }
+      interface User : Organization.User, UserFragment
 
       companion object {
         fun Organization.User.asUser(): User? = this as? User

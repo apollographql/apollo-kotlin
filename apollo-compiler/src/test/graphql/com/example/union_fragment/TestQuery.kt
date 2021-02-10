@@ -43,17 +43,10 @@ class TestQuery : Query<TestQuery.Data> {
       val __typename: String
 
       interface Starship : Search, com.example.union_fragment.fragment.Starship {
-        override val __typename: String
-
         /**
          * The ID of the starship
          */
         val id: String
-
-        /**
-         * The name of the starship
-         */
-        override val name: String
       }
 
       data class StarshipSearch(

@@ -52,13 +52,6 @@ interface StarshipFragment {
         val __typename: String
 
         interface Person : Node, PilotFragment {
-          override val __typename: String
-
-          /**
-           * The name of this person.
-           */
-          override val name: String?
-
           /**
            * A planet that this person was born on or inhabits.
            */
@@ -69,17 +62,8 @@ interface StarshipFragment {
            * 0 ABY.
            */
           interface Homeworld : PilotFragment.Homeworld {
-            override val __typename: String
-
             interface Planet : Homeworld, PlanetFragment, PilotFragment.Homeworld.Planet,
-                PilotFragment.Homeworld {
-              override val __typename: String
-
-              /**
-               * The name of this planet.
-               */
-              override val name: String?
-            }
+                PilotFragment.Homeworld
 
             companion object {
               fun Homeworld.asPlanet(): Planet? = this as? Planet

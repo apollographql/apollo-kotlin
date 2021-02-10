@@ -42,8 +42,6 @@ class HeroDetailsImpl : Fragment<HeroDetailsImpl.Data> {
      * A character from the Star Wars universe
      */
     interface Friends : HeroDetails.Friends {
-      override val __typename: String
-
       data class HumanFriends(
         override val __typename: String,
         /**

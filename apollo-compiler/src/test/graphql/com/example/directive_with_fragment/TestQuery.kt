@@ -73,33 +73,9 @@ data class TestQuery(
        */
       val id: String
 
-      interface Character : Hero, HeroDetails {
-        override val __typename: String
+      interface Character : Hero, HeroDetails
 
-        /**
-         * The ID of the character
-         */
-        override val id: String
-
-        /**
-         * The name of the character
-         */
-        override val name: String
-      }
-
-      interface Human : Hero, HumanDetails {
-        override val __typename: String
-
-        /**
-         * The ID of the character
-         */
-        override val id: String
-
-        /**
-         * The home planet of the human, or null if unknown
-         */
-        override val homePlanet: String?
-      }
+      interface Human : Hero, HumanDetails
 
       data class CharacterHero(
         override val __typename: String,

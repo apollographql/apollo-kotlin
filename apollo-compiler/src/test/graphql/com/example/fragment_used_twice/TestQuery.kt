@@ -47,49 +47,11 @@ class TestQuery : Query<TestQuery.Data> {
       val __typename: String
 
       interface Character : Hero, HeroDetails {
-        override val __typename: String
-
-        /**
-         * The name of the character
-         */
-        override val name: String
-
-        interface Character : Hero.Character, HeroDetails.Character {
-          override val __typename: String
-
-          /**
-           * The name of the character
-           */
-          override val name: String
-
-          /**
-           * The date character was born.
-           */
-          override val birthDate: Any
-        }
+        interface Character : Hero.Character, HeroDetails.Character
       }
 
       interface Human : Hero, HumanDetails {
-        override val __typename: String
-
-        /**
-         * What this human calls themselves
-         */
-        override val name: String
-
-        interface Character : Human, HumanDetails.Character {
-          override val __typename: String
-
-          /**
-           * What this human calls themselves
-           */
-          override val name: String
-
-          /**
-           * The date character was born.
-           */
-          override val birthDate: Any
-        }
+        interface Character : Human, HumanDetails.Character
       }
 
       data class CharacterHero(

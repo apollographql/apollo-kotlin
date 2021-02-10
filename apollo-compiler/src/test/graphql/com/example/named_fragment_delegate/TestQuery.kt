@@ -47,18 +47,6 @@ class TestQuery : Query<TestQuery.Data> {
       val __typename: String
 
       interface Droid : Hero, DroidDetails {
-        override val __typename: String
-
-        /**
-         * What others call this droid
-         */
-        override val name: String
-
-        /**
-         * This droid's primary function
-         */
-        override val primaryFunction: String?
-
         /**
          * This droid's friends, or an empty list if they have none
          */
@@ -67,27 +55,10 @@ class TestQuery : Query<TestQuery.Data> {
         /**
          * A character from the Star Wars universe
          */
-        interface Friends : DroidDetails.Friends {
-          /**
-           * The name of the character
-           */
-          override val name: String
-        }
+        interface Friends : DroidDetails.Friends
       }
 
       interface Human : Hero, HumanDetails {
-        override val __typename: String
-
-        /**
-         * What this human calls themselves
-         */
-        override val name: String
-
-        /**
-         * Profile link
-         */
-        override val profileLink: Any
-
         /**
          * The friends of the human exposed as a connection with edges
          */
@@ -114,12 +85,7 @@ class TestQuery : Query<TestQuery.Data> {
             /**
              * A character from the Star Wars universe
              */
-            interface Node : HumanDetails.FriendsConnection.Edges.Node {
-              /**
-               * The name of the character
-               */
-              override val name: String
-            }
+            interface Node : HumanDetails.FriendsConnection.Edges.Node
           }
         }
       }

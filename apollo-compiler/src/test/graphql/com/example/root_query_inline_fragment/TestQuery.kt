@@ -41,8 +41,6 @@ class TestQuery : Query<TestQuery.Data> {
     val __typename: String
 
     interface Query : Data {
-      override val __typename: String
-
       val hero: Hero?
 
       val droid: Droid?
@@ -64,18 +62,6 @@ class TestQuery : Query<TestQuery.Data> {
         val appearsIn: List<Episode?>
 
         interface Human : Hero {
-          override val __typename: String
-
-          /**
-           * The name of the character
-           */
-          override val name: String
-
-          /**
-           * The movies this character appears in
-           */
-          override val appearsIn: List<Episode?>
-
           /**
            * Height in the preferred unit, default is meters
            */
@@ -94,8 +80,6 @@ class TestQuery : Query<TestQuery.Data> {
         val __typename: String
 
         interface Droid : Query.Droid {
-          override val __typename: String
-
           /**
            * What others call this droid
            */
@@ -122,8 +106,6 @@ class TestQuery : Query<TestQuery.Data> {
        * A character from the Star Wars universe
        */
       interface Hero : Query.Hero {
-        override val __typename: String
-
         data class HumanHero(
           override val __typename: String,
           /**
@@ -157,8 +139,6 @@ class TestQuery : Query<TestQuery.Data> {
        * An autonomous mechanical character in the Star Wars universe
        */
       interface Droid : Query.Droid {
-        override val __typename: String
-
         data class DroidDroid(
           override val __typename: String,
           /**

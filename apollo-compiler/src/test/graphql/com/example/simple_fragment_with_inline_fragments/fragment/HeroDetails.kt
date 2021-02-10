@@ -38,13 +38,6 @@ interface HeroDetails {
     val name: String
 
     interface Human : Friends {
-      override val __typename: String
-
-      /**
-       * The name of the character
-       */
-      override val name: String
-
       /**
        * Height in the preferred unit, default is meters
        */
@@ -52,13 +45,6 @@ interface HeroDetails {
     }
 
     interface Droid : Friends {
-      override val __typename: String
-
-      /**
-       * The name of the character
-       */
-      override val name: String
-
       /**
        * This droid's primary function
        */
