@@ -13,7 +13,6 @@ import okio.IOException
 class SimpleResponseWriter(private val customScalarAdapters: CustomScalarAdapters) : ResponseWriter {
   private val data: MutableMap<String, Any?> = LinkedHashMap()
 
-  @Throws(IOException::class)
   fun toJson(indent: String?): String {
     return Buffer().apply {
       JsonWriter.of(this).use { jsonWriter ->
@@ -25,6 +24,8 @@ class SimpleResponseWriter(private val customScalarAdapters: CustomScalarAdapter
       }
     }.readUtf8()
   }
+
+  fun toMap(): Map<String, Any?> = data
 
   override fun writeString(field: ResponseField, value: String?) {
     data[field.responseName] = value

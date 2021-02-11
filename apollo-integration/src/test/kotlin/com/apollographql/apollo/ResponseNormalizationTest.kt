@@ -3,15 +3,19 @@ package com.apollographql.apollo
 import com.apollographql.apollo.Utils.enqueueAndAssertResponse
 import com.apollographql.apollo.Utils.immediateExecutor
 import com.apollographql.apollo.Utils.immediateExecutorService
+import com.apollographql.apollo.api.CustomScalarAdapters
 import com.apollographql.apollo.api.Input.Companion.fromNullable
 import com.apollographql.apollo.api.Query
 import com.apollographql.apollo.api.Operation
+import com.apollographql.apollo.api.parse
 import com.apollographql.apollo.cache.CacheHeaders
 import com.apollographql.apollo.cache.normalized.CacheKey.Companion.from
+import com.apollographql.apollo.cache.normalized.CacheKeyResolver
 import com.apollographql.apollo.cache.normalized.CacheReference
 import com.apollographql.apollo.cache.normalized.NormalizedCache
 import com.apollographql.apollo.cache.normalized.Record
 import com.apollographql.apollo.cache.normalized.MemoryCacheFactory
+import com.apollographql.apollo.cache.normalized.internal.normalize
 import com.apollographql.apollo.integration.httpcache.AllPlanetsQuery
 import com.apollographql.apollo.integration.normalizer.*
 import com.apollographql.apollo.integration.normalizer.type.Episode
@@ -31,6 +35,7 @@ class ResponseNormalizationTest {
 
   val server = MockWebServer()
   private val QUERY_ROOT_KEY = "QUERY_ROOT"
+
   @Before
   fun setUp() {
     val okHttpClient = OkHttpClient.Builder()
@@ -90,12 +95,17 @@ class ResponseNormalizationTest {
   @Test
   @Throws(Exception::class)
   fun testHeroAppearsInQuery() {
-    assertHasNoErrors("HeroAppearsInResponse.json", HeroAppearsInQuery())
-    val record = normalizedCache.loadRecord(QUERY_ROOT_KEY, CacheHeaders.NONE)
-    val heroReference = record!!["hero"] as CacheReference?
+    val operation = HeroAppearsInQuery()
+    val data = operation.parse(Utils.readFileToString(Utils::class.java, "/HeroAppearsInResponse.json"))
+    val records = operation.normalize(data = data.data!!, CustomScalarAdapters.DEFAULT, CacheKeyResolver.DEFAULT)
+
+    val rootRecord = records.first { it.key == QUERY_ROOT_KEY }
+
+    val heroReference = rootRecord["hero"] as CacheReference?
     Truth.assertThat(heroReference).isEqualTo(CacheReference("hero"))
-    val hero = normalizedCache.loadRecord(heroReference!!.key, CacheHeaders.NONE)
-    Truth.assertThat(hero!!["appearsIn"]).isEqualTo(Arrays.asList("NEWHOPE", "EMPIRE", "JEDI"))
+
+    val hero = records.first { it.key == heroReference!!.key }
+    Truth.assertThat(hero["appearsIn"]).isEqualTo(listOf("NEWHOPE", "EMPIRE", "JEDI"))
   }
 
   @Test
@@ -137,19 +147,18 @@ class ResponseNormalizationTest {
   @Test
   @Throws(Exception::class)
   fun testHeroAndFriendsNamesWithIDForParentOnly() {
-    assertHasNoErrors("HeroAndFriendsNameWithIdsParentOnlyResponse.json",
-        HeroAndFriendsNamesWithIDForParentOnlyQuery(fromNullable(Episode.JEDI)))
-    val record = normalizedCache.loadRecord(QUERY_ROOT_KEY, CacheHeaders.NONE)
+    val records = records(HeroAndFriendsNamesWithIDForParentOnlyQuery(fromNullable(Episode.JEDI)), "/HeroAndFriendsNameWithIdsParentOnlyResponse.json")
+    val record = records[QUERY_ROOT_KEY]
     val heroReference = record!![TEST_FIELD_KEY_JEDI] as CacheReference?
     Truth.assertThat(heroReference).isEqualTo(CacheReference("2001"))
-    val heroRecord = normalizedCache.loadRecord(heroReference!!.key, CacheHeaders.NONE)
+    val heroRecord = records.get(heroReference!!.key)
     Truth.assertThat(heroRecord!!["name"]).isEqualTo("R2-D2")
     Truth.assertThat(heroRecord["friends"]).isEqualTo(Arrays.asList(
         CacheReference("2001.friends.0"),
         CacheReference("2001.friends.1"),
         CacheReference("2001.friends.2")
     ))
-    val luke = normalizedCache.loadRecord("2001.friends.0", CacheHeaders.NONE)
+    val luke = records.get("2001.friends.0")
     Truth.assertThat(luke!!["name"]).isEqualTo("Luke Skywalker")
   }
 
@@ -220,33 +229,35 @@ class ResponseNormalizationTest {
   @Test
   @Throws(Exception::class)
   fun testHeroParentTypeDependentFieldHuman() {
-    assertHasNoErrors(
-        "HeroParentTypeDependentFieldHumanResponse.json",
-        HeroParentTypeDependentFieldQuery(fromNullable(Episode.EMPIRE))
-    )
-    val lukeRecord = normalizedCache
-        .loadRecord("$TEST_FIELD_KEY_EMPIRE.friends.0", CacheHeaders.NONE)
+    val records = records(HeroParentTypeDependentFieldQuery(fromNullable(Episode.EMPIRE)), "/HeroParentTypeDependentFieldHumanResponse.json")
+
+    val lukeRecord = records.get("$TEST_FIELD_KEY_EMPIRE.friends.0")
     Truth.assertThat(lukeRecord!!["name"]).isEqualTo("Han Solo")
     Truth.assertThat(lukeRecord["height({\"unit\":\"FOOT\"})"]).isEqualTo(BigDecimal.valueOf(5.905512))
   }
 
+  private fun <D : Operation.Data> records(operation: Operation<D>, name: String): Map<String, Record> {
+    val data = operation.parse(Utils.readFileToString(Utils::class.java, name))
+    val records = operation.normalize(data = data.data!!, CustomScalarAdapters.DEFAULT, IdFieldCacheKeyResolver())
+    return records.associateBy { it.key }
+  }
+
   @Test
-  @Throws(Exception::class)
-  fun list_of_objects_with_null_object() {
-    assertHasNoErrors("AllPlanetsListOfObjectWithNullObject.json", AllPlanetsQuery())
+  fun list_of_objects_with_null_object2() {
+    val records = records(AllPlanetsQuery(), "/AllPlanetsListOfObjectWithNullObject.json")
     val fieldKey = "allPlanets({\"first\":300})"
     var record: Record?
 
-    record = normalizedCache.loadRecord("$fieldKey.planets.0", CacheHeaders.NONE)
-    Truth.assertThat(record!!["filmConnection"]).isNull()
-    record = normalizedCache.loadRecord("$fieldKey.planets.0.filmConnection", CacheHeaders.NONE)
+    record = records.get("$fieldKey.planets.0")
+    Truth.assertThat(record?.get("filmConnection")).isNull()
+    record = records.get("$fieldKey.planets.0.filmConnection")
     Truth.assertThat(record).isNull()
-    record = normalizedCache.loadRecord("$fieldKey.planets.1.filmConnection", CacheHeaders.NONE)
+    record = records.get("$fieldKey.planets.1.filmConnection")
     Truth.assertThat(record).isNotNull()
   }
 
   @Throws(Exception::class)
-  private fun <D: Operation.Data> assertHasNoErrors(mockResponse: String, query: Query<D>) {
+  private fun <D : Operation.Data> assertHasNoErrors(mockResponse: String, query: Query<D>) {
     enqueueAndAssertResponse(
         server,
         mockResponse,

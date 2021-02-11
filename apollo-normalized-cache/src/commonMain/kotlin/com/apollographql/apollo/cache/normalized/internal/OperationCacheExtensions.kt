@@ -7,6 +7,7 @@ import com.apollographql.apollo.cache.normalized.Record
 import com.apollographql.apollo.api.ResponseField
 import com.apollographql.apollo.api.internal.MapResponseReader
 import com.apollographql.apollo.api.internal.ResponseAdapter
+import com.apollographql.apollo.api.internal.SimpleResponseWriter
 import com.apollographql.apollo.api.internal.ValueResolver
 import com.apollographql.apollo.cache.CacheHeaders
 import com.apollographql.apollo.cache.normalized.CacheKey
@@ -17,9 +18,11 @@ fun <D : Operation.Data> Operation<D>.normalize(
     customScalarAdapters: CustomScalarAdapters,
     cacheKeyResolver: CacheKeyResolver
 ): Set<Record> {
-  val writer = NormalizationIRResponseWriter(variables(), customScalarAdapters)
+  val writer = SimpleResponseWriter(customScalarAdapters)
   adapter().toResponse(writer, data)
-  return Normalizer(cacheKeyResolver).normalize(writer.root, null).values.toSet()
+  return Normalizer(variables()) { responseField, fields ->
+    cacheKeyResolver.fromFieldRecordSet(responseField, fields).let { if (it == CacheKey.NO_KEY) null else it.key}
+  }.normalize(writer.toMap(), null, CacheKeyResolver.rootKey().key, responseFields()).toSet()
 }
 
 fun <D : Fragment.Data> Fragment<D>.normalize(
@@ -28,9 +31,11 @@ fun <D : Fragment.Data> Fragment<D>.normalize(
     cacheKeyResolver: CacheKeyResolver,
     rootKey: String
 ): Set<Record> {
-  val writer = NormalizationIRResponseWriter(variables(), customScalarAdapters)
+  val writer = SimpleResponseWriter(customScalarAdapters)
   adapter().toResponse(writer, data)
-  return Normalizer(cacheKeyResolver).normalize(writer.root, rootKey).values.toSet()
+  return Normalizer(variables()) { responseField, fields ->
+    cacheKeyResolver.fromFieldRecordSet(responseField, fields).key
+  }.normalize(writer.toMap(), rootKey, rootKey, responseFields()).toSet()
 }
 
 enum class ReadMode {
