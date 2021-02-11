@@ -17,27 +17,30 @@ fun <D : Operation.Data> Operation<D>.normalize(
     data: D,
     customScalarAdapters: CustomScalarAdapters,
     cacheKeyResolver: CacheKeyResolver
-): Set<Record> {
-  val writer = SimpleResponseWriter(customScalarAdapters)
-  adapter().toResponse(writer, data)
-  return Normalizer(variables()) { responseField, fields ->
-    cacheKeyResolver.fromFieldRecordSet(responseField, fields).let { if (it == CacheKey.NO_KEY) null else it.key}
-  }.normalize(writer.toMap(), null, CacheKeyResolver.rootKey().key, responseFields()).toSet()
-}
+) = normalize(data, customScalarAdapters, cacheKeyResolver, CacheKeyResolver.rootKey().key, adapter(), variables(), responseFields())
 
 fun <D : Fragment.Data> Fragment<D>.normalize(
     data: D,
     customScalarAdapters: CustomScalarAdapters,
     cacheKeyResolver: CacheKeyResolver,
     rootKey: String
-): Set<Record> {
-  val writer = SimpleResponseWriter(customScalarAdapters)
-  adapter().toResponse(writer, data)
-  return Normalizer(variables()) { responseField, fields ->
-    cacheKeyResolver.fromFieldRecordSet(responseField, fields).key
-  }.normalize(writer.toMap(), rootKey, rootKey, responseFields()).toSet()
-}
+) = normalize(data, customScalarAdapters, cacheKeyResolver, rootKey, adapter(), variables(), responseFields())
 
+private fun <D> normalize(
+    data: D,
+    customScalarAdapters: CustomScalarAdapters,
+    cacheKeyResolver: CacheKeyResolver,
+    rootKey: String,
+    adapter: ResponseAdapter<D>,
+    variables: Operation.Variables,
+    fieldSets: List<ResponseField.FieldSet>
+): Map<String, Record>  {
+  val writer = SimpleResponseWriter(customScalarAdapters)
+  adapter.toResponse(writer, data)
+  return Normalizer(variables) { responseField, fields ->
+    cacheKeyResolver.fromFieldRecordSet(responseField, fields).let { if (it == CacheKey.NO_KEY) null else it.key}
+  }.normalize(writer.toMap(), null, rootKey, fieldSets)
+}
 enum class ReadMode {
   /**
    * Depth-first traversal. Resolve CacheReferences as they are encountered

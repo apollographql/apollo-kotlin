@@ -177,13 +177,13 @@ class RealApolloStore(
         cacheKeyResolver = cacheKeyResolver
     )
 
-    val changedKeys = optimisticCache.merge(records, cacheHeaders)
+    val changedKeys = optimisticCache.merge(records.values.toList(), cacheHeaders)
 
     if (publish) {
       publish(changedKeys)
     }
 
-    return records to changedKeys
+    return records.values.toSet() to changedKeys
   }
 
   override fun <D : Operation.Data> writeOperation(
@@ -237,7 +237,7 @@ class RealApolloStore(
         data = operationData,
         customScalarAdapters = customScalarAdapters,
         cacheKeyResolver = cacheKeyResolver
-    ).map { record ->
+    ).values.map { record ->
       Record(
           key = record.key,
           fields = record.fields,

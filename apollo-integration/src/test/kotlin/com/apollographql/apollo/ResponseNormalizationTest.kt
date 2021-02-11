@@ -95,17 +95,15 @@ class ResponseNormalizationTest {
   @Test
   @Throws(Exception::class)
   fun testHeroAppearsInQuery() {
-    val operation = HeroAppearsInQuery()
-    val data = operation.parse(Utils.readFileToString(Utils::class.java, "/HeroAppearsInResponse.json"))
-    val records = operation.normalize(data = data.data!!, CustomScalarAdapters.DEFAULT, CacheKeyResolver.DEFAULT)
+    val records = records(HeroAppearsInQuery(), "/HeroAppearsInResponse.json")
 
-    val rootRecord = records.first { it.key == QUERY_ROOT_KEY }
+    val rootRecord = records.get(QUERY_ROOT_KEY)!!
 
     val heroReference = rootRecord["hero"] as CacheReference?
     Truth.assertThat(heroReference).isEqualTo(CacheReference("hero"))
 
-    val hero = records.first { it.key == heroReference!!.key }
-    Truth.assertThat(hero["appearsIn"]).isEqualTo(listOf("NEWHOPE", "EMPIRE", "JEDI"))
+    val hero = records.get(heroReference!!.key)
+    Truth.assertThat(hero?.get("appearsIn")).isEqualTo(listOf("NEWHOPE", "EMPIRE", "JEDI"))
   }
 
   @Test
@@ -238,8 +236,7 @@ class ResponseNormalizationTest {
 
   private fun <D : Operation.Data> records(operation: Operation<D>, name: String): Map<String, Record> {
     val data = operation.parse(Utils.readFileToString(Utils::class.java, name))
-    val records = operation.normalize(data = data.data!!, CustomScalarAdapters.DEFAULT, IdFieldCacheKeyResolver())
-    return records.associateBy { it.key }
+    return operation.normalize(data = data.data!!, CustomScalarAdapters.DEFAULT, IdFieldCacheKeyResolver())
   }
 
   @Test

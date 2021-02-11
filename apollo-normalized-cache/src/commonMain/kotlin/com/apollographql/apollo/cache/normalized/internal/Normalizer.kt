@@ -12,11 +12,11 @@ class Normalizer(val variables: Operation.Variables, val cacheKeyForObject: (Res
   private val records = mutableMapOf<String, Record>()
   private val cacheKeyBuilder = RealCacheKeyBuilder()
 
-  fun normalize(map: Map<String, Any?>, path: String?, rootKey: String, fieldSets: List<ResponseField.FieldSet>): Collection<Record> {
+  fun normalize(map: Map<String, Any?>, path: String?, rootKey: String, fieldSets: List<ResponseField.FieldSet>): Map<String, Record> {
 
     records[rootKey] = Record(rootKey, map.toFields(path, fieldSets = fieldSets))
 
-    return records.values
+    return records
   }
 
   private fun Map<String, Any?>.normalize(path: String, field: ResponseField): CacheReference {
