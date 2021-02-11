@@ -217,7 +217,7 @@ class RealApolloStore(
           customScalarAdapters = customScalarAdapters,
           cacheKeyResolver = cacheKeyResolver,
           rootKey = cacheKey.key
-      )
+      ).values
 
       val changedKeys = merge(records, cacheHeaders)
       if (publish) {

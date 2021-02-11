@@ -13,11 +13,11 @@ You can run the tests from Android Studio by clicking the "run" icon in the gutt
 Run on a Pixel 3 XL. Feel free to update/commit new results and we can get the history using `git annotate`
 
 ```
-benchmark:    13,239,690 ns Benchmark.moshi
-benchmark:    14,983,907 ns Benchmark.apollo
-benchmark:    25,381,565 ns Benchmark.apolloParseAndNormalize
-benchmark:     4,657,449 ns Benchmark.apolloReadCacheMemory
-benchmark:     7,913,594 ns Benchmark.apolloBatchCacheMemory
-benchmark:   232,572,731 ns Benchmark.apolloReadCacheSql
-benchmark:    69,434,069 ns Benchmark.apolloBatchCacheSql
+benchmark:    12,708,491 ns Benchmark.moshi
+benchmark:    14,634,377 ns Benchmark.apollo
+benchmark:    22,720,575 ns Benchmark.apolloParseAndNormalize
+benchmark:     4,988,282 ns Benchmark.apolloReadCacheMemory
+benchmark:     7,897,344 ns Benchmark.apolloBatchCacheMemory
+benchmark:   228,939,711 ns Benchmark.apolloReadCacheSql
+benchmark:    71,957,872 ns Benchmark.apolloBatchCacheSql
 ```

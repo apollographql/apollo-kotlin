@@ -4,9 +4,7 @@ import Utils.bufferedSource
 import androidx.benchmark.junit4.BenchmarkRule
 import androidx.benchmark.junit4.measureRepeated
 import androidx.test.platform.app.InstrumentationRegistry
-import com.apollographql.apollo.ApolloClient
 import com.apollographql.apollo.api.CustomScalarAdapters
-import com.apollographql.apollo.api.internal.json.JsonReader
 import com.apollographql.apollo.api.parse
 import com.apollographql.apollo.benchmark.moshi.Query
 import com.apollographql.apollo.cache.CacheHeaders
@@ -17,10 +15,8 @@ import com.apollographql.apollo.cache.normalized.internal.ReadMode
 import com.apollographql.apollo.cache.normalized.internal.ReadableStore
 import com.apollographql.apollo.cache.normalized.internal.normalize
 import com.apollographql.apollo.cache.normalized.internal.readDataFromCache
-import com.apollographql.apollo.cache.normalized.sql.SqlNormalizedCache
 import com.apollographql.apollo.cache.normalized.sql.SqlNormalizedCacheFactory
 import com.squareup.moshi.Moshi
-import org.junit.Before
 import org.junit.BeforeClass
 import org.junit.Rule
 import org.junit.Test
@@ -68,7 +64,7 @@ class Benchmark {
     @JvmStatic
     fun setup() {
       val data = operation.parse(bufferedSource()).data!!
-      val records = operation.normalize(data, CustomScalarAdapters.DEFAULT, CacheKeyResolver.DEFAULT)
+      val records = operation.normalize(data, CustomScalarAdapters.DEFAULT, CacheKeyResolver.DEFAULT).values
 
       val sqlCache = SqlNormalizedCacheFactory(context = InstrumentationRegistry.getInstrumentation().context).create()
       sqlCache.merge(records, CacheHeaders.NONE)
