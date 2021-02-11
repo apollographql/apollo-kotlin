@@ -20,13 +20,14 @@ import kotlin.collections.List
     "RemoveExplicitTypeArguments", "NestedLambdaShadowedImplicitParameter", "PropertyName",
     "RemoveRedundantQualifierName")
 object HumanDetailsImpl_ResponseAdapter : ResponseAdapter<HumanDetailsImpl.Data> {
-  private val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
+  val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
     ResponseField(
       type = ResponseField.Type.NotNull(ResponseField.Type.Named.Other("String")),
       responseName = "__typename",
       fieldName = "__typename",
       arguments = emptyMap(),
       conditions = emptyList(),
+      fieldSets = emptyList(),
     ),
     ResponseField(
       type = ResponseField.Type.NotNull(ResponseField.Type.Named.Other("String")),
@@ -34,6 +35,7 @@ object HumanDetailsImpl_ResponseAdapter : ResponseAdapter<HumanDetailsImpl.Data>
       fieldName = "name",
       arguments = emptyMap(),
       conditions = emptyList(),
+      fieldSets = emptyList(),
     ),
     ResponseField(
       type = ResponseField.Type.NotNull(ResponseField.Type.Named.Other("URL")),
@@ -41,6 +43,7 @@ object HumanDetailsImpl_ResponseAdapter : ResponseAdapter<HumanDetailsImpl.Data>
       fieldName = "profileLink",
       arguments = emptyMap(),
       conditions = emptyList(),
+      fieldSets = emptyList(),
     ),
     ResponseField(
       type = ResponseField.Type.NotNull(ResponseField.Type.Named.Object("FriendsConnection")),
@@ -48,6 +51,9 @@ object HumanDetailsImpl_ResponseAdapter : ResponseAdapter<HumanDetailsImpl.Data>
       fieldName = "friendsConnection",
       arguments = emptyMap(),
       conditions = emptyList(),
+      fieldSets = listOf(
+        ResponseField.FieldSet(null, FriendsConnection.RESPONSE_FIELDS)
+      ),
     )
   )
 
@@ -87,13 +93,16 @@ object HumanDetailsImpl_ResponseAdapter : ResponseAdapter<HumanDetailsImpl.Data>
   }
 
   object FriendsConnection : ResponseAdapter<HumanDetailsImpl.Data.FriendsConnection> {
-    private val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
+    val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
       ResponseField(
         type = ResponseField.Type.List(ResponseField.Type.Named.Object("FriendsEdge")),
         responseName = "edges",
         fieldName = "edges",
         arguments = emptyMap(),
         conditions = emptyList(),
+        fieldSets = listOf(
+          ResponseField.FieldSet(null, Edge.RESPONSE_FIELDS)
+        ),
       )
     )
 
@@ -127,13 +136,16 @@ object HumanDetailsImpl_ResponseAdapter : ResponseAdapter<HumanDetailsImpl.Data>
     }
 
     object Edge : ResponseAdapter<HumanDetailsImpl.Data.FriendsConnection.Edge> {
-      private val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
+      val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
         ResponseField(
           type = ResponseField.Type.Named.Object("Character"),
           responseName = "node",
           fieldName = "node",
           arguments = emptyMap(),
           conditions = emptyList(),
+          fieldSets = listOf(
+            ResponseField.FieldSet(null, Node.RESPONSE_FIELDS)
+          ),
         )
       )
 
@@ -167,13 +179,14 @@ object HumanDetailsImpl_ResponseAdapter : ResponseAdapter<HumanDetailsImpl.Data>
       }
 
       object Node : ResponseAdapter<HumanDetailsImpl.Data.FriendsConnection.Edge.Node> {
-        private val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
+        val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
           ResponseField(
             type = ResponseField.Type.NotNull(ResponseField.Type.Named.Other("String")),
             responseName = "name",
             fieldName = "name",
             arguments = emptyMap(),
             conditions = emptyList(),
+            fieldSets = emptyList(),
           )
         )
 

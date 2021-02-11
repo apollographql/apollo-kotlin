@@ -122,7 +122,7 @@ class StreamResponseReaderJvmCustomTypesTest {
       )
       return StreamResponseReader(
           jsonReader = jsonReader,
-          variables = EMPTY_OPERATION.variables(),
+          variables = Operation.EMPTY_VARIABLES,
           scalarTypeAdapters = ScalarTypeAdapters(customScalarAdapters),
       )
     }

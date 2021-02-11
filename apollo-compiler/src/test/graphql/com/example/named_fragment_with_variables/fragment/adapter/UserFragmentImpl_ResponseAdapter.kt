@@ -18,13 +18,14 @@ import kotlin.Suppress
     "RemoveExplicitTypeArguments", "NestedLambdaShadowedImplicitParameter", "PropertyName",
     "RemoveRedundantQualifierName")
 object UserFragmentImpl_ResponseAdapter : ResponseAdapter<UserFragmentImpl.Data> {
-  private val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
+  val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
     ResponseField(
       type = ResponseField.Type.NotNull(ResponseField.Type.Named.Other("String")),
       responseName = "__typename",
       fieldName = "__typename",
       arguments = emptyMap(),
       conditions = emptyList(),
+      fieldSets = emptyList(),
     ),
     ResponseField(
       type = ResponseField.Type.NotNull(ResponseField.Type.Named.Other("String")),
@@ -32,6 +33,7 @@ object UserFragmentImpl_ResponseAdapter : ResponseAdapter<UserFragmentImpl.Data>
       fieldName = "firstName",
       arguments = emptyMap(),
       conditions = emptyList(),
+      fieldSets = emptyList(),
     ),
     ResponseField(
       type = ResponseField.Type.NotNull(ResponseField.Type.Named.Other("String")),
@@ -39,6 +41,7 @@ object UserFragmentImpl_ResponseAdapter : ResponseAdapter<UserFragmentImpl.Data>
       fieldName = "lastName",
       arguments = emptyMap(),
       conditions = emptyList(),
+      fieldSets = emptyList(),
     ),
     ResponseField(
       type = ResponseField.Type.NotNull(ResponseField.Type.Named.Other("String")),
@@ -49,6 +52,7 @@ object UserFragmentImpl_ResponseAdapter : ResponseAdapter<UserFragmentImpl.Data>
           "kind" to "Variable",
           "variableName" to "size")),
       conditions = emptyList(),
+      fieldSets = emptyList(),
     )
   )
 

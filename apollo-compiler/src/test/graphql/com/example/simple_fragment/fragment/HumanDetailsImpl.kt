@@ -7,15 +7,20 @@ package com.example.simple_fragment.fragment
 
 import com.apollographql.apollo.api.Fragment
 import com.apollographql.apollo.api.Operation
+import com.apollographql.apollo.api.ResponseField
 import com.apollographql.apollo.api.internal.ResponseAdapter
 import com.example.simple_fragment.fragment.adapter.HumanDetailsImpl_ResponseAdapter
 import kotlin.String
+import kotlin.collections.List
 
 internal class HumanDetailsImpl : Fragment<HumanDetailsImpl.Data> {
   override fun adapter(): ResponseAdapter<Data> {
     return HumanDetailsImpl_ResponseAdapter
   }
 
+  override fun responseFields(): List<ResponseField.FieldSet> = listOf(
+    ResponseField.FieldSet(null, HumanDetailsImpl_ResponseAdapter.RESPONSE_FIELDS)
+  )
   override fun variables(): Operation.Variables = Operation.EMPTY_VARIABLES
 
   /**

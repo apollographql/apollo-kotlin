@@ -18,13 +18,16 @@ import kotlin.Suppress
     "RemoveExplicitTypeArguments", "NestedLambdaShadowedImplicitParameter", "PropertyName",
     "RemoveRedundantQualifierName")
 object TestQuery_ResponseAdapter : ResponseAdapter<TestQuery.Data> {
-  private val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
+  val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
     ResponseField(
       type = ResponseField.Type.Named.Object("Character"),
       responseName = "r2",
       fieldName = "hero",
       arguments = emptyMap(),
       conditions = emptyList(),
+      fieldSets = listOf(
+        ResponseField.FieldSet(null, R2.RESPONSE_FIELDS)
+      ),
     ),
     ResponseField(
       type = ResponseField.Type.Named.Object("Character"),
@@ -33,6 +36,9 @@ object TestQuery_ResponseAdapter : ResponseAdapter<TestQuery.Data> {
       arguments = mapOf<String, Any?>(
         "episode" to "EMPIRE"),
       conditions = emptyList(),
+      fieldSets = listOf(
+        ResponseField.FieldSet(null, Luke.RESPONSE_FIELDS)
+      ),
     )
   )
 
@@ -76,13 +82,14 @@ object TestQuery_ResponseAdapter : ResponseAdapter<TestQuery.Data> {
   }
 
   object R2 : ResponseAdapter<TestQuery.Data.R2> {
-    private val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
+    val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
       ResponseField(
         type = ResponseField.Type.NotNull(ResponseField.Type.Named.Other("String")),
         responseName = "name",
         fieldName = "name",
         arguments = emptyMap(),
         conditions = emptyList(),
+        fieldSets = emptyList(),
       )
     )
 
@@ -107,13 +114,14 @@ object TestQuery_ResponseAdapter : ResponseAdapter<TestQuery.Data> {
   }
 
   object Luke : ResponseAdapter<TestQuery.Data.Luke> {
-    private val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
+    val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
       ResponseField(
         type = ResponseField.Type.NotNull(ResponseField.Type.Named.Other("String")),
         responseName = "id",
         fieldName = "id",
         arguments = emptyMap(),
         conditions = emptyList(),
+        fieldSets = emptyList(),
       ),
       ResponseField(
         type = ResponseField.Type.NotNull(ResponseField.Type.Named.Other("String")),
@@ -121,6 +129,7 @@ object TestQuery_ResponseAdapter : ResponseAdapter<TestQuery.Data> {
         fieldName = "name",
         arguments = emptyMap(),
         conditions = emptyList(),
+        fieldSets = emptyList(),
       )
     )
 

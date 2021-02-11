@@ -109,8 +109,9 @@ private fun CodeGenerationAst.ObjectType.readFragmentFromResponseFunSpec(): FunS
       }
       .applyIf(possibleImplementations.isNotEmpty()) {
         addStatement(
-            "val·typename·=·%L·?:·reader.readString(RESPONSE_FIELDS[0])",
-            CodeGenerationAst.typenameField.responseName.escapeKotlinReservedWord()
+            "val·typename·=·%L·?:·reader.readString(%T.Typename)",
+            CodeGenerationAst.typenameField.responseName.escapeKotlinReservedWord(),
+            ResponseField::class.java
         )
         beginControlFlow("return·when(typename)")
         addCode(

@@ -4,6 +4,7 @@ import com.apollographql.apollo.ApolloClient
 import com.apollographql.apollo.IdleResourceCallback
 import com.apollographql.apollo.api.Operation
 import com.apollographql.apollo.api.Query
+import com.apollographql.apollo.api.ResponseField
 import com.apollographql.apollo.rx2.Rx2Apollo
 import com.google.common.truth.Truth
 import okhttp3.Interceptor
@@ -137,6 +138,10 @@ class ApolloCallTrackerTest {
 
       override fun operationId(): String {
         return ""
+      }
+
+      override fun responseFields(): List<ResponseField.FieldSet> {
+        return emptyList()
       }
     }
   }

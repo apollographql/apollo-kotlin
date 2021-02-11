@@ -18,13 +18,16 @@ import kotlin.Suppress
     "RemoveExplicitTypeArguments", "NestedLambdaShadowedImplicitParameter", "PropertyName",
     "RemoveRedundantQualifierName")
 object TestQuery_ResponseAdapter : ResponseAdapter<TestQuery.Data> {
-  private val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
+  val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
     ResponseField(
       type = ResponseField.Type.Named.Object("TypeWithGraphQLKeywords"),
       responseName = "typeWithGraphQLKeywords",
       fieldName = "typeWithGraphQLKeywords",
       arguments = emptyMap(),
       conditions = emptyList(),
+      fieldSets = listOf(
+        ResponseField.FieldSet(null, TypeWithGraphQLKeywords.RESPONSE_FIELDS)
+      ),
     )
   )
 
@@ -56,13 +59,14 @@ object TestQuery_ResponseAdapter : ResponseAdapter<TestQuery.Data> {
   }
 
   object TypeWithGraphQLKeywords : ResponseAdapter<TestQuery.Data.TypeWithGraphQLKeywords> {
-    private val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
+    val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
       ResponseField(
         type = ResponseField.Type.Named.Other("String"),
         responseName = "on",
         fieldName = "on",
         arguments = emptyMap(),
         conditions = emptyList(),
+        fieldSets = emptyList(),
       ),
       ResponseField(
         type = ResponseField.Type.Named.Other("String"),
@@ -73,6 +77,7 @@ object TestQuery_ResponseAdapter : ResponseAdapter<TestQuery.Data> {
             "kind" to "Variable",
             "variableName" to "operation")),
         conditions = emptyList(),
+        fieldSets = emptyList(),
       ),
       ResponseField(
         type = ResponseField.Type.Named.Other("String"),
@@ -84,6 +89,7 @@ object TestQuery_ResponseAdapter : ResponseAdapter<TestQuery.Data> {
           |with a new line
           """.trimMargin()),
         conditions = emptyList(),
+        fieldSets = emptyList(),
       )
     )
 

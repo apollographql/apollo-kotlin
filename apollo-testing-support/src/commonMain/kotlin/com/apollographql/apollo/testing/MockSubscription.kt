@@ -41,7 +41,8 @@ class MockSubscription(
                     responseName = "name",
                     fieldName = "name",
                     arguments = emptyMap(),
-                    conditions = emptyList()
+                    conditions = emptyList(),
+                    fieldSets = emptyList()
                 )
             )!!
         )
@@ -58,4 +59,8 @@ class MockSubscription(
   override fun operationId(): String = name.hashCode().toString()
 
   data class Data(val name: String) : Operation.Data
+
+  override fun responseFields(): List<ResponseField.FieldSet> {
+    return emptyList()
+  }
 }

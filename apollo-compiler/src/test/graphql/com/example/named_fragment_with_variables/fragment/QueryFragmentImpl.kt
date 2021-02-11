@@ -7,6 +7,7 @@ package com.example.named_fragment_with_variables.fragment
 
 import com.apollographql.apollo.api.Fragment
 import com.apollographql.apollo.api.Operation
+import com.apollographql.apollo.api.ResponseField
 import com.apollographql.apollo.api.internal.InputFieldMarshaller
 import com.apollographql.apollo.api.internal.ResponseAdapter
 import com.example.named_fragment_with_variables.fragment.adapter.QueryFragmentImpl_ResponseAdapter
@@ -44,6 +45,9 @@ data class QueryFragmentImpl(
     return QueryFragmentImpl_ResponseAdapter
   }
 
+  override fun responseFields(): List<ResponseField.FieldSet> = listOf(
+    ResponseField.FieldSet(null, QueryFragmentImpl_ResponseAdapter.RESPONSE_FIELDS)
+  )
   override fun variables(): Operation.Variables = variables
 
   data class Data(

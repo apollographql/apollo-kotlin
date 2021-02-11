@@ -26,6 +26,7 @@ class SealedClassesTest {
         "path",
         "path",
         arguments,
+        emptyList(),
         emptyList())
 
 

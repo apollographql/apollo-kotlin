@@ -11,4 +11,6 @@ interface Fragment<D: Fragment.Data> {
   fun variables(): Operation.Variables
 
   fun adapter(): ResponseAdapter<D>
+
+  fun responseFields(): List<ResponseField.FieldSet>
 }

@@ -2,6 +2,7 @@ package com.apollographql.apollo
 
 import com.apollographql.apollo.api.Operation
 import com.apollographql.apollo.api.Query
+import com.apollographql.apollo.api.ResponseField
 import com.apollographql.apollo.api.internal.json.JsonEncodingException
 import com.apollographql.apollo.exception.ApolloHttpException
 import com.apollographql.apollo.exception.ApolloNetworkException
@@ -43,6 +44,10 @@ class ApolloExceptionTest {
 
     override fun operationId(): String {
       return ""
+    }
+
+    override fun responseFields(): List<ResponseField.FieldSet> {
+      return emptyList()
     }
   }
 

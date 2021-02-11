@@ -11,23 +11,23 @@ import com.apollographql.apollo.api.parse
 import com.apollographql.apollo.benchmark.moshi.Query
 import com.apollographql.apollo.cache.CacheHeaders
 import com.apollographql.apollo.cache.normalized.CacheKeyResolver
+import com.apollographql.apollo.cache.normalized.MemoryCache
 import com.apollographql.apollo.cache.normalized.Record
 import com.apollographql.apollo.cache.normalized.internal.ReadableStore
+import com.apollographql.apollo.cache.normalized.internal.batchDataFromCache
 import com.apollographql.apollo.cache.normalized.internal.normalize
 import com.apollographql.apollo.cache.normalized.internal.readDataFromCache
-import com.apollographql.apollo.cache.normalized.internal.streamDataFromCache
 import com.apollographql.apollo.cache.normalized.sql.SqlNormalizedCache
 import com.apollographql.apollo.cache.normalized.sql.SqlNormalizedCacheFactory
 import com.squareup.moshi.Moshi
 import org.junit.Before
+import org.junit.BeforeClass
 import org.junit.Rule
 import org.junit.Test
 
 class Benchmark {
   @get:Rule
   val benchmarkRule = BenchmarkRule()
-
-  private val operation = GetResponseQuery()
 
   private val moshiAdapter = Moshi.Builder().build().adapter(Query::class.java)
 
@@ -59,35 +59,61 @@ class Benchmark {
     val records = operation.normalize(data, CustomScalarAdapters.DEFAULT, CacheKeyResolver.DEFAULT)
   }
 
-  lateinit var apolloClient: ApolloClient
-  lateinit var cache: SqlNormalizedCache
-  lateinit var readableStore: ReadableStore
+  companion object {
+    lateinit var sqlReadableStore: ReadableStore
+    lateinit var memoryReadableStore: ReadableStore
+    private val operation = GetResponseQuery()
 
-  @Before
-  fun setup() {
-    apolloClient = ApolloClient.builder()
-        .normalizedCache(SqlNormalizedCacheFactory(context = InstrumentationRegistry.getInstrumentation().context))
-        .build()
+    @BeforeClass
+    @JvmStatic
+    fun setup() {
+      val data = operation.parse(bufferedSource()).data!!
+      val records = operation.normalize(data, CustomScalarAdapters.DEFAULT, CacheKeyResolver.DEFAULT)
 
-    val data = operation.parse(bufferedSource()).data!!
+      val sqlCache = SqlNormalizedCacheFactory(context = InstrumentationRegistry.getInstrumentation().context).create()
+      sqlCache.merge(records, CacheHeaders.NONE)
+      sqlReadableStore = object : ReadableStore {
+        override fun read(key: String, cacheHeaders: CacheHeaders): Record? {
+          return sqlCache.loadRecord(key, cacheHeaders)
+        }
 
-    val records = operation.normalize(data, CustomScalarAdapters.DEFAULT, CacheKeyResolver.DEFAULT)
-    cache.merge(records, CacheHeaders.NONE)
-
-    readableStore = object : ReadableStore {
-      override fun read(key: String, cacheHeaders: CacheHeaders): Record? {
-        return cache.loadRecord(key, cacheHeaders)
+        override fun read(keys: Collection<String>, cacheHeaders: CacheHeaders): Collection<Record> {
+          return sqlCache.loadRecords(keys, cacheHeaders)
+        }
       }
 
-      override fun read(keys: Collection<String>, cacheHeaders: CacheHeaders): Collection<Record> {
-        return cache.loadRecords(keys, cacheHeaders)
+      val memoryCache = MemoryCache(Int.MAX_VALUE)
+      memoryCache.merge(records, CacheHeaders.NONE)
+      memoryReadableStore = object : ReadableStore {
+        override fun read(key: String, cacheHeaders: CacheHeaders): Record? {
+          return memoryCache.loadRecord(key, cacheHeaders)
+        }
+
+        override fun read(keys: Collection<String>, cacheHeaders: CacheHeaders): Collection<Record> {
+          return memoryCache.loadRecords(keys, cacheHeaders)
+        }
       }
     }
   }
 
+
   @Test
-  fun apolloReadCache() = benchmarkRule.measureRepeated {
-    val data2 = operation.readDataFromCache(CustomScalarAdapters.DEFAULT, readableStore, CacheKeyResolver.DEFAULT, CacheHeaders.NONE)
-    //println(data2)
+  fun apolloReadCacheSql() = benchmarkRule.measureRepeated {
+    val data2 = operation.readDataFromCache(CustomScalarAdapters.DEFAULT, sqlReadableStore, CacheKeyResolver.DEFAULT, CacheHeaders.NONE)
+  }
+
+  @Test
+  fun apolloBatchCacheSql() = benchmarkRule.measureRepeated {
+    val data2 = operation.readDataFromCache(CustomScalarAdapters.DEFAULT, sqlReadableStore, CacheKeyResolver.DEFAULT, CacheHeaders.NONE, ReadMode.BATCH)
+  }
+
+  @Test
+  fun apolloReadCacheMemory() = benchmarkRule.measureRepeated {
+    val data2 = operation.readDataFromCache(CustomScalarAdapters.DEFAULT, memoryReadableStore, CacheKeyResolver.DEFAULT, CacheHeaders.NONE)
+  }
+
+  @Test
+  fun apolloBatchCacheMemory() = benchmarkRule.measureRepeated {
+    val data2 = operation.readDataFromCache(CustomScalarAdapters.DEFAULT, memoryReadableStore, CacheKeyResolver.DEFAULT, CacheHeaders.NONE, ReadMode.BATCH)
   }
 }

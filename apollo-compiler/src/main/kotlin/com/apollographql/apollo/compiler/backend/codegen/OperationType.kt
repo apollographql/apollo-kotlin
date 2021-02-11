@@ -2,6 +2,7 @@ package com.apollographql.apollo.compiler.backend.codegen
 
 import com.apollographql.apollo.api.Mutation
 import com.apollographql.apollo.api.Query
+import com.apollographql.apollo.api.ResponseField
 import com.apollographql.apollo.api.Subscription
 import com.apollographql.apollo.api.internal.QueryDocumentMinifier
 import com.apollographql.apollo.api.internal.ResponseAdapter
@@ -53,6 +54,19 @@ internal fun CodeGenerationAst.OperationType.typeSpec(targetPackage: String, gen
               .addCode("return %T", operationResponseAdapter)
               .build()
       )
+      .addFunction(
+          FunSpec.builder(
+              "responseFields",
+          )
+              .addModifiers(KModifier.OVERRIDE)
+              .returns(
+                  List::class.asClassName().parameterizedBy(
+                      ResponseField.FieldSet::class.asClassName(),
+                  )
+              )
+              .addCode("return %L", responseFieldsCode())
+              .build()
+      )
       .addType(this.dataType.typeSpec())
       .addType(TypeSpec.companionObjectBuilder()
           .addProperty(PropertySpec.builder("OPERATION_ID", String::class)
@@ -91,3 +105,24 @@ private fun CodeGenerationAst.OperationType.superInterfaceType(targetPackage: St
   }.parameterizedBy(dataTypeName)
 }
 
+private fun CodeGenerationAst.OperationType.responseFieldsCode(): CodeBlock {
+  val builder = CodeBlock.builder()
+
+  builder.add("listOf(\n")
+  builder.indent()
+  when (val kind = dataType.kind) {
+    is CodeGenerationAst.ObjectType.Kind.Object -> {
+      builder.add("%T(null, %T.RESPONSE_FIELDS)\n", ResponseField.FieldSet::class, dataType.typeRef.asAdapterTypeName())
+    }
+    is CodeGenerationAst.ObjectType.Kind.Fragment -> {
+      kind.possibleImplementations.forEach {
+        builder.add("%T(%S, %T.RESPONSE_FIELDS),\n", ResponseField.FieldSet::class, it.key, it.value.asAdapterTypeName())
+      }
+      builder.add("%T(null, %T.RESPONSE_FIELDS),\n", ResponseField.FieldSet::class, kind.defaultImplementation.asAdapterTypeName())
+    }
+  }
+  builder.unindent()
+  builder.add(")")
+
+  return builder.build()
+}

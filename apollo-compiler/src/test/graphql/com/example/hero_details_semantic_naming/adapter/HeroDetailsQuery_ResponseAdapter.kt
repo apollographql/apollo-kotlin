@@ -20,13 +20,16 @@ import kotlin.collections.List
     "RemoveExplicitTypeArguments", "NestedLambdaShadowedImplicitParameter", "PropertyName",
     "RemoveRedundantQualifierName")
 object HeroDetailsQuery_ResponseAdapter : ResponseAdapter<HeroDetailsQuery.Data> {
-  private val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
+  val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
     ResponseField(
       type = ResponseField.Type.Named.Object("Character"),
       responseName = "hero",
       fieldName = "hero",
       arguments = emptyMap(),
       conditions = emptyList(),
+      fieldSets = listOf(
+        ResponseField.FieldSet(null, Hero.RESPONSE_FIELDS)
+      ),
     )
   )
 
@@ -58,13 +61,14 @@ object HeroDetailsQuery_ResponseAdapter : ResponseAdapter<HeroDetailsQuery.Data>
   }
 
   object Hero : ResponseAdapter<HeroDetailsQuery.Data.Hero> {
-    private val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
+    val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
       ResponseField(
         type = ResponseField.Type.NotNull(ResponseField.Type.Named.Other("String")),
         responseName = "name",
         fieldName = "name",
         arguments = emptyMap(),
         conditions = emptyList(),
+        fieldSets = emptyList(),
       ),
       ResponseField(
         type = ResponseField.Type.NotNull(ResponseField.Type.Named.Object("FriendsConnection")),
@@ -72,6 +76,9 @@ object HeroDetailsQuery_ResponseAdapter : ResponseAdapter<HeroDetailsQuery.Data>
         fieldName = "friendsConnection",
         arguments = emptyMap(),
         conditions = emptyList(),
+        fieldSets = listOf(
+          ResponseField.FieldSet(null, FriendsConnection.RESPONSE_FIELDS)
+        ),
       )
     )
 
@@ -104,13 +111,14 @@ object HeroDetailsQuery_ResponseAdapter : ResponseAdapter<HeroDetailsQuery.Data>
     }
 
     object FriendsConnection : ResponseAdapter<HeroDetailsQuery.Data.Hero.FriendsConnection> {
-      private val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
+      val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
         ResponseField(
           type = ResponseField.Type.Named.Other("Int"),
           responseName = "totalCount",
           fieldName = "totalCount",
           arguments = emptyMap(),
           conditions = emptyList(),
+          fieldSets = emptyList(),
         ),
         ResponseField(
           type = ResponseField.Type.List(ResponseField.Type.Named.Object("FriendsEdge")),
@@ -118,6 +126,9 @@ object HeroDetailsQuery_ResponseAdapter : ResponseAdapter<HeroDetailsQuery.Data>
           fieldName = "edges",
           arguments = emptyMap(),
           conditions = emptyList(),
+          fieldSets = listOf(
+            ResponseField.FieldSet(null, Edge.RESPONSE_FIELDS)
+          ),
         )
       )
 
@@ -155,13 +166,16 @@ object HeroDetailsQuery_ResponseAdapter : ResponseAdapter<HeroDetailsQuery.Data>
       }
 
       object Edge : ResponseAdapter<HeroDetailsQuery.Data.Hero.FriendsConnection.Edge> {
-        private val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
+        val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
           ResponseField(
             type = ResponseField.Type.Named.Object("Character"),
             responseName = "node",
             fieldName = "node",
             arguments = emptyMap(),
             conditions = emptyList(),
+            fieldSets = listOf(
+              ResponseField.FieldSet(null, Node.RESPONSE_FIELDS)
+            ),
           )
         )
 
@@ -195,13 +209,14 @@ object HeroDetailsQuery_ResponseAdapter : ResponseAdapter<HeroDetailsQuery.Data>
         }
 
         object Node : ResponseAdapter<HeroDetailsQuery.Data.Hero.FriendsConnection.Edge.Node> {
-          private val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
+          val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
             ResponseField(
               type = ResponseField.Type.NotNull(ResponseField.Type.Named.Other("String")),
               responseName = "name",
               fieldName = "name",
               arguments = emptyMap(),
               conditions = emptyList(),
+              fieldSets = emptyList(),
             )
           )
 

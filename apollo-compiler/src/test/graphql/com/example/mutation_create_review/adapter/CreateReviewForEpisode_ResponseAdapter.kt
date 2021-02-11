@@ -24,7 +24,7 @@ import kotlin.collections.List
     "RemoveRedundantQualifierName")
 internal object CreateReviewForEpisode_ResponseAdapter :
     ResponseAdapter<CreateReviewForEpisode.Data> {
-  private val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
+  val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
     ResponseField(
       type = ResponseField.Type.Named.Object("Review"),
       responseName = "createReview",
@@ -37,6 +37,9 @@ internal object CreateReviewForEpisode_ResponseAdapter :
           "kind" to "Variable",
           "variableName" to "review")),
       conditions = emptyList(),
+      fieldSets = listOf(
+        ResponseField.FieldSet(null, CreateReview.RESPONSE_FIELDS)
+      ),
     )
   )
 
@@ -69,13 +72,14 @@ internal object CreateReviewForEpisode_ResponseAdapter :
   }
 
   object CreateReview : ResponseAdapter<CreateReviewForEpisode.Data.CreateReview> {
-    private val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
+    val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
       ResponseField(
         type = ResponseField.Type.NotNull(ResponseField.Type.Named.Other("Int")),
         responseName = "stars",
         fieldName = "stars",
         arguments = emptyMap(),
         conditions = emptyList(),
+        fieldSets = emptyList(),
       ),
       ResponseField(
         type = ResponseField.Type.Named.Other("String"),
@@ -83,6 +87,7 @@ internal object CreateReviewForEpisode_ResponseAdapter :
         fieldName = "commentary",
         arguments = emptyMap(),
         conditions = emptyList(),
+        fieldSets = emptyList(),
       ),
       ResponseField(
         type =
@@ -91,6 +96,7 @@ internal object CreateReviewForEpisode_ResponseAdapter :
         fieldName = "listOfListOfString",
         arguments = emptyMap(),
         conditions = emptyList(),
+        fieldSets = emptyList(),
       ),
       ResponseField(
         type =
@@ -99,6 +105,7 @@ internal object CreateReviewForEpisode_ResponseAdapter :
         fieldName = "listOfListOfEnum",
         arguments = emptyMap(),
         conditions = emptyList(),
+        fieldSets = emptyList(),
       ),
       ResponseField(
         type =
@@ -107,6 +114,7 @@ internal object CreateReviewForEpisode_ResponseAdapter :
         fieldName = "listOfListOfCustom",
         arguments = emptyMap(),
         conditions = emptyList(),
+        fieldSets = emptyList(),
       ),
       ResponseField(
         type =
@@ -115,6 +123,9 @@ internal object CreateReviewForEpisode_ResponseAdapter :
         fieldName = "listOfListOfObject",
         arguments = emptyMap(),
         conditions = emptyList(),
+        fieldSets = listOf(
+          ResponseField.FieldSet(null, ListOfListOfObject.RESPONSE_FIELDS)
+        ),
       )
     )
 
@@ -194,13 +205,14 @@ internal object CreateReviewForEpisode_ResponseAdapter :
 
     object ListOfListOfObject :
         ResponseAdapter<CreateReviewForEpisode.Data.CreateReview.ListOfListOfObject> {
-      private val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
+      val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
         ResponseField(
           type = ResponseField.Type.NotNull(ResponseField.Type.Named.Other("String")),
           responseName = "name",
           fieldName = "name",
           arguments = emptyMap(),
           conditions = emptyList(),
+          fieldSets = emptyList(),
         )
       )
 

@@ -3,6 +3,7 @@ package com.apollographql.apollo.internal
 import com.apollographql.apollo.ApolloClient
 import com.apollographql.apollo.api.Operation
 import com.apollographql.apollo.api.Query
+import com.apollographql.apollo.api.ResponseField
 import com.apollographql.apollo.api.cache.http.HttpCachePolicy
 import com.apollographql.apollo.api.cache.http.HttpCachePolicy.FetchStrategy
 import com.apollographql.apollo.fetcher.ApolloResponseFetchers
@@ -31,6 +32,10 @@ class ResponseFetcherTest {
 
     override fun operationId(): String {
       return ""
+    }
+
+    override fun responseFields(): List<ResponseField.FieldSet> {
+      return emptyList()
     }
   }
 

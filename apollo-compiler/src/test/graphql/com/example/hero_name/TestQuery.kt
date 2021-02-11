@@ -7,11 +7,13 @@ package com.example.hero_name
 
 import com.apollographql.apollo.api.Operation
 import com.apollographql.apollo.api.Query
+import com.apollographql.apollo.api.ResponseField
 import com.apollographql.apollo.api.internal.QueryDocumentMinifier
 import com.apollographql.apollo.api.internal.ResponseAdapter
 import com.example.hero_name.adapter.TestQuery_ResponseAdapter
 import kotlin.String
 import kotlin.Suppress
+import kotlin.collections.List
 
 @Suppress("NAME_SHADOWING", "UNUSED_ANONYMOUS_PARAMETER", "LocalVariableName",
     "RemoveExplicitTypeArguments", "NestedLambdaShadowedImplicitParameter", "PropertyName",
@@ -26,6 +28,9 @@ class TestQuery : Query<TestQuery.Data> {
   override fun name(): String = OPERATION_NAME
 
   override fun adapter(): ResponseAdapter<Data> = TestQuery_ResponseAdapter
+  override fun responseFields(): List<ResponseField.FieldSet> = listOf(
+    ResponseField.FieldSet(null, TestQuery_ResponseAdapter.RESPONSE_FIELDS)
+  )
   /**
    * The query type, represents all of the entry points into our object graph
    */
@@ -35,31 +40,67 @@ class TestQuery : Query<TestQuery.Data> {
     /**
      * A character from the Star Wars universe
      */
-    data class Hero(
+    interface Hero {
+      val __typename: String
+
       /**
        * The name of the character
        */
-      val name: String,
-      /**
-       * The ID of the character
-       */
-      val id: String
-    )
+      val name: String
+
+      interface Droid : Hero {
+        override val __typename: String
+
+        /**
+         * The name of the character
+         */
+        override val name: String
+
+        /**
+         * This droid's primary function
+         */
+        val primaryFunction: String?
+      }
+
+      data class DroidHero(
+        override val __typename: String,
+        /**
+         * The name of the character
+         */
+        override val name: String,
+        /**
+         * This droid's primary function
+         */
+        override val primaryFunction: String?
+      ) : Hero, Droid
+
+      data class OtherHero(
+        override val __typename: String,
+        /**
+         * The name of the character
+         */
+        override val name: String
+      ) : Hero
+
+      companion object {
+        fun Hero.asDroid(): Droid? = this as? Droid
+      }
+    }
   }
 
   companion object {
     const val OPERATION_ID: String =
-        "65397ddaca19455aa5c39253adcd047619e1474bee8c5a3d7c796439ee9535be"
+        "726f5fd3f4648f4ae21ce47a45020e326e693a3a9c521a08e76ef8cb1e791f3b"
 
     val QUERY_DOCUMENT: String = QueryDocumentMinifier.minify(
           """
           |query TestQuery {
           |  hero {
+          |    __typename
           |    name
-          |  }
-          |  hero {
-          |    id
-          |    name
+          |    ... on Droid {
+          |      primaryFunction
+          |    }
           |  }
           |}
           """.trimMargin()

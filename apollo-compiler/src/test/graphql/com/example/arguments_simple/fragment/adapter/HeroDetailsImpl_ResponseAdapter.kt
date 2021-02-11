@@ -20,13 +20,14 @@ import kotlin.collections.List
     "RemoveExplicitTypeArguments", "NestedLambdaShadowedImplicitParameter", "PropertyName",
     "RemoveRedundantQualifierName")
 object HeroDetailsImpl_ResponseAdapter : ResponseAdapter<HeroDetailsImpl.Data> {
-  private val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
+  val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
     ResponseField(
       type = ResponseField.Type.NotNull(ResponseField.Type.Named.Other("String")),
       responseName = "__typename",
       fieldName = "__typename",
       arguments = emptyMap(),
       conditions = emptyList(),
+      fieldSets = emptyList(),
     ),
     ResponseField(
       type = ResponseField.Type.NotNull(ResponseField.Type.Named.Object("FriendsConnection")),
@@ -37,6 +38,9 @@ object HeroDetailsImpl_ResponseAdapter : ResponseAdapter<HeroDetailsImpl.Data> {
           "kind" to "Variable",
           "variableName" to "friendsCount")),
       conditions = emptyList(),
+      fieldSets = listOf(
+        ResponseField.FieldSet(null, FriendsConnection.RESPONSE_FIELDS)
+      ),
     )
   )
 
@@ -68,13 +72,14 @@ object HeroDetailsImpl_ResponseAdapter : ResponseAdapter<HeroDetailsImpl.Data> {
   }
 
   object FriendsConnection : ResponseAdapter<HeroDetailsImpl.Data.FriendsConnection> {
-    private val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
+    val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
       ResponseField(
         type = ResponseField.Type.Named.Other("Int"),
         responseName = "totalCount",
         fieldName = "totalCount",
         arguments = emptyMap(),
         conditions = emptyList(),
+        fieldSets = emptyList(),
       ),
       ResponseField(
         type = ResponseField.Type.List(ResponseField.Type.Named.Object("FriendsEdge")),
@@ -82,6 +87,9 @@ object HeroDetailsImpl_ResponseAdapter : ResponseAdapter<HeroDetailsImpl.Data> {
         fieldName = "edges",
         arguments = emptyMap(),
         conditions = emptyList(),
+        fieldSets = listOf(
+          ResponseField.FieldSet(null, Edge.RESPONSE_FIELDS)
+        ),
       )
     )
 
@@ -118,13 +126,16 @@ object HeroDetailsImpl_ResponseAdapter : ResponseAdapter<HeroDetailsImpl.Data> {
     }
 
     object Edge : ResponseAdapter<HeroDetailsImpl.Data.FriendsConnection.Edge> {
-      private val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
+      val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
         ResponseField(
           type = ResponseField.Type.Named.Object("Character"),
           responseName = "node",
           fieldName = "node",
           arguments = emptyMap(),
           conditions = emptyList(),
+          fieldSets = listOf(
+            ResponseField.FieldSet(null, Node.RESPONSE_FIELDS)
+          ),
         )
       )
 
@@ -158,7 +169,7 @@ object HeroDetailsImpl_ResponseAdapter : ResponseAdapter<HeroDetailsImpl.Data> {
       }
 
       object Node : ResponseAdapter<HeroDetailsImpl.Data.FriendsConnection.Edge.Node> {
-        private val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
+        val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
           ResponseField(
             type = ResponseField.Type.Named.Other("String"),
             responseName = "name",
@@ -167,6 +178,7 @@ object HeroDetailsImpl_ResponseAdapter : ResponseAdapter<HeroDetailsImpl.Data> {
             conditions = listOf(
               ResponseField.Condition.booleanCondition("IncludeName", false)
             ),
+            fieldSets = emptyList(),
           )
         )
 

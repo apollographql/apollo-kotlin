@@ -19,7 +19,7 @@ import kotlin.Suppress
     "RemoveExplicitTypeArguments", "NestedLambdaShadowedImplicitParameter", "PropertyName",
     "RemoveRedundantQualifierName")
 object TestSubscription_ResponseAdapter : ResponseAdapter<TestSubscription.Data> {
-  private val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
+  val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
     ResponseField(
       type = ResponseField.Type.Named.Object("Comment"),
       responseName = "commentAdded",
@@ -29,6 +29,9 @@ object TestSubscription_ResponseAdapter : ResponseAdapter<TestSubscription.Data>
           "kind" to "Variable",
           "variableName" to "repo")),
       conditions = emptyList(),
+      fieldSets = listOf(
+        ResponseField.FieldSet(null, CommentAdded.RESPONSE_FIELDS)
+      ),
     )
   )
 
@@ -60,13 +63,14 @@ object TestSubscription_ResponseAdapter : ResponseAdapter<TestSubscription.Data>
   }
 
   object CommentAdded : ResponseAdapter<TestSubscription.Data.CommentAdded> {
-    private val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
+    val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
       ResponseField(
         type = ResponseField.Type.NotNull(ResponseField.Type.Named.Other("Int")),
         responseName = "id",
         fieldName = "id",
         arguments = emptyMap(),
         conditions = emptyList(),
+        fieldSets = emptyList(),
       ),
       ResponseField(
         type = ResponseField.Type.NotNull(ResponseField.Type.Named.Other("String")),
@@ -74,6 +78,7 @@ object TestSubscription_ResponseAdapter : ResponseAdapter<TestSubscription.Data>
         fieldName = "content",
         arguments = emptyMap(),
         conditions = emptyList(),
+        fieldSets = emptyList(),
       )
     )
 

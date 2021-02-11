@@ -7,6 +7,7 @@ package com.example.mutation_create_review_semantic_naming
 
 import com.apollographql.apollo.api.Mutation
 import com.apollographql.apollo.api.Operation
+import com.apollographql.apollo.api.ResponseField
 import com.apollographql.apollo.api.internal.InputFieldMarshaller
 import com.apollographql.apollo.api.internal.QueryDocumentMinifier
 import com.apollographql.apollo.api.internal.ResponseAdapter
@@ -17,6 +18,7 @@ import kotlin.Any
 import kotlin.Int
 import kotlin.String
 import kotlin.Suppress
+import kotlin.collections.List
 import kotlin.collections.Map
 import kotlin.jvm.Transient
 
@@ -51,6 +53,9 @@ data class CreateReviewForEpisodeMutation(
   override fun name(): String = OPERATION_NAME
 
   override fun adapter(): ResponseAdapter<Data> = CreateReviewForEpisodeMutation_ResponseAdapter
+  override fun responseFields(): List<ResponseField.FieldSet> = listOf(
+    ResponseField.FieldSet(null, CreateReviewForEpisodeMutation_ResponseAdapter.RESPONSE_FIELDS)
+  )
   /**
    * The mutation type, represents all updates we can make to our data
    */

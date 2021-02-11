@@ -8,6 +8,7 @@ package com.example.arguments_simple.fragment
 import com.apollographql.apollo.api.Fragment
 import com.apollographql.apollo.api.Input
 import com.apollographql.apollo.api.Operation
+import com.apollographql.apollo.api.ResponseField
 import com.apollographql.apollo.api.internal.InputFieldMarshaller
 import com.apollographql.apollo.api.internal.ResponseAdapter
 import com.example.arguments_simple.fragment.adapter.HeroDetailsImpl_ResponseAdapter
@@ -46,6 +47,9 @@ data class HeroDetailsImpl(
     return HeroDetailsImpl_ResponseAdapter
   }
 
+  override fun responseFields(): List<ResponseField.FieldSet> = listOf(
+    ResponseField.FieldSet(null, HeroDetailsImpl_ResponseAdapter.RESPONSE_FIELDS)
+  )
   override fun variables(): Operation.Variables = variables
 
   /**

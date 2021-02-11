@@ -19,13 +19,16 @@ import kotlin.collections.List
     "RemoveExplicitTypeArguments", "NestedLambdaShadowedImplicitParameter", "PropertyName",
     "RemoveRedundantQualifierName")
 object TestQuery_ResponseAdapter : ResponseAdapter<TestQuery.Data> {
-  private val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
+  val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
     ResponseField(
       type = ResponseField.Type.NotNull(ResponseField.Type.Named.Object("__Schema")),
       responseName = "__schema",
       fieldName = "__schema",
       arguments = emptyMap(),
       conditions = emptyList(),
+      fieldSets = listOf(
+        ResponseField.FieldSet(null, __Schema.RESPONSE_FIELDS)
+      ),
     ),
     ResponseField(
       type = ResponseField.Type.NotNull(ResponseField.Type.Named.Object("__Type")),
@@ -34,6 +37,9 @@ object TestQuery_ResponseAdapter : ResponseAdapter<TestQuery.Data> {
       arguments = mapOf<String, Any?>(
         "name" to "Vehicle"),
       conditions = emptyList(),
+      fieldSets = listOf(
+        ResponseField.FieldSet(null, __Type.RESPONSE_FIELDS)
+      ),
     )
   )
 
@@ -69,13 +75,16 @@ object TestQuery_ResponseAdapter : ResponseAdapter<TestQuery.Data> {
   }
 
   object __Schema : ResponseAdapter<TestQuery.Data.__Schema> {
-    private val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
+    val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
       ResponseField(
         type = ResponseField.Type.NotNull(ResponseField.Type.Named.Object("__Type")),
         responseName = "queryType",
         fieldName = "queryType",
         arguments = emptyMap(),
         conditions = emptyList(),
+        fieldSets = listOf(
+          ResponseField.FieldSet(null, QueryType.RESPONSE_FIELDS)
+        ),
       ),
       ResponseField(
         type =
@@ -84,6 +93,9 @@ object TestQuery_ResponseAdapter : ResponseAdapter<TestQuery.Data> {
         fieldName = "types",
         arguments = emptyMap(),
         conditions = emptyList(),
+        fieldSets = listOf(
+          ResponseField.FieldSet(null, Type.RESPONSE_FIELDS)
+        ),
       )
     )
 
@@ -124,13 +136,14 @@ object TestQuery_ResponseAdapter : ResponseAdapter<TestQuery.Data> {
     }
 
     object QueryType : ResponseAdapter<TestQuery.Data.__Schema.QueryType> {
-      private val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
+      val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
         ResponseField(
           type = ResponseField.Type.Named.Other("String"),
           responseName = "name",
           fieldName = "name",
           arguments = emptyMap(),
           conditions = emptyList(),
+          fieldSets = emptyList(),
         )
       )
 
@@ -156,13 +169,14 @@ object TestQuery_ResponseAdapter : ResponseAdapter<TestQuery.Data> {
     }
 
     object Type : ResponseAdapter<TestQuery.Data.__Schema.Type> {
-      private val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
+      val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
         ResponseField(
           type = ResponseField.Type.Named.Other("String"),
           responseName = "name",
           fieldName = "name",
           arguments = emptyMap(),
           conditions = emptyList(),
+          fieldSets = emptyList(),
         )
       )
 
@@ -189,13 +203,14 @@ object TestQuery_ResponseAdapter : ResponseAdapter<TestQuery.Data> {
   }
 
   object __Type : ResponseAdapter<TestQuery.Data.__Type> {
-    private val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
+    val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
       ResponseField(
         type = ResponseField.Type.Named.Other("String"),
         responseName = "name",
         fieldName = "name",
         arguments = emptyMap(),
         conditions = emptyList(),
+        fieldSets = emptyList(),
       )
     )
 

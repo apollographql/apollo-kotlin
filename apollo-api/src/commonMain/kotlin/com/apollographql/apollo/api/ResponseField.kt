@@ -17,9 +17,11 @@ class ResponseField(
     val responseName: String,
     val fieldName: String,
     val arguments: Map<String, Any?>,
-    val conditions: List<Condition>
+    val conditions: List<Condition>,
+    val fieldSets: List<FieldSet>,
 ) {
 
+  class FieldSet(val typeCondition: String?, val responseFields: Array<ResponseField>)
   /**
    * Resolves field argument value by [name]. If argument represents a references to the variable, it will be resolved from
    * provided operation [variables] values.
@@ -60,8 +62,6 @@ class ResponseField(
       class Other(name: String): Named(name)
     }
   }
-
-  enum class Kind { OBJECT, OTHER }
   /**
    * Abstraction for condition to be associated with field
    */
@@ -101,5 +101,14 @@ class ResponseField(
       is Type.Named -> name
       is Type.List -> ofType.leafType()
     }
+
+    val Typename = ResponseField(
+        type = Type.NotNull(Type.Named.Other("String")),
+        responseName = "__typename",
+        fieldName = "__typename",
+        arguments = emptyMap(),
+        conditions = emptyList(),
+        fieldSets = emptyList(),
+    )
   }
 }
