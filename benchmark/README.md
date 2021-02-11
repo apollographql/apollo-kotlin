@@ -15,7 +15,7 @@ Run on a Pixel 3 XL. Feel free to update/commit new results and we can get the h
 ```
 benchmark:    13,239,690 ns Benchmark.moshi
 benchmark:    14,983,907 ns Benchmark.apollo
-benchmark:    23,650,472 ns Benchmark.apolloParseAndNormalize
+benchmark:    25,381,565 ns Benchmark.apolloParseAndNormalize
 benchmark:     4,657,449 ns Benchmark.apolloReadCacheMemory
 benchmark:     7,913,594 ns Benchmark.apolloBatchCacheMemory
 benchmark:   232,572,731 ns Benchmark.apolloReadCacheSql

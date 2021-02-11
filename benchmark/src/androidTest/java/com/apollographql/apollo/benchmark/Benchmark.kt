@@ -13,8 +13,8 @@ import com.apollographql.apollo.cache.CacheHeaders
 import com.apollographql.apollo.cache.normalized.CacheKeyResolver
 import com.apollographql.apollo.cache.normalized.MemoryCache
 import com.apollographql.apollo.cache.normalized.Record
+import com.apollographql.apollo.cache.normalized.internal.ReadMode
 import com.apollographql.apollo.cache.normalized.internal.ReadableStore
-import com.apollographql.apollo.cache.normalized.internal.batchDataFromCache
 import com.apollographql.apollo.cache.normalized.internal.normalize
 import com.apollographql.apollo.cache.normalized.internal.readDataFromCache
 import com.apollographql.apollo.cache.normalized.sql.SqlNormalizedCache
