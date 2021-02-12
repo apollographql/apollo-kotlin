@@ -5,8 +5,8 @@ import com.apollographql.apollo.api.internal.MapResponseParser
 import com.apollographql.apollo.api.internal.OperationRequestBodyComposer
 import com.apollographql.apollo.api.internal.StreamResponseParser
 import com.apollographql.apollo.api.internal.MapResponseReader
-import com.apollographql.apollo.api.internal.SimpleResponseWriter
 import com.apollographql.apollo.api.internal.ValueResolver
+import com.apollographql.apollo.api.internal.json.JsonUtf8Writer
 import okio.Buffer
 import okio.BufferedSource
 import okio.ByteString
@@ -40,12 +40,14 @@ import kotlin.jvm.JvmOverloads
  * param is not provided.
  */
 @JvmOverloads
-fun <D : Operation.Data> Operation<D>.toJson(value: D, indent: String = "", customScalarAdapters: CustomScalarAdapters = DEFAULT): String {
+fun <D : Operation.Data> Operation<D>.toJson(data: D, indent: String = "", customScalarAdapters: CustomScalarAdapters = DEFAULT): String {
   return try {
-    SimpleResponseWriter(customScalarAdapters).let { writer ->
-      adapter().toResponse(writer, value)
-      writer.toJson(indent)
+    val buffer = Buffer()
+    val writer = JsonUtf8Writer(buffer).apply {
+      this.indent = indent
     }
+    adapter().toResponse(writer, data, customScalarAdapters)
+    buffer.readUtf8()
   } catch (e: IOException) {
     throw IllegalStateException(e)
   }

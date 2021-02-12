@@ -35,11 +35,11 @@ private fun <D> normalize(
     variables: Operation.Variables,
     fieldSets: List<ResponseField.FieldSet>
 ): Map<String, Record>  {
-  val writer = SimpleResponseWriter(customScalarAdapters)
-  adapter.toResponse(writer, data)
+  val writer = MapJsonWriter()
+  adapter.toResponse(writer, data, customScalarAdapters)
   return Normalizer(variables) { responseField, fields ->
     cacheKeyResolver.fromFieldRecordSet(responseField, fields).let { if (it == CacheKey.NO_KEY) null else it.key}
-  }.normalize(writer.toMap(), null, rootKey, fieldSets)
+  }.normalize(writer.root() as Map<String, Any?>, null, rootKey, fieldSets)
 }
 enum class ReadMode {
   /**
