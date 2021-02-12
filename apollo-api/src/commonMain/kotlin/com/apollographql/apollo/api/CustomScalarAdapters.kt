@@ -1,5 +1,11 @@
 package com.apollographql.apollo.api
 
+import com.apollographql.apollo.api.internal.ResponseAdapter
+import com.apollographql.apollo.api.internal.json.JsonReader
+import com.apollographql.apollo.api.internal.json.JsonWriter
+import com.apollographql.apollo.api.internal.json.Utils.readRecursively
+import com.apollographql.apollo.api.internal.json.Utils.writeToJson
+
 /**
  * A wrapper around a Map of [CustomScalarAdapter] that allows to easily retrieve an adapter for the given [CustomScalar]
  */
@@ -28,7 +34,22 @@ class CustomScalarAdapters(val customScalarAdapters: Map<CustomScalar, CustomSca
 
   @Suppress("UNCHECKED_CAST")
   fun <T : Any> adapterFor(graphqlName: String): CustomScalarAdapter<T> {
-    return adapterByGraphQLName[graphqlName] as CustomScalarAdapter<T>
+    return adapterByGraphQLName[graphqlName] as CustomScalarAdapter<T>? ?: throw IllegalStateException("Cannot find a CustomScalarAdapter for $graphqlName")
+  }
+
+  @Suppress("UNCHECKED_CAST")
+  fun <T : Any> responseAdapterFor(graphqlName: String): ResponseAdapter<T> {
+    return CustomResponseAdapter(adapterFor(graphqlName))
+  }
+
+  class CustomResponseAdapter<T: Any>(private val wrappedAdapter: CustomScalarAdapter<T>) : ResponseAdapter<T> {
+    override fun fromResponse(reader: JsonReader, customScalarAdapters: CustomScalarAdapters): T {
+      return wrappedAdapter.decode(JsonElement.fromRawValue(reader.readRecursively()))
+    }
+
+    override fun toResponse(writer: JsonWriter, value: T, customScalarAdapters: CustomScalarAdapters) {
+      writeToJson(wrappedAdapter.encode(value).toRawValue(), writer)
+    }
   }
 
   companion object {

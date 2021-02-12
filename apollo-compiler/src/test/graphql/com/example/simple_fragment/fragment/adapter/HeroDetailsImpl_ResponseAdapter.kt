@@ -5,10 +5,12 @@
 //
 package com.example.simple_fragment.fragment.adapter
 
+import com.apollographql.apollo.api.CustomScalarAdapters
 import com.apollographql.apollo.api.ResponseField
 import com.apollographql.apollo.api.internal.ResponseAdapter
 import com.apollographql.apollo.api.internal.ResponseReader
 import com.apollographql.apollo.api.internal.ResponseWriter
+import com.apollographql.apollo.api.internal.stringResponseAdapter
 import com.example.simple_fragment.fragment.HeroDetailsImpl
 import kotlin.Array
 import kotlin.String
@@ -53,23 +55,30 @@ internal object HeroDetailsImpl_ResponseAdapter : ResponseAdapter<HeroDetailsImp
       )
     )
 
-    override fun fromResponse(reader: ResponseReader, __typename: String?):
-        HeroDetailsImpl.Data.HumanData {
-      return reader.run {
-        var __typename: String? = __typename
-        var name: String? = null
-        while(true) {
-          when (selectField(RESPONSE_FIELDS)) {
-            0 -> __typename = readString(RESPONSE_FIELDS[0])
-            1 -> name = readString(RESPONSE_FIELDS[1])
-            else -> break
-          }
+    val RESPONSE_NAMES: Array<String> = RESPONSE_FIELDS.map { it.responseName }
+
+    val __typenameAdapter: ResponseAdapter<String?> = stringResponseAdapter
+
+    val nameAdapter: ResponseAdapter<String?> = stringResponseAdapter
+
+    override fun fromResponse(
+      reader: ResponseReader,
+      customScalarAdapters: CustomScalarAdapters,
+      __typename: String?
+    ): HeroDetailsImpl.Data.HumanData {
+      var __typename: String? = __typename
+      var name: String? = null
+      while(true) {
+        when (selectField(responseNames)) {
+          0 -> __typename = readString(RESPONSE_FIELDS[0])!!
+          1 -> name = readString(RESPONSE_FIELDS[1])!!
+          else -> break
         }
-        HeroDetailsImpl.Data.HumanData(
-          __typename = __typename!!,
-          name = name!!
-        )
       }
+      return HeroDetailsImpl.Data.HumanData(
+        __typename = __typename!!,
+        name = name!!
+      )
     }
 
     override fun toResponse(writer: ResponseWriter, value: HeroDetailsImpl.Data.HumanData) {
@@ -90,20 +99,25 @@ internal object HeroDetailsImpl_ResponseAdapter : ResponseAdapter<HeroDetailsImp
       )
     )
 
-    override fun fromResponse(reader: ResponseReader, __typename: String?):
-        HeroDetailsImpl.Data.OtherData {
-      return reader.run {
-        var __typename: String? = __typename
-        while(true) {
-          when (selectField(RESPONSE_FIELDS)) {
-            0 -> __typename = readString(RESPONSE_FIELDS[0])
-            else -> break
-          }
+    val RESPONSE_NAMES: Array<String> = RESPONSE_FIELDS.map { it.responseName }
+
+    val __typenameAdapter: ResponseAdapter<String?> = stringResponseAdapter
+
+    override fun fromResponse(
+      reader: ResponseReader,
+      customScalarAdapters: CustomScalarAdapters,
+      __typename: String?
+    ): HeroDetailsImpl.Data.OtherData {
+      var __typename: String? = __typename
+      while(true) {
+        when (selectField(responseNames)) {
+          0 -> __typename = readString(RESPONSE_FIELDS[0])!!
+          else -> break
         }
-        HeroDetailsImpl.Data.OtherData(
-          __typename = __typename!!
-        )
       }
+      return HeroDetailsImpl.Data.OtherData(
+        __typename = __typename!!
+      )
     }
 
     override fun toResponse(writer: ResponseWriter, value: HeroDetailsImpl.Data.OtherData) {

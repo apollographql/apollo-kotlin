@@ -1,6 +1,8 @@
 package com.apollographql.apollo.compiler.backend.codegen
 
 import com.apollographql.apollo.api.ResponseField
+import com.apollographql.apollo.api.internal.ListResponseAdapter
+import com.apollographql.apollo.api.internal.NullableResponseAdapter
 import com.apollographql.apollo.api.internal.ResponseAdapter
 import com.apollographql.apollo.compiler.applyIf
 import com.apollographql.apollo.compiler.backend.ast.CodeGenerationAst
@@ -8,6 +10,7 @@ import com.apollographql.apollo.compiler.escapeKotlinReservedWord
 import com.squareup.kotlinpoet.ClassName
 import com.squareup.kotlinpoet.CodeBlock
 import com.squareup.kotlinpoet.KModifier
+import com.squareup.kotlinpoet.MemberName
 import com.squareup.kotlinpoet.ParameterizedTypeName.Companion.parameterizedBy
 import com.squareup.kotlinpoet.PropertySpec
 import com.squareup.kotlinpoet.TypeSpec
@@ -39,10 +42,13 @@ private fun CodeGenerationAst.ObjectType.rootResponseAdapterTypeSpec(generateAsI
 private fun CodeGenerationAst.ObjectType.responseAdapterTypeSpec(): TypeSpec {
   return TypeSpec.objectBuilder(this.name)
       .addSuperinterface(ResponseAdapter::class.asTypeName().parameterizedBy(this.typeRef.asTypeName()))
-      .applyIf(
-          this.fields.isNotEmpty()
-              && this.kind is CodeGenerationAst.ObjectType.Kind.Object) {
-        addProperty(responseFieldsPropertySpec(this@responseAdapterTypeSpec))
+      .apply {
+          if (fields.isNotEmpty()
+              && kind is CodeGenerationAst.ObjectType.Kind.Object) {
+            addProperty(responseFieldsPropertySpec(this@responseAdapterTypeSpec))
+            addProperty(responseNamesPropertySpec())
+            addProperties(adapterPropertySpecs(this@responseAdapterTypeSpec))
+          }
       }
       .addFunction(readFromResponseFunSpec())
       .addFunction(writeToResponseFunSpec())
@@ -98,6 +104,50 @@ private fun responseFieldsPropertySpec(objectType: CodeGenerationAst.ObjectType)
           ),
       )
       .initializer(initializer)
+      .build()
+}
+
+private fun adapterPropertySpecs(objectType: CodeGenerationAst.ObjectType): List<PropertySpec> {
+  return objectType.fields.map { it.adapterPropertySpec() }
+}
+
+private fun adapterInitializer(type: CodeGenerationAst.FieldType): CodeBlock {
+  if (type.nullable) {
+    return CodeBlock.of("%T(%L)", NullableResponseAdapter::class.asClassName(), adapterInitializer(type.nonNullable()))
+  }
+  return when (type) {
+    is CodeGenerationAst.FieldType.Array -> CodeBlock.of("%T(%L)", ListResponseAdapter::class.asClassName(), adapterInitializer(type.nonNullable()))
+    is CodeGenerationAst.FieldType.Scalar.Boolean -> CodeBlock.of("%M", MemberName("com.apollographql.apollo.api.internal", "booleanResponseAdapter"))
+    is CodeGenerationAst.FieldType.Scalar.ID -> CodeBlock.of("%M", MemberName("com.apollographql.apollo.api.internal", "stringResponseAdapter"))
+    is CodeGenerationAst.FieldType.Scalar.String -> CodeBlock.of("%M", MemberName("com.apollographql.apollo.api.internal", "stringResponseAdapter"))
+    is CodeGenerationAst.FieldType.Scalar.Int -> CodeBlock.of("%M", MemberName("com.apollographql.apollo.api.internal", "intResponseAdapter"))
+    is CodeGenerationAst.FieldType.Scalar.Float -> CodeBlock.of("%M", MemberName("com.apollographql.apollo.api.internal", "floatResponseAdapter"))
+    is CodeGenerationAst.FieldType.Scalar.Enum -> CodeBlock.of("%T.adapter", type.typeRef.asTypeName().copy(nullable = false))
+    is CodeGenerationAst.FieldType.Object -> CodeBlock.of("%T", type.typeRef.asAdapterTypeName().copy(nullable = false))
+    is CodeGenerationAst.FieldType.Scalar.Custom -> CodeBlock.of("customScalarAdapters.responseAdapterFor<%T>(%S)", ClassName.bestGuess(type.type), type.schemaTypeName)
+  }
+}
+private fun CodeGenerationAst.Field.adapterPropertySpec(): PropertySpec {
+  return PropertySpec
+      .builder(
+          name = "${name.escapeKotlinReservedWord()}Adapter",
+          type = ResponseAdapter::class.asClassName().parameterizedBy(
+              type.asTypeName().copy(nullable = true),
+          ),
+      )
+      .initializer(adapterInitializer(type))
+      .build()
+}
+
+private fun responseNamesPropertySpec(): PropertySpec {
+  return PropertySpec
+      .builder(
+          name = "RESPONSE_NAMES",
+          type = List::class.asClassName().parameterizedBy(
+              String::class.asClassName(),
+          ),
+      )
+      .initializer("RESPONSE_FIELDS.map { it.responseName }")
       .build()
 }
 

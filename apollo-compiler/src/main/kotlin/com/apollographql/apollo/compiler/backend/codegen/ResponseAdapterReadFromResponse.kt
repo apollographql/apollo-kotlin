@@ -1,6 +1,7 @@
 package com.apollographql.apollo.compiler.backend.codegen
 
 import com.apollographql.apollo.api.CustomScalar
+import com.apollographql.apollo.api.CustomScalarAdapters
 import com.apollographql.apollo.api.ResponseField
 import com.apollographql.apollo.api.internal.ResponseReader
 import com.apollographql.apollo.compiler.applyIf
@@ -44,14 +45,14 @@ private fun CodeGenerationAst.ObjectType.readObjectFromResponseFunSpec(): FunSpe
 
   val selectFieldsCode = CodeBlock.builder()
       .beginControlFlow("while(true)")
-      .beginControlFlow("when·(selectField(RESPONSE_FIELDS))")
+      .beginControlFlow("when·(selectField(responseNames))")
       .add(
           this.fields.mapIndexed { fieldIndex, field ->
             CodeBlock.of(
                 "%L·->·%L·=·%L",
                 fieldIndex,
                 field.name.escapeKotlinReservedWord(),
-                field.type.nullable().fromResponseCode(field = "RESPONSE_FIELDS[$fieldIndex]")
+                field.type.fromResponseCode(field = "RESPONSE_FIELDS[$fieldIndex]")
             )
           }.joinToCode(separator = "\n", suffix = "\n")
       )
@@ -79,14 +80,13 @@ private fun CodeGenerationAst.ObjectType.readObjectFromResponseFunSpec(): FunSpe
       .addModifiers(KModifier.OVERRIDE)
       .returns(this.typeRef.asTypeName())
       .addParameter(ParameterSpec.builder("reader", ResponseReader::class).build())
+      .addParameter(ParameterSpec.builder("customScalarAdapters", CustomScalarAdapters::class).build())
       .addParameter(CodeGenerationAst.typenameField.asOptionalParameterSpec(withDefaultValue = false))
       .addCode(CodeBlock
           .builder()
-          .beginControlFlow("return·reader.run")
           .add(fieldVariablesCode)
           .add(selectFieldsCode)
-          .add(typeConstructorCode)
-          .endControlFlow()
+          .add("return %L", typeConstructorCode)
           .build()
       )
       .build()
