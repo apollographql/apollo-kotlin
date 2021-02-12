@@ -58,6 +58,9 @@ class ResponseField(
      * but we want to stay lightweight so for now we add this information
      */
     sealed class Named(val name: String): Type() {
+      /**
+       * This is field is a Kotlin object. It can be a GraphQL union, interface or object
+       */
       class Object(name: String): Named(name)
       class Other(name: String): Named(name)
     }

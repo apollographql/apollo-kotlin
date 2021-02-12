@@ -97,7 +97,7 @@ class ApolloCacheInterceptor<S>(private val store: S) : ApolloRequestInterceptor
     val operation = request.operation
     val records = operation.normalize(data, customScalarAdapters, CacheKeyResolver.DEFAULT)
 
-    store.merge(records.toList(), CacheHeaders.NONE)
+    store.merge(records.values.toList(), CacheHeaders.NONE)
   }
 
   private fun <D : Operation.Data> readFromCache(request: ApolloRequest<D>, customScalarAdapters: CustomScalarAdapters): ApolloResponse<D>? {

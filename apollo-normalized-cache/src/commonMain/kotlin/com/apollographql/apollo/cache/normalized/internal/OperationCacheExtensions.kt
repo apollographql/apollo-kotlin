@@ -7,6 +7,7 @@ import com.apollographql.apollo.cache.normalized.Record
 import com.apollographql.apollo.api.ResponseField
 import com.apollographql.apollo.api.internal.MapResponseReader
 import com.apollographql.apollo.api.internal.ResponseAdapter
+import com.apollographql.apollo.api.internal.SimpleResponseWriter
 import com.apollographql.apollo.api.internal.ValueResolver
 import com.apollographql.apollo.cache.CacheHeaders
 import com.apollographql.apollo.cache.normalized.CacheKey
@@ -16,23 +17,30 @@ fun <D : Operation.Data> Operation<D>.normalize(
     data: D,
     customScalarAdapters: CustomScalarAdapters,
     cacheKeyResolver: CacheKeyResolver
-): Set<Record> {
-  val writer = NormalizationIRResponseWriter(variables(), customScalarAdapters)
-  adapter().toResponse(writer, data)
-  return Normalizer(cacheKeyResolver).normalize(writer.root, null).values.toSet()
-}
+) = normalize(data, customScalarAdapters, cacheKeyResolver, CacheKeyResolver.rootKey().key, adapter(), variables(), responseFields())
 
 fun <D : Fragment.Data> Fragment<D>.normalize(
     data: D,
     customScalarAdapters: CustomScalarAdapters,
     cacheKeyResolver: CacheKeyResolver,
     rootKey: String
-): Set<Record> {
-  val writer = NormalizationIRResponseWriter(variables(), customScalarAdapters)
-  adapter().toResponse(writer, data)
-  return Normalizer(cacheKeyResolver).normalize(writer.root, rootKey).values.toSet()
-}
+) = normalize(data, customScalarAdapters, cacheKeyResolver, rootKey, adapter(), variables(), responseFields())
 
+private fun <D> normalize(
+    data: D,
+    customScalarAdapters: CustomScalarAdapters,
+    cacheKeyResolver: CacheKeyResolver,
+    rootKey: String,
+    adapter: ResponseAdapter<D>,
+    variables: Operation.Variables,
+    fieldSets: List<ResponseField.FieldSet>
+): Map<String, Record>  {
+  val writer = SimpleResponseWriter(customScalarAdapters)
+  adapter.toResponse(writer, data)
+  return Normalizer(variables) { responseField, fields ->
+    cacheKeyResolver.fromFieldRecordSet(responseField, fields).let { if (it == CacheKey.NO_KEY) null else it.key}
+  }.normalize(writer.toMap(), null, rootKey, fieldSets)
+}
 enum class ReadMode {
   /**
    * Depth-first traversal. Resolve CacheReferences as they are encountered

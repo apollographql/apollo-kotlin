@@ -9,6 +9,18 @@ import com.benasher44.uuid.Uuid
  */
 class Record (
     val key: String,
+    /**
+     * a list of fields. Values can be
+     * - Int
+     * - Long
+     * - Boolean
+     * - String
+     * - Double
+     * - CacheReference
+     * - List
+     * - Map (for custom scalars)
+     * - null
+     */
     val fields: Map<String, Any?>,
     val mutationId: Uuid? = null,
 ) : Map<String, Any?> by fields {
