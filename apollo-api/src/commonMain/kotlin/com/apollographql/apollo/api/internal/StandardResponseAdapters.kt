@@ -5,7 +5,7 @@ import com.apollographql.apollo.api.internal.json.JsonReader
 import com.apollographql.apollo.api.internal.json.JsonWriter
 
 class ListResponseAdapter<T>(private val wrappedAdapter: ResponseAdapter<T>): ResponseAdapter<List<T>> {
-  override fun fromResponse(reader: JsonReader, customScalarAdapters: CustomScalarAdapters): List<T> {
+  override fun fromResponse(reader: JsonReader, customScalarAdapters: CustomScalarAdapters, __typename: String?): List<T> {
     reader.beginArray()
     val list = mutableListOf<T>()
     while(reader.hasNext()) {
@@ -23,7 +23,7 @@ class ListResponseAdapter<T>(private val wrappedAdapter: ResponseAdapter<T>): Re
 }
 
 class NullableResponseAdapter<T:Any>(private val wrappedAdapter: ResponseAdapter<T>): ResponseAdapter<T?> {
-  override fun fromResponse(reader: JsonReader, customScalarAdapters: CustomScalarAdapters): T? {
+  override fun fromResponse(reader: JsonReader, customScalarAdapters: CustomScalarAdapters, __typename: String?): T? {
     return if (reader.peek() == JsonReader.Token.NULL) {
       null
     } else {
@@ -41,7 +41,7 @@ class NullableResponseAdapter<T:Any>(private val wrappedAdapter: ResponseAdapter
 }
 
 object stringResponseAdapter: ResponseAdapter<String> {
-  override fun fromResponse(reader: JsonReader, customScalarAdapters: CustomScalarAdapters): String {
+  override fun fromResponse(reader: JsonReader, customScalarAdapters: CustomScalarAdapters, __typename: String?): String {
     return reader.nextString()!!
   }
 
@@ -51,7 +51,7 @@ object stringResponseAdapter: ResponseAdapter<String> {
 }
 
 object intResponseAdapter: ResponseAdapter<Int> {
-  override fun fromResponse(reader: JsonReader, customScalarAdapters: CustomScalarAdapters): Int {
+  override fun fromResponse(reader: JsonReader, customScalarAdapters: CustomScalarAdapters, __typename: String?): Int {
     return reader.nextInt()
   }
 
@@ -61,7 +61,7 @@ object intResponseAdapter: ResponseAdapter<Int> {
 }
 
 object doubleResponseAdapter: ResponseAdapter<Double> {
-  override fun fromResponse(reader: JsonReader, customScalarAdapters: CustomScalarAdapters): Double {
+  override fun fromResponse(reader: JsonReader, customScalarAdapters: CustomScalarAdapters, __typename: String?): Double {
     return reader.nextDouble()
   }
 
@@ -71,7 +71,7 @@ object doubleResponseAdapter: ResponseAdapter<Double> {
 }
 
 object booleanResponseAdapter: ResponseAdapter<Boolean> {
-  override fun fromResponse(reader: JsonReader, customScalarAdapters: CustomScalarAdapters): Boolean {
+  override fun fromResponse(reader: JsonReader, customScalarAdapters: CustomScalarAdapters, __typename: String?): Boolean {
     return reader.nextBoolean()
   }
 

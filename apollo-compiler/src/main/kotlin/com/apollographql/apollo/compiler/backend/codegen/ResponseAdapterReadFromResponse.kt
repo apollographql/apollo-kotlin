@@ -4,9 +4,11 @@ import com.apollographql.apollo.api.CustomScalar
 import com.apollographql.apollo.api.CustomScalarAdapters
 import com.apollographql.apollo.api.ResponseField
 import com.apollographql.apollo.api.internal.ResponseReader
+import com.apollographql.apollo.api.internal.json.JsonReader
 import com.apollographql.apollo.compiler.applyIf
 import com.apollographql.apollo.compiler.backend.ast.CodeGenerationAst
 import com.apollographql.apollo.compiler.escapeKotlinReservedWord
+import com.apollographql.apollo.exception.UnexpectedNullValue
 import com.squareup.kotlinpoet.ClassName
 import com.squareup.kotlinpoet.CodeBlock
 import com.squareup.kotlinpoet.FunSpec
@@ -45,14 +47,14 @@ private fun CodeGenerationAst.ObjectType.readObjectFromResponseFunSpec(): FunSpe
 
   val selectFieldsCode = CodeBlock.builder()
       .beginControlFlow("while(true)")
-      .beginControlFlow("when·(selectField(responseNames))")
+      .beginControlFlow("when·(reader.selectField(responseNames))")
       .add(
           this.fields.mapIndexed { fieldIndex, field ->
             CodeBlock.of(
                 "%L·->·%L·=·%L",
                 fieldIndex,
                 field.name.escapeKotlinReservedWord(),
-                field.type.fromResponseCode(field = "RESPONSE_FIELDS[$fieldIndex]")
+                field.type.fromResponseCode(field.name)
             )
           }.joinToCode(separator = "\n", suffix = "\n")
       )
@@ -79,7 +81,7 @@ private fun CodeGenerationAst.ObjectType.readObjectFromResponseFunSpec(): FunSpe
   return FunSpec.builder("fromResponse")
       .addModifiers(KModifier.OVERRIDE)
       .returns(this.typeRef.asTypeName())
-      .addParameter(ParameterSpec.builder("reader", ResponseReader::class).build())
+      .addParameter(ParameterSpec.builder("reader", JsonReader::class).build())
       .addParameter(ParameterSpec.builder("customScalarAdapters", CustomScalarAdapters::class).build())
       .addParameter(CodeGenerationAst.typenameField.asOptionalParameterSpec(withDefaultValue = false))
       .addCode(CodeBlock
@@ -150,90 +152,12 @@ private fun CodeGenerationAst.ObjectType.readFragmentDelegateFromResponseFunSpec
       .build()
 }
 
-private fun CodeGenerationAst.FieldType.fromResponseCode(field: String): CodeBlock {
-  val notNullOperator = "!!".takeUnless { nullable } ?: ""
-  return when (this) {
-    is CodeGenerationAst.FieldType.Scalar -> when (this) {
-      is CodeGenerationAst.FieldType.Scalar.ID,
-      is CodeGenerationAst.FieldType.Scalar.String -> CodeBlock.of("readString(%L)%L", field, notNullOperator)
-      is CodeGenerationAst.FieldType.Scalar.Int -> CodeBlock.of("readInt(%L)%L", field, notNullOperator)
-      is CodeGenerationAst.FieldType.Scalar.Boolean -> CodeBlock.of("readBoolean(%L)%L", field, notNullOperator)
-      is CodeGenerationAst.FieldType.Scalar.Float -> CodeBlock.of("readDouble(%L)%L", field, notNullOperator)
-      is CodeGenerationAst.FieldType.Scalar.Enum -> if (nullable) {
-        CodeBlock.of("readString(%L)?.let·{·%T.safeValueOf(it)·}", field, typeRef.asTypeName().copy(nullable = false))
-      } else {
-        CodeBlock.of("%T.safeValueOf(readString(%L)!!)", typeRef.asTypeName().copy(nullable = false), field)
-      }
-      is CodeGenerationAst.FieldType.Scalar.Custom -> if (field.isNotEmpty()) {
-        CodeBlock.of("readCustomScalar<%T>(%L)%L", ClassName.bestGuess(type), field, notNullOperator)
-      } else {
-        CodeBlock.of(
-            "readCustomScalar<%T>(%T)%L", ClassName.bestGuess(type), typeRef.asTypeName(), notNullOperator
-        )
-      }
-    }
-    is CodeGenerationAst.FieldType.Object -> {
-      val fieldCode = field.takeIf { it.isNotEmpty() }?.let { CodeBlock.of("(%L)", it) } ?: CodeBlock.of("")
-      CodeBlock.builder()
-          .addStatement("readObject<%T>%L·{·reader·->", typeRef.asTypeName(), fieldCode)
-          .indent()
-          .addStatement("%T.fromResponse(reader)", typeRef.asAdapterTypeName())
-          .unindent()
-          .add("}%L", notNullOperator)
-          .build()
-    }
-    is CodeGenerationAst.FieldType.Array -> {
-      CodeBlock.builder()
-          .addStatement("readList<%T>(%L)·{·reader·->", rawType.asTypeName().copy(nullable = false), field)
-          .indent()
-          .add(rawType.readListItemCode())
-          .unindent()
-          .add("\n}%L", notNullOperator)
-          .applyIf(!rawType.nullable) {
-            if (nullable) {
-              add("?.map·{ it!! }")
-            } else {
-              add(".map·{ it!! }")
-            }
-          }
-          .build()
-    }
+private fun CodeGenerationAst.FieldType.fromResponseCode(fieldName: String): CodeBlock {
+  val builder = CodeBlock.builder()
+  builder.add("${fieldName.escapeKotlinReservedWord()}Adapter.fromResponse(reader, customScalarAdapters)")
+  if (!nullable) {
+    builder.add(" ?: throw %T(%S)", UnexpectedNullValue::class.asTypeName(), fieldName)
   }
+  return builder.build()
 }
 
-private fun CodeGenerationAst.FieldType.readListItemCode(): CodeBlock {
-  return when (this) {
-    is CodeGenerationAst.FieldType.Scalar -> when (this) {
-      is CodeGenerationAst.FieldType.Scalar.ID,
-      is CodeGenerationAst.FieldType.Scalar.String -> CodeBlock.of("reader.readString()")
-      is CodeGenerationAst.FieldType.Scalar.Int -> CodeBlock.of("reader.readInt()")
-      is CodeGenerationAst.FieldType.Scalar.Boolean -> CodeBlock.of("reader.readBoolean()")
-      is CodeGenerationAst.FieldType.Scalar.Float -> CodeBlock.of("reader.readDouble()")
-      is CodeGenerationAst.FieldType.Scalar.Enum -> CodeBlock.of(
-          "%T.safeValueOf(reader.readString())", typeRef.asTypeName().copy(nullable = false)
-      )
-      is CodeGenerationAst.FieldType.Scalar.Custom -> CodeBlock.of(
-          "reader.readCustomScalar<%T>(%T)", ClassName.bestGuess(type), typeRef.asTypeName()
-      )
-    }
-    is CodeGenerationAst.FieldType.Object -> {
-      CodeBlock.builder()
-          .addStatement("reader.readObject<%T>·{·reader·->", typeRef.asTypeName())
-          .indent()
-          .addStatement("%T.fromResponse(reader)", typeRef.asAdapterTypeName())
-          .unindent()
-          .add("}")
-          .build()
-    }
-    is CodeGenerationAst.FieldType.Array -> {
-      CodeBlock.builder()
-          .addStatement("reader.readList<%T>·{·reader·->", rawType.asTypeName().copy(nullable = false))
-          .indent()
-          .add(rawType.readListItemCode())
-          .unindent()
-          .add("\n}")
-          .applyIf(!rawType.nullable) { add(".map·{ it!! }") }
-          .build()
-    }
-  }
-}
