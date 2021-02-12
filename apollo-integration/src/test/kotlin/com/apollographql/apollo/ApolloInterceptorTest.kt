@@ -23,7 +23,6 @@ import okhttp3.*
 import okhttp3.mockwebserver.MockResponse
 import okhttp3.mockwebserver.MockWebServer
 import org.junit.Before
-import org.junit.Rule
 import org.junit.Test
 import java.io.IOException
 import java.util.concurrent.Executor

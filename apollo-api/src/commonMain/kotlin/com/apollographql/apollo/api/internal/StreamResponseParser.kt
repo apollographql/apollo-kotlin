@@ -61,13 +61,7 @@ object StreamResponseParser {
     }
 
     beginObject()
-    val data = adapter.fromResponse(
-        StreamResponseReader(
-            jsonReader = this,
-            variables = variables,
-            customScalarAdapters = customScalarAdapters,
-        )
-    )
+    val data = adapter.fromResponse(this, customScalarAdapters)
     endObject()
     return data
   }

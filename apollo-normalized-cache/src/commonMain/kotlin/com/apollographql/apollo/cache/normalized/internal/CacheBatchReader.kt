@@ -2,11 +2,22 @@ package com.apollographql.apollo.cache.normalized.internal
 
 import com.apollographql.apollo.api.Operation
 import com.apollographql.apollo.api.ResponseField
+import com.apollographql.apollo.api.internal.Utils.shouldSkip
 import com.apollographql.apollo.cache.CacheHeaders
 import com.apollographql.apollo.cache.normalized.CacheKey
 import com.apollographql.apollo.cache.normalized.CacheKeyResolver
 import com.apollographql.apollo.cache.normalized.CacheReference
+import com.apollographql.apollo.exception.FieldMissingException
+import com.apollographql.apollo.exception.ObjectMissingException
 
+/**
+ * Reads [rootFieldSets] starting at [rootKey] from [readableStore]
+ *
+ * This is a resolver that solves the "N+1" problem by batching all SQL queries at a given depth
+ * It respects skip/include directives
+ *
+ * Returns the data in [toMap]
+ */
 class CacheBatchReader(
     private val readableStore: ReadableStore,
     private val rootKey: String,
@@ -46,30 +57,34 @@ class CacheBatchReader(
       val copy = pendingReferences.toList()
       pendingReferences.clear()
       copy.forEach { pendingReference ->
-        val record = records[pendingReference.key] ?: throw error("Cache miss on ${pendingReference.key}")
+        val record = records[pendingReference.key] ?: throw ObjectMissingException(pendingReference.key)
 
         val fieldSet = pendingReference.fieldSets.firstOrNull { it.typeCondition == record["__typename"] }
             ?: pendingReference.fieldSets.first { it.typeCondition == null }
 
-        val map = fieldSet.responseFields.map {
+        val map = fieldSet.responseFields.mapNotNull {
+          if (it.shouldSkip(variables.valueMap())) {
+            return@mapNotNull null
+          }
+
           val type = it.type
-          val value: Any? = if (type.isObject()) {
+          val fieldName = if (type.isObject()) {
             val cacheKey = cacheKeyResolver.fromFieldArguments(it, variables)
             if (cacheKey != CacheKey.NO_KEY ) {
               // user provided a lookup
-              record[cacheKey.key]
-              // should we fallback to fieldName here?
+              cacheKey.key
             } else {
-              val fieldName = cacheKeyBuilder.build(it, variables)
               // no key provided
-              record[fieldName]
+              cacheKeyBuilder.build(it, variables)
             }
           } else {
-            // not an object, use the regular method
-            val fieldName = cacheKeyBuilder.build(it, variables)
-            record[fieldName]
+            cacheKeyBuilder.build(it, variables)
           }
 
+          if (!record.containsKey(fieldName)) {
+            throw FieldMissingException(record.key, fieldName, cacheKeyBuilder.build(it, variables))
+          }
+          val value = record[fieldName]
           value.registerCacheReferences(it.fieldSets)
 
           it.responseName to value
@@ -107,6 +122,7 @@ class CacheBatchReader(
         }
       }
       is Map<*, *> -> {
+        // This will traverse Map custom scalars but this is ok as it shouldn't contain any CacheReference
         mapValues { it.value.resolveCacheReferences() }
       }
       else -> this

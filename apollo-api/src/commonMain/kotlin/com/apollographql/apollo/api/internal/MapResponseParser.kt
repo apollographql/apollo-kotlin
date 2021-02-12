@@ -24,7 +24,7 @@ object MapResponseParser {
       customScalarAdapters: CustomScalarAdapters,
   ): Response<D> {
     val data = (payload["data"] as Map<String, Any?>?)?.let {
-      operation.parseData(it, customScalarAdapters, MapValueResolver())
+      operation.parseData(it, customScalarAdapters)
     }
 
     val errors = if (payload.containsKey("errors")) {
@@ -78,11 +78,5 @@ object MapResponseParser {
       }
     }
     return Error.Location(line, column)
-  }
-
-  private class MapValueResolver : ValueResolver<Map<String, Any?>> {
-    override fun <T> valueFor(map: Map<String, Any?>, field: ResponseField): T? {
-      return map[field.responseName] as T?
-    }
   }
 }

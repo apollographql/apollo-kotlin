@@ -1,6 +1,5 @@
 package com.apollographql.apollo
 
-import com.apollographql.apollo.Utils.immediateExecutor
 import com.apollographql.apollo.Utils.immediateExecutorService
 import com.apollographql.apollo.Utils.readFileToString
 import com.apollographql.apollo.api.Input.Companion.fromNullable

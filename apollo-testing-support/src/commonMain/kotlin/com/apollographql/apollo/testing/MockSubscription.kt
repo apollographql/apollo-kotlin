@@ -1,5 +1,6 @@
 package com.apollographql.apollo.testing
 
+import com.apollographql.apollo.api.CustomScalarAdapters
 import com.apollographql.apollo.api.Operation
 import com.apollographql.apollo.api.ResponseField
 import com.apollographql.apollo.api.Subscription
@@ -7,6 +8,8 @@ import com.apollographql.apollo.api.internal.InputFieldMarshaller
 import com.apollographql.apollo.api.internal.ResponseAdapter
 import com.apollographql.apollo.api.internal.ResponseReader
 import com.apollographql.apollo.api.internal.ResponseWriter
+import com.apollographql.apollo.api.internal.json.JsonReader
+import com.apollographql.apollo.api.internal.json.JsonWriter
 
 class MockSubscription(
     private val queryDocument: String = "subscription MockSubscription { name }",
@@ -33,22 +36,14 @@ class MockSubscription(
 
   override fun adapter(): ResponseAdapter<Data> {
     return object : ResponseAdapter<Data> {
-      override fun fromResponse(reader: ResponseReader, __typename: String?): Data {
+      override fun fromResponse(reader: JsonReader, customScalarAdapters: CustomScalarAdapters): Data {
+        reader.nextName()
         return Data(
-            name = reader.readString(
-                ResponseField(
-                    type = ResponseField.Type.Named.Other("String"),
-                    responseName = "name",
-                    fieldName = "name",
-                    arguments = emptyMap(),
-                    conditions = emptyList(),
-                    fieldSets = emptyList()
-                )
-            )!!
+            name = reader.nextString()!!
         )
       }
 
-      override fun toResponse(writer: ResponseWriter, value: Data) {
+      override fun toResponse(writer: JsonWriter, value: Data, customScalarAdapters: CustomScalarAdapters) {
         TODO("Not yet implemented")
       }
     }

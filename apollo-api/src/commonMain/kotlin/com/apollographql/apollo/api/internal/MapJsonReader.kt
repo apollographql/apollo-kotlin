@@ -1,8 +1,7 @@
-package com.apollographql.apollo.cache.normalized.internal
+package com.apollographql.apollo.api.internal
 
 import com.apollographql.apollo.api.BigDecimal
 import com.apollographql.apollo.api.internal.json.JsonReader
-import com.apollographql.apollo.cache.normalized.CacheReference
 
 class MapJsonReader(val root: Map<String, Any?>) : JsonReader {
   class OrderedMap(val entries: List<Entry>)
@@ -77,7 +76,6 @@ class MapJsonReader(val root: Map<String, Any?>) : JsonReader {
     is BigDecimal -> JsonReader.Token.NUMBER
     is String -> JsonReader.Token.STRING
     is Boolean -> JsonReader.Token.BOOLEAN
-    is CacheReference -> JsonReader.Token.BEGIN_OBJECT
     else -> error("")
   }
   override fun hasNext(): Boolean {

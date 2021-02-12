@@ -1,6 +1,7 @@
 package com.apollographql.apollo.api
 
 import com.apollographql.apollo.api.CustomScalarAdapters.Companion.DEFAULT
+import com.apollographql.apollo.api.internal.MapJsonReader
 import com.apollographql.apollo.api.internal.MapResponseParser
 import com.apollographql.apollo.api.internal.OperationRequestBodyComposer
 import com.apollographql.apollo.api.internal.StreamResponseParser
@@ -168,14 +169,10 @@ fun <D : Operation.Data> Operation<D>.parse(
 fun <D : Operation.Data, M: Map<String, Any?>> Operation<D>.parseData(
     map: M,
     customScalarAdapters: CustomScalarAdapters = DEFAULT,
-    valueResolver: ValueResolver<M>
 ): D {
-  return MapResponseReader(
-      variables(),
+  return MapJsonReader(
       map,
-      valueResolver,
-      customScalarAdapters,
   ).let {
-    adapter().fromResponse(it)
+    adapter().fromResponse(it, customScalarAdapters)
   }
 }
