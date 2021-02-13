@@ -48,15 +48,11 @@ class TestQuery : Query<TestQuery.Data> {
 
       val foo: String
 
-      interface Bar : Foo {
-        val bar: String
-      }
-
       data class BarFoo(
         override val __typename: String,
         override val foo: String,
-        override val bar: String
-      ) : Foo, Bar
+        val bar: String
+      ) : Foo
 
       data class OtherFoo(
         override val __typename: String,
@@ -64,7 +60,7 @@ class TestQuery : Query<TestQuery.Data> {
       ) : Foo
 
       companion object {
-        fun Foo.asBar(): Bar? = this as? Bar
+        fun Foo.asBarFoo(): BarFoo? = this as? BarFoo
       }
     }
   }

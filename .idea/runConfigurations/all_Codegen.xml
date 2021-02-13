@@ -4,7 +4,7 @@
       <option name="executionName" />
       <option name="externalProjectPath" value="$PROJECT_DIR$/.." />
       <option name="externalSystemIdString" value="GRADLE" />
-      <option name="scriptParameters" value="--tests &quot;com.apollographql.apollo.compiler.CodegenTest&quot; -DupdateTestFixtures=true -DcodegenTests=.*named_fragment_inside.*" />
+      <option name="scriptParameters" value="--tests &quot;com.apollographql.apollo.compiler.CodegenTest&quot; -DupdateTestFixtures=true" />
       <option name="taskDescriptions">
         <list />
       </option>

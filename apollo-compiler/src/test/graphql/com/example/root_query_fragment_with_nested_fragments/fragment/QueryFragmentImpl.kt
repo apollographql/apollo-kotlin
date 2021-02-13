@@ -47,6 +47,10 @@ class QueryFragmentImpl : Fragment<QueryFragmentImpl.Data> {
       data class OtherHero(
         override val __typename: String
       ) : QueryFragment.Hero, Hero
+
+      companion object {
+        fun Hero.asCharacterHero(): CharacterHero? = this as? CharacterHero
+      }
     }
 
     /**
@@ -68,6 +72,10 @@ class QueryFragmentImpl : Fragment<QueryFragmentImpl.Data> {
       data class OtherDroid(
         override val __typename: String
       ) : QueryFragment.Droid, Droid
+
+      companion object {
+        fun Droid.asDroidDroid(): DroidDroid? = this as? DroidDroid
+      }
     }
 
     /**
@@ -89,6 +97,10 @@ class QueryFragmentImpl : Fragment<QueryFragmentImpl.Data> {
       data class OtherHuman(
         override val __typename: String
       ) : QueryFragment.Human, Human
+
+      companion object {
+        fun Human.asHumanHuman(): HumanHuman? = this as? HumanHuman
+      }
     }
   }
 }

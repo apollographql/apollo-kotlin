@@ -57,27 +57,20 @@ class TestQuery : Query<TestQuery.Data> {
     interface Objects {
       val __typename: String
 
-      interface Character : Objects {
-        /**
-         * The name of the character
-         */
-        val name: String
-      }
-
       data class CharacterObjects(
         override val __typename: String,
         /**
          * The name of the character
          */
-        override val name: String
-      ) : Objects, Character
+        val name: String
+      ) : Objects
 
       data class OtherObjects(
         override val __typename: String
       ) : Objects
 
       companion object {
-        fun Objects.asCharacter(): Character? = this as? Character
+        fun Objects.asCharacterObjects(): CharacterObjects? = this as? CharacterObjects
       }
     }
   }

@@ -42,57 +42,38 @@ class TestQuery : Query<TestQuery.Data> {
     interface Search {
       val __typename: String
 
-      interface Character : Search {
-        /**
-         * The name of the character
-         */
-        val name: String
-
-        interface Human : Character {
-          /**
-           * The home planet of the human, or null if unknown
-           */
-          val homePlanet: String?
-        }
-
-        interface Droid : Character {
-          /**
-           * This droid's primary function
-           */
-          val primaryFunction: String?
-        }
-      }
-
       data class CharacterDroidSearch(
         override val __typename: String,
         /**
          * The name of the character
          */
-        override val name: String,
+        val name: String,
         /**
          * This droid's primary function
          */
-        override val primaryFunction: String?
-      ) : Search, Character, Character.Droid
+        val primaryFunction: String?
+      ) : Search
 
       data class CharacterHumanSearch(
         override val __typename: String,
         /**
          * The name of the character
          */
-        override val name: String,
+        val name: String,
         /**
          * The home planet of the human, or null if unknown
          */
-        override val homePlanet: String?
-      ) : Search, Character, Character.Human
+        val homePlanet: String?
+      ) : Search
 
       data class OtherSearch(
         override val __typename: String
       ) : Search
 
       companion object {
-        fun Search.asCharacter(): Character? = this as? Character
+        fun Search.asCharacterDroidSearch(): CharacterDroidSearch? = this as? CharacterDroidSearch
+
+        fun Search.asCharacterHumanSearch(): CharacterHumanSearch? = this as? CharacterHumanSearch
       }
     }
   }

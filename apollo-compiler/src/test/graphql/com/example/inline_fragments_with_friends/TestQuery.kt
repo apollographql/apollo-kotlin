@@ -50,50 +50,6 @@ class TestQuery : Query<TestQuery.Data> {
        */
       val name: String
 
-      interface Human : Hero {
-        /**
-         * Height in the preferred unit, default is meters
-         */
-        val height: Double?
-
-        /**
-         * This human's friends, or an empty list if they have none
-         */
-        val friends: List<Friends?>?
-
-        /**
-         * A character from the Star Wars universe
-         */
-        interface Friends {
-          /**
-           * The movies this character appears in
-           */
-          val appearsIn: List<Episode?>
-        }
-      }
-
-      interface Droid : Hero {
-        /**
-         * This droid's primary function
-         */
-        val primaryFunction: String?
-
-        /**
-         * This droid's friends, or an empty list if they have none
-         */
-        val friends: List<Friends?>?
-
-        /**
-         * A character from the Star Wars universe
-         */
-        interface Friends {
-          /**
-           * The ID of the character
-           */
-          val id: String
-        }
-      }
-
       data class HumanHero(
         override val __typename: String,
         /**
@@ -103,12 +59,12 @@ class TestQuery : Query<TestQuery.Data> {
         /**
          * Height in the preferred unit, default is meters
          */
-        override val height: Double?,
+        val height: Double?,
         /**
          * This human's friends, or an empty list if they have none
          */
-        override val friends: List<Friends?>?
-      ) : Hero, Human {
+        val friends: List<Friends?>?
+      ) : Hero {
         /**
          * A character from the Star Wars universe
          */
@@ -116,8 +72,8 @@ class TestQuery : Query<TestQuery.Data> {
           /**
            * The movies this character appears in
            */
-          override val appearsIn: List<Episode?>
-        ) : Human.Friends
+          val appearsIn: List<Episode?>
+        )
       }
 
       data class DroidHero(
@@ -129,12 +85,12 @@ class TestQuery : Query<TestQuery.Data> {
         /**
          * This droid's primary function
          */
-        override val primaryFunction: String?,
+        val primaryFunction: String?,
         /**
          * This droid's friends, or an empty list if they have none
          */
-        override val friends: List<Friends?>?
-      ) : Hero, Droid {
+        val friends: List<Friends?>?
+      ) : Hero {
         /**
          * A character from the Star Wars universe
          */
@@ -142,8 +98,8 @@ class TestQuery : Query<TestQuery.Data> {
           /**
            * The ID of the character
            */
-          override val id: String
-        ) : Droid.Friends
+          val id: String
+        )
       }
 
       data class OtherHero(
@@ -155,9 +111,9 @@ class TestQuery : Query<TestQuery.Data> {
       ) : Hero
 
       companion object {
-        fun Hero.asHuman(): Human? = this as? Human
+        fun Hero.asHumanHero(): HumanHero? = this as? HumanHero
 
-        fun Hero.asDroid(): Droid? = this as? Droid
+        fun Hero.asDroidHero(): DroidHero? = this as? DroidHero
       }
     }
   }

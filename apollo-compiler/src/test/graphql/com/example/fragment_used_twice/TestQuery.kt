@@ -46,14 +46,6 @@ class TestQuery : Query<TestQuery.Data> {
     interface Hero {
       val __typename: String
 
-      interface Character : Hero, HeroDetails {
-        interface Character : Hero.Character, HeroDetails.Character
-      }
-
-      interface Human : Hero, HumanDetails {
-        interface Character : Human, HumanDetails.Character
-      }
-
       data class CharacterHero(
         override val __typename: String,
         /**
@@ -64,7 +56,7 @@ class TestQuery : Query<TestQuery.Data> {
          * The date character was born.
          */
         override val birthDate: Any
-      ) : Hero, Character, HeroDetails, Character.Character, HeroDetails.Character
+      ) : Hero, HeroDetails, HeroDetails.Character
 
       data class CharacterHumanHero(
         override val __typename: String,
@@ -76,21 +68,16 @@ class TestQuery : Query<TestQuery.Data> {
          * The date character was born.
          */
         override val birthDate: Any
-      ) : Hero, Character, HeroDetails, Character.Character, HeroDetails.Character, Human,
-          HumanDetails, Human.Character, HumanDetails.Character
+      ) : Hero, HeroDetails, HeroDetails.Character, HumanDetails, HumanDetails.Character
 
       data class OtherHero(
         override val __typename: String
       ) : Hero
 
       companion object {
-        fun Hero.asCharacter(): Character? = this as? Character
+        fun Hero.asCharacterHero(): CharacterHero? = this as? CharacterHero
 
-        fun Hero.heroDetails(): HeroDetails? = this as? HeroDetails
-
-        fun Hero.asHuman(): Human? = this as? Human
-
-        fun Hero.humanDetails(): HumanDetails? = this as? HumanDetails
+        fun Hero.asCharacterHumanHero(): CharacterHumanHero? = this as? CharacterHumanHero
       }
     }
   }

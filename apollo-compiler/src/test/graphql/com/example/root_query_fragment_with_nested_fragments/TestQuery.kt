@@ -41,23 +41,30 @@ class TestQuery : Query<TestQuery.Data> {
   interface Data : Operation.Data {
     val __typename: String
 
-    interface Query : Data, QueryFragment {
-      override val hero: Hero?
-
-      override val droid: Droid?
-
+    data class QueryData(
+      override val __typename: String,
+      override val hero: Hero?,
+      override val droid: Droid?,
       override val human: Human?
-
+    ) : Data, QueryFragment {
       /**
        * A character from the Star Wars universe
        */
       interface Hero : QueryFragment.Hero {
-        interface Character : Hero, HeroFragment, QueryFragment.Hero.Character, QueryFragment.Hero
+        data class CharacterHero(
+          override val __typename: String,
+          /**
+           * The name of the character
+           */
+          override val name: String
+        ) : HeroFragment, QueryFragment.Hero.Character, QueryFragment.Hero, Hero
+
+        data class OtherHero(
+          override val __typename: String
+        ) : QueryFragment.Hero, Hero
 
         companion object {
-          fun Hero.asCharacter(): Character? = this as? Character
-
-          fun Hero.heroFragment(): HeroFragment? = this as? HeroFragment
+          fun Hero.asCharacterHero(): CharacterHero? = this as? CharacterHero
         }
       }
 
@@ -65,55 +72,6 @@ class TestQuery : Query<TestQuery.Data> {
        * An autonomous mechanical character in the Star Wars universe
        */
       interface Droid : QueryFragment.Droid {
-        interface Droid : Query.Droid, DroidFragment, QueryFragment.Droid.Droid, QueryFragment.Droid
-
-        companion object {
-          fun Query.Droid.asDroid(): Droid? = this as? Droid
-
-          fun Query.Droid.droidFragment(): DroidFragment? = this as? DroidFragment
-        }
-      }
-
-      /**
-       * A humanoid creature from the Star Wars universe
-       */
-      interface Human : QueryFragment.Human {
-        interface Human : Query.Human, QueryFragment.Human.Human, QueryFragment.Human
-
-        companion object {
-          fun Query.Human.asHuman(): Human? = this as? Human
-        }
-      }
-    }
-
-    data class QueryData(
-      override val __typename: String,
-      override val hero: Hero?,
-      override val droid: Droid?,
-      override val human: Human?
-    ) : Data, Query, QueryFragment {
-      /**
-       * A character from the Star Wars universe
-       */
-      interface Hero : Query.Hero, QueryFragment.Hero {
-        data class CharacterHero(
-          override val __typename: String,
-          /**
-           * The name of the character
-           */
-          override val name: String
-        ) : Query.Hero, Query.Hero.Character, HeroFragment, QueryFragment.Hero.Character,
-            QueryFragment.Hero, Hero
-
-        data class OtherHero(
-          override val __typename: String
-        ) : Query.Hero, QueryFragment.Hero, Hero
-      }
-
-      /**
-       * An autonomous mechanical character in the Star Wars universe
-       */
-      interface Droid : Query.Droid, QueryFragment.Droid {
         data class DroidDroid(
           override val __typename: String,
           /**
@@ -124,18 +82,21 @@ class TestQuery : Query<TestQuery.Data> {
            * This droid's primary function
            */
           override val primaryFunction: String?
-        ) : Query.Droid, Query.Droid.Droid, DroidFragment, QueryFragment.Droid.Droid,
-            QueryFragment.Droid, Droid
+        ) : DroidFragment, QueryFragment.Droid.Droid, QueryFragment.Droid, Droid
 
         data class OtherDroid(
           override val __typename: String
-        ) : Query.Droid, QueryFragment.Droid, Droid
+        ) : QueryFragment.Droid, Droid
+
+        companion object {
+          fun Droid.asDroidDroid(): DroidDroid? = this as? DroidDroid
+        }
       }
 
       /**
        * A humanoid creature from the Star Wars universe
        */
-      interface Human : Query.Human, QueryFragment.Human {
+      interface Human : QueryFragment.Human {
         data class HumanHuman(
           override val __typename: String,
           /**
@@ -146,11 +107,15 @@ class TestQuery : Query<TestQuery.Data> {
            * The home planet of the human, or null if unknown
            */
           override val homePlanet: String?
-        ) : Query.Human, Query.Human.Human, QueryFragment.Human.Human, QueryFragment.Human, Human
+        ) : QueryFragment.Human.Human, QueryFragment.Human, Human
 
         data class OtherHuman(
           override val __typename: String
-        ) : Query.Human, QueryFragment.Human, Human
+        ) : QueryFragment.Human, Human
+
+        companion object {
+          fun Human.asHumanHuman(): HumanHuman? = this as? HumanHuman
+        }
       }
     }
 
@@ -159,9 +124,7 @@ class TestQuery : Query<TestQuery.Data> {
     ) : Data
 
     companion object {
-      fun Data.asQuery(): Query? = this as? Query
-
-      fun Data.queryFragment(): QueryFragment? = this as? QueryFragment
+      fun Data.asQueryData(): QueryData? = this as? QueryData
     }
   }
 

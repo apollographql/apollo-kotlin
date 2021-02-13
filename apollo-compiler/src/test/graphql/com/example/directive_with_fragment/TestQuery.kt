@@ -73,10 +73,6 @@ data class TestQuery(
        */
       val id: String
 
-      interface Character : Hero, HeroDetails
-
-      interface Human : Hero, HumanDetails
-
       data class CharacterHero(
         override val __typename: String,
         /**
@@ -87,7 +83,7 @@ data class TestQuery(
          * The name of the character
          */
         override val name: String
-      ) : Hero, Character, HeroDetails
+      ) : Hero, HeroDetails
 
       data class CharacterHumanHero(
         override val __typename: String,
@@ -103,7 +99,7 @@ data class TestQuery(
          * The home planet of the human, or null if unknown
          */
         override val homePlanet: String?
-      ) : Hero, Character, HeroDetails, Human, HumanDetails
+      ) : Hero, HeroDetails, HumanDetails
 
       data class OtherHero(
         override val __typename: String,
@@ -114,13 +110,9 @@ data class TestQuery(
       ) : Hero
 
       companion object {
-        fun Hero.asCharacter(): Character? = this as? Character
+        fun Hero.asCharacterHero(): CharacterHero? = this as? CharacterHero
 
-        fun Hero.heroDetails(): HeroDetails? = this as? HeroDetails
-
-        fun Hero.asHuman(): Human? = this as? Human
-
-        fun Hero.humanDetails(): HumanDetails? = this as? HumanDetails
+        fun Hero.asCharacterHumanHero(): CharacterHumanHero? = this as? CharacterHumanHero
       }
     }
   }

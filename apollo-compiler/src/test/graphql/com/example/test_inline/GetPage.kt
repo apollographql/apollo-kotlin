@@ -43,37 +43,27 @@ class GetPage : Query<GetPage.Data> {
         val title: String
       }
 
-      interface ParticularCollection : Collection {
-        override val items: List<Items>
-
-        interface Items : Collection.Items {
-          val __typename: String
-
-          interface ParticularItem : Items {
-            val image: String
-          }
-
-          companion object {
-            fun Items.asParticularItem(): ParticularItem? = this as? ParticularItem
-          }
-        }
-      }
-
       data class ParticularCollectionCollection(
         override val __typename: String,
         override val items: List<Items>
-      ) : Collection, ParticularCollection {
-        interface Items : Collection.Items, ParticularCollection.Items {
+      ) : Collection {
+        interface Items : Collection.Items {
+          val __typename: String
+
           data class ParticularItemItems(
             override val title: String,
             override val __typename: String,
-            override val image: String
-          ) : ParticularCollection.Items, ParticularCollection.Items.ParticularItem, Items
+            val image: String
+          ) : Items
 
           data class OtherItems(
             override val title: String,
             override val __typename: String
-          ) : Collection.Items, ParticularCollection.Items, Items
+          ) : Collection.Items, Items
+
+          companion object {
+            fun Items.asParticularItemItems(): ParticularItemItems? = this as? ParticularItemItems
+          }
         }
       }
 
@@ -87,8 +77,8 @@ class GetPage : Query<GetPage.Data> {
       }
 
       companion object {
-        fun Collection.asParticularCollection(): ParticularCollection? = this as?
-            ParticularCollection
+        fun Collection.asParticularCollectionCollection(): ParticularCollectionCollection? = this
+            as? ParticularCollectionCollection
       }
     }
   }

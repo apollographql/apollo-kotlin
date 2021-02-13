@@ -46,50 +46,6 @@ class TestQuery : Query<TestQuery.Data> {
     interface Hero {
       val __typename: String
 
-      interface Droid : Hero, DroidDetails {
-        /**
-         * This droid's friends, or an empty list if they have none
-         */
-        override val friends: List<Friends?>?
-
-        /**
-         * A character from the Star Wars universe
-         */
-        interface Friends : DroidDetails.Friends
-      }
-
-      interface Human : Hero, HumanDetails {
-        /**
-         * The friends of the human exposed as a connection with edges
-         */
-        override val friendsConnection: FriendsConnection
-
-        /**
-         * A connection object for a character's friends
-         */
-        interface FriendsConnection : HumanDetails.FriendsConnection {
-          /**
-           * The edges for each of the character's friends.
-           */
-          override val edges: List<Edges?>?
-
-          /**
-           * An edge object for a character's friends
-           */
-          interface Edges : HumanDetails.FriendsConnection.Edges {
-            /**
-             * The character represented by this friendship edge
-             */
-            override val node: Node?
-
-            /**
-             * A character from the Star Wars universe
-             */
-            interface Node : HumanDetails.FriendsConnection.Edges.Node
-          }
-        }
-      }
-
       data class DroidHero(
         override val __typename: String,
         /**
@@ -104,7 +60,7 @@ class TestQuery : Query<TestQuery.Data> {
          * This droid's friends, or an empty list if they have none
          */
         override val friends: List<Friends?>?
-      ) : Hero, Droid, DroidDetails {
+      ) : Hero, DroidDetails {
         /**
          * A character from the Star Wars universe
          */
@@ -113,7 +69,7 @@ class TestQuery : Query<TestQuery.Data> {
            * The name of the character
            */
           override val name: String
-        ) : Droid.Friends, DroidDetails.Friends
+        ) : DroidDetails.Friends
       }
 
       data class HumanHero(
@@ -130,7 +86,7 @@ class TestQuery : Query<TestQuery.Data> {
          * The friends of the human exposed as a connection with edges
          */
         override val friendsConnection: FriendsConnection
-      ) : Hero, Human, HumanDetails {
+      ) : Hero, HumanDetails {
         /**
          * A connection object for a character's friends
          */
@@ -139,7 +95,7 @@ class TestQuery : Query<TestQuery.Data> {
            * The edges for each of the character's friends.
            */
           override val edges: List<Edges?>?
-        ) : Human.FriendsConnection, HumanDetails.FriendsConnection {
+        ) : HumanDetails.FriendsConnection {
           /**
            * An edge object for a character's friends
            */
@@ -148,7 +104,7 @@ class TestQuery : Query<TestQuery.Data> {
              * The character represented by this friendship edge
              */
             override val node: Node?
-          ) : Human.FriendsConnection.Edges, HumanDetails.FriendsConnection.Edges {
+          ) : HumanDetails.FriendsConnection.Edges {
             /**
              * A character from the Star Wars universe
              */
@@ -157,7 +113,7 @@ class TestQuery : Query<TestQuery.Data> {
                * The name of the character
                */
               override val name: String
-            ) : Human.FriendsConnection.Edges.Node, HumanDetails.FriendsConnection.Edges.Node
+            ) : HumanDetails.FriendsConnection.Edges.Node
           }
         }
       }
@@ -167,13 +123,9 @@ class TestQuery : Query<TestQuery.Data> {
       ) : Hero
 
       companion object {
-        fun Hero.asDroid(): Droid? = this as? Droid
+        fun Hero.asDroidHero(): DroidHero? = this as? DroidHero
 
-        fun Hero.droidDetails(): DroidDetails? = this as? DroidDetails
-
-        fun Hero.asHuman(): Human? = this as? Human
-
-        fun Hero.humanDetails(): HumanDetails? = this as? HumanDetails
+        fun Hero.asHumanHero(): HumanHero? = this as? HumanHero
       }
     }
   }

@@ -38,9 +38,9 @@ object TestQuery_ResponseAdapter : ResponseAdapter<TestQuery.Data> {
         "text" to "abc"),
       conditions = emptyList(),
       fieldSets = listOf(
-        ResponseField.FieldSet("Human", Object.CharacterObject.RESPONSE_FIELDS),
-        ResponseField.FieldSet("Droid", Object.CharacterObject.RESPONSE_FIELDS),
-        ResponseField.FieldSet(null, Object.OtherObject.RESPONSE_FIELDS),
+        ResponseField.FieldSet("Human", Objects.CharacterObjects.RESPONSE_FIELDS),
+        ResponseField.FieldSet("Droid", Objects.CharacterObjects.RESPONSE_FIELDS),
+        ResponseField.FieldSet(null, Objects.OtherObjects.RESPONSE_FIELDS),
       ),
     )
   )
@@ -48,15 +48,15 @@ object TestQuery_ResponseAdapter : ResponseAdapter<TestQuery.Data> {
   override fun fromResponse(reader: ResponseReader, __typename: String?): TestQuery.Data {
     return reader.run {
       var yield_: TestQuery.Data.Yield? = null
-      var objects: List<TestQuery.Data.Object?>? = null
+      var objects: List<TestQuery.Data.Objects?>? = null
       while(true) {
         when (selectField(RESPONSE_FIELDS)) {
           0 -> yield_ = readObject<TestQuery.Data.Yield>(RESPONSE_FIELDS[0]) { reader ->
             Yield.fromResponse(reader)
           }
-          1 -> objects = readList<TestQuery.Data.Object>(RESPONSE_FIELDS[1]) { reader ->
-            reader.readObject<TestQuery.Data.Object> { reader ->
-              Object.fromResponse(reader)
+          1 -> objects = readList<TestQuery.Data.Objects>(RESPONSE_FIELDS[1]) { reader ->
+            reader.readObject<TestQuery.Data.Objects> { reader ->
+              Objects.fromResponse(reader)
             }
           }
           else -> break
@@ -79,7 +79,7 @@ object TestQuery_ResponseAdapter : ResponseAdapter<TestQuery.Data> {
     }
     writer.writeList(RESPONSE_FIELDS[1], value.objects) { value, listItemWriter ->
       listItemWriter.writeObject { writer ->
-        Object.toResponse(writer, value)
+        Objects.toResponse(writer, value)
       }
     }
   }
@@ -128,24 +128,24 @@ object TestQuery_ResponseAdapter : ResponseAdapter<TestQuery.Data> {
     }
   }
 
-  object Object : ResponseAdapter<TestQuery.Data.Object> {
-    override fun fromResponse(reader: ResponseReader, __typename: String?): TestQuery.Data.Object {
+  object Objects : ResponseAdapter<TestQuery.Data.Objects> {
+    override fun fromResponse(reader: ResponseReader, __typename: String?): TestQuery.Data.Objects {
       val typename = __typename ?: reader.readString(ResponseField.Typename)
       return when(typename) {
-        "Human" -> CharacterObject.fromResponse(reader, typename)
-        "Droid" -> CharacterObject.fromResponse(reader, typename)
-        else -> OtherObject.fromResponse(reader, typename)
+        "Human" -> CharacterObjects.fromResponse(reader, typename)
+        "Droid" -> CharacterObjects.fromResponse(reader, typename)
+        else -> OtherObjects.fromResponse(reader, typename)
       }
     }
 
-    override fun toResponse(writer: ResponseWriter, value: TestQuery.Data.Object) {
+    override fun toResponse(writer: ResponseWriter, value: TestQuery.Data.Objects) {
       when(value) {
-        is TestQuery.Data.Object.CharacterObject -> CharacterObject.toResponse(writer, value)
-        is TestQuery.Data.Object.OtherObject -> OtherObject.toResponse(writer, value)
+        is TestQuery.Data.Objects.CharacterObjects -> CharacterObjects.toResponse(writer, value)
+        is TestQuery.Data.Objects.OtherObjects -> OtherObjects.toResponse(writer, value)
       }
     }
 
-    object CharacterObject : ResponseAdapter<TestQuery.Data.Object.CharacterObject> {
+    object CharacterObjects : ResponseAdapter<TestQuery.Data.Objects.CharacterObjects> {
       val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
         ResponseField(
           type = ResponseField.Type.NotNull(ResponseField.Type.Named.Other("String")),
@@ -166,7 +166,7 @@ object TestQuery_ResponseAdapter : ResponseAdapter<TestQuery.Data> {
       )
 
       override fun fromResponse(reader: ResponseReader, __typename: String?):
-          TestQuery.Data.Object.CharacterObject {
+          TestQuery.Data.Objects.CharacterObjects {
         return reader.run {
           var __typename: String? = __typename
           var name: String? = null
@@ -177,7 +177,7 @@ object TestQuery_ResponseAdapter : ResponseAdapter<TestQuery.Data> {
               else -> break
             }
           }
-          TestQuery.Data.Object.CharacterObject(
+          TestQuery.Data.Objects.CharacterObjects(
             __typename = __typename!!,
             name = name!!
           )
@@ -185,13 +185,13 @@ object TestQuery_ResponseAdapter : ResponseAdapter<TestQuery.Data> {
       }
 
       override fun toResponse(writer: ResponseWriter,
-          value: TestQuery.Data.Object.CharacterObject) {
+          value: TestQuery.Data.Objects.CharacterObjects) {
         writer.writeString(RESPONSE_FIELDS[0], value.__typename)
         writer.writeString(RESPONSE_FIELDS[1], value.name)
       }
     }
 
-    object OtherObject : ResponseAdapter<TestQuery.Data.Object.OtherObject> {
+    object OtherObjects : ResponseAdapter<TestQuery.Data.Objects.OtherObjects> {
       val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
         ResponseField(
           type = ResponseField.Type.NotNull(ResponseField.Type.Named.Other("String")),
@@ -204,7 +204,7 @@ object TestQuery_ResponseAdapter : ResponseAdapter<TestQuery.Data> {
       )
 
       override fun fromResponse(reader: ResponseReader, __typename: String?):
-          TestQuery.Data.Object.OtherObject {
+          TestQuery.Data.Objects.OtherObjects {
         return reader.run {
           var __typename: String? = __typename
           while(true) {
@@ -213,13 +213,13 @@ object TestQuery_ResponseAdapter : ResponseAdapter<TestQuery.Data> {
               else -> break
             }
           }
-          TestQuery.Data.Object.OtherObject(
+          TestQuery.Data.Objects.OtherObjects(
             __typename = __typename!!
           )
         }
       }
 
-      override fun toResponse(writer: ResponseWriter, value: TestQuery.Data.Object.OtherObject) {
+      override fun toResponse(writer: ResponseWriter, value: TestQuery.Data.Objects.OtherObjects) {
         writer.writeString(RESPONSE_FIELDS[0], value.__typename)
       }
     }

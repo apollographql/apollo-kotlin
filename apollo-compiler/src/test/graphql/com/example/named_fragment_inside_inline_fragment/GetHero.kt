@@ -7,6 +7,7 @@ package com.example.named_fragment_inside_inline_fragment
 
 import com.apollographql.apollo.api.Operation
 import com.apollographql.apollo.api.Query
+import com.apollographql.apollo.api.ResponseField
 import com.apollographql.apollo.api.internal.QueryDocumentMinifier
 import com.apollographql.apollo.api.internal.ResponseAdapter
 import com.example.named_fragment_inside_inline_fragment.adapter.GetHero_ResponseAdapter
@@ -30,6 +31,9 @@ class GetHero : Query<GetHero.Data> {
   override fun name(): String = OPERATION_NAME
 
   override fun adapter(): ResponseAdapter<Data> = GetHero_ResponseAdapter
+  override fun responseFields(): List<ResponseField.FieldSet> = listOf(
+    ResponseField.FieldSet(null, GetHero_ResponseAdapter.RESPONSE_FIELDS)
+  )
   /**
    * The query type, represents all of the entry points into our object graph
    */
@@ -42,10 +46,6 @@ class GetHero : Query<GetHero.Data> {
     interface Hero {
       val __typename: String
 
-      interface Character : Hero {
-        interface Character : Hero.Character, CharacterName, CharacterAppearsIn
-      }
-
       data class CharacterHero(
         override val __typename: String,
         /**
@@ -56,14 +56,14 @@ class GetHero : Query<GetHero.Data> {
          * The movies this character appears in
          */
         override val appearsIn: List<Episode?>
-      ) : Hero, Character, Character.Character, CharacterName, CharacterAppearsIn
+      ) : Hero, CharacterName, CharacterAppearsIn
 
       data class OtherHero(
         override val __typename: String
       ) : Hero
 
       companion object {
-        fun Hero.asCharacter(): Character? = this as? Character
+        fun Hero.asCharacterHero(): CharacterHero? = this as? CharacterHero
       }
     }
   }

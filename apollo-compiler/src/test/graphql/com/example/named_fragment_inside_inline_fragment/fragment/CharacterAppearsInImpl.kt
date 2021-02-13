@@ -7,6 +7,7 @@ package com.example.named_fragment_inside_inline_fragment.fragment
 
 import com.apollographql.apollo.api.Fragment
 import com.apollographql.apollo.api.Operation
+import com.apollographql.apollo.api.ResponseField
 import com.apollographql.apollo.api.internal.ResponseAdapter
 import com.example.named_fragment_inside_inline_fragment.fragment.adapter.CharacterAppearsInImpl_ResponseAdapter
 import com.example.named_fragment_inside_inline_fragment.type.Episode
@@ -18,6 +19,9 @@ class CharacterAppearsInImpl : Fragment<CharacterAppearsInImpl.Data> {
     return CharacterAppearsInImpl_ResponseAdapter
   }
 
+  override fun responseFields(): List<ResponseField.FieldSet> = listOf(
+    ResponseField.FieldSet(null, CharacterAppearsInImpl_ResponseAdapter.RESPONSE_FIELDS)
+  )
   override fun variables(): Operation.Variables = Operation.EMPTY_VARIABLES
 
   /**

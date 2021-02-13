@@ -49,15 +49,9 @@ internal class TestQuery : Query<TestQuery.Data> {
     interface Hero {
       val __typename: String
 
-      interface Character : Hero, HeroDetails {
-        interface Human : Character, HeroDetails.Human
-      }
-
-      interface Human : Hero, HumanDetails
-
       data class CharacterHero(
         override val __typename: String
-      ) : Hero, Character, HeroDetails
+      ) : Hero, HeroDetails
 
       data class CharacterHumanHero(
         override val __typename: String,
@@ -65,20 +59,16 @@ internal class TestQuery : Query<TestQuery.Data> {
          * What this human calls themselves
          */
         override val name: String
-      ) : Hero, Character, HeroDetails, Character.Human, HeroDetails.Human, Human, HumanDetails
+      ) : Hero, HeroDetails, HeroDetails.Human, HumanDetails
 
       data class OtherHero(
         override val __typename: String
       ) : Hero
 
       companion object {
-        fun Hero.asCharacter(): Character? = this as? Character
+        fun Hero.asCharacterHero(): CharacterHero? = this as? CharacterHero
 
-        fun Hero.heroDetails(): HeroDetails? = this as? HeroDetails
-
-        fun Hero.asHuman(): Human? = this as? Human
-
-        fun Hero.humanDetails(): HumanDetails? = this as? HumanDetails
+        fun Hero.asCharacterHumanHero(): CharacterHumanHero? = this as? CharacterHumanHero
       }
     }
   }

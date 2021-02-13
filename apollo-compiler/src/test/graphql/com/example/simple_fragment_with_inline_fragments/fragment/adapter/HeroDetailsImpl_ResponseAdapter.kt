@@ -44,9 +44,9 @@ object HeroDetailsImpl_ResponseAdapter : ResponseAdapter<HeroDetailsImpl.Data> {
       arguments = emptyMap(),
       conditions = emptyList(),
       fieldSets = listOf(
-        ResponseField.FieldSet("Human", Friend.HumanFriend.RESPONSE_FIELDS),
-        ResponseField.FieldSet("Droid", Friend.DroidFriend.RESPONSE_FIELDS),
-        ResponseField.FieldSet(null, Friend.OtherFriend.RESPONSE_FIELDS),
+        ResponseField.FieldSet("Human", Friends.HumanFriends.RESPONSE_FIELDS),
+        ResponseField.FieldSet("Droid", Friends.DroidFriends.RESPONSE_FIELDS),
+        ResponseField.FieldSet(null, Friends.OtherFriends.RESPONSE_FIELDS),
       ),
     )
   )
@@ -55,14 +55,14 @@ object HeroDetailsImpl_ResponseAdapter : ResponseAdapter<HeroDetailsImpl.Data> {
     return reader.run {
       var __typename: String? = __typename
       var name: String? = null
-      var friends: List<HeroDetailsImpl.Data.Friend?>? = null
+      var friends: List<HeroDetailsImpl.Data.Friends?>? = null
       while(true) {
         when (selectField(RESPONSE_FIELDS)) {
           0 -> __typename = readString(RESPONSE_FIELDS[0])
           1 -> name = readString(RESPONSE_FIELDS[1])
-          2 -> friends = readList<HeroDetailsImpl.Data.Friend>(RESPONSE_FIELDS[2]) { reader ->
-            reader.readObject<HeroDetailsImpl.Data.Friend> { reader ->
-              Friend.fromResponse(reader)
+          2 -> friends = readList<HeroDetailsImpl.Data.Friends>(RESPONSE_FIELDS[2]) { reader ->
+            reader.readObject<HeroDetailsImpl.Data.Friends> { reader ->
+              Friends.fromResponse(reader)
             }
           }
           else -> break
@@ -81,31 +81,31 @@ object HeroDetailsImpl_ResponseAdapter : ResponseAdapter<HeroDetailsImpl.Data> {
     writer.writeString(RESPONSE_FIELDS[1], value.name)
     writer.writeList(RESPONSE_FIELDS[2], value.friends) { value, listItemWriter ->
       listItemWriter.writeObject { writer ->
-        Friend.toResponse(writer, value)
+        Friends.toResponse(writer, value)
       }
     }
   }
 
-  object Friend : ResponseAdapter<HeroDetailsImpl.Data.Friend> {
+  object Friends : ResponseAdapter<HeroDetailsImpl.Data.Friends> {
     override fun fromResponse(reader: ResponseReader, __typename: String?):
-        HeroDetailsImpl.Data.Friend {
+        HeroDetailsImpl.Data.Friends {
       val typename = __typename ?: reader.readString(ResponseField.Typename)
       return when(typename) {
-        "Human" -> HumanFriend.fromResponse(reader, typename)
-        "Droid" -> DroidFriend.fromResponse(reader, typename)
-        else -> OtherFriend.fromResponse(reader, typename)
+        "Human" -> HumanFriends.fromResponse(reader, typename)
+        "Droid" -> DroidFriends.fromResponse(reader, typename)
+        else -> OtherFriends.fromResponse(reader, typename)
       }
     }
 
-    override fun toResponse(writer: ResponseWriter, value: HeroDetailsImpl.Data.Friend) {
+    override fun toResponse(writer: ResponseWriter, value: HeroDetailsImpl.Data.Friends) {
       when(value) {
-        is HeroDetailsImpl.Data.Friend.HumanFriend -> HumanFriend.toResponse(writer, value)
-        is HeroDetailsImpl.Data.Friend.DroidFriend -> DroidFriend.toResponse(writer, value)
-        is HeroDetailsImpl.Data.Friend.OtherFriend -> OtherFriend.toResponse(writer, value)
+        is HeroDetailsImpl.Data.Friends.HumanFriends -> HumanFriends.toResponse(writer, value)
+        is HeroDetailsImpl.Data.Friends.DroidFriends -> DroidFriends.toResponse(writer, value)
+        is HeroDetailsImpl.Data.Friends.OtherFriends -> OtherFriends.toResponse(writer, value)
       }
     }
 
-    object HumanFriend : ResponseAdapter<HeroDetailsImpl.Data.Friend.HumanFriend> {
+    object HumanFriends : ResponseAdapter<HeroDetailsImpl.Data.Friends.HumanFriends> {
       val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
         ResponseField(
           type = ResponseField.Type.NotNull(ResponseField.Type.Named.Other("String")),
@@ -134,7 +134,7 @@ object HeroDetailsImpl_ResponseAdapter : ResponseAdapter<HeroDetailsImpl.Data> {
       )
 
       override fun fromResponse(reader: ResponseReader, __typename: String?):
-          HeroDetailsImpl.Data.Friend.HumanFriend {
+          HeroDetailsImpl.Data.Friends.HumanFriends {
         return reader.run {
           var __typename: String? = __typename
           var name: String? = null
@@ -147,7 +147,7 @@ object HeroDetailsImpl_ResponseAdapter : ResponseAdapter<HeroDetailsImpl.Data> {
               else -> break
             }
           }
-          HeroDetailsImpl.Data.Friend.HumanFriend(
+          HeroDetailsImpl.Data.Friends.HumanFriends(
             __typename = __typename!!,
             name = name!!,
             height = height
@@ -156,14 +156,14 @@ object HeroDetailsImpl_ResponseAdapter : ResponseAdapter<HeroDetailsImpl.Data> {
       }
 
       override fun toResponse(writer: ResponseWriter,
-          value: HeroDetailsImpl.Data.Friend.HumanFriend) {
+          value: HeroDetailsImpl.Data.Friends.HumanFriends) {
         writer.writeString(RESPONSE_FIELDS[0], value.__typename)
         writer.writeString(RESPONSE_FIELDS[1], value.name)
         writer.writeDouble(RESPONSE_FIELDS[2], value.height)
       }
     }
 
-    object DroidFriend : ResponseAdapter<HeroDetailsImpl.Data.Friend.DroidFriend> {
+    object DroidFriends : ResponseAdapter<HeroDetailsImpl.Data.Friends.DroidFriends> {
       val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
         ResponseField(
           type = ResponseField.Type.NotNull(ResponseField.Type.Named.Other("String")),
@@ -192,7 +192,7 @@ object HeroDetailsImpl_ResponseAdapter : ResponseAdapter<HeroDetailsImpl.Data> {
       )
 
       override fun fromResponse(reader: ResponseReader, __typename: String?):
-          HeroDetailsImpl.Data.Friend.DroidFriend {
+          HeroDetailsImpl.Data.Friends.DroidFriends {
         return reader.run {
           var __typename: String? = __typename
           var name: String? = null
@@ -205,7 +205,7 @@ object HeroDetailsImpl_ResponseAdapter : ResponseAdapter<HeroDetailsImpl.Data> {
               else -> break
             }
           }
-          HeroDetailsImpl.Data.Friend.DroidFriend(
+          HeroDetailsImpl.Data.Friends.DroidFriends(
             __typename = __typename!!,
             name = name!!,
             primaryFunction = primaryFunction
@@ -214,14 +214,14 @@ object HeroDetailsImpl_ResponseAdapter : ResponseAdapter<HeroDetailsImpl.Data> {
       }
 
       override fun toResponse(writer: ResponseWriter,
-          value: HeroDetailsImpl.Data.Friend.DroidFriend) {
+          value: HeroDetailsImpl.Data.Friends.DroidFriends) {
         writer.writeString(RESPONSE_FIELDS[0], value.__typename)
         writer.writeString(RESPONSE_FIELDS[1], value.name)
         writer.writeString(RESPONSE_FIELDS[2], value.primaryFunction)
       }
     }
 
-    object OtherFriend : ResponseAdapter<HeroDetailsImpl.Data.Friend.OtherFriend> {
+    object OtherFriends : ResponseAdapter<HeroDetailsImpl.Data.Friends.OtherFriends> {
       val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
         ResponseField(
           type = ResponseField.Type.NotNull(ResponseField.Type.Named.Other("String")),
@@ -242,7 +242,7 @@ object HeroDetailsImpl_ResponseAdapter : ResponseAdapter<HeroDetailsImpl.Data> {
       )
 
       override fun fromResponse(reader: ResponseReader, __typename: String?):
-          HeroDetailsImpl.Data.Friend.OtherFriend {
+          HeroDetailsImpl.Data.Friends.OtherFriends {
         return reader.run {
           var __typename: String? = __typename
           var name: String? = null
@@ -253,7 +253,7 @@ object HeroDetailsImpl_ResponseAdapter : ResponseAdapter<HeroDetailsImpl.Data> {
               else -> break
             }
           }
-          HeroDetailsImpl.Data.Friend.OtherFriend(
+          HeroDetailsImpl.Data.Friends.OtherFriends(
             __typename = __typename!!,
             name = name!!
           )
@@ -261,7 +261,7 @@ object HeroDetailsImpl_ResponseAdapter : ResponseAdapter<HeroDetailsImpl.Data> {
       }
 
       override fun toResponse(writer: ResponseWriter,
-          value: HeroDetailsImpl.Data.Friend.OtherFriend) {
+          value: HeroDetailsImpl.Data.Friends.OtherFriends) {
         writer.writeString(RESPONSE_FIELDS[0], value.__typename)
         writer.writeString(RESPONSE_FIELDS[1], value.name)
       }

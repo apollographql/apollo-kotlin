@@ -70,6 +70,10 @@ data class QueryFragmentImpl(
         data class OtherUser(
           override val __typename: String
         ) : QueryFragment.Organization.User, User
+
+        companion object {
+          fun User.asUserUser(): UserUser? = this as? UserUser
+        }
       }
     }
   }

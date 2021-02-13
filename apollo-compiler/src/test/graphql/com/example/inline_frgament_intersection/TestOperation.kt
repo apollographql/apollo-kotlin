@@ -40,96 +40,67 @@ class TestOperation : Query<TestOperation.Data> {
     interface Random {
       val __typename: String
 
-      interface Being : Random {
-        val name: String
-
-        val friends: List<Friends>
-
+      data class BeingHumanRandom(
+        override val __typename: String,
+        val name: String,
+        val friends: List<Friends>,
+        val profilePictureUrl: String?
+      ) : Random {
         interface Friends {
           val __typename: String
 
           val name: String
 
-          interface Wookie : Friends {
-            val lifeExpectancy: Double?
-          }
+          val isFamous: Boolean?
 
-          companion object {
-            fun Friends.asWookie(): Wookie? = this as? Wookie
-          }
-        }
-
-        interface Human : Being {
-          override val friends: List<Friends>
-
-          val profilePictureUrl: String?
-
-          interface Friends : Being.Friends {
-            val isFamous: Boolean?
-
-            interface Wookie : Being.Friends, Being.Friends.Wookie, Friends {
-              val race: Race
-            }
-
-            companion object {
-              fun Friends.asWookie(): Wookie? = this as? Wookie
-            }
-          }
-        }
-      }
-
-      interface Wookie : Random {
-        val race: Race
-
-        val friends: List<Friends>
-
-        interface Friends {
-          val lifeExpectancy: Double?
-        }
-      }
-
-      data class BeingHumanRandom(
-        override val __typename: String,
-        override val name: String,
-        override val friends: List<Friends>,
-        override val profilePictureUrl: String?
-      ) : Random, Being, Being.Human {
-        interface Friends : Being.Friends, Being.Human.Friends {
           data class WookieFriends(
             override val __typename: String,
             override val name: String,
             override val isFamous: Boolean?,
-            override val lifeExpectancy: Double?,
-            override val race: Race
-          ) : Being.Friends, Being.Friends.Wookie, Being.Human.Friends, Being.Human.Friends.Wookie,
-              Friends
+            val lifeExpectancy: Double?,
+            val race: Race
+          ) : Friends
 
           data class OtherFriends(
             override val __typename: String,
             override val name: String,
             override val isFamous: Boolean?
-          ) : Being.Friends, Being.Human.Friends, Friends
+          ) : Friends
+
+          companion object {
+            fun Friends.asWookieFriends(): WookieFriends? = this as? WookieFriends
+          }
         }
       }
 
       data class BeingWookieRandom(
         override val __typename: String,
-        override val name: String,
-        override val friends: List<Friends>,
-        override val race: Race
-      ) : Random, Being, Wookie {
-        interface Friends : Being.Friends, Wookie.Friends {
+        val name: String,
+        val friends: List<Friends>,
+        val race: Race
+      ) : Random {
+        interface Friends {
+          val __typename: String
+
+          val name: String
+
+          val lifeExpectancy: Double?
+
           data class WookieFriends(
             override val __typename: String,
             override val name: String,
             override val lifeExpectancy: Double?
-          ) : Being.Friends, Being.Friends.Wookie, Friends
+          ) : Friends
 
           data class OtherFriends(
             override val __typename: String,
             override val name: String,
             override val lifeExpectancy: Double?
-          ) : Being.Friends, Wookie.Friends, Friends
+          ) : Friends
+
+          companion object {
+            fun Friends.asWookieFriends(): WookieFriends? = this as? WookieFriends
+          }
         }
       }
 
@@ -138,9 +109,9 @@ class TestOperation : Query<TestOperation.Data> {
       ) : Random
 
       companion object {
-        fun Random.asBeing(): Being? = this as? Being
+        fun Random.asBeingHumanRandom(): BeingHumanRandom? = this as? BeingHumanRandom
 
-        fun Random.asWookie(): Wookie? = this as? Wookie
+        fun Random.asBeingWookieRandom(): BeingWookieRandom? = this as? BeingWookieRandom
       }
     }
   }

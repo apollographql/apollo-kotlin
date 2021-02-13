@@ -64,45 +64,30 @@ data class GetUser(
   interface Data : Operation.Data {
     val __typename: String
 
-    interface Query : Data, QueryFragment {
-      override val organization: Organization?
-
-      interface Organization : QueryFragment.Organization {
-        override val user: List<User>
-
-        interface User : QueryFragment.Organization.User {
-          interface User : Organization.User, UserFragment, QueryFragment.Organization.User.User,
-              QueryFragment.Organization.User
-
-          companion object {
-            fun Organization.User.asUser(): User? = this as? User
-
-            fun Organization.User.userFragment(): UserFragment? = this as? UserFragment
-          }
-        }
-      }
-    }
-
     data class QueryData(
       override val __typename: String,
       override val organization: Organization?
-    ) : Data, Query, QueryFragment {
+    ) : Data, QueryFragment {
       data class Organization(
         override val id: String,
         override val user: List<User>
-      ) : Query.Organization, QueryFragment.Organization {
-        interface User : Query.Organization.User, QueryFragment.Organization.User {
+      ) : QueryFragment.Organization {
+        interface User : QueryFragment.Organization.User {
           data class UserUser(
             override val __typename: String,
             override val firstName: String,
             override val lastName: String,
             override val avatar: String
-          ) : Query.Organization.User, Query.Organization.User.User, UserFragment,
-              QueryFragment.Organization.User.User, QueryFragment.Organization.User, User
+          ) : UserFragment, QueryFragment.Organization.User.User, QueryFragment.Organization.User,
+              User
 
           data class OtherUser(
             override val __typename: String
-          ) : Query.Organization.User, QueryFragment.Organization.User, User
+          ) : QueryFragment.Organization.User, User
+
+          companion object {
+            fun User.asUserUser(): UserUser? = this as? UserUser
+          }
         }
       }
     }
@@ -112,9 +97,7 @@ data class GetUser(
     ) : Data
 
     companion object {
-      fun Data.asQuery(): Query? = this as? Query
-
-      fun Data.queryFragment(): QueryFragment? = this as? QueryFragment
+      fun Data.asQueryData(): QueryData? = this as? QueryData
     }
   }
 

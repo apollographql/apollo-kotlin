@@ -92,12 +92,20 @@ class StarshipFragmentImpl : Fragment<StarshipFragmentImpl.Data> {
                 override val __typename: String
               ) : StarshipFragment.PilotConnection.Edges.Node.Person.Homeworld,
                   PilotFragment.Homeworld, Homeworld
+
+              companion object {
+                fun Homeworld.asPlanetHomeworld(): PlanetHomeworld? = this as? PlanetHomeworld
+              }
             }
           }
 
           data class OtherNode(
             override val __typename: String
           ) : StarshipFragment.PilotConnection.Edges.Node, Node
+
+          companion object {
+            fun Node.asPersonNode(): PersonNode? = this as? PersonNode
+          }
         }
       }
     }

@@ -5,6 +5,7 @@ import com.apollographql.apollo.compiler.backend.ir.BackendIrMergeUtils.mergeFie
 import com.apollographql.apollo.compiler.backend.ir.SelectionKeyUtils.addFieldSelectionKey
 import com.apollographql.apollo.compiler.backend.ir.SelectionKeyUtils.attachToNewSelectionRoot
 import com.apollographql.apollo.compiler.backend.ir.SelectionKeyUtils.isBelongToNamedFragment
+import com.apollographql.apollo.compiler.backend.ir.SelectionKeyUtils.removeFragmentSelectionKeys
 import com.apollographql.apollo.compiler.frontend.GQLNamedType
 import com.apollographql.apollo.compiler.frontend.Schema
 import com.apollographql.apollo.compiler.frontend.SourceLocation
@@ -156,7 +157,7 @@ internal class BackendIrBuilder constructor(
         name = this.name,
         alias = this.alias,
         schemaTypeRef = this.type.toSchemaType(),
-        typeName = this.typeName,
+        typeName = this.responseName,
         args = arguments,
         fields = fields,
         fragments = fragments,
@@ -180,7 +181,7 @@ internal class BackendIrBuilder constructor(
   private fun List<FrontendIr.Selection.Field>.buildBackendIrFields(selectionKey: SelectionKey): List<BackendIr.Field> {
     return this.map { field ->
       field.buildBackendIrField(
-          selectionKey = selectionKey + field.typeName,
+          selectionKey = selectionKey + field.responseName,
       )
     }
   }
@@ -381,24 +382,44 @@ internal class BackendIrBuilder constructor(
     val fragmentInterfaces = this.fragments
         .mergeInterfaceFragmentsWithTheSameName()
 
+    val fragmentInterfaceRootSelectionKeys = fragmentInterfaces
+        .map { selectionKey + it.name }
+
     val fragmentImplementations = fragmentInterfaces
         .flattenFragments()
         .buildFragmentImplementations(
             parentName = this.typeName,
-            parentFields = this.fields,
+            // NOTE: required by new version that removes interfaces
+            parentFields = this.fields.addFieldSelectionKey(selectionKey),
             parentPossibleSchemaTypes = fieldPossibleSchemaTypes,
             parentSelectionKeys = this.selectionKeys,
             selectionKey = selectionKey,
         )
+        // NOTE: new version that removes interfaces
+        .map { it.removeFragmentSelectionKeys(fragmentInterfaceRootSelectionKeys) }
 
+    // NOTE: new version that removes interfaces
     return this.copy(
-        fields = this.fields.takeIf { keepInterfaces } ?: this.fields.filter { it.name == "__typename" },
+        fields = this.fields,
         fragments = BackendIr.Fragments(
-            fragments = (fragmentInterfaces.takeIf { keepInterfaces } ?: emptyList()) + fragmentImplementations,
-            accessors = (this.fragments.accessors.takeIf { keepInterfaces } ?: emptyMap()),
+            fragments = fragmentImplementations,
+            accessors = fragmentImplementations
+                .filterNot { it.type == BackendIr.Fragment.Type.Fallback }
+                .map { "as${it.name.capitalize()}" to selectionKey + it.name }
+                .toMap()
         ),
         selectionKeys = this.selectionKeys + selectionKey,
     )
+
+    // NOTE: this is old version that keeps interfaces
+//    return this.copy(
+//        fields = this.fields.takeIf { keepInterfaces } ?: this.fields.filter { it.name == "__typename" },
+//        fragments = BackendIr.Fragments(
+//            fragments = (fragmentInterfaces.takeIf { keepInterfaces } ?: emptyList()) + fragmentImplementations,
+//            accessors = (this.fragments.accessors.takeIf { keepInterfaces } ?: emptyMap()),
+//        ),
+//        selectionKeys = this.selectionKeys + selectionKey,
+//    )
   }
 
   private fun List<BackendIr.Fragment>.buildFragmentImplementations(
@@ -771,15 +792,4 @@ internal class BackendIrBuilder constructor(
       val condition: BackendIr.Condition,
       val selectionKeys: Set<SelectionKey>,
   )
-
-  private val FrontendIr.Selection.Field.typeName: String
-    get() {
-      val isListType = if (this.type is FrontendIr.Type.NonNull) {
-        this.type.ofType is FrontendIr.Type.List
-      } else {
-        this.type is FrontendIr.Type.List
-      }
-      val isObjectType = this.selections.isNotEmpty()
-      return if (isListType && isObjectType) this.responseName.capitalize() else this.responseName
-    }
 }

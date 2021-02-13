@@ -67,78 +67,6 @@ class HeroDetailQuery : Query<HeroDetailQuery.Data> {
         val name: String
       }
 
-      interface Human : HeroDetailQuery {
-        /**
-         * The friends of the character, or an empty list if they have none
-         */
-        override val friends: List<Friends?>?
-
-        /**
-         * Height in the preferred unit, default is meters
-         */
-        val height: Double?
-
-        /**
-         * A character from the Star Wars universe
-         */
-        interface Friends : HeroDetailQuery.Friends {
-          /**
-           * The movies this character appears in
-           */
-          val appearsIn: List<Episode?>
-
-          /**
-           * The friends of the character, or an empty list if they have none
-           */
-          val friends: List<Friends?>?
-
-          /**
-           * A character from the Star Wars universe
-           */
-          interface Friends {
-            val __typename: String
-
-            interface Character : Friends, HeroDetails {
-              /**
-               * The friends of the character exposed as a connection with edges
-               */
-              override val friendsConnection: FriendsConnection
-
-              /**
-               * A connection object for a character's friends
-               */
-              interface FriendsConnection : HeroDetails.FriendsConnection {
-                /**
-                 * The edges for each of the character's friends.
-                 */
-                override val edges: List<Edges?>?
-
-                /**
-                 * An edge object for a character's friends
-                 */
-                interface Edges : HeroDetails.FriendsConnection.Edges {
-                  /**
-                   * The character represented by this friendship edge
-                   */
-                  override val node: Node?
-
-                  /**
-                   * A character from the Star Wars universe
-                   */
-                  interface Node : HeroDetails.FriendsConnection.Edges.Node
-                }
-              }
-            }
-
-            companion object {
-              fun Friends.asCharacter(): Character? = this as? Character
-
-              fun Friends.heroDetails(): HeroDetails? = this as? HeroDetails
-            }
-          }
-        }
-      }
-
       data class HumanHeroDetailQuery(
         override val __typename: String,
         /**
@@ -152,8 +80,8 @@ class HeroDetailQuery : Query<HeroDetailQuery.Data> {
         /**
          * Height in the preferred unit, default is meters
          */
-        override val height: Double?
-      ) : HeroDetailQuery, Human {
+        val height: Double?
+      ) : HeroDetailQuery {
         /**
          * A character from the Star Wars universe
          */
@@ -165,16 +93,18 @@ class HeroDetailQuery : Query<HeroDetailQuery.Data> {
           /**
            * The movies this character appears in
            */
-          override val appearsIn: List<Episode?>,
+          val appearsIn: List<Episode?>,
           /**
            * The friends of the character, or an empty list if they have none
            */
-          override val friends: List<Friends?>?
-        ) : HeroDetailQuery.Friends, Human.Friends {
+          val friends: List<Friends?>?
+        ) : HeroDetailQuery.Friends {
           /**
            * A character from the Star Wars universe
            */
-          interface Friends : Human.Friends.Friends {
+          interface Friends {
+            val __typename: String
+
             data class CharacterFriends(
               override val __typename: String,
               /**
@@ -185,7 +115,7 @@ class HeroDetailQuery : Query<HeroDetailQuery.Data> {
                * The friends of the character exposed as a connection with edges
                */
               override val friendsConnection: FriendsConnection
-            ) : Human.Friends.Friends, Human.Friends.Friends.Character, HeroDetails, Friends {
+            ) : HeroDetails, Friends {
               /**
                * A connection object for a character's friends
                */
@@ -198,7 +128,7 @@ class HeroDetailQuery : Query<HeroDetailQuery.Data> {
                  * The edges for each of the character's friends.
                  */
                 override val edges: List<Edges?>?
-              ) : Human.Friends.Friends.Character.FriendsConnection, HeroDetails.FriendsConnection {
+              ) : HeroDetails.FriendsConnection {
                 /**
                  * An edge object for a character's friends
                  */
@@ -207,8 +137,7 @@ class HeroDetailQuery : Query<HeroDetailQuery.Data> {
                    * The character represented by this friendship edge
                    */
                   override val node: Node?
-                ) : Human.Friends.Friends.Character.FriendsConnection.Edges,
-                    HeroDetails.FriendsConnection.Edges {
+                ) : HeroDetails.FriendsConnection.Edges {
                   /**
                    * A character from the Star Wars universe
                    */
@@ -217,15 +146,18 @@ class HeroDetailQuery : Query<HeroDetailQuery.Data> {
                      * The name of the character
                      */
                     override val name: String
-                  ) : Human.Friends.Friends.Character.FriendsConnection.Edges.Node,
-                      HeroDetails.FriendsConnection.Edges.Node
+                  ) : HeroDetails.FriendsConnection.Edges.Node
                 }
               }
             }
 
             data class OtherFriends(
               override val __typename: String
-            ) : Human.Friends.Friends, Friends
+            ) : Friends
+
+            companion object {
+              fun Friends.asCharacterFriends(): CharacterFriends? = this as? CharacterFriends
+            }
           }
         }
       }
@@ -253,7 +185,8 @@ class HeroDetailQuery : Query<HeroDetailQuery.Data> {
       }
 
       companion object {
-        fun HeroDetailQuery.asHuman(): Human? = this as? Human
+        fun HeroDetailQuery.asHumanHeroDetailQuery(): HumanHeroDetailQuery? = this as?
+            HumanHeroDetailQuery
       }
     }
   }

@@ -33,15 +33,46 @@ internal object SelectionKeyUtils {
   }
 
   private fun BackendIr.Fragment.addFragmentSelectionKey(selectionKey: SelectionKey): BackendIr.Fragment {
-    return when (this.type) {
-      BackendIr.Fragment.Type.Interface -> this.copy(
-          fields = this.fields.addFieldSelectionKey(selectionKey + this.name),
-          selectionKeys = this.selectionKeys + (selectionKey + this.name)
-      )
-      // it looks like a hack but for fragment implementations we don't allow to change their locations
-      // (by adding another selection key) as they must be used only in one place where they defined.
-      else -> this
+    return this.copy(
+        fields = this.fields.addFieldSelectionKey(selectionKey + this.name),
+        selectionKeys = this.selectionKeys + (selectionKey + this.name)
+    )
+  }
+
+  fun List<BackendIr.Field>.removeFieldSelectionKeys(selectionKeysToRemove: Collection<SelectionKey>): List<BackendIr.Field> {
+    if (selectionKeysToRemove.isEmpty()) return this
+    return this.map { field ->
+      field.removeFieldSelectionKeys(selectionKeysToRemove)
     }
+  }
+
+  fun BackendIr.Field.removeFieldSelectionKeys(selectionKeysToRemove: Collection<SelectionKey>): BackendIr.Field {
+    if (selectionKeysToRemove.isEmpty()) return this
+    return this.copy(
+        fields = this.fields.removeFieldSelectionKeys(selectionKeysToRemove),
+        fragments = this.fragments.copy(
+            fragments = this.fragments.fragments
+                .removeFragmentSelectionKeys(selectionKeysToRemove)
+        ),
+        selectionKeys = this.selectionKeys.filter { selectionKey ->
+          selectionKeysToRemove.find { selectionKeyToRemove -> selectionKey.rootedWith(selectionKeyToRemove) } == null
+        }.toSet()
+    )
+  }
+
+  private fun List<BackendIr.Fragment>.removeFragmentSelectionKeys(selectionKeysToRemove: Collection<SelectionKey>): List<BackendIr.Fragment> {
+    return this.map { fragment ->
+      fragment.removeFragmentSelectionKeys(selectionKeysToRemove)
+    }
+  }
+
+  fun BackendIr.Fragment.removeFragmentSelectionKeys(selectionKeysToRemove: Collection<SelectionKey>): BackendIr.Fragment {
+    return this.copy(
+        fields = this.fields.removeFieldSelectionKeys(selectionKeysToRemove),
+        selectionKeys = this.selectionKeys.filter { selectionKey ->
+          selectionKeysToRemove.find { selectionKeyToRemove -> selectionKey.rootedWith(selectionKeyToRemove) } == null
+        }.toSet()
+    )
   }
 
   fun BackendIr.Field.isBelongToNamedFragment(namedFragmentName: String): Boolean {
@@ -89,15 +120,29 @@ internal object SelectionKeyUtils {
    */
   private fun SelectionKey.merge(otherKey: SelectionKey): SelectionKey {
     var index = 0
-    do {
-      index++
-    } while (
+    while (
         index < this.keys.size &&
         index < otherKey.keys.size &&
         this.keys[index].equals(otherKey.keys[index], ignoreCase = true)
-    )
+    ) {
+      index++
+    }
     return this.copy(
         keys = this.keys + otherKey.keys.subList(index, otherKey.keys.size)
     )
+  }
+
+  private fun SelectionKey.rootedWith(root: SelectionKey): Boolean {
+    if (this.type != root.type) return false
+
+    var index = 0
+    while (index < this.keys.size && index < root.keys.size) {
+      if (!this.keys[index].equals(root.keys[index], ignoreCase = true)) {
+        return false
+      }
+      index++
+    }
+
+    return index >= root.keys.size
   }
 }

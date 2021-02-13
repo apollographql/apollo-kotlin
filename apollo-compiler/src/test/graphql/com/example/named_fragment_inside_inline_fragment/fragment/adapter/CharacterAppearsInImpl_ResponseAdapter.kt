@@ -20,13 +20,14 @@ import kotlin.collections.List
     "RemoveExplicitTypeArguments", "NestedLambdaShadowedImplicitParameter", "PropertyName",
     "RemoveRedundantQualifierName")
 object CharacterAppearsInImpl_ResponseAdapter : ResponseAdapter<CharacterAppearsInImpl.Data> {
-  private val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
+  val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
     ResponseField(
       type = ResponseField.Type.NotNull(ResponseField.Type.Named.Other("String")),
       responseName = "__typename",
       fieldName = "__typename",
       arguments = emptyMap(),
       conditions = emptyList(),
+      fieldSets = emptyList(),
     ),
     ResponseField(
       type =
@@ -35,6 +36,7 @@ object CharacterAppearsInImpl_ResponseAdapter : ResponseAdapter<CharacterAppears
       fieldName = "appearsIn",
       arguments = emptyMap(),
       conditions = emptyList(),
+      fieldSets = emptyList(),
     )
   )
 

@@ -49,13 +49,6 @@ class TestQuery : Query<TestQuery.Data> {
        */
       val name: String
 
-      interface Human : NonOptionalHero {
-        /**
-         * Height in the preferred unit, default is meters
-         */
-        val height: Double?
-      }
-
       data class HumanNonOptionalHero(
         override val __typename: String,
         /**
@@ -65,8 +58,8 @@ class TestQuery : Query<TestQuery.Data> {
         /**
          * Height in the preferred unit, default is meters
          */
-        override val height: Double?
-      ) : NonOptionalHero, Human
+        val height: Double?
+      ) : NonOptionalHero
 
       data class OtherNonOptionalHero(
         override val __typename: String,
@@ -77,7 +70,8 @@ class TestQuery : Query<TestQuery.Data> {
       ) : NonOptionalHero
 
       companion object {
-        fun NonOptionalHero.asHuman(): Human? = this as? Human
+        fun NonOptionalHero.asHumanNonOptionalHero(): HumanNonOptionalHero? = this as?
+            HumanNonOptionalHero
       }
     }
   }
