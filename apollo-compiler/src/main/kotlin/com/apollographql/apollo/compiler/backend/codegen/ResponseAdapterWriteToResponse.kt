@@ -28,7 +28,7 @@ private fun CodeGenerationAst.ObjectType.writeObjectToResponseFunSpec(): FunSpec
     field.writeCode()
   }.joinToCode(separator = "")
   return FunSpec.builder("toResponse")
-      .addModifiers(KModifier.OVERRIDE)
+      .applyIf(!isTypeCase) { addModifiers(KModifier.OVERRIDE) }
       .addParameter(ParameterSpec(name = "writer", type = JsonWriter::class.asTypeName()))
       .addParameter(ParameterSpec(name = "value", type = this.typeRef.asTypeName()))
       .addCode(writeFieldsCode)
@@ -85,6 +85,6 @@ private fun CodeGenerationAst.ObjectType.writeFragmentToResponseFunSpec(): FunSp
 
 private fun CodeGenerationAst.Field.writeCode(): CodeBlock {
   return CodeBlock.builder().apply {
-   addStatement("${name.escapeKotlinReservedWord()}Adapter.toResponse(writer, value.${name.escapeKotlinReservedWord()})")
+    addStatement("${name.escapeKotlinReservedWord()}Adapter.toResponse(writer, value.${name.escapeKotlinReservedWord()})")
   }.build()
 }

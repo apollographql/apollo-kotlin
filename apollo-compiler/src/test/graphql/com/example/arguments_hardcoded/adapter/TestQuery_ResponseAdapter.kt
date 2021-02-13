@@ -33,7 +33,7 @@ class TestQuery_ResponseAdapter(
 
   val testNullableArgumentsAdapter: ResponseAdapter<Int> = intResponseAdapter
 
-  override fun fromResponse(reader: JsonReader, __typename: String?): TestQuery.Data {
+  override fun fromResponse(reader: JsonReader): TestQuery.Data {
     var reviews: List<TestQuery.Data.Review?>? = null
     var testNullableArguments: Int? = null
     reader.beginObject()
@@ -99,7 +99,7 @@ class TestQuery_ResponseAdapter(
 
     val commentaryAdapter: ResponseAdapter<String?> = NullableResponseAdapter(stringResponseAdapter)
 
-    override fun fromResponse(reader: JsonReader, __typename: String?): TestQuery.Data.Review {
+    override fun fromResponse(reader: JsonReader): TestQuery.Data.Review {
       var stars: Int? = null
       var commentary: String? = null
       reader.beginObject()

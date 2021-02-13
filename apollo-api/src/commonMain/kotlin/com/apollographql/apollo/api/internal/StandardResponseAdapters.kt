@@ -24,6 +24,7 @@ class ListResponseAdapter<T>(private val wrappedAdapter: ResponseAdapter<T>): Re
 class NullableResponseAdapter<T:Any>(private val wrappedAdapter: ResponseAdapter<T>): ResponseAdapter<T?> {
   override fun fromResponse(reader: JsonReader): T? {
     return if (reader.peek() == JsonReader.Token.NULL) {
+      reader.skipValue()
       null
     } else {
       wrappedAdapter.fromResponse(reader)

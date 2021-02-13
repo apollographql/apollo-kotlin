@@ -31,7 +31,7 @@ private fun CodeGenerationAst.ObjectType.readObjectFromResponseFunSpec(): FunSpe
               "var·%L:·%T·=·%L",
               field.name.escapeKotlinReservedWord(),
               field.type.asTypeName().copy(nullable = true),
-              CodeGenerationAst.typenameField.responseName.escapeKotlinReservedWord()
+              if (isTypeCase) "__typename" else "null"
           )
         } else {
           CodeBlock.of(
@@ -77,10 +77,15 @@ private fun CodeGenerationAst.ObjectType.readObjectFromResponseFunSpec(): FunSpe
       .build()
 
   return FunSpec.builder("fromResponse")
-      .addModifiers(KModifier.OVERRIDE)
       .returns(this.typeRef.asTypeName())
       .addParameter(ParameterSpec.builder("reader", JsonReader::class).build())
-      .applyIf(isTypeCase) { addParameter(CodeGenerationAst.typenameField.asOptionalParameterSpec(withDefaultValue = false)) }
+      .apply {
+        if (isTypeCase) {
+          addParameter(CodeGenerationAst.typenameField.asOptionalParameterSpec(withDefaultValue = false))
+        } else {
+          addModifiers(KModifier.OVERRIDE)
+        }
+      }
       .addCode(CodeBlock
           .builder()
           .add(fieldVariablesCode)
@@ -101,7 +106,6 @@ private fun CodeGenerationAst.ObjectType.readFragmentFromResponseFunSpec(): FunS
       .addModifiers(KModifier.OVERRIDE)
       .returns(this.typeRef.asTypeName())
       .addParameter(ParameterSpec.builder("reader", JsonReader::class).build())
-      .addParameter(CodeGenerationAst.typenameField.asOptionalParameterSpec(withDefaultValue = false))
       .applyIf(possibleImplementations.isEmpty()) {
         addStatement(
             "return·%T.fromResponse(reader)",

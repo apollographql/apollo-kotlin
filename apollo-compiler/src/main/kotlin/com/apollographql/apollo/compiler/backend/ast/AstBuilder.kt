@@ -289,6 +289,7 @@ internal class AstBuilder private constructor(
         abstract = true,
         currentSelectionKey = this.selectionSet.defaultSelectionKey,
         alternativeSelectionKeys = selectionSet.selectionKeys,
+        isTypeCase = false
     )
     val implementationDataType = buildObjectType(
         name = this.implementationSelectionSet.defaultSelectionKey.keys.last(),
@@ -300,6 +301,7 @@ internal class AstBuilder private constructor(
         abstract = false,
         currentSelectionKey = this.implementationSelectionSet.defaultSelectionKey,
         alternativeSelectionKeys = implementationSelectionSet.selectionKeys,
+        isTypeCase = false,
     )
     val implementationTypeRef = CodeGenerationAst.TypeRef(
         name = this.implementationSelectionSet.name.toUpperCamelCase(),
@@ -310,6 +312,7 @@ internal class AstBuilder private constructor(
         interfaceType = interfaceType,
         implementationType = CodeGenerationAst.ObjectType(
             name = implementationTypeRef.name,
+            isTypeCase = false,
             description = "",
             deprecationReason = null,
             fields = emptyList(),
@@ -355,6 +358,7 @@ internal class AstBuilder private constructor(
         abstract = abstract,
         currentSelectionKey = currentSelectionKey,
         alternativeSelectionKeys = selectionKeys,
+        isTypeCase = false
     )
   }
 
@@ -368,6 +372,7 @@ internal class AstBuilder private constructor(
       abstract: Boolean,
       currentSelectionKey: SelectionKey,
       alternativeSelectionKeys: Set<SelectionKey>,
+      isTypeCase: Boolean
   ): CodeGenerationAst.ObjectType {
     return if (fragments.isEmpty()) {
       buildObjectTypeWithoutFragments(
@@ -379,6 +384,7 @@ internal class AstBuilder private constructor(
           abstract = abstract,
           currentSelectionKey = currentSelectionKey,
           alternativeSelectionKeys = alternativeSelectionKeys,
+          isTypeCase = isTypeCase
       )
     } else {
       buildObjectTypeWithFragments(
@@ -404,6 +410,7 @@ internal class AstBuilder private constructor(
       abstract: Boolean,
       currentSelectionKey: SelectionKey,
       alternativeSelectionKeys: Set<SelectionKey>,
+      isTypeCase: Boolean,
   ): CodeGenerationAst.ObjectType {
     val astFields = fields.map { field ->
       field.buildField(
@@ -437,6 +444,7 @@ internal class AstBuilder private constructor(
         nestedObjects = nestedObjects,
         schemaTypename = schemaTypename,
         fragmentAccessors = emptyList(),
+        isTypeCase = isTypeCase
     )
   }
 
@@ -479,7 +487,6 @@ internal class AstBuilder private constructor(
         abstract = abstract,
         fields = fields,
         targetPackageName = targetPackageName,
-
         selectionKey = selectionKey,
     )
     val objectTypeRef = selectionKey.asTypeRef(targetPackageName)
@@ -502,6 +509,7 @@ internal class AstBuilder private constructor(
         nestedObjects = nestedObjects,
         schemaTypename = schemaTypename,
         fragmentAccessors = fragmentAccessors,
+        isTypeCase = false
     )
   }
 
@@ -517,6 +525,7 @@ internal class AstBuilder private constructor(
           targetPackageName = targetPackageName,
           abstract = abstract,
           selectionKey = selectionKey,
+          isTypeCase = true
       )
     }
     val fieldNestedObjects = fields
@@ -535,6 +544,7 @@ internal class AstBuilder private constructor(
       targetPackageName: String,
       abstract: Boolean,
       selectionKey: SelectionKey,
+      isTypeCase: Boolean,
   ): CodeGenerationAst.ObjectType {
     return if (abstract || this.type == BackendIr.Fragment.Type.Interface) {
       val objectType = buildObjectTypeWithoutFragments(
@@ -546,6 +556,7 @@ internal class AstBuilder private constructor(
           abstract = true,
           currentSelectionKey = selectionKey + this.name,
           alternativeSelectionKeys = this.selectionKeys,
+          isTypeCase = isTypeCase,
       )
       objectType.copy(
           nestedObjects = objectType.nestedObjects + (this.nestedFragments?.map { nestedFragment ->
@@ -553,6 +564,7 @@ internal class AstBuilder private constructor(
                 targetPackageName = targetPackageName,
                 abstract = true,
                 selectionKey = selectionKey + this.name,
+                isTypeCase = false,
             )
           } ?: emptyList())
       )
@@ -570,6 +582,7 @@ internal class AstBuilder private constructor(
           abstract = abstract,
           currentSelectionKey = selectionKey + this.name,
           alternativeSelectionKeys = this.selectionKeys,
+          isTypeCase = isTypeCase
       )
     }
   }
