@@ -16,7 +16,7 @@ import kotlin.collections.List
 
 class QueryFragmentImpl : Fragment<QueryFragmentImpl.Data> {
   override fun adapter(customScalarAdapters: CustomScalarAdapters): ResponseAdapter<Data> {
-    val adapter = customScalarAdapters.getFragmentAdapter(name()) {
+    val adapter = customScalarAdapters.getFragmentAdapter("QueryFragmentImpl") {
       QueryFragmentImpl_ResponseAdapter(customScalarAdapters)
     }
     return adapter

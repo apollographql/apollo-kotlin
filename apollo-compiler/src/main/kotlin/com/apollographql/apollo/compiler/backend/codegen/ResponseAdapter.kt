@@ -77,7 +77,7 @@ private fun CodeGenerationAst.ObjectType.responseAdapterTypeSpec(): TypeSpec {
 }
 
 private fun objectAdapterPropertySpecs(kind: CodeGenerationAst.ObjectType.Kind.Fragment): Iterable<PropertySpec> {
-  return (kind.possibleImplementations.values + kind.defaultImplementation).map { typeRef ->
+  return (kind.possibleImplementations.values.distinct() + kind.defaultImplementation).map { typeRef ->
     PropertySpec.builder("${typeRef.name.toLowerCamelCase()}Adapter", typeRef.asAdapterTypeName())
         .initializer("%L(customScalarAdapters)", typeRef.asAdapterTypeName())
         .build()
@@ -107,6 +107,11 @@ internal fun CodeGenerationAst.TypeRef.asAdapterTypeName(): ClassName {
     }
   }
 }
+
+internal fun CodeGenerationAst.TypeRef.asEnumAdapterTypeName(): ClassName {
+  return ClassName(packageName = packageName, "${this.name.escapeKotlinReservedWord()}_ResponseAdapter")
+}
+
 
 
 private fun responseFieldsPropertySpec(objectType: CodeGenerationAst.ObjectType): PropertySpec {
@@ -148,7 +153,7 @@ private fun adapterInitializer(type: CodeGenerationAst.FieldType): CodeBlock {
     is CodeGenerationAst.FieldType.Scalar.String -> CodeBlock.of("%M", MemberName("com.apollographql.apollo.api.internal", "stringResponseAdapter"))
     is CodeGenerationAst.FieldType.Scalar.Int -> CodeBlock.of("%M", MemberName("com.apollographql.apollo.api.internal", "intResponseAdapter"))
     is CodeGenerationAst.FieldType.Scalar.Float -> CodeBlock.of("%M", MemberName("com.apollographql.apollo.api.internal", "doubleResponseAdapter"))
-    is CodeGenerationAst.FieldType.Scalar.Enum -> CodeBlock.of("%T.adapter", type.typeRef.asTypeName().copy(nullable = false))
+    is CodeGenerationAst.FieldType.Scalar.Enum -> CodeBlock.of("%T", type.typeRef.asEnumAdapterTypeName().copy(nullable = false))
     is CodeGenerationAst.FieldType.Object -> CodeBlock.of("%T(customScalarAdapters)", type.typeRef.asAdapterTypeName().copy(nullable = false))
     is CodeGenerationAst.FieldType.Scalar.Custom -> CodeBlock.of("customScalarAdapters.responseAdapterFor<%T>(%S)", ClassName.bestGuess(type.type), type.schemaTypeName)
   }

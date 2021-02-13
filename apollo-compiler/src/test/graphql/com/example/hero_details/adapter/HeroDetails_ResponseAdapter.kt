@@ -17,6 +17,7 @@ import com.apollographql.apollo.api.internal.stringResponseAdapter
 import com.apollographql.apollo.exception.UnexpectedNullValue
 import com.example.hero_details.HeroDetails
 import com.example.hero_details.type.Hero_type
+import com.example.hero_details.type.Hero_type_ResponseAdapter
 import kotlin.Array
 import kotlin.Int
 import kotlin.String
@@ -71,7 +72,7 @@ class HeroDetails_ResponseAdapter(
   class Hero(
     customScalarAdapters: CustomScalarAdapters
   ) : ResponseAdapter<HeroDetails.Data.Hero> {
-    val typeAdapter: ResponseAdapter<Hero_type> = Hero_type.adapter
+    val typeAdapter: ResponseAdapter<Hero_type> = Hero_type_ResponseAdapter
 
     val nameAdapter: ResponseAdapter<String> = stringResponseAdapter
 

@@ -17,7 +17,7 @@ import kotlin.collections.List
 
 class HumanDetailsImpl : Fragment<HumanDetailsImpl.Data> {
   override fun adapter(customScalarAdapters: CustomScalarAdapters): ResponseAdapter<Data> {
-    val adapter = customScalarAdapters.getFragmentAdapter(name()) {
+    val adapter = customScalarAdapters.getFragmentAdapter("HumanDetailsImpl") {
       HumanDetailsImpl_ResponseAdapter(customScalarAdapters)
     }
     return adapter

@@ -16,7 +16,7 @@ import kotlin.collections.List
 
 class HeroFragmentImpl : Fragment<HeroFragmentImpl.Data> {
   override fun adapter(customScalarAdapters: CustomScalarAdapters): ResponseAdapter<Data> {
-    val adapter = customScalarAdapters.getFragmentAdapter(name()) {
+    val adapter = customScalarAdapters.getFragmentAdapter("HeroFragmentImpl") {
       HeroFragmentImpl_ResponseAdapter(customScalarAdapters)
     }
     return adapter

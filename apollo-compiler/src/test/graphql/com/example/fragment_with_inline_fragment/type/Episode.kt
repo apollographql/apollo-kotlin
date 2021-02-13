@@ -6,6 +6,9 @@
 package com.example.fragment_with_inline_fragment.type
 
 import com.apollographql.apollo.api.EnumValue
+import com.apollographql.apollo.api.internal.ResponseAdapter
+import com.apollographql.apollo.api.internal.json.JsonReader
+import com.apollographql.apollo.api.internal.json.JsonWriter
 import kotlin.Deprecated
 import kotlin.String
 
@@ -46,9 +49,22 @@ enum class Episode(
    * Auto generated constant for unknown enum values
    */
   UNKNOWN__("UNKNOWN__");
+}
 
-  companion object {
-    fun safeValueOf(rawValue: String): Episode = values().find { it.rawValue == rawValue } ?:
-        UNKNOWN__
+object Episode_ResponseAdapter : ResponseAdapter<Episode> {
+  override fun fromResponse(reader: JsonReader, __typename: String?): Episode {
+    val rawValue = reader.nextString()!!
+    return when(rawValue) {
+      "NEWHOPE" -> Episode.NEWHOPE
+      "EMPIRE" -> Episode.EMPIRE
+      "JEDI" -> Episode.JEDI
+      "DEPRECATED" -> Episode.DEPRECATED
+      "new" -> Episode.NEW
+      else -> Episode.UNKNOWN__
+    }
+  }
+
+  override fun toResponse(writer: JsonWriter, value: Episode) {
+    writer.value(value.rawValue)
   }
 }

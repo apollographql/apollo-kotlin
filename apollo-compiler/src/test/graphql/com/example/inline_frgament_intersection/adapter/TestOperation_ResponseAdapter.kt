@@ -18,6 +18,7 @@ import com.apollographql.apollo.api.internal.stringResponseAdapter
 import com.apollographql.apollo.exception.UnexpectedNullValue
 import com.example.inline_frgament_intersection.TestOperation
 import com.example.inline_frgament_intersection.type.Race
+import com.example.inline_frgament_intersection.type.Race_ResponseAdapter
 import kotlin.Array
 import kotlin.Boolean
 import kotlin.Double
@@ -238,7 +239,7 @@ class TestOperation_ResponseAdapter(
           val lifeExpectancyAdapter: ResponseAdapter<Double?> =
               NullableResponseAdapter(doubleResponseAdapter)
 
-          val raceAdapter: ResponseAdapter<Race> = Race.adapter
+          val raceAdapter: ResponseAdapter<Race> = Race_ResponseAdapter
 
           override fun fromResponse(reader: JsonReader, __typename: String?):
               TestOperation.Data.Random.BeingHumanRandom.Friend.WookieFriend {
@@ -410,7 +411,7 @@ class TestOperation_ResponseAdapter(
       val friendsAdapter: ResponseAdapter<List<TestOperation.Data.Random.BeingWookieRandom.Friend>>
           = ListResponseAdapter(Friend(customScalarAdapters))
 
-      val raceAdapter: ResponseAdapter<Race> = Race.adapter
+      val raceAdapter: ResponseAdapter<Race> = Race_ResponseAdapter
 
       override fun fromResponse(reader: JsonReader, __typename: String?):
           TestOperation.Data.Random.BeingWookieRandom {

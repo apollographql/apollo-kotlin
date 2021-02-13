@@ -6,6 +6,9 @@
 package com.example.hero_details.type
 
 import com.apollographql.apollo.api.EnumValue
+import com.apollographql.apollo.api.internal.ResponseAdapter
+import com.apollographql.apollo.api.internal.json.JsonReader
+import com.apollographql.apollo.api.internal.json.JsonWriter
 import kotlin.String
 
 /**
@@ -22,9 +25,19 @@ enum class Hero_type(
    * Auto generated constant for unknown enum values
    */
   UNKNOWN__("UNKNOWN__");
+}
 
-  companion object {
-    fun safeValueOf(rawValue: String): Hero_type = values().find { it.rawValue == rawValue } ?:
-        UNKNOWN__
+object Hero_type_ResponseAdapter : ResponseAdapter<Hero_type> {
+  override fun fromResponse(reader: JsonReader, __typename: String?): Hero_type {
+    val rawValue = reader.nextString()!!
+    return when(rawValue) {
+      "human" -> Hero_type.HUMAN
+      "droid" -> Hero_type.DROID
+      else -> Hero_type.UNKNOWN__
+    }
+  }
+
+  override fun toResponse(writer: JsonWriter, value: Hero_type) {
+    writer.value(value.rawValue)
   }
 }

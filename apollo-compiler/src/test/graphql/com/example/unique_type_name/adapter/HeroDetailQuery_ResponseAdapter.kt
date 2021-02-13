@@ -18,6 +18,7 @@ import com.apollographql.apollo.api.internal.stringResponseAdapter
 import com.apollographql.apollo.exception.UnexpectedNullValue
 import com.example.unique_type_name.HeroDetailQuery
 import com.example.unique_type_name.type.Episode
+import com.example.unique_type_name.type.Episode_ResponseAdapter
 import kotlin.Array
 import kotlin.Double
 import kotlin.Int
@@ -138,8 +139,7 @@ class HeroDetailQuery_ResponseAdapter(
           }
         }
         reader.endObject()
-        return
-            com.example.unique_type_name.HeroDetailQuery.Data.HeroDetailQuery.HumanHeroDetailQuery(
+        return com.example.unique_type_name.HeroDetailQuery.Data.HeroDetailQuery.HumanHeroDetailQuery(
           __typename = __typename!!,
           name = name!!,
           friends = friends,
@@ -204,7 +204,7 @@ class HeroDetailQuery_ResponseAdapter(
         val nameAdapter: ResponseAdapter<String> = stringResponseAdapter
 
         val appearsInAdapter: ResponseAdapter<List<Episode?>> =
-            ListResponseAdapter(NullableResponseAdapter(Episode.adapter))
+            ListResponseAdapter(NullableResponseAdapter(Episode_ResponseAdapter))
 
         val friendsAdapter:
             ResponseAdapter<List<com.example.unique_type_name.HeroDetailQuery.Data.HeroDetailQuery.HumanHeroDetailQuery.Friend.Friend?>?>
@@ -227,8 +227,7 @@ class HeroDetailQuery_ResponseAdapter(
             }
           }
           reader.endObject()
-          return
-              com.example.unique_type_name.HeroDetailQuery.Data.HeroDetailQuery.HumanHeroDetailQuery.Friend(
+          return com.example.unique_type_name.HeroDetailQuery.Data.HeroDetailQuery.HumanHeroDetailQuery.Friend(
             name = name!!,
             appearsIn = appearsIn!!,
             friends = friends
@@ -283,9 +282,6 @@ class HeroDetailQuery_ResponseAdapter(
         ) :
             ResponseAdapter<com.example.unique_type_name.HeroDetailQuery.Data.HeroDetailQuery.HumanHeroDetailQuery.Friend.Friend>
             {
-          val characterFriendAdapter: CharacterFriend =
-              com.example.unique_type_name.adapter.HeroDetailQuery_ResponseAdapter.HeroDetailQuery.HumanHeroDetailQuery.Friend.Friend.CharacterFriend(customScalarAdapters)
-
           val characterFriendAdapter: CharacterFriend =
               com.example.unique_type_name.adapter.HeroDetailQuery_ResponseAdapter.HeroDetailQuery.HumanHeroDetailQuery.Friend.Friend.CharacterFriend(customScalarAdapters)
 
@@ -344,8 +340,7 @@ class HeroDetailQuery_ResponseAdapter(
                 }
               }
               reader.endObject()
-              return
-                  com.example.unique_type_name.HeroDetailQuery.Data.HeroDetailQuery.HumanHeroDetailQuery.Friend.Friend.CharacterFriend(
+              return com.example.unique_type_name.HeroDetailQuery.Data.HeroDetailQuery.HumanHeroDetailQuery.Friend.Friend.CharacterFriend(
                 __typename = __typename!!,
                 name = name!!,
                 friendsConnection = friendsConnection!!
@@ -419,8 +414,7 @@ class HeroDetailQuery_ResponseAdapter(
                   }
                 }
                 reader.endObject()
-                return
-                    com.example.unique_type_name.HeroDetailQuery.Data.HeroDetailQuery.HumanHeroDetailQuery.Friend.Friend.CharacterFriend.FriendsConnection(
+                return com.example.unique_type_name.HeroDetailQuery.Data.HeroDetailQuery.HumanHeroDetailQuery.Friend.Friend.CharacterFriend.FriendsConnection(
                   totalCount = totalCount,
                   edges = edges
                 )
@@ -477,8 +471,7 @@ class HeroDetailQuery_ResponseAdapter(
                     }
                   }
                   reader.endObject()
-                  return
-                      com.example.unique_type_name.HeroDetailQuery.Data.HeroDetailQuery.HumanHeroDetailQuery.Friend.Friend.CharacterFriend.FriendsConnection.Edge(
+                  return com.example.unique_type_name.HeroDetailQuery.Data.HeroDetailQuery.HumanHeroDetailQuery.Friend.Friend.CharacterFriend.FriendsConnection.Edge(
                     node = node
                   )
                 }
@@ -524,8 +517,7 @@ class HeroDetailQuery_ResponseAdapter(
                       }
                     }
                     reader.endObject()
-                    return
-                        com.example.unique_type_name.HeroDetailQuery.Data.HeroDetailQuery.HumanHeroDetailQuery.Friend.Friend.CharacterFriend.FriendsConnection.Edge.Node(
+                    return com.example.unique_type_name.HeroDetailQuery.Data.HeroDetailQuery.HumanHeroDetailQuery.Friend.Friend.CharacterFriend.FriendsConnection.Edge.Node(
                       name = name!!
                     )
                   }
@@ -573,8 +565,7 @@ class HeroDetailQuery_ResponseAdapter(
                 }
               }
               reader.endObject()
-              return
-                  com.example.unique_type_name.HeroDetailQuery.Data.HeroDetailQuery.HumanHeroDetailQuery.Friend.Friend.OtherFriend(
+              return com.example.unique_type_name.HeroDetailQuery.Data.HeroDetailQuery.HumanHeroDetailQuery.Friend.Friend.OtherFriend(
                 __typename = __typename!!
               )
             }
@@ -633,8 +624,7 @@ class HeroDetailQuery_ResponseAdapter(
           }
         }
         reader.endObject()
-        return
-            com.example.unique_type_name.HeroDetailQuery.Data.HeroDetailQuery.OtherHeroDetailQuery(
+        return com.example.unique_type_name.HeroDetailQuery.Data.HeroDetailQuery.OtherHeroDetailQuery(
           __typename = __typename!!,
           name = name!!,
           friends = friends
@@ -699,8 +689,7 @@ class HeroDetailQuery_ResponseAdapter(
             }
           }
           reader.endObject()
-          return
-              com.example.unique_type_name.HeroDetailQuery.Data.HeroDetailQuery.OtherHeroDetailQuery.Friend(
+          return com.example.unique_type_name.HeroDetailQuery.Data.HeroDetailQuery.OtherHeroDetailQuery.Friend(
             name = name!!
           )
         }

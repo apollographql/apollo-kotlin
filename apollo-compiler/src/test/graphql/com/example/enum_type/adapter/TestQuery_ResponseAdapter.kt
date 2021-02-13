@@ -16,6 +16,7 @@ import com.apollographql.apollo.api.internal.stringResponseAdapter
 import com.apollographql.apollo.exception.UnexpectedNullValue
 import com.example.enum_type.TestQuery
 import com.example.enum_type.type.Episode
+import com.example.enum_type.type.Episode_ResponseAdapter
 import kotlin.Array
 import kotlin.String
 import kotlin.Suppress
@@ -72,9 +73,9 @@ class TestQuery_ResponseAdapter(
     val nameAdapter: ResponseAdapter<String> = stringResponseAdapter
 
     val appearsInAdapter: ResponseAdapter<List<Episode?>> =
-        ListResponseAdapter(NullableResponseAdapter(Episode.adapter))
+        ListResponseAdapter(NullableResponseAdapter(Episode_ResponseAdapter))
 
-    val firstAppearsInAdapter: ResponseAdapter<Episode> = Episode.adapter
+    val firstAppearsInAdapter: ResponseAdapter<Episode> = Episode_ResponseAdapter
 
     override fun fromResponse(reader: JsonReader, __typename: String?): TestQuery.Data.Hero {
       var name: String? = null

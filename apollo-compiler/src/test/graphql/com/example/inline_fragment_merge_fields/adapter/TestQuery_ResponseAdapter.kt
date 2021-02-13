@@ -74,9 +74,6 @@ class TestQuery_ResponseAdapter(
     val characterHeroAdapter: CharacterHero =
         com.example.inline_fragment_merge_fields.adapter.TestQuery_ResponseAdapter.Hero.CharacterHero(customScalarAdapters)
 
-    val characterHeroAdapter: CharacterHero =
-        com.example.inline_fragment_merge_fields.adapter.TestQuery_ResponseAdapter.Hero.CharacterHero(customScalarAdapters)
-
     val otherHeroAdapter: OtherHero =
         com.example.inline_fragment_merge_fields.adapter.TestQuery_ResponseAdapter.Hero.OtherHero(customScalarAdapters)
 

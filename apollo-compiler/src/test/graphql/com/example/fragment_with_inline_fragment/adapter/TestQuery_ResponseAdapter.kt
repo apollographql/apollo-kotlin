@@ -17,6 +17,7 @@ import com.apollographql.apollo.api.internal.stringResponseAdapter
 import com.apollographql.apollo.exception.UnexpectedNullValue
 import com.example.fragment_with_inline_fragment.TestQuery
 import com.example.fragment_with_inline_fragment.type.Episode
+import com.example.fragment_with_inline_fragment.type.Episode_ResponseAdapter
 import kotlin.Array
 import kotlin.Int
 import kotlin.String
@@ -111,7 +112,7 @@ class TestQuery_ResponseAdapter(
       val nameAdapter: ResponseAdapter<String> = stringResponseAdapter
 
       val appearsInAdapter: ResponseAdapter<List<Episode?>> =
-          ListResponseAdapter(NullableResponseAdapter(Episode.adapter))
+          ListResponseAdapter(NullableResponseAdapter(Episode_ResponseAdapter))
 
       val friendsConnectionAdapter:
           ResponseAdapter<TestQuery.Data.Hero.CharacterDroidHero.FriendsConnection> =
@@ -366,7 +367,7 @@ class TestQuery_ResponseAdapter(
       val nameAdapter: ResponseAdapter<String> = stringResponseAdapter
 
       val appearsInAdapter: ResponseAdapter<List<Episode?>> =
-          ListResponseAdapter(NullableResponseAdapter(Episode.adapter))
+          ListResponseAdapter(NullableResponseAdapter(Episode_ResponseAdapter))
 
       val friendsConnectionAdapter:
           ResponseAdapter<TestQuery.Data.Hero.CharacterHumanHero.FriendsConnection> =
@@ -606,7 +607,7 @@ class TestQuery_ResponseAdapter(
       val nameAdapter: ResponseAdapter<String> = stringResponseAdapter
 
       val appearsInAdapter: ResponseAdapter<List<Episode?>> =
-          ListResponseAdapter(NullableResponseAdapter(Episode.adapter))
+          ListResponseAdapter(NullableResponseAdapter(Episode_ResponseAdapter))
 
       override fun fromResponse(reader: JsonReader, __typename: String?):
           TestQuery.Data.Hero.OtherHero {

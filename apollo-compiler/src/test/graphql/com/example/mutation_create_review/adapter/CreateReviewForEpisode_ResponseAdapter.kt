@@ -17,6 +17,7 @@ import com.apollographql.apollo.api.internal.stringResponseAdapter
 import com.apollographql.apollo.exception.UnexpectedNullValue
 import com.example.mutation_create_review.CreateReviewForEpisode
 import com.example.mutation_create_review.type.Episode
+import com.example.mutation_create_review.type.Episode_ResponseAdapter
 import java.util.Date
 import kotlin.Array
 import kotlin.Int
@@ -86,7 +87,7 @@ internal class CreateReviewForEpisode_ResponseAdapter(
         NullableResponseAdapter(ListResponseAdapter(ListResponseAdapter(stringResponseAdapter)))
 
     val listOfListOfEnumAdapter: ResponseAdapter<List<List<Episode>>?> =
-        NullableResponseAdapter(ListResponseAdapter(ListResponseAdapter(Episode.adapter)))
+        NullableResponseAdapter(ListResponseAdapter(ListResponseAdapter(Episode_ResponseAdapter)))
 
     val listOfListOfCustomAdapter: ResponseAdapter<List<List<Date>>?> =
         NullableResponseAdapter(ListResponseAdapter(ListResponseAdapter(customScalarAdapters.responseAdapterFor<Date>("Date"))))

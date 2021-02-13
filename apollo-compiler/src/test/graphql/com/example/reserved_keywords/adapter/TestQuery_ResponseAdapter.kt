@@ -145,9 +145,6 @@ class TestQuery_ResponseAdapter(
     val characterObjectAdapter: CharacterObject =
         com.example.reserved_keywords.adapter.TestQuery_ResponseAdapter.Object.CharacterObject(customScalarAdapters)
 
-    val characterObjectAdapter: CharacterObject =
-        com.example.reserved_keywords.adapter.TestQuery_ResponseAdapter.Object.CharacterObject(customScalarAdapters)
-
     val otherObjectAdapter: OtherObject =
         com.example.reserved_keywords.adapter.TestQuery_ResponseAdapter.Object.OtherObject(customScalarAdapters)
 

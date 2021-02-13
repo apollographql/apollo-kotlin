@@ -225,8 +225,7 @@ class AllStarships_ResponseAdapter(
               }
             }
             reader.endObject()
-            return
-                com.example.fragment_in_fragment.AllStarships.Data.AllStarships.Edge.Node.StarshipNode(
+            return com.example.fragment_in_fragment.AllStarships.Data.AllStarships.Edge.Node.StarshipNode(
               __typename = __typename!!,
               id = id!!,
               name = name,
@@ -304,8 +303,7 @@ class AllStarships_ResponseAdapter(
                 }
               }
               reader.endObject()
-              return
-                  com.example.fragment_in_fragment.AllStarships.Data.AllStarships.Edge.Node.StarshipNode.PilotConnection(
+              return com.example.fragment_in_fragment.AllStarships.Data.AllStarships.Edge.Node.StarshipNode.PilotConnection(
                 edges = edges
               )
             }
@@ -353,8 +351,7 @@ class AllStarships_ResponseAdapter(
                   }
                 }
                 reader.endObject()
-                return
-                    com.example.fragment_in_fragment.AllStarships.Data.AllStarships.Edge.Node.StarshipNode.PilotConnection.Edge(
+                return com.example.fragment_in_fragment.AllStarships.Data.AllStarships.Edge.Node.StarshipNode.PilotConnection.Edge(
                   node = node
                 )
               }
@@ -444,8 +441,7 @@ class AllStarships_ResponseAdapter(
                       }
                     }
                     reader.endObject()
-                    return
-                        com.example.fragment_in_fragment.AllStarships.Data.AllStarships.Edge.Node.StarshipNode.PilotConnection.Edge.Node.PersonNode(
+                    return com.example.fragment_in_fragment.AllStarships.Data.AllStarships.Edge.Node.StarshipNode.PilotConnection.Edge.Node.PersonNode(
                       __typename = __typename!!,
                       name = name,
                       homeworld = homeworld
@@ -550,8 +546,7 @@ class AllStarships_ResponseAdapter(
                           }
                         }
                         reader.endObject()
-                        return
-                            com.example.fragment_in_fragment.AllStarships.Data.AllStarships.Edge.Node.StarshipNode.PilotConnection.Edge.Node.PersonNode.Homeworld.PlanetHomeworld(
+                        return com.example.fragment_in_fragment.AllStarships.Data.AllStarships.Edge.Node.StarshipNode.PilotConnection.Edge.Node.PersonNode.Homeworld.PlanetHomeworld(
                           __typename = __typename!!,
                           name = name
                         )
@@ -607,8 +602,7 @@ class AllStarships_ResponseAdapter(
                           }
                         }
                         reader.endObject()
-                        return
-                            com.example.fragment_in_fragment.AllStarships.Data.AllStarships.Edge.Node.StarshipNode.PilotConnection.Edge.Node.PersonNode.Homeworld.OtherHomeworld(
+                        return com.example.fragment_in_fragment.AllStarships.Data.AllStarships.Edge.Node.StarshipNode.PilotConnection.Edge.Node.PersonNode.Homeworld.OtherHomeworld(
                           __typename = __typename!!
                         )
                       }
@@ -656,8 +650,7 @@ class AllStarships_ResponseAdapter(
                       }
                     }
                     reader.endObject()
-                    return
-                        com.example.fragment_in_fragment.AllStarships.Data.AllStarships.Edge.Node.StarshipNode.PilotConnection.Edge.Node.OtherNode(
+                    return com.example.fragment_in_fragment.AllStarships.Data.AllStarships.Edge.Node.StarshipNode.PilotConnection.Edge.Node.OtherNode(
                       __typename = __typename!!
                     )
                   }
@@ -706,8 +699,7 @@ class AllStarships_ResponseAdapter(
               }
             }
             reader.endObject()
-            return
-                com.example.fragment_in_fragment.AllStarships.Data.AllStarships.Edge.Node.OtherNode(
+            return com.example.fragment_in_fragment.AllStarships.Data.AllStarships.Edge.Node.OtherNode(
               __typename = __typename!!
             )
           }

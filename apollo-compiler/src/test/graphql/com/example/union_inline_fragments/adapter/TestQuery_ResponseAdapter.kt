@@ -16,6 +16,7 @@ import com.apollographql.apollo.api.internal.stringResponseAdapter
 import com.apollographql.apollo.exception.UnexpectedNullValue
 import com.example.union_inline_fragments.TestQuery
 import com.example.union_inline_fragments.type.Episode
+import com.example.union_inline_fragments.type.Episode_ResponseAdapter
 import kotlin.Array
 import kotlin.String
 import kotlin.Suppress
@@ -73,9 +74,6 @@ class TestQuery_ResponseAdapter(
   class Search(
     customScalarAdapters: CustomScalarAdapters
   ) : ResponseAdapter<TestQuery.Data.Search> {
-    val characterSearchAdapter: CharacterSearch =
-        com.example.union_inline_fragments.adapter.TestQuery_ResponseAdapter.Search.CharacterSearch(customScalarAdapters)
-
     val characterSearchAdapter: CharacterSearch =
         com.example.union_inline_fragments.adapter.TestQuery_ResponseAdapter.Search.CharacterSearch(customScalarAdapters)
 
@@ -465,9 +463,6 @@ class TestQuery_ResponseAdapter(
             val characterFriendAdapter: CharacterFriend =
                 com.example.union_inline_fragments.adapter.TestQuery_ResponseAdapter.Search.CharacterSearch.Friend.CharacterHumanFriend.Friend.CharacterFriend(customScalarAdapters)
 
-            val characterFriendAdapter: CharacterFriend =
-                com.example.union_inline_fragments.adapter.TestQuery_ResponseAdapter.Search.CharacterSearch.Friend.CharacterHumanFriend.Friend.CharacterFriend(customScalarAdapters)
-
             val otherFriendAdapter: OtherFriend =
                 com.example.union_inline_fragments.adapter.TestQuery_ResponseAdapter.Search.CharacterSearch.Friend.CharacterHumanFriend.Friend.OtherFriend(customScalarAdapters)
 
@@ -500,7 +495,7 @@ class TestQuery_ResponseAdapter(
                 {
               val __typenameAdapter: ResponseAdapter<String> = stringResponseAdapter
 
-              val firstAppearsInAdapter: ResponseAdapter<Episode> = Episode.adapter
+              val firstAppearsInAdapter: ResponseAdapter<Episode> = Episode_ResponseAdapter
 
               override fun fromResponse(reader: JsonReader, __typename: String?):
                   TestQuery.Data.Search.CharacterSearch.Friend.CharacterHumanFriend.Friend.CharacterFriend {
@@ -517,8 +512,7 @@ class TestQuery_ResponseAdapter(
                   }
                 }
                 reader.endObject()
-                return
-                    TestQuery.Data.Search.CharacterSearch.Friend.CharacterHumanFriend.Friend.CharacterFriend(
+                return TestQuery.Data.Search.CharacterSearch.Friend.CharacterHumanFriend.Friend.CharacterFriend(
                   __typename = __typename!!,
                   firstAppearsIn = firstAppearsIn!!
                 )
@@ -573,8 +567,7 @@ class TestQuery_ResponseAdapter(
                   }
                 }
                 reader.endObject()
-                return
-                    TestQuery.Data.Search.CharacterSearch.Friend.CharacterHumanFriend.Friend.OtherFriend(
+                return TestQuery.Data.Search.CharacterSearch.Friend.CharacterHumanFriend.Friend.OtherFriend(
                   __typename = __typename!!
                 )
               }

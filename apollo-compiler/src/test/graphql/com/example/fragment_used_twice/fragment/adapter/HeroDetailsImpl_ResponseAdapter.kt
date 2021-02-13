@@ -28,9 +28,6 @@ class HeroDetailsImpl_ResponseAdapter(
   val characterDataAdapter: CharacterData =
       com.example.fragment_used_twice.fragment.adapter.HeroDetailsImpl_ResponseAdapter.CharacterData(customScalarAdapters)
 
-  val characterDataAdapter: CharacterData =
-      com.example.fragment_used_twice.fragment.adapter.HeroDetailsImpl_ResponseAdapter.CharacterData(customScalarAdapters)
-
   val otherDataAdapter: OtherData =
       com.example.fragment_used_twice.fragment.adapter.HeroDetailsImpl_ResponseAdapter.OtherData(customScalarAdapters)
 

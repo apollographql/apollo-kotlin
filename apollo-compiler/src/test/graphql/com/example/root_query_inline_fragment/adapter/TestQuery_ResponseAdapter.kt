@@ -17,6 +17,7 @@ import com.apollographql.apollo.api.internal.stringResponseAdapter
 import com.apollographql.apollo.exception.UnexpectedNullValue
 import com.example.root_query_inline_fragment.TestQuery
 import com.example.root_query_inline_fragment.type.Episode
+import com.example.root_query_inline_fragment.type.Episode_ResponseAdapter
 import kotlin.Array
 import kotlin.Double
 import kotlin.String
@@ -168,7 +169,7 @@ class TestQuery_ResponseAdapter(
         val nameAdapter: ResponseAdapter<String> = stringResponseAdapter
 
         val appearsInAdapter: ResponseAdapter<List<Episode?>> =
-            ListResponseAdapter(NullableResponseAdapter(Episode.adapter))
+            ListResponseAdapter(NullableResponseAdapter(Episode_ResponseAdapter))
 
         val heightAdapter: ResponseAdapter<Double?> = NullableResponseAdapter(doubleResponseAdapter)
 
@@ -256,7 +257,7 @@ class TestQuery_ResponseAdapter(
         val nameAdapter: ResponseAdapter<String> = stringResponseAdapter
 
         val appearsInAdapter: ResponseAdapter<List<Episode?>> =
-            ListResponseAdapter(NullableResponseAdapter(Episode.adapter))
+            ListResponseAdapter(NullableResponseAdapter(Episode_ResponseAdapter))
 
         override fun fromResponse(reader: JsonReader, __typename: String?):
             TestQuery.Data.QueryData.Hero.OtherHero {

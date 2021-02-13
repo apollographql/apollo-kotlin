@@ -36,7 +36,7 @@ data class UserFragmentImpl(
   }
 
   override fun adapter(customScalarAdapters: CustomScalarAdapters): ResponseAdapter<Data> {
-    val adapter = customScalarAdapters.getFragmentAdapter(name()) {
+    val adapter = customScalarAdapters.getFragmentAdapter("UserFragmentImpl") {
       UserFragmentImpl_ResponseAdapter(customScalarAdapters)
     }
     return adapter

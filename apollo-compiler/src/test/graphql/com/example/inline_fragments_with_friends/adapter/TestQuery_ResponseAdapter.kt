@@ -17,6 +17,7 @@ import com.apollographql.apollo.api.internal.stringResponseAdapter
 import com.apollographql.apollo.exception.UnexpectedNullValue
 import com.example.inline_fragments_with_friends.TestQuery
 import com.example.inline_fragments_with_friends.type.Episode
+import com.example.inline_fragments_with_friends.type.Episode_ResponseAdapter
 import kotlin.Array
 import kotlin.Double
 import kotlin.String
@@ -193,7 +194,7 @@ class TestQuery_ResponseAdapter(
         customScalarAdapters: CustomScalarAdapters
       ) : ResponseAdapter<TestQuery.Data.Hero.HumanHero.Friend> {
         val appearsInAdapter: ResponseAdapter<List<Episode?>> =
-            ListResponseAdapter(NullableResponseAdapter(Episode.adapter))
+            ListResponseAdapter(NullableResponseAdapter(Episode_ResponseAdapter))
 
         override fun fromResponse(reader: JsonReader, __typename: String?):
             TestQuery.Data.Hero.HumanHero.Friend {

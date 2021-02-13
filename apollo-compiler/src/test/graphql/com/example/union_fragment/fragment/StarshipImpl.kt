@@ -16,7 +16,7 @@ import kotlin.collections.List
 
 class StarshipImpl : Fragment<StarshipImpl.Data> {
   override fun adapter(customScalarAdapters: CustomScalarAdapters): ResponseAdapter<Data> {
-    val adapter = customScalarAdapters.getFragmentAdapter(name()) {
+    val adapter = customScalarAdapters.getFragmentAdapter("StarshipImpl") {
       StarshipImpl_ResponseAdapter(customScalarAdapters)
     }
     return adapter

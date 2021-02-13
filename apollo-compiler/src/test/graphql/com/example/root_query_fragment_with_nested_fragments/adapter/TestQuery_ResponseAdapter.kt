@@ -153,9 +153,6 @@ class TestQuery_ResponseAdapter(
       val characterHeroAdapter: CharacterHero =
           com.example.root_query_fragment_with_nested_fragments.adapter.TestQuery_ResponseAdapter.QueryData.Hero.CharacterHero(customScalarAdapters)
 
-      val characterHeroAdapter: CharacterHero =
-          com.example.root_query_fragment_with_nested_fragments.adapter.TestQuery_ResponseAdapter.QueryData.Hero.CharacterHero(customScalarAdapters)
-
       val otherHeroAdapter: OtherHero =
           com.example.root_query_fragment_with_nested_fragments.adapter.TestQuery_ResponseAdapter.QueryData.Hero.OtherHero(customScalarAdapters)
 

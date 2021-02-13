@@ -87,7 +87,7 @@ private fun CodeGenerationAst.ObjectType.readObjectFromResponseFunSpec(): FunSpe
           .addStatement("reader.beginObject()")
           .add(selectFieldsCode)
           .addStatement("reader.endObject()")
-          .add("return %L", typeConstructorCode)
+          .add("return·%L", typeConstructorCode)
           .build()
       )
       .build()

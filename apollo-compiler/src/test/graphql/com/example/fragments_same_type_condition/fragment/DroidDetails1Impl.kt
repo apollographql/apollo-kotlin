@@ -16,7 +16,7 @@ import kotlin.collections.List
 
 class DroidDetails1Impl : Fragment<DroidDetails1Impl.Data> {
   override fun adapter(customScalarAdapters: CustomScalarAdapters): ResponseAdapter<Data> {
-    val adapter = customScalarAdapters.getFragmentAdapter(name()) {
+    val adapter = customScalarAdapters.getFragmentAdapter("DroidDetails1Impl") {
       DroidDetails1Impl_ResponseAdapter(customScalarAdapters)
     }
     return adapter

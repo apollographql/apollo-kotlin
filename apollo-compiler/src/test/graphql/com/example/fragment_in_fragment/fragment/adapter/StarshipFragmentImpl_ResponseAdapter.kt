@@ -357,8 +357,7 @@ class StarshipFragmentImpl_ResponseAdapter(
                   }
                 }
                 reader.endObject()
-                return
-                    StarshipFragmentImpl.Data.PilotConnection.Edge.Node.PersonNode.Homeworld.PlanetHomeworld(
+                return StarshipFragmentImpl.Data.PilotConnection.Edge.Node.PersonNode.Homeworld.PlanetHomeworld(
                   __typename = __typename!!,
                   name = name
                 )
@@ -413,8 +412,7 @@ class StarshipFragmentImpl_ResponseAdapter(
                   }
                 }
                 reader.endObject()
-                return
-                    StarshipFragmentImpl.Data.PilotConnection.Edge.Node.PersonNode.Homeworld.OtherHomeworld(
+                return StarshipFragmentImpl.Data.PilotConnection.Edge.Node.PersonNode.Homeworld.OtherHomeworld(
                   __typename = __typename!!
                 )
               }

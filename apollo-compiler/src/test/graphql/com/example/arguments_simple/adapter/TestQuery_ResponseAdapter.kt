@@ -107,9 +107,6 @@ class TestQuery_ResponseAdapter(
     val characterHeroAdapter: CharacterHero =
         com.example.arguments_simple.adapter.TestQuery_ResponseAdapter.Hero.CharacterHero(customScalarAdapters)
 
-    val characterHeroAdapter: CharacterHero =
-        com.example.arguments_simple.adapter.TestQuery_ResponseAdapter.Hero.CharacterHero(customScalarAdapters)
-
     val otherHeroAdapter: OtherHero =
         com.example.arguments_simple.adapter.TestQuery_ResponseAdapter.Hero.OtherHero(customScalarAdapters)
 

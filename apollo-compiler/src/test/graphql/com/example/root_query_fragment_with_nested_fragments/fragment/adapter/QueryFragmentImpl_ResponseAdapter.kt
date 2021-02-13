@@ -125,9 +125,6 @@ class QueryFragmentImpl_ResponseAdapter(
     val characterHeroAdapter: CharacterHero =
         com.example.root_query_fragment_with_nested_fragments.fragment.adapter.QueryFragmentImpl_ResponseAdapter.Hero.CharacterHero(customScalarAdapters)
 
-    val characterHeroAdapter: CharacterHero =
-        com.example.root_query_fragment_with_nested_fragments.fragment.adapter.QueryFragmentImpl_ResponseAdapter.Hero.CharacterHero(customScalarAdapters)
-
     val otherHeroAdapter: OtherHero =
         com.example.root_query_fragment_with_nested_fragments.fragment.adapter.QueryFragmentImpl_ResponseAdapter.Hero.OtherHero(customScalarAdapters)
 
