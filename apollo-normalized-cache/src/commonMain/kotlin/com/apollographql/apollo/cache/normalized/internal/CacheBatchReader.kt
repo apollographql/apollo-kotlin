@@ -88,7 +88,7 @@ class CacheBatchReader(
             }
             record[fieldName]
           }
-          
+
           value.registerCacheReferences(it.fieldSets)
 
           it.responseName to value
