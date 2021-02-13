@@ -19,16 +19,11 @@ class JsonScalarTest {
   @Throws(Exception::class)
   fun jsonScalar() {
     val server = MockWebServer()
-    val okHttpClient = OkHttpClient.Builder()
-        .dispatcher(Dispatcher(immediateExecutorService()))
-        .build()
 
     val apolloClient = ApolloClient.builder()
         .serverUrl(server.url("/"))
-        .okHttpClient(okHttpClient)
         .addCustomScalarAdapter(CustomScalars.Json, BuiltinCustomScalarAdapters.MAP_ADAPTER)
         .normalizedCache(MemoryCacheFactory(maxSizeBytes = Int.MAX_VALUE), IdFieldCacheKeyResolver())
-        .dispatcher(immediateExecutor())
         .build()
 
     cacheAndAssertCachedResponse(
@@ -39,10 +34,9 @@ class JsonScalarTest {
       assertThat(response.hasErrors()).isFalse()
       val expectedMap = mapOf(
           "obj" to mapOf("key" to "value"),
-          "list" to listOf(BigDecimal(0), BigDecimal(1), BigDecimal(2))
+          "list" to listOf(0, 1, 2)
       )
       assertThat(response.data!!.json).isEqualTo(expectedMap)
-      true
     }
 
     // Trigger a merge

@@ -2,12 +2,14 @@ package com.apollographql.apollo
 
 import com.apollographql.apollo.api.Operation
 import com.apollographql.apollo.api.Response
+import com.apollographql.apollo.coroutines.await
 import com.apollographql.apollo.fetcher.ApolloResponseFetchers.CACHE_ONLY
 import com.apollographql.apollo.fetcher.ApolloResponseFetchers.NETWORK_ONLY
 import com.apollographql.apollo.rx2.Rx2Apollo
 import com.google.common.io.CharStreams
 import io.reactivex.functions.Predicate
 import kotlinx.coroutines.channels.Channel
+import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.withTimeout
 import okhttp3.mockwebserver.MockResponse
 import okhttp3.mockwebserver.MockWebServer
@@ -64,18 +66,19 @@ object Utils {
   }
 
   @Throws(Exception::class)
-  fun <D: Operation.Data> cacheAndAssertCachedResponse(server: MockWebServer, mockResponse: String, call: ApolloQueryCall<D>,
-                                       predicate: Predicate<Response<D>>) {
+  fun <D: Operation.Data> cacheAndAssertCachedResponse(
+      server: MockWebServer,
+      mockResponse: String,
+      call: ApolloQueryCall<D>,
+      block: (Response<D>) -> Unit
+  ) {
     server.enqueue(mockResponse(mockResponse))
-    assertResponse(
-        call.responseFetcher(NETWORK_ONLY),
-        { response -> !response.hasErrors() }
-    )
-
-    assertResponse(
-        call.clone().responseFetcher(CACHE_ONLY),
-        predicate
-    )
+    runBlocking {
+      var response = call.clone().responseFetcher(NETWORK_ONLY).await()
+      check(!response.hasErrors())
+      response = call.clone().responseFetcher(CACHE_ONLY).await()
+      block(response)
+    }
   }
 
   fun immediateExecutorService(): ExecutorService {
