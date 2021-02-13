@@ -15,9 +15,11 @@ class ListResponseAdapter<T>(private val wrappedAdapter: ResponseAdapter<T>): Re
   }
 
   override fun toResponse(writer: JsonWriter, value: List<T>) {
+    writer.beginArray()
     value.forEach {
       wrappedAdapter.toResponse(writer, it)
     }
+    writer.endArray()
   }
 }
 

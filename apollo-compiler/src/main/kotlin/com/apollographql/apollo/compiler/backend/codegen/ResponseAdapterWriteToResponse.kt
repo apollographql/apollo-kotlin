@@ -24,14 +24,11 @@ internal fun CodeGenerationAst.ObjectType.writeToResponseFunSpec(): FunSpec {
 }
 
 private fun CodeGenerationAst.ObjectType.writeObjectToResponseFunSpec(): FunSpec {
-  val writeFieldsCode = this.fields.mapIndexed { index, field ->
-    field.writeCode()
-  }.joinToCode(separator = "")
   return FunSpec.builder("toResponse")
       .applyIf(!isTypeCase) { addModifiers(KModifier.OVERRIDE) }
       .addParameter(ParameterSpec(name = "writer", type = JsonWriter::class.asTypeName()))
       .addParameter(ParameterSpec(name = "value", type = this.typeRef.asTypeName()))
-      .addCode(writeFieldsCode)
+      .addCode(this.fields.writeCode())
       .build()
 }
 
@@ -55,9 +52,7 @@ private fun CodeGenerationAst.ObjectType.writeFragmentToResponseFunSpec(): FunSp
       .addParameter(ParameterSpec(name = "value", type = this.typeRef.asTypeName()))
       .applyIf(possibleImplementations.isEmpty()) {
         addCode(
-            this@writeFragmentToResponseFunSpec.fields.mapIndexed { index, field ->
-              field.writeCode()
-            }.joinToCode(separator = "")
+            this@writeFragmentToResponseFunSpec.fields.writeCode()
         )
       }
       .applyIf(possibleImplementations.isNotEmpty()) {
@@ -83,8 +78,18 @@ private fun CodeGenerationAst.ObjectType.writeFragmentToResponseFunSpec(): FunSp
       .build()
 }
 
+internal fun List<CodeGenerationAst.Field>.writeCode(): CodeBlock {
+  val builder = CodeBlock.builder()
+  builder.addStatement("writer.beginObject()")
+  forEach {
+    builder.add(it.writeCode())
+  }
+  builder.addStatement("writer.endObject()")
+  return builder.build()
+}
 private fun CodeGenerationAst.Field.writeCode(): CodeBlock {
   return CodeBlock.builder().apply {
-    addStatement("${name.escapeKotlinReservedWord()}Adapter.toResponse(writer, value.${name.escapeKotlinReservedWord()})")
+    addStatement("writer.name(%S)", name)
+    addStatement("${kotlinNameForAdapterField(name)}.toResponse(writer, value.${name.escapeKotlinReservedWord()})")
   }.build()
 }

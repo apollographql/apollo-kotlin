@@ -10,3 +10,5 @@ import com.apollographql.apollo.compiler.escapeKotlinReservedWord
  */
 internal fun kotlinNameForEnumValue(graphqlEnumValue: String) = graphqlEnumValue.toUpperCase()
 internal fun kotlinNameForEnum(graphqlEnum: String) = graphqlEnum.escapeKotlinReservedWord()
+internal fun kotlinNameForField(responseName: String) = responseName.escapeKotlinReservedWord()
+internal fun kotlinNameForAdapterField(responseName: String) = "${responseName.escapeKotlinReservedWord()}Adapter"
