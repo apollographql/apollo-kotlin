@@ -61,6 +61,7 @@ internal data class CodeGenerationAst(
       val typeRef: TypeRef,
       val schemaTypename: String?,
       val fragmentAccessors: List<FragmentAccessor>,
+      val isTypeCase: Boolean,
   ) {
     val abstract: Boolean = kind == Kind.Interface || kind is Kind.Fragment
 

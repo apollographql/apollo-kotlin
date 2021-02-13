@@ -36,14 +36,14 @@ internal fun CodeGenerationAst.FragmentType.responseAdapterTypeSpec(generateAsIn
 }
 
 private fun CodeGenerationAst.ObjectType.rootResponseAdapterTypeSpec(generateAsInternal: Boolean = false): TypeSpec {
-  return this.responseAdapterTypeSpec(isBaseAdapter = true)
+  return this.responseAdapterTypeSpec()
       .toBuilder()
       .applyIf(generateAsInternal) { addModifiers(KModifier.INTERNAL) }
       .addAnnotation(suppressWarningsAnnotation)
       .build()
 }
 
-private fun CodeGenerationAst.ObjectType.responseAdapterTypeSpec(isBaseAdapter: Boolean): TypeSpec {
+private fun CodeGenerationAst.ObjectType.responseAdapterTypeSpec(): TypeSpec {
 
   return TypeSpec.classBuilder(this.name)
       .primaryConstructor(
@@ -51,7 +51,7 @@ private fun CodeGenerationAst.ObjectType.responseAdapterTypeSpec(isBaseAdapter: 
               .addParameter(ParameterSpec.builder("customScalarAdapters", CustomScalarAdapters::class.asTypeName()).build())
               .build()
       )
-      .applyIf(isBaseAdapter) { addSuperinterface(ResponseAdapter::class.asTypeName().parameterizedBy(this@responseAdapterTypeSpec.typeRef.asTypeName())) }
+      .applyIf(!isTypeCase) { addSuperinterface(ResponseAdapter::class.asTypeName().parameterizedBy(this@responseAdapterTypeSpec.typeRef.asTypeName())) }
       .apply {
         if (fields.isNotEmpty()) {
           if (kind is CodeGenerationAst.ObjectType.Kind.Object) {
@@ -62,7 +62,7 @@ private fun CodeGenerationAst.ObjectType.responseAdapterTypeSpec(isBaseAdapter: 
           }
         }
       }
-      .addFunction(readFromResponseFunSpec(isBaseAdapter))
+      .addFunction(readFromResponseFunSpec())
       .addFunction(writeToResponseFunSpec())
       .addTypes(
           this.nestedObjects
@@ -70,7 +70,7 @@ private fun CodeGenerationAst.ObjectType.responseAdapterTypeSpec(isBaseAdapter: 
                 when {
                   nestedObject.kind is CodeGenerationAst.ObjectType.Kind.Object ||
                   (nestedObject.kind is CodeGenerationAst.ObjectType.Kind.Fragment && nestedObject.kind.possibleImplementations.isNotEmpty()) -> {
-                    nestedObject.responseAdapterTypeSpec(this.kind is CodeGenerationAst.ObjectType.Kind.Fragment)
+                    nestedObject.responseAdapterTypeSpec()
                   }
                   else -> null
                 }
