@@ -125,7 +125,7 @@ class IntegrationTest {
     ) { response ->
       assertThat(response.hasErrors()).isTrue()
       assertThat(response.errors!![0].customAttributes).hasSize(4)
-      assertThat(response.errors!![0].customAttributes["code"]).isEqualTo(BigDecimal(500))
+      assertThat(response.errors!![0].customAttributes["code"]).isEqualTo(500)
       assertThat(response.errors!![0].customAttributes["status"]).isEqualTo("Internal Error")
       assertThat(response.errors!![0].customAttributes["fatal"]).isEqualTo(true)
       assertThat(response.errors!![0].customAttributes["path"]).isEqualTo(Arrays.asList("query"))
