@@ -56,9 +56,7 @@ object StreamResponseParser {
       return nextNull<D>()
     }
 
-    beginObject()
     val data = adapter.fromResponse(this)
-    endObject()
     return data
   }
 

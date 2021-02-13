@@ -39,6 +39,8 @@ object Utils {
     }
   }
 
+  fun resourceText(name: String) = readFileToString(this::class.java, "/$name")
+
   fun immediateExecutor(): Executor {
     return Executor { command -> command.run() }
   }

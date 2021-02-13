@@ -6,7 +6,7 @@ import com.apollographql.apollo.api.internal.json.JsonWriter
 
 interface ResponseAdapter<T> {
 
-  fun fromResponse(reader: JsonReader, __typename: String? = null): T
+  fun fromResponse(reader: JsonReader): T
 
   fun toResponse(writer: JsonWriter, value: T)
 }

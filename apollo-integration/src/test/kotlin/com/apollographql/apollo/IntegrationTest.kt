@@ -48,25 +48,25 @@ import java.util.Locale
 
 class IntegrationTest {
   private lateinit var apolloClient: ApolloClient
-  private lateinit var dateCustomScalarAdapter: CustomScalarAdapter<Date>
+  private var dateCustomScalarAdapter = object : CustomScalarAdapter<Date> {
+    override fun decode(jsonElement: JsonElement): Date {
+      return try {
+        DATE_FORMAT.parse(jsonElement.toRawValue().toString())
+      } catch (e: ParseException) {
+        throw RuntimeException(e)
+      }
+    }
+
+    override fun encode(value: Date): JsonElement {
+      return JsonString(DATE_FORMAT.format(value))
+    }
+  }
 
   val server = MockWebServer()
 
   @Before
   fun setUp() {
-    dateCustomScalarAdapter = object : CustomScalarAdapter<Date> {
-      override fun decode(jsonElement: JsonElement): Date {
-        return try {
-          DATE_FORMAT.parse(jsonElement.toRawValue().toString())
-        } catch (e: ParseException) {
-          throw RuntimeException(e)
-        }
-      }
 
-      override fun encode(value: Date): JsonElement {
-        return JsonString(DATE_FORMAT.format(value))
-      }
-    }
     apolloClient = ApolloClient.builder()
         .serverUrl(server.url("/"))
         .okHttpClient(OkHttpClient.Builder().dispatcher(Dispatcher(immediateExecutorService())).build())
@@ -78,34 +78,14 @@ class IntegrationTest {
   }
 
   @Test
-  @Throws(Exception::class)
-  fun allPlanetQuery() {
+  fun `request POST body contains operation, query and variables`() {
     server.enqueue(mockResponse("HttpCacheTestAllPlanets.json"))
     assertResponse(
         apolloClient.query(AllPlanetsQuery())
-    ) { (_, data) ->
-      assertThat(data!!.allPlanets?.planets?.size).isEqualTo(60)
-      val planets = data.allPlanets?.planets?.mapNotNull {
-        (it as PlanetFragment).name
-      }
-      assertThat(planets).isEqualTo(("Tatooine, Alderaan, Yavin IV, Hoth, Dagobah, Bespin, Endor, Naboo, "
-          + "Coruscant, Kamino, Geonosis, Utapau, Mustafar, Kashyyyk, Polis Massa, Mygeeto, Felucia, Cato Neimoidia, "
-          + "Saleucami, Stewjon, Eriadu, Corellia, Rodia, Nal Hutta, Dantooine, Bestine IV, Ord Mantell, unknown, "
-          + "Trandosha, Socorro, Mon Cala, Chandrila, Sullust, Toydaria, Malastare, Dathomir, Ryloth, Aleen Minor, "
-          + "Vulpter, Troiken, Tund, Haruun Kal, Cerea, Glee Anselm, Iridonia, Tholoth, Iktotch, Quermia, Dorin, "
-          + "Champala, Mirial, Serenno, Concord Dawn, Zolan, Ojom, Skako, Muunilinst, Shili, Kalee, Umbara")
-          .split(",")
-          .map { it.trim() }
-      )
-      val firstPlanet = data.allPlanets?.planets?.get(0)
-      assertThat((firstPlanet as PlanetFragment).climates).isEqualTo(listOf("arid"))
-      assertThat((firstPlanet as PlanetFragment).surfaceWater).isWithin(1.0)
-      assertThat(firstPlanet.filmConnection?.totalCount).isEqualTo(5)
-      assertThat(firstPlanet.filmConnection?.films?.size).isEqualTo(5)
-      assertThat((firstPlanet.filmConnection?.films?.get(0) as FilmFragment).title).isEqualTo("A New Hope")
-      assertThat((firstPlanet.filmConnection?.films?.get(0) as FilmFragment).producers).isEqualTo(listOf("Gary Kurtz", "Rick McCallum"))
+    ) {
       true
     }
+
     val body = server.takeRequest().body.readString(Charsets.UTF_8)
     checkTestFixture(body, "IntegrationTest/allPlanets.json")
   }
@@ -343,7 +323,7 @@ class IntegrationTest {
   }
 
   @Throws(Exception::class)
-  private fun <D: Operation.Data> enqueueCall(call: ApolloQueryCall<D>): List<ApolloCall.StatusEvent?> {
+  private fun <D : Operation.Data> enqueueCall(call: ApolloQueryCall<D>): List<ApolloCall.StatusEvent?> {
     val statusEvents: MutableList<ApolloCall.StatusEvent?> = ArrayList()
     call.enqueue(object : ApolloCall.Callback<D>() {
       override fun onResponse(response: Response<D>) {}
@@ -357,7 +337,7 @@ class IntegrationTest {
 
   companion object {
     private val DATE_FORMAT = SimpleDateFormat("yyyy-MM-dd", Locale.US)
-    private fun <D: Operation.Data> assertResponse(call: ApolloCall<D>, predicate: Predicate<Response<D>>) {
+    private fun <D : Operation.Data> assertResponse(call: ApolloCall<D>, predicate: Predicate<Response<D>>) {
       Rx2Apollo.from(call)
           .test()
           .assertValue(predicate)
