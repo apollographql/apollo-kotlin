@@ -47,7 +47,7 @@ fun <D : Operation.Data> Operation<D>.toJson(data: D, indent: String = "", custo
     val writer = JsonUtf8Writer(buffer).apply {
       this.indent = indent
     }
-    adapter().toResponse(writer, data, customScalarAdapters)
+    adapter(customScalarAdapters).toResponse(writer, data)
     buffer.readUtf8()
   } catch (e: IOException) {
     throw IllegalStateException(e)
@@ -173,6 +173,6 @@ fun <D : Operation.Data, M: Map<String, Any?>> Operation<D>.parseData(
   return MapJsonReader(
       map,
   ).let {
-    adapter().fromResponse(it, customScalarAdapters)
+    adapter(customScalarAdapters).fromResponse(it)
   }
 }

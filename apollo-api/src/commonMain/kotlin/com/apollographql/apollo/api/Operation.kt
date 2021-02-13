@@ -28,7 +28,7 @@ interface Operation<D : Operation.Data> {
   /**
    * Returns an Adapter that maps the server response data to/from generated model class [D].
    */
-  fun adapter(): ResponseAdapter<D>
+  fun adapter(customScalarAdapters: CustomScalarAdapters): ResponseAdapter<D>
 
   /**
    *

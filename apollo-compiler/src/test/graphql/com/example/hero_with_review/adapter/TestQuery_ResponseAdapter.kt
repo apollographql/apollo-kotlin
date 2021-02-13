@@ -5,118 +5,135 @@
 //
 package com.example.hero_with_review.adapter
 
+import com.apollographql.apollo.api.CustomScalarAdapters
 import com.apollographql.apollo.api.ResponseField
+import com.apollographql.apollo.api.internal.NullableResponseAdapter
 import com.apollographql.apollo.api.internal.ResponseAdapter
-import com.apollographql.apollo.api.internal.ResponseReader
-import com.apollographql.apollo.api.internal.ResponseWriter
+import com.apollographql.apollo.api.internal.intResponseAdapter
+import com.apollographql.apollo.api.internal.json.JsonReader
+import com.apollographql.apollo.api.internal.json.JsonWriter
+import com.apollographql.apollo.api.internal.stringResponseAdapter
+import com.apollographql.apollo.exception.UnexpectedNullValue
 import com.example.hero_with_review.TestQuery
 import kotlin.Array
 import kotlin.Int
 import kotlin.String
 import kotlin.Suppress
+import kotlin.collections.List
 
 @Suppress("NAME_SHADOWING", "UNUSED_ANONYMOUS_PARAMETER", "LocalVariableName",
     "RemoveExplicitTypeArguments", "NestedLambdaShadowedImplicitParameter", "PropertyName",
     "RemoveRedundantQualifierName")
-object TestQuery_ResponseAdapter : ResponseAdapter<TestQuery.Data> {
-  val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
-    ResponseField(
-      type = ResponseField.Type.Named.Object("Review"),
-      responseName = "createReview",
-      fieldName = "createReview",
-      arguments = mapOf<String, Any?>(
-        "episode" to mapOf<String, Any?>(
-          "kind" to "Variable",
-          "variableName" to "ep"),
-        "review" to mapOf<String, Any?>(
-          "stars" to 5,
-          "listOfEnums" to listOf<Any?>(
-            "JEDI",
-            "EMPIRE",
-            "NEWHOPE"),
-          "listOfStringNonOptional" to listOf<Any?>(
-            "1",
-            "2",
-            "3"),
-          "favoriteColor" to mapOf<String, Any?>(
-            "red" to 1,
-            "blue" to 1.0))),
-      conditions = emptyList(),
-      fieldSets = listOf(
-        ResponseField.FieldSet(null, CreateReview.RESPONSE_FIELDS)
-      ),
-    )
-  )
+class TestQuery_ResponseAdapter(
+  customScalarAdapters: CustomScalarAdapters
+) : ResponseAdapter<TestQuery.Data> {
+  val createReviewAdapter: ResponseAdapter<TestQuery.Data.CreateReview?> =
+      NullableResponseAdapter(CreateReview(customScalarAdapters))
 
-  override fun fromResponse(reader: ResponseReader, __typename: String?): TestQuery.Data {
-    return reader.run {
-      var createReview: TestQuery.Data.CreateReview? = null
+  override fun fromResponse(reader: JsonReader, __typename: String?): TestQuery.Data {
+    var createReview: TestQuery.Data.CreateReview? = null
+    reader.beginObject()
+    while(true) {
+      when (reader.selectName(RESPONSE_NAMES)) {
+        0 -> createReview = createReviewAdapter.fromResponse(reader)
+        else -> break
+      }
+    }
+    reader.endObject()
+    return TestQuery.Data(
+      createReview = createReview
+    )
+  }
+
+  override fun toResponse(writer: JsonWriter, value: TestQuery.Data) {
+    createReviewAdapter.toResponse(writer, value.createReview)
+  }
+
+  companion object {
+    val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
+      ResponseField(
+        type = ResponseField.Type.Named.Object("Review"),
+        responseName = "createReview",
+        fieldName = "createReview",
+        arguments = mapOf<String, Any?>(
+          "episode" to mapOf<String, Any?>(
+            "kind" to "Variable",
+            "variableName" to "ep"),
+          "review" to mapOf<String, Any?>(
+            "stars" to 5,
+            "listOfEnums" to listOf<Any?>(
+              "JEDI",
+              "EMPIRE",
+              "NEWHOPE"),
+            "listOfStringNonOptional" to listOf<Any?>(
+              "1",
+              "2",
+              "3"),
+            "favoriteColor" to mapOf<String, Any?>(
+              "red" to 1,
+              "blue" to 1.0))),
+        conditions = emptyList(),
+        fieldSets = listOf(
+          ResponseField.FieldSet(null, CreateReview.RESPONSE_FIELDS)
+        ),
+      )
+    )
+
+    val RESPONSE_NAMES: List<String> = RESPONSE_FIELDS.map { it.responseName }
+  }
+
+  class CreateReview(
+    customScalarAdapters: CustomScalarAdapters
+  ) : ResponseAdapter<TestQuery.Data.CreateReview> {
+    val starsAdapter: ResponseAdapter<Int> = intResponseAdapter
+
+    val commentaryAdapter: ResponseAdapter<String?> = NullableResponseAdapter(stringResponseAdapter)
+
+    override fun fromResponse(reader: JsonReader, __typename: String?):
+        TestQuery.Data.CreateReview {
+      var stars: Int? = null
+      var commentary: String? = null
+      reader.beginObject()
       while(true) {
-        when (selectField(RESPONSE_FIELDS)) {
-          0 -> createReview = readObject<TestQuery.Data.CreateReview>(RESPONSE_FIELDS[0]) { reader ->
-            CreateReview.fromResponse(reader)
-          }
+        when (reader.selectName(RESPONSE_NAMES)) {
+          0 -> stars = starsAdapter.fromResponse(reader) ?: throw UnexpectedNullValue("stars")
+          1 -> commentary = commentaryAdapter.fromResponse(reader)
           else -> break
         }
       }
-      TestQuery.Data(
-        createReview = createReview
+      reader.endObject()
+      return TestQuery.Data.CreateReview(
+        stars = stars!!,
+        commentary = commentary
       )
     }
-  }
 
-  override fun toResponse(writer: ResponseWriter, value: TestQuery.Data) {
-    if(value.createReview == null) {
-      writer.writeObject(RESPONSE_FIELDS[0], null)
-    } else {
-      writer.writeObject(RESPONSE_FIELDS[0]) { writer ->
-        CreateReview.toResponse(writer, value.createReview)
-      }
+    override fun toResponse(writer: JsonWriter, value: TestQuery.Data.CreateReview) {
+      starsAdapter.toResponse(writer, value.stars)
+      commentaryAdapter.toResponse(writer, value.commentary)
     }
-  }
 
-  object CreateReview : ResponseAdapter<TestQuery.Data.CreateReview> {
-    val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
-      ResponseField(
-        type = ResponseField.Type.NotNull(ResponseField.Type.Named.Other("Int")),
-        responseName = "stars",
-        fieldName = "stars",
-        arguments = emptyMap(),
-        conditions = emptyList(),
-        fieldSets = emptyList(),
-      ),
-      ResponseField(
-        type = ResponseField.Type.Named.Other("String"),
-        responseName = "commentary",
-        fieldName = "commentary",
-        arguments = emptyMap(),
-        conditions = emptyList(),
-        fieldSets = emptyList(),
-      )
-    )
-
-    override fun fromResponse(reader: ResponseReader, __typename: String?):
-        TestQuery.Data.CreateReview {
-      return reader.run {
-        var stars: Int? = null
-        var commentary: String? = null
-        while(true) {
-          when (selectField(RESPONSE_FIELDS)) {
-            0 -> stars = readInt(RESPONSE_FIELDS[0])
-            1 -> commentary = readString(RESPONSE_FIELDS[1])
-            else -> break
-          }
-        }
-        TestQuery.Data.CreateReview(
-          stars = stars!!,
-          commentary = commentary
+    companion object {
+      val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
+        ResponseField(
+          type = ResponseField.Type.NotNull(ResponseField.Type.Named.Other("Int")),
+          responseName = "stars",
+          fieldName = "stars",
+          arguments = emptyMap(),
+          conditions = emptyList(),
+          fieldSets = emptyList(),
+        ),
+        ResponseField(
+          type = ResponseField.Type.Named.Other("String"),
+          responseName = "commentary",
+          fieldName = "commentary",
+          arguments = emptyMap(),
+          conditions = emptyList(),
+          fieldSets = emptyList(),
         )
-      }
-    }
+      )
 
-    override fun toResponse(writer: ResponseWriter, value: TestQuery.Data.CreateReview) {
-      writer.writeInt(RESPONSE_FIELDS[0], value.stars)
-      writer.writeString(RESPONSE_FIELDS[1], value.commentary)
+      val RESPONSE_NAMES: List<String> = RESPONSE_FIELDS.map { it.responseName }
     }
   }
 }

@@ -5,6 +5,7 @@
 //
 package com.example.mutation_create_review
 
+import com.apollographql.apollo.api.CustomScalarAdapters
 import com.apollographql.apollo.api.Mutation
 import com.apollographql.apollo.api.Operation
 import com.apollographql.apollo.api.ResponseField
@@ -53,7 +54,13 @@ internal data class CreateReviewForEpisode(
 
   override fun name(): String = OPERATION_NAME
 
-  override fun adapter(): ResponseAdapter<Data> = CreateReviewForEpisode_ResponseAdapter
+  override fun adapter(customScalarAdapters: CustomScalarAdapters): ResponseAdapter<Data> {
+    val adapter = customScalarAdapters.getOperationAdapter(name()) {
+      CreateReviewForEpisode_ResponseAdapter(customScalarAdapters)
+    }
+    return adapter
+  }
+
   override fun responseFields(): List<ResponseField.FieldSet> = listOf(
     ResponseField.FieldSet(null, CreateReviewForEpisode_ResponseAdapter.RESPONSE_FIELDS)
   )

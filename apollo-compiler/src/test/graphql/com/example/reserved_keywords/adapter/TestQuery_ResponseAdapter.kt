@@ -5,10 +5,15 @@
 //
 package com.example.reserved_keywords.adapter
 
+import com.apollographql.apollo.api.CustomScalarAdapters
 import com.apollographql.apollo.api.ResponseField
+import com.apollographql.apollo.api.internal.ListResponseAdapter
+import com.apollographql.apollo.api.internal.NullableResponseAdapter
 import com.apollographql.apollo.api.internal.ResponseAdapter
-import com.apollographql.apollo.api.internal.ResponseReader
-import com.apollographql.apollo.api.internal.ResponseWriter
+import com.apollographql.apollo.api.internal.json.JsonReader
+import com.apollographql.apollo.api.internal.json.JsonWriter
+import com.apollographql.apollo.api.internal.stringResponseAdapter
+import com.apollographql.apollo.exception.UnexpectedNullValue
 import com.example.reserved_keywords.TestQuery
 import kotlin.Array
 import kotlin.String
@@ -18,139 +23,104 @@ import kotlin.collections.List
 @Suppress("NAME_SHADOWING", "UNUSED_ANONYMOUS_PARAMETER", "LocalVariableName",
     "RemoveExplicitTypeArguments", "NestedLambdaShadowedImplicitParameter", "PropertyName",
     "RemoveRedundantQualifierName")
-object TestQuery_ResponseAdapter : ResponseAdapter<TestQuery.Data> {
-  val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
-    ResponseField(
-      type = ResponseField.Type.Named.Object("Character"),
-      responseName = "yield",
-      fieldName = "hero",
-      arguments = emptyMap(),
-      conditions = emptyList(),
-      fieldSets = listOf(
-        ResponseField.FieldSet(null, Yield.RESPONSE_FIELDS)
-      ),
-    ),
-    ResponseField(
-      type = ResponseField.Type.List(ResponseField.Type.Named.Object("SearchResult")),
-      responseName = "objects",
-      fieldName = "search",
-      arguments = mapOf<String, Any?>(
-        "text" to "abc"),
-      conditions = emptyList(),
-      fieldSets = listOf(
-        ResponseField.FieldSet("Human", Object.CharacterObject.RESPONSE_FIELDS),
-        ResponseField.FieldSet("Droid", Object.CharacterObject.RESPONSE_FIELDS),
-        ResponseField.FieldSet(null, Object.OtherObject.RESPONSE_FIELDS),
-      ),
-    )
-  )
+class TestQuery_ResponseAdapter(
+  customScalarAdapters: CustomScalarAdapters
+) : ResponseAdapter<TestQuery.Data> {
+  val yield_Adapter: ResponseAdapter<TestQuery.Data.Yield?> =
+      NullableResponseAdapter(Yield(customScalarAdapters))
 
-  override fun fromResponse(reader: ResponseReader, __typename: String?): TestQuery.Data {
-    return reader.run {
-      var yield_: TestQuery.Data.Yield? = null
-      var objects: List<TestQuery.Data.Object?>? = null
+  val objectsAdapter: ResponseAdapter<List<TestQuery.Data.Object?>?> =
+      NullableResponseAdapter(ListResponseAdapter(NullableResponseAdapter(Object(customScalarAdapters))))
+
+  override fun fromResponse(reader: JsonReader, __typename: String?): TestQuery.Data {
+    var yield_: TestQuery.Data.Yield? = null
+    var objects: List<TestQuery.Data.Object?>? = null
+    reader.beginObject()
+    while(true) {
+      when (reader.selectName(RESPONSE_NAMES)) {
+        0 -> yield_ = yield_Adapter.fromResponse(reader)
+        1 -> objects = objectsAdapter.fromResponse(reader)
+        else -> break
+      }
+    }
+    reader.endObject()
+    return TestQuery.Data(
+      yield_ = yield_,
+      objects = objects
+    )
+  }
+
+  override fun toResponse(writer: JsonWriter, value: TestQuery.Data) {
+    yield_Adapter.toResponse(writer, value.yield_)
+    objectsAdapter.toResponse(writer, value.objects)
+  }
+
+  companion object {
+    val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
+      ResponseField(
+        type = ResponseField.Type.Named.Object("Character"),
+        responseName = "yield",
+        fieldName = "hero",
+        arguments = emptyMap(),
+        conditions = emptyList(),
+        fieldSets = listOf(
+          ResponseField.FieldSet(null, Yield.RESPONSE_FIELDS)
+        ),
+      ),
+      ResponseField(
+        type = ResponseField.Type.List(ResponseField.Type.Named.Object("SearchResult")),
+        responseName = "objects",
+        fieldName = "search",
+        arguments = mapOf<String, Any?>(
+          "text" to "abc"),
+        conditions = emptyList(),
+        fieldSets = listOf(
+          ResponseField.FieldSet("Human", Object.CharacterObject.RESPONSE_FIELDS),
+          ResponseField.FieldSet("Droid", Object.CharacterObject.RESPONSE_FIELDS),
+          ResponseField.FieldSet(null, Object.OtherObject.RESPONSE_FIELDS),
+        ),
+      )
+    )
+
+    val RESPONSE_NAMES: List<String> = RESPONSE_FIELDS.map { it.responseName }
+  }
+
+  class Yield(
+    customScalarAdapters: CustomScalarAdapters
+  ) : ResponseAdapter<TestQuery.Data.Yield> {
+    val it_Adapter: ResponseAdapter<String> = stringResponseAdapter
+
+    val nameAdapter: ResponseAdapter<String> = stringResponseAdapter
+
+    override fun fromResponse(reader: JsonReader, __typename: String?): TestQuery.Data.Yield {
+      var it_: String? = null
+      var name: String? = null
+      reader.beginObject()
       while(true) {
-        when (selectField(RESPONSE_FIELDS)) {
-          0 -> yield_ = readObject<TestQuery.Data.Yield>(RESPONSE_FIELDS[0]) { reader ->
-            Yield.fromResponse(reader)
-          }
-          1 -> objects = readList<TestQuery.Data.Object>(RESPONSE_FIELDS[1]) { reader ->
-            reader.readObject<TestQuery.Data.Object> { reader ->
-              Object.fromResponse(reader)
-            }
-          }
+        when (reader.selectName(RESPONSE_NAMES)) {
+          0 -> it_ = it_Adapter.fromResponse(reader) ?: throw UnexpectedNullValue("it")
+          1 -> name = nameAdapter.fromResponse(reader) ?: throw UnexpectedNullValue("name")
           else -> break
         }
       }
-      TestQuery.Data(
-        yield_ = yield_,
-        objects = objects
+      reader.endObject()
+      return TestQuery.Data.Yield(
+        it_ = it_!!,
+        name = name!!
       )
     }
-  }
 
-  override fun toResponse(writer: ResponseWriter, value: TestQuery.Data) {
-    if(value.yield_ == null) {
-      writer.writeObject(RESPONSE_FIELDS[0], null)
-    } else {
-      writer.writeObject(RESPONSE_FIELDS[0]) { writer ->
-        Yield.toResponse(writer, value.yield_)
-      }
-    }
-    writer.writeList(RESPONSE_FIELDS[1], value.objects) { value, listItemWriter ->
-      listItemWriter.writeObject { writer ->
-        Object.toResponse(writer, value)
-      }
-    }
-  }
-
-  object Yield : ResponseAdapter<TestQuery.Data.Yield> {
-    val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
-      ResponseField(
-        type = ResponseField.Type.NotNull(ResponseField.Type.Named.Other("String")),
-        responseName = "it",
-        fieldName = "id",
-        arguments = emptyMap(),
-        conditions = emptyList(),
-        fieldSets = emptyList(),
-      ),
-      ResponseField(
-        type = ResponseField.Type.NotNull(ResponseField.Type.Named.Other("String")),
-        responseName = "name",
-        fieldName = "name",
-        arguments = emptyMap(),
-        conditions = emptyList(),
-        fieldSets = emptyList(),
-      )
-    )
-
-    override fun fromResponse(reader: ResponseReader, __typename: String?): TestQuery.Data.Yield {
-      return reader.run {
-        var it_: String? = null
-        var name: String? = null
-        while(true) {
-          when (selectField(RESPONSE_FIELDS)) {
-            0 -> it_ = readString(RESPONSE_FIELDS[0])
-            1 -> name = readString(RESPONSE_FIELDS[1])
-            else -> break
-          }
-        }
-        TestQuery.Data.Yield(
-          it_ = it_!!,
-          name = name!!
-        )
-      }
+    override fun toResponse(writer: JsonWriter, value: TestQuery.Data.Yield) {
+      it_Adapter.toResponse(writer, value.it_)
+      nameAdapter.toResponse(writer, value.name)
     }
 
-    override fun toResponse(writer: ResponseWriter, value: TestQuery.Data.Yield) {
-      writer.writeString(RESPONSE_FIELDS[0], value.it_)
-      writer.writeString(RESPONSE_FIELDS[1], value.name)
-    }
-  }
-
-  object Object : ResponseAdapter<TestQuery.Data.Object> {
-    override fun fromResponse(reader: ResponseReader, __typename: String?): TestQuery.Data.Object {
-      val typename = __typename ?: reader.readString(ResponseField.Typename)
-      return when(typename) {
-        "Human" -> CharacterObject.fromResponse(reader, typename)
-        "Droid" -> CharacterObject.fromResponse(reader, typename)
-        else -> OtherObject.fromResponse(reader, typename)
-      }
-    }
-
-    override fun toResponse(writer: ResponseWriter, value: TestQuery.Data.Object) {
-      when(value) {
-        is TestQuery.Data.Object.CharacterObject -> CharacterObject.toResponse(writer, value)
-        is TestQuery.Data.Object.OtherObject -> OtherObject.toResponse(writer, value)
-      }
-    }
-
-    object CharacterObject : ResponseAdapter<TestQuery.Data.Object.CharacterObject> {
+    companion object {
       val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
         ResponseField(
           type = ResponseField.Type.NotNull(ResponseField.Type.Named.Other("String")),
-          responseName = "__typename",
-          fieldName = "__typename",
+          responseName = "it",
+          fieldName = "id",
           arguments = emptyMap(),
           conditions = emptyList(),
           fieldSets = emptyList(),
@@ -165,62 +135,137 @@ object TestQuery_ResponseAdapter : ResponseAdapter<TestQuery.Data> {
         )
       )
 
-      override fun fromResponse(reader: ResponseReader, __typename: String?):
-          TestQuery.Data.Object.CharacterObject {
-        return reader.run {
-          var __typename: String? = __typename
-          var name: String? = null
-          while(true) {
-            when (selectField(RESPONSE_FIELDS)) {
-              0 -> __typename = readString(RESPONSE_FIELDS[0])
-              1 -> name = readString(RESPONSE_FIELDS[1])
-              else -> break
-            }
-          }
-          TestQuery.Data.Object.CharacterObject(
-            __typename = __typename!!,
-            name = name!!
-          )
-        }
-      }
+      val RESPONSE_NAMES: List<String> = RESPONSE_FIELDS.map { it.responseName }
+    }
+  }
 
-      override fun toResponse(writer: ResponseWriter,
-          value: TestQuery.Data.Object.CharacterObject) {
-        writer.writeString(RESPONSE_FIELDS[0], value.__typename)
-        writer.writeString(RESPONSE_FIELDS[1], value.name)
+  class Object(
+    customScalarAdapters: CustomScalarAdapters
+  ) : ResponseAdapter<TestQuery.Data.Object> {
+    val characterObjectAdapter: CharacterObject =
+        com.example.reserved_keywords.adapter.TestQuery_ResponseAdapter.Object.CharacterObject(customScalarAdapters)
+
+    val characterObjectAdapter: CharacterObject =
+        com.example.reserved_keywords.adapter.TestQuery_ResponseAdapter.Object.CharacterObject(customScalarAdapters)
+
+    val otherObjectAdapter: OtherObject =
+        com.example.reserved_keywords.adapter.TestQuery_ResponseAdapter.Object.OtherObject(customScalarAdapters)
+
+    override fun fromResponse(reader: JsonReader, __typename: String?): TestQuery.Data.Object {
+      reader.beginObject()
+      check(reader.nextName() == "__typename")
+      val typename = reader.nextString()
+
+      return when(typename) {
+        "Human" -> characterObjectAdapter.fromResponse(reader, typename)
+        "Droid" -> characterObjectAdapter.fromResponse(reader, typename)
+        else -> otherObjectAdapter.fromResponse(reader, typename)
+      }
+      .also { reader.endObject() }
+    }
+
+    override fun toResponse(writer: JsonWriter, value: TestQuery.Data.Object) {
+      when(value) {
+        is TestQuery.Data.Object.CharacterObject -> characterObjectAdapter.toResponse(writer, value)
+        is TestQuery.Data.Object.OtherObject -> otherObjectAdapter.toResponse(writer, value)
       }
     }
 
-    object OtherObject : ResponseAdapter<TestQuery.Data.Object.OtherObject> {
-      val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
-        ResponseField(
-          type = ResponseField.Type.NotNull(ResponseField.Type.Named.Other("String")),
-          responseName = "__typename",
-          fieldName = "__typename",
-          arguments = emptyMap(),
-          conditions = emptyList(),
-          fieldSets = emptyList(),
-        )
-      )
+    class CharacterObject(
+      customScalarAdapters: CustomScalarAdapters
+    ) : ResponseAdapter<TestQuery.Data.Object.CharacterObject> {
+      val __typenameAdapter: ResponseAdapter<String> = stringResponseAdapter
 
-      override fun fromResponse(reader: ResponseReader, __typename: String?):
-          TestQuery.Data.Object.OtherObject {
-        return reader.run {
-          var __typename: String? = __typename
-          while(true) {
-            when (selectField(RESPONSE_FIELDS)) {
-              0 -> __typename = readString(RESPONSE_FIELDS[0])
-              else -> break
-            }
+      val nameAdapter: ResponseAdapter<String> = stringResponseAdapter
+
+      override fun fromResponse(reader: JsonReader, __typename: String?):
+          TestQuery.Data.Object.CharacterObject {
+        var __typename: String? = __typename
+        var name: String? = null
+        reader.beginObject()
+        while(true) {
+          when (reader.selectName(RESPONSE_NAMES)) {
+            0 -> __typename = __typenameAdapter.fromResponse(reader) ?: throw
+                UnexpectedNullValue("__typename")
+            1 -> name = nameAdapter.fromResponse(reader) ?: throw UnexpectedNullValue("name")
+            else -> break
           }
-          TestQuery.Data.Object.OtherObject(
-            __typename = __typename!!
-          )
         }
+        reader.endObject()
+        return TestQuery.Data.Object.CharacterObject(
+          __typename = __typename!!,
+          name = name!!
+        )
       }
 
-      override fun toResponse(writer: ResponseWriter, value: TestQuery.Data.Object.OtherObject) {
-        writer.writeString(RESPONSE_FIELDS[0], value.__typename)
+      override fun toResponse(writer: JsonWriter, value: TestQuery.Data.Object.CharacterObject) {
+        __typenameAdapter.toResponse(writer, value.__typename)
+        nameAdapter.toResponse(writer, value.name)
+      }
+
+      companion object {
+        val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
+          ResponseField(
+            type = ResponseField.Type.NotNull(ResponseField.Type.Named.Other("String")),
+            responseName = "__typename",
+            fieldName = "__typename",
+            arguments = emptyMap(),
+            conditions = emptyList(),
+            fieldSets = emptyList(),
+          ),
+          ResponseField(
+            type = ResponseField.Type.NotNull(ResponseField.Type.Named.Other("String")),
+            responseName = "name",
+            fieldName = "name",
+            arguments = emptyMap(),
+            conditions = emptyList(),
+            fieldSets = emptyList(),
+          )
+        )
+
+        val RESPONSE_NAMES: List<String> = RESPONSE_FIELDS.map { it.responseName }
+      }
+    }
+
+    class OtherObject(
+      customScalarAdapters: CustomScalarAdapters
+    ) : ResponseAdapter<TestQuery.Data.Object.OtherObject> {
+      val __typenameAdapter: ResponseAdapter<String> = stringResponseAdapter
+
+      override fun fromResponse(reader: JsonReader, __typename: String?):
+          TestQuery.Data.Object.OtherObject {
+        var __typename: String? = __typename
+        reader.beginObject()
+        while(true) {
+          when (reader.selectName(RESPONSE_NAMES)) {
+            0 -> __typename = __typenameAdapter.fromResponse(reader) ?: throw
+                UnexpectedNullValue("__typename")
+            else -> break
+          }
+        }
+        reader.endObject()
+        return TestQuery.Data.Object.OtherObject(
+          __typename = __typename!!
+        )
+      }
+
+      override fun toResponse(writer: JsonWriter, value: TestQuery.Data.Object.OtherObject) {
+        __typenameAdapter.toResponse(writer, value.__typename)
+      }
+
+      companion object {
+        val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
+          ResponseField(
+            type = ResponseField.Type.NotNull(ResponseField.Type.Named.Other("String")),
+            responseName = "__typename",
+            fieldName = "__typename",
+            arguments = emptyMap(),
+            conditions = emptyList(),
+            fieldSets = emptyList(),
+          )
+        )
+
+        val RESPONSE_NAMES: List<String> = RESPONSE_FIELDS.map { it.responseName }
       }
     }
   }

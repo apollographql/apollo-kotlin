@@ -5,6 +5,7 @@
 //
 package com.example.named_fragment_with_variables.fragment
 
+import com.apollographql.apollo.api.CustomScalarAdapters
 import com.apollographql.apollo.api.Fragment
 import com.apollographql.apollo.api.Operation
 import com.apollographql.apollo.api.ResponseField
@@ -34,8 +35,11 @@ data class UserFragmentImpl(
     }
   }
 
-  override fun adapter(): ResponseAdapter<Data> {
-    return UserFragmentImpl_ResponseAdapter
+  override fun adapter(customScalarAdapters: CustomScalarAdapters): ResponseAdapter<Data> {
+    val adapter = customScalarAdapters.getFragmentAdapter(name()) {
+      UserFragmentImpl_ResponseAdapter(customScalarAdapters)
+    }
+    return adapter
   }
 
   override fun responseFields(): List<ResponseField.FieldSet> = listOf(

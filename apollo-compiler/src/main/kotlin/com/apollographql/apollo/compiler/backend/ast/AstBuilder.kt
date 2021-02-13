@@ -708,14 +708,14 @@ internal class AstBuilder private constructor(
       )
     }
   }
+}
 
-  private fun String.toLowerCamelCase(): String {
-    val firstLetterIndex = this.indexOfFirst { it.isLetter() }
-    return this.substring(0, firstLetterIndex) + this.substring(firstLetterIndex, this.length).decapitalize()
-  }
+fun String.toLowerCamelCase(): String {
+  val firstLetterIndex = this.indexOfFirst { it.isLetter() }
+  return this.substring(0, firstLetterIndex) + this.substring(firstLetterIndex, this.length).decapitalize()
+}
 
-  private fun String.toUpperCamelCase(): String {
-    val firstLetterIndex = this.indexOfFirst { it.isLetter() }
-    return this.substring(0, firstLetterIndex) + this.substring(firstLetterIndex, this.length).capitalize()
-  }
+fun String.toUpperCamelCase(): String {
+  val firstLetterIndex = this.indexOfFirst { it.isLetter() }
+  return this.substring(0, firstLetterIndex) + this.substring(firstLetterIndex, this.length).capitalize()
 }

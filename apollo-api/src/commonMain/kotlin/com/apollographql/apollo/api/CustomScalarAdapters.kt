@@ -5,6 +5,7 @@ import com.apollographql.apollo.api.internal.json.JsonReader
 import com.apollographql.apollo.api.internal.json.JsonWriter
 import com.apollographql.apollo.api.internal.json.Utils.readRecursively
 import com.apollographql.apollo.api.internal.json.Utils.writeToJson
+import kotlin.jvm.Synchronized
 
 /**
  * A wrapper around a Map of [CustomScalarAdapter] that allows to easily retrieve an adapter for the given [CustomScalar]
@@ -12,6 +13,9 @@ import com.apollographql.apollo.api.internal.json.Utils.writeToJson
 class CustomScalarAdapters(val customScalarAdapters: Map<CustomScalar, CustomScalarAdapter<*>>) {
 
   private val adapterByGraphQLName = customScalarAdapters.mapKeys { it.key.graphqlName }
+
+  private val adapterByQueryName = mutableMapOf<String, ResponseAdapter<*>>()
+  private val adapterByFragmentName = mutableMapOf<String, ResponseAdapter<*>>()
 
   @Suppress("UNCHECKED_CAST")
   fun <T : Any> adapterFor(customScalar: CustomScalar): CustomScalarAdapter<T> {
@@ -42,12 +46,25 @@ class CustomScalarAdapters(val customScalarAdapters: Map<CustomScalar, CustomSca
     return CustomResponseAdapter(adapterFor(graphqlName))
   }
 
+  @Synchronized
+  @Suppress("UNCHECKED_CAST")
+  fun <D> getOperationAdapter(operationName: String, defaultValue: () -> ResponseAdapter<D>): ResponseAdapter<D> {
+    return adapterByQueryName.getOrPut(operationName, defaultValue) as ResponseAdapter<D>
+  }
+
+  @Synchronized
+  @Suppress("UNCHECKED_CAST")
+  fun <D> getFragmentAdapter(fragmentName: String, defaultValue: () -> ResponseAdapter<D>): ResponseAdapter<D> {
+    return adapterByFragmentName.getOrPut(fragmentName, defaultValue) as ResponseAdapter<D>
+  }
+
+
   class CustomResponseAdapter<T: Any>(private val wrappedAdapter: CustomScalarAdapter<T>) : ResponseAdapter<T> {
-    override fun fromResponse(reader: JsonReader, customScalarAdapters: CustomScalarAdapters, __typename: String?): T {
+    override fun fromResponse(reader: JsonReader, __typename: String?): T {
       return wrappedAdapter.decode(JsonElement.fromRawValue(reader.readRecursively()))
     }
 
-    override fun toResponse(writer: JsonWriter, value: T, customScalarAdapters: CustomScalarAdapters) {
+    override fun toResponse(writer: JsonWriter, value: T) {
       writeToJson(wrappedAdapter.encode(value).toRawValue(), writer)
     }
   }

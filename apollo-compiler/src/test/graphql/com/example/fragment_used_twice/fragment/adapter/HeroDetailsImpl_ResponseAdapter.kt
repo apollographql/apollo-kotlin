@@ -5,135 +5,180 @@
 //
 package com.example.fragment_used_twice.fragment.adapter
 
+import com.apollographql.apollo.api.CustomScalarAdapters
 import com.apollographql.apollo.api.ResponseField
 import com.apollographql.apollo.api.internal.ResponseAdapter
-import com.apollographql.apollo.api.internal.ResponseReader
-import com.apollographql.apollo.api.internal.ResponseWriter
+import com.apollographql.apollo.api.internal.json.JsonReader
+import com.apollographql.apollo.api.internal.json.JsonWriter
+import com.apollographql.apollo.api.internal.stringResponseAdapter
+import com.apollographql.apollo.exception.UnexpectedNullValue
 import com.example.fragment_used_twice.fragment.HeroDetailsImpl
 import kotlin.Any
 import kotlin.Array
 import kotlin.String
 import kotlin.Suppress
+import kotlin.collections.List
 
 @Suppress("NAME_SHADOWING", "UNUSED_ANONYMOUS_PARAMETER", "LocalVariableName",
     "RemoveExplicitTypeArguments", "NestedLambdaShadowedImplicitParameter", "PropertyName",
     "RemoveRedundantQualifierName")
-object HeroDetailsImpl_ResponseAdapter : ResponseAdapter<HeroDetailsImpl.Data> {
-  override fun fromResponse(reader: ResponseReader, __typename: String?): HeroDetailsImpl.Data {
-    val typename = __typename ?: reader.readString(ResponseField.Typename)
+class HeroDetailsImpl_ResponseAdapter(
+  customScalarAdapters: CustomScalarAdapters
+) : ResponseAdapter<HeroDetailsImpl.Data> {
+  val characterDataAdapter: CharacterData =
+      com.example.fragment_used_twice.fragment.adapter.HeroDetailsImpl_ResponseAdapter.CharacterData(customScalarAdapters)
+
+  val characterDataAdapter: CharacterData =
+      com.example.fragment_used_twice.fragment.adapter.HeroDetailsImpl_ResponseAdapter.CharacterData(customScalarAdapters)
+
+  val otherDataAdapter: OtherData =
+      com.example.fragment_used_twice.fragment.adapter.HeroDetailsImpl_ResponseAdapter.OtherData(customScalarAdapters)
+
+  override fun fromResponse(reader: JsonReader, __typename: String?): HeroDetailsImpl.Data {
+    reader.beginObject()
+    check(reader.nextName() == "__typename")
+    val typename = reader.nextString()
+
     return when(typename) {
-      "Droid" -> CharacterData.fromResponse(reader, typename)
-      "Human" -> CharacterData.fromResponse(reader, typename)
-      else -> OtherData.fromResponse(reader, typename)
+      "Droid" -> characterDataAdapter.fromResponse(reader, typename)
+      "Human" -> characterDataAdapter.fromResponse(reader, typename)
+      else -> otherDataAdapter.fromResponse(reader, typename)
     }
+    .also { reader.endObject() }
   }
 
-  override fun toResponse(writer: ResponseWriter, value: HeroDetailsImpl.Data) {
+  override fun toResponse(writer: JsonWriter, value: HeroDetailsImpl.Data) {
     when(value) {
-      is HeroDetailsImpl.Data.CharacterData -> CharacterData.toResponse(writer, value)
-      is HeroDetailsImpl.Data.OtherData -> OtherData.toResponse(writer, value)
+      is HeroDetailsImpl.Data.CharacterData -> characterDataAdapter.toResponse(writer, value)
+      is HeroDetailsImpl.Data.OtherData -> otherDataAdapter.toResponse(writer, value)
     }
   }
 
-  object CharacterData : ResponseAdapter<HeroDetailsImpl.Data.CharacterData> {
-    val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
-      ResponseField(
-        type = ResponseField.Type.NotNull(ResponseField.Type.Named.Other("String")),
-        responseName = "__typename",
-        fieldName = "__typename",
-        arguments = emptyMap(),
-        conditions = emptyList(),
-        fieldSets = emptyList(),
-      ),
-      ResponseField(
-        type = ResponseField.Type.NotNull(ResponseField.Type.Named.Other("String")),
-        responseName = "name",
-        fieldName = "name",
-        arguments = emptyMap(),
-        conditions = emptyList(),
-        fieldSets = emptyList(),
-      ),
-      ResponseField(
-        type = ResponseField.Type.NotNull(ResponseField.Type.Named.Other("Date")),
-        responseName = "birthDate",
-        fieldName = "birthDate",
-        arguments = emptyMap(),
-        conditions = emptyList(),
-        fieldSets = emptyList(),
-      )
-    )
+  class CharacterData(
+    customScalarAdapters: CustomScalarAdapters
+  ) : ResponseAdapter<HeroDetailsImpl.Data.CharacterData> {
+    val __typenameAdapter: ResponseAdapter<String> = stringResponseAdapter
 
-    override fun fromResponse(reader: ResponseReader, __typename: String?):
+    val nameAdapter: ResponseAdapter<String> = stringResponseAdapter
+
+    val birthDateAdapter: ResponseAdapter<Any> =
+        customScalarAdapters.responseAdapterFor<Any>("Date")
+
+    override fun fromResponse(reader: JsonReader, __typename: String?):
         HeroDetailsImpl.Data.CharacterData {
-      return reader.run {
-        var __typename: String? = __typename
-        var name: String? = null
-        var birthDate: Any? = null
-        while(true) {
-          when (selectField(RESPONSE_FIELDS)) {
-            0 -> __typename = readString(RESPONSE_FIELDS[0])
-            1 -> name = readString(RESPONSE_FIELDS[1])
-            2 -> birthDate = readCustomScalar<Any>(RESPONSE_FIELDS[2])
-            else -> break
-          }
+      var __typename: String? = __typename
+      var name: String? = null
+      var birthDate: Any? = null
+      reader.beginObject()
+      while(true) {
+        when (reader.selectName(RESPONSE_NAMES)) {
+          0 -> __typename = __typenameAdapter.fromResponse(reader) ?: throw
+              UnexpectedNullValue("__typename")
+          1 -> name = nameAdapter.fromResponse(reader) ?: throw UnexpectedNullValue("name")
+          2 -> birthDate = birthDateAdapter.fromResponse(reader) ?: throw
+              UnexpectedNullValue("birthDate")
+          else -> break
         }
-        HeroDetailsImpl.Data.CharacterData(
-          __typename = __typename!!,
-          name = name!!,
-          birthDate = birthDate!!
-        )
       }
+      reader.endObject()
+      return HeroDetailsImpl.Data.CharacterData(
+        __typename = __typename!!,
+        name = name!!,
+        birthDate = birthDate!!
+      )
     }
 
-    override fun toResponse(writer: ResponseWriter, value: HeroDetailsImpl.Data.CharacterData) {
-      writer.writeString(RESPONSE_FIELDS[0], value.__typename)
-      writer.writeString(RESPONSE_FIELDS[1], value.name)
-      writer.writeCustom(RESPONSE_FIELDS[2], value.birthDate)
+    override fun toResponse(writer: JsonWriter, value: HeroDetailsImpl.Data.CharacterData) {
+      __typenameAdapter.toResponse(writer, value.__typename)
+      nameAdapter.toResponse(writer, value.name)
+      birthDateAdapter.toResponse(writer, value.birthDate)
+    }
+
+    companion object {
+      val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
+        ResponseField(
+          type = ResponseField.Type.NotNull(ResponseField.Type.Named.Other("String")),
+          responseName = "__typename",
+          fieldName = "__typename",
+          arguments = emptyMap(),
+          conditions = emptyList(),
+          fieldSets = emptyList(),
+        ),
+        ResponseField(
+          type = ResponseField.Type.NotNull(ResponseField.Type.Named.Other("String")),
+          responseName = "name",
+          fieldName = "name",
+          arguments = emptyMap(),
+          conditions = emptyList(),
+          fieldSets = emptyList(),
+        ),
+        ResponseField(
+          type = ResponseField.Type.NotNull(ResponseField.Type.Named.Other("Date")),
+          responseName = "birthDate",
+          fieldName = "birthDate",
+          arguments = emptyMap(),
+          conditions = emptyList(),
+          fieldSets = emptyList(),
+        )
+      )
+
+      val RESPONSE_NAMES: List<String> = RESPONSE_FIELDS.map { it.responseName }
     }
   }
 
-  object OtherData : ResponseAdapter<HeroDetailsImpl.Data.OtherData> {
-    val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
-      ResponseField(
-        type = ResponseField.Type.NotNull(ResponseField.Type.Named.Other("String")),
-        responseName = "__typename",
-        fieldName = "__typename",
-        arguments = emptyMap(),
-        conditions = emptyList(),
-        fieldSets = emptyList(),
-      ),
-      ResponseField(
-        type = ResponseField.Type.NotNull(ResponseField.Type.Named.Other("String")),
-        responseName = "name",
-        fieldName = "name",
-        arguments = emptyMap(),
-        conditions = emptyList(),
-        fieldSets = emptyList(),
-      )
-    )
+  class OtherData(
+    customScalarAdapters: CustomScalarAdapters
+  ) : ResponseAdapter<HeroDetailsImpl.Data.OtherData> {
+    val __typenameAdapter: ResponseAdapter<String> = stringResponseAdapter
 
-    override fun fromResponse(reader: ResponseReader, __typename: String?):
+    val nameAdapter: ResponseAdapter<String> = stringResponseAdapter
+
+    override fun fromResponse(reader: JsonReader, __typename: String?):
         HeroDetailsImpl.Data.OtherData {
-      return reader.run {
-        var __typename: String? = __typename
-        var name: String? = null
-        while(true) {
-          when (selectField(RESPONSE_FIELDS)) {
-            0 -> __typename = readString(RESPONSE_FIELDS[0])
-            1 -> name = readString(RESPONSE_FIELDS[1])
-            else -> break
-          }
+      var __typename: String? = __typename
+      var name: String? = null
+      reader.beginObject()
+      while(true) {
+        when (reader.selectName(RESPONSE_NAMES)) {
+          0 -> __typename = __typenameAdapter.fromResponse(reader) ?: throw
+              UnexpectedNullValue("__typename")
+          1 -> name = nameAdapter.fromResponse(reader) ?: throw UnexpectedNullValue("name")
+          else -> break
         }
-        HeroDetailsImpl.Data.OtherData(
-          __typename = __typename!!,
-          name = name!!
-        )
       }
+      reader.endObject()
+      return HeroDetailsImpl.Data.OtherData(
+        __typename = __typename!!,
+        name = name!!
+      )
     }
 
-    override fun toResponse(writer: ResponseWriter, value: HeroDetailsImpl.Data.OtherData) {
-      writer.writeString(RESPONSE_FIELDS[0], value.__typename)
-      writer.writeString(RESPONSE_FIELDS[1], value.name)
+    override fun toResponse(writer: JsonWriter, value: HeroDetailsImpl.Data.OtherData) {
+      __typenameAdapter.toResponse(writer, value.__typename)
+      nameAdapter.toResponse(writer, value.name)
+    }
+
+    companion object {
+      val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
+        ResponseField(
+          type = ResponseField.Type.NotNull(ResponseField.Type.Named.Other("String")),
+          responseName = "__typename",
+          fieldName = "__typename",
+          arguments = emptyMap(),
+          conditions = emptyList(),
+          fieldSets = emptyList(),
+        ),
+        ResponseField(
+          type = ResponseField.Type.NotNull(ResponseField.Type.Named.Other("String")),
+          responseName = "name",
+          fieldName = "name",
+          arguments = emptyMap(),
+          conditions = emptyList(),
+          fieldSets = emptyList(),
+        )
+      )
+
+      val RESPONSE_NAMES: List<String> = RESPONSE_FIELDS.map { it.responseName }
     }
   }
 }

@@ -5,6 +5,7 @@
 //
 package com.example.fragment_in_fragment.fragment
 
+import com.apollographql.apollo.api.CustomScalarAdapters
 import com.apollographql.apollo.api.Fragment
 import com.apollographql.apollo.api.Operation
 import com.apollographql.apollo.api.ResponseField
@@ -14,8 +15,11 @@ import kotlin.String
 import kotlin.collections.List
 
 class StarshipFragmentImpl : Fragment<StarshipFragmentImpl.Data> {
-  override fun adapter(): ResponseAdapter<Data> {
-    return StarshipFragmentImpl_ResponseAdapter
+  override fun adapter(customScalarAdapters: CustomScalarAdapters): ResponseAdapter<Data> {
+    val adapter = customScalarAdapters.getFragmentAdapter("StarshipFragmentImpl") {
+      StarshipFragmentImpl_ResponseAdapter(customScalarAdapters)
+    }
+    return adapter
   }
 
   override fun responseFields(): List<ResponseField.FieldSet> = listOf(

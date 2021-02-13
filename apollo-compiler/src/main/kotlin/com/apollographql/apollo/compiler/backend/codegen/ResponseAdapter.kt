@@ -1,16 +1,20 @@
 package com.apollographql.apollo.compiler.backend.codegen
 
+import com.apollographql.apollo.api.CustomScalarAdapters
 import com.apollographql.apollo.api.ResponseField
 import com.apollographql.apollo.api.internal.ListResponseAdapter
 import com.apollographql.apollo.api.internal.NullableResponseAdapter
 import com.apollographql.apollo.api.internal.ResponseAdapter
 import com.apollographql.apollo.compiler.applyIf
 import com.apollographql.apollo.compiler.backend.ast.CodeGenerationAst
+import com.apollographql.apollo.compiler.backend.ast.toLowerCamelCase
 import com.apollographql.apollo.compiler.escapeKotlinReservedWord
 import com.squareup.kotlinpoet.ClassName
 import com.squareup.kotlinpoet.CodeBlock
+import com.squareup.kotlinpoet.FunSpec
 import com.squareup.kotlinpoet.KModifier
 import com.squareup.kotlinpoet.MemberName
+import com.squareup.kotlinpoet.ParameterSpec
 import com.squareup.kotlinpoet.ParameterizedTypeName.Companion.parameterizedBy
 import com.squareup.kotlinpoet.PropertySpec
 import com.squareup.kotlinpoet.TypeSpec
@@ -40,15 +44,22 @@ private fun CodeGenerationAst.ObjectType.rootResponseAdapterTypeSpec(generateAsI
 }
 
 private fun CodeGenerationAst.ObjectType.responseAdapterTypeSpec(): TypeSpec {
-  return TypeSpec.objectBuilder(this.name)
+  return TypeSpec.classBuilder(this.name)
+      .primaryConstructor(
+          FunSpec.constructorBuilder()
+              .addParameter(ParameterSpec.builder("customScalarAdapters", CustomScalarAdapters::class.asTypeName()).build())
+              .build()
+      )
       .addSuperinterface(ResponseAdapter::class.asTypeName().parameterizedBy(this.typeRef.asTypeName()))
       .apply {
-          if (fields.isNotEmpty()
-              && kind is CodeGenerationAst.ObjectType.Kind.Object) {
-            addProperty(responseFieldsPropertySpec(this@responseAdapterTypeSpec))
-            addProperty(responseNamesPropertySpec())
+        if (fields.isNotEmpty()) {
+          if (kind is CodeGenerationAst.ObjectType.Kind.Object) {
+            addType(companionObjectTypeSpec(this@responseAdapterTypeSpec))
             addProperties(adapterPropertySpecs(this@responseAdapterTypeSpec))
+          } else if (kind is CodeGenerationAst.ObjectType.Kind.Fragment) {
+            addProperties(objectAdapterPropertySpecs(kind))
           }
+        }
       }
       .addFunction(readFromResponseFunSpec())
       .addFunction(writeToResponseFunSpec())
@@ -63,6 +74,21 @@ private fun CodeGenerationAst.ObjectType.responseAdapterTypeSpec(): TypeSpec {
               }
       )
       .build()
+}
+
+private fun objectAdapterPropertySpecs(kind: CodeGenerationAst.ObjectType.Kind.Fragment): Iterable<PropertySpec> {
+  return (kind.possibleImplementations.values + kind.defaultImplementation).map { typeRef ->
+    PropertySpec.builder("${typeRef.name.toLowerCamelCase()}Adapter", typeRef.asAdapterTypeName())
+        .initializer("%L(customScalarAdapters)", typeRef.asAdapterTypeName())
+        .build()
+  }
+}
+
+private fun companionObjectTypeSpec(objectType: CodeGenerationAst.ObjectType): TypeSpec {
+  return TypeSpec.companionObjectBuilder().apply {
+    addProperty(responseFieldsPropertySpec(objectType))
+    addProperty(responseNamesPropertySpec())
+  }.build()
 }
 
 internal fun CodeGenerationAst.TypeRef.asAdapterTypeName(): ClassName {
@@ -116,24 +142,23 @@ private fun adapterInitializer(type: CodeGenerationAst.FieldType): CodeBlock {
     return CodeBlock.of("%T(%L)", NullableResponseAdapter::class.asClassName(), adapterInitializer(type.nonNullable()))
   }
   return when (type) {
-    is CodeGenerationAst.FieldType.Array -> CodeBlock.of("%T(%L)", ListResponseAdapter::class.asClassName(), adapterInitializer(type.nonNullable()))
+    is CodeGenerationAst.FieldType.Array -> CodeBlock.of("%T(%L)", ListResponseAdapter::class.asClassName(), adapterInitializer(type.rawType))
     is CodeGenerationAst.FieldType.Scalar.Boolean -> CodeBlock.of("%M", MemberName("com.apollographql.apollo.api.internal", "booleanResponseAdapter"))
     is CodeGenerationAst.FieldType.Scalar.ID -> CodeBlock.of("%M", MemberName("com.apollographql.apollo.api.internal", "stringResponseAdapter"))
     is CodeGenerationAst.FieldType.Scalar.String -> CodeBlock.of("%M", MemberName("com.apollographql.apollo.api.internal", "stringResponseAdapter"))
     is CodeGenerationAst.FieldType.Scalar.Int -> CodeBlock.of("%M", MemberName("com.apollographql.apollo.api.internal", "intResponseAdapter"))
-    is CodeGenerationAst.FieldType.Scalar.Float -> CodeBlock.of("%M", MemberName("com.apollographql.apollo.api.internal", "floatResponseAdapter"))
+    is CodeGenerationAst.FieldType.Scalar.Float -> CodeBlock.of("%M", MemberName("com.apollographql.apollo.api.internal", "doubleResponseAdapter"))
     is CodeGenerationAst.FieldType.Scalar.Enum -> CodeBlock.of("%T.adapter", type.typeRef.asTypeName().copy(nullable = false))
-    is CodeGenerationAst.FieldType.Object -> CodeBlock.of("%T", type.typeRef.asAdapterTypeName().copy(nullable = false))
+    is CodeGenerationAst.FieldType.Object -> CodeBlock.of("%T(customScalarAdapters)", type.typeRef.asAdapterTypeName().copy(nullable = false))
     is CodeGenerationAst.FieldType.Scalar.Custom -> CodeBlock.of("customScalarAdapters.responseAdapterFor<%T>(%S)", ClassName.bestGuess(type.type), type.schemaTypeName)
   }
 }
+
 private fun CodeGenerationAst.Field.adapterPropertySpec(): PropertySpec {
   return PropertySpec
       .builder(
           name = "${name.escapeKotlinReservedWord()}Adapter",
-          type = ResponseAdapter::class.asClassName().parameterizedBy(
-              type.asTypeName().copy(nullable = true),
-          ),
+          type = ResponseAdapter::class.asClassName().parameterizedBy(type.asTypeName())
       )
       .initializer(adapterInitializer(type))
       .build()

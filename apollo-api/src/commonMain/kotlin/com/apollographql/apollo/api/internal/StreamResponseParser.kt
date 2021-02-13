@@ -30,9 +30,7 @@ object StreamResponseParser {
       while (jsonReader.hasNext()) {
         when (jsonReader.nextName()) {
           "data" -> data = jsonReader.readData(
-              adapter = operation.adapter(),
-              variables = operation.variables(),
-              customScalarAdapters = customScalarAdapters,
+              adapter = operation.adapter(customScalarAdapters),
           )
           "errors" -> errors = jsonReader.readErrors()
           "extensions" -> extensions = jsonReader.readRecursively() as Map<String, Any?>
@@ -53,15 +51,13 @@ object StreamResponseParser {
 
   private fun <D : Operation.Data> JsonReader.readData(
       adapter: ResponseAdapter<D>,
-      variables: Operation.Variables,
-      customScalarAdapters: CustomScalarAdapters,
   ): D? {
     if (peek() == JsonReader.Token.NULL) {
       return nextNull<D>()
     }
 
     beginObject()
-    val data = adapter.fromResponse(this, customScalarAdapters)
+    val data = adapter.fromResponse(this)
     endObject()
     return data
   }

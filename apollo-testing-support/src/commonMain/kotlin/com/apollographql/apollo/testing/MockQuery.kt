@@ -16,9 +16,9 @@ class MockQuery : Query<MockQuery.Data> {
 
   override fun variables(): Operation.Variables = Operation.EMPTY_VARIABLES
 
-  override fun adapter(): ResponseAdapter<Data> {
+  override fun adapter(customScalarAdapters: CustomScalarAdapters): ResponseAdapter<Data> {
     return object : ResponseAdapter<Data> {
-      override fun fromResponse(reader: JsonReader, customScalarAdapters: CustomScalarAdapters): Data {
+      override fun fromResponse(reader: JsonReader, __typename: String?): Data {
         // consume the json stream
         while (reader.hasNext()) {
           reader.nextName()
@@ -26,7 +26,7 @@ class MockQuery : Query<MockQuery.Data> {
         return Data
       }
 
-      override fun toResponse(writer: JsonWriter, value: Data, customScalarAdapters: CustomScalarAdapters) {
+      override fun toResponse(writer: JsonWriter, value: Data) {
         TODO("Not yet implemented")
       }
     }

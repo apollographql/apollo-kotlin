@@ -5,125 +5,142 @@
 //
 package com.example.arguments_complex.adapter
 
+import com.apollographql.apollo.api.CustomScalarAdapters
 import com.apollographql.apollo.api.ResponseField
+import com.apollographql.apollo.api.internal.NullableResponseAdapter
 import com.apollographql.apollo.api.internal.ResponseAdapter
-import com.apollographql.apollo.api.internal.ResponseReader
-import com.apollographql.apollo.api.internal.ResponseWriter
+import com.apollographql.apollo.api.internal.doubleResponseAdapter
+import com.apollographql.apollo.api.internal.json.JsonReader
+import com.apollographql.apollo.api.internal.json.JsonWriter
+import com.apollographql.apollo.api.internal.stringResponseAdapter
+import com.apollographql.apollo.exception.UnexpectedNullValue
 import com.example.arguments_complex.TestQuery
 import kotlin.Array
 import kotlin.Double
 import kotlin.String
 import kotlin.Suppress
+import kotlin.collections.List
 
 @Suppress("NAME_SHADOWING", "UNUSED_ANONYMOUS_PARAMETER", "LocalVariableName",
     "RemoveExplicitTypeArguments", "NestedLambdaShadowedImplicitParameter", "PropertyName",
     "RemoveRedundantQualifierName")
-object TestQuery_ResponseAdapter : ResponseAdapter<TestQuery.Data> {
-  val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
-    ResponseField(
-      type = ResponseField.Type.Named.Object("Human"),
-      responseName = "heroWithReview",
-      fieldName = "heroWithReview",
-      arguments = mapOf<String, Any?>(
-        "episode" to mapOf<String, Any?>(
-          "kind" to "Variable",
-          "variableName" to "episode"),
-        "review" to mapOf<String, Any?>(
-          "stars" to mapOf<String, Any?>(
-            "kind" to "Variable",
-            "variableName" to "stars"),
-          "favoriteColor" to mapOf<String, Any?>(
-            "red" to 0,
-            "green" to mapOf<String, Any?>(
-              "kind" to "Variable",
-              "variableName" to "greenValue"),
-            "blue" to 0.0),
-          "booleanNonOptional" to false,
-          "listOfStringNonOptional" to emptyList<Any?>()),
-        "listOfInts" to listOf<Any?>(
-          mapOf<String, Any?>(
-            "kind" to "Variable",
-            "variableName" to "stars"),
-          mapOf<String, Any?>(
-            "kind" to "Variable",
-            "variableName" to "stars"))),
-      conditions = emptyList(),
-      fieldSets = listOf(
-        ResponseField.FieldSet(null, HeroWithReview.RESPONSE_FIELDS)
-      ),
-    )
-  )
+class TestQuery_ResponseAdapter(
+  customScalarAdapters: CustomScalarAdapters
+) : ResponseAdapter<TestQuery.Data> {
+  val heroWithReviewAdapter: ResponseAdapter<TestQuery.Data.HeroWithReview?> =
+      NullableResponseAdapter(HeroWithReview(customScalarAdapters))
 
-  override fun fromResponse(reader: ResponseReader, __typename: String?): TestQuery.Data {
-    return reader.run {
-      var heroWithReview: TestQuery.Data.HeroWithReview? = null
+  override fun fromResponse(reader: JsonReader, __typename: String?): TestQuery.Data {
+    var heroWithReview: TestQuery.Data.HeroWithReview? = null
+    reader.beginObject()
+    while(true) {
+      when (reader.selectName(RESPONSE_NAMES)) {
+        0 -> heroWithReview = heroWithReviewAdapter.fromResponse(reader)
+        else -> break
+      }
+    }
+    reader.endObject()
+    return TestQuery.Data(
+      heroWithReview = heroWithReview
+    )
+  }
+
+  override fun toResponse(writer: JsonWriter, value: TestQuery.Data) {
+    heroWithReviewAdapter.toResponse(writer, value.heroWithReview)
+  }
+
+  companion object {
+    val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
+      ResponseField(
+        type = ResponseField.Type.Named.Object("Human"),
+        responseName = "heroWithReview",
+        fieldName = "heroWithReview",
+        arguments = mapOf<String, Any?>(
+          "episode" to mapOf<String, Any?>(
+            "kind" to "Variable",
+            "variableName" to "episode"),
+          "review" to mapOf<String, Any?>(
+            "stars" to mapOf<String, Any?>(
+              "kind" to "Variable",
+              "variableName" to "stars"),
+            "favoriteColor" to mapOf<String, Any?>(
+              "red" to 0,
+              "green" to mapOf<String, Any?>(
+                "kind" to "Variable",
+                "variableName" to "greenValue"),
+              "blue" to 0.0),
+            "booleanNonOptional" to false,
+            "listOfStringNonOptional" to emptyList<Any?>()),
+          "listOfInts" to listOf<Any?>(
+            mapOf<String, Any?>(
+              "kind" to "Variable",
+              "variableName" to "stars"),
+            mapOf<String, Any?>(
+              "kind" to "Variable",
+              "variableName" to "stars"))),
+        conditions = emptyList(),
+        fieldSets = listOf(
+          ResponseField.FieldSet(null, HeroWithReview.RESPONSE_FIELDS)
+        ),
+      )
+    )
+
+    val RESPONSE_NAMES: List<String> = RESPONSE_FIELDS.map { it.responseName }
+  }
+
+  class HeroWithReview(
+    customScalarAdapters: CustomScalarAdapters
+  ) : ResponseAdapter<TestQuery.Data.HeroWithReview> {
+    val nameAdapter: ResponseAdapter<String> = stringResponseAdapter
+
+    val heightAdapter: ResponseAdapter<Double?> = NullableResponseAdapter(doubleResponseAdapter)
+
+    override fun fromResponse(reader: JsonReader, __typename: String?):
+        TestQuery.Data.HeroWithReview {
+      var name: String? = null
+      var height: Double? = null
+      reader.beginObject()
       while(true) {
-        when (selectField(RESPONSE_FIELDS)) {
-          0 -> heroWithReview = readObject<TestQuery.Data.HeroWithReview>(RESPONSE_FIELDS[0]) { reader ->
-            HeroWithReview.fromResponse(reader)
-          }
+        when (reader.selectName(RESPONSE_NAMES)) {
+          0 -> name = nameAdapter.fromResponse(reader) ?: throw UnexpectedNullValue("name")
+          1 -> height = heightAdapter.fromResponse(reader)
           else -> break
         }
       }
-      TestQuery.Data(
-        heroWithReview = heroWithReview
+      reader.endObject()
+      return TestQuery.Data.HeroWithReview(
+        name = name!!,
+        height = height
       )
     }
-  }
 
-  override fun toResponse(writer: ResponseWriter, value: TestQuery.Data) {
-    if(value.heroWithReview == null) {
-      writer.writeObject(RESPONSE_FIELDS[0], null)
-    } else {
-      writer.writeObject(RESPONSE_FIELDS[0]) { writer ->
-        HeroWithReview.toResponse(writer, value.heroWithReview)
-      }
+    override fun toResponse(writer: JsonWriter, value: TestQuery.Data.HeroWithReview) {
+      nameAdapter.toResponse(writer, value.name)
+      heightAdapter.toResponse(writer, value.height)
     }
-  }
 
-  object HeroWithReview : ResponseAdapter<TestQuery.Data.HeroWithReview> {
-    val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
-      ResponseField(
-        type = ResponseField.Type.NotNull(ResponseField.Type.Named.Other("String")),
-        responseName = "name",
-        fieldName = "name",
-        arguments = emptyMap(),
-        conditions = emptyList(),
-        fieldSets = emptyList(),
-      ),
-      ResponseField(
-        type = ResponseField.Type.Named.Other("Float"),
-        responseName = "height",
-        fieldName = "height",
-        arguments = mapOf<String, Any?>(
-          "unit" to "FOOT"),
-        conditions = emptyList(),
-        fieldSets = emptyList(),
-      )
-    )
-
-    override fun fromResponse(reader: ResponseReader, __typename: String?):
-        TestQuery.Data.HeroWithReview {
-      return reader.run {
-        var name: String? = null
-        var height: Double? = null
-        while(true) {
-          when (selectField(RESPONSE_FIELDS)) {
-            0 -> name = readString(RESPONSE_FIELDS[0])
-            1 -> height = readDouble(RESPONSE_FIELDS[1])
-            else -> break
-          }
-        }
-        TestQuery.Data.HeroWithReview(
-          name = name!!,
-          height = height
+    companion object {
+      val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
+        ResponseField(
+          type = ResponseField.Type.NotNull(ResponseField.Type.Named.Other("String")),
+          responseName = "name",
+          fieldName = "name",
+          arguments = emptyMap(),
+          conditions = emptyList(),
+          fieldSets = emptyList(),
+        ),
+        ResponseField(
+          type = ResponseField.Type.Named.Other("Float"),
+          responseName = "height",
+          fieldName = "height",
+          arguments = mapOf<String, Any?>(
+            "unit" to "FOOT"),
+          conditions = emptyList(),
+          fieldSets = emptyList(),
         )
-      }
-    }
+      )
 
-    override fun toResponse(writer: ResponseWriter, value: TestQuery.Data.HeroWithReview) {
-      writer.writeString(RESPONSE_FIELDS[0], value.name)
-      writer.writeDouble(RESPONSE_FIELDS[1], value.height)
+      val RESPONSE_NAMES: List<String> = RESPONSE_FIELDS.map { it.responseName }
     }
   }
 }

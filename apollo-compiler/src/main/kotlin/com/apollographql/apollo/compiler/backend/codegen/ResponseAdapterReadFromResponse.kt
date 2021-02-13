@@ -1,15 +1,13 @@
 package com.apollographql.apollo.compiler.backend.codegen
 
-import com.apollographql.apollo.api.CustomScalar
-import com.apollographql.apollo.api.CustomScalarAdapters
 import com.apollographql.apollo.api.ResponseField
 import com.apollographql.apollo.api.internal.ResponseReader
 import com.apollographql.apollo.api.internal.json.JsonReader
 import com.apollographql.apollo.compiler.applyIf
 import com.apollographql.apollo.compiler.backend.ast.CodeGenerationAst
+import com.apollographql.apollo.compiler.backend.ast.toLowerCamelCase
 import com.apollographql.apollo.compiler.escapeKotlinReservedWord
 import com.apollographql.apollo.exception.UnexpectedNullValue
-import com.squareup.kotlinpoet.ClassName
 import com.squareup.kotlinpoet.CodeBlock
 import com.squareup.kotlinpoet.FunSpec
 import com.squareup.kotlinpoet.KModifier
@@ -47,7 +45,7 @@ private fun CodeGenerationAst.ObjectType.readObjectFromResponseFunSpec(): FunSpe
 
   val selectFieldsCode = CodeBlock.builder()
       .beginControlFlow("while(true)")
-      .beginControlFlow("when·(reader.selectField(responseNames))")
+      .beginControlFlow("when·(reader.selectName(RESPONSE_NAMES))")
       .add(
           this.fields.mapIndexed { fieldIndex, field ->
             CodeBlock.of(
@@ -82,12 +80,13 @@ private fun CodeGenerationAst.ObjectType.readObjectFromResponseFunSpec(): FunSpe
       .addModifiers(KModifier.OVERRIDE)
       .returns(this.typeRef.asTypeName())
       .addParameter(ParameterSpec.builder("reader", JsonReader::class).build())
-      .addParameter(ParameterSpec.builder("customScalarAdapters", CustomScalarAdapters::class).build())
       .addParameter(CodeGenerationAst.typenameField.asOptionalParameterSpec(withDefaultValue = false))
       .addCode(CodeBlock
           .builder()
           .add(fieldVariablesCode)
+          .addStatement("reader.beginObject()")
           .add(selectFieldsCode)
+          .addStatement("reader.endObject()")
           .add("return %L", typeConstructorCode)
           .build()
       )
@@ -101,7 +100,7 @@ private fun CodeGenerationAst.ObjectType.readFragmentFromResponseFunSpec(): FunS
   return FunSpec.builder("fromResponse")
       .addModifiers(KModifier.OVERRIDE)
       .returns(this.typeRef.asTypeName())
-      .addParameter(ParameterSpec.builder("reader", ResponseReader::class).build())
+      .addParameter(ParameterSpec.builder("reader", JsonReader::class).build())
       .addParameter(CodeGenerationAst.typenameField.asOptionalParameterSpec(withDefaultValue = false))
       .applyIf(possibleImplementations.isEmpty()) {
         addStatement(
@@ -110,28 +109,32 @@ private fun CodeGenerationAst.ObjectType.readFragmentFromResponseFunSpec(): FunS
         )
       }
       .applyIf(possibleImplementations.isNotEmpty()) {
+        addStatement("reader.beginObject()")
+        addStatement("check(reader.nextName() == \"__typename\")")
+        addStatement("val·typename·=·reader.nextString()")
         addStatement(
-            "val·typename·=·%L·?:·reader.readString(%T.Typename)",
+            "",
             CodeGenerationAst.typenameField.responseName.escapeKotlinReservedWord(),
             ResponseField::class.java
         )
         beginControlFlow("return·when(typename)")
         addCode(
             possibleImplementations
-                .map { (typeCondition, type) ->
+                .map { (typeCondition, typeRef) ->
                   CodeBlock.of(
-                      "%S·->·%T.fromResponse(reader,·typename)",
+                      "%S·->·${typeRef.name.toLowerCamelCase()}Adapter.fromResponse(reader,·typename)",
                       typeCondition,
-                      type.asAdapterTypeName(),
                   )
                 }
                 .joinToCode(separator = "\n", suffix = "\n")
         )
         addStatement(
-            "else·->·%T.fromResponse(reader,·typename)",
+            "else·->·${defaultImplementation.name.toLowerCamelCase()}Adapter.fromResponse(reader,·typename)",
             defaultImplementation.asAdapterTypeName()
         )
         endControlFlow()
+        addStatement(".also { reader.endObject() }")
+
       }
       .build()
 }
@@ -154,7 +157,7 @@ private fun CodeGenerationAst.ObjectType.readFragmentDelegateFromResponseFunSpec
 
 private fun CodeGenerationAst.FieldType.fromResponseCode(fieldName: String): CodeBlock {
   val builder = CodeBlock.builder()
-  builder.add("${fieldName.escapeKotlinReservedWord()}Adapter.fromResponse(reader, customScalarAdapters)")
+  builder.add("${fieldName.escapeKotlinReservedWord()}Adapter.fromResponse(reader)")
   if (!nullable) {
     builder.add(" ?: throw %T(%S)", UnexpectedNullValue::class.asTypeName(), fieldName)
   }
