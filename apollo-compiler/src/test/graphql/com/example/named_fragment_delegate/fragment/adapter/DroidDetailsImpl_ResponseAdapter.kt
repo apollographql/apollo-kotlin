@@ -36,8 +36,8 @@ class DroidDetailsImpl_ResponseAdapter(
   val friendsAdapter: ResponseAdapter<List<DroidDetailsImpl.Data.Friend?>?> =
       NullableResponseAdapter(ListResponseAdapter(NullableResponseAdapter(Friend(customScalarAdapters))))
 
-  override fun fromResponse(reader: JsonReader, __typename: String?): DroidDetailsImpl.Data {
-    var __typename: String? = __typename
+  override fun fromResponse(reader: JsonReader): DroidDetailsImpl.Data {
+    var __typename: String? = null
     var name: String? = null
     var primaryFunction: String? = null
     var friends: List<DroidDetailsImpl.Data.Friend?>? = null
@@ -114,8 +114,7 @@ class DroidDetailsImpl_ResponseAdapter(
   ) : ResponseAdapter<DroidDetailsImpl.Data.Friend> {
     val nameAdapter: ResponseAdapter<String> = stringResponseAdapter
 
-    override fun fromResponse(reader: JsonReader, __typename: String?):
-        DroidDetailsImpl.Data.Friend {
+    override fun fromResponse(reader: JsonReader): DroidDetailsImpl.Data.Friend {
       var name: String? = null
       reader.beginObject()
       while(true) {

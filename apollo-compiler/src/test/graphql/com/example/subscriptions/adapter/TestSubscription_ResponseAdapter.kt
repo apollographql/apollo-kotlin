@@ -30,7 +30,7 @@ class TestSubscription_ResponseAdapter(
   val commentAddedAdapter: ResponseAdapter<TestSubscription.Data.CommentAdded?> =
       NullableResponseAdapter(CommentAdded(customScalarAdapters))
 
-  override fun fromResponse(reader: JsonReader, __typename: String?): TestSubscription.Data {
+  override fun fromResponse(reader: JsonReader): TestSubscription.Data {
     var commentAdded: TestSubscription.Data.CommentAdded? = null
     reader.beginObject()
     while(true) {
@@ -76,8 +76,7 @@ class TestSubscription_ResponseAdapter(
 
     val contentAdapter: ResponseAdapter<String> = stringResponseAdapter
 
-    override fun fromResponse(reader: JsonReader, __typename: String?):
-        TestSubscription.Data.CommentAdded {
+    override fun fromResponse(reader: JsonReader): TestSubscription.Data.CommentAdded {
       var id: Int? = null
       var content: String? = null
       reader.beginObject()

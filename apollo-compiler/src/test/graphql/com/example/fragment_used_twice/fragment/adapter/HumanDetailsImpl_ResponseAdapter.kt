@@ -31,7 +31,7 @@ class HumanDetailsImpl_ResponseAdapter(
   val otherDataAdapter: OtherData =
       com.example.fragment_used_twice.fragment.adapter.HumanDetailsImpl_ResponseAdapter.OtherData(customScalarAdapters)
 
-  override fun fromResponse(reader: JsonReader, __typename: String?): HumanDetailsImpl.Data {
+  override fun fromResponse(reader: JsonReader): HumanDetailsImpl.Data {
     reader.beginObject()
     check(reader.nextName() == "__typename")
     val typename = reader.nextString()
@@ -52,7 +52,7 @@ class HumanDetailsImpl_ResponseAdapter(
 
   class CharacterData(
     customScalarAdapters: CustomScalarAdapters
-  ) : ResponseAdapter<HumanDetailsImpl.Data.CharacterData> {
+  ) {
     val __typenameAdapter: ResponseAdapter<String> = stringResponseAdapter
 
     val nameAdapter: ResponseAdapter<String> = stringResponseAdapter
@@ -60,12 +60,10 @@ class HumanDetailsImpl_ResponseAdapter(
     val birthDateAdapter: ResponseAdapter<Any> =
         customScalarAdapters.responseAdapterFor<Any>("Date")
 
-    override fun fromResponse(reader: JsonReader, __typename: String?):
-        HumanDetailsImpl.Data.CharacterData {
+    fun fromResponse(reader: JsonReader, __typename: String?): HumanDetailsImpl.Data.CharacterData {
       var __typename: String? = __typename
       var name: String? = null
       var birthDate: Any? = null
-      reader.beginObject()
       while(true) {
         when (reader.selectName(RESPONSE_NAMES)) {
           0 -> __typename = __typenameAdapter.fromResponse(reader) ?: throw
@@ -76,7 +74,6 @@ class HumanDetailsImpl_ResponseAdapter(
           else -> break
         }
       }
-      reader.endObject()
       return HumanDetailsImpl.Data.CharacterData(
         __typename = __typename!!,
         name = name!!,
@@ -84,7 +81,7 @@ class HumanDetailsImpl_ResponseAdapter(
       )
     }
 
-    override fun toResponse(writer: JsonWriter, value: HumanDetailsImpl.Data.CharacterData) {
+    fun toResponse(writer: JsonWriter, value: HumanDetailsImpl.Data.CharacterData) {
       __typenameAdapter.toResponse(writer, value.__typename)
       nameAdapter.toResponse(writer, value.name)
       birthDateAdapter.toResponse(writer, value.birthDate)
@@ -124,16 +121,14 @@ class HumanDetailsImpl_ResponseAdapter(
 
   class OtherData(
     customScalarAdapters: CustomScalarAdapters
-  ) : ResponseAdapter<HumanDetailsImpl.Data.OtherData> {
+  ) {
     val __typenameAdapter: ResponseAdapter<String> = stringResponseAdapter
 
     val nameAdapter: ResponseAdapter<String> = stringResponseAdapter
 
-    override fun fromResponse(reader: JsonReader, __typename: String?):
-        HumanDetailsImpl.Data.OtherData {
+    fun fromResponse(reader: JsonReader, __typename: String?): HumanDetailsImpl.Data.OtherData {
       var __typename: String? = __typename
       var name: String? = null
-      reader.beginObject()
       while(true) {
         when (reader.selectName(RESPONSE_NAMES)) {
           0 -> __typename = __typenameAdapter.fromResponse(reader) ?: throw
@@ -142,14 +137,13 @@ class HumanDetailsImpl_ResponseAdapter(
           else -> break
         }
       }
-      reader.endObject()
       return HumanDetailsImpl.Data.OtherData(
         __typename = __typename!!,
         name = name!!
       )
     }
 
-    override fun toResponse(writer: JsonWriter, value: HumanDetailsImpl.Data.OtherData) {
+    fun toResponse(writer: JsonWriter, value: HumanDetailsImpl.Data.OtherData) {
       __typenameAdapter.toResponse(writer, value.__typename)
       nameAdapter.toResponse(writer, value.name)
     }

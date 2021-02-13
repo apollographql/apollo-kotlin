@@ -34,7 +34,7 @@ class TestQuery_ResponseAdapter(
   val lukeAdapter: ResponseAdapter<TestQuery.Data.Luke?> =
       NullableResponseAdapter(Luke(customScalarAdapters))
 
-  override fun fromResponse(reader: JsonReader, __typename: String?): TestQuery.Data {
+  override fun fromResponse(reader: JsonReader): TestQuery.Data {
     var r2: TestQuery.Data.R2? = null
     var luke: TestQuery.Data.Luke? = null
     reader.beginObject()
@@ -93,7 +93,7 @@ class TestQuery_ResponseAdapter(
     val friendsConnectionAdapter: ResponseAdapter<TestQuery.Data.R2.FriendsConnection> =
         FriendsConnection(customScalarAdapters)
 
-    override fun fromResponse(reader: JsonReader, __typename: String?): TestQuery.Data.R2 {
+    override fun fromResponse(reader: JsonReader): TestQuery.Data.R2 {
       var name: String? = null
       var friendsConnection: TestQuery.Data.R2.FriendsConnection? = null
       reader.beginObject()
@@ -150,8 +150,7 @@ class TestQuery_ResponseAdapter(
       val edgesAdapter: ResponseAdapter<List<TestQuery.Data.R2.FriendsConnection.Edge?>?> =
           NullableResponseAdapter(ListResponseAdapter(NullableResponseAdapter(Edge(customScalarAdapters))))
 
-      override fun fromResponse(reader: JsonReader, __typename: String?):
-          TestQuery.Data.R2.FriendsConnection {
+      override fun fromResponse(reader: JsonReader): TestQuery.Data.R2.FriendsConnection {
         var totalCount: Int? = null
         var edges: List<TestQuery.Data.R2.FriendsConnection.Edge?>? = null
         reader.beginObject()
@@ -205,8 +204,7 @@ class TestQuery_ResponseAdapter(
         val nodeAdapter: ResponseAdapter<TestQuery.Data.R2.FriendsConnection.Edge.Node?> =
             NullableResponseAdapter(Node(customScalarAdapters))
 
-        override fun fromResponse(reader: JsonReader, __typename: String?):
-            TestQuery.Data.R2.FriendsConnection.Edge {
+        override fun fromResponse(reader: JsonReader): TestQuery.Data.R2.FriendsConnection.Edge {
           var node: TestQuery.Data.R2.FriendsConnection.Edge.Node? = null
           reader.beginObject()
           while(true) {
@@ -248,7 +246,7 @@ class TestQuery_ResponseAdapter(
         ) : ResponseAdapter<TestQuery.Data.R2.FriendsConnection.Edge.Node> {
           val nameAdapter: ResponseAdapter<String> = stringResponseAdapter
 
-          override fun fromResponse(reader: JsonReader, __typename: String?):
+          override fun fromResponse(reader: JsonReader):
               TestQuery.Data.R2.FriendsConnection.Edge.Node {
             var name: String? = null
             reader.beginObject()
@@ -298,7 +296,7 @@ class TestQuery_ResponseAdapter(
     val friendsConnectionAdapter: ResponseAdapter<TestQuery.Data.Luke.FriendsConnection> =
         FriendsConnection(customScalarAdapters)
 
-    override fun fromResponse(reader: JsonReader, __typename: String?): TestQuery.Data.Luke {
+    override fun fromResponse(reader: JsonReader): TestQuery.Data.Luke {
       var id: String? = null
       var name: String? = null
       var friendsConnection: TestQuery.Data.Luke.FriendsConnection? = null
@@ -367,8 +365,7 @@ class TestQuery_ResponseAdapter(
       val edgesAdapter: ResponseAdapter<List<TestQuery.Data.Luke.FriendsConnection.Edge?>?> =
           NullableResponseAdapter(ListResponseAdapter(NullableResponseAdapter(Edge(customScalarAdapters))))
 
-      override fun fromResponse(reader: JsonReader, __typename: String?):
-          TestQuery.Data.Luke.FriendsConnection {
+      override fun fromResponse(reader: JsonReader): TestQuery.Data.Luke.FriendsConnection {
         var totalCount: Int? = null
         var edges: List<TestQuery.Data.Luke.FriendsConnection.Edge?>? = null
         reader.beginObject()
@@ -422,8 +419,7 @@ class TestQuery_ResponseAdapter(
         val nodeAdapter: ResponseAdapter<TestQuery.Data.Luke.FriendsConnection.Edge.Node?> =
             NullableResponseAdapter(Node(customScalarAdapters))
 
-        override fun fromResponse(reader: JsonReader, __typename: String?):
-            TestQuery.Data.Luke.FriendsConnection.Edge {
+        override fun fromResponse(reader: JsonReader): TestQuery.Data.Luke.FriendsConnection.Edge {
           var node: TestQuery.Data.Luke.FriendsConnection.Edge.Node? = null
           reader.beginObject()
           while(true) {
@@ -465,7 +461,7 @@ class TestQuery_ResponseAdapter(
         ) : ResponseAdapter<TestQuery.Data.Luke.FriendsConnection.Edge.Node> {
           val nameAdapter: ResponseAdapter<String> = stringResponseAdapter
 
-          override fun fromResponse(reader: JsonReader, __typename: String?):
+          override fun fromResponse(reader: JsonReader):
               TestQuery.Data.Luke.FriendsConnection.Edge.Node {
             var name: String? = null
             reader.beginObject()

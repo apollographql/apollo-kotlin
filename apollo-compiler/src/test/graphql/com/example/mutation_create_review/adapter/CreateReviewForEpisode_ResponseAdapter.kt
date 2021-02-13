@@ -34,7 +34,7 @@ internal class CreateReviewForEpisode_ResponseAdapter(
   val createReviewAdapter: ResponseAdapter<CreateReviewForEpisode.Data.CreateReview?> =
       NullableResponseAdapter(CreateReview(customScalarAdapters))
 
-  override fun fromResponse(reader: JsonReader, __typename: String?): CreateReviewForEpisode.Data {
+  override fun fromResponse(reader: JsonReader): CreateReviewForEpisode.Data {
     var createReview: CreateReviewForEpisode.Data.CreateReview? = null
     reader.beginObject()
     while(true) {
@@ -96,8 +96,7 @@ internal class CreateReviewForEpisode_ResponseAdapter(
         ResponseAdapter<List<List<CreateReviewForEpisode.Data.CreateReview.ListOfListOfObject>>?> =
         NullableResponseAdapter(ListResponseAdapter(ListResponseAdapter(ListOfListOfObject(customScalarAdapters))))
 
-    override fun fromResponse(reader: JsonReader, __typename: String?):
-        CreateReviewForEpisode.Data.CreateReview {
+    override fun fromResponse(reader: JsonReader): CreateReviewForEpisode.Data.CreateReview {
       var stars: Int? = null
       var commentary: String? = null
       var listOfListOfString: List<List<String>>? = null
@@ -202,7 +201,7 @@ internal class CreateReviewForEpisode_ResponseAdapter(
     ) : ResponseAdapter<CreateReviewForEpisode.Data.CreateReview.ListOfListOfObject> {
       val nameAdapter: ResponseAdapter<String> = stringResponseAdapter
 
-      override fun fromResponse(reader: JsonReader, __typename: String?):
+      override fun fromResponse(reader: JsonReader):
           CreateReviewForEpisode.Data.CreateReview.ListOfListOfObject {
         var name: String? = null
         reader.beginObject()

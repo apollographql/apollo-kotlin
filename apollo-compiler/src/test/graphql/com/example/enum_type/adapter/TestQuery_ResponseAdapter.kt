@@ -31,7 +31,7 @@ class TestQuery_ResponseAdapter(
   val heroAdapter: ResponseAdapter<TestQuery.Data.Hero?> =
       NullableResponseAdapter(Hero(customScalarAdapters))
 
-  override fun fromResponse(reader: JsonReader, __typename: String?): TestQuery.Data {
+  override fun fromResponse(reader: JsonReader): TestQuery.Data {
     var hero: TestQuery.Data.Hero? = null
     reader.beginObject()
     while(true) {
@@ -77,7 +77,7 @@ class TestQuery_ResponseAdapter(
 
     val firstAppearsInAdapter: ResponseAdapter<Episode> = Episode_ResponseAdapter
 
-    override fun fromResponse(reader: JsonReader, __typename: String?): TestQuery.Data.Hero {
+    override fun fromResponse(reader: JsonReader): TestQuery.Data.Hero {
       var name: String? = null
       var appearsIn: List<Episode?>? = null
       var firstAppearsIn: Episode? = null

@@ -27,7 +27,7 @@ enum class Race(
 }
 
 object Race_ResponseAdapter : ResponseAdapter<Race> {
-  override fun fromResponse(reader: JsonReader, __typename: String?): Race {
+  override fun fromResponse(reader: JsonReader): Race {
     val rawValue = reader.nextString()!!
     return when(rawValue) {
       "WOOKIE" -> Race.WOOKIE

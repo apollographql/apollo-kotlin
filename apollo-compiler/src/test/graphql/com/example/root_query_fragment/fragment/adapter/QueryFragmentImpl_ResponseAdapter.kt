@@ -30,8 +30,8 @@ class QueryFragmentImpl_ResponseAdapter(
   val heroAdapter: ResponseAdapter<QueryFragmentImpl.Data.Hero?> =
       NullableResponseAdapter(Hero(customScalarAdapters))
 
-  override fun fromResponse(reader: JsonReader, __typename: String?): QueryFragmentImpl.Data {
-    var __typename: String? = __typename
+  override fun fromResponse(reader: JsonReader): QueryFragmentImpl.Data {
+    var __typename: String? = null
     var hero: QueryFragmentImpl.Data.Hero? = null
     reader.beginObject()
     while(true) {
@@ -84,8 +84,7 @@ class QueryFragmentImpl_ResponseAdapter(
   ) : ResponseAdapter<QueryFragmentImpl.Data.Hero> {
     val nameAdapter: ResponseAdapter<String> = stringResponseAdapter
 
-    override fun fromResponse(reader: JsonReader, __typename: String?):
-        QueryFragmentImpl.Data.Hero {
+    override fun fromResponse(reader: JsonReader): QueryFragmentImpl.Data.Hero {
       var name: String? = null
       reader.beginObject()
       while(true) {

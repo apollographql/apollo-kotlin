@@ -31,8 +31,8 @@ class QueryFragmentImpl_ResponseAdapter(
   val organizationAdapter: ResponseAdapter<QueryFragmentImpl.Data.Organization?> =
       NullableResponseAdapter(Organization(customScalarAdapters))
 
-  override fun fromResponse(reader: JsonReader, __typename: String?): QueryFragmentImpl.Data {
-    var __typename: String? = __typename
+  override fun fromResponse(reader: JsonReader): QueryFragmentImpl.Data {
+    var __typename: String? = null
     var organization: QueryFragmentImpl.Data.Organization? = null
     reader.beginObject()
     while(true) {
@@ -91,8 +91,7 @@ class QueryFragmentImpl_ResponseAdapter(
     val userAdapter: ResponseAdapter<List<QueryFragmentImpl.Data.Organization.User>> =
         ListResponseAdapter(User(customScalarAdapters))
 
-    override fun fromResponse(reader: JsonReader, __typename: String?):
-        QueryFragmentImpl.Data.Organization {
+    override fun fromResponse(reader: JsonReader): QueryFragmentImpl.Data.Organization {
       var id: String? = null
       var user: List<QueryFragmentImpl.Data.Organization.User>? = null
       reader.beginObject()
@@ -154,8 +153,7 @@ class QueryFragmentImpl_ResponseAdapter(
       val otherUserAdapter: OtherUser =
           com.example.named_fragment_with_variables.fragment.adapter.QueryFragmentImpl_ResponseAdapter.Organization.User.OtherUser(customScalarAdapters)
 
-      override fun fromResponse(reader: JsonReader, __typename: String?):
-          QueryFragmentImpl.Data.Organization.User {
+      override fun fromResponse(reader: JsonReader): QueryFragmentImpl.Data.Organization.User {
         reader.beginObject()
         check(reader.nextName() == "__typename")
         val typename = reader.nextString()
@@ -176,7 +174,7 @@ class QueryFragmentImpl_ResponseAdapter(
 
       class UserUser(
         customScalarAdapters: CustomScalarAdapters
-      ) : ResponseAdapter<QueryFragmentImpl.Data.Organization.User.UserUser> {
+      ) {
         val __typenameAdapter: ResponseAdapter<String> = stringResponseAdapter
 
         val firstNameAdapter: ResponseAdapter<String> = stringResponseAdapter
@@ -185,13 +183,12 @@ class QueryFragmentImpl_ResponseAdapter(
 
         val avatarAdapter: ResponseAdapter<String> = stringResponseAdapter
 
-        override fun fromResponse(reader: JsonReader, __typename: String?):
+        fun fromResponse(reader: JsonReader, __typename: String?):
             QueryFragmentImpl.Data.Organization.User.UserUser {
           var __typename: String? = __typename
           var firstName: String? = null
           var lastName: String? = null
           var avatar: String? = null
-          reader.beginObject()
           while(true) {
             when (reader.selectName(RESPONSE_NAMES)) {
               0 -> __typename = __typenameAdapter.fromResponse(reader) ?: throw
@@ -205,7 +202,6 @@ class QueryFragmentImpl_ResponseAdapter(
               else -> break
             }
           }
-          reader.endObject()
           return QueryFragmentImpl.Data.Organization.User.UserUser(
             __typename = __typename!!,
             firstName = firstName!!,
@@ -214,7 +210,7 @@ class QueryFragmentImpl_ResponseAdapter(
           )
         }
 
-        override fun toResponse(writer: JsonWriter,
+        fun toResponse(writer: JsonWriter,
             value: QueryFragmentImpl.Data.Organization.User.UserUser) {
           __typenameAdapter.toResponse(writer, value.__typename)
           firstNameAdapter.toResponse(writer, value.firstName)
@@ -267,13 +263,12 @@ class QueryFragmentImpl_ResponseAdapter(
 
       class OtherUser(
         customScalarAdapters: CustomScalarAdapters
-      ) : ResponseAdapter<QueryFragmentImpl.Data.Organization.User.OtherUser> {
+      ) {
         val __typenameAdapter: ResponseAdapter<String> = stringResponseAdapter
 
-        override fun fromResponse(reader: JsonReader, __typename: String?):
+        fun fromResponse(reader: JsonReader, __typename: String?):
             QueryFragmentImpl.Data.Organization.User.OtherUser {
           var __typename: String? = __typename
-          reader.beginObject()
           while(true) {
             when (reader.selectName(RESPONSE_NAMES)) {
               0 -> __typename = __typenameAdapter.fromResponse(reader) ?: throw
@@ -281,13 +276,12 @@ class QueryFragmentImpl_ResponseAdapter(
               else -> break
             }
           }
-          reader.endObject()
           return QueryFragmentImpl.Data.Organization.User.OtherUser(
             __typename = __typename!!
           )
         }
 
-        override fun toResponse(writer: JsonWriter,
+        fun toResponse(writer: JsonWriter,
             value: QueryFragmentImpl.Data.Organization.User.OtherUser) {
           __typenameAdapter.toResponse(writer, value.__typename)
         }

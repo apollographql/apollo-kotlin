@@ -29,8 +29,8 @@ class PlanetFragmentImpl_ResponseAdapter(
 
   val nameAdapter: ResponseAdapter<String?> = NullableResponseAdapter(stringResponseAdapter)
 
-  override fun fromResponse(reader: JsonReader, __typename: String?): PlanetFragmentImpl.Data {
-    var __typename: String? = __typename
+  override fun fromResponse(reader: JsonReader): PlanetFragmentImpl.Data {
+    var __typename: String? = null
     var name: String? = null
     reader.beginObject()
     while(true) {

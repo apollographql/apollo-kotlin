@@ -32,8 +32,8 @@ class DroidDetailsImpl_ResponseAdapter(
   val primaryFunctionAdapter: ResponseAdapter<String?> =
       NullableResponseAdapter(stringResponseAdapter)
 
-  override fun fromResponse(reader: JsonReader, __typename: String?): DroidDetailsImpl.Data {
-    var __typename: String? = __typename
+  override fun fromResponse(reader: JsonReader): DroidDetailsImpl.Data {
+    var __typename: String? = null
     var name: String? = null
     var primaryFunction: String? = null
     reader.beginObject()

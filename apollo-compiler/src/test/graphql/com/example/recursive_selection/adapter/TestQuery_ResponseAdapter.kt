@@ -29,7 +29,7 @@ class TestQuery_ResponseAdapter(
   val treeAdapter: ResponseAdapter<TestQuery.Data.Tree?> =
       NullableResponseAdapter(Tree(customScalarAdapters))
 
-  override fun fromResponse(reader: JsonReader, __typename: String?): TestQuery.Data {
+  override fun fromResponse(reader: JsonReader): TestQuery.Data {
     var tree: TestQuery.Data.Tree? = null
     reader.beginObject()
     while(true) {
@@ -76,7 +76,7 @@ class TestQuery_ResponseAdapter(
     val parentAdapter: ResponseAdapter<TestQuery.Data.Tree.Parent?> =
         NullableResponseAdapter(Parent(customScalarAdapters))
 
-    override fun fromResponse(reader: JsonReader, __typename: String?): TestQuery.Data.Tree {
+    override fun fromResponse(reader: JsonReader): TestQuery.Data.Tree {
       var name: String? = null
       var children: List<TestQuery.Data.Tree.Child>? = null
       var parent: TestQuery.Data.Tree.Parent? = null
@@ -145,8 +145,7 @@ class TestQuery_ResponseAdapter(
     ) : ResponseAdapter<TestQuery.Data.Tree.Child> {
       val nameAdapter: ResponseAdapter<String> = stringResponseAdapter
 
-      override fun fromResponse(reader: JsonReader, __typename: String?):
-          TestQuery.Data.Tree.Child {
+      override fun fromResponse(reader: JsonReader): TestQuery.Data.Tree.Child {
         var name: String? = null
         reader.beginObject()
         while(true) {
@@ -186,8 +185,7 @@ class TestQuery_ResponseAdapter(
     ) : ResponseAdapter<TestQuery.Data.Tree.Parent> {
       val nameAdapter: ResponseAdapter<String> = stringResponseAdapter
 
-      override fun fromResponse(reader: JsonReader, __typename: String?):
-          TestQuery.Data.Tree.Parent {
+      override fun fromResponse(reader: JsonReader): TestQuery.Data.Tree.Parent {
         var name: String? = null
         reader.beginObject()
         while(true) {

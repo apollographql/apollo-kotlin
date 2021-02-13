@@ -27,7 +27,7 @@ class TestQuery_ResponseAdapter(
   val typeWithGraphQLKeywordsAdapter: ResponseAdapter<TestQuery.Data.TypeWithGraphQLKeywords?> =
       NullableResponseAdapter(TypeWithGraphQLKeywords(customScalarAdapters))
 
-  override fun fromResponse(reader: JsonReader, __typename: String?): TestQuery.Data {
+  override fun fromResponse(reader: JsonReader): TestQuery.Data {
     var typeWithGraphQLKeywords: TestQuery.Data.TypeWithGraphQLKeywords? = null
     reader.beginObject()
     while(true) {
@@ -72,8 +72,7 @@ class TestQuery_ResponseAdapter(
 
     val aliasAdapter: ResponseAdapter<String?> = NullableResponseAdapter(stringResponseAdapter)
 
-    override fun fromResponse(reader: JsonReader, __typename: String?):
-        TestQuery.Data.TypeWithGraphQLKeywords {
+    override fun fromResponse(reader: JsonReader): TestQuery.Data.TypeWithGraphQLKeywords {
       var on: String? = null
       var null_: String? = null
       var alias: String? = null

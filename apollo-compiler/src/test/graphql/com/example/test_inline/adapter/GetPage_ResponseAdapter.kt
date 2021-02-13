@@ -27,7 +27,7 @@ class GetPage_ResponseAdapter(
 ) : ResponseAdapter<GetPage.Data> {
   val collectionAdapter: ResponseAdapter<GetPage.Data.Collection> = Collection(customScalarAdapters)
 
-  override fun fromResponse(reader: JsonReader, __typename: String?): GetPage.Data {
+  override fun fromResponse(reader: JsonReader): GetPage.Data {
     var collection: GetPage.Data.Collection? = null
     reader.beginObject()
     while(true) {
@@ -75,7 +75,7 @@ class GetPage_ResponseAdapter(
     val otherCollectionAdapter: OtherCollection =
         com.example.test_inline.adapter.GetPage_ResponseAdapter.Collection.OtherCollection(customScalarAdapters)
 
-    override fun fromResponse(reader: JsonReader, __typename: String?): GetPage.Data.Collection {
+    override fun fromResponse(reader: JsonReader): GetPage.Data.Collection {
       reader.beginObject()
       check(reader.nextName() == "__typename")
       val typename = reader.nextString()
@@ -96,18 +96,17 @@ class GetPage_ResponseAdapter(
 
     class ParticularCollectionCollection(
       customScalarAdapters: CustomScalarAdapters
-    ) : ResponseAdapter<GetPage.Data.Collection.ParticularCollectionCollection> {
+    ) {
       val __typenameAdapter: ResponseAdapter<String> = stringResponseAdapter
 
       val itemsAdapter:
           ResponseAdapter<List<GetPage.Data.Collection.ParticularCollectionCollection.Item>> =
           ListResponseAdapter(Item(customScalarAdapters))
 
-      override fun fromResponse(reader: JsonReader, __typename: String?):
+      fun fromResponse(reader: JsonReader, __typename: String?):
           GetPage.Data.Collection.ParticularCollectionCollection {
         var __typename: String? = __typename
         var items: List<GetPage.Data.Collection.ParticularCollectionCollection.Item>? = null
-        reader.beginObject()
         while(true) {
           when (reader.selectName(RESPONSE_NAMES)) {
             0 -> __typename = __typenameAdapter.fromResponse(reader) ?: throw
@@ -116,14 +115,13 @@ class GetPage_ResponseAdapter(
             else -> break
           }
         }
-        reader.endObject()
         return GetPage.Data.Collection.ParticularCollectionCollection(
           __typename = __typename!!,
           items = items!!
         )
       }
 
-      override fun toResponse(writer: JsonWriter,
+      fun toResponse(writer: JsonWriter,
           value: GetPage.Data.Collection.ParticularCollectionCollection) {
         __typenameAdapter.toResponse(writer, value.__typename)
         itemsAdapter.toResponse(writer, value.items)
@@ -165,7 +163,7 @@ class GetPage_ResponseAdapter(
         val otherItemAdapter: OtherItem =
             com.example.test_inline.adapter.GetPage_ResponseAdapter.Collection.ParticularCollectionCollection.Item.OtherItem(customScalarAdapters)
 
-        override fun fromResponse(reader: JsonReader, __typename: String?):
+        override fun fromResponse(reader: JsonReader):
             GetPage.Data.Collection.ParticularCollectionCollection.Item {
           reader.beginObject()
           check(reader.nextName() == "__typename")
@@ -188,21 +186,18 @@ class GetPage_ResponseAdapter(
 
         class ParticularItemItem(
           customScalarAdapters: CustomScalarAdapters
-        ) :
-            ResponseAdapter<GetPage.Data.Collection.ParticularCollectionCollection.Item.ParticularItemItem>
-            {
+        ) {
           val titleAdapter: ResponseAdapter<String> = stringResponseAdapter
 
           val __typenameAdapter: ResponseAdapter<String> = stringResponseAdapter
 
           val imageAdapter: ResponseAdapter<String> = stringResponseAdapter
 
-          override fun fromResponse(reader: JsonReader, __typename: String?):
+          fun fromResponse(reader: JsonReader, __typename: String?):
               GetPage.Data.Collection.ParticularCollectionCollection.Item.ParticularItemItem {
             var title: String? = null
             var __typename: String? = __typename
             var image: String? = null
-            reader.beginObject()
             while(true) {
               when (reader.selectName(RESPONSE_NAMES)) {
                 0 -> title = titleAdapter.fromResponse(reader) ?: throw UnexpectedNullValue("title")
@@ -212,7 +207,6 @@ class GetPage_ResponseAdapter(
                 else -> break
               }
             }
-            reader.endObject()
             return GetPage.Data.Collection.ParticularCollectionCollection.Item.ParticularItemItem(
               title = title!!,
               __typename = __typename!!,
@@ -220,7 +214,7 @@ class GetPage_ResponseAdapter(
             )
           }
 
-          override fun toResponse(writer: JsonWriter,
+          fun toResponse(writer: JsonWriter,
               value: GetPage.Data.Collection.ParticularCollectionCollection.Item.ParticularItemItem) {
             titleAdapter.toResponse(writer, value.title)
             __typenameAdapter.toResponse(writer, value.__typename)
@@ -261,16 +255,15 @@ class GetPage_ResponseAdapter(
 
         class OtherItem(
           customScalarAdapters: CustomScalarAdapters
-        ) : ResponseAdapter<GetPage.Data.Collection.ParticularCollectionCollection.Item.OtherItem> {
+        ) {
           val titleAdapter: ResponseAdapter<String> = stringResponseAdapter
 
           val __typenameAdapter: ResponseAdapter<String> = stringResponseAdapter
 
-          override fun fromResponse(reader: JsonReader, __typename: String?):
+          fun fromResponse(reader: JsonReader, __typename: String?):
               GetPage.Data.Collection.ParticularCollectionCollection.Item.OtherItem {
             var title: String? = null
             var __typename: String? = __typename
-            reader.beginObject()
             while(true) {
               when (reader.selectName(RESPONSE_NAMES)) {
                 0 -> title = titleAdapter.fromResponse(reader) ?: throw UnexpectedNullValue("title")
@@ -279,14 +272,13 @@ class GetPage_ResponseAdapter(
                 else -> break
               }
             }
-            reader.endObject()
             return GetPage.Data.Collection.ParticularCollectionCollection.Item.OtherItem(
               title = title!!,
               __typename = __typename!!
             )
           }
 
-          override fun toResponse(writer: JsonWriter,
+          fun toResponse(writer: JsonWriter,
               value: GetPage.Data.Collection.ParticularCollectionCollection.Item.OtherItem) {
             titleAdapter.toResponse(writer, value.title)
             __typenameAdapter.toResponse(writer, value.__typename)
@@ -320,17 +312,16 @@ class GetPage_ResponseAdapter(
 
     class OtherCollection(
       customScalarAdapters: CustomScalarAdapters
-    ) : ResponseAdapter<GetPage.Data.Collection.OtherCollection> {
+    ) {
       val __typenameAdapter: ResponseAdapter<String> = stringResponseAdapter
 
       val itemsAdapter: ResponseAdapter<List<GetPage.Data.Collection.OtherCollection.Item>> =
           ListResponseAdapter(Item(customScalarAdapters))
 
-      override fun fromResponse(reader: JsonReader, __typename: String?):
+      fun fromResponse(reader: JsonReader, __typename: String?):
           GetPage.Data.Collection.OtherCollection {
         var __typename: String? = __typename
         var items: List<GetPage.Data.Collection.OtherCollection.Item>? = null
-        reader.beginObject()
         while(true) {
           when (reader.selectName(RESPONSE_NAMES)) {
             0 -> __typename = __typenameAdapter.fromResponse(reader) ?: throw
@@ -339,14 +330,13 @@ class GetPage_ResponseAdapter(
             else -> break
           }
         }
-        reader.endObject()
         return GetPage.Data.Collection.OtherCollection(
           __typename = __typename!!,
           items = items!!
         )
       }
 
-      override fun toResponse(writer: JsonWriter, value: GetPage.Data.Collection.OtherCollection) {
+      fun toResponse(writer: JsonWriter, value: GetPage.Data.Collection.OtherCollection) {
         __typenameAdapter.toResponse(writer, value.__typename)
         itemsAdapter.toResponse(writer, value.items)
       }
@@ -382,7 +372,7 @@ class GetPage_ResponseAdapter(
       ) : ResponseAdapter<GetPage.Data.Collection.OtherCollection.Item> {
         val titleAdapter: ResponseAdapter<String> = stringResponseAdapter
 
-        override fun fromResponse(reader: JsonReader, __typename: String?):
+        override fun fromResponse(reader: JsonReader):
             GetPage.Data.Collection.OtherCollection.Item {
           var title: String? = null
           reader.beginObject()

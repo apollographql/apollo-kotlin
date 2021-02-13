@@ -28,8 +28,8 @@ class StarshipImpl_ResponseAdapter(
 
   val nameAdapter: ResponseAdapter<String> = stringResponseAdapter
 
-  override fun fromResponse(reader: JsonReader, __typename: String?): StarshipImpl.Data {
-    var __typename: String? = __typename
+  override fun fromResponse(reader: JsonReader): StarshipImpl.Data {
+    var __typename: String? = null
     var name: String? = null
     reader.beginObject()
     while(true) {

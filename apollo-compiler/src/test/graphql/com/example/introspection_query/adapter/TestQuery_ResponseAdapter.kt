@@ -30,7 +30,7 @@ class TestQuery_ResponseAdapter(
 
   val __typeAdapter: ResponseAdapter<TestQuery.Data.__Type> = __Type(customScalarAdapters)
 
-  override fun fromResponse(reader: JsonReader, __typename: String?): TestQuery.Data {
+  override fun fromResponse(reader: JsonReader): TestQuery.Data {
     var __schema: TestQuery.Data.__Schema? = null
     var __type: TestQuery.Data.__Type? = null
     reader.beginObject()
@@ -91,7 +91,7 @@ class TestQuery_ResponseAdapter(
     val typesAdapter: ResponseAdapter<List<TestQuery.Data.__Schema.Type>> =
         ListResponseAdapter(Type(customScalarAdapters))
 
-    override fun fromResponse(reader: JsonReader, __typename: String?): TestQuery.Data.__Schema {
+    override fun fromResponse(reader: JsonReader): TestQuery.Data.__Schema {
       var queryType: TestQuery.Data.__Schema.QueryType? = null
       var types: List<TestQuery.Data.__Schema.Type>? = null
       reader.beginObject()
@@ -148,8 +148,7 @@ class TestQuery_ResponseAdapter(
     ) : ResponseAdapter<TestQuery.Data.__Schema.QueryType> {
       val nameAdapter: ResponseAdapter<String?> = NullableResponseAdapter(stringResponseAdapter)
 
-      override fun fromResponse(reader: JsonReader, __typename: String?):
-          TestQuery.Data.__Schema.QueryType {
+      override fun fromResponse(reader: JsonReader): TestQuery.Data.__Schema.QueryType {
         var name: String? = null
         reader.beginObject()
         while(true) {
@@ -189,8 +188,7 @@ class TestQuery_ResponseAdapter(
     ) : ResponseAdapter<TestQuery.Data.__Schema.Type> {
       val nameAdapter: ResponseAdapter<String?> = NullableResponseAdapter(stringResponseAdapter)
 
-      override fun fromResponse(reader: JsonReader, __typename: String?):
-          TestQuery.Data.__Schema.Type {
+      override fun fromResponse(reader: JsonReader): TestQuery.Data.__Schema.Type {
         var name: String? = null
         reader.beginObject()
         while(true) {
@@ -231,7 +229,7 @@ class TestQuery_ResponseAdapter(
   ) : ResponseAdapter<TestQuery.Data.__Type> {
     val nameAdapter: ResponseAdapter<String?> = NullableResponseAdapter(stringResponseAdapter)
 
-    override fun fromResponse(reader: JsonReader, __typename: String?): TestQuery.Data.__Type {
+    override fun fromResponse(reader: JsonReader): TestQuery.Data.__Type {
       var name: String? = null
       reader.beginObject()
       while(true) {

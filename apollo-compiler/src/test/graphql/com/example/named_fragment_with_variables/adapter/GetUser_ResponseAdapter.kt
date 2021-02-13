@@ -32,7 +32,7 @@ class GetUser_ResponseAdapter(
   val otherDataAdapter: OtherData =
       com.example.named_fragment_with_variables.adapter.GetUser_ResponseAdapter.OtherData(customScalarAdapters)
 
-  override fun fromResponse(reader: JsonReader, __typename: String?): GetUser.Data {
+  override fun fromResponse(reader: JsonReader): GetUser.Data {
     reader.beginObject()
     check(reader.nextName() == "__typename")
     val typename = reader.nextString()
@@ -53,16 +53,15 @@ class GetUser_ResponseAdapter(
 
   class QueryData(
     customScalarAdapters: CustomScalarAdapters
-  ) : ResponseAdapter<GetUser.Data.QueryData> {
+  ) {
     val __typenameAdapter: ResponseAdapter<String> = stringResponseAdapter
 
     val organizationAdapter: ResponseAdapter<GetUser.Data.QueryData.Organization?> =
         NullableResponseAdapter(Organization(customScalarAdapters))
 
-    override fun fromResponse(reader: JsonReader, __typename: String?): GetUser.Data.QueryData {
+    fun fromResponse(reader: JsonReader, __typename: String?): GetUser.Data.QueryData {
       var __typename: String? = __typename
       var organization: GetUser.Data.QueryData.Organization? = null
-      reader.beginObject()
       while(true) {
         when (reader.selectName(RESPONSE_NAMES)) {
           0 -> __typename = __typenameAdapter.fromResponse(reader) ?: throw
@@ -71,14 +70,13 @@ class GetUser_ResponseAdapter(
           else -> break
         }
       }
-      reader.endObject()
       return GetUser.Data.QueryData(
         __typename = __typename!!,
         organization = organization
       )
     }
 
-    override fun toResponse(writer: JsonWriter, value: GetUser.Data.QueryData) {
+    fun toResponse(writer: JsonWriter, value: GetUser.Data.QueryData) {
       __typenameAdapter.toResponse(writer, value.__typename)
       organizationAdapter.toResponse(writer, value.organization)
     }
@@ -119,8 +117,7 @@ class GetUser_ResponseAdapter(
       val userAdapter: ResponseAdapter<List<GetUser.Data.QueryData.Organization.User>> =
           ListResponseAdapter(User(customScalarAdapters))
 
-      override fun fromResponse(reader: JsonReader, __typename: String?):
-          GetUser.Data.QueryData.Organization {
+      override fun fromResponse(reader: JsonReader): GetUser.Data.QueryData.Organization {
         var id: String? = null
         var user: List<GetUser.Data.QueryData.Organization.User>? = null
         reader.beginObject()
@@ -182,8 +179,7 @@ class GetUser_ResponseAdapter(
         val otherUserAdapter: OtherUser =
             com.example.named_fragment_with_variables.adapter.GetUser_ResponseAdapter.QueryData.Organization.User.OtherUser(customScalarAdapters)
 
-        override fun fromResponse(reader: JsonReader, __typename: String?):
-            GetUser.Data.QueryData.Organization.User {
+        override fun fromResponse(reader: JsonReader): GetUser.Data.QueryData.Organization.User {
           reader.beginObject()
           check(reader.nextName() == "__typename")
           val typename = reader.nextString()
@@ -205,7 +201,7 @@ class GetUser_ResponseAdapter(
 
         class UserUser(
           customScalarAdapters: CustomScalarAdapters
-        ) : ResponseAdapter<GetUser.Data.QueryData.Organization.User.UserUser> {
+        ) {
           val __typenameAdapter: ResponseAdapter<String> = stringResponseAdapter
 
           val firstNameAdapter: ResponseAdapter<String> = stringResponseAdapter
@@ -214,13 +210,12 @@ class GetUser_ResponseAdapter(
 
           val avatarAdapter: ResponseAdapter<String> = stringResponseAdapter
 
-          override fun fromResponse(reader: JsonReader, __typename: String?):
+          fun fromResponse(reader: JsonReader, __typename: String?):
               GetUser.Data.QueryData.Organization.User.UserUser {
             var __typename: String? = __typename
             var firstName: String? = null
             var lastName: String? = null
             var avatar: String? = null
-            reader.beginObject()
             while(true) {
               when (reader.selectName(RESPONSE_NAMES)) {
                 0 -> __typename = __typenameAdapter.fromResponse(reader) ?: throw
@@ -234,7 +229,6 @@ class GetUser_ResponseAdapter(
                 else -> break
               }
             }
-            reader.endObject()
             return GetUser.Data.QueryData.Organization.User.UserUser(
               __typename = __typename!!,
               firstName = firstName!!,
@@ -243,7 +237,7 @@ class GetUser_ResponseAdapter(
             )
           }
 
-          override fun toResponse(writer: JsonWriter,
+          fun toResponse(writer: JsonWriter,
               value: GetUser.Data.QueryData.Organization.User.UserUser) {
             __typenameAdapter.toResponse(writer, value.__typename)
             firstNameAdapter.toResponse(writer, value.firstName)
@@ -296,13 +290,12 @@ class GetUser_ResponseAdapter(
 
         class OtherUser(
           customScalarAdapters: CustomScalarAdapters
-        ) : ResponseAdapter<GetUser.Data.QueryData.Organization.User.OtherUser> {
+        ) {
           val __typenameAdapter: ResponseAdapter<String> = stringResponseAdapter
 
-          override fun fromResponse(reader: JsonReader, __typename: String?):
+          fun fromResponse(reader: JsonReader, __typename: String?):
               GetUser.Data.QueryData.Organization.User.OtherUser {
             var __typename: String? = __typename
-            reader.beginObject()
             while(true) {
               when (reader.selectName(RESPONSE_NAMES)) {
                 0 -> __typename = __typenameAdapter.fromResponse(reader) ?: throw
@@ -310,13 +303,12 @@ class GetUser_ResponseAdapter(
                 else -> break
               }
             }
-            reader.endObject()
             return GetUser.Data.QueryData.Organization.User.OtherUser(
               __typename = __typename!!
             )
           }
 
-          override fun toResponse(writer: JsonWriter,
+          fun toResponse(writer: JsonWriter,
               value: GetUser.Data.QueryData.Organization.User.OtherUser) {
             __typenameAdapter.toResponse(writer, value.__typename)
           }
@@ -342,12 +334,11 @@ class GetUser_ResponseAdapter(
 
   class OtherData(
     customScalarAdapters: CustomScalarAdapters
-  ) : ResponseAdapter<GetUser.Data.OtherData> {
+  ) {
     val __typenameAdapter: ResponseAdapter<String> = stringResponseAdapter
 
-    override fun fromResponse(reader: JsonReader, __typename: String?): GetUser.Data.OtherData {
+    fun fromResponse(reader: JsonReader, __typename: String?): GetUser.Data.OtherData {
       var __typename: String? = __typename
-      reader.beginObject()
       while(true) {
         when (reader.selectName(RESPONSE_NAMES)) {
           0 -> __typename = __typenameAdapter.fromResponse(reader) ?: throw
@@ -355,13 +346,12 @@ class GetUser_ResponseAdapter(
           else -> break
         }
       }
-      reader.endObject()
       return GetUser.Data.OtherData(
         __typename = __typename!!
       )
     }
 
-    override fun toResponse(writer: JsonWriter, value: GetUser.Data.OtherData) {
+    fun toResponse(writer: JsonWriter, value: GetUser.Data.OtherData) {
       __typenameAdapter.toResponse(writer, value.__typename)
     }
 

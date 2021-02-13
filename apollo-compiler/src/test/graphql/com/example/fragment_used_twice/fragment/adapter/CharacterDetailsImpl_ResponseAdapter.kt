@@ -31,8 +31,8 @@ class CharacterDetailsImpl_ResponseAdapter(
 
   val birthDateAdapter: ResponseAdapter<Any> = customScalarAdapters.responseAdapterFor<Any>("Date")
 
-  override fun fromResponse(reader: JsonReader, __typename: String?): CharacterDetailsImpl.Data {
-    var __typename: String? = __typename
+  override fun fromResponse(reader: JsonReader): CharacterDetailsImpl.Data {
+    var __typename: String? = null
     var name: String? = null
     var birthDate: Any? = null
     reader.beginObject()

@@ -28,7 +28,7 @@ class TestQuery_ResponseAdapter(
   val heroAdapter: ResponseAdapter<TestQuery.Data.Hero?> =
       NullableResponseAdapter(Hero(customScalarAdapters))
 
-  override fun fromResponse(reader: JsonReader, __typename: String?): TestQuery.Data {
+  override fun fromResponse(reader: JsonReader): TestQuery.Data {
     var hero: TestQuery.Data.Hero? = null
     reader.beginObject()
     while(true) {
@@ -78,7 +78,7 @@ class TestQuery_ResponseAdapter(
     val otherHeroAdapter: OtherHero =
         com.example.directive_with_inline_fragment.adapter.TestQuery_ResponseAdapter.Hero.OtherHero(customScalarAdapters)
 
-    override fun fromResponse(reader: JsonReader, __typename: String?): TestQuery.Data.Hero {
+    override fun fromResponse(reader: JsonReader): TestQuery.Data.Hero {
       reader.beginObject()
       check(reader.nextName() == "__typename")
       val typename = reader.nextString()
@@ -101,7 +101,7 @@ class TestQuery_ResponseAdapter(
 
     class HumanCharacterHero(
       customScalarAdapters: CustomScalarAdapters
-    ) : ResponseAdapter<TestQuery.Data.Hero.HumanCharacterHero> {
+    ) {
       val __typenameAdapter: ResponseAdapter<String> = stringResponseAdapter
 
       val idAdapter: ResponseAdapter<String> = stringResponseAdapter
@@ -111,13 +111,12 @@ class TestQuery_ResponseAdapter(
       val homePlanetAdapter: ResponseAdapter<String?> =
           NullableResponseAdapter(stringResponseAdapter)
 
-      override fun fromResponse(reader: JsonReader, __typename: String?):
+      fun fromResponse(reader: JsonReader, __typename: String?):
           TestQuery.Data.Hero.HumanCharacterHero {
         var __typename: String? = __typename
         var id: String? = null
         var name: String? = null
         var homePlanet: String? = null
-        reader.beginObject()
         while(true) {
           when (reader.selectName(RESPONSE_NAMES)) {
             0 -> __typename = __typenameAdapter.fromResponse(reader) ?: throw
@@ -128,7 +127,6 @@ class TestQuery_ResponseAdapter(
             else -> break
           }
         }
-        reader.endObject()
         return TestQuery.Data.Hero.HumanCharacterHero(
           __typename = __typename!!,
           id = id!!,
@@ -137,7 +135,7 @@ class TestQuery_ResponseAdapter(
         )
       }
 
-      override fun toResponse(writer: JsonWriter, value: TestQuery.Data.Hero.HumanCharacterHero) {
+      fun toResponse(writer: JsonWriter, value: TestQuery.Data.Hero.HumanCharacterHero) {
         __typenameAdapter.toResponse(writer, value.__typename)
         idAdapter.toResponse(writer, value.id)
         nameAdapter.toResponse(writer, value.name)
@@ -186,7 +184,7 @@ class TestQuery_ResponseAdapter(
 
     class DroidCharacterHero(
       customScalarAdapters: CustomScalarAdapters
-    ) : ResponseAdapter<TestQuery.Data.Hero.DroidCharacterHero> {
+    ) {
       val __typenameAdapter: ResponseAdapter<String> = stringResponseAdapter
 
       val idAdapter: ResponseAdapter<String> = stringResponseAdapter
@@ -196,13 +194,12 @@ class TestQuery_ResponseAdapter(
       val primaryFunctionAdapter: ResponseAdapter<String?> =
           NullableResponseAdapter(stringResponseAdapter)
 
-      override fun fromResponse(reader: JsonReader, __typename: String?):
+      fun fromResponse(reader: JsonReader, __typename: String?):
           TestQuery.Data.Hero.DroidCharacterHero {
         var __typename: String? = __typename
         var id: String? = null
         var name: String? = null
         var primaryFunction: String? = null
-        reader.beginObject()
         while(true) {
           when (reader.selectName(RESPONSE_NAMES)) {
             0 -> __typename = __typenameAdapter.fromResponse(reader) ?: throw
@@ -213,7 +210,6 @@ class TestQuery_ResponseAdapter(
             else -> break
           }
         }
-        reader.endObject()
         return TestQuery.Data.Hero.DroidCharacterHero(
           __typename = __typename!!,
           id = id!!,
@@ -222,7 +218,7 @@ class TestQuery_ResponseAdapter(
         )
       }
 
-      override fun toResponse(writer: JsonWriter, value: TestQuery.Data.Hero.DroidCharacterHero) {
+      fun toResponse(writer: JsonWriter, value: TestQuery.Data.Hero.DroidCharacterHero) {
         __typenameAdapter.toResponse(writer, value.__typename)
         idAdapter.toResponse(writer, value.id)
         nameAdapter.toResponse(writer, value.name)
@@ -271,16 +267,14 @@ class TestQuery_ResponseAdapter(
 
     class OtherHero(
       customScalarAdapters: CustomScalarAdapters
-    ) : ResponseAdapter<TestQuery.Data.Hero.OtherHero> {
+    ) {
       val __typenameAdapter: ResponseAdapter<String> = stringResponseAdapter
 
       val idAdapter: ResponseAdapter<String> = stringResponseAdapter
 
-      override fun fromResponse(reader: JsonReader, __typename: String?):
-          TestQuery.Data.Hero.OtherHero {
+      fun fromResponse(reader: JsonReader, __typename: String?): TestQuery.Data.Hero.OtherHero {
         var __typename: String? = __typename
         var id: String? = null
-        reader.beginObject()
         while(true) {
           when (reader.selectName(RESPONSE_NAMES)) {
             0 -> __typename = __typenameAdapter.fromResponse(reader) ?: throw
@@ -289,14 +283,13 @@ class TestQuery_ResponseAdapter(
             else -> break
           }
         }
-        reader.endObject()
         return TestQuery.Data.Hero.OtherHero(
           __typename = __typename!!,
           id = id!!
         )
       }
 
-      override fun toResponse(writer: JsonWriter, value: TestQuery.Data.Hero.OtherHero) {
+      fun toResponse(writer: JsonWriter, value: TestQuery.Data.Hero.OtherHero) {
         __typenameAdapter.toResponse(writer, value.__typename)
         idAdapter.toResponse(writer, value.id)
       }

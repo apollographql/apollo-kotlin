@@ -30,7 +30,7 @@ class TestQuery_ResponseAdapter(
   val heroWithReviewAdapter: ResponseAdapter<TestQuery.Data.HeroWithReview?> =
       NullableResponseAdapter(HeroWithReview(customScalarAdapters))
 
-  override fun fromResponse(reader: JsonReader, __typename: String?): TestQuery.Data {
+  override fun fromResponse(reader: JsonReader): TestQuery.Data {
     var heroWithReview: TestQuery.Data.HeroWithReview? = null
     reader.beginObject()
     while(true) {
@@ -95,8 +95,7 @@ class TestQuery_ResponseAdapter(
 
     val heightAdapter: ResponseAdapter<Double?> = NullableResponseAdapter(doubleResponseAdapter)
 
-    override fun fromResponse(reader: JsonReader, __typename: String?):
-        TestQuery.Data.HeroWithReview {
+    override fun fromResponse(reader: JsonReader): TestQuery.Data.HeroWithReview {
       var name: String? = null
       var height: Double? = null
       reader.beginObject()

@@ -30,8 +30,7 @@ class CreateReviewForEpisodeMutation_ResponseAdapter(
   val createReviewAdapter: ResponseAdapter<CreateReviewForEpisodeMutation.Data.CreateReview?> =
       NullableResponseAdapter(CreateReview(customScalarAdapters))
 
-  override fun fromResponse(reader: JsonReader, __typename: String?):
-      CreateReviewForEpisodeMutation.Data {
+  override fun fromResponse(reader: JsonReader): CreateReviewForEpisodeMutation.Data {
     var createReview: CreateReviewForEpisodeMutation.Data.CreateReview? = null
     reader.beginObject()
     while(true) {
@@ -80,7 +79,7 @@ class CreateReviewForEpisodeMutation_ResponseAdapter(
 
     val commentaryAdapter: ResponseAdapter<String?> = NullableResponseAdapter(stringResponseAdapter)
 
-    override fun fromResponse(reader: JsonReader, __typename: String?):
+    override fun fromResponse(reader: JsonReader):
         CreateReviewForEpisodeMutation.Data.CreateReview {
       var stars: Int? = null
       var commentary: String? = null

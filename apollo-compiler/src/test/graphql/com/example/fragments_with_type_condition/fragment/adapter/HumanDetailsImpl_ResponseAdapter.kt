@@ -33,8 +33,8 @@ class HumanDetailsImpl_ResponseAdapter(
 
   val heightAdapter: ResponseAdapter<Double?> = NullableResponseAdapter(doubleResponseAdapter)
 
-  override fun fromResponse(reader: JsonReader, __typename: String?): HumanDetailsImpl.Data {
-    var __typename: String? = __typename
+  override fun fromResponse(reader: JsonReader): HumanDetailsImpl.Data {
+    var __typename: String? = null
     var name: String? = null
     var height: Double? = null
     reader.beginObject()

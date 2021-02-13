@@ -54,7 +54,7 @@ sealed class Episode(
 }
 
 object Episode_ResponseAdapter : ResponseAdapter<Episode> {
-  override fun fromResponse(reader: JsonReader, __typename: String?): Episode {
+  override fun fromResponse(reader: JsonReader): Episode {
     val rawValue = reader.nextString()!!
     return when(rawValue) {
       "NEWHOPE" -> Episode.NEWHOPE

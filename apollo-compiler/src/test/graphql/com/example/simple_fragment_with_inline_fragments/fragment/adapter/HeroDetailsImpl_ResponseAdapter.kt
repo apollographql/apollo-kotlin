@@ -35,8 +35,8 @@ class HeroDetailsImpl_ResponseAdapter(
   val friendsAdapter: ResponseAdapter<List<HeroDetailsImpl.Data.Friend?>?> =
       NullableResponseAdapter(ListResponseAdapter(NullableResponseAdapter(Friend(customScalarAdapters))))
 
-  override fun fromResponse(reader: JsonReader, __typename: String?): HeroDetailsImpl.Data {
-    var __typename: String? = __typename
+  override fun fromResponse(reader: JsonReader): HeroDetailsImpl.Data {
+    var __typename: String? = null
     var name: String? = null
     var friends: List<HeroDetailsImpl.Data.Friend?>? = null
     reader.beginObject()
@@ -110,8 +110,7 @@ class HeroDetailsImpl_ResponseAdapter(
     val otherFriendAdapter: OtherFriend =
         com.example.simple_fragment_with_inline_fragments.fragment.adapter.HeroDetailsImpl_ResponseAdapter.Friend.OtherFriend(customScalarAdapters)
 
-    override fun fromResponse(reader: JsonReader, __typename: String?):
-        HeroDetailsImpl.Data.Friend {
+    override fun fromResponse(reader: JsonReader): HeroDetailsImpl.Data.Friend {
       reader.beginObject()
       check(reader.nextName() == "__typename")
       val typename = reader.nextString()
@@ -134,19 +133,18 @@ class HeroDetailsImpl_ResponseAdapter(
 
     class HumanFriend(
       customScalarAdapters: CustomScalarAdapters
-    ) : ResponseAdapter<HeroDetailsImpl.Data.Friend.HumanFriend> {
+    ) {
       val __typenameAdapter: ResponseAdapter<String> = stringResponseAdapter
 
       val nameAdapter: ResponseAdapter<String> = stringResponseAdapter
 
       val heightAdapter: ResponseAdapter<Double?> = NullableResponseAdapter(doubleResponseAdapter)
 
-      override fun fromResponse(reader: JsonReader, __typename: String?):
+      fun fromResponse(reader: JsonReader, __typename: String?):
           HeroDetailsImpl.Data.Friend.HumanFriend {
         var __typename: String? = __typename
         var name: String? = null
         var height: Double? = null
-        reader.beginObject()
         while(true) {
           when (reader.selectName(RESPONSE_NAMES)) {
             0 -> __typename = __typenameAdapter.fromResponse(reader) ?: throw
@@ -156,7 +154,6 @@ class HeroDetailsImpl_ResponseAdapter(
             else -> break
           }
         }
-        reader.endObject()
         return HeroDetailsImpl.Data.Friend.HumanFriend(
           __typename = __typename!!,
           name = name!!,
@@ -164,7 +161,7 @@ class HeroDetailsImpl_ResponseAdapter(
         )
       }
 
-      override fun toResponse(writer: JsonWriter, value: HeroDetailsImpl.Data.Friend.HumanFriend) {
+      fun toResponse(writer: JsonWriter, value: HeroDetailsImpl.Data.Friend.HumanFriend) {
         __typenameAdapter.toResponse(writer, value.__typename)
         nameAdapter.toResponse(writer, value.name)
         heightAdapter.toResponse(writer, value.height)
@@ -204,7 +201,7 @@ class HeroDetailsImpl_ResponseAdapter(
 
     class DroidFriend(
       customScalarAdapters: CustomScalarAdapters
-    ) : ResponseAdapter<HeroDetailsImpl.Data.Friend.DroidFriend> {
+    ) {
       val __typenameAdapter: ResponseAdapter<String> = stringResponseAdapter
 
       val nameAdapter: ResponseAdapter<String> = stringResponseAdapter
@@ -212,12 +209,11 @@ class HeroDetailsImpl_ResponseAdapter(
       val primaryFunctionAdapter: ResponseAdapter<String?> =
           NullableResponseAdapter(stringResponseAdapter)
 
-      override fun fromResponse(reader: JsonReader, __typename: String?):
+      fun fromResponse(reader: JsonReader, __typename: String?):
           HeroDetailsImpl.Data.Friend.DroidFriend {
         var __typename: String? = __typename
         var name: String? = null
         var primaryFunction: String? = null
-        reader.beginObject()
         while(true) {
           when (reader.selectName(RESPONSE_NAMES)) {
             0 -> __typename = __typenameAdapter.fromResponse(reader) ?: throw
@@ -227,7 +223,6 @@ class HeroDetailsImpl_ResponseAdapter(
             else -> break
           }
         }
-        reader.endObject()
         return HeroDetailsImpl.Data.Friend.DroidFriend(
           __typename = __typename!!,
           name = name!!,
@@ -235,7 +230,7 @@ class HeroDetailsImpl_ResponseAdapter(
         )
       }
 
-      override fun toResponse(writer: JsonWriter, value: HeroDetailsImpl.Data.Friend.DroidFriend) {
+      fun toResponse(writer: JsonWriter, value: HeroDetailsImpl.Data.Friend.DroidFriend) {
         __typenameAdapter.toResponse(writer, value.__typename)
         nameAdapter.toResponse(writer, value.name)
         primaryFunctionAdapter.toResponse(writer, value.primaryFunction)
@@ -275,16 +270,15 @@ class HeroDetailsImpl_ResponseAdapter(
 
     class OtherFriend(
       customScalarAdapters: CustomScalarAdapters
-    ) : ResponseAdapter<HeroDetailsImpl.Data.Friend.OtherFriend> {
+    ) {
       val __typenameAdapter: ResponseAdapter<String> = stringResponseAdapter
 
       val nameAdapter: ResponseAdapter<String> = stringResponseAdapter
 
-      override fun fromResponse(reader: JsonReader, __typename: String?):
+      fun fromResponse(reader: JsonReader, __typename: String?):
           HeroDetailsImpl.Data.Friend.OtherFriend {
         var __typename: String? = __typename
         var name: String? = null
-        reader.beginObject()
         while(true) {
           when (reader.selectName(RESPONSE_NAMES)) {
             0 -> __typename = __typenameAdapter.fromResponse(reader) ?: throw
@@ -293,14 +287,13 @@ class HeroDetailsImpl_ResponseAdapter(
             else -> break
           }
         }
-        reader.endObject()
         return HeroDetailsImpl.Data.Friend.OtherFriend(
           __typename = __typename!!,
           name = name!!
         )
       }
 
-      override fun toResponse(writer: JsonWriter, value: HeroDetailsImpl.Data.Friend.OtherFriend) {
+      fun toResponse(writer: JsonWriter, value: HeroDetailsImpl.Data.Friend.OtherFriend) {
         __typenameAdapter.toResponse(writer, value.__typename)
         nameAdapter.toResponse(writer, value.name)
       }

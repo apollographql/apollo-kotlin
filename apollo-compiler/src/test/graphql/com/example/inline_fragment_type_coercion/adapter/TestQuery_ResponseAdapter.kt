@@ -28,7 +28,7 @@ class TestQuery_ResponseAdapter(
   val fooAdapter: ResponseAdapter<TestQuery.Data.Foo?> =
       NullableResponseAdapter(Foo(customScalarAdapters))
 
-  override fun fromResponse(reader: JsonReader, __typename: String?): TestQuery.Data {
+  override fun fromResponse(reader: JsonReader): TestQuery.Data {
     var foo: TestQuery.Data.Foo? = null
     reader.beginObject()
     while(true) {
@@ -74,7 +74,7 @@ class TestQuery_ResponseAdapter(
     val otherFooAdapter: OtherFoo =
         com.example.inline_fragment_type_coercion.adapter.TestQuery_ResponseAdapter.Foo.OtherFoo(customScalarAdapters)
 
-    override fun fromResponse(reader: JsonReader, __typename: String?): TestQuery.Data.Foo {
+    override fun fromResponse(reader: JsonReader): TestQuery.Data.Foo {
       reader.beginObject()
       check(reader.nextName() == "__typename")
       val typename = reader.nextString()
@@ -95,19 +95,17 @@ class TestQuery_ResponseAdapter(
 
     class BarFoo(
       customScalarAdapters: CustomScalarAdapters
-    ) : ResponseAdapter<TestQuery.Data.Foo.BarFoo> {
+    ) {
       val __typenameAdapter: ResponseAdapter<String> = stringResponseAdapter
 
       val fooAdapter: ResponseAdapter<String> = stringResponseAdapter
 
       val barAdapter: ResponseAdapter<String> = stringResponseAdapter
 
-      override fun fromResponse(reader: JsonReader, __typename: String?):
-          TestQuery.Data.Foo.BarFoo {
+      fun fromResponse(reader: JsonReader, __typename: String?): TestQuery.Data.Foo.BarFoo {
         var __typename: String? = __typename
         var foo: String? = null
         var bar: String? = null
-        reader.beginObject()
         while(true) {
           when (reader.selectName(RESPONSE_NAMES)) {
             0 -> __typename = __typenameAdapter.fromResponse(reader) ?: throw
@@ -117,7 +115,6 @@ class TestQuery_ResponseAdapter(
             else -> break
           }
         }
-        reader.endObject()
         return TestQuery.Data.Foo.BarFoo(
           __typename = __typename!!,
           foo = foo!!,
@@ -125,7 +122,7 @@ class TestQuery_ResponseAdapter(
         )
       }
 
-      override fun toResponse(writer: JsonWriter, value: TestQuery.Data.Foo.BarFoo) {
+      fun toResponse(writer: JsonWriter, value: TestQuery.Data.Foo.BarFoo) {
         __typenameAdapter.toResponse(writer, value.__typename)
         fooAdapter.toResponse(writer, value.foo)
         barAdapter.toResponse(writer, value.bar)
@@ -165,16 +162,14 @@ class TestQuery_ResponseAdapter(
 
     class OtherFoo(
       customScalarAdapters: CustomScalarAdapters
-    ) : ResponseAdapter<TestQuery.Data.Foo.OtherFoo> {
+    ) {
       val __typenameAdapter: ResponseAdapter<String> = stringResponseAdapter
 
       val fooAdapter: ResponseAdapter<String> = stringResponseAdapter
 
-      override fun fromResponse(reader: JsonReader, __typename: String?):
-          TestQuery.Data.Foo.OtherFoo {
+      fun fromResponse(reader: JsonReader, __typename: String?): TestQuery.Data.Foo.OtherFoo {
         var __typename: String? = __typename
         var foo: String? = null
-        reader.beginObject()
         while(true) {
           when (reader.selectName(RESPONSE_NAMES)) {
             0 -> __typename = __typenameAdapter.fromResponse(reader) ?: throw
@@ -183,14 +178,13 @@ class TestQuery_ResponseAdapter(
             else -> break
           }
         }
-        reader.endObject()
         return TestQuery.Data.Foo.OtherFoo(
           __typename = __typename!!,
           foo = foo!!
         )
       }
 
-      override fun toResponse(writer: JsonWriter, value: TestQuery.Data.Foo.OtherFoo) {
+      fun toResponse(writer: JsonWriter, value: TestQuery.Data.Foo.OtherFoo) {
         __typenameAdapter.toResponse(writer, value.__typename)
         fooAdapter.toResponse(writer, value.foo)
       }

@@ -34,7 +34,7 @@ class TestOperation_ResponseAdapter(
 ) : ResponseAdapter<TestOperation.Data> {
   val randomAdapter: ResponseAdapter<TestOperation.Data.Random> = Random(customScalarAdapters)
 
-  override fun fromResponse(reader: JsonReader, __typename: String?): TestOperation.Data {
+  override fun fromResponse(reader: JsonReader): TestOperation.Data {
     var random: TestOperation.Data.Random? = null
     reader.beginObject()
     while(true) {
@@ -84,7 +84,7 @@ class TestOperation_ResponseAdapter(
     val otherRandomAdapter: OtherRandom =
         com.example.inline_frgament_intersection.adapter.TestOperation_ResponseAdapter.Random.OtherRandom(customScalarAdapters)
 
-    override fun fromResponse(reader: JsonReader, __typename: String?): TestOperation.Data.Random {
+    override fun fromResponse(reader: JsonReader): TestOperation.Data.Random {
       reader.beginObject()
       check(reader.nextName() == "__typename")
       val typename = reader.nextString()
@@ -107,7 +107,7 @@ class TestOperation_ResponseAdapter(
 
     class BeingHumanRandom(
       customScalarAdapters: CustomScalarAdapters
-    ) : ResponseAdapter<TestOperation.Data.Random.BeingHumanRandom> {
+    ) {
       val __typenameAdapter: ResponseAdapter<String> = stringResponseAdapter
 
       val nameAdapter: ResponseAdapter<String> = stringResponseAdapter
@@ -118,13 +118,12 @@ class TestOperation_ResponseAdapter(
       val profilePictureUrlAdapter: ResponseAdapter<String?> =
           NullableResponseAdapter(stringResponseAdapter)
 
-      override fun fromResponse(reader: JsonReader, __typename: String?):
+      fun fromResponse(reader: JsonReader, __typename: String?):
           TestOperation.Data.Random.BeingHumanRandom {
         var __typename: String? = __typename
         var name: String? = null
         var friends: List<TestOperation.Data.Random.BeingHumanRandom.Friend>? = null
         var profilePictureUrl: String? = null
-        reader.beginObject()
         while(true) {
           when (reader.selectName(RESPONSE_NAMES)) {
             0 -> __typename = __typenameAdapter.fromResponse(reader) ?: throw
@@ -136,7 +135,6 @@ class TestOperation_ResponseAdapter(
             else -> break
           }
         }
-        reader.endObject()
         return TestOperation.Data.Random.BeingHumanRandom(
           __typename = __typename!!,
           name = name!!,
@@ -145,8 +143,7 @@ class TestOperation_ResponseAdapter(
         )
       }
 
-      override fun toResponse(writer: JsonWriter,
-          value: TestOperation.Data.Random.BeingHumanRandom) {
+      fun toResponse(writer: JsonWriter, value: TestOperation.Data.Random.BeingHumanRandom) {
         __typenameAdapter.toResponse(writer, value.__typename)
         nameAdapter.toResponse(writer, value.name)
         friendsAdapter.toResponse(writer, value.friends)
@@ -205,7 +202,7 @@ class TestOperation_ResponseAdapter(
         val otherFriendAdapter: OtherFriend =
             com.example.inline_frgament_intersection.adapter.TestOperation_ResponseAdapter.Random.BeingHumanRandom.Friend.OtherFriend(customScalarAdapters)
 
-        override fun fromResponse(reader: JsonReader, __typename: String?):
+        override fun fromResponse(reader: JsonReader):
             TestOperation.Data.Random.BeingHumanRandom.Friend {
           reader.beginObject()
           check(reader.nextName() == "__typename")
@@ -228,7 +225,7 @@ class TestOperation_ResponseAdapter(
 
         class WookieFriend(
           customScalarAdapters: CustomScalarAdapters
-        ) : ResponseAdapter<TestOperation.Data.Random.BeingHumanRandom.Friend.WookieFriend> {
+        ) {
           val __typenameAdapter: ResponseAdapter<String> = stringResponseAdapter
 
           val nameAdapter: ResponseAdapter<String> = stringResponseAdapter
@@ -241,14 +238,13 @@ class TestOperation_ResponseAdapter(
 
           val raceAdapter: ResponseAdapter<Race> = Race_ResponseAdapter
 
-          override fun fromResponse(reader: JsonReader, __typename: String?):
+          fun fromResponse(reader: JsonReader, __typename: String?):
               TestOperation.Data.Random.BeingHumanRandom.Friend.WookieFriend {
             var __typename: String? = __typename
             var name: String? = null
             var isFamous: Boolean? = null
             var lifeExpectancy: Double? = null
             var race: Race? = null
-            reader.beginObject()
             while(true) {
               when (reader.selectName(RESPONSE_NAMES)) {
                 0 -> __typename = __typenameAdapter.fromResponse(reader) ?: throw
@@ -260,7 +256,6 @@ class TestOperation_ResponseAdapter(
                 else -> break
               }
             }
-            reader.endObject()
             return TestOperation.Data.Random.BeingHumanRandom.Friend.WookieFriend(
               __typename = __typename!!,
               name = name!!,
@@ -270,7 +265,7 @@ class TestOperation_ResponseAdapter(
             )
           }
 
-          override fun toResponse(writer: JsonWriter,
+          fun toResponse(writer: JsonWriter,
               value: TestOperation.Data.Random.BeingHumanRandom.Friend.WookieFriend) {
             __typenameAdapter.toResponse(writer, value.__typename)
             nameAdapter.toResponse(writer, value.name)
@@ -329,7 +324,7 @@ class TestOperation_ResponseAdapter(
 
         class OtherFriend(
           customScalarAdapters: CustomScalarAdapters
-        ) : ResponseAdapter<TestOperation.Data.Random.BeingHumanRandom.Friend.OtherFriend> {
+        ) {
           val __typenameAdapter: ResponseAdapter<String> = stringResponseAdapter
 
           val nameAdapter: ResponseAdapter<String> = stringResponseAdapter
@@ -337,12 +332,11 @@ class TestOperation_ResponseAdapter(
           val isFamousAdapter: ResponseAdapter<Boolean?> =
               NullableResponseAdapter(booleanResponseAdapter)
 
-          override fun fromResponse(reader: JsonReader, __typename: String?):
+          fun fromResponse(reader: JsonReader, __typename: String?):
               TestOperation.Data.Random.BeingHumanRandom.Friend.OtherFriend {
             var __typename: String? = __typename
             var name: String? = null
             var isFamous: Boolean? = null
-            reader.beginObject()
             while(true) {
               when (reader.selectName(RESPONSE_NAMES)) {
                 0 -> __typename = __typenameAdapter.fromResponse(reader) ?: throw
@@ -352,7 +346,6 @@ class TestOperation_ResponseAdapter(
                 else -> break
               }
             }
-            reader.endObject()
             return TestOperation.Data.Random.BeingHumanRandom.Friend.OtherFriend(
               __typename = __typename!!,
               name = name!!,
@@ -360,7 +353,7 @@ class TestOperation_ResponseAdapter(
             )
           }
 
-          override fun toResponse(writer: JsonWriter,
+          fun toResponse(writer: JsonWriter,
               value: TestOperation.Data.Random.BeingHumanRandom.Friend.OtherFriend) {
             __typenameAdapter.toResponse(writer, value.__typename)
             nameAdapter.toResponse(writer, value.name)
@@ -403,7 +396,7 @@ class TestOperation_ResponseAdapter(
 
     class BeingWookieRandom(
       customScalarAdapters: CustomScalarAdapters
-    ) : ResponseAdapter<TestOperation.Data.Random.BeingWookieRandom> {
+    ) {
       val __typenameAdapter: ResponseAdapter<String> = stringResponseAdapter
 
       val nameAdapter: ResponseAdapter<String> = stringResponseAdapter
@@ -413,13 +406,12 @@ class TestOperation_ResponseAdapter(
 
       val raceAdapter: ResponseAdapter<Race> = Race_ResponseAdapter
 
-      override fun fromResponse(reader: JsonReader, __typename: String?):
+      fun fromResponse(reader: JsonReader, __typename: String?):
           TestOperation.Data.Random.BeingWookieRandom {
         var __typename: String? = __typename
         var name: String? = null
         var friends: List<TestOperation.Data.Random.BeingWookieRandom.Friend>? = null
         var race: Race? = null
-        reader.beginObject()
         while(true) {
           when (reader.selectName(RESPONSE_NAMES)) {
             0 -> __typename = __typenameAdapter.fromResponse(reader) ?: throw
@@ -431,7 +423,6 @@ class TestOperation_ResponseAdapter(
             else -> break
           }
         }
-        reader.endObject()
         return TestOperation.Data.Random.BeingWookieRandom(
           __typename = __typename!!,
           name = name!!,
@@ -440,8 +431,7 @@ class TestOperation_ResponseAdapter(
         )
       }
 
-      override fun toResponse(writer: JsonWriter,
-          value: TestOperation.Data.Random.BeingWookieRandom) {
+      fun toResponse(writer: JsonWriter, value: TestOperation.Data.Random.BeingWookieRandom) {
         __typenameAdapter.toResponse(writer, value.__typename)
         nameAdapter.toResponse(writer, value.name)
         friendsAdapter.toResponse(writer, value.friends)
@@ -500,7 +490,7 @@ class TestOperation_ResponseAdapter(
         val otherFriendAdapter: OtherFriend =
             com.example.inline_frgament_intersection.adapter.TestOperation_ResponseAdapter.Random.BeingWookieRandom.Friend.OtherFriend(customScalarAdapters)
 
-        override fun fromResponse(reader: JsonReader, __typename: String?):
+        override fun fromResponse(reader: JsonReader):
             TestOperation.Data.Random.BeingWookieRandom.Friend {
           reader.beginObject()
           check(reader.nextName() == "__typename")
@@ -523,7 +513,7 @@ class TestOperation_ResponseAdapter(
 
         class WookieFriend(
           customScalarAdapters: CustomScalarAdapters
-        ) : ResponseAdapter<TestOperation.Data.Random.BeingWookieRandom.Friend.WookieFriend> {
+        ) {
           val __typenameAdapter: ResponseAdapter<String> = stringResponseAdapter
 
           val nameAdapter: ResponseAdapter<String> = stringResponseAdapter
@@ -531,12 +521,11 @@ class TestOperation_ResponseAdapter(
           val lifeExpectancyAdapter: ResponseAdapter<Double?> =
               NullableResponseAdapter(doubleResponseAdapter)
 
-          override fun fromResponse(reader: JsonReader, __typename: String?):
+          fun fromResponse(reader: JsonReader, __typename: String?):
               TestOperation.Data.Random.BeingWookieRandom.Friend.WookieFriend {
             var __typename: String? = __typename
             var name: String? = null
             var lifeExpectancy: Double? = null
-            reader.beginObject()
             while(true) {
               when (reader.selectName(RESPONSE_NAMES)) {
                 0 -> __typename = __typenameAdapter.fromResponse(reader) ?: throw
@@ -546,7 +535,6 @@ class TestOperation_ResponseAdapter(
                 else -> break
               }
             }
-            reader.endObject()
             return TestOperation.Data.Random.BeingWookieRandom.Friend.WookieFriend(
               __typename = __typename!!,
               name = name!!,
@@ -554,7 +542,7 @@ class TestOperation_ResponseAdapter(
             )
           }
 
-          override fun toResponse(writer: JsonWriter,
+          fun toResponse(writer: JsonWriter,
               value: TestOperation.Data.Random.BeingWookieRandom.Friend.WookieFriend) {
             __typenameAdapter.toResponse(writer, value.__typename)
             nameAdapter.toResponse(writer, value.name)
@@ -595,7 +583,7 @@ class TestOperation_ResponseAdapter(
 
         class OtherFriend(
           customScalarAdapters: CustomScalarAdapters
-        ) : ResponseAdapter<TestOperation.Data.Random.BeingWookieRandom.Friend.OtherFriend> {
+        ) {
           val __typenameAdapter: ResponseAdapter<String> = stringResponseAdapter
 
           val nameAdapter: ResponseAdapter<String> = stringResponseAdapter
@@ -603,12 +591,11 @@ class TestOperation_ResponseAdapter(
           val lifeExpectancyAdapter: ResponseAdapter<Double?> =
               NullableResponseAdapter(doubleResponseAdapter)
 
-          override fun fromResponse(reader: JsonReader, __typename: String?):
+          fun fromResponse(reader: JsonReader, __typename: String?):
               TestOperation.Data.Random.BeingWookieRandom.Friend.OtherFriend {
             var __typename: String? = __typename
             var name: String? = null
             var lifeExpectancy: Double? = null
-            reader.beginObject()
             while(true) {
               when (reader.selectName(RESPONSE_NAMES)) {
                 0 -> __typename = __typenameAdapter.fromResponse(reader) ?: throw
@@ -618,7 +605,6 @@ class TestOperation_ResponseAdapter(
                 else -> break
               }
             }
-            reader.endObject()
             return TestOperation.Data.Random.BeingWookieRandom.Friend.OtherFriend(
               __typename = __typename!!,
               name = name!!,
@@ -626,7 +612,7 @@ class TestOperation_ResponseAdapter(
             )
           }
 
-          override fun toResponse(writer: JsonWriter,
+          fun toResponse(writer: JsonWriter,
               value: TestOperation.Data.Random.BeingWookieRandom.Friend.OtherFriend) {
             __typenameAdapter.toResponse(writer, value.__typename)
             nameAdapter.toResponse(writer, value.name)
@@ -669,13 +655,12 @@ class TestOperation_ResponseAdapter(
 
     class OtherRandom(
       customScalarAdapters: CustomScalarAdapters
-    ) : ResponseAdapter<TestOperation.Data.Random.OtherRandom> {
+    ) {
       val __typenameAdapter: ResponseAdapter<String> = stringResponseAdapter
 
-      override fun fromResponse(reader: JsonReader, __typename: String?):
+      fun fromResponse(reader: JsonReader, __typename: String?):
           TestOperation.Data.Random.OtherRandom {
         var __typename: String? = __typename
-        reader.beginObject()
         while(true) {
           when (reader.selectName(RESPONSE_NAMES)) {
             0 -> __typename = __typenameAdapter.fromResponse(reader) ?: throw
@@ -683,13 +668,12 @@ class TestOperation_ResponseAdapter(
             else -> break
           }
         }
-        reader.endObject()
         return TestOperation.Data.Random.OtherRandom(
           __typename = __typename!!
         )
       }
 
-      override fun toResponse(writer: JsonWriter, value: TestOperation.Data.Random.OtherRandom) {
+      fun toResponse(writer: JsonWriter, value: TestOperation.Data.Random.OtherRandom) {
         __typenameAdapter.toResponse(writer, value.__typename)
       }
 

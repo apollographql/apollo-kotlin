@@ -29,7 +29,7 @@ class TestQuery_ResponseAdapter(
   val searchAdapter: ResponseAdapter<List<TestQuery.Data.Search?>?> =
       NullableResponseAdapter(ListResponseAdapter(NullableResponseAdapter(Search(customScalarAdapters))))
 
-  override fun fromResponse(reader: JsonReader, __typename: String?): TestQuery.Data {
+  override fun fromResponse(reader: JsonReader): TestQuery.Data {
     var search: List<TestQuery.Data.Search?>? = null
     reader.beginObject()
     while(true) {
@@ -80,7 +80,7 @@ class TestQuery_ResponseAdapter(
     val otherSearchAdapter: OtherSearch =
         com.example.inline_fragment_inside_inline_fragment.adapter.TestQuery_ResponseAdapter.Search.OtherSearch(customScalarAdapters)
 
-    override fun fromResponse(reader: JsonReader, __typename: String?): TestQuery.Data.Search {
+    override fun fromResponse(reader: JsonReader): TestQuery.Data.Search {
       reader.beginObject()
       check(reader.nextName() == "__typename")
       val typename = reader.nextString()
@@ -103,7 +103,7 @@ class TestQuery_ResponseAdapter(
 
     class CharacterDroidSearch(
       customScalarAdapters: CustomScalarAdapters
-    ) : ResponseAdapter<TestQuery.Data.Search.CharacterDroidSearch> {
+    ) {
       val __typenameAdapter: ResponseAdapter<String> = stringResponseAdapter
 
       val nameAdapter: ResponseAdapter<String> = stringResponseAdapter
@@ -111,12 +111,11 @@ class TestQuery_ResponseAdapter(
       val primaryFunctionAdapter: ResponseAdapter<String?> =
           NullableResponseAdapter(stringResponseAdapter)
 
-      override fun fromResponse(reader: JsonReader, __typename: String?):
+      fun fromResponse(reader: JsonReader, __typename: String?):
           TestQuery.Data.Search.CharacterDroidSearch {
         var __typename: String? = __typename
         var name: String? = null
         var primaryFunction: String? = null
-        reader.beginObject()
         while(true) {
           when (reader.selectName(RESPONSE_NAMES)) {
             0 -> __typename = __typenameAdapter.fromResponse(reader) ?: throw
@@ -126,7 +125,6 @@ class TestQuery_ResponseAdapter(
             else -> break
           }
         }
-        reader.endObject()
         return TestQuery.Data.Search.CharacterDroidSearch(
           __typename = __typename!!,
           name = name!!,
@@ -134,8 +132,7 @@ class TestQuery_ResponseAdapter(
         )
       }
 
-      override fun toResponse(writer: JsonWriter,
-          value: TestQuery.Data.Search.CharacterDroidSearch) {
+      fun toResponse(writer: JsonWriter, value: TestQuery.Data.Search.CharacterDroidSearch) {
         __typenameAdapter.toResponse(writer, value.__typename)
         nameAdapter.toResponse(writer, value.name)
         primaryFunctionAdapter.toResponse(writer, value.primaryFunction)
@@ -175,7 +172,7 @@ class TestQuery_ResponseAdapter(
 
     class CharacterHumanSearch(
       customScalarAdapters: CustomScalarAdapters
-    ) : ResponseAdapter<TestQuery.Data.Search.CharacterHumanSearch> {
+    ) {
       val __typenameAdapter: ResponseAdapter<String> = stringResponseAdapter
 
       val nameAdapter: ResponseAdapter<String> = stringResponseAdapter
@@ -183,12 +180,11 @@ class TestQuery_ResponseAdapter(
       val homePlanetAdapter: ResponseAdapter<String?> =
           NullableResponseAdapter(stringResponseAdapter)
 
-      override fun fromResponse(reader: JsonReader, __typename: String?):
+      fun fromResponse(reader: JsonReader, __typename: String?):
           TestQuery.Data.Search.CharacterHumanSearch {
         var __typename: String? = __typename
         var name: String? = null
         var homePlanet: String? = null
-        reader.beginObject()
         while(true) {
           when (reader.selectName(RESPONSE_NAMES)) {
             0 -> __typename = __typenameAdapter.fromResponse(reader) ?: throw
@@ -198,7 +194,6 @@ class TestQuery_ResponseAdapter(
             else -> break
           }
         }
-        reader.endObject()
         return TestQuery.Data.Search.CharacterHumanSearch(
           __typename = __typename!!,
           name = name!!,
@@ -206,8 +201,7 @@ class TestQuery_ResponseAdapter(
         )
       }
 
-      override fun toResponse(writer: JsonWriter,
-          value: TestQuery.Data.Search.CharacterHumanSearch) {
+      fun toResponse(writer: JsonWriter, value: TestQuery.Data.Search.CharacterHumanSearch) {
         __typenameAdapter.toResponse(writer, value.__typename)
         nameAdapter.toResponse(writer, value.name)
         homePlanetAdapter.toResponse(writer, value.homePlanet)
@@ -247,13 +241,11 @@ class TestQuery_ResponseAdapter(
 
     class OtherSearch(
       customScalarAdapters: CustomScalarAdapters
-    ) : ResponseAdapter<TestQuery.Data.Search.OtherSearch> {
+    ) {
       val __typenameAdapter: ResponseAdapter<String> = stringResponseAdapter
 
-      override fun fromResponse(reader: JsonReader, __typename: String?):
-          TestQuery.Data.Search.OtherSearch {
+      fun fromResponse(reader: JsonReader, __typename: String?): TestQuery.Data.Search.OtherSearch {
         var __typename: String? = __typename
-        reader.beginObject()
         while(true) {
           when (reader.selectName(RESPONSE_NAMES)) {
             0 -> __typename = __typenameAdapter.fromResponse(reader) ?: throw
@@ -261,13 +253,12 @@ class TestQuery_ResponseAdapter(
             else -> break
           }
         }
-        reader.endObject()
         return TestQuery.Data.Search.OtherSearch(
           __typename = __typename!!
         )
       }
 
-      override fun toResponse(writer: JsonWriter, value: TestQuery.Data.Search.OtherSearch) {
+      fun toResponse(writer: JsonWriter, value: TestQuery.Data.Search.OtherSearch) {
         __typenameAdapter.toResponse(writer, value.__typename)
       }
 

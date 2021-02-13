@@ -28,8 +28,8 @@ class HeroDetailsImpl_ResponseAdapter(
 
   val nameAdapter: ResponseAdapter<String> = stringResponseAdapter
 
-  override fun fromResponse(reader: JsonReader, __typename: String?): HeroDetailsImpl.Data {
-    var __typename: String? = __typename
+  override fun fromResponse(reader: JsonReader): HeroDetailsImpl.Data {
+    var __typename: String? = null
     var name: String? = null
     reader.beginObject()
     while(true) {

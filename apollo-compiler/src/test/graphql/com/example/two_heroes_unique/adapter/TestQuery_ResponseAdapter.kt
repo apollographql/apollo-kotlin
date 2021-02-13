@@ -31,7 +31,7 @@ class TestQuery_ResponseAdapter(
   val lukeAdapter: ResponseAdapter<TestQuery.Data.Luke?> =
       NullableResponseAdapter(Luke(customScalarAdapters))
 
-  override fun fromResponse(reader: JsonReader, __typename: String?): TestQuery.Data {
+  override fun fromResponse(reader: JsonReader): TestQuery.Data {
     var r2: TestQuery.Data.R2? = null
     var luke: TestQuery.Data.Luke? = null
     reader.beginObject()
@@ -87,7 +87,7 @@ class TestQuery_ResponseAdapter(
   ) : ResponseAdapter<TestQuery.Data.R2> {
     val nameAdapter: ResponseAdapter<String> = stringResponseAdapter
 
-    override fun fromResponse(reader: JsonReader, __typename: String?): TestQuery.Data.R2 {
+    override fun fromResponse(reader: JsonReader): TestQuery.Data.R2 {
       var name: String? = null
       reader.beginObject()
       while(true) {
@@ -129,7 +129,7 @@ class TestQuery_ResponseAdapter(
 
     val nameAdapter: ResponseAdapter<String> = stringResponseAdapter
 
-    override fun fromResponse(reader: JsonReader, __typename: String?): TestQuery.Data.Luke {
+    override fun fromResponse(reader: JsonReader): TestQuery.Data.Luke {
       var id: String? = null
       var name: String? = null
       reader.beginObject()

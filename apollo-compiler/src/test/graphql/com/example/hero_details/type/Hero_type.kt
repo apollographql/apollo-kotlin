@@ -28,7 +28,7 @@ enum class Hero_type(
 }
 
 object Hero_type_ResponseAdapter : ResponseAdapter<Hero_type> {
-  override fun fromResponse(reader: JsonReader, __typename: String?): Hero_type {
+  override fun fromResponse(reader: JsonReader): Hero_type {
     val rawValue = reader.nextString()!!
     return when(rawValue) {
       "human" -> Hero_type.HUMAN

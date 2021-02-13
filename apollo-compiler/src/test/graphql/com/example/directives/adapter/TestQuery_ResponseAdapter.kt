@@ -29,7 +29,7 @@ class TestQuery_ResponseAdapter(
   val heroAdapter: ResponseAdapter<TestQuery.Data.Hero?> =
       NullableResponseAdapter(Hero(customScalarAdapters))
 
-  override fun fromResponse(reader: JsonReader, __typename: String?): TestQuery.Data {
+  override fun fromResponse(reader: JsonReader): TestQuery.Data {
     var hero: TestQuery.Data.Hero? = null
     reader.beginObject()
     while(true) {
@@ -73,7 +73,7 @@ class TestQuery_ResponseAdapter(
     val friendsConnectionAdapter: ResponseAdapter<TestQuery.Data.Hero.FriendsConnection?> =
         NullableResponseAdapter(FriendsConnection(customScalarAdapters))
 
-    override fun fromResponse(reader: JsonReader, __typename: String?): TestQuery.Data.Hero {
+    override fun fromResponse(reader: JsonReader): TestQuery.Data.Hero {
       var name: String? = null
       var friendsConnection: TestQuery.Data.Hero.FriendsConnection? = null
       reader.beginObject()
@@ -130,8 +130,7 @@ class TestQuery_ResponseAdapter(
     ) : ResponseAdapter<TestQuery.Data.Hero.FriendsConnection> {
       val totalCountAdapter: ResponseAdapter<Int?> = NullableResponseAdapter(intResponseAdapter)
 
-      override fun fromResponse(reader: JsonReader, __typename: String?):
-          TestQuery.Data.Hero.FriendsConnection {
+      override fun fromResponse(reader: JsonReader): TestQuery.Data.Hero.FriendsConnection {
         var totalCount: Int? = null
         reader.beginObject()
         while(true) {

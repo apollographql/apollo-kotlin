@@ -32,8 +32,8 @@ class UserFragmentImpl_ResponseAdapter(
 
   val avatarAdapter: ResponseAdapter<String> = stringResponseAdapter
 
-  override fun fromResponse(reader: JsonReader, __typename: String?): UserFragmentImpl.Data {
-    var __typename: String? = __typename
+  override fun fromResponse(reader: JsonReader): UserFragmentImpl.Data {
+    var __typename: String? = null
     var firstName: String? = null
     var lastName: String? = null
     var avatar: String? = null

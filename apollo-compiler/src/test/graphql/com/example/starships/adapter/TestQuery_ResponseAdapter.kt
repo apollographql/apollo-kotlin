@@ -31,7 +31,7 @@ class TestQuery_ResponseAdapter(
   val starshipAdapter: ResponseAdapter<TestQuery.Data.Starship?> =
       NullableResponseAdapter(Starship(customScalarAdapters))
 
-  override fun fromResponse(reader: JsonReader, __typename: String?): TestQuery.Data {
+  override fun fromResponse(reader: JsonReader): TestQuery.Data {
     var starship: TestQuery.Data.Starship? = null
     reader.beginObject()
     while(true) {
@@ -80,7 +80,7 @@ class TestQuery_ResponseAdapter(
     val coordinatesAdapter: ResponseAdapter<List<List<Double>>?> =
         NullableResponseAdapter(ListResponseAdapter(ListResponseAdapter(doubleResponseAdapter)))
 
-    override fun fromResponse(reader: JsonReader, __typename: String?): TestQuery.Data.Starship {
+    override fun fromResponse(reader: JsonReader): TestQuery.Data.Starship {
       var id: String? = null
       var name: String? = null
       var coordinates: List<List<Double>>? = null

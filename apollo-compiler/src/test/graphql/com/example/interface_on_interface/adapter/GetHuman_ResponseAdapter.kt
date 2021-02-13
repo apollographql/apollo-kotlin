@@ -30,7 +30,7 @@ class GetHuman_ResponseAdapter(
 
   val nodeAdapter: ResponseAdapter<GetHuman.Data.Node> = Node(customScalarAdapters)
 
-  override fun fromResponse(reader: JsonReader, __typename: String?): GetHuman.Data {
+  override fun fromResponse(reader: JsonReader): GetHuman.Data {
     var human: GetHuman.Data.Human? = null
     var node: GetHuman.Data.Node? = null
     reader.beginObject()
@@ -90,7 +90,7 @@ class GetHuman_ResponseAdapter(
 
     val heightAdapter: ResponseAdapter<Double> = doubleResponseAdapter
 
-    override fun fromResponse(reader: JsonReader, __typename: String?): GetHuman.Data.Human {
+    override fun fromResponse(reader: JsonReader): GetHuman.Data.Human {
       var id: String? = null
       var name: String? = null
       var height: Double? = null
@@ -158,7 +158,7 @@ class GetHuman_ResponseAdapter(
     val otherNodeAdapter: OtherNode =
         com.example.interface_on_interface.adapter.GetHuman_ResponseAdapter.Node.OtherNode(customScalarAdapters)
 
-    override fun fromResponse(reader: JsonReader, __typename: String?): GetHuman.Data.Node {
+    override fun fromResponse(reader: JsonReader): GetHuman.Data.Node {
       reader.beginObject()
       check(reader.nextName() == "__typename")
       val typename = reader.nextString()
@@ -179,16 +179,14 @@ class GetHuman_ResponseAdapter(
 
     class HumanNode(
       customScalarAdapters: CustomScalarAdapters
-    ) : ResponseAdapter<GetHuman.Data.Node.HumanNode> {
+    ) {
       val __typenameAdapter: ResponseAdapter<String> = stringResponseAdapter
 
       val heightAdapter: ResponseAdapter<Double> = doubleResponseAdapter
 
-      override fun fromResponse(reader: JsonReader, __typename: String?):
-          GetHuman.Data.Node.HumanNode {
+      fun fromResponse(reader: JsonReader, __typename: String?): GetHuman.Data.Node.HumanNode {
         var __typename: String? = __typename
         var height: Double? = null
-        reader.beginObject()
         while(true) {
           when (reader.selectName(RESPONSE_NAMES)) {
             0 -> __typename = __typenameAdapter.fromResponse(reader) ?: throw
@@ -197,14 +195,13 @@ class GetHuman_ResponseAdapter(
             else -> break
           }
         }
-        reader.endObject()
         return GetHuman.Data.Node.HumanNode(
           __typename = __typename!!,
           height = height!!
         )
       }
 
-      override fun toResponse(writer: JsonWriter, value: GetHuman.Data.Node.HumanNode) {
+      fun toResponse(writer: JsonWriter, value: GetHuman.Data.Node.HumanNode) {
         __typenameAdapter.toResponse(writer, value.__typename)
         heightAdapter.toResponse(writer, value.height)
       }
@@ -235,13 +232,11 @@ class GetHuman_ResponseAdapter(
 
     class OtherNode(
       customScalarAdapters: CustomScalarAdapters
-    ) : ResponseAdapter<GetHuman.Data.Node.OtherNode> {
+    ) {
       val __typenameAdapter: ResponseAdapter<String> = stringResponseAdapter
 
-      override fun fromResponse(reader: JsonReader, __typename: String?):
-          GetHuman.Data.Node.OtherNode {
+      fun fromResponse(reader: JsonReader, __typename: String?): GetHuman.Data.Node.OtherNode {
         var __typename: String? = __typename
-        reader.beginObject()
         while(true) {
           when (reader.selectName(RESPONSE_NAMES)) {
             0 -> __typename = __typenameAdapter.fromResponse(reader) ?: throw
@@ -249,13 +244,12 @@ class GetHuman_ResponseAdapter(
             else -> break
           }
         }
-        reader.endObject()
         return GetHuman.Data.Node.OtherNode(
           __typename = __typename!!
         )
       }
 
-      override fun toResponse(writer: JsonWriter, value: GetHuman.Data.Node.OtherNode) {
+      fun toResponse(writer: JsonWriter, value: GetHuman.Data.Node.OtherNode) {
         __typenameAdapter.toResponse(writer, value.__typename)
       }
 

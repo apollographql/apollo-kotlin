@@ -33,8 +33,8 @@ class HeroDetailsImpl_ResponseAdapter(
   val friendsConnectionAdapter: ResponseAdapter<HeroDetailsImpl.Data.FriendsConnection> =
       FriendsConnection(customScalarAdapters)
 
-  override fun fromResponse(reader: JsonReader, __typename: String?): HeroDetailsImpl.Data {
-    var __typename: String? = __typename
+  override fun fromResponse(reader: JsonReader): HeroDetailsImpl.Data {
+    var __typename: String? = null
     var friendsConnection: HeroDetailsImpl.Data.FriendsConnection? = null
     reader.beginObject()
     while(true) {
@@ -94,8 +94,7 @@ class HeroDetailsImpl_ResponseAdapter(
     val edgesAdapter: ResponseAdapter<List<HeroDetailsImpl.Data.FriendsConnection.Edge?>?> =
         NullableResponseAdapter(ListResponseAdapter(NullableResponseAdapter(Edge(customScalarAdapters))))
 
-    override fun fromResponse(reader: JsonReader, __typename: String?):
-        HeroDetailsImpl.Data.FriendsConnection {
+    override fun fromResponse(reader: JsonReader): HeroDetailsImpl.Data.FriendsConnection {
       var totalCount: Int? = null
       var edges: List<HeroDetailsImpl.Data.FriendsConnection.Edge?>? = null
       reader.beginObject()
@@ -149,8 +148,7 @@ class HeroDetailsImpl_ResponseAdapter(
       val nodeAdapter: ResponseAdapter<HeroDetailsImpl.Data.FriendsConnection.Edge.Node?> =
           NullableResponseAdapter(Node(customScalarAdapters))
 
-      override fun fromResponse(reader: JsonReader, __typename: String?):
-          HeroDetailsImpl.Data.FriendsConnection.Edge {
+      override fun fromResponse(reader: JsonReader): HeroDetailsImpl.Data.FriendsConnection.Edge {
         var node: HeroDetailsImpl.Data.FriendsConnection.Edge.Node? = null
         reader.beginObject()
         while(true) {
@@ -192,7 +190,7 @@ class HeroDetailsImpl_ResponseAdapter(
       ) : ResponseAdapter<HeroDetailsImpl.Data.FriendsConnection.Edge.Node> {
         val nameAdapter: ResponseAdapter<String?> = NullableResponseAdapter(stringResponseAdapter)
 
-        override fun fromResponse(reader: JsonReader, __typename: String?):
+        override fun fromResponse(reader: JsonReader):
             HeroDetailsImpl.Data.FriendsConnection.Edge.Node {
           var name: String? = null
           reader.beginObject()
