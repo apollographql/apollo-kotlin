@@ -47,7 +47,11 @@ fun <D : Operation.Data> Operation<D>.toJson(data: D, indent: String = "", custo
     val writer = JsonUtf8Writer(buffer).apply {
       this.indent = indent
     }
+    // Do we need to wrap in data?
+    writer.beginObject()
+    writer.name("data")
     adapter(customScalarAdapters).toResponse(writer, data)
+    writer.endObject()
     buffer.readUtf8()
   } catch (e: IOException) {
     throw IllegalStateException(e)

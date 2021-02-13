@@ -1,6 +1,5 @@
 package com.apollographql.apollo
 
-import com.apollographql.apollo.api.Operation
 import com.apollographql.apollo.api.parse
 import com.apollographql.apollo.integration.httpcache.AllPlanetsQuery
 import com.apollographql.apollo.integration.httpcache.fragment.FilmFragment
@@ -13,7 +12,7 @@ class ResponseParserTest {
   @Test
   @Throws(Exception::class)
   fun allPlanetQuery() {
-    val data = AllPlanetsQuery().parse(Utils.resourceText("HttpCacheTestAllPlanets.json")).data
+    val data = AllPlanetsQuery().parse(Utils.readResource("HttpCacheTestAllPlanets.json")).data
 
     assertThat(data!!.allPlanets?.planets?.size).isEqualTo(60)
     val planets = data.allPlanets?.planets?.mapNotNull {

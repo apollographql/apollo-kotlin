@@ -20,8 +20,6 @@ import com.apollographql.apollo.fetcher.ApolloResponseFetchers
 import com.apollographql.apollo.http.OkHttpExecutionContext
 import com.apollographql.apollo.integration.httpcache.AllFilmsQuery
 import com.apollographql.apollo.integration.httpcache.AllPlanetsQuery
-import com.apollographql.apollo.integration.httpcache.fragment.FilmFragment
-import com.apollographql.apollo.integration.httpcache.fragment.PlanetFragment
 import com.apollographql.apollo.integration.httpcache.type.CustomScalars
 import com.apollographql.apollo.integration.normalizer.EpisodeHeroNameQuery
 import com.apollographql.apollo.integration.normalizer.HeroNameQuery
@@ -223,7 +221,7 @@ class IntegrationTest {
   @Test
   @Throws(Exception::class)
   fun operationJsonWriter() {
-    val expected = readFileToString(javaClass, "/OperationJsonWriter.json")
+    val expected = Utils.readResource("OperationJsonWriter.json")
     val query = AllPlanetsQuery()
     val data = query.parse(expected).data
     val actual = query.toJson(data!!, "  ")
