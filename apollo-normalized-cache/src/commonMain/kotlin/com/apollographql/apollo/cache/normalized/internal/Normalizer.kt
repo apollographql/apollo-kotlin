@@ -1,10 +1,8 @@
 package com.apollographql.apollo.cache.normalized.internal
 
-import com.apollographql.apollo.api.BigDecimal
 import com.apollographql.apollo.api.Operation
 import com.apollographql.apollo.api.ResponseField
 import com.apollographql.apollo.api.internal.Utils.shouldSkip
-import com.apollographql.apollo.cache.normalized.CacheKey
 import com.apollographql.apollo.cache.normalized.CacheReference
 import com.apollographql.apollo.cache.normalized.Record
 
@@ -60,7 +58,6 @@ class Normalizer(val variables: Operation.Variables, val cacheKeyForObject: (Res
         value == null -> null
         unwrappedType is ResponseField.Type.List -> (value as List<Any?>).normalize(path.append(fieldKey), it, unwrappedType)
         unwrappedType is ResponseField.Type.Named.Object -> (value as Map<String, Any?>).normalize(path.append(fieldKey), it)
-        value is Number -> BigDecimal(value.toString()) // FixMe: store native value
         else -> value // scalar or enum
       }
     }.toMap()
@@ -80,7 +77,6 @@ class Normalizer(val variables: Operation.Variables, val cacheKeyForObject: (Res
         value == null -> null
         unwrappedType is ResponseField.Type.List -> (value as List<Any?>).normalize(path.append(index.toString()), field, unwrappedType)
         unwrappedType is ResponseField.Type.Named.Object -> (value as Map<String, Any?>).normalize(path.append(index.toString()), field)
-        value is Number -> BigDecimal(value.toString())
         else -> value
       }
     }

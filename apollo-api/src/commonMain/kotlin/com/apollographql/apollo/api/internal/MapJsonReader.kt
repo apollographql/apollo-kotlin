@@ -73,7 +73,8 @@ class MapJsonReader(val root: Map<String, Any?>) : JsonReader {
     null -> JsonReader.Token.NULL
     is List<*> -> JsonReader.Token.BEGIN_ARRAY
     is Map<*, *> -> JsonReader.Token.BEGIN_OBJECT
-    is BigDecimal -> JsonReader.Token.NUMBER
+    is Int -> JsonReader.Token.NUMBER
+    is Double -> JsonReader.Token.NUMBER
     is String -> JsonReader.Token.STRING
     is Boolean -> JsonReader.Token.BOOLEAN
     else -> error("")
@@ -129,7 +130,8 @@ class MapJsonReader(val root: Map<String, Any?>) : JsonReader {
   }
 
   override fun nextString(): String? {
-    return nextValue() as String?
+    // nextValue can be an Int or Double too
+    return nextValue()?.toString()
   }
 
   override fun nextBoolean(): Boolean {

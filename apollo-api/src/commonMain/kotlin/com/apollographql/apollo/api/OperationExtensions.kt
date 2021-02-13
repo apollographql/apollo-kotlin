@@ -5,8 +5,6 @@ import com.apollographql.apollo.api.internal.MapJsonReader
 import com.apollographql.apollo.api.internal.MapResponseParser
 import com.apollographql.apollo.api.internal.OperationRequestBodyComposer
 import com.apollographql.apollo.api.internal.StreamResponseParser
-import com.apollographql.apollo.api.internal.MapResponseReader
-import com.apollographql.apollo.api.internal.ValueResolver
 import com.apollographql.apollo.api.internal.json.JsonUtf8Writer
 import okio.Buffer
 import okio.BufferedSource
