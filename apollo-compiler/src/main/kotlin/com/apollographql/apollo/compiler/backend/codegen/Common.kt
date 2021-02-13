@@ -51,7 +51,7 @@ internal fun CodeGenerationAst.TypeRef.asTypeName(): ClassName {
 internal fun Any.toDefaultValueCodeBlock(typeName: TypeName, fieldType: CodeGenerationAst.FieldType): CodeBlock {
   return when {
     this is Number -> CodeBlock.of("%L%L", castTo(typeName), if (typeName == LONG) "L" else "")
-    fieldType is CodeGenerationAst.FieldType.Scalar.Enum -> CodeBlock.of("%T.safeValueOf(%S)", typeName.copy(nullable = false), this)
+    fieldType is CodeGenerationAst.FieldType.Scalar.Enum -> CodeBlock.of("%T.%L", typeName.copy(nullable = false), kotlinNameForEnumValue(this.toString()))
     fieldType is CodeGenerationAst.FieldType.Array -> {
       @Suppress("UNCHECKED_CAST")
       (this as List<Any>).toDefaultValueCodeBlock(typeName, fieldType.rawType)

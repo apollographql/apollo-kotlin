@@ -127,14 +127,14 @@ private val unknownEnumConstTypeSpec: TypeSpec
 
 private fun CodeGenerationAst.EnumType.toSealedClassTypeSpec(generateAsInternal: Boolean): TypeSpec {
   return TypeSpec
-      .classBuilder(name.escapeKotlinReservedWord())
+      .classBuilder(kotlinNameForEnum(name))
       .applyIf(description.isNotBlank()) { addKdoc("%L\n", description) }
       .applyIf(generateAsInternal) { addModifiers(KModifier.INTERNAL) }
       .addModifiers(KModifier.SEALED)
       .primaryConstructor(primaryConstructorWithOverriddenParamSpec)
       .addSuperinterface(EnumValue::class)
       .addProperty(rawValuePropertySpec)
-      .addTypes(consts.map { value -> value.toObjectTypeSpec(ClassName("", name.escapeKotlinReservedWord())) })
+      .addTypes(consts.map { value -> value.toObjectTypeSpec(ClassName("", kotlinNameForEnum(name))) })
       .addType(unknownValueTypeSpec)
       .build()
 }

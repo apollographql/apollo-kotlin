@@ -34,7 +34,7 @@ data class ColorInput(
   /**
    * for test purpose only
    */
-  val enumWithDefaultValue: Input<Episode> = Input.optional(Episode.safeValueOf("new")),
+  val enumWithDefaultValue: Input<Episode> = Input.optional(Episode.NEW),
   /**
    * Circle ref to review input
    */
