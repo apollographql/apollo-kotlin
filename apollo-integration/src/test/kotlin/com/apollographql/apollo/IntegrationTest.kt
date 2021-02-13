@@ -15,6 +15,7 @@ import com.apollographql.apollo.api.Response
 import com.apollographql.apollo.api.parse
 import com.apollographql.apollo.api.toJson
 import com.apollographql.apollo.cache.normalized.MemoryCacheFactory
+import com.apollographql.apollo.coroutines.await
 import com.apollographql.apollo.exception.ApolloException
 import com.apollographql.apollo.fetcher.ApolloResponseFetchers
 import com.apollographql.apollo.http.OkHttpExecutionContext
@@ -27,7 +28,7 @@ import com.apollographql.apollo.integration.normalizer.type.Episode
 import com.apollographql.apollo.rx2.Rx2Apollo
 import com.google.common.base.Charsets
 import com.google.common.truth.Truth.assertThat
-import io.reactivex.functions.Predicate
+import kotlinx.coroutines.runBlocking
 import okhttp3.Dispatcher
 import okhttp3.OkHttpClient
 import okhttp3.mockwebserver.MockResponse
@@ -81,7 +82,6 @@ class IntegrationTest {
     assertResponse(
         apolloClient.query(AllPlanetsQuery())
     ) {
-      true
     }
 
     val body = server.takeRequest().body.readString(Charsets.UTF_8)
@@ -92,15 +92,11 @@ class IntegrationTest {
   @Throws(Exception::class)
   fun error_response() {
     server.enqueue(mockResponse("ResponseError.json"))
-    assertResponse(
-        apolloClient.query(AllPlanetsQuery()),
-        Predicate<Response<AllPlanetsQuery.Data>> { response ->
-          assertThat(response.hasErrors()).isTrue()
-          assertThat(response.errors).containsExactly(Error(
-              "Cannot query field \"names\" on type \"Species\".", listOf(Error.Location(3, 5)), emptyMap<String, Any>()))
-          true
-        }
-    )
+    assertResponse(apolloClient.query(AllPlanetsQuery())) { response ->
+      assertThat(response.hasErrors()).isTrue()
+      assertThat(response.errors).containsExactly(Error(
+          "Cannot query field \"names\" on type \"Species\".", listOf(Error.Location(3, 5)), emptyMap<String, Any>()))
+    }
   }
 
   @Test
@@ -117,7 +113,6 @@ class IntegrationTest {
       assertThat(response.errors!![0].customAttributes["code"]).isEqualTo("userNotFound")
       assertThat(response.errors!![0].customAttributes["path"]).isEqualTo("loginWithPassword")
       assertThat(response.errors!![0].locations).hasSize(0)
-      true
     }
   }
 
@@ -134,7 +129,6 @@ class IntegrationTest {
       assertThat(response.errors!![0].customAttributes["status"]).isEqualTo("Internal Error")
       assertThat(response.errors!![0].customAttributes["fatal"]).isEqualTo(true)
       assertThat(response.errors!![0].customAttributes["path"]).isEqualTo(Arrays.asList("query"))
-      true
     }
   }
 
@@ -149,7 +143,6 @@ class IntegrationTest {
       assertThat(data!!.hero?.name).isEqualTo("R2-D2")
       assertThat(errors).containsExactly(Error(
           "Cannot query field \"names\" on type \"Species\".", listOf(Error.Location(3, 5)), emptyMap<String, Any>()))
-      true
     }
   }
 
@@ -168,7 +161,6 @@ class IntegrationTest {
       }
       assertThat(dates).isEqualTo(Arrays.asList("1977-05-25", "1980-05-17", "1983-05-25", "1999-05-19",
           "2002-05-16", "2005-05-19"))
-      true
     }
   }
 
@@ -181,7 +173,6 @@ class IntegrationTest {
     ) { response ->
       assertThat(response.data).isNull()
       assertThat(response.hasErrors()).isFalse()
-      true
     }
   }
 
@@ -296,23 +287,21 @@ class IntegrationTest {
         .setHeader("Header2", "Header2#value")
     server.enqueue(httpResponse)
     assertResponse(
-        apolloClient.query(AllPlanetsQuery()),
-        Predicate { response: Response<AllPlanetsQuery.Data> ->
-          assertThat(response.executionContext[OkHttpExecutionContext.KEY]).isNotNull()
-          assertThat(response.executionContext[OkHttpExecutionContext.KEY]!!.response).isNotNull()
-          assertThat(response.executionContext[OkHttpExecutionContext.KEY]!!.response.headers().toString())
-              .isEqualTo(
-                  """
+        apolloClient.query(AllPlanetsQuery())
+    ) { response: Response<AllPlanetsQuery.Data> ->
+      assertThat(response.executionContext[OkHttpExecutionContext.KEY]).isNotNull()
+      assertThat(response.executionContext[OkHttpExecutionContext.KEY]!!.response).isNotNull()
+      assertThat(response.executionContext[OkHttpExecutionContext.KEY]!!.response.headers().toString())
+          .isEqualTo(
+              """
               Transfer-encoding: chunked
               Header1: Header1#value
               Header2: Header2#value
               
               """.trimIndent()
-              )
-          assertThat(response.executionContext[OkHttpExecutionContext.KEY]!!.response.body()).isNull()
-          true
-        }
-    )
+          )
+      assertThat(response.executionContext[OkHttpExecutionContext.KEY]!!.response.body()).isNull()
+    }
   }
 
   @Throws(IOException::class)
@@ -335,10 +324,11 @@ class IntegrationTest {
 
   companion object {
     private val DATE_FORMAT = SimpleDateFormat("yyyy-MM-dd", Locale.US)
-    private fun <D : Operation.Data> assertResponse(call: ApolloCall<D>, predicate: Predicate<Response<D>>) {
-      Rx2Apollo.from(call)
-          .test()
-          .assertValue(predicate)
+    private fun <D : Operation.Data> assertResponse(call: ApolloCall<D>, block: (Response<D>) -> Unit) {
+      val response = runBlocking {
+        call.await()
+      }
+      block(response)
     }
   }
 }

@@ -41,7 +41,7 @@ class MapJsonWriter: JsonWriter() {
   override fun endObject(): JsonWriter = apply {
     val state = stack.removeAt(stack.size - 1)
 
-    check(state is State.List)
+    check(state is State.Map)
   }
 
   override fun name(name: String): JsonWriter = apply {
