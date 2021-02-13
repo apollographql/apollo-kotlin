@@ -155,12 +155,10 @@ class ApolloInterceptorTest {
         .addApplicationInterceptor(secondInterceptor)
         .build()
     assertResponse(
-        client.query(query),
-        Predicate<Response<EpisodeHeroNameQuery.Data>> { response ->
-          Truth.assertThat(expectedResponse.parsedResponse.get()).isEqualTo(response)
-          true
-        }
-    )
+        client.query(query)
+    ) { response ->
+      assertThat(expectedResponse.parsedResponse.get()).isEqualTo(response)
+    }
   }
 
   @Test

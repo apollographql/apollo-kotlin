@@ -58,9 +58,8 @@ class OptimisticCacheTestCase {
     enqueueAndAssertResponse(
         server,
         "HeroAndFriendsNameResponse.json",
-        apolloClient!!.query(query),
-        Predicate<Response<HeroAndFriendsNamesQuery.Data>> { response -> !response.hasErrors() }
-    )
+        apolloClient!!.query(query)
+    ) { response -> !response.hasErrors() }
     val mutationId = UUID.randomUUID()
     val data = HeroAndFriendsNamesQuery.Data(HeroAndFriendsNamesQuery.Data.Hero(
         "R222-D222",
@@ -230,9 +229,8 @@ class OptimisticCacheTestCase {
     enqueueAndAssertResponse(
         server,
         "HeroNameWithEnumsResponse.json",
-        apolloClient!!.query(HeroNameWithEnumsQuery()),
-        Predicate<Response<HeroNameWithEnumsQuery.Data>> { response -> !response.hasErrors() }
-    )
+        apolloClient!!.query(HeroNameWithEnumsQuery())
+    ) { response -> !response.hasErrors() }
     val mutationId = UUID.randomUUID()
     apolloClient!!.apolloStore.writeOptimisticUpdates(
         HeroNameQuery(),
@@ -338,15 +336,14 @@ class OptimisticCacheTestCase {
     enqueueAndAssertResponse(
         server,
         "HeroAndFriendsNameWithIdsResponse.json",
-        apolloClient!!.query(query1),
-        Predicate<Response<HeroAndFriendsNamesWithIDsQuery.Data>> { response -> !response.hasErrors() }
-    )
+        apolloClient!!.query(query1)
+    ) { response -> !response.hasErrors() }
+
     enqueueAndAssertResponse(
         server,
         "HeroNameWithIdResponse.json",
-        apolloClient!!.query(query2),
-        Predicate<Response<HeroNameWithIdQuery.Data>> { response -> !response.hasErrors() }
-    )
+        apolloClient!!.query(query2)
+    ) { response -> !response.hasErrors() }
     val data1 = HeroAndFriendsNamesWithIDsQuery.Data(
         HeroAndFriendsNamesWithIDsQuery.Data.Hero(
             "2001",

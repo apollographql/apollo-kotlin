@@ -42,23 +42,26 @@ class CacheSequentialReader(
       }
 
       val type = it.type
-      val fieldName = if (type.isObject()) {
+      val value = if (type.isObject()) {
         val cacheKey = cacheKeyResolver.fromFieldArguments(it, variables)
         if (cacheKey != CacheKey.NO_KEY ) {
           // user provided a lookup
-          cacheKey.key
+          CacheReference(cacheKey.key)
         } else {
           // no key provided
-          cacheKeyBuilder.build(it, variables)
+          val fieldName = cacheKeyBuilder.build(it, variables)
+          if (!record.containsKey(fieldName)) {
+            throw FieldMissingException(record.key, fieldName, cacheKeyBuilder.build(it, variables))
+          }
+          record[fieldName]
         }
       } else {
-        cacheKeyBuilder.build(it, variables)
+        val fieldName = cacheKeyBuilder.build(it, variables)
+        if (!record.containsKey(fieldName)) {
+          throw FieldMissingException(record.key, fieldName, cacheKeyBuilder.build(it, variables))
+        }
+        record[fieldName]
       }
-
-      if (!record.containsKey(fieldName)) {
-        throw FieldMissingException(record.key, fieldName, cacheKeyBuilder.build(it, variables))
-      }
-      val value = record[fieldName]
 
       it.responseName to value.resolve(it.fieldSets)
     }.toMap()

@@ -427,35 +427,43 @@ class ResponseWriteTestCase {
     enqueueAndAssertResponse(
         server,
         "StarshipByIdResponse.json",
-        apolloClient!!.query(query)
-    ) { (_, data) ->
+        apolloClient!!.query(query).responseFetcher(ApolloResponseFetchers.NETWORK_ONLY)
+    ) {
+      val data = it.data
       assertThat(data!!.starship?.name).isEqualTo("SuperRocket")
       assertThat(data.starship?.coordinates).hasSize(3)
-      assertThat(data.starship?.coordinates).containsExactly(Arrays.asList(100.0, 200.0), Arrays.asList(300.0, 400.0),
-          Arrays.asList(500.0, 600.0))
-      true
+      assertThat(data.starship?.coordinates).containsExactly(
+          listOf(100.0, 200.0),
+          listOf(300.0, 400.0),
+          listOf(500.0, 600.0)
+      )
     }
     val starship = Starship(
         "Starship1",
         "SuperRocket",
-        Arrays.asList(Arrays.asList(900.0, 800.0), Arrays.asList(700.0, 600.0))
+        listOf(
+            listOf(900.0, 800.0),
+            listOf(700.0, 600.0)
+        )
     )
     apolloClient!!.apolloStore.writeOperation(query, StarshipByIdQuery.Data(starship))
     assertCachedQueryResponse(
         query
-    ) { (_, data) ->
+    ) {
+      val data = it.data
       assertThat(data!!.starship?.name).isEqualTo("SuperRocket")
       assertThat(data.starship?.coordinates).hasSize(2)
-      assertThat(data.starship?.coordinates).containsExactly(Arrays.asList(900.0, 800.0), Arrays.asList(700.0, 600.0))
-      true
+      assertThat(data.starship?.coordinates).containsExactly(
+          listOf(900.0, 800.0),
+          listOf(700.0, 600.0)
+      )
     }
   }
 
   @Throws(Exception::class)
-  private fun <D: Operation.Data> assertCachedQueryResponse(query: Query<D>, predicate: Predicate<Response<D>>) {
+  private fun <D: Operation.Data> assertCachedQueryResponse(query: Query<D>, block: (Response<D>) -> Unit) {
     assertResponse(
-        apolloClient!!.query(query).responseFetcher(ApolloResponseFetchers.CACHE_ONLY),
-        predicate
+        apolloClient!!.query(query).responseFetcher(ApolloResponseFetchers.CACHE_ONLY), block
     )
   }
 }

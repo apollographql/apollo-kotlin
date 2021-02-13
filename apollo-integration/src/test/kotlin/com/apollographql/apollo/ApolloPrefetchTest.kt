@@ -75,9 +75,8 @@ class ApolloPrefetchTest {
     assertResponse(
         apolloClient
             .query(AllPlanetsQuery())
-            .httpCachePolicy(HttpCachePolicy.CACHE_ONLY.expireAfter(2, TimeUnit.SECONDS)),
-        Predicate<Response<AllPlanetsQuery.Data>> { dataResponse -> !dataResponse.hasErrors() }
-    )
+            .httpCachePolicy(HttpCachePolicy.CACHE_ONLY.expireAfter(2, TimeUnit.SECONDS))
+    ) { dataResponse -> !dataResponse.hasErrors() }
   }
 
   @Test
@@ -93,9 +92,8 @@ class ApolloPrefetchTest {
     enqueueAndAssertResponse(
         server,
         "HttpCacheTestAllPlanets.json",
-        apolloClient.query(AllPlanetsQuery()),
-        Predicate<Response<AllPlanetsQuery.Data>> { response -> !response.hasErrors() }
-    )
+        apolloClient.query(AllPlanetsQuery())
+    ) { response -> !response.hasErrors() }
   }
 
   @Test
