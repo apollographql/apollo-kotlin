@@ -60,7 +60,7 @@ class CustomScalarAdapters(val customScalarAdapters: Map<CustomScalar, CustomSca
 
 
   class CustomResponseAdapter<T: Any>(private val wrappedAdapter: CustomScalarAdapter<T>) : ResponseAdapter<T> {
-    override fun fromResponse(reader: JsonReader, __typename: String?): T {
+    override fun fromResponse(reader: JsonReader): T {
       return wrappedAdapter.decode(JsonElement.fromRawValue(reader.readRecursively()))
     }
 

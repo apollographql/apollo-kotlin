@@ -1,11 +1,10 @@
 package com.apollographql.apollo.api.internal
 
-import com.apollographql.apollo.api.CustomScalarAdapters
 import com.apollographql.apollo.api.internal.json.JsonReader
 import com.apollographql.apollo.api.internal.json.JsonWriter
 
 class ListResponseAdapter<T>(private val wrappedAdapter: ResponseAdapter<T>): ResponseAdapter<List<T>> {
-  override fun fromResponse(reader: JsonReader, __typename: String?): List<T> {
+  override fun fromResponse(reader: JsonReader): List<T> {
     reader.beginArray()
     val list = mutableListOf<T>()
     while(reader.hasNext()) {
@@ -23,7 +22,7 @@ class ListResponseAdapter<T>(private val wrappedAdapter: ResponseAdapter<T>): Re
 }
 
 class NullableResponseAdapter<T:Any>(private val wrappedAdapter: ResponseAdapter<T>): ResponseAdapter<T?> {
-  override fun fromResponse(reader: JsonReader, __typename: String?): T? {
+  override fun fromResponse(reader: JsonReader): T? {
     return if (reader.peek() == JsonReader.Token.NULL) {
       null
     } else {
@@ -41,7 +40,7 @@ class NullableResponseAdapter<T:Any>(private val wrappedAdapter: ResponseAdapter
 }
 
 object stringResponseAdapter: ResponseAdapter<String> {
-  override fun fromResponse(reader: JsonReader, __typename: String?): String {
+  override fun fromResponse(reader: JsonReader): String {
     return reader.nextString()!!
   }
 
@@ -51,7 +50,7 @@ object stringResponseAdapter: ResponseAdapter<String> {
 }
 
 object intResponseAdapter: ResponseAdapter<Int> {
-  override fun fromResponse(reader: JsonReader, __typename: String?): Int {
+  override fun fromResponse(reader: JsonReader): Int {
     return reader.nextInt()
   }
 
@@ -61,7 +60,7 @@ object intResponseAdapter: ResponseAdapter<Int> {
 }
 
 object doubleResponseAdapter: ResponseAdapter<Double> {
-  override fun fromResponse(reader: JsonReader, __typename: String?): Double {
+  override fun fromResponse(reader: JsonReader): Double {
     return reader.nextDouble()
   }
 
@@ -71,7 +70,7 @@ object doubleResponseAdapter: ResponseAdapter<Double> {
 }
 
 object booleanResponseAdapter: ResponseAdapter<Boolean> {
-  override fun fromResponse(reader: JsonReader, __typename: String?): Boolean {
+  override fun fromResponse(reader: JsonReader): Boolean {
     return reader.nextBoolean()
   }
 

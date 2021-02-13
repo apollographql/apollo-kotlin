@@ -15,15 +15,15 @@ import com.squareup.kotlinpoet.ParameterSpec
 import com.squareup.kotlinpoet.asTypeName
 import com.squareup.kotlinpoet.joinToCode
 
-internal fun CodeGenerationAst.ObjectType.readFromResponseFunSpec(): FunSpec {
+internal fun CodeGenerationAst.ObjectType.readFromResponseFunSpec(isBaseAdapter: Boolean): FunSpec {
   return when (this.kind) {
     is CodeGenerationAst.ObjectType.Kind.Fragment -> readFragmentFromResponseFunSpec()
     is CodeGenerationAst.ObjectType.Kind.FragmentDelegate -> readFragmentDelegateFromResponseFunSpec()
-    else -> readObjectFromResponseFunSpec()
+    else -> readObjectFromResponseFunSpec(isBaseAdapter)
   }
 }
 
-private fun CodeGenerationAst.ObjectType.readObjectFromResponseFunSpec(): FunSpec {
+private fun CodeGenerationAst.ObjectType.readObjectFromResponseFunSpec(isBaseAdapter: Boolean): FunSpec {
   val fieldVariablesCode = this.fields
       .map { field ->
         if (field.responseName == CodeGenerationAst.typenameField.responseName) {
@@ -80,13 +80,13 @@ private fun CodeGenerationAst.ObjectType.readObjectFromResponseFunSpec(): FunSpe
       .addModifiers(KModifier.OVERRIDE)
       .returns(this.typeRef.asTypeName())
       .addParameter(ParameterSpec.builder("reader", JsonReader::class).build())
-      .addParameter(CodeGenerationAst.typenameField.asOptionalParameterSpec(withDefaultValue = false))
+      .applyIf(!isBaseAdapter) { addParameter(CodeGenerationAst.typenameField.asOptionalParameterSpec(withDefaultValue = false)) }
       .addCode(CodeBlock
           .builder()
           .add(fieldVariablesCode)
-          .addStatement("reader.beginObject()")
+          .applyIf(isBaseAdapter) {addStatement("reader.beginObject()")}
           .add(selectFieldsCode)
-          .addStatement("reader.endObject()")
+          .applyIf(isBaseAdapter) {addStatement("reader.endObject()")}
           .add("return·%L", typeConstructorCode)
           .build()
       )

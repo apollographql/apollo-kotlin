@@ -36,21 +36,22 @@ internal fun CodeGenerationAst.FragmentType.responseAdapterTypeSpec(generateAsIn
 }
 
 private fun CodeGenerationAst.ObjectType.rootResponseAdapterTypeSpec(generateAsInternal: Boolean = false): TypeSpec {
-  return this.responseAdapterTypeSpec()
+  return this.responseAdapterTypeSpec(isBaseAdapter = true)
       .toBuilder()
       .applyIf(generateAsInternal) { addModifiers(KModifier.INTERNAL) }
       .addAnnotation(suppressWarningsAnnotation)
       .build()
 }
 
-private fun CodeGenerationAst.ObjectType.responseAdapterTypeSpec(): TypeSpec {
+private fun CodeGenerationAst.ObjectType.responseAdapterTypeSpec(isBaseAdapter: Boolean): TypeSpec {
+
   return TypeSpec.classBuilder(this.name)
       .primaryConstructor(
           FunSpec.constructorBuilder()
               .addParameter(ParameterSpec.builder("customScalarAdapters", CustomScalarAdapters::class.asTypeName()).build())
               .build()
       )
-      .addSuperinterface(ResponseAdapter::class.asTypeName().parameterizedBy(this.typeRef.asTypeName()))
+      .applyIf(isBaseAdapter) { addSuperinterface(ResponseAdapter::class.asTypeName().parameterizedBy(this@responseAdapterTypeSpec.typeRef.asTypeName())) }
       .apply {
         if (fields.isNotEmpty()) {
           if (kind is CodeGenerationAst.ObjectType.Kind.Object) {
@@ -61,16 +62,18 @@ private fun CodeGenerationAst.ObjectType.responseAdapterTypeSpec(): TypeSpec {
           }
         }
       }
-      .addFunction(readFromResponseFunSpec())
+      .addFunction(readFromResponseFunSpec(isBaseAdapter))
       .addFunction(writeToResponseFunSpec())
       .addTypes(
           this.nestedObjects
-              .filter {
-                it.kind is CodeGenerationAst.ObjectType.Kind.Object
-                    || (it.kind is CodeGenerationAst.ObjectType.Kind.Fragment && it.kind.possibleImplementations.isNotEmpty())
-              }
-              .map { nestedObject ->
-                nestedObject.responseAdapterTypeSpec()
+              .mapNotNull { nestedObject ->
+                when {
+                  nestedObject.kind is CodeGenerationAst.ObjectType.Kind.Object ||
+                  (nestedObject.kind is CodeGenerationAst.ObjectType.Kind.Fragment && nestedObject.kind.possibleImplementations.isNotEmpty()) -> {
+                    nestedObject.responseAdapterTypeSpec(this.kind is CodeGenerationAst.ObjectType.Kind.Fragment)
+                  }
+                  else -> null
+                }
               }
       )
       .build()
@@ -111,7 +114,6 @@ internal fun CodeGenerationAst.TypeRef.asAdapterTypeName(): ClassName {
 internal fun CodeGenerationAst.TypeRef.asEnumAdapterTypeName(): ClassName {
   return ClassName(packageName = packageName, "${this.name.escapeKotlinReservedWord()}_ResponseAdapter")
 }
-
 
 
 private fun responseFieldsPropertySpec(objectType: CodeGenerationAst.ObjectType): PropertySpec {
