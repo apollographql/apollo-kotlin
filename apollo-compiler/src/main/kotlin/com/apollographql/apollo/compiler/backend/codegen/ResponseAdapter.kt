@@ -157,7 +157,11 @@ private fun adapterInitializer(type: CodeGenerationAst.FieldType): CodeBlock {
     is CodeGenerationAst.FieldType.Scalar.Float -> CodeBlock.of("%M", MemberName("com.apollographql.apollo.api.internal", "doubleResponseAdapter"))
     is CodeGenerationAst.FieldType.Scalar.Enum -> CodeBlock.of("%T", type.typeRef.asEnumAdapterTypeName().copy(nullable = false))
     is CodeGenerationAst.FieldType.Object -> CodeBlock.of("%T(customScalarAdapters)", type.typeRef.asAdapterTypeName().copy(nullable = false))
-    is CodeGenerationAst.FieldType.Scalar.Custom -> CodeBlock.of("customScalarAdapters.responseAdapterFor<%T>(%S)", ClassName.bestGuess(type.type), type.schemaTypeName)
+    is CodeGenerationAst.FieldType.Scalar.Custom -> CodeBlock.of(
+        "customScalarAdapters.responseAdapterFor<%T>(%T)",
+        ClassName.bestGuess(type.type),
+        type.typeRef.asTypeName()
+    )
   }
 }
 

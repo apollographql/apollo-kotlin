@@ -14,6 +14,8 @@ import com.apollographql.apollo.api.internal.json.JsonWriter
 import com.apollographql.apollo.api.internal.stringResponseAdapter
 import com.apollographql.apollo.exception.UnexpectedNullValue
 import com.example.hero_name.TestQuery
+import com.example.hero_name.type.CustomScalars
+import kotlin.Any
 import kotlin.Array
 import kotlin.String
 import kotlin.Suppress
@@ -103,25 +105,32 @@ class TestQuery_ResponseAdapter(
 
       val nameAdapter: ResponseAdapter<String> = stringResponseAdapter
 
+      val birthDateAdapter: ResponseAdapter<Any> =
+          customScalarAdapters.responseAdapterFor<Any>(CustomScalars.Date)
+
       val primaryFunctionAdapter: ResponseAdapter<String?> =
           NullableResponseAdapter(stringResponseAdapter)
 
       fun fromResponse(reader: JsonReader, __typename: String?): TestQuery.Data.Hero.DroidHero {
         var __typename: String? = __typename
         var name: String? = null
+        var birthDate: Any? = null
         var primaryFunction: String? = null
         while(true) {
           when (reader.selectName(RESPONSE_NAMES)) {
             0 -> __typename = __typenameAdapter.fromResponse(reader) ?: throw
                 UnexpectedNullValue("__typename")
             1 -> name = nameAdapter.fromResponse(reader) ?: throw UnexpectedNullValue("name")
-            2 -> primaryFunction = primaryFunctionAdapter.fromResponse(reader)
+            2 -> birthDate = birthDateAdapter.fromResponse(reader) ?: throw
+                UnexpectedNullValue("birthDate")
+            3 -> primaryFunction = primaryFunctionAdapter.fromResponse(reader)
             else -> break
           }
         }
         return TestQuery.Data.Hero.DroidHero(
           __typename = __typename!!,
           name = name!!,
+          birthDate = birthDate!!,
           primaryFunction = primaryFunction
         )
       }
@@ -132,6 +141,8 @@ class TestQuery_ResponseAdapter(
         __typenameAdapter.toResponse(writer, value.__typename)
         writer.name("name")
         nameAdapter.toResponse(writer, value.name)
+        writer.name("birthDate")
+        birthDateAdapter.toResponse(writer, value.birthDate)
         writer.name("primaryFunction")
         primaryFunctionAdapter.toResponse(writer, value.primaryFunction)
         writer.endObject()
@@ -151,6 +162,14 @@ class TestQuery_ResponseAdapter(
             type = ResponseField.Type.NotNull(ResponseField.Type.Named.Other("String")),
             responseName = "name",
             fieldName = "name",
+            arguments = emptyMap(),
+            conditions = emptyList(),
+            fieldSets = emptyList(),
+          ),
+          ResponseField(
+            type = ResponseField.Type.NotNull(ResponseField.Type.Named.Other("Date")),
+            responseName = "birthDate",
+            fieldName = "birthDate",
             arguments = emptyMap(),
             conditions = emptyList(),
             fieldSets = emptyList(),
@@ -176,20 +195,27 @@ class TestQuery_ResponseAdapter(
 
       val nameAdapter: ResponseAdapter<String> = stringResponseAdapter
 
+      val birthDateAdapter: ResponseAdapter<Any> =
+          customScalarAdapters.responseAdapterFor<Any>(CustomScalars.Date)
+
       fun fromResponse(reader: JsonReader, __typename: String?): TestQuery.Data.Hero.OtherHero {
         var __typename: String? = __typename
         var name: String? = null
+        var birthDate: Any? = null
         while(true) {
           when (reader.selectName(RESPONSE_NAMES)) {
             0 -> __typename = __typenameAdapter.fromResponse(reader) ?: throw
                 UnexpectedNullValue("__typename")
             1 -> name = nameAdapter.fromResponse(reader) ?: throw UnexpectedNullValue("name")
+            2 -> birthDate = birthDateAdapter.fromResponse(reader) ?: throw
+                UnexpectedNullValue("birthDate")
             else -> break
           }
         }
         return TestQuery.Data.Hero.OtherHero(
           __typename = __typename!!,
-          name = name!!
+          name = name!!,
+          birthDate = birthDate!!
         )
       }
 
@@ -199,6 +225,8 @@ class TestQuery_ResponseAdapter(
         __typenameAdapter.toResponse(writer, value.__typename)
         writer.name("name")
         nameAdapter.toResponse(writer, value.name)
+        writer.name("birthDate")
+        birthDateAdapter.toResponse(writer, value.birthDate)
         writer.endObject()
       }
 
@@ -216,6 +244,14 @@ class TestQuery_ResponseAdapter(
             type = ResponseField.Type.NotNull(ResponseField.Type.Named.Other("String")),
             responseName = "name",
             fieldName = "name",
+            arguments = emptyMap(),
+            conditions = emptyList(),
+            fieldSets = emptyList(),
+          ),
+          ResponseField(
+            type = ResponseField.Type.NotNull(ResponseField.Type.Named.Other("Date")),
+            responseName = "birthDate",
+            fieldName = "birthDate",
             arguments = emptyMap(),
             conditions = emptyList(),
             fieldSets = emptyList(),

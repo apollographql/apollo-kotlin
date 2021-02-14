@@ -12,6 +12,7 @@ import com.apollographql.apollo.api.ResponseField
 import com.apollographql.apollo.api.internal.QueryDocumentMinifier
 import com.apollographql.apollo.api.internal.ResponseAdapter
 import com.example.hero_name.adapter.TestQuery_ResponseAdapter
+import kotlin.Any
 import kotlin.String
 import kotlin.Suppress
 import kotlin.collections.List
@@ -55,6 +56,11 @@ class TestQuery : Query<TestQuery.Data> {
        */
       val name: String
 
+      /**
+       * The date character was born.
+       */
+      val birthDate: Any
+
       interface Droid : Hero {
         override val __typename: String
 
@@ -62,6 +68,11 @@ class TestQuery : Query<TestQuery.Data> {
          * The name of the character
          */
         override val name: String
+
+        /**
+         * The date character was born.
+         */
+        override val birthDate: Any
 
         /**
          * This droid's primary function
@@ -76,6 +87,10 @@ class TestQuery : Query<TestQuery.Data> {
          */
         override val name: String,
         /**
+         * The date character was born.
+         */
+        override val birthDate: Any,
+        /**
          * This droid's primary function
          */
         override val primaryFunction: String?
@@ -86,7 +101,11 @@ class TestQuery : Query<TestQuery.Data> {
         /**
          * The name of the character
          */
-        override val name: String
+        override val name: String,
+        /**
+         * The date character was born.
+         */
+        override val birthDate: Any
       ) : Hero
 
       companion object {
@@ -97,7 +116,7 @@ class TestQuery : Query<TestQuery.Data> {
 
   companion object {
     const val OPERATION_ID: String =
-        "726f5fd3f4648f4ae21ce47a45020e326e693a3a9c521a08e76ef8cb1e791f3b"
+        "17e30561f6043a4c67f3de02bc6c76798edb2d584095975a2f75862222ef4912"
 
     val QUERY_DOCUMENT: String = QueryDocumentMinifier.minify(
           """
@@ -105,6 +124,7 @@ class TestQuery : Query<TestQuery.Data> {
           |  hero {
           |    __typename
           |    name
+          |    birthDate
           |    ... on Droid {
           |      primaryFunction
           |    }

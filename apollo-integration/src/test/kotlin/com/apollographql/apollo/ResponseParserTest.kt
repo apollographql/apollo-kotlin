@@ -13,7 +13,9 @@ import com.apollographql.apollo.integration.httpcache.AllPlanetsQuery
 import com.apollographql.apollo.integration.httpcache.fragment.FilmFragment
 import com.apollographql.apollo.integration.httpcache.fragment.PlanetFragment
 import com.apollographql.apollo.integration.httpcache.type.CustomScalars
+import com.apollographql.apollo.integration.normalizer.CharacterDetailsQuery
 import com.apollographql.apollo.integration.normalizer.EpisodeHeroNameQuery
+import com.apollographql.apollo.integration.normalizer.GetJsonScalarQuery
 import com.apollographql.apollo.integration.normalizer.HeroNameQuery
 import com.apollographql.apollo.integration.normalizer.type.Episode
 import com.google.common.truth.Truth.assertThat
@@ -209,5 +211,36 @@ class ResponseParserTest {
             )
         )
     ))
+  }
+
+  @Test
+  fun `forgetting to add a runtime adapter for a scalar registered in the plugin fails`() {
+    val data = CharacterDetailsQuery.Data(
+        CharacterDetailsQuery.Data.Character.HumanCharacter(
+            __typename = "Human",
+            name = "Luke",
+            birthDate = Date(),
+            appearsIn = emptyList(),
+            firstAppearsIn = Episode.EMPIRE
+        )
+    )
+    val query = CharacterDetailsQuery(id = "1")
+    try {
+      query.parse(query.toJson(data))
+      error("expected IllegalStateException")
+    } catch (e: IllegalStateException) {
+      assertThat(e.message).contains("Cannot find a CustomScalarAdapter for Date")
+    }
+  }
+
+  @Test
+  fun `not registering an adapter, neither at runtime or in the gradle plugin defaults to Any`() {
+    val data = GetJsonScalarQuery.Data(
+        json = mapOf("1" to "2", "3" to listOf("a", "b"))
+    )
+    val query = GetJsonScalarQuery()
+    val response = query.parse(query.toJson(data))
+
+    assertThat(response.data).isEqualTo(data)
   }
 }

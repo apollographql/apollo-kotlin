@@ -189,7 +189,6 @@ internal data class CodeGenerationAst(
       data class ID(
           override val nullable: kotlin.Boolean,
           val type: kotlin.String,
-          val customEnumType: TypeRef
       ) : Scalar() {
         override val schemaTypeName = "ID"
       }

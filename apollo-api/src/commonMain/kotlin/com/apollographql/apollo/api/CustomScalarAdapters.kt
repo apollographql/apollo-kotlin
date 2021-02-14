@@ -27,7 +27,9 @@ class CustomScalarAdapters(val customScalarAdapters: Map<CustomScalar, CustomSca
       /**
        * If none is found, provide a default adapter based on the implementation class name
        * This saves the user the hassle of registering a scalar adapter for mapping to widespread such as Long, Map, etc...
-       * The ScalarType must still be declared in the Gradle plugin configuration.
+       * The ScalarType must still be declared in the Gradle plugin configuration (except for Any that will fallback here all the time)
+       *
+       * TODO: we could determine during codegen if we're going to fallback to Any and remove this hook
        */
       customScalarAdapter = adapterByClassName[customScalar.className]
     }
@@ -36,14 +38,9 @@ class CustomScalarAdapters(val customScalarAdapters: Map<CustomScalar, CustomSca
     } as CustomScalarAdapter<T>
   }
 
-  @Suppress("UNCHECKED_CAST")
-  fun <T : Any> adapterFor(graphqlName: String): CustomScalarAdapter<T> {
-    return adapterByGraphQLName[graphqlName] as CustomScalarAdapter<T>? ?: throw IllegalStateException("Cannot find a CustomScalarAdapter for $graphqlName")
-  }
 
-  @Suppress("UNCHECKED_CAST")
-  fun <T : Any> responseAdapterFor(graphqlName: String): ResponseAdapter<T> {
-    return CustomResponseAdapter(adapterFor(graphqlName))
+  fun <T : Any> responseAdapterFor(customScalar: CustomScalar): ResponseAdapter<T> {
+    return CustomResponseAdapter(adapterFor(customScalar))
   }
 
   @Synchronized
