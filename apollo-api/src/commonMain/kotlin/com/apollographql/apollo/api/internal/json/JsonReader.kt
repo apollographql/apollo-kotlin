@@ -146,19 +146,8 @@ interface JsonReader : Closeable {
   @Throws(IOException::class)
   fun skipValue()
 
-  fun selectName(names: List<String>): Int {
-    while (hasNext()) {
-      val name = nextName()
-      // TODO optimize
-      val index = names.indexOfFirst { it == name }
-      if (index != -1) {
-        return index
-      } else {
-        skipValue()
-      }
-    }
-    return -1
-  }
+  fun selectName(names: List<String>): Int
+
   /**
    * A structure, name, or value type in a JSON-encoded string.
    */

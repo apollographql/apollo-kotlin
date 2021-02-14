@@ -20,8 +20,10 @@ import okio.Buffer
 import okio.BufferedSource
 import okio.ByteString
 import okio.ByteString.Companion.encodeUtf8
+import okio.ByteString.Companion.toByteString
 import okio.EOFException
 import okio.IOException
+import okio.Options
 
 class BufferedSourceJsonReader(private val source: BufferedSource) : JsonReader {
   private val buffer: Buffer = source.buffer
@@ -59,6 +61,11 @@ class BufferedSourceJsonReader(private val source: BufferedSource) : JsonReader 
 
   private var failOnUnknown = false
 
+  private val indexStack = IntArray(32).apply {
+    this[0] = 0
+  }
+  private var indexStackSize = 1
+
   @Throws(IOException::class)
   override fun beginArray(): JsonReader = apply {
     val p = peeked.takeUnless { it == PEEKED_NONE } ?: doPeek()
@@ -89,6 +96,9 @@ class BufferedSourceJsonReader(private val source: BufferedSource) : JsonReader 
     if (p == PEEKED_BEGIN_OBJECT) {
       push(JsonScope.EMPTY_OBJECT)
       peeked = PEEKED_NONE
+
+      indexStackSize++
+      indexStack[indexStackSize - 1] = 0
     } else {
       throw JsonDataException("Expected BEGIN_OBJECT but was ${peek()} at path ${getPath()}")
     }
@@ -102,6 +112,8 @@ class BufferedSourceJsonReader(private val source: BufferedSource) : JsonReader 
       pathNames[stackSize] = null // Free the last path name so that it can be garbage collected!
       pathIndices[stackSize - 1]++
       peeked = PEEKED_NONE
+
+      indexStackSize--
     } else {
       throw JsonDataException("Expected END_OBJECT but was ${peek()} at path ${getPath()}")
     }
@@ -747,6 +759,29 @@ class BufferedSourceJsonReader(private val source: BufferedSource) : JsonReader 
     } while (count != 0)
     pathIndices[stackSize - 1]++
     pathNames[stackSize - 1] = "null"
+  }
+
+  override fun selectName(names: List<String>): Int {
+    while (hasNext()) {
+      val name = nextName()
+      val expectedIndex = indexStack[indexStackSize - 1]
+      if (names[expectedIndex] == name) {
+        return expectedIndex.also {
+          indexStack[indexStackSize - 1] = expectedIndex + 1
+        }
+      } else {
+        // guess failed, fallback to full search
+        val index = names.indexOfFirst { it == name }
+        if (index != -1) {
+          indexStack[indexStackSize - 1] = index
+          return index
+        } else {
+          skipValue()
+        }
+
+      }
+    }
+    return -1
   }
 
   private fun push(newTop: Int) {

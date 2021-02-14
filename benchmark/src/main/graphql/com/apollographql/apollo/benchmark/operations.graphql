@@ -7,12 +7,14 @@ query GetResponse {
         balance
         picture
         age
+        eye_color
         name {
             first
             last
         }
         company
         email
+        phone
         address
         about
         registered
@@ -32,8 +34,6 @@ query GetResponse {
         }
         greeting
         favorite_fruit
-        eye_color
-        phone
     }
     status
     is_real_json

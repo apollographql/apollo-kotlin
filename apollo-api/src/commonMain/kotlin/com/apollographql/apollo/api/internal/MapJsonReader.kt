@@ -17,6 +17,12 @@ class MapJsonReader(val root: Map<String, Any?>) : JsonReader {
   var currentIndex = 0
   var currentName: String? = "root"
 
+  private val nameIndexStack = IntArray(32).apply {
+    this[0] = 0
+  }
+  private var nameIndexStackSize = 1
+
+
   private fun push(data: Any) {
     dataStack.add(currentData)
     indexStack.add(currentIndex)
@@ -63,10 +69,17 @@ class MapJsonReader(val root: Map<String, Any?>) : JsonReader {
     val map = nextValue()
     check(map is Map<*, *>)
     push(OrderedMap(map.entries.map { Entry(it.key as String, it.value) }))
+
+    nameIndexStackSize++
+    check(nameIndexStackSize < 33) {
+      "Json is too deeply nested"
+    }
+    nameIndexStack[nameIndexStackSize - 1] = 0
   }
 
   override fun endObject() = apply {
     pop()
+    nameIndexStackSize--
   }
 
   private fun anyToToken(any: Any?) = when(any) {
@@ -162,5 +175,28 @@ class MapJsonReader(val root: Map<String, Any?>) : JsonReader {
   }
 
   override fun close() {
+  }
+
+  override fun selectName(names: List<String>): Int {
+    while (hasNext()) {
+      val name = nextName()
+      val expectedIndex = nameIndexStack[nameIndexStackSize - 1]
+      if (names[expectedIndex] == name) {
+        return expectedIndex.also {
+          nameIndexStack[nameIndexStackSize - 1] = expectedIndex + 1
+        }
+      } else {
+        // guess failed, fallback to fullsearch
+        val index = names.indexOfFirst { it == name }
+        if (index != -1) {
+          nameIndexStack[nameIndexStackSize - 1] = index
+          return index
+        } else {
+          skipValue()
+        }
+
+      }
+    }
+    return -1
   }
 }
