@@ -77,8 +77,12 @@ class GetUser_ResponseAdapter(
     }
 
     fun toResponse(writer: JsonWriter, value: GetUser.Data.QueryData) {
+      writer.beginObject()
+      writer.name("__typename")
       __typenameAdapter.toResponse(writer, value.__typename)
+      writer.name("organization")
       organizationAdapter.toResponse(writer, value.organization)
+      writer.endObject()
     }
 
     companion object {
@@ -136,8 +140,12 @@ class GetUser_ResponseAdapter(
       }
 
       override fun toResponse(writer: JsonWriter, value: GetUser.Data.QueryData.Organization) {
+        writer.beginObject()
+        writer.name("id")
         idAdapter.toResponse(writer, value.id)
+        writer.name("user")
         userAdapter.toResponse(writer, value.user)
+        writer.endObject()
       }
 
       companion object {
@@ -239,10 +247,16 @@ class GetUser_ResponseAdapter(
 
           fun toResponse(writer: JsonWriter,
               value: GetUser.Data.QueryData.Organization.User.UserUser) {
+            writer.beginObject()
+            writer.name("__typename")
             __typenameAdapter.toResponse(writer, value.__typename)
+            writer.name("firstName")
             firstNameAdapter.toResponse(writer, value.firstName)
+            writer.name("lastName")
             lastNameAdapter.toResponse(writer, value.lastName)
+            writer.name("avatar")
             avatarAdapter.toResponse(writer, value.avatar)
+            writer.endObject()
           }
 
           companion object {
@@ -310,7 +324,10 @@ class GetUser_ResponseAdapter(
 
           fun toResponse(writer: JsonWriter,
               value: GetUser.Data.QueryData.Organization.User.OtherUser) {
+            writer.beginObject()
+            writer.name("__typename")
             __typenameAdapter.toResponse(writer, value.__typename)
+            writer.endObject()
           }
 
           companion object {
@@ -352,7 +369,10 @@ class GetUser_ResponseAdapter(
     }
 
     fun toResponse(writer: JsonWriter, value: GetUser.Data.OtherData) {
+      writer.beginObject()
+      writer.name("__typename")
       __typenameAdapter.toResponse(writer, value.__typename)
+      writer.endObject()
     }
 
     companion object {

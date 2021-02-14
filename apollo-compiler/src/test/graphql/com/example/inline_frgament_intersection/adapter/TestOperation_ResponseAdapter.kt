@@ -50,7 +50,10 @@ class TestOperation_ResponseAdapter(
   }
 
   override fun toResponse(writer: JsonWriter, value: TestOperation.Data) {
+    writer.beginObject()
+    writer.name("random")
     randomAdapter.toResponse(writer, value.random)
+    writer.endObject()
   }
 
   companion object {
@@ -144,10 +147,16 @@ class TestOperation_ResponseAdapter(
       }
 
       fun toResponse(writer: JsonWriter, value: TestOperation.Data.Random.BeingHumanRandom) {
+        writer.beginObject()
+        writer.name("__typename")
         __typenameAdapter.toResponse(writer, value.__typename)
+        writer.name("name")
         nameAdapter.toResponse(writer, value.name)
+        writer.name("friends")
         friendsAdapter.toResponse(writer, value.friends)
+        writer.name("profilePictureUrl")
         profilePictureUrlAdapter.toResponse(writer, value.profilePictureUrl)
+        writer.endObject()
       }
 
       companion object {
@@ -267,11 +276,18 @@ class TestOperation_ResponseAdapter(
 
           fun toResponse(writer: JsonWriter,
               value: TestOperation.Data.Random.BeingHumanRandom.Friend.WookieFriend) {
+            writer.beginObject()
+            writer.name("__typename")
             __typenameAdapter.toResponse(writer, value.__typename)
+            writer.name("name")
             nameAdapter.toResponse(writer, value.name)
+            writer.name("isFamous")
             isFamousAdapter.toResponse(writer, value.isFamous)
+            writer.name("lifeExpectancy")
             lifeExpectancyAdapter.toResponse(writer, value.lifeExpectancy)
+            writer.name("race")
             raceAdapter.toResponse(writer, value.race)
+            writer.endObject()
           }
 
           companion object {
@@ -355,9 +371,14 @@ class TestOperation_ResponseAdapter(
 
           fun toResponse(writer: JsonWriter,
               value: TestOperation.Data.Random.BeingHumanRandom.Friend.OtherFriend) {
+            writer.beginObject()
+            writer.name("__typename")
             __typenameAdapter.toResponse(writer, value.__typename)
+            writer.name("name")
             nameAdapter.toResponse(writer, value.name)
+            writer.name("isFamous")
             isFamousAdapter.toResponse(writer, value.isFamous)
+            writer.endObject()
           }
 
           companion object {
@@ -432,10 +453,16 @@ class TestOperation_ResponseAdapter(
       }
 
       fun toResponse(writer: JsonWriter, value: TestOperation.Data.Random.BeingWookieRandom) {
+        writer.beginObject()
+        writer.name("__typename")
         __typenameAdapter.toResponse(writer, value.__typename)
+        writer.name("name")
         nameAdapter.toResponse(writer, value.name)
+        writer.name("friends")
         friendsAdapter.toResponse(writer, value.friends)
+        writer.name("race")
         raceAdapter.toResponse(writer, value.race)
+        writer.endObject()
       }
 
       companion object {
@@ -544,9 +571,14 @@ class TestOperation_ResponseAdapter(
 
           fun toResponse(writer: JsonWriter,
               value: TestOperation.Data.Random.BeingWookieRandom.Friend.WookieFriend) {
+            writer.beginObject()
+            writer.name("__typename")
             __typenameAdapter.toResponse(writer, value.__typename)
+            writer.name("name")
             nameAdapter.toResponse(writer, value.name)
+            writer.name("lifeExpectancy")
             lifeExpectancyAdapter.toResponse(writer, value.lifeExpectancy)
+            writer.endObject()
           }
 
           companion object {
@@ -614,9 +646,14 @@ class TestOperation_ResponseAdapter(
 
           fun toResponse(writer: JsonWriter,
               value: TestOperation.Data.Random.BeingWookieRandom.Friend.OtherFriend) {
+            writer.beginObject()
+            writer.name("__typename")
             __typenameAdapter.toResponse(writer, value.__typename)
+            writer.name("name")
             nameAdapter.toResponse(writer, value.name)
+            writer.name("lifeExpectancy")
             lifeExpectancyAdapter.toResponse(writer, value.lifeExpectancy)
+            writer.endObject()
           }
 
           companion object {
@@ -674,7 +711,10 @@ class TestOperation_ResponseAdapter(
       }
 
       fun toResponse(writer: JsonWriter, value: TestOperation.Data.Random.OtherRandom) {
+        writer.beginObject()
+        writer.name("__typename")
         __typenameAdapter.toResponse(writer, value.__typename)
+        writer.endObject()
       }
 
       companion object {

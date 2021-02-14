@@ -53,8 +53,12 @@ class TestQuery_ResponseAdapter(
   }
 
   override fun toResponse(writer: JsonWriter, value: TestQuery.Data) {
+    writer.beginObject()
+    writer.name("r2")
     r2Adapter.toResponse(writer, value.r2)
+    writer.name("luke")
     lukeAdapter.toResponse(writer, value.luke)
+    writer.endObject()
   }
 
   companion object {
@@ -113,8 +117,12 @@ class TestQuery_ResponseAdapter(
     }
 
     override fun toResponse(writer: JsonWriter, value: TestQuery.Data.R2) {
+      writer.beginObject()
+      writer.name("name")
       nameAdapter.toResponse(writer, value.name)
+      writer.name("friendsConnection")
       friendsConnectionAdapter.toResponse(writer, value.friendsConnection)
+      writer.endObject()
     }
 
     companion object {
@@ -169,8 +177,12 @@ class TestQuery_ResponseAdapter(
       }
 
       override fun toResponse(writer: JsonWriter, value: TestQuery.Data.R2.FriendsConnection) {
+        writer.beginObject()
+        writer.name("totalCount")
         totalCountAdapter.toResponse(writer, value.totalCount)
+        writer.name("edges")
         edgesAdapter.toResponse(writer, value.edges)
+        writer.endObject()
       }
 
       companion object {
@@ -221,7 +233,10 @@ class TestQuery_ResponseAdapter(
 
         override fun toResponse(writer: JsonWriter,
             value: TestQuery.Data.R2.FriendsConnection.Edge) {
+          writer.beginObject()
+          writer.name("node")
           nodeAdapter.toResponse(writer, value.node)
+          writer.endObject()
         }
 
         companion object {
@@ -264,7 +279,10 @@ class TestQuery_ResponseAdapter(
 
           override fun toResponse(writer: JsonWriter,
               value: TestQuery.Data.R2.FriendsConnection.Edge.Node) {
+            writer.beginObject()
+            writer.name("name")
             nameAdapter.toResponse(writer, value.name)
+            writer.endObject()
           }
 
           companion object {
@@ -319,9 +337,14 @@ class TestQuery_ResponseAdapter(
     }
 
     override fun toResponse(writer: JsonWriter, value: TestQuery.Data.Luke) {
+      writer.beginObject()
+      writer.name("id")
       idAdapter.toResponse(writer, value.id)
+      writer.name("name")
       nameAdapter.toResponse(writer, value.name)
+      writer.name("friendsConnection")
       friendsConnectionAdapter.toResponse(writer, value.friendsConnection)
+      writer.endObject()
     }
 
     companion object {
@@ -384,8 +407,12 @@ class TestQuery_ResponseAdapter(
       }
 
       override fun toResponse(writer: JsonWriter, value: TestQuery.Data.Luke.FriendsConnection) {
+        writer.beginObject()
+        writer.name("totalCount")
         totalCountAdapter.toResponse(writer, value.totalCount)
+        writer.name("edges")
         edgesAdapter.toResponse(writer, value.edges)
+        writer.endObject()
       }
 
       companion object {
@@ -436,7 +463,10 @@ class TestQuery_ResponseAdapter(
 
         override fun toResponse(writer: JsonWriter,
             value: TestQuery.Data.Luke.FriendsConnection.Edge) {
+          writer.beginObject()
+          writer.name("node")
           nodeAdapter.toResponse(writer, value.node)
+          writer.endObject()
         }
 
         companion object {
@@ -479,7 +509,10 @@ class TestQuery_ResponseAdapter(
 
           override fun toResponse(writer: JsonWriter,
               value: TestQuery.Data.Luke.FriendsConnection.Edge.Node) {
+            writer.beginObject()
+            writer.name("name")
             nameAdapter.toResponse(writer, value.name)
+            writer.endObject()
           }
 
           companion object {

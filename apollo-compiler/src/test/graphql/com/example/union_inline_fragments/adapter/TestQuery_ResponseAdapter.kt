@@ -47,7 +47,10 @@ class TestQuery_ResponseAdapter(
   }
 
   override fun toResponse(writer: JsonWriter, value: TestQuery.Data) {
+    writer.beginObject()
+    writer.name("search")
     searchAdapter.toResponse(writer, value.search)
+    writer.endObject()
   }
 
   companion object {
@@ -142,10 +145,16 @@ class TestQuery_ResponseAdapter(
       }
 
       fun toResponse(writer: JsonWriter, value: TestQuery.Data.Search.CharacterSearch) {
+        writer.beginObject()
+        writer.name("__typename")
         __typenameAdapter.toResponse(writer, value.__typename)
+        writer.name("id")
         idAdapter.toResponse(writer, value.id)
+        writer.name("name")
         nameAdapter.toResponse(writer, value.name)
+        writer.name("friends")
         friendsAdapter.toResponse(writer, value.friends)
+        writer.endObject()
       }
 
       companion object {
@@ -267,10 +276,16 @@ class TestQuery_ResponseAdapter(
 
           fun toResponse(writer: JsonWriter,
               value: TestQuery.Data.Search.CharacterSearch.Friend.CharacterDroidFriend) {
+            writer.beginObject()
+            writer.name("__typename")
             __typenameAdapter.toResponse(writer, value.__typename)
+            writer.name("name")
             nameAdapter.toResponse(writer, value.name)
+            writer.name("primaryFunction")
             primaryFunctionAdapter.toResponse(writer, value.primaryFunction)
+            writer.name("friends")
             friendsAdapter.toResponse(writer, value.friends)
+            writer.endObject()
           }
 
           companion object {
@@ -339,7 +354,10 @@ class TestQuery_ResponseAdapter(
 
             override fun toResponse(writer: JsonWriter,
                 value: TestQuery.Data.Search.CharacterSearch.Friend.CharacterDroidFriend.Friend) {
+              writer.beginObject()
+              writer.name("id")
               idAdapter.toResponse(writer, value.id)
+              writer.endObject()
             }
 
             companion object {
@@ -400,10 +418,16 @@ class TestQuery_ResponseAdapter(
 
           fun toResponse(writer: JsonWriter,
               value: TestQuery.Data.Search.CharacterSearch.Friend.CharacterHumanFriend) {
+            writer.beginObject()
+            writer.name("__typename")
             __typenameAdapter.toResponse(writer, value.__typename)
+            writer.name("name")
             nameAdapter.toResponse(writer, value.name)
+            writer.name("homePlanet")
             homePlanetAdapter.toResponse(writer, value.homePlanet)
+            writer.name("friends")
             friendsAdapter.toResponse(writer, value.friends)
+            writer.endObject()
           }
 
           companion object {
@@ -510,8 +534,12 @@ class TestQuery_ResponseAdapter(
 
               fun toResponse(writer: JsonWriter,
                   value: TestQuery.Data.Search.CharacterSearch.Friend.CharacterHumanFriend.Friend.CharacterFriend) {
+                writer.beginObject()
+                writer.name("__typename")
                 __typenameAdapter.toResponse(writer, value.__typename)
+                writer.name("firstAppearsIn")
                 firstAppearsInAdapter.toResponse(writer, value.firstAppearsIn)
+                writer.endObject()
               }
 
               companion object {
@@ -560,7 +588,10 @@ class TestQuery_ResponseAdapter(
 
               fun toResponse(writer: JsonWriter,
                   value: TestQuery.Data.Search.CharacterSearch.Friend.CharacterHumanFriend.Friend.OtherFriend) {
+                writer.beginObject()
+                writer.name("__typename")
                 __typenameAdapter.toResponse(writer, value.__typename)
+                writer.endObject()
               }
 
               companion object {
@@ -603,7 +634,10 @@ class TestQuery_ResponseAdapter(
 
           fun toResponse(writer: JsonWriter,
               value: TestQuery.Data.Search.CharacterSearch.Friend.OtherFriend) {
+            writer.beginObject()
+            writer.name("__typename")
             __typenameAdapter.toResponse(writer, value.__typename)
+            writer.endObject()
           }
 
           companion object {
@@ -650,8 +684,12 @@ class TestQuery_ResponseAdapter(
       }
 
       fun toResponse(writer: JsonWriter, value: TestQuery.Data.Search.StarshipSearch) {
+        writer.beginObject()
+        writer.name("__typename")
         __typenameAdapter.toResponse(writer, value.__typename)
+        writer.name("name")
         nameAdapter.toResponse(writer, value.name)
+        writer.endObject()
       }
 
       companion object {
@@ -698,7 +736,10 @@ class TestQuery_ResponseAdapter(
       }
 
       fun toResponse(writer: JsonWriter, value: TestQuery.Data.Search.OtherSearch) {
+        writer.beginObject()
+        writer.name("__typename")
         __typenameAdapter.toResponse(writer, value.__typename)
+        writer.endObject()
       }
 
       companion object {

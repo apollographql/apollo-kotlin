@@ -44,7 +44,10 @@ class TestQuery_ResponseAdapter(
   }
 
   override fun toResponse(writer: JsonWriter, value: TestQuery.Data) {
+    writer.beginObject()
+    writer.name("hero")
     heroAdapter.toResponse(writer, value.hero)
+    writer.endObject()
   }
 
   companion object {
@@ -136,10 +139,16 @@ class TestQuery_ResponseAdapter(
       }
 
       fun toResponse(writer: JsonWriter, value: TestQuery.Data.Hero.HumanCharacterHero) {
+        writer.beginObject()
+        writer.name("__typename")
         __typenameAdapter.toResponse(writer, value.__typename)
+        writer.name("id")
         idAdapter.toResponse(writer, value.id)
+        writer.name("name")
         nameAdapter.toResponse(writer, value.name)
+        writer.name("homePlanet")
         homePlanetAdapter.toResponse(writer, value.homePlanet)
+        writer.endObject()
       }
 
       companion object {
@@ -219,10 +228,16 @@ class TestQuery_ResponseAdapter(
       }
 
       fun toResponse(writer: JsonWriter, value: TestQuery.Data.Hero.DroidCharacterHero) {
+        writer.beginObject()
+        writer.name("__typename")
         __typenameAdapter.toResponse(writer, value.__typename)
+        writer.name("id")
         idAdapter.toResponse(writer, value.id)
+        writer.name("name")
         nameAdapter.toResponse(writer, value.name)
+        writer.name("primaryFunction")
         primaryFunctionAdapter.toResponse(writer, value.primaryFunction)
+        writer.endObject()
       }
 
       companion object {
@@ -290,8 +305,12 @@ class TestQuery_ResponseAdapter(
       }
 
       fun toResponse(writer: JsonWriter, value: TestQuery.Data.Hero.OtherHero) {
+        writer.beginObject()
+        writer.name("__typename")
         __typenameAdapter.toResponse(writer, value.__typename)
+        writer.name("id")
         idAdapter.toResponse(writer, value.id)
+        writer.endObject()
       }
 
       companion object {

@@ -44,7 +44,10 @@ class GetPage_ResponseAdapter(
   }
 
   override fun toResponse(writer: JsonWriter, value: GetPage.Data) {
+    writer.beginObject()
+    writer.name("collection")
     collectionAdapter.toResponse(writer, value.collection)
+    writer.endObject()
   }
 
   companion object {
@@ -123,8 +126,12 @@ class GetPage_ResponseAdapter(
 
       fun toResponse(writer: JsonWriter,
           value: GetPage.Data.Collection.ParticularCollectionCollection) {
+        writer.beginObject()
+        writer.name("__typename")
         __typenameAdapter.toResponse(writer, value.__typename)
+        writer.name("items")
         itemsAdapter.toResponse(writer, value.items)
+        writer.endObject()
       }
 
       companion object {
@@ -216,9 +223,14 @@ class GetPage_ResponseAdapter(
 
           fun toResponse(writer: JsonWriter,
               value: GetPage.Data.Collection.ParticularCollectionCollection.Item.ParticularItemItem) {
+            writer.beginObject()
+            writer.name("title")
             titleAdapter.toResponse(writer, value.title)
+            writer.name("__typename")
             __typenameAdapter.toResponse(writer, value.__typename)
+            writer.name("image")
             imageAdapter.toResponse(writer, value.image)
+            writer.endObject()
           }
 
           companion object {
@@ -280,8 +292,12 @@ class GetPage_ResponseAdapter(
 
           fun toResponse(writer: JsonWriter,
               value: GetPage.Data.Collection.ParticularCollectionCollection.Item.OtherItem) {
+            writer.beginObject()
+            writer.name("title")
             titleAdapter.toResponse(writer, value.title)
+            writer.name("__typename")
             __typenameAdapter.toResponse(writer, value.__typename)
+            writer.endObject()
           }
 
           companion object {
@@ -337,8 +353,12 @@ class GetPage_ResponseAdapter(
       }
 
       fun toResponse(writer: JsonWriter, value: GetPage.Data.Collection.OtherCollection) {
+        writer.beginObject()
+        writer.name("__typename")
         __typenameAdapter.toResponse(writer, value.__typename)
+        writer.name("items")
         itemsAdapter.toResponse(writer, value.items)
+        writer.endObject()
       }
 
       companion object {
@@ -390,7 +410,10 @@ class GetPage_ResponseAdapter(
 
         override fun toResponse(writer: JsonWriter,
             value: GetPage.Data.Collection.OtherCollection.Item) {
+          writer.beginObject()
+          writer.name("title")
           titleAdapter.toResponse(writer, value.title)
+          writer.endObject()
         }
 
         companion object {

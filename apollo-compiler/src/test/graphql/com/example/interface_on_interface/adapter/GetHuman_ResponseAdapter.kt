@@ -49,8 +49,12 @@ class GetHuman_ResponseAdapter(
   }
 
   override fun toResponse(writer: JsonWriter, value: GetHuman.Data) {
+    writer.beginObject()
+    writer.name("human")
     humanAdapter.toResponse(writer, value.human)
+    writer.name("node")
     nodeAdapter.toResponse(writer, value.node)
+    writer.endObject()
   }
 
   companion object {
@@ -112,9 +116,14 @@ class GetHuman_ResponseAdapter(
     }
 
     override fun toResponse(writer: JsonWriter, value: GetHuman.Data.Human) {
+      writer.beginObject()
+      writer.name("id")
       idAdapter.toResponse(writer, value.id)
+      writer.name("name")
       nameAdapter.toResponse(writer, value.name)
+      writer.name("height")
       heightAdapter.toResponse(writer, value.height)
+      writer.endObject()
     }
 
     companion object {
@@ -202,8 +211,12 @@ class GetHuman_ResponseAdapter(
       }
 
       fun toResponse(writer: JsonWriter, value: GetHuman.Data.Node.HumanNode) {
+        writer.beginObject()
+        writer.name("__typename")
         __typenameAdapter.toResponse(writer, value.__typename)
+        writer.name("height")
         heightAdapter.toResponse(writer, value.height)
+        writer.endObject()
       }
 
       companion object {
@@ -250,7 +263,10 @@ class GetHuman_ResponseAdapter(
       }
 
       fun toResponse(writer: JsonWriter, value: GetHuman.Data.Node.OtherNode) {
+        writer.beginObject()
+        writer.name("__typename")
         __typenameAdapter.toResponse(writer, value.__typename)
+        writer.endObject()
       }
 
       companion object {

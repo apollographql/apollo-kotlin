@@ -43,7 +43,10 @@ class TestQuery_ResponseAdapter(
   }
 
   override fun toResponse(writer: JsonWriter, value: TestQuery.Data) {
+    writer.beginObject()
+    writer.name("typeWithGraphQLKeywords")
     typeWithGraphQLKeywordsAdapter.toResponse(writer, value.typeWithGraphQLKeywords)
+    writer.endObject()
   }
 
   companion object {
@@ -94,9 +97,14 @@ class TestQuery_ResponseAdapter(
     }
 
     override fun toResponse(writer: JsonWriter, value: TestQuery.Data.TypeWithGraphQLKeywords) {
+      writer.beginObject()
+      writer.name("on")
       onAdapter.toResponse(writer, value.on)
+      writer.name("null")
       null_Adapter.toResponse(writer, value.null_)
+      writer.name("alias")
       aliasAdapter.toResponse(writer, value.alias)
+      writer.endObject()
     }
 
     companion object {

@@ -61,10 +61,16 @@ class StarshipFragmentImpl_ResponseAdapter(
   }
 
   override fun toResponse(writer: JsonWriter, value: StarshipFragmentImpl.Data) {
+    writer.beginObject()
+    writer.name("__typename")
     __typenameAdapter.toResponse(writer, value.__typename)
+    writer.name("id")
     idAdapter.toResponse(writer, value.id)
+    writer.name("name")
     nameAdapter.toResponse(writer, value.name)
+    writer.name("pilotConnection")
     pilotConnectionAdapter.toResponse(writer, value.pilotConnection)
+    writer.endObject()
   }
 
   companion object {
@@ -130,7 +136,10 @@ class StarshipFragmentImpl_ResponseAdapter(
     }
 
     override fun toResponse(writer: JsonWriter, value: StarshipFragmentImpl.Data.PilotConnection) {
+      writer.beginObject()
+      writer.name("edges")
       edgesAdapter.toResponse(writer, value.edges)
+      writer.endObject()
     }
 
     companion object {
@@ -174,7 +183,10 @@ class StarshipFragmentImpl_ResponseAdapter(
 
       override fun toResponse(writer: JsonWriter,
           value: StarshipFragmentImpl.Data.PilotConnection.Edge) {
+        writer.beginObject()
+        writer.name("node")
         nodeAdapter.toResponse(writer, value.node)
+        writer.endObject()
       }
 
       companion object {
@@ -259,9 +271,14 @@ class StarshipFragmentImpl_ResponseAdapter(
 
           fun toResponse(writer: JsonWriter,
               value: StarshipFragmentImpl.Data.PilotConnection.Edge.Node.PersonNode) {
+            writer.beginObject()
+            writer.name("__typename")
             __typenameAdapter.toResponse(writer, value.__typename)
+            writer.name("name")
             nameAdapter.toResponse(writer, value.name)
+            writer.name("homeworld")
             homeworldAdapter.toResponse(writer, value.homeworld)
+            writer.endObject()
           }
 
           companion object {
@@ -358,8 +375,12 @@ class StarshipFragmentImpl_ResponseAdapter(
 
               fun toResponse(writer: JsonWriter,
                   value: StarshipFragmentImpl.Data.PilotConnection.Edge.Node.PersonNode.Homeworld.PlanetHomeworld) {
+                writer.beginObject()
+                writer.name("__typename")
                 __typenameAdapter.toResponse(writer, value.__typename)
+                writer.name("name")
                 nameAdapter.toResponse(writer, value.name)
+                writer.endObject()
               }
 
               companion object {
@@ -408,7 +429,10 @@ class StarshipFragmentImpl_ResponseAdapter(
 
               fun toResponse(writer: JsonWriter,
                   value: StarshipFragmentImpl.Data.PilotConnection.Edge.Node.PersonNode.Homeworld.OtherHomeworld) {
+                writer.beginObject()
+                writer.name("__typename")
                 __typenameAdapter.toResponse(writer, value.__typename)
+                writer.endObject()
               }
 
               companion object {
@@ -451,7 +475,10 @@ class StarshipFragmentImpl_ResponseAdapter(
 
           fun toResponse(writer: JsonWriter,
               value: StarshipFragmentImpl.Data.PilotConnection.Edge.Node.OtherNode) {
+            writer.beginObject()
+            writer.name("__typename")
             __typenameAdapter.toResponse(writer, value.__typename)
+            writer.endObject()
           }
 
           companion object {

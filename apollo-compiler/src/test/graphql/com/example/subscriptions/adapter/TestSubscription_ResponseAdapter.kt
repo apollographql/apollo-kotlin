@@ -46,7 +46,10 @@ class TestSubscription_ResponseAdapter(
   }
 
   override fun toResponse(writer: JsonWriter, value: TestSubscription.Data) {
+    writer.beginObject()
+    writer.name("commentAdded")
     commentAddedAdapter.toResponse(writer, value.commentAdded)
+    writer.endObject()
   }
 
   companion object {
@@ -95,8 +98,12 @@ class TestSubscription_ResponseAdapter(
     }
 
     override fun toResponse(writer: JsonWriter, value: TestSubscription.Data.CommentAdded) {
+      writer.beginObject()
+      writer.name("id")
       idAdapter.toResponse(writer, value.id)
+      writer.name("content")
       contentAdapter.toResponse(writer, value.content)
+      writer.endObject()
     }
 
     companion object {

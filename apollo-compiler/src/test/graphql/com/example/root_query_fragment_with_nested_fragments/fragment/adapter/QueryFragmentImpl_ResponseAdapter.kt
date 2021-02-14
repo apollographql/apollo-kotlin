@@ -62,10 +62,16 @@ class QueryFragmentImpl_ResponseAdapter(
   }
 
   override fun toResponse(writer: JsonWriter, value: QueryFragmentImpl.Data) {
+    writer.beginObject()
+    writer.name("__typename")
     __typenameAdapter.toResponse(writer, value.__typename)
+    writer.name("hero")
     heroAdapter.toResponse(writer, value.hero)
+    writer.name("droid")
     droidAdapter.toResponse(writer, value.droid)
+    writer.name("human")
     humanAdapter.toResponse(writer, value.human)
+    writer.endObject()
   }
 
   companion object {
@@ -174,8 +180,12 @@ class QueryFragmentImpl_ResponseAdapter(
       }
 
       fun toResponse(writer: JsonWriter, value: QueryFragmentImpl.Data.Hero.CharacterHero) {
+        writer.beginObject()
+        writer.name("__typename")
         __typenameAdapter.toResponse(writer, value.__typename)
+        writer.name("name")
         nameAdapter.toResponse(writer, value.name)
+        writer.endObject()
       }
 
       companion object {
@@ -223,7 +233,10 @@ class QueryFragmentImpl_ResponseAdapter(
       }
 
       fun toResponse(writer: JsonWriter, value: QueryFragmentImpl.Data.Hero.OtherHero) {
+        writer.beginObject()
+        writer.name("__typename")
         __typenameAdapter.toResponse(writer, value.__typename)
+        writer.endObject()
       }
 
       companion object {
@@ -303,9 +316,14 @@ class QueryFragmentImpl_ResponseAdapter(
       }
 
       fun toResponse(writer: JsonWriter, value: QueryFragmentImpl.Data.Droid.DroidDroid) {
+        writer.beginObject()
+        writer.name("__typename")
         __typenameAdapter.toResponse(writer, value.__typename)
+        writer.name("name")
         nameAdapter.toResponse(writer, value.name)
+        writer.name("primaryFunction")
         primaryFunctionAdapter.toResponse(writer, value.primaryFunction)
+        writer.endObject()
       }
 
       companion object {
@@ -361,7 +379,10 @@ class QueryFragmentImpl_ResponseAdapter(
       }
 
       fun toResponse(writer: JsonWriter, value: QueryFragmentImpl.Data.Droid.OtherDroid) {
+        writer.beginObject()
+        writer.name("__typename")
         __typenameAdapter.toResponse(writer, value.__typename)
+        writer.endObject()
       }
 
       companion object {
@@ -441,9 +462,14 @@ class QueryFragmentImpl_ResponseAdapter(
       }
 
       fun toResponse(writer: JsonWriter, value: QueryFragmentImpl.Data.Human.HumanHuman) {
+        writer.beginObject()
+        writer.name("__typename")
         __typenameAdapter.toResponse(writer, value.__typename)
+        writer.name("name")
         nameAdapter.toResponse(writer, value.name)
+        writer.name("homePlanet")
         homePlanetAdapter.toResponse(writer, value.homePlanet)
+        writer.endObject()
       }
 
       companion object {
@@ -499,7 +525,10 @@ class QueryFragmentImpl_ResponseAdapter(
       }
 
       fun toResponse(writer: JsonWriter, value: QueryFragmentImpl.Data.Human.OtherHuman) {
+        writer.beginObject()
+        writer.name("__typename")
         __typenameAdapter.toResponse(writer, value.__typename)
+        writer.endObject()
       }
 
       companion object {

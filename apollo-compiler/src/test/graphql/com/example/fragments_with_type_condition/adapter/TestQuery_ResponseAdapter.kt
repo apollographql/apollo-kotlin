@@ -52,8 +52,12 @@ class TestQuery_ResponseAdapter(
   }
 
   override fun toResponse(writer: JsonWriter, value: TestQuery.Data) {
+    writer.beginObject()
+    writer.name("r2")
     r2Adapter.toResponse(writer, value.r2)
+    writer.name("luke")
     lukeAdapter.toResponse(writer, value.luke)
+    writer.endObject()
   }
 
   companion object {
@@ -150,9 +154,14 @@ class TestQuery_ResponseAdapter(
       }
 
       fun toResponse(writer: JsonWriter, value: TestQuery.Data.R2.HumanR2) {
+        writer.beginObject()
+        writer.name("__typename")
         __typenameAdapter.toResponse(writer, value.__typename)
+        writer.name("name")
         nameAdapter.toResponse(writer, value.name)
+        writer.name("height")
         heightAdapter.toResponse(writer, value.height)
+        writer.endObject()
       }
 
       companion object {
@@ -218,9 +227,14 @@ class TestQuery_ResponseAdapter(
       }
 
       fun toResponse(writer: JsonWriter, value: TestQuery.Data.R2.DroidR2) {
+        writer.beginObject()
+        writer.name("__typename")
         __typenameAdapter.toResponse(writer, value.__typename)
+        writer.name("name")
         nameAdapter.toResponse(writer, value.name)
+        writer.name("primaryFunction")
         primaryFunctionAdapter.toResponse(writer, value.primaryFunction)
+        writer.endObject()
       }
 
       companion object {
@@ -275,7 +289,10 @@ class TestQuery_ResponseAdapter(
       }
 
       fun toResponse(writer: JsonWriter, value: TestQuery.Data.R2.OtherR2) {
+        writer.beginObject()
+        writer.name("__typename")
         __typenameAdapter.toResponse(writer, value.__typename)
+        writer.endObject()
       }
 
       companion object {
@@ -358,9 +375,14 @@ class TestQuery_ResponseAdapter(
       }
 
       fun toResponse(writer: JsonWriter, value: TestQuery.Data.Luke.HumanLuke) {
+        writer.beginObject()
+        writer.name("__typename")
         __typenameAdapter.toResponse(writer, value.__typename)
+        writer.name("name")
         nameAdapter.toResponse(writer, value.name)
+        writer.name("height")
         heightAdapter.toResponse(writer, value.height)
+        writer.endObject()
       }
 
       companion object {
@@ -426,9 +448,14 @@ class TestQuery_ResponseAdapter(
       }
 
       fun toResponse(writer: JsonWriter, value: TestQuery.Data.Luke.DroidLuke) {
+        writer.beginObject()
+        writer.name("__typename")
         __typenameAdapter.toResponse(writer, value.__typename)
+        writer.name("name")
         nameAdapter.toResponse(writer, value.name)
+        writer.name("primaryFunction")
         primaryFunctionAdapter.toResponse(writer, value.primaryFunction)
+        writer.endObject()
       }
 
       companion object {
@@ -483,7 +510,10 @@ class TestQuery_ResponseAdapter(
       }
 
       fun toResponse(writer: JsonWriter, value: TestQuery.Data.Luke.OtherLuke) {
+        writer.beginObject()
+        writer.name("__typename")
         __typenameAdapter.toResponse(writer, value.__typename)
+        writer.endObject()
       }
 
       companion object {

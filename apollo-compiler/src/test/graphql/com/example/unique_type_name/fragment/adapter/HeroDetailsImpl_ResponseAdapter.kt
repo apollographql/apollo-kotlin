@@ -59,9 +59,14 @@ class HeroDetailsImpl_ResponseAdapter(
   }
 
   override fun toResponse(writer: JsonWriter, value: HeroDetailsImpl.Data) {
+    writer.beginObject()
+    writer.name("__typename")
     __typenameAdapter.toResponse(writer, value.__typename)
+    writer.name("name")
     nameAdapter.toResponse(writer, value.name)
+    writer.name("friendsConnection")
     friendsConnectionAdapter.toResponse(writer, value.friendsConnection)
+    writer.endObject()
   }
 
   companion object {
@@ -124,8 +129,12 @@ class HeroDetailsImpl_ResponseAdapter(
     }
 
     override fun toResponse(writer: JsonWriter, value: HeroDetailsImpl.Data.FriendsConnection) {
+      writer.beginObject()
+      writer.name("totalCount")
       totalCountAdapter.toResponse(writer, value.totalCount)
+      writer.name("edges")
       edgesAdapter.toResponse(writer, value.edges)
+      writer.endObject()
     }
 
     companion object {
@@ -176,7 +185,10 @@ class HeroDetailsImpl_ResponseAdapter(
 
       override fun toResponse(writer: JsonWriter,
           value: HeroDetailsImpl.Data.FriendsConnection.Edge) {
+        writer.beginObject()
+        writer.name("node")
         nodeAdapter.toResponse(writer, value.node)
+        writer.endObject()
       }
 
       companion object {
@@ -219,7 +231,10 @@ class HeroDetailsImpl_ResponseAdapter(
 
         override fun toResponse(writer: JsonWriter,
             value: HeroDetailsImpl.Data.FriendsConnection.Edge.Node) {
+          writer.beginObject()
+          writer.name("name")
           nameAdapter.toResponse(writer, value.name)
+          writer.endObject()
         }
 
         companion object {

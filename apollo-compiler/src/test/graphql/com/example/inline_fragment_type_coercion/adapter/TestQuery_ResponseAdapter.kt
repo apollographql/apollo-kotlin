@@ -44,7 +44,10 @@ class TestQuery_ResponseAdapter(
   }
 
   override fun toResponse(writer: JsonWriter, value: TestQuery.Data) {
+    writer.beginObject()
+    writer.name("foo")
     fooAdapter.toResponse(writer, value.foo)
+    writer.endObject()
   }
 
   companion object {
@@ -123,9 +126,14 @@ class TestQuery_ResponseAdapter(
       }
 
       fun toResponse(writer: JsonWriter, value: TestQuery.Data.Foo.BarFoo) {
+        writer.beginObject()
+        writer.name("__typename")
         __typenameAdapter.toResponse(writer, value.__typename)
+        writer.name("foo")
         fooAdapter.toResponse(writer, value.foo)
+        writer.name("bar")
         barAdapter.toResponse(writer, value.bar)
+        writer.endObject()
       }
 
       companion object {
@@ -185,8 +193,12 @@ class TestQuery_ResponseAdapter(
       }
 
       fun toResponse(writer: JsonWriter, value: TestQuery.Data.Foo.OtherFoo) {
+        writer.beginObject()
+        writer.name("__typename")
         __typenameAdapter.toResponse(writer, value.__typename)
+        writer.name("foo")
         fooAdapter.toResponse(writer, value.foo)
+        writer.endObject()
       }
 
       companion object {

@@ -50,8 +50,12 @@ class DroidDetails2Impl_ResponseAdapter(
   }
 
   override fun toResponse(writer: JsonWriter, value: DroidDetails2Impl.Data) {
+    writer.beginObject()
+    writer.name("__typename")
     __typenameAdapter.toResponse(writer, value.__typename)
+    writer.name("primaryFunction")
     primaryFunctionAdapter.toResponse(writer, value.primaryFunction)
+    writer.endObject()
   }
 
   companion object {

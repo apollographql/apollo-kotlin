@@ -47,7 +47,10 @@ class TestQuery_ResponseAdapter(
   }
 
   override fun toResponse(writer: JsonWriter, value: TestQuery.Data) {
+    writer.beginObject()
+    writer.name("starship")
     starshipAdapter.toResponse(writer, value.starship)
+    writer.endObject()
   }
 
   companion object {
@@ -102,9 +105,14 @@ class TestQuery_ResponseAdapter(
     }
 
     override fun toResponse(writer: JsonWriter, value: TestQuery.Data.Starship) {
+      writer.beginObject()
+      writer.name("id")
       idAdapter.toResponse(writer, value.id)
+      writer.name("name")
       nameAdapter.toResponse(writer, value.name)
+      writer.name("coordinates")
       coordinatesAdapter.toResponse(writer, value.coordinates)
+      writer.endObject()
     }
 
     companion object {

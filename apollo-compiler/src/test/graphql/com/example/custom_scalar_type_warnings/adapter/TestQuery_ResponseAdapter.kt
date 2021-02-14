@@ -45,7 +45,10 @@ class TestQuery_ResponseAdapter(
   }
 
   override fun toResponse(writer: JsonWriter, value: TestQuery.Data) {
+    writer.beginObject()
+    writer.name("hero")
     heroAdapter.toResponse(writer, value.hero)
+    writer.endObject()
   }
 
   companion object {
@@ -87,7 +90,10 @@ class TestQuery_ResponseAdapter(
     }
 
     override fun toResponse(writer: JsonWriter, value: TestQuery.Data.Hero) {
+      writer.beginObject()
+      writer.name("links")
       linksAdapter.toResponse(writer, value.links)
+      writer.endObject()
     }
 
     companion object {

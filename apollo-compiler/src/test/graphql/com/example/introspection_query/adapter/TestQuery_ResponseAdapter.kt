@@ -50,8 +50,12 @@ class TestQuery_ResponseAdapter(
   }
 
   override fun toResponse(writer: JsonWriter, value: TestQuery.Data) {
+    writer.beginObject()
+    writer.name("__schema")
     __schemaAdapter.toResponse(writer, value.__schema)
+    writer.name("__type")
     __typeAdapter.toResponse(writer, value.__type)
+    writer.endObject()
   }
 
   companion object {
@@ -111,8 +115,12 @@ class TestQuery_ResponseAdapter(
     }
 
     override fun toResponse(writer: JsonWriter, value: TestQuery.Data.__Schema) {
+      writer.beginObject()
+      writer.name("queryType")
       queryTypeAdapter.toResponse(writer, value.queryType)
+      writer.name("types")
       typesAdapter.toResponse(writer, value.types)
+      writer.endObject()
     }
 
     companion object {
@@ -164,7 +172,10 @@ class TestQuery_ResponseAdapter(
       }
 
       override fun toResponse(writer: JsonWriter, value: TestQuery.Data.__Schema.QueryType) {
+        writer.beginObject()
+        writer.name("name")
         nameAdapter.toResponse(writer, value.name)
+        writer.endObject()
       }
 
       companion object {
@@ -204,7 +215,10 @@ class TestQuery_ResponseAdapter(
       }
 
       override fun toResponse(writer: JsonWriter, value: TestQuery.Data.__Schema.Type) {
+        writer.beginObject()
+        writer.name("name")
         nameAdapter.toResponse(writer, value.name)
+        writer.endObject()
       }
 
       companion object {
@@ -245,7 +259,10 @@ class TestQuery_ResponseAdapter(
     }
 
     override fun toResponse(writer: JsonWriter, value: TestQuery.Data.__Type) {
+      writer.beginObject()
+      writer.name("name")
       nameAdapter.toResponse(writer, value.name)
+      writer.endObject()
     }
 
     companion object {

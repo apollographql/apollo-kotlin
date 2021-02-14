@@ -64,10 +64,16 @@ class HumanDetailsImpl_ResponseAdapter(
   }
 
   override fun toResponse(writer: JsonWriter, value: HumanDetailsImpl.Data) {
+    writer.beginObject()
+    writer.name("__typename")
     __typenameAdapter.toResponse(writer, value.__typename)
+    writer.name("name")
     nameAdapter.toResponse(writer, value.name)
+    writer.name("profileLink")
     profileLinkAdapter.toResponse(writer, value.profileLink)
+    writer.name("friendsConnection")
     friendsConnectionAdapter.toResponse(writer, value.friendsConnection)
+    writer.endObject()
   }
 
   companion object {
@@ -133,7 +139,10 @@ class HumanDetailsImpl_ResponseAdapter(
     }
 
     override fun toResponse(writer: JsonWriter, value: HumanDetailsImpl.Data.FriendsConnection) {
+      writer.beginObject()
+      writer.name("edges")
       edgesAdapter.toResponse(writer, value.edges)
+      writer.endObject()
     }
 
     companion object {
@@ -176,7 +185,10 @@ class HumanDetailsImpl_ResponseAdapter(
 
       override fun toResponse(writer: JsonWriter,
           value: HumanDetailsImpl.Data.FriendsConnection.Edge) {
+        writer.beginObject()
+        writer.name("node")
         nodeAdapter.toResponse(writer, value.node)
+        writer.endObject()
       }
 
       companion object {
@@ -219,7 +231,10 @@ class HumanDetailsImpl_ResponseAdapter(
 
         override fun toResponse(writer: JsonWriter,
             value: HumanDetailsImpl.Data.FriendsConnection.Edge.Node) {
+          writer.beginObject()
+          writer.name("name")
           nameAdapter.toResponse(writer, value.name)
+          writer.endObject()
         }
 
         companion object {

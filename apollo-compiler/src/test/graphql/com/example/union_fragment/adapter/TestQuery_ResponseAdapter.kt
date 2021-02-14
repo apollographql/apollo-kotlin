@@ -45,7 +45,10 @@ class TestQuery_ResponseAdapter(
   }
 
   override fun toResponse(writer: JsonWriter, value: TestQuery.Data) {
+    writer.beginObject()
+    writer.name("search")
     searchAdapter.toResponse(writer, value.search)
+    writer.endObject()
   }
 
   companion object {
@@ -126,9 +129,14 @@ class TestQuery_ResponseAdapter(
       }
 
       fun toResponse(writer: JsonWriter, value: TestQuery.Data.Search.StarshipSearch) {
+        writer.beginObject()
+        writer.name("__typename")
         __typenameAdapter.toResponse(writer, value.__typename)
+        writer.name("id")
         idAdapter.toResponse(writer, value.id)
+        writer.name("name")
         nameAdapter.toResponse(writer, value.name)
+        writer.endObject()
       }
 
       companion object {
@@ -183,7 +191,10 @@ class TestQuery_ResponseAdapter(
       }
 
       fun toResponse(writer: JsonWriter, value: TestQuery.Data.Search.OtherSearch) {
+        writer.beginObject()
+        writer.name("__typename")
         __typenameAdapter.toResponse(writer, value.__typename)
+        writer.endObject()
       }
 
       companion object {

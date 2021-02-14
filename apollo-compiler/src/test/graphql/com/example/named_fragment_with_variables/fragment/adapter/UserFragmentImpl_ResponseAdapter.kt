@@ -60,10 +60,16 @@ class UserFragmentImpl_ResponseAdapter(
   }
 
   override fun toResponse(writer: JsonWriter, value: UserFragmentImpl.Data) {
+    writer.beginObject()
+    writer.name("__typename")
     __typenameAdapter.toResponse(writer, value.__typename)
+    writer.name("firstName")
     firstNameAdapter.toResponse(writer, value.firstName)
+    writer.name("lastName")
     lastNameAdapter.toResponse(writer, value.lastName)
+    writer.name("avatar")
     avatarAdapter.toResponse(writer, value.avatar)
+    writer.endObject()
   }
 
   companion object {

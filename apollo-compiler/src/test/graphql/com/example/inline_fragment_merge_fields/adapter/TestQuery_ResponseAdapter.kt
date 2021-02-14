@@ -46,7 +46,10 @@ class TestQuery_ResponseAdapter(
   }
 
   override fun toResponse(writer: JsonWriter, value: TestQuery.Data) {
+    writer.beginObject()
+    writer.name("hero")
     heroAdapter.toResponse(writer, value.hero)
+    writer.endObject()
   }
 
   companion object {
@@ -137,10 +140,16 @@ class TestQuery_ResponseAdapter(
       }
 
       fun toResponse(writer: JsonWriter, value: TestQuery.Data.Hero.CharacterHero) {
+        writer.beginObject()
+        writer.name("__typename")
         __typenameAdapter.toResponse(writer, value.__typename)
+        writer.name("name")
         nameAdapter.toResponse(writer, value.name)
+        writer.name("friendsConnection")
         friendsConnectionAdapter.toResponse(writer, value.friendsConnection)
+        writer.name("profileLink")
         profileLinkAdapter.toResponse(writer, value.profileLink)
+        writer.endObject()
       }
 
       companion object {
@@ -209,7 +218,10 @@ class TestQuery_ResponseAdapter(
 
         override fun toResponse(writer: JsonWriter,
             value: TestQuery.Data.Hero.CharacterHero.FriendsConnection) {
+          writer.beginObject()
+          writer.name("edges")
           edgesAdapter.toResponse(writer, value.edges)
+          writer.endObject()
         }
 
         companion object {
@@ -254,7 +266,10 @@ class TestQuery_ResponseAdapter(
 
           override fun toResponse(writer: JsonWriter,
               value: TestQuery.Data.Hero.CharacterHero.FriendsConnection.Edge) {
+            writer.beginObject()
+            writer.name("node")
             nodeAdapter.toResponse(writer, value.node)
+            writer.endObject()
           }
 
           companion object {
@@ -297,7 +312,10 @@ class TestQuery_ResponseAdapter(
 
             override fun toResponse(writer: JsonWriter,
                 value: TestQuery.Data.Hero.CharacterHero.FriendsConnection.Edge.Node) {
+              writer.beginObject()
+              writer.name("name")
               nameAdapter.toResponse(writer, value.name)
+              writer.endObject()
             }
 
             companion object {
@@ -351,9 +369,14 @@ class TestQuery_ResponseAdapter(
       }
 
       fun toResponse(writer: JsonWriter, value: TestQuery.Data.Hero.OtherHero) {
+        writer.beginObject()
+        writer.name("__typename")
         __typenameAdapter.toResponse(writer, value.__typename)
+        writer.name("name")
         nameAdapter.toResponse(writer, value.name)
+        writer.name("friendsConnection")
         friendsConnectionAdapter.toResponse(writer, value.friendsConnection)
+        writer.endObject()
       }
 
       companion object {
@@ -414,7 +437,10 @@ class TestQuery_ResponseAdapter(
 
         override fun toResponse(writer: JsonWriter,
             value: TestQuery.Data.Hero.OtherHero.FriendsConnection) {
+          writer.beginObject()
+          writer.name("edges")
           edgesAdapter.toResponse(writer, value.edges)
+          writer.endObject()
         }
 
         companion object {
@@ -459,7 +485,10 @@ class TestQuery_ResponseAdapter(
 
           override fun toResponse(writer: JsonWriter,
               value: TestQuery.Data.Hero.OtherHero.FriendsConnection.Edge) {
+            writer.beginObject()
+            writer.name("node")
             nodeAdapter.toResponse(writer, value.node)
+            writer.endObject()
           }
 
           companion object {
@@ -502,7 +531,10 @@ class TestQuery_ResponseAdapter(
 
             override fun toResponse(writer: JsonWriter,
                 value: TestQuery.Data.Hero.OtherHero.FriendsConnection.Edge.Node) {
+              writer.beginObject()
+              writer.name("name")
               nameAdapter.toResponse(writer, value.name)
+              writer.endObject()
             }
 
             companion object {

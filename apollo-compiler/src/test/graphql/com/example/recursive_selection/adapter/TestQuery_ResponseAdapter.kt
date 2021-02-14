@@ -45,7 +45,10 @@ class TestQuery_ResponseAdapter(
   }
 
   override fun toResponse(writer: JsonWriter, value: TestQuery.Data) {
+    writer.beginObject()
+    writer.name("tree")
     treeAdapter.toResponse(writer, value.tree)
+    writer.endObject()
   }
 
   companion object {
@@ -99,9 +102,14 @@ class TestQuery_ResponseAdapter(
     }
 
     override fun toResponse(writer: JsonWriter, value: TestQuery.Data.Tree) {
+      writer.beginObject()
+      writer.name("name")
       nameAdapter.toResponse(writer, value.name)
+      writer.name("children")
       childrenAdapter.toResponse(writer, value.children)
+      writer.name("parent")
       parentAdapter.toResponse(writer, value.parent)
+      writer.endObject()
     }
 
     companion object {
@@ -161,7 +169,10 @@ class TestQuery_ResponseAdapter(
       }
 
       override fun toResponse(writer: JsonWriter, value: TestQuery.Data.Tree.Child) {
+        writer.beginObject()
+        writer.name("name")
         nameAdapter.toResponse(writer, value.name)
+        writer.endObject()
       }
 
       companion object {
@@ -201,7 +212,10 @@ class TestQuery_ResponseAdapter(
       }
 
       override fun toResponse(writer: JsonWriter, value: TestQuery.Data.Tree.Parent) {
+        writer.beginObject()
+        writer.name("name")
         nameAdapter.toResponse(writer, value.name)
+        writer.endObject()
       }
 
       companion object {

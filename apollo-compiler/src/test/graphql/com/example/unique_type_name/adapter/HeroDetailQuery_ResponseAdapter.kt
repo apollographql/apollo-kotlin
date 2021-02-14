@@ -53,7 +53,10 @@ class HeroDetailQuery_ResponseAdapter(
 
   override fun toResponse(writer: JsonWriter,
       value: com.example.unique_type_name.HeroDetailQuery.Data) {
+    writer.beginObject()
+    writer.name("heroDetailQuery")
     heroDetailQueryAdapter.toResponse(writer, value.heroDetailQuery)
+    writer.endObject()
   }
 
   companion object {
@@ -144,10 +147,16 @@ class HeroDetailQuery_ResponseAdapter(
 
       fun toResponse(writer: JsonWriter,
           value: com.example.unique_type_name.HeroDetailQuery.Data.HeroDetailQuery.HumanHeroDetailQuery) {
+        writer.beginObject()
+        writer.name("__typename")
         __typenameAdapter.toResponse(writer, value.__typename)
+        writer.name("name")
         nameAdapter.toResponse(writer, value.name)
+        writer.name("friends")
         friendsAdapter.toResponse(writer, value.friends)
+        writer.name("height")
         heightAdapter.toResponse(writer, value.height)
+        writer.endObject()
       }
 
       companion object {
@@ -231,9 +240,14 @@ class HeroDetailQuery_ResponseAdapter(
 
         override fun toResponse(writer: JsonWriter,
             value: com.example.unique_type_name.HeroDetailQuery.Data.HeroDetailQuery.HumanHeroDetailQuery.Friend) {
+          writer.beginObject()
+          writer.name("name")
           nameAdapter.toResponse(writer, value.name)
+          writer.name("appearsIn")
           appearsInAdapter.toResponse(writer, value.appearsIn)
+          writer.name("friends")
           friendsAdapter.toResponse(writer, value.friends)
+          writer.endObject()
         }
 
         companion object {
@@ -340,9 +354,14 @@ class HeroDetailQuery_ResponseAdapter(
 
             fun toResponse(writer: JsonWriter,
                 value: com.example.unique_type_name.HeroDetailQuery.Data.HeroDetailQuery.HumanHeroDetailQuery.Friend.Friend.CharacterFriend) {
+              writer.beginObject()
+              writer.name("__typename")
               __typenameAdapter.toResponse(writer, value.__typename)
+              writer.name("name")
               nameAdapter.toResponse(writer, value.name)
+              writer.name("friendsConnection")
               friendsConnectionAdapter.toResponse(writer, value.friendsConnection)
+              writer.endObject()
             }
 
             companion object {
@@ -413,8 +432,12 @@ class HeroDetailQuery_ResponseAdapter(
 
               override fun toResponse(writer: JsonWriter,
                   value: com.example.unique_type_name.HeroDetailQuery.Data.HeroDetailQuery.HumanHeroDetailQuery.Friend.Friend.CharacterFriend.FriendsConnection) {
+                writer.beginObject()
+                writer.name("totalCount")
                 totalCountAdapter.toResponse(writer, value.totalCount)
+                writer.name("edges")
                 edgesAdapter.toResponse(writer, value.edges)
+                writer.endObject()
               }
 
               companion object {
@@ -469,7 +492,10 @@ class HeroDetailQuery_ResponseAdapter(
 
                 override fun toResponse(writer: JsonWriter,
                     value: com.example.unique_type_name.HeroDetailQuery.Data.HeroDetailQuery.HumanHeroDetailQuery.Friend.Friend.CharacterFriend.FriendsConnection.Edge) {
+                  writer.beginObject()
+                  writer.name("node")
                   nodeAdapter.toResponse(writer, value.node)
+                  writer.endObject()
                 }
 
                 companion object {
@@ -515,7 +541,10 @@ class HeroDetailQuery_ResponseAdapter(
 
                   override fun toResponse(writer: JsonWriter,
                       value: com.example.unique_type_name.HeroDetailQuery.Data.HeroDetailQuery.HumanHeroDetailQuery.Friend.Friend.CharacterFriend.FriendsConnection.Edge.Node) {
+                    writer.beginObject()
+                    writer.name("name")
                     nameAdapter.toResponse(writer, value.name)
+                    writer.endObject()
                   }
 
                   companion object {
@@ -559,7 +588,10 @@ class HeroDetailQuery_ResponseAdapter(
 
             fun toResponse(writer: JsonWriter,
                 value: com.example.unique_type_name.HeroDetailQuery.Data.HeroDetailQuery.HumanHeroDetailQuery.Friend.Friend.OtherFriend) {
+              writer.beginObject()
+              writer.name("__typename")
               __typenameAdapter.toResponse(writer, value.__typename)
+              writer.endObject()
             }
 
             companion object {
@@ -616,9 +648,14 @@ class HeroDetailQuery_ResponseAdapter(
 
       fun toResponse(writer: JsonWriter,
           value: com.example.unique_type_name.HeroDetailQuery.Data.HeroDetailQuery.OtherHeroDetailQuery) {
+        writer.beginObject()
+        writer.name("__typename")
         __typenameAdapter.toResponse(writer, value.__typename)
+        writer.name("name")
         nameAdapter.toResponse(writer, value.name)
+        writer.name("friends")
         friendsAdapter.toResponse(writer, value.friends)
+        writer.endObject()
       }
 
       companion object {
@@ -679,7 +716,10 @@ class HeroDetailQuery_ResponseAdapter(
 
         override fun toResponse(writer: JsonWriter,
             value: com.example.unique_type_name.HeroDetailQuery.Data.HeroDetailQuery.OtherHeroDetailQuery.Friend) {
+          writer.beginObject()
+          writer.name("name")
           nameAdapter.toResponse(writer, value.name)
+          writer.endObject()
         }
 
         companion object {

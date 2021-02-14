@@ -55,9 +55,14 @@ class CharacterDetailsImpl_ResponseAdapter(
   }
 
   override fun toResponse(writer: JsonWriter, value: CharacterDetailsImpl.Data) {
+    writer.beginObject()
+    writer.name("__typename")
     __typenameAdapter.toResponse(writer, value.__typename)
+    writer.name("name")
     nameAdapter.toResponse(writer, value.name)
+    writer.name("birthDate")
     birthDateAdapter.toResponse(writer, value.birthDate)
+    writer.endObject()
   }
 
   companion object {

@@ -50,8 +50,12 @@ class QueryFragmentImpl_ResponseAdapter(
   }
 
   override fun toResponse(writer: JsonWriter, value: QueryFragmentImpl.Data) {
+    writer.beginObject()
+    writer.name("__typename")
     __typenameAdapter.toResponse(writer, value.__typename)
+    writer.name("hero")
     heroAdapter.toResponse(writer, value.hero)
+    writer.endObject()
   }
 
   companion object {
@@ -100,7 +104,10 @@ class QueryFragmentImpl_ResponseAdapter(
     }
 
     override fun toResponse(writer: JsonWriter, value: QueryFragmentImpl.Data.Hero) {
+      writer.beginObject()
+      writer.name("name")
       nameAdapter.toResponse(writer, value.name)
+      writer.endObject()
     }
 
     companion object {

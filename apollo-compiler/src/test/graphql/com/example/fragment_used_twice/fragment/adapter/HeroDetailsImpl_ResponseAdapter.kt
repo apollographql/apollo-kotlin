@@ -83,9 +83,14 @@ class HeroDetailsImpl_ResponseAdapter(
     }
 
     fun toResponse(writer: JsonWriter, value: HeroDetailsImpl.Data.CharacterData) {
+      writer.beginObject()
+      writer.name("__typename")
       __typenameAdapter.toResponse(writer, value.__typename)
+      writer.name("name")
       nameAdapter.toResponse(writer, value.name)
+      writer.name("birthDate")
       birthDateAdapter.toResponse(writer, value.birthDate)
+      writer.endObject()
     }
 
     companion object {
@@ -145,8 +150,12 @@ class HeroDetailsImpl_ResponseAdapter(
     }
 
     fun toResponse(writer: JsonWriter, value: HeroDetailsImpl.Data.OtherData) {
+      writer.beginObject()
+      writer.name("__typename")
       __typenameAdapter.toResponse(writer, value.__typename)
+      writer.name("name")
       nameAdapter.toResponse(writer, value.name)
+      writer.endObject()
     }
 
     companion object {

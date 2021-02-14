@@ -47,7 +47,10 @@ class TestQuery_ResponseAdapter(
   }
 
   override fun toResponse(writer: JsonWriter, value: TestQuery.Data) {
+    writer.beginObject()
+    writer.name("nonOptionalHero")
     nonOptionalHeroAdapter.toResponse(writer, value.nonOptionalHero)
+    writer.endObject()
   }
 
   companion object {
@@ -129,9 +132,14 @@ class TestQuery_ResponseAdapter(
 
       fun toResponse(writer: JsonWriter,
           value: TestQuery.Data.NonOptionalHero.HumanNonOptionalHero) {
+        writer.beginObject()
+        writer.name("__typename")
         __typenameAdapter.toResponse(writer, value.__typename)
+        writer.name("name")
         nameAdapter.toResponse(writer, value.name)
+        writer.name("height")
         heightAdapter.toResponse(writer, value.height)
+        writer.endObject()
       }
 
       companion object {
@@ -193,8 +201,12 @@ class TestQuery_ResponseAdapter(
 
       fun toResponse(writer: JsonWriter,
           value: TestQuery.Data.NonOptionalHero.OtherNonOptionalHero) {
+        writer.beginObject()
+        writer.name("__typename")
         __typenameAdapter.toResponse(writer, value.__typename)
+        writer.name("name")
         nameAdapter.toResponse(writer, value.name)
+        writer.endObject()
       }
 
       companion object {

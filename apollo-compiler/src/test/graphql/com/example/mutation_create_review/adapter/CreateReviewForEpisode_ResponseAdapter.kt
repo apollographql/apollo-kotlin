@@ -50,7 +50,10 @@ internal class CreateReviewForEpisode_ResponseAdapter(
   }
 
   override fun toResponse(writer: JsonWriter, value: CreateReviewForEpisode.Data) {
+    writer.beginObject()
+    writer.name("createReview")
     createReviewAdapter.toResponse(writer, value.createReview)
+    writer.endObject()
   }
 
   companion object {
@@ -127,12 +130,20 @@ internal class CreateReviewForEpisode_ResponseAdapter(
     }
 
     override fun toResponse(writer: JsonWriter, value: CreateReviewForEpisode.Data.CreateReview) {
+      writer.beginObject()
+      writer.name("stars")
       starsAdapter.toResponse(writer, value.stars)
+      writer.name("commentary")
       commentaryAdapter.toResponse(writer, value.commentary)
+      writer.name("listOfListOfString")
       listOfListOfStringAdapter.toResponse(writer, value.listOfListOfString)
+      writer.name("listOfListOfEnum")
       listOfListOfEnumAdapter.toResponse(writer, value.listOfListOfEnum)
+      writer.name("listOfListOfCustom")
       listOfListOfCustomAdapter.toResponse(writer, value.listOfListOfCustom)
+      writer.name("listOfListOfObject")
       listOfListOfObjectAdapter.toResponse(writer, value.listOfListOfObject)
+      writer.endObject()
     }
 
     companion object {
@@ -219,7 +230,10 @@ internal class CreateReviewForEpisode_ResponseAdapter(
 
       override fun toResponse(writer: JsonWriter,
           value: CreateReviewForEpisode.Data.CreateReview.ListOfListOfObject) {
+        writer.beginObject()
+        writer.name("name")
         nameAdapter.toResponse(writer, value.name)
+        writer.endObject()
       }
 
       companion object {

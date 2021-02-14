@@ -47,7 +47,10 @@ class TestQuery_ResponseAdapter(
   }
 
   override fun toResponse(writer: JsonWriter, value: TestQuery.Data) {
+    writer.beginObject()
+    writer.name("hero")
     heroAdapter.toResponse(writer, value.hero)
+    writer.endObject()
   }
 
   companion object {
@@ -122,12 +125,20 @@ class TestQuery_ResponseAdapter(
     }
 
     override fun toResponse(writer: JsonWriter, value: TestQuery.Data.Hero) {
+      writer.beginObject()
+      writer.name("name")
       nameAdapter.toResponse(writer, value.name)
+      writer.name("birthDate")
       birthDateAdapter.toResponse(writer, value.birthDate)
+      writer.name("appearanceDates")
       appearanceDatesAdapter.toResponse(writer, value.appearanceDates)
+      writer.name("fieldWithUnsupportedType")
       fieldWithUnsupportedTypeAdapter.toResponse(writer, value.fieldWithUnsupportedType)
+      writer.name("profileLink")
       profileLinkAdapter.toResponse(writer, value.profileLink)
+      writer.name("links")
       linksAdapter.toResponse(writer, value.links)
+      writer.endObject()
     }
 
     companion object {

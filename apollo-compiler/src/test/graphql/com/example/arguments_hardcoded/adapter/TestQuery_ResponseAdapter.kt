@@ -53,8 +53,12 @@ class TestQuery_ResponseAdapter(
   }
 
   override fun toResponse(writer: JsonWriter, value: TestQuery.Data) {
+    writer.beginObject()
+    writer.name("reviews")
     reviewsAdapter.toResponse(writer, value.reviews)
+    writer.name("testNullableArguments")
     testNullableArgumentsAdapter.toResponse(writer, value.testNullableArguments)
+    writer.endObject()
   }
 
   companion object {
@@ -118,8 +122,12 @@ class TestQuery_ResponseAdapter(
     }
 
     override fun toResponse(writer: JsonWriter, value: TestQuery.Data.Review) {
+      writer.beginObject()
+      writer.name("stars")
       starsAdapter.toResponse(writer, value.stars)
+      writer.name("commentary")
       commentaryAdapter.toResponse(writer, value.commentary)
+      writer.endObject()
     }
 
     companion object {

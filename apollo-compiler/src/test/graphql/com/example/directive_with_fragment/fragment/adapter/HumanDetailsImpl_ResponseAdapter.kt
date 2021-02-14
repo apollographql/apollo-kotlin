@@ -49,8 +49,12 @@ class HumanDetailsImpl_ResponseAdapter(
   }
 
   override fun toResponse(writer: JsonWriter, value: HumanDetailsImpl.Data) {
+    writer.beginObject()
+    writer.name("__typename")
     __typenameAdapter.toResponse(writer, value.__typename)
+    writer.name("homePlanet")
     homePlanetAdapter.toResponse(writer, value.homePlanet)
+    writer.endObject()
   }
 
   companion object {

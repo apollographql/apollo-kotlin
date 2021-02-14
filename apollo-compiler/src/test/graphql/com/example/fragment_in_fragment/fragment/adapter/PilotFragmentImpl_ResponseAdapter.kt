@@ -55,9 +55,14 @@ class PilotFragmentImpl_ResponseAdapter(
   }
 
   override fun toResponse(writer: JsonWriter, value: PilotFragmentImpl.Data) {
+    writer.beginObject()
+    writer.name("__typename")
     __typenameAdapter.toResponse(writer, value.__typename)
+    writer.name("name")
     nameAdapter.toResponse(writer, value.name)
+    writer.name("homeworld")
     homeworldAdapter.toResponse(writer, value.homeworld)
+    writer.endObject()
   }
 
   companion object {
@@ -148,8 +153,12 @@ class PilotFragmentImpl_ResponseAdapter(
       }
 
       fun toResponse(writer: JsonWriter, value: PilotFragmentImpl.Data.Homeworld.PlanetHomeworld) {
+        writer.beginObject()
+        writer.name("__typename")
         __typenameAdapter.toResponse(writer, value.__typename)
+        writer.name("name")
         nameAdapter.toResponse(writer, value.name)
+        writer.endObject()
       }
 
       companion object {
@@ -197,7 +206,10 @@ class PilotFragmentImpl_ResponseAdapter(
       }
 
       fun toResponse(writer: JsonWriter, value: PilotFragmentImpl.Data.Homeworld.OtherHomeworld) {
+        writer.beginObject()
+        writer.name("__typename")
         __typenameAdapter.toResponse(writer, value.__typename)
+        writer.endObject()
       }
 
       companion object {

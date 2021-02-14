@@ -49,8 +49,12 @@ class PlanetFragmentImpl_ResponseAdapter(
   }
 
   override fun toResponse(writer: JsonWriter, value: PlanetFragmentImpl.Data) {
+    writer.beginObject()
+    writer.name("__typename")
     __typenameAdapter.toResponse(writer, value.__typename)
+    writer.name("name")
     nameAdapter.toResponse(writer, value.name)
+    writer.endObject()
   }
 
   companion object {

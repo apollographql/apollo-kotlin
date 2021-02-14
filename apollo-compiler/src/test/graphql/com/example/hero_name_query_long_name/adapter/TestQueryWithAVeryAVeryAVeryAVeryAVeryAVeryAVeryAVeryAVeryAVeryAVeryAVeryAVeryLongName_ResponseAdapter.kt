@@ -50,8 +50,11 @@ class
 
   override fun toResponse(writer: JsonWriter,
       value: TestQueryWithAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryLongName.Data) {
+    writer.beginObject()
+    writer.name("heroAVeryAVeryAVeryAVeryAVeryAVeryAV")
     heroAVeryAVeryAVeryAVeryAVeryAVeryAVAdapter.toResponse(writer,
         value.heroAVeryAVeryAVeryAVeryAVeryAVeryAV)
+    writer.endObject()
   }
 
   companion object {
@@ -103,8 +106,11 @@ class
 
     override fun toResponse(writer: JsonWriter,
         value: TestQueryWithAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryLongName.Data.HeroAVeryAVeryAVeryAVeryAVeryAVeryAV) {
+      writer.beginObject()
+      writer.name("nameAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryLongName")
       nameAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryLongNameAdapter.toResponse(writer,
           value.nameAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryLongName)
+      writer.endObject()
     }
 
     companion object {
