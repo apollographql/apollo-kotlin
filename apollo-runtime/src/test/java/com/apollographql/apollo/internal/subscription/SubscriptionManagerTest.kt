@@ -356,7 +356,7 @@ class SubscriptionManagerTest {
 
     override fun variables() = Operation.EMPTY_VARIABLES
 
-    override fun adapter() = throw UnsupportedOperationException()
+    override fun adapter(customScalarAdapters: CustomScalarAdapters) = throw UnsupportedOperationException()
 
     override fun name(): String = "SomeSubscription"
 

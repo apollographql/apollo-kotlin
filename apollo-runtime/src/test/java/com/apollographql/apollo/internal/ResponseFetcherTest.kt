@@ -1,6 +1,7 @@
 package com.apollographql.apollo.internal
 
 import com.apollographql.apollo.ApolloClient
+import com.apollographql.apollo.api.CustomScalarAdapters
 import com.apollographql.apollo.api.Operation
 import com.apollographql.apollo.api.Query
 import com.apollographql.apollo.api.ResponseField
@@ -24,7 +25,7 @@ class ResponseFetcherTest {
       return Operation.EMPTY_VARIABLES
     }
 
-    override fun adapter() = throw UnsupportedOperationException()
+    override fun adapter(customScalarAdapters: CustomScalarAdapters) = throw UnsupportedOperationException()
 
     override fun name(): String {
       return operationName

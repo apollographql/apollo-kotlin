@@ -1,5 +1,6 @@
 package com.apollographql.apollo
 
+import com.apollographql.apollo.api.CustomScalarAdapters
 import com.apollographql.apollo.api.Operation
 import com.apollographql.apollo.api.Query
 import com.apollographql.apollo.api.ResponseField
@@ -36,7 +37,7 @@ class ApolloExceptionTest {
       return Operation.EMPTY_VARIABLES
     }
 
-    override fun adapter() = throw UnsupportedOperationException()
+    override fun adapter(customScalarAdapters: CustomScalarAdapters) = throw UnsupportedOperationException()
 
     override fun name(): String {
       return operationName
@@ -89,7 +90,7 @@ class ApolloExceptionTest {
   fun httpExceptionPrefetch() {
     server.enqueue(MockResponse().setResponseCode(401).setBody("Unauthorized request!"))
     Rx2Apollo
-        .from(apolloClient.prefetch<Operation.Data>(emptyQuery))
+        .from(apolloClient.prefetch(emptyQuery))
         .test()
         .awaitDone(timeoutSeconds, TimeUnit.SECONDS)
         .assertNoValues()
@@ -100,7 +101,7 @@ class ApolloExceptionTest {
   @Throws(Exception::class)
   fun testTimeoutException() {
     Rx2Apollo
-        .from(apolloClient.query<Operation.Data>(emptyQuery))
+        .from(apolloClient.query(emptyQuery))
         .test()
         .awaitDone(timeoutSeconds * 2, TimeUnit.SECONDS)
         .assertNoValues()
@@ -116,7 +117,7 @@ class ApolloExceptionTest {
   @Throws(Exception::class)
   fun testTimeoutExceptionPrefetch() {
     Rx2Apollo
-        .from(apolloClient.prefetch<Operation.Data>(emptyQuery))
+        .from(apolloClient.prefetch(emptyQuery))
         .test()
         .awaitDone(timeoutSeconds * 2, TimeUnit.SECONDS)
         .assertNoValues()
@@ -133,7 +134,7 @@ class ApolloExceptionTest {
   fun testParseException() {
     server.enqueue(MockResponse().setBody("Noise"))
     Rx2Apollo
-        .from(apolloClient.query<Operation.Data>(emptyQuery))
+        .from(apolloClient.query(emptyQuery))
         .test()
         .awaitDone(timeoutSeconds, TimeUnit.SECONDS)
         .assertNoValues()

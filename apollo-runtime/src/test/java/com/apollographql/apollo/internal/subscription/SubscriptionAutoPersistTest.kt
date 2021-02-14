@@ -159,7 +159,7 @@ class SubscriptionAutoPersistTest {
       return Operation.EMPTY_VARIABLES
     }
 
-    override fun adapter(): ResponseAdapter<Operation.Data> {
+    override fun adapter(customScalarAdapters: CustomScalarAdapters): ResponseAdapter<Operation.Data> {
       throw UnsupportedOperationException()
     }
 

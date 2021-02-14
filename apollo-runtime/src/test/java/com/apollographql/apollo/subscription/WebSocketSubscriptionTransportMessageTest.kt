@@ -96,7 +96,7 @@ class WebSocketSubscriptionTransportMessageTest {
             "data" to mapOf(
                 "commentAdded" to mapOf(
                     "__typename" to "Comment",
-                    "id" to BigDecimal.valueOf(10),
+                    "id" to 10,
                     "content" to "test10"
                 )
             )
