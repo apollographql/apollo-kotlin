@@ -57,13 +57,11 @@ class TestQuery_ResponseAdapter(
     val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
       ResponseField(
         type = ResponseField.Type.Named.Object("Starship"),
-        responseName = "starship",
         fieldName = "starship",
         arguments = mapOf<String, Any?>(
           "id" to mapOf<String, Any?>(
             "kind" to "Variable",
             "variableName" to "id")),
-        conditions = emptyList(),
         fieldSets = listOf(
           ResponseField.FieldSet(null, Starship.RESPONSE_FIELDS)
         ),
@@ -119,28 +117,16 @@ class TestQuery_ResponseAdapter(
       val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
         ResponseField(
           type = ResponseField.Type.NotNull(ResponseField.Type.Named.Other("String")),
-          responseName = "id",
           fieldName = "id",
-          arguments = emptyMap(),
-          conditions = emptyList(),
-          fieldSets = emptyList(),
         ),
         ResponseField(
           type = ResponseField.Type.NotNull(ResponseField.Type.Named.Other("String")),
-          responseName = "name",
           fieldName = "name",
-          arguments = emptyMap(),
-          conditions = emptyList(),
-          fieldSets = emptyList(),
         ),
         ResponseField(
           type =
               ResponseField.Type.List(ResponseField.Type.NotNull(ResponseField.Type.List(ResponseField.Type.NotNull(ResponseField.Type.Named.Other("Float"))))),
-          responseName = "coordinates",
           fieldName = "coordinates",
-          arguments = emptyMap(),
-          conditions = emptyList(),
-          fieldSets = emptyList(),
         )
       )
 

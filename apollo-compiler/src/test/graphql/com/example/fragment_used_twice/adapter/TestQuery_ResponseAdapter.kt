@@ -14,6 +14,7 @@ import com.apollographql.apollo.api.internal.json.JsonWriter
 import com.apollographql.apollo.api.internal.stringResponseAdapter
 import com.apollographql.apollo.exception.UnexpectedNullValue
 import com.example.fragment_used_twice.TestQuery
+import com.example.fragment_used_twice.type.CustomScalars
 import kotlin.Any
 import kotlin.Array
 import kotlin.String
@@ -55,10 +56,7 @@ class TestQuery_ResponseAdapter(
     val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
       ResponseField(
         type = ResponseField.Type.Named.Object("Character"),
-        responseName = "hero",
         fieldName = "hero",
-        arguments = emptyMap(),
-        conditions = emptyList(),
         fieldSets = listOf(
           ResponseField.FieldSet("Droid", Hero.CharacterHero.RESPONSE_FIELDS),
           ResponseField.FieldSet("Human", Hero.CharacterHumanHero.RESPONSE_FIELDS),
@@ -111,7 +109,7 @@ class TestQuery_ResponseAdapter(
       val nameAdapter: ResponseAdapter<String> = stringResponseAdapter
 
       val birthDateAdapter: ResponseAdapter<Any> =
-          customScalarAdapters.responseAdapterFor<Any>("Date")
+          customScalarAdapters.responseAdapterFor<Any>(CustomScalars.Date)
 
       fun fromResponse(reader: JsonReader, __typename: String?): TestQuery.Data.Hero.CharacterHero {
         var __typename: String? = __typename
@@ -147,29 +145,14 @@ class TestQuery_ResponseAdapter(
 
       companion object {
         val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
+          ResponseField.Typename,
           ResponseField(
             type = ResponseField.Type.NotNull(ResponseField.Type.Named.Other("String")),
-            responseName = "__typename",
-            fieldName = "__typename",
-            arguments = emptyMap(),
-            conditions = emptyList(),
-            fieldSets = emptyList(),
-          ),
-          ResponseField(
-            type = ResponseField.Type.NotNull(ResponseField.Type.Named.Other("String")),
-            responseName = "name",
             fieldName = "name",
-            arguments = emptyMap(),
-            conditions = emptyList(),
-            fieldSets = emptyList(),
           ),
           ResponseField(
             type = ResponseField.Type.NotNull(ResponseField.Type.Named.Other("Date")),
-            responseName = "birthDate",
             fieldName = "birthDate",
-            arguments = emptyMap(),
-            conditions = emptyList(),
-            fieldSets = emptyList(),
           )
         )
 
@@ -185,7 +168,7 @@ class TestQuery_ResponseAdapter(
       val nameAdapter: ResponseAdapter<String> = stringResponseAdapter
 
       val birthDateAdapter: ResponseAdapter<Any> =
-          customScalarAdapters.responseAdapterFor<Any>("Date")
+          customScalarAdapters.responseAdapterFor<Any>(CustomScalars.Date)
 
       fun fromResponse(reader: JsonReader, __typename: String?):
           TestQuery.Data.Hero.CharacterHumanHero {
@@ -222,29 +205,14 @@ class TestQuery_ResponseAdapter(
 
       companion object {
         val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
+          ResponseField.Typename,
           ResponseField(
             type = ResponseField.Type.NotNull(ResponseField.Type.Named.Other("String")),
-            responseName = "__typename",
-            fieldName = "__typename",
-            arguments = emptyMap(),
-            conditions = emptyList(),
-            fieldSets = emptyList(),
-          ),
-          ResponseField(
-            type = ResponseField.Type.NotNull(ResponseField.Type.Named.Other("String")),
-            responseName = "name",
             fieldName = "name",
-            arguments = emptyMap(),
-            conditions = emptyList(),
-            fieldSets = emptyList(),
           ),
           ResponseField(
             type = ResponseField.Type.NotNull(ResponseField.Type.Named.Other("Date")),
-            responseName = "birthDate",
             fieldName = "birthDate",
-            arguments = emptyMap(),
-            conditions = emptyList(),
-            fieldSets = emptyList(),
           )
         )
 
@@ -280,14 +248,7 @@ class TestQuery_ResponseAdapter(
 
       companion object {
         val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
-          ResponseField(
-            type = ResponseField.Type.NotNull(ResponseField.Type.Named.Other("String")),
-            responseName = "__typename",
-            fieldName = "__typename",
-            arguments = emptyMap(),
-            conditions = emptyList(),
-            fieldSets = emptyList(),
-          )
+          ResponseField.Typename
         )
 
         val RESPONSE_NAMES: List<String> = RESPONSE_FIELDS.map { it.responseName }

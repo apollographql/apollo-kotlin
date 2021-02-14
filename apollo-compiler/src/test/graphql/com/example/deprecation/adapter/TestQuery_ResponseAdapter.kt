@@ -56,13 +56,11 @@ class TestQuery_ResponseAdapter(
     val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
       ResponseField(
         type = ResponseField.Type.Named.Object("Character"),
-        responseName = "hero",
         fieldName = "hero",
         arguments = mapOf<String, Any?>(
           "episode" to mapOf<String, Any?>(
             "kind" to "Variable",
             "variableName" to "episode")),
-        conditions = emptyList(),
         fieldSets = listOf(
           ResponseField.FieldSet(null, Hero.RESPONSE_FIELDS)
         ),
@@ -119,27 +117,15 @@ class TestQuery_ResponseAdapter(
       val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
         ResponseField(
           type = ResponseField.Type.NotNull(ResponseField.Type.Named.Other("String")),
-          responseName = "name",
           fieldName = "name",
-          arguments = emptyMap(),
-          conditions = emptyList(),
-          fieldSets = emptyList(),
         ),
         ResponseField(
           type = ResponseField.Type.NotNull(ResponseField.Type.Named.Other("String")),
-          responseName = "deprecated",
           fieldName = "deprecated",
-          arguments = emptyMap(),
-          conditions = emptyList(),
-          fieldSets = emptyList(),
         ),
         ResponseField(
           type = ResponseField.Type.NotNull(ResponseField.Type.Named.Other("Boolean")),
-          responseName = "deprecatedBool",
           fieldName = "deprecatedBool",
-          arguments = emptyMap(),
-          conditions = emptyList(),
-          fieldSets = emptyList(),
         )
       )
 

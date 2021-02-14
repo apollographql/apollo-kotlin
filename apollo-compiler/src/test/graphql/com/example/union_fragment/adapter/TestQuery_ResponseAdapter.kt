@@ -55,11 +55,9 @@ class TestQuery_ResponseAdapter(
     val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
       ResponseField(
         type = ResponseField.Type.List(ResponseField.Type.Named.Object("SearchResult")),
-        responseName = "search",
         fieldName = "search",
         arguments = mapOf<String, Any?>(
           "text" to "test"),
-        conditions = emptyList(),
         fieldSets = listOf(
           ResponseField.FieldSet("Starship", Search.StarshipSearch.RESPONSE_FIELDS),
           ResponseField.FieldSet(null, Search.OtherSearch.RESPONSE_FIELDS),
@@ -141,29 +139,14 @@ class TestQuery_ResponseAdapter(
 
       companion object {
         val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
+          ResponseField.Typename,
           ResponseField(
             type = ResponseField.Type.NotNull(ResponseField.Type.Named.Other("String")),
-            responseName = "__typename",
-            fieldName = "__typename",
-            arguments = emptyMap(),
-            conditions = emptyList(),
-            fieldSets = emptyList(),
-          ),
-          ResponseField(
-            type = ResponseField.Type.NotNull(ResponseField.Type.Named.Other("String")),
-            responseName = "id",
             fieldName = "id",
-            arguments = emptyMap(),
-            conditions = emptyList(),
-            fieldSets = emptyList(),
           ),
           ResponseField(
             type = ResponseField.Type.NotNull(ResponseField.Type.Named.Other("String")),
-            responseName = "name",
             fieldName = "name",
-            arguments = emptyMap(),
-            conditions = emptyList(),
-            fieldSets = emptyList(),
           )
         )
 
@@ -199,14 +182,7 @@ class TestQuery_ResponseAdapter(
 
       companion object {
         val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
-          ResponseField(
-            type = ResponseField.Type.NotNull(ResponseField.Type.Named.Other("String")),
-            responseName = "__typename",
-            fieldName = "__typename",
-            arguments = emptyMap(),
-            conditions = emptyList(),
-            fieldSets = emptyList(),
-          )
+          ResponseField.Typename
         )
 
         val RESPONSE_NAMES: List<String> = RESPONSE_FIELDS.map { it.responseName }

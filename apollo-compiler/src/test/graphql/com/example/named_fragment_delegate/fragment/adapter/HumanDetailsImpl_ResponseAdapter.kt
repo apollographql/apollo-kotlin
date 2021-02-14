@@ -15,6 +15,7 @@ import com.apollographql.apollo.api.internal.json.JsonWriter
 import com.apollographql.apollo.api.internal.stringResponseAdapter
 import com.apollographql.apollo.exception.UnexpectedNullValue
 import com.example.named_fragment_delegate.fragment.HumanDetailsImpl
+import com.example.named_fragment_delegate.type.CustomScalars
 import kotlin.Any
 import kotlin.Array
 import kotlin.String
@@ -31,7 +32,8 @@ class HumanDetailsImpl_ResponseAdapter(
 
   val nameAdapter: ResponseAdapter<String> = stringResponseAdapter
 
-  val profileLinkAdapter: ResponseAdapter<Any> = customScalarAdapters.responseAdapterFor<Any>("URL")
+  val profileLinkAdapter: ResponseAdapter<Any> =
+      customScalarAdapters.responseAdapterFor<Any>(CustomScalars.URL)
 
   val friendsConnectionAdapter: ResponseAdapter<HumanDetailsImpl.Data.FriendsConnection> =
       FriendsConnection(customScalarAdapters)
@@ -78,36 +80,18 @@ class HumanDetailsImpl_ResponseAdapter(
 
   companion object {
     val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
+      ResponseField.Typename,
       ResponseField(
         type = ResponseField.Type.NotNull(ResponseField.Type.Named.Other("String")),
-        responseName = "__typename",
-        fieldName = "__typename",
-        arguments = emptyMap(),
-        conditions = emptyList(),
-        fieldSets = emptyList(),
-      ),
-      ResponseField(
-        type = ResponseField.Type.NotNull(ResponseField.Type.Named.Other("String")),
-        responseName = "name",
         fieldName = "name",
-        arguments = emptyMap(),
-        conditions = emptyList(),
-        fieldSets = emptyList(),
       ),
       ResponseField(
         type = ResponseField.Type.NotNull(ResponseField.Type.Named.Other("URL")),
-        responseName = "profileLink",
         fieldName = "profileLink",
-        arguments = emptyMap(),
-        conditions = emptyList(),
-        fieldSets = emptyList(),
       ),
       ResponseField(
         type = ResponseField.Type.NotNull(ResponseField.Type.Named.Object("FriendsConnection")),
-        responseName = "friendsConnection",
         fieldName = "friendsConnection",
-        arguments = emptyMap(),
-        conditions = emptyList(),
         fieldSets = listOf(
           ResponseField.FieldSet(null, FriendsConnection.RESPONSE_FIELDS)
         ),
@@ -149,10 +133,7 @@ class HumanDetailsImpl_ResponseAdapter(
       val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
         ResponseField(
           type = ResponseField.Type.List(ResponseField.Type.Named.Object("FriendsEdge")),
-          responseName = "edges",
           fieldName = "edges",
-          arguments = emptyMap(),
-          conditions = emptyList(),
           fieldSets = listOf(
             ResponseField.FieldSet(null, Edge.RESPONSE_FIELDS)
           ),
@@ -195,10 +176,7 @@ class HumanDetailsImpl_ResponseAdapter(
         val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
           ResponseField(
             type = ResponseField.Type.Named.Object("Character"),
-            responseName = "node",
             fieldName = "node",
-            arguments = emptyMap(),
-            conditions = emptyList(),
             fieldSets = listOf(
               ResponseField.FieldSet(null, Node.RESPONSE_FIELDS)
             ),
@@ -241,11 +219,7 @@ class HumanDetailsImpl_ResponseAdapter(
           val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
             ResponseField(
               type = ResponseField.Type.NotNull(ResponseField.Type.Named.Other("String")),
-              responseName = "name",
               fieldName = "name",
-              arguments = emptyMap(),
-              conditions = emptyList(),
-              fieldSets = emptyList(),
             )
           )
 

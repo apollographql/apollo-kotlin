@@ -54,10 +54,7 @@ class TestQuery_ResponseAdapter(
     val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
       ResponseField(
         type = ResponseField.Type.Named.Object("Character"),
-        responseName = "hero",
         fieldName = "hero",
-        arguments = emptyMap(),
-        conditions = emptyList(),
         fieldSets = listOf(
           ResponseField.FieldSet(null, Hero.RESPONSE_FIELDS)
         ),
@@ -105,19 +102,11 @@ class TestQuery_ResponseAdapter(
       val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
         ResponseField(
           type = ResponseField.Type.NotNull(ResponseField.Type.Named.Other("String")),
-          responseName = "id",
           fieldName = "id",
-          arguments = emptyMap(),
-          conditions = emptyList(),
-          fieldSets = emptyList(),
         ),
         ResponseField(
           type = ResponseField.Type.NotNull(ResponseField.Type.Named.Other("String")),
-          responseName = "name",
           fieldName = "name",
-          arguments = emptyMap(),
-          conditions = emptyList(),
-          fieldSets = emptyList(),
         )
       )
 

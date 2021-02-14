@@ -14,11 +14,11 @@ import kotlin.jvm.JvmStatic
  */
 class ResponseField(
     val type: Type,
-    val responseName: String,
     val fieldName: String,
-    val arguments: Map<String, Any?>,
-    val conditions: List<Condition>,
-    val fieldSets: List<FieldSet>,
+    val responseName: String = fieldName,
+    val arguments: Map<String, Any?> = emptyMap(),
+    val conditions: List<Condition> = emptyList(),
+    val fieldSets: List<FieldSet> = emptyList(),
 ) {
 
   class FieldSet(val typeCondition: String?, val responseFields: Array<ResponseField>)

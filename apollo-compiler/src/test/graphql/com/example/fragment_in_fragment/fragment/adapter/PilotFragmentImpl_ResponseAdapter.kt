@@ -67,28 +67,14 @@ class PilotFragmentImpl_ResponseAdapter(
 
   companion object {
     val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
-      ResponseField(
-        type = ResponseField.Type.NotNull(ResponseField.Type.Named.Other("String")),
-        responseName = "__typename",
-        fieldName = "__typename",
-        arguments = emptyMap(),
-        conditions = emptyList(),
-        fieldSets = emptyList(),
-      ),
+      ResponseField.Typename,
       ResponseField(
         type = ResponseField.Type.Named.Other("String"),
-        responseName = "name",
         fieldName = "name",
-        arguments = emptyMap(),
-        conditions = emptyList(),
-        fieldSets = emptyList(),
       ),
       ResponseField(
         type = ResponseField.Type.Named.Object("Planet"),
-        responseName = "homeworld",
         fieldName = "homeworld",
-        arguments = emptyMap(),
-        conditions = emptyList(),
         fieldSets = listOf(
           ResponseField.FieldSet("Planet", Homeworld.PlanetHomeworld.RESPONSE_FIELDS),
           ResponseField.FieldSet(null, Homeworld.OtherHomeworld.RESPONSE_FIELDS),
@@ -163,21 +149,10 @@ class PilotFragmentImpl_ResponseAdapter(
 
       companion object {
         val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
-          ResponseField(
-            type = ResponseField.Type.NotNull(ResponseField.Type.Named.Other("String")),
-            responseName = "__typename",
-            fieldName = "__typename",
-            arguments = emptyMap(),
-            conditions = emptyList(),
-            fieldSets = emptyList(),
-          ),
+          ResponseField.Typename,
           ResponseField(
             type = ResponseField.Type.Named.Other("String"),
-            responseName = "name",
             fieldName = "name",
-            arguments = emptyMap(),
-            conditions = emptyList(),
-            fieldSets = emptyList(),
           )
         )
 
@@ -214,14 +189,7 @@ class PilotFragmentImpl_ResponseAdapter(
 
       companion object {
         val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
-          ResponseField(
-            type = ResponseField.Type.NotNull(ResponseField.Type.Named.Other("String")),
-            responseName = "__typename",
-            fieldName = "__typename",
-            arguments = emptyMap(),
-            conditions = emptyList(),
-            fieldSets = emptyList(),
-          )
+          ResponseField.Typename
         )
 
         val RESPONSE_NAMES: List<String> = RESPONSE_FIELDS.map { it.responseName }

@@ -61,14 +61,13 @@ class
     val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
       ResponseField(
         type = ResponseField.Type.Named.Object("Character"),
-        responseName = "heroAVeryAVeryAVeryAVeryAVeryAVeryAV",
         fieldName = "hero",
+        responseName = "heroAVeryAVeryAVeryAVeryAVeryAVeryAV",
         arguments = mapOf<String, Any?>(
           "episode" to mapOf<String, Any?>(
             "kind" to "Variable",
             "variableName" to
                 "episodeAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryLongName")),
-        conditions = emptyList(),
         fieldSets = listOf(
           ResponseField.FieldSet(null, HeroAVeryAVeryAVeryAVeryAVeryAVeryAV.RESPONSE_FIELDS)
         ),
@@ -117,12 +116,9 @@ class
       val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
         ResponseField(
           type = ResponseField.Type.NotNull(ResponseField.Type.Named.Other("String")),
+          fieldName = "name",
           responseName =
               "nameAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryLongName",
-          fieldName = "name",
-          arguments = emptyMap(),
-          conditions = emptyList(),
-          fieldSets = emptyList(),
         )
       )
 

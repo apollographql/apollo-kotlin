@@ -58,21 +58,10 @@ internal class HumanDetailsImpl_ResponseAdapter(
 
   companion object {
     val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
+      ResponseField.Typename,
       ResponseField(
         type = ResponseField.Type.NotNull(ResponseField.Type.Named.Other("String")),
-        responseName = "__typename",
-        fieldName = "__typename",
-        arguments = emptyMap(),
-        conditions = emptyList(),
-        fieldSets = emptyList(),
-      ),
-      ResponseField(
-        type = ResponseField.Type.NotNull(ResponseField.Type.Named.Other("String")),
-        responseName = "name",
         fieldName = "name",
-        arguments = emptyMap(),
-        conditions = emptyList(),
-        fieldSets = emptyList(),
       )
     )
 

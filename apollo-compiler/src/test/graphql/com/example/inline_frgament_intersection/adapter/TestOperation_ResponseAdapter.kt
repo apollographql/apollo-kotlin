@@ -60,10 +60,7 @@ class TestOperation_ResponseAdapter(
     val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
       ResponseField(
         type = ResponseField.Type.NotNull(ResponseField.Type.Named.Object("Anything")),
-        responseName = "random",
         fieldName = "random",
-        arguments = emptyMap(),
-        conditions = emptyList(),
         fieldSets = listOf(
           ResponseField.FieldSet("Human", Random.BeingHumanRandom.RESPONSE_FIELDS),
           ResponseField.FieldSet("Wookie", Random.BeingWookieRandom.RESPONSE_FIELDS),
@@ -161,29 +158,15 @@ class TestOperation_ResponseAdapter(
 
       companion object {
         val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
+          ResponseField.Typename,
           ResponseField(
             type = ResponseField.Type.NotNull(ResponseField.Type.Named.Other("String")),
-            responseName = "__typename",
-            fieldName = "__typename",
-            arguments = emptyMap(),
-            conditions = emptyList(),
-            fieldSets = emptyList(),
-          ),
-          ResponseField(
-            type = ResponseField.Type.NotNull(ResponseField.Type.Named.Other("String")),
-            responseName = "name",
             fieldName = "name",
-            arguments = emptyMap(),
-            conditions = emptyList(),
-            fieldSets = emptyList(),
           ),
           ResponseField(
             type =
                 ResponseField.Type.NotNull(ResponseField.Type.List(ResponseField.Type.NotNull(ResponseField.Type.Named.Object("Being")))),
-            responseName = "friends",
             fieldName = "friends",
-            arguments = emptyMap(),
-            conditions = emptyList(),
             fieldSets = listOf(
               ResponseField.FieldSet("Wookie", Friend.WookieFriend.RESPONSE_FIELDS),
               ResponseField.FieldSet(null, Friend.OtherFriend.RESPONSE_FIELDS),
@@ -191,11 +174,7 @@ class TestOperation_ResponseAdapter(
           ),
           ResponseField(
             type = ResponseField.Type.Named.Other("String"),
-            responseName = "profilePictureUrl",
             fieldName = "profilePictureUrl",
-            arguments = emptyMap(),
-            conditions = emptyList(),
-            fieldSets = emptyList(),
           )
         )
 
@@ -292,45 +271,22 @@ class TestOperation_ResponseAdapter(
 
           companion object {
             val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
+              ResponseField.Typename,
               ResponseField(
                 type = ResponseField.Type.NotNull(ResponseField.Type.Named.Other("String")),
-                responseName = "__typename",
-                fieldName = "__typename",
-                arguments = emptyMap(),
-                conditions = emptyList(),
-                fieldSets = emptyList(),
-              ),
-              ResponseField(
-                type = ResponseField.Type.NotNull(ResponseField.Type.Named.Other("String")),
-                responseName = "name",
                 fieldName = "name",
-                arguments = emptyMap(),
-                conditions = emptyList(),
-                fieldSets = emptyList(),
               ),
               ResponseField(
                 type = ResponseField.Type.Named.Other("Boolean"),
-                responseName = "isFamous",
                 fieldName = "isFamous",
-                arguments = emptyMap(),
-                conditions = emptyList(),
-                fieldSets = emptyList(),
               ),
               ResponseField(
                 type = ResponseField.Type.Named.Other("Float"),
-                responseName = "lifeExpectancy",
                 fieldName = "lifeExpectancy",
-                arguments = emptyMap(),
-                conditions = emptyList(),
-                fieldSets = emptyList(),
               ),
               ResponseField(
                 type = ResponseField.Type.NotNull(ResponseField.Type.Named.Other("Race")),
-                responseName = "race",
                 fieldName = "race",
-                arguments = emptyMap(),
-                conditions = emptyList(),
-                fieldSets = emptyList(),
               )
             )
 
@@ -383,29 +339,14 @@ class TestOperation_ResponseAdapter(
 
           companion object {
             val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
+              ResponseField.Typename,
               ResponseField(
                 type = ResponseField.Type.NotNull(ResponseField.Type.Named.Other("String")),
-                responseName = "__typename",
-                fieldName = "__typename",
-                arguments = emptyMap(),
-                conditions = emptyList(),
-                fieldSets = emptyList(),
-              ),
-              ResponseField(
-                type = ResponseField.Type.NotNull(ResponseField.Type.Named.Other("String")),
-                responseName = "name",
                 fieldName = "name",
-                arguments = emptyMap(),
-                conditions = emptyList(),
-                fieldSets = emptyList(),
               ),
               ResponseField(
                 type = ResponseField.Type.Named.Other("Boolean"),
-                responseName = "isFamous",
                 fieldName = "isFamous",
-                arguments = emptyMap(),
-                conditions = emptyList(),
-                fieldSets = emptyList(),
               )
             )
 
@@ -467,29 +408,15 @@ class TestOperation_ResponseAdapter(
 
       companion object {
         val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
+          ResponseField.Typename,
           ResponseField(
             type = ResponseField.Type.NotNull(ResponseField.Type.Named.Other("String")),
-            responseName = "__typename",
-            fieldName = "__typename",
-            arguments = emptyMap(),
-            conditions = emptyList(),
-            fieldSets = emptyList(),
-          ),
-          ResponseField(
-            type = ResponseField.Type.NotNull(ResponseField.Type.Named.Other("String")),
-            responseName = "name",
             fieldName = "name",
-            arguments = emptyMap(),
-            conditions = emptyList(),
-            fieldSets = emptyList(),
           ),
           ResponseField(
             type =
                 ResponseField.Type.NotNull(ResponseField.Type.List(ResponseField.Type.NotNull(ResponseField.Type.Named.Object("Being")))),
-            responseName = "friends",
             fieldName = "friends",
-            arguments = emptyMap(),
-            conditions = emptyList(),
             fieldSets = listOf(
               ResponseField.FieldSet("Wookie", Friend.WookieFriend.RESPONSE_FIELDS),
               ResponseField.FieldSet(null, Friend.OtherFriend.RESPONSE_FIELDS),
@@ -497,11 +424,7 @@ class TestOperation_ResponseAdapter(
           ),
           ResponseField(
             type = ResponseField.Type.NotNull(ResponseField.Type.Named.Other("Race")),
-            responseName = "race",
             fieldName = "race",
-            arguments = emptyMap(),
-            conditions = emptyList(),
-            fieldSets = emptyList(),
           )
         )
 
@@ -583,29 +506,14 @@ class TestOperation_ResponseAdapter(
 
           companion object {
             val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
+              ResponseField.Typename,
               ResponseField(
                 type = ResponseField.Type.NotNull(ResponseField.Type.Named.Other("String")),
-                responseName = "__typename",
-                fieldName = "__typename",
-                arguments = emptyMap(),
-                conditions = emptyList(),
-                fieldSets = emptyList(),
-              ),
-              ResponseField(
-                type = ResponseField.Type.NotNull(ResponseField.Type.Named.Other("String")),
-                responseName = "name",
                 fieldName = "name",
-                arguments = emptyMap(),
-                conditions = emptyList(),
-                fieldSets = emptyList(),
               ),
               ResponseField(
                 type = ResponseField.Type.Named.Other("Float"),
-                responseName = "lifeExpectancy",
                 fieldName = "lifeExpectancy",
-                arguments = emptyMap(),
-                conditions = emptyList(),
-                fieldSets = emptyList(),
               )
             )
 
@@ -658,29 +566,14 @@ class TestOperation_ResponseAdapter(
 
           companion object {
             val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
+              ResponseField.Typename,
               ResponseField(
                 type = ResponseField.Type.NotNull(ResponseField.Type.Named.Other("String")),
-                responseName = "__typename",
-                fieldName = "__typename",
-                arguments = emptyMap(),
-                conditions = emptyList(),
-                fieldSets = emptyList(),
-              ),
-              ResponseField(
-                type = ResponseField.Type.NotNull(ResponseField.Type.Named.Other("String")),
-                responseName = "name",
                 fieldName = "name",
-                arguments = emptyMap(),
-                conditions = emptyList(),
-                fieldSets = emptyList(),
               ),
               ResponseField(
                 type = ResponseField.Type.Named.Other("Float"),
-                responseName = "lifeExpectancy",
                 fieldName = "lifeExpectancy",
-                arguments = emptyMap(),
-                conditions = emptyList(),
-                fieldSets = emptyList(),
               )
             )
 
@@ -719,14 +612,7 @@ class TestOperation_ResponseAdapter(
 
       companion object {
         val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
-          ResponseField(
-            type = ResponseField.Type.NotNull(ResponseField.Type.Named.Other("String")),
-            responseName = "__typename",
-            fieldName = "__typename",
-            arguments = emptyMap(),
-            conditions = emptyList(),
-            fieldSets = emptyList(),
-          )
+          ResponseField.Typename
         )
 
         val RESPONSE_NAMES: List<String> = RESPONSE_FIELDS.map { it.responseName }

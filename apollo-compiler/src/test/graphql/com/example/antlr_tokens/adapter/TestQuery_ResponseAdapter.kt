@@ -53,10 +53,7 @@ class TestQuery_ResponseAdapter(
     val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
       ResponseField(
         type = ResponseField.Type.Named.Object("TypeWithGraphQLKeywords"),
-        responseName = "typeWithGraphQLKeywords",
         fieldName = "typeWithGraphQLKeywords",
-        arguments = emptyMap(),
-        conditions = emptyList(),
         fieldSets = listOf(
           ResponseField.FieldSet(null, TypeWithGraphQLKeywords.RESPONSE_FIELDS)
         ),
@@ -111,34 +108,25 @@ class TestQuery_ResponseAdapter(
       val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
         ResponseField(
           type = ResponseField.Type.Named.Other("String"),
-          responseName = "on",
           fieldName = "on",
-          arguments = emptyMap(),
-          conditions = emptyList(),
-          fieldSets = emptyList(),
         ),
         ResponseField(
           type = ResponseField.Type.Named.Other("String"),
-          responseName = "null",
           fieldName = "null",
           arguments = mapOf<String, Any?>(
             "fragment" to mapOf<String, Any?>(
               "kind" to "Variable",
               "variableName" to "operation")),
-          conditions = emptyList(),
-          fieldSets = emptyList(),
         ),
         ResponseField(
           type = ResponseField.Type.Named.Other("String"),
-          responseName = "alias",
           fieldName = "null",
+          responseName = "alias",
           arguments = mapOf<String, Any?>(
             "fragment" to """
             |A string
             |with a new line
             """.trimMargin()),
-          conditions = emptyList(),
-          fieldSets = emptyList(),
         )
       )
 

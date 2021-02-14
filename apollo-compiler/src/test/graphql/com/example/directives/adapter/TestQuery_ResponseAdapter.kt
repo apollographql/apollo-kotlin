@@ -55,10 +55,7 @@ class TestQuery_ResponseAdapter(
     val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
       ResponseField(
         type = ResponseField.Type.Named.Object("Character"),
-        responseName = "hero",
         fieldName = "hero",
-        arguments = emptyMap(),
-        conditions = emptyList(),
         fieldSets = listOf(
           ResponseField.FieldSet(null, Hero.RESPONSE_FIELDS)
         ),
@@ -107,19 +104,14 @@ class TestQuery_ResponseAdapter(
       val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
         ResponseField(
           type = ResponseField.Type.Named.Other("String"),
-          responseName = "name",
           fieldName = "name",
-          arguments = emptyMap(),
           conditions = listOf(
             ResponseField.Condition.booleanCondition("includeName", false)
           ),
-          fieldSets = emptyList(),
         ),
         ResponseField(
           type = ResponseField.Type.Named.Object("FriendsConnection"),
-          responseName = "friendsConnection",
           fieldName = "friendsConnection",
-          arguments = emptyMap(),
           conditions = listOf(
             ResponseField.Condition.booleanCondition("skipFriends", true)
           ),
@@ -163,11 +155,7 @@ class TestQuery_ResponseAdapter(
         val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
           ResponseField(
             type = ResponseField.Type.Named.Other("Int"),
-            responseName = "totalCount",
             fieldName = "totalCount",
-            arguments = emptyMap(),
-            conditions = emptyList(),
-            fieldSets = emptyList(),
           )
         )
 

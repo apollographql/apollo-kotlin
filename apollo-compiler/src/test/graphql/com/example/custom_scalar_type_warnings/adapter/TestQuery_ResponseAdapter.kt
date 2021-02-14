@@ -14,6 +14,7 @@ import com.apollographql.apollo.api.internal.json.JsonReader
 import com.apollographql.apollo.api.internal.json.JsonWriter
 import com.apollographql.apollo.exception.UnexpectedNullValue
 import com.example.custom_scalar_type_warnings.TestQuery
+import com.example.custom_scalar_type_warnings.type.CustomScalars
 import kotlin.Any
 import kotlin.Array
 import kotlin.String
@@ -55,10 +56,7 @@ class TestQuery_ResponseAdapter(
     val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
       ResponseField(
         type = ResponseField.Type.Named.Object("Character"),
-        responseName = "hero",
         fieldName = "hero",
-        arguments = emptyMap(),
-        conditions = emptyList(),
         fieldSets = listOf(
           ResponseField.FieldSet(null, Hero.RESPONSE_FIELDS)
         ),
@@ -72,7 +70,7 @@ class TestQuery_ResponseAdapter(
     customScalarAdapters: CustomScalarAdapters
   ) : ResponseAdapter<TestQuery.Data.Hero> {
     val linksAdapter: ResponseAdapter<List<Any>> =
-        ListResponseAdapter(customScalarAdapters.responseAdapterFor<Any>("URL"))
+        ListResponseAdapter(customScalarAdapters.responseAdapterFor<Any>(CustomScalars.URL))
 
     override fun fromResponse(reader: JsonReader): TestQuery.Data.Hero {
       var links: List<Any>? = null
@@ -101,11 +99,7 @@ class TestQuery_ResponseAdapter(
         ResponseField(
           type =
               ResponseField.Type.NotNull(ResponseField.Type.List(ResponseField.Type.NotNull(ResponseField.Type.Named.Other("URL")))),
-          responseName = "links",
           fieldName = "links",
-          arguments = emptyMap(),
-          conditions = emptyList(),
-          fieldSets = emptyList(),
         )
       )
 

@@ -60,20 +60,10 @@ class QueryFragmentImpl_ResponseAdapter(
 
   companion object {
     val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
-      ResponseField(
-        type = ResponseField.Type.NotNull(ResponseField.Type.Named.Other("String")),
-        responseName = "__typename",
-        fieldName = "__typename",
-        arguments = emptyMap(),
-        conditions = emptyList(),
-        fieldSets = emptyList(),
-      ),
+      ResponseField.Typename,
       ResponseField(
         type = ResponseField.Type.Named.Object("Character"),
-        responseName = "hero",
         fieldName = "hero",
-        arguments = emptyMap(),
-        conditions = emptyList(),
         fieldSets = listOf(
           ResponseField.FieldSet(null, Hero.RESPONSE_FIELDS)
         ),
@@ -114,11 +104,7 @@ class QueryFragmentImpl_ResponseAdapter(
       val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
         ResponseField(
           type = ResponseField.Type.NotNull(ResponseField.Type.Named.Other("String")),
-          responseName = "name",
           fieldName = "name",
-          arguments = emptyMap(),
-          conditions = emptyList(),
-          fieldSets = emptyList(),
         )
       )
 

@@ -16,6 +16,7 @@ import com.apollographql.apollo.api.internal.json.JsonWriter
 import com.apollographql.apollo.api.internal.stringResponseAdapter
 import com.apollographql.apollo.exception.UnexpectedNullValue
 import com.example.mutation_create_review.CreateReviewForEpisode
+import com.example.mutation_create_review.type.CustomScalars
 import com.example.mutation_create_review.type.Episode
 import com.example.mutation_create_review.type.Episode_ResponseAdapter
 import java.util.Date
@@ -60,7 +61,6 @@ internal class CreateReviewForEpisode_ResponseAdapter(
     val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
       ResponseField(
         type = ResponseField.Type.Named.Object("Review"),
-        responseName = "createReview",
         fieldName = "createReview",
         arguments = mapOf<String, Any?>(
           "episode" to mapOf<String, Any?>(
@@ -69,7 +69,6 @@ internal class CreateReviewForEpisode_ResponseAdapter(
           "review" to mapOf<String, Any?>(
             "kind" to "Variable",
             "variableName" to "review")),
-        conditions = emptyList(),
         fieldSets = listOf(
           ResponseField.FieldSet(null, CreateReview.RESPONSE_FIELDS)
         ),
@@ -93,7 +92,7 @@ internal class CreateReviewForEpisode_ResponseAdapter(
         NullableResponseAdapter(ListResponseAdapter(ListResponseAdapter(Episode_ResponseAdapter)))
 
     val listOfListOfCustomAdapter: ResponseAdapter<List<List<Date>>?> =
-        NullableResponseAdapter(ListResponseAdapter(ListResponseAdapter(customScalarAdapters.responseAdapterFor<Date>("Date"))))
+        NullableResponseAdapter(ListResponseAdapter(ListResponseAdapter(customScalarAdapters.responseAdapterFor<Date>(CustomScalars.Date))))
 
     val listOfListOfObjectAdapter:
         ResponseAdapter<List<List<CreateReviewForEpisode.Data.CreateReview.ListOfListOfObject>>?> =
@@ -150,54 +149,31 @@ internal class CreateReviewForEpisode_ResponseAdapter(
       val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
         ResponseField(
           type = ResponseField.Type.NotNull(ResponseField.Type.Named.Other("Int")),
-          responseName = "stars",
           fieldName = "stars",
-          arguments = emptyMap(),
-          conditions = emptyList(),
-          fieldSets = emptyList(),
         ),
         ResponseField(
           type = ResponseField.Type.Named.Other("String"),
-          responseName = "commentary",
           fieldName = "commentary",
-          arguments = emptyMap(),
-          conditions = emptyList(),
-          fieldSets = emptyList(),
         ),
         ResponseField(
           type =
               ResponseField.Type.List(ResponseField.Type.NotNull(ResponseField.Type.List(ResponseField.Type.NotNull(ResponseField.Type.Named.Other("String"))))),
-          responseName = "listOfListOfString",
           fieldName = "listOfListOfString",
-          arguments = emptyMap(),
-          conditions = emptyList(),
-          fieldSets = emptyList(),
         ),
         ResponseField(
           type =
               ResponseField.Type.List(ResponseField.Type.NotNull(ResponseField.Type.List(ResponseField.Type.NotNull(ResponseField.Type.Named.Other("Episode"))))),
-          responseName = "listOfListOfEnum",
           fieldName = "listOfListOfEnum",
-          arguments = emptyMap(),
-          conditions = emptyList(),
-          fieldSets = emptyList(),
         ),
         ResponseField(
           type =
               ResponseField.Type.List(ResponseField.Type.NotNull(ResponseField.Type.List(ResponseField.Type.NotNull(ResponseField.Type.Named.Other("Date"))))),
-          responseName = "listOfListOfCustom",
           fieldName = "listOfListOfCustom",
-          arguments = emptyMap(),
-          conditions = emptyList(),
-          fieldSets = emptyList(),
         ),
         ResponseField(
           type =
               ResponseField.Type.List(ResponseField.Type.NotNull(ResponseField.Type.List(ResponseField.Type.NotNull(ResponseField.Type.Named.Object("Character"))))),
-          responseName = "listOfListOfObject",
           fieldName = "listOfListOfObject",
-          arguments = emptyMap(),
-          conditions = emptyList(),
           fieldSets = listOf(
             ResponseField.FieldSet(null, ListOfListOfObject.RESPONSE_FIELDS)
           ),
@@ -240,11 +216,7 @@ internal class CreateReviewForEpisode_ResponseAdapter(
         val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
           ResponseField(
             type = ResponseField.Type.NotNull(ResponseField.Type.Named.Other("String")),
-            responseName = "name",
             fieldName = "name",
-            arguments = emptyMap(),
-            conditions = emptyList(),
-            fieldSets = emptyList(),
           )
         )
 

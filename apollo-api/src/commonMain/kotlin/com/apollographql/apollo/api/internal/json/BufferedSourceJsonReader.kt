@@ -768,7 +768,9 @@ class BufferedSourceJsonReader(private val source: BufferedSource) : JsonReader 
       if (names[expectedIndex] == name) {
         return expectedIndex.also {
           indexStack[indexStackSize - 1] = expectedIndex + 1
-          // be defensive here to check for index out of bounds?
+          if (indexStack[indexStackSize - 1] == names.size) {
+            indexStack[indexStackSize - 1] = 0
+          }
         }
       } else {
         // guess failed, fallback to full search
@@ -784,7 +786,9 @@ class BufferedSourceJsonReader(private val source: BufferedSource) : JsonReader 
           if (names[index] == name) {
             return index.also {
               indexStack[indexStackSize - 1] = index + 1
-              // be defensive here to check for index out of bounds?
+              if (indexStack[indexStackSize - 1] == names.size) {
+                indexStack[indexStackSize - 1] = 0
+              }
             }
           }
         }

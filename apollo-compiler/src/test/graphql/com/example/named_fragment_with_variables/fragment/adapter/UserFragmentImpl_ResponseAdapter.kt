@@ -74,40 +74,22 @@ class UserFragmentImpl_ResponseAdapter(
 
   companion object {
     val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
+      ResponseField.Typename,
       ResponseField(
         type = ResponseField.Type.NotNull(ResponseField.Type.Named.Other("String")),
-        responseName = "__typename",
-        fieldName = "__typename",
-        arguments = emptyMap(),
-        conditions = emptyList(),
-        fieldSets = emptyList(),
-      ),
-      ResponseField(
-        type = ResponseField.Type.NotNull(ResponseField.Type.Named.Other("String")),
-        responseName = "firstName",
         fieldName = "firstName",
-        arguments = emptyMap(),
-        conditions = emptyList(),
-        fieldSets = emptyList(),
       ),
       ResponseField(
         type = ResponseField.Type.NotNull(ResponseField.Type.Named.Other("String")),
-        responseName = "lastName",
         fieldName = "lastName",
-        arguments = emptyMap(),
-        conditions = emptyList(),
-        fieldSets = emptyList(),
       ),
       ResponseField(
         type = ResponseField.Type.NotNull(ResponseField.Type.Named.Other("String")),
-        responseName = "avatar",
         fieldName = "avatar",
         arguments = mapOf<String, Any?>(
           "size" to mapOf<String, Any?>(
             "kind" to "Variable",
             "variableName" to "size")),
-        conditions = emptyList(),
-        fieldSets = emptyList(),
       )
     )
 

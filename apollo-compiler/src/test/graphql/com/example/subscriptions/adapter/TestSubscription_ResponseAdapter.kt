@@ -56,13 +56,11 @@ class TestSubscription_ResponseAdapter(
     val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
       ResponseField(
         type = ResponseField.Type.Named.Object("Comment"),
-        responseName = "commentAdded",
         fieldName = "commentAdded",
         arguments = mapOf<String, Any?>(
           "repoFullName" to mapOf<String, Any?>(
             "kind" to "Variable",
             "variableName" to "repo")),
-        conditions = emptyList(),
         fieldSets = listOf(
           ResponseField.FieldSet(null, CommentAdded.RESPONSE_FIELDS)
         ),
@@ -110,19 +108,11 @@ class TestSubscription_ResponseAdapter(
       val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
         ResponseField(
           type = ResponseField.Type.NotNull(ResponseField.Type.Named.Other("Int")),
-          responseName = "id",
           fieldName = "id",
-          arguments = emptyMap(),
-          conditions = emptyList(),
-          fieldSets = emptyList(),
         ),
         ResponseField(
           type = ResponseField.Type.NotNull(ResponseField.Type.Named.Other("String")),
-          responseName = "content",
           fieldName = "content",
-          arguments = emptyMap(),
-          conditions = emptyList(),
-          fieldSets = emptyList(),
         )
       )
 

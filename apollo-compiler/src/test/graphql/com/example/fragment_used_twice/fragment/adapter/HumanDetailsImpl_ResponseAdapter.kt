@@ -13,6 +13,7 @@ import com.apollographql.apollo.api.internal.json.JsonWriter
 import com.apollographql.apollo.api.internal.stringResponseAdapter
 import com.apollographql.apollo.exception.UnexpectedNullValue
 import com.example.fragment_used_twice.fragment.HumanDetailsImpl
+import com.example.fragment_used_twice.type.CustomScalars
 import kotlin.Any
 import kotlin.Array
 import kotlin.String
@@ -58,7 +59,7 @@ class HumanDetailsImpl_ResponseAdapter(
     val nameAdapter: ResponseAdapter<String> = stringResponseAdapter
 
     val birthDateAdapter: ResponseAdapter<Any> =
-        customScalarAdapters.responseAdapterFor<Any>("Date")
+        customScalarAdapters.responseAdapterFor<Any>(CustomScalars.Date)
 
     fun fromResponse(reader: JsonReader, __typename: String?): HumanDetailsImpl.Data.CharacterData {
       var __typename: String? = __typename
@@ -94,29 +95,14 @@ class HumanDetailsImpl_ResponseAdapter(
 
     companion object {
       val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
+        ResponseField.Typename,
         ResponseField(
           type = ResponseField.Type.NotNull(ResponseField.Type.Named.Other("String")),
-          responseName = "__typename",
-          fieldName = "__typename",
-          arguments = emptyMap(),
-          conditions = emptyList(),
-          fieldSets = emptyList(),
-        ),
-        ResponseField(
-          type = ResponseField.Type.NotNull(ResponseField.Type.Named.Other("String")),
-          responseName = "name",
           fieldName = "name",
-          arguments = emptyMap(),
-          conditions = emptyList(),
-          fieldSets = emptyList(),
         ),
         ResponseField(
           type = ResponseField.Type.NotNull(ResponseField.Type.Named.Other("Date")),
-          responseName = "birthDate",
           fieldName = "birthDate",
-          arguments = emptyMap(),
-          conditions = emptyList(),
-          fieldSets = emptyList(),
         )
       )
 
@@ -159,21 +145,10 @@ class HumanDetailsImpl_ResponseAdapter(
 
     companion object {
       val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
+        ResponseField.Typename,
         ResponseField(
           type = ResponseField.Type.NotNull(ResponseField.Type.Named.Other("String")),
-          responseName = "__typename",
-          fieldName = "__typename",
-          arguments = emptyMap(),
-          conditions = emptyList(),
-          fieldSets = emptyList(),
-        ),
-        ResponseField(
-          type = ResponseField.Type.NotNull(ResponseField.Type.Named.Other("String")),
-          responseName = "name",
           fieldName = "name",
-          arguments = emptyMap(),
-          conditions = emptyList(),
-          fieldSets = emptyList(),
         )
       )
 

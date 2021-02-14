@@ -56,7 +56,6 @@ class TestQuery_ResponseAdapter(
     val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
       ResponseField(
         type = ResponseField.Type.Named.Object("Review"),
-        responseName = "createReview",
         fieldName = "createReview",
         arguments = mapOf<String, Any?>(
           "episode" to mapOf<String, Any?>(
@@ -75,7 +74,6 @@ class TestQuery_ResponseAdapter(
             "favoriteColor" to mapOf<String, Any?>(
               "red" to 1,
               "blue" to 1.0))),
-        conditions = emptyList(),
         fieldSets = listOf(
           ResponseField.FieldSet(null, CreateReview.RESPONSE_FIELDS)
         ),
@@ -123,19 +121,11 @@ class TestQuery_ResponseAdapter(
       val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
         ResponseField(
           type = ResponseField.Type.NotNull(ResponseField.Type.Named.Other("Int")),
-          responseName = "stars",
           fieldName = "stars",
-          arguments = emptyMap(),
-          conditions = emptyList(),
-          fieldSets = emptyList(),
         ),
         ResponseField(
           type = ResponseField.Type.Named.Other("String"),
-          responseName = "commentary",
           fieldName = "commentary",
-          arguments = emptyMap(),
-          conditions = emptyList(),
-          fieldSets = emptyList(),
         )
       )
 

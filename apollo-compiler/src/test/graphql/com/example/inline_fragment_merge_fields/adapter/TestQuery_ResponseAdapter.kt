@@ -15,6 +15,7 @@ import com.apollographql.apollo.api.internal.json.JsonWriter
 import com.apollographql.apollo.api.internal.stringResponseAdapter
 import com.apollographql.apollo.exception.UnexpectedNullValue
 import com.example.inline_fragment_merge_fields.TestQuery
+import com.example.inline_fragment_merge_fields.type.CustomScalars
 import kotlin.Any
 import kotlin.Array
 import kotlin.String
@@ -56,10 +57,7 @@ class TestQuery_ResponseAdapter(
     val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
       ResponseField(
         type = ResponseField.Type.Named.Object("Character"),
-        responseName = "hero",
         fieldName = "hero",
-        arguments = emptyMap(),
-        conditions = emptyList(),
         fieldSets = listOf(
           ResponseField.FieldSet("Droid", Hero.CharacterHero.RESPONSE_FIELDS),
           ResponseField.FieldSet("Human", Hero.CharacterHero.RESPONSE_FIELDS),
@@ -112,7 +110,7 @@ class TestQuery_ResponseAdapter(
           FriendsConnection(customScalarAdapters)
 
       val profileLinkAdapter: ResponseAdapter<Any> =
-          customScalarAdapters.responseAdapterFor<Any>("URL")
+          customScalarAdapters.responseAdapterFor<Any>(CustomScalars.URL)
 
       fun fromResponse(reader: JsonReader, __typename: String?): TestQuery.Data.Hero.CharacterHero {
         var __typename: String? = __typename
@@ -154,39 +152,21 @@ class TestQuery_ResponseAdapter(
 
       companion object {
         val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
+          ResponseField.Typename,
           ResponseField(
             type = ResponseField.Type.NotNull(ResponseField.Type.Named.Other("String")),
-            responseName = "__typename",
-            fieldName = "__typename",
-            arguments = emptyMap(),
-            conditions = emptyList(),
-            fieldSets = emptyList(),
-          ),
-          ResponseField(
-            type = ResponseField.Type.NotNull(ResponseField.Type.Named.Other("String")),
-            responseName = "name",
             fieldName = "name",
-            arguments = emptyMap(),
-            conditions = emptyList(),
-            fieldSets = emptyList(),
           ),
           ResponseField(
             type = ResponseField.Type.NotNull(ResponseField.Type.Named.Object("FriendsConnection")),
-            responseName = "friendsConnection",
             fieldName = "friendsConnection",
-            arguments = emptyMap(),
-            conditions = emptyList(),
             fieldSets = listOf(
               ResponseField.FieldSet(null, FriendsConnection.RESPONSE_FIELDS)
             ),
           ),
           ResponseField(
             type = ResponseField.Type.NotNull(ResponseField.Type.Named.Other("URL")),
-            responseName = "profileLink",
             fieldName = "profileLink",
-            arguments = emptyMap(),
-            conditions = emptyList(),
-            fieldSets = emptyList(),
           )
         )
 
@@ -228,10 +208,7 @@ class TestQuery_ResponseAdapter(
           val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
             ResponseField(
               type = ResponseField.Type.List(ResponseField.Type.Named.Object("FriendsEdge")),
-              responseName = "edges",
               fieldName = "edges",
-              arguments = emptyMap(),
-              conditions = emptyList(),
               fieldSets = listOf(
                 ResponseField.FieldSet(null, Edge.RESPONSE_FIELDS)
               ),
@@ -276,10 +253,7 @@ class TestQuery_ResponseAdapter(
             val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
               ResponseField(
                 type = ResponseField.Type.Named.Object("Character"),
-                responseName = "node",
                 fieldName = "node",
-                arguments = emptyMap(),
-                conditions = emptyList(),
                 fieldSets = listOf(
                   ResponseField.FieldSet(null, Node.RESPONSE_FIELDS)
                 ),
@@ -322,11 +296,7 @@ class TestQuery_ResponseAdapter(
               val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
                 ResponseField(
                   type = ResponseField.Type.NotNull(ResponseField.Type.Named.Other("String")),
-                  responseName = "name",
                   fieldName = "name",
-                  arguments = emptyMap(),
-                  conditions = emptyList(),
-                  fieldSets = emptyList(),
                 )
               )
 
@@ -381,28 +351,14 @@ class TestQuery_ResponseAdapter(
 
       companion object {
         val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
+          ResponseField.Typename,
           ResponseField(
             type = ResponseField.Type.NotNull(ResponseField.Type.Named.Other("String")),
-            responseName = "__typename",
-            fieldName = "__typename",
-            arguments = emptyMap(),
-            conditions = emptyList(),
-            fieldSets = emptyList(),
-          ),
-          ResponseField(
-            type = ResponseField.Type.NotNull(ResponseField.Type.Named.Other("String")),
-            responseName = "name",
             fieldName = "name",
-            arguments = emptyMap(),
-            conditions = emptyList(),
-            fieldSets = emptyList(),
           ),
           ResponseField(
             type = ResponseField.Type.NotNull(ResponseField.Type.Named.Object("FriendsConnection")),
-            responseName = "friendsConnection",
             fieldName = "friendsConnection",
-            arguments = emptyMap(),
-            conditions = emptyList(),
             fieldSets = listOf(
               ResponseField.FieldSet(null, FriendsConnection.RESPONSE_FIELDS)
             ),
@@ -447,10 +403,7 @@ class TestQuery_ResponseAdapter(
           val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
             ResponseField(
               type = ResponseField.Type.List(ResponseField.Type.Named.Object("FriendsEdge")),
-              responseName = "edges",
               fieldName = "edges",
-              arguments = emptyMap(),
-              conditions = emptyList(),
               fieldSets = listOf(
                 ResponseField.FieldSet(null, Edge.RESPONSE_FIELDS)
               ),
@@ -495,10 +448,7 @@ class TestQuery_ResponseAdapter(
             val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
               ResponseField(
                 type = ResponseField.Type.Named.Object("Character"),
-                responseName = "node",
                 fieldName = "node",
-                arguments = emptyMap(),
-                conditions = emptyList(),
                 fieldSets = listOf(
                   ResponseField.FieldSet(null, Node.RESPONSE_FIELDS)
                 ),
@@ -541,11 +491,7 @@ class TestQuery_ResponseAdapter(
               val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
                 ResponseField(
                   type = ResponseField.Type.NotNull(ResponseField.Type.Named.Other("String")),
-                  responseName = "name",
                   fieldName = "name",
-                  arguments = emptyMap(),
-                  conditions = emptyList(),
-                  fieldSets = emptyList(),
                 )
               )
 

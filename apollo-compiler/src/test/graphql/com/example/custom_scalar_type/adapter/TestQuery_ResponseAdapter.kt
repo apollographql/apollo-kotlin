@@ -15,6 +15,7 @@ import com.apollographql.apollo.api.internal.json.JsonWriter
 import com.apollographql.apollo.api.internal.stringResponseAdapter
 import com.apollographql.apollo.exception.UnexpectedNullValue
 import com.example.custom_scalar_type.TestQuery
+import com.example.custom_scalar_type.type.CustomScalars
 import java.util.Date
 import kotlin.Any
 import kotlin.Array
@@ -57,10 +58,7 @@ class TestQuery_ResponseAdapter(
     val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
       ResponseField(
         type = ResponseField.Type.Named.Object("Character"),
-        responseName = "hero",
         fieldName = "hero",
-        arguments = emptyMap(),
-        conditions = emptyList(),
         fieldSets = listOf(
           ResponseField.FieldSet(null, Hero.RESPONSE_FIELDS)
         ),
@@ -76,19 +74,19 @@ class TestQuery_ResponseAdapter(
     val nameAdapter: ResponseAdapter<String> = stringResponseAdapter
 
     val birthDateAdapter: ResponseAdapter<Date> =
-        customScalarAdapters.responseAdapterFor<Date>("Date")
+        customScalarAdapters.responseAdapterFor<Date>(CustomScalars.Date)
 
     val appearanceDatesAdapter: ResponseAdapter<List<Date>> =
-        ListResponseAdapter(customScalarAdapters.responseAdapterFor<Date>("Date"))
+        ListResponseAdapter(customScalarAdapters.responseAdapterFor<Date>(CustomScalars.Date))
 
     val fieldWithUnsupportedTypeAdapter: ResponseAdapter<Any> =
-        customScalarAdapters.responseAdapterFor<Any>("UnsupportedType")
+        customScalarAdapters.responseAdapterFor<Any>(CustomScalars.UnsupportedType)
 
     val profileLinkAdapter: ResponseAdapter<java.lang.String> =
-        customScalarAdapters.responseAdapterFor<java.lang.String>("URL")
+        customScalarAdapters.responseAdapterFor<java.lang.String>(CustomScalars.URL)
 
     val linksAdapter: ResponseAdapter<List<java.lang.String>> =
-        ListResponseAdapter(customScalarAdapters.responseAdapterFor<java.lang.String>("URL"))
+        ListResponseAdapter(customScalarAdapters.responseAdapterFor<java.lang.String>(CustomScalars.URL))
 
     override fun fromResponse(reader: JsonReader): TestQuery.Data.Hero {
       var name: String? = null
@@ -145,53 +143,29 @@ class TestQuery_ResponseAdapter(
       val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
         ResponseField(
           type = ResponseField.Type.NotNull(ResponseField.Type.Named.Other("String")),
-          responseName = "name",
           fieldName = "name",
-          arguments = emptyMap(),
-          conditions = emptyList(),
-          fieldSets = emptyList(),
         ),
         ResponseField(
           type = ResponseField.Type.NotNull(ResponseField.Type.Named.Other("Date")),
-          responseName = "birthDate",
           fieldName = "birthDate",
-          arguments = emptyMap(),
-          conditions = emptyList(),
-          fieldSets = emptyList(),
         ),
         ResponseField(
           type =
               ResponseField.Type.NotNull(ResponseField.Type.List(ResponseField.Type.NotNull(ResponseField.Type.Named.Other("Date")))),
-          responseName = "appearanceDates",
           fieldName = "appearanceDates",
-          arguments = emptyMap(),
-          conditions = emptyList(),
-          fieldSets = emptyList(),
         ),
         ResponseField(
           type = ResponseField.Type.NotNull(ResponseField.Type.Named.Other("UnsupportedType")),
-          responseName = "fieldWithUnsupportedType",
           fieldName = "fieldWithUnsupportedType",
-          arguments = emptyMap(),
-          conditions = emptyList(),
-          fieldSets = emptyList(),
         ),
         ResponseField(
           type = ResponseField.Type.NotNull(ResponseField.Type.Named.Other("URL")),
-          responseName = "profileLink",
           fieldName = "profileLink",
-          arguments = emptyMap(),
-          conditions = emptyList(),
-          fieldSets = emptyList(),
         ),
         ResponseField(
           type =
               ResponseField.Type.NotNull(ResponseField.Type.List(ResponseField.Type.NotNull(ResponseField.Type.Named.Other("URL")))),
-          responseName = "links",
           fieldName = "links",
-          arguments = emptyMap(),
-          conditions = emptyList(),
-          fieldSets = emptyList(),
         )
       )
 

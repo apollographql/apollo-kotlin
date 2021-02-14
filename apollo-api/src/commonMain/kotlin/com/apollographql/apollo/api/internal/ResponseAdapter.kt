@@ -1,6 +1,5 @@
 package com.apollographql.apollo.api.internal
 
-import com.apollographql.apollo.api.CustomScalarAdapters
 import com.apollographql.apollo.api.internal.json.JsonReader
 import com.apollographql.apollo.api.internal.json.JsonWriter
 

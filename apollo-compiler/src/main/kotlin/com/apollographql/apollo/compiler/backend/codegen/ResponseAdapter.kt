@@ -222,14 +222,25 @@ private fun CodeBlock.toNonNullable(): CodeBlock {
 }
 
 private fun CodeGenerationAst.Field.responseFieldInitializerCode(objectType: CodeGenerationAst.ObjectType): CodeBlock {
+  if (responseName == "__typename" && schemaName == "__typename") {
+    return CodeBlock.of("%T.Typename", ResponseField::class.asTypeName())
+  }
   val builder = CodeBlock.builder().add("%T(\n", ResponseField::class)
   builder.indent()
   builder.add("type = %L,\n", type.toTypeCode())
-  builder.add("responseName = %S,\n", responseName)
   builder.add("fieldName = %S,\n", schemaName)
-  builder.add("arguments = %L,\n", arguments.takeIf { it.isNotEmpty() }?.let { anyToCode(it) } ?: "emptyMap()")
-  builder.add("conditions = %L,\n", conditionsListCode(conditions))
-  builder.add("fieldSets = %L,\n", fieldSetsCode(this.type, objectType))
+  if (responseName != schemaName) {
+    builder.add("responseName = %S,\n", responseName)
+  }
+  if (arguments.isNotEmpty()) {
+    builder.add("arguments = %L,\n", arguments.takeIf { it.isNotEmpty() }?.let { anyToCode(it) } ?: "emptyMap()")
+  }
+  if (conditions.isNotEmpty()) {
+    builder.add("conditions = %L,\n", conditionsListCode(conditions))
+  }
+  if (this.type.leafType() is CodeGenerationAst.FieldType.Object) {
+    builder.add("fieldSets = %L,\n", fieldSetsCode(this.type, objectType))
+  }
   builder.unindent()
   builder.add(")")
 

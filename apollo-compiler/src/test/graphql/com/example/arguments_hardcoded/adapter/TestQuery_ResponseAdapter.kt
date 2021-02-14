@@ -65,20 +65,17 @@ class TestQuery_ResponseAdapter(
     val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
       ResponseField(
         type = ResponseField.Type.List(ResponseField.Type.Named.Object("Review")),
-        responseName = "reviews",
         fieldName = "reviews",
         arguments = mapOf<String, Any?>(
           "episode" to "JEDI",
           "starsInt" to 10,
           "starsFloat" to 9.9),
-        conditions = emptyList(),
         fieldSets = listOf(
           ResponseField.FieldSet(null, Review.RESPONSE_FIELDS)
         ),
       ),
       ResponseField(
         type = ResponseField.Type.NotNull(ResponseField.Type.Named.Other("Int")),
-        responseName = "testNullableArguments",
         fieldName = "testNullableArguments",
         arguments = mapOf<String, Any?>(
           "int" to null,
@@ -88,8 +85,6 @@ class TestQuery_ResponseAdapter(
           "episode" to null,
           "boolean" to null,
           "list" to null),
-        conditions = emptyList(),
-        fieldSets = emptyList(),
       )
     )
 
@@ -134,19 +129,11 @@ class TestQuery_ResponseAdapter(
       val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
         ResponseField(
           type = ResponseField.Type.NotNull(ResponseField.Type.Named.Other("Int")),
-          responseName = "stars",
           fieldName = "stars",
-          arguments = emptyMap(),
-          conditions = emptyList(),
-          fieldSets = emptyList(),
         ),
         ResponseField(
           type = ResponseField.Type.Named.Other("String"),
-          responseName = "commentary",
           fieldName = "commentary",
-          arguments = emptyMap(),
-          conditions = emptyList(),
-          fieldSets = emptyList(),
         )
       )
 
