@@ -1,8 +1,5 @@
 package com.apollographql.apollo.compiler.backend.codegen
 
-import com.apollographql.apollo.api.CustomScalar
-import com.apollographql.apollo.api.ResponseField
-import com.apollographql.apollo.api.internal.ResponseWriter
 import com.apollographql.apollo.api.internal.json.JsonWriter
 import com.apollographql.apollo.compiler.applyIf
 import com.apollographql.apollo.compiler.backend.ast.CodeGenerationAst
@@ -36,7 +33,7 @@ private fun CodeGenerationAst.ObjectType.writeFragmentDelegateToResponseFunSpec(
   val fragmentRef = (this.kind as CodeGenerationAst.ObjectType.Kind.FragmentDelegate).fragmentTypeRef
   return FunSpec.builder("toResponse")
       .addModifiers(KModifier.OVERRIDE)
-      .addParameter(ParameterSpec(name = "writer", type = ResponseWriter::class.asTypeName()))
+      .addParameter(ParameterSpec(name = "writer", type = JsonWriter::class.asTypeName()))
       .addParameter(ParameterSpec(name = "value", type = this.typeRef.asTypeName()))
       .addStatement("%T.toResponse(writer,·value.delegate)", fragmentRef.enclosingType!!.asAdapterTypeName())
       .build()

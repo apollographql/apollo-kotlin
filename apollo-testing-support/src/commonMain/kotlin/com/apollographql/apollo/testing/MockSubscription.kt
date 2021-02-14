@@ -6,8 +6,6 @@ import com.apollographql.apollo.api.ResponseField
 import com.apollographql.apollo.api.Subscription
 import com.apollographql.apollo.api.internal.InputFieldMarshaller
 import com.apollographql.apollo.api.internal.ResponseAdapter
-import com.apollographql.apollo.api.internal.ResponseReader
-import com.apollographql.apollo.api.internal.ResponseWriter
 import com.apollographql.apollo.api.internal.json.JsonReader
 import com.apollographql.apollo.api.internal.json.JsonWriter
 

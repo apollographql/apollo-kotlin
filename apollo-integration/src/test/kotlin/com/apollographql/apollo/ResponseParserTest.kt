@@ -228,8 +228,8 @@ class ResponseParserTest {
     try {
       query.parse(query.toJson(data))
       error("expected IllegalStateException")
-    } catch (e: IllegalStateException) {
-      assertThat(e.message).contains("Cannot find a CustomScalarAdapter for Date")
+    } catch (e: IllegalArgumentException) {
+      assertThat(e.message).contains("Can't map GraphQL type: `Date`")
     }
   }
 

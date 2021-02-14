@@ -762,6 +762,10 @@ class BufferedSourceJsonReader(private val source: BufferedSource) : JsonReader 
   }
 
   override fun selectName(names: List<String>): Int {
+    if (names.isEmpty()) {
+      return -1
+    }
+
     while (hasNext()) {
       val name = nextName()
       val expectedIndex = indexStack[indexStackSize - 1]

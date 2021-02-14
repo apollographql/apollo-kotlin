@@ -1,7 +1,6 @@
 package com.apollographql.apollo.compiler.backend.codegen
 
 import com.apollographql.apollo.api.ResponseField
-import com.apollographql.apollo.api.internal.ResponseReader
 import com.apollographql.apollo.api.internal.json.JsonReader
 import com.apollographql.apollo.compiler.applyIf
 import com.apollographql.apollo.compiler.backend.ast.CodeGenerationAst
@@ -148,7 +147,7 @@ private fun CodeGenerationAst.ObjectType.readFragmentDelegateFromResponseFunSpec
   return FunSpec.builder("fromResponse")
       .addModifiers(KModifier.OVERRIDE)
       .returns(this.typeRef.asTypeName())
-      .addParameter(ParameterSpec.builder("reader", ResponseReader::class).build())
+      .addParameter(ParameterSpec.builder("reader", JsonReader::class).build())
       .addParameter(CodeGenerationAst.typenameField.asOptionalParameterSpec(withDefaultValue = false))
       .addStatement(
           "return·%T(%T.fromResponse(reader,·%L))",

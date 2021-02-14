@@ -5,8 +5,6 @@ import com.apollographql.apollo.api.Operation
 import com.apollographql.apollo.api.Query
 import com.apollographql.apollo.api.ResponseField
 import com.apollographql.apollo.api.internal.ResponseAdapter
-import com.apollographql.apollo.api.internal.ResponseReader
-import com.apollographql.apollo.api.internal.ResponseWriter
 import com.apollographql.apollo.api.internal.json.JsonReader
 import com.apollographql.apollo.api.internal.json.JsonWriter
 
@@ -21,7 +19,9 @@ class MockQuery : Query<MockQuery.Data> {
       override fun fromResponse(reader: JsonReader): Data {
         reader.beginObject()
         // consume the json stream
-        while (reader.selectName(emptyList()) != -1) {
+        while (reader.hasNext()) {
+          reader.nextName()
+          reader.skipValue()
         }
         reader.endObject()
         return Data

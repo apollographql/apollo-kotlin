@@ -178,25 +178,45 @@ class MapJsonReader(val root: Map<String, Any?>) : JsonReader {
   }
 
   override fun selectName(names: List<String>): Int {
+    if (names.isEmpty()) {
+      return -1
+    }
+
     while (hasNext()) {
       val name = nextName()
       val expectedIndex = nameIndexStack[nameIndexStackSize - 1]
       if (names[expectedIndex] == name) {
         return expectedIndex.also {
           nameIndexStack[nameIndexStackSize - 1] = expectedIndex + 1
+          if (nameIndexStack[nameIndexStackSize - 1] == names.size) {
+            nameIndexStack[nameIndexStackSize - 1] = 0
+          }
         }
       } else {
-        // guess failed, fallback to fullsearch
-        val index = names.indexOfFirst { it == name }
-        if (index != -1) {
-          nameIndexStack[nameIndexStackSize - 1] = index
-          return index
-        } else {
-          skipValue()
+        // guess failed, fallback to full search
+        var index = expectedIndex
+        while (true) {
+          index++
+          if (index == names.size) {
+            index = 0
+          }
+          if (index == expectedIndex) {
+            break
+          }
+          if (names[index] == name) {
+            return index.also {
+              nameIndexStack[nameIndexStackSize - 1] = index + 1
+              if (nameIndexStack[nameIndexStackSize - 1] == names.size) {
+                nameIndexStack[nameIndexStackSize - 1] = 0
+              }
+            }
+          }
         }
 
+        skipValue()
       }
     }
     return -1
   }
+
 }
