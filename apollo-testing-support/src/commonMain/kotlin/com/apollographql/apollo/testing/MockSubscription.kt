@@ -37,10 +37,13 @@ class MockSubscription(
   override fun adapter(customScalarAdapters: CustomScalarAdapters): ResponseAdapter<Data> {
     return object : ResponseAdapter<Data> {
       override fun fromResponse(reader: JsonReader): Data {
+        reader.beginObject()
         reader.nextName()
         return Data(
             name = reader.nextString()!!
-        )
+        ).also {
+          reader.endObject()
+        }
       }
 
       override fun toResponse(writer: JsonWriter, value: Data) {

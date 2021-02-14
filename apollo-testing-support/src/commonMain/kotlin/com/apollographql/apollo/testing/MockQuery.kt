@@ -19,10 +19,11 @@ class MockQuery : Query<MockQuery.Data> {
   override fun adapter(customScalarAdapters: CustomScalarAdapters): ResponseAdapter<Data> {
     return object : ResponseAdapter<Data> {
       override fun fromResponse(reader: JsonReader): Data {
+        reader.beginObject()
         // consume the json stream
-        while (reader.hasNext()) {
-          reader.nextName()
+        while (reader.selectName(emptyList()) != -1) {
         }
+        reader.endObject()
         return Data
       }
 

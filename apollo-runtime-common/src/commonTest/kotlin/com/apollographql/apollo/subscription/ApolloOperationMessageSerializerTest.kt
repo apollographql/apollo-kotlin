@@ -66,7 +66,7 @@ class ApolloOperationMessageSerializerTest {
             "operationName" to subscription.name(),
             "extensions" to mapOf(
                 "persistedQuery" to mapOf(
-                    "version" to BigDecimal(1),
+                    "version" to 1,
                     "sha256Hash" to subscription.operationId()
                 )
             )
@@ -81,7 +81,7 @@ class ApolloOperationMessageSerializerTest {
             "query" to subscription.queryDocument(),
             "extensions" to mapOf(
                 "persistedQuery" to mapOf(
-                    "version" to BigDecimal(1),
+                    "version" to 1,
                     "sha256Hash" to subscription.operationId()
                 )
             )
