@@ -56,8 +56,7 @@ object StreamResponseParser {
       return nextNull<D>()
     }
 
-    val data = adapter.fromResponse(this)
-    return data
+    return adapter.fromResponse(this)
   }
 
   @Suppress("UNCHECKED_CAST")
