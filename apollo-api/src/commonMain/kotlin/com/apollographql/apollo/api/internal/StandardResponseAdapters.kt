@@ -81,3 +81,13 @@ object booleanResponseAdapter: ResponseAdapter<Boolean> {
     writer.value(value)
   }
 }
+
+object anyResponseAdapter: ResponseAdapter<Boolean> {
+  override fun fromResponse(reader: JsonReader): Boolean {
+    return reader.nextBoolean()
+  }
+
+  override fun toResponse(writer: JsonWriter, value: Boolean) {
+    writer.value(value)
+  }
+}
