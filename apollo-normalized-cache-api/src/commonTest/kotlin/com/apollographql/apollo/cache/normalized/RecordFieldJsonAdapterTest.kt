@@ -1,6 +1,5 @@
 package com.apollographql.apollo.cache.normalized
 
-import com.apollographql.apollo.api.BigDecimal
 import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertNull
@@ -10,7 +9,7 @@ class RecordFieldJsonAdapterTest {
 
   @Test
   fun testFieldsAdapterSerializationDeserialization() {
-    val expectedBigDecimal = BigDecimal("1.23")
+    val expectedDouble = "1.23"
     val expectedStringValue = "StringValue"
     val expectedBooleanValue = true
     val expectedCacheReference = CacheReference("foo")
@@ -23,7 +22,7 @@ class RecordFieldJsonAdapterTest {
     val record = Record(
         key = "root",
         fields = mapOf(
-            "bigDecimal" to expectedBigDecimal,
+            "double" to expectedDouble,
             "string" to expectedStringValue,
             "boolean" to expectedBooleanValue,
             "cacheReference" to expectedCacheReference,
@@ -38,7 +37,7 @@ class RecordFieldJsonAdapterTest {
     val json = RecordFieldJsonAdapter.toJson(record.fields)
     val deserializedMap = requireNotNull(RecordFieldJsonAdapter.fromJson(json))
 
-    assertEquals(actual = deserializedMap["bigDecimal"], expected = expectedBigDecimal)
+    assertEquals(actual = deserializedMap["double"], expected = expectedDouble)
     assertEquals(actual = deserializedMap["string"], expected = expectedStringValue)
     assertEquals(actual = deserializedMap["boolean"], expected = expectedBooleanValue)
     assertEquals(actual = deserializedMap["cacheReference"], expected = expectedCacheReference)
