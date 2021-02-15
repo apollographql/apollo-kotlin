@@ -85,16 +85,11 @@ class StarshipFragmentImpl_ResponseAdapter(
         type = ResponseField.Type.Named.Object("StarshipPilotsConnection"),
         fieldName = "pilotConnection",
         fieldSets = listOf(
-<<<<<<< HEAD
           ResponseField.FieldSet(null, PilotConnection.RESPONSE_FIELDS)
-=======
-          ResponseField.FieldSet(null, Edges.RESPONSE_FIELDS)
->>>>>>> dev-3.x
         ),
       )
     )
 
-<<<<<<< HEAD
     val RESPONSE_NAMES: List<String> = RESPONSE_FIELDS.map { it.responseName }
   }
 
@@ -112,21 +107,6 @@ class StarshipFragmentImpl_ResponseAdapter(
         when (reader.selectName(RESPONSE_NAMES)) {
           0 -> edges = nullableListOfNullableEdgesAdapter.fromResponse(reader)
           else -> break
-=======
-    override fun fromResponse(reader: ResponseReader, __typename: String?):
-        StarshipFragmentImpl.Data.PilotConnection {
-      return reader.run {
-        var edges: List<StarshipFragmentImpl.Data.PilotConnection.Edges?>? = null
-        while(true) {
-          when (selectField(RESPONSE_FIELDS)) {
-            0 -> edges = readList<StarshipFragmentImpl.Data.PilotConnection.Edges>(RESPONSE_FIELDS[0]) { reader ->
-              reader.readObject<StarshipFragmentImpl.Data.PilotConnection.Edges> { reader ->
-                Edges.fromResponse(reader)
-              }
-            }
-            else -> break
-          }
->>>>>>> dev-3.x
         }
       }
       reader.endObject()
@@ -135,7 +115,6 @@ class StarshipFragmentImpl_ResponseAdapter(
       )
     }
 
-<<<<<<< HEAD
     override fun toResponse(writer: JsonWriter, value: StarshipFragmentImpl.Data.PilotConnection) {
       writer.beginObject()
       writer.name("edges")
@@ -144,18 +123,6 @@ class StarshipFragmentImpl_ResponseAdapter(
     }
 
     companion object {
-=======
-    override fun toResponse(writer: ResponseWriter,
-        value: StarshipFragmentImpl.Data.PilotConnection) {
-      writer.writeList(RESPONSE_FIELDS[0], value.edges) { value, listItemWriter ->
-        listItemWriter.writeObject { writer ->
-          Edges.toResponse(writer, value)
-        }
-      }
-    }
-
-    object Edges : ResponseAdapter<StarshipFragmentImpl.Data.PilotConnection.Edges> {
->>>>>>> dev-3.x
       val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
         ResponseField(
           type = ResponseField.Type.List(ResponseField.Type.Named.Object("StarshipPilotsEdge")),
@@ -166,7 +133,6 @@ class StarshipFragmentImpl_ResponseAdapter(
         )
       )
 
-<<<<<<< HEAD
       val RESPONSE_NAMES: List<String> = RESPONSE_FIELDS.map { it.responseName }
     }
 
@@ -186,23 +152,6 @@ class StarshipFragmentImpl_ResponseAdapter(
             0 -> node = nullableNodeAdapter.fromResponse(reader)
             else -> break
           }
-=======
-      override fun fromResponse(reader: ResponseReader, __typename: String?):
-          StarshipFragmentImpl.Data.PilotConnection.Edges {
-        return reader.run {
-          var node: StarshipFragmentImpl.Data.PilotConnection.Edges.Node? = null
-          while(true) {
-            when (selectField(RESPONSE_FIELDS)) {
-              0 -> node = readObject<StarshipFragmentImpl.Data.PilotConnection.Edges.Node>(RESPONSE_FIELDS[0]) { reader ->
-                Node.fromResponse(reader)
-              }
-              else -> break
-            }
-          }
-          StarshipFragmentImpl.Data.PilotConnection.Edges(
-            node = node
-          )
->>>>>>> dev-3.x
         }
         reader.endObject()
         return StarshipFragmentImpl.Data.PilotConnection.Edges(
@@ -210,7 +159,6 @@ class StarshipFragmentImpl_ResponseAdapter(
         )
       }
 
-<<<<<<< HEAD
       override fun toResponse(writer: JsonWriter,
           value: StarshipFragmentImpl.Data.PilotConnection.Edges) {
         writer.beginObject()
@@ -249,23 +197,6 @@ class StarshipFragmentImpl_ResponseAdapter(
           check(reader.nextName() == "__typename")
           val typename = reader.nextString()
 
-=======
-      override fun toResponse(writer: ResponseWriter,
-          value: StarshipFragmentImpl.Data.PilotConnection.Edges) {
-        if(value.node == null) {
-          writer.writeObject(RESPONSE_FIELDS[0], null)
-        } else {
-          writer.writeObject(RESPONSE_FIELDS[0]) { writer ->
-            Node.toResponse(writer, value.node)
-          }
-        }
-      }
-
-      object Node : ResponseAdapter<StarshipFragmentImpl.Data.PilotConnection.Edges.Node> {
-        override fun fromResponse(reader: ResponseReader, __typename: String?):
-            StarshipFragmentImpl.Data.PilotConnection.Edges.Node {
-          val typename = __typename ?: reader.readString(ResponseField.Typename)
->>>>>>> dev-3.x
           return when(typename) {
             "Person" -> PersonNodeAdapter.fromResponse(reader, typename)
             else -> OtherNodeAdapter.fromResponse(reader, typename)
@@ -273,7 +204,6 @@ class StarshipFragmentImpl_ResponseAdapter(
           .also { reader.endObject() }
         }
 
-<<<<<<< HEAD
         override fun toResponse(writer: JsonWriter,
             value: StarshipFragmentImpl.Data.PilotConnection.Edges.Node) {
           when(value) {
@@ -306,69 +236,6 @@ class StarshipFragmentImpl_ResponseAdapter(
                 2 -> homeworld = nullableHomeworldAdapter.fromResponse(reader)
                 else -> break
               }
-=======
-        override fun toResponse(writer: ResponseWriter,
-            value: StarshipFragmentImpl.Data.PilotConnection.Edges.Node) {
-          when(value) {
-            is StarshipFragmentImpl.Data.PilotConnection.Edges.Node.PersonNode -> PersonNode.toResponse(writer, value)
-            is StarshipFragmentImpl.Data.PilotConnection.Edges.Node.OtherNode -> OtherNode.toResponse(writer, value)
-          }
-        }
-
-        object PersonNode :
-            ResponseAdapter<StarshipFragmentImpl.Data.PilotConnection.Edges.Node.PersonNode> {
-          val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
-            ResponseField(
-              type = ResponseField.Type.NotNull(ResponseField.Type.Named.Other("String")),
-              responseName = "__typename",
-              fieldName = "__typename",
-              arguments = emptyMap(),
-              conditions = emptyList(),
-              fieldSets = emptyList(),
-            ),
-            ResponseField(
-              type = ResponseField.Type.Named.Other("String"),
-              responseName = "name",
-              fieldName = "name",
-              arguments = emptyMap(),
-              conditions = emptyList(),
-              fieldSets = emptyList(),
-            ),
-            ResponseField(
-              type = ResponseField.Type.Named.Object("Planet"),
-              responseName = "homeworld",
-              fieldName = "homeworld",
-              arguments = emptyMap(),
-              conditions = emptyList(),
-              fieldSets = listOf(
-                ResponseField.FieldSet("Planet", Homeworld.PlanetHomeworld.RESPONSE_FIELDS),
-                ResponseField.FieldSet(null, Homeworld.OtherHomeworld.RESPONSE_FIELDS),
-              ),
-            )
-          )
-
-          override fun fromResponse(reader: ResponseReader, __typename: String?):
-              StarshipFragmentImpl.Data.PilotConnection.Edges.Node.PersonNode {
-            return reader.run {
-              var __typename: String? = __typename
-              var name: String? = null
-              var homeworld: StarshipFragmentImpl.Data.PilotConnection.Edges.Node.PersonNode.Homeworld? = null
-              while(true) {
-                when (selectField(RESPONSE_FIELDS)) {
-                  0 -> __typename = readString(RESPONSE_FIELDS[0])
-                  1 -> name = readString(RESPONSE_FIELDS[1])
-                  2 -> homeworld = readObject<StarshipFragmentImpl.Data.PilotConnection.Edges.Node.PersonNode.Homeworld>(RESPONSE_FIELDS[2]) { reader ->
-                    Homeworld.fromResponse(reader)
-                  }
-                  else -> break
-                }
-              }
-              StarshipFragmentImpl.Data.PilotConnection.Edges.Node.PersonNode(
-                __typename = __typename!!,
-                name = name,
-                homeworld = homeworld
-              )
->>>>>>> dev-3.x
             }
             return StarshipFragmentImpl.Data.PilotConnection.Edges.Node.PersonNode(
               __typename = __typename!!,
@@ -377,7 +244,6 @@ class StarshipFragmentImpl_ResponseAdapter(
             )
           }
 
-<<<<<<< HEAD
           fun toResponse(writer: JsonWriter,
               value: StarshipFragmentImpl.Data.PilotConnection.Edges.Node.PersonNode) {
             writer.beginObject()
@@ -427,27 +293,6 @@ class StarshipFragmentImpl_ResponseAdapter(
               check(reader.nextName() == "__typename")
               val typename = reader.nextString()
 
-=======
-          override fun toResponse(writer: ResponseWriter,
-              value: StarshipFragmentImpl.Data.PilotConnection.Edges.Node.PersonNode) {
-            writer.writeString(RESPONSE_FIELDS[0], value.__typename)
-            writer.writeString(RESPONSE_FIELDS[1], value.name)
-            if(value.homeworld == null) {
-              writer.writeObject(RESPONSE_FIELDS[2], null)
-            } else {
-              writer.writeObject(RESPONSE_FIELDS[2]) { writer ->
-                Homeworld.toResponse(writer, value.homeworld)
-              }
-            }
-          }
-
-          object Homeworld :
-              ResponseAdapter<StarshipFragmentImpl.Data.PilotConnection.Edges.Node.PersonNode.Homeworld>
-              {
-            override fun fromResponse(reader: ResponseReader, __typename: String?):
-                StarshipFragmentImpl.Data.PilotConnection.Edges.Node.PersonNode.Homeworld {
-              val typename = __typename ?: reader.readString(ResponseField.Typename)
->>>>>>> dev-3.x
               return when(typename) {
                 "Planet" -> PlanetHomeworldAdapter.fromResponse(reader, typename)
                 else -> OtherHomeworldAdapter.fromResponse(reader, typename)
@@ -455,7 +300,6 @@ class StarshipFragmentImpl_ResponseAdapter(
               .also { reader.endObject() }
             }
 
-<<<<<<< HEAD
             override fun toResponse(writer: JsonWriter,
                 value: StarshipFragmentImpl.Data.PilotConnection.Edges.Node.PersonNode.Homeworld) {
               when(value) {
@@ -482,54 +326,6 @@ class StarshipFragmentImpl_ResponseAdapter(
                     1 -> name = nullableStringAdapter.fromResponse(reader)
                     else -> break
                   }
-=======
-            override fun toResponse(writer: ResponseWriter,
-                value: StarshipFragmentImpl.Data.PilotConnection.Edges.Node.PersonNode.Homeworld) {
-              when(value) {
-                is StarshipFragmentImpl.Data.PilotConnection.Edges.Node.PersonNode.Homeworld.PlanetHomeworld -> PlanetHomeworld.toResponse(writer, value)
-                is StarshipFragmentImpl.Data.PilotConnection.Edges.Node.PersonNode.Homeworld.OtherHomeworld -> OtherHomeworld.toResponse(writer, value)
-              }
-            }
-
-            object PlanetHomeworld :
-                ResponseAdapter<StarshipFragmentImpl.Data.PilotConnection.Edges.Node.PersonNode.Homeworld.PlanetHomeworld>
-                {
-              val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
-                ResponseField(
-                  type = ResponseField.Type.NotNull(ResponseField.Type.Named.Other("String")),
-                  responseName = "__typename",
-                  fieldName = "__typename",
-                  arguments = emptyMap(),
-                  conditions = emptyList(),
-                  fieldSets = emptyList(),
-                ),
-                ResponseField(
-                  type = ResponseField.Type.Named.Other("String"),
-                  responseName = "name",
-                  fieldName = "name",
-                  arguments = emptyMap(),
-                  conditions = emptyList(),
-                  fieldSets = emptyList(),
-                )
-              )
-
-              override fun fromResponse(reader: ResponseReader, __typename: String?):
-                  StarshipFragmentImpl.Data.PilotConnection.Edges.Node.PersonNode.Homeworld.PlanetHomeworld {
-                return reader.run {
-                  var __typename: String? = __typename
-                  var name: String? = null
-                  while(true) {
-                    when (selectField(RESPONSE_FIELDS)) {
-                      0 -> __typename = readString(RESPONSE_FIELDS[0])
-                      1 -> name = readString(RESPONSE_FIELDS[1])
-                      else -> break
-                    }
-                  }
-                  StarshipFragmentImpl.Data.PilotConnection.Edges.Node.PersonNode.Homeworld.PlanetHomeworld(
-                    __typename = __typename!!,
-                    name = name
-                  )
->>>>>>> dev-3.x
                 }
                 return StarshipFragmentImpl.Data.PilotConnection.Edges.Node.PersonNode.Homeworld.PlanetHomeworld(
                   __typename = __typename!!,
@@ -537,7 +333,6 @@ class StarshipFragmentImpl_ResponseAdapter(
                 )
               }
 
-<<<<<<< HEAD
               fun toResponse(writer: JsonWriter,
                   value: StarshipFragmentImpl.Data.PilotConnection.Edges.Node.PersonNode.Homeworld.PlanetHomeworld) {
                 writer.beginObject()
@@ -546,15 +341,8 @@ class StarshipFragmentImpl_ResponseAdapter(
                 writer.name("name")
                 nullableStringAdapter.toResponse(writer, value.name)
                 writer.endObject()
-=======
-              override fun toResponse(writer: ResponseWriter,
-                  value: StarshipFragmentImpl.Data.PilotConnection.Edges.Node.PersonNode.Homeworld.PlanetHomeworld) {
-                writer.writeString(RESPONSE_FIELDS[0], value.__typename)
-                writer.writeString(RESPONSE_FIELDS[1], value.name)
->>>>>>> dev-3.x
               }
 
-<<<<<<< HEAD
               companion object {
                 val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
                   ResponseField.Typename,
@@ -562,22 +350,8 @@ class StarshipFragmentImpl_ResponseAdapter(
                     type = ResponseField.Type.Named.Other("String"),
                     fieldName = "name",
                   )
-=======
-            object OtherHomeworld :
-                ResponseAdapter<StarshipFragmentImpl.Data.PilotConnection.Edges.Node.PersonNode.Homeworld.OtherHomeworld>
-                {
-              val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
-                ResponseField(
-                  type = ResponseField.Type.NotNull(ResponseField.Type.Named.Other("String")),
-                  responseName = "__typename",
-                  fieldName = "__typename",
-                  arguments = emptyMap(),
-                  conditions = emptyList(),
-                  fieldSets = emptyList(),
->>>>>>> dev-3.x
                 )
 
-<<<<<<< HEAD
                 val RESPONSE_NAMES: List<String> = RESPONSE_FIELDS.map { it.responseName }
               }
             }
@@ -595,28 +369,12 @@ class StarshipFragmentImpl_ResponseAdapter(
                     0 -> __typename = stringAdapter.fromResponse(reader)
                     else -> break
                   }
-=======
-              override fun fromResponse(reader: ResponseReader, __typename: String?):
-                  StarshipFragmentImpl.Data.PilotConnection.Edges.Node.PersonNode.Homeworld.OtherHomeworld {
-                return reader.run {
-                  var __typename: String? = __typename
-                  while(true) {
-                    when (selectField(RESPONSE_FIELDS)) {
-                      0 -> __typename = readString(RESPONSE_FIELDS[0])
-                      else -> break
-                    }
-                  }
-                  StarshipFragmentImpl.Data.PilotConnection.Edges.Node.PersonNode.Homeworld.OtherHomeworld(
-                    __typename = __typename!!
-                  )
->>>>>>> dev-3.x
                 }
                 return StarshipFragmentImpl.Data.PilotConnection.Edges.Node.PersonNode.Homeworld.OtherHomeworld(
                   __typename = __typename!!
                 )
               }
 
-<<<<<<< HEAD
               fun toResponse(writer: JsonWriter,
                   value: StarshipFragmentImpl.Data.PilotConnection.Edges.Node.PersonNode.Homeworld.OtherHomeworld) {
                 writer.beginObject()
@@ -631,17 +389,11 @@ class StarshipFragmentImpl_ResponseAdapter(
                 )
 
                 val RESPONSE_NAMES: List<String> = RESPONSE_FIELDS.map { it.responseName }
-=======
-              override fun toResponse(writer: ResponseWriter,
-                  value: StarshipFragmentImpl.Data.PilotConnection.Edges.Node.PersonNode.Homeworld.OtherHomeworld) {
-                writer.writeString(RESPONSE_FIELDS[0], value.__typename)
->>>>>>> dev-3.x
               }
             }
           }
         }
 
-<<<<<<< HEAD
         class OtherNode(
           customScalarAdapters: CustomScalarAdapters
         ) {
@@ -655,34 +407,6 @@ class StarshipFragmentImpl_ResponseAdapter(
                 0 -> __typename = stringAdapter.fromResponse(reader)
                 else -> break
               }
-=======
-        object OtherNode :
-            ResponseAdapter<StarshipFragmentImpl.Data.PilotConnection.Edges.Node.OtherNode> {
-          val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
-            ResponseField(
-              type = ResponseField.Type.NotNull(ResponseField.Type.Named.Other("String")),
-              responseName = "__typename",
-              fieldName = "__typename",
-              arguments = emptyMap(),
-              conditions = emptyList(),
-              fieldSets = emptyList(),
-            )
-          )
-
-          override fun fromResponse(reader: ResponseReader, __typename: String?):
-              StarshipFragmentImpl.Data.PilotConnection.Edges.Node.OtherNode {
-            return reader.run {
-              var __typename: String? = __typename
-              while(true) {
-                when (selectField(RESPONSE_FIELDS)) {
-                  0 -> __typename = readString(RESPONSE_FIELDS[0])
-                  else -> break
-                }
-              }
-              StarshipFragmentImpl.Data.PilotConnection.Edges.Node.OtherNode(
-                __typename = __typename!!
-              )
->>>>>>> dev-3.x
             }
             return StarshipFragmentImpl.Data.PilotConnection.Edges.Node.OtherNode(
               __typename = __typename!!
@@ -697,18 +421,12 @@ class StarshipFragmentImpl_ResponseAdapter(
             writer.endObject()
           }
 
-<<<<<<< HEAD
           companion object {
             val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
               ResponseField.Typename
             )
 
             val RESPONSE_NAMES: List<String> = RESPONSE_FIELDS.map { it.responseName }
-=======
-          override fun toResponse(writer: ResponseWriter,
-              value: StarshipFragmentImpl.Data.PilotConnection.Edges.Node.OtherNode) {
-            writer.writeString(RESPONSE_FIELDS[0], value.__typename)
->>>>>>> dev-3.x
           }
         }
       }

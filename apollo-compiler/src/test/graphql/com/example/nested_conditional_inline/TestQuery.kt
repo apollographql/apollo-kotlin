@@ -145,21 +145,12 @@ data class TestQuery(
          */
         interface Friends {
           val __typename: String
-<<<<<<< HEAD
 
           /**
            * The name of the character
            */
           val name: String
 
-=======
-
-          /**
-           * The name of the character
-           */
-          val name: String
-
->>>>>>> dev-3.x
           data class HumanFriends(
             override val __typename: String,
             /**

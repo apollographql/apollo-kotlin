@@ -56,14 +56,11 @@ class TestQuery : Query<TestQuery.Data> {
        */
       val name: String
 
-<<<<<<< HEAD
       /**
        * The date character was born.
        */
       val birthDate: Any
 
-=======
->>>>>>> dev-3.x
       data class DroidHero(
         override val __typename: String,
         /**

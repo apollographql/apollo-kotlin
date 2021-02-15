@@ -22,7 +22,6 @@ import kotlin.collections.List
 @Suppress("NAME_SHADOWING", "UNUSED_ANONYMOUS_PARAMETER", "LocalVariableName",
     "RemoveExplicitTypeArguments", "NestedLambdaShadowedImplicitParameter", "PropertyName",
     "RemoveRedundantQualifierName")
-<<<<<<< HEAD
 class DroidDetailsImpl_ResponseAdapter(
   customScalarAdapters: CustomScalarAdapters
 ) : ResponseAdapter<DroidDetailsImpl.Data> {
@@ -47,64 +46,6 @@ class DroidDetailsImpl_ResponseAdapter(
         2 -> primaryFunction = nullableStringAdapter.fromResponse(reader)
         3 -> friends = nullableListOfNullableFriendsAdapter.fromResponse(reader)
         else -> break
-=======
-object DroidDetailsImpl_ResponseAdapter : ResponseAdapter<DroidDetailsImpl.Data> {
-  val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
-    ResponseField(
-      type = ResponseField.Type.NotNull(ResponseField.Type.Named.Other("String")),
-      responseName = "__typename",
-      fieldName = "__typename",
-      arguments = emptyMap(),
-      conditions = emptyList(),
-      fieldSets = emptyList(),
-    ),
-    ResponseField(
-      type = ResponseField.Type.NotNull(ResponseField.Type.Named.Other("String")),
-      responseName = "name",
-      fieldName = "name",
-      arguments = emptyMap(),
-      conditions = emptyList(),
-      fieldSets = emptyList(),
-    ),
-    ResponseField(
-      type = ResponseField.Type.Named.Other("String"),
-      responseName = "primaryFunction",
-      fieldName = "primaryFunction",
-      arguments = emptyMap(),
-      conditions = emptyList(),
-      fieldSets = emptyList(),
-    ),
-    ResponseField(
-      type = ResponseField.Type.List(ResponseField.Type.Named.Object("Character")),
-      responseName = "friends",
-      fieldName = "friends",
-      arguments = emptyMap(),
-      conditions = emptyList(),
-      fieldSets = listOf(
-        ResponseField.FieldSet(null, Friends.RESPONSE_FIELDS)
-      ),
-    )
-  )
-
-  override fun fromResponse(reader: ResponseReader, __typename: String?): DroidDetailsImpl.Data {
-    return reader.run {
-      var __typename: String? = __typename
-      var name: String? = null
-      var primaryFunction: String? = null
-      var friends: List<DroidDetailsImpl.Data.Friends?>? = null
-      while(true) {
-        when (selectField(RESPONSE_FIELDS)) {
-          0 -> __typename = readString(RESPONSE_FIELDS[0])
-          1 -> name = readString(RESPONSE_FIELDS[1])
-          2 -> primaryFunction = readString(RESPONSE_FIELDS[2])
-          3 -> friends = readList<DroidDetailsImpl.Data.Friends>(RESPONSE_FIELDS[3]) { reader ->
-            reader.readObject<DroidDetailsImpl.Data.Friends> { reader ->
-              Friends.fromResponse(reader)
-            }
-          }
-          else -> break
-        }
->>>>>>> dev-3.x
       }
     }
     reader.endObject()
@@ -116,7 +57,6 @@ object DroidDetailsImpl_ResponseAdapter : ResponseAdapter<DroidDetailsImpl.Data>
     )
   }
 
-<<<<<<< HEAD
   override fun toResponse(writer: JsonWriter, value: DroidDetailsImpl.Data) {
     writer.beginObject()
     writer.name("__typename")
@@ -131,20 +71,6 @@ object DroidDetailsImpl_ResponseAdapter : ResponseAdapter<DroidDetailsImpl.Data>
   }
 
   companion object {
-=======
-  override fun toResponse(writer: ResponseWriter, value: DroidDetailsImpl.Data) {
-    writer.writeString(RESPONSE_FIELDS[0], value.__typename)
-    writer.writeString(RESPONSE_FIELDS[1], value.name)
-    writer.writeString(RESPONSE_FIELDS[2], value.primaryFunction)
-    writer.writeList(RESPONSE_FIELDS[3], value.friends) { value, listItemWriter ->
-      listItemWriter.writeObject { writer ->
-        Friends.toResponse(writer, value)
-      }
-    }
-  }
-
-  object Friends : ResponseAdapter<DroidDetailsImpl.Data.Friends> {
->>>>>>> dev-3.x
     val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
       ResponseField.Typename,
       ResponseField(
@@ -164,7 +90,6 @@ object DroidDetailsImpl_ResponseAdapter : ResponseAdapter<DroidDetailsImpl.Data>
       )
     )
 
-<<<<<<< HEAD
     val RESPONSE_NAMES: List<String> = RESPONSE_FIELDS.map { it.responseName }
   }
 
@@ -181,21 +106,6 @@ object DroidDetailsImpl_ResponseAdapter : ResponseAdapter<DroidDetailsImpl.Data>
           0 -> name = stringAdapter.fromResponse(reader)
           else -> break
         }
-=======
-    override fun fromResponse(reader: ResponseReader, __typename: String?):
-        DroidDetailsImpl.Data.Friends {
-      return reader.run {
-        var name: String? = null
-        while(true) {
-          when (selectField(RESPONSE_FIELDS)) {
-            0 -> name = readString(RESPONSE_FIELDS[0])
-            else -> break
-          }
-        }
-        DroidDetailsImpl.Data.Friends(
-          name = name!!
-        )
->>>>>>> dev-3.x
       }
       reader.endObject()
       return DroidDetailsImpl.Data.Friends(
@@ -210,7 +120,6 @@ object DroidDetailsImpl_ResponseAdapter : ResponseAdapter<DroidDetailsImpl.Data>
       writer.endObject()
     }
 
-<<<<<<< HEAD
     companion object {
       val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
         ResponseField(
@@ -220,10 +129,6 @@ object DroidDetailsImpl_ResponseAdapter : ResponseAdapter<DroidDetailsImpl.Data>
       )
 
       val RESPONSE_NAMES: List<String> = RESPONSE_FIELDS.map { it.responseName }
-=======
-    override fun toResponse(writer: ResponseWriter, value: DroidDetailsImpl.Data.Friends) {
-      writer.writeString(RESPONSE_FIELDS[0], value.name)
->>>>>>> dev-3.x
     }
   }
 }

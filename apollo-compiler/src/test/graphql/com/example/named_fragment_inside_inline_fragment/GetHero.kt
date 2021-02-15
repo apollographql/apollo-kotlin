@@ -5,10 +5,7 @@
 //
 package com.example.named_fragment_inside_inline_fragment
 
-<<<<<<< HEAD
 import com.apollographql.apollo.api.CustomScalarAdapters
-=======
->>>>>>> dev-3.x
 import com.apollographql.apollo.api.Operation
 import com.apollographql.apollo.api.Query
 import com.apollographql.apollo.api.ResponseField
@@ -34,7 +31,6 @@ class GetHero : Query<GetHero.Data> {
 
   override fun name(): String = OPERATION_NAME
 
-<<<<<<< HEAD
   override fun adapter(customScalarAdapters: CustomScalarAdapters): ResponseAdapter<Data> {
     val adapter = customScalarAdapters.getOperationAdapter(name()) {
       GetHero_ResponseAdapter(customScalarAdapters)
@@ -42,9 +38,6 @@ class GetHero : Query<GetHero.Data> {
     return adapter
   }
 
-=======
-  override fun adapter(): ResponseAdapter<Data> = GetHero_ResponseAdapter
->>>>>>> dev-3.x
   override fun responseFields(): List<ResponseField.FieldSet> = listOf(
     ResponseField.FieldSet(null, GetHero_ResponseAdapter.RESPONSE_FIELDS)
   )
