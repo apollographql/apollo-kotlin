@@ -17,12 +17,12 @@ import io.reactivex.subjects.PublishSubject
 abstract class  GitHubDataSource(protected val apolloClient: ApolloClient) {
   protected val repositoriesSubject: PublishSubject<List<RepositoryFragment>> = PublishSubject.create()
   protected val repositoryDetailSubject: PublishSubject<Response<GithubRepositoryDetailQuery.Data>> = PublishSubject.create()
-  protected val commitsSubject: PublishSubject<List<GithubRepositoryCommitsQuery.Data.Viewer.Repository.Ref.Target.Commit.History.Edge>> = PublishSubject.create()
+  protected val commitsSubject: PublishSubject<List<GithubRepositoryCommitsQuery.Data.Viewer.Repository.Ref.Target.CommitTarget.History.Edges>> = PublishSubject.create()
   protected val exceptionSubject: PublishSubject<Throwable> = PublishSubject.create()
 
   val repositories: Observable<List<RepositoryFragment>> = repositoriesSubject.hide()
   val repositoryDetail: Observable<Response<GithubRepositoryDetailQuery.Data>> = repositoryDetailSubject.hide()
-  val commits: Observable<List<GithubRepositoryCommitsQuery.Data.Viewer.Repository.Ref.Target.Commit.History.Edge>> = commitsSubject.hide()
+  val commits: Observable<List<GithubRepositoryCommitsQuery.Data.Viewer.Repository.Ref.Target.CommitTarget.History.Edges>> = commitsSubject.hide()
   val error: Observable<Throwable> = exceptionSubject.hide()
 
   abstract fun fetchRepositories()

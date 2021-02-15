@@ -48,20 +48,6 @@ class TestQuery : Query<TestQuery.Data> {
        */
       val name: String
 
-      interface Droid : Hero {
-        override val __typename: String
-
-        /**
-         * The name of the character
-         */
-        override val name: String
-
-        /**
-         * This droid's primary function
-         */
-        val primaryFunction: String?
-      }
-
       data class DroidHero(
         override val __typename: String,
         /**
@@ -71,8 +57,8 @@ class TestQuery : Query<TestQuery.Data> {
         /**
          * This droid's primary function
          */
-        override val primaryFunction: String?
-      ) : Hero, Droid
+        val primaryFunction: String?
+      ) : Hero
 
       data class OtherHero(
         override val __typename: String,
@@ -83,7 +69,7 @@ class TestQuery : Query<TestQuery.Data> {
       ) : Hero
 
       companion object {
-        fun Hero.asDroid(): Droid? = this as? Droid
+        fun Hero.asDroidHero(): DroidHero? = this as? DroidHero
       }
     }
   }

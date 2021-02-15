@@ -29,11 +29,17 @@ private fun CodeGenerationAst.ObjectType.objectTypeSpec(): TypeSpec {
       .apply { if (description.isNotBlank()) addKdoc("%L\n", description) }
       .applyIf(!abstract) { primaryConstructor(primaryConstructorSpec) }
       .addProperties(
-          fields.map { field ->
-            field.asPropertySpec(
-                initializer = CodeBlock.of(field.name.escapeKotlinReservedWord()).takeUnless { abstract }
-            )
-          }
+          fields
+              .filter {
+                it.type is CodeGenerationAst.FieldType.Object ||
+                    (it.type is CodeGenerationAst.FieldType.Array && it.type.leafType is CodeGenerationAst.FieldType.Object) ||
+                    !it.override ||
+                    !abstract
+              }.map { field ->
+                field.asPropertySpec(
+                    initializer = CodeBlock.of(field.name.escapeKotlinReservedWord()).takeUnless { abstract }
+                )
+              }
       )
       .addTypes(
           this.nestedObjects

@@ -28,12 +28,12 @@ interface DroidDetails {
   /**
    * This droid's friends, or an empty list if they have none
    */
-  val friends: List<Friend?>?
+  val friends: List<Friends?>?
 
   /**
    * A character from the Star Wars universe
    */
-  interface Friend {
+  interface Friends {
     /**
      * The name of the character
      */

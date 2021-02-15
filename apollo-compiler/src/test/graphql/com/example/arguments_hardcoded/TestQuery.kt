@@ -36,15 +36,15 @@ class TestQuery : Query<TestQuery.Data> {
    * The query type, represents all of the entry points into our object graph
    */
   data class Data(
-    val reviews: List<Review?>?,
+    val reviews: List<Reviews?>?,
     val testNullableArguments: Int
   ) : Operation.Data {
-    fun reviewsFilterNotNull(): List<Review>? = reviews?.filterNotNull()
+    fun reviewsFilterNotNull(): List<Reviews>? = reviews?.filterNotNull()
 
     /**
      * Represents a review for a movie
      */
-    data class Review(
+    data class Reviews(
       /**
        * The number of stars this review gave, 1-5
        */

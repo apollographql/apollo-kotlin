@@ -30,8 +30,6 @@ class HeroDetailsImpl : Fragment<HeroDetailsImpl.Data> {
    * A character from the Star Wars universe
    */
   interface Data : HeroDetails, Fragment.Data {
-    override val __typename: String
-
     data class DroidData(
       override val __typename: String,
       /**
@@ -46,7 +44,7 @@ class HeroDetailsImpl : Fragment<HeroDetailsImpl.Data> {
        * This droid's primary function
        */
       override val primaryFunction: String?
-    ) : HeroDetails, HeroDetails.Droid, HeroDetails.Droid.Droid, Data {
+    ) : HeroDetails, HeroDetails.Droid, HeroDetails.Droid.Droid, DroidDetails, Data {
       /**
        * A connection object for a character's friends
        */
@@ -58,19 +56,19 @@ class HeroDetailsImpl : Fragment<HeroDetailsImpl.Data> {
         /**
          * The edges for each of the character's friends.
          */
-        override val edges: List<Edge?>?
+        override val edges: List<Edges?>?
       ) : HeroDetails.FriendsConnection, HeroDetails.Droid.FriendsConnection,
           HeroDetails.Droid.Droid.FriendsConnection {
         /**
          * An edge object for a character's friends
          */
-        data class Edge(
+        data class Edges(
           /**
            * The character represented by this friendship edge
            */
           override val node: Node?
-        ) : HeroDetails.FriendsConnection.Edge, HeroDetails.Droid.FriendsConnection.Edge,
-            HeroDetails.Droid.Droid.FriendsConnection.Edge {
+        ) : HeroDetails.FriendsConnection.Edges, HeroDetails.Droid.FriendsConnection.Edges,
+            HeroDetails.Droid.Droid.FriendsConnection.Edges {
           /**
            * A character from the Star Wars universe
            */
@@ -79,9 +77,9 @@ class HeroDetailsImpl : Fragment<HeroDetailsImpl.Data> {
              * The name of the character
              */
             override val name: String
-          ) : HeroDetails.FriendsConnection.Edge.Node,
-              HeroDetails.Droid.FriendsConnection.Edge.Node,
-              HeroDetails.Droid.Droid.FriendsConnection.Edge.Node
+          ) : HeroDetails.FriendsConnection.Edges.Node,
+              HeroDetails.Droid.FriendsConnection.Edges.Node,
+              HeroDetails.Droid.Droid.FriendsConnection.Edges.Node
         }
       }
     }
@@ -108,17 +106,17 @@ class HeroDetailsImpl : Fragment<HeroDetailsImpl.Data> {
         /**
          * The edges for each of the character's friends.
          */
-        override val edges: List<Edge?>?
+        override val edges: List<Edges?>?
       ) : HeroDetails.FriendsConnection, HeroDetails.Human.FriendsConnection {
         /**
          * An edge object for a character's friends
          */
-        data class Edge(
+        data class Edges(
           /**
            * The character represented by this friendship edge
            */
           override val node: Node?
-        ) : HeroDetails.FriendsConnection.Edge, HeroDetails.Human.FriendsConnection.Edge {
+        ) : HeroDetails.FriendsConnection.Edges, HeroDetails.Human.FriendsConnection.Edges {
           /**
            * A character from the Star Wars universe
            */
@@ -127,7 +125,8 @@ class HeroDetailsImpl : Fragment<HeroDetailsImpl.Data> {
              * The name of the character
              */
             override val name: String
-          ) : HeroDetails.FriendsConnection.Edge.Node, HeroDetails.Human.FriendsConnection.Edge.Node
+          ) : HeroDetails.FriendsConnection.Edges.Node,
+              HeroDetails.Human.FriendsConnection.Edges.Node
         }
       }
     }
@@ -154,17 +153,17 @@ class HeroDetailsImpl : Fragment<HeroDetailsImpl.Data> {
         /**
          * The edges for each of the character's friends.
          */
-        override val edges: List<Edge?>?
+        override val edges: List<Edges?>?
       ) : HeroDetails.FriendsConnection {
         /**
          * An edge object for a character's friends
          */
-        data class Edge(
+        data class Edges(
           /**
            * The character represented by this friendship edge
            */
           override val node: Node?
-        ) : HeroDetails.FriendsConnection.Edge {
+        ) : HeroDetails.FriendsConnection.Edges {
           /**
            * A character from the Star Wars universe
            */
@@ -173,7 +172,7 @@ class HeroDetailsImpl : Fragment<HeroDetailsImpl.Data> {
              * The name of the character
              */
             override val name: String
-          ) : HeroDetails.FriendsConnection.Edge.Node
+          ) : HeroDetails.FriendsConnection.Edges.Node
         }
       }
     }

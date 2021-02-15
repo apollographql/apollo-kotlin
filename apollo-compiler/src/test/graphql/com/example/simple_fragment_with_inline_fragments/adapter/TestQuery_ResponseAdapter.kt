@@ -104,9 +104,9 @@ object TestQuery_ResponseAdapter : ResponseAdapter<TestQuery.Data> {
           arguments = emptyMap(),
           conditions = emptyList(),
           fieldSets = listOf(
-            ResponseField.FieldSet("Human", Friend.HumanFriend.RESPONSE_FIELDS),
-            ResponseField.FieldSet("Droid", Friend.DroidFriend.RESPONSE_FIELDS),
-            ResponseField.FieldSet(null, Friend.OtherFriend.RESPONSE_FIELDS),
+            ResponseField.FieldSet("Human", Friends.HumanFriends.RESPONSE_FIELDS),
+            ResponseField.FieldSet("Droid", Friends.DroidFriends.RESPONSE_FIELDS),
+            ResponseField.FieldSet(null, Friends.OtherFriends.RESPONSE_FIELDS),
           ),
         )
       )
@@ -116,14 +116,14 @@ object TestQuery_ResponseAdapter : ResponseAdapter<TestQuery.Data> {
         return reader.run {
           var __typename: String? = __typename
           var name: String? = null
-          var friends: List<TestQuery.Data.Hero.CharacterHero.Friend?>? = null
+          var friends: List<TestQuery.Data.Hero.CharacterHero.Friends?>? = null
           while(true) {
             when (selectField(RESPONSE_FIELDS)) {
               0 -> __typename = readString(RESPONSE_FIELDS[0])
               1 -> name = readString(RESPONSE_FIELDS[1])
-              2 -> friends = readList<TestQuery.Data.Hero.CharacterHero.Friend>(RESPONSE_FIELDS[2]) { reader ->
-                reader.readObject<TestQuery.Data.Hero.CharacterHero.Friend> { reader ->
-                  Friend.fromResponse(reader)
+              2 -> friends = readList<TestQuery.Data.Hero.CharacterHero.Friends>(RESPONSE_FIELDS[2]) { reader ->
+                reader.readObject<TestQuery.Data.Hero.CharacterHero.Friends> { reader ->
+                  Friends.fromResponse(reader)
                 }
               }
               else -> break
@@ -142,32 +142,33 @@ object TestQuery_ResponseAdapter : ResponseAdapter<TestQuery.Data> {
         writer.writeString(RESPONSE_FIELDS[1], value.name)
         writer.writeList(RESPONSE_FIELDS[2], value.friends) { value, listItemWriter ->
           listItemWriter.writeObject { writer ->
-            Friend.toResponse(writer, value)
+            Friends.toResponse(writer, value)
           }
         }
       }
 
-      object Friend : ResponseAdapter<TestQuery.Data.Hero.CharacterHero.Friend> {
+      object Friends : ResponseAdapter<TestQuery.Data.Hero.CharacterHero.Friends> {
         override fun fromResponse(reader: ResponseReader, __typename: String?):
-            TestQuery.Data.Hero.CharacterHero.Friend {
+            TestQuery.Data.Hero.CharacterHero.Friends {
           val typename = __typename ?: reader.readString(ResponseField.Typename)
           return when(typename) {
-            "Human" -> HumanFriend.fromResponse(reader, typename)
-            "Droid" -> DroidFriend.fromResponse(reader, typename)
-            else -> OtherFriend.fromResponse(reader, typename)
+            "Human" -> HumanFriends.fromResponse(reader, typename)
+            "Droid" -> DroidFriends.fromResponse(reader, typename)
+            else -> OtherFriends.fromResponse(reader, typename)
           }
         }
 
         override fun toResponse(writer: ResponseWriter,
-            value: TestQuery.Data.Hero.CharacterHero.Friend) {
+            value: TestQuery.Data.Hero.CharacterHero.Friends) {
           when(value) {
-            is TestQuery.Data.Hero.CharacterHero.Friend.HumanFriend -> HumanFriend.toResponse(writer, value)
-            is TestQuery.Data.Hero.CharacterHero.Friend.DroidFriend -> DroidFriend.toResponse(writer, value)
-            is TestQuery.Data.Hero.CharacterHero.Friend.OtherFriend -> OtherFriend.toResponse(writer, value)
+            is TestQuery.Data.Hero.CharacterHero.Friends.HumanFriends -> HumanFriends.toResponse(writer, value)
+            is TestQuery.Data.Hero.CharacterHero.Friends.DroidFriends -> DroidFriends.toResponse(writer, value)
+            is TestQuery.Data.Hero.CharacterHero.Friends.OtherFriends -> OtherFriends.toResponse(writer, value)
           }
         }
 
-        object HumanFriend : ResponseAdapter<TestQuery.Data.Hero.CharacterHero.Friend.HumanFriend> {
+        object HumanFriends :
+            ResponseAdapter<TestQuery.Data.Hero.CharacterHero.Friends.HumanFriends> {
           val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
             ResponseField(
               type = ResponseField.Type.NotNull(ResponseField.Type.Named.Other("String")),
@@ -196,7 +197,7 @@ object TestQuery_ResponseAdapter : ResponseAdapter<TestQuery.Data> {
           )
 
           override fun fromResponse(reader: ResponseReader, __typename: String?):
-              TestQuery.Data.Hero.CharacterHero.Friend.HumanFriend {
+              TestQuery.Data.Hero.CharacterHero.Friends.HumanFriends {
             return reader.run {
               var __typename: String? = __typename
               var name: String? = null
@@ -209,7 +210,7 @@ object TestQuery_ResponseAdapter : ResponseAdapter<TestQuery.Data> {
                   else -> break
                 }
               }
-              TestQuery.Data.Hero.CharacterHero.Friend.HumanFriend(
+              TestQuery.Data.Hero.CharacterHero.Friends.HumanFriends(
                 __typename = __typename!!,
                 name = name!!,
                 height = height
@@ -218,14 +219,15 @@ object TestQuery_ResponseAdapter : ResponseAdapter<TestQuery.Data> {
           }
 
           override fun toResponse(writer: ResponseWriter,
-              value: TestQuery.Data.Hero.CharacterHero.Friend.HumanFriend) {
+              value: TestQuery.Data.Hero.CharacterHero.Friends.HumanFriends) {
             writer.writeString(RESPONSE_FIELDS[0], value.__typename)
             writer.writeString(RESPONSE_FIELDS[1], value.name)
             writer.writeDouble(RESPONSE_FIELDS[2], value.height)
           }
         }
 
-        object DroidFriend : ResponseAdapter<TestQuery.Data.Hero.CharacterHero.Friend.DroidFriend> {
+        object DroidFriends :
+            ResponseAdapter<TestQuery.Data.Hero.CharacterHero.Friends.DroidFriends> {
           val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
             ResponseField(
               type = ResponseField.Type.NotNull(ResponseField.Type.Named.Other("String")),
@@ -254,7 +256,7 @@ object TestQuery_ResponseAdapter : ResponseAdapter<TestQuery.Data> {
           )
 
           override fun fromResponse(reader: ResponseReader, __typename: String?):
-              TestQuery.Data.Hero.CharacterHero.Friend.DroidFriend {
+              TestQuery.Data.Hero.CharacterHero.Friends.DroidFriends {
             return reader.run {
               var __typename: String? = __typename
               var name: String? = null
@@ -267,7 +269,7 @@ object TestQuery_ResponseAdapter : ResponseAdapter<TestQuery.Data> {
                   else -> break
                 }
               }
-              TestQuery.Data.Hero.CharacterHero.Friend.DroidFriend(
+              TestQuery.Data.Hero.CharacterHero.Friends.DroidFriends(
                 __typename = __typename!!,
                 name = name!!,
                 primaryFunction = primaryFunction
@@ -276,14 +278,15 @@ object TestQuery_ResponseAdapter : ResponseAdapter<TestQuery.Data> {
           }
 
           override fun toResponse(writer: ResponseWriter,
-              value: TestQuery.Data.Hero.CharacterHero.Friend.DroidFriend) {
+              value: TestQuery.Data.Hero.CharacterHero.Friends.DroidFriends) {
             writer.writeString(RESPONSE_FIELDS[0], value.__typename)
             writer.writeString(RESPONSE_FIELDS[1], value.name)
             writer.writeString(RESPONSE_FIELDS[2], value.primaryFunction)
           }
         }
 
-        object OtherFriend : ResponseAdapter<TestQuery.Data.Hero.CharacterHero.Friend.OtherFriend> {
+        object OtherFriends :
+            ResponseAdapter<TestQuery.Data.Hero.CharacterHero.Friends.OtherFriends> {
           val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
             ResponseField(
               type = ResponseField.Type.NotNull(ResponseField.Type.Named.Other("String")),
@@ -304,7 +307,7 @@ object TestQuery_ResponseAdapter : ResponseAdapter<TestQuery.Data> {
           )
 
           override fun fromResponse(reader: ResponseReader, __typename: String?):
-              TestQuery.Data.Hero.CharacterHero.Friend.OtherFriend {
+              TestQuery.Data.Hero.CharacterHero.Friends.OtherFriends {
             return reader.run {
               var __typename: String? = __typename
               var name: String? = null
@@ -315,7 +318,7 @@ object TestQuery_ResponseAdapter : ResponseAdapter<TestQuery.Data> {
                   else -> break
                 }
               }
-              TestQuery.Data.Hero.CharacterHero.Friend.OtherFriend(
+              TestQuery.Data.Hero.CharacterHero.Friends.OtherFriends(
                 __typename = __typename!!,
                 name = name!!
               )
@@ -323,7 +326,7 @@ object TestQuery_ResponseAdapter : ResponseAdapter<TestQuery.Data> {
           }
 
           override fun toResponse(writer: ResponseWriter,
-              value: TestQuery.Data.Hero.CharacterHero.Friend.OtherFriend) {
+              value: TestQuery.Data.Hero.CharacterHero.Friends.OtherFriends) {
             writer.writeString(RESPONSE_FIELDS[0], value.__typename)
             writer.writeString(RESPONSE_FIELDS[1], value.name)
           }

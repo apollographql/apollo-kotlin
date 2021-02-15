@@ -51,7 +51,7 @@ object DroidDetailsImpl_ResponseAdapter : ResponseAdapter<DroidDetailsImpl.Data>
       arguments = emptyMap(),
       conditions = emptyList(),
       fieldSets = listOf(
-        ResponseField.FieldSet(null, Friend.RESPONSE_FIELDS)
+        ResponseField.FieldSet(null, Friends.RESPONSE_FIELDS)
       ),
     )
   )
@@ -61,15 +61,15 @@ object DroidDetailsImpl_ResponseAdapter : ResponseAdapter<DroidDetailsImpl.Data>
       var __typename: String? = __typename
       var name: String? = null
       var primaryFunction: String? = null
-      var friends: List<DroidDetailsImpl.Data.Friend?>? = null
+      var friends: List<DroidDetailsImpl.Data.Friends?>? = null
       while(true) {
         when (selectField(RESPONSE_FIELDS)) {
           0 -> __typename = readString(RESPONSE_FIELDS[0])
           1 -> name = readString(RESPONSE_FIELDS[1])
           2 -> primaryFunction = readString(RESPONSE_FIELDS[2])
-          3 -> friends = readList<DroidDetailsImpl.Data.Friend>(RESPONSE_FIELDS[3]) { reader ->
-            reader.readObject<DroidDetailsImpl.Data.Friend> { reader ->
-              Friend.fromResponse(reader)
+          3 -> friends = readList<DroidDetailsImpl.Data.Friends>(RESPONSE_FIELDS[3]) { reader ->
+            reader.readObject<DroidDetailsImpl.Data.Friends> { reader ->
+              Friends.fromResponse(reader)
             }
           }
           else -> break
@@ -90,12 +90,12 @@ object DroidDetailsImpl_ResponseAdapter : ResponseAdapter<DroidDetailsImpl.Data>
     writer.writeString(RESPONSE_FIELDS[2], value.primaryFunction)
     writer.writeList(RESPONSE_FIELDS[3], value.friends) { value, listItemWriter ->
       listItemWriter.writeObject { writer ->
-        Friend.toResponse(writer, value)
+        Friends.toResponse(writer, value)
       }
     }
   }
 
-  object Friend : ResponseAdapter<DroidDetailsImpl.Data.Friend> {
+  object Friends : ResponseAdapter<DroidDetailsImpl.Data.Friends> {
     val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
       ResponseField(
         type = ResponseField.Type.NotNull(ResponseField.Type.Named.Other("String")),
@@ -108,7 +108,7 @@ object DroidDetailsImpl_ResponseAdapter : ResponseAdapter<DroidDetailsImpl.Data>
     )
 
     override fun fromResponse(reader: ResponseReader, __typename: String?):
-        DroidDetailsImpl.Data.Friend {
+        DroidDetailsImpl.Data.Friends {
       return reader.run {
         var name: String? = null
         while(true) {
@@ -117,13 +117,13 @@ object DroidDetailsImpl_ResponseAdapter : ResponseAdapter<DroidDetailsImpl.Data>
             else -> break
           }
         }
-        DroidDetailsImpl.Data.Friend(
+        DroidDetailsImpl.Data.Friends(
           name = name!!
         )
       }
     }
 
-    override fun toResponse(writer: ResponseWriter, value: DroidDetailsImpl.Data.Friend) {
+    override fun toResponse(writer: ResponseWriter, value: DroidDetailsImpl.Data.Friends) {
       writer.writeString(RESPONSE_FIELDS[0], value.name)
     }
   }

@@ -88,7 +88,7 @@ object HeroDetailsImpl_ResponseAdapter : ResponseAdapter<HeroDetailsImpl.Data> {
         arguments = emptyMap(),
         conditions = emptyList(),
         fieldSets = listOf(
-          ResponseField.FieldSet(null, Edge.RESPONSE_FIELDS)
+          ResponseField.FieldSet(null, Edges.RESPONSE_FIELDS)
         ),
       )
     )
@@ -97,13 +97,13 @@ object HeroDetailsImpl_ResponseAdapter : ResponseAdapter<HeroDetailsImpl.Data> {
         HeroDetailsImpl.Data.FriendsConnection {
       return reader.run {
         var totalCount: Int? = null
-        var edges: List<HeroDetailsImpl.Data.FriendsConnection.Edge?>? = null
+        var edges: List<HeroDetailsImpl.Data.FriendsConnection.Edges?>? = null
         while(true) {
           when (selectField(RESPONSE_FIELDS)) {
             0 -> totalCount = readInt(RESPONSE_FIELDS[0])
-            1 -> edges = readList<HeroDetailsImpl.Data.FriendsConnection.Edge>(RESPONSE_FIELDS[1]) { reader ->
-              reader.readObject<HeroDetailsImpl.Data.FriendsConnection.Edge> { reader ->
-                Edge.fromResponse(reader)
+            1 -> edges = readList<HeroDetailsImpl.Data.FriendsConnection.Edges>(RESPONSE_FIELDS[1]) { reader ->
+              reader.readObject<HeroDetailsImpl.Data.FriendsConnection.Edges> { reader ->
+                Edges.fromResponse(reader)
               }
             }
             else -> break
@@ -120,12 +120,12 @@ object HeroDetailsImpl_ResponseAdapter : ResponseAdapter<HeroDetailsImpl.Data> {
       writer.writeInt(RESPONSE_FIELDS[0], value.totalCount)
       writer.writeList(RESPONSE_FIELDS[1], value.edges) { value, listItemWriter ->
         listItemWriter.writeObject { writer ->
-          Edge.toResponse(writer, value)
+          Edges.toResponse(writer, value)
         }
       }
     }
 
-    object Edge : ResponseAdapter<HeroDetailsImpl.Data.FriendsConnection.Edge> {
+    object Edges : ResponseAdapter<HeroDetailsImpl.Data.FriendsConnection.Edges> {
       val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
         ResponseField(
           type = ResponseField.Type.Named.Object("Character"),
@@ -140,25 +140,25 @@ object HeroDetailsImpl_ResponseAdapter : ResponseAdapter<HeroDetailsImpl.Data> {
       )
 
       override fun fromResponse(reader: ResponseReader, __typename: String?):
-          HeroDetailsImpl.Data.FriendsConnection.Edge {
+          HeroDetailsImpl.Data.FriendsConnection.Edges {
         return reader.run {
-          var node: HeroDetailsImpl.Data.FriendsConnection.Edge.Node? = null
+          var node: HeroDetailsImpl.Data.FriendsConnection.Edges.Node? = null
           while(true) {
             when (selectField(RESPONSE_FIELDS)) {
-              0 -> node = readObject<HeroDetailsImpl.Data.FriendsConnection.Edge.Node>(RESPONSE_FIELDS[0]) { reader ->
+              0 -> node = readObject<HeroDetailsImpl.Data.FriendsConnection.Edges.Node>(RESPONSE_FIELDS[0]) { reader ->
                 Node.fromResponse(reader)
               }
               else -> break
             }
           }
-          HeroDetailsImpl.Data.FriendsConnection.Edge(
+          HeroDetailsImpl.Data.FriendsConnection.Edges(
             node = node
           )
         }
       }
 
       override fun toResponse(writer: ResponseWriter,
-          value: HeroDetailsImpl.Data.FriendsConnection.Edge) {
+          value: HeroDetailsImpl.Data.FriendsConnection.Edges) {
         if(value.node == null) {
           writer.writeObject(RESPONSE_FIELDS[0], null)
         } else {
@@ -168,7 +168,7 @@ object HeroDetailsImpl_ResponseAdapter : ResponseAdapter<HeroDetailsImpl.Data> {
         }
       }
 
-      object Node : ResponseAdapter<HeroDetailsImpl.Data.FriendsConnection.Edge.Node> {
+      object Node : ResponseAdapter<HeroDetailsImpl.Data.FriendsConnection.Edges.Node> {
         val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
           ResponseField(
             type = ResponseField.Type.Named.Other("String"),
@@ -183,7 +183,7 @@ object HeroDetailsImpl_ResponseAdapter : ResponseAdapter<HeroDetailsImpl.Data> {
         )
 
         override fun fromResponse(reader: ResponseReader, __typename: String?):
-            HeroDetailsImpl.Data.FriendsConnection.Edge.Node {
+            HeroDetailsImpl.Data.FriendsConnection.Edges.Node {
           return reader.run {
             var name: String? = null
             while(true) {
@@ -192,14 +192,14 @@ object HeroDetailsImpl_ResponseAdapter : ResponseAdapter<HeroDetailsImpl.Data> {
                 else -> break
               }
             }
-            HeroDetailsImpl.Data.FriendsConnection.Edge.Node(
+            HeroDetailsImpl.Data.FriendsConnection.Edges.Node(
               name = name
             )
           }
         }
 
         override fun toResponse(writer: ResponseWriter,
-            value: HeroDetailsImpl.Data.FriendsConnection.Edge.Node) {
+            value: HeroDetailsImpl.Data.FriendsConnection.Edges.Node) {
           writer.writeString(RESPONSE_FIELDS[0], value.name)
         }
       }

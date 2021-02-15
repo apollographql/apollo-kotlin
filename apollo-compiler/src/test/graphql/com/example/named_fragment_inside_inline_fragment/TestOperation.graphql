@@ -1,0 +1,16 @@
+query GetHero {
+  hero {
+    ... on Character {
+      ...characterName
+      ...characterAppearsIn
+    }
+  }
+}
+
+fragment characterName on Character {
+  name
+}
+
+fragment characterAppearsIn on Character {
+  appearsIn
+}

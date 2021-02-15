@@ -40,13 +40,11 @@ class TestQuery : Query<TestQuery.Data> {
   interface Data : Operation.Data {
     val __typename: String
 
-    interface Query : Data {
-      override val __typename: String
-
-      val hero: Hero?
-
+    data class QueryData(
+      override val __typename: String,
+      val hero: Hero?,
       val droid: Droid?
-
+    ) : Data {
       /**
        * A character from the Star Wars universe
        */
@@ -63,67 +61,6 @@ class TestQuery : Query<TestQuery.Data> {
          */
         val appearsIn: List<Episode?>
 
-        interface Human : Hero {
-          override val __typename: String
-
-          /**
-           * The name of the character
-           */
-          override val name: String
-
-          /**
-           * The movies this character appears in
-           */
-          override val appearsIn: List<Episode?>
-
-          /**
-           * Height in the preferred unit, default is meters
-           */
-          val height: Double?
-        }
-
-        companion object {
-          fun Hero.asHuman(): Human? = this as? Human
-        }
-      }
-
-      /**
-       * An autonomous mechanical character in the Star Wars universe
-       */
-      interface Droid {
-        val __typename: String
-
-        interface Droid : Query.Droid {
-          override val __typename: String
-
-          /**
-           * What others call this droid
-           */
-          val name: String
-
-          /**
-           * This droid's primary function
-           */
-          val primaryFunction: String?
-        }
-
-        companion object {
-          fun Query.Droid.asDroid(): Droid? = this as? Droid
-        }
-      }
-    }
-
-    data class QueryData(
-      override val __typename: String,
-      override val hero: Hero?,
-      override val droid: Droid?
-    ) : Data, Query {
-      /**
-       * A character from the Star Wars universe
-       */
-      interface Hero : Query.Hero {
-        override val __typename: String
-
         data class HumanHero(
           override val __typename: String,
           /**
@@ -137,8 +74,8 @@ class TestQuery : Query<TestQuery.Data> {
           /**
            * Height in the preferred unit, default is meters
            */
-          override val height: Double?
-        ) : Query.Hero, Query.Hero.Human, Hero
+          val height: Double?
+        ) : Hero
 
         data class OtherHero(
           override val __typename: String,
@@ -150,30 +87,38 @@ class TestQuery : Query<TestQuery.Data> {
            * The movies this character appears in
            */
           override val appearsIn: List<Episode?>
-        ) : Query.Hero, Hero
+        ) : Hero
+
+        companion object {
+          fun Hero.asHumanHero(): HumanHero? = this as? HumanHero
+        }
       }
 
       /**
        * An autonomous mechanical character in the Star Wars universe
        */
-      interface Droid : Query.Droid {
-        override val __typename: String
+      interface Droid {
+        val __typename: String
 
         data class DroidDroid(
           override val __typename: String,
           /**
            * What others call this droid
            */
-          override val name: String,
+          val name: String,
           /**
            * This droid's primary function
            */
-          override val primaryFunction: String?
-        ) : Query.Droid, Query.Droid.Droid, Droid
+          val primaryFunction: String?
+        ) : Droid
 
         data class OtherDroid(
           override val __typename: String
-        ) : Query.Droid, Droid
+        ) : Droid
+
+        companion object {
+          fun Droid.asDroidDroid(): DroidDroid? = this as? DroidDroid
+        }
       }
     }
 
@@ -182,7 +127,7 @@ class TestQuery : Query<TestQuery.Data> {
     ) : Data
 
     companion object {
-      fun Data.asQuery(): Query? = this as? Query
+      fun Data.asQueryData(): QueryData? = this as? QueryData
     }
   }
 

@@ -22,7 +22,15 @@ internal fun CodeGenerationAst.FragmentType.interfaceTypeSpec(generateAsInternal
       .addAnnotation(suppressWarningsAnnotation)
       .applyIf(generateAsInternal) { addModifiers(KModifier.INTERNAL) }
       .applyIf(this.description.isNotBlank()) { addKdoc("%L\n", this@interfaceTypeSpec.description) }
-      .addProperties(this.interfaceType.fields.map { field -> field.asPropertySpec() })
+      .addProperties(
+          this.interfaceType.fields
+              .filter {
+                it.type is CodeGenerationAst.FieldType.Object ||
+                    (it.type is CodeGenerationAst.FieldType.Array && it.type.leafType is CodeGenerationAst.FieldType.Object) ||
+                    !it.override
+              }
+              .map { field -> field.asPropertySpec() }
+      )
       .addTypes(
           this.interfaceType.nestedObjects.map { nestedObject ->
             nestedObject.typeSpec()
