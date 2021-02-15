@@ -12,7 +12,6 @@ import com.apollographql.apollo.api.internal.ResponseAdapter
 import com.apollographql.apollo.api.internal.json.JsonReader
 import com.apollographql.apollo.api.internal.json.JsonWriter
 import com.apollographql.apollo.api.internal.stringResponseAdapter
-import com.apollographql.apollo.exception.UnexpectedNullValue
 import com.example.fragment_in_fragment.fragment.PlanetFragmentImpl
 import kotlin.Array
 import kotlin.String
@@ -25,9 +24,10 @@ import kotlin.collections.List
 class PlanetFragmentImpl_ResponseAdapter(
   customScalarAdapters: CustomScalarAdapters
 ) : ResponseAdapter<PlanetFragmentImpl.Data> {
-  val __typenameAdapter: ResponseAdapter<String> = stringResponseAdapter
+  val stringAdapter: ResponseAdapter<String> = stringResponseAdapter
 
-  val nameAdapter: ResponseAdapter<String?> = NullableResponseAdapter(stringResponseAdapter)
+  val nullablestringAdapterAdapter: ResponseAdapter<String?> =
+      NullableResponseAdapter(stringResponseAdapter)
 
   override fun fromResponse(reader: JsonReader): PlanetFragmentImpl.Data {
     var __typename: String? = null
@@ -35,9 +35,8 @@ class PlanetFragmentImpl_ResponseAdapter(
     reader.beginObject()
     while(true) {
       when (reader.selectName(RESPONSE_NAMES)) {
-        0 -> __typename = __typenameAdapter.fromResponse(reader) ?: throw
-            UnexpectedNullValue("__typename")
-        1 -> name = nameAdapter.fromResponse(reader)
+        0 -> __typename = stringAdapter.fromResponse(reader)
+        1 -> name = nullablestringAdapterAdapter.fromResponse(reader)
         else -> break
       }
     }
@@ -51,9 +50,9 @@ class PlanetFragmentImpl_ResponseAdapter(
   override fun toResponse(writer: JsonWriter, value: PlanetFragmentImpl.Data) {
     writer.beginObject()
     writer.name("__typename")
-    __typenameAdapter.toResponse(writer, value.__typename)
+    stringAdapter.toResponse(writer, value.__typename)
     writer.name("name")
-    nameAdapter.toResponse(writer, value.name)
+    nullablestringAdapterAdapter.toResponse(writer, value.name)
     writer.endObject()
   }
 

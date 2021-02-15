@@ -51,7 +51,7 @@ private fun CodeGenerationAst.ObjectType.readObjectFromResponseFunSpec(): FunSpe
                 "%L·->·%L·=·%L",
                 fieldIndex,
                 field.name.escapeKotlinReservedWord(),
-                field.type.fromResponseCode(field.name)
+                field.type.fromResponseCode()
             )
           }.joinToCode(separator = "\n", suffix = "\n")
       )
@@ -125,14 +125,14 @@ private fun CodeGenerationAst.ObjectType.readFragmentFromResponseFunSpec(): FunS
             possibleImplementations
                 .map { (typeCondition, typeRef) ->
                   CodeBlock.of(
-                      "%S·->·${typeRef.name.toLowerCamelCase()}Adapter.fromResponse(reader,·typename)",
+                      "%S·->·${kotlinNameForTypeCaseAdapterField(typeRef)}.fromResponse(reader,·typename)",
                       typeCondition,
                   )
                 }
                 .joinToCode(separator = "\n", suffix = "\n")
         )
         addStatement(
-            "else·->·${defaultImplementation.name.toLowerCamelCase()}Adapter.fromResponse(reader,·typename)",
+            "else·->·${kotlinNameForTypeCaseAdapterField(defaultImplementation)}.fromResponse(reader,·typename)",
             defaultImplementation.asAdapterTypeName()
         )
         endControlFlow()
@@ -158,12 +158,9 @@ private fun CodeGenerationAst.ObjectType.readFragmentDelegateFromResponseFunSpec
       .build()
 }
 
-private fun CodeGenerationAst.FieldType.fromResponseCode(fieldName: String): CodeBlock {
+private fun CodeGenerationAst.FieldType.fromResponseCode(): CodeBlock {
   val builder = CodeBlock.builder()
-  builder.add("${fieldName.escapeKotlinReservedWord()}Adapter.fromResponse(reader)")
-  if (!nullable) {
-    builder.add(" ?: throw %T(%S)", UnexpectedNullValue::class.asTypeName(), fieldName)
-  }
+  builder.add("${kotlinNameForAdapterField(this)}.fromResponse(reader)")
   return builder.build()
 }
 

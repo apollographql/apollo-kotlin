@@ -13,7 +13,6 @@ import com.apollographql.apollo.api.internal.intResponseAdapter
 import com.apollographql.apollo.api.internal.json.JsonReader
 import com.apollographql.apollo.api.internal.json.JsonWriter
 import com.apollographql.apollo.api.internal.stringResponseAdapter
-import com.apollographql.apollo.exception.UnexpectedNullValue
 import com.example.subscriptions.TestSubscription
 import kotlin.Array
 import kotlin.Int
@@ -27,7 +26,7 @@ import kotlin.collections.List
 class TestSubscription_ResponseAdapter(
   customScalarAdapters: CustomScalarAdapters
 ) : ResponseAdapter<TestSubscription.Data> {
-  val commentAddedAdapter: ResponseAdapter<TestSubscription.Data.CommentAdded?> =
+  val nullablecommentAdapterAdapter: ResponseAdapter<TestSubscription.Data.CommentAdded?> =
       NullableResponseAdapter(CommentAdded(customScalarAdapters))
 
   override fun fromResponse(reader: JsonReader): TestSubscription.Data {
@@ -35,7 +34,7 @@ class TestSubscription_ResponseAdapter(
     reader.beginObject()
     while(true) {
       when (reader.selectName(RESPONSE_NAMES)) {
-        0 -> commentAdded = commentAddedAdapter.fromResponse(reader)
+        0 -> commentAdded = nullablecommentAdapterAdapter.fromResponse(reader)
         else -> break
       }
     }
@@ -48,7 +47,7 @@ class TestSubscription_ResponseAdapter(
   override fun toResponse(writer: JsonWriter, value: TestSubscription.Data) {
     writer.beginObject()
     writer.name("commentAdded")
-    commentAddedAdapter.toResponse(writer, value.commentAdded)
+    nullablecommentAdapterAdapter.toResponse(writer, value.commentAdded)
     writer.endObject()
   }
 
@@ -73,9 +72,9 @@ class TestSubscription_ResponseAdapter(
   class CommentAdded(
     customScalarAdapters: CustomScalarAdapters
   ) : ResponseAdapter<TestSubscription.Data.CommentAdded> {
-    val idAdapter: ResponseAdapter<Int> = intResponseAdapter
+    val intAdapter: ResponseAdapter<Int> = intResponseAdapter
 
-    val contentAdapter: ResponseAdapter<String> = stringResponseAdapter
+    val stringAdapter: ResponseAdapter<String> = stringResponseAdapter
 
     override fun fromResponse(reader: JsonReader): TestSubscription.Data.CommentAdded {
       var id: Int? = null
@@ -83,8 +82,8 @@ class TestSubscription_ResponseAdapter(
       reader.beginObject()
       while(true) {
         when (reader.selectName(RESPONSE_NAMES)) {
-          0 -> id = idAdapter.fromResponse(reader) ?: throw UnexpectedNullValue("id")
-          1 -> content = contentAdapter.fromResponse(reader) ?: throw UnexpectedNullValue("content")
+          0 -> id = intAdapter.fromResponse(reader)
+          1 -> content = stringAdapter.fromResponse(reader)
           else -> break
         }
       }
@@ -98,9 +97,9 @@ class TestSubscription_ResponseAdapter(
     override fun toResponse(writer: JsonWriter, value: TestSubscription.Data.CommentAdded) {
       writer.beginObject()
       writer.name("id")
-      idAdapter.toResponse(writer, value.id)
+      intAdapter.toResponse(writer, value.id)
       writer.name("content")
-      contentAdapter.toResponse(writer, value.content)
+      stringAdapter.toResponse(writer, value.content)
       writer.endObject()
     }
 

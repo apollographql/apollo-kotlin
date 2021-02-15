@@ -1,5 +1,6 @@
 package com.apollographql.apollo.compiler.backend.codegen
 
+import com.apollographql.apollo.compiler.backend.ast.CodeGenerationAst
 import com.apollographql.apollo.compiler.escapeKotlinReservedWord
 
 /**
@@ -11,4 +12,21 @@ import com.apollographql.apollo.compiler.escapeKotlinReservedWord
 internal fun kotlinNameForEnumValue(graphqlEnumValue: String) = graphqlEnumValue.toUpperCase()
 internal fun kotlinNameForEnum(graphqlEnum: String) = graphqlEnum.escapeKotlinReservedWord()
 internal fun kotlinNameForField(responseName: String) = responseName.escapeKotlinReservedWord()
-internal fun kotlinNameForAdapterField(responseName: String) = "${responseName.escapeKotlinReservedWord()}Adapter"
+internal fun kotlinNameForAdapterField(type: CodeGenerationAst.FieldType): String {
+  return kotlinNameForAdapterFieldRecursive(type).decapitalize() + "Adapter"
+}
+internal fun kotlinNameForTypeCaseAdapterField(typeRef: CodeGenerationAst.TypeRef): String {
+  return typeRef.name.escapeKotlinReservedWord() + "Adapter"
+}
+
+private fun kotlinNameForAdapterFieldRecursive(type: CodeGenerationAst.FieldType): String {
+  if (type.nullable) {
+    return "Nullable" + kotlinNameForAdapterFieldRecursive(type.nonNullable())
+  }
+
+  return when (type) {
+    is CodeGenerationAst.FieldType.Array -> "ListOf" + kotlinNameForAdapterFieldRecursive(type.rawType)
+    is CodeGenerationAst.FieldType.Object -> type.typeRef.name.capitalize()
+    is CodeGenerationAst.FieldType.Scalar -> type.schemaTypeName.capitalize()
+  }
+}

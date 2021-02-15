@@ -42,7 +42,7 @@ class ApolloCacheInterceptor<S>(private val store: S) : ApolloRequestInterceptor
       when (policy) {
         FetchPolicy.CACHE_FIRST -> {
           val response = readFromCache(request, chain.customScalarAdapters)
-          if (response != null) {
+          if (response?.response?.data != null) {
             emit(response)
           } else {
             proceed(request, chain).collect { emit(it) }
@@ -52,7 +52,7 @@ class ApolloCacheInterceptor<S>(private val store: S) : ApolloRequestInterceptor
           proceed(request, chain)
               .catch {
                 val response = readFromCache(request, chain.customScalarAdapters)
-                if (response != null) {
+                if (response?.response?.data != null) {
                   emit(response)
                 } else {
                   // If we didn't get something in the cache, we need to signal callers that something went
@@ -66,7 +66,7 @@ class ApolloCacheInterceptor<S>(private val store: S) : ApolloRequestInterceptor
         }
         FetchPolicy.CACHE_ONLY -> {
           val response = readFromCache(request, chain.customScalarAdapters)
-          if (response != null) {
+          if (response?.response?.data != null) {
             emit(response)
           }
         }
@@ -78,7 +78,7 @@ class ApolloCacheInterceptor<S>(private val store: S) : ApolloRequestInterceptor
         }
         FetchPolicy.CACHE_AND_NETWORK -> {
           val response = readFromCache(request, chain.customScalarAdapters)
-          if (response != null) {
+          if (response?.response?.data != null) {
             emit(response)
           }
 
@@ -103,14 +103,7 @@ class ApolloCacheInterceptor<S>(private val store: S) : ApolloRequestInterceptor
 
   private fun <D : Operation.Data> readFromCache(request: ApolloRequest<D>, customScalarAdapters: CustomScalarAdapters): ApolloResponse<D>? {
     val operation = request.operation
-    val rootRecord = store.read(CacheKeyResolver.rootKey().key, CacheHeaders.NONE) ?: return null
 
-    val fieldValueResolver = CacheValueResolver(store,
-        operation.variables(),
-        CacheKeyResolver.DEFAULT,
-        CacheHeaders.NONE,
-        RealCacheKeyBuilder()
-    )
     val data = operation.readDataFromCache(customScalarAdapters, store, CacheKeyResolver.DEFAULT, CacheHeaders.NONE)
 
     return ApolloResponse(

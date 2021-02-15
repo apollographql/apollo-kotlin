@@ -12,7 +12,6 @@ import com.apollographql.apollo.api.internal.ResponseAdapter
 import com.apollographql.apollo.api.internal.json.JsonReader
 import com.apollographql.apollo.api.internal.json.JsonWriter
 import com.apollographql.apollo.api.internal.stringResponseAdapter
-import com.apollographql.apollo.exception.UnexpectedNullValue
 import com.example.two_heroes_unique.TestQuery
 import kotlin.Array
 import kotlin.String
@@ -25,10 +24,10 @@ import kotlin.collections.List
 class TestQuery_ResponseAdapter(
   customScalarAdapters: CustomScalarAdapters
 ) : ResponseAdapter<TestQuery.Data> {
-  val r2Adapter: ResponseAdapter<TestQuery.Data.R2?> =
+  val nullablecharacterAdapterAdapter: ResponseAdapter<TestQuery.Data.R2?> =
       NullableResponseAdapter(R2(customScalarAdapters))
 
-  val lukeAdapter: ResponseAdapter<TestQuery.Data.Luke?> =
+  val nullablecharacterAdapterAdapter: ResponseAdapter<TestQuery.Data.Luke?> =
       NullableResponseAdapter(Luke(customScalarAdapters))
 
   override fun fromResponse(reader: JsonReader): TestQuery.Data {
@@ -37,8 +36,8 @@ class TestQuery_ResponseAdapter(
     reader.beginObject()
     while(true) {
       when (reader.selectName(RESPONSE_NAMES)) {
-        0 -> r2 = r2Adapter.fromResponse(reader)
-        1 -> luke = lukeAdapter.fromResponse(reader)
+        0 -> r2 = nullablecharacterAdapterAdapter.fromResponse(reader)
+        1 -> luke = nullablecharacterAdapterAdapter.fromResponse(reader)
         else -> break
       }
     }
@@ -52,9 +51,9 @@ class TestQuery_ResponseAdapter(
   override fun toResponse(writer: JsonWriter, value: TestQuery.Data) {
     writer.beginObject()
     writer.name("r2")
-    r2Adapter.toResponse(writer, value.r2)
+    nullablecharacterAdapterAdapter.toResponse(writer, value.r2)
     writer.name("luke")
-    lukeAdapter.toResponse(writer, value.luke)
+    nullablecharacterAdapterAdapter.toResponse(writer, value.luke)
     writer.endObject()
   }
 
@@ -86,14 +85,14 @@ class TestQuery_ResponseAdapter(
   class R2(
     customScalarAdapters: CustomScalarAdapters
   ) : ResponseAdapter<TestQuery.Data.R2> {
-    val nameAdapter: ResponseAdapter<String> = stringResponseAdapter
+    val stringAdapter: ResponseAdapter<String> = stringResponseAdapter
 
     override fun fromResponse(reader: JsonReader): TestQuery.Data.R2 {
       var name: String? = null
       reader.beginObject()
       while(true) {
         when (reader.selectName(RESPONSE_NAMES)) {
-          0 -> name = nameAdapter.fromResponse(reader) ?: throw UnexpectedNullValue("name")
+          0 -> name = stringAdapter.fromResponse(reader)
           else -> break
         }
       }
@@ -106,7 +105,7 @@ class TestQuery_ResponseAdapter(
     override fun toResponse(writer: JsonWriter, value: TestQuery.Data.R2) {
       writer.beginObject()
       writer.name("name")
-      nameAdapter.toResponse(writer, value.name)
+      stringAdapter.toResponse(writer, value.name)
       writer.endObject()
     }
 
@@ -125,9 +124,7 @@ class TestQuery_ResponseAdapter(
   class Luke(
     customScalarAdapters: CustomScalarAdapters
   ) : ResponseAdapter<TestQuery.Data.Luke> {
-    val idAdapter: ResponseAdapter<String> = stringResponseAdapter
-
-    val nameAdapter: ResponseAdapter<String> = stringResponseAdapter
+    val stringAdapter: ResponseAdapter<String> = stringResponseAdapter
 
     override fun fromResponse(reader: JsonReader): TestQuery.Data.Luke {
       var id: String? = null
@@ -135,8 +132,8 @@ class TestQuery_ResponseAdapter(
       reader.beginObject()
       while(true) {
         when (reader.selectName(RESPONSE_NAMES)) {
-          0 -> id = idAdapter.fromResponse(reader) ?: throw UnexpectedNullValue("id")
-          1 -> name = nameAdapter.fromResponse(reader) ?: throw UnexpectedNullValue("name")
+          0 -> id = stringAdapter.fromResponse(reader)
+          1 -> name = stringAdapter.fromResponse(reader)
           else -> break
         }
       }
@@ -150,9 +147,9 @@ class TestQuery_ResponseAdapter(
     override fun toResponse(writer: JsonWriter, value: TestQuery.Data.Luke) {
       writer.beginObject()
       writer.name("id")
-      idAdapter.toResponse(writer, value.id)
+      stringAdapter.toResponse(writer, value.id)
       writer.name("name")
-      nameAdapter.toResponse(writer, value.name)
+      stringAdapter.toResponse(writer, value.name)
       writer.endObject()
     }
 

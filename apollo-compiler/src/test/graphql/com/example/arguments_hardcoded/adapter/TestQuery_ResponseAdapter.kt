@@ -14,7 +14,6 @@ import com.apollographql.apollo.api.internal.intResponseAdapter
 import com.apollographql.apollo.api.internal.json.JsonReader
 import com.apollographql.apollo.api.internal.json.JsonWriter
 import com.apollographql.apollo.api.internal.stringResponseAdapter
-import com.apollographql.apollo.exception.UnexpectedNullValue
 import com.example.arguments_hardcoded.TestQuery
 import kotlin.Array
 import kotlin.Int
@@ -28,10 +27,11 @@ import kotlin.collections.List
 class TestQuery_ResponseAdapter(
   customScalarAdapters: CustomScalarAdapters
 ) : ResponseAdapter<TestQuery.Data> {
-  val reviewsAdapter: ResponseAdapter<List<TestQuery.Data.Review?>?> =
+  val nullablelistOfnullablereviewAdapterAdapterAdapterAdapter:
+      ResponseAdapter<List<TestQuery.Data.Review?>?> =
       NullableResponseAdapter(ListResponseAdapter(NullableResponseAdapter(Review(customScalarAdapters))))
 
-  val testNullableArgumentsAdapter: ResponseAdapter<Int> = intResponseAdapter
+  val intAdapter: ResponseAdapter<Int> = intResponseAdapter
 
   override fun fromResponse(reader: JsonReader): TestQuery.Data {
     var reviews: List<TestQuery.Data.Review?>? = null
@@ -39,9 +39,8 @@ class TestQuery_ResponseAdapter(
     reader.beginObject()
     while(true) {
       when (reader.selectName(RESPONSE_NAMES)) {
-        0 -> reviews = reviewsAdapter.fromResponse(reader)
-        1 -> testNullableArguments = testNullableArgumentsAdapter.fromResponse(reader) ?: throw
-            UnexpectedNullValue("testNullableArguments")
+        0 -> reviews = nullablelistOfnullablereviewAdapterAdapterAdapterAdapter.fromResponse(reader)
+        1 -> testNullableArguments = intAdapter.fromResponse(reader)
         else -> break
       }
     }
@@ -55,9 +54,9 @@ class TestQuery_ResponseAdapter(
   override fun toResponse(writer: JsonWriter, value: TestQuery.Data) {
     writer.beginObject()
     writer.name("reviews")
-    reviewsAdapter.toResponse(writer, value.reviews)
+    nullablelistOfnullablereviewAdapterAdapterAdapterAdapter.toResponse(writer, value.reviews)
     writer.name("testNullableArguments")
-    testNullableArgumentsAdapter.toResponse(writer, value.testNullableArguments)
+    intAdapter.toResponse(writer, value.testNullableArguments)
     writer.endObject()
   }
 
@@ -94,9 +93,10 @@ class TestQuery_ResponseAdapter(
   class Review(
     customScalarAdapters: CustomScalarAdapters
   ) : ResponseAdapter<TestQuery.Data.Review> {
-    val starsAdapter: ResponseAdapter<Int> = intResponseAdapter
+    val intAdapter: ResponseAdapter<Int> = intResponseAdapter
 
-    val commentaryAdapter: ResponseAdapter<String?> = NullableResponseAdapter(stringResponseAdapter)
+    val nullablestringAdapterAdapter: ResponseAdapter<String?> =
+        NullableResponseAdapter(stringResponseAdapter)
 
     override fun fromResponse(reader: JsonReader): TestQuery.Data.Review {
       var stars: Int? = null
@@ -104,8 +104,8 @@ class TestQuery_ResponseAdapter(
       reader.beginObject()
       while(true) {
         when (reader.selectName(RESPONSE_NAMES)) {
-          0 -> stars = starsAdapter.fromResponse(reader) ?: throw UnexpectedNullValue("stars")
-          1 -> commentary = commentaryAdapter.fromResponse(reader)
+          0 -> stars = intAdapter.fromResponse(reader)
+          1 -> commentary = nullablestringAdapterAdapter.fromResponse(reader)
           else -> break
         }
       }
@@ -119,9 +119,9 @@ class TestQuery_ResponseAdapter(
     override fun toResponse(writer: JsonWriter, value: TestQuery.Data.Review) {
       writer.beginObject()
       writer.name("stars")
-      starsAdapter.toResponse(writer, value.stars)
+      intAdapter.toResponse(writer, value.stars)
       writer.name("commentary")
-      commentaryAdapter.toResponse(writer, value.commentary)
+      nullablestringAdapterAdapter.toResponse(writer, value.commentary)
       writer.endObject()
     }
 

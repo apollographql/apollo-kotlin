@@ -12,7 +12,6 @@ import com.apollographql.apollo.api.internal.ResponseAdapter
 import com.apollographql.apollo.api.internal.json.JsonReader
 import com.apollographql.apollo.api.internal.json.JsonWriter
 import com.apollographql.apollo.api.internal.stringResponseAdapter
-import com.apollographql.apollo.exception.UnexpectedNullValue
 import com.example.fragments_same_type_condition.fragment.DroidDetails2Impl
 import kotlin.Array
 import kotlin.String
@@ -25,9 +24,9 @@ import kotlin.collections.List
 class DroidDetails2Impl_ResponseAdapter(
   customScalarAdapters: CustomScalarAdapters
 ) : ResponseAdapter<DroidDetails2Impl.Data> {
-  val __typenameAdapter: ResponseAdapter<String> = stringResponseAdapter
+  val stringAdapter: ResponseAdapter<String> = stringResponseAdapter
 
-  val primaryFunctionAdapter: ResponseAdapter<String?> =
+  val nullablestringAdapterAdapter: ResponseAdapter<String?> =
       NullableResponseAdapter(stringResponseAdapter)
 
   override fun fromResponse(reader: JsonReader): DroidDetails2Impl.Data {
@@ -36,9 +35,8 @@ class DroidDetails2Impl_ResponseAdapter(
     reader.beginObject()
     while(true) {
       when (reader.selectName(RESPONSE_NAMES)) {
-        0 -> __typename = __typenameAdapter.fromResponse(reader) ?: throw
-            UnexpectedNullValue("__typename")
-        1 -> primaryFunction = primaryFunctionAdapter.fromResponse(reader)
+        0 -> __typename = stringAdapter.fromResponse(reader)
+        1 -> primaryFunction = nullablestringAdapterAdapter.fromResponse(reader)
         else -> break
       }
     }
@@ -52,9 +50,9 @@ class DroidDetails2Impl_ResponseAdapter(
   override fun toResponse(writer: JsonWriter, value: DroidDetails2Impl.Data) {
     writer.beginObject()
     writer.name("__typename")
-    __typenameAdapter.toResponse(writer, value.__typename)
+    stringAdapter.toResponse(writer, value.__typename)
     writer.name("primaryFunction")
-    primaryFunctionAdapter.toResponse(writer, value.primaryFunction)
+    nullablestringAdapterAdapter.toResponse(writer, value.primaryFunction)
     writer.endObject()
   }
 

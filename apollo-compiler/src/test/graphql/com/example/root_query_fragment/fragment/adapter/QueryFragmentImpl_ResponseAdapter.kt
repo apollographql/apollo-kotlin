@@ -12,7 +12,6 @@ import com.apollographql.apollo.api.internal.ResponseAdapter
 import com.apollographql.apollo.api.internal.json.JsonReader
 import com.apollographql.apollo.api.internal.json.JsonWriter
 import com.apollographql.apollo.api.internal.stringResponseAdapter
-import com.apollographql.apollo.exception.UnexpectedNullValue
 import com.example.root_query_fragment.fragment.QueryFragmentImpl
 import kotlin.Array
 import kotlin.String
@@ -25,9 +24,9 @@ import kotlin.collections.List
 class QueryFragmentImpl_ResponseAdapter(
   customScalarAdapters: CustomScalarAdapters
 ) : ResponseAdapter<QueryFragmentImpl.Data> {
-  val __typenameAdapter: ResponseAdapter<String> = stringResponseAdapter
+  val stringAdapter: ResponseAdapter<String> = stringResponseAdapter
 
-  val heroAdapter: ResponseAdapter<QueryFragmentImpl.Data.Hero?> =
+  val nullablecharacterAdapterAdapter: ResponseAdapter<QueryFragmentImpl.Data.Hero?> =
       NullableResponseAdapter(Hero(customScalarAdapters))
 
   override fun fromResponse(reader: JsonReader): QueryFragmentImpl.Data {
@@ -36,9 +35,8 @@ class QueryFragmentImpl_ResponseAdapter(
     reader.beginObject()
     while(true) {
       when (reader.selectName(RESPONSE_NAMES)) {
-        0 -> __typename = __typenameAdapter.fromResponse(reader) ?: throw
-            UnexpectedNullValue("__typename")
-        1 -> hero = heroAdapter.fromResponse(reader)
+        0 -> __typename = stringAdapter.fromResponse(reader)
+        1 -> hero = nullablecharacterAdapterAdapter.fromResponse(reader)
         else -> break
       }
     }
@@ -52,9 +50,9 @@ class QueryFragmentImpl_ResponseAdapter(
   override fun toResponse(writer: JsonWriter, value: QueryFragmentImpl.Data) {
     writer.beginObject()
     writer.name("__typename")
-    __typenameAdapter.toResponse(writer, value.__typename)
+    stringAdapter.toResponse(writer, value.__typename)
     writer.name("hero")
-    heroAdapter.toResponse(writer, value.hero)
+    nullablecharacterAdapterAdapter.toResponse(writer, value.hero)
     writer.endObject()
   }
 
@@ -76,14 +74,14 @@ class QueryFragmentImpl_ResponseAdapter(
   class Hero(
     customScalarAdapters: CustomScalarAdapters
   ) : ResponseAdapter<QueryFragmentImpl.Data.Hero> {
-    val nameAdapter: ResponseAdapter<String> = stringResponseAdapter
+    val stringAdapter: ResponseAdapter<String> = stringResponseAdapter
 
     override fun fromResponse(reader: JsonReader): QueryFragmentImpl.Data.Hero {
       var name: String? = null
       reader.beginObject()
       while(true) {
         when (reader.selectName(RESPONSE_NAMES)) {
-          0 -> name = nameAdapter.fromResponse(reader) ?: throw UnexpectedNullValue("name")
+          0 -> name = stringAdapter.fromResponse(reader)
           else -> break
         }
       }
@@ -96,7 +94,7 @@ class QueryFragmentImpl_ResponseAdapter(
     override fun toResponse(writer: JsonWriter, value: QueryFragmentImpl.Data.Hero) {
       writer.beginObject()
       writer.name("name")
-      nameAdapter.toResponse(writer, value.name)
+      stringAdapter.toResponse(writer, value.name)
       writer.endObject()
     }
 

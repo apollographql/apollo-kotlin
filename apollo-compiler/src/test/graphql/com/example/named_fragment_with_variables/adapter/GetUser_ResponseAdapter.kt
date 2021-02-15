@@ -13,7 +13,6 @@ import com.apollographql.apollo.api.internal.ResponseAdapter
 import com.apollographql.apollo.api.internal.json.JsonReader
 import com.apollographql.apollo.api.internal.json.JsonWriter
 import com.apollographql.apollo.api.internal.stringResponseAdapter
-import com.apollographql.apollo.exception.UnexpectedNullValue
 import com.example.named_fragment_with_variables.GetUser
 import kotlin.Array
 import kotlin.String
@@ -26,10 +25,10 @@ import kotlin.collections.List
 class GetUser_ResponseAdapter(
   customScalarAdapters: CustomScalarAdapters
 ) : ResponseAdapter<GetUser.Data> {
-  val queryDataAdapter: QueryData =
+  val QueryDataAdapter: QueryData =
       com.example.named_fragment_with_variables.adapter.GetUser_ResponseAdapter.QueryData(customScalarAdapters)
 
-  val otherDataAdapter: OtherData =
+  val OtherDataAdapter: OtherData =
       com.example.named_fragment_with_variables.adapter.GetUser_ResponseAdapter.OtherData(customScalarAdapters)
 
   override fun fromResponse(reader: JsonReader): GetUser.Data {
@@ -38,25 +37,25 @@ class GetUser_ResponseAdapter(
     val typename = reader.nextString()
 
     return when(typename) {
-      "Query" -> queryDataAdapter.fromResponse(reader, typename)
-      else -> otherDataAdapter.fromResponse(reader, typename)
+      "Query" -> QueryDataAdapter.fromResponse(reader, typename)
+      else -> OtherDataAdapter.fromResponse(reader, typename)
     }
     .also { reader.endObject() }
   }
 
   override fun toResponse(writer: JsonWriter, value: GetUser.Data) {
     when(value) {
-      is GetUser.Data.QueryData -> queryDataAdapter.toResponse(writer, value)
-      is GetUser.Data.OtherData -> otherDataAdapter.toResponse(writer, value)
+      is GetUser.Data.QueryData -> QueryDataAdapter.toResponse(writer, value)
+      is GetUser.Data.OtherData -> OtherDataAdapter.toResponse(writer, value)
     }
   }
 
   class QueryData(
     customScalarAdapters: CustomScalarAdapters
   ) {
-    val __typenameAdapter: ResponseAdapter<String> = stringResponseAdapter
+    val stringAdapter: ResponseAdapter<String> = stringResponseAdapter
 
-    val organizationAdapter: ResponseAdapter<GetUser.Data.QueryData.Organization?> =
+    val nullableorganizationAdapterAdapter: ResponseAdapter<GetUser.Data.QueryData.Organization?> =
         NullableResponseAdapter(Organization(customScalarAdapters))
 
     fun fromResponse(reader: JsonReader, __typename: String?): GetUser.Data.QueryData {
@@ -64,9 +63,8 @@ class GetUser_ResponseAdapter(
       var organization: GetUser.Data.QueryData.Organization? = null
       while(true) {
         when (reader.selectName(RESPONSE_NAMES)) {
-          0 -> __typename = __typenameAdapter.fromResponse(reader) ?: throw
-              UnexpectedNullValue("__typename")
-          1 -> organization = organizationAdapter.fromResponse(reader)
+          0 -> __typename = stringAdapter.fromResponse(reader)
+          1 -> organization = nullableorganizationAdapterAdapter.fromResponse(reader)
           else -> break
         }
       }
@@ -79,9 +77,9 @@ class GetUser_ResponseAdapter(
     fun toResponse(writer: JsonWriter, value: GetUser.Data.QueryData) {
       writer.beginObject()
       writer.name("__typename")
-      __typenameAdapter.toResponse(writer, value.__typename)
+      stringAdapter.toResponse(writer, value.__typename)
       writer.name("organization")
-      organizationAdapter.toResponse(writer, value.organization)
+      nullableorganizationAdapterAdapter.toResponse(writer, value.organization)
       writer.endObject()
     }
 
@@ -107,10 +105,10 @@ class GetUser_ResponseAdapter(
     class Organization(
       customScalarAdapters: CustomScalarAdapters
     ) : ResponseAdapter<GetUser.Data.QueryData.Organization> {
-      val idAdapter: ResponseAdapter<String> = stringResponseAdapter
+      val stringAdapter: ResponseAdapter<String> = stringResponseAdapter
 
-      val userAdapter: ResponseAdapter<List<GetUser.Data.QueryData.Organization.User>> =
-          ListResponseAdapter(User(customScalarAdapters))
+      val listOfuserAdapterAdapter: ResponseAdapter<List<GetUser.Data.QueryData.Organization.User>>
+          = ListResponseAdapter(User(customScalarAdapters))
 
       override fun fromResponse(reader: JsonReader): GetUser.Data.QueryData.Organization {
         var id: String? = null
@@ -118,8 +116,8 @@ class GetUser_ResponseAdapter(
         reader.beginObject()
         while(true) {
           when (reader.selectName(RESPONSE_NAMES)) {
-            0 -> id = idAdapter.fromResponse(reader) ?: throw UnexpectedNullValue("id")
-            1 -> user = userAdapter.fromResponse(reader) ?: throw UnexpectedNullValue("user")
+            0 -> id = stringAdapter.fromResponse(reader)
+            1 -> user = listOfuserAdapterAdapter.fromResponse(reader)
             else -> break
           }
         }
@@ -133,9 +131,9 @@ class GetUser_ResponseAdapter(
       override fun toResponse(writer: JsonWriter, value: GetUser.Data.QueryData.Organization) {
         writer.beginObject()
         writer.name("id")
-        idAdapter.toResponse(writer, value.id)
+        stringAdapter.toResponse(writer, value.id)
         writer.name("user")
-        userAdapter.toResponse(writer, value.user)
+        listOfuserAdapterAdapter.toResponse(writer, value.user)
         writer.endObject()
       }
 
@@ -166,10 +164,10 @@ class GetUser_ResponseAdapter(
       class User(
         customScalarAdapters: CustomScalarAdapters
       ) : ResponseAdapter<GetUser.Data.QueryData.Organization.User> {
-        val userUserAdapter: UserUser =
+        val UserUserAdapter: UserUser =
             com.example.named_fragment_with_variables.adapter.GetUser_ResponseAdapter.QueryData.Organization.User.UserUser(customScalarAdapters)
 
-        val otherUserAdapter: OtherUser =
+        val OtherUserAdapter: OtherUser =
             com.example.named_fragment_with_variables.adapter.GetUser_ResponseAdapter.QueryData.Organization.User.OtherUser(customScalarAdapters)
 
         override fun fromResponse(reader: JsonReader): GetUser.Data.QueryData.Organization.User {
@@ -178,8 +176,8 @@ class GetUser_ResponseAdapter(
           val typename = reader.nextString()
 
           return when(typename) {
-            "User" -> userUserAdapter.fromResponse(reader, typename)
-            else -> otherUserAdapter.fromResponse(reader, typename)
+            "User" -> UserUserAdapter.fromResponse(reader, typename)
+            else -> OtherUserAdapter.fromResponse(reader, typename)
           }
           .also { reader.endObject() }
         }
@@ -187,21 +185,15 @@ class GetUser_ResponseAdapter(
         override fun toResponse(writer: JsonWriter,
             value: GetUser.Data.QueryData.Organization.User) {
           when(value) {
-            is GetUser.Data.QueryData.Organization.User.UserUser -> userUserAdapter.toResponse(writer, value)
-            is GetUser.Data.QueryData.Organization.User.OtherUser -> otherUserAdapter.toResponse(writer, value)
+            is GetUser.Data.QueryData.Organization.User.UserUser -> UserUserAdapter.toResponse(writer, value)
+            is GetUser.Data.QueryData.Organization.User.OtherUser -> OtherUserAdapter.toResponse(writer, value)
           }
         }
 
         class UserUser(
           customScalarAdapters: CustomScalarAdapters
         ) {
-          val __typenameAdapter: ResponseAdapter<String> = stringResponseAdapter
-
-          val firstNameAdapter: ResponseAdapter<String> = stringResponseAdapter
-
-          val lastNameAdapter: ResponseAdapter<String> = stringResponseAdapter
-
-          val avatarAdapter: ResponseAdapter<String> = stringResponseAdapter
+          val stringAdapter: ResponseAdapter<String> = stringResponseAdapter
 
           fun fromResponse(reader: JsonReader, __typename: String?):
               GetUser.Data.QueryData.Organization.User.UserUser {
@@ -211,14 +203,10 @@ class GetUser_ResponseAdapter(
             var avatar: String? = null
             while(true) {
               when (reader.selectName(RESPONSE_NAMES)) {
-                0 -> __typename = __typenameAdapter.fromResponse(reader) ?: throw
-                    UnexpectedNullValue("__typename")
-                1 -> firstName = firstNameAdapter.fromResponse(reader) ?: throw
-                    UnexpectedNullValue("firstName")
-                2 -> lastName = lastNameAdapter.fromResponse(reader) ?: throw
-                    UnexpectedNullValue("lastName")
-                3 -> avatar = avatarAdapter.fromResponse(reader) ?: throw
-                    UnexpectedNullValue("avatar")
+                0 -> __typename = stringAdapter.fromResponse(reader)
+                1 -> firstName = stringAdapter.fromResponse(reader)
+                2 -> lastName = stringAdapter.fromResponse(reader)
+                3 -> avatar = stringAdapter.fromResponse(reader)
                 else -> break
               }
             }
@@ -234,13 +222,13 @@ class GetUser_ResponseAdapter(
               value: GetUser.Data.QueryData.Organization.User.UserUser) {
             writer.beginObject()
             writer.name("__typename")
-            __typenameAdapter.toResponse(writer, value.__typename)
+            stringAdapter.toResponse(writer, value.__typename)
             writer.name("firstName")
-            firstNameAdapter.toResponse(writer, value.firstName)
+            stringAdapter.toResponse(writer, value.firstName)
             writer.name("lastName")
-            lastNameAdapter.toResponse(writer, value.lastName)
+            stringAdapter.toResponse(writer, value.lastName)
             writer.name("avatar")
-            avatarAdapter.toResponse(writer, value.avatar)
+            stringAdapter.toResponse(writer, value.avatar)
             writer.endObject()
           }
 
@@ -272,15 +260,14 @@ class GetUser_ResponseAdapter(
         class OtherUser(
           customScalarAdapters: CustomScalarAdapters
         ) {
-          val __typenameAdapter: ResponseAdapter<String> = stringResponseAdapter
+          val stringAdapter: ResponseAdapter<String> = stringResponseAdapter
 
           fun fromResponse(reader: JsonReader, __typename: String?):
               GetUser.Data.QueryData.Organization.User.OtherUser {
             var __typename: String? = __typename
             while(true) {
               when (reader.selectName(RESPONSE_NAMES)) {
-                0 -> __typename = __typenameAdapter.fromResponse(reader) ?: throw
-                    UnexpectedNullValue("__typename")
+                0 -> __typename = stringAdapter.fromResponse(reader)
                 else -> break
               }
             }
@@ -293,7 +280,7 @@ class GetUser_ResponseAdapter(
               value: GetUser.Data.QueryData.Organization.User.OtherUser) {
             writer.beginObject()
             writer.name("__typename")
-            __typenameAdapter.toResponse(writer, value.__typename)
+            stringAdapter.toResponse(writer, value.__typename)
             writer.endObject()
           }
 
@@ -312,14 +299,13 @@ class GetUser_ResponseAdapter(
   class OtherData(
     customScalarAdapters: CustomScalarAdapters
   ) {
-    val __typenameAdapter: ResponseAdapter<String> = stringResponseAdapter
+    val stringAdapter: ResponseAdapter<String> = stringResponseAdapter
 
     fun fromResponse(reader: JsonReader, __typename: String?): GetUser.Data.OtherData {
       var __typename: String? = __typename
       while(true) {
         when (reader.selectName(RESPONSE_NAMES)) {
-          0 -> __typename = __typenameAdapter.fromResponse(reader) ?: throw
-              UnexpectedNullValue("__typename")
+          0 -> __typename = stringAdapter.fromResponse(reader)
           else -> break
         }
       }
@@ -331,7 +317,7 @@ class GetUser_ResponseAdapter(
     fun toResponse(writer: JsonWriter, value: GetUser.Data.OtherData) {
       writer.beginObject()
       writer.name("__typename")
-      __typenameAdapter.toResponse(writer, value.__typename)
+      stringAdapter.toResponse(writer, value.__typename)
       writer.endObject()
     }
 

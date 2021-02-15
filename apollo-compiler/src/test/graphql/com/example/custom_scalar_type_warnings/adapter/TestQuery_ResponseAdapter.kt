@@ -12,7 +12,6 @@ import com.apollographql.apollo.api.internal.NullableResponseAdapter
 import com.apollographql.apollo.api.internal.ResponseAdapter
 import com.apollographql.apollo.api.internal.json.JsonReader
 import com.apollographql.apollo.api.internal.json.JsonWriter
-import com.apollographql.apollo.exception.UnexpectedNullValue
 import com.example.custom_scalar_type_warnings.TestQuery
 import com.example.custom_scalar_type_warnings.type.CustomScalars
 import kotlin.Any
@@ -27,7 +26,7 @@ import kotlin.collections.List
 class TestQuery_ResponseAdapter(
   customScalarAdapters: CustomScalarAdapters
 ) : ResponseAdapter<TestQuery.Data> {
-  val heroAdapter: ResponseAdapter<TestQuery.Data.Hero?> =
+  val nullablecharacterAdapterAdapter: ResponseAdapter<TestQuery.Data.Hero?> =
       NullableResponseAdapter(Hero(customScalarAdapters))
 
   override fun fromResponse(reader: JsonReader): TestQuery.Data {
@@ -35,7 +34,7 @@ class TestQuery_ResponseAdapter(
     reader.beginObject()
     while(true) {
       when (reader.selectName(RESPONSE_NAMES)) {
-        0 -> hero = heroAdapter.fromResponse(reader)
+        0 -> hero = nullablecharacterAdapterAdapter.fromResponse(reader)
         else -> break
       }
     }
@@ -48,7 +47,7 @@ class TestQuery_ResponseAdapter(
   override fun toResponse(writer: JsonWriter, value: TestQuery.Data) {
     writer.beginObject()
     writer.name("hero")
-    heroAdapter.toResponse(writer, value.hero)
+    nullablecharacterAdapterAdapter.toResponse(writer, value.hero)
     writer.endObject()
   }
 
@@ -69,7 +68,7 @@ class TestQuery_ResponseAdapter(
   class Hero(
     customScalarAdapters: CustomScalarAdapters
   ) : ResponseAdapter<TestQuery.Data.Hero> {
-    val linksAdapter: ResponseAdapter<List<Any>> =
+    val listOfuRLAdapterAdapter: ResponseAdapter<List<Any>> =
         ListResponseAdapter(customScalarAdapters.responseAdapterFor<Any>(CustomScalars.URL))
 
     override fun fromResponse(reader: JsonReader): TestQuery.Data.Hero {
@@ -77,7 +76,7 @@ class TestQuery_ResponseAdapter(
       reader.beginObject()
       while(true) {
         when (reader.selectName(RESPONSE_NAMES)) {
-          0 -> links = linksAdapter.fromResponse(reader) ?: throw UnexpectedNullValue("links")
+          0 -> links = listOfuRLAdapterAdapter.fromResponse(reader)
           else -> break
         }
       }
@@ -90,7 +89,7 @@ class TestQuery_ResponseAdapter(
     override fun toResponse(writer: JsonWriter, value: TestQuery.Data.Hero) {
       writer.beginObject()
       writer.name("links")
-      linksAdapter.toResponse(writer, value.links)
+      listOfuRLAdapterAdapter.toResponse(writer, value.links)
       writer.endObject()
     }
 

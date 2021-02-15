@@ -60,14 +60,14 @@ private fun CodeGenerationAst.ObjectType.writeFragmentToResponseFunSpec(): FunSp
                 .distinct()
                 .map { type ->
                   CodeBlock.of(
-                      "is·%T·->·${type.name.toLowerCamelCase()}Adapter.toResponse(writer,·value)",
+                      "is·%T·->·${kotlinNameForTypeCaseAdapterField(type)}.toResponse(writer,·value)",
                       type.asTypeName(),
                   )
                 }
                 .joinToCode(separator = "\n", suffix = "\n")
         )
         addStatement(
-            "is·%T·->·${defaultImplementation.name.toLowerCamelCase()}Adapter.toResponse(writer,·value)",
+            "is·%T·->·${kotlinNameForTypeCaseAdapterField(defaultImplementation)}.toResponse(writer,·value)",
             defaultImplementation.asTypeName(),
         )
         endControlFlow()
@@ -87,6 +87,6 @@ internal fun List<CodeGenerationAst.Field>.writeCode(): CodeBlock {
 private fun CodeGenerationAst.Field.writeCode(): CodeBlock {
   return CodeBlock.builder().apply {
     addStatement("writer.name(%S)", name)
-    addStatement("${kotlinNameForAdapterField(name)}.toResponse(writer, value.${name.escapeKotlinReservedWord()})")
+    addStatement("${kotlinNameForAdapterField(type)}.toResponse(writer, value.${name.escapeKotlinReservedWord()})")
   }.build()
 }

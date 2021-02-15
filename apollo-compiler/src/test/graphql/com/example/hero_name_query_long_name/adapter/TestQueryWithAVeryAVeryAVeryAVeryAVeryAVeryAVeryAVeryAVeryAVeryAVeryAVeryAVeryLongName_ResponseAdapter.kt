@@ -12,7 +12,6 @@ import com.apollographql.apollo.api.internal.ResponseAdapter
 import com.apollographql.apollo.api.internal.json.JsonReader
 import com.apollographql.apollo.api.internal.json.JsonWriter
 import com.apollographql.apollo.api.internal.stringResponseAdapter
-import com.apollographql.apollo.exception.UnexpectedNullValue
 import com.example.hero_name_query_long_name.TestQueryWithAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryLongName
 import kotlin.Array
 import kotlin.String
@@ -28,7 +27,7 @@ class
 ) :
     ResponseAdapter<TestQueryWithAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryLongName.Data>
     {
-  val heroAVeryAVeryAVeryAVeryAVeryAVeryAVAdapter:
+  val nullablecharacterAdapterAdapter:
       ResponseAdapter<TestQueryWithAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryLongName.Data.HeroAVeryAVeryAVeryAVeryAVeryAVeryAV?>
       = NullableResponseAdapter(HeroAVeryAVeryAVeryAVeryAVeryAVeryAV(customScalarAdapters))
 
@@ -38,7 +37,7 @@ class
     reader.beginObject()
     while(true) {
       when (reader.selectName(RESPONSE_NAMES)) {
-        0 -> heroAVeryAVeryAVeryAVeryAVeryAVeryAV = heroAVeryAVeryAVeryAVeryAVeryAVeryAVAdapter.fromResponse(reader)
+        0 -> heroAVeryAVeryAVeryAVeryAVeryAVeryAV = nullablecharacterAdapterAdapter.fromResponse(reader)
         else -> break
       }
     }
@@ -52,8 +51,7 @@ class
       value: TestQueryWithAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryLongName.Data) {
     writer.beginObject()
     writer.name("heroAVeryAVeryAVeryAVeryAVeryAVeryAV")
-    heroAVeryAVeryAVeryAVeryAVeryAVeryAVAdapter.toResponse(writer,
-        value.heroAVeryAVeryAVeryAVeryAVeryAVeryAV)
+    nullablecharacterAdapterAdapter.toResponse(writer, value.heroAVeryAVeryAVeryAVeryAVeryAVeryAV)
     writer.endObject()
   }
 
@@ -82,8 +80,7 @@ class
   ) :
       ResponseAdapter<TestQueryWithAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryLongName.Data.HeroAVeryAVeryAVeryAVeryAVeryAVeryAV>
       {
-    val nameAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryLongNameAdapter:
-        ResponseAdapter<String> = stringResponseAdapter
+    val stringAdapter: ResponseAdapter<String> = stringResponseAdapter
 
     override fun fromResponse(reader: JsonReader):
         TestQueryWithAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryLongName.Data.HeroAVeryAVeryAVeryAVeryAVeryAVeryAV {
@@ -91,9 +88,7 @@ class
       reader.beginObject()
       while(true) {
         when (reader.selectName(RESPONSE_NAMES)) {
-          0 -> nameAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryLongName = nameAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryLongNameAdapter.fromResponse(reader)
-              ?: throw
-              UnexpectedNullValue("nameAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryLongName")
+          0 -> nameAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryLongName = stringAdapter.fromResponse(reader)
           else -> break
         }
       }
@@ -107,7 +102,7 @@ class
         value: TestQueryWithAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryLongName.Data.HeroAVeryAVeryAVeryAVeryAVeryAVeryAV) {
       writer.beginObject()
       writer.name("nameAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryLongName")
-      nameAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryLongNameAdapter.toResponse(writer,
+      stringAdapter.toResponse(writer,
           value.nameAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryLongName)
       writer.endObject()
     }

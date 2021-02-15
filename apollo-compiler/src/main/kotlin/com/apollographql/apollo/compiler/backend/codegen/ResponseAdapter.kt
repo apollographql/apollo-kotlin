@@ -81,7 +81,7 @@ private fun CodeGenerationAst.ObjectType.responseAdapterTypeSpec(): TypeSpec {
 
 private fun objectAdapterPropertySpecs(kind: CodeGenerationAst.ObjectType.Kind.Fragment): Iterable<PropertySpec> {
   return (kind.possibleImplementations.values.distinct() + kind.defaultImplementation).map { typeRef ->
-    PropertySpec.builder("${typeRef.name.toLowerCamelCase()}Adapter", typeRef.asAdapterTypeName())
+    PropertySpec.builder(kotlinNameForTypeCaseAdapterField(typeRef), typeRef.asAdapterTypeName())
         .initializer("%L(customScalarAdapters)", typeRef.asAdapterTypeName())
         .build()
   }
@@ -141,7 +141,7 @@ private fun responseFieldsPropertySpec(objectType: CodeGenerationAst.ObjectType)
 }
 
 private fun adapterPropertySpecs(objectType: CodeGenerationAst.ObjectType): List<PropertySpec> {
-  return objectType.fields.map { it.adapterPropertySpec() }
+  return objectType.fields.map { it.type }.toSet().map { it.adapterPropertySpec() }
 }
 
 private fun adapterInitializer(type: CodeGenerationAst.FieldType): CodeBlock {
@@ -165,13 +165,13 @@ private fun adapterInitializer(type: CodeGenerationAst.FieldType): CodeBlock {
   }
 }
 
-private fun CodeGenerationAst.Field.adapterPropertySpec(): PropertySpec {
+private fun CodeGenerationAst.FieldType.adapterPropertySpec(): PropertySpec {
   return PropertySpec
       .builder(
-          name = "${name.escapeKotlinReservedWord()}Adapter",
-          type = ResponseAdapter::class.asClassName().parameterizedBy(type.asTypeName())
+          name = kotlinNameForAdapterField(this),
+          type = ResponseAdapter::class.asClassName().parameterizedBy(asTypeName())
       )
-      .initializer(adapterInitializer(type))
+      .initializer(adapterInitializer(this))
       .build()
 }
 

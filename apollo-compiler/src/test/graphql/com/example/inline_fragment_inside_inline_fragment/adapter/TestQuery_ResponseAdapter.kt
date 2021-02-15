@@ -13,7 +13,6 @@ import com.apollographql.apollo.api.internal.ResponseAdapter
 import com.apollographql.apollo.api.internal.json.JsonReader
 import com.apollographql.apollo.api.internal.json.JsonWriter
 import com.apollographql.apollo.api.internal.stringResponseAdapter
-import com.apollographql.apollo.exception.UnexpectedNullValue
 import com.example.inline_fragment_inside_inline_fragment.TestQuery
 import kotlin.Array
 import kotlin.String
@@ -26,7 +25,8 @@ import kotlin.collections.List
 class TestQuery_ResponseAdapter(
   customScalarAdapters: CustomScalarAdapters
 ) : ResponseAdapter<TestQuery.Data> {
-  val searchAdapter: ResponseAdapter<List<TestQuery.Data.Search?>?> =
+  val nullablelistOfnullablesearchResultAdapterAdapterAdapterAdapter:
+      ResponseAdapter<List<TestQuery.Data.Search?>?> =
       NullableResponseAdapter(ListResponseAdapter(NullableResponseAdapter(Search(customScalarAdapters))))
 
   override fun fromResponse(reader: JsonReader): TestQuery.Data {
@@ -34,7 +34,7 @@ class TestQuery_ResponseAdapter(
     reader.beginObject()
     while(true) {
       when (reader.selectName(RESPONSE_NAMES)) {
-        0 -> search = searchAdapter.fromResponse(reader)
+        0 -> search = nullablelistOfnullablesearchResultAdapterAdapterAdapterAdapter.fromResponse(reader)
         else -> break
       }
     }
@@ -47,7 +47,7 @@ class TestQuery_ResponseAdapter(
   override fun toResponse(writer: JsonWriter, value: TestQuery.Data) {
     writer.beginObject()
     writer.name("search")
-    searchAdapter.toResponse(writer, value.search)
+    nullablelistOfnullablesearchResultAdapterAdapterAdapterAdapter.toResponse(writer, value.search)
     writer.endObject()
   }
 
@@ -72,13 +72,13 @@ class TestQuery_ResponseAdapter(
   class Search(
     customScalarAdapters: CustomScalarAdapters
   ) : ResponseAdapter<TestQuery.Data.Search> {
-    val characterDroidSearchAdapter: CharacterDroidSearch =
+    val CharacterDroidSearchAdapter: CharacterDroidSearch =
         com.example.inline_fragment_inside_inline_fragment.adapter.TestQuery_ResponseAdapter.Search.CharacterDroidSearch(customScalarAdapters)
 
-    val characterHumanSearchAdapter: CharacterHumanSearch =
+    val CharacterHumanSearchAdapter: CharacterHumanSearch =
         com.example.inline_fragment_inside_inline_fragment.adapter.TestQuery_ResponseAdapter.Search.CharacterHumanSearch(customScalarAdapters)
 
-    val otherSearchAdapter: OtherSearch =
+    val OtherSearchAdapter: OtherSearch =
         com.example.inline_fragment_inside_inline_fragment.adapter.TestQuery_ResponseAdapter.Search.OtherSearch(customScalarAdapters)
 
     override fun fromResponse(reader: JsonReader): TestQuery.Data.Search {
@@ -87,29 +87,27 @@ class TestQuery_ResponseAdapter(
       val typename = reader.nextString()
 
       return when(typename) {
-        "Droid" -> characterDroidSearchAdapter.fromResponse(reader, typename)
-        "Human" -> characterHumanSearchAdapter.fromResponse(reader, typename)
-        else -> otherSearchAdapter.fromResponse(reader, typename)
+        "Droid" -> CharacterDroidSearchAdapter.fromResponse(reader, typename)
+        "Human" -> CharacterHumanSearchAdapter.fromResponse(reader, typename)
+        else -> OtherSearchAdapter.fromResponse(reader, typename)
       }
       .also { reader.endObject() }
     }
 
     override fun toResponse(writer: JsonWriter, value: TestQuery.Data.Search) {
       when(value) {
-        is TestQuery.Data.Search.CharacterDroidSearch -> characterDroidSearchAdapter.toResponse(writer, value)
-        is TestQuery.Data.Search.CharacterHumanSearch -> characterHumanSearchAdapter.toResponse(writer, value)
-        is TestQuery.Data.Search.OtherSearch -> otherSearchAdapter.toResponse(writer, value)
+        is TestQuery.Data.Search.CharacterDroidSearch -> CharacterDroidSearchAdapter.toResponse(writer, value)
+        is TestQuery.Data.Search.CharacterHumanSearch -> CharacterHumanSearchAdapter.toResponse(writer, value)
+        is TestQuery.Data.Search.OtherSearch -> OtherSearchAdapter.toResponse(writer, value)
       }
     }
 
     class CharacterDroidSearch(
       customScalarAdapters: CustomScalarAdapters
     ) {
-      val __typenameAdapter: ResponseAdapter<String> = stringResponseAdapter
+      val stringAdapter: ResponseAdapter<String> = stringResponseAdapter
 
-      val nameAdapter: ResponseAdapter<String> = stringResponseAdapter
-
-      val primaryFunctionAdapter: ResponseAdapter<String?> =
+      val nullablestringAdapterAdapter: ResponseAdapter<String?> =
           NullableResponseAdapter(stringResponseAdapter)
 
       fun fromResponse(reader: JsonReader, __typename: String?):
@@ -119,10 +117,9 @@ class TestQuery_ResponseAdapter(
         var primaryFunction: String? = null
         while(true) {
           when (reader.selectName(RESPONSE_NAMES)) {
-            0 -> __typename = __typenameAdapter.fromResponse(reader) ?: throw
-                UnexpectedNullValue("__typename")
-            1 -> name = nameAdapter.fromResponse(reader) ?: throw UnexpectedNullValue("name")
-            2 -> primaryFunction = primaryFunctionAdapter.fromResponse(reader)
+            0 -> __typename = stringAdapter.fromResponse(reader)
+            1 -> name = stringAdapter.fromResponse(reader)
+            2 -> primaryFunction = nullablestringAdapterAdapter.fromResponse(reader)
             else -> break
           }
         }
@@ -136,11 +133,11 @@ class TestQuery_ResponseAdapter(
       fun toResponse(writer: JsonWriter, value: TestQuery.Data.Search.CharacterDroidSearch) {
         writer.beginObject()
         writer.name("__typename")
-        __typenameAdapter.toResponse(writer, value.__typename)
+        stringAdapter.toResponse(writer, value.__typename)
         writer.name("name")
-        nameAdapter.toResponse(writer, value.name)
+        stringAdapter.toResponse(writer, value.name)
         writer.name("primaryFunction")
-        primaryFunctionAdapter.toResponse(writer, value.primaryFunction)
+        nullablestringAdapterAdapter.toResponse(writer, value.primaryFunction)
         writer.endObject()
       }
 
@@ -164,11 +161,9 @@ class TestQuery_ResponseAdapter(
     class CharacterHumanSearch(
       customScalarAdapters: CustomScalarAdapters
     ) {
-      val __typenameAdapter: ResponseAdapter<String> = stringResponseAdapter
+      val stringAdapter: ResponseAdapter<String> = stringResponseAdapter
 
-      val nameAdapter: ResponseAdapter<String> = stringResponseAdapter
-
-      val homePlanetAdapter: ResponseAdapter<String?> =
+      val nullablestringAdapterAdapter: ResponseAdapter<String?> =
           NullableResponseAdapter(stringResponseAdapter)
 
       fun fromResponse(reader: JsonReader, __typename: String?):
@@ -178,10 +173,9 @@ class TestQuery_ResponseAdapter(
         var homePlanet: String? = null
         while(true) {
           when (reader.selectName(RESPONSE_NAMES)) {
-            0 -> __typename = __typenameAdapter.fromResponse(reader) ?: throw
-                UnexpectedNullValue("__typename")
-            1 -> name = nameAdapter.fromResponse(reader) ?: throw UnexpectedNullValue("name")
-            2 -> homePlanet = homePlanetAdapter.fromResponse(reader)
+            0 -> __typename = stringAdapter.fromResponse(reader)
+            1 -> name = stringAdapter.fromResponse(reader)
+            2 -> homePlanet = nullablestringAdapterAdapter.fromResponse(reader)
             else -> break
           }
         }
@@ -195,11 +189,11 @@ class TestQuery_ResponseAdapter(
       fun toResponse(writer: JsonWriter, value: TestQuery.Data.Search.CharacterHumanSearch) {
         writer.beginObject()
         writer.name("__typename")
-        __typenameAdapter.toResponse(writer, value.__typename)
+        stringAdapter.toResponse(writer, value.__typename)
         writer.name("name")
-        nameAdapter.toResponse(writer, value.name)
+        stringAdapter.toResponse(writer, value.name)
         writer.name("homePlanet")
-        homePlanetAdapter.toResponse(writer, value.homePlanet)
+        nullablestringAdapterAdapter.toResponse(writer, value.homePlanet)
         writer.endObject()
       }
 
@@ -223,14 +217,13 @@ class TestQuery_ResponseAdapter(
     class OtherSearch(
       customScalarAdapters: CustomScalarAdapters
     ) {
-      val __typenameAdapter: ResponseAdapter<String> = stringResponseAdapter
+      val stringAdapter: ResponseAdapter<String> = stringResponseAdapter
 
       fun fromResponse(reader: JsonReader, __typename: String?): TestQuery.Data.Search.OtherSearch {
         var __typename: String? = __typename
         while(true) {
           when (reader.selectName(RESPONSE_NAMES)) {
-            0 -> __typename = __typenameAdapter.fromResponse(reader) ?: throw
-                UnexpectedNullValue("__typename")
+            0 -> __typename = stringAdapter.fromResponse(reader)
             else -> break
           }
         }
@@ -242,7 +235,7 @@ class TestQuery_ResponseAdapter(
       fun toResponse(writer: JsonWriter, value: TestQuery.Data.Search.OtherSearch) {
         writer.beginObject()
         writer.name("__typename")
-        __typenameAdapter.toResponse(writer, value.__typename)
+        stringAdapter.toResponse(writer, value.__typename)
         writer.endObject()
       }
 

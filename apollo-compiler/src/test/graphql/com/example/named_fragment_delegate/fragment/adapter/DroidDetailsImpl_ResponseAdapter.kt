@@ -13,7 +13,6 @@ import com.apollographql.apollo.api.internal.ResponseAdapter
 import com.apollographql.apollo.api.internal.json.JsonReader
 import com.apollographql.apollo.api.internal.json.JsonWriter
 import com.apollographql.apollo.api.internal.stringResponseAdapter
-import com.apollographql.apollo.exception.UnexpectedNullValue
 import com.example.named_fragment_delegate.fragment.DroidDetailsImpl
 import kotlin.Array
 import kotlin.String
@@ -26,14 +25,13 @@ import kotlin.collections.List
 class DroidDetailsImpl_ResponseAdapter(
   customScalarAdapters: CustomScalarAdapters
 ) : ResponseAdapter<DroidDetailsImpl.Data> {
-  val __typenameAdapter: ResponseAdapter<String> = stringResponseAdapter
+  val stringAdapter: ResponseAdapter<String> = stringResponseAdapter
 
-  val nameAdapter: ResponseAdapter<String> = stringResponseAdapter
-
-  val primaryFunctionAdapter: ResponseAdapter<String?> =
+  val nullablestringAdapterAdapter: ResponseAdapter<String?> =
       NullableResponseAdapter(stringResponseAdapter)
 
-  val friendsAdapter: ResponseAdapter<List<DroidDetailsImpl.Data.Friend?>?> =
+  val nullablelistOfnullablecharacterAdapterAdapterAdapterAdapter:
+      ResponseAdapter<List<DroidDetailsImpl.Data.Friend?>?> =
       NullableResponseAdapter(ListResponseAdapter(NullableResponseAdapter(Friend(customScalarAdapters))))
 
   override fun fromResponse(reader: JsonReader): DroidDetailsImpl.Data {
@@ -44,11 +42,10 @@ class DroidDetailsImpl_ResponseAdapter(
     reader.beginObject()
     while(true) {
       when (reader.selectName(RESPONSE_NAMES)) {
-        0 -> __typename = __typenameAdapter.fromResponse(reader) ?: throw
-            UnexpectedNullValue("__typename")
-        1 -> name = nameAdapter.fromResponse(reader) ?: throw UnexpectedNullValue("name")
-        2 -> primaryFunction = primaryFunctionAdapter.fromResponse(reader)
-        3 -> friends = friendsAdapter.fromResponse(reader)
+        0 -> __typename = stringAdapter.fromResponse(reader)
+        1 -> name = stringAdapter.fromResponse(reader)
+        2 -> primaryFunction = nullablestringAdapterAdapter.fromResponse(reader)
+        3 -> friends = nullablelistOfnullablecharacterAdapterAdapterAdapterAdapter.fromResponse(reader)
         else -> break
       }
     }
@@ -64,13 +61,13 @@ class DroidDetailsImpl_ResponseAdapter(
   override fun toResponse(writer: JsonWriter, value: DroidDetailsImpl.Data) {
     writer.beginObject()
     writer.name("__typename")
-    __typenameAdapter.toResponse(writer, value.__typename)
+    stringAdapter.toResponse(writer, value.__typename)
     writer.name("name")
-    nameAdapter.toResponse(writer, value.name)
+    stringAdapter.toResponse(writer, value.name)
     writer.name("primaryFunction")
-    primaryFunctionAdapter.toResponse(writer, value.primaryFunction)
+    nullablestringAdapterAdapter.toResponse(writer, value.primaryFunction)
     writer.name("friends")
-    friendsAdapter.toResponse(writer, value.friends)
+    nullablelistOfnullablecharacterAdapterAdapterAdapterAdapter.toResponse(writer, value.friends)
     writer.endObject()
   }
 
@@ -100,14 +97,14 @@ class DroidDetailsImpl_ResponseAdapter(
   class Friend(
     customScalarAdapters: CustomScalarAdapters
   ) : ResponseAdapter<DroidDetailsImpl.Data.Friend> {
-    val nameAdapter: ResponseAdapter<String> = stringResponseAdapter
+    val stringAdapter: ResponseAdapter<String> = stringResponseAdapter
 
     override fun fromResponse(reader: JsonReader): DroidDetailsImpl.Data.Friend {
       var name: String? = null
       reader.beginObject()
       while(true) {
         when (reader.selectName(RESPONSE_NAMES)) {
-          0 -> name = nameAdapter.fromResponse(reader) ?: throw UnexpectedNullValue("name")
+          0 -> name = stringAdapter.fromResponse(reader)
           else -> break
         }
       }
@@ -120,7 +117,7 @@ class DroidDetailsImpl_ResponseAdapter(
     override fun toResponse(writer: JsonWriter, value: DroidDetailsImpl.Data.Friend) {
       writer.beginObject()
       writer.name("name")
-      nameAdapter.toResponse(writer, value.name)
+      stringAdapter.toResponse(writer, value.name)
       writer.endObject()
     }
 

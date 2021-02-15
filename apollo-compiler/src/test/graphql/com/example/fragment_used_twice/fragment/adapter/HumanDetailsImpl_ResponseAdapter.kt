@@ -11,7 +11,6 @@ import com.apollographql.apollo.api.internal.ResponseAdapter
 import com.apollographql.apollo.api.internal.json.JsonReader
 import com.apollographql.apollo.api.internal.json.JsonWriter
 import com.apollographql.apollo.api.internal.stringResponseAdapter
-import com.apollographql.apollo.exception.UnexpectedNullValue
 import com.example.fragment_used_twice.fragment.HumanDetailsImpl
 import com.example.fragment_used_twice.type.CustomScalars
 import kotlin.Any
@@ -26,10 +25,10 @@ import kotlin.collections.List
 class HumanDetailsImpl_ResponseAdapter(
   customScalarAdapters: CustomScalarAdapters
 ) : ResponseAdapter<HumanDetailsImpl.Data> {
-  val characterDataAdapter: CharacterData =
+  val CharacterDataAdapter: CharacterData =
       com.example.fragment_used_twice.fragment.adapter.HumanDetailsImpl_ResponseAdapter.CharacterData(customScalarAdapters)
 
-  val otherDataAdapter: OtherData =
+  val OtherDataAdapter: OtherData =
       com.example.fragment_used_twice.fragment.adapter.HumanDetailsImpl_ResponseAdapter.OtherData(customScalarAdapters)
 
   override fun fromResponse(reader: JsonReader): HumanDetailsImpl.Data {
@@ -38,27 +37,25 @@ class HumanDetailsImpl_ResponseAdapter(
     val typename = reader.nextString()
 
     return when(typename) {
-      "Human" -> characterDataAdapter.fromResponse(reader, typename)
-      else -> otherDataAdapter.fromResponse(reader, typename)
+      "Human" -> CharacterDataAdapter.fromResponse(reader, typename)
+      else -> OtherDataAdapter.fromResponse(reader, typename)
     }
     .also { reader.endObject() }
   }
 
   override fun toResponse(writer: JsonWriter, value: HumanDetailsImpl.Data) {
     when(value) {
-      is HumanDetailsImpl.Data.CharacterData -> characterDataAdapter.toResponse(writer, value)
-      is HumanDetailsImpl.Data.OtherData -> otherDataAdapter.toResponse(writer, value)
+      is HumanDetailsImpl.Data.CharacterData -> CharacterDataAdapter.toResponse(writer, value)
+      is HumanDetailsImpl.Data.OtherData -> OtherDataAdapter.toResponse(writer, value)
     }
   }
 
   class CharacterData(
     customScalarAdapters: CustomScalarAdapters
   ) {
-    val __typenameAdapter: ResponseAdapter<String> = stringResponseAdapter
+    val stringAdapter: ResponseAdapter<String> = stringResponseAdapter
 
-    val nameAdapter: ResponseAdapter<String> = stringResponseAdapter
-
-    val birthDateAdapter: ResponseAdapter<Any> =
+    val dateAdapter: ResponseAdapter<Any> =
         customScalarAdapters.responseAdapterFor<Any>(CustomScalars.Date)
 
     fun fromResponse(reader: JsonReader, __typename: String?): HumanDetailsImpl.Data.CharacterData {
@@ -67,11 +64,9 @@ class HumanDetailsImpl_ResponseAdapter(
       var birthDate: Any? = null
       while(true) {
         when (reader.selectName(RESPONSE_NAMES)) {
-          0 -> __typename = __typenameAdapter.fromResponse(reader) ?: throw
-              UnexpectedNullValue("__typename")
-          1 -> name = nameAdapter.fromResponse(reader) ?: throw UnexpectedNullValue("name")
-          2 -> birthDate = birthDateAdapter.fromResponse(reader) ?: throw
-              UnexpectedNullValue("birthDate")
+          0 -> __typename = stringAdapter.fromResponse(reader)
+          1 -> name = stringAdapter.fromResponse(reader)
+          2 -> birthDate = dateAdapter.fromResponse(reader)
           else -> break
         }
       }
@@ -85,11 +80,11 @@ class HumanDetailsImpl_ResponseAdapter(
     fun toResponse(writer: JsonWriter, value: HumanDetailsImpl.Data.CharacterData) {
       writer.beginObject()
       writer.name("__typename")
-      __typenameAdapter.toResponse(writer, value.__typename)
+      stringAdapter.toResponse(writer, value.__typename)
       writer.name("name")
-      nameAdapter.toResponse(writer, value.name)
+      stringAdapter.toResponse(writer, value.name)
       writer.name("birthDate")
-      birthDateAdapter.toResponse(writer, value.birthDate)
+      dateAdapter.toResponse(writer, value.birthDate)
       writer.endObject()
     }
 
@@ -113,18 +108,15 @@ class HumanDetailsImpl_ResponseAdapter(
   class OtherData(
     customScalarAdapters: CustomScalarAdapters
   ) {
-    val __typenameAdapter: ResponseAdapter<String> = stringResponseAdapter
-
-    val nameAdapter: ResponseAdapter<String> = stringResponseAdapter
+    val stringAdapter: ResponseAdapter<String> = stringResponseAdapter
 
     fun fromResponse(reader: JsonReader, __typename: String?): HumanDetailsImpl.Data.OtherData {
       var __typename: String? = __typename
       var name: String? = null
       while(true) {
         when (reader.selectName(RESPONSE_NAMES)) {
-          0 -> __typename = __typenameAdapter.fromResponse(reader) ?: throw
-              UnexpectedNullValue("__typename")
-          1 -> name = nameAdapter.fromResponse(reader) ?: throw UnexpectedNullValue("name")
+          0 -> __typename = stringAdapter.fromResponse(reader)
+          1 -> name = stringAdapter.fromResponse(reader)
           else -> break
         }
       }
@@ -137,9 +129,9 @@ class HumanDetailsImpl_ResponseAdapter(
     fun toResponse(writer: JsonWriter, value: HumanDetailsImpl.Data.OtherData) {
       writer.beginObject()
       writer.name("__typename")
-      __typenameAdapter.toResponse(writer, value.__typename)
+      stringAdapter.toResponse(writer, value.__typename)
       writer.name("name")
-      nameAdapter.toResponse(writer, value.name)
+      stringAdapter.toResponse(writer, value.name)
       writer.endObject()
     }
 

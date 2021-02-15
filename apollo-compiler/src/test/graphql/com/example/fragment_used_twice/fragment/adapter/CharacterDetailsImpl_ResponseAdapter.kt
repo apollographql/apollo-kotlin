@@ -11,7 +11,6 @@ import com.apollographql.apollo.api.internal.ResponseAdapter
 import com.apollographql.apollo.api.internal.json.JsonReader
 import com.apollographql.apollo.api.internal.json.JsonWriter
 import com.apollographql.apollo.api.internal.stringResponseAdapter
-import com.apollographql.apollo.exception.UnexpectedNullValue
 import com.example.fragment_used_twice.fragment.CharacterDetailsImpl
 import com.example.fragment_used_twice.type.CustomScalars
 import kotlin.Any
@@ -26,11 +25,9 @@ import kotlin.collections.List
 class CharacterDetailsImpl_ResponseAdapter(
   customScalarAdapters: CustomScalarAdapters
 ) : ResponseAdapter<CharacterDetailsImpl.Data> {
-  val __typenameAdapter: ResponseAdapter<String> = stringResponseAdapter
+  val stringAdapter: ResponseAdapter<String> = stringResponseAdapter
 
-  val nameAdapter: ResponseAdapter<String> = stringResponseAdapter
-
-  val birthDateAdapter: ResponseAdapter<Any> =
+  val dateAdapter: ResponseAdapter<Any> =
       customScalarAdapters.responseAdapterFor<Any>(CustomScalars.Date)
 
   override fun fromResponse(reader: JsonReader): CharacterDetailsImpl.Data {
@@ -40,11 +37,9 @@ class CharacterDetailsImpl_ResponseAdapter(
     reader.beginObject()
     while(true) {
       when (reader.selectName(RESPONSE_NAMES)) {
-        0 -> __typename = __typenameAdapter.fromResponse(reader) ?: throw
-            UnexpectedNullValue("__typename")
-        1 -> name = nameAdapter.fromResponse(reader) ?: throw UnexpectedNullValue("name")
-        2 -> birthDate = birthDateAdapter.fromResponse(reader) ?: throw
-            UnexpectedNullValue("birthDate")
+        0 -> __typename = stringAdapter.fromResponse(reader)
+        1 -> name = stringAdapter.fromResponse(reader)
+        2 -> birthDate = dateAdapter.fromResponse(reader)
         else -> break
       }
     }
@@ -59,11 +54,11 @@ class CharacterDetailsImpl_ResponseAdapter(
   override fun toResponse(writer: JsonWriter, value: CharacterDetailsImpl.Data) {
     writer.beginObject()
     writer.name("__typename")
-    __typenameAdapter.toResponse(writer, value.__typename)
+    stringAdapter.toResponse(writer, value.__typename)
     writer.name("name")
-    nameAdapter.toResponse(writer, value.name)
+    stringAdapter.toResponse(writer, value.name)
     writer.name("birthDate")
-    birthDateAdapter.toResponse(writer, value.birthDate)
+    dateAdapter.toResponse(writer, value.birthDate)
     writer.endObject()
   }
 

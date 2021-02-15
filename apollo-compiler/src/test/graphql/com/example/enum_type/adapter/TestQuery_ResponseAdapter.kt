@@ -13,7 +13,6 @@ import com.apollographql.apollo.api.internal.ResponseAdapter
 import com.apollographql.apollo.api.internal.json.JsonReader
 import com.apollographql.apollo.api.internal.json.JsonWriter
 import com.apollographql.apollo.api.internal.stringResponseAdapter
-import com.apollographql.apollo.exception.UnexpectedNullValue
 import com.example.enum_type.TestQuery
 import com.example.enum_type.type.Episode
 import com.example.enum_type.type.Episode_ResponseAdapter
@@ -28,7 +27,7 @@ import kotlin.collections.List
 class TestQuery_ResponseAdapter(
   customScalarAdapters: CustomScalarAdapters
 ) : ResponseAdapter<TestQuery.Data> {
-  val heroAdapter: ResponseAdapter<TestQuery.Data.Hero?> =
+  val nullablecharacterAdapterAdapter: ResponseAdapter<TestQuery.Data.Hero?> =
       NullableResponseAdapter(Hero(customScalarAdapters))
 
   override fun fromResponse(reader: JsonReader): TestQuery.Data {
@@ -36,7 +35,7 @@ class TestQuery_ResponseAdapter(
     reader.beginObject()
     while(true) {
       when (reader.selectName(RESPONSE_NAMES)) {
-        0 -> hero = heroAdapter.fromResponse(reader)
+        0 -> hero = nullablecharacterAdapterAdapter.fromResponse(reader)
         else -> break
       }
     }
@@ -49,7 +48,7 @@ class TestQuery_ResponseAdapter(
   override fun toResponse(writer: JsonWriter, value: TestQuery.Data) {
     writer.beginObject()
     writer.name("hero")
-    heroAdapter.toResponse(writer, value.hero)
+    nullablecharacterAdapterAdapter.toResponse(writer, value.hero)
     writer.endObject()
   }
 
@@ -70,12 +69,12 @@ class TestQuery_ResponseAdapter(
   class Hero(
     customScalarAdapters: CustomScalarAdapters
   ) : ResponseAdapter<TestQuery.Data.Hero> {
-    val nameAdapter: ResponseAdapter<String> = stringResponseAdapter
+    val stringAdapter: ResponseAdapter<String> = stringResponseAdapter
 
-    val appearsInAdapter: ResponseAdapter<List<Episode?>> =
+    val listOfnullableepisodeAdapterAdapterAdapter: ResponseAdapter<List<Episode?>> =
         ListResponseAdapter(NullableResponseAdapter(Episode_ResponseAdapter))
 
-    val firstAppearsInAdapter: ResponseAdapter<Episode> = Episode_ResponseAdapter
+    val episodeAdapter: ResponseAdapter<Episode> = Episode_ResponseAdapter
 
     override fun fromResponse(reader: JsonReader): TestQuery.Data.Hero {
       var name: String? = null
@@ -84,11 +83,9 @@ class TestQuery_ResponseAdapter(
       reader.beginObject()
       while(true) {
         when (reader.selectName(RESPONSE_NAMES)) {
-          0 -> name = nameAdapter.fromResponse(reader) ?: throw UnexpectedNullValue("name")
-          1 -> appearsIn = appearsInAdapter.fromResponse(reader) ?: throw
-              UnexpectedNullValue("appearsIn")
-          2 -> firstAppearsIn = firstAppearsInAdapter.fromResponse(reader) ?: throw
-              UnexpectedNullValue("firstAppearsIn")
+          0 -> name = stringAdapter.fromResponse(reader)
+          1 -> appearsIn = listOfnullableepisodeAdapterAdapterAdapter.fromResponse(reader)
+          2 -> firstAppearsIn = episodeAdapter.fromResponse(reader)
           else -> break
         }
       }
@@ -103,11 +100,11 @@ class TestQuery_ResponseAdapter(
     override fun toResponse(writer: JsonWriter, value: TestQuery.Data.Hero) {
       writer.beginObject()
       writer.name("name")
-      nameAdapter.toResponse(writer, value.name)
+      stringAdapter.toResponse(writer, value.name)
       writer.name("appearsIn")
-      appearsInAdapter.toResponse(writer, value.appearsIn)
+      listOfnullableepisodeAdapterAdapterAdapter.toResponse(writer, value.appearsIn)
       writer.name("firstAppearsIn")
-      firstAppearsInAdapter.toResponse(writer, value.firstAppearsIn)
+      episodeAdapter.toResponse(writer, value.firstAppearsIn)
       writer.endObject()
     }
 

@@ -13,7 +13,6 @@ import com.apollographql.apollo.api.internal.ResponseAdapter
 import com.apollographql.apollo.api.internal.json.JsonReader
 import com.apollographql.apollo.api.internal.json.JsonWriter
 import com.apollographql.apollo.api.internal.stringResponseAdapter
-import com.apollographql.apollo.exception.UnexpectedNullValue
 import com.example.union_fragment.TestQuery
 import kotlin.Array
 import kotlin.String
@@ -26,7 +25,8 @@ import kotlin.collections.List
 class TestQuery_ResponseAdapter(
   customScalarAdapters: CustomScalarAdapters
 ) : ResponseAdapter<TestQuery.Data> {
-  val searchAdapter: ResponseAdapter<List<TestQuery.Data.Search?>?> =
+  val nullablelistOfnullablesearchResultAdapterAdapterAdapterAdapter:
+      ResponseAdapter<List<TestQuery.Data.Search?>?> =
       NullableResponseAdapter(ListResponseAdapter(NullableResponseAdapter(Search(customScalarAdapters))))
 
   override fun fromResponse(reader: JsonReader): TestQuery.Data {
@@ -34,7 +34,7 @@ class TestQuery_ResponseAdapter(
     reader.beginObject()
     while(true) {
       when (reader.selectName(RESPONSE_NAMES)) {
-        0 -> search = searchAdapter.fromResponse(reader)
+        0 -> search = nullablelistOfnullablesearchResultAdapterAdapterAdapterAdapter.fromResponse(reader)
         else -> break
       }
     }
@@ -47,7 +47,7 @@ class TestQuery_ResponseAdapter(
   override fun toResponse(writer: JsonWriter, value: TestQuery.Data) {
     writer.beginObject()
     writer.name("search")
-    searchAdapter.toResponse(writer, value.search)
+    nullablelistOfnullablesearchResultAdapterAdapterAdapterAdapter.toResponse(writer, value.search)
     writer.endObject()
   }
 
@@ -71,10 +71,10 @@ class TestQuery_ResponseAdapter(
   class Search(
     customScalarAdapters: CustomScalarAdapters
   ) : ResponseAdapter<TestQuery.Data.Search> {
-    val starshipSearchAdapter: StarshipSearch =
+    val StarshipSearchAdapter: StarshipSearch =
         com.example.union_fragment.adapter.TestQuery_ResponseAdapter.Search.StarshipSearch(customScalarAdapters)
 
-    val otherSearchAdapter: OtherSearch =
+    val OtherSearchAdapter: OtherSearch =
         com.example.union_fragment.adapter.TestQuery_ResponseAdapter.Search.OtherSearch(customScalarAdapters)
 
     override fun fromResponse(reader: JsonReader): TestQuery.Data.Search {
@@ -83,27 +83,23 @@ class TestQuery_ResponseAdapter(
       val typename = reader.nextString()
 
       return when(typename) {
-        "Starship" -> starshipSearchAdapter.fromResponse(reader, typename)
-        else -> otherSearchAdapter.fromResponse(reader, typename)
+        "Starship" -> StarshipSearchAdapter.fromResponse(reader, typename)
+        else -> OtherSearchAdapter.fromResponse(reader, typename)
       }
       .also { reader.endObject() }
     }
 
     override fun toResponse(writer: JsonWriter, value: TestQuery.Data.Search) {
       when(value) {
-        is TestQuery.Data.Search.StarshipSearch -> starshipSearchAdapter.toResponse(writer, value)
-        is TestQuery.Data.Search.OtherSearch -> otherSearchAdapter.toResponse(writer, value)
+        is TestQuery.Data.Search.StarshipSearch -> StarshipSearchAdapter.toResponse(writer, value)
+        is TestQuery.Data.Search.OtherSearch -> OtherSearchAdapter.toResponse(writer, value)
       }
     }
 
     class StarshipSearch(
       customScalarAdapters: CustomScalarAdapters
     ) {
-      val __typenameAdapter: ResponseAdapter<String> = stringResponseAdapter
-
-      val idAdapter: ResponseAdapter<String> = stringResponseAdapter
-
-      val nameAdapter: ResponseAdapter<String> = stringResponseAdapter
+      val stringAdapter: ResponseAdapter<String> = stringResponseAdapter
 
       fun fromResponse(reader: JsonReader, __typename: String?):
           TestQuery.Data.Search.StarshipSearch {
@@ -112,10 +108,9 @@ class TestQuery_ResponseAdapter(
         var name: String? = null
         while(true) {
           when (reader.selectName(RESPONSE_NAMES)) {
-            0 -> __typename = __typenameAdapter.fromResponse(reader) ?: throw
-                UnexpectedNullValue("__typename")
-            1 -> id = idAdapter.fromResponse(reader) ?: throw UnexpectedNullValue("id")
-            2 -> name = nameAdapter.fromResponse(reader) ?: throw UnexpectedNullValue("name")
+            0 -> __typename = stringAdapter.fromResponse(reader)
+            1 -> id = stringAdapter.fromResponse(reader)
+            2 -> name = stringAdapter.fromResponse(reader)
             else -> break
           }
         }
@@ -129,11 +124,11 @@ class TestQuery_ResponseAdapter(
       fun toResponse(writer: JsonWriter, value: TestQuery.Data.Search.StarshipSearch) {
         writer.beginObject()
         writer.name("__typename")
-        __typenameAdapter.toResponse(writer, value.__typename)
+        stringAdapter.toResponse(writer, value.__typename)
         writer.name("id")
-        idAdapter.toResponse(writer, value.id)
+        stringAdapter.toResponse(writer, value.id)
         writer.name("name")
-        nameAdapter.toResponse(writer, value.name)
+        stringAdapter.toResponse(writer, value.name)
         writer.endObject()
       }
 
@@ -157,14 +152,13 @@ class TestQuery_ResponseAdapter(
     class OtherSearch(
       customScalarAdapters: CustomScalarAdapters
     ) {
-      val __typenameAdapter: ResponseAdapter<String> = stringResponseAdapter
+      val stringAdapter: ResponseAdapter<String> = stringResponseAdapter
 
       fun fromResponse(reader: JsonReader, __typename: String?): TestQuery.Data.Search.OtherSearch {
         var __typename: String? = __typename
         while(true) {
           when (reader.selectName(RESPONSE_NAMES)) {
-            0 -> __typename = __typenameAdapter.fromResponse(reader) ?: throw
-                UnexpectedNullValue("__typename")
+            0 -> __typename = stringAdapter.fromResponse(reader)
             else -> break
           }
         }
@@ -176,7 +170,7 @@ class TestQuery_ResponseAdapter(
       fun toResponse(writer: JsonWriter, value: TestQuery.Data.Search.OtherSearch) {
         writer.beginObject()
         writer.name("__typename")
-        __typenameAdapter.toResponse(writer, value.__typename)
+        stringAdapter.toResponse(writer, value.__typename)
         writer.endObject()
       }
 

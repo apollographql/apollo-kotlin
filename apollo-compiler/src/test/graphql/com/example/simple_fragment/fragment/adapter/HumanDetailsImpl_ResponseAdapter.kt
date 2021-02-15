@@ -11,7 +11,6 @@ import com.apollographql.apollo.api.internal.ResponseAdapter
 import com.apollographql.apollo.api.internal.json.JsonReader
 import com.apollographql.apollo.api.internal.json.JsonWriter
 import com.apollographql.apollo.api.internal.stringResponseAdapter
-import com.apollographql.apollo.exception.UnexpectedNullValue
 import com.example.simple_fragment.fragment.HumanDetailsImpl
 import kotlin.Array
 import kotlin.String
@@ -24,9 +23,7 @@ import kotlin.collections.List
 internal class HumanDetailsImpl_ResponseAdapter(
   customScalarAdapters: CustomScalarAdapters
 ) : ResponseAdapter<HumanDetailsImpl.Data> {
-  val __typenameAdapter: ResponseAdapter<String> = stringResponseAdapter
-
-  val nameAdapter: ResponseAdapter<String> = stringResponseAdapter
+  val stringAdapter: ResponseAdapter<String> = stringResponseAdapter
 
   override fun fromResponse(reader: JsonReader): HumanDetailsImpl.Data {
     var __typename: String? = null
@@ -34,9 +31,8 @@ internal class HumanDetailsImpl_ResponseAdapter(
     reader.beginObject()
     while(true) {
       when (reader.selectName(RESPONSE_NAMES)) {
-        0 -> __typename = __typenameAdapter.fromResponse(reader) ?: throw
-            UnexpectedNullValue("__typename")
-        1 -> name = nameAdapter.fromResponse(reader) ?: throw UnexpectedNullValue("name")
+        0 -> __typename = stringAdapter.fromResponse(reader)
+        1 -> name = stringAdapter.fromResponse(reader)
         else -> break
       }
     }
@@ -50,9 +46,9 @@ internal class HumanDetailsImpl_ResponseAdapter(
   override fun toResponse(writer: JsonWriter, value: HumanDetailsImpl.Data) {
     writer.beginObject()
     writer.name("__typename")
-    __typenameAdapter.toResponse(writer, value.__typename)
+    stringAdapter.toResponse(writer, value.__typename)
     writer.name("name")
-    nameAdapter.toResponse(writer, value.name)
+    stringAdapter.toResponse(writer, value.name)
     writer.endObject()
   }
 

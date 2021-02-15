@@ -13,7 +13,6 @@ import com.apollographql.apollo.api.internal.intResponseAdapter
 import com.apollographql.apollo.api.internal.json.JsonReader
 import com.apollographql.apollo.api.internal.json.JsonWriter
 import com.apollographql.apollo.api.internal.stringResponseAdapter
-import com.apollographql.apollo.exception.UnexpectedNullValue
 import com.example.mutation_create_review_semantic_naming.CreateReviewForEpisodeMutation
 import kotlin.Array
 import kotlin.Int
@@ -27,7 +26,8 @@ import kotlin.collections.List
 class CreateReviewForEpisodeMutation_ResponseAdapter(
   customScalarAdapters: CustomScalarAdapters
 ) : ResponseAdapter<CreateReviewForEpisodeMutation.Data> {
-  val createReviewAdapter: ResponseAdapter<CreateReviewForEpisodeMutation.Data.CreateReview?> =
+  val nullablereviewAdapterAdapter:
+      ResponseAdapter<CreateReviewForEpisodeMutation.Data.CreateReview?> =
       NullableResponseAdapter(CreateReview(customScalarAdapters))
 
   override fun fromResponse(reader: JsonReader): CreateReviewForEpisodeMutation.Data {
@@ -35,7 +35,7 @@ class CreateReviewForEpisodeMutation_ResponseAdapter(
     reader.beginObject()
     while(true) {
       when (reader.selectName(RESPONSE_NAMES)) {
-        0 -> createReview = createReviewAdapter.fromResponse(reader)
+        0 -> createReview = nullablereviewAdapterAdapter.fromResponse(reader)
         else -> break
       }
     }
@@ -48,7 +48,7 @@ class CreateReviewForEpisodeMutation_ResponseAdapter(
   override fun toResponse(writer: JsonWriter, value: CreateReviewForEpisodeMutation.Data) {
     writer.beginObject()
     writer.name("createReview")
-    createReviewAdapter.toResponse(writer, value.createReview)
+    nullablereviewAdapterAdapter.toResponse(writer, value.createReview)
     writer.endObject()
   }
 
@@ -76,9 +76,10 @@ class CreateReviewForEpisodeMutation_ResponseAdapter(
   class CreateReview(
     customScalarAdapters: CustomScalarAdapters
   ) : ResponseAdapter<CreateReviewForEpisodeMutation.Data.CreateReview> {
-    val starsAdapter: ResponseAdapter<Int> = intResponseAdapter
+    val intAdapter: ResponseAdapter<Int> = intResponseAdapter
 
-    val commentaryAdapter: ResponseAdapter<String?> = NullableResponseAdapter(stringResponseAdapter)
+    val nullablestringAdapterAdapter: ResponseAdapter<String?> =
+        NullableResponseAdapter(stringResponseAdapter)
 
     override fun fromResponse(reader: JsonReader):
         CreateReviewForEpisodeMutation.Data.CreateReview {
@@ -87,8 +88,8 @@ class CreateReviewForEpisodeMutation_ResponseAdapter(
       reader.beginObject()
       while(true) {
         when (reader.selectName(RESPONSE_NAMES)) {
-          0 -> stars = starsAdapter.fromResponse(reader) ?: throw UnexpectedNullValue("stars")
-          1 -> commentary = commentaryAdapter.fromResponse(reader)
+          0 -> stars = intAdapter.fromResponse(reader)
+          1 -> commentary = nullablestringAdapterAdapter.fromResponse(reader)
           else -> break
         }
       }
@@ -103,9 +104,9 @@ class CreateReviewForEpisodeMutation_ResponseAdapter(
         value: CreateReviewForEpisodeMutation.Data.CreateReview) {
       writer.beginObject()
       writer.name("stars")
-      starsAdapter.toResponse(writer, value.stars)
+      intAdapter.toResponse(writer, value.stars)
       writer.name("commentary")
-      commentaryAdapter.toResponse(writer, value.commentary)
+      nullablestringAdapterAdapter.toResponse(writer, value.commentary)
       writer.endObject()
     }
 

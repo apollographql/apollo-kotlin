@@ -25,7 +25,6 @@ class Benchmark {
   @get:Rule
   val benchmarkRule = BenchmarkRule()
 
-  private val moshiAdapter = Moshi.Builder().build().adapter(Query::class.java)
 
   @Test
   fun moshi() = benchmarkRule.measureRepeated {
@@ -42,7 +41,7 @@ class Benchmark {
       bufferedSource()
     }
 
-    operation.parse(bufferedSource)
+    operation.parse(bufferedSource, customScalarAdapters)
   }
 
   @Test
@@ -51,7 +50,7 @@ class Benchmark {
       bufferedSource()
     }
 
-    val data = operation.parse(bufferedSource).data!!
+    val data = operation.parse(bufferedSource, customScalarAdapters).data!!
     val records = operation.normalize(data, CustomScalarAdapters.DEFAULT, CacheKeyResolver.DEFAULT)
   }
 
@@ -59,12 +58,17 @@ class Benchmark {
     lateinit var sqlReadableStore: ReadableStore
     lateinit var memoryReadableStore: ReadableStore
     private val operation = GetResponseQuery()
+    private val moshiAdapter = Moshi.Builder().build().adapter(Query::class.java)
+    private val customScalarAdapters = CustomScalarAdapters(emptyMap())
 
     @BeforeClass
     @JvmStatic
     fun setup() {
       val data = operation.parse(bufferedSource()).data!!
       val records = operation.normalize(data, CustomScalarAdapters.DEFAULT, CacheKeyResolver.DEFAULT).values
+
+      // warm the adapter
+      operation.adapter(customScalarAdapters)
 
       val sqlCache = SqlNormalizedCacheFactory(context = InstrumentationRegistry.getInstrumentation().context).create()
       sqlCache.merge(records, CacheHeaders.NONE)

@@ -11,7 +11,6 @@ import com.apollographql.apollo.api.internal.ResponseAdapter
 import com.apollographql.apollo.api.internal.json.JsonReader
 import com.apollographql.apollo.api.internal.json.JsonWriter
 import com.apollographql.apollo.api.internal.stringResponseAdapter
-import com.apollographql.apollo.exception.UnexpectedNullValue
 import com.example.simple_fragment.fragment.HeroDetailsImpl
 import kotlin.Array
 import kotlin.String
@@ -24,10 +23,10 @@ import kotlin.collections.List
 internal class HeroDetailsImpl_ResponseAdapter(
   customScalarAdapters: CustomScalarAdapters
 ) : ResponseAdapter<HeroDetailsImpl.Data> {
-  val humanDataAdapter: HumanData =
+  val HumanDataAdapter: HumanData =
       com.example.simple_fragment.fragment.adapter.HeroDetailsImpl_ResponseAdapter.HumanData(customScalarAdapters)
 
-  val otherDataAdapter: OtherData =
+  val OtherDataAdapter: OtherData =
       com.example.simple_fragment.fragment.adapter.HeroDetailsImpl_ResponseAdapter.OtherData(customScalarAdapters)
 
   override fun fromResponse(reader: JsonReader): HeroDetailsImpl.Data {
@@ -36,34 +35,31 @@ internal class HeroDetailsImpl_ResponseAdapter(
     val typename = reader.nextString()
 
     return when(typename) {
-      "Human" -> humanDataAdapter.fromResponse(reader, typename)
-      else -> otherDataAdapter.fromResponse(reader, typename)
+      "Human" -> HumanDataAdapter.fromResponse(reader, typename)
+      else -> OtherDataAdapter.fromResponse(reader, typename)
     }
     .also { reader.endObject() }
   }
 
   override fun toResponse(writer: JsonWriter, value: HeroDetailsImpl.Data) {
     when(value) {
-      is HeroDetailsImpl.Data.HumanData -> humanDataAdapter.toResponse(writer, value)
-      is HeroDetailsImpl.Data.OtherData -> otherDataAdapter.toResponse(writer, value)
+      is HeroDetailsImpl.Data.HumanData -> HumanDataAdapter.toResponse(writer, value)
+      is HeroDetailsImpl.Data.OtherData -> OtherDataAdapter.toResponse(writer, value)
     }
   }
 
   class HumanData(
     customScalarAdapters: CustomScalarAdapters
   ) {
-    val __typenameAdapter: ResponseAdapter<String> = stringResponseAdapter
-
-    val nameAdapter: ResponseAdapter<String> = stringResponseAdapter
+    val stringAdapter: ResponseAdapter<String> = stringResponseAdapter
 
     fun fromResponse(reader: JsonReader, __typename: String?): HeroDetailsImpl.Data.HumanData {
       var __typename: String? = __typename
       var name: String? = null
       while(true) {
         when (reader.selectName(RESPONSE_NAMES)) {
-          0 -> __typename = __typenameAdapter.fromResponse(reader) ?: throw
-              UnexpectedNullValue("__typename")
-          1 -> name = nameAdapter.fromResponse(reader) ?: throw UnexpectedNullValue("name")
+          0 -> __typename = stringAdapter.fromResponse(reader)
+          1 -> name = stringAdapter.fromResponse(reader)
           else -> break
         }
       }
@@ -76,9 +72,9 @@ internal class HeroDetailsImpl_ResponseAdapter(
     fun toResponse(writer: JsonWriter, value: HeroDetailsImpl.Data.HumanData) {
       writer.beginObject()
       writer.name("__typename")
-      __typenameAdapter.toResponse(writer, value.__typename)
+      stringAdapter.toResponse(writer, value.__typename)
       writer.name("name")
-      nameAdapter.toResponse(writer, value.name)
+      stringAdapter.toResponse(writer, value.name)
       writer.endObject()
     }
 
@@ -98,14 +94,13 @@ internal class HeroDetailsImpl_ResponseAdapter(
   class OtherData(
     customScalarAdapters: CustomScalarAdapters
   ) {
-    val __typenameAdapter: ResponseAdapter<String> = stringResponseAdapter
+    val stringAdapter: ResponseAdapter<String> = stringResponseAdapter
 
     fun fromResponse(reader: JsonReader, __typename: String?): HeroDetailsImpl.Data.OtherData {
       var __typename: String? = __typename
       while(true) {
         when (reader.selectName(RESPONSE_NAMES)) {
-          0 -> __typename = __typenameAdapter.fromResponse(reader) ?: throw
-              UnexpectedNullValue("__typename")
+          0 -> __typename = stringAdapter.fromResponse(reader)
           else -> break
         }
       }
@@ -117,7 +112,7 @@ internal class HeroDetailsImpl_ResponseAdapter(
     fun toResponse(writer: JsonWriter, value: HeroDetailsImpl.Data.OtherData) {
       writer.beginObject()
       writer.name("__typename")
-      __typenameAdapter.toResponse(writer, value.__typename)
+      stringAdapter.toResponse(writer, value.__typename)
       writer.endObject()
     }
 

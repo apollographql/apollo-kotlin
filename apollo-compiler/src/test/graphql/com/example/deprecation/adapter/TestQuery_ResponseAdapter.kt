@@ -13,7 +13,6 @@ import com.apollographql.apollo.api.internal.booleanResponseAdapter
 import com.apollographql.apollo.api.internal.json.JsonReader
 import com.apollographql.apollo.api.internal.json.JsonWriter
 import com.apollographql.apollo.api.internal.stringResponseAdapter
-import com.apollographql.apollo.exception.UnexpectedNullValue
 import com.example.deprecation.TestQuery
 import kotlin.Array
 import kotlin.Boolean
@@ -27,7 +26,7 @@ import kotlin.collections.List
 class TestQuery_ResponseAdapter(
   customScalarAdapters: CustomScalarAdapters
 ) : ResponseAdapter<TestQuery.Data> {
-  val heroAdapter: ResponseAdapter<TestQuery.Data.Hero?> =
+  val nullablecharacterAdapterAdapter: ResponseAdapter<TestQuery.Data.Hero?> =
       NullableResponseAdapter(Hero(customScalarAdapters))
 
   override fun fromResponse(reader: JsonReader): TestQuery.Data {
@@ -35,7 +34,7 @@ class TestQuery_ResponseAdapter(
     reader.beginObject()
     while(true) {
       when (reader.selectName(RESPONSE_NAMES)) {
-        0 -> hero = heroAdapter.fromResponse(reader)
+        0 -> hero = nullablecharacterAdapterAdapter.fromResponse(reader)
         else -> break
       }
     }
@@ -48,7 +47,7 @@ class TestQuery_ResponseAdapter(
   override fun toResponse(writer: JsonWriter, value: TestQuery.Data) {
     writer.beginObject()
     writer.name("hero")
-    heroAdapter.toResponse(writer, value.hero)
+    nullablecharacterAdapterAdapter.toResponse(writer, value.hero)
     writer.endObject()
   }
 
@@ -73,11 +72,9 @@ class TestQuery_ResponseAdapter(
   class Hero(
     customScalarAdapters: CustomScalarAdapters
   ) : ResponseAdapter<TestQuery.Data.Hero> {
-    val nameAdapter: ResponseAdapter<String> = stringResponseAdapter
+    val stringAdapter: ResponseAdapter<String> = stringResponseAdapter
 
-    val deprecatedAdapter: ResponseAdapter<String> = stringResponseAdapter
-
-    val deprecatedBoolAdapter: ResponseAdapter<Boolean> = booleanResponseAdapter
+    val booleanAdapter: ResponseAdapter<Boolean> = booleanResponseAdapter
 
     override fun fromResponse(reader: JsonReader): TestQuery.Data.Hero {
       var name: String? = null
@@ -86,11 +83,9 @@ class TestQuery_ResponseAdapter(
       reader.beginObject()
       while(true) {
         when (reader.selectName(RESPONSE_NAMES)) {
-          0 -> name = nameAdapter.fromResponse(reader) ?: throw UnexpectedNullValue("name")
-          1 -> deprecated = deprecatedAdapter.fromResponse(reader) ?: throw
-              UnexpectedNullValue("deprecated")
-          2 -> deprecatedBool = deprecatedBoolAdapter.fromResponse(reader) ?: throw
-              UnexpectedNullValue("deprecatedBool")
+          0 -> name = stringAdapter.fromResponse(reader)
+          1 -> deprecated = stringAdapter.fromResponse(reader)
+          2 -> deprecatedBool = booleanAdapter.fromResponse(reader)
           else -> break
         }
       }
@@ -105,11 +100,11 @@ class TestQuery_ResponseAdapter(
     override fun toResponse(writer: JsonWriter, value: TestQuery.Data.Hero) {
       writer.beginObject()
       writer.name("name")
-      nameAdapter.toResponse(writer, value.name)
+      stringAdapter.toResponse(writer, value.name)
       writer.name("deprecated")
-      deprecatedAdapter.toResponse(writer, value.deprecated)
+      stringAdapter.toResponse(writer, value.deprecated)
       writer.name("deprecatedBool")
-      deprecatedBoolAdapter.toResponse(writer, value.deprecatedBool)
+      booleanAdapter.toResponse(writer, value.deprecatedBool)
       writer.endObject()
     }
 

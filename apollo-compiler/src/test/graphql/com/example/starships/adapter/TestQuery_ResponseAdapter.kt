@@ -14,7 +14,6 @@ import com.apollographql.apollo.api.internal.doubleResponseAdapter
 import com.apollographql.apollo.api.internal.json.JsonReader
 import com.apollographql.apollo.api.internal.json.JsonWriter
 import com.apollographql.apollo.api.internal.stringResponseAdapter
-import com.apollographql.apollo.exception.UnexpectedNullValue
 import com.example.starships.TestQuery
 import kotlin.Array
 import kotlin.Double
@@ -28,7 +27,7 @@ import kotlin.collections.List
 class TestQuery_ResponseAdapter(
   customScalarAdapters: CustomScalarAdapters
 ) : ResponseAdapter<TestQuery.Data> {
-  val starshipAdapter: ResponseAdapter<TestQuery.Data.Starship?> =
+  val nullablestarshipAdapterAdapter: ResponseAdapter<TestQuery.Data.Starship?> =
       NullableResponseAdapter(Starship(customScalarAdapters))
 
   override fun fromResponse(reader: JsonReader): TestQuery.Data {
@@ -36,7 +35,7 @@ class TestQuery_ResponseAdapter(
     reader.beginObject()
     while(true) {
       when (reader.selectName(RESPONSE_NAMES)) {
-        0 -> starship = starshipAdapter.fromResponse(reader)
+        0 -> starship = nullablestarshipAdapterAdapter.fromResponse(reader)
         else -> break
       }
     }
@@ -49,7 +48,7 @@ class TestQuery_ResponseAdapter(
   override fun toResponse(writer: JsonWriter, value: TestQuery.Data) {
     writer.beginObject()
     writer.name("starship")
-    starshipAdapter.toResponse(writer, value.starship)
+    nullablestarshipAdapterAdapter.toResponse(writer, value.starship)
     writer.endObject()
   }
 
@@ -74,12 +73,10 @@ class TestQuery_ResponseAdapter(
   class Starship(
     customScalarAdapters: CustomScalarAdapters
   ) : ResponseAdapter<TestQuery.Data.Starship> {
-    val idAdapter: ResponseAdapter<String> = stringResponseAdapter
+    val stringAdapter: ResponseAdapter<String> = stringResponseAdapter
 
-    val nameAdapter: ResponseAdapter<String> = stringResponseAdapter
-
-    val coordinatesAdapter: ResponseAdapter<List<List<Double>>?> =
-        NullableResponseAdapter(ListResponseAdapter(ListResponseAdapter(doubleResponseAdapter)))
+    val nullablelistOflistOffloatAdapterAdapterAdapterAdapter: ResponseAdapter<List<List<Double>>?>
+        = NullableResponseAdapter(ListResponseAdapter(ListResponseAdapter(doubleResponseAdapter)))
 
     override fun fromResponse(reader: JsonReader): TestQuery.Data.Starship {
       var id: String? = null
@@ -88,9 +85,9 @@ class TestQuery_ResponseAdapter(
       reader.beginObject()
       while(true) {
         when (reader.selectName(RESPONSE_NAMES)) {
-          0 -> id = idAdapter.fromResponse(reader) ?: throw UnexpectedNullValue("id")
-          1 -> name = nameAdapter.fromResponse(reader) ?: throw UnexpectedNullValue("name")
-          2 -> coordinates = coordinatesAdapter.fromResponse(reader)
+          0 -> id = stringAdapter.fromResponse(reader)
+          1 -> name = stringAdapter.fromResponse(reader)
+          2 -> coordinates = nullablelistOflistOffloatAdapterAdapterAdapterAdapter.fromResponse(reader)
           else -> break
         }
       }
@@ -105,11 +102,11 @@ class TestQuery_ResponseAdapter(
     override fun toResponse(writer: JsonWriter, value: TestQuery.Data.Starship) {
       writer.beginObject()
       writer.name("id")
-      idAdapter.toResponse(writer, value.id)
+      stringAdapter.toResponse(writer, value.id)
       writer.name("name")
-      nameAdapter.toResponse(writer, value.name)
+      stringAdapter.toResponse(writer, value.name)
       writer.name("coordinates")
-      coordinatesAdapter.toResponse(writer, value.coordinates)
+      nullablelistOflistOffloatAdapterAdapterAdapterAdapter.toResponse(writer, value.coordinates)
       writer.endObject()
     }
 

@@ -14,7 +14,6 @@ import com.apollographql.apollo.api.internal.intResponseAdapter
 import com.apollographql.apollo.api.internal.json.JsonReader
 import com.apollographql.apollo.api.internal.json.JsonWriter
 import com.apollographql.apollo.api.internal.stringResponseAdapter
-import com.apollographql.apollo.exception.UnexpectedNullValue
 import com.example.mutation_create_review.CreateReviewForEpisode
 import com.example.mutation_create_review.type.CustomScalars
 import com.example.mutation_create_review.type.Episode
@@ -32,7 +31,7 @@ import kotlin.collections.List
 internal class CreateReviewForEpisode_ResponseAdapter(
   customScalarAdapters: CustomScalarAdapters
 ) : ResponseAdapter<CreateReviewForEpisode.Data> {
-  val createReviewAdapter: ResponseAdapter<CreateReviewForEpisode.Data.CreateReview?> =
+  val nullablereviewAdapterAdapter: ResponseAdapter<CreateReviewForEpisode.Data.CreateReview?> =
       NullableResponseAdapter(CreateReview(customScalarAdapters))
 
   override fun fromResponse(reader: JsonReader): CreateReviewForEpisode.Data {
@@ -40,7 +39,7 @@ internal class CreateReviewForEpisode_ResponseAdapter(
     reader.beginObject()
     while(true) {
       when (reader.selectName(RESPONSE_NAMES)) {
-        0 -> createReview = createReviewAdapter.fromResponse(reader)
+        0 -> createReview = nullablereviewAdapterAdapter.fromResponse(reader)
         else -> break
       }
     }
@@ -53,7 +52,7 @@ internal class CreateReviewForEpisode_ResponseAdapter(
   override fun toResponse(writer: JsonWriter, value: CreateReviewForEpisode.Data) {
     writer.beginObject()
     writer.name("createReview")
-    createReviewAdapter.toResponse(writer, value.createReview)
+    nullablereviewAdapterAdapter.toResponse(writer, value.createReview)
     writer.endObject()
   }
 
@@ -81,20 +80,22 @@ internal class CreateReviewForEpisode_ResponseAdapter(
   class CreateReview(
     customScalarAdapters: CustomScalarAdapters
   ) : ResponseAdapter<CreateReviewForEpisode.Data.CreateReview> {
-    val starsAdapter: ResponseAdapter<Int> = intResponseAdapter
+    val intAdapter: ResponseAdapter<Int> = intResponseAdapter
 
-    val commentaryAdapter: ResponseAdapter<String?> = NullableResponseAdapter(stringResponseAdapter)
+    val nullablestringAdapterAdapter: ResponseAdapter<String?> =
+        NullableResponseAdapter(stringResponseAdapter)
 
-    val listOfListOfStringAdapter: ResponseAdapter<List<List<String>>?> =
-        NullableResponseAdapter(ListResponseAdapter(ListResponseAdapter(stringResponseAdapter)))
+    val nullablelistOflistOfstringAdapterAdapterAdapterAdapter: ResponseAdapter<List<List<String>>?>
+        = NullableResponseAdapter(ListResponseAdapter(ListResponseAdapter(stringResponseAdapter)))
 
-    val listOfListOfEnumAdapter: ResponseAdapter<List<List<Episode>>?> =
+    val nullablelistOflistOfepisodeAdapterAdapterAdapterAdapter:
+        ResponseAdapter<List<List<Episode>>?> =
         NullableResponseAdapter(ListResponseAdapter(ListResponseAdapter(Episode_ResponseAdapter)))
 
-    val listOfListOfCustomAdapter: ResponseAdapter<List<List<Date>>?> =
+    val nullablelistOflistOfdateAdapterAdapterAdapterAdapter: ResponseAdapter<List<List<Date>>?> =
         NullableResponseAdapter(ListResponseAdapter(ListResponseAdapter(customScalarAdapters.responseAdapterFor<Date>(CustomScalars.Date))))
 
-    val listOfListOfObjectAdapter:
+    val nullablelistOflistOfcharacterAdapterAdapterAdapterAdapter:
         ResponseAdapter<List<List<CreateReviewForEpisode.Data.CreateReview.ListOfListOfObject>>?> =
         NullableResponseAdapter(ListResponseAdapter(ListResponseAdapter(ListOfListOfObject(customScalarAdapters))))
 
@@ -108,12 +109,12 @@ internal class CreateReviewForEpisode_ResponseAdapter(
       reader.beginObject()
       while(true) {
         when (reader.selectName(RESPONSE_NAMES)) {
-          0 -> stars = starsAdapter.fromResponse(reader) ?: throw UnexpectedNullValue("stars")
-          1 -> commentary = commentaryAdapter.fromResponse(reader)
-          2 -> listOfListOfString = listOfListOfStringAdapter.fromResponse(reader)
-          3 -> listOfListOfEnum = listOfListOfEnumAdapter.fromResponse(reader)
-          4 -> listOfListOfCustom = listOfListOfCustomAdapter.fromResponse(reader)
-          5 -> listOfListOfObject = listOfListOfObjectAdapter.fromResponse(reader)
+          0 -> stars = intAdapter.fromResponse(reader)
+          1 -> commentary = nullablestringAdapterAdapter.fromResponse(reader)
+          2 -> listOfListOfString = nullablelistOflistOfstringAdapterAdapterAdapterAdapter.fromResponse(reader)
+          3 -> listOfListOfEnum = nullablelistOflistOfepisodeAdapterAdapterAdapterAdapter.fromResponse(reader)
+          4 -> listOfListOfCustom = nullablelistOflistOfdateAdapterAdapterAdapterAdapter.fromResponse(reader)
+          5 -> listOfListOfObject = nullablelistOflistOfcharacterAdapterAdapterAdapterAdapter.fromResponse(reader)
           else -> break
         }
       }
@@ -131,17 +132,21 @@ internal class CreateReviewForEpisode_ResponseAdapter(
     override fun toResponse(writer: JsonWriter, value: CreateReviewForEpisode.Data.CreateReview) {
       writer.beginObject()
       writer.name("stars")
-      starsAdapter.toResponse(writer, value.stars)
+      intAdapter.toResponse(writer, value.stars)
       writer.name("commentary")
-      commentaryAdapter.toResponse(writer, value.commentary)
+      nullablestringAdapterAdapter.toResponse(writer, value.commentary)
       writer.name("listOfListOfString")
-      listOfListOfStringAdapter.toResponse(writer, value.listOfListOfString)
+      nullablelistOflistOfstringAdapterAdapterAdapterAdapter.toResponse(writer,
+          value.listOfListOfString)
       writer.name("listOfListOfEnum")
-      listOfListOfEnumAdapter.toResponse(writer, value.listOfListOfEnum)
+      nullablelistOflistOfepisodeAdapterAdapterAdapterAdapter.toResponse(writer,
+          value.listOfListOfEnum)
       writer.name("listOfListOfCustom")
-      listOfListOfCustomAdapter.toResponse(writer, value.listOfListOfCustom)
+      nullablelistOflistOfdateAdapterAdapterAdapterAdapter.toResponse(writer,
+          value.listOfListOfCustom)
       writer.name("listOfListOfObject")
-      listOfListOfObjectAdapter.toResponse(writer, value.listOfListOfObject)
+      nullablelistOflistOfcharacterAdapterAdapterAdapterAdapter.toResponse(writer,
+          value.listOfListOfObject)
       writer.endObject()
     }
 
@@ -186,7 +191,7 @@ internal class CreateReviewForEpisode_ResponseAdapter(
     class ListOfListOfObject(
       customScalarAdapters: CustomScalarAdapters
     ) : ResponseAdapter<CreateReviewForEpisode.Data.CreateReview.ListOfListOfObject> {
-      val nameAdapter: ResponseAdapter<String> = stringResponseAdapter
+      val stringAdapter: ResponseAdapter<String> = stringResponseAdapter
 
       override fun fromResponse(reader: JsonReader):
           CreateReviewForEpisode.Data.CreateReview.ListOfListOfObject {
@@ -194,7 +199,7 @@ internal class CreateReviewForEpisode_ResponseAdapter(
         reader.beginObject()
         while(true) {
           when (reader.selectName(RESPONSE_NAMES)) {
-            0 -> name = nameAdapter.fromResponse(reader) ?: throw UnexpectedNullValue("name")
+            0 -> name = stringAdapter.fromResponse(reader)
             else -> break
           }
         }
@@ -208,7 +213,7 @@ internal class CreateReviewForEpisode_ResponseAdapter(
           value: CreateReviewForEpisode.Data.CreateReview.ListOfListOfObject) {
         writer.beginObject()
         writer.name("name")
-        nameAdapter.toResponse(writer, value.name)
+        stringAdapter.toResponse(writer, value.name)
         writer.endObject()
       }
 

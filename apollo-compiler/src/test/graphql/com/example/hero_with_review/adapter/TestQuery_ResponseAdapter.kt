@@ -13,7 +13,6 @@ import com.apollographql.apollo.api.internal.intResponseAdapter
 import com.apollographql.apollo.api.internal.json.JsonReader
 import com.apollographql.apollo.api.internal.json.JsonWriter
 import com.apollographql.apollo.api.internal.stringResponseAdapter
-import com.apollographql.apollo.exception.UnexpectedNullValue
 import com.example.hero_with_review.TestQuery
 import kotlin.Array
 import kotlin.Int
@@ -27,7 +26,7 @@ import kotlin.collections.List
 class TestQuery_ResponseAdapter(
   customScalarAdapters: CustomScalarAdapters
 ) : ResponseAdapter<TestQuery.Data> {
-  val createReviewAdapter: ResponseAdapter<TestQuery.Data.CreateReview?> =
+  val nullablereviewAdapterAdapter: ResponseAdapter<TestQuery.Data.CreateReview?> =
       NullableResponseAdapter(CreateReview(customScalarAdapters))
 
   override fun fromResponse(reader: JsonReader): TestQuery.Data {
@@ -35,7 +34,7 @@ class TestQuery_ResponseAdapter(
     reader.beginObject()
     while(true) {
       when (reader.selectName(RESPONSE_NAMES)) {
-        0 -> createReview = createReviewAdapter.fromResponse(reader)
+        0 -> createReview = nullablereviewAdapterAdapter.fromResponse(reader)
         else -> break
       }
     }
@@ -48,7 +47,7 @@ class TestQuery_ResponseAdapter(
   override fun toResponse(writer: JsonWriter, value: TestQuery.Data) {
     writer.beginObject()
     writer.name("createReview")
-    createReviewAdapter.toResponse(writer, value.createReview)
+    nullablereviewAdapterAdapter.toResponse(writer, value.createReview)
     writer.endObject()
   }
 
@@ -86,9 +85,10 @@ class TestQuery_ResponseAdapter(
   class CreateReview(
     customScalarAdapters: CustomScalarAdapters
   ) : ResponseAdapter<TestQuery.Data.CreateReview> {
-    val starsAdapter: ResponseAdapter<Int> = intResponseAdapter
+    val intAdapter: ResponseAdapter<Int> = intResponseAdapter
 
-    val commentaryAdapter: ResponseAdapter<String?> = NullableResponseAdapter(stringResponseAdapter)
+    val nullablestringAdapterAdapter: ResponseAdapter<String?> =
+        NullableResponseAdapter(stringResponseAdapter)
 
     override fun fromResponse(reader: JsonReader): TestQuery.Data.CreateReview {
       var stars: Int? = null
@@ -96,8 +96,8 @@ class TestQuery_ResponseAdapter(
       reader.beginObject()
       while(true) {
         when (reader.selectName(RESPONSE_NAMES)) {
-          0 -> stars = starsAdapter.fromResponse(reader) ?: throw UnexpectedNullValue("stars")
-          1 -> commentary = commentaryAdapter.fromResponse(reader)
+          0 -> stars = intAdapter.fromResponse(reader)
+          1 -> commentary = nullablestringAdapterAdapter.fromResponse(reader)
           else -> break
         }
       }
@@ -111,9 +111,9 @@ class TestQuery_ResponseAdapter(
     override fun toResponse(writer: JsonWriter, value: TestQuery.Data.CreateReview) {
       writer.beginObject()
       writer.name("stars")
-      starsAdapter.toResponse(writer, value.stars)
+      intAdapter.toResponse(writer, value.stars)
       writer.name("commentary")
-      commentaryAdapter.toResponse(writer, value.commentary)
+      nullablestringAdapterAdapter.toResponse(writer, value.commentary)
       writer.endObject()
     }
 

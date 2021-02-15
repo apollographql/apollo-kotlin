@@ -12,7 +12,6 @@ import com.apollographql.apollo.api.internal.ResponseAdapter
 import com.apollographql.apollo.api.internal.json.JsonReader
 import com.apollographql.apollo.api.internal.json.JsonWriter
 import com.apollographql.apollo.api.internal.stringResponseAdapter
-import com.apollographql.apollo.exception.UnexpectedNullValue
 import com.example.fragment_in_fragment.fragment.PilotFragmentImpl
 import kotlin.Array
 import kotlin.String
@@ -25,11 +24,12 @@ import kotlin.collections.List
 class PilotFragmentImpl_ResponseAdapter(
   customScalarAdapters: CustomScalarAdapters
 ) : ResponseAdapter<PilotFragmentImpl.Data> {
-  val __typenameAdapter: ResponseAdapter<String> = stringResponseAdapter
+  val stringAdapter: ResponseAdapter<String> = stringResponseAdapter
 
-  val nameAdapter: ResponseAdapter<String?> = NullableResponseAdapter(stringResponseAdapter)
+  val nullablestringAdapterAdapter: ResponseAdapter<String?> =
+      NullableResponseAdapter(stringResponseAdapter)
 
-  val homeworldAdapter: ResponseAdapter<PilotFragmentImpl.Data.Homeworld?> =
+  val nullableplanetAdapterAdapter: ResponseAdapter<PilotFragmentImpl.Data.Homeworld?> =
       NullableResponseAdapter(Homeworld(customScalarAdapters))
 
   override fun fromResponse(reader: JsonReader): PilotFragmentImpl.Data {
@@ -39,10 +39,9 @@ class PilotFragmentImpl_ResponseAdapter(
     reader.beginObject()
     while(true) {
       when (reader.selectName(RESPONSE_NAMES)) {
-        0 -> __typename = __typenameAdapter.fromResponse(reader) ?: throw
-            UnexpectedNullValue("__typename")
-        1 -> name = nameAdapter.fromResponse(reader)
-        2 -> homeworld = homeworldAdapter.fromResponse(reader)
+        0 -> __typename = stringAdapter.fromResponse(reader)
+        1 -> name = nullablestringAdapterAdapter.fromResponse(reader)
+        2 -> homeworld = nullableplanetAdapterAdapter.fromResponse(reader)
         else -> break
       }
     }
@@ -57,11 +56,11 @@ class PilotFragmentImpl_ResponseAdapter(
   override fun toResponse(writer: JsonWriter, value: PilotFragmentImpl.Data) {
     writer.beginObject()
     writer.name("__typename")
-    __typenameAdapter.toResponse(writer, value.__typename)
+    stringAdapter.toResponse(writer, value.__typename)
     writer.name("name")
-    nameAdapter.toResponse(writer, value.name)
+    nullablestringAdapterAdapter.toResponse(writer, value.name)
     writer.name("homeworld")
-    homeworldAdapter.toResponse(writer, value.homeworld)
+    nullableplanetAdapterAdapter.toResponse(writer, value.homeworld)
     writer.endObject()
   }
 
@@ -88,10 +87,10 @@ class PilotFragmentImpl_ResponseAdapter(
   class Homeworld(
     customScalarAdapters: CustomScalarAdapters
   ) : ResponseAdapter<PilotFragmentImpl.Data.Homeworld> {
-    val planetHomeworldAdapter: PlanetHomeworld =
+    val PlanetHomeworldAdapter: PlanetHomeworld =
         com.example.fragment_in_fragment.fragment.adapter.PilotFragmentImpl_ResponseAdapter.Homeworld.PlanetHomeworld(customScalarAdapters)
 
-    val otherHomeworldAdapter: OtherHomeworld =
+    val OtherHomeworldAdapter: OtherHomeworld =
         com.example.fragment_in_fragment.fragment.adapter.PilotFragmentImpl_ResponseAdapter.Homeworld.OtherHomeworld(customScalarAdapters)
 
     override fun fromResponse(reader: JsonReader): PilotFragmentImpl.Data.Homeworld {
@@ -100,25 +99,26 @@ class PilotFragmentImpl_ResponseAdapter(
       val typename = reader.nextString()
 
       return when(typename) {
-        "Planet" -> planetHomeworldAdapter.fromResponse(reader, typename)
-        else -> otherHomeworldAdapter.fromResponse(reader, typename)
+        "Planet" -> PlanetHomeworldAdapter.fromResponse(reader, typename)
+        else -> OtherHomeworldAdapter.fromResponse(reader, typename)
       }
       .also { reader.endObject() }
     }
 
     override fun toResponse(writer: JsonWriter, value: PilotFragmentImpl.Data.Homeworld) {
       when(value) {
-        is PilotFragmentImpl.Data.Homeworld.PlanetHomeworld -> planetHomeworldAdapter.toResponse(writer, value)
-        is PilotFragmentImpl.Data.Homeworld.OtherHomeworld -> otherHomeworldAdapter.toResponse(writer, value)
+        is PilotFragmentImpl.Data.Homeworld.PlanetHomeworld -> PlanetHomeworldAdapter.toResponse(writer, value)
+        is PilotFragmentImpl.Data.Homeworld.OtherHomeworld -> OtherHomeworldAdapter.toResponse(writer, value)
       }
     }
 
     class PlanetHomeworld(
       customScalarAdapters: CustomScalarAdapters
     ) {
-      val __typenameAdapter: ResponseAdapter<String> = stringResponseAdapter
+      val stringAdapter: ResponseAdapter<String> = stringResponseAdapter
 
-      val nameAdapter: ResponseAdapter<String?> = NullableResponseAdapter(stringResponseAdapter)
+      val nullablestringAdapterAdapter: ResponseAdapter<String?> =
+          NullableResponseAdapter(stringResponseAdapter)
 
       fun fromResponse(reader: JsonReader, __typename: String?):
           PilotFragmentImpl.Data.Homeworld.PlanetHomeworld {
@@ -126,9 +126,8 @@ class PilotFragmentImpl_ResponseAdapter(
         var name: String? = null
         while(true) {
           when (reader.selectName(RESPONSE_NAMES)) {
-            0 -> __typename = __typenameAdapter.fromResponse(reader) ?: throw
-                UnexpectedNullValue("__typename")
-            1 -> name = nameAdapter.fromResponse(reader)
+            0 -> __typename = stringAdapter.fromResponse(reader)
+            1 -> name = nullablestringAdapterAdapter.fromResponse(reader)
             else -> break
           }
         }
@@ -141,9 +140,9 @@ class PilotFragmentImpl_ResponseAdapter(
       fun toResponse(writer: JsonWriter, value: PilotFragmentImpl.Data.Homeworld.PlanetHomeworld) {
         writer.beginObject()
         writer.name("__typename")
-        __typenameAdapter.toResponse(writer, value.__typename)
+        stringAdapter.toResponse(writer, value.__typename)
         writer.name("name")
-        nameAdapter.toResponse(writer, value.name)
+        nullablestringAdapterAdapter.toResponse(writer, value.name)
         writer.endObject()
       }
 
@@ -163,15 +162,14 @@ class PilotFragmentImpl_ResponseAdapter(
     class OtherHomeworld(
       customScalarAdapters: CustomScalarAdapters
     ) {
-      val __typenameAdapter: ResponseAdapter<String> = stringResponseAdapter
+      val stringAdapter: ResponseAdapter<String> = stringResponseAdapter
 
       fun fromResponse(reader: JsonReader, __typename: String?):
           PilotFragmentImpl.Data.Homeworld.OtherHomeworld {
         var __typename: String? = __typename
         while(true) {
           when (reader.selectName(RESPONSE_NAMES)) {
-            0 -> __typename = __typenameAdapter.fromResponse(reader) ?: throw
-                UnexpectedNullValue("__typename")
+            0 -> __typename = stringAdapter.fromResponse(reader)
             else -> break
           }
         }
@@ -183,7 +181,7 @@ class PilotFragmentImpl_ResponseAdapter(
       fun toResponse(writer: JsonWriter, value: PilotFragmentImpl.Data.Homeworld.OtherHomeworld) {
         writer.beginObject()
         writer.name("__typename")
-        __typenameAdapter.toResponse(writer, value.__typename)
+        stringAdapter.toResponse(writer, value.__typename)
         writer.endObject()
       }
 

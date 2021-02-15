@@ -13,7 +13,6 @@ import com.apollographql.apollo.api.internal.ResponseAdapter
 import com.apollographql.apollo.api.internal.json.JsonReader
 import com.apollographql.apollo.api.internal.json.JsonWriter
 import com.apollographql.apollo.api.internal.stringResponseAdapter
-import com.apollographql.apollo.exception.UnexpectedNullValue
 import com.example.named_fragment_delegate.fragment.HumanDetailsImpl
 import com.example.named_fragment_delegate.type.CustomScalars
 import kotlin.Any
@@ -28,11 +27,9 @@ import kotlin.collections.List
 class HumanDetailsImpl_ResponseAdapter(
   customScalarAdapters: CustomScalarAdapters
 ) : ResponseAdapter<HumanDetailsImpl.Data> {
-  val __typenameAdapter: ResponseAdapter<String> = stringResponseAdapter
+  val stringAdapter: ResponseAdapter<String> = stringResponseAdapter
 
-  val nameAdapter: ResponseAdapter<String> = stringResponseAdapter
-
-  val profileLinkAdapter: ResponseAdapter<Any> =
+  val uRLAdapter: ResponseAdapter<Any> =
       customScalarAdapters.responseAdapterFor<Any>(CustomScalars.URL)
 
   val friendsConnectionAdapter: ResponseAdapter<HumanDetailsImpl.Data.FriendsConnection> =
@@ -46,13 +43,10 @@ class HumanDetailsImpl_ResponseAdapter(
     reader.beginObject()
     while(true) {
       when (reader.selectName(RESPONSE_NAMES)) {
-        0 -> __typename = __typenameAdapter.fromResponse(reader) ?: throw
-            UnexpectedNullValue("__typename")
-        1 -> name = nameAdapter.fromResponse(reader) ?: throw UnexpectedNullValue("name")
-        2 -> profileLink = profileLinkAdapter.fromResponse(reader) ?: throw
-            UnexpectedNullValue("profileLink")
-        3 -> friendsConnection = friendsConnectionAdapter.fromResponse(reader) ?: throw
-            UnexpectedNullValue("friendsConnection")
+        0 -> __typename = stringAdapter.fromResponse(reader)
+        1 -> name = stringAdapter.fromResponse(reader)
+        2 -> profileLink = uRLAdapter.fromResponse(reader)
+        3 -> friendsConnection = friendsConnectionAdapter.fromResponse(reader)
         else -> break
       }
     }
@@ -68,11 +62,11 @@ class HumanDetailsImpl_ResponseAdapter(
   override fun toResponse(writer: JsonWriter, value: HumanDetailsImpl.Data) {
     writer.beginObject()
     writer.name("__typename")
-    __typenameAdapter.toResponse(writer, value.__typename)
+    stringAdapter.toResponse(writer, value.__typename)
     writer.name("name")
-    nameAdapter.toResponse(writer, value.name)
+    stringAdapter.toResponse(writer, value.name)
     writer.name("profileLink")
-    profileLinkAdapter.toResponse(writer, value.profileLink)
+    uRLAdapter.toResponse(writer, value.profileLink)
     writer.name("friendsConnection")
     friendsConnectionAdapter.toResponse(writer, value.friendsConnection)
     writer.endObject()
@@ -104,7 +98,8 @@ class HumanDetailsImpl_ResponseAdapter(
   class FriendsConnection(
     customScalarAdapters: CustomScalarAdapters
   ) : ResponseAdapter<HumanDetailsImpl.Data.FriendsConnection> {
-    val edgesAdapter: ResponseAdapter<List<HumanDetailsImpl.Data.FriendsConnection.Edge?>?> =
+    val nullablelistOfnullablefriendsEdgeAdapterAdapterAdapterAdapter:
+        ResponseAdapter<List<HumanDetailsImpl.Data.FriendsConnection.Edge?>?> =
         NullableResponseAdapter(ListResponseAdapter(NullableResponseAdapter(Edge(customScalarAdapters))))
 
     override fun fromResponse(reader: JsonReader): HumanDetailsImpl.Data.FriendsConnection {
@@ -112,7 +107,7 @@ class HumanDetailsImpl_ResponseAdapter(
       reader.beginObject()
       while(true) {
         when (reader.selectName(RESPONSE_NAMES)) {
-          0 -> edges = edgesAdapter.fromResponse(reader)
+          0 -> edges = nullablelistOfnullablefriendsEdgeAdapterAdapterAdapterAdapter.fromResponse(reader)
           else -> break
         }
       }
@@ -125,7 +120,7 @@ class HumanDetailsImpl_ResponseAdapter(
     override fun toResponse(writer: JsonWriter, value: HumanDetailsImpl.Data.FriendsConnection) {
       writer.beginObject()
       writer.name("edges")
-      edgesAdapter.toResponse(writer, value.edges)
+      nullablelistOfnullablefriendsEdgeAdapterAdapterAdapterAdapter.toResponse(writer, value.edges)
       writer.endObject()
     }
 
@@ -146,7 +141,8 @@ class HumanDetailsImpl_ResponseAdapter(
     class Edge(
       customScalarAdapters: CustomScalarAdapters
     ) : ResponseAdapter<HumanDetailsImpl.Data.FriendsConnection.Edge> {
-      val nodeAdapter: ResponseAdapter<HumanDetailsImpl.Data.FriendsConnection.Edge.Node?> =
+      val nullablecharacterAdapterAdapter:
+          ResponseAdapter<HumanDetailsImpl.Data.FriendsConnection.Edge.Node?> =
           NullableResponseAdapter(Node(customScalarAdapters))
 
       override fun fromResponse(reader: JsonReader): HumanDetailsImpl.Data.FriendsConnection.Edge {
@@ -154,7 +150,7 @@ class HumanDetailsImpl_ResponseAdapter(
         reader.beginObject()
         while(true) {
           when (reader.selectName(RESPONSE_NAMES)) {
-            0 -> node = nodeAdapter.fromResponse(reader)
+            0 -> node = nullablecharacterAdapterAdapter.fromResponse(reader)
             else -> break
           }
         }
@@ -168,7 +164,7 @@ class HumanDetailsImpl_ResponseAdapter(
           value: HumanDetailsImpl.Data.FriendsConnection.Edge) {
         writer.beginObject()
         writer.name("node")
-        nodeAdapter.toResponse(writer, value.node)
+        nullablecharacterAdapterAdapter.toResponse(writer, value.node)
         writer.endObject()
       }
 
@@ -189,7 +185,7 @@ class HumanDetailsImpl_ResponseAdapter(
       class Node(
         customScalarAdapters: CustomScalarAdapters
       ) : ResponseAdapter<HumanDetailsImpl.Data.FriendsConnection.Edge.Node> {
-        val nameAdapter: ResponseAdapter<String> = stringResponseAdapter
+        val stringAdapter: ResponseAdapter<String> = stringResponseAdapter
 
         override fun fromResponse(reader: JsonReader):
             HumanDetailsImpl.Data.FriendsConnection.Edge.Node {
@@ -197,7 +193,7 @@ class HumanDetailsImpl_ResponseAdapter(
           reader.beginObject()
           while(true) {
             when (reader.selectName(RESPONSE_NAMES)) {
-              0 -> name = nameAdapter.fromResponse(reader) ?: throw UnexpectedNullValue("name")
+              0 -> name = stringAdapter.fromResponse(reader)
               else -> break
             }
           }
@@ -211,7 +207,7 @@ class HumanDetailsImpl_ResponseAdapter(
             value: HumanDetailsImpl.Data.FriendsConnection.Edge.Node) {
           writer.beginObject()
           writer.name("name")
-          nameAdapter.toResponse(writer, value.name)
+          stringAdapter.toResponse(writer, value.name)
           writer.endObject()
         }
 

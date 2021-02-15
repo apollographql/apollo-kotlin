@@ -24,7 +24,8 @@ import kotlin.collections.List
 class TestQuery_ResponseAdapter(
   customScalarAdapters: CustomScalarAdapters
 ) : ResponseAdapter<TestQuery.Data> {
-  val typeWithGraphQLKeywordsAdapter: ResponseAdapter<TestQuery.Data.TypeWithGraphQLKeywords?> =
+  val nullabletypeWithGraphQLKeywordsAdapterAdapter:
+      ResponseAdapter<TestQuery.Data.TypeWithGraphQLKeywords?> =
       NullableResponseAdapter(TypeWithGraphQLKeywords(customScalarAdapters))
 
   override fun fromResponse(reader: JsonReader): TestQuery.Data {
@@ -32,7 +33,7 @@ class TestQuery_ResponseAdapter(
     reader.beginObject()
     while(true) {
       when (reader.selectName(RESPONSE_NAMES)) {
-        0 -> typeWithGraphQLKeywords = typeWithGraphQLKeywordsAdapter.fromResponse(reader)
+        0 -> typeWithGraphQLKeywords = nullabletypeWithGraphQLKeywordsAdapterAdapter.fromResponse(reader)
         else -> break
       }
     }
@@ -45,7 +46,7 @@ class TestQuery_ResponseAdapter(
   override fun toResponse(writer: JsonWriter, value: TestQuery.Data) {
     writer.beginObject()
     writer.name("typeWithGraphQLKeywords")
-    typeWithGraphQLKeywordsAdapter.toResponse(writer, value.typeWithGraphQLKeywords)
+    nullabletypeWithGraphQLKeywordsAdapterAdapter.toResponse(writer, value.typeWithGraphQLKeywords)
     writer.endObject()
   }
 
@@ -66,11 +67,8 @@ class TestQuery_ResponseAdapter(
   class TypeWithGraphQLKeywords(
     customScalarAdapters: CustomScalarAdapters
   ) : ResponseAdapter<TestQuery.Data.TypeWithGraphQLKeywords> {
-    val onAdapter: ResponseAdapter<String?> = NullableResponseAdapter(stringResponseAdapter)
-
-    val null_Adapter: ResponseAdapter<String?> = NullableResponseAdapter(stringResponseAdapter)
-
-    val aliasAdapter: ResponseAdapter<String?> = NullableResponseAdapter(stringResponseAdapter)
+    val nullablestringAdapterAdapter: ResponseAdapter<String?> =
+        NullableResponseAdapter(stringResponseAdapter)
 
     override fun fromResponse(reader: JsonReader): TestQuery.Data.TypeWithGraphQLKeywords {
       var on: String? = null
@@ -79,9 +77,9 @@ class TestQuery_ResponseAdapter(
       reader.beginObject()
       while(true) {
         when (reader.selectName(RESPONSE_NAMES)) {
-          0 -> on = onAdapter.fromResponse(reader)
-          1 -> null_ = null_Adapter.fromResponse(reader)
-          2 -> alias = aliasAdapter.fromResponse(reader)
+          0 -> on = nullablestringAdapterAdapter.fromResponse(reader)
+          1 -> null_ = nullablestringAdapterAdapter.fromResponse(reader)
+          2 -> alias = nullablestringAdapterAdapter.fromResponse(reader)
           else -> break
         }
       }
@@ -96,11 +94,11 @@ class TestQuery_ResponseAdapter(
     override fun toResponse(writer: JsonWriter, value: TestQuery.Data.TypeWithGraphQLKeywords) {
       writer.beginObject()
       writer.name("on")
-      onAdapter.toResponse(writer, value.on)
+      nullablestringAdapterAdapter.toResponse(writer, value.on)
       writer.name("null")
-      null_Adapter.toResponse(writer, value.null_)
+      nullablestringAdapterAdapter.toResponse(writer, value.null_)
       writer.name("alias")
-      aliasAdapter.toResponse(writer, value.alias)
+      nullablestringAdapterAdapter.toResponse(writer, value.alias)
       writer.endObject()
     }
 

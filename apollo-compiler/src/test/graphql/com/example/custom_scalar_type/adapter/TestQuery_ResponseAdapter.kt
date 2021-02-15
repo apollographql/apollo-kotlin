@@ -13,7 +13,6 @@ import com.apollographql.apollo.api.internal.ResponseAdapter
 import com.apollographql.apollo.api.internal.json.JsonReader
 import com.apollographql.apollo.api.internal.json.JsonWriter
 import com.apollographql.apollo.api.internal.stringResponseAdapter
-import com.apollographql.apollo.exception.UnexpectedNullValue
 import com.example.custom_scalar_type.TestQuery
 import com.example.custom_scalar_type.type.CustomScalars
 import java.util.Date
@@ -29,7 +28,7 @@ import kotlin.collections.List
 class TestQuery_ResponseAdapter(
   customScalarAdapters: CustomScalarAdapters
 ) : ResponseAdapter<TestQuery.Data> {
-  val heroAdapter: ResponseAdapter<TestQuery.Data.Hero?> =
+  val nullablecharacterAdapterAdapter: ResponseAdapter<TestQuery.Data.Hero?> =
       NullableResponseAdapter(Hero(customScalarAdapters))
 
   override fun fromResponse(reader: JsonReader): TestQuery.Data {
@@ -37,7 +36,7 @@ class TestQuery_ResponseAdapter(
     reader.beginObject()
     while(true) {
       when (reader.selectName(RESPONSE_NAMES)) {
-        0 -> hero = heroAdapter.fromResponse(reader)
+        0 -> hero = nullablecharacterAdapterAdapter.fromResponse(reader)
         else -> break
       }
     }
@@ -50,7 +49,7 @@ class TestQuery_ResponseAdapter(
   override fun toResponse(writer: JsonWriter, value: TestQuery.Data) {
     writer.beginObject()
     writer.name("hero")
-    heroAdapter.toResponse(writer, value.hero)
+    nullablecharacterAdapterAdapter.toResponse(writer, value.hero)
     writer.endObject()
   }
 
@@ -71,21 +70,21 @@ class TestQuery_ResponseAdapter(
   class Hero(
     customScalarAdapters: CustomScalarAdapters
   ) : ResponseAdapter<TestQuery.Data.Hero> {
-    val nameAdapter: ResponseAdapter<String> = stringResponseAdapter
+    val stringAdapter: ResponseAdapter<String> = stringResponseAdapter
 
-    val birthDateAdapter: ResponseAdapter<Date> =
+    val dateAdapter: ResponseAdapter<Date> =
         customScalarAdapters.responseAdapterFor<Date>(CustomScalars.Date)
 
-    val appearanceDatesAdapter: ResponseAdapter<List<Date>> =
+    val listOfdateAdapterAdapter: ResponseAdapter<List<Date>> =
         ListResponseAdapter(customScalarAdapters.responseAdapterFor<Date>(CustomScalars.Date))
 
-    val fieldWithUnsupportedTypeAdapter: ResponseAdapter<Any> =
+    val unsupportedTypeAdapter: ResponseAdapter<Any> =
         customScalarAdapters.responseAdapterFor<Any>(CustomScalars.UnsupportedType)
 
-    val profileLinkAdapter: ResponseAdapter<java.lang.String> =
+    val uRLAdapter: ResponseAdapter<java.lang.String> =
         customScalarAdapters.responseAdapterFor<java.lang.String>(CustomScalars.URL)
 
-    val linksAdapter: ResponseAdapter<List<java.lang.String>> =
+    val listOfuRLAdapterAdapter: ResponseAdapter<List<java.lang.String>> =
         ListResponseAdapter(customScalarAdapters.responseAdapterFor<java.lang.String>(CustomScalars.URL))
 
     override fun fromResponse(reader: JsonReader): TestQuery.Data.Hero {
@@ -98,16 +97,12 @@ class TestQuery_ResponseAdapter(
       reader.beginObject()
       while(true) {
         when (reader.selectName(RESPONSE_NAMES)) {
-          0 -> name = nameAdapter.fromResponse(reader) ?: throw UnexpectedNullValue("name")
-          1 -> birthDate = birthDateAdapter.fromResponse(reader) ?: throw
-              UnexpectedNullValue("birthDate")
-          2 -> appearanceDates = appearanceDatesAdapter.fromResponse(reader) ?: throw
-              UnexpectedNullValue("appearanceDates")
-          3 -> fieldWithUnsupportedType = fieldWithUnsupportedTypeAdapter.fromResponse(reader) ?:
-              throw UnexpectedNullValue("fieldWithUnsupportedType")
-          4 -> profileLink = profileLinkAdapter.fromResponse(reader) ?: throw
-              UnexpectedNullValue("profileLink")
-          5 -> links = linksAdapter.fromResponse(reader) ?: throw UnexpectedNullValue("links")
+          0 -> name = stringAdapter.fromResponse(reader)
+          1 -> birthDate = dateAdapter.fromResponse(reader)
+          2 -> appearanceDates = listOfdateAdapterAdapter.fromResponse(reader)
+          3 -> fieldWithUnsupportedType = unsupportedTypeAdapter.fromResponse(reader)
+          4 -> profileLink = uRLAdapter.fromResponse(reader)
+          5 -> links = listOfuRLAdapterAdapter.fromResponse(reader)
           else -> break
         }
       }
@@ -125,17 +120,17 @@ class TestQuery_ResponseAdapter(
     override fun toResponse(writer: JsonWriter, value: TestQuery.Data.Hero) {
       writer.beginObject()
       writer.name("name")
-      nameAdapter.toResponse(writer, value.name)
+      stringAdapter.toResponse(writer, value.name)
       writer.name("birthDate")
-      birthDateAdapter.toResponse(writer, value.birthDate)
+      dateAdapter.toResponse(writer, value.birthDate)
       writer.name("appearanceDates")
-      appearanceDatesAdapter.toResponse(writer, value.appearanceDates)
+      listOfdateAdapterAdapter.toResponse(writer, value.appearanceDates)
       writer.name("fieldWithUnsupportedType")
-      fieldWithUnsupportedTypeAdapter.toResponse(writer, value.fieldWithUnsupportedType)
+      unsupportedTypeAdapter.toResponse(writer, value.fieldWithUnsupportedType)
       writer.name("profileLink")
-      profileLinkAdapter.toResponse(writer, value.profileLink)
+      uRLAdapter.toResponse(writer, value.profileLink)
       writer.name("links")
-      linksAdapter.toResponse(writer, value.links)
+      listOfuRLAdapterAdapter.toResponse(writer, value.links)
       writer.endObject()
     }
 

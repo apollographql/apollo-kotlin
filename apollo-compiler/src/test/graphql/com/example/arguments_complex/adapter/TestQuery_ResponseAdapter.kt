@@ -13,7 +13,6 @@ import com.apollographql.apollo.api.internal.doubleResponseAdapter
 import com.apollographql.apollo.api.internal.json.JsonReader
 import com.apollographql.apollo.api.internal.json.JsonWriter
 import com.apollographql.apollo.api.internal.stringResponseAdapter
-import com.apollographql.apollo.exception.UnexpectedNullValue
 import com.example.arguments_complex.TestQuery
 import kotlin.Array
 import kotlin.Double
@@ -27,7 +26,7 @@ import kotlin.collections.List
 class TestQuery_ResponseAdapter(
   customScalarAdapters: CustomScalarAdapters
 ) : ResponseAdapter<TestQuery.Data> {
-  val heroWithReviewAdapter: ResponseAdapter<TestQuery.Data.HeroWithReview?> =
+  val nullablehumanAdapterAdapter: ResponseAdapter<TestQuery.Data.HeroWithReview?> =
       NullableResponseAdapter(HeroWithReview(customScalarAdapters))
 
   override fun fromResponse(reader: JsonReader): TestQuery.Data {
@@ -35,7 +34,7 @@ class TestQuery_ResponseAdapter(
     reader.beginObject()
     while(true) {
       when (reader.selectName(RESPONSE_NAMES)) {
-        0 -> heroWithReview = heroWithReviewAdapter.fromResponse(reader)
+        0 -> heroWithReview = nullablehumanAdapterAdapter.fromResponse(reader)
         else -> break
       }
     }
@@ -48,7 +47,7 @@ class TestQuery_ResponseAdapter(
   override fun toResponse(writer: JsonWriter, value: TestQuery.Data) {
     writer.beginObject()
     writer.name("heroWithReview")
-    heroWithReviewAdapter.toResponse(writer, value.heroWithReview)
+    nullablehumanAdapterAdapter.toResponse(writer, value.heroWithReview)
     writer.endObject()
   }
 
@@ -92,9 +91,10 @@ class TestQuery_ResponseAdapter(
   class HeroWithReview(
     customScalarAdapters: CustomScalarAdapters
   ) : ResponseAdapter<TestQuery.Data.HeroWithReview> {
-    val nameAdapter: ResponseAdapter<String> = stringResponseAdapter
+    val stringAdapter: ResponseAdapter<String> = stringResponseAdapter
 
-    val heightAdapter: ResponseAdapter<Double?> = NullableResponseAdapter(doubleResponseAdapter)
+    val nullablefloatAdapterAdapter: ResponseAdapter<Double?> =
+        NullableResponseAdapter(doubleResponseAdapter)
 
     override fun fromResponse(reader: JsonReader): TestQuery.Data.HeroWithReview {
       var name: String? = null
@@ -102,8 +102,8 @@ class TestQuery_ResponseAdapter(
       reader.beginObject()
       while(true) {
         when (reader.selectName(RESPONSE_NAMES)) {
-          0 -> name = nameAdapter.fromResponse(reader) ?: throw UnexpectedNullValue("name")
-          1 -> height = heightAdapter.fromResponse(reader)
+          0 -> name = stringAdapter.fromResponse(reader)
+          1 -> height = nullablefloatAdapterAdapter.fromResponse(reader)
           else -> break
         }
       }
@@ -117,9 +117,9 @@ class TestQuery_ResponseAdapter(
     override fun toResponse(writer: JsonWriter, value: TestQuery.Data.HeroWithReview) {
       writer.beginObject()
       writer.name("name")
-      nameAdapter.toResponse(writer, value.name)
+      stringAdapter.toResponse(writer, value.name)
       writer.name("height")
-      heightAdapter.toResponse(writer, value.height)
+      nullablefloatAdapterAdapter.toResponse(writer, value.height)
       writer.endObject()
     }
 

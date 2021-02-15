@@ -13,7 +13,6 @@ import com.apollographql.apollo.api.internal.ResponseAdapter
 import com.apollographql.apollo.api.internal.json.JsonReader
 import com.apollographql.apollo.api.internal.json.JsonWriter
 import com.apollographql.apollo.api.internal.stringResponseAdapter
-import com.apollographql.apollo.exception.UnexpectedNullValue
 import com.example.recursive_selection.TestQuery
 import kotlin.Array
 import kotlin.String
@@ -26,7 +25,7 @@ import kotlin.collections.List
 class TestQuery_ResponseAdapter(
   customScalarAdapters: CustomScalarAdapters
 ) : ResponseAdapter<TestQuery.Data> {
-  val treeAdapter: ResponseAdapter<TestQuery.Data.Tree?> =
+  val nullabletreeAdapterAdapter: ResponseAdapter<TestQuery.Data.Tree?> =
       NullableResponseAdapter(Tree(customScalarAdapters))
 
   override fun fromResponse(reader: JsonReader): TestQuery.Data {
@@ -34,7 +33,7 @@ class TestQuery_ResponseAdapter(
     reader.beginObject()
     while(true) {
       when (reader.selectName(RESPONSE_NAMES)) {
-        0 -> tree = treeAdapter.fromResponse(reader)
+        0 -> tree = nullabletreeAdapterAdapter.fromResponse(reader)
         else -> break
       }
     }
@@ -47,7 +46,7 @@ class TestQuery_ResponseAdapter(
   override fun toResponse(writer: JsonWriter, value: TestQuery.Data) {
     writer.beginObject()
     writer.name("tree")
-    treeAdapter.toResponse(writer, value.tree)
+    nullabletreeAdapterAdapter.toResponse(writer, value.tree)
     writer.endObject()
   }
 
@@ -68,12 +67,12 @@ class TestQuery_ResponseAdapter(
   class Tree(
     customScalarAdapters: CustomScalarAdapters
   ) : ResponseAdapter<TestQuery.Data.Tree> {
-    val nameAdapter: ResponseAdapter<String> = stringResponseAdapter
+    val stringAdapter: ResponseAdapter<String> = stringResponseAdapter
 
-    val childrenAdapter: ResponseAdapter<List<TestQuery.Data.Tree.Child>> =
+    val listOftreeAdapterAdapter: ResponseAdapter<List<TestQuery.Data.Tree.Child>> =
         ListResponseAdapter(Child(customScalarAdapters))
 
-    val parentAdapter: ResponseAdapter<TestQuery.Data.Tree.Parent?> =
+    val nullabletreeAdapterAdapter: ResponseAdapter<TestQuery.Data.Tree.Parent?> =
         NullableResponseAdapter(Parent(customScalarAdapters))
 
     override fun fromResponse(reader: JsonReader): TestQuery.Data.Tree {
@@ -83,10 +82,9 @@ class TestQuery_ResponseAdapter(
       reader.beginObject()
       while(true) {
         when (reader.selectName(RESPONSE_NAMES)) {
-          0 -> name = nameAdapter.fromResponse(reader) ?: throw UnexpectedNullValue("name")
-          1 -> children = childrenAdapter.fromResponse(reader) ?: throw
-              UnexpectedNullValue("children")
-          2 -> parent = parentAdapter.fromResponse(reader)
+          0 -> name = stringAdapter.fromResponse(reader)
+          1 -> children = listOftreeAdapterAdapter.fromResponse(reader)
+          2 -> parent = nullabletreeAdapterAdapter.fromResponse(reader)
           else -> break
         }
       }
@@ -101,11 +99,11 @@ class TestQuery_ResponseAdapter(
     override fun toResponse(writer: JsonWriter, value: TestQuery.Data.Tree) {
       writer.beginObject()
       writer.name("name")
-      nameAdapter.toResponse(writer, value.name)
+      stringAdapter.toResponse(writer, value.name)
       writer.name("children")
-      childrenAdapter.toResponse(writer, value.children)
+      listOftreeAdapterAdapter.toResponse(writer, value.children)
       writer.name("parent")
-      parentAdapter.toResponse(writer, value.parent)
+      nullabletreeAdapterAdapter.toResponse(writer, value.parent)
       writer.endObject()
     }
 
@@ -138,14 +136,14 @@ class TestQuery_ResponseAdapter(
     class Child(
       customScalarAdapters: CustomScalarAdapters
     ) : ResponseAdapter<TestQuery.Data.Tree.Child> {
-      val nameAdapter: ResponseAdapter<String> = stringResponseAdapter
+      val stringAdapter: ResponseAdapter<String> = stringResponseAdapter
 
       override fun fromResponse(reader: JsonReader): TestQuery.Data.Tree.Child {
         var name: String? = null
         reader.beginObject()
         while(true) {
           when (reader.selectName(RESPONSE_NAMES)) {
-            0 -> name = nameAdapter.fromResponse(reader) ?: throw UnexpectedNullValue("name")
+            0 -> name = stringAdapter.fromResponse(reader)
             else -> break
           }
         }
@@ -158,7 +156,7 @@ class TestQuery_ResponseAdapter(
       override fun toResponse(writer: JsonWriter, value: TestQuery.Data.Tree.Child) {
         writer.beginObject()
         writer.name("name")
-        nameAdapter.toResponse(writer, value.name)
+        stringAdapter.toResponse(writer, value.name)
         writer.endObject()
       }
 
@@ -177,14 +175,14 @@ class TestQuery_ResponseAdapter(
     class Parent(
       customScalarAdapters: CustomScalarAdapters
     ) : ResponseAdapter<TestQuery.Data.Tree.Parent> {
-      val nameAdapter: ResponseAdapter<String> = stringResponseAdapter
+      val stringAdapter: ResponseAdapter<String> = stringResponseAdapter
 
       override fun fromResponse(reader: JsonReader): TestQuery.Data.Tree.Parent {
         var name: String? = null
         reader.beginObject()
         while(true) {
           when (reader.selectName(RESPONSE_NAMES)) {
-            0 -> name = nameAdapter.fromResponse(reader) ?: throw UnexpectedNullValue("name")
+            0 -> name = stringAdapter.fromResponse(reader)
             else -> break
           }
         }
@@ -197,7 +195,7 @@ class TestQuery_ResponseAdapter(
       override fun toResponse(writer: JsonWriter, value: TestQuery.Data.Tree.Parent) {
         writer.beginObject()
         writer.name("name")
-        nameAdapter.toResponse(writer, value.name)
+        stringAdapter.toResponse(writer, value.name)
         writer.endObject()
       }
 
