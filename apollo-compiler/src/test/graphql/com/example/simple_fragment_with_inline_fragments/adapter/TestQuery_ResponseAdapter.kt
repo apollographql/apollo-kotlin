@@ -27,7 +27,7 @@ import kotlin.collections.List
 class TestQuery_ResponseAdapter(
   customScalarAdapters: CustomScalarAdapters
 ) : ResponseAdapter<TestQuery.Data> {
-  val nullablecharacterAdapterAdapter: ResponseAdapter<TestQuery.Data.Hero?> =
+  val nullableHeroAdapter: ResponseAdapter<TestQuery.Data.Hero?> =
       NullableResponseAdapter(Hero(customScalarAdapters))
 
   override fun fromResponse(reader: JsonReader): TestQuery.Data {
@@ -35,7 +35,7 @@ class TestQuery_ResponseAdapter(
     reader.beginObject()
     while(true) {
       when (reader.selectName(RESPONSE_NAMES)) {
-        0 -> hero = nullablecharacterAdapterAdapter.fromResponse(reader)
+        0 -> hero = nullableHeroAdapter.fromResponse(reader)
         else -> break
       }
     }
@@ -48,7 +48,7 @@ class TestQuery_ResponseAdapter(
   override fun toResponse(writer: JsonWriter, value: TestQuery.Data) {
     writer.beginObject()
     writer.name("hero")
-    nullablecharacterAdapterAdapter.toResponse(writer, value.hero)
+    nullableHeroAdapter.toResponse(writer, value.hero)
     writer.endObject()
   }
 
@@ -102,7 +102,7 @@ class TestQuery_ResponseAdapter(
     ) {
       val stringAdapter: ResponseAdapter<String> = stringResponseAdapter
 
-      val nullablelistOfnullablecharacterAdapterAdapterAdapterAdapter:
+      val nullableListOfNullableFriendAdapter:
           ResponseAdapter<List<TestQuery.Data.Hero.CharacterHero.Friend?>?> =
           NullableResponseAdapter(ListResponseAdapter(NullableResponseAdapter(Friend(customScalarAdapters))))
 
@@ -114,7 +114,7 @@ class TestQuery_ResponseAdapter(
           when (reader.selectName(RESPONSE_NAMES)) {
             0 -> __typename = stringAdapter.fromResponse(reader)
             1 -> name = stringAdapter.fromResponse(reader)
-            2 -> friends = nullablelistOfnullablecharacterAdapterAdapterAdapterAdapter.fromResponse(reader)
+            2 -> friends = nullableListOfNullableFriendAdapter.fromResponse(reader)
             else -> break
           }
         }
@@ -132,8 +132,7 @@ class TestQuery_ResponseAdapter(
         writer.name("name")
         stringAdapter.toResponse(writer, value.name)
         writer.name("friends")
-        nullablelistOfnullablecharacterAdapterAdapterAdapterAdapter.toResponse(writer,
-            value.friends)
+        nullableListOfNullableFriendAdapter.toResponse(writer, value.friends)
         writer.endObject()
       }
 
@@ -197,7 +196,7 @@ class TestQuery_ResponseAdapter(
         ) {
           val stringAdapter: ResponseAdapter<String> = stringResponseAdapter
 
-          val nullablefloatAdapterAdapter: ResponseAdapter<Double?> =
+          val nullableFloatAdapter: ResponseAdapter<Double?> =
               NullableResponseAdapter(doubleResponseAdapter)
 
           fun fromResponse(reader: JsonReader, __typename: String?):
@@ -209,7 +208,7 @@ class TestQuery_ResponseAdapter(
               when (reader.selectName(RESPONSE_NAMES)) {
                 0 -> __typename = stringAdapter.fromResponse(reader)
                 1 -> name = stringAdapter.fromResponse(reader)
-                2 -> height = nullablefloatAdapterAdapter.fromResponse(reader)
+                2 -> height = nullableFloatAdapter.fromResponse(reader)
                 else -> break
               }
             }
@@ -228,7 +227,7 @@ class TestQuery_ResponseAdapter(
             writer.name("name")
             stringAdapter.toResponse(writer, value.name)
             writer.name("height")
-            nullablefloatAdapterAdapter.toResponse(writer, value.height)
+            nullableFloatAdapter.toResponse(writer, value.height)
             writer.endObject()
           }
 
@@ -254,7 +253,7 @@ class TestQuery_ResponseAdapter(
         ) {
           val stringAdapter: ResponseAdapter<String> = stringResponseAdapter
 
-          val nullablestringAdapterAdapter: ResponseAdapter<String?> =
+          val nullableStringAdapter: ResponseAdapter<String?> =
               NullableResponseAdapter(stringResponseAdapter)
 
           fun fromResponse(reader: JsonReader, __typename: String?):
@@ -266,7 +265,7 @@ class TestQuery_ResponseAdapter(
               when (reader.selectName(RESPONSE_NAMES)) {
                 0 -> __typename = stringAdapter.fromResponse(reader)
                 1 -> name = stringAdapter.fromResponse(reader)
-                2 -> primaryFunction = nullablestringAdapterAdapter.fromResponse(reader)
+                2 -> primaryFunction = nullableStringAdapter.fromResponse(reader)
                 else -> break
               }
             }
@@ -285,7 +284,7 @@ class TestQuery_ResponseAdapter(
             writer.name("name")
             stringAdapter.toResponse(writer, value.name)
             writer.name("primaryFunction")
-            nullablestringAdapterAdapter.toResponse(writer, value.primaryFunction)
+            nullableStringAdapter.toResponse(writer, value.primaryFunction)
             writer.endObject()
           }
 

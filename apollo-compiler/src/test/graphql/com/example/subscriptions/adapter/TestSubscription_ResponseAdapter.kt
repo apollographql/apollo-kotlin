@@ -26,7 +26,7 @@ import kotlin.collections.List
 class TestSubscription_ResponseAdapter(
   customScalarAdapters: CustomScalarAdapters
 ) : ResponseAdapter<TestSubscription.Data> {
-  val nullablecommentAdapterAdapter: ResponseAdapter<TestSubscription.Data.CommentAdded?> =
+  val nullableCommentAddedAdapter: ResponseAdapter<TestSubscription.Data.CommentAdded?> =
       NullableResponseAdapter(CommentAdded(customScalarAdapters))
 
   override fun fromResponse(reader: JsonReader): TestSubscription.Data {
@@ -34,7 +34,7 @@ class TestSubscription_ResponseAdapter(
     reader.beginObject()
     while(true) {
       when (reader.selectName(RESPONSE_NAMES)) {
-        0 -> commentAdded = nullablecommentAdapterAdapter.fromResponse(reader)
+        0 -> commentAdded = nullableCommentAddedAdapter.fromResponse(reader)
         else -> break
       }
     }
@@ -47,7 +47,7 @@ class TestSubscription_ResponseAdapter(
   override fun toResponse(writer: JsonWriter, value: TestSubscription.Data) {
     writer.beginObject()
     writer.name("commentAdded")
-    nullablecommentAdapterAdapter.toResponse(writer, value.commentAdded)
+    nullableCommentAddedAdapter.toResponse(writer, value.commentAdded)
     writer.endObject()
   }
 

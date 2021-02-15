@@ -26,13 +26,13 @@ class QueryFragmentImpl_ResponseAdapter(
 ) : ResponseAdapter<QueryFragmentImpl.Data> {
   val stringAdapter: ResponseAdapter<String> = stringResponseAdapter
 
-  val nullablecharacterAdapterAdapter: ResponseAdapter<QueryFragmentImpl.Data.Hero?> =
+  val nullableHeroAdapter: ResponseAdapter<QueryFragmentImpl.Data.Hero?> =
       NullableResponseAdapter(Hero(customScalarAdapters))
 
-  val nullabledroidAdapterAdapter: ResponseAdapter<QueryFragmentImpl.Data.Droid?> =
+  val nullableDroidAdapter: ResponseAdapter<QueryFragmentImpl.Data.Droid?> =
       NullableResponseAdapter(Droid(customScalarAdapters))
 
-  val nullablehumanAdapterAdapter: ResponseAdapter<QueryFragmentImpl.Data.Human?> =
+  val nullableHumanAdapter: ResponseAdapter<QueryFragmentImpl.Data.Human?> =
       NullableResponseAdapter(Human(customScalarAdapters))
 
   override fun fromResponse(reader: JsonReader): QueryFragmentImpl.Data {
@@ -44,9 +44,9 @@ class QueryFragmentImpl_ResponseAdapter(
     while(true) {
       when (reader.selectName(RESPONSE_NAMES)) {
         0 -> __typename = stringAdapter.fromResponse(reader)
-        1 -> hero = nullablecharacterAdapterAdapter.fromResponse(reader)
-        2 -> droid = nullabledroidAdapterAdapter.fromResponse(reader)
-        3 -> human = nullablehumanAdapterAdapter.fromResponse(reader)
+        1 -> hero = nullableHeroAdapter.fromResponse(reader)
+        2 -> droid = nullableDroidAdapter.fromResponse(reader)
+        3 -> human = nullableHumanAdapter.fromResponse(reader)
         else -> break
       }
     }
@@ -64,11 +64,11 @@ class QueryFragmentImpl_ResponseAdapter(
     writer.name("__typename")
     stringAdapter.toResponse(writer, value.__typename)
     writer.name("hero")
-    nullablecharacterAdapterAdapter.toResponse(writer, value.hero)
+    nullableHeroAdapter.toResponse(writer, value.hero)
     writer.name("droid")
-    nullabledroidAdapterAdapter.toResponse(writer, value.droid)
+    nullableDroidAdapter.toResponse(writer, value.droid)
     writer.name("human")
-    nullablehumanAdapterAdapter.toResponse(writer, value.human)
+    nullableHumanAdapter.toResponse(writer, value.human)
     writer.endObject()
   }
 
@@ -251,7 +251,7 @@ class QueryFragmentImpl_ResponseAdapter(
     ) {
       val stringAdapter: ResponseAdapter<String> = stringResponseAdapter
 
-      val nullablestringAdapterAdapter: ResponseAdapter<String?> =
+      val nullableStringAdapter: ResponseAdapter<String?> =
           NullableResponseAdapter(stringResponseAdapter)
 
       fun fromResponse(reader: JsonReader, __typename: String?):
@@ -263,7 +263,7 @@ class QueryFragmentImpl_ResponseAdapter(
           when (reader.selectName(RESPONSE_NAMES)) {
             0 -> __typename = stringAdapter.fromResponse(reader)
             1 -> name = stringAdapter.fromResponse(reader)
-            2 -> primaryFunction = nullablestringAdapterAdapter.fromResponse(reader)
+            2 -> primaryFunction = nullableStringAdapter.fromResponse(reader)
             else -> break
           }
         }
@@ -281,7 +281,7 @@ class QueryFragmentImpl_ResponseAdapter(
         writer.name("name")
         stringAdapter.toResponse(writer, value.name)
         writer.name("primaryFunction")
-        nullablestringAdapterAdapter.toResponse(writer, value.primaryFunction)
+        nullableStringAdapter.toResponse(writer, value.primaryFunction)
         writer.endObject()
       }
 
@@ -371,7 +371,7 @@ class QueryFragmentImpl_ResponseAdapter(
     ) {
       val stringAdapter: ResponseAdapter<String> = stringResponseAdapter
 
-      val nullablestringAdapterAdapter: ResponseAdapter<String?> =
+      val nullableStringAdapter: ResponseAdapter<String?> =
           NullableResponseAdapter(stringResponseAdapter)
 
       fun fromResponse(reader: JsonReader, __typename: String?):
@@ -383,7 +383,7 @@ class QueryFragmentImpl_ResponseAdapter(
           when (reader.selectName(RESPONSE_NAMES)) {
             0 -> __typename = stringAdapter.fromResponse(reader)
             1 -> name = stringAdapter.fromResponse(reader)
-            2 -> homePlanet = nullablestringAdapterAdapter.fromResponse(reader)
+            2 -> homePlanet = nullableStringAdapter.fromResponse(reader)
             else -> break
           }
         }
@@ -401,7 +401,7 @@ class QueryFragmentImpl_ResponseAdapter(
         writer.name("name")
         stringAdapter.toResponse(writer, value.name)
         writer.name("homePlanet")
-        nullablestringAdapterAdapter.toResponse(writer, value.homePlanet)
+        nullableStringAdapter.toResponse(writer, value.homePlanet)
         writer.endObject()
       }
 

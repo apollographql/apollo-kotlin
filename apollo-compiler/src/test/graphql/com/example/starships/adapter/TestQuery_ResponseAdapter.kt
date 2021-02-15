@@ -27,7 +27,7 @@ import kotlin.collections.List
 class TestQuery_ResponseAdapter(
   customScalarAdapters: CustomScalarAdapters
 ) : ResponseAdapter<TestQuery.Data> {
-  val nullablestarshipAdapterAdapter: ResponseAdapter<TestQuery.Data.Starship?> =
+  val nullableStarshipAdapter: ResponseAdapter<TestQuery.Data.Starship?> =
       NullableResponseAdapter(Starship(customScalarAdapters))
 
   override fun fromResponse(reader: JsonReader): TestQuery.Data {
@@ -35,7 +35,7 @@ class TestQuery_ResponseAdapter(
     reader.beginObject()
     while(true) {
       when (reader.selectName(RESPONSE_NAMES)) {
-        0 -> starship = nullablestarshipAdapterAdapter.fromResponse(reader)
+        0 -> starship = nullableStarshipAdapter.fromResponse(reader)
         else -> break
       }
     }
@@ -48,7 +48,7 @@ class TestQuery_ResponseAdapter(
   override fun toResponse(writer: JsonWriter, value: TestQuery.Data) {
     writer.beginObject()
     writer.name("starship")
-    nullablestarshipAdapterAdapter.toResponse(writer, value.starship)
+    nullableStarshipAdapter.toResponse(writer, value.starship)
     writer.endObject()
   }
 
@@ -75,8 +75,8 @@ class TestQuery_ResponseAdapter(
   ) : ResponseAdapter<TestQuery.Data.Starship> {
     val stringAdapter: ResponseAdapter<String> = stringResponseAdapter
 
-    val nullablelistOflistOffloatAdapterAdapterAdapterAdapter: ResponseAdapter<List<List<Double>>?>
-        = NullableResponseAdapter(ListResponseAdapter(ListResponseAdapter(doubleResponseAdapter)))
+    val nullableListOfListOfFloatAdapter: ResponseAdapter<List<List<Double>>?> =
+        NullableResponseAdapter(ListResponseAdapter(ListResponseAdapter(doubleResponseAdapter)))
 
     override fun fromResponse(reader: JsonReader): TestQuery.Data.Starship {
       var id: String? = null
@@ -87,7 +87,7 @@ class TestQuery_ResponseAdapter(
         when (reader.selectName(RESPONSE_NAMES)) {
           0 -> id = stringAdapter.fromResponse(reader)
           1 -> name = stringAdapter.fromResponse(reader)
-          2 -> coordinates = nullablelistOflistOffloatAdapterAdapterAdapterAdapter.fromResponse(reader)
+          2 -> coordinates = nullableListOfListOfFloatAdapter.fromResponse(reader)
           else -> break
         }
       }
@@ -106,7 +106,7 @@ class TestQuery_ResponseAdapter(
       writer.name("name")
       stringAdapter.toResponse(writer, value.name)
       writer.name("coordinates")
-      nullablelistOflistOffloatAdapterAdapterAdapterAdapter.toResponse(writer, value.coordinates)
+      nullableListOfListOfFloatAdapter.toResponse(writer, value.coordinates)
       writer.endObject()
     }
 

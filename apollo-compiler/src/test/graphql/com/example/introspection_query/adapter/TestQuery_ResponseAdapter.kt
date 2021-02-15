@@ -82,10 +82,10 @@ class TestQuery_ResponseAdapter(
   class __Schema(
     customScalarAdapters: CustomScalarAdapters
   ) : ResponseAdapter<TestQuery.Data.__Schema> {
-    val __TypeAdapter: ResponseAdapter<TestQuery.Data.__Schema.QueryType> =
+    val queryTypeAdapter: ResponseAdapter<TestQuery.Data.__Schema.QueryType> =
         QueryType(customScalarAdapters)
 
-    val listOf__TypeAdapterAdapter: ResponseAdapter<List<TestQuery.Data.__Schema.Type>> =
+    val listOfTypeAdapter: ResponseAdapter<List<TestQuery.Data.__Schema.Type>> =
         ListResponseAdapter(Type(customScalarAdapters))
 
     override fun fromResponse(reader: JsonReader): TestQuery.Data.__Schema {
@@ -94,8 +94,8 @@ class TestQuery_ResponseAdapter(
       reader.beginObject()
       while(true) {
         when (reader.selectName(RESPONSE_NAMES)) {
-          0 -> queryType = __TypeAdapter.fromResponse(reader)
-          1 -> types = listOf__TypeAdapterAdapter.fromResponse(reader)
+          0 -> queryType = queryTypeAdapter.fromResponse(reader)
+          1 -> types = listOfTypeAdapter.fromResponse(reader)
           else -> break
         }
       }
@@ -109,9 +109,9 @@ class TestQuery_ResponseAdapter(
     override fun toResponse(writer: JsonWriter, value: TestQuery.Data.__Schema) {
       writer.beginObject()
       writer.name("queryType")
-      __TypeAdapter.toResponse(writer, value.queryType)
+      queryTypeAdapter.toResponse(writer, value.queryType)
       writer.name("types")
-      listOf__TypeAdapterAdapter.toResponse(writer, value.types)
+      listOfTypeAdapter.toResponse(writer, value.types)
       writer.endObject()
     }
 
@@ -140,7 +140,7 @@ class TestQuery_ResponseAdapter(
     class QueryType(
       customScalarAdapters: CustomScalarAdapters
     ) : ResponseAdapter<TestQuery.Data.__Schema.QueryType> {
-      val nullablestringAdapterAdapter: ResponseAdapter<String?> =
+      val nullableStringAdapter: ResponseAdapter<String?> =
           NullableResponseAdapter(stringResponseAdapter)
 
       override fun fromResponse(reader: JsonReader): TestQuery.Data.__Schema.QueryType {
@@ -148,7 +148,7 @@ class TestQuery_ResponseAdapter(
         reader.beginObject()
         while(true) {
           when (reader.selectName(RESPONSE_NAMES)) {
-            0 -> name = nullablestringAdapterAdapter.fromResponse(reader)
+            0 -> name = nullableStringAdapter.fromResponse(reader)
             else -> break
           }
         }
@@ -161,7 +161,7 @@ class TestQuery_ResponseAdapter(
       override fun toResponse(writer: JsonWriter, value: TestQuery.Data.__Schema.QueryType) {
         writer.beginObject()
         writer.name("name")
-        nullablestringAdapterAdapter.toResponse(writer, value.name)
+        nullableStringAdapter.toResponse(writer, value.name)
         writer.endObject()
       }
 
@@ -180,7 +180,7 @@ class TestQuery_ResponseAdapter(
     class Type(
       customScalarAdapters: CustomScalarAdapters
     ) : ResponseAdapter<TestQuery.Data.__Schema.Type> {
-      val nullablestringAdapterAdapter: ResponseAdapter<String?> =
+      val nullableStringAdapter: ResponseAdapter<String?> =
           NullableResponseAdapter(stringResponseAdapter)
 
       override fun fromResponse(reader: JsonReader): TestQuery.Data.__Schema.Type {
@@ -188,7 +188,7 @@ class TestQuery_ResponseAdapter(
         reader.beginObject()
         while(true) {
           when (reader.selectName(RESPONSE_NAMES)) {
-            0 -> name = nullablestringAdapterAdapter.fromResponse(reader)
+            0 -> name = nullableStringAdapter.fromResponse(reader)
             else -> break
           }
         }
@@ -201,7 +201,7 @@ class TestQuery_ResponseAdapter(
       override fun toResponse(writer: JsonWriter, value: TestQuery.Data.__Schema.Type) {
         writer.beginObject()
         writer.name("name")
-        nullablestringAdapterAdapter.toResponse(writer, value.name)
+        nullableStringAdapter.toResponse(writer, value.name)
         writer.endObject()
       }
 
@@ -221,7 +221,7 @@ class TestQuery_ResponseAdapter(
   class __Type(
     customScalarAdapters: CustomScalarAdapters
   ) : ResponseAdapter<TestQuery.Data.__Type> {
-    val nullablestringAdapterAdapter: ResponseAdapter<String?> =
+    val nullableStringAdapter: ResponseAdapter<String?> =
         NullableResponseAdapter(stringResponseAdapter)
 
     override fun fromResponse(reader: JsonReader): TestQuery.Data.__Type {
@@ -229,7 +229,7 @@ class TestQuery_ResponseAdapter(
       reader.beginObject()
       while(true) {
         when (reader.selectName(RESPONSE_NAMES)) {
-          0 -> name = nullablestringAdapterAdapter.fromResponse(reader)
+          0 -> name = nullableStringAdapter.fromResponse(reader)
           else -> break
         }
       }
@@ -242,7 +242,7 @@ class TestQuery_ResponseAdapter(
     override fun toResponse(writer: JsonWriter, value: TestQuery.Data.__Type) {
       writer.beginObject()
       writer.name("name")
-      nullablestringAdapterAdapter.toResponse(writer, value.name)
+      nullableStringAdapter.toResponse(writer, value.name)
       writer.endObject()
     }
 

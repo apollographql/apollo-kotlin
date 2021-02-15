@@ -27,10 +27,10 @@ import kotlin.collections.List
 class TestQuery_ResponseAdapter(
   customScalarAdapters: CustomScalarAdapters
 ) : ResponseAdapter<TestQuery.Data> {
-  val nullabler2AdapterAdapter: ResponseAdapter<TestQuery.Data.R2?> =
+  val nullableR2Adapter: ResponseAdapter<TestQuery.Data.R2?> =
       NullableResponseAdapter(R2(customScalarAdapters))
 
-  val nullablelukeAdapterAdapter: ResponseAdapter<TestQuery.Data.Luke?> =
+  val nullableLukeAdapter: ResponseAdapter<TestQuery.Data.Luke?> =
       NullableResponseAdapter(Luke(customScalarAdapters))
 
   override fun fromResponse(reader: JsonReader): TestQuery.Data {
@@ -39,8 +39,8 @@ class TestQuery_ResponseAdapter(
     reader.beginObject()
     while(true) {
       when (reader.selectName(RESPONSE_NAMES)) {
-        0 -> r2 = nullabler2AdapterAdapter.fromResponse(reader)
-        1 -> luke = nullablelukeAdapterAdapter.fromResponse(reader)
+        0 -> r2 = nullableR2Adapter.fromResponse(reader)
+        1 -> luke = nullableLukeAdapter.fromResponse(reader)
         else -> break
       }
     }
@@ -54,9 +54,9 @@ class TestQuery_ResponseAdapter(
   override fun toResponse(writer: JsonWriter, value: TestQuery.Data) {
     writer.beginObject()
     writer.name("r2")
-    nullabler2AdapterAdapter.toResponse(writer, value.r2)
+    nullableR2Adapter.toResponse(writer, value.r2)
     writer.name("luke")
-    nullablelukeAdapterAdapter.toResponse(writer, value.luke)
+    nullableLukeAdapter.toResponse(writer, value.luke)
     writer.endObject()
   }
 
@@ -141,10 +141,9 @@ class TestQuery_ResponseAdapter(
     class FriendsConnection(
       customScalarAdapters: CustomScalarAdapters
     ) : ResponseAdapter<TestQuery.Data.R2.FriendsConnection> {
-      val nullableintAdapterAdapter: ResponseAdapter<Int?> =
-          NullableResponseAdapter(intResponseAdapter)
+      val nullableIntAdapter: ResponseAdapter<Int?> = NullableResponseAdapter(intResponseAdapter)
 
-      val nullablelistOfnullableedgeAdapterAdapterAdapterAdapter:
+      val nullableListOfNullableEdgeAdapter:
           ResponseAdapter<List<TestQuery.Data.R2.FriendsConnection.Edge?>?> =
           NullableResponseAdapter(ListResponseAdapter(NullableResponseAdapter(Edge(customScalarAdapters))))
 
@@ -154,8 +153,8 @@ class TestQuery_ResponseAdapter(
         reader.beginObject()
         while(true) {
           when (reader.selectName(RESPONSE_NAMES)) {
-            0 -> totalCount = nullableintAdapterAdapter.fromResponse(reader)
-            1 -> edges = nullablelistOfnullableedgeAdapterAdapterAdapterAdapter.fromResponse(reader)
+            0 -> totalCount = nullableIntAdapter.fromResponse(reader)
+            1 -> edges = nullableListOfNullableEdgeAdapter.fromResponse(reader)
             else -> break
           }
         }
@@ -169,9 +168,9 @@ class TestQuery_ResponseAdapter(
       override fun toResponse(writer: JsonWriter, value: TestQuery.Data.R2.FriendsConnection) {
         writer.beginObject()
         writer.name("totalCount")
-        nullableintAdapterAdapter.toResponse(writer, value.totalCount)
+        nullableIntAdapter.toResponse(writer, value.totalCount)
         writer.name("edges")
-        nullablelistOfnullableedgeAdapterAdapterAdapterAdapter.toResponse(writer, value.edges)
+        nullableListOfNullableEdgeAdapter.toResponse(writer, value.edges)
         writer.endObject()
       }
 
@@ -196,8 +195,7 @@ class TestQuery_ResponseAdapter(
       class Edge(
         customScalarAdapters: CustomScalarAdapters
       ) : ResponseAdapter<TestQuery.Data.R2.FriendsConnection.Edge> {
-        val nullablenodeAdapterAdapter:
-            ResponseAdapter<TestQuery.Data.R2.FriendsConnection.Edge.Node?> =
+        val nullableNodeAdapter: ResponseAdapter<TestQuery.Data.R2.FriendsConnection.Edge.Node?> =
             NullableResponseAdapter(Node(customScalarAdapters))
 
         override fun fromResponse(reader: JsonReader): TestQuery.Data.R2.FriendsConnection.Edge {
@@ -205,7 +203,7 @@ class TestQuery_ResponseAdapter(
           reader.beginObject()
           while(true) {
             when (reader.selectName(RESPONSE_NAMES)) {
-              0 -> node = nullablenodeAdapterAdapter.fromResponse(reader)
+              0 -> node = nullableNodeAdapter.fromResponse(reader)
               else -> break
             }
           }
@@ -219,7 +217,7 @@ class TestQuery_ResponseAdapter(
             value: TestQuery.Data.R2.FriendsConnection.Edge) {
           writer.beginObject()
           writer.name("node")
-          nullablenodeAdapterAdapter.toResponse(writer, value.node)
+          nullableNodeAdapter.toResponse(writer, value.node)
           writer.endObject()
         }
 
@@ -346,10 +344,9 @@ class TestQuery_ResponseAdapter(
     class FriendsConnection(
       customScalarAdapters: CustomScalarAdapters
     ) : ResponseAdapter<TestQuery.Data.Luke.FriendsConnection> {
-      val nullableintAdapterAdapter: ResponseAdapter<Int?> =
-          NullableResponseAdapter(intResponseAdapter)
+      val nullableIntAdapter: ResponseAdapter<Int?> = NullableResponseAdapter(intResponseAdapter)
 
-      val nullablelistOfnullableedgeAdapterAdapterAdapterAdapter:
+      val nullableListOfNullableEdgeAdapter:
           ResponseAdapter<List<TestQuery.Data.Luke.FriendsConnection.Edge?>?> =
           NullableResponseAdapter(ListResponseAdapter(NullableResponseAdapter(Edge(customScalarAdapters))))
 
@@ -359,8 +356,8 @@ class TestQuery_ResponseAdapter(
         reader.beginObject()
         while(true) {
           when (reader.selectName(RESPONSE_NAMES)) {
-            0 -> totalCount = nullableintAdapterAdapter.fromResponse(reader)
-            1 -> edges = nullablelistOfnullableedgeAdapterAdapterAdapterAdapter.fromResponse(reader)
+            0 -> totalCount = nullableIntAdapter.fromResponse(reader)
+            1 -> edges = nullableListOfNullableEdgeAdapter.fromResponse(reader)
             else -> break
           }
         }
@@ -374,9 +371,9 @@ class TestQuery_ResponseAdapter(
       override fun toResponse(writer: JsonWriter, value: TestQuery.Data.Luke.FriendsConnection) {
         writer.beginObject()
         writer.name("totalCount")
-        nullableintAdapterAdapter.toResponse(writer, value.totalCount)
+        nullableIntAdapter.toResponse(writer, value.totalCount)
         writer.name("edges")
-        nullablelistOfnullableedgeAdapterAdapterAdapterAdapter.toResponse(writer, value.edges)
+        nullableListOfNullableEdgeAdapter.toResponse(writer, value.edges)
         writer.endObject()
       }
 
@@ -401,8 +398,7 @@ class TestQuery_ResponseAdapter(
       class Edge(
         customScalarAdapters: CustomScalarAdapters
       ) : ResponseAdapter<TestQuery.Data.Luke.FriendsConnection.Edge> {
-        val nullablenodeAdapterAdapter:
-            ResponseAdapter<TestQuery.Data.Luke.FriendsConnection.Edge.Node?> =
+        val nullableNodeAdapter: ResponseAdapter<TestQuery.Data.Luke.FriendsConnection.Edge.Node?> =
             NullableResponseAdapter(Node(customScalarAdapters))
 
         override fun fromResponse(reader: JsonReader): TestQuery.Data.Luke.FriendsConnection.Edge {
@@ -410,7 +406,7 @@ class TestQuery_ResponseAdapter(
           reader.beginObject()
           while(true) {
             when (reader.selectName(RESPONSE_NAMES)) {
-              0 -> node = nullablenodeAdapterAdapter.fromResponse(reader)
+              0 -> node = nullableNodeAdapter.fromResponse(reader)
               else -> break
             }
           }
@@ -424,7 +420,7 @@ class TestQuery_ResponseAdapter(
             value: TestQuery.Data.Luke.FriendsConnection.Edge) {
           writer.beginObject()
           writer.name("node")
-          nullablenodeAdapterAdapter.toResponse(writer, value.node)
+          nullableNodeAdapter.toResponse(writer, value.node)
           writer.endObject()
         }
 

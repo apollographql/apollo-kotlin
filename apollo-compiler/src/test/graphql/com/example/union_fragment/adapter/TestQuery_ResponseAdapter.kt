@@ -25,8 +25,7 @@ import kotlin.collections.List
 class TestQuery_ResponseAdapter(
   customScalarAdapters: CustomScalarAdapters
 ) : ResponseAdapter<TestQuery.Data> {
-  val nullablelistOfnullablesearchResultAdapterAdapterAdapterAdapter:
-      ResponseAdapter<List<TestQuery.Data.Search?>?> =
+  val nullableListOfNullableSearchAdapter: ResponseAdapter<List<TestQuery.Data.Search?>?> =
       NullableResponseAdapter(ListResponseAdapter(NullableResponseAdapter(Search(customScalarAdapters))))
 
   override fun fromResponse(reader: JsonReader): TestQuery.Data {
@@ -34,7 +33,7 @@ class TestQuery_ResponseAdapter(
     reader.beginObject()
     while(true) {
       when (reader.selectName(RESPONSE_NAMES)) {
-        0 -> search = nullablelistOfnullablesearchResultAdapterAdapterAdapterAdapter.fromResponse(reader)
+        0 -> search = nullableListOfNullableSearchAdapter.fromResponse(reader)
         else -> break
       }
     }
@@ -47,7 +46,7 @@ class TestQuery_ResponseAdapter(
   override fun toResponse(writer: JsonWriter, value: TestQuery.Data) {
     writer.beginObject()
     writer.name("search")
-    nullablelistOfnullablesearchResultAdapterAdapterAdapterAdapter.toResponse(writer, value.search)
+    nullableListOfNullableSearchAdapter.toResponse(writer, value.search)
     writer.endObject()
   }
 

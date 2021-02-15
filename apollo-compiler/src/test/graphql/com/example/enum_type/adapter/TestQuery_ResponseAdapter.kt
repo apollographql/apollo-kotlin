@@ -27,7 +27,7 @@ import kotlin.collections.List
 class TestQuery_ResponseAdapter(
   customScalarAdapters: CustomScalarAdapters
 ) : ResponseAdapter<TestQuery.Data> {
-  val nullablecharacterAdapterAdapter: ResponseAdapter<TestQuery.Data.Hero?> =
+  val nullableHeroAdapter: ResponseAdapter<TestQuery.Data.Hero?> =
       NullableResponseAdapter(Hero(customScalarAdapters))
 
   override fun fromResponse(reader: JsonReader): TestQuery.Data {
@@ -35,7 +35,7 @@ class TestQuery_ResponseAdapter(
     reader.beginObject()
     while(true) {
       when (reader.selectName(RESPONSE_NAMES)) {
-        0 -> hero = nullablecharacterAdapterAdapter.fromResponse(reader)
+        0 -> hero = nullableHeroAdapter.fromResponse(reader)
         else -> break
       }
     }
@@ -48,7 +48,7 @@ class TestQuery_ResponseAdapter(
   override fun toResponse(writer: JsonWriter, value: TestQuery.Data) {
     writer.beginObject()
     writer.name("hero")
-    nullablecharacterAdapterAdapter.toResponse(writer, value.hero)
+    nullableHeroAdapter.toResponse(writer, value.hero)
     writer.endObject()
   }
 
@@ -71,7 +71,7 @@ class TestQuery_ResponseAdapter(
   ) : ResponseAdapter<TestQuery.Data.Hero> {
     val stringAdapter: ResponseAdapter<String> = stringResponseAdapter
 
-    val listOfnullableepisodeAdapterAdapterAdapter: ResponseAdapter<List<Episode?>> =
+    val listOfNullableEpisodeAdapter: ResponseAdapter<List<Episode?>> =
         ListResponseAdapter(NullableResponseAdapter(Episode_ResponseAdapter))
 
     val episodeAdapter: ResponseAdapter<Episode> = Episode_ResponseAdapter
@@ -84,7 +84,7 @@ class TestQuery_ResponseAdapter(
       while(true) {
         when (reader.selectName(RESPONSE_NAMES)) {
           0 -> name = stringAdapter.fromResponse(reader)
-          1 -> appearsIn = listOfnullableepisodeAdapterAdapterAdapter.fromResponse(reader)
+          1 -> appearsIn = listOfNullableEpisodeAdapter.fromResponse(reader)
           2 -> firstAppearsIn = episodeAdapter.fromResponse(reader)
           else -> break
         }
@@ -102,7 +102,7 @@ class TestQuery_ResponseAdapter(
       writer.name("name")
       stringAdapter.toResponse(writer, value.name)
       writer.name("appearsIn")
-      listOfnullableepisodeAdapterAdapterAdapter.toResponse(writer, value.appearsIn)
+      listOfNullableEpisodeAdapter.toResponse(writer, value.appearsIn)
       writer.name("firstAppearsIn")
       episodeAdapter.toResponse(writer, value.firstAppearsIn)
       writer.endObject()

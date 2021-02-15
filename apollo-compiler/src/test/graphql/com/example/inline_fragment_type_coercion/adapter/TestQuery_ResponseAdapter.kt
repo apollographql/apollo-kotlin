@@ -24,7 +24,7 @@ import kotlin.collections.List
 class TestQuery_ResponseAdapter(
   customScalarAdapters: CustomScalarAdapters
 ) : ResponseAdapter<TestQuery.Data> {
-  val nullablefooAdapterAdapter: ResponseAdapter<TestQuery.Data.Foo?> =
+  val nullableFooAdapter: ResponseAdapter<TestQuery.Data.Foo?> =
       NullableResponseAdapter(Foo(customScalarAdapters))
 
   override fun fromResponse(reader: JsonReader): TestQuery.Data {
@@ -32,7 +32,7 @@ class TestQuery_ResponseAdapter(
     reader.beginObject()
     while(true) {
       when (reader.selectName(RESPONSE_NAMES)) {
-        0 -> foo = nullablefooAdapterAdapter.fromResponse(reader)
+        0 -> foo = nullableFooAdapter.fromResponse(reader)
         else -> break
       }
     }
@@ -45,7 +45,7 @@ class TestQuery_ResponseAdapter(
   override fun toResponse(writer: JsonWriter, value: TestQuery.Data) {
     writer.beginObject()
     writer.name("foo")
-    nullablefooAdapterAdapter.toResponse(writer, value.foo)
+    nullableFooAdapter.toResponse(writer, value.foo)
     writer.endObject()
   }
 

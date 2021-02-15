@@ -24,7 +24,7 @@ import kotlin.collections.List
 class TestQuery_ResponseAdapter(
   customScalarAdapters: CustomScalarAdapters
 ) : ResponseAdapter<TestQuery.Data> {
-  val nullabletypeWithGraphQLKeywordsAdapterAdapter:
+  val nullableTypeWithGraphQLKeywordsAdapter:
       ResponseAdapter<TestQuery.Data.TypeWithGraphQLKeywords?> =
       NullableResponseAdapter(TypeWithGraphQLKeywords(customScalarAdapters))
 
@@ -33,7 +33,7 @@ class TestQuery_ResponseAdapter(
     reader.beginObject()
     while(true) {
       when (reader.selectName(RESPONSE_NAMES)) {
-        0 -> typeWithGraphQLKeywords = nullabletypeWithGraphQLKeywordsAdapterAdapter.fromResponse(reader)
+        0 -> typeWithGraphQLKeywords = nullableTypeWithGraphQLKeywordsAdapter.fromResponse(reader)
         else -> break
       }
     }
@@ -46,7 +46,7 @@ class TestQuery_ResponseAdapter(
   override fun toResponse(writer: JsonWriter, value: TestQuery.Data) {
     writer.beginObject()
     writer.name("typeWithGraphQLKeywords")
-    nullabletypeWithGraphQLKeywordsAdapterAdapter.toResponse(writer, value.typeWithGraphQLKeywords)
+    nullableTypeWithGraphQLKeywordsAdapter.toResponse(writer, value.typeWithGraphQLKeywords)
     writer.endObject()
   }
 
@@ -67,7 +67,7 @@ class TestQuery_ResponseAdapter(
   class TypeWithGraphQLKeywords(
     customScalarAdapters: CustomScalarAdapters
   ) : ResponseAdapter<TestQuery.Data.TypeWithGraphQLKeywords> {
-    val nullablestringAdapterAdapter: ResponseAdapter<String?> =
+    val nullableStringAdapter: ResponseAdapter<String?> =
         NullableResponseAdapter(stringResponseAdapter)
 
     override fun fromResponse(reader: JsonReader): TestQuery.Data.TypeWithGraphQLKeywords {
@@ -77,9 +77,9 @@ class TestQuery_ResponseAdapter(
       reader.beginObject()
       while(true) {
         when (reader.selectName(RESPONSE_NAMES)) {
-          0 -> on = nullablestringAdapterAdapter.fromResponse(reader)
-          1 -> null_ = nullablestringAdapterAdapter.fromResponse(reader)
-          2 -> alias = nullablestringAdapterAdapter.fromResponse(reader)
+          0 -> on = nullableStringAdapter.fromResponse(reader)
+          1 -> null_ = nullableStringAdapter.fromResponse(reader)
+          2 -> alias = nullableStringAdapter.fromResponse(reader)
           else -> break
         }
       }
@@ -94,11 +94,11 @@ class TestQuery_ResponseAdapter(
     override fun toResponse(writer: JsonWriter, value: TestQuery.Data.TypeWithGraphQLKeywords) {
       writer.beginObject()
       writer.name("on")
-      nullablestringAdapterAdapter.toResponse(writer, value.on)
+      nullableStringAdapter.toResponse(writer, value.on)
       writer.name("null")
-      nullablestringAdapterAdapter.toResponse(writer, value.null_)
+      nullableStringAdapter.toResponse(writer, value.null_)
       writer.name("alias")
-      nullablestringAdapterAdapter.toResponse(writer, value.alias)
+      nullableStringAdapter.toResponse(writer, value.alias)
       writer.endObject()
     }
 

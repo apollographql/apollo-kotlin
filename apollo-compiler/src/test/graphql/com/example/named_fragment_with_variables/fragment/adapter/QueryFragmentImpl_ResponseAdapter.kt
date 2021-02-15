@@ -27,7 +27,7 @@ class QueryFragmentImpl_ResponseAdapter(
 ) : ResponseAdapter<QueryFragmentImpl.Data> {
   val stringAdapter: ResponseAdapter<String> = stringResponseAdapter
 
-  val nullableorganizationAdapterAdapter: ResponseAdapter<QueryFragmentImpl.Data.Organization?> =
+  val nullableOrganizationAdapter: ResponseAdapter<QueryFragmentImpl.Data.Organization?> =
       NullableResponseAdapter(Organization(customScalarAdapters))
 
   override fun fromResponse(reader: JsonReader): QueryFragmentImpl.Data {
@@ -37,7 +37,7 @@ class QueryFragmentImpl_ResponseAdapter(
     while(true) {
       when (reader.selectName(RESPONSE_NAMES)) {
         0 -> __typename = stringAdapter.fromResponse(reader)
-        1 -> organization = nullableorganizationAdapterAdapter.fromResponse(reader)
+        1 -> organization = nullableOrganizationAdapter.fromResponse(reader)
         else -> break
       }
     }
@@ -53,7 +53,7 @@ class QueryFragmentImpl_ResponseAdapter(
     writer.name("__typename")
     stringAdapter.toResponse(writer, value.__typename)
     writer.name("organization")
-    nullableorganizationAdapterAdapter.toResponse(writer, value.organization)
+    nullableOrganizationAdapter.toResponse(writer, value.organization)
     writer.endObject()
   }
 
@@ -81,7 +81,7 @@ class QueryFragmentImpl_ResponseAdapter(
   ) : ResponseAdapter<QueryFragmentImpl.Data.Organization> {
     val stringAdapter: ResponseAdapter<String> = stringResponseAdapter
 
-    val listOfuserAdapterAdapter: ResponseAdapter<List<QueryFragmentImpl.Data.Organization.User>> =
+    val listOfUserAdapter: ResponseAdapter<List<QueryFragmentImpl.Data.Organization.User>> =
         ListResponseAdapter(User(customScalarAdapters))
 
     override fun fromResponse(reader: JsonReader): QueryFragmentImpl.Data.Organization {
@@ -91,7 +91,7 @@ class QueryFragmentImpl_ResponseAdapter(
       while(true) {
         when (reader.selectName(RESPONSE_NAMES)) {
           0 -> id = stringAdapter.fromResponse(reader)
-          1 -> user = listOfuserAdapterAdapter.fromResponse(reader)
+          1 -> user = listOfUserAdapter.fromResponse(reader)
           else -> break
         }
       }
@@ -107,7 +107,7 @@ class QueryFragmentImpl_ResponseAdapter(
       writer.name("id")
       stringAdapter.toResponse(writer, value.id)
       writer.name("user")
-      listOfuserAdapterAdapter.toResponse(writer, value.user)
+      listOfUserAdapter.toResponse(writer, value.user)
       writer.endObject()
     }
 

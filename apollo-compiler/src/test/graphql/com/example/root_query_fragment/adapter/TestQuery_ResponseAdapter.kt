@@ -54,7 +54,7 @@ class TestQuery_ResponseAdapter(
   ) {
     val stringAdapter: ResponseAdapter<String> = stringResponseAdapter
 
-    val nullablecharacterAdapterAdapter: ResponseAdapter<TestQuery.Data.QueryData.Hero?> =
+    val nullableHeroAdapter: ResponseAdapter<TestQuery.Data.QueryData.Hero?> =
         NullableResponseAdapter(Hero(customScalarAdapters))
 
     fun fromResponse(reader: JsonReader, __typename: String?): TestQuery.Data.QueryData {
@@ -63,7 +63,7 @@ class TestQuery_ResponseAdapter(
       while(true) {
         when (reader.selectName(RESPONSE_NAMES)) {
           0 -> __typename = stringAdapter.fromResponse(reader)
-          1 -> hero = nullablecharacterAdapterAdapter.fromResponse(reader)
+          1 -> hero = nullableHeroAdapter.fromResponse(reader)
           else -> break
         }
       }
@@ -78,7 +78,7 @@ class TestQuery_ResponseAdapter(
       writer.name("__typename")
       stringAdapter.toResponse(writer, value.__typename)
       writer.name("hero")
-      nullablecharacterAdapterAdapter.toResponse(writer, value.hero)
+      nullableHeroAdapter.toResponse(writer, value.hero)
       writer.endObject()
     }
 

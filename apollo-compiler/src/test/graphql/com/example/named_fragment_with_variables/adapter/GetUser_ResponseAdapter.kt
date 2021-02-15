@@ -55,7 +55,7 @@ class GetUser_ResponseAdapter(
   ) {
     val stringAdapter: ResponseAdapter<String> = stringResponseAdapter
 
-    val nullableorganizationAdapterAdapter: ResponseAdapter<GetUser.Data.QueryData.Organization?> =
+    val nullableOrganizationAdapter: ResponseAdapter<GetUser.Data.QueryData.Organization?> =
         NullableResponseAdapter(Organization(customScalarAdapters))
 
     fun fromResponse(reader: JsonReader, __typename: String?): GetUser.Data.QueryData {
@@ -64,7 +64,7 @@ class GetUser_ResponseAdapter(
       while(true) {
         when (reader.selectName(RESPONSE_NAMES)) {
           0 -> __typename = stringAdapter.fromResponse(reader)
-          1 -> organization = nullableorganizationAdapterAdapter.fromResponse(reader)
+          1 -> organization = nullableOrganizationAdapter.fromResponse(reader)
           else -> break
         }
       }
@@ -79,7 +79,7 @@ class GetUser_ResponseAdapter(
       writer.name("__typename")
       stringAdapter.toResponse(writer, value.__typename)
       writer.name("organization")
-      nullableorganizationAdapterAdapter.toResponse(writer, value.organization)
+      nullableOrganizationAdapter.toResponse(writer, value.organization)
       writer.endObject()
     }
 
@@ -107,8 +107,8 @@ class GetUser_ResponseAdapter(
     ) : ResponseAdapter<GetUser.Data.QueryData.Organization> {
       val stringAdapter: ResponseAdapter<String> = stringResponseAdapter
 
-      val listOfuserAdapterAdapter: ResponseAdapter<List<GetUser.Data.QueryData.Organization.User>>
-          = ListResponseAdapter(User(customScalarAdapters))
+      val listOfUserAdapter: ResponseAdapter<List<GetUser.Data.QueryData.Organization.User>> =
+          ListResponseAdapter(User(customScalarAdapters))
 
       override fun fromResponse(reader: JsonReader): GetUser.Data.QueryData.Organization {
         var id: String? = null
@@ -117,7 +117,7 @@ class GetUser_ResponseAdapter(
         while(true) {
           when (reader.selectName(RESPONSE_NAMES)) {
             0 -> id = stringAdapter.fromResponse(reader)
-            1 -> user = listOfuserAdapterAdapter.fromResponse(reader)
+            1 -> user = listOfUserAdapter.fromResponse(reader)
             else -> break
           }
         }
@@ -133,7 +133,7 @@ class GetUser_ResponseAdapter(
         writer.name("id")
         stringAdapter.toResponse(writer, value.id)
         writer.name("user")
-        listOfuserAdapterAdapter.toResponse(writer, value.user)
+        listOfUserAdapter.toResponse(writer, value.user)
         writer.endObject()
       }
 

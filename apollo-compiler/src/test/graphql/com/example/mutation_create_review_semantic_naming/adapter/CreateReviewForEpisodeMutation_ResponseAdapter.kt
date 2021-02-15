@@ -26,7 +26,7 @@ import kotlin.collections.List
 class CreateReviewForEpisodeMutation_ResponseAdapter(
   customScalarAdapters: CustomScalarAdapters
 ) : ResponseAdapter<CreateReviewForEpisodeMutation.Data> {
-  val nullablereviewAdapterAdapter:
+  val nullableCreateReviewAdapter:
       ResponseAdapter<CreateReviewForEpisodeMutation.Data.CreateReview?> =
       NullableResponseAdapter(CreateReview(customScalarAdapters))
 
@@ -35,7 +35,7 @@ class CreateReviewForEpisodeMutation_ResponseAdapter(
     reader.beginObject()
     while(true) {
       when (reader.selectName(RESPONSE_NAMES)) {
-        0 -> createReview = nullablereviewAdapterAdapter.fromResponse(reader)
+        0 -> createReview = nullableCreateReviewAdapter.fromResponse(reader)
         else -> break
       }
     }
@@ -48,7 +48,7 @@ class CreateReviewForEpisodeMutation_ResponseAdapter(
   override fun toResponse(writer: JsonWriter, value: CreateReviewForEpisodeMutation.Data) {
     writer.beginObject()
     writer.name("createReview")
-    nullablereviewAdapterAdapter.toResponse(writer, value.createReview)
+    nullableCreateReviewAdapter.toResponse(writer, value.createReview)
     writer.endObject()
   }
 
@@ -78,7 +78,7 @@ class CreateReviewForEpisodeMutation_ResponseAdapter(
   ) : ResponseAdapter<CreateReviewForEpisodeMutation.Data.CreateReview> {
     val intAdapter: ResponseAdapter<Int> = intResponseAdapter
 
-    val nullablestringAdapterAdapter: ResponseAdapter<String?> =
+    val nullableStringAdapter: ResponseAdapter<String?> =
         NullableResponseAdapter(stringResponseAdapter)
 
     override fun fromResponse(reader: JsonReader):
@@ -89,7 +89,7 @@ class CreateReviewForEpisodeMutation_ResponseAdapter(
       while(true) {
         when (reader.selectName(RESPONSE_NAMES)) {
           0 -> stars = intAdapter.fromResponse(reader)
-          1 -> commentary = nullablestringAdapterAdapter.fromResponse(reader)
+          1 -> commentary = nullableStringAdapter.fromResponse(reader)
           else -> break
         }
       }
@@ -106,7 +106,7 @@ class CreateReviewForEpisodeMutation_ResponseAdapter(
       writer.name("stars")
       intAdapter.toResponse(writer, value.stars)
       writer.name("commentary")
-      nullablestringAdapterAdapter.toResponse(writer, value.commentary)
+      nullableStringAdapter.toResponse(writer, value.commentary)
       writer.endObject()
     }
 

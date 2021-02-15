@@ -27,7 +27,7 @@ class
 ) :
     ResponseAdapter<TestQueryWithAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryLongName.Data>
     {
-  val nullablecharacterAdapterAdapter:
+  val nullableHeroAVeryAVeryAVeryAVeryAVeryAVeryAVAdapter:
       ResponseAdapter<TestQueryWithAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryLongName.Data.HeroAVeryAVeryAVeryAVeryAVeryAVeryAV?>
       = NullableResponseAdapter(HeroAVeryAVeryAVeryAVeryAVeryAVeryAV(customScalarAdapters))
 
@@ -37,7 +37,7 @@ class
     reader.beginObject()
     while(true) {
       when (reader.selectName(RESPONSE_NAMES)) {
-        0 -> heroAVeryAVeryAVeryAVeryAVeryAVeryAV = nullablecharacterAdapterAdapter.fromResponse(reader)
+        0 -> heroAVeryAVeryAVeryAVeryAVeryAVeryAV = nullableHeroAVeryAVeryAVeryAVeryAVeryAVeryAVAdapter.fromResponse(reader)
         else -> break
       }
     }
@@ -51,7 +51,8 @@ class
       value: TestQueryWithAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryLongName.Data) {
     writer.beginObject()
     writer.name("heroAVeryAVeryAVeryAVeryAVeryAVeryAV")
-    nullablecharacterAdapterAdapter.toResponse(writer, value.heroAVeryAVeryAVeryAVeryAVeryAVeryAV)
+    nullableHeroAVeryAVeryAVeryAVeryAVeryAVeryAVAdapter.toResponse(writer,
+        value.heroAVeryAVeryAVeryAVeryAVeryAVeryAV)
     writer.endObject()
   }
 

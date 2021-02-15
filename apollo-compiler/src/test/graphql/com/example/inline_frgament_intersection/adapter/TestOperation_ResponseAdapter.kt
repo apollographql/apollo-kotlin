@@ -31,14 +31,14 @@ import kotlin.collections.List
 class TestOperation_ResponseAdapter(
   customScalarAdapters: CustomScalarAdapters
 ) : ResponseAdapter<TestOperation.Data> {
-  val anythingAdapter: ResponseAdapter<TestOperation.Data.Random> = Random(customScalarAdapters)
+  val randomAdapter: ResponseAdapter<TestOperation.Data.Random> = Random(customScalarAdapters)
 
   override fun fromResponse(reader: JsonReader): TestOperation.Data {
     var random: TestOperation.Data.Random? = null
     reader.beginObject()
     while(true) {
       when (reader.selectName(RESPONSE_NAMES)) {
-        0 -> random = anythingAdapter.fromResponse(reader)
+        0 -> random = randomAdapter.fromResponse(reader)
         else -> break
       }
     }
@@ -51,7 +51,7 @@ class TestOperation_ResponseAdapter(
   override fun toResponse(writer: JsonWriter, value: TestOperation.Data) {
     writer.beginObject()
     writer.name("random")
-    anythingAdapter.toResponse(writer, value.random)
+    randomAdapter.toResponse(writer, value.random)
     writer.endObject()
   }
 
@@ -109,11 +109,11 @@ class TestOperation_ResponseAdapter(
     ) {
       val stringAdapter: ResponseAdapter<String> = stringResponseAdapter
 
-      val listOfbeingAdapterAdapter:
+      val listOfFriendAdapter:
           ResponseAdapter<List<TestOperation.Data.Random.BeingHumanRandom.Friend>> =
           ListResponseAdapter(Friend(customScalarAdapters))
 
-      val nullablestringAdapterAdapter: ResponseAdapter<String?> =
+      val nullableStringAdapter: ResponseAdapter<String?> =
           NullableResponseAdapter(stringResponseAdapter)
 
       fun fromResponse(reader: JsonReader, __typename: String?):
@@ -126,8 +126,8 @@ class TestOperation_ResponseAdapter(
           when (reader.selectName(RESPONSE_NAMES)) {
             0 -> __typename = stringAdapter.fromResponse(reader)
             1 -> name = stringAdapter.fromResponse(reader)
-            2 -> friends = listOfbeingAdapterAdapter.fromResponse(reader)
-            3 -> profilePictureUrl = nullablestringAdapterAdapter.fromResponse(reader)
+            2 -> friends = listOfFriendAdapter.fromResponse(reader)
+            3 -> profilePictureUrl = nullableStringAdapter.fromResponse(reader)
             else -> break
           }
         }
@@ -146,9 +146,9 @@ class TestOperation_ResponseAdapter(
         writer.name("name")
         stringAdapter.toResponse(writer, value.name)
         writer.name("friends")
-        listOfbeingAdapterAdapter.toResponse(writer, value.friends)
+        listOfFriendAdapter.toResponse(writer, value.friends)
         writer.name("profilePictureUrl")
-        nullablestringAdapterAdapter.toResponse(writer, value.profilePictureUrl)
+        nullableStringAdapter.toResponse(writer, value.profilePictureUrl)
         writer.endObject()
       }
 
@@ -212,10 +212,10 @@ class TestOperation_ResponseAdapter(
         ) {
           val stringAdapter: ResponseAdapter<String> = stringResponseAdapter
 
-          val nullablebooleanAdapterAdapter: ResponseAdapter<Boolean?> =
+          val nullableBooleanAdapter: ResponseAdapter<Boolean?> =
               NullableResponseAdapter(booleanResponseAdapter)
 
-          val nullablefloatAdapterAdapter: ResponseAdapter<Double?> =
+          val nullableFloatAdapter: ResponseAdapter<Double?> =
               NullableResponseAdapter(doubleResponseAdapter)
 
           val raceAdapter: ResponseAdapter<Race> = Race_ResponseAdapter
@@ -231,8 +231,8 @@ class TestOperation_ResponseAdapter(
               when (reader.selectName(RESPONSE_NAMES)) {
                 0 -> __typename = stringAdapter.fromResponse(reader)
                 1 -> name = stringAdapter.fromResponse(reader)
-                2 -> isFamous = nullablebooleanAdapterAdapter.fromResponse(reader)
-                3 -> lifeExpectancy = nullablefloatAdapterAdapter.fromResponse(reader)
+                2 -> isFamous = nullableBooleanAdapter.fromResponse(reader)
+                3 -> lifeExpectancy = nullableFloatAdapter.fromResponse(reader)
                 4 -> race = raceAdapter.fromResponse(reader)
                 else -> break
               }
@@ -254,9 +254,9 @@ class TestOperation_ResponseAdapter(
             writer.name("name")
             stringAdapter.toResponse(writer, value.name)
             writer.name("isFamous")
-            nullablebooleanAdapterAdapter.toResponse(writer, value.isFamous)
+            nullableBooleanAdapter.toResponse(writer, value.isFamous)
             writer.name("lifeExpectancy")
-            nullablefloatAdapterAdapter.toResponse(writer, value.lifeExpectancy)
+            nullableFloatAdapter.toResponse(writer, value.lifeExpectancy)
             writer.name("race")
             raceAdapter.toResponse(writer, value.race)
             writer.endObject()
@@ -292,7 +292,7 @@ class TestOperation_ResponseAdapter(
         ) {
           val stringAdapter: ResponseAdapter<String> = stringResponseAdapter
 
-          val nullablebooleanAdapterAdapter: ResponseAdapter<Boolean?> =
+          val nullableBooleanAdapter: ResponseAdapter<Boolean?> =
               NullableResponseAdapter(booleanResponseAdapter)
 
           fun fromResponse(reader: JsonReader, __typename: String?):
@@ -304,7 +304,7 @@ class TestOperation_ResponseAdapter(
               when (reader.selectName(RESPONSE_NAMES)) {
                 0 -> __typename = stringAdapter.fromResponse(reader)
                 1 -> name = stringAdapter.fromResponse(reader)
-                2 -> isFamous = nullablebooleanAdapterAdapter.fromResponse(reader)
+                2 -> isFamous = nullableBooleanAdapter.fromResponse(reader)
                 else -> break
               }
             }
@@ -323,7 +323,7 @@ class TestOperation_ResponseAdapter(
             writer.name("name")
             stringAdapter.toResponse(writer, value.name)
             writer.name("isFamous")
-            nullablebooleanAdapterAdapter.toResponse(writer, value.isFamous)
+            nullableBooleanAdapter.toResponse(writer, value.isFamous)
             writer.endObject()
           }
 
@@ -351,7 +351,7 @@ class TestOperation_ResponseAdapter(
     ) {
       val stringAdapter: ResponseAdapter<String> = stringResponseAdapter
 
-      val listOfbeingAdapterAdapter:
+      val listOfFriendAdapter:
           ResponseAdapter<List<TestOperation.Data.Random.BeingWookieRandom.Friend>> =
           ListResponseAdapter(Friend(customScalarAdapters))
 
@@ -367,7 +367,7 @@ class TestOperation_ResponseAdapter(
           when (reader.selectName(RESPONSE_NAMES)) {
             0 -> __typename = stringAdapter.fromResponse(reader)
             1 -> name = stringAdapter.fromResponse(reader)
-            2 -> friends = listOfbeingAdapterAdapter.fromResponse(reader)
+            2 -> friends = listOfFriendAdapter.fromResponse(reader)
             3 -> race = raceAdapter.fromResponse(reader)
             else -> break
           }
@@ -387,7 +387,7 @@ class TestOperation_ResponseAdapter(
         writer.name("name")
         stringAdapter.toResponse(writer, value.name)
         writer.name("friends")
-        listOfbeingAdapterAdapter.toResponse(writer, value.friends)
+        listOfFriendAdapter.toResponse(writer, value.friends)
         writer.name("race")
         raceAdapter.toResponse(writer, value.race)
         writer.endObject()
@@ -453,7 +453,7 @@ class TestOperation_ResponseAdapter(
         ) {
           val stringAdapter: ResponseAdapter<String> = stringResponseAdapter
 
-          val nullablefloatAdapterAdapter: ResponseAdapter<Double?> =
+          val nullableFloatAdapter: ResponseAdapter<Double?> =
               NullableResponseAdapter(doubleResponseAdapter)
 
           fun fromResponse(reader: JsonReader, __typename: String?):
@@ -465,7 +465,7 @@ class TestOperation_ResponseAdapter(
               when (reader.selectName(RESPONSE_NAMES)) {
                 0 -> __typename = stringAdapter.fromResponse(reader)
                 1 -> name = stringAdapter.fromResponse(reader)
-                2 -> lifeExpectancy = nullablefloatAdapterAdapter.fromResponse(reader)
+                2 -> lifeExpectancy = nullableFloatAdapter.fromResponse(reader)
                 else -> break
               }
             }
@@ -484,7 +484,7 @@ class TestOperation_ResponseAdapter(
             writer.name("name")
             stringAdapter.toResponse(writer, value.name)
             writer.name("lifeExpectancy")
-            nullablefloatAdapterAdapter.toResponse(writer, value.lifeExpectancy)
+            nullableFloatAdapter.toResponse(writer, value.lifeExpectancy)
             writer.endObject()
           }
 
@@ -510,7 +510,7 @@ class TestOperation_ResponseAdapter(
         ) {
           val stringAdapter: ResponseAdapter<String> = stringResponseAdapter
 
-          val nullablefloatAdapterAdapter: ResponseAdapter<Double?> =
+          val nullableFloatAdapter: ResponseAdapter<Double?> =
               NullableResponseAdapter(doubleResponseAdapter)
 
           fun fromResponse(reader: JsonReader, __typename: String?):
@@ -522,7 +522,7 @@ class TestOperation_ResponseAdapter(
               when (reader.selectName(RESPONSE_NAMES)) {
                 0 -> __typename = stringAdapter.fromResponse(reader)
                 1 -> name = stringAdapter.fromResponse(reader)
-                2 -> lifeExpectancy = nullablefloatAdapterAdapter.fromResponse(reader)
+                2 -> lifeExpectancy = nullableFloatAdapter.fromResponse(reader)
                 else -> break
               }
             }
@@ -541,7 +541,7 @@ class TestOperation_ResponseAdapter(
             writer.name("name")
             stringAdapter.toResponse(writer, value.name)
             writer.name("lifeExpectancy")
-            nullablefloatAdapterAdapter.toResponse(writer, value.lifeExpectancy)
+            nullableFloatAdapter.toResponse(writer, value.lifeExpectancy)
             writer.endObject()
           }
 

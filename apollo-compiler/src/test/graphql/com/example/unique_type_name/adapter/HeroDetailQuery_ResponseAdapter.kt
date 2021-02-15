@@ -31,7 +31,7 @@ import kotlin.collections.List
 class HeroDetailQuery_ResponseAdapter(
   customScalarAdapters: CustomScalarAdapters
 ) : ResponseAdapter<HeroDetailQuery.Data> {
-  val nullablecharacterAdapterAdapter:
+  val nullableHeroDetailQueryAdapter:
       ResponseAdapter<com.example.unique_type_name.HeroDetailQuery.Data.HeroDetailQuery?> =
       NullableResponseAdapter(HeroDetailQuery(customScalarAdapters))
 
@@ -40,7 +40,7 @@ class HeroDetailQuery_ResponseAdapter(
     reader.beginObject()
     while(true) {
       when (reader.selectName(RESPONSE_NAMES)) {
-        0 -> heroDetailQuery = nullablecharacterAdapterAdapter.fromResponse(reader)
+        0 -> heroDetailQuery = nullableHeroDetailQueryAdapter.fromResponse(reader)
         else -> break
       }
     }
@@ -54,7 +54,7 @@ class HeroDetailQuery_ResponseAdapter(
       value: com.example.unique_type_name.HeroDetailQuery.Data) {
     writer.beginObject()
     writer.name("heroDetailQuery")
-    nullablecharacterAdapterAdapter.toResponse(writer, value.heroDetailQuery)
+    nullableHeroDetailQueryAdapter.toResponse(writer, value.heroDetailQuery)
     writer.endObject()
   }
 
@@ -108,12 +108,12 @@ class HeroDetailQuery_ResponseAdapter(
     ) {
       val stringAdapter: ResponseAdapter<String> = stringResponseAdapter
 
-      val nullablelistOfnullablecharacterAdapterAdapterAdapterAdapter:
+      val nullableListOfNullableFriendAdapter:
           ResponseAdapter<List<com.example.unique_type_name.HeroDetailQuery.Data.HeroDetailQuery.HumanHeroDetailQuery.Friend?>?>
           =
           NullableResponseAdapter(ListResponseAdapter(NullableResponseAdapter(Friend(customScalarAdapters))))
 
-      val nullablefloatAdapterAdapter: ResponseAdapter<Double?> =
+      val nullableFloatAdapter: ResponseAdapter<Double?> =
           NullableResponseAdapter(doubleResponseAdapter)
 
       fun fromResponse(reader: JsonReader, __typename: String?):
@@ -126,8 +126,8 @@ class HeroDetailQuery_ResponseAdapter(
           when (reader.selectName(RESPONSE_NAMES)) {
             0 -> __typename = stringAdapter.fromResponse(reader)
             1 -> name = stringAdapter.fromResponse(reader)
-            2 -> friends = nullablelistOfnullablecharacterAdapterAdapterAdapterAdapter.fromResponse(reader)
-            3 -> height = nullablefloatAdapterAdapter.fromResponse(reader)
+            2 -> friends = nullableListOfNullableFriendAdapter.fromResponse(reader)
+            3 -> height = nullableFloatAdapter.fromResponse(reader)
             else -> break
           }
         }
@@ -147,10 +147,9 @@ class HeroDetailQuery_ResponseAdapter(
         writer.name("name")
         stringAdapter.toResponse(writer, value.name)
         writer.name("friends")
-        nullablelistOfnullablecharacterAdapterAdapterAdapterAdapter.toResponse(writer,
-            value.friends)
+        nullableListOfNullableFriendAdapter.toResponse(writer, value.friends)
         writer.name("height")
-        nullablefloatAdapterAdapter.toResponse(writer, value.height)
+        nullableFloatAdapter.toResponse(writer, value.height)
         writer.endObject()
       }
 
@@ -184,10 +183,10 @@ class HeroDetailQuery_ResponseAdapter(
           {
         val stringAdapter: ResponseAdapter<String> = stringResponseAdapter
 
-        val listOfnullableepisodeAdapterAdapterAdapter: ResponseAdapter<List<Episode?>> =
+        val listOfNullableEpisodeAdapter: ResponseAdapter<List<Episode?>> =
             ListResponseAdapter(NullableResponseAdapter(Episode_ResponseAdapter))
 
-        val nullablelistOfnullablecharacterAdapterAdapterAdapterAdapter:
+        val nullableListOfNullableFriendAdapter:
             ResponseAdapter<List<com.example.unique_type_name.HeroDetailQuery.Data.HeroDetailQuery.HumanHeroDetailQuery.Friend.Friend?>?>
             =
             NullableResponseAdapter(ListResponseAdapter(NullableResponseAdapter(Friend(customScalarAdapters))))
@@ -201,8 +200,8 @@ class HeroDetailQuery_ResponseAdapter(
           while(true) {
             when (reader.selectName(RESPONSE_NAMES)) {
               0 -> name = stringAdapter.fromResponse(reader)
-              1 -> appearsIn = listOfnullableepisodeAdapterAdapterAdapter.fromResponse(reader)
-              2 -> friends = nullablelistOfnullablecharacterAdapterAdapterAdapterAdapter.fromResponse(reader)
+              1 -> appearsIn = listOfNullableEpisodeAdapter.fromResponse(reader)
+              2 -> friends = nullableListOfNullableFriendAdapter.fromResponse(reader)
               else -> break
             }
           }
@@ -220,10 +219,9 @@ class HeroDetailQuery_ResponseAdapter(
           writer.name("name")
           stringAdapter.toResponse(writer, value.name)
           writer.name("appearsIn")
-          listOfnullableepisodeAdapterAdapterAdapter.toResponse(writer, value.appearsIn)
+          listOfNullableEpisodeAdapter.toResponse(writer, value.appearsIn)
           writer.name("friends")
-          nullablelistOfnullablecharacterAdapterAdapterAdapterAdapter.toResponse(writer,
-              value.friends)
+          nullableListOfNullableFriendAdapter.toResponse(writer, value.friends)
           writer.endObject()
         }
 
@@ -351,10 +349,10 @@ class HeroDetailQuery_ResponseAdapter(
             ) :
                 ResponseAdapter<com.example.unique_type_name.HeroDetailQuery.Data.HeroDetailQuery.HumanHeroDetailQuery.Friend.Friend.CharacterFriend.FriendsConnection>
                 {
-              val nullableintAdapterAdapter: ResponseAdapter<Int?> =
+              val nullableIntAdapter: ResponseAdapter<Int?> =
                   NullableResponseAdapter(intResponseAdapter)
 
-              val nullablelistOfnullablefriendsEdgeAdapterAdapterAdapterAdapter:
+              val nullableListOfNullableEdgeAdapter:
                   ResponseAdapter<List<com.example.unique_type_name.HeroDetailQuery.Data.HeroDetailQuery.HumanHeroDetailQuery.Friend.Friend.CharacterFriend.FriendsConnection.Edge?>?>
                   =
                   NullableResponseAdapter(ListResponseAdapter(NullableResponseAdapter(Edge(customScalarAdapters))))
@@ -366,8 +364,8 @@ class HeroDetailQuery_ResponseAdapter(
                 reader.beginObject()
                 while(true) {
                   when (reader.selectName(RESPONSE_NAMES)) {
-                    0 -> totalCount = nullableintAdapterAdapter.fromResponse(reader)
-                    1 -> edges = nullablelistOfnullablefriendsEdgeAdapterAdapterAdapterAdapter.fromResponse(reader)
+                    0 -> totalCount = nullableIntAdapter.fromResponse(reader)
+                    1 -> edges = nullableListOfNullableEdgeAdapter.fromResponse(reader)
                     else -> break
                   }
                 }
@@ -382,10 +380,9 @@ class HeroDetailQuery_ResponseAdapter(
                   value: com.example.unique_type_name.HeroDetailQuery.Data.HeroDetailQuery.HumanHeroDetailQuery.Friend.Friend.CharacterFriend.FriendsConnection) {
                 writer.beginObject()
                 writer.name("totalCount")
-                nullableintAdapterAdapter.toResponse(writer, value.totalCount)
+                nullableIntAdapter.toResponse(writer, value.totalCount)
                 writer.name("edges")
-                nullablelistOfnullablefriendsEdgeAdapterAdapterAdapterAdapter.toResponse(writer,
-                    value.edges)
+                nullableListOfNullableEdgeAdapter.toResponse(writer, value.edges)
                 writer.endObject()
               }
 
@@ -412,7 +409,7 @@ class HeroDetailQuery_ResponseAdapter(
               ) :
                   ResponseAdapter<com.example.unique_type_name.HeroDetailQuery.Data.HeroDetailQuery.HumanHeroDetailQuery.Friend.Friend.CharacterFriend.FriendsConnection.Edge>
                   {
-                val nullablecharacterAdapterAdapter:
+                val nullableNodeAdapter:
                     ResponseAdapter<com.example.unique_type_name.HeroDetailQuery.Data.HeroDetailQuery.HumanHeroDetailQuery.Friend.Friend.CharacterFriend.FriendsConnection.Edge.Node?>
                     = NullableResponseAdapter(Node(customScalarAdapters))
 
@@ -422,7 +419,7 @@ class HeroDetailQuery_ResponseAdapter(
                   reader.beginObject()
                   while(true) {
                     when (reader.selectName(RESPONSE_NAMES)) {
-                      0 -> node = nullablecharacterAdapterAdapter.fromResponse(reader)
+                      0 -> node = nullableNodeAdapter.fromResponse(reader)
                       else -> break
                     }
                   }
@@ -436,7 +433,7 @@ class HeroDetailQuery_ResponseAdapter(
                     value: com.example.unique_type_name.HeroDetailQuery.Data.HeroDetailQuery.HumanHeroDetailQuery.Friend.Friend.CharacterFriend.FriendsConnection.Edge) {
                   writer.beginObject()
                   writer.name("node")
-                  nullablecharacterAdapterAdapter.toResponse(writer, value.node)
+                  nullableNodeAdapter.toResponse(writer, value.node)
                   writer.endObject()
                 }
 
@@ -544,7 +541,7 @@ class HeroDetailQuery_ResponseAdapter(
     ) {
       val stringAdapter: ResponseAdapter<String> = stringResponseAdapter
 
-      val nullablelistOfnullablecharacterAdapterAdapterAdapterAdapter:
+      val nullableListOfNullableFriendAdapter:
           ResponseAdapter<List<com.example.unique_type_name.HeroDetailQuery.Data.HeroDetailQuery.OtherHeroDetailQuery.Friend?>?>
           =
           NullableResponseAdapter(ListResponseAdapter(NullableResponseAdapter(Friend(customScalarAdapters))))
@@ -558,7 +555,7 @@ class HeroDetailQuery_ResponseAdapter(
           when (reader.selectName(RESPONSE_NAMES)) {
             0 -> __typename = stringAdapter.fromResponse(reader)
             1 -> name = stringAdapter.fromResponse(reader)
-            2 -> friends = nullablelistOfnullablecharacterAdapterAdapterAdapterAdapter.fromResponse(reader)
+            2 -> friends = nullableListOfNullableFriendAdapter.fromResponse(reader)
             else -> break
           }
         }
@@ -577,8 +574,7 @@ class HeroDetailQuery_ResponseAdapter(
         writer.name("name")
         stringAdapter.toResponse(writer, value.name)
         writer.name("friends")
-        nullablelistOfnullablecharacterAdapterAdapterAdapterAdapter.toResponse(writer,
-            value.friends)
+        nullableListOfNullableFriendAdapter.toResponse(writer, value.friends)
         writer.endObject()
       }
 

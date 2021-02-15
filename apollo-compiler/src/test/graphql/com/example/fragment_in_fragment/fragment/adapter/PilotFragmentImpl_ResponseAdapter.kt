@@ -26,10 +26,10 @@ class PilotFragmentImpl_ResponseAdapter(
 ) : ResponseAdapter<PilotFragmentImpl.Data> {
   val stringAdapter: ResponseAdapter<String> = stringResponseAdapter
 
-  val nullablestringAdapterAdapter: ResponseAdapter<String?> =
+  val nullableStringAdapter: ResponseAdapter<String?> =
       NullableResponseAdapter(stringResponseAdapter)
 
-  val nullableplanetAdapterAdapter: ResponseAdapter<PilotFragmentImpl.Data.Homeworld?> =
+  val nullableHomeworldAdapter: ResponseAdapter<PilotFragmentImpl.Data.Homeworld?> =
       NullableResponseAdapter(Homeworld(customScalarAdapters))
 
   override fun fromResponse(reader: JsonReader): PilotFragmentImpl.Data {
@@ -40,8 +40,8 @@ class PilotFragmentImpl_ResponseAdapter(
     while(true) {
       when (reader.selectName(RESPONSE_NAMES)) {
         0 -> __typename = stringAdapter.fromResponse(reader)
-        1 -> name = nullablestringAdapterAdapter.fromResponse(reader)
-        2 -> homeworld = nullableplanetAdapterAdapter.fromResponse(reader)
+        1 -> name = nullableStringAdapter.fromResponse(reader)
+        2 -> homeworld = nullableHomeworldAdapter.fromResponse(reader)
         else -> break
       }
     }
@@ -58,9 +58,9 @@ class PilotFragmentImpl_ResponseAdapter(
     writer.name("__typename")
     stringAdapter.toResponse(writer, value.__typename)
     writer.name("name")
-    nullablestringAdapterAdapter.toResponse(writer, value.name)
+    nullableStringAdapter.toResponse(writer, value.name)
     writer.name("homeworld")
-    nullableplanetAdapterAdapter.toResponse(writer, value.homeworld)
+    nullableHomeworldAdapter.toResponse(writer, value.homeworld)
     writer.endObject()
   }
 
@@ -117,7 +117,7 @@ class PilotFragmentImpl_ResponseAdapter(
     ) {
       val stringAdapter: ResponseAdapter<String> = stringResponseAdapter
 
-      val nullablestringAdapterAdapter: ResponseAdapter<String?> =
+      val nullableStringAdapter: ResponseAdapter<String?> =
           NullableResponseAdapter(stringResponseAdapter)
 
       fun fromResponse(reader: JsonReader, __typename: String?):
@@ -127,7 +127,7 @@ class PilotFragmentImpl_ResponseAdapter(
         while(true) {
           when (reader.selectName(RESPONSE_NAMES)) {
             0 -> __typename = stringAdapter.fromResponse(reader)
-            1 -> name = nullablestringAdapterAdapter.fromResponse(reader)
+            1 -> name = nullableStringAdapter.fromResponse(reader)
             else -> break
           }
         }
@@ -142,7 +142,7 @@ class PilotFragmentImpl_ResponseAdapter(
         writer.name("__typename")
         stringAdapter.toResponse(writer, value.__typename)
         writer.name("name")
-        nullablestringAdapterAdapter.toResponse(writer, value.name)
+        nullableStringAdapter.toResponse(writer, value.name)
         writer.endObject()
       }
 

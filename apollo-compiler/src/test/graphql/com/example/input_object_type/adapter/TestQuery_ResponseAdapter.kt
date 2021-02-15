@@ -26,7 +26,7 @@ import kotlin.collections.List
 class TestQuery_ResponseAdapter(
   customScalarAdapters: CustomScalarAdapters
 ) : ResponseAdapter<TestQuery.Data> {
-  val nullablereviewAdapterAdapter: ResponseAdapter<TestQuery.Data.CreateReview?> =
+  val nullableCreateReviewAdapter: ResponseAdapter<TestQuery.Data.CreateReview?> =
       NullableResponseAdapter(CreateReview(customScalarAdapters))
 
   override fun fromResponse(reader: JsonReader): TestQuery.Data {
@@ -34,7 +34,7 @@ class TestQuery_ResponseAdapter(
     reader.beginObject()
     while(true) {
       when (reader.selectName(RESPONSE_NAMES)) {
-        0 -> createReview = nullablereviewAdapterAdapter.fromResponse(reader)
+        0 -> createReview = nullableCreateReviewAdapter.fromResponse(reader)
         else -> break
       }
     }
@@ -47,7 +47,7 @@ class TestQuery_ResponseAdapter(
   override fun toResponse(writer: JsonWriter, value: TestQuery.Data) {
     writer.beginObject()
     writer.name("createReview")
-    nullablereviewAdapterAdapter.toResponse(writer, value.createReview)
+    nullableCreateReviewAdapter.toResponse(writer, value.createReview)
     writer.endObject()
   }
 
@@ -77,7 +77,7 @@ class TestQuery_ResponseAdapter(
   ) : ResponseAdapter<TestQuery.Data.CreateReview> {
     val intAdapter: ResponseAdapter<Int> = intResponseAdapter
 
-    val nullablestringAdapterAdapter: ResponseAdapter<String?> =
+    val nullableStringAdapter: ResponseAdapter<String?> =
         NullableResponseAdapter(stringResponseAdapter)
 
     override fun fromResponse(reader: JsonReader): TestQuery.Data.CreateReview {
@@ -87,7 +87,7 @@ class TestQuery_ResponseAdapter(
       while(true) {
         when (reader.selectName(RESPONSE_NAMES)) {
           0 -> stars = intAdapter.fromResponse(reader)
-          1 -> commentary = nullablestringAdapterAdapter.fromResponse(reader)
+          1 -> commentary = nullableStringAdapter.fromResponse(reader)
           else -> break
         }
       }
@@ -103,7 +103,7 @@ class TestQuery_ResponseAdapter(
       writer.name("stars")
       intAdapter.toResponse(writer, value.stars)
       writer.name("commentary")
-      nullablestringAdapterAdapter.toResponse(writer, value.commentary)
+      nullableStringAdapter.toResponse(writer, value.commentary)
       writer.endObject()
     }
 

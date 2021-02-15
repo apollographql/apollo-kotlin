@@ -27,8 +27,7 @@ import kotlin.collections.List
 class TestQuery_ResponseAdapter(
   customScalarAdapters: CustomScalarAdapters
 ) : ResponseAdapter<TestQuery.Data> {
-  val nullablelistOfnullablereviewAdapterAdapterAdapterAdapter:
-      ResponseAdapter<List<TestQuery.Data.Review?>?> =
+  val nullableListOfNullableReviewAdapter: ResponseAdapter<List<TestQuery.Data.Review?>?> =
       NullableResponseAdapter(ListResponseAdapter(NullableResponseAdapter(Review(customScalarAdapters))))
 
   val intAdapter: ResponseAdapter<Int> = intResponseAdapter
@@ -39,7 +38,7 @@ class TestQuery_ResponseAdapter(
     reader.beginObject()
     while(true) {
       when (reader.selectName(RESPONSE_NAMES)) {
-        0 -> reviews = nullablelistOfnullablereviewAdapterAdapterAdapterAdapter.fromResponse(reader)
+        0 -> reviews = nullableListOfNullableReviewAdapter.fromResponse(reader)
         1 -> testNullableArguments = intAdapter.fromResponse(reader)
         else -> break
       }
@@ -54,7 +53,7 @@ class TestQuery_ResponseAdapter(
   override fun toResponse(writer: JsonWriter, value: TestQuery.Data) {
     writer.beginObject()
     writer.name("reviews")
-    nullablelistOfnullablereviewAdapterAdapterAdapterAdapter.toResponse(writer, value.reviews)
+    nullableListOfNullableReviewAdapter.toResponse(writer, value.reviews)
     writer.name("testNullableArguments")
     intAdapter.toResponse(writer, value.testNullableArguments)
     writer.endObject()
@@ -95,7 +94,7 @@ class TestQuery_ResponseAdapter(
   ) : ResponseAdapter<TestQuery.Data.Review> {
     val intAdapter: ResponseAdapter<Int> = intResponseAdapter
 
-    val nullablestringAdapterAdapter: ResponseAdapter<String?> =
+    val nullableStringAdapter: ResponseAdapter<String?> =
         NullableResponseAdapter(stringResponseAdapter)
 
     override fun fromResponse(reader: JsonReader): TestQuery.Data.Review {
@@ -105,7 +104,7 @@ class TestQuery_ResponseAdapter(
       while(true) {
         when (reader.selectName(RESPONSE_NAMES)) {
           0 -> stars = intAdapter.fromResponse(reader)
-          1 -> commentary = nullablestringAdapterAdapter.fromResponse(reader)
+          1 -> commentary = nullableStringAdapter.fromResponse(reader)
           else -> break
         }
       }
@@ -121,7 +120,7 @@ class TestQuery_ResponseAdapter(
       writer.name("stars")
       intAdapter.toResponse(writer, value.stars)
       writer.name("commentary")
-      nullablestringAdapterAdapter.toResponse(writer, value.commentary)
+      nullableStringAdapter.toResponse(writer, value.commentary)
       writer.endObject()
     }
 

@@ -27,10 +27,10 @@ import kotlin.collections.List
 class TestQuery_ResponseAdapter(
   customScalarAdapters: CustomScalarAdapters
 ) : ResponseAdapter<TestQuery.Data> {
-  val nullablecharacterAdapterAdapter: ResponseAdapter<TestQuery.Data.Hero?> =
+  val nullableHeroAdapter: ResponseAdapter<TestQuery.Data.Hero?> =
       NullableResponseAdapter(Hero(customScalarAdapters))
 
-  val nullablehumanAdapterAdapter: ResponseAdapter<TestQuery.Data.HeroWithReview?> =
+  val nullableHeroWithReviewAdapter: ResponseAdapter<TestQuery.Data.HeroWithReview?> =
       NullableResponseAdapter(HeroWithReview(customScalarAdapters))
 
   override fun fromResponse(reader: JsonReader): TestQuery.Data {
@@ -39,8 +39,8 @@ class TestQuery_ResponseAdapter(
     reader.beginObject()
     while(true) {
       when (reader.selectName(RESPONSE_NAMES)) {
-        0 -> hero = nullablecharacterAdapterAdapter.fromResponse(reader)
-        1 -> heroWithReview = nullablehumanAdapterAdapter.fromResponse(reader)
+        0 -> hero = nullableHeroAdapter.fromResponse(reader)
+        1 -> heroWithReview = nullableHeroWithReviewAdapter.fromResponse(reader)
         else -> break
       }
     }
@@ -54,9 +54,9 @@ class TestQuery_ResponseAdapter(
   override fun toResponse(writer: JsonWriter, value: TestQuery.Data) {
     writer.beginObject()
     writer.name("hero")
-    nullablecharacterAdapterAdapter.toResponse(writer, value.hero)
+    nullableHeroAdapter.toResponse(writer, value.hero)
     writer.name("heroWithReview")
-    nullablehumanAdapterAdapter.toResponse(writer, value.heroWithReview)
+    nullableHeroWithReviewAdapter.toResponse(writer, value.heroWithReview)
     writer.endObject()
   }
 
@@ -134,7 +134,7 @@ class TestQuery_ResponseAdapter(
     ) {
       val stringAdapter: ResponseAdapter<String> = stringResponseAdapter
 
-      val nullablestringAdapterAdapter: ResponseAdapter<String?> =
+      val nullableStringAdapter: ResponseAdapter<String?> =
           NullableResponseAdapter(stringResponseAdapter)
 
       val friendsConnectionAdapter:
@@ -148,7 +148,7 @@ class TestQuery_ResponseAdapter(
         while(true) {
           when (reader.selectName(RESPONSE_NAMES)) {
             0 -> __typename = stringAdapter.fromResponse(reader)
-            1 -> name = nullablestringAdapterAdapter.fromResponse(reader)
+            1 -> name = nullableStringAdapter.fromResponse(reader)
             2 -> friendsConnection = friendsConnectionAdapter.fromResponse(reader)
             else -> break
           }
@@ -165,7 +165,7 @@ class TestQuery_ResponseAdapter(
         writer.name("__typename")
         stringAdapter.toResponse(writer, value.__typename)
         writer.name("name")
-        nullablestringAdapterAdapter.toResponse(writer, value.name)
+        nullableStringAdapter.toResponse(writer, value.name)
         writer.name("friendsConnection")
         friendsConnectionAdapter.toResponse(writer, value.friendsConnection)
         writer.endObject()
@@ -200,10 +200,9 @@ class TestQuery_ResponseAdapter(
       class FriendsConnection(
         customScalarAdapters: CustomScalarAdapters
       ) : ResponseAdapter<TestQuery.Data.Hero.CharacterHero.FriendsConnection> {
-        val nullableintAdapterAdapter: ResponseAdapter<Int?> =
-            NullableResponseAdapter(intResponseAdapter)
+        val nullableIntAdapter: ResponseAdapter<Int?> = NullableResponseAdapter(intResponseAdapter)
 
-        val nullablelistOfnullablefriendsEdgeAdapterAdapterAdapterAdapter:
+        val nullableListOfNullableEdgeAdapter:
             ResponseAdapter<List<TestQuery.Data.Hero.CharacterHero.FriendsConnection.Edge?>?> =
             NullableResponseAdapter(ListResponseAdapter(NullableResponseAdapter(Edge(customScalarAdapters))))
 
@@ -214,8 +213,8 @@ class TestQuery_ResponseAdapter(
           reader.beginObject()
           while(true) {
             when (reader.selectName(RESPONSE_NAMES)) {
-              0 -> totalCount = nullableintAdapterAdapter.fromResponse(reader)
-              1 -> edges = nullablelistOfnullablefriendsEdgeAdapterAdapterAdapterAdapter.fromResponse(reader)
+              0 -> totalCount = nullableIntAdapter.fromResponse(reader)
+              1 -> edges = nullableListOfNullableEdgeAdapter.fromResponse(reader)
               else -> break
             }
           }
@@ -230,10 +229,9 @@ class TestQuery_ResponseAdapter(
             value: TestQuery.Data.Hero.CharacterHero.FriendsConnection) {
           writer.beginObject()
           writer.name("totalCount")
-          nullableintAdapterAdapter.toResponse(writer, value.totalCount)
+          nullableIntAdapter.toResponse(writer, value.totalCount)
           writer.name("edges")
-          nullablelistOfnullablefriendsEdgeAdapterAdapterAdapterAdapter.toResponse(writer,
-              value.edges)
+          nullableListOfNullableEdgeAdapter.toResponse(writer, value.edges)
           writer.endObject()
         }
 
@@ -258,7 +256,7 @@ class TestQuery_ResponseAdapter(
         class Edge(
           customScalarAdapters: CustomScalarAdapters
         ) : ResponseAdapter<TestQuery.Data.Hero.CharacterHero.FriendsConnection.Edge> {
-          val nullablecharacterAdapterAdapter:
+          val nullableNodeAdapter:
               ResponseAdapter<TestQuery.Data.Hero.CharacterHero.FriendsConnection.Edge.Node?> =
               NullableResponseAdapter(Node(customScalarAdapters))
 
@@ -268,7 +266,7 @@ class TestQuery_ResponseAdapter(
             reader.beginObject()
             while(true) {
               when (reader.selectName(RESPONSE_NAMES)) {
-                0 -> node = nullablecharacterAdapterAdapter.fromResponse(reader)
+                0 -> node = nullableNodeAdapter.fromResponse(reader)
                 else -> break
               }
             }
@@ -282,7 +280,7 @@ class TestQuery_ResponseAdapter(
               value: TestQuery.Data.Hero.CharacterHero.FriendsConnection.Edge) {
             writer.beginObject()
             writer.name("node")
-            nullablecharacterAdapterAdapter.toResponse(writer, value.node)
+            nullableNodeAdapter.toResponse(writer, value.node)
             writer.endObject()
           }
 
@@ -303,7 +301,7 @@ class TestQuery_ResponseAdapter(
           class Node(
             customScalarAdapters: CustomScalarAdapters
           ) : ResponseAdapter<TestQuery.Data.Hero.CharacterHero.FriendsConnection.Edge.Node> {
-            val nullablestringAdapterAdapter: ResponseAdapter<String?> =
+            val nullableStringAdapter: ResponseAdapter<String?> =
                 NullableResponseAdapter(stringResponseAdapter)
 
             override fun fromResponse(reader: JsonReader):
@@ -312,7 +310,7 @@ class TestQuery_ResponseAdapter(
               reader.beginObject()
               while(true) {
                 when (reader.selectName(RESPONSE_NAMES)) {
-                  0 -> name = nullablestringAdapterAdapter.fromResponse(reader)
+                  0 -> name = nullableStringAdapter.fromResponse(reader)
                   else -> break
                 }
               }
@@ -326,7 +324,7 @@ class TestQuery_ResponseAdapter(
                 value: TestQuery.Data.Hero.CharacterHero.FriendsConnection.Edge.Node) {
               writer.beginObject()
               writer.name("name")
-              nullablestringAdapterAdapter.toResponse(writer, value.name)
+              nullableStringAdapter.toResponse(writer, value.name)
               writer.endObject()
             }
 
@@ -353,7 +351,7 @@ class TestQuery_ResponseAdapter(
     ) {
       val stringAdapter: ResponseAdapter<String> = stringResponseAdapter
 
-      val nullablestringAdapterAdapter: ResponseAdapter<String?> =
+      val nullableStringAdapter: ResponseAdapter<String?> =
           NullableResponseAdapter(stringResponseAdapter)
 
       fun fromResponse(reader: JsonReader, __typename: String?): TestQuery.Data.Hero.OtherHero {
@@ -362,7 +360,7 @@ class TestQuery_ResponseAdapter(
         while(true) {
           when (reader.selectName(RESPONSE_NAMES)) {
             0 -> __typename = stringAdapter.fromResponse(reader)
-            1 -> name = nullablestringAdapterAdapter.fromResponse(reader)
+            1 -> name = nullableStringAdapter.fromResponse(reader)
             else -> break
           }
         }
@@ -377,7 +375,7 @@ class TestQuery_ResponseAdapter(
         writer.name("__typename")
         stringAdapter.toResponse(writer, value.__typename)
         writer.name("name")
-        nullablestringAdapterAdapter.toResponse(writer, value.name)
+        nullableStringAdapter.toResponse(writer, value.name)
         writer.endObject()
       }
 

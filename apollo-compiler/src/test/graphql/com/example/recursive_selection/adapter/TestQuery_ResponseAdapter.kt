@@ -25,7 +25,7 @@ import kotlin.collections.List
 class TestQuery_ResponseAdapter(
   customScalarAdapters: CustomScalarAdapters
 ) : ResponseAdapter<TestQuery.Data> {
-  val nullabletreeAdapterAdapter: ResponseAdapter<TestQuery.Data.Tree?> =
+  val nullableTreeAdapter: ResponseAdapter<TestQuery.Data.Tree?> =
       NullableResponseAdapter(Tree(customScalarAdapters))
 
   override fun fromResponse(reader: JsonReader): TestQuery.Data {
@@ -33,7 +33,7 @@ class TestQuery_ResponseAdapter(
     reader.beginObject()
     while(true) {
       when (reader.selectName(RESPONSE_NAMES)) {
-        0 -> tree = nullabletreeAdapterAdapter.fromResponse(reader)
+        0 -> tree = nullableTreeAdapter.fromResponse(reader)
         else -> break
       }
     }
@@ -46,7 +46,7 @@ class TestQuery_ResponseAdapter(
   override fun toResponse(writer: JsonWriter, value: TestQuery.Data) {
     writer.beginObject()
     writer.name("tree")
-    nullabletreeAdapterAdapter.toResponse(writer, value.tree)
+    nullableTreeAdapter.toResponse(writer, value.tree)
     writer.endObject()
   }
 
@@ -69,10 +69,10 @@ class TestQuery_ResponseAdapter(
   ) : ResponseAdapter<TestQuery.Data.Tree> {
     val stringAdapter: ResponseAdapter<String> = stringResponseAdapter
 
-    val listOftreeAdapterAdapter: ResponseAdapter<List<TestQuery.Data.Tree.Child>> =
+    val listOfChildAdapter: ResponseAdapter<List<TestQuery.Data.Tree.Child>> =
         ListResponseAdapter(Child(customScalarAdapters))
 
-    val nullabletreeAdapterAdapter: ResponseAdapter<TestQuery.Data.Tree.Parent?> =
+    val nullableParentAdapter: ResponseAdapter<TestQuery.Data.Tree.Parent?> =
         NullableResponseAdapter(Parent(customScalarAdapters))
 
     override fun fromResponse(reader: JsonReader): TestQuery.Data.Tree {
@@ -83,8 +83,8 @@ class TestQuery_ResponseAdapter(
       while(true) {
         when (reader.selectName(RESPONSE_NAMES)) {
           0 -> name = stringAdapter.fromResponse(reader)
-          1 -> children = listOftreeAdapterAdapter.fromResponse(reader)
-          2 -> parent = nullabletreeAdapterAdapter.fromResponse(reader)
+          1 -> children = listOfChildAdapter.fromResponse(reader)
+          2 -> parent = nullableParentAdapter.fromResponse(reader)
           else -> break
         }
       }
@@ -101,9 +101,9 @@ class TestQuery_ResponseAdapter(
       writer.name("name")
       stringAdapter.toResponse(writer, value.name)
       writer.name("children")
-      listOftreeAdapterAdapter.toResponse(writer, value.children)
+      listOfChildAdapter.toResponse(writer, value.children)
       writer.name("parent")
-      nullabletreeAdapterAdapter.toResponse(writer, value.parent)
+      nullableParentAdapter.toResponse(writer, value.parent)
       writer.endObject()
     }
 

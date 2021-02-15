@@ -29,7 +29,7 @@ import kotlin.collections.List
 class TestQuery_ResponseAdapter(
   customScalarAdapters: CustomScalarAdapters
 ) : ResponseAdapter<TestQuery.Data> {
-  val nullablecharacterAdapterAdapter: ResponseAdapter<TestQuery.Data.Hero?> =
+  val nullableHeroAdapter: ResponseAdapter<TestQuery.Data.Hero?> =
       NullableResponseAdapter(Hero(customScalarAdapters))
 
   override fun fromResponse(reader: JsonReader): TestQuery.Data {
@@ -37,7 +37,7 @@ class TestQuery_ResponseAdapter(
     reader.beginObject()
     while(true) {
       when (reader.selectName(RESPONSE_NAMES)) {
-        0 -> hero = nullablecharacterAdapterAdapter.fromResponse(reader)
+        0 -> hero = nullableHeroAdapter.fromResponse(reader)
         else -> break
       }
     }
@@ -50,7 +50,7 @@ class TestQuery_ResponseAdapter(
   override fun toResponse(writer: JsonWriter, value: TestQuery.Data) {
     writer.beginObject()
     writer.name("hero")
-    nullablecharacterAdapterAdapter.toResponse(writer, value.hero)
+    nullableHeroAdapter.toResponse(writer, value.hero)
     writer.endObject()
   }
 
@@ -108,14 +108,14 @@ class TestQuery_ResponseAdapter(
     ) {
       val stringAdapter: ResponseAdapter<String> = stringResponseAdapter
 
-      val listOfnullableepisodeAdapterAdapterAdapter: ResponseAdapter<List<Episode?>> =
+      val listOfNullableEpisodeAdapter: ResponseAdapter<List<Episode?>> =
           ListResponseAdapter(NullableResponseAdapter(Episode_ResponseAdapter))
 
       val friendsConnectionAdapter:
           ResponseAdapter<TestQuery.Data.Hero.CharacterDroidHero.FriendsConnection> =
           FriendsConnection(customScalarAdapters)
 
-      val nullablestringAdapterAdapter: ResponseAdapter<String?> =
+      val nullableStringAdapter: ResponseAdapter<String?> =
           NullableResponseAdapter(stringResponseAdapter)
 
       fun fromResponse(reader: JsonReader, __typename: String?):
@@ -129,9 +129,9 @@ class TestQuery_ResponseAdapter(
           when (reader.selectName(RESPONSE_NAMES)) {
             0 -> __typename = stringAdapter.fromResponse(reader)
             1 -> name = stringAdapter.fromResponse(reader)
-            2 -> appearsIn = listOfnullableepisodeAdapterAdapterAdapter.fromResponse(reader)
+            2 -> appearsIn = listOfNullableEpisodeAdapter.fromResponse(reader)
             3 -> friendsConnection = friendsConnectionAdapter.fromResponse(reader)
-            4 -> primaryFunction = nullablestringAdapterAdapter.fromResponse(reader)
+            4 -> primaryFunction = nullableStringAdapter.fromResponse(reader)
             else -> break
           }
         }
@@ -151,11 +151,11 @@ class TestQuery_ResponseAdapter(
         writer.name("name")
         stringAdapter.toResponse(writer, value.name)
         writer.name("appearsIn")
-        listOfnullableepisodeAdapterAdapterAdapter.toResponse(writer, value.appearsIn)
+        listOfNullableEpisodeAdapter.toResponse(writer, value.appearsIn)
         writer.name("friendsConnection")
         friendsConnectionAdapter.toResponse(writer, value.friendsConnection)
         writer.name("primaryFunction")
-        nullablestringAdapterAdapter.toResponse(writer, value.primaryFunction)
+        nullableStringAdapter.toResponse(writer, value.primaryFunction)
         writer.endObject()
       }
 
@@ -190,10 +190,9 @@ class TestQuery_ResponseAdapter(
       class FriendsConnection(
         customScalarAdapters: CustomScalarAdapters
       ) : ResponseAdapter<TestQuery.Data.Hero.CharacterDroidHero.FriendsConnection> {
-        val nullableintAdapterAdapter: ResponseAdapter<Int?> =
-            NullableResponseAdapter(intResponseAdapter)
+        val nullableIntAdapter: ResponseAdapter<Int?> = NullableResponseAdapter(intResponseAdapter)
 
-        val nullablelistOfnullablefriendsEdgeAdapterAdapterAdapterAdapter:
+        val nullableListOfNullableEdgeAdapter:
             ResponseAdapter<List<TestQuery.Data.Hero.CharacterDroidHero.FriendsConnection.Edge?>?> =
             NullableResponseAdapter(ListResponseAdapter(NullableResponseAdapter(Edge(customScalarAdapters))))
 
@@ -204,8 +203,8 @@ class TestQuery_ResponseAdapter(
           reader.beginObject()
           while(true) {
             when (reader.selectName(RESPONSE_NAMES)) {
-              0 -> totalCount = nullableintAdapterAdapter.fromResponse(reader)
-              1 -> edges = nullablelistOfnullablefriendsEdgeAdapterAdapterAdapterAdapter.fromResponse(reader)
+              0 -> totalCount = nullableIntAdapter.fromResponse(reader)
+              1 -> edges = nullableListOfNullableEdgeAdapter.fromResponse(reader)
               else -> break
             }
           }
@@ -220,10 +219,9 @@ class TestQuery_ResponseAdapter(
             value: TestQuery.Data.Hero.CharacterDroidHero.FriendsConnection) {
           writer.beginObject()
           writer.name("totalCount")
-          nullableintAdapterAdapter.toResponse(writer, value.totalCount)
+          nullableIntAdapter.toResponse(writer, value.totalCount)
           writer.name("edges")
-          nullablelistOfnullablefriendsEdgeAdapterAdapterAdapterAdapter.toResponse(writer,
-              value.edges)
+          nullableListOfNullableEdgeAdapter.toResponse(writer, value.edges)
           writer.endObject()
         }
 
@@ -248,7 +246,7 @@ class TestQuery_ResponseAdapter(
         class Edge(
           customScalarAdapters: CustomScalarAdapters
         ) : ResponseAdapter<TestQuery.Data.Hero.CharacterDroidHero.FriendsConnection.Edge> {
-          val nullablecharacterAdapterAdapter:
+          val nullableNodeAdapter:
               ResponseAdapter<TestQuery.Data.Hero.CharacterDroidHero.FriendsConnection.Edge.Node?> =
               NullableResponseAdapter(Node(customScalarAdapters))
 
@@ -258,7 +256,7 @@ class TestQuery_ResponseAdapter(
             reader.beginObject()
             while(true) {
               when (reader.selectName(RESPONSE_NAMES)) {
-                0 -> node = nullablecharacterAdapterAdapter.fromResponse(reader)
+                0 -> node = nullableNodeAdapter.fromResponse(reader)
                 else -> break
               }
             }
@@ -272,7 +270,7 @@ class TestQuery_ResponseAdapter(
               value: TestQuery.Data.Hero.CharacterDroidHero.FriendsConnection.Edge) {
             writer.beginObject()
             writer.name("node")
-            nullablecharacterAdapterAdapter.toResponse(writer, value.node)
+            nullableNodeAdapter.toResponse(writer, value.node)
             writer.endObject()
           }
 
@@ -339,7 +337,7 @@ class TestQuery_ResponseAdapter(
     ) {
       val stringAdapter: ResponseAdapter<String> = stringResponseAdapter
 
-      val listOfnullableepisodeAdapterAdapterAdapter: ResponseAdapter<List<Episode?>> =
+      val listOfNullableEpisodeAdapter: ResponseAdapter<List<Episode?>> =
           ListResponseAdapter(NullableResponseAdapter(Episode_ResponseAdapter))
 
       val friendsConnectionAdapter:
@@ -356,7 +354,7 @@ class TestQuery_ResponseAdapter(
           when (reader.selectName(RESPONSE_NAMES)) {
             0 -> __typename = stringAdapter.fromResponse(reader)
             1 -> name = stringAdapter.fromResponse(reader)
-            2 -> appearsIn = listOfnullableepisodeAdapterAdapterAdapter.fromResponse(reader)
+            2 -> appearsIn = listOfNullableEpisodeAdapter.fromResponse(reader)
             3 -> friendsConnection = friendsConnectionAdapter.fromResponse(reader)
             else -> break
           }
@@ -376,7 +374,7 @@ class TestQuery_ResponseAdapter(
         writer.name("name")
         stringAdapter.toResponse(writer, value.name)
         writer.name("appearsIn")
-        listOfnullableepisodeAdapterAdapterAdapter.toResponse(writer, value.appearsIn)
+        listOfNullableEpisodeAdapter.toResponse(writer, value.appearsIn)
         writer.name("friendsConnection")
         friendsConnectionAdapter.toResponse(writer, value.friendsConnection)
         writer.endObject()
@@ -409,10 +407,9 @@ class TestQuery_ResponseAdapter(
       class FriendsConnection(
         customScalarAdapters: CustomScalarAdapters
       ) : ResponseAdapter<TestQuery.Data.Hero.CharacterHumanHero.FriendsConnection> {
-        val nullableintAdapterAdapter: ResponseAdapter<Int?> =
-            NullableResponseAdapter(intResponseAdapter)
+        val nullableIntAdapter: ResponseAdapter<Int?> = NullableResponseAdapter(intResponseAdapter)
 
-        val nullablelistOfnullablefriendsEdgeAdapterAdapterAdapterAdapter:
+        val nullableListOfNullableEdgeAdapter:
             ResponseAdapter<List<TestQuery.Data.Hero.CharacterHumanHero.FriendsConnection.Edge?>?> =
             NullableResponseAdapter(ListResponseAdapter(NullableResponseAdapter(Edge(customScalarAdapters))))
 
@@ -423,8 +420,8 @@ class TestQuery_ResponseAdapter(
           reader.beginObject()
           while(true) {
             when (reader.selectName(RESPONSE_NAMES)) {
-              0 -> totalCount = nullableintAdapterAdapter.fromResponse(reader)
-              1 -> edges = nullablelistOfnullablefriendsEdgeAdapterAdapterAdapterAdapter.fromResponse(reader)
+              0 -> totalCount = nullableIntAdapter.fromResponse(reader)
+              1 -> edges = nullableListOfNullableEdgeAdapter.fromResponse(reader)
               else -> break
             }
           }
@@ -439,10 +436,9 @@ class TestQuery_ResponseAdapter(
             value: TestQuery.Data.Hero.CharacterHumanHero.FriendsConnection) {
           writer.beginObject()
           writer.name("totalCount")
-          nullableintAdapterAdapter.toResponse(writer, value.totalCount)
+          nullableIntAdapter.toResponse(writer, value.totalCount)
           writer.name("edges")
-          nullablelistOfnullablefriendsEdgeAdapterAdapterAdapterAdapter.toResponse(writer,
-              value.edges)
+          nullableListOfNullableEdgeAdapter.toResponse(writer, value.edges)
           writer.endObject()
         }
 
@@ -467,7 +463,7 @@ class TestQuery_ResponseAdapter(
         class Edge(
           customScalarAdapters: CustomScalarAdapters
         ) : ResponseAdapter<TestQuery.Data.Hero.CharacterHumanHero.FriendsConnection.Edge> {
-          val nullablecharacterAdapterAdapter:
+          val nullableNodeAdapter:
               ResponseAdapter<TestQuery.Data.Hero.CharacterHumanHero.FriendsConnection.Edge.Node?> =
               NullableResponseAdapter(Node(customScalarAdapters))
 
@@ -477,7 +473,7 @@ class TestQuery_ResponseAdapter(
             reader.beginObject()
             while(true) {
               when (reader.selectName(RESPONSE_NAMES)) {
-                0 -> node = nullablecharacterAdapterAdapter.fromResponse(reader)
+                0 -> node = nullableNodeAdapter.fromResponse(reader)
                 else -> break
               }
             }
@@ -491,7 +487,7 @@ class TestQuery_ResponseAdapter(
               value: TestQuery.Data.Hero.CharacterHumanHero.FriendsConnection.Edge) {
             writer.beginObject()
             writer.name("node")
-            nullablecharacterAdapterAdapter.toResponse(writer, value.node)
+            nullableNodeAdapter.toResponse(writer, value.node)
             writer.endObject()
           }
 
@@ -558,7 +554,7 @@ class TestQuery_ResponseAdapter(
     ) {
       val stringAdapter: ResponseAdapter<String> = stringResponseAdapter
 
-      val listOfnullableepisodeAdapterAdapterAdapter: ResponseAdapter<List<Episode?>> =
+      val listOfNullableEpisodeAdapter: ResponseAdapter<List<Episode?>> =
           ListResponseAdapter(NullableResponseAdapter(Episode_ResponseAdapter))
 
       fun fromResponse(reader: JsonReader, __typename: String?): TestQuery.Data.Hero.OtherHero {
@@ -569,7 +565,7 @@ class TestQuery_ResponseAdapter(
           when (reader.selectName(RESPONSE_NAMES)) {
             0 -> __typename = stringAdapter.fromResponse(reader)
             1 -> name = stringAdapter.fromResponse(reader)
-            2 -> appearsIn = listOfnullableepisodeAdapterAdapterAdapter.fromResponse(reader)
+            2 -> appearsIn = listOfNullableEpisodeAdapter.fromResponse(reader)
             else -> break
           }
         }
@@ -587,7 +583,7 @@ class TestQuery_ResponseAdapter(
         writer.name("name")
         stringAdapter.toResponse(writer, value.name)
         writer.name("appearsIn")
-        listOfnullableepisodeAdapterAdapterAdapter.toResponse(writer, value.appearsIn)
+        listOfNullableEpisodeAdapter.toResponse(writer, value.appearsIn)
         writer.endObject()
       }
 

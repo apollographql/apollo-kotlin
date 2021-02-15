@@ -26,7 +26,7 @@ import kotlin.collections.List
 class TestQuery_ResponseAdapter(
   customScalarAdapters: CustomScalarAdapters
 ) : ResponseAdapter<TestQuery.Data> {
-  val nullablecharacterAdapterAdapter: ResponseAdapter<TestQuery.Data.Hero?> =
+  val nullableHeroAdapter: ResponseAdapter<TestQuery.Data.Hero?> =
       NullableResponseAdapter(Hero(customScalarAdapters))
 
   override fun fromResponse(reader: JsonReader): TestQuery.Data {
@@ -34,7 +34,7 @@ class TestQuery_ResponseAdapter(
     reader.beginObject()
     while(true) {
       when (reader.selectName(RESPONSE_NAMES)) {
-        0 -> hero = nullablecharacterAdapterAdapter.fromResponse(reader)
+        0 -> hero = nullableHeroAdapter.fromResponse(reader)
         else -> break
       }
     }
@@ -47,7 +47,7 @@ class TestQuery_ResponseAdapter(
   override fun toResponse(writer: JsonWriter, value: TestQuery.Data) {
     writer.beginObject()
     writer.name("hero")
-    nullablecharacterAdapterAdapter.toResponse(writer, value.hero)
+    nullableHeroAdapter.toResponse(writer, value.hero)
     writer.endObject()
   }
 
@@ -68,11 +68,10 @@ class TestQuery_ResponseAdapter(
   class Hero(
     customScalarAdapters: CustomScalarAdapters
   ) : ResponseAdapter<TestQuery.Data.Hero> {
-    val nullablestringAdapterAdapter: ResponseAdapter<String?> =
+    val nullableStringAdapter: ResponseAdapter<String?> =
         NullableResponseAdapter(stringResponseAdapter)
 
-    val nullablefriendsConnectionAdapterAdapter:
-        ResponseAdapter<TestQuery.Data.Hero.FriendsConnection?> =
+    val nullableFriendsConnectionAdapter: ResponseAdapter<TestQuery.Data.Hero.FriendsConnection?> =
         NullableResponseAdapter(FriendsConnection(customScalarAdapters))
 
     override fun fromResponse(reader: JsonReader): TestQuery.Data.Hero {
@@ -81,8 +80,8 @@ class TestQuery_ResponseAdapter(
       reader.beginObject()
       while(true) {
         when (reader.selectName(RESPONSE_NAMES)) {
-          0 -> name = nullablestringAdapterAdapter.fromResponse(reader)
-          1 -> friendsConnection = nullablefriendsConnectionAdapterAdapter.fromResponse(reader)
+          0 -> name = nullableStringAdapter.fromResponse(reader)
+          1 -> friendsConnection = nullableFriendsConnectionAdapter.fromResponse(reader)
           else -> break
         }
       }
@@ -96,9 +95,9 @@ class TestQuery_ResponseAdapter(
     override fun toResponse(writer: JsonWriter, value: TestQuery.Data.Hero) {
       writer.beginObject()
       writer.name("name")
-      nullablestringAdapterAdapter.toResponse(writer, value.name)
+      nullableStringAdapter.toResponse(writer, value.name)
       writer.name("friendsConnection")
-      nullablefriendsConnectionAdapterAdapter.toResponse(writer, value.friendsConnection)
+      nullableFriendsConnectionAdapter.toResponse(writer, value.friendsConnection)
       writer.endObject()
     }
 
@@ -129,15 +128,14 @@ class TestQuery_ResponseAdapter(
     class FriendsConnection(
       customScalarAdapters: CustomScalarAdapters
     ) : ResponseAdapter<TestQuery.Data.Hero.FriendsConnection> {
-      val nullableintAdapterAdapter: ResponseAdapter<Int?> =
-          NullableResponseAdapter(intResponseAdapter)
+      val nullableIntAdapter: ResponseAdapter<Int?> = NullableResponseAdapter(intResponseAdapter)
 
       override fun fromResponse(reader: JsonReader): TestQuery.Data.Hero.FriendsConnection {
         var totalCount: Int? = null
         reader.beginObject()
         while(true) {
           when (reader.selectName(RESPONSE_NAMES)) {
-            0 -> totalCount = nullableintAdapterAdapter.fromResponse(reader)
+            0 -> totalCount = nullableIntAdapter.fromResponse(reader)
             else -> break
           }
         }
@@ -150,7 +148,7 @@ class TestQuery_ResponseAdapter(
       override fun toResponse(writer: JsonWriter, value: TestQuery.Data.Hero.FriendsConnection) {
         writer.beginObject()
         writer.name("totalCount")
-        nullableintAdapterAdapter.toResponse(writer, value.totalCount)
+        nullableIntAdapter.toResponse(writer, value.totalCount)
         writer.endObject()
       }
 

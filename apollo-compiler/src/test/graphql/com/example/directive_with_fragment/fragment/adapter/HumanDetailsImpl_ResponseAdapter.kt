@@ -26,7 +26,7 @@ class HumanDetailsImpl_ResponseAdapter(
 ) : ResponseAdapter<HumanDetailsImpl.Data> {
   val stringAdapter: ResponseAdapter<String> = stringResponseAdapter
 
-  val nullablestringAdapterAdapter: ResponseAdapter<String?> =
+  val nullableStringAdapter: ResponseAdapter<String?> =
       NullableResponseAdapter(stringResponseAdapter)
 
   override fun fromResponse(reader: JsonReader): HumanDetailsImpl.Data {
@@ -36,7 +36,7 @@ class HumanDetailsImpl_ResponseAdapter(
     while(true) {
       when (reader.selectName(RESPONSE_NAMES)) {
         0 -> __typename = stringAdapter.fromResponse(reader)
-        1 -> homePlanet = nullablestringAdapterAdapter.fromResponse(reader)
+        1 -> homePlanet = nullableStringAdapter.fromResponse(reader)
         else -> break
       }
     }
@@ -52,7 +52,7 @@ class HumanDetailsImpl_ResponseAdapter(
     writer.name("__typename")
     stringAdapter.toResponse(writer, value.__typename)
     writer.name("homePlanet")
-    nullablestringAdapterAdapter.toResponse(writer, value.homePlanet)
+    nullableStringAdapter.toResponse(writer, value.homePlanet)
     writer.endObject()
   }
 

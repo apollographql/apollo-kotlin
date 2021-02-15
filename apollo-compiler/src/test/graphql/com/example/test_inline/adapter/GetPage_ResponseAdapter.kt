@@ -97,7 +97,7 @@ class GetPage_ResponseAdapter(
     ) {
       val stringAdapter: ResponseAdapter<String> = stringResponseAdapter
 
-      val listOfitemAdapterAdapter:
+      val listOfItemAdapter:
           ResponseAdapter<List<GetPage.Data.Collection.ParticularCollectionCollection.Item>> =
           ListResponseAdapter(Item(customScalarAdapters))
 
@@ -108,7 +108,7 @@ class GetPage_ResponseAdapter(
         while(true) {
           when (reader.selectName(RESPONSE_NAMES)) {
             0 -> __typename = stringAdapter.fromResponse(reader)
-            1 -> items = listOfitemAdapterAdapter.fromResponse(reader)
+            1 -> items = listOfItemAdapter.fromResponse(reader)
             else -> break
           }
         }
@@ -124,7 +124,7 @@ class GetPage_ResponseAdapter(
         writer.name("__typename")
         stringAdapter.toResponse(writer, value.__typename)
         writer.name("items")
-        listOfitemAdapterAdapter.toResponse(writer, value.items)
+        listOfItemAdapter.toResponse(writer, value.items)
         writer.endObject()
       }
 
@@ -281,8 +281,7 @@ class GetPage_ResponseAdapter(
     ) {
       val stringAdapter: ResponseAdapter<String> = stringResponseAdapter
 
-      val listOfitemAdapterAdapter:
-          ResponseAdapter<List<GetPage.Data.Collection.OtherCollection.Item>> =
+      val listOfItemAdapter: ResponseAdapter<List<GetPage.Data.Collection.OtherCollection.Item>> =
           ListResponseAdapter(Item(customScalarAdapters))
 
       fun fromResponse(reader: JsonReader, __typename: String?):
@@ -292,7 +291,7 @@ class GetPage_ResponseAdapter(
         while(true) {
           when (reader.selectName(RESPONSE_NAMES)) {
             0 -> __typename = stringAdapter.fromResponse(reader)
-            1 -> items = listOfitemAdapterAdapter.fromResponse(reader)
+            1 -> items = listOfItemAdapter.fromResponse(reader)
             else -> break
           }
         }
@@ -307,7 +306,7 @@ class GetPage_ResponseAdapter(
         writer.name("__typename")
         stringAdapter.toResponse(writer, value.__typename)
         writer.name("items")
-        listOfitemAdapterAdapter.toResponse(writer, value.items)
+        listOfItemAdapter.toResponse(writer, value.items)
         writer.endObject()
       }
 

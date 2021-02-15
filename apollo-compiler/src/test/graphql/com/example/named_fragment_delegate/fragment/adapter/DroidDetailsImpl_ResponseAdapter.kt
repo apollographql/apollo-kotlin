@@ -27,11 +27,10 @@ class DroidDetailsImpl_ResponseAdapter(
 ) : ResponseAdapter<DroidDetailsImpl.Data> {
   val stringAdapter: ResponseAdapter<String> = stringResponseAdapter
 
-  val nullablestringAdapterAdapter: ResponseAdapter<String?> =
+  val nullableStringAdapter: ResponseAdapter<String?> =
       NullableResponseAdapter(stringResponseAdapter)
 
-  val nullablelistOfnullablecharacterAdapterAdapterAdapterAdapter:
-      ResponseAdapter<List<DroidDetailsImpl.Data.Friend?>?> =
+  val nullableListOfNullableFriendAdapter: ResponseAdapter<List<DroidDetailsImpl.Data.Friend?>?> =
       NullableResponseAdapter(ListResponseAdapter(NullableResponseAdapter(Friend(customScalarAdapters))))
 
   override fun fromResponse(reader: JsonReader): DroidDetailsImpl.Data {
@@ -44,8 +43,8 @@ class DroidDetailsImpl_ResponseAdapter(
       when (reader.selectName(RESPONSE_NAMES)) {
         0 -> __typename = stringAdapter.fromResponse(reader)
         1 -> name = stringAdapter.fromResponse(reader)
-        2 -> primaryFunction = nullablestringAdapterAdapter.fromResponse(reader)
-        3 -> friends = nullablelistOfnullablecharacterAdapterAdapterAdapterAdapter.fromResponse(reader)
+        2 -> primaryFunction = nullableStringAdapter.fromResponse(reader)
+        3 -> friends = nullableListOfNullableFriendAdapter.fromResponse(reader)
         else -> break
       }
     }
@@ -65,9 +64,9 @@ class DroidDetailsImpl_ResponseAdapter(
     writer.name("name")
     stringAdapter.toResponse(writer, value.name)
     writer.name("primaryFunction")
-    nullablestringAdapterAdapter.toResponse(writer, value.primaryFunction)
+    nullableStringAdapter.toResponse(writer, value.primaryFunction)
     writer.name("friends")
-    nullablelistOfnullablecharacterAdapterAdapterAdapterAdapter.toResponse(writer, value.friends)
+    nullableListOfNullableFriendAdapter.toResponse(writer, value.friends)
     writer.endObject()
   }
 

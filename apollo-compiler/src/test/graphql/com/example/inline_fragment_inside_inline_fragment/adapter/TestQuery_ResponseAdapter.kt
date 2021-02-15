@@ -25,8 +25,7 @@ import kotlin.collections.List
 class TestQuery_ResponseAdapter(
   customScalarAdapters: CustomScalarAdapters
 ) : ResponseAdapter<TestQuery.Data> {
-  val nullablelistOfnullablesearchResultAdapterAdapterAdapterAdapter:
-      ResponseAdapter<List<TestQuery.Data.Search?>?> =
+  val nullableListOfNullableSearchAdapter: ResponseAdapter<List<TestQuery.Data.Search?>?> =
       NullableResponseAdapter(ListResponseAdapter(NullableResponseAdapter(Search(customScalarAdapters))))
 
   override fun fromResponse(reader: JsonReader): TestQuery.Data {
@@ -34,7 +33,7 @@ class TestQuery_ResponseAdapter(
     reader.beginObject()
     while(true) {
       when (reader.selectName(RESPONSE_NAMES)) {
-        0 -> search = nullablelistOfnullablesearchResultAdapterAdapterAdapterAdapter.fromResponse(reader)
+        0 -> search = nullableListOfNullableSearchAdapter.fromResponse(reader)
         else -> break
       }
     }
@@ -47,7 +46,7 @@ class TestQuery_ResponseAdapter(
   override fun toResponse(writer: JsonWriter, value: TestQuery.Data) {
     writer.beginObject()
     writer.name("search")
-    nullablelistOfnullablesearchResultAdapterAdapterAdapterAdapter.toResponse(writer, value.search)
+    nullableListOfNullableSearchAdapter.toResponse(writer, value.search)
     writer.endObject()
   }
 
@@ -107,7 +106,7 @@ class TestQuery_ResponseAdapter(
     ) {
       val stringAdapter: ResponseAdapter<String> = stringResponseAdapter
 
-      val nullablestringAdapterAdapter: ResponseAdapter<String?> =
+      val nullableStringAdapter: ResponseAdapter<String?> =
           NullableResponseAdapter(stringResponseAdapter)
 
       fun fromResponse(reader: JsonReader, __typename: String?):
@@ -119,7 +118,7 @@ class TestQuery_ResponseAdapter(
           when (reader.selectName(RESPONSE_NAMES)) {
             0 -> __typename = stringAdapter.fromResponse(reader)
             1 -> name = stringAdapter.fromResponse(reader)
-            2 -> primaryFunction = nullablestringAdapterAdapter.fromResponse(reader)
+            2 -> primaryFunction = nullableStringAdapter.fromResponse(reader)
             else -> break
           }
         }
@@ -137,7 +136,7 @@ class TestQuery_ResponseAdapter(
         writer.name("name")
         stringAdapter.toResponse(writer, value.name)
         writer.name("primaryFunction")
-        nullablestringAdapterAdapter.toResponse(writer, value.primaryFunction)
+        nullableStringAdapter.toResponse(writer, value.primaryFunction)
         writer.endObject()
       }
 
@@ -163,7 +162,7 @@ class TestQuery_ResponseAdapter(
     ) {
       val stringAdapter: ResponseAdapter<String> = stringResponseAdapter
 
-      val nullablestringAdapterAdapter: ResponseAdapter<String?> =
+      val nullableStringAdapter: ResponseAdapter<String?> =
           NullableResponseAdapter(stringResponseAdapter)
 
       fun fromResponse(reader: JsonReader, __typename: String?):
@@ -175,7 +174,7 @@ class TestQuery_ResponseAdapter(
           when (reader.selectName(RESPONSE_NAMES)) {
             0 -> __typename = stringAdapter.fromResponse(reader)
             1 -> name = stringAdapter.fromResponse(reader)
-            2 -> homePlanet = nullablestringAdapterAdapter.fromResponse(reader)
+            2 -> homePlanet = nullableStringAdapter.fromResponse(reader)
             else -> break
           }
         }
@@ -193,7 +192,7 @@ class TestQuery_ResponseAdapter(
         writer.name("name")
         stringAdapter.toResponse(writer, value.name)
         writer.name("homePlanet")
-        nullablestringAdapterAdapter.toResponse(writer, value.homePlanet)
+        nullableStringAdapter.toResponse(writer, value.homePlanet)
         writer.endObject()
       }
 

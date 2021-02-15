@@ -26,7 +26,7 @@ class DroidDetails2Impl_ResponseAdapter(
 ) : ResponseAdapter<DroidDetails2Impl.Data> {
   val stringAdapter: ResponseAdapter<String> = stringResponseAdapter
 
-  val nullablestringAdapterAdapter: ResponseAdapter<String?> =
+  val nullableStringAdapter: ResponseAdapter<String?> =
       NullableResponseAdapter(stringResponseAdapter)
 
   override fun fromResponse(reader: JsonReader): DroidDetails2Impl.Data {
@@ -36,7 +36,7 @@ class DroidDetails2Impl_ResponseAdapter(
     while(true) {
       when (reader.selectName(RESPONSE_NAMES)) {
         0 -> __typename = stringAdapter.fromResponse(reader)
-        1 -> primaryFunction = nullablestringAdapterAdapter.fromResponse(reader)
+        1 -> primaryFunction = nullableStringAdapter.fromResponse(reader)
         else -> break
       }
     }
@@ -52,7 +52,7 @@ class DroidDetails2Impl_ResponseAdapter(
     writer.name("__typename")
     stringAdapter.toResponse(writer, value.__typename)
     writer.name("primaryFunction")
-    nullablestringAdapterAdapter.toResponse(writer, value.primaryFunction)
+    nullableStringAdapter.toResponse(writer, value.primaryFunction)
     writer.endObject()
   }
 

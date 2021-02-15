@@ -25,11 +25,10 @@ import kotlin.collections.List
 class TestQuery_ResponseAdapter(
   customScalarAdapters: CustomScalarAdapters
 ) : ResponseAdapter<TestQuery.Data> {
-  val nullablecharacterAdapterAdapter: ResponseAdapter<TestQuery.Data.Yield?> =
+  val nullableYieldAdapter: ResponseAdapter<TestQuery.Data.Yield?> =
       NullableResponseAdapter(Yield(customScalarAdapters))
 
-  val nullablelistOfnullablesearchResultAdapterAdapterAdapterAdapter:
-      ResponseAdapter<List<TestQuery.Data.Object?>?> =
+  val nullableListOfNullableObjectAdapter: ResponseAdapter<List<TestQuery.Data.Object?>?> =
       NullableResponseAdapter(ListResponseAdapter(NullableResponseAdapter(Object(customScalarAdapters))))
 
   override fun fromResponse(reader: JsonReader): TestQuery.Data {
@@ -38,8 +37,8 @@ class TestQuery_ResponseAdapter(
     reader.beginObject()
     while(true) {
       when (reader.selectName(RESPONSE_NAMES)) {
-        0 -> yield_ = nullablecharacterAdapterAdapter.fromResponse(reader)
-        1 -> objects = nullablelistOfnullablesearchResultAdapterAdapterAdapterAdapter.fromResponse(reader)
+        0 -> yield_ = nullableYieldAdapter.fromResponse(reader)
+        1 -> objects = nullableListOfNullableObjectAdapter.fromResponse(reader)
         else -> break
       }
     }
@@ -53,9 +52,9 @@ class TestQuery_ResponseAdapter(
   override fun toResponse(writer: JsonWriter, value: TestQuery.Data) {
     writer.beginObject()
     writer.name("yield")
-    nullablecharacterAdapterAdapter.toResponse(writer, value.yield_)
+    nullableYieldAdapter.toResponse(writer, value.yield_)
     writer.name("objects")
-    nullablelistOfnullablesearchResultAdapterAdapterAdapterAdapter.toResponse(writer, value.objects)
+    nullableListOfNullableObjectAdapter.toResponse(writer, value.objects)
     writer.endObject()
   }
 

@@ -26,7 +26,7 @@ class PlanetFragmentImpl_ResponseAdapter(
 ) : ResponseAdapter<PlanetFragmentImpl.Data> {
   val stringAdapter: ResponseAdapter<String> = stringResponseAdapter
 
-  val nullablestringAdapterAdapter: ResponseAdapter<String?> =
+  val nullableStringAdapter: ResponseAdapter<String?> =
       NullableResponseAdapter(stringResponseAdapter)
 
   override fun fromResponse(reader: JsonReader): PlanetFragmentImpl.Data {
@@ -36,7 +36,7 @@ class PlanetFragmentImpl_ResponseAdapter(
     while(true) {
       when (reader.selectName(RESPONSE_NAMES)) {
         0 -> __typename = stringAdapter.fromResponse(reader)
-        1 -> name = nullablestringAdapterAdapter.fromResponse(reader)
+        1 -> name = nullableStringAdapter.fromResponse(reader)
         else -> break
       }
     }
@@ -52,7 +52,7 @@ class PlanetFragmentImpl_ResponseAdapter(
     writer.name("__typename")
     stringAdapter.toResponse(writer, value.__typename)
     writer.name("name")
-    nullablestringAdapterAdapter.toResponse(writer, value.name)
+    nullableStringAdapter.toResponse(writer, value.name)
     writer.endObject()
   }
 

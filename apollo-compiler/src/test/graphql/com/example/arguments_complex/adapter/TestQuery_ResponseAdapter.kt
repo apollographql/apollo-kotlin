@@ -26,7 +26,7 @@ import kotlin.collections.List
 class TestQuery_ResponseAdapter(
   customScalarAdapters: CustomScalarAdapters
 ) : ResponseAdapter<TestQuery.Data> {
-  val nullablehumanAdapterAdapter: ResponseAdapter<TestQuery.Data.HeroWithReview?> =
+  val nullableHeroWithReviewAdapter: ResponseAdapter<TestQuery.Data.HeroWithReview?> =
       NullableResponseAdapter(HeroWithReview(customScalarAdapters))
 
   override fun fromResponse(reader: JsonReader): TestQuery.Data {
@@ -34,7 +34,7 @@ class TestQuery_ResponseAdapter(
     reader.beginObject()
     while(true) {
       when (reader.selectName(RESPONSE_NAMES)) {
-        0 -> heroWithReview = nullablehumanAdapterAdapter.fromResponse(reader)
+        0 -> heroWithReview = nullableHeroWithReviewAdapter.fromResponse(reader)
         else -> break
       }
     }
@@ -47,7 +47,7 @@ class TestQuery_ResponseAdapter(
   override fun toResponse(writer: JsonWriter, value: TestQuery.Data) {
     writer.beginObject()
     writer.name("heroWithReview")
-    nullablehumanAdapterAdapter.toResponse(writer, value.heroWithReview)
+    nullableHeroWithReviewAdapter.toResponse(writer, value.heroWithReview)
     writer.endObject()
   }
 
@@ -93,7 +93,7 @@ class TestQuery_ResponseAdapter(
   ) : ResponseAdapter<TestQuery.Data.HeroWithReview> {
     val stringAdapter: ResponseAdapter<String> = stringResponseAdapter
 
-    val nullablefloatAdapterAdapter: ResponseAdapter<Double?> =
+    val nullableFloatAdapter: ResponseAdapter<Double?> =
         NullableResponseAdapter(doubleResponseAdapter)
 
     override fun fromResponse(reader: JsonReader): TestQuery.Data.HeroWithReview {
@@ -103,7 +103,7 @@ class TestQuery_ResponseAdapter(
       while(true) {
         when (reader.selectName(RESPONSE_NAMES)) {
           0 -> name = stringAdapter.fromResponse(reader)
-          1 -> height = nullablefloatAdapterAdapter.fromResponse(reader)
+          1 -> height = nullableFloatAdapter.fromResponse(reader)
           else -> break
         }
       }
@@ -119,7 +119,7 @@ class TestQuery_ResponseAdapter(
       writer.name("name")
       stringAdapter.toResponse(writer, value.name)
       writer.name("height")
-      nullablefloatAdapterAdapter.toResponse(writer, value.height)
+      nullableFloatAdapter.toResponse(writer, value.height)
       writer.endObject()
     }
 

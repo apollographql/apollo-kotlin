@@ -24,10 +24,10 @@ import kotlin.collections.List
 class TestQuery_ResponseAdapter(
   customScalarAdapters: CustomScalarAdapters
 ) : ResponseAdapter<TestQuery.Data> {
-  val nullablecharacterAdapterAdapter: ResponseAdapter<TestQuery.Data.R2?> =
+  val nullableR2Adapter: ResponseAdapter<TestQuery.Data.R2?> =
       NullableResponseAdapter(R2(customScalarAdapters))
 
-  val nullablecharacterAdapterAdapter: ResponseAdapter<TestQuery.Data.Luke?> =
+  val nullableLukeAdapter: ResponseAdapter<TestQuery.Data.Luke?> =
       NullableResponseAdapter(Luke(customScalarAdapters))
 
   override fun fromResponse(reader: JsonReader): TestQuery.Data {
@@ -36,8 +36,8 @@ class TestQuery_ResponseAdapter(
     reader.beginObject()
     while(true) {
       when (reader.selectName(RESPONSE_NAMES)) {
-        0 -> r2 = nullablecharacterAdapterAdapter.fromResponse(reader)
-        1 -> luke = nullablecharacterAdapterAdapter.fromResponse(reader)
+        0 -> r2 = nullableR2Adapter.fromResponse(reader)
+        1 -> luke = nullableLukeAdapter.fromResponse(reader)
         else -> break
       }
     }
@@ -51,9 +51,9 @@ class TestQuery_ResponseAdapter(
   override fun toResponse(writer: JsonWriter, value: TestQuery.Data) {
     writer.beginObject()
     writer.name("r2")
-    nullablecharacterAdapterAdapter.toResponse(writer, value.r2)
+    nullableR2Adapter.toResponse(writer, value.r2)
     writer.name("luke")
-    nullablecharacterAdapterAdapter.toResponse(writer, value.luke)
+    nullableLukeAdapter.toResponse(writer, value.luke)
     writer.endObject()
   }
 

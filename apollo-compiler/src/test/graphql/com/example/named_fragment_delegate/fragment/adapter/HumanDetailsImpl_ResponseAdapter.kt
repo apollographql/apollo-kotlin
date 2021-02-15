@@ -98,7 +98,7 @@ class HumanDetailsImpl_ResponseAdapter(
   class FriendsConnection(
     customScalarAdapters: CustomScalarAdapters
   ) : ResponseAdapter<HumanDetailsImpl.Data.FriendsConnection> {
-    val nullablelistOfnullablefriendsEdgeAdapterAdapterAdapterAdapter:
+    val nullableListOfNullableEdgeAdapter:
         ResponseAdapter<List<HumanDetailsImpl.Data.FriendsConnection.Edge?>?> =
         NullableResponseAdapter(ListResponseAdapter(NullableResponseAdapter(Edge(customScalarAdapters))))
 
@@ -107,7 +107,7 @@ class HumanDetailsImpl_ResponseAdapter(
       reader.beginObject()
       while(true) {
         when (reader.selectName(RESPONSE_NAMES)) {
-          0 -> edges = nullablelistOfnullablefriendsEdgeAdapterAdapterAdapterAdapter.fromResponse(reader)
+          0 -> edges = nullableListOfNullableEdgeAdapter.fromResponse(reader)
           else -> break
         }
       }
@@ -120,7 +120,7 @@ class HumanDetailsImpl_ResponseAdapter(
     override fun toResponse(writer: JsonWriter, value: HumanDetailsImpl.Data.FriendsConnection) {
       writer.beginObject()
       writer.name("edges")
-      nullablelistOfnullablefriendsEdgeAdapterAdapterAdapterAdapter.toResponse(writer, value.edges)
+      nullableListOfNullableEdgeAdapter.toResponse(writer, value.edges)
       writer.endObject()
     }
 
@@ -141,8 +141,7 @@ class HumanDetailsImpl_ResponseAdapter(
     class Edge(
       customScalarAdapters: CustomScalarAdapters
     ) : ResponseAdapter<HumanDetailsImpl.Data.FriendsConnection.Edge> {
-      val nullablecharacterAdapterAdapter:
-          ResponseAdapter<HumanDetailsImpl.Data.FriendsConnection.Edge.Node?> =
+      val nullableNodeAdapter: ResponseAdapter<HumanDetailsImpl.Data.FriendsConnection.Edge.Node?> =
           NullableResponseAdapter(Node(customScalarAdapters))
 
       override fun fromResponse(reader: JsonReader): HumanDetailsImpl.Data.FriendsConnection.Edge {
@@ -150,7 +149,7 @@ class HumanDetailsImpl_ResponseAdapter(
         reader.beginObject()
         while(true) {
           when (reader.selectName(RESPONSE_NAMES)) {
-            0 -> node = nullablecharacterAdapterAdapter.fromResponse(reader)
+            0 -> node = nullableNodeAdapter.fromResponse(reader)
             else -> break
           }
         }
@@ -164,7 +163,7 @@ class HumanDetailsImpl_ResponseAdapter(
           value: HumanDetailsImpl.Data.FriendsConnection.Edge) {
         writer.beginObject()
         writer.name("node")
-        nullablecharacterAdapterAdapter.toResponse(writer, value.node)
+        nullableNodeAdapter.toResponse(writer, value.node)
         writer.endObject()
       }
 

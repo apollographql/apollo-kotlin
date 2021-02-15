@@ -28,7 +28,7 @@ import kotlin.collections.List
 class TestQuery_ResponseAdapter(
   customScalarAdapters: CustomScalarAdapters
 ) : ResponseAdapter<TestQuery.Data> {
-  val nullablecharacterAdapterAdapter: ResponseAdapter<TestQuery.Data.Hero?> =
+  val nullableHeroAdapter: ResponseAdapter<TestQuery.Data.Hero?> =
       NullableResponseAdapter(Hero(customScalarAdapters))
 
   override fun fromResponse(reader: JsonReader): TestQuery.Data {
@@ -36,7 +36,7 @@ class TestQuery_ResponseAdapter(
     reader.beginObject()
     while(true) {
       when (reader.selectName(RESPONSE_NAMES)) {
-        0 -> hero = nullablecharacterAdapterAdapter.fromResponse(reader)
+        0 -> hero = nullableHeroAdapter.fromResponse(reader)
         else -> break
       }
     }
@@ -49,7 +49,7 @@ class TestQuery_ResponseAdapter(
   override fun toResponse(writer: JsonWriter, value: TestQuery.Data) {
     writer.beginObject()
     writer.name("hero")
-    nullablecharacterAdapterAdapter.toResponse(writer, value.hero)
+    nullableHeroAdapter.toResponse(writer, value.hero)
     writer.endObject()
   }
 
@@ -75,7 +75,7 @@ class TestQuery_ResponseAdapter(
     val dateAdapter: ResponseAdapter<Date> =
         customScalarAdapters.responseAdapterFor<Date>(CustomScalars.Date)
 
-    val listOfdateAdapterAdapter: ResponseAdapter<List<Date>> =
+    val listOfDateAdapter: ResponseAdapter<List<Date>> =
         ListResponseAdapter(customScalarAdapters.responseAdapterFor<Date>(CustomScalars.Date))
 
     val unsupportedTypeAdapter: ResponseAdapter<Any> =
@@ -84,7 +84,7 @@ class TestQuery_ResponseAdapter(
     val uRLAdapter: ResponseAdapter<java.lang.String> =
         customScalarAdapters.responseAdapterFor<java.lang.String>(CustomScalars.URL)
 
-    val listOfuRLAdapterAdapter: ResponseAdapter<List<java.lang.String>> =
+    val listOfURLAdapter: ResponseAdapter<List<java.lang.String>> =
         ListResponseAdapter(customScalarAdapters.responseAdapterFor<java.lang.String>(CustomScalars.URL))
 
     override fun fromResponse(reader: JsonReader): TestQuery.Data.Hero {
@@ -99,10 +99,10 @@ class TestQuery_ResponseAdapter(
         when (reader.selectName(RESPONSE_NAMES)) {
           0 -> name = stringAdapter.fromResponse(reader)
           1 -> birthDate = dateAdapter.fromResponse(reader)
-          2 -> appearanceDates = listOfdateAdapterAdapter.fromResponse(reader)
+          2 -> appearanceDates = listOfDateAdapter.fromResponse(reader)
           3 -> fieldWithUnsupportedType = unsupportedTypeAdapter.fromResponse(reader)
           4 -> profileLink = uRLAdapter.fromResponse(reader)
-          5 -> links = listOfuRLAdapterAdapter.fromResponse(reader)
+          5 -> links = listOfURLAdapter.fromResponse(reader)
           else -> break
         }
       }
@@ -124,13 +124,13 @@ class TestQuery_ResponseAdapter(
       writer.name("birthDate")
       dateAdapter.toResponse(writer, value.birthDate)
       writer.name("appearanceDates")
-      listOfdateAdapterAdapter.toResponse(writer, value.appearanceDates)
+      listOfDateAdapter.toResponse(writer, value.appearanceDates)
       writer.name("fieldWithUnsupportedType")
       unsupportedTypeAdapter.toResponse(writer, value.fieldWithUnsupportedType)
       writer.name("profileLink")
       uRLAdapter.toResponse(writer, value.profileLink)
       writer.name("links")
-      listOfuRLAdapterAdapter.toResponse(writer, value.links)
+      listOfURLAdapter.toResponse(writer, value.links)
       writer.endObject()
     }
 

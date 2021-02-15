@@ -26,7 +26,7 @@ import kotlin.collections.List
 class TestQuery_ResponseAdapter(
   customScalarAdapters: CustomScalarAdapters
 ) : ResponseAdapter<TestQuery.Data> {
-  val nullablecharacterAdapterAdapter: ResponseAdapter<TestQuery.Data.Hero?> =
+  val nullableHeroAdapter: ResponseAdapter<TestQuery.Data.Hero?> =
       NullableResponseAdapter(Hero(customScalarAdapters))
 
   override fun fromResponse(reader: JsonReader): TestQuery.Data {
@@ -34,7 +34,7 @@ class TestQuery_ResponseAdapter(
     reader.beginObject()
     while(true) {
       when (reader.selectName(RESPONSE_NAMES)) {
-        0 -> hero = nullablecharacterAdapterAdapter.fromResponse(reader)
+        0 -> hero = nullableHeroAdapter.fromResponse(reader)
         else -> break
       }
     }
@@ -47,7 +47,7 @@ class TestQuery_ResponseAdapter(
   override fun toResponse(writer: JsonWriter, value: TestQuery.Data) {
     writer.beginObject()
     writer.name("hero")
-    nullablecharacterAdapterAdapter.toResponse(writer, value.hero)
+    nullableHeroAdapter.toResponse(writer, value.hero)
     writer.endObject()
   }
 
@@ -102,7 +102,7 @@ class TestQuery_ResponseAdapter(
       val dateAdapter: ResponseAdapter<Any> =
           customScalarAdapters.responseAdapterFor<Any>(CustomScalars.Date)
 
-      val nullablestringAdapterAdapter: ResponseAdapter<String?> =
+      val nullableStringAdapter: ResponseAdapter<String?> =
           NullableResponseAdapter(stringResponseAdapter)
 
       fun fromResponse(reader: JsonReader, __typename: String?): TestQuery.Data.Hero.DroidHero {
@@ -115,7 +115,7 @@ class TestQuery_ResponseAdapter(
             0 -> __typename = stringAdapter.fromResponse(reader)
             1 -> name = stringAdapter.fromResponse(reader)
             2 -> birthDate = dateAdapter.fromResponse(reader)
-            3 -> primaryFunction = nullablestringAdapterAdapter.fromResponse(reader)
+            3 -> primaryFunction = nullableStringAdapter.fromResponse(reader)
             else -> break
           }
         }
@@ -136,7 +136,7 @@ class TestQuery_ResponseAdapter(
         writer.name("birthDate")
         dateAdapter.toResponse(writer, value.birthDate)
         writer.name("primaryFunction")
-        nullablestringAdapterAdapter.toResponse(writer, value.primaryFunction)
+        nullableStringAdapter.toResponse(writer, value.primaryFunction)
         writer.endObject()
       }
 

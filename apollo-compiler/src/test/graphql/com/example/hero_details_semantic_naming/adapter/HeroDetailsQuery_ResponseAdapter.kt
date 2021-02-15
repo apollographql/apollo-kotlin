@@ -27,7 +27,7 @@ import kotlin.collections.List
 class HeroDetailsQuery_ResponseAdapter(
   customScalarAdapters: CustomScalarAdapters
 ) : ResponseAdapter<HeroDetailsQuery.Data> {
-  val nullablecharacterAdapterAdapter: ResponseAdapter<HeroDetailsQuery.Data.Hero?> =
+  val nullableHeroAdapter: ResponseAdapter<HeroDetailsQuery.Data.Hero?> =
       NullableResponseAdapter(Hero(customScalarAdapters))
 
   override fun fromResponse(reader: JsonReader): HeroDetailsQuery.Data {
@@ -35,7 +35,7 @@ class HeroDetailsQuery_ResponseAdapter(
     reader.beginObject()
     while(true) {
       when (reader.selectName(RESPONSE_NAMES)) {
-        0 -> hero = nullablecharacterAdapterAdapter.fromResponse(reader)
+        0 -> hero = nullableHeroAdapter.fromResponse(reader)
         else -> break
       }
     }
@@ -48,7 +48,7 @@ class HeroDetailsQuery_ResponseAdapter(
   override fun toResponse(writer: JsonWriter, value: HeroDetailsQuery.Data) {
     writer.beginObject()
     writer.name("hero")
-    nullablecharacterAdapterAdapter.toResponse(writer, value.hero)
+    nullableHeroAdapter.toResponse(writer, value.hero)
     writer.endObject()
   }
 
@@ -122,10 +122,9 @@ class HeroDetailsQuery_ResponseAdapter(
     class FriendsConnection(
       customScalarAdapters: CustomScalarAdapters
     ) : ResponseAdapter<HeroDetailsQuery.Data.Hero.FriendsConnection> {
-      val nullableintAdapterAdapter: ResponseAdapter<Int?> =
-          NullableResponseAdapter(intResponseAdapter)
+      val nullableIntAdapter: ResponseAdapter<Int?> = NullableResponseAdapter(intResponseAdapter)
 
-      val nullablelistOfnullablefriendsEdgeAdapterAdapterAdapterAdapter:
+      val nullableListOfNullableEdgeAdapter:
           ResponseAdapter<List<HeroDetailsQuery.Data.Hero.FriendsConnection.Edge?>?> =
           NullableResponseAdapter(ListResponseAdapter(NullableResponseAdapter(Edge(customScalarAdapters))))
 
@@ -135,8 +134,8 @@ class HeroDetailsQuery_ResponseAdapter(
         reader.beginObject()
         while(true) {
           when (reader.selectName(RESPONSE_NAMES)) {
-            0 -> totalCount = nullableintAdapterAdapter.fromResponse(reader)
-            1 -> edges = nullablelistOfnullablefriendsEdgeAdapterAdapterAdapterAdapter.fromResponse(reader)
+            0 -> totalCount = nullableIntAdapter.fromResponse(reader)
+            1 -> edges = nullableListOfNullableEdgeAdapter.fromResponse(reader)
             else -> break
           }
         }
@@ -151,10 +150,9 @@ class HeroDetailsQuery_ResponseAdapter(
           value: HeroDetailsQuery.Data.Hero.FriendsConnection) {
         writer.beginObject()
         writer.name("totalCount")
-        nullableintAdapterAdapter.toResponse(writer, value.totalCount)
+        nullableIntAdapter.toResponse(writer, value.totalCount)
         writer.name("edges")
-        nullablelistOfnullablefriendsEdgeAdapterAdapterAdapterAdapter.toResponse(writer,
-            value.edges)
+        nullableListOfNullableEdgeAdapter.toResponse(writer, value.edges)
         writer.endObject()
       }
 
@@ -179,7 +177,7 @@ class HeroDetailsQuery_ResponseAdapter(
       class Edge(
         customScalarAdapters: CustomScalarAdapters
       ) : ResponseAdapter<HeroDetailsQuery.Data.Hero.FriendsConnection.Edge> {
-        val nullablecharacterAdapterAdapter:
+        val nullableNodeAdapter:
             ResponseAdapter<HeroDetailsQuery.Data.Hero.FriendsConnection.Edge.Node?> =
             NullableResponseAdapter(Node(customScalarAdapters))
 
@@ -189,7 +187,7 @@ class HeroDetailsQuery_ResponseAdapter(
           reader.beginObject()
           while(true) {
             when (reader.selectName(RESPONSE_NAMES)) {
-              0 -> node = nullablecharacterAdapterAdapter.fromResponse(reader)
+              0 -> node = nullableNodeAdapter.fromResponse(reader)
               else -> break
             }
           }
@@ -203,7 +201,7 @@ class HeroDetailsQuery_ResponseAdapter(
             value: HeroDetailsQuery.Data.Hero.FriendsConnection.Edge) {
           writer.beginObject()
           writer.name("node")
-          nullablecharacterAdapterAdapter.toResponse(writer, value.node)
+          nullableNodeAdapter.toResponse(writer, value.node)
           writer.endObject()
         }
 
