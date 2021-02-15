@@ -53,6 +53,28 @@ class TestQuery_ResponseAdapter(
   companion object {
     val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
       ResponseField(
+<<<<<<< HEAD
+=======
+        type = ResponseField.Type.NotNull(ResponseField.Type.Named.Other("String")),
+        responseName = "name",
+        fieldName = "name",
+        arguments = emptyMap(),
+        conditions = emptyList(),
+        fieldSets = emptyList(),
+      ),
+      ResponseField(
+        type =
+            ResponseField.Type.NotNull(ResponseField.Type.List(ResponseField.Type.NotNull(ResponseField.Type.Named.Object("Tree")))),
+        responseName = "children",
+        fieldName = "children",
+        arguments = emptyMap(),
+        conditions = emptyList(),
+        fieldSets = listOf(
+          ResponseField.FieldSet(null, Children.RESPONSE_FIELDS)
+        ),
+      ),
+      ResponseField(
+>>>>>>> dev-3.x
         type = ResponseField.Type.Named.Object("Tree"),
         fieldName = "tree",
         fieldSets = listOf(
@@ -61,6 +83,7 @@ class TestQuery_ResponseAdapter(
       )
     )
 
+<<<<<<< HEAD
     val RESPONSE_NAMES: List<String> = RESPONSE_FIELDS.map { it.responseName }
   }
 
@@ -86,6 +109,26 @@ class TestQuery_ResponseAdapter(
           1 -> children = listOfChildrenAdapter.fromResponse(reader)
           2 -> parent = nullableParentAdapter.fromResponse(reader)
           else -> break
+=======
+    override fun fromResponse(reader: ResponseReader, __typename: String?): TestQuery.Data.Tree {
+      return reader.run {
+        var name: String? = null
+        var children: List<TestQuery.Data.Tree.Children>? = null
+        var parent: TestQuery.Data.Tree.Parent? = null
+        while(true) {
+          when (selectField(RESPONSE_FIELDS)) {
+            0 -> name = readString(RESPONSE_FIELDS[0])
+            1 -> children = readList<TestQuery.Data.Tree.Children>(RESPONSE_FIELDS[1]) { reader ->
+              reader.readObject<TestQuery.Data.Tree.Children> { reader ->
+                Children.fromResponse(reader)
+              }
+            }?.map { it!! }
+            2 -> parent = readObject<TestQuery.Data.Tree.Parent>(RESPONSE_FIELDS[2]) { reader ->
+              Parent.fromResponse(reader)
+            }
+            else -> break
+          }
+>>>>>>> dev-3.x
         }
       }
       reader.endObject()
@@ -96,6 +139,7 @@ class TestQuery_ResponseAdapter(
       )
     }
 
+<<<<<<< HEAD
     override fun toResponse(writer: JsonWriter, value: TestQuery.Data.Tree) {
       writer.beginObject()
       writer.name("name")
@@ -108,6 +152,25 @@ class TestQuery_ResponseAdapter(
     }
 
     companion object {
+=======
+    override fun toResponse(writer: ResponseWriter, value: TestQuery.Data.Tree) {
+      writer.writeString(RESPONSE_FIELDS[0], value.name)
+      writer.writeList(RESPONSE_FIELDS[1], value.children) { value, listItemWriter ->
+        listItemWriter.writeObject { writer ->
+          Children.toResponse(writer, value)
+        }
+      }
+      if(value.parent == null) {
+        writer.writeObject(RESPONSE_FIELDS[2], null)
+      } else {
+        writer.writeObject(RESPONSE_FIELDS[2]) { writer ->
+          Parent.toResponse(writer, value.parent)
+        }
+      }
+    }
+
+    object Children : ResponseAdapter<TestQuery.Data.Tree.Children> {
+>>>>>>> dev-3.x
       val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
         ResponseField(
           type = ResponseField.Type.NotNull(ResponseField.Type.Named.Other("String")),
@@ -130,6 +193,7 @@ class TestQuery_ResponseAdapter(
         )
       )
 
+<<<<<<< HEAD
       val RESPONSE_NAMES: List<String> = RESPONSE_FIELDS.map { it.responseName }
     }
 
@@ -146,6 +210,21 @@ class TestQuery_ResponseAdapter(
             0 -> name = stringAdapter.fromResponse(reader)
             else -> break
           }
+=======
+      override fun fromResponse(reader: ResponseReader, __typename: String?):
+          TestQuery.Data.Tree.Children {
+        return reader.run {
+          var name: String? = null
+          while(true) {
+            when (selectField(RESPONSE_FIELDS)) {
+              0 -> name = readString(RESPONSE_FIELDS[0])
+              else -> break
+            }
+          }
+          TestQuery.Data.Tree.Children(
+            name = name!!
+          )
+>>>>>>> dev-3.x
         }
         reader.endObject()
         return TestQuery.Data.Tree.Children(
@@ -153,11 +232,16 @@ class TestQuery_ResponseAdapter(
         )
       }
 
+<<<<<<< HEAD
       override fun toResponse(writer: JsonWriter, value: TestQuery.Data.Tree.Children) {
         writer.beginObject()
         writer.name("name")
         stringAdapter.toResponse(writer, value.name)
         writer.endObject()
+=======
+      override fun toResponse(writer: ResponseWriter, value: TestQuery.Data.Tree.Children) {
+        writer.writeString(RESPONSE_FIELDS[0], value.name)
+>>>>>>> dev-3.x
       }
 
       companion object {

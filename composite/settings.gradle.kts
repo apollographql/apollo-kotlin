@@ -21,11 +21,4 @@ if (System.getProperty("idea.sync.active") == null) {
     project(":multiplatform:kmp-android-app").projectDir = file("../samples/multiplatform/kmp-android-app")
 }
 
-if (System.getProperty("idea.sync.active") == null) {
-  include(":kotlin-sample")
-  project(":kotlin-sample").projectDir = file("../samples/kotlin-sample")
-  include(":multiplatform:kmp-android-app")
-  project(":multiplatform:kmp-android-app").projectDir = file("../samples/multiplatform/kmp-android-app")
-}
-
 includeBuild("../")

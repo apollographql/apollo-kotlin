@@ -24,6 +24,7 @@ import kotlin.collections.List
 @Suppress("NAME_SHADOWING", "UNUSED_ANONYMOUS_PARAMETER", "LocalVariableName",
     "RemoveExplicitTypeArguments", "NestedLambdaShadowedImplicitParameter", "PropertyName",
     "RemoveRedundantQualifierName")
+<<<<<<< HEAD
 class TestQuery_ResponseAdapter(
   customScalarAdapters: CustomScalarAdapters
 ) : ResponseAdapter<TestQuery.Data> {
@@ -41,6 +42,54 @@ class TestQuery_ResponseAdapter(
         0 -> reviews = nullableListOfNullableReviewsAdapter.fromResponse(reader)
         1 -> testNullableArguments = intAdapter.fromResponse(reader)
         else -> break
+=======
+object TestQuery_ResponseAdapter : ResponseAdapter<TestQuery.Data> {
+  val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
+    ResponseField(
+      type = ResponseField.Type.List(ResponseField.Type.Named.Object("Review")),
+      responseName = "reviews",
+      fieldName = "reviews",
+      arguments = mapOf<String, Any?>(
+        "episode" to "JEDI",
+        "starsInt" to 10,
+        "starsFloat" to 9.9),
+      conditions = emptyList(),
+      fieldSets = listOf(
+        ResponseField.FieldSet(null, Reviews.RESPONSE_FIELDS)
+      ),
+    ),
+    ResponseField(
+      type = ResponseField.Type.NotNull(ResponseField.Type.Named.Other("Int")),
+      responseName = "testNullableArguments",
+      fieldName = "testNullableArguments",
+      arguments = mapOf<String, Any?>(
+        "int" to null,
+        "string" to null,
+        "float" to null,
+        "review" to null,
+        "episode" to null,
+        "boolean" to null,
+        "list" to null),
+      conditions = emptyList(),
+      fieldSets = emptyList(),
+    )
+  )
+
+  override fun fromResponse(reader: ResponseReader, __typename: String?): TestQuery.Data {
+    return reader.run {
+      var reviews: List<TestQuery.Data.Reviews?>? = null
+      var testNullableArguments: Int? = null
+      while(true) {
+        when (selectField(RESPONSE_FIELDS)) {
+          0 -> reviews = readList<TestQuery.Data.Reviews>(RESPONSE_FIELDS[0]) { reader ->
+            reader.readObject<TestQuery.Data.Reviews> { reader ->
+              Reviews.fromResponse(reader)
+            }
+          }
+          1 -> testNullableArguments = readInt(RESPONSE_FIELDS[1])
+          else -> break
+        }
+>>>>>>> dev-3.x
       }
     }
     reader.endObject()
@@ -50,6 +99,7 @@ class TestQuery_ResponseAdapter(
     )
   }
 
+<<<<<<< HEAD
   override fun toResponse(writer: JsonWriter, value: TestQuery.Data) {
     writer.beginObject()
     writer.name("reviews")
@@ -60,6 +110,18 @@ class TestQuery_ResponseAdapter(
   }
 
   companion object {
+=======
+  override fun toResponse(writer: ResponseWriter, value: TestQuery.Data) {
+    writer.writeList(RESPONSE_FIELDS[0], value.reviews) { value, listItemWriter ->
+      listItemWriter.writeObject { writer ->
+        Reviews.toResponse(writer, value)
+      }
+    }
+    writer.writeInt(RESPONSE_FIELDS[1], value.testNullableArguments)
+  }
+
+  object Reviews : ResponseAdapter<TestQuery.Data.Reviews> {
+>>>>>>> dev-3.x
     val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
       ResponseField(
         type = ResponseField.Type.List(ResponseField.Type.Named.Object("Review")),
@@ -86,6 +148,7 @@ class TestQuery_ResponseAdapter(
       )
     )
 
+<<<<<<< HEAD
     val RESPONSE_NAMES: List<String> = RESPONSE_FIELDS.map { it.responseName }
   }
 
@@ -107,6 +170,23 @@ class TestQuery_ResponseAdapter(
           1 -> commentary = nullableStringAdapter.fromResponse(reader)
           else -> break
         }
+=======
+    override fun fromResponse(reader: ResponseReader, __typename: String?): TestQuery.Data.Reviews {
+      return reader.run {
+        var stars: Int? = null
+        var commentary: String? = null
+        while(true) {
+          when (selectField(RESPONSE_FIELDS)) {
+            0 -> stars = readInt(RESPONSE_FIELDS[0])
+            1 -> commentary = readString(RESPONSE_FIELDS[1])
+            else -> break
+          }
+        }
+        TestQuery.Data.Reviews(
+          stars = stars!!,
+          commentary = commentary
+        )
+>>>>>>> dev-3.x
       }
       reader.endObject()
       return TestQuery.Data.Reviews(
@@ -124,6 +204,7 @@ class TestQuery_ResponseAdapter(
       writer.endObject()
     }
 
+<<<<<<< HEAD
     companion object {
       val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
         ResponseField(
@@ -137,6 +218,11 @@ class TestQuery_ResponseAdapter(
       )
 
       val RESPONSE_NAMES: List<String> = RESPONSE_FIELDS.map { it.responseName }
+=======
+    override fun toResponse(writer: ResponseWriter, value: TestQuery.Data.Reviews) {
+      writer.writeInt(RESPONSE_FIELDS[0], value.stars)
+      writer.writeString(RESPONSE_FIELDS[1], value.commentary)
+>>>>>>> dev-3.x
     }
   }
 }

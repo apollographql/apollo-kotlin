@@ -105,6 +105,7 @@ class TestQuery_ResponseAdapter(
       }
     }
 
+<<<<<<< HEAD
     class CharacterSearch(
       customScalarAdapters: CustomScalarAdapters
     ) {
@@ -113,9 +114,51 @@ class TestQuery_ResponseAdapter(
       val nullableListOfNullableFriendsAdapter:
           ResponseAdapter<List<TestQuery.Data.Search.CharacterSearch.Friends?>?> =
           NullableResponseAdapter(ListResponseAdapter(NullableResponseAdapter(Friends(customScalarAdapters))))
+=======
+    object CharacterSearch : ResponseAdapter<TestQuery.Data.Search.CharacterSearch> {
+      val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
+        ResponseField(
+          type = ResponseField.Type.NotNull(ResponseField.Type.Named.Other("String")),
+          responseName = "__typename",
+          fieldName = "__typename",
+          arguments = emptyMap(),
+          conditions = emptyList(),
+          fieldSets = emptyList(),
+        ),
+        ResponseField(
+          type = ResponseField.Type.NotNull(ResponseField.Type.Named.Other("String")),
+          responseName = "id",
+          fieldName = "id",
+          arguments = emptyMap(),
+          conditions = emptyList(),
+          fieldSets = emptyList(),
+        ),
+        ResponseField(
+          type = ResponseField.Type.NotNull(ResponseField.Type.Named.Other("String")),
+          responseName = "name",
+          fieldName = "name",
+          arguments = emptyMap(),
+          conditions = emptyList(),
+          fieldSets = emptyList(),
+        ),
+        ResponseField(
+          type = ResponseField.Type.List(ResponseField.Type.Named.Object("Character")),
+          responseName = "friends",
+          fieldName = "friends",
+          arguments = emptyMap(),
+          conditions = emptyList(),
+          fieldSets = listOf(
+            ResponseField.FieldSet("Droid", Friends.CharacterDroidFriends.RESPONSE_FIELDS),
+            ResponseField.FieldSet("Human", Friends.CharacterHumanFriends.RESPONSE_FIELDS),
+            ResponseField.FieldSet(null, Friends.OtherFriends.RESPONSE_FIELDS),
+          ),
+        )
+      )
+>>>>>>> dev-3.x
 
       fun fromResponse(reader: JsonReader, __typename: String?):
           TestQuery.Data.Search.CharacterSearch {
+<<<<<<< HEAD
         var __typename: String? = __typename
         var id: String? = null
         var name: String? = null
@@ -127,6 +170,25 @@ class TestQuery_ResponseAdapter(
             2 -> name = stringAdapter.fromResponse(reader)
             3 -> friends = nullableListOfNullableFriendsAdapter.fromResponse(reader)
             else -> break
+=======
+        return reader.run {
+          var __typename: String? = __typename
+          var id: String? = null
+          var name: String? = null
+          var friends: List<TestQuery.Data.Search.CharacterSearch.Friends?>? = null
+          while(true) {
+            when (selectField(RESPONSE_FIELDS)) {
+              0 -> __typename = readString(RESPONSE_FIELDS[0])
+              1 -> id = readString(RESPONSE_FIELDS[1])
+              2 -> name = readString(RESPONSE_FIELDS[2])
+              3 -> friends = readList<TestQuery.Data.Search.CharacterSearch.Friends>(RESPONSE_FIELDS[3]) { reader ->
+                reader.readObject<TestQuery.Data.Search.CharacterSearch.Friends> { reader ->
+                  Friends.fromResponse(reader)
+                }
+              }
+              else -> break
+            }
+>>>>>>> dev-3.x
           }
         }
         return TestQuery.Data.Search.CharacterSearch(
@@ -137,6 +199,7 @@ class TestQuery_ResponseAdapter(
         )
       }
 
+<<<<<<< HEAD
       fun toResponse(writer: JsonWriter, value: TestQuery.Data.Search.CharacterSearch) {
         writer.beginObject()
         writer.name("__typename")
@@ -197,10 +260,33 @@ class TestQuery_ResponseAdapter(
             "Droid" -> CharacterDroidFriendsAdapter.fromResponse(reader, typename)
             "Human" -> CharacterHumanFriendsAdapter.fromResponse(reader, typename)
             else -> OtherFriendsAdapter.fromResponse(reader, typename)
+=======
+      override fun toResponse(writer: ResponseWriter,
+          value: TestQuery.Data.Search.CharacterSearch) {
+        writer.writeString(RESPONSE_FIELDS[0], value.__typename)
+        writer.writeString(RESPONSE_FIELDS[1], value.id)
+        writer.writeString(RESPONSE_FIELDS[2], value.name)
+        writer.writeList(RESPONSE_FIELDS[3], value.friends) { value, listItemWriter ->
+          listItemWriter.writeObject { writer ->
+            Friends.toResponse(writer, value)
+          }
+        }
+      }
+
+      object Friends : ResponseAdapter<TestQuery.Data.Search.CharacterSearch.Friends> {
+        override fun fromResponse(reader: ResponseReader, __typename: String?):
+            TestQuery.Data.Search.CharacterSearch.Friends {
+          val typename = __typename ?: reader.readString(ResponseField.Typename)
+          return when(typename) {
+            "Droid" -> CharacterDroidFriends.fromResponse(reader, typename)
+            "Human" -> CharacterHumanFriends.fromResponse(reader, typename)
+            else -> OtherFriends.fromResponse(reader, typename)
+>>>>>>> dev-3.x
           }
           .also { reader.endObject() }
         }
 
+<<<<<<< HEAD
         override fun toResponse(writer: JsonWriter,
             value: TestQuery.Data.Search.CharacterSearch.Friends) {
           when(value) {
@@ -237,6 +323,82 @@ class TestQuery_ResponseAdapter(
                 3 -> friends = nullableListOfNullableFriendsAdapter.fromResponse(reader)
                 else -> break
               }
+=======
+        override fun toResponse(writer: ResponseWriter,
+            value: TestQuery.Data.Search.CharacterSearch.Friends) {
+          when(value) {
+            is TestQuery.Data.Search.CharacterSearch.Friends.CharacterDroidFriends -> CharacterDroidFriends.toResponse(writer, value)
+            is TestQuery.Data.Search.CharacterSearch.Friends.CharacterHumanFriends -> CharacterHumanFriends.toResponse(writer, value)
+            is TestQuery.Data.Search.CharacterSearch.Friends.OtherFriends -> OtherFriends.toResponse(writer, value)
+          }
+        }
+
+        object CharacterDroidFriends :
+            ResponseAdapter<TestQuery.Data.Search.CharacterSearch.Friends.CharacterDroidFriends> {
+          val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
+            ResponseField(
+              type = ResponseField.Type.NotNull(ResponseField.Type.Named.Other("String")),
+              responseName = "__typename",
+              fieldName = "__typename",
+              arguments = emptyMap(),
+              conditions = emptyList(),
+              fieldSets = emptyList(),
+            ),
+            ResponseField(
+              type = ResponseField.Type.NotNull(ResponseField.Type.Named.Other("String")),
+              responseName = "name",
+              fieldName = "name",
+              arguments = emptyMap(),
+              conditions = emptyList(),
+              fieldSets = emptyList(),
+            ),
+            ResponseField(
+              type = ResponseField.Type.Named.Other("String"),
+              responseName = "primaryFunction",
+              fieldName = "primaryFunction",
+              arguments = emptyMap(),
+              conditions = emptyList(),
+              fieldSets = emptyList(),
+            ),
+            ResponseField(
+              type = ResponseField.Type.List(ResponseField.Type.Named.Object("Character")),
+              responseName = "friends",
+              fieldName = "friends",
+              arguments = emptyMap(),
+              conditions = emptyList(),
+              fieldSets = listOf(
+                ResponseField.FieldSet(null, Friends.RESPONSE_FIELDS)
+              ),
+            )
+          )
+
+          override fun fromResponse(reader: ResponseReader, __typename: String?):
+              TestQuery.Data.Search.CharacterSearch.Friends.CharacterDroidFriends {
+            return reader.run {
+              var __typename: String? = __typename
+              var name: String? = null
+              var primaryFunction: String? = null
+              var friends: List<TestQuery.Data.Search.CharacterSearch.Friends.CharacterDroidFriends.Friends?>? = null
+              while(true) {
+                when (selectField(RESPONSE_FIELDS)) {
+                  0 -> __typename = readString(RESPONSE_FIELDS[0])
+                  1 -> name = readString(RESPONSE_FIELDS[1])
+                  2 -> primaryFunction = readString(RESPONSE_FIELDS[2])
+                  3 -> friends = readList<TestQuery.Data.Search.CharacterSearch.Friends.CharacterDroidFriends.Friends>(RESPONSE_FIELDS[3]) { reader ->
+                    reader.readObject<TestQuery.Data.Search.CharacterSearch.Friends.CharacterDroidFriends.Friends> { reader ->
+                      Friends.fromResponse(reader)
+                    }
+                  }
+                  else -> break
+                }
+              }
+              TestQuery.Data.Search.CharacterSearch.Friends.CharacterDroidFriends(
+                __typename = __typename!!,
+                name = name!!,
+                primaryFunction = primaryFunction,
+                friends = friends
+              )
+>>>>>>> dev-3.x
             }
             return TestQuery.Data.Search.CharacterSearch.Friends.CharacterDroidFriends(
               __typename = __typename!!,
@@ -246,6 +408,7 @@ class TestQuery_ResponseAdapter(
             )
           }
 
+<<<<<<< HEAD
           fun toResponse(writer: JsonWriter,
               value: TestQuery.Data.Search.CharacterSearch.Friends.CharacterDroidFriends) {
             writer.beginObject()
@@ -261,6 +424,23 @@ class TestQuery_ResponseAdapter(
           }
 
           companion object {
+=======
+          override fun toResponse(writer: ResponseWriter,
+              value: TestQuery.Data.Search.CharacterSearch.Friends.CharacterDroidFriends) {
+            writer.writeString(RESPONSE_FIELDS[0], value.__typename)
+            writer.writeString(RESPONSE_FIELDS[1], value.name)
+            writer.writeString(RESPONSE_FIELDS[2], value.primaryFunction)
+            writer.writeList(RESPONSE_FIELDS[3], value.friends) { value, listItemWriter ->
+              listItemWriter.writeObject { writer ->
+                Friends.toResponse(writer, value)
+              }
+            }
+          }
+
+          object Friends :
+              ResponseAdapter<TestQuery.Data.Search.CharacterSearch.Friends.CharacterDroidFriends.Friends>
+              {
+>>>>>>> dev-3.x
             val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
               ResponseField.Typename,
               ResponseField(
@@ -280,9 +460,33 @@ class TestQuery_ResponseAdapter(
               )
             )
 
+<<<<<<< HEAD
             val RESPONSE_NAMES: List<String> = RESPONSE_FIELDS.map { it.responseName }
+=======
+            override fun fromResponse(reader: ResponseReader, __typename: String?):
+                TestQuery.Data.Search.CharacterSearch.Friends.CharacterDroidFriends.Friends {
+              return reader.run {
+                var id: String? = null
+                while(true) {
+                  when (selectField(RESPONSE_FIELDS)) {
+                    0 -> id = readString(RESPONSE_FIELDS[0])
+                    else -> break
+                  }
+                }
+                TestQuery.Data.Search.CharacterSearch.Friends.CharacterDroidFriends.Friends(
+                  id = id!!
+                )
+              }
+            }
+
+            override fun toResponse(writer: ResponseWriter,
+                value: TestQuery.Data.Search.CharacterSearch.Friends.CharacterDroidFriends.Friends) {
+              writer.writeString(RESPONSE_FIELDS[0], value.id)
+            }
+>>>>>>> dev-3.x
           }
 
+<<<<<<< HEAD
           class Friends(
             customScalarAdapters: CustomScalarAdapters
           ) :
@@ -303,6 +507,74 @@ class TestQuery_ResponseAdapter(
               reader.endObject()
               return TestQuery.Data.Search.CharacterSearch.Friends.CharacterDroidFriends.Friends(
                 id = id!!
+=======
+        object CharacterHumanFriends :
+            ResponseAdapter<TestQuery.Data.Search.CharacterSearch.Friends.CharacterHumanFriends> {
+          val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
+            ResponseField(
+              type = ResponseField.Type.NotNull(ResponseField.Type.Named.Other("String")),
+              responseName = "__typename",
+              fieldName = "__typename",
+              arguments = emptyMap(),
+              conditions = emptyList(),
+              fieldSets = emptyList(),
+            ),
+            ResponseField(
+              type = ResponseField.Type.NotNull(ResponseField.Type.Named.Other("String")),
+              responseName = "name",
+              fieldName = "name",
+              arguments = emptyMap(),
+              conditions = emptyList(),
+              fieldSets = emptyList(),
+            ),
+            ResponseField(
+              type = ResponseField.Type.Named.Other("String"),
+              responseName = "homePlanet",
+              fieldName = "homePlanet",
+              arguments = emptyMap(),
+              conditions = emptyList(),
+              fieldSets = emptyList(),
+            ),
+            ResponseField(
+              type = ResponseField.Type.List(ResponseField.Type.Named.Object("Character")),
+              responseName = "friends",
+              fieldName = "friends",
+              arguments = emptyMap(),
+              conditions = emptyList(),
+              fieldSets = listOf(
+                ResponseField.FieldSet("Droid", Friends.CharacterFriends.RESPONSE_FIELDS),
+                ResponseField.FieldSet("Human", Friends.CharacterFriends.RESPONSE_FIELDS),
+                ResponseField.FieldSet(null, Friends.OtherFriends.RESPONSE_FIELDS),
+              ),
+            )
+          )
+
+          override fun fromResponse(reader: ResponseReader, __typename: String?):
+              TestQuery.Data.Search.CharacterSearch.Friends.CharacterHumanFriends {
+            return reader.run {
+              var __typename: String? = __typename
+              var name: String? = null
+              var homePlanet: String? = null
+              var friends: List<TestQuery.Data.Search.CharacterSearch.Friends.CharacterHumanFriends.Friends?>? = null
+              while(true) {
+                when (selectField(RESPONSE_FIELDS)) {
+                  0 -> __typename = readString(RESPONSE_FIELDS[0])
+                  1 -> name = readString(RESPONSE_FIELDS[1])
+                  2 -> homePlanet = readString(RESPONSE_FIELDS[2])
+                  3 -> friends = readList<TestQuery.Data.Search.CharacterSearch.Friends.CharacterHumanFriends.Friends>(RESPONSE_FIELDS[3]) { reader ->
+                    reader.readObject<TestQuery.Data.Search.CharacterSearch.Friends.CharacterHumanFriends.Friends> { reader ->
+                      Friends.fromResponse(reader)
+                    }
+                  }
+                  else -> break
+                }
+              }
+              TestQuery.Data.Search.CharacterSearch.Friends.CharacterHumanFriends(
+                __typename = __typename!!,
+                name = name!!,
+                homePlanet = homePlanet,
+                friends = friends
+>>>>>>> dev-3.x
               )
             }
 
@@ -327,6 +599,7 @@ class TestQuery_ResponseAdapter(
           }
         }
 
+<<<<<<< HEAD
         class CharacterHumanFriends(
           customScalarAdapters: CustomScalarAdapters
         ) {
@@ -353,6 +626,16 @@ class TestQuery_ResponseAdapter(
                 2 -> homePlanet = nullableStringAdapter.fromResponse(reader)
                 3 -> friends = nullableListOfNullableFriendsAdapter.fromResponse(reader)
                 else -> break
+=======
+          override fun toResponse(writer: ResponseWriter,
+              value: TestQuery.Data.Search.CharacterSearch.Friends.CharacterHumanFriends) {
+            writer.writeString(RESPONSE_FIELDS[0], value.__typename)
+            writer.writeString(RESPONSE_FIELDS[1], value.name)
+            writer.writeString(RESPONSE_FIELDS[2], value.homePlanet)
+            writer.writeList(RESPONSE_FIELDS[3], value.friends) { value, listItemWriter ->
+              listItemWriter.writeObject { writer ->
+                Friends.toResponse(writer, value)
+>>>>>>> dev-3.x
               }
             }
             return TestQuery.Data.Search.CharacterSearch.Friends.CharacterHumanFriends(
@@ -402,6 +685,7 @@ class TestQuery_ResponseAdapter(
             val RESPONSE_NAMES: List<String> = RESPONSE_FIELDS.map { it.responseName }
           }
 
+<<<<<<< HEAD
           class Friends(
             customScalarAdapters: CustomScalarAdapters
           ) :
@@ -423,10 +707,23 @@ class TestQuery_ResponseAdapter(
                 "Droid" -> CharacterFriendsAdapter.fromResponse(reader, typename)
                 "Human" -> CharacterFriendsAdapter.fromResponse(reader, typename)
                 else -> OtherFriendsAdapter.fromResponse(reader, typename)
+=======
+          object Friends :
+              ResponseAdapter<TestQuery.Data.Search.CharacterSearch.Friends.CharacterHumanFriends.Friends>
+              {
+            override fun fromResponse(reader: ResponseReader, __typename: String?):
+                TestQuery.Data.Search.CharacterSearch.Friends.CharacterHumanFriends.Friends {
+              val typename = __typename ?: reader.readString(ResponseField.Typename)
+              return when(typename) {
+                "Droid" -> CharacterFriends.fromResponse(reader, typename)
+                "Human" -> CharacterFriends.fromResponse(reader, typename)
+                else -> OtherFriends.fromResponse(reader, typename)
+>>>>>>> dev-3.x
               }
               .also { reader.endObject() }
             }
 
+<<<<<<< HEAD
             override fun toResponse(writer: JsonWriter,
                 value: TestQuery.Data.Search.CharacterSearch.Friends.CharacterHumanFriends.Friends) {
               when(value) {
@@ -452,6 +749,54 @@ class TestQuery_ResponseAdapter(
                     1 -> firstAppearsIn = episodeAdapter.fromResponse(reader)
                     else -> break
                   }
+=======
+            override fun toResponse(writer: ResponseWriter,
+                value: TestQuery.Data.Search.CharacterSearch.Friends.CharacterHumanFriends.Friends) {
+              when(value) {
+                is TestQuery.Data.Search.CharacterSearch.Friends.CharacterHumanFriends.Friends.CharacterFriends -> CharacterFriends.toResponse(writer, value)
+                is TestQuery.Data.Search.CharacterSearch.Friends.CharacterHumanFriends.Friends.OtherFriends -> OtherFriends.toResponse(writer, value)
+              }
+            }
+
+            object CharacterFriends :
+                ResponseAdapter<TestQuery.Data.Search.CharacterSearch.Friends.CharacterHumanFriends.Friends.CharacterFriends>
+                {
+              val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
+                ResponseField(
+                  type = ResponseField.Type.NotNull(ResponseField.Type.Named.Other("String")),
+                  responseName = "__typename",
+                  fieldName = "__typename",
+                  arguments = emptyMap(),
+                  conditions = emptyList(),
+                  fieldSets = emptyList(),
+                ),
+                ResponseField(
+                  type = ResponseField.Type.NotNull(ResponseField.Type.Named.Other("Episode")),
+                  responseName = "firstAppearsIn",
+                  fieldName = "firstAppearsIn",
+                  arguments = emptyMap(),
+                  conditions = emptyList(),
+                  fieldSets = emptyList(),
+                )
+              )
+
+              override fun fromResponse(reader: ResponseReader, __typename: String?):
+                  TestQuery.Data.Search.CharacterSearch.Friends.CharacterHumanFriends.Friends.CharacterFriends {
+                return reader.run {
+                  var __typename: String? = __typename
+                  var firstAppearsIn: Episode? = null
+                  while(true) {
+                    when (selectField(RESPONSE_FIELDS)) {
+                      0 -> __typename = readString(RESPONSE_FIELDS[0])
+                      1 -> firstAppearsIn = readString(RESPONSE_FIELDS[1])?.let { Episode.safeValueOf(it) }
+                      else -> break
+                    }
+                  }
+                  TestQuery.Data.Search.CharacterSearch.Friends.CharacterHumanFriends.Friends.CharacterFriends(
+                    __typename = __typename!!,
+                    firstAppearsIn = firstAppearsIn!!
+                  )
+>>>>>>> dev-3.x
                 }
                 return TestQuery.Data.Search.CharacterSearch.Friends.CharacterHumanFriends.Friends.CharacterFriends(
                   __typename = __typename!!,
@@ -459,6 +804,7 @@ class TestQuery_ResponseAdapter(
                 )
               }
 
+<<<<<<< HEAD
               fun toResponse(writer: JsonWriter,
                   value: TestQuery.Data.Search.CharacterSearch.Friends.CharacterHumanFriends.Friends.CharacterFriends) {
                 writer.beginObject()
@@ -467,8 +813,15 @@ class TestQuery_ResponseAdapter(
                 writer.name("firstAppearsIn")
                 episodeAdapter.toResponse(writer, value.firstAppearsIn)
                 writer.endObject()
+=======
+              override fun toResponse(writer: ResponseWriter,
+                  value: TestQuery.Data.Search.CharacterSearch.Friends.CharacterHumanFriends.Friends.CharacterFriends) {
+                writer.writeString(RESPONSE_FIELDS[0], value.__typename)
+                writer.writeString(RESPONSE_FIELDS[1], value.firstAppearsIn.rawValue)
+>>>>>>> dev-3.x
               }
 
+<<<<<<< HEAD
               companion object {
                 val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
                   ResponseField.Typename,
@@ -476,8 +829,22 @@ class TestQuery_ResponseAdapter(
                     type = ResponseField.Type.NotNull(ResponseField.Type.Named.Other("Episode")),
                     fieldName = "firstAppearsIn",
                   )
+=======
+            object OtherFriends :
+                ResponseAdapter<TestQuery.Data.Search.CharacterSearch.Friends.CharacterHumanFriends.Friends.OtherFriends>
+                {
+              val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
+                ResponseField(
+                  type = ResponseField.Type.NotNull(ResponseField.Type.Named.Other("String")),
+                  responseName = "__typename",
+                  fieldName = "__typename",
+                  arguments = emptyMap(),
+                  conditions = emptyList(),
+                  fieldSets = emptyList(),
+>>>>>>> dev-3.x
                 )
 
+<<<<<<< HEAD
                 val RESPONSE_NAMES: List<String> = RESPONSE_FIELDS.map { it.responseName }
               }
             }
@@ -495,6 +862,21 @@ class TestQuery_ResponseAdapter(
                     0 -> __typename = stringAdapter.fromResponse(reader)
                     else -> break
                   }
+=======
+              override fun fromResponse(reader: ResponseReader, __typename: String?):
+                  TestQuery.Data.Search.CharacterSearch.Friends.CharacterHumanFriends.Friends.OtherFriends {
+                return reader.run {
+                  var __typename: String? = __typename
+                  while(true) {
+                    when (selectField(RESPONSE_FIELDS)) {
+                      0 -> __typename = readString(RESPONSE_FIELDS[0])
+                      else -> break
+                    }
+                  }
+                  TestQuery.Data.Search.CharacterSearch.Friends.CharacterHumanFriends.Friends.OtherFriends(
+                    __typename = __typename!!
+                  )
+>>>>>>> dev-3.x
                 }
                 return TestQuery.Data.Search.CharacterSearch.Friends.CharacterHumanFriends.Friends.OtherFriends(
                   __typename = __typename!!
@@ -509,17 +891,24 @@ class TestQuery_ResponseAdapter(
                 writer.endObject()
               }
 
+<<<<<<< HEAD
               companion object {
                 val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
                   ResponseField.Typename
                 )
 
                 val RESPONSE_NAMES: List<String> = RESPONSE_FIELDS.map { it.responseName }
+=======
+              override fun toResponse(writer: ResponseWriter,
+                  value: TestQuery.Data.Search.CharacterSearch.Friends.CharacterHumanFriends.Friends.OtherFriends) {
+                writer.writeString(RESPONSE_FIELDS[0], value.__typename)
+>>>>>>> dev-3.x
               }
             }
           }
         }
 
+<<<<<<< HEAD
         class OtherFriends(
           customScalarAdapters: CustomScalarAdapters
         ) {
@@ -533,12 +922,41 @@ class TestQuery_ResponseAdapter(
                 0 -> __typename = stringAdapter.fromResponse(reader)
                 else -> break
               }
+=======
+        object OtherFriends :
+            ResponseAdapter<TestQuery.Data.Search.CharacterSearch.Friends.OtherFriends> {
+          val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
+            ResponseField(
+              type = ResponseField.Type.NotNull(ResponseField.Type.Named.Other("String")),
+              responseName = "__typename",
+              fieldName = "__typename",
+              arguments = emptyMap(),
+              conditions = emptyList(),
+              fieldSets = emptyList(),
+            )
+          )
+
+          override fun fromResponse(reader: ResponseReader, __typename: String?):
+              TestQuery.Data.Search.CharacterSearch.Friends.OtherFriends {
+            return reader.run {
+              var __typename: String? = __typename
+              while(true) {
+                when (selectField(RESPONSE_FIELDS)) {
+                  0 -> __typename = readString(RESPONSE_FIELDS[0])
+                  else -> break
+                }
+              }
+              TestQuery.Data.Search.CharacterSearch.Friends.OtherFriends(
+                __typename = __typename!!
+              )
+>>>>>>> dev-3.x
             }
             return TestQuery.Data.Search.CharacterSearch.Friends.OtherFriends(
               __typename = __typename!!
             )
           }
 
+<<<<<<< HEAD
           fun toResponse(writer: JsonWriter,
               value: TestQuery.Data.Search.CharacterSearch.Friends.OtherFriends) {
             writer.beginObject()
@@ -553,6 +971,11 @@ class TestQuery_ResponseAdapter(
             )
 
             val RESPONSE_NAMES: List<String> = RESPONSE_FIELDS.map { it.responseName }
+=======
+          override fun toResponse(writer: ResponseWriter,
+              value: TestQuery.Data.Search.CharacterSearch.Friends.OtherFriends) {
+            writer.writeString(RESPONSE_FIELDS[0], value.__typename)
+>>>>>>> dev-3.x
           }
         }
       }

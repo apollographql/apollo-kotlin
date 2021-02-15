@@ -71,11 +71,16 @@ class TestQuery_ResponseAdapter(
         arguments = mapOf<String, Any?>(
           "name" to "Vehicle"),
         fieldSets = listOf(
+<<<<<<< HEAD
           ResponseField.FieldSet(null, __Type.RESPONSE_FIELDS)
+=======
+          ResponseField.FieldSet(null, Types.RESPONSE_FIELDS)
+>>>>>>> dev-3.x
         ),
       )
     )
 
+<<<<<<< HEAD
     val RESPONSE_NAMES: List<String> = RESPONSE_FIELDS.map { it.responseName }
   }
 
@@ -97,6 +102,25 @@ class TestQuery_ResponseAdapter(
           0 -> queryType = queryTypeAdapter.fromResponse(reader)
           1 -> types = listOfTypesAdapter.fromResponse(reader)
           else -> break
+=======
+    override fun fromResponse(reader: ResponseReader, __typename: String?):
+        TestQuery.Data.__Schema {
+      return reader.run {
+        var queryType: TestQuery.Data.__Schema.QueryType? = null
+        var types: List<TestQuery.Data.__Schema.Types>? = null
+        while(true) {
+          when (selectField(RESPONSE_FIELDS)) {
+            0 -> queryType = readObject<TestQuery.Data.__Schema.QueryType>(RESPONSE_FIELDS[0]) { reader ->
+              QueryType.fromResponse(reader)
+            }
+            1 -> types = readList<TestQuery.Data.__Schema.Types>(RESPONSE_FIELDS[1]) { reader ->
+              reader.readObject<TestQuery.Data.__Schema.Types> { reader ->
+                Types.fromResponse(reader)
+              }
+            }?.map { it!! }
+            else -> break
+          }
+>>>>>>> dev-3.x
         }
       }
       reader.endObject()
@@ -106,6 +130,7 @@ class TestQuery_ResponseAdapter(
       )
     }
 
+<<<<<<< HEAD
     override fun toResponse(writer: JsonWriter, value: TestQuery.Data.__Schema) {
       writer.beginObject()
       writer.name("queryType")
@@ -113,6 +138,17 @@ class TestQuery_ResponseAdapter(
       writer.name("types")
       listOfTypesAdapter.toResponse(writer, value.types)
       writer.endObject()
+=======
+    override fun toResponse(writer: ResponseWriter, value: TestQuery.Data.__Schema) {
+      writer.writeObject(RESPONSE_FIELDS[0]) { writer ->
+        QueryType.toResponse(writer, value.queryType)
+      }
+      writer.writeList(RESPONSE_FIELDS[1], value.types) { value, listItemWriter ->
+        listItemWriter.writeObject { writer ->
+          Types.toResponse(writer, value)
+        }
+      }
+>>>>>>> dev-3.x
     }
 
     companion object {
@@ -165,15 +201,47 @@ class TestQuery_ResponseAdapter(
         writer.endObject()
       }
 
+<<<<<<< HEAD
       companion object {
         val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
           ResponseField(
             type = ResponseField.Type.Named.Other("String"),
             fieldName = "name",
+=======
+    object Types : ResponseAdapter<TestQuery.Data.__Schema.Types> {
+      val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
+        ResponseField(
+          type = ResponseField.Type.Named.Other("String"),
+          responseName = "name",
+          fieldName = "name",
+          arguments = emptyMap(),
+          conditions = emptyList(),
+          fieldSets = emptyList(),
+        )
+      )
+
+      override fun fromResponse(reader: ResponseReader, __typename: String?):
+          TestQuery.Data.__Schema.Types {
+        return reader.run {
+          var name: String? = null
+          while(true) {
+            when (selectField(RESPONSE_FIELDS)) {
+              0 -> name = readString(RESPONSE_FIELDS[0])
+              else -> break
+            }
+          }
+          TestQuery.Data.__Schema.Types(
+            name = name
+>>>>>>> dev-3.x
           )
         )
 
+<<<<<<< HEAD
         val RESPONSE_NAMES: List<String> = RESPONSE_FIELDS.map { it.responseName }
+=======
+      override fun toResponse(writer: ResponseWriter, value: TestQuery.Data.__Schema.Types) {
+        writer.writeString(RESPONSE_FIELDS[0], value.name)
+>>>>>>> dev-3.x
       }
     }
 

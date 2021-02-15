@@ -22,7 +22,7 @@ class ApolloiOSRepository(private val repository: ApolloCoroutinesRepository) {
     }
   }
 
-  fun fetchCommits(repositoryName: String, success: (List<GithubRepositoryCommitsQuery.Data.Viewer.Repository.Ref.Target.Commit.History.Edge?>) -> Unit) {
+  fun fetchCommits(repositoryName: String, success: (List<GithubRepositoryCommitsQuery.Data.Viewer.Repository.Ref.Target.CommitTarget.History.Edges?>) -> Unit) {
     GlobalScope.launch(MainLoopDispatcher) {
       success(repository.fetchCommits(repositoryName))
     }
