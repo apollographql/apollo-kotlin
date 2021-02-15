@@ -5,7 +5,7 @@
 //
 package com.example.fragment_with_inline_fragment.fragment.adapter
 
-import com.apollographql.apollo.api.CustomScalarAdapters
+import com.apollographql.apollo.api.ResponseAdapterCache
 import com.apollographql.apollo.api.ResponseField
 import com.apollographql.apollo.api.internal.ListResponseAdapter
 import com.apollographql.apollo.api.internal.NullableResponseAdapter
@@ -25,7 +25,7 @@ import kotlin.collections.List
     "RemoveExplicitTypeArguments", "NestedLambdaShadowedImplicitParameter", "PropertyName",
     "RemoveRedundantQualifierName")
 class HeroDetailsImpl_ResponseAdapter(
-  customScalarAdapters: CustomScalarAdapters
+  customScalarAdapters: ResponseAdapterCache
 ) : ResponseAdapter<HeroDetailsImpl.Data> {
   val DroidDataAdapter: DroidData =
       com.example.fragment_with_inline_fragment.fragment.adapter.HeroDetailsImpl_ResponseAdapter.DroidData(customScalarAdapters)
@@ -58,7 +58,7 @@ class HeroDetailsImpl_ResponseAdapter(
   }
 
   class DroidData(
-    customScalarAdapters: CustomScalarAdapters
+    customScalarAdapters: ResponseAdapterCache
   ) {
     val stringAdapter: ResponseAdapter<String> = stringResponseAdapter
 
@@ -127,7 +127,7 @@ class HeroDetailsImpl_ResponseAdapter(
     }
 
     class FriendsConnection(
-      customScalarAdapters: CustomScalarAdapters
+      customScalarAdapters: ResponseAdapterCache
     ) : ResponseAdapter<HeroDetailsImpl.Data.DroidData.FriendsConnection> {
       val nullableIntAdapter: ResponseAdapter<Int?> = NullableResponseAdapter(intResponseAdapter)
 
@@ -183,7 +183,7 @@ class HeroDetailsImpl_ResponseAdapter(
       }
 
       class Edges(
-        customScalarAdapters: CustomScalarAdapters
+        customScalarAdapters: ResponseAdapterCache
       ) : ResponseAdapter<HeroDetailsImpl.Data.DroidData.FriendsConnection.Edges> {
         val nullableNodeAdapter:
             ResponseAdapter<HeroDetailsImpl.Data.DroidData.FriendsConnection.Edges.Node?> =
@@ -228,7 +228,7 @@ class HeroDetailsImpl_ResponseAdapter(
         }
 
         class Node(
-          customScalarAdapters: CustomScalarAdapters
+          customScalarAdapters: ResponseAdapterCache
         ) : ResponseAdapter<HeroDetailsImpl.Data.DroidData.FriendsConnection.Edges.Node> {
           val stringAdapter: ResponseAdapter<String> = stringResponseAdapter
 
@@ -272,7 +272,7 @@ class HeroDetailsImpl_ResponseAdapter(
   }
 
   class HumanData(
-    customScalarAdapters: CustomScalarAdapters
+    customScalarAdapters: ResponseAdapterCache
   ) {
     val stringAdapter: ResponseAdapter<String> = stringResponseAdapter
 
@@ -329,7 +329,7 @@ class HeroDetailsImpl_ResponseAdapter(
     }
 
     class FriendsConnection(
-      customScalarAdapters: CustomScalarAdapters
+      customScalarAdapters: ResponseAdapterCache
     ) : ResponseAdapter<HeroDetailsImpl.Data.HumanData.FriendsConnection> {
       val nullableIntAdapter: ResponseAdapter<Int?> = NullableResponseAdapter(intResponseAdapter)
 
@@ -385,7 +385,7 @@ class HeroDetailsImpl_ResponseAdapter(
       }
 
       class Edges(
-        customScalarAdapters: CustomScalarAdapters
+        customScalarAdapters: ResponseAdapterCache
       ) : ResponseAdapter<HeroDetailsImpl.Data.HumanData.FriendsConnection.Edges> {
         val nullableNodeAdapter:
             ResponseAdapter<HeroDetailsImpl.Data.HumanData.FriendsConnection.Edges.Node?> =
@@ -430,7 +430,7 @@ class HeroDetailsImpl_ResponseAdapter(
         }
 
         class Node(
-          customScalarAdapters: CustomScalarAdapters
+          customScalarAdapters: ResponseAdapterCache
         ) : ResponseAdapter<HeroDetailsImpl.Data.HumanData.FriendsConnection.Edges.Node> {
           val stringAdapter: ResponseAdapter<String> = stringResponseAdapter
 
@@ -474,7 +474,7 @@ class HeroDetailsImpl_ResponseAdapter(
   }
 
   class OtherData(
-    customScalarAdapters: CustomScalarAdapters
+    customScalarAdapters: ResponseAdapterCache
   ) {
     val stringAdapter: ResponseAdapter<String> = stringResponseAdapter
 
@@ -531,7 +531,7 @@ class HeroDetailsImpl_ResponseAdapter(
     }
 
     class FriendsConnection(
-      customScalarAdapters: CustomScalarAdapters
+      customScalarAdapters: ResponseAdapterCache
     ) : ResponseAdapter<HeroDetailsImpl.Data.OtherData.FriendsConnection> {
       val nullableIntAdapter: ResponseAdapter<Int?> = NullableResponseAdapter(intResponseAdapter)
 
@@ -587,7 +587,7 @@ class HeroDetailsImpl_ResponseAdapter(
       }
 
       class Edges(
-        customScalarAdapters: CustomScalarAdapters
+        customScalarAdapters: ResponseAdapterCache
       ) : ResponseAdapter<HeroDetailsImpl.Data.OtherData.FriendsConnection.Edges> {
         val nullableNodeAdapter:
             ResponseAdapter<HeroDetailsImpl.Data.OtherData.FriendsConnection.Edges.Node?> =
@@ -632,7 +632,7 @@ class HeroDetailsImpl_ResponseAdapter(
         }
 
         class Node(
-          customScalarAdapters: CustomScalarAdapters
+          customScalarAdapters: ResponseAdapterCache
         ) : ResponseAdapter<HeroDetailsImpl.Data.OtherData.FriendsConnection.Edges.Node> {
           val stringAdapter: ResponseAdapter<String> = stringResponseAdapter
 

@@ -5,7 +5,7 @@
 //
 package com.example.hero_with_review.adapter
 
-import com.apollographql.apollo.api.CustomScalarAdapters
+import com.apollographql.apollo.api.ResponseAdapterCache
 import com.apollographql.apollo.api.ResponseField
 import com.apollographql.apollo.api.internal.NullableResponseAdapter
 import com.apollographql.apollo.api.internal.ResponseAdapter
@@ -24,7 +24,7 @@ import kotlin.collections.List
     "RemoveExplicitTypeArguments", "NestedLambdaShadowedImplicitParameter", "PropertyName",
     "RemoveRedundantQualifierName")
 class TestQuery_ResponseAdapter(
-  customScalarAdapters: CustomScalarAdapters
+  customScalarAdapters: ResponseAdapterCache
 ) : ResponseAdapter<TestQuery.Data> {
   val nullableCreateReviewAdapter: ResponseAdapter<TestQuery.Data.CreateReview?> =
       NullableResponseAdapter(CreateReview(customScalarAdapters))
@@ -83,7 +83,7 @@ class TestQuery_ResponseAdapter(
   }
 
   class CreateReview(
-    customScalarAdapters: CustomScalarAdapters
+    customScalarAdapters: ResponseAdapterCache
   ) : ResponseAdapter<TestQuery.Data.CreateReview> {
     val intAdapter: ResponseAdapter<Int> = intResponseAdapter
 

@@ -5,7 +5,7 @@
 //
 package com.example.named_fragment_delegate.fragment.adapter
 
-import com.apollographql.apollo.api.CustomScalarAdapters
+import com.apollographql.apollo.api.ResponseAdapterCache
 import com.apollographql.apollo.api.ResponseField
 import com.apollographql.apollo.api.internal.ListResponseAdapter
 import com.apollographql.apollo.api.internal.NullableResponseAdapter
@@ -25,7 +25,7 @@ import kotlin.collections.List
     "RemoveExplicitTypeArguments", "NestedLambdaShadowedImplicitParameter", "PropertyName",
     "RemoveRedundantQualifierName")
 class HumanDetailsImpl_ResponseAdapter(
-  customScalarAdapters: CustomScalarAdapters
+  customScalarAdapters: ResponseAdapterCache
 ) : ResponseAdapter<HumanDetailsImpl.Data> {
   val stringAdapter: ResponseAdapter<String> = stringResponseAdapter
 
@@ -96,7 +96,7 @@ class HumanDetailsImpl_ResponseAdapter(
   }
 
   class FriendsConnection(
-    customScalarAdapters: CustomScalarAdapters
+    customScalarAdapters: ResponseAdapterCache
   ) : ResponseAdapter<HumanDetailsImpl.Data.FriendsConnection> {
     val nullableListOfNullableEdgesAdapter:
         ResponseAdapter<List<HumanDetailsImpl.Data.FriendsConnection.Edges?>?> =
@@ -139,7 +139,7 @@ class HumanDetailsImpl_ResponseAdapter(
     }
 
     class Edges(
-      customScalarAdapters: CustomScalarAdapters
+      customScalarAdapters: ResponseAdapterCache
     ) : ResponseAdapter<HumanDetailsImpl.Data.FriendsConnection.Edges> {
       val nullableNodeAdapter: ResponseAdapter<HumanDetailsImpl.Data.FriendsConnection.Edges.Node?>
           = NullableResponseAdapter(Node(customScalarAdapters))
@@ -182,7 +182,7 @@ class HumanDetailsImpl_ResponseAdapter(
       }
 
       class Node(
-        customScalarAdapters: CustomScalarAdapters
+        customScalarAdapters: ResponseAdapterCache
       ) : ResponseAdapter<HumanDetailsImpl.Data.FriendsConnection.Edges.Node> {
         val stringAdapter: ResponseAdapter<String> = stringResponseAdapter
 

@@ -5,7 +5,7 @@
 //
 package com.example.named_fragment_with_variables.fragment.adapter
 
-import com.apollographql.apollo.api.CustomScalarAdapters
+import com.apollographql.apollo.api.ResponseAdapterCache
 import com.apollographql.apollo.api.ResponseField
 import com.apollographql.apollo.api.internal.ListResponseAdapter
 import com.apollographql.apollo.api.internal.NullableResponseAdapter
@@ -23,7 +23,7 @@ import kotlin.collections.List
     "RemoveExplicitTypeArguments", "NestedLambdaShadowedImplicitParameter", "PropertyName",
     "RemoveRedundantQualifierName")
 class QueryFragmentImpl_ResponseAdapter(
-  customScalarAdapters: CustomScalarAdapters
+  customScalarAdapters: ResponseAdapterCache
 ) : ResponseAdapter<QueryFragmentImpl.Data> {
   val stringAdapter: ResponseAdapter<String> = stringResponseAdapter
 
@@ -77,7 +77,7 @@ class QueryFragmentImpl_ResponseAdapter(
   }
 
   class Organization(
-    customScalarAdapters: CustomScalarAdapters
+    customScalarAdapters: ResponseAdapterCache
   ) : ResponseAdapter<QueryFragmentImpl.Data.Organization> {
     val stringAdapter: ResponseAdapter<String> = stringResponseAdapter
 
@@ -136,7 +136,7 @@ class QueryFragmentImpl_ResponseAdapter(
     }
 
     class User(
-      customScalarAdapters: CustomScalarAdapters
+      customScalarAdapters: ResponseAdapterCache
     ) : ResponseAdapter<QueryFragmentImpl.Data.Organization.User> {
       val UserUserAdapter: UserUser =
           com.example.named_fragment_with_variables.fragment.adapter.QueryFragmentImpl_ResponseAdapter.Organization.User.UserUser(customScalarAdapters)
@@ -164,7 +164,7 @@ class QueryFragmentImpl_ResponseAdapter(
       }
 
       class UserUser(
-        customScalarAdapters: CustomScalarAdapters
+        customScalarAdapters: ResponseAdapterCache
       ) {
         val stringAdapter: ResponseAdapter<String> = stringResponseAdapter
 
@@ -231,7 +231,7 @@ class QueryFragmentImpl_ResponseAdapter(
       }
 
       class OtherUser(
-        customScalarAdapters: CustomScalarAdapters
+        customScalarAdapters: ResponseAdapterCache
       ) {
         val stringAdapter: ResponseAdapter<String> = stringResponseAdapter
 

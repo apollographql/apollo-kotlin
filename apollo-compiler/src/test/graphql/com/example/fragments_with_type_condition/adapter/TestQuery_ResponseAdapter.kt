@@ -5,7 +5,7 @@
 //
 package com.example.fragments_with_type_condition.adapter
 
-import com.apollographql.apollo.api.CustomScalarAdapters
+import com.apollographql.apollo.api.ResponseAdapterCache
 import com.apollographql.apollo.api.ResponseField
 import com.apollographql.apollo.api.internal.NullableResponseAdapter
 import com.apollographql.apollo.api.internal.ResponseAdapter
@@ -24,7 +24,7 @@ import kotlin.collections.List
     "RemoveExplicitTypeArguments", "NestedLambdaShadowedImplicitParameter", "PropertyName",
     "RemoveRedundantQualifierName")
 class TestQuery_ResponseAdapter(
-  customScalarAdapters: CustomScalarAdapters
+  customScalarAdapters: ResponseAdapterCache
 ) : ResponseAdapter<TestQuery.Data> {
   val nullableR2Adapter: ResponseAdapter<TestQuery.Data.R2?> =
       NullableResponseAdapter(R2(customScalarAdapters))
@@ -87,7 +87,7 @@ class TestQuery_ResponseAdapter(
   }
 
   class R2(
-    customScalarAdapters: CustomScalarAdapters
+    customScalarAdapters: ResponseAdapterCache
   ) : ResponseAdapter<TestQuery.Data.R2> {
     val HumanR2Adapter: HumanR2 =
         com.example.fragments_with_type_condition.adapter.TestQuery_ResponseAdapter.R2.HumanR2(customScalarAdapters)
@@ -120,7 +120,7 @@ class TestQuery_ResponseAdapter(
     }
 
     class HumanR2(
-      customScalarAdapters: CustomScalarAdapters
+      customScalarAdapters: ResponseAdapterCache
     ) {
       val stringAdapter: ResponseAdapter<String> = stringResponseAdapter
 
@@ -175,7 +175,7 @@ class TestQuery_ResponseAdapter(
     }
 
     class DroidR2(
-      customScalarAdapters: CustomScalarAdapters
+      customScalarAdapters: ResponseAdapterCache
     ) {
       val stringAdapter: ResponseAdapter<String> = stringResponseAdapter
 
@@ -230,7 +230,7 @@ class TestQuery_ResponseAdapter(
     }
 
     class OtherR2(
-      customScalarAdapters: CustomScalarAdapters
+      customScalarAdapters: ResponseAdapterCache
     ) {
       val stringAdapter: ResponseAdapter<String> = stringResponseAdapter
 
@@ -265,7 +265,7 @@ class TestQuery_ResponseAdapter(
   }
 
   class Luke(
-    customScalarAdapters: CustomScalarAdapters
+    customScalarAdapters: ResponseAdapterCache
   ) : ResponseAdapter<TestQuery.Data.Luke> {
     val HumanLukeAdapter: HumanLuke =
         com.example.fragments_with_type_condition.adapter.TestQuery_ResponseAdapter.Luke.HumanLuke(customScalarAdapters)
@@ -298,7 +298,7 @@ class TestQuery_ResponseAdapter(
     }
 
     class HumanLuke(
-      customScalarAdapters: CustomScalarAdapters
+      customScalarAdapters: ResponseAdapterCache
     ) {
       val stringAdapter: ResponseAdapter<String> = stringResponseAdapter
 
@@ -353,7 +353,7 @@ class TestQuery_ResponseAdapter(
     }
 
     class DroidLuke(
-      customScalarAdapters: CustomScalarAdapters
+      customScalarAdapters: ResponseAdapterCache
     ) {
       val stringAdapter: ResponseAdapter<String> = stringResponseAdapter
 
@@ -408,7 +408,7 @@ class TestQuery_ResponseAdapter(
     }
 
     class OtherLuke(
-      customScalarAdapters: CustomScalarAdapters
+      customScalarAdapters: ResponseAdapterCache
     ) {
       val stringAdapter: ResponseAdapter<String> = stringResponseAdapter
 

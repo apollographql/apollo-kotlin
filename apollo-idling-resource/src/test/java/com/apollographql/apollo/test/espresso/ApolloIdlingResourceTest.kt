@@ -8,7 +8,7 @@ import com.apollographql.apollo.api.Operation.Companion.EMPTY_VARIABLES
 import com.apollographql.apollo.api.Query
 import com.apollographql.apollo.api.Response
 import com.apollographql.apollo.api.ResponseField
-import com.apollographql.apollo.api.CustomScalarAdapters
+import com.apollographql.apollo.api.ResponseAdapterCache
 import com.apollographql.apollo.api.internal.json.JsonReader
 import com.apollographql.apollo.api.internal.json.JsonWriter
 import com.apollographql.apollo.api.internal.OperationRequestBodyComposer.compose
@@ -153,7 +153,7 @@ class ApolloIdlingResourceTest {
         return EMPTY_VARIABLES
       }
 
-      override fun adapter(customScalarAdapters: CustomScalarAdapters): ResponseAdapter<Operation.Data> {
+      override fun adapter(responseAdapterCache: ResponseAdapterCache): ResponseAdapter<Operation.Data> {
         return object: ResponseAdapter<Operation.Data> {
           override fun fromResponse(reader: JsonReader): Operation.Data {
             while (reader.selectName(emptyList()) != -1) {

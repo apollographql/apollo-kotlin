@@ -5,7 +5,7 @@
 //
 package com.example.nested_conditional_inline.adapter
 
-import com.apollographql.apollo.api.CustomScalarAdapters
+import com.apollographql.apollo.api.ResponseAdapterCache
 import com.apollographql.apollo.api.ResponseField
 import com.apollographql.apollo.api.internal.ListResponseAdapter
 import com.apollographql.apollo.api.internal.NullableResponseAdapter
@@ -25,7 +25,7 @@ import kotlin.collections.List
     "RemoveExplicitTypeArguments", "NestedLambdaShadowedImplicitParameter", "PropertyName",
     "RemoveRedundantQualifierName")
 class TestQuery_ResponseAdapter(
-  customScalarAdapters: CustomScalarAdapters
+  customScalarAdapters: ResponseAdapterCache
 ) : ResponseAdapter<TestQuery.Data> {
   val nullableHeroAdapter: ResponseAdapter<TestQuery.Data.Hero?> =
       NullableResponseAdapter(Hero(customScalarAdapters))
@@ -73,7 +73,7 @@ class TestQuery_ResponseAdapter(
   }
 
   class Hero(
-    customScalarAdapters: CustomScalarAdapters
+    customScalarAdapters: ResponseAdapterCache
   ) : ResponseAdapter<TestQuery.Data.Hero> {
     val HumanHeroAdapter: HumanHero =
         com.example.nested_conditional_inline.adapter.TestQuery_ResponseAdapter.Hero.HumanHero(customScalarAdapters)
@@ -106,7 +106,7 @@ class TestQuery_ResponseAdapter(
     }
 
     class HumanHero(
-      customScalarAdapters: CustomScalarAdapters
+      customScalarAdapters: ResponseAdapterCache
     ) {
       val stringAdapter: ResponseAdapter<String> = stringResponseAdapter
 
@@ -165,7 +165,7 @@ class TestQuery_ResponseAdapter(
       }
 
       class Friends(
-        customScalarAdapters: CustomScalarAdapters
+        customScalarAdapters: ResponseAdapterCache
       ) : ResponseAdapter<TestQuery.Data.Hero.HumanHero.Friends> {
         val HumanFriendsAdapter: HumanFriends =
             com.example.nested_conditional_inline.adapter.TestQuery_ResponseAdapter.Hero.HumanHero.Friends.HumanFriends(customScalarAdapters)
@@ -193,7 +193,7 @@ class TestQuery_ResponseAdapter(
         }
 
         class HumanFriends(
-          customScalarAdapters: CustomScalarAdapters
+          customScalarAdapters: ResponseAdapterCache
         ) {
           val stringAdapter: ResponseAdapter<String> = stringResponseAdapter
 
@@ -252,7 +252,7 @@ class TestQuery_ResponseAdapter(
         }
 
         class OtherFriends(
-          customScalarAdapters: CustomScalarAdapters
+          customScalarAdapters: ResponseAdapterCache
         ) {
           val stringAdapter: ResponseAdapter<String> = stringResponseAdapter
 
@@ -299,7 +299,7 @@ class TestQuery_ResponseAdapter(
     }
 
     class DroidHero(
-      customScalarAdapters: CustomScalarAdapters
+      customScalarAdapters: ResponseAdapterCache
     ) {
       val stringAdapter: ResponseAdapter<String> = stringResponseAdapter
 
@@ -358,7 +358,7 @@ class TestQuery_ResponseAdapter(
       }
 
       class Friends(
-        customScalarAdapters: CustomScalarAdapters
+        customScalarAdapters: ResponseAdapterCache
       ) : ResponseAdapter<TestQuery.Data.Hero.DroidHero.Friends> {
         val HumanFriendsAdapter: HumanFriends =
             com.example.nested_conditional_inline.adapter.TestQuery_ResponseAdapter.Hero.DroidHero.Friends.HumanFriends(customScalarAdapters)
@@ -386,7 +386,7 @@ class TestQuery_ResponseAdapter(
         }
 
         class HumanFriends(
-          customScalarAdapters: CustomScalarAdapters
+          customScalarAdapters: ResponseAdapterCache
         ) {
           val stringAdapter: ResponseAdapter<String> = stringResponseAdapter
 
@@ -445,7 +445,7 @@ class TestQuery_ResponseAdapter(
         }
 
         class OtherFriends(
-          customScalarAdapters: CustomScalarAdapters
+          customScalarAdapters: ResponseAdapterCache
         ) {
           val stringAdapter: ResponseAdapter<String> = stringResponseAdapter
 
@@ -492,7 +492,7 @@ class TestQuery_ResponseAdapter(
     }
 
     class OtherHero(
-      customScalarAdapters: CustomScalarAdapters
+      customScalarAdapters: ResponseAdapterCache
     ) {
       val stringAdapter: ResponseAdapter<String> = stringResponseAdapter
 

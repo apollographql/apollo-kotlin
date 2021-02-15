@@ -5,7 +5,7 @@
 //
 package com.example.union_inline_fragments.adapter
 
-import com.apollographql.apollo.api.CustomScalarAdapters
+import com.apollographql.apollo.api.ResponseAdapterCache
 import com.apollographql.apollo.api.ResponseField
 import com.apollographql.apollo.api.internal.ListResponseAdapter
 import com.apollographql.apollo.api.internal.NullableResponseAdapter
@@ -25,7 +25,7 @@ import kotlin.collections.List
     "RemoveExplicitTypeArguments", "NestedLambdaShadowedImplicitParameter", "PropertyName",
     "RemoveRedundantQualifierName")
 class TestQuery_ResponseAdapter(
-  customScalarAdapters: CustomScalarAdapters
+  customScalarAdapters: ResponseAdapterCache
 ) : ResponseAdapter<TestQuery.Data> {
   val nullableListOfNullableSearchAdapter: ResponseAdapter<List<TestQuery.Data.Search?>?> =
       NullableResponseAdapter(ListResponseAdapter(NullableResponseAdapter(Search(customScalarAdapters))))
@@ -72,7 +72,7 @@ class TestQuery_ResponseAdapter(
   }
 
   class Search(
-    customScalarAdapters: CustomScalarAdapters
+    customScalarAdapters: ResponseAdapterCache
   ) : ResponseAdapter<TestQuery.Data.Search> {
     val CharacterSearchAdapter: CharacterSearch =
         com.example.union_inline_fragments.adapter.TestQuery_ResponseAdapter.Search.CharacterSearch(customScalarAdapters)
@@ -106,7 +106,7 @@ class TestQuery_ResponseAdapter(
     }
 
     class CharacterSearch(
-      customScalarAdapters: CustomScalarAdapters
+      customScalarAdapters: ResponseAdapterCache
     ) {
       val stringAdapter: ResponseAdapter<String> = stringResponseAdapter
 
@@ -176,7 +176,7 @@ class TestQuery_ResponseAdapter(
       }
 
       class Friends(
-        customScalarAdapters: CustomScalarAdapters
+        customScalarAdapters: ResponseAdapterCache
       ) : ResponseAdapter<TestQuery.Data.Search.CharacterSearch.Friends> {
         val CharacterDroidFriendsAdapter: CharacterDroidFriends =
             com.example.union_inline_fragments.adapter.TestQuery_ResponseAdapter.Search.CharacterSearch.Friends.CharacterDroidFriends(customScalarAdapters)
@@ -211,7 +211,7 @@ class TestQuery_ResponseAdapter(
         }
 
         class CharacterDroidFriends(
-          customScalarAdapters: CustomScalarAdapters
+          customScalarAdapters: ResponseAdapterCache
         ) {
           val stringAdapter: ResponseAdapter<String> = stringResponseAdapter
 
@@ -284,7 +284,7 @@ class TestQuery_ResponseAdapter(
           }
 
           class Friends(
-            customScalarAdapters: CustomScalarAdapters
+            customScalarAdapters: ResponseAdapterCache
           ) :
               ResponseAdapter<TestQuery.Data.Search.CharacterSearch.Friends.CharacterDroidFriends.Friends>
               {
@@ -328,7 +328,7 @@ class TestQuery_ResponseAdapter(
         }
 
         class CharacterHumanFriends(
-          customScalarAdapters: CustomScalarAdapters
+          customScalarAdapters: ResponseAdapterCache
         ) {
           val stringAdapter: ResponseAdapter<String> = stringResponseAdapter
 
@@ -403,7 +403,7 @@ class TestQuery_ResponseAdapter(
           }
 
           class Friends(
-            customScalarAdapters: CustomScalarAdapters
+            customScalarAdapters: ResponseAdapterCache
           ) :
               ResponseAdapter<TestQuery.Data.Search.CharacterSearch.Friends.CharacterHumanFriends.Friends>
               {
@@ -436,7 +436,7 @@ class TestQuery_ResponseAdapter(
             }
 
             class CharacterFriends(
-              customScalarAdapters: CustomScalarAdapters
+              customScalarAdapters: ResponseAdapterCache
             ) {
               val stringAdapter: ResponseAdapter<String> = stringResponseAdapter
 
@@ -483,7 +483,7 @@ class TestQuery_ResponseAdapter(
             }
 
             class OtherFriends(
-              customScalarAdapters: CustomScalarAdapters
+              customScalarAdapters: ResponseAdapterCache
             ) {
               val stringAdapter: ResponseAdapter<String> = stringResponseAdapter
 
@@ -521,7 +521,7 @@ class TestQuery_ResponseAdapter(
         }
 
         class OtherFriends(
-          customScalarAdapters: CustomScalarAdapters
+          customScalarAdapters: ResponseAdapterCache
         ) {
           val stringAdapter: ResponseAdapter<String> = stringResponseAdapter
 
@@ -559,7 +559,7 @@ class TestQuery_ResponseAdapter(
     }
 
     class StarshipSearch(
-      customScalarAdapters: CustomScalarAdapters
+      customScalarAdapters: ResponseAdapterCache
     ) {
       val stringAdapter: ResponseAdapter<String> = stringResponseAdapter
 
@@ -603,7 +603,7 @@ class TestQuery_ResponseAdapter(
     }
 
     class OtherSearch(
-      customScalarAdapters: CustomScalarAdapters
+      customScalarAdapters: ResponseAdapterCache
     ) {
       val stringAdapter: ResponseAdapter<String> = stringResponseAdapter
 

@@ -5,7 +5,7 @@
 //
 package com.example.two_heroes_unique.adapter
 
-import com.apollographql.apollo.api.CustomScalarAdapters
+import com.apollographql.apollo.api.ResponseAdapterCache
 import com.apollographql.apollo.api.ResponseField
 import com.apollographql.apollo.api.internal.NullableResponseAdapter
 import com.apollographql.apollo.api.internal.ResponseAdapter
@@ -22,7 +22,7 @@ import kotlin.collections.List
     "RemoveExplicitTypeArguments", "NestedLambdaShadowedImplicitParameter", "PropertyName",
     "RemoveRedundantQualifierName")
 class TestQuery_ResponseAdapter(
-  customScalarAdapters: CustomScalarAdapters
+  customScalarAdapters: ResponseAdapterCache
 ) : ResponseAdapter<TestQuery.Data> {
   val nullableR2Adapter: ResponseAdapter<TestQuery.Data.R2?> =
       NullableResponseAdapter(R2(customScalarAdapters))
@@ -83,7 +83,7 @@ class TestQuery_ResponseAdapter(
   }
 
   class R2(
-    customScalarAdapters: CustomScalarAdapters
+    customScalarAdapters: ResponseAdapterCache
   ) : ResponseAdapter<TestQuery.Data.R2> {
     val stringAdapter: ResponseAdapter<String> = stringResponseAdapter
 
@@ -122,7 +122,7 @@ class TestQuery_ResponseAdapter(
   }
 
   class Luke(
-    customScalarAdapters: CustomScalarAdapters
+    customScalarAdapters: ResponseAdapterCache
   ) : ResponseAdapter<TestQuery.Data.Luke> {
     val stringAdapter: ResponseAdapter<String> = stringResponseAdapter
 

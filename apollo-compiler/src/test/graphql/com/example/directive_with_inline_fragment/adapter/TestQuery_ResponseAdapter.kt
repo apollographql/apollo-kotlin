@@ -5,7 +5,7 @@
 //
 package com.example.directive_with_inline_fragment.adapter
 
-import com.apollographql.apollo.api.CustomScalarAdapters
+import com.apollographql.apollo.api.ResponseAdapterCache
 import com.apollographql.apollo.api.ResponseField
 import com.apollographql.apollo.api.internal.NullableResponseAdapter
 import com.apollographql.apollo.api.internal.ResponseAdapter
@@ -22,7 +22,7 @@ import kotlin.collections.List
     "RemoveExplicitTypeArguments", "NestedLambdaShadowedImplicitParameter", "PropertyName",
     "RemoveRedundantQualifierName")
 class TestQuery_ResponseAdapter(
-  customScalarAdapters: CustomScalarAdapters
+  customScalarAdapters: ResponseAdapterCache
 ) : ResponseAdapter<TestQuery.Data> {
   val nullableHeroAdapter: ResponseAdapter<TestQuery.Data.Hero?> =
       NullableResponseAdapter(Hero(customScalarAdapters))
@@ -66,7 +66,7 @@ class TestQuery_ResponseAdapter(
   }
 
   class Hero(
-    customScalarAdapters: CustomScalarAdapters
+    customScalarAdapters: ResponseAdapterCache
   ) : ResponseAdapter<TestQuery.Data.Hero> {
     val HumanCharacterHeroAdapter: HumanCharacterHero =
         com.example.directive_with_inline_fragment.adapter.TestQuery_ResponseAdapter.Hero.HumanCharacterHero(customScalarAdapters)
@@ -99,7 +99,7 @@ class TestQuery_ResponseAdapter(
     }
 
     class HumanCharacterHero(
-      customScalarAdapters: CustomScalarAdapters
+      customScalarAdapters: ResponseAdapterCache
     ) {
       val stringAdapter: ResponseAdapter<String> = stringResponseAdapter
 
@@ -164,7 +164,7 @@ class TestQuery_ResponseAdapter(
     }
 
     class DroidCharacterHero(
-      customScalarAdapters: CustomScalarAdapters
+      customScalarAdapters: ResponseAdapterCache
     ) {
       val stringAdapter: ResponseAdapter<String> = stringResponseAdapter
 
@@ -229,7 +229,7 @@ class TestQuery_ResponseAdapter(
     }
 
     class OtherHero(
-      customScalarAdapters: CustomScalarAdapters
+      customScalarAdapters: ResponseAdapterCache
     ) {
       val stringAdapter: ResponseAdapter<String> = stringResponseAdapter
 

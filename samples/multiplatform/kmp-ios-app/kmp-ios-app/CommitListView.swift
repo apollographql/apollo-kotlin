@@ -21,7 +21,7 @@ struct CommitListView: View {
 
 struct CommitListView_Previews: PreviewProvider {
     static var previews: some View {
-        let repo = RepositoryFragmentDefaultImpl(__typename: "__typename",
+        let repo = RepositoryFragmentImpl.Data(__typename: "__typename",
                                       id: "1",
                                       name: "TestRepo",
                                       repoDescription: "a test repo")
@@ -32,4 +32,4 @@ struct CommitListView_Previews: PreviewProvider {
     }
 }
 
-extension GithubRepositoryCommitsQuery.Node: Identifiable {}
+extension GithubRepositoryCommitsQueryDataViewerRepositoryRefTargetCommitTarget.HistoryEdgesNode: Identifiable {}

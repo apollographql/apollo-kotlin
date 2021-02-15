@@ -14,8 +14,8 @@ class ResponseAdapterCache(val customScalarAdapters: Map<CustomScalar, CustomSca
 
   private val adapterByGraphQLName = customScalarAdapters.mapKeys { it.key.graphqlName }
 
-  private val adapterByQueryName = mutableMapOf<String, ResponseAdapter<*>>()
-  private val adapterByFragmentName = mutableMapOf<String, ResponseAdapter<*>>()
+  private val adapterByQueryName = ThreadSafeMap<String, ResponseAdapter<*>>()
+  private val adapterByFragmentName = ThreadSafeMap<String, ResponseAdapter<*>>()
 
   @Suppress("UNCHECKED_CAST")
   fun <T : Any> adapterFor(customScalar: CustomScalar): CustomScalarAdapter<T> {

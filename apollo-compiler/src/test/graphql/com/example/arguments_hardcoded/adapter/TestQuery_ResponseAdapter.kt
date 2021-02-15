@@ -5,7 +5,7 @@
 //
 package com.example.arguments_hardcoded.adapter
 
-import com.apollographql.apollo.api.CustomScalarAdapters
+import com.apollographql.apollo.api.ResponseAdapterCache
 import com.apollographql.apollo.api.ResponseField
 import com.apollographql.apollo.api.internal.ListResponseAdapter
 import com.apollographql.apollo.api.internal.NullableResponseAdapter
@@ -25,7 +25,7 @@ import kotlin.collections.List
     "RemoveExplicitTypeArguments", "NestedLambdaShadowedImplicitParameter", "PropertyName",
     "RemoveRedundantQualifierName")
 class TestQuery_ResponseAdapter(
-  customScalarAdapters: CustomScalarAdapters
+  customScalarAdapters: ResponseAdapterCache
 ) : ResponseAdapter<TestQuery.Data> {
   val nullableListOfNullableReviewsAdapter: ResponseAdapter<List<TestQuery.Data.Reviews?>?> =
       NullableResponseAdapter(ListResponseAdapter(NullableResponseAdapter(Reviews(customScalarAdapters))))
@@ -90,7 +90,7 @@ class TestQuery_ResponseAdapter(
   }
 
   class Reviews(
-    customScalarAdapters: CustomScalarAdapters
+    customScalarAdapters: ResponseAdapterCache
   ) : ResponseAdapter<TestQuery.Data.Reviews> {
     val intAdapter: ResponseAdapter<Int> = intResponseAdapter
 

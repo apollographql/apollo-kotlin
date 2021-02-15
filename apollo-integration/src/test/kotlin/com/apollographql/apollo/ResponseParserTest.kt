@@ -6,6 +6,8 @@ import com.apollographql.apollo.api.Error
 import com.apollographql.apollo.api.Input
 import com.apollographql.apollo.api.JsonElement
 import com.apollographql.apollo.api.JsonString
+import com.apollographql.apollo.api.parse
+import com.apollographql.apollo.api.toJson
 import com.apollographql.apollo.integration.httpcache.AllFilmsQuery
 import com.apollographql.apollo.integration.httpcache.AllPlanetsQuery
 import com.apollographql.apollo.integration.httpcache.fragment.FilmFragment

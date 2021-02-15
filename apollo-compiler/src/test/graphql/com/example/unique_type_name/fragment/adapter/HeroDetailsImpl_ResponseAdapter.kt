@@ -5,7 +5,7 @@
 //
 package com.example.unique_type_name.fragment.adapter
 
-import com.apollographql.apollo.api.CustomScalarAdapters
+import com.apollographql.apollo.api.ResponseAdapterCache
 import com.apollographql.apollo.api.ResponseField
 import com.apollographql.apollo.api.internal.ListResponseAdapter
 import com.apollographql.apollo.api.internal.NullableResponseAdapter
@@ -25,7 +25,7 @@ import kotlin.collections.List
     "RemoveExplicitTypeArguments", "NestedLambdaShadowedImplicitParameter", "PropertyName",
     "RemoveRedundantQualifierName")
 class HeroDetailsImpl_ResponseAdapter(
-  customScalarAdapters: CustomScalarAdapters
+  customScalarAdapters: ResponseAdapterCache
 ) : ResponseAdapter<HeroDetailsImpl.Data> {
   val stringAdapter: ResponseAdapter<String> = stringResponseAdapter
 
@@ -84,7 +84,7 @@ class HeroDetailsImpl_ResponseAdapter(
   }
 
   class FriendsConnection(
-    customScalarAdapters: CustomScalarAdapters
+    customScalarAdapters: ResponseAdapterCache
   ) : ResponseAdapter<HeroDetailsImpl.Data.FriendsConnection> {
     val nullableIntAdapter: ResponseAdapter<Int?> = NullableResponseAdapter(intResponseAdapter)
 
@@ -138,7 +138,7 @@ class HeroDetailsImpl_ResponseAdapter(
     }
 
     class Edges(
-      customScalarAdapters: CustomScalarAdapters
+      customScalarAdapters: ResponseAdapterCache
     ) : ResponseAdapter<HeroDetailsImpl.Data.FriendsConnection.Edges> {
       val nullableNodeAdapter: ResponseAdapter<HeroDetailsImpl.Data.FriendsConnection.Edges.Node?> =
           NullableResponseAdapter(Node(customScalarAdapters))
@@ -181,7 +181,7 @@ class HeroDetailsImpl_ResponseAdapter(
       }
 
       class Node(
-        customScalarAdapters: CustomScalarAdapters
+        customScalarAdapters: ResponseAdapterCache
       ) : ResponseAdapter<HeroDetailsImpl.Data.FriendsConnection.Edges.Node> {
         val stringAdapter: ResponseAdapter<String> = stringResponseAdapter
 

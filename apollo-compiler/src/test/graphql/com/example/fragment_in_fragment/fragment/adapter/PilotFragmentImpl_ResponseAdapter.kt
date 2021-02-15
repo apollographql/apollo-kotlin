@@ -5,7 +5,7 @@
 //
 package com.example.fragment_in_fragment.fragment.adapter
 
-import com.apollographql.apollo.api.CustomScalarAdapters
+import com.apollographql.apollo.api.ResponseAdapterCache
 import com.apollographql.apollo.api.ResponseField
 import com.apollographql.apollo.api.internal.NullableResponseAdapter
 import com.apollographql.apollo.api.internal.ResponseAdapter
@@ -22,7 +22,7 @@ import kotlin.collections.List
     "RemoveExplicitTypeArguments", "NestedLambdaShadowedImplicitParameter", "PropertyName",
     "RemoveRedundantQualifierName")
 class PilotFragmentImpl_ResponseAdapter(
-  customScalarAdapters: CustomScalarAdapters
+  customScalarAdapters: ResponseAdapterCache
 ) : ResponseAdapter<PilotFragmentImpl.Data> {
   val stringAdapter: ResponseAdapter<String> = stringResponseAdapter
 
@@ -85,7 +85,7 @@ class PilotFragmentImpl_ResponseAdapter(
   }
 
   class Homeworld(
-    customScalarAdapters: CustomScalarAdapters
+    customScalarAdapters: ResponseAdapterCache
   ) : ResponseAdapter<PilotFragmentImpl.Data.Homeworld> {
     val PlanetHomeworldAdapter: PlanetHomeworld =
         com.example.fragment_in_fragment.fragment.adapter.PilotFragmentImpl_ResponseAdapter.Homeworld.PlanetHomeworld(customScalarAdapters)
@@ -113,7 +113,7 @@ class PilotFragmentImpl_ResponseAdapter(
     }
 
     class PlanetHomeworld(
-      customScalarAdapters: CustomScalarAdapters
+      customScalarAdapters: ResponseAdapterCache
     ) {
       val stringAdapter: ResponseAdapter<String> = stringResponseAdapter
 
@@ -160,7 +160,7 @@ class PilotFragmentImpl_ResponseAdapter(
     }
 
     class OtherHomeworld(
-      customScalarAdapters: CustomScalarAdapters
+      customScalarAdapters: ResponseAdapterCache
     ) {
       val stringAdapter: ResponseAdapter<String> = stringResponseAdapter
 

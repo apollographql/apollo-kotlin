@@ -5,7 +5,7 @@
 //
 package com.example.inline_fragment_type_coercion.adapter
 
-import com.apollographql.apollo.api.CustomScalarAdapters
+import com.apollographql.apollo.api.ResponseAdapterCache
 import com.apollographql.apollo.api.ResponseField
 import com.apollographql.apollo.api.internal.NullableResponseAdapter
 import com.apollographql.apollo.api.internal.ResponseAdapter
@@ -22,7 +22,7 @@ import kotlin.collections.List
     "RemoveExplicitTypeArguments", "NestedLambdaShadowedImplicitParameter", "PropertyName",
     "RemoveRedundantQualifierName")
 class TestQuery_ResponseAdapter(
-  customScalarAdapters: CustomScalarAdapters
+  customScalarAdapters: ResponseAdapterCache
 ) : ResponseAdapter<TestQuery.Data> {
   val nullableFooAdapter: ResponseAdapter<TestQuery.Data.Foo?> =
       NullableResponseAdapter(Foo(customScalarAdapters))
@@ -65,7 +65,7 @@ class TestQuery_ResponseAdapter(
   }
 
   class Foo(
-    customScalarAdapters: CustomScalarAdapters
+    customScalarAdapters: ResponseAdapterCache
   ) : ResponseAdapter<TestQuery.Data.Foo> {
     val BarFooAdapter: BarFoo =
         com.example.inline_fragment_type_coercion.adapter.TestQuery_ResponseAdapter.Foo.BarFoo(customScalarAdapters)
@@ -93,7 +93,7 @@ class TestQuery_ResponseAdapter(
     }
 
     class BarFoo(
-      customScalarAdapters: CustomScalarAdapters
+      customScalarAdapters: ResponseAdapterCache
     ) {
       val stringAdapter: ResponseAdapter<String> = stringResponseAdapter
 
@@ -145,7 +145,7 @@ class TestQuery_ResponseAdapter(
     }
 
     class OtherFoo(
-      customScalarAdapters: CustomScalarAdapters
+      customScalarAdapters: ResponseAdapterCache
     ) {
       val stringAdapter: ResponseAdapter<String> = stringResponseAdapter
 

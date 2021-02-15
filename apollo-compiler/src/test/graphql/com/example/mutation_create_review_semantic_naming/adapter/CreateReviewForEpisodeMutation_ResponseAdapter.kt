@@ -5,7 +5,7 @@
 //
 package com.example.mutation_create_review_semantic_naming.adapter
 
-import com.apollographql.apollo.api.CustomScalarAdapters
+import com.apollographql.apollo.api.ResponseAdapterCache
 import com.apollographql.apollo.api.ResponseField
 import com.apollographql.apollo.api.internal.NullableResponseAdapter
 import com.apollographql.apollo.api.internal.ResponseAdapter
@@ -24,7 +24,7 @@ import kotlin.collections.List
     "RemoveExplicitTypeArguments", "NestedLambdaShadowedImplicitParameter", "PropertyName",
     "RemoveRedundantQualifierName")
 class CreateReviewForEpisodeMutation_ResponseAdapter(
-  customScalarAdapters: CustomScalarAdapters
+  customScalarAdapters: ResponseAdapterCache
 ) : ResponseAdapter<CreateReviewForEpisodeMutation.Data> {
   val nullableCreateReviewAdapter:
       ResponseAdapter<CreateReviewForEpisodeMutation.Data.CreateReview?> =
@@ -74,7 +74,7 @@ class CreateReviewForEpisodeMutation_ResponseAdapter(
   }
 
   class CreateReview(
-    customScalarAdapters: CustomScalarAdapters
+    customScalarAdapters: ResponseAdapterCache
   ) : ResponseAdapter<CreateReviewForEpisodeMutation.Data.CreateReview> {
     val intAdapter: ResponseAdapter<Int> = intResponseAdapter
 

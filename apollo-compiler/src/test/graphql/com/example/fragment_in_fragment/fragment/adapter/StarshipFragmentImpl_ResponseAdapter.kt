@@ -5,7 +5,7 @@
 //
 package com.example.fragment_in_fragment.fragment.adapter
 
-import com.apollographql.apollo.api.CustomScalarAdapters
+import com.apollographql.apollo.api.ResponseAdapterCache
 import com.apollographql.apollo.api.ResponseField
 import com.apollographql.apollo.api.internal.ListResponseAdapter
 import com.apollographql.apollo.api.internal.NullableResponseAdapter
@@ -23,7 +23,7 @@ import kotlin.collections.List
     "RemoveExplicitTypeArguments", "NestedLambdaShadowedImplicitParameter", "PropertyName",
     "RemoveRedundantQualifierName")
 class StarshipFragmentImpl_ResponseAdapter(
-  customScalarAdapters: CustomScalarAdapters
+  customScalarAdapters: ResponseAdapterCache
 ) : ResponseAdapter<StarshipFragmentImpl.Data> {
   val stringAdapter: ResponseAdapter<String> = stringResponseAdapter
 
@@ -94,7 +94,7 @@ class StarshipFragmentImpl_ResponseAdapter(
   }
 
   class PilotConnection(
-    customScalarAdapters: CustomScalarAdapters
+    customScalarAdapters: ResponseAdapterCache
   ) : ResponseAdapter<StarshipFragmentImpl.Data.PilotConnection> {
     val nullableListOfNullableEdgesAdapter:
         ResponseAdapter<List<StarshipFragmentImpl.Data.PilotConnection.Edges?>?> =
@@ -137,7 +137,7 @@ class StarshipFragmentImpl_ResponseAdapter(
     }
 
     class Edges(
-      customScalarAdapters: CustomScalarAdapters
+      customScalarAdapters: ResponseAdapterCache
     ) : ResponseAdapter<StarshipFragmentImpl.Data.PilotConnection.Edges> {
       val nullableNodeAdapter:
           ResponseAdapter<StarshipFragmentImpl.Data.PilotConnection.Edges.Node?> =
@@ -183,7 +183,7 @@ class StarshipFragmentImpl_ResponseAdapter(
       }
 
       class Node(
-        customScalarAdapters: CustomScalarAdapters
+        customScalarAdapters: ResponseAdapterCache
       ) : ResponseAdapter<StarshipFragmentImpl.Data.PilotConnection.Edges.Node> {
         val PersonNodeAdapter: PersonNode =
             com.example.fragment_in_fragment.fragment.adapter.StarshipFragmentImpl_ResponseAdapter.PilotConnection.Edges.Node.PersonNode(customScalarAdapters)
@@ -213,7 +213,7 @@ class StarshipFragmentImpl_ResponseAdapter(
         }
 
         class PersonNode(
-          customScalarAdapters: CustomScalarAdapters
+          customScalarAdapters: ResponseAdapterCache
         ) {
           val stringAdapter: ResponseAdapter<String> = stringResponseAdapter
 
@@ -277,7 +277,7 @@ class StarshipFragmentImpl_ResponseAdapter(
           }
 
           class Homeworld(
-            customScalarAdapters: CustomScalarAdapters
+            customScalarAdapters: ResponseAdapterCache
           ) :
               ResponseAdapter<StarshipFragmentImpl.Data.PilotConnection.Edges.Node.PersonNode.Homeworld>
               {
@@ -309,7 +309,7 @@ class StarshipFragmentImpl_ResponseAdapter(
             }
 
             class PlanetHomeworld(
-              customScalarAdapters: CustomScalarAdapters
+              customScalarAdapters: ResponseAdapterCache
             ) {
               val stringAdapter: ResponseAdapter<String> = stringResponseAdapter
 
@@ -357,7 +357,7 @@ class StarshipFragmentImpl_ResponseAdapter(
             }
 
             class OtherHomeworld(
-              customScalarAdapters: CustomScalarAdapters
+              customScalarAdapters: ResponseAdapterCache
             ) {
               val stringAdapter: ResponseAdapter<String> = stringResponseAdapter
 
@@ -395,7 +395,7 @@ class StarshipFragmentImpl_ResponseAdapter(
         }
 
         class OtherNode(
-          customScalarAdapters: CustomScalarAdapters
+          customScalarAdapters: ResponseAdapterCache
         ) {
           val stringAdapter: ResponseAdapter<String> = stringResponseAdapter
 

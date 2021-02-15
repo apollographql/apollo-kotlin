@@ -5,7 +5,7 @@
 //
 package com.example.interface_on_interface.adapter
 
-import com.apollographql.apollo.api.CustomScalarAdapters
+import com.apollographql.apollo.api.ResponseAdapterCache
 import com.apollographql.apollo.api.ResponseField
 import com.apollographql.apollo.api.internal.ResponseAdapter
 import com.apollographql.apollo.api.internal.doubleResponseAdapter
@@ -23,7 +23,7 @@ import kotlin.collections.List
     "RemoveExplicitTypeArguments", "NestedLambdaShadowedImplicitParameter", "PropertyName",
     "RemoveRedundantQualifierName")
 class GetHuman_ResponseAdapter(
-  customScalarAdapters: CustomScalarAdapters
+  customScalarAdapters: ResponseAdapterCache
 ) : ResponseAdapter<GetHuman.Data> {
   val humanAdapter: ResponseAdapter<GetHuman.Data.Human> = Human(customScalarAdapters)
 
@@ -79,7 +79,7 @@ class GetHuman_ResponseAdapter(
   }
 
   class Human(
-    customScalarAdapters: CustomScalarAdapters
+    customScalarAdapters: ResponseAdapterCache
   ) : ResponseAdapter<GetHuman.Data.Human> {
     val stringAdapter: ResponseAdapter<String> = stringResponseAdapter
 
@@ -138,7 +138,7 @@ class GetHuman_ResponseAdapter(
   }
 
   class Node(
-    customScalarAdapters: CustomScalarAdapters
+    customScalarAdapters: ResponseAdapterCache
   ) : ResponseAdapter<GetHuman.Data.Node> {
     val HumanNodeAdapter: HumanNode =
         com.example.interface_on_interface.adapter.GetHuman_ResponseAdapter.Node.HumanNode(customScalarAdapters)
@@ -166,7 +166,7 @@ class GetHuman_ResponseAdapter(
     }
 
     class HumanNode(
-      customScalarAdapters: CustomScalarAdapters
+      customScalarAdapters: ResponseAdapterCache
     ) {
       val stringAdapter: ResponseAdapter<String> = stringResponseAdapter
 
@@ -211,7 +211,7 @@ class GetHuman_ResponseAdapter(
     }
 
     class OtherNode(
-      customScalarAdapters: CustomScalarAdapters
+      customScalarAdapters: ResponseAdapterCache
     ) {
       val stringAdapter: ResponseAdapter<String> = stringResponseAdapter
 

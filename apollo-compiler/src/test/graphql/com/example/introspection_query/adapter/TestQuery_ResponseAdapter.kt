@@ -5,7 +5,7 @@
 //
 package com.example.introspection_query.adapter
 
-import com.apollographql.apollo.api.CustomScalarAdapters
+import com.apollographql.apollo.api.ResponseAdapterCache
 import com.apollographql.apollo.api.ResponseField
 import com.apollographql.apollo.api.internal.ListResponseAdapter
 import com.apollographql.apollo.api.internal.NullableResponseAdapter
@@ -23,7 +23,7 @@ import kotlin.collections.List
     "RemoveExplicitTypeArguments", "NestedLambdaShadowedImplicitParameter", "PropertyName",
     "RemoveRedundantQualifierName")
 class TestQuery_ResponseAdapter(
-  customScalarAdapters: CustomScalarAdapters
+  customScalarAdapters: ResponseAdapterCache
 ) : ResponseAdapter<TestQuery.Data> {
   val __SchemaAdapter: ResponseAdapter<TestQuery.Data.__Schema> = __Schema(customScalarAdapters)
 
@@ -80,7 +80,7 @@ class TestQuery_ResponseAdapter(
   }
 
   class __Schema(
-    customScalarAdapters: CustomScalarAdapters
+    customScalarAdapters: ResponseAdapterCache
   ) : ResponseAdapter<TestQuery.Data.__Schema> {
     val queryTypeAdapter: ResponseAdapter<TestQuery.Data.__Schema.QueryType> =
         QueryType(customScalarAdapters)
@@ -138,7 +138,7 @@ class TestQuery_ResponseAdapter(
     }
 
     class QueryType(
-      customScalarAdapters: CustomScalarAdapters
+      customScalarAdapters: ResponseAdapterCache
     ) : ResponseAdapter<TestQuery.Data.__Schema.QueryType> {
       val nullableStringAdapter: ResponseAdapter<String?> =
           NullableResponseAdapter(stringResponseAdapter)
@@ -178,7 +178,7 @@ class TestQuery_ResponseAdapter(
     }
 
     class Types(
-      customScalarAdapters: CustomScalarAdapters
+      customScalarAdapters: ResponseAdapterCache
     ) : ResponseAdapter<TestQuery.Data.__Schema.Types> {
       val nullableStringAdapter: ResponseAdapter<String?> =
           NullableResponseAdapter(stringResponseAdapter)
@@ -219,7 +219,7 @@ class TestQuery_ResponseAdapter(
   }
 
   class __Type(
-    customScalarAdapters: CustomScalarAdapters
+    customScalarAdapters: ResponseAdapterCache
   ) : ResponseAdapter<TestQuery.Data.__Type> {
     val nullableStringAdapter: ResponseAdapter<String?> =
         NullableResponseAdapter(stringResponseAdapter)

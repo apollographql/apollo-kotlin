@@ -65,7 +65,7 @@ class ApolloClient private constructor(
             subscriptionNetworkTransport = subscriptionNetworkTransport,
             coroutineDispatcherContext = coroutineDispatcherContext
         ),
-        customScalarAdapters = responseAdapterCache
+        responseAdapterCache = responseAdapterCache
     )
   }
 

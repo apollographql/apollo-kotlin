@@ -5,7 +5,7 @@
 //
 package com.example.hero_details_semantic_naming.adapter
 
-import com.apollographql.apollo.api.CustomScalarAdapters
+import com.apollographql.apollo.api.ResponseAdapterCache
 import com.apollographql.apollo.api.ResponseField
 import com.apollographql.apollo.api.internal.ListResponseAdapter
 import com.apollographql.apollo.api.internal.NullableResponseAdapter
@@ -25,7 +25,7 @@ import kotlin.collections.List
     "RemoveExplicitTypeArguments", "NestedLambdaShadowedImplicitParameter", "PropertyName",
     "RemoveRedundantQualifierName")
 class HeroDetailsQuery_ResponseAdapter(
-  customScalarAdapters: CustomScalarAdapters
+  customScalarAdapters: ResponseAdapterCache
 ) : ResponseAdapter<HeroDetailsQuery.Data> {
   val nullableHeroAdapter: ResponseAdapter<HeroDetailsQuery.Data.Hero?> =
       NullableResponseAdapter(Hero(customScalarAdapters))
@@ -67,7 +67,7 @@ class HeroDetailsQuery_ResponseAdapter(
   }
 
   class Hero(
-    customScalarAdapters: CustomScalarAdapters
+    customScalarAdapters: ResponseAdapterCache
   ) : ResponseAdapter<HeroDetailsQuery.Data.Hero> {
     val stringAdapter: ResponseAdapter<String> = stringResponseAdapter
 
@@ -120,7 +120,7 @@ class HeroDetailsQuery_ResponseAdapter(
     }
 
     class FriendsConnection(
-      customScalarAdapters: CustomScalarAdapters
+      customScalarAdapters: ResponseAdapterCache
     ) : ResponseAdapter<HeroDetailsQuery.Data.Hero.FriendsConnection> {
       val nullableIntAdapter: ResponseAdapter<Int?> = NullableResponseAdapter(intResponseAdapter)
 
@@ -175,7 +175,7 @@ class HeroDetailsQuery_ResponseAdapter(
       }
 
       class Edges(
-        customScalarAdapters: CustomScalarAdapters
+        customScalarAdapters: ResponseAdapterCache
       ) : ResponseAdapter<HeroDetailsQuery.Data.Hero.FriendsConnection.Edges> {
         val nullableNodeAdapter:
             ResponseAdapter<HeroDetailsQuery.Data.Hero.FriendsConnection.Edges.Node?> =
@@ -220,7 +220,7 @@ class HeroDetailsQuery_ResponseAdapter(
         }
 
         class Node(
-          customScalarAdapters: CustomScalarAdapters
+          customScalarAdapters: ResponseAdapterCache
         ) : ResponseAdapter<HeroDetailsQuery.Data.Hero.FriendsConnection.Edges.Node> {
           val stringAdapter: ResponseAdapter<String> = stringResponseAdapter
 

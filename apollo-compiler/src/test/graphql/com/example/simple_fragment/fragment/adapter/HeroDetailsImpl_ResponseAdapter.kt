@@ -5,7 +5,7 @@
 //
 package com.example.simple_fragment.fragment.adapter
 
-import com.apollographql.apollo.api.CustomScalarAdapters
+import com.apollographql.apollo.api.ResponseAdapterCache
 import com.apollographql.apollo.api.ResponseField
 import com.apollographql.apollo.api.internal.ResponseAdapter
 import com.apollographql.apollo.api.internal.json.JsonReader
@@ -21,7 +21,7 @@ import kotlin.collections.List
     "RemoveExplicitTypeArguments", "NestedLambdaShadowedImplicitParameter", "PropertyName",
     "RemoveRedundantQualifierName")
 internal class HeroDetailsImpl_ResponseAdapter(
-  customScalarAdapters: CustomScalarAdapters
+  customScalarAdapters: ResponseAdapterCache
 ) : ResponseAdapter<HeroDetailsImpl.Data> {
   val HumanDataAdapter: HumanData =
       com.example.simple_fragment.fragment.adapter.HeroDetailsImpl_ResponseAdapter.HumanData(customScalarAdapters)
@@ -49,7 +49,7 @@ internal class HeroDetailsImpl_ResponseAdapter(
   }
 
   class HumanData(
-    customScalarAdapters: CustomScalarAdapters
+    customScalarAdapters: ResponseAdapterCache
   ) {
     val stringAdapter: ResponseAdapter<String> = stringResponseAdapter
 
@@ -92,7 +92,7 @@ internal class HeroDetailsImpl_ResponseAdapter(
   }
 
   class OtherData(
-    customScalarAdapters: CustomScalarAdapters
+    customScalarAdapters: ResponseAdapterCache
   ) {
     val stringAdapter: ResponseAdapter<String> = stringResponseAdapter
 

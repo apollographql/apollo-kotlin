@@ -5,9 +5,9 @@
 //
 package com.example.root_query_fragment_with_nested_fragments.fragment
 
-import com.apollographql.apollo.api.CustomScalarAdapters
 import com.apollographql.apollo.api.Fragment
 import com.apollographql.apollo.api.Operation
+import com.apollographql.apollo.api.ResponseAdapterCache
 import com.apollographql.apollo.api.ResponseField
 import com.apollographql.apollo.api.internal.ResponseAdapter
 import com.example.root_query_fragment_with_nested_fragments.fragment.adapter.HeroFragmentImpl_ResponseAdapter
@@ -15,7 +15,7 @@ import kotlin.String
 import kotlin.collections.List
 
 class HeroFragmentImpl : Fragment<HeroFragmentImpl.Data> {
-  override fun adapter(customScalarAdapters: CustomScalarAdapters): ResponseAdapter<Data> {
+  override fun adapter(customScalarAdapters: ResponseAdapterCache): ResponseAdapter<Data> {
     val adapter = customScalarAdapters.getFragmentAdapter("HeroFragmentImpl") {
       HeroFragmentImpl_ResponseAdapter(customScalarAdapters)
     }

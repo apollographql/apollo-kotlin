@@ -5,8 +5,8 @@
 //
 package com.example.subscriptions
 
-import com.apollographql.apollo.api.CustomScalarAdapters
 import com.apollographql.apollo.api.Operation
+import com.apollographql.apollo.api.ResponseAdapterCache
 import com.apollographql.apollo.api.ResponseField
 import com.apollographql.apollo.api.Subscription
 import com.apollographql.apollo.api.internal.InputFieldMarshaller
@@ -48,7 +48,7 @@ data class TestSubscription(
 
   override fun name(): String = OPERATION_NAME
 
-  override fun adapter(customScalarAdapters: CustomScalarAdapters): ResponseAdapter<Data> {
+  override fun adapter(customScalarAdapters: ResponseAdapterCache): ResponseAdapter<Data> {
     val adapter = customScalarAdapters.getOperationAdapter(name()) {
       TestSubscription_ResponseAdapter(customScalarAdapters)
     }

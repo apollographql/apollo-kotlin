@@ -5,7 +5,7 @@
 //
 package com.example.inline_frgament_intersection.adapter
 
-import com.apollographql.apollo.api.CustomScalarAdapters
+import com.apollographql.apollo.api.ResponseAdapterCache
 import com.apollographql.apollo.api.ResponseField
 import com.apollographql.apollo.api.internal.ListResponseAdapter
 import com.apollographql.apollo.api.internal.NullableResponseAdapter
@@ -29,7 +29,7 @@ import kotlin.collections.List
     "RemoveExplicitTypeArguments", "NestedLambdaShadowedImplicitParameter", "PropertyName",
     "RemoveRedundantQualifierName")
 class TestOperation_ResponseAdapter(
-  customScalarAdapters: CustomScalarAdapters
+  customScalarAdapters: ResponseAdapterCache
 ) : ResponseAdapter<TestOperation.Data> {
   val randomAdapter: ResponseAdapter<TestOperation.Data.Random> = Random(customScalarAdapters)
 
@@ -72,7 +72,7 @@ class TestOperation_ResponseAdapter(
   }
 
   class Random(
-    customScalarAdapters: CustomScalarAdapters
+    customScalarAdapters: ResponseAdapterCache
   ) : ResponseAdapter<TestOperation.Data.Random> {
     val BeingHumanRandomAdapter: BeingHumanRandom =
         com.example.inline_frgament_intersection.adapter.TestOperation_ResponseAdapter.Random.BeingHumanRandom(customScalarAdapters)
@@ -105,7 +105,7 @@ class TestOperation_ResponseAdapter(
     }
 
     class BeingHumanRandom(
-      customScalarAdapters: CustomScalarAdapters
+      customScalarAdapters: ResponseAdapterCache
     ) {
       val stringAdapter: ResponseAdapter<String> = stringResponseAdapter
 
@@ -178,7 +178,7 @@ class TestOperation_ResponseAdapter(
       }
 
       class Friends(
-        customScalarAdapters: CustomScalarAdapters
+        customScalarAdapters: ResponseAdapterCache
       ) : ResponseAdapter<TestOperation.Data.Random.BeingHumanRandom.Friends> {
         val WookieFriendsAdapter: WookieFriends =
             com.example.inline_frgament_intersection.adapter.TestOperation_ResponseAdapter.Random.BeingHumanRandom.Friends.WookieFriends(customScalarAdapters)
@@ -208,7 +208,7 @@ class TestOperation_ResponseAdapter(
         }
 
         class WookieFriends(
-          customScalarAdapters: CustomScalarAdapters
+          customScalarAdapters: ResponseAdapterCache
         ) {
           val stringAdapter: ResponseAdapter<String> = stringResponseAdapter
 
@@ -288,7 +288,7 @@ class TestOperation_ResponseAdapter(
         }
 
         class OtherFriends(
-          customScalarAdapters: CustomScalarAdapters
+          customScalarAdapters: ResponseAdapterCache
         ) {
           val stringAdapter: ResponseAdapter<String> = stringResponseAdapter
 
@@ -347,7 +347,7 @@ class TestOperation_ResponseAdapter(
     }
 
     class BeingWookieRandom(
-      customScalarAdapters: CustomScalarAdapters
+      customScalarAdapters: ResponseAdapterCache
     ) {
       val stringAdapter: ResponseAdapter<String> = stringResponseAdapter
 
@@ -419,7 +419,7 @@ class TestOperation_ResponseAdapter(
       }
 
       class Friends(
-        customScalarAdapters: CustomScalarAdapters
+        customScalarAdapters: ResponseAdapterCache
       ) : ResponseAdapter<TestOperation.Data.Random.BeingWookieRandom.Friends> {
         val WookieFriendsAdapter: WookieFriends =
             com.example.inline_frgament_intersection.adapter.TestOperation_ResponseAdapter.Random.BeingWookieRandom.Friends.WookieFriends(customScalarAdapters)
@@ -449,7 +449,7 @@ class TestOperation_ResponseAdapter(
         }
 
         class WookieFriends(
-          customScalarAdapters: CustomScalarAdapters
+          customScalarAdapters: ResponseAdapterCache
         ) {
           val stringAdapter: ResponseAdapter<String> = stringResponseAdapter
 
@@ -506,7 +506,7 @@ class TestOperation_ResponseAdapter(
         }
 
         class OtherFriends(
-          customScalarAdapters: CustomScalarAdapters
+          customScalarAdapters: ResponseAdapterCache
         ) {
           val stringAdapter: ResponseAdapter<String> = stringResponseAdapter
 
@@ -565,7 +565,7 @@ class TestOperation_ResponseAdapter(
     }
 
     class OtherRandom(
-      customScalarAdapters: CustomScalarAdapters
+      customScalarAdapters: ResponseAdapterCache
     ) {
       val stringAdapter: ResponseAdapter<String> = stringResponseAdapter
 

@@ -5,7 +5,7 @@
 //
 package com.example.root_query_fragment.adapter
 
-import com.apollographql.apollo.api.CustomScalarAdapters
+import com.apollographql.apollo.api.ResponseAdapterCache
 import com.apollographql.apollo.api.ResponseField
 import com.apollographql.apollo.api.internal.NullableResponseAdapter
 import com.apollographql.apollo.api.internal.ResponseAdapter
@@ -22,7 +22,7 @@ import kotlin.collections.List
     "RemoveExplicitTypeArguments", "NestedLambdaShadowedImplicitParameter", "PropertyName",
     "RemoveRedundantQualifierName")
 class TestQuery_ResponseAdapter(
-  customScalarAdapters: CustomScalarAdapters
+  customScalarAdapters: ResponseAdapterCache
 ) : ResponseAdapter<TestQuery.Data> {
   val QueryDataAdapter: QueryData =
       com.example.root_query_fragment.adapter.TestQuery_ResponseAdapter.QueryData(customScalarAdapters)
@@ -50,7 +50,7 @@ class TestQuery_ResponseAdapter(
   }
 
   class QueryData(
-    customScalarAdapters: CustomScalarAdapters
+    customScalarAdapters: ResponseAdapterCache
   ) {
     val stringAdapter: ResponseAdapter<String> = stringResponseAdapter
 
@@ -98,7 +98,7 @@ class TestQuery_ResponseAdapter(
     }
 
     class Hero(
-      customScalarAdapters: CustomScalarAdapters
+      customScalarAdapters: ResponseAdapterCache
     ) : ResponseAdapter<TestQuery.Data.QueryData.Hero> {
       val stringAdapter: ResponseAdapter<String> = stringResponseAdapter
 
@@ -138,7 +138,7 @@ class TestQuery_ResponseAdapter(
   }
 
   class OtherData(
-    customScalarAdapters: CustomScalarAdapters
+    customScalarAdapters: ResponseAdapterCache
   ) {
     val stringAdapter: ResponseAdapter<String> = stringResponseAdapter
 

@@ -5,7 +5,7 @@
 //
 package com.example.reserved_keywords.adapter
 
-import com.apollographql.apollo.api.CustomScalarAdapters
+import com.apollographql.apollo.api.ResponseAdapterCache
 import com.apollographql.apollo.api.ResponseField
 import com.apollographql.apollo.api.internal.ListResponseAdapter
 import com.apollographql.apollo.api.internal.NullableResponseAdapter
@@ -23,7 +23,7 @@ import kotlin.collections.List
     "RemoveExplicitTypeArguments", "NestedLambdaShadowedImplicitParameter", "PropertyName",
     "RemoveRedundantQualifierName")
 class TestQuery_ResponseAdapter(
-  customScalarAdapters: CustomScalarAdapters
+  customScalarAdapters: ResponseAdapterCache
 ) : ResponseAdapter<TestQuery.Data> {
   val nullableYieldAdapter: ResponseAdapter<TestQuery.Data.Yield?> =
       NullableResponseAdapter(Yield(customScalarAdapters))
@@ -86,7 +86,7 @@ class TestQuery_ResponseAdapter(
   }
 
   class Yield(
-    customScalarAdapters: CustomScalarAdapters
+    customScalarAdapters: ResponseAdapterCache
   ) : ResponseAdapter<TestQuery.Data.Yield> {
     val stringAdapter: ResponseAdapter<String> = stringResponseAdapter
 
@@ -135,7 +135,7 @@ class TestQuery_ResponseAdapter(
   }
 
   class Objects(
-    customScalarAdapters: CustomScalarAdapters
+    customScalarAdapters: ResponseAdapterCache
   ) : ResponseAdapter<TestQuery.Data.Objects> {
     val CharacterObjectsAdapter: CharacterObjects =
         com.example.reserved_keywords.adapter.TestQuery_ResponseAdapter.Objects.CharacterObjects(customScalarAdapters)
@@ -164,7 +164,7 @@ class TestQuery_ResponseAdapter(
     }
 
     class CharacterObjects(
-      customScalarAdapters: CustomScalarAdapters
+      customScalarAdapters: ResponseAdapterCache
     ) {
       val stringAdapter: ResponseAdapter<String> = stringResponseAdapter
 
@@ -208,7 +208,7 @@ class TestQuery_ResponseAdapter(
     }
 
     class OtherObjects(
-      customScalarAdapters: CustomScalarAdapters
+      customScalarAdapters: ResponseAdapterCache
     ) {
       val stringAdapter: ResponseAdapter<String> = stringResponseAdapter
 

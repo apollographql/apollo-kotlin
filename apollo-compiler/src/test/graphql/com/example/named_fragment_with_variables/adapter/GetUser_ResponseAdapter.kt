@@ -5,7 +5,7 @@
 //
 package com.example.named_fragment_with_variables.adapter
 
-import com.apollographql.apollo.api.CustomScalarAdapters
+import com.apollographql.apollo.api.ResponseAdapterCache
 import com.apollographql.apollo.api.ResponseField
 import com.apollographql.apollo.api.internal.ListResponseAdapter
 import com.apollographql.apollo.api.internal.NullableResponseAdapter
@@ -23,7 +23,7 @@ import kotlin.collections.List
     "RemoveExplicitTypeArguments", "NestedLambdaShadowedImplicitParameter", "PropertyName",
     "RemoveRedundantQualifierName")
 class GetUser_ResponseAdapter(
-  customScalarAdapters: CustomScalarAdapters
+  customScalarAdapters: ResponseAdapterCache
 ) : ResponseAdapter<GetUser.Data> {
   val QueryDataAdapter: QueryData =
       com.example.named_fragment_with_variables.adapter.GetUser_ResponseAdapter.QueryData(customScalarAdapters)
@@ -51,7 +51,7 @@ class GetUser_ResponseAdapter(
   }
 
   class QueryData(
-    customScalarAdapters: CustomScalarAdapters
+    customScalarAdapters: ResponseAdapterCache
   ) {
     val stringAdapter: ResponseAdapter<String> = stringResponseAdapter
 
@@ -103,7 +103,7 @@ class GetUser_ResponseAdapter(
     }
 
     class Organization(
-      customScalarAdapters: CustomScalarAdapters
+      customScalarAdapters: ResponseAdapterCache
     ) : ResponseAdapter<GetUser.Data.QueryData.Organization> {
       val stringAdapter: ResponseAdapter<String> = stringResponseAdapter
 
@@ -162,7 +162,7 @@ class GetUser_ResponseAdapter(
       }
 
       class User(
-        customScalarAdapters: CustomScalarAdapters
+        customScalarAdapters: ResponseAdapterCache
       ) : ResponseAdapter<GetUser.Data.QueryData.Organization.User> {
         val UserUserAdapter: UserUser =
             com.example.named_fragment_with_variables.adapter.GetUser_ResponseAdapter.QueryData.Organization.User.UserUser(customScalarAdapters)
@@ -191,7 +191,7 @@ class GetUser_ResponseAdapter(
         }
 
         class UserUser(
-          customScalarAdapters: CustomScalarAdapters
+          customScalarAdapters: ResponseAdapterCache
         ) {
           val stringAdapter: ResponseAdapter<String> = stringResponseAdapter
 
@@ -258,7 +258,7 @@ class GetUser_ResponseAdapter(
         }
 
         class OtherUser(
-          customScalarAdapters: CustomScalarAdapters
+          customScalarAdapters: ResponseAdapterCache
         ) {
           val stringAdapter: ResponseAdapter<String> = stringResponseAdapter
 
@@ -297,7 +297,7 @@ class GetUser_ResponseAdapter(
   }
 
   class OtherData(
-    customScalarAdapters: CustomScalarAdapters
+    customScalarAdapters: ResponseAdapterCache
   ) {
     val stringAdapter: ResponseAdapter<String> = stringResponseAdapter
 

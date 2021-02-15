@@ -5,7 +5,7 @@
 //
 package com.example.mutation_create_review.adapter
 
-import com.apollographql.apollo.api.CustomScalarAdapters
+import com.apollographql.apollo.api.ResponseAdapterCache
 import com.apollographql.apollo.api.ResponseField
 import com.apollographql.apollo.api.internal.ListResponseAdapter
 import com.apollographql.apollo.api.internal.NullableResponseAdapter
@@ -29,7 +29,7 @@ import kotlin.collections.List
     "RemoveExplicitTypeArguments", "NestedLambdaShadowedImplicitParameter", "PropertyName",
     "RemoveRedundantQualifierName")
 internal class CreateReviewForEpisode_ResponseAdapter(
-  customScalarAdapters: CustomScalarAdapters
+  customScalarAdapters: ResponseAdapterCache
 ) : ResponseAdapter<CreateReviewForEpisode.Data> {
   val nullableCreateReviewAdapter: ResponseAdapter<CreateReviewForEpisode.Data.CreateReview?> =
       NullableResponseAdapter(CreateReview(customScalarAdapters))
@@ -78,7 +78,7 @@ internal class CreateReviewForEpisode_ResponseAdapter(
   }
 
   class CreateReview(
-    customScalarAdapters: CustomScalarAdapters
+    customScalarAdapters: ResponseAdapterCache
   ) : ResponseAdapter<CreateReviewForEpisode.Data.CreateReview> {
     val intAdapter: ResponseAdapter<Int> = intResponseAdapter
 
@@ -184,7 +184,7 @@ internal class CreateReviewForEpisode_ResponseAdapter(
     }
 
     class ListOfListOfObject(
-      customScalarAdapters: CustomScalarAdapters
+      customScalarAdapters: ResponseAdapterCache
     ) : ResponseAdapter<CreateReviewForEpisode.Data.CreateReview.ListOfListOfObject> {
       val stringAdapter: ResponseAdapter<String> = stringResponseAdapter
 

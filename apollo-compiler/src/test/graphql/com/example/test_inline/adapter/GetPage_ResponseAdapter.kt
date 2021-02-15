@@ -5,7 +5,7 @@
 //
 package com.example.test_inline.adapter
 
-import com.apollographql.apollo.api.CustomScalarAdapters
+import com.apollographql.apollo.api.ResponseAdapterCache
 import com.apollographql.apollo.api.ResponseField
 import com.apollographql.apollo.api.internal.ListResponseAdapter
 import com.apollographql.apollo.api.internal.ResponseAdapter
@@ -22,7 +22,7 @@ import kotlin.collections.List
     "RemoveExplicitTypeArguments", "NestedLambdaShadowedImplicitParameter", "PropertyName",
     "RemoveRedundantQualifierName")
 class GetPage_ResponseAdapter(
-  customScalarAdapters: CustomScalarAdapters
+  customScalarAdapters: ResponseAdapterCache
 ) : ResponseAdapter<GetPage.Data> {
   val collectionAdapter: ResponseAdapter<GetPage.Data.Collection> = Collection(customScalarAdapters)
 
@@ -65,7 +65,7 @@ class GetPage_ResponseAdapter(
   }
 
   class Collection(
-    customScalarAdapters: CustomScalarAdapters
+    customScalarAdapters: ResponseAdapterCache
   ) : ResponseAdapter<GetPage.Data.Collection> {
     val ParticularCollectionCollectionAdapter: ParticularCollectionCollection =
         com.example.test_inline.adapter.GetPage_ResponseAdapter.Collection.ParticularCollectionCollection(customScalarAdapters)
@@ -93,7 +93,7 @@ class GetPage_ResponseAdapter(
     }
 
     class ParticularCollectionCollection(
-      customScalarAdapters: CustomScalarAdapters
+      customScalarAdapters: ResponseAdapterCache
     ) {
       val stringAdapter: ResponseAdapter<String> = stringResponseAdapter
 
@@ -146,7 +146,7 @@ class GetPage_ResponseAdapter(
       }
 
       class Items(
-        customScalarAdapters: CustomScalarAdapters
+        customScalarAdapters: ResponseAdapterCache
       ) : ResponseAdapter<GetPage.Data.Collection.ParticularCollectionCollection.Items> {
         val ParticularItemItemsAdapter: ParticularItemItems =
             com.example.test_inline.adapter.GetPage_ResponseAdapter.Collection.ParticularCollectionCollection.Items.ParticularItemItems(customScalarAdapters)
@@ -176,7 +176,7 @@ class GetPage_ResponseAdapter(
         }
 
         class ParticularItemItems(
-          customScalarAdapters: CustomScalarAdapters
+          customScalarAdapters: ResponseAdapterCache
         ) {
           val stringAdapter: ResponseAdapter<String> = stringResponseAdapter
 
@@ -230,7 +230,7 @@ class GetPage_ResponseAdapter(
         }
 
         class OtherItems(
-          customScalarAdapters: CustomScalarAdapters
+          customScalarAdapters: ResponseAdapterCache
         ) {
           val stringAdapter: ResponseAdapter<String> = stringResponseAdapter
 
@@ -277,7 +277,7 @@ class GetPage_ResponseAdapter(
     }
 
     class OtherCollection(
-      customScalarAdapters: CustomScalarAdapters
+      customScalarAdapters: ResponseAdapterCache
     ) {
       val stringAdapter: ResponseAdapter<String> = stringResponseAdapter
 
@@ -327,7 +327,7 @@ class GetPage_ResponseAdapter(
       }
 
       class Items(
-        customScalarAdapters: CustomScalarAdapters
+        customScalarAdapters: ResponseAdapterCache
       ) : ResponseAdapter<GetPage.Data.Collection.OtherCollection.Items> {
         val stringAdapter: ResponseAdapter<String> = stringResponseAdapter
 

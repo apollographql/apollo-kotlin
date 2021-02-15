@@ -5,7 +5,7 @@
 //
 package com.example.subscriptions.adapter
 
-import com.apollographql.apollo.api.CustomScalarAdapters
+import com.apollographql.apollo.api.ResponseAdapterCache
 import com.apollographql.apollo.api.ResponseField
 import com.apollographql.apollo.api.internal.NullableResponseAdapter
 import com.apollographql.apollo.api.internal.ResponseAdapter
@@ -24,7 +24,7 @@ import kotlin.collections.List
     "RemoveExplicitTypeArguments", "NestedLambdaShadowedImplicitParameter", "PropertyName",
     "RemoveRedundantQualifierName")
 class TestSubscription_ResponseAdapter(
-  customScalarAdapters: CustomScalarAdapters
+  customScalarAdapters: ResponseAdapterCache
 ) : ResponseAdapter<TestSubscription.Data> {
   val nullableCommentAddedAdapter: ResponseAdapter<TestSubscription.Data.CommentAdded?> =
       NullableResponseAdapter(CommentAdded(customScalarAdapters))
@@ -70,7 +70,7 @@ class TestSubscription_ResponseAdapter(
   }
 
   class CommentAdded(
-    customScalarAdapters: CustomScalarAdapters
+    customScalarAdapters: ResponseAdapterCache
   ) : ResponseAdapter<TestSubscription.Data.CommentAdded> {
     val intAdapter: ResponseAdapter<Int> = intResponseAdapter
 

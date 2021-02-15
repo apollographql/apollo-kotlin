@@ -5,7 +5,7 @@
 //
 package com.example.named_fragment_delegate.adapter
 
-import com.apollographql.apollo.api.CustomScalarAdapters
+import com.apollographql.apollo.api.ResponseAdapterCache
 import com.apollographql.apollo.api.ResponseField
 import com.apollographql.apollo.api.internal.ListResponseAdapter
 import com.apollographql.apollo.api.internal.NullableResponseAdapter
@@ -25,7 +25,7 @@ import kotlin.collections.List
     "RemoveExplicitTypeArguments", "NestedLambdaShadowedImplicitParameter", "PropertyName",
     "RemoveRedundantQualifierName")
 class TestQuery_ResponseAdapter(
-  customScalarAdapters: CustomScalarAdapters
+  customScalarAdapters: ResponseAdapterCache
 ) : ResponseAdapter<TestQuery.Data> {
   val nullableHeroAdapter: ResponseAdapter<TestQuery.Data.Hero?> =
       NullableResponseAdapter(Hero(customScalarAdapters))
@@ -69,7 +69,7 @@ class TestQuery_ResponseAdapter(
   }
 
   class Hero(
-    customScalarAdapters: CustomScalarAdapters
+    customScalarAdapters: ResponseAdapterCache
   ) : ResponseAdapter<TestQuery.Data.Hero> {
     val DroidHeroAdapter: DroidHero =
         com.example.named_fragment_delegate.adapter.TestQuery_ResponseAdapter.Hero.DroidHero(customScalarAdapters)
@@ -102,7 +102,7 @@ class TestQuery_ResponseAdapter(
     }
 
     class DroidHero(
-      customScalarAdapters: CustomScalarAdapters
+      customScalarAdapters: ResponseAdapterCache
     ) {
       val stringAdapter: ResponseAdapter<String> = stringResponseAdapter
 
@@ -172,7 +172,7 @@ class TestQuery_ResponseAdapter(
       }
 
       class Friends(
-        customScalarAdapters: CustomScalarAdapters
+        customScalarAdapters: ResponseAdapterCache
       ) : ResponseAdapter<TestQuery.Data.Hero.DroidHero.Friends> {
         val stringAdapter: ResponseAdapter<String> = stringResponseAdapter
 
@@ -212,7 +212,7 @@ class TestQuery_ResponseAdapter(
     }
 
     class HumanHero(
-      customScalarAdapters: CustomScalarAdapters
+      customScalarAdapters: ResponseAdapterCache
     ) {
       val stringAdapter: ResponseAdapter<String> = stringResponseAdapter
 
@@ -281,7 +281,7 @@ class TestQuery_ResponseAdapter(
       }
 
       class FriendsConnection(
-        customScalarAdapters: CustomScalarAdapters
+        customScalarAdapters: ResponseAdapterCache
       ) : ResponseAdapter<TestQuery.Data.Hero.HumanHero.FriendsConnection> {
         val nullableListOfNullableEdgesAdapter:
             ResponseAdapter<List<TestQuery.Data.Hero.HumanHero.FriendsConnection.Edges?>?> =
@@ -326,7 +326,7 @@ class TestQuery_ResponseAdapter(
         }
 
         class Edges(
-          customScalarAdapters: CustomScalarAdapters
+          customScalarAdapters: ResponseAdapterCache
         ) : ResponseAdapter<TestQuery.Data.Hero.HumanHero.FriendsConnection.Edges> {
           val nullableNodeAdapter:
               ResponseAdapter<TestQuery.Data.Hero.HumanHero.FriendsConnection.Edges.Node?> =
@@ -371,7 +371,7 @@ class TestQuery_ResponseAdapter(
           }
 
           class Node(
-            customScalarAdapters: CustomScalarAdapters
+            customScalarAdapters: ResponseAdapterCache
           ) : ResponseAdapter<TestQuery.Data.Hero.HumanHero.FriendsConnection.Edges.Node> {
             val stringAdapter: ResponseAdapter<String> = stringResponseAdapter
 
@@ -415,7 +415,7 @@ class TestQuery_ResponseAdapter(
     }
 
     class OtherHero(
-      customScalarAdapters: CustomScalarAdapters
+      customScalarAdapters: ResponseAdapterCache
     ) {
       val stringAdapter: ResponseAdapter<String> = stringResponseAdapter
 

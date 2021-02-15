@@ -87,17 +87,17 @@ struct RepoDetailView: View {
 struct RepoDetailView_Previews: PreviewProvider {
     static var previews: some View {
         let manager = RepositoryManager()
-        let repo = RepositoryFragment(__typename: "__typename",
+        let repo = RepositoryFragmentImpl.Data(__typename: "__typename",
                                       id: "1",
                                       name: "TestRepo",
                                       repoDescription: "a test repo")
-        manager.repoDetails[repo.name] = RepositoryDetail(__typename: "__typename",
+        manager.repoDetails[repo.name] = RepositoryDetailImpl.Data(__typename: "__typename",
                                                           id: "1",
-                                                          name: "Test Repo", repoDescription: "A Test Repo", issues: RepositoryDetail.Issues(__typename: "__typename", totalCount: 3),
-                                                          pullRequests: RepositoryDetail.PullRequests(__typename: "__typename", totalCount: 1),
-                                                          stargazers: RepositoryDetail.Stargazers(__typename: "__typename", totalCount: 25),
+                                                          name: "Test Repo", repoDescription: "A Test Repo", issues: RepositoryDetailImpl.DataIssues(totalCount: 3),
+                                                          pullRequests: RepositoryDetailImpl.DataPullRequests( totalCount: 1),
+                                                          stargazers: RepositoryDetailImpl.DataStargazers( totalCount: 25),
                                                           forkCount: 2,
-                                                          releases: RepositoryDetail.Releases(__typename: "__typename", totalCount: 14))
+                                                          releases: RepositoryDetailImpl.DataReleases(totalCount: 14))
         return NavigationView {
             RepoDetailView(repo: repo,
                            repoManager: manager)

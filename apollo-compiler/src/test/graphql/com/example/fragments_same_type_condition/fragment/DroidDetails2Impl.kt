@@ -5,9 +5,9 @@
 //
 package com.example.fragments_same_type_condition.fragment
 
-import com.apollographql.apollo.api.CustomScalarAdapters
 import com.apollographql.apollo.api.Fragment
 import com.apollographql.apollo.api.Operation
+import com.apollographql.apollo.api.ResponseAdapterCache
 import com.apollographql.apollo.api.ResponseField
 import com.apollographql.apollo.api.internal.ResponseAdapter
 import com.example.fragments_same_type_condition.fragment.adapter.DroidDetails2Impl_ResponseAdapter
@@ -15,7 +15,7 @@ import kotlin.String
 import kotlin.collections.List
 
 class DroidDetails2Impl : Fragment<DroidDetails2Impl.Data> {
-  override fun adapter(customScalarAdapters: CustomScalarAdapters): ResponseAdapter<Data> {
+  override fun adapter(customScalarAdapters: ResponseAdapterCache): ResponseAdapter<Data> {
     val adapter = customScalarAdapters.getFragmentAdapter("DroidDetails2Impl") {
       DroidDetails2Impl_ResponseAdapter(customScalarAdapters)
     }

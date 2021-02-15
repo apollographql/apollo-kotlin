@@ -5,7 +5,7 @@
 //
 package com.example.unique_type_name.adapter
 
-import com.apollographql.apollo.api.CustomScalarAdapters
+import com.apollographql.apollo.api.ResponseAdapterCache
 import com.apollographql.apollo.api.ResponseField
 import com.apollographql.apollo.api.internal.ListResponseAdapter
 import com.apollographql.apollo.api.internal.NullableResponseAdapter
@@ -29,7 +29,7 @@ import kotlin.collections.List
     "RemoveExplicitTypeArguments", "NestedLambdaShadowedImplicitParameter", "PropertyName",
     "RemoveRedundantQualifierName")
 class HeroDetailQuery_ResponseAdapter(
-  customScalarAdapters: CustomScalarAdapters
+  customScalarAdapters: ResponseAdapterCache
 ) : ResponseAdapter<HeroDetailQuery.Data> {
   val nullableHeroDetailQueryAdapter:
       ResponseAdapter<com.example.unique_type_name.HeroDetailQuery.Data.HeroDetailQuery?> =
@@ -74,7 +74,7 @@ class HeroDetailQuery_ResponseAdapter(
   }
 
   class HeroDetailQuery(
-    customScalarAdapters: CustomScalarAdapters
+    customScalarAdapters: ResponseAdapterCache
   ) : ResponseAdapter<com.example.unique_type_name.HeroDetailQuery.Data.HeroDetailQuery> {
     val HumanHeroDetailQueryAdapter: HumanHeroDetailQuery =
         com.example.unique_type_name.adapter.HeroDetailQuery_ResponseAdapter.HeroDetailQuery.HumanHeroDetailQuery(customScalarAdapters)
@@ -104,7 +104,7 @@ class HeroDetailQuery_ResponseAdapter(
     }
 
     class HumanHeroDetailQuery(
-      customScalarAdapters: CustomScalarAdapters
+      customScalarAdapters: ResponseAdapterCache
     ) {
       val stringAdapter: ResponseAdapter<String> = stringResponseAdapter
 
@@ -177,7 +177,7 @@ class HeroDetailQuery_ResponseAdapter(
       }
 
       class Friends(
-        customScalarAdapters: CustomScalarAdapters
+        customScalarAdapters: ResponseAdapterCache
       ) :
           ResponseAdapter<com.example.unique_type_name.HeroDetailQuery.Data.HeroDetailQuery.HumanHeroDetailQuery.Friends>
           {
@@ -251,7 +251,7 @@ class HeroDetailQuery_ResponseAdapter(
         }
 
         class Friends(
-          customScalarAdapters: CustomScalarAdapters
+          customScalarAdapters: ResponseAdapterCache
         ) :
             ResponseAdapter<com.example.unique_type_name.HeroDetailQuery.Data.HeroDetailQuery.HumanHeroDetailQuery.Friends.Friends>
             {
@@ -284,7 +284,7 @@ class HeroDetailQuery_ResponseAdapter(
           }
 
           class CharacterFriends(
-            customScalarAdapters: CustomScalarAdapters
+            customScalarAdapters: ResponseAdapterCache
           ) {
             val stringAdapter: ResponseAdapter<String> = stringResponseAdapter
 
@@ -345,7 +345,7 @@ class HeroDetailQuery_ResponseAdapter(
             }
 
             class FriendsConnection(
-              customScalarAdapters: CustomScalarAdapters
+              customScalarAdapters: ResponseAdapterCache
             ) :
                 ResponseAdapter<com.example.unique_type_name.HeroDetailQuery.Data.HeroDetailQuery.HumanHeroDetailQuery.Friends.Friends.CharacterFriends.FriendsConnection>
                 {
@@ -405,7 +405,7 @@ class HeroDetailQuery_ResponseAdapter(
               }
 
               class Edges(
-                customScalarAdapters: CustomScalarAdapters
+                customScalarAdapters: ResponseAdapterCache
               ) :
                   ResponseAdapter<com.example.unique_type_name.HeroDetailQuery.Data.HeroDetailQuery.HumanHeroDetailQuery.Friends.Friends.CharacterFriends.FriendsConnection.Edges>
                   {
@@ -452,7 +452,7 @@ class HeroDetailQuery_ResponseAdapter(
                 }
 
                 class Node(
-                  customScalarAdapters: CustomScalarAdapters
+                  customScalarAdapters: ResponseAdapterCache
                 ) :
                     ResponseAdapter<com.example.unique_type_name.HeroDetailQuery.Data.HeroDetailQuery.HumanHeroDetailQuery.Friends.Friends.CharacterFriends.FriendsConnection.Edges.Node>
                     {
@@ -498,7 +498,7 @@ class HeroDetailQuery_ResponseAdapter(
           }
 
           class OtherFriends(
-            customScalarAdapters: CustomScalarAdapters
+            customScalarAdapters: ResponseAdapterCache
           ) {
             val stringAdapter: ResponseAdapter<String> = stringResponseAdapter
 
@@ -537,7 +537,7 @@ class HeroDetailQuery_ResponseAdapter(
     }
 
     class OtherHeroDetailQuery(
-      customScalarAdapters: CustomScalarAdapters
+      customScalarAdapters: ResponseAdapterCache
     ) {
       val stringAdapter: ResponseAdapter<String> = stringResponseAdapter
 
@@ -598,7 +598,7 @@ class HeroDetailQuery_ResponseAdapter(
       }
 
       class Friends(
-        customScalarAdapters: CustomScalarAdapters
+        customScalarAdapters: ResponseAdapterCache
       ) :
           ResponseAdapter<com.example.unique_type_name.HeroDetailQuery.Data.HeroDetailQuery.OtherHeroDetailQuery.Friends>
           {

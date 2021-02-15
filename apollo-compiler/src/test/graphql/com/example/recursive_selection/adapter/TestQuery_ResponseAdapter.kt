@@ -5,7 +5,7 @@
 //
 package com.example.recursive_selection.adapter
 
-import com.apollographql.apollo.api.CustomScalarAdapters
+import com.apollographql.apollo.api.ResponseAdapterCache
 import com.apollographql.apollo.api.ResponseField
 import com.apollographql.apollo.api.internal.ListResponseAdapter
 import com.apollographql.apollo.api.internal.NullableResponseAdapter
@@ -23,7 +23,7 @@ import kotlin.collections.List
     "RemoveExplicitTypeArguments", "NestedLambdaShadowedImplicitParameter", "PropertyName",
     "RemoveRedundantQualifierName")
 class TestQuery_ResponseAdapter(
-  customScalarAdapters: CustomScalarAdapters
+  customScalarAdapters: ResponseAdapterCache
 ) : ResponseAdapter<TestQuery.Data> {
   val nullableTreeAdapter: ResponseAdapter<TestQuery.Data.Tree?> =
       NullableResponseAdapter(Tree(customScalarAdapters))
@@ -65,7 +65,7 @@ class TestQuery_ResponseAdapter(
   }
 
   class Tree(
-    customScalarAdapters: CustomScalarAdapters
+    customScalarAdapters: ResponseAdapterCache
   ) : ResponseAdapter<TestQuery.Data.Tree> {
     val stringAdapter: ResponseAdapter<String> = stringResponseAdapter
 
@@ -134,7 +134,7 @@ class TestQuery_ResponseAdapter(
     }
 
     class Children(
-      customScalarAdapters: CustomScalarAdapters
+      customScalarAdapters: ResponseAdapterCache
     ) : ResponseAdapter<TestQuery.Data.Tree.Children> {
       val stringAdapter: ResponseAdapter<String> = stringResponseAdapter
 
@@ -173,7 +173,7 @@ class TestQuery_ResponseAdapter(
     }
 
     class Parent(
-      customScalarAdapters: CustomScalarAdapters
+      customScalarAdapters: ResponseAdapterCache
     ) : ResponseAdapter<TestQuery.Data.Tree.Parent> {
       val stringAdapter: ResponseAdapter<String> = stringResponseAdapter
 

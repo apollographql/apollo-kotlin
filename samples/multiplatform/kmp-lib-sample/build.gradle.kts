@@ -80,4 +80,5 @@ tasks.register("copyFramework", Sync::class) {
 
 apollo {
   service("kmpsample")
+  generateFragmentImplementations.set(true)
 }

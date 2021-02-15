@@ -5,7 +5,7 @@
 //
 package com.example.named_fragment_inside_inline_fragment.adapter
 
-import com.apollographql.apollo.api.CustomScalarAdapters
+import com.apollographql.apollo.api.ResponseAdapterCache
 import com.apollographql.apollo.api.ResponseField
 import com.apollographql.apollo.api.internal.ListResponseAdapter
 import com.apollographql.apollo.api.internal.NullableResponseAdapter
@@ -25,7 +25,7 @@ import kotlin.collections.List
     "RemoveExplicitTypeArguments", "NestedLambdaShadowedImplicitParameter", "PropertyName",
     "RemoveRedundantQualifierName")
 class GetHero_ResponseAdapter(
-  customScalarAdapters: CustomScalarAdapters
+  customScalarAdapters: ResponseAdapterCache
 ) : ResponseAdapter<GetHero.Data> {
   val nullableHeroAdapter: ResponseAdapter<GetHero.Data.Hero?> =
       NullableResponseAdapter(Hero(customScalarAdapters))
@@ -69,7 +69,7 @@ class GetHero_ResponseAdapter(
   }
 
   class Hero(
-    customScalarAdapters: CustomScalarAdapters
+    customScalarAdapters: ResponseAdapterCache
   ) : ResponseAdapter<GetHero.Data.Hero> {
     val CharacterHeroAdapter: CharacterHero =
         com.example.named_fragment_inside_inline_fragment.adapter.GetHero_ResponseAdapter.Hero.CharacterHero(customScalarAdapters)
@@ -98,7 +98,7 @@ class GetHero_ResponseAdapter(
     }
 
     class CharacterHero(
-      customScalarAdapters: CustomScalarAdapters
+      customScalarAdapters: ResponseAdapterCache
     ) {
       val stringAdapter: ResponseAdapter<String> = stringResponseAdapter
 
@@ -154,7 +154,7 @@ class GetHero_ResponseAdapter(
     }
 
     class OtherHero(
-      customScalarAdapters: CustomScalarAdapters
+      customScalarAdapters: ResponseAdapterCache
     ) {
       val stringAdapter: ResponseAdapter<String> = stringResponseAdapter
 
