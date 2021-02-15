@@ -4,7 +4,7 @@ import com.apollographql.apollo.api.BigDecimal
 import com.apollographql.apollo.api.CustomScalarAdapter
 import com.apollographql.apollo.api.JsonElement
 import com.apollographql.apollo.api.CustomScalar
-import com.apollographql.apollo.api.CustomScalarAdapters
+import com.apollographql.apollo.api.ResponseAdapterCache
 import com.apollographql.apollo.api.JsonBoolean
 import com.apollographql.apollo.api.JsonNull
 import com.apollographql.apollo.api.JsonNumber
@@ -22,7 +22,7 @@ class InputFieldJsonWriterTest {
     serializeNulls = true
     beginObject()
   }
-  private val inputFieldJsonWriter = InputFieldJsonWriter(jsonWriter, CustomScalarAdapters(emptyMap()))
+  private val inputFieldJsonWriter = InputFieldJsonWriter(jsonWriter, ResponseAdapterCache(emptyMap()))
 
   @Test
   fun writeString() {
@@ -97,7 +97,7 @@ class InputFieldJsonWriterTest {
         return JsonBoolean((value as Boolean))
       }
     }
-    val inputFieldJsonWriter = InputFieldJsonWriter(jsonWriter, CustomScalarAdapters(customScalarAdapters))
+    val inputFieldJsonWriter = InputFieldJsonWriter(jsonWriter, ResponseAdapterCache(customScalarAdapters))
     inputFieldJsonWriter.writeCustom("someField", customScalar, true)
     inputFieldJsonWriter.writeCustom("someNullField", customScalar, null)
     assertEquals("{\"someField\":true,\"someNullField\":null", jsonBuffer.readUtf8())
@@ -112,7 +112,7 @@ class InputFieldJsonWriterTest {
         return JsonNumber((value as BigDecimal).toNumber())
       }
     }
-    val inputFieldJsonWriter = InputFieldJsonWriter(jsonWriter, CustomScalarAdapters(customScalarAdapters))
+    val inputFieldJsonWriter = InputFieldJsonWriter(jsonWriter, ResponseAdapterCache(customScalarAdapters))
     inputFieldJsonWriter.writeCustom("someField", customScalar, BigDecimal("100.1"))
     inputFieldJsonWriter.writeCustom("someNullField", customScalar, null)
     assertEquals("{\"someField\":100.1,\"someNullField\":null", jsonBuffer.readUtf8())
@@ -127,7 +127,7 @@ class InputFieldJsonWriterTest {
         return JsonString((value as String))
       }
     }
-    val inputFieldJsonWriter = InputFieldJsonWriter(jsonWriter, CustomScalarAdapters(customScalarAdapters))
+    val inputFieldJsonWriter = InputFieldJsonWriter(jsonWriter, ResponseAdapterCache(customScalarAdapters))
     inputFieldJsonWriter.writeCustom("someField", customScalar, "someValue")
     inputFieldJsonWriter.writeCustom("someNullField", customScalar, null)
     assertEquals("{\"someField\":\"someValue\",\"someNullField\":null", jsonBuffer.readUtf8())
@@ -142,7 +142,7 @@ class InputFieldJsonWriterTest {
         return JsonNull
       }
     }
-    val inputFieldJsonWriter = InputFieldJsonWriter(jsonWriter, CustomScalarAdapters(customScalarAdapters))
+    val inputFieldJsonWriter = InputFieldJsonWriter(jsonWriter, ResponseAdapterCache(customScalarAdapters))
     inputFieldJsonWriter.writeCustom("someField", customScalar, null)
     assertEquals("{\"someField\":null", jsonBuffer.readUtf8())
   }

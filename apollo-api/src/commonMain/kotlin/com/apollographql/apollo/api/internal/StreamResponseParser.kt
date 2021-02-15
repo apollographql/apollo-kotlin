@@ -3,7 +3,7 @@ package com.apollographql.apollo.api.internal
 import com.apollographql.apollo.api.Error
 import com.apollographql.apollo.api.Operation
 import com.apollographql.apollo.api.Response
-import com.apollographql.apollo.api.CustomScalarAdapters
+import com.apollographql.apollo.api.ResponseAdapterCache
 import com.apollographql.apollo.api.internal.json.BufferedSourceJsonReader
 import com.apollographql.apollo.api.internal.json.JsonReader
 import com.apollographql.apollo.api.internal.json.Utils.readRecursively
@@ -19,7 +19,7 @@ object StreamResponseParser {
   fun <D : Operation.Data> parse(
       source: BufferedSource,
       operation: Operation<D>,
-      customScalarAdapters: CustomScalarAdapters
+      responseAdapterCache: ResponseAdapterCache
   ): Response<D> {
     return BufferedSourceJsonReader(source).use { jsonReader ->
       jsonReader.beginObject()
@@ -30,7 +30,7 @@ object StreamResponseParser {
       while (jsonReader.hasNext()) {
         when (jsonReader.nextName()) {
           "data" -> data = jsonReader.readData(
-              adapter = operation.adapter(customScalarAdapters),
+              adapter = operation.adapter(responseAdapterCache),
           )
           "errors" -> errors = jsonReader.readErrors()
           "extensions" -> extensions = jsonReader.readRecursively() as Map<String, Any?>

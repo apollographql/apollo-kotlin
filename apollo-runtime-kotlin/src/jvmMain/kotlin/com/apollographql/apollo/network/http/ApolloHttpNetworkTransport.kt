@@ -6,7 +6,7 @@ import com.apollographql.apollo.exception.ApolloNetworkException
 import com.apollographql.apollo.exception.ApolloParseException
 import com.apollographql.apollo.exception.ApolloSerializationException
 import com.apollographql.apollo.api.ApolloExperimental
-import com.apollographql.apollo.api.CustomScalarAdapters
+import com.apollographql.apollo.api.ResponseAdapterCache
 import com.apollographql.apollo.api.ExecutionContext
 import com.apollographql.apollo.api.Operation
 import com.apollographql.apollo.api.composeRequestBody
@@ -63,14 +63,14 @@ actual class ApolloHttpNetworkTransport(
 
   override fun <D : Operation.Data> execute(
       request: ApolloRequest<D>,
-      customScalarAdapters: CustomScalarAdapters,
+      responseAdapterCache: ResponseAdapterCache,
       executionContext: ExecutionContext
   ): Flow<ApolloResponse<D>> {
     return flow {
       val response = suspendCancellableCoroutine<ApolloResponse<D>> { continuation ->
         val httpRequest = request.toHttpRequest(
             executionContext[HttpExecutionContext.Request],
-            customScalarAdapters
+            responseAdapterCache
         )
         httpCallFactory.newCall(httpRequest)
             .also { call ->
@@ -92,7 +92,7 @@ actual class ApolloHttpNetworkTransport(
 
                   override fun onResponse(call: Call, response: Response) {
                     if (continuation.isCancelled) return
-                    runCatching { response.parse(request, customScalarAdapters) }
+                    runCatching { response.parse(request, responseAdapterCache) }
                         .onSuccess { graphQlResponse -> continuation.resume(graphQlResponse) }
                         .onFailure { e ->
                           response.close()
@@ -124,7 +124,7 @@ actual class ApolloHttpNetworkTransport(
   @Suppress("UNCHECKED_CAST")
   private fun <D : Operation.Data> Response.parse(
       request: ApolloRequest<D>,
-      customScalarAdapters: CustomScalarAdapters
+      responseAdapterCache: ResponseAdapterCache
   ): ApolloResponse<D> {
     if (!isSuccessful) throw ApolloHttpException(
         statusCode = code(),
@@ -140,7 +140,7 @@ actual class ApolloHttpNetworkTransport(
 
     val response = request.operation.parse(
         source = responseBody.source(),
-        customScalarAdapters = customScalarAdapters
+        responseAdapterCache = responseAdapterCache
     )
     return ApolloResponse(
         requestUuid = request.requestUuid,
@@ -154,12 +154,12 @@ actual class ApolloHttpNetworkTransport(
 
   private fun <D : Operation.Data> ApolloRequest<D>.toHttpRequest(
       httpExecutionContext: HttpExecutionContext.Request?,
-      customScalarAdapters: CustomScalarAdapters
+      responseAdapterCache: ResponseAdapterCache
   ): Request {
     try {
       return when (httpMethod) {
-        HttpMethod.Get -> toHttpGetRequest(httpExecutionContext, customScalarAdapters)
-        HttpMethod.Post -> toHttpPostRequest(httpExecutionContext, customScalarAdapters)
+        HttpMethod.Get -> toHttpGetRequest(httpExecutionContext, responseAdapterCache)
+        HttpMethod.Post -> toHttpPostRequest(httpExecutionContext, responseAdapterCache)
       }
     } catch (e: Exception) {
       throw ApolloSerializationException(
@@ -171,13 +171,13 @@ actual class ApolloHttpNetworkTransport(
 
   private fun <D : Operation.Data> ApolloRequest<D>.toHttpGetRequest(
       httpExecutionContext: HttpExecutionContext.Request?,
-      customScalarAdapters: CustomScalarAdapters
+      responseAdapterCache: ResponseAdapterCache
   ): Request {
     val url = serverUrl.newBuilder()
         .addQueryParameter("query", operation.queryDocument())
         .addQueryParameter("operationName", operation.name())
         .apply {
-          operation.variables().marshal(customScalarAdapters).let { variables ->
+          operation.variables().marshal(responseAdapterCache).let { variables ->
             if (variables.isNotEmpty()) addQueryParameter("variables", variables)
           }
         }
@@ -195,9 +195,9 @@ actual class ApolloHttpNetworkTransport(
 
   private fun <D : Operation.Data> ApolloRequest<D>.toHttpPostRequest(
       httpExecutionContext: HttpExecutionContext.Request?,
-      customScalarAdapters: CustomScalarAdapters
+      responseAdapterCache: ResponseAdapterCache
   ): Request {
-    val requestBody = operation.composeRequestBody(customScalarAdapters)
+    val requestBody = operation.composeRequestBody(responseAdapterCache)
         .let {
           RequestBody.create(
               MediaType.parse(MEDIA_TYPE),

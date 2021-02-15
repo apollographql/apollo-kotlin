@@ -1,9 +1,8 @@
 package com.apollographql.apollo.internal
 
 import com.apollographql.apollo.NamedCountDownLatch
-import com.apollographql.apollo.api.CustomScalarAdapters
+import com.apollographql.apollo.api.ResponseAdapterCache
 import com.apollographql.apollo.api.internal.ApolloLogger
-import com.apollographql.apollo.api.internal.json.JsonReader
 import com.apollographql.apollo.cache.CacheHeaders
 import com.apollographql.apollo.cache.normalized.CacheKey
 import com.apollographql.apollo.cache.normalized.CacheKeyResolver
@@ -11,7 +10,6 @@ import com.apollographql.apollo.cache.normalized.internal.RealApolloStore
 import com.apollographql.apollo.cache.normalized.NormalizedCache
 import com.apollographql.apollo.cache.normalized.Record
 import org.junit.Test
-import java.util.*
 import java.util.concurrent.TimeUnit
 import kotlin.reflect.KClass
 
@@ -51,7 +49,7 @@ class ApolloStoreTest {
           }
         },
         CacheKeyResolver.DEFAULT,
-        CustomScalarAdapters(emptyMap()),
+        ResponseAdapterCache(emptyMap()),
         ApolloLogger(null)
     )
     realApolloStore.clearAll()

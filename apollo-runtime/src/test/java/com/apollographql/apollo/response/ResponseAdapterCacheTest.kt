@@ -3,21 +3,21 @@ package com.apollographql.apollo.response
 import com.apollographql.apollo.api.CustomScalarAdapter
 import com.apollographql.apollo.api.JsonElement
 import com.apollographql.apollo.api.CustomScalar
-import com.apollographql.apollo.api.CustomScalarAdapters
+import com.apollographql.apollo.api.ResponseAdapterCache
 import com.apollographql.apollo.api.JsonList
 import com.apollographql.apollo.api.JsonObject
 import com.apollographql.apollo.api.JsonString
 import com.google.common.truth.Truth.assertThat
 import org.junit.Test
 
-class CustomScalarAdaptersTest {
+class ResponseAdapterCacheTest {
   @Test
   fun customAdapterTakePrecedentOverDefault() {
     val customScalarAdapters = mutableMapOf<CustomScalar, CustomScalarAdapter<*>>()
     val expectedAdapter = MockCustomScalarAdapter()
     customScalarAdapters[CustomScalar("String", String::class.java.name)] = expectedAdapter
 
-    val actualAdapter = CustomScalarAdapters(customScalarAdapters).adapterFor<String>(
+    val actualAdapter = ResponseAdapterCache(customScalarAdapters).adapterFor<String>(
         CustomScalar(
             "String",
             String::class.java.name
@@ -28,7 +28,7 @@ class CustomScalarAdaptersTest {
 
   @Test(expected = IllegalArgumentException::class)
   fun missingAdapter() {
-    CustomScalarAdapters(emptyMap())
+    ResponseAdapterCache(emptyMap())
         .adapterFor<RuntimeException>(
             CustomScalar(
                 "RuntimeException",
@@ -126,7 +126,7 @@ class CustomScalarAdaptersTest {
   }
 
   private fun <T : Any> defaultAdapter(clazz: Class<T>): CustomScalarAdapter<T> {
-    return CustomScalarAdapters(emptyMap()).adapterFor(
+    return ResponseAdapterCache(emptyMap()).adapterFor(
         CustomScalar(clazz.simpleName, clazz.name)
     )
   }

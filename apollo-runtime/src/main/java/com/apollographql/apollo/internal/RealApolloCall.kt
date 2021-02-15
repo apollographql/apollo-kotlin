@@ -3,7 +3,7 @@ package com.apollographql.apollo.internal
 import com.apollographql.apollo.ApolloCall
 import com.apollographql.apollo.ApolloMutationCall
 import com.apollographql.apollo.ApolloQueryCall
-import com.apollographql.apollo.api.CustomScalarAdapters
+import com.apollographql.apollo.api.ResponseAdapterCache
 import com.apollographql.apollo.api.Mutation
 import com.apollographql.apollo.api.Operation
 import com.apollographql.apollo.api.Query
@@ -48,7 +48,7 @@ class RealApolloCall<D : Operation.Data> internal constructor(builder: Builder<D
   val httpCallFactory: Call.Factory?
   val httpCache: HttpCache?
   val httpCachePolicy: HttpCachePolicy.Policy?
-  val customScalarAdapters: CustomScalarAdapters
+  val responseAdapterCache: ResponseAdapterCache
   val apolloStore: ApolloStore?
   val cacheHeaders: CacheHeaders?
   val requestHeaders: RequestHeaders
@@ -92,7 +92,7 @@ class RealApolloCall<D : Operation.Data> internal constructor(builder: Builder<D
   }
 
   override fun watcher(): RealApolloQueryWatcher<D> {
-    return RealApolloQueryWatcher(clone(), apolloStore!!, customScalarAdapters!!, logger!!, tracker!!, ApolloResponseFetchers.CACHE_FIRST)
+    return RealApolloQueryWatcher(clone(), apolloStore!!, responseAdapterCache!!, logger!!, tracker!!, ApolloResponseFetchers.CACHE_FIRST)
   }
 
   override fun httpCachePolicy(httpCachePolicy: HttpCachePolicy.Policy): RealApolloCall<D> {
@@ -230,7 +230,7 @@ class RealApolloCall<D : Operation.Data> internal constructor(builder: Builder<D
         .httpCallFactory(httpCallFactory)
         .httpCache(httpCache)
         .httpCachePolicy(httpCachePolicy!!)
-        .scalarTypeAdapters(customScalarAdapters)
+        .scalarTypeAdapters(responseAdapterCache)
         .apolloStore(apolloStore)
         .cacheHeaders(cacheHeaders!!)
         .requestHeaders(requestHeaders)
@@ -325,9 +325,9 @@ class RealApolloCall<D : Operation.Data> internal constructor(builder: Builder<D
     }
     interceptors.add(ApolloParseInterceptor(
         httpCache,
-        customScalarAdapters,
+        responseAdapterCache,
         logger))
-    interceptors.add(ApolloServerInterceptor(serverUrl!!, httpCallFactory!!, httpCachePolicy, false, customScalarAdapters,
+    interceptors.add(ApolloServerInterceptor(serverUrl!!, httpCallFactory!!, httpCachePolicy, false, responseAdapterCache,
         logger))
     return RealApolloInterceptorChain(interceptors)
   }
@@ -338,7 +338,7 @@ class RealApolloCall<D : Operation.Data> internal constructor(builder: Builder<D
     var httpCallFactory: Call.Factory? = null
     var httpCache: HttpCache? = null
     var httpCachePolicy: HttpCachePolicy.Policy? = null
-    var customScalarAdapters: CustomScalarAdapters? = null
+    var responseAdapterCache: ResponseAdapterCache? = null
     var apolloStore: ApolloStore? = null
     var responseFetcher: ResponseFetcher? = null
     var cacheHeaders: CacheHeaders? = null
@@ -376,8 +376,8 @@ class RealApolloCall<D : Operation.Data> internal constructor(builder: Builder<D
       return this
     }
 
-    fun scalarTypeAdapters(customScalarAdapters: CustomScalarAdapters?): Builder<D> {
-      this.customScalarAdapters = customScalarAdapters
+    fun scalarTypeAdapters(responseAdapterCache: ResponseAdapterCache?): Builder<D> {
+      this.responseAdapterCache = responseAdapterCache
       return this
     }
 
@@ -489,7 +489,7 @@ class RealApolloCall<D : Operation.Data> internal constructor(builder: Builder<D
     httpCallFactory = builder.httpCallFactory
     httpCache = builder.httpCache
     httpCachePolicy = builder.httpCachePolicy
-    customScalarAdapters = builder.customScalarAdapters ?: throw IllegalArgumentException()
+    responseAdapterCache = builder.responseAdapterCache ?: throw IllegalArgumentException()
     apolloStore = builder.apolloStore
     responseFetcher = builder.responseFetcher
     cacheHeaders = builder.cacheHeaders
@@ -510,7 +510,7 @@ class RealApolloCall<D : Operation.Data> internal constructor(builder: Builder<D
           .queryWatchers(refetchQueryNames)
           .serverUrl(builder.serverUrl)
           .httpCallFactory(builder.httpCallFactory)
-          .scalarTypeAdapters(builder.customScalarAdapters)
+          .scalarTypeAdapters(builder.responseAdapterCache)
           .apolloStore(builder.apolloStore)
           .dispatcher(builder.dispatcher)
           .logger(builder.logger)

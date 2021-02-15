@@ -1,6 +1,6 @@
 package com.apollographql.apollo.internal.subscription
 
-import com.apollographql.apollo.api.CustomScalarAdapters
+import com.apollographql.apollo.api.ResponseAdapterCache
 import com.apollographql.apollo.api.Operation
 import com.apollographql.apollo.api.Response
 import com.apollographql.apollo.api.Subscription
@@ -22,7 +22,7 @@ import java.util.concurrent.CopyOnWriteArrayList
 import java.util.concurrent.Executor
 import java.util.concurrent.TimeUnit
 
-class RealSubscriptionManager(private val customScalarAdapters: CustomScalarAdapters,
+class RealSubscriptionManager(private val responseAdapterCache: ResponseAdapterCache,
                               transportFactory: SubscriptionTransport.Factory,
                               private val connectionParams: SubscriptionConnectionParamsProvider,
                               private val dispatcher: Executor,
@@ -98,7 +98,7 @@ class RealSubscriptionManager(private val customScalarAdapters: CustomScalarAdap
           transport.connect()
         } else if (state == SubscriptionManagerState.ACTIVE) {
           transport.send(
-              OperationClientMessage.Start(subscriptionId.toString(), subscription, customScalarAdapters, autoPersistSubscription, false)
+              OperationClientMessage.Start(subscriptionId.toString(), subscription, responseAdapterCache, autoPersistSubscription, false)
           )
         }
       }
@@ -296,7 +296,7 @@ class RealSubscriptionManager(private val customScalarAdapters: CustomScalarAdap
     if (subscriptionRecord != null) {
       val subscription = subscriptionRecord!!.subscription
       try {
-        val response = MapResponseParser.parse(message.payload, subscription, customScalarAdapters)
+        val response = MapResponseParser.parse(message.payload, subscription, responseAdapterCache)
         subscriptionRecord!!.notifyOnResponse(response)
       } catch (e: Exception) {
         subscriptionRecord = removeSubscriptionById(subscriptionId)
@@ -317,7 +317,7 @@ class RealSubscriptionManager(private val customScalarAdapters: CustomScalarAdap
         state = SubscriptionManagerState.ACTIVE
         for (subscriptionRecord in subscriptions.values) {
           transport.send(
-              OperationClientMessage.Start(subscriptionRecord.id.toString(), subscriptionRecord.subscription, customScalarAdapters,
+              OperationClientMessage.Start(subscriptionRecord.id.toString(), subscriptionRecord.subscription, responseAdapterCache,
                   autoPersistSubscription, false)
           )
         }
@@ -341,7 +341,7 @@ class RealSubscriptionManager(private val customScalarAdapters: CustomScalarAdap
       synchronized(this) {
         subscriptions[subscriptionRecord.id] = subscriptionRecord
         transport.send(OperationClientMessage.Start(
-            subscriptionRecord.id.toString(), subscriptionRecord.subscription, customScalarAdapters, true, true
+            subscriptionRecord.id.toString(), subscriptionRecord.subscription, responseAdapterCache, true, true
         ))
       }
     } else {

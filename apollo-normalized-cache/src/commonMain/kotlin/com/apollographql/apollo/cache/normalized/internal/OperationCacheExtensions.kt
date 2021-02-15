@@ -1,6 +1,6 @@
 package com.apollographql.apollo.cache.normalized.internal
 
-import com.apollographql.apollo.api.CustomScalarAdapters
+import com.apollographql.apollo.api.ResponseAdapterCache
 import com.apollographql.apollo.api.Fragment
 import com.apollographql.apollo.api.Operation
 import com.apollographql.apollo.cache.normalized.Record
@@ -13,16 +13,16 @@ import com.apollographql.apollo.cache.normalized.CacheKeyResolver
 
 fun <D : Operation.Data> Operation<D>.normalize(
     data: D,
-    customScalarAdapters: CustomScalarAdapters,
+    responseAdapterCache: ResponseAdapterCache,
     cacheKeyResolver: CacheKeyResolver
-) = normalizeInternal(data, cacheKeyResolver, CacheKeyResolver.rootKey().key, adapter(customScalarAdapters), variables(), responseFields())
+) = normalizeInternal(data, cacheKeyResolver, CacheKeyResolver.rootKey().key, adapter(responseAdapterCache), variables(), responseFields())
 
 fun <D : Fragment.Data> Fragment<D>.normalize(
     data: D,
-    customScalarAdapters: CustomScalarAdapters,
+    responseAdapterCache: ResponseAdapterCache,
     cacheKeyResolver: CacheKeyResolver,
     rootKey: String
-) = normalizeInternal(data, cacheKeyResolver, rootKey, adapter(customScalarAdapters), variables(), responseFields())
+) = normalizeInternal(data, cacheKeyResolver, rootKey, adapter(responseAdapterCache), variables(), responseFields())
 
 private fun <D> normalizeInternal(
     data: D,
@@ -51,7 +51,7 @@ enum class ReadMode {
 }
 
 fun <D : Operation.Data> Operation<D>.readDataFromCache(
-    customScalarAdapters: CustomScalarAdapters,
+    responseAdapterCache: ResponseAdapterCache,
     readableStore: ReadableStore,
     cacheKeyResolver: CacheKeyResolver,
     cacheHeaders: CacheHeaders,
@@ -61,7 +61,7 @@ fun <D : Operation.Data> Operation<D>.readDataFromCache(
     cacheKeyResolver = cacheKeyResolver,
     cacheHeaders = cacheHeaders,
     variables = variables(),
-    adapter = adapter(customScalarAdapters),
+    adapter = adapter(responseAdapterCache),
     mode = mode,
     cacheKey = CacheKeyResolver.rootKey(),
     fieldSets = responseFields()
@@ -69,7 +69,7 @@ fun <D : Operation.Data> Operation<D>.readDataFromCache(
 
 fun <D : Fragment.Data> Fragment<D>.readDataFromCache(
     cacheKey: CacheKey,
-    customScalarAdapters: CustomScalarAdapters,
+    responseAdapterCache: ResponseAdapterCache,
     readableStore: ReadableStore,
     cacheKeyResolver: CacheKeyResolver,
     cacheHeaders: CacheHeaders,
@@ -80,7 +80,7 @@ fun <D : Fragment.Data> Fragment<D>.readDataFromCache(
     cacheKeyResolver = cacheKeyResolver,
     cacheHeaders = cacheHeaders,
     variables = variables(),
-    adapter = adapter(customScalarAdapters),
+    adapter = adapter(responseAdapterCache),
     mode = mode,
     fieldSets = responseFields()
 )

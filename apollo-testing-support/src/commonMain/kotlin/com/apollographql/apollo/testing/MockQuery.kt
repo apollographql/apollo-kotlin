@@ -1,6 +1,6 @@
 package com.apollographql.apollo.testing
 
-import com.apollographql.apollo.api.CustomScalarAdapters
+import com.apollographql.apollo.api.ResponseAdapterCache
 import com.apollographql.apollo.api.Operation
 import com.apollographql.apollo.api.Query
 import com.apollographql.apollo.api.ResponseField
@@ -14,7 +14,7 @@ class MockQuery : Query<MockQuery.Data> {
 
   override fun variables(): Operation.Variables = Operation.EMPTY_VARIABLES
 
-  override fun adapter(customScalarAdapters: CustomScalarAdapters): ResponseAdapter<Data> {
+  override fun adapter(responseAdapterCache: ResponseAdapterCache): ResponseAdapter<Data> {
     return object : ResponseAdapter<Data> {
       override fun fromResponse(reader: JsonReader): Data {
         reader.beginObject()

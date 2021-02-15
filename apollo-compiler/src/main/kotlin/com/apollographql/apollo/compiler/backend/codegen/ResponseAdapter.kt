@@ -1,13 +1,12 @@
 package com.apollographql.apollo.compiler.backend.codegen
 
-import com.apollographql.apollo.api.CustomScalarAdapters
+import com.apollographql.apollo.api.ResponseAdapterCache
 import com.apollographql.apollo.api.ResponseField
 import com.apollographql.apollo.api.internal.ListResponseAdapter
 import com.apollographql.apollo.api.internal.NullableResponseAdapter
 import com.apollographql.apollo.api.internal.ResponseAdapter
 import com.apollographql.apollo.compiler.applyIf
 import com.apollographql.apollo.compiler.backend.ast.CodeGenerationAst
-import com.apollographql.apollo.compiler.backend.ast.toLowerCamelCase
 import com.apollographql.apollo.compiler.escapeKotlinReservedWord
 import com.squareup.kotlinpoet.ClassName
 import com.squareup.kotlinpoet.CodeBlock
@@ -48,7 +47,7 @@ private fun CodeGenerationAst.ObjectType.responseAdapterTypeSpec(): TypeSpec {
   return TypeSpec.classBuilder(this.name)
       .primaryConstructor(
           FunSpec.constructorBuilder()
-              .addParameter(ParameterSpec.builder("customScalarAdapters", CustomScalarAdapters::class.asTypeName()).build())
+              .addParameter(ParameterSpec.builder("customScalarAdapters", ResponseAdapterCache::class.asTypeName()).build())
               .build()
       )
       .applyIf(!isTypeCase) { addSuperinterface(ResponseAdapter::class.asTypeName().parameterizedBy(this@responseAdapterTypeSpec.typeRef.asTypeName())) }

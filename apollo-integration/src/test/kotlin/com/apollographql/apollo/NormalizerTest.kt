@@ -1,6 +1,6 @@
 package com.apollographql.apollo
 
-import com.apollographql.apollo.api.CustomScalarAdapters
+import com.apollographql.apollo.api.ResponseAdapterCache
 import com.apollographql.apollo.api.Input.Companion.fromNullable
 import com.apollographql.apollo.api.Operation
 import com.apollographql.apollo.api.parse
@@ -25,7 +25,6 @@ import com.apollographql.apollo.integration.normalizer.type.Episode
 import com.google.common.truth.Truth
 import org.junit.Before
 import org.junit.Test
-import java.math.BigDecimal
 import java.util.Arrays
 
 class ResponseNormalizationTest {
@@ -233,7 +232,7 @@ class ResponseNormalizationTest {
   companion object {
     private fun <D : Operation.Data> records(operation: Operation<D>, name: String): Map<String, Record> {
       val data = operation.parse(Utils.readResource(name))
-      return operation.normalize(data = data.data!!, CustomScalarAdapters.DEFAULT, IdFieldCacheKeyResolver())
+      return operation.normalize(data = data.data!!, ResponseAdapterCache.DEFAULT, IdFieldCacheKeyResolver())
     }
 
     private const val TEST_FIELD_KEY_JEDI = "hero({\"episode\":\"JEDI\"})"

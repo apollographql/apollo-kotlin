@@ -10,7 +10,7 @@ import kotlin.jvm.Synchronized
 /**
  * A wrapper around a Map of [CustomScalarAdapter] that allows to easily retrieve an adapter for the given [CustomScalar]
  */
-class CustomScalarAdapters(val customScalarAdapters: Map<CustomScalar, CustomScalarAdapter<*>>) {
+class ResponseAdapterCache(val customScalarAdapters: Map<CustomScalar, CustomScalarAdapter<*>>) {
 
   private val adapterByGraphQLName = customScalarAdapters.mapKeys { it.key.graphqlName }
 
@@ -67,7 +67,7 @@ class CustomScalarAdapters(val customScalarAdapters: Map<CustomScalar, CustomSca
   }
 
   companion object {
-    val DEFAULT = CustomScalarAdapters(emptyMap())
+    val DEFAULT = ResponseAdapterCache(emptyMap())
 
     private val adapterByClassName = mapOf(
         "java.lang.String" to BuiltinCustomScalarAdapters.STRING_ADAPTER,

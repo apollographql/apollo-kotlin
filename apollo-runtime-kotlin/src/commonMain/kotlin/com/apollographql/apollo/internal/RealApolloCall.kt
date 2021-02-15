@@ -6,7 +6,7 @@ import com.apollographql.apollo.ApolloSubscriptionCall
 import com.apollographql.apollo.api.ApolloExperimental
 import com.apollographql.apollo.api.Operation
 import com.apollographql.apollo.api.Response
-import com.apollographql.apollo.api.CustomScalarAdapters
+import com.apollographql.apollo.api.ResponseAdapterCache
 import com.apollographql.apollo.ApolloRequest
 import com.apollographql.apollo.interceptor.ApolloRequestInterceptor
 import com.apollographql.apollo.interceptor.RealInterceptorChain
@@ -21,7 +21,7 @@ import kotlinx.coroutines.flow.map
 class RealApolloCall<D : Operation.Data> constructor(
     val request: ApolloRequest<D>,
     private val interceptors: List<ApolloRequestInterceptor>,
-    private val customScalarAdapters: CustomScalarAdapters
+    private val responseAdapterCache: ResponseAdapterCache
 ) : ApolloQueryCall<D>, ApolloMutationCall<D>, ApolloSubscriptionCall<D> {
 
   @ApolloExperimental
@@ -31,7 +31,7 @@ class RealApolloCall<D : Operation.Data> constructor(
           RealInterceptorChain(
               interceptors,
               0,
-              customScalarAdapters
+              responseAdapterCache
           )
       )
     }.flatMapLatest { interceptorChain ->

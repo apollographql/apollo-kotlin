@@ -10,7 +10,7 @@ interface Fragment<D: Fragment.Data> {
 
   fun variables(): Operation.Variables
 
-  fun adapter(customScalarAdapters: CustomScalarAdapters): ResponseAdapter<D>
+  fun adapter(responseAdapterCache: ResponseAdapterCache): ResponseAdapter<D>
 
   fun responseFields(): List<ResponseField.FieldSet>
 }

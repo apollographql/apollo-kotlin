@@ -3,7 +3,7 @@ package com.apollographql.apollo
 import com.apollographql.apollo.ApolloClient.Builder
 import com.apollographql.apollo.api.CustomScalar
 import com.apollographql.apollo.api.CustomScalarAdapter
-import com.apollographql.apollo.api.CustomScalarAdapters
+import com.apollographql.apollo.api.ResponseAdapterCache
 import com.apollographql.apollo.api.Mutation
 import com.apollographql.apollo.api.Operation
 import com.apollographql.apollo.api.Query
@@ -19,7 +19,6 @@ import com.apollographql.apollo.cache.normalized.ApolloStore
 import com.apollographql.apollo.cache.normalized.CacheKeyResolver
 import com.apollographql.apollo.cache.normalized.NormalizedCache
 import com.apollographql.apollo.cache.normalized.NormalizedCacheFactory
-import com.apollographql.apollo.cache.normalized.RecordFieldJsonAdapter
 import com.apollographql.apollo.fetcher.ApolloResponseFetchers
 import com.apollographql.apollo.fetcher.ResponseFetcher
 import com.apollographql.apollo.interceptor.ApolloInterceptor
@@ -80,9 +79,9 @@ class ApolloClient internal constructor(
      */
     val apolloStore: ApolloStore,
     /**
-     * @return The [CustomScalarAdapters] scalarTypeAdapters
+     * @return The [ResponseAdapterCache] scalarTypeAdapters
      */
-    val scalarTypeAdapters: CustomScalarAdapters,
+    val scalarTypeAdapters: ResponseAdapterCache,
     private val dispatcher: Executor?,
     private val defaultHttpCachePolicy: HttpCachePolicy.Policy,
     private val defaultResponseFetcher: ResponseFetcher,
@@ -621,7 +620,7 @@ class ApolloClient internal constructor(
       if (dispatcher == null) {
         dispatcher = defaultDispatcher()
       }
-      val customScalarAdapters = CustomScalarAdapters(Collections.unmodifiableMap(CustomScalarAdapters))
+      val customScalarAdapters = ResponseAdapterCache(Collections.unmodifiableMap(CustomScalarAdapters))
       var apolloStore = apolloStore
       val cacheFactory = cacheFactory
       val cacheKeyResolver = cacheKeyResolver

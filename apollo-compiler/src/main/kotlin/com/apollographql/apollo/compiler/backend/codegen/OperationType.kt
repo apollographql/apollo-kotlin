@@ -1,6 +1,6 @@
 package com.apollographql.apollo.compiler.backend.codegen
 
-import com.apollographql.apollo.api.CustomScalarAdapters
+import com.apollographql.apollo.api.ResponseAdapterCache
 import com.apollographql.apollo.api.Mutation
 import com.apollographql.apollo.api.Query
 import com.apollographql.apollo.api.ResponseField
@@ -105,7 +105,7 @@ private fun adapterFunSpec(operationResponseAdapter: ClassName): FunSpec {
 
   return FunSpec.builder("adapter")
       .addModifiers(KModifier.OVERRIDE)
-      .addParameter(ParameterSpec.builder("customScalarAdapters", CustomScalarAdapters::class.asTypeName()).build())
+      .addParameter(ParameterSpec.builder("customScalarAdapters", ResponseAdapterCache::class.asTypeName()).build())
       .returns(ResponseAdapter::class.asClassName().parameterizedBy(ClassName(packageName = "", "Data")))
       .addCode(body)
       .build()

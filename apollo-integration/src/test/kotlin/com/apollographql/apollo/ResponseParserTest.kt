@@ -1,13 +1,11 @@
 package com.apollographql.apollo
 
 import com.apollographql.apollo.api.CustomScalarAdapter
-import com.apollographql.apollo.api.CustomScalarAdapters
+import com.apollographql.apollo.api.ResponseAdapterCache
 import com.apollographql.apollo.api.Error
 import com.apollographql.apollo.api.Input
 import com.apollographql.apollo.api.JsonElement
 import com.apollographql.apollo.api.JsonString
-import com.apollographql.apollo.api.parse
-import com.apollographql.apollo.api.toJson
 import com.apollographql.apollo.integration.httpcache.AllFilmsQuery
 import com.apollographql.apollo.integration.httpcache.AllPlanetsQuery
 import com.apollographql.apollo.integration.httpcache.fragment.FilmFragment
@@ -120,7 +118,7 @@ class ResponseParserTest {
       override fun decode(jsonElement: JsonElement) = DATE_FORMAT.parse(jsonElement.toRawValue().toString())
       override fun encode(value: Date) = JsonString(DATE_FORMAT.format(value))
     }
-    val response = AllFilmsQuery().parse(Utils.readResource("HttpCacheTestAllFilms.json"), CustomScalarAdapters(mapOf(CustomScalars.Date to dateCustomScalarAdapter)))
+    val response = AllFilmsQuery().parse(Utils.readResource("HttpCacheTestAllFilms.json"), ResponseAdapterCache(mapOf(CustomScalars.Date to dateCustomScalarAdapter)))
     assertThat(response.hasErrors()).isFalse()
     assertThat(response.data!!.allFilms?.films).hasSize(6)
     assertThat(response.data!!.allFilms?.films?.map { dateCustomScalarAdapter.encode(it!!.releaseDate).value }).isEqualTo(
@@ -178,7 +176,7 @@ class ResponseParserTest {
   fun parseErrorOperationRawResponse() {
     val response = EpisodeHeroNameQuery(Input.fromNullable(Episode.EMPIRE)).parse(
         Buffer().readFrom(javaClass.getResourceAsStream("/ResponseErrorWithData.json")),
-        CustomScalarAdapters(emptyMap())
+        ResponseAdapterCache(emptyMap())
     )
     val data = response.data
     val errors = response.errors

@@ -1,7 +1,7 @@
 package com.apollographql.apollo.internal
 
 import com.apollographql.apollo.ApolloCall
-import com.apollographql.apollo.api.CustomScalarAdapters
+import com.apollographql.apollo.api.ResponseAdapterCache
 import com.apollographql.apollo.api.Operation
 import com.apollographql.apollo.api.Query
 import com.apollographql.apollo.api.Response
@@ -79,7 +79,7 @@ class QueryReFetcher(builder: Builder) {
     var queryWatchers: List<String> = emptyList()
     var serverUrl: HttpUrl? = null
     var httpCallFactory: Call.Factory? = null
-    var customScalarAdapters: CustomScalarAdapters? = null
+    var responseAdapterCache: ResponseAdapterCache? = null
     var apolloStore: ApolloStore? = null
     var dispatcher: Executor? = null
     var logger: ApolloLogger? = null
@@ -107,8 +107,8 @@ class QueryReFetcher(builder: Builder) {
       return this
     }
 
-    fun scalarTypeAdapters(customScalarAdapters: CustomScalarAdapters?): Builder {
-      this.customScalarAdapters = customScalarAdapters
+    fun scalarTypeAdapters(responseAdapterCache: ResponseAdapterCache?): Builder {
+      this.responseAdapterCache = responseAdapterCache
       return this
     }
 
@@ -170,7 +170,7 @@ class QueryReFetcher(builder: Builder) {
           .operation(query)
           .serverUrl(builder.serverUrl)
           .httpCallFactory(builder.httpCallFactory)
-          .scalarTypeAdapters(builder.customScalarAdapters)
+          .scalarTypeAdapters(builder.responseAdapterCache)
           .apolloStore(builder.apolloStore)
           .httpCachePolicy(HttpCachePolicy.NETWORK_ONLY)
           .responseFetcher(ApolloResponseFetchers.NETWORK_ONLY)

@@ -1,6 +1,6 @@
 package com.apollographql.apollo.cache.normalized.internal
 
-import com.apollographql.apollo.api.CustomScalarAdapters
+import com.apollographql.apollo.api.ResponseAdapterCache
 import com.apollographql.apollo.api.Fragment
 import com.apollographql.apollo.api.Operation
 import com.apollographql.apollo.api.internal.ApolloLogger
@@ -17,7 +17,7 @@ import kotlinx.atomicfu.locks.withLock
 class RealApolloStore(
     normalizedCache: NormalizedCache,
     private val cacheKeyResolver: CacheKeyResolver,
-    val customScalarAdapters: CustomScalarAdapters,
+    val responseAdapterCache: ResponseAdapterCache,
     val logger: ApolloLogger
 ) : ApolloStore, ReadableStore, WriteableStore {
   private val transactionLock = ReentrantReadWriteLock()
@@ -132,7 +132,7 @@ class RealApolloStore(
     return readTransaction { cache ->
       try {
         operation.readDataFromCache(
-            customScalarAdapters = customScalarAdapters,
+            responseAdapterCache = responseAdapterCache,
             readableStore = cache,
             cacheKeyResolver = cacheKeyResolver(),
             cacheHeaders = cacheHeaders
@@ -152,7 +152,7 @@ class RealApolloStore(
     return readTransaction { cache ->
       try {
         fragment.readDataFromCache(
-            customScalarAdapters = customScalarAdapters,
+            responseAdapterCache = responseAdapterCache,
             readableStore = cache,
             cacheKeyResolver = cacheKeyResolver(),
             cacheHeaders = cacheHeaders,
@@ -173,7 +173,7 @@ class RealApolloStore(
   ): Pair<Set<Record>, Set<String>> {
     val records = operation.normalize(
         data = operationData,
-        customScalarAdapters = customScalarAdapters,
+        responseAdapterCache = responseAdapterCache,
         cacheKeyResolver = cacheKeyResolver
     )
 
@@ -214,7 +214,7 @@ class RealApolloStore(
     return writeTransaction {
       val records = fragment.normalize(
           data = fragmentData,
-          customScalarAdapters = customScalarAdapters,
+          responseAdapterCache = responseAdapterCache,
           cacheKeyResolver = cacheKeyResolver,
           rootKey = cacheKey.key
       ).values
@@ -235,7 +235,7 @@ class RealApolloStore(
   ): Set<String> {
     val records = operation.normalize(
         data = operationData,
-        customScalarAdapters = customScalarAdapters,
+        responseAdapterCache = responseAdapterCache,
         cacheKeyResolver = cacheKeyResolver
     ).values.map { record ->
       Record(

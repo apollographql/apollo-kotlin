@@ -1,7 +1,7 @@
 package com.apollographql.apollo.network
 
 import com.apollographql.apollo.api.ApolloExperimental
-import com.apollographql.apollo.api.CustomScalarAdapters
+import com.apollographql.apollo.api.ResponseAdapterCache
 import com.apollographql.apollo.api.ExecutionContext
 import com.apollographql.apollo.api.Operation
 import com.apollographql.apollo.ApolloRequest
@@ -13,7 +13,7 @@ interface NetworkTransport {
 
   fun <D : Operation.Data> execute(
       request: ApolloRequest<D>,
-      customScalarAdapters: CustomScalarAdapters,
+      responseAdapterCache: ResponseAdapterCache,
       executionContext: ExecutionContext
   ): Flow<ApolloResponse<D>>
 }

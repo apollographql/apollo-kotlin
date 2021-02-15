@@ -1,11 +1,10 @@
 package com.apollographql.apollo.internal.subscription
 
-import com.apollographql.apollo.api.CustomScalarAdapters
+import com.apollographql.apollo.api.ResponseAdapterCache
 import com.apollographql.apollo.api.Operation
 import com.apollographql.apollo.api.ResponseField
 import com.apollographql.apollo.api.Subscription
 import com.apollographql.apollo.api.internal.ResponseAdapter
-import com.apollographql.apollo.cache.normalized.ApolloStore
 import com.apollographql.apollo.cache.normalized.CacheKeyResolver
 import com.apollographql.apollo.subscription.ApolloOperationMessageSerializer
 import com.apollographql.apollo.subscription.OperationClientMessage
@@ -31,7 +30,7 @@ class SubscriptionAutoPersistTest {
   fun setUp() {
     subscriptionTransportFactory = MockSubscriptionTransportFactory()
     subscriptionManager = RealSubscriptionManager(
-        CustomScalarAdapters(emptyMap()),
+        ResponseAdapterCache(emptyMap()),
         subscriptionTransportFactory!!,
         SubscriptionConnectionParamsProvider.Const(SubscriptionConnectionParams()),
         MockExecutor(),
@@ -159,7 +158,7 @@ class SubscriptionAutoPersistTest {
       return Operation.EMPTY_VARIABLES
     }
 
-    override fun adapter(customScalarAdapters: CustomScalarAdapters): ResponseAdapter<Operation.Data> {
+    override fun adapter(responseAdapterCache: ResponseAdapterCache): ResponseAdapter<Operation.Data> {
       throw UnsupportedOperationException()
     }
 

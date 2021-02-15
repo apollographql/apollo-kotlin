@@ -1,6 +1,6 @@
 package com.apollographql.apollo.subscription
 
-import com.apollographql.apollo.api.CustomScalarAdapters
+import com.apollographql.apollo.api.ResponseAdapterCache
 import com.apollographql.apollo.api.Operation
 import com.apollographql.apollo.api.ResponseField
 import com.apollographql.apollo.api.Subscription
@@ -29,7 +29,7 @@ class MockSubscription(
         }
   }
 
-  override fun adapter(customScalarAdapters: CustomScalarAdapters) = throw UnsupportedOperationException()
+  override fun adapter(responseAdapterCache: ResponseAdapterCache) = throw UnsupportedOperationException()
 
   override fun name(): String = name
 
