@@ -11,7 +11,7 @@ import kotlinx.android.synthetic.main.item_commit.view.*
 
 class CommitsAdapter : RecyclerView.Adapter<CommitsAdapter.ViewHolder>() {
 
-  private var data: List<GithubRepositoryCommitsQuery.Data.Viewer.Repository.Ref.Target.Commit.History.Edge>? = null
+  private var data: List<GithubRepositoryCommitsQuery.Data.Viewer.Repository.Ref.Target.CommitTarget.History.Edges>? = null
 
   override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
     return ViewHolder(
@@ -26,13 +26,13 @@ class CommitsAdapter : RecyclerView.Adapter<CommitsAdapter.ViewHolder>() {
   }
 
 
-  fun setItems(data: List<GithubRepositoryCommitsQuery.Data.Viewer.Repository.Ref.Target.Commit.History.Edge>) {
+  fun setItems(data: List<GithubRepositoryCommitsQuery.Data.Viewer.Repository.Ref.Target.CommitTarget.History.Edges>) {
     this.data = data
     notifyDataSetChanged()
   }
 
   class ViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
-    fun bind(commit: GithubRepositoryCommitsQuery.Data.Viewer.Repository.Ref.Target.Commit.History.Edge) {
+    fun bind(commit: GithubRepositoryCommitsQuery.Data.Viewer.Repository.Ref.Target.CommitTarget.History.Edges) {
       itemView.run {
         tvCommitSha1.text = commit.node?.abbreviatedOid
         val headline = "${commit.node?.author?.email}: ${commit.node?.messageHeadline}"
