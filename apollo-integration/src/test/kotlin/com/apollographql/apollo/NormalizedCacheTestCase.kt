@@ -183,11 +183,11 @@ class NormalizedCacheTestCase {
       assertThat(response.hasErrors()).isFalse()
       assertThat(response.data!!.hero?.name).isEqualTo("R2-D2")
       assertThat(response.data!!.hero?.name).isEqualTo("R2-D2")
-      val hero = response.data!!.hero as HeroParentTypeDependentFieldQuery.Data.Hero.Droid
+      val hero = response.data!!.hero as HeroParentTypeDependentFieldQuery.Data.Hero.DroidHero
       assertThat(hero.friends).hasSize(3)
       assertThat(hero.friends?.get(0)?.name).isEqualTo("Luke Skywalker")
       assertThat(hero.friends?.get(0)?.name).isEqualTo("Luke Skywalker")
-      assertThat((hero.friends?.get(0) as HeroParentTypeDependentFieldQuery.Data.Hero.Droid.Friend.Human).height).isWithin(1.72)
+      assertThat((hero.friends?.get(0) as HeroParentTypeDependentFieldQuery.Data.Hero.DroidHero.Friends.HumanFriends).height).isWithin(1.72)
       true
     }
   }
