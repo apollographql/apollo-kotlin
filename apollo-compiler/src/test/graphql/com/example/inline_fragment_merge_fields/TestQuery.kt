@@ -68,12 +68,12 @@ class TestQuery : Query<TestQuery.Data> {
         /**
          * The edges for each of the character's friends.
          */
-        val edges: List<Edge?>?
+        val edges: List<Edges?>?
 
         /**
          * An edge object for a character's friends
          */
-        interface Edge {
+        interface Edges {
           /**
            * The character represented by this friendship edge
            */
@@ -91,55 +91,6 @@ class TestQuery : Query<TestQuery.Data> {
         }
       }
 
-      interface Character : Hero {
-        override val __typename: String
-
-        /**
-         * The name of the character
-         */
-        override val name: String
-
-        /**
-         * The friends of the character exposed as a connection with edges
-         */
-        override val friendsConnection: FriendsConnection
-
-        /**
-         * Profile link
-         */
-        val profileLink: Any
-
-        /**
-         * A connection object for a character's friends
-         */
-        interface FriendsConnection : Hero.FriendsConnection {
-          /**
-           * The edges for each of the character's friends.
-           */
-          override val edges: List<Edge?>?
-
-          /**
-           * An edge object for a character's friends
-           */
-          interface Edge : Hero.FriendsConnection.Edge {
-            /**
-             * The character represented by this friendship edge
-             */
-            override val node: Node?
-
-            /**
-             * A character from the Star Wars universe
-             */
-            interface Node : Hero.FriendsConnection.Edge.Node {
-              /**
-               * The name of the character
-               */
-              override val name: String
-            }
-          }
-        }
-      }
-
       data class CharacterHero(
         override val __typename: String,
         /**
@@ -153,8 +104,8 @@ class TestQuery : Query<TestQuery.Data> {
         /**
          * Profile link
          */
-        override val profileLink: Any
-      ) : Hero, Character {
+        val profileLink: Any
+      ) : Hero {
         /**
          * A connection object for a character's friends
          */
@@ -162,17 +113,17 @@ class TestQuery : Query<TestQuery.Data> {
           /**
            * The edges for each of the character's friends.
            */
-          override val edges: List<Edge?>?
-        ) : Hero.FriendsConnection, Character.FriendsConnection {
+          override val edges: List<Edges?>?
+        ) : Hero.FriendsConnection {
           /**
            * An edge object for a character's friends
            */
-          data class Edge(
+          data class Edges(
             /**
              * The character represented by this friendship edge
              */
             override val node: Node?
-          ) : Hero.FriendsConnection.Edge, Character.FriendsConnection.Edge {
+          ) : Hero.FriendsConnection.Edges {
             /**
              * A character from the Star Wars universe
              */
@@ -181,7 +132,7 @@ class TestQuery : Query<TestQuery.Data> {
                * The name of the character
                */
               override val name: String
-            ) : Hero.FriendsConnection.Edge.Node, Character.FriendsConnection.Edge.Node
+            ) : Hero.FriendsConnection.Edges.Node
           }
         }
       }
@@ -204,17 +155,17 @@ class TestQuery : Query<TestQuery.Data> {
           /**
            * The edges for each of the character's friends.
            */
-          override val edges: List<Edge?>?
+          override val edges: List<Edges?>?
         ) : Hero.FriendsConnection {
           /**
            * An edge object for a character's friends
            */
-          data class Edge(
+          data class Edges(
             /**
              * The character represented by this friendship edge
              */
             override val node: Node?
-          ) : Hero.FriendsConnection.Edge {
+          ) : Hero.FriendsConnection.Edges {
             /**
              * A character from the Star Wars universe
              */
@@ -223,13 +174,13 @@ class TestQuery : Query<TestQuery.Data> {
                * The name of the character
                */
               override val name: String
-            ) : Hero.FriendsConnection.Edge.Node
+            ) : Hero.FriendsConnection.Edges.Node
           }
         }
       }
 
       companion object {
-        fun Hero.asCharacter(): Character? = this as? Character
+        fun Hero.asCharacterHero(): CharacterHero? = this as? CharacterHero
       }
     }
   }

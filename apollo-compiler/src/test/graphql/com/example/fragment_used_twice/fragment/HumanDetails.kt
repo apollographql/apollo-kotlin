@@ -5,7 +5,6 @@
 //
 package com.example.fragment_used_twice.fragment
 
-import kotlin.Any
 import kotlin.String
 import kotlin.Suppress
 
@@ -20,19 +19,7 @@ interface HumanDetails {
    */
   val name: String
 
-  interface Character : HumanDetails, CharacterDetails {
-    override val __typename: String
-
-    /**
-     * What this human calls themselves
-     */
-    override val name: String
-
-    /**
-     * The date character was born.
-     */
-    override val birthDate: Any
-  }
+  interface Character : HumanDetails, CharacterDetails
 
   companion object {
     val FRAGMENT_DEFINITION: String = """

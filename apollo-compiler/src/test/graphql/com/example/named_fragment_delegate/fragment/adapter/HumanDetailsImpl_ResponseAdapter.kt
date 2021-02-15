@@ -98,16 +98,16 @@ class HumanDetailsImpl_ResponseAdapter(
   class FriendsConnection(
     customScalarAdapters: CustomScalarAdapters
   ) : ResponseAdapter<HumanDetailsImpl.Data.FriendsConnection> {
-    val nullableListOfNullableEdgeAdapter:
-        ResponseAdapter<List<HumanDetailsImpl.Data.FriendsConnection.Edge?>?> =
-        NullableResponseAdapter(ListResponseAdapter(NullableResponseAdapter(Edge(customScalarAdapters))))
+    val nullableListOfNullableEdgesAdapter:
+        ResponseAdapter<List<HumanDetailsImpl.Data.FriendsConnection.Edges?>?> =
+        NullableResponseAdapter(ListResponseAdapter(NullableResponseAdapter(Edges(customScalarAdapters))))
 
     override fun fromResponse(reader: JsonReader): HumanDetailsImpl.Data.FriendsConnection {
-      var edges: List<HumanDetailsImpl.Data.FriendsConnection.Edge?>? = null
+      var edges: List<HumanDetailsImpl.Data.FriendsConnection.Edges?>? = null
       reader.beginObject()
       while(true) {
         when (reader.selectName(RESPONSE_NAMES)) {
-          0 -> edges = nullableListOfNullableEdgeAdapter.fromResponse(reader)
+          0 -> edges = nullableListOfNullableEdgesAdapter.fromResponse(reader)
           else -> break
         }
       }
@@ -120,7 +120,7 @@ class HumanDetailsImpl_ResponseAdapter(
     override fun toResponse(writer: JsonWriter, value: HumanDetailsImpl.Data.FriendsConnection) {
       writer.beginObject()
       writer.name("edges")
-      nullableListOfNullableEdgeAdapter.toResponse(writer, value.edges)
+      nullableListOfNullableEdgesAdapter.toResponse(writer, value.edges)
       writer.endObject()
     }
 
@@ -130,7 +130,7 @@ class HumanDetailsImpl_ResponseAdapter(
           type = ResponseField.Type.List(ResponseField.Type.Named.Object("FriendsEdge")),
           fieldName = "edges",
           fieldSets = listOf(
-            ResponseField.FieldSet(null, Edge.RESPONSE_FIELDS)
+            ResponseField.FieldSet(null, Edges.RESPONSE_FIELDS)
           ),
         )
       )
@@ -138,14 +138,14 @@ class HumanDetailsImpl_ResponseAdapter(
       val RESPONSE_NAMES: List<String> = RESPONSE_FIELDS.map { it.responseName }
     }
 
-    class Edge(
+    class Edges(
       customScalarAdapters: CustomScalarAdapters
-    ) : ResponseAdapter<HumanDetailsImpl.Data.FriendsConnection.Edge> {
-      val nullableNodeAdapter: ResponseAdapter<HumanDetailsImpl.Data.FriendsConnection.Edge.Node?> =
-          NullableResponseAdapter(Node(customScalarAdapters))
+    ) : ResponseAdapter<HumanDetailsImpl.Data.FriendsConnection.Edges> {
+      val nullableNodeAdapter: ResponseAdapter<HumanDetailsImpl.Data.FriendsConnection.Edges.Node?>
+          = NullableResponseAdapter(Node(customScalarAdapters))
 
-      override fun fromResponse(reader: JsonReader): HumanDetailsImpl.Data.FriendsConnection.Edge {
-        var node: HumanDetailsImpl.Data.FriendsConnection.Edge.Node? = null
+      override fun fromResponse(reader: JsonReader): HumanDetailsImpl.Data.FriendsConnection.Edges {
+        var node: HumanDetailsImpl.Data.FriendsConnection.Edges.Node? = null
         reader.beginObject()
         while(true) {
           when (reader.selectName(RESPONSE_NAMES)) {
@@ -154,13 +154,13 @@ class HumanDetailsImpl_ResponseAdapter(
           }
         }
         reader.endObject()
-        return HumanDetailsImpl.Data.FriendsConnection.Edge(
+        return HumanDetailsImpl.Data.FriendsConnection.Edges(
           node = node
         )
       }
 
       override fun toResponse(writer: JsonWriter,
-          value: HumanDetailsImpl.Data.FriendsConnection.Edge) {
+          value: HumanDetailsImpl.Data.FriendsConnection.Edges) {
         writer.beginObject()
         writer.name("node")
         nullableNodeAdapter.toResponse(writer, value.node)
@@ -183,11 +183,11 @@ class HumanDetailsImpl_ResponseAdapter(
 
       class Node(
         customScalarAdapters: CustomScalarAdapters
-      ) : ResponseAdapter<HumanDetailsImpl.Data.FriendsConnection.Edge.Node> {
+      ) : ResponseAdapter<HumanDetailsImpl.Data.FriendsConnection.Edges.Node> {
         val stringAdapter: ResponseAdapter<String> = stringResponseAdapter
 
         override fun fromResponse(reader: JsonReader):
-            HumanDetailsImpl.Data.FriendsConnection.Edge.Node {
+            HumanDetailsImpl.Data.FriendsConnection.Edges.Node {
           var name: String? = null
           reader.beginObject()
           while(true) {
@@ -197,13 +197,13 @@ class HumanDetailsImpl_ResponseAdapter(
             }
           }
           reader.endObject()
-          return HumanDetailsImpl.Data.FriendsConnection.Edge.Node(
+          return HumanDetailsImpl.Data.FriendsConnection.Edges.Node(
             name = name!!
           )
         }
 
         override fun toResponse(writer: JsonWriter,
-            value: HumanDetailsImpl.Data.FriendsConnection.Edge.Node) {
+            value: HumanDetailsImpl.Data.FriendsConnection.Edges.Node) {
           writer.beginObject()
           writer.name("name")
           stringAdapter.toResponse(writer, value.name)

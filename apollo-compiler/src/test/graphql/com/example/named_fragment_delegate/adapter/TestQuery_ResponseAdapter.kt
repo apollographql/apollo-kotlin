@@ -109,21 +109,21 @@ class TestQuery_ResponseAdapter(
       val nullableStringAdapter: ResponseAdapter<String?> =
           NullableResponseAdapter(stringResponseAdapter)
 
-      val nullableListOfNullableFriendAdapter:
-          ResponseAdapter<List<TestQuery.Data.Hero.DroidHero.Friend?>?> =
-          NullableResponseAdapter(ListResponseAdapter(NullableResponseAdapter(Friend(customScalarAdapters))))
+      val nullableListOfNullableFriendsAdapter:
+          ResponseAdapter<List<TestQuery.Data.Hero.DroidHero.Friends?>?> =
+          NullableResponseAdapter(ListResponseAdapter(NullableResponseAdapter(Friends(customScalarAdapters))))
 
       fun fromResponse(reader: JsonReader, __typename: String?): TestQuery.Data.Hero.DroidHero {
         var __typename: String? = __typename
         var name: String? = null
         var primaryFunction: String? = null
-        var friends: List<TestQuery.Data.Hero.DroidHero.Friend?>? = null
+        var friends: List<TestQuery.Data.Hero.DroidHero.Friends?>? = null
         while(true) {
           when (reader.selectName(RESPONSE_NAMES)) {
             0 -> __typename = stringAdapter.fromResponse(reader)
             1 -> name = stringAdapter.fromResponse(reader)
             2 -> primaryFunction = nullableStringAdapter.fromResponse(reader)
-            3 -> friends = nullableListOfNullableFriendAdapter.fromResponse(reader)
+            3 -> friends = nullableListOfNullableFriendsAdapter.fromResponse(reader)
             else -> break
           }
         }
@@ -144,7 +144,7 @@ class TestQuery_ResponseAdapter(
         writer.name("primaryFunction")
         nullableStringAdapter.toResponse(writer, value.primaryFunction)
         writer.name("friends")
-        nullableListOfNullableFriendAdapter.toResponse(writer, value.friends)
+        nullableListOfNullableFriendsAdapter.toResponse(writer, value.friends)
         writer.endObject()
       }
 
@@ -163,7 +163,7 @@ class TestQuery_ResponseAdapter(
             type = ResponseField.Type.List(ResponseField.Type.Named.Object("Character")),
             fieldName = "friends",
             fieldSets = listOf(
-              ResponseField.FieldSet(null, Friend.RESPONSE_FIELDS)
+              ResponseField.FieldSet(null, Friends.RESPONSE_FIELDS)
             ),
           )
         )
@@ -171,12 +171,12 @@ class TestQuery_ResponseAdapter(
         val RESPONSE_NAMES: List<String> = RESPONSE_FIELDS.map { it.responseName }
       }
 
-      class Friend(
+      class Friends(
         customScalarAdapters: CustomScalarAdapters
-      ) : ResponseAdapter<TestQuery.Data.Hero.DroidHero.Friend> {
+      ) : ResponseAdapter<TestQuery.Data.Hero.DroidHero.Friends> {
         val stringAdapter: ResponseAdapter<String> = stringResponseAdapter
 
-        override fun fromResponse(reader: JsonReader): TestQuery.Data.Hero.DroidHero.Friend {
+        override fun fromResponse(reader: JsonReader): TestQuery.Data.Hero.DroidHero.Friends {
           var name: String? = null
           reader.beginObject()
           while(true) {
@@ -186,12 +186,12 @@ class TestQuery_ResponseAdapter(
             }
           }
           reader.endObject()
-          return TestQuery.Data.Hero.DroidHero.Friend(
+          return TestQuery.Data.Hero.DroidHero.Friends(
             name = name!!
           )
         }
 
-        override fun toResponse(writer: JsonWriter, value: TestQuery.Data.Hero.DroidHero.Friend) {
+        override fun toResponse(writer: JsonWriter, value: TestQuery.Data.Hero.DroidHero.Friends) {
           writer.beginObject()
           writer.name("name")
           stringAdapter.toResponse(writer, value.name)
@@ -283,17 +283,17 @@ class TestQuery_ResponseAdapter(
       class FriendsConnection(
         customScalarAdapters: CustomScalarAdapters
       ) : ResponseAdapter<TestQuery.Data.Hero.HumanHero.FriendsConnection> {
-        val nullableListOfNullableEdgeAdapter:
-            ResponseAdapter<List<TestQuery.Data.Hero.HumanHero.FriendsConnection.Edge?>?> =
-            NullableResponseAdapter(ListResponseAdapter(NullableResponseAdapter(Edge(customScalarAdapters))))
+        val nullableListOfNullableEdgesAdapter:
+            ResponseAdapter<List<TestQuery.Data.Hero.HumanHero.FriendsConnection.Edges?>?> =
+            NullableResponseAdapter(ListResponseAdapter(NullableResponseAdapter(Edges(customScalarAdapters))))
 
         override fun fromResponse(reader: JsonReader):
             TestQuery.Data.Hero.HumanHero.FriendsConnection {
-          var edges: List<TestQuery.Data.Hero.HumanHero.FriendsConnection.Edge?>? = null
+          var edges: List<TestQuery.Data.Hero.HumanHero.FriendsConnection.Edges?>? = null
           reader.beginObject()
           while(true) {
             when (reader.selectName(RESPONSE_NAMES)) {
-              0 -> edges = nullableListOfNullableEdgeAdapter.fromResponse(reader)
+              0 -> edges = nullableListOfNullableEdgesAdapter.fromResponse(reader)
               else -> break
             }
           }
@@ -307,7 +307,7 @@ class TestQuery_ResponseAdapter(
             value: TestQuery.Data.Hero.HumanHero.FriendsConnection) {
           writer.beginObject()
           writer.name("edges")
-          nullableListOfNullableEdgeAdapter.toResponse(writer, value.edges)
+          nullableListOfNullableEdgesAdapter.toResponse(writer, value.edges)
           writer.endObject()
         }
 
@@ -317,7 +317,7 @@ class TestQuery_ResponseAdapter(
               type = ResponseField.Type.List(ResponseField.Type.Named.Object("FriendsEdge")),
               fieldName = "edges",
               fieldSets = listOf(
-                ResponseField.FieldSet(null, Edge.RESPONSE_FIELDS)
+                ResponseField.FieldSet(null, Edges.RESPONSE_FIELDS)
               ),
             )
           )
@@ -325,16 +325,16 @@ class TestQuery_ResponseAdapter(
           val RESPONSE_NAMES: List<String> = RESPONSE_FIELDS.map { it.responseName }
         }
 
-        class Edge(
+        class Edges(
           customScalarAdapters: CustomScalarAdapters
-        ) : ResponseAdapter<TestQuery.Data.Hero.HumanHero.FriendsConnection.Edge> {
+        ) : ResponseAdapter<TestQuery.Data.Hero.HumanHero.FriendsConnection.Edges> {
           val nullableNodeAdapter:
-              ResponseAdapter<TestQuery.Data.Hero.HumanHero.FriendsConnection.Edge.Node?> =
+              ResponseAdapter<TestQuery.Data.Hero.HumanHero.FriendsConnection.Edges.Node?> =
               NullableResponseAdapter(Node(customScalarAdapters))
 
           override fun fromResponse(reader: JsonReader):
-              TestQuery.Data.Hero.HumanHero.FriendsConnection.Edge {
-            var node: TestQuery.Data.Hero.HumanHero.FriendsConnection.Edge.Node? = null
+              TestQuery.Data.Hero.HumanHero.FriendsConnection.Edges {
+            var node: TestQuery.Data.Hero.HumanHero.FriendsConnection.Edges.Node? = null
             reader.beginObject()
             while(true) {
               when (reader.selectName(RESPONSE_NAMES)) {
@@ -343,13 +343,13 @@ class TestQuery_ResponseAdapter(
               }
             }
             reader.endObject()
-            return TestQuery.Data.Hero.HumanHero.FriendsConnection.Edge(
+            return TestQuery.Data.Hero.HumanHero.FriendsConnection.Edges(
               node = node
             )
           }
 
           override fun toResponse(writer: JsonWriter,
-              value: TestQuery.Data.Hero.HumanHero.FriendsConnection.Edge) {
+              value: TestQuery.Data.Hero.HumanHero.FriendsConnection.Edges) {
             writer.beginObject()
             writer.name("node")
             nullableNodeAdapter.toResponse(writer, value.node)
@@ -372,11 +372,11 @@ class TestQuery_ResponseAdapter(
 
           class Node(
             customScalarAdapters: CustomScalarAdapters
-          ) : ResponseAdapter<TestQuery.Data.Hero.HumanHero.FriendsConnection.Edge.Node> {
+          ) : ResponseAdapter<TestQuery.Data.Hero.HumanHero.FriendsConnection.Edges.Node> {
             val stringAdapter: ResponseAdapter<String> = stringResponseAdapter
 
             override fun fromResponse(reader: JsonReader):
-                TestQuery.Data.Hero.HumanHero.FriendsConnection.Edge.Node {
+                TestQuery.Data.Hero.HumanHero.FriendsConnection.Edges.Node {
               var name: String? = null
               reader.beginObject()
               while(true) {
@@ -386,13 +386,13 @@ class TestQuery_ResponseAdapter(
                 }
               }
               reader.endObject()
-              return TestQuery.Data.Hero.HumanHero.FriendsConnection.Edge.Node(
+              return TestQuery.Data.Hero.HumanHero.FriendsConnection.Edges.Node(
                 name = name!!
               )
             }
 
             override fun toResponse(writer: JsonWriter,
-                value: TestQuery.Data.Hero.HumanHero.FriendsConnection.Edge.Node) {
+                value: TestQuery.Data.Hero.HumanHero.FriendsConnection.Edges.Node) {
               writer.beginObject()
               writer.name("name")
               stringAdapter.toResponse(writer, value.name)

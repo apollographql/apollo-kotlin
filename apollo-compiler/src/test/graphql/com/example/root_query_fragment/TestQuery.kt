@@ -46,26 +46,10 @@ class TestQuery : Query<TestQuery.Data> {
   interface Data : Operation.Data {
     val __typename: String
 
-    interface Query : Data, QueryFragment {
-      override val __typename: String
-
-      override val hero: Hero?
-
-      /**
-       * A character from the Star Wars universe
-       */
-      interface Hero : QueryFragment.Hero {
-        /**
-         * The name of the character
-         */
-        override val name: String
-      }
-    }
-
     data class QueryData(
       override val __typename: String,
       override val hero: Hero?
-    ) : Data, Query, QueryFragment {
+    ) : Data, QueryFragment {
       /**
        * A character from the Star Wars universe
        */
@@ -74,7 +58,7 @@ class TestQuery : Query<TestQuery.Data> {
          * The name of the character
          */
         override val name: String
-      ) : Query.Hero, QueryFragment.Hero
+      ) : QueryFragment.Hero
     }
 
     data class OtherData(
@@ -82,9 +66,7 @@ class TestQuery : Query<TestQuery.Data> {
     ) : Data
 
     companion object {
-      fun Data.asQuery(): Query? = this as? Query
-
-      fun Data.queryFragment(): QueryFragment? = this as? QueryFragment
+      fun Data.asQueryData(): QueryData? = this as? QueryData
     }
   }
 

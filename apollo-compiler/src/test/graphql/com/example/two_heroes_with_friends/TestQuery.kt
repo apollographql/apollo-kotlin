@@ -70,14 +70,14 @@ class TestQuery : Query<TestQuery.Data> {
         /**
          * The edges for each of the character's friends.
          */
-        val edges: List<Edge?>?
+        val edges: List<Edges?>?
       ) {
-        fun edgesFilterNotNull(): List<Edge>? = edges?.filterNotNull()
+        fun edgesFilterNotNull(): List<Edges>? = edges?.filterNotNull()
 
         /**
          * An edge object for a character's friends
          */
-        data class Edge(
+        data class Edges(
           /**
            * The character represented by this friendship edge
            */
@@ -124,14 +124,14 @@ class TestQuery : Query<TestQuery.Data> {
         /**
          * The edges for each of the character's friends.
          */
-        val edges: List<Edge?>?
+        val edges: List<Edges?>?
       ) {
-        fun edgesFilterNotNull(): List<Edge>? = edges?.filterNotNull()
+        fun edgesFilterNotNull(): List<Edges>? = edges?.filterNotNull()
 
         /**
          * An edge object for a character's friends
          */
-        data class Edge(
+        data class Edges(
           /**
            * The character represented by this friendship edge
            */

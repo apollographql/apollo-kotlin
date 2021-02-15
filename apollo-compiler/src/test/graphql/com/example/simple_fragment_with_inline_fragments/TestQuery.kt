@@ -52,66 +52,6 @@ class TestQuery : Query<TestQuery.Data> {
     interface Hero {
       val __typename: String
 
-      interface Character : Hero, HeroDetails {
-        override val __typename: String
-
-        /**
-         * The name of the character
-         */
-        override val name: String
-
-        /**
-         * The friends of the character, or an empty list if they have none
-         */
-        override val friends: List<Friend?>?
-
-        /**
-         * A character from the Star Wars universe
-         */
-        interface Friend : HeroDetails.Friend {
-          override val __typename: String
-
-          /**
-           * The name of the character
-           */
-          override val name: String
-
-          interface Human : Friend, HeroDetails.Friend.Human, HeroDetails.Friend {
-            override val __typename: String
-
-            /**
-             * The name of the character
-             */
-            override val name: String
-
-            /**
-             * Height in the preferred unit, default is meters
-             */
-            override val height: Double?
-          }
-
-          interface Droid : Friend, HeroDetails.Friend.Droid, HeroDetails.Friend {
-            override val __typename: String
-
-            /**
-             * The name of the character
-             */
-            override val name: String
-
-            /**
-             * This droid's primary function
-             */
-            override val primaryFunction: String?
-          }
-
-          companion object {
-            fun Friend.asHuman(): Human? = this as? Human
-
-            fun Friend.asDroid(): Droid? = this as? Droid
-          }
-        }
-      }
-
       data class CharacterHero(
         override val __typename: String,
         /**
@@ -121,15 +61,13 @@ class TestQuery : Query<TestQuery.Data> {
         /**
          * The friends of the character, or an empty list if they have none
          */
-        override val friends: List<Friend?>?
-      ) : Hero, Character, HeroDetails {
+        override val friends: List<Friends?>?
+      ) : Hero, HeroDetails {
         /**
          * A character from the Star Wars universe
          */
-        interface Friend : Character.Friend, HeroDetails.Friend {
-          override val __typename: String
-
-          data class HumanFriend(
+        interface Friends : HeroDetails.Friends {
+          data class HumanFriends(
             override val __typename: String,
             /**
              * The name of the character
@@ -139,10 +77,9 @@ class TestQuery : Query<TestQuery.Data> {
              * Height in the preferred unit, default is meters
              */
             override val height: Double?
-          ) : Character.Friend, Character.Friend.Human, HeroDetails.Friend.Human,
-              HeroDetails.Friend, Friend
+          ) : HeroDetails.Friends.Human, HeroDetails.Friends, Friends
 
-          data class DroidFriend(
+          data class DroidFriends(
             override val __typename: String,
             /**
              * The name of the character
@@ -152,16 +89,21 @@ class TestQuery : Query<TestQuery.Data> {
              * This droid's primary function
              */
             override val primaryFunction: String?
-          ) : Character.Friend, Character.Friend.Droid, HeroDetails.Friend.Droid,
-              HeroDetails.Friend, Friend
+          ) : HeroDetails.Friends.Droid, HeroDetails.Friends, Friends
 
-          data class OtherFriend(
+          data class OtherFriends(
             override val __typename: String,
             /**
              * The name of the character
              */
             override val name: String
-          ) : Character.Friend, HeroDetails.Friend, Friend
+          ) : HeroDetails.Friends, Friends
+
+          companion object {
+            fun Friends.asHumanFriends(): HumanFriends? = this as? HumanFriends
+
+            fun Friends.asDroidFriends(): DroidFriends? = this as? DroidFriends
+          }
         }
       }
 
@@ -170,9 +112,7 @@ class TestQuery : Query<TestQuery.Data> {
       ) : Hero
 
       companion object {
-        fun Hero.asCharacter(): Character? = this as? Character
-
-        fun Hero.heroDetails(): HeroDetails? = this as? HeroDetails
+        fun Hero.asCharacterHero(): CharacterHero? = this as? CharacterHero
       }
     }
   }

@@ -63,8 +63,6 @@ data class QueryFragmentImpl(
       override val user: List<User>
     ) : QueryFragment.Organization {
       interface User : QueryFragment.Organization.User {
-        override val __typename: String
-
         data class UserUser(
           override val __typename: String,
           override val firstName: String,
@@ -76,6 +74,10 @@ data class QueryFragmentImpl(
         data class OtherUser(
           override val __typename: String
         ) : QueryFragment.Organization.User, User
+
+        companion object {
+          fun User.asUserUser(): UserUser? = this as? UserUser
+        }
       }
     }
   }

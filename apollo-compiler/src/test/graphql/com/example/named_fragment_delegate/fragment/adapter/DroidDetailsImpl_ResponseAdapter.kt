@@ -30,21 +30,21 @@ class DroidDetailsImpl_ResponseAdapter(
   val nullableStringAdapter: ResponseAdapter<String?> =
       NullableResponseAdapter(stringResponseAdapter)
 
-  val nullableListOfNullableFriendAdapter: ResponseAdapter<List<DroidDetailsImpl.Data.Friend?>?> =
-      NullableResponseAdapter(ListResponseAdapter(NullableResponseAdapter(Friend(customScalarAdapters))))
+  val nullableListOfNullableFriendsAdapter: ResponseAdapter<List<DroidDetailsImpl.Data.Friends?>?> =
+      NullableResponseAdapter(ListResponseAdapter(NullableResponseAdapter(Friends(customScalarAdapters))))
 
   override fun fromResponse(reader: JsonReader): DroidDetailsImpl.Data {
     var __typename: String? = null
     var name: String? = null
     var primaryFunction: String? = null
-    var friends: List<DroidDetailsImpl.Data.Friend?>? = null
+    var friends: List<DroidDetailsImpl.Data.Friends?>? = null
     reader.beginObject()
     while(true) {
       when (reader.selectName(RESPONSE_NAMES)) {
         0 -> __typename = stringAdapter.fromResponse(reader)
         1 -> name = stringAdapter.fromResponse(reader)
         2 -> primaryFunction = nullableStringAdapter.fromResponse(reader)
-        3 -> friends = nullableListOfNullableFriendAdapter.fromResponse(reader)
+        3 -> friends = nullableListOfNullableFriendsAdapter.fromResponse(reader)
         else -> break
       }
     }
@@ -66,7 +66,7 @@ class DroidDetailsImpl_ResponseAdapter(
     writer.name("primaryFunction")
     nullableStringAdapter.toResponse(writer, value.primaryFunction)
     writer.name("friends")
-    nullableListOfNullableFriendAdapter.toResponse(writer, value.friends)
+    nullableListOfNullableFriendsAdapter.toResponse(writer, value.friends)
     writer.endObject()
   }
 
@@ -85,7 +85,7 @@ class DroidDetailsImpl_ResponseAdapter(
         type = ResponseField.Type.List(ResponseField.Type.Named.Object("Character")),
         fieldName = "friends",
         fieldSets = listOf(
-          ResponseField.FieldSet(null, Friend.RESPONSE_FIELDS)
+          ResponseField.FieldSet(null, Friends.RESPONSE_FIELDS)
         ),
       )
     )
@@ -93,12 +93,12 @@ class DroidDetailsImpl_ResponseAdapter(
     val RESPONSE_NAMES: List<String> = RESPONSE_FIELDS.map { it.responseName }
   }
 
-  class Friend(
+  class Friends(
     customScalarAdapters: CustomScalarAdapters
-  ) : ResponseAdapter<DroidDetailsImpl.Data.Friend> {
+  ) : ResponseAdapter<DroidDetailsImpl.Data.Friends> {
     val stringAdapter: ResponseAdapter<String> = stringResponseAdapter
 
-    override fun fromResponse(reader: JsonReader): DroidDetailsImpl.Data.Friend {
+    override fun fromResponse(reader: JsonReader): DroidDetailsImpl.Data.Friends {
       var name: String? = null
       reader.beginObject()
       while(true) {
@@ -108,12 +108,12 @@ class DroidDetailsImpl_ResponseAdapter(
         }
       }
       reader.endObject()
-      return DroidDetailsImpl.Data.Friend(
+      return DroidDetailsImpl.Data.Friends(
         name = name!!
       )
     }
 
-    override fun toResponse(writer: JsonWriter, value: DroidDetailsImpl.Data.Friend) {
+    override fun toResponse(writer: JsonWriter, value: DroidDetailsImpl.Data.Friends) {
       writer.beginObject()
       writer.name("name")
       stringAdapter.toResponse(writer, value.name)

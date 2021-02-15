@@ -54,34 +54,6 @@ class TestQuery : Query<TestQuery.Data> {
     interface R2 {
       val __typename: String
 
-      interface Human : R2, HumanDetails {
-        override val __typename: String
-
-        /**
-         * What this human calls themselves
-         */
-        override val name: String
-
-        /**
-         * Height in the preferred unit, default is meters
-         */
-        override val height: Double?
-      }
-
-      interface Droid : R2, DroidDetails {
-        override val __typename: String
-
-        /**
-         * What others call this droid
-         */
-        override val name: String
-
-        /**
-         * This droid's primary function
-         */
-        override val primaryFunction: String?
-      }
-
       data class HumanR2(
         override val __typename: String,
         /**
@@ -92,7 +64,7 @@ class TestQuery : Query<TestQuery.Data> {
          * Height in the preferred unit, default is meters
          */
         override val height: Double?
-      ) : R2, Human, HumanDetails
+      ) : R2, HumanDetails
 
       data class DroidR2(
         override val __typename: String,
@@ -104,20 +76,16 @@ class TestQuery : Query<TestQuery.Data> {
          * This droid's primary function
          */
         override val primaryFunction: String?
-      ) : R2, Droid, DroidDetails
+      ) : R2, DroidDetails
 
       data class OtherR2(
         override val __typename: String
       ) : R2
 
       companion object {
-        fun R2.asHuman(): Human? = this as? Human
+        fun R2.asHumanR2(): HumanR2? = this as? HumanR2
 
-        fun R2.humanDetails(): HumanDetails? = this as? HumanDetails
-
-        fun R2.asDroid(): Droid? = this as? Droid
-
-        fun R2.droidDetails(): DroidDetails? = this as? DroidDetails
+        fun R2.asDroidR2(): DroidR2? = this as? DroidR2
       }
     }
 
@@ -126,34 +94,6 @@ class TestQuery : Query<TestQuery.Data> {
      */
     interface Luke {
       val __typename: String
-
-      interface Human : Luke, HumanDetails {
-        override val __typename: String
-
-        /**
-         * What this human calls themselves
-         */
-        override val name: String
-
-        /**
-         * Height in the preferred unit, default is meters
-         */
-        override val height: Double?
-      }
-
-      interface Droid : Luke, DroidDetails {
-        override val __typename: String
-
-        /**
-         * What others call this droid
-         */
-        override val name: String
-
-        /**
-         * This droid's primary function
-         */
-        override val primaryFunction: String?
-      }
 
       data class HumanLuke(
         override val __typename: String,
@@ -165,7 +105,7 @@ class TestQuery : Query<TestQuery.Data> {
          * Height in the preferred unit, default is meters
          */
         override val height: Double?
-      ) : Luke, Human, HumanDetails
+      ) : Luke, HumanDetails
 
       data class DroidLuke(
         override val __typename: String,
@@ -177,20 +117,16 @@ class TestQuery : Query<TestQuery.Data> {
          * This droid's primary function
          */
         override val primaryFunction: String?
-      ) : Luke, Droid, DroidDetails
+      ) : Luke, DroidDetails
 
       data class OtherLuke(
         override val __typename: String
       ) : Luke
 
       companion object {
-        fun Luke.asHuman(): Human? = this as? Human
+        fun Luke.asHumanLuke(): HumanLuke? = this as? HumanLuke
 
-        fun Luke.humanDetails(): HumanDetails? = this as? HumanDetails
-
-        fun Luke.asDroid(): Droid? = this as? Droid
-
-        fun Luke.droidDetails(): DroidDetails? = this as? DroidDetails
+        fun Luke.asDroidLuke(): DroidLuke? = this as? DroidLuke
       }
     }
   }

@@ -81,94 +81,6 @@ data class TestQuery(
        */
       val name: String
 
-      interface Human : Hero {
-        override val __typename: String
-
-        /**
-         * The name of the character
-         */
-        override val name: String
-
-        /**
-         * This human's friends, or an empty list if they have none
-         */
-        val friends: List<Friend?>?
-
-        /**
-         * A character from the Star Wars universe
-         */
-        interface Friend {
-          val __typename: String
-
-          /**
-           * The name of the character
-           */
-          val name: String
-
-          interface Human : Friend {
-            override val __typename: String
-
-            /**
-             * The name of the character
-             */
-            override val name: String
-
-            /**
-             * Height in the preferred unit, default is meters
-             */
-            val height: Double?
-          }
-
-          companion object {
-            fun Friend.asHuman(): Human? = this as? Human
-          }
-        }
-      }
-
-      interface Droid : Hero {
-        override val __typename: String
-
-        /**
-         * The name of the character
-         */
-        override val name: String
-
-        /**
-         * This droid's friends, or an empty list if they have none
-         */
-        val friends: List<Friend?>?
-
-        /**
-         * A character from the Star Wars universe
-         */
-        interface Friend {
-          val __typename: String
-
-          /**
-           * The name of the character
-           */
-          val name: String
-
-          interface Human : Friend {
-            override val __typename: String
-
-            /**
-             * The name of the character
-             */
-            override val name: String
-
-            /**
-             * Height in the preferred unit, default is meters
-             */
-            val height: Double?
-          }
-
-          companion object {
-            fun Friend.asHuman(): Human? = this as? Human
-          }
-        }
-      }
-
       data class HumanHero(
         override val __typename: String,
         /**
@@ -178,15 +90,20 @@ data class TestQuery(
         /**
          * This human's friends, or an empty list if they have none
          */
-        override val friends: List<Friend?>?
-      ) : Hero, Human {
+        val friends: List<Friends?>?
+      ) : Hero {
         /**
          * A character from the Star Wars universe
          */
-        interface Friend : Human.Friend {
-          override val __typename: String
+        interface Friends {
+          val __typename: String
 
-          data class HumanFriend(
+          /**
+           * The name of the character
+           */
+          val name: String
+
+          data class HumanFriends(
             override val __typename: String,
             /**
              * The name of the character
@@ -195,16 +112,20 @@ data class TestQuery(
             /**
              * Height in the preferred unit, default is meters
              */
-            override val height: Double?
-          ) : Human.Friend, Human.Friend.Human, Friend
+            val height: Double?
+          ) : Friends
 
-          data class OtherFriend(
+          data class OtherFriends(
             override val __typename: String,
             /**
              * The name of the character
              */
             override val name: String
-          ) : Human.Friend, Friend
+          ) : Friends
+
+          companion object {
+            fun Friends.asHumanFriends(): HumanFriends? = this as? HumanFriends
+          }
         }
       }
 
@@ -217,15 +138,20 @@ data class TestQuery(
         /**
          * This droid's friends, or an empty list if they have none
          */
-        override val friends: List<Friend?>?
-      ) : Hero, Droid {
+        val friends: List<Friends?>?
+      ) : Hero {
         /**
          * A character from the Star Wars universe
          */
-        interface Friend : Droid.Friend {
-          override val __typename: String
+        interface Friends {
+          val __typename: String
 
-          data class HumanFriend(
+          /**
+           * The name of the character
+           */
+          val name: String
+
+          data class HumanFriends(
             override val __typename: String,
             /**
              * The name of the character
@@ -234,16 +160,20 @@ data class TestQuery(
             /**
              * Height in the preferred unit, default is meters
              */
-            override val height: Double?
-          ) : Droid.Friend, Droid.Friend.Human, Friend
+            val height: Double?
+          ) : Friends
 
-          data class OtherFriend(
+          data class OtherFriends(
             override val __typename: String,
             /**
              * The name of the character
              */
             override val name: String
-          ) : Droid.Friend, Friend
+          ) : Friends
+
+          companion object {
+            fun Friends.asHumanFriends(): HumanFriends? = this as? HumanFriends
+          }
         }
       }
 
@@ -256,9 +186,9 @@ data class TestQuery(
       ) : Hero
 
       companion object {
-        fun Hero.asHuman(): Human? = this as? Human
+        fun Hero.asHumanHero(): HumanHero? = this as? HumanHero
 
-        fun Hero.asDroid(): Droid? = this as? Droid
+        fun Hero.asDroidHero(): DroidHero? = this as? DroidHero
       }
     }
   }

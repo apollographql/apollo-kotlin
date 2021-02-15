@@ -18,14 +18,7 @@ import kotlin.Suppress
 internal interface HeroDetails {
   val __typename: String
 
-  interface Human : HeroDetails, HumanDetails {
-    override val __typename: String
-
-    /**
-     * What this human calls themselves
-     */
-    override val name: String
-  }
+  interface Human : HeroDetails, HumanDetails
 
   companion object {
     val FRAGMENT_DEFINITION: String = """

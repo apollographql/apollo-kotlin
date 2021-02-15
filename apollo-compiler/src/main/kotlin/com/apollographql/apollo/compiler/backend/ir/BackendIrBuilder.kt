@@ -3,6 +3,9 @@ package com.apollographql.apollo.compiler.backend.ir
 import com.apollographql.apollo.compiler.PackageNameProvider
 import com.apollographql.apollo.compiler.backend.ir.BackendIrMergeUtils.mergeFields
 import com.apollographql.apollo.compiler.backend.ir.SelectionKeyUtils.addFieldSelectionKey
+import com.apollographql.apollo.compiler.backend.ir.SelectionKeyUtils.attachToNewSelectionRoot
+import com.apollographql.apollo.compiler.backend.ir.SelectionKeyUtils.isBelongToNamedFragment
+import com.apollographql.apollo.compiler.backend.ir.SelectionKeyUtils.removeFragmentSelectionKeys
 import com.apollographql.apollo.compiler.frontend.GQLNamedType
 import com.apollographql.apollo.compiler.frontend.Schema
 import com.apollographql.apollo.compiler.frontend.SourceLocation
@@ -12,7 +15,6 @@ import com.apollographql.apollo.compiler.frontend.schemaKind
 import com.apollographql.apollo.compiler.frontend.toKotlinValue
 import com.apollographql.apollo.compiler.frontend.toSchemaType
 import com.apollographql.apollo.compiler.introspection.IntrospectionSchema
-import com.apollographql.apollo.compiler.singularize
 
 internal class BackendIrBuilder constructor(
     private val schema: Schema,
@@ -155,7 +157,7 @@ internal class BackendIrBuilder constructor(
         name = this.name,
         alias = this.alias,
         schemaTypeRef = this.type.toSchemaType(),
-        typeName = this.typeName,
+        typeName = this.responseName,
         args = arguments,
         fields = fields,
         fragments = fragments,
@@ -179,7 +181,7 @@ internal class BackendIrBuilder constructor(
   private fun List<FrontendIr.Selection.Field>.buildBackendIrFields(selectionKey: SelectionKey): List<BackendIr.Field> {
     return this.map { field ->
       field.buildBackendIrField(
-          selectionKey = selectionKey + field.typeName,
+          selectionKey = selectionKey + field.responseName,
       )
     }
   }
@@ -317,31 +319,40 @@ internal class BackendIrBuilder constructor(
       parentSelectionKey: SelectionKey,
       parentPossibleTypes: Set<String>,
   ): List<BackendIr.Fragment> {
+    // we might get fragments defined with the same name
+    val groupedFragments = this.groupBy { fragment -> fragment.name }
+
     // merge fragments with the same type condition into one interface
-    return this.map { fragment ->
-      val nestedFragments = fragment.fragments.buildBackendIrFragmentInterfaces(
-          parentSelectionKey = parentSelectionKey + fragment.name,
-          parentPossibleTypes = fragment.possibleTypes.toSet(),
+    return groupedFragments.map { (_, fragments) ->
+      val fields = fragments.fold(emptyList<BackendIr.Field>()) { acc, fragment ->
+        acc.mergeFields(fragment.fields)
+      }
+      val selectionsKeys = fragments.fold(emptySet<SelectionKey>()) { acc, fragment ->
+        acc.plus(fragment.selectionKeys)
+      }
+      val nestedFragments = fragments.flatMap { it.fragments }.buildBackendIrFragmentInterfaces(
+          parentSelectionKey = parentSelectionKey + fragments.first().name,
+          parentPossibleTypes = fragments.first().possibleTypes.toSet(),
       )
 
       // as fragment can be defined on interface that has more possible implementations than field type where it used
       // build intersection of fragment's and field's possible types
-      val possibleTypes = fragment.possibleTypes.intersect(parentPossibleTypes)
+      val possibleTypes = fragments.flatMap { it.possibleTypes }.intersect(parentPossibleTypes)
 
       val possibleSchemaTypes = possibleTypes.map { type ->
         GQLNamedType(sourceLocation = SourceLocation.UNKNOWN, type).toSchemaType(schema)
       }.toSet()
 
       BackendIr.Fragment(
-          name = fragment.name,
-          fields = fragment.fields,
+          name = fragments.first().name,
+          fields = fields,
           nestedFragments = createFragments(
               selectionKey = parentSelectionKey,
               fragments = nestedFragments,
           ),
-          selectionKeys = fragment.selectionKeys,
+          selectionKeys = selectionsKeys,
           possibleTypes = possibleSchemaTypes,
-          description = fragment.description,
+          description = fragments.joinToString { it.description },
           type = BackendIr.Fragment.Type.Interface,
       )
     }
@@ -371,24 +382,44 @@ internal class BackendIrBuilder constructor(
     val fragmentInterfaces = this.fragments
         .mergeInterfaceFragmentsWithTheSameName()
 
+    val fragmentInterfaceRootSelectionKeys = fragmentInterfaces
+        .map { selectionKey + it.name }
+
     val fragmentImplementations = fragmentInterfaces
         .flattenFragments()
         .buildFragmentImplementations(
             parentName = this.typeName,
-            parentFields = this.fields,
+            // NOTE: required by new version that removes interfaces
+            parentFields = this.fields.addFieldSelectionKey(selectionKey),
             parentPossibleSchemaTypes = fieldPossibleSchemaTypes,
             parentSelectionKeys = this.selectionKeys,
             selectionKey = selectionKey,
         )
+        // NOTE: new version that removes interfaces
+        .map { it.removeFragmentSelectionKeys(fragmentInterfaceRootSelectionKeys) }
 
+    // NOTE: new version that removes interfaces
     return this.copy(
-        fields = this.fields.takeIf { keepInterfaces } ?: this.fields.filter { it.name == "__typename" },
+        fields = this.fields,
         fragments = BackendIr.Fragments(
-            fragments = (fragmentInterfaces.takeIf { keepInterfaces } ?: emptyList()) + fragmentImplementations,
-            accessors = (this.fragments.accessors.takeIf { keepInterfaces } ?: emptyMap()),
+            fragments = fragmentImplementations,
+            accessors = fragmentImplementations
+                .filterNot { it.type == BackendIr.Fragment.Type.Fallback }
+                .map { "as${it.name.capitalize()}" to selectionKey + it.name }
+                .toMap()
         ),
         selectionKeys = this.selectionKeys + selectionKey,
     )
+
+    // NOTE: this is old version that keeps interfaces
+//    return this.copy(
+//        fields = this.fields.takeIf { keepInterfaces } ?: this.fields.filter { it.name == "__typename" },
+//        fragments = BackendIr.Fragments(
+//            fragments = (fragmentInterfaces.takeIf { keepInterfaces } ?: emptyList()) + fragmentImplementations,
+//            accessors = (this.fragments.accessors.takeIf { keepInterfaces } ?: emptyMap()),
+//        ),
+//        selectionKeys = this.selectionKeys + selectionKey,
+//    )
   }
 
   private fun List<BackendIr.Fragment>.buildFragmentImplementations(
@@ -473,30 +504,24 @@ internal class BackendIrBuilder constructor(
     )
   }
 
-  @Suppress("NAME_SHADOWING")
   private fun buildGenericFragments(
       inlineFragments: List<FrontendIr.Selection.InlineFragment>,
       namedFragments: List<FrontendIr.Selection.FragmentSpread>,
       parentSelectionKey: SelectionKey,
       parentFields: List<BackendIr.Field>,
-      parentNamedFragmentSelectionKey: SelectionKey? = null,
   ): List<GenericFragment> {
     val genericInlineFragments = inlineFragments.map { inlineFragment ->
       val fragmentName = inlineFragment.fragmentDefinition.typeCondition.name.capitalize()
 
-      val parentFields = parentFields.addFieldSelectionKey(
-          parentNamedFragmentSelectionKey?.plus(fragmentName)
-      )
-
       buildGenericFragment(
           fragmentName = fragmentName,
           fragmentTypeCondition = inlineFragment.fragmentDefinition.typeCondition.name,
-          fragmentFields = inlineFragment.fragmentDefinition.selections,
+          fragmentFields = inlineFragment.fragmentDefinition.selections.filterIsInstance<FrontendIr.Selection.Field>(),
           nestedInlineFragments = inlineFragment.fragmentDefinition.selections.filterIsInstance<FrontendIr.Selection.InlineFragment>(),
           nestedNamedFragments = inlineFragment.fragmentDefinition.selections.filterIsInstance<FrontendIr.Selection.FragmentSpread>(),
           fragmentDescription = inlineFragment.fragmentDefinition.typeCondition.description ?: "",
           fragmentCondition = inlineFragment.condition.buildBackendIrCondition(),
-          namedFragmentSelectionKey = parentNamedFragmentSelectionKey?.plus(fragmentName),
+          namedFragmentSelectionKey = null,
           parentSelectionKey = parentSelectionKey,
           parentFields = parentFields,
       )
@@ -505,15 +530,10 @@ internal class BackendIrBuilder constructor(
     val genericNamedFragments = namedFragments.map { fragmentSpread ->
       val namedFragment = checkNotNull(allFragmentDefinitions[fragmentSpread.name])
 
-      val namedFragmentSelectionKey = parentNamedFragmentSelectionKey?.plus(namedFragment.typeCondition.name.capitalize())
-          ?: SelectionKey(
-              root = namedFragment.name.capitalize(),
-              keys = listOf(namedFragment.name.capitalize()),
-              type = SelectionKey.Type.Fragment,
-          )
-
-      val parentFields = parentFields.addFieldSelectionKey(
-          parentNamedFragmentSelectionKey?.plus(namedFragment.typeCondition.name.capitalize())
+      val namedFragmentSelectionKey = SelectionKey(
+          root = namedFragment.name.capitalize(),
+          keys = listOf(namedFragment.name.capitalize()),
+          type = SelectionKey.Type.Fragment,
       )
 
       buildGenericFragment(
@@ -588,7 +608,7 @@ internal class BackendIrBuilder constructor(
   private fun buildGenericFragment(
       fragmentName: String,
       fragmentTypeCondition: String,
-      fragmentFields: List<FrontendIr.Selection>,
+      fragmentFields: List<FrontendIr.Selection.Field>,
       nestedInlineFragments: List<FrontendIr.Selection.InlineFragment>,
       nestedNamedFragments: List<FrontendIr.Selection.FragmentSpread>,
       fragmentDescription: String,
@@ -598,10 +618,9 @@ internal class BackendIrBuilder constructor(
       parentSelectionKey: SelectionKey,
   ): GenericFragment {
     val fields = parentFields
-        .addFieldSelectionKey(parentSelectionKey + fragmentName)
+        .attachToNewSelectionRoot(parentSelectionKey + fragmentName)
         .mergeFields(
             fragmentFields
-                .filterIsInstance<FrontendIr.Selection.Field>()
                 .buildBackendIrFields(parentSelectionKey + fragmentName)
                 .addFieldSelectionKey(namedFragmentSelectionKey)
         )
@@ -617,14 +636,20 @@ internal class BackendIrBuilder constructor(
     val nestedInlineFragments = nestedInlineFragments.map { inlineFragment ->
       val nestedFragmentName = inlineFragment.fragmentDefinition.typeCondition.name.capitalize()
 
-      val parentFields = fields.addFieldSelectionKey(
-          namedFragmentSelectionKey?.plus(nestedFragmentName)
-      )
+      val parentFields = if (namedFragmentSelectionKey != null) {
+        fields.map { field ->
+          if (field.isBelongToNamedFragment(namedFragmentSelectionKey.root)) {
+            field.addFieldSelectionKey(namedFragmentSelectionKey + nestedFragmentName + field.responseName)
+          } else {
+            field
+          }
+        }
+      } else fields
 
       buildGenericFragment(
           fragmentName = nestedFragmentName,
           fragmentTypeCondition = inlineFragment.fragmentDefinition.typeCondition.name,
-          fragmentFields = inlineFragment.fragmentDefinition.selections,
+          fragmentFields = inlineFragment.fragmentDefinition.selections.filterIsInstance<FrontendIr.Selection.Field>(),
           nestedInlineFragments = inlineFragment.fragmentDefinition.selections.filterIsInstance<FrontendIr.Selection.InlineFragment>(),
           nestedNamedFragments = inlineFragment.fragmentDefinition.selections.filterIsInstance<FrontendIr.Selection.FragmentSpread>(),
           fragmentDescription = inlineFragment.fragmentDefinition.typeCondition.description ?: "",
@@ -640,19 +665,30 @@ internal class BackendIrBuilder constructor(
 
       val nestedFragmentName = namedFragment.typeCondition.name.capitalize()
 
-      val parentFields = fields.addFieldSelectionKey(
-          namedFragmentSelectionKey?.plus(nestedFragmentName)
-      )
+      val parentFields = if (namedFragmentSelectionKey != null) {
+        fields.map { field ->
+          if (field.isBelongToNamedFragment(namedFragmentSelectionKey.root)) {
+            field.addFieldSelectionKey(namedFragmentSelectionKey + nestedFragmentName + field.responseName)
+          } else {
+            field
+          }
+        }
+      } else fields
 
       buildGenericFragment(
           fragmentName = nestedFragmentName,
           fragmentTypeCondition = namedFragment.typeCondition.name,
-          fragmentFields = namedFragment.selections,
+          fragmentFields = namedFragment.selections.filterIsInstance<FrontendIr.Selection.Field>(),
           nestedInlineFragments = namedFragment.selections.filterIsInstance<FrontendIr.Selection.InlineFragment>(),
           nestedNamedFragments = namedFragment.selections.filterIsInstance<FrontendIr.Selection.FragmentSpread>(),
           fragmentDescription = namedFragment.typeCondition.description ?: "",
           fragmentCondition = fragmentSpread.condition.buildBackendIrCondition(),
-          namedFragmentSelectionKey = namedFragmentSelectionKey?.plus(nestedFragmentName),
+          namedFragmentSelectionKey = namedFragmentSelectionKey?.plus(nestedFragmentName)
+              ?: SelectionKey(
+                  root = namedFragment.name.capitalize(),
+                  keys = listOf(namedFragment.name.capitalize()),
+                  type = SelectionKey.Type.Fragment,
+              ),
           parentFields = parentFields,
           parentSelectionKey = selectionKey,
       )
@@ -756,15 +792,4 @@ internal class BackendIrBuilder constructor(
       val condition: BackendIr.Condition,
       val selectionKeys: Set<SelectionKey>,
   )
-
-  private val FrontendIr.Selection.Field.typeName: String
-    get() {
-      val isListType = if (this.type is FrontendIr.Type.NonNull) {
-        this.type.ofType is FrontendIr.Type.List
-      } else {
-        this.type is FrontendIr.Type.List
-      }
-      val isObjectType = this.selections.isNotEmpty()
-      return if (isListType && isObjectType) this.responseName.singularize().capitalize() else this.responseName
-    }
 }

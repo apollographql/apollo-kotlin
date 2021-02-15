@@ -69,21 +69,21 @@ class TestQuery_ResponseAdapter(
   ) : ResponseAdapter<TestQuery.Data.Tree> {
     val stringAdapter: ResponseAdapter<String> = stringResponseAdapter
 
-    val listOfChildAdapter: ResponseAdapter<List<TestQuery.Data.Tree.Child>> =
-        ListResponseAdapter(Child(customScalarAdapters))
+    val listOfChildrenAdapter: ResponseAdapter<List<TestQuery.Data.Tree.Children>> =
+        ListResponseAdapter(Children(customScalarAdapters))
 
     val nullableParentAdapter: ResponseAdapter<TestQuery.Data.Tree.Parent?> =
         NullableResponseAdapter(Parent(customScalarAdapters))
 
     override fun fromResponse(reader: JsonReader): TestQuery.Data.Tree {
       var name: String? = null
-      var children: List<TestQuery.Data.Tree.Child>? = null
+      var children: List<TestQuery.Data.Tree.Children>? = null
       var parent: TestQuery.Data.Tree.Parent? = null
       reader.beginObject()
       while(true) {
         when (reader.selectName(RESPONSE_NAMES)) {
           0 -> name = stringAdapter.fromResponse(reader)
-          1 -> children = listOfChildAdapter.fromResponse(reader)
+          1 -> children = listOfChildrenAdapter.fromResponse(reader)
           2 -> parent = nullableParentAdapter.fromResponse(reader)
           else -> break
         }
@@ -101,7 +101,7 @@ class TestQuery_ResponseAdapter(
       writer.name("name")
       stringAdapter.toResponse(writer, value.name)
       writer.name("children")
-      listOfChildAdapter.toResponse(writer, value.children)
+      listOfChildrenAdapter.toResponse(writer, value.children)
       writer.name("parent")
       nullableParentAdapter.toResponse(writer, value.parent)
       writer.endObject()
@@ -118,7 +118,7 @@ class TestQuery_ResponseAdapter(
               ResponseField.Type.NotNull(ResponseField.Type.List(ResponseField.Type.NotNull(ResponseField.Type.Named.Object("Tree")))),
           fieldName = "children",
           fieldSets = listOf(
-            ResponseField.FieldSet(null, Child.RESPONSE_FIELDS)
+            ResponseField.FieldSet(null, Children.RESPONSE_FIELDS)
           ),
         ),
         ResponseField(
@@ -133,12 +133,12 @@ class TestQuery_ResponseAdapter(
       val RESPONSE_NAMES: List<String> = RESPONSE_FIELDS.map { it.responseName }
     }
 
-    class Child(
+    class Children(
       customScalarAdapters: CustomScalarAdapters
-    ) : ResponseAdapter<TestQuery.Data.Tree.Child> {
+    ) : ResponseAdapter<TestQuery.Data.Tree.Children> {
       val stringAdapter: ResponseAdapter<String> = stringResponseAdapter
 
-      override fun fromResponse(reader: JsonReader): TestQuery.Data.Tree.Child {
+      override fun fromResponse(reader: JsonReader): TestQuery.Data.Tree.Children {
         var name: String? = null
         reader.beginObject()
         while(true) {
@@ -148,12 +148,12 @@ class TestQuery_ResponseAdapter(
           }
         }
         reader.endObject()
-        return TestQuery.Data.Tree.Child(
+        return TestQuery.Data.Tree.Children(
           name = name!!
         )
       }
 
-      override fun toResponse(writer: JsonWriter, value: TestQuery.Data.Tree.Child) {
+      override fun toResponse(writer: JsonWriter, value: TestQuery.Data.Tree.Children) {
         writer.beginObject()
         writer.name("name")
         stringAdapter.toResponse(writer, value.name)

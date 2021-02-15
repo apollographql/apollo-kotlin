@@ -202,7 +202,7 @@ class ResponseWriteTestCase {
       assertThat(data.hero?.friends).isNull()
       true
     }
-    val friend = HeroAndFriendsNamesWithIDsQuery.Data.Hero.Friend(
+    val friend = HeroAndFriendsNamesWithIDsQuery.Data.Hero.Friends(
         "1002",
         "Han Soloooo"
     )
@@ -254,12 +254,12 @@ class ResponseWriteTestCase {
         id = "2001",
         name = "R222-D222",
         friends = listOf(
-            HeroAndFriendsWithFragmentsQuery.Data.Hero.CharacterHero.Friend.HumanFriend(
+            HeroAndFriendsWithFragmentsQuery.Data.Hero.CharacterHero.Friends.HumanFriends(
                 __typename = "Human",
                 id = "1006",
                 name = "SuperMan"
             ),
-            HeroAndFriendsWithFragmentsQuery.Data.Hero.CharacterHero.Friend.HumanFriend(
+            HeroAndFriendsWithFragmentsQuery.Data.Hero.CharacterHero.Friends.HumanFriends(
                 __typename = "Human",
                 id = "1004",
                 name = "Beast"
@@ -296,16 +296,16 @@ class ResponseWriteTestCase {
     ) { (_, data) ->
       assertThat(data!!.hero?.name).isEqualTo("R2-D2")
       assertThat(data.hero?.friends).hasSize(3)
-      val asHuman = data.hero?.friends?.get(0) as? EpisodeHeroWithInlineFragmentQuery.Data.Hero.Friend.Human
+      val asHuman = data.hero?.friends?.get(0) as? EpisodeHeroWithInlineFragmentQuery.Data.Hero.Friends.HumanFriends
       assertThat(asHuman?.__typename).isEqualTo("Human")
       assertThat(asHuman?.id).isEqualTo("1000")
       assertThat(asHuman?.name).isEqualTo("Luke Skywalker")
       assertThat(asHuman?.height).isWithin(1.5)
-      val asDroid1 = data.hero?.friends?.get(1) as? EpisodeHeroWithInlineFragmentQuery.Data.Hero.Friend.Droid
+      val asDroid1 = data.hero?.friends?.get(1) as? EpisodeHeroWithInlineFragmentQuery.Data.Hero.Friends.DroidFriends
       assertThat(asDroid1?.__typename).isEqualTo("Droid")
       assertThat(asDroid1?.name).isEqualTo("Android")
       assertThat(asDroid1?.primaryFunction).isEqualTo("Hunt and destroy iOS devices")
-      val asDroid2 = data.hero?.friends?.get(2) as EpisodeHeroWithInlineFragmentQuery.Data.Hero.Friend.Droid
+      val asDroid2 = data.hero?.friends?.get(2) as EpisodeHeroWithInlineFragmentQuery.Data.Hero.Friends.DroidFriends
       assertThat(asDroid2.__typename).isEqualTo("Droid")
       assertThat(asDroid2.name).isEqualTo("Battle Droid")
       assertThat(asDroid2.primaryFunction).isEqualTo("Controlled alternative to human soldiers")
@@ -314,13 +314,13 @@ class ResponseWriteTestCase {
     val hero = EpisodeHeroWithInlineFragmentQuery.Data.Hero(
         name = "R22-D22",
         friends = listOf(
-            EpisodeHeroWithInlineFragmentQuery.Data.Hero.Friend.HumanFriend(
+            EpisodeHeroWithInlineFragmentQuery.Data.Hero.Friends.HumanFriends(
                 __typename = "Human",
                 id = "1002",
                 name = "Han Solo",
                 height = 2.5
             ),
-            EpisodeHeroWithInlineFragmentQuery.Data.Hero.Friend.DroidFriend(
+            EpisodeHeroWithInlineFragmentQuery.Data.Hero.Friends.DroidFriends(
                 __typename = "Droid",
                 primaryFunction = "Entertainment",
                 name = "RD",
@@ -333,12 +333,12 @@ class ResponseWriteTestCase {
     ) { (_, data) ->
       assertThat(data!!.hero?.name).isEqualTo("R22-D22")
       assertThat(data.hero?.friends).hasSize(2)
-      val asHuman = data.hero?.friends?.get(0) as? EpisodeHeroWithInlineFragmentQuery.Data.Hero.Friend.Human
+      val asHuman = data.hero?.friends?.get(0) as? EpisodeHeroWithInlineFragmentQuery.Data.Hero.Friends.HumanFriends
       assertThat(asHuman?.__typename).isEqualTo("Human")
       assertThat(asHuman?.id).isEqualTo("1002")
       assertThat(asHuman?.name).isEqualTo("Han Solo")
       assertThat(asHuman?.height).isWithin(2.5)
-      val asDroid = data.hero?.friends?.get(1) as? EpisodeHeroWithInlineFragmentQuery.Data.Hero.Friend.Droid
+      val asDroid = data.hero?.friends?.get(1) as? EpisodeHeroWithInlineFragmentQuery.Data.Hero.Friends.DroidFriends
       assertThat(asDroid?.__typename).isEqualTo("Droid")
       assertThat(asDroid?.name).isEqualTo("RD")
       assertThat(asDroid?.primaryFunction).isEqualTo("Entertainment")
@@ -380,12 +380,12 @@ class ResponseWriteTestCase {
             id = "2001",
             name = "R222-D222",
             friends = listOf(
-                HeroWithFriendsFragmentImpl.Data.Friend.HumanFriend(
+                HeroWithFriendsFragmentImpl.Data.Friends.HumanFriends(
                     __typename = "Human",
                     id = "1000",
                     name = "SuperMan"
                 ),
-                HeroWithFriendsFragmentImpl.Data.Friend.HumanFriend(
+                HeroWithFriendsFragmentImpl.Data.Friends.HumanFriends(
                     __typename = "Human",
                     id = "1002",
                     name = "Han Solo"

@@ -174,15 +174,15 @@ internal data class CodeGenerationAst(
         override val schemaTypeName = "String"
       }
 
-      data class Int(override val nullable: kotlin.Boolean) : Scalar(){
+      data class Int(override val nullable: kotlin.Boolean) : Scalar() {
         override val schemaTypeName = "Int"
       }
 
-      data class Float(override val nullable: kotlin.Boolean) : Scalar(){
+      data class Float(override val nullable: kotlin.Boolean) : Scalar() {
         override val schemaTypeName = "Float"
       }
 
-      data class Boolean(override val nullable: kotlin.Boolean) : Scalar(){
+      data class Boolean(override val nullable: kotlin.Boolean) : Scalar() {
         override val schemaTypeName = "Boolean"
       }
 
@@ -216,7 +216,10 @@ internal data class CodeGenerationAst(
     data class Array(
         override val nullable: Boolean,
         val rawType: FieldType
-    ) : FieldType()
+    ) : FieldType() {
+      val leafType: FieldType
+        get() = if (rawType is Array) rawType.leafType else rawType
+    }
   }
 
   /**

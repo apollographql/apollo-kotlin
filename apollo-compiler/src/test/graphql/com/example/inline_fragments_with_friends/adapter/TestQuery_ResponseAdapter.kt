@@ -111,21 +111,21 @@ class TestQuery_ResponseAdapter(
       val nullableFloatAdapter: ResponseAdapter<Double?> =
           NullableResponseAdapter(doubleResponseAdapter)
 
-      val nullableListOfNullableFriendAdapter:
-          ResponseAdapter<List<TestQuery.Data.Hero.HumanHero.Friend?>?> =
-          NullableResponseAdapter(ListResponseAdapter(NullableResponseAdapter(Friend(customScalarAdapters))))
+      val nullableListOfNullableFriendsAdapter:
+          ResponseAdapter<List<TestQuery.Data.Hero.HumanHero.Friends?>?> =
+          NullableResponseAdapter(ListResponseAdapter(NullableResponseAdapter(Friends(customScalarAdapters))))
 
       fun fromResponse(reader: JsonReader, __typename: String?): TestQuery.Data.Hero.HumanHero {
         var __typename: String? = __typename
         var name: String? = null
         var height: Double? = null
-        var friends: List<TestQuery.Data.Hero.HumanHero.Friend?>? = null
+        var friends: List<TestQuery.Data.Hero.HumanHero.Friends?>? = null
         while(true) {
           when (reader.selectName(RESPONSE_NAMES)) {
             0 -> __typename = stringAdapter.fromResponse(reader)
             1 -> name = stringAdapter.fromResponse(reader)
             2 -> height = nullableFloatAdapter.fromResponse(reader)
-            3 -> friends = nullableListOfNullableFriendAdapter.fromResponse(reader)
+            3 -> friends = nullableListOfNullableFriendsAdapter.fromResponse(reader)
             else -> break
           }
         }
@@ -146,7 +146,7 @@ class TestQuery_ResponseAdapter(
         writer.name("height")
         nullableFloatAdapter.toResponse(writer, value.height)
         writer.name("friends")
-        nullableListOfNullableFriendAdapter.toResponse(writer, value.friends)
+        nullableListOfNullableFriendsAdapter.toResponse(writer, value.friends)
         writer.endObject()
       }
 
@@ -165,7 +165,7 @@ class TestQuery_ResponseAdapter(
             type = ResponseField.Type.List(ResponseField.Type.Named.Object("Character")),
             fieldName = "friends",
             fieldSets = listOf(
-              ResponseField.FieldSet(null, Friend.RESPONSE_FIELDS)
+              ResponseField.FieldSet(null, Friends.RESPONSE_FIELDS)
             ),
           )
         )
@@ -173,13 +173,13 @@ class TestQuery_ResponseAdapter(
         val RESPONSE_NAMES: List<String> = RESPONSE_FIELDS.map { it.responseName }
       }
 
-      class Friend(
+      class Friends(
         customScalarAdapters: CustomScalarAdapters
-      ) : ResponseAdapter<TestQuery.Data.Hero.HumanHero.Friend> {
+      ) : ResponseAdapter<TestQuery.Data.Hero.HumanHero.Friends> {
         val listOfNullableEpisodeAdapter: ResponseAdapter<List<Episode?>> =
             ListResponseAdapter(NullableResponseAdapter(Episode_ResponseAdapter))
 
-        override fun fromResponse(reader: JsonReader): TestQuery.Data.Hero.HumanHero.Friend {
+        override fun fromResponse(reader: JsonReader): TestQuery.Data.Hero.HumanHero.Friends {
           var appearsIn: List<Episode?>? = null
           reader.beginObject()
           while(true) {
@@ -189,12 +189,12 @@ class TestQuery_ResponseAdapter(
             }
           }
           reader.endObject()
-          return TestQuery.Data.Hero.HumanHero.Friend(
+          return TestQuery.Data.Hero.HumanHero.Friends(
             appearsIn = appearsIn!!
           )
         }
 
-        override fun toResponse(writer: JsonWriter, value: TestQuery.Data.Hero.HumanHero.Friend) {
+        override fun toResponse(writer: JsonWriter, value: TestQuery.Data.Hero.HumanHero.Friends) {
           writer.beginObject()
           writer.name("appearsIn")
           listOfNullableEpisodeAdapter.toResponse(writer, value.appearsIn)
@@ -223,21 +223,21 @@ class TestQuery_ResponseAdapter(
       val nullableStringAdapter: ResponseAdapter<String?> =
           NullableResponseAdapter(stringResponseAdapter)
 
-      val nullableListOfNullableFriendAdapter:
-          ResponseAdapter<List<TestQuery.Data.Hero.DroidHero.Friend?>?> =
-          NullableResponseAdapter(ListResponseAdapter(NullableResponseAdapter(Friend(customScalarAdapters))))
+      val nullableListOfNullableFriendsAdapter:
+          ResponseAdapter<List<TestQuery.Data.Hero.DroidHero.Friends?>?> =
+          NullableResponseAdapter(ListResponseAdapter(NullableResponseAdapter(Friends(customScalarAdapters))))
 
       fun fromResponse(reader: JsonReader, __typename: String?): TestQuery.Data.Hero.DroidHero {
         var __typename: String? = __typename
         var name: String? = null
         var primaryFunction: String? = null
-        var friends: List<TestQuery.Data.Hero.DroidHero.Friend?>? = null
+        var friends: List<TestQuery.Data.Hero.DroidHero.Friends?>? = null
         while(true) {
           when (reader.selectName(RESPONSE_NAMES)) {
             0 -> __typename = stringAdapter.fromResponse(reader)
             1 -> name = stringAdapter.fromResponse(reader)
             2 -> primaryFunction = nullableStringAdapter.fromResponse(reader)
-            3 -> friends = nullableListOfNullableFriendAdapter.fromResponse(reader)
+            3 -> friends = nullableListOfNullableFriendsAdapter.fromResponse(reader)
             else -> break
           }
         }
@@ -258,7 +258,7 @@ class TestQuery_ResponseAdapter(
         writer.name("primaryFunction")
         nullableStringAdapter.toResponse(writer, value.primaryFunction)
         writer.name("friends")
-        nullableListOfNullableFriendAdapter.toResponse(writer, value.friends)
+        nullableListOfNullableFriendsAdapter.toResponse(writer, value.friends)
         writer.endObject()
       }
 
@@ -277,7 +277,7 @@ class TestQuery_ResponseAdapter(
             type = ResponseField.Type.List(ResponseField.Type.Named.Object("Character")),
             fieldName = "friends",
             fieldSets = listOf(
-              ResponseField.FieldSet(null, Friend.RESPONSE_FIELDS)
+              ResponseField.FieldSet(null, Friends.RESPONSE_FIELDS)
             ),
           )
         )
@@ -285,12 +285,12 @@ class TestQuery_ResponseAdapter(
         val RESPONSE_NAMES: List<String> = RESPONSE_FIELDS.map { it.responseName }
       }
 
-      class Friend(
+      class Friends(
         customScalarAdapters: CustomScalarAdapters
-      ) : ResponseAdapter<TestQuery.Data.Hero.DroidHero.Friend> {
+      ) : ResponseAdapter<TestQuery.Data.Hero.DroidHero.Friends> {
         val stringAdapter: ResponseAdapter<String> = stringResponseAdapter
 
-        override fun fromResponse(reader: JsonReader): TestQuery.Data.Hero.DroidHero.Friend {
+        override fun fromResponse(reader: JsonReader): TestQuery.Data.Hero.DroidHero.Friends {
           var id: String? = null
           reader.beginObject()
           while(true) {
@@ -300,12 +300,12 @@ class TestQuery_ResponseAdapter(
             }
           }
           reader.endObject()
-          return TestQuery.Data.Hero.DroidHero.Friend(
+          return TestQuery.Data.Hero.DroidHero.Friends(
             id = id!!
           )
         }
 
-        override fun toResponse(writer: JsonWriter, value: TestQuery.Data.Hero.DroidHero.Friend) {
+        override fun toResponse(writer: JsonWriter, value: TestQuery.Data.Hero.DroidHero.Friends) {
           writer.beginObject()
           writer.name("id")
           stringAdapter.toResponse(writer, value.id)

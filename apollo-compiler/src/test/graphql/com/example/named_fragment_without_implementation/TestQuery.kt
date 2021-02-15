@@ -58,34 +58,6 @@ class TestQuery : Query<TestQuery.Data> {
        */
       val name: String
 
-      interface Human : Hero, HumanDetails {
-        override val __typename: String
-
-        /**
-         * The name of the character
-         */
-        override val name: String
-
-        /**
-         * Height in the preferred unit, default is meters
-         */
-        override val height: Double?
-      }
-
-      interface Droid : Hero, DroidDetails {
-        override val __typename: String
-
-        /**
-         * The name of the character
-         */
-        override val name: String
-
-        /**
-         * This droid's primary function
-         */
-        override val primaryFunction: String?
-      }
-
       data class HumanHero(
         override val __typename: String,
         /**
@@ -96,7 +68,7 @@ class TestQuery : Query<TestQuery.Data> {
          * Height in the preferred unit, default is meters
          */
         override val height: Double?
-      ) : Hero, Human, HumanDetails
+      ) : Hero, HumanDetails
 
       data class DroidHero(
         override val __typename: String,
@@ -108,7 +80,7 @@ class TestQuery : Query<TestQuery.Data> {
          * This droid's primary function
          */
         override val primaryFunction: String?
-      ) : Hero, Droid, DroidDetails
+      ) : Hero, DroidDetails
 
       data class OtherHero(
         override val __typename: String,
@@ -119,13 +91,9 @@ class TestQuery : Query<TestQuery.Data> {
       ) : Hero
 
       companion object {
-        fun Hero.asHuman(): Human? = this as? Human
+        fun Hero.asHumanHero(): HumanHero? = this as? HumanHero
 
-        fun Hero.humanDetails(): HumanDetails? = this as? HumanDetails
-
-        fun Hero.asDroid(): Droid? = this as? Droid
-
-        fun Hero.droidDetails(): DroidDetails? = this as? DroidDetails
+        fun Hero.asDroidHero(): DroidHero? = this as? DroidHero
       }
     }
   }

@@ -47,13 +47,13 @@ class TestQuery : Query<TestQuery.Data> {
   ) : Operation.Data {
     data class __Schema(
       val queryType: QueryType,
-      val types: List<Type>
+      val types: List<Types>
     ) {
       data class QueryType(
         val name: String?
       )
 
-      data class Type(
+      data class Types(
         val name: String?
       )
     }

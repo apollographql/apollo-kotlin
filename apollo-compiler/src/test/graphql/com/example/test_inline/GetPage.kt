@@ -44,68 +44,48 @@ class GetPage : Query<GetPage.Data> {
     interface Collection {
       val __typename: String
 
-      val items: List<Item>
+      val items: List<Items>
 
-      interface Item {
+      interface Items {
         val title: String
-      }
-
-      interface ParticularCollection : Collection {
-        override val __typename: String
-
-        override val items: List<Item>
-
-        interface Item : Collection.Item {
-          override val title: String
-
-          val __typename: String
-
-          interface ParticularItem : Item {
-            override val __typename: String
-
-            val image: String
-
-            override val title: String
-          }
-
-          companion object {
-            fun Item.asParticularItem(): ParticularItem? = this as? ParticularItem
-          }
-        }
       }
 
       data class ParticularCollectionCollection(
         override val __typename: String,
-        override val items: List<Item>
-      ) : Collection, ParticularCollection {
-        interface Item : Collection.Item, ParticularCollection.Item {
-          override val __typename: String
+        override val items: List<Items>
+      ) : Collection {
+        interface Items : Collection.Items {
+          val __typename: String
 
-          data class ParticularItemItem(
+          data class ParticularItemItems(
             override val title: String,
             override val __typename: String,
-            override val image: String
-          ) : ParticularCollection.Item, ParticularCollection.Item.ParticularItem, Item
+            val image: String
+          ) : Items
 
-          data class OtherItem(
+          data class OtherItems(
             override val title: String,
             override val __typename: String
-          ) : Collection.Item, ParticularCollection.Item, Item
+          ) : Collection.Items, Items
+
+          companion object {
+            fun Items.asParticularItemItems(): ParticularItemItems? = this as? ParticularItemItems
+          }
         }
       }
 
       data class OtherCollection(
         override val __typename: String,
-        override val items: List<Item>
+        override val items: List<Items>
       ) : Collection {
-        data class Item(
+        data class Items(
           override val title: String
-        ) : Collection.Item
+        ) : Collection.Items
       }
 
       companion object {
-        fun Collection.asParticularCollection(): ParticularCollection? = this as?
-            ParticularCollection
+        fun Collection.asParticularCollectionCollection(): ParticularCollectionCollection? = this
+            as? ParticularCollectionCollection
       }
     }
   }

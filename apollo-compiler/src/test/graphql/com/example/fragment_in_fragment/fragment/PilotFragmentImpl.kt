@@ -46,8 +46,6 @@ class PilotFragmentImpl : Fragment<PilotFragmentImpl.Data> {
      * 0 ABY.
      */
     interface Homeworld : PilotFragment.Homeworld {
-      override val __typename: String
-
       data class PlanetHomeworld(
         override val __typename: String,
         /**
@@ -59,6 +57,10 @@ class PilotFragmentImpl : Fragment<PilotFragmentImpl.Data> {
       data class OtherHomeworld(
         override val __typename: String
       ) : PilotFragment.Homeworld, Homeworld
+
+      companion object {
+        fun Homeworld.asPlanetHomeworld(): PlanetHomeworld? = this as? PlanetHomeworld
+      }
     }
   }
 }

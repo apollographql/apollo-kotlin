@@ -77,17 +77,17 @@ data class HeroDetailsImpl(
       /**
        * The edges for each of the character's friends.
        */
-      override val edges: List<Edge?>?
+      override val edges: List<Edges?>?
     ) : HeroDetails.FriendsConnection {
       /**
        * An edge object for a character's friends
        */
-      data class Edge(
+      data class Edges(
         /**
          * The character represented by this friendship edge
          */
         override val node: Node?
-      ) : HeroDetails.FriendsConnection.Edge {
+      ) : HeroDetails.FriendsConnection.Edges {
         /**
          * A character from the Star Wars universe
          */
@@ -96,7 +96,7 @@ data class HeroDetailsImpl(
            * The name of the character
            */
           override val name: String?
-        ) : HeroDetails.FriendsConnection.Edge.Node
+        ) : HeroDetails.FriendsConnection.Edges.Node
       }
     }
   }

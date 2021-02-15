@@ -110,22 +110,22 @@ class TestQuery_ResponseAdapter(
     ) {
       val stringAdapter: ResponseAdapter<String> = stringResponseAdapter
 
-      val nullableListOfNullableFriendAdapter:
-          ResponseAdapter<List<TestQuery.Data.Search.CharacterSearch.Friend?>?> =
-          NullableResponseAdapter(ListResponseAdapter(NullableResponseAdapter(Friend(customScalarAdapters))))
+      val nullableListOfNullableFriendsAdapter:
+          ResponseAdapter<List<TestQuery.Data.Search.CharacterSearch.Friends?>?> =
+          NullableResponseAdapter(ListResponseAdapter(NullableResponseAdapter(Friends(customScalarAdapters))))
 
       fun fromResponse(reader: JsonReader, __typename: String?):
           TestQuery.Data.Search.CharacterSearch {
         var __typename: String? = __typename
         var id: String? = null
         var name: String? = null
-        var friends: List<TestQuery.Data.Search.CharacterSearch.Friend?>? = null
+        var friends: List<TestQuery.Data.Search.CharacterSearch.Friends?>? = null
         while(true) {
           when (reader.selectName(RESPONSE_NAMES)) {
             0 -> __typename = stringAdapter.fromResponse(reader)
             1 -> id = stringAdapter.fromResponse(reader)
             2 -> name = stringAdapter.fromResponse(reader)
-            3 -> friends = nullableListOfNullableFriendAdapter.fromResponse(reader)
+            3 -> friends = nullableListOfNullableFriendsAdapter.fromResponse(reader)
             else -> break
           }
         }
@@ -146,7 +146,7 @@ class TestQuery_ResponseAdapter(
         writer.name("name")
         stringAdapter.toResponse(writer, value.name)
         writer.name("friends")
-        nullableListOfNullableFriendAdapter.toResponse(writer, value.friends)
+        nullableListOfNullableFriendsAdapter.toResponse(writer, value.friends)
         writer.endObject()
       }
 
@@ -165,9 +165,9 @@ class TestQuery_ResponseAdapter(
             type = ResponseField.Type.List(ResponseField.Type.Named.Object("Character")),
             fieldName = "friends",
             fieldSets = listOf(
-              ResponseField.FieldSet("Droid", Friend.CharacterDroidFriend.RESPONSE_FIELDS),
-              ResponseField.FieldSet("Human", Friend.CharacterHumanFriend.RESPONSE_FIELDS),
-              ResponseField.FieldSet(null, Friend.OtherFriend.RESPONSE_FIELDS),
+              ResponseField.FieldSet("Droid", Friends.CharacterDroidFriends.RESPONSE_FIELDS),
+              ResponseField.FieldSet("Human", Friends.CharacterHumanFriends.RESPONSE_FIELDS),
+              ResponseField.FieldSet(null, Friends.OtherFriends.RESPONSE_FIELDS),
             ),
           )
         )
@@ -175,42 +175,42 @@ class TestQuery_ResponseAdapter(
         val RESPONSE_NAMES: List<String> = RESPONSE_FIELDS.map { it.responseName }
       }
 
-      class Friend(
+      class Friends(
         customScalarAdapters: CustomScalarAdapters
-      ) : ResponseAdapter<TestQuery.Data.Search.CharacterSearch.Friend> {
-        val CharacterDroidFriendAdapter: CharacterDroidFriend =
-            com.example.union_inline_fragments.adapter.TestQuery_ResponseAdapter.Search.CharacterSearch.Friend.CharacterDroidFriend(customScalarAdapters)
+      ) : ResponseAdapter<TestQuery.Data.Search.CharacterSearch.Friends> {
+        val CharacterDroidFriendsAdapter: CharacterDroidFriends =
+            com.example.union_inline_fragments.adapter.TestQuery_ResponseAdapter.Search.CharacterSearch.Friends.CharacterDroidFriends(customScalarAdapters)
 
-        val CharacterHumanFriendAdapter: CharacterHumanFriend =
-            com.example.union_inline_fragments.adapter.TestQuery_ResponseAdapter.Search.CharacterSearch.Friend.CharacterHumanFriend(customScalarAdapters)
+        val CharacterHumanFriendsAdapter: CharacterHumanFriends =
+            com.example.union_inline_fragments.adapter.TestQuery_ResponseAdapter.Search.CharacterSearch.Friends.CharacterHumanFriends(customScalarAdapters)
 
-        val OtherFriendAdapter: OtherFriend =
-            com.example.union_inline_fragments.adapter.TestQuery_ResponseAdapter.Search.CharacterSearch.Friend.OtherFriend(customScalarAdapters)
+        val OtherFriendsAdapter: OtherFriends =
+            com.example.union_inline_fragments.adapter.TestQuery_ResponseAdapter.Search.CharacterSearch.Friends.OtherFriends(customScalarAdapters)
 
         override fun fromResponse(reader: JsonReader):
-            TestQuery.Data.Search.CharacterSearch.Friend {
+            TestQuery.Data.Search.CharacterSearch.Friends {
           reader.beginObject()
           check(reader.nextName() == "__typename")
           val typename = reader.nextString()
 
           return when(typename) {
-            "Droid" -> CharacterDroidFriendAdapter.fromResponse(reader, typename)
-            "Human" -> CharacterHumanFriendAdapter.fromResponse(reader, typename)
-            else -> OtherFriendAdapter.fromResponse(reader, typename)
+            "Droid" -> CharacterDroidFriendsAdapter.fromResponse(reader, typename)
+            "Human" -> CharacterHumanFriendsAdapter.fromResponse(reader, typename)
+            else -> OtherFriendsAdapter.fromResponse(reader, typename)
           }
           .also { reader.endObject() }
         }
 
         override fun toResponse(writer: JsonWriter,
-            value: TestQuery.Data.Search.CharacterSearch.Friend) {
+            value: TestQuery.Data.Search.CharacterSearch.Friends) {
           when(value) {
-            is TestQuery.Data.Search.CharacterSearch.Friend.CharacterDroidFriend -> CharacterDroidFriendAdapter.toResponse(writer, value)
-            is TestQuery.Data.Search.CharacterSearch.Friend.CharacterHumanFriend -> CharacterHumanFriendAdapter.toResponse(writer, value)
-            is TestQuery.Data.Search.CharacterSearch.Friend.OtherFriend -> OtherFriendAdapter.toResponse(writer, value)
+            is TestQuery.Data.Search.CharacterSearch.Friends.CharacterDroidFriends -> CharacterDroidFriendsAdapter.toResponse(writer, value)
+            is TestQuery.Data.Search.CharacterSearch.Friends.CharacterHumanFriends -> CharacterHumanFriendsAdapter.toResponse(writer, value)
+            is TestQuery.Data.Search.CharacterSearch.Friends.OtherFriends -> OtherFriendsAdapter.toResponse(writer, value)
           }
         }
 
-        class CharacterDroidFriend(
+        class CharacterDroidFriends(
           customScalarAdapters: CustomScalarAdapters
         ) {
           val stringAdapter: ResponseAdapter<String> = stringResponseAdapter
@@ -218,27 +218,27 @@ class TestQuery_ResponseAdapter(
           val nullableStringAdapter: ResponseAdapter<String?> =
               NullableResponseAdapter(stringResponseAdapter)
 
-          val nullableListOfNullableFriendAdapter:
-              ResponseAdapter<List<TestQuery.Data.Search.CharacterSearch.Friend.CharacterDroidFriend.Friend?>?>
+          val nullableListOfNullableFriendsAdapter:
+              ResponseAdapter<List<TestQuery.Data.Search.CharacterSearch.Friends.CharacterDroidFriends.Friends?>?>
               =
-              NullableResponseAdapter(ListResponseAdapter(NullableResponseAdapter(Friend(customScalarAdapters))))
+              NullableResponseAdapter(ListResponseAdapter(NullableResponseAdapter(Friends(customScalarAdapters))))
 
           fun fromResponse(reader: JsonReader, __typename: String?):
-              TestQuery.Data.Search.CharacterSearch.Friend.CharacterDroidFriend {
+              TestQuery.Data.Search.CharacterSearch.Friends.CharacterDroidFriends {
             var __typename: String? = __typename
             var name: String? = null
             var primaryFunction: String? = null
-            var friends: List<TestQuery.Data.Search.CharacterSearch.Friend.CharacterDroidFriend.Friend?>? = null
+            var friends: List<TestQuery.Data.Search.CharacterSearch.Friends.CharacterDroidFriends.Friends?>? = null
             while(true) {
               when (reader.selectName(RESPONSE_NAMES)) {
                 0 -> __typename = stringAdapter.fromResponse(reader)
                 1 -> name = stringAdapter.fromResponse(reader)
                 2 -> primaryFunction = nullableStringAdapter.fromResponse(reader)
-                3 -> friends = nullableListOfNullableFriendAdapter.fromResponse(reader)
+                3 -> friends = nullableListOfNullableFriendsAdapter.fromResponse(reader)
                 else -> break
               }
             }
-            return TestQuery.Data.Search.CharacterSearch.Friend.CharacterDroidFriend(
+            return TestQuery.Data.Search.CharacterSearch.Friends.CharacterDroidFriends(
               __typename = __typename!!,
               name = name!!,
               primaryFunction = primaryFunction,
@@ -247,7 +247,7 @@ class TestQuery_ResponseAdapter(
           }
 
           fun toResponse(writer: JsonWriter,
-              value: TestQuery.Data.Search.CharacterSearch.Friend.CharacterDroidFriend) {
+              value: TestQuery.Data.Search.CharacterSearch.Friends.CharacterDroidFriends) {
             writer.beginObject()
             writer.name("__typename")
             stringAdapter.toResponse(writer, value.__typename)
@@ -256,7 +256,7 @@ class TestQuery_ResponseAdapter(
             writer.name("primaryFunction")
             nullableStringAdapter.toResponse(writer, value.primaryFunction)
             writer.name("friends")
-            nullableListOfNullableFriendAdapter.toResponse(writer, value.friends)
+            nullableListOfNullableFriendsAdapter.toResponse(writer, value.friends)
             writer.endObject()
           }
 
@@ -275,7 +275,7 @@ class TestQuery_ResponseAdapter(
                 type = ResponseField.Type.List(ResponseField.Type.Named.Object("Character")),
                 fieldName = "friends",
                 fieldSets = listOf(
-                  ResponseField.FieldSet(null, Friend.RESPONSE_FIELDS)
+                  ResponseField.FieldSet(null, Friends.RESPONSE_FIELDS)
                 ),
               )
             )
@@ -283,15 +283,15 @@ class TestQuery_ResponseAdapter(
             val RESPONSE_NAMES: List<String> = RESPONSE_FIELDS.map { it.responseName }
           }
 
-          class Friend(
+          class Friends(
             customScalarAdapters: CustomScalarAdapters
           ) :
-              ResponseAdapter<TestQuery.Data.Search.CharacterSearch.Friend.CharacterDroidFriend.Friend>
+              ResponseAdapter<TestQuery.Data.Search.CharacterSearch.Friends.CharacterDroidFriends.Friends>
               {
             val stringAdapter: ResponseAdapter<String> = stringResponseAdapter
 
             override fun fromResponse(reader: JsonReader):
-                TestQuery.Data.Search.CharacterSearch.Friend.CharacterDroidFriend.Friend {
+                TestQuery.Data.Search.CharacterSearch.Friends.CharacterDroidFriends.Friends {
               var id: String? = null
               reader.beginObject()
               while(true) {
@@ -301,13 +301,13 @@ class TestQuery_ResponseAdapter(
                 }
               }
               reader.endObject()
-              return TestQuery.Data.Search.CharacterSearch.Friend.CharacterDroidFriend.Friend(
+              return TestQuery.Data.Search.CharacterSearch.Friends.CharacterDroidFriends.Friends(
                 id = id!!
               )
             }
 
             override fun toResponse(writer: JsonWriter,
-                value: TestQuery.Data.Search.CharacterSearch.Friend.CharacterDroidFriend.Friend) {
+                value: TestQuery.Data.Search.CharacterSearch.Friends.CharacterDroidFriends.Friends) {
               writer.beginObject()
               writer.name("id")
               stringAdapter.toResponse(writer, value.id)
@@ -327,7 +327,7 @@ class TestQuery_ResponseAdapter(
           }
         }
 
-        class CharacterHumanFriend(
+        class CharacterHumanFriends(
           customScalarAdapters: CustomScalarAdapters
         ) {
           val stringAdapter: ResponseAdapter<String> = stringResponseAdapter
@@ -335,27 +335,27 @@ class TestQuery_ResponseAdapter(
           val nullableStringAdapter: ResponseAdapter<String?> =
               NullableResponseAdapter(stringResponseAdapter)
 
-          val nullableListOfNullableFriendAdapter:
-              ResponseAdapter<List<TestQuery.Data.Search.CharacterSearch.Friend.CharacterHumanFriend.Friend?>?>
+          val nullableListOfNullableFriendsAdapter:
+              ResponseAdapter<List<TestQuery.Data.Search.CharacterSearch.Friends.CharacterHumanFriends.Friends?>?>
               =
-              NullableResponseAdapter(ListResponseAdapter(NullableResponseAdapter(Friend(customScalarAdapters))))
+              NullableResponseAdapter(ListResponseAdapter(NullableResponseAdapter(Friends(customScalarAdapters))))
 
           fun fromResponse(reader: JsonReader, __typename: String?):
-              TestQuery.Data.Search.CharacterSearch.Friend.CharacterHumanFriend {
+              TestQuery.Data.Search.CharacterSearch.Friends.CharacterHumanFriends {
             var __typename: String? = __typename
             var name: String? = null
             var homePlanet: String? = null
-            var friends: List<TestQuery.Data.Search.CharacterSearch.Friend.CharacterHumanFriend.Friend?>? = null
+            var friends: List<TestQuery.Data.Search.CharacterSearch.Friends.CharacterHumanFriends.Friends?>? = null
             while(true) {
               when (reader.selectName(RESPONSE_NAMES)) {
                 0 -> __typename = stringAdapter.fromResponse(reader)
                 1 -> name = stringAdapter.fromResponse(reader)
                 2 -> homePlanet = nullableStringAdapter.fromResponse(reader)
-                3 -> friends = nullableListOfNullableFriendAdapter.fromResponse(reader)
+                3 -> friends = nullableListOfNullableFriendsAdapter.fromResponse(reader)
                 else -> break
               }
             }
-            return TestQuery.Data.Search.CharacterSearch.Friend.CharacterHumanFriend(
+            return TestQuery.Data.Search.CharacterSearch.Friends.CharacterHumanFriends(
               __typename = __typename!!,
               name = name!!,
               homePlanet = homePlanet,
@@ -364,7 +364,7 @@ class TestQuery_ResponseAdapter(
           }
 
           fun toResponse(writer: JsonWriter,
-              value: TestQuery.Data.Search.CharacterSearch.Friend.CharacterHumanFriend) {
+              value: TestQuery.Data.Search.CharacterSearch.Friends.CharacterHumanFriends) {
             writer.beginObject()
             writer.name("__typename")
             stringAdapter.toResponse(writer, value.__typename)
@@ -373,7 +373,7 @@ class TestQuery_ResponseAdapter(
             writer.name("homePlanet")
             nullableStringAdapter.toResponse(writer, value.homePlanet)
             writer.name("friends")
-            nullableListOfNullableFriendAdapter.toResponse(writer, value.friends)
+            nullableListOfNullableFriendsAdapter.toResponse(writer, value.friends)
             writer.endObject()
           }
 
@@ -392,9 +392,9 @@ class TestQuery_ResponseAdapter(
                 type = ResponseField.Type.List(ResponseField.Type.Named.Object("Character")),
                 fieldName = "friends",
                 fieldSets = listOf(
-                  ResponseField.FieldSet("Droid", Friend.CharacterFriend.RESPONSE_FIELDS),
-                  ResponseField.FieldSet("Human", Friend.CharacterFriend.RESPONSE_FIELDS),
-                  ResponseField.FieldSet(null, Friend.OtherFriend.RESPONSE_FIELDS),
+                  ResponseField.FieldSet("Droid", Friends.CharacterFriends.RESPONSE_FIELDS),
+                  ResponseField.FieldSet("Human", Friends.CharacterFriends.RESPONSE_FIELDS),
+                  ResponseField.FieldSet(null, Friends.OtherFriends.RESPONSE_FIELDS),
                 ),
               )
             )
@@ -402,40 +402,40 @@ class TestQuery_ResponseAdapter(
             val RESPONSE_NAMES: List<String> = RESPONSE_FIELDS.map { it.responseName }
           }
 
-          class Friend(
+          class Friends(
             customScalarAdapters: CustomScalarAdapters
           ) :
-              ResponseAdapter<TestQuery.Data.Search.CharacterSearch.Friend.CharacterHumanFriend.Friend>
+              ResponseAdapter<TestQuery.Data.Search.CharacterSearch.Friends.CharacterHumanFriends.Friends>
               {
-            val CharacterFriendAdapter: CharacterFriend =
-                com.example.union_inline_fragments.adapter.TestQuery_ResponseAdapter.Search.CharacterSearch.Friend.CharacterHumanFriend.Friend.CharacterFriend(customScalarAdapters)
+            val CharacterFriendsAdapter: CharacterFriends =
+                com.example.union_inline_fragments.adapter.TestQuery_ResponseAdapter.Search.CharacterSearch.Friends.CharacterHumanFriends.Friends.CharacterFriends(customScalarAdapters)
 
-            val OtherFriendAdapter: OtherFriend =
-                com.example.union_inline_fragments.adapter.TestQuery_ResponseAdapter.Search.CharacterSearch.Friend.CharacterHumanFriend.Friend.OtherFriend(customScalarAdapters)
+            val OtherFriendsAdapter: OtherFriends =
+                com.example.union_inline_fragments.adapter.TestQuery_ResponseAdapter.Search.CharacterSearch.Friends.CharacterHumanFriends.Friends.OtherFriends(customScalarAdapters)
 
             override fun fromResponse(reader: JsonReader):
-                TestQuery.Data.Search.CharacterSearch.Friend.CharacterHumanFriend.Friend {
+                TestQuery.Data.Search.CharacterSearch.Friends.CharacterHumanFriends.Friends {
               reader.beginObject()
               check(reader.nextName() == "__typename")
               val typename = reader.nextString()
 
               return when(typename) {
-                "Droid" -> CharacterFriendAdapter.fromResponse(reader, typename)
-                "Human" -> CharacterFriendAdapter.fromResponse(reader, typename)
-                else -> OtherFriendAdapter.fromResponse(reader, typename)
+                "Droid" -> CharacterFriendsAdapter.fromResponse(reader, typename)
+                "Human" -> CharacterFriendsAdapter.fromResponse(reader, typename)
+                else -> OtherFriendsAdapter.fromResponse(reader, typename)
               }
               .also { reader.endObject() }
             }
 
             override fun toResponse(writer: JsonWriter,
-                value: TestQuery.Data.Search.CharacterSearch.Friend.CharacterHumanFriend.Friend) {
+                value: TestQuery.Data.Search.CharacterSearch.Friends.CharacterHumanFriends.Friends) {
               when(value) {
-                is TestQuery.Data.Search.CharacterSearch.Friend.CharacterHumanFriend.Friend.CharacterFriend -> CharacterFriendAdapter.toResponse(writer, value)
-                is TestQuery.Data.Search.CharacterSearch.Friend.CharacterHumanFriend.Friend.OtherFriend -> OtherFriendAdapter.toResponse(writer, value)
+                is TestQuery.Data.Search.CharacterSearch.Friends.CharacterHumanFriends.Friends.CharacterFriends -> CharacterFriendsAdapter.toResponse(writer, value)
+                is TestQuery.Data.Search.CharacterSearch.Friends.CharacterHumanFriends.Friends.OtherFriends -> OtherFriendsAdapter.toResponse(writer, value)
               }
             }
 
-            class CharacterFriend(
+            class CharacterFriends(
               customScalarAdapters: CustomScalarAdapters
             ) {
               val stringAdapter: ResponseAdapter<String> = stringResponseAdapter
@@ -443,7 +443,7 @@ class TestQuery_ResponseAdapter(
               val episodeAdapter: ResponseAdapter<Episode> = Episode_ResponseAdapter
 
               fun fromResponse(reader: JsonReader, __typename: String?):
-                  TestQuery.Data.Search.CharacterSearch.Friend.CharacterHumanFriend.Friend.CharacterFriend {
+                  TestQuery.Data.Search.CharacterSearch.Friends.CharacterHumanFriends.Friends.CharacterFriends {
                 var __typename: String? = __typename
                 var firstAppearsIn: Episode? = null
                 while(true) {
@@ -453,14 +453,14 @@ class TestQuery_ResponseAdapter(
                     else -> break
                   }
                 }
-                return TestQuery.Data.Search.CharacterSearch.Friend.CharacterHumanFriend.Friend.CharacterFriend(
+                return TestQuery.Data.Search.CharacterSearch.Friends.CharacterHumanFriends.Friends.CharacterFriends(
                   __typename = __typename!!,
                   firstAppearsIn = firstAppearsIn!!
                 )
               }
 
               fun toResponse(writer: JsonWriter,
-                  value: TestQuery.Data.Search.CharacterSearch.Friend.CharacterHumanFriend.Friend.CharacterFriend) {
+                  value: TestQuery.Data.Search.CharacterSearch.Friends.CharacterHumanFriends.Friends.CharacterFriends) {
                 writer.beginObject()
                 writer.name("__typename")
                 stringAdapter.toResponse(writer, value.__typename)
@@ -482,13 +482,13 @@ class TestQuery_ResponseAdapter(
               }
             }
 
-            class OtherFriend(
+            class OtherFriends(
               customScalarAdapters: CustomScalarAdapters
             ) {
               val stringAdapter: ResponseAdapter<String> = stringResponseAdapter
 
               fun fromResponse(reader: JsonReader, __typename: String?):
-                  TestQuery.Data.Search.CharacterSearch.Friend.CharacterHumanFriend.Friend.OtherFriend {
+                  TestQuery.Data.Search.CharacterSearch.Friends.CharacterHumanFriends.Friends.OtherFriends {
                 var __typename: String? = __typename
                 while(true) {
                   when (reader.selectName(RESPONSE_NAMES)) {
@@ -496,13 +496,13 @@ class TestQuery_ResponseAdapter(
                     else -> break
                   }
                 }
-                return TestQuery.Data.Search.CharacterSearch.Friend.CharacterHumanFriend.Friend.OtherFriend(
+                return TestQuery.Data.Search.CharacterSearch.Friends.CharacterHumanFriends.Friends.OtherFriends(
                   __typename = __typename!!
                 )
               }
 
               fun toResponse(writer: JsonWriter,
-                  value: TestQuery.Data.Search.CharacterSearch.Friend.CharacterHumanFriend.Friend.OtherFriend) {
+                  value: TestQuery.Data.Search.CharacterSearch.Friends.CharacterHumanFriends.Friends.OtherFriends) {
                 writer.beginObject()
                 writer.name("__typename")
                 stringAdapter.toResponse(writer, value.__typename)
@@ -520,13 +520,13 @@ class TestQuery_ResponseAdapter(
           }
         }
 
-        class OtherFriend(
+        class OtherFriends(
           customScalarAdapters: CustomScalarAdapters
         ) {
           val stringAdapter: ResponseAdapter<String> = stringResponseAdapter
 
           fun fromResponse(reader: JsonReader, __typename: String?):
-              TestQuery.Data.Search.CharacterSearch.Friend.OtherFriend {
+              TestQuery.Data.Search.CharacterSearch.Friends.OtherFriends {
             var __typename: String? = __typename
             while(true) {
               when (reader.selectName(RESPONSE_NAMES)) {
@@ -534,13 +534,13 @@ class TestQuery_ResponseAdapter(
                 else -> break
               }
             }
-            return TestQuery.Data.Search.CharacterSearch.Friend.OtherFriend(
+            return TestQuery.Data.Search.CharacterSearch.Friends.OtherFriends(
               __typename = __typename!!
             )
           }
 
           fun toResponse(writer: JsonWriter,
-              value: TestQuery.Data.Search.CharacterSearch.Friend.OtherFriend) {
+              value: TestQuery.Data.Search.CharacterSearch.Friends.OtherFriends) {
             writer.beginObject()
             writer.name("__typename")
             stringAdapter.toResponse(writer, value.__typename)

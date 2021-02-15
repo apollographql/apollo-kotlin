@@ -27,18 +27,18 @@ import kotlin.collections.List
 class TestQuery_ResponseAdapter(
   customScalarAdapters: CustomScalarAdapters
 ) : ResponseAdapter<TestQuery.Data> {
-  val nullableListOfNullableReviewAdapter: ResponseAdapter<List<TestQuery.Data.Review?>?> =
-      NullableResponseAdapter(ListResponseAdapter(NullableResponseAdapter(Review(customScalarAdapters))))
+  val nullableListOfNullableReviewsAdapter: ResponseAdapter<List<TestQuery.Data.Reviews?>?> =
+      NullableResponseAdapter(ListResponseAdapter(NullableResponseAdapter(Reviews(customScalarAdapters))))
 
   val intAdapter: ResponseAdapter<Int> = intResponseAdapter
 
   override fun fromResponse(reader: JsonReader): TestQuery.Data {
-    var reviews: List<TestQuery.Data.Review?>? = null
+    var reviews: List<TestQuery.Data.Reviews?>? = null
     var testNullableArguments: Int? = null
     reader.beginObject()
     while(true) {
       when (reader.selectName(RESPONSE_NAMES)) {
-        0 -> reviews = nullableListOfNullableReviewAdapter.fromResponse(reader)
+        0 -> reviews = nullableListOfNullableReviewsAdapter.fromResponse(reader)
         1 -> testNullableArguments = intAdapter.fromResponse(reader)
         else -> break
       }
@@ -53,7 +53,7 @@ class TestQuery_ResponseAdapter(
   override fun toResponse(writer: JsonWriter, value: TestQuery.Data) {
     writer.beginObject()
     writer.name("reviews")
-    nullableListOfNullableReviewAdapter.toResponse(writer, value.reviews)
+    nullableListOfNullableReviewsAdapter.toResponse(writer, value.reviews)
     writer.name("testNullableArguments")
     intAdapter.toResponse(writer, value.testNullableArguments)
     writer.endObject()
@@ -69,7 +69,7 @@ class TestQuery_ResponseAdapter(
           "starsInt" to 10,
           "starsFloat" to 9.9),
         fieldSets = listOf(
-          ResponseField.FieldSet(null, Review.RESPONSE_FIELDS)
+          ResponseField.FieldSet(null, Reviews.RESPONSE_FIELDS)
         ),
       ),
       ResponseField(
@@ -89,15 +89,15 @@ class TestQuery_ResponseAdapter(
     val RESPONSE_NAMES: List<String> = RESPONSE_FIELDS.map { it.responseName }
   }
 
-  class Review(
+  class Reviews(
     customScalarAdapters: CustomScalarAdapters
-  ) : ResponseAdapter<TestQuery.Data.Review> {
+  ) : ResponseAdapter<TestQuery.Data.Reviews> {
     val intAdapter: ResponseAdapter<Int> = intResponseAdapter
 
     val nullableStringAdapter: ResponseAdapter<String?> =
         NullableResponseAdapter(stringResponseAdapter)
 
-    override fun fromResponse(reader: JsonReader): TestQuery.Data.Review {
+    override fun fromResponse(reader: JsonReader): TestQuery.Data.Reviews {
       var stars: Int? = null
       var commentary: String? = null
       reader.beginObject()
@@ -109,13 +109,13 @@ class TestQuery_ResponseAdapter(
         }
       }
       reader.endObject()
-      return TestQuery.Data.Review(
+      return TestQuery.Data.Reviews(
         stars = stars!!,
         commentary = commentary
       )
     }
 
-    override fun toResponse(writer: JsonWriter, value: TestQuery.Data.Review) {
+    override fun toResponse(writer: JsonWriter, value: TestQuery.Data.Reviews) {
       writer.beginObject()
       writer.name("stars")
       intAdapter.toResponse(writer, value.stars)

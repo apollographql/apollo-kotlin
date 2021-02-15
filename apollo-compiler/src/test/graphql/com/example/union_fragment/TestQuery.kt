@@ -12,6 +12,7 @@ import com.apollographql.apollo.api.ResponseField
 import com.apollographql.apollo.api.internal.QueryDocumentMinifier
 import com.apollographql.apollo.api.internal.ResponseAdapter
 import com.example.union_fragment.adapter.TestQuery_ResponseAdapter
+import com.example.union_fragment.fragment.Starship
 import kotlin.String
 import kotlin.Suppress
 import kotlin.collections.List
@@ -49,41 +50,24 @@ class TestQuery : Query<TestQuery.Data> {
     interface Search {
       val __typename: String
 
-      interface Starship : Search, com.example.union_fragment.fragment.Starship {
-        override val __typename: String
-
-        /**
-         * The ID of the starship
-         */
-        val id: String
-
-        /**
-         * The name of the starship
-         */
-        override val name: String
-      }
-
       data class StarshipSearch(
         override val __typename: String,
         /**
          * The ID of the starship
          */
-        override val id: String,
+        val id: String,
         /**
          * The name of the starship
          */
         override val name: String
-      ) : Search, Starship, com.example.union_fragment.fragment.Starship
+      ) : Search, Starship
 
       data class OtherSearch(
         override val __typename: String
       ) : Search
 
       companion object {
-        fun Search.asStarship(): Starship? = this as? Starship
-
-        fun Search.starship(): com.example.union_fragment.fragment.Starship? = this as?
-            com.example.union_fragment.fragment.Starship
+        fun Search.asStarshipSearch(): StarshipSearch? = this as? StarshipSearch
       }
     }
   }
