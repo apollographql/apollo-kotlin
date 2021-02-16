@@ -43,13 +43,11 @@ class ResponseAdapterCache(val customScalarAdapters: Map<CustomScalar, CustomSca
     return CustomResponseAdapter(adapterFor(customScalar))
   }
 
-  @Synchronized
   @Suppress("UNCHECKED_CAST")
   fun <D> getOperationAdapter(operationName: String, defaultValue: () -> ResponseAdapter<D>): ResponseAdapter<D> {
     return adapterByQueryName.getOrPut(operationName, defaultValue) as ResponseAdapter<D>
   }
 
-  @Synchronized
   @Suppress("UNCHECKED_CAST")
   fun <D> getFragmentAdapter(fragmentName: String, defaultValue: () -> ResponseAdapter<D>): ResponseAdapter<D> {
     return adapterByFragmentName.getOrPut(fragmentName, defaultValue) as ResponseAdapter<D>
