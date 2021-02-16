@@ -9,9 +9,9 @@ import com.apollographql.apollo.api.ResponseAdapterCache
 import com.apollographql.apollo.api.ResponseField
 import com.apollographql.apollo.api.internal.NullableResponseAdapter
 import com.apollographql.apollo.api.internal.ResponseAdapter
+import com.apollographql.apollo.api.internal.StringResponseAdapter
 import com.apollographql.apollo.api.internal.json.JsonReader
 import com.apollographql.apollo.api.internal.json.JsonWriter
-import com.apollographql.apollo.api.internal.stringResponseAdapter
 import com.example.root_query_fragment.fragment.QueryFragmentImpl
 import kotlin.Array
 import kotlin.String
@@ -24,7 +24,7 @@ import kotlin.collections.List
 class QueryFragmentImpl_ResponseAdapter(
   responseAdapterCache: ResponseAdapterCache
 ) : ResponseAdapter<QueryFragmentImpl.Data> {
-  private val stringAdapter: ResponseAdapter<String> = stringResponseAdapter
+  private val stringAdapter: ResponseAdapter<String> = StringResponseAdapter
 
   private val nullableHeroAdapter: ResponseAdapter<QueryFragmentImpl.Data.Hero?> =
       NullableResponseAdapter(Hero(responseAdapterCache))
@@ -74,7 +74,7 @@ class QueryFragmentImpl_ResponseAdapter(
   class Hero(
     responseAdapterCache: ResponseAdapterCache
   ) : ResponseAdapter<QueryFragmentImpl.Data.Hero> {
-    private val stringAdapter: ResponseAdapter<String> = stringResponseAdapter
+    private val stringAdapter: ResponseAdapter<String> = StringResponseAdapter
 
     override fun fromResponse(reader: JsonReader): QueryFragmentImpl.Data.Hero {
       var name: String? = null

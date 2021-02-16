@@ -10,9 +10,9 @@ import com.apollographql.apollo.api.ResponseField
 import com.apollographql.apollo.api.internal.ListResponseAdapter
 import com.apollographql.apollo.api.internal.NullableResponseAdapter
 import com.apollographql.apollo.api.internal.ResponseAdapter
+import com.apollographql.apollo.api.internal.StringResponseAdapter
 import com.apollographql.apollo.api.internal.json.JsonReader
 import com.apollographql.apollo.api.internal.json.JsonWriter
-import com.apollographql.apollo.api.internal.stringResponseAdapter
 import com.example.named_fragment_delegate.fragment.DroidDetailsImpl
 import kotlin.Array
 import kotlin.String
@@ -25,10 +25,10 @@ import kotlin.collections.List
 class DroidDetailsImpl_ResponseAdapter(
   responseAdapterCache: ResponseAdapterCache
 ) : ResponseAdapter<DroidDetailsImpl.Data> {
-  private val stringAdapter: ResponseAdapter<String> = stringResponseAdapter
+  private val stringAdapter: ResponseAdapter<String> = StringResponseAdapter
 
   private val nullableStringAdapter: ResponseAdapter<String?> =
-      NullableResponseAdapter(stringResponseAdapter)
+      NullableResponseAdapter(StringResponseAdapter)
 
   private val nullableListOfNullableFriendsAdapter:
       ResponseAdapter<List<DroidDetailsImpl.Data.Friends?>?> =
@@ -97,7 +97,7 @@ class DroidDetailsImpl_ResponseAdapter(
   class Friends(
     responseAdapterCache: ResponseAdapterCache
   ) : ResponseAdapter<DroidDetailsImpl.Data.Friends> {
-    private val stringAdapter: ResponseAdapter<String> = stringResponseAdapter
+    private val stringAdapter: ResponseAdapter<String> = StringResponseAdapter
 
     override fun fromResponse(reader: JsonReader): DroidDetailsImpl.Data.Friends {
       var name: String? = null

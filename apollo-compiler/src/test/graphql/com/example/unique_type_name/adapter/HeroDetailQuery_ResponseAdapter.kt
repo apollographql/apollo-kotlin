@@ -7,14 +7,14 @@ package com.example.unique_type_name.adapter
 
 import com.apollographql.apollo.api.ResponseAdapterCache
 import com.apollographql.apollo.api.ResponseField
+import com.apollographql.apollo.api.internal.DoubleResponseAdapter
+import com.apollographql.apollo.api.internal.IntResponseAdapter
 import com.apollographql.apollo.api.internal.ListResponseAdapter
 import com.apollographql.apollo.api.internal.NullableResponseAdapter
 import com.apollographql.apollo.api.internal.ResponseAdapter
-import com.apollographql.apollo.api.internal.doubleResponseAdapter
-import com.apollographql.apollo.api.internal.intResponseAdapter
+import com.apollographql.apollo.api.internal.StringResponseAdapter
 import com.apollographql.apollo.api.internal.json.JsonReader
 import com.apollographql.apollo.api.internal.json.JsonWriter
-import com.apollographql.apollo.api.internal.stringResponseAdapter
 import com.example.unique_type_name.HeroDetailQuery
 import com.example.unique_type_name.type.Episode
 import com.example.unique_type_name.type.Episode_ResponseAdapter
@@ -106,7 +106,7 @@ class HeroDetailQuery_ResponseAdapter(
     class HumanHeroDetailQuery(
       responseAdapterCache: ResponseAdapterCache
     ) {
-      private val stringAdapter: ResponseAdapter<String> = stringResponseAdapter
+      private val stringAdapter: ResponseAdapter<String> = StringResponseAdapter
 
       private val nullableListOfNullableFriendsAdapter:
           ResponseAdapter<List<com.example.unique_type_name.HeroDetailQuery.Data.HeroDetailQuery.HumanHeroDetailQuery.Friends?>?>
@@ -114,7 +114,7 @@ class HeroDetailQuery_ResponseAdapter(
           NullableResponseAdapter(ListResponseAdapter(NullableResponseAdapter(Friends(responseAdapterCache))))
 
       private val nullableFloatAdapter: ResponseAdapter<Double?> =
-          NullableResponseAdapter(doubleResponseAdapter)
+          NullableResponseAdapter(DoubleResponseAdapter)
 
       fun fromResponse(reader: JsonReader, __typename: String?):
           com.example.unique_type_name.HeroDetailQuery.Data.HeroDetailQuery.HumanHeroDetailQuery {
@@ -181,7 +181,7 @@ class HeroDetailQuery_ResponseAdapter(
       ) :
           ResponseAdapter<com.example.unique_type_name.HeroDetailQuery.Data.HeroDetailQuery.HumanHeroDetailQuery.Friends>
           {
-        private val stringAdapter: ResponseAdapter<String> = stringResponseAdapter
+        private val stringAdapter: ResponseAdapter<String> = StringResponseAdapter
 
         private val listOfNullableEpisodeAdapter: ResponseAdapter<List<Episode?>> =
             ListResponseAdapter(NullableResponseAdapter(Episode_ResponseAdapter))
@@ -286,7 +286,7 @@ class HeroDetailQuery_ResponseAdapter(
           class CharacterFriends(
             responseAdapterCache: ResponseAdapterCache
           ) {
-            private val stringAdapter: ResponseAdapter<String> = stringResponseAdapter
+            private val stringAdapter: ResponseAdapter<String> = StringResponseAdapter
 
             private val friendsConnectionAdapter:
                 ResponseAdapter<com.example.unique_type_name.HeroDetailQuery.Data.HeroDetailQuery.HumanHeroDetailQuery.Friends.Friends.CharacterFriends.FriendsConnection>
@@ -350,7 +350,7 @@ class HeroDetailQuery_ResponseAdapter(
                 ResponseAdapter<com.example.unique_type_name.HeroDetailQuery.Data.HeroDetailQuery.HumanHeroDetailQuery.Friends.Friends.CharacterFriends.FriendsConnection>
                 {
               private val nullableIntAdapter: ResponseAdapter<Int?> =
-                  NullableResponseAdapter(intResponseAdapter)
+                  NullableResponseAdapter(IntResponseAdapter)
 
               private val nullableListOfNullableEdgesAdapter:
                   ResponseAdapter<List<com.example.unique_type_name.HeroDetailQuery.Data.HeroDetailQuery.HumanHeroDetailQuery.Friends.Friends.CharacterFriends.FriendsConnection.Edges?>?>
@@ -456,7 +456,7 @@ class HeroDetailQuery_ResponseAdapter(
                 ) :
                     ResponseAdapter<com.example.unique_type_name.HeroDetailQuery.Data.HeroDetailQuery.HumanHeroDetailQuery.Friends.Friends.CharacterFriends.FriendsConnection.Edges.Node>
                     {
-                  private val stringAdapter: ResponseAdapter<String> = stringResponseAdapter
+                  private val stringAdapter: ResponseAdapter<String> = StringResponseAdapter
 
                   override fun fromResponse(reader: JsonReader):
                       com.example.unique_type_name.HeroDetailQuery.Data.HeroDetailQuery.HumanHeroDetailQuery.Friends.Friends.CharacterFriends.FriendsConnection.Edges.Node {
@@ -500,7 +500,7 @@ class HeroDetailQuery_ResponseAdapter(
           class OtherFriends(
             responseAdapterCache: ResponseAdapterCache
           ) {
-            private val stringAdapter: ResponseAdapter<String> = stringResponseAdapter
+            private val stringAdapter: ResponseAdapter<String> = StringResponseAdapter
 
             fun fromResponse(reader: JsonReader, __typename: String?):
                 com.example.unique_type_name.HeroDetailQuery.Data.HeroDetailQuery.HumanHeroDetailQuery.Friends.Friends.OtherFriends {
@@ -539,7 +539,7 @@ class HeroDetailQuery_ResponseAdapter(
     class OtherHeroDetailQuery(
       responseAdapterCache: ResponseAdapterCache
     ) {
-      private val stringAdapter: ResponseAdapter<String> = stringResponseAdapter
+      private val stringAdapter: ResponseAdapter<String> = StringResponseAdapter
 
       private val nullableListOfNullableFriendsAdapter:
           ResponseAdapter<List<com.example.unique_type_name.HeroDetailQuery.Data.HeroDetailQuery.OtherHeroDetailQuery.Friends?>?>
@@ -602,7 +602,7 @@ class HeroDetailQuery_ResponseAdapter(
       ) :
           ResponseAdapter<com.example.unique_type_name.HeroDetailQuery.Data.HeroDetailQuery.OtherHeroDetailQuery.Friends>
           {
-        private val stringAdapter: ResponseAdapter<String> = stringResponseAdapter
+        private val stringAdapter: ResponseAdapter<String> = StringResponseAdapter
 
         override fun fromResponse(reader: JsonReader):
             com.example.unique_type_name.HeroDetailQuery.Data.HeroDetailQuery.OtherHeroDetailQuery.Friends {

@@ -10,9 +10,9 @@ import com.apollographql.apollo.api.ResponseField
 import com.apollographql.apollo.api.internal.ListResponseAdapter
 import com.apollographql.apollo.api.internal.NullableResponseAdapter
 import com.apollographql.apollo.api.internal.ResponseAdapter
+import com.apollographql.apollo.api.internal.StringResponseAdapter
 import com.apollographql.apollo.api.internal.json.JsonReader
 import com.apollographql.apollo.api.internal.json.JsonWriter
-import com.apollographql.apollo.api.internal.stringResponseAdapter
 import com.example.named_fragment_inside_inline_fragment.fragment.CharacterAppearsInImpl
 import com.example.named_fragment_inside_inline_fragment.type.Episode
 import com.example.named_fragment_inside_inline_fragment.type.Episode_ResponseAdapter
@@ -27,7 +27,7 @@ import kotlin.collections.List
 class CharacterAppearsInImpl_ResponseAdapter(
   responseAdapterCache: ResponseAdapterCache
 ) : ResponseAdapter<CharacterAppearsInImpl.Data> {
-  private val stringAdapter: ResponseAdapter<String> = stringResponseAdapter
+  private val stringAdapter: ResponseAdapter<String> = StringResponseAdapter
 
   private val listOfNullableEpisodeAdapter: ResponseAdapter<List<Episode?>> =
       ListResponseAdapter(NullableResponseAdapter(Episode_ResponseAdapter))

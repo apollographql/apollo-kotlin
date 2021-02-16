@@ -7,12 +7,12 @@ package com.example.subscriptions.adapter
 
 import com.apollographql.apollo.api.ResponseAdapterCache
 import com.apollographql.apollo.api.ResponseField
+import com.apollographql.apollo.api.internal.IntResponseAdapter
 import com.apollographql.apollo.api.internal.NullableResponseAdapter
 import com.apollographql.apollo.api.internal.ResponseAdapter
-import com.apollographql.apollo.api.internal.intResponseAdapter
+import com.apollographql.apollo.api.internal.StringResponseAdapter
 import com.apollographql.apollo.api.internal.json.JsonReader
 import com.apollographql.apollo.api.internal.json.JsonWriter
-import com.apollographql.apollo.api.internal.stringResponseAdapter
 import com.example.subscriptions.TestSubscription
 import kotlin.Array
 import kotlin.Int
@@ -72,9 +72,9 @@ class TestSubscription_ResponseAdapter(
   class CommentAdded(
     responseAdapterCache: ResponseAdapterCache
   ) : ResponseAdapter<TestSubscription.Data.CommentAdded> {
-    private val intAdapter: ResponseAdapter<Int> = intResponseAdapter
+    private val intAdapter: ResponseAdapter<Int> = IntResponseAdapter
 
-    private val stringAdapter: ResponseAdapter<String> = stringResponseAdapter
+    private val stringAdapter: ResponseAdapter<String> = StringResponseAdapter
 
     override fun fromResponse(reader: JsonReader): TestSubscription.Data.CommentAdded {
       var id: Int? = null

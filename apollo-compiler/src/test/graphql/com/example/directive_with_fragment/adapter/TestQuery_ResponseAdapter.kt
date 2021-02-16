@@ -9,9 +9,9 @@ import com.apollographql.apollo.api.ResponseAdapterCache
 import com.apollographql.apollo.api.ResponseField
 import com.apollographql.apollo.api.internal.NullableResponseAdapter
 import com.apollographql.apollo.api.internal.ResponseAdapter
+import com.apollographql.apollo.api.internal.StringResponseAdapter
 import com.apollographql.apollo.api.internal.json.JsonReader
 import com.apollographql.apollo.api.internal.json.JsonWriter
-import com.apollographql.apollo.api.internal.stringResponseAdapter
 import com.example.directive_with_fragment.TestQuery
 import kotlin.Array
 import kotlin.String
@@ -101,7 +101,7 @@ class TestQuery_ResponseAdapter(
     class CharacterHero(
       responseAdapterCache: ResponseAdapterCache
     ) {
-      private val stringAdapter: ResponseAdapter<String> = stringResponseAdapter
+      private val stringAdapter: ResponseAdapter<String> = StringResponseAdapter
 
       fun fromResponse(reader: JsonReader, __typename: String?): TestQuery.Data.Hero.CharacterHero {
         var __typename: String? = __typename
@@ -153,10 +153,10 @@ class TestQuery_ResponseAdapter(
     class CharacterHumanHero(
       responseAdapterCache: ResponseAdapterCache
     ) {
-      private val stringAdapter: ResponseAdapter<String> = stringResponseAdapter
+      private val stringAdapter: ResponseAdapter<String> = StringResponseAdapter
 
       private val nullableStringAdapter: ResponseAdapter<String?> =
-          NullableResponseAdapter(stringResponseAdapter)
+          NullableResponseAdapter(StringResponseAdapter)
 
       fun fromResponse(reader: JsonReader, __typename: String?):
           TestQuery.Data.Hero.CharacterHumanHero {
@@ -218,7 +218,7 @@ class TestQuery_ResponseAdapter(
     class OtherHero(
       responseAdapterCache: ResponseAdapterCache
     ) {
-      private val stringAdapter: ResponseAdapter<String> = stringResponseAdapter
+      private val stringAdapter: ResponseAdapter<String> = StringResponseAdapter
 
       fun fromResponse(reader: JsonReader, __typename: String?): TestQuery.Data.Hero.OtherHero {
         var __typename: String? = __typename

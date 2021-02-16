@@ -7,13 +7,13 @@ package com.example.starships.adapter
 
 import com.apollographql.apollo.api.ResponseAdapterCache
 import com.apollographql.apollo.api.ResponseField
+import com.apollographql.apollo.api.internal.DoubleResponseAdapter
 import com.apollographql.apollo.api.internal.ListResponseAdapter
 import com.apollographql.apollo.api.internal.NullableResponseAdapter
 import com.apollographql.apollo.api.internal.ResponseAdapter
-import com.apollographql.apollo.api.internal.doubleResponseAdapter
+import com.apollographql.apollo.api.internal.StringResponseAdapter
 import com.apollographql.apollo.api.internal.json.JsonReader
 import com.apollographql.apollo.api.internal.json.JsonWriter
-import com.apollographql.apollo.api.internal.stringResponseAdapter
 import com.example.starships.TestQuery
 import kotlin.Array
 import kotlin.Double
@@ -73,10 +73,10 @@ class TestQuery_ResponseAdapter(
   class Starship(
     responseAdapterCache: ResponseAdapterCache
   ) : ResponseAdapter<TestQuery.Data.Starship> {
-    private val stringAdapter: ResponseAdapter<String> = stringResponseAdapter
+    private val stringAdapter: ResponseAdapter<String> = StringResponseAdapter
 
     private val nullableListOfListOfFloatAdapter: ResponseAdapter<List<List<Double>>?> =
-        NullableResponseAdapter(ListResponseAdapter(ListResponseAdapter(doubleResponseAdapter)))
+        NullableResponseAdapter(ListResponseAdapter(ListResponseAdapter(DoubleResponseAdapter)))
 
     override fun fromResponse(reader: JsonReader): TestQuery.Data.Starship {
       var id: String? = null

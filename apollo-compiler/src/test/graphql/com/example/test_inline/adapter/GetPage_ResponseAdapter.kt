@@ -9,9 +9,9 @@ import com.apollographql.apollo.api.ResponseAdapterCache
 import com.apollographql.apollo.api.ResponseField
 import com.apollographql.apollo.api.internal.ListResponseAdapter
 import com.apollographql.apollo.api.internal.ResponseAdapter
+import com.apollographql.apollo.api.internal.StringResponseAdapter
 import com.apollographql.apollo.api.internal.json.JsonReader
 import com.apollographql.apollo.api.internal.json.JsonWriter
-import com.apollographql.apollo.api.internal.stringResponseAdapter
 import com.example.test_inline.GetPage
 import kotlin.Array
 import kotlin.String
@@ -96,7 +96,7 @@ class GetPage_ResponseAdapter(
     class ParticularCollectionCollection(
       responseAdapterCache: ResponseAdapterCache
     ) {
-      private val stringAdapter: ResponseAdapter<String> = stringResponseAdapter
+      private val stringAdapter: ResponseAdapter<String> = StringResponseAdapter
 
       private val listOfItemsAdapter:
           ResponseAdapter<List<GetPage.Data.Collection.ParticularCollectionCollection.Items>> =
@@ -179,7 +179,7 @@ class GetPage_ResponseAdapter(
         class ParticularItemItems(
           responseAdapterCache: ResponseAdapterCache
         ) {
-          private val stringAdapter: ResponseAdapter<String> = stringResponseAdapter
+          private val stringAdapter: ResponseAdapter<String> = StringResponseAdapter
 
           fun fromResponse(reader: JsonReader, __typename: String?):
               GetPage.Data.Collection.ParticularCollectionCollection.Items.ParticularItemItems {
@@ -233,7 +233,7 @@ class GetPage_ResponseAdapter(
         class OtherItems(
           responseAdapterCache: ResponseAdapterCache
         ) {
-          private val stringAdapter: ResponseAdapter<String> = stringResponseAdapter
+          private val stringAdapter: ResponseAdapter<String> = StringResponseAdapter
 
           fun fromResponse(reader: JsonReader, __typename: String?):
               GetPage.Data.Collection.ParticularCollectionCollection.Items.OtherItems {
@@ -280,7 +280,7 @@ class GetPage_ResponseAdapter(
     class OtherCollection(
       responseAdapterCache: ResponseAdapterCache
     ) {
-      private val stringAdapter: ResponseAdapter<String> = stringResponseAdapter
+      private val stringAdapter: ResponseAdapter<String> = StringResponseAdapter
 
       private val listOfItemsAdapter:
           ResponseAdapter<List<GetPage.Data.Collection.OtherCollection.Items>> =
@@ -331,7 +331,7 @@ class GetPage_ResponseAdapter(
       class Items(
         responseAdapterCache: ResponseAdapterCache
       ) : ResponseAdapter<GetPage.Data.Collection.OtherCollection.Items> {
-        private val stringAdapter: ResponseAdapter<String> = stringResponseAdapter
+        private val stringAdapter: ResponseAdapter<String> = StringResponseAdapter
 
         override fun fromResponse(reader: JsonReader):
             GetPage.Data.Collection.OtherCollection.Items {

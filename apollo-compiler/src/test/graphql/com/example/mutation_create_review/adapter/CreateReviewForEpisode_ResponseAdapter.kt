@@ -7,13 +7,13 @@ package com.example.mutation_create_review.adapter
 
 import com.apollographql.apollo.api.ResponseAdapterCache
 import com.apollographql.apollo.api.ResponseField
+import com.apollographql.apollo.api.internal.IntResponseAdapter
 import com.apollographql.apollo.api.internal.ListResponseAdapter
 import com.apollographql.apollo.api.internal.NullableResponseAdapter
 import com.apollographql.apollo.api.internal.ResponseAdapter
-import com.apollographql.apollo.api.internal.intResponseAdapter
+import com.apollographql.apollo.api.internal.StringResponseAdapter
 import com.apollographql.apollo.api.internal.json.JsonReader
 import com.apollographql.apollo.api.internal.json.JsonWriter
-import com.apollographql.apollo.api.internal.stringResponseAdapter
 import com.example.mutation_create_review.CreateReviewForEpisode
 import com.example.mutation_create_review.type.CustomScalars
 import com.example.mutation_create_review.type.Episode
@@ -81,13 +81,13 @@ internal class CreateReviewForEpisode_ResponseAdapter(
   class CreateReview(
     responseAdapterCache: ResponseAdapterCache
   ) : ResponseAdapter<CreateReviewForEpisode.Data.CreateReview> {
-    private val intAdapter: ResponseAdapter<Int> = intResponseAdapter
+    private val intAdapter: ResponseAdapter<Int> = IntResponseAdapter
 
     private val nullableStringAdapter: ResponseAdapter<String?> =
-        NullableResponseAdapter(stringResponseAdapter)
+        NullableResponseAdapter(StringResponseAdapter)
 
     private val nullableListOfListOfStringAdapter: ResponseAdapter<List<List<String>>?> =
-        NullableResponseAdapter(ListResponseAdapter(ListResponseAdapter(stringResponseAdapter)))
+        NullableResponseAdapter(ListResponseAdapter(ListResponseAdapter(StringResponseAdapter)))
 
     private val nullableListOfListOfEpisodeAdapter: ResponseAdapter<List<List<Episode>>?> =
         NullableResponseAdapter(ListResponseAdapter(ListResponseAdapter(Episode_ResponseAdapter)))
@@ -187,7 +187,7 @@ internal class CreateReviewForEpisode_ResponseAdapter(
     class ListOfListOfObject(
       responseAdapterCache: ResponseAdapterCache
     ) : ResponseAdapter<CreateReviewForEpisode.Data.CreateReview.ListOfListOfObject> {
-      private val stringAdapter: ResponseAdapter<String> = stringResponseAdapter
+      private val stringAdapter: ResponseAdapter<String> = StringResponseAdapter
 
       override fun fromResponse(reader: JsonReader):
           CreateReviewForEpisode.Data.CreateReview.ListOfListOfObject {

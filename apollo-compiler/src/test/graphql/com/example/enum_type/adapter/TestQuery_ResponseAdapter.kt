@@ -10,9 +10,9 @@ import com.apollographql.apollo.api.ResponseField
 import com.apollographql.apollo.api.internal.ListResponseAdapter
 import com.apollographql.apollo.api.internal.NullableResponseAdapter
 import com.apollographql.apollo.api.internal.ResponseAdapter
+import com.apollographql.apollo.api.internal.StringResponseAdapter
 import com.apollographql.apollo.api.internal.json.JsonReader
 import com.apollographql.apollo.api.internal.json.JsonWriter
-import com.apollographql.apollo.api.internal.stringResponseAdapter
 import com.example.enum_type.TestQuery
 import com.example.enum_type.type.Episode
 import com.example.enum_type.type.Episode_ResponseAdapter
@@ -69,7 +69,7 @@ class TestQuery_ResponseAdapter(
   class Hero(
     responseAdapterCache: ResponseAdapterCache
   ) : ResponseAdapter<TestQuery.Data.Hero> {
-    private val stringAdapter: ResponseAdapter<String> = stringResponseAdapter
+    private val stringAdapter: ResponseAdapter<String> = StringResponseAdapter
 
     private val listOfNullableEpisodeAdapter: ResponseAdapter<List<Episode?>> =
         ListResponseAdapter(NullableResponseAdapter(Episode_ResponseAdapter))

@@ -10,9 +10,9 @@ import com.apollographql.apollo.api.ResponseField
 import com.apollographql.apollo.api.internal.ListResponseAdapter
 import com.apollographql.apollo.api.internal.NullableResponseAdapter
 import com.apollographql.apollo.api.internal.ResponseAdapter
+import com.apollographql.apollo.api.internal.StringResponseAdapter
 import com.apollographql.apollo.api.internal.json.JsonReader
 import com.apollographql.apollo.api.internal.json.JsonWriter
-import com.apollographql.apollo.api.internal.stringResponseAdapter
 import com.example.fragment_in_fragment.fragment.StarshipFragmentImpl
 import kotlin.Array
 import kotlin.String
@@ -25,10 +25,10 @@ import kotlin.collections.List
 class StarshipFragmentImpl_ResponseAdapter(
   responseAdapterCache: ResponseAdapterCache
 ) : ResponseAdapter<StarshipFragmentImpl.Data> {
-  private val stringAdapter: ResponseAdapter<String> = stringResponseAdapter
+  private val stringAdapter: ResponseAdapter<String> = StringResponseAdapter
 
   private val nullableStringAdapter: ResponseAdapter<String?> =
-      NullableResponseAdapter(stringResponseAdapter)
+      NullableResponseAdapter(StringResponseAdapter)
 
   private val nullablePilotConnectionAdapter:
       ResponseAdapter<StarshipFragmentImpl.Data.PilotConnection?> =
@@ -216,10 +216,10 @@ class StarshipFragmentImpl_ResponseAdapter(
         class PersonNode(
           responseAdapterCache: ResponseAdapterCache
         ) {
-          private val stringAdapter: ResponseAdapter<String> = stringResponseAdapter
+          private val stringAdapter: ResponseAdapter<String> = StringResponseAdapter
 
           private val nullableStringAdapter: ResponseAdapter<String?> =
-              NullableResponseAdapter(stringResponseAdapter)
+              NullableResponseAdapter(StringResponseAdapter)
 
           private val nullableHomeworldAdapter:
               ResponseAdapter<StarshipFragmentImpl.Data.PilotConnection.Edges.Node.PersonNode.Homeworld?>
@@ -312,10 +312,10 @@ class StarshipFragmentImpl_ResponseAdapter(
             class PlanetHomeworld(
               responseAdapterCache: ResponseAdapterCache
             ) {
-              private val stringAdapter: ResponseAdapter<String> = stringResponseAdapter
+              private val stringAdapter: ResponseAdapter<String> = StringResponseAdapter
 
               private val nullableStringAdapter: ResponseAdapter<String?> =
-                  NullableResponseAdapter(stringResponseAdapter)
+                  NullableResponseAdapter(StringResponseAdapter)
 
               fun fromResponse(reader: JsonReader, __typename: String?):
                   StarshipFragmentImpl.Data.PilotConnection.Edges.Node.PersonNode.Homeworld.PlanetHomeworld {
@@ -360,7 +360,7 @@ class StarshipFragmentImpl_ResponseAdapter(
             class OtherHomeworld(
               responseAdapterCache: ResponseAdapterCache
             ) {
-              private val stringAdapter: ResponseAdapter<String> = stringResponseAdapter
+              private val stringAdapter: ResponseAdapter<String> = StringResponseAdapter
 
               fun fromResponse(reader: JsonReader, __typename: String?):
                   StarshipFragmentImpl.Data.PilotConnection.Edges.Node.PersonNode.Homeworld.OtherHomeworld {
@@ -398,7 +398,7 @@ class StarshipFragmentImpl_ResponseAdapter(
         class OtherNode(
           responseAdapterCache: ResponseAdapterCache
         ) {
-          private val stringAdapter: ResponseAdapter<String> = stringResponseAdapter
+          private val stringAdapter: ResponseAdapter<String> = StringResponseAdapter
 
           fun fromResponse(reader: JsonReader, __typename: String?):
               StarshipFragmentImpl.Data.PilotConnection.Edges.Node.OtherNode {

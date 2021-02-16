@@ -10,9 +10,9 @@ import com.apollographql.apollo.api.ResponseField
 import com.apollographql.apollo.api.internal.ListResponseAdapter
 import com.apollographql.apollo.api.internal.NullableResponseAdapter
 import com.apollographql.apollo.api.internal.ResponseAdapter
+import com.apollographql.apollo.api.internal.StringResponseAdapter
 import com.apollographql.apollo.api.internal.json.JsonReader
 import com.apollographql.apollo.api.internal.json.JsonWriter
-import com.apollographql.apollo.api.internal.stringResponseAdapter
 import com.example.union_inline_fragments.TestQuery
 import com.example.union_inline_fragments.type.Episode
 import com.example.union_inline_fragments.type.Episode_ResponseAdapter
@@ -108,7 +108,7 @@ class TestQuery_ResponseAdapter(
     class CharacterSearch(
       responseAdapterCache: ResponseAdapterCache
     ) {
-      private val stringAdapter: ResponseAdapter<String> = stringResponseAdapter
+      private val stringAdapter: ResponseAdapter<String> = StringResponseAdapter
 
       private val nullableListOfNullableFriendsAdapter:
           ResponseAdapter<List<TestQuery.Data.Search.CharacterSearch.Friends?>?> =
@@ -213,10 +213,10 @@ class TestQuery_ResponseAdapter(
         class CharacterDroidFriends(
           responseAdapterCache: ResponseAdapterCache
         ) {
-          private val stringAdapter: ResponseAdapter<String> = stringResponseAdapter
+          private val stringAdapter: ResponseAdapter<String> = StringResponseAdapter
 
           private val nullableStringAdapter: ResponseAdapter<String?> =
-              NullableResponseAdapter(stringResponseAdapter)
+              NullableResponseAdapter(StringResponseAdapter)
 
           private val nullableListOfNullableFriendsAdapter:
               ResponseAdapter<List<TestQuery.Data.Search.CharacterSearch.Friends.CharacterDroidFriends.Friends?>?>
@@ -288,7 +288,7 @@ class TestQuery_ResponseAdapter(
           ) :
               ResponseAdapter<TestQuery.Data.Search.CharacterSearch.Friends.CharacterDroidFriends.Friends>
               {
-            private val stringAdapter: ResponseAdapter<String> = stringResponseAdapter
+            private val stringAdapter: ResponseAdapter<String> = StringResponseAdapter
 
             override fun fromResponse(reader: JsonReader):
                 TestQuery.Data.Search.CharacterSearch.Friends.CharacterDroidFriends.Friends {
@@ -330,10 +330,10 @@ class TestQuery_ResponseAdapter(
         class CharacterHumanFriends(
           responseAdapterCache: ResponseAdapterCache
         ) {
-          private val stringAdapter: ResponseAdapter<String> = stringResponseAdapter
+          private val stringAdapter: ResponseAdapter<String> = StringResponseAdapter
 
           private val nullableStringAdapter: ResponseAdapter<String?> =
-              NullableResponseAdapter(stringResponseAdapter)
+              NullableResponseAdapter(StringResponseAdapter)
 
           private val nullableListOfNullableFriendsAdapter:
               ResponseAdapter<List<TestQuery.Data.Search.CharacterSearch.Friends.CharacterHumanFriends.Friends?>?>
@@ -438,7 +438,7 @@ class TestQuery_ResponseAdapter(
             class CharacterFriends(
               responseAdapterCache: ResponseAdapterCache
             ) {
-              private val stringAdapter: ResponseAdapter<String> = stringResponseAdapter
+              private val stringAdapter: ResponseAdapter<String> = StringResponseAdapter
 
               private val episodeAdapter: ResponseAdapter<Episode> = Episode_ResponseAdapter
 
@@ -485,7 +485,7 @@ class TestQuery_ResponseAdapter(
             class OtherFriends(
               responseAdapterCache: ResponseAdapterCache
             ) {
-              private val stringAdapter: ResponseAdapter<String> = stringResponseAdapter
+              private val stringAdapter: ResponseAdapter<String> = StringResponseAdapter
 
               fun fromResponse(reader: JsonReader, __typename: String?):
                   TestQuery.Data.Search.CharacterSearch.Friends.CharacterHumanFriends.Friends.OtherFriends {
@@ -523,7 +523,7 @@ class TestQuery_ResponseAdapter(
         class OtherFriends(
           responseAdapterCache: ResponseAdapterCache
         ) {
-          private val stringAdapter: ResponseAdapter<String> = stringResponseAdapter
+          private val stringAdapter: ResponseAdapter<String> = StringResponseAdapter
 
           fun fromResponse(reader: JsonReader, __typename: String?):
               TestQuery.Data.Search.CharacterSearch.Friends.OtherFriends {
@@ -561,7 +561,7 @@ class TestQuery_ResponseAdapter(
     class StarshipSearch(
       responseAdapterCache: ResponseAdapterCache
     ) {
-      private val stringAdapter: ResponseAdapter<String> = stringResponseAdapter
+      private val stringAdapter: ResponseAdapter<String> = StringResponseAdapter
 
       fun fromResponse(reader: JsonReader, __typename: String?):
           TestQuery.Data.Search.StarshipSearch {
@@ -605,7 +605,7 @@ class TestQuery_ResponseAdapter(
     class OtherSearch(
       responseAdapterCache: ResponseAdapterCache
     ) {
-      private val stringAdapter: ResponseAdapter<String> = stringResponseAdapter
+      private val stringAdapter: ResponseAdapter<String> = StringResponseAdapter
 
       fun fromResponse(reader: JsonReader, __typename: String?): TestQuery.Data.Search.OtherSearch {
         var __typename: String? = __typename

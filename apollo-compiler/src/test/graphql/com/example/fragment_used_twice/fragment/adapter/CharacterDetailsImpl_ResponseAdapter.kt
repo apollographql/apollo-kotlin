@@ -8,9 +8,9 @@ package com.example.fragment_used_twice.fragment.adapter
 import com.apollographql.apollo.api.ResponseAdapterCache
 import com.apollographql.apollo.api.ResponseField
 import com.apollographql.apollo.api.internal.ResponseAdapter
+import com.apollographql.apollo.api.internal.StringResponseAdapter
 import com.apollographql.apollo.api.internal.json.JsonReader
 import com.apollographql.apollo.api.internal.json.JsonWriter
-import com.apollographql.apollo.api.internal.stringResponseAdapter
 import com.example.fragment_used_twice.fragment.CharacterDetailsImpl
 import com.example.fragment_used_twice.type.CustomScalars
 import kotlin.Any
@@ -25,7 +25,7 @@ import kotlin.collections.List
 class CharacterDetailsImpl_ResponseAdapter(
   responseAdapterCache: ResponseAdapterCache
 ) : ResponseAdapter<CharacterDetailsImpl.Data> {
-  private val stringAdapter: ResponseAdapter<String> = stringResponseAdapter
+  private val stringAdapter: ResponseAdapter<String> = StringResponseAdapter
 
   private val dateAdapter: ResponseAdapter<Any> =
       responseAdapterCache.responseAdapterFor<Any>(CustomScalars.Date)

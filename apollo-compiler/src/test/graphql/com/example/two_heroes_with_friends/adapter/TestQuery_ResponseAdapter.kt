@@ -7,13 +7,13 @@ package com.example.two_heroes_with_friends.adapter
 
 import com.apollographql.apollo.api.ResponseAdapterCache
 import com.apollographql.apollo.api.ResponseField
+import com.apollographql.apollo.api.internal.IntResponseAdapter
 import com.apollographql.apollo.api.internal.ListResponseAdapter
 import com.apollographql.apollo.api.internal.NullableResponseAdapter
 import com.apollographql.apollo.api.internal.ResponseAdapter
-import com.apollographql.apollo.api.internal.intResponseAdapter
+import com.apollographql.apollo.api.internal.StringResponseAdapter
 import com.apollographql.apollo.api.internal.json.JsonReader
 import com.apollographql.apollo.api.internal.json.JsonWriter
-import com.apollographql.apollo.api.internal.stringResponseAdapter
 import com.example.two_heroes_with_friends.TestQuery
 import kotlin.Array
 import kotlin.Int
@@ -88,7 +88,7 @@ class TestQuery_ResponseAdapter(
   class R2(
     responseAdapterCache: ResponseAdapterCache
   ) : ResponseAdapter<TestQuery.Data.R2> {
-    private val stringAdapter: ResponseAdapter<String> = stringResponseAdapter
+    private val stringAdapter: ResponseAdapter<String> = StringResponseAdapter
 
     private val friendsConnectionAdapter: ResponseAdapter<TestQuery.Data.R2.FriendsConnection> =
         FriendsConnection(responseAdapterCache)
@@ -142,7 +142,7 @@ class TestQuery_ResponseAdapter(
       responseAdapterCache: ResponseAdapterCache
     ) : ResponseAdapter<TestQuery.Data.R2.FriendsConnection> {
       private val nullableIntAdapter: ResponseAdapter<Int?> =
-          NullableResponseAdapter(intResponseAdapter)
+          NullableResponseAdapter(IntResponseAdapter)
 
       private val nullableListOfNullableEdgesAdapter:
           ResponseAdapter<List<TestQuery.Data.R2.FriendsConnection.Edges?>?> =
@@ -240,7 +240,7 @@ class TestQuery_ResponseAdapter(
         class Node(
           responseAdapterCache: ResponseAdapterCache
         ) : ResponseAdapter<TestQuery.Data.R2.FriendsConnection.Edges.Node> {
-          private val stringAdapter: ResponseAdapter<String> = stringResponseAdapter
+          private val stringAdapter: ResponseAdapter<String> = StringResponseAdapter
 
           override fun fromResponse(reader: JsonReader):
               TestQuery.Data.R2.FriendsConnection.Edges.Node {
@@ -284,7 +284,7 @@ class TestQuery_ResponseAdapter(
   class Luke(
     responseAdapterCache: ResponseAdapterCache
   ) : ResponseAdapter<TestQuery.Data.Luke> {
-    private val stringAdapter: ResponseAdapter<String> = stringResponseAdapter
+    private val stringAdapter: ResponseAdapter<String> = StringResponseAdapter
 
     private val friendsConnectionAdapter: ResponseAdapter<TestQuery.Data.Luke.FriendsConnection> =
         FriendsConnection(responseAdapterCache)
@@ -347,7 +347,7 @@ class TestQuery_ResponseAdapter(
       responseAdapterCache: ResponseAdapterCache
     ) : ResponseAdapter<TestQuery.Data.Luke.FriendsConnection> {
       private val nullableIntAdapter: ResponseAdapter<Int?> =
-          NullableResponseAdapter(intResponseAdapter)
+          NullableResponseAdapter(IntResponseAdapter)
 
       private val nullableListOfNullableEdgesAdapter:
           ResponseAdapter<List<TestQuery.Data.Luke.FriendsConnection.Edges?>?> =
@@ -445,7 +445,7 @@ class TestQuery_ResponseAdapter(
         class Node(
           responseAdapterCache: ResponseAdapterCache
         ) : ResponseAdapter<TestQuery.Data.Luke.FriendsConnection.Edges.Node> {
-          private val stringAdapter: ResponseAdapter<String> = stringResponseAdapter
+          private val stringAdapter: ResponseAdapter<String> = StringResponseAdapter
 
           override fun fromResponse(reader: JsonReader):
               TestQuery.Data.Luke.FriendsConnection.Edges.Node {

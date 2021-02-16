@@ -7,13 +7,13 @@ package com.example.arguments_simple.fragment.adapter
 
 import com.apollographql.apollo.api.ResponseAdapterCache
 import com.apollographql.apollo.api.ResponseField
+import com.apollographql.apollo.api.internal.IntResponseAdapter
 import com.apollographql.apollo.api.internal.ListResponseAdapter
 import com.apollographql.apollo.api.internal.NullableResponseAdapter
 import com.apollographql.apollo.api.internal.ResponseAdapter
-import com.apollographql.apollo.api.internal.intResponseAdapter
+import com.apollographql.apollo.api.internal.StringResponseAdapter
 import com.apollographql.apollo.api.internal.json.JsonReader
 import com.apollographql.apollo.api.internal.json.JsonWriter
-import com.apollographql.apollo.api.internal.stringResponseAdapter
 import com.example.arguments_simple.fragment.HeroDetailsImpl
 import kotlin.Array
 import kotlin.Int
@@ -27,7 +27,7 @@ import kotlin.collections.List
 class HeroDetailsImpl_ResponseAdapter(
   responseAdapterCache: ResponseAdapterCache
 ) : ResponseAdapter<HeroDetailsImpl.Data> {
-  private val stringAdapter: ResponseAdapter<String> = stringResponseAdapter
+  private val stringAdapter: ResponseAdapter<String> = StringResponseAdapter
 
   private val friendsConnectionAdapter: ResponseAdapter<HeroDetailsImpl.Data.FriendsConnection> =
       FriendsConnection(responseAdapterCache)
@@ -82,7 +82,7 @@ class HeroDetailsImpl_ResponseAdapter(
     responseAdapterCache: ResponseAdapterCache
   ) : ResponseAdapter<HeroDetailsImpl.Data.FriendsConnection> {
     private val nullableIntAdapter: ResponseAdapter<Int?> =
-        NullableResponseAdapter(intResponseAdapter)
+        NullableResponseAdapter(IntResponseAdapter)
 
     private val nullableListOfNullableEdgesAdapter:
         ResponseAdapter<List<HeroDetailsImpl.Data.FriendsConnection.Edges?>?> =
@@ -181,7 +181,7 @@ class HeroDetailsImpl_ResponseAdapter(
         responseAdapterCache: ResponseAdapterCache
       ) : ResponseAdapter<HeroDetailsImpl.Data.FriendsConnection.Edges.Node> {
         private val nullableStringAdapter: ResponseAdapter<String?> =
-            NullableResponseAdapter(stringResponseAdapter)
+            NullableResponseAdapter(StringResponseAdapter)
 
         override fun fromResponse(reader: JsonReader):
             HeroDetailsImpl.Data.FriendsConnection.Edges.Node {

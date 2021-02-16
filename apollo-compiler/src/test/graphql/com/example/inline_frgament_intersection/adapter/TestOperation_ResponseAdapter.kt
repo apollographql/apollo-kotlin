@@ -7,14 +7,14 @@ package com.example.inline_frgament_intersection.adapter
 
 import com.apollographql.apollo.api.ResponseAdapterCache
 import com.apollographql.apollo.api.ResponseField
+import com.apollographql.apollo.api.internal.BooleanResponseAdapter
+import com.apollographql.apollo.api.internal.DoubleResponseAdapter
 import com.apollographql.apollo.api.internal.ListResponseAdapter
 import com.apollographql.apollo.api.internal.NullableResponseAdapter
 import com.apollographql.apollo.api.internal.ResponseAdapter
-import com.apollographql.apollo.api.internal.booleanResponseAdapter
-import com.apollographql.apollo.api.internal.doubleResponseAdapter
+import com.apollographql.apollo.api.internal.StringResponseAdapter
 import com.apollographql.apollo.api.internal.json.JsonReader
 import com.apollographql.apollo.api.internal.json.JsonWriter
-import com.apollographql.apollo.api.internal.stringResponseAdapter
 import com.example.inline_frgament_intersection.TestOperation
 import com.example.inline_frgament_intersection.type.Race
 import com.example.inline_frgament_intersection.type.Race_ResponseAdapter
@@ -108,14 +108,14 @@ class TestOperation_ResponseAdapter(
     class BeingHumanRandom(
       responseAdapterCache: ResponseAdapterCache
     ) {
-      private val stringAdapter: ResponseAdapter<String> = stringResponseAdapter
+      private val stringAdapter: ResponseAdapter<String> = StringResponseAdapter
 
       private val listOfFriendsAdapter:
           ResponseAdapter<List<TestOperation.Data.Random.BeingHumanRandom.Friends>> =
           ListResponseAdapter(Friends(responseAdapterCache))
 
       private val nullableStringAdapter: ResponseAdapter<String?> =
-          NullableResponseAdapter(stringResponseAdapter)
+          NullableResponseAdapter(StringResponseAdapter)
 
       fun fromResponse(reader: JsonReader, __typename: String?):
           TestOperation.Data.Random.BeingHumanRandom {
@@ -211,13 +211,13 @@ class TestOperation_ResponseAdapter(
         class WookieFriends(
           responseAdapterCache: ResponseAdapterCache
         ) {
-          private val stringAdapter: ResponseAdapter<String> = stringResponseAdapter
+          private val stringAdapter: ResponseAdapter<String> = StringResponseAdapter
 
           private val nullableBooleanAdapter: ResponseAdapter<Boolean?> =
-              NullableResponseAdapter(booleanResponseAdapter)
+              NullableResponseAdapter(BooleanResponseAdapter)
 
           private val nullableFloatAdapter: ResponseAdapter<Double?> =
-              NullableResponseAdapter(doubleResponseAdapter)
+              NullableResponseAdapter(DoubleResponseAdapter)
 
           private val raceAdapter: ResponseAdapter<Race> = Race_ResponseAdapter
 
@@ -291,10 +291,10 @@ class TestOperation_ResponseAdapter(
         class OtherFriends(
           responseAdapterCache: ResponseAdapterCache
         ) {
-          private val stringAdapter: ResponseAdapter<String> = stringResponseAdapter
+          private val stringAdapter: ResponseAdapter<String> = StringResponseAdapter
 
           private val nullableBooleanAdapter: ResponseAdapter<Boolean?> =
-              NullableResponseAdapter(booleanResponseAdapter)
+              NullableResponseAdapter(BooleanResponseAdapter)
 
           fun fromResponse(reader: JsonReader, __typename: String?):
               TestOperation.Data.Random.BeingHumanRandom.Friends.OtherFriends {
@@ -350,7 +350,7 @@ class TestOperation_ResponseAdapter(
     class BeingWookieRandom(
       responseAdapterCache: ResponseAdapterCache
     ) {
-      private val stringAdapter: ResponseAdapter<String> = stringResponseAdapter
+      private val stringAdapter: ResponseAdapter<String> = StringResponseAdapter
 
       private val listOfFriendsAdapter:
           ResponseAdapter<List<TestOperation.Data.Random.BeingWookieRandom.Friends>> =
@@ -452,10 +452,10 @@ class TestOperation_ResponseAdapter(
         class WookieFriends(
           responseAdapterCache: ResponseAdapterCache
         ) {
-          private val stringAdapter: ResponseAdapter<String> = stringResponseAdapter
+          private val stringAdapter: ResponseAdapter<String> = StringResponseAdapter
 
           private val nullableFloatAdapter: ResponseAdapter<Double?> =
-              NullableResponseAdapter(doubleResponseAdapter)
+              NullableResponseAdapter(DoubleResponseAdapter)
 
           fun fromResponse(reader: JsonReader, __typename: String?):
               TestOperation.Data.Random.BeingWookieRandom.Friends.WookieFriends {
@@ -509,10 +509,10 @@ class TestOperation_ResponseAdapter(
         class OtherFriends(
           responseAdapterCache: ResponseAdapterCache
         ) {
-          private val stringAdapter: ResponseAdapter<String> = stringResponseAdapter
+          private val stringAdapter: ResponseAdapter<String> = StringResponseAdapter
 
           private val nullableFloatAdapter: ResponseAdapter<Double?> =
-              NullableResponseAdapter(doubleResponseAdapter)
+              NullableResponseAdapter(DoubleResponseAdapter)
 
           fun fromResponse(reader: JsonReader, __typename: String?):
               TestOperation.Data.Random.BeingWookieRandom.Friends.OtherFriends {
@@ -568,7 +568,7 @@ class TestOperation_ResponseAdapter(
     class OtherRandom(
       responseAdapterCache: ResponseAdapterCache
     ) {
-      private val stringAdapter: ResponseAdapter<String> = stringResponseAdapter
+      private val stringAdapter: ResponseAdapter<String> = StringResponseAdapter
 
       fun fromResponse(reader: JsonReader, __typename: String?):
           TestOperation.Data.Random.OtherRandom {

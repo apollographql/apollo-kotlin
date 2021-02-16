@@ -7,12 +7,12 @@ package com.example.mutation_create_review_semantic_naming.adapter
 
 import com.apollographql.apollo.api.ResponseAdapterCache
 import com.apollographql.apollo.api.ResponseField
+import com.apollographql.apollo.api.internal.IntResponseAdapter
 import com.apollographql.apollo.api.internal.NullableResponseAdapter
 import com.apollographql.apollo.api.internal.ResponseAdapter
-import com.apollographql.apollo.api.internal.intResponseAdapter
+import com.apollographql.apollo.api.internal.StringResponseAdapter
 import com.apollographql.apollo.api.internal.json.JsonReader
 import com.apollographql.apollo.api.internal.json.JsonWriter
-import com.apollographql.apollo.api.internal.stringResponseAdapter
 import com.example.mutation_create_review_semantic_naming.CreateReviewForEpisodeMutation
 import kotlin.Array
 import kotlin.Int
@@ -76,10 +76,10 @@ class CreateReviewForEpisodeMutation_ResponseAdapter(
   class CreateReview(
     responseAdapterCache: ResponseAdapterCache
   ) : ResponseAdapter<CreateReviewForEpisodeMutation.Data.CreateReview> {
-    private val intAdapter: ResponseAdapter<Int> = intResponseAdapter
+    private val intAdapter: ResponseAdapter<Int> = IntResponseAdapter
 
     private val nullableStringAdapter: ResponseAdapter<String?> =
-        NullableResponseAdapter(stringResponseAdapter)
+        NullableResponseAdapter(StringResponseAdapter)
 
     override fun fromResponse(reader: JsonReader):
         CreateReviewForEpisodeMutation.Data.CreateReview {

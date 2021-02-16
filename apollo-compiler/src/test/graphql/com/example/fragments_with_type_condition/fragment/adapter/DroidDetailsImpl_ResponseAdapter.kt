@@ -9,9 +9,9 @@ import com.apollographql.apollo.api.ResponseAdapterCache
 import com.apollographql.apollo.api.ResponseField
 import com.apollographql.apollo.api.internal.NullableResponseAdapter
 import com.apollographql.apollo.api.internal.ResponseAdapter
+import com.apollographql.apollo.api.internal.StringResponseAdapter
 import com.apollographql.apollo.api.internal.json.JsonReader
 import com.apollographql.apollo.api.internal.json.JsonWriter
-import com.apollographql.apollo.api.internal.stringResponseAdapter
 import com.example.fragments_with_type_condition.fragment.DroidDetailsImpl
 import kotlin.Array
 import kotlin.String
@@ -24,10 +24,10 @@ import kotlin.collections.List
 class DroidDetailsImpl_ResponseAdapter(
   responseAdapterCache: ResponseAdapterCache
 ) : ResponseAdapter<DroidDetailsImpl.Data> {
-  private val stringAdapter: ResponseAdapter<String> = stringResponseAdapter
+  private val stringAdapter: ResponseAdapter<String> = StringResponseAdapter
 
   private val nullableStringAdapter: ResponseAdapter<String?> =
-      NullableResponseAdapter(stringResponseAdapter)
+      NullableResponseAdapter(StringResponseAdapter)
 
   override fun fromResponse(reader: JsonReader): DroidDetailsImpl.Data {
     var __typename: String? = null

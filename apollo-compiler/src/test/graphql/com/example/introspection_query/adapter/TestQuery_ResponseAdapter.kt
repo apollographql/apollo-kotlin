@@ -10,9 +10,9 @@ import com.apollographql.apollo.api.ResponseField
 import com.apollographql.apollo.api.internal.ListResponseAdapter
 import com.apollographql.apollo.api.internal.NullableResponseAdapter
 import com.apollographql.apollo.api.internal.ResponseAdapter
+import com.apollographql.apollo.api.internal.StringResponseAdapter
 import com.apollographql.apollo.api.internal.json.JsonReader
 import com.apollographql.apollo.api.internal.json.JsonWriter
-import com.apollographql.apollo.api.internal.stringResponseAdapter
 import com.example.introspection_query.TestQuery
 import kotlin.Array
 import kotlin.String
@@ -142,7 +142,7 @@ class TestQuery_ResponseAdapter(
       responseAdapterCache: ResponseAdapterCache
     ) : ResponseAdapter<TestQuery.Data.__Schema.QueryType> {
       private val nullableStringAdapter: ResponseAdapter<String?> =
-          NullableResponseAdapter(stringResponseAdapter)
+          NullableResponseAdapter(StringResponseAdapter)
 
       override fun fromResponse(reader: JsonReader): TestQuery.Data.__Schema.QueryType {
         var name: String? = null
@@ -182,7 +182,7 @@ class TestQuery_ResponseAdapter(
       responseAdapterCache: ResponseAdapterCache
     ) : ResponseAdapter<TestQuery.Data.__Schema.Types> {
       private val nullableStringAdapter: ResponseAdapter<String?> =
-          NullableResponseAdapter(stringResponseAdapter)
+          NullableResponseAdapter(StringResponseAdapter)
 
       override fun fromResponse(reader: JsonReader): TestQuery.Data.__Schema.Types {
         var name: String? = null
@@ -223,7 +223,7 @@ class TestQuery_ResponseAdapter(
     responseAdapterCache: ResponseAdapterCache
   ) : ResponseAdapter<TestQuery.Data.__Type> {
     private val nullableStringAdapter: ResponseAdapter<String?> =
-        NullableResponseAdapter(stringResponseAdapter)
+        NullableResponseAdapter(StringResponseAdapter)
 
     override fun fromResponse(reader: JsonReader): TestQuery.Data.__Type {
       var name: String? = null

@@ -10,9 +10,9 @@ import com.apollographql.apollo.api.ResponseField
 import com.apollographql.apollo.api.internal.ListResponseAdapter
 import com.apollographql.apollo.api.internal.NullableResponseAdapter
 import com.apollographql.apollo.api.internal.ResponseAdapter
+import com.apollographql.apollo.api.internal.StringResponseAdapter
 import com.apollographql.apollo.api.internal.json.JsonReader
 import com.apollographql.apollo.api.internal.json.JsonWriter
-import com.apollographql.apollo.api.internal.stringResponseAdapter
 import com.example.named_fragment_delegate.fragment.HumanDetailsImpl
 import com.example.named_fragment_delegate.type.CustomScalars
 import kotlin.Any
@@ -27,7 +27,7 @@ import kotlin.collections.List
 class HumanDetailsImpl_ResponseAdapter(
   responseAdapterCache: ResponseAdapterCache
 ) : ResponseAdapter<HumanDetailsImpl.Data> {
-  private val stringAdapter: ResponseAdapter<String> = stringResponseAdapter
+  private val stringAdapter: ResponseAdapter<String> = StringResponseAdapter
 
   private val uRLAdapter: ResponseAdapter<Any> =
       responseAdapterCache.responseAdapterFor<Any>(CustomScalars.URL)
@@ -185,7 +185,7 @@ class HumanDetailsImpl_ResponseAdapter(
       class Node(
         responseAdapterCache: ResponseAdapterCache
       ) : ResponseAdapter<HumanDetailsImpl.Data.FriendsConnection.Edges.Node> {
-        private val stringAdapter: ResponseAdapter<String> = stringResponseAdapter
+        private val stringAdapter: ResponseAdapter<String> = StringResponseAdapter
 
         override fun fromResponse(reader: JsonReader):
             HumanDetailsImpl.Data.FriendsConnection.Edges.Node {

@@ -7,12 +7,12 @@ package com.example.deprecation.adapter
 
 import com.apollographql.apollo.api.ResponseAdapterCache
 import com.apollographql.apollo.api.ResponseField
+import com.apollographql.apollo.api.internal.BooleanResponseAdapter
 import com.apollographql.apollo.api.internal.NullableResponseAdapter
 import com.apollographql.apollo.api.internal.ResponseAdapter
-import com.apollographql.apollo.api.internal.booleanResponseAdapter
+import com.apollographql.apollo.api.internal.StringResponseAdapter
 import com.apollographql.apollo.api.internal.json.JsonReader
 import com.apollographql.apollo.api.internal.json.JsonWriter
-import com.apollographql.apollo.api.internal.stringResponseAdapter
 import com.example.deprecation.TestQuery
 import kotlin.Array
 import kotlin.Boolean
@@ -72,9 +72,9 @@ class TestQuery_ResponseAdapter(
   class Hero(
     responseAdapterCache: ResponseAdapterCache
   ) : ResponseAdapter<TestQuery.Data.Hero> {
-    private val stringAdapter: ResponseAdapter<String> = stringResponseAdapter
+    private val stringAdapter: ResponseAdapter<String> = StringResponseAdapter
 
-    private val booleanAdapter: ResponseAdapter<Boolean> = booleanResponseAdapter
+    private val booleanAdapter: ResponseAdapter<Boolean> = BooleanResponseAdapter
 
     override fun fromResponse(reader: JsonReader): TestQuery.Data.Hero {
       var name: String? = null

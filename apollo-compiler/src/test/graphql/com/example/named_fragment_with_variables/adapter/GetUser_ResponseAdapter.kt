@@ -10,9 +10,9 @@ import com.apollographql.apollo.api.ResponseField
 import com.apollographql.apollo.api.internal.ListResponseAdapter
 import com.apollographql.apollo.api.internal.NullableResponseAdapter
 import com.apollographql.apollo.api.internal.ResponseAdapter
+import com.apollographql.apollo.api.internal.StringResponseAdapter
 import com.apollographql.apollo.api.internal.json.JsonReader
 import com.apollographql.apollo.api.internal.json.JsonWriter
-import com.apollographql.apollo.api.internal.stringResponseAdapter
 import com.example.named_fragment_with_variables.GetUser
 import kotlin.Array
 import kotlin.String
@@ -53,7 +53,7 @@ class GetUser_ResponseAdapter(
   class QueryData(
     responseAdapterCache: ResponseAdapterCache
   ) {
-    private val stringAdapter: ResponseAdapter<String> = stringResponseAdapter
+    private val stringAdapter: ResponseAdapter<String> = StringResponseAdapter
 
     private val nullableOrganizationAdapter: ResponseAdapter<GetUser.Data.QueryData.Organization?> =
         NullableResponseAdapter(Organization(responseAdapterCache))
@@ -105,7 +105,7 @@ class GetUser_ResponseAdapter(
     class Organization(
       responseAdapterCache: ResponseAdapterCache
     ) : ResponseAdapter<GetUser.Data.QueryData.Organization> {
-      private val stringAdapter: ResponseAdapter<String> = stringResponseAdapter
+      private val stringAdapter: ResponseAdapter<String> = StringResponseAdapter
 
       private val listOfUserAdapter: ResponseAdapter<List<GetUser.Data.QueryData.Organization.User>>
           = ListResponseAdapter(User(responseAdapterCache))
@@ -193,7 +193,7 @@ class GetUser_ResponseAdapter(
         class UserUser(
           responseAdapterCache: ResponseAdapterCache
         ) {
-          private val stringAdapter: ResponseAdapter<String> = stringResponseAdapter
+          private val stringAdapter: ResponseAdapter<String> = StringResponseAdapter
 
           fun fromResponse(reader: JsonReader, __typename: String?):
               GetUser.Data.QueryData.Organization.User.UserUser {
@@ -260,7 +260,7 @@ class GetUser_ResponseAdapter(
         class OtherUser(
           responseAdapterCache: ResponseAdapterCache
         ) {
-          private val stringAdapter: ResponseAdapter<String> = stringResponseAdapter
+          private val stringAdapter: ResponseAdapter<String> = StringResponseAdapter
 
           fun fromResponse(reader: JsonReader, __typename: String?):
               GetUser.Data.QueryData.Organization.User.OtherUser {
@@ -299,7 +299,7 @@ class GetUser_ResponseAdapter(
   class OtherData(
     responseAdapterCache: ResponseAdapterCache
   ) {
-    private val stringAdapter: ResponseAdapter<String> = stringResponseAdapter
+    private val stringAdapter: ResponseAdapter<String> = StringResponseAdapter
 
     fun fromResponse(reader: JsonReader, __typename: String?): GetUser.Data.OtherData {
       var __typename: String? = __typename

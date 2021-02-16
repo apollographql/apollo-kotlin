@@ -9,9 +9,9 @@ import com.apollographql.apollo.api.ResponseAdapterCache
 import com.apollographql.apollo.api.ResponseField
 import com.apollographql.apollo.api.internal.NullableResponseAdapter
 import com.apollographql.apollo.api.internal.ResponseAdapter
+import com.apollographql.apollo.api.internal.StringResponseAdapter
 import com.apollographql.apollo.api.internal.json.JsonReader
 import com.apollographql.apollo.api.internal.json.JsonWriter
-import com.apollographql.apollo.api.internal.stringResponseAdapter
 import com.example.root_query_fragment_with_nested_fragments.fragment.QueryFragmentImpl
 import kotlin.Array
 import kotlin.String
@@ -24,7 +24,7 @@ import kotlin.collections.List
 class QueryFragmentImpl_ResponseAdapter(
   responseAdapterCache: ResponseAdapterCache
 ) : ResponseAdapter<QueryFragmentImpl.Data> {
-  private val stringAdapter: ResponseAdapter<String> = stringResponseAdapter
+  private val stringAdapter: ResponseAdapter<String> = StringResponseAdapter
 
   private val nullableHeroAdapter: ResponseAdapter<QueryFragmentImpl.Data.Hero?> =
       NullableResponseAdapter(Hero(responseAdapterCache))
@@ -141,7 +141,7 @@ class QueryFragmentImpl_ResponseAdapter(
     class CharacterHero(
       responseAdapterCache: ResponseAdapterCache
     ) {
-      private val stringAdapter: ResponseAdapter<String> = stringResponseAdapter
+      private val stringAdapter: ResponseAdapter<String> = StringResponseAdapter
 
       fun fromResponse(reader: JsonReader, __typename: String?):
           QueryFragmentImpl.Data.Hero.CharacterHero {
@@ -185,7 +185,7 @@ class QueryFragmentImpl_ResponseAdapter(
     class OtherHero(
       responseAdapterCache: ResponseAdapterCache
     ) {
-      private val stringAdapter: ResponseAdapter<String> = stringResponseAdapter
+      private val stringAdapter: ResponseAdapter<String> = StringResponseAdapter
 
       fun fromResponse(reader: JsonReader, __typename: String?):
           QueryFragmentImpl.Data.Hero.OtherHero {
@@ -249,10 +249,10 @@ class QueryFragmentImpl_ResponseAdapter(
     class DroidDroid(
       responseAdapterCache: ResponseAdapterCache
     ) {
-      private val stringAdapter: ResponseAdapter<String> = stringResponseAdapter
+      private val stringAdapter: ResponseAdapter<String> = StringResponseAdapter
 
       private val nullableStringAdapter: ResponseAdapter<String?> =
-          NullableResponseAdapter(stringResponseAdapter)
+          NullableResponseAdapter(StringResponseAdapter)
 
       fun fromResponse(reader: JsonReader, __typename: String?):
           QueryFragmentImpl.Data.Droid.DroidDroid {
@@ -305,7 +305,7 @@ class QueryFragmentImpl_ResponseAdapter(
     class OtherDroid(
       responseAdapterCache: ResponseAdapterCache
     ) {
-      private val stringAdapter: ResponseAdapter<String> = stringResponseAdapter
+      private val stringAdapter: ResponseAdapter<String> = StringResponseAdapter
 
       fun fromResponse(reader: JsonReader, __typename: String?):
           QueryFragmentImpl.Data.Droid.OtherDroid {
@@ -369,10 +369,10 @@ class QueryFragmentImpl_ResponseAdapter(
     class HumanHuman(
       responseAdapterCache: ResponseAdapterCache
     ) {
-      private val stringAdapter: ResponseAdapter<String> = stringResponseAdapter
+      private val stringAdapter: ResponseAdapter<String> = StringResponseAdapter
 
       private val nullableStringAdapter: ResponseAdapter<String?> =
-          NullableResponseAdapter(stringResponseAdapter)
+          NullableResponseAdapter(StringResponseAdapter)
 
       fun fromResponse(reader: JsonReader, __typename: String?):
           QueryFragmentImpl.Data.Human.HumanHuman {
@@ -425,7 +425,7 @@ class QueryFragmentImpl_ResponseAdapter(
     class OtherHuman(
       responseAdapterCache: ResponseAdapterCache
     ) {
-      private val stringAdapter: ResponseAdapter<String> = stringResponseAdapter
+      private val stringAdapter: ResponseAdapter<String> = StringResponseAdapter
 
       fun fromResponse(reader: JsonReader, __typename: String?):
           QueryFragmentImpl.Data.Human.OtherHuman {

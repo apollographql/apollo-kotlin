@@ -7,11 +7,11 @@ package com.example.interface_on_interface.adapter
 
 import com.apollographql.apollo.api.ResponseAdapterCache
 import com.apollographql.apollo.api.ResponseField
+import com.apollographql.apollo.api.internal.DoubleResponseAdapter
 import com.apollographql.apollo.api.internal.ResponseAdapter
-import com.apollographql.apollo.api.internal.doubleResponseAdapter
+import com.apollographql.apollo.api.internal.StringResponseAdapter
 import com.apollographql.apollo.api.internal.json.JsonReader
 import com.apollographql.apollo.api.internal.json.JsonWriter
-import com.apollographql.apollo.api.internal.stringResponseAdapter
 import com.example.interface_on_interface.GetHuman
 import kotlin.Array
 import kotlin.Double
@@ -81,9 +81,9 @@ class GetHuman_ResponseAdapter(
   class Human(
     responseAdapterCache: ResponseAdapterCache
   ) : ResponseAdapter<GetHuman.Data.Human> {
-    private val stringAdapter: ResponseAdapter<String> = stringResponseAdapter
+    private val stringAdapter: ResponseAdapter<String> = StringResponseAdapter
 
-    private val floatAdapter: ResponseAdapter<Double> = doubleResponseAdapter
+    private val floatAdapter: ResponseAdapter<Double> = DoubleResponseAdapter
 
     override fun fromResponse(reader: JsonReader): GetHuman.Data.Human {
       var id: String? = null
@@ -168,9 +168,9 @@ class GetHuman_ResponseAdapter(
     class HumanNode(
       responseAdapterCache: ResponseAdapterCache
     ) {
-      private val stringAdapter: ResponseAdapter<String> = stringResponseAdapter
+      private val stringAdapter: ResponseAdapter<String> = StringResponseAdapter
 
-      private val floatAdapter: ResponseAdapter<Double> = doubleResponseAdapter
+      private val floatAdapter: ResponseAdapter<Double> = DoubleResponseAdapter
 
       fun fromResponse(reader: JsonReader, __typename: String?): GetHuman.Data.Node.HumanNode {
         var __typename: String? = __typename
@@ -213,7 +213,7 @@ class GetHuman_ResponseAdapter(
     class OtherNode(
       responseAdapterCache: ResponseAdapterCache
     ) {
-      private val stringAdapter: ResponseAdapter<String> = stringResponseAdapter
+      private val stringAdapter: ResponseAdapter<String> = StringResponseAdapter
 
       fun fromResponse(reader: JsonReader, __typename: String?): GetHuman.Data.Node.OtherNode {
         var __typename: String? = __typename

@@ -7,13 +7,13 @@ package com.example.arguments_hardcoded.adapter
 
 import com.apollographql.apollo.api.ResponseAdapterCache
 import com.apollographql.apollo.api.ResponseField
+import com.apollographql.apollo.api.internal.IntResponseAdapter
 import com.apollographql.apollo.api.internal.ListResponseAdapter
 import com.apollographql.apollo.api.internal.NullableResponseAdapter
 import com.apollographql.apollo.api.internal.ResponseAdapter
-import com.apollographql.apollo.api.internal.intResponseAdapter
+import com.apollographql.apollo.api.internal.StringResponseAdapter
 import com.apollographql.apollo.api.internal.json.JsonReader
 import com.apollographql.apollo.api.internal.json.JsonWriter
-import com.apollographql.apollo.api.internal.stringResponseAdapter
 import com.example.arguments_hardcoded.TestQuery
 import kotlin.Array
 import kotlin.Int
@@ -31,7 +31,7 @@ class TestQuery_ResponseAdapter(
       =
       NullableResponseAdapter(ListResponseAdapter(NullableResponseAdapter(Reviews(responseAdapterCache))))
 
-  private val intAdapter: ResponseAdapter<Int> = intResponseAdapter
+  private val intAdapter: ResponseAdapter<Int> = IntResponseAdapter
 
   override fun fromResponse(reader: JsonReader): TestQuery.Data {
     var reviews: List<TestQuery.Data.Reviews?>? = null
@@ -93,10 +93,10 @@ class TestQuery_ResponseAdapter(
   class Reviews(
     responseAdapterCache: ResponseAdapterCache
   ) : ResponseAdapter<TestQuery.Data.Reviews> {
-    private val intAdapter: ResponseAdapter<Int> = intResponseAdapter
+    private val intAdapter: ResponseAdapter<Int> = IntResponseAdapter
 
     private val nullableStringAdapter: ResponseAdapter<String?> =
-        NullableResponseAdapter(stringResponseAdapter)
+        NullableResponseAdapter(StringResponseAdapter)
 
     override fun fromResponse(reader: JsonReader): TestQuery.Data.Reviews {
       var stars: Int? = null

@@ -7,12 +7,12 @@ package com.example.fragments_with_type_condition.adapter
 
 import com.apollographql.apollo.api.ResponseAdapterCache
 import com.apollographql.apollo.api.ResponseField
+import com.apollographql.apollo.api.internal.DoubleResponseAdapter
 import com.apollographql.apollo.api.internal.NullableResponseAdapter
 import com.apollographql.apollo.api.internal.ResponseAdapter
-import com.apollographql.apollo.api.internal.doubleResponseAdapter
+import com.apollographql.apollo.api.internal.StringResponseAdapter
 import com.apollographql.apollo.api.internal.json.JsonReader
 import com.apollographql.apollo.api.internal.json.JsonWriter
-import com.apollographql.apollo.api.internal.stringResponseAdapter
 import com.example.fragments_with_type_condition.TestQuery
 import kotlin.Array
 import kotlin.Double
@@ -122,10 +122,10 @@ class TestQuery_ResponseAdapter(
     class HumanR2(
       responseAdapterCache: ResponseAdapterCache
     ) {
-      private val stringAdapter: ResponseAdapter<String> = stringResponseAdapter
+      private val stringAdapter: ResponseAdapter<String> = StringResponseAdapter
 
       private val nullableFloatAdapter: ResponseAdapter<Double?> =
-          NullableResponseAdapter(doubleResponseAdapter)
+          NullableResponseAdapter(DoubleResponseAdapter)
 
       fun fromResponse(reader: JsonReader, __typename: String?): TestQuery.Data.R2.HumanR2 {
         var __typename: String? = __typename
@@ -177,10 +177,10 @@ class TestQuery_ResponseAdapter(
     class DroidR2(
       responseAdapterCache: ResponseAdapterCache
     ) {
-      private val stringAdapter: ResponseAdapter<String> = stringResponseAdapter
+      private val stringAdapter: ResponseAdapter<String> = StringResponseAdapter
 
       private val nullableStringAdapter: ResponseAdapter<String?> =
-          NullableResponseAdapter(stringResponseAdapter)
+          NullableResponseAdapter(StringResponseAdapter)
 
       fun fromResponse(reader: JsonReader, __typename: String?): TestQuery.Data.R2.DroidR2 {
         var __typename: String? = __typename
@@ -232,7 +232,7 @@ class TestQuery_ResponseAdapter(
     class OtherR2(
       responseAdapterCache: ResponseAdapterCache
     ) {
-      private val stringAdapter: ResponseAdapter<String> = stringResponseAdapter
+      private val stringAdapter: ResponseAdapter<String> = StringResponseAdapter
 
       fun fromResponse(reader: JsonReader, __typename: String?): TestQuery.Data.R2.OtherR2 {
         var __typename: String? = __typename
@@ -300,10 +300,10 @@ class TestQuery_ResponseAdapter(
     class HumanLuke(
       responseAdapterCache: ResponseAdapterCache
     ) {
-      private val stringAdapter: ResponseAdapter<String> = stringResponseAdapter
+      private val stringAdapter: ResponseAdapter<String> = StringResponseAdapter
 
       private val nullableFloatAdapter: ResponseAdapter<Double?> =
-          NullableResponseAdapter(doubleResponseAdapter)
+          NullableResponseAdapter(DoubleResponseAdapter)
 
       fun fromResponse(reader: JsonReader, __typename: String?): TestQuery.Data.Luke.HumanLuke {
         var __typename: String? = __typename
@@ -355,10 +355,10 @@ class TestQuery_ResponseAdapter(
     class DroidLuke(
       responseAdapterCache: ResponseAdapterCache
     ) {
-      private val stringAdapter: ResponseAdapter<String> = stringResponseAdapter
+      private val stringAdapter: ResponseAdapter<String> = StringResponseAdapter
 
       private val nullableStringAdapter: ResponseAdapter<String?> =
-          NullableResponseAdapter(stringResponseAdapter)
+          NullableResponseAdapter(StringResponseAdapter)
 
       fun fromResponse(reader: JsonReader, __typename: String?): TestQuery.Data.Luke.DroidLuke {
         var __typename: String? = __typename
@@ -410,7 +410,7 @@ class TestQuery_ResponseAdapter(
     class OtherLuke(
       responseAdapterCache: ResponseAdapterCache
     ) {
-      private val stringAdapter: ResponseAdapter<String> = stringResponseAdapter
+      private val stringAdapter: ResponseAdapter<String> = StringResponseAdapter
 
       fun fromResponse(reader: JsonReader, __typename: String?): TestQuery.Data.Luke.OtherLuke {
         var __typename: String? = __typename

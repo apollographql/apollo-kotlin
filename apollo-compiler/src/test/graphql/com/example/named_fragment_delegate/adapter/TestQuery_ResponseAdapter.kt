@@ -10,9 +10,9 @@ import com.apollographql.apollo.api.ResponseField
 import com.apollographql.apollo.api.internal.ListResponseAdapter
 import com.apollographql.apollo.api.internal.NullableResponseAdapter
 import com.apollographql.apollo.api.internal.ResponseAdapter
+import com.apollographql.apollo.api.internal.StringResponseAdapter
 import com.apollographql.apollo.api.internal.json.JsonReader
 import com.apollographql.apollo.api.internal.json.JsonWriter
-import com.apollographql.apollo.api.internal.stringResponseAdapter
 import com.example.named_fragment_delegate.TestQuery
 import com.example.named_fragment_delegate.type.CustomScalars
 import kotlin.Any
@@ -104,10 +104,10 @@ class TestQuery_ResponseAdapter(
     class DroidHero(
       responseAdapterCache: ResponseAdapterCache
     ) {
-      private val stringAdapter: ResponseAdapter<String> = stringResponseAdapter
+      private val stringAdapter: ResponseAdapter<String> = StringResponseAdapter
 
       private val nullableStringAdapter: ResponseAdapter<String?> =
-          NullableResponseAdapter(stringResponseAdapter)
+          NullableResponseAdapter(StringResponseAdapter)
 
       private val nullableListOfNullableFriendsAdapter:
           ResponseAdapter<List<TestQuery.Data.Hero.DroidHero.Friends?>?> =
@@ -174,7 +174,7 @@ class TestQuery_ResponseAdapter(
       class Friends(
         responseAdapterCache: ResponseAdapterCache
       ) : ResponseAdapter<TestQuery.Data.Hero.DroidHero.Friends> {
-        private val stringAdapter: ResponseAdapter<String> = stringResponseAdapter
+        private val stringAdapter: ResponseAdapter<String> = StringResponseAdapter
 
         override fun fromResponse(reader: JsonReader): TestQuery.Data.Hero.DroidHero.Friends {
           var name: String? = null
@@ -214,7 +214,7 @@ class TestQuery_ResponseAdapter(
     class HumanHero(
       responseAdapterCache: ResponseAdapterCache
     ) {
-      private val stringAdapter: ResponseAdapter<String> = stringResponseAdapter
+      private val stringAdapter: ResponseAdapter<String> = StringResponseAdapter
 
       private val uRLAdapter: ResponseAdapter<Any> =
           responseAdapterCache.responseAdapterFor<Any>(CustomScalars.URL)
@@ -374,7 +374,7 @@ class TestQuery_ResponseAdapter(
           class Node(
             responseAdapterCache: ResponseAdapterCache
           ) : ResponseAdapter<TestQuery.Data.Hero.HumanHero.FriendsConnection.Edges.Node> {
-            private val stringAdapter: ResponseAdapter<String> = stringResponseAdapter
+            private val stringAdapter: ResponseAdapter<String> = StringResponseAdapter
 
             override fun fromResponse(reader: JsonReader):
                 TestQuery.Data.Hero.HumanHero.FriendsConnection.Edges.Node {
@@ -418,7 +418,7 @@ class TestQuery_ResponseAdapter(
     class OtherHero(
       responseAdapterCache: ResponseAdapterCache
     ) {
-      private val stringAdapter: ResponseAdapter<String> = stringResponseAdapter
+      private val stringAdapter: ResponseAdapter<String> = StringResponseAdapter
 
       fun fromResponse(reader: JsonReader, __typename: String?): TestQuery.Data.Hero.OtherHero {
         var __typename: String? = __typename

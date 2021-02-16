@@ -7,12 +7,12 @@ package com.example.inline_fragment_for_non_optional_field.adapter
 
 import com.apollographql.apollo.api.ResponseAdapterCache
 import com.apollographql.apollo.api.ResponseField
+import com.apollographql.apollo.api.internal.DoubleResponseAdapter
 import com.apollographql.apollo.api.internal.NullableResponseAdapter
 import com.apollographql.apollo.api.internal.ResponseAdapter
-import com.apollographql.apollo.api.internal.doubleResponseAdapter
+import com.apollographql.apollo.api.internal.StringResponseAdapter
 import com.apollographql.apollo.api.internal.json.JsonReader
 import com.apollographql.apollo.api.internal.json.JsonWriter
-import com.apollographql.apollo.api.internal.stringResponseAdapter
 import com.example.inline_fragment_for_non_optional_field.TestQuery
 import kotlin.Array
 import kotlin.Double
@@ -99,10 +99,10 @@ class TestQuery_ResponseAdapter(
     class HumanNonOptionalHero(
       responseAdapterCache: ResponseAdapterCache
     ) {
-      private val stringAdapter: ResponseAdapter<String> = stringResponseAdapter
+      private val stringAdapter: ResponseAdapter<String> = StringResponseAdapter
 
       private val nullableFloatAdapter: ResponseAdapter<Double?> =
-          NullableResponseAdapter(doubleResponseAdapter)
+          NullableResponseAdapter(DoubleResponseAdapter)
 
       fun fromResponse(reader: JsonReader, __typename: String?):
           TestQuery.Data.NonOptionalHero.HumanNonOptionalHero {
@@ -156,7 +156,7 @@ class TestQuery_ResponseAdapter(
     class OtherNonOptionalHero(
       responseAdapterCache: ResponseAdapterCache
     ) {
-      private val stringAdapter: ResponseAdapter<String> = stringResponseAdapter
+      private val stringAdapter: ResponseAdapter<String> = StringResponseAdapter
 
       fun fromResponse(reader: JsonReader, __typename: String?):
           TestQuery.Data.NonOptionalHero.OtherNonOptionalHero {

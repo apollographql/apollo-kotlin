@@ -7,13 +7,13 @@ package com.example.hero_details.adapter
 
 import com.apollographql.apollo.api.ResponseAdapterCache
 import com.apollographql.apollo.api.ResponseField
+import com.apollographql.apollo.api.internal.IntResponseAdapter
 import com.apollographql.apollo.api.internal.ListResponseAdapter
 import com.apollographql.apollo.api.internal.NullableResponseAdapter
 import com.apollographql.apollo.api.internal.ResponseAdapter
-import com.apollographql.apollo.api.internal.intResponseAdapter
+import com.apollographql.apollo.api.internal.StringResponseAdapter
 import com.apollographql.apollo.api.internal.json.JsonReader
 import com.apollographql.apollo.api.internal.json.JsonWriter
-import com.apollographql.apollo.api.internal.stringResponseAdapter
 import com.example.hero_details.HeroDetails
 import com.example.hero_details.type.Hero_type
 import com.example.hero_details.type.Hero_type_ResponseAdapter
@@ -73,7 +73,7 @@ class HeroDetails_ResponseAdapter(
   ) : ResponseAdapter<HeroDetails.Data.Hero> {
     private val hero_typeAdapter: ResponseAdapter<Hero_type> = Hero_type_ResponseAdapter
 
-    private val stringAdapter: ResponseAdapter<String> = stringResponseAdapter
+    private val stringAdapter: ResponseAdapter<String> = StringResponseAdapter
 
     private val friendsConnectionAdapter: ResponseAdapter<HeroDetails.Data.Hero.FriendsConnection> =
         FriendsConnection(responseAdapterCache)
@@ -136,7 +136,7 @@ class HeroDetails_ResponseAdapter(
       responseAdapterCache: ResponseAdapterCache
     ) : ResponseAdapter<HeroDetails.Data.Hero.FriendsConnection> {
       private val nullableIntAdapter: ResponseAdapter<Int?> =
-          NullableResponseAdapter(intResponseAdapter)
+          NullableResponseAdapter(IntResponseAdapter)
 
       private val nullableListOfNullableEdgesAdapter:
           ResponseAdapter<List<HeroDetails.Data.Hero.FriendsConnection.Edges?>?> =
@@ -235,7 +235,7 @@ class HeroDetails_ResponseAdapter(
         class Node(
           responseAdapterCache: ResponseAdapterCache
         ) : ResponseAdapter<HeroDetails.Data.Hero.FriendsConnection.Edges.Node> {
-          private val stringAdapter: ResponseAdapter<String> = stringResponseAdapter
+          private val stringAdapter: ResponseAdapter<String> = StringResponseAdapter
 
           override fun fromResponse(reader: JsonReader):
               HeroDetails.Data.Hero.FriendsConnection.Edges.Node {
