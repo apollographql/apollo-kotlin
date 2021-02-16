@@ -35,8 +35,7 @@ import kotlin.jvm.JvmOverloads
  * @param indent the indentation string to be repeated for each level of indentation in the encoded document. Must be a string
  * containing only whitespace. If [indent] is an empty String the encoded document will be compact. Otherwise the encoded
  * document will be more human-readable.
- * @param responseAdapterCache configured instance of custom GraphQL scalar type adapters. Default adapters are used if this
- * param is not provided.
+ * @param [responseAdapterCache] configured instance of GraphQL operation response adapters cache. A global empty instance will be used by default.
  */
 @JvmOverloads
 fun <D : Operation.Data> Operation<D>.toJson(data: D, indent: String = "", responseAdapterCache: ResponseAdapterCache = DEFAULT): String {
