@@ -1,11 +1,11 @@
-package com.apollographql.apollo.cache.normalized.internal
+package com.apollographql.apollo3.cache.normalized.internal
 
-import com.apollographql.apollo.api.InputType
-import com.apollographql.apollo.api.Operation
-import com.apollographql.apollo.api.ResponseField
-import com.apollographql.apollo.api.ResponseField.Companion.isArgumentValueVariableType
-import com.apollographql.apollo.api.internal.json.JsonWriter
-import com.apollographql.apollo.api.internal.json.Utils
+import com.apollographql.apollo3.api.InputType
+import com.apollographql.apollo3.api.Operation
+import com.apollographql.apollo3.api.ResponseField
+import com.apollographql.apollo3.api.ResponseField.Companion.isArgumentValueVariableType
+import com.apollographql.apollo3.api.internal.json.JsonWriter
+import com.apollographql.apollo3.api.internal.json.Utils
 import okio.Buffer
 import okio.IOException
 

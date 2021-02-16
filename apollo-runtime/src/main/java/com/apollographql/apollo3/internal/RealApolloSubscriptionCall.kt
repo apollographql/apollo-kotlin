@@ -1,18 +1,18 @@
-package com.apollographql.apollo.internal
+package com.apollographql.apollo3.internal
 
-import com.apollographql.apollo.ApolloSubscriptionCall
-import com.apollographql.apollo.api.Operation
-import com.apollographql.apollo.api.Response
-import com.apollographql.apollo.api.Subscription
-import com.apollographql.apollo.api.internal.ApolloLogger
-import com.apollographql.apollo.cache.CacheHeaders
-import com.apollographql.apollo.cache.normalized.ApolloStore
-import com.apollographql.apollo.exception.ApolloCanceledException
-import com.apollographql.apollo.exception.ApolloNetworkException
-import com.apollographql.apollo.internal.CallState.IllegalStateMessage.Companion.forCurrentState
-import com.apollographql.apollo.internal.subscription.ApolloSubscriptionException
-import com.apollographql.apollo.internal.subscription.SubscriptionManager
-import com.apollographql.apollo.internal.subscription.SubscriptionResponse
+import com.apollographql.apollo3.ApolloSubscriptionCall
+import com.apollographql.apollo3.api.Operation
+import com.apollographql.apollo3.api.Response
+import com.apollographql.apollo3.api.Subscription
+import com.apollographql.apollo3.api.internal.ApolloLogger
+import com.apollographql.apollo3.cache.CacheHeaders
+import com.apollographql.apollo3.cache.normalized.ApolloStore
+import com.apollographql.apollo3.exception.ApolloCanceledException
+import com.apollographql.apollo3.exception.ApolloNetworkException
+import com.apollographql.apollo3.internal.CallState.IllegalStateMessage.Companion.forCurrentState
+import com.apollographql.apollo3.internal.subscription.ApolloSubscriptionException
+import com.apollographql.apollo3.internal.subscription.SubscriptionManager
+import com.apollographql.apollo3.internal.subscription.SubscriptionResponse
 import java.util.concurrent.Executor
 import java.util.concurrent.atomic.AtomicReference
 

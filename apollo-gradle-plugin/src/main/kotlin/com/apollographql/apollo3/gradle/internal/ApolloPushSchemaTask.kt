@@ -1,4 +1,4 @@
-package com.apollographql.apollo.gradle.internal
+package com.apollographql.apollo3.gradle.internal
 
 import org.gradle.api.DefaultTask
 import org.gradle.api.provider.Property
@@ -31,8 +31,8 @@ abstract class ApolloPushSchemaTask : DefaultTask() {
 
 
   private fun Property<String>.orProperty(name: String) = orElse(project.provider {
-    (project.findProperty("com.apollographql.apollo.$name") as? String)?.also {
-      logger.lifecycle("Using the com.apollographql.apollo.$name property is deprecated. Use --$name instead.")
+    (project.findProperty("com.apollographql.apollo3.$name") as? String)?.also {
+      logger.lifecycle("Using the com.apollographql.apollo3.$name property is deprecated. Use --$name instead.")
     }
   }).orNull
 

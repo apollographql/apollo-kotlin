@@ -1,6 +1,6 @@
-package com.apollographql.apollo.compiler.introspection
+package com.apollographql.apollo3.compiler.introspection
 
-import com.apollographql.apollo.compiler.fromJson
+import com.apollographql.apollo3.compiler.fromJson
 import com.squareup.moshi.JsonClass
 import com.squareup.moshi.JsonReader
 import okio.ByteString.Companion.decodeHex

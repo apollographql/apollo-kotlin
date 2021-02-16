@@ -1,7 +1,7 @@
-package com.apollographql.apollo.api
+package com.apollographql.apollo3.api
 
-import com.apollographql.apollo.api.ExecutionContext.Element
-import com.apollographql.apollo.api.ExecutionContext.Key
+import com.apollographql.apollo3.api.ExecutionContext.Element
+import com.apollographql.apollo3.api.ExecutionContext.Key
 import kotlin.jvm.JvmField
 
 /**

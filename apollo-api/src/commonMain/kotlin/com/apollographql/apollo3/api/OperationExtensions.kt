@@ -1,11 +1,11 @@
-package com.apollographql.apollo.api
+package com.apollographql.apollo3.api
 
-import com.apollographql.apollo.api.ResponseAdapterCache.Companion.DEFAULT
-import com.apollographql.apollo.api.internal.MapJsonReader
-import com.apollographql.apollo.api.internal.MapResponseParser
-import com.apollographql.apollo.api.internal.OperationRequestBodyComposer
-import com.apollographql.apollo.api.internal.StreamResponseParser
-import com.apollographql.apollo.api.internal.json.JsonUtf8Writer
+import com.apollographql.apollo3.api.ResponseAdapterCache.Companion.DEFAULT
+import com.apollographql.apollo3.api.internal.MapJsonReader
+import com.apollographql.apollo3.api.internal.MapResponseParser
+import com.apollographql.apollo3.api.internal.OperationRequestBodyComposer
+import com.apollographql.apollo3.api.internal.StreamResponseParser
+import com.apollographql.apollo3.api.internal.json.JsonUtf8Writer
 import okio.Buffer
 import okio.BufferedSource
 import okio.ByteString

@@ -1,4 +1,4 @@
-package com.apollographql.apollo.integration
+package com.apollographql.apollo3.integration
 
 import java.io.File
 

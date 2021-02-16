@@ -6,7 +6,7 @@ apply(plugin = "com.squareup.sqldelight")
 
 configure<com.squareup.sqldelight.gradle.SqlDelightExtension> {
   database("ApolloDatabase") {
-    packageName = "com.apollographql.apollo.cache.normalized.sql"
+    packageName = "com.apollographql.apollo3.cache.normalized.sql"
     schemaOutputDirectory = file("src/main/sqldelight/schemas")
   }
 }

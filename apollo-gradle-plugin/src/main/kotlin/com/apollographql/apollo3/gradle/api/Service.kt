@@ -1,8 +1,8 @@
-package com.apollographql.apollo.gradle.api
+package com.apollographql.apollo3.gradle.api
 
-import com.apollographql.apollo.api.ApolloExperimental
-import com.apollographql.apollo.compiler.OperationIdGenerator
-import com.apollographql.apollo.compiler.OperationOutputGenerator
+import com.apollographql.apollo3.api.ApolloExperimental
+import com.apollographql.apollo3.compiler.OperationIdGenerator
+import com.apollographql.apollo3.compiler.OperationOutputGenerator
 import org.gradle.api.Action
 import org.gradle.api.Task
 import org.gradle.api.file.Directory
@@ -91,7 +91,7 @@ interface Service {
    *
    * Example Md5 hash generator:
    * ```groovy
-   * import com.apollographql.apollo.compiler.OperationIdGenerator
+   * import com.apollographql.apollo3.compiler.OperationIdGenerator
    *
    * apollo {
    *   operationIdGenerator = new OperationIdGenerator() {
@@ -119,7 +119,7 @@ interface Service {
    *
    * Example Md5 hash generator:
    * ```groovy
-   * import com.apollographql.apollo.compiler.OperationIdGenerator
+   * import com.apollographql.apollo3.compiler.OperationIdGenerator
    *
    * apollo {
    *   operationOutputGenerator = new OperationIdGenerator() {
@@ -228,7 +228,7 @@ interface Service {
       val task: TaskProvider<out Task>,
 
       /**
-       * A json file containing a [Map]<[String], [com.apollographql.apollo.compiler.operationoutput.OperationDescriptor]>
+       * A json file containing a [Map]<[String], [com.apollographql.apollo3.compiler.operationoutput.OperationDescriptor]>
        *
        * This file can be used to upload the queries exact content and their matching operation ID to a server for whitelisting
        * or persisted queries.

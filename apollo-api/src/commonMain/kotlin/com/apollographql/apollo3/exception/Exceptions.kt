@@ -1,4 +1,4 @@
-package com.apollographql.apollo.exception
+package com.apollographql.apollo3.exception
 
 open class ApolloException(message: String? = null, cause: Throwable? = null) : RuntimeException(message, cause)
 

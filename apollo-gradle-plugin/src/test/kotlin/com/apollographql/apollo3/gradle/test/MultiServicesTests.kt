@@ -1,9 +1,9 @@
-package com.apollographql.apollo.gradle.test
+package com.apollographql.apollo3.gradle.test
 
 
-import com.apollographql.apollo.gradle.util.TestUtils
-import com.apollographql.apollo.gradle.util.TestUtils.withProject
-import com.apollographql.apollo.gradle.util.generatedChild
+import com.apollographql.apollo3.gradle.util.TestUtils
+import com.apollographql.apollo3.gradle.util.TestUtils.withProject
+import com.apollographql.apollo3.gradle.util.generatedChild
 import org.gradle.testkit.runner.UnexpectedBuildFailure
 import org.hamcrest.CoreMatchers.containsString
 import org.hamcrest.MatcherAssert

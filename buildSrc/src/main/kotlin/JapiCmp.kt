@@ -24,7 +24,7 @@ object JapiCmp {
 
       val jar = "$artifact-$version.jar"
 
-      val url = "https://jcenter.bintray.com/com/apollographql/apollo/$artifact/$version/$jar"
+      val url = "https://jcenter.bintray.com/com/apollographql/apollo3/$artifact/$version/$jar"
       val client = OkHttpClient()
       val request = Request.Builder().get().url(url).build()
 

@@ -1,7 +1,7 @@
-package com.apollographql.apollo.api.internal
+package com.apollographql.apollo3.api.internal
 
-import com.apollographql.apollo.api.Operation
-import com.apollographql.apollo.api.ResponseField
+import com.apollographql.apollo3.api.Operation
+import com.apollographql.apollo3.api.ResponseField
 
 class NoOpResolveDelegate<T>: ResolveDelegate<T> {
   override fun willResolveRootQuery(operation: Operation<*>) {

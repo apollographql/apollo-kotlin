@@ -1,13 +1,13 @@
-package com.apollographql.apollo.subscription
+package com.apollographql.apollo3.subscription
 
-import com.apollographql.apollo.api.internal.json.BufferedSourceJsonReader
-import com.apollographql.apollo.api.internal.json.JsonEncodingException
-import com.apollographql.apollo.api.internal.json.JsonReader
-import com.apollographql.apollo.api.internal.json.JsonWriter
-import com.apollographql.apollo.api.internal.json.Utils
-import com.apollographql.apollo.api.internal.json.Utils.readRecursively
-import com.apollographql.apollo.api.internal.json.use
-import com.apollographql.apollo.api.internal.json.writeObject
+import com.apollographql.apollo3.api.internal.json.BufferedSourceJsonReader
+import com.apollographql.apollo3.api.internal.json.JsonEncodingException
+import com.apollographql.apollo3.api.internal.json.JsonReader
+import com.apollographql.apollo3.api.internal.json.JsonWriter
+import com.apollographql.apollo3.api.internal.json.Utils
+import com.apollographql.apollo3.api.internal.json.Utils.readRecursively
+import com.apollographql.apollo3.api.internal.json.use
+import com.apollographql.apollo3.api.internal.json.writeObject
 import okio.BufferedSink
 import okio.BufferedSource
 import okio.IOException

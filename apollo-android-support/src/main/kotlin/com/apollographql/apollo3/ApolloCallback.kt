@@ -1,14 +1,14 @@
-package com.apollographql.apollo
+package com.apollographql.apollo3
 
 import android.os.Handler
 import android.os.Looper
-import com.apollographql.apollo.ApolloCallback
-import com.apollographql.apollo.api.Response
-import com.apollographql.apollo.api.Operation
-import com.apollographql.apollo.exception.ApolloException
-import com.apollographql.apollo.exception.ApolloHttpException
-import com.apollographql.apollo.exception.ApolloNetworkException
-import com.apollographql.apollo.exception.ApolloParseException
+import com.apollographql.apollo3.ApolloCallback
+import com.apollographql.apollo3.api.Response
+import com.apollographql.apollo3.api.Operation
+import com.apollographql.apollo3.exception.ApolloException
+import com.apollographql.apollo3.exception.ApolloHttpException
+import com.apollographql.apollo3.exception.ApolloNetworkException
+import com.apollographql.apollo3.exception.ApolloParseException
 
 /**
  *

@@ -1,11 +1,11 @@
-package com.apollographql.apollo.api.internal
+package com.apollographql.apollo3.api.internal
 
-import com.apollographql.apollo.api.ResponseAdapterCache
-import com.apollographql.apollo.api.Error
-import com.apollographql.apollo.api.Operation
-import com.apollographql.apollo.api.Response
-import com.apollographql.apollo.api.Response.Companion.builder
-import com.apollographql.apollo.api.parseData
+import com.apollographql.apollo3.api.ResponseAdapterCache
+import com.apollographql.apollo3.api.Error
+import com.apollographql.apollo3.api.Operation
+import com.apollographql.apollo3.api.Response
+import com.apollographql.apollo3.api.Response.Companion.builder
+import com.apollographql.apollo3.api.parseData
 
 /**
  * [MapResponseParser] parses network responses, including data, errors and extensions from a regular Map<String, Any?>.

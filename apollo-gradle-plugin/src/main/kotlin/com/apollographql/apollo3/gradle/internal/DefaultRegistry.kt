@@ -1,6 +1,6 @@
-package com.apollographql.apollo.gradle.internal
+package com.apollographql.apollo3.gradle.internal
 
-import com.apollographql.apollo.gradle.api.Registry
+import com.apollographql.apollo3.gradle.api.Registry
 import org.gradle.api.provider.Property
 
 abstract class DefaultRegistry: Registry {

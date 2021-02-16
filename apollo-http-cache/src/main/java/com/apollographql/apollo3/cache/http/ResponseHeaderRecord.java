@@ -13,9 +13,9 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.apollographql.apollo.cache.http;
+package com.apollographql.apollo3.cache.http;
 
-import com.apollographql.apollo.cache.http.internal.StatusLine;
+import com.apollographql.apollo3.cache.http.internal.StatusLine;
 import java.io.IOException;
 import java.security.cert.Certificate;
 import java.security.cert.CertificateEncodingException;
@@ -42,7 +42,7 @@ import okio.Okio;
 import okio.Sink;
 import okio.Source;
 
-import static com.apollographql.apollo.cache.http.Utils.varyHeaders;
+import static com.apollographql.apollo3.cache.http.Utils.varyHeaders;
 
 /**
  * Class was copied and modified from {@link okhttp3.Cache.Entry}

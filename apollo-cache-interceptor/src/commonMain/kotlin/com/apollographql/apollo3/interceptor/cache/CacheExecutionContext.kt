@@ -1,12 +1,12 @@
-package com.apollographql.apollo.interceptor.cache
+package com.apollographql.apollo3.interceptor.cache
 
-import com.apollographql.apollo.ApolloClient
-import com.apollographql.apollo.api.ApolloExperimental
-import com.apollographql.apollo.api.ExecutionContext
-import com.apollographql.apollo.api.Operation
-import com.apollographql.apollo.api.Response
-import com.apollographql.apollo.cache.normalized.NormalizedCache
-import com.apollographql.apollo.ApolloQueryRequest
+import com.apollographql.apollo3.ApolloClient
+import com.apollographql.apollo3.api.ApolloExperimental
+import com.apollographql.apollo3.api.ExecutionContext
+import com.apollographql.apollo3.api.Operation
+import com.apollographql.apollo3.api.Response
+import com.apollographql.apollo3.cache.normalized.NormalizedCache
+import com.apollographql.apollo3.ApolloQueryRequest
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 
 @ApolloExperimental

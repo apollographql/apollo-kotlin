@@ -1,15 +1,15 @@
-package com.apollographql.apollo.fetcher
+package com.apollographql.apollo3.fetcher
 
-import com.apollographql.apollo.internal.fetcher.CacheAndNetworkFetcher
-import com.apollographql.apollo.internal.fetcher.CacheFirstFetcher
-import com.apollographql.apollo.internal.fetcher.CacheOnlyFetcher
-import com.apollographql.apollo.internal.fetcher.NetworkFirstFetcher
-import com.apollographql.apollo.internal.fetcher.NetworkOnlyFetcher
+import com.apollographql.apollo3.internal.fetcher.CacheAndNetworkFetcher
+import com.apollographql.apollo3.internal.fetcher.CacheFirstFetcher
+import com.apollographql.apollo3.internal.fetcher.CacheOnlyFetcher
+import com.apollographql.apollo3.internal.fetcher.NetworkFirstFetcher
+import com.apollographql.apollo3.internal.fetcher.NetworkOnlyFetcher
 
 object ApolloResponseFetchers {
   /**
    * Signals the apollo client to **only** fetch the data from the normalized cache. If it's not present in
-   * the normalized cache or if an exception occurs while trying to fetch it from the normalized cache, an empty [ ] is sent back with the [com.apollographql.apollo.api.Operation] info
+   * the normalized cache or if an exception occurs while trying to fetch it from the normalized cache, an empty [ ] is sent back with the [com.apollographql.apollo3.api.Operation] info
    * wrapped inside.
    */
   val CACHE_ONLY: ResponseFetcher = CacheOnlyFetcher()

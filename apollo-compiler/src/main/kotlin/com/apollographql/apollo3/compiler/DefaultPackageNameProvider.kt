@@ -1,4 +1,4 @@
-package com.apollographql.apollo.compiler
+package com.apollographql.apollo3.compiler
 
 class DefaultPackageNameProvider constructor(private val rootPackageName: String, private val roots: Roots) : PackageNameProvider {
 

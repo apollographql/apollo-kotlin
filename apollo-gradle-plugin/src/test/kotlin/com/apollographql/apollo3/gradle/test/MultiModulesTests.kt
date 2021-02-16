@@ -1,7 +1,7 @@
-package com.apollographql.apollo.gradle.test
+package com.apollographql.apollo3.gradle.test
 
-import com.apollographql.apollo.gradle.util.TestUtils
-import com.apollographql.apollo.gradle.util.replaceInText
+import com.apollographql.apollo3.gradle.util.TestUtils
+import com.apollographql.apollo3.gradle.util.replaceInText
 import com.google.common.truth.Truth
 import junit.framework.Assert.fail
 import org.gradle.testkit.runner.TaskOutcome

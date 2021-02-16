@@ -1,9 +1,9 @@
-package com.apollographql.apollo.interceptor
+package com.apollographql.apollo3.interceptor
 
-import com.apollographql.apollo.api.ApolloExperimental
-import com.apollographql.apollo.api.ExecutionContext
-import com.apollographql.apollo.api.Operation
-import com.apollographql.apollo.api.Response
+import com.apollographql.apollo3.api.ApolloExperimental
+import com.apollographql.apollo3.api.ExecutionContext
+import com.apollographql.apollo3.api.Operation
+import com.apollographql.apollo3.api.Response
 import com.benasher44.uuid.Uuid
 
 @ApolloExperimental

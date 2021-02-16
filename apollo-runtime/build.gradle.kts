@@ -3,7 +3,7 @@ plugins {
 }
 
 metalava {
-  hiddenPackages += setOf("com.apollographql.apollo.internal")
+  hiddenPackages += setOf("com.apollographql.apollo3.internal")
 }
 
 dependencies {

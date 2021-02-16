@@ -1,11 +1,11 @@
-package com.apollographql.apollo.testing
+package com.apollographql.apollo3.testing
 
-import com.apollographql.apollo.api.ApolloExperimental
-import com.apollographql.apollo.api.Operation
-import com.apollographql.apollo.interceptor.ApolloInterceptorChain
-import com.apollographql.apollo.ApolloRequest
-import com.apollographql.apollo.interceptor.ApolloRequestInterceptor
-import com.apollographql.apollo.interceptor.ApolloResponse
+import com.apollographql.apollo3.api.ApolloExperimental
+import com.apollographql.apollo3.api.Operation
+import com.apollographql.apollo3.interceptor.ApolloInterceptorChain
+import com.apollographql.apollo3.ApolloRequest
+import com.apollographql.apollo3.interceptor.ApolloRequestInterceptor
+import com.apollographql.apollo3.interceptor.ApolloResponse
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.catch

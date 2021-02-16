@@ -1,15 +1,15 @@
-package com.apollographql.apollo.compiler.backend.codegen
+package com.apollographql.apollo3.compiler.backend.codegen
 
-import com.apollographql.apollo.api.ResponseAdapterCache
-import com.apollographql.apollo.api.Mutation
-import com.apollographql.apollo.api.Query
-import com.apollographql.apollo.api.ResponseField
-import com.apollographql.apollo.api.Subscription
-import com.apollographql.apollo.api.internal.QueryDocumentMinifier
-import com.apollographql.apollo.api.internal.ResponseAdapter
-import com.apollographql.apollo.compiler.applyIf
-import com.apollographql.apollo.compiler.backend.ast.CodeGenerationAst
-import com.apollographql.apollo.compiler.escapeKotlinReservedWord
+import com.apollographql.apollo3.api.ResponseAdapterCache
+import com.apollographql.apollo3.api.Mutation
+import com.apollographql.apollo3.api.Query
+import com.apollographql.apollo3.api.ResponseField
+import com.apollographql.apollo3.api.Subscription
+import com.apollographql.apollo3.api.internal.QueryDocumentMinifier
+import com.apollographql.apollo3.api.internal.ResponseAdapter
+import com.apollographql.apollo3.compiler.applyIf
+import com.apollographql.apollo3.compiler.backend.ast.CodeGenerationAst
+import com.apollographql.apollo3.compiler.escapeKotlinReservedWord
 import com.squareup.kotlinpoet.ClassName
 import com.squareup.kotlinpoet.CodeBlock
 import com.squareup.kotlinpoet.FunSpec

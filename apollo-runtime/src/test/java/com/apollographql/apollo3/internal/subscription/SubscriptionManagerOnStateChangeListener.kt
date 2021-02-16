@@ -1,7 +1,7 @@
-package com.apollographql.apollo.internal.subscription
+package com.apollographql.apollo3.internal.subscription
 
-import com.apollographql.apollo.subscription.OnSubscriptionManagerStateChangeListener
-import com.apollographql.apollo.subscription.SubscriptionManagerState
+import com.apollographql.apollo3.subscription.OnSubscriptionManagerStateChangeListener
+import com.apollographql.apollo3.subscription.SubscriptionManagerState
 import com.google.common.truth.Truth
 import java.util.ArrayList
 import java.util.concurrent.TimeUnit

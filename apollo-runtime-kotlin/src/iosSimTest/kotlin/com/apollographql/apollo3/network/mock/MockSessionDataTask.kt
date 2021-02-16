@@ -1,6 +1,6 @@
-package com.apollographql.apollo.network.mock
+package com.apollographql.apollo3.network.mock
 
-import com.apollographql.apollo.network.http.UrlSessionDataTaskCompletionHandler
+import com.apollographql.apollo3.network.http.UrlSessionDataTaskCompletionHandler
 import platform.Foundation.NSURLSessionDataTask
 
 class MockSessionDataTask(

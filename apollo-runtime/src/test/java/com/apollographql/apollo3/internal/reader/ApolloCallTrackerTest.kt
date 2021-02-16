@@ -1,12 +1,12 @@
-package com.apollographql.apollo.internal.reader
+package com.apollographql.apollo3.internal.reader
 
-import com.apollographql.apollo.ApolloClient
-import com.apollographql.apollo.IdleResourceCallback
-import com.apollographql.apollo.api.ResponseAdapterCache
-import com.apollographql.apollo.api.Operation
-import com.apollographql.apollo.api.Query
-import com.apollographql.apollo.api.ResponseField
-import com.apollographql.apollo.rx2.Rx2Apollo
+import com.apollographql.apollo3.ApolloClient
+import com.apollographql.apollo3.IdleResourceCallback
+import com.apollographql.apollo3.api.ResponseAdapterCache
+import com.apollographql.apollo3.api.Operation
+import com.apollographql.apollo3.api.Query
+import com.apollographql.apollo3.api.ResponseField
+import com.apollographql.apollo3.rx2.Rx2Apollo
 import com.google.common.truth.Truth
 import okhttp3.Interceptor
 import okhttp3.OkHttpClient

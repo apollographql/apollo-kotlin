@@ -1,6 +1,6 @@
-package com.apollographql.apollo.network.ws
+package com.apollographql.apollo3.network.ws
 
-import com.apollographql.apollo.exception.ApolloWebSocketException
+import com.apollographql.apollo3.exception.ApolloWebSocketException
 import kotlinx.coroutines.CompletableDeferred
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.channels.Channel

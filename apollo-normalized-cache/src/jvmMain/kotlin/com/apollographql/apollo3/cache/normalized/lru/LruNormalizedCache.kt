@@ -1,16 +1,16 @@
-package com.apollographql.apollo.cache.normalized.lru
+package com.apollographql.apollo3.cache.normalized.lru
 
-import com.apollographql.apollo.cache.ApolloCacheHeaders
-import com.apollographql.apollo.cache.CacheHeaders
-import com.apollographql.apollo.cache.normalized.CacheKey
-import com.apollographql.apollo.cache.normalized.NormalizedCache
-import com.apollographql.apollo.cache.normalized.Record
+import com.apollographql.apollo3.cache.ApolloCacheHeaders
+import com.apollographql.apollo3.cache.CacheHeaders
+import com.apollographql.apollo3.cache.normalized.CacheKey
+import com.apollographql.apollo3.cache.normalized.NormalizedCache
+import com.apollographql.apollo3.cache.normalized.Record
 import com.nytimes.android.external.cache.Cache
 import com.nytimes.android.external.cache.CacheBuilder
 import java.nio.charset.Charset
 import kotlin.reflect.KClass
 
-@Deprecated("Will be removed soon", replaceWith = ReplaceWith("MemoryCache", "com.apollographql.apollo.cache.normalized.MemoryCache"))
+@Deprecated("Will be removed soon", replaceWith = ReplaceWith("MemoryCache", "com.apollographql.apollo3.cache.normalized.MemoryCache"))
 class LruNormalizedCache internal constructor(evictionPolicy: EvictionPolicy) : NormalizedCache() {
 
   private val lruCache: Cache<String, Record> = CacheBuilder.newBuilder().apply {

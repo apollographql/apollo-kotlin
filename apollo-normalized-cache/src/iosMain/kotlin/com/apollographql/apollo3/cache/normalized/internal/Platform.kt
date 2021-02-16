@@ -1,4 +1,4 @@
-package com.apollographql.apollo.cache.normalized.internal
+package com.apollographql.apollo3.cache.normalized.internal
 
 import kotlinx.atomicfu.locks.reentrantLock
 import kotlinx.atomicfu.locks.withLock

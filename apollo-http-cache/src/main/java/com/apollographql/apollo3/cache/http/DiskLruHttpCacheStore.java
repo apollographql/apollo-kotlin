@@ -1,10 +1,10 @@
-package com.apollographql.apollo.cache.http;
+package com.apollographql.apollo3.cache.http;
 
-import com.apollographql.apollo.api.cache.http.HttpCacheRecord;
-import com.apollographql.apollo.api.cache.http.HttpCacheRecordEditor;
-import com.apollographql.apollo.api.cache.http.HttpCacheStore;
-import com.apollographql.apollo.cache.http.internal.DiskLruCache;
-import com.apollographql.apollo.cache.http.internal.FileSystem;
+import com.apollographql.apollo3.api.cache.http.HttpCacheRecord;
+import com.apollographql.apollo3.api.cache.http.HttpCacheRecordEditor;
+import com.apollographql.apollo3.api.cache.http.HttpCacheStore;
+import com.apollographql.apollo3.cache.http.internal.DiskLruCache;
+import com.apollographql.apollo3.cache.http.internal.FileSystem;
 import java.io.File;
 import java.io.IOException;
 import java.util.concurrent.locks.ReadWriteLock;

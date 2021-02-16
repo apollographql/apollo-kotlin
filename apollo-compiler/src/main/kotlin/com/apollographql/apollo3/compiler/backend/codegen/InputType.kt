@@ -1,11 +1,11 @@
-package com.apollographql.apollo.compiler.backend.codegen
+package com.apollographql.apollo3.compiler.backend.codegen
 
-import com.apollographql.apollo.api.Input
-import com.apollographql.apollo.api.internal.InputFieldMarshaller
-import com.apollographql.apollo.api.internal.InputFieldWriter
-import com.apollographql.apollo.compiler.applyIf
-import com.apollographql.apollo.compiler.backend.ast.CodeGenerationAst
-import com.apollographql.apollo.compiler.escapeKotlinReservedWord
+import com.apollographql.apollo3.api.Input
+import com.apollographql.apollo3.api.internal.InputFieldMarshaller
+import com.apollographql.apollo3.api.internal.InputFieldWriter
+import com.apollographql.apollo3.compiler.applyIf
+import com.apollographql.apollo3.compiler.backend.ast.CodeGenerationAst
+import com.apollographql.apollo3.compiler.escapeKotlinReservedWord
 import com.squareup.kotlinpoet.CodeBlock
 import com.squareup.kotlinpoet.FunSpec
 import com.squareup.kotlinpoet.KModifier
@@ -35,7 +35,7 @@ internal fun CodeGenerationAst.InputType.typeSpec(generateAsInternal: Boolean = 
         .applyIf(generateAsInternal) { addModifiers(KModifier.INTERNAL) }
         .addAnnotation(suppressWarningsAnnotation)
         .addModifiers(KModifier.DATA)
-        .addSuperinterface(com.apollographql.apollo.api.InputType::class)
+        .addSuperinterface(com.apollographql.apollo3.api.InputType::class)
         .primaryConstructor(primaryConstructorSpec)
         .addProperties(
             fields.map { field ->

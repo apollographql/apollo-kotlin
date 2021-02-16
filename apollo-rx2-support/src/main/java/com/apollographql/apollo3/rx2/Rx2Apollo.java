@@ -1,14 +1,14 @@
-package com.apollographql.apollo.rx2;
+package com.apollographql.apollo3.rx2;
 
-import com.apollographql.apollo.ApolloCall;
-import com.apollographql.apollo.ApolloPrefetch;
-import com.apollographql.apollo.ApolloQueryWatcher;
-import com.apollographql.apollo.ApolloSubscriptionCall;
-import com.apollographql.apollo.api.Operation;
-import com.apollographql.apollo.api.Response;
-import com.apollographql.apollo.exception.ApolloException;
-import com.apollographql.apollo.internal.subscription.ApolloSubscriptionTerminatedException;
-import com.apollographql.apollo.internal.util.Cancelable;
+import com.apollographql.apollo3.ApolloCall;
+import com.apollographql.apollo3.ApolloPrefetch;
+import com.apollographql.apollo3.ApolloQueryWatcher;
+import com.apollographql.apollo3.ApolloSubscriptionCall;
+import com.apollographql.apollo3.api.Operation;
+import com.apollographql.apollo3.api.Response;
+import com.apollographql.apollo3.exception.ApolloException;
+import com.apollographql.apollo3.internal.subscription.ApolloSubscriptionTerminatedException;
+import com.apollographql.apollo3.internal.util.Cancelable;
 import io.reactivex.BackpressureStrategy;
 import io.reactivex.Completable;
 import io.reactivex.CompletableEmitter;
@@ -24,7 +24,7 @@ import io.reactivex.disposables.Disposable;
 import io.reactivex.exceptions.Exceptions;
 import org.jetbrains.annotations.NotNull;
 
-import static com.apollographql.apollo.api.internal.Utils.checkNotNull;
+import static com.apollographql.apollo3.api.internal.Utils.checkNotNull;
 
 /**
  * The Rx2Apollo class provides methods for converting ApolloCall, ApolloPrefetch and ApolloWatcher types to RxJava 2
@@ -73,7 +73,7 @@ public class Rx2Apollo {
 
   /**
    * Converts an {@link ApolloCall} to an {@link Observable}. The number of emissions this Observable will have is based
-   * on the {@link com.apollographql.apollo.fetcher.ResponseFetcher} used with the call.
+   * on the {@link com.apollographql.apollo3.fetcher.ResponseFetcher} used with the call.
    *
    * @param call the ApolloCall to convert
    * @param <D>  the value type.

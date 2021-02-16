@@ -1,12 +1,12 @@
-package com.apollographql.apollo.api
+package com.apollographql.apollo3.api
 
-import com.apollographql.apollo.api.internal.InputFieldMarshaller
-import com.apollographql.apollo.api.internal.InputFieldWriter
-import com.apollographql.apollo.api.internal.ResponseAdapter
-import com.apollographql.apollo.api.internal.Throws
-import com.apollographql.apollo.api.internal.json.InputFieldJsonWriter
-import com.apollographql.apollo.api.internal.json.JsonWriter
-import com.apollographql.apollo.api.internal.json.use
+import com.apollographql.apollo3.api.internal.InputFieldMarshaller
+import com.apollographql.apollo3.api.internal.InputFieldWriter
+import com.apollographql.apollo3.api.internal.ResponseAdapter
+import com.apollographql.apollo3.api.internal.Throws
+import com.apollographql.apollo3.api.internal.json.InputFieldJsonWriter
+import com.apollographql.apollo3.api.internal.json.JsonWriter
+import com.apollographql.apollo3.api.internal.json.use
 import okio.Buffer
 import okio.IOException
 import kotlin.jvm.JvmField

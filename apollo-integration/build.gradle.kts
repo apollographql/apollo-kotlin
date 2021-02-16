@@ -1,20 +1,20 @@
-import com.apollographql.apollo.gradle.api.ApolloExtension
+import com.apollographql.apollo3.gradle.api.ApolloExtension
 
 plugins {
-  id("com.apollographql.apollo")
+  id("com.apollographql.apollo3")
   kotlin("jvm")
 }
 
 dependencies {
   implementation(groovy.util.Eval.x(project, "x.dep.kotlin.coroutines"))
 
-  implementation("com.apollographql.apollo:apollo-runtime")
-  implementation("com.apollographql.apollo:apollo-rx2-support")
-  implementation("com.apollographql.apollo:apollo-rx3-support")
-  implementation("com.apollographql.apollo:apollo-coroutines-support")
-  implementation("com.apollographql.apollo:apollo-http-cache")
-  implementation("com.apollographql.apollo:apollo-normalized-cache-sqlite")
-  implementation("com.apollographql.apollo:apollo-compiler")
+  implementation("com.apollographql.apollo3:apollo-runtime")
+  implementation("com.apollographql.apollo3:apollo-rx2-support")
+  implementation("com.apollographql.apollo3:apollo-rx3-support")
+  implementation("com.apollographql.apollo3:apollo-coroutines-support")
+  implementation("com.apollographql.apollo3:apollo-http-cache")
+  implementation("com.apollographql.apollo3:apollo-normalized-cache-sqlite")
+  implementation("com.apollographql.apollo3:apollo-compiler")
 
   testImplementation(kotlin("test-junit"))
   testImplementation(groovy.util.Eval.x(project, "x.dep.junit"))
@@ -24,7 +24,7 @@ dependencies {
 }
 
 configure<ApolloExtension> {
-  file("src/main/graphql/com/apollographql/apollo/integration").listFiles()
+  file("src/main/graphql/com/apollographql/apollo3/integration").listFiles()
       .filter { it.isDirectory }
       .forEach {
         service(it.name) {
@@ -37,7 +37,7 @@ configure<ApolloExtension> {
             }
             "upload" -> {
               customScalarsMapping.set(mapOf(
-                  "Upload" to "com.apollographql.apollo.api.FileUpload"
+                  "Upload" to "com.apollographql.apollo3.api.FileUpload"
               ))
             }
             "sealedclasses" -> {
@@ -51,8 +51,8 @@ configure<ApolloExtension> {
             }
           }
 
-          sourceFolder.set("com/apollographql/apollo/integration/${it.name}")
-          rootPackageName.set("com.apollographql.apollo.integration.${it.name}")
+          sourceFolder.set("com/apollographql/apollo3/integration/${it.name}")
+          rootPackageName.set("com.apollographql.apollo3.integration.${it.name}")
         }
       }
 }

@@ -1,11 +1,11 @@
-package com.apollographql.apollo
+package com.apollographql.apollo3
 
-import com.apollographql.apollo.api.Operation
-import com.apollographql.apollo.exception.ApolloCanceledException
-import com.apollographql.apollo.exception.ApolloException
-import com.apollographql.apollo.exception.ApolloHttpException
-import com.apollographql.apollo.exception.ApolloNetworkException
-import com.apollographql.apollo.internal.util.Cancelable
+import com.apollographql.apollo3.api.Operation
+import com.apollographql.apollo3.exception.ApolloCanceledException
+import com.apollographql.apollo3.exception.ApolloException
+import com.apollographql.apollo3.exception.ApolloHttpException
+import com.apollographql.apollo3.exception.ApolloNetworkException
+import com.apollographql.apollo3.internal.util.Cancelable
 
 /**
  *
@@ -51,7 +51,7 @@ interface ApolloPrefetch : Cancelable {
    * Cancels this [ApolloPrefetch]. If the call has already completed, nothing will happen.
    * If the call is outgoing, an [ApolloCanceledException] will be thrown if the call was started
    * with [.execute]. If the call was started with [.enqueue]
-   * the [com.apollographql.apollo.ApolloPrefetch.Callback] will be disposed, and will receive no more events.
+   * the [com.apollographql.apollo3.ApolloPrefetch.Callback] will be disposed, and will receive no more events.
    * The call will attempt to abort and release resources, if possible.
    */
   override fun cancel()

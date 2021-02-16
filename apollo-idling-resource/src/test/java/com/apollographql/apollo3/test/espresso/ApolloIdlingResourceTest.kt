@@ -1,20 +1,20 @@
-package com.apollographql.apollo.test.espresso
+package com.apollographql.apollo3.test.espresso
 
 import androidx.test.espresso.IdlingResource.ResourceCallback
-import com.apollographql.apollo.ApolloCall
-import com.apollographql.apollo.ApolloClient
-import com.apollographql.apollo.api.Operation
-import com.apollographql.apollo.api.Operation.Companion.EMPTY_VARIABLES
-import com.apollographql.apollo.api.Query
-import com.apollographql.apollo.api.Response
-import com.apollographql.apollo.api.ResponseField
-import com.apollographql.apollo.api.ResponseAdapterCache
-import com.apollographql.apollo.api.internal.json.JsonReader
-import com.apollographql.apollo.api.internal.json.JsonWriter
-import com.apollographql.apollo.api.internal.OperationRequestBodyComposer.compose
-import com.apollographql.apollo.api.internal.ResponseAdapter
-import com.apollographql.apollo.exception.ApolloException
-import com.apollographql.apollo.rx2.Rx2Apollo
+import com.apollographql.apollo3.ApolloCall
+import com.apollographql.apollo3.ApolloClient
+import com.apollographql.apollo3.api.Operation
+import com.apollographql.apollo3.api.Operation.Companion.EMPTY_VARIABLES
+import com.apollographql.apollo3.api.Query
+import com.apollographql.apollo3.api.Response
+import com.apollographql.apollo3.api.ResponseField
+import com.apollographql.apollo3.api.ResponseAdapterCache
+import com.apollographql.apollo3.api.internal.json.JsonReader
+import com.apollographql.apollo3.api.internal.json.JsonWriter
+import com.apollographql.apollo3.api.internal.OperationRequestBodyComposer.compose
+import com.apollographql.apollo3.api.internal.ResponseAdapter
+import com.apollographql.apollo3.exception.ApolloException
+import com.apollographql.apollo3.rx2.Rx2Apollo
 import com.google.common.truth.Truth
 import okhttp3.OkHttpClient
 import okhttp3.mockwebserver.MockResponse
@@ -29,7 +29,7 @@ import java.util.concurrent.CountDownLatch
 import java.util.concurrent.Executors
 import java.util.concurrent.TimeUnit
 import java.util.concurrent.atomic.AtomicInteger
-import com.apollographql.apollo.test.espresso.ApolloIdlingResource
+import com.apollographql.apollo3.test.espresso.ApolloIdlingResource
 import org.junit.Before
 
 class ApolloIdlingResourceTest {

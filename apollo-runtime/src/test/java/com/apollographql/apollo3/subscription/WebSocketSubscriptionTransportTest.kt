@@ -1,4 +1,4 @@
-package com.apollographql.apollo.subscription
+package com.apollographql.apollo3.subscription
 
 import com.google.common.truth.Truth.assertThat
 import okhttp3.Protocol

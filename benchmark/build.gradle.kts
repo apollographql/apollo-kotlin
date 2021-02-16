@@ -13,14 +13,14 @@ buildscript {
   dependencies {
     classpath(groovy.util.Eval.x(project, "x.dep.android.plugin"))
     classpath(groovy.util.Eval.x(project, "x.dep.kotlin.plugin"))
-    classpath("com.apollographql.apollo:apollo-gradle-plugin:3.0.0-SNAPSHOT")
+    classpath("com.apollographql.apollo3:apollo-gradle-plugin:3.0.0-SNAPSHOT")
     classpath("androidx.benchmark:benchmark-gradle-plugin:1.0.0")
   }
 }
 
 apply(plugin = "com.android.library")
 apply(plugin = "org.jetbrains.kotlin.android")
-apply(plugin = "com.apollographql.apollo")
+apply(plugin = "com.apollographql.apollo3")
 apply(plugin = "androidx.benchmark")
 apply(plugin = "org.jetbrains.kotlin.kapt")
 
@@ -35,9 +35,9 @@ repositories {
 }
 
 dependencies {
-  add("implementation", "com.apollographql.apollo:apollo-runtime:3.0.0-SNAPSHOT")
-  add("implementation", "com.apollographql.apollo:apollo-api:3.0.0-SNAPSHOT")
-  add("implementation", "com.apollographql.apollo:apollo-normalized-cache-sqlite:3.0.0-SNAPSHOT")
+  add("implementation", "com.apollographql.apollo3:apollo-runtime:3.0.0-SNAPSHOT")
+  add("implementation", "com.apollographql.apollo3:apollo-api:3.0.0-SNAPSHOT")
+  add("implementation", "com.apollographql.apollo3:apollo-normalized-cache-sqlite:3.0.0-SNAPSHOT")
 
   add("implementation", groovy.util.Eval.x(project, "x.dep.moshi.moshi"))
   add("kapt", groovy.util.Eval.x(project, "x.dep.moshi.kotlinCodegen"))
@@ -75,5 +75,5 @@ plugins.withType(org.gradle.api.plugins.JavaPlugin::class.java) {
   }
 }
 
-configure<com.apollographql.apollo.gradle.api.ApolloExtension> {
+configure<com.apollographql.apollo3.gradle.api.ApolloExtension> {
 }

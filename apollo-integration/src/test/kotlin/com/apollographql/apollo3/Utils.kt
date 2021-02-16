@@ -1,10 +1,10 @@
-package com.apollographql.apollo
+package com.apollographql.apollo3
 
-import com.apollographql.apollo.api.Operation
-import com.apollographql.apollo.api.Response
-import com.apollographql.apollo.coroutines.await
-import com.apollographql.apollo.fetcher.ApolloResponseFetchers.CACHE_ONLY
-import com.apollographql.apollo.fetcher.ApolloResponseFetchers.NETWORK_ONLY
+import com.apollographql.apollo3.api.Operation
+import com.apollographql.apollo3.api.Response
+import com.apollographql.apollo3.coroutines.await
+import com.apollographql.apollo3.fetcher.ApolloResponseFetchers.CACHE_ONLY
+import com.apollographql.apollo3.fetcher.ApolloResponseFetchers.NETWORK_ONLY
 import com.google.common.io.CharStreams
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.runBlocking

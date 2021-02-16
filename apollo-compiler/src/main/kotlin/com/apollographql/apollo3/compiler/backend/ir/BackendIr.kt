@@ -1,6 +1,6 @@
-package com.apollographql.apollo.compiler.backend.ir
+package com.apollographql.apollo3.compiler.backend.ir
 
-import com.apollographql.apollo.compiler.introspection.IntrospectionSchema
+import com.apollographql.apollo3.compiler.introspection.IntrospectionSchema
 
 internal data class SelectionKey(
     val root: String,

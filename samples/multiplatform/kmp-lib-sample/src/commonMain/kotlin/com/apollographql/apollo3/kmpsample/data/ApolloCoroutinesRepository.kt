@@ -1,19 +1,19 @@
-package com.apollographql.apollo.kmpsample.data
+package com.apollographql.apollo3.kmpsample.data
 
-import com.apollographql.apollo.ApolloClient
-import com.apollographql.apollo.api.ApolloExperimental
-import com.apollographql.apollo.kmpsample.GithubRepositoriesQuery
-import com.apollographql.apollo.kmpsample.GithubRepositoryCommitsQuery
-import com.apollographql.apollo.kmpsample.GithubRepositoryCommitsQuery.Data.Viewer.Repository.Ref.Target.Companion.asCommitTarget
-import com.apollographql.apollo.kmpsample.GithubRepositoryDetailQuery
-import com.apollographql.apollo.kmpsample.GithubRepositoryDetailQuery.Data.Viewer.Repository.Companion.asRepositoryRepository
-import com.apollographql.apollo.kmpsample.fragment.RepositoryDetail
-import com.apollographql.apollo.kmpsample.fragment.RepositoryFragment
-import com.apollographql.apollo.kmpsample.type.OrderDirection
-import com.apollographql.apollo.kmpsample.type.PullRequestState
-import com.apollographql.apollo.kmpsample.type.RepositoryOrderField
-import com.apollographql.apollo.network.HttpExecutionContext
-import com.apollographql.apollo.network.http.ApolloHttpNetworkTransport
+import com.apollographql.apollo3.ApolloClient
+import com.apollographql.apollo3.api.ApolloExperimental
+import com.apollographql.apollo3.kmpsample.GithubRepositoriesQuery
+import com.apollographql.apollo3.kmpsample.GithubRepositoryCommitsQuery
+import com.apollographql.apollo3.kmpsample.GithubRepositoryCommitsQuery.Data.Viewer.Repository.Ref.Target.Companion.asCommitTarget
+import com.apollographql.apollo3.kmpsample.GithubRepositoryDetailQuery
+import com.apollographql.apollo3.kmpsample.GithubRepositoryDetailQuery.Data.Viewer.Repository.Companion.asRepositoryRepository
+import com.apollographql.apollo3.kmpsample.fragment.RepositoryDetail
+import com.apollographql.apollo3.kmpsample.fragment.RepositoryFragment
+import com.apollographql.apollo3.kmpsample.type.OrderDirection
+import com.apollographql.apollo3.kmpsample.type.PullRequestState
+import com.apollographql.apollo3.kmpsample.type.RepositoryOrderField
+import com.apollographql.apollo3.network.HttpExecutionContext
+import com.apollographql.apollo3.network.http.ApolloHttpNetworkTransport
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.single
 

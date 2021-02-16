@@ -24,7 +24,7 @@
 grammar GraphQL;
 
 @header {
-package com.apollographql.apollo.compiler.parser.antlr;
+package com.apollographql.apollo3.compiler.parser.antlr;
 }
 
 document

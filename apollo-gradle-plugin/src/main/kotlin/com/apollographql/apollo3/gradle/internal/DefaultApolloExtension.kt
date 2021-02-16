@@ -1,17 +1,17 @@
-package com.apollographql.apollo.gradle.internal
+package com.apollographql.apollo3.gradle.internal
 
-import com.apollographql.apollo.compiler.OperationIdGenerator
-import com.apollographql.apollo.compiler.OperationOutputGenerator
-import com.apollographql.apollo.gradle.api.AndroidProject
-import com.apollographql.apollo.gradle.api.ApolloAttributes
-import com.apollographql.apollo.gradle.api.ApolloExtension
-import com.apollographql.apollo.gradle.api.KotlinJvmProject
-import com.apollographql.apollo.gradle.api.KotlinMultiplatformProject
-import com.apollographql.apollo.gradle.api.Service
-import com.apollographql.apollo.gradle.api.androidExtension
-import com.apollographql.apollo.gradle.api.isKotlinMultiplatform
-import com.apollographql.apollo.gradle.api.kotlinJvmExtension
-import com.apollographql.apollo.gradle.api.kotlinMultiplatformExtension
+import com.apollographql.apollo3.compiler.OperationIdGenerator
+import com.apollographql.apollo3.compiler.OperationOutputGenerator
+import com.apollographql.apollo3.gradle.api.AndroidProject
+import com.apollographql.apollo3.gradle.api.ApolloAttributes
+import com.apollographql.apollo3.gradle.api.ApolloExtension
+import com.apollographql.apollo3.gradle.api.KotlinJvmProject
+import com.apollographql.apollo3.gradle.api.KotlinMultiplatformProject
+import com.apollographql.apollo3.gradle.api.Service
+import com.apollographql.apollo3.gradle.api.androidExtension
+import com.apollographql.apollo3.gradle.api.isKotlinMultiplatform
+import com.apollographql.apollo3.gradle.api.kotlinJvmExtension
+import com.apollographql.apollo3.gradle.api.kotlinMultiplatformExtension
 import org.gradle.api.Action
 import org.gradle.api.Project
 import org.gradle.api.Task
@@ -424,7 +424,7 @@ abstract class DefaultApolloExtension(private val project: Project, private val 
       return configurations.flatMap { configuration ->
         configuration.incoming.dependencies
             .filter {
-              it.group == "com.apollographql.apollo"
+              it.group == "com.apollographql.apollo3"
             }.map { dependency ->
               Dep(dependency.name, dependency.version)
             }

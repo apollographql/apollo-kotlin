@@ -1,6 +1,6 @@
-package com.apollographql.apollo.gradle.internal
+package com.apollographql.apollo3.gradle.internal
 
-import com.apollographql.apollo.gradle.api.Introspection
+import com.apollographql.apollo3.gradle.api.Introspection
 import org.gradle.api.provider.MapProperty
 import org.gradle.api.provider.Property
 

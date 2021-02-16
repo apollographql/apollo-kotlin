@@ -1,4 +1,4 @@
-package com.apollographql.apollo.kotlinsample.repositories
+package com.apollographql.apollo3.kotlinsample.repositories
 
 import android.os.Bundle
 import android.view.View
@@ -6,12 +6,12 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import com.apollographql.apollo.kotlinsample.BuildConfig
-import com.apollographql.apollo.kotlinsample.KotlinSampleApp
-import com.apollographql.apollo.kotlinsample.R
-import com.apollographql.apollo.kotlinsample.data.GitHubDataSource
-import com.apollographql.apollo.kotlinsample.fragment.RepositoryFragment
-import com.apollographql.apollo.kotlinsample.repositoryDetail.RepositoryDetailActivity
+import com.apollographql.apollo3.kotlinsample.BuildConfig
+import com.apollographql.apollo3.kotlinsample.KotlinSampleApp
+import com.apollographql.apollo3.kotlinsample.R
+import com.apollographql.apollo3.kotlinsample.data.GitHubDataSource
+import com.apollographql.apollo3.kotlinsample.fragment.RepositoryFragment
+import com.apollographql.apollo3.kotlinsample.repositoryDetail.RepositoryDetailActivity
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.schedulers.Schedulers

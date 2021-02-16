@@ -33,14 +33,14 @@ abstract class GeneratePluginVersion : DefaultTask() {
     val versionFile = File(outputDir.asFile.get(), "Version.kt")
     versionFile.parentFile.mkdirs()
     versionFile.writeText("""// Generated file. Do not edit!
-package com.apollographql.apollo.compiler
+package com.apollographql.apollo3.compiler
 val VERSION = "${project.version}"
 """)
   }
 }
 
 val pluginVersionTaskProvider = tasks.register("pluginVersion", GeneratePluginVersion::class.java) {
-  outputDir.set(project.layout.buildDirectory.dir("generated/kotlin/com/apollographql/apollo/compiler/"))
+  outputDir.set(project.layout.buildDirectory.dir("generated/kotlin/com/apollographql/apollo3/compiler/"))
   version.set(project.version.toString())
 }
 

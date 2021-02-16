@@ -1,7 +1,7 @@
-package com.apollographql.apollo.subscription
+package com.apollographql.apollo3.subscription
 
-import com.apollographql.apollo.api.ResponseAdapterCache
-import com.apollographql.apollo.api.Subscription
+import com.apollographql.apollo3.api.ResponseAdapterCache
+import com.apollographql.apollo3.api.Subscription
 
 sealed class OperationClientMessage {
   class Init(val connectionParams: Map<String, Any?>) : OperationClientMessage() {

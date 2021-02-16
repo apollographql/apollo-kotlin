@@ -5,11 +5,11 @@
 //
 package com.example.fragment_with_inline_fragment.fragment
 
-import com.apollographql.apollo.api.Fragment
-import com.apollographql.apollo.api.Operation
-import com.apollographql.apollo.api.ResponseAdapterCache
-import com.apollographql.apollo.api.ResponseField
-import com.apollographql.apollo.api.internal.ResponseAdapter
+import com.apollographql.apollo3.api.Fragment
+import com.apollographql.apollo3.api.Operation
+import com.apollographql.apollo3.api.ResponseAdapterCache
+import com.apollographql.apollo3.api.ResponseField
+import com.apollographql.apollo3.api.internal.ResponseAdapter
 import com.example.fragment_with_inline_fragment.fragment.adapter.HeroDetailsImpl_ResponseAdapter
 import kotlin.Int
 import kotlin.String

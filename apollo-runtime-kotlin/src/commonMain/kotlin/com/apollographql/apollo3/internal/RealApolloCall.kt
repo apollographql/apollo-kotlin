@@ -1,15 +1,15 @@
-package com.apollographql.apollo.internal
+package com.apollographql.apollo3.internal
 
-import com.apollographql.apollo.ApolloMutationCall
-import com.apollographql.apollo.ApolloQueryCall
-import com.apollographql.apollo.ApolloSubscriptionCall
-import com.apollographql.apollo.api.ApolloExperimental
-import com.apollographql.apollo.api.Operation
-import com.apollographql.apollo.api.Response
-import com.apollographql.apollo.api.ResponseAdapterCache
-import com.apollographql.apollo.ApolloRequest
-import com.apollographql.apollo.interceptor.ApolloRequestInterceptor
-import com.apollographql.apollo.interceptor.RealInterceptorChain
+import com.apollographql.apollo3.ApolloMutationCall
+import com.apollographql.apollo3.ApolloQueryCall
+import com.apollographql.apollo3.ApolloSubscriptionCall
+import com.apollographql.apollo3.api.ApolloExperimental
+import com.apollographql.apollo3.api.Operation
+import com.apollographql.apollo3.api.Response
+import com.apollographql.apollo3.api.ResponseAdapterCache
+import com.apollographql.apollo3.ApolloRequest
+import com.apollographql.apollo3.interceptor.ApolloRequestInterceptor
+import com.apollographql.apollo3.interceptor.RealInterceptorChain
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flatMapLatest

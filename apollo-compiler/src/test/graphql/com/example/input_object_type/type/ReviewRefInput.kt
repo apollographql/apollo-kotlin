@@ -5,9 +5,9 @@
 //
 package com.example.input_object_type.type
 
-import com.apollographql.apollo.api.Input
-import com.apollographql.apollo.api.InputType
-import com.apollographql.apollo.api.internal.InputFieldMarshaller
+import com.apollographql.apollo3.api.Input
+import com.apollographql.apollo3.api.InputType
+import com.apollographql.apollo3.api.internal.InputFieldMarshaller
 import kotlin.Suppress
 
 /**

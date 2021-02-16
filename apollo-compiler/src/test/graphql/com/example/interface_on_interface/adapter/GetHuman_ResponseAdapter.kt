@@ -5,13 +5,13 @@
 //
 package com.example.interface_on_interface.adapter
 
-import com.apollographql.apollo.api.ResponseAdapterCache
-import com.apollographql.apollo.api.ResponseField
-import com.apollographql.apollo.api.internal.DoubleResponseAdapter
-import com.apollographql.apollo.api.internal.ResponseAdapter
-import com.apollographql.apollo.api.internal.StringResponseAdapter
-import com.apollographql.apollo.api.internal.json.JsonReader
-import com.apollographql.apollo.api.internal.json.JsonWriter
+import com.apollographql.apollo3.api.ResponseAdapterCache
+import com.apollographql.apollo3.api.ResponseField
+import com.apollographql.apollo3.api.internal.DoubleResponseAdapter
+import com.apollographql.apollo3.api.internal.ResponseAdapter
+import com.apollographql.apollo3.api.internal.StringResponseAdapter
+import com.apollographql.apollo3.api.internal.json.JsonReader
+import com.apollographql.apollo3.api.internal.json.JsonWriter
 import com.example.interface_on_interface.GetHuman
 import kotlin.Array
 import kotlin.Double

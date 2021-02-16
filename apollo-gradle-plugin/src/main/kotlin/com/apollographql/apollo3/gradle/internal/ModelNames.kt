@@ -1,6 +1,6 @@
-package com.apollographql.apollo.gradle.internal
+package com.apollographql.apollo3.gradle.internal
 
-import com.apollographql.apollo.gradle.api.Service
+import com.apollographql.apollo3.gradle.api.Service
 
 object ModelNames {
   private fun camelCase(vararg elements: String): String {

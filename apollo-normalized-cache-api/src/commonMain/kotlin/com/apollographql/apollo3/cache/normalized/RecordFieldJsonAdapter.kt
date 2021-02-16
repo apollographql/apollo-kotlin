@@ -1,10 +1,10 @@
-package com.apollographql.apollo.cache.normalized
+package com.apollographql.apollo3.cache.normalized
 
-import com.apollographql.apollo.api.internal.json.BufferedSourceJsonReader
-import com.apollographql.apollo.api.internal.json.JsonWriter
-import com.apollographql.apollo.api.internal.json.Utils.readRecursively
-import com.apollographql.apollo.api.internal.json.use
-import com.apollographql.apollo.cache.normalized.RecordFieldJsonAdapter.writeJsonValue
+import com.apollographql.apollo3.api.internal.json.BufferedSourceJsonReader
+import com.apollographql.apollo3.api.internal.json.JsonWriter
+import com.apollographql.apollo3.api.internal.json.Utils.readRecursively
+import com.apollographql.apollo3.api.internal.json.use
+import com.apollographql.apollo3.cache.normalized.RecordFieldJsonAdapter.writeJsonValue
 import okio.Buffer
 import okio.BufferedSource
 import okio.ByteString.Companion.encodeUtf8

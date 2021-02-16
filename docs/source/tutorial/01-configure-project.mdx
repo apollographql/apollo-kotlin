@@ -36,13 +36,13 @@ This tutorial uses `2.2.0` because it is the latest version at the time of writi
 
 ## Apply the plugin
 
-Apply the Apollo plugin in `app/build.gradle.kts`. There are two `build.gradle.kts` in the project. Make sure to use the one in the `app` directory this time. The Apollo plugin ID is `com.apollographql.apollo`.
+Apply the Apollo plugin in `app/build.gradle.kts`. There are two `build.gradle.kts` in the project. Make sure to use the one in the `app` directory this time. The Apollo plugin ID is `com.apollographql.apollo3`.
 
 ```kotlin:title=app/build.gradle.kts
 plugins {
     id("com.android.application")
     // ...
-    id("com.apollographql.apollo").version("2.2.0")
+    id("com.apollographql.apollo3").version("2.2.0")
 }
 ```
 
@@ -66,8 +66,8 @@ Now add `apollo-runtime` and `apollo-coroutines-support` to the list of dependen
 dependencies {
     implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"
     // ...
-    implementation 'com.apollographql.apollo:apollo-runtime:2.2.0'
-    implementation 'com.apollographql.apollo:apollo-coroutines-support:2.2.0'
+    implementation 'com.apollographql.apollo3:apollo-runtime:2.2.0'
+    implementation 'com.apollographql.apollo3:apollo-coroutines-support:2.2.0'
     // ...
 }
 ```

@@ -1,4 +1,4 @@
-package com.apollographql.apollo.cache.normalized
+package com.apollographql.apollo3.cache.normalized
 
 import kotlin.test.Test
 import kotlin.test.assertEquals

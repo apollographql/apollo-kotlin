@@ -1,15 +1,15 @@
-package com.apollographql.apollo.cache.normalized.internal
+package com.apollographql.apollo3.cache.normalized.internal
 
-import com.apollographql.apollo.api.Operation
-import com.apollographql.apollo.api.ResponseField
-import com.apollographql.apollo.api.internal.Utils.shouldSkip
-import com.apollographql.apollo.cache.CacheHeaders
-import com.apollographql.apollo.cache.normalized.CacheKey
-import com.apollographql.apollo.cache.normalized.CacheKeyResolver
-import com.apollographql.apollo.cache.normalized.CacheReference
-import com.apollographql.apollo.cache.normalized.Record
-import com.apollographql.apollo.exception.FieldMissingException
-import com.apollographql.apollo.exception.ObjectMissingException
+import com.apollographql.apollo3.api.Operation
+import com.apollographql.apollo3.api.ResponseField
+import com.apollographql.apollo3.api.internal.Utils.shouldSkip
+import com.apollographql.apollo3.cache.CacheHeaders
+import com.apollographql.apollo3.cache.normalized.CacheKey
+import com.apollographql.apollo3.cache.normalized.CacheKeyResolver
+import com.apollographql.apollo3.cache.normalized.CacheReference
+import com.apollographql.apollo3.cache.normalized.Record
+import com.apollographql.apollo3.exception.FieldMissingException
+import com.apollographql.apollo3.exception.ObjectMissingException
 
 
 class CacheSequentialReader(

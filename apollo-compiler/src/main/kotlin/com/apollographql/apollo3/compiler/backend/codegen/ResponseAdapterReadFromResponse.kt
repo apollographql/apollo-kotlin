@@ -1,12 +1,12 @@
-package com.apollographql.apollo.compiler.backend.codegen
+package com.apollographql.apollo3.compiler.backend.codegen
 
-import com.apollographql.apollo.api.ResponseField
-import com.apollographql.apollo.api.internal.json.JsonReader
-import com.apollographql.apollo.compiler.applyIf
-import com.apollographql.apollo.compiler.backend.ast.CodeGenerationAst
-import com.apollographql.apollo.compiler.backend.ast.toLowerCamelCase
-import com.apollographql.apollo.compiler.escapeKotlinReservedWord
-import com.apollographql.apollo.exception.UnexpectedNullValue
+import com.apollographql.apollo3.api.ResponseField
+import com.apollographql.apollo3.api.internal.json.JsonReader
+import com.apollographql.apollo3.compiler.applyIf
+import com.apollographql.apollo3.compiler.backend.ast.CodeGenerationAst
+import com.apollographql.apollo3.compiler.backend.ast.toLowerCamelCase
+import com.apollographql.apollo3.compiler.escapeKotlinReservedWord
+import com.apollographql.apollo3.exception.UnexpectedNullValue
 import com.squareup.kotlinpoet.CodeBlock
 import com.squareup.kotlinpoet.FunSpec
 import com.squareup.kotlinpoet.KModifier

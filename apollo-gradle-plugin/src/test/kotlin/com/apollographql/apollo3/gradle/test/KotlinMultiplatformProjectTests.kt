@@ -1,6 +1,6 @@
-package com.apollographql.apollo.gradle.test
+package com.apollographql.apollo3.gradle.test
 
-import com.apollographql.apollo.gradle.util.TestUtils
+import com.apollographql.apollo3.gradle.util.TestUtils
 import org.junit.Test
 
 class KotlinMultiplatformProjectTests {

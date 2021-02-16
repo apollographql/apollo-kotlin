@@ -1,11 +1,11 @@
-package com.apollographql.apollo.test.espresso;
+package com.apollographql.apollo3.test.espresso;
 
 import androidx.test.espresso.IdlingResource;
-import com.apollographql.apollo.ApolloClient;
-import com.apollographql.apollo.IdleResourceCallback;
+import com.apollographql.apollo3.ApolloClient;
+import com.apollographql.apollo3.IdleResourceCallback;
 import org.jetbrains.annotations.NotNull;
 
-import static com.apollographql.apollo.api.internal.Utils.checkNotNull;
+import static com.apollographql.apollo3.api.internal.Utils.checkNotNull;
 
 /**
  * An Espresso {@link IdlingResource} for {@link ApolloClient}.

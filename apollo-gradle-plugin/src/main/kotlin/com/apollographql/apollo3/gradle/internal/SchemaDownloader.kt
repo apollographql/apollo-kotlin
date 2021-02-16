@@ -1,6 +1,6 @@
-package com.apollographql.apollo.gradle.internal
+package com.apollographql.apollo3.gradle.internal
 
-import com.apollographql.apollo.compiler.fromJson
+import com.apollographql.apollo3.compiler.fromJson
 
 object SchemaDownloader {
   fun downloadIntrospection(

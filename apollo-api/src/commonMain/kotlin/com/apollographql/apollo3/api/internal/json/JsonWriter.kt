@@ -13,10 +13,10 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.apollographql.apollo.api.internal.json
+package com.apollographql.apollo3.api.internal.json
 
-import com.apollographql.apollo.api.internal.Throws
-import com.apollographql.apollo.api.internal.json.JsonScope.getPath
+import com.apollographql.apollo3.api.internal.Throws
+import com.apollographql.apollo3.api.internal.json.JsonScope.getPath
 import okio.BufferedSink
 import okio.IOException
 import kotlin.jvm.JvmStatic

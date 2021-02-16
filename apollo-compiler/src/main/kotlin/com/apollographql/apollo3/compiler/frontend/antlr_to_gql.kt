@@ -1,6 +1,6 @@
-package com.apollographql.apollo.compiler.frontend
+package com.apollographql.apollo3.compiler.frontend
 
-import com.apollographql.apollo.compiler.parser.antlr.GraphQLParser
+import com.apollographql.apollo3.compiler.parser.antlr.GraphQLParser
 import org.antlr.v4.runtime.Token
 
 fun GraphQLParser.DocumentContext.toGQLDocument(filePath: String? = null) = AntlrToGQLScope(filePath).parseDocumentContext(this)

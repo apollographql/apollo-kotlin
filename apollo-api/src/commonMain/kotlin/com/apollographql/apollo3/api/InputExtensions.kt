@@ -2,7 +2,7 @@
 @file:JvmName("KotlinExtensions")
 @file:JvmMultifileClass
 
-package com.apollographql.apollo.api
+package com.apollographql.apollo3.api
 
 import kotlin.jvm.JvmMultifileClass
 import kotlin.jvm.JvmName

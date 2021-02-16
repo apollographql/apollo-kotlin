@@ -1,4 +1,4 @@
-package com.apollographql.apollo.network
+package com.apollographql.apollo3.network
 
 import kotlinx.cinterop.addressOf
 import kotlinx.cinterop.convert

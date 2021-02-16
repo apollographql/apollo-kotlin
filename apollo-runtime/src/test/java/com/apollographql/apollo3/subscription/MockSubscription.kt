@@ -1,10 +1,10 @@
-package com.apollographql.apollo.subscription
+package com.apollographql.apollo3.subscription
 
-import com.apollographql.apollo.api.ResponseAdapterCache
-import com.apollographql.apollo.api.Operation
-import com.apollographql.apollo.api.ResponseField
-import com.apollographql.apollo.api.Subscription
-import com.apollographql.apollo.api.internal.InputFieldMarshaller
+import com.apollographql.apollo3.api.ResponseAdapterCache
+import com.apollographql.apollo3.api.Operation
+import com.apollographql.apollo3.api.ResponseField
+import com.apollographql.apollo3.api.Subscription
+import com.apollographql.apollo3.api.internal.InputFieldMarshaller
 
 class MockSubscription(
     private val queryDocument: String = "subscription{commentAdded{id  name}",

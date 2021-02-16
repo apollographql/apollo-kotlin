@@ -1,4 +1,4 @@
-package com.apollographql.apollo.compiler.frontend.ir
+package com.apollographql.apollo3.compiler.frontend.ir
 
 internal fun FrontendIr.Operation.simplifyConditions(): FrontendIr.Operation {
   return copy( selections = selections.simplifyConditions())

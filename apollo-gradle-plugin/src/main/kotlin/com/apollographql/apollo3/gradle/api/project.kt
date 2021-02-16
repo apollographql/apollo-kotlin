@@ -1,4 +1,4 @@
-package com.apollographql.apollo.gradle.api
+package com.apollographql.apollo3.gradle.api
 
 import com.android.build.gradle.BaseExtension
 import org.gradle.api.Project

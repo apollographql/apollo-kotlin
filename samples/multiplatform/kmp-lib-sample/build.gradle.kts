@@ -3,10 +3,10 @@ import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 
 plugins {
   kotlin("multiplatform")
-  id("com.apollographql.apollo")
+  id("com.apollographql.apollo3")
 }
 
-group = "com.apollographql.apollo.kmpsample"
+group = "com.apollographql.apollo3.kmpsample"
 version = 1.0
 
 kotlin {
@@ -28,8 +28,8 @@ kotlin {
   sourceSets {
     commonMain {
       dependencies {
-        implementation("com.apollographql.apollo:apollo-api")
-        implementation("com.apollographql.apollo:apollo-runtime-kotlin")
+        implementation("com.apollographql.apollo3:apollo-api")
+        implementation("com.apollographql.apollo3:apollo-runtime-kotlin")
         implementation(groovy.util.Eval.x(project, "x.dep.kotlin.coroutines"))
       }
     }

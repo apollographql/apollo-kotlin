@@ -13,9 +13,9 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.apollographql.apollo.api.internal
+package com.apollographql.apollo3.api.internal
 
-import com.apollographql.apollo.api.internal.Absent.Companion.withType
+import com.apollographql.apollo3.api.internal.Absent.Companion.withType
 import java.io.Serializable
 
 /**

@@ -1,19 +1,19 @@
-package com.apollographql.apollo.kotlinsample.data
+package com.apollographql.apollo3.kotlinsample.data
 
 import android.util.Log
-import com.apollographql.apollo.ApolloCall
-import com.apollographql.apollo.ApolloClient
-import com.apollographql.apollo.api.Operation
-import com.apollographql.apollo.api.Response
-import com.apollographql.apollo.exception.ApolloException
-import com.apollographql.apollo.fetcher.ApolloResponseFetchers
-import com.apollographql.apollo.kotlinsample.GithubRepositoriesQuery
-import com.apollographql.apollo.kotlinsample.GithubRepositoryCommitsQuery
-import com.apollographql.apollo.kotlinsample.GithubRepositoryCommitsQuery.Data.Viewer.Repository.Ref.Target.Companion.asCommitTarget
-import com.apollographql.apollo.kotlinsample.GithubRepositoryDetailQuery
-import com.apollographql.apollo.kotlinsample.type.OrderDirection
-import com.apollographql.apollo.kotlinsample.type.PullRequestState
-import com.apollographql.apollo.kotlinsample.type.RepositoryOrderField
+import com.apollographql.apollo3.ApolloCall
+import com.apollographql.apollo3.ApolloClient
+import com.apollographql.apollo3.api.Operation
+import com.apollographql.apollo3.api.Response
+import com.apollographql.apollo3.exception.ApolloException
+import com.apollographql.apollo3.fetcher.ApolloResponseFetchers
+import com.apollographql.apollo3.kotlinsample.GithubRepositoriesQuery
+import com.apollographql.apollo3.kotlinsample.GithubRepositoryCommitsQuery
+import com.apollographql.apollo3.kotlinsample.GithubRepositoryCommitsQuery.Data.Viewer.Repository.Ref.Target.Companion.asCommitTarget
+import com.apollographql.apollo3.kotlinsample.GithubRepositoryDetailQuery
+import com.apollographql.apollo3.kotlinsample.type.OrderDirection
+import com.apollographql.apollo3.kotlinsample.type.PullRequestState
+import com.apollographql.apollo3.kotlinsample.type.RepositoryOrderField
 
 /**
  * An implementation of a [GitHubDataSource] that shows how to fetch data using callbacks.

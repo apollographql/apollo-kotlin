@@ -1,8 +1,8 @@
-package com.apollographql.apollo.kmpsample.data
+package com.apollographql.apollo3.kmpsample.data
 
-import com.apollographql.apollo.kmpsample.GithubRepositoryCommitsQuery
-import com.apollographql.apollo.kmpsample.fragment.RepositoryDetail
-import com.apollographql.apollo.kmpsample.fragment.RepositoryFragment
+import com.apollographql.apollo3.kmpsample.GithubRepositoryCommitsQuery
+import com.apollographql.apollo3.kmpsample.fragment.RepositoryDetail
+import com.apollographql.apollo3.kmpsample.fragment.RepositoryFragment
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.InternalCoroutinesApi
 import kotlinx.coroutines.launch

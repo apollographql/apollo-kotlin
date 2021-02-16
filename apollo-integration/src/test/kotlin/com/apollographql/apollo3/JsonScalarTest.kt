@@ -1,13 +1,13 @@
-package com.apollographql.apollo
+package com.apollographql.apollo3
 
-import com.apollographql.apollo.integration.normalizer.GetJsonScalarQuery
-import com.apollographql.apollo.Utils.cacheAndAssertCachedResponse
-import com.apollographql.apollo.Utils.immediateExecutor
-import com.apollographql.apollo.Utils.immediateExecutorService
-import com.apollographql.apollo.api.BigDecimal
-import com.apollographql.apollo.api.BuiltinCustomScalarAdapters
-import com.apollographql.apollo.cache.normalized.MemoryCacheFactory
-import com.apollographql.apollo.integration.normalizer.type.CustomScalars
+import com.apollographql.apollo3.integration.normalizer.GetJsonScalarQuery
+import com.apollographql.apollo3.Utils.cacheAndAssertCachedResponse
+import com.apollographql.apollo3.Utils.immediateExecutor
+import com.apollographql.apollo3.Utils.immediateExecutorService
+import com.apollographql.apollo3.api.BigDecimal
+import com.apollographql.apollo3.api.BuiltinCustomScalarAdapters
+import com.apollographql.apollo3.cache.normalized.MemoryCacheFactory
+import com.apollographql.apollo3.integration.normalizer.type.CustomScalars
 import com.google.common.truth.Truth.assertThat
 import okhttp3.Dispatcher
 import okhttp3.OkHttpClient

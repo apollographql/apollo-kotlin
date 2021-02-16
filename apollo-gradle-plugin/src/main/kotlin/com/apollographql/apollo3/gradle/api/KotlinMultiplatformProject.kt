@@ -1,6 +1,6 @@
-package com.apollographql.apollo.gradle.api
+package com.apollographql.apollo3.gradle.api
 
-import com.apollographql.apollo.gradle.internal.ApolloGenerateSourcesTask
+import com.apollographql.apollo3.gradle.internal.ApolloGenerateSourcesTask
 import org.gradle.api.Project
 import org.gradle.api.tasks.TaskProvider
 import org.jetbrains.kotlin.gradle.dsl.KotlinMultiplatformExtension

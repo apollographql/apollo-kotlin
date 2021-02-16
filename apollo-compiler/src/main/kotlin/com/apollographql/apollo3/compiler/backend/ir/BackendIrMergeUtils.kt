@@ -1,4 +1,4 @@
-package com.apollographql.apollo.compiler.backend.ir
+package com.apollographql.apollo3.compiler.backend.ir
 
 internal object BackendIrMergeUtils {
 

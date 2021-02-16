@@ -1,8 +1,8 @@
 @file:Suppress("MemberVisibilityCanBePrivate")
 
-package com.apollographql.apollo.cache.normalized.internal
+package com.apollographql.apollo3.cache.normalized.internal
 
-import com.apollographql.apollo.cache.normalized.Record
+import com.apollographql.apollo3.cache.normalized.Record
 
 class CacheMissException(
     val record: Record,

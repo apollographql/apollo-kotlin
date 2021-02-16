@@ -5,7 +5,7 @@
 //
 package com.example.simple_fragment_with_inline_fragments.type
 
-import com.apollographql.apollo.api.CustomScalar
+import com.apollographql.apollo3.api.CustomScalar
 
 /**
  * Auto generated constants for custom scalars. Use them to register your [CustomScalarAdapter]s

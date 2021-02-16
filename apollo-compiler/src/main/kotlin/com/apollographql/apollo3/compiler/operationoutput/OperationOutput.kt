@@ -1,6 +1,6 @@
-package com.apollographql.apollo.compiler.operationoutput
+package com.apollographql.apollo3.compiler.operationoutput
 
-import com.apollographql.apollo.compiler.applyIf
+import com.apollographql.apollo3.compiler.applyIf
 import com.squareup.moshi.JsonAdapter
 import com.squareup.moshi.JsonClass
 import com.squareup.moshi.Moshi

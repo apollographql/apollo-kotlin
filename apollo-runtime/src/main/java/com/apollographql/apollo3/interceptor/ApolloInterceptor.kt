@@ -1,10 +1,10 @@
-package com.apollographql.apollo.interceptor
+package com.apollographql.apollo3.interceptor
 
-import com.apollographql.apollo.api.Operation
-import com.apollographql.apollo.api.internal.Optional
-import com.apollographql.apollo.cache.CacheHeaders
-import com.apollographql.apollo.exception.ApolloException
-import com.apollographql.apollo.request.RequestHeaders
+import com.apollographql.apollo3.api.Operation
+import com.apollographql.apollo3.api.internal.Optional
+import com.apollographql.apollo3.cache.CacheHeaders
+import com.apollographql.apollo3.exception.ApolloException
+import com.apollographql.apollo3.request.RequestHeaders
 import okhttp3.Response
 import java.util.UUID
 import java.util.concurrent.Executor
@@ -31,7 +31,7 @@ interface ApolloInterceptor {
    * Disposes of the resources which are no longer required.
    *
    *
-   * A use case for this method call would be when an [com.apollographql.apollo.ApolloCall] needs to be
+   * A use case for this method call would be when an [com.apollographql.apollo3.ApolloCall] needs to be
    * cancelled and resources need to be disposed of.
    */
   fun dispose()
@@ -85,10 +85,10 @@ interface ApolloInterceptor {
   /**
    * InterceptorResponse class represents the response returned by the [ApolloInterceptor].
    */
-  class InterceptorResponse @JvmOverloads constructor(httpResponse: Response?, parsedResponse: com.apollographql.apollo.api.Response<*>? = null) {
+  class InterceptorResponse @JvmOverloads constructor(httpResponse: Response?, parsedResponse: com.apollographql.apollo3.api.Response<*>? = null) {
     val httpResponse: Optional<Response>
     @JvmField
-    val parsedResponse: Optional<com.apollographql.apollo.api.Response<*>?>
+    val parsedResponse: Optional<com.apollographql.apollo3.api.Response<*>?>
 
     init {
       this.httpResponse = Optional.fromNullable(httpResponse)

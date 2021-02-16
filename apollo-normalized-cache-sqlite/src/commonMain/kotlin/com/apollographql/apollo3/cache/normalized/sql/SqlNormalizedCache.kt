@@ -1,19 +1,19 @@
-package com.apollographql.apollo.cache.normalized.sql
+package com.apollographql.apollo3.cache.normalized.sql
 
-import com.apollographql.apollo.cache.ApolloCacheHeaders
-import com.apollographql.apollo.cache.ApolloCacheHeaders.EVICT_AFTER_READ
-import com.apollographql.apollo.cache.CacheHeaders
-import com.apollographql.apollo.cache.normalized.CacheKey
-import com.apollographql.apollo.cache.normalized.NormalizedCache
-import com.apollographql.apollo.cache.normalized.Record
-import com.apollographql.apollo.cache.normalized.RecordFieldJsonAdapter
-import com.apollographql.apollo.cache.normalized.sql.internal.RecordsetDataSource.deleteAllRecords
-import com.apollographql.apollo.cache.normalized.sql.internal.RecordsetDataSource.deleteRecord
-import com.apollographql.apollo.cache.normalized.sql.internal.RecordsetDataSource.selectAllRecords
-import com.apollographql.apollo.cache.normalized.sql.internal.RecordsetDataSource.selectRecord
-import com.apollographql.apollo.cache.normalized.sql.internal.RecordsetDataSource.selectRecords
-import com.apollographql.apollo.cache.normalized.sql.internal.RecordsetDataSource.updateRecord
-import com.apollographql.apollo.cache.normalized.sql.internal.RecordsetDataSource.updateRecords
+import com.apollographql.apollo3.cache.ApolloCacheHeaders
+import com.apollographql.apollo3.cache.ApolloCacheHeaders.EVICT_AFTER_READ
+import com.apollographql.apollo3.cache.CacheHeaders
+import com.apollographql.apollo3.cache.normalized.CacheKey
+import com.apollographql.apollo3.cache.normalized.NormalizedCache
+import com.apollographql.apollo3.cache.normalized.Record
+import com.apollographql.apollo3.cache.normalized.RecordFieldJsonAdapter
+import com.apollographql.apollo3.cache.normalized.sql.internal.RecordsetDataSource.deleteAllRecords
+import com.apollographql.apollo3.cache.normalized.sql.internal.RecordsetDataSource.deleteRecord
+import com.apollographql.apollo3.cache.normalized.sql.internal.RecordsetDataSource.selectAllRecords
+import com.apollographql.apollo3.cache.normalized.sql.internal.RecordsetDataSource.selectRecord
+import com.apollographql.apollo3.cache.normalized.sql.internal.RecordsetDataSource.selectRecords
+import com.apollographql.apollo3.cache.normalized.sql.internal.RecordsetDataSource.updateRecord
+import com.apollographql.apollo3.cache.normalized.sql.internal.RecordsetDataSource.updateRecords
 import kotlin.reflect.KClass
 
 class SqlNormalizedCache internal constructor(

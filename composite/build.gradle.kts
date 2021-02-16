@@ -13,7 +13,7 @@ buildscript {
     classpath(groovy.util.Eval.x(project, "x.dep.oneEightPlugin"))
     classpath(groovy.util.Eval.x(project, "x.dep.android.plugin"))
     classpath(groovy.util.Eval.x(project, "x.dep.kotlin.plugin"))
-    classpath("com.apollographql.apollo:apollo-gradle-plugin")
+    classpath("com.apollographql.apollo3:apollo-gradle-plugin")
   }
 }
 

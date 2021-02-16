@@ -1,12 +1,12 @@
-package com.apollographql.apollo
+package com.apollographql.apollo3
 
-import com.apollographql.apollo.Utils.enqueueAndAssertResponse
-import com.apollographql.apollo.Utils.immediateExecutor
-import com.apollographql.apollo.Utils.immediateExecutorService
-import com.apollographql.apollo.api.Input.Companion.fromNullable
-import com.apollographql.apollo.api.Response
-import com.apollographql.apollo.integration.normalizer.HeroAndFriendsNamesQuery
-import com.apollographql.apollo.integration.normalizer.type.Episode
+import com.apollographql.apollo3.Utils.enqueueAndAssertResponse
+import com.apollographql.apollo3.Utils.immediateExecutor
+import com.apollographql.apollo3.Utils.immediateExecutorService
+import com.apollographql.apollo3.api.Input.Companion.fromNullable
+import com.apollographql.apollo3.api.Response
+import com.apollographql.apollo3.integration.normalizer.HeroAndFriendsNamesQuery
+import com.apollographql.apollo3.integration.normalizer.type.Episode
 import com.google.common.truth.Truth
 import io.reactivex.functions.Predicate
 import okhttp3.Dispatcher

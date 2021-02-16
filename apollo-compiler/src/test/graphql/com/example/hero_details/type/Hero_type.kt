@@ -5,10 +5,10 @@
 //
 package com.example.hero_details.type
 
-import com.apollographql.apollo.api.EnumValue
-import com.apollographql.apollo.api.internal.ResponseAdapter
-import com.apollographql.apollo.api.internal.json.JsonReader
-import com.apollographql.apollo.api.internal.json.JsonWriter
+import com.apollographql.apollo3.api.EnumValue
+import com.apollographql.apollo3.api.internal.ResponseAdapter
+import com.apollographql.apollo3.api.internal.json.JsonReader
+import com.apollographql.apollo3.api.internal.json.JsonWriter
 import kotlin.String
 
 /**

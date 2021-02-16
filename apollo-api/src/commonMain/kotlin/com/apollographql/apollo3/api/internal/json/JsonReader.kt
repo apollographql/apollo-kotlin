@@ -13,9 +13,9 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.apollographql.apollo.api.internal.json
+package com.apollographql.apollo3.api.internal.json
 
-import com.apollographql.apollo.api.internal.Throws
+import com.apollographql.apollo3.api.internal.Throws
 import okio.IOException
 
 /**

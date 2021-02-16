@@ -1,7 +1,7 @@
-package com.apollographql.apollo.network
+package com.apollographql.apollo3.network
 
-import com.apollographql.apollo.api.ApolloExperimental
-import com.apollographql.apollo.api.ExecutionContext
+import com.apollographql.apollo3.api.ApolloExperimental
+import com.apollographql.apollo3.api.ExecutionContext
 
 @ApolloExperimental
 sealed class HttpExecutionContext {

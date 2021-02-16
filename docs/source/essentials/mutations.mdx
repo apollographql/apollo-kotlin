@@ -173,7 +173,7 @@ You need to define this mapping in your build.gradle file.
 ```groovy
 apollo {
   customScalarsMapping = [
-    "Upload" : "com.apollographql.apollo.api.FileUpload"
+    "Upload" : "com.apollographql.apollo3.api.FileUpload"
   ]
 }
 ```
@@ -183,7 +183,7 @@ apollo {
 **Note2** While Apollo Android doesn't use reflection for regular operations, file upload is. If you're using Proguard/R8, you need to keep everything inheriting from `InputType`:
 
 ```proguard:title=proguard-rules.pro
--keep class * implements com.apollographql.apollo.api.InputType { *; }
+-keep class * implements com.apollographql.apollo3.api.InputType { *; }
 ```
 
 In this example, the GraphQL schema uses custom scalar type named `Upload` for file upload. 

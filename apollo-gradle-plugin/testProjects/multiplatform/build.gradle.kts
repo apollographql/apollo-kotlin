@@ -17,7 +17,7 @@ buildscript {
 }
 
 apply(plugin = "org.jetbrains.kotlin.multiplatform")
-apply(plugin = "com.apollographql.apollo")
+apply(plugin = "com.apollographql.apollo3")
 
 repositories {
     maven {

@@ -3,7 +3,7 @@ import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 
 plugins {
     id("com.android.application")
-    id("com.apollographql.apollo")
+    id("com.apollographql.apollo3")
     id("kotlin-android")
     id("kotlin-android-extensions")
 }
@@ -17,7 +17,7 @@ extensions.findByType(BaseExtension::class.java)!!.apply {
     }
 
     defaultConfig {
-        applicationId = "com.apollographql.apollo.kotlinsample"
+        applicationId = "com.apollographql.apollo3.kotlinsample"
         minSdkVersion(groovy.util.Eval.x(project, "x.androidConfig.minSdkVersion").toString())
         targetSdkVersion(groovy.util.Eval.x(project, "x.androidConfig.targetSdkVersion").toString())
 
@@ -35,12 +35,12 @@ tasks.withType<KotlinCompile> {
 }
 
 dependencies {
-    implementation("com.apollographql.apollo:apollo-rx2-support")
-    implementation("com.apollographql.apollo:apollo-coroutines-support")
-    implementation("com.apollographql.apollo:apollo-runtime")
-    implementation("com.apollographql.apollo:apollo-http-cache")
-    implementation("com.apollographql.apollo:apollo-android-support")
-    implementation("com.apollographql.apollo:apollo-normalized-cache-sqlite")
+    implementation("com.apollographql.apollo3:apollo-rx2-support")
+    implementation("com.apollographql.apollo3:apollo-coroutines-support")
+    implementation("com.apollographql.apollo3:apollo-runtime")
+    implementation("com.apollographql.apollo3:apollo-http-cache")
+    implementation("com.apollographql.apollo3:apollo-android-support")
+    implementation("com.apollographql.apollo3:apollo-normalized-cache-sqlite")
     implementation(groovy.util.Eval.x(project, "x.dep.okHttp.logging"))
     implementation(groovy.util.Eval.x(project, "x.dep.androidx.appcompat"))
     implementation(groovy.util.Eval.x(project, "x.dep.androidx.recyclerView"))

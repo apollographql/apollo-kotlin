@@ -1,9 +1,9 @@
-package com.apollographql.apollo.gradle.api
+package com.apollographql.apollo3.gradle.api
 
 import com.android.build.gradle.api.BaseVariant
-import com.apollographql.apollo.gradle.api.Service
-import com.apollographql.apollo.gradle.api.kotlinJvmExtension
-import com.apollographql.apollo.gradle.api.kotlinMultiplatformExtension
+import com.apollographql.apollo3.gradle.api.Service
+import com.apollographql.apollo3.gradle.api.kotlinJvmExtension
+import com.apollographql.apollo3.gradle.api.kotlinMultiplatformExtension
 import org.gradle.api.Project
 import org.gradle.api.file.SourceDirectorySet
 import org.gradle.api.tasks.TaskProvider

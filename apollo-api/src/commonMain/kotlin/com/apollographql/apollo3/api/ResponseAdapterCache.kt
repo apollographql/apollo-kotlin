@@ -1,10 +1,10 @@
-package com.apollographql.apollo.api
+package com.apollographql.apollo3.api
 
-import com.apollographql.apollo.api.internal.ResponseAdapter
-import com.apollographql.apollo.api.internal.json.JsonReader
-import com.apollographql.apollo.api.internal.json.JsonWriter
-import com.apollographql.apollo.api.internal.json.Utils.readRecursively
-import com.apollographql.apollo.api.internal.json.Utils.writeToJson
+import com.apollographql.apollo3.api.internal.ResponseAdapter
+import com.apollographql.apollo3.api.internal.json.JsonReader
+import com.apollographql.apollo3.api.internal.json.JsonWriter
+import com.apollographql.apollo3.api.internal.json.Utils.readRecursively
+import com.apollographql.apollo3.api.internal.json.Utils.writeToJson
 import kotlin.jvm.Synchronized
 
 /**
@@ -109,7 +109,7 @@ class ResponseAdapterCache(val customScalarAdapters: Map<CustomScalar, CustomSca
         "java.util.List" to BuiltinCustomScalarAdapters.LIST_ADAPTER,
         "kotlin.collections.List" to  BuiltinCustomScalarAdapters.LIST_ADAPTER,
 
-        "com.apollographql.apollo.api.FileUpload" to  BuiltinCustomScalarAdapters.FILE_UPLOAD_ADAPTER,
+        "com.apollographql.apollo3.api.FileUpload" to  BuiltinCustomScalarAdapters.FILE_UPLOAD_ADAPTER,
 
         "java.lang.Object" to  BuiltinCustomScalarAdapters.FALLBACK_ADAPTER,
         "kotlin.Any" to  BuiltinCustomScalarAdapters.FALLBACK_ADAPTER,

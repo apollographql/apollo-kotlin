@@ -1,6 +1,6 @@
-package com.apollographql.apollo.cache.normalized
+package com.apollographql.apollo3.cache.normalized
 
-import com.apollographql.apollo.api.BigDecimal
+import com.apollographql.apollo3.api.BigDecimal
 import kotlin.test.Test
 import kotlin.test.assertEquals
 

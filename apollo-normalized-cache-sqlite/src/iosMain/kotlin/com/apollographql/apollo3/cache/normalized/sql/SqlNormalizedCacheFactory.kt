@@ -1,6 +1,6 @@
-package com.apollographql.apollo.cache.normalized.sql
+package com.apollographql.apollo3.cache.normalized.sql
 
-import com.apollographql.apollo.cache.normalized.NormalizedCacheFactory
+import com.apollographql.apollo3.cache.normalized.NormalizedCacheFactory
 import com.squareup.sqldelight.db.SqlDriver
 import com.squareup.sqldelight.drivers.native.NativeSqliteDriver
 

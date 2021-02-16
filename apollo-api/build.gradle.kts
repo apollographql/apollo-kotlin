@@ -89,5 +89,5 @@ kotlin {
 }
 
 metalava {
-  hiddenPackages += setOf("com.apollographql.apollo.api.internal")
+  hiddenPackages += setOf("com.apollographql.apollo3.api.internal")
 }

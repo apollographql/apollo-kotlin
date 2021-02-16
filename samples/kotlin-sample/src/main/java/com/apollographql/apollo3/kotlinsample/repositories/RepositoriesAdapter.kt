@@ -1,11 +1,11 @@
-package com.apollographql.apollo.kotlinsample.repositories
+package com.apollographql.apollo3.kotlinsample.repositories
 
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
-import com.apollographql.apollo.kotlinsample.R
-import com.apollographql.apollo.kotlinsample.fragment.RepositoryFragment
+import com.apollographql.apollo3.kotlinsample.R
+import com.apollographql.apollo3.kotlinsample.fragment.RepositoryFragment
 import kotlinx.android.synthetic.main.item_repository.view.*
 
 class RepositoriesAdapter(private val onClick: (RepositoryFragment) -> Unit) : RecyclerView.Adapter<RepositoriesAdapter.ViewHolder>() {

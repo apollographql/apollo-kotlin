@@ -1,4 +1,4 @@
-package com.apollographql.apollo.api
+package com.apollographql.apollo3.api
 
 /**
  * Class represents the adapter for mapping GraphQL custom scalar types to Java objects.

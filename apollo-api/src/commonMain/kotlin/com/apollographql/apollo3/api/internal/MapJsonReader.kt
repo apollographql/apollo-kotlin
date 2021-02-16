@@ -1,7 +1,7 @@
-package com.apollographql.apollo.api.internal
+package com.apollographql.apollo3.api.internal
 
-import com.apollographql.apollo.api.BigDecimal
-import com.apollographql.apollo.api.internal.json.JsonReader
+import com.apollographql.apollo3.api.BigDecimal
+import com.apollographql.apollo3.api.internal.json.JsonReader
 
 class MapJsonReader(val root: Map<String, Any?>) : JsonReader {
   class OrderedMap(val entries: List<Entry>)
@@ -18,7 +18,7 @@ class MapJsonReader(val root: Map<String, Any?>) : JsonReader {
   var currentName: String? = "root"
 
   /**
-   * See [com.apollographql.apollo.api.internal.json.BufferedSourceJsonReader] for the 32 limitation
+   * See [com.apollographql.apollo3.api.internal.json.BufferedSourceJsonReader] for the 32 limitation
    */
   private val nameIndexStack = IntArray(32).apply {
     this[0] = 0

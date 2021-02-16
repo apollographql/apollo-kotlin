@@ -1,15 +1,15 @@
-package com.apollographql.apollo.internal.fetcher
+package com.apollographql.apollo3.internal.fetcher
 
-import com.apollographql.apollo.ApolloCall
-import com.apollographql.apollo.ApolloClient
-import com.apollographql.apollo.IdFieldCacheKeyResolver
-import com.apollographql.apollo.Utils.immediateExecutor
-import com.apollographql.apollo.Utils.immediateExecutorService
-import com.apollographql.apollo.Utils.readFileToString
-import com.apollographql.apollo.api.Response
-import com.apollographql.apollo.cache.normalized.MemoryCacheFactory
-import com.apollographql.apollo.exception.ApolloException
-import com.apollographql.apollo.integration.normalizer.EpisodeHeroNameQuery
+import com.apollographql.apollo3.ApolloCall
+import com.apollographql.apollo3.ApolloClient
+import com.apollographql.apollo3.IdFieldCacheKeyResolver
+import com.apollographql.apollo3.Utils.immediateExecutor
+import com.apollographql.apollo3.Utils.immediateExecutorService
+import com.apollographql.apollo3.Utils.readFileToString
+import com.apollographql.apollo3.api.Response
+import com.apollographql.apollo3.cache.normalized.MemoryCacheFactory
+import com.apollographql.apollo3.exception.ApolloException
+import com.apollographql.apollo3.integration.normalizer.EpisodeHeroNameQuery
 import okhttp3.Dispatcher
 import okhttp3.OkHttpClient
 import okhttp3.mockwebserver.MockResponse

@@ -1,9 +1,9 @@
-package com.apollographql.apollo
+package com.apollographql.apollo3
 
-import com.apollographql.apollo.api.Operation
-import com.apollographql.apollo.api.ResponseField
-import com.apollographql.apollo.cache.normalized.CacheKey
-import com.apollographql.apollo.cache.normalized.CacheKeyResolver
+import com.apollographql.apollo3.api.Operation
+import com.apollographql.apollo3.api.ResponseField
+import com.apollographql.apollo3.cache.normalized.CacheKey
+import com.apollographql.apollo3.cache.normalized.CacheKeyResolver
 
 class IdFieldCacheKeyResolver : CacheKeyResolver() {
   override fun fromFieldRecordSet(field: ResponseField, recordSet: Map<String, Any?>): CacheKey {

@@ -1,14 +1,14 @@
-package com.apollographql.apollo.kotlinsample.data
+package com.apollographql.apollo3.kotlinsample.data
 
-import com.apollographql.apollo.ApolloClient
-import com.apollographql.apollo.coroutines.await
-import com.apollographql.apollo.kotlinsample.GithubRepositoriesQuery
-import com.apollographql.apollo.kotlinsample.GithubRepositoryCommitsQuery
-import com.apollographql.apollo.kotlinsample.GithubRepositoryCommitsQuery.Data.Viewer.Repository.Ref.Target.Companion.asCommitTarget
-import com.apollographql.apollo.kotlinsample.GithubRepositoryDetailQuery
-import com.apollographql.apollo.kotlinsample.type.OrderDirection
-import com.apollographql.apollo.kotlinsample.type.PullRequestState
-import com.apollographql.apollo.kotlinsample.type.RepositoryOrderField
+import com.apollographql.apollo3.ApolloClient
+import com.apollographql.apollo3.coroutines.await
+import com.apollographql.apollo3.kotlinsample.GithubRepositoriesQuery
+import com.apollographql.apollo3.kotlinsample.GithubRepositoryCommitsQuery
+import com.apollographql.apollo3.kotlinsample.GithubRepositoryCommitsQuery.Data.Viewer.Repository.Ref.Target.Companion.asCommitTarget
+import com.apollographql.apollo3.kotlinsample.GithubRepositoryDetailQuery
+import com.apollographql.apollo3.kotlinsample.type.OrderDirection
+import com.apollographql.apollo3.kotlinsample.type.PullRequestState
+import com.apollographql.apollo3.kotlinsample.type.RepositoryOrderField
 import kotlinx.coroutines.*
 import kotlin.coroutines.CoroutineContext
 

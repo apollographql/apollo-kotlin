@@ -1,6 +1,6 @@
-package com.apollographql.apollo.cache.normalized.internal
+package com.apollographql.apollo3.cache.normalized.internal
 
-import com.apollographql.apollo.api.internal.json.JsonWriter
+import com.apollographql.apollo3.api.internal.json.JsonWriter
 
 class MapJsonWriter: JsonWriter() {
   sealed class State {

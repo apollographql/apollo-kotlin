@@ -1,4 +1,4 @@
-package com.apollographql.apollo.kmpsample
+package com.apollographql.apollo3.kmpsample
 
 import android.app.Application
 

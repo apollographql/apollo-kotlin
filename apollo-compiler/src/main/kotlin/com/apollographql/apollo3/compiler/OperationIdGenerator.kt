@@ -1,4 +1,4 @@
-package com.apollographql.apollo.compiler
+package com.apollographql.apollo3.compiler
 
 import java.nio.charset.StandardCharsets
 import java.security.MessageDigest

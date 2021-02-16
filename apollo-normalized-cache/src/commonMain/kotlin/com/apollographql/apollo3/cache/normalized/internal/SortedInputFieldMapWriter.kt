@@ -1,9 +1,9 @@
-package com.apollographql.apollo.cache.normalized.internal
+package com.apollographql.apollo3.cache.normalized.internal
 
-import com.apollographql.apollo.api.CustomScalar
-import com.apollographql.apollo.api.internal.InputFieldMarshaller
-import com.apollographql.apollo.api.internal.InputFieldWriter
-import com.apollographql.apollo.api.internal.Throws
+import com.apollographql.apollo3.api.CustomScalar
+import com.apollographql.apollo3.api.internal.InputFieldMarshaller
+import com.apollographql.apollo3.api.internal.InputFieldWriter
+import com.apollographql.apollo3.api.internal.Throws
 import okio.IOException
 
 class SortedInputFieldMapWriter() : InputFieldWriter {

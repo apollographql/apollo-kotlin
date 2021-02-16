@@ -1,4 +1,4 @@
-package com.apollographql.apollo.compiler.introspection
+package com.apollographql.apollo3.compiler.introspection
 
 
 internal fun IntrospectionSchema.resolveType(graphqlType: String): IntrospectionSchema.TypeRef = when {

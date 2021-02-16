@@ -1,4 +1,4 @@
-package com.apollographql.apollo.api.internal.json
+package com.apollographql.apollo3.api.internal.json
 
 inline fun <T : Closeable?, R> T.use(block: (T) -> R): R {
     var exception: Throwable? = null

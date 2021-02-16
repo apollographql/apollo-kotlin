@@ -9,7 +9,7 @@ import AddQuery from "../shared/add-query.mdx"
 
 ## Add the Gradle plugin
 
-In your app Gradle file, apply the `com.apollographql.apollo` plugin:
+In your app Gradle file, apply the `com.apollographql.apollo3` plugin:
 
 Using the [plugins DSL](https://docs.gradle.org/current/userguide/plugins.html#sec:plugins_block):
 
@@ -18,14 +18,14 @@ Using the [plugins DSL](https://docs.gradle.org/current/userguide/plugins.html#s
 ```groovy
 plugins {
   // ...
-  id("com.apollographql.apollo").version("x.y.z")
+  id("com.apollographql.apollo3").version("x.y.z")
 }
 ```
 
 ```kotlin
 plugins {
   // ...
-  id("com.apollographql.apollo").version("x.y.z")
+  id("com.apollographql.apollo3").version("x.y.z")
 }
 ```
 
@@ -38,19 +38,19 @@ Or using the [legacy syntax](https://docs.gradle.org/current/userguide/plugins.h
 ```groovy
 buildscript {
   // ...
-  classpath("com.apollographql.apollo:apollo-gradle-plugin:x.y.z")
+  classpath("com.apollographql.apollo3:apollo-gradle-plugin:x.y.z")
 }
 
-apply plugin: "com.apollographql.apollo"
+apply plugin: "com.apollographql.apollo3"
 ```
 
 ```kotlin
 buildscript {
   // ...
-  classpath("com.apollographql.apollo:apollo-gradle-plugin:x.y.z")
+  classpath("com.apollographql.apollo3:apollo-gradle-plugin:x.y.z")
 }
 
-apply(plugin = "com.apollographql.apollo")
+apply(plugin = "com.apollographql.apollo3")
 ```
 
 </MultiCodeBlock>
@@ -60,7 +60,7 @@ The plugin is hosted on the Gradle plugin portal, Jcenter and Maven Central.
 
 ```kotlin
 dependencies {
-  implementation("com.apollographql.apollo:apollo-runtime:x.y.z")
+  implementation("com.apollographql.apollo3:apollo-runtime:x.y.z")
 }
 ```
 

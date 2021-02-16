@@ -1,9 +1,9 @@
-package com.apollographql.apollo.compiler.frontend.ir
+package com.apollographql.apollo3.compiler.frontend.ir
 
-import com.apollographql.apollo.compiler.frontend.GQLFragmentDefinition
-import com.apollographql.apollo.compiler.frontend.GQLOperationDefinition
-import com.apollographql.apollo.compiler.frontend.GQLTypeDefinition
-import com.apollographql.apollo.compiler.frontend.GQLValue
+import com.apollographql.apollo3.compiler.frontend.GQLFragmentDefinition
+import com.apollographql.apollo3.compiler.frontend.GQLOperationDefinition
+import com.apollographql.apollo3.compiler.frontend.GQLTypeDefinition
+import com.apollographql.apollo3.compiler.frontend.GQLValue
 
 /**
  * FrontendIr is computed from the GQLDocuments. It resolves field definitions, operation names, etc.. so it's easier to work with and

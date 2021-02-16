@@ -1,7 +1,7 @@
-package com.apollographql.apollo
+package com.apollographql.apollo3
 
 /**
- * Logger to use for logging by the [com.apollographql.apollo.ApolloClient]
+ * Logger to use for logging by the [com.apollographql.apollo3.ApolloClient]
  */
 interface Logger {
   /**

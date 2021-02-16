@@ -1,12 +1,12 @@
-package com.apollographql.apollo.response
+package com.apollographql.apollo3.response
 
-import com.apollographql.apollo.api.CustomScalarAdapter
-import com.apollographql.apollo.api.JsonElement
-import com.apollographql.apollo.api.CustomScalar
-import com.apollographql.apollo.api.ResponseAdapterCache
-import com.apollographql.apollo.api.JsonList
-import com.apollographql.apollo.api.JsonObject
-import com.apollographql.apollo.api.JsonString
+import com.apollographql.apollo3.api.CustomScalarAdapter
+import com.apollographql.apollo3.api.JsonElement
+import com.apollographql.apollo3.api.CustomScalar
+import com.apollographql.apollo3.api.ResponseAdapterCache
+import com.apollographql.apollo3.api.JsonList
+import com.apollographql.apollo3.api.JsonObject
+import com.apollographql.apollo3.api.JsonString
 import com.google.common.truth.Truth.assertThat
 import org.junit.Test
 

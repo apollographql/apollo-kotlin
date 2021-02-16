@@ -1,14 +1,14 @@
-package com.apollographql.apollo.internal
+package com.apollographql.apollo3.internal
 
-import com.apollographql.apollo.NamedCountDownLatch
-import com.apollographql.apollo.api.ResponseAdapterCache
-import com.apollographql.apollo.api.internal.ApolloLogger
-import com.apollographql.apollo.cache.CacheHeaders
-import com.apollographql.apollo.cache.normalized.CacheKey
-import com.apollographql.apollo.cache.normalized.CacheKeyResolver
-import com.apollographql.apollo.cache.normalized.internal.RealApolloStore
-import com.apollographql.apollo.cache.normalized.NormalizedCache
-import com.apollographql.apollo.cache.normalized.Record
+import com.apollographql.apollo3.NamedCountDownLatch
+import com.apollographql.apollo3.api.ResponseAdapterCache
+import com.apollographql.apollo3.api.internal.ApolloLogger
+import com.apollographql.apollo3.cache.CacheHeaders
+import com.apollographql.apollo3.cache.normalized.CacheKey
+import com.apollographql.apollo3.cache.normalized.CacheKeyResolver
+import com.apollographql.apollo3.cache.normalized.internal.RealApolloStore
+import com.apollographql.apollo3.cache.normalized.NormalizedCache
+import com.apollographql.apollo3.cache.normalized.Record
 import org.junit.Test
 import java.util.concurrent.TimeUnit
 import kotlin.reflect.KClass

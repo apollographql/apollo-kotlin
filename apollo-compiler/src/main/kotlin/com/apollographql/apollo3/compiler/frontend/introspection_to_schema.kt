@@ -1,6 +1,6 @@
-package com.apollographql.apollo.compiler.frontend
+package com.apollographql.apollo3.compiler.frontend
 
-import com.apollographql.apollo.compiler.introspection.IntrospectionSchema
+import com.apollographql.apollo3.compiler.introspection.IntrospectionSchema
 
 private class GQLDocumentBuilder(private val introspectionSchema: IntrospectionSchema) {
 

@@ -1,13 +1,13 @@
-package com.apollographql.apollo.internal
+package com.apollographql.apollo3.internal
 
-import com.apollographql.apollo.ApolloCall
-import com.apollographql.apollo.ApolloMutationCall
-import com.apollographql.apollo.ApolloPrefetch
-import com.apollographql.apollo.ApolloQueryCall
-import com.apollographql.apollo.ApolloQueryWatcher
-import com.apollographql.apollo.IdleResourceCallback
-import com.apollographql.apollo.api.Mutation
-import com.apollographql.apollo.api.Query
+import com.apollographql.apollo3.ApolloCall
+import com.apollographql.apollo3.ApolloMutationCall
+import com.apollographql.apollo3.ApolloPrefetch
+import com.apollographql.apollo3.ApolloQueryCall
+import com.apollographql.apollo3.ApolloQueryWatcher
+import com.apollographql.apollo3.IdleResourceCallback
+import com.apollographql.apollo3.api.Mutation
+import com.apollographql.apollo3.api.Query
 import java.util.HashMap
 import java.util.HashSet
 import java.util.concurrent.atomic.AtomicInteger

@@ -1,4 +1,4 @@
-package com.apollographql.apollo.api
+package com.apollographql.apollo3.api
 
 import kotlinx.cinterop.StableRef
 import kotlin.native.concurrent.TransferMode

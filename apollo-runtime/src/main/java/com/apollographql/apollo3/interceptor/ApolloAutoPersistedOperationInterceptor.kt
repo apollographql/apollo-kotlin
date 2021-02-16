@@ -1,18 +1,18 @@
-package com.apollographql.apollo.interceptor
+package com.apollographql.apollo3.interceptor
 
-import com.apollographql.apollo.api.Error
-import com.apollographql.apollo.api.Mutation
-import com.apollographql.apollo.api.Operation
-import com.apollographql.apollo.api.Query
-import com.apollographql.apollo.api.Response
-import com.apollographql.apollo.api.internal.ApolloLogger
-import com.apollographql.apollo.api.internal.Function
-import com.apollographql.apollo.api.internal.Optional
-import com.apollographql.apollo.exception.ApolloException
-import com.apollographql.apollo.interceptor.ApolloInterceptor.CallBack
-import com.apollographql.apollo.interceptor.ApolloInterceptor.FetchSourceType
-import com.apollographql.apollo.interceptor.ApolloInterceptor.InterceptorRequest
-import com.apollographql.apollo.interceptor.ApolloInterceptor.InterceptorResponse
+import com.apollographql.apollo3.api.Error
+import com.apollographql.apollo3.api.Mutation
+import com.apollographql.apollo3.api.Operation
+import com.apollographql.apollo3.api.Query
+import com.apollographql.apollo3.api.Response
+import com.apollographql.apollo3.api.internal.ApolloLogger
+import com.apollographql.apollo3.api.internal.Function
+import com.apollographql.apollo3.api.internal.Optional
+import com.apollographql.apollo3.exception.ApolloException
+import com.apollographql.apollo3.interceptor.ApolloInterceptor.CallBack
+import com.apollographql.apollo3.interceptor.ApolloInterceptor.FetchSourceType
+import com.apollographql.apollo3.interceptor.ApolloInterceptor.InterceptorRequest
+import com.apollographql.apollo3.interceptor.ApolloInterceptor.InterceptorResponse
 import java.util.concurrent.Executor
 
 class ApolloAutoPersistedOperationInterceptor(private val logger: ApolloLogger,

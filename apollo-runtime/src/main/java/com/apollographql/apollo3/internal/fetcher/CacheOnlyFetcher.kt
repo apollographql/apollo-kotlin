@@ -1,21 +1,21 @@
-package com.apollographql.apollo.internal.fetcher
+package com.apollographql.apollo3.internal.fetcher
 
-import com.apollographql.apollo.api.Operation
-import com.apollographql.apollo.api.Response.Companion.builder
-import com.apollographql.apollo.api.internal.ApolloLogger
-import com.apollographql.apollo.exception.ApolloException
-import com.apollographql.apollo.fetcher.ResponseFetcher
-import com.apollographql.apollo.interceptor.ApolloInterceptor
-import com.apollographql.apollo.interceptor.ApolloInterceptor.CallBack
-import com.apollographql.apollo.interceptor.ApolloInterceptor.FetchSourceType
-import com.apollographql.apollo.interceptor.ApolloInterceptor.InterceptorRequest
-import com.apollographql.apollo.interceptor.ApolloInterceptor.InterceptorResponse
-import com.apollographql.apollo.interceptor.ApolloInterceptorChain
+import com.apollographql.apollo3.api.Operation
+import com.apollographql.apollo3.api.Response.Companion.builder
+import com.apollographql.apollo3.api.internal.ApolloLogger
+import com.apollographql.apollo3.exception.ApolloException
+import com.apollographql.apollo3.fetcher.ResponseFetcher
+import com.apollographql.apollo3.interceptor.ApolloInterceptor
+import com.apollographql.apollo3.interceptor.ApolloInterceptor.CallBack
+import com.apollographql.apollo3.interceptor.ApolloInterceptor.FetchSourceType
+import com.apollographql.apollo3.interceptor.ApolloInterceptor.InterceptorRequest
+import com.apollographql.apollo3.interceptor.ApolloInterceptor.InterceptorResponse
+import com.apollographql.apollo3.interceptor.ApolloInterceptorChain
 import java.util.concurrent.Executor
 
 /**
  * Signals the apollo client to **only** fetch the data from the normalized cache. If it's not present in the
- * normalized cache or if an exception occurs while trying to fetch it from the normalized cache, an empty [ ] is sent back with the [com.apollographql.apollo.api.Operation] info
+ * normalized cache or if an exception occurs while trying to fetch it from the normalized cache, an empty [ ] is sent back with the [com.apollographql.apollo3.api.Operation] info
  * wrapped inside.
  */
 class CacheOnlyFetcher : ResponseFetcher {

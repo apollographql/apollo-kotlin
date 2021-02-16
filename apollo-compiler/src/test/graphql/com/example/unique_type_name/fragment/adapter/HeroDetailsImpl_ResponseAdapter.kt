@@ -5,15 +5,15 @@
 //
 package com.example.unique_type_name.fragment.adapter
 
-import com.apollographql.apollo.api.ResponseAdapterCache
-import com.apollographql.apollo.api.ResponseField
-import com.apollographql.apollo.api.internal.IntResponseAdapter
-import com.apollographql.apollo.api.internal.ListResponseAdapter
-import com.apollographql.apollo.api.internal.NullableResponseAdapter
-import com.apollographql.apollo.api.internal.ResponseAdapter
-import com.apollographql.apollo.api.internal.StringResponseAdapter
-import com.apollographql.apollo.api.internal.json.JsonReader
-import com.apollographql.apollo.api.internal.json.JsonWriter
+import com.apollographql.apollo3.api.ResponseAdapterCache
+import com.apollographql.apollo3.api.ResponseField
+import com.apollographql.apollo3.api.internal.IntResponseAdapter
+import com.apollographql.apollo3.api.internal.ListResponseAdapter
+import com.apollographql.apollo3.api.internal.NullableResponseAdapter
+import com.apollographql.apollo3.api.internal.ResponseAdapter
+import com.apollographql.apollo3.api.internal.StringResponseAdapter
+import com.apollographql.apollo3.api.internal.json.JsonReader
+import com.apollographql.apollo3.api.internal.json.JsonWriter
 import com.example.unique_type_name.fragment.HeroDetailsImpl
 import kotlin.Array
 import kotlin.Int

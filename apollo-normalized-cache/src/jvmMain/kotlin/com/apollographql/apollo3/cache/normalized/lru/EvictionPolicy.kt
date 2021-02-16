@@ -1,9 +1,9 @@
-package com.apollographql.apollo.cache.normalized.lru
+package com.apollographql.apollo3.cache.normalized.lru
 
 import java.util.concurrent.TimeUnit
 
 /**
- * Controls how long a [com.apollographql.apollo.cache.normalized.Record] will
+ * Controls how long a [com.apollographql.apollo3.cache.normalized.Record] will
  * stay in a [LruNormalizedCache].
  */
 @Deprecated("Will be removed soon")

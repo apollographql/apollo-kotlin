@@ -1,10 +1,10 @@
-package com.apollographql.apollo.internal.fetcher
+package com.apollographql.apollo3.internal.fetcher
 
-import com.apollographql.apollo.api.Input
-import com.apollographql.apollo.exception.ApolloException
-import com.apollographql.apollo.fetcher.ApolloResponseFetchers
-import com.apollographql.apollo.integration.normalizer.EpisodeHeroNameQuery
-import com.apollographql.apollo.integration.normalizer.type.Episode
+import com.apollographql.apollo3.api.Input
+import com.apollographql.apollo3.exception.ApolloException
+import com.apollographql.apollo3.fetcher.ApolloResponseFetchers
+import com.apollographql.apollo3.integration.normalizer.EpisodeHeroNameQuery
+import com.apollographql.apollo3.integration.normalizer.type.Episode
 import com.google.common.truth.Truth
 import com.google.common.truth.Truth.assertThat
 import okhttp3.mockwebserver.MockResponse

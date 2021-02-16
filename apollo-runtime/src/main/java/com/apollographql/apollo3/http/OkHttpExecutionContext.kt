@@ -1,7 +1,7 @@
-package com.apollographql.apollo.http
+package com.apollographql.apollo3.http
 
-import com.apollographql.apollo.api.ApolloExperimental
-import com.apollographql.apollo.api.ExecutionContext
+import com.apollographql.apollo3.api.ApolloExperimental
+import com.apollographql.apollo3.api.ExecutionContext
 import okhttp3.Response
 
 /**

@@ -1,6 +1,6 @@
 import {MultiCodeBlock} from 'gatsby-theme-apollo-docs';
 
-In your app Gradle file, apply the `com.apollographql.apollo` plugin:
+In your app Gradle file, apply the `com.apollographql.apollo3` plugin:
 
 Using the [plugins DSL](https://docs.gradle.org/current/userguide/plugins.html#sec:plugins_block):
 
@@ -9,14 +9,14 @@ Using the [plugins DSL](https://docs.gradle.org/current/userguide/plugins.html#s
 ```kotlin
 plugins {
   // ...
-  id("com.apollographql.apollo").version("x.y.z")
+  id("com.apollographql.apollo3").version("x.y.z")
 }
 ```
 
 ```groovy
 plugins {
   // ...
-  id("com.apollographql.apollo").version("x.y.z")
+  id("com.apollographql.apollo3").version("x.y.z")
 }
 ```
 
@@ -29,19 +29,19 @@ Or using the [legacy syntax](https://docs.gradle.org/current/userguide/plugins.h
 ```kotlin
 buildscript {
   // ...
-  classpath("com.apollographql.apollo:apollo-gradle-plugin:x.y.z")
+  classpath("com.apollographql.apollo3:apollo-gradle-plugin:x.y.z")
 }
 
-apply(plugin = "com.apollographql.apollo")
+apply(plugin = "com.apollographql.apollo3")
 ```
 
 ```groovy
 buildscript {
   // ...
-  classpath("com.apollographql.apollo:apollo-gradle-plugin:x.y.z")
+  classpath("com.apollographql.apollo3:apollo-gradle-plugin:x.y.z")
 }
 
-apply plugin: "com.apollographql.apollo"
+apply plugin: "com.apollographql.apollo3"
 ```
 
 </MultiCodeBlock>

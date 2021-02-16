@@ -1,15 +1,15 @@
-package com.apollographql.apollo.cache.normalized.internal
+package com.apollographql.apollo3.cache.normalized.internal
 
-import com.apollographql.apollo.api.ResponseAdapterCache
-import com.apollographql.apollo.api.Fragment
-import com.apollographql.apollo.api.Operation
-import com.apollographql.apollo.cache.normalized.Record
-import com.apollographql.apollo.api.ResponseField
-import com.apollographql.apollo.api.internal.MapJsonReader
-import com.apollographql.apollo.api.internal.ResponseAdapter
-import com.apollographql.apollo.cache.CacheHeaders
-import com.apollographql.apollo.cache.normalized.CacheKey
-import com.apollographql.apollo.cache.normalized.CacheKeyResolver
+import com.apollographql.apollo3.api.ResponseAdapterCache
+import com.apollographql.apollo3.api.Fragment
+import com.apollographql.apollo3.api.Operation
+import com.apollographql.apollo3.cache.normalized.Record
+import com.apollographql.apollo3.api.ResponseField
+import com.apollographql.apollo3.api.internal.MapJsonReader
+import com.apollographql.apollo3.api.internal.ResponseAdapter
+import com.apollographql.apollo3.cache.CacheHeaders
+import com.apollographql.apollo3.cache.normalized.CacheKey
+import com.apollographql.apollo3.cache.normalized.CacheKeyResolver
 
 fun <D : Operation.Data> Operation<D>.normalize(
     data: D,

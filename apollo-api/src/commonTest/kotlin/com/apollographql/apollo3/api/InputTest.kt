@@ -1,6 +1,6 @@
-package com.apollographql.apollo.api
+package com.apollographql.apollo3.api
 
-import com.apollographql.apollo.api.Input.Companion.fromNullable
+import com.apollographql.apollo3.api.Input.Companion.fromNullable
 import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertNotEquals

@@ -1,4 +1,4 @@
-package com.apollographql.apollo
+package com.apollographql.apollo3
 
 import okhttp3.Interceptor
 import okhttp3.Response
