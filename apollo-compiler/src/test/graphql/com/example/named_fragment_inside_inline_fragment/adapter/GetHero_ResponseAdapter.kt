@@ -25,10 +25,10 @@ import kotlin.collections.List
     "RemoveExplicitTypeArguments", "NestedLambdaShadowedImplicitParameter", "PropertyName",
     "RemoveRedundantQualifierName")
 class GetHero_ResponseAdapter(
-  customScalarAdapters: ResponseAdapterCache
+  responseAdapterCache: ResponseAdapterCache
 ) : ResponseAdapter<GetHero.Data> {
-  val nullableHeroAdapter: ResponseAdapter<GetHero.Data.Hero?> =
-      NullableResponseAdapter(Hero(customScalarAdapters))
+  private val nullableHeroAdapter: ResponseAdapter<GetHero.Data.Hero?> =
+      NullableResponseAdapter(Hero(responseAdapterCache))
 
   override fun fromResponse(reader: JsonReader): GetHero.Data {
     var hero: GetHero.Data.Hero? = null
@@ -69,13 +69,13 @@ class GetHero_ResponseAdapter(
   }
 
   class Hero(
-    customScalarAdapters: ResponseAdapterCache
+    responseAdapterCache: ResponseAdapterCache
   ) : ResponseAdapter<GetHero.Data.Hero> {
     val CharacterHeroAdapter: CharacterHero =
-        com.example.named_fragment_inside_inline_fragment.adapter.GetHero_ResponseAdapter.Hero.CharacterHero(customScalarAdapters)
+        com.example.named_fragment_inside_inline_fragment.adapter.GetHero_ResponseAdapter.Hero.CharacterHero(responseAdapterCache)
 
     val OtherHeroAdapter: OtherHero =
-        com.example.named_fragment_inside_inline_fragment.adapter.GetHero_ResponseAdapter.Hero.OtherHero(customScalarAdapters)
+        com.example.named_fragment_inside_inline_fragment.adapter.GetHero_ResponseAdapter.Hero.OtherHero(responseAdapterCache)
 
     override fun fromResponse(reader: JsonReader): GetHero.Data.Hero {
       reader.beginObject()
@@ -98,11 +98,11 @@ class GetHero_ResponseAdapter(
     }
 
     class CharacterHero(
-      customScalarAdapters: ResponseAdapterCache
+      responseAdapterCache: ResponseAdapterCache
     ) {
-      val stringAdapter: ResponseAdapter<String> = stringResponseAdapter
+      private val stringAdapter: ResponseAdapter<String> = stringResponseAdapter
 
-      val listOfNullableEpisodeAdapter: ResponseAdapter<List<Episode?>> =
+      private val listOfNullableEpisodeAdapter: ResponseAdapter<List<Episode?>> =
           ListResponseAdapter(NullableResponseAdapter(Episode_ResponseAdapter))
 
       fun fromResponse(reader: JsonReader, __typename: String?): GetHero.Data.Hero.CharacterHero {
@@ -154,9 +154,9 @@ class GetHero_ResponseAdapter(
     }
 
     class OtherHero(
-      customScalarAdapters: ResponseAdapterCache
+      responseAdapterCache: ResponseAdapterCache
     ) {
-      val stringAdapter: ResponseAdapter<String> = stringResponseAdapter
+      private val stringAdapter: ResponseAdapter<String> = stringResponseAdapter
 
       fun fromResponse(reader: JsonReader, __typename: String?): GetHero.Data.Hero.OtherHero {
         var __typename: String? = __typename

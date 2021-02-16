@@ -21,9 +21,9 @@ import kotlin.collections.List
     "RemoveExplicitTypeArguments", "NestedLambdaShadowedImplicitParameter", "PropertyName",
     "RemoveRedundantQualifierName")
 class CharacterNameImpl_ResponseAdapter(
-  customScalarAdapters: ResponseAdapterCache
+  responseAdapterCache: ResponseAdapterCache
 ) : ResponseAdapter<CharacterNameImpl.Data> {
-  val stringAdapter: ResponseAdapter<String> = stringResponseAdapter
+  private val stringAdapter: ResponseAdapter<String> = stringResponseAdapter
 
   override fun fromResponse(reader: JsonReader): CharacterNameImpl.Data {
     var __typename: String? = null

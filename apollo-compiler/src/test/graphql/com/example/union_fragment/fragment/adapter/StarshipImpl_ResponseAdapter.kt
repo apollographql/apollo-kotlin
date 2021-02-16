@@ -21,9 +21,9 @@ import kotlin.collections.List
     "RemoveExplicitTypeArguments", "NestedLambdaShadowedImplicitParameter", "PropertyName",
     "RemoveRedundantQualifierName")
 class StarshipImpl_ResponseAdapter(
-  customScalarAdapters: ResponseAdapterCache
+  responseAdapterCache: ResponseAdapterCache
 ) : ResponseAdapter<StarshipImpl.Data> {
-  val stringAdapter: ResponseAdapter<String> = stringResponseAdapter
+  private val stringAdapter: ResponseAdapter<String> = stringResponseAdapter
 
   override fun fromResponse(reader: JsonReader): StarshipImpl.Data {
     var __typename: String? = null

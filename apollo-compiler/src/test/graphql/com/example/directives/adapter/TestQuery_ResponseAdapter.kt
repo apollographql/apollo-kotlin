@@ -24,10 +24,10 @@ import kotlin.collections.List
     "RemoveExplicitTypeArguments", "NestedLambdaShadowedImplicitParameter", "PropertyName",
     "RemoveRedundantQualifierName")
 class TestQuery_ResponseAdapter(
-  customScalarAdapters: ResponseAdapterCache
+  responseAdapterCache: ResponseAdapterCache
 ) : ResponseAdapter<TestQuery.Data> {
-  val nullableHeroAdapter: ResponseAdapter<TestQuery.Data.Hero?> =
-      NullableResponseAdapter(Hero(customScalarAdapters))
+  private val nullableHeroAdapter: ResponseAdapter<TestQuery.Data.Hero?> =
+      NullableResponseAdapter(Hero(responseAdapterCache))
 
   override fun fromResponse(reader: JsonReader): TestQuery.Data {
     var hero: TestQuery.Data.Hero? = null
@@ -66,13 +66,14 @@ class TestQuery_ResponseAdapter(
   }
 
   class Hero(
-    customScalarAdapters: ResponseAdapterCache
+    responseAdapterCache: ResponseAdapterCache
   ) : ResponseAdapter<TestQuery.Data.Hero> {
-    val nullableStringAdapter: ResponseAdapter<String?> =
+    private val nullableStringAdapter: ResponseAdapter<String?> =
         NullableResponseAdapter(stringResponseAdapter)
 
-    val nullableFriendsConnectionAdapter: ResponseAdapter<TestQuery.Data.Hero.FriendsConnection?> =
-        NullableResponseAdapter(FriendsConnection(customScalarAdapters))
+    private val nullableFriendsConnectionAdapter:
+        ResponseAdapter<TestQuery.Data.Hero.FriendsConnection?> =
+        NullableResponseAdapter(FriendsConnection(responseAdapterCache))
 
     override fun fromResponse(reader: JsonReader): TestQuery.Data.Hero {
       var name: String? = null
@@ -126,9 +127,10 @@ class TestQuery_ResponseAdapter(
     }
 
     class FriendsConnection(
-      customScalarAdapters: ResponseAdapterCache
+      responseAdapterCache: ResponseAdapterCache
     ) : ResponseAdapter<TestQuery.Data.Hero.FriendsConnection> {
-      val nullableIntAdapter: ResponseAdapter<Int?> = NullableResponseAdapter(intResponseAdapter)
+      private val nullableIntAdapter: ResponseAdapter<Int?> =
+          NullableResponseAdapter(intResponseAdapter)
 
       override fun fromResponse(reader: JsonReader): TestQuery.Data.Hero.FriendsConnection {
         var totalCount: Int? = null

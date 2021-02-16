@@ -25,10 +25,10 @@ import kotlin.collections.List
     "RemoveExplicitTypeArguments", "NestedLambdaShadowedImplicitParameter", "PropertyName",
     "RemoveRedundantQualifierName")
 class TestQuery_ResponseAdapter(
-  customScalarAdapters: ResponseAdapterCache
+  responseAdapterCache: ResponseAdapterCache
 ) : ResponseAdapter<TestQuery.Data> {
-  val nullableHeroAdapter: ResponseAdapter<TestQuery.Data.Hero?> =
-      NullableResponseAdapter(Hero(customScalarAdapters))
+  private val nullableHeroAdapter: ResponseAdapter<TestQuery.Data.Hero?> =
+      NullableResponseAdapter(Hero(responseAdapterCache))
 
   override fun fromResponse(reader: JsonReader): TestQuery.Data {
     var hero: TestQuery.Data.Hero? = null
@@ -69,13 +69,13 @@ class TestQuery_ResponseAdapter(
   }
 
   class Hero(
-    customScalarAdapters: ResponseAdapterCache
+    responseAdapterCache: ResponseAdapterCache
   ) : ResponseAdapter<TestQuery.Data.Hero> {
     val CharacterHeroAdapter: CharacterHero =
-        com.example.inline_fragment_merge_fields.adapter.TestQuery_ResponseAdapter.Hero.CharacterHero(customScalarAdapters)
+        com.example.inline_fragment_merge_fields.adapter.TestQuery_ResponseAdapter.Hero.CharacterHero(responseAdapterCache)
 
     val OtherHeroAdapter: OtherHero =
-        com.example.inline_fragment_merge_fields.adapter.TestQuery_ResponseAdapter.Hero.OtherHero(customScalarAdapters)
+        com.example.inline_fragment_merge_fields.adapter.TestQuery_ResponseAdapter.Hero.OtherHero(responseAdapterCache)
 
     override fun fromResponse(reader: JsonReader): TestQuery.Data.Hero {
       reader.beginObject()
@@ -98,16 +98,16 @@ class TestQuery_ResponseAdapter(
     }
 
     class CharacterHero(
-      customScalarAdapters: ResponseAdapterCache
+      responseAdapterCache: ResponseAdapterCache
     ) {
-      val stringAdapter: ResponseAdapter<String> = stringResponseAdapter
+      private val stringAdapter: ResponseAdapter<String> = stringResponseAdapter
 
-      val friendsConnectionAdapter:
+      private val friendsConnectionAdapter:
           ResponseAdapter<TestQuery.Data.Hero.CharacterHero.FriendsConnection> =
-          FriendsConnection(customScalarAdapters)
+          FriendsConnection(responseAdapterCache)
 
-      val uRLAdapter: ResponseAdapter<Any> =
-          customScalarAdapters.responseAdapterFor<Any>(CustomScalars.URL)
+      private val uRLAdapter: ResponseAdapter<Any> =
+          responseAdapterCache.responseAdapterFor<Any>(CustomScalars.URL)
 
       fun fromResponse(reader: JsonReader, __typename: String?): TestQuery.Data.Hero.CharacterHero {
         var __typename: String? = __typename
@@ -168,11 +168,11 @@ class TestQuery_ResponseAdapter(
       }
 
       class FriendsConnection(
-        customScalarAdapters: ResponseAdapterCache
+        responseAdapterCache: ResponseAdapterCache
       ) : ResponseAdapter<TestQuery.Data.Hero.CharacterHero.FriendsConnection> {
-        val nullableListOfNullableEdgesAdapter:
+        private val nullableListOfNullableEdgesAdapter:
             ResponseAdapter<List<TestQuery.Data.Hero.CharacterHero.FriendsConnection.Edges?>?> =
-            NullableResponseAdapter(ListResponseAdapter(NullableResponseAdapter(Edges(customScalarAdapters))))
+            NullableResponseAdapter(ListResponseAdapter(NullableResponseAdapter(Edges(responseAdapterCache))))
 
         override fun fromResponse(reader: JsonReader):
             TestQuery.Data.Hero.CharacterHero.FriendsConnection {
@@ -213,11 +213,11 @@ class TestQuery_ResponseAdapter(
         }
 
         class Edges(
-          customScalarAdapters: ResponseAdapterCache
+          responseAdapterCache: ResponseAdapterCache
         ) : ResponseAdapter<TestQuery.Data.Hero.CharacterHero.FriendsConnection.Edges> {
-          val nullableNodeAdapter:
+          private val nullableNodeAdapter:
               ResponseAdapter<TestQuery.Data.Hero.CharacterHero.FriendsConnection.Edges.Node?> =
-              NullableResponseAdapter(Node(customScalarAdapters))
+              NullableResponseAdapter(Node(responseAdapterCache))
 
           override fun fromResponse(reader: JsonReader):
               TestQuery.Data.Hero.CharacterHero.FriendsConnection.Edges {
@@ -258,9 +258,9 @@ class TestQuery_ResponseAdapter(
           }
 
           class Node(
-            customScalarAdapters: ResponseAdapterCache
+            responseAdapterCache: ResponseAdapterCache
           ) : ResponseAdapter<TestQuery.Data.Hero.CharacterHero.FriendsConnection.Edges.Node> {
-            val stringAdapter: ResponseAdapter<String> = stringResponseAdapter
+            private val stringAdapter: ResponseAdapter<String> = stringResponseAdapter
 
             override fun fromResponse(reader: JsonReader):
                 TestQuery.Data.Hero.CharacterHero.FriendsConnection.Edges.Node {
@@ -302,12 +302,13 @@ class TestQuery_ResponseAdapter(
     }
 
     class OtherHero(
-      customScalarAdapters: ResponseAdapterCache
+      responseAdapterCache: ResponseAdapterCache
     ) {
-      val stringAdapter: ResponseAdapter<String> = stringResponseAdapter
+      private val stringAdapter: ResponseAdapter<String> = stringResponseAdapter
 
-      val friendsConnectionAdapter: ResponseAdapter<TestQuery.Data.Hero.OtherHero.FriendsConnection>
-          = FriendsConnection(customScalarAdapters)
+      private val friendsConnectionAdapter:
+          ResponseAdapter<TestQuery.Data.Hero.OtherHero.FriendsConnection> =
+          FriendsConnection(responseAdapterCache)
 
       fun fromResponse(reader: JsonReader, __typename: String?): TestQuery.Data.Hero.OtherHero {
         var __typename: String? = __typename
@@ -359,11 +360,11 @@ class TestQuery_ResponseAdapter(
       }
 
       class FriendsConnection(
-        customScalarAdapters: ResponseAdapterCache
+        responseAdapterCache: ResponseAdapterCache
       ) : ResponseAdapter<TestQuery.Data.Hero.OtherHero.FriendsConnection> {
-        val nullableListOfNullableEdgesAdapter:
+        private val nullableListOfNullableEdgesAdapter:
             ResponseAdapter<List<TestQuery.Data.Hero.OtherHero.FriendsConnection.Edges?>?> =
-            NullableResponseAdapter(ListResponseAdapter(NullableResponseAdapter(Edges(customScalarAdapters))))
+            NullableResponseAdapter(ListResponseAdapter(NullableResponseAdapter(Edges(responseAdapterCache))))
 
         override fun fromResponse(reader: JsonReader):
             TestQuery.Data.Hero.OtherHero.FriendsConnection {
@@ -404,11 +405,11 @@ class TestQuery_ResponseAdapter(
         }
 
         class Edges(
-          customScalarAdapters: ResponseAdapterCache
+          responseAdapterCache: ResponseAdapterCache
         ) : ResponseAdapter<TestQuery.Data.Hero.OtherHero.FriendsConnection.Edges> {
-          val nullableNodeAdapter:
+          private val nullableNodeAdapter:
               ResponseAdapter<TestQuery.Data.Hero.OtherHero.FriendsConnection.Edges.Node?> =
-              NullableResponseAdapter(Node(customScalarAdapters))
+              NullableResponseAdapter(Node(responseAdapterCache))
 
           override fun fromResponse(reader: JsonReader):
               TestQuery.Data.Hero.OtherHero.FriendsConnection.Edges {
@@ -449,9 +450,9 @@ class TestQuery_ResponseAdapter(
           }
 
           class Node(
-            customScalarAdapters: ResponseAdapterCache
+            responseAdapterCache: ResponseAdapterCache
           ) : ResponseAdapter<TestQuery.Data.Hero.OtherHero.FriendsConnection.Edges.Node> {
-            val stringAdapter: ResponseAdapter<String> = stringResponseAdapter
+            private val stringAdapter: ResponseAdapter<String> = stringResponseAdapter
 
             override fun fromResponse(reader: JsonReader):
                 TestQuery.Data.Hero.OtherHero.FriendsConnection.Edges.Node {

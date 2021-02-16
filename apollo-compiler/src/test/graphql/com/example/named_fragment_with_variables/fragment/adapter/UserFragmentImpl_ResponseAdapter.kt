@@ -21,9 +21,9 @@ import kotlin.collections.List
     "RemoveExplicitTypeArguments", "NestedLambdaShadowedImplicitParameter", "PropertyName",
     "RemoveRedundantQualifierName")
 class UserFragmentImpl_ResponseAdapter(
-  customScalarAdapters: ResponseAdapterCache
+  responseAdapterCache: ResponseAdapterCache
 ) : ResponseAdapter<UserFragmentImpl.Data> {
-  val stringAdapter: ResponseAdapter<String> = stringResponseAdapter
+  private val stringAdapter: ResponseAdapter<String> = stringResponseAdapter
 
   override fun fromResponse(reader: JsonReader): UserFragmentImpl.Data {
     var __typename: String? = null

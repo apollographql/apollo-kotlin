@@ -29,11 +29,11 @@ import kotlin.collections.List
     "RemoveExplicitTypeArguments", "NestedLambdaShadowedImplicitParameter", "PropertyName",
     "RemoveRedundantQualifierName")
 class HeroDetailQuery_ResponseAdapter(
-  customScalarAdapters: ResponseAdapterCache
+  responseAdapterCache: ResponseAdapterCache
 ) : ResponseAdapter<HeroDetailQuery.Data> {
-  val nullableHeroDetailQueryAdapter:
+  private val nullableHeroDetailQueryAdapter:
       ResponseAdapter<com.example.unique_type_name.HeroDetailQuery.Data.HeroDetailQuery?> =
-      NullableResponseAdapter(HeroDetailQuery(customScalarAdapters))
+      NullableResponseAdapter(HeroDetailQuery(responseAdapterCache))
 
   override fun fromResponse(reader: JsonReader): com.example.unique_type_name.HeroDetailQuery.Data {
     var heroDetailQuery: com.example.unique_type_name.HeroDetailQuery.Data.HeroDetailQuery? = null
@@ -74,13 +74,13 @@ class HeroDetailQuery_ResponseAdapter(
   }
 
   class HeroDetailQuery(
-    customScalarAdapters: ResponseAdapterCache
+    responseAdapterCache: ResponseAdapterCache
   ) : ResponseAdapter<com.example.unique_type_name.HeroDetailQuery.Data.HeroDetailQuery> {
     val HumanHeroDetailQueryAdapter: HumanHeroDetailQuery =
-        com.example.unique_type_name.adapter.HeroDetailQuery_ResponseAdapter.HeroDetailQuery.HumanHeroDetailQuery(customScalarAdapters)
+        com.example.unique_type_name.adapter.HeroDetailQuery_ResponseAdapter.HeroDetailQuery.HumanHeroDetailQuery(responseAdapterCache)
 
     val OtherHeroDetailQueryAdapter: OtherHeroDetailQuery =
-        com.example.unique_type_name.adapter.HeroDetailQuery_ResponseAdapter.HeroDetailQuery.OtherHeroDetailQuery(customScalarAdapters)
+        com.example.unique_type_name.adapter.HeroDetailQuery_ResponseAdapter.HeroDetailQuery.OtherHeroDetailQuery(responseAdapterCache)
 
     override fun fromResponse(reader: JsonReader):
         com.example.unique_type_name.HeroDetailQuery.Data.HeroDetailQuery {
@@ -104,16 +104,16 @@ class HeroDetailQuery_ResponseAdapter(
     }
 
     class HumanHeroDetailQuery(
-      customScalarAdapters: ResponseAdapterCache
+      responseAdapterCache: ResponseAdapterCache
     ) {
-      val stringAdapter: ResponseAdapter<String> = stringResponseAdapter
+      private val stringAdapter: ResponseAdapter<String> = stringResponseAdapter
 
-      val nullableListOfNullableFriendsAdapter:
+      private val nullableListOfNullableFriendsAdapter:
           ResponseAdapter<List<com.example.unique_type_name.HeroDetailQuery.Data.HeroDetailQuery.HumanHeroDetailQuery.Friends?>?>
           =
-          NullableResponseAdapter(ListResponseAdapter(NullableResponseAdapter(Friends(customScalarAdapters))))
+          NullableResponseAdapter(ListResponseAdapter(NullableResponseAdapter(Friends(responseAdapterCache))))
 
-      val nullableFloatAdapter: ResponseAdapter<Double?> =
+      private val nullableFloatAdapter: ResponseAdapter<Double?> =
           NullableResponseAdapter(doubleResponseAdapter)
 
       fun fromResponse(reader: JsonReader, __typename: String?):
@@ -177,19 +177,19 @@ class HeroDetailQuery_ResponseAdapter(
       }
 
       class Friends(
-        customScalarAdapters: ResponseAdapterCache
+        responseAdapterCache: ResponseAdapterCache
       ) :
           ResponseAdapter<com.example.unique_type_name.HeroDetailQuery.Data.HeroDetailQuery.HumanHeroDetailQuery.Friends>
           {
-        val stringAdapter: ResponseAdapter<String> = stringResponseAdapter
+        private val stringAdapter: ResponseAdapter<String> = stringResponseAdapter
 
-        val listOfNullableEpisodeAdapter: ResponseAdapter<List<Episode?>> =
+        private val listOfNullableEpisodeAdapter: ResponseAdapter<List<Episode?>> =
             ListResponseAdapter(NullableResponseAdapter(Episode_ResponseAdapter))
 
-        val nullableListOfNullableFriendsAdapter:
+        private val nullableListOfNullableFriendsAdapter:
             ResponseAdapter<List<com.example.unique_type_name.HeroDetailQuery.Data.HeroDetailQuery.HumanHeroDetailQuery.Friends.Friends?>?>
             =
-            NullableResponseAdapter(ListResponseAdapter(NullableResponseAdapter(Friends(customScalarAdapters))))
+            NullableResponseAdapter(ListResponseAdapter(NullableResponseAdapter(Friends(responseAdapterCache))))
 
         override fun fromResponse(reader: JsonReader):
             com.example.unique_type_name.HeroDetailQuery.Data.HeroDetailQuery.HumanHeroDetailQuery.Friends {
@@ -251,15 +251,15 @@ class HeroDetailQuery_ResponseAdapter(
         }
 
         class Friends(
-          customScalarAdapters: ResponseAdapterCache
+          responseAdapterCache: ResponseAdapterCache
         ) :
             ResponseAdapter<com.example.unique_type_name.HeroDetailQuery.Data.HeroDetailQuery.HumanHeroDetailQuery.Friends.Friends>
             {
           val CharacterFriendsAdapter: CharacterFriends =
-              com.example.unique_type_name.adapter.HeroDetailQuery_ResponseAdapter.HeroDetailQuery.HumanHeroDetailQuery.Friends.Friends.CharacterFriends(customScalarAdapters)
+              com.example.unique_type_name.adapter.HeroDetailQuery_ResponseAdapter.HeroDetailQuery.HumanHeroDetailQuery.Friends.Friends.CharacterFriends(responseAdapterCache)
 
           val OtherFriendsAdapter: OtherFriends =
-              com.example.unique_type_name.adapter.HeroDetailQuery_ResponseAdapter.HeroDetailQuery.HumanHeroDetailQuery.Friends.Friends.OtherFriends(customScalarAdapters)
+              com.example.unique_type_name.adapter.HeroDetailQuery_ResponseAdapter.HeroDetailQuery.HumanHeroDetailQuery.Friends.Friends.OtherFriends(responseAdapterCache)
 
           override fun fromResponse(reader: JsonReader):
               com.example.unique_type_name.HeroDetailQuery.Data.HeroDetailQuery.HumanHeroDetailQuery.Friends.Friends {
@@ -284,13 +284,13 @@ class HeroDetailQuery_ResponseAdapter(
           }
 
           class CharacterFriends(
-            customScalarAdapters: ResponseAdapterCache
+            responseAdapterCache: ResponseAdapterCache
           ) {
-            val stringAdapter: ResponseAdapter<String> = stringResponseAdapter
+            private val stringAdapter: ResponseAdapter<String> = stringResponseAdapter
 
-            val friendsConnectionAdapter:
+            private val friendsConnectionAdapter:
                 ResponseAdapter<com.example.unique_type_name.HeroDetailQuery.Data.HeroDetailQuery.HumanHeroDetailQuery.Friends.Friends.CharacterFriends.FriendsConnection>
-                = FriendsConnection(customScalarAdapters)
+                = FriendsConnection(responseAdapterCache)
 
             fun fromResponse(reader: JsonReader, __typename: String?):
                 com.example.unique_type_name.HeroDetailQuery.Data.HeroDetailQuery.HumanHeroDetailQuery.Friends.Friends.CharacterFriends {
@@ -345,17 +345,17 @@ class HeroDetailQuery_ResponseAdapter(
             }
 
             class FriendsConnection(
-              customScalarAdapters: ResponseAdapterCache
+              responseAdapterCache: ResponseAdapterCache
             ) :
                 ResponseAdapter<com.example.unique_type_name.HeroDetailQuery.Data.HeroDetailQuery.HumanHeroDetailQuery.Friends.Friends.CharacterFriends.FriendsConnection>
                 {
-              val nullableIntAdapter: ResponseAdapter<Int?> =
+              private val nullableIntAdapter: ResponseAdapter<Int?> =
                   NullableResponseAdapter(intResponseAdapter)
 
-              val nullableListOfNullableEdgesAdapter:
+              private val nullableListOfNullableEdgesAdapter:
                   ResponseAdapter<List<com.example.unique_type_name.HeroDetailQuery.Data.HeroDetailQuery.HumanHeroDetailQuery.Friends.Friends.CharacterFriends.FriendsConnection.Edges?>?>
                   =
-                  NullableResponseAdapter(ListResponseAdapter(NullableResponseAdapter(Edges(customScalarAdapters))))
+                  NullableResponseAdapter(ListResponseAdapter(NullableResponseAdapter(Edges(responseAdapterCache))))
 
               override fun fromResponse(reader: JsonReader):
                   com.example.unique_type_name.HeroDetailQuery.Data.HeroDetailQuery.HumanHeroDetailQuery.Friends.Friends.CharacterFriends.FriendsConnection {
@@ -405,13 +405,13 @@ class HeroDetailQuery_ResponseAdapter(
               }
 
               class Edges(
-                customScalarAdapters: ResponseAdapterCache
+                responseAdapterCache: ResponseAdapterCache
               ) :
                   ResponseAdapter<com.example.unique_type_name.HeroDetailQuery.Data.HeroDetailQuery.HumanHeroDetailQuery.Friends.Friends.CharacterFriends.FriendsConnection.Edges>
                   {
-                val nullableNodeAdapter:
+                private val nullableNodeAdapter:
                     ResponseAdapter<com.example.unique_type_name.HeroDetailQuery.Data.HeroDetailQuery.HumanHeroDetailQuery.Friends.Friends.CharacterFriends.FriendsConnection.Edges.Node?>
-                    = NullableResponseAdapter(Node(customScalarAdapters))
+                    = NullableResponseAdapter(Node(responseAdapterCache))
 
                 override fun fromResponse(reader: JsonReader):
                     com.example.unique_type_name.HeroDetailQuery.Data.HeroDetailQuery.HumanHeroDetailQuery.Friends.Friends.CharacterFriends.FriendsConnection.Edges {
@@ -452,11 +452,11 @@ class HeroDetailQuery_ResponseAdapter(
                 }
 
                 class Node(
-                  customScalarAdapters: ResponseAdapterCache
+                  responseAdapterCache: ResponseAdapterCache
                 ) :
                     ResponseAdapter<com.example.unique_type_name.HeroDetailQuery.Data.HeroDetailQuery.HumanHeroDetailQuery.Friends.Friends.CharacterFriends.FriendsConnection.Edges.Node>
                     {
-                  val stringAdapter: ResponseAdapter<String> = stringResponseAdapter
+                  private val stringAdapter: ResponseAdapter<String> = stringResponseAdapter
 
                   override fun fromResponse(reader: JsonReader):
                       com.example.unique_type_name.HeroDetailQuery.Data.HeroDetailQuery.HumanHeroDetailQuery.Friends.Friends.CharacterFriends.FriendsConnection.Edges.Node {
@@ -498,9 +498,9 @@ class HeroDetailQuery_ResponseAdapter(
           }
 
           class OtherFriends(
-            customScalarAdapters: ResponseAdapterCache
+            responseAdapterCache: ResponseAdapterCache
           ) {
-            val stringAdapter: ResponseAdapter<String> = stringResponseAdapter
+            private val stringAdapter: ResponseAdapter<String> = stringResponseAdapter
 
             fun fromResponse(reader: JsonReader, __typename: String?):
                 com.example.unique_type_name.HeroDetailQuery.Data.HeroDetailQuery.HumanHeroDetailQuery.Friends.Friends.OtherFriends {
@@ -537,14 +537,14 @@ class HeroDetailQuery_ResponseAdapter(
     }
 
     class OtherHeroDetailQuery(
-      customScalarAdapters: ResponseAdapterCache
+      responseAdapterCache: ResponseAdapterCache
     ) {
-      val stringAdapter: ResponseAdapter<String> = stringResponseAdapter
+      private val stringAdapter: ResponseAdapter<String> = stringResponseAdapter
 
-      val nullableListOfNullableFriendsAdapter:
+      private val nullableListOfNullableFriendsAdapter:
           ResponseAdapter<List<com.example.unique_type_name.HeroDetailQuery.Data.HeroDetailQuery.OtherHeroDetailQuery.Friends?>?>
           =
-          NullableResponseAdapter(ListResponseAdapter(NullableResponseAdapter(Friends(customScalarAdapters))))
+          NullableResponseAdapter(ListResponseAdapter(NullableResponseAdapter(Friends(responseAdapterCache))))
 
       fun fromResponse(reader: JsonReader, __typename: String?):
           com.example.unique_type_name.HeroDetailQuery.Data.HeroDetailQuery.OtherHeroDetailQuery {
@@ -598,11 +598,11 @@ class HeroDetailQuery_ResponseAdapter(
       }
 
       class Friends(
-        customScalarAdapters: ResponseAdapterCache
+        responseAdapterCache: ResponseAdapterCache
       ) :
           ResponseAdapter<com.example.unique_type_name.HeroDetailQuery.Data.HeroDetailQuery.OtherHeroDetailQuery.Friends>
           {
-        val stringAdapter: ResponseAdapter<String> = stringResponseAdapter
+        private val stringAdapter: ResponseAdapter<String> = stringResponseAdapter
 
         override fun fromResponse(reader: JsonReader):
             com.example.unique_type_name.HeroDetailQuery.Data.HeroDetailQuery.OtherHeroDetailQuery.Friends {

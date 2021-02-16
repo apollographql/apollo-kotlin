@@ -21,9 +21,9 @@ import kotlin.collections.List
     "RemoveExplicitTypeArguments", "NestedLambdaShadowedImplicitParameter", "PropertyName",
     "RemoveRedundantQualifierName")
 class HeroFragmentImpl_ResponseAdapter(
-  customScalarAdapters: ResponseAdapterCache
+  responseAdapterCache: ResponseAdapterCache
 ) : ResponseAdapter<HeroFragmentImpl.Data> {
-  val stringAdapter: ResponseAdapter<String> = stringResponseAdapter
+  private val stringAdapter: ResponseAdapter<String> = stringResponseAdapter
 
   override fun fromResponse(reader: JsonReader): HeroFragmentImpl.Data {
     var __typename: String? = null

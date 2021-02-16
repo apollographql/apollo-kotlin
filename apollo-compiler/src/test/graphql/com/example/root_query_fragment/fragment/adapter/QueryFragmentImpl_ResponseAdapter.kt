@@ -22,12 +22,12 @@ import kotlin.collections.List
     "RemoveExplicitTypeArguments", "NestedLambdaShadowedImplicitParameter", "PropertyName",
     "RemoveRedundantQualifierName")
 class QueryFragmentImpl_ResponseAdapter(
-  customScalarAdapters: ResponseAdapterCache
+  responseAdapterCache: ResponseAdapterCache
 ) : ResponseAdapter<QueryFragmentImpl.Data> {
-  val stringAdapter: ResponseAdapter<String> = stringResponseAdapter
+  private val stringAdapter: ResponseAdapter<String> = stringResponseAdapter
 
-  val nullableHeroAdapter: ResponseAdapter<QueryFragmentImpl.Data.Hero?> =
-      NullableResponseAdapter(Hero(customScalarAdapters))
+  private val nullableHeroAdapter: ResponseAdapter<QueryFragmentImpl.Data.Hero?> =
+      NullableResponseAdapter(Hero(responseAdapterCache))
 
   override fun fromResponse(reader: JsonReader): QueryFragmentImpl.Data {
     var __typename: String? = null
@@ -72,9 +72,9 @@ class QueryFragmentImpl_ResponseAdapter(
   }
 
   class Hero(
-    customScalarAdapters: ResponseAdapterCache
+    responseAdapterCache: ResponseAdapterCache
   ) : ResponseAdapter<QueryFragmentImpl.Data.Hero> {
-    val stringAdapter: ResponseAdapter<String> = stringResponseAdapter
+    private val stringAdapter: ResponseAdapter<String> = stringResponseAdapter
 
     override fun fromResponse(reader: JsonReader): QueryFragmentImpl.Data.Hero {
       var name: String? = null

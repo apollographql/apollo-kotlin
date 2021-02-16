@@ -25,12 +25,13 @@ import kotlin.collections.List
     "RemoveExplicitTypeArguments", "NestedLambdaShadowedImplicitParameter", "PropertyName",
     "RemoveRedundantQualifierName")
 class TestQuery_ResponseAdapter(
-  customScalarAdapters: ResponseAdapterCache
+  responseAdapterCache: ResponseAdapterCache
 ) : ResponseAdapter<TestQuery.Data> {
-  val nullableListOfNullableReviewsAdapter: ResponseAdapter<List<TestQuery.Data.Reviews?>?> =
-      NullableResponseAdapter(ListResponseAdapter(NullableResponseAdapter(Reviews(customScalarAdapters))))
+  private val nullableListOfNullableReviewsAdapter: ResponseAdapter<List<TestQuery.Data.Reviews?>?>
+      =
+      NullableResponseAdapter(ListResponseAdapter(NullableResponseAdapter(Reviews(responseAdapterCache))))
 
-  val intAdapter: ResponseAdapter<Int> = intResponseAdapter
+  private val intAdapter: ResponseAdapter<Int> = intResponseAdapter
 
   override fun fromResponse(reader: JsonReader): TestQuery.Data {
     var reviews: List<TestQuery.Data.Reviews?>? = null
@@ -90,11 +91,11 @@ class TestQuery_ResponseAdapter(
   }
 
   class Reviews(
-    customScalarAdapters: ResponseAdapterCache
+    responseAdapterCache: ResponseAdapterCache
   ) : ResponseAdapter<TestQuery.Data.Reviews> {
-    val intAdapter: ResponseAdapter<Int> = intResponseAdapter
+    private val intAdapter: ResponseAdapter<Int> = intResponseAdapter
 
-    val nullableStringAdapter: ResponseAdapter<String?> =
+    private val nullableStringAdapter: ResponseAdapter<String?> =
         NullableResponseAdapter(stringResponseAdapter)
 
     override fun fromResponse(reader: JsonReader): TestQuery.Data.Reviews {

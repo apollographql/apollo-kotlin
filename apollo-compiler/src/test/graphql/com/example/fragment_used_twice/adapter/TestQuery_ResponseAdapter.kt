@@ -24,10 +24,10 @@ import kotlin.collections.List
     "RemoveExplicitTypeArguments", "NestedLambdaShadowedImplicitParameter", "PropertyName",
     "RemoveRedundantQualifierName")
 class TestQuery_ResponseAdapter(
-  customScalarAdapters: ResponseAdapterCache
+  responseAdapterCache: ResponseAdapterCache
 ) : ResponseAdapter<TestQuery.Data> {
-  val nullableHeroAdapter: ResponseAdapter<TestQuery.Data.Hero?> =
-      NullableResponseAdapter(Hero(customScalarAdapters))
+  private val nullableHeroAdapter: ResponseAdapter<TestQuery.Data.Hero?> =
+      NullableResponseAdapter(Hero(responseAdapterCache))
 
   override fun fromResponse(reader: JsonReader): TestQuery.Data {
     var hero: TestQuery.Data.Hero? = null
@@ -68,16 +68,16 @@ class TestQuery_ResponseAdapter(
   }
 
   class Hero(
-    customScalarAdapters: ResponseAdapterCache
+    responseAdapterCache: ResponseAdapterCache
   ) : ResponseAdapter<TestQuery.Data.Hero> {
     val CharacterHeroAdapter: CharacterHero =
-        com.example.fragment_used_twice.adapter.TestQuery_ResponseAdapter.Hero.CharacterHero(customScalarAdapters)
+        com.example.fragment_used_twice.adapter.TestQuery_ResponseAdapter.Hero.CharacterHero(responseAdapterCache)
 
     val CharacterHumanHeroAdapter: CharacterHumanHero =
-        com.example.fragment_used_twice.adapter.TestQuery_ResponseAdapter.Hero.CharacterHumanHero(customScalarAdapters)
+        com.example.fragment_used_twice.adapter.TestQuery_ResponseAdapter.Hero.CharacterHumanHero(responseAdapterCache)
 
     val OtherHeroAdapter: OtherHero =
-        com.example.fragment_used_twice.adapter.TestQuery_ResponseAdapter.Hero.OtherHero(customScalarAdapters)
+        com.example.fragment_used_twice.adapter.TestQuery_ResponseAdapter.Hero.OtherHero(responseAdapterCache)
 
     override fun fromResponse(reader: JsonReader): TestQuery.Data.Hero {
       reader.beginObject()
@@ -101,12 +101,12 @@ class TestQuery_ResponseAdapter(
     }
 
     class CharacterHero(
-      customScalarAdapters: ResponseAdapterCache
+      responseAdapterCache: ResponseAdapterCache
     ) {
-      val stringAdapter: ResponseAdapter<String> = stringResponseAdapter
+      private val stringAdapter: ResponseAdapter<String> = stringResponseAdapter
 
-      val dateAdapter: ResponseAdapter<Any> =
-          customScalarAdapters.responseAdapterFor<Any>(CustomScalars.Date)
+      private val dateAdapter: ResponseAdapter<Any> =
+          responseAdapterCache.responseAdapterFor<Any>(CustomScalars.Date)
 
       fun fromResponse(reader: JsonReader, __typename: String?): TestQuery.Data.Hero.CharacterHero {
         var __typename: String? = __typename
@@ -156,12 +156,12 @@ class TestQuery_ResponseAdapter(
     }
 
     class CharacterHumanHero(
-      customScalarAdapters: ResponseAdapterCache
+      responseAdapterCache: ResponseAdapterCache
     ) {
-      val stringAdapter: ResponseAdapter<String> = stringResponseAdapter
+      private val stringAdapter: ResponseAdapter<String> = stringResponseAdapter
 
-      val dateAdapter: ResponseAdapter<Any> =
-          customScalarAdapters.responseAdapterFor<Any>(CustomScalars.Date)
+      private val dateAdapter: ResponseAdapter<Any> =
+          responseAdapterCache.responseAdapterFor<Any>(CustomScalars.Date)
 
       fun fromResponse(reader: JsonReader, __typename: String?):
           TestQuery.Data.Hero.CharacterHumanHero {
@@ -212,9 +212,9 @@ class TestQuery_ResponseAdapter(
     }
 
     class OtherHero(
-      customScalarAdapters: ResponseAdapterCache
+      responseAdapterCache: ResponseAdapterCache
     ) {
-      val stringAdapter: ResponseAdapter<String> = stringResponseAdapter
+      private val stringAdapter: ResponseAdapter<String> = stringResponseAdapter
 
       fun fromResponse(reader: JsonReader, __typename: String?): TestQuery.Data.Hero.OtherHero {
         var __typename: String? = __typename

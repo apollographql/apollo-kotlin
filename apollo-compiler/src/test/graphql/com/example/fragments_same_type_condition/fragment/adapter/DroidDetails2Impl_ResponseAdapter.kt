@@ -22,11 +22,11 @@ import kotlin.collections.List
     "RemoveExplicitTypeArguments", "NestedLambdaShadowedImplicitParameter", "PropertyName",
     "RemoveRedundantQualifierName")
 class DroidDetails2Impl_ResponseAdapter(
-  customScalarAdapters: ResponseAdapterCache
+  responseAdapterCache: ResponseAdapterCache
 ) : ResponseAdapter<DroidDetails2Impl.Data> {
-  val stringAdapter: ResponseAdapter<String> = stringResponseAdapter
+  private val stringAdapter: ResponseAdapter<String> = stringResponseAdapter
 
-  val nullableStringAdapter: ResponseAdapter<String?> =
+  private val nullableStringAdapter: ResponseAdapter<String?> =
       NullableResponseAdapter(stringResponseAdapter)
 
   override fun fromResponse(reader: JsonReader): DroidDetails2Impl.Data {

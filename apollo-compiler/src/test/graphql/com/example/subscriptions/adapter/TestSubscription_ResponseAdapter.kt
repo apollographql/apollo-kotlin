@@ -24,10 +24,10 @@ import kotlin.collections.List
     "RemoveExplicitTypeArguments", "NestedLambdaShadowedImplicitParameter", "PropertyName",
     "RemoveRedundantQualifierName")
 class TestSubscription_ResponseAdapter(
-  customScalarAdapters: ResponseAdapterCache
+  responseAdapterCache: ResponseAdapterCache
 ) : ResponseAdapter<TestSubscription.Data> {
-  val nullableCommentAddedAdapter: ResponseAdapter<TestSubscription.Data.CommentAdded?> =
-      NullableResponseAdapter(CommentAdded(customScalarAdapters))
+  private val nullableCommentAddedAdapter: ResponseAdapter<TestSubscription.Data.CommentAdded?> =
+      NullableResponseAdapter(CommentAdded(responseAdapterCache))
 
   override fun fromResponse(reader: JsonReader): TestSubscription.Data {
     var commentAdded: TestSubscription.Data.CommentAdded? = null
@@ -70,11 +70,11 @@ class TestSubscription_ResponseAdapter(
   }
 
   class CommentAdded(
-    customScalarAdapters: ResponseAdapterCache
+    responseAdapterCache: ResponseAdapterCache
   ) : ResponseAdapter<TestSubscription.Data.CommentAdded> {
-    val intAdapter: ResponseAdapter<Int> = intResponseAdapter
+    private val intAdapter: ResponseAdapter<Int> = intResponseAdapter
 
-    val stringAdapter: ResponseAdapter<String> = stringResponseAdapter
+    private val stringAdapter: ResponseAdapter<String> = stringResponseAdapter
 
     override fun fromResponse(reader: JsonReader): TestSubscription.Data.CommentAdded {
       var id: Int? = null

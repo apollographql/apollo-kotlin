@@ -22,10 +22,10 @@ import kotlin.collections.List
     "RemoveExplicitTypeArguments", "NestedLambdaShadowedImplicitParameter", "PropertyName",
     "RemoveRedundantQualifierName")
 class TestQuery_ResponseAdapter(
-  customScalarAdapters: ResponseAdapterCache
+  responseAdapterCache: ResponseAdapterCache
 ) : ResponseAdapter<TestQuery.Data> {
-  val nullableHeroAdapter: ResponseAdapter<TestQuery.Data.Hero?> =
-      NullableResponseAdapter(Hero(customScalarAdapters))
+  private val nullableHeroAdapter: ResponseAdapter<TestQuery.Data.Hero?> =
+      NullableResponseAdapter(Hero(responseAdapterCache))
 
   override fun fromResponse(reader: JsonReader): TestQuery.Data {
     var hero: TestQuery.Data.Hero? = null
@@ -65,13 +65,13 @@ class TestQuery_ResponseAdapter(
   }
 
   class Hero(
-    customScalarAdapters: ResponseAdapterCache
+    responseAdapterCache: ResponseAdapterCache
   ) : ResponseAdapter<TestQuery.Data.Hero> {
     val DroidHeroAdapter: DroidHero =
-        com.example.fragments_same_type_condition.adapter.TestQuery_ResponseAdapter.Hero.DroidHero(customScalarAdapters)
+        com.example.fragments_same_type_condition.adapter.TestQuery_ResponseAdapter.Hero.DroidHero(responseAdapterCache)
 
     val OtherHeroAdapter: OtherHero =
-        com.example.fragments_same_type_condition.adapter.TestQuery_ResponseAdapter.Hero.OtherHero(customScalarAdapters)
+        com.example.fragments_same_type_condition.adapter.TestQuery_ResponseAdapter.Hero.OtherHero(responseAdapterCache)
 
     override fun fromResponse(reader: JsonReader): TestQuery.Data.Hero {
       reader.beginObject()
@@ -93,11 +93,11 @@ class TestQuery_ResponseAdapter(
     }
 
     class DroidHero(
-      customScalarAdapters: ResponseAdapterCache
+      responseAdapterCache: ResponseAdapterCache
     ) {
-      val stringAdapter: ResponseAdapter<String> = stringResponseAdapter
+      private val stringAdapter: ResponseAdapter<String> = stringResponseAdapter
 
-      val nullableStringAdapter: ResponseAdapter<String?> =
+      private val nullableStringAdapter: ResponseAdapter<String?> =
           NullableResponseAdapter(stringResponseAdapter)
 
       fun fromResponse(reader: JsonReader, __typename: String?): TestQuery.Data.Hero.DroidHero {
@@ -148,9 +148,9 @@ class TestQuery_ResponseAdapter(
     }
 
     class OtherHero(
-      customScalarAdapters: ResponseAdapterCache
+      responseAdapterCache: ResponseAdapterCache
     ) {
-      val stringAdapter: ResponseAdapter<String> = stringResponseAdapter
+      private val stringAdapter: ResponseAdapter<String> = stringResponseAdapter
 
       fun fromResponse(reader: JsonReader, __typename: String?): TestQuery.Data.Hero.OtherHero {
         var __typename: String? = __typename

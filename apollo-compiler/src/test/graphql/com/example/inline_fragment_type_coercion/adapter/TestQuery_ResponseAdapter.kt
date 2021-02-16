@@ -22,10 +22,10 @@ import kotlin.collections.List
     "RemoveExplicitTypeArguments", "NestedLambdaShadowedImplicitParameter", "PropertyName",
     "RemoveRedundantQualifierName")
 class TestQuery_ResponseAdapter(
-  customScalarAdapters: ResponseAdapterCache
+  responseAdapterCache: ResponseAdapterCache
 ) : ResponseAdapter<TestQuery.Data> {
-  val nullableFooAdapter: ResponseAdapter<TestQuery.Data.Foo?> =
-      NullableResponseAdapter(Foo(customScalarAdapters))
+  private val nullableFooAdapter: ResponseAdapter<TestQuery.Data.Foo?> =
+      NullableResponseAdapter(Foo(responseAdapterCache))
 
   override fun fromResponse(reader: JsonReader): TestQuery.Data {
     var foo: TestQuery.Data.Foo? = null
@@ -65,13 +65,13 @@ class TestQuery_ResponseAdapter(
   }
 
   class Foo(
-    customScalarAdapters: ResponseAdapterCache
+    responseAdapterCache: ResponseAdapterCache
   ) : ResponseAdapter<TestQuery.Data.Foo> {
     val BarFooAdapter: BarFoo =
-        com.example.inline_fragment_type_coercion.adapter.TestQuery_ResponseAdapter.Foo.BarFoo(customScalarAdapters)
+        com.example.inline_fragment_type_coercion.adapter.TestQuery_ResponseAdapter.Foo.BarFoo(responseAdapterCache)
 
     val OtherFooAdapter: OtherFoo =
-        com.example.inline_fragment_type_coercion.adapter.TestQuery_ResponseAdapter.Foo.OtherFoo(customScalarAdapters)
+        com.example.inline_fragment_type_coercion.adapter.TestQuery_ResponseAdapter.Foo.OtherFoo(responseAdapterCache)
 
     override fun fromResponse(reader: JsonReader): TestQuery.Data.Foo {
       reader.beginObject()
@@ -93,9 +93,9 @@ class TestQuery_ResponseAdapter(
     }
 
     class BarFoo(
-      customScalarAdapters: ResponseAdapterCache
+      responseAdapterCache: ResponseAdapterCache
     ) {
-      val stringAdapter: ResponseAdapter<String> = stringResponseAdapter
+      private val stringAdapter: ResponseAdapter<String> = stringResponseAdapter
 
       fun fromResponse(reader: JsonReader, __typename: String?): TestQuery.Data.Foo.BarFoo {
         var __typename: String? = __typename
@@ -145,9 +145,9 @@ class TestQuery_ResponseAdapter(
     }
 
     class OtherFoo(
-      customScalarAdapters: ResponseAdapterCache
+      responseAdapterCache: ResponseAdapterCache
     ) {
-      val stringAdapter: ResponseAdapter<String> = stringResponseAdapter
+      private val stringAdapter: ResponseAdapter<String> = stringResponseAdapter
 
       fun fromResponse(reader: JsonReader, __typename: String?): TestQuery.Data.Foo.OtherFoo {
         var __typename: String? = __typename

@@ -47,7 +47,7 @@ private fun CodeGenerationAst.ObjectType.responseAdapterTypeSpec(): TypeSpec {
   return TypeSpec.classBuilder(this.name)
       .primaryConstructor(
           FunSpec.constructorBuilder()
-              .addParameter(ParameterSpec.builder("customScalarAdapters", ResponseAdapterCache::class.asTypeName()).build())
+              .addParameter(ParameterSpec.builder("responseAdapterCache", ResponseAdapterCache::class.asTypeName()).build())
               .build()
       )
       .applyIf(!isTypeCase) { addSuperinterface(ResponseAdapter::class.asTypeName().parameterizedBy(this@responseAdapterTypeSpec.typeRef.asTypeName())) }
@@ -81,7 +81,7 @@ private fun CodeGenerationAst.ObjectType.responseAdapterTypeSpec(): TypeSpec {
 private fun objectAdapterPropertySpecs(kind: CodeGenerationAst.ObjectType.Kind.Fragment): Iterable<PropertySpec> {
   return (kind.possibleImplementations.values.distinct() + kind.defaultImplementation).map { typeRef ->
     PropertySpec.builder(kotlinNameForTypeCaseAdapterField(typeRef), typeRef.asAdapterTypeName())
-        .initializer("%L(customScalarAdapters)", typeRef.asAdapterTypeName())
+        .initializer("%L(responseAdapterCache)", typeRef.asAdapterTypeName())
         .build()
   }
 }
@@ -155,9 +155,9 @@ private fun adapterInitializer(type: CodeGenerationAst.FieldType): CodeBlock {
     is CodeGenerationAst.FieldType.Scalar.Int -> CodeBlock.of("%M", MemberName("com.apollographql.apollo.api.internal", "intResponseAdapter"))
     is CodeGenerationAst.FieldType.Scalar.Float -> CodeBlock.of("%M", MemberName("com.apollographql.apollo.api.internal", "doubleResponseAdapter"))
     is CodeGenerationAst.FieldType.Scalar.Enum -> CodeBlock.of("%T", type.typeRef.asEnumAdapterTypeName().copy(nullable = false))
-    is CodeGenerationAst.FieldType.Object -> CodeBlock.of("%T(customScalarAdapters)", type.typeRef.asAdapterTypeName().copy(nullable = false))
+    is CodeGenerationAst.FieldType.Object -> CodeBlock.of("%T(responseAdapterCache)", type.typeRef.asAdapterTypeName().copy(nullable = false))
     is CodeGenerationAst.FieldType.Scalar.Custom -> CodeBlock.of(
-        "customScalarAdapters.responseAdapterFor<%T>(%T)",
+        "responseAdapterCache.responseAdapterFor<%T>(%T)",
         ClassName.bestGuess(type.type),
         type.typeRef.asTypeName()
     )
@@ -170,6 +170,7 @@ private fun CodeGenerationAst.FieldType.adapterPropertySpec(): PropertySpec {
           name = kotlinNameForAdapterField(this),
           type = ResponseAdapter::class.asClassName().parameterizedBy(asTypeName())
       )
+      .addModifiers(KModifier.PRIVATE)
       .initializer(adapterInitializer(this))
       .build()
 }

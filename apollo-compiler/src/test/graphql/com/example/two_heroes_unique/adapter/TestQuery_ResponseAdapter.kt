@@ -22,13 +22,13 @@ import kotlin.collections.List
     "RemoveExplicitTypeArguments", "NestedLambdaShadowedImplicitParameter", "PropertyName",
     "RemoveRedundantQualifierName")
 class TestQuery_ResponseAdapter(
-  customScalarAdapters: ResponseAdapterCache
+  responseAdapterCache: ResponseAdapterCache
 ) : ResponseAdapter<TestQuery.Data> {
-  val nullableR2Adapter: ResponseAdapter<TestQuery.Data.R2?> =
-      NullableResponseAdapter(R2(customScalarAdapters))
+  private val nullableR2Adapter: ResponseAdapter<TestQuery.Data.R2?> =
+      NullableResponseAdapter(R2(responseAdapterCache))
 
-  val nullableLukeAdapter: ResponseAdapter<TestQuery.Data.Luke?> =
-      NullableResponseAdapter(Luke(customScalarAdapters))
+  private val nullableLukeAdapter: ResponseAdapter<TestQuery.Data.Luke?> =
+      NullableResponseAdapter(Luke(responseAdapterCache))
 
   override fun fromResponse(reader: JsonReader): TestQuery.Data {
     var r2: TestQuery.Data.R2? = null
@@ -83,9 +83,9 @@ class TestQuery_ResponseAdapter(
   }
 
   class R2(
-    customScalarAdapters: ResponseAdapterCache
+    responseAdapterCache: ResponseAdapterCache
   ) : ResponseAdapter<TestQuery.Data.R2> {
-    val stringAdapter: ResponseAdapter<String> = stringResponseAdapter
+    private val stringAdapter: ResponseAdapter<String> = stringResponseAdapter
 
     override fun fromResponse(reader: JsonReader): TestQuery.Data.R2 {
       var name: String? = null
@@ -122,9 +122,9 @@ class TestQuery_ResponseAdapter(
   }
 
   class Luke(
-    customScalarAdapters: ResponseAdapterCache
+    responseAdapterCache: ResponseAdapterCache
   ) : ResponseAdapter<TestQuery.Data.Luke> {
-    val stringAdapter: ResponseAdapter<String> = stringResponseAdapter
+    private val stringAdapter: ResponseAdapter<String> = stringResponseAdapter
 
     override fun fromResponse(reader: JsonReader): TestQuery.Data.Luke {
       var id: String? = null

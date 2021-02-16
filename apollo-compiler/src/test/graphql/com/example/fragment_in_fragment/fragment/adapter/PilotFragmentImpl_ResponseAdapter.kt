@@ -22,15 +22,15 @@ import kotlin.collections.List
     "RemoveExplicitTypeArguments", "NestedLambdaShadowedImplicitParameter", "PropertyName",
     "RemoveRedundantQualifierName")
 class PilotFragmentImpl_ResponseAdapter(
-  customScalarAdapters: ResponseAdapterCache
+  responseAdapterCache: ResponseAdapterCache
 ) : ResponseAdapter<PilotFragmentImpl.Data> {
-  val stringAdapter: ResponseAdapter<String> = stringResponseAdapter
+  private val stringAdapter: ResponseAdapter<String> = stringResponseAdapter
 
-  val nullableStringAdapter: ResponseAdapter<String?> =
+  private val nullableStringAdapter: ResponseAdapter<String?> =
       NullableResponseAdapter(stringResponseAdapter)
 
-  val nullableHomeworldAdapter: ResponseAdapter<PilotFragmentImpl.Data.Homeworld?> =
-      NullableResponseAdapter(Homeworld(customScalarAdapters))
+  private val nullableHomeworldAdapter: ResponseAdapter<PilotFragmentImpl.Data.Homeworld?> =
+      NullableResponseAdapter(Homeworld(responseAdapterCache))
 
   override fun fromResponse(reader: JsonReader): PilotFragmentImpl.Data {
     var __typename: String? = null
@@ -85,13 +85,13 @@ class PilotFragmentImpl_ResponseAdapter(
   }
 
   class Homeworld(
-    customScalarAdapters: ResponseAdapterCache
+    responseAdapterCache: ResponseAdapterCache
   ) : ResponseAdapter<PilotFragmentImpl.Data.Homeworld> {
     val PlanetHomeworldAdapter: PlanetHomeworld =
-        com.example.fragment_in_fragment.fragment.adapter.PilotFragmentImpl_ResponseAdapter.Homeworld.PlanetHomeworld(customScalarAdapters)
+        com.example.fragment_in_fragment.fragment.adapter.PilotFragmentImpl_ResponseAdapter.Homeworld.PlanetHomeworld(responseAdapterCache)
 
     val OtherHomeworldAdapter: OtherHomeworld =
-        com.example.fragment_in_fragment.fragment.adapter.PilotFragmentImpl_ResponseAdapter.Homeworld.OtherHomeworld(customScalarAdapters)
+        com.example.fragment_in_fragment.fragment.adapter.PilotFragmentImpl_ResponseAdapter.Homeworld.OtherHomeworld(responseAdapterCache)
 
     override fun fromResponse(reader: JsonReader): PilotFragmentImpl.Data.Homeworld {
       reader.beginObject()
@@ -113,11 +113,11 @@ class PilotFragmentImpl_ResponseAdapter(
     }
 
     class PlanetHomeworld(
-      customScalarAdapters: ResponseAdapterCache
+      responseAdapterCache: ResponseAdapterCache
     ) {
-      val stringAdapter: ResponseAdapter<String> = stringResponseAdapter
+      private val stringAdapter: ResponseAdapter<String> = stringResponseAdapter
 
-      val nullableStringAdapter: ResponseAdapter<String?> =
+      private val nullableStringAdapter: ResponseAdapter<String?> =
           NullableResponseAdapter(stringResponseAdapter)
 
       fun fromResponse(reader: JsonReader, __typename: String?):
@@ -160,9 +160,9 @@ class PilotFragmentImpl_ResponseAdapter(
     }
 
     class OtherHomeworld(
-      customScalarAdapters: ResponseAdapterCache
+      responseAdapterCache: ResponseAdapterCache
     ) {
-      val stringAdapter: ResponseAdapter<String> = stringResponseAdapter
+      private val stringAdapter: ResponseAdapter<String> = stringResponseAdapter
 
       fun fromResponse(reader: JsonReader, __typename: String?):
           PilotFragmentImpl.Data.Homeworld.OtherHomeworld {

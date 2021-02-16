@@ -23,11 +23,12 @@ import kotlin.collections.List
     "RemoveExplicitTypeArguments", "NestedLambdaShadowedImplicitParameter", "PropertyName",
     "RemoveRedundantQualifierName")
 class TestQuery_ResponseAdapter(
-  customScalarAdapters: ResponseAdapterCache
+  responseAdapterCache: ResponseAdapterCache
 ) : ResponseAdapter<TestQuery.Data> {
-  val __SchemaAdapter: ResponseAdapter<TestQuery.Data.__Schema> = __Schema(customScalarAdapters)
+  private val __SchemaAdapter: ResponseAdapter<TestQuery.Data.__Schema> =
+      __Schema(responseAdapterCache)
 
-  val __TypeAdapter: ResponseAdapter<TestQuery.Data.__Type> = __Type(customScalarAdapters)
+  private val __TypeAdapter: ResponseAdapter<TestQuery.Data.__Type> = __Type(responseAdapterCache)
 
   override fun fromResponse(reader: JsonReader): TestQuery.Data {
     var __schema: TestQuery.Data.__Schema? = null
@@ -80,13 +81,13 @@ class TestQuery_ResponseAdapter(
   }
 
   class __Schema(
-    customScalarAdapters: ResponseAdapterCache
+    responseAdapterCache: ResponseAdapterCache
   ) : ResponseAdapter<TestQuery.Data.__Schema> {
-    val queryTypeAdapter: ResponseAdapter<TestQuery.Data.__Schema.QueryType> =
-        QueryType(customScalarAdapters)
+    private val queryTypeAdapter: ResponseAdapter<TestQuery.Data.__Schema.QueryType> =
+        QueryType(responseAdapterCache)
 
-    val listOfTypesAdapter: ResponseAdapter<List<TestQuery.Data.__Schema.Types>> =
-        ListResponseAdapter(Types(customScalarAdapters))
+    private val listOfTypesAdapter: ResponseAdapter<List<TestQuery.Data.__Schema.Types>> =
+        ListResponseAdapter(Types(responseAdapterCache))
 
     override fun fromResponse(reader: JsonReader): TestQuery.Data.__Schema {
       var queryType: TestQuery.Data.__Schema.QueryType? = null
@@ -138,9 +139,9 @@ class TestQuery_ResponseAdapter(
     }
 
     class QueryType(
-      customScalarAdapters: ResponseAdapterCache
+      responseAdapterCache: ResponseAdapterCache
     ) : ResponseAdapter<TestQuery.Data.__Schema.QueryType> {
-      val nullableStringAdapter: ResponseAdapter<String?> =
+      private val nullableStringAdapter: ResponseAdapter<String?> =
           NullableResponseAdapter(stringResponseAdapter)
 
       override fun fromResponse(reader: JsonReader): TestQuery.Data.__Schema.QueryType {
@@ -178,9 +179,9 @@ class TestQuery_ResponseAdapter(
     }
 
     class Types(
-      customScalarAdapters: ResponseAdapterCache
+      responseAdapterCache: ResponseAdapterCache
     ) : ResponseAdapter<TestQuery.Data.__Schema.Types> {
-      val nullableStringAdapter: ResponseAdapter<String?> =
+      private val nullableStringAdapter: ResponseAdapter<String?> =
           NullableResponseAdapter(stringResponseAdapter)
 
       override fun fromResponse(reader: JsonReader): TestQuery.Data.__Schema.Types {
@@ -219,9 +220,9 @@ class TestQuery_ResponseAdapter(
   }
 
   class __Type(
-    customScalarAdapters: ResponseAdapterCache
+    responseAdapterCache: ResponseAdapterCache
   ) : ResponseAdapter<TestQuery.Data.__Type> {
-    val nullableStringAdapter: ResponseAdapter<String?> =
+    private val nullableStringAdapter: ResponseAdapter<String?> =
         NullableResponseAdapter(stringResponseAdapter)
 
     override fun fromResponse(reader: JsonReader): TestQuery.Data.__Type {

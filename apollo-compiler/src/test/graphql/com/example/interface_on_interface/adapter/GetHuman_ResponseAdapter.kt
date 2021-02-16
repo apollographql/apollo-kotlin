@@ -23,11 +23,11 @@ import kotlin.collections.List
     "RemoveExplicitTypeArguments", "NestedLambdaShadowedImplicitParameter", "PropertyName",
     "RemoveRedundantQualifierName")
 class GetHuman_ResponseAdapter(
-  customScalarAdapters: ResponseAdapterCache
+  responseAdapterCache: ResponseAdapterCache
 ) : ResponseAdapter<GetHuman.Data> {
-  val humanAdapter: ResponseAdapter<GetHuman.Data.Human> = Human(customScalarAdapters)
+  private val humanAdapter: ResponseAdapter<GetHuman.Data.Human> = Human(responseAdapterCache)
 
-  val nodeAdapter: ResponseAdapter<GetHuman.Data.Node> = Node(customScalarAdapters)
+  private val nodeAdapter: ResponseAdapter<GetHuman.Data.Node> = Node(responseAdapterCache)
 
   override fun fromResponse(reader: JsonReader): GetHuman.Data {
     var human: GetHuman.Data.Human? = null
@@ -79,11 +79,11 @@ class GetHuman_ResponseAdapter(
   }
 
   class Human(
-    customScalarAdapters: ResponseAdapterCache
+    responseAdapterCache: ResponseAdapterCache
   ) : ResponseAdapter<GetHuman.Data.Human> {
-    val stringAdapter: ResponseAdapter<String> = stringResponseAdapter
+    private val stringAdapter: ResponseAdapter<String> = stringResponseAdapter
 
-    val floatAdapter: ResponseAdapter<Double> = doubleResponseAdapter
+    private val floatAdapter: ResponseAdapter<Double> = doubleResponseAdapter
 
     override fun fromResponse(reader: JsonReader): GetHuman.Data.Human {
       var id: String? = null
@@ -138,13 +138,13 @@ class GetHuman_ResponseAdapter(
   }
 
   class Node(
-    customScalarAdapters: ResponseAdapterCache
+    responseAdapterCache: ResponseAdapterCache
   ) : ResponseAdapter<GetHuman.Data.Node> {
     val HumanNodeAdapter: HumanNode =
-        com.example.interface_on_interface.adapter.GetHuman_ResponseAdapter.Node.HumanNode(customScalarAdapters)
+        com.example.interface_on_interface.adapter.GetHuman_ResponseAdapter.Node.HumanNode(responseAdapterCache)
 
     val OtherNodeAdapter: OtherNode =
-        com.example.interface_on_interface.adapter.GetHuman_ResponseAdapter.Node.OtherNode(customScalarAdapters)
+        com.example.interface_on_interface.adapter.GetHuman_ResponseAdapter.Node.OtherNode(responseAdapterCache)
 
     override fun fromResponse(reader: JsonReader): GetHuman.Data.Node {
       reader.beginObject()
@@ -166,11 +166,11 @@ class GetHuman_ResponseAdapter(
     }
 
     class HumanNode(
-      customScalarAdapters: ResponseAdapterCache
+      responseAdapterCache: ResponseAdapterCache
     ) {
-      val stringAdapter: ResponseAdapter<String> = stringResponseAdapter
+      private val stringAdapter: ResponseAdapter<String> = stringResponseAdapter
 
-      val floatAdapter: ResponseAdapter<Double> = doubleResponseAdapter
+      private val floatAdapter: ResponseAdapter<Double> = doubleResponseAdapter
 
       fun fromResponse(reader: JsonReader, __typename: String?): GetHuman.Data.Node.HumanNode {
         var __typename: String? = __typename
@@ -211,9 +211,9 @@ class GetHuman_ResponseAdapter(
     }
 
     class OtherNode(
-      customScalarAdapters: ResponseAdapterCache
+      responseAdapterCache: ResponseAdapterCache
     ) {
-      val stringAdapter: ResponseAdapter<String> = stringResponseAdapter
+      private val stringAdapter: ResponseAdapter<String> = stringResponseAdapter
 
       fun fromResponse(reader: JsonReader, __typename: String?): GetHuman.Data.Node.OtherNode {
         var __typename: String? = __typename

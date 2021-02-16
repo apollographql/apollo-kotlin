@@ -17,6 +17,9 @@ class MapJsonReader(val root: Map<String, Any?>) : JsonReader {
   var currentIndex = 0
   var currentName: String? = "root"
 
+  /**
+   * See [com.apollographql.apollo.api.internal.json.BufferedSourceJsonReader] for the 32 limitation
+   */
   private val nameIndexStack = IntArray(32).apply {
     this[0] = 0
   }

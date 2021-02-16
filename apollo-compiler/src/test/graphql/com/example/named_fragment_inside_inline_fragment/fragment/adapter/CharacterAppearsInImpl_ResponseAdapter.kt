@@ -25,11 +25,11 @@ import kotlin.collections.List
     "RemoveExplicitTypeArguments", "NestedLambdaShadowedImplicitParameter", "PropertyName",
     "RemoveRedundantQualifierName")
 class CharacterAppearsInImpl_ResponseAdapter(
-  customScalarAdapters: ResponseAdapterCache
+  responseAdapterCache: ResponseAdapterCache
 ) : ResponseAdapter<CharacterAppearsInImpl.Data> {
-  val stringAdapter: ResponseAdapter<String> = stringResponseAdapter
+  private val stringAdapter: ResponseAdapter<String> = stringResponseAdapter
 
-  val listOfNullableEpisodeAdapter: ResponseAdapter<List<Episode?>> =
+  private val listOfNullableEpisodeAdapter: ResponseAdapter<List<Episode?>> =
       ListResponseAdapter(NullableResponseAdapter(Episode_ResponseAdapter))
 
   override fun fromResponse(reader: JsonReader): CharacterAppearsInImpl.Data {

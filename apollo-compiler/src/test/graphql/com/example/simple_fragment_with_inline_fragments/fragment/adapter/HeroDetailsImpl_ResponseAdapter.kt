@@ -25,12 +25,13 @@ import kotlin.collections.List
     "RemoveExplicitTypeArguments", "NestedLambdaShadowedImplicitParameter", "PropertyName",
     "RemoveRedundantQualifierName")
 class HeroDetailsImpl_ResponseAdapter(
-  customScalarAdapters: ResponseAdapterCache
+  responseAdapterCache: ResponseAdapterCache
 ) : ResponseAdapter<HeroDetailsImpl.Data> {
-  val stringAdapter: ResponseAdapter<String> = stringResponseAdapter
+  private val stringAdapter: ResponseAdapter<String> = stringResponseAdapter
 
-  val nullableListOfNullableFriendsAdapter: ResponseAdapter<List<HeroDetailsImpl.Data.Friends?>?> =
-      NullableResponseAdapter(ListResponseAdapter(NullableResponseAdapter(Friends(customScalarAdapters))))
+  private val nullableListOfNullableFriendsAdapter:
+      ResponseAdapter<List<HeroDetailsImpl.Data.Friends?>?> =
+      NullableResponseAdapter(ListResponseAdapter(NullableResponseAdapter(Friends(responseAdapterCache))))
 
   override fun fromResponse(reader: JsonReader): HeroDetailsImpl.Data {
     var __typename: String? = null
@@ -86,16 +87,16 @@ class HeroDetailsImpl_ResponseAdapter(
   }
 
   class Friends(
-    customScalarAdapters: ResponseAdapterCache
+    responseAdapterCache: ResponseAdapterCache
   ) : ResponseAdapter<HeroDetailsImpl.Data.Friends> {
     val HumanFriendsAdapter: HumanFriends =
-        com.example.simple_fragment_with_inline_fragments.fragment.adapter.HeroDetailsImpl_ResponseAdapter.Friends.HumanFriends(customScalarAdapters)
+        com.example.simple_fragment_with_inline_fragments.fragment.adapter.HeroDetailsImpl_ResponseAdapter.Friends.HumanFriends(responseAdapterCache)
 
     val DroidFriendsAdapter: DroidFriends =
-        com.example.simple_fragment_with_inline_fragments.fragment.adapter.HeroDetailsImpl_ResponseAdapter.Friends.DroidFriends(customScalarAdapters)
+        com.example.simple_fragment_with_inline_fragments.fragment.adapter.HeroDetailsImpl_ResponseAdapter.Friends.DroidFriends(responseAdapterCache)
 
     val OtherFriendsAdapter: OtherFriends =
-        com.example.simple_fragment_with_inline_fragments.fragment.adapter.HeroDetailsImpl_ResponseAdapter.Friends.OtherFriends(customScalarAdapters)
+        com.example.simple_fragment_with_inline_fragments.fragment.adapter.HeroDetailsImpl_ResponseAdapter.Friends.OtherFriends(responseAdapterCache)
 
     override fun fromResponse(reader: JsonReader): HeroDetailsImpl.Data.Friends {
       reader.beginObject()
@@ -119,11 +120,11 @@ class HeroDetailsImpl_ResponseAdapter(
     }
 
     class HumanFriends(
-      customScalarAdapters: ResponseAdapterCache
+      responseAdapterCache: ResponseAdapterCache
     ) {
-      val stringAdapter: ResponseAdapter<String> = stringResponseAdapter
+      private val stringAdapter: ResponseAdapter<String> = stringResponseAdapter
 
-      val nullableFloatAdapter: ResponseAdapter<Double?> =
+      private val nullableFloatAdapter: ResponseAdapter<Double?> =
           NullableResponseAdapter(doubleResponseAdapter)
 
       fun fromResponse(reader: JsonReader, __typename: String?):
@@ -175,11 +176,11 @@ class HeroDetailsImpl_ResponseAdapter(
     }
 
     class DroidFriends(
-      customScalarAdapters: ResponseAdapterCache
+      responseAdapterCache: ResponseAdapterCache
     ) {
-      val stringAdapter: ResponseAdapter<String> = stringResponseAdapter
+      private val stringAdapter: ResponseAdapter<String> = stringResponseAdapter
 
-      val nullableStringAdapter: ResponseAdapter<String?> =
+      private val nullableStringAdapter: ResponseAdapter<String?> =
           NullableResponseAdapter(stringResponseAdapter)
 
       fun fromResponse(reader: JsonReader, __typename: String?):
@@ -231,9 +232,9 @@ class HeroDetailsImpl_ResponseAdapter(
     }
 
     class OtherFriends(
-      customScalarAdapters: ResponseAdapterCache
+      responseAdapterCache: ResponseAdapterCache
     ) {
-      val stringAdapter: ResponseAdapter<String> = stringResponseAdapter
+      private val stringAdapter: ResponseAdapter<String> = stringResponseAdapter
 
       fun fromResponse(reader: JsonReader, __typename: String?):
           HeroDetailsImpl.Data.Friends.OtherFriends {

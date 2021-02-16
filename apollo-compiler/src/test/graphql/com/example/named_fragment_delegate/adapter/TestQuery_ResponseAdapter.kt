@@ -25,10 +25,10 @@ import kotlin.collections.List
     "RemoveExplicitTypeArguments", "NestedLambdaShadowedImplicitParameter", "PropertyName",
     "RemoveRedundantQualifierName")
 class TestQuery_ResponseAdapter(
-  customScalarAdapters: ResponseAdapterCache
+  responseAdapterCache: ResponseAdapterCache
 ) : ResponseAdapter<TestQuery.Data> {
-  val nullableHeroAdapter: ResponseAdapter<TestQuery.Data.Hero?> =
-      NullableResponseAdapter(Hero(customScalarAdapters))
+  private val nullableHeroAdapter: ResponseAdapter<TestQuery.Data.Hero?> =
+      NullableResponseAdapter(Hero(responseAdapterCache))
 
   override fun fromResponse(reader: JsonReader): TestQuery.Data {
     var hero: TestQuery.Data.Hero? = null
@@ -69,16 +69,16 @@ class TestQuery_ResponseAdapter(
   }
 
   class Hero(
-    customScalarAdapters: ResponseAdapterCache
+    responseAdapterCache: ResponseAdapterCache
   ) : ResponseAdapter<TestQuery.Data.Hero> {
     val DroidHeroAdapter: DroidHero =
-        com.example.named_fragment_delegate.adapter.TestQuery_ResponseAdapter.Hero.DroidHero(customScalarAdapters)
+        com.example.named_fragment_delegate.adapter.TestQuery_ResponseAdapter.Hero.DroidHero(responseAdapterCache)
 
     val HumanHeroAdapter: HumanHero =
-        com.example.named_fragment_delegate.adapter.TestQuery_ResponseAdapter.Hero.HumanHero(customScalarAdapters)
+        com.example.named_fragment_delegate.adapter.TestQuery_ResponseAdapter.Hero.HumanHero(responseAdapterCache)
 
     val OtherHeroAdapter: OtherHero =
-        com.example.named_fragment_delegate.adapter.TestQuery_ResponseAdapter.Hero.OtherHero(customScalarAdapters)
+        com.example.named_fragment_delegate.adapter.TestQuery_ResponseAdapter.Hero.OtherHero(responseAdapterCache)
 
     override fun fromResponse(reader: JsonReader): TestQuery.Data.Hero {
       reader.beginObject()
@@ -102,16 +102,16 @@ class TestQuery_ResponseAdapter(
     }
 
     class DroidHero(
-      customScalarAdapters: ResponseAdapterCache
+      responseAdapterCache: ResponseAdapterCache
     ) {
-      val stringAdapter: ResponseAdapter<String> = stringResponseAdapter
+      private val stringAdapter: ResponseAdapter<String> = stringResponseAdapter
 
-      val nullableStringAdapter: ResponseAdapter<String?> =
+      private val nullableStringAdapter: ResponseAdapter<String?> =
           NullableResponseAdapter(stringResponseAdapter)
 
-      val nullableListOfNullableFriendsAdapter:
+      private val nullableListOfNullableFriendsAdapter:
           ResponseAdapter<List<TestQuery.Data.Hero.DroidHero.Friends?>?> =
-          NullableResponseAdapter(ListResponseAdapter(NullableResponseAdapter(Friends(customScalarAdapters))))
+          NullableResponseAdapter(ListResponseAdapter(NullableResponseAdapter(Friends(responseAdapterCache))))
 
       fun fromResponse(reader: JsonReader, __typename: String?): TestQuery.Data.Hero.DroidHero {
         var __typename: String? = __typename
@@ -172,9 +172,9 @@ class TestQuery_ResponseAdapter(
       }
 
       class Friends(
-        customScalarAdapters: ResponseAdapterCache
+        responseAdapterCache: ResponseAdapterCache
       ) : ResponseAdapter<TestQuery.Data.Hero.DroidHero.Friends> {
-        val stringAdapter: ResponseAdapter<String> = stringResponseAdapter
+        private val stringAdapter: ResponseAdapter<String> = stringResponseAdapter
 
         override fun fromResponse(reader: JsonReader): TestQuery.Data.Hero.DroidHero.Friends {
           var name: String? = null
@@ -212,15 +212,16 @@ class TestQuery_ResponseAdapter(
     }
 
     class HumanHero(
-      customScalarAdapters: ResponseAdapterCache
+      responseAdapterCache: ResponseAdapterCache
     ) {
-      val stringAdapter: ResponseAdapter<String> = stringResponseAdapter
+      private val stringAdapter: ResponseAdapter<String> = stringResponseAdapter
 
-      val uRLAdapter: ResponseAdapter<Any> =
-          customScalarAdapters.responseAdapterFor<Any>(CustomScalars.URL)
+      private val uRLAdapter: ResponseAdapter<Any> =
+          responseAdapterCache.responseAdapterFor<Any>(CustomScalars.URL)
 
-      val friendsConnectionAdapter: ResponseAdapter<TestQuery.Data.Hero.HumanHero.FriendsConnection>
-          = FriendsConnection(customScalarAdapters)
+      private val friendsConnectionAdapter:
+          ResponseAdapter<TestQuery.Data.Hero.HumanHero.FriendsConnection> =
+          FriendsConnection(responseAdapterCache)
 
       fun fromResponse(reader: JsonReader, __typename: String?): TestQuery.Data.Hero.HumanHero {
         var __typename: String? = __typename
@@ -281,11 +282,11 @@ class TestQuery_ResponseAdapter(
       }
 
       class FriendsConnection(
-        customScalarAdapters: ResponseAdapterCache
+        responseAdapterCache: ResponseAdapterCache
       ) : ResponseAdapter<TestQuery.Data.Hero.HumanHero.FriendsConnection> {
-        val nullableListOfNullableEdgesAdapter:
+        private val nullableListOfNullableEdgesAdapter:
             ResponseAdapter<List<TestQuery.Data.Hero.HumanHero.FriendsConnection.Edges?>?> =
-            NullableResponseAdapter(ListResponseAdapter(NullableResponseAdapter(Edges(customScalarAdapters))))
+            NullableResponseAdapter(ListResponseAdapter(NullableResponseAdapter(Edges(responseAdapterCache))))
 
         override fun fromResponse(reader: JsonReader):
             TestQuery.Data.Hero.HumanHero.FriendsConnection {
@@ -326,11 +327,11 @@ class TestQuery_ResponseAdapter(
         }
 
         class Edges(
-          customScalarAdapters: ResponseAdapterCache
+          responseAdapterCache: ResponseAdapterCache
         ) : ResponseAdapter<TestQuery.Data.Hero.HumanHero.FriendsConnection.Edges> {
-          val nullableNodeAdapter:
+          private val nullableNodeAdapter:
               ResponseAdapter<TestQuery.Data.Hero.HumanHero.FriendsConnection.Edges.Node?> =
-              NullableResponseAdapter(Node(customScalarAdapters))
+              NullableResponseAdapter(Node(responseAdapterCache))
 
           override fun fromResponse(reader: JsonReader):
               TestQuery.Data.Hero.HumanHero.FriendsConnection.Edges {
@@ -371,9 +372,9 @@ class TestQuery_ResponseAdapter(
           }
 
           class Node(
-            customScalarAdapters: ResponseAdapterCache
+            responseAdapterCache: ResponseAdapterCache
           ) : ResponseAdapter<TestQuery.Data.Hero.HumanHero.FriendsConnection.Edges.Node> {
-            val stringAdapter: ResponseAdapter<String> = stringResponseAdapter
+            private val stringAdapter: ResponseAdapter<String> = stringResponseAdapter
 
             override fun fromResponse(reader: JsonReader):
                 TestQuery.Data.Hero.HumanHero.FriendsConnection.Edges.Node {
@@ -415,9 +416,9 @@ class TestQuery_ResponseAdapter(
     }
 
     class OtherHero(
-      customScalarAdapters: ResponseAdapterCache
+      responseAdapterCache: ResponseAdapterCache
     ) {
-      val stringAdapter: ResponseAdapter<String> = stringResponseAdapter
+      private val stringAdapter: ResponseAdapter<String> = stringResponseAdapter
 
       fun fromResponse(reader: JsonReader, __typename: String?): TestQuery.Data.Hero.OtherHero {
         var __typename: String? = __typename

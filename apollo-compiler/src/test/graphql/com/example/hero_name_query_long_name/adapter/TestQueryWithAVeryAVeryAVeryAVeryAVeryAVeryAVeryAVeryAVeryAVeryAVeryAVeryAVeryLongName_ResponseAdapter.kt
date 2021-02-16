@@ -23,13 +23,13 @@ import kotlin.collections.List
     "RemoveRedundantQualifierName")
 class
     TestQueryWithAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryLongName_ResponseAdapter(
-  customScalarAdapters: ResponseAdapterCache
+  responseAdapterCache: ResponseAdapterCache
 ) :
     ResponseAdapter<TestQueryWithAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryLongName.Data>
     {
-  val nullableHeroAVeryAVeryAVeryAVeryAVeryAVeryAVAdapter:
+  private val nullableHeroAVeryAVeryAVeryAVeryAVeryAVeryAVAdapter:
       ResponseAdapter<TestQueryWithAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryLongName.Data.HeroAVeryAVeryAVeryAVeryAVeryAVeryAV?>
-      = NullableResponseAdapter(HeroAVeryAVeryAVeryAVeryAVeryAVeryAV(customScalarAdapters))
+      = NullableResponseAdapter(HeroAVeryAVeryAVeryAVeryAVeryAVeryAV(responseAdapterCache))
 
   override fun fromResponse(reader: JsonReader):
       TestQueryWithAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryLongName.Data {
@@ -77,11 +77,11 @@ class
   }
 
   class HeroAVeryAVeryAVeryAVeryAVeryAVeryAV(
-    customScalarAdapters: ResponseAdapterCache
+    responseAdapterCache: ResponseAdapterCache
   ) :
       ResponseAdapter<TestQueryWithAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryLongName.Data.HeroAVeryAVeryAVeryAVeryAVeryAVeryAV>
       {
-    val stringAdapter: ResponseAdapter<String> = stringResponseAdapter
+    private val stringAdapter: ResponseAdapter<String> = stringResponseAdapter
 
     override fun fromResponse(reader: JsonReader):
         TestQueryWithAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryLongName.Data.HeroAVeryAVeryAVeryAVeryAVeryAVeryAV {

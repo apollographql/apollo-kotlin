@@ -21,13 +21,13 @@ import kotlin.collections.List
     "RemoveExplicitTypeArguments", "NestedLambdaShadowedImplicitParameter", "PropertyName",
     "RemoveRedundantQualifierName")
 internal class HeroDetailsImpl_ResponseAdapter(
-  customScalarAdapters: ResponseAdapterCache
+  responseAdapterCache: ResponseAdapterCache
 ) : ResponseAdapter<HeroDetailsImpl.Data> {
   val HumanDataAdapter: HumanData =
-      com.example.simple_fragment.fragment.adapter.HeroDetailsImpl_ResponseAdapter.HumanData(customScalarAdapters)
+      com.example.simple_fragment.fragment.adapter.HeroDetailsImpl_ResponseAdapter.HumanData(responseAdapterCache)
 
   val OtherDataAdapter: OtherData =
-      com.example.simple_fragment.fragment.adapter.HeroDetailsImpl_ResponseAdapter.OtherData(customScalarAdapters)
+      com.example.simple_fragment.fragment.adapter.HeroDetailsImpl_ResponseAdapter.OtherData(responseAdapterCache)
 
   override fun fromResponse(reader: JsonReader): HeroDetailsImpl.Data {
     reader.beginObject()
@@ -49,9 +49,9 @@ internal class HeroDetailsImpl_ResponseAdapter(
   }
 
   class HumanData(
-    customScalarAdapters: ResponseAdapterCache
+    responseAdapterCache: ResponseAdapterCache
   ) {
-    val stringAdapter: ResponseAdapter<String> = stringResponseAdapter
+    private val stringAdapter: ResponseAdapter<String> = stringResponseAdapter
 
     fun fromResponse(reader: JsonReader, __typename: String?): HeroDetailsImpl.Data.HumanData {
       var __typename: String? = __typename
@@ -92,9 +92,9 @@ internal class HeroDetailsImpl_ResponseAdapter(
   }
 
   class OtherData(
-    customScalarAdapters: ResponseAdapterCache
+    responseAdapterCache: ResponseAdapterCache
   ) {
-    val stringAdapter: ResponseAdapter<String> = stringResponseAdapter
+    private val stringAdapter: ResponseAdapter<String> = stringResponseAdapter
 
     fun fromResponse(reader: JsonReader, __typename: String?): HeroDetailsImpl.Data.OtherData {
       var __typename: String? = __typename

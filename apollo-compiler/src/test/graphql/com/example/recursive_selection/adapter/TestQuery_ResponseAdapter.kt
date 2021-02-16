@@ -23,10 +23,10 @@ import kotlin.collections.List
     "RemoveExplicitTypeArguments", "NestedLambdaShadowedImplicitParameter", "PropertyName",
     "RemoveRedundantQualifierName")
 class TestQuery_ResponseAdapter(
-  customScalarAdapters: ResponseAdapterCache
+  responseAdapterCache: ResponseAdapterCache
 ) : ResponseAdapter<TestQuery.Data> {
-  val nullableTreeAdapter: ResponseAdapter<TestQuery.Data.Tree?> =
-      NullableResponseAdapter(Tree(customScalarAdapters))
+  private val nullableTreeAdapter: ResponseAdapter<TestQuery.Data.Tree?> =
+      NullableResponseAdapter(Tree(responseAdapterCache))
 
   override fun fromResponse(reader: JsonReader): TestQuery.Data {
     var tree: TestQuery.Data.Tree? = null
@@ -65,15 +65,15 @@ class TestQuery_ResponseAdapter(
   }
 
   class Tree(
-    customScalarAdapters: ResponseAdapterCache
+    responseAdapterCache: ResponseAdapterCache
   ) : ResponseAdapter<TestQuery.Data.Tree> {
-    val stringAdapter: ResponseAdapter<String> = stringResponseAdapter
+    private val stringAdapter: ResponseAdapter<String> = stringResponseAdapter
 
-    val listOfChildrenAdapter: ResponseAdapter<List<TestQuery.Data.Tree.Children>> =
-        ListResponseAdapter(Children(customScalarAdapters))
+    private val listOfChildrenAdapter: ResponseAdapter<List<TestQuery.Data.Tree.Children>> =
+        ListResponseAdapter(Children(responseAdapterCache))
 
-    val nullableParentAdapter: ResponseAdapter<TestQuery.Data.Tree.Parent?> =
-        NullableResponseAdapter(Parent(customScalarAdapters))
+    private val nullableParentAdapter: ResponseAdapter<TestQuery.Data.Tree.Parent?> =
+        NullableResponseAdapter(Parent(responseAdapterCache))
 
     override fun fromResponse(reader: JsonReader): TestQuery.Data.Tree {
       var name: String? = null
@@ -134,9 +134,9 @@ class TestQuery_ResponseAdapter(
     }
 
     class Children(
-      customScalarAdapters: ResponseAdapterCache
+      responseAdapterCache: ResponseAdapterCache
     ) : ResponseAdapter<TestQuery.Data.Tree.Children> {
-      val stringAdapter: ResponseAdapter<String> = stringResponseAdapter
+      private val stringAdapter: ResponseAdapter<String> = stringResponseAdapter
 
       override fun fromResponse(reader: JsonReader): TestQuery.Data.Tree.Children {
         var name: String? = null
@@ -173,9 +173,9 @@ class TestQuery_ResponseAdapter(
     }
 
     class Parent(
-      customScalarAdapters: ResponseAdapterCache
+      responseAdapterCache: ResponseAdapterCache
     ) : ResponseAdapter<TestQuery.Data.Tree.Parent> {
-      val stringAdapter: ResponseAdapter<String> = stringResponseAdapter
+      private val stringAdapter: ResponseAdapter<String> = stringResponseAdapter
 
       override fun fromResponse(reader: JsonReader): TestQuery.Data.Tree.Parent {
         var name: String? = null

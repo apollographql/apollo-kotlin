@@ -25,16 +25,16 @@ import kotlin.collections.List
     "RemoveExplicitTypeArguments", "NestedLambdaShadowedImplicitParameter", "PropertyName",
     "RemoveRedundantQualifierName")
 class HeroDetailsImpl_ResponseAdapter(
-  customScalarAdapters: ResponseAdapterCache
+  responseAdapterCache: ResponseAdapterCache
 ) : ResponseAdapter<HeroDetailsImpl.Data> {
   val DroidDataAdapter: DroidData =
-      com.example.fragment_with_inline_fragment.fragment.adapter.HeroDetailsImpl_ResponseAdapter.DroidData(customScalarAdapters)
+      com.example.fragment_with_inline_fragment.fragment.adapter.HeroDetailsImpl_ResponseAdapter.DroidData(responseAdapterCache)
 
   val HumanDataAdapter: HumanData =
-      com.example.fragment_with_inline_fragment.fragment.adapter.HeroDetailsImpl_ResponseAdapter.HumanData(customScalarAdapters)
+      com.example.fragment_with_inline_fragment.fragment.adapter.HeroDetailsImpl_ResponseAdapter.HumanData(responseAdapterCache)
 
   val OtherDataAdapter: OtherData =
-      com.example.fragment_with_inline_fragment.fragment.adapter.HeroDetailsImpl_ResponseAdapter.OtherData(customScalarAdapters)
+      com.example.fragment_with_inline_fragment.fragment.adapter.HeroDetailsImpl_ResponseAdapter.OtherData(responseAdapterCache)
 
   override fun fromResponse(reader: JsonReader): HeroDetailsImpl.Data {
     reader.beginObject()
@@ -58,14 +58,15 @@ class HeroDetailsImpl_ResponseAdapter(
   }
 
   class DroidData(
-    customScalarAdapters: ResponseAdapterCache
+    responseAdapterCache: ResponseAdapterCache
   ) {
-    val stringAdapter: ResponseAdapter<String> = stringResponseAdapter
+    private val stringAdapter: ResponseAdapter<String> = stringResponseAdapter
 
-    val friendsConnectionAdapter: ResponseAdapter<HeroDetailsImpl.Data.DroidData.FriendsConnection>
-        = FriendsConnection(customScalarAdapters)
+    private val friendsConnectionAdapter:
+        ResponseAdapter<HeroDetailsImpl.Data.DroidData.FriendsConnection> =
+        FriendsConnection(responseAdapterCache)
 
-    val nullableStringAdapter: ResponseAdapter<String?> =
+    private val nullableStringAdapter: ResponseAdapter<String?> =
         NullableResponseAdapter(stringResponseAdapter)
 
     fun fromResponse(reader: JsonReader, __typename: String?): HeroDetailsImpl.Data.DroidData {
@@ -127,13 +128,14 @@ class HeroDetailsImpl_ResponseAdapter(
     }
 
     class FriendsConnection(
-      customScalarAdapters: ResponseAdapterCache
+      responseAdapterCache: ResponseAdapterCache
     ) : ResponseAdapter<HeroDetailsImpl.Data.DroidData.FriendsConnection> {
-      val nullableIntAdapter: ResponseAdapter<Int?> = NullableResponseAdapter(intResponseAdapter)
+      private val nullableIntAdapter: ResponseAdapter<Int?> =
+          NullableResponseAdapter(intResponseAdapter)
 
-      val nullableListOfNullableEdgesAdapter:
+      private val nullableListOfNullableEdgesAdapter:
           ResponseAdapter<List<HeroDetailsImpl.Data.DroidData.FriendsConnection.Edges?>?> =
-          NullableResponseAdapter(ListResponseAdapter(NullableResponseAdapter(Edges(customScalarAdapters))))
+          NullableResponseAdapter(ListResponseAdapter(NullableResponseAdapter(Edges(responseAdapterCache))))
 
       override fun fromResponse(reader: JsonReader):
           HeroDetailsImpl.Data.DroidData.FriendsConnection {
@@ -183,11 +185,11 @@ class HeroDetailsImpl_ResponseAdapter(
       }
 
       class Edges(
-        customScalarAdapters: ResponseAdapterCache
+        responseAdapterCache: ResponseAdapterCache
       ) : ResponseAdapter<HeroDetailsImpl.Data.DroidData.FriendsConnection.Edges> {
-        val nullableNodeAdapter:
+        private val nullableNodeAdapter:
             ResponseAdapter<HeroDetailsImpl.Data.DroidData.FriendsConnection.Edges.Node?> =
-            NullableResponseAdapter(Node(customScalarAdapters))
+            NullableResponseAdapter(Node(responseAdapterCache))
 
         override fun fromResponse(reader: JsonReader):
             HeroDetailsImpl.Data.DroidData.FriendsConnection.Edges {
@@ -228,9 +230,9 @@ class HeroDetailsImpl_ResponseAdapter(
         }
 
         class Node(
-          customScalarAdapters: ResponseAdapterCache
+          responseAdapterCache: ResponseAdapterCache
         ) : ResponseAdapter<HeroDetailsImpl.Data.DroidData.FriendsConnection.Edges.Node> {
-          val stringAdapter: ResponseAdapter<String> = stringResponseAdapter
+          private val stringAdapter: ResponseAdapter<String> = stringResponseAdapter
 
           override fun fromResponse(reader: JsonReader):
               HeroDetailsImpl.Data.DroidData.FriendsConnection.Edges.Node {
@@ -272,12 +274,13 @@ class HeroDetailsImpl_ResponseAdapter(
   }
 
   class HumanData(
-    customScalarAdapters: ResponseAdapterCache
+    responseAdapterCache: ResponseAdapterCache
   ) {
-    val stringAdapter: ResponseAdapter<String> = stringResponseAdapter
+    private val stringAdapter: ResponseAdapter<String> = stringResponseAdapter
 
-    val friendsConnectionAdapter: ResponseAdapter<HeroDetailsImpl.Data.HumanData.FriendsConnection>
-        = FriendsConnection(customScalarAdapters)
+    private val friendsConnectionAdapter:
+        ResponseAdapter<HeroDetailsImpl.Data.HumanData.FriendsConnection> =
+        FriendsConnection(responseAdapterCache)
 
     fun fromResponse(reader: JsonReader, __typename: String?): HeroDetailsImpl.Data.HumanData {
       var __typename: String? = __typename
@@ -329,13 +332,14 @@ class HeroDetailsImpl_ResponseAdapter(
     }
 
     class FriendsConnection(
-      customScalarAdapters: ResponseAdapterCache
+      responseAdapterCache: ResponseAdapterCache
     ) : ResponseAdapter<HeroDetailsImpl.Data.HumanData.FriendsConnection> {
-      val nullableIntAdapter: ResponseAdapter<Int?> = NullableResponseAdapter(intResponseAdapter)
+      private val nullableIntAdapter: ResponseAdapter<Int?> =
+          NullableResponseAdapter(intResponseAdapter)
 
-      val nullableListOfNullableEdgesAdapter:
+      private val nullableListOfNullableEdgesAdapter:
           ResponseAdapter<List<HeroDetailsImpl.Data.HumanData.FriendsConnection.Edges?>?> =
-          NullableResponseAdapter(ListResponseAdapter(NullableResponseAdapter(Edges(customScalarAdapters))))
+          NullableResponseAdapter(ListResponseAdapter(NullableResponseAdapter(Edges(responseAdapterCache))))
 
       override fun fromResponse(reader: JsonReader):
           HeroDetailsImpl.Data.HumanData.FriendsConnection {
@@ -385,11 +389,11 @@ class HeroDetailsImpl_ResponseAdapter(
       }
 
       class Edges(
-        customScalarAdapters: ResponseAdapterCache
+        responseAdapterCache: ResponseAdapterCache
       ) : ResponseAdapter<HeroDetailsImpl.Data.HumanData.FriendsConnection.Edges> {
-        val nullableNodeAdapter:
+        private val nullableNodeAdapter:
             ResponseAdapter<HeroDetailsImpl.Data.HumanData.FriendsConnection.Edges.Node?> =
-            NullableResponseAdapter(Node(customScalarAdapters))
+            NullableResponseAdapter(Node(responseAdapterCache))
 
         override fun fromResponse(reader: JsonReader):
             HeroDetailsImpl.Data.HumanData.FriendsConnection.Edges {
@@ -430,9 +434,9 @@ class HeroDetailsImpl_ResponseAdapter(
         }
 
         class Node(
-          customScalarAdapters: ResponseAdapterCache
+          responseAdapterCache: ResponseAdapterCache
         ) : ResponseAdapter<HeroDetailsImpl.Data.HumanData.FriendsConnection.Edges.Node> {
-          val stringAdapter: ResponseAdapter<String> = stringResponseAdapter
+          private val stringAdapter: ResponseAdapter<String> = stringResponseAdapter
 
           override fun fromResponse(reader: JsonReader):
               HeroDetailsImpl.Data.HumanData.FriendsConnection.Edges.Node {
@@ -474,12 +478,13 @@ class HeroDetailsImpl_ResponseAdapter(
   }
 
   class OtherData(
-    customScalarAdapters: ResponseAdapterCache
+    responseAdapterCache: ResponseAdapterCache
   ) {
-    val stringAdapter: ResponseAdapter<String> = stringResponseAdapter
+    private val stringAdapter: ResponseAdapter<String> = stringResponseAdapter
 
-    val friendsConnectionAdapter: ResponseAdapter<HeroDetailsImpl.Data.OtherData.FriendsConnection>
-        = FriendsConnection(customScalarAdapters)
+    private val friendsConnectionAdapter:
+        ResponseAdapter<HeroDetailsImpl.Data.OtherData.FriendsConnection> =
+        FriendsConnection(responseAdapterCache)
 
     fun fromResponse(reader: JsonReader, __typename: String?): HeroDetailsImpl.Data.OtherData {
       var __typename: String? = __typename
@@ -531,13 +536,14 @@ class HeroDetailsImpl_ResponseAdapter(
     }
 
     class FriendsConnection(
-      customScalarAdapters: ResponseAdapterCache
+      responseAdapterCache: ResponseAdapterCache
     ) : ResponseAdapter<HeroDetailsImpl.Data.OtherData.FriendsConnection> {
-      val nullableIntAdapter: ResponseAdapter<Int?> = NullableResponseAdapter(intResponseAdapter)
+      private val nullableIntAdapter: ResponseAdapter<Int?> =
+          NullableResponseAdapter(intResponseAdapter)
 
-      val nullableListOfNullableEdgesAdapter:
+      private val nullableListOfNullableEdgesAdapter:
           ResponseAdapter<List<HeroDetailsImpl.Data.OtherData.FriendsConnection.Edges?>?> =
-          NullableResponseAdapter(ListResponseAdapter(NullableResponseAdapter(Edges(customScalarAdapters))))
+          NullableResponseAdapter(ListResponseAdapter(NullableResponseAdapter(Edges(responseAdapterCache))))
 
       override fun fromResponse(reader: JsonReader):
           HeroDetailsImpl.Data.OtherData.FriendsConnection {
@@ -587,11 +593,11 @@ class HeroDetailsImpl_ResponseAdapter(
       }
 
       class Edges(
-        customScalarAdapters: ResponseAdapterCache
+        responseAdapterCache: ResponseAdapterCache
       ) : ResponseAdapter<HeroDetailsImpl.Data.OtherData.FriendsConnection.Edges> {
-        val nullableNodeAdapter:
+        private val nullableNodeAdapter:
             ResponseAdapter<HeroDetailsImpl.Data.OtherData.FriendsConnection.Edges.Node?> =
-            NullableResponseAdapter(Node(customScalarAdapters))
+            NullableResponseAdapter(Node(responseAdapterCache))
 
         override fun fromResponse(reader: JsonReader):
             HeroDetailsImpl.Data.OtherData.FriendsConnection.Edges {
@@ -632,9 +638,9 @@ class HeroDetailsImpl_ResponseAdapter(
         }
 
         class Node(
-          customScalarAdapters: ResponseAdapterCache
+          responseAdapterCache: ResponseAdapterCache
         ) : ResponseAdapter<HeroDetailsImpl.Data.OtherData.FriendsConnection.Edges.Node> {
-          val stringAdapter: ResponseAdapter<String> = stringResponseAdapter
+          private val stringAdapter: ResponseAdapter<String> = stringResponseAdapter
 
           override fun fromResponse(reader: JsonReader):
               HeroDetailsImpl.Data.OtherData.FriendsConnection.Edges.Node {

@@ -23,15 +23,16 @@ import kotlin.collections.List
     "RemoveExplicitTypeArguments", "NestedLambdaShadowedImplicitParameter", "PropertyName",
     "RemoveRedundantQualifierName")
 class DroidDetailsImpl_ResponseAdapter(
-  customScalarAdapters: ResponseAdapterCache
+  responseAdapterCache: ResponseAdapterCache
 ) : ResponseAdapter<DroidDetailsImpl.Data> {
-  val stringAdapter: ResponseAdapter<String> = stringResponseAdapter
+  private val stringAdapter: ResponseAdapter<String> = stringResponseAdapter
 
-  val nullableStringAdapter: ResponseAdapter<String?> =
+  private val nullableStringAdapter: ResponseAdapter<String?> =
       NullableResponseAdapter(stringResponseAdapter)
 
-  val nullableListOfNullableFriendsAdapter: ResponseAdapter<List<DroidDetailsImpl.Data.Friends?>?> =
-      NullableResponseAdapter(ListResponseAdapter(NullableResponseAdapter(Friends(customScalarAdapters))))
+  private val nullableListOfNullableFriendsAdapter:
+      ResponseAdapter<List<DroidDetailsImpl.Data.Friends?>?> =
+      NullableResponseAdapter(ListResponseAdapter(NullableResponseAdapter(Friends(responseAdapterCache))))
 
   override fun fromResponse(reader: JsonReader): DroidDetailsImpl.Data {
     var __typename: String? = null
@@ -94,9 +95,9 @@ class DroidDetailsImpl_ResponseAdapter(
   }
 
   class Friends(
-    customScalarAdapters: ResponseAdapterCache
+    responseAdapterCache: ResponseAdapterCache
   ) : ResponseAdapter<DroidDetailsImpl.Data.Friends> {
-    val stringAdapter: ResponseAdapter<String> = stringResponseAdapter
+    private val stringAdapter: ResponseAdapter<String> = stringResponseAdapter
 
     override fun fromResponse(reader: JsonReader): DroidDetailsImpl.Data.Friends {
       var name: String? = null

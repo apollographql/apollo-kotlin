@@ -25,10 +25,10 @@ import kotlin.collections.List
     "RemoveExplicitTypeArguments", "NestedLambdaShadowedImplicitParameter", "PropertyName",
     "RemoveRedundantQualifierName")
 class TestQuery_ResponseAdapter(
-  customScalarAdapters: ResponseAdapterCache
+  responseAdapterCache: ResponseAdapterCache
 ) : ResponseAdapter<TestQuery.Data> {
-  val nullableStarshipAdapter: ResponseAdapter<TestQuery.Data.Starship?> =
-      NullableResponseAdapter(Starship(customScalarAdapters))
+  private val nullableStarshipAdapter: ResponseAdapter<TestQuery.Data.Starship?> =
+      NullableResponseAdapter(Starship(responseAdapterCache))
 
   override fun fromResponse(reader: JsonReader): TestQuery.Data {
     var starship: TestQuery.Data.Starship? = null
@@ -71,11 +71,11 @@ class TestQuery_ResponseAdapter(
   }
 
   class Starship(
-    customScalarAdapters: ResponseAdapterCache
+    responseAdapterCache: ResponseAdapterCache
   ) : ResponseAdapter<TestQuery.Data.Starship> {
-    val stringAdapter: ResponseAdapter<String> = stringResponseAdapter
+    private val stringAdapter: ResponseAdapter<String> = stringResponseAdapter
 
-    val nullableListOfListOfFloatAdapter: ResponseAdapter<List<List<Double>>?> =
+    private val nullableListOfListOfFloatAdapter: ResponseAdapter<List<List<Double>>?> =
         NullableResponseAdapter(ListResponseAdapter(ListResponseAdapter(doubleResponseAdapter)))
 
     override fun fromResponse(reader: JsonReader): TestQuery.Data.Starship {

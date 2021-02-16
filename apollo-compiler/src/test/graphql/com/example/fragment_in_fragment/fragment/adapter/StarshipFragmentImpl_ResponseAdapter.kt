@@ -23,15 +23,16 @@ import kotlin.collections.List
     "RemoveExplicitTypeArguments", "NestedLambdaShadowedImplicitParameter", "PropertyName",
     "RemoveRedundantQualifierName")
 class StarshipFragmentImpl_ResponseAdapter(
-  customScalarAdapters: ResponseAdapterCache
+  responseAdapterCache: ResponseAdapterCache
 ) : ResponseAdapter<StarshipFragmentImpl.Data> {
-  val stringAdapter: ResponseAdapter<String> = stringResponseAdapter
+  private val stringAdapter: ResponseAdapter<String> = stringResponseAdapter
 
-  val nullableStringAdapter: ResponseAdapter<String?> =
+  private val nullableStringAdapter: ResponseAdapter<String?> =
       NullableResponseAdapter(stringResponseAdapter)
 
-  val nullablePilotConnectionAdapter: ResponseAdapter<StarshipFragmentImpl.Data.PilotConnection?> =
-      NullableResponseAdapter(PilotConnection(customScalarAdapters))
+  private val nullablePilotConnectionAdapter:
+      ResponseAdapter<StarshipFragmentImpl.Data.PilotConnection?> =
+      NullableResponseAdapter(PilotConnection(responseAdapterCache))
 
   override fun fromResponse(reader: JsonReader): StarshipFragmentImpl.Data {
     var __typename: String? = null
@@ -94,11 +95,11 @@ class StarshipFragmentImpl_ResponseAdapter(
   }
 
   class PilotConnection(
-    customScalarAdapters: ResponseAdapterCache
+    responseAdapterCache: ResponseAdapterCache
   ) : ResponseAdapter<StarshipFragmentImpl.Data.PilotConnection> {
-    val nullableListOfNullableEdgesAdapter:
+    private val nullableListOfNullableEdgesAdapter:
         ResponseAdapter<List<StarshipFragmentImpl.Data.PilotConnection.Edges?>?> =
-        NullableResponseAdapter(ListResponseAdapter(NullableResponseAdapter(Edges(customScalarAdapters))))
+        NullableResponseAdapter(ListResponseAdapter(NullableResponseAdapter(Edges(responseAdapterCache))))
 
     override fun fromResponse(reader: JsonReader): StarshipFragmentImpl.Data.PilotConnection {
       var edges: List<StarshipFragmentImpl.Data.PilotConnection.Edges?>? = null
@@ -137,11 +138,11 @@ class StarshipFragmentImpl_ResponseAdapter(
     }
 
     class Edges(
-      customScalarAdapters: ResponseAdapterCache
+      responseAdapterCache: ResponseAdapterCache
     ) : ResponseAdapter<StarshipFragmentImpl.Data.PilotConnection.Edges> {
-      val nullableNodeAdapter:
+      private val nullableNodeAdapter:
           ResponseAdapter<StarshipFragmentImpl.Data.PilotConnection.Edges.Node?> =
-          NullableResponseAdapter(Node(customScalarAdapters))
+          NullableResponseAdapter(Node(responseAdapterCache))
 
       override fun fromResponse(reader: JsonReader):
           StarshipFragmentImpl.Data.PilotConnection.Edges {
@@ -183,13 +184,13 @@ class StarshipFragmentImpl_ResponseAdapter(
       }
 
       class Node(
-        customScalarAdapters: ResponseAdapterCache
+        responseAdapterCache: ResponseAdapterCache
       ) : ResponseAdapter<StarshipFragmentImpl.Data.PilotConnection.Edges.Node> {
         val PersonNodeAdapter: PersonNode =
-            com.example.fragment_in_fragment.fragment.adapter.StarshipFragmentImpl_ResponseAdapter.PilotConnection.Edges.Node.PersonNode(customScalarAdapters)
+            com.example.fragment_in_fragment.fragment.adapter.StarshipFragmentImpl_ResponseAdapter.PilotConnection.Edges.Node.PersonNode(responseAdapterCache)
 
         val OtherNodeAdapter: OtherNode =
-            com.example.fragment_in_fragment.fragment.adapter.StarshipFragmentImpl_ResponseAdapter.PilotConnection.Edges.Node.OtherNode(customScalarAdapters)
+            com.example.fragment_in_fragment.fragment.adapter.StarshipFragmentImpl_ResponseAdapter.PilotConnection.Edges.Node.OtherNode(responseAdapterCache)
 
         override fun fromResponse(reader: JsonReader):
             StarshipFragmentImpl.Data.PilotConnection.Edges.Node {
@@ -213,16 +214,16 @@ class StarshipFragmentImpl_ResponseAdapter(
         }
 
         class PersonNode(
-          customScalarAdapters: ResponseAdapterCache
+          responseAdapterCache: ResponseAdapterCache
         ) {
-          val stringAdapter: ResponseAdapter<String> = stringResponseAdapter
+          private val stringAdapter: ResponseAdapter<String> = stringResponseAdapter
 
-          val nullableStringAdapter: ResponseAdapter<String?> =
+          private val nullableStringAdapter: ResponseAdapter<String?> =
               NullableResponseAdapter(stringResponseAdapter)
 
-          val nullableHomeworldAdapter:
+          private val nullableHomeworldAdapter:
               ResponseAdapter<StarshipFragmentImpl.Data.PilotConnection.Edges.Node.PersonNode.Homeworld?>
-              = NullableResponseAdapter(Homeworld(customScalarAdapters))
+              = NullableResponseAdapter(Homeworld(responseAdapterCache))
 
           fun fromResponse(reader: JsonReader, __typename: String?):
               StarshipFragmentImpl.Data.PilotConnection.Edges.Node.PersonNode {
@@ -277,15 +278,15 @@ class StarshipFragmentImpl_ResponseAdapter(
           }
 
           class Homeworld(
-            customScalarAdapters: ResponseAdapterCache
+            responseAdapterCache: ResponseAdapterCache
           ) :
               ResponseAdapter<StarshipFragmentImpl.Data.PilotConnection.Edges.Node.PersonNode.Homeworld>
               {
             val PlanetHomeworldAdapter: PlanetHomeworld =
-                com.example.fragment_in_fragment.fragment.adapter.StarshipFragmentImpl_ResponseAdapter.PilotConnection.Edges.Node.PersonNode.Homeworld.PlanetHomeworld(customScalarAdapters)
+                com.example.fragment_in_fragment.fragment.adapter.StarshipFragmentImpl_ResponseAdapter.PilotConnection.Edges.Node.PersonNode.Homeworld.PlanetHomeworld(responseAdapterCache)
 
             val OtherHomeworldAdapter: OtherHomeworld =
-                com.example.fragment_in_fragment.fragment.adapter.StarshipFragmentImpl_ResponseAdapter.PilotConnection.Edges.Node.PersonNode.Homeworld.OtherHomeworld(customScalarAdapters)
+                com.example.fragment_in_fragment.fragment.adapter.StarshipFragmentImpl_ResponseAdapter.PilotConnection.Edges.Node.PersonNode.Homeworld.OtherHomeworld(responseAdapterCache)
 
             override fun fromResponse(reader: JsonReader):
                 StarshipFragmentImpl.Data.PilotConnection.Edges.Node.PersonNode.Homeworld {
@@ -309,11 +310,11 @@ class StarshipFragmentImpl_ResponseAdapter(
             }
 
             class PlanetHomeworld(
-              customScalarAdapters: ResponseAdapterCache
+              responseAdapterCache: ResponseAdapterCache
             ) {
-              val stringAdapter: ResponseAdapter<String> = stringResponseAdapter
+              private val stringAdapter: ResponseAdapter<String> = stringResponseAdapter
 
-              val nullableStringAdapter: ResponseAdapter<String?> =
+              private val nullableStringAdapter: ResponseAdapter<String?> =
                   NullableResponseAdapter(stringResponseAdapter)
 
               fun fromResponse(reader: JsonReader, __typename: String?):
@@ -357,9 +358,9 @@ class StarshipFragmentImpl_ResponseAdapter(
             }
 
             class OtherHomeworld(
-              customScalarAdapters: ResponseAdapterCache
+              responseAdapterCache: ResponseAdapterCache
             ) {
-              val stringAdapter: ResponseAdapter<String> = stringResponseAdapter
+              private val stringAdapter: ResponseAdapter<String> = stringResponseAdapter
 
               fun fromResponse(reader: JsonReader, __typename: String?):
                   StarshipFragmentImpl.Data.PilotConnection.Edges.Node.PersonNode.Homeworld.OtherHomeworld {
@@ -395,9 +396,9 @@ class StarshipFragmentImpl_ResponseAdapter(
         }
 
         class OtherNode(
-          customScalarAdapters: ResponseAdapterCache
+          responseAdapterCache: ResponseAdapterCache
         ) {
-          val stringAdapter: ResponseAdapter<String> = stringResponseAdapter
+          private val stringAdapter: ResponseAdapter<String> = stringResponseAdapter
 
           fun fromResponse(reader: JsonReader, __typename: String?):
               StarshipFragmentImpl.Data.PilotConnection.Edges.Node.OtherNode {

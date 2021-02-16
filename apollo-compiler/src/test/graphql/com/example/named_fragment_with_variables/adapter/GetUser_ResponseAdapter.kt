@@ -23,13 +23,13 @@ import kotlin.collections.List
     "RemoveExplicitTypeArguments", "NestedLambdaShadowedImplicitParameter", "PropertyName",
     "RemoveRedundantQualifierName")
 class GetUser_ResponseAdapter(
-  customScalarAdapters: ResponseAdapterCache
+  responseAdapterCache: ResponseAdapterCache
 ) : ResponseAdapter<GetUser.Data> {
   val QueryDataAdapter: QueryData =
-      com.example.named_fragment_with_variables.adapter.GetUser_ResponseAdapter.QueryData(customScalarAdapters)
+      com.example.named_fragment_with_variables.adapter.GetUser_ResponseAdapter.QueryData(responseAdapterCache)
 
   val OtherDataAdapter: OtherData =
-      com.example.named_fragment_with_variables.adapter.GetUser_ResponseAdapter.OtherData(customScalarAdapters)
+      com.example.named_fragment_with_variables.adapter.GetUser_ResponseAdapter.OtherData(responseAdapterCache)
 
   override fun fromResponse(reader: JsonReader): GetUser.Data {
     reader.beginObject()
@@ -51,12 +51,12 @@ class GetUser_ResponseAdapter(
   }
 
   class QueryData(
-    customScalarAdapters: ResponseAdapterCache
+    responseAdapterCache: ResponseAdapterCache
   ) {
-    val stringAdapter: ResponseAdapter<String> = stringResponseAdapter
+    private val stringAdapter: ResponseAdapter<String> = stringResponseAdapter
 
-    val nullableOrganizationAdapter: ResponseAdapter<GetUser.Data.QueryData.Organization?> =
-        NullableResponseAdapter(Organization(customScalarAdapters))
+    private val nullableOrganizationAdapter: ResponseAdapter<GetUser.Data.QueryData.Organization?> =
+        NullableResponseAdapter(Organization(responseAdapterCache))
 
     fun fromResponse(reader: JsonReader, __typename: String?): GetUser.Data.QueryData {
       var __typename: String? = __typename
@@ -103,12 +103,12 @@ class GetUser_ResponseAdapter(
     }
 
     class Organization(
-      customScalarAdapters: ResponseAdapterCache
+      responseAdapterCache: ResponseAdapterCache
     ) : ResponseAdapter<GetUser.Data.QueryData.Organization> {
-      val stringAdapter: ResponseAdapter<String> = stringResponseAdapter
+      private val stringAdapter: ResponseAdapter<String> = stringResponseAdapter
 
-      val listOfUserAdapter: ResponseAdapter<List<GetUser.Data.QueryData.Organization.User>> =
-          ListResponseAdapter(User(customScalarAdapters))
+      private val listOfUserAdapter: ResponseAdapter<List<GetUser.Data.QueryData.Organization.User>>
+          = ListResponseAdapter(User(responseAdapterCache))
 
       override fun fromResponse(reader: JsonReader): GetUser.Data.QueryData.Organization {
         var id: String? = null
@@ -162,13 +162,13 @@ class GetUser_ResponseAdapter(
       }
 
       class User(
-        customScalarAdapters: ResponseAdapterCache
+        responseAdapterCache: ResponseAdapterCache
       ) : ResponseAdapter<GetUser.Data.QueryData.Organization.User> {
         val UserUserAdapter: UserUser =
-            com.example.named_fragment_with_variables.adapter.GetUser_ResponseAdapter.QueryData.Organization.User.UserUser(customScalarAdapters)
+            com.example.named_fragment_with_variables.adapter.GetUser_ResponseAdapter.QueryData.Organization.User.UserUser(responseAdapterCache)
 
         val OtherUserAdapter: OtherUser =
-            com.example.named_fragment_with_variables.adapter.GetUser_ResponseAdapter.QueryData.Organization.User.OtherUser(customScalarAdapters)
+            com.example.named_fragment_with_variables.adapter.GetUser_ResponseAdapter.QueryData.Organization.User.OtherUser(responseAdapterCache)
 
         override fun fromResponse(reader: JsonReader): GetUser.Data.QueryData.Organization.User {
           reader.beginObject()
@@ -191,9 +191,9 @@ class GetUser_ResponseAdapter(
         }
 
         class UserUser(
-          customScalarAdapters: ResponseAdapterCache
+          responseAdapterCache: ResponseAdapterCache
         ) {
-          val stringAdapter: ResponseAdapter<String> = stringResponseAdapter
+          private val stringAdapter: ResponseAdapter<String> = stringResponseAdapter
 
           fun fromResponse(reader: JsonReader, __typename: String?):
               GetUser.Data.QueryData.Organization.User.UserUser {
@@ -258,9 +258,9 @@ class GetUser_ResponseAdapter(
         }
 
         class OtherUser(
-          customScalarAdapters: ResponseAdapterCache
+          responseAdapterCache: ResponseAdapterCache
         ) {
-          val stringAdapter: ResponseAdapter<String> = stringResponseAdapter
+          private val stringAdapter: ResponseAdapter<String> = stringResponseAdapter
 
           fun fromResponse(reader: JsonReader, __typename: String?):
               GetUser.Data.QueryData.Organization.User.OtherUser {
@@ -297,9 +297,9 @@ class GetUser_ResponseAdapter(
   }
 
   class OtherData(
-    customScalarAdapters: ResponseAdapterCache
+    responseAdapterCache: ResponseAdapterCache
   ) {
-    val stringAdapter: ResponseAdapter<String> = stringResponseAdapter
+    private val stringAdapter: ResponseAdapter<String> = stringResponseAdapter
 
     fun fromResponse(reader: JsonReader, __typename: String?): GetUser.Data.OtherData {
       var __typename: String? = __typename

@@ -23,10 +23,10 @@ import kotlin.collections.List
     "RemoveExplicitTypeArguments", "NestedLambdaShadowedImplicitParameter", "PropertyName",
     "RemoveRedundantQualifierName")
 class TestQuery_ResponseAdapter(
-  customScalarAdapters: ResponseAdapterCache
+  responseAdapterCache: ResponseAdapterCache
 ) : ResponseAdapter<TestQuery.Data> {
-  val nullableListOfNullableSearchAdapter: ResponseAdapter<List<TestQuery.Data.Search?>?> =
-      NullableResponseAdapter(ListResponseAdapter(NullableResponseAdapter(Search(customScalarAdapters))))
+  private val nullableListOfNullableSearchAdapter: ResponseAdapter<List<TestQuery.Data.Search?>?> =
+      NullableResponseAdapter(ListResponseAdapter(NullableResponseAdapter(Search(responseAdapterCache))))
 
   override fun fromResponse(reader: JsonReader): TestQuery.Data {
     var search: List<TestQuery.Data.Search?>? = null
@@ -69,16 +69,16 @@ class TestQuery_ResponseAdapter(
   }
 
   class Search(
-    customScalarAdapters: ResponseAdapterCache
+    responseAdapterCache: ResponseAdapterCache
   ) : ResponseAdapter<TestQuery.Data.Search> {
     val CharacterDroidSearchAdapter: CharacterDroidSearch =
-        com.example.inline_fragment_inside_inline_fragment.adapter.TestQuery_ResponseAdapter.Search.CharacterDroidSearch(customScalarAdapters)
+        com.example.inline_fragment_inside_inline_fragment.adapter.TestQuery_ResponseAdapter.Search.CharacterDroidSearch(responseAdapterCache)
 
     val CharacterHumanSearchAdapter: CharacterHumanSearch =
-        com.example.inline_fragment_inside_inline_fragment.adapter.TestQuery_ResponseAdapter.Search.CharacterHumanSearch(customScalarAdapters)
+        com.example.inline_fragment_inside_inline_fragment.adapter.TestQuery_ResponseAdapter.Search.CharacterHumanSearch(responseAdapterCache)
 
     val OtherSearchAdapter: OtherSearch =
-        com.example.inline_fragment_inside_inline_fragment.adapter.TestQuery_ResponseAdapter.Search.OtherSearch(customScalarAdapters)
+        com.example.inline_fragment_inside_inline_fragment.adapter.TestQuery_ResponseAdapter.Search.OtherSearch(responseAdapterCache)
 
     override fun fromResponse(reader: JsonReader): TestQuery.Data.Search {
       reader.beginObject()
@@ -102,11 +102,11 @@ class TestQuery_ResponseAdapter(
     }
 
     class CharacterDroidSearch(
-      customScalarAdapters: ResponseAdapterCache
+      responseAdapterCache: ResponseAdapterCache
     ) {
-      val stringAdapter: ResponseAdapter<String> = stringResponseAdapter
+      private val stringAdapter: ResponseAdapter<String> = stringResponseAdapter
 
-      val nullableStringAdapter: ResponseAdapter<String?> =
+      private val nullableStringAdapter: ResponseAdapter<String?> =
           NullableResponseAdapter(stringResponseAdapter)
 
       fun fromResponse(reader: JsonReader, __typename: String?):
@@ -158,11 +158,11 @@ class TestQuery_ResponseAdapter(
     }
 
     class CharacterHumanSearch(
-      customScalarAdapters: ResponseAdapterCache
+      responseAdapterCache: ResponseAdapterCache
     ) {
-      val stringAdapter: ResponseAdapter<String> = stringResponseAdapter
+      private val stringAdapter: ResponseAdapter<String> = stringResponseAdapter
 
-      val nullableStringAdapter: ResponseAdapter<String?> =
+      private val nullableStringAdapter: ResponseAdapter<String?> =
           NullableResponseAdapter(stringResponseAdapter)
 
       fun fromResponse(reader: JsonReader, __typename: String?):
@@ -214,9 +214,9 @@ class TestQuery_ResponseAdapter(
     }
 
     class OtherSearch(
-      customScalarAdapters: ResponseAdapterCache
+      responseAdapterCache: ResponseAdapterCache
     ) {
-      val stringAdapter: ResponseAdapter<String> = stringResponseAdapter
+      private val stringAdapter: ResponseAdapter<String> = stringResponseAdapter
 
       fun fromResponse(reader: JsonReader, __typename: String?): TestQuery.Data.Search.OtherSearch {
         var __typename: String? = __typename

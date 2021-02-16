@@ -25,15 +25,15 @@ import kotlin.collections.List
     "RemoveExplicitTypeArguments", "NestedLambdaShadowedImplicitParameter", "PropertyName",
     "RemoveRedundantQualifierName")
 class HumanDetailsImpl_ResponseAdapter(
-  customScalarAdapters: ResponseAdapterCache
+  responseAdapterCache: ResponseAdapterCache
 ) : ResponseAdapter<HumanDetailsImpl.Data> {
-  val stringAdapter: ResponseAdapter<String> = stringResponseAdapter
+  private val stringAdapter: ResponseAdapter<String> = stringResponseAdapter
 
-  val uRLAdapter: ResponseAdapter<Any> =
-      customScalarAdapters.responseAdapterFor<Any>(CustomScalars.URL)
+  private val uRLAdapter: ResponseAdapter<Any> =
+      responseAdapterCache.responseAdapterFor<Any>(CustomScalars.URL)
 
-  val friendsConnectionAdapter: ResponseAdapter<HumanDetailsImpl.Data.FriendsConnection> =
-      FriendsConnection(customScalarAdapters)
+  private val friendsConnectionAdapter: ResponseAdapter<HumanDetailsImpl.Data.FriendsConnection> =
+      FriendsConnection(responseAdapterCache)
 
   override fun fromResponse(reader: JsonReader): HumanDetailsImpl.Data {
     var __typename: String? = null
@@ -96,11 +96,11 @@ class HumanDetailsImpl_ResponseAdapter(
   }
 
   class FriendsConnection(
-    customScalarAdapters: ResponseAdapterCache
+    responseAdapterCache: ResponseAdapterCache
   ) : ResponseAdapter<HumanDetailsImpl.Data.FriendsConnection> {
-    val nullableListOfNullableEdgesAdapter:
+    private val nullableListOfNullableEdgesAdapter:
         ResponseAdapter<List<HumanDetailsImpl.Data.FriendsConnection.Edges?>?> =
-        NullableResponseAdapter(ListResponseAdapter(NullableResponseAdapter(Edges(customScalarAdapters))))
+        NullableResponseAdapter(ListResponseAdapter(NullableResponseAdapter(Edges(responseAdapterCache))))
 
     override fun fromResponse(reader: JsonReader): HumanDetailsImpl.Data.FriendsConnection {
       var edges: List<HumanDetailsImpl.Data.FriendsConnection.Edges?>? = null
@@ -139,10 +139,11 @@ class HumanDetailsImpl_ResponseAdapter(
     }
 
     class Edges(
-      customScalarAdapters: ResponseAdapterCache
+      responseAdapterCache: ResponseAdapterCache
     ) : ResponseAdapter<HumanDetailsImpl.Data.FriendsConnection.Edges> {
-      val nullableNodeAdapter: ResponseAdapter<HumanDetailsImpl.Data.FriendsConnection.Edges.Node?>
-          = NullableResponseAdapter(Node(customScalarAdapters))
+      private val nullableNodeAdapter:
+          ResponseAdapter<HumanDetailsImpl.Data.FriendsConnection.Edges.Node?> =
+          NullableResponseAdapter(Node(responseAdapterCache))
 
       override fun fromResponse(reader: JsonReader): HumanDetailsImpl.Data.FriendsConnection.Edges {
         var node: HumanDetailsImpl.Data.FriendsConnection.Edges.Node? = null
@@ -182,9 +183,9 @@ class HumanDetailsImpl_ResponseAdapter(
       }
 
       class Node(
-        customScalarAdapters: ResponseAdapterCache
+        responseAdapterCache: ResponseAdapterCache
       ) : ResponseAdapter<HumanDetailsImpl.Data.FriendsConnection.Edges.Node> {
-        val stringAdapter: ResponseAdapter<String> = stringResponseAdapter
+        private val stringAdapter: ResponseAdapter<String> = stringResponseAdapter
 
         override fun fromResponse(reader: JsonReader):
             HumanDetailsImpl.Data.FriendsConnection.Edges.Node {

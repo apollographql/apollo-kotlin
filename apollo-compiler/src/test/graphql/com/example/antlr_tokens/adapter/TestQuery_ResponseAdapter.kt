@@ -22,11 +22,11 @@ import kotlin.collections.List
     "RemoveExplicitTypeArguments", "NestedLambdaShadowedImplicitParameter", "PropertyName",
     "RemoveRedundantQualifierName")
 class TestQuery_ResponseAdapter(
-  customScalarAdapters: ResponseAdapterCache
+  responseAdapterCache: ResponseAdapterCache
 ) : ResponseAdapter<TestQuery.Data> {
-  val nullableTypeWithGraphQLKeywordsAdapter:
+  private val nullableTypeWithGraphQLKeywordsAdapter:
       ResponseAdapter<TestQuery.Data.TypeWithGraphQLKeywords?> =
-      NullableResponseAdapter(TypeWithGraphQLKeywords(customScalarAdapters))
+      NullableResponseAdapter(TypeWithGraphQLKeywords(responseAdapterCache))
 
   override fun fromResponse(reader: JsonReader): TestQuery.Data {
     var typeWithGraphQLKeywords: TestQuery.Data.TypeWithGraphQLKeywords? = null
@@ -65,9 +65,9 @@ class TestQuery_ResponseAdapter(
   }
 
   class TypeWithGraphQLKeywords(
-    customScalarAdapters: ResponseAdapterCache
+    responseAdapterCache: ResponseAdapterCache
   ) : ResponseAdapter<TestQuery.Data.TypeWithGraphQLKeywords> {
-    val nullableStringAdapter: ResponseAdapter<String?> =
+    private val nullableStringAdapter: ResponseAdapter<String?> =
         NullableResponseAdapter(stringResponseAdapter)
 
     override fun fromResponse(reader: JsonReader): TestQuery.Data.TypeWithGraphQLKeywords {

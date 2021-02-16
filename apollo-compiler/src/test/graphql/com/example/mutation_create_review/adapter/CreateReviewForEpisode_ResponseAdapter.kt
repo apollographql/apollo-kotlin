@@ -29,10 +29,11 @@ import kotlin.collections.List
     "RemoveExplicitTypeArguments", "NestedLambdaShadowedImplicitParameter", "PropertyName",
     "RemoveRedundantQualifierName")
 internal class CreateReviewForEpisode_ResponseAdapter(
-  customScalarAdapters: ResponseAdapterCache
+  responseAdapterCache: ResponseAdapterCache
 ) : ResponseAdapter<CreateReviewForEpisode.Data> {
-  val nullableCreateReviewAdapter: ResponseAdapter<CreateReviewForEpisode.Data.CreateReview?> =
-      NullableResponseAdapter(CreateReview(customScalarAdapters))
+  private val nullableCreateReviewAdapter:
+      ResponseAdapter<CreateReviewForEpisode.Data.CreateReview?> =
+      NullableResponseAdapter(CreateReview(responseAdapterCache))
 
   override fun fromResponse(reader: JsonReader): CreateReviewForEpisode.Data {
     var createReview: CreateReviewForEpisode.Data.CreateReview? = null
@@ -78,25 +79,25 @@ internal class CreateReviewForEpisode_ResponseAdapter(
   }
 
   class CreateReview(
-    customScalarAdapters: ResponseAdapterCache
+    responseAdapterCache: ResponseAdapterCache
   ) : ResponseAdapter<CreateReviewForEpisode.Data.CreateReview> {
-    val intAdapter: ResponseAdapter<Int> = intResponseAdapter
+    private val intAdapter: ResponseAdapter<Int> = intResponseAdapter
 
-    val nullableStringAdapter: ResponseAdapter<String?> =
+    private val nullableStringAdapter: ResponseAdapter<String?> =
         NullableResponseAdapter(stringResponseAdapter)
 
-    val nullableListOfListOfStringAdapter: ResponseAdapter<List<List<String>>?> =
+    private val nullableListOfListOfStringAdapter: ResponseAdapter<List<List<String>>?> =
         NullableResponseAdapter(ListResponseAdapter(ListResponseAdapter(stringResponseAdapter)))
 
-    val nullableListOfListOfEpisodeAdapter: ResponseAdapter<List<List<Episode>>?> =
+    private val nullableListOfListOfEpisodeAdapter: ResponseAdapter<List<List<Episode>>?> =
         NullableResponseAdapter(ListResponseAdapter(ListResponseAdapter(Episode_ResponseAdapter)))
 
-    val nullableListOfListOfDateAdapter: ResponseAdapter<List<List<Date>>?> =
-        NullableResponseAdapter(ListResponseAdapter(ListResponseAdapter(customScalarAdapters.responseAdapterFor<Date>(CustomScalars.Date))))
+    private val nullableListOfListOfDateAdapter: ResponseAdapter<List<List<Date>>?> =
+        NullableResponseAdapter(ListResponseAdapter(ListResponseAdapter(responseAdapterCache.responseAdapterFor<Date>(CustomScalars.Date))))
 
-    val nullableListOfListOfListOfListOfObjectAdapter:
+    private val nullableListOfListOfListOfListOfObjectAdapter:
         ResponseAdapter<List<List<CreateReviewForEpisode.Data.CreateReview.ListOfListOfObject>>?> =
-        NullableResponseAdapter(ListResponseAdapter(ListResponseAdapter(ListOfListOfObject(customScalarAdapters))))
+        NullableResponseAdapter(ListResponseAdapter(ListResponseAdapter(ListOfListOfObject(responseAdapterCache))))
 
     override fun fromResponse(reader: JsonReader): CreateReviewForEpisode.Data.CreateReview {
       var stars: Int? = null
@@ -184,9 +185,9 @@ internal class CreateReviewForEpisode_ResponseAdapter(
     }
 
     class ListOfListOfObject(
-      customScalarAdapters: ResponseAdapterCache
+      responseAdapterCache: ResponseAdapterCache
     ) : ResponseAdapter<CreateReviewForEpisode.Data.CreateReview.ListOfListOfObject> {
-      val stringAdapter: ResponseAdapter<String> = stringResponseAdapter
+      private val stringAdapter: ResponseAdapter<String> = stringResponseAdapter
 
       override fun fromResponse(reader: JsonReader):
           CreateReviewForEpisode.Data.CreateReview.ListOfListOfObject {

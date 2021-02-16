@@ -23,12 +23,12 @@ import kotlin.collections.List
     "RemoveExplicitTypeArguments", "NestedLambdaShadowedImplicitParameter", "PropertyName",
     "RemoveRedundantQualifierName")
 class QueryFragmentImpl_ResponseAdapter(
-  customScalarAdapters: ResponseAdapterCache
+  responseAdapterCache: ResponseAdapterCache
 ) : ResponseAdapter<QueryFragmentImpl.Data> {
-  val stringAdapter: ResponseAdapter<String> = stringResponseAdapter
+  private val stringAdapter: ResponseAdapter<String> = stringResponseAdapter
 
-  val nullableOrganizationAdapter: ResponseAdapter<QueryFragmentImpl.Data.Organization?> =
-      NullableResponseAdapter(Organization(customScalarAdapters))
+  private val nullableOrganizationAdapter: ResponseAdapter<QueryFragmentImpl.Data.Organization?> =
+      NullableResponseAdapter(Organization(responseAdapterCache))
 
   override fun fromResponse(reader: JsonReader): QueryFragmentImpl.Data {
     var __typename: String? = null
@@ -77,12 +77,12 @@ class QueryFragmentImpl_ResponseAdapter(
   }
 
   class Organization(
-    customScalarAdapters: ResponseAdapterCache
+    responseAdapterCache: ResponseAdapterCache
   ) : ResponseAdapter<QueryFragmentImpl.Data.Organization> {
-    val stringAdapter: ResponseAdapter<String> = stringResponseAdapter
+    private val stringAdapter: ResponseAdapter<String> = stringResponseAdapter
 
-    val listOfUserAdapter: ResponseAdapter<List<QueryFragmentImpl.Data.Organization.User>> =
-        ListResponseAdapter(User(customScalarAdapters))
+    private val listOfUserAdapter: ResponseAdapter<List<QueryFragmentImpl.Data.Organization.User>> =
+        ListResponseAdapter(User(responseAdapterCache))
 
     override fun fromResponse(reader: JsonReader): QueryFragmentImpl.Data.Organization {
       var id: String? = null
@@ -136,13 +136,13 @@ class QueryFragmentImpl_ResponseAdapter(
     }
 
     class User(
-      customScalarAdapters: ResponseAdapterCache
+      responseAdapterCache: ResponseAdapterCache
     ) : ResponseAdapter<QueryFragmentImpl.Data.Organization.User> {
       val UserUserAdapter: UserUser =
-          com.example.named_fragment_with_variables.fragment.adapter.QueryFragmentImpl_ResponseAdapter.Organization.User.UserUser(customScalarAdapters)
+          com.example.named_fragment_with_variables.fragment.adapter.QueryFragmentImpl_ResponseAdapter.Organization.User.UserUser(responseAdapterCache)
 
       val OtherUserAdapter: OtherUser =
-          com.example.named_fragment_with_variables.fragment.adapter.QueryFragmentImpl_ResponseAdapter.Organization.User.OtherUser(customScalarAdapters)
+          com.example.named_fragment_with_variables.fragment.adapter.QueryFragmentImpl_ResponseAdapter.Organization.User.OtherUser(responseAdapterCache)
 
       override fun fromResponse(reader: JsonReader): QueryFragmentImpl.Data.Organization.User {
         reader.beginObject()
@@ -164,9 +164,9 @@ class QueryFragmentImpl_ResponseAdapter(
       }
 
       class UserUser(
-        customScalarAdapters: ResponseAdapterCache
+        responseAdapterCache: ResponseAdapterCache
       ) {
-        val stringAdapter: ResponseAdapter<String> = stringResponseAdapter
+        private val stringAdapter: ResponseAdapter<String> = stringResponseAdapter
 
         fun fromResponse(reader: JsonReader, __typename: String?):
             QueryFragmentImpl.Data.Organization.User.UserUser {
@@ -231,9 +231,9 @@ class QueryFragmentImpl_ResponseAdapter(
       }
 
       class OtherUser(
-        customScalarAdapters: ResponseAdapterCache
+        responseAdapterCache: ResponseAdapterCache
       ) {
-        val stringAdapter: ResponseAdapter<String> = stringResponseAdapter
+        private val stringAdapter: ResponseAdapter<String> = stringResponseAdapter
 
         fun fromResponse(reader: JsonReader, __typename: String?):
             QueryFragmentImpl.Data.Organization.User.OtherUser {

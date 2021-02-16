@@ -24,13 +24,13 @@ import kotlin.collections.List
     "RemoveExplicitTypeArguments", "NestedLambdaShadowedImplicitParameter", "PropertyName",
     "RemoveRedundantQualifierName")
 class TestQuery_ResponseAdapter(
-  customScalarAdapters: ResponseAdapterCache
+  responseAdapterCache: ResponseAdapterCache
 ) : ResponseAdapter<TestQuery.Data> {
-  val nullableR2Adapter: ResponseAdapter<TestQuery.Data.R2?> =
-      NullableResponseAdapter(R2(customScalarAdapters))
+  private val nullableR2Adapter: ResponseAdapter<TestQuery.Data.R2?> =
+      NullableResponseAdapter(R2(responseAdapterCache))
 
-  val nullableLukeAdapter: ResponseAdapter<TestQuery.Data.Luke?> =
-      NullableResponseAdapter(Luke(customScalarAdapters))
+  private val nullableLukeAdapter: ResponseAdapter<TestQuery.Data.Luke?> =
+      NullableResponseAdapter(Luke(responseAdapterCache))
 
   override fun fromResponse(reader: JsonReader): TestQuery.Data {
     var r2: TestQuery.Data.R2? = null
@@ -87,16 +87,16 @@ class TestQuery_ResponseAdapter(
   }
 
   class R2(
-    customScalarAdapters: ResponseAdapterCache
+    responseAdapterCache: ResponseAdapterCache
   ) : ResponseAdapter<TestQuery.Data.R2> {
     val HumanR2Adapter: HumanR2 =
-        com.example.fragments_with_type_condition.adapter.TestQuery_ResponseAdapter.R2.HumanR2(customScalarAdapters)
+        com.example.fragments_with_type_condition.adapter.TestQuery_ResponseAdapter.R2.HumanR2(responseAdapterCache)
 
     val DroidR2Adapter: DroidR2 =
-        com.example.fragments_with_type_condition.adapter.TestQuery_ResponseAdapter.R2.DroidR2(customScalarAdapters)
+        com.example.fragments_with_type_condition.adapter.TestQuery_ResponseAdapter.R2.DroidR2(responseAdapterCache)
 
     val OtherR2Adapter: OtherR2 =
-        com.example.fragments_with_type_condition.adapter.TestQuery_ResponseAdapter.R2.OtherR2(customScalarAdapters)
+        com.example.fragments_with_type_condition.adapter.TestQuery_ResponseAdapter.R2.OtherR2(responseAdapterCache)
 
     override fun fromResponse(reader: JsonReader): TestQuery.Data.R2 {
       reader.beginObject()
@@ -120,11 +120,11 @@ class TestQuery_ResponseAdapter(
     }
 
     class HumanR2(
-      customScalarAdapters: ResponseAdapterCache
+      responseAdapterCache: ResponseAdapterCache
     ) {
-      val stringAdapter: ResponseAdapter<String> = stringResponseAdapter
+      private val stringAdapter: ResponseAdapter<String> = stringResponseAdapter
 
-      val nullableFloatAdapter: ResponseAdapter<Double?> =
+      private val nullableFloatAdapter: ResponseAdapter<Double?> =
           NullableResponseAdapter(doubleResponseAdapter)
 
       fun fromResponse(reader: JsonReader, __typename: String?): TestQuery.Data.R2.HumanR2 {
@@ -175,11 +175,11 @@ class TestQuery_ResponseAdapter(
     }
 
     class DroidR2(
-      customScalarAdapters: ResponseAdapterCache
+      responseAdapterCache: ResponseAdapterCache
     ) {
-      val stringAdapter: ResponseAdapter<String> = stringResponseAdapter
+      private val stringAdapter: ResponseAdapter<String> = stringResponseAdapter
 
-      val nullableStringAdapter: ResponseAdapter<String?> =
+      private val nullableStringAdapter: ResponseAdapter<String?> =
           NullableResponseAdapter(stringResponseAdapter)
 
       fun fromResponse(reader: JsonReader, __typename: String?): TestQuery.Data.R2.DroidR2 {
@@ -230,9 +230,9 @@ class TestQuery_ResponseAdapter(
     }
 
     class OtherR2(
-      customScalarAdapters: ResponseAdapterCache
+      responseAdapterCache: ResponseAdapterCache
     ) {
-      val stringAdapter: ResponseAdapter<String> = stringResponseAdapter
+      private val stringAdapter: ResponseAdapter<String> = stringResponseAdapter
 
       fun fromResponse(reader: JsonReader, __typename: String?): TestQuery.Data.R2.OtherR2 {
         var __typename: String? = __typename
@@ -265,16 +265,16 @@ class TestQuery_ResponseAdapter(
   }
 
   class Luke(
-    customScalarAdapters: ResponseAdapterCache
+    responseAdapterCache: ResponseAdapterCache
   ) : ResponseAdapter<TestQuery.Data.Luke> {
     val HumanLukeAdapter: HumanLuke =
-        com.example.fragments_with_type_condition.adapter.TestQuery_ResponseAdapter.Luke.HumanLuke(customScalarAdapters)
+        com.example.fragments_with_type_condition.adapter.TestQuery_ResponseAdapter.Luke.HumanLuke(responseAdapterCache)
 
     val DroidLukeAdapter: DroidLuke =
-        com.example.fragments_with_type_condition.adapter.TestQuery_ResponseAdapter.Luke.DroidLuke(customScalarAdapters)
+        com.example.fragments_with_type_condition.adapter.TestQuery_ResponseAdapter.Luke.DroidLuke(responseAdapterCache)
 
     val OtherLukeAdapter: OtherLuke =
-        com.example.fragments_with_type_condition.adapter.TestQuery_ResponseAdapter.Luke.OtherLuke(customScalarAdapters)
+        com.example.fragments_with_type_condition.adapter.TestQuery_ResponseAdapter.Luke.OtherLuke(responseAdapterCache)
 
     override fun fromResponse(reader: JsonReader): TestQuery.Data.Luke {
       reader.beginObject()
@@ -298,11 +298,11 @@ class TestQuery_ResponseAdapter(
     }
 
     class HumanLuke(
-      customScalarAdapters: ResponseAdapterCache
+      responseAdapterCache: ResponseAdapterCache
     ) {
-      val stringAdapter: ResponseAdapter<String> = stringResponseAdapter
+      private val stringAdapter: ResponseAdapter<String> = stringResponseAdapter
 
-      val nullableFloatAdapter: ResponseAdapter<Double?> =
+      private val nullableFloatAdapter: ResponseAdapter<Double?> =
           NullableResponseAdapter(doubleResponseAdapter)
 
       fun fromResponse(reader: JsonReader, __typename: String?): TestQuery.Data.Luke.HumanLuke {
@@ -353,11 +353,11 @@ class TestQuery_ResponseAdapter(
     }
 
     class DroidLuke(
-      customScalarAdapters: ResponseAdapterCache
+      responseAdapterCache: ResponseAdapterCache
     ) {
-      val stringAdapter: ResponseAdapter<String> = stringResponseAdapter
+      private val stringAdapter: ResponseAdapter<String> = stringResponseAdapter
 
-      val nullableStringAdapter: ResponseAdapter<String?> =
+      private val nullableStringAdapter: ResponseAdapter<String?> =
           NullableResponseAdapter(stringResponseAdapter)
 
       fun fromResponse(reader: JsonReader, __typename: String?): TestQuery.Data.Luke.DroidLuke {
@@ -408,9 +408,9 @@ class TestQuery_ResponseAdapter(
     }
 
     class OtherLuke(
-      customScalarAdapters: ResponseAdapterCache
+      responseAdapterCache: ResponseAdapterCache
     ) {
-      val stringAdapter: ResponseAdapter<String> = stringResponseAdapter
+      private val stringAdapter: ResponseAdapter<String> = stringResponseAdapter
 
       fun fromResponse(reader: JsonReader, __typename: String?): TestQuery.Data.Luke.OtherLuke {
         var __typename: String? = __typename

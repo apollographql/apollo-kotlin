@@ -25,10 +25,10 @@ import kotlin.collections.List
     "RemoveExplicitTypeArguments", "NestedLambdaShadowedImplicitParameter", "PropertyName",
     "RemoveRedundantQualifierName")
 class TestQuery_ResponseAdapter(
-  customScalarAdapters: ResponseAdapterCache
+  responseAdapterCache: ResponseAdapterCache
 ) : ResponseAdapter<TestQuery.Data> {
-  val nullableListOfNullableSearchAdapter: ResponseAdapter<List<TestQuery.Data.Search?>?> =
-      NullableResponseAdapter(ListResponseAdapter(NullableResponseAdapter(Search(customScalarAdapters))))
+  private val nullableListOfNullableSearchAdapter: ResponseAdapter<List<TestQuery.Data.Search?>?> =
+      NullableResponseAdapter(ListResponseAdapter(NullableResponseAdapter(Search(responseAdapterCache))))
 
   override fun fromResponse(reader: JsonReader): TestQuery.Data {
     var search: List<TestQuery.Data.Search?>? = null
@@ -72,16 +72,16 @@ class TestQuery_ResponseAdapter(
   }
 
   class Search(
-    customScalarAdapters: ResponseAdapterCache
+    responseAdapterCache: ResponseAdapterCache
   ) : ResponseAdapter<TestQuery.Data.Search> {
     val CharacterSearchAdapter: CharacterSearch =
-        com.example.union_inline_fragments.adapter.TestQuery_ResponseAdapter.Search.CharacterSearch(customScalarAdapters)
+        com.example.union_inline_fragments.adapter.TestQuery_ResponseAdapter.Search.CharacterSearch(responseAdapterCache)
 
     val StarshipSearchAdapter: StarshipSearch =
-        com.example.union_inline_fragments.adapter.TestQuery_ResponseAdapter.Search.StarshipSearch(customScalarAdapters)
+        com.example.union_inline_fragments.adapter.TestQuery_ResponseAdapter.Search.StarshipSearch(responseAdapterCache)
 
     val OtherSearchAdapter: OtherSearch =
-        com.example.union_inline_fragments.adapter.TestQuery_ResponseAdapter.Search.OtherSearch(customScalarAdapters)
+        com.example.union_inline_fragments.adapter.TestQuery_ResponseAdapter.Search.OtherSearch(responseAdapterCache)
 
     override fun fromResponse(reader: JsonReader): TestQuery.Data.Search {
       reader.beginObject()
@@ -106,13 +106,13 @@ class TestQuery_ResponseAdapter(
     }
 
     class CharacterSearch(
-      customScalarAdapters: ResponseAdapterCache
+      responseAdapterCache: ResponseAdapterCache
     ) {
-      val stringAdapter: ResponseAdapter<String> = stringResponseAdapter
+      private val stringAdapter: ResponseAdapter<String> = stringResponseAdapter
 
-      val nullableListOfNullableFriendsAdapter:
+      private val nullableListOfNullableFriendsAdapter:
           ResponseAdapter<List<TestQuery.Data.Search.CharacterSearch.Friends?>?> =
-          NullableResponseAdapter(ListResponseAdapter(NullableResponseAdapter(Friends(customScalarAdapters))))
+          NullableResponseAdapter(ListResponseAdapter(NullableResponseAdapter(Friends(responseAdapterCache))))
 
       fun fromResponse(reader: JsonReader, __typename: String?):
           TestQuery.Data.Search.CharacterSearch {
@@ -176,16 +176,16 @@ class TestQuery_ResponseAdapter(
       }
 
       class Friends(
-        customScalarAdapters: ResponseAdapterCache
+        responseAdapterCache: ResponseAdapterCache
       ) : ResponseAdapter<TestQuery.Data.Search.CharacterSearch.Friends> {
         val CharacterDroidFriendsAdapter: CharacterDroidFriends =
-            com.example.union_inline_fragments.adapter.TestQuery_ResponseAdapter.Search.CharacterSearch.Friends.CharacterDroidFriends(customScalarAdapters)
+            com.example.union_inline_fragments.adapter.TestQuery_ResponseAdapter.Search.CharacterSearch.Friends.CharacterDroidFriends(responseAdapterCache)
 
         val CharacterHumanFriendsAdapter: CharacterHumanFriends =
-            com.example.union_inline_fragments.adapter.TestQuery_ResponseAdapter.Search.CharacterSearch.Friends.CharacterHumanFriends(customScalarAdapters)
+            com.example.union_inline_fragments.adapter.TestQuery_ResponseAdapter.Search.CharacterSearch.Friends.CharacterHumanFriends(responseAdapterCache)
 
         val OtherFriendsAdapter: OtherFriends =
-            com.example.union_inline_fragments.adapter.TestQuery_ResponseAdapter.Search.CharacterSearch.Friends.OtherFriends(customScalarAdapters)
+            com.example.union_inline_fragments.adapter.TestQuery_ResponseAdapter.Search.CharacterSearch.Friends.OtherFriends(responseAdapterCache)
 
         override fun fromResponse(reader: JsonReader):
             TestQuery.Data.Search.CharacterSearch.Friends {
@@ -211,17 +211,17 @@ class TestQuery_ResponseAdapter(
         }
 
         class CharacterDroidFriends(
-          customScalarAdapters: ResponseAdapterCache
+          responseAdapterCache: ResponseAdapterCache
         ) {
-          val stringAdapter: ResponseAdapter<String> = stringResponseAdapter
+          private val stringAdapter: ResponseAdapter<String> = stringResponseAdapter
 
-          val nullableStringAdapter: ResponseAdapter<String?> =
+          private val nullableStringAdapter: ResponseAdapter<String?> =
               NullableResponseAdapter(stringResponseAdapter)
 
-          val nullableListOfNullableFriendsAdapter:
+          private val nullableListOfNullableFriendsAdapter:
               ResponseAdapter<List<TestQuery.Data.Search.CharacterSearch.Friends.CharacterDroidFriends.Friends?>?>
               =
-              NullableResponseAdapter(ListResponseAdapter(NullableResponseAdapter(Friends(customScalarAdapters))))
+              NullableResponseAdapter(ListResponseAdapter(NullableResponseAdapter(Friends(responseAdapterCache))))
 
           fun fromResponse(reader: JsonReader, __typename: String?):
               TestQuery.Data.Search.CharacterSearch.Friends.CharacterDroidFriends {
@@ -284,11 +284,11 @@ class TestQuery_ResponseAdapter(
           }
 
           class Friends(
-            customScalarAdapters: ResponseAdapterCache
+            responseAdapterCache: ResponseAdapterCache
           ) :
               ResponseAdapter<TestQuery.Data.Search.CharacterSearch.Friends.CharacterDroidFriends.Friends>
               {
-            val stringAdapter: ResponseAdapter<String> = stringResponseAdapter
+            private val stringAdapter: ResponseAdapter<String> = stringResponseAdapter
 
             override fun fromResponse(reader: JsonReader):
                 TestQuery.Data.Search.CharacterSearch.Friends.CharacterDroidFriends.Friends {
@@ -328,17 +328,17 @@ class TestQuery_ResponseAdapter(
         }
 
         class CharacterHumanFriends(
-          customScalarAdapters: ResponseAdapterCache
+          responseAdapterCache: ResponseAdapterCache
         ) {
-          val stringAdapter: ResponseAdapter<String> = stringResponseAdapter
+          private val stringAdapter: ResponseAdapter<String> = stringResponseAdapter
 
-          val nullableStringAdapter: ResponseAdapter<String?> =
+          private val nullableStringAdapter: ResponseAdapter<String?> =
               NullableResponseAdapter(stringResponseAdapter)
 
-          val nullableListOfNullableFriendsAdapter:
+          private val nullableListOfNullableFriendsAdapter:
               ResponseAdapter<List<TestQuery.Data.Search.CharacterSearch.Friends.CharacterHumanFriends.Friends?>?>
               =
-              NullableResponseAdapter(ListResponseAdapter(NullableResponseAdapter(Friends(customScalarAdapters))))
+              NullableResponseAdapter(ListResponseAdapter(NullableResponseAdapter(Friends(responseAdapterCache))))
 
           fun fromResponse(reader: JsonReader, __typename: String?):
               TestQuery.Data.Search.CharacterSearch.Friends.CharacterHumanFriends {
@@ -403,15 +403,15 @@ class TestQuery_ResponseAdapter(
           }
 
           class Friends(
-            customScalarAdapters: ResponseAdapterCache
+            responseAdapterCache: ResponseAdapterCache
           ) :
               ResponseAdapter<TestQuery.Data.Search.CharacterSearch.Friends.CharacterHumanFriends.Friends>
               {
             val CharacterFriendsAdapter: CharacterFriends =
-                com.example.union_inline_fragments.adapter.TestQuery_ResponseAdapter.Search.CharacterSearch.Friends.CharacterHumanFriends.Friends.CharacterFriends(customScalarAdapters)
+                com.example.union_inline_fragments.adapter.TestQuery_ResponseAdapter.Search.CharacterSearch.Friends.CharacterHumanFriends.Friends.CharacterFriends(responseAdapterCache)
 
             val OtherFriendsAdapter: OtherFriends =
-                com.example.union_inline_fragments.adapter.TestQuery_ResponseAdapter.Search.CharacterSearch.Friends.CharacterHumanFriends.Friends.OtherFriends(customScalarAdapters)
+                com.example.union_inline_fragments.adapter.TestQuery_ResponseAdapter.Search.CharacterSearch.Friends.CharacterHumanFriends.Friends.OtherFriends(responseAdapterCache)
 
             override fun fromResponse(reader: JsonReader):
                 TestQuery.Data.Search.CharacterSearch.Friends.CharacterHumanFriends.Friends {
@@ -436,11 +436,11 @@ class TestQuery_ResponseAdapter(
             }
 
             class CharacterFriends(
-              customScalarAdapters: ResponseAdapterCache
+              responseAdapterCache: ResponseAdapterCache
             ) {
-              val stringAdapter: ResponseAdapter<String> = stringResponseAdapter
+              private val stringAdapter: ResponseAdapter<String> = stringResponseAdapter
 
-              val episodeAdapter: ResponseAdapter<Episode> = Episode_ResponseAdapter
+              private val episodeAdapter: ResponseAdapter<Episode> = Episode_ResponseAdapter
 
               fun fromResponse(reader: JsonReader, __typename: String?):
                   TestQuery.Data.Search.CharacterSearch.Friends.CharacterHumanFriends.Friends.CharacterFriends {
@@ -483,9 +483,9 @@ class TestQuery_ResponseAdapter(
             }
 
             class OtherFriends(
-              customScalarAdapters: ResponseAdapterCache
+              responseAdapterCache: ResponseAdapterCache
             ) {
-              val stringAdapter: ResponseAdapter<String> = stringResponseAdapter
+              private val stringAdapter: ResponseAdapter<String> = stringResponseAdapter
 
               fun fromResponse(reader: JsonReader, __typename: String?):
                   TestQuery.Data.Search.CharacterSearch.Friends.CharacterHumanFriends.Friends.OtherFriends {
@@ -521,9 +521,9 @@ class TestQuery_ResponseAdapter(
         }
 
         class OtherFriends(
-          customScalarAdapters: ResponseAdapterCache
+          responseAdapterCache: ResponseAdapterCache
         ) {
-          val stringAdapter: ResponseAdapter<String> = stringResponseAdapter
+          private val stringAdapter: ResponseAdapter<String> = stringResponseAdapter
 
           fun fromResponse(reader: JsonReader, __typename: String?):
               TestQuery.Data.Search.CharacterSearch.Friends.OtherFriends {
@@ -559,9 +559,9 @@ class TestQuery_ResponseAdapter(
     }
 
     class StarshipSearch(
-      customScalarAdapters: ResponseAdapterCache
+      responseAdapterCache: ResponseAdapterCache
     ) {
-      val stringAdapter: ResponseAdapter<String> = stringResponseAdapter
+      private val stringAdapter: ResponseAdapter<String> = stringResponseAdapter
 
       fun fromResponse(reader: JsonReader, __typename: String?):
           TestQuery.Data.Search.StarshipSearch {
@@ -603,9 +603,9 @@ class TestQuery_ResponseAdapter(
     }
 
     class OtherSearch(
-      customScalarAdapters: ResponseAdapterCache
+      responseAdapterCache: ResponseAdapterCache
     ) {
-      val stringAdapter: ResponseAdapter<String> = stringResponseAdapter
+      private val stringAdapter: ResponseAdapter<String> = stringResponseAdapter
 
       fun fromResponse(reader: JsonReader, __typename: String?): TestQuery.Data.Search.OtherSearch {
         var __typename: String? = __typename

@@ -23,13 +23,14 @@ import kotlin.collections.List
     "RemoveExplicitTypeArguments", "NestedLambdaShadowedImplicitParameter", "PropertyName",
     "RemoveRedundantQualifierName")
 class TestQuery_ResponseAdapter(
-  customScalarAdapters: ResponseAdapterCache
+  responseAdapterCache: ResponseAdapterCache
 ) : ResponseAdapter<TestQuery.Data> {
-  val nullableYieldAdapter: ResponseAdapter<TestQuery.Data.Yield?> =
-      NullableResponseAdapter(Yield(customScalarAdapters))
+  private val nullableYieldAdapter: ResponseAdapter<TestQuery.Data.Yield?> =
+      NullableResponseAdapter(Yield(responseAdapterCache))
 
-  val nullableListOfNullableObjectsAdapter: ResponseAdapter<List<TestQuery.Data.Objects?>?> =
-      NullableResponseAdapter(ListResponseAdapter(NullableResponseAdapter(Objects(customScalarAdapters))))
+  private val nullableListOfNullableObjectsAdapter: ResponseAdapter<List<TestQuery.Data.Objects?>?>
+      =
+      NullableResponseAdapter(ListResponseAdapter(NullableResponseAdapter(Objects(responseAdapterCache))))
 
   override fun fromResponse(reader: JsonReader): TestQuery.Data {
     var yield_: TestQuery.Data.Yield? = null
@@ -86,9 +87,9 @@ class TestQuery_ResponseAdapter(
   }
 
   class Yield(
-    customScalarAdapters: ResponseAdapterCache
+    responseAdapterCache: ResponseAdapterCache
   ) : ResponseAdapter<TestQuery.Data.Yield> {
-    val stringAdapter: ResponseAdapter<String> = stringResponseAdapter
+    private val stringAdapter: ResponseAdapter<String> = stringResponseAdapter
 
     override fun fromResponse(reader: JsonReader): TestQuery.Data.Yield {
       var it_: String? = null
@@ -135,13 +136,13 @@ class TestQuery_ResponseAdapter(
   }
 
   class Objects(
-    customScalarAdapters: ResponseAdapterCache
+    responseAdapterCache: ResponseAdapterCache
   ) : ResponseAdapter<TestQuery.Data.Objects> {
     val CharacterObjectsAdapter: CharacterObjects =
-        com.example.reserved_keywords.adapter.TestQuery_ResponseAdapter.Objects.CharacterObjects(customScalarAdapters)
+        com.example.reserved_keywords.adapter.TestQuery_ResponseAdapter.Objects.CharacterObjects(responseAdapterCache)
 
     val OtherObjectsAdapter: OtherObjects =
-        com.example.reserved_keywords.adapter.TestQuery_ResponseAdapter.Objects.OtherObjects(customScalarAdapters)
+        com.example.reserved_keywords.adapter.TestQuery_ResponseAdapter.Objects.OtherObjects(responseAdapterCache)
 
     override fun fromResponse(reader: JsonReader): TestQuery.Data.Objects {
       reader.beginObject()
@@ -164,9 +165,9 @@ class TestQuery_ResponseAdapter(
     }
 
     class CharacterObjects(
-      customScalarAdapters: ResponseAdapterCache
+      responseAdapterCache: ResponseAdapterCache
     ) {
-      val stringAdapter: ResponseAdapter<String> = stringResponseAdapter
+      private val stringAdapter: ResponseAdapter<String> = stringResponseAdapter
 
       fun fromResponse(reader: JsonReader, __typename: String?):
           TestQuery.Data.Objects.CharacterObjects {
@@ -208,9 +209,9 @@ class TestQuery_ResponseAdapter(
     }
 
     class OtherObjects(
-      customScalarAdapters: ResponseAdapterCache
+      responseAdapterCache: ResponseAdapterCache
     ) {
-      val stringAdapter: ResponseAdapter<String> = stringResponseAdapter
+      private val stringAdapter: ResponseAdapter<String> = stringResponseAdapter
 
       fun fromResponse(reader: JsonReader, __typename: String?):
           TestQuery.Data.Objects.OtherObjects {

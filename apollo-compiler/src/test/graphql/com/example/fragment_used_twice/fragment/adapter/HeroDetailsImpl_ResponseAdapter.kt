@@ -23,13 +23,13 @@ import kotlin.collections.List
     "RemoveExplicitTypeArguments", "NestedLambdaShadowedImplicitParameter", "PropertyName",
     "RemoveRedundantQualifierName")
 class HeroDetailsImpl_ResponseAdapter(
-  customScalarAdapters: ResponseAdapterCache
+  responseAdapterCache: ResponseAdapterCache
 ) : ResponseAdapter<HeroDetailsImpl.Data> {
   val CharacterDataAdapter: CharacterData =
-      com.example.fragment_used_twice.fragment.adapter.HeroDetailsImpl_ResponseAdapter.CharacterData(customScalarAdapters)
+      com.example.fragment_used_twice.fragment.adapter.HeroDetailsImpl_ResponseAdapter.CharacterData(responseAdapterCache)
 
   val OtherDataAdapter: OtherData =
-      com.example.fragment_used_twice.fragment.adapter.HeroDetailsImpl_ResponseAdapter.OtherData(customScalarAdapters)
+      com.example.fragment_used_twice.fragment.adapter.HeroDetailsImpl_ResponseAdapter.OtherData(responseAdapterCache)
 
   override fun fromResponse(reader: JsonReader): HeroDetailsImpl.Data {
     reader.beginObject()
@@ -52,12 +52,12 @@ class HeroDetailsImpl_ResponseAdapter(
   }
 
   class CharacterData(
-    customScalarAdapters: ResponseAdapterCache
+    responseAdapterCache: ResponseAdapterCache
   ) {
-    val stringAdapter: ResponseAdapter<String> = stringResponseAdapter
+    private val stringAdapter: ResponseAdapter<String> = stringResponseAdapter
 
-    val dateAdapter: ResponseAdapter<Any> =
-        customScalarAdapters.responseAdapterFor<Any>(CustomScalars.Date)
+    private val dateAdapter: ResponseAdapter<Any> =
+        responseAdapterCache.responseAdapterFor<Any>(CustomScalars.Date)
 
     fun fromResponse(reader: JsonReader, __typename: String?): HeroDetailsImpl.Data.CharacterData {
       var __typename: String? = __typename
@@ -107,9 +107,9 @@ class HeroDetailsImpl_ResponseAdapter(
   }
 
   class OtherData(
-    customScalarAdapters: ResponseAdapterCache
+    responseAdapterCache: ResponseAdapterCache
   ) {
-    val stringAdapter: ResponseAdapter<String> = stringResponseAdapter
+    private val stringAdapter: ResponseAdapter<String> = stringResponseAdapter
 
     fun fromResponse(reader: JsonReader, __typename: String?): HeroDetailsImpl.Data.OtherData {
       var __typename: String? = __typename

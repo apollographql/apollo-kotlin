@@ -25,13 +25,13 @@ import kotlin.collections.List
     "RemoveExplicitTypeArguments", "NestedLambdaShadowedImplicitParameter", "PropertyName",
     "RemoveRedundantQualifierName")
 class TestQuery_ResponseAdapter(
-  customScalarAdapters: ResponseAdapterCache
+  responseAdapterCache: ResponseAdapterCache
 ) : ResponseAdapter<TestQuery.Data> {
-  val nullableR2Adapter: ResponseAdapter<TestQuery.Data.R2?> =
-      NullableResponseAdapter(R2(customScalarAdapters))
+  private val nullableR2Adapter: ResponseAdapter<TestQuery.Data.R2?> =
+      NullableResponseAdapter(R2(responseAdapterCache))
 
-  val nullableLukeAdapter: ResponseAdapter<TestQuery.Data.Luke?> =
-      NullableResponseAdapter(Luke(customScalarAdapters))
+  private val nullableLukeAdapter: ResponseAdapter<TestQuery.Data.Luke?> =
+      NullableResponseAdapter(Luke(responseAdapterCache))
 
   override fun fromResponse(reader: JsonReader): TestQuery.Data {
     var r2: TestQuery.Data.R2? = null
@@ -86,12 +86,12 @@ class TestQuery_ResponseAdapter(
   }
 
   class R2(
-    customScalarAdapters: ResponseAdapterCache
+    responseAdapterCache: ResponseAdapterCache
   ) : ResponseAdapter<TestQuery.Data.R2> {
-    val stringAdapter: ResponseAdapter<String> = stringResponseAdapter
+    private val stringAdapter: ResponseAdapter<String> = stringResponseAdapter
 
-    val friendsConnectionAdapter: ResponseAdapter<TestQuery.Data.R2.FriendsConnection> =
-        FriendsConnection(customScalarAdapters)
+    private val friendsConnectionAdapter: ResponseAdapter<TestQuery.Data.R2.FriendsConnection> =
+        FriendsConnection(responseAdapterCache)
 
     override fun fromResponse(reader: JsonReader): TestQuery.Data.R2 {
       var name: String? = null
@@ -139,13 +139,14 @@ class TestQuery_ResponseAdapter(
     }
 
     class FriendsConnection(
-      customScalarAdapters: ResponseAdapterCache
+      responseAdapterCache: ResponseAdapterCache
     ) : ResponseAdapter<TestQuery.Data.R2.FriendsConnection> {
-      val nullableIntAdapter: ResponseAdapter<Int?> = NullableResponseAdapter(intResponseAdapter)
+      private val nullableIntAdapter: ResponseAdapter<Int?> =
+          NullableResponseAdapter(intResponseAdapter)
 
-      val nullableListOfNullableEdgesAdapter:
+      private val nullableListOfNullableEdgesAdapter:
           ResponseAdapter<List<TestQuery.Data.R2.FriendsConnection.Edges?>?> =
-          NullableResponseAdapter(ListResponseAdapter(NullableResponseAdapter(Edges(customScalarAdapters))))
+          NullableResponseAdapter(ListResponseAdapter(NullableResponseAdapter(Edges(responseAdapterCache))))
 
       override fun fromResponse(reader: JsonReader): TestQuery.Data.R2.FriendsConnection {
         var totalCount: Int? = null
@@ -193,10 +194,11 @@ class TestQuery_ResponseAdapter(
       }
 
       class Edges(
-        customScalarAdapters: ResponseAdapterCache
+        responseAdapterCache: ResponseAdapterCache
       ) : ResponseAdapter<TestQuery.Data.R2.FriendsConnection.Edges> {
-        val nullableNodeAdapter: ResponseAdapter<TestQuery.Data.R2.FriendsConnection.Edges.Node?> =
-            NullableResponseAdapter(Node(customScalarAdapters))
+        private val nullableNodeAdapter:
+            ResponseAdapter<TestQuery.Data.R2.FriendsConnection.Edges.Node?> =
+            NullableResponseAdapter(Node(responseAdapterCache))
 
         override fun fromResponse(reader: JsonReader): TestQuery.Data.R2.FriendsConnection.Edges {
           var node: TestQuery.Data.R2.FriendsConnection.Edges.Node? = null
@@ -236,9 +238,9 @@ class TestQuery_ResponseAdapter(
         }
 
         class Node(
-          customScalarAdapters: ResponseAdapterCache
+          responseAdapterCache: ResponseAdapterCache
         ) : ResponseAdapter<TestQuery.Data.R2.FriendsConnection.Edges.Node> {
-          val stringAdapter: ResponseAdapter<String> = stringResponseAdapter
+          private val stringAdapter: ResponseAdapter<String> = stringResponseAdapter
 
           override fun fromResponse(reader: JsonReader):
               TestQuery.Data.R2.FriendsConnection.Edges.Node {
@@ -280,12 +282,12 @@ class TestQuery_ResponseAdapter(
   }
 
   class Luke(
-    customScalarAdapters: ResponseAdapterCache
+    responseAdapterCache: ResponseAdapterCache
   ) : ResponseAdapter<TestQuery.Data.Luke> {
-    val stringAdapter: ResponseAdapter<String> = stringResponseAdapter
+    private val stringAdapter: ResponseAdapter<String> = stringResponseAdapter
 
-    val friendsConnectionAdapter: ResponseAdapter<TestQuery.Data.Luke.FriendsConnection> =
-        FriendsConnection(customScalarAdapters)
+    private val friendsConnectionAdapter: ResponseAdapter<TestQuery.Data.Luke.FriendsConnection> =
+        FriendsConnection(responseAdapterCache)
 
     override fun fromResponse(reader: JsonReader): TestQuery.Data.Luke {
       var id: String? = null
@@ -342,13 +344,14 @@ class TestQuery_ResponseAdapter(
     }
 
     class FriendsConnection(
-      customScalarAdapters: ResponseAdapterCache
+      responseAdapterCache: ResponseAdapterCache
     ) : ResponseAdapter<TestQuery.Data.Luke.FriendsConnection> {
-      val nullableIntAdapter: ResponseAdapter<Int?> = NullableResponseAdapter(intResponseAdapter)
+      private val nullableIntAdapter: ResponseAdapter<Int?> =
+          NullableResponseAdapter(intResponseAdapter)
 
-      val nullableListOfNullableEdgesAdapter:
+      private val nullableListOfNullableEdgesAdapter:
           ResponseAdapter<List<TestQuery.Data.Luke.FriendsConnection.Edges?>?> =
-          NullableResponseAdapter(ListResponseAdapter(NullableResponseAdapter(Edges(customScalarAdapters))))
+          NullableResponseAdapter(ListResponseAdapter(NullableResponseAdapter(Edges(responseAdapterCache))))
 
       override fun fromResponse(reader: JsonReader): TestQuery.Data.Luke.FriendsConnection {
         var totalCount: Int? = null
@@ -396,10 +399,11 @@ class TestQuery_ResponseAdapter(
       }
 
       class Edges(
-        customScalarAdapters: ResponseAdapterCache
+        responseAdapterCache: ResponseAdapterCache
       ) : ResponseAdapter<TestQuery.Data.Luke.FriendsConnection.Edges> {
-        val nullableNodeAdapter: ResponseAdapter<TestQuery.Data.Luke.FriendsConnection.Edges.Node?>
-            = NullableResponseAdapter(Node(customScalarAdapters))
+        private val nullableNodeAdapter:
+            ResponseAdapter<TestQuery.Data.Luke.FriendsConnection.Edges.Node?> =
+            NullableResponseAdapter(Node(responseAdapterCache))
 
         override fun fromResponse(reader: JsonReader): TestQuery.Data.Luke.FriendsConnection.Edges {
           var node: TestQuery.Data.Luke.FriendsConnection.Edges.Node? = null
@@ -439,9 +443,9 @@ class TestQuery_ResponseAdapter(
         }
 
         class Node(
-          customScalarAdapters: ResponseAdapterCache
+          responseAdapterCache: ResponseAdapterCache
         ) : ResponseAdapter<TestQuery.Data.Luke.FriendsConnection.Edges.Node> {
-          val stringAdapter: ResponseAdapter<String> = stringResponseAdapter
+          private val stringAdapter: ResponseAdapter<String> = stringResponseAdapter
 
           override fun fromResponse(reader: JsonReader):
               TestQuery.Data.Luke.FriendsConnection.Edges.Node {

@@ -22,9 +22,10 @@ import kotlin.collections.List
     "RemoveExplicitTypeArguments", "NestedLambdaShadowedImplicitParameter", "PropertyName",
     "RemoveRedundantQualifierName")
 class GetPage_ResponseAdapter(
-  customScalarAdapters: ResponseAdapterCache
+  responseAdapterCache: ResponseAdapterCache
 ) : ResponseAdapter<GetPage.Data> {
-  val collectionAdapter: ResponseAdapter<GetPage.Data.Collection> = Collection(customScalarAdapters)
+  private val collectionAdapter: ResponseAdapter<GetPage.Data.Collection> =
+      Collection(responseAdapterCache)
 
   override fun fromResponse(reader: JsonReader): GetPage.Data {
     var collection: GetPage.Data.Collection? = null
@@ -65,13 +66,13 @@ class GetPage_ResponseAdapter(
   }
 
   class Collection(
-    customScalarAdapters: ResponseAdapterCache
+    responseAdapterCache: ResponseAdapterCache
   ) : ResponseAdapter<GetPage.Data.Collection> {
     val ParticularCollectionCollectionAdapter: ParticularCollectionCollection =
-        com.example.test_inline.adapter.GetPage_ResponseAdapter.Collection.ParticularCollectionCollection(customScalarAdapters)
+        com.example.test_inline.adapter.GetPage_ResponseAdapter.Collection.ParticularCollectionCollection(responseAdapterCache)
 
     val OtherCollectionAdapter: OtherCollection =
-        com.example.test_inline.adapter.GetPage_ResponseAdapter.Collection.OtherCollection(customScalarAdapters)
+        com.example.test_inline.adapter.GetPage_ResponseAdapter.Collection.OtherCollection(responseAdapterCache)
 
     override fun fromResponse(reader: JsonReader): GetPage.Data.Collection {
       reader.beginObject()
@@ -93,13 +94,13 @@ class GetPage_ResponseAdapter(
     }
 
     class ParticularCollectionCollection(
-      customScalarAdapters: ResponseAdapterCache
+      responseAdapterCache: ResponseAdapterCache
     ) {
-      val stringAdapter: ResponseAdapter<String> = stringResponseAdapter
+      private val stringAdapter: ResponseAdapter<String> = stringResponseAdapter
 
-      val listOfItemsAdapter:
+      private val listOfItemsAdapter:
           ResponseAdapter<List<GetPage.Data.Collection.ParticularCollectionCollection.Items>> =
-          ListResponseAdapter(Items(customScalarAdapters))
+          ListResponseAdapter(Items(responseAdapterCache))
 
       fun fromResponse(reader: JsonReader, __typename: String?):
           GetPage.Data.Collection.ParticularCollectionCollection {
@@ -146,13 +147,13 @@ class GetPage_ResponseAdapter(
       }
 
       class Items(
-        customScalarAdapters: ResponseAdapterCache
+        responseAdapterCache: ResponseAdapterCache
       ) : ResponseAdapter<GetPage.Data.Collection.ParticularCollectionCollection.Items> {
         val ParticularItemItemsAdapter: ParticularItemItems =
-            com.example.test_inline.adapter.GetPage_ResponseAdapter.Collection.ParticularCollectionCollection.Items.ParticularItemItems(customScalarAdapters)
+            com.example.test_inline.adapter.GetPage_ResponseAdapter.Collection.ParticularCollectionCollection.Items.ParticularItemItems(responseAdapterCache)
 
         val OtherItemsAdapter: OtherItems =
-            com.example.test_inline.adapter.GetPage_ResponseAdapter.Collection.ParticularCollectionCollection.Items.OtherItems(customScalarAdapters)
+            com.example.test_inline.adapter.GetPage_ResponseAdapter.Collection.ParticularCollectionCollection.Items.OtherItems(responseAdapterCache)
 
         override fun fromResponse(reader: JsonReader):
             GetPage.Data.Collection.ParticularCollectionCollection.Items {
@@ -176,9 +177,9 @@ class GetPage_ResponseAdapter(
         }
 
         class ParticularItemItems(
-          customScalarAdapters: ResponseAdapterCache
+          responseAdapterCache: ResponseAdapterCache
         ) {
-          val stringAdapter: ResponseAdapter<String> = stringResponseAdapter
+          private val stringAdapter: ResponseAdapter<String> = stringResponseAdapter
 
           fun fromResponse(reader: JsonReader, __typename: String?):
               GetPage.Data.Collection.ParticularCollectionCollection.Items.ParticularItemItems {
@@ -230,9 +231,9 @@ class GetPage_ResponseAdapter(
         }
 
         class OtherItems(
-          customScalarAdapters: ResponseAdapterCache
+          responseAdapterCache: ResponseAdapterCache
         ) {
-          val stringAdapter: ResponseAdapter<String> = stringResponseAdapter
+          private val stringAdapter: ResponseAdapter<String> = stringResponseAdapter
 
           fun fromResponse(reader: JsonReader, __typename: String?):
               GetPage.Data.Collection.ParticularCollectionCollection.Items.OtherItems {
@@ -277,12 +278,13 @@ class GetPage_ResponseAdapter(
     }
 
     class OtherCollection(
-      customScalarAdapters: ResponseAdapterCache
+      responseAdapterCache: ResponseAdapterCache
     ) {
-      val stringAdapter: ResponseAdapter<String> = stringResponseAdapter
+      private val stringAdapter: ResponseAdapter<String> = stringResponseAdapter
 
-      val listOfItemsAdapter: ResponseAdapter<List<GetPage.Data.Collection.OtherCollection.Items>> =
-          ListResponseAdapter(Items(customScalarAdapters))
+      private val listOfItemsAdapter:
+          ResponseAdapter<List<GetPage.Data.Collection.OtherCollection.Items>> =
+          ListResponseAdapter(Items(responseAdapterCache))
 
       fun fromResponse(reader: JsonReader, __typename: String?):
           GetPage.Data.Collection.OtherCollection {
@@ -327,9 +329,9 @@ class GetPage_ResponseAdapter(
       }
 
       class Items(
-        customScalarAdapters: ResponseAdapterCache
+        responseAdapterCache: ResponseAdapterCache
       ) : ResponseAdapter<GetPage.Data.Collection.OtherCollection.Items> {
-        val stringAdapter: ResponseAdapter<String> = stringResponseAdapter
+        private val stringAdapter: ResponseAdapter<String> = stringResponseAdapter
 
         override fun fromResponse(reader: JsonReader):
             GetPage.Data.Collection.OtherCollection.Items {

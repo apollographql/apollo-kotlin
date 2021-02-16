@@ -26,10 +26,10 @@ import kotlin.collections.List
     "RemoveExplicitTypeArguments", "NestedLambdaShadowedImplicitParameter", "PropertyName",
     "RemoveRedundantQualifierName")
 class TestQuery_ResponseAdapter(
-  customScalarAdapters: ResponseAdapterCache
+  responseAdapterCache: ResponseAdapterCache
 ) : ResponseAdapter<TestQuery.Data> {
-  val nullableHeroAdapter: ResponseAdapter<TestQuery.Data.Hero?> =
-      NullableResponseAdapter(Hero(customScalarAdapters))
+  private val nullableHeroAdapter: ResponseAdapter<TestQuery.Data.Hero?> =
+      NullableResponseAdapter(Hero(responseAdapterCache))
 
   override fun fromResponse(reader: JsonReader): TestQuery.Data {
     var hero: TestQuery.Data.Hero? = null
@@ -68,24 +68,24 @@ class TestQuery_ResponseAdapter(
   }
 
   class Hero(
-    customScalarAdapters: ResponseAdapterCache
+    responseAdapterCache: ResponseAdapterCache
   ) : ResponseAdapter<TestQuery.Data.Hero> {
-    val stringAdapter: ResponseAdapter<String> = stringResponseAdapter
+    private val stringAdapter: ResponseAdapter<String> = stringResponseAdapter
 
-    val dateAdapter: ResponseAdapter<Date> =
-        customScalarAdapters.responseAdapterFor<Date>(CustomScalars.Date)
+    private val dateAdapter: ResponseAdapter<Date> =
+        responseAdapterCache.responseAdapterFor<Date>(CustomScalars.Date)
 
-    val listOfDateAdapter: ResponseAdapter<List<Date>> =
-        ListResponseAdapter(customScalarAdapters.responseAdapterFor<Date>(CustomScalars.Date))
+    private val listOfDateAdapter: ResponseAdapter<List<Date>> =
+        ListResponseAdapter(responseAdapterCache.responseAdapterFor<Date>(CustomScalars.Date))
 
-    val unsupportedTypeAdapter: ResponseAdapter<Any> =
-        customScalarAdapters.responseAdapterFor<Any>(CustomScalars.UnsupportedType)
+    private val unsupportedTypeAdapter: ResponseAdapter<Any> =
+        responseAdapterCache.responseAdapterFor<Any>(CustomScalars.UnsupportedType)
 
-    val uRLAdapter: ResponseAdapter<java.lang.String> =
-        customScalarAdapters.responseAdapterFor<java.lang.String>(CustomScalars.URL)
+    private val uRLAdapter: ResponseAdapter<java.lang.String> =
+        responseAdapterCache.responseAdapterFor<java.lang.String>(CustomScalars.URL)
 
-    val listOfURLAdapter: ResponseAdapter<List<java.lang.String>> =
-        ListResponseAdapter(customScalarAdapters.responseAdapterFor<java.lang.String>(CustomScalars.URL))
+    private val listOfURLAdapter: ResponseAdapter<List<java.lang.String>> =
+        ListResponseAdapter(responseAdapterCache.responseAdapterFor<java.lang.String>(CustomScalars.URL))
 
     override fun fromResponse(reader: JsonReader): TestQuery.Data.Hero {
       var name: String? = null

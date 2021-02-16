@@ -24,10 +24,10 @@ import kotlin.collections.List
     "RemoveExplicitTypeArguments", "NestedLambdaShadowedImplicitParameter", "PropertyName",
     "RemoveRedundantQualifierName")
 class TestQuery_ResponseAdapter(
-  customScalarAdapters: ResponseAdapterCache
+  responseAdapterCache: ResponseAdapterCache
 ) : ResponseAdapter<TestQuery.Data> {
-  val nonOptionalHeroAdapter: ResponseAdapter<TestQuery.Data.NonOptionalHero> =
-      NonOptionalHero(customScalarAdapters)
+  private val nonOptionalHeroAdapter: ResponseAdapter<TestQuery.Data.NonOptionalHero> =
+      NonOptionalHero(responseAdapterCache)
 
   override fun fromResponse(reader: JsonReader): TestQuery.Data {
     var nonOptionalHero: TestQuery.Data.NonOptionalHero? = null
@@ -69,13 +69,13 @@ class TestQuery_ResponseAdapter(
   }
 
   class NonOptionalHero(
-    customScalarAdapters: ResponseAdapterCache
+    responseAdapterCache: ResponseAdapterCache
   ) : ResponseAdapter<TestQuery.Data.NonOptionalHero> {
     val HumanNonOptionalHeroAdapter: HumanNonOptionalHero =
-        com.example.inline_fragment_for_non_optional_field.adapter.TestQuery_ResponseAdapter.NonOptionalHero.HumanNonOptionalHero(customScalarAdapters)
+        com.example.inline_fragment_for_non_optional_field.adapter.TestQuery_ResponseAdapter.NonOptionalHero.HumanNonOptionalHero(responseAdapterCache)
 
     val OtherNonOptionalHeroAdapter: OtherNonOptionalHero =
-        com.example.inline_fragment_for_non_optional_field.adapter.TestQuery_ResponseAdapter.NonOptionalHero.OtherNonOptionalHero(customScalarAdapters)
+        com.example.inline_fragment_for_non_optional_field.adapter.TestQuery_ResponseAdapter.NonOptionalHero.OtherNonOptionalHero(responseAdapterCache)
 
     override fun fromResponse(reader: JsonReader): TestQuery.Data.NonOptionalHero {
       reader.beginObject()
@@ -97,11 +97,11 @@ class TestQuery_ResponseAdapter(
     }
 
     class HumanNonOptionalHero(
-      customScalarAdapters: ResponseAdapterCache
+      responseAdapterCache: ResponseAdapterCache
     ) {
-      val stringAdapter: ResponseAdapter<String> = stringResponseAdapter
+      private val stringAdapter: ResponseAdapter<String> = stringResponseAdapter
 
-      val nullableFloatAdapter: ResponseAdapter<Double?> =
+      private val nullableFloatAdapter: ResponseAdapter<Double?> =
           NullableResponseAdapter(doubleResponseAdapter)
 
       fun fromResponse(reader: JsonReader, __typename: String?):
@@ -154,9 +154,9 @@ class TestQuery_ResponseAdapter(
     }
 
     class OtherNonOptionalHero(
-      customScalarAdapters: ResponseAdapterCache
+      responseAdapterCache: ResponseAdapterCache
     ) {
-      val stringAdapter: ResponseAdapter<String> = stringResponseAdapter
+      private val stringAdapter: ResponseAdapter<String> = stringResponseAdapter
 
       fun fromResponse(reader: JsonReader, __typename: String?):
           TestQuery.Data.NonOptionalHero.OtherNonOptionalHero {
