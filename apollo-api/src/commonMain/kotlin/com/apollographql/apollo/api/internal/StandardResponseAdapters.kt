@@ -2,6 +2,8 @@ package com.apollographql.apollo.api.internal
 
 import com.apollographql.apollo.api.internal.json.JsonReader
 import com.apollographql.apollo.api.internal.json.JsonWriter
+import com.apollographql.apollo.api.internal.json.Utils
+import com.apollographql.apollo.api.internal.json.Utils.readRecursively
 
 class ListResponseAdapter<T>(private val wrappedAdapter: ResponseAdapter<T>): ResponseAdapter<List<T>> {
   override fun fromResponse(reader: JsonReader): List<T> {
@@ -42,7 +44,7 @@ class NullableResponseAdapter<T:Any>(private val wrappedAdapter: ResponseAdapter
   }
 }
 
-object stringResponseAdapter: ResponseAdapter<String> {
+object StringResponseAdapter: ResponseAdapter<String> {
   override fun fromResponse(reader: JsonReader): String {
     return reader.nextString()!!
   }
@@ -52,7 +54,7 @@ object stringResponseAdapter: ResponseAdapter<String> {
   }
 }
 
-object intResponseAdapter: ResponseAdapter<Int> {
+object IntResponseAdapter: ResponseAdapter<Int> {
   override fun fromResponse(reader: JsonReader): Int {
     return reader.nextInt()
   }
@@ -62,7 +64,7 @@ object intResponseAdapter: ResponseAdapter<Int> {
   }
 }
 
-object doubleResponseAdapter: ResponseAdapter<Double> {
+object DoubleResponseAdapter: ResponseAdapter<Double> {
   override fun fromResponse(reader: JsonReader): Double {
     return reader.nextDouble()
   }
@@ -72,7 +74,7 @@ object doubleResponseAdapter: ResponseAdapter<Double> {
   }
 }
 
-object booleanResponseAdapter: ResponseAdapter<Boolean> {
+object BooleanResponseAdapter: ResponseAdapter<Boolean> {
   override fun fromResponse(reader: JsonReader): Boolean {
     return reader.nextBoolean()
   }
@@ -82,12 +84,12 @@ object booleanResponseAdapter: ResponseAdapter<Boolean> {
   }
 }
 
-object anyResponseAdapter: ResponseAdapter<Boolean> {
-  override fun fromResponse(reader: JsonReader): Boolean {
-    return reader.nextBoolean()
+object AnyResponseAdapter: ResponseAdapter<Any?> {
+  override fun fromResponse(reader: JsonReader): Any? {
+    return reader.readRecursively()
   }
 
-  override fun toResponse(writer: JsonWriter, value: Boolean) {
-    writer.value(value)
+  override fun toResponse(writer: JsonWriter, value: Any?) {
+    Utils.writeToJson(value, writer)
   }
 }

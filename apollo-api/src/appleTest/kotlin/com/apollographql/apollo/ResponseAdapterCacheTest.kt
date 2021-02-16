@@ -1,20 +1,9 @@
 package com.apollographql.apollo
 
 import com.apollographql.apollo.api.ResponseAdapterCache
-import com.apollographql.apollo.api.internal.intResponseAdapter
+import com.apollographql.apollo.api.internal.IntResponseAdapter
 import com.apollographql.apollo.api.internal.json.BufferedSourceJsonReader
-import kotlinx.cinterop.StableRef
-import kotlinx.cinterop.asStableRef
-import kotlinx.cinterop.staticCFunction
 import okio.Buffer
-import platform.darwin.DISPATCH_QUEUE_SERIAL
-import platform.darwin.dispatch_async
-import platform.darwin.dispatch_async_f
-import platform.darwin.dispatch_queue_create
-import platform.darwin.dispatch_queue_t
-import platform.darwin.dispatch_sync
-import platform.darwin.dispatch_sync_f
-import platform.posix.sleep
 import kotlin.native.concurrent.AtomicInt
 import kotlin.native.concurrent.ThreadLocal
 import kotlin.native.concurrent.TransferMode
@@ -56,7 +45,7 @@ class ResponseAdapterCacheTest {
 }
 
 private fun readInt(cache: ResponseAdapterCache): Int {
-  val adapter = cache.getOperationAdapter("TestQuery") { intResponseAdapter }
+  val adapter = cache.getOperationAdapter("TestQuery") { IntResponseAdapter }
   val buffer = Buffer()
   buffer.writeUtf8("42")
   val jsonReader = BufferedSourceJsonReader(buffer)

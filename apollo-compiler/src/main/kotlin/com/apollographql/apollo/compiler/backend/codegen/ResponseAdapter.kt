@@ -149,11 +149,11 @@ private fun adapterInitializer(type: CodeGenerationAst.FieldType): CodeBlock {
   }
   return when (type) {
     is CodeGenerationAst.FieldType.Array -> CodeBlock.of("%T(%L)", ListResponseAdapter::class.asClassName(), adapterInitializer(type.rawType))
-    is CodeGenerationAst.FieldType.Scalar.Boolean -> CodeBlock.of("%M", MemberName("com.apollographql.apollo.api.internal", "booleanResponseAdapter"))
-    is CodeGenerationAst.FieldType.Scalar.ID -> CodeBlock.of("%M", MemberName("com.apollographql.apollo.api.internal", "stringResponseAdapter"))
-    is CodeGenerationAst.FieldType.Scalar.String -> CodeBlock.of("%M", MemberName("com.apollographql.apollo.api.internal", "stringResponseAdapter"))
-    is CodeGenerationAst.FieldType.Scalar.Int -> CodeBlock.of("%M", MemberName("com.apollographql.apollo.api.internal", "intResponseAdapter"))
-    is CodeGenerationAst.FieldType.Scalar.Float -> CodeBlock.of("%M", MemberName("com.apollographql.apollo.api.internal", "doubleResponseAdapter"))
+    is CodeGenerationAst.FieldType.Scalar.Boolean -> CodeBlock.of("%M", MemberName("com.apollographql.apollo.api.internal", "BooleanResponseAdapter"))
+    is CodeGenerationAst.FieldType.Scalar.ID -> CodeBlock.of("%M", MemberName("com.apollographql.apollo.api.internal", "StringResponseAdapter"))
+    is CodeGenerationAst.FieldType.Scalar.String -> CodeBlock.of("%M", MemberName("com.apollographql.apollo.api.internal", "StringResponseAdapter"))
+    is CodeGenerationAst.FieldType.Scalar.Int -> CodeBlock.of("%M", MemberName("com.apollographql.apollo.api.internal", "IntResponseAdapter"))
+    is CodeGenerationAst.FieldType.Scalar.Float -> CodeBlock.of("%M", MemberName("com.apollographql.apollo.api.internal", "DoubleResponseAdapter"))
     is CodeGenerationAst.FieldType.Scalar.Enum -> CodeBlock.of("%T", type.typeRef.asEnumAdapterTypeName().copy(nullable = false))
     is CodeGenerationAst.FieldType.Object -> CodeBlock.of("%T(responseAdapterCache)", type.typeRef.asAdapterTypeName().copy(nullable = false))
     is CodeGenerationAst.FieldType.Scalar.Custom -> CodeBlock.of(
