@@ -8,7 +8,9 @@ import com.apollographql.apollo.api.internal.json.Utils.writeToJson
 import kotlin.jvm.Synchronized
 
 /**
- * A wrapper around a Map of [CustomScalarAdapter] that allows to easily retrieve an adapter for the given [CustomScalar]
+ * A cache of [ResponseAdapter] so that they are only built once for each query/fragments
+ *
+ * @param customScalarAdapters a map from [CustomScalar] to the matching runtime [CustomScalarAdapter]
  */
 class ResponseAdapterCache(val customScalarAdapters: Map<CustomScalar, CustomScalarAdapter<*>>) {
 
