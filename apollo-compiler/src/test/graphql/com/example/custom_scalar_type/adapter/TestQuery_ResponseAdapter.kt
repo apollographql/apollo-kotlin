@@ -5,10 +5,14 @@
 //
 package com.example.custom_scalar_type.adapter
 
+import com.apollographql.apollo.api.ResponseAdapterCache
 import com.apollographql.apollo.api.ResponseField
+import com.apollographql.apollo.api.internal.ListResponseAdapter
+import com.apollographql.apollo.api.internal.NullableResponseAdapter
 import com.apollographql.apollo.api.internal.ResponseAdapter
-import com.apollographql.apollo.api.internal.ResponseReader
-import com.apollographql.apollo.api.internal.ResponseWriter
+import com.apollographql.apollo.api.internal.StringResponseAdapter
+import com.apollographql.apollo.api.internal.json.JsonReader
+import com.apollographql.apollo.api.internal.json.JsonWriter
 import com.example.custom_scalar_type.TestQuery
 import com.example.custom_scalar_type.type.CustomScalars
 import java.util.Date
@@ -21,144 +25,146 @@ import kotlin.collections.List
 @Suppress("NAME_SHADOWING", "UNUSED_ANONYMOUS_PARAMETER", "LocalVariableName",
     "RemoveExplicitTypeArguments", "NestedLambdaShadowedImplicitParameter", "PropertyName",
     "RemoveRedundantQualifierName")
-object TestQuery_ResponseAdapter : ResponseAdapter<TestQuery.Data> {
-  val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
-    ResponseField(
-      type = ResponseField.Type.Named.Object("Character"),
-      responseName = "hero",
-      fieldName = "hero",
-      arguments = emptyMap(),
-      conditions = emptyList(),
-      fieldSets = listOf(
-        ResponseField.FieldSet(null, Hero.RESPONSE_FIELDS)
-      ),
-    )
-  )
+class TestQuery_ResponseAdapter(
+  responseAdapterCache: ResponseAdapterCache
+) : ResponseAdapter<TestQuery.Data> {
+  private val nullableHeroAdapter: ResponseAdapter<TestQuery.Data.Hero?> =
+      NullableResponseAdapter(Hero(responseAdapterCache))
 
-  override fun fromResponse(reader: ResponseReader, __typename: String?): TestQuery.Data {
-    return reader.run {
-      var hero: TestQuery.Data.Hero? = null
+  override fun fromResponse(reader: JsonReader): TestQuery.Data {
+    var hero: TestQuery.Data.Hero? = null
+    reader.beginObject()
+    while(true) {
+      when (reader.selectName(RESPONSE_NAMES)) {
+        0 -> hero = nullableHeroAdapter.fromResponse(reader)
+        else -> break
+      }
+    }
+    reader.endObject()
+    return TestQuery.Data(
+      hero = hero
+    )
+  }
+
+  override fun toResponse(writer: JsonWriter, value: TestQuery.Data) {
+    writer.beginObject()
+    writer.name("hero")
+    nullableHeroAdapter.toResponse(writer, value.hero)
+    writer.endObject()
+  }
+
+  companion object {
+    val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
+      ResponseField(
+        type = ResponseField.Type.Named.Object("Character"),
+        fieldName = "hero",
+        fieldSets = listOf(
+          ResponseField.FieldSet(null, Hero.RESPONSE_FIELDS)
+        ),
+      )
+    )
+
+    val RESPONSE_NAMES: List<String> = RESPONSE_FIELDS.map { it.responseName }
+  }
+
+  class Hero(
+    responseAdapterCache: ResponseAdapterCache
+  ) : ResponseAdapter<TestQuery.Data.Hero> {
+    private val stringAdapter: ResponseAdapter<String> = StringResponseAdapter
+
+    private val dateAdapter: ResponseAdapter<Date> =
+        responseAdapterCache.responseAdapterFor<Date>(CustomScalars.Date)
+
+    private val listOfDateAdapter: ResponseAdapter<List<Date>> =
+        ListResponseAdapter(responseAdapterCache.responseAdapterFor<Date>(CustomScalars.Date))
+
+    private val unsupportedTypeAdapter: ResponseAdapter<Any> =
+        responseAdapterCache.responseAdapterFor<Any>(CustomScalars.UnsupportedType)
+
+    private val uRLAdapter: ResponseAdapter<java.lang.String> =
+        responseAdapterCache.responseAdapterFor<java.lang.String>(CustomScalars.URL)
+
+    private val listOfURLAdapter: ResponseAdapter<List<java.lang.String>> =
+        ListResponseAdapter(responseAdapterCache.responseAdapterFor<java.lang.String>(CustomScalars.URL))
+
+    override fun fromResponse(reader: JsonReader): TestQuery.Data.Hero {
+      var name: String? = null
+      var birthDate: Date? = null
+      var appearanceDates: List<Date>? = null
+      var fieldWithUnsupportedType: Any? = null
+      var profileLink: java.lang.String? = null
+      var links: List<java.lang.String>? = null
+      reader.beginObject()
       while(true) {
-        when (selectField(RESPONSE_FIELDS)) {
-          0 -> hero = readObject<TestQuery.Data.Hero>(RESPONSE_FIELDS[0]) { reader ->
-            Hero.fromResponse(reader)
-          }
+        when (reader.selectName(RESPONSE_NAMES)) {
+          0 -> name = stringAdapter.fromResponse(reader)
+          1 -> birthDate = dateAdapter.fromResponse(reader)
+          2 -> appearanceDates = listOfDateAdapter.fromResponse(reader)
+          3 -> fieldWithUnsupportedType = unsupportedTypeAdapter.fromResponse(reader)
+          4 -> profileLink = uRLAdapter.fromResponse(reader)
+          5 -> links = listOfURLAdapter.fromResponse(reader)
           else -> break
         }
       }
-      TestQuery.Data(
-        hero = hero
+      reader.endObject()
+      return TestQuery.Data.Hero(
+        name = name!!,
+        birthDate = birthDate!!,
+        appearanceDates = appearanceDates!!,
+        fieldWithUnsupportedType = fieldWithUnsupportedType!!,
+        profileLink = profileLink!!,
+        links = links!!
       )
     }
-  }
 
-  override fun toResponse(writer: ResponseWriter, value: TestQuery.Data) {
-    if(value.hero == null) {
-      writer.writeObject(RESPONSE_FIELDS[0], null)
-    } else {
-      writer.writeObject(RESPONSE_FIELDS[0]) { writer ->
-        Hero.toResponse(writer, value.hero)
-      }
+    override fun toResponse(writer: JsonWriter, value: TestQuery.Data.Hero) {
+      writer.beginObject()
+      writer.name("name")
+      stringAdapter.toResponse(writer, value.name)
+      writer.name("birthDate")
+      dateAdapter.toResponse(writer, value.birthDate)
+      writer.name("appearanceDates")
+      listOfDateAdapter.toResponse(writer, value.appearanceDates)
+      writer.name("fieldWithUnsupportedType")
+      unsupportedTypeAdapter.toResponse(writer, value.fieldWithUnsupportedType)
+      writer.name("profileLink")
+      uRLAdapter.toResponse(writer, value.profileLink)
+      writer.name("links")
+      listOfURLAdapter.toResponse(writer, value.links)
+      writer.endObject()
     }
-  }
 
-  object Hero : ResponseAdapter<TestQuery.Data.Hero> {
-    val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
-      ResponseField(
-        type = ResponseField.Type.NotNull(ResponseField.Type.Named.Other("String")),
-        responseName = "name",
-        fieldName = "name",
-        arguments = emptyMap(),
-        conditions = emptyList(),
-        fieldSets = emptyList(),
-      ),
-      ResponseField(
-        type = ResponseField.Type.NotNull(ResponseField.Type.Named.Other("Date")),
-        responseName = "birthDate",
-        fieldName = "birthDate",
-        arguments = emptyMap(),
-        conditions = emptyList(),
-        fieldSets = emptyList(),
-      ),
-      ResponseField(
-        type =
-            ResponseField.Type.NotNull(ResponseField.Type.List(ResponseField.Type.NotNull(ResponseField.Type.Named.Other("Date")))),
-        responseName = "appearanceDates",
-        fieldName = "appearanceDates",
-        arguments = emptyMap(),
-        conditions = emptyList(),
-        fieldSets = emptyList(),
-      ),
-      ResponseField(
-        type = ResponseField.Type.NotNull(ResponseField.Type.Named.Other("UnsupportedType")),
-        responseName = "fieldWithUnsupportedType",
-        fieldName = "fieldWithUnsupportedType",
-        arguments = emptyMap(),
-        conditions = emptyList(),
-        fieldSets = emptyList(),
-      ),
-      ResponseField(
-        type = ResponseField.Type.NotNull(ResponseField.Type.Named.Other("URL")),
-        responseName = "profileLink",
-        fieldName = "profileLink",
-        arguments = emptyMap(),
-        conditions = emptyList(),
-        fieldSets = emptyList(),
-      ),
-      ResponseField(
-        type =
-            ResponseField.Type.NotNull(ResponseField.Type.List(ResponseField.Type.NotNull(ResponseField.Type.Named.Other("URL")))),
-        responseName = "links",
-        fieldName = "links",
-        arguments = emptyMap(),
-        conditions = emptyList(),
-        fieldSets = emptyList(),
-      )
-    )
-
-    override fun fromResponse(reader: ResponseReader, __typename: String?): TestQuery.Data.Hero {
-      return reader.run {
-        var name: String? = null
-        var birthDate: Date? = null
-        var appearanceDates: List<Date>? = null
-        var fieldWithUnsupportedType: Any? = null
-        var profileLink: java.lang.String? = null
-        var links: List<java.lang.String>? = null
-        while(true) {
-          when (selectField(RESPONSE_FIELDS)) {
-            0 -> name = readString(RESPONSE_FIELDS[0])
-            1 -> birthDate = readCustomScalar<Date>(RESPONSE_FIELDS[1])
-            2 -> appearanceDates = readList<Date>(RESPONSE_FIELDS[2]) { reader ->
-              reader.readCustomScalar<Date>(CustomScalars.Date)
-            }?.map { it!! }
-            3 -> fieldWithUnsupportedType = readCustomScalar<Any>(RESPONSE_FIELDS[3])
-            4 -> profileLink = readCustomScalar<java.lang.String>(RESPONSE_FIELDS[4])
-            5 -> links = readList<java.lang.String>(RESPONSE_FIELDS[5]) { reader ->
-              reader.readCustomScalar<java.lang.String>(CustomScalars.URL)
-            }?.map { it!! }
-            else -> break
-          }
-        }
-        TestQuery.Data.Hero(
-          name = name!!,
-          birthDate = birthDate!!,
-          appearanceDates = appearanceDates!!,
-          fieldWithUnsupportedType = fieldWithUnsupportedType!!,
-          profileLink = profileLink!!,
-          links = links!!
+    companion object {
+      val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
+        ResponseField(
+          type = ResponseField.Type.NotNull(ResponseField.Type.Named.Other("String")),
+          fieldName = "name",
+        ),
+        ResponseField(
+          type = ResponseField.Type.NotNull(ResponseField.Type.Named.Other("Date")),
+          fieldName = "birthDate",
+        ),
+        ResponseField(
+          type =
+              ResponseField.Type.NotNull(ResponseField.Type.List(ResponseField.Type.NotNull(ResponseField.Type.Named.Other("Date")))),
+          fieldName = "appearanceDates",
+        ),
+        ResponseField(
+          type = ResponseField.Type.NotNull(ResponseField.Type.Named.Other("UnsupportedType")),
+          fieldName = "fieldWithUnsupportedType",
+        ),
+        ResponseField(
+          type = ResponseField.Type.NotNull(ResponseField.Type.Named.Other("URL")),
+          fieldName = "profileLink",
+        ),
+        ResponseField(
+          type =
+              ResponseField.Type.NotNull(ResponseField.Type.List(ResponseField.Type.NotNull(ResponseField.Type.Named.Other("URL")))),
+          fieldName = "links",
         )
-      }
-    }
+      )
 
-    override fun toResponse(writer: ResponseWriter, value: TestQuery.Data.Hero) {
-      writer.writeString(RESPONSE_FIELDS[0], value.name)
-      writer.writeCustom(RESPONSE_FIELDS[1], value.birthDate)
-      writer.writeList(RESPONSE_FIELDS[2], value.appearanceDates) { value, listItemWriter ->
-        listItemWriter.writeCustom(CustomScalars.Date, value)}
-      writer.writeCustom(RESPONSE_FIELDS[3], value.fieldWithUnsupportedType)
-      writer.writeCustom(RESPONSE_FIELDS[4], value.profileLink)
-      writer.writeList(RESPONSE_FIELDS[5], value.links) { value, listItemWriter ->
-        listItemWriter.writeCustom(CustomScalars.URL, value)}
+      val RESPONSE_NAMES: List<String> = RESPONSE_FIELDS.map { it.responseName }
     }
   }
 }

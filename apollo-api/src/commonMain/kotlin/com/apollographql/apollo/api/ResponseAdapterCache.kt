@@ -1,11 +1,23 @@
 package com.apollographql.apollo.api
 
+import com.apollographql.apollo.api.internal.ResponseAdapter
+import com.apollographql.apollo.api.internal.json.JsonReader
+import com.apollographql.apollo.api.internal.json.JsonWriter
+import com.apollographql.apollo.api.internal.json.Utils.readRecursively
+import com.apollographql.apollo.api.internal.json.Utils.writeToJson
+import kotlin.jvm.Synchronized
+
 /**
- * A wrapper around a Map of [CustomScalarAdapter] that allows to easily retrieve an adapter for the given [CustomScalar]
+ * A cache of [ResponseAdapter] so that they are only built once for each query/fragments
+ *
+ * @param customScalarAdapters a map from [CustomScalar] to the matching runtime [CustomScalarAdapter]
  */
-class CustomScalarAdapters(val customScalarAdapters: Map<CustomScalar, CustomScalarAdapter<*>>) {
+class ResponseAdapterCache(val customScalarAdapters: Map<CustomScalar, CustomScalarAdapter<*>>) {
 
   private val adapterByGraphQLName = customScalarAdapters.mapKeys { it.key.graphqlName }
+
+  private val adapterByQueryName = ThreadSafeMap<String, ResponseAdapter<*>>()
+  private val adapterByFragmentName = ThreadSafeMap<String, ResponseAdapter<*>>()
 
   @Suppress("UNCHECKED_CAST")
   fun <T : Any> adapterFor(customScalar: CustomScalar): CustomScalarAdapter<T> {
@@ -17,7 +29,9 @@ class CustomScalarAdapters(val customScalarAdapters: Map<CustomScalar, CustomSca
       /**
        * If none is found, provide a default adapter based on the implementation class name
        * This saves the user the hassle of registering a scalar adapter for mapping to widespread such as Long, Map, etc...
-       * The ScalarType must still be declared in the Gradle plugin configuration.
+       * The ScalarType must still be declared in the Gradle plugin configuration (except for Any that will fallback here all the time)
+       *
+       * TODO: we could determine during codegen if we're going to fallback to Any and remove this hook
        */
       customScalarAdapter = adapterByClassName[customScalar.className]
     }
@@ -26,13 +40,44 @@ class CustomScalarAdapters(val customScalarAdapters: Map<CustomScalar, CustomSca
     } as CustomScalarAdapter<T>
   }
 
+
+  fun <T : Any> responseAdapterFor(customScalar: CustomScalar): ResponseAdapter<T> {
+    return CustomResponseAdapter(adapterFor(customScalar))
+  }
+
   @Suppress("UNCHECKED_CAST")
-  fun <T : Any> adapterFor(graphqlName: String): CustomScalarAdapter<T> {
-    return adapterByGraphQLName[graphqlName] as CustomScalarAdapter<T>
+  fun <D> getOperationAdapter(operationName: String, defaultValue: () -> ResponseAdapter<D>): ResponseAdapter<D> {
+    return adapterByQueryName.getOrPut(operationName, defaultValue) as ResponseAdapter<D>
+  }
+
+  @Suppress("UNCHECKED_CAST")
+  fun <D> getFragmentAdapter(fragmentName: String, defaultValue: () -> ResponseAdapter<D>): ResponseAdapter<D> {
+    return adapterByFragmentName.getOrPut(fragmentName, defaultValue) as ResponseAdapter<D>
+  }
+
+
+  private class CustomResponseAdapter<T: Any>(private val wrappedAdapter: CustomScalarAdapter<T>) : ResponseAdapter<T> {
+    override fun fromResponse(reader: JsonReader): T {
+      return wrappedAdapter.decode(JsonElement.fromRawValue(reader.readRecursively()))
+    }
+
+    override fun toResponse(writer: JsonWriter, value: T) {
+      writeToJson(wrappedAdapter.encode(value).toRawValue(), writer)
+    }
+  }
+
+  /**
+   * releases resources associated with this [ResponseAdapterCache].
+   *
+   * Use it on native to release the [kotlinx.cinterop.StableRef]
+   */
+  fun dispose() {
+    adapterByFragmentName.dispose()
+    adapterByQueryName.dispose()
   }
 
   companion object {
-    val DEFAULT = CustomScalarAdapters(emptyMap())
+    val DEFAULT = ResponseAdapterCache(emptyMap())
 
     private val adapterByClassName = mapOf(
         "java.lang.String" to BuiltinCustomScalarAdapters.STRING_ADAPTER,

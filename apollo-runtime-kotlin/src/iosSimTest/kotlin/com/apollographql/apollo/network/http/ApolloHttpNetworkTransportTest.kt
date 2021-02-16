@@ -4,7 +4,7 @@ import com.apollographql.apollo.exception.ApolloHttpException
 import com.apollographql.apollo.exception.ApolloNetworkException
 import com.apollographql.apollo.api.ApolloExperimental
 import com.apollographql.apollo.api.ExecutionContext
-import com.apollographql.apollo.api.CustomScalarAdapters
+import com.apollographql.apollo.api.ResponseAdapterCache
 import com.apollographql.apollo.api.composeRequestBody
 import com.apollographql.apollo.ApolloQueryRequest
 import com.apollographql.apollo.ApolloRequest
@@ -45,7 +45,7 @@ class ApolloHttpNetworkTransportTest {
 
     try {
       runBlocking {
-        networkTransport.execute(request = mockGraphQLRequest(), customScalarAdapters = CustomScalarAdapters.DEFAULT, executionContext = ExecutionContext.Empty).single()
+        networkTransport.execute(request = mockGraphQLRequest(), responseAdapterCache = ResponseAdapterCache.DEFAULT, executionContext = ExecutionContext.Empty).single()
       }
     } catch (e: ApolloNetworkException) {
       // expected
@@ -73,7 +73,7 @@ class ApolloHttpNetworkTransportTest {
 
     try {
       runBlocking {
-        networkTransport.execute(request = mockGraphQLRequest(), customScalarAdapters = CustomScalarAdapters.DEFAULT, executionContext = ExecutionContext.Empty).single()
+        networkTransport.execute(request = mockGraphQLRequest(), responseAdapterCache = ResponseAdapterCache.DEFAULT, executionContext = ExecutionContext.Empty).single()
       }
     } catch (e: ApolloHttpException) {
       assertEquals(404, e.statusCode)
@@ -92,7 +92,7 @@ class ApolloHttpNetworkTransportTest {
     }
 
     val response = runBlocking {
-      networkTransport.execute(request = mockGraphQLRequest(), customScalarAdapters = CustomScalarAdapters.DEFAULT, executionContext = ExecutionContext.Empty).single()
+      networkTransport.execute(request = mockGraphQLRequest(), responseAdapterCache = ResponseAdapterCache.DEFAULT, executionContext = ExecutionContext.Empty).single()
     }
 
     assertEquals(MockQuery.Data, response.response.data)
@@ -114,7 +114,7 @@ class ApolloHttpNetworkTransportTest {
     }
 
     runBlocking {
-      networkTransport.execute(request = mockGraphQLRequest(), customScalarAdapters = CustomScalarAdapters.DEFAULT, executionContext = ExecutionContext.Empty).single()
+      networkTransport.execute(request = mockGraphQLRequest(), responseAdapterCache = ResponseAdapterCache.DEFAULT, executionContext = ExecutionContext.Empty).single()
     }
   }
 

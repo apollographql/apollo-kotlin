@@ -1,10 +1,9 @@
 package com.apollographql.apollo.internal.subscription
 
-import com.apollographql.apollo.api.CustomScalarAdapters
+import com.apollographql.apollo.api.ResponseAdapterCache
 import com.apollographql.apollo.api.Operation
 import com.apollographql.apollo.api.ResponseField
 import com.apollographql.apollo.api.Subscription
-import com.apollographql.apollo.cache.normalized.ApolloStore
 import com.apollographql.apollo.cache.normalized.CacheKeyResolver
 import com.apollographql.apollo.subscription.OperationClientMessage
 import com.apollographql.apollo.subscription.OperationServerMessage
@@ -30,7 +29,7 @@ class SubscriptionManagerTest {
 
   init {
     subscriptionManager = RealSubscriptionManager(
-        CustomScalarAdapters(emptyMap()),
+        ResponseAdapterCache(emptyMap()),
         subscriptionTransportFactory,
         SubscriptionConnectionParamsProvider.Const(SubscriptionConnectionParams()),
         MockExecutor(),
@@ -356,7 +355,7 @@ class SubscriptionManagerTest {
 
     override fun variables() = Operation.EMPTY_VARIABLES
 
-    override fun adapter() = throw UnsupportedOperationException()
+    override fun adapter(responseAdapterCache: ResponseAdapterCache) = throw UnsupportedOperationException()
 
     override fun name(): String = "SomeSubscription"
 

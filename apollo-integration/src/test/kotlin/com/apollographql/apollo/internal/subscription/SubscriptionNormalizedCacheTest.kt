@@ -38,7 +38,7 @@ class SubscriptionNormalizedCacheTest {
     networkOperationData = mapOf(
         "data" to mapOf(
             "commentAdded" to mapOf(
-                "id" to BigDecimal(100),
+                "id" to 100,
                 "content" to "Network comment content",
                 "postedBy" to mapOf(
                     "login" to "user@user.com"

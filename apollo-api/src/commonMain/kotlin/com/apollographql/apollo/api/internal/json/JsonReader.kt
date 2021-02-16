@@ -146,6 +146,8 @@ interface JsonReader : Closeable {
   @Throws(IOException::class)
   fun skipValue()
 
+  fun selectName(names: List<String>): Int
+
   /**
    * A structure, name, or value type in a JSON-encoded string.
    */

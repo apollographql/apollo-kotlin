@@ -1,6 +1,6 @@
 package com.apollographql.apollo.subscription
 
-import com.apollographql.apollo.api.CustomScalarAdapters
+import com.apollographql.apollo.api.ResponseAdapterCache
 import com.google.common.truth.Truth.assertThat
 import okhttp3.Protocol
 import okhttp3.Request
@@ -10,7 +10,6 @@ import okhttp3.WebSocketListener
 import okio.ByteString
 import org.junit.Before
 import org.junit.Test
-import java.math.BigDecimal
 
 class WebSocketSubscriptionTransportMessageTest {
   private lateinit var webSocketFactory: MockWebSocketFactory
@@ -42,7 +41,7 @@ class WebSocketSubscriptionTransportMessageTest {
         OperationClientMessage.Start(
             subscriptionId = "subscriptionId",
             subscription = MockSubscription(),
-            customScalarAdapters = CustomScalarAdapters(emptyMap()),
+            responseAdapterCache = ResponseAdapterCache(emptyMap()),
             autoPersistSubscription = false,
             sendSubscriptionDocument = false)
     )
@@ -53,7 +52,7 @@ class WebSocketSubscriptionTransportMessageTest {
   @Test
   fun startSubscriptionAutoPersistSubscriptionEnabledSendDocumentEnabled() {
     subscriptionTransport.send(OperationClientMessage.Start("subscriptionId", MockSubscription(),
-        CustomScalarAdapters(emptyMap()), autoPersistSubscription = true, sendSubscriptionDocument = true))
+        ResponseAdapterCache(emptyMap()), autoPersistSubscription = true, sendSubscriptionDocument = true))
     val expected = """{"id":"subscriptionId","type":"start","payload":{"variables":{},"operationName":"SomeSubscription","query":"subscription{commentAdded{id  name}","extensions":{"persistedQuery":{"version":1,"sha256Hash":"someId"}}}}"""
     assertThat(webSocketFactory.webSocket.lastSentMessage).isEqualTo(expected)
   }
@@ -61,7 +60,7 @@ class WebSocketSubscriptionTransportMessageTest {
   @Test
   fun startSubscriptionAutoPersistSubscriptionEnabledSendDocumentDisabled() {
     subscriptionTransport.send(OperationClientMessage.Start("subscriptionId", MockSubscription(),
-        CustomScalarAdapters(emptyMap()), autoPersistSubscription = true, sendSubscriptionDocument = false))
+        ResponseAdapterCache(emptyMap()), autoPersistSubscription = true, sendSubscriptionDocument = false))
     val expected = """{"id":"subscriptionId","type":"start","payload":{"variables":{},"operationName":"SomeSubscription","extensions":{"persistedQuery":{"version":1,"sha256Hash":"someId"}}}}"""
     assertThat(webSocketFactory.webSocket.lastSentMessage).isEqualTo(expected)
   }
@@ -96,7 +95,7 @@ class WebSocketSubscriptionTransportMessageTest {
             "data" to mapOf(
                 "commentAdded" to mapOf(
                     "__typename" to "Comment",
-                    "id" to BigDecimal.valueOf(10),
+                    "id" to 10,
                     "content" to "test10"
                 )
             )

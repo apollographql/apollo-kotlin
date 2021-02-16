@@ -2,7 +2,7 @@ package com.apollographql.apollo.internal
 
 import com.apollographql.apollo.ApolloCall
 import com.apollographql.apollo.ApolloQueryWatcher
-import com.apollographql.apollo.api.CustomScalarAdapters
+import com.apollographql.apollo.api.ResponseAdapterCache
 import com.apollographql.apollo.api.Operation
 import com.apollographql.apollo.api.Response
 import com.apollographql.apollo.api.internal.ApolloLogger
@@ -23,7 +23,7 @@ import java.util.concurrent.atomic.AtomicReference
 class RealApolloQueryWatcher<D : Operation.Data>(
     private var activeCall: RealApolloCall<D>,
     val apolloStore: ApolloStore,
-    private val customScalarAdapters: CustomScalarAdapters,
+    private val responseAdapterCache: ResponseAdapterCache,
     val logger: ApolloLogger,
     private val tracker: ApolloCallTracker,
     private var refetchResponseFetcher: ResponseFetcher
@@ -98,7 +98,7 @@ class RealApolloQueryWatcher<D : Operation.Data>(
   }
 
   override fun clone(): ApolloQueryWatcher<D> {
-    return RealApolloQueryWatcher(activeCall.clone(), apolloStore, customScalarAdapters, logger, tracker, refetchResponseFetcher)
+    return RealApolloQueryWatcher(activeCall.clone(), apolloStore, responseAdapterCache, logger, tracker, refetchResponseFetcher)
   }
 
   private fun callbackProxy(): ApolloCall.Callback<D> {

@@ -8,11 +8,11 @@ import com.apollographql.apollo.api.Operation.Companion.EMPTY_VARIABLES
 import com.apollographql.apollo.api.Query
 import com.apollographql.apollo.api.Response
 import com.apollographql.apollo.api.ResponseField
-import com.apollographql.apollo.api.CustomScalarAdapters
+import com.apollographql.apollo.api.ResponseAdapterCache
+import com.apollographql.apollo.api.internal.json.JsonReader
+import com.apollographql.apollo.api.internal.json.JsonWriter
 import com.apollographql.apollo.api.internal.OperationRequestBodyComposer.compose
 import com.apollographql.apollo.api.internal.ResponseAdapter
-import com.apollographql.apollo.api.internal.ResponseReader
-import com.apollographql.apollo.api.internal.ResponseWriter
 import com.apollographql.apollo.exception.ApolloException
 import com.apollographql.apollo.rx2.Rx2Apollo
 import com.google.common.truth.Truth
@@ -153,16 +153,16 @@ class ApolloIdlingResourceTest {
         return EMPTY_VARIABLES
       }
 
-      override fun adapter(): ResponseAdapter<Operation.Data> {
+      override fun adapter(responseAdapterCache: ResponseAdapterCache): ResponseAdapter<Operation.Data> {
         return object: ResponseAdapter<Operation.Data> {
-          override fun fromResponse(reader: ResponseReader, __typename: String?): Operation.Data {
-            while (reader.selectField(emptyArray()) != -1) {
+          override fun fromResponse(reader: JsonReader): Operation.Data {
+            while (reader.selectName(emptyList()) != -1) {
               // consume the json stream
             }
             return object: Operation.Data {}
           }
 
-          override fun toResponse(writer: ResponseWriter, value: Operation.Data) {
+          override fun toResponse(writer: JsonWriter, value: Operation.Data) {
             TODO("Not yet implemented")
           }
         }

@@ -5,10 +5,14 @@
 //
 package com.example.union_fragment.adapter
 
+import com.apollographql.apollo.api.ResponseAdapterCache
 import com.apollographql.apollo.api.ResponseField
+import com.apollographql.apollo.api.internal.ListResponseAdapter
+import com.apollographql.apollo.api.internal.NullableResponseAdapter
 import com.apollographql.apollo.api.internal.ResponseAdapter
-import com.apollographql.apollo.api.internal.ResponseReader
-import com.apollographql.apollo.api.internal.ResponseWriter
+import com.apollographql.apollo.api.internal.StringResponseAdapter
+import com.apollographql.apollo.api.internal.json.JsonReader
+import com.apollographql.apollo.api.internal.json.JsonWriter
 import com.example.union_fragment.TestQuery
 import kotlin.Array
 import kotlin.String
@@ -18,152 +22,163 @@ import kotlin.collections.List
 @Suppress("NAME_SHADOWING", "UNUSED_ANONYMOUS_PARAMETER", "LocalVariableName",
     "RemoveExplicitTypeArguments", "NestedLambdaShadowedImplicitParameter", "PropertyName",
     "RemoveRedundantQualifierName")
-object TestQuery_ResponseAdapter : ResponseAdapter<TestQuery.Data> {
-  val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
-    ResponseField(
-      type = ResponseField.Type.List(ResponseField.Type.Named.Object("SearchResult")),
-      responseName = "search",
-      fieldName = "search",
-      arguments = mapOf<String, Any?>(
-        "text" to "test"),
-      conditions = emptyList(),
-      fieldSets = listOf(
-        ResponseField.FieldSet("Starship", Search.StarshipSearch.RESPONSE_FIELDS),
-        ResponseField.FieldSet(null, Search.OtherSearch.RESPONSE_FIELDS),
-      ),
+class TestQuery_ResponseAdapter(
+  responseAdapterCache: ResponseAdapterCache
+) : ResponseAdapter<TestQuery.Data> {
+  private val nullableListOfNullableSearchAdapter: ResponseAdapter<List<TestQuery.Data.Search?>?> =
+      NullableResponseAdapter(ListResponseAdapter(NullableResponseAdapter(Search(responseAdapterCache))))
+
+  override fun fromResponse(reader: JsonReader): TestQuery.Data {
+    var search: List<TestQuery.Data.Search?>? = null
+    reader.beginObject()
+    while(true) {
+      when (reader.selectName(RESPONSE_NAMES)) {
+        0 -> search = nullableListOfNullableSearchAdapter.fromResponse(reader)
+        else -> break
+      }
+    }
+    reader.endObject()
+    return TestQuery.Data(
+      search = search
     )
-  )
+  }
 
-  override fun fromResponse(reader: ResponseReader, __typename: String?): TestQuery.Data {
-    return reader.run {
-      var search: List<TestQuery.Data.Search?>? = null
-      while(true) {
-        when (selectField(RESPONSE_FIELDS)) {
-          0 -> search = readList<TestQuery.Data.Search>(RESPONSE_FIELDS[0]) { reader ->
-            reader.readObject<TestQuery.Data.Search> { reader ->
-              Search.fromResponse(reader)
-            }
-          }
-          else -> break
-        }
-      }
-      TestQuery.Data(
-        search = search
+  override fun toResponse(writer: JsonWriter, value: TestQuery.Data) {
+    writer.beginObject()
+    writer.name("search")
+    nullableListOfNullableSearchAdapter.toResponse(writer, value.search)
+    writer.endObject()
+  }
+
+  companion object {
+    val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
+      ResponseField(
+        type = ResponseField.Type.List(ResponseField.Type.Named.Object("SearchResult")),
+        fieldName = "search",
+        arguments = mapOf<String, Any?>(
+          "text" to "test"),
+        fieldSets = listOf(
+          ResponseField.FieldSet("Starship", Search.StarshipSearch.RESPONSE_FIELDS),
+          ResponseField.FieldSet(null, Search.OtherSearch.RESPONSE_FIELDS),
+        ),
       )
-    }
+    )
+
+    val RESPONSE_NAMES: List<String> = RESPONSE_FIELDS.map { it.responseName }
   }
 
-  override fun toResponse(writer: ResponseWriter, value: TestQuery.Data) {
-    writer.writeList(RESPONSE_FIELDS[0], value.search) { value, listItemWriter ->
-      listItemWriter.writeObject { writer ->
-        Search.toResponse(writer, value)
-      }
-    }
-  }
+  class Search(
+    responseAdapterCache: ResponseAdapterCache
+  ) : ResponseAdapter<TestQuery.Data.Search> {
+    val StarshipSearchAdapter: StarshipSearch =
+        com.example.union_fragment.adapter.TestQuery_ResponseAdapter.Search.StarshipSearch(responseAdapterCache)
 
-  object Search : ResponseAdapter<TestQuery.Data.Search> {
-    override fun fromResponse(reader: ResponseReader, __typename: String?): TestQuery.Data.Search {
-      val typename = __typename ?: reader.readString(ResponseField.Typename)
+    val OtherSearchAdapter: OtherSearch =
+        com.example.union_fragment.adapter.TestQuery_ResponseAdapter.Search.OtherSearch(responseAdapterCache)
+
+    override fun fromResponse(reader: JsonReader): TestQuery.Data.Search {
+      reader.beginObject()
+      check(reader.nextName() == "__typename")
+      val typename = reader.nextString()
+
       return when(typename) {
-        "Starship" -> StarshipSearch.fromResponse(reader, typename)
-        else -> OtherSearch.fromResponse(reader, typename)
+        "Starship" -> StarshipSearchAdapter.fromResponse(reader, typename)
+        else -> OtherSearchAdapter.fromResponse(reader, typename)
       }
+      .also { reader.endObject() }
     }
 
-    override fun toResponse(writer: ResponseWriter, value: TestQuery.Data.Search) {
+    override fun toResponse(writer: JsonWriter, value: TestQuery.Data.Search) {
       when(value) {
-        is TestQuery.Data.Search.StarshipSearch -> StarshipSearch.toResponse(writer, value)
-        is TestQuery.Data.Search.OtherSearch -> OtherSearch.toResponse(writer, value)
+        is TestQuery.Data.Search.StarshipSearch -> StarshipSearchAdapter.toResponse(writer, value)
+        is TestQuery.Data.Search.OtherSearch -> OtherSearchAdapter.toResponse(writer, value)
       }
     }
 
-    object StarshipSearch : ResponseAdapter<TestQuery.Data.Search.StarshipSearch> {
-      val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
-        ResponseField(
-          type = ResponseField.Type.NotNull(ResponseField.Type.Named.Other("String")),
-          responseName = "__typename",
-          fieldName = "__typename",
-          arguments = emptyMap(),
-          conditions = emptyList(),
-          fieldSets = emptyList(),
-        ),
-        ResponseField(
-          type = ResponseField.Type.NotNull(ResponseField.Type.Named.Other("String")),
-          responseName = "id",
-          fieldName = "id",
-          arguments = emptyMap(),
-          conditions = emptyList(),
-          fieldSets = emptyList(),
-        ),
-        ResponseField(
-          type = ResponseField.Type.NotNull(ResponseField.Type.Named.Other("String")),
-          responseName = "name",
-          fieldName = "name",
-          arguments = emptyMap(),
-          conditions = emptyList(),
-          fieldSets = emptyList(),
-        )
-      )
+    class StarshipSearch(
+      responseAdapterCache: ResponseAdapterCache
+    ) {
+      private val stringAdapter: ResponseAdapter<String> = StringResponseAdapter
 
-      override fun fromResponse(reader: ResponseReader, __typename: String?):
+      fun fromResponse(reader: JsonReader, __typename: String?):
           TestQuery.Data.Search.StarshipSearch {
-        return reader.run {
-          var __typename: String? = __typename
-          var id: String? = null
-          var name: String? = null
-          while(true) {
-            when (selectField(RESPONSE_FIELDS)) {
-              0 -> __typename = readString(RESPONSE_FIELDS[0])
-              1 -> id = readString(RESPONSE_FIELDS[1])
-              2 -> name = readString(RESPONSE_FIELDS[2])
-              else -> break
-            }
+        var __typename: String? = __typename
+        var id: String? = null
+        var name: String? = null
+        while(true) {
+          when (reader.selectName(RESPONSE_NAMES)) {
+            0 -> __typename = stringAdapter.fromResponse(reader)
+            1 -> id = stringAdapter.fromResponse(reader)
+            2 -> name = stringAdapter.fromResponse(reader)
+            else -> break
           }
-          TestQuery.Data.Search.StarshipSearch(
-            __typename = __typename!!,
-            id = id!!,
-            name = name!!
-          )
         }
+        return TestQuery.Data.Search.StarshipSearch(
+          __typename = __typename!!,
+          id = id!!,
+          name = name!!
+        )
       }
 
-      override fun toResponse(writer: ResponseWriter, value: TestQuery.Data.Search.StarshipSearch) {
-        writer.writeString(RESPONSE_FIELDS[0], value.__typename)
-        writer.writeString(RESPONSE_FIELDS[1], value.id)
-        writer.writeString(RESPONSE_FIELDS[2], value.name)
+      fun toResponse(writer: JsonWriter, value: TestQuery.Data.Search.StarshipSearch) {
+        writer.beginObject()
+        writer.name("__typename")
+        stringAdapter.toResponse(writer, value.__typename)
+        writer.name("id")
+        stringAdapter.toResponse(writer, value.id)
+        writer.name("name")
+        stringAdapter.toResponse(writer, value.name)
+        writer.endObject()
+      }
+
+      companion object {
+        val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
+          ResponseField.Typename,
+          ResponseField(
+            type = ResponseField.Type.NotNull(ResponseField.Type.Named.Other("String")),
+            fieldName = "id",
+          ),
+          ResponseField(
+            type = ResponseField.Type.NotNull(ResponseField.Type.Named.Other("String")),
+            fieldName = "name",
+          )
+        )
+
+        val RESPONSE_NAMES: List<String> = RESPONSE_FIELDS.map { it.responseName }
       }
     }
 
-    object OtherSearch : ResponseAdapter<TestQuery.Data.Search.OtherSearch> {
-      val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
-        ResponseField(
-          type = ResponseField.Type.NotNull(ResponseField.Type.Named.Other("String")),
-          responseName = "__typename",
-          fieldName = "__typename",
-          arguments = emptyMap(),
-          conditions = emptyList(),
-          fieldSets = emptyList(),
-        )
-      )
+    class OtherSearch(
+      responseAdapterCache: ResponseAdapterCache
+    ) {
+      private val stringAdapter: ResponseAdapter<String> = StringResponseAdapter
 
-      override fun fromResponse(reader: ResponseReader, __typename: String?):
-          TestQuery.Data.Search.OtherSearch {
-        return reader.run {
-          var __typename: String? = __typename
-          while(true) {
-            when (selectField(RESPONSE_FIELDS)) {
-              0 -> __typename = readString(RESPONSE_FIELDS[0])
-              else -> break
-            }
+      fun fromResponse(reader: JsonReader, __typename: String?): TestQuery.Data.Search.OtherSearch {
+        var __typename: String? = __typename
+        while(true) {
+          when (reader.selectName(RESPONSE_NAMES)) {
+            0 -> __typename = stringAdapter.fromResponse(reader)
+            else -> break
           }
-          TestQuery.Data.Search.OtherSearch(
-            __typename = __typename!!
-          )
         }
+        return TestQuery.Data.Search.OtherSearch(
+          __typename = __typename!!
+        )
       }
 
-      override fun toResponse(writer: ResponseWriter, value: TestQuery.Data.Search.OtherSearch) {
-        writer.writeString(RESPONSE_FIELDS[0], value.__typename)
+      fun toResponse(writer: JsonWriter, value: TestQuery.Data.Search.OtherSearch) {
+        writer.beginObject()
+        writer.name("__typename")
+        stringAdapter.toResponse(writer, value.__typename)
+        writer.endObject()
+      }
+
+      companion object {
+        val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
+          ResponseField.Typename
+        )
+
+        val RESPONSE_NAMES: List<String> = RESPONSE_FIELDS.map { it.responseName }
       }
     }
   }

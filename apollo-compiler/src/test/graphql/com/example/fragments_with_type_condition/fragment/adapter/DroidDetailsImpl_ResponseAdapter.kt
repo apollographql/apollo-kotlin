@@ -5,70 +5,75 @@
 //
 package com.example.fragments_with_type_condition.fragment.adapter
 
+import com.apollographql.apollo.api.ResponseAdapterCache
 import com.apollographql.apollo.api.ResponseField
+import com.apollographql.apollo.api.internal.NullableResponseAdapter
 import com.apollographql.apollo.api.internal.ResponseAdapter
-import com.apollographql.apollo.api.internal.ResponseReader
-import com.apollographql.apollo.api.internal.ResponseWriter
+import com.apollographql.apollo.api.internal.StringResponseAdapter
+import com.apollographql.apollo.api.internal.json.JsonReader
+import com.apollographql.apollo.api.internal.json.JsonWriter
 import com.example.fragments_with_type_condition.fragment.DroidDetailsImpl
 import kotlin.Array
 import kotlin.String
 import kotlin.Suppress
+import kotlin.collections.List
 
 @Suppress("NAME_SHADOWING", "UNUSED_ANONYMOUS_PARAMETER", "LocalVariableName",
     "RemoveExplicitTypeArguments", "NestedLambdaShadowedImplicitParameter", "PropertyName",
     "RemoveRedundantQualifierName")
-object DroidDetailsImpl_ResponseAdapter : ResponseAdapter<DroidDetailsImpl.Data> {
-  val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
-    ResponseField(
-      type = ResponseField.Type.NotNull(ResponseField.Type.Named.Other("String")),
-      responseName = "__typename",
-      fieldName = "__typename",
-      arguments = emptyMap(),
-      conditions = emptyList(),
-      fieldSets = emptyList(),
-    ),
-    ResponseField(
-      type = ResponseField.Type.NotNull(ResponseField.Type.Named.Other("String")),
-      responseName = "name",
-      fieldName = "name",
-      arguments = emptyMap(),
-      conditions = emptyList(),
-      fieldSets = emptyList(),
-    ),
-    ResponseField(
-      type = ResponseField.Type.Named.Other("String"),
-      responseName = "primaryFunction",
-      fieldName = "primaryFunction",
-      arguments = emptyMap(),
-      conditions = emptyList(),
-      fieldSets = emptyList(),
-    )
-  )
+class DroidDetailsImpl_ResponseAdapter(
+  responseAdapterCache: ResponseAdapterCache
+) : ResponseAdapter<DroidDetailsImpl.Data> {
+  private val stringAdapter: ResponseAdapter<String> = StringResponseAdapter
 
-  override fun fromResponse(reader: ResponseReader, __typename: String?): DroidDetailsImpl.Data {
-    return reader.run {
-      var __typename: String? = __typename
-      var name: String? = null
-      var primaryFunction: String? = null
-      while(true) {
-        when (selectField(RESPONSE_FIELDS)) {
-          0 -> __typename = readString(RESPONSE_FIELDS[0])
-          1 -> name = readString(RESPONSE_FIELDS[1])
-          2 -> primaryFunction = readString(RESPONSE_FIELDS[2])
-          else -> break
-        }
+  private val nullableStringAdapter: ResponseAdapter<String?> =
+      NullableResponseAdapter(StringResponseAdapter)
+
+  override fun fromResponse(reader: JsonReader): DroidDetailsImpl.Data {
+    var __typename: String? = null
+    var name: String? = null
+    var primaryFunction: String? = null
+    reader.beginObject()
+    while(true) {
+      when (reader.selectName(RESPONSE_NAMES)) {
+        0 -> __typename = stringAdapter.fromResponse(reader)
+        1 -> name = stringAdapter.fromResponse(reader)
+        2 -> primaryFunction = nullableStringAdapter.fromResponse(reader)
+        else -> break
       }
-      DroidDetailsImpl.Data(
-        __typename = __typename!!,
-        name = name!!,
-        primaryFunction = primaryFunction
-      )
     }
+    reader.endObject()
+    return DroidDetailsImpl.Data(
+      __typename = __typename!!,
+      name = name!!,
+      primaryFunction = primaryFunction
+    )
   }
 
-  override fun toResponse(writer: ResponseWriter, value: DroidDetailsImpl.Data) {
-    writer.writeString(RESPONSE_FIELDS[0], value.__typename)
-    writer.writeString(RESPONSE_FIELDS[1], value.name)
-    writer.writeString(RESPONSE_FIELDS[2], value.primaryFunction)
+  override fun toResponse(writer: JsonWriter, value: DroidDetailsImpl.Data) {
+    writer.beginObject()
+    writer.name("__typename")
+    stringAdapter.toResponse(writer, value.__typename)
+    writer.name("name")
+    stringAdapter.toResponse(writer, value.name)
+    writer.name("primaryFunction")
+    nullableStringAdapter.toResponse(writer, value.primaryFunction)
+    writer.endObject()
+  }
+
+  companion object {
+    val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
+      ResponseField.Typename,
+      ResponseField(
+        type = ResponseField.Type.NotNull(ResponseField.Type.Named.Other("String")),
+        fieldName = "name",
+      ),
+      ResponseField(
+        type = ResponseField.Type.Named.Other("String"),
+        fieldName = "primaryFunction",
+      )
+    )
+
+    val RESPONSE_NAMES: List<String> = RESPONSE_FIELDS.map { it.responseName }
   }
 }

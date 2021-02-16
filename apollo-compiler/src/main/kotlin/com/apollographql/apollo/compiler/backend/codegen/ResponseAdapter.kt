@@ -1,13 +1,19 @@
 package com.apollographql.apollo.compiler.backend.codegen
 
+import com.apollographql.apollo.api.ResponseAdapterCache
 import com.apollographql.apollo.api.ResponseField
+import com.apollographql.apollo.api.internal.ListResponseAdapter
+import com.apollographql.apollo.api.internal.NullableResponseAdapter
 import com.apollographql.apollo.api.internal.ResponseAdapter
 import com.apollographql.apollo.compiler.applyIf
 import com.apollographql.apollo.compiler.backend.ast.CodeGenerationAst
 import com.apollographql.apollo.compiler.escapeKotlinReservedWord
 import com.squareup.kotlinpoet.ClassName
 import com.squareup.kotlinpoet.CodeBlock
+import com.squareup.kotlinpoet.FunSpec
 import com.squareup.kotlinpoet.KModifier
+import com.squareup.kotlinpoet.MemberName
+import com.squareup.kotlinpoet.ParameterSpec
 import com.squareup.kotlinpoet.ParameterizedTypeName.Companion.parameterizedBy
 import com.squareup.kotlinpoet.PropertySpec
 import com.squareup.kotlinpoet.TypeSpec
@@ -37,26 +43,54 @@ private fun CodeGenerationAst.ObjectType.rootResponseAdapterTypeSpec(generateAsI
 }
 
 private fun CodeGenerationAst.ObjectType.responseAdapterTypeSpec(): TypeSpec {
-  return TypeSpec.objectBuilder(this.name)
-      .addSuperinterface(ResponseAdapter::class.asTypeName().parameterizedBy(this.typeRef.asTypeName()))
-      .applyIf(
-          this.fields.isNotEmpty()
-              && this.kind is CodeGenerationAst.ObjectType.Kind.Object) {
-        addProperty(responseFieldsPropertySpec(this@responseAdapterTypeSpec))
+
+  return TypeSpec.classBuilder(this.name)
+      .primaryConstructor(
+          FunSpec.constructorBuilder()
+              .addParameter(ParameterSpec.builder("responseAdapterCache", ResponseAdapterCache::class.asTypeName()).build())
+              .build()
+      )
+      .applyIf(!isTypeCase) { addSuperinterface(ResponseAdapter::class.asTypeName().parameterizedBy(this@responseAdapterTypeSpec.typeRef.asTypeName())) }
+      .apply {
+        if (fields.isNotEmpty()) {
+          if (kind is CodeGenerationAst.ObjectType.Kind.Object) {
+            addType(companionObjectTypeSpec(this@responseAdapterTypeSpec))
+            addProperties(adapterPropertySpecs(this@responseAdapterTypeSpec))
+          } else if (kind is CodeGenerationAst.ObjectType.Kind.Fragment) {
+            addProperties(objectAdapterPropertySpecs(kind))
+          }
+        }
       }
       .addFunction(readFromResponseFunSpec())
       .addFunction(writeToResponseFunSpec())
       .addTypes(
           this.nestedObjects
-              .filter {
-                it.kind is CodeGenerationAst.ObjectType.Kind.Object
-                    || (it.kind is CodeGenerationAst.ObjectType.Kind.Fragment && it.kind.possibleImplementations.isNotEmpty())
-              }
-              .map { nestedObject ->
-                nestedObject.responseAdapterTypeSpec()
+              .mapNotNull { nestedObject ->
+                when {
+                  nestedObject.kind is CodeGenerationAst.ObjectType.Kind.Object ||
+                  (nestedObject.kind is CodeGenerationAst.ObjectType.Kind.Fragment && nestedObject.kind.possibleImplementations.isNotEmpty()) -> {
+                    nestedObject.responseAdapterTypeSpec()
+                  }
+                  else -> null
+                }
               }
       )
       .build()
+}
+
+private fun objectAdapterPropertySpecs(kind: CodeGenerationAst.ObjectType.Kind.Fragment): Iterable<PropertySpec> {
+  return (kind.possibleImplementations.values.distinct() + kind.defaultImplementation).map { typeRef ->
+    PropertySpec.builder(kotlinNameForTypeCaseAdapterField(typeRef), typeRef.asAdapterTypeName())
+        .initializer("%L(responseAdapterCache)", typeRef.asAdapterTypeName())
+        .build()
+  }
+}
+
+private fun companionObjectTypeSpec(objectType: CodeGenerationAst.ObjectType): TypeSpec {
+  return TypeSpec.companionObjectBuilder().apply {
+    addProperty(responseFieldsPropertySpec(objectType))
+    addProperty(responseNamesPropertySpec())
+  }.build()
 }
 
 internal fun CodeGenerationAst.TypeRef.asAdapterTypeName(): ClassName {
@@ -74,6 +108,10 @@ internal fun CodeGenerationAst.TypeRef.asAdapterTypeName(): ClassName {
       ClassName(packageName = "$packageName.adapter", enclosingType.asAdapterTypeName().simpleNames + this.name.escapeKotlinReservedWord())
     }
   }
+}
+
+internal fun CodeGenerationAst.TypeRef.asEnumAdapterTypeName(): ClassName {
+  return ClassName(packageName = packageName, "${this.name.escapeKotlinReservedWord()}_ResponseAdapter")
 }
 
 
@@ -98,6 +136,54 @@ private fun responseFieldsPropertySpec(objectType: CodeGenerationAst.ObjectType)
           ),
       )
       .initializer(initializer)
+      .build()
+}
+
+private fun adapterPropertySpecs(objectType: CodeGenerationAst.ObjectType): List<PropertySpec> {
+  return objectType.fields.map { it.type }.toSet().map { it.adapterPropertySpec() }
+}
+
+private fun adapterInitializer(type: CodeGenerationAst.FieldType): CodeBlock {
+  if (type.nullable) {
+    return CodeBlock.of("%T(%L)", NullableResponseAdapter::class.asClassName(), adapterInitializer(type.nonNullable()))
+  }
+  return when (type) {
+    is CodeGenerationAst.FieldType.Array -> CodeBlock.of("%T(%L)", ListResponseAdapter::class.asClassName(), adapterInitializer(type.rawType))
+    is CodeGenerationAst.FieldType.Scalar.Boolean -> CodeBlock.of("%M", MemberName("com.apollographql.apollo.api.internal", "BooleanResponseAdapter"))
+    is CodeGenerationAst.FieldType.Scalar.ID -> CodeBlock.of("%M", MemberName("com.apollographql.apollo.api.internal", "StringResponseAdapter"))
+    is CodeGenerationAst.FieldType.Scalar.String -> CodeBlock.of("%M", MemberName("com.apollographql.apollo.api.internal", "StringResponseAdapter"))
+    is CodeGenerationAst.FieldType.Scalar.Int -> CodeBlock.of("%M", MemberName("com.apollographql.apollo.api.internal", "IntResponseAdapter"))
+    is CodeGenerationAst.FieldType.Scalar.Float -> CodeBlock.of("%M", MemberName("com.apollographql.apollo.api.internal", "DoubleResponseAdapter"))
+    is CodeGenerationAst.FieldType.Scalar.Enum -> CodeBlock.of("%T", type.typeRef.asEnumAdapterTypeName().copy(nullable = false))
+    is CodeGenerationAst.FieldType.Object -> CodeBlock.of("%T(responseAdapterCache)", type.typeRef.asAdapterTypeName().copy(nullable = false))
+    is CodeGenerationAst.FieldType.Scalar.Custom -> CodeBlock.of(
+        "responseAdapterCache.responseAdapterFor<%T>(%T)",
+        ClassName.bestGuess(type.type),
+        type.typeRef.asTypeName()
+    )
+  }
+}
+
+private fun CodeGenerationAst.FieldType.adapterPropertySpec(): PropertySpec {
+  return PropertySpec
+      .builder(
+          name = kotlinNameForAdapterField(this),
+          type = ResponseAdapter::class.asClassName().parameterizedBy(asTypeName())
+      )
+      .addModifiers(KModifier.PRIVATE)
+      .initializer(adapterInitializer(this))
+      .build()
+}
+
+private fun responseNamesPropertySpec(): PropertySpec {
+  return PropertySpec
+      .builder(
+          name = "RESPONSE_NAMES",
+          type = List::class.asClassName().parameterizedBy(
+              String::class.asClassName(),
+          ),
+      )
+      .initializer("RESPONSE_FIELDS.map { it.responseName }")
       .build()
 }
 
@@ -136,14 +222,25 @@ private fun CodeBlock.toNonNullable(): CodeBlock {
 }
 
 private fun CodeGenerationAst.Field.responseFieldInitializerCode(objectType: CodeGenerationAst.ObjectType): CodeBlock {
+  if (responseName == "__typename" && schemaName == "__typename") {
+    return CodeBlock.of("%T.Typename", ResponseField::class.asTypeName())
+  }
   val builder = CodeBlock.builder().add("%T(\n", ResponseField::class)
   builder.indent()
   builder.add("type = %L,\n", type.toTypeCode())
-  builder.add("responseName = %S,\n", responseName)
   builder.add("fieldName = %S,\n", schemaName)
-  builder.add("arguments = %L,\n", arguments.takeIf { it.isNotEmpty() }?.let { anyToCode(it) } ?: "emptyMap()")
-  builder.add("conditions = %L,\n", conditionsListCode(conditions))
-  builder.add("fieldSets = %L,\n", fieldSetsCode(this.type, objectType))
+  if (responseName != schemaName) {
+    builder.add("responseName = %S,\n", responseName)
+  }
+  if (arguments.isNotEmpty()) {
+    builder.add("arguments = %L,\n", arguments.takeIf { it.isNotEmpty() }?.let { anyToCode(it) } ?: "emptyMap()")
+  }
+  if (conditions.isNotEmpty()) {
+    builder.add("conditions = %L,\n", conditionsListCode(conditions))
+  }
+  if (this.type.leafType() is CodeGenerationAst.FieldType.Object) {
+    builder.add("fieldSets = %L,\n", fieldSetsCode(this.type, objectType))
+  }
   builder.unindent()
   builder.add(")")
 

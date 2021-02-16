@@ -28,7 +28,7 @@ interface Operation<D : Operation.Data> {
   /**
    * Returns an Adapter that maps the server response data to/from generated model class [D].
    */
-  fun adapter(): ResponseAdapter<D>
+  fun adapter(responseAdapterCache: ResponseAdapterCache): ResponseAdapter<D>
 
   /**
    *
@@ -87,19 +87,19 @@ interface Operation<D : Operation.Data> {
      */
     @Throws(IOException::class)
     fun marshal(): String {
-      return marshal(CustomScalarAdapters.DEFAULT)
+      return marshal(ResponseAdapterCache.DEFAULT)
     }
 
     /**
-     * Serializes variables with provided scalarTypeAdapters [customScalarAdapters] as JSON string to be sent to the GraphQL server.
+     * Serializes variables with provided scalarTypeAdapters [responseAdapterCache] as JSON string to be sent to the GraphQL server.
      */
     @Throws(IOException::class)
-    fun marshal(customScalarAdapters: CustomScalarAdapters): String {
+    fun marshal(responseAdapterCache: ResponseAdapterCache): String {
       return Buffer().apply {
         JsonWriter.of(this).use { jsonWriter ->
           jsonWriter.serializeNulls = true
           jsonWriter.beginObject()
-          marshaller().marshal(InputFieldJsonWriter(jsonWriter, customScalarAdapters))
+          marshaller().marshal(InputFieldJsonWriter(jsonWriter, responseAdapterCache))
           jsonWriter.endObject()
         }
       }.readUtf8()

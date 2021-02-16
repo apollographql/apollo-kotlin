@@ -1,6 +1,6 @@
 package com.apollographql.apollo
 
-import com.apollographql.apollo.api.CustomScalarAdapters
+import com.apollographql.apollo.api.ResponseAdapterCache
 import com.apollographql.apollo.api.Input.Companion.fromNullable
 import com.apollographql.apollo.api.Operation
 import com.apollographql.apollo.api.parse
@@ -25,7 +25,6 @@ import com.apollographql.apollo.integration.normalizer.type.Episode
 import com.google.common.truth.Truth
 import org.junit.Before
 import org.junit.Test
-import java.math.BigDecimal
 import java.util.Arrays
 
 class ResponseNormalizationTest {
@@ -199,7 +198,7 @@ class ResponseNormalizationTest {
     val records = records(HeroParentTypeDependentFieldQuery(fromNullable(Episode.JEDI)), "HeroParentTypeDependentFieldDroidResponse.json")
     val lukeRecord = records.get(TEST_FIELD_KEY_JEDI + ".friends.0")
     Truth.assertThat(lukeRecord!!["name"]).isEqualTo("Luke Skywalker")
-    Truth.assertThat(lukeRecord["height({\"unit\":\"METER\"})"]).isEqualTo(BigDecimal.valueOf(1.72))
+    Truth.assertThat(lukeRecord["height({\"unit\":\"METER\"})"]).isEqualTo(1.72)
     val friends = records.get(TEST_FIELD_KEY_JEDI)!!["friends"] as List<Any>?
     Truth.assertThat(friends!![0]).isEqualTo(CacheReference("$TEST_FIELD_KEY_JEDI.friends.0"))
     Truth.assertThat(friends[1]).isEqualTo(CacheReference("$TEST_FIELD_KEY_JEDI.friends.1"))
@@ -213,7 +212,7 @@ class ResponseNormalizationTest {
 
     val lukeRecord = records.get("$TEST_FIELD_KEY_EMPIRE.friends.0")
     Truth.assertThat(lukeRecord!!["name"]).isEqualTo("Han Solo")
-    Truth.assertThat(lukeRecord["height({\"unit\":\"FOOT\"})"]).isEqualTo(BigDecimal.valueOf(5.905512))
+    Truth.assertThat(lukeRecord["height({\"unit\":\"FOOT\"})"]).isEqualTo(5.905512)
   }
 
   @Test
@@ -232,8 +231,8 @@ class ResponseNormalizationTest {
 
   companion object {
     private fun <D : Operation.Data> records(operation: Operation<D>, name: String): Map<String, Record> {
-      val data = operation.parse(Utils.readFileToString(Utils::class.java, "/$name"))
-      return operation.normalize(data = data.data!!, CustomScalarAdapters.DEFAULT, IdFieldCacheKeyResolver())
+      val data = operation.parse(Utils.readResource(name))
+      return operation.normalize(data = data.data!!, ResponseAdapterCache.DEFAULT, IdFieldCacheKeyResolver())
     }
 
     private const val TEST_FIELD_KEY_JEDI = "hero({\"episode\":\"JEDI\"})"

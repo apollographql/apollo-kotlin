@@ -23,7 +23,6 @@ import okhttp3.*
 import okhttp3.mockwebserver.MockResponse
 import okhttp3.mockwebserver.MockWebServer
 import org.junit.Before
-import org.junit.Rule
 import org.junit.Test
 import java.io.IOException
 import java.util.concurrent.Executor
@@ -156,12 +155,10 @@ class ApolloInterceptorTest {
         .addApplicationInterceptor(secondInterceptor)
         .build()
     assertResponse(
-        client.query(query),
-        Predicate<Response<EpisodeHeroNameQuery.Data>> { response ->
-          Truth.assertThat(expectedResponse.parsedResponse.get()).isEqualTo(response)
-          true
-        }
-    )
+        client.query(query)
+    ) { response ->
+      assertThat(expectedResponse.parsedResponse.get()).isEqualTo(response)
+    }
   }
 
   @Test

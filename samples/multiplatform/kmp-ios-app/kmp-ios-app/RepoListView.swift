@@ -32,8 +32,8 @@ struct RepoListView: View {
 struct ContentView_Previews: PreviewProvider {
     static var previews: some View {
         let repos = [
-            RepositoryFragmentDefaultImpl(__typename: "__typename", id: "1", name: "Test1", repoDescription: "Test Repo 1"),
-            RepositoryFragmentDefaultImpl(__typename: "__typename", id: "2", name: "Test2", repoDescription: "Test Repo 2")
+            RepositoryFragmentImpl.Data(__typename: "__typename", id: "1", name: "Test1", repoDescription: "Test Repo 1"),
+            RepositoryFragmentImpl.Data(__typename: "__typename", id: "2", name: "Test2", repoDescription: "Test Repo 2")
         ]
         
         let repoManager = RepositoryManager()
@@ -42,4 +42,4 @@ struct ContentView_Previews: PreviewProvider {
     }
 }
 
-extension RepositoryFragment: Identifiable { }
+extension RepositoryFragmentImpl: Identifiable { }

@@ -7,6 +7,7 @@ package com.example.directives
 
 import com.apollographql.apollo.api.Operation
 import com.apollographql.apollo.api.Query
+import com.apollographql.apollo.api.ResponseAdapterCache
 import com.apollographql.apollo.api.ResponseField
 import com.apollographql.apollo.api.internal.InputFieldMarshaller
 import com.apollographql.apollo.api.internal.QueryDocumentMinifier
@@ -51,7 +52,13 @@ data class TestQuery(
 
   override fun name(): String = OPERATION_NAME
 
-  override fun adapter(): ResponseAdapter<Data> = TestQuery_ResponseAdapter
+  override fun adapter(customScalarAdapters: ResponseAdapterCache): ResponseAdapter<Data> {
+    val adapter = customScalarAdapters.getOperationAdapter(name()) {
+      TestQuery_ResponseAdapter(customScalarAdapters)
+    }
+    return adapter
+  }
+
   override fun responseFields(): List<ResponseField.FieldSet> = listOf(
     ResponseField.FieldSet(null, TestQuery_ResponseAdapter.RESPONSE_FIELDS)
   )

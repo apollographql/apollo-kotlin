@@ -7,6 +7,7 @@ package com.example.fragment_in_fragment
 
 import com.apollographql.apollo.api.Operation
 import com.apollographql.apollo.api.Query
+import com.apollographql.apollo.api.ResponseAdapterCache
 import com.apollographql.apollo.api.ResponseField
 import com.apollographql.apollo.api.internal.QueryDocumentMinifier
 import com.apollographql.apollo.api.internal.ResponseAdapter
@@ -30,7 +31,13 @@ class AllStarships : Query<AllStarships.Data> {
 
   override fun name(): String = OPERATION_NAME
 
-  override fun adapter(): ResponseAdapter<Data> = AllStarships_ResponseAdapter
+  override fun adapter(customScalarAdapters: ResponseAdapterCache): ResponseAdapter<Data> {
+    val adapter = customScalarAdapters.getOperationAdapter(name()) {
+      AllStarships_ResponseAdapter(customScalarAdapters)
+    }
+    return adapter
+  }
+
   override fun responseFields(): List<ResponseField.FieldSet> = listOf(
     ResponseField.FieldSet(null, AllStarships_ResponseAdapter.RESPONSE_FIELDS)
   )

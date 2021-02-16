@@ -1,12 +1,10 @@
 package com.apollographql.apollo.internal.interceptor
 
 import com.apollographql.apollo.Utils.checkTestFixture
-import com.apollographql.apollo.api.CustomScalarAdapter
 import com.apollographql.apollo.api.FileUpload
 import com.apollographql.apollo.api.Input
 import com.apollographql.apollo.api.Operation
-import com.apollographql.apollo.api.CustomScalar
-import com.apollographql.apollo.api.CustomScalarAdapters
+import com.apollographql.apollo.api.ResponseAdapterCache
 import com.apollographql.apollo.api.cache.http.HttpCache
 import com.apollographql.apollo.api.internal.ApolloLogger
 import com.apollographql.apollo.cache.CacheHeaders
@@ -101,7 +99,7 @@ class ApolloServerInterceptorFileUploadTest {
     }
     val interceptor = ApolloServerInterceptor(serverUrl,
         AssertHttpCallFactory(requestAssertPredicate), null, false,
-        CustomScalarAdapters(emptyMap()),
+        ResponseAdapterCache(emptyMap()),
         ApolloLogger(null))
     interceptor.httpPostCall(mutationSingle, CacheHeaders.NONE, RequestHeaders.NONE, true, false)
   }
@@ -125,7 +123,7 @@ class ApolloServerInterceptorFileUploadTest {
     }
     val interceptor = ApolloServerInterceptor(serverUrl,
         AssertHttpCallFactory(requestAssertPredicate), null, false,
-        CustomScalarAdapters(emptyMap()),
+        ResponseAdapterCache(emptyMap()),
         ApolloLogger(null))
     interceptor.httpPostCall(mutationSource, CacheHeaders.NONE, RequestHeaders.NONE, true, false)
   }
@@ -146,7 +144,7 @@ class ApolloServerInterceptorFileUploadTest {
     }
     val interceptor = ApolloServerInterceptor(serverUrl,
         AssertHttpCallFactory(requestAssertPredicate), null, false,
-        CustomScalarAdapters(emptyMap()),
+        ResponseAdapterCache(emptyMap()),
         ApolloLogger(null))
     interceptor.httpPostCall(mutationTwice, CacheHeaders.NONE, RequestHeaders.NONE, true, false)
   }
@@ -167,7 +165,7 @@ class ApolloServerInterceptorFileUploadTest {
     }
     val interceptor = ApolloServerInterceptor(serverUrl,
         AssertHttpCallFactory(requestAssertPredicate), null, false,
-        CustomScalarAdapters(emptyMap()),
+        ResponseAdapterCache(emptyMap()),
         ApolloLogger(null))
     interceptor.httpPostCall(mutationMultiple, CacheHeaders.NONE, RequestHeaders.NONE, true, false)
   }
@@ -183,7 +181,7 @@ class ApolloServerInterceptorFileUploadTest {
     }
     val interceptor = ApolloServerInterceptor(serverUrl,
         AssertHttpCallFactory(requestAssertPredicate), null, false,
-        CustomScalarAdapters(emptyMap()),
+        ResponseAdapterCache(emptyMap()),
         ApolloLogger(null))
     interceptor.httpPostCall(mutationNested, CacheHeaders.NONE, RequestHeaders.NONE, true, false)
   }
@@ -218,7 +216,7 @@ class ApolloServerInterceptorFileUploadTest {
         .build()
     val interceptor = ApolloServerInterceptor(serverUrl,
         AssertHttpCallFactory(requestAssertPredicate), null, false,
-        CustomScalarAdapters(emptyMap()),
+        ResponseAdapterCache(emptyMap()),
         ApolloLogger(null))
     interceptor.httpPostCall(mutationSingle, CacheHeaders.NONE, requestHeaders, true, false)
   }

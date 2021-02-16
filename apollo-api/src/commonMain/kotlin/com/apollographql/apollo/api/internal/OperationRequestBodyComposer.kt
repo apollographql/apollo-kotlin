@@ -1,7 +1,7 @@
 package com.apollographql.apollo.api.internal
 
 import com.apollographql.apollo.api.Operation
-import com.apollographql.apollo.api.CustomScalarAdapters
+import com.apollographql.apollo.api.ResponseAdapterCache
 import com.apollographql.apollo.api.internal.json.JsonWriter
 import com.apollographql.apollo.api.internal.json.use
 import okio.Buffer
@@ -15,7 +15,7 @@ object OperationRequestBodyComposer {
       operation: Operation<*>,
       autoPersistQueries: Boolean,
       withQueryDocument: Boolean,
-      customScalarAdapters: CustomScalarAdapters
+      responseAdapterCache: ResponseAdapterCache
   ): ByteString {
     val buffer = Buffer()
     JsonWriter.of(buffer).use { writer ->
@@ -23,7 +23,7 @@ object OperationRequestBodyComposer {
         serializeNulls = true
         beginObject()
         name("operationName").value(operation.name())
-        name("variables").jsonValue(operation.variables().marshal(customScalarAdapters))
+        name("variables").jsonValue(operation.variables().marshal(responseAdapterCache))
         if (autoPersistQueries) {
           name("extensions")
           beginObject()

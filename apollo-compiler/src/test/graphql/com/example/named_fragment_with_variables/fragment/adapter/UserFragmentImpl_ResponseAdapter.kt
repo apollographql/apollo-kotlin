@@ -5,85 +5,84 @@
 //
 package com.example.named_fragment_with_variables.fragment.adapter
 
+import com.apollographql.apollo.api.ResponseAdapterCache
 import com.apollographql.apollo.api.ResponseField
 import com.apollographql.apollo.api.internal.ResponseAdapter
-import com.apollographql.apollo.api.internal.ResponseReader
-import com.apollographql.apollo.api.internal.ResponseWriter
+import com.apollographql.apollo.api.internal.StringResponseAdapter
+import com.apollographql.apollo.api.internal.json.JsonReader
+import com.apollographql.apollo.api.internal.json.JsonWriter
 import com.example.named_fragment_with_variables.fragment.UserFragmentImpl
 import kotlin.Array
 import kotlin.String
 import kotlin.Suppress
+import kotlin.collections.List
 
 @Suppress("NAME_SHADOWING", "UNUSED_ANONYMOUS_PARAMETER", "LocalVariableName",
     "RemoveExplicitTypeArguments", "NestedLambdaShadowedImplicitParameter", "PropertyName",
     "RemoveRedundantQualifierName")
-object UserFragmentImpl_ResponseAdapter : ResponseAdapter<UserFragmentImpl.Data> {
-  val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
-    ResponseField(
-      type = ResponseField.Type.NotNull(ResponseField.Type.Named.Other("String")),
-      responseName = "__typename",
-      fieldName = "__typename",
-      arguments = emptyMap(),
-      conditions = emptyList(),
-      fieldSets = emptyList(),
-    ),
-    ResponseField(
-      type = ResponseField.Type.NotNull(ResponseField.Type.Named.Other("String")),
-      responseName = "firstName",
-      fieldName = "firstName",
-      arguments = emptyMap(),
-      conditions = emptyList(),
-      fieldSets = emptyList(),
-    ),
-    ResponseField(
-      type = ResponseField.Type.NotNull(ResponseField.Type.Named.Other("String")),
-      responseName = "lastName",
-      fieldName = "lastName",
-      arguments = emptyMap(),
-      conditions = emptyList(),
-      fieldSets = emptyList(),
-    ),
-    ResponseField(
-      type = ResponseField.Type.NotNull(ResponseField.Type.Named.Other("String")),
-      responseName = "avatar",
-      fieldName = "avatar",
-      arguments = mapOf<String, Any?>(
-        "size" to mapOf<String, Any?>(
-          "kind" to "Variable",
-          "variableName" to "size")),
-      conditions = emptyList(),
-      fieldSets = emptyList(),
-    )
-  )
+class UserFragmentImpl_ResponseAdapter(
+  responseAdapterCache: ResponseAdapterCache
+) : ResponseAdapter<UserFragmentImpl.Data> {
+  private val stringAdapter: ResponseAdapter<String> = StringResponseAdapter
 
-  override fun fromResponse(reader: ResponseReader, __typename: String?): UserFragmentImpl.Data {
-    return reader.run {
-      var __typename: String? = __typename
-      var firstName: String? = null
-      var lastName: String? = null
-      var avatar: String? = null
-      while(true) {
-        when (selectField(RESPONSE_FIELDS)) {
-          0 -> __typename = readString(RESPONSE_FIELDS[0])
-          1 -> firstName = readString(RESPONSE_FIELDS[1])
-          2 -> lastName = readString(RESPONSE_FIELDS[2])
-          3 -> avatar = readString(RESPONSE_FIELDS[3])
-          else -> break
-        }
+  override fun fromResponse(reader: JsonReader): UserFragmentImpl.Data {
+    var __typename: String? = null
+    var firstName: String? = null
+    var lastName: String? = null
+    var avatar: String? = null
+    reader.beginObject()
+    while(true) {
+      when (reader.selectName(RESPONSE_NAMES)) {
+        0 -> __typename = stringAdapter.fromResponse(reader)
+        1 -> firstName = stringAdapter.fromResponse(reader)
+        2 -> lastName = stringAdapter.fromResponse(reader)
+        3 -> avatar = stringAdapter.fromResponse(reader)
+        else -> break
       }
-      UserFragmentImpl.Data(
-        __typename = __typename!!,
-        firstName = firstName!!,
-        lastName = lastName!!,
-        avatar = avatar!!
-      )
     }
+    reader.endObject()
+    return UserFragmentImpl.Data(
+      __typename = __typename!!,
+      firstName = firstName!!,
+      lastName = lastName!!,
+      avatar = avatar!!
+    )
   }
 
-  override fun toResponse(writer: ResponseWriter, value: UserFragmentImpl.Data) {
-    writer.writeString(RESPONSE_FIELDS[0], value.__typename)
-    writer.writeString(RESPONSE_FIELDS[1], value.firstName)
-    writer.writeString(RESPONSE_FIELDS[2], value.lastName)
-    writer.writeString(RESPONSE_FIELDS[3], value.avatar)
+  override fun toResponse(writer: JsonWriter, value: UserFragmentImpl.Data) {
+    writer.beginObject()
+    writer.name("__typename")
+    stringAdapter.toResponse(writer, value.__typename)
+    writer.name("firstName")
+    stringAdapter.toResponse(writer, value.firstName)
+    writer.name("lastName")
+    stringAdapter.toResponse(writer, value.lastName)
+    writer.name("avatar")
+    stringAdapter.toResponse(writer, value.avatar)
+    writer.endObject()
+  }
+
+  companion object {
+    val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
+      ResponseField.Typename,
+      ResponseField(
+        type = ResponseField.Type.NotNull(ResponseField.Type.Named.Other("String")),
+        fieldName = "firstName",
+      ),
+      ResponseField(
+        type = ResponseField.Type.NotNull(ResponseField.Type.Named.Other("String")),
+        fieldName = "lastName",
+      ),
+      ResponseField(
+        type = ResponseField.Type.NotNull(ResponseField.Type.Named.Other("String")),
+        fieldName = "avatar",
+        arguments = mapOf<String, Any?>(
+          "size" to mapOf<String, Any?>(
+            "kind" to "Variable",
+            "variableName" to "size")),
+      )
+    )
+
+    val RESPONSE_NAMES: List<String> = RESPONSE_FIELDS.map { it.responseName }
   }
 }

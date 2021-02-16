@@ -1,12 +1,13 @@
 package com.apollographql.apollo.testing
 
+import com.apollographql.apollo.api.ResponseAdapterCache
 import com.apollographql.apollo.api.Operation
 import com.apollographql.apollo.api.ResponseField
 import com.apollographql.apollo.api.Subscription
 import com.apollographql.apollo.api.internal.InputFieldMarshaller
 import com.apollographql.apollo.api.internal.ResponseAdapter
-import com.apollographql.apollo.api.internal.ResponseReader
-import com.apollographql.apollo.api.internal.ResponseWriter
+import com.apollographql.apollo.api.internal.json.JsonReader
+import com.apollographql.apollo.api.internal.json.JsonWriter
 
 class MockSubscription(
     private val queryDocument: String = "subscription MockSubscription { name }",
@@ -31,24 +32,19 @@ class MockSubscription(
         }
   }
 
-  override fun adapter(): ResponseAdapter<Data> {
+  override fun adapter(responseAdapterCache: ResponseAdapterCache): ResponseAdapter<Data> {
     return object : ResponseAdapter<Data> {
-      override fun fromResponse(reader: ResponseReader, __typename: String?): Data {
+      override fun fromResponse(reader: JsonReader): Data {
+        reader.beginObject()
+        reader.nextName()
         return Data(
-            name = reader.readString(
-                ResponseField(
-                    type = ResponseField.Type.Named.Other("String"),
-                    responseName = "name",
-                    fieldName = "name",
-                    arguments = emptyMap(),
-                    conditions = emptyList(),
-                    fieldSets = emptyList()
-                )
-            )!!
-        )
+            name = reader.nextString()!!
+        ).also {
+          reader.endObject()
+        }
       }
 
-      override fun toResponse(writer: ResponseWriter, value: Data) {
+      override fun toResponse(writer: JsonWriter, value: Data) {
         TODO("Not yet implemented")
       }
     }

@@ -5,10 +5,14 @@
 //
 package com.example.fragment_in_fragment.adapter
 
+import com.apollographql.apollo.api.ResponseAdapterCache
 import com.apollographql.apollo.api.ResponseField
+import com.apollographql.apollo.api.internal.ListResponseAdapter
+import com.apollographql.apollo.api.internal.NullableResponseAdapter
 import com.apollographql.apollo.api.internal.ResponseAdapter
-import com.apollographql.apollo.api.internal.ResponseReader
-import com.apollographql.apollo.api.internal.ResponseWriter
+import com.apollographql.apollo.api.internal.StringResponseAdapter
+import com.apollographql.apollo.api.internal.json.JsonReader
+import com.apollographql.apollo.api.internal.json.JsonWriter
 import com.example.fragment_in_fragment.AllStarships
 import kotlin.Array
 import kotlin.String
@@ -18,563 +22,594 @@ import kotlin.collections.List
 @Suppress("NAME_SHADOWING", "UNUSED_ANONYMOUS_PARAMETER", "LocalVariableName",
     "RemoveExplicitTypeArguments", "NestedLambdaShadowedImplicitParameter", "PropertyName",
     "RemoveRedundantQualifierName")
-object AllStarships_ResponseAdapter : ResponseAdapter<AllStarships.Data> {
-  val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
-    ResponseField(
-      type = ResponseField.Type.Named.Object("StarshipsConnection"),
-      responseName = "allStarships",
-      fieldName = "allStarships",
-      arguments = mapOf<String, Any?>(
-        "first" to 7),
-      conditions = emptyList(),
-      fieldSets = listOf(
-        ResponseField.FieldSet(null, AllStarships.RESPONSE_FIELDS)
-      ),
-    )
-  )
+class AllStarships_ResponseAdapter(
+  responseAdapterCache: ResponseAdapterCache
+) : ResponseAdapter<AllStarships.Data> {
+  private val nullableAllStarshipsAdapter:
+      ResponseAdapter<com.example.fragment_in_fragment.AllStarships.Data.AllStarships?> =
+      NullableResponseAdapter(AllStarships(responseAdapterCache))
 
-  override fun fromResponse(reader: ResponseReader, __typename: String?):
+  override fun fromResponse(reader: JsonReader):
       com.example.fragment_in_fragment.AllStarships.Data {
-    return reader.run {
-      var allStarships: com.example.fragment_in_fragment.AllStarships.Data.AllStarships? = null
-      while(true) {
-        when (selectField(RESPONSE_FIELDS)) {
-          0 -> allStarships = readObject<com.example.fragment_in_fragment.AllStarships.Data.AllStarships>(RESPONSE_FIELDS[0]) { reader ->
-            AllStarships.fromResponse(reader)
-          }
-          else -> break
-        }
+    var allStarships: com.example.fragment_in_fragment.AllStarships.Data.AllStarships? = null
+    reader.beginObject()
+    while(true) {
+      when (reader.selectName(RESPONSE_NAMES)) {
+        0 -> allStarships = nullableAllStarshipsAdapter.fromResponse(reader)
+        else -> break
       }
-      com.example.fragment_in_fragment.AllStarships.Data(
-        allStarships = allStarships
-      )
     }
+    reader.endObject()
+    return com.example.fragment_in_fragment.AllStarships.Data(
+      allStarships = allStarships
+    )
   }
 
-  override fun toResponse(writer: ResponseWriter,
+  override fun toResponse(writer: JsonWriter,
       value: com.example.fragment_in_fragment.AllStarships.Data) {
-    if(value.allStarships == null) {
-      writer.writeObject(RESPONSE_FIELDS[0], null)
-    } else {
-      writer.writeObject(RESPONSE_FIELDS[0]) { writer ->
-        AllStarships.toResponse(writer, value.allStarships)
-      }
-    }
+    writer.beginObject()
+    writer.name("allStarships")
+    nullableAllStarshipsAdapter.toResponse(writer, value.allStarships)
+    writer.endObject()
   }
 
-  object AllStarships :
-      ResponseAdapter<com.example.fragment_in_fragment.AllStarships.Data.AllStarships> {
+  companion object {
     val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
       ResponseField(
-        type = ResponseField.Type.List(ResponseField.Type.Named.Object("StarshipsEdge")),
-        responseName = "edges",
-        fieldName = "edges",
-        arguments = emptyMap(),
-        conditions = emptyList(),
+        type = ResponseField.Type.Named.Object("StarshipsConnection"),
+        fieldName = "allStarships",
+        arguments = mapOf<String, Any?>(
+          "first" to 7),
         fieldSets = listOf(
-          ResponseField.FieldSet(null, Edges.RESPONSE_FIELDS)
+          ResponseField.FieldSet(null, AllStarships.RESPONSE_FIELDS)
         ),
       )
     )
 
-    override fun fromResponse(reader: ResponseReader, __typename: String?):
+    val RESPONSE_NAMES: List<String> = RESPONSE_FIELDS.map { it.responseName }
+  }
+
+  class AllStarships(
+    responseAdapterCache: ResponseAdapterCache
+  ) : ResponseAdapter<com.example.fragment_in_fragment.AllStarships.Data.AllStarships> {
+    private val nullableListOfNullableEdgesAdapter:
+        ResponseAdapter<List<com.example.fragment_in_fragment.AllStarships.Data.AllStarships.Edges?>?>
+        =
+        NullableResponseAdapter(ListResponseAdapter(NullableResponseAdapter(Edges(responseAdapterCache))))
+
+    override fun fromResponse(reader: JsonReader):
         com.example.fragment_in_fragment.AllStarships.Data.AllStarships {
-      return reader.run {
-        var edges: List<com.example.fragment_in_fragment.AllStarships.Data.AllStarships.Edges?>? = null
-        while(true) {
-          when (selectField(RESPONSE_FIELDS)) {
-            0 -> edges = readList<com.example.fragment_in_fragment.AllStarships.Data.AllStarships.Edges>(RESPONSE_FIELDS[0]) { reader ->
-              reader.readObject<com.example.fragment_in_fragment.AllStarships.Data.AllStarships.Edges> { reader ->
-                Edges.fromResponse(reader)
-              }
-            }
-            else -> break
-          }
+      var edges: List<com.example.fragment_in_fragment.AllStarships.Data.AllStarships.Edges?>? = null
+      reader.beginObject()
+      while(true) {
+        when (reader.selectName(RESPONSE_NAMES)) {
+          0 -> edges = nullableListOfNullableEdgesAdapter.fromResponse(reader)
+          else -> break
         }
-        com.example.fragment_in_fragment.AllStarships.Data.AllStarships(
-          edges = edges
-        )
       }
+      reader.endObject()
+      return com.example.fragment_in_fragment.AllStarships.Data.AllStarships(
+        edges = edges
+      )
     }
 
-    override fun toResponse(writer: ResponseWriter,
+    override fun toResponse(writer: JsonWriter,
         value: com.example.fragment_in_fragment.AllStarships.Data.AllStarships) {
-      writer.writeList(RESPONSE_FIELDS[0], value.edges) { value, listItemWriter ->
-        listItemWriter.writeObject { writer ->
-          Edges.toResponse(writer, value)
-        }
-      }
+      writer.beginObject()
+      writer.name("edges")
+      nullableListOfNullableEdgesAdapter.toResponse(writer, value.edges)
+      writer.endObject()
     }
 
-    object Edges :
-        ResponseAdapter<com.example.fragment_in_fragment.AllStarships.Data.AllStarships.Edges> {
+    companion object {
       val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
         ResponseField(
-          type = ResponseField.Type.Named.Object("Starship"),
-          responseName = "node",
-          fieldName = "node",
-          arguments = emptyMap(),
-          conditions = emptyList(),
+          type = ResponseField.Type.List(ResponseField.Type.Named.Object("StarshipsEdge")),
+          fieldName = "edges",
           fieldSets = listOf(
-            ResponseField.FieldSet("Starship", Node.StarshipNode.RESPONSE_FIELDS),
-            ResponseField.FieldSet(null, Node.OtherNode.RESPONSE_FIELDS),
+            ResponseField.FieldSet(null, Edges.RESPONSE_FIELDS)
           ),
         )
       )
 
-      override fun fromResponse(reader: ResponseReader, __typename: String?):
+      val RESPONSE_NAMES: List<String> = RESPONSE_FIELDS.map { it.responseName }
+    }
+
+    class Edges(
+      responseAdapterCache: ResponseAdapterCache
+    ) : ResponseAdapter<com.example.fragment_in_fragment.AllStarships.Data.AllStarships.Edges> {
+      private val nullableNodeAdapter:
+          ResponseAdapter<com.example.fragment_in_fragment.AllStarships.Data.AllStarships.Edges.Node?>
+          = NullableResponseAdapter(Node(responseAdapterCache))
+
+      override fun fromResponse(reader: JsonReader):
           com.example.fragment_in_fragment.AllStarships.Data.AllStarships.Edges {
-        return reader.run {
-          var node: com.example.fragment_in_fragment.AllStarships.Data.AllStarships.Edges.Node? = null
-          while(true) {
-            when (selectField(RESPONSE_FIELDS)) {
-              0 -> node = readObject<com.example.fragment_in_fragment.AllStarships.Data.AllStarships.Edges.Node>(RESPONSE_FIELDS[0]) { reader ->
-                Node.fromResponse(reader)
-              }
-              else -> break
-            }
+        var node: com.example.fragment_in_fragment.AllStarships.Data.AllStarships.Edges.Node? = null
+        reader.beginObject()
+        while(true) {
+          when (reader.selectName(RESPONSE_NAMES)) {
+            0 -> node = nullableNodeAdapter.fromResponse(reader)
+            else -> break
           }
-          com.example.fragment_in_fragment.AllStarships.Data.AllStarships.Edges(
-            node = node
-          )
         }
+        reader.endObject()
+        return com.example.fragment_in_fragment.AllStarships.Data.AllStarships.Edges(
+          node = node
+        )
       }
 
-      override fun toResponse(writer: ResponseWriter,
+      override fun toResponse(writer: JsonWriter,
           value: com.example.fragment_in_fragment.AllStarships.Data.AllStarships.Edges) {
-        if(value.node == null) {
-          writer.writeObject(RESPONSE_FIELDS[0], null)
-        } else {
-          writer.writeObject(RESPONSE_FIELDS[0]) { writer ->
-            Node.toResponse(writer, value.node)
-          }
-        }
+        writer.beginObject()
+        writer.name("node")
+        nullableNodeAdapter.toResponse(writer, value.node)
+        writer.endObject()
       }
 
-      object Node :
+      companion object {
+        val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
+          ResponseField(
+            type = ResponseField.Type.Named.Object("Starship"),
+            fieldName = "node",
+            fieldSets = listOf(
+              ResponseField.FieldSet("Starship", Node.StarshipNode.RESPONSE_FIELDS),
+              ResponseField.FieldSet(null, Node.OtherNode.RESPONSE_FIELDS),
+            ),
+          )
+        )
+
+        val RESPONSE_NAMES: List<String> = RESPONSE_FIELDS.map { it.responseName }
+      }
+
+      class Node(
+        responseAdapterCache: ResponseAdapterCache
+      ) :
           ResponseAdapter<com.example.fragment_in_fragment.AllStarships.Data.AllStarships.Edges.Node>
           {
-        override fun fromResponse(reader: ResponseReader, __typename: String?):
+        val StarshipNodeAdapter: StarshipNode =
+            com.example.fragment_in_fragment.adapter.AllStarships_ResponseAdapter.AllStarships.Edges.Node.StarshipNode(responseAdapterCache)
+
+        val OtherNodeAdapter: OtherNode =
+            com.example.fragment_in_fragment.adapter.AllStarships_ResponseAdapter.AllStarships.Edges.Node.OtherNode(responseAdapterCache)
+
+        override fun fromResponse(reader: JsonReader):
             com.example.fragment_in_fragment.AllStarships.Data.AllStarships.Edges.Node {
-          val typename = __typename ?: reader.readString(ResponseField.Typename)
+          reader.beginObject()
+          check(reader.nextName() == "__typename")
+          val typename = reader.nextString()
+
           return when(typename) {
-            "Starship" -> StarshipNode.fromResponse(reader, typename)
-            else -> OtherNode.fromResponse(reader, typename)
+            "Starship" -> StarshipNodeAdapter.fromResponse(reader, typename)
+            else -> OtherNodeAdapter.fromResponse(reader, typename)
           }
+          .also { reader.endObject() }
         }
 
-        override fun toResponse(writer: ResponseWriter,
+        override fun toResponse(writer: JsonWriter,
             value: com.example.fragment_in_fragment.AllStarships.Data.AllStarships.Edges.Node) {
           when(value) {
-            is com.example.fragment_in_fragment.AllStarships.Data.AllStarships.Edges.Node.StarshipNode -> StarshipNode.toResponse(writer, value)
-            is com.example.fragment_in_fragment.AllStarships.Data.AllStarships.Edges.Node.OtherNode -> OtherNode.toResponse(writer, value)
+            is com.example.fragment_in_fragment.AllStarships.Data.AllStarships.Edges.Node.StarshipNode -> StarshipNodeAdapter.toResponse(writer, value)
+            is com.example.fragment_in_fragment.AllStarships.Data.AllStarships.Edges.Node.OtherNode -> OtherNodeAdapter.toResponse(writer, value)
           }
         }
 
-        object StarshipNode :
-            ResponseAdapter<com.example.fragment_in_fragment.AllStarships.Data.AllStarships.Edges.Node.StarshipNode>
-            {
-          val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
-            ResponseField(
-              type = ResponseField.Type.NotNull(ResponseField.Type.Named.Other("String")),
-              responseName = "__typename",
-              fieldName = "__typename",
-              arguments = emptyMap(),
-              conditions = emptyList(),
-              fieldSets = emptyList(),
-            ),
-            ResponseField(
-              type = ResponseField.Type.NotNull(ResponseField.Type.Named.Other("String")),
-              responseName = "id",
-              fieldName = "id",
-              arguments = emptyMap(),
-              conditions = emptyList(),
-              fieldSets = emptyList(),
-            ),
-            ResponseField(
-              type = ResponseField.Type.Named.Other("String"),
-              responseName = "name",
-              fieldName = "name",
-              arguments = emptyMap(),
-              conditions = emptyList(),
-              fieldSets = emptyList(),
-            ),
-            ResponseField(
-              type = ResponseField.Type.Named.Object("StarshipPilotsConnection"),
-              responseName = "pilotConnection",
-              fieldName = "pilotConnection",
-              arguments = emptyMap(),
-              conditions = emptyList(),
-              fieldSets = listOf(
-                ResponseField.FieldSet(null, PilotConnection.RESPONSE_FIELDS)
-              ),
-            )
-          )
+        class StarshipNode(
+          responseAdapterCache: ResponseAdapterCache
+        ) {
+          private val stringAdapter: ResponseAdapter<String> = StringResponseAdapter
 
-          override fun fromResponse(reader: ResponseReader, __typename: String?):
+          private val nullableStringAdapter: ResponseAdapter<String?> =
+              NullableResponseAdapter(StringResponseAdapter)
+
+          private val nullablePilotConnectionAdapter:
+              ResponseAdapter<com.example.fragment_in_fragment.AllStarships.Data.AllStarships.Edges.Node.StarshipNode.PilotConnection?>
+              = NullableResponseAdapter(PilotConnection(responseAdapterCache))
+
+          fun fromResponse(reader: JsonReader, __typename: String?):
               com.example.fragment_in_fragment.AllStarships.Data.AllStarships.Edges.Node.StarshipNode {
-            return reader.run {
-              var __typename: String? = __typename
-              var id: String? = null
-              var name: String? = null
-              var pilotConnection: com.example.fragment_in_fragment.AllStarships.Data.AllStarships.Edges.Node.StarshipNode.PilotConnection? = null
-              while(true) {
-                when (selectField(RESPONSE_FIELDS)) {
-                  0 -> __typename = readString(RESPONSE_FIELDS[0])
-                  1 -> id = readString(RESPONSE_FIELDS[1])
-                  2 -> name = readString(RESPONSE_FIELDS[2])
-                  3 -> pilotConnection = readObject<com.example.fragment_in_fragment.AllStarships.Data.AllStarships.Edges.Node.StarshipNode.PilotConnection>(RESPONSE_FIELDS[3]) { reader ->
-                    PilotConnection.fromResponse(reader)
-                  }
-                  else -> break
-                }
+            var __typename: String? = __typename
+            var id: String? = null
+            var name: String? = null
+            var pilotConnection: com.example.fragment_in_fragment.AllStarships.Data.AllStarships.Edges.Node.StarshipNode.PilotConnection? = null
+            while(true) {
+              when (reader.selectName(RESPONSE_NAMES)) {
+                0 -> __typename = stringAdapter.fromResponse(reader)
+                1 -> id = stringAdapter.fromResponse(reader)
+                2 -> name = nullableStringAdapter.fromResponse(reader)
+                3 -> pilotConnection = nullablePilotConnectionAdapter.fromResponse(reader)
+                else -> break
               }
-              com.example.fragment_in_fragment.AllStarships.Data.AllStarships.Edges.Node.StarshipNode(
-                __typename = __typename!!,
-                id = id!!,
-                name = name,
-                pilotConnection = pilotConnection
-              )
             }
+            return com.example.fragment_in_fragment.AllStarships.Data.AllStarships.Edges.Node.StarshipNode(
+              __typename = __typename!!,
+              id = id!!,
+              name = name,
+              pilotConnection = pilotConnection
+            )
           }
 
-          override fun toResponse(writer: ResponseWriter,
+          fun toResponse(writer: JsonWriter,
               value: com.example.fragment_in_fragment.AllStarships.Data.AllStarships.Edges.Node.StarshipNode) {
-            writer.writeString(RESPONSE_FIELDS[0], value.__typename)
-            writer.writeString(RESPONSE_FIELDS[1], value.id)
-            writer.writeString(RESPONSE_FIELDS[2], value.name)
-            if(value.pilotConnection == null) {
-              writer.writeObject(RESPONSE_FIELDS[3], null)
-            } else {
-              writer.writeObject(RESPONSE_FIELDS[3]) { writer ->
-                PilotConnection.toResponse(writer, value.pilotConnection)
-              }
-            }
+            writer.beginObject()
+            writer.name("__typename")
+            stringAdapter.toResponse(writer, value.__typename)
+            writer.name("id")
+            stringAdapter.toResponse(writer, value.id)
+            writer.name("name")
+            nullableStringAdapter.toResponse(writer, value.name)
+            writer.name("pilotConnection")
+            nullablePilotConnectionAdapter.toResponse(writer, value.pilotConnection)
+            writer.endObject()
           }
 
-          object PilotConnection :
-              ResponseAdapter<com.example.fragment_in_fragment.AllStarships.Data.AllStarships.Edges.Node.StarshipNode.PilotConnection>
-              {
+          companion object {
             val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
+              ResponseField.Typename,
               ResponseField(
-                type =
-                    ResponseField.Type.List(ResponseField.Type.Named.Object("StarshipPilotsEdge")),
-                responseName = "edges",
-                fieldName = "edges",
-                arguments = emptyMap(),
-                conditions = emptyList(),
+                type = ResponseField.Type.NotNull(ResponseField.Type.Named.Other("String")),
+                fieldName = "id",
+              ),
+              ResponseField(
+                type = ResponseField.Type.Named.Other("String"),
+                fieldName = "name",
+              ),
+              ResponseField(
+                type = ResponseField.Type.Named.Object("StarshipPilotsConnection"),
+                fieldName = "pilotConnection",
                 fieldSets = listOf(
-                  ResponseField.FieldSet(null, Edges.RESPONSE_FIELDS)
+                  ResponseField.FieldSet(null, PilotConnection.RESPONSE_FIELDS)
                 ),
               )
             )
 
-            override fun fromResponse(reader: ResponseReader, __typename: String?):
+            val RESPONSE_NAMES: List<String> = RESPONSE_FIELDS.map { it.responseName }
+          }
+
+          class PilotConnection(
+            responseAdapterCache: ResponseAdapterCache
+          ) :
+              ResponseAdapter<com.example.fragment_in_fragment.AllStarships.Data.AllStarships.Edges.Node.StarshipNode.PilotConnection>
+              {
+            private val nullableListOfNullableEdgesAdapter:
+                ResponseAdapter<List<com.example.fragment_in_fragment.AllStarships.Data.AllStarships.Edges.Node.StarshipNode.PilotConnection.Edges?>?>
+                =
+                NullableResponseAdapter(ListResponseAdapter(NullableResponseAdapter(Edges(responseAdapterCache))))
+
+            override fun fromResponse(reader: JsonReader):
                 com.example.fragment_in_fragment.AllStarships.Data.AllStarships.Edges.Node.StarshipNode.PilotConnection {
-              return reader.run {
-                var edges: List<com.example.fragment_in_fragment.AllStarships.Data.AllStarships.Edges.Node.StarshipNode.PilotConnection.Edges?>? = null
-                while(true) {
-                  when (selectField(RESPONSE_FIELDS)) {
-                    0 -> edges = readList<com.example.fragment_in_fragment.AllStarships.Data.AllStarships.Edges.Node.StarshipNode.PilotConnection.Edges>(RESPONSE_FIELDS[0]) { reader ->
-                      reader.readObject<com.example.fragment_in_fragment.AllStarships.Data.AllStarships.Edges.Node.StarshipNode.PilotConnection.Edges> { reader ->
-                        Edges.fromResponse(reader)
-                      }
-                    }
-                    else -> break
-                  }
+              var edges: List<com.example.fragment_in_fragment.AllStarships.Data.AllStarships.Edges.Node.StarshipNode.PilotConnection.Edges?>? = null
+              reader.beginObject()
+              while(true) {
+                when (reader.selectName(RESPONSE_NAMES)) {
+                  0 -> edges = nullableListOfNullableEdgesAdapter.fromResponse(reader)
+                  else -> break
                 }
-                com.example.fragment_in_fragment.AllStarships.Data.AllStarships.Edges.Node.StarshipNode.PilotConnection(
-                  edges = edges
-                )
               }
+              reader.endObject()
+              return com.example.fragment_in_fragment.AllStarships.Data.AllStarships.Edges.Node.StarshipNode.PilotConnection(
+                edges = edges
+              )
             }
 
-            override fun toResponse(writer: ResponseWriter,
+            override fun toResponse(writer: JsonWriter,
                 value: com.example.fragment_in_fragment.AllStarships.Data.AllStarships.Edges.Node.StarshipNode.PilotConnection) {
-              writer.writeList(RESPONSE_FIELDS[0], value.edges) { value, listItemWriter ->
-                listItemWriter.writeObject { writer ->
-                  Edges.toResponse(writer, value)
-                }
-              }
+              writer.beginObject()
+              writer.name("edges")
+              nullableListOfNullableEdgesAdapter.toResponse(writer, value.edges)
+              writer.endObject()
             }
 
-            object Edges :
-                ResponseAdapter<com.example.fragment_in_fragment.AllStarships.Data.AllStarships.Edges.Node.StarshipNode.PilotConnection.Edges>
-                {
+            companion object {
               val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
                 ResponseField(
-                  type = ResponseField.Type.Named.Object("Person"),
-                  responseName = "node",
-                  fieldName = "node",
-                  arguments = emptyMap(),
-                  conditions = emptyList(),
+                  type =
+                      ResponseField.Type.List(ResponseField.Type.Named.Object("StarshipPilotsEdge")),
+                  fieldName = "edges",
                   fieldSets = listOf(
-                    ResponseField.FieldSet("Person", Node.PersonNode.RESPONSE_FIELDS),
-                    ResponseField.FieldSet(null, Node.OtherNode.RESPONSE_FIELDS),
+                    ResponseField.FieldSet(null, Edges.RESPONSE_FIELDS)
                   ),
                 )
               )
 
-              override fun fromResponse(reader: ResponseReader, __typename: String?):
+              val RESPONSE_NAMES: List<String> = RESPONSE_FIELDS.map { it.responseName }
+            }
+
+            class Edges(
+              responseAdapterCache: ResponseAdapterCache
+            ) :
+                ResponseAdapter<com.example.fragment_in_fragment.AllStarships.Data.AllStarships.Edges.Node.StarshipNode.PilotConnection.Edges>
+                {
+              private val nullableNodeAdapter:
+                  ResponseAdapter<com.example.fragment_in_fragment.AllStarships.Data.AllStarships.Edges.Node.StarshipNode.PilotConnection.Edges.Node?>
+                  = NullableResponseAdapter(Node(responseAdapterCache))
+
+              override fun fromResponse(reader: JsonReader):
                   com.example.fragment_in_fragment.AllStarships.Data.AllStarships.Edges.Node.StarshipNode.PilotConnection.Edges {
-                return reader.run {
-                  var node: com.example.fragment_in_fragment.AllStarships.Data.AllStarships.Edges.Node.StarshipNode.PilotConnection.Edges.Node? = null
-                  while(true) {
-                    when (selectField(RESPONSE_FIELDS)) {
-                      0 -> node = readObject<com.example.fragment_in_fragment.AllStarships.Data.AllStarships.Edges.Node.StarshipNode.PilotConnection.Edges.Node>(RESPONSE_FIELDS[0]) { reader ->
-                        Node.fromResponse(reader)
-                      }
-                      else -> break
-                    }
+                var node: com.example.fragment_in_fragment.AllStarships.Data.AllStarships.Edges.Node.StarshipNode.PilotConnection.Edges.Node? = null
+                reader.beginObject()
+                while(true) {
+                  when (reader.selectName(RESPONSE_NAMES)) {
+                    0 -> node = nullableNodeAdapter.fromResponse(reader)
+                    else -> break
                   }
-                  com.example.fragment_in_fragment.AllStarships.Data.AllStarships.Edges.Node.StarshipNode.PilotConnection.Edges(
-                    node = node
-                  )
                 }
+                reader.endObject()
+                return com.example.fragment_in_fragment.AllStarships.Data.AllStarships.Edges.Node.StarshipNode.PilotConnection.Edges(
+                  node = node
+                )
               }
 
-              override fun toResponse(writer: ResponseWriter,
+              override fun toResponse(writer: JsonWriter,
                   value: com.example.fragment_in_fragment.AllStarships.Data.AllStarships.Edges.Node.StarshipNode.PilotConnection.Edges) {
-                if(value.node == null) {
-                  writer.writeObject(RESPONSE_FIELDS[0], null)
-                } else {
-                  writer.writeObject(RESPONSE_FIELDS[0]) { writer ->
-                    Node.toResponse(writer, value.node)
-                  }
-                }
+                writer.beginObject()
+                writer.name("node")
+                nullableNodeAdapter.toResponse(writer, value.node)
+                writer.endObject()
               }
 
-              object Node :
+              companion object {
+                val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
+                  ResponseField(
+                    type = ResponseField.Type.Named.Object("Person"),
+                    fieldName = "node",
+                    fieldSets = listOf(
+                      ResponseField.FieldSet("Person", Node.PersonNode.RESPONSE_FIELDS),
+                      ResponseField.FieldSet(null, Node.OtherNode.RESPONSE_FIELDS),
+                    ),
+                  )
+                )
+
+                val RESPONSE_NAMES: List<String> = RESPONSE_FIELDS.map { it.responseName }
+              }
+
+              class Node(
+                responseAdapterCache: ResponseAdapterCache
+              ) :
                   ResponseAdapter<com.example.fragment_in_fragment.AllStarships.Data.AllStarships.Edges.Node.StarshipNode.PilotConnection.Edges.Node>
                   {
-                override fun fromResponse(reader: ResponseReader, __typename: String?):
+                val PersonNodeAdapter: PersonNode =
+                    com.example.fragment_in_fragment.adapter.AllStarships_ResponseAdapter.AllStarships.Edges.Node.StarshipNode.PilotConnection.Edges.Node.PersonNode(responseAdapterCache)
+
+                val OtherNodeAdapter: OtherNode =
+                    com.example.fragment_in_fragment.adapter.AllStarships_ResponseAdapter.AllStarships.Edges.Node.StarshipNode.PilotConnection.Edges.Node.OtherNode(responseAdapterCache)
+
+                override fun fromResponse(reader: JsonReader):
                     com.example.fragment_in_fragment.AllStarships.Data.AllStarships.Edges.Node.StarshipNode.PilotConnection.Edges.Node {
-                  val typename = __typename ?: reader.readString(ResponseField.Typename)
+                  reader.beginObject()
+                  check(reader.nextName() == "__typename")
+                  val typename = reader.nextString()
+
                   return when(typename) {
-                    "Person" -> PersonNode.fromResponse(reader, typename)
-                    else -> OtherNode.fromResponse(reader, typename)
+                    "Person" -> PersonNodeAdapter.fromResponse(reader, typename)
+                    else -> OtherNodeAdapter.fromResponse(reader, typename)
                   }
+                  .also { reader.endObject() }
                 }
 
-                override fun toResponse(writer: ResponseWriter,
+                override fun toResponse(writer: JsonWriter,
                     value: com.example.fragment_in_fragment.AllStarships.Data.AllStarships.Edges.Node.StarshipNode.PilotConnection.Edges.Node) {
                   when(value) {
-                    is com.example.fragment_in_fragment.AllStarships.Data.AllStarships.Edges.Node.StarshipNode.PilotConnection.Edges.Node.PersonNode -> PersonNode.toResponse(writer, value)
-                    is com.example.fragment_in_fragment.AllStarships.Data.AllStarships.Edges.Node.StarshipNode.PilotConnection.Edges.Node.OtherNode -> OtherNode.toResponse(writer, value)
+                    is com.example.fragment_in_fragment.AllStarships.Data.AllStarships.Edges.Node.StarshipNode.PilotConnection.Edges.Node.PersonNode -> PersonNodeAdapter.toResponse(writer, value)
+                    is com.example.fragment_in_fragment.AllStarships.Data.AllStarships.Edges.Node.StarshipNode.PilotConnection.Edges.Node.OtherNode -> OtherNodeAdapter.toResponse(writer, value)
                   }
                 }
 
-                object PersonNode :
-                    ResponseAdapter<com.example.fragment_in_fragment.AllStarships.Data.AllStarships.Edges.Node.StarshipNode.PilotConnection.Edges.Node.PersonNode>
-                    {
-                  val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
-                    ResponseField(
-                      type = ResponseField.Type.NotNull(ResponseField.Type.Named.Other("String")),
-                      responseName = "__typename",
-                      fieldName = "__typename",
-                      arguments = emptyMap(),
-                      conditions = emptyList(),
-                      fieldSets = emptyList(),
-                    ),
-                    ResponseField(
-                      type = ResponseField.Type.Named.Other("String"),
-                      responseName = "name",
-                      fieldName = "name",
-                      arguments = emptyMap(),
-                      conditions = emptyList(),
-                      fieldSets = emptyList(),
-                    ),
-                    ResponseField(
-                      type = ResponseField.Type.Named.Object("Planet"),
-                      responseName = "homeworld",
-                      fieldName = "homeworld",
-                      arguments = emptyMap(),
-                      conditions = emptyList(),
-                      fieldSets = listOf(
-                        ResponseField.FieldSet("Planet", Homeworld.PlanetHomeworld.RESPONSE_FIELDS),
-                        ResponseField.FieldSet(null, Homeworld.OtherHomeworld.RESPONSE_FIELDS),
-                      ),
-                    )
-                  )
+                class PersonNode(
+                  responseAdapterCache: ResponseAdapterCache
+                ) {
+                  private val stringAdapter: ResponseAdapter<String> = StringResponseAdapter
 
-                  override fun fromResponse(reader: ResponseReader, __typename: String?):
+                  private val nullableStringAdapter: ResponseAdapter<String?> =
+                      NullableResponseAdapter(StringResponseAdapter)
+
+                  private val nullableHomeworldAdapter:
+                      ResponseAdapter<com.example.fragment_in_fragment.AllStarships.Data.AllStarships.Edges.Node.StarshipNode.PilotConnection.Edges.Node.PersonNode.Homeworld?>
+                      = NullableResponseAdapter(Homeworld(responseAdapterCache))
+
+                  fun fromResponse(reader: JsonReader, __typename: String?):
                       com.example.fragment_in_fragment.AllStarships.Data.AllStarships.Edges.Node.StarshipNode.PilotConnection.Edges.Node.PersonNode {
-                    return reader.run {
-                      var __typename: String? = __typename
-                      var name: String? = null
-                      var homeworld: com.example.fragment_in_fragment.AllStarships.Data.AllStarships.Edges.Node.StarshipNode.PilotConnection.Edges.Node.PersonNode.Homeworld? = null
-                      while(true) {
-                        when (selectField(RESPONSE_FIELDS)) {
-                          0 -> __typename = readString(RESPONSE_FIELDS[0])
-                          1 -> name = readString(RESPONSE_FIELDS[1])
-                          2 -> homeworld = readObject<com.example.fragment_in_fragment.AllStarships.Data.AllStarships.Edges.Node.StarshipNode.PilotConnection.Edges.Node.PersonNode.Homeworld>(RESPONSE_FIELDS[2]) { reader ->
-                            Homeworld.fromResponse(reader)
-                          }
-                          else -> break
-                        }
+                    var __typename: String? = __typename
+                    var name: String? = null
+                    var homeworld: com.example.fragment_in_fragment.AllStarships.Data.AllStarships.Edges.Node.StarshipNode.PilotConnection.Edges.Node.PersonNode.Homeworld? = null
+                    while(true) {
+                      when (reader.selectName(RESPONSE_NAMES)) {
+                        0 -> __typename = stringAdapter.fromResponse(reader)
+                        1 -> name = nullableStringAdapter.fromResponse(reader)
+                        2 -> homeworld = nullableHomeworldAdapter.fromResponse(reader)
+                        else -> break
                       }
-                      com.example.fragment_in_fragment.AllStarships.Data.AllStarships.Edges.Node.StarshipNode.PilotConnection.Edges.Node.PersonNode(
-                        __typename = __typename!!,
-                        name = name,
-                        homeworld = homeworld
-                      )
                     }
+                    return com.example.fragment_in_fragment.AllStarships.Data.AllStarships.Edges.Node.StarshipNode.PilotConnection.Edges.Node.PersonNode(
+                      __typename = __typename!!,
+                      name = name,
+                      homeworld = homeworld
+                    )
                   }
 
-                  override fun toResponse(writer: ResponseWriter,
+                  fun toResponse(writer: JsonWriter,
                       value: com.example.fragment_in_fragment.AllStarships.Data.AllStarships.Edges.Node.StarshipNode.PilotConnection.Edges.Node.PersonNode) {
-                    writer.writeString(RESPONSE_FIELDS[0], value.__typename)
-                    writer.writeString(RESPONSE_FIELDS[1], value.name)
-                    if(value.homeworld == null) {
-                      writer.writeObject(RESPONSE_FIELDS[2], null)
-                    } else {
-                      writer.writeObject(RESPONSE_FIELDS[2]) { writer ->
-                        Homeworld.toResponse(writer, value.homeworld)
-                      }
-                    }
+                    writer.beginObject()
+                    writer.name("__typename")
+                    stringAdapter.toResponse(writer, value.__typename)
+                    writer.name("name")
+                    nullableStringAdapter.toResponse(writer, value.name)
+                    writer.name("homeworld")
+                    nullableHomeworldAdapter.toResponse(writer, value.homeworld)
+                    writer.endObject()
                   }
 
-                  object Homeworld :
+                  companion object {
+                    val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
+                      ResponseField.Typename,
+                      ResponseField(
+                        type = ResponseField.Type.Named.Other("String"),
+                        fieldName = "name",
+                      ),
+                      ResponseField(
+                        type = ResponseField.Type.Named.Object("Planet"),
+                        fieldName = "homeworld",
+                        fieldSets = listOf(
+                          ResponseField.FieldSet("Planet",
+                              Homeworld.PlanetHomeworld.RESPONSE_FIELDS),
+                          ResponseField.FieldSet(null, Homeworld.OtherHomeworld.RESPONSE_FIELDS),
+                        ),
+                      )
+                    )
+
+                    val RESPONSE_NAMES: List<String> = RESPONSE_FIELDS.map { it.responseName }
+                  }
+
+                  class Homeworld(
+                    responseAdapterCache: ResponseAdapterCache
+                  ) :
                       ResponseAdapter<com.example.fragment_in_fragment.AllStarships.Data.AllStarships.Edges.Node.StarshipNode.PilotConnection.Edges.Node.PersonNode.Homeworld>
                       {
-                    override fun fromResponse(reader: ResponseReader, __typename: String?):
+                    val PlanetHomeworldAdapter: PlanetHomeworld =
+                        com.example.fragment_in_fragment.adapter.AllStarships_ResponseAdapter.AllStarships.Edges.Node.StarshipNode.PilotConnection.Edges.Node.PersonNode.Homeworld.PlanetHomeworld(responseAdapterCache)
+
+                    val OtherHomeworldAdapter: OtherHomeworld =
+                        com.example.fragment_in_fragment.adapter.AllStarships_ResponseAdapter.AllStarships.Edges.Node.StarshipNode.PilotConnection.Edges.Node.PersonNode.Homeworld.OtherHomeworld(responseAdapterCache)
+
+                    override fun fromResponse(reader: JsonReader):
                         com.example.fragment_in_fragment.AllStarships.Data.AllStarships.Edges.Node.StarshipNode.PilotConnection.Edges.Node.PersonNode.Homeworld {
-                      val typename = __typename ?: reader.readString(ResponseField.Typename)
+                      reader.beginObject()
+                      check(reader.nextName() == "__typename")
+                      val typename = reader.nextString()
+
                       return when(typename) {
-                        "Planet" -> PlanetHomeworld.fromResponse(reader, typename)
-                        else -> OtherHomeworld.fromResponse(reader, typename)
+                        "Planet" -> PlanetHomeworldAdapter.fromResponse(reader, typename)
+                        else -> OtherHomeworldAdapter.fromResponse(reader, typename)
                       }
+                      .also { reader.endObject() }
                     }
 
-                    override fun toResponse(writer: ResponseWriter,
+                    override fun toResponse(writer: JsonWriter,
                         value: com.example.fragment_in_fragment.AllStarships.Data.AllStarships.Edges.Node.StarshipNode.PilotConnection.Edges.Node.PersonNode.Homeworld) {
                       when(value) {
-                        is com.example.fragment_in_fragment.AllStarships.Data.AllStarships.Edges.Node.StarshipNode.PilotConnection.Edges.Node.PersonNode.Homeworld.PlanetHomeworld -> PlanetHomeworld.toResponse(writer, value)
-                        is com.example.fragment_in_fragment.AllStarships.Data.AllStarships.Edges.Node.StarshipNode.PilotConnection.Edges.Node.PersonNode.Homeworld.OtherHomeworld -> OtherHomeworld.toResponse(writer, value)
+                        is com.example.fragment_in_fragment.AllStarships.Data.AllStarships.Edges.Node.StarshipNode.PilotConnection.Edges.Node.PersonNode.Homeworld.PlanetHomeworld -> PlanetHomeworldAdapter.toResponse(writer, value)
+                        is com.example.fragment_in_fragment.AllStarships.Data.AllStarships.Edges.Node.StarshipNode.PilotConnection.Edges.Node.PersonNode.Homeworld.OtherHomeworld -> OtherHomeworldAdapter.toResponse(writer, value)
                       }
                     }
 
-                    object PlanetHomeworld :
-                        ResponseAdapter<com.example.fragment_in_fragment.AllStarships.Data.AllStarships.Edges.Node.StarshipNode.PilotConnection.Edges.Node.PersonNode.Homeworld.PlanetHomeworld>
-                        {
-                      val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
-                        ResponseField(
-                          type =
-                              ResponseField.Type.NotNull(ResponseField.Type.Named.Other("String")),
-                          responseName = "__typename",
-                          fieldName = "__typename",
-                          arguments = emptyMap(),
-                          conditions = emptyList(),
-                          fieldSets = emptyList(),
-                        ),
-                        ResponseField(
-                          type = ResponseField.Type.Named.Other("String"),
-                          responseName = "name",
-                          fieldName = "name",
-                          arguments = emptyMap(),
-                          conditions = emptyList(),
-                          fieldSets = emptyList(),
-                        )
-                      )
+                    class PlanetHomeworld(
+                      responseAdapterCache: ResponseAdapterCache
+                    ) {
+                      private val stringAdapter: ResponseAdapter<String> = StringResponseAdapter
 
-                      override fun fromResponse(reader: ResponseReader, __typename: String?):
+                      private val nullableStringAdapter: ResponseAdapter<String?> =
+                          NullableResponseAdapter(StringResponseAdapter)
+
+                      fun fromResponse(reader: JsonReader, __typename: String?):
                           com.example.fragment_in_fragment.AllStarships.Data.AllStarships.Edges.Node.StarshipNode.PilotConnection.Edges.Node.PersonNode.Homeworld.PlanetHomeworld {
-                        return reader.run {
-                          var __typename: String? = __typename
-                          var name: String? = null
-                          while(true) {
-                            when (selectField(RESPONSE_FIELDS)) {
-                              0 -> __typename = readString(RESPONSE_FIELDS[0])
-                              1 -> name = readString(RESPONSE_FIELDS[1])
-                              else -> break
-                            }
+                        var __typename: String? = __typename
+                        var name: String? = null
+                        while(true) {
+                          when (reader.selectName(RESPONSE_NAMES)) {
+                            0 -> __typename = stringAdapter.fromResponse(reader)
+                            1 -> name = nullableStringAdapter.fromResponse(reader)
+                            else -> break
                           }
-                          com.example.fragment_in_fragment.AllStarships.Data.AllStarships.Edges.Node.StarshipNode.PilotConnection.Edges.Node.PersonNode.Homeworld.PlanetHomeworld(
-                            __typename = __typename!!,
-                            name = name
-                          )
                         }
+                        return com.example.fragment_in_fragment.AllStarships.Data.AllStarships.Edges.Node.StarshipNode.PilotConnection.Edges.Node.PersonNode.Homeworld.PlanetHomeworld(
+                          __typename = __typename!!,
+                          name = name
+                        )
                       }
 
-                      override fun toResponse(writer: ResponseWriter,
+                      fun toResponse(writer: JsonWriter,
                           value: com.example.fragment_in_fragment.AllStarships.Data.AllStarships.Edges.Node.StarshipNode.PilotConnection.Edges.Node.PersonNode.Homeworld.PlanetHomeworld) {
-                        writer.writeString(RESPONSE_FIELDS[0], value.__typename)
-                        writer.writeString(RESPONSE_FIELDS[1], value.name)
+                        writer.beginObject()
+                        writer.name("__typename")
+                        stringAdapter.toResponse(writer, value.__typename)
+                        writer.name("name")
+                        nullableStringAdapter.toResponse(writer, value.name)
+                        writer.endObject()
+                      }
+
+                      companion object {
+                        val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
+                          ResponseField.Typename,
+                          ResponseField(
+                            type = ResponseField.Type.Named.Other("String"),
+                            fieldName = "name",
+                          )
+                        )
+
+                        val RESPONSE_NAMES: List<String> = RESPONSE_FIELDS.map { it.responseName }
                       }
                     }
 
-                    object OtherHomeworld :
-                        ResponseAdapter<com.example.fragment_in_fragment.AllStarships.Data.AllStarships.Edges.Node.StarshipNode.PilotConnection.Edges.Node.PersonNode.Homeworld.OtherHomeworld>
-                        {
-                      val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
-                        ResponseField(
-                          type =
-                              ResponseField.Type.NotNull(ResponseField.Type.Named.Other("String")),
-                          responseName = "__typename",
-                          fieldName = "__typename",
-                          arguments = emptyMap(),
-                          conditions = emptyList(),
-                          fieldSets = emptyList(),
-                        )
-                      )
+                    class OtherHomeworld(
+                      responseAdapterCache: ResponseAdapterCache
+                    ) {
+                      private val stringAdapter: ResponseAdapter<String> = StringResponseAdapter
 
-                      override fun fromResponse(reader: ResponseReader, __typename: String?):
+                      fun fromResponse(reader: JsonReader, __typename: String?):
                           com.example.fragment_in_fragment.AllStarships.Data.AllStarships.Edges.Node.StarshipNode.PilotConnection.Edges.Node.PersonNode.Homeworld.OtherHomeworld {
-                        return reader.run {
-                          var __typename: String? = __typename
-                          while(true) {
-                            when (selectField(RESPONSE_FIELDS)) {
-                              0 -> __typename = readString(RESPONSE_FIELDS[0])
-                              else -> break
-                            }
+                        var __typename: String? = __typename
+                        while(true) {
+                          when (reader.selectName(RESPONSE_NAMES)) {
+                            0 -> __typename = stringAdapter.fromResponse(reader)
+                            else -> break
                           }
-                          com.example.fragment_in_fragment.AllStarships.Data.AllStarships.Edges.Node.StarshipNode.PilotConnection.Edges.Node.PersonNode.Homeworld.OtherHomeworld(
-                            __typename = __typename!!
-                          )
                         }
+                        return com.example.fragment_in_fragment.AllStarships.Data.AllStarships.Edges.Node.StarshipNode.PilotConnection.Edges.Node.PersonNode.Homeworld.OtherHomeworld(
+                          __typename = __typename!!
+                        )
                       }
 
-                      override fun toResponse(writer: ResponseWriter,
+                      fun toResponse(writer: JsonWriter,
                           value: com.example.fragment_in_fragment.AllStarships.Data.AllStarships.Edges.Node.StarshipNode.PilotConnection.Edges.Node.PersonNode.Homeworld.OtherHomeworld) {
-                        writer.writeString(RESPONSE_FIELDS[0], value.__typename)
+                        writer.beginObject()
+                        writer.name("__typename")
+                        stringAdapter.toResponse(writer, value.__typename)
+                        writer.endObject()
+                      }
+
+                      companion object {
+                        val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
+                          ResponseField.Typename
+                        )
+
+                        val RESPONSE_NAMES: List<String> = RESPONSE_FIELDS.map { it.responseName }
                       }
                     }
                   }
                 }
 
-                object OtherNode :
-                    ResponseAdapter<com.example.fragment_in_fragment.AllStarships.Data.AllStarships.Edges.Node.StarshipNode.PilotConnection.Edges.Node.OtherNode>
-                    {
-                  val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
-                    ResponseField(
-                      type = ResponseField.Type.NotNull(ResponseField.Type.Named.Other("String")),
-                      responseName = "__typename",
-                      fieldName = "__typename",
-                      arguments = emptyMap(),
-                      conditions = emptyList(),
-                      fieldSets = emptyList(),
-                    )
-                  )
+                class OtherNode(
+                  responseAdapterCache: ResponseAdapterCache
+                ) {
+                  private val stringAdapter: ResponseAdapter<String> = StringResponseAdapter
 
-                  override fun fromResponse(reader: ResponseReader, __typename: String?):
+                  fun fromResponse(reader: JsonReader, __typename: String?):
                       com.example.fragment_in_fragment.AllStarships.Data.AllStarships.Edges.Node.StarshipNode.PilotConnection.Edges.Node.OtherNode {
-                    return reader.run {
-                      var __typename: String? = __typename
-                      while(true) {
-                        when (selectField(RESPONSE_FIELDS)) {
-                          0 -> __typename = readString(RESPONSE_FIELDS[0])
-                          else -> break
-                        }
+                    var __typename: String? = __typename
+                    while(true) {
+                      when (reader.selectName(RESPONSE_NAMES)) {
+                        0 -> __typename = stringAdapter.fromResponse(reader)
+                        else -> break
                       }
-                      com.example.fragment_in_fragment.AllStarships.Data.AllStarships.Edges.Node.StarshipNode.PilotConnection.Edges.Node.OtherNode(
-                        __typename = __typename!!
-                      )
                     }
+                    return com.example.fragment_in_fragment.AllStarships.Data.AllStarships.Edges.Node.StarshipNode.PilotConnection.Edges.Node.OtherNode(
+                      __typename = __typename!!
+                    )
                   }
 
-                  override fun toResponse(writer: ResponseWriter,
+                  fun toResponse(writer: JsonWriter,
                       value: com.example.fragment_in_fragment.AllStarships.Data.AllStarships.Edges.Node.StarshipNode.PilotConnection.Edges.Node.OtherNode) {
-                    writer.writeString(RESPONSE_FIELDS[0], value.__typename)
+                    writer.beginObject()
+                    writer.name("__typename")
+                    stringAdapter.toResponse(writer, value.__typename)
+                    writer.endObject()
+                  }
+
+                  companion object {
+                    val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
+                      ResponseField.Typename
+                    )
+
+                    val RESPONSE_NAMES: List<String> = RESPONSE_FIELDS.map { it.responseName }
                   }
                 }
               }
@@ -582,39 +617,39 @@ object AllStarships_ResponseAdapter : ResponseAdapter<AllStarships.Data> {
           }
         }
 
-        object OtherNode :
-            ResponseAdapter<com.example.fragment_in_fragment.AllStarships.Data.AllStarships.Edges.Node.OtherNode>
-            {
-          val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
-            ResponseField(
-              type = ResponseField.Type.NotNull(ResponseField.Type.Named.Other("String")),
-              responseName = "__typename",
-              fieldName = "__typename",
-              arguments = emptyMap(),
-              conditions = emptyList(),
-              fieldSets = emptyList(),
-            )
-          )
+        class OtherNode(
+          responseAdapterCache: ResponseAdapterCache
+        ) {
+          private val stringAdapter: ResponseAdapter<String> = StringResponseAdapter
 
-          override fun fromResponse(reader: ResponseReader, __typename: String?):
+          fun fromResponse(reader: JsonReader, __typename: String?):
               com.example.fragment_in_fragment.AllStarships.Data.AllStarships.Edges.Node.OtherNode {
-            return reader.run {
-              var __typename: String? = __typename
-              while(true) {
-                when (selectField(RESPONSE_FIELDS)) {
-                  0 -> __typename = readString(RESPONSE_FIELDS[0])
-                  else -> break
-                }
+            var __typename: String? = __typename
+            while(true) {
+              when (reader.selectName(RESPONSE_NAMES)) {
+                0 -> __typename = stringAdapter.fromResponse(reader)
+                else -> break
               }
-              com.example.fragment_in_fragment.AllStarships.Data.AllStarships.Edges.Node.OtherNode(
-                __typename = __typename!!
-              )
             }
+            return com.example.fragment_in_fragment.AllStarships.Data.AllStarships.Edges.Node.OtherNode(
+              __typename = __typename!!
+            )
           }
 
-          override fun toResponse(writer: ResponseWriter,
+          fun toResponse(writer: JsonWriter,
               value: com.example.fragment_in_fragment.AllStarships.Data.AllStarships.Edges.Node.OtherNode) {
-            writer.writeString(RESPONSE_FIELDS[0], value.__typename)
+            writer.beginObject()
+            writer.name("__typename")
+            stringAdapter.toResponse(writer, value.__typename)
+            writer.endObject()
+          }
+
+          companion object {
+            val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
+              ResponseField.Typename
+            )
+
+            val RESPONSE_NAMES: List<String> = RESPONSE_FIELDS.map { it.responseName }
           }
         }
       }

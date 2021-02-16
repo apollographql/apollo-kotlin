@@ -1,13 +1,11 @@
 package com.apollographql.apollo.internal.interceptor
 
 import com.apollographql.apollo.Utils.checkTestFixture
-import com.apollographql.apollo.api.CustomScalarAdapter
 import com.apollographql.apollo.api.Input
-import com.apollographql.apollo.api.CustomScalarAdapters
+import com.apollographql.apollo.api.ResponseAdapterCache
 import com.apollographql.apollo.api.cache.http.HttpCache
 import com.apollographql.apollo.api.cache.http.HttpCachePolicy
 import com.apollographql.apollo.api.internal.ApolloLogger
-import com.apollographql.apollo.api.internal.Optional
 import com.apollographql.apollo.cache.ApolloCacheHeaders
 import com.apollographql.apollo.cache.CacheHeaders
 import com.apollographql.apollo.integration.interceptor.AllFilmsQuery
@@ -46,7 +44,7 @@ class ApolloServerInterceptorTest {
     }
     val interceptor = ApolloServerInterceptor(serverUrl,
         AssertHttpCallFactory(requestAssertPredicate), null, false,
-        CustomScalarAdapters(emptyMap()),
+        ResponseAdapterCache(emptyMap()),
         ApolloLogger(null))
     interceptor.httpPostCall(query, CacheHeaders.NONE, RequestHeaders.NONE, true, false)
   }
@@ -54,7 +52,7 @@ class ApolloServerInterceptorTest {
   @Test
   @Throws(Exception::class)
   fun testCachedHttpCall() {
-    val scalarTypeAdapters = CustomScalarAdapters(emptyMap())
+    val scalarTypeAdapters = ResponseAdapterCache(emptyMap())
     val cacheKey: String = ApolloServerInterceptor.cacheKey(query, scalarTypeAdapters)
     val requestAssertPredicate = Predicate<Request?> { request ->
       Truth.assertThat(request).isNotNull()
@@ -112,7 +110,7 @@ class ApolloServerInterceptorTest {
         .build()
     val interceptor = ApolloServerInterceptor(serverUrl,
         AssertHttpCallFactory(requestAssertPredicate), null, false,
-        CustomScalarAdapters(emptyMap()),
+        ResponseAdapterCache(emptyMap()),
         ApolloLogger(null))
     interceptor.httpPostCall(query, CacheHeaders.NONE, requestHeaders, true, false)
   }
@@ -139,7 +137,7 @@ class ApolloServerInterceptorTest {
     }
     val interceptor = ApolloServerInterceptor(serverUrl,
         AssertHttpCallFactory(requestAssertPredicate), null, false,
-        CustomScalarAdapters(emptyMap()),
+        ResponseAdapterCache(emptyMap()),
         ApolloLogger(null))
     interceptor.httpGetCall(query, CacheHeaders.NONE, RequestHeaders.NONE, true, true)
   }

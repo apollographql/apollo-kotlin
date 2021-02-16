@@ -5,12 +5,17 @@
 //
 package com.example.named_fragment_inside_inline_fragment.fragment.adapter
 
+import com.apollographql.apollo.api.ResponseAdapterCache
 import com.apollographql.apollo.api.ResponseField
+import com.apollographql.apollo.api.internal.ListResponseAdapter
+import com.apollographql.apollo.api.internal.NullableResponseAdapter
 import com.apollographql.apollo.api.internal.ResponseAdapter
-import com.apollographql.apollo.api.internal.ResponseReader
-import com.apollographql.apollo.api.internal.ResponseWriter
+import com.apollographql.apollo.api.internal.StringResponseAdapter
+import com.apollographql.apollo.api.internal.json.JsonReader
+import com.apollographql.apollo.api.internal.json.JsonWriter
 import com.example.named_fragment_inside_inline_fragment.fragment.CharacterAppearsInImpl
 import com.example.named_fragment_inside_inline_fragment.type.Episode
+import com.example.named_fragment_inside_inline_fragment.type.Episode_ResponseAdapter
 import kotlin.Array
 import kotlin.String
 import kotlin.Suppress
@@ -19,51 +24,51 @@ import kotlin.collections.List
 @Suppress("NAME_SHADOWING", "UNUSED_ANONYMOUS_PARAMETER", "LocalVariableName",
     "RemoveExplicitTypeArguments", "NestedLambdaShadowedImplicitParameter", "PropertyName",
     "RemoveRedundantQualifierName")
-object CharacterAppearsInImpl_ResponseAdapter : ResponseAdapter<CharacterAppearsInImpl.Data> {
-  val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
-    ResponseField(
-      type = ResponseField.Type.NotNull(ResponseField.Type.Named.Other("String")),
-      responseName = "__typename",
-      fieldName = "__typename",
-      arguments = emptyMap(),
-      conditions = emptyList(),
-      fieldSets = emptyList(),
-    ),
-    ResponseField(
-      type =
-          ResponseField.Type.NotNull(ResponseField.Type.List(ResponseField.Type.Named.Other("Episode"))),
-      responseName = "appearsIn",
-      fieldName = "appearsIn",
-      arguments = emptyMap(),
-      conditions = emptyList(),
-      fieldSets = emptyList(),
-    )
-  )
+class CharacterAppearsInImpl_ResponseAdapter(
+  responseAdapterCache: ResponseAdapterCache
+) : ResponseAdapter<CharacterAppearsInImpl.Data> {
+  private val stringAdapter: ResponseAdapter<String> = StringResponseAdapter
 
-  override fun fromResponse(reader: ResponseReader, __typename: String?):
-      CharacterAppearsInImpl.Data {
-    return reader.run {
-      var __typename: String? = __typename
-      var appearsIn: List<Episode?>? = null
-      while(true) {
-        when (selectField(RESPONSE_FIELDS)) {
-          0 -> __typename = readString(RESPONSE_FIELDS[0])
-          1 -> appearsIn = readList<Episode>(RESPONSE_FIELDS[1]) { reader ->
-            Episode.safeValueOf(reader.readString())
-          }
-          else -> break
-        }
+  private val listOfNullableEpisodeAdapter: ResponseAdapter<List<Episode?>> =
+      ListResponseAdapter(NullableResponseAdapter(Episode_ResponseAdapter))
+
+  override fun fromResponse(reader: JsonReader): CharacterAppearsInImpl.Data {
+    var __typename: String? = null
+    var appearsIn: List<Episode?>? = null
+    reader.beginObject()
+    while(true) {
+      when (reader.selectName(RESPONSE_NAMES)) {
+        0 -> __typename = stringAdapter.fromResponse(reader)
+        1 -> appearsIn = listOfNullableEpisodeAdapter.fromResponse(reader)
+        else -> break
       }
-      CharacterAppearsInImpl.Data(
-        __typename = __typename!!,
-        appearsIn = appearsIn!!
-      )
     }
+    reader.endObject()
+    return CharacterAppearsInImpl.Data(
+      __typename = __typename!!,
+      appearsIn = appearsIn!!
+    )
   }
 
-  override fun toResponse(writer: ResponseWriter, value: CharacterAppearsInImpl.Data) {
-    writer.writeString(RESPONSE_FIELDS[0], value.__typename)
-    writer.writeList(RESPONSE_FIELDS[1], value.appearsIn) { value, listItemWriter ->
-      listItemWriter.writeString(value?.rawValue)}
+  override fun toResponse(writer: JsonWriter, value: CharacterAppearsInImpl.Data) {
+    writer.beginObject()
+    writer.name("__typename")
+    stringAdapter.toResponse(writer, value.__typename)
+    writer.name("appearsIn")
+    listOfNullableEpisodeAdapter.toResponse(writer, value.appearsIn)
+    writer.endObject()
+  }
+
+  companion object {
+    val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
+      ResponseField.Typename,
+      ResponseField(
+        type =
+            ResponseField.Type.NotNull(ResponseField.Type.List(ResponseField.Type.Named.Other("Episode"))),
+        fieldName = "appearsIn",
+      )
+    )
+
+    val RESPONSE_NAMES: List<String> = RESPONSE_FIELDS.map { it.responseName }
   }
 }

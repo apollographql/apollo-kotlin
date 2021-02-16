@@ -1,8 +1,14 @@
 package com.apollographql.apollo.exception
 
+open class ApolloException(message: String? = null, cause: Throwable? = null) : RuntimeException(message, cause)
+
 class ApolloSerializationException(message: String? = null, cause: Throwable? = null) : ApolloException(message = message, cause = cause)
 
 class ApolloParseException(message: String? = null, cause: Throwable? = null) : ApolloException(message = message, cause = cause)
+class UnexpectedNullValue(fieldName: String) : ApolloException(message = "Unexpected null value at '$fieldName'")
+
+class ObjectMissingException(key: String? = null) : ApolloException(message = "Object '$key' is not cached")
+class FieldMissingException(key: String? = null, fieldName: String, canonicalFieldName: String) : ApolloException(message = "Object '$key' has no field named '$fieldName' ($canonicalFieldName)")
 
 class ApolloCanceledException(message: String? = null, cause: Throwable? = null) : ApolloException(message = message, cause = cause)
 

@@ -1,9 +1,7 @@
 package com.apollographql.apollo.subscription
 
-import com.apollographql.apollo.api.CustomScalarAdapters
+import com.apollographql.apollo.api.ResponseAdapterCache
 import com.apollographql.apollo.api.Subscription
-import com.apollographql.apollo.api.internal.json.JsonWriter
-import okio.Buffer
 
 sealed class OperationClientMessage {
   class Init(val connectionParams: Map<String, Any?>) : OperationClientMessage() {
@@ -15,7 +13,7 @@ sealed class OperationClientMessage {
   class Start(
       val subscriptionId: String,
       val subscription: Subscription<*>,
-      val customScalarAdapters: CustomScalarAdapters,
+      val responseAdapterCache: ResponseAdapterCache,
       val autoPersistSubscription: Boolean,
       /**
        * whether or not to send the document. Only valid if [autoPersistSubscription] is true

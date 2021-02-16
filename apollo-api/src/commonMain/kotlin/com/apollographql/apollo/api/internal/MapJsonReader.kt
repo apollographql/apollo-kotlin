@@ -1,8 +1,7 @@
-package com.apollographql.apollo.cache.normalized.internal
+package com.apollographql.apollo.api.internal
 
 import com.apollographql.apollo.api.BigDecimal
 import com.apollographql.apollo.api.internal.json.JsonReader
-import com.apollographql.apollo.cache.normalized.CacheReference
 
 class MapJsonReader(val root: Map<String, Any?>) : JsonReader {
   class OrderedMap(val entries: List<Entry>)
@@ -17,6 +16,15 @@ class MapJsonReader(val root: Map<String, Any?>) : JsonReader {
   var currentData: Any = sentinel
   var currentIndex = 0
   var currentName: String? = "root"
+
+  /**
+   * See [com.apollographql.apollo.api.internal.json.BufferedSourceJsonReader] for the 32 limitation
+   */
+  private val nameIndexStack = IntArray(32).apply {
+    this[0] = 0
+  }
+  private var nameIndexStackSize = 1
+
 
   private fun push(data: Any) {
     dataStack.add(currentData)
@@ -64,20 +72,27 @@ class MapJsonReader(val root: Map<String, Any?>) : JsonReader {
     val map = nextValue()
     check(map is Map<*, *>)
     push(OrderedMap(map.entries.map { Entry(it.key as String, it.value) }))
+
+    nameIndexStackSize++
+    check(nameIndexStackSize < 33) {
+      "Json is too deeply nested"
+    }
+    nameIndexStack[nameIndexStackSize - 1] = 0
   }
 
   override fun endObject() = apply {
     pop()
+    nameIndexStackSize--
   }
 
   private fun anyToToken(any: Any?) = when(any) {
     null -> JsonReader.Token.NULL
     is List<*> -> JsonReader.Token.BEGIN_ARRAY
     is Map<*, *> -> JsonReader.Token.BEGIN_OBJECT
-    is BigDecimal -> JsonReader.Token.NUMBER
+    is Int -> JsonReader.Token.NUMBER
+    is Double -> JsonReader.Token.NUMBER
     is String -> JsonReader.Token.STRING
     is Boolean -> JsonReader.Token.BOOLEAN
-    is CacheReference -> JsonReader.Token.BEGIN_OBJECT
     else -> error("")
   }
   override fun hasNext(): Boolean {
@@ -131,7 +146,8 @@ class MapJsonReader(val root: Map<String, Any?>) : JsonReader {
   }
 
   override fun nextString(): String? {
-    return nextValue() as String?
+    // nextValue can be an Int or Double too
+    return nextValue()?.toString()
   }
 
   override fun nextBoolean(): Boolean {
@@ -163,4 +179,47 @@ class MapJsonReader(val root: Map<String, Any?>) : JsonReader {
 
   override fun close() {
   }
+
+  override fun selectName(names: List<String>): Int {
+    if (names.isEmpty()) {
+      return -1
+    }
+
+    while (hasNext()) {
+      val name = nextName()
+      val expectedIndex = nameIndexStack[nameIndexStackSize - 1]
+      if (names[expectedIndex] == name) {
+        return expectedIndex.also {
+          nameIndexStack[nameIndexStackSize - 1] = expectedIndex + 1
+          if (nameIndexStack[nameIndexStackSize - 1] == names.size) {
+            nameIndexStack[nameIndexStackSize - 1] = 0
+          }
+        }
+      } else {
+        // guess failed, fallback to full search
+        var index = expectedIndex
+        while (true) {
+          index++
+          if (index == names.size) {
+            index = 0
+          }
+          if (index == expectedIndex) {
+            break
+          }
+          if (names[index] == name) {
+            return index.also {
+              nameIndexStack[nameIndexStackSize - 1] = index + 1
+              if (nameIndexStack[nameIndexStackSize - 1] == names.size) {
+                nameIndexStack[nameIndexStackSize - 1] = 0
+              }
+            }
+          }
+        }
+
+        skipValue()
+      }
+    }
+    return -1
+  }
+
 }

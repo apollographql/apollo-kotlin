@@ -1,7 +1,7 @@
 package com.apollographql.apollo.internal
 
 import com.apollographql.apollo.ApolloPrefetch
-import com.apollographql.apollo.api.CustomScalarAdapters
+import com.apollographql.apollo.api.ResponseAdapterCache
 import com.apollographql.apollo.api.Operation
 import com.apollographql.apollo.api.cache.http.HttpCachePolicy
 import com.apollographql.apollo.api.internal.ApolloLogger
@@ -29,7 +29,7 @@ class RealApolloPrefetch(
     val operation: Operation<*>,
     val serverUrl: HttpUrl,
     val httpCallFactory: Call.Factory,
-    val customScalarAdapters: CustomScalarAdapters,
+    val responseAdapterCache: ResponseAdapterCache,
     val dispatcher: Executor,
     val logger: ApolloLogger,
     val tracker: ApolloCallTracker
@@ -110,7 +110,7 @@ class RealApolloPrefetch(
   }
 
   override fun clone(): ApolloPrefetch {
-    return RealApolloPrefetch(operation, serverUrl, httpCallFactory, customScalarAdapters, dispatcher, logger,
+    return RealApolloPrefetch(operation, serverUrl, httpCallFactory, responseAdapterCache, dispatcher, logger,
         tracker)
   }
 
@@ -166,7 +166,7 @@ class RealApolloPrefetch(
 
   init {
     interceptorChain = RealApolloInterceptorChain(listOf<ApolloInterceptor>(
-        ApolloServerInterceptor(serverUrl, httpCallFactory, HttpCachePolicy.NETWORK_ONLY, true, customScalarAdapters,
+        ApolloServerInterceptor(serverUrl, httpCallFactory, HttpCachePolicy.NETWORK_ONLY, true, responseAdapterCache,
             logger)
     ))
   }

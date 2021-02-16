@@ -13,13 +13,13 @@ class RepositoryManager: ObservableObject {
     
     private let repository = ApolloiOSRepositoryKt.create()
     
-    @Published var repos: [RepositoryFragment] = []
+    @Published var repos: [RepositoryFragmentImpl] = []
     @Published var repoDetails: [String: RepositoryDetail] = [:]
-    @Published var commits: [String: [GithubRepositoryCommitsQuery.Node]] = [:]
+    @Published var commits: [String: [GithubRepositoryCommitsQueryDataViewerRepositoryRefTargetCommitTarget.HistoryEdgesNode]] = [:]
     
     func fetch() {
         self.repository.fetchRepositories { [weak self] repos in
-            self?.repos = repos
+            self?.repos = repos as [RepositoryFragmentImpl]
         }
     }
     
@@ -38,7 +38,7 @@ class RepositoryManager: ObservableObject {
         // `Node` it contains is where actual information about the commit lives.
         self.repository.fetchCommits(repositoryName: repo.name) { [weak self] commits in
             let filteredCommits = commits
-                .compactMap { $0 as? GithubRepositoryCommitsQuery.Edge }
+                .compactMap { $0 as? GithubRepositoryCommitsQueryDataViewerRepositoryRefTargetCommitTarget.HistoryEdges }
                 .compactMap { $0.node }
             self?.commits[repo.name] = filteredCommits
         }

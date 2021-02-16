@@ -1,12 +1,11 @@
 package com.apollographql.apollo.api
 
-import com.apollographql.apollo.api.CustomScalarAdapters.Companion.DEFAULT
+import com.apollographql.apollo.api.ResponseAdapterCache.Companion.DEFAULT
+import com.apollographql.apollo.api.internal.MapJsonReader
 import com.apollographql.apollo.api.internal.MapResponseParser
 import com.apollographql.apollo.api.internal.OperationRequestBodyComposer
 import com.apollographql.apollo.api.internal.StreamResponseParser
-import com.apollographql.apollo.api.internal.MapResponseReader
-import com.apollographql.apollo.api.internal.SimpleResponseWriter
-import com.apollographql.apollo.api.internal.ValueResolver
+import com.apollographql.apollo.api.internal.json.JsonUtf8Writer
 import okio.Buffer
 import okio.BufferedSource
 import okio.ByteString
@@ -36,16 +35,21 @@ import kotlin.jvm.JvmOverloads
  * @param indent the indentation string to be repeated for each level of indentation in the encoded document. Must be a string
  * containing only whitespace. If [indent] is an empty String the encoded document will be compact. Otherwise the encoded
  * document will be more human-readable.
- * @param customScalarAdapters configured instance of custom GraphQL scalar type adapters. Default adapters are used if this
- * param is not provided.
+ * @param [responseAdapterCache] configured instance of GraphQL operation response adapters cache. A global empty instance will be used by default.
  */
 @JvmOverloads
-fun <D : Operation.Data> Operation<D>.toJson(value: D, indent: String = "", customScalarAdapters: CustomScalarAdapters = DEFAULT): String {
+fun <D : Operation.Data> Operation<D>.toJson(data: D, indent: String = "", responseAdapterCache: ResponseAdapterCache = DEFAULT): String {
   return try {
-    SimpleResponseWriter(customScalarAdapters).let { writer ->
-      adapter().toResponse(writer, value)
-      writer.toJson(indent)
+    val buffer = Buffer()
+    val writer = JsonUtf8Writer(buffer).apply {
+      this.indent = indent
     }
+    // Do we need to wrap in data?
+    writer.beginObject()
+    writer.name("data")
+    adapter(responseAdapterCache).toResponse(writer, data)
+    writer.endObject()
+    buffer.readUtf8()
   } catch (e: IOException) {
     throw IllegalStateException(e)
   }
@@ -58,7 +62,7 @@ fun <D : Operation.Data> Operation<D>.toJson(value: D, indent: String = "", cust
  * will be encoded along with regular GraphQL request body. If query was previously persisted on the GraphQL server
  * set [withQueryDocument] to `false` to skip query document be sent in the request.
  *
- * Optional [customScalarAdapters] must be provided in case when this operation defines variables with custom GraphQL scalar type.
+ * Optional [responseAdapterCache] must be provided in case when this operation defines variables with custom GraphQL scalar type.
  *
  * *Example*:
  * ```
@@ -79,18 +83,18 @@ fun <D : Operation.Data> Operation<D>.toJson(value: D, indent: String = "", cust
 fun Operation<*>.composeRequestBody(
     autoPersistQueries: Boolean,
     withQueryDocument: Boolean,
-    customScalarAdapters: CustomScalarAdapters = DEFAULT
+    responseAdapterCache: ResponseAdapterCache = DEFAULT
 ): ByteString {
   return OperationRequestBodyComposer.compose(
       operation = this,
       autoPersistQueries = autoPersistQueries,
       withQueryDocument = withQueryDocument,
-      customScalarAdapters = customScalarAdapters
+      responseAdapterCache = responseAdapterCache
   )
 }
 
 /**
- * Composes POST JSON-encoded request body with provided [customScalarAdapters] to be sent to the GraphQL server.
+ * Composes POST JSON-encoded request body with provided [responseAdapterCache] to be sent to the GraphQL server.
  *
  * *Example*:
  * ```
@@ -103,77 +107,73 @@ fun Operation<*>.composeRequestBody(
  */
 @JvmOverloads
 fun Operation<*>.composeRequestBody(
-    customScalarAdapters: CustomScalarAdapters = DEFAULT
+    responseAdapterCache: ResponseAdapterCache = DEFAULT
 ): ByteString {
   return OperationRequestBodyComposer.compose(
       operation = this,
       autoPersistQueries = false,
       withQueryDocument = true,
-      customScalarAdapters = customScalarAdapters
+      responseAdapterCache = responseAdapterCache
   )
 }
 
 /**
- * Parses GraphQL operation raw response from the [source] with provided [customScalarAdapters] and returns result [Response]
+ * Parses GraphQL operation raw response from the [source] with provided [responseAdapterCache] and returns result [Response]
  *
  * This will consume [source] so you don't need to close it. Also, you cannot reuse it
  */
 @JvmOverloads
 fun <D : Operation.Data> Operation<D>.parse(
     source: BufferedSource,
-    customScalarAdapters: CustomScalarAdapters = DEFAULT
+    responseAdapterCache: ResponseAdapterCache = DEFAULT
 ): Response<D> {
-  return StreamResponseParser.parse(source, this, customScalarAdapters)
+  return StreamResponseParser.parse(source, this, responseAdapterCache)
 }
 
 /**
- * Parses GraphQL operation raw response from [byteString] with provided [customScalarAdapters] and returns result [Response]
+ * Parses GraphQL operation raw response from [byteString] with provided [responseAdapterCache] and returns result [Response]
  */
 fun <D : Operation.Data> Operation<D>.parse(
     byteString: ByteString,
-    customScalarAdapters: CustomScalarAdapters = DEFAULT
+    responseAdapterCache: ResponseAdapterCache = DEFAULT
 ): Response<D> {
-  return parse(Buffer().write(byteString), customScalarAdapters)
+  return parse(Buffer().write(byteString), responseAdapterCache)
 }
 
 /**
- * Parses GraphQL operation raw response from [string] with provided [customScalarAdapters] and returns result [Response]
+ * Parses GraphQL operation raw response from [string] with provided [responseAdapterCache] and returns result [Response]
  */
 fun <D : Operation.Data> Operation<D>.parse(
     string: String,
-    customScalarAdapters: CustomScalarAdapters = DEFAULT
+    responseAdapterCache: ResponseAdapterCache = DEFAULT
 ): Response<D> {
-  return parse(Buffer().writeUtf8(string), customScalarAdapters)
+  return parse(Buffer().writeUtf8(string), responseAdapterCache)
 }
 
 /**
- * Parses GraphQL operation raw response from [map] with provided [customScalarAdapters] and returns result [Response]
+ * Parses GraphQL operation raw response from [map] with provided [responseAdapterCache] and returns result [Response]
  *
  * @param map: a [Map] representing the response. It typically include a "data" field
  */
 fun <D : Operation.Data> Operation<D>.parse(
     map: Map<String, Any?>,
-    customScalarAdapters: CustomScalarAdapters = DEFAULT
+    responseAdapterCache: ResponseAdapterCache = DEFAULT
 ): Response<D> {
-  return MapResponseParser.parse(map, this, customScalarAdapters)
+  return MapResponseParser.parse(map, this, responseAdapterCache)
 }
 
 /**
- * Parses GraphQL operation raw response from [map] with provided [customScalarAdapters] and returns result [Response]
+ * Parses GraphQL operation raw response from [map] with provided [responseAdapterCache] and returns result [Response]
  *
  * @param map: a [Map] representing the response. It typically include a "data" field
  */
 fun <D : Operation.Data, M: Map<String, Any?>> Operation<D>.parseData(
     map: M,
-    customScalarAdapters: CustomScalarAdapters = DEFAULT,
-    valueResolver: ValueResolver<M>
+    responseAdapterCache: ResponseAdapterCache = DEFAULT,
 ): D {
-  return MapResponseReader(
-      variables(),
+  return MapJsonReader(
       map,
-      valueResolver,
-      customScalarAdapters,
   ).let {
-    adapter().fromResponse(it)
+    adapter(responseAdapterCache).fromResponse(it)
   }
 }

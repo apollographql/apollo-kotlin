@@ -7,6 +7,7 @@ package com.example.root_query_fragment_with_nested_fragments.fragment
 
 import com.apollographql.apollo.api.Fragment
 import com.apollographql.apollo.api.Operation
+import com.apollographql.apollo.api.ResponseAdapterCache
 import com.apollographql.apollo.api.ResponseField
 import com.apollographql.apollo.api.internal.ResponseAdapter
 import com.example.root_query_fragment_with_nested_fragments.fragment.adapter.DroidFragmentImpl_ResponseAdapter
@@ -14,8 +15,11 @@ import kotlin.String
 import kotlin.collections.List
 
 class DroidFragmentImpl : Fragment<DroidFragmentImpl.Data> {
-  override fun adapter(): ResponseAdapter<Data> {
-    return DroidFragmentImpl_ResponseAdapter
+  override fun adapter(customScalarAdapters: ResponseAdapterCache): ResponseAdapter<Data> {
+    val adapter = customScalarAdapters.getFragmentAdapter("DroidFragmentImpl") {
+      DroidFragmentImpl_ResponseAdapter(customScalarAdapters)
+    }
+    return adapter
   }
 
   override fun responseFields(): List<ResponseField.FieldSet> = listOf(

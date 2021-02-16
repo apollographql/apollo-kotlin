@@ -5,178 +5,192 @@
 //
 package com.example.fragment_in_fragment.fragment.adapter
 
+import com.apollographql.apollo.api.ResponseAdapterCache
 import com.apollographql.apollo.api.ResponseField
+import com.apollographql.apollo.api.internal.NullableResponseAdapter
 import com.apollographql.apollo.api.internal.ResponseAdapter
-import com.apollographql.apollo.api.internal.ResponseReader
-import com.apollographql.apollo.api.internal.ResponseWriter
+import com.apollographql.apollo.api.internal.StringResponseAdapter
+import com.apollographql.apollo.api.internal.json.JsonReader
+import com.apollographql.apollo.api.internal.json.JsonWriter
 import com.example.fragment_in_fragment.fragment.PilotFragmentImpl
 import kotlin.Array
 import kotlin.String
 import kotlin.Suppress
+import kotlin.collections.List
 
 @Suppress("NAME_SHADOWING", "UNUSED_ANONYMOUS_PARAMETER", "LocalVariableName",
     "RemoveExplicitTypeArguments", "NestedLambdaShadowedImplicitParameter", "PropertyName",
     "RemoveRedundantQualifierName")
-object PilotFragmentImpl_ResponseAdapter : ResponseAdapter<PilotFragmentImpl.Data> {
-  val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
-    ResponseField(
-      type = ResponseField.Type.NotNull(ResponseField.Type.Named.Other("String")),
-      responseName = "__typename",
-      fieldName = "__typename",
-      arguments = emptyMap(),
-      conditions = emptyList(),
-      fieldSets = emptyList(),
-    ),
-    ResponseField(
-      type = ResponseField.Type.Named.Other("String"),
-      responseName = "name",
-      fieldName = "name",
-      arguments = emptyMap(),
-      conditions = emptyList(),
-      fieldSets = emptyList(),
-    ),
-    ResponseField(
-      type = ResponseField.Type.Named.Object("Planet"),
-      responseName = "homeworld",
-      fieldName = "homeworld",
-      arguments = emptyMap(),
-      conditions = emptyList(),
-      fieldSets = listOf(
-        ResponseField.FieldSet("Planet", Homeworld.PlanetHomeworld.RESPONSE_FIELDS),
-        ResponseField.FieldSet(null, Homeworld.OtherHomeworld.RESPONSE_FIELDS),
-      ),
+class PilotFragmentImpl_ResponseAdapter(
+  responseAdapterCache: ResponseAdapterCache
+) : ResponseAdapter<PilotFragmentImpl.Data> {
+  private val stringAdapter: ResponseAdapter<String> = StringResponseAdapter
+
+  private val nullableStringAdapter: ResponseAdapter<String?> =
+      NullableResponseAdapter(StringResponseAdapter)
+
+  private val nullableHomeworldAdapter: ResponseAdapter<PilotFragmentImpl.Data.Homeworld?> =
+      NullableResponseAdapter(Homeworld(responseAdapterCache))
+
+  override fun fromResponse(reader: JsonReader): PilotFragmentImpl.Data {
+    var __typename: String? = null
+    var name: String? = null
+    var homeworld: PilotFragmentImpl.Data.Homeworld? = null
+    reader.beginObject()
+    while(true) {
+      when (reader.selectName(RESPONSE_NAMES)) {
+        0 -> __typename = stringAdapter.fromResponse(reader)
+        1 -> name = nullableStringAdapter.fromResponse(reader)
+        2 -> homeworld = nullableHomeworldAdapter.fromResponse(reader)
+        else -> break
+      }
+    }
+    reader.endObject()
+    return PilotFragmentImpl.Data(
+      __typename = __typename!!,
+      name = name,
+      homeworld = homeworld
     )
-  )
-
-  override fun fromResponse(reader: ResponseReader, __typename: String?): PilotFragmentImpl.Data {
-    return reader.run {
-      var __typename: String? = __typename
-      var name: String? = null
-      var homeworld: PilotFragmentImpl.Data.Homeworld? = null
-      while(true) {
-        when (selectField(RESPONSE_FIELDS)) {
-          0 -> __typename = readString(RESPONSE_FIELDS[0])
-          1 -> name = readString(RESPONSE_FIELDS[1])
-          2 -> homeworld = readObject<PilotFragmentImpl.Data.Homeworld>(RESPONSE_FIELDS[2]) { reader ->
-            Homeworld.fromResponse(reader)
-          }
-          else -> break
-        }
-      }
-      PilotFragmentImpl.Data(
-        __typename = __typename!!,
-        name = name,
-        homeworld = homeworld
-      )
-    }
   }
 
-  override fun toResponse(writer: ResponseWriter, value: PilotFragmentImpl.Data) {
-    writer.writeString(RESPONSE_FIELDS[0], value.__typename)
-    writer.writeString(RESPONSE_FIELDS[1], value.name)
-    if(value.homeworld == null) {
-      writer.writeObject(RESPONSE_FIELDS[2], null)
-    } else {
-      writer.writeObject(RESPONSE_FIELDS[2]) { writer ->
-        Homeworld.toResponse(writer, value.homeworld)
-      }
-    }
+  override fun toResponse(writer: JsonWriter, value: PilotFragmentImpl.Data) {
+    writer.beginObject()
+    writer.name("__typename")
+    stringAdapter.toResponse(writer, value.__typename)
+    writer.name("name")
+    nullableStringAdapter.toResponse(writer, value.name)
+    writer.name("homeworld")
+    nullableHomeworldAdapter.toResponse(writer, value.homeworld)
+    writer.endObject()
   }
 
-  object Homeworld : ResponseAdapter<PilotFragmentImpl.Data.Homeworld> {
-    override fun fromResponse(reader: ResponseReader, __typename: String?):
-        PilotFragmentImpl.Data.Homeworld {
-      val typename = __typename ?: reader.readString(ResponseField.Typename)
-      return when(typename) {
-        "Planet" -> PlanetHomeworld.fromResponse(reader, typename)
-        else -> OtherHomeworld.fromResponse(reader, typename)
-      }
-    }
-
-    override fun toResponse(writer: ResponseWriter, value: PilotFragmentImpl.Data.Homeworld) {
-      when(value) {
-        is PilotFragmentImpl.Data.Homeworld.PlanetHomeworld -> PlanetHomeworld.toResponse(writer, value)
-        is PilotFragmentImpl.Data.Homeworld.OtherHomeworld -> OtherHomeworld.toResponse(writer, value)
-      }
-    }
-
-    object PlanetHomeworld : ResponseAdapter<PilotFragmentImpl.Data.Homeworld.PlanetHomeworld> {
-      val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
-        ResponseField(
-          type = ResponseField.Type.NotNull(ResponseField.Type.Named.Other("String")),
-          responseName = "__typename",
-          fieldName = "__typename",
-          arguments = emptyMap(),
-          conditions = emptyList(),
-          fieldSets = emptyList(),
+  companion object {
+    val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
+      ResponseField.Typename,
+      ResponseField(
+        type = ResponseField.Type.Named.Other("String"),
+        fieldName = "name",
+      ),
+      ResponseField(
+        type = ResponseField.Type.Named.Object("Planet"),
+        fieldName = "homeworld",
+        fieldSets = listOf(
+          ResponseField.FieldSet("Planet", Homeworld.PlanetHomeworld.RESPONSE_FIELDS),
+          ResponseField.FieldSet(null, Homeworld.OtherHomeworld.RESPONSE_FIELDS),
         ),
-        ResponseField(
-          type = ResponseField.Type.Named.Other("String"),
-          responseName = "name",
-          fieldName = "name",
-          arguments = emptyMap(),
-          conditions = emptyList(),
-          fieldSets = emptyList(),
-        )
       )
+    )
 
-      override fun fromResponse(reader: ResponseReader, __typename: String?):
-          PilotFragmentImpl.Data.Homeworld.PlanetHomeworld {
-        return reader.run {
-          var __typename: String? = __typename
-          var name: String? = null
-          while(true) {
-            when (selectField(RESPONSE_FIELDS)) {
-              0 -> __typename = readString(RESPONSE_FIELDS[0])
-              1 -> name = readString(RESPONSE_FIELDS[1])
-              else -> break
-            }
-          }
-          PilotFragmentImpl.Data.Homeworld.PlanetHomeworld(
-            __typename = __typename!!,
-            name = name
-          )
-        }
+    val RESPONSE_NAMES: List<String> = RESPONSE_FIELDS.map { it.responseName }
+  }
+
+  class Homeworld(
+    responseAdapterCache: ResponseAdapterCache
+  ) : ResponseAdapter<PilotFragmentImpl.Data.Homeworld> {
+    val PlanetHomeworldAdapter: PlanetHomeworld =
+        com.example.fragment_in_fragment.fragment.adapter.PilotFragmentImpl_ResponseAdapter.Homeworld.PlanetHomeworld(responseAdapterCache)
+
+    val OtherHomeworldAdapter: OtherHomeworld =
+        com.example.fragment_in_fragment.fragment.adapter.PilotFragmentImpl_ResponseAdapter.Homeworld.OtherHomeworld(responseAdapterCache)
+
+    override fun fromResponse(reader: JsonReader): PilotFragmentImpl.Data.Homeworld {
+      reader.beginObject()
+      check(reader.nextName() == "__typename")
+      val typename = reader.nextString()
+
+      return when(typename) {
+        "Planet" -> PlanetHomeworldAdapter.fromResponse(reader, typename)
+        else -> OtherHomeworldAdapter.fromResponse(reader, typename)
       }
+      .also { reader.endObject() }
+    }
 
-      override fun toResponse(writer: ResponseWriter,
-          value: PilotFragmentImpl.Data.Homeworld.PlanetHomeworld) {
-        writer.writeString(RESPONSE_FIELDS[0], value.__typename)
-        writer.writeString(RESPONSE_FIELDS[1], value.name)
+    override fun toResponse(writer: JsonWriter, value: PilotFragmentImpl.Data.Homeworld) {
+      when(value) {
+        is PilotFragmentImpl.Data.Homeworld.PlanetHomeworld -> PlanetHomeworldAdapter.toResponse(writer, value)
+        is PilotFragmentImpl.Data.Homeworld.OtherHomeworld -> OtherHomeworldAdapter.toResponse(writer, value)
       }
     }
 
-    object OtherHomeworld : ResponseAdapter<PilotFragmentImpl.Data.Homeworld.OtherHomeworld> {
-      val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
-        ResponseField(
-          type = ResponseField.Type.NotNull(ResponseField.Type.Named.Other("String")),
-          responseName = "__typename",
-          fieldName = "__typename",
-          arguments = emptyMap(),
-          conditions = emptyList(),
-          fieldSets = emptyList(),
-        )
-      )
+    class PlanetHomeworld(
+      responseAdapterCache: ResponseAdapterCache
+    ) {
+      private val stringAdapter: ResponseAdapter<String> = StringResponseAdapter
 
-      override fun fromResponse(reader: ResponseReader, __typename: String?):
-          PilotFragmentImpl.Data.Homeworld.OtherHomeworld {
-        return reader.run {
-          var __typename: String? = __typename
-          while(true) {
-            when (selectField(RESPONSE_FIELDS)) {
-              0 -> __typename = readString(RESPONSE_FIELDS[0])
-              else -> break
-            }
+      private val nullableStringAdapter: ResponseAdapter<String?> =
+          NullableResponseAdapter(StringResponseAdapter)
+
+      fun fromResponse(reader: JsonReader, __typename: String?):
+          PilotFragmentImpl.Data.Homeworld.PlanetHomeworld {
+        var __typename: String? = __typename
+        var name: String? = null
+        while(true) {
+          when (reader.selectName(RESPONSE_NAMES)) {
+            0 -> __typename = stringAdapter.fromResponse(reader)
+            1 -> name = nullableStringAdapter.fromResponse(reader)
+            else -> break
           }
-          PilotFragmentImpl.Data.Homeworld.OtherHomeworld(
-            __typename = __typename!!
-          )
         }
+        return PilotFragmentImpl.Data.Homeworld.PlanetHomeworld(
+          __typename = __typename!!,
+          name = name
+        )
       }
 
-      override fun toResponse(writer: ResponseWriter,
-          value: PilotFragmentImpl.Data.Homeworld.OtherHomeworld) {
-        writer.writeString(RESPONSE_FIELDS[0], value.__typename)
+      fun toResponse(writer: JsonWriter, value: PilotFragmentImpl.Data.Homeworld.PlanetHomeworld) {
+        writer.beginObject()
+        writer.name("__typename")
+        stringAdapter.toResponse(writer, value.__typename)
+        writer.name("name")
+        nullableStringAdapter.toResponse(writer, value.name)
+        writer.endObject()
+      }
+
+      companion object {
+        val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
+          ResponseField.Typename,
+          ResponseField(
+            type = ResponseField.Type.Named.Other("String"),
+            fieldName = "name",
+          )
+        )
+
+        val RESPONSE_NAMES: List<String> = RESPONSE_FIELDS.map { it.responseName }
+      }
+    }
+
+    class OtherHomeworld(
+      responseAdapterCache: ResponseAdapterCache
+    ) {
+      private val stringAdapter: ResponseAdapter<String> = StringResponseAdapter
+
+      fun fromResponse(reader: JsonReader, __typename: String?):
+          PilotFragmentImpl.Data.Homeworld.OtherHomeworld {
+        var __typename: String? = __typename
+        while(true) {
+          when (reader.selectName(RESPONSE_NAMES)) {
+            0 -> __typename = stringAdapter.fromResponse(reader)
+            else -> break
+          }
+        }
+        return PilotFragmentImpl.Data.Homeworld.OtherHomeworld(
+          __typename = __typename!!
+        )
+      }
+
+      fun toResponse(writer: JsonWriter, value: PilotFragmentImpl.Data.Homeworld.OtherHomeworld) {
+        writer.beginObject()
+        writer.name("__typename")
+        stringAdapter.toResponse(writer, value.__typename)
+        writer.endObject()
+      }
+
+      companion object {
+        val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
+          ResponseField.Typename
+        )
+
+        val RESPONSE_NAMES: List<String> = RESPONSE_FIELDS.map { it.responseName }
       }
     }
   }

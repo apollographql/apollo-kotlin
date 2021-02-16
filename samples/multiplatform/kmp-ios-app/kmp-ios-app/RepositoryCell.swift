@@ -25,7 +25,7 @@ struct RepositoryCell: View {
 
 struct RepositoryCell_Previews: PreviewProvider {
     static var previews: some View {
-        let sampleRepo = RepositoryFragmentDefaultImpl(__typename: "Repository", id: "1", name: "TestRepo", repoDescription: "Repo Description")
+        let sampleRepo = RepositoryFragmentImpl.Data(__typename: "Repository", id: "1", name: "TestRepo", repoDescription: "Repo Description")
         return RepositoryCell(repo: sampleRepo)
     }
 }

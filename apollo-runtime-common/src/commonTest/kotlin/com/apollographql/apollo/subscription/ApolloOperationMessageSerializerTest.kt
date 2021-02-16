@@ -1,7 +1,6 @@
 package com.apollographql.apollo.subscription
 
-import com.apollographql.apollo.api.BigDecimal
-import com.apollographql.apollo.api.CustomScalarAdapters
+import com.apollographql.apollo.api.ResponseAdapterCache
 import com.apollographql.apollo.api.internal.json.BufferedSourceJsonReader
 import com.apollographql.apollo.api.internal.json.Utils.readRecursively
 import com.apollographql.apollo.testing.MockSubscription
@@ -31,21 +30,21 @@ class ApolloOperationMessageSerializerTest {
     val regularQuery = OperationClientMessage.Start(
         subscriptionId = "subscription-id",
         subscription = subscription,
-        customScalarAdapters = CustomScalarAdapters.DEFAULT,
+        responseAdapterCache = ResponseAdapterCache.DEFAULT,
         autoPersistSubscription = false,
         sendSubscriptionDocument = true
     )
     val persistedQueryWithoutDocument = OperationClientMessage.Start(
         subscriptionId = "subscription-id",
         subscription = subscription,
-        customScalarAdapters = CustomScalarAdapters.DEFAULT,
+        responseAdapterCache = ResponseAdapterCache.DEFAULT,
         autoPersistSubscription = true,
         sendSubscriptionDocument = false
     )
     val persistedQueryWithDocument = OperationClientMessage.Start(
         subscriptionId = "subscription-id",
         subscription = subscription,
-        customScalarAdapters = CustomScalarAdapters.DEFAULT,
+        responseAdapterCache = ResponseAdapterCache.DEFAULT,
         autoPersistSubscription = true,
         sendSubscriptionDocument = true
     )
@@ -66,7 +65,7 @@ class ApolloOperationMessageSerializerTest {
             "operationName" to subscription.name(),
             "extensions" to mapOf(
                 "persistedQuery" to mapOf(
-                    "version" to BigDecimal(1),
+                    "version" to 1,
                     "sha256Hash" to subscription.operationId()
                 )
             )
@@ -81,7 +80,7 @@ class ApolloOperationMessageSerializerTest {
             "query" to subscription.queryDocument(),
             "extensions" to mapOf(
                 "persistedQuery" to mapOf(
-                    "version" to BigDecimal(1),
+                    "version" to 1,
                     "sha256Hash" to subscription.operationId()
                 )
             )

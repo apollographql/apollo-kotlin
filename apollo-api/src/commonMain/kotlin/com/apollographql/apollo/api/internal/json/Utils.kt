@@ -62,9 +62,32 @@ object Utils {
 
       JsonReader.Token.BOOLEAN -> nextBoolean()
 
-      JsonReader.Token.NUMBER -> BigDecimal(nextString()!!)
+      JsonReader.Token.NUMBER -> {
+        val number = nextString()!!
+        // optimize
+        if (number.contains('.') || number.contains('e') || number.contains('E')) {
+          try {
+            number.toDouble()
+          } catch (e: Exception) {
+            number
+          }
+        } else {
+          try {
+            number.toInt()
+          } catch (e: Exception) {
+            number
+          }
+        }
+      }
 
-      JsonReader.Token.LONG -> BigDecimal(nextLong())
+      JsonReader.Token.LONG -> {
+        val number = nextString()!!
+        try {
+          number.toInt()
+        } catch (e: Exception) {
+          number
+        }
+      }
 
       else -> nextString()!!
     }

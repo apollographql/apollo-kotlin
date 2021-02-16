@@ -7,6 +7,7 @@ package com.example.named_fragment_with_variables
 
 import com.apollographql.apollo.api.Operation
 import com.apollographql.apollo.api.Query
+import com.apollographql.apollo.api.ResponseAdapterCache
 import com.apollographql.apollo.api.ResponseField
 import com.apollographql.apollo.api.internal.InputFieldMarshaller
 import com.apollographql.apollo.api.internal.QueryDocumentMinifier
@@ -56,7 +57,13 @@ data class GetUser(
 
   override fun name(): String = OPERATION_NAME
 
-  override fun adapter(): ResponseAdapter<Data> = GetUser_ResponseAdapter
+  override fun adapter(customScalarAdapters: ResponseAdapterCache): ResponseAdapter<Data> {
+    val adapter = customScalarAdapters.getOperationAdapter(name()) {
+      GetUser_ResponseAdapter(customScalarAdapters)
+    }
+    return adapter
+  }
+
   override fun responseFields(): List<ResponseField.FieldSet> = listOf(
     ResponseField.FieldSet("Query", GetUser_ResponseAdapter.QueryData.RESPONSE_FIELDS),
     ResponseField.FieldSet(null, GetUser_ResponseAdapter.OtherData.RESPONSE_FIELDS),

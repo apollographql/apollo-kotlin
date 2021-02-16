@@ -1,7 +1,7 @@
 package com.apollographql.apollo.api.internal.json
 
 import com.apollographql.apollo.api.CustomScalar
-import com.apollographql.apollo.api.CustomScalarAdapters
+import com.apollographql.apollo.api.ResponseAdapterCache
 import com.apollographql.apollo.api.JsonBoolean
 import com.apollographql.apollo.api.JsonList
 import com.apollographql.apollo.api.JsonNull
@@ -16,7 +16,7 @@ import okio.IOException
 
 class InputFieldJsonWriter(
     private val jsonWriter: JsonWriter,
-    private val customScalarAdapters: CustomScalarAdapters
+    private val responseAdapterCache: ResponseAdapterCache
 ) : InputFieldWriter {
 
   @Throws(IOException::class)
@@ -80,7 +80,7 @@ class InputFieldJsonWriter(
       return
     }
 
-    val customScalarAdapter = customScalarAdapters.adapterFor<Any>(customScalar)
+    val customScalarAdapter = responseAdapterCache.adapterFor<Any>(customScalar)
     when (val jsonElement = customScalarAdapter.encode(value)) {
       is JsonString -> writeString(fieldName, jsonElement.value)
       is JsonBoolean -> writeBoolean(fieldName, jsonElement.value)
@@ -108,7 +108,7 @@ class InputFieldJsonWriter(
       jsonWriter.name(fieldName).nullValue()
     } else {
       jsonWriter.name(fieldName).beginArray()
-      listWriter.write(JsonListItemWriter(jsonWriter, customScalarAdapters))
+      listWriter.write(JsonListItemWriter(jsonWriter, responseAdapterCache))
       jsonWriter.endArray()
     }
   }
@@ -125,7 +125,7 @@ class InputFieldJsonWriter(
 
   private class JsonListItemWriter(
       private val jsonWriter: JsonWriter,
-      private val customScalarAdapters: CustomScalarAdapters
+      private val responseAdapterCache: ResponseAdapterCache
   ) : InputFieldWriter.ListItemWriter {
 
     @Throws(IOException::class)
@@ -194,7 +194,7 @@ class InputFieldJsonWriter(
         return
       }
 
-      val customScalarAdapter = customScalarAdapters.adapterFor<Any>(customScalar)
+      val customScalarAdapter = responseAdapterCache.adapterFor<Any>(customScalar)
       when (val jsonElement = customScalarAdapter.encode(value)) {
         is JsonString -> writeString(jsonElement.value)
         is JsonBoolean -> writeBoolean(jsonElement.value)
@@ -211,7 +211,7 @@ class InputFieldJsonWriter(
         jsonWriter.nullValue()
       } else {
         jsonWriter.beginObject()
-        marshaller.marshal(InputFieldJsonWriter(jsonWriter, customScalarAdapters))
+        marshaller.marshal(InputFieldJsonWriter(jsonWriter, responseAdapterCache))
         jsonWriter.endObject()
       }
     }
@@ -222,7 +222,7 @@ class InputFieldJsonWriter(
         jsonWriter.nullValue()
       } else {
         jsonWriter.beginArray()
-        listWriter.write(JsonListItemWriter(jsonWriter, customScalarAdapters))
+        listWriter.write(JsonListItemWriter(jsonWriter, responseAdapterCache))
         jsonWriter.endArray()
       }
     }

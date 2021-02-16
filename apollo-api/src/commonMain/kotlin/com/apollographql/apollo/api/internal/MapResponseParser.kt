@@ -1,11 +1,10 @@
 package com.apollographql.apollo.api.internal
 
-import com.apollographql.apollo.api.CustomScalarAdapters
+import com.apollographql.apollo.api.ResponseAdapterCache
 import com.apollographql.apollo.api.Error
 import com.apollographql.apollo.api.Operation
 import com.apollographql.apollo.api.Response
 import com.apollographql.apollo.api.Response.Companion.builder
-import com.apollographql.apollo.api.ResponseField
 import com.apollographql.apollo.api.parseData
 
 /**
@@ -21,10 +20,10 @@ object MapResponseParser {
   fun <D : Operation.Data> parse(
       payload: Map<String, Any?>,
       operation: Operation<D>,
-      customScalarAdapters: CustomScalarAdapters,
+      responseAdapterCache: ResponseAdapterCache,
   ): Response<D> {
     val data = (payload["data"] as Map<String, Any?>?)?.let {
-      operation.parseData(it, customScalarAdapters, MapValueResolver())
+      operation.parseData(it, responseAdapterCache)
     }
 
     val errors = if (payload.containsKey("errors")) {
@@ -78,11 +77,5 @@ object MapResponseParser {
       }
     }
     return Error.Location(line, column)
-  }
-
-  private class MapValueResolver : ValueResolver<Map<String, Any?>> {
-    override fun <T> valueFor(map: Map<String, Any?>, field: ResponseField): T? {
-      return map[field.responseName] as T?
-    }
   }
 }

@@ -5,436 +5,455 @@
 //
 package com.example.root_query_fragment_with_nested_fragments.fragment.adapter
 
+import com.apollographql.apollo.api.ResponseAdapterCache
 import com.apollographql.apollo.api.ResponseField
+import com.apollographql.apollo.api.internal.NullableResponseAdapter
 import com.apollographql.apollo.api.internal.ResponseAdapter
-import com.apollographql.apollo.api.internal.ResponseReader
-import com.apollographql.apollo.api.internal.ResponseWriter
+import com.apollographql.apollo.api.internal.StringResponseAdapter
+import com.apollographql.apollo.api.internal.json.JsonReader
+import com.apollographql.apollo.api.internal.json.JsonWriter
 import com.example.root_query_fragment_with_nested_fragments.fragment.QueryFragmentImpl
 import kotlin.Array
 import kotlin.String
 import kotlin.Suppress
+import kotlin.collections.List
 
 @Suppress("NAME_SHADOWING", "UNUSED_ANONYMOUS_PARAMETER", "LocalVariableName",
     "RemoveExplicitTypeArguments", "NestedLambdaShadowedImplicitParameter", "PropertyName",
     "RemoveRedundantQualifierName")
-object QueryFragmentImpl_ResponseAdapter : ResponseAdapter<QueryFragmentImpl.Data> {
-  val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
-    ResponseField(
-      type = ResponseField.Type.NotNull(ResponseField.Type.Named.Other("String")),
-      responseName = "__typename",
-      fieldName = "__typename",
-      arguments = emptyMap(),
-      conditions = emptyList(),
-      fieldSets = emptyList(),
-    ),
-    ResponseField(
-      type = ResponseField.Type.Named.Object("Character"),
-      responseName = "hero",
-      fieldName = "hero",
-      arguments = emptyMap(),
-      conditions = emptyList(),
-      fieldSets = listOf(
-        ResponseField.FieldSet("Droid", Hero.CharacterHero.RESPONSE_FIELDS),
-        ResponseField.FieldSet("Human", Hero.CharacterHero.RESPONSE_FIELDS),
-        ResponseField.FieldSet(null, Hero.OtherHero.RESPONSE_FIELDS),
-      ),
-    ),
-    ResponseField(
-      type = ResponseField.Type.Named.Object("Droid"),
-      responseName = "droid",
-      fieldName = "droid",
-      arguments = mapOf<String, Any?>(
-        "id" to 1),
-      conditions = emptyList(),
-      fieldSets = listOf(
-        ResponseField.FieldSet("Droid", Droid.DroidDroid.RESPONSE_FIELDS),
-        ResponseField.FieldSet(null, Droid.OtherDroid.RESPONSE_FIELDS),
-      ),
-    ),
-    ResponseField(
-      type = ResponseField.Type.Named.Object("Human"),
-      responseName = "human",
-      fieldName = "human",
-      arguments = mapOf<String, Any?>(
-        "id" to 1),
-      conditions = emptyList(),
-      fieldSets = listOf(
-        ResponseField.FieldSet("Human", Human.HumanHuman.RESPONSE_FIELDS),
-        ResponseField.FieldSet(null, Human.OtherHuman.RESPONSE_FIELDS),
-      ),
+class QueryFragmentImpl_ResponseAdapter(
+  responseAdapterCache: ResponseAdapterCache
+) : ResponseAdapter<QueryFragmentImpl.Data> {
+  private val stringAdapter: ResponseAdapter<String> = StringResponseAdapter
+
+  private val nullableHeroAdapter: ResponseAdapter<QueryFragmentImpl.Data.Hero?> =
+      NullableResponseAdapter(Hero(responseAdapterCache))
+
+  private val nullableDroidAdapter: ResponseAdapter<QueryFragmentImpl.Data.Droid?> =
+      NullableResponseAdapter(Droid(responseAdapterCache))
+
+  private val nullableHumanAdapter: ResponseAdapter<QueryFragmentImpl.Data.Human?> =
+      NullableResponseAdapter(Human(responseAdapterCache))
+
+  override fun fromResponse(reader: JsonReader): QueryFragmentImpl.Data {
+    var __typename: String? = null
+    var hero: QueryFragmentImpl.Data.Hero? = null
+    var droid: QueryFragmentImpl.Data.Droid? = null
+    var human: QueryFragmentImpl.Data.Human? = null
+    reader.beginObject()
+    while(true) {
+      when (reader.selectName(RESPONSE_NAMES)) {
+        0 -> __typename = stringAdapter.fromResponse(reader)
+        1 -> hero = nullableHeroAdapter.fromResponse(reader)
+        2 -> droid = nullableDroidAdapter.fromResponse(reader)
+        3 -> human = nullableHumanAdapter.fromResponse(reader)
+        else -> break
+      }
+    }
+    reader.endObject()
+    return QueryFragmentImpl.Data(
+      __typename = __typename!!,
+      hero = hero,
+      droid = droid,
+      human = human
     )
-  )
-
-  override fun fromResponse(reader: ResponseReader, __typename: String?): QueryFragmentImpl.Data {
-    return reader.run {
-      var __typename: String? = __typename
-      var hero: QueryFragmentImpl.Data.Hero? = null
-      var droid: QueryFragmentImpl.Data.Droid? = null
-      var human: QueryFragmentImpl.Data.Human? = null
-      while(true) {
-        when (selectField(RESPONSE_FIELDS)) {
-          0 -> __typename = readString(RESPONSE_FIELDS[0])
-          1 -> hero = readObject<QueryFragmentImpl.Data.Hero>(RESPONSE_FIELDS[1]) { reader ->
-            Hero.fromResponse(reader)
-          }
-          2 -> droid = readObject<QueryFragmentImpl.Data.Droid>(RESPONSE_FIELDS[2]) { reader ->
-            Droid.fromResponse(reader)
-          }
-          3 -> human = readObject<QueryFragmentImpl.Data.Human>(RESPONSE_FIELDS[3]) { reader ->
-            Human.fromResponse(reader)
-          }
-          else -> break
-        }
-      }
-      QueryFragmentImpl.Data(
-        __typename = __typename!!,
-        hero = hero,
-        droid = droid,
-        human = human
-      )
-    }
   }
 
-  override fun toResponse(writer: ResponseWriter, value: QueryFragmentImpl.Data) {
-    writer.writeString(RESPONSE_FIELDS[0], value.__typename)
-    if(value.hero == null) {
-      writer.writeObject(RESPONSE_FIELDS[1], null)
-    } else {
-      writer.writeObject(RESPONSE_FIELDS[1]) { writer ->
-        Hero.toResponse(writer, value.hero)
-      }
-    }
-    if(value.droid == null) {
-      writer.writeObject(RESPONSE_FIELDS[2], null)
-    } else {
-      writer.writeObject(RESPONSE_FIELDS[2]) { writer ->
-        Droid.toResponse(writer, value.droid)
-      }
-    }
-    if(value.human == null) {
-      writer.writeObject(RESPONSE_FIELDS[3], null)
-    } else {
-      writer.writeObject(RESPONSE_FIELDS[3]) { writer ->
-        Human.toResponse(writer, value.human)
-      }
-    }
+  override fun toResponse(writer: JsonWriter, value: QueryFragmentImpl.Data) {
+    writer.beginObject()
+    writer.name("__typename")
+    stringAdapter.toResponse(writer, value.__typename)
+    writer.name("hero")
+    nullableHeroAdapter.toResponse(writer, value.hero)
+    writer.name("droid")
+    nullableDroidAdapter.toResponse(writer, value.droid)
+    writer.name("human")
+    nullableHumanAdapter.toResponse(writer, value.human)
+    writer.endObject()
   }
 
-  object Hero : ResponseAdapter<QueryFragmentImpl.Data.Hero> {
-    override fun fromResponse(reader: ResponseReader, __typename: String?):
-        QueryFragmentImpl.Data.Hero {
-      val typename = __typename ?: reader.readString(ResponseField.Typename)
-      return when(typename) {
-        "Droid" -> CharacterHero.fromResponse(reader, typename)
-        "Human" -> CharacterHero.fromResponse(reader, typename)
-        else -> OtherHero.fromResponse(reader, typename)
-      }
-    }
-
-    override fun toResponse(writer: ResponseWriter, value: QueryFragmentImpl.Data.Hero) {
-      when(value) {
-        is QueryFragmentImpl.Data.Hero.CharacterHero -> CharacterHero.toResponse(writer, value)
-        is QueryFragmentImpl.Data.Hero.OtherHero -> OtherHero.toResponse(writer, value)
-      }
-    }
-
-    object CharacterHero : ResponseAdapter<QueryFragmentImpl.Data.Hero.CharacterHero> {
-      val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
-        ResponseField(
-          type = ResponseField.Type.NotNull(ResponseField.Type.Named.Other("String")),
-          responseName = "__typename",
-          fieldName = "__typename",
-          arguments = emptyMap(),
-          conditions = emptyList(),
-          fieldSets = emptyList(),
+  companion object {
+    val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
+      ResponseField.Typename,
+      ResponseField(
+        type = ResponseField.Type.Named.Object("Character"),
+        fieldName = "hero",
+        fieldSets = listOf(
+          ResponseField.FieldSet("Droid", Hero.CharacterHero.RESPONSE_FIELDS),
+          ResponseField.FieldSet("Human", Hero.CharacterHero.RESPONSE_FIELDS),
+          ResponseField.FieldSet(null, Hero.OtherHero.RESPONSE_FIELDS),
         ),
-        ResponseField(
-          type = ResponseField.Type.NotNull(ResponseField.Type.Named.Other("String")),
-          responseName = "name",
-          fieldName = "name",
-          arguments = emptyMap(),
-          conditions = emptyList(),
-          fieldSets = emptyList(),
-        )
+      ),
+      ResponseField(
+        type = ResponseField.Type.Named.Object("Droid"),
+        fieldName = "droid",
+        arguments = mapOf<String, Any?>(
+          "id" to 1),
+        fieldSets = listOf(
+          ResponseField.FieldSet("Droid", Droid.DroidDroid.RESPONSE_FIELDS),
+          ResponseField.FieldSet(null, Droid.OtherDroid.RESPONSE_FIELDS),
+        ),
+      ),
+      ResponseField(
+        type = ResponseField.Type.Named.Object("Human"),
+        fieldName = "human",
+        arguments = mapOf<String, Any?>(
+          "id" to 1),
+        fieldSets = listOf(
+          ResponseField.FieldSet("Human", Human.HumanHuman.RESPONSE_FIELDS),
+          ResponseField.FieldSet(null, Human.OtherHuman.RESPONSE_FIELDS),
+        ),
       )
+    )
 
-      override fun fromResponse(reader: ResponseReader, __typename: String?):
+    val RESPONSE_NAMES: List<String> = RESPONSE_FIELDS.map { it.responseName }
+  }
+
+  class Hero(
+    responseAdapterCache: ResponseAdapterCache
+  ) : ResponseAdapter<QueryFragmentImpl.Data.Hero> {
+    val CharacterHeroAdapter: CharacterHero =
+        com.example.root_query_fragment_with_nested_fragments.fragment.adapter.QueryFragmentImpl_ResponseAdapter.Hero.CharacterHero(responseAdapterCache)
+
+    val OtherHeroAdapter: OtherHero =
+        com.example.root_query_fragment_with_nested_fragments.fragment.adapter.QueryFragmentImpl_ResponseAdapter.Hero.OtherHero(responseAdapterCache)
+
+    override fun fromResponse(reader: JsonReader): QueryFragmentImpl.Data.Hero {
+      reader.beginObject()
+      check(reader.nextName() == "__typename")
+      val typename = reader.nextString()
+
+      return when(typename) {
+        "Droid" -> CharacterHeroAdapter.fromResponse(reader, typename)
+        "Human" -> CharacterHeroAdapter.fromResponse(reader, typename)
+        else -> OtherHeroAdapter.fromResponse(reader, typename)
+      }
+      .also { reader.endObject() }
+    }
+
+    override fun toResponse(writer: JsonWriter, value: QueryFragmentImpl.Data.Hero) {
+      when(value) {
+        is QueryFragmentImpl.Data.Hero.CharacterHero -> CharacterHeroAdapter.toResponse(writer, value)
+        is QueryFragmentImpl.Data.Hero.OtherHero -> OtherHeroAdapter.toResponse(writer, value)
+      }
+    }
+
+    class CharacterHero(
+      responseAdapterCache: ResponseAdapterCache
+    ) {
+      private val stringAdapter: ResponseAdapter<String> = StringResponseAdapter
+
+      fun fromResponse(reader: JsonReader, __typename: String?):
           QueryFragmentImpl.Data.Hero.CharacterHero {
-        return reader.run {
-          var __typename: String? = __typename
-          var name: String? = null
-          while(true) {
-            when (selectField(RESPONSE_FIELDS)) {
-              0 -> __typename = readString(RESPONSE_FIELDS[0])
-              1 -> name = readString(RESPONSE_FIELDS[1])
-              else -> break
-            }
+        var __typename: String? = __typename
+        var name: String? = null
+        while(true) {
+          when (reader.selectName(RESPONSE_NAMES)) {
+            0 -> __typename = stringAdapter.fromResponse(reader)
+            1 -> name = stringAdapter.fromResponse(reader)
+            else -> break
           }
-          QueryFragmentImpl.Data.Hero.CharacterHero(
-            __typename = __typename!!,
-            name = name!!
-          )
         }
+        return QueryFragmentImpl.Data.Hero.CharacterHero(
+          __typename = __typename!!,
+          name = name!!
+        )
       }
 
-      override fun toResponse(writer: ResponseWriter,
-          value: QueryFragmentImpl.Data.Hero.CharacterHero) {
-        writer.writeString(RESPONSE_FIELDS[0], value.__typename)
-        writer.writeString(RESPONSE_FIELDS[1], value.name)
+      fun toResponse(writer: JsonWriter, value: QueryFragmentImpl.Data.Hero.CharacterHero) {
+        writer.beginObject()
+        writer.name("__typename")
+        stringAdapter.toResponse(writer, value.__typename)
+        writer.name("name")
+        stringAdapter.toResponse(writer, value.name)
+        writer.endObject()
+      }
+
+      companion object {
+        val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
+          ResponseField.Typename,
+          ResponseField(
+            type = ResponseField.Type.NotNull(ResponseField.Type.Named.Other("String")),
+            fieldName = "name",
+          )
+        )
+
+        val RESPONSE_NAMES: List<String> = RESPONSE_FIELDS.map { it.responseName }
       }
     }
 
-    object OtherHero : ResponseAdapter<QueryFragmentImpl.Data.Hero.OtherHero> {
-      val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
-        ResponseField(
-          type = ResponseField.Type.NotNull(ResponseField.Type.Named.Other("String")),
-          responseName = "__typename",
-          fieldName = "__typename",
-          arguments = emptyMap(),
-          conditions = emptyList(),
-          fieldSets = emptyList(),
-        )
-      )
+    class OtherHero(
+      responseAdapterCache: ResponseAdapterCache
+    ) {
+      private val stringAdapter: ResponseAdapter<String> = StringResponseAdapter
 
-      override fun fromResponse(reader: ResponseReader, __typename: String?):
+      fun fromResponse(reader: JsonReader, __typename: String?):
           QueryFragmentImpl.Data.Hero.OtherHero {
-        return reader.run {
-          var __typename: String? = __typename
-          while(true) {
-            when (selectField(RESPONSE_FIELDS)) {
-              0 -> __typename = readString(RESPONSE_FIELDS[0])
-              else -> break
-            }
+        var __typename: String? = __typename
+        while(true) {
+          when (reader.selectName(RESPONSE_NAMES)) {
+            0 -> __typename = stringAdapter.fromResponse(reader)
+            else -> break
           }
-          QueryFragmentImpl.Data.Hero.OtherHero(
-            __typename = __typename!!
-          )
         }
+        return QueryFragmentImpl.Data.Hero.OtherHero(
+          __typename = __typename!!
+        )
       }
 
-      override fun toResponse(writer: ResponseWriter,
-          value: QueryFragmentImpl.Data.Hero.OtherHero) {
-        writer.writeString(RESPONSE_FIELDS[0], value.__typename)
+      fun toResponse(writer: JsonWriter, value: QueryFragmentImpl.Data.Hero.OtherHero) {
+        writer.beginObject()
+        writer.name("__typename")
+        stringAdapter.toResponse(writer, value.__typename)
+        writer.endObject()
+      }
+
+      companion object {
+        val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
+          ResponseField.Typename
+        )
+
+        val RESPONSE_NAMES: List<String> = RESPONSE_FIELDS.map { it.responseName }
       }
     }
   }
 
-  object Droid : ResponseAdapter<QueryFragmentImpl.Data.Droid> {
-    override fun fromResponse(reader: ResponseReader, __typename: String?):
-        QueryFragmentImpl.Data.Droid {
-      val typename = __typename ?: reader.readString(ResponseField.Typename)
+  class Droid(
+    responseAdapterCache: ResponseAdapterCache
+  ) : ResponseAdapter<QueryFragmentImpl.Data.Droid> {
+    val DroidDroidAdapter: DroidDroid =
+        com.example.root_query_fragment_with_nested_fragments.fragment.adapter.QueryFragmentImpl_ResponseAdapter.Droid.DroidDroid(responseAdapterCache)
+
+    val OtherDroidAdapter: OtherDroid =
+        com.example.root_query_fragment_with_nested_fragments.fragment.adapter.QueryFragmentImpl_ResponseAdapter.Droid.OtherDroid(responseAdapterCache)
+
+    override fun fromResponse(reader: JsonReader): QueryFragmentImpl.Data.Droid {
+      reader.beginObject()
+      check(reader.nextName() == "__typename")
+      val typename = reader.nextString()
+
       return when(typename) {
-        "Droid" -> DroidDroid.fromResponse(reader, typename)
-        else -> OtherDroid.fromResponse(reader, typename)
+        "Droid" -> DroidDroidAdapter.fromResponse(reader, typename)
+        else -> OtherDroidAdapter.fromResponse(reader, typename)
       }
+      .also { reader.endObject() }
     }
 
-    override fun toResponse(writer: ResponseWriter, value: QueryFragmentImpl.Data.Droid) {
+    override fun toResponse(writer: JsonWriter, value: QueryFragmentImpl.Data.Droid) {
       when(value) {
-        is QueryFragmentImpl.Data.Droid.DroidDroid -> DroidDroid.toResponse(writer, value)
-        is QueryFragmentImpl.Data.Droid.OtherDroid -> OtherDroid.toResponse(writer, value)
+        is QueryFragmentImpl.Data.Droid.DroidDroid -> DroidDroidAdapter.toResponse(writer, value)
+        is QueryFragmentImpl.Data.Droid.OtherDroid -> OtherDroidAdapter.toResponse(writer, value)
       }
     }
 
-    object DroidDroid : ResponseAdapter<QueryFragmentImpl.Data.Droid.DroidDroid> {
-      val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
-        ResponseField(
-          type = ResponseField.Type.NotNull(ResponseField.Type.Named.Other("String")),
-          responseName = "__typename",
-          fieldName = "__typename",
-          arguments = emptyMap(),
-          conditions = emptyList(),
-          fieldSets = emptyList(),
-        ),
-        ResponseField(
-          type = ResponseField.Type.NotNull(ResponseField.Type.Named.Other("String")),
-          responseName = "name",
-          fieldName = "name",
-          arguments = emptyMap(),
-          conditions = emptyList(),
-          fieldSets = emptyList(),
-        ),
-        ResponseField(
-          type = ResponseField.Type.Named.Other("String"),
-          responseName = "primaryFunction",
-          fieldName = "primaryFunction",
-          arguments = emptyMap(),
-          conditions = emptyList(),
-          fieldSets = emptyList(),
-        )
-      )
+    class DroidDroid(
+      responseAdapterCache: ResponseAdapterCache
+    ) {
+      private val stringAdapter: ResponseAdapter<String> = StringResponseAdapter
 
-      override fun fromResponse(reader: ResponseReader, __typename: String?):
+      private val nullableStringAdapter: ResponseAdapter<String?> =
+          NullableResponseAdapter(StringResponseAdapter)
+
+      fun fromResponse(reader: JsonReader, __typename: String?):
           QueryFragmentImpl.Data.Droid.DroidDroid {
-        return reader.run {
-          var __typename: String? = __typename
-          var name: String? = null
-          var primaryFunction: String? = null
-          while(true) {
-            when (selectField(RESPONSE_FIELDS)) {
-              0 -> __typename = readString(RESPONSE_FIELDS[0])
-              1 -> name = readString(RESPONSE_FIELDS[1])
-              2 -> primaryFunction = readString(RESPONSE_FIELDS[2])
-              else -> break
-            }
+        var __typename: String? = __typename
+        var name: String? = null
+        var primaryFunction: String? = null
+        while(true) {
+          when (reader.selectName(RESPONSE_NAMES)) {
+            0 -> __typename = stringAdapter.fromResponse(reader)
+            1 -> name = stringAdapter.fromResponse(reader)
+            2 -> primaryFunction = nullableStringAdapter.fromResponse(reader)
+            else -> break
           }
-          QueryFragmentImpl.Data.Droid.DroidDroid(
-            __typename = __typename!!,
-            name = name!!,
-            primaryFunction = primaryFunction
-          )
         }
+        return QueryFragmentImpl.Data.Droid.DroidDroid(
+          __typename = __typename!!,
+          name = name!!,
+          primaryFunction = primaryFunction
+        )
       }
 
-      override fun toResponse(writer: ResponseWriter,
-          value: QueryFragmentImpl.Data.Droid.DroidDroid) {
-        writer.writeString(RESPONSE_FIELDS[0], value.__typename)
-        writer.writeString(RESPONSE_FIELDS[1], value.name)
-        writer.writeString(RESPONSE_FIELDS[2], value.primaryFunction)
+      fun toResponse(writer: JsonWriter, value: QueryFragmentImpl.Data.Droid.DroidDroid) {
+        writer.beginObject()
+        writer.name("__typename")
+        stringAdapter.toResponse(writer, value.__typename)
+        writer.name("name")
+        stringAdapter.toResponse(writer, value.name)
+        writer.name("primaryFunction")
+        nullableStringAdapter.toResponse(writer, value.primaryFunction)
+        writer.endObject()
+      }
+
+      companion object {
+        val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
+          ResponseField.Typename,
+          ResponseField(
+            type = ResponseField.Type.NotNull(ResponseField.Type.Named.Other("String")),
+            fieldName = "name",
+          ),
+          ResponseField(
+            type = ResponseField.Type.Named.Other("String"),
+            fieldName = "primaryFunction",
+          )
+        )
+
+        val RESPONSE_NAMES: List<String> = RESPONSE_FIELDS.map { it.responseName }
       }
     }
 
-    object OtherDroid : ResponseAdapter<QueryFragmentImpl.Data.Droid.OtherDroid> {
-      val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
-        ResponseField(
-          type = ResponseField.Type.NotNull(ResponseField.Type.Named.Other("String")),
-          responseName = "__typename",
-          fieldName = "__typename",
-          arguments = emptyMap(),
-          conditions = emptyList(),
-          fieldSets = emptyList(),
-        )
-      )
+    class OtherDroid(
+      responseAdapterCache: ResponseAdapterCache
+    ) {
+      private val stringAdapter: ResponseAdapter<String> = StringResponseAdapter
 
-      override fun fromResponse(reader: ResponseReader, __typename: String?):
+      fun fromResponse(reader: JsonReader, __typename: String?):
           QueryFragmentImpl.Data.Droid.OtherDroid {
-        return reader.run {
-          var __typename: String? = __typename
-          while(true) {
-            when (selectField(RESPONSE_FIELDS)) {
-              0 -> __typename = readString(RESPONSE_FIELDS[0])
-              else -> break
-            }
+        var __typename: String? = __typename
+        while(true) {
+          when (reader.selectName(RESPONSE_NAMES)) {
+            0 -> __typename = stringAdapter.fromResponse(reader)
+            else -> break
           }
-          QueryFragmentImpl.Data.Droid.OtherDroid(
-            __typename = __typename!!
-          )
         }
+        return QueryFragmentImpl.Data.Droid.OtherDroid(
+          __typename = __typename!!
+        )
       }
 
-      override fun toResponse(writer: ResponseWriter,
-          value: QueryFragmentImpl.Data.Droid.OtherDroid) {
-        writer.writeString(RESPONSE_FIELDS[0], value.__typename)
+      fun toResponse(writer: JsonWriter, value: QueryFragmentImpl.Data.Droid.OtherDroid) {
+        writer.beginObject()
+        writer.name("__typename")
+        stringAdapter.toResponse(writer, value.__typename)
+        writer.endObject()
+      }
+
+      companion object {
+        val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
+          ResponseField.Typename
+        )
+
+        val RESPONSE_NAMES: List<String> = RESPONSE_FIELDS.map { it.responseName }
       }
     }
   }
 
-  object Human : ResponseAdapter<QueryFragmentImpl.Data.Human> {
-    override fun fromResponse(reader: ResponseReader, __typename: String?):
-        QueryFragmentImpl.Data.Human {
-      val typename = __typename ?: reader.readString(ResponseField.Typename)
+  class Human(
+    responseAdapterCache: ResponseAdapterCache
+  ) : ResponseAdapter<QueryFragmentImpl.Data.Human> {
+    val HumanHumanAdapter: HumanHuman =
+        com.example.root_query_fragment_with_nested_fragments.fragment.adapter.QueryFragmentImpl_ResponseAdapter.Human.HumanHuman(responseAdapterCache)
+
+    val OtherHumanAdapter: OtherHuman =
+        com.example.root_query_fragment_with_nested_fragments.fragment.adapter.QueryFragmentImpl_ResponseAdapter.Human.OtherHuman(responseAdapterCache)
+
+    override fun fromResponse(reader: JsonReader): QueryFragmentImpl.Data.Human {
+      reader.beginObject()
+      check(reader.nextName() == "__typename")
+      val typename = reader.nextString()
+
       return when(typename) {
-        "Human" -> HumanHuman.fromResponse(reader, typename)
-        else -> OtherHuman.fromResponse(reader, typename)
+        "Human" -> HumanHumanAdapter.fromResponse(reader, typename)
+        else -> OtherHumanAdapter.fromResponse(reader, typename)
       }
+      .also { reader.endObject() }
     }
 
-    override fun toResponse(writer: ResponseWriter, value: QueryFragmentImpl.Data.Human) {
+    override fun toResponse(writer: JsonWriter, value: QueryFragmentImpl.Data.Human) {
       when(value) {
-        is QueryFragmentImpl.Data.Human.HumanHuman -> HumanHuman.toResponse(writer, value)
-        is QueryFragmentImpl.Data.Human.OtherHuman -> OtherHuman.toResponse(writer, value)
+        is QueryFragmentImpl.Data.Human.HumanHuman -> HumanHumanAdapter.toResponse(writer, value)
+        is QueryFragmentImpl.Data.Human.OtherHuman -> OtherHumanAdapter.toResponse(writer, value)
       }
     }
 
-    object HumanHuman : ResponseAdapter<QueryFragmentImpl.Data.Human.HumanHuman> {
-      val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
-        ResponseField(
-          type = ResponseField.Type.NotNull(ResponseField.Type.Named.Other("String")),
-          responseName = "__typename",
-          fieldName = "__typename",
-          arguments = emptyMap(),
-          conditions = emptyList(),
-          fieldSets = emptyList(),
-        ),
-        ResponseField(
-          type = ResponseField.Type.NotNull(ResponseField.Type.Named.Other("String")),
-          responseName = "name",
-          fieldName = "name",
-          arguments = emptyMap(),
-          conditions = emptyList(),
-          fieldSets = emptyList(),
-        ),
-        ResponseField(
-          type = ResponseField.Type.Named.Other("String"),
-          responseName = "homePlanet",
-          fieldName = "homePlanet",
-          arguments = emptyMap(),
-          conditions = emptyList(),
-          fieldSets = emptyList(),
-        )
-      )
+    class HumanHuman(
+      responseAdapterCache: ResponseAdapterCache
+    ) {
+      private val stringAdapter: ResponseAdapter<String> = StringResponseAdapter
 
-      override fun fromResponse(reader: ResponseReader, __typename: String?):
+      private val nullableStringAdapter: ResponseAdapter<String?> =
+          NullableResponseAdapter(StringResponseAdapter)
+
+      fun fromResponse(reader: JsonReader, __typename: String?):
           QueryFragmentImpl.Data.Human.HumanHuman {
-        return reader.run {
-          var __typename: String? = __typename
-          var name: String? = null
-          var homePlanet: String? = null
-          while(true) {
-            when (selectField(RESPONSE_FIELDS)) {
-              0 -> __typename = readString(RESPONSE_FIELDS[0])
-              1 -> name = readString(RESPONSE_FIELDS[1])
-              2 -> homePlanet = readString(RESPONSE_FIELDS[2])
-              else -> break
-            }
+        var __typename: String? = __typename
+        var name: String? = null
+        var homePlanet: String? = null
+        while(true) {
+          when (reader.selectName(RESPONSE_NAMES)) {
+            0 -> __typename = stringAdapter.fromResponse(reader)
+            1 -> name = stringAdapter.fromResponse(reader)
+            2 -> homePlanet = nullableStringAdapter.fromResponse(reader)
+            else -> break
           }
-          QueryFragmentImpl.Data.Human.HumanHuman(
-            __typename = __typename!!,
-            name = name!!,
-            homePlanet = homePlanet
-          )
         }
+        return QueryFragmentImpl.Data.Human.HumanHuman(
+          __typename = __typename!!,
+          name = name!!,
+          homePlanet = homePlanet
+        )
       }
 
-      override fun toResponse(writer: ResponseWriter,
-          value: QueryFragmentImpl.Data.Human.HumanHuman) {
-        writer.writeString(RESPONSE_FIELDS[0], value.__typename)
-        writer.writeString(RESPONSE_FIELDS[1], value.name)
-        writer.writeString(RESPONSE_FIELDS[2], value.homePlanet)
+      fun toResponse(writer: JsonWriter, value: QueryFragmentImpl.Data.Human.HumanHuman) {
+        writer.beginObject()
+        writer.name("__typename")
+        stringAdapter.toResponse(writer, value.__typename)
+        writer.name("name")
+        stringAdapter.toResponse(writer, value.name)
+        writer.name("homePlanet")
+        nullableStringAdapter.toResponse(writer, value.homePlanet)
+        writer.endObject()
+      }
+
+      companion object {
+        val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
+          ResponseField.Typename,
+          ResponseField(
+            type = ResponseField.Type.NotNull(ResponseField.Type.Named.Other("String")),
+            fieldName = "name",
+          ),
+          ResponseField(
+            type = ResponseField.Type.Named.Other("String"),
+            fieldName = "homePlanet",
+          )
+        )
+
+        val RESPONSE_NAMES: List<String> = RESPONSE_FIELDS.map { it.responseName }
       }
     }
 
-    object OtherHuman : ResponseAdapter<QueryFragmentImpl.Data.Human.OtherHuman> {
-      val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
-        ResponseField(
-          type = ResponseField.Type.NotNull(ResponseField.Type.Named.Other("String")),
-          responseName = "__typename",
-          fieldName = "__typename",
-          arguments = emptyMap(),
-          conditions = emptyList(),
-          fieldSets = emptyList(),
-        )
-      )
+    class OtherHuman(
+      responseAdapterCache: ResponseAdapterCache
+    ) {
+      private val stringAdapter: ResponseAdapter<String> = StringResponseAdapter
 
-      override fun fromResponse(reader: ResponseReader, __typename: String?):
+      fun fromResponse(reader: JsonReader, __typename: String?):
           QueryFragmentImpl.Data.Human.OtherHuman {
-        return reader.run {
-          var __typename: String? = __typename
-          while(true) {
-            when (selectField(RESPONSE_FIELDS)) {
-              0 -> __typename = readString(RESPONSE_FIELDS[0])
-              else -> break
-            }
+        var __typename: String? = __typename
+        while(true) {
+          when (reader.selectName(RESPONSE_NAMES)) {
+            0 -> __typename = stringAdapter.fromResponse(reader)
+            else -> break
           }
-          QueryFragmentImpl.Data.Human.OtherHuman(
-            __typename = __typename!!
-          )
         }
+        return QueryFragmentImpl.Data.Human.OtherHuman(
+          __typename = __typename!!
+        )
       }
 
-      override fun toResponse(writer: ResponseWriter,
-          value: QueryFragmentImpl.Data.Human.OtherHuman) {
-        writer.writeString(RESPONSE_FIELDS[0], value.__typename)
+      fun toResponse(writer: JsonWriter, value: QueryFragmentImpl.Data.Human.OtherHuman) {
+        writer.beginObject()
+        writer.name("__typename")
+        stringAdapter.toResponse(writer, value.__typename)
+        writer.endObject()
+      }
+
+      companion object {
+        val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
+          ResponseField.Typename
+        )
+
+        val RESPONSE_NAMES: List<String> = RESPONSE_FIELDS.map { it.responseName }
       }
     }
   }

@@ -6,7 +6,9 @@ import com.apollographql.apollo.compiler.backend.codegen.interfaceTypeSpec
 import com.apollographql.apollo.compiler.backend.codegen.patchKotlinNativeOptionalArrayProperties
 import com.apollographql.apollo.compiler.backend.codegen.responseAdapterTypeSpec
 import com.apollographql.apollo.compiler.backend.codegen.typeSpec
+import com.apollographql.apollo.compiler.backend.codegen.typeSpecs
 import com.apollographql.apollo.compiler.backend.ir.BackendIr
+import com.apollographql.apollo.compiler.escapeKotlinReservedWord
 import com.apollographql.apollo.compiler.frontend.Schema
 import com.apollographql.apollo.compiler.frontend.toIntrospectionSchema
 import com.apollographql.apollo.compiler.operationoutput.OperationOutput
@@ -49,13 +51,15 @@ internal class GraphQLCodeGenerator(
     ast.enumTypes
         .filter { enumType -> enumsToGenerate.contains(enumType.graphqlName) }
         .forEach { enumType ->
-          enumType
-              .typeSpec(
-                  generateAsInternal = generateAsInternal,
-                  enumAsSealedClassPatternFilters = enumAsSealedClassPatternFilters
-              )
-              .fileSpec(typesPackageName)
-              .writeTo(outputDir)
+          fileSpec(typesPackageName, enumType.name.escapeKotlinReservedWord()) {
+            enumType.typeSpecs(
+                generateAsInternal = generateAsInternal,
+                enumAsSealedClassPatternFilters = enumAsSealedClassPatternFilters,
+                packageName = typesPackageName
+            ).forEach {
+              addType(it)
+            }
+          }.writeTo(outputDir)
         }
 
     ast.inputTypes

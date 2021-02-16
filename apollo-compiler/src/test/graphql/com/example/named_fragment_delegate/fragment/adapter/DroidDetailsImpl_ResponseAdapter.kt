@@ -5,10 +5,14 @@
 //
 package com.example.named_fragment_delegate.fragment.adapter
 
+import com.apollographql.apollo.api.ResponseAdapterCache
 import com.apollographql.apollo.api.ResponseField
+import com.apollographql.apollo.api.internal.ListResponseAdapter
+import com.apollographql.apollo.api.internal.NullableResponseAdapter
 import com.apollographql.apollo.api.internal.ResponseAdapter
-import com.apollographql.apollo.api.internal.ResponseReader
-import com.apollographql.apollo.api.internal.ResponseWriter
+import com.apollographql.apollo.api.internal.StringResponseAdapter
+import com.apollographql.apollo.api.internal.json.JsonReader
+import com.apollographql.apollo.api.internal.json.JsonWriter
 import com.example.named_fragment_delegate.fragment.DroidDetailsImpl
 import kotlin.Array
 import kotlin.String
@@ -18,113 +22,114 @@ import kotlin.collections.List
 @Suppress("NAME_SHADOWING", "UNUSED_ANONYMOUS_PARAMETER", "LocalVariableName",
     "RemoveExplicitTypeArguments", "NestedLambdaShadowedImplicitParameter", "PropertyName",
     "RemoveRedundantQualifierName")
-object DroidDetailsImpl_ResponseAdapter : ResponseAdapter<DroidDetailsImpl.Data> {
-  val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
-    ResponseField(
-      type = ResponseField.Type.NotNull(ResponseField.Type.Named.Other("String")),
-      responseName = "__typename",
-      fieldName = "__typename",
-      arguments = emptyMap(),
-      conditions = emptyList(),
-      fieldSets = emptyList(),
-    ),
-    ResponseField(
-      type = ResponseField.Type.NotNull(ResponseField.Type.Named.Other("String")),
-      responseName = "name",
-      fieldName = "name",
-      arguments = emptyMap(),
-      conditions = emptyList(),
-      fieldSets = emptyList(),
-    ),
-    ResponseField(
-      type = ResponseField.Type.Named.Other("String"),
-      responseName = "primaryFunction",
-      fieldName = "primaryFunction",
-      arguments = emptyMap(),
-      conditions = emptyList(),
-      fieldSets = emptyList(),
-    ),
-    ResponseField(
-      type = ResponseField.Type.List(ResponseField.Type.Named.Object("Character")),
-      responseName = "friends",
-      fieldName = "friends",
-      arguments = emptyMap(),
-      conditions = emptyList(),
-      fieldSets = listOf(
-        ResponseField.FieldSet(null, Friends.RESPONSE_FIELDS)
-      ),
-    )
-  )
+class DroidDetailsImpl_ResponseAdapter(
+  responseAdapterCache: ResponseAdapterCache
+) : ResponseAdapter<DroidDetailsImpl.Data> {
+  private val stringAdapter: ResponseAdapter<String> = StringResponseAdapter
 
-  override fun fromResponse(reader: ResponseReader, __typename: String?): DroidDetailsImpl.Data {
-    return reader.run {
-      var __typename: String? = __typename
+  private val nullableStringAdapter: ResponseAdapter<String?> =
+      NullableResponseAdapter(StringResponseAdapter)
+
+  private val nullableListOfNullableFriendsAdapter:
+      ResponseAdapter<List<DroidDetailsImpl.Data.Friends?>?> =
+      NullableResponseAdapter(ListResponseAdapter(NullableResponseAdapter(Friends(responseAdapterCache))))
+
+  override fun fromResponse(reader: JsonReader): DroidDetailsImpl.Data {
+    var __typename: String? = null
+    var name: String? = null
+    var primaryFunction: String? = null
+    var friends: List<DroidDetailsImpl.Data.Friends?>? = null
+    reader.beginObject()
+    while(true) {
+      when (reader.selectName(RESPONSE_NAMES)) {
+        0 -> __typename = stringAdapter.fromResponse(reader)
+        1 -> name = stringAdapter.fromResponse(reader)
+        2 -> primaryFunction = nullableStringAdapter.fromResponse(reader)
+        3 -> friends = nullableListOfNullableFriendsAdapter.fromResponse(reader)
+        else -> break
+      }
+    }
+    reader.endObject()
+    return DroidDetailsImpl.Data(
+      __typename = __typename!!,
+      name = name!!,
+      primaryFunction = primaryFunction,
+      friends = friends
+    )
+  }
+
+  override fun toResponse(writer: JsonWriter, value: DroidDetailsImpl.Data) {
+    writer.beginObject()
+    writer.name("__typename")
+    stringAdapter.toResponse(writer, value.__typename)
+    writer.name("name")
+    stringAdapter.toResponse(writer, value.name)
+    writer.name("primaryFunction")
+    nullableStringAdapter.toResponse(writer, value.primaryFunction)
+    writer.name("friends")
+    nullableListOfNullableFriendsAdapter.toResponse(writer, value.friends)
+    writer.endObject()
+  }
+
+  companion object {
+    val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
+      ResponseField.Typename,
+      ResponseField(
+        type = ResponseField.Type.NotNull(ResponseField.Type.Named.Other("String")),
+        fieldName = "name",
+      ),
+      ResponseField(
+        type = ResponseField.Type.Named.Other("String"),
+        fieldName = "primaryFunction",
+      ),
+      ResponseField(
+        type = ResponseField.Type.List(ResponseField.Type.Named.Object("Character")),
+        fieldName = "friends",
+        fieldSets = listOf(
+          ResponseField.FieldSet(null, Friends.RESPONSE_FIELDS)
+        ),
+      )
+    )
+
+    val RESPONSE_NAMES: List<String> = RESPONSE_FIELDS.map { it.responseName }
+  }
+
+  class Friends(
+    responseAdapterCache: ResponseAdapterCache
+  ) : ResponseAdapter<DroidDetailsImpl.Data.Friends> {
+    private val stringAdapter: ResponseAdapter<String> = StringResponseAdapter
+
+    override fun fromResponse(reader: JsonReader): DroidDetailsImpl.Data.Friends {
       var name: String? = null
-      var primaryFunction: String? = null
-      var friends: List<DroidDetailsImpl.Data.Friends?>? = null
+      reader.beginObject()
       while(true) {
-        when (selectField(RESPONSE_FIELDS)) {
-          0 -> __typename = readString(RESPONSE_FIELDS[0])
-          1 -> name = readString(RESPONSE_FIELDS[1])
-          2 -> primaryFunction = readString(RESPONSE_FIELDS[2])
-          3 -> friends = readList<DroidDetailsImpl.Data.Friends>(RESPONSE_FIELDS[3]) { reader ->
-            reader.readObject<DroidDetailsImpl.Data.Friends> { reader ->
-              Friends.fromResponse(reader)
-            }
-          }
+        when (reader.selectName(RESPONSE_NAMES)) {
+          0 -> name = stringAdapter.fromResponse(reader)
           else -> break
         }
       }
-      DroidDetailsImpl.Data(
-        __typename = __typename!!,
-        name = name!!,
-        primaryFunction = primaryFunction,
-        friends = friends
+      reader.endObject()
+      return DroidDetailsImpl.Data.Friends(
+        name = name!!
       )
     }
-  }
 
-  override fun toResponse(writer: ResponseWriter, value: DroidDetailsImpl.Data) {
-    writer.writeString(RESPONSE_FIELDS[0], value.__typename)
-    writer.writeString(RESPONSE_FIELDS[1], value.name)
-    writer.writeString(RESPONSE_FIELDS[2], value.primaryFunction)
-    writer.writeList(RESPONSE_FIELDS[3], value.friends) { value, listItemWriter ->
-      listItemWriter.writeObject { writer ->
-        Friends.toResponse(writer, value)
-      }
+    override fun toResponse(writer: JsonWriter, value: DroidDetailsImpl.Data.Friends) {
+      writer.beginObject()
+      writer.name("name")
+      stringAdapter.toResponse(writer, value.name)
+      writer.endObject()
     }
-  }
 
-  object Friends : ResponseAdapter<DroidDetailsImpl.Data.Friends> {
-    val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
-      ResponseField(
-        type = ResponseField.Type.NotNull(ResponseField.Type.Named.Other("String")),
-        responseName = "name",
-        fieldName = "name",
-        arguments = emptyMap(),
-        conditions = emptyList(),
-        fieldSets = emptyList(),
-      )
-    )
-
-    override fun fromResponse(reader: ResponseReader, __typename: String?):
-        DroidDetailsImpl.Data.Friends {
-      return reader.run {
-        var name: String? = null
-        while(true) {
-          when (selectField(RESPONSE_FIELDS)) {
-            0 -> name = readString(RESPONSE_FIELDS[0])
-            else -> break
-          }
-        }
-        DroidDetailsImpl.Data.Friends(
-          name = name!!
+    companion object {
+      val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
+        ResponseField(
+          type = ResponseField.Type.NotNull(ResponseField.Type.Named.Other("String")),
+          fieldName = "name",
         )
-      }
-    }
+      )
 
-    override fun toResponse(writer: ResponseWriter, value: DroidDetailsImpl.Data.Friends) {
-      writer.writeString(RESPONSE_FIELDS[0], value.name)
+      val RESPONSE_NAMES: List<String> = RESPONSE_FIELDS.map { it.responseName }
     }
   }
 }

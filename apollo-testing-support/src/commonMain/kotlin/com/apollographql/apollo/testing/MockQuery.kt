@@ -1,11 +1,12 @@
 package com.apollographql.apollo.testing
 
+import com.apollographql.apollo.api.ResponseAdapterCache
 import com.apollographql.apollo.api.Operation
 import com.apollographql.apollo.api.Query
 import com.apollographql.apollo.api.ResponseField
 import com.apollographql.apollo.api.internal.ResponseAdapter
-import com.apollographql.apollo.api.internal.ResponseReader
-import com.apollographql.apollo.api.internal.ResponseWriter
+import com.apollographql.apollo.api.internal.json.JsonReader
+import com.apollographql.apollo.api.internal.json.JsonWriter
 
 class MockQuery : Query<MockQuery.Data> {
 
@@ -13,16 +14,20 @@ class MockQuery : Query<MockQuery.Data> {
 
   override fun variables(): Operation.Variables = Operation.EMPTY_VARIABLES
 
-  override fun adapter(): ResponseAdapter<Data> {
+  override fun adapter(responseAdapterCache: ResponseAdapterCache): ResponseAdapter<Data> {
     return object : ResponseAdapter<Data> {
-      override fun fromResponse(reader: ResponseReader, __typename: String?): Data {
-        while (reader.selectField(emptyArray()) != -1) {
-          // consume the json stream
+      override fun fromResponse(reader: JsonReader): Data {
+        reader.beginObject()
+        // consume the json stream
+        while (reader.hasNext()) {
+          reader.nextName()
+          reader.skipValue()
         }
+        reader.endObject()
         return Data
       }
 
-      override fun toResponse(writer: ResponseWriter, value: Data) {
+      override fun toResponse(writer: JsonWriter, value: Data) {
         TODO("Not yet implemented")
       }
     }

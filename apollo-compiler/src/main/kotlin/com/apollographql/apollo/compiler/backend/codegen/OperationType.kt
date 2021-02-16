@@ -1,5 +1,6 @@
 package com.apollographql.apollo.compiler.backend.codegen
 
+import com.apollographql.apollo.api.ResponseAdapterCache
 import com.apollographql.apollo.api.Mutation
 import com.apollographql.apollo.api.Query
 import com.apollographql.apollo.api.ResponseField
@@ -13,11 +14,13 @@ import com.squareup.kotlinpoet.ClassName
 import com.squareup.kotlinpoet.CodeBlock
 import com.squareup.kotlinpoet.FunSpec
 import com.squareup.kotlinpoet.KModifier
+import com.squareup.kotlinpoet.ParameterSpec
 import com.squareup.kotlinpoet.ParameterizedTypeName.Companion.parameterizedBy
 import com.squareup.kotlinpoet.PropertySpec
 import com.squareup.kotlinpoet.TypeName
 import com.squareup.kotlinpoet.TypeSpec
 import com.squareup.kotlinpoet.asClassName
+import com.squareup.kotlinpoet.asTypeName
 
 internal fun CodeGenerationAst.OperationType.typeSpec(targetPackage: String, generateAsInternal: Boolean = false): TypeSpec {
   val operationResponseAdapter = CodeGenerationAst.TypeRef(name = name, packageName = targetPackage).asAdapterTypeName()
@@ -47,13 +50,7 @@ internal fun CodeGenerationAst.OperationType.typeSpec(targetPackage: String, gen
           .addStatement("return OPERATION_NAME")
           .build()
       )
-      .addFunction(
-          FunSpec.builder("adapter")
-              .addModifiers(KModifier.OVERRIDE)
-              .returns(ResponseAdapter::class.asClassName().parameterizedBy(ClassName(packageName = "", "Data")))
-              .addCode("return %T", operationResponseAdapter)
-              .build()
-      )
+      .addFunction(adapterFunSpec(operationResponseAdapter))
       .addFunction(
           FunSpec.builder(
               "responseFields",
@@ -94,6 +91,25 @@ internal fun CodeGenerationAst.OperationType.typeSpec(targetPackage: String, gen
           .build()
       )
       .build()
+}
+
+private fun adapterFunSpec(operationResponseAdapter: ClassName): FunSpec {
+  val body = CodeBlock.builder().apply {
+    addStatement("val adapter = customScalarAdapters.getOperationAdapter(name()) {")
+    indent()
+    addStatement("%T(customScalarAdapters)", operationResponseAdapter)
+    unindent()
+    addStatement("}")
+    addStatement("return adapter")
+  }.build()
+
+  return FunSpec.builder("adapter")
+      .addModifiers(KModifier.OVERRIDE)
+      .addParameter(ParameterSpec.builder("customScalarAdapters", ResponseAdapterCache::class.asTypeName()).build())
+      .returns(ResponseAdapter::class.asClassName().parameterizedBy(ClassName(packageName = "", "Data")))
+      .addCode(body)
+      .build()
+
 }
 
 private fun CodeGenerationAst.OperationType.superInterfaceType(targetPackage: String): TypeName {

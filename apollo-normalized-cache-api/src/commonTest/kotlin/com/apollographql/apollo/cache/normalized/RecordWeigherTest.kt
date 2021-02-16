@@ -8,7 +8,7 @@ class RecordWeigherTest {
 
   @Test
   fun testRecordWeigher() {
-    val expectedBigDecimal = BigDecimal(1.23)
+    val expectedDouble = 1.23
     val expectedStringValue = "StringValue"
     val expectedBooleanValue = true
     val expectedCacheReference = CacheReference("foo")
@@ -17,7 +17,7 @@ class RecordWeigherTest {
     val record = Record(
         key = "root",
         fields = mapOf(
-            "bigDecimal" to expectedBigDecimal,
+            "double" to expectedDouble,
             "string" to expectedStringValue,
             "boolean" to expectedBooleanValue,
             "cacheReference" to expectedCacheReference,
@@ -25,6 +25,6 @@ class RecordWeigherTest {
             "referenceList" to expectedCacheReferenceList,
         )
     )
-    assertEquals(actual = record.sizeInBytes, expected = 246)
+    assertEquals(actual = record.sizeInBytes, expected = 218)
   }
 }

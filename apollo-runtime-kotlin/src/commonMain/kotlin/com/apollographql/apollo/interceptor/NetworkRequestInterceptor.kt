@@ -20,9 +20,9 @@ class NetworkRequestInterceptor(
 
   override fun <D : Operation.Data> intercept(request: ApolloRequest<D>, chain: ApolloInterceptorChain): Flow<ApolloResponse<D>> {
     return when (request) {
-      is ApolloQueryRequest -> networkTransport.execute(request = request, customScalarAdapters = chain.customScalarAdapters, executionContext = request.executionContext + coroutineDispatcherContext)
-      is ApolloMutationRequest -> networkTransport.execute(request = request, customScalarAdapters = chain.customScalarAdapters, executionContext = request.executionContext + coroutineDispatcherContext)
-      is ApolloSubscriptionRequest -> subscriptionNetworkTransport.execute(request = request, customScalarAdapters = chain.customScalarAdapters, executionContext = request.executionContext + coroutineDispatcherContext)
+      is ApolloQueryRequest -> networkTransport.execute(request = request, responseAdapterCache = chain.responseAdapterCache, executionContext = request.executionContext + coroutineDispatcherContext)
+      is ApolloMutationRequest -> networkTransport.execute(request = request, responseAdapterCache = chain.responseAdapterCache, executionContext = request.executionContext + coroutineDispatcherContext)
+      is ApolloSubscriptionRequest -> subscriptionNetworkTransport.execute(request = request, responseAdapterCache = chain.responseAdapterCache, executionContext = request.executionContext + coroutineDispatcherContext)
       else -> emptyFlow() // should never happen
     }
   }

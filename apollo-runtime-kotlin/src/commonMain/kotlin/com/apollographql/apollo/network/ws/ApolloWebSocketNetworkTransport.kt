@@ -3,7 +3,7 @@ package com.apollographql.apollo.network.ws
 import com.apollographql.apollo.exception.ApolloWebSocketException
 import com.apollographql.apollo.exception.ApolloWebSocketServerException
 import com.apollographql.apollo.api.ApolloExperimental
-import com.apollographql.apollo.api.CustomScalarAdapters
+import com.apollographql.apollo.api.ResponseAdapterCache
 import com.apollographql.apollo.api.ExecutionContext
 import com.apollographql.apollo.api.Operation
 import com.apollographql.apollo.api.Subscription
@@ -68,7 +68,7 @@ class ApolloWebSocketNetworkTransport(
 
   override fun <D : Operation.Data> execute(
       request: ApolloRequest<D>,
-      customScalarAdapters: CustomScalarAdapters,
+      responseAdapterCache: ResponseAdapterCache,
       executionContext: ExecutionContext
   ): Flow<ApolloResponse<D>> {
     val dispatcherContext = requireNotNull(
@@ -79,13 +79,13 @@ class ApolloWebSocketNetworkTransport(
           .subscribe()
           .filter { message -> message !is OperationServerMessage.ConnectionAcknowledge }
           .takeWhile { message -> message !is OperationServerMessage.Complete || message.id != request.requestUuid.toString() }
-          .mapNotNull { message -> message.process(request, customScalarAdapters) }
+          .mapNotNull { message -> message.process(request, responseAdapterCache) }
           .onStart {
             serverConnection.send(
                 OperationClientMessage.Start(
                     subscriptionId = request.requestUuid.toString(),
                     subscription = request.operation as Subscription<*>,
-                    customScalarAdapters = customScalarAdapters,
+                    responseAdapterCache = responseAdapterCache,
                     autoPersistSubscription = false,
                     sendSubscriptionDocument = true
                 )
@@ -102,7 +102,7 @@ class ApolloWebSocketNetworkTransport(
 
   private fun <D : Operation.Data> OperationServerMessage.process(
       request: ApolloRequest<D>,
-      customScalarAdapters: CustomScalarAdapters
+      responseAdapterCache: ResponseAdapterCache
   ): ApolloResponse<D>? {
     return when (this) {
       is OperationServerMessage.Error -> {
@@ -126,7 +126,7 @@ class ApolloWebSocketNetworkTransport(
           val response = try {
             request.operation.parse(
                 source = buffer,
-                customScalarAdapters = customScalarAdapters
+                responseAdapterCache = responseAdapterCache
             )
           } catch (e: Exception) {
             throw ApolloParseException(

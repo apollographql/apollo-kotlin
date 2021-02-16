@@ -5,222 +5,242 @@
 //
 package com.example.interface_on_interface.adapter
 
+import com.apollographql.apollo.api.ResponseAdapterCache
 import com.apollographql.apollo.api.ResponseField
+import com.apollographql.apollo.api.internal.DoubleResponseAdapter
 import com.apollographql.apollo.api.internal.ResponseAdapter
-import com.apollographql.apollo.api.internal.ResponseReader
-import com.apollographql.apollo.api.internal.ResponseWriter
+import com.apollographql.apollo.api.internal.StringResponseAdapter
+import com.apollographql.apollo.api.internal.json.JsonReader
+import com.apollographql.apollo.api.internal.json.JsonWriter
 import com.example.interface_on_interface.GetHuman
 import kotlin.Array
 import kotlin.Double
 import kotlin.String
 import kotlin.Suppress
+import kotlin.collections.List
 
 @Suppress("NAME_SHADOWING", "UNUSED_ANONYMOUS_PARAMETER", "LocalVariableName",
     "RemoveExplicitTypeArguments", "NestedLambdaShadowedImplicitParameter", "PropertyName",
     "RemoveRedundantQualifierName")
-object GetHuman_ResponseAdapter : ResponseAdapter<GetHuman.Data> {
-  val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
-    ResponseField(
-      type = ResponseField.Type.NotNull(ResponseField.Type.Named.Object("Human")),
-      responseName = "human",
-      fieldName = "human",
-      arguments = emptyMap(),
-      conditions = emptyList(),
-      fieldSets = listOf(
-        ResponseField.FieldSet(null, Human.RESPONSE_FIELDS)
-      ),
-    ),
-    ResponseField(
-      type = ResponseField.Type.NotNull(ResponseField.Type.Named.Object("Node")),
-      responseName = "node",
-      fieldName = "node",
-      arguments = emptyMap(),
-      conditions = emptyList(),
-      fieldSets = listOf(
-        ResponseField.FieldSet("Human", Node.HumanNode.RESPONSE_FIELDS),
-        ResponseField.FieldSet(null, Node.OtherNode.RESPONSE_FIELDS),
-      ),
-    )
-  )
+class GetHuman_ResponseAdapter(
+  responseAdapterCache: ResponseAdapterCache
+) : ResponseAdapter<GetHuman.Data> {
+  private val humanAdapter: ResponseAdapter<GetHuman.Data.Human> = Human(responseAdapterCache)
 
-  override fun fromResponse(reader: ResponseReader, __typename: String?): GetHuman.Data {
-    return reader.run {
-      var human: GetHuman.Data.Human? = null
-      var node: GetHuman.Data.Node? = null
+  private val nodeAdapter: ResponseAdapter<GetHuman.Data.Node> = Node(responseAdapterCache)
+
+  override fun fromResponse(reader: JsonReader): GetHuman.Data {
+    var human: GetHuman.Data.Human? = null
+    var node: GetHuman.Data.Node? = null
+    reader.beginObject()
+    while(true) {
+      when (reader.selectName(RESPONSE_NAMES)) {
+        0 -> human = humanAdapter.fromResponse(reader)
+        1 -> node = nodeAdapter.fromResponse(reader)
+        else -> break
+      }
+    }
+    reader.endObject()
+    return GetHuman.Data(
+      human = human!!,
+      node = node!!
+    )
+  }
+
+  override fun toResponse(writer: JsonWriter, value: GetHuman.Data) {
+    writer.beginObject()
+    writer.name("human")
+    humanAdapter.toResponse(writer, value.human)
+    writer.name("node")
+    nodeAdapter.toResponse(writer, value.node)
+    writer.endObject()
+  }
+
+  companion object {
+    val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
+      ResponseField(
+        type = ResponseField.Type.NotNull(ResponseField.Type.Named.Object("Human")),
+        fieldName = "human",
+        fieldSets = listOf(
+          ResponseField.FieldSet(null, Human.RESPONSE_FIELDS)
+        ),
+      ),
+      ResponseField(
+        type = ResponseField.Type.NotNull(ResponseField.Type.Named.Object("Node")),
+        fieldName = "node",
+        fieldSets = listOf(
+          ResponseField.FieldSet("Human", Node.HumanNode.RESPONSE_FIELDS),
+          ResponseField.FieldSet(null, Node.OtherNode.RESPONSE_FIELDS),
+        ),
+      )
+    )
+
+    val RESPONSE_NAMES: List<String> = RESPONSE_FIELDS.map { it.responseName }
+  }
+
+  class Human(
+    responseAdapterCache: ResponseAdapterCache
+  ) : ResponseAdapter<GetHuman.Data.Human> {
+    private val stringAdapter: ResponseAdapter<String> = StringResponseAdapter
+
+    private val floatAdapter: ResponseAdapter<Double> = DoubleResponseAdapter
+
+    override fun fromResponse(reader: JsonReader): GetHuman.Data.Human {
+      var id: String? = null
+      var name: String? = null
+      var height: Double? = null
+      reader.beginObject()
       while(true) {
-        when (selectField(RESPONSE_FIELDS)) {
-          0 -> human = readObject<GetHuman.Data.Human>(RESPONSE_FIELDS[0]) { reader ->
-            Human.fromResponse(reader)
-          }
-          1 -> node = readObject<GetHuman.Data.Node>(RESPONSE_FIELDS[1]) { reader ->
-            Node.fromResponse(reader)
-          }
+        when (reader.selectName(RESPONSE_NAMES)) {
+          0 -> id = stringAdapter.fromResponse(reader)
+          1 -> name = stringAdapter.fromResponse(reader)
+          2 -> height = floatAdapter.fromResponse(reader)
           else -> break
         }
       }
-      GetHuman.Data(
-        human = human!!,
-        node = node!!
+      reader.endObject()
+      return GetHuman.Data.Human(
+        id = id!!,
+        name = name!!,
+        height = height!!
       )
     }
-  }
 
-  override fun toResponse(writer: ResponseWriter, value: GetHuman.Data) {
-    writer.writeObject(RESPONSE_FIELDS[0]) { writer ->
-      Human.toResponse(writer, value.human)
-    }
-    writer.writeObject(RESPONSE_FIELDS[1]) { writer ->
-      Node.toResponse(writer, value.node)
-    }
-  }
-
-  object Human : ResponseAdapter<GetHuman.Data.Human> {
-    val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
-      ResponseField(
-        type = ResponseField.Type.NotNull(ResponseField.Type.Named.Other("String")),
-        responseName = "id",
-        fieldName = "id",
-        arguments = emptyMap(),
-        conditions = emptyList(),
-        fieldSets = emptyList(),
-      ),
-      ResponseField(
-        type = ResponseField.Type.NotNull(ResponseField.Type.Named.Other("String")),
-        responseName = "name",
-        fieldName = "name",
-        arguments = emptyMap(),
-        conditions = emptyList(),
-        fieldSets = emptyList(),
-      ),
-      ResponseField(
-        type = ResponseField.Type.NotNull(ResponseField.Type.Named.Other("Float")),
-        responseName = "height",
-        fieldName = "height",
-        arguments = emptyMap(),
-        conditions = emptyList(),
-        fieldSets = emptyList(),
-      )
-    )
-
-    override fun fromResponse(reader: ResponseReader, __typename: String?): GetHuman.Data.Human {
-      return reader.run {
-        var id: String? = null
-        var name: String? = null
-        var height: Double? = null
-        while(true) {
-          when (selectField(RESPONSE_FIELDS)) {
-            0 -> id = readString(RESPONSE_FIELDS[0])
-            1 -> name = readString(RESPONSE_FIELDS[1])
-            2 -> height = readDouble(RESPONSE_FIELDS[2])
-            else -> break
-          }
-        }
-        GetHuman.Data.Human(
-          id = id!!,
-          name = name!!,
-          height = height!!
-        )
-      }
+    override fun toResponse(writer: JsonWriter, value: GetHuman.Data.Human) {
+      writer.beginObject()
+      writer.name("id")
+      stringAdapter.toResponse(writer, value.id)
+      writer.name("name")
+      stringAdapter.toResponse(writer, value.name)
+      writer.name("height")
+      floatAdapter.toResponse(writer, value.height)
+      writer.endObject()
     }
 
-    override fun toResponse(writer: ResponseWriter, value: GetHuman.Data.Human) {
-      writer.writeString(RESPONSE_FIELDS[0], value.id)
-      writer.writeString(RESPONSE_FIELDS[1], value.name)
-      writer.writeDouble(RESPONSE_FIELDS[2], value.height)
-    }
-  }
-
-  object Node : ResponseAdapter<GetHuman.Data.Node> {
-    override fun fromResponse(reader: ResponseReader, __typename: String?): GetHuman.Data.Node {
-      val typename = __typename ?: reader.readString(ResponseField.Typename)
-      return when(typename) {
-        "Human" -> HumanNode.fromResponse(reader, typename)
-        else -> OtherNode.fromResponse(reader, typename)
-      }
-    }
-
-    override fun toResponse(writer: ResponseWriter, value: GetHuman.Data.Node) {
-      when(value) {
-        is GetHuman.Data.Node.HumanNode -> HumanNode.toResponse(writer, value)
-        is GetHuman.Data.Node.OtherNode -> OtherNode.toResponse(writer, value)
-      }
-    }
-
-    object HumanNode : ResponseAdapter<GetHuman.Data.Node.HumanNode> {
+    companion object {
       val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
         ResponseField(
           type = ResponseField.Type.NotNull(ResponseField.Type.Named.Other("String")),
-          responseName = "__typename",
-          fieldName = "__typename",
-          arguments = emptyMap(),
-          conditions = emptyList(),
-          fieldSets = emptyList(),
+          fieldName = "id",
+        ),
+        ResponseField(
+          type = ResponseField.Type.NotNull(ResponseField.Type.Named.Other("String")),
+          fieldName = "name",
         ),
         ResponseField(
           type = ResponseField.Type.NotNull(ResponseField.Type.Named.Other("Float")),
-          responseName = "height",
           fieldName = "height",
-          arguments = emptyMap(),
-          conditions = emptyList(),
-          fieldSets = emptyList(),
         )
       )
 
-      override fun fromResponse(reader: ResponseReader, __typename: String?):
-          GetHuman.Data.Node.HumanNode {
-        return reader.run {
-          var __typename: String? = __typename
-          var height: Double? = null
-          while(true) {
-            when (selectField(RESPONSE_FIELDS)) {
-              0 -> __typename = readString(RESPONSE_FIELDS[0])
-              1 -> height = readDouble(RESPONSE_FIELDS[1])
-              else -> break
-            }
-          }
-          GetHuman.Data.Node.HumanNode(
-            __typename = __typename!!,
-            height = height!!
-          )
-        }
-      }
+      val RESPONSE_NAMES: List<String> = RESPONSE_FIELDS.map { it.responseName }
+    }
+  }
 
-      override fun toResponse(writer: ResponseWriter, value: GetHuman.Data.Node.HumanNode) {
-        writer.writeString(RESPONSE_FIELDS[0], value.__typename)
-        writer.writeDouble(RESPONSE_FIELDS[1], value.height)
+  class Node(
+    responseAdapterCache: ResponseAdapterCache
+  ) : ResponseAdapter<GetHuman.Data.Node> {
+    val HumanNodeAdapter: HumanNode =
+        com.example.interface_on_interface.adapter.GetHuman_ResponseAdapter.Node.HumanNode(responseAdapterCache)
+
+    val OtherNodeAdapter: OtherNode =
+        com.example.interface_on_interface.adapter.GetHuman_ResponseAdapter.Node.OtherNode(responseAdapterCache)
+
+    override fun fromResponse(reader: JsonReader): GetHuman.Data.Node {
+      reader.beginObject()
+      check(reader.nextName() == "__typename")
+      val typename = reader.nextString()
+
+      return when(typename) {
+        "Human" -> HumanNodeAdapter.fromResponse(reader, typename)
+        else -> OtherNodeAdapter.fromResponse(reader, typename)
+      }
+      .also { reader.endObject() }
+    }
+
+    override fun toResponse(writer: JsonWriter, value: GetHuman.Data.Node) {
+      when(value) {
+        is GetHuman.Data.Node.HumanNode -> HumanNodeAdapter.toResponse(writer, value)
+        is GetHuman.Data.Node.OtherNode -> OtherNodeAdapter.toResponse(writer, value)
       }
     }
 
-    object OtherNode : ResponseAdapter<GetHuman.Data.Node.OtherNode> {
-      val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
-        ResponseField(
-          type = ResponseField.Type.NotNull(ResponseField.Type.Named.Other("String")),
-          responseName = "__typename",
-          fieldName = "__typename",
-          arguments = emptyMap(),
-          conditions = emptyList(),
-          fieldSets = emptyList(),
-        )
-      )
+    class HumanNode(
+      responseAdapterCache: ResponseAdapterCache
+    ) {
+      private val stringAdapter: ResponseAdapter<String> = StringResponseAdapter
 
-      override fun fromResponse(reader: ResponseReader, __typename: String?):
-          GetHuman.Data.Node.OtherNode {
-        return reader.run {
-          var __typename: String? = __typename
-          while(true) {
-            when (selectField(RESPONSE_FIELDS)) {
-              0 -> __typename = readString(RESPONSE_FIELDS[0])
-              else -> break
-            }
+      private val floatAdapter: ResponseAdapter<Double> = DoubleResponseAdapter
+
+      fun fromResponse(reader: JsonReader, __typename: String?): GetHuman.Data.Node.HumanNode {
+        var __typename: String? = __typename
+        var height: Double? = null
+        while(true) {
+          when (reader.selectName(RESPONSE_NAMES)) {
+            0 -> __typename = stringAdapter.fromResponse(reader)
+            1 -> height = floatAdapter.fromResponse(reader)
+            else -> break
           }
-          GetHuman.Data.Node.OtherNode(
-            __typename = __typename!!
-          )
         }
+        return GetHuman.Data.Node.HumanNode(
+          __typename = __typename!!,
+          height = height!!
+        )
       }
 
-      override fun toResponse(writer: ResponseWriter, value: GetHuman.Data.Node.OtherNode) {
-        writer.writeString(RESPONSE_FIELDS[0], value.__typename)
+      fun toResponse(writer: JsonWriter, value: GetHuman.Data.Node.HumanNode) {
+        writer.beginObject()
+        writer.name("__typename")
+        stringAdapter.toResponse(writer, value.__typename)
+        writer.name("height")
+        floatAdapter.toResponse(writer, value.height)
+        writer.endObject()
+      }
+
+      companion object {
+        val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
+          ResponseField.Typename,
+          ResponseField(
+            type = ResponseField.Type.NotNull(ResponseField.Type.Named.Other("Float")),
+            fieldName = "height",
+          )
+        )
+
+        val RESPONSE_NAMES: List<String> = RESPONSE_FIELDS.map { it.responseName }
+      }
+    }
+
+    class OtherNode(
+      responseAdapterCache: ResponseAdapterCache
+    ) {
+      private val stringAdapter: ResponseAdapter<String> = StringResponseAdapter
+
+      fun fromResponse(reader: JsonReader, __typename: String?): GetHuman.Data.Node.OtherNode {
+        var __typename: String? = __typename
+        while(true) {
+          when (reader.selectName(RESPONSE_NAMES)) {
+            0 -> __typename = stringAdapter.fromResponse(reader)
+            else -> break
+          }
+        }
+        return GetHuman.Data.Node.OtherNode(
+          __typename = __typename!!
+        )
+      }
+
+      fun toResponse(writer: JsonWriter, value: GetHuman.Data.Node.OtherNode) {
+        writer.beginObject()
+        writer.name("__typename")
+        stringAdapter.toResponse(writer, value.__typename)
+        writer.endObject()
+      }
+
+      companion object {
+        val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
+          ResponseField.Typename
+        )
+
+        val RESPONSE_NAMES: List<String> = RESPONSE_FIELDS.map { it.responseName }
       }
     }
   }

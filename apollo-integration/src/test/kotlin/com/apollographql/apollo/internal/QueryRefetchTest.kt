@@ -88,16 +88,14 @@ class QueryRefetchTest {
     enqueueAndAssertResponse(
         server,
         "ReviewsEmpireEpisodeResponse.json",
-        apolloClient.query(ReviewsByEpisodeQuery(Episode.EMPIRE)).responseFetcher(ApolloResponseFetchers.NETWORK_FIRST),
-        Predicate<Response<ReviewsByEpisodeQuery.Data>> { response -> !response.hasErrors() }
-    )
+        apolloClient.query(ReviewsByEpisodeQuery(Episode.EMPIRE)).responseFetcher(ApolloResponseFetchers.NETWORK_FIRST)
+    ) { response -> !response.hasErrors() }
     assertResponse(
         apolloClient.query(ReviewsByEpisodeQuery(Episode.EMPIRE)).responseFetcher(ApolloResponseFetchers.CACHE_ONLY)
     ) { (_, data) ->
       assertThat(data!!.reviews).hasSize(3)
       assertThat(data.reviews?.get(2)?.stars).isEqualTo(5)
       assertThat(data.reviews?.get(2)?.commentary).isEqualTo("Amazing")
-      true
     }
     val mutation = CreateReviewMutation(
         Episode.EMPIRE,

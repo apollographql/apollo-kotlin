@@ -7,6 +7,7 @@ package com.example.named_fragment_inside_inline_fragment
 
 import com.apollographql.apollo.api.Operation
 import com.apollographql.apollo.api.Query
+import com.apollographql.apollo.api.ResponseAdapterCache
 import com.apollographql.apollo.api.ResponseField
 import com.apollographql.apollo.api.internal.QueryDocumentMinifier
 import com.apollographql.apollo.api.internal.ResponseAdapter
@@ -30,7 +31,13 @@ class GetHero : Query<GetHero.Data> {
 
   override fun name(): String = OPERATION_NAME
 
-  override fun adapter(): ResponseAdapter<Data> = GetHero_ResponseAdapter
+  override fun adapter(customScalarAdapters: ResponseAdapterCache): ResponseAdapter<Data> {
+    val adapter = customScalarAdapters.getOperationAdapter(name()) {
+      GetHero_ResponseAdapter(customScalarAdapters)
+    }
+    return adapter
+  }
+
   override fun responseFields(): List<ResponseField.FieldSet> = listOf(
     ResponseField.FieldSet(null, GetHero_ResponseAdapter.RESPONSE_FIELDS)
   )

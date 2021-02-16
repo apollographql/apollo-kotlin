@@ -6,6 +6,9 @@
 package com.example.arguments_complex.type
 
 import com.apollographql.apollo.api.EnumValue
+import com.apollographql.apollo.api.internal.ResponseAdapter
+import com.apollographql.apollo.api.internal.json.JsonReader
+import com.apollographql.apollo.api.internal.json.JsonWriter
 import kotlin.Deprecated
 import kotlin.String
 
@@ -48,15 +51,22 @@ sealed class Episode(
   class UNKNOWN__(
     rawValue: String
   ) : Episode(rawValue = rawValue)
+}
 
-  companion object {
-    fun safeValueOf(rawValue: String): Episode = when(rawValue) {
-      "NEWHOPE" -> NEWHOPE
-      "EMPIRE" -> EMPIRE
-      "JEDI" -> JEDI
-      "DEPRECATED" -> DEPRECATED
-      "new" -> NEW
-      else -> UNKNOWN__(rawValue)
+object Episode_ResponseAdapter : ResponseAdapter<Episode> {
+  override fun fromResponse(reader: JsonReader): Episode {
+    val rawValue = reader.nextString()!!
+    return when(rawValue) {
+      "NEWHOPE" -> Episode.NEWHOPE
+      "EMPIRE" -> Episode.EMPIRE
+      "JEDI" -> Episode.JEDI
+      "DEPRECATED" -> Episode.DEPRECATED
+      "new" -> Episode.NEW
+      else -> Episode.UNKNOWN__(rawValue)
     }
+  }
+
+  override fun toResponse(writer: JsonWriter, value: Episode) {
+    writer.value(value.rawValue)
   }
 }

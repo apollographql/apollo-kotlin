@@ -5,105 +5,117 @@
 //
 package com.example.subscriptions.adapter
 
+import com.apollographql.apollo.api.ResponseAdapterCache
 import com.apollographql.apollo.api.ResponseField
+import com.apollographql.apollo.api.internal.IntResponseAdapter
+import com.apollographql.apollo.api.internal.NullableResponseAdapter
 import com.apollographql.apollo.api.internal.ResponseAdapter
-import com.apollographql.apollo.api.internal.ResponseReader
-import com.apollographql.apollo.api.internal.ResponseWriter
+import com.apollographql.apollo.api.internal.StringResponseAdapter
+import com.apollographql.apollo.api.internal.json.JsonReader
+import com.apollographql.apollo.api.internal.json.JsonWriter
 import com.example.subscriptions.TestSubscription
 import kotlin.Array
 import kotlin.Int
 import kotlin.String
 import kotlin.Suppress
+import kotlin.collections.List
 
 @Suppress("NAME_SHADOWING", "UNUSED_ANONYMOUS_PARAMETER", "LocalVariableName",
     "RemoveExplicitTypeArguments", "NestedLambdaShadowedImplicitParameter", "PropertyName",
     "RemoveRedundantQualifierName")
-object TestSubscription_ResponseAdapter : ResponseAdapter<TestSubscription.Data> {
-  val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
-    ResponseField(
-      type = ResponseField.Type.Named.Object("Comment"),
-      responseName = "commentAdded",
-      fieldName = "commentAdded",
-      arguments = mapOf<String, Any?>(
-        "repoFullName" to mapOf<String, Any?>(
-          "kind" to "Variable",
-          "variableName" to "repo")),
-      conditions = emptyList(),
-      fieldSets = listOf(
-        ResponseField.FieldSet(null, CommentAdded.RESPONSE_FIELDS)
-      ),
-    )
-  )
+class TestSubscription_ResponseAdapter(
+  responseAdapterCache: ResponseAdapterCache
+) : ResponseAdapter<TestSubscription.Data> {
+  private val nullableCommentAddedAdapter: ResponseAdapter<TestSubscription.Data.CommentAdded?> =
+      NullableResponseAdapter(CommentAdded(responseAdapterCache))
 
-  override fun fromResponse(reader: ResponseReader, __typename: String?): TestSubscription.Data {
-    return reader.run {
-      var commentAdded: TestSubscription.Data.CommentAdded? = null
+  override fun fromResponse(reader: JsonReader): TestSubscription.Data {
+    var commentAdded: TestSubscription.Data.CommentAdded? = null
+    reader.beginObject()
+    while(true) {
+      when (reader.selectName(RESPONSE_NAMES)) {
+        0 -> commentAdded = nullableCommentAddedAdapter.fromResponse(reader)
+        else -> break
+      }
+    }
+    reader.endObject()
+    return TestSubscription.Data(
+      commentAdded = commentAdded
+    )
+  }
+
+  override fun toResponse(writer: JsonWriter, value: TestSubscription.Data) {
+    writer.beginObject()
+    writer.name("commentAdded")
+    nullableCommentAddedAdapter.toResponse(writer, value.commentAdded)
+    writer.endObject()
+  }
+
+  companion object {
+    val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
+      ResponseField(
+        type = ResponseField.Type.Named.Object("Comment"),
+        fieldName = "commentAdded",
+        arguments = mapOf<String, Any?>(
+          "repoFullName" to mapOf<String, Any?>(
+            "kind" to "Variable",
+            "variableName" to "repo")),
+        fieldSets = listOf(
+          ResponseField.FieldSet(null, CommentAdded.RESPONSE_FIELDS)
+        ),
+      )
+    )
+
+    val RESPONSE_NAMES: List<String> = RESPONSE_FIELDS.map { it.responseName }
+  }
+
+  class CommentAdded(
+    responseAdapterCache: ResponseAdapterCache
+  ) : ResponseAdapter<TestSubscription.Data.CommentAdded> {
+    private val intAdapter: ResponseAdapter<Int> = IntResponseAdapter
+
+    private val stringAdapter: ResponseAdapter<String> = StringResponseAdapter
+
+    override fun fromResponse(reader: JsonReader): TestSubscription.Data.CommentAdded {
+      var id: Int? = null
+      var content: String? = null
+      reader.beginObject()
       while(true) {
-        when (selectField(RESPONSE_FIELDS)) {
-          0 -> commentAdded = readObject<TestSubscription.Data.CommentAdded>(RESPONSE_FIELDS[0]) { reader ->
-            CommentAdded.fromResponse(reader)
-          }
+        when (reader.selectName(RESPONSE_NAMES)) {
+          0 -> id = intAdapter.fromResponse(reader)
+          1 -> content = stringAdapter.fromResponse(reader)
           else -> break
         }
       }
-      TestSubscription.Data(
-        commentAdded = commentAdded
+      reader.endObject()
+      return TestSubscription.Data.CommentAdded(
+        id = id!!,
+        content = content!!
       )
     }
-  }
 
-  override fun toResponse(writer: ResponseWriter, value: TestSubscription.Data) {
-    if(value.commentAdded == null) {
-      writer.writeObject(RESPONSE_FIELDS[0], null)
-    } else {
-      writer.writeObject(RESPONSE_FIELDS[0]) { writer ->
-        CommentAdded.toResponse(writer, value.commentAdded)
-      }
+    override fun toResponse(writer: JsonWriter, value: TestSubscription.Data.CommentAdded) {
+      writer.beginObject()
+      writer.name("id")
+      intAdapter.toResponse(writer, value.id)
+      writer.name("content")
+      stringAdapter.toResponse(writer, value.content)
+      writer.endObject()
     }
-  }
 
-  object CommentAdded : ResponseAdapter<TestSubscription.Data.CommentAdded> {
-    val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
-      ResponseField(
-        type = ResponseField.Type.NotNull(ResponseField.Type.Named.Other("Int")),
-        responseName = "id",
-        fieldName = "id",
-        arguments = emptyMap(),
-        conditions = emptyList(),
-        fieldSets = emptyList(),
-      ),
-      ResponseField(
-        type = ResponseField.Type.NotNull(ResponseField.Type.Named.Other("String")),
-        responseName = "content",
-        fieldName = "content",
-        arguments = emptyMap(),
-        conditions = emptyList(),
-        fieldSets = emptyList(),
-      )
-    )
-
-    override fun fromResponse(reader: ResponseReader, __typename: String?):
-        TestSubscription.Data.CommentAdded {
-      return reader.run {
-        var id: Int? = null
-        var content: String? = null
-        while(true) {
-          when (selectField(RESPONSE_FIELDS)) {
-            0 -> id = readInt(RESPONSE_FIELDS[0])
-            1 -> content = readString(RESPONSE_FIELDS[1])
-            else -> break
-          }
-        }
-        TestSubscription.Data.CommentAdded(
-          id = id!!,
-          content = content!!
+    companion object {
+      val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
+        ResponseField(
+          type = ResponseField.Type.NotNull(ResponseField.Type.Named.Other("Int")),
+          fieldName = "id",
+        ),
+        ResponseField(
+          type = ResponseField.Type.NotNull(ResponseField.Type.Named.Other("String")),
+          fieldName = "content",
         )
-      }
-    }
+      )
 
-    override fun toResponse(writer: ResponseWriter, value: TestSubscription.Data.CommentAdded) {
-      writer.writeInt(RESPONSE_FIELDS[0], value.id)
-      writer.writeString(RESPONSE_FIELDS[1], value.content)
+      val RESPONSE_NAMES: List<String> = RESPONSE_FIELDS.map { it.responseName }
     }
   }
 }

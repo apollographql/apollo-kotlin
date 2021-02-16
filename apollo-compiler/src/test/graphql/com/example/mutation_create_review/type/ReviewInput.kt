@@ -42,11 +42,11 @@ internal data class ReviewInput(
   /**
    * for test purpose only
    */
-  val enumWithDefaultValue: Input<Episode> = Input.optional(Episode.safeValueOf("JEDI")),
+  val enumWithDefaultValue: Input<Episode> = Input.optional(Episode.JEDI),
   /**
    * for test purpose only
    */
-  val nonNullableEnumWithDefaultValue: Episode = Episode.safeValueOf("JEDI"),
+  val nonNullableEnumWithDefaultValue: Episode = Episode.JEDI,
   /**
    * for test purpose only
    */
@@ -62,8 +62,7 @@ internal data class ReviewInput(
   /**
    * for test purpose only
    */
-  val listOfEnums: Input<List<Episode?>> = Input.optional(listOf(Episode.safeValueOf("NEWHOPE"),
-      Episode.safeValueOf("EMPIRE"))),
+  val listOfEnums: Input<List<Episode?>> = Input.optional(listOf(Episode.NEWHOPE, Episode.EMPIRE)),
   /**
    * for test purpose only
    */

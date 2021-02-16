@@ -9,7 +9,7 @@ import SwiftUI
 import kmp_lib_sample
 
 struct CommitCell: View {
-    let commit: GithubRepositoryCommitsQuery.Node
+    let commit: GithubRepositoryCommitsQueryDataViewerRepositoryRefTargetCommitTarget.HistoryEdgesNode
     
     var body: some View {
         VStack(alignment: .leading) {
@@ -28,10 +28,9 @@ struct CommitCell: View {
 
 struct CommitCell_Previews: PreviewProvider {
     static var previews: some View {
-        let author = GithubRepositoryCommitsQuery.Author(__typename: "__typename",
-                                                         name: "Test Author",
+        let author = GithubRepositoryCommitsQueryDataViewerRepositoryRefTargetCommitTarget.HistoryEdgesNodeAuthor(name: "Test Author",
                                                          email: "not@real.com")
-        let node = GithubRepositoryCommitsQuery.Node(__typename: "__typename",
+        let node = GithubRepositoryCommitsQueryDataViewerRepositoryRefTargetCommitTarget.HistoryEdgesNode(
                                                      id: "1",
                                                      messageHeadline: "A short commit message",
                                                      abbreviatedOid: "fcaafb",

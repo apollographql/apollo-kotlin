@@ -2,12 +2,12 @@ package com.apollographql.apollo
 
 import com.apollographql.apollo.api.Operation
 import com.apollographql.apollo.api.Response
+import com.apollographql.apollo.coroutines.await
 import com.apollographql.apollo.fetcher.ApolloResponseFetchers.CACHE_ONLY
 import com.apollographql.apollo.fetcher.ApolloResponseFetchers.NETWORK_ONLY
-import com.apollographql.apollo.rx2.Rx2Apollo
 import com.google.common.io.CharStreams
-import io.reactivex.functions.Predicate
 import kotlinx.coroutines.channels.Channel
+import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.withTimeout
 import okhttp3.mockwebserver.MockResponse
 import okhttp3.mockwebserver.MockWebServer
@@ -31,13 +31,15 @@ object Utils {
     var inputStreamReader: InputStreamReader? = null
     try {
       inputStreamReader = InputStreamReader(contextClass.getResourceAsStream(streamIdentifier), Charset.defaultCharset())
-      return CharStreams.toString(inputStreamReader)
+      return inputStreamReader.readText()
     } catch (e: IOException) {
       throw IOException()
     } finally {
       inputStreamReader?.close()
     }
   }
+
+  fun readResource(name: String) = readFileToString(this::class.java, "/$name")
 
   fun immediateExecutor(): Executor {
     return Executor { command -> command.run() }
@@ -48,32 +50,37 @@ object Utils {
     return MockResponse().setChunkedBody(readFileToString(Utils::class.java, "/$fileName"), 32)
   }
 
-  fun <D: Operation.Data> assertResponse(call: ApolloCall<D>, predicate: Predicate<Response<D>>) {
-    Rx2Apollo.from(call)
-        .test()
-        .assertValue(predicate)
+  fun <D: Operation.Data> assertResponse(call: ApolloCall<D>, block: (Response<D>) -> Unit) {
+    runBlocking {
+      block.invoke(call.await())
+    }
   }
 
   @Throws(Exception::class)
-  fun <D: Operation.Data> enqueueAndAssertResponse(server: MockWebServer, mockResponse: String, call: ApolloCall<D>,
-                                   predicate: Predicate<Response<D>>) {
+  fun <D: Operation.Data> enqueueAndAssertResponse(
+      server: MockWebServer,
+      mockResponse: String, call: ApolloCall<D>,
+      block: (Response<D>) -> Unit) {
     server.enqueue(mockResponse(mockResponse))
-    assertResponse(call, predicate)
+    assertResponse(call) {
+      block(it)
+    }
   }
 
   @Throws(Exception::class)
-  fun <D: Operation.Data> cacheAndAssertCachedResponse(server: MockWebServer, mockResponse: String, call: ApolloQueryCall<D>,
-                                       predicate: Predicate<Response<D>>) {
+  fun <D: Operation.Data> cacheAndAssertCachedResponse(
+      server: MockWebServer,
+      mockResponse: String,
+      call: ApolloQueryCall<D>,
+      block: (Response<D>) -> Unit
+  ) {
     server.enqueue(mockResponse(mockResponse))
-    assertResponse(
-        call.responseFetcher(NETWORK_ONLY),
-        { response -> !response.hasErrors() }
-    )
-
-    assertResponse(
-        call.clone().responseFetcher(CACHE_ONLY),
-        predicate
-    )
+    runBlocking {
+      var response = call.clone().responseFetcher(NETWORK_ONLY).await()
+      check(!response.hasErrors())
+      response = call.clone().responseFetcher(CACHE_ONLY).await()
+      block(response)
+    }
   }
 
   fun immediateExecutorService(): ExecutorService {
