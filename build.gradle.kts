@@ -118,10 +118,6 @@ fun Project.configurePublishing() {
           withType<MavenPublication> {
             // multiplatform doesn't add javadoc by default so add it here
             artifact(emptyJavadocJarTaskProvider.get())
-            if (name == "kotlinMultiplatform") {
-              // sources are added for each platform but not for the common module
-              artifact(emptySourcesJarTaskProvider.get())
-            }
           }
         }
         plugins.hasPlugin("java-gradle-plugin") -> {
