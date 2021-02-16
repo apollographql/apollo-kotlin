@@ -3,23 +3,19 @@ plugins {
 }
 
 kotlin {
-  @Suppress("ClassName")
-  data class iOSTarget(val name: String, val preset: String, val id: String)
-
-  val iosTargets = listOf(
-      iOSTarget("ios", "iosArm64", "ios-arm64"),
-      iOSTarget("iosSim", "iosX64", "ios-x64")
-  )
-
-  for ((targetName, presetName, id) in iosTargets) {
-    targetFromPreset(presets.getByName(presetName), targetName) {
-      mavenPublication {
-        artifactId = "${project.name}-$id"
-      }
-    }
-  }
-
   jvm()
+
+  var macosX64Target: org.jetbrains.kotlin.gradle.plugin.mpp.KotlinNativeTargetWithHostTests? = null
+  var iosX64Target: org.jetbrains.kotlin.gradle.plugin.mpp.KotlinNativeTargetWithSimulatorTests? = null
+  var iosArm64Target: org.jetbrains.kotlin.gradle.plugin.mpp.KotlinNativeTarget? = null
+  if (System.getProperty("idea.sync.active") == null) {
+    macosX64Target = macosX64()
+    iosX64Target = iosX64()
+    iosArm64Target = iosArm64()
+  } else {
+    // Hack, we make intelliJ believe all our code is in the apple sourceSets
+    macosX64Target = macosX64("apple")
+  }
 
   js {
     useCommonJs()
@@ -40,12 +36,15 @@ kotlin {
       }
     }
 
-    val iosMain by getting {
-      dependsOn(commonMain)
+    var appleMain = findByName("appleMain")
+    if (appleMain == null) {
+      // If we're not in intelliJ, create a source set that we add later on
+      appleMain = create("appleMain")
     }
-
-    val iosSimMain by getting {
-      dependsOn(iosMain)
+    var appleTest = findByName("appleTest")
+    if (appleTest == null) {
+      // If we're not in intelliJ, create a source set that we add later on
+      appleTest = create("appleTest")
     }
 
     val jsMain by getting {
@@ -75,6 +74,16 @@ kotlin {
         implementation(groovy.util.Eval.x(project, "x.dep.truth"))
         implementation(groovy.util.Eval.x(project, "x.dep.okHttp.okHttp"))
       }
+    }
+
+    if (System.getProperty("idea.sync.active") == null) {
+      // Add all the code to all different targets if not inside intelliJ
+      iosArm64Target?.compilations?.getByName("main")?.source(appleMain!!)
+      iosX64Target?.compilations?.getByName("main")?.source(appleMain!!)
+      macosX64Target?.compilations?.getByName("main")?.source(appleMain!!)
+      iosArm64Target?.compilations?.getByName("test")?.source(appleTest!!)
+      iosX64Target?.compilations?.getByName("test")?.source(appleTest!!)
+      macosX64Target?.compilations?.getByName("test")?.source(appleTest!!)
     }
   }
 }
