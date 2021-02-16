@@ -29,7 +29,7 @@ actual class ThreadSafeMap<K, V> {
     return result
   }
 
-  fun dispose() {
+  actual fun dispose() {
     stableRef.dispose()
   }
 }

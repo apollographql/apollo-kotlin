@@ -7,4 +7,6 @@ actual class ThreadSafeMap<K, V> {
   actual fun getOrPut(key: K, defaultValue: () -> V): V {
     return map.getOrPut(key, defaultValue)
   }
+  actual fun dispose() {
+  }
 }

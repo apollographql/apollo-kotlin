@@ -56,7 +56,7 @@ class ResponseAdapterCache(val customScalarAdapters: Map<CustomScalar, CustomSca
   }
 
 
-  class CustomResponseAdapter<T: Any>(private val wrappedAdapter: CustomScalarAdapter<T>) : ResponseAdapter<T> {
+  private class CustomResponseAdapter<T: Any>(private val wrappedAdapter: CustomScalarAdapter<T>) : ResponseAdapter<T> {
     override fun fromResponse(reader: JsonReader): T {
       return wrappedAdapter.decode(JsonElement.fromRawValue(reader.readRecursively()))
     }
@@ -64,6 +64,16 @@ class ResponseAdapterCache(val customScalarAdapters: Map<CustomScalar, CustomSca
     override fun toResponse(writer: JsonWriter, value: T) {
       writeToJson(wrappedAdapter.encode(value).toRawValue(), writer)
     }
+  }
+
+  /**
+   * releases resources associated with this [ResponseAdapterCache].
+   *
+   * Use it on native to release the [kotlinx.cinterop.StableRef]
+   */
+  fun dispose() {
+    adapterByFragmentName.dispose()
+    adapterByQueryName.dispose()
   }
 
   companion object {
