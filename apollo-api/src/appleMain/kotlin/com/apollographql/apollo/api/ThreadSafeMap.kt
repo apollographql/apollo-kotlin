@@ -5,6 +5,10 @@ import kotlin.native.concurrent.TransferMode
 import kotlin.native.concurrent.Worker
 import kotlin.native.concurrent.freeze
 
+/**
+ * threadsafe Map with a minimalist API
+ * inspired by https://github.com/touchlab/Stately
+ */
 actual class ThreadSafeMap<K, V> {
   private val worker = Worker.start(name = "ThreadSafeMap")
 
@@ -20,7 +24,7 @@ actual class ThreadSafeMap<K, V> {
     }
   }
 
-  fun <R> doWork(block: () -> R): R {
+  private fun <R> doWork(block: () -> R): R {
     val result = worker.execute(TransferMode.SAFE, { block.freeze() }) {
       val ret = it().freeze()
       ret
