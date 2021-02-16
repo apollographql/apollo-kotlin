@@ -10,7 +10,7 @@ import kotlin.native.concurrent.freeze
 
 actual class ThreadSafeMap<K, V> {
   private val stableRef = StableRef.create(mutableMapOf<K, V>())
-  private val queue = dispatch_queue_create(label = "map", attr = DISPATCH_QUEUE_SERIAL as dispatch_queue_t)
+  private val queue = dispatch_queue_create(label = "ThreadSafeMap", attr = DISPATCH_QUEUE_SERIAL as dispatch_queue_t)
 
   actual fun getOrPut(key: K, defaultValue: () -> V): V {
     defaultValue.freeze()
