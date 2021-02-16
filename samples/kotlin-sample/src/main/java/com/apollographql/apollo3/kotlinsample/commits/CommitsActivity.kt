@@ -1,4 +1,4 @@
-package com.apollographql.apollo.kotlinsample.commits
+package com.apollographql.apollo3.kotlinsample.commits
 
 import android.content.Context
 import android.content.Intent
@@ -7,10 +7,10 @@ import android.view.View.GONE
 import android.view.View.VISIBLE
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.LinearLayoutManager
-import com.apollographql.apollo.kotlinsample.GithubRepositoryCommitsQuery
-import com.apollographql.apollo.kotlinsample.KotlinSampleApp
-import com.apollographql.apollo.kotlinsample.R
-import com.apollographql.apollo.kotlinsample.data.GitHubDataSource
+import com.apollographql.apollo3.kotlinsample.GithubRepositoryCommitsQuery
+import com.apollographql.apollo3.kotlinsample.KotlinSampleApp
+import com.apollographql.apollo3.kotlinsample.R
+import com.apollographql.apollo3.kotlinsample.data.GitHubDataSource
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.schedulers.Schedulers

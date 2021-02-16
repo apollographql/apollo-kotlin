@@ -1,4 +1,4 @@
-package com.apollographql.apollo.compiler
+package com.apollographql.apollo3.compiler
 
 private val JAVA_RESERVED_WORDS = arrayOf(
     "abstract", "assert", "boolean", "break", "byte", "case", "catch", "char", "class", "const", "continue", "default",

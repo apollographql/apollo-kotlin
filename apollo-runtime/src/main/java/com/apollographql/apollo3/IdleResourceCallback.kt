@@ -1,4 +1,4 @@
-package com.apollographql.apollo
+package com.apollographql.apollo3
 
 /**
  * Callback which gets invoked when the resource transitions

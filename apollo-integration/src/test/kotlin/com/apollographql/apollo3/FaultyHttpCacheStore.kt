@@ -1,10 +1,10 @@
-package com.apollographql.apollo
+package com.apollographql.apollo3
 
-import com.apollographql.apollo.api.cache.http.HttpCacheRecord
-import com.apollographql.apollo.api.cache.http.HttpCacheRecordEditor
-import com.apollographql.apollo.api.cache.http.HttpCacheStore
-import com.apollographql.apollo.cache.http.internal.DiskLruCache
-import com.apollographql.apollo.cache.http.internal.FileSystem
+import com.apollographql.apollo3.api.cache.http.HttpCacheRecord
+import com.apollographql.apollo3.api.cache.http.HttpCacheRecordEditor
+import com.apollographql.apollo3.api.cache.http.HttpCacheStore
+import com.apollographql.apollo3.cache.http.internal.DiskLruCache
+import com.apollographql.apollo3.cache.http.internal.FileSystem
 import okio.Buffer
 import okio.Sink
 import okio.Source

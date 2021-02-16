@@ -1,6 +1,6 @@
-package com.apollographql.apollo
+package com.apollographql.apollo3
 
-import com.apollographql.apollo.cache.http.internal.FileSystem
+import com.apollographql.apollo3.cache.http.internal.FileSystem
 import okio.Sink
 import okio.Source
 import java.io.File

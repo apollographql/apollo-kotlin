@@ -1,8 +1,8 @@
-package com.apollographql.apollo.gradle.test
+package com.apollographql.apollo3.gradle.test
 
 
-import com.apollographql.apollo.gradle.util.TestUtils
-import com.apollographql.apollo.gradle.util.TestUtils.withSimpleProject
+import com.apollographql.apollo3.gradle.util.TestUtils
+import com.apollographql.apollo3.gradle.util.TestUtils.withSimpleProject
 import okhttp3.mockwebserver.MockResponse
 import okhttp3.mockwebserver.MockWebServer
 import org.gradle.testkit.runner.TaskOutcome

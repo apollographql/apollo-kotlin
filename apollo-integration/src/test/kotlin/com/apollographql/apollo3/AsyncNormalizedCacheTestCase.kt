@@ -1,14 +1,14 @@
-package com.apollographql.apollo
+package com.apollographql.apollo3
 
-import com.apollographql.apollo.Utils.readFileToString
-import com.apollographql.apollo.api.Input
-import com.apollographql.apollo.api.Response
-import com.apollographql.apollo.cache.normalized.MemoryCacheFactory
-import com.apollographql.apollo.exception.ApolloException
-import com.apollographql.apollo.fetcher.ApolloResponseFetchers
-import com.apollographql.apollo.integration.normalizer.EpisodeHeroNameQuery
-import com.apollographql.apollo.integration.normalizer.type.Episode
-import com.apollographql.apollo.rx2.Rx2Apollo
+import com.apollographql.apollo3.Utils.readFileToString
+import com.apollographql.apollo3.api.Input
+import com.apollographql.apollo3.api.Response
+import com.apollographql.apollo3.cache.normalized.MemoryCacheFactory
+import com.apollographql.apollo3.exception.ApolloException
+import com.apollographql.apollo3.fetcher.ApolloResponseFetchers
+import com.apollographql.apollo3.integration.normalizer.EpisodeHeroNameQuery
+import com.apollographql.apollo3.integration.normalizer.type.Episode
+import com.apollographql.apollo3.rx2.Rx2Apollo
 import io.reactivex.Observable
 import io.reactivex.functions.Predicate
 import io.reactivex.observers.TestObserver

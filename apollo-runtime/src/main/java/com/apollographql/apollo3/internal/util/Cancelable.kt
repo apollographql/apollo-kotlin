@@ -1,4 +1,4 @@
-package com.apollographql.apollo.internal.util
+package com.apollographql.apollo3.internal.util
 
 /**
  * Represents an operation which can be canceled.

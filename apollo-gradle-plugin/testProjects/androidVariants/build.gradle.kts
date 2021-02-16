@@ -1,4 +1,4 @@
-import com.apollographql.apollo.gradle.api.ApolloExtension
+import com.apollographql.apollo3.gradle.api.ApolloExtension
 import com.android.build.gradle.BaseExtension
 
 buildscript {
@@ -21,7 +21,7 @@ buildscript {
 
 apply(plugin = "com.android.library")
 apply(plugin = "org.jetbrains.kotlin.android")
-apply(plugin = "com.apollographql.apollo")
+apply(plugin = "com.apollographql.apollo3")
 
 repositories {
   maven {

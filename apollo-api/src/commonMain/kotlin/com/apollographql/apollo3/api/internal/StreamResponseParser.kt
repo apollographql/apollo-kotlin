@@ -1,13 +1,13 @@
-package com.apollographql.apollo.api.internal
+package com.apollographql.apollo3.api.internal
 
-import com.apollographql.apollo.api.Error
-import com.apollographql.apollo.api.Operation
-import com.apollographql.apollo.api.Response
-import com.apollographql.apollo.api.ResponseAdapterCache
-import com.apollographql.apollo.api.internal.json.BufferedSourceJsonReader
-import com.apollographql.apollo.api.internal.json.JsonReader
-import com.apollographql.apollo.api.internal.json.Utils.readRecursively
-import com.apollographql.apollo.api.internal.json.use
+import com.apollographql.apollo3.api.Error
+import com.apollographql.apollo3.api.Operation
+import com.apollographql.apollo3.api.Response
+import com.apollographql.apollo3.api.ResponseAdapterCache
+import com.apollographql.apollo3.api.internal.json.BufferedSourceJsonReader
+import com.apollographql.apollo3.api.internal.json.JsonReader
+import com.apollographql.apollo3.api.internal.json.Utils.readRecursively
+import com.apollographql.apollo3.api.internal.json.use
 import okio.BufferedSource
 import okio.IOException
 import kotlin.jvm.JvmStatic

@@ -1,4 +1,4 @@
-package com.apollographql.apollo.compiler.frontend
+package com.apollographql.apollo3.compiler.frontend
 
 /**
  * a very thin wrapper around a schema GQLDocument

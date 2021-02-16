@@ -1,4 +1,4 @@
-package com.apollographql.apollo.compiler.frontend
+package com.apollographql.apollo3.compiler.frontend
 
 /**
  * This visits the fragments and operation recursively and all their

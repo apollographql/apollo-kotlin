@@ -3,7 +3,7 @@
  *
  * This is all in one file so we can use sealed classes. Extensions are in gqlxyz.kt
  */
-package com.apollographql.apollo.compiler.frontend
+package com.apollographql.apollo3.compiler.frontend
 
 import okio.BufferedSink
 
@@ -15,7 +15,7 @@ import okio.BufferedSink
  *
  * See [GraphQLParser] for the different ways to get a [GQLDocument].
  *
- * Compared to the Antlr [com.apollographql.apollo.compiler.parser.antlr.GraphQLParser.DocumentContext], a GQLDocument
+ * Compared to the Antlr [com.apollographql.apollo3.compiler.parser.antlr.GraphQLParser.DocumentContext], a GQLDocument
  * is a lot simpler and allows for easy modifying a document (using .clone()) and outputing them to a [okio.BufferedSink].
  *
  * Whitespace tokens are not mapped to GQLNodes so some formatting will be lost during modification

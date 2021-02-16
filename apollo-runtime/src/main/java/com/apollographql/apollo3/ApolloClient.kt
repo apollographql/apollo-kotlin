@@ -1,40 +1,40 @@
-package com.apollographql.apollo
+package com.apollographql.apollo3
 
-import com.apollographql.apollo.ApolloClient.Builder
-import com.apollographql.apollo.api.CustomScalar
-import com.apollographql.apollo.api.CustomScalarAdapter
-import com.apollographql.apollo.api.ResponseAdapterCache
-import com.apollographql.apollo.api.Mutation
-import com.apollographql.apollo.api.Operation
-import com.apollographql.apollo.api.Query
-import com.apollographql.apollo.api.Subscription
-import com.apollographql.apollo.api.cache.http.HttpCache
-import com.apollographql.apollo.api.cache.http.HttpCachePolicy
-import com.apollographql.apollo.api.internal.ApolloLogger
-import com.apollographql.apollo.api.internal.Optional.Companion.absent
-import com.apollographql.apollo.api.internal.Optional.Companion.fromNullable
-import com.apollographql.apollo.api.internal.Optional.Companion.of
-import com.apollographql.apollo.cache.CacheHeaders
-import com.apollographql.apollo.cache.normalized.ApolloStore
-import com.apollographql.apollo.cache.normalized.CacheKeyResolver
-import com.apollographql.apollo.cache.normalized.NormalizedCache
-import com.apollographql.apollo.cache.normalized.NormalizedCacheFactory
-import com.apollographql.apollo.fetcher.ApolloResponseFetchers
-import com.apollographql.apollo.fetcher.ResponseFetcher
-import com.apollographql.apollo.interceptor.ApolloInterceptor
-import com.apollographql.apollo.interceptor.ApolloInterceptorFactory
-import com.apollographql.apollo.internal.ApolloCallTracker
-import com.apollographql.apollo.internal.RealApolloCall
-import com.apollographql.apollo.internal.RealApolloPrefetch
-import com.apollographql.apollo.cache.normalized.internal.RealApolloStore
-import com.apollographql.apollo.internal.RealApolloSubscriptionCall
-import com.apollographql.apollo.internal.subscription.NoOpSubscriptionManager
-import com.apollographql.apollo.internal.subscription.RealSubscriptionManager
-import com.apollographql.apollo.internal.subscription.SubscriptionManager
-import com.apollographql.apollo.subscription.OnSubscriptionManagerStateChangeListener
-import com.apollographql.apollo.subscription.SubscriptionConnectionParams
-import com.apollographql.apollo.subscription.SubscriptionConnectionParamsProvider
-import com.apollographql.apollo.subscription.SubscriptionTransport
+import com.apollographql.apollo3.ApolloClient.Builder
+import com.apollographql.apollo3.api.CustomScalar
+import com.apollographql.apollo3.api.CustomScalarAdapter
+import com.apollographql.apollo3.api.ResponseAdapterCache
+import com.apollographql.apollo3.api.Mutation
+import com.apollographql.apollo3.api.Operation
+import com.apollographql.apollo3.api.Query
+import com.apollographql.apollo3.api.Subscription
+import com.apollographql.apollo3.api.cache.http.HttpCache
+import com.apollographql.apollo3.api.cache.http.HttpCachePolicy
+import com.apollographql.apollo3.api.internal.ApolloLogger
+import com.apollographql.apollo3.api.internal.Optional.Companion.absent
+import com.apollographql.apollo3.api.internal.Optional.Companion.fromNullable
+import com.apollographql.apollo3.api.internal.Optional.Companion.of
+import com.apollographql.apollo3.cache.CacheHeaders
+import com.apollographql.apollo3.cache.normalized.ApolloStore
+import com.apollographql.apollo3.cache.normalized.CacheKeyResolver
+import com.apollographql.apollo3.cache.normalized.NormalizedCache
+import com.apollographql.apollo3.cache.normalized.NormalizedCacheFactory
+import com.apollographql.apollo3.fetcher.ApolloResponseFetchers
+import com.apollographql.apollo3.fetcher.ResponseFetcher
+import com.apollographql.apollo3.interceptor.ApolloInterceptor
+import com.apollographql.apollo3.interceptor.ApolloInterceptorFactory
+import com.apollographql.apollo3.internal.ApolloCallTracker
+import com.apollographql.apollo3.internal.RealApolloCall
+import com.apollographql.apollo3.internal.RealApolloPrefetch
+import com.apollographql.apollo3.cache.normalized.internal.RealApolloStore
+import com.apollographql.apollo3.internal.RealApolloSubscriptionCall
+import com.apollographql.apollo3.internal.subscription.NoOpSubscriptionManager
+import com.apollographql.apollo3.internal.subscription.RealSubscriptionManager
+import com.apollographql.apollo3.internal.subscription.SubscriptionManager
+import com.apollographql.apollo3.subscription.OnSubscriptionManagerStateChangeListener
+import com.apollographql.apollo3.subscription.SubscriptionConnectionParams
+import com.apollographql.apollo3.subscription.SubscriptionConnectionParamsProvider
+import com.apollographql.apollo3.subscription.SubscriptionTransport
 import okhttp3.Call
 import okhttp3.HttpUrl
 import okhttp3.Interceptor
@@ -425,7 +425,7 @@ class ApolloClient internal constructor(
     }
 
     /**
-     * Set the default [CacheHeaders] strategy that will be passed to the [com.apollographql.apollo.interceptor.FetchOptions]
+     * Set the default [CacheHeaders] strategy that will be passed to the [com.apollographql.apollo3.interceptor.FetchOptions]
      * used in each new [ApolloCall].
      *
      * @return The [Builder] object to be used for chaining method calls

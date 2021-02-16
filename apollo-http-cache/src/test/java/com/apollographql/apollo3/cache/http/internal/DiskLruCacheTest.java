@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.apollographql.apollo.cache.http.internal;
+package com.apollographql.apollo3.cache.http.internal;
 
 import java.io.File;
 import java.io.IOException;
@@ -37,10 +37,10 @@ import org.junit.rules.TemporaryFolder;
 import org.junit.rules.Timeout;
 
 import static com.google.common.truth.Truth.assertThat;
-import static com.apollographql.apollo.cache.http.internal.DiskLruCache.JOURNAL_FILE;
-import static com.apollographql.apollo.cache.http.internal.DiskLruCache.JOURNAL_FILE_BACKUP;
-import static com.apollographql.apollo.cache.http.internal.DiskLruCache.MAGIC;
-import static com.apollographql.apollo.cache.http.internal.DiskLruCache.VERSION_1;
+import static com.apollographql.apollo3.cache.http.internal.DiskLruCache.JOURNAL_FILE;
+import static com.apollographql.apollo3.cache.http.internal.DiskLruCache.JOURNAL_FILE_BACKUP;
+import static com.apollographql.apollo3.cache.http.internal.DiskLruCache.MAGIC;
+import static com.apollographql.apollo3.cache.http.internal.DiskLruCache.VERSION_1;
 import static org.junit.Assert.fail;
 
 /**

@@ -1,17 +1,17 @@
-package com.apollographql.apollo.api.internal.json
+package com.apollographql.apollo3.api.internal.json
 
-import com.apollographql.apollo.api.CustomScalar
-import com.apollographql.apollo.api.ResponseAdapterCache
-import com.apollographql.apollo.api.JsonBoolean
-import com.apollographql.apollo.api.JsonList
-import com.apollographql.apollo.api.JsonNull
-import com.apollographql.apollo.api.JsonNumber
-import com.apollographql.apollo.api.JsonObject
-import com.apollographql.apollo.api.JsonString
-import com.apollographql.apollo.api.internal.InputFieldMarshaller
-import com.apollographql.apollo.api.internal.InputFieldWriter
-import com.apollographql.apollo.api.internal.Throws
-import com.apollographql.apollo.api.internal.json.Utils.writeToJson
+import com.apollographql.apollo3.api.CustomScalar
+import com.apollographql.apollo3.api.ResponseAdapterCache
+import com.apollographql.apollo3.api.JsonBoolean
+import com.apollographql.apollo3.api.JsonList
+import com.apollographql.apollo3.api.JsonNull
+import com.apollographql.apollo3.api.JsonNumber
+import com.apollographql.apollo3.api.JsonObject
+import com.apollographql.apollo3.api.JsonString
+import com.apollographql.apollo3.api.internal.InputFieldMarshaller
+import com.apollographql.apollo3.api.internal.InputFieldWriter
+import com.apollographql.apollo3.api.internal.Throws
+import com.apollographql.apollo3.api.internal.json.Utils.writeToJson
 import okio.IOException
 
 class InputFieldJsonWriter(

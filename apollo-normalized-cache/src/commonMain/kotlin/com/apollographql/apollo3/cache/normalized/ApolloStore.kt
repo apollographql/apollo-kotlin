@@ -1,14 +1,14 @@
-package com.apollographql.apollo.cache.normalized
+package com.apollographql.apollo3.cache.normalized
 
-import com.apollographql.apollo.api.Fragment
-import com.apollographql.apollo.api.Operation
-import com.apollographql.apollo.cache.CacheHeaders
-import com.apollographql.apollo.cache.normalized.ApolloStore.RecordChangeSubscriber
-import com.apollographql.apollo.cache.normalized.internal.NoOpApolloStore
+import com.apollographql.apollo3.api.Fragment
+import com.apollographql.apollo3.api.Operation
+import com.apollographql.apollo3.cache.CacheHeaders
+import com.apollographql.apollo3.cache.normalized.ApolloStore.RecordChangeSubscriber
+import com.apollographql.apollo3.cache.normalized.internal.NoOpApolloStore
 import com.benasher44.uuid.Uuid
 
 /**
- * ApolloStore exposes a thread-safe api to access a [com.apollographql.apollo.cache.normalized.NormalizedCache].
+ * ApolloStore exposes a thread-safe api to access a [com.apollographql.apollo3.cache.normalized.NormalizedCache].
  * It also maintains a list of [RecordChangeSubscriber] that will be notified with changed records.
  *
  * Most clients should have no need to directly interface with an [ApolloStore].
@@ -99,7 +99,7 @@ interface ApolloStore {
 
   /**
    * Write operation to the store and optionally publish changes of [Record] which have changed,
-   * that will notify any [com.apollographql.apollo.ApolloQueryWatcher] that depends on these [Record] to re-fetch.
+   * that will notify any [com.apollographql.apollo3.ApolloQueryWatcher] that depends on these [Record] to re-fetch.
    * This is a synchronous operation that might block if the underlying cache is doing IO
    *
    * @param operation     [Operation] response data of which should be written to the store
@@ -116,7 +116,7 @@ interface ApolloStore {
 
   /**
    * Write fragment to the store and optionally publish changes of [Record] which have changed,
-   * that will notify any [com.apollographql.apollo.ApolloQueryWatcher] that depends on these [Record] to re-fetch.
+   * that will notify any [com.apollographql.apollo3.ApolloQueryWatcher] that depends on these [Record] to re-fetch.
    * This is a synchronous operation that might block if the underlying cache is doing IO
    *
    * @param fragment data to be written to the store

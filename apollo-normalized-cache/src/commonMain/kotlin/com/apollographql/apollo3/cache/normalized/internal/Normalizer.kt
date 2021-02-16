@@ -1,10 +1,10 @@
-package com.apollographql.apollo.cache.normalized.internal
+package com.apollographql.apollo3.cache.normalized.internal
 
-import com.apollographql.apollo.api.Operation
-import com.apollographql.apollo.api.ResponseField
-import com.apollographql.apollo.api.internal.Utils.shouldSkip
-import com.apollographql.apollo.cache.normalized.CacheReference
-import com.apollographql.apollo.cache.normalized.Record
+import com.apollographql.apollo3.api.Operation
+import com.apollographql.apollo3.api.ResponseField
+import com.apollographql.apollo3.api.internal.Utils.shouldSkip
+import com.apollographql.apollo3.cache.normalized.CacheReference
+import com.apollographql.apollo3.cache.normalized.Record
 
 class Normalizer(val variables: Operation.Variables, val cacheKeyForObject: (ResponseField, Map<String, Any?>) -> String?) {
   private val records = mutableMapOf<String, Record>()

@@ -1,10 +1,10 @@
-package com.apollographql.apollo.gradle.test
+package com.apollographql.apollo3.gradle.test
 
 
-import com.apollographql.apollo.gradle.util.TestUtils
-import com.apollographql.apollo.gradle.util.TestUtils.withSimpleProject
-import com.apollographql.apollo.gradle.util.generatedChild
-import com.apollographql.apollo.gradle.util.replaceInText
+import com.apollographql.apollo3.gradle.util.TestUtils
+import com.apollographql.apollo3.gradle.util.TestUtils.withSimpleProject
+import com.apollographql.apollo3.gradle.util.generatedChild
+import com.apollographql.apollo3.gradle.util.replaceInText
 import org.gradle.testkit.runner.TaskOutcome
 import org.hamcrest.CoreMatchers.containsString
 import org.hamcrest.CoreMatchers.not

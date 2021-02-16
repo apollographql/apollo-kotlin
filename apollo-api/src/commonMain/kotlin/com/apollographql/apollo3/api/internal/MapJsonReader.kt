@@ -1,7 +1,7 @@
-package com.apollographql.apollo.api.internal
+package com.apollographql.apollo3.api.internal
 
-import com.apollographql.apollo.api.BigDecimal
-import com.apollographql.apollo.api.internal.json.JsonReader
+import com.apollographql.apollo3.api.BigDecimal
+import com.apollographql.apollo3.api.internal.json.JsonReader
 
 class MapJsonReader(val root: Map<String, Any?>) : JsonReader {
   class OrderedMap(val entries: List<Entry>)

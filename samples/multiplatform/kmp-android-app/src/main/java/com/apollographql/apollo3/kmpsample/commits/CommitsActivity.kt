@@ -1,4 +1,4 @@
-package com.apollographql.apollo.kmpsample.commits
+package com.apollographql.apollo3.kmpsample.commits
 
 import android.content.Context
 import android.content.Intent
@@ -8,9 +8,9 @@ import android.view.View.VISIBLE
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import com.apollographql.apollo.kmpsample.GithubRepositoryCommitsQuery
-import com.apollographql.apollo.kmpsample.data.ApolloCoroutinesRepository
-import com.apollographql.apollo.kmpsample.databinding.ActivityCommitsBinding
+import com.apollographql.apollo3.kmpsample.GithubRepositoryCommitsQuery
+import com.apollographql.apollo3.kmpsample.data.ApolloCoroutinesRepository
+import com.apollographql.apollo3.kmpsample.databinding.ActivityCommitsBinding
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job

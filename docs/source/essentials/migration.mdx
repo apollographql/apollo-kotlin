@@ -46,7 +46,7 @@ If you explicitly depend okio, it is recommended to do a major version upgrade b
 ### New Normalized Cache Modules
 
 For in-memory `LruNormalizedCache` users, no change required since `apollo-runtime` brings it as transitive dependency. It is still
-recommended adding the following dependency explicitly: `implementation("com.apollographql.apollo:apollo-normalized-cache:x.y.z")`
+recommended adding the following dependency explicitly: `implementation("com.apollographql.apollo3:apollo-normalized-cache:x.y.z")`
 
 > Apollo normalized cache module ([#2142](https://github.com/apollographql/apollo-android/pull/2142))
 
@@ -54,10 +54,10 @@ recommended adding the following dependency explicitly: `implementation("com.apo
 
 ```kotlin:title=build.gradle
 // Replace:
-implementation("com.apollographql.apollo:apollo-android-support:x.y.z")
+implementation("com.apollographql.apollo3:apollo-android-support:x.y.z")
 
 // With:
-implementation("com.apollographql.apollo:apollo-normalized-cache-sqlite:x.y.z") // highlight-line
+implementation("com.apollographql.apollo3:apollo-normalized-cache-sqlite:x.y.z") // highlight-line
 ```
 
 `ApolloSqlHelper` is deprecated. Instantiate `SqlNormalizedCacheFactory` with same arguments instead.
@@ -105,7 +105,7 @@ different options.
 
 #### New plugin ID
 
-The plugin ID has been changed from `com.apollographql.android` to `com.apollographql.apollo` to make it clear that the plugin works also
+The plugin ID has been changed from `com.apollographql.android` to `com.apollographql.apollo3` to make it clear that the plugin works also
 for non-Android projects. `com.apollographql.android` will be removed in a future revision.
 
 <MultiCodeBlock>
@@ -115,7 +115,7 @@ for non-Android projects. `com.apollographql.android` will be removed in a futur
 apply(plugin = "com.apollographql.android")
 
 // With:
-apply(plugin = "com.apollographql.apollo") // highlight-line
+apply(plugin = "com.apollographql.apollo3") // highlight-line
 ```
 
 ```groovy
@@ -123,7 +123,7 @@ apply(plugin = "com.apollographql.apollo") // highlight-line
 apply plugin: 'com.apollographql.android'
 
 // With:
-apply plugin: 'com.apollographql.apollo' // highlight-line
+apply plugin: 'com.apollographql.apollo3' // highlight-line
 ```
 
 </MultiCodeBlock>
@@ -209,16 +209,16 @@ apollo {
 }
 ```
 
-Also, the classes of the plugin have been split into an [api](https://github.com/apollographql/apollo-android/tree/4692659508242d64882b8bff11efa7dcd555dbcc/apollo-gradle-plugin-incubating/src/main/kotlin/com/apollographql/apollo/gradle/api)
-part and an [internal](https://github.com/apollographql/apollo-android/tree/4692659508242d64882b8bff11efa7dcd555dbcc/apollo-gradle-plugin-incubating/src/main/kotlin/com/apollographql/apollo/gradle/internal)
+Also, the classes of the plugin have been split into an [api](https://github.com/apollographql/apollo-android/tree/4692659508242d64882b8bff11efa7dcd555dbcc/apollo-gradle-plugin-incubating/src/main/kotlin/com/apollographql/apollo3/gradle/api)
+part and an [internal](https://github.com/apollographql/apollo-android/tree/4692659508242d64882b8bff11efa7dcd555dbcc/apollo-gradle-plugin-incubating/src/main/kotlin/com/apollographql/apollo3/gradle/internal)
 one. If you were relying on fully qualified class names from your `build.gradle.kts` files, you will have to tweak them:
 
 ```kotlin
 // Replace:
-import com.apollographql.apollo.gradle.ApolloExtension
+import com.apollographql.apollo3.gradle.ApolloExtension
 
 // With:
-import com.apollographql.apollo.gradle.api.ApolloExtension // highlight-line
+import com.apollographql.apollo3.gradle.api.ApolloExtension // highlight-line
 ```
 
 ### Breaking changes in generated Kotlin models with inline fragments:
@@ -330,8 +330,8 @@ The artifact is also renamed to make its intention more obvious. Documentation f
 
 ```groovy:title=build.gradle
   // Replace:
-  androidTestImplementation("com.apollographql.apollo:apollo-espresso-support:x.y.z")
+  androidTestImplementation("com.apollographql.apollo3:apollo-espresso-support:x.y.z")
 
   // With:
-  androidTestImplementation("com.apollographql.apollo:apollo-idling-resource:x.y.z") // highlight-line
+  androidTestImplementation("com.apollographql.apollo3:apollo-idling-resource:x.y.z") // highlight-line
 ```

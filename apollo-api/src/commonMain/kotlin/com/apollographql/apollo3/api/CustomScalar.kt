@@ -1,4 +1,4 @@
-package com.apollographql.apollo.api
+package com.apollographql.apollo3.api
 
 /**
  * Represents a mapping from a custom GraphQL scalar type to a Java/Kotlin class

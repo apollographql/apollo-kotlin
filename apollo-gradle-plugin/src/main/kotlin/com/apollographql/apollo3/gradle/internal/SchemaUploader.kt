@@ -1,7 +1,7 @@
-package com.apollographql.apollo.gradle.internal
+package com.apollographql.apollo3.gradle.internal
 
-import com.apollographql.apollo.compiler.fromJson
-import com.apollographql.apollo.gradle.internal.SchemaDownloader.cast
+import com.apollographql.apollo3.compiler.fromJson
+import com.apollographql.apollo3.gradle.internal.SchemaDownloader.cast
 import java.net.InetAddress
 import java.nio.charset.StandardCharsets
 import java.security.MessageDigest

@@ -1,6 +1,6 @@
-package com.apollographql.apollo.gradle.internal
+package com.apollographql.apollo3.gradle.internal
 
-import com.apollographql.apollo.compiler.toJson
+import com.apollographql.apollo3.compiler.toJson
 import com.squareup.moshi.JsonWriter
 import okhttp3.MediaType.Companion.toMediaTypeOrNull
 import okhttp3.OkHttpClient
@@ -21,7 +21,7 @@ internal object SchemaHelper {
         .addInterceptor { chain ->
           chain.request().newBuilder()
               .header("apollographql-client-name", "apollo-gradle-plugin")
-              .header("apollographql-client-version", com.apollographql.apollo.compiler.VERSION)
+              .header("apollographql-client-version", com.apollographql.apollo3.compiler.VERSION)
               .build()
               .let {
                 chain.proceed(it)

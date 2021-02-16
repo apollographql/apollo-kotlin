@@ -1,11 +1,11 @@
-package com.apollographql.apollo
+package com.apollographql.apollo3
 
-import com.apollographql.apollo.api.Operation
-import com.apollographql.apollo.api.Query
-import com.apollographql.apollo.api.cache.http.HttpCachePolicy
-import com.apollographql.apollo.cache.CacheHeaders
-import com.apollographql.apollo.fetcher.ResponseFetcher
-import com.apollographql.apollo.request.RequestHeaders
+import com.apollographql.apollo3.api.Operation
+import com.apollographql.apollo3.api.Query
+import com.apollographql.apollo3.api.cache.http.HttpCachePolicy
+import com.apollographql.apollo3.cache.CacheHeaders
+import com.apollographql.apollo3.fetcher.ResponseFetcher
+import com.apollographql.apollo3.request.RequestHeaders
 
 /**
  * A call prepared to execute GraphQL query operation.
@@ -31,13 +31,13 @@ interface ApolloQueryCall<D : Operation.Data> : ApolloCall<D> {
   fun httpCachePolicy(httpCachePolicy: HttpCachePolicy.Policy): ApolloQueryCall<D>
 
   /**
-   * Sets the [CacheHeaders] to use for this call. [com.apollographql.apollo.interceptor.FetchOptions] will
+   * Sets the [CacheHeaders] to use for this call. [com.apollographql.apollo3.interceptor.FetchOptions] will
    * be configured with this headers, and will be accessible from the [ResponseFetcher] used for this call.
    *
    * Deprecated, use [.toBuilder] to mutate the ApolloCall
    *
    * @param cacheHeaders the [CacheHeaders] that will be passed with records generated from this request to [                     ]. Standardized cache headers are
-   * defined in [com.apollographql.apollo.cache.ApolloCacheHeaders].
+   * defined in [com.apollographql.apollo3.cache.ApolloCacheHeaders].
    * @return The ApolloCall object with the provided [CacheHeaders].
    */
   @Deprecated("")
@@ -73,11 +73,11 @@ interface ApolloQueryCall<D : Operation.Data> : ApolloCall<D> {
     override fun build(): ApolloQueryCall<D>
 
     /**
-     * Sets the [CacheHeaders] to use for this call. [com.apollographql.apollo.interceptor.FetchOptions] will
+     * Sets the [CacheHeaders] to use for this call. [com.apollographql.apollo3.interceptor.FetchOptions] will
      * be configured with this headers, and will be accessible from the [ResponseFetcher] used for this call.
      *
      * @param cacheHeaders the [CacheHeaders] that will be passed with records generated from this request to [                     ]. Standardized cache headers are
-     * defined in [com.apollographql.apollo.cache.ApolloCacheHeaders].
+     * defined in [com.apollographql.apollo3.cache.ApolloCacheHeaders].
      * @return The ApolloCall object with the provided [CacheHeaders].
      */
     override fun cacheHeaders(cacheHeaders: CacheHeaders): Builder<D>

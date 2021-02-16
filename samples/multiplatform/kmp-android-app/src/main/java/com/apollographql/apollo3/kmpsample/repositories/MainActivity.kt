@@ -1,4 +1,4 @@
-package com.apollographql.apollo.kmpsample.repositories
+package com.apollographql.apollo3.kmpsample.repositories
 
 import android.os.Bundle
 import android.view.View
@@ -7,9 +7,9 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import com.apollographql.apollo.kmpsample.data.ApolloCoroutinesRepository
-import com.apollographql.apollo.kmpsample.databinding.ActivityMainBinding
-import com.apollographql.apollo.kmpsample.repositoryDetail.RepositoryDetailActivity
+import com.apollographql.apollo3.kmpsample.data.ApolloCoroutinesRepository
+import com.apollographql.apollo3.kmpsample.databinding.ActivityMainBinding
+import com.apollographql.apollo3.kmpsample.repositoryDetail.RepositoryDetailActivity
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job

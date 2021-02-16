@@ -1,4 +1,4 @@
-package com.apollographql.apollo.compiler.frontend
+package com.apollographql.apollo3.compiler.frontend
 
 fun GQLOperationDefinition.withTypenameWhenNeeded(schema: Schema): GQLOperationDefinition {
   return copy(

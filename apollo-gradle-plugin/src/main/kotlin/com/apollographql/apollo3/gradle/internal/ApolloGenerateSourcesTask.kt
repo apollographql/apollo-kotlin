@@ -1,7 +1,7 @@
-package com.apollographql.apollo.gradle.internal
+package com.apollographql.apollo3.gradle.internal
 
-import com.apollographql.apollo.compiler.GraphQLCompiler
-import com.apollographql.apollo.compiler.OperationOutputGenerator
+import com.apollographql.apollo3.compiler.GraphQLCompiler
+import com.apollographql.apollo3.compiler.OperationOutputGenerator
 import org.gradle.api.DefaultTask
 import org.gradle.api.file.ConfigurableFileCollection
 import org.gradle.api.file.DirectoryProperty

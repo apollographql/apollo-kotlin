@@ -1,4 +1,4 @@
-package com.apollographql.apollo.kmpsample.repositoryDetail
+package com.apollographql.apollo3.kmpsample.repositoryDetail
 
 import android.annotation.SuppressLint
 import android.content.Context
@@ -6,10 +6,10 @@ import android.content.Intent
 import android.os.Bundle
 import android.view.View
 import androidx.appcompat.app.AppCompatActivity
-import com.apollographql.apollo.kmpsample.commits.CommitsActivity
-import com.apollographql.apollo.kmpsample.data.ApolloCoroutinesRepository
-import com.apollographql.apollo.kmpsample.databinding.ActivityRepositoryDetailBinding
-import com.apollographql.apollo.kmpsample.fragment.RepositoryDetail
+import com.apollographql.apollo3.kmpsample.commits.CommitsActivity
+import com.apollographql.apollo3.kmpsample.data.ApolloCoroutinesRepository
+import com.apollographql.apollo3.kmpsample.databinding.ActivityRepositoryDetailBinding
+import com.apollographql.apollo3.kmpsample.fragment.RepositoryDetail
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job

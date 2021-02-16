@@ -1,9 +1,9 @@
-package com.apollographql.apollo
+package com.apollographql.apollo3
 
-import com.apollographql.apollo.api.ResponseField
-import com.apollographql.apollo.api.Operation
-import com.apollographql.apollo.cache.normalized.internal.RealCacheKeyBuilder
-import com.apollographql.apollo.integration.sealedclasses.type.Direction
+import com.apollographql.apollo3.api.ResponseField
+import com.apollographql.apollo3.api.Operation
+import com.apollographql.apollo3.cache.normalized.internal.RealCacheKeyBuilder
+import com.apollographql.apollo3.integration.sealedclasses.type.Direction
 import com.google.common.truth.Truth
 import org.junit.Test
 

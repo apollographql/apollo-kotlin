@@ -1,11 +1,11 @@
-package com.apollographql.apollo.interceptor.cache
+package com.apollographql.apollo3.interceptor.cache
 
-import com.apollographql.apollo.api.internal.json.JsonReader
-import com.apollographql.apollo.cache.CacheHeaders
-import com.apollographql.apollo.cache.normalized.NormalizedCache
-import com.apollographql.apollo.cache.normalized.Record
-import com.apollographql.apollo.cache.normalized.internal.ReadableStore
-import com.apollographql.apollo.cache.normalized.internal.WriteableStore
+import com.apollographql.apollo3.api.internal.json.JsonReader
+import com.apollographql.apollo3.cache.CacheHeaders
+import com.apollographql.apollo3.cache.normalized.NormalizedCache
+import com.apollographql.apollo3.cache.normalized.Record
+import com.apollographql.apollo3.cache.normalized.internal.ReadableStore
+import com.apollographql.apollo3.cache.normalized.internal.WriteableStore
 
 class ApolloStore(private val normalizedCache: NormalizedCache): ReadableStore, WriteableStore {
   override fun merge(recordCollection: Collection<Record>, cacheHeaders: CacheHeaders): Set<String> {

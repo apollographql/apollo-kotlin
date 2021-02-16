@@ -1,9 +1,9 @@
-package com.apollographql.apollo.internal.interceptor
+package com.apollographql.apollo3.internal.interceptor
 
-import com.apollographql.apollo.interceptor.ApolloInterceptor
-import com.apollographql.apollo.interceptor.ApolloInterceptor.CallBack
-import com.apollographql.apollo.interceptor.ApolloInterceptor.InterceptorRequest
-import com.apollographql.apollo.interceptor.ApolloInterceptorChain
+import com.apollographql.apollo3.interceptor.ApolloInterceptor
+import com.apollographql.apollo3.interceptor.ApolloInterceptor.CallBack
+import com.apollographql.apollo3.interceptor.ApolloInterceptor.InterceptorRequest
+import com.apollographql.apollo3.interceptor.ApolloInterceptorChain
 import java.util.ArrayList
 import java.util.concurrent.Executor
 

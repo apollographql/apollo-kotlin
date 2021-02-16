@@ -41,7 +41,7 @@ apollo {
 
 ## Custom ID for Persisted Queries
 
-By default, Apollo uses `Sha256` hashing algorithm to generate an ID for the query. To provide custom ID generation logic, use the option - `operationIdGenerator` which accepts an `instance` that implements the `OperationIdGenerator` interface (`com.apollographql.apollo.compiler.OperationIdGenerator`) as the input. This option can be used to either specify a different hashing algorithm or to fetch the persisted query ID from a different place - e.g. a service or a CLI.
+By default, Apollo uses `Sha256` hashing algorithm to generate an ID for the query. To provide custom ID generation logic, use the option - `operationIdGenerator` which accepts an `instance` that implements the `OperationIdGenerator` interface (`com.apollographql.apollo3.compiler.OperationIdGenerator`) as the input. This option can be used to either specify a different hashing algorithm or to fetch the persisted query ID from a different place - e.g. a service or a CLI.
 
 Example Md5 hash generator:
 
@@ -49,7 +49,7 @@ Example Md5 hash generator:
 
 ```kotlin
 apollo {
-    operationIdGenerator.set(object: com.apollographql.apollo.compiler.OperationIdGenerator {
+    operationIdGenerator.set(object: com.apollographql.apollo3.compiler.OperationIdGenerator {
         override val version = "my-md5-version1"
 
         override fun apply(operationDocument: String, operationFilepath: String): String {
@@ -60,7 +60,7 @@ apollo {
 ```
 
 ```groovy
-import com.apollographql.apollo.compiler.OperationIdGenerator
+import com.apollographql.apollo3.compiler.OperationIdGenerator
 
 apollo {
   operationIdGenerator = new OperationIdGenerator() {

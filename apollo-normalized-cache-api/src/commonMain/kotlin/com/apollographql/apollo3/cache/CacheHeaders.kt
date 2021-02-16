@@ -1,8 +1,8 @@
-package com.apollographql.apollo.cache
+package com.apollographql.apollo3.cache
 
-import com.apollographql.apollo.api.Operation
-import com.apollographql.apollo.cache.normalized.NormalizedCache
-import com.apollographql.apollo.cache.normalized.Record
+import com.apollographql.apollo3.api.Operation
+import com.apollographql.apollo3.cache.normalized.NormalizedCache
+import com.apollographql.apollo3.cache.normalized.Record
 import kotlin.jvm.JvmField
 import kotlin.jvm.JvmStatic
 

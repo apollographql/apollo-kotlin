@@ -1,20 +1,20 @@
-package com.apollographql.apollo.compiler.backend.ir
+package com.apollographql.apollo3.compiler.backend.ir
 
-import com.apollographql.apollo.compiler.PackageNameProvider
-import com.apollographql.apollo.compiler.backend.ir.BackendIrMergeUtils.mergeFields
-import com.apollographql.apollo.compiler.backend.ir.SelectionKeyUtils.addFieldSelectionKey
-import com.apollographql.apollo.compiler.backend.ir.SelectionKeyUtils.attachToNewSelectionRoot
-import com.apollographql.apollo.compiler.backend.ir.SelectionKeyUtils.isBelongToNamedFragment
-import com.apollographql.apollo.compiler.backend.ir.SelectionKeyUtils.removeFragmentSelectionKeys
-import com.apollographql.apollo.compiler.frontend.GQLNamedType
-import com.apollographql.apollo.compiler.frontend.Schema
-import com.apollographql.apollo.compiler.frontend.SourceLocation
-import com.apollographql.apollo.compiler.frontend.ir.FrontendIr
-import com.apollographql.apollo.compiler.frontend.possibleTypes
-import com.apollographql.apollo.compiler.frontend.schemaKind
-import com.apollographql.apollo.compiler.frontend.toKotlinValue
-import com.apollographql.apollo.compiler.frontend.toSchemaType
-import com.apollographql.apollo.compiler.introspection.IntrospectionSchema
+import com.apollographql.apollo3.compiler.PackageNameProvider
+import com.apollographql.apollo3.compiler.backend.ir.BackendIrMergeUtils.mergeFields
+import com.apollographql.apollo3.compiler.backend.ir.SelectionKeyUtils.addFieldSelectionKey
+import com.apollographql.apollo3.compiler.backend.ir.SelectionKeyUtils.attachToNewSelectionRoot
+import com.apollographql.apollo3.compiler.backend.ir.SelectionKeyUtils.isBelongToNamedFragment
+import com.apollographql.apollo3.compiler.backend.ir.SelectionKeyUtils.removeFragmentSelectionKeys
+import com.apollographql.apollo3.compiler.frontend.GQLNamedType
+import com.apollographql.apollo3.compiler.frontend.Schema
+import com.apollographql.apollo3.compiler.frontend.SourceLocation
+import com.apollographql.apollo3.compiler.frontend.ir.FrontendIr
+import com.apollographql.apollo3.compiler.frontend.possibleTypes
+import com.apollographql.apollo3.compiler.frontend.schemaKind
+import com.apollographql.apollo3.compiler.frontend.toKotlinValue
+import com.apollographql.apollo3.compiler.frontend.toSchemaType
+import com.apollographql.apollo3.compiler.introspection.IntrospectionSchema
 
 internal class BackendIrBuilder constructor(
     private val schema: Schema,

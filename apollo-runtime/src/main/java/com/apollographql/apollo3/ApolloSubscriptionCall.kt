@@ -1,12 +1,12 @@
-package com.apollographql.apollo
+package com.apollographql.apollo3
 
-import com.apollographql.apollo.ApolloSubscriptionCall.Callback
-import com.apollographql.apollo.api.Operation
-import com.apollographql.apollo.api.Response
-import com.apollographql.apollo.api.Subscription
-import com.apollographql.apollo.exception.ApolloCanceledException
-import com.apollographql.apollo.exception.ApolloException
-import com.apollographql.apollo.internal.util.Cancelable
+import com.apollographql.apollo3.ApolloSubscriptionCall.Callback
+import com.apollographql.apollo3.api.Operation
+import com.apollographql.apollo3.api.Response
+import com.apollographql.apollo3.api.Subscription
+import com.apollographql.apollo3.exception.ApolloCanceledException
+import com.apollographql.apollo3.exception.ApolloException
+import com.apollographql.apollo3.internal.util.Cancelable
 
 /**
  *

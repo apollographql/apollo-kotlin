@@ -1,4 +1,4 @@
-package com.apollographql.apollo.request
+package com.apollographql.apollo3.request
 
 import java.util.LinkedHashMap
 

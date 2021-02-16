@@ -1,7 +1,7 @@
-package com.apollographql.apollo.cache.normalized
+package com.apollographql.apollo3.cache.normalized
 
-import com.apollographql.apollo.api.Operation
-import com.apollographql.apollo.api.ResponseField
+import com.apollographql.apollo3.api.Operation
+import com.apollographql.apollo3.api.ResponseField
 import kotlin.jvm.JvmField
 import kotlin.jvm.JvmStatic
 import kotlin.jvm.JvmSuppressWildcards

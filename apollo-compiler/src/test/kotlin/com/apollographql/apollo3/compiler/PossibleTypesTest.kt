@@ -1,7 +1,7 @@
-package com.apollographql.apollo.compiler
+package com.apollographql.apollo3.compiler
 
-import com.apollographql.apollo.compiler.frontend.GraphQLParser
-import com.apollographql.apollo.compiler.frontend.possibleTypes
+import com.apollographql.apollo3.compiler.frontend.GraphQLParser
+import com.apollographql.apollo3.compiler.frontend.possibleTypes
 import com.google.common.truth.Truth.assertThat
 import org.junit.Test
 import java.io.File

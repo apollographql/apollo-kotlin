@@ -1,7 +1,7 @@
-package com.apollographql.apollo
+package com.apollographql.apollo3
 
 import android.util.Log
-import com.apollographql.apollo.Logger
+import com.apollographql.apollo3.Logger
 
 /**
  * This is an Android wrapper around [Logger] that will take any messages Apollo wants

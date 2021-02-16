@@ -1,12 +1,12 @@
-package com.apollographql.apollo.compiler.backend.ast
+package com.apollographql.apollo3.compiler.backend.ast
 
-import com.apollographql.apollo.api.Operation
-import com.apollographql.apollo.compiler.backend.ir.BackendIr
-import com.apollographql.apollo.compiler.backend.ir.SelectionKey
-import com.apollographql.apollo.compiler.introspection.IntrospectionSchema
-import com.apollographql.apollo.compiler.introspection.resolveType
-import com.apollographql.apollo.compiler.operationoutput.OperationOutput
-import com.apollographql.apollo.compiler.operationoutput.findOperationId
+import com.apollographql.apollo3.api.Operation
+import com.apollographql.apollo3.compiler.backend.ir.BackendIr
+import com.apollographql.apollo3.compiler.backend.ir.SelectionKey
+import com.apollographql.apollo3.compiler.introspection.IntrospectionSchema
+import com.apollographql.apollo3.compiler.introspection.resolveType
+import com.apollographql.apollo3.compiler.operationoutput.OperationOutput
+import com.apollographql.apollo3.compiler.operationoutput.findOperationId
 
 internal class AstBuilder private constructor(
     private val backendIr: BackendIr,

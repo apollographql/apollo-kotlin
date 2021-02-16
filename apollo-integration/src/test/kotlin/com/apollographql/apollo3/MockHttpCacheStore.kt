@@ -1,8 +1,8 @@
-package com.apollographql.apollo
+package com.apollographql.apollo3
 
-import com.apollographql.apollo.api.cache.http.HttpCacheRecord
-import com.apollographql.apollo.api.cache.http.HttpCacheRecordEditor
-import com.apollographql.apollo.api.cache.http.HttpCacheStore
+import com.apollographql.apollo3.api.cache.http.HttpCacheRecord
+import com.apollographql.apollo3.api.cache.http.HttpCacheRecordEditor
+import com.apollographql.apollo3.api.cache.http.HttpCacheStore
 import java.io.IOException
 
 internal class MockHttpCacheStore : HttpCacheStore {

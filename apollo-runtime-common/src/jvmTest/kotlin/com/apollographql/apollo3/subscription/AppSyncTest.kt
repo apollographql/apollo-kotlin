@@ -1,4 +1,4 @@
-package com.apollographql.apollo.subscription
+package com.apollographql.apollo3.subscription
 
 import org.junit.Test
 import kotlin.test.assertEquals

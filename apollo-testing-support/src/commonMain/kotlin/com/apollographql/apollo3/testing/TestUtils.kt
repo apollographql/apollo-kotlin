@@ -1,4 +1,4 @@
-package com.apollographql.apollo.testing
+package com.apollographql.apollo3.testing
 
 import kotlinx.coroutines.CoroutineScope
 import kotlin.coroutines.CoroutineContext

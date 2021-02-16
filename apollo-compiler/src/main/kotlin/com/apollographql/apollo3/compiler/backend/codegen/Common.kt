@@ -1,8 +1,8 @@
-package com.apollographql.apollo.compiler.backend.codegen
+package com.apollographql.apollo3.compiler.backend.codegen
 
-import com.apollographql.apollo.compiler.applyIf
-import com.apollographql.apollo.compiler.backend.ast.CodeGenerationAst
-import com.apollographql.apollo.compiler.escapeKotlinReservedWord
+import com.apollographql.apollo3.compiler.applyIf
+import com.apollographql.apollo3.compiler.backend.ast.CodeGenerationAst
+import com.apollographql.apollo3.compiler.escapeKotlinReservedWord
 import com.squareup.kotlinpoet.AnnotationSpec
 import com.squareup.kotlinpoet.BOOLEAN
 import com.squareup.kotlinpoet.ClassName
@@ -147,7 +147,7 @@ internal fun TypeSpec.patchKotlinNativeOptionalArrayProperties(): TypeSpec {
       .build()
 }
 
-private val MULTIPLATFORM_THROWS = ClassName("com.apollographql.apollo.api.internal", "Throws")
+private val MULTIPLATFORM_THROWS = ClassName("com.apollographql.apollo3.api.internal", "Throws")
 
 internal fun CodeGenerationAst.Field.asOptionalParameterSpec(withDefaultValue: Boolean = true): ParameterSpec {
   return ParameterSpec

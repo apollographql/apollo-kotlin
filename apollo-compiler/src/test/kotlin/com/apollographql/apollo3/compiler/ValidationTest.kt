@@ -1,11 +1,11 @@
-package com.apollographql.apollo.compiler
+package com.apollographql.apollo3.compiler
 
-import com.apollographql.apollo.compiler.TestUtils.checkExpected
-import com.apollographql.apollo.compiler.TestUtils.testParametersForGraphQLFilesIn
-import com.apollographql.apollo.compiler.frontend.GraphQLParser
-import com.apollographql.apollo.compiler.frontend.Issue
-import com.apollographql.apollo.compiler.frontend.toSchema
-import com.apollographql.apollo.compiler.introspection.IntrospectionSchema
+import com.apollographql.apollo3.compiler.TestUtils.checkExpected
+import com.apollographql.apollo3.compiler.TestUtils.testParametersForGraphQLFilesIn
+import com.apollographql.apollo3.compiler.frontend.GraphQLParser
+import com.apollographql.apollo3.compiler.frontend.Issue
+import com.apollographql.apollo3.compiler.frontend.toSchema
+import com.apollographql.apollo3.compiler.introspection.IntrospectionSchema
 import com.google.common.truth.Truth.assertThat
 import org.junit.Test
 import org.junit.runner.RunWith

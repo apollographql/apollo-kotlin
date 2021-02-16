@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.apollographql.apollo.gradle.util
+package com.apollographql.apollo3.gradle.util
 
 import java.io.File
 import java.util.Properties

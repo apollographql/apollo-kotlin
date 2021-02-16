@@ -1,4 +1,4 @@
-package com.apollographql.apollo.network
+package com.apollographql.apollo3.network
 
 enum class HttpMethod {
   Get, Post

@@ -1,4 +1,4 @@
-package com.apollographql.apollo.compiler.backend.ast
+package com.apollographql.apollo3.compiler.backend.ast
 
 internal typealias CustomScalarTypes = Map<String, CodeGenerationAst.CustomScalarType>
 

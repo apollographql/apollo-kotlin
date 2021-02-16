@@ -1,7 +1,7 @@
-package com.apollographql.apollo.api.internal.json
+package com.apollographql.apollo3.api.internal.json
 
-import com.apollographql.apollo.api.BigDecimal
-import com.apollographql.apollo.api.EnumValue
+import com.apollographql.apollo3.api.BigDecimal
+import com.apollographql.apollo3.api.EnumValue
 
 object Utils {
   fun writeToJson(value: Any?, jsonWriter: JsonWriter) {

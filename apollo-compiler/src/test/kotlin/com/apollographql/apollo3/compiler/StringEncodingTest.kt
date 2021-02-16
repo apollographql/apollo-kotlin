@@ -1,6 +1,6 @@
-package com.apollographql.apollo.compiler
+package com.apollographql.apollo3.compiler
 
-import com.apollographql.apollo.compiler.frontend.GraphQLString
+import com.apollographql.apollo3.compiler.frontend.GraphQLString
 import com.google.common.truth.Truth
 import org.junit.Test
 

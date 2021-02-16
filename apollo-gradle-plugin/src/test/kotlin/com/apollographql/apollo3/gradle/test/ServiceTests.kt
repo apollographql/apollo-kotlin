@@ -1,11 +1,11 @@
-package com.apollographql.apollo.gradle.test
+package com.apollographql.apollo3.gradle.test
 
-import com.apollographql.apollo.gradle.util.TestUtils
-import com.apollographql.apollo.gradle.util.TestUtils.fixturesDirectory
-import com.apollographql.apollo.gradle.util.TestUtils.withSimpleProject
-import com.apollographql.apollo.gradle.util.TestUtils.withTestProject
-import com.apollographql.apollo.gradle.util.generatedChild
-import com.apollographql.apollo.gradle.util.replaceInText
+import com.apollographql.apollo3.gradle.util.TestUtils
+import com.apollographql.apollo3.gradle.util.TestUtils.fixturesDirectory
+import com.apollographql.apollo3.gradle.util.TestUtils.withSimpleProject
+import com.apollographql.apollo3.gradle.util.TestUtils.withTestProject
+import com.apollographql.apollo3.gradle.util.generatedChild
+import com.apollographql.apollo3.gradle.util.replaceInText
 import com.google.common.truth.Truth
 import org.gradle.testkit.runner.TaskOutcome
 import org.gradle.testkit.runner.UnexpectedBuildFailure
@@ -219,7 +219,7 @@ class ServiceTests {
   @Test
   fun `versions are enforced`() {
     withSimpleProject { dir ->
-      File(dir, "build.gradle").replaceInText("dep.apollo.api", "\"com.apollographql.apollo:apollo-api:1.2.0\"")
+      File(dir, "build.gradle").replaceInText("dep.apollo.api", "\"com.apollographql.apollo3:apollo-api:1.2.0\"")
 
       var exception: Exception? = null
       try {
@@ -241,7 +241,7 @@ class ServiceTests {
       val result = TestUtils.executeTask("checkApolloVersions", dir)
       assert(result.task(":checkApolloVersions")?.outcome == TaskOutcome.UP_TO_DATE)
 
-      File(dir, "build.gradle").replaceInText("dep.apollo.api", "\"com.apollographql.apollo:apollo-api:1.2.0\"")
+      File(dir, "build.gradle").replaceInText("dep.apollo.api", "\"com.apollographql.apollo3:apollo-api:1.2.0\"")
 
       var exception: Exception? = null
       try {

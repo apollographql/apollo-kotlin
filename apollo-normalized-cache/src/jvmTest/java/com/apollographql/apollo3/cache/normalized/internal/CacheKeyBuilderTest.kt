@@ -1,12 +1,12 @@
-package com.apollographql.apollo.cache.normalized.internal
+package com.apollographql.apollo3.cache.normalized.internal
 
-import com.apollographql.apollo.api.InputType
-import com.apollographql.apollo.api.Operation
-import com.apollographql.apollo.api.ResponseField
-import com.apollographql.apollo.api.ResponseField.Companion.forString
-import com.apollographql.apollo.api.CustomScalar
-import com.apollographql.apollo.api.internal.InputFieldMarshaller
-import com.apollographql.apollo.api.internal.InputFieldWriter
+import com.apollographql.apollo3.api.InputType
+import com.apollographql.apollo3.api.Operation
+import com.apollographql.apollo3.api.ResponseField
+import com.apollographql.apollo3.api.ResponseField.Companion.forString
+import com.apollographql.apollo3.api.CustomScalar
+import com.apollographql.apollo3.api.internal.InputFieldMarshaller
+import com.apollographql.apollo3.api.internal.InputFieldWriter
 import com.google.common.truth.Truth
 import org.junit.Test
 import java.io.IOException

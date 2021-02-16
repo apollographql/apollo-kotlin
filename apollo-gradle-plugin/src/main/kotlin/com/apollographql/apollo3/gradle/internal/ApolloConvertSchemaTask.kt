@@ -1,13 +1,13 @@
-package com.apollographql.apollo.gradle.internal
+package com.apollographql.apollo3.gradle.internal
 
-import com.apollographql.apollo.compiler.frontend.GraphQLParser
-import com.apollographql.apollo.compiler.frontend.toFile
-import com.apollographql.apollo.compiler.frontend.toIntrospectionSchema
-import com.apollographql.apollo.compiler.frontend.toSchema
-import com.apollographql.apollo.compiler.frontend.toUtf8WithIndents
-import com.apollographql.apollo.compiler.introspection.IntrospectionSchema
-import com.apollographql.apollo.compiler.introspection.IntrospectionSchema.Companion.wrap
-import com.apollographql.apollo.compiler.toJson
+import com.apollographql.apollo3.compiler.frontend.GraphQLParser
+import com.apollographql.apollo3.compiler.frontend.toFile
+import com.apollographql.apollo3.compiler.frontend.toIntrospectionSchema
+import com.apollographql.apollo3.compiler.frontend.toSchema
+import com.apollographql.apollo3.compiler.frontend.toUtf8WithIndents
+import com.apollographql.apollo3.compiler.introspection.IntrospectionSchema
+import com.apollographql.apollo3.compiler.introspection.IntrospectionSchema.Companion.wrap
+import com.apollographql.apollo3.compiler.toJson
 import org.gradle.api.DefaultTask
 import org.gradle.api.provider.Property
 import org.gradle.api.tasks.Input

@@ -1,6 +1,6 @@
-package com.apollographql.apollo.compiler
+package com.apollographql.apollo3.compiler
 
-import com.apollographql.apollo.compiler.introspection.IntrospectionSchema
+import com.apollographql.apollo3.compiler.introspection.IntrospectionSchema
 import com.squareup.moshi.JsonAdapter
 import com.squareup.moshi.JsonReader
 import com.squareup.moshi.JsonWriter

@@ -1,11 +1,11 @@
-package com.apollographql.apollo.interceptor
+package com.apollographql.apollo3.interceptor
 
-import com.apollographql.apollo.ApolloRequest
-import com.apollographql.apollo.exception.ApolloHttpException
-import com.apollographql.apollo.exception.ApolloBearerTokenException
-import com.apollographql.apollo.api.ApolloExperimental
-import com.apollographql.apollo.api.Operation
-import com.apollographql.apollo.network.HttpExecutionContext
+import com.apollographql.apollo3.ApolloRequest
+import com.apollographql.apollo3.exception.ApolloHttpException
+import com.apollographql.apollo3.exception.ApolloBearerTokenException
+import com.apollographql.apollo3.api.ApolloExperimental
+import com.apollographql.apollo3.api.Operation
+import com.apollographql.apollo3.network.HttpExecutionContext
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.FlowPreview
 import kotlinx.coroutines.flow.Flow

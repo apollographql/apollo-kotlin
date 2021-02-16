@@ -1,7 +1,7 @@
-package com.apollographql.apollo.compiler
+package com.apollographql.apollo3.compiler
 
-import com.apollographql.apollo.compiler.operationoutput.OperationDescriptor
-import com.apollographql.apollo.compiler.operationoutput.OperationOutput
+import com.apollographql.apollo3.compiler.operationoutput.OperationDescriptor
+import com.apollographql.apollo3.compiler.operationoutput.OperationOutput
 
 
 interface OperationOutputGenerator {

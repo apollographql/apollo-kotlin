@@ -1,4 +1,4 @@
-package com.apollographql.apollo.cache.normalized
+package com.apollographql.apollo3.cache.normalized
 
 import kotlin.jvm.JvmField
 import kotlin.jvm.JvmStatic

@@ -1,9 +1,9 @@
-package com.apollographql.apollo.cache.normalized.sql
+package com.apollographql.apollo3.cache.normalized.sql
 
 import android.content.Context
 import androidx.sqlite.db.SupportSQLiteOpenHelper
 import androidx.sqlite.db.framework.FrameworkSQLiteOpenHelperFactory
-import com.apollographql.apollo.cache.normalized.NormalizedCacheFactory
+import com.apollographql.apollo3.cache.normalized.NormalizedCacheFactory
 import com.squareup.sqldelight.android.AndroidSqliteDriver
 import com.squareup.sqldelight.db.SqlDriver
 

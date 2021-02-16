@@ -1,4 +1,4 @@
-package com.apollographql.apollo.interceptor
+package com.apollographql.apollo3.interceptor
 
 interface TokenProvider {
   suspend fun currentToken(): String

@@ -1,11 +1,11 @@
-package com.apollographql.apollo.cache.http;
+package com.apollographql.apollo3.cache.http;
 
-import com.apollographql.apollo.Logger;
-import com.apollographql.apollo.api.cache.http.HttpCache;
-import com.apollographql.apollo.api.cache.http.HttpCacheRecord;
-import com.apollographql.apollo.api.cache.http.HttpCacheRecordEditor;
-import com.apollographql.apollo.api.cache.http.HttpCacheStore;
-import com.apollographql.apollo.api.internal.ApolloLogger;
+import com.apollographql.apollo3.Logger;
+import com.apollographql.apollo3.api.cache.http.HttpCache;
+import com.apollographql.apollo3.api.cache.http.HttpCacheRecord;
+import com.apollographql.apollo3.api.cache.http.HttpCacheRecordEditor;
+import com.apollographql.apollo3.api.cache.http.HttpCacheStore;
+import com.apollographql.apollo3.api.internal.ApolloLogger;
 import okhttp3.Interceptor;
 import okhttp3.Response;
 import okio.ForwardingSource;
@@ -16,9 +16,9 @@ import org.jetbrains.annotations.Nullable;
 
 import java.io.IOException;
 
-import static com.apollographql.apollo.api.internal.Utils.checkNotNull;
-import static com.apollographql.apollo.cache.http.Utils.copyResponseBody;
-import static com.apollographql.apollo.cache.http.Utils.skipStoreResponse;
+import static com.apollographql.apollo3.api.internal.Utils.checkNotNull;
+import static com.apollographql.apollo3.cache.http.Utils.copyResponseBody;
+import static com.apollographql.apollo3.cache.http.Utils.skipStoreResponse;
 
 @SuppressWarnings("WeakerAccess")
 public final class ApolloHttpCache implements HttpCache {

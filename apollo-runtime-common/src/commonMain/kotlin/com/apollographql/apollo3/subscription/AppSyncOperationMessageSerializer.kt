@@ -1,10 +1,10 @@
-package com.apollographql.apollo.subscription
+package com.apollographql.apollo3.subscription
 
-import com.apollographql.apollo.api.internal.json.JsonWriter
-import com.apollographql.apollo.api.internal.json.Utils
-import com.apollographql.apollo.api.internal.json.use
-import com.apollographql.apollo.api.internal.json.writeObject
-import com.apollographql.apollo.subscription.ApolloOperationMessageSerializer.writePayloadContentsTo
+import com.apollographql.apollo3.api.internal.json.JsonWriter
+import com.apollographql.apollo3.api.internal.json.Utils
+import com.apollographql.apollo3.api.internal.json.use
+import com.apollographql.apollo3.api.internal.json.writeObject
+import com.apollographql.apollo3.subscription.ApolloOperationMessageSerializer.writePayloadContentsTo
 import okio.Buffer
 import okio.BufferedSink
 import okio.BufferedSource

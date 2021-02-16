@@ -5,12 +5,12 @@
 //
 package com.example.fragment_used_twice
 
-import com.apollographql.apollo.api.Operation
-import com.apollographql.apollo.api.Query
-import com.apollographql.apollo.api.ResponseAdapterCache
-import com.apollographql.apollo.api.ResponseField
-import com.apollographql.apollo.api.internal.QueryDocumentMinifier
-import com.apollographql.apollo.api.internal.ResponseAdapter
+import com.apollographql.apollo3.api.Operation
+import com.apollographql.apollo3.api.Query
+import com.apollographql.apollo3.api.ResponseAdapterCache
+import com.apollographql.apollo3.api.ResponseField
+import com.apollographql.apollo3.api.internal.QueryDocumentMinifier
+import com.apollographql.apollo3.api.internal.ResponseAdapter
 import com.example.fragment_used_twice.adapter.TestQuery_ResponseAdapter
 import com.example.fragment_used_twice.fragment.HeroDetails
 import com.example.fragment_used_twice.fragment.HumanDetails

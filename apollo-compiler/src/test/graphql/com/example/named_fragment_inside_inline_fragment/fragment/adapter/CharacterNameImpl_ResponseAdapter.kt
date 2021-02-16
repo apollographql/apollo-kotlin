@@ -5,12 +5,12 @@
 //
 package com.example.named_fragment_inside_inline_fragment.fragment.adapter
 
-import com.apollographql.apollo.api.ResponseAdapterCache
-import com.apollographql.apollo.api.ResponseField
-import com.apollographql.apollo.api.internal.ResponseAdapter
-import com.apollographql.apollo.api.internal.json.JsonReader
-import com.apollographql.apollo.api.internal.json.JsonWriter
-import com.apollographql.apollo.api.internal.stringResponseAdapter
+import com.apollographql.apollo3.api.ResponseAdapterCache
+import com.apollographql.apollo3.api.ResponseField
+import com.apollographql.apollo3.api.internal.ResponseAdapter
+import com.apollographql.apollo3.api.internal.json.JsonReader
+import com.apollographql.apollo3.api.internal.json.JsonWriter
+import com.apollographql.apollo3.api.internal.stringResponseAdapter
 import com.example.named_fragment_inside_inline_fragment.fragment.CharacterNameImpl
 import kotlin.Array
 import kotlin.String

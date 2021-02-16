@@ -1,4 +1,4 @@
-import com.apollographql.apollo.gradle.api.ApolloExtension
+import com.apollographql.apollo3.gradle.api.ApolloExtension
 
 buildscript {
   apply(from = "../../../gradle/dependencies.gradle")
@@ -16,7 +16,7 @@ buildscript {
 }
 
 apply(plugin = "org.jetbrains.kotlin.jvm")
-apply(plugin = "com.apollographql.apollo")
+apply(plugin = "com.apollographql.apollo3")
 
 repositories {
   mavenCentral()

@@ -1,20 +1,20 @@
 @file:Suppress("NOTHING_TO_INLINE")
 @file:JvmName("KotlinExtensions")
 
-package com.apollographql.apollo.rx2
+package com.apollographql.apollo3.rx2
 
-import com.apollographql.apollo.ApolloCall
-import com.apollographql.apollo.ApolloClient
-import com.apollographql.apollo.ApolloMutationCall
-import com.apollographql.apollo.ApolloPrefetch
-import com.apollographql.apollo.ApolloQueryCall
-import com.apollographql.apollo.ApolloQueryWatcher
-import com.apollographql.apollo.ApolloSubscriptionCall
-import com.apollographql.apollo.api.Mutation
-import com.apollographql.apollo.api.Operation
-import com.apollographql.apollo.api.Query
-import com.apollographql.apollo.api.Response
-import com.apollographql.apollo.api.Subscription
+import com.apollographql.apollo3.ApolloCall
+import com.apollographql.apollo3.ApolloClient
+import com.apollographql.apollo3.ApolloMutationCall
+import com.apollographql.apollo3.ApolloPrefetch
+import com.apollographql.apollo3.ApolloQueryCall
+import com.apollographql.apollo3.ApolloQueryWatcher
+import com.apollographql.apollo3.ApolloSubscriptionCall
+import com.apollographql.apollo3.api.Mutation
+import com.apollographql.apollo3.api.Operation
+import com.apollographql.apollo3.api.Query
+import com.apollographql.apollo3.api.Response
+import com.apollographql.apollo3.api.Subscription
 import io.reactivex.BackpressureStrategy
 import io.reactivex.Completable
 import io.reactivex.Flowable
@@ -47,7 +47,7 @@ inline fun <D : Operation.Data> ApolloSubscriptionCall<D>.rx(
  * Creates a new [ApolloQueryCall] call and then converts it to an [Observable].
  *
  * The number of emissions this Observable will have is based on the
- * [com.apollographql.apollo.fetcher.ResponseFetcher] used with the call.
+ * [com.apollographql.apollo3.fetcher.ResponseFetcher] used with the call.
  */
 @JvmSynthetic
 @CheckReturnValue
@@ -69,7 +69,7 @@ inline fun <D : Operation.Data> ApolloClient.rxMutate(
 /**
  * Creates a new [ApolloMutationCall] call and then converts it to a [Single].
  *
- * Provided optimistic updates will be stored in [com.apollographql.apollo.cache.normalized.ApolloStore]
+ * Provided optimistic updates will be stored in [com.apollographql.apollo3.cache.normalized.ApolloStore]
  * immediately before mutation execution. Any [ApolloQueryWatcher] dependent on the changed cache records will
  * be re-fetched.
  */

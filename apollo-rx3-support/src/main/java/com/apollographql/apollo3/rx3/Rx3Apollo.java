@@ -1,14 +1,14 @@
-package com.apollographql.apollo.rx3;
+package com.apollographql.apollo3.rx3;
 
-import com.apollographql.apollo.ApolloCall;
-import com.apollographql.apollo.ApolloPrefetch;
-import com.apollographql.apollo.ApolloQueryWatcher;
-import com.apollographql.apollo.ApolloSubscriptionCall;
-import com.apollographql.apollo.api.Operation;
-import com.apollographql.apollo.api.Response;
-import com.apollographql.apollo.exception.ApolloException;
-import com.apollographql.apollo.internal.subscription.ApolloSubscriptionTerminatedException;
-import com.apollographql.apollo.internal.util.Cancelable;
+import com.apollographql.apollo3.ApolloCall;
+import com.apollographql.apollo3.ApolloPrefetch;
+import com.apollographql.apollo3.ApolloQueryWatcher;
+import com.apollographql.apollo3.ApolloSubscriptionCall;
+import com.apollographql.apollo3.api.Operation;
+import com.apollographql.apollo3.api.Response;
+import com.apollographql.apollo3.exception.ApolloException;
+import com.apollographql.apollo3.internal.subscription.ApolloSubscriptionTerminatedException;
+import com.apollographql.apollo3.internal.util.Cancelable;
 import io.reactivex.rxjava3.annotations.CheckReturnValue;
 import io.reactivex.rxjava3.core.BackpressureStrategy;
 import io.reactivex.rxjava3.core.Completable;
@@ -24,7 +24,7 @@ import io.reactivex.rxjava3.disposables.Disposable;
 import io.reactivex.rxjava3.exceptions.Exceptions;
 import org.jetbrains.annotations.NotNull;
 
-import static com.apollographql.apollo.api.internal.Utils.checkNotNull;
+import static com.apollographql.apollo3.api.internal.Utils.checkNotNull;
 
 /**
  * The Rx3Apollo class provides methods for converting ApolloCall, ApolloPrefetch and ApolloWatcher types to RxJava 3
@@ -73,7 +73,7 @@ public class Rx3Apollo {
 
   /**
    * Converts an {@link ApolloCall} to an {@link Observable}. The number of emissions this Observable will have is based
-   * on the {@link com.apollographql.apollo.fetcher.ResponseFetcher} used with the call.
+   * on the {@link com.apollographql.apollo3.fetcher.ResponseFetcher} used with the call.
    *
    * @param call the ApolloCall to convert
    * @param <D>  the value type.

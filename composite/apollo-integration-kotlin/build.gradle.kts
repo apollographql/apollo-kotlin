@@ -1,7 +1,7 @@
-import com.apollographql.apollo.gradle.api.kotlinMultiplatformExtension
+import com.apollographql.apollo3.gradle.api.kotlinMultiplatformExtension
 
 plugins {
-  id("com.apollographql.apollo")
+  id("com.apollographql.apollo3")
   id("net.mbonnin.one.eight")
   kotlin("multiplatform")
 }
@@ -29,11 +29,11 @@ kotlin {
 
     val commonTest by getting {
       dependencies {
-        implementation("com.apollographql.apollo:apollo-api")
-        implementation("com.apollographql.apollo:apollo-runtime-kotlin")
-        implementation("com.apollographql.apollo:apollo-normalized-cache")
-        implementation("com.apollographql.apollo:apollo-cache-interceptor")
-        implementation("com.apollographql.apollo:apollo-testing-support")
+        implementation("com.apollographql.apollo3:apollo-api")
+        implementation("com.apollographql.apollo3:apollo-runtime-kotlin")
+        implementation("com.apollographql.apollo3:apollo-normalized-cache")
+        implementation("com.apollographql.apollo3:apollo-cache-interceptor")
+        implementation("com.apollographql.apollo3:apollo-testing-support")
         api(groovy.util.Eval.x(project, "x.dep.kotlin.coroutines"))
         implementation(kotlin("test-common"))
         implementation(kotlin("test-annotations-common"))
@@ -52,8 +52,8 @@ kotlin {
 
 apollo {
   service("default")  {
-    schemaFile.set(file("../../apollo-integration/src/main/graphql/com/apollographql/apollo/integration/normalizer/schema.sdl"))
-    addGraphqlDirectory(file("../../apollo-integration/src/main/graphql/com/apollographql/apollo/integration/normalizer/"))
+    schemaFile.set(file("../../apollo-integration/src/main/graphql/com/apollographql/apollo3/integration/normalizer/schema.sdl"))
+    addGraphqlDirectory(file("../../apollo-integration/src/main/graphql/com/apollographql/apollo3/integration/normalizer/"))
     withOutputDir {
       val kotlinMultiplatformExtension = project.kotlinMultiplatformExtension!!
 

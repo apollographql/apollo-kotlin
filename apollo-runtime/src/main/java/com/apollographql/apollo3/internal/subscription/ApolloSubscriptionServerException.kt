@@ -1,4 +1,4 @@
-package com.apollographql.apollo.internal.subscription
+package com.apollographql.apollo3.internal.subscription
 
 import java.util.Collections
 

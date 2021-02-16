@@ -1,6 +1,6 @@
-package com.apollographql.apollo.api.internal
+package com.apollographql.apollo3.api.internal
 
-import com.apollographql.apollo.api.CustomScalar
+import com.apollographql.apollo3.api.CustomScalar
 import okio.IOException
 import kotlin.jvm.JvmSynthetic
 

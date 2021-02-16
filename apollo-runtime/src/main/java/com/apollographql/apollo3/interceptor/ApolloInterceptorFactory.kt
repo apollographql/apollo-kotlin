@@ -1,7 +1,7 @@
-package com.apollographql.apollo.interceptor
+package com.apollographql.apollo3.interceptor
 
-import com.apollographql.apollo.api.Operation
-import com.apollographql.apollo.api.internal.ApolloLogger
+import com.apollographql.apollo3.api.Operation
+import com.apollographql.apollo3.api.internal.ApolloLogger
 
 interface ApolloInterceptorFactory {
   /**

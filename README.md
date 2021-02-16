@@ -5,8 +5,8 @@
 [![Join Spectrum](https://img.shields.io/badge/spectrum-join-orange?logo=spectrum)](https://spectrum.chat/apollo/apollo-android) 
 [![Slack](https://img.shields.io/static/v1?label=kotlinlang&message=apollo-android&color=15a2f5&logo=slack)](https://app.slack.com/client/T09229ZC6/C01A6KM1SBZ)
 [![CI](https://github.com/apollographql/apollo-android/workflows/CI/badge.svg)](https://github.com/apollographql/apollo-android/actions)
-[![Maven Central](https://img.shields.io/maven-central/v/com.apollographql.apollo/apollo-api)](https://repo1.maven.org/maven2/com/apollographql/apollo/)
-[![OSS Snapshots](https://img.shields.io/nexus/s/com.apollographql.apollo/apollo-api?server=https%3A%2F%2Foss.sonatype.org&label=oss-snapshots)](https://oss.sonatype.org/content/repositories/snapshots/com/apollographql/apollo/)
+[![Maven Central](https://img.shields.io/maven-central/v/com.apollographql.apollo3/apollo-api)](https://repo1.maven.org/maven2/com/apollographql/apollo3/)
+[![OSS Snapshots](https://img.shields.io/nexus/s/com.apollographql.apollo3/apollo-api?server=https%3A%2F%2Foss.sonatype.org&label=oss-snapshots)](https://oss.sonatype.org/content/repositories/snapshots/com/apollographql/apollo3/)
 
 Apollo Android is a GraphQL client that generates Java and Kotlin models from GraphQL queries. These models give you a type-safe API to work with GraphQL servers.  Apollo helps you keep your GraphQL query statements together, organized, and easy to access. 
 
@@ -44,16 +44,16 @@ The [JS Graphql IntelliJ Plugin](https://jimkyndemeyer.github.io/js-graphql-inte
 
 ## Releases
 
-The latest version is [![Maven Central](https://img.shields.io/maven-central/v/com.apollographql.apollo/apollo-api)](https://repo1.maven.org/maven2/com/apollographql/apollo/)
+The latest version is [![Maven Central](https://img.shields.io/maven-central/v/com.apollographql.apollo3/apollo-api)](https://repo1.maven.org/maven2/com/apollographql/apollo3/)
 
 Check the [changelog](https://github.com/apollographql/apollo-android/releases) for the release history. 
 
-Releases are hosted on [Jcenter](https://jcenter.bintray.com/com/apollographql/apollo/) and [Maven Central](https://repo1.maven.org/maven2/com/apollographql/apollo/). The plugin is additionally hosted on the [Gradle Plugin Portal](https://plugins.gradle.org/plugin/com.apollographql.apollo) 
+Releases are hosted on [Jcenter](https://jcenter.bintray.com/com/apollographql/apollo3/) and [Maven Central](https://repo1.maven.org/maven2/com/apollographql/apollo3/). The plugin is additionally hosted on the [Gradle Plugin Portal](https://plugins.gradle.org/plugin/com.apollographql.apollo3) 
 
 
 ```groovy:title=build.gradle.kts
 plugins {
-  id("com.apollographql.apollo").version("x.y.z")
+  id("com.apollographql.apollo3").version("x.y.z")
 }
 
 repositories {
@@ -61,19 +61,19 @@ repositories {
 }
 
 dependencies {
-  implementation("com.apollographql.apollo:apollo-runtime:x.y.z")
+  implementation("com.apollographql.apollo3:apollo-runtime:x.y.z")
 
   // optional: if you want to use the normalized cache
-  implementation("com.apollographql.apollo:apollo-normalized-cache-sqlite:x.y.z")
+  implementation("com.apollographql.apollo3:apollo-normalized-cache-sqlite:x.y.z")
   // optional: for coroutines support
-  implementation("com.apollographql.apollo:apollo-coroutines-support:x.y.z")
+  implementation("com.apollographql.apollo3:apollo-coroutines-support:x.y.z")
   // optional: for RxJava3 support  
-  implementation("com.apollographql.apollo:apollo-rx3-support:x.y.z")
+  implementation("com.apollographql.apollo3:apollo-rx3-support:x.y.z")
   // optional: Most of apollo-android does not depend on Android in practice and runs on any JVM or on Kotlin native. apollo-android-support contains a few Android-only helper classes. For an example to send logs to logcat or run callbacks on the main thread.
-  implementation("com.apollographql.apollo:apollo-android-support:x.y.z")
+  implementation("com.apollographql.apollo3:apollo-android-support:x.y.z")
   // optional: if you just want the generated models and parsers and write your own HTTP code/cache code, you can remove apollo-runtime
   // and use apollo-api instead  
-  implementation("com.apollographql.apollo:apollo-api:x.y.z")
+  implementation("com.apollographql.apollo3:apollo-api:x.y.z")
 }
 ```
 

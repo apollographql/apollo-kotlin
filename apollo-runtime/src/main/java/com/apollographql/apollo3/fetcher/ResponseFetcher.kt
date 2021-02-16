@@ -1,11 +1,11 @@
-package com.apollographql.apollo.fetcher
+package com.apollographql.apollo3.fetcher
 
-import com.apollographql.apollo.api.internal.ApolloLogger
-import com.apollographql.apollo.interceptor.ApolloInterceptor
+import com.apollographql.apollo3.api.internal.ApolloLogger
+import com.apollographql.apollo3.interceptor.ApolloInterceptor
 
 /**
  * A ResponseFetcher is an [ApolloInterceptor] inserted at the beginning of a request chain.
- * It can control how a request is fetched by configuring [com.apollographql.apollo.interceptor.FetchOptions].
+ * It can control how a request is fetched by configuring [com.apollographql.apollo3.interceptor.FetchOptions].
  *
  * See [ApolloResponseFetchers] for a basic set of fetchers.
  */

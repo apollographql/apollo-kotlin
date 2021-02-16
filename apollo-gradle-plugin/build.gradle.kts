@@ -6,7 +6,7 @@ plugins {
 
 
 metalava {
-  hiddenPackages += setOf("com.apollographql.apollo.gradle.internal")
+  hiddenPackages += setOf("com.apollographql.apollo3.gradle.internal")
 }
 
 dependencies {
@@ -45,10 +45,10 @@ pluginBundle {
 gradlePlugin {
   plugins {
     create("apolloGradlePlugin") {
-      id = "com.apollographql.apollo"
+      id = "com.apollographql.apollo3"
       displayName = "Apollo Android GraphQL client plugin."
       description = "Automatically generates typesafe java and kotlin models from your GraphQL files."
-      implementationClass = "com.apollographql.apollo.gradle.internal.ApolloPlugin"
+      implementationClass = "com.apollographql.apollo3.gradle.internal.ApolloPlugin"
     }
   }
 }

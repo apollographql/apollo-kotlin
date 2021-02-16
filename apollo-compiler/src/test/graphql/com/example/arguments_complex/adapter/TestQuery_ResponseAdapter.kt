@@ -5,14 +5,14 @@
 //
 package com.example.arguments_complex.adapter
 
-import com.apollographql.apollo.api.ResponseAdapterCache
-import com.apollographql.apollo.api.ResponseField
-import com.apollographql.apollo.api.internal.NullableResponseAdapter
-import com.apollographql.apollo.api.internal.ResponseAdapter
-import com.apollographql.apollo.api.internal.doubleResponseAdapter
-import com.apollographql.apollo.api.internal.json.JsonReader
-import com.apollographql.apollo.api.internal.json.JsonWriter
-import com.apollographql.apollo.api.internal.stringResponseAdapter
+import com.apollographql.apollo3.api.ResponseAdapterCache
+import com.apollographql.apollo3.api.ResponseField
+import com.apollographql.apollo3.api.internal.NullableResponseAdapter
+import com.apollographql.apollo3.api.internal.ResponseAdapter
+import com.apollographql.apollo3.api.internal.doubleResponseAdapter
+import com.apollographql.apollo3.api.internal.json.JsonReader
+import com.apollographql.apollo3.api.internal.json.JsonWriter
+import com.apollographql.apollo3.api.internal.stringResponseAdapter
 import com.example.arguments_complex.TestQuery
 import kotlin.Array
 import kotlin.Double

@@ -1,20 +1,20 @@
-package com.apollographql.apollo
+package com.apollographql.apollo3
 
-import com.apollographql.apollo.api.ApolloExperimental
-import com.apollographql.apollo.api.CustomScalarAdapter
-import com.apollographql.apollo.api.ExecutionContext
-import com.apollographql.apollo.api.Mutation
-import com.apollographql.apollo.api.Operation
-import com.apollographql.apollo.api.Query
-import com.apollographql.apollo.api.CustomScalar
-import com.apollographql.apollo.api.ResponseAdapterCache
-import com.apollographql.apollo.api.Subscription
-import com.apollographql.apollo.dispatcher.ApolloCoroutineDispatcherContext
-import com.apollographql.apollo.interceptor.ApolloRequestInterceptor
-import com.apollographql.apollo.interceptor.NetworkRequestInterceptor
-import com.apollographql.apollo.internal.RealApolloCall
-import com.apollographql.apollo.network.NetworkTransport
-import com.apollographql.apollo.network.http.ApolloHttpNetworkTransport
+import com.apollographql.apollo3.api.ApolloExperimental
+import com.apollographql.apollo3.api.CustomScalarAdapter
+import com.apollographql.apollo3.api.ExecutionContext
+import com.apollographql.apollo3.api.Mutation
+import com.apollographql.apollo3.api.Operation
+import com.apollographql.apollo3.api.Query
+import com.apollographql.apollo3.api.CustomScalar
+import com.apollographql.apollo3.api.ResponseAdapterCache
+import com.apollographql.apollo3.api.Subscription
+import com.apollographql.apollo3.dispatcher.ApolloCoroutineDispatcherContext
+import com.apollographql.apollo3.interceptor.ApolloRequestInterceptor
+import com.apollographql.apollo3.interceptor.NetworkRequestInterceptor
+import com.apollographql.apollo3.internal.RealApolloCall
+import com.apollographql.apollo3.network.NetworkTransport
+import com.apollographql.apollo3.network.http.ApolloHttpNetworkTransport
 import kotlinx.coroutines.Dispatchers
 
 /**

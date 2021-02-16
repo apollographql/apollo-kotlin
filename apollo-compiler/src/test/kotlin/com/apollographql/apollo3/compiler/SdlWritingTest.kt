@@ -1,7 +1,7 @@
-package com.apollographql.apollo.compiler
+package com.apollographql.apollo3.compiler
 
-import com.apollographql.apollo.compiler.frontend.GraphQLParser
-import com.apollographql.apollo.compiler.frontend.toFile
+import com.apollographql.apollo3.compiler.frontend.GraphQLParser
+import com.apollographql.apollo3.compiler.frontend.toFile
 import org.junit.Assert
 import org.junit.Test
 import java.io.File
@@ -44,7 +44,7 @@ class SdlWritingTest {
     when {
       clazz.isPrimitive -> return if (a != b) path else null
       a is String || a is Int || a is Boolean || a is Double ->return if (a != b) path else null
-      !clazz.`package`.name.startsWith("com.apollographql.apollo.compiler.frontend.gql") -> {
+      !clazz.`package`.name.startsWith("com.apollographql.apollo3.compiler.frontend.gql") -> {
         // don't compare classes outside of our control
         // espectially since Int has circular references
         return null

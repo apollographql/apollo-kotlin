@@ -1,13 +1,13 @@
-package com.apollographql.apollo.internal
+package com.apollographql.apollo3.internal
 
-import com.apollographql.apollo.ApolloClient
-import com.apollographql.apollo.api.ResponseAdapterCache
-import com.apollographql.apollo.api.Operation
-import com.apollographql.apollo.api.Query
-import com.apollographql.apollo.api.ResponseField
-import com.apollographql.apollo.api.cache.http.HttpCachePolicy
-import com.apollographql.apollo.api.cache.http.HttpCachePolicy.FetchStrategy
-import com.apollographql.apollo.fetcher.ApolloResponseFetchers
+import com.apollographql.apollo3.ApolloClient
+import com.apollographql.apollo3.api.ResponseAdapterCache
+import com.apollographql.apollo3.api.Operation
+import com.apollographql.apollo3.api.Query
+import com.apollographql.apollo3.api.ResponseField
+import com.apollographql.apollo3.api.cache.http.HttpCachePolicy
+import com.apollographql.apollo3.api.cache.http.HttpCachePolicy.FetchStrategy
+import com.apollographql.apollo3.fetcher.ApolloResponseFetchers
 import com.google.common.truth.Truth
 import okhttp3.OkHttpClient
 import org.junit.Test

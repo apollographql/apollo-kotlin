@@ -1,4 +1,4 @@
-package com.apollographql.apollo.api
+package com.apollographql.apollo3.api
 
 // BigDecimal cannot subclass `Number` in JS, as it will cause runtime trap in any compiled Kotlin/JS product in the module initialization
 // script.

@@ -1,4 +1,4 @@
-package com.apollographql.apollo.api
+package com.apollographql.apollo3.api
 
 import platform.Foundation.NSDecimalNumber
 

@@ -1,4 +1,4 @@
-package com.apollographql.apollo.gradle.util
+package com.apollographql.apollo3.gradle.util
 
 
 import org.gradle.testkit.runner.BuildResult
@@ -18,7 +18,7 @@ object TestUtils {
   val androidLibraryPlugin = Plugin(id = "com.android.library", artifact = "android.plugin")
   val kotlinJvmPlugin = Plugin(id = "org.jetbrains.kotlin.jvm", artifact = "kotlin.plugin")
   val kotlinAndroidPlugin = Plugin(id = "org.jetbrains.kotlin.android", artifact = "kotlin.plugin")
-  val apolloPlugin = Plugin(id = "com.apollographql.apollo", artifact = "apollo.plugin")
+  val apolloPlugin = Plugin(id = "com.apollographql.apollo3", artifact = "apollo.plugin")
   val apolloPluginAndroid = Plugin(id = "com.apollographql.android", artifact = "apollo.plugin")
 
 

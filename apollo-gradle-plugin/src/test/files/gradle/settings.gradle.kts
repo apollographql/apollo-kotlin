@@ -17,7 +17,7 @@ pluginManagement {
         useModule(groovy.util.Eval.x(extra, "x.dep.kotlin.plugin"))
       }
 
-      if (requested.id.id == "com.apollographql.apollo") {
+      if (requested.id.id == "com.apollographql.apollo3") {
         useModule(groovy.util.Eval.x(extra, "x.dep.apollo.plugin"))
       }
     }

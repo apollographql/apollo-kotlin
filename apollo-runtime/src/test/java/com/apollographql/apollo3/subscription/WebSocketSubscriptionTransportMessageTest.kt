@@ -1,6 +1,6 @@
-package com.apollographql.apollo.subscription
+package com.apollographql.apollo3.subscription
 
-import com.apollographql.apollo.api.ResponseAdapterCache
+import com.apollographql.apollo3.api.ResponseAdapterCache
 import com.google.common.truth.Truth.assertThat
 import okhttp3.Protocol
 import okhttp3.Request

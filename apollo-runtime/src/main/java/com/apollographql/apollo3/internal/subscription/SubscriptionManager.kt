@@ -1,9 +1,9 @@
-package com.apollographql.apollo.internal.subscription
+package com.apollographql.apollo3.internal.subscription
 
-import com.apollographql.apollo.api.Operation
-import com.apollographql.apollo.api.Subscription
-import com.apollographql.apollo.subscription.OnSubscriptionManagerStateChangeListener
-import com.apollographql.apollo.subscription.SubscriptionManagerState
+import com.apollographql.apollo3.api.Operation
+import com.apollographql.apollo3.api.Subscription
+import com.apollographql.apollo3.subscription.OnSubscriptionManagerStateChangeListener
+import com.apollographql.apollo3.subscription.SubscriptionManagerState
 
 interface SubscriptionManager {
   /**

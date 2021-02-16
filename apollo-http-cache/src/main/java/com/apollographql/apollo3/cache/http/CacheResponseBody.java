@@ -1,4 +1,4 @@
-package com.apollographql.apollo.cache.http;
+package com.apollographql.apollo3.cache.http;
 
 import okhttp3.MediaType;
 import okhttp3.ResponseBody;

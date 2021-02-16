@@ -1,11 +1,11 @@
-package com.apollographql.apollo.gradle.internal
+package com.apollographql.apollo3.gradle.internal
 
-import com.apollographql.apollo.compiler.OperationIdGenerator
-import com.apollographql.apollo.compiler.OperationOutputGenerator
-import com.apollographql.apollo.gradle.api.Introspection
-import com.apollographql.apollo.gradle.api.Registry
-import com.apollographql.apollo.gradle.api.Service
-import com.apollographql.apollo.gradle.internal.DefaultApolloExtension.Companion.MIN_GRADLE_VERSION
+import com.apollographql.apollo3.compiler.OperationIdGenerator
+import com.apollographql.apollo3.compiler.OperationOutputGenerator
+import com.apollographql.apollo3.gradle.api.Introspection
+import com.apollographql.apollo3.gradle.api.Registry
+import com.apollographql.apollo3.gradle.api.Service
+import com.apollographql.apollo3.gradle.internal.DefaultApolloExtension.Companion.MIN_GRADLE_VERSION
 import org.gradle.api.Action
 import org.gradle.api.Project
 import org.gradle.api.file.Directory

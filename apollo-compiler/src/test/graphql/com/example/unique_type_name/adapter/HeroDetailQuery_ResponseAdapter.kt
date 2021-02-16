@@ -5,16 +5,16 @@
 //
 package com.example.unique_type_name.adapter
 
-import com.apollographql.apollo.api.ResponseAdapterCache
-import com.apollographql.apollo.api.ResponseField
-import com.apollographql.apollo.api.internal.ListResponseAdapter
-import com.apollographql.apollo.api.internal.NullableResponseAdapter
-import com.apollographql.apollo.api.internal.ResponseAdapter
-import com.apollographql.apollo.api.internal.doubleResponseAdapter
-import com.apollographql.apollo.api.internal.intResponseAdapter
-import com.apollographql.apollo.api.internal.json.JsonReader
-import com.apollographql.apollo.api.internal.json.JsonWriter
-import com.apollographql.apollo.api.internal.stringResponseAdapter
+import com.apollographql.apollo3.api.ResponseAdapterCache
+import com.apollographql.apollo3.api.ResponseField
+import com.apollographql.apollo3.api.internal.ListResponseAdapter
+import com.apollographql.apollo3.api.internal.NullableResponseAdapter
+import com.apollographql.apollo3.api.internal.ResponseAdapter
+import com.apollographql.apollo3.api.internal.doubleResponseAdapter
+import com.apollographql.apollo3.api.internal.intResponseAdapter
+import com.apollographql.apollo3.api.internal.json.JsonReader
+import com.apollographql.apollo3.api.internal.json.JsonWriter
+import com.apollographql.apollo3.api.internal.stringResponseAdapter
 import com.example.unique_type_name.HeroDetailQuery
 import com.example.unique_type_name.type.Episode
 import com.example.unique_type_name.type.Episode_ResponseAdapter

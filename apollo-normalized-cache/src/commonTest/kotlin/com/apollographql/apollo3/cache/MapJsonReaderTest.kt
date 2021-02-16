@@ -1,6 +1,6 @@
-package com.apollographql.apollo.cache
+package com.apollographql.apollo3.cache
 
-import com.apollographql.apollo.api.internal.MapJsonReader
+import com.apollographql.apollo3.api.internal.MapJsonReader
 import kotlin.test.Test
 import kotlin.test.assertEquals
 

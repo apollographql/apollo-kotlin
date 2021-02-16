@@ -1,4 +1,4 @@
-package com.apollographql.apollo.internal
+package com.apollographql.apollo3.internal
 
 enum class CallState {
   IDLE, ACTIVE, TERMINATED, CANCELED;

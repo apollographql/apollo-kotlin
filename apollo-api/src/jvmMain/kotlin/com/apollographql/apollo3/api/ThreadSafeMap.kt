@@ -1,4 +1,4 @@
-package com.apollographql.apollo.api
+package com.apollographql.apollo3.api
 
 actual class ThreadSafeMap<K, V> {
   private val map = mutableMapOf<K, V>()

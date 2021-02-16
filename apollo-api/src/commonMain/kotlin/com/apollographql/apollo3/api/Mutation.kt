@@ -1,4 +1,4 @@
-package com.apollographql.apollo.api
+package com.apollographql.apollo3.api
 
 /**
  * Represents a GraphQL mutation operation that will be sent to the server.

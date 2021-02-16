@@ -5,14 +5,14 @@
 //
 package com.example.antlr_tokens
 
-import com.apollographql.apollo.api.Input
-import com.apollographql.apollo.api.Operation
-import com.apollographql.apollo.api.Query
-import com.apollographql.apollo.api.ResponseAdapterCache
-import com.apollographql.apollo.api.ResponseField
-import com.apollographql.apollo.api.internal.InputFieldMarshaller
-import com.apollographql.apollo.api.internal.QueryDocumentMinifier
-import com.apollographql.apollo.api.internal.ResponseAdapter
+import com.apollographql.apollo3.api.Input
+import com.apollographql.apollo3.api.Operation
+import com.apollographql.apollo3.api.Query
+import com.apollographql.apollo3.api.ResponseAdapterCache
+import com.apollographql.apollo3.api.ResponseField
+import com.apollographql.apollo3.api.internal.InputFieldMarshaller
+import com.apollographql.apollo3.api.internal.QueryDocumentMinifier
+import com.apollographql.apollo3.api.internal.ResponseAdapter
 import com.example.antlr_tokens.adapter.TestQuery_ResponseAdapter
 import kotlin.Any
 import kotlin.String

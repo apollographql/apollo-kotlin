@@ -1,4 +1,4 @@
-package com.apollographql.apollo.api.cache.http
+package com.apollographql.apollo3.api.cache.http
 
 import okhttp3.Interceptor
 import okhttp3.Response

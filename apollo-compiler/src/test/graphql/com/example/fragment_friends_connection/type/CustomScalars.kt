@@ -5,7 +5,7 @@
 //
 package com.example.fragment_friends_connection.type
 
-import com.apollographql.apollo.api.CustomScalar
+import com.apollographql.apollo3.api.CustomScalar
 
 /**
  * Auto generated constants for custom scalars. Use them to register your [CustomScalarAdapter]s

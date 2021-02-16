@@ -1,4 +1,4 @@
-package com.apollographql.apollo.network.mock
+package com.apollographql.apollo3.network.mock
 
 import platform.Foundation.NSData
 import platform.Foundation.NSError

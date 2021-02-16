@@ -1,4 +1,4 @@
-package com.apollographql.apollo.compiler
+package com.apollographql.apollo3.compiler
 
 import com.tschuchort.compiletesting.KotlinCompilation
 import com.tschuchort.compiletesting.SourceFile

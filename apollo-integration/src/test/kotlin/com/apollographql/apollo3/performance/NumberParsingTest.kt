@@ -1,9 +1,9 @@
-package com.apollographql.apollo.performance
+package com.apollographql.apollo3.performance
 
-import com.apollographql.apollo.api.parse
-import com.apollographql.apollo.api.internal.json.JsonWriter
-import com.apollographql.apollo.integration.performance.GetFloatsQuery
-import com.apollographql.apollo.integration.performance.GetIntsQuery
+import com.apollographql.apollo3.api.parse
+import com.apollographql.apollo3.api.internal.json.JsonWriter
+import com.apollographql.apollo3.integration.performance.GetFloatsQuery
+import com.apollographql.apollo3.integration.performance.GetIntsQuery
 import okio.Buffer
 import okio.ByteString
 import kotlin.random.Random

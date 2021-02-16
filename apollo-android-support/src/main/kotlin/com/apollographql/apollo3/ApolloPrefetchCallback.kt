@@ -1,9 +1,9 @@
-package com.apollographql.apollo
+package com.apollographql.apollo3
 
 import android.os.Handler
-import com.apollographql.apollo.exception.ApolloException
-import com.apollographql.apollo.exception.ApolloHttpException
-import com.apollographql.apollo.exception.ApolloNetworkException
+import com.apollographql.apollo3.exception.ApolloException
+import com.apollographql.apollo3.exception.ApolloHttpException
+import com.apollographql.apollo3.exception.ApolloNetworkException
 
 /**
  * Android wrapper for [ApolloPrefetch.Callback] to be operated on specified [Handler]

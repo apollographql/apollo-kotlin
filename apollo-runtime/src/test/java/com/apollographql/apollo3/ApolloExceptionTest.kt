@@ -1,14 +1,14 @@
-package com.apollographql.apollo
+package com.apollographql.apollo3
 
-import com.apollographql.apollo.api.ResponseAdapterCache
-import com.apollographql.apollo.api.Operation
-import com.apollographql.apollo.api.Query
-import com.apollographql.apollo.api.ResponseField
-import com.apollographql.apollo.api.internal.json.JsonEncodingException
-import com.apollographql.apollo.exception.ApolloHttpException
-import com.apollographql.apollo.exception.ApolloNetworkException
-import com.apollographql.apollo.exception.ApolloParseException
-import com.apollographql.apollo.rx2.Rx2Apollo
+import com.apollographql.apollo3.api.ResponseAdapterCache
+import com.apollographql.apollo3.api.Operation
+import com.apollographql.apollo3.api.Query
+import com.apollographql.apollo3.api.ResponseField
+import com.apollographql.apollo3.api.internal.json.JsonEncodingException
+import com.apollographql.apollo3.exception.ApolloHttpException
+import com.apollographql.apollo3.exception.ApolloNetworkException
+import com.apollographql.apollo3.exception.ApolloParseException
+import com.apollographql.apollo3.rx2.Rx2Apollo
 import com.google.common.truth.Truth.assertThat
 import okhttp3.OkHttpClient
 import okhttp3.mockwebserver.MockResponse

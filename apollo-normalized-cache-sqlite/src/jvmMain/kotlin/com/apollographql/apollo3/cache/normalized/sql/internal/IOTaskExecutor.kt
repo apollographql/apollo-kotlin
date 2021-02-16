@@ -1,4 +1,4 @@
-package com.apollographql.apollo.cache.normalized.sql.internal
+package com.apollographql.apollo3.cache.normalized.sql.internal
 
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext

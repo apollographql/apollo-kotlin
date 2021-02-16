@@ -22,7 +22,7 @@ buildscript {
 
 // ADD PLUGINS HERE
 // apply plugin: 'com.android.library'
-// apply plugin: 'com.apollographql.apollo'
+// apply plugin: 'com.apollographql.apollo3'
 
 repositories {
   maven {

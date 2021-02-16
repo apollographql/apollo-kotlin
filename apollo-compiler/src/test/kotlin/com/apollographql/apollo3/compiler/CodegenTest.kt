@@ -1,7 +1,7 @@
-package com.apollographql.apollo.compiler
+package com.apollographql.apollo3.compiler
 
-import com.apollographql.apollo.compiler.TestUtils.checkTestFixture
-import com.apollographql.apollo.compiler.TestUtils.shouldUpdateTestFixtures
+import com.apollographql.apollo3.compiler.TestUtils.checkTestFixture
+import com.apollographql.apollo3.compiler.TestUtils.shouldUpdateTestFixtures
 import org.junit.AfterClass
 import org.junit.Test
 import org.junit.runner.RunWith

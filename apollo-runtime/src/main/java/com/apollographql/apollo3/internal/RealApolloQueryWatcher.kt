@@ -1,23 +1,23 @@
-package com.apollographql.apollo.internal
+package com.apollographql.apollo3.internal
 
-import com.apollographql.apollo.ApolloCall
-import com.apollographql.apollo.ApolloQueryWatcher
-import com.apollographql.apollo.api.ResponseAdapterCache
-import com.apollographql.apollo.api.Operation
-import com.apollographql.apollo.api.Response
-import com.apollographql.apollo.api.internal.ApolloLogger
-import com.apollographql.apollo.api.internal.Optional
-import com.apollographql.apollo.cache.normalized.ApolloStore
-import com.apollographql.apollo.cache.normalized.ApolloStore.RecordChangeSubscriber
-import com.apollographql.apollo.cache.normalized.Record
-import com.apollographql.apollo.cache.normalized.internal.dependentKeys
-import com.apollographql.apollo.exception.ApolloCanceledException
-import com.apollographql.apollo.exception.ApolloException
-import com.apollographql.apollo.exception.ApolloHttpException
-import com.apollographql.apollo.exception.ApolloNetworkException
-import com.apollographql.apollo.exception.ApolloParseException
-import com.apollographql.apollo.fetcher.ResponseFetcher
-import com.apollographql.apollo.internal.CallState.IllegalStateMessage.Companion.forCurrentState
+import com.apollographql.apollo3.ApolloCall
+import com.apollographql.apollo3.ApolloQueryWatcher
+import com.apollographql.apollo3.api.ResponseAdapterCache
+import com.apollographql.apollo3.api.Operation
+import com.apollographql.apollo3.api.Response
+import com.apollographql.apollo3.api.internal.ApolloLogger
+import com.apollographql.apollo3.api.internal.Optional
+import com.apollographql.apollo3.cache.normalized.ApolloStore
+import com.apollographql.apollo3.cache.normalized.ApolloStore.RecordChangeSubscriber
+import com.apollographql.apollo3.cache.normalized.Record
+import com.apollographql.apollo3.cache.normalized.internal.dependentKeys
+import com.apollographql.apollo3.exception.ApolloCanceledException
+import com.apollographql.apollo3.exception.ApolloException
+import com.apollographql.apollo3.exception.ApolloHttpException
+import com.apollographql.apollo3.exception.ApolloNetworkException
+import com.apollographql.apollo3.exception.ApolloParseException
+import com.apollographql.apollo3.fetcher.ResponseFetcher
+import com.apollographql.apollo3.internal.CallState.IllegalStateMessage.Companion.forCurrentState
 import java.util.concurrent.atomic.AtomicReference
 
 class RealApolloQueryWatcher<D : Operation.Data>(

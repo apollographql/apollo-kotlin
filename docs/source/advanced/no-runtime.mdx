@@ -7,10 +7,10 @@ import {MultiCodeBlock} from 'gatsby-theme-apollo-docs';
 
 `apollo-runtime` and `ApolloClient` provides support for doing the network requests and interacting with the cache but you can use the generated queries without the runtime if you want.
 
-For this, remove the `com.apollographql.apollo:apollo-runtime`dependency and replace it with:
+For this, remove the `com.apollographql.apollo3:apollo-runtime`dependency and replace it with:
 
 ```kotlin:title=build.gradle
-implementation("com.apollographql.apollo:apollo-api:x.y.z")
+implementation("com.apollographql.apollo3:apollo-api:x.y.z")
 ```
 
 ## Composing HTTP request body
@@ -36,7 +36,7 @@ okhttp3.RequestBody requestBody = RequestBody.create(mediaType, payload);
 </MultiCodeBlock>
 
 If GraphQL operation defines any variable with custom scalar type, you must provide properly configured instance of
-`com.apollographql.apollo.response.ScalarTypeAdapters`:
+`com.apollographql.apollo3.response.ScalarTypeAdapters`:
 
 ```java
 ScalarTypeAdapters scalarTypeAdapters = new ScalarTypeAdapters(<provide your custom scalar type adapters>);
@@ -72,7 +72,7 @@ okhttp3.Response httpResponse = ...;
 Response<Operation.Data> response = new Query().parse(httpResponse.body().source());
 ```
 
-If you do have custom GraphQL scalar types, pass properly configured instance of `com.apollographql.apollo.response.ScalarTypeAdapters`:
+If you do have custom GraphQL scalar types, pass properly configured instance of `com.apollographql.apollo3.response.ScalarTypeAdapters`:
 
 ```java
 okhttp3.Response httpResponse = ...;

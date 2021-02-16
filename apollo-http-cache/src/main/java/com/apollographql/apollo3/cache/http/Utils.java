@@ -1,7 +1,7 @@
-package com.apollographql.apollo.cache.http;
+package com.apollographql.apollo3.cache.http;
 
-import com.apollographql.apollo.api.cache.http.HttpCachePolicy;
-import com.apollographql.apollo.cache.http.internal.HttpDate;
+import com.apollographql.apollo3.api.cache.http.HttpCachePolicy;
+import com.apollographql.apollo3.cache.http.internal.HttpDate;
 import java.io.Closeable;
 import java.io.IOException;
 import java.io.InterruptedIOException;
@@ -22,13 +22,13 @@ import okio.Okio;
 import okio.Sink;
 import okio.Source;
 
-import static com.apollographql.apollo.api.cache.http.HttpCache.CACHE_DO_NOT_STORE;
-import static com.apollographql.apollo.api.cache.http.HttpCache.CACHE_EXPIRE_AFTER_READ_HEADER;
-import static com.apollographql.apollo.api.cache.http.HttpCache.CACHE_EXPIRE_TIMEOUT_HEADER;
-import static com.apollographql.apollo.api.cache.http.HttpCache.CACHE_FETCH_STRATEGY_HEADER;
-import static com.apollographql.apollo.api.cache.http.HttpCache.CACHE_KEY_HEADER;
-import static com.apollographql.apollo.api.cache.http.HttpCache.CACHE_PREFETCH_HEADER;
-import static com.apollographql.apollo.api.cache.http.HttpCache.CACHE_SERVED_DATE_HEADER;
+import static com.apollographql.apollo3.api.cache.http.HttpCache.CACHE_DO_NOT_STORE;
+import static com.apollographql.apollo3.api.cache.http.HttpCache.CACHE_EXPIRE_AFTER_READ_HEADER;
+import static com.apollographql.apollo3.api.cache.http.HttpCache.CACHE_EXPIRE_TIMEOUT_HEADER;
+import static com.apollographql.apollo3.api.cache.http.HttpCache.CACHE_FETCH_STRATEGY_HEADER;
+import static com.apollographql.apollo3.api.cache.http.HttpCache.CACHE_KEY_HEADER;
+import static com.apollographql.apollo3.api.cache.http.HttpCache.CACHE_PREFETCH_HEADER;
+import static com.apollographql.apollo3.api.cache.http.HttpCache.CACHE_SERVED_DATE_HEADER;
 
 final class Utils {
   private static final byte[] EMPTY_BYTE_ARRAY = new byte[0];

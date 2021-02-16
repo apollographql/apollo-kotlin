@@ -1,4 +1,4 @@
-package com.apollographql.apollo.cache.normalized
+package com.apollographql.apollo3.cache.normalized
 
 /**
  * A Factory used to construct an instance of a [NormalizedCache] configured with the custom scalar adapters set in

@@ -1,11 +1,11 @@
-package com.apollographql.apollo.kmpsample.repositories
+package com.apollographql.apollo3.kmpsample.repositories
 
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
-import com.apollographql.apollo.kmpsample.databinding.ItemRepositoryBinding
-import com.apollographql.apollo.kmpsample.fragment.RepositoryFragment
+import com.apollographql.apollo3.kmpsample.databinding.ItemRepositoryBinding
+import com.apollographql.apollo3.kmpsample.fragment.RepositoryFragment
 
 class RepositoriesAdapter(
     private val onClick: (RepositoryFragment) -> Unit

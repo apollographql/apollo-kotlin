@@ -1,11 +1,11 @@
-package com.apollographql.apollo.gradle.api
+package com.apollographql.apollo3.gradle.api
 
 import com.android.build.gradle.AppExtension
 import com.android.build.gradle.BaseExtension
 import com.android.build.gradle.LibraryExtension
 import com.android.build.gradle.TestedExtension
 import com.android.build.gradle.api.BaseVariant
-import com.apollographql.apollo.gradle.internal.ApolloGenerateSourcesTask
+import com.apollographql.apollo3.gradle.internal.ApolloGenerateSourcesTask
 import org.gradle.api.Project
 import org.gradle.api.Task
 import org.gradle.api.file.Directory

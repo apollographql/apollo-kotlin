@@ -1,11 +1,11 @@
-package com.apollographql.apollo.kotlinsample.data
+package com.apollographql.apollo3.kotlinsample.data
 
-import com.apollographql.apollo.ApolloClient
-import com.apollographql.apollo.api.Response
-import com.apollographql.apollo.kotlinsample.GithubRepositoriesQuery
-import com.apollographql.apollo.kotlinsample.GithubRepositoryCommitsQuery
-import com.apollographql.apollo.kotlinsample.GithubRepositoryDetailQuery
-import com.apollographql.apollo.kotlinsample.fragment.RepositoryFragment
+import com.apollographql.apollo3.ApolloClient
+import com.apollographql.apollo3.api.Response
+import com.apollographql.apollo3.kotlinsample.GithubRepositoriesQuery
+import com.apollographql.apollo3.kotlinsample.GithubRepositoryCommitsQuery
+import com.apollographql.apollo3.kotlinsample.GithubRepositoryDetailQuery
+import com.apollographql.apollo3.kotlinsample.fragment.RepositoryFragment
 import io.reactivex.Observable
 import io.reactivex.subjects.PublishSubject
 

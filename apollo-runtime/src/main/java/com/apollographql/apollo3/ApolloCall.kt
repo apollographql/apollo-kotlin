@@ -1,16 +1,16 @@
-package com.apollographql.apollo
+package com.apollographql.apollo3
 
-import com.apollographql.apollo.api.Operation
-import com.apollographql.apollo.api.Response
-import com.apollographql.apollo.cache.CacheHeaders
-import com.apollographql.apollo.cache.normalized.Record
-import com.apollographql.apollo.exception.ApolloCanceledException
-import com.apollographql.apollo.exception.ApolloException
-import com.apollographql.apollo.exception.ApolloHttpException
-import com.apollographql.apollo.exception.ApolloNetworkException
-import com.apollographql.apollo.exception.ApolloParseException
-import com.apollographql.apollo.fetcher.ResponseFetcher
-import com.apollographql.apollo.internal.util.Cancelable
+import com.apollographql.apollo3.api.Operation
+import com.apollographql.apollo3.api.Response
+import com.apollographql.apollo3.cache.CacheHeaders
+import com.apollographql.apollo3.cache.normalized.Record
+import com.apollographql.apollo3.exception.ApolloCanceledException
+import com.apollographql.apollo3.exception.ApolloException
+import com.apollographql.apollo3.exception.ApolloHttpException
+import com.apollographql.apollo3.exception.ApolloNetworkException
+import com.apollographql.apollo3.exception.ApolloParseException
+import com.apollographql.apollo3.fetcher.ResponseFetcher
+import com.apollographql.apollo3.internal.util.Cancelable
 
 /**
  *
@@ -31,7 +31,7 @@ interface ApolloCall<D : Operation.Data> : Cancelable {
   fun enqueue(callback: Callback<D>?)
 
   /**
-   * Sets the [CacheHeaders] to use for this call. [com.apollographql.apollo.interceptor.FetchOptions] will
+   * Sets the [CacheHeaders] to use for this call. [com.apollographql.apollo3.interceptor.FetchOptions] will
    * be configured with this headers, and will be accessible from the [ResponseFetcher] used for this call.
    *
    * Deprecated, use [.toBuilder] to mutate the ApolloCall
@@ -62,7 +62,7 @@ interface ApolloCall<D : Operation.Data> : Cancelable {
 
   /**
    * Cancels this [ApolloCall]. If the call was started with [.enqueue], the
-   * [com.apollographql.apollo.ApolloCall.Callback] will be disposed, and will receive no more events.
+   * [com.apollographql.apollo3.ApolloCall.Callback] will be disposed, and will receive no more events.
    * The call will attempt to abort and release resources, if possible.
    */
   override fun cancel()
@@ -71,7 +71,7 @@ interface ApolloCall<D : Operation.Data> : Cancelable {
     fun build(): ApolloCall<D>
 
     /**
-     * Sets the [CacheHeaders] to use for this call. [com.apollographql.apollo.interceptor.FetchOptions] will
+     * Sets the [CacheHeaders] to use for this call. [com.apollographql.apollo3.interceptor.FetchOptions] will
      * be configured with this headers, and will be accessible from the [ResponseFetcher] used for this call.
      *
      * @param cacheHeaders the [CacheHeaders] that will be passed with records generated from this request to [                     ]. Standardized cache headers are

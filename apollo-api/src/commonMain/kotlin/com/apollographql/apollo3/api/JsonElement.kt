@@ -1,4 +1,4 @@
-package com.apollographql.apollo.api
+package com.apollographql.apollo3.api
 
 /**
  * A wrapper class for representation of custom GraphQL type value, used in user provided [CustomScalarAdapter]

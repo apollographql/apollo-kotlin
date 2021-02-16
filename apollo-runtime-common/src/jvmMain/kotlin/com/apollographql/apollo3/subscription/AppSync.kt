@@ -1,7 +1,7 @@
-package com.apollographql.apollo.subscription
+package com.apollographql.apollo3.subscription
 
-import com.apollographql.apollo.api.internal.json.JsonWriter
-import com.apollographql.apollo.api.internal.json.Utils
+import com.apollographql.apollo3.api.internal.json.JsonWriter
+import com.apollographql.apollo3.api.internal.json.Utils
 import okhttp3.HttpUrl
 import okio.Buffer
 import okio.ByteString

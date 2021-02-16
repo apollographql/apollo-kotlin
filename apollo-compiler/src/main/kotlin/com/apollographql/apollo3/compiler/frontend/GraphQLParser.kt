@@ -1,7 +1,7 @@
-package com.apollographql.apollo.compiler.frontend
+package com.apollographql.apollo3.compiler.frontend
 
-import com.apollographql.apollo.compiler.parser.antlr.GraphQLLexer
-import com.apollographql.apollo.compiler.parser.antlr.GraphQLParser as AntlrGraphQLParser
+import com.apollographql.apollo3.compiler.parser.antlr.GraphQLLexer
+import com.apollographql.apollo3.compiler.parser.antlr.GraphQLParser as AntlrGraphQLParser
 import okio.BufferedSource
 import okio.buffer
 import okio.source

@@ -1,8 +1,8 @@
-package com.apollographql.apollo
+package com.apollographql.apollo3
 
-import com.apollographql.apollo.api.Operation
-import com.apollographql.apollo.fetcher.ResponseFetcher
-import com.apollographql.apollo.internal.util.Cancelable
+import com.apollographql.apollo3.api.Operation
+import com.apollographql.apollo3.fetcher.ResponseFetcher
+import com.apollographql.apollo3.internal.util.Cancelable
 
 interface ApolloQueryWatcher<D : Operation.Data> : Cancelable {
   fun enqueueAndWatch(callback: ApolloCall.Callback<D>): ApolloQueryWatcher<D>
@@ -26,7 +26,7 @@ interface ApolloQueryWatcher<D : Operation.Data> : Cancelable {
   fun refetch()
 
   /**
-   * Cancels this [ApolloQueryWatcher]. The [com.apollographql.apollo.ApolloCall.Callback]
+   * Cancels this [ApolloQueryWatcher]. The [com.apollographql.apollo3.ApolloCall.Callback]
    * will be disposed, and will receive no more events. Any active operations will attempt to abort and
    * release resources, if possible.
    */

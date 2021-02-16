@@ -1,9 +1,9 @@
-package com.apollographql.apollo.subscription
+package com.apollographql.apollo3.subscription
 
-import com.apollographql.apollo.api.ResponseAdapterCache
-import com.apollographql.apollo.api.internal.json.BufferedSourceJsonReader
-import com.apollographql.apollo.api.internal.json.Utils.readRecursively
-import com.apollographql.apollo.testing.MockSubscription
+import com.apollographql.apollo3.api.ResponseAdapterCache
+import com.apollographql.apollo3.api.internal.json.BufferedSourceJsonReader
+import com.apollographql.apollo3.api.internal.json.Utils.readRecursively
+import com.apollographql.apollo3.testing.MockSubscription
 import okio.Buffer
 import kotlin.test.Test
 import kotlin.test.assertEquals

@@ -8,7 +8,7 @@ plugins {
 android {
     compileSdkVersion(groovy.util.Eval.x(project, "x.androidConfig.compileSdkVersion").toString().toInt())
     defaultConfig {
-        applicationId = "com.apollographql.apollo.kmpsample"
+        applicationId = "com.apollographql.apollo3.kmpsample"
         minSdkVersion(groovy.util.Eval.x(project, "x.androidConfig.minSdkVersion").toString())
         targetSdkVersion(groovy.util.Eval.x(project, "x.androidConfig.targetSdkVersion").toString())
     }
@@ -33,7 +33,7 @@ tasks.withType<KotlinCompile> {
 
 dependencies {
     implementation(project(":multiplatform:kmp-lib-sample"))
-    implementation("com.apollographql.apollo:apollo-api")
+    implementation("com.apollographql.apollo3:apollo-api")
 
     implementation(groovy.util.Eval.x(project, "x.dep.androidx.appcompat"))
     implementation(groovy.util.Eval.x(project, "x.dep.androidx.recyclerView"))

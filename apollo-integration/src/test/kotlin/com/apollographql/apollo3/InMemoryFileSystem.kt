@@ -13,9 +13,9 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.apollographql.apollo
+package com.apollographql.apollo3
 
-import com.apollographql.apollo.cache.http.internal.FileSystem
+import com.apollographql.apollo3.cache.http.internal.FileSystem
 import okio.*
 import org.junit.rules.TestRule
 import org.junit.runner.Description

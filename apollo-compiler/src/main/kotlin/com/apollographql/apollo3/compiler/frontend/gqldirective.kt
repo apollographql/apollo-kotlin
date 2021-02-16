@@ -1,4 +1,4 @@
-package com.apollographql.apollo.compiler.frontend
+package com.apollographql.apollo3.compiler.frontend
 
 internal fun List<GQLDirective>.findDeprecationReason() = firstOrNull { it.name == "deprecated" }
     ?.let {
