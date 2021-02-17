@@ -637,7 +637,7 @@ class ApolloClient internal constructor(
             subscriptionConnectionParams,
             dispatcher,
             subscriptionHeartbeatTimeout,
-            cacheKeyResolver.get(),
+            cacheKeyResolver.or(CacheKeyResolver.DEFAULT),
             enableAutoPersistedSubscriptions)
       }
       return ApolloClient(serverUrl,
