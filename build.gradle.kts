@@ -155,24 +155,6 @@ fun Project.configurePublishing() {
       }
 
       maven {
-        name = "bintray"
-        url = uri("https://api.bintray.com/maven/apollographql/android/apollo/;override=1")
-        credentials {
-          username = System.getenv("BINTRAY_USER")
-          password = System.getenv("BINTRAY_API_KEY")
-        }
-      }
-
-      maven {
-        name = "ojo"
-        url = uri("https://oss.jfrog.org/artifactory/oss-snapshot-local/")
-        credentials {
-          username = System.getenv("BINTRAY_USER")
-          password = System.getenv("BINTRAY_API_KEY")
-        }
-      }
-
-      maven {
         name = "ossSnapshots"
         url = uri("https://oss.sonatype.org/content/repositories/snapshots/")
         credentials {
@@ -264,17 +246,8 @@ fun shouldPublishSnapshots(): Boolean {
 
 tasks.register("publishSnapshotsIfNeeded") {
   if (shouldPublishSnapshots()) {
-    project.logger.log(LogLevel.LIFECYCLE, "Deploying snapshot to OJO...")
-    dependsOn(subprojectTasks("publishAllPublicationsToOjoRepository"))
     project.logger.log(LogLevel.LIFECYCLE, "Deploying snapshot to OSS Snapshots...")
     dependsOn(subprojectTasks("publishAllPublicationsToOssSnapshotsRepository"))
-  }
-}
-
-tasks.register("publishToBintrayIfNeeded") {
-  if (isTag()) {
-    project.logger.log(LogLevel.LIFECYCLE, "Deploying release to Bintray...")
-    dependsOn(subprojectTasks("publishAllPublicationsToBintrayRepository"))
   }
 }
 
@@ -300,34 +273,6 @@ tasks.register("sonatypeCloseAndReleaseRepository") {
         baseUrl = "https://oss.sonatype.org/service/local/",
         groupId = "com.apollographql"
     ).closeAndReleaseRepository()
-  }
-}
-
-tasks.register("bintrayPublish") {
-  doLast {
-    val version = findProperty("VERSION_NAME") as String?
-    "{\"publish_wait_for_secs\": -1}".toRequestBody("application/json".toMediaType()).let {
-      val credentials = basic(System.getenv("BINTRAY_USER"), System.getenv("BINTRAY_API_KEY"))
-      Request.Builder()
-          .post(it)
-          .header("Authorization", credentials)
-          .url("https://api.bintray.com/content/apollographql/android/apollo/$version/publish")
-          .build()
-    }.let {
-      /**
-       * Do the actual publishing with increased timeouts because the API might take a long time to reply
-       * If it times out, the files are published but apparently not the version. Making the call again seems to fix it
-       */
-      okhttp3.OkHttpClient.Builder()
-              .readTimeout(1, TimeUnit.HOURS)
-              .build()
-              .newCall(it)
-              .execute()
-    }.use {
-      check(it.isSuccessful) {
-        "Cannot publish to bintray: ${it.code}\n: ${it.body?.string()}"
-      }
-    }
   }
 }
 

@@ -48,7 +48,7 @@ The latest version is [![Maven Central](https://img.shields.io/maven-central/v/c
 
 Check the [changelog](https://github.com/apollographql/apollo-android/releases) for the release history. 
 
-Releases are hosted on [Jcenter](https://jcenter.bintray.com/com/apollographql/apollo3/) and [Maven Central](https://repo1.maven.org/maven2/com/apollographql/apollo3/). The plugin is additionally hosted on the [Gradle Plugin Portal](https://plugins.gradle.org/plugin/com.apollographql.apollo3) 
+Releases are hosted on [Maven Central](https://repo1.maven.org/maven2/com/apollographql/apollo3/). The plugin is additionally hosted on the [Gradle Plugin Portal](https://plugins.gradle.org/plugin/com.apollographql.apollo3) 
 
 
 ```groovy:title=build.gradle.kts

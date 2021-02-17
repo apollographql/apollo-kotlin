@@ -10,7 +10,7 @@ import org.gradle.api.tasks.TaskAction
 import java.io.File
 
 object JapiCmp {
-  abstract class DownloadBaselineJar: DefaultTask() {
+  abstract class DownloadBaselineJar : DefaultTask() {
     @get:Input
     lateinit var artifact: String
 
@@ -24,7 +24,7 @@ object JapiCmp {
 
       val jar = "$artifact-$version.jar"
 
-      val url = "https://jcenter.bintray.com/com/apollographql/apollo3/$artifact/$version/$jar"
+      val url = "https://repo1.maven.org/maven2/com/apollographql/apollo3/$artifact/$version/$jar"
       val client = OkHttpClient()
       val request = Request.Builder().get().url(url).build()
 
@@ -35,9 +35,10 @@ object JapiCmp {
       }
     }
   }
+
   fun Project.configureJapiCmp() {
     val downloadBaselineJarTaskProvider = tasks.register("downloadBaseLineJar", DownloadBaselineJar::class.java) {
-      val artifact = when  {
+      val artifact = when {
         project.pluginManager.hasPlugin("org.jetbrains.kotlin.multiplatform") -> "${project.name}-jvm"
         else -> project.name
       }
@@ -82,14 +83,17 @@ object JapiCmp {
 
 
   private fun latestVersion(): String {
-    return "https://api.bintray.com/packages/apollographql/android/apollo/versions/_latest"
+    return "https://repo1.maven.org/maven2/com/apollographql/apollo/apollo-api/maven-metadata.xml"
         .let {
           Request.Builder().url(it).build()
         }.let {
           OkHttpClient().newCall(it).execute()
               .body!!.string()
-        }.let {
-          (Moshi.Builder().build().adapter(Any::class.java).fromJson(it) as Map<String, Any>).get("name") as String
+              .lines()
+              .filter {
+                it.contains("latest")
+              }.first()
+              .replace(Regex(".*<latest>(.*)<latest>.*"), "$1")
         }
   }
 }
