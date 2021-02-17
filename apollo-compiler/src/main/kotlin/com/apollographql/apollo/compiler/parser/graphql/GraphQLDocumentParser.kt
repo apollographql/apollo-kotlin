@@ -315,6 +315,7 @@ class GraphQLDocumentParser(
         .flatMap { it.fields }
         .filter { it.responseName != Field.TYPE_NAME_FIELD.responseName }
     val inlineFragmentRefsToMerge = inlineFragmentsToMerge.flatMap { it.fragments }
+    val inlineInlineFragmentToMerge = inlineFragmentsToMerge.flatMap { it.inlineFragments }
     val mergedFields = fields.result.mergeFields(others = inlineFragmentFieldsToMerge)
 
     val conditions = directives().parse()
@@ -332,7 +333,7 @@ class GraphQLDocumentParser(
               it.copy(
                   fields = it.fields.mergeFields(others = mergedFields)
               )
-            },
+            } + inlineInlineFragmentToMerge,
             description = schemaField.description?.trim() ?: "",
             deprecationReason = schemaField.deprecationReason,
             conditions = conditions,
