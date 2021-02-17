@@ -192,7 +192,6 @@ class CodegenTest(private val folder: File, private val testLanguage: TestLangua
     fun data() =  File("src/test/graphql/com/example/")
           .listFiles()!!
           .filter { it.isDirectory }
-          .filter { it.name == "fragment_in_inline_inline_fragment"}
           .let {
             it.map {
               arrayOf(it, TestLanguage.Kotlin)

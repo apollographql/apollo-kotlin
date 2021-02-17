@@ -283,6 +283,7 @@ class IRBuilder(private val schema: IntrospectionSchema,
         filePath = filePath
     )
     return this.fragments.map { it.name }
+        .union(inlineFragments.flatMap { it.referencedFragments(fragments, filePath) })
         .union(fields.referencedFragmentNames(fragments = fragments, filePath = filePath))
         .union(referencedFragments.flatMap { it.referencedFragments(fragments) })
   }

@@ -19,6 +19,7 @@ import com.apollographql.apollo.api.internal.ResponseFieldMarshaller
 import com.apollographql.apollo.api.internal.ResponseReader
 import com.apollographql.apollo.api.internal.SimpleOperationResponseParser
 import com.apollographql.apollo.api.internal.Throws
+import com.example.fragment_in_inline_inline_fragment.fragment.DroidFragment
 import kotlin.Array
 import kotlin.Boolean
 import kotlin.String
@@ -80,25 +81,104 @@ class TestQuery : Query<TestQuery.Data, TestQuery.Data, Operation.Variables> {
     scalarTypeAdapters = scalarTypeAdapters
   )
 
+  interface HeroCharacter {
+    fun marshaller(): ResponseFieldMarshaller
+  }
+
   /**
-   * A character from the Star Wars universe
+   * An autonomous mechanical character in the Star Wars universe
    */
-  data class Hero(
-    val __typename: String = "Character"
-  ) {
-    fun marshaller(): ResponseFieldMarshaller = ResponseFieldMarshaller.invoke { writer ->
-      writer.writeString(RESPONSE_FIELDS[0], this@Hero.__typename)
+  data class AsDroid(
+    val __typename: String = "Droid",
+    /**
+     * What others call this droid
+     */
+    val name: String,
+    val fragments: Fragments
+  ) : HeroCharacter {
+    override fun marshaller(): ResponseFieldMarshaller = ResponseFieldMarshaller.invoke { writer ->
+      writer.writeString(RESPONSE_FIELDS[0], this@AsDroid.__typename)
+      writer.writeString(RESPONSE_FIELDS[1], this@AsDroid.name)
+      this@AsDroid.fragments.marshaller().marshal(writer)
     }
 
     companion object {
       private val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
+          ResponseField.forString("__typename", "__typename", null, false, null),
+          ResponseField.forString("name", "name", null, false, null),
           ResponseField.forString("__typename", "__typename", null, false, null)
+          )
+
+      operator fun invoke(reader: ResponseReader): AsDroid = reader.run {
+        val __typename = readString(RESPONSE_FIELDS[0])!!
+        val name = readString(RESPONSE_FIELDS[1])!!
+        val fragments = Fragments(reader)
+        AsDroid(
+          __typename = __typename,
+          name = name,
+          fragments = fragments
+        )
+      }
+
+      @Suppress("FunctionName")
+      fun Mapper(): ResponseFieldMapper<AsDroid> = ResponseFieldMapper { invoke(it) }
+    }
+
+    data class Fragments(
+      val droidFragment: DroidFragment
+    ) {
+      fun marshaller(): ResponseFieldMarshaller = ResponseFieldMarshaller.invoke { writer ->
+        writer.writeFragment(this@Fragments.droidFragment.marshaller())
+      }
+
+      companion object {
+        private val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
+            ResponseField.forFragment("__typename", "__typename", null)
+            )
+
+        operator fun invoke(reader: ResponseReader): Fragments = reader.run {
+          val droidFragment = readFragment<DroidFragment>(RESPONSE_FIELDS[0]) { reader ->
+            DroidFragment(reader)
+          }!!
+          Fragments(
+            droidFragment = droidFragment
+          )
+        }
+
+        @Suppress("FunctionName")
+        fun Mapper(): ResponseFieldMapper<Fragments> = ResponseFieldMapper { invoke(it) }
+      }
+    }
+  }
+
+  /**
+   * A character from the Star Wars universe
+   */
+  data class Hero(
+    val __typename: String = "Character",
+    val asDroid: AsDroid?
+  ) {
+    fun marshaller(): ResponseFieldMarshaller = ResponseFieldMarshaller.invoke { writer ->
+      writer.writeString(RESPONSE_FIELDS[0], this@Hero.__typename)
+      writer.writeFragment(this@Hero.asDroid?.marshaller())
+    }
+
+    companion object {
+      private val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
+          ResponseField.forString("__typename", "__typename", null, false, null),
+          ResponseField.forFragment("__typename", "__typename", listOf(
+            ResponseField.Condition.typeCondition(arrayOf("Droid"))
+          ))
           )
 
       operator fun invoke(reader: ResponseReader): Hero = reader.run {
         val __typename = readString(RESPONSE_FIELDS[0])!!
+        val asDroid = readFragment<AsDroid>(RESPONSE_FIELDS[1]) { reader ->
+          AsDroid(reader)
+        }
         Hero(
-          __typename = __typename
+          __typename = __typename,
+          asDroid = asDroid
         )
       }
 
@@ -138,7 +218,7 @@ class TestQuery : Query<TestQuery.Data, TestQuery.Data, Operation.Variables> {
 
   companion object {
     const val OPERATION_ID: String =
-        "88512d02adfe0d0a455947026b8f863b0466a5b8ef26969c66a82f70aebbca2d"
+        "0259b31bf475dfe397aadcf77a3bde3e95e0b27e248089b94213eee9f9e432d8"
 
     val QUERY_DOCUMENT: String = QueryDocumentMinifier.minify(
           """
@@ -148,10 +228,15 @@ class TestQuery : Query<TestQuery.Data, TestQuery.Data, Operation.Variables> {
           |    ... on Character {
           |      __typename
           |      ... on Droid {
+          |        name
           |        ...droidFragment
           |      }
           |    }
           |  }
+          |}
+          |fragment droidFragment on Droid {
+          |  __typename
+          |  name
           |}
           """.trimMargin()
         )

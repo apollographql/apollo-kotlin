@@ -20,11 +20,13 @@ import com.apollographql.apollo.api.internal.ResponseReader;
 import com.apollographql.apollo.api.internal.ResponseWriter;
 import com.apollographql.apollo.api.internal.SimpleOperationResponseParser;
 import com.apollographql.apollo.api.internal.Utils;
+import com.example.fragment_in_inline_inline_fragment.fragment.DroidFragment;
 import java.io.IOException;
 import java.lang.Object;
 import java.lang.Override;
 import java.lang.String;
 import java.lang.SuppressWarnings;
+import java.util.Arrays;
 import java.util.Collections;
 import okio.Buffer;
 import okio.BufferedSource;
@@ -33,7 +35,7 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 public final class TestQuery implements Query<TestQuery.Data, Optional<TestQuery.Data>, Operation.Variables> {
-  public static final String OPERATION_ID = "88512d02adfe0d0a455947026b8f863b0466a5b8ef26969c66a82f70aebbca2d";
+  public static final String OPERATION_ID = "0259b31bf475dfe397aadcf77a3bde3e95e0b27e248089b94213eee9f9e432d8";
 
   public static final String QUERY_DOCUMENT = QueryDocumentMinifier.minify(
     "query TestQuery {\n"
@@ -42,10 +44,15 @@ public final class TestQuery implements Query<TestQuery.Data, Optional<TestQuery
         + "    ... on Character {\n"
         + "      __typename\n"
         + "      ... on Droid {\n"
+        + "        name\n"
         + "        ...droidFragment\n"
         + "      }\n"
         + "    }\n"
         + "  }\n"
+        + "}\n"
+        + "fragment droidFragment on Droid {\n"
+        + "  __typename\n"
+        + "  name\n"
         + "}"
   );
 
@@ -239,7 +246,249 @@ public final class TestQuery implements Query<TestQuery.Data, Optional<TestQuery
   /**
    * A character from the Star Wars universe
    */
-  public static class Hero {
+  public interface Hero {
+    @NotNull String __typename();
+
+    ResponseFieldMarshaller marshaller();
+
+    default <T> T visit(Visitor<T> visitor) {
+      if (this instanceof AsDroid) {
+        return visitor.visit((AsDroid) this);
+      } else if (this instanceof AsCharacter) {
+        return visitor.visit((AsCharacter) this);
+      }
+      return visitor.visitDefault(this);
+    }
+
+    final class Mapper implements ResponseFieldMapper<Hero> {
+      static final ResponseField[] $responseFields = {
+        ResponseField.forFragment("__typename", "__typename", Arrays.<ResponseField.Condition>asList(
+          ResponseField.Condition.typeCondition(new String[] {"Droid"})
+        ))
+      };
+
+      final AsDroid.Mapper asDroidFieldMapper = new AsDroid.Mapper();
+
+      final AsCharacter.Mapper asCharacterFieldMapper = new AsCharacter.Mapper();
+
+      @Override
+      public Hero map(ResponseReader reader) {
+        final AsDroid asDroid = reader.readFragment($responseFields[0], new ResponseReader.ObjectReader<AsDroid>() {
+          @Override
+          public AsDroid read(ResponseReader reader) {
+            return asDroidFieldMapper.map(reader);
+          }
+        });
+        if (asDroid != null) {
+          return asDroid;
+        }
+        return asCharacterFieldMapper.map(reader);
+      }
+    }
+
+    interface Visitor<T> {
+      T visitDefault(@NotNull Hero hero);
+
+      T visit(@NotNull AsDroid asDroid);
+
+      T visit(@NotNull AsCharacter asCharacter);
+    }
+  }
+
+  /**
+   * An autonomous mechanical character in the Star Wars universe
+   */
+  public static class AsDroid implements Hero {
+    static final ResponseField[] $responseFields = {
+      ResponseField.forString("__typename", "__typename", null, false, Collections.<ResponseField.Condition>emptyList()),
+      ResponseField.forString("name", "name", null, false, Collections.<ResponseField.Condition>emptyList()),
+      ResponseField.forString("__typename", "__typename", null, false, Collections.<ResponseField.Condition>emptyList())
+    };
+
+    final @NotNull String __typename;
+
+    final @NotNull String name;
+
+    private final @NotNull Fragments fragments;
+
+    private transient volatile String $toString;
+
+    private transient volatile int $hashCode;
+
+    private transient volatile boolean $hashCodeMemoized;
+
+    public AsDroid(@NotNull String __typename, @NotNull String name, @NotNull Fragments fragments) {
+      this.__typename = Utils.checkNotNull(__typename, "__typename == null");
+      this.name = Utils.checkNotNull(name, "name == null");
+      this.fragments = Utils.checkNotNull(fragments, "fragments == null");
+    }
+
+    public @NotNull String __typename() {
+      return this.__typename;
+    }
+
+    /**
+     * What others call this droid
+     */
+    public @NotNull String name() {
+      return this.name;
+    }
+
+    public @NotNull Fragments fragments() {
+      return this.fragments;
+    }
+
+    @SuppressWarnings({"rawtypes", "unchecked"})
+    public ResponseFieldMarshaller marshaller() {
+      return new ResponseFieldMarshaller() {
+        @Override
+        public void marshal(ResponseWriter writer) {
+          writer.writeString($responseFields[0], __typename);
+          writer.writeString($responseFields[1], name);
+          fragments.marshaller().marshal(writer);
+        }
+      };
+    }
+
+    @Override
+    public String toString() {
+      if ($toString == null) {
+        $toString = "AsDroid{"
+          + "__typename=" + __typename + ", "
+          + "name=" + name + ", "
+          + "fragments=" + fragments
+          + "}";
+      }
+      return $toString;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+      if (o == this) {
+        return true;
+      }
+      if (o instanceof AsDroid) {
+        AsDroid that = (AsDroid) o;
+        return this.__typename.equals(that.__typename)
+         && this.name.equals(that.name)
+         && this.fragments.equals(that.fragments);
+      }
+      return false;
+    }
+
+    @Override
+    public int hashCode() {
+      if (!$hashCodeMemoized) {
+        int h = 1;
+        h *= 1000003;
+        h ^= __typename.hashCode();
+        h *= 1000003;
+        h ^= name.hashCode();
+        h *= 1000003;
+        h ^= fragments.hashCode();
+        $hashCode = h;
+        $hashCodeMemoized = true;
+      }
+      return $hashCode;
+    }
+
+    public static class Fragments {
+      final @NotNull DroidFragment droidFragment;
+
+      private transient volatile String $toString;
+
+      private transient volatile int $hashCode;
+
+      private transient volatile boolean $hashCodeMemoized;
+
+      public Fragments(@NotNull DroidFragment droidFragment) {
+        this.droidFragment = Utils.checkNotNull(droidFragment, "droidFragment == null");
+      }
+
+      public @NotNull DroidFragment droidFragment() {
+        return this.droidFragment;
+      }
+
+      public ResponseFieldMarshaller marshaller() {
+        return new ResponseFieldMarshaller() {
+          @Override
+          public void marshal(ResponseWriter writer) {
+            writer.writeFragment(droidFragment.marshaller());
+          }
+        };
+      }
+
+      @Override
+      public String toString() {
+        if ($toString == null) {
+          $toString = "Fragments{"
+            + "droidFragment=" + droidFragment
+            + "}";
+        }
+        return $toString;
+      }
+
+      @Override
+      public boolean equals(Object o) {
+        if (o == this) {
+          return true;
+        }
+        if (o instanceof Fragments) {
+          Fragments that = (Fragments) o;
+          return this.droidFragment.equals(that.droidFragment);
+        }
+        return false;
+      }
+
+      @Override
+      public int hashCode() {
+        if (!$hashCodeMemoized) {
+          int h = 1;
+          h *= 1000003;
+          h ^= droidFragment.hashCode();
+          $hashCode = h;
+          $hashCodeMemoized = true;
+        }
+        return $hashCode;
+      }
+
+      public static final class Mapper implements ResponseFieldMapper<Fragments> {
+        static final ResponseField[] $responseFields = {
+          ResponseField.forFragment("__typename", "__typename", Collections.<ResponseField.Condition>emptyList())
+        };
+
+        final DroidFragment.Mapper droidFragmentFieldMapper = new DroidFragment.Mapper();
+
+        @Override
+        public @NotNull Fragments map(ResponseReader reader) {
+          final DroidFragment droidFragment = reader.readFragment($responseFields[0], new ResponseReader.ObjectReader<DroidFragment>() {
+            @Override
+            public DroidFragment read(ResponseReader reader) {
+              return droidFragmentFieldMapper.map(reader);
+            }
+          });
+          return new Fragments(droidFragment);
+        }
+      }
+    }
+
+    public static final class Mapper implements ResponseFieldMapper<AsDroid> {
+      final Fragments.Mapper fragmentsFieldMapper = new Fragments.Mapper();
+
+      @Override
+      public AsDroid map(ResponseReader reader) {
+        final String __typename = reader.readString($responseFields[0]);
+        final String name = reader.readString($responseFields[1]);
+        final Fragments fragments = fragmentsFieldMapper.map(reader);
+        return new AsDroid(__typename, name, fragments);
+      }
+    }
+  }
+
+  /**
+   * A character from the Star Wars universe
+   */
+  public static class AsCharacter implements Hero {
     static final ResponseField[] $responseFields = {
       ResponseField.forString("__typename", "__typename", null, false, Collections.<ResponseField.Condition>emptyList())
     };
@@ -252,7 +501,7 @@ public final class TestQuery implements Query<TestQuery.Data, Optional<TestQuery
 
     private transient volatile boolean $hashCodeMemoized;
 
-    public Hero(@NotNull String __typename) {
+    public AsCharacter(@NotNull String __typename) {
       this.__typename = Utils.checkNotNull(__typename, "__typename == null");
     }
 
@@ -273,7 +522,7 @@ public final class TestQuery implements Query<TestQuery.Data, Optional<TestQuery
     @Override
     public String toString() {
       if ($toString == null) {
-        $toString = "Hero{"
+        $toString = "AsCharacter{"
           + "__typename=" + __typename
           + "}";
       }
@@ -285,8 +534,8 @@ public final class TestQuery implements Query<TestQuery.Data, Optional<TestQuery
       if (o == this) {
         return true;
       }
-      if (o instanceof Hero) {
-        Hero that = (Hero) o;
+      if (o instanceof AsCharacter) {
+        AsCharacter that = (AsCharacter) o;
         return this.__typename.equals(that.__typename);
       }
       return false;
@@ -304,11 +553,11 @@ public final class TestQuery implements Query<TestQuery.Data, Optional<TestQuery
       return $hashCode;
     }
 
-    public static final class Mapper implements ResponseFieldMapper<Hero> {
+    public static final class Mapper implements ResponseFieldMapper<AsCharacter> {
       @Override
-      public Hero map(ResponseReader reader) {
+      public AsCharacter map(ResponseReader reader) {
         final String __typename = reader.readString($responseFields[0]);
-        return new Hero(__typename);
+        return new AsCharacter(__typename);
       }
     }
   }

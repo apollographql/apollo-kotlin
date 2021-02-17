@@ -2,6 +2,7 @@ query TestQuery {
     hero {
         ... on Character {
             ... on Droid {
+                name
                 ...droidFragment
             }
         }
