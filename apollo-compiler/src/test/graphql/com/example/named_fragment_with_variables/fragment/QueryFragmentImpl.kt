@@ -77,6 +77,8 @@ data class QueryFragmentImpl(
 
         companion object {
           fun User.asUserUser(): UserUser? = this as? UserUser
+
+          fun User.asUserFragment(): UserFragment? = this as? UserFragment
         }
       }
     }

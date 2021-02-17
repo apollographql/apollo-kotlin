@@ -76,6 +76,10 @@ internal class TestQuery : Query<TestQuery.Data> {
         fun Hero.asCharacterHero(): CharacterHero? = this as? CharacterHero
 
         fun Hero.asCharacterHumanHero(): CharacterHumanHero? = this as? CharacterHumanHero
+
+        fun Hero.asHeroDetails(): HeroDetails? = this as? HeroDetails
+
+        fun Hero.asHumanDetails(): HumanDetails? = this as? HumanDetails
       }
     }
   }

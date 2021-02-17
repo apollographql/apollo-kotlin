@@ -157,6 +157,8 @@ data class TestQuery(
 
       companion object {
         fun Hero.asCharacterHero(): CharacterHero? = this as? CharacterHero
+
+        fun Hero.asHeroDetails(): HeroDetails? = this as? HeroDetails
       }
     }
 

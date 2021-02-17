@@ -67,6 +67,8 @@ class TestQuery : Query<TestQuery.Data> {
 
     companion object {
       fun Data.asQueryData(): QueryData? = this as? QueryData
+
+      fun Data.asQueryFragment(): QueryFragment? = this as? QueryFragment
     }
   }
 

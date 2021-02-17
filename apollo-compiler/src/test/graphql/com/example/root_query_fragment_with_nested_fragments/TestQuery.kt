@@ -72,6 +72,8 @@ class TestQuery : Query<TestQuery.Data> {
 
         companion object {
           fun Hero.asCharacterHero(): CharacterHero? = this as? CharacterHero
+
+          fun Hero.asHeroFragment(): HeroFragment? = this as? HeroFragment
         }
       }
 
@@ -97,6 +99,8 @@ class TestQuery : Query<TestQuery.Data> {
 
         companion object {
           fun Droid.asDroidDroid(): DroidDroid? = this as? DroidDroid
+
+          fun Droid.asDroidFragment(): DroidFragment? = this as? DroidFragment
         }
       }
 
@@ -132,6 +136,8 @@ class TestQuery : Query<TestQuery.Data> {
 
     companion object {
       fun Data.asQueryData(): QueryData? = this as? QueryData
+
+      fun Data.asQueryFragment(): QueryFragment? = this as? QueryFragment
     }
   }
 

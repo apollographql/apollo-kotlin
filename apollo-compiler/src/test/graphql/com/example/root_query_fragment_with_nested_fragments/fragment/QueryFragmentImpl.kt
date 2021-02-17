@@ -54,6 +54,8 @@ class QueryFragmentImpl : Fragment<QueryFragmentImpl.Data> {
 
       companion object {
         fun Hero.asCharacterHero(): CharacterHero? = this as? CharacterHero
+
+        fun Hero.asHeroFragment(): HeroFragment? = this as? HeroFragment
       }
     }
 
@@ -79,6 +81,8 @@ class QueryFragmentImpl : Fragment<QueryFragmentImpl.Data> {
 
       companion object {
         fun Droid.asDroidDroid(): DroidDroid? = this as? DroidDroid
+
+        fun Droid.asDroidFragment(): DroidFragment? = this as? DroidFragment
       }
     }
 
