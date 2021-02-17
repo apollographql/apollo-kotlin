@@ -159,7 +159,7 @@ class CodegenTest(private val folder: File, private val testLanguage: TestLangua
 
       val schemaFile = folder.listFiles()!!.find { it.isFile && (it.name == "schema.sdl" || it.name == "schema.json") }
           ?: File("src/test/graphql/schema.sdl")
-      
+
       val graphqlFiles = setOf(File(folder, "TestOperation.graphql"))
       val operationOutputGenerator = OperationOutputGenerator.DefaultOperationOuputGenerator(operationIdGenerator)
 
@@ -192,6 +192,7 @@ class CodegenTest(private val folder: File, private val testLanguage: TestLangua
     fun data() =  File("src/test/graphql/com/example/")
           .listFiles()!!
           .filter { it.isDirectory }
+          .filter { it.name == "fragment_in_inline_inline_fragment"}
           .let {
             it.map {
               arrayOf(it, TestLanguage.Kotlin)

@@ -1,0 +1,13 @@
+query TestQuery {
+    hero {
+        ... on Character {
+            ... on Droid {
+                ...droidFragment
+            }
+        }
+    }
+}
+
+fragment droidFragment on Droid {
+    name
+}
