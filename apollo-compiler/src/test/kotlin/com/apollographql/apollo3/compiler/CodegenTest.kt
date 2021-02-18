@@ -39,7 +39,7 @@ class CodegenTest(private val folder: File) {
     }
 
     expectedFiles.forEach { expected ->
-      val relativePath = expected.relativeTo(expectedRoot).path
+      val relativePath = expected.relativeTo(expectedRoot).path.removeSuffix(".expected")
       val actual = File(actualRoot, relativePath)
       if (!actual.exists()) {
         if (shouldUpdateTestFixtures()) {
