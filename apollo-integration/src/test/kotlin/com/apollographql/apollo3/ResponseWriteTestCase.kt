@@ -5,7 +5,7 @@ import com.apollographql.apollo3.Utils.enqueueAndAssertResponse
 import com.apollographql.apollo3.Utils.immediateExecutor
 import com.apollographql.apollo3.Utils.immediateExecutorService
 import com.apollographql.apollo3.api.CustomScalarAdapter
-import com.apollographql.apollo3.api.Input.Companion.fromNullable
+import com.apollographql.apollo3.api.Input
 import com.apollographql.apollo3.api.JsonElement
 import com.apollographql.apollo3.api.JsonString
 import com.apollographql.apollo3.api.Operation
@@ -75,7 +75,7 @@ class ResponseWriteTestCase {
   @Test
   @Throws(Exception::class)
   fun customScalar() {
-    val query = EpisodeHeroWithDatesQuery(fromNullable(Episode.JEDI))
+    val query = EpisodeHeroWithDatesQuery(Input.present(Episode.JEDI))
     enqueueAndAssertResponse(
         server,
         "EpisodeHeroWithDatesResponse.json",
@@ -171,7 +171,7 @@ class ResponseWriteTestCase {
   @Test
   @Throws(Exception::class)
   fun objects() {
-    val query = HeroAndFriendsNamesWithIDsQuery(fromNullable(Episode.JEDI))
+    val query = HeroAndFriendsNamesWithIDsQuery(Input.present(Episode.JEDI))
     enqueueAndAssertResponse(
         server,
         "HeroAndFriendsNameWithIdsResponse.json",
@@ -227,7 +227,7 @@ class ResponseWriteTestCase {
   @Test
   @Throws(Exception::class)
   fun operation_with_fragments() {
-    val query = HeroAndFriendsWithFragmentsQuery(fromNullable(Episode.NEWHOPE))
+    val query = HeroAndFriendsWithFragmentsQuery(Input.present(Episode.NEWHOPE))
     enqueueAndAssertResponse(
         server,
         "HeroAndFriendsWithFragmentResponse.json",
@@ -288,7 +288,7 @@ class ResponseWriteTestCase {
   @Test
   @Throws(Exception::class)
   fun operation_with_inline_fragments() {
-    val query = EpisodeHeroWithInlineFragmentQuery(fromNullable(Episode.NEWHOPE))
+    val query = EpisodeHeroWithInlineFragmentQuery(Input.present(Episode.NEWHOPE))
     enqueueAndAssertResponse(
         server,
         "EpisodeHeroWithInlineFragmentResponse.json",
@@ -349,7 +349,7 @@ class ResponseWriteTestCase {
   @Test
   @Throws(Exception::class)
   fun fragments() {
-    val query = HeroAndFriendsWithFragmentsQuery(fromNullable(Episode.NEWHOPE))
+    val query = HeroAndFriendsWithFragmentsQuery(Input.present(Episode.NEWHOPE))
     enqueueAndAssertResponse(
         server,
         "HeroAndFriendsWithFragmentResponse.json",

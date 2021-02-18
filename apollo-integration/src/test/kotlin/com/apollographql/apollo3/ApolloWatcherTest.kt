@@ -66,7 +66,7 @@ class ApolloWatcherTest {
   @Test
   fun testQueryWatcherUpdated_SameQuery_DifferentResults() {
     val heroNameList: MutableList<String> = ArrayList()
-    val query = EpisodeHeroNameQuery(Input.fromNullable(Episode.EMPIRE))
+    val query = EpisodeHeroNameQuery(Input.present(Episode.EMPIRE))
     server.enqueue(Utils.mockResponse("EpisodeHeroNameResponseWithId.json"))
     val watcher = apolloClient.query(query).watcher()
     watcher.enqueueAndWatch(
@@ -101,7 +101,7 @@ class ApolloWatcherTest {
 
     server.enqueue(Utils.mockResponse("EpisodeHeroNameResponseWithId.json"))
     val job = launch {
-      apolloClient.query(EpisodeHeroNameWithIdQuery(Input.fromNullable(Episode.EMPIRE)))
+      apolloClient.query(EpisodeHeroNameWithIdQuery(Input.present(Episode.EMPIRE)))
           .watcher()
           .toFlow()
           .collect {
@@ -129,7 +129,7 @@ class ApolloWatcherTest {
   @Test
   fun testQueryWatcherNotUpdated_SameQuery_SameResults() {
     val heroNameList: MutableList<String> = ArrayList()
-    val query: EpisodeHeroNameQuery = EpisodeHeroNameQuery(Input.fromNullable(Episode.EMPIRE))
+    val query: EpisodeHeroNameQuery = EpisodeHeroNameQuery(Input.present(Episode.EMPIRE))
     server.enqueue(Utils.mockResponse("EpisodeHeroNameResponseWithId.json"))
     val watcher: ApolloQueryWatcher<EpisodeHeroNameQuery.Data> = apolloClient.query(query).watcher()
     watcher.enqueueAndWatch(
@@ -157,7 +157,7 @@ class ApolloWatcherTest {
     server.enqueue(Utils.mockResponse("EpisodeHeroNameResponseWithId.json"))
 
     val job = async {
-      apolloClient.query(EpisodeHeroNameWithIdQuery(Input.fromNullable(Episode.EMPIRE))).watcher().toFlow().collect {
+      apolloClient.query(EpisodeHeroNameWithIdQuery(Input.present(Episode.EMPIRE))).watcher().toFlow().collect {
         channel.send(it.data)
       }
     }
@@ -165,7 +165,7 @@ class ApolloWatcherTest {
     assertThat(channel.receiveOrTimeout()?.hero?.name).isEqualTo("R2-D2")
 
     server.enqueue(Utils.mockResponse("HeroAndFriendsNameWithIdsNameChange.json"))
-    apolloClient.query(HeroAndFriendsNamesWithIDsQuery(Input.fromNullable(Episode.NEWHOPE)))
+    apolloClient.query(HeroAndFriendsNamesWithIDsQuery(Input.present(Episode.NEWHOPE)))
         .responseFetcher(ApolloResponseFetchers.NETWORK_ONLY)
         .await()
         .let {
@@ -181,7 +181,7 @@ class ApolloWatcherTest {
   fun testQueryWatcherNotUpdated_DifferentQueries() {
     val heroNameList: MutableList<String> = ArrayList()
     server.enqueue(Utils.mockResponse("EpisodeHeroNameResponseWithId.json"))
-    val query: EpisodeHeroNameQuery = EpisodeHeroNameQuery(Input.fromNullable(Episode.EMPIRE))
+    val query: EpisodeHeroNameQuery = EpisodeHeroNameQuery(Input.present(Episode.EMPIRE))
     val watcher: ApolloQueryWatcher<EpisodeHeroNameQuery.Data> = apolloClient.query(query).watcher()
     watcher.enqueueAndWatch(
         object : Callback<EpisodeHeroNameQuery.Data>() {
@@ -193,7 +193,7 @@ class ApolloWatcherTest {
             Assert.fail(e.message)
           }
         })
-    val friendsQuery: HeroAndFriendsNamesWithIDsQuery = HeroAndFriendsNamesWithIDsQuery(Input.fromNullable(Episode.NEWHOPE))
+    val friendsQuery: HeroAndFriendsNamesWithIDsQuery = HeroAndFriendsNamesWithIDsQuery(Input.present(Episode.NEWHOPE))
     server.enqueue(Utils.mockResponse("HeroAndFriendsNameWithIdsResponse.json"))
     apolloClient.query(friendsQuery).responseFetcher(ApolloResponseFetchers.NETWORK_ONLY).enqueue(null)
     watcher.cancel()
@@ -205,7 +205,7 @@ class ApolloWatcherTest {
   fun testRefetchCacheControl() {
     val heroNameList: MutableList<String> = ArrayList()
     server.enqueue(Utils.mockResponse("EpisodeHeroNameResponseWithId.json"))
-    val query = EpisodeHeroNameQuery(Input.fromNullable(Episode.EMPIRE))
+    val query = EpisodeHeroNameQuery(Input.present(Episode.EMPIRE))
     val watcher: ApolloQueryWatcher<EpisodeHeroNameQuery.Data> = apolloClient.query(query).watcher()
     watcher.refetchResponseFetcher(ApolloResponseFetchers.NETWORK_ONLY) //Force network instead of CACHE_FIRST default
         .enqueueAndWatch(
@@ -235,7 +235,7 @@ class ApolloWatcherTest {
   @Test
   fun testQueryWatcherUpdated_SameQuery_DifferentResults_cacheOnly() {
     val heroNameList: MutableList<String> = ArrayList()
-    val query = EpisodeHeroNameQuery(Input.fromNullable(Episode.EMPIRE))
+    val query = EpisodeHeroNameQuery(Input.present(Episode.EMPIRE))
     server.enqueue(Utils.mockResponse("EpisodeHeroNameResponseWithId.json"))
     apolloClient.query(query).enqueue(object : Callback<EpisodeHeroNameQuery.Data>() {
       override fun onResponse(response: Response<EpisodeHeroNameQuery.Data>) {}
@@ -268,7 +268,7 @@ class ApolloWatcherTest {
   @Test
   fun testQueryWatcherNotCalled_WhenCanceled() {
     val heroNameList: MutableList<String> = ArrayList()
-    val query: EpisodeHeroNameQuery = EpisodeHeroNameQuery(Input.fromNullable(Episode.EMPIRE))
+    val query: EpisodeHeroNameQuery = EpisodeHeroNameQuery(Input.present(Episode.EMPIRE))
     server.enqueue(Utils.mockResponse("EpisodeHeroNameResponseWithId.json"))
     val watcher: ApolloQueryWatcher<EpisodeHeroNameQuery.Data> = apolloClient.query(query).watcher()
     watcher.enqueueAndWatch(
@@ -295,7 +295,7 @@ class ApolloWatcherTest {
   @Test
   fun emptyCacheQueryWatcherCacheOnly() {
     val watchedHeroes = ArrayList<EpisodeHeroNameQuery.Data.Hero?>()
-    val query = EpisodeHeroNameQuery(Input.fromNullable(Episode.EMPIRE))
+    val query = EpisodeHeroNameQuery(Input.present(Episode.EMPIRE))
     apolloClient.query(query)
         .responseFetcher(ApolloResponseFetchers.CACHE_ONLY)
         .watcher()
@@ -330,7 +330,7 @@ class ApolloWatcherTest {
     runBlocking {
       val channel = Channel<Response<EpisodeHeroNameQuery.Data>>(capacity = Channel.UNLIMITED)
       val job = launch {
-        apolloClient.query(EpisodeHeroNameQuery(Input.fromNullable(Episode.EMPIRE)))
+        apolloClient.query(EpisodeHeroNameQuery(Input.present(Episode.EMPIRE)))
             .responseFetcher(ApolloResponseFetchers.CACHE_ONLY)
             .watcher()
             .refetchResponseFetcher(ApolloResponseFetchers.CACHE_ONLY)
@@ -365,7 +365,7 @@ class ApolloWatcherTest {
     runBlocking {
       val channel = Channel<Response<EpisodeHeroNameQuery.Data>>(capacity = Channel.UNLIMITED)
       val job = launch {
-        apolloClient.query(EpisodeHeroNameQuery(Input.fromNullable(Episode.EMPIRE)))
+        apolloClient.query(EpisodeHeroNameQuery(Input.present(Episode.EMPIRE)))
             .responseFetcher(ApolloResponseFetchers.CACHE_ONLY)
             .watcher()
             .refetchResponseFetcher(ApolloResponseFetchers.CACHE_ONLY)
@@ -381,7 +381,7 @@ class ApolloWatcherTest {
 
       // execute a query that should go to the network and trigger a result from the watcher
       server.enqueue(Utils.mockResponse("EpisodeHeroNameResponseWithId.json"))
-      apolloClient.query(EpisodeHeroNameQuery(Input.fromNullable(Episode.EMPIRE))).await()
+      apolloClient.query(EpisodeHeroNameQuery(Input.present(Episode.EMPIRE))).await()
 
       val response2 = channel.receive()
 

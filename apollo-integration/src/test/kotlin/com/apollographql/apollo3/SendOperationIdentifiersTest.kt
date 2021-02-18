@@ -3,7 +3,7 @@ package com.apollographql.apollo3
 import com.apollographql.apollo3.Utils.enqueueAndAssertResponse
 import com.apollographql.apollo3.Utils.immediateExecutor
 import com.apollographql.apollo3.Utils.immediateExecutorService
-import com.apollographql.apollo3.api.Input.Companion.fromNullable
+import com.apollographql.apollo3.api.Input
 import com.apollographql.apollo3.api.Response
 import com.apollographql.apollo3.integration.normalizer.HeroAndFriendsNamesQuery
 import com.apollographql.apollo3.integration.normalizer.type.Episode
@@ -21,7 +21,7 @@ class SendOperationIdentifiersTest {
   @Test
   @Throws(Exception::class)
   fun sendOperationIdsTrue() {
-    val query = HeroAndFriendsNamesQuery(fromNullable(Episode.EMPIRE))
+    val query = HeroAndFriendsNamesQuery(Input.present(Episode.EMPIRE))
     val apolloClient = ApolloClient.builder()
         .serverUrl(server.url("/"))
         .enableAutoPersistedQueries(true)
@@ -37,7 +37,7 @@ class SendOperationIdentifiersTest {
   @Test
   @Throws(Exception::class)
   fun doesNotSendOperationIdsWhenFalse() {
-    val query = HeroAndFriendsNamesQuery(fromNullable(Episode.EMPIRE))
+    val query = HeroAndFriendsNamesQuery(Input.present(Episode.EMPIRE))
     val apolloClient = ApolloClient.builder()
         .serverUrl(server.url("/"))
         .enableAutoPersistedQueries(false)
@@ -53,7 +53,7 @@ class SendOperationIdentifiersTest {
   @Test
   @Throws(Exception::class)
   fun operationIdHttpRequestHeader() {
-    val heroAndFriendsNamesQuery = HeroAndFriendsNamesQuery(fromNullable(Episode.EMPIRE))
+    val heroAndFriendsNamesQuery = HeroAndFriendsNamesQuery(Input.present(Episode.EMPIRE))
     val applicationInterceptorHeader = AtomicBoolean()
     val networkInterceptorHeader = AtomicBoolean()
     val okHttpClient = OkHttpClient.Builder()

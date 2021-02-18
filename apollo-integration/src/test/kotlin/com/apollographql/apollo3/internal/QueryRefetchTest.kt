@@ -63,7 +63,7 @@ class QueryRefetchTest {
   fun refetchNoPreCachedQuery() {
     val mutation = CreateReviewMutation(
         Episode.EMPIRE,
-        ReviewInput(stars = 5, commentary = Input.fromNullable("Awesome"), favoriteColor = ColorInput())
+        ReviewInput(stars = 5, commentary = Input.present("Awesome"), favoriteColor = ColorInput())
     )
     server.enqueue(mockResponse("CreateReviewResponse.json"))
     server.enqueue(mockResponse("ReviewsEmpireEpisodeResponse.json"))
@@ -99,7 +99,7 @@ class QueryRefetchTest {
     }
     val mutation = CreateReviewMutation(
         Episode.EMPIRE,
-        ReviewInput(stars = 5, commentary = Input.fromNullable("Awesome"), favoriteColor = ColorInput())
+        ReviewInput(stars = 5, commentary = Input.present("Awesome"), favoriteColor = ColorInput())
     )
     server.enqueue(mockResponse("CreateReviewResponse.json"))
     server.enqueue(mockResponse("ReviewsEmpireEpisodeResponseUpdated.json"))
@@ -137,7 +137,7 @@ class QueryRefetchTest {
         })
     val mutation = CreateReviewMutation(
         Episode.EMPIRE,
-        ReviewInput(stars = 5, commentary = Input.fromNullable("Awesome"), favoriteColor = ColorInput())
+        ReviewInput(stars = 5, commentary = Input.present("Awesome"), favoriteColor = ColorInput())
     )
     Rx2Apollo
         .from(apolloClient.mutate(mutation).refetchQueries(queryWatcher.operation().name()))

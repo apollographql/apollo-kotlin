@@ -23,7 +23,7 @@ import java.util.concurrent.TimeUnit
 
 class ApolloServerInterceptorTest {
   private val serverUrl = HttpUrl.parse("http://google.com")!!
-  private val query = AllFilmsQuery(after = Input.optional("some cursor"), before = Input.absent(), first = Input.fromNullable(null), last = Input.optional(100))
+  private val query = AllFilmsQuery(after = Input.present("some cursor"), before = Input.absent(), first = Input.absent(), last = Input.present(100))
 
   @Test
   @Throws(Exception::class)
@@ -130,7 +130,7 @@ class ApolloServerInterceptorTest {
       Truth.assertThat(request.header(HttpCache.CACHE_PREFETCH_HEADER)).isNull()
       Truth.assertThat(request.url().queryParameter("query")).isEqualTo(query.queryDocument().replace("\n", ""))
       Truth.assertThat(request.url().queryParameter("operationName")).isEqualTo(query.name())
-      Truth.assertThat(request.url().queryParameter("variables")).isEqualTo("{\"after\":\"some cursor\",\"first\":null,\"last\":100}")
+      Truth.assertThat(request.url().queryParameter("variables")).isEqualTo("{\"after\":\"some cursor\",\"last\":100}")
       Truth.assertThat(request.url().queryParameter("extensions")).isEqualTo("{\"persistedQuery\":{\"version\":1," +
           "\"sha256Hash\":\"" + query.operationId() + "\"}}")
       true

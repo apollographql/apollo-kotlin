@@ -1,7 +1,7 @@
 package com.apollographql.apollo3
 
+import com.apollographql.apollo3.api.Input
 import com.apollographql.apollo3.api.ResponseAdapterCache
-import com.apollographql.apollo3.api.Input.Companion.fromNullable
 import com.apollographql.apollo3.api.Operation
 import com.apollographql.apollo3.api.parse
 import com.apollographql.apollo3.cache.CacheHeaders
@@ -71,7 +71,7 @@ class ResponseNormalizationTest {
   @Test
   @Throws(Exception::class)
   fun testHeroNameWithVariable() {
-    val records = records(EpisodeHeroNameQuery(fromNullable(Episode.JEDI)), "EpisodeHeroNameResponse.json")
+    val records = records(EpisodeHeroNameQuery(Input.present(Episode.JEDI)), "EpisodeHeroNameResponse.json")
     val record = records.get(QUERY_ROOT_KEY)
     val reference = record!![TEST_FIELD_KEY_JEDI] as CacheReference?
     Truth.assertThat(reference).isEqualTo(CacheReference(TEST_FIELD_KEY_JEDI))
@@ -96,7 +96,7 @@ class ResponseNormalizationTest {
   @Test
   @Throws(Exception::class)
   fun testHeroAndFriendsNamesQueryWithoutIDs() {
-    val records = records(HeroAndFriendsNamesQuery(fromNullable(Episode.JEDI)), "HeroAndFriendsNameResponse.json")
+    val records = records(HeroAndFriendsNamesQuery(Input.present(Episode.JEDI)), "HeroAndFriendsNameResponse.json")
     val record = records.get(QUERY_ROOT_KEY)
     val heroReference = record!![TEST_FIELD_KEY_JEDI] as CacheReference?
     Truth.assertThat(heroReference).isEqualTo(CacheReference(TEST_FIELD_KEY_JEDI))
@@ -114,7 +114,7 @@ class ResponseNormalizationTest {
   @Test
   @Throws(Exception::class)
   fun testHeroAndFriendsNamesQueryWithIDs() {
-    val records = records(HeroAndFriendsNamesWithIDsQuery(fromNullable(Episode.JEDI)), "HeroAndFriendsNameWithIdsResponse.json")
+    val records = records(HeroAndFriendsNamesWithIDsQuery(Input.present(Episode.JEDI)), "HeroAndFriendsNameWithIdsResponse.json")
     val record = records.get(QUERY_ROOT_KEY)
     val heroReference = record!![TEST_FIELD_KEY_JEDI] as CacheReference?
     Truth.assertThat(heroReference).isEqualTo(CacheReference("2001"))
@@ -132,7 +132,7 @@ class ResponseNormalizationTest {
   @Test
   @Throws(Exception::class)
   fun testHeroAndFriendsNamesWithIDForParentOnly() {
-    val records = records(HeroAndFriendsNamesWithIDForParentOnlyQuery(fromNullable(Episode.JEDI)), "HeroAndFriendsNameWithIdsParentOnlyResponse.json")
+    val records = records(HeroAndFriendsNamesWithIDForParentOnlyQuery(Input.present(Episode.JEDI)), "HeroAndFriendsNameWithIdsParentOnlyResponse.json")
     val record = records[QUERY_ROOT_KEY]
     val heroReference = record!![TEST_FIELD_KEY_JEDI] as CacheReference?
     Truth.assertThat(heroReference).isEqualTo(CacheReference("2001"))
@@ -162,7 +162,7 @@ class ResponseNormalizationTest {
   @Test
   @Throws(Exception::class)
   fun testHeroTypeDependentAliasedFieldQueryDroid() {
-    val records = records(HeroTypeDependentAliasedFieldQuery(fromNullable(Episode.JEDI)), "HeroTypeDependentAliasedFieldResponse.json")
+    val records = records(HeroTypeDependentAliasedFieldQuery(Input.present(Episode.JEDI)), "HeroTypeDependentAliasedFieldResponse.json")
     val record = records.get(QUERY_ROOT_KEY)
     val heroReference = record!![TEST_FIELD_KEY_JEDI] as CacheReference?
     val hero = records.get(heroReference!!.key)
@@ -173,7 +173,7 @@ class ResponseNormalizationTest {
   @Test
   @Throws(Exception::class)
   fun testHeroTypeDependentAliasedFieldQueryHuman() {
-    val records = records(HeroTypeDependentAliasedFieldQuery(fromNullable(Episode.EMPIRE)), "HeroTypeDependentAliasedFieldResponseHuman.json")
+    val records = records(HeroTypeDependentAliasedFieldQuery(Input.present(Episode.EMPIRE)), "HeroTypeDependentAliasedFieldResponseHuman.json")
     val record = records.get(QUERY_ROOT_KEY)
     val heroReference = record!![TEST_FIELD_KEY_EMPIRE] as CacheReference?
     val hero = records.get(heroReference!!.key)
@@ -184,7 +184,7 @@ class ResponseNormalizationTest {
   @Test
   @Throws(Exception::class)
   fun testHeroParentTypeDependentAliasedFieldQueryHuman() {
-    val records = records(HeroTypeDependentAliasedFieldQuery(fromNullable(Episode.EMPIRE)), "HeroTypeDependentAliasedFieldResponseHuman.json")
+    val records = records(HeroTypeDependentAliasedFieldQuery(Input.present(Episode.EMPIRE)), "HeroTypeDependentAliasedFieldResponseHuman.json")
     val record = records.get(QUERY_ROOT_KEY)
     val heroReference = record!![TEST_FIELD_KEY_EMPIRE] as CacheReference?
     val hero = records.get(heroReference!!.key)
@@ -195,7 +195,7 @@ class ResponseNormalizationTest {
   @Test
   @Throws(Exception::class)
   fun testHeroParentTypeDependentFieldDroid() {
-    val records = records(HeroParentTypeDependentFieldQuery(fromNullable(Episode.JEDI)), "HeroParentTypeDependentFieldDroidResponse.json")
+    val records = records(HeroParentTypeDependentFieldQuery(Input.present(Episode.JEDI)), "HeroParentTypeDependentFieldDroidResponse.json")
     val lukeRecord = records.get(TEST_FIELD_KEY_JEDI + ".friends.0")
     Truth.assertThat(lukeRecord!!["name"]).isEqualTo("Luke Skywalker")
     Truth.assertThat(lukeRecord["height({\"unit\":\"METER\"})"]).isEqualTo(1.72)
@@ -208,7 +208,7 @@ class ResponseNormalizationTest {
   @Test
   @Throws(Exception::class)
   fun testHeroParentTypeDependentFieldHuman() {
-    val records = records(HeroParentTypeDependentFieldQuery(fromNullable(Episode.EMPIRE)), "HeroParentTypeDependentFieldHumanResponse.json")
+    val records = records(HeroParentTypeDependentFieldQuery(Input.present(Episode.EMPIRE)), "HeroParentTypeDependentFieldHumanResponse.json")
 
     val lukeRecord = records.get("$TEST_FIELD_KEY_EMPIRE.friends.0")
     Truth.assertThat(lukeRecord!!["name"]).isEqualTo("Han Solo")

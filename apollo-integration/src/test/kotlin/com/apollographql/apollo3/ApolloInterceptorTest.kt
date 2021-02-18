@@ -180,7 +180,7 @@ class ApolloInterceptorTest {
   }
 
   private fun createHeroNameQuery(): EpisodeHeroNameQuery {
-    return EpisodeHeroNameQuery(episode = Input.fromNullable(Episode.EMPIRE))
+    return EpisodeHeroNameQuery(episode = Input.present(Episode.EMPIRE))
   }
 
   private fun createApolloClient(interceptor: ApolloInterceptor, dispatcher: Executor = immediateExecutor()): ApolloClient {

@@ -246,8 +246,9 @@ class ApolloServerInterceptor(
           }
         }
         is Input<*> -> {
-          val unwrappedValue = value.value
-          recursiveGetUploadData(unwrappedValue, variableName, allUploads)
+          if (value.isPresent) {
+            recursiveGetUploadData(value.getOrThrow(), variableName, allUploads)
+          }
         }
         is FileUpload -> {
           val upload = value

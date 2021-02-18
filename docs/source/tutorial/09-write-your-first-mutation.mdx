@@ -73,7 +73,7 @@ From the click listener, display the ProgressBar and execute the query with the 
             binding.submit.visibility = View.GONE
             lifecycleScope.launchWhenResumed {
                 val response = try {
-                    apolloClient.mutate(LoginMutation(email = Input.fromNullable(email))).await()
+                    apolloClient.mutate(LoginMutation(email = Input.present(email))).await()
                 } catch (e: Exception) {
                     null
                 }

@@ -86,7 +86,7 @@ Start a coroutine and execute the query. Replace the previous single query with 
       var cursor: String? = null
       for (item in channel) {
           val response = try {
-              apolloClient.query(LaunchListQuery(cursor = Input.fromNullable(cursor))).await()
+              apolloClient.query(LaunchListQuery(cursor = Input.present(cursor))).await()
           } catch (e: ApolloException) {
               Log.d("LaunchList", "Failure", e)
               return@launchWhenResumed

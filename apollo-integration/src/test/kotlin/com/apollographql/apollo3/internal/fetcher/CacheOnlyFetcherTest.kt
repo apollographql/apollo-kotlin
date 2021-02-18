@@ -16,7 +16,7 @@ class CacheOnlyFetcherTest : BaseFetcherTest() {
   @Test
   @Throws(IOException::class, ApolloException::class, TimeoutException::class, InterruptedException::class)
   fun enqueue() {
-    val query = EpisodeHeroNameQuery(episode = Input.fromNullable(Episode.EMPIRE))
+    val query = EpisodeHeroNameQuery(episode = Input.present(Episode.EMPIRE))
     var trackingCallback: TrackingCallback
 
     // Is null when cache empty

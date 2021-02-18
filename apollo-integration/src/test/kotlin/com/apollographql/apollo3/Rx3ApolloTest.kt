@@ -59,7 +59,7 @@ class Rx3ApolloTest {
   fun callProducesValue() {
     server.enqueue(mockResponse(FILE_EPISODE_HERO_NAME_WITH_ID))
     Rx3Apollo
-        .from(apolloClient.query(EpisodeHeroNameQuery(Input.fromNullable(EMPIRE))))
+        .from(apolloClient.query(EpisodeHeroNameQuery(Input.present(EMPIRE))))
         .test()
         .assertNoErrors()
         .assertComplete()
@@ -75,7 +75,7 @@ class Rx3ApolloTest {
     server.enqueue(mockResponse(FILE_EPISODE_HERO_NAME_WITH_ID))
     val testObserver = TestObserver<Response<EpisodeHeroNameQuery.Data>>()
     val disposable: Disposable = Rx3Apollo
-        .from(apolloClient.query(EpisodeHeroNameQuery(Input.fromNullable(EMPIRE))))
+        .from(apolloClient.query(EpisodeHeroNameQuery(Input.present(EMPIRE))))
         .subscribeWith(testObserver)
     disposable.dispose()
     testObserver.assertComplete()
@@ -87,7 +87,7 @@ class Rx3ApolloTest {
   fun prefetchCompletes() {
     server.enqueue(mockResponse(FILE_EPISODE_HERO_NAME_WITH_ID))
     Rx3Apollo
-        .from(apolloClient.prefetch(EpisodeHeroNameQuery(Input.fromNullable(EMPIRE))))
+        .from(apolloClient.prefetch(EpisodeHeroNameQuery(Input.present(EMPIRE))))
         .test()
         .assertNoErrors()
         .assertComplete()
@@ -99,7 +99,7 @@ class Rx3ApolloTest {
     server.enqueue(mockResponse(FILE_EPISODE_HERO_NAME_WITH_ID))
     val testObserver: TestObserver<EpisodeHeroNameQuery.Data> = TestObserver<EpisodeHeroNameQuery.Data>()
     val disposable: Disposable = Rx3Apollo
-        .from(apolloClient.prefetch(EpisodeHeroNameQuery(Input.fromNullable(EMPIRE))))
+        .from(apolloClient.prefetch(EpisodeHeroNameQuery(Input.present(EMPIRE))))
         .observeOn(TestScheduler())
         .subscribeWith(testObserver)
     disposable.dispose()
@@ -113,11 +113,11 @@ class Rx3ApolloTest {
     server.enqueue(mockResponse(FILE_EPISODE_HERO_NAME_WITH_ID))
     val observer = TestObserver<EpisodeHeroNameWithIdQuery.Data>()
     Rx3Apollo
-        .from(apolloClient.query(EpisodeHeroNameWithIdQuery(Input.fromNullable(EMPIRE))).watcher())
+        .from(apolloClient.query(EpisodeHeroNameWithIdQuery(Input.present(EMPIRE))).watcher())
         .map { response -> response.data }
         .subscribeWith(observer)
     server.enqueue(mockResponse(FILE_EPISODE_HERO_NAME_CHANGE))
-    apolloClient.query(EpisodeHeroNameWithIdQuery(Input.fromNullable(EMPIRE)))
+    apolloClient.query(EpisodeHeroNameWithIdQuery(Input.present(EMPIRE)))
         .responseFetcher(NETWORK_ONLY)
         .enqueue(null)
     observer.assertValueCount(2)
@@ -138,7 +138,7 @@ class Rx3ApolloTest {
     server.enqueue(mockResponse(FILE_EPISODE_HERO_NAME_WITH_ID))
     val observer: TestObserver<EpisodeHeroNameQuery.Data> = TestObserver<EpisodeHeroNameQuery.Data>()
     Rx3Apollo
-        .from(apolloClient.query(EpisodeHeroNameQuery(Input.fromNullable(EMPIRE))).watcher())
+        .from(apolloClient.query(EpisodeHeroNameQuery(Input.present(EMPIRE))).watcher())
         .retry(1)
         .map({ response -> response.data })
         .subscribeWith(observer)
@@ -155,11 +155,11 @@ class Rx3ApolloTest {
     server.enqueue(mockResponse(FILE_EPISODE_HERO_NAME_WITH_ID))
     val observer: TestObserver<EpisodeHeroNameQuery.Data> = TestObserver<EpisodeHeroNameQuery.Data>()
     Rx3Apollo
-        .from(apolloClient.query(EpisodeHeroNameQuery(Input.fromNullable(EMPIRE))).watcher())
+        .from(apolloClient.query(EpisodeHeroNameQuery(Input.present(EMPIRE))).watcher())
         .map({ response -> response.data })
         .subscribeWith(observer)
     server.enqueue(mockResponse(FILE_EPISODE_HERO_NAME_WITH_ID))
-    apolloClient.query(EpisodeHeroNameQuery(Input.fromNullable(EMPIRE))).responseFetcher(NETWORK_ONLY)
+    apolloClient.query(EpisodeHeroNameQuery(Input.present(EMPIRE))).responseFetcher(NETWORK_ONLY)
         .enqueue(null)
     observer
         .assertValueCount(1)
@@ -175,11 +175,11 @@ class Rx3ApolloTest {
     server.enqueue(mockResponse(FILE_EPISODE_HERO_NAME_WITH_ID))
     val observer = TestObserver<EpisodeHeroNameWithIdQuery.Data>()
     Rx3Apollo
-        .from(apolloClient.query(EpisodeHeroNameWithIdQuery(Input.fromNullable(EMPIRE))).watcher())
+        .from(apolloClient.query(EpisodeHeroNameWithIdQuery(Input.present(EMPIRE))).watcher())
         .map { response -> response.data }
         .subscribeWith(observer)
     server.enqueue(mockResponse("HeroAndFriendsNameWithIdsNameChange.json"))
-    apolloClient.query(HeroAndFriendsNamesWithIDsQuery(Input.fromNullable(NEWHOPE))).enqueue(null)
+    apolloClient.query(HeroAndFriendsNamesWithIDsQuery(Input.present(NEWHOPE))).enqueue(null)
     observer
         .assertValueCount(2)
         .assertValueAt(0) { data ->
@@ -199,13 +199,13 @@ class Rx3ApolloTest {
     val testObserver: TestObserver<EpisodeHeroNameQuery.Data> = TestObserver<EpisodeHeroNameQuery.Data>()
     val scheduler = TestScheduler()
     val disposable: Disposable = Rx3Apollo
-        .from(apolloClient.query(EpisodeHeroNameQuery(Input.fromNullable(EMPIRE))).watcher())
+        .from(apolloClient.query(EpisodeHeroNameQuery(Input.present(EMPIRE))).watcher())
         .map({ response -> response.data })
         .observeOn(scheduler)
         .subscribeWith(testObserver)
     scheduler.triggerActions()
     server.enqueue(mockResponse(FILE_EPISODE_HERO_NAME_CHANGE))
-    apolloClient.query(EpisodeHeroNameQuery(Input.fromNullable(EMPIRE))).responseFetcher(NETWORK_ONLY)
+    apolloClient.query(EpisodeHeroNameQuery(Input.present(EMPIRE))).responseFetcher(NETWORK_ONLY)
         .enqueue(null)
     disposable.dispose()
     scheduler.triggerActions()

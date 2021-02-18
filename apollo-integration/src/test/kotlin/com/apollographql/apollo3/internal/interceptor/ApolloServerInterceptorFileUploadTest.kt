@@ -45,12 +45,12 @@ class ApolloServerInterceptorFileUploadTest {
     }
   }
 
-  private val nestedObject0 = NestedObject(file = Input.optional(upload0), fileList = Input.optional(listOf(upload1, upload2)))
-  private val nestedObject1 = NestedObject(file = Input.optional(upload1), fileList = Input.optional(listOf(upload0, upload2)))
+  private val nestedObject0 = NestedObject(file = Input.present(upload0), fileList = Input.present(listOf(upload1, upload2)))
+  private val nestedObject1 = NestedObject(file = Input.present(upload1), fileList = Input.present(listOf(upload0, upload2)))
   private val nestedObject2 = NestedObject(
-      file = Input.optional(upload2),
-      fileList = Input.optional(listOf(upload0, upload1)),
-      recursiveNested = Input.optional(listOf(nestedObject0, nestedObject1))
+      file = Input.present(upload2),
+      fileList = Input.present(listOf(upload0, upload1)),
+      recursiveNested = Input.present(listOf(nestedObject0, nestedObject1))
   )
 
   private val mutationSingle = SingleUploadMutation(file = upload1)
@@ -61,7 +61,7 @@ class ApolloServerInterceptorFileUploadTest {
 
   private lateinit var mutationMultiple: MultipleUploadMutation
 
-  private val mutationNested = NestedUploadMutation(nested = Input.optional(nestedObject2), topFile = Input.optional(upload2), topFileList = Input.optional(listOf(upload1, upload0)))
+  private val mutationNested = NestedUploadMutation(nested = Input.present(nestedObject2), topFile = Input.present(upload2), topFileList = Input.present(listOf(upload1, upload0)))
 
   private fun createFile(fileName: String, content: String): String {
     val tempDir = System.getProperty("java.io.tmpdir")

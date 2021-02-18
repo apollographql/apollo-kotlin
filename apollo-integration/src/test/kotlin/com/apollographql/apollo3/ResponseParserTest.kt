@@ -98,7 +98,7 @@ class ResponseParserTest {
   @Test
   @Throws(Exception::class)
   fun errorResponse_with_data() {
-    val response = EpisodeHeroNameQuery(Input.fromNullable(Episode.JEDI)).parse(Utils.readResource("ResponseErrorWithData.json"))
+    val response = EpisodeHeroNameQuery(Input.present(Episode.JEDI)).parse(Utils.readResource("ResponseErrorWithData.json"))
     val data = response.data
     val errors = response.errors
     assertThat(data).isNotNull()
@@ -176,7 +176,7 @@ class ResponseParserTest {
   @Test
   @Throws(Exception::class)
   fun parseErrorOperationRawResponse() {
-    val response = EpisodeHeroNameQuery(Input.fromNullable(Episode.EMPIRE)).parse(
+    val response = EpisodeHeroNameQuery(Input.present(Episode.EMPIRE)).parse(
         Buffer().readFrom(javaClass.getResourceAsStream("/ResponseErrorWithData.json")),
         ResponseAdapterCache(emptyMap())
     )

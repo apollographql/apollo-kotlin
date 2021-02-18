@@ -16,7 +16,7 @@ class CacheAndNetworkFetcherTest : BaseFetcherTest() {
   @Test
   @Throws(IOException::class, ApolloException::class)
   fun enqueue() {
-    val query = EpisodeHeroNameQuery(episode = Input.fromNullable(Episode.EMPIRE))
+    val query = EpisodeHeroNameQuery(episode = Input.present(Episode.EMPIRE))
     var trackingCallback: TrackingCallback
 
     // Has error when cache empty, and network error

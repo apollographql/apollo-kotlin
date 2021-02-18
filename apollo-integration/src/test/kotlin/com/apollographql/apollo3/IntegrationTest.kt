@@ -110,7 +110,7 @@ class IntegrationTest {
   @Test
   @Throws(Exception::class)
   fun writeOperationRawRequest() {
-    val query = EpisodeHeroNameQuery(Input.fromNullable(Episode.EMPIRE))
+    val query = EpisodeHeroNameQuery(Input.present(Episode.EMPIRE))
 
     assertThat(query.name()).isEqualTo("EpisodeHeroName")
     assertThat(query.queryDocument()).isEqualTo("query EpisodeHeroName(\$episode: Episode) { hero(episode: \$episode) { name } }")

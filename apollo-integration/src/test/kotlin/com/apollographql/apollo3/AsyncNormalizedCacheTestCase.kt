@@ -44,7 +44,7 @@ class AsyncNormalizedCacheTestCase {
   @Test
   @Throws(IOException::class, InterruptedException::class, ApolloException::class)
   fun testAsync() {
-    val query: EpisodeHeroNameQuery = EpisodeHeroNameQuery(episode = Input.fromNullable(Episode.EMPIRE))
+    val query: EpisodeHeroNameQuery = EpisodeHeroNameQuery(episode = Input.present(Episode.EMPIRE))
     for (i in 0..499) {
       server.enqueue(mockResponse("HeroNameResponse.json"))
     }

@@ -6,7 +6,6 @@ import com.apollographql.apollo3.Utils.immediateExecutor
 import com.apollographql.apollo3.Utils.immediateExecutorService
 import com.apollographql.apollo3.Utils.readFileToString
 import com.apollographql.apollo3.api.Input
-import com.apollographql.apollo3.api.Input.Companion.fromNullable
 import com.apollographql.apollo3.api.Response
 import com.apollographql.apollo3.cache.normalized.MemoryCacheFactory
 import com.apollographql.apollo3.exception.ApolloException
@@ -54,7 +53,7 @@ class OptimisticCacheTestCase {
   @Test
   @Throws(Exception::class)
   fun simple() {
-    val query = HeroAndFriendsNamesQuery(fromNullable(Episode.JEDI))
+    val query = HeroAndFriendsNamesQuery(Input.present(Episode.JEDI))
     enqueueAndAssertResponse(
         server,
         "HeroAndFriendsNameResponse.json",
@@ -98,7 +97,7 @@ class OptimisticCacheTestCase {
   @Test
   @Throws(Exception::class)
   fun two_optimistic_two_rollback() {
-    val query1 = HeroAndFriendsNamesWithIDsQuery(fromNullable(Episode.JEDI))
+    val query1 = HeroAndFriendsNamesWithIDsQuery(Input.present(Episode.JEDI))
     val mutationId1 = UUID.randomUUID()
 
     // execute query1 from the network
@@ -275,7 +274,7 @@ class OptimisticCacheTestCase {
     val updateReviewMutation = UpdateReviewMutation(
         "empireReview2",
         ReviewInput(
-            commentary = fromNullable("Great"),
+            commentary = Input.present("Great"),
             stars = 5,
             favoriteColor = ColorInput()
         )
@@ -329,7 +328,7 @@ class OptimisticCacheTestCase {
   @Test
   @Throws(Exception::class)
   fun two_optimistic_reverse_rollback_order() {
-    val query1 = HeroAndFriendsNamesWithIDsQuery(fromNullable(Episode.JEDI))
+    val query1 = HeroAndFriendsNamesWithIDsQuery(Input.present(Episode.JEDI))
     val mutationId1 = UUID.randomUUID()
     val query2 = HeroNameWithIdQuery()
     val mutationId2 = UUID.randomUUID()

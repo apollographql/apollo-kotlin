@@ -58,7 +58,7 @@ class CoroutinesApolloTest {
 
     runBlocking {
       val response: Response<EpisodeHeroNameQuery.Data> =
-      apolloClient.query(EpisodeHeroNameQuery(Input.fromNullable(Episode.EMPIRE))).await()
+      apolloClient.query(EpisodeHeroNameQuery(Input.present(Episode.EMPIRE))).await()
       assertThat(response.data!!.hero!!.name).isEqualTo("R2-D2")
     }
   }
@@ -69,7 +69,7 @@ class CoroutinesApolloTest {
 
     runBlocking {
         val response: Response<EpisodeHeroNameQuery.Data> =
-        apolloClient.query(EpisodeHeroNameQuery(Input.fromNullable(Episode.EMPIRE))).toDeferred().await()
+        apolloClient.query(EpisodeHeroNameQuery(Input.present(Episode.EMPIRE))).toDeferred().await()
         assertThat(response.data!!.hero!!.name).isEqualTo("R2-D2")
     }
   }
@@ -79,7 +79,7 @@ class CoroutinesApolloTest {
     server.enqueue(mockResponse(FILE_EPISODE_HERO_NAME_WITH_ID))
 
     runBlocking {
-      apolloClient.prefetch(EpisodeHeroNameQuery(Input.fromNullable(Episode.EMPIRE))).await()
+      apolloClient.prefetch(EpisodeHeroNameQuery(Input.present(Episode.EMPIRE))).await()
     }
   }
 
@@ -89,7 +89,7 @@ class CoroutinesApolloTest {
     server.enqueue(mockResponse(FILE_EPISODE_HERO_NAME_WITH_ID).throttleBody(1, 5000, TimeUnit.MILLISECONDS))
 
     runBlocking {
-      val prefetchCall = apolloClient.prefetch(EpisodeHeroNameQuery(Input.fromNullable(Episode.EMPIRE)))
+      val prefetchCall = apolloClient.prefetch(EpisodeHeroNameQuery(Input.present(Episode.EMPIRE)))
       val job = async {
         prefetchCall.await()
       }
@@ -102,7 +102,7 @@ class CoroutinesApolloTest {
     server.enqueue(mockResponse(FILE_EPISODE_HERO_NAME_WITH_ID))
 
     runBlocking {
-      val job = apolloClient.prefetch(EpisodeHeroNameQuery(Input.fromNullable(Episode.EMPIRE)))
+      val job = apolloClient.prefetch(EpisodeHeroNameQuery(Input.present(Episode.EMPIRE)))
           .toJob()
       job.cancel()
     }
@@ -113,7 +113,7 @@ class CoroutinesApolloTest {
   fun flowCanBeRead() {
     server.enqueue(mockResponse(FILE_EPISODE_HERO_NAME_WITH_ID))
 
-    val flow = apolloClient.query(EpisodeHeroNameQuery(Input.fromNullable(Episode.EMPIRE))).toFlow()
+    val flow = apolloClient.query(EpisodeHeroNameQuery(Input.present(Episode.EMPIRE))).toFlow()
 
     runBlocking {
       val result = mutableListOf<Response<EpisodeHeroNameQuery.Data>>()
@@ -128,7 +128,7 @@ class CoroutinesApolloTest {
   fun flowError() {
     server.enqueue(MockResponse().setResponseCode(200).setBody("nonsense"))
 
-    val flow = apolloClient.query(EpisodeHeroNameQuery(Input.fromNullable(Episode.EMPIRE))).toFlow()
+    val flow = apolloClient.query(EpisodeHeroNameQuery(Input.present(Episode.EMPIRE))).toFlow()
 
     runBlocking {
       val result = mutableListOf<Response<EpisodeHeroNameQuery.Data>>()
@@ -150,7 +150,7 @@ class CoroutinesApolloTest {
 
     val response: Response<EpisodeHeroNameQuery.Data> = runBlocking {
       apolloClient
-          .query(EpisodeHeroNameQuery(Input.fromNullable(Episode.EMPIRE)))
+          .query(EpisodeHeroNameQuery(Input.present(Episode.EMPIRE)))
           .toFlow()
           .retry(retries = 1)
           .single()
@@ -167,7 +167,7 @@ class CoroutinesApolloTest {
 
     val response: Response<EpisodeHeroNameQuery.Data> = runBlocking {
       apolloClient
-          .query(EpisodeHeroNameQuery(Input.fromNullable(Episode.EMPIRE)))
+          .query(EpisodeHeroNameQuery(Input.present(Episode.EMPIRE)))
           .watcher()
           .toFlow()
           .retry(retries = 1)

@@ -3,7 +3,7 @@ package com.apollographql.apollo3
 import com.apollographql.apollo3.Utils.immediateExecutor
 import com.apollographql.apollo3.Utils.immediateExecutorService
 import com.apollographql.apollo3.Utils.readFileToString
-import com.apollographql.apollo3.api.Input.Companion.fromNullable
+import com.apollographql.apollo3.api.Input
 import com.apollographql.apollo3.api.internal.json.JsonReader
 import com.apollographql.apollo3.cache.ApolloCacheHeaders
 import com.apollographql.apollo3.cache.CacheHeaders
@@ -77,7 +77,7 @@ class CacheHeadersTest {
         .build()
     server.enqueue(mockResponse("HeroAndFriendsNameResponse.json"))
     val cacheHeaders = builder().addHeader(ApolloCacheHeaders.DO_NOT_STORE, "true").build()
-    Rx2Apollo.from(apolloClient.query(HeroAndFriendsNamesQuery(fromNullable(Episode.NEWHOPE)))
+    Rx2Apollo.from(apolloClient.query(HeroAndFriendsNamesQuery(Input.present(Episode.NEWHOPE)))
         .cacheHeaders(cacheHeaders))
         .test()
     Truth.assertThat(hasHeader.get()).isTrue()
@@ -134,7 +134,7 @@ class CacheHeadersTest {
     server.enqueue(mockResponse("HeroAndFriendsNameResponse.json"))
 
     runBlocking {
-      apolloClient.query(HeroAndFriendsNamesQuery(fromNullable(Episode.NEWHOPE)))
+      apolloClient.query(HeroAndFriendsNamesQuery(Input.present(Episode.NEWHOPE)))
           .cacheHeaders(cacheHeaders)
           .await()
     }

@@ -3,14 +3,15 @@ package com.apollographql.apollo3
 import com.apollographql.apollo3.ApolloClient.Builder
 import com.apollographql.apollo3.api.CustomScalar
 import com.apollographql.apollo3.api.CustomScalarAdapter
-import com.apollographql.apollo3.api.ResponseAdapterCache
 import com.apollographql.apollo3.api.Mutation
 import com.apollographql.apollo3.api.Operation
 import com.apollographql.apollo3.api.Query
+import com.apollographql.apollo3.api.ResponseAdapterCache
 import com.apollographql.apollo3.api.Subscription
 import com.apollographql.apollo3.api.cache.http.HttpCache
 import com.apollographql.apollo3.api.cache.http.HttpCachePolicy
 import com.apollographql.apollo3.api.internal.ApolloLogger
+import com.apollographql.apollo3.api.internal.Optional
 import com.apollographql.apollo3.api.internal.Optional.Companion.absent
 import com.apollographql.apollo3.api.internal.Optional.Companion.fromNullable
 import com.apollographql.apollo3.api.internal.Optional.Companion.of
@@ -19,6 +20,7 @@ import com.apollographql.apollo3.cache.normalized.ApolloStore
 import com.apollographql.apollo3.cache.normalized.CacheKeyResolver
 import com.apollographql.apollo3.cache.normalized.NormalizedCache
 import com.apollographql.apollo3.cache.normalized.NormalizedCacheFactory
+import com.apollographql.apollo3.cache.normalized.internal.RealApolloStore
 import com.apollographql.apollo3.fetcher.ApolloResponseFetchers
 import com.apollographql.apollo3.fetcher.ResponseFetcher
 import com.apollographql.apollo3.interceptor.ApolloInterceptor
@@ -26,7 +28,6 @@ import com.apollographql.apollo3.interceptor.ApolloInterceptorFactory
 import com.apollographql.apollo3.internal.ApolloCallTracker
 import com.apollographql.apollo3.internal.RealApolloCall
 import com.apollographql.apollo3.internal.RealApolloPrefetch
-import com.apollographql.apollo3.cache.normalized.internal.RealApolloStore
 import com.apollographql.apollo3.internal.RealApolloSubscriptionCall
 import com.apollographql.apollo3.internal.subscription.NoOpSubscriptionManager
 import com.apollographql.apollo3.internal.subscription.RealSubscriptionManager
@@ -383,8 +384,8 @@ class ApolloClient internal constructor(
     @JvmOverloads
     fun normalizedCache(normalizedCacheFactory: NormalizedCacheFactory<*>,
                         keyResolver: CacheKeyResolver = CacheKeyResolver.DEFAULT, writeToCacheAsynchronously: Boolean = false): Builder {
-      cacheFactory = fromNullable(normalizedCacheFactory)
-      cacheKeyResolver = fromNullable(keyResolver)
+      cacheFactory = Optional.fromNullable(normalizedCacheFactory)
+      cacheKeyResolver = Optional.fromNullable((keyResolver))
       writeToNormalizedCacheAsynchronously = writeToCacheAsynchronously
       return this
     }

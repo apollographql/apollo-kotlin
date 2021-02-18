@@ -54,13 +54,13 @@ Replace all usages of `apolloClient` with `apolloClient(context)`. There is one 
 
 ```kotlin
 // LaunchListFragment
-apolloClient(requireContext()).query(LaunchListQuery(cursor = Input.fromNullable(cursor))).await()
+apolloClient(requireContext()).query(LaunchListQuery(cursor = Input.present(cursor))).await()
 
 // LaunchDetailsFragment
 apolloClient(requireContext()).query(LaunchDetailsQuery(id = args.launchId)).await()
 
 // LoginFragment
-apolloClient(requireContext()).mutate(LoginMutation(email = Input.fromNullable(email))).await()
+apolloClient(requireContext()).mutate(LoginMutation(email = Input.present(email))).await()
 
 ```
 
