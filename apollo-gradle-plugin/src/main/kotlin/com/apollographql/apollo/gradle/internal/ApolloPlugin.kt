@@ -11,6 +11,7 @@ import org.gradle.api.Task
 import org.gradle.api.artifacts.Configuration
 import org.gradle.api.artifacts.ConfigurationContainer
 import org.gradle.api.attributes.Usage
+import org.gradle.api.provider.Provider
 import org.gradle.api.tasks.TaskProvider
 import org.gradle.util.GradleVersion
 import java.net.URLDecoder
@@ -286,7 +287,7 @@ open class ApolloPlugin : Plugin<Project> {
 
     data class Dep(val name: String, val version: String?)
 
-    fun getDeps(configurations: ConfigurationContainer): List<Dep> {
+    fun getDeps(configurations: List<Configuration>): List<Dep> {
       return configurations.flatMap { configuration ->
         configuration.incoming.dependencies
             .filter {
@@ -301,20 +302,34 @@ open class ApolloPlugin : Plugin<Project> {
       return project.tasks.register(ModelNames.checkApolloVersions()) {
         val outputFile = BuildDirLayout.versionCheck(project)
 
-        val allDeps = (
-            getDeps(project.rootProject.buildscript.configurations) +
-                getDeps(project.buildscript.configurations) +
-                getDeps(project.configurations)
-            )
-
-        val allVersions = allDeps.mapNotNull { it.version }.distinct().sorted()
-        it.inputs.property("allVersions", allVersions)
         it.outputs.file(outputFile)
 
+        it.inputs.property("versions") {
+          val allConfigurations = project.rootProject.buildscript.configurations +
+                  project.buildscript.configurations +
+                  project.configurations
+
+          /**
+           * This includes all the configurations in the dependency resolution so it
+           * "freezes" them and adding dependencies after [getDeps] fails with:
+           *
+           * Cannot change dependencies of dependency configuration '$configuration'
+           * after it has been included in dependency resolution.
+           *
+           * Since this is lazy, it should hopefully be called after all other plugins
+           * have had a chance to change the dependencies
+           */
+          getDeps(allConfigurations.toList())
+                  .mapNotNull { it.version }
+                  .distinct()
+                  .sorted()
+        }
+
         it.doLast {
+          val allVersions = it.inputs.properties["versions"] as List<String>
+
           check(allVersions.size <= 1) {
-            val found = allDeps.map { "${it.name}:${it.version}" }.distinct().joinToString("\n")
-            "All apollo versions should be the same. Found:\n$found"
+            "ApolloGraphQL: All apollo versions should be the same. Found:\n$allVersions"
           }
 
           val version = allVersions.firstOrNull()
