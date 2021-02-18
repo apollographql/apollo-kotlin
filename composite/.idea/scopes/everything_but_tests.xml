@@ -1,0 +1,3 @@
+<component name="DependencyValidationManager">
+  <scope name="everything-but-tests" pattern="(file[apollo-composite.*]:*/||file[apollo-android.*]:*/)&amp;&amp;!file[apollo-android.apollo-compiler.test]:graphql//*" />
+</component>
