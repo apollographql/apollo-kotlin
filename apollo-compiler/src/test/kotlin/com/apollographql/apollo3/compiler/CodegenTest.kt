@@ -1,6 +1,7 @@
 package com.apollographql.apollo3.compiler
 
 import com.apollographql.apollo3.compiler.TestUtils.checkTestFixture
+import com.apollographql.apollo3.compiler.TestUtils.shouldUpdateMeasurements
 import com.apollographql.apollo3.compiler.TestUtils.shouldUpdateTestFixtures
 import org.junit.AfterClass
 import org.junit.Test
@@ -81,7 +82,7 @@ class CodegenTest(private val folder: File) {
     @AfterClass
     @JvmStatic
     fun dumpTimes() {
-      if (shouldUpdateTestFixtures()) {
+      if (shouldUpdateMeasurements()) {
         File("src/test/graphql/com/example/measurements").writeText(
             measurements
                 .sortedByDescending {

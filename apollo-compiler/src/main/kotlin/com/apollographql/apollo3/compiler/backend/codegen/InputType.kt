@@ -64,7 +64,7 @@ private fun CodeGenerationAst.InputField.parameterSpec(): ParameterSpec {
       ?.toDefaultValueCodeBlock(typeName = rawTypeName, fieldType = type)
       .let { code ->
         if (type.nullable) {
-          code?.let { CodeBlock.of("%T.optional(%L)", Input::class, it) } ?: CodeBlock.of("%T.absent()", Input::class)
+          code?.let { CodeBlock.of("%T.present(%L)", Input::class, it) } ?: CodeBlock.of("%T.absent()", Input::class)
         } else {
           code
         }
@@ -101,9 +101,9 @@ internal fun CodeGenerationAst.InputField.writeCodeBlock(thisRef: String): CodeB
       is CodeGenerationAst.FieldType.Scalar.String -> {
         if (type.nullable) {
           CodeBlock.builder()
-              .addStatement("if·(this@%L.%L.defined)·{", thisRef, name.escapeKotlinReservedWord())
+              .addStatement("if·(this@%L.%L.isPresent)·{", thisRef, name.escapeKotlinReservedWord())
               .indent()
-              .addStatement("writer.writeString(%S, this@%L.%L.value)", schemaName, thisRef, name.escapeKotlinReservedWord())
+              .addStatement("writer.writeString(%S, this@%L.%L.getOrThrow())", schemaName, thisRef, name.escapeKotlinReservedWord())
               .unindent()
               .addStatement("}")
               .build()
@@ -114,10 +114,10 @@ internal fun CodeGenerationAst.InputField.writeCodeBlock(thisRef: String): CodeB
       is CodeGenerationAst.FieldType.Scalar.Int -> {
         if (type.nullable) {
           CodeBlock.builder()
-              .addStatement("if·(this@%L.%L.defined)·{", thisRef, name.escapeKotlinReservedWord())
+              .addStatement("if·(this@%L.%L.isPresent)·{", thisRef, name.escapeKotlinReservedWord())
               .indent()
               .addStatement(
-                  "writer.writeInt(%S, this@%L.%L.value)",
+                  "writer.writeInt(%S, this@%L.%L.getOrThrow())",
                   schemaName,
                   thisRef,
                   name.escapeKotlinReservedWord()
@@ -132,9 +132,9 @@ internal fun CodeGenerationAst.InputField.writeCodeBlock(thisRef: String): CodeB
       is CodeGenerationAst.FieldType.Scalar.Boolean -> {
         if (type.nullable) {
           CodeBlock.builder()
-              .addStatement("if·(this@%L.%L.defined)·{", thisRef, name.escapeKotlinReservedWord())
+              .addStatement("if·(this@%L.%L.isPresent)·{", thisRef, name.escapeKotlinReservedWord())
               .indent()
-              .addStatement("writer.writeBoolean(%S, this@%L.%L.value)", schemaName, thisRef, name.escapeKotlinReservedWord())
+              .addStatement("writer.writeBoolean(%S, this@%L.%L.getOrThrow())", schemaName, thisRef, name.escapeKotlinReservedWord())
               .unindent()
               .addStatement("}")
               .build()
@@ -145,9 +145,9 @@ internal fun CodeGenerationAst.InputField.writeCodeBlock(thisRef: String): CodeB
       is CodeGenerationAst.FieldType.Scalar.Float -> {
         if (type.nullable) {
           CodeBlock.builder()
-              .addStatement("if·(this@%L.%L.defined)·{", thisRef, name.escapeKotlinReservedWord())
+              .addStatement("if·(this@%L.%L.isPresent)·{", thisRef, name.escapeKotlinReservedWord())
               .indent()
-              .addStatement("writer.writeDouble(%S, this@%L.%L.value)", schemaName, thisRef, name.escapeKotlinReservedWord())
+              .addStatement("writer.writeDouble(%S, this@%L.%L.getOrThrow())", schemaName, thisRef, name.escapeKotlinReservedWord())
               .unindent()
               .addStatement("}")
               .build()
@@ -158,9 +158,9 @@ internal fun CodeGenerationAst.InputField.writeCodeBlock(thisRef: String): CodeB
       is CodeGenerationAst.FieldType.Scalar.Enum -> {
         if (type.nullable) {
           CodeBlock.builder()
-              .addStatement("if·(this@%L.%L.defined)·{", thisRef, name.escapeKotlinReservedWord())
+              .addStatement("if·(this@%L.%L.isPresent)·{", thisRef, name.escapeKotlinReservedWord())
               .indent()
-              .addStatement("writer.writeString(%S, this@%L.%L.value?.rawValue)", schemaName, thisRef, name.escapeKotlinReservedWord())
+              .addStatement("writer.writeString(%S, this@%L.%L.getOrThrow()?.rawValue)", schemaName, thisRef, name.escapeKotlinReservedWord())
               .unindent()
               .addStatement("}")
               .build()
@@ -171,10 +171,10 @@ internal fun CodeGenerationAst.InputField.writeCodeBlock(thisRef: String): CodeB
       is CodeGenerationAst.FieldType.Scalar.Custom -> {
         if (type.nullable) {
           CodeBlock.builder()
-              .addStatement("if·(this@%L.%L.defined)·{", thisRef, name)
+              .addStatement("if·(this@%L.%L.isPresent)·{", thisRef, name)
               .indent()
               .addStatement(
-                  "writer.writeCustom(%S, %T, this@%L.%L.value)",
+                  "writer.writeCustom(%S, %T, this@%L.%L.getOrThrow())",
                   schemaName,
                   type.typeRef.asTypeName(),
                   thisRef,
@@ -197,9 +197,9 @@ internal fun CodeGenerationAst.InputField.writeCodeBlock(thisRef: String): CodeB
     is CodeGenerationAst.FieldType.Object -> {
       if (type.nullable) {
         CodeBlock.builder()
-            .addStatement("if·(this@%L.%L.defined)·{", thisRef, name.escapeKotlinReservedWord())
+            .addStatement("if·(this@%L.%L.isPresent)·{", thisRef, name.escapeKotlinReservedWord())
             .indent()
-            .addStatement("writer.writeObject(%S, this@%L.%L.value?.marshaller())", schemaName, thisRef, name.escapeKotlinReservedWord())
+            .addStatement("writer.writeObject(%S, this@%L.%L.getOrThrow()?.marshaller())", schemaName, thisRef, name.escapeKotlinReservedWord())
             .unindent()
             .addStatement("}")
             .build()
@@ -211,8 +211,8 @@ internal fun CodeGenerationAst.InputField.writeCodeBlock(thisRef: String): CodeB
       val codeBlockBuilder: CodeBlock.Builder = CodeBlock.Builder()
       if (type.nullable) {
         codeBlockBuilder
-            .beginControlFlow("if·(this@%L.%L.defined)", thisRef, name)
-            .add("writer.writeList(%S, this@%L.%L.value?.let { value ->\n", schemaName, thisRef, name.escapeKotlinReservedWord())
+            .beginControlFlow("if·(this@%L.%L.isPresent)", thisRef, name)
+            .add("writer.writeList(%S, this@%L.%L.getOrThrow()?.let { value ->\n", schemaName, thisRef, name.escapeKotlinReservedWord())
             .indent()
             .beginControlFlow("%T { listItemWriter ->", InputFieldWriter.ListWriter::class)
             .beginControlFlow("value.forEach·{ value ->")

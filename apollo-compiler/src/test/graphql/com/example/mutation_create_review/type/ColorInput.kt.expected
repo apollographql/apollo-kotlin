@@ -26,7 +26,7 @@ internal data class ColorInput(
   /**
    * Green color
    */
-  val green: Input<Double> = Input.optional(0.0),
+  val green: Input<Double> = Input.present(0.0),
   /**
    * Blue color
    */
@@ -34,7 +34,7 @@ internal data class ColorInput(
   /**
    * for test purpose only
    */
-  val enumWithDefaultValue: Input<Episode> = Input.optional(Episode.NEW),
+  val enumWithDefaultValue: Input<Episode> = Input.present(Episode.NEW),
   /**
    * Circle ref to review input
    */
@@ -42,16 +42,17 @@ internal data class ColorInput(
 ) : InputType {
   override fun marshaller(): InputFieldMarshaller = InputFieldMarshaller.invoke { writer ->
     writer.writeInt("red", this@ColorInput.red)
-    if (this@ColorInput.green.defined) {
-      writer.writeDouble("green", this@ColorInput.green.value)
+    if (this@ColorInput.green.isPresent) {
+      writer.writeDouble("green", this@ColorInput.green.getOrThrow())
     }
     writer.writeDouble("blue", this@ColorInput.blue)
-    if (this@ColorInput.enumWithDefaultValue.defined) {
+    if (this@ColorInput.enumWithDefaultValue.isPresent) {
       writer.writeString("enumWithDefaultValue",
-          this@ColorInput.enumWithDefaultValue.value?.rawValue)
+          this@ColorInput.enumWithDefaultValue.getOrThrow()?.rawValue)
     }
-    if (this@ColorInput.reviewRefInput.defined) {
-      writer.writeObject("reviewRefInput", this@ColorInput.reviewRefInput.value?.marshaller())
+    if (this@ColorInput.reviewRefInput.isPresent) {
+      writer.writeObject("reviewRefInput",
+          this@ColorInput.reviewRefInput.getOrThrow()?.marshaller())
     }
   }
 }

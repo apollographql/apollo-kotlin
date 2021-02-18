@@ -32,15 +32,15 @@ data class TestQuery(
   @Transient
   private val variables: Operation.Variables = object : Operation.Variables() {
     override fun valueMap(): Map<String, Any?> = mutableMapOf<String, Any?>().apply {
-      if (this@TestQuery.episode.defined) {
-        this["episode"] = this@TestQuery.episode.value
+      if (this@TestQuery.episode.isPresent) {
+        this["episode"] = this@TestQuery.episode.getOrThrow()
       }
     }
 
     override fun marshaller(): InputFieldMarshaller {
       return InputFieldMarshaller.invoke { writer ->
-        if (this@TestQuery.episode.defined) {
-          writer.writeString("episode", this@TestQuery.episode.value?.rawValue)
+        if (this@TestQuery.episode.isPresent) {
+          writer.writeString("episode", this@TestQuery.episode.getOrThrow()?.rawValue)
         }
       }
     }

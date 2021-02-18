@@ -30,7 +30,7 @@ data class ReviewInput(
   /**
    * for test purpose only
    */
-  val nullableIntFieldWithDefaultValue: Input<Int> = Input.optional(10),
+  val nullableIntFieldWithDefaultValue: Input<Int> = Input.present(10),
   /**
    * Comment about the movie, optional
    */
@@ -42,7 +42,7 @@ data class ReviewInput(
   /**
    * for test purpose only
    */
-  val enumWithDefaultValue: Input<Episode> = Input.optional(Episode.JEDI),
+  val enumWithDefaultValue: Input<Episode> = Input.present(Episode.JEDI),
   /**
    * for test purpose only
    */
@@ -62,15 +62,15 @@ data class ReviewInput(
   /**
    * for test purpose only
    */
-  val listOfEnums: Input<List<Episode?>> = Input.optional(listOf(Episode.NEWHOPE, Episode.EMPIRE)),
+  val listOfEnums: Input<List<Episode?>> = Input.present(listOf(Episode.NEWHOPE, Episode.EMPIRE)),
   /**
    * for test purpose only
    */
-  val listOfInt: Input<List<Int?>> = Input.optional(listOf(1, 2, 3)),
+  val listOfInt: Input<List<Int?>> = Input.present(listOf(1, 2, 3)),
   /**
    * for test purpose only
    */
-  val listOfString: Input<List<String?>> = Input.optional(listOf("test1", "test2", "test3")),
+  val listOfString: Input<List<String?>> = Input.present(listOf("test1", "test2", "test3")),
   /**
    * for test purpose only
    */
@@ -78,11 +78,11 @@ data class ReviewInput(
   /**
    * for test purpose only
    */
-  val listOfInputTypes: Input<List<ColorInput?>> = Input.optional(emptyList()),
+  val listOfInputTypes: Input<List<ColorInput?>> = Input.present(emptyList()),
   /**
    * for test purpose only
    */
-  val booleanWithDefaultValue: Input<Boolean> = Input.optional(true),
+  val booleanWithDefaultValue: Input<Boolean> = Input.present(true),
   /**
    * for test purpose only
    */
@@ -114,25 +114,25 @@ data class ReviewInput(
 ) : InputType {
   override fun marshaller(): InputFieldMarshaller = InputFieldMarshaller.invoke { writer ->
     writer.writeInt("stars", this@ReviewInput.stars)
-    if (this@ReviewInput.nullableIntFieldWithDefaultValue.defined) {
+    if (this@ReviewInput.nullableIntFieldWithDefaultValue.isPresent) {
       writer.writeInt("nullableIntFieldWithDefaultValue",
-          this@ReviewInput.nullableIntFieldWithDefaultValue.value)
+          this@ReviewInput.nullableIntFieldWithDefaultValue.getOrThrow())
     }
-    if (this@ReviewInput.commentary.defined) {
-      writer.writeString("commentary", this@ReviewInput.commentary.value)
+    if (this@ReviewInput.commentary.isPresent) {
+      writer.writeString("commentary", this@ReviewInput.commentary.getOrThrow())
     }
     writer.writeObject("favoriteColor", this@ReviewInput.favoriteColor.marshaller())
-    if (this@ReviewInput.enumWithDefaultValue.defined) {
+    if (this@ReviewInput.enumWithDefaultValue.isPresent) {
       writer.writeString("enumWithDefaultValue",
-          this@ReviewInput.enumWithDefaultValue.value?.rawValue)
+          this@ReviewInput.enumWithDefaultValue.getOrThrow()?.rawValue)
     }
     writer.writeString("nonNullableEnumWithDefaultValue",
         this@ReviewInput.nonNullableEnumWithDefaultValue.rawValue)
-    if (this@ReviewInput.nullableEnum.defined) {
-      writer.writeString("nullableEnum", this@ReviewInput.nullableEnum.value?.rawValue)
+    if (this@ReviewInput.nullableEnum.isPresent) {
+      writer.writeString("nullableEnum", this@ReviewInput.nullableEnum.getOrThrow()?.rawValue)
     }
-    if (this@ReviewInput.listOfCustomScalar.defined) {
-      writer.writeList("listOfCustomScalar", this@ReviewInput.listOfCustomScalar.value?.let {
+    if (this@ReviewInput.listOfCustomScalar.isPresent) {
+      writer.writeList("listOfCustomScalar", this@ReviewInput.listOfCustomScalar.getOrThrow()?.let {
           value ->
         InputFieldWriter.ListWriter { listItemWriter ->
           value.forEach { value ->
@@ -141,11 +141,12 @@ data class ReviewInput(
         }
       })
     }
-    if (this@ReviewInput.customScalar.defined) {
-      writer.writeCustom("customScalar", CustomScalars.Date, this@ReviewInput.customScalar.value)
+    if (this@ReviewInput.customScalar.isPresent) {
+      writer.writeCustom("customScalar", CustomScalars.Date,
+          this@ReviewInput.customScalar.getOrThrow())
     }
-    if (this@ReviewInput.listOfEnums.defined) {
-      writer.writeList("listOfEnums", this@ReviewInput.listOfEnums.value?.let { value ->
+    if (this@ReviewInput.listOfEnums.isPresent) {
+      writer.writeList("listOfEnums", this@ReviewInput.listOfEnums.getOrThrow()?.let { value ->
         InputFieldWriter.ListWriter { listItemWriter ->
           value.forEach { value ->
             listItemWriter.writeString(value?.rawValue)
@@ -153,8 +154,8 @@ data class ReviewInput(
         }
       })
     }
-    if (this@ReviewInput.listOfInt.defined) {
-      writer.writeList("listOfInt", this@ReviewInput.listOfInt.value?.let { value ->
+    if (this@ReviewInput.listOfInt.isPresent) {
+      writer.writeList("listOfInt", this@ReviewInput.listOfInt.getOrThrow()?.let { value ->
         InputFieldWriter.ListWriter { listItemWriter ->
           value.forEach { value ->
             listItemWriter.writeInt(value)
@@ -162,8 +163,8 @@ data class ReviewInput(
         }
       })
     }
-    if (this@ReviewInput.listOfString.defined) {
-      writer.writeList("listOfString", this@ReviewInput.listOfString.value?.let { value ->
+    if (this@ReviewInput.listOfString.isPresent) {
+      writer.writeList("listOfString", this@ReviewInput.listOfString.getOrThrow()?.let { value ->
         InputFieldWriter.ListWriter { listItemWriter ->
           value.forEach { value ->
             listItemWriter.writeString(value)
@@ -176,8 +177,9 @@ data class ReviewInput(
         listItemWriter.writeString(value)
       }
     }
-    if (this@ReviewInput.listOfInputTypes.defined) {
-      writer.writeList("listOfInputTypes", this@ReviewInput.listOfInputTypes.value?.let { value ->
+    if (this@ReviewInput.listOfInputTypes.isPresent) {
+      writer.writeList("listOfInputTypes", this@ReviewInput.listOfInputTypes.getOrThrow()?.let {
+          value ->
         InputFieldWriter.ListWriter { listItemWriter ->
           value.forEach { value ->
             listItemWriter.writeObject(value?.marshaller())
@@ -185,14 +187,15 @@ data class ReviewInput(
         }
       })
     }
-    if (this@ReviewInput.booleanWithDefaultValue.defined) {
-      writer.writeBoolean("booleanWithDefaultValue", this@ReviewInput.booleanWithDefaultValue.value)
+    if (this@ReviewInput.booleanWithDefaultValue.isPresent) {
+      writer.writeBoolean("booleanWithDefaultValue",
+          this@ReviewInput.booleanWithDefaultValue.getOrThrow())
     }
-    if (this@ReviewInput.booleanNonOptional.defined) {
-      writer.writeBoolean("booleanNonOptional", this@ReviewInput.booleanNonOptional.value)
+    if (this@ReviewInput.booleanNonOptional.isPresent) {
+      writer.writeBoolean("booleanNonOptional", this@ReviewInput.booleanNonOptional.getOrThrow())
     }
-    if (this@ReviewInput.listOfListOfString.defined) {
-      writer.writeList("listOfListOfString", this@ReviewInput.listOfListOfString.value?.let {
+    if (this@ReviewInput.listOfListOfString.isPresent) {
+      writer.writeList("listOfListOfString", this@ReviewInput.listOfListOfString.getOrThrow()?.let {
           value ->
         InputFieldWriter.ListWriter { listItemWriter ->
           value.forEach { value ->
@@ -205,8 +208,9 @@ data class ReviewInput(
         }
       })
     }
-    if (this@ReviewInput.listOfListOfEnum.defined) {
-      writer.writeList("listOfListOfEnum", this@ReviewInput.listOfListOfEnum.value?.let { value ->
+    if (this@ReviewInput.listOfListOfEnum.isPresent) {
+      writer.writeList("listOfListOfEnum", this@ReviewInput.listOfListOfEnum.getOrThrow()?.let {
+          value ->
         InputFieldWriter.ListWriter { listItemWriter ->
           value.forEach { value ->
             listItemWriter.writeList { listItemWriter ->
@@ -218,8 +222,8 @@ data class ReviewInput(
         }
       })
     }
-    if (this@ReviewInput.listOfListOfCustom.defined) {
-      writer.writeList("listOfListOfCustom", this@ReviewInput.listOfListOfCustom.value?.let {
+    if (this@ReviewInput.listOfListOfCustom.isPresent) {
+      writer.writeList("listOfListOfCustom", this@ReviewInput.listOfListOfCustom.getOrThrow()?.let {
           value ->
         InputFieldWriter.ListWriter { listItemWriter ->
           value.forEach { value ->
@@ -232,8 +236,8 @@ data class ReviewInput(
         }
       })
     }
-    if (this@ReviewInput.listOfListOfObject.defined) {
-      writer.writeList("listOfListOfObject", this@ReviewInput.listOfListOfObject.value?.let {
+    if (this@ReviewInput.listOfListOfObject.isPresent) {
+      writer.writeList("listOfListOfObject", this@ReviewInput.listOfListOfObject.getOrThrow()?.let {
           value ->
         InputFieldWriter.ListWriter { listItemWriter ->
           value.forEach { value ->
@@ -246,11 +250,11 @@ data class ReviewInput(
         }
       })
     }
-    if (this@ReviewInput.capitalizedField.defined) {
-      writer.writeString("CapitalizedField", this@ReviewInput.capitalizedField.value)
+    if (this@ReviewInput.capitalizedField.isPresent) {
+      writer.writeString("CapitalizedField", this@ReviewInput.capitalizedField.getOrThrow())
     }
-    if (this@ReviewInput.capitalizedInt.defined) {
-      writer.writeInt("CapitalizedInt", this@ReviewInput.capitalizedInt.value)
+    if (this@ReviewInput.capitalizedInt.isPresent) {
+      writer.writeInt("CapitalizedInt", this@ReviewInput.capitalizedInt.getOrThrow())
     }
   }
 }

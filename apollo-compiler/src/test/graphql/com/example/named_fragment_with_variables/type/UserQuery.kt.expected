@@ -21,8 +21,8 @@ data class UserQuery(
 ) : InputType {
   override fun marshaller(): InputFieldMarshaller = InputFieldMarshaller.invoke { writer ->
     writer.writeString("name", this@UserQuery.name)
-    if (this@UserQuery.isAdmin.defined) {
-      writer.writeBoolean("isAdmin", this@UserQuery.isAdmin.value)
+    if (this@UserQuery.isAdmin.isPresent) {
+      writer.writeBoolean("isAdmin", this@UserQuery.isAdmin.getOrThrow())
     }
   }
 }

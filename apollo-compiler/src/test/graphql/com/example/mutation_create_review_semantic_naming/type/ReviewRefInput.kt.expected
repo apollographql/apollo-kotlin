@@ -20,8 +20,8 @@ data class ReviewRefInput(
   val reviewInput: Input<ReviewInput> = Input.absent()
 ) : InputType {
   override fun marshaller(): InputFieldMarshaller = InputFieldMarshaller.invoke { writer ->
-    if (this@ReviewRefInput.reviewInput.defined) {
-      writer.writeObject("reviewInput", this@ReviewRefInput.reviewInput.value?.marshaller())
+    if (this@ReviewRefInput.reviewInput.isPresent) {
+      writer.writeObject("reviewInput", this@ReviewRefInput.reviewInput.getOrThrow()?.marshaller())
     }
   }
 }

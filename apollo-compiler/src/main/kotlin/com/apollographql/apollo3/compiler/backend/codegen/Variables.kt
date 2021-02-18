@@ -55,13 +55,13 @@ private fun List<CodeGenerationAst.InputField>.variablesValueMapSpec(enclosingCl
             if (field.type.nullable) {
               CodeBlock.builder()
                   .addStatement(
-                      "if·(this@%L.%L.defined)·{",
+                      "if·(this@%L.%L.isPresent)·{",
                       enclosingClassName.escapeKotlinReservedWord(),
                       field.name.escapeKotlinReservedWord()
                   )
                   .indent()
                   .addStatement(
-                      "this[%S]·=·this@%L.%L.value",
+                      "this[%S]·=·this@%L.%L.getOrThrow()",
                       field.schemaName,
                       enclosingClassName.escapeKotlinReservedWord(),
                       field.name.escapeKotlinReservedWord()

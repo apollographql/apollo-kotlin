@@ -28,16 +28,16 @@ data class HeroDetailsImpl(
   @Transient
   private val variables: Operation.Variables = object : Operation.Variables() {
     override fun valueMap(): Map<String, Any?> = mutableMapOf<String, Any?>().apply {
-      if (this@HeroDetailsImpl.friendsCount.defined) {
-        this["friendsCount"] = this@HeroDetailsImpl.friendsCount.value
+      if (this@HeroDetailsImpl.friendsCount.isPresent) {
+        this["friendsCount"] = this@HeroDetailsImpl.friendsCount.getOrThrow()
       }
       this["IncludeName"] = this@HeroDetailsImpl.includeName
     }
 
     override fun marshaller(): InputFieldMarshaller {
       return InputFieldMarshaller.invoke { writer ->
-        if (this@HeroDetailsImpl.friendsCount.defined) {
-          writer.writeInt("friendsCount", this@HeroDetailsImpl.friendsCount.value)
+        if (this@HeroDetailsImpl.friendsCount.isPresent) {
+          writer.writeInt("friendsCount", this@HeroDetailsImpl.friendsCount.getOrThrow())
         }
         writer.writeBoolean("IncludeName", this@HeroDetailsImpl.includeName)
       }
