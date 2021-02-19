@@ -53,7 +53,7 @@ object RecordFieldJsonAdapter {
 
   @Suppress("UNCHECKED_CAST")
   private fun JsonWriter.writeJsonValue(value: Any?) {
-    val jsonWriter = when (value) {
+    when (value) {
       null -> this.nullValue()
       is String -> this.value(value)
       is Boolean -> this.value(value)
