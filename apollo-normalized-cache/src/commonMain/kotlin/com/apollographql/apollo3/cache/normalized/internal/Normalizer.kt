@@ -41,7 +41,7 @@ class Normalizer(val variables: Operation.Variables, val cacheKeyForObject: (Res
       "No field set found at $path on typeCondition $this"
     }
     return fieldSet.responseFields.mapNotNull {
-      if (it.shouldSkip(variableValues = variables.valueMap())) {
+      if (it.shouldSkip(variableValues = variables.valueMap)) {
         // The json doesn't know about skip/include so filter here
         return@mapNotNull null
       }

@@ -40,7 +40,12 @@ interface Operation<D : Operation.Data> {
   /**
    * Serializes the variables of this operation to a json to send over HTTP or to a Map that we can later use to resolve variables
    */
-  fun serializeVariables(jsonWriter: JsonWriter)
+  fun serializeVariables(jsonWriter: JsonWriter, responseAdapterCache: ResponseAdapterCache)
+
+  /**
+   * A helper class to hold variables
+   */
+  class Variables(val valueMap: Map<String, Any?>)
 
   /**
    * The tree of fields used for normalizing/reading from the cache

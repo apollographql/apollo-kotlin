@@ -2,6 +2,7 @@ package com.apollographql.apollo3.api
 
 import com.apollographql.apollo3.api.ResponseAdapterCache.Companion.DEFAULT
 import com.apollographql.apollo3.api.internal.MapJsonReader
+import com.apollographql.apollo3.api.internal.MapJsonWriter
 import com.apollographql.apollo3.api.internal.MapResponseParser
 import com.apollographql.apollo3.api.internal.OperationRequestBodyComposer
 import com.apollographql.apollo3.api.internal.StreamResponseParser
@@ -177,3 +178,19 @@ fun <D : Operation.Data, M: Map<String, Any?>> Operation<D>.parseData(
     adapter(responseAdapterCache).fromResponse(it)
   }
 }
+
+fun <D : Operation.Data> Operation<D>.variables(responseAdapterCache: ResponseAdapterCache): Operation.Variables {
+  val valueMap = MapJsonWriter().apply {
+    serializeVariables(this, responseAdapterCache)
+  }.root() as Map<String, Any?>
+  return Operation.Variables(valueMap)
+}
+
+
+fun <D : Fragment.Data> Fragment<D>.variables(responseAdapterCache: ResponseAdapterCache): Operation.Variables {
+  val valueMap = MapJsonWriter().apply {
+    serializeVariables(this, responseAdapterCache)
+  }.root() as Map<String, Any?>
+  return Operation.Variables(valueMap)
+}
+

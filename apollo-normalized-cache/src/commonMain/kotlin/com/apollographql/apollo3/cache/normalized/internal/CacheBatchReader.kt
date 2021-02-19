@@ -63,7 +63,7 @@ class CacheBatchReader(
             ?: pendingReference.fieldSets.first { it.typeCondition == null }
 
         val map = fieldSet.responseFields.mapNotNull {
-          if (it.shouldSkip(variables.valueMap())) {
+          if (it.shouldSkip(variables.valueMap)) {
             return@mapNotNull null
           }
 

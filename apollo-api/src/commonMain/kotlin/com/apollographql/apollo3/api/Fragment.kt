@@ -7,7 +7,7 @@ interface Fragment<D: Fragment.Data> {
   /**
    * Fragments do not have variable per the GraphQL spec but they are infered from arguments and used when reading the cache
    */
-  fun serializeVariables(jsonWriter: JsonWriter)
+  fun serializeVariables(jsonWriter: JsonWriter, responseAdapterCache: ResponseAdapterCache)
 
   fun adapter(responseAdapterCache: ResponseAdapterCache): ResponseAdapter<D>
 

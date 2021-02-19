@@ -23,7 +23,8 @@ object OperationRequestBodyComposer {
         serializeNulls = true
         beginObject()
         name("operationName").value(operation.name())
-        name("variables").jsonValue(operation.variables().marshal(responseAdapterCache))
+        name("variables")
+        operation.serializeVariables(this, responseAdapterCache)
         if (autoPersistQueries) {
           name("extensions")
           beginObject()

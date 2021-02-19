@@ -260,6 +260,7 @@ class CacheKeyBuilderTest {
         }
       }
     }
+
     val variables: Operation.Variables = object : Operation.Variables() {
       override fun valueMap(): Map<String, Any?> {
         val map = HashMap<String, Any?>()

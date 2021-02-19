@@ -54,7 +54,7 @@ class RealCacheKeyBuilder : CacheKeyBuilder {
 
   @Suppress("UNCHECKED_CAST")
   private fun resolveVariable(name: String, variables: Operation.Variables): Any? {
-    return when (val resolvedVariable = variables.valueMap()[name]) {
+    return when (val resolvedVariable = variables.valueMap[name]) {
       is InputType -> {
         val inputFieldMapWriter = SortedInputFieldMapWriter()
         resolvedVariable.marshaller().marshal(inputFieldMapWriter)
