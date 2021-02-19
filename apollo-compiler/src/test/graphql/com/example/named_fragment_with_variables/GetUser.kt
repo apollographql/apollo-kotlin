@@ -94,6 +94,8 @@ data class GetUser(
 
           companion object {
             fun User.asUserUser(): UserUser? = this as? UserUser
+
+            fun User.asUserFragment(): UserFragment? = this as? UserFragment
           }
         }
       }
@@ -105,6 +107,8 @@ data class GetUser(
 
     companion object {
       fun Data.asQueryData(): QueryData? = this as? QueryData
+
+      fun Data.asQueryFragment(): QueryFragment? = this as? QueryFragment
     }
   }
 

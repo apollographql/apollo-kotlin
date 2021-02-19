@@ -188,6 +188,8 @@ class TestQuery : Query<TestQuery.Data> {
         fun Hero.asCharacterDroidHero(): CharacterDroidHero? = this as? CharacterDroidHero
 
         fun Hero.asCharacterHumanHero(): CharacterHumanHero? = this as? CharacterHumanHero
+
+        fun Hero.asHeroDetails(): HeroDetails? = this as? HeroDetails
       }
     }
   }
