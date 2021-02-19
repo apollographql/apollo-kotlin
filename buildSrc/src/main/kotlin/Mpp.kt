@@ -1,6 +1,6 @@
 import org.gradle.api.Project
 
-fun Project.configureMppDefaults() {
+fun Project.configureMppDefaults(withJs: Boolean = true) {
   val kotlinExtension = extensions.findByName("kotlin") as? org.jetbrains.kotlin.gradle.dsl.KotlinMultiplatformExtension
   check(kotlinExtension != null) {
     "No multiplatform extension found"
@@ -11,10 +11,12 @@ fun Project.configureMppDefaults() {
      */
     jvm()
 
-    js {
-      useCommonJs()
-      browser()
-      nodejs()
+    if (withJs) {
+      js {
+        useCommonJs()
+        browser()
+        nodejs()
+      }
     }
 
     if (System.getProperty("idea.sync.active") == null) {
@@ -47,9 +49,11 @@ fun Project.configureMppDefaults() {
         implementation(kotlin("test-annotations-common"))
       }
     }
-    sourceSets.getByName("jsTest") {
-      it.dependencies {
-        implementation(kotlin("test-js"))
+    if (withJs) {
+      sourceSets.getByName("jsTest") {
+        it.dependencies {
+          implementation(kotlin("test-js"))
+        }
       }
     }
     sourceSets.getByName("jvmTest") {
