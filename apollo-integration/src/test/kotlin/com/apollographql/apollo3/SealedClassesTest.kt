@@ -25,9 +25,7 @@ class SealedClassesTest {
         emptyList(),
         emptyList())
 
-    val variables = object : Operation.Variables() {
-      override fun valueMap() = mapOf("direction" to Direction.NORTH)
-    }
+    val variables = Operation.Variables(mapOf("direction" to Direction.NORTH))
     val cacheKey = RealCacheKeyBuilder().build(field, variables)
     Truth.assertThat(cacheKey).isEqualTo("path({\"direction\":\"NORTH\"})")
   }

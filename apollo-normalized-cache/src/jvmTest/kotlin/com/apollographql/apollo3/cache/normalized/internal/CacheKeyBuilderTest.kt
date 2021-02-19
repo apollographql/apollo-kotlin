@@ -4,6 +4,7 @@ import com.apollographql.apollo3.api.InputType
 import com.apollographql.apollo3.api.Operation
 import com.apollographql.apollo3.api.ResponseField
 import com.apollographql.apollo3.api.CustomScalar
+import com.apollographql.apollo3.api.VariableValue
 import com.apollographql.apollo3.api.internal.InputFieldMarshaller
 import com.apollographql.apollo3.api.internal.InputFieldWriter
 import com.google.common.truth.Truth
@@ -24,22 +25,16 @@ class CacheKeyBuilderTest {
   @Test
   fun testFieldWithNoArguments() {
     val field = createResponseField("hero", "hero")
-    val variables: Operation.Variables = object : Operation.Variables() {
-      override fun valueMap(): Map<String, Any?> {
-        return super.valueMap()
-      }
-    }
+    val variables = Operation.Variables(emptyMap())
+
     Truth.assertThat(cacheKeyBuilder.build(field, variables)).isEqualTo("hero")
   }
 
   @Test
   fun testFieldWithNoArgumentsWithAlias() {
     val field = createResponseField("r2", "hero")
-    val variables: Operation.Variables = object : Operation.Variables() {
-      override fun valueMap(): Map<String, Any?> {
-        return super.valueMap()
-      }
-    }
+    val variables = Operation.Variables(emptyMap())
+
     Truth.assertThat(cacheKeyBuilder.build(field, variables)).isEqualTo("hero")
   }
 
@@ -47,11 +42,8 @@ class CacheKeyBuilderTest {
   fun testFieldWithArgument() {
     val arguments = mapOf<String, Any?>("episode" to "JEDI")
     val field = createResponseField("hero", "hero", arguments)
-    val variables: Operation.Variables = object : Operation.Variables() {
-      override fun valueMap(): Map<String, Any?> {
-        return super.valueMap()
-      }
-    }
+    val variables = Operation.Variables(emptyMap())
+
     Truth.assertThat(cacheKeyBuilder.build(field, variables)).isEqualTo("hero({\"episode\":\"JEDI\"})")
   }
 
@@ -59,49 +51,34 @@ class CacheKeyBuilderTest {
   fun testFieldWithArgumentAndAlias() {
     val arguments = mapOf<String, Any?>("episode" to "JEDI")
     val field = createResponseField("r2", "hero", arguments)
-    val variables: Operation.Variables = object : Operation.Variables() {
-      override fun valueMap(): Map<String, Any?> {
-        return super.valueMap()
-      }
-    }
+    val variables = Operation.Variables(emptyMap())
+
     Truth.assertThat(cacheKeyBuilder.build(field, variables)).isEqualTo("hero({\"episode\":\"JEDI\"})")
   }
 
   @Test
   fun testFieldWithVariableArgument() {
     val argument = mapOf<String, Any?>(
-        "episode" to mapOf<String, Any>(
-            "kind" to "Variable",
-            "variableName" to "episode"
-        )
+        "episode" to VariableValue("episode")
     )
     val field = createResponseField("hero", "hero", argument)
-    val variables: Operation.Variables = object : Operation.Variables() {
-      override fun valueMap(): Map<String, Any?> {
-        val map = HashMap<String, Any?>()
-        map["episode"] = Episode.JEDI
-        return map
-      }
-    }
+    val variables = Operation.Variables(mapOf(
+        "episode" to Episode.JEDI
+    ))
+
     Truth.assertThat(cacheKeyBuilder.build(field, variables)).isEqualTo("hero({\"episode\":\"JEDI\"})")
   }
 
   @Test
   fun testFieldWithVariableArgumentNull() {
     val argument = mapOf<String, Any?>(
-        "episode" to mapOf<String, Any>(
-            "kind" to "Variable",
-            "variableName" to "episode"
-        )
+        "episode" to VariableValue("episode")
     )
     val field = createResponseField("hero", "hero", argument)
-    val variables: Operation.Variables = object : Operation.Variables() {
-      override fun valueMap(): Map<String, Any?> {
-        val map = HashMap<String, Any?>()
-        map["episode"] = null
-        return map
-      }
-    }
+    val variables = Operation.Variables(mapOf(
+        "episode" to null
+    ))
+
     Truth.assertThat(cacheKeyBuilder.build(field, variables)).isEqualTo("hero({\"episode\":null})")
   }
 
@@ -112,11 +89,8 @@ class CacheKeyBuilderTest {
         "color" to "blue"
     )
     val field = createResponseField("hero", "hero", arguments)
-    val variables: Operation.Variables = object : Operation.Variables() {
-      override fun valueMap(): Map<String, Any?> {
-        return super.valueMap()
-      }
-    }
+    val variables = Operation.Variables(emptyMap())
+
     Truth.assertThat(cacheKeyBuilder.build(field, variables)).isEqualTo("hero({\"color\":\"blue\",\"episode\":\"JEDI\"})")
   }
 
@@ -127,11 +101,8 @@ class CacheKeyBuilderTest {
         "color" to "blue"
     )
     val field = createResponseField("hero", "hero", arguments)
-    val variables: Operation.Variables = object : Operation.Variables() {
-      override fun valueMap(): Map<String, Any?> {
-        return super.valueMap()
-      }
-    }
+    val variables = Operation.Variables(emptyMap())
+
     val fieldTwoArguments = mapOf<String, Any?>(
         "color" to "blue",
         "episode" to "JEDI")
@@ -149,11 +120,8 @@ class CacheKeyBuilderTest {
         )
     )
     val field = createResponseField("hero", "hero", arguments)
-    val variables: Operation.Variables = object : Operation.Variables() {
-      override fun valueMap(): Map<String, Any?> {
-        return super.valueMap()
-      }
-    }
+    val variables = Operation.Variables(emptyMap())
+
     Truth.assertThat(cacheKeyBuilder.build(field, variables)).isEqualTo("hero({\"episode\":\"JEDI\",\"nested\":{\"bar\":2,\"foo\":1}})")
   }
 
@@ -165,11 +133,7 @@ class CacheKeyBuilderTest {
         arguments = mapOf<String, Any?>("episode" to Episode.JEDI)
     )
 
-    val variables: Operation.Variables = object : Operation.Variables() {
-      override fun valueMap(): Map<String, Any?> {
-        return super.valueMap()
-      }
-    }
+    val variables = Operation.Variables(emptyMap())
     Truth.assertThat(cacheKeyBuilder.build(field, variables)).isEqualTo("hero({\"episode\":\"JEDI\"})")
   }
 
@@ -178,21 +142,13 @@ class CacheKeyBuilderTest {
     val arguments = mapOf<String, Any?>(
         "episode" to "JEDI",
         "nested" to mapOf(
-            "foo" to mapOf<String, Any>(
-                "kind" to "Variable",
-                "variableName" to "stars"
-            ),
+            "foo" to VariableValue("stars"),
             "bar" to "2"
         )
     )
     val field = createResponseField("hero", "hero", arguments)
-    val variables: Operation.Variables = object : Operation.Variables() {
-      override fun valueMap(): Map<String, Any?> {
-        val map = HashMap<String, Any?>()
-        map["stars"] = 1
-        return map
-      }
-    }
+    val variables = Operation.Variables(mapOf( "stars" to 1))
+
     Truth.assertThat(cacheKeyBuilder.build(field, variables)).isEqualTo("hero({\"episode\":\"JEDI\",\"nested\":{\"bar\":\"2\",\"foo\":1}})")
   }
 
@@ -200,11 +156,8 @@ class CacheKeyBuilderTest {
   fun fieldInputTypeArgument() {
     val arguments = mapOf<String, Any?>(
         "episode" to "JEDI",
-        "nested" to mapOf<String, Any>(
-            "foo" to mapOf<String, Any>(
-                "kind" to "Variable",
-                "variableName" to "testInput"
-            ),
+        "nested" to mapOf(
+            "foo" to VariableValue("testInput"),
             "bar" to "2"
         )
     )
@@ -261,13 +214,8 @@ class CacheKeyBuilderTest {
       }
     }
 
-    val variables: Operation.Variables = object : Operation.Variables() {
-      override fun valueMap(): Map<String, Any?> {
-        val map = HashMap<String, Any?>()
-        map["testInput"] = testInput
-        return map
-      }
-    }
+    val variables = Operation.Variables(mapOf( "testInput" to testInput))
+
     Truth.assertThat(cacheKeyBuilder.build(field, variables)).isEqualTo(
         "hero({\"episode\":\"JEDI\",\"nested\":{\"bar\":\"2\",\"foo\":{\"boolean\":true,\"custom\":\"JEDI\",\"double\":3.0,\"int\":1,"
             + "\"list\":[\"string\",1,2,3.0,4,true,\"JEDI\",{\"int\":1,\"string\":\"string\"},[\"string\",1]],\"long\":2,"
@@ -279,10 +227,7 @@ class CacheKeyBuilderTest {
     val arguments = mapOf<String, Any?>(
         "episode" to null,
         "nested" to mapOf<String, Any?>(
-            "foo" to mapOf<String, Any>(
-                "kind" to "Variable",
-                "variableName" to "testInput"
-            ),
+            "foo" to VariableValue("testInput"),
             "bar" to null
         )
     )
@@ -327,13 +272,8 @@ class CacheKeyBuilderTest {
         }
       }
     }
-    val variables: Operation.Variables = object : Operation.Variables() {
-      override fun valueMap(): Map<String, Any?> {
-        val map = HashMap<String, Any?>()
-        map["testInput"] = testInput
-        return map
-      }
-    }
+    val variables = Operation.Variables(mapOf( "testInput" to testInput))
+
     Truth.assertThat(cacheKeyBuilder.build(field, variables)).isEqualTo("hero({\"episode\":null,\"nested\":{\"bar\":null,\"foo\":{\"boolean\":null,\"custom\":null,\"double\":null,\"int\":null,\"listNull"
         + "\":null,\"listWithNulls\":[],\"long\":null,\"null\":null,\"number\":null,\"object\":null,\"string\":null}}})")
   }
@@ -349,24 +289,17 @@ class CacheKeyBuilderTest {
 
   @Test
   fun testFieldWithVariablesInLists() {
-    val arguments = mutableMapOf<String, Any?>().apply {
-      put("where", mutableMapOf<String, Any?>().apply {
-        put("and", mutableListOf<Any?>().apply {
-          add(mutableMapOf<String, Any?>().apply {
-            put("kind", "Variable")
-            put("variableName", "stars")
-          })
-        })
-      })
-    }
+    val arguments = mapOf(
+        "where" to mapOf(
+            "and" to listOf(
+                VariableValue("stars")
+            )
+        )
+    )
 
     val field = createResponseField("hero", "hero", arguments)
-    val variables0: Operation.Variables = object : Operation.Variables() {
-      override fun valueMap() = mapOf("stars" to listOf(0))
-    }
-    val variables1: Operation.Variables = object : Operation.Variables() {
-      override fun valueMap() = mapOf("stars" to listOf(1))
-    }
+    val variables0 = Operation.Variables(mapOf( "stars" to listOf(0)))
+    val variables1 = Operation.Variables(mapOf( "stars" to listOf(1)))
 
     Truth.assertThat(cacheKeyBuilder.build(field, variables0)).isNotEqualTo(cacheKeyBuilder.build(field, variables1))
   }

@@ -12,6 +12,7 @@ import com.apollographql.apollo3.api.Operation
 import com.apollographql.apollo3.api.composeRequestBody
 import com.apollographql.apollo3.api.parse
 import com.apollographql.apollo3.ApolloRequest
+import com.apollographql.apollo3.api.variablesJson
 import com.apollographql.apollo3.interceptor.ApolloResponse
 import com.apollographql.apollo3.network.HttpExecutionContext
 import com.apollographql.apollo3.network.HttpMethod
@@ -161,9 +162,7 @@ actual class ApolloHttpNetworkTransport(
     urlComponents.queryItems = listOfNotNull(
         NSURLQueryItem(name = "query", value = operation.queryDocument()),
         NSURLQueryItem(name = "operationName", value = operation.name()),
-        operation.variables().marshal(responseAdapterCache).let { variables ->
-          if (variables.isNotEmpty()) NSURLQueryItem(name = "variables", value = variables) else null
-        }
+        NSURLQueryItem(name = "variables", value = operation.variablesJson(responseAdapterCache))
     )
     return NSMutableURLRequest.requestWithURL(
         URL = urlComponents.URL!!

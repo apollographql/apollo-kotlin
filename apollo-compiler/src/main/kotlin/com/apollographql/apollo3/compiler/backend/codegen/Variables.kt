@@ -3,6 +3,7 @@ package com.apollographql.apollo3.compiler.backend.codegen
 import com.apollographql.apollo3.api.Input
 import com.apollographql.apollo3.api.Operation
 import com.apollographql.apollo3.api.internal.InputFieldMarshaller
+import com.apollographql.apollo3.api.internal.json.JsonWriter
 import com.apollographql.apollo3.compiler.applyIf
 import com.apollographql.apollo3.compiler.backend.ast.CodeGenerationAst
 import com.apollographql.apollo3.compiler.escapeKotlinReservedWord
@@ -101,7 +102,7 @@ private fun List<CodeGenerationAst.InputField>.variablesMarshallerSpec(thisRef: 
 
 internal fun List<CodeGenerationAst.InputField>.serializeVariablesFunSpec() = FunSpec.builder("serializeVariables")
     .addModifiers(KModifier.OVERRIDE)
-    .addParameter("writer")
+    .addParameter("writer", JsonWriter::class)
     .apply {
       if (isNotEmpty()) {
         addStatement("return variables")

@@ -12,6 +12,7 @@ import com.apollographql.apollo3.api.Operation
 import com.apollographql.apollo3.api.composeRequestBody
 import com.apollographql.apollo3.api.parse
 import com.apollographql.apollo3.ApolloRequest
+import com.apollographql.apollo3.api.variablesJson
 import com.apollographql.apollo3.interceptor.ApolloResponse
 import com.apollographql.apollo3.network.HttpExecutionContext
 import com.apollographql.apollo3.network.HttpMethod
@@ -176,11 +177,7 @@ actual class ApolloHttpNetworkTransport(
     val url = serverUrl.newBuilder()
         .addQueryParameter("query", operation.queryDocument())
         .addQueryParameter("operationName", operation.name())
-        .apply {
-          operation.variables().marshal(responseAdapterCache).let { variables ->
-            if (variables.isNotEmpty()) addQueryParameter("variables", variables)
-          }
-        }
+        .addQueryParameter("variables", operation.variablesJson(responseAdapterCache))
         .build()
     return Request.Builder()
         .url(url)
