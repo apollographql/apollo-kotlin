@@ -7,6 +7,7 @@ package com.example.deprecation.adapter
 
 import com.apollographql.apollo3.api.ResponseAdapterCache
 import com.apollographql.apollo3.api.ResponseField
+import com.apollographql.apollo3.api.VariableValue
 import com.apollographql.apollo3.api.internal.BooleanResponseAdapter
 import com.apollographql.apollo3.api.internal.NullableResponseAdapter
 import com.apollographql.apollo3.api.internal.ResponseAdapter
@@ -57,9 +58,7 @@ class TestQuery_ResponseAdapter(
         type = ResponseField.Type.Named.Object("Character"),
         fieldName = "hero",
         arguments = mapOf<String, Any?>(
-          "episode" to mapOf<String, Any?>(
-            "kind" to "Variable",
-            "variableName" to "episode")),
+          "episode" to VariableValue("episode")),
         fieldSets = listOf(
           ResponseField.FieldSet(null, Hero.RESPONSE_FIELDS)
         ),

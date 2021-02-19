@@ -2,6 +2,7 @@ package com.apollographql.apollo3.compiler.backend.codegen
 
 import com.apollographql.apollo3.api.ResponseAdapterCache
 import com.apollographql.apollo3.api.ResponseField
+import com.apollographql.apollo3.api.VariableValue
 import com.apollographql.apollo3.api.internal.ListResponseAdapter
 import com.apollographql.apollo3.api.internal.NullableResponseAdapter
 import com.apollographql.apollo3.api.internal.ResponseAdapter
@@ -233,7 +234,7 @@ private fun CodeGenerationAst.Field.responseFieldInitializerCode(objectType: Cod
     builder.add("responseName = %S,\n", responseName)
   }
   if (arguments.isNotEmpty()) {
-    builder.add("arguments = %L,\n", arguments.takeIf { it.isNotEmpty() }?.let { anyToCode(it) } ?: "emptyMap()")
+    builder.add("arguments = %L,\n", arguments.takeIf { it.isNotEmpty() }?.let { valueToCode(it) } ?: "emptyMap()")
   }
   if (conditions.isNotEmpty()) {
     builder.add("conditions = %L,\n", conditionsListCode(conditions))
@@ -303,7 +304,20 @@ private fun conditionsListCode(conditions: Set<CodeGenerationAst.Field.Condition
       }
 }
 
-private fun anyToCode(any: Any?): CodeBlock {
+/**
+ * This is the symmetric call to [com.apollographql.apollo3.compiler.frontend.toKotlinValue]
+ *
+ * any can be:
+ * - Int
+ * - Double
+ * - Boolean
+ * - String
+ * - Map
+ * - List
+ * - String for Enum
+ * - [com.apollographql.apollo3.api.VariableValue] for variables
+ */
+private fun valueToCode(any: Any?): CodeBlock {
   return with(any) {
     when {
       this == null -> CodeBlock.of("null")
@@ -311,7 +325,7 @@ private fun anyToCode(any: Any?): CodeBlock {
       this is Map<*, *> -> CodeBlock.builder()
           .add("mapOf<%T,·Any?>(\n", String::class.asTypeName())
           .indent()
-          .add(map { CodeBlock.of("%S to %L", it.key, anyToCode(it.value)) }.joinToCode(separator = ",\n"))
+          .add(map { CodeBlock.of("%S to %L", it.key, valueToCode(it.value)) }.joinToCode(separator = ",\n"))
           .unindent()
           .add(")")
           .build()
@@ -319,13 +333,14 @@ private fun anyToCode(any: Any?): CodeBlock {
       this is List<*> -> CodeBlock.builder()
           .add("listOf<Any?>(\n")
           .indent()
-          .add(map { anyToCode(it) }.joinToCode(separator = ",\n"))
+          .add(map { valueToCode(it) }.joinToCode(separator = ",\n"))
           .unindent()
           .add(")")
           .build()
       this is String -> CodeBlock.of("%S", this)
       this is Number -> CodeBlock.of("%L", this)
       this is Boolean -> CodeBlock.of("%L", this)
+      this is VariableValue -> CodeBlock.of("%T(%S)", VariableValue::class, name)
       else -> throw IllegalStateException("Cannot generate code for $this")
     }
   }

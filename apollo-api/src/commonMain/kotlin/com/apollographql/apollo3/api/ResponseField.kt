@@ -33,14 +33,8 @@ class ResponseField(
   ): Any? {
     val variableValues = variables.valueMap()
     val argumentValue = arguments[name]
-    return if (argumentValue is Map<*, *>) {
-      val argumentValueMap = argumentValue as Map<String, Any?>
-      if (isArgumentValueVariableType(argumentValueMap)) {
-        val variableName = argumentValueMap[VARIABLE_NAME_KEY].toString()
-        variableValues[variableName]
-      } else {
-        null
-      }
+    return if (argumentValue is VariableValue) {
+      variableValues[argumentValue.name]
     } else {
       argumentValue
     }
@@ -89,22 +83,6 @@ class ResponseField(
   ) : Condition()
 
   companion object {
-    private const val VARIABLE_IDENTIFIER_KEY = "kind"
-    private const val VARIABLE_IDENTIFIER_VALUE = "Variable"
-    const val VARIABLE_NAME_KEY = "variableName"
-
-    @JvmStatic
-    fun isArgumentValueVariableType(objectMap: Map<String, Any?>): Boolean {
-      return (objectMap.containsKey(VARIABLE_IDENTIFIER_KEY)
-          && objectMap[VARIABLE_IDENTIFIER_KEY] == VARIABLE_IDENTIFIER_VALUE && objectMap.containsKey(VARIABLE_NAME_KEY))
-    }
-
-    fun Type.leafType(): String = when(this) {
-      is Type.NotNull -> ofType.leafType()
-      is Type.Named -> name
-      is Type.List -> ofType.leafType()
-    }
-
     val Typename = ResponseField(
         type = Type.NotNull(Type.Named.Other("String")),
         responseName = "__typename",

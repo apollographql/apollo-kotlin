@@ -7,6 +7,7 @@ package com.example.subscriptions.adapter
 
 import com.apollographql.apollo3.api.ResponseAdapterCache
 import com.apollographql.apollo3.api.ResponseField
+import com.apollographql.apollo3.api.VariableValue
 import com.apollographql.apollo3.api.internal.IntResponseAdapter
 import com.apollographql.apollo3.api.internal.NullableResponseAdapter
 import com.apollographql.apollo3.api.internal.ResponseAdapter
@@ -57,9 +58,7 @@ class TestSubscription_ResponseAdapter(
         type = ResponseField.Type.Named.Object("Comment"),
         fieldName = "commentAdded",
         arguments = mapOf<String, Any?>(
-          "repoFullName" to mapOf<String, Any?>(
-            "kind" to "Variable",
-            "variableName" to "repo")),
+          "repoFullName" to VariableValue("repo")),
         fieldSets = listOf(
           ResponseField.FieldSet(null, CommentAdded.RESPONSE_FIELDS)
         ),

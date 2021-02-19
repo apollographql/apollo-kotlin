@@ -7,6 +7,7 @@ package com.example.arguments_complex.adapter
 
 import com.apollographql.apollo3.api.ResponseAdapterCache
 import com.apollographql.apollo3.api.ResponseField
+import com.apollographql.apollo3.api.VariableValue
 import com.apollographql.apollo3.api.internal.DoubleResponseAdapter
 import com.apollographql.apollo3.api.internal.NullableResponseAdapter
 import com.apollographql.apollo3.api.internal.ResponseAdapter
@@ -57,28 +58,18 @@ class TestQuery_ResponseAdapter(
         type = ResponseField.Type.Named.Object("Human"),
         fieldName = "heroWithReview",
         arguments = mapOf<String, Any?>(
-          "episode" to mapOf<String, Any?>(
-            "kind" to "Variable",
-            "variableName" to "episode"),
+          "episode" to VariableValue("episode"),
           "review" to mapOf<String, Any?>(
-            "stars" to mapOf<String, Any?>(
-              "kind" to "Variable",
-              "variableName" to "stars"),
+            "stars" to VariableValue("stars"),
             "favoriteColor" to mapOf<String, Any?>(
               "red" to 0,
-              "green" to mapOf<String, Any?>(
-                "kind" to "Variable",
-                "variableName" to "greenValue"),
+              "green" to VariableValue("greenValue"),
               "blue" to 0.0),
             "booleanNonOptional" to false,
             "listOfStringNonOptional" to emptyList<Any?>()),
           "listOfInts" to listOf<Any?>(
-            mapOf<String, Any?>(
-              "kind" to "Variable",
-              "variableName" to "stars"),
-            mapOf<String, Any?>(
-              "kind" to "Variable",
-              "variableName" to "stars"))),
+            VariableValue("stars"),
+            VariableValue("stars"))),
         fieldSets = listOf(
           ResponseField.FieldSet(null, HeroWithReview.RESPONSE_FIELDS)
         ),

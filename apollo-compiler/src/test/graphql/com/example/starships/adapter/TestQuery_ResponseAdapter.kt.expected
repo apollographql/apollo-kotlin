@@ -7,6 +7,7 @@ package com.example.starships.adapter
 
 import com.apollographql.apollo3.api.ResponseAdapterCache
 import com.apollographql.apollo3.api.ResponseField
+import com.apollographql.apollo3.api.VariableValue
 import com.apollographql.apollo3.api.internal.DoubleResponseAdapter
 import com.apollographql.apollo3.api.internal.ListResponseAdapter
 import com.apollographql.apollo3.api.internal.NullableResponseAdapter
@@ -58,9 +59,7 @@ class TestQuery_ResponseAdapter(
         type = ResponseField.Type.Named.Object("Starship"),
         fieldName = "starship",
         arguments = mapOf<String, Any?>(
-          "id" to mapOf<String, Any?>(
-            "kind" to "Variable",
-            "variableName" to "id")),
+          "id" to VariableValue("id")),
         fieldSets = listOf(
           ResponseField.FieldSet(null, Starship.RESPONSE_FIELDS)
         ),
