@@ -17,11 +17,11 @@ import kotlin.Suppress
     "RemoveExplicitTypeArguments", "NestedLambdaShadowedImplicitParameter", "PropertyName",
     "RemoveRedundantQualifierName")
 data class ReviewRefInput(
-  val reviewInput: Input<ReviewInput> = Input.absent()
+  val reviewInput: Input<ReviewInput> = Input.Absent()
 ) : InputType {
   override fun marshaller(): InputFieldMarshaller = InputFieldMarshaller.invoke { writer ->
-    if (this@ReviewRefInput.reviewInput.isPresent) {
-      writer.writeObject("reviewInput", this@ReviewRefInput.reviewInput.getOrThrow()?.marshaller())
+    if (this@ReviewRefInput.reviewInput is Input.Present) {
+      writer.writeObject("reviewInput", this@ReviewRefInput.reviewInput.value?.marshaller())
     }
   }
 }

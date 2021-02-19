@@ -27,20 +27,20 @@ import kotlin.jvm.Transient
     "RemoveExplicitTypeArguments", "NestedLambdaShadowedImplicitParameter", "PropertyName",
     "RemoveRedundantQualifierName")
 data class TestQuery(
-  val episode: Input<Episode> = Input.absent()
+  val episode: Input<Episode> = Input.Absent()
 ) : Query<TestQuery.Data> {
   @Transient
   private val variables: Operation.Variables = object : Operation.Variables() {
     override fun valueMap(): Map<String, Any?> = mutableMapOf<String, Any?>().apply {
-      if (this@TestQuery.episode.isPresent) {
-        this["episode"] = this@TestQuery.episode.getOrThrow()
+      if (this@TestQuery.episode is Input.Present) {
+        this["episode"] = this@TestQuery.episode.value
       }
     }
 
     override fun marshaller(): InputFieldMarshaller {
       return InputFieldMarshaller.invoke { writer ->
-        if (this@TestQuery.episode.isPresent) {
-          writer.writeString("episode", this@TestQuery.episode.getOrThrow()?.rawValue)
+        if (this@TestQuery.episode is Input.Present) {
+          writer.writeString("episode", this@TestQuery.episode.value?.rawValue)
         }
       }
     }

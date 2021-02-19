@@ -26,7 +26,7 @@ private fun List<CodeGenerationAst.InputField>.constructorFunSpec() = FunSpec
                 if (type.isNullable) Input::class.asClassName().parameterizedBy(type.copy(nullable = false)) else type
               }
           )
-          .applyIf(variable.type.nullable) { defaultValue("%T.absent()", Input::class.asClassName()) }
+          .applyIf(variable.type.nullable) { defaultValue("%T()", Input.Absent::class.asClassName()) }
           .build()
     })
     .build()
@@ -55,13 +55,14 @@ private fun List<CodeGenerationAst.InputField>.variablesValueMapSpec(enclosingCl
             if (field.type.nullable) {
               CodeBlock.builder()
                   .addStatement(
-                      "if·(this@%L.%L.isPresent)·{",
+                      "if·(this@%L.%L·is·%T)·{",
                       enclosingClassName.escapeKotlinReservedWord(),
-                      field.name.escapeKotlinReservedWord()
+                      field.name.escapeKotlinReservedWord(),
+                      Input.Present::class
                   )
                   .indent()
                   .addStatement(
-                      "this[%S]·=·this@%L.%L.getOrThrow()",
+                      "this[%S]·=·this@%L.%L.value",
                       field.schemaName,
                       enclosingClassName.escapeKotlinReservedWord(),
                       field.name.escapeKotlinReservedWord()

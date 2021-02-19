@@ -17,12 +17,12 @@ import kotlin.Suppress
     "RemoveRedundantQualifierName")
 data class UserQuery(
   val name: String,
-  val isAdmin: Input<Boolean> = Input.absent()
+  val isAdmin: Input<Boolean> = Input.Absent()
 ) : InputType {
   override fun marshaller(): InputFieldMarshaller = InputFieldMarshaller.invoke { writer ->
     writer.writeString("name", this@UserQuery.name)
-    if (this@UserQuery.isAdmin.isPresent) {
-      writer.writeBoolean("isAdmin", this@UserQuery.isAdmin.getOrThrow())
+    if (this@UserQuery.isAdmin is Input.Present) {
+      writer.writeBoolean("isAdmin", this@UserQuery.isAdmin.value)
     }
   }
 }
