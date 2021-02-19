@@ -60,6 +60,8 @@ class PilotFragmentImpl : Fragment<PilotFragmentImpl.Data> {
 
       companion object {
         fun Homeworld.asPlanetHomeworld(): PlanetHomeworld? = this as? PlanetHomeworld
+
+        fun Homeworld.asPlanetFragment(): PlanetFragment? = this as? PlanetFragment
       }
     }
   }

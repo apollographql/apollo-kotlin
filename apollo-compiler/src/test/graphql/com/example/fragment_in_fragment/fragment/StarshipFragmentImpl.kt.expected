@@ -99,6 +99,8 @@ class StarshipFragmentImpl : Fragment<StarshipFragmentImpl.Data> {
 
               companion object {
                 fun Homeworld.asPlanetHomeworld(): PlanetHomeworld? = this as? PlanetHomeworld
+
+                fun Homeworld.asPlanetFragment(): PlanetFragment? = this as? PlanetFragment
               }
             }
           }
@@ -109,6 +111,8 @@ class StarshipFragmentImpl : Fragment<StarshipFragmentImpl.Data> {
 
           companion object {
             fun Node.asPersonNode(): PersonNode? = this as? PersonNode
+
+            fun Node.asPilotFragment(): PilotFragment? = this as? PilotFragment
           }
         }
       }

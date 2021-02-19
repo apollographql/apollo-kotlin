@@ -71,6 +71,10 @@ class GetHero : Query<GetHero.Data> {
 
       companion object {
         fun Hero.asCharacterHero(): CharacterHero? = this as? CharacterHero
+
+        fun Hero.asCharacterName(): CharacterName? = this as? CharacterName
+
+        fun Hero.asCharacterAppearsIn(): CharacterAppearsIn? = this as? CharacterAppearsIn
       }
     }
   }

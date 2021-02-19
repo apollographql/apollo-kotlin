@@ -406,6 +406,19 @@ internal class BackendIrBuilder constructor(
             accessors = fragmentImplementations
                 .filterNot { it.type == BackendIr.Fragment.Type.Fallback }
                 .map { "as${it.name.capitalize()}" to selectionKey + it.name }
+                .plus(
+                    // add accessors for named fragment interfaces
+                    fragmentImplementations
+                        .flatMap { fragment ->
+                          fragment.selectionKeys.filter { fragmentSelectionKey ->
+                            // filter only root named fragment keys that doesn't belong to current one
+                            fragmentSelectionKey.type == SelectionKey.Type.Fragment &&
+                                fragmentSelectionKey.keys.size == 1 &&
+                                (selectionKey.type != SelectionKey.Type.Fragment || selectionKey.root != fragmentSelectionKey.root)
+                          }
+                        }
+                        .map { fragmentSelectionKey -> "as${fragmentSelectionKey.root.capitalize()}" to fragmentSelectionKey }
+                )
                 .toMap()
         ),
         selectionKeys = this.selectionKeys + selectionKey,

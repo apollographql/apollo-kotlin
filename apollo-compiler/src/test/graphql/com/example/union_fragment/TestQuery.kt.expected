@@ -68,6 +68,8 @@ class TestQuery : Query<TestQuery.Data> {
 
       companion object {
         fun Search.asStarshipSearch(): StarshipSearch? = this as? StarshipSearch
+
+        fun Search.asStarship(): Starship? = this as? Starship
       }
     }
   }

@@ -86,6 +86,10 @@ class TestQuery : Query<TestQuery.Data> {
         fun R2.asHumanR2(): HumanR2? = this as? HumanR2
 
         fun R2.asDroidR2(): DroidR2? = this as? DroidR2
+
+        fun R2.asHumanDetails(): HumanDetails? = this as? HumanDetails
+
+        fun R2.asDroidDetails(): DroidDetails? = this as? DroidDetails
       }
     }
 
@@ -127,6 +131,10 @@ class TestQuery : Query<TestQuery.Data> {
         fun Luke.asHumanLuke(): HumanLuke? = this as? HumanLuke
 
         fun Luke.asDroidLuke(): DroidLuke? = this as? DroidLuke
+
+        fun Luke.asHumanDetails(): HumanDetails? = this as? HumanDetails
+
+        fun Luke.asDroidDetails(): DroidDetails? = this as? DroidDetails
       }
     }
   }

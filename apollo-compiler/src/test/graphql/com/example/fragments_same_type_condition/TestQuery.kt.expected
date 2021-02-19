@@ -70,6 +70,10 @@ class TestQuery : Query<TestQuery.Data> {
 
       companion object {
         fun Hero.asDroidHero(): DroidHero? = this as? DroidHero
+
+        fun Hero.asDroidDetails1(): DroidDetails1? = this as? DroidDetails1
+
+        fun Hero.asDroidDetails2(): DroidDetails2? = this as? DroidDetails2
       }
     }
   }

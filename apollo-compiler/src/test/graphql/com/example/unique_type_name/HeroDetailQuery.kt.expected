@@ -164,6 +164,8 @@ class HeroDetailQuery : Query<HeroDetailQuery.Data> {
 
             companion object {
               fun Friends.asCharacterFriends(): CharacterFriends? = this as? CharacterFriends
+
+              fun Friends.asHeroDetails(): HeroDetails? = this as? HeroDetails
             }
           }
         }
