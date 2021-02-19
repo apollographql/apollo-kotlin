@@ -30,7 +30,7 @@ class CodegenTest(private val folder: File) {
     }
 
     val expectedRoot = folder.parentFile.parentFile.parentFile
-    val expectedFiles = folder.walk().filter { it.isFile && it.extension == "kt" }
+    val expectedFiles = folder.walk().filter { it.isFile && it.extension == "expected" }
 
     val actualRoot = args.outputDir
     val actualFiles = actualRoot.walk().filter {
@@ -39,7 +39,7 @@ class CodegenTest(private val folder: File) {
     }
 
     expectedFiles.forEach { expected ->
-      val relativePath = expected.relativeTo(expectedRoot).path
+      val relativePath = expected.relativeTo(expectedRoot).path.removeSuffix(".expected")
       val actual = File(actualRoot, relativePath)
       if (!actual.exists()) {
         if (shouldUpdateTestFixtures()) {
@@ -54,7 +54,7 @@ class CodegenTest(private val folder: File) {
     }
     actualFiles.forEach { actual ->
       val relativePath = actual.relativeTo(actualRoot).path
-      val expected = File(expectedRoot, relativePath)
+      val expected = File(expectedRoot, "$relativePath.expected")
       if (!expected.exists()) {
         if (shouldUpdateTestFixtures()) {
           println("adding expected file: ${actual.absolutePath} - ${actual.path}")
