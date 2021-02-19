@@ -2,6 +2,7 @@ package com.apollographql.apollo3
 
 import com.apollographql.apollo3.api.ResponseField
 import com.apollographql.apollo3.api.Operation
+import com.apollographql.apollo3.api.VariableValue
 import com.apollographql.apollo3.cache.normalized.internal.RealCacheKeyBuilder
 import com.apollographql.apollo3.integration.sealedclasses.type.Direction
 import com.google.common.truth.Truth
@@ -14,12 +15,7 @@ class SealedClassesTest {
   @Test
   fun `cache keys are correct for sealed classes`() {
 
-    val arguments = mapOf("direction" to
-        mapOf(
-            "kind" to "Variable",
-            "variableName" to "direction"
-        )
-    )
+    val arguments = mapOf("direction" to VariableValue("direction"))
 
     val field = ResponseField(
         ResponseField.Type.Named.Other("String"),
@@ -28,7 +24,6 @@ class SealedClassesTest {
         arguments,
         emptyList(),
         emptyList())
-
 
     val variables = object : Operation.Variables() {
       override fun valueMap() = mapOf("direction" to Direction.NORTH)
