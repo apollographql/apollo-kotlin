@@ -75,7 +75,7 @@ class ResponseWriteTestCase {
   @Test
   @Throws(Exception::class)
   fun customScalar() {
-    val query = EpisodeHeroWithDatesQuery(Input.present(Episode.JEDI))
+    val query = EpisodeHeroWithDatesQuery(Input.Present(Episode.JEDI))
     enqueueAndAssertResponse(
         server,
         "EpisodeHeroWithDatesResponse.json",
@@ -171,7 +171,7 @@ class ResponseWriteTestCase {
   @Test
   @Throws(Exception::class)
   fun objects() {
-    val query = HeroAndFriendsNamesWithIDsQuery(Input.present(Episode.JEDI))
+    val query = HeroAndFriendsNamesWithIDsQuery(Input.Present(Episode.JEDI))
     enqueueAndAssertResponse(
         server,
         "HeroAndFriendsNameWithIdsResponse.json",
@@ -227,7 +227,7 @@ class ResponseWriteTestCase {
   @Test
   @Throws(Exception::class)
   fun operation_with_fragments() {
-    val query = HeroAndFriendsWithFragmentsQuery(Input.present(Episode.NEWHOPE))
+    val query = HeroAndFriendsWithFragmentsQuery(Input.Present(Episode.NEWHOPE))
     enqueueAndAssertResponse(
         server,
         "HeroAndFriendsWithFragmentResponse.json",
@@ -288,7 +288,7 @@ class ResponseWriteTestCase {
   @Test
   @Throws(Exception::class)
   fun operation_with_inline_fragments() {
-    val query = EpisodeHeroWithInlineFragmentQuery(Input.present(Episode.NEWHOPE))
+    val query = EpisodeHeroWithInlineFragmentQuery(Input.Present(Episode.NEWHOPE))
     enqueueAndAssertResponse(
         server,
         "EpisodeHeroWithInlineFragmentResponse.json",
@@ -349,7 +349,7 @@ class ResponseWriteTestCase {
   @Test
   @Throws(Exception::class)
   fun fragments() {
-    val query = HeroAndFriendsWithFragmentsQuery(Input.present(Episode.NEWHOPE))
+    val query = HeroAndFriendsWithFragmentsQuery(Input.Present(Episode.NEWHOPE))
     enqueueAndAssertResponse(
         server,
         "HeroAndFriendsWithFragmentResponse.json",

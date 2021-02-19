@@ -137,7 +137,7 @@ class ApolloInterceptorChainTest {
   }
 
   private fun createQuery(): EpisodeHeroNameQuery {
-    return EpisodeHeroNameQuery(episode = Input.present(Episode.EMPIRE))
+    return EpisodeHeroNameQuery(episode = Input.Present(Episode.EMPIRE))
   }
 
   private fun prepareInterceptorResponse(query: EpisodeHeroNameQuery): InterceptorResponse {

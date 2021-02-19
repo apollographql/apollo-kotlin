@@ -148,7 +148,7 @@ class ApolloCancelCallTest {
   @Throws(Exception::class)
   fun cancelCallBeforeEnqueueCanceledException() {
     server.enqueue(mockResponse("EpisodeHeroNameResponse.json"))
-    val call: ApolloCall<EpisodeHeroNameQuery.Data> = apolloClient.query(EpisodeHeroNameQuery(Input.present(Episode.EMPIRE)))
+    val call: ApolloCall<EpisodeHeroNameQuery.Data> = apolloClient.query(EpisodeHeroNameQuery(Input.Present(Episode.EMPIRE)))
 
     val callback = TestableCallback<EpisodeHeroNameQuery.Data>()
 
@@ -173,7 +173,7 @@ class ApolloCancelCallTest {
         .httpCache(ApolloHttpCache(cacheStore, null))
         .build()
     server.enqueue(mockResponse("EpisodeHeroNameResponse.json").setHeadersDelay(500, TimeUnit.MILLISECONDS))
-    val call: ApolloCall<EpisodeHeroNameQuery.Data> = apolloClient.query(EpisodeHeroNameQuery(Input.present(Episode.EMPIRE)))
+    val call: ApolloCall<EpisodeHeroNameQuery.Data> = apolloClient.query(EpisodeHeroNameQuery(Input.Present(Episode.EMPIRE)))
 
     val callback = TestableCallback<EpisodeHeroNameQuery.Data>()
 
@@ -194,7 +194,7 @@ class ApolloCancelCallTest {
   @Throws(Exception::class)
   fun cancelPrefetchBeforeEnqueueCanceledException() {
     server.enqueue(mockResponse("EpisodeHeroNameResponse.json"))
-    val call = apolloClient.prefetch(EpisodeHeroNameQuery(Input.present(Episode.EMPIRE)))
+    val call = apolloClient.prefetch(EpisodeHeroNameQuery(Input.Present(Episode.EMPIRE)))
 
     val callback = TestablePrefetchCallback()
 
@@ -210,7 +210,7 @@ class ApolloCancelCallTest {
   @Throws(Exception::class)
   fun cancelPrefetchAfterEnqueueNoCallback() {
     server.enqueue(mockResponse("EpisodeHeroNameResponse.json").setHeadersDelay(500, TimeUnit.MILLISECONDS))
-    val call = apolloClient.prefetch(EpisodeHeroNameQuery(Input.present(Episode.EMPIRE)))
+    val call = apolloClient.prefetch(EpisodeHeroNameQuery(Input.Present(Episode.EMPIRE)))
 
     val callback = TestablePrefetchCallback()
 

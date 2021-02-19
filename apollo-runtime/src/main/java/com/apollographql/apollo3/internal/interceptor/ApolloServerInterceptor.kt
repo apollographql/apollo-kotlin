@@ -246,8 +246,8 @@ class ApolloServerInterceptor(
           }
         }
         is Input<*> -> {
-          if (value.isPresent) {
-            recursiveGetUploadData(value.getOrThrow(), variableName, allUploads)
+          if (value is Input.Present<*>) {
+            recursiveGetUploadData(value.value, variableName, allUploads)
           }
         }
         is FileUpload -> {

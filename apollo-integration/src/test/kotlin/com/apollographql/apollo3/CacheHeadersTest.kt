@@ -77,7 +77,7 @@ class CacheHeadersTest {
         .build()
     server.enqueue(mockResponse("HeroAndFriendsNameResponse.json"))
     val cacheHeaders = builder().addHeader(ApolloCacheHeaders.DO_NOT_STORE, "true").build()
-    Rx2Apollo.from(apolloClient.query(HeroAndFriendsNamesQuery(Input.present(Episode.NEWHOPE)))
+    Rx2Apollo.from(apolloClient.query(HeroAndFriendsNamesQuery(Input.Present(Episode.NEWHOPE)))
         .cacheHeaders(cacheHeaders))
         .test()
     Truth.assertThat(hasHeader.get()).isTrue()
@@ -134,7 +134,7 @@ class CacheHeadersTest {
     server.enqueue(mockResponse("HeroAndFriendsNameResponse.json"))
 
     runBlocking {
-      apolloClient.query(HeroAndFriendsNamesQuery(Input.present(Episode.NEWHOPE)))
+      apolloClient.query(HeroAndFriendsNamesQuery(Input.Present(Episode.NEWHOPE)))
           .cacheHeaders(cacheHeaders)
           .await()
     }

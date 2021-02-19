@@ -53,7 +53,7 @@ class OptimisticCacheTestCase {
   @Test
   @Throws(Exception::class)
   fun simple() {
-    val query = HeroAndFriendsNamesQuery(Input.present(Episode.JEDI))
+    val query = HeroAndFriendsNamesQuery(Input.Present(Episode.JEDI))
     enqueueAndAssertResponse(
         server,
         "HeroAndFriendsNameResponse.json",
@@ -97,7 +97,7 @@ class OptimisticCacheTestCase {
   @Test
   @Throws(Exception::class)
   fun two_optimistic_two_rollback() {
-    val query1 = HeroAndFriendsNamesWithIDsQuery(Input.present(Episode.JEDI))
+    val query1 = HeroAndFriendsNamesWithIDsQuery(Input.Present(Episode.JEDI))
     val mutationId1 = UUID.randomUUID()
 
     // execute query1 from the network
@@ -274,7 +274,7 @@ class OptimisticCacheTestCase {
     val updateReviewMutation = UpdateReviewMutation(
         "empireReview2",
         ReviewInput(
-            commentary = Input.present("Great"),
+            commentary = Input.Present("Great"),
             stars = 5,
             favoriteColor = ColorInput()
         )
@@ -328,7 +328,7 @@ class OptimisticCacheTestCase {
   @Test
   @Throws(Exception::class)
   fun two_optimistic_reverse_rollback_order() {
-    val query1 = HeroAndFriendsNamesWithIDsQuery(Input.present(Episode.JEDI))
+    val query1 = HeroAndFriendsNamesWithIDsQuery(Input.Present(Episode.JEDI))
     val mutationId1 = UUID.randomUUID()
     val query2 = HeroNameWithIdQuery()
     val mutationId2 = UUID.randomUUID()

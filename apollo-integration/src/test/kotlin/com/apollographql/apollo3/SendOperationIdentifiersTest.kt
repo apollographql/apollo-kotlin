@@ -21,7 +21,7 @@ class SendOperationIdentifiersTest {
   @Test
   @Throws(Exception::class)
   fun sendOperationIdsTrue() {
-    val query = HeroAndFriendsNamesQuery(Input.present(Episode.EMPIRE))
+    val query = HeroAndFriendsNamesQuery(Input.Present(Episode.EMPIRE))
     val apolloClient = ApolloClient.builder()
         .serverUrl(server.url("/"))
         .enableAutoPersistedQueries(true)
@@ -37,7 +37,7 @@ class SendOperationIdentifiersTest {
   @Test
   @Throws(Exception::class)
   fun doesNotSendOperationIdsWhenFalse() {
-    val query = HeroAndFriendsNamesQuery(Input.present(Episode.EMPIRE))
+    val query = HeroAndFriendsNamesQuery(Input.Present(Episode.EMPIRE))
     val apolloClient = ApolloClient.builder()
         .serverUrl(server.url("/"))
         .enableAutoPersistedQueries(false)
@@ -53,7 +53,7 @@ class SendOperationIdentifiersTest {
   @Test
   @Throws(Exception::class)
   fun operationIdHttpRequestHeader() {
-    val heroAndFriendsNamesQuery = HeroAndFriendsNamesQuery(Input.present(Episode.EMPIRE))
+    val heroAndFriendsNamesQuery = HeroAndFriendsNamesQuery(Input.Present(Episode.EMPIRE))
     val applicationInterceptorHeader = AtomicBoolean()
     val networkInterceptorHeader = AtomicBoolean()
     val okHttpClient = OkHttpClient.Builder()
