@@ -164,8 +164,8 @@ class LruNormalizedCacheTest {
     primaryCache.merge(record, CacheHeaders.NONE)
 
     //verify write through behavior
-    assertThat(primaryCache.loadRecord("root", CacheHeaders.NONE)!!.field("bar")).isEqualTo("bar")
-    assertThat(primaryCache.nextCache!!.loadRecord("root", CacheHeaders.NONE)!!.field("bar")).isEqualTo("bar")
+    assertThat(primaryCache.loadRecord("root", CacheHeaders.NONE)!!.get("bar")).isEqualTo("bar")
+    assertThat(primaryCache.nextCache!!.loadRecord("root", CacheHeaders.NONE)!!.get("bar")).isEqualTo("bar")
   }
 
   @Test
@@ -231,7 +231,7 @@ class LruNormalizedCacheTest {
         .chain(secondaryCacheFactory).createChain() as LruNormalizedCache
     val record = Record(key = "key", fields = emptyMap())
     primaryCache.merge(record, CacheHeaders.NONE)
-    primaryCache.clearCurrentCache()
+    primaryCache.clearAll()
 
     val nextCache = requireNotNull(primaryCache.nextCache)
     assertThat(nextCache.loadRecord("key", CacheHeaders.NONE)).isNotNull()
@@ -392,8 +392,8 @@ class LruNormalizedCacheTest {
     val cacheRecord = requireNotNull(store.loadRecord(testRecord.key, CacheHeaders.NONE))
 
     assertThat(cacheRecord.key).isEqualTo(testRecord.key)
-    assertThat(cacheRecord.field("a")).isEqualTo(testRecord.field("a"))
-    assertThat(cacheRecord.field("b")).isEqualTo(testRecord.field("b"))
+    assertThat(cacheRecord.get("a")).isEqualTo(testRecord.get("a"))
+    assertThat(cacheRecord.get("b")).isEqualTo(testRecord.get("b"))
   }
 
   private fun createTestRecord(id: String): Record {
