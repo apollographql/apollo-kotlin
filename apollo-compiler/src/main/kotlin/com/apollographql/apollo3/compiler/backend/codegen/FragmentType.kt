@@ -108,7 +108,7 @@ internal fun CodeGenerationAst.FragmentType.implementationTypeSpec(generateAsInt
               .addCode("return %L", responseFieldsCode())
               .build()
       )
-      .addFunction(variables.variablesFunSpec())
+      .addFunction(variables.serializeVariablesFunSpec())
       .build()
 }
 

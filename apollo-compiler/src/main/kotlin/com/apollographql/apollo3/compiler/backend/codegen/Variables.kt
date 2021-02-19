@@ -99,9 +99,9 @@ private fun List<CodeGenerationAst.InputField>.variablesMarshallerSpec(thisRef: 
       .build()
 }
 
-internal fun List<CodeGenerationAst.InputField>.variablesFunSpec() = FunSpec.builder("variables")
+internal fun List<CodeGenerationAst.InputField>.serializeVariablesFunSpec() = FunSpec.builder("serializeVariables")
     .addModifiers(KModifier.OVERRIDE)
-    .returns(Operation.Variables::class.asClassName())
+    .addParameter("writer")
     .apply {
       if (isNotEmpty()) {
         addStatement("return variables")

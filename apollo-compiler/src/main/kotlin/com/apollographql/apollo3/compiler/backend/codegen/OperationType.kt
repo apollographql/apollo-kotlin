@@ -43,7 +43,7 @@ internal fun CodeGenerationAst.OperationType.typeSpec(targetPackage: String, gen
           .addStatement("return QUERY_DOCUMENT")
           .build()
       )
-      .addFunction(variables.variablesFunSpec())
+      .addFunction(variables.serializeVariablesFunSpec())
       .addFunction(FunSpec.builder("name")
           .addModifiers(KModifier.OVERRIDE)
           .returns(String::class)
