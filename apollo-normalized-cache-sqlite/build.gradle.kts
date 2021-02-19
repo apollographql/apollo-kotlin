@@ -11,7 +11,8 @@ configure<com.squareup.sqldelight.gradle.SqlDelightExtension> {
   }
 }
 
-configureMppDefaults()
+// https://github.com/cashapp/sqldelight/pull/1486
+configureMppDefaults(withJs = false)
 
 configure<org.jetbrains.kotlin.gradle.dsl.KotlinMultiplatformExtension> {
   if (System.getProperty("idea.sync.active") == null) {
@@ -56,6 +57,15 @@ configure<org.jetbrains.kotlin.gradle.dsl.KotlinMultiplatformExtension> {
     val jvmTest by getting {
       dependencies {
         implementation(groovy.util.Eval.x(project, "x.dep.truth"))
+      }
+    }
+
+    val androidTest by getting {
+      // this allows the android unit test to use the JVM driver
+      // TODO: makes this better with HMPP?
+      dependsOn(jvmTest)
+      dependencies {
+        implementation(kotlin("test-junit"))
       }
     }
   }

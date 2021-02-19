@@ -225,20 +225,6 @@ class LruNormalizedCacheTest {
   }
 
   @Test
-  fun testClearPrimaryCache() {
-    val secondaryCacheFactory = LruNormalizedCacheFactory(EvictionPolicy.NO_EVICTION)
-    val primaryCache = LruNormalizedCacheFactory(EvictionPolicy.NO_EVICTION)
-        .chain(secondaryCacheFactory).createChain() as LruNormalizedCache
-    val record = Record(key = "key", fields = emptyMap())
-    primaryCache.merge(record, CacheHeaders.NONE)
-    primaryCache.clearAll()
-
-    val nextCache = requireNotNull(primaryCache.nextCache)
-    assertThat(nextCache.loadRecord("key", CacheHeaders.NONE)).isNotNull()
-    assertThat(nextCache.loadRecord("key", CacheHeaders.NONE)).isNotNull()
-  }
-
-  @Test
   fun testClearSecondaryCache() {
     val secondaryCacheFactory = LruNormalizedCacheFactory(EvictionPolicy.NO_EVICTION)
     val primaryCache = LruNormalizedCacheFactory(EvictionPolicy.NO_EVICTION)
@@ -348,7 +334,7 @@ class LruNormalizedCacheTest {
 
     val lruCache = createLruNormalizedCache()
 
-    val record1 = createTestRecord("id_1")
+    val record1 = Record("id_1", emptyMap())
     val record2 = Record(
         key = "id_2",
         fields = mapOf(
@@ -369,7 +355,7 @@ class LruNormalizedCacheTest {
 
     val lruCache = createLruNormalizedCache()
 
-    val record1 = createTestRecord("id_1")
+    val record1 = Record("id_1", emptyMap())
     val record2 = Record(
         key = "id_2",
         fields = mapOf(
