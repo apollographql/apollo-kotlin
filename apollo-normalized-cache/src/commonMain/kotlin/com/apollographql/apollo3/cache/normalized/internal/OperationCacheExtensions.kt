@@ -127,6 +127,6 @@ private fun <D> readInternal(
 
 fun Collection<Record>?.dependentKeys(): Set<String> {
   return this?.flatMap {
-    it.keys() + it.key
+    it.fieldKeys() + it.key
   }?.toSet() ?: emptySet()
 }

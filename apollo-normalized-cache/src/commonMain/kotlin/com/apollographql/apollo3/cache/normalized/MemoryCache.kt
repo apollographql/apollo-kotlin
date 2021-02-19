@@ -74,7 +74,7 @@ class MemoryCache(
           record = record,
           expireAfterMillis = expireAfterMillis
       )
-      record.keys()
+      record.fieldKeys()
     } else {
       val (mergedRecord, changedKeys) = oldRecord.mergeWith(record)
       lruCache[record.key] = CacheEntry(

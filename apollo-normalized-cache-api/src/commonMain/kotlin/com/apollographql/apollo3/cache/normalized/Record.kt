@@ -55,7 +55,7 @@ class Record (
    * Returns a set of all field keys.
    * A field key incorporates any GraphQL arguments in addition to the field name.
    */
-  fun keys(): Set<String> {
+  fun fieldKeys(): Set<String> {
     return fields.keys.map { "$key.$it" }.toSet()
   }
 

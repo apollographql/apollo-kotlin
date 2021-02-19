@@ -77,7 +77,7 @@ class LruNormalizedCache internal constructor(evictionPolicy: EvictionPolicy) : 
     val oldRecord = loadRecord(record.key, cacheHeaders)
     val changedKeys = if (oldRecord == null) {
       lruCache.put(record.key, record)
-      record.keys()
+      record.fieldKeys()
     } else {
       val (mergedRecord, changedKeys) = oldRecord.mergeWith(record)
       lruCache.put(record.key, mergedRecord)

@@ -45,7 +45,7 @@ internal object RecordsetDataSource {
               key = record.key,
               record = RecordFieldJsonAdapter.toJson(record.fields),
           )
-          record.keys()
+          record.fieldKeys()
         } else {
           val (mergedRecord, changedKeys) = oldRecord.mergeWith(record)
           if (mergedRecord.isNotEmpty()) {
@@ -71,7 +71,7 @@ internal object RecordsetDataSource {
             key = record.key,
             record = RecordFieldJsonAdapter.toJson(record.fields),
         )
-        record.keys()
+        record.fieldKeys()
       } else {
         val (mergedRecord, changedKeys) = oldRecord.mergeWith(record)
         if (mergedRecord.isNotEmpty()) {
