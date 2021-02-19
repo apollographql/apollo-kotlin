@@ -3,7 +3,6 @@ package com.apollographql.apollo3.cache.normalized.internal
 import com.apollographql.apollo3.api.InputType
 import com.apollographql.apollo3.api.Operation
 import com.apollographql.apollo3.api.ResponseField
-import com.apollographql.apollo3.api.ResponseField.Companion.forString
 import com.apollographql.apollo3.api.CustomScalar
 import com.apollographql.apollo3.api.internal.InputFieldMarshaller
 import com.apollographql.apollo3.api.internal.InputFieldWriter
@@ -22,7 +21,7 @@ class CacheKeyBuilderTest {
 
   @Test
   fun testFieldWithNoArguments() {
-    val field = forString("hero", "hero", null, false, emptyList())
+    val field = createResponseField("hero", "hero")
     val variables: Operation.Variables = object : Operation.Variables() {
       override fun valueMap(): Map<String, Any?> {
         return super.valueMap()
@@ -33,7 +32,7 @@ class CacheKeyBuilderTest {
 
   @Test
   fun testFieldWithNoArgumentsWithAlias() {
-    val field = forString("r2", "hero", null, false, emptyList())
+    val field = createResponseField("r2", "hero")
     val variables: Operation.Variables = object : Operation.Variables() {
       override fun valueMap(): Map<String, Any?> {
         return super.valueMap()
@@ -158,8 +157,12 @@ class CacheKeyBuilderTest {
 
   @Test
   fun testFieldWithNonPrimitiveValue() {
-    val field = forString("hero", "hero",
-        mapOf<String, Any?>("episode" to Episode.JEDI), false, emptyList())
+    val field = ResponseField(
+        type = ResponseField.Type.Named.Other("String"),
+        fieldName = "hero",
+        arguments = mapOf<String, Any?>("episode" to Episode.JEDI)
+    )
+
     val variables: Operation.Variables = object : Operation.Variables() {
       override fun valueMap(): Map<String, Any?> {
         return super.valueMap()
@@ -332,12 +335,13 @@ class CacheKeyBuilderTest {
         + "\":null,\"listWithNulls\":[],\"long\":null,\"null\":null,\"number\":null,\"object\":null,\"string\":null}}})")
   }
 
-  private fun createResponseField(responseName: String, fieldName: String, arguments: Map<String, Any?>): ResponseField {
-    return forString(
-        responseName,
-        fieldName,
-        arguments,
-        false, emptyList())
+  private fun createResponseField(responseName: String, fieldName: String, arguments: Map<String, Any?> = emptyMap()): ResponseField {
+    return ResponseField(
+        type = ResponseField.Type.Named.Other("String"),
+        fieldName = fieldName,
+        responseName = responseName,
+        arguments = arguments
+    )
   }
 
   @Test
