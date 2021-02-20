@@ -2,8 +2,6 @@ package com.apollographql.apollo3.compiler.backend.codegen
 
 import com.apollographql.apollo3.api.Input
 import com.apollographql.apollo3.api.InputType
-import com.apollographql.apollo3.api.internal.InputFieldMarshaller
-import com.apollographql.apollo3.api.internal.InputFieldWriter
 import com.apollographql.apollo3.api.internal.ResponseAdapter
 import com.apollographql.apollo3.compiler.applyIf
 import com.apollographql.apollo3.compiler.backend.ast.CodeGenerationAst
