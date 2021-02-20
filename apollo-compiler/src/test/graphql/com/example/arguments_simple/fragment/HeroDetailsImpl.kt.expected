@@ -22,13 +22,13 @@ import kotlin.collections.Map
 import kotlin.jvm.Transient
 
 data class HeroDetailsImpl(
-  val friendsCount: Input<Int> = Input.absent(),
+  val friendsCount: Input<Int> = Input.Absent,
   val includeName: Boolean
 ) : Fragment<HeroDetailsImpl.Data> {
   @Transient
   private val variables: Operation.Variables = object : Operation.Variables() {
     override fun valueMap(): Map<String, Any?> = mutableMapOf<String, Any?>().apply {
-      if (this@HeroDetailsImpl.friendsCount.defined) {
+      if (this@HeroDetailsImpl.friendsCount is Input.Present) {
         this["friendsCount"] = this@HeroDetailsImpl.friendsCount.value
       }
       this["IncludeName"] = this@HeroDetailsImpl.includeName
@@ -36,7 +36,7 @@ data class HeroDetailsImpl(
 
     override fun marshaller(): InputFieldMarshaller {
       return InputFieldMarshaller.invoke { writer ->
-        if (this@HeroDetailsImpl.friendsCount.defined) {
+        if (this@HeroDetailsImpl.friendsCount is Input.Present) {
           writer.writeInt("friendsCount", this@HeroDetailsImpl.friendsCount.value)
         }
         writer.writeBoolean("IncludeName", this@HeroDetailsImpl.includeName)

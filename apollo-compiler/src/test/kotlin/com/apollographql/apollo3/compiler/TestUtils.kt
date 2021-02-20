@@ -15,6 +15,12 @@ internal object TestUtils {
       else -> false
     }
   }
+  internal fun shouldUpdateMeasurements(): Boolean {
+    return when (System.getProperty("updateMeasurements")?.trim()) {
+      "on", "true", "1" -> true
+      else -> false
+    }
+  }
 
   internal fun checkTestFixture(actual: File, expected: File) {
     val actualText = actual.readText()

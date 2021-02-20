@@ -4,6 +4,7 @@
 !**/.idea/codeStyles
 !**/.idea/icon.png
 !**/.idea/runConfigurations
+!**/.idea/scopes
 *.iml
 build
 local.properties
