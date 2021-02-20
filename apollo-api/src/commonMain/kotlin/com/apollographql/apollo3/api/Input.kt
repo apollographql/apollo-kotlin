@@ -8,6 +8,6 @@ package com.apollographql.apollo3.api
  */
 sealed class Input<out V> {
   class Present<V>(val value: V): Input<V>()
-  class Absent<V>: Input<V>()
+  object Absent: Input<Nothing>()
 }
 

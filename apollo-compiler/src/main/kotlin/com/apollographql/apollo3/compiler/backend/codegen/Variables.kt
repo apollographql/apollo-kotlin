@@ -26,7 +26,7 @@ private fun List<CodeGenerationAst.InputField>.constructorFunSpec() = FunSpec
                 if (type.isNullable) Input::class.asClassName().parameterizedBy(type.copy(nullable = false)) else type
               }
           )
-          .applyIf(variable.type.nullable) { defaultValue("%T()", Input.Absent::class.asClassName()) }
+          .applyIf(variable.type.nullable) { defaultValue("%T", Input.Absent::class.asClassName()) }
           .build()
     })
     .build()

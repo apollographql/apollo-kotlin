@@ -64,7 +64,7 @@ private fun CodeGenerationAst.InputField.parameterSpec(): ParameterSpec {
       ?.toDefaultValueCodeBlock(typeName = rawTypeName, fieldType = type)
       .let { code ->
         if (type.nullable) {
-          code?.let { CodeBlock.of("%T(%L)", Input.Present::class, it) } ?: CodeBlock.of("%T()", Input.Absent::class)
+          code?.let { CodeBlock.of("%T(%L)", Input.Present::class, it) } ?: CodeBlock.of("%T", Input.Absent::class)
         } else {
           code
         }
