@@ -7,8 +7,6 @@ package com.example.input_object_type.type
 
 import com.apollographql.apollo3.api.Input
 import com.apollographql.apollo3.api.InputType
-import com.apollographql.apollo3.api.internal.InputFieldMarshaller
-import com.apollographql.apollo3.api.internal.InputFieldWriter
 import java.util.Date
 import kotlin.Boolean
 import kotlin.Int
@@ -30,7 +28,7 @@ data class ReviewInput(
   /**
    * for test purpose only
    */
-  val nullableIntFieldWithDefaultValue: Input<Int> = Input.Present(10),
+  val nullableIntFieldWithDefaultValue: Input<Int> = Input.Absent(),
   /**
    * Comment about the movie, optional
    */
@@ -42,11 +40,11 @@ data class ReviewInput(
   /**
    * for test purpose only
    */
-  val enumWithDefaultValue: Input<Episode> = Input.Present(Episode.JEDI),
+  val enumWithDefaultValue: Input<Episode> = Input.Absent(),
   /**
    * for test purpose only
    */
-  val nonNullableEnumWithDefaultValue: Episode = Episode.JEDI,
+  val nonNullableEnumWithDefaultValue: Episode,
   /**
    * for test purpose only
    */
@@ -62,15 +60,15 @@ data class ReviewInput(
   /**
    * for test purpose only
    */
-  val listOfEnums: Input<List<Episode?>> = Input.Present(listOf(Episode.NEWHOPE, Episode.EMPIRE)),
+  val listOfEnums: Input<List<Episode?>> = Input.Absent(),
   /**
    * for test purpose only
    */
-  val listOfInt: Input<List<Int?>> = Input.Present(listOf(1, 2, 3)),
+  val listOfInt: Input<List<Int?>> = Input.Absent(),
   /**
    * for test purpose only
    */
-  val listOfString: Input<List<String?>> = Input.Present(listOf("test1", "test2", "test3")),
+  val listOfString: Input<List<String?>> = Input.Absent(),
   /**
    * for test purpose only
    */
@@ -78,11 +76,11 @@ data class ReviewInput(
   /**
    * for test purpose only
    */
-  val listOfInputTypes: Input<List<ColorInput?>> = Input.Present(emptyList()),
+  val listOfInputTypes: Input<List<ColorInput?>> = Input.Absent(),
   /**
    * for test purpose only
    */
-  val booleanWithDefaultValue: Input<Boolean> = Input.Present(true),
+  val booleanWithDefaultValue: Input<Boolean> = Input.Absent(),
   /**
    * for test purpose only
    */

@@ -64,9 +64,9 @@ internal fun CodeGenerationAst.FragmentType.interfaceTypeSpec(generateAsInternal
 
 private fun adapterFunSpec(fragmentName: String, adapterClassName: TypeName): FunSpec {
   val body = CodeBlock.builder().apply {
-    addStatement("val adapter = customScalarAdapters.getFragmentAdapter(%S) {", fragmentName)
+    addStatement("val adapter = ${Identifier.RESPONSE_ADAPTER_CACHE}.getFragmentAdapter(%S) {", fragmentName)
     indent()
-    addStatement("%T(customScalarAdapters)", adapterClassName)
+    addStatement("%T(${Identifier.RESPONSE_ADAPTER_CACHE})", adapterClassName)
     unindent()
     addStatement("}")
     addStatement("return adapter")
@@ -74,7 +74,7 @@ private fun adapterFunSpec(fragmentName: String, adapterClassName: TypeName): Fu
 
   return FunSpec.builder("adapter")
       .addModifiers(KModifier.OVERRIDE)
-      .addParameter(ParameterSpec.builder("customScalarAdapters", ResponseAdapterCache::class.asTypeName()).build())
+      .addParameter(ParameterSpec.builder(Identifier.RESPONSE_ADAPTER_CACHE, ResponseAdapterCache::class.asTypeName()).build())
       .returns(ResponseAdapter::class.asClassName().parameterizedBy(ClassName(packageName = "", "Data")))
       .addCode(body)
       .build()
@@ -91,7 +91,7 @@ internal fun CodeGenerationAst.FragmentType.implementationTypeSpec(generateAsInt
       }
       .addSuperinterface(Fragment::class.java.asClassName().parameterizedBy(dataTypeName))
       .applyIf(generateAsInternal) { addModifiers(KModifier.INTERNAL) }
-      .addVariablesIfNeeded(variables, this.implementationType.typeRef.name)
+      .makeDataClass(variables.map { it.toParameterSpec() })
       .addFunction(
           adapterFunSpec(this.implementationType.name, this.implementationType.typeRef.asAdapterTypeName())
       )
@@ -108,7 +108,12 @@ internal fun CodeGenerationAst.FragmentType.implementationTypeSpec(generateAsInt
               .addCode("return %L", responseFieldsCode())
               .build()
       )
-      .addFunction(variables.serializeVariablesFunSpec())
+      .addFunction(serializeVariablesFunSpec(
+          funName = "serializeVariables",
+          packageName = this.implementationType.typeRef.packageName,
+          name = this.implementationType.typeRef.name,
+          getOrPut = "getFragmentVariablesAdapter(\"${this.implementationType.name}\")"
+      ))
       .build()
 }
 

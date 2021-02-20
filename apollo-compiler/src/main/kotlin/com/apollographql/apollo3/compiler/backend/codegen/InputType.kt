@@ -1,8 +1,10 @@
 package com.apollographql.apollo3.compiler.backend.codegen
 
 import com.apollographql.apollo3.api.Input
+import com.apollographql.apollo3.api.InputType
 import com.apollographql.apollo3.api.internal.InputFieldMarshaller
 import com.apollographql.apollo3.api.internal.InputFieldWriter
+import com.apollographql.apollo3.api.internal.ResponseAdapter
 import com.apollographql.apollo3.compiler.applyIf
 import com.apollographql.apollo3.compiler.backend.ast.CodeGenerationAst
 import com.apollographql.apollo3.compiler.escapeKotlinReservedWord
@@ -12,39 +14,19 @@ import com.squareup.kotlinpoet.KModifier
 import com.squareup.kotlinpoet.ParameterSpec
 import com.squareup.kotlinpoet.ParameterizedTypeName.Companion.parameterizedBy
 import com.squareup.kotlinpoet.PropertySpec
+import com.squareup.kotlinpoet.TypeName
 import com.squareup.kotlinpoet.TypeSpec
 import com.squareup.kotlinpoet.asClassName
 
-internal fun CodeGenerationAst.InputField.asPropertySpec(initializer: CodeBlock): PropertySpec {
-  return PropertySpec
-      .builder(
-          name = name.escapeKotlinReservedWord(),
-          type = type.asTypeName().let { type ->
-            type.takeUnless { type.isNullable } ?: Input::class.asClassName().parameterizedBy(type.copy(nullable = false))
-          }
-      )
-      .apply { if (description.isNotBlank()) addKdoc("%L\n", description) }
-      .apply { initializer(initializer) }
-      .build()
-}
 
 internal fun CodeGenerationAst.InputType.typeSpec(generateAsInternal: Boolean = false) =
     TypeSpec
-        .classBuilder(name.escapeKotlinReservedWord())
+        .classBuilder(kotlinNameForInputObjectType(name))
         .applyIf(description.isNotBlank()) { addKdoc("%L\n", description) }
         .applyIf(generateAsInternal) { addModifiers(KModifier.INTERNAL) }
         .addAnnotation(suppressWarningsAnnotation)
-        .addModifiers(KModifier.DATA)
-        .addSuperinterface(com.apollographql.apollo3.api.InputType::class)
-        .primaryConstructor(primaryConstructorSpec)
-        .addProperties(
-            fields.map { field ->
-              field.asPropertySpec(
-                  initializer = CodeBlock.of(field.name.escapeKotlinReservedWord())
-              )
-            }
-        )
-        .addFunction(marshallerFunSpec)
+        .makeDataClass(fields.map { it.toParameterSpec() })
+        .addSuperinterface(InputType::class)
         .build()
 
 private val CodeGenerationAst.InputType.primaryConstructorSpec: FunSpec

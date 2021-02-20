@@ -203,7 +203,7 @@ internal class AstBuilder private constructor(
       )
 
       IntrospectionSchema.Kind.INPUT_OBJECT -> {
-        CodeGenerationAst.FieldType.Object(
+        CodeGenerationAst.FieldType.InputObject(
             nullable = true,
             typeRef = CodeGenerationAst.TypeRef(
                 name = this.name!!.toUpperCamelCase(),
