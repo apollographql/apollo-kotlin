@@ -27,7 +27,7 @@ import kotlin.jvm.Transient
     "RemoveRedundantQualifierName")
 data class TestQueryWithAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryLongName(
   val episodeAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryLongName:
-      Input<Episode> = Input.Absent()
+      Input<Episode> = Input.Absent
 ) :
     Query<TestQueryWithAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryLongName.Data>
     {

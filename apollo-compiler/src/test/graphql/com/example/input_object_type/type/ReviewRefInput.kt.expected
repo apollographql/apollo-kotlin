@@ -17,7 +17,7 @@ import kotlin.Suppress
     "RemoveExplicitTypeArguments", "NestedLambdaShadowedImplicitParameter", "PropertyName",
     "RemoveRedundantQualifierName")
 data class ReviewRefInput(
-  val reviewInput: Input<ReviewInput> = Input.Absent()
+  val reviewInput: Input<ReviewInput> = Input.Absent
 ) : InputType {
   override fun marshaller(): InputFieldMarshaller = InputFieldMarshaller.invoke { writer ->
     if (this@ReviewRefInput.reviewInput is Input.Present) {

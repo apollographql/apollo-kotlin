@@ -17,7 +17,7 @@ import kotlin.Suppress
     "RemoveRedundantQualifierName")
 data class UserQuery(
   val name: String,
-  val isAdmin: Input<Boolean> = Input.Absent()
+  val isAdmin: Input<Boolean> = Input.Absent
 ) : InputType {
   override fun marshaller(): InputFieldMarshaller = InputFieldMarshaller.invoke { writer ->
     writer.writeString("name", this@UserQuery.name)

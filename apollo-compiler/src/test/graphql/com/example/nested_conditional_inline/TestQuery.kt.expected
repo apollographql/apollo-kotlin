@@ -27,7 +27,7 @@ import kotlin.jvm.Transient
     "RemoveExplicitTypeArguments", "NestedLambdaShadowedImplicitParameter", "PropertyName",
     "RemoveRedundantQualifierName")
 data class TestQuery(
-  val episode: Input<Episode> = Input.Absent()
+  val episode: Input<Episode> = Input.Absent
 ) : Query<TestQuery.Data> {
   @Transient
   private val variables: Operation.Variables = object : Operation.Variables() {

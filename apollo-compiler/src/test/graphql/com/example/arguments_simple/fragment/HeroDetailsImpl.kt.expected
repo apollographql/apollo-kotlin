@@ -22,7 +22,7 @@ import kotlin.collections.Map
 import kotlin.jvm.Transient
 
 data class HeroDetailsImpl(
-  val friendsCount: Input<Int> = Input.Absent(),
+  val friendsCount: Input<Int> = Input.Absent,
   val includeName: Boolean
 ) : Fragment<HeroDetailsImpl.Data> {
   @Transient
