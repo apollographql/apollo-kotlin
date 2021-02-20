@@ -10,7 +10,6 @@ import com.apollographql.apollo3.api.cache.http.HttpCache
 import com.apollographql.apollo3.api.cache.http.HttpCachePolicy
 import com.apollographql.apollo3.api.composeRequestBody
 import com.apollographql.apollo3.api.internal.ApolloLogger
-import com.apollographql.apollo3.api.internal.json.InputFieldJsonWriter
 import com.apollographql.apollo3.api.internal.json.JsonWriter.Companion.of
 import com.apollographql.apollo3.api.variables
 import com.apollographql.apollo3.cache.ApolloCacheHeaders
