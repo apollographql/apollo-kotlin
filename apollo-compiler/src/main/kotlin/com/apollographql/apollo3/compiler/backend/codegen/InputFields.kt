@@ -2,7 +2,6 @@ package com.apollographql.apollo3.compiler.backend.codegen
 
 import com.apollographql.apollo3.api.Input
 import com.apollographql.apollo3.api.ResponseAdapterCache
-import com.apollographql.apollo3.api.internal.InputResponseAdapter
 import com.apollographql.apollo3.api.internal.ResponseAdapter
 import com.apollographql.apollo3.api.internal.json.JsonReader
 import com.apollographql.apollo3.api.internal.json.JsonWriter
@@ -15,21 +14,15 @@ import com.squareup.kotlinpoet.FunSpec
 import com.squareup.kotlinpoet.KModifier
 import com.squareup.kotlinpoet.ParameterSpec
 import com.squareup.kotlinpoet.ParameterizedTypeName.Companion.parameterizedBy
-import com.squareup.kotlinpoet.PropertySpec
 import com.squareup.kotlinpoet.TypeName
 import com.squareup.kotlinpoet.TypeSpec
 import com.squareup.kotlinpoet.asClassName
 import com.squareup.kotlinpoet.asTypeName
-import java.lang.IllegalStateException
 
 internal fun CodeGenerationAst.InputField.asInputTypeName() = if (isRequired) {
   type.asTypeName()
 } else {
   Input::class.asClassName().parameterizedBy(type.asTypeName().copy(nullable = false))
-}
-
-internal fun CodeGenerationAst.InputField.asInputAdapterTypeName(): TypeName {
-  return ResponseAdapter::class.asClassName().parameterizedBy(asInputTypeName())
 }
 
 internal fun CodeGenerationAst.InputField.toParameterSpec(): ParameterSpec {
@@ -73,6 +66,12 @@ fun notImplementedFromResponseFunSpec(returnTypeName: TypeName) = FunSpec.builde
     .addCode("throw %T(%S)", IllegalStateException::class, "Input type used in output position")
     .build()
 
+private fun CodeGenerationAst.InputField.actualType() = if (isRequired) {
+  type.nonNullable()
+} else {
+  type
+}
+
 internal fun List<CodeGenerationAst.InputField>.serializerTypeSpec(
     packageName: String,
     name: String
@@ -87,9 +86,12 @@ internal fun List<CodeGenerationAst.InputField>.serializerTypeSpec(
       .build()
   )
 
-  forEach {
-    builder.addProperty(it.adapterPropertySpec())
-  }
+  map {
+    it.actualType()
+  }.distinct()
+      .forEach {
+        builder.addProperty(it.adapterPropertySpec())
+      }
 
   builder.addFunction(notImplementedFromResponseFunSpec(className))
   builder.addFunction(FunSpec.builder(Identifier.TO_RESPONSE)
@@ -99,10 +101,15 @@ internal fun List<CodeGenerationAst.InputField>.serializerTypeSpec(
       .addCode(CodeBlock.Builder().apply {
         addStatement("writer.beginObject()")
         forEach {
-          addStatement("%L.toResponse(writer, value.%L)",
-              kotlinNameForVariableAdapterField(it.name, it.type),
-              kotlinNameForVariable(it.name)
-          )
+          if (!it.isRequired) {
+            beginControlFlow("if (value.%L is %T)", kotlinNameForVariable(it.name), Input.Present::class)
+            addStatement("writer.name(%S)", it.name)
+            addStatement("%L.toResponse(writer, value.%L.value)", kotlinNameForAdapterField(it.actualType()), kotlinNameForVariable(it.name))
+            endControlFlow()
+          } else {
+            addStatement("writer.name(%S)", it.name)
+            addStatement("%L.toResponse(writer, value.%L)", kotlinNameForAdapterField(it.actualType()), kotlinNameForVariable(it.name))
+          }
         }
         addStatement("writer.endObject()")
       }.build())
@@ -110,16 +117,4 @@ internal fun List<CodeGenerationAst.InputField>.serializerTypeSpec(
   )
 
   return builder.build()
-}
-
-private fun CodeGenerationAst.InputField.adapterPropertySpec(): PropertySpec {
-  val initializer = if (!isRequired) {
-    CodeBlock.of("%T(%S, %L)", InputResponseAdapter::class, schemaName, adapterInitializer(type.nonNullable()))
-  } else {
-    adapterInitializer(type)
-  }
-
-  return PropertySpec.builder(kotlinNameForVariableAdapterField(name, type), asInputAdapterTypeName())
-      .initializer(initializer)
-      .build()
 }

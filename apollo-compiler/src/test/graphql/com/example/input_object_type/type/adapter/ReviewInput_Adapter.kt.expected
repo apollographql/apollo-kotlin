@@ -8,7 +8,6 @@ package com.example.input_object_type.type.adapter
 import com.apollographql.apollo3.api.Input
 import com.apollographql.apollo3.api.ResponseAdapterCache
 import com.apollographql.apollo3.api.internal.BooleanResponseAdapter
-import com.apollographql.apollo3.api.internal.InputResponseAdapter
 import com.apollographql.apollo3.api.internal.IntResponseAdapter
 import com.apollographql.apollo3.api.internal.ListResponseAdapter
 import com.apollographql.apollo3.api.internal.NullableResponseAdapter
@@ -31,112 +30,144 @@ import kotlin.collections.List
 class ReviewInput_Adapter(
   responseAdapterCache: ResponseAdapterCache
 ) : ResponseAdapter<ReviewInput> {
-  val starsIntAdapter: ResponseAdapter<Input<Int>> = InputResponseAdapter("stars",
-      IntResponseAdapter)
+  private val intAdapter: ResponseAdapter<Int> = IntResponseAdapter
 
-  val nullableIntFieldWithDefaultValueNullableIntAdapter: ResponseAdapter<Input<Int>> =
-      InputResponseAdapter("nullableIntFieldWithDefaultValue", IntResponseAdapter)
+  private val nullableIntAdapter: ResponseAdapter<Int?> =
+      NullableResponseAdapter(IntResponseAdapter)
 
-  val commentaryNullableStringAdapter: ResponseAdapter<Input<String>> =
-      InputResponseAdapter("commentary", StringResponseAdapter)
+  private val nullableStringAdapter: ResponseAdapter<String?> =
+      NullableResponseAdapter(StringResponseAdapter)
 
-  val favoriteColorColorInputAdapter: ResponseAdapter<Input<ColorInput>> =
-      InputResponseAdapter("favoriteColor", ColorInput_Adapter(responseAdapterCache))
+  private val colorInputAdapter: ResponseAdapter<ColorInput> =
+      ColorInput_Adapter(responseAdapterCache)
 
-  val enumWithDefaultValueNullableEpisodeAdapter: ResponseAdapter<Input<Episode>> =
-      InputResponseAdapter("enumWithDefaultValue", Episode_ResponseAdapter)
+  private val nullableEpisodeAdapter: ResponseAdapter<Episode?> =
+      NullableResponseAdapter(Episode_ResponseAdapter)
 
-  val nonNullableEnumWithDefaultValueEpisodeAdapter: ResponseAdapter<Episode> =
-      Episode_ResponseAdapter
+  private val episodeAdapter: ResponseAdapter<Episode> = Episode_ResponseAdapter
 
-  val nullableEnumNullableEpisodeAdapter: ResponseAdapter<Input<Episode>> =
-      InputResponseAdapter("nullableEnum", Episode_ResponseAdapter)
+  private val nullableListOfNullableDateAdapter: ResponseAdapter<List<Date?>?> =
+      NullableResponseAdapter(ListResponseAdapter(NullableResponseAdapter(responseAdapterCache.responseAdapterFor<Date>(CustomScalars.Date))))
 
-  val listOfCustomScalarNullableListOfNullableDateAdapter: ResponseAdapter<Input<List<Date?>>> =
-      InputResponseAdapter("listOfCustomScalar",
-      ListResponseAdapter(NullableResponseAdapter(responseAdapterCache.responseAdapterFor<Date>(CustomScalars.Date))))
+  private val nullableDateAdapter: ResponseAdapter<Date?> =
+      NullableResponseAdapter(responseAdapterCache.responseAdapterFor<Date>(CustomScalars.Date))
 
-  val customScalarNullableDateAdapter: ResponseAdapter<Input<Date>> =
-      InputResponseAdapter("customScalar",
-      responseAdapterCache.responseAdapterFor<Date>(CustomScalars.Date))
+  private val nullableListOfNullableEpisodeAdapter: ResponseAdapter<List<Episode?>?> =
+      NullableResponseAdapter(ListResponseAdapter(NullableResponseAdapter(Episode_ResponseAdapter)))
 
-  val listOfEnumsNullableListOfNullableEpisodeAdapter: ResponseAdapter<Input<List<Episode?>>> =
-      InputResponseAdapter("listOfEnums",
-      ListResponseAdapter(NullableResponseAdapter(Episode_ResponseAdapter)))
+  private val nullableListOfNullableIntAdapter: ResponseAdapter<List<Int?>?> =
+      NullableResponseAdapter(ListResponseAdapter(NullableResponseAdapter(IntResponseAdapter)))
 
-  val listOfIntNullableListOfNullableIntAdapter: ResponseAdapter<Input<List<Int?>>> =
-      InputResponseAdapter("listOfInt",
-      ListResponseAdapter(NullableResponseAdapter(IntResponseAdapter)))
+  private val nullableListOfNullableStringAdapter: ResponseAdapter<List<String?>?> =
+      NullableResponseAdapter(ListResponseAdapter(NullableResponseAdapter(StringResponseAdapter)))
 
-  val listOfStringNullableListOfNullableStringAdapter: ResponseAdapter<Input<List<String?>>> =
-      InputResponseAdapter("listOfString",
-      ListResponseAdapter(NullableResponseAdapter(StringResponseAdapter)))
+  private val listOfNullableStringAdapter: ResponseAdapter<List<String?>> =
+      ListResponseAdapter(NullableResponseAdapter(StringResponseAdapter))
 
-  val listOfStringNonOptionalListOfNullableStringAdapter: ResponseAdapter<Input<List<String?>>> =
-      InputResponseAdapter("listOfStringNonOptional",
-      ListResponseAdapter(NullableResponseAdapter(StringResponseAdapter)))
+  private val nullableListOfNullableColorInputAdapter: ResponseAdapter<List<ColorInput?>?> =
+      NullableResponseAdapter(ListResponseAdapter(NullableResponseAdapter(ColorInput_Adapter(responseAdapterCache))))
 
-  val listOfInputTypesNullableListOfNullableColorInputAdapter:
-      ResponseAdapter<Input<List<ColorInput?>>> = InputResponseAdapter("listOfInputTypes",
-      ListResponseAdapter(NullableResponseAdapter(ColorInput_Adapter(responseAdapterCache))))
+  private val nullableBooleanAdapter: ResponseAdapter<Boolean?> =
+      NullableResponseAdapter(BooleanResponseAdapter)
 
-  val booleanWithDefaultValueNullableBooleanAdapter: ResponseAdapter<Input<Boolean>> =
-      InputResponseAdapter("booleanWithDefaultValue", BooleanResponseAdapter)
+  private val nullableListOfListOfStringAdapter: ResponseAdapter<List<List<String>>?> =
+      NullableResponseAdapter(ListResponseAdapter(ListResponseAdapter(StringResponseAdapter)))
 
-  val booleanNonOptionalNullableBooleanAdapter: ResponseAdapter<Input<Boolean>> =
-      InputResponseAdapter("booleanNonOptional", BooleanResponseAdapter)
+  private val nullableListOfListOfEpisodeAdapter: ResponseAdapter<List<List<Episode>>?> =
+      NullableResponseAdapter(ListResponseAdapter(ListResponseAdapter(Episode_ResponseAdapter)))
 
-  val listOfListOfStringNullableListOfListOfStringAdapter:
-      ResponseAdapter<Input<List<List<String>>>> = InputResponseAdapter("listOfListOfString",
-      ListResponseAdapter(ListResponseAdapter(StringResponseAdapter)))
+  private val nullableListOfListOfDateAdapter: ResponseAdapter<List<List<Date>>?> =
+      NullableResponseAdapter(ListResponseAdapter(ListResponseAdapter(responseAdapterCache.responseAdapterFor<Date>(CustomScalars.Date))))
 
-  val listOfListOfEnumNullableListOfListOfEpisodeAdapter:
-      ResponseAdapter<Input<List<List<Episode>>>> = InputResponseAdapter("listOfListOfEnum",
-      ListResponseAdapter(ListResponseAdapter(Episode_ResponseAdapter)))
-
-  val listOfListOfCustomNullableListOfListOfDateAdapter: ResponseAdapter<Input<List<List<Date>>>> =
-      InputResponseAdapter("listOfListOfCustom",
-      ListResponseAdapter(ListResponseAdapter(responseAdapterCache.responseAdapterFor<Date>(CustomScalars.Date))))
-
-  val listOfListOfObjectNullableListOfListOfColorInputAdapter:
-      ResponseAdapter<Input<List<List<ColorInput>>>> = InputResponseAdapter("listOfListOfObject",
-      ListResponseAdapter(ListResponseAdapter(ColorInput_Adapter(responseAdapterCache))))
-
-  val capitalizedFieldNullableStringAdapter: ResponseAdapter<Input<String>> =
-      InputResponseAdapter("CapitalizedField", StringResponseAdapter)
-
-  val capitalizedIntNullableIntAdapter: ResponseAdapter<Input<Int>> =
-      InputResponseAdapter("CapitalizedInt", IntResponseAdapter)
+  private val nullableListOfListOfColorInputAdapter: ResponseAdapter<List<List<ColorInput>>?> =
+      NullableResponseAdapter(ListResponseAdapter(ListResponseAdapter(ColorInput_Adapter(responseAdapterCache))))
 
   override fun fromResponse(reader: JsonReader): ReviewInput = throw
       IllegalStateException("Input type used in output position")
   override fun toResponse(writer: JsonWriter, value: ReviewInput) {
-    starsIntAdapter.toResponse(writer, value.stars)
-    nullableIntFieldWithDefaultValueNullableIntAdapter.toResponse(writer,
-        value.nullableIntFieldWithDefaultValue)
-    commentaryNullableStringAdapter.toResponse(writer, value.commentary)
-    favoriteColorColorInputAdapter.toResponse(writer, value.favoriteColor)
-    enumWithDefaultValueNullableEpisodeAdapter.toResponse(writer, value.enumWithDefaultValue)
-    nonNullableEnumWithDefaultValueEpisodeAdapter.toResponse(writer,
-        value.nonNullableEnumWithDefaultValue)
-    nullableEnumNullableEpisodeAdapter.toResponse(writer, value.nullableEnum)
-    listOfCustomScalarNullableListOfNullableDateAdapter.toResponse(writer, value.listOfCustomScalar)
-    customScalarNullableDateAdapter.toResponse(writer, value.customScalar)
-    listOfEnumsNullableListOfNullableEpisodeAdapter.toResponse(writer, value.listOfEnums)
-    listOfIntNullableListOfNullableIntAdapter.toResponse(writer, value.listOfInt)
-    listOfStringNullableListOfNullableStringAdapter.toResponse(writer, value.listOfString)
-    listOfStringNonOptionalListOfNullableStringAdapter.toResponse(writer,
-        value.listOfStringNonOptional)
-    listOfInputTypesNullableListOfNullableColorInputAdapter.toResponse(writer,
-        value.listOfInputTypes)
-    booleanWithDefaultValueNullableBooleanAdapter.toResponse(writer, value.booleanWithDefaultValue)
-    booleanNonOptionalNullableBooleanAdapter.toResponse(writer, value.booleanNonOptional)
-    listOfListOfStringNullableListOfListOfStringAdapter.toResponse(writer, value.listOfListOfString)
-    listOfListOfEnumNullableListOfListOfEpisodeAdapter.toResponse(writer, value.listOfListOfEnum)
-    listOfListOfCustomNullableListOfListOfDateAdapter.toResponse(writer, value.listOfListOfCustom)
-    listOfListOfObjectNullableListOfListOfColorInputAdapter.toResponse(writer,
-        value.listOfListOfObject)
-    capitalizedFieldNullableStringAdapter.toResponse(writer, value.capitalizedField)
-    capitalizedIntNullableIntAdapter.toResponse(writer, value.capitalizedInt)
+    writer.beginObject()
+    writer.name("stars")
+    intAdapter.toResponse(writer, value.stars)
+    if (value.nullableIntFieldWithDefaultValue is Input.Present) {
+      writer.name("nullableIntFieldWithDefaultValue")
+      nullableIntAdapter.toResponse(writer, value.nullableIntFieldWithDefaultValue.value)
+    }
+    if (value.commentary is Input.Present) {
+      writer.name("commentary")
+      nullableStringAdapter.toResponse(writer, value.commentary.value)
+    }
+    writer.name("favoriteColor")
+    colorInputAdapter.toResponse(writer, value.favoriteColor)
+    if (value.enumWithDefaultValue is Input.Present) {
+      writer.name("enumWithDefaultValue")
+      nullableEpisodeAdapter.toResponse(writer, value.enumWithDefaultValue.value)
+    }
+    if (value.nonNullableEnumWithDefaultValue is Input.Present) {
+      writer.name("nonNullableEnumWithDefaultValue")
+      episodeAdapter.toResponse(writer, value.nonNullableEnumWithDefaultValue.value)
+    }
+    if (value.nullableEnum is Input.Present) {
+      writer.name("nullableEnum")
+      nullableEpisodeAdapter.toResponse(writer, value.nullableEnum.value)
+    }
+    if (value.listOfCustomScalar is Input.Present) {
+      writer.name("listOfCustomScalar")
+      nullableListOfNullableDateAdapter.toResponse(writer, value.listOfCustomScalar.value)
+    }
+    if (value.customScalar is Input.Present) {
+      writer.name("customScalar")
+      nullableDateAdapter.toResponse(writer, value.customScalar.value)
+    }
+    if (value.listOfEnums is Input.Present) {
+      writer.name("listOfEnums")
+      nullableListOfNullableEpisodeAdapter.toResponse(writer, value.listOfEnums.value)
+    }
+    if (value.listOfInt is Input.Present) {
+      writer.name("listOfInt")
+      nullableListOfNullableIntAdapter.toResponse(writer, value.listOfInt.value)
+    }
+    if (value.listOfString is Input.Present) {
+      writer.name("listOfString")
+      nullableListOfNullableStringAdapter.toResponse(writer, value.listOfString.value)
+    }
+    writer.name("listOfStringNonOptional")
+    listOfNullableStringAdapter.toResponse(writer, value.listOfStringNonOptional)
+    if (value.listOfInputTypes is Input.Present) {
+      writer.name("listOfInputTypes")
+      nullableListOfNullableColorInputAdapter.toResponse(writer, value.listOfInputTypes.value)
+    }
+    if (value.booleanWithDefaultValue is Input.Present) {
+      writer.name("booleanWithDefaultValue")
+      nullableBooleanAdapter.toResponse(writer, value.booleanWithDefaultValue.value)
+    }
+    if (value.booleanNonOptional is Input.Present) {
+      writer.name("booleanNonOptional")
+      nullableBooleanAdapter.toResponse(writer, value.booleanNonOptional.value)
+    }
+    if (value.listOfListOfString is Input.Present) {
+      writer.name("listOfListOfString")
+      nullableListOfListOfStringAdapter.toResponse(writer, value.listOfListOfString.value)
+    }
+    if (value.listOfListOfEnum is Input.Present) {
+      writer.name("listOfListOfEnum")
+      nullableListOfListOfEpisodeAdapter.toResponse(writer, value.listOfListOfEnum.value)
+    }
+    if (value.listOfListOfCustom is Input.Present) {
+      writer.name("listOfListOfCustom")
+      nullableListOfListOfDateAdapter.toResponse(writer, value.listOfListOfCustom.value)
+    }
+    if (value.listOfListOfObject is Input.Present) {
+      writer.name("listOfListOfObject")
+      nullableListOfListOfColorInputAdapter.toResponse(writer, value.listOfListOfObject.value)
+    }
+    if (value.capitalizedField is Input.Present) {
+      writer.name("capitalizedField")
+      nullableStringAdapter.toResponse(writer, value.capitalizedField.value)
+    }
+    if (value.capitalizedInt is Input.Present) {
+      writer.name("capitalizedInt")
+      nullableIntAdapter.toResponse(writer, value.capitalizedInt.value)
+    }
+    writer.endObject()
   }
 }

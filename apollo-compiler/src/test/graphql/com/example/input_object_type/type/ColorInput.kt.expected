@@ -21,7 +21,7 @@ data class ColorInput(
   /**
    * Red color
    */
-  val red: Int,
+  val red: Input<Int> = Input.Absent(),
   /**
    * Green color
    */
@@ -29,7 +29,7 @@ data class ColorInput(
   /**
    * Blue color
    */
-  val blue: Double,
+  val blue: Input<Double> = Input.Absent(),
   /**
    * for test purpose only
    */

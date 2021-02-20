@@ -13,9 +13,6 @@ internal fun kotlinNameForEnumValue(graphqlEnumValue: String) = graphqlEnumValue
 internal fun kotlinNameForEnum(graphqlEnum: String) = graphqlEnum.escapeKotlinReservedWord()
 internal fun kotlinNameForField(responseName: String) = responseName.escapeKotlinReservedWord()
 internal fun kotlinNameForOperation(operationName: String) = operationName.escapeKotlinReservedWord()
-internal fun kotlinNameForVariableAdapterField(name: String, type: CodeGenerationAst.FieldType): String {
-  return name + kotlinNameForAdapterFieldRecursive(type) + "Adapter"
-}
 internal fun kotlinNameForAdapterField(type: CodeGenerationAst.FieldType): String {
   return kotlinNameForAdapterFieldRecursive(type).decapitalize() + "Adapter"
 }

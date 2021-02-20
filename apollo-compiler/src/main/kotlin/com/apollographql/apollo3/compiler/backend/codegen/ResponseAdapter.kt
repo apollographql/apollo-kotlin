@@ -169,7 +169,7 @@ internal fun adapterInitializer(type: CodeGenerationAst.FieldType): CodeBlock {
   }
 }
 
-private fun CodeGenerationAst.FieldType.adapterPropertySpec(): PropertySpec {
+internal fun CodeGenerationAst.FieldType.adapterPropertySpec(): PropertySpec {
   return PropertySpec
       .builder(
           name = kotlinNameForAdapterField(this),

@@ -94,16 +94,3 @@ object AnyResponseAdapter: ResponseAdapter<Any?> {
     Utils.writeToJson(value, writer)
   }
 }
-
-class InputResponseAdapter<T>(val name: String, val wrappedAdapter: ResponseAdapter<T>): ResponseAdapter<Input<T>> {
-  override fun fromResponse(reader: JsonReader): Input<T> {
-    throw IllegalStateException("Input value used in output position")
-  }
-
-  override fun toResponse(writer: JsonWriter, value: Input<T>) {
-    if (value is Input.Present) {
-      writer.name(name)
-      wrappedAdapter.toResponse(writer, value.value)
-    }
-  }
-}

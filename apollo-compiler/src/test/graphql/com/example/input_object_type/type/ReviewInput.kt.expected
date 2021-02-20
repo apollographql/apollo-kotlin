@@ -24,7 +24,7 @@ data class ReviewInput(
   /**
    * 0-5 stars
    */
-  val stars: Input<Int>,
+  val stars: Int,
   /**
    * for test purpose only
    */
@@ -36,7 +36,7 @@ data class ReviewInput(
   /**
    * Favorite color, optional
    */
-  val favoriteColor: Input<ColorInput>,
+  val favoriteColor: ColorInput,
   /**
    * for test purpose only
    */
@@ -44,7 +44,7 @@ data class ReviewInput(
   /**
    * for test purpose only
    */
-  val nonNullableEnumWithDefaultValue: Episode,
+  val nonNullableEnumWithDefaultValue: Input<Episode> = Input.Absent(),
   /**
    * for test purpose only
    */
@@ -72,7 +72,7 @@ data class ReviewInput(
   /**
    * for test purpose only
    */
-  val listOfStringNonOptional: Input<List<String?>>,
+  val listOfStringNonOptional: List<String?>,
   /**
    * for test purpose only
    */

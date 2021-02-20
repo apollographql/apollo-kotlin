@@ -19,15 +19,19 @@ import java.lang.IllegalStateException
 class TestQuery_Adapter(
   responseAdapterCache: ResponseAdapterCache
 ) : ResponseAdapter<TestQuery> {
-  val epEpisodeAdapter: ResponseAdapter<Episode> = Episode_ResponseAdapter
+  private val episodeAdapter: ResponseAdapter<Episode> = Episode_ResponseAdapter
 
-  val reviewReviewInputAdapter: ResponseAdapter<ReviewInput> =
+  private val reviewInputAdapter: ResponseAdapter<ReviewInput> =
       ReviewInput_Adapter(responseAdapterCache)
 
   override fun fromResponse(reader: JsonReader): TestQuery = throw
       IllegalStateException("Input type used in output position")
   override fun toResponse(writer: JsonWriter, value: TestQuery) {
-    epEpisodeAdapter.toResponse(writer, value.ep)
-    reviewReviewInputAdapter.toResponse(writer, value.review)
+    writer.beginObject()
+    writer.name("ep")
+    episodeAdapter.toResponse(writer, value.ep)
+    writer.name("review")
+    reviewInputAdapter.toResponse(writer, value.review)
+    writer.endObject()
   }
 }
