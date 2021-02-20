@@ -10,6 +10,9 @@ import com.apollographql.apollo3.api.JsonElement
 import com.apollographql.apollo3.api.JsonString
 import com.apollographql.apollo3.api.Operation
 import com.apollographql.apollo3.api.Response
+import com.apollographql.apollo3.api.ResponseAdapterCache
+import com.apollographql.apollo3.api.variables
+import com.apollographql.apollo3.api.variablesJson
 import com.apollographql.apollo3.cache.normalized.MemoryCacheFactory
 import com.apollographql.apollo3.coroutines.await
 import com.apollographql.apollo3.exception.ApolloException
@@ -114,7 +117,7 @@ class IntegrationTest {
 
     assertThat(query.name()).isEqualTo("EpisodeHeroName")
     assertThat(query.queryDocument()).isEqualTo("query EpisodeHeroName(\$episode: Episode) { hero(episode: \$episode) { name } }")
-    assertThat(query.variables().marshal()).isEqualTo("{\"episode\":\"EMPIRE\"}")
+    assertThat(query.variablesJson(ResponseAdapterCache.DEFAULT)).isEqualTo("{\"episode\":\"EMPIRE\"}")
   }
 
   @Throws(IOException::class)

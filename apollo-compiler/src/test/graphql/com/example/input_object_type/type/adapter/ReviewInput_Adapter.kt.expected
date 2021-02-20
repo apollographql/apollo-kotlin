@@ -31,7 +31,8 @@ import kotlin.collections.List
 class ReviewInput_Adapter(
   responseAdapterCache: ResponseAdapterCache
 ) : ResponseAdapter<ReviewInput> {
-  val starsIntAdapter: ResponseAdapter<Int> = IntResponseAdapter
+  val starsIntAdapter: ResponseAdapter<Input<Int>> = InputResponseAdapter("stars",
+      IntResponseAdapter)
 
   val nullableIntFieldWithDefaultValueNullableIntAdapter: ResponseAdapter<Input<Int>> =
       InputResponseAdapter("nullableIntFieldWithDefaultValue", IntResponseAdapter)
@@ -39,8 +40,8 @@ class ReviewInput_Adapter(
   val commentaryNullableStringAdapter: ResponseAdapter<Input<String>> =
       InputResponseAdapter("commentary", StringResponseAdapter)
 
-  val favoriteColorColorInputAdapter: ResponseAdapter<ColorInput> =
-      ColorInput_Adapter(responseAdapterCache)
+  val favoriteColorColorInputAdapter: ResponseAdapter<Input<ColorInput>> =
+      InputResponseAdapter("favoriteColor", ColorInput_Adapter(responseAdapterCache))
 
   val enumWithDefaultValueNullableEpisodeAdapter: ResponseAdapter<Input<Episode>> =
       InputResponseAdapter("enumWithDefaultValue", Episode_ResponseAdapter)
@@ -71,8 +72,9 @@ class ReviewInput_Adapter(
       InputResponseAdapter("listOfString",
       ListResponseAdapter(NullableResponseAdapter(StringResponseAdapter)))
 
-  val listOfStringNonOptionalListOfNullableStringAdapter: ResponseAdapter<List<String?>> =
-      ListResponseAdapter(NullableResponseAdapter(StringResponseAdapter))
+  val listOfStringNonOptionalListOfNullableStringAdapter: ResponseAdapter<Input<List<String?>>> =
+      InputResponseAdapter("listOfStringNonOptional",
+      ListResponseAdapter(NullableResponseAdapter(StringResponseAdapter)))
 
   val listOfInputTypesNullableListOfNullableColorInputAdapter:
       ResponseAdapter<Input<List<ColorInput?>>> = InputResponseAdapter("listOfInputTypes",

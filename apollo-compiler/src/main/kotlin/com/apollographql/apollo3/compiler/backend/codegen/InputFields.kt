@@ -22,13 +22,13 @@ import com.squareup.kotlinpoet.asClassName
 import com.squareup.kotlinpoet.asTypeName
 import java.lang.IllegalStateException
 
-internal fun CodeGenerationAst.FieldType.asInputTypeName() = if (nullable) {
-  Input::class.asClassName().parameterizedBy(asTypeName().copy(nullable = false))
+internal fun CodeGenerationAst.InputField.asInputTypeName() = if (isRequired) {
+  type.asTypeName()
 } else {
-  asTypeName()
+  Input::class.asClassName().parameterizedBy(type.asTypeName().copy(nullable = false))
 }
 
-internal fun CodeGenerationAst.FieldType.asInputAdapterTypeName(): TypeName {
+internal fun CodeGenerationAst.InputField.asInputAdapterTypeName(): TypeName {
   return ResponseAdapter::class.asClassName().parameterizedBy(asInputTypeName())
 }
 
@@ -36,12 +36,10 @@ internal fun CodeGenerationAst.InputField.toParameterSpec(): ParameterSpec {
   return ParameterSpec
       .builder(
           name = name.escapeKotlinReservedWord(),
-          type = type.asTypeName().let { type ->
-            if (type.isNullable) Input::class.asClassName().parameterizedBy(type.copy(nullable = false)) else type
-          }
+          type = asInputTypeName()
       )
       .applyIf(description.isNotBlank()) { addKdoc("%L\n", description) }
-      .applyIf(type.nullable) { defaultValue("%T()", Input.Absent::class.asClassName()) }
+      .applyIf(!isRequired) { defaultValue("%T()", Input.Absent::class.asClassName()) }
       .build()
 }
 
@@ -113,13 +111,13 @@ internal fun List<CodeGenerationAst.InputField>.serializerTypeSpec(
 }
 
 private fun CodeGenerationAst.InputField.adapterPropertySpec(): PropertySpec {
-  val initializer = if (type.nullable) {
+  val initializer = if (!isRequired) {
     CodeBlock.of("%T(%S, %L)", InputResponseAdapter::class, schemaName, adapterInitializer(type.nonNullable()))
   } else {
     adapterInitializer(type)
   }
 
-  return PropertySpec.builder(kotlinNameForVariableAdapterField(name, type), type.asInputAdapterTypeName())
+  return PropertySpec.builder(kotlinNameForVariableAdapterField(name, type), asInputAdapterTypeName())
       .initializer(initializer)
       .build()
 }

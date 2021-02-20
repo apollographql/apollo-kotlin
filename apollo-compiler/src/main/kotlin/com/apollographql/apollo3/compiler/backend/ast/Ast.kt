@@ -105,13 +105,17 @@ internal data class CodeGenerationAst(
       val fields: List<InputField>
   )
 
+  /**
+   * Represents either an input field or a variable
+   *
+   */
   data class InputField(
       val name: String,
       val schemaName: String,
       val deprecationReason: String?,
       val type: FieldType,
       val description: String,
-      val defaultValue: Any?
+      val isRequired: Boolean
   )
 
   data class EnumType(

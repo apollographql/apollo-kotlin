@@ -24,7 +24,7 @@ data class ReviewInput(
   /**
    * 0-5 stars
    */
-  val stars: Int,
+  val stars: Input<Int>,
   /**
    * for test purpose only
    */
@@ -36,7 +36,7 @@ data class ReviewInput(
   /**
    * Favorite color, optional
    */
-  val favoriteColor: ColorInput,
+  val favoriteColor: Input<ColorInput>,
   /**
    * for test purpose only
    */
@@ -72,7 +72,7 @@ data class ReviewInput(
   /**
    * for test purpose only
    */
-  val listOfStringNonOptional: List<String?>,
+  val listOfStringNonOptional: Input<List<String?>>,
   /**
    * for test purpose only
    */
