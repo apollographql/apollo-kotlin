@@ -5,6 +5,7 @@ import com.apollographql.apollo3.api.internal.json.JsonReader
 import com.apollographql.apollo3.api.internal.json.JsonWriter
 import com.apollographql.apollo3.api.internal.json.Utils.readRecursively
 import com.apollographql.apollo3.api.internal.json.Utils.writeToJson
+import kotlin.reflect.KClass
 
 /**
  * A cache of [ResponseAdapter] so that they are only built once for each query/fragments
@@ -15,10 +16,8 @@ class ResponseAdapterCache(val customScalarAdapters: Map<CustomScalar, CustomSca
 
   private val adapterByGraphQLName = customScalarAdapters.mapKeys { it.key.graphqlName }
 
-  private val adapterByOperationName = ThreadSafeMap<String, ResponseAdapter<*>>()
-  private val adapterByFragmentName = ThreadSafeMap<String, ResponseAdapter<*>>()
-  private val variableAdapterByOperationName = ThreadSafeMap<String, ResponseAdapter<*>>()
-  private val variableAdapterByFragmentName = ThreadSafeMap<String, ResponseAdapter<*>>()
+  private val adapterByClass = ThreadSafeMap<KClass<*>, ResponseAdapter<*>>()
+  private val variableAdapterByClass = ThreadSafeMap<KClass<*>, ResponseAdapter<*>>()
 
   @Suppress("UNCHECKED_CAST")
   fun <T : Any> adapterFor(customScalar: CustomScalar): CustomScalarAdapter<T> {
@@ -47,24 +46,15 @@ class ResponseAdapterCache(val customScalarAdapters: Map<CustomScalar, CustomSca
   }
 
   @Suppress("UNCHECKED_CAST")
-  fun <D> getOperationAdapter(operationName: String, defaultValue: () -> ResponseAdapter<D>): ResponseAdapter<D> {
-    return adapterByOperationName.getOrPut(operationName, defaultValue) as ResponseAdapter<D>
+  fun <D> getAdapterFor(klass: KClass<*>, defaultValue: () -> ResponseAdapter<D>): ResponseAdapter<D> {
+    return adapterByClass.getOrPut(klass, defaultValue) as ResponseAdapter<D>
   }
 
   @Suppress("UNCHECKED_CAST")
-  fun <D> getFragmentAdapter(fragmentName: String, defaultValue: () -> ResponseAdapter<D>): ResponseAdapter<D> {
-    return adapterByFragmentName.getOrPut(fragmentName, defaultValue) as ResponseAdapter<D>
+  fun <D> getVariablesAdapterFor(klass: KClass<*>, defaultValue: () -> ResponseAdapter<D>): ResponseAdapter<D> {
+    return variableAdapterByClass.getOrPut(klass, defaultValue) as ResponseAdapter<D>
   }
 
-  @Suppress("UNCHECKED_CAST")
-  fun <D> getOperationVariablesAdapter(operationName: String, defaultValue: () -> ResponseAdapter<D>): ResponseAdapter<D> {
-    return variableAdapterByOperationName.getOrPut(operationName, defaultValue) as ResponseAdapter<D>
-  }
-
-  @Suppress("UNCHECKED_CAST")
-  fun <D> getFragmentVariablesAdapter(fragmentName: String, defaultValue: () -> ResponseAdapter<D>): ResponseAdapter<D> {
-    return variableAdapterByFragmentName.getOrPut(fragmentName, defaultValue) as ResponseAdapter<D>
-  }
 
   private class CustomResponseAdapter<T: Any>(private val wrappedAdapter: CustomScalarAdapter<T>) : ResponseAdapter<T> {
     override fun fromResponse(reader: JsonReader): T {
@@ -82,9 +72,8 @@ class ResponseAdapterCache(val customScalarAdapters: Map<CustomScalar, CustomSca
    * Use it on native to release the [kotlinx.cinterop.StableRef]
    */
   fun dispose() {
-    adapterByFragmentName.dispose()
-    adapterByOperationName.dispose()
-    variableAdapterByOperationName.dispose()
+    variableAdapterByClass.dispose()
+    adapterByClass.dispose()
   }
 
   companion object {

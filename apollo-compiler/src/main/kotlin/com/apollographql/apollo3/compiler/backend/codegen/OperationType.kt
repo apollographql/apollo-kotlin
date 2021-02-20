@@ -48,7 +48,6 @@ internal fun CodeGenerationAst.OperationType.typeSpec(targetPackage: String, gen
           funName = "serializeVariables",
           packageName = targetPackage,
           name = name,
-          getOrPut = "getOperationVariablesAdapter(name())"
       ))
       .addFunction(FunSpec.builder("name")
           .addModifiers(KModifier.OVERRIDE)
@@ -101,7 +100,7 @@ internal fun CodeGenerationAst.OperationType.typeSpec(targetPackage: String, gen
 
 private fun adapterFunSpec(operationResponseAdapter: ClassName): FunSpec {
   val body = CodeBlock.builder().apply {
-    addStatement("val adapter = ${Identifier.RESPONSE_ADAPTER_CACHE}.getOperationAdapter(name()) {")
+    addStatement("val adapter = ${Identifier.RESPONSE_ADAPTER_CACHE}.getAdapterFor(this::class) {")
     indent()
     addStatement("%T(${Identifier.RESPONSE_ADAPTER_CACHE})", operationResponseAdapter)
     unindent()

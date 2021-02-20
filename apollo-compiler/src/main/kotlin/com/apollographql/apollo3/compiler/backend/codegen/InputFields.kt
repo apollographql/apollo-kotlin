@@ -40,10 +40,10 @@ fun serializeVariablesFunSpec(
     funName: String,
     packageName: String,
     name: String,
-    getOrPut: String): FunSpec {
+): FunSpec {
   val serializerClassName = ClassName("$packageName.adapter", kotlinNameForSerializer(name))
   val body = CodeBlock.builder().apply {
-    addStatement("${Identifier.RESPONSE_ADAPTER_CACHE}.$getOrPut {")
+    addStatement("${Identifier.RESPONSE_ADAPTER_CACHE}.getVariablesAdapterFor(this::class) {")
     indent()
     addStatement("%T(${Identifier.RESPONSE_ADAPTER_CACHE})", serializerClassName)
     unindent()

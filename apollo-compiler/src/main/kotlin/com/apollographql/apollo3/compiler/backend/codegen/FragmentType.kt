@@ -64,7 +64,7 @@ internal fun CodeGenerationAst.FragmentType.interfaceTypeSpec(generateAsInternal
 
 private fun adapterFunSpec(fragmentName: String, adapterClassName: TypeName): FunSpec {
   val body = CodeBlock.builder().apply {
-    addStatement("val adapter = ${Identifier.RESPONSE_ADAPTER_CACHE}.getFragmentAdapter(%S) {", fragmentName)
+    addStatement("val adapter = ${Identifier.RESPONSE_ADAPTER_CACHE}.getAdapterFor(this::class) {", fragmentName)
     indent()
     addStatement("%T(${Identifier.RESPONSE_ADAPTER_CACHE})", adapterClassName)
     unindent()
@@ -112,7 +112,6 @@ internal fun CodeGenerationAst.FragmentType.implementationTypeSpec(generateAsInt
           funName = "serializeVariables",
           packageName = this.implementationType.typeRef.packageName,
           name = this.implementationType.typeRef.name,
-          getOrPut = "getFragmentVariablesAdapter(\"${this.implementationType.name}\")"
       ))
       .build()
 }
