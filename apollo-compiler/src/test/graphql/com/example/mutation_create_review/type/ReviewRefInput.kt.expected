@@ -17,10 +17,4 @@ import kotlin.Suppress
     "RemoveRedundantQualifierName")
 internal data class ReviewRefInput(
   val reviewInput: Input<ReviewInput> = Input.Absent
-) : InputType {
-  override fun marshaller(): InputFieldMarshaller = InputFieldMarshaller.invoke { writer ->
-    if (this@ReviewRefInput.reviewInput is Input.Present) {
-      writer.writeObject("reviewInput", this@ReviewRefInput.reviewInput.value?.marshaller())
-    }
-  }
-}
+) : InputType
