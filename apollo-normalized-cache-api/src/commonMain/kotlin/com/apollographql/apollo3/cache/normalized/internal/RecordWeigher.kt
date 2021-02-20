@@ -49,7 +49,7 @@ object RecordWeigher {
       is Map<*, *> -> {
         SIZE_OF_MAP_OVERHEAD + field.keys.sumBy { weighField(it) } + field.values.sumBy { weighField(it) }
       }
-      else -> error("Unknown field type in Record. ${field::class.qualifiedName}")
+      else -> error("Unknown field type in Record: '$field'")
     }
   }
 }

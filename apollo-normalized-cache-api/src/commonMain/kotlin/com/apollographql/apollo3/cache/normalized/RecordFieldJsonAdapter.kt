@@ -71,7 +71,7 @@ object RecordFieldJsonAdapter {
         }
         this.endObject()
       }
-      else -> error("Unsupported record value type: ${value::class.qualifiedName}")
+      else -> error("Unsupported record value type: '$value'")
     }
   }
 }

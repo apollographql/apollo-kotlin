@@ -164,8 +164,8 @@ class LruNormalizedCacheTest {
     primaryCache.merge(record, CacheHeaders.NONE)
 
     //verify write through behavior
-    assertThat(primaryCache.loadRecord("root", CacheHeaders.NONE)!!.field("bar")).isEqualTo("bar")
-    assertThat(primaryCache.nextCache!!.loadRecord("root", CacheHeaders.NONE)!!.field("bar")).isEqualTo("bar")
+    assertThat(primaryCache.loadRecord("root", CacheHeaders.NONE)!!.get("bar")).isEqualTo("bar")
+    assertThat(primaryCache.nextCache!!.loadRecord("root", CacheHeaders.NONE)!!.get("bar")).isEqualTo("bar")
   }
 
   @Test
@@ -222,20 +222,6 @@ class LruNormalizedCacheTest {
     primaryCacheStore.clearAll()
 
     assertThat(primaryCacheStore.loadRecord("key", CacheHeaders.NONE)).isNull()
-  }
-
-  @Test
-  fun testClearPrimaryCache() {
-    val secondaryCacheFactory = LruNormalizedCacheFactory(EvictionPolicy.NO_EVICTION)
-    val primaryCache = LruNormalizedCacheFactory(EvictionPolicy.NO_EVICTION)
-        .chain(secondaryCacheFactory).createChain() as LruNormalizedCache
-    val record = Record(key = "key", fields = emptyMap())
-    primaryCache.merge(record, CacheHeaders.NONE)
-    primaryCache.clearCurrentCache()
-
-    val nextCache = requireNotNull(primaryCache.nextCache)
-    assertThat(nextCache.loadRecord("key", CacheHeaders.NONE)).isNotNull()
-    assertThat(nextCache.loadRecord("key", CacheHeaders.NONE)).isNotNull()
   }
 
   @Test
@@ -348,7 +334,7 @@ class LruNormalizedCacheTest {
 
     val lruCache = createLruNormalizedCache()
 
-    val record1 = createTestRecord("id_1")
+    val record1 = Record("id_1", emptyMap())
     val record2 = Record(
         key = "id_2",
         fields = mapOf(
@@ -369,7 +355,7 @@ class LruNormalizedCacheTest {
 
     val lruCache = createLruNormalizedCache()
 
-    val record1 = createTestRecord("id_1")
+    val record1 = Record("id_1", emptyMap())
     val record2 = Record(
         key = "id_2",
         fields = mapOf(
@@ -392,8 +378,8 @@ class LruNormalizedCacheTest {
     val cacheRecord = requireNotNull(store.loadRecord(testRecord.key, CacheHeaders.NONE))
 
     assertThat(cacheRecord.key).isEqualTo(testRecord.key)
-    assertThat(cacheRecord.field("a")).isEqualTo(testRecord.field("a"))
-    assertThat(cacheRecord.field("b")).isEqualTo(testRecord.field("b"))
+    assertThat(cacheRecord.get("a")).isEqualTo(testRecord.get("a"))
+    assertThat(cacheRecord.get("b")).isEqualTo(testRecord.get("b"))
   }
 
   private fun createTestRecord(id: String): Record {

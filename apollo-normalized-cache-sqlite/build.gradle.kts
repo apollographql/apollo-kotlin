@@ -11,29 +11,15 @@ configure<com.squareup.sqldelight.gradle.SqlDelightExtension> {
   }
 }
 
+// https://github.com/cashapp/sqldelight/pull/1486
+configureMppDefaults(withJs = false)
+
 configure<org.jetbrains.kotlin.gradle.dsl.KotlinMultiplatformExtension> {
-  data class iOSTarget(val name: String, val preset: String, val id: String)
-
-  val iosTargets = listOf(
-      iOSTarget("ios", "iosArm64", "ios-arm64"),
-      iOSTarget("iosSim", "iosX64", "ios-x64")
-  )
-
-  for ((targetName, presetName, id) in iosTargets) {
-    targetFromPreset(presets.getByName(presetName), targetName) {
-      mavenPublication {
-        artifactId = "${project.name}-$id"
-      }
-    }
-  }
-
   if (System.getProperty("idea.sync.active") == null) {
     android {
       publishAllLibraryVariants()
     }
   }
-
-  jvm()
 
   sourceSets {
     val commonMain by getting {
@@ -51,6 +37,18 @@ configure<org.jetbrains.kotlin.gradle.dsl.KotlinMultiplatformExtension> {
       }
     }
 
+    val appleMain by getting {
+      dependencies {
+        implementation(groovy.util.Eval.x(project, "x.dep.sqldelight.native"))
+      }
+    }
+
+    val jvmTest by getting {
+      dependencies {
+        implementation(groovy.util.Eval.x(project, "x.dep.truth"))
+      }
+    }
+
     if (System.getProperty("idea.sync.active") == null) {
       val androidMain by getting {
         dependsOn(commonMain)
@@ -60,48 +58,14 @@ configure<org.jetbrains.kotlin.gradle.dsl.KotlinMultiplatformExtension> {
           implementation(groovy.util.Eval.x(project, "x.dep.androidx.sqliteFramework"))
         }
       }
-    }
-
-    val iosMain by getting {
-      dependsOn(commonMain)
-      dependencies {
-        implementation(groovy.util.Eval.x(project, "x.dep.sqldelight.native"))
-      }
-    }
-
-    val iosSimMain by getting {
-      dependsOn(iosMain)
-    }
-
-    val commonTest by getting {
-      dependencies {
-        implementation(kotlin("test-common"))
-        implementation(kotlin("test-annotations-common"))
-      }
-    }
-
-    val jvmTest by getting {
-      dependsOn(commonTest)
-      dependencies {
-        implementation(kotlin("test-junit"))
-
-        implementation(groovy.util.Eval.x(project, "x.dep.junit"))
-        implementation(groovy.util.Eval.x(project, "x.dep.truth"))
-      }
-    }
-
-    if (System.getProperty("idea.sync.active") == null) {
       val androidTest by getting {
+        // this allows the android unit test to use the JVM driver
+        // TODO: makes this better with HMPP?
         dependsOn(jvmTest)
+        dependencies {
+          implementation(kotlin("test-junit"))
+        }
       }
-    }
-
-    val iosTest by getting {
-      dependsOn(commonTest)
-    }
-
-    val iosSimTest by getting {
-      dependsOn(iosTest)
     }
   }
 }
