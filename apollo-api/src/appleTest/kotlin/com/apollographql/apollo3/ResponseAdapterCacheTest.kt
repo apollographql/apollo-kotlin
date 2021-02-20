@@ -45,7 +45,7 @@ class ResponseAdapterCacheTest {
 }
 
 private fun readInt(cache: ResponseAdapterCache): Int {
-  val adapter = cache.getOperationAdapter("TestQuery") { IntResponseAdapter }
+  val adapter = cache.getAdapterFor(Int::class) { IntResponseAdapter }
   val buffer = Buffer()
   buffer.writeUtf8("42")
   val jsonReader = BufferedSourceJsonReader(buffer)

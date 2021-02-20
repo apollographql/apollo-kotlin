@@ -7,46 +7,24 @@ package com.example.arguments_simple.fragment
 
 import com.apollographql.apollo3.api.Fragment
 import com.apollographql.apollo3.api.Input
-import com.apollographql.apollo3.api.Operation
 import com.apollographql.apollo3.api.ResponseAdapterCache
 import com.apollographql.apollo3.api.ResponseField
-import com.apollographql.apollo3.api.internal.InputFieldMarshaller
 import com.apollographql.apollo3.api.internal.ResponseAdapter
+import com.apollographql.apollo3.api.internal.json.JsonWriter
+import com.example.arguments_simple.fragment.adapter.HeroDetailsImpl_Adapter
 import com.example.arguments_simple.fragment.adapter.HeroDetailsImpl_ResponseAdapter
-import kotlin.Any
 import kotlin.Boolean
 import kotlin.Int
 import kotlin.String
 import kotlin.collections.List
-import kotlin.collections.Map
-import kotlin.jvm.Transient
 
 data class HeroDetailsImpl(
   val friendsCount: Input<Int> = Input.Absent,
   val includeName: Boolean
 ) : Fragment<HeroDetailsImpl.Data> {
-  @Transient
-  private val variables: Operation.Variables = object : Operation.Variables() {
-    override fun valueMap(): Map<String, Any?> = mutableMapOf<String, Any?>().apply {
-      if (this@HeroDetailsImpl.friendsCount is Input.Present) {
-        this["friendsCount"] = this@HeroDetailsImpl.friendsCount.value
-      }
-      this["IncludeName"] = this@HeroDetailsImpl.includeName
-    }
-
-    override fun marshaller(): InputFieldMarshaller {
-      return InputFieldMarshaller.invoke { writer ->
-        if (this@HeroDetailsImpl.friendsCount is Input.Present) {
-          writer.writeInt("friendsCount", this@HeroDetailsImpl.friendsCount.value)
-        }
-        writer.writeBoolean("IncludeName", this@HeroDetailsImpl.includeName)
-      }
-    }
-  }
-
-  override fun adapter(customScalarAdapters: ResponseAdapterCache): ResponseAdapter<Data> {
-    val adapter = customScalarAdapters.getFragmentAdapter("HeroDetailsImpl") {
-      HeroDetailsImpl_ResponseAdapter(customScalarAdapters)
+  override fun adapter(responseAdapterCache: ResponseAdapterCache): ResponseAdapter<Data> {
+    val adapter = responseAdapterCache.getAdapterFor(this::class) {
+      HeroDetailsImpl_ResponseAdapter(responseAdapterCache)
     }
     return adapter
   }
@@ -54,7 +32,11 @@ data class HeroDetailsImpl(
   override fun responseFields(): List<ResponseField.FieldSet> = listOf(
     ResponseField.FieldSet(null, HeroDetailsImpl_ResponseAdapter.RESPONSE_FIELDS)
   )
-  override fun variables(): Operation.Variables = variables
+  override fun serializeVariables(writer: JsonWriter, responseAdapterCache: ResponseAdapterCache) {
+    responseAdapterCache.getVariablesAdapterFor(this::class) {
+      HeroDetailsImpl_Adapter(responseAdapterCache)
+    }.toResponse(writer, this)
+  }
 
   /**
    * A character from the Star Wars universe

@@ -33,7 +33,7 @@ data class TestQuery(
   override fun queryDocument(): String = QUERY_DOCUMENT
 
   override fun serializeVariables(writer: JsonWriter, responseAdapterCache: ResponseAdapterCache) {
-    responseAdapterCache.getOperationVariablesAdapter(name()) {
+    responseAdapterCache.getVariablesAdapterFor(this::class) {
       TestQuery_Adapter(responseAdapterCache)
     }.toResponse(writer, this)
   }
@@ -41,7 +41,7 @@ data class TestQuery(
   override fun name(): String = OPERATION_NAME
 
   override fun adapter(responseAdapterCache: ResponseAdapterCache): ResponseAdapter<Data> {
-    val adapter = responseAdapterCache.getOperationAdapter(name()) {
+    val adapter = responseAdapterCache.getAdapterFor(this::class) {
       TestQuery_ResponseAdapter(responseAdapterCache)
     }
     return adapter

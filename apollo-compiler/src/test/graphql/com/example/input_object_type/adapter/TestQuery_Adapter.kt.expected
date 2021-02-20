@@ -14,7 +14,7 @@ import com.example.input_object_type.type.Episode
 import com.example.input_object_type.type.Episode_ResponseAdapter
 import com.example.input_object_type.type.ReviewInput
 import com.example.input_object_type.type.adapter.ReviewInput_Adapter
-import java.lang.IllegalStateException
+import kotlin.IllegalStateException
 
 class TestQuery_Adapter(
   responseAdapterCache: ResponseAdapterCache

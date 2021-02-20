@@ -17,8 +17,8 @@ import com.example.input_object_type.type.ColorInput
 import com.example.input_object_type.type.Episode
 import com.example.input_object_type.type.Episode_ResponseAdapter
 import com.example.input_object_type.type.ReviewRefInput
-import java.lang.IllegalStateException
 import kotlin.Double
+import kotlin.IllegalStateException
 import kotlin.Int
 
 class ColorInput_Adapter(

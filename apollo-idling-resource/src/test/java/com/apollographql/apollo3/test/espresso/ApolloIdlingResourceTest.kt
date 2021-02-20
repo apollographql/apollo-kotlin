@@ -4,7 +4,6 @@ import androidx.test.espresso.IdlingResource.ResourceCallback
 import com.apollographql.apollo3.ApolloCall
 import com.apollographql.apollo3.ApolloClient
 import com.apollographql.apollo3.api.Operation
-import com.apollographql.apollo3.api.Operation.Companion.EMPTY_VARIABLES
 import com.apollographql.apollo3.api.Query
 import com.apollographql.apollo3.api.Response
 import com.apollographql.apollo3.api.ResponseField
@@ -149,8 +148,9 @@ class ApolloIdlingResourceTest {
         return ""
       }
 
-      override fun variables(): Operation.Variables {
-        return EMPTY_VARIABLES
+      override fun serializeVariables(writer: JsonWriter, responseAdapterCache: ResponseAdapterCache) {
+        writer.beginObject()
+        writer.endObject()
       }
 
       override fun adapter(responseAdapterCache: ResponseAdapterCache): ResponseAdapter<Operation.Data> {

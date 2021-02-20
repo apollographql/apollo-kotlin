@@ -7,7 +7,6 @@ package com.example.mutation_create_review_semantic_naming.type
 
 import com.apollographql.apollo3.api.Input
 import com.apollographql.apollo3.api.InputType
-import com.apollographql.apollo3.api.internal.InputFieldMarshaller
 import kotlin.Double
 import kotlin.Int
 import kotlin.Suppress
@@ -22,19 +21,19 @@ data class ColorInput(
   /**
    * Red color
    */
-  val red: Int = 1,
+  val red: Input<Int> = Input.Absent(),
   /**
    * Green color
    */
-  val green: Input<Double> = Input.Present(0.0),
+  val green: Input<Double> = Input.Absent(),
   /**
    * Blue color
    */
-  val blue: Double = 1.5,
+  val blue: Input<Double> = Input.Absent(),
   /**
    * for test purpose only
    */
-  val enumWithDefaultValue: Input<Episode> = Input.Present(Episode.NEW),
+  val enumWithDefaultValue: Input<Episode> = Input.Absent(),
   /**
    * Circle ref to review input
    */

@@ -190,9 +190,7 @@ class CacheKeyBuilderTest {
     val variables = Operation.Variables(mapOf( "testInput" to testInput))
 
     Truth.assertThat(cacheKeyBuilder.build(field, variables)).isEqualTo(
-        "hero({\"episode\":\"JEDI\",\"nested\":{\"bar\":\"2\",\"foo\":{\"boolean\":true,\"custom\":\"JEDI\",\"double\":3.0,\"int\":1,"
-            + "\"list\":[\"string\",1,2,3.0,4,true,\"JEDI\",{\"int\":1,\"string\":\"string\"},[\"string\",1]],\"long\":2,"
-            + "\"number\":4,\"object\":{\"int\":1,\"string\":\"string\"},\"string\":\"string\"}}})")
+        "hero({\"episode\":\"JEDI\",\"nested\":{\"bar\":\"2\",\"foo\":{\"string\":\"string\",\"int\":1,\"long\":2,\"double\":3.0,\"number\":4,\"boolean\":true,\"custom\":\"JEDI\",\"object\":{\"string\":\"string\",\"int\":1},\"list\":[\"string\",1,2,3.0,4,true,\"JEDI\",{\"string\":\"string\",\"int\":1},[\"string\",1]]}}})")
   }
 
   @Test
@@ -221,8 +219,7 @@ class CacheKeyBuilderTest {
 
     val variables = Operation.Variables(mapOf( "testInput" to testInput))
 
-    Truth.assertThat(cacheKeyBuilder.build(field, variables)).isEqualTo("hero({\"episode\":null,\"nested\":{\"bar\":null,\"foo\":{\"boolean\":null,\"custom\":null,\"double\":null,\"int\":null,\"listNull"
-        + "\":null,\"listWithNulls\":[],\"long\":null,\"null\":null,\"number\":null,\"object\":null,\"string\":null}}})")
+    Truth.assertThat(cacheKeyBuilder.build(field, variables)).isEqualTo("hero({\"episode\":null,\"nested\":{\"bar\":null,\"foo\":{\"string\":null,\"int\":null,\"long\":null,\"double\":null,\"number\":null,\"boolean\":null,\"custom\":null,\"object\":null,\"listNull\":null,\"listWithNulls\":[null,null,null,null,null,null,null,null,null],\"null\":null}}})")
   }
 
   private fun createResponseField(responseName: String, fieldName: String, arguments: Map<String, Any?> = emptyMap()): ResponseField {

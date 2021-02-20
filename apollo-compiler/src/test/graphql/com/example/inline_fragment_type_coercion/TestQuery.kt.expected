@@ -11,6 +11,8 @@ import com.apollographql.apollo3.api.ResponseAdapterCache
 import com.apollographql.apollo3.api.ResponseField
 import com.apollographql.apollo3.api.internal.QueryDocumentMinifier
 import com.apollographql.apollo3.api.internal.ResponseAdapter
+import com.apollographql.apollo3.api.internal.json.JsonWriter
+import com.example.inline_fragment_type_coercion.adapter.TestQuery_Adapter
 import com.example.inline_fragment_type_coercion.adapter.TestQuery_ResponseAdapter
 import kotlin.String
 import kotlin.Suppress
@@ -24,13 +26,17 @@ class TestQuery : Query<TestQuery.Data> {
 
   override fun queryDocument(): String = QUERY_DOCUMENT
 
-  override fun variables(): Operation.Variables = Operation.EMPTY_VARIABLES
+  override fun serializeVariables(writer: JsonWriter, responseAdapterCache: ResponseAdapterCache) {
+    responseAdapterCache.getVariablesAdapterFor(this::class) {
+      TestQuery_Adapter(responseAdapterCache)
+    }.toResponse(writer, this)
+  }
 
   override fun name(): String = OPERATION_NAME
 
-  override fun adapter(customScalarAdapters: ResponseAdapterCache): ResponseAdapter<Data> {
-    val adapter = customScalarAdapters.getOperationAdapter(name()) {
-      TestQuery_ResponseAdapter(customScalarAdapters)
+  override fun adapter(responseAdapterCache: ResponseAdapterCache): ResponseAdapter<Data> {
+    val adapter = responseAdapterCache.getAdapterFor(this::class) {
+      TestQuery_ResponseAdapter(responseAdapterCache)
     }
     return adapter
   }

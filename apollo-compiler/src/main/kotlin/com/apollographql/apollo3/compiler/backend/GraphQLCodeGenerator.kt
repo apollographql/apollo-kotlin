@@ -70,7 +70,7 @@ internal class GraphQLCodeGenerator(
               .typeSpec(generateAsInternal)
               .fileSpec(typesPackageName)
               .writeTo(outputDir)
-          inputType.fields.serializerTypeSpec(typesPackageName, inputType.name)
+          inputType.fields.serializerTypeSpec(typesPackageName, inputType.name, generateAsInternal)
               .fileSpec("${typesPackageName}.adapter")
               .writeTo(outputDir)
         }
@@ -88,7 +88,7 @@ internal class GraphQLCodeGenerator(
                 .fileSpec(fragmentsPackageName)
                 .writeTo(outputDir)
 
-            fragmentType.variables.serializerTypeSpec(fragmentsPackageName, fragmentType.implementationType.name)
+            fragmentType.variables.serializerTypeSpec(fragmentsPackageName, fragmentType.implementationType.name, generateAsInternal)
                 .fileSpec("${fragmentsPackageName}.adapter")
                 .writeTo(outputDir)
 
@@ -113,7 +113,7 @@ internal class GraphQLCodeGenerator(
           .fileSpec(operationType.packageName)
           .writeTo(outputDir)
 
-      operationType.variables.serializerTypeSpec(operationType.packageName, operationType.name)
+      operationType.variables.serializerTypeSpec(operationType.packageName, operationType.name, generateAsInternal)
           .fileSpec("${operationType.packageName}.adapter")
           .writeTo(outputDir)
       operationType.responseAdapterTypeSpec(generateAsInternal)

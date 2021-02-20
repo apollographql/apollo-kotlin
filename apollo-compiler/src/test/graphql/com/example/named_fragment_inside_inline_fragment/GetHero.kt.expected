@@ -11,6 +11,8 @@ import com.apollographql.apollo3.api.ResponseAdapterCache
 import com.apollographql.apollo3.api.ResponseField
 import com.apollographql.apollo3.api.internal.QueryDocumentMinifier
 import com.apollographql.apollo3.api.internal.ResponseAdapter
+import com.apollographql.apollo3.api.internal.json.JsonWriter
+import com.example.named_fragment_inside_inline_fragment.adapter.GetHero_Adapter
 import com.example.named_fragment_inside_inline_fragment.adapter.GetHero_ResponseAdapter
 import com.example.named_fragment_inside_inline_fragment.fragment.CharacterAppearsIn
 import com.example.named_fragment_inside_inline_fragment.fragment.CharacterName
@@ -27,13 +29,17 @@ class GetHero : Query<GetHero.Data> {
 
   override fun queryDocument(): String = QUERY_DOCUMENT
 
-  override fun variables(): Operation.Variables = Operation.EMPTY_VARIABLES
+  override fun serializeVariables(writer: JsonWriter, responseAdapterCache: ResponseAdapterCache) {
+    responseAdapterCache.getVariablesAdapterFor(this::class) {
+      GetHero_Adapter(responseAdapterCache)
+    }.toResponse(writer, this)
+  }
 
   override fun name(): String = OPERATION_NAME
 
-  override fun adapter(customScalarAdapters: ResponseAdapterCache): ResponseAdapter<Data> {
-    val adapter = customScalarAdapters.getOperationAdapter(name()) {
-      GetHero_ResponseAdapter(customScalarAdapters)
+  override fun adapter(responseAdapterCache: ResponseAdapterCache): ResponseAdapter<Data> {
+    val adapter = responseAdapterCache.getAdapterFor(this::class) {
+      GetHero_ResponseAdapter(responseAdapterCache)
     }
     return adapter
   }

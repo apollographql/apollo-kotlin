@@ -6,18 +6,19 @@
 package com.example.root_query_fragment_with_nested_fragments.fragment
 
 import com.apollographql.apollo3.api.Fragment
-import com.apollographql.apollo3.api.Operation
 import com.apollographql.apollo3.api.ResponseAdapterCache
 import com.apollographql.apollo3.api.ResponseField
 import com.apollographql.apollo3.api.internal.ResponseAdapter
+import com.apollographql.apollo3.api.internal.json.JsonWriter
+import com.example.root_query_fragment_with_nested_fragments.fragment.adapter.QueryFragmentImpl_Adapter
 import com.example.root_query_fragment_with_nested_fragments.fragment.adapter.QueryFragmentImpl_ResponseAdapter
 import kotlin.String
 import kotlin.collections.List
 
 class QueryFragmentImpl : Fragment<QueryFragmentImpl.Data> {
-  override fun adapter(customScalarAdapters: ResponseAdapterCache): ResponseAdapter<Data> {
-    val adapter = customScalarAdapters.getFragmentAdapter("QueryFragmentImpl") {
-      QueryFragmentImpl_ResponseAdapter(customScalarAdapters)
+  override fun adapter(responseAdapterCache: ResponseAdapterCache): ResponseAdapter<Data> {
+    val adapter = responseAdapterCache.getAdapterFor(this::class) {
+      QueryFragmentImpl_ResponseAdapter(responseAdapterCache)
     }
     return adapter
   }
@@ -25,7 +26,11 @@ class QueryFragmentImpl : Fragment<QueryFragmentImpl.Data> {
   override fun responseFields(): List<ResponseField.FieldSet> = listOf(
     ResponseField.FieldSet(null, QueryFragmentImpl_ResponseAdapter.RESPONSE_FIELDS)
   )
-  override fun variables(): Operation.Variables = Operation.EMPTY_VARIABLES
+  override fun serializeVariables(writer: JsonWriter, responseAdapterCache: ResponseAdapterCache) {
+    responseAdapterCache.getVariablesAdapterFor(this::class) {
+      QueryFragmentImpl_Adapter(responseAdapterCache)
+    }.toResponse(writer, this)
+  }
 
   /**
    * The query type, represents all of the entry points into our object graph

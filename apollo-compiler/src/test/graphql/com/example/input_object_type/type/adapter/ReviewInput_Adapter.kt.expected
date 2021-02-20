@@ -20,9 +20,9 @@ import com.example.input_object_type.type.CustomScalars
 import com.example.input_object_type.type.Episode
 import com.example.input_object_type.type.Episode_ResponseAdapter
 import com.example.input_object_type.type.ReviewInput
-import java.lang.IllegalStateException
 import java.util.Date
 import kotlin.Boolean
+import kotlin.IllegalStateException
 import kotlin.Int
 import kotlin.String
 import kotlin.collections.List

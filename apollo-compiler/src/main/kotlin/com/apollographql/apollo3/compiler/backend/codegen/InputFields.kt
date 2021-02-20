@@ -63,7 +63,7 @@ fun notImplementedFromResponseFunSpec(returnTypeName: TypeName) = FunSpec.builde
     .addModifiers(KModifier.OVERRIDE)
     .addParameter(ParameterSpec.builder(Identifier.READER, JsonReader::class).build())
     .returns(returnTypeName)
-    .addCode("throw %T(%S)", IllegalStateException::class, "Input type used in output position")
+    .addCode("throw %T(%S)", ClassName("kotlin", "IllegalStateException"), "Input type used in output position")
     .build()
 
 private fun CodeGenerationAst.InputField.actualType() = if (isRequired) {
@@ -74,11 +74,15 @@ private fun CodeGenerationAst.InputField.actualType() = if (isRequired) {
 
 internal fun List<CodeGenerationAst.InputField>.serializerTypeSpec(
     packageName: String,
-    name: String
+    name: String,
+    generateAsInternal: Boolean
 ): TypeSpec {
   val className = ClassName(packageName, name)
   val builder = TypeSpec.classBuilder(kotlinNameForSerializer(name))
 
+  if (generateAsInternal) {
+    builder.addModifiers(KModifier.INTERNAL)
+  }
   builder.addSuperinterface(ResponseAdapter::class.asClassName().parameterizedBy(className))
 
   builder.primaryConstructor(FunSpec.constructorBuilder()

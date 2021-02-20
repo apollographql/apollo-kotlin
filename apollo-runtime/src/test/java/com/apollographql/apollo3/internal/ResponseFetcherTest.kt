@@ -7,6 +7,7 @@ import com.apollographql.apollo3.api.Query
 import com.apollographql.apollo3.api.ResponseField
 import com.apollographql.apollo3.api.cache.http.HttpCachePolicy
 import com.apollographql.apollo3.api.cache.http.HttpCachePolicy.FetchStrategy
+import com.apollographql.apollo3.api.internal.json.JsonWriter
 import com.apollographql.apollo3.fetcher.ApolloResponseFetchers
 import com.google.common.truth.Truth
 import okhttp3.OkHttpClient
@@ -21,8 +22,9 @@ class ResponseFetcherTest {
       return ""
     }
 
-    override fun variables(): Operation.Variables {
-      return Operation.EMPTY_VARIABLES
+    override fun serializeVariables(writer: JsonWriter, responseAdapterCache: ResponseAdapterCache) {
+      writer.beginObject()
+      writer.endObject()
     }
 
     override fun adapter(responseAdapterCache: ResponseAdapterCache) = throw UnsupportedOperationException()

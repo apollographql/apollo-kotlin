@@ -6,18 +6,19 @@
 package com.example.fragment_in_fragment.fragment
 
 import com.apollographql.apollo3.api.Fragment
-import com.apollographql.apollo3.api.Operation
 import com.apollographql.apollo3.api.ResponseAdapterCache
 import com.apollographql.apollo3.api.ResponseField
 import com.apollographql.apollo3.api.internal.ResponseAdapter
+import com.apollographql.apollo3.api.internal.json.JsonWriter
+import com.example.fragment_in_fragment.fragment.adapter.PilotFragmentImpl_Adapter
 import com.example.fragment_in_fragment.fragment.adapter.PilotFragmentImpl_ResponseAdapter
 import kotlin.String
 import kotlin.collections.List
 
 class PilotFragmentImpl : Fragment<PilotFragmentImpl.Data> {
-  override fun adapter(customScalarAdapters: ResponseAdapterCache): ResponseAdapter<Data> {
-    val adapter = customScalarAdapters.getFragmentAdapter("PilotFragmentImpl") {
-      PilotFragmentImpl_ResponseAdapter(customScalarAdapters)
+  override fun adapter(responseAdapterCache: ResponseAdapterCache): ResponseAdapter<Data> {
+    val adapter = responseAdapterCache.getAdapterFor(this::class) {
+      PilotFragmentImpl_ResponseAdapter(responseAdapterCache)
     }
     return adapter
   }
@@ -25,7 +26,11 @@ class PilotFragmentImpl : Fragment<PilotFragmentImpl.Data> {
   override fun responseFields(): List<ResponseField.FieldSet> = listOf(
     ResponseField.FieldSet(null, PilotFragmentImpl_ResponseAdapter.RESPONSE_FIELDS)
   )
-  override fun variables(): Operation.Variables = Operation.EMPTY_VARIABLES
+  override fun serializeVariables(writer: JsonWriter, responseAdapterCache: ResponseAdapterCache) {
+    responseAdapterCache.getVariablesAdapterFor(this::class) {
+      PilotFragmentImpl_Adapter(responseAdapterCache)
+    }.toResponse(writer, this)
+  }
 
   /**
    * An individual person or character within the Star Wars universe.
