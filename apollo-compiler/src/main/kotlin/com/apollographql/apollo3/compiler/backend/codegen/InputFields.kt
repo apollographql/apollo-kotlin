@@ -32,7 +32,7 @@ internal fun CodeGenerationAst.InputField.toParameterSpec(): ParameterSpec {
           type = asInputTypeName()
       )
       .applyIf(description.isNotBlank()) { addKdoc("%L\n", description) }
-      .applyIf(!isRequired) { defaultValue("%T()", Input.Absent::class.asClassName()) }
+      .applyIf(!isRequired) { defaultValue("%T", Input.Absent::class.asClassName()) }
       .build()
 }
 
