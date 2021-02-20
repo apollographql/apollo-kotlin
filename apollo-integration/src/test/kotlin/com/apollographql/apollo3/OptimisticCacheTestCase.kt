@@ -279,8 +279,16 @@ class OptimisticCacheTestCase {
             favoriteColor = ColorInput()
         )
     )
-    apolloClient!!.mutate(updateReviewMutation, UpdateReviewMutation.Data(UpdateReview(
-        "empireReview2", 5, "Great"))).enqueue(
+    apolloClient!!.mutate(
+        updateReviewMutation,
+        UpdateReviewMutation.Data(
+            UpdateReview(
+                "empireReview2",
+                5,
+                "Great"
+            )
+        )
+    ).enqueue(
         object : ApolloCall.Callback<UpdateReviewMutation.Data>() {
           override fun onResponse(response: Response<UpdateReviewMutation.Data>) {}
           override fun onFailure(e: ApolloException) {}

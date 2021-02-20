@@ -97,12 +97,14 @@ internal fun List<CodeGenerationAst.InputField>.serializerTypeSpec(
       .addParameter(Identifier.VALUE, className)
       .addModifiers(KModifier.OVERRIDE)
       .addCode(CodeBlock.Builder().apply {
+        addStatement("writer.beginObject()")
         forEach {
           addStatement("%L.toResponse(writer, value.%L)",
               kotlinNameForVariableAdapterField(it.name, it.type),
               kotlinNameForVariable(it.name)
           )
         }
+        addStatement("writer.endObject()")
       }.build())
       .build()
   )
