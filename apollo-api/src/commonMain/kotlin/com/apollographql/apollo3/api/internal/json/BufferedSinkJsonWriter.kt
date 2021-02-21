@@ -15,7 +15,7 @@
  */
 package com.apollographql.apollo3.api.internal.json
 
-import com.apollographql.apollo3.api.FileUpload
+import com.apollographql.apollo3.api.Upload
 import com.apollographql.apollo3.api.internal.Throws
 import okio.BufferedSink
 import okio.IOException
@@ -191,7 +191,7 @@ class BufferedSinkJsonWriter(private val sink: BufferedSink) : JsonWriter {
     return this
   }
 
-  override fun value(value: FileUpload) = apply {
+  override fun value(value: Upload) = apply {
     nullValue()
   }
 

@@ -15,11 +15,9 @@
  */
 package com.apollographql.apollo3.api.internal.json
 
-import com.apollographql.apollo3.api.FileUpload
+import com.apollographql.apollo3.api.Upload
 import com.apollographql.apollo3.api.internal.Throws
-import okio.BufferedSink
 import okio.IOException
-import kotlin.jvm.JvmStatic
 
 /**
  * Writes a JSON [RFC 7159](http://www.ietf.org/rfc/rfc7159.txt) encoded value to a stream, one token at a time.
@@ -105,8 +103,8 @@ interface JsonWriter : Closeable, Flushable {
   fun value(value: Int): JsonWriter
 
   /**
-   * Encodes a [FileUpload].
+   * Encodes a [Upload].
    */
   @Throws(IOException::class)
-  fun value(value: FileUpload): JsonWriter
+  fun value(value: Upload): JsonWriter
 }

@@ -109,7 +109,7 @@ class ResponseAdapterCache(val customScalarAdapters: Map<CustomScalar, CustomSca
         "java.util.List" to BuiltinCustomScalarAdapters.LIST_ADAPTER,
         "kotlin.collections.List" to  BuiltinCustomScalarAdapters.LIST_ADAPTER,
 
-        "com.apollographql.apollo3.api.FileUpload" to  BuiltinCustomScalarAdapters.FILE_UPLOAD_ADAPTER,
+        "com.apollographql.apollo3.api.Upload" to  BuiltinCustomScalarAdapters.FILE_UPLOAD_ADAPTER,
 
         "java.lang.Object" to  BuiltinCustomScalarAdapters.FALLBACK_ADAPTER,
         "kotlin.Any" to  BuiltinCustomScalarAdapters.FALLBACK_ADAPTER,

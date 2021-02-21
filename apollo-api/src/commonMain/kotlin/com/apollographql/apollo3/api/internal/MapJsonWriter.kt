@@ -1,6 +1,6 @@
 package com.apollographql.apollo3.api.internal
 
-import com.apollographql.apollo3.api.FileUpload
+import com.apollographql.apollo3.api.Upload
 import com.apollographql.apollo3.api.internal.json.JsonWriter
 
 class MapJsonWriter: JsonWriter {
@@ -78,7 +78,7 @@ class MapJsonWriter: JsonWriter {
 
   override fun value(value: Int) = valueInternal(value)
 
-  override fun value(value: FileUpload) = apply {
+  override fun value(value: Upload) = apply {
     nullValue()
   }
 

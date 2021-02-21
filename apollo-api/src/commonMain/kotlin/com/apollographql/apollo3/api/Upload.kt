@@ -8,7 +8,7 @@ import okio.BufferedSink
  *
  * This class is heavily inspired by [okhttp3.RequestBody]
  */
-interface FileUpload {
+interface Upload {
   val contentType: String
 
   /**

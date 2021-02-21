@@ -1,6 +1,7 @@
 package com.apollographql.apollo3.api.internal
 
 import com.apollographql.apollo3.api.Input
+import com.apollographql.apollo3.api.Upload
 import com.apollographql.apollo3.api.internal.json.JsonReader
 import com.apollographql.apollo3.api.internal.json.JsonWriter
 import com.apollographql.apollo3.api.internal.json.Utils
@@ -94,3 +95,14 @@ object AnyResponseAdapter: ResponseAdapter<Any?> {
     Utils.writeToJson(value, writer)
   }
 }
+
+object UploadResponseAdapter: ResponseAdapter<Upload> {
+  override fun fromResponse(reader: JsonReader): Upload {
+    error("File Upload used in output position")
+  }
+
+  override fun toResponse(writer: JsonWriter, value: Upload) {
+    writer.value(value)
+  }
+}
+

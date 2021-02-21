@@ -1,14 +1,14 @@
 package com.apollographql.apollo3.api.internal.json
 
-import com.apollographql.apollo3.api.FileUpload
+import com.apollographql.apollo3.api.Upload
 
 class FileUploadAwareJsonWriter(private val wrappedWriter: BufferedSinkJsonWriter): JsonWriter {
-  private val uploads = mutableMapOf<String, FileUpload>()
+  private val uploads = mutableMapOf<String, Upload>()
 
   init {
     wrappedWriter.serializeNulls = true
   }
-  fun collectedUploads(): Map<String, FileUpload> = uploads
+  fun collectedUploads(): Map<String, Upload> = uploads
 
   override fun beginArray() = apply {
     wrappedWriter.beginArray()
@@ -46,7 +46,7 @@ class FileUploadAwareJsonWriter(private val wrappedWriter: BufferedSinkJsonWrite
     wrappedWriter.value(value)
   }
 
-  override fun value(value: FileUpload) = apply {
+  override fun value(value: Upload) = apply {
     uploads[wrappedWriter.path] = value
     wrappedWriter.nullValue()
   }

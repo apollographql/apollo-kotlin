@@ -1,6 +1,6 @@
 package com.apollographql.apollo3.api.internal
 
-import com.apollographql.apollo3.api.FileUpload
+import com.apollographql.apollo3.api.Upload
 import com.apollographql.apollo3.api.Operation
 import com.apollographql.apollo3.api.ResponseAdapterCache
 import com.apollographql.apollo3.api.internal.json.BufferedSinkJsonWriter
@@ -98,7 +98,7 @@ object OperationRequestBodyComposer {
       }
     }
   }
-  private fun Map<String, FileUpload>.toMapBuffer(): Buffer {
+  private fun Map<String, Upload>.toMapBuffer(): Buffer {
     val buffer = Buffer()
 
     val writer = BufferedSinkJsonWriter(buffer)

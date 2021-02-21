@@ -1,18 +1,14 @@
 package com.apollographql.apollo3.internal.interceptor
 
 import com.apollographql.apollo3.api.ResponseAdapterCache
-import com.apollographql.apollo3.api.FileUpload
-import com.apollographql.apollo3.api.Input
-import com.apollographql.apollo3.api.InputType
+import com.apollographql.apollo3.api.Upload
 import com.apollographql.apollo3.api.Operation
 import com.apollographql.apollo3.api.Query
 import com.apollographql.apollo3.api.cache.http.HttpCache
 import com.apollographql.apollo3.api.cache.http.HttpCachePolicy
-import com.apollographql.apollo3.api.composeRequestBody
 import com.apollographql.apollo3.api.internal.ApolloLogger
 import com.apollographql.apollo3.api.internal.OperationRequestBodyComposer
 import com.apollographql.apollo3.api.internal.json.BufferedSinkJsonWriter
-import com.apollographql.apollo3.api.variables
 import com.apollographql.apollo3.cache.ApolloCacheHeaders
 import com.apollographql.apollo3.cache.CacheHeaders
 import com.apollographql.apollo3.exception.ApolloNetworkException
@@ -27,16 +23,12 @@ import okhttp3.Call
 import okhttp3.Callback
 import okhttp3.HttpUrl
 import okhttp3.MediaType
-import okhttp3.MultipartBody
 import okhttp3.Request
 import okhttp3.RequestBody
 import okhttp3.Response
 import okio.Buffer
 import okio.BufferedSink
-import okio.ByteString
-import java.io.File
 import java.io.IOException
-import java.util.ArrayList
 import java.util.concurrent.Executor
 import java.util.concurrent.atomic.AtomicReference
 
@@ -173,7 +165,7 @@ class ApolloServerInterceptor(
     }
   }
 
-  class FileUploadMeta internal constructor(val key: String, val mimetype: String, val fileUpload: FileUpload)
+  class FileUploadMeta internal constructor(val key: String, val mimetype: String, val upload: Upload)
   companion object {
     const val HEADER_ACCEPT_TYPE = "Accept"
     const val HEADER_CONTENT_TYPE = "Content-Type"

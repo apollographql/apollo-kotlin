@@ -86,16 +86,6 @@ object BuiltinCustomScalarAdapters {
   val FALLBACK_ADAPTER = adapterWithDefaultEncode { jsonElement ->
     jsonElement.toRawValue()
   }
-
-  val FILE_UPLOAD_ADAPTER = object : CustomScalarAdapter<FileUpload> {
-    override fun decode(jsonElement: JsonElement): FileUpload {
-      throw IllegalStateException("ApolloGraphQL: cannot decode FileUpload")
-    }
-
-    override fun encode(value: FileUpload): JsonElement {
-      return JsonNull
-    }
-  }
 }
 
 private fun <T> adapterWithDefaultEncode(
