@@ -42,54 +42,6 @@ import kotlin.jvm.JvmStatic
  * malformed JSON string will fail with an [IllegalStateException].
  */
 abstract class JsonWriter : Closeable, Flushable {
-  // The nesting stack. Using a manual array rather than an ArrayList saves 20%. This stack permits  up to 32 levels of nesting including
-  // the top-level document. Deeper nesting is prone to trigger StackOverflowErrors.
-  protected var stackSize = 0
-  protected val scopes = IntArray(32)
-  protected val pathNames = arrayOfNulls<String>(32)
-  protected val pathIndices = IntArray(32)
-
-  /**
-   * A string containing a full set of spaces for a single level of indentation, or null for no pretty printing.
-   */
-  var indent: String? = null
-
-  /**
-   * Configure this writer to relax its syntax rules.
-   *
-   * By default, this writer only emits well-formed JSON as specified by [RFC 7159](http://www.ietf.org/rfc/rfc7159.txt).
-   */
-  var isLenient = false
-
-  /**
-   * Sets whether object members are serialized when their value is null. This has no impact on array elements.
-   *
-   * The default is false.
-   */
-  var serializeNulls = false
-
-  /**
-   * Returns the scope on the top of the stack.
-   */
-  fun peekScope(): Int {
-    check(stackSize != 0) { "JsonWriter is closed." }
-    return scopes[stackSize - 1]
-  }
-
-  fun pushScope(newTop: Int) {
-    if (stackSize == scopes.size) {
-      throw JsonDataException("Nesting too deep at $path: circular reference?")
-    }
-    scopes[stackSize++] = newTop
-  }
-
-  /**
-   * Replace the value on the top of the stack with the given value.
-   */
-  fun replaceTop(topOfStack: Int) {
-    scopes[stackSize - 1] = topOfStack
-  }
-
   /**
    * Begins encoding a new array. Each call to this method must be paired with a call to [endArray].
    */
@@ -162,12 +114,6 @@ abstract class JsonWriter : Closeable, Flushable {
    */
   @Throws(IOException::class)
   abstract fun value(value: Number?): JsonWriter
-
-  /**
-   * Returns a [JsonPath](http://goessner.net/articles/JsonPath/) to the current location in the JSON value.
-   */
-  val path: String
-    get() = getPath(stackSize, scopes, pathNames, pathIndices)
 
   companion object {
     /**

@@ -46,7 +46,7 @@ class ApolloServerInterceptorFileUploadTest {
     override fun contentLength() = content.size.toLong()
     override fun fileName() = "source"
     override fun writeTo(sink: BufferedSink) {
-      sink.writeAll(Buffer().let { it.write(content) })
+      sink.writeAll(Buffer().write(content))
     }
   }
 
