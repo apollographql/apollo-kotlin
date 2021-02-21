@@ -56,7 +56,6 @@ public final class RealApolloCall<T> implements ApolloQueryCall<T>, ApolloMutati
   final Call.Factory httpCallFactory;
   final HttpCache httpCache;
   final HttpCachePolicy.Policy httpCachePolicy;
-  final ResponseFieldMapperFactory responseFieldMapperFactory;
   final ScalarTypeAdapters scalarTypeAdapters;
   final ApolloStore apolloStore;
   final CacheHeaders cacheHeaders;
@@ -90,7 +89,6 @@ public final class RealApolloCall<T> implements ApolloQueryCall<T>, ApolloMutati
     httpCallFactory = builder.httpCallFactory;
     httpCache = builder.httpCache;
     httpCachePolicy = builder.httpCachePolicy;
-    responseFieldMapperFactory = builder.responseFieldMapperFactory;
     scalarTypeAdapters = builder.scalarTypeAdapters;
     apolloStore = builder.apolloStore;
     responseFetcher = builder.responseFetcher;
@@ -113,7 +111,6 @@ public final class RealApolloCall<T> implements ApolloQueryCall<T>, ApolloMutati
           .queryWatchers(refetchQueryNames)
           .serverUrl(builder.serverUrl)
           .httpCallFactory(builder.httpCallFactory)
-          .responseFieldMapperFactory(builder.responseFieldMapperFactory)
           .scalarTypeAdapters(builder.scalarTypeAdapters)
           .apolloStore(builder.apolloStore)
           .dispatcher(builder.dispatcher)
@@ -308,7 +305,6 @@ public final class RealApolloCall<T> implements ApolloQueryCall<T>, ApolloMutati
         .httpCallFactory(httpCallFactory)
         .httpCache(httpCache)
         .httpCachePolicy(httpCachePolicy)
-        .responseFieldMapperFactory(responseFieldMapperFactory)
         .scalarTypeAdapters(scalarTypeAdapters)
         .apolloStore(apolloStore)
         .cacheHeaders(cacheHeaders)
@@ -385,7 +381,7 @@ public final class RealApolloCall<T> implements ApolloQueryCall<T>, ApolloMutati
 
   private ApolloInterceptorChain prepareInterceptorChain(Operation operation) {
     HttpCachePolicy.Policy httpCachePolicy = operation instanceof Query ? this.httpCachePolicy : null;
-    ResponseFieldMapper responseFieldMapper = responseFieldMapperFactory.create(operation);
+    ResponseFieldMapper responseFieldMapper = operation.responseFieldMapper();
 
     List<ApolloInterceptor> interceptors = new ArrayList<>();
 
@@ -430,7 +426,6 @@ public final class RealApolloCall<T> implements ApolloQueryCall<T>, ApolloMutati
     Call.Factory httpCallFactory;
     HttpCache httpCache;
     HttpCachePolicy.Policy httpCachePolicy;
-    ResponseFieldMapperFactory responseFieldMapperFactory;
     ScalarTypeAdapters scalarTypeAdapters;
     ApolloStore apolloStore;
     ResponseFetcher responseFetcher;
@@ -470,8 +465,11 @@ public final class RealApolloCall<T> implements ApolloQueryCall<T>, ApolloMutati
       return this;
     }
 
-    public Builder<T> responseFieldMapperFactory(ResponseFieldMapperFactory responseFieldMapperFactory) {
-      this.responseFieldMapperFactory = responseFieldMapperFactory;
+    /**
+     * @deprecated The mapper factory is no longer used and will be removed in the future.
+     */
+    @Deprecated
+    public Builder<T> responseFieldMapperFactory(@SuppressWarnings("unused") ResponseFieldMapperFactory responseFieldMapperFactory) {
       return this;
     }
 
