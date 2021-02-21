@@ -1,5 +1,6 @@
 package com.apollographql.apollo3.cache.normalized
 
+import com.apollographql.apollo3.api.internal.json.BufferedSinkJsonWriter
 import com.apollographql.apollo3.api.internal.json.BufferedSourceJsonReader
 import com.apollographql.apollo3.api.internal.json.JsonWriter
 import com.apollographql.apollo3.api.internal.json.Utils.readRecursively
@@ -17,7 +18,7 @@ object RecordFieldJsonAdapter {
 
   fun toJson(fields: Map<String, Any?>): String {
     val buffer = Buffer()
-    JsonWriter.of(buffer).use { jsonWriter ->
+    BufferedSinkJsonWriter(buffer).use { jsonWriter ->
       jsonWriter.serializeNulls = true
       jsonWriter.beginObject()
       for ((key, value) in fields) {

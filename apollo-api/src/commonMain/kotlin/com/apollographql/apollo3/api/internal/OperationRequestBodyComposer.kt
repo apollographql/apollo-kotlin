@@ -2,7 +2,7 @@ package com.apollographql.apollo3.api.internal
 
 import com.apollographql.apollo3.api.Operation
 import com.apollographql.apollo3.api.ResponseAdapterCache
-import com.apollographql.apollo3.api.internal.json.JsonWriter
+import com.apollographql.apollo3.api.internal.json.BufferedSinkJsonWriter
 import com.apollographql.apollo3.api.internal.json.use
 import okio.Buffer
 import okio.ByteString
@@ -18,7 +18,7 @@ object OperationRequestBodyComposer {
       responseAdapterCache: ResponseAdapterCache
   ): ByteString {
     val buffer = Buffer()
-    JsonWriter.of(buffer).use { writer ->
+    BufferedSinkJsonWriter(buffer).use { writer ->
       with(writer) {
         serializeNulls = true
         beginObject()

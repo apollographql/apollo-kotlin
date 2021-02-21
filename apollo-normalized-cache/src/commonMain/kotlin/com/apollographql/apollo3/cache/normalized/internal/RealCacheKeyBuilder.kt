@@ -4,6 +4,7 @@ import com.apollographql.apollo3.api.InputType
 import com.apollographql.apollo3.api.Operation
 import com.apollographql.apollo3.api.ResponseField
 import com.apollographql.apollo3.api.Variable
+import com.apollographql.apollo3.api.internal.json.BufferedSinkJsonWriter
 import com.apollographql.apollo3.api.internal.json.JsonWriter
 import com.apollographql.apollo3.api.internal.json.Utils
 import okio.Buffer
@@ -18,7 +19,7 @@ class RealCacheKeyBuilder : CacheKeyBuilder {
     val resolvedArguments = resolveVariables(field.arguments, variables)
     return try {
       val buffer = Buffer()
-      val jsonWriter = JsonWriter.of(buffer)
+      val jsonWriter = BufferedSinkJsonWriter(buffer)
       jsonWriter.serializeNulls = true
       Utils.writeToJson(resolvedArguments, jsonWriter)
       jsonWriter.close()

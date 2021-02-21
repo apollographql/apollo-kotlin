@@ -6,7 +6,7 @@ import com.apollographql.apollo3.api.internal.MapJsonWriter
 import com.apollographql.apollo3.api.internal.MapResponseParser
 import com.apollographql.apollo3.api.internal.OperationRequestBodyComposer
 import com.apollographql.apollo3.api.internal.StreamResponseParser
-import com.apollographql.apollo3.api.internal.json.JsonUtf8Writer
+import com.apollographql.apollo3.api.internal.json.BufferedSinkJsonWriter
 import com.apollographql.apollo3.api.internal.json.JsonWriter
 import okio.Buffer
 import okio.BufferedSource
@@ -43,7 +43,7 @@ import kotlin.jvm.JvmOverloads
 fun <D : Operation.Data> Operation<D>.toJson(data: D, indent: String = "", responseAdapterCache: ResponseAdapterCache = DEFAULT): String {
   return try {
     val buffer = Buffer()
-    val writer = JsonUtf8Writer(buffer).apply {
+    val writer = BufferedSinkJsonWriter(buffer).apply {
       this.indent = indent
     }
     // Do we need to wrap in data?
@@ -198,13 +198,13 @@ fun <D : Fragment.Data> Fragment<D>.variables(responseAdapterCache: ResponseAdap
 
 fun <D : Operation.Data> Operation<D>.variablesJson(responseAdapterCache: ResponseAdapterCache): String {
   return Buffer().apply {
-    serializeVariables(JsonWriter.of(this), responseAdapterCache)
+    serializeVariables(BufferedSinkJsonWriter(this), responseAdapterCache)
   }.readUtf8()
 }
 
 
 fun <D : Fragment.Data> Fragment<D>.variablesJson(responseAdapterCache: ResponseAdapterCache): String {
   return Buffer().apply {
-    serializeVariables(JsonWriter.of(this), responseAdapterCache)
+    serializeVariables(BufferedSinkJsonWriter(this), responseAdapterCache)
   }.readUtf8()
 }

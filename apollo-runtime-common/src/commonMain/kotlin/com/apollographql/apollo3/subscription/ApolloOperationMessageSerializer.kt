@@ -1,5 +1,6 @@
 package com.apollographql.apollo3.subscription
 
+import com.apollographql.apollo3.api.internal.json.BufferedSinkJsonWriter
 import com.apollographql.apollo3.api.internal.json.BufferedSourceJsonReader
 import com.apollographql.apollo3.api.internal.json.JsonEncodingException
 import com.apollographql.apollo3.api.internal.json.JsonReader
@@ -19,7 +20,7 @@ import okio.use as okioUse
  */
 object ApolloOperationMessageSerializer : OperationMessageSerializer {
   override fun writeClientMessage(message: OperationClientMessage, sink: BufferedSink) {
-    JsonWriter.of(sink).use { writer ->
+    BufferedSinkJsonWriter(sink).use { writer ->
       writer.writeObject {
         message.writeContentsTo(writer)
       }

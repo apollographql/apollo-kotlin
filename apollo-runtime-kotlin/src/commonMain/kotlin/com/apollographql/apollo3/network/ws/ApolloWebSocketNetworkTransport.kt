@@ -13,6 +13,7 @@ import com.apollographql.apollo3.api.parse
 import com.apollographql.apollo3.dispatcher.ApolloCoroutineDispatcherContext
 import com.apollographql.apollo3.exception.ApolloParseException
 import com.apollographql.apollo3.ApolloRequest
+import com.apollographql.apollo3.api.internal.json.BufferedSinkJsonWriter
 import com.apollographql.apollo3.interceptor.ApolloResponse
 import com.apollographql.apollo3.network.NetworkTransport
 import com.apollographql.apollo3.subscription.ApolloOperationMessageSerializer
@@ -118,7 +119,7 @@ class ApolloWebSocketNetworkTransport(
       is OperationServerMessage.Data -> {
         if (id == request.requestUuid.toString()) {
           val buffer = Buffer().apply {
-            JsonWriter.of(buffer)
+            BufferedSinkJsonWriter(buffer)
                 .apply { Utils.writeToJson(payload, this) }
                 .flush()
           }

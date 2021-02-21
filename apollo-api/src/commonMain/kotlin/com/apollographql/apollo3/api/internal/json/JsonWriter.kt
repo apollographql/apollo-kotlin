@@ -16,7 +16,6 @@
 package com.apollographql.apollo3.api.internal.json
 
 import com.apollographql.apollo3.api.internal.Throws
-import com.apollographql.apollo3.api.internal.json.JsonScope.getPath
 import okio.BufferedSink
 import okio.IOException
 import kotlin.jvm.JvmStatic
@@ -114,14 +113,4 @@ abstract class JsonWriter : Closeable, Flushable {
    */
   @Throws(IOException::class)
   abstract fun value(value: Number?): JsonWriter
-
-  companion object {
-    /**
-     * Returns a new instance that writes UTF-8 encoded JSON to `sink`.
-     */
-    @JvmStatic
-    fun of(sink: BufferedSink): JsonWriter {
-      return JsonUtf8Writer(sink)
-    }
-  }
 }

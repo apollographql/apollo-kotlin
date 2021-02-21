@@ -10,7 +10,7 @@ import com.apollographql.apollo3.api.cache.http.HttpCache
 import com.apollographql.apollo3.api.cache.http.HttpCachePolicy
 import com.apollographql.apollo3.api.composeRequestBody
 import com.apollographql.apollo3.api.internal.ApolloLogger
-import com.apollographql.apollo3.api.internal.json.JsonWriter.Companion.of
+import com.apollographql.apollo3.api.internal.json.BufferedSinkJsonWriter
 import com.apollographql.apollo3.api.variables
 import com.apollographql.apollo3.cache.ApolloCacheHeaders
 import com.apollographql.apollo3.cache.CacheHeaders
@@ -204,7 +204,7 @@ class ApolloServerInterceptor(
                                       operation: Operation<*>,
                                       responseAdapterCache: ResponseAdapterCache?) {
       val buffer = Buffer()
-      val jsonWriter = of(buffer)
+      val jsonWriter = BufferedSinkJsonWriter(buffer)
       jsonWriter.serializeNulls = true
       operation.serializeVariables(jsonWriter, responseAdapterCache!!)
       jsonWriter.close()
@@ -214,7 +214,7 @@ class ApolloServerInterceptor(
     @Throws(IOException::class)
     fun addExtensionsUrlQueryParameter(urlBuilder: HttpUrl.Builder, operation: Operation<*>) {
       val buffer = Buffer()
-      val jsonWriter = of(buffer)
+      val jsonWriter = BufferedSinkJsonWriter(buffer)
       jsonWriter.serializeNulls = true
       jsonWriter.beginObject()
       jsonWriter.name("persistedQuery")
@@ -288,7 +288,7 @@ class ApolloServerInterceptor(
     @Throws(IOException::class)
     fun httpMultipartRequestBody(operations: RequestBody?, fileUploadMetaList: ArrayList<FileUploadMeta>): RequestBody {
       val buffer = Buffer()
-      val jsonWriter = of(buffer)
+      val jsonWriter = BufferedSinkJsonWriter(buffer)
       jsonWriter.beginObject()
       fileUploadMetaList.forEachIndexed { i, fileUploadMeta ->
         jsonWriter.name(i.toString()).beginArray()

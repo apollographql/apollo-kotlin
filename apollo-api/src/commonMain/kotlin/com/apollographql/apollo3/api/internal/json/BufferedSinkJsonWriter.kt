@@ -20,7 +20,7 @@ import okio.BufferedSink
 import okio.ByteString
 import okio.IOException
 
-internal class JsonUtf8Writer(private val sink: BufferedSink) : JsonWriter() {
+class BufferedSinkJsonWriter(private val sink: BufferedSink) : JsonWriter() {
   // The nesting stack. Using a manual array rather than an ArrayList saves 20%. This stack permits  up to 32 levels of nesting including
   // the top-level document. Deeper nesting is prone to trigger StackOverflowErrors.
   private var stackSize = 0

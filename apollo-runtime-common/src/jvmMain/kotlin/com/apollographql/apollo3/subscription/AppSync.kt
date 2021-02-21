@@ -1,5 +1,6 @@
 package com.apollographql.apollo3.subscription
 
+import com.apollographql.apollo3.api.internal.json.BufferedSinkJsonWriter
 import com.apollographql.apollo3.api.internal.json.JsonWriter
 import com.apollographql.apollo3.api.internal.json.Utils
 import okhttp3.HttpUrl
@@ -61,7 +62,7 @@ object AppSync {
 
   private fun Map<String, Any?>.base64Encode(): String {
     val buffer = Buffer()
-    Utils.writeToJson(this, JsonWriter.of(buffer))
+    Utils.writeToJson(this, BufferedSinkJsonWriter(buffer))
     return buffer.readByteString().base64()
   }
 }

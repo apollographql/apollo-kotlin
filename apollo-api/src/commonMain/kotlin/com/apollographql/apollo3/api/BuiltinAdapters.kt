@@ -1,6 +1,6 @@
 package com.apollographql.apollo3.api
 
-import com.apollographql.apollo3.api.internal.json.JsonWriter
+import com.apollographql.apollo3.api.internal.json.BufferedSinkJsonWriter
 import com.apollographql.apollo3.api.internal.json.Utils
 import com.apollographql.apollo3.api.internal.json.use
 import okio.Buffer
@@ -19,7 +19,7 @@ object BuiltinCustomScalarAdapters {
       is JsonObject,
       is JsonList -> {
         val buffer = Buffer()
-        JsonWriter.of(buffer).use { writer ->
+        BufferedSinkJsonWriter(buffer).use { writer ->
           Utils.writeToJson(jsonElement.toRawValue(), writer)
         }
         buffer.readUtf8()
