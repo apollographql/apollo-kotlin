@@ -8,30 +8,22 @@ import okio.BufferedSink
  *
  * This class is heavily inspired by [okhttp3.RequestBody]
  */
-open class FileUpload(val mimetype: String, val filePath: String? = null) {
+interface FileUpload {
+  val contentType: String
+
   /**
    * Returns the number of bytes that will be written to `sink` in a call to [.writeTo],
    * or -1 if that count is unknown.
    */
-  open fun contentLength(): Long {
-    return -1
-  }
-
-  /**
-   *  Writes the content of this request to `sink`.
-   */
-  open fun writeTo(sink: BufferedSink) {
-    throw UnsupportedOperationException("ApolloGraphQL: if you're not passing a `filePath` parameter, you must override `FileUpload.writeTo`")
-  }
+  val contentLength: Long
 
   /**
    * The fileName to send to the server. Might be null
    */
-  open fun fileName(): String? {
-    throw UnsupportedOperationException("ApolloGraphQL: if you're not passing a `filePath` parameter, you must override `FileUpload.fileName`")
-  }
+  val fileName: String?
 
-  companion object {
-
-  }
+  /**
+   *  Writes the content of this request to `sink`.
+   */
+  fun writeTo(sink: BufferedSink)
 }

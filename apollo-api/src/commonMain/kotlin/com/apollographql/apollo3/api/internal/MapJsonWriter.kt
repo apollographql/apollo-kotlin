@@ -1,8 +1,9 @@
 package com.apollographql.apollo3.api.internal
 
+import com.apollographql.apollo3.api.FileUpload
 import com.apollographql.apollo3.api.internal.json.JsonWriter
 
-class MapJsonWriter: JsonWriter() {
+class MapJsonWriter: JsonWriter {
   sealed class State {
     class List(val list: MutableList<Any?>): State()
     class Map(val map: MutableMap<String, Any?>, var name: String?): State()
@@ -11,7 +12,7 @@ class MapJsonWriter: JsonWriter() {
   private var root: Any? = null
   private var rootSet = false
 
-  val stack = mutableListOf<State>()
+  private val stack = mutableListOf<State>()
 
   fun root(): Any? {
     check(rootSet)
@@ -54,30 +55,32 @@ class MapJsonWriter: JsonWriter() {
   }
 
   private fun <T> valueInternal(value: T?) = apply {
-    val state = stack.lastOrNull()
-
-    if (state is State.Map) {
-      check(state.name != null)
-      state.map[state.name!!] = value
-      state.name = null
-    } else if( state is State.List) {
-      state.list.add(value)
-    } else {
-      root = value
-      rootSet = true
+    when (val state = stack.lastOrNull()) {
+      is State.Map -> {
+        check(state.name != null)
+        state.map[state.name!!] = value
+        state.name = null
+      }
+      is State.List -> {
+        state.list.add(value)
+      }
+      else -> {
+        root = value
+        rootSet = true
+      }
     }
   }
-  override fun value(value: String?) = valueInternal(value)
+  override fun value(value: String) = valueInternal(value)
 
-  override fun value(value: Boolean?) = valueInternal(value)
+  override fun value(value: Boolean) = valueInternal(value)
 
   override fun value(value: Double) = valueInternal(value)
 
-  override fun value(value: Long) = valueInternal(value)
+  override fun value(value: Int) = valueInternal(value)
 
-  override fun value(value: Number?) = valueInternal(value)
-
-  override fun jsonValue(value: String?) = throw UnsupportedOperationException()
+  override fun value(value: FileUpload) = apply {
+    nullValue()
+  }
 
   override fun nullValue() = valueInternal(null)
 

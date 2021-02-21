@@ -92,31 +92,11 @@ fun Operation<*>.composeRequestBody(
       autoPersistQueries = autoPersistQueries,
       withQueryDocument = withQueryDocument,
       responseAdapterCache = responseAdapterCache
-  )
-}
-
-/**
- * Composes POST JSON-encoded request body with provided [responseAdapterCache] to be sent to the GraphQL server.
- *
- * *Example*:
- * ```
- * {
- *    "query": "query TestQuery($episode: Episode) { hero(episode: $episode) { name } }",
- *    "operationName": "TestQuery",
- *    "variables": { "episode": "JEDI" }
- * }
- * ```
- */
-@JvmOverloads
-fun Operation<*>.composeRequestBody(
-    responseAdapterCache: ResponseAdapterCache = DEFAULT
-): ByteString {
-  return OperationRequestBodyComposer.compose(
-      operation = this,
-      autoPersistQueries = false,
-      withQueryDocument = true,
-      responseAdapterCache = responseAdapterCache
-  )
+  ).let {
+    Buffer().apply {
+      it.writeTo(this)
+    }.readByteString()
+  }
 }
 
 /**

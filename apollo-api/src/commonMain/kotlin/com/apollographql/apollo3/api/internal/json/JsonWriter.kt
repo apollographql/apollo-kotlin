@@ -15,6 +15,7 @@
  */
 package com.apollographql.apollo3.api.internal.json
 
+import com.apollographql.apollo3.api.FileUpload
 import com.apollographql.apollo3.api.internal.Throws
 import okio.BufferedSink
 import okio.IOException
@@ -40,57 +41,54 @@ import kotlin.jvm.JvmStatic
  * Each `JsonWriter` may be used to write a single JSON stream. Instances of this class are not thread safe. Calls that would result in a
  * malformed JSON string will fail with an [IllegalStateException].
  */
-abstract class JsonWriter : Closeable, Flushable {
+interface JsonWriter : Closeable, Flushable {
   /**
    * Begins encoding a new array. Each call to this method must be paired with a call to [endArray].
    */
   @Throws(IOException::class)
-  abstract fun beginArray(): JsonWriter
+  fun beginArray(): JsonWriter
 
   /**
    * Ends encoding the current array.
    */
   @Throws(IOException::class)
-  abstract fun endArray(): JsonWriter
+  fun endArray(): JsonWriter
 
   /**
    * Begins encoding a new object. Each call to this method must be paired with a call to [endObject].
    */
   @Throws(IOException::class)
-  abstract fun beginObject(): JsonWriter
+  fun beginObject(): JsonWriter
 
   /**
    * Ends encoding the current object.
    */
   @Throws(IOException::class)
-  abstract fun endObject(): JsonWriter
+  fun endObject(): JsonWriter
 
   /**
    * Encodes the property name.
    */
   @Throws(IOException::class)
-  abstract fun name(name: String): JsonWriter
+  fun name(name: String): JsonWriter
 
   /**
    * Encodes the literal string `value`, or null to encode a null literal.
    */
   @Throws(IOException::class)
-  abstract fun value(value: String?): JsonWriter
-
-  @Throws(IOException::class)
-  abstract fun jsonValue(value: String?): JsonWriter
-
+  fun value(value: String): JsonWriter
+  
   /**
    * Encodes `null`.
    */
   @Throws(IOException::class)
-  abstract fun nullValue(): JsonWriter
+  fun nullValue(): JsonWriter
 
   /**
    * Encodes boolean `value`.
    */
   @Throws(IOException::class)
-  abstract fun value(value: Boolean?): JsonWriter
+  fun value(value: Boolean): JsonWriter
 
   /**
    * Encodes a finite double `value`.
@@ -98,19 +96,17 @@ abstract class JsonWriter : Closeable, Flushable {
    * May not be [Double.isNaN] or [Double.isInfinite].
    */
   @Throws(IOException::class)
-  abstract fun value(value: Double): JsonWriter
+  fun value(value: Double): JsonWriter
 
   /**
-   * Encodes long `value`.
+   * Encodes int `value`.
    */
   @Throws(IOException::class)
-  abstract fun value(value: Long): JsonWriter
+  fun value(value: Int): JsonWriter
 
   /**
-   * Encodes number `value`.
-   *
-   * May not be [Double.isNaN] or [Double.isInfinite].
+   * Encodes a [FileUpload].
    */
   @Throws(IOException::class)
-  abstract fun value(value: Number?): JsonWriter
+  fun value(value: FileUpload): JsonWriter
 }

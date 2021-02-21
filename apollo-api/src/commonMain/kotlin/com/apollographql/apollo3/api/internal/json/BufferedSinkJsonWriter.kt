@@ -15,12 +15,12 @@
  */
 package com.apollographql.apollo3.api.internal.json
 
+import com.apollographql.apollo3.api.FileUpload
 import com.apollographql.apollo3.api.internal.Throws
 import okio.BufferedSink
-import okio.ByteString
 import okio.IOException
 
-class BufferedSinkJsonWriter(private val sink: BufferedSink) : JsonWriter() {
+class BufferedSinkJsonWriter(private val sink: BufferedSink) : JsonWriter {
   // The nesting stack. Using a manual array rather than an ArrayList saves 20%. This stack permits  up to 32 levels of nesting including
   // the top-level document. Deeper nesting is prone to trigger StackOverflowErrors.
   private var stackSize = 0
@@ -38,7 +38,7 @@ class BufferedSinkJsonWriter(private val sink: BufferedSink) : JsonWriter() {
    *
    * By default, this writer only emits well-formed JSON as specified by [RFC 7159](http://www.ietf.org/rfc/rfc7159.txt).
    */
-  var isLenient = false
+  private var isLenient = false
 
   /**
    * Sets whether object members are serialized when their value is null. This has no impact on array elements.
@@ -135,25 +135,10 @@ class BufferedSinkJsonWriter(private val sink: BufferedSink) : JsonWriter() {
   }
 
   @Throws(IOException::class)
-  override fun value(value: String?): JsonWriter {
-    if (value == null) {
-      return nullValue()
-    }
+  override fun value(value: String): JsonWriter {
     writeDeferredName()
     beforeValue()
     string(sink, value)
-    pathIndices[stackSize - 1]++
-    return this
-  }
-
-  @Throws(IOException::class)
-  override fun jsonValue(value: String?): JsonWriter {
-    if (value == null) {
-      return nullValue()
-    }
-    writeDeferredName()
-    beforeValue()
-    sink.writeUtf8(value)
     pathIndices[stackSize - 1]++
     return this
   }
@@ -175,10 +160,8 @@ class BufferedSinkJsonWriter(private val sink: BufferedSink) : JsonWriter() {
   }
 
   @Throws(IOException::class)
-  override fun value(value: Boolean?): JsonWriter {
-    return if (value == null) {
-      nullValue()
-    } else {
+  override fun value(value: Boolean): JsonWriter {
+    return run {
       writeDeferredName()
       beforeValue()
       sink.writeUtf8(if (value) "true" else "false")
@@ -200,7 +183,7 @@ class BufferedSinkJsonWriter(private val sink: BufferedSink) : JsonWriter() {
   }
 
   @Throws(IOException::class)
-  override fun value(value: Long): JsonWriter {
+  override fun value(value: Int): JsonWriter {
     writeDeferredName()
     beforeValue()
     sink.writeUtf8(value.toString())
@@ -208,20 +191,8 @@ class BufferedSinkJsonWriter(private val sink: BufferedSink) : JsonWriter() {
     return this
   }
 
-  @Throws(IOException::class)
-  override fun value(value: Number?): JsonWriter {
-    if (value == null) {
-      return nullValue()
-    }
-    val string = value.toString()
-    require(!(!isLenient && (string == "-Infinity" || string == "Infinity" || string == "NaN"))) {
-      "Numeric values must be finite, but was $value"
-    }
-    writeDeferredName()
-    beforeValue()
-    sink.writeUtf8(string)
-    pathIndices[stackSize - 1]++
-    return this
+  override fun value(value: FileUpload) = apply {
+    nullValue()
   }
 
   /**
