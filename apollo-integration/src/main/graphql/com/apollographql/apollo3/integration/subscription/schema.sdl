@@ -6,7 +6,7 @@ type Query {
   """
   A single entry
   """
-  entry("""The full repository name from GitHub, e.g. "apollostack/GitHunt-API"""" repoFullName: String!): Entry
+  entry("""The full repository name from GitHub, e.g. apollostack/GitHunt-API""" repoFullName: String!): Entry
   """
   Return the currently logged in user, or null if nobody is logged in
   """
@@ -163,15 +163,15 @@ type Mutation {
   """
   Submit a new repository, returns the new submission
   """
-  submitRepository("""The full repository name from GitHub, e.g. "apollostack/GitHunt-API"""" repoFullName: String!): Entry
+  submitRepository("""The full repository name from GitHub, e.g. apollostack/GitHunt-API""" repoFullName: String!): Entry
   """
   Vote on a repository submission, returns the submission that was voted on
   """
-  vote("""The full repository name from GitHub, e.g. "apollostack/GitHunt-API"""" repoFullName: String!, """The type of vote - UP, DOWN, or CANCEL""" type: VoteType!): Entry
+  vote("""The full repository name from GitHub, e.g. apollostack/GitHunt-API""" repoFullName: String!, """The type of vote - UP, DOWN, or CANCEL""" type: VoteType!): Entry
   """
   Comment on a repository, returns the new comment
   """
-  submitComment("""The full repository name from GitHub, e.g. "apollostack/GitHunt-API"""" repoFullName: String!, """The text content for the new comment""" commentContent: String!): Comment
+  submitComment("""The full repository name from GitHub, e.g. apollostack/GitHunt-API""" repoFullName: String!, """The text content for the new comment""" commentContent: String!): Comment
 }
 
 """
