@@ -2,7 +2,7 @@ package com.apollographql.apollo3.cache.normalized.internal
 
 import com.apollographql.apollo3.api.Operation
 import com.apollographql.apollo3.api.ResponseField
-import com.apollographql.apollo3.api.VariableValue
+import com.apollographql.apollo3.api.Variable
 import com.google.common.truth.Truth
 import org.junit.Ignore
 import org.junit.Test
@@ -53,7 +53,7 @@ class CacheKeyBuilderTest {
   @Test
   fun testFieldWithVariableArgument() {
     val argument = mapOf<String, Any?>(
-        "episode" to VariableValue("episode")
+        "episode" to Variable("episode")
     )
     val field = createResponseField("hero", "hero", argument)
     val variables = Operation.Variables(mapOf(
@@ -66,7 +66,7 @@ class CacheKeyBuilderTest {
   @Test
   fun testFieldWithVariableArgumentNull() {
     val argument = mapOf<String, Any?>(
-        "episode" to VariableValue("episode")
+        "episode" to Variable("episode")
     )
     val field = createResponseField("hero", "hero", argument)
     val variables = Operation.Variables(mapOf(
@@ -136,7 +136,7 @@ class CacheKeyBuilderTest {
     val arguments = mapOf<String, Any?>(
         "episode" to "JEDI",
         "nested" to mapOf(
-            "foo" to VariableValue("stars"),
+            "foo" to Variable("stars"),
             "bar" to "2"
         )
     )
@@ -151,7 +151,7 @@ class CacheKeyBuilderTest {
     val arguments = mapOf<String, Any?>(
         "episode" to "JEDI",
         "nested" to mapOf(
-            "foo" to VariableValue("testInput"),
+            "foo" to Variable("testInput"),
             "bar" to "2"
         )
     )
@@ -195,10 +195,10 @@ class CacheKeyBuilderTest {
 
   @Test
   fun testFieldArgumentInputTypeWithNulls() {
-    val arguments = mapOf<String, Any?>(
+    val arguments = mapOf(
         "episode" to null,
-        "nested" to mapOf<String, Any?>(
-            "foo" to VariableValue("testInput"),
+        "nested" to mapOf(
+            "foo" to Variable("testInput"),
             "bar" to null
         )
     )
@@ -236,7 +236,7 @@ class CacheKeyBuilderTest {
     val arguments = mapOf(
         "where" to mapOf(
             "and" to listOf(
-                VariableValue("stars")
+                Variable("stars")
             )
         )
     )
