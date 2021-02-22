@@ -1,6 +1,7 @@
 package com.apollographql.apollo3.api
 
 import com.apollographql.apollo3.api.internal.ResponseAdapter
+import com.apollographql.apollo3.api.internal.UploadResponseAdapter
 import com.apollographql.apollo3.api.internal.json.JsonReader
 import com.apollographql.apollo3.api.internal.json.JsonWriter
 import com.apollographql.apollo3.api.internal.json.Utils.readRecursively
@@ -47,6 +48,9 @@ class ResponseAdapterCache(val customScalarAdapters: Map<CustomScalar, CustomSca
   fun <T : Any> responseAdapterFor(customScalar: CustomScalar): ResponseAdapter<T> {
     if (responseAdapterByGraphQLName[customScalar.graphqlName] != null) {
       return responseAdapterByGraphQLName[customScalar.graphqlName] as ResponseAdapter<T>
+    }
+    if (customScalar.className == "com.apollographql.apollo3.api.Upload") {
+      return UploadResponseAdapter as ResponseAdapter<T>
     }
     return CustomResponseAdapter(adapterFor(customScalar))
   }

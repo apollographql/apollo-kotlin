@@ -9,11 +9,14 @@ import com.apollographql.apollo3.api.internal.json.use
 import com.benasher44.uuid.uuid4
 import okio.Buffer
 import okio.BufferedSink
+import okio.BufferedSource
+import okio.ByteString
+import okio.Source
 import kotlin.jvm.JvmStatic
 
 object OperationRequestBodyComposer {
   interface Body {
-    val operations: Buffer
+    val operations: ByteString
     val contentType: String
 
     fun writeTo(bufferedSink: BufferedSink)
@@ -52,30 +55,33 @@ object OperationRequestBodyComposer {
       }
     }
 
+    buffer.flush()
+    val operationByteString = buffer.readByteString()
+
     val uploads = jsonWriter.collectedUploads()
     if (uploads.isEmpty()) {
       return object : Body {
-        override val operations = buffer
+        override val operations = operationByteString
         override val contentType = "application/json"
 
         override fun writeTo(bufferedSink: BufferedSink) {
-          bufferedSink.writeAll(buffer)
+          bufferedSink.write(operationByteString)
         }
       }
     } else {
       return object : Body {
         private val boundary = uuid4().toString()
 
-        override val operations = buffer
+        override val operations = operationByteString
         override val contentType = "multipart/form-data; boundary=$boundary"
 
         override fun writeTo(bufferedSink: BufferedSink) {
-          bufferedSink.writeUtf8("\r\n--$boundary\r\n")
+          bufferedSink.writeUtf8("--$boundary\r\n")
           bufferedSink.writeUtf8("Content-Disposition: form-data; name=\"operations\"\r\n")
           bufferedSink.writeUtf8("Content-Type: application/json\r\n")
-          bufferedSink.writeUtf8("Content-Length: ${buffer.size}\r\n")
+          bufferedSink.writeUtf8("Content-Length: ${operationByteString.size}\r\n")
           bufferedSink.writeUtf8("\r\n")
-          bufferedSink.writeAll(buffer)
+          bufferedSink.write(operationByteString)
 
           val uploadsMapBuffer = uploads.toMapBuffer()
           bufferedSink.writeUtf8("\r\n--$boundary\r\n")
@@ -100,7 +106,7 @@ object OperationRequestBodyComposer {
             bufferedSink.writeUtf8("\r\n")
             upload.writeTo(bufferedSink)
           }
-          bufferedSink.writeUtf8("\r\n--$boundary\r\n")
+          bufferedSink.writeUtf8("\r\n--$boundary--\r\n")
         }
       }
     }
