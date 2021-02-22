@@ -2,6 +2,7 @@ package com.apollographql.apollo3
 
 import com.apollographql.apollo3.api.ResponseField
 import com.apollographql.apollo3.api.Operation
+import com.apollographql.apollo3.api.Variable
 import com.apollographql.apollo3.cache.normalized.internal.RealCacheKeyBuilder
 import com.apollographql.apollo3.integration.sealedclasses.type.Direction
 import com.google.common.truth.Truth
