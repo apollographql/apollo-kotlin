@@ -50,7 +50,7 @@ object JsonScope {
     var isRoot = true
     for (i in 0 until stackSize) {
       when (stack[i]) {
-        EMPTY_ARRAY, NONEMPTY_ARRAY -> result.append('[').append(pathIndices[i]).append(']')
+        EMPTY_ARRAY, NONEMPTY_ARRAY -> result.append('.').append(pathIndices[i])
         EMPTY_OBJECT, DANGLING_NAME, NONEMPTY_OBJECT -> {
           if (!isRoot) {
             result.append('.')

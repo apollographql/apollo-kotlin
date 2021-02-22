@@ -55,10 +55,14 @@ class BufferedSinkJsonWriter(private val sink: BufferedSink) : JsonWriter {
 
   /**
    * Returns a [JsonPath](http://goessner.net/articles/JsonPath/) to the current location in the JSON value.
+   *
+   * Note: the implementation is modified from the Moshi implementation to:
+   * - Remove the leading "$."
+   * - Remove square brackets in lists. This isn't great because it doesn't allow to distinguish lists from "0" keys but
+   * this is how File Upload works: https://github.com/jaydenseric/graphql-multipart-request-spec
    */
   val path: String
     get() = JsonScope.getPath(stackSize, scopes, pathNames, pathIndices)
-
 
   init {
     pushScope(JsonScope.EMPTY_DOCUMENT)
