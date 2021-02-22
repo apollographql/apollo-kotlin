@@ -1,8 +1,5 @@
 package com.apollographql.apollo3.api.internal.json
 
-import com.apollographql.apollo3.api.BigDecimal
-import com.apollographql.apollo3.api.EnumValue
-
 object Utils {
   fun writeToJson(value: Any?, jsonWriter: JsonWriter) {
     when (value) {
@@ -28,7 +25,6 @@ object Utils {
       is Boolean -> jsonWriter.value(value)
       is Int -> jsonWriter.value(value)
       is Double -> jsonWriter.value(value)
-      is EnumValue -> jsonWriter.value(value.rawValue)
       else -> jsonWriter.value(value.toString())
     }
   }
