@@ -19,7 +19,7 @@ import kotlin.String
 import kotlin.collections.List
 
 data class HeroDetailsImpl(
-  val friendsCount: Input<Int> = Input.Absent,
+  val friendsCount: Input<Int?> = Input.Absent,
   val includeName: Boolean
 ) : Fragment<HeroDetailsImpl.Data> {
   override fun adapter(responseAdapterCache: ResponseAdapterCache): ResponseAdapter<Data> {

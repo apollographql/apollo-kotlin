@@ -16,5 +16,5 @@ import kotlin.Suppress
     "RemoveRedundantQualifierName")
 data class UserQuery(
   val name: String,
-  val isAdmin: Input<Boolean> = Input.Absent
+  val isAdmin: Input<Boolean?> = Input.Absent
 ) : InputType

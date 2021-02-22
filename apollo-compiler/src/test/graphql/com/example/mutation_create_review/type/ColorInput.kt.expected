@@ -25,7 +25,7 @@ internal data class ColorInput(
   /**
    * Green color
    */
-  val green: Input<Double> = Input.Absent,
+  val green: Input<Double?> = Input.Absent,
   /**
    * Blue color
    */
@@ -33,9 +33,9 @@ internal data class ColorInput(
   /**
    * for test purpose only
    */
-  val enumWithDefaultValue: Input<Episode> = Input.Absent,
+  val enumWithDefaultValue: Input<Episode?> = Input.Absent,
   /**
    * Circle ref to review input
    */
-  val reviewRefInput: Input<ReviewRefInput> = Input.Absent
+  val reviewRefInput: Input<ReviewRefInput?> = Input.Absent
 ) : InputType

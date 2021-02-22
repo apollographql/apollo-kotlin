@@ -23,7 +23,7 @@ import kotlin.collections.List
     "RemoveExplicitTypeArguments", "NestedLambdaShadowedImplicitParameter", "PropertyName",
     "RemoveRedundantQualifierName")
 data class TestQuery(
-  val operation: Input<String> = Input.Absent
+  val operation: Input<String?> = Input.Absent
 ) : Query<TestQuery.Data> {
   override fun operationId(): String = OPERATION_ID
 
