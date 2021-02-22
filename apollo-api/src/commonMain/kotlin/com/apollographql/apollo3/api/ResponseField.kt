@@ -33,7 +33,7 @@ class ResponseField(
   ): Any? {
     val variableValues = variables.valueMap()
     val argumentValue = arguments[name]
-    return if (argumentValue is VariableValue) {
+    return if (argumentValue is Variable) {
       variableValues[argumentValue.name]
     } else {
       argumentValue

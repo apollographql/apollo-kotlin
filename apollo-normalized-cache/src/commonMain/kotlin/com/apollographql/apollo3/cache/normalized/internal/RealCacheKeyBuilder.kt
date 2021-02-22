@@ -3,7 +3,7 @@ package com.apollographql.apollo3.cache.normalized.internal
 import com.apollographql.apollo3.api.InputType
 import com.apollographql.apollo3.api.Operation
 import com.apollographql.apollo3.api.ResponseField
-import com.apollographql.apollo3.api.VariableValue
+import com.apollographql.apollo3.api.Variable
 import com.apollographql.apollo3.api.internal.json.JsonWriter
 import com.apollographql.apollo3.api.internal.json.Utils
 import okio.Buffer
@@ -32,7 +32,7 @@ class RealCacheKeyBuilder : CacheKeyBuilder {
   private fun resolveVariables(value: Any?, variables: Operation.Variables): Any? {
     return when (value) {
       null -> null
-      is VariableValue -> {
+      is Variable -> {
         resolveVariable(value.name, variables)
       }
       is Map<*, *> -> {

@@ -2,7 +2,7 @@ package com.apollographql.apollo3.compiler.backend.codegen
 
 import com.apollographql.apollo3.api.ResponseAdapterCache
 import com.apollographql.apollo3.api.ResponseField
-import com.apollographql.apollo3.api.VariableValue
+import com.apollographql.apollo3.api.Variable
 import com.apollographql.apollo3.api.internal.ListResponseAdapter
 import com.apollographql.apollo3.api.internal.NullableResponseAdapter
 import com.apollographql.apollo3.api.internal.ResponseAdapter
@@ -315,7 +315,7 @@ private fun conditionsListCode(conditions: Set<CodeGenerationAst.Field.Condition
  * - Map
  * - List
  * - String for Enum
- * - [com.apollographql.apollo3.api.VariableValue] for variables
+ * - [com.apollographql.apollo3.api.Variable] for variables
  */
 private fun valueToCode(any: Any?): CodeBlock {
   return with(any) {
@@ -340,7 +340,7 @@ private fun valueToCode(any: Any?): CodeBlock {
       this is String -> CodeBlock.of("%S", this)
       this is Number -> CodeBlock.of("%L", this)
       this is Boolean -> CodeBlock.of("%L", this)
-      this is VariableValue -> CodeBlock.of("%T(%S)", VariableValue::class, name)
+      this is Variable -> CodeBlock.of("%T(%S)", Variable::class, name)
       else -> throw IllegalStateException("Cannot generate code for $this")
     }
   }
