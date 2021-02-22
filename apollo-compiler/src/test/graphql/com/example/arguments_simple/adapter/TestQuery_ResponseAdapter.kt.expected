@@ -7,7 +7,7 @@ package com.example.arguments_simple.adapter
 
 import com.apollographql.apollo3.api.ResponseAdapterCache
 import com.apollographql.apollo3.api.ResponseField
-import com.apollographql.apollo3.api.VariableValue
+import com.apollographql.apollo3.api.Variable
 import com.apollographql.apollo3.api.internal.IntResponseAdapter
 import com.apollographql.apollo3.api.internal.ListResponseAdapter
 import com.apollographql.apollo3.api.internal.NullableResponseAdapter
@@ -67,8 +67,8 @@ class TestQuery_ResponseAdapter(
         type = ResponseField.Type.Named.Object("Character"),
         fieldName = "hero",
         arguments = mapOf<String, Any?>(
-          "episode" to VariableValue("episode"),
-          "listOfListOfStringArgs" to VariableValue("listOfListOfStringArgs")),
+          "episode" to Variable("episode"),
+          "listOfListOfStringArgs" to Variable("listOfListOfStringArgs")),
         fieldSets = listOf(
           ResponseField.FieldSet("Droid", Hero.CharacterHero.RESPONSE_FIELDS),
           ResponseField.FieldSet("Human", Hero.CharacterHero.RESPONSE_FIELDS),
@@ -79,7 +79,7 @@ class TestQuery_ResponseAdapter(
         type = ResponseField.Type.Named.Object("Human"),
         fieldName = "heroWithReview",
         arguments = mapOf<String, Any?>(
-          "episode" to VariableValue("episode"),
+          "episode" to Variable("episode"),
           "review" to mapOf<String, Any?>(
             "stars" to 5,
             "favoriteColor" to mapOf<String, Any?>(
@@ -180,7 +180,7 @@ class TestQuery_ResponseAdapter(
             type = ResponseField.Type.NotNull(ResponseField.Type.Named.Object("FriendsConnection")),
             fieldName = "friendsConnection",
             arguments = mapOf<String, Any?>(
-              "first" to VariableValue("friendsCount")),
+              "first" to Variable("friendsCount")),
             fieldSets = listOf(
               ResponseField.FieldSet(null, FriendsConnection.RESPONSE_FIELDS)
             ),

@@ -7,7 +7,7 @@ package com.example.input_object_type.adapter
 
 import com.apollographql.apollo3.api.ResponseAdapterCache
 import com.apollographql.apollo3.api.ResponseField
-import com.apollographql.apollo3.api.VariableValue
+import com.apollographql.apollo3.api.Variable
 import com.apollographql.apollo3.api.internal.IntResponseAdapter
 import com.apollographql.apollo3.api.internal.NullableResponseAdapter
 import com.apollographql.apollo3.api.internal.ResponseAdapter
@@ -58,8 +58,8 @@ class TestQuery_ResponseAdapter(
         type = ResponseField.Type.Named.Object("Review"),
         fieldName = "createReview",
         arguments = mapOf<String, Any?>(
-          "episode" to VariableValue("ep"),
-          "review" to VariableValue("review")),
+          "episode" to Variable("ep"),
+          "review" to Variable("review")),
         fieldSets = listOf(
           ResponseField.FieldSet(null, CreateReview.RESPONSE_FIELDS)
         ),

@@ -7,7 +7,7 @@ package com.example.antlr_tokens.adapter
 
 import com.apollographql.apollo3.api.ResponseAdapterCache
 import com.apollographql.apollo3.api.ResponseField
-import com.apollographql.apollo3.api.VariableValue
+import com.apollographql.apollo3.api.Variable
 import com.apollographql.apollo3.api.internal.NullableResponseAdapter
 import com.apollographql.apollo3.api.internal.ResponseAdapter
 import com.apollographql.apollo3.api.internal.StringResponseAdapter
@@ -113,7 +113,7 @@ class TestQuery_ResponseAdapter(
           type = ResponseField.Type.Named.Other("String"),
           fieldName = "null",
           arguments = mapOf<String, Any?>(
-            "fragment" to VariableValue("operation")),
+            "fragment" to Variable("operation")),
         ),
         ResponseField(
           type = ResponseField.Type.Named.Other("String"),

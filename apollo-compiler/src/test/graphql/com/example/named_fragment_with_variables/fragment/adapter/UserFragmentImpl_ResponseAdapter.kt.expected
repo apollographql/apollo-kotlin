@@ -7,7 +7,7 @@ package com.example.named_fragment_with_variables.fragment.adapter
 
 import com.apollographql.apollo3.api.ResponseAdapterCache
 import com.apollographql.apollo3.api.ResponseField
-import com.apollographql.apollo3.api.VariableValue
+import com.apollographql.apollo3.api.Variable
 import com.apollographql.apollo3.api.internal.ResponseAdapter
 import com.apollographql.apollo3.api.internal.StringResponseAdapter
 import com.apollographql.apollo3.api.internal.json.JsonReader
@@ -78,7 +78,7 @@ class UserFragmentImpl_ResponseAdapter(
         type = ResponseField.Type.NotNull(ResponseField.Type.Named.Other("String")),
         fieldName = "avatar",
         arguments = mapOf<String, Any?>(
-          "size" to VariableValue("size")),
+          "size" to Variable("size")),
       )
     )
 
