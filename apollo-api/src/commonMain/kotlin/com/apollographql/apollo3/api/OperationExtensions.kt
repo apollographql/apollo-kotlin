@@ -99,6 +99,21 @@ fun Operation<*>.composeRequestBody(
   }
 }
 
+@Deprecated("use composeRequestBody instead")
+fun Operation<*>.composeRequestBody(
+    responseAdapterCache: ResponseAdapterCache = DEFAULT
+): ByteString {
+  return OperationRequestBodyComposer.compose(
+      operation = this,
+      autoPersistQueries = false,
+      withQueryDocument = true,
+      responseAdapterCache = responseAdapterCache
+  ).let {
+    Buffer().apply {
+      it.writeTo(this)
+    }.readByteString()
+  }
+}
 /**
  * Parses GraphQL operation raw response from the [source] with provided [responseAdapterCache] and returns result [Response]
  *

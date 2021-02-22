@@ -130,7 +130,6 @@ class ApolloServerInterceptor(
       override fun writeTo(sink: BufferedSink) {
         body.writeTo(bufferedSink = sink)
       }
-
     }
     val requestBuilder = Request.Builder()
         .url(serverUrl)
@@ -165,24 +164,21 @@ class ApolloServerInterceptor(
     }
   }
 
-  class FileUploadMeta internal constructor(val key: String, val mimetype: String, val upload: Upload)
   companion object {
     const val HEADER_ACCEPT_TYPE = "Accept"
-    const val HEADER_CONTENT_TYPE = "Content-Type"
     const val HEADER_APOLLO_OPERATION_ID = "X-APOLLO-OPERATION-ID"
     const val HEADER_APOLLO_OPERATION_NAME = "X-APOLLO-OPERATION-NAME"
     const val ACCEPT_TYPE = "application/json"
-    const val CONTENT_TYPE = "application/json"
-    val MEDIA_TYPE = MediaType.parse("application/json; charset=utf-8")
+    val MEDIA_TYPE = MediaType.parse("application/json")
 
     @Throws(IOException::class)
-    private fun cacheKey(operation: Operation<*>, responseAdapterCache: ResponseAdapterCache): String {
+    fun cacheKey(operation: Operation<*>, responseAdapterCache: ResponseAdapterCache): String {
       return OperationRequestBodyComposer.compose(
           operation = operation,
           autoPersistQueries = true,
           withQueryDocument = true,
           responseAdapterCache = responseAdapterCache
-      ).operations.md5().utf8()
+      ).operations.md5().hex()
     }
 
     @Throws(IOException::class)

@@ -73,27 +73,34 @@ object OperationRequestBodyComposer {
           bufferedSink.writeUtf8("\r\n--$boundary\r\n")
           bufferedSink.writeUtf8("Content-Disposition: form-data; name=\"operations\"\r\n")
           bufferedSink.writeUtf8("Content-Type: application/json\r\n")
+          bufferedSink.writeUtf8("Content-Length: ${buffer.size}\r\n")
+          bufferedSink.writeUtf8("\r\n")
           bufferedSink.writeAll(buffer)
+
+          val uploadsMapBuffer = uploads.toMapBuffer()
           bufferedSink.writeUtf8("\r\n--$boundary\r\n")
           bufferedSink.writeUtf8("Content-Disposition: form-data; name=\"map\"\r\n")
           bufferedSink.writeUtf8("Content-Type: application/json\r\n")
-          bufferedSink.writeAll(uploads.toMapBuffer())
-          bufferedSink.writeAll(buffer)
+          bufferedSink.writeUtf8("Content-Length: ${uploadsMapBuffer.size}\r\n")
+          bufferedSink.writeUtf8("\r\n")
+          bufferedSink.writeAll(uploadsMapBuffer)
 
-          uploads.values.forEachIndexed { index, fileUpload ->
+          uploads.values.forEachIndexed { index, upload ->
             bufferedSink.writeUtf8("\r\n--$boundary\r\n")
             bufferedSink.writeUtf8("Content-Disposition: form-data; name=\"$index\"")
-            if (fileUpload.fileName != null) {
-              bufferedSink.writeUtf8("filename=\"${fileUpload.fileName}\"")
+            if (upload.fileName != null) {
+              bufferedSink.writeUtf8("; filename=\"${upload.fileName}\"")
             }
             bufferedSink.writeUtf8("\r\n")
-            bufferedSink.writeUtf8("Content-Type: ${fileUpload.contentType}\r\n")
-            val contentLength = fileUpload.contentLength
+            bufferedSink.writeUtf8("Content-Type: ${upload.contentType}\r\n")
+            val contentLength = upload.contentLength
             if (contentLength != -1L) {
               bufferedSink.writeUtf8("Content-Length: $contentLength\r\n")
             }
-            fileUpload.writeTo(bufferedSink)
+            bufferedSink.writeUtf8("\r\n")
+            upload.writeTo(bufferedSink)
           }
+          bufferedSink.writeUtf8("\r\n--$boundary\r\n")
         }
       }
     }
@@ -104,7 +111,7 @@ object OperationRequestBodyComposer {
     val writer = BufferedSinkJsonWriter(buffer)
     AnyResponseAdapter.toResponse(writer, entries.mapIndexed { index, entry ->
       index.toString() to listOf(entry.key)
-    })
+    }.toMap())
     writer.flush()
 
     return buffer

@@ -33,7 +33,6 @@ class ApolloServerInterceptorTest {
       assertDefaultRequestHeaders(request)
       Truth.assertThat(request!!.url()).isEqualTo(serverUrl)
       Truth.assertThat(request.method()).isEqualTo("POST")
-      Truth.assertThat(request.header(ApolloServerInterceptor.HEADER_CONTENT_TYPE)).isEqualTo(ApolloServerInterceptor.CONTENT_TYPE)
       Truth.assertThat(request.header(HttpCache.CACHE_KEY_HEADER)).isNull()
       Truth.assertThat(request.header(HttpCache.CACHE_FETCH_STRATEGY_HEADER)).isNull()
       Truth.assertThat(request.header(HttpCache.CACHE_EXPIRE_TIMEOUT_HEADER)).isNull()
@@ -59,7 +58,6 @@ class ApolloServerInterceptorTest {
       assertDefaultRequestHeaders(request)
       Truth.assertThat(request!!.url()).isEqualTo(serverUrl)
       Truth.assertThat(request.method()).isEqualTo("POST")
-      Truth.assertThat(request.header(ApolloServerInterceptor.HEADER_CONTENT_TYPE)).isEqualTo(ApolloServerInterceptor.CONTENT_TYPE)
       Truth.assertThat(request.header(HttpCache.CACHE_KEY_HEADER)).isEqualTo(cacheKey)
       Truth.assertThat(request.header(HttpCache.CACHE_FETCH_STRATEGY_HEADER)).isEqualTo("NETWORK_FIRST")
       Truth.assertThat(request.header(HttpCache.CACHE_EXPIRE_TIMEOUT_HEADER)).isEqualTo("10000")
@@ -71,10 +69,17 @@ class ApolloServerInterceptorTest {
     }
     val interceptor = ApolloServerInterceptor(serverUrl,
         AssertHttpCallFactory(requestAssertPredicate),
-        HttpCachePolicy.NETWORK_FIRST.expireAfter(10, TimeUnit.SECONDS), false,
-        scalarTypeAdapters, ApolloLogger(null))
-    interceptor.httpPostCall(query, CacheHeaders.builder().addHeader(ApolloCacheHeaders.DO_NOT_STORE, "true").build(),
-        RequestHeaders.NONE, true, false)
+        HttpCachePolicy.NETWORK_FIRST.expireAfter(10, TimeUnit.SECONDS),
+        false,
+        scalarTypeAdapters,
+        ApolloLogger(null))
+
+    interceptor.httpPostCall(
+        operation = query,
+        cacheHeaders = CacheHeaders.builder().addHeader(ApolloCacheHeaders.DO_NOT_STORE, "true").build(),
+        requestHeaders = RequestHeaders.NONE,
+        writeQueryDocument = true,
+        autoPersistQueries = false)
   }
 
   @Test
@@ -91,7 +96,6 @@ class ApolloServerInterceptorTest {
       assertDefaultRequestHeaders(request)
       Truth.assertThat(request!!.url()).isEqualTo(serverUrl)
       Truth.assertThat(request.method()).isEqualTo("POST")
-      Truth.assertThat(request.header(ApolloServerInterceptor.HEADER_CONTENT_TYPE)).isEqualTo(ApolloServerInterceptor.CONTENT_TYPE)
       Truth.assertThat(request.header(HttpCache.CACHE_KEY_HEADER)).isNull()
       Truth.assertThat(request.header(HttpCache.CACHE_FETCH_STRATEGY_HEADER)).isNull()
       Truth.assertThat(request.header(HttpCache.CACHE_EXPIRE_TIMEOUT_HEADER)).isNull()
@@ -122,7 +126,6 @@ class ApolloServerInterceptorTest {
       Truth.assertThat(request).isNotNull()
       assertDefaultRequestHeaders(request)
       Truth.assertThat(request!!.method()).isEqualTo("GET")
-      Truth.assertThat(request.header(ApolloServerInterceptor.HEADER_CONTENT_TYPE)).isNull()
       Truth.assertThat(request.header(HttpCache.CACHE_KEY_HEADER)).isNull()
       Truth.assertThat(request.header(HttpCache.CACHE_FETCH_STRATEGY_HEADER)).isNull()
       Truth.assertThat(request.header(HttpCache.CACHE_EXPIRE_TIMEOUT_HEADER)).isNull()

@@ -416,7 +416,6 @@ class ResponseWriteTestCase {
       assertThat(((data.hero as HeroWithFriendsFragment).friends?.get(1) as HumanWithIdFragment).__typename).isEqualTo("Human")
       assertThat(((data.hero as HeroWithFriendsFragment).friends?.get(1) as HumanWithIdFragment).id).isEqualTo("1002")
       assertThat(((data.hero as HeroWithFriendsFragment).friends?.get(1) as HumanWithIdFragment).name).isEqualTo("Beast")
-      true
     }
   }
 

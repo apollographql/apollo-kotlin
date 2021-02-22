@@ -46,7 +46,7 @@ class NumberParsingTest {
   @Test
   fun parseInts() {
     val random = Random.Default
-    val json = mockJson { it.jsonValue(random.nextDouble().toString()) }
+    val json = mockJson { it.value(random.nextDouble()) }
 
     val time = measureTime {
       val operation = GetIntsQuery()
@@ -67,7 +67,7 @@ class NumberParsingTest {
   fun parseFloats() {
 
     val random = Random.Default
-    val json = mockJson { it.jsonValue(random.nextDouble().toString()) }
+    val json = mockJson { it.value(random.nextDouble()) }
 
     Runtime.getRuntime().gc()
     val time = measureTime {

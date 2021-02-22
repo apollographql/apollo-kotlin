@@ -56,7 +56,7 @@ class FileUploadAwareJsonWriter(private val wrappedWriter: BufferedSinkJsonWrite
   }
 
   override fun close() {
-    wrappedWriter.nullValue()
+    wrappedWriter.close()
   }
 
   override fun flush() {
