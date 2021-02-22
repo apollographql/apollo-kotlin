@@ -5,7 +5,6 @@
 //
 package com.example.hero_name_query_long_name.type
 
-import com.apollographql.apollo3.api.EnumValue
 import com.apollographql.apollo3.api.internal.ResponseAdapter
 import com.apollographql.apollo3.api.internal.json.JsonReader
 import com.apollographql.apollo3.api.internal.json.JsonWriter
@@ -16,8 +15,8 @@ import kotlin.String
  * The episodes in the Star Wars trilogy
  */
 enum class Episode(
-  override val rawValue: String
-) : EnumValue {
+  val rawValue: String
+) {
   /**
    * Star Wars Episode IV: A New Hope, released in 1977.
    */

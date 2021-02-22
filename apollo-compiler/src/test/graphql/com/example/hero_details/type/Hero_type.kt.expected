@@ -5,7 +5,6 @@
 //
 package com.example.hero_details.type
 
-import com.apollographql.apollo3.api.EnumValue
 import com.apollographql.apollo3.api.internal.ResponseAdapter
 import com.apollographql.apollo3.api.internal.json.JsonReader
 import com.apollographql.apollo3.api.internal.json.JsonWriter
@@ -15,8 +14,8 @@ import kotlin.String
  * Lower case enum type name
  */
 enum class Hero_type(
-  override val rawValue: String
-) : EnumValue {
+  val rawValue: String
+) {
   HUMAN("human"),
 
   DROID("droid"),
