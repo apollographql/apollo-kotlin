@@ -7,7 +7,6 @@ import com.apollographql.apollo.api.Subscription;
 import com.apollographql.apollo.api.internal.ResponseFieldMapper;
 import com.apollographql.apollo.cache.normalized.Record;
 import com.apollographql.apollo.exception.ApolloNetworkException;
-import com.apollographql.apollo.internal.ResponseFieldMapperFactory;
 import com.apollographql.apollo.cache.normalized.internal.ResponseNormalizer;
 import com.apollographql.apollo.response.OperationResponseParser;
 import com.apollographql.apollo.subscription.OnSubscriptionManagerStateChangeListener;
@@ -53,7 +52,6 @@ public final class RealSubscriptionManager implements SubscriptionManager {
   private final Executor dispatcher;
   private final long connectionHeartbeatTimeoutMs;
   private final Function0<ResponseNormalizer<Map<String, Object>>> responseNormalizer;
-  private final ResponseFieldMapperFactory responseFieldMapperFactory = new ResponseFieldMapperFactory();
   private final Runnable connectionAcknowledgeTimeoutTimerTask = new Runnable() {
     @Override
     public void run() {
@@ -403,7 +401,7 @@ public final class RealSubscriptionManager implements SubscriptionManager {
 
     if (subscriptionRecord != null) {
       ResponseNormalizer<Map<String, Object>> normalizer = responseNormalizer.invoke();
-      ResponseFieldMapper responseFieldMapper = responseFieldMapperFactory.create(subscriptionRecord.subscription);
+      ResponseFieldMapper responseFieldMapper = subscriptionRecord.subscription.responseFieldMapper();
       OperationResponseParser parser = new OperationResponseParser(subscriptionRecord.subscription, responseFieldMapper,
           scalarTypeAdapters, normalizer);
 

@@ -27,7 +27,7 @@ import kotlin.coroutines.resume
  */
 @ExperimentalCoroutinesApi
 fun <T> ApolloCall<T>.toFlow(): Flow<Response<T>> = callbackFlow {
-  val clone = clone()
+  val clone = toBuilder().build()
   clone.enqueue(
       object : ApolloCall.Callback<T>() {
         override fun onResponse(response: Response<T>) {

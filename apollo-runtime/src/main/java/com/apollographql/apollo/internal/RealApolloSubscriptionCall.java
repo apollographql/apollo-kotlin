@@ -36,20 +36,17 @@ public class RealApolloSubscriptionCall<T> implements ApolloSubscriptionCall<T> 
   private final ApolloStore apolloStore;
   private final CachePolicy cachePolicy;
   private final Executor dispatcher;
-  private final ResponseFieldMapperFactory responseFieldMapperFactory;
   private final ApolloLogger logger;
   private final AtomicReference<CallState> state = new AtomicReference<>(IDLE);
   private SubscriptionManagerCallback<T> subscriptionCallback;
 
   public RealApolloSubscriptionCall(@NotNull Subscription<?, T, ?> subscription, @NotNull SubscriptionManager subscriptionManager,
-      @NotNull ApolloStore apolloStore, @NotNull CachePolicy cachePolicy, @NotNull Executor dispatcher,
-      @NotNull ResponseFieldMapperFactory responseFieldMapperFactory, @NotNull ApolloLogger logger) {
+      @NotNull ApolloStore apolloStore, @NotNull CachePolicy cachePolicy, @NotNull Executor dispatcher, @NotNull ApolloLogger logger) {
     this.subscription = subscription;
     this.subscriptionManager = subscriptionManager;
     this.apolloStore = apolloStore;
     this.cachePolicy = cachePolicy;
     this.dispatcher = dispatcher;
-    this.responseFieldMapperFactory = responseFieldMapperFactory;
     this.logger = logger;
   }
 
@@ -124,7 +121,7 @@ public class RealApolloSubscriptionCall<T> implements ApolloSubscriptionCall<T> 
   @Override
   public ApolloSubscriptionCall<T> clone() {
     return new RealApolloSubscriptionCall<>(subscription, subscriptionManager, apolloStore, cachePolicy, dispatcher,
-        responseFieldMapperFactory, logger);
+        logger);
   }
 
   @Override public boolean isCanceled() {
@@ -134,7 +131,7 @@ public class RealApolloSubscriptionCall<T> implements ApolloSubscriptionCall<T> 
   @NotNull @Override public ApolloSubscriptionCall<T> cachePolicy(@NotNull CachePolicy cachePolicy) {
     checkNotNull(cachePolicy, "cachePolicy is null");
     return new RealApolloSubscriptionCall<>(subscription, subscriptionManager, apolloStore, cachePolicy, dispatcher,
-        responseFieldMapperFactory, logger);
+        logger);
   }
 
   private void terminate() {
@@ -163,7 +160,7 @@ public class RealApolloSubscriptionCall<T> implements ApolloSubscriptionCall<T> 
   @SuppressWarnings("unchecked")
   private Response<T> resolveFromCache() {
     final ResponseNormalizer<Record> responseNormalizer = apolloStore.cacheResponseNormalizer();
-    final ResponseFieldMapper responseFieldMapper = responseFieldMapperFactory.create(subscription);
+    final ResponseFieldMapper responseFieldMapper = subscription.responseFieldMapper();
 
     final ApolloStoreOperation<Response> apolloStoreOperation = apolloStore.read(subscription, responseFieldMapper, responseNormalizer,
         CacheHeaders.NONE);

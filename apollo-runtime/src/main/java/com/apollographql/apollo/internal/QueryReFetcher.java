@@ -45,7 +45,6 @@ final class QueryReFetcher {
           .operation(query)
           .serverUrl(builder.serverUrl)
           .httpCallFactory(builder.httpCallFactory)
-          .responseFieldMapperFactory(builder.responseFieldMapperFactory)
           .scalarTypeAdapters(builder.scalarTypeAdapters)
           .apolloStore(builder.apolloStore)
           .httpCachePolicy(HttpCachePolicy.NETWORK_ONLY)
@@ -120,7 +119,6 @@ final class QueryReFetcher {
     List<OperationName> queryWatchers = Collections.emptyList();
     HttpUrl serverUrl;
     Call.Factory httpCallFactory;
-    ResponseFieldMapperFactory responseFieldMapperFactory;
     ScalarTypeAdapters scalarTypeAdapters;
     ApolloStore apolloStore;
     Executor dispatcher;
@@ -150,8 +148,11 @@ final class QueryReFetcher {
       return this;
     }
 
-    Builder responseFieldMapperFactory(ResponseFieldMapperFactory responseFieldMapperFactory) {
-      this.responseFieldMapperFactory = responseFieldMapperFactory;
+    /**
+     * @deprecated The mapper factory is no longer used and will be removed in the future.
+     */
+    @Deprecated
+    Builder responseFieldMapperFactory(@SuppressWarnings("unused") ResponseFieldMapperFactory responseFieldMapperFactory) {
       return this;
     }
 
