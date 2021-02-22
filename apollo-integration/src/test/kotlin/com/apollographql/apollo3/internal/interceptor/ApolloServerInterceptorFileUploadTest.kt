@@ -250,13 +250,12 @@ class ApolloServerInterceptorFileUploadTest {
     var currentLength = -1L
     var currentDisposition: String? = null
     var currentType: String? = null
-    val boundary = "--$boundary"
 
     while (true) {
       if (exhausted()) {
         error("no boundary found")
       }
-      if (readUtf8Line() == boundary) {
+      if (readUtf8Line() == "--$boundary") {
         break
       }
     }
@@ -291,7 +290,16 @@ class ApolloServerInterceptorFileUploadTest {
 
           check(readByte() == '\r'.toByte())
           check(readByte() == '\n'.toByte())
-          check(readUtf8Line() == boundary)
+          check(readUtf8("--$boundary".length.toLong()) == "--$boundary")
+          when (val suffix = readUtf8(2)) {
+            "--" -> {
+              check(readByte() == '\r'.toByte())
+              check(readByte() == '\n'.toByte())
+              break
+            }
+            "\r\n" -> Unit
+            else -> error("Unexpected suffix '$suffix'")
+          }
         }
       }
     }
