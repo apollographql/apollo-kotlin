@@ -41,6 +41,11 @@ abstract class ApolloDownloadSchemaTask : DefaultTask() {
   @get:Option(option = "graphVariant", description = "The variant of the Apollo graph used to download the schema.")
   abstract val graphVariant: Property<String>
 
+  @get:Optional
+  @get:Input
+  @get:Option(option = "registryUrl", description = "The registry url of the registry instance used to download the schema. Defaults to \"https://graphql.api.apollographql.com/api/graphql\"")
+  abstract val registryUrl: Property<String>
+
   @get:Input
   @get:Optional
   @get:Option(option = "schema", description = "path where the schema will be downloaded, relative to the current working directory")
@@ -63,9 +68,9 @@ abstract class ApolloDownloadSchemaTask : DefaultTask() {
   @TaskAction
   fun taskAction() {
 
-    val endpointUrl = endpoint.getOrNull()
+    val endpointUrl = endpoint.orNull
 
-    val schema = schema.getOrNull()?.let { File(it) } // commandline is resolved relative to cwd
+    val schema = schema.orNull?.let { File(it) } // commandline is resolved relative to cwd
     check(schema != null) {
       "ApolloGraphQL: please specify where to download the schema with --schema"
     }
@@ -74,9 +79,9 @@ abstract class ApolloDownloadSchemaTask : DefaultTask() {
     var introspectionSchema: String? = null
     var sdlSchema: String? = null
 
-    val key = key.getOrNull()
-    var graph = graph.getOrNull()
-    val graphVariant = graphVariant.getOrNull()
+    val key = key.orNull
+    var graph = graph.orNull
+    val graphVariant = graphVariant.orNull
 
     if (graph == null && key != null && key.startsWith("service:")) {
       // Fallback to reading the graph from the key
@@ -84,22 +89,27 @@ abstract class ApolloDownloadSchemaTask : DefaultTask() {
       graph = key.split(":")[1]
     }
 
-    if (endpointUrl != null) {
-      introspectionSchema = SchemaDownloader.downloadIntrospection(
-          endpoint = endpointUrl,
-          headers = headers,
-      )
-    } else if (graph != null) {
-      check (key != null) {
-        "ApolloGraphQL: please define --key to download graph $graph"
+    when {
+      endpointUrl != null -> {
+        introspectionSchema = SchemaDownloader.downloadIntrospection(
+            endpoint = endpointUrl,
+            headers = headers,
+        )
       }
-      sdlSchema = SchemaDownloader.downloadRegistry(
-          graph = graph,
-          key = key,
-          variant = graphVariant ?: "current"
-      )
-    } else {
-      throw IllegalArgumentException("ApolloGraphQL: either --endpoint or --graph is required")
+      graph != null -> {
+        check (key != null) {
+          "ApolloGraphQL: please define --key to download graph $graph"
+        }
+        sdlSchema = SchemaDownloader.downloadRegistry(
+            graph = graph,
+            key = key,
+            variant = graphVariant ?: "current",
+            endpoint = registryUrl.orNull ?: "https://graphql.api.apollographql.com/api/graphql"
+        )
+      }
+      else -> {
+        throw IllegalArgumentException("ApolloGraphQL: either --endpoint or --graph is required")
+      }
     }
 
     schema.parentFile?.mkdirs()
