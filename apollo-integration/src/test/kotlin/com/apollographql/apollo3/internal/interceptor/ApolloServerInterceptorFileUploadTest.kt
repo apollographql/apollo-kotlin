@@ -8,7 +8,7 @@ import com.apollographql.apollo3.api.ResponseAdapterCache
 import com.apollographql.apollo3.api.Upload
 import com.apollographql.apollo3.api.cache.http.HttpCache
 import com.apollographql.apollo3.api.internal.ApolloLogger
-import com.apollographql.apollo3.api.internal.UploadResponseAdapter
+import com.apollographql.apollo3.api.UploadResponseAdapter
 import com.apollographql.apollo3.cache.CacheHeaders
 import com.apollographql.apollo3.integration.upload.MultipleUploadMutation
 import com.apollographql.apollo3.integration.upload.NestedUploadMutation

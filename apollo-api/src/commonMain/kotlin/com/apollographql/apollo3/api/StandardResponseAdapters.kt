@@ -1,8 +1,6 @@
-package com.apollographql.apollo3.api.internal
+package com.apollographql.apollo3.api
 
 
-import com.apollographql.apollo3.api.ResponseAdapter
-import com.apollographql.apollo3.api.Upload
 import com.apollographql.apollo3.api.json.JsonReader
 import com.apollographql.apollo3.api.json.JsonWriter
 import com.apollographql.apollo3.api.internal.json.Utils

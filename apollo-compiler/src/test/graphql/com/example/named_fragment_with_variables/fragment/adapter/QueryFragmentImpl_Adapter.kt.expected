@@ -5,10 +5,10 @@
 //
 package com.example.named_fragment_with_variables.fragment.adapter
 
+import com.apollographql.apollo3.api.IntResponseAdapter
 import com.apollographql.apollo3.api.ResponseAdapter
 import com.apollographql.apollo3.api.ResponseAdapterCache
-import com.apollographql.apollo3.api.internal.IntResponseAdapter
-import com.apollographql.apollo3.api.internal.StringResponseAdapter
+import com.apollographql.apollo3.api.StringResponseAdapter
 import com.apollographql.apollo3.api.json.JsonReader
 import com.apollographql.apollo3.api.json.JsonWriter
 import com.example.named_fragment_with_variables.fragment.QueryFragmentImpl

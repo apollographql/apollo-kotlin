@@ -8,7 +8,7 @@ package com.example.named_fragment_inside_inline_fragment.fragment.adapter
 import com.apollographql.apollo3.api.ResponseAdapter
 import com.apollographql.apollo3.api.ResponseAdapterCache
 import com.apollographql.apollo3.api.ResponseField
-import com.apollographql.apollo3.api.internal.StringResponseAdapter
+import com.apollographql.apollo3.api.StringResponseAdapter
 import com.apollographql.apollo3.api.json.JsonReader
 import com.apollographql.apollo3.api.json.JsonWriter
 import com.example.named_fragment_inside_inline_fragment.fragment.CharacterNameImpl

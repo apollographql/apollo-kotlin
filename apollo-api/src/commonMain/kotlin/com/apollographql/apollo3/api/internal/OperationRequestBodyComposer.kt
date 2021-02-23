@@ -1,5 +1,6 @@
 package com.apollographql.apollo3.api.internal
 
+import com.apollographql.apollo3.api.AnyResponseAdapter
 import com.apollographql.apollo3.api.Upload
 import com.apollographql.apollo3.api.Operation
 import com.apollographql.apollo3.api.ResponseAdapterCache

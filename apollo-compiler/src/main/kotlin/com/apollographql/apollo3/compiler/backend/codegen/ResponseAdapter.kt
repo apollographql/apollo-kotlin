@@ -1,11 +1,15 @@
 package com.apollographql.apollo3.compiler.backend.codegen
 
+import com.apollographql.apollo3.api.BooleanResponseAdapter
+import com.apollographql.apollo3.api.DoubleResponseAdapter
+import com.apollographql.apollo3.api.IntResponseAdapter
 import com.apollographql.apollo3.api.ResponseAdapterCache
 import com.apollographql.apollo3.api.ResponseField
 import com.apollographql.apollo3.api.Variable
-import com.apollographql.apollo3.api.internal.ListResponseAdapter
-import com.apollographql.apollo3.api.internal.NullableResponseAdapter
+import com.apollographql.apollo3.api.ListResponseAdapter
+import com.apollographql.apollo3.api.NullableResponseAdapter
 import com.apollographql.apollo3.api.ResponseAdapter
+import com.apollographql.apollo3.api.StringResponseAdapter
 import com.apollographql.apollo3.compiler.applyIf
 import com.apollographql.apollo3.compiler.backend.ast.CodeGenerationAst
 import com.apollographql.apollo3.compiler.escapeKotlinReservedWord
@@ -153,11 +157,11 @@ internal fun adapterInitializer(type: CodeGenerationAst.FieldType): CodeBlock {
   }
   return when (type) {
     is CodeGenerationAst.FieldType.Array -> CodeBlock.of("%T(%L)", ListResponseAdapter::class.asClassName(), adapterInitializer(type.rawType))
-    is CodeGenerationAst.FieldType.Scalar.Boolean -> CodeBlock.of("%M", MemberName("com.apollographql.apollo3.api.internal", "BooleanResponseAdapter"))
-    is CodeGenerationAst.FieldType.Scalar.ID -> CodeBlock.of("%M", MemberName("com.apollographql.apollo3.api.internal", "StringResponseAdapter"))
-    is CodeGenerationAst.FieldType.Scalar.String -> CodeBlock.of("%M", MemberName("com.apollographql.apollo3.api.internal", "StringResponseAdapter"))
-    is CodeGenerationAst.FieldType.Scalar.Int -> CodeBlock.of("%M", MemberName("com.apollographql.apollo3.api.internal", "IntResponseAdapter"))
-    is CodeGenerationAst.FieldType.Scalar.Float -> CodeBlock.of("%M", MemberName("com.apollographql.apollo3.api.internal", "DoubleResponseAdapter"))
+    is CodeGenerationAst.FieldType.Scalar.Boolean -> CodeBlock.of("%T", BooleanResponseAdapter::class)
+    is CodeGenerationAst.FieldType.Scalar.ID -> CodeBlock.of("%T", StringResponseAdapter::class)
+    is CodeGenerationAst.FieldType.Scalar.String -> CodeBlock.of("%T", StringResponseAdapter::class)
+    is CodeGenerationAst.FieldType.Scalar.Int -> CodeBlock.of("%T", IntResponseAdapter::class)
+    is CodeGenerationAst.FieldType.Scalar.Float -> CodeBlock.of("%T", DoubleResponseAdapter::class)
     is CodeGenerationAst.FieldType.Scalar.Enum -> CodeBlock.of("%T", type.typeRef.asEnumAdapterTypeName().copy(nullable = false))
     is CodeGenerationAst.FieldType.Object -> CodeBlock.of("%T(responseAdapterCache)", type.typeRef.asAdapterTypeName().copy(nullable = false))
     is CodeGenerationAst.FieldType.InputObject -> CodeBlock.of("%T(responseAdapterCache)", type.typeRef.asInputAdapterTypeName().copy(nullable = false))

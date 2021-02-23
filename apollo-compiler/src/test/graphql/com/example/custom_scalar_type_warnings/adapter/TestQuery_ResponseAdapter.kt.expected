@@ -5,11 +5,11 @@
 //
 package com.example.custom_scalar_type_warnings.adapter
 
+import com.apollographql.apollo3.api.ListResponseAdapter
+import com.apollographql.apollo3.api.NullableResponseAdapter
 import com.apollographql.apollo3.api.ResponseAdapter
 import com.apollographql.apollo3.api.ResponseAdapterCache
 import com.apollographql.apollo3.api.ResponseField
-import com.apollographql.apollo3.api.internal.ListResponseAdapter
-import com.apollographql.apollo3.api.internal.NullableResponseAdapter
 import com.apollographql.apollo3.api.json.JsonReader
 import com.apollographql.apollo3.api.json.JsonWriter
 import com.example.custom_scalar_type_warnings.TestQuery
