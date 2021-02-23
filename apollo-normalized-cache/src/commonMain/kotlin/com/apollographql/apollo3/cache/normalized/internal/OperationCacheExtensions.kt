@@ -5,8 +5,8 @@ import com.apollographql.apollo3.api.Fragment
 import com.apollographql.apollo3.api.Operation
 import com.apollographql.apollo3.cache.normalized.Record
 import com.apollographql.apollo3.api.ResponseField
-import com.apollographql.apollo3.api.internal.MapJsonReader
-import com.apollographql.apollo3.api.internal.MapJsonWriter
+import com.apollographql.apollo3.api.internal.json.MapJsonReader
+import com.apollographql.apollo3.api.internal.json.MapJsonWriter
 import com.apollographql.apollo3.api.internal.ResponseAdapter
 import com.apollographql.apollo3.api.variables
 import com.apollographql.apollo3.cache.CacheHeaders

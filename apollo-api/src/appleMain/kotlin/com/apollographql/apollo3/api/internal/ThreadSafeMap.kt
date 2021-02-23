@@ -1,4 +1,4 @@
-package com.apollographql.apollo3.api
+package com.apollographql.apollo3.api.internal
 
 import kotlinx.cinterop.StableRef
 import kotlin.native.concurrent.TransferMode
@@ -37,4 +37,3 @@ actual class ThreadSafeMap<K, V> {
     stableRef.dispose()
   }
 }
-

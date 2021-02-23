@@ -1,12 +1,19 @@
 package com.apollographql.apollo3.api.internal
 
-import com.apollographql.apollo3.api.Input
+
 import com.apollographql.apollo3.api.Upload
 import com.apollographql.apollo3.api.internal.json.JsonReader
 import com.apollographql.apollo3.api.internal.json.JsonWriter
 import com.apollographql.apollo3.api.internal.json.Utils
 import com.apollographql.apollo3.api.internal.json.Utils.readRecursively
 
+/**
+ * This file contains a list of [ResponseAdapter] for standard types
+ *
+ * They are mostly used from the generated code but could be useful in any other situations that requires adapting from
+ * GraphQL to Kotlin.
+ * In particular, [AnyResponseAdapter] can be used to read/write a Kotlin representation from/to Json.
+ */
 class ListResponseAdapter<T>(private val wrappedAdapter: ResponseAdapter<T>): ResponseAdapter<List<T>> {
   override fun fromResponse(reader: JsonReader): List<T> {
     reader.beginArray()

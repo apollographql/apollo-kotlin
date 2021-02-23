@@ -12,8 +12,12 @@ import okio.BufferedSource
 import okio.IOException
 import kotlin.jvm.JvmStatic
 
+/**
+ * [StreamResponseParser] parses network responses, including data, errors and extensions from a [JsonReader]
+ *
+ * That will avoid the cost of having to create an entire Map in memory
+ */
 object StreamResponseParser {
-
   @JvmStatic
   @Throws(IOException::class)
   fun <D : Operation.Data> parse(

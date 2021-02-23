@@ -1,5 +1,8 @@
 package com.apollographql.apollo3.api.internal.json
 
+/**
+ * Helper methods to read and write generic Json values
+ */
 object Utils {
   fun writeToJson(value: Any?, jsonWriter: JsonWriter) {
     when (value) {

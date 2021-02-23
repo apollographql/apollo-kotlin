@@ -14,6 +14,10 @@ import okio.ByteString
 import okio.Source
 import kotlin.jvm.JvmStatic
 
+/**
+ * [OperationRequestBodyComposer] is a helper class to create a body from an operation. The body will include serialized
+ * variables and possibly be multi-part if variables contain uploads.
+ */
 object OperationRequestBodyComposer {
   interface Body {
     val operations: ByteString
@@ -22,6 +26,15 @@ object OperationRequestBodyComposer {
     fun writeTo(bufferedSink: BufferedSink)
   }
 
+  /**
+   * @param operation the instance of the [Operation] to create a body for.
+   * @param autoPersistQueries write the APQs extension if true
+   * @param withQueryDocument if false, skip writing the query document. This can be used with APQs to make network requests smaller
+   * @param responseAdapterCache a [ResponseAdapterCache] containing the custom scalar [ResponseAdapter] to use to serialize variables
+   *
+   * @return a [Body] to be sent over HTTP. It will either be of "application/json" type or "multipart/form-data" if variables contain
+   * [Upload]
+   */
   @JvmStatic
   fun compose(
       operation: Operation<*>,
@@ -111,14 +124,15 @@ object OperationRequestBodyComposer {
       }
     }
   }
+
   private fun Map<String, Upload>.toMapBuffer(): Buffer {
     val buffer = Buffer()
 
-    val writer = BufferedSinkJsonWriter(buffer)
-    AnyResponseAdapter.toResponse(writer, entries.mapIndexed { index, entry ->
-      index.toString() to listOf(entry.key)
-    }.toMap())
-    writer.flush()
+    BufferedSinkJsonWriter(buffer).use {
+      AnyResponseAdapter.toResponse(it, entries.mapIndexed { index, entry ->
+        index.toString() to listOf(entry.key)
+      }.toMap())
+    }
 
     return buffer
   }

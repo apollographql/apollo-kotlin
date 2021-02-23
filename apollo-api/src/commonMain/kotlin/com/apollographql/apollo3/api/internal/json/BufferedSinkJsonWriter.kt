@@ -20,6 +20,14 @@ import com.apollographql.apollo3.api.internal.Throws
 import okio.BufferedSink
 import okio.IOException
 
+/**
+ * A [JsonWriter] that writes json to an okio [BufferedSink]
+ *
+ * The base implementation was taken from Moshi and ported to Kotlin multiplatform with some tweaks to make it better suited for GraphQL
+ * (see [JsonWriter] and [path]).
+ *
+ * To writer to a [Map], see also [MapJsonWriter]
+ */
 class BufferedSinkJsonWriter(private val sink: BufferedSink) : JsonWriter {
   // The nesting stack. Using a manual array rather than an ArrayList saves 20%. This stack permits  up to 32 levels of nesting including
   // the top-level document. Deeper nesting is prone to trigger StackOverflowErrors.

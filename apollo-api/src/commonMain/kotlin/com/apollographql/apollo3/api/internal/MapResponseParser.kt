@@ -10,6 +10,7 @@ import com.apollographql.apollo3.api.parseData
 /**
  * [MapResponseParser] parses network responses, including data, errors and extensions from a regular Map<String, Any?>.
  * For better performance, you can parse a response from a [okio.BufferedSource] directly with [StreamResponseParser].
+ *
  * That will avoid the cost of having to create an entire Map in memory
  */
 object MapResponseParser {
