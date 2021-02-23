@@ -1,7 +1,7 @@
 package com.apollographql.apollo3.cache.http;
 
 import com.apollographql.apollo3.api.cache.http.HttpCacheRecordEditor;
-import com.apollographql.apollo3.api.internal.ApolloLogger;
+import com.apollographql.apollo3.api.ApolloLogger;
 import okhttp3.MediaType;
 import okhttp3.Response;
 import okhttp3.ResponseBody;

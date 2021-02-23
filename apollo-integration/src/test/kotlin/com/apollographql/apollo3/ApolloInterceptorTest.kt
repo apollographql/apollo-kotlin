@@ -7,19 +7,25 @@ import com.apollographql.apollo3.Utils.immediateExecutorService
 import com.apollographql.apollo3.Utils.readFileToString
 import com.apollographql.apollo3.api.Input
 import com.apollographql.apollo3.api.Response
-import com.apollographql.apollo3.api.Response.Companion.builder
 import com.apollographql.apollo3.exception.ApolloException
 import com.apollographql.apollo3.exception.ApolloParseException
 import com.apollographql.apollo3.integration.normalizer.EpisodeHeroNameQuery
 import com.apollographql.apollo3.integration.normalizer.type.Episode
 import com.apollographql.apollo3.interceptor.ApolloInterceptor
-import com.apollographql.apollo3.interceptor.ApolloInterceptor.*
+import com.apollographql.apollo3.interceptor.ApolloInterceptor.CallBack
+import com.apollographql.apollo3.interceptor.ApolloInterceptor.FetchSourceType
+import com.apollographql.apollo3.interceptor.ApolloInterceptor.InterceptorRequest
+import com.apollographql.apollo3.interceptor.ApolloInterceptor.InterceptorResponse
 import com.apollographql.apollo3.interceptor.ApolloInterceptorChain
 import com.apollographql.apollo3.rx2.Rx2Apollo
 import com.google.common.truth.Truth
 import com.google.common.truth.Truth.assertThat
-import io.reactivex.functions.Predicate
-import okhttp3.*
+import okhttp3.Dispatcher
+import okhttp3.MediaType
+import okhttp3.OkHttpClient
+import okhttp3.Protocol
+import okhttp3.Request
+import okhttp3.ResponseBody
 import okhttp3.mockwebserver.MockResponse
 import okhttp3.mockwebserver.MockWebServer
 import org.junit.Before
@@ -203,8 +209,14 @@ class ApolloInterceptorTest {
         .message("Intercepted")
         .body(ResponseBody.create(MediaType.parse("text/plain; charset=utf-8"), "fakeResponse"))
         .build()
-    val apolloResponse = builder<EpisodeHeroNameQuery.Data>(query).build()
-    return InterceptorResponse(okHttpResponse, apolloResponse)
+
+    return InterceptorResponse(
+        okHttpResponse,
+        Response(
+            operation = query,
+            data = null
+        )
+    )
   }
 
   @Throws(IOException::class)

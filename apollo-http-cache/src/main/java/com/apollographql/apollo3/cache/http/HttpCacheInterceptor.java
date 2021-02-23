@@ -1,6 +1,6 @@
 package com.apollographql.apollo3.cache.http;
 
-import com.apollographql.apollo3.api.internal.ApolloLogger;
+import com.apollographql.apollo3.api.ApolloLogger;
 import okhttp3.Interceptor;
 import okhttp3.Request;
 import okhttp3.Response;

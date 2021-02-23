@@ -83,6 +83,10 @@ class ResponseField(
   ) : Condition()
 
   companion object {
+    /**
+     * A pre-computed [ResponseField] to be used from generated code as an optimization
+     * It shouldn't be used directly
+     */
     val Typename = ResponseField(
         type = Type.NotNull(Type.Named.Other("String")),
         responseName = "__typename",

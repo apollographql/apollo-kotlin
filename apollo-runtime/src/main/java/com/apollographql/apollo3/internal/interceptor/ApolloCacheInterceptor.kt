@@ -3,7 +3,7 @@ package com.apollographql.apollo3.internal.interceptor
 import com.apollographql.apollo3.ApolloCall
 import com.apollographql.apollo3.api.Operation
 import com.apollographql.apollo3.api.Response
-import com.apollographql.apollo3.api.internal.ApolloLogger
+import com.apollographql.apollo3.api.ApolloLogger
 import com.apollographql.apollo3.cache.ApolloCacheHeaders
 import com.apollographql.apollo3.cache.normalized.ApolloStore
 import com.apollographql.apollo3.exception.ApolloException
@@ -84,10 +84,14 @@ class ApolloCacheInterceptor<D : Operation.Data>(
         request.cacheHeaders)
     if (data != null) {
       logger.d("Cache HIT for operation %s", request.operation.name())
-      return InterceptorResponse(null, Response.builder<Operation.Data>(request.operation)
-          .data(data)
-          .fromCache(true)
-          .build())
+      return InterceptorResponse(
+          null,
+          Response(
+              operation = request.operation,
+              data = data,
+              isFromCache = true
+          )
+      )
     }
     logger.d("Cache MISS for operation %s", request.operation.name())
     throw ApolloGenericException(String.format("Cache miss for operation %s", request.operation.name()))

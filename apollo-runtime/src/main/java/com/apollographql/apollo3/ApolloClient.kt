@@ -10,7 +10,8 @@ import com.apollographql.apollo3.api.ResponseAdapterCache
 import com.apollographql.apollo3.api.Subscription
 import com.apollographql.apollo3.api.cache.http.HttpCache
 import com.apollographql.apollo3.api.cache.http.HttpCachePolicy
-import com.apollographql.apollo3.api.internal.ApolloLogger
+import com.apollographql.apollo3.api.ApolloLogger
+import com.apollographql.apollo3.api.Logger
 import com.apollographql.apollo3.api.internal.Optional
 import com.apollographql.apollo3.api.internal.Optional.Companion.absent
 import com.apollographql.apollo3.api.internal.Optional.Companion.fromNullable

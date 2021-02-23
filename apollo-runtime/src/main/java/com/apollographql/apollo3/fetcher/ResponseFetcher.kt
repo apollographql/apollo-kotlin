@@ -1,6 +1,6 @@
 package com.apollographql.apollo3.fetcher
 
-import com.apollographql.apollo3.api.internal.ApolloLogger
+import com.apollographql.apollo3.api.ApolloLogger
 import com.apollographql.apollo3.interceptor.ApolloInterceptor
 
 /**

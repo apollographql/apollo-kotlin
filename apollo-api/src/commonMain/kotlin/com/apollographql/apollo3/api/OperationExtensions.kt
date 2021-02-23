@@ -64,11 +64,11 @@ fun <D : Operation.Data> Operation<D>.toJson(data: D, indent: String = "", respo
 }
 
 /**
- * Parses GraphQL operation raw response from [map] with provided [responseAdapterCache] and returns result [Response]
+ * Parses GraphQL operation raw response from [map] with provided [responseAdapterCache] and returns result [Operation.Data]
  *
- * @param map: a [Map] representing the response. It typically include a "data" field
+ * @param map: a [Map] representing the response data. It's typically the `data` object of a GraphQL response
  */
-fun <D : Operation.Data, M: Map<String, Any?>> Operation<D>.parseData(
+fun <D : Operation.Data, M: Map<String, Any?>> Operation<D>.fromJson(
     map: M,
     responseAdapterCache: ResponseAdapterCache = DEFAULT,
 ): D {
@@ -82,10 +82,12 @@ fun <D : Operation.Data, M: Map<String, Any?>> Operation<D>.parseData(
 /**
  * Parses GraphQL operation raw response from the [source] with provided [responseAdapterCache] and returns result [Response]
  *
- * This will consume [source] so you don't need to close it. Also, you cannot reuse it
+ * @param source A [BufferedSource] representing the full response. It typically contains a "data" and/or "errors" field
+ *
+ * This will consume [source] so you don't need to close it and you cannot reuse it.
  */
 @JvmOverloads
-fun <D : Operation.Data> Operation<D>.parse(
+fun <D : Operation.Data> Operation<D>.fromResponse(
     source: BufferedSource,
     responseAdapterCache: ResponseAdapterCache = DEFAULT
 ): Response<D> {
@@ -93,23 +95,27 @@ fun <D : Operation.Data> Operation<D>.parse(
 }
 
 /**
- * Parses GraphQL operation raw response from [byteString] with provided [responseAdapterCache] and returns result [Response]
+ * Parses GraphQL operation raw response from the [byteString] with provided [responseAdapterCache] and returns result [Response]
+ *
+ * @param byteString A [ByteString] representing the full response. It typically contains a "data" and/or "errors" field
  */
-fun <D : Operation.Data> Operation<D>.parse(
+fun <D : Operation.Data> Operation<D>.fromResponse(
     byteString: ByteString,
     responseAdapterCache: ResponseAdapterCache = DEFAULT
 ): Response<D> {
-  return parse(Buffer().write(byteString), responseAdapterCache)
+  return fromResponse(Buffer().write(byteString), responseAdapterCache)
 }
 
 /**
- * Parses GraphQL operation raw response from [string] with provided [responseAdapterCache] and returns result [Response]
+ * Parses GraphQL operation raw response from the [string] with provided [responseAdapterCache] and returns result [Response]
+ *
+ * @param string A [String] representing the full response. It typically contains a "data" and/or "errors" field
  */
-fun <D : Operation.Data> Operation<D>.parse(
+fun <D : Operation.Data> Operation<D>.fromResponse(
     string: String,
     responseAdapterCache: ResponseAdapterCache = DEFAULT
 ): Response<D> {
-  return parse(Buffer().writeUtf8(string), responseAdapterCache)
+  return fromResponse(Buffer().writeUtf8(string), responseAdapterCache)
 }
 
 /**
@@ -117,13 +123,16 @@ fun <D : Operation.Data> Operation<D>.parse(
  *
  * @param map: a [Map] representing the response. It typically include a "data" field
  */
-fun <D : Operation.Data> Operation<D>.parse(
+fun <D : Operation.Data> Operation<D>.fromResponse(
     map: Map<String, Any?>,
     responseAdapterCache: ResponseAdapterCache = DEFAULT
 ): Response<D> {
   return MapResponseParser.parse(map, this, responseAdapterCache)
 }
 
+/**
+ * Serializes variables to a Json Map
+ */
 fun <D : Operation.Data> Operation<D>.variables(responseAdapterCache: ResponseAdapterCache): Operation.Variables {
   val valueMap = MapJsonWriter().apply {
     serializeVariables(this, responseAdapterCache)
@@ -131,7 +140,9 @@ fun <D : Operation.Data> Operation<D>.variables(responseAdapterCache: ResponseAd
   return Operation.Variables(valueMap)
 }
 
-
+/**
+ * Serializes variables to a Json Map
+ */
 fun <D : Fragment.Data> Fragment<D>.variables(responseAdapterCache: ResponseAdapterCache): Operation.Variables {
   val valueMap = MapJsonWriter().apply {
     serializeVariables(this, responseAdapterCache)
@@ -139,14 +150,18 @@ fun <D : Fragment.Data> Fragment<D>.variables(responseAdapterCache: ResponseAdap
   return Operation.Variables(valueMap)
 }
 
-
+/**
+ * Serializes variables to a Json String
+ */
 fun <D : Operation.Data> Operation<D>.variablesJson(responseAdapterCache: ResponseAdapterCache): String {
   return Buffer().apply {
     serializeVariables(BufferedSinkJsonWriter(this), responseAdapterCache)
   }.readUtf8()
 }
 
-
+/**
+ * Serializes variables to a Json String
+ */
 fun <D : Fragment.Data> Fragment<D>.variablesJson(responseAdapterCache: ResponseAdapterCache): String {
   return Buffer().apply {
     serializeVariables(BufferedSinkJsonWriter(this), responseAdapterCache)

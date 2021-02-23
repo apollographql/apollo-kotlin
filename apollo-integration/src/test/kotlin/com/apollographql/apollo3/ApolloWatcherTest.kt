@@ -3,12 +3,11 @@ package com.apollographql.apollo3
 import com.apollographql.apollo3.ApolloCall.Callback
 import com.apollographql.apollo3.Utils.receiveOrTimeout
 import com.apollographql.apollo3.api.Input
+import com.apollographql.apollo3.api.Logger
 import com.apollographql.apollo3.api.Response
 import com.apollographql.apollo3.cache.CacheHeaders
 import com.apollographql.apollo3.cache.normalized.MemoryCacheFactory
 import com.apollographql.apollo3.cache.normalized.Record
-import com.apollographql.apollo3.cache.normalized.internal.Transaction
-import com.apollographql.apollo3.cache.normalized.internal.WriteableStore
 import com.apollographql.apollo3.coroutines.await
 import com.apollographql.apollo3.coroutines.toFlow
 import com.apollographql.apollo3.exception.ApolloException
@@ -19,7 +18,6 @@ import com.apollographql.apollo3.integration.normalizer.HeroAndFriendsNamesWithI
 import com.apollographql.apollo3.integration.normalizer.StarshipByIdQuery
 import com.apollographql.apollo3.integration.normalizer.type.Episode
 import com.apollographql.apollo3.cache.normalized.internal.RealApolloStore
-import com.google.common.truth.Truth
 import com.google.common.truth.Truth.assertThat
 import junit.framework.Assert
 import kotlinx.coroutines.async

@@ -7,9 +7,8 @@ import com.apollographql.apollo3.api.ResponseAdapterCache
 import com.apollographql.apollo3.api.ExecutionContext
 import com.apollographql.apollo3.api.Operation
 import com.apollographql.apollo3.api.Subscription
-import com.apollographql.apollo3.api.internal.json.JsonWriter
 import com.apollographql.apollo3.api.internal.json.Utils
-import com.apollographql.apollo3.api.parse
+import com.apollographql.apollo3.api.fromResponse
 import com.apollographql.apollo3.dispatcher.ApolloCoroutineDispatcherContext
 import com.apollographql.apollo3.exception.ApolloParseException
 import com.apollographql.apollo3.ApolloRequest
@@ -125,7 +124,7 @@ class ApolloWebSocketNetworkTransport(
           }
 
           val response = try {
-            request.operation.parse(
+            request.operation.fromResponse(
                 source = buffer,
                 responseAdapterCache = responseAdapterCache
             )

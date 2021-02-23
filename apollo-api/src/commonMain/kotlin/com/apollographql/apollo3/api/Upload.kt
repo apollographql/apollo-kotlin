@@ -6,7 +6,14 @@ import okio.BufferedSink
  * A class that represents a file upload in a multipart upload
  * See https://github.com/jaydenseric/graphql-multipart-request-spec
  *
- * This class is heavily inspired by [okhttp3.RequestBody]
+ * Use this to map your upload custom scalar and the apollo runtime will be able to extract them
+ * and send them out of band.
+ *
+ * customScalarsMapping.set(mapOf(
+ *   "Upload" to "com.apollographql.apollo3.api.Upload"
+ * ))
+ *
+ * If you have a JVM File at hand, see also [FileUpload]
  */
 interface Upload {
   val contentType: String

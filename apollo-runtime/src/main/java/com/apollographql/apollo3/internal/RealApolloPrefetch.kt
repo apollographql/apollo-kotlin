@@ -4,7 +4,7 @@ import com.apollographql.apollo3.ApolloPrefetch
 import com.apollographql.apollo3.api.ResponseAdapterCache
 import com.apollographql.apollo3.api.Operation
 import com.apollographql.apollo3.api.cache.http.HttpCachePolicy
-import com.apollographql.apollo3.api.internal.ApolloLogger
+import com.apollographql.apollo3.api.ApolloLogger
 import com.apollographql.apollo3.api.internal.Optional
 import com.apollographql.apollo3.exception.ApolloCanceledException
 import com.apollographql.apollo3.exception.ApolloException

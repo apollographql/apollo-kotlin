@@ -3,8 +3,8 @@ package com.apollographql.apollo3.internal.interceptor
 import com.apollographql.apollo3.api.ResponseAdapterCache
 import com.apollographql.apollo3.api.Operation
 import com.apollographql.apollo3.api.cache.http.HttpCache
-import com.apollographql.apollo3.api.internal.ApolloLogger
-import com.apollographql.apollo3.api.parse
+import com.apollographql.apollo3.api.ApolloLogger
+import com.apollographql.apollo3.api.fromResponse
 import com.apollographql.apollo3.exception.ApolloException
 import com.apollographql.apollo3.exception.ApolloHttpException
 import com.apollographql.apollo3.exception.ApolloParseException
@@ -70,13 +70,13 @@ class ApolloParseInterceptor(private val httpCache: HttpCache?,
     return if (httpResponse.isSuccessful) {
       try {
         val httpExecutionContext = OkHttpExecutionContext(httpResponse)
-        var parsedResponse = operation.parse(httpResponse.body()!!.source(), responseAdapterCache)
+        var parsedResponse = operation.fromResponse(httpResponse.body()!!.source(), responseAdapterCache)
 
-        parsedResponse = parsedResponse
-            .toBuilder()
-            .fromCache(httpResponse.cacheResponse() != null)
-            .executionContext(parsedResponse.executionContext.plus(httpExecutionContext))
-            .build()
+        parsedResponse = parsedResponse.copy(
+            isFromCache = httpResponse.cacheResponse() != null,
+            executionContext = parsedResponse.executionContext.plus(httpExecutionContext)
+        )
+
         if (parsedResponse.hasErrors() && httpCache != null) {
           httpCache.removeQuietly(cacheKey!!)
         }

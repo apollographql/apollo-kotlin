@@ -5,7 +5,7 @@ import com.apollographql.apollo3.api.Mutation
 import com.apollographql.apollo3.api.Operation
 import com.apollographql.apollo3.api.Query
 import com.apollographql.apollo3.api.Response
-import com.apollographql.apollo3.api.internal.ApolloLogger
+import com.apollographql.apollo3.api.ApolloLogger
 import com.apollographql.apollo3.api.internal.Function
 import com.apollographql.apollo3.api.internal.Optional
 import com.apollographql.apollo3.exception.ApolloException

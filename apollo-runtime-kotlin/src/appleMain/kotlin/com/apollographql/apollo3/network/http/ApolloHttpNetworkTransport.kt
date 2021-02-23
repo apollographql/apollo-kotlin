@@ -9,7 +9,7 @@ import com.apollographql.apollo3.api.ApolloExperimental
 import com.apollographql.apollo3.api.ResponseAdapterCache
 import com.apollographql.apollo3.api.ExecutionContext
 import com.apollographql.apollo3.api.Operation
-import com.apollographql.apollo3.api.parse
+import com.apollographql.apollo3.api.fromResponse
 import com.apollographql.apollo3.ApolloRequest
 import com.apollographql.apollo3.api.internal.OperationRequestBodyComposer
 import com.apollographql.apollo3.api.variablesJson
@@ -249,7 +249,7 @@ actual class ApolloHttpNetworkTransport(
     )
 
     return try {
-      val response = request.operation.parse(
+      val response = request.operation.fromResponse(
           source = Buffer().write(data.toByteString()).apply { flush() },
           responseAdapterCache = responseAdapterCache
       )

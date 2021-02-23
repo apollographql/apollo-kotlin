@@ -4,8 +4,7 @@ import com.apollographql.apollo3.api.ResponseAdapterCache
 import com.apollographql.apollo3.api.Error
 import com.apollographql.apollo3.api.Operation
 import com.apollographql.apollo3.api.Response
-import com.apollographql.apollo3.api.Response.Companion.builder
-import com.apollographql.apollo3.api.parseData
+import com.apollographql.apollo3.api.fromJson
 
 /**
  * [MapResponseParser] parses network responses, including data, errors and extensions from a regular Map<String, Any?>.
@@ -24,7 +23,7 @@ object MapResponseParser {
       responseAdapterCache: ResponseAdapterCache,
   ): Response<D> {
     val data = (payload["data"] as Map<String, Any?>?)?.let {
-      operation.parseData(it, responseAdapterCache)
+      operation.fromJson(it, responseAdapterCache)
     }
 
     val errors = if (payload.containsKey("errors")) {
@@ -35,11 +34,12 @@ object MapResponseParser {
       null
     }
 
-    return builder<D>(operation)
-        .data(data)
-        .errors(errors)
-        .extensions(payload["extensions"] as Map<String, Any?>?)
-        .build()
+    return Response(
+        operation = operation,
+        data = data,
+        errors = errors,
+        extensions = payload["extensions"] as? Map<String, Any?>? ?: emptyMap()
+    )
   }
 
   fun parseError(payload: Map<String, Any?>): Error {
