@@ -1,6 +1,6 @@
 package com.apollographql.apollo3.compiler.backend.codegen
 
-import com.apollographql.apollo3.api.InputType
+import com.apollographql.apollo3.api.InputObject
 import com.apollographql.apollo3.compiler.applyIf
 import com.apollographql.apollo3.compiler.backend.ast.CodeGenerationAst
 import com.squareup.kotlinpoet.KModifier
@@ -14,6 +14,6 @@ internal fun CodeGenerationAst.InputType.typeSpec(generateAsInternal: Boolean = 
         .applyIf(generateAsInternal) { addModifiers(KModifier.INTERNAL) }
         .addAnnotation(suppressWarningsAnnotation)
         .makeDataClass(fields.map { it.toParameterSpec() })
-        .addSuperinterface(InputType::class)
+        .addSuperinterface(InputObject::class)
         .build()
 

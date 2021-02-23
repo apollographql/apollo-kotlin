@@ -4,7 +4,7 @@ import com.apollographql.apollo3.api.internal.ResponseAdapter
 import com.apollographql.apollo3.api.internal.json.JsonWriter
 
 /**
- * Represents a GraphQL operation (mutation or query).
+ * Represents a GraphQL operation (mutation, query or subscription).
  */
 interface Operation<D : Operation.Data> {
   /**

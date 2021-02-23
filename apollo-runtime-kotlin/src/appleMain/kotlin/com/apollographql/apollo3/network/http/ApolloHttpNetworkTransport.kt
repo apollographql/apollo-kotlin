@@ -9,9 +9,9 @@ import com.apollographql.apollo3.api.ApolloExperimental
 import com.apollographql.apollo3.api.ResponseAdapterCache
 import com.apollographql.apollo3.api.ExecutionContext
 import com.apollographql.apollo3.api.Operation
-import com.apollographql.apollo3.api.composeRequestBody
 import com.apollographql.apollo3.api.parse
 import com.apollographql.apollo3.ApolloRequest
+import com.apollographql.apollo3.api.internal.OperationRequestBodyComposer
 import com.apollographql.apollo3.api.variablesJson
 import com.apollographql.apollo3.interceptor.ApolloResponse
 import com.apollographql.apollo3.network.HttpExecutionContext
@@ -27,6 +27,7 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.suspendCancellableCoroutine
 import okio.Buffer
+import okio.ByteString
 import okio.IOException
 import okio.toByteString
 import platform.Foundation.NSData
@@ -173,6 +174,22 @@ actual class ApolloHttpNetworkTransport(
           .plus(httpExecutionContext?.headers ?: emptyMap())
           .forEach { (key, value) -> setValue(value, forHTTPHeaderField = key) }
       setCachePolicy(NSURLRequestReloadIgnoringCacheData)
+    }
+  }
+
+  // TODO: handle multipart and APQ
+  private fun Operation<*>.composeRequestBody(
+      responseAdapterCache: ResponseAdapterCache = ResponseAdapterCache.DEFAULT
+  ): ByteString {
+    return OperationRequestBodyComposer.compose(
+        operation = this,
+        autoPersistQueries = false,
+        withQueryDocument = true,
+        responseAdapterCache = responseAdapterCache
+    ).let {
+      Buffer().apply {
+        it.writeTo(this)
+      }.readByteString()
     }
   }
 
