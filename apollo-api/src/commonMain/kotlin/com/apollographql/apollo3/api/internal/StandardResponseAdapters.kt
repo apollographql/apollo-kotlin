@@ -1,9 +1,10 @@
 package com.apollographql.apollo3.api.internal
 
 
+import com.apollographql.apollo3.api.ResponseAdapter
 import com.apollographql.apollo3.api.Upload
-import com.apollographql.apollo3.api.internal.json.JsonReader
-import com.apollographql.apollo3.api.internal.json.JsonWriter
+import com.apollographql.apollo3.api.json.JsonReader
+import com.apollographql.apollo3.api.json.JsonWriter
 import com.apollographql.apollo3.api.internal.json.Utils
 import com.apollographql.apollo3.api.internal.json.Utils.readRecursively
 

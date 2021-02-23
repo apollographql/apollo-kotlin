@@ -1,15 +1,14 @@
 package com.apollographql.apollo3.subscription
 
 import com.apollographql.apollo3.api.internal.json.BufferedSinkJsonWriter
-import com.apollographql.apollo3.api.internal.json.JsonWriter
+import com.apollographql.apollo3.api.json.JsonWriter
 import com.apollographql.apollo3.api.internal.json.Utils
-import com.apollographql.apollo3.api.internal.json.use
+import com.apollographql.apollo3.api.json.use
 import com.apollographql.apollo3.api.internal.json.writeObject
 import com.apollographql.apollo3.subscription.ApolloOperationMessageSerializer.writePayloadContentsTo
 import okio.Buffer
 import okio.BufferedSink
 import okio.BufferedSource
-import okio.IOException
 import okio.use as okioUse
 
 /**

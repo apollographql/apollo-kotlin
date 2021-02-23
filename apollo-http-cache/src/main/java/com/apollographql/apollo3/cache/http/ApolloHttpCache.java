@@ -5,7 +5,7 @@ import com.apollographql.apollo3.api.cache.http.HttpCache;
 import com.apollographql.apollo3.api.cache.http.HttpCacheRecord;
 import com.apollographql.apollo3.api.cache.http.HttpCacheRecordEditor;
 import com.apollographql.apollo3.api.cache.http.HttpCacheStore;
-import com.apollographql.apollo3.api.ApolloLogger;
+import com.apollographql.apollo3.api.internal.ApolloLogger;
 import okhttp3.Interceptor;
 import okhttp3.Response;
 import okio.ForwardingSource;

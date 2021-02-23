@@ -1,7 +1,6 @@
 package com.apollographql.apollo3.api
 
-import com.apollographql.apollo3.api.internal.ResponseAdapter
-import com.apollographql.apollo3.api.internal.json.JsonWriter
+import com.apollographql.apollo3.api.json.JsonWriter
 
 /**
  * Represents a GraphQL operation (mutation, query or subscription).

@@ -5,7 +5,7 @@ import com.apollographql.apollo3.api.Operation
 import com.apollographql.apollo3.api.Query
 import com.apollographql.apollo3.api.cache.http.HttpCache
 import com.apollographql.apollo3.api.cache.http.HttpCachePolicy
-import com.apollographql.apollo3.api.ApolloLogger
+import com.apollographql.apollo3.api.internal.ApolloLogger
 import com.apollographql.apollo3.api.internal.OperationRequestBodyComposer
 import com.apollographql.apollo3.api.internal.json.BufferedSinkJsonWriter
 import com.apollographql.apollo3.cache.ApolloCacheHeaders

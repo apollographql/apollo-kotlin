@@ -5,13 +5,11 @@ import com.apollographql.apollo3.api.Operation
 import com.apollographql.apollo3.api.ResponseAdapterCache
 import com.apollographql.apollo3.api.internal.json.BufferedSinkJsonWriter
 import com.apollographql.apollo3.api.internal.json.FileUploadAwareJsonWriter
-import com.apollographql.apollo3.api.internal.json.use
+import com.apollographql.apollo3.api.json.use
 import com.benasher44.uuid.uuid4
 import okio.Buffer
 import okio.BufferedSink
-import okio.BufferedSource
 import okio.ByteString
-import okio.Source
 import kotlin.jvm.JvmStatic
 
 /**

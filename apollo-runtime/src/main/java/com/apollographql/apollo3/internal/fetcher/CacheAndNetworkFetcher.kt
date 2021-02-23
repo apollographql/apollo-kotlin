@@ -1,6 +1,6 @@
 package com.apollographql.apollo3.internal.fetcher
 
-import com.apollographql.apollo3.api.ApolloLogger
+import com.apollographql.apollo3.api.internal.ApolloLogger
 import com.apollographql.apollo3.api.internal.Optional.Companion.absent
 import com.apollographql.apollo3.api.internal.Optional.Companion.of
 import com.apollographql.apollo3.exception.ApolloException

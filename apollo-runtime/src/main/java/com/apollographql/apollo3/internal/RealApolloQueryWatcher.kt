@@ -5,7 +5,7 @@ import com.apollographql.apollo3.ApolloQueryWatcher
 import com.apollographql.apollo3.api.ResponseAdapterCache
 import com.apollographql.apollo3.api.Operation
 import com.apollographql.apollo3.api.Response
-import com.apollographql.apollo3.api.ApolloLogger
+import com.apollographql.apollo3.api.internal.ApolloLogger
 import com.apollographql.apollo3.api.internal.Optional
 import com.apollographql.apollo3.cache.normalized.ApolloStore
 import com.apollographql.apollo3.cache.normalized.ApolloStore.RecordChangeSubscriber

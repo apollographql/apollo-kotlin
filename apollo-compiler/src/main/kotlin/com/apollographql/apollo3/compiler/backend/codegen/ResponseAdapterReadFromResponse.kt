@@ -1,17 +1,14 @@
 package com.apollographql.apollo3.compiler.backend.codegen
 
 import com.apollographql.apollo3.api.ResponseField
-import com.apollographql.apollo3.api.internal.json.JsonReader
+import com.apollographql.apollo3.api.json.JsonReader
 import com.apollographql.apollo3.compiler.applyIf
 import com.apollographql.apollo3.compiler.backend.ast.CodeGenerationAst
-import com.apollographql.apollo3.compiler.backend.ast.toLowerCamelCase
 import com.apollographql.apollo3.compiler.escapeKotlinReservedWord
-import com.apollographql.apollo3.exception.UnexpectedNullValue
 import com.squareup.kotlinpoet.CodeBlock
 import com.squareup.kotlinpoet.FunSpec
 import com.squareup.kotlinpoet.KModifier
 import com.squareup.kotlinpoet.ParameterSpec
-import com.squareup.kotlinpoet.asTypeName
 import com.squareup.kotlinpoet.joinToCode
 
 internal fun CodeGenerationAst.ObjectType.readFromResponseFunSpec(): FunSpec {

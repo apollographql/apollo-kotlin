@@ -1,6 +1,5 @@
 package com.apollographql.apollo3.cache.normalized.internal
 
-import com.apollographql.apollo3.api.internal.json.JsonReader
 import com.apollographql.apollo3.cache.CacheHeaders
 import com.apollographql.apollo3.cache.normalized.Record
 

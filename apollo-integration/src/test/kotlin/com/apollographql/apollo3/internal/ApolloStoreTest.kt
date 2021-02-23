@@ -2,7 +2,7 @@ package com.apollographql.apollo3.internal
 
 import com.apollographql.apollo3.NamedCountDownLatch
 import com.apollographql.apollo3.api.ResponseAdapterCache
-import com.apollographql.apollo3.api.ApolloLogger
+import com.apollographql.apollo3.api.internal.ApolloLogger
 import com.apollographql.apollo3.cache.CacheHeaders
 import com.apollographql.apollo3.cache.normalized.CacheKey
 import com.apollographql.apollo3.cache.normalized.CacheKeyResolver

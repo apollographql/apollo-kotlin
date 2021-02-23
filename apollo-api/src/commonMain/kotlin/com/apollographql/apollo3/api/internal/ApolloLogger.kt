@@ -1,5 +1,6 @@
-package com.apollographql.apollo3.api
+package com.apollographql.apollo3.api.internal
 
+import com.apollographql.apollo3.api.Logger
 import com.apollographql.apollo3.api.Logger.Companion.DEBUG
 import com.apollographql.apollo3.api.Logger.Companion.ERROR
 import com.apollographql.apollo3.api.Logger.Companion.WARN

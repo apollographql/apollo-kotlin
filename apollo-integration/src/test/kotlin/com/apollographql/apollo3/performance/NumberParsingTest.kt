@@ -1,8 +1,7 @@
 package com.apollographql.apollo3.performance
 
 import com.apollographql.apollo3.api.internal.json.BufferedSinkJsonWriter
-import com.apollographql.apollo3.api.fromResponse
-import com.apollographql.apollo3.api.internal.json.JsonWriter
+import com.apollographql.apollo3.api.json.JsonWriter
 import com.apollographql.apollo3.integration.performance.GetFloatsQuery
 import com.apollographql.apollo3.integration.performance.GetIntsQuery
 import okio.Buffer

@@ -2,14 +2,11 @@ package com.apollographql.apollo3.cache.normalized
 
 import com.apollographql.apollo3.api.internal.json.BufferedSinkJsonWriter
 import com.apollographql.apollo3.api.internal.json.BufferedSourceJsonReader
-import com.apollographql.apollo3.api.internal.json.JsonWriter
+import com.apollographql.apollo3.api.json.JsonWriter
 import com.apollographql.apollo3.api.internal.json.Utils.readRecursively
-import com.apollographql.apollo3.api.internal.json.use
-import com.apollographql.apollo3.cache.normalized.RecordFieldJsonAdapter.writeJsonValue
+import com.apollographql.apollo3.api.json.use
 import okio.Buffer
-import okio.BufferedSource
 import okio.ByteString.Companion.encodeUtf8
-import okio.IOException
 
 /**
  * An adapter used to serialize and deserialize Record fields. Record object types will be serialized to [CacheReference].

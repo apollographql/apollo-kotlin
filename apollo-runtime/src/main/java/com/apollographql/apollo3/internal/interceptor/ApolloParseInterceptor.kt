@@ -3,7 +3,7 @@ package com.apollographql.apollo3.internal.interceptor
 import com.apollographql.apollo3.api.ResponseAdapterCache
 import com.apollographql.apollo3.api.Operation
 import com.apollographql.apollo3.api.cache.http.HttpCache
-import com.apollographql.apollo3.api.ApolloLogger
+import com.apollographql.apollo3.api.internal.ApolloLogger
 import com.apollographql.apollo3.api.fromResponse
 import com.apollographql.apollo3.exception.ApolloException
 import com.apollographql.apollo3.exception.ApolloHttpException

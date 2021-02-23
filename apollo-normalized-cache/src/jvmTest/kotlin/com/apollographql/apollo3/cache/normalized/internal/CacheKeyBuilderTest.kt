@@ -6,7 +6,6 @@ import com.apollographql.apollo3.api.Variable
 import com.google.common.truth.Truth
 import org.junit.Ignore
 import org.junit.Test
-import java.math.BigDecimal
 
 @Ignore("Will be fixed in the next PR")
 class CacheKeyBuilderTest {

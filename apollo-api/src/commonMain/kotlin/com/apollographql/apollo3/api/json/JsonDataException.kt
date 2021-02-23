@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.apollographql.apollo3.api.internal.json
+package com.apollographql.apollo3.api.json
 
 /**
  * Thrown when the data in a JSON document doesn't match the data expected by the caller.

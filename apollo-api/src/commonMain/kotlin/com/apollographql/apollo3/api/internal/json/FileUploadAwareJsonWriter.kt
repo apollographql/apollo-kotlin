@@ -1,6 +1,7 @@
 package com.apollographql.apollo3.api.internal.json
 
 import com.apollographql.apollo3.api.Upload
+import com.apollographql.apollo3.api.json.JsonWriter
 
 /**
  * A [JsonWriter] that can wrap a [BufferedSinkJsonWriter] and intercept [Upload] writes. This is used to send

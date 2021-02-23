@@ -1,5 +1,8 @@
 package com.apollographql.apollo3.api.internal.json
 
+import com.apollographql.apollo3.api.json.JsonReader
+import com.apollographql.apollo3.api.json.JsonWriter
+
 /**
  * Helper methods to read and write generic Json values
  */

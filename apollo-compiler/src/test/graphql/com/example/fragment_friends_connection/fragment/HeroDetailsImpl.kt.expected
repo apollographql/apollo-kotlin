@@ -6,10 +6,10 @@
 package com.example.fragment_friends_connection.fragment
 
 import com.apollographql.apollo3.api.Fragment
+import com.apollographql.apollo3.api.ResponseAdapter
 import com.apollographql.apollo3.api.ResponseAdapterCache
 import com.apollographql.apollo3.api.ResponseField
-import com.apollographql.apollo3.api.internal.ResponseAdapter
-import com.apollographql.apollo3.api.internal.json.JsonWriter
+import com.apollographql.apollo3.api.json.JsonWriter
 import com.example.fragment_friends_connection.fragment.adapter.HeroDetailsImpl_Adapter
 import com.example.fragment_friends_connection.fragment.adapter.HeroDetailsImpl_ResponseAdapter
 import kotlin.Int

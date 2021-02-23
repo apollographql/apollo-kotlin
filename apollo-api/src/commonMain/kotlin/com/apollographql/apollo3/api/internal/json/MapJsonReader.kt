@@ -1,6 +1,6 @@
 package com.apollographql.apollo3.api.internal.json
 
-import okio.BufferedSink
+import com.apollographql.apollo3.api.json.JsonReader
 
 /**
  * A [JsonReader] that reads data from a regular [Map<String, Any?>]

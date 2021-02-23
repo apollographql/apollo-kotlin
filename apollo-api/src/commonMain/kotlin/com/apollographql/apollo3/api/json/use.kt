@@ -1,4 +1,4 @@
-package com.apollographql.apollo3.api.internal.json
+package com.apollographql.apollo3.api.json
 
 /**
  * A version of use that works on JS and native

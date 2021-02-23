@@ -5,8 +5,8 @@ import com.apollographql.apollo3.api.Mutation
 import com.apollographql.apollo3.api.Query
 import com.apollographql.apollo3.api.ResponseField
 import com.apollographql.apollo3.api.Subscription
-import com.apollographql.apollo3.api.internal.QueryDocumentMinifier
-import com.apollographql.apollo3.api.internal.ResponseAdapter
+import com.apollographql.apollo3.api.QueryDocumentMinifier
+import com.apollographql.apollo3.api.ResponseAdapter
 import com.apollographql.apollo3.compiler.applyIf
 import com.apollographql.apollo3.compiler.backend.ast.CodeGenerationAst
 import com.apollographql.apollo3.compiler.escapeKotlinReservedWord

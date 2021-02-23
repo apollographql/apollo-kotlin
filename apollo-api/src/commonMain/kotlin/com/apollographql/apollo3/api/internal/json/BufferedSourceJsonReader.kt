@@ -15,16 +15,16 @@
  */
 package com.apollographql.apollo3.api.internal.json
 
-import com.apollographql.apollo3.api.internal.Throws
+import com.apollographql.apollo3.api.Throws
+import com.apollographql.apollo3.api.json.JsonDataException
+import com.apollographql.apollo3.api.json.JsonEncodingException
+import com.apollographql.apollo3.api.json.JsonReader
 import okio.Buffer
-import okio.BufferedSink
 import okio.BufferedSource
 import okio.ByteString
 import okio.ByteString.Companion.encodeUtf8
-import okio.ByteString.Companion.toByteString
 import okio.EOFException
 import okio.IOException
-import okio.Options
 
 /**
  * A [JsonWriter] that reads json from an okio [BufferedSource]

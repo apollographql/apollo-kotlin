@@ -5,7 +5,7 @@ import com.apollographql.apollo3.api.Operation
 import com.apollographql.apollo3.api.ResponseField
 import com.apollographql.apollo3.api.Subscription
 import com.apollographql.apollo3.api.internal.AnyResponseAdapter
-import com.apollographql.apollo3.api.internal.json.JsonWriter
+import com.apollographql.apollo3.api.json.JsonWriter
 
 class MockSubscription(
     private val queryDocument: String = "subscription{commentAdded{id  name}",
