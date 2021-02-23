@@ -61,13 +61,11 @@ class ResponseParserTest {
   fun `errors are properly read`() {
     val response = AllPlanetsQuery().fromResponse(Utils.readResource("ResponseError.json"))
     assertThat(response.hasErrors()).isTrue()
-    assertThat(response.errors).containsExactly(
-        Error(
-            "Cannot query field \"names\" on type \"Species\".",
-            listOf(Error.Location(3, 5)),
-            emptyMap<String, Any>()
-        )
-    )
+    val errors = response.errors
+    assertThat(errors?.get(0)?.message).isEqualTo("Cannot query field \"names\" on type \"Species\".")
+    assertThat(errors?.get(0)?.locations?.get(0)?.line).isEqualTo(3)
+    assertThat(errors?.get(0)?.locations?.get(0)?.column).isEqualTo(5)
+    assertThat(errors?.get(0)?.customAttributes?.size).isEqualTo(0)
   }
 
   @Test
@@ -103,13 +101,11 @@ class ResponseParserTest {
     val errors = response.errors
     assertThat(data).isNotNull()
     assertThat(data!!.hero?.name).isEqualTo("R2-D2")
-    assertThat(errors).containsExactly(
-        Error(
-            "Cannot query field \"names\" on type \"Species\".",
-            listOf(Error.Location(3, 5)),
-            emptyMap<String, Any>()
-        )
-    )
+    assertThat(errors?.size).isEqualTo(1)
+    assertThat(errors?.get(0)?.message).isEqualTo("Cannot query field \"names\" on type \"Species\".")
+    assertThat(errors?.get(0)?.locations?.get(0)?.line).isEqualTo(3)
+    assertThat(errors?.get(0)?.locations?.get(0)?.column).isEqualTo(5)
+    assertThat(errors?.get(0)?.customAttributes?.size).isEqualTo(0)
   }
 
   @Test
@@ -186,13 +182,10 @@ class ResponseParserTest {
     assertThat(data).isNotNull()
     assertThat(data!!.hero).isNotNull()
     assertThat(data.hero?.name).isEqualTo("R2-D2")
-    assertThat(errors).containsExactly(
-        Error(
-            "Cannot query field \"names\" on type \"Species\".",
-            listOf(Error.Location(3, 5)),
-            emptyMap<String, Any>()
-        )
-    )
+    assertThat(errors?.get(0)?.message).isEqualTo("Cannot query field \"names\" on type \"Species\".")
+    assertThat(errors?.get(0)?.locations?.get(0)?.line).isEqualTo(3)
+    assertThat(errors?.get(0)?.locations?.get(0)?.column).isEqualTo(5)
+    assertThat(errors?.get(0)?.customAttributes?.size).isEqualTo(0)
   }
 
   @Test

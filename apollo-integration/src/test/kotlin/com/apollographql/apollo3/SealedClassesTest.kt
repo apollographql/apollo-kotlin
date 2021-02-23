@@ -2,6 +2,7 @@ package com.apollographql.apollo3
 
 import com.apollographql.apollo3.api.Input
 import com.apollographql.apollo3.api.ResponseAdapterCache
+import com.apollographql.apollo3.api.variables
 import com.apollographql.apollo3.cache.normalized.internal.RealCacheKeyBuilder
 import com.apollographql.apollo3.integration.sealedclasses.SealedClassQuery
 import com.apollographql.apollo3.integration.sealedclasses.type.Direction

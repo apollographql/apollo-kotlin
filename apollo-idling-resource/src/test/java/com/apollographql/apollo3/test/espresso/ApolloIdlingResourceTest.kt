@@ -8,10 +8,10 @@ import com.apollographql.apollo3.api.Query
 import com.apollographql.apollo3.api.Response
 import com.apollographql.apollo3.api.ResponseField
 import com.apollographql.apollo3.api.ResponseAdapterCache
-import com.apollographql.apollo3.api.internal.json.JsonReader
-import com.apollographql.apollo3.api.internal.json.JsonWriter
+import com.apollographql.apollo3.api.json.JsonReader
+import com.apollographql.apollo3.api.json.JsonWriter
 import com.apollographql.apollo3.api.internal.OperationRequestBodyComposer.compose
-import com.apollographql.apollo3.api.internal.ResponseAdapter
+import com.apollographql.apollo3.api.ResponseAdapter
 import com.apollographql.apollo3.exception.ApolloException
 import com.apollographql.apollo3.rx2.Rx2Apollo
 import com.google.common.truth.Truth
