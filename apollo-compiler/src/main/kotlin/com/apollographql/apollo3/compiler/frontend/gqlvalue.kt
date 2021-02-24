@@ -1,5 +1,7 @@
 package com.apollographql.apollo3.compiler.frontend
 
+import com.apollographql.apollo3.api.Variable
+
 fun GQLValue.toKotlinValue(constContext: Boolean): Any? {
   return when (this) {
     is GQLIntValue -> value
@@ -14,10 +16,7 @@ fun GQLValue.toKotlinValue(constContext: Boolean): Any? {
       if (constContext) {
         throw ConversionException("Value cannot be a variable in a const context", sourceLocation)
       } else {
-        mapOf(
-            "kind" to "Variable",
-            "variableName" to name
-        )
+        Variable(name)
       }
     }
   }

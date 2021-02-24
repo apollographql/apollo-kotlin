@@ -7,6 +7,7 @@ package com.example.named_fragment_with_variables.adapter
 
 import com.apollographql.apollo3.api.ResponseAdapterCache
 import com.apollographql.apollo3.api.ResponseField
+import com.apollographql.apollo3.api.Variable
 import com.apollographql.apollo3.api.internal.ListResponseAdapter
 import com.apollographql.apollo3.api.internal.NullableResponseAdapter
 import com.apollographql.apollo3.api.internal.ResponseAdapter
@@ -90,9 +91,7 @@ class GetUser_ResponseAdapter(
           type = ResponseField.Type.Named.Object("Organization"),
           fieldName = "organization",
           arguments = mapOf<String, Any?>(
-            "id" to mapOf<String, Any?>(
-              "kind" to "Variable",
-              "variableName" to "organizationId")),
+            "id" to Variable("organizationId")),
           fieldSets = listOf(
             ResponseField.FieldSet(null, Organization.RESPONSE_FIELDS)
           ),
@@ -148,9 +147,7 @@ class GetUser_ResponseAdapter(
                 ResponseField.Type.NotNull(ResponseField.Type.List(ResponseField.Type.NotNull(ResponseField.Type.Named.Object("User")))),
             fieldName = "user",
             arguments = mapOf<String, Any?>(
-              "query" to mapOf<String, Any?>(
-                "kind" to "Variable",
-                "variableName" to "query")),
+              "query" to Variable("query")),
             fieldSets = listOf(
               ResponseField.FieldSet("User", User.UserUser.RESPONSE_FIELDS),
               ResponseField.FieldSet(null, User.OtherUser.RESPONSE_FIELDS),
@@ -247,9 +244,7 @@ class GetUser_ResponseAdapter(
                 type = ResponseField.Type.NotNull(ResponseField.Type.Named.Other("String")),
                 fieldName = "avatar",
                 arguments = mapOf<String, Any?>(
-                  "size" to mapOf<String, Any?>(
-                    "kind" to "Variable",
-                    "variableName" to "size")),
+                  "size" to Variable("size")),
               )
             )
 

@@ -7,6 +7,7 @@ package com.example.hero_with_review.adapter
 
 import com.apollographql.apollo3.api.ResponseAdapterCache
 import com.apollographql.apollo3.api.ResponseField
+import com.apollographql.apollo3.api.Variable
 import com.apollographql.apollo3.api.internal.IntResponseAdapter
 import com.apollographql.apollo3.api.internal.NullableResponseAdapter
 import com.apollographql.apollo3.api.internal.ResponseAdapter
@@ -57,9 +58,7 @@ class TestQuery_ResponseAdapter(
         type = ResponseField.Type.Named.Object("Review"),
         fieldName = "createReview",
         arguments = mapOf<String, Any?>(
-          "episode" to mapOf<String, Any?>(
-            "kind" to "Variable",
-            "variableName" to "ep"),
+          "episode" to Variable("ep"),
           "review" to mapOf<String, Any?>(
             "stars" to 5,
             "listOfEnums" to listOf<Any?>(

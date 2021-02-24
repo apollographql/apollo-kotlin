@@ -7,6 +7,7 @@ package com.example.arguments_simple.fragment.adapter
 
 import com.apollographql.apollo3.api.ResponseAdapterCache
 import com.apollographql.apollo3.api.ResponseField
+import com.apollographql.apollo3.api.Variable
 import com.apollographql.apollo3.api.internal.IntResponseAdapter
 import com.apollographql.apollo3.api.internal.ListResponseAdapter
 import com.apollographql.apollo3.api.internal.NullableResponseAdapter
@@ -66,9 +67,7 @@ class HeroDetailsImpl_ResponseAdapter(
         type = ResponseField.Type.NotNull(ResponseField.Type.Named.Object("FriendsConnection")),
         fieldName = "friendsConnection",
         arguments = mapOf<String, Any?>(
-          "first" to mapOf<String, Any?>(
-            "kind" to "Variable",
-            "variableName" to "friendsCount")),
+          "first" to Variable("friendsCount")),
         fieldSets = listOf(
           ResponseField.FieldSet(null, FriendsConnection.RESPONSE_FIELDS)
         ),

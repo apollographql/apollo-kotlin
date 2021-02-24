@@ -7,6 +7,7 @@ package com.example.mutation_create_review.adapter
 
 import com.apollographql.apollo3.api.ResponseAdapterCache
 import com.apollographql.apollo3.api.ResponseField
+import com.apollographql.apollo3.api.Variable
 import com.apollographql.apollo3.api.internal.IntResponseAdapter
 import com.apollographql.apollo3.api.internal.ListResponseAdapter
 import com.apollographql.apollo3.api.internal.NullableResponseAdapter
@@ -63,12 +64,8 @@ internal class CreateReviewForEpisode_ResponseAdapter(
         type = ResponseField.Type.Named.Object("Review"),
         fieldName = "createReview",
         arguments = mapOf<String, Any?>(
-          "episode" to mapOf<String, Any?>(
-            "kind" to "Variable",
-            "variableName" to "ep"),
-          "review" to mapOf<String, Any?>(
-            "kind" to "Variable",
-            "variableName" to "review")),
+          "episode" to Variable("ep"),
+          "review" to Variable("review")),
         fieldSets = listOf(
           ResponseField.FieldSet(null, CreateReview.RESPONSE_FIELDS)
         ),

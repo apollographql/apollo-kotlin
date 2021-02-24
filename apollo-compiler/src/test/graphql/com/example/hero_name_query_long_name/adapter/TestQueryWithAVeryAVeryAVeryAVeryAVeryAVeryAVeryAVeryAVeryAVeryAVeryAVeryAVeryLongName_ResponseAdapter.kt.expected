@@ -7,6 +7,7 @@ package com.example.hero_name_query_long_name.adapter
 
 import com.apollographql.apollo3.api.ResponseAdapterCache
 import com.apollographql.apollo3.api.ResponseField
+import com.apollographql.apollo3.api.Variable
 import com.apollographql.apollo3.api.internal.NullableResponseAdapter
 import com.apollographql.apollo3.api.internal.ResponseAdapter
 import com.apollographql.apollo3.api.internal.StringResponseAdapter
@@ -63,10 +64,8 @@ class
         fieldName = "hero",
         responseName = "heroAVeryAVeryAVeryAVeryAVeryAVeryAV",
         arguments = mapOf<String, Any?>(
-          "episode" to mapOf<String, Any?>(
-            "kind" to "Variable",
-            "variableName" to
-                "episodeAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryLongName")),
+          "episode" to
+              Variable("episodeAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryLongName")),
         fieldSets = listOf(
           ResponseField.FieldSet(null, HeroAVeryAVeryAVeryAVeryAVeryAVeryAV.RESPONSE_FIELDS)
         ),

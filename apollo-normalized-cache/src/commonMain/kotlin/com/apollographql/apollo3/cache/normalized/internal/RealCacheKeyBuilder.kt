@@ -3,7 +3,7 @@ package com.apollographql.apollo3.cache.normalized.internal
 import com.apollographql.apollo3.api.InputType
 import com.apollographql.apollo3.api.Operation
 import com.apollographql.apollo3.api.ResponseField
-import com.apollographql.apollo3.api.ResponseField.Companion.isArgumentValueVariableType
+import com.apollographql.apollo3.api.Variable
 import com.apollographql.apollo3.api.internal.json.JsonWriter
 import com.apollographql.apollo3.api.internal.json.Utils
 import okio.Buffer
@@ -32,17 +32,16 @@ class RealCacheKeyBuilder : CacheKeyBuilder {
   private fun resolveVariables(value: Any?, variables: Operation.Variables): Any? {
     return when (value) {
       null -> null
+      is Variable -> {
+        resolveVariable(value.name, variables)
+      }
       is Map<*, *> -> {
         value as Map<String, Any?>
-        if (isArgumentValueVariableType(value)) {
-          resolveVariable(value, variables)
-        } else {
-          value.mapValues {
-            resolveVariables(it.value, variables)
-          }.toList()
-              .sortedBy { it.first }
-              .toMap()
-        }
+        value.mapValues {
+          resolveVariables(it.value, variables)
+        }.toList()
+            .sortedBy { it.first }
+            .toMap()
       }
       is List<*> -> {
         value.map {
@@ -54,10 +53,8 @@ class RealCacheKeyBuilder : CacheKeyBuilder {
   }
 
   @Suppress("UNCHECKED_CAST")
-  private fun resolveVariable(objectMap: Map<String, Any?>, variables: Operation.Variables): Any? {
-    val variable = objectMap[ResponseField.VARIABLE_NAME_KEY]
-
-    return when (val resolvedVariable = variables.valueMap()[variable]) {
+  private fun resolveVariable(name: String, variables: Operation.Variables): Any? {
+    return when (val resolvedVariable = variables.valueMap()[name]) {
       is InputType -> {
         val inputFieldMapWriter = SortedInputFieldMapWriter()
         resolvedVariable.marshaller().marshal(inputFieldMapWriter)
