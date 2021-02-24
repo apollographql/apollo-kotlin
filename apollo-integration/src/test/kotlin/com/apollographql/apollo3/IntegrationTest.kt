@@ -10,7 +10,10 @@ import com.apollographql.apollo3.api.JsonElement
 import com.apollographql.apollo3.api.JsonString
 import com.apollographql.apollo3.api.Operation
 import com.apollographql.apollo3.api.Response
+import com.apollographql.apollo3.api.ResponseAdapter
 import com.apollographql.apollo3.api.ResponseAdapterCache
+import com.apollographql.apollo3.api.json.JsonReader
+import com.apollographql.apollo3.api.json.JsonWriter
 import com.apollographql.apollo3.api.variables
 import com.apollographql.apollo3.api.variablesJson
 import com.apollographql.apollo3.cache.normalized.MemoryCacheFactory
@@ -41,11 +44,16 @@ import java.util.Locale
 
 class IntegrationTest {
   private lateinit var apolloClient: ApolloClient
-  private var dateCustomScalarAdapter = object : CustomScalarAdapter<Date> {
+  private val dateCustomScalarAdapter: ResponseAdapter<Date> = object : ResponseAdapter<Date> {
     private val DATE_FORMAT = SimpleDateFormat("yyyy-MM-dd", Locale.US)
 
-    override fun decode(jsonElement: JsonElement) = DATE_FORMAT.parse(jsonElement.toRawValue().toString())
-    override fun encode(value: Date) = JsonString(DATE_FORMAT.format(value))
+    override fun fromResponse(reader: JsonReader): Date {
+      return DATE_FORMAT.parse(reader.nextString())
+    }
+
+    override fun toResponse(writer: JsonWriter, value: Date) {
+      writer.value(DATE_FORMAT.format(value))
+    }
   }
 
   val server = MockWebServer()

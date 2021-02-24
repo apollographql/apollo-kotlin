@@ -41,7 +41,7 @@ class WebSocketSubscriptionTransportMessageTest {
         OperationClientMessage.Start(
             subscriptionId = "subscriptionId",
             subscription = MockSubscription(),
-            responseAdapterCache = ResponseAdapterCache(emptyMap()),
+            responseAdapterCache = ResponseAdapterCache.DEFAULT,
             autoPersistSubscription = false,
             sendSubscriptionDocument = false)
     )
@@ -52,7 +52,7 @@ class WebSocketSubscriptionTransportMessageTest {
   @Test
   fun startSubscriptionAutoPersistSubscriptionEnabledSendDocumentEnabled() {
     subscriptionTransport.send(OperationClientMessage.Start("subscriptionId", MockSubscription(),
-        ResponseAdapterCache(emptyMap()), autoPersistSubscription = true, sendSubscriptionDocument = true))
+        ResponseAdapterCache.DEFAULT, autoPersistSubscription = true, sendSubscriptionDocument = true))
     val expected = """{"id":"subscriptionId","type":"start","payload":{"variables":{},"operationName":"SomeSubscription","query":"subscription{commentAdded{id  name}","extensions":{"persistedQuery":{"version":1,"sha256Hash":"someId"}}}}"""
     assertThat(webSocketFactory.webSocket.lastSentMessage).isEqualTo(expected)
   }
@@ -60,7 +60,7 @@ class WebSocketSubscriptionTransportMessageTest {
   @Test
   fun startSubscriptionAutoPersistSubscriptionEnabledSendDocumentDisabled() {
     subscriptionTransport.send(OperationClientMessage.Start("subscriptionId", MockSubscription(),
-        ResponseAdapterCache(emptyMap()), autoPersistSubscription = true, sendSubscriptionDocument = false))
+        ResponseAdapterCache.DEFAULT, autoPersistSubscription = true, sendSubscriptionDocument = false))
     val expected = """{"id":"subscriptionId","type":"start","payload":{"variables":{},"operationName":"SomeSubscription","extensions":{"persistedQuery":{"version":1,"sha256Hash":"someId"}}}}"""
     assertThat(webSocketFactory.webSocket.lastSentMessage).isEqualTo(expected)
   }

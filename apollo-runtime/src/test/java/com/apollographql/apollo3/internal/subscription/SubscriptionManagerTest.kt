@@ -30,7 +30,7 @@ class SubscriptionManagerTest {
 
   init {
     subscriptionManager = RealSubscriptionManager(
-        ResponseAdapterCache(emptyMap()),
+        ResponseAdapterCache.DEFAULT,
         subscriptionTransportFactory,
         SubscriptionConnectionParamsProvider.Const(SubscriptionConnectionParams()),
         MockExecutor(),

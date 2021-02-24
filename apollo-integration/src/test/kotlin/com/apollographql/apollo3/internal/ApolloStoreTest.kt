@@ -49,7 +49,7 @@ class ApolloStoreTest {
           }
         },
         CacheKeyResolver.DEFAULT,
-        ResponseAdapterCache(emptyMap()),
+        ResponseAdapterCache.DEFAULT,
         ApolloLogger(null)
     )
     realApolloStore.clearAll()

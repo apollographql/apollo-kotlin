@@ -11,6 +11,9 @@ import com.apollographql.apollo3.api.JsonString
 import com.apollographql.apollo3.api.Operation
 import com.apollographql.apollo3.api.Query
 import com.apollographql.apollo3.api.Response
+import com.apollographql.apollo3.api.ResponseAdapter
+import com.apollographql.apollo3.api.json.JsonReader
+import com.apollographql.apollo3.api.json.JsonWriter
 import com.apollographql.apollo3.cache.normalized.CacheKey.Companion.from
 import com.apollographql.apollo3.cache.normalized.MemoryCacheFactory
 import com.apollographql.apollo3.fetcher.ApolloResponseFetchers
@@ -43,8 +46,19 @@ import java.util.Locale
 class ResponseWriteTestCase {
   private var apolloClient: ApolloClient? = null
 
-  val server = MockWebServer()
-  private val DATE_TIME_FORMAT = SimpleDateFormat("yyyy-mm-dd", Locale.US)
+  private val server = MockWebServer()
+  private val DATE_TIME_FORMAT = SimpleDateFormat("yyyy-MM-dd", Locale.US)
+
+  private val dateCustomScalarAdapter: ResponseAdapter<Date> = object : ResponseAdapter<Date> {
+
+    override fun fromResponse(reader: JsonReader): Date {
+      return DATE_TIME_FORMAT.parse(reader.nextString())
+    }
+
+    override fun toResponse(writer: JsonWriter, value: Date) {
+      writer.value(DATE_TIME_FORMAT.format(value))
+    }
+  }
 
   @Before
   fun setUp() {
@@ -56,19 +70,7 @@ class ResponseWriteTestCase {
         .okHttpClient(okHttpClient)
         .normalizedCache(MemoryCacheFactory(maxSizeBytes = Int.MAX_VALUE), IdFieldCacheKeyResolver())
         .dispatcher(immediateExecutor())
-        .addCustomScalarAdapter(CustomScalars.Date, object : CustomScalarAdapter<Date> {
-          override fun decode(jsonElement: JsonElement): Date {
-            return try {
-              DATE_TIME_FORMAT.parse(jsonElement.toRawValue().toString())
-            } catch (e: ParseException) {
-              throw RuntimeException(e)
-            }
-          }
-
-          override fun encode(value: Date): JsonElement {
-            return JsonString(DATE_TIME_FORMAT.format(value))
-          }
-        })
+        .addCustomScalarAdapter(CustomScalars.Date, dateCustomScalarAdapter)
         .build()
   }
 
@@ -87,7 +89,6 @@ class ResponseWriteTestCase {
       assertThat(DATE_TIME_FORMAT.format(data.hero?.showUpDates?.get(0))).isEqualTo("2017-01-16")
       assertThat(DATE_TIME_FORMAT.format(data.hero?.showUpDates?.get(1))).isEqualTo("2017-02-16")
       assertThat(DATE_TIME_FORMAT.format(data.hero?.showUpDates?.get(2))).isEqualTo("2017-03-16")
-      true
     }
     var hero = EpisodeHeroWithDatesQuery.Data.Hero(
         "R222-D222",

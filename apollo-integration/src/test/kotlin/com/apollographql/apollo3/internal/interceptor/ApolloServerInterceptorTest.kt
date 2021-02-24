@@ -43,7 +43,7 @@ class ApolloServerInterceptorTest {
     }
     val interceptor = ApolloServerInterceptor(serverUrl,
         AssertHttpCallFactory(requestAssertPredicate), null, false,
-        ResponseAdapterCache(emptyMap()),
+        ResponseAdapterCache.DEFAULT,
         ApolloLogger(null))
     interceptor.httpPostCall(query, CacheHeaders.NONE, RequestHeaders.NONE, true, false)
   }
@@ -51,7 +51,7 @@ class ApolloServerInterceptorTest {
   @Test
   @Throws(Exception::class)
   fun testCachedHttpCall() {
-    val scalarTypeAdapters = ResponseAdapterCache(emptyMap())
+    val scalarTypeAdapters = ResponseAdapterCache.DEFAULT
     val cacheKey: String = ApolloServerInterceptor.cacheKey(query, scalarTypeAdapters)
     val requestAssertPredicate = Predicate<Request?> { request ->
       Truth.assertThat(request).isNotNull()
@@ -114,7 +114,7 @@ class ApolloServerInterceptorTest {
         .build()
     val interceptor = ApolloServerInterceptor(serverUrl,
         AssertHttpCallFactory(requestAssertPredicate), null, false,
-        ResponseAdapterCache(emptyMap()),
+        ResponseAdapterCache.DEFAULT,
         ApolloLogger(null))
     interceptor.httpPostCall(query, CacheHeaders.NONE, requestHeaders, true, false)
   }
@@ -140,7 +140,7 @@ class ApolloServerInterceptorTest {
     }
     val interceptor = ApolloServerInterceptor(serverUrl,
         AssertHttpCallFactory(requestAssertPredicate), null, false,
-        ResponseAdapterCache(emptyMap()),
+        ResponseAdapterCache.DEFAULT,
         ApolloLogger(null))
     interceptor.httpGetCall(query, CacheHeaders.NONE, RequestHeaders.NONE, true, true)
   }

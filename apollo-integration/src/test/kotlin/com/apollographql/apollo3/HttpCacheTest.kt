@@ -6,8 +6,11 @@ import com.apollographql.apollo3.Utils.readFileToString
 import com.apollographql.apollo3.api.CustomScalarAdapter
 import com.apollographql.apollo3.api.JsonElement
 import com.apollographql.apollo3.api.JsonString
+import com.apollographql.apollo3.api.ResponseAdapter
 import com.apollographql.apollo3.api.cache.http.HttpCache
 import com.apollographql.apollo3.api.cache.http.HttpCachePolicy
+import com.apollographql.apollo3.api.json.JsonReader
+import com.apollographql.apollo3.api.json.JsonWriter
 import com.apollographql.apollo3.cache.ApolloCacheHeaders
 import com.apollographql.apollo3.cache.CacheHeaders.Companion.builder
 import com.apollographql.apollo3.cache.http.ApolloHttpCache
@@ -55,19 +58,18 @@ class HttpCacheTest {
 
   @Before
   fun setUp() {
-    val dateCustomScalarAdapter: CustomScalarAdapter<Date> = object : CustomScalarAdapter<Date> {
-      override fun decode(jsonElement: JsonElement): Date {
-        return try {
-          DATE_FORMAT.parse(jsonElement.toRawValue().toString())
-        } catch (e: ParseException) {
-          throw RuntimeException(e)
-        }
+    val dateCustomScalarAdapter: ResponseAdapter<Date> = object : ResponseAdapter<Date> {
+      private val DATE_FORMAT = SimpleDateFormat("yyyy-MM-dd", Locale.US)
+
+      override fun fromResponse(reader: JsonReader): Date {
+        return DATE_FORMAT.parse(reader.nextString())
       }
 
-      override fun encode(value: Date): JsonElement {
-        return JsonString(DATE_FORMAT.format(value))
+      override fun toResponse(writer: JsonWriter, value: Date) {
+        writer.value(DATE_FORMAT.format(value))
       }
     }
+
     cacheStore = MockHttpCacheStore()
     cacheStore.delegate = DiskLruHttpCacheStore(inMemoryFileSystem, File("/cache/"), Int.MAX_VALUE.toLong())
     val cache: HttpCache = ApolloHttpCache(cacheStore, null)
@@ -566,9 +568,5 @@ class HttpCacheTest {
       lastHttResponse = chain.proceed(lastHttRequest)
       return lastHttResponse!!
     }
-  }
-
-  companion object {
-    private val DATE_FORMAT = SimpleDateFormat("yyyy-MM-dd", Locale.US)
   }
 }

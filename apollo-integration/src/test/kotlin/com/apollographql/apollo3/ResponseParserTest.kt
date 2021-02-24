@@ -6,8 +6,14 @@ import com.apollographql.apollo3.api.Error
 import com.apollographql.apollo3.api.Input
 import com.apollographql.apollo3.api.JsonElement
 import com.apollographql.apollo3.api.JsonString
+import com.apollographql.apollo3.api.ResponseAdapter
 import com.apollographql.apollo3.api.fromResponse
+import com.apollographql.apollo3.api.internal.json.BufferedSinkJsonWriter
+import com.apollographql.apollo3.api.json.JsonReader
+import com.apollographql.apollo3.api.json.JsonWriter
+import com.apollographql.apollo3.api.json.use
 import com.apollographql.apollo3.api.toJson
+import com.apollographql.apollo3.compiler.toJson
 import com.apollographql.apollo3.integration.httpcache.AllFilmsQuery
 import com.apollographql.apollo3.integration.httpcache.AllPlanetsQuery
 import com.apollographql.apollo3.integration.httpcache.fragment.FilmFragment
@@ -108,19 +114,33 @@ class ResponseParserTest {
     assertThat(errors?.get(0)?.customAttributes?.size).isEqualTo(0)
   }
 
+  private fun <T> ResponseAdapter<T>.toJsonString(t: T): String {
+    val buffer = Buffer()
+    BufferedSinkJsonWriter(buffer).use {
+      toResponse(it, t)
+    }
+    return buffer.readUtf8()
+  }
+
   @Test
   @Throws(Exception::class)
   fun allFilmsWithDate() {
-    val dateCustomScalarAdapter = object : CustomScalarAdapter<Date> {
+    val dateCustomScalarAdapter = object : ResponseAdapter<Date> {
       private val DATE_FORMAT = SimpleDateFormat("yyyy-MM-dd", Locale.US)
-      override fun decode(jsonElement: JsonElement) = DATE_FORMAT.parse(jsonElement.toRawValue().toString())
-      override fun encode(value: Date) = JsonString(DATE_FORMAT.format(value))
+      override fun fromResponse(reader: JsonReader): Date {
+        return  DATE_FORMAT.parse(reader.nextString())
+      }
+
+      override fun toResponse(writer: JsonWriter, value: Date) {
+        writer.value(DATE_FORMAT.format(value))
+      }
     }
     val response = AllFilmsQuery().fromResponse(Utils.readResource("HttpCacheTestAllFilms.json"), ResponseAdapterCache(mapOf(CustomScalars.Date to dateCustomScalarAdapter)))
     assertThat(response.hasErrors()).isFalse()
     assertThat(response.data!!.allFilms?.films).hasSize(6)
-    assertThat(response.data!!.allFilms?.films?.map { dateCustomScalarAdapter.encode(it!!.releaseDate).value }).isEqualTo(
-        listOf("1977-05-25", "1980-05-17", "1983-05-25", "1999-05-19", "2002-05-16", "2005-05-19"))
+    assertThat(response.data!!.allFilms?.films?.map { dateCustomScalarAdapter.toJsonString(it!!.releaseDate) }).isEqualTo(
+        listOf("1977-05-25", "1980-05-17", "1983-05-25", "1999-05-19", "2002-05-16", "2005-05-19").map { "\"$it\"" }
+    )
   }
 
   @Test
@@ -174,7 +194,7 @@ class ResponseParserTest {
   fun parseErrorOperationRawResponse() {
     val response = EpisodeHeroNameQuery(Input.Present(Episode.EMPIRE)).fromResponse(
         Buffer().readFrom(javaClass.getResourceAsStream("/ResponseErrorWithData.json")),
-        ResponseAdapterCache(emptyMap())
+        ResponseAdapterCache.DEFAULT
     )
     val data = response.data
     val errors = response.errors
@@ -221,7 +241,7 @@ class ResponseParserTest {
     try {
       query.fromResponse(query.toJson(data))
       error("expected IllegalStateException")
-    } catch (e: IllegalArgumentException) {
+    } catch (e: IllegalStateException) {
       assertThat(e.message).contains("Can't map GraphQL type: `Date`")
     }
   }
