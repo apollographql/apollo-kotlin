@@ -9,9 +9,9 @@ import com.apollographql.apollo3.api.ApolloExperimental
 import com.apollographql.apollo3.api.ResponseAdapterCache
 import com.apollographql.apollo3.api.ExecutionContext
 import com.apollographql.apollo3.api.Operation
-import com.apollographql.apollo3.api.composeRequestBody
-import com.apollographql.apollo3.api.parse
+import com.apollographql.apollo3.api.fromResponse
 import com.apollographql.apollo3.ApolloRequest
+import com.apollographql.apollo3.api.internal.OperationRequestBodyComposer
 import com.apollographql.apollo3.api.variablesJson
 import com.apollographql.apollo3.interceptor.ApolloResponse
 import com.apollographql.apollo3.network.HttpExecutionContext
@@ -30,6 +30,8 @@ import okhttp3.OkHttpClient
 import okhttp3.Request
 import okhttp3.RequestBody
 import okhttp3.Response
+import okio.Buffer
+import okio.ByteString
 import java.io.IOException
 import java.util.concurrent.TimeUnit
 import kotlin.coroutines.resume
@@ -139,7 +141,7 @@ actual class ApolloHttpNetworkTransport(
         message = "Failed to parse GraphQL http network response: EOF"
     )
 
-    val response = request.operation.parse(
+    val response = request.operation.fromResponse(
         source = responseBody.source(),
         responseAdapterCache = responseAdapterCache
     )
@@ -188,6 +190,22 @@ actual class ApolloHttpNetworkTransport(
           }
         }
         .build()
+  }
+
+  // TODO: handle multipart and APQ
+  private fun Operation<*>.composeRequestBody(
+      responseAdapterCache: ResponseAdapterCache = ResponseAdapterCache.DEFAULT
+  ): ByteString {
+    return OperationRequestBodyComposer.compose(
+        operation = this,
+        autoPersistQueries = false,
+        withQueryDocument = true,
+        responseAdapterCache = responseAdapterCache
+    ).let {
+      Buffer().apply {
+        it.writeTo(this)
+      }.readByteString()
+    }
   }
 
   private fun <D : Operation.Data> ApolloRequest<D>.toHttpPostRequest(

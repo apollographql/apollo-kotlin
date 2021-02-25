@@ -6,7 +6,7 @@ import com.apollographql.apollo3.api.Error
 import com.apollographql.apollo3.api.Input
 import com.apollographql.apollo3.api.JsonElement
 import com.apollographql.apollo3.api.JsonString
-import com.apollographql.apollo3.api.parse
+import com.apollographql.apollo3.api.fromResponse
 import com.apollographql.apollo3.api.toJson
 import com.apollographql.apollo3.integration.httpcache.AllFilmsQuery
 import com.apollographql.apollo3.integration.httpcache.AllPlanetsQuery
@@ -32,7 +32,7 @@ class ResponseParserTest {
   @Test
   @Throws(Exception::class)
   fun allPlanetQuery() {
-    val data = AllPlanetsQuery().parse(Utils.readResource("HttpCacheTestAllPlanets.json")).data
+    val data = AllPlanetsQuery().fromResponse(Utils.readResource("HttpCacheTestAllPlanets.json")).data
 
     assertThat(data!!.allPlanets?.planets?.size).isEqualTo(60)
     val planets = data.allPlanets?.planets?.mapNotNull {
@@ -59,21 +59,19 @@ class ResponseParserTest {
   @Test
   @Throws(Exception::class)
   fun `errors are properly read`() {
-    val response = AllPlanetsQuery().parse(Utils.readResource("ResponseError.json"))
+    val response = AllPlanetsQuery().fromResponse(Utils.readResource("ResponseError.json"))
     assertThat(response.hasErrors()).isTrue()
-    assertThat(response.errors).containsExactly(
-        Error(
-            "Cannot query field \"names\" on type \"Species\".",
-            listOf(Error.Location(3, 5)),
-            emptyMap<String, Any>()
-        )
-    )
+    val errors = response.errors
+    assertThat(errors?.get(0)?.message).isEqualTo("Cannot query field \"names\" on type \"Species\".")
+    assertThat(errors?.get(0)?.locations?.get(0)?.line).isEqualTo(3)
+    assertThat(errors?.get(0)?.locations?.get(0)?.column).isEqualTo(5)
+    assertThat(errors?.get(0)?.customAttributes?.size).isEqualTo(0)
   }
 
   @Test
   @Throws(Exception::class)
   fun `error with no message, no location and custom attributes`() {
-    val response = AllPlanetsQuery().parse(Utils.readResource("ResponseErrorWithNullsAndCustomAttributes.json"))
+    val response = AllPlanetsQuery().fromResponse(Utils.readResource("ResponseErrorWithNullsAndCustomAttributes.json"))
     assertThat(response.hasErrors()).isTrue()
     assertThat(response.errors).hasSize(1)
     assertThat(response.errors!![0].message).isEqualTo("")
@@ -86,7 +84,7 @@ class ResponseParserTest {
   @Test
   @Throws(Exception::class)
   fun `error with message, location and custom attributes`() {
-    val response = AllPlanetsQuery().parse(Utils.readResource("ResponseErrorWithCustomAttributes.json"))
+    val response = AllPlanetsQuery().fromResponse(Utils.readResource("ResponseErrorWithCustomAttributes.json"))
     assertThat(response.hasErrors()).isTrue()
     assertThat(response.errors!![0].customAttributes).hasSize(4)
     assertThat(response.errors!![0].customAttributes["code"]).isEqualTo(500)
@@ -98,18 +96,16 @@ class ResponseParserTest {
   @Test
   @Throws(Exception::class)
   fun errorResponse_with_data() {
-    val response = EpisodeHeroNameQuery(Input.Present(Episode.JEDI)).parse(Utils.readResource("ResponseErrorWithData.json"))
+    val response = EpisodeHeroNameQuery(Input.Present(Episode.JEDI)).fromResponse(Utils.readResource("ResponseErrorWithData.json"))
     val data = response.data
     val errors = response.errors
     assertThat(data).isNotNull()
     assertThat(data!!.hero?.name).isEqualTo("R2-D2")
-    assertThat(errors).containsExactly(
-        Error(
-            "Cannot query field \"names\" on type \"Species\".",
-            listOf(Error.Location(3, 5)),
-            emptyMap<String, Any>()
-        )
-    )
+    assertThat(errors?.size).isEqualTo(1)
+    assertThat(errors?.get(0)?.message).isEqualTo("Cannot query field \"names\" on type \"Species\".")
+    assertThat(errors?.get(0)?.locations?.get(0)?.line).isEqualTo(3)
+    assertThat(errors?.get(0)?.locations?.get(0)?.column).isEqualTo(5)
+    assertThat(errors?.get(0)?.customAttributes?.size).isEqualTo(0)
   }
 
   @Test
@@ -120,7 +116,7 @@ class ResponseParserTest {
       override fun decode(jsonElement: JsonElement) = DATE_FORMAT.parse(jsonElement.toRawValue().toString())
       override fun encode(value: Date) = JsonString(DATE_FORMAT.format(value))
     }
-    val response = AllFilmsQuery().parse(Utils.readResource("HttpCacheTestAllFilms.json"), ResponseAdapterCache(mapOf(CustomScalars.Date to dateCustomScalarAdapter)))
+    val response = AllFilmsQuery().fromResponse(Utils.readResource("HttpCacheTestAllFilms.json"), ResponseAdapterCache(mapOf(CustomScalars.Date to dateCustomScalarAdapter)))
     assertThat(response.hasErrors()).isFalse()
     assertThat(response.data!!.allFilms?.films).hasSize(6)
     assertThat(response.data!!.allFilms?.films?.map { dateCustomScalarAdapter.encode(it!!.releaseDate).value }).isEqualTo(
@@ -130,7 +126,7 @@ class ResponseParserTest {
   @Test
   @Throws(Exception::class)
   fun dataNull() {
-    val response = HeroNameQuery().parse(Utils.readResource("ResponseDataNull.json"))
+    val response = HeroNameQuery().fromResponse(Utils.readResource("ResponseDataNull.json"))
     assertThat(response.data).isNull()
     assertThat(response.hasErrors()).isFalse()
   }
@@ -139,7 +135,7 @@ class ResponseParserTest {
   @Throws(Exception::class)
   fun fieldMissing() {
     try {
-      HeroNameQuery().parse(Utils.readResource("ResponseDataMissing.json"))
+      HeroNameQuery().fromResponse(Utils.readResource("ResponseDataMissing.json"))
       error("an error was expected")
     } catch (e: NullPointerException) {
     }
@@ -148,7 +144,7 @@ class ResponseParserTest {
   @Test
   @Throws(Exception::class)
   fun operationResponseParser() {
-    val data = HeroNameQuery().parse(Utils.readResource("HeroNameResponse.json")).data
+    val data = HeroNameQuery().fromResponse(Utils.readResource("HeroNameResponse.json")).data
     assertThat(data!!.hero?.name).isEqualTo("R2-D2")
   }
 
@@ -157,7 +153,7 @@ class ResponseParserTest {
   fun operationJsonWriter() {
     val expected = Utils.readResource("OperationJsonWriter.json")
     val query = AllPlanetsQuery()
-    val data = query.parse(expected).data
+    val data = query.fromResponse(expected).data
     val actual = query.toJson(data!!, "  ")
     assertThat(actual).isEqualTo(expected)
   }
@@ -166,7 +162,7 @@ class ResponseParserTest {
   @Throws(Exception::class)
   fun parseSuccessOperationRawResponse() {
     val query = AllPlanetsQuery()
-    val response = query.parse(Utils.readResource("AllPlanetsNullableField.json"))
+    val response = query.fromResponse(Utils.readResource("AllPlanetsNullableField.json"))
     assertThat(response.operation).isEqualTo(query)
     assertThat(response.hasErrors()).isFalse()
     assertThat(response.data).isNotNull()
@@ -176,7 +172,7 @@ class ResponseParserTest {
   @Test
   @Throws(Exception::class)
   fun parseErrorOperationRawResponse() {
-    val response = EpisodeHeroNameQuery(Input.Present(Episode.EMPIRE)).parse(
+    val response = EpisodeHeroNameQuery(Input.Present(Episode.EMPIRE)).fromResponse(
         Buffer().readFrom(javaClass.getResourceAsStream("/ResponseErrorWithData.json")),
         ResponseAdapterCache(emptyMap())
     )
@@ -186,20 +182,17 @@ class ResponseParserTest {
     assertThat(data).isNotNull()
     assertThat(data!!.hero).isNotNull()
     assertThat(data.hero?.name).isEqualTo("R2-D2")
-    assertThat(errors).containsExactly(
-        Error(
-            "Cannot query field \"names\" on type \"Species\".",
-            listOf(Error.Location(3, 5)),
-            emptyMap<String, Any>()
-        )
-    )
+    assertThat(errors?.get(0)?.message).isEqualTo("Cannot query field \"names\" on type \"Species\".")
+    assertThat(errors?.get(0)?.locations?.get(0)?.line).isEqualTo(3)
+    assertThat(errors?.get(0)?.locations?.get(0)?.column).isEqualTo(5)
+    assertThat(errors?.get(0)?.customAttributes?.size).isEqualTo(0)
   }
 
   @Test
   @Throws(Exception::class)
   fun `extensions are read from response`() {
     val query = HeroNameQuery()
-    val extensions = query.parse(Utils.readResource("HeroNameResponse.json")).extensions
+    val extensions = query.fromResponse(Utils.readResource("HeroNameResponse.json")).extensions
     assertThat(extensions).isEqualTo(mapOf(
         "cost" to mapOf(
             "requestedQueryCost" to 3,
@@ -226,7 +219,7 @@ class ResponseParserTest {
     )
     val query = CharacterDetailsQuery(id = "1")
     try {
-      query.parse(query.toJson(data))
+      query.fromResponse(query.toJson(data))
       error("expected IllegalStateException")
     } catch (e: IllegalArgumentException) {
       assertThat(e.message).contains("Can't map GraphQL type: `Date`")
@@ -239,7 +232,7 @@ class ResponseParserTest {
         json = mapOf("1" to "2", "3" to listOf("a", "b"))
     )
     val query = GetJsonScalarQuery()
-    val response = query.parse(query.toJson(data))
+    val response = query.fromResponse(query.toJson(data))
 
     assertThat(response.data).isEqualTo(data)
   }

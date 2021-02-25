@@ -4,7 +4,7 @@ import com.apollographql.apollo3.api.ApolloExperimental
 import com.apollographql.apollo3.api.ResponseAdapterCache
 import com.apollographql.apollo3.api.ExecutionContext
 import com.apollographql.apollo3.api.Operation
-import com.apollographql.apollo3.api.parse
+import com.apollographql.apollo3.api.fromResponse
 import com.apollographql.apollo3.exception.ApolloHttpException
 import com.apollographql.apollo3.interceptor.ApolloResponse
 import com.apollographql.apollo3.interceptor.BearerTokenInterceptor
@@ -43,7 +43,7 @@ class OauthInterceptorTest {
             emit(
                 ApolloResponse(
                     requestUuid = request.requestUuid,
-                    response = request.operation.parse("{\"data\":{\"name\":\"MockQuery\"}}".encodeUtf8()),
+                    response = request.operation.fromResponse("{\"data\":{\"name\":\"MockQuery\"}}".encodeUtf8()),
                     executionContext = ExecutionContext.Empty
                 )
             )

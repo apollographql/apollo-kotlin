@@ -1,7 +1,7 @@
 package com.apollographql.apollo3
 
 import com.apollographql.apollo3.api.ResponseAdapterCache
-import com.apollographql.apollo3.api.internal.IntResponseAdapter
+import com.apollographql.apollo3.api.IntResponseAdapter
 import com.apollographql.apollo3.api.internal.json.BufferedSourceJsonReader
 import okio.Buffer
 import kotlin.native.concurrent.AtomicInt

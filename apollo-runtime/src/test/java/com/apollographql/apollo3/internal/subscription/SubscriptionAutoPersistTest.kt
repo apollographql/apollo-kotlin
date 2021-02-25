@@ -4,8 +4,8 @@ import com.apollographql.apollo3.api.ResponseAdapterCache
 import com.apollographql.apollo3.api.Operation
 import com.apollographql.apollo3.api.ResponseField
 import com.apollographql.apollo3.api.Subscription
-import com.apollographql.apollo3.api.internal.ResponseAdapter
-import com.apollographql.apollo3.api.internal.json.JsonWriter
+import com.apollographql.apollo3.api.ResponseAdapter
+import com.apollographql.apollo3.api.json.JsonWriter
 import com.apollographql.apollo3.cache.normalized.CacheKeyResolver
 import com.apollographql.apollo3.subscription.ApolloOperationMessageSerializer
 import com.apollographql.apollo3.subscription.OperationClientMessage

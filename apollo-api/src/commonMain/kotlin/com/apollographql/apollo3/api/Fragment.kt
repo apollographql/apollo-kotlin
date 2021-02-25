@@ -1,8 +1,10 @@
 package com.apollographql.apollo3.api
 
-import com.apollographql.apollo3.api.internal.ResponseAdapter
-import com.apollographql.apollo3.api.internal.json.JsonWriter
+import com.apollographql.apollo3.api.json.JsonWriter
 
+/**
+ * Base interface for a fragment implementation.
+ */
 interface Fragment<D: Fragment.Data> {
   /**
    * Fragments do not have variable per the GraphQL spec but they are infered from arguments and used when reading the cache

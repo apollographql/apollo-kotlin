@@ -1,21 +1,40 @@
-package com.apollographql.apollo3.api.internal
+package com.apollographql.apollo3.api.internal.json
 
-import com.apollographql.apollo3.api.BigDecimal
-import com.apollographql.apollo3.api.internal.json.JsonReader
+import com.apollographql.apollo3.api.json.JsonReader
 
+/**
+ * A [JsonReader] that reads data from a regular [Map<String, Any?>]
+ *
+ * Map values should be any of:
+ * - String
+ * - Int
+ * - Double
+ * - null
+ * - Map<String, Any?> where values are any of these values recursively
+ * - List<Any?> where values are any of these values recursively
+ *
+ * Anything else is undefined
+ *
+ * @param root the root [Map] to read from
+ *
+ * The base implementation was taken from Moshi and ported to Kotlin multiplatform with some tweaks to make it better suited for GraphQL
+ * (see [JsonReader]).
+ *
+ * To read from a [okio.BufferedSource], see also [BufferedSourceJsonReader]
+ */
 class MapJsonReader(val root: Map<String, Any?>) : JsonReader {
-  class OrderedMap(val entries: List<Entry>)
-  class Entry(val key: String, val value: Any?)
+  private class OrderedMap(val entries: List<Entry>)
+  private class Entry(val key: String, val value: Any?)
 
-  val dataStack = ArrayList<Any>()
-  val indexStack = ArrayList<Int>()
-  val nameStack = ArrayList<String?>()
+  private val dataStack = ArrayList<Any>()
+  private val indexStack = ArrayList<Int>()
+  private val nameStack = ArrayList<String?>()
 
-  val sentinel = OrderedMap(listOf(Entry("root", root)))
+  private val sentinel = OrderedMap(listOf(Entry("root", root)))
 
-  var currentData: Any = sentinel
-  var currentIndex = 0
-  var currentName: String? = "root"
+  private var currentData: Any = sentinel
+  private var currentIndex = 0
+  private var currentName: String? = "root"
 
   /**
    * See [com.apollographql.apollo3.api.internal.json.BufferedSourceJsonReader] for the 32 limitation
@@ -23,6 +42,7 @@ class MapJsonReader(val root: Map<String, Any?>) : JsonReader {
   private val nameIndexStack = IntArray(32).apply {
     this[0] = 0
   }
+
   private var nameIndexStackSize = 1
 
 
@@ -165,10 +185,6 @@ class MapJsonReader(val root: Map<String, Any?>) : JsonReader {
     return nextValue() as Double
   }
 
-  override fun nextLong(): Long {
-    return nextValue() as Long
-  }
-
   override fun nextInt(): Int {
     return nextValue() as Int
   }
@@ -221,5 +237,4 @@ class MapJsonReader(val root: Map<String, Any?>) : JsonReader {
     }
     return -1
   }
-
 }

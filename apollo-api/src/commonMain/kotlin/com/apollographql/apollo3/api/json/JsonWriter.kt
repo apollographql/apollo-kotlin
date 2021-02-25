@@ -13,10 +13,10 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.apollographql.apollo3.api.internal.json
+package com.apollographql.apollo3.api.json
 
 import com.apollographql.apollo3.api.Upload
-import com.apollographql.apollo3.api.internal.Throws
+import com.apollographql.apollo3.api.Throws
 import okio.IOException
 
 /**
@@ -38,8 +38,11 @@ import okio.IOException
  *
  * Each `JsonWriter` may be used to write a single JSON stream. Instances of this class are not thread safe. Calls that would result in a
  * malformed JSON string will fail with an [IllegalStateException].
+ *
+ * **Note**: This interface was originally from Moshi and has been tweaked to better match the GraphQL use cases such as the
+ * absence of arbitrary precision and the presence of the [Upload]
  */
-interface JsonWriter : Closeable, Flushable {
+interface JsonWriter : Closeable {
   /**
    * Begins encoding a new array. Each call to this method must be paired with a call to [endArray].
    */
@@ -107,4 +110,9 @@ interface JsonWriter : Closeable, Flushable {
    */
   @Throws(IOException::class)
   fun value(value: Upload): JsonWriter
+
+  /**
+   * Flushes the writer
+   */
+  fun flush()
 }

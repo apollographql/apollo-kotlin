@@ -1,9 +1,8 @@
 package com.apollographql.apollo3.api
 
-import com.apollographql.apollo3.api.internal.ResponseAdapter
-import com.apollographql.apollo3.api.internal.UploadResponseAdapter
-import com.apollographql.apollo3.api.internal.json.JsonReader
-import com.apollographql.apollo3.api.internal.json.JsonWriter
+import com.apollographql.apollo3.api.internal.ThreadSafeMap
+import com.apollographql.apollo3.api.json.JsonReader
+import com.apollographql.apollo3.api.json.JsonWriter
 import com.apollographql.apollo3.api.internal.json.Utils.readRecursively
 import com.apollographql.apollo3.api.internal.json.Utils.writeToJson
 import kotlin.reflect.KClass

@@ -1,4 +1,4 @@
-package com.apollographql.apollo3
+package com.apollographql.apollo3.api
 
 /**
  * Logger to use for logging by the [com.apollographql.apollo3.ApolloClient]

@@ -1,4 +1,4 @@
-package com.apollographql.apollo3.api.internal
+package com.apollographql.apollo3.api
 
 import kotlin.jvm.JvmStatic
 

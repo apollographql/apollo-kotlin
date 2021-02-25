@@ -6,7 +6,7 @@
 package com.example.mutation_create_review_semantic_naming.type
 
 import com.apollographql.apollo3.api.Input
-import com.apollographql.apollo3.api.InputType
+import com.apollographql.apollo3.api.InputObject
 import kotlin.Any
 import kotlin.Boolean
 import kotlin.Int
@@ -109,4 +109,4 @@ data class ReviewInput(
    * for test purpose only
    */
   val capitalizedInt: Input<Int?> = Input.Absent
-) : InputType
+) : InputObject

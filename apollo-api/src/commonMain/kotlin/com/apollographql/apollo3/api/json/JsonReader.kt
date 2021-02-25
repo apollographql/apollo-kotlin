@@ -13,9 +13,9 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.apollographql.apollo3.api.internal.json
+package com.apollographql.apollo3.api.json
 
-import com.apollographql.apollo3.api.internal.Throws
+import com.apollographql.apollo3.api.Throws
 import okio.IOException
 
 /**
@@ -28,6 +28,9 @@ import okio.IOException
  * Within JSON objects, name/value pairs are represented by a single token.
  *
  * Each {@code JsonReader} may be used to read a single JSON stream. Instances of this class are not thread safe.
+ *
+ * **Note**: This interface was originally from Moshi and has been tweaked to better match the GraphQL use cases such as the
+ * absence of arbitrary precision
  */
 interface JsonReader : Closeable {
 
@@ -111,18 +114,6 @@ interface JsonReader : Closeable {
    */
   @Throws(IOException::class)
   fun nextDouble(): Double
-
-  /**
-   * Returns the [Token.NUMBER] value of the next token, consuming it.
-   *
-   * If the next token is a string, this method will attempt to parse it as a long. If the next token's numeric value cannot be exactly
-   * represented by a [Long], this method throws.
-   *
-   * @throws JsonDataException if the next token is not a literal value, if the next literal value cannot be parsed as a number, or
-   * exactly represented as a long.
-   */
-  @Throws(IOException::class)
-  fun nextLong(): Long
 
   /**
    * Returns the [Token.NUMBER] value of the next token, consuming it.

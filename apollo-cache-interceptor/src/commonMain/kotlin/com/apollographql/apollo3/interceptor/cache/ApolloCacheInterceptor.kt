@@ -3,13 +3,13 @@ package com.apollographql.apollo3.interceptor.cache
 import com.apollographql.apollo3.api.ApolloExperimental
 import com.apollographql.apollo3.api.ResponseAdapterCache
 import com.apollographql.apollo3.api.Operation
-import com.apollographql.apollo3.api.Response.Companion.builder
 import com.apollographql.apollo3.cache.CacheHeaders
 import com.apollographql.apollo3.cache.normalized.CacheKeyResolver
 import com.apollographql.apollo3.cache.normalized.internal.ReadableStore
 import com.apollographql.apollo3.cache.normalized.internal.WriteableStore
 import com.apollographql.apollo3.interceptor.ApolloInterceptorChain
 import com.apollographql.apollo3.ApolloRequest
+import com.apollographql.apollo3.api.Response
 import com.apollographql.apollo3.interceptor.ApolloRequestInterceptor
 import com.apollographql.apollo3.interceptor.ApolloResponse
 import com.apollographql.apollo3.cache.normalized.internal.normalize
@@ -104,9 +104,10 @@ class ApolloCacheInterceptor<S>(private val store: S) : ApolloRequestInterceptor
     val data = operation.readDataFromCache(responseAdapterCache, store, CacheKeyResolver.DEFAULT, CacheHeaders.NONE)
 
     return ApolloResponse(
-        response = builder<D>(operation)
-            .data(data)
-            .build(),
+        response = Response(
+            operation = operation,
+            data = data
+        ),
         requestUuid = request.requestUuid,
         executionContext = request.executionContext
     ).setFromCache(true)

@@ -1,7 +1,6 @@
 package com.apollographql.apollo3.internal.interceptor
 
 import com.apollographql.apollo3.api.ResponseAdapterCache
-import com.apollographql.apollo3.api.Upload
 import com.apollographql.apollo3.api.Operation
 import com.apollographql.apollo3.api.Query
 import com.apollographql.apollo3.api.cache.http.HttpCache

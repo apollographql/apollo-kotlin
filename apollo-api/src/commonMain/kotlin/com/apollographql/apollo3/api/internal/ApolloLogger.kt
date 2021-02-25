@@ -1,9 +1,9 @@
 package com.apollographql.apollo3.api.internal
 
-import com.apollographql.apollo3.Logger
-import com.apollographql.apollo3.Logger.Companion.DEBUG
-import com.apollographql.apollo3.Logger.Companion.ERROR
-import com.apollographql.apollo3.Logger.Companion.WARN
+import com.apollographql.apollo3.api.Logger
+import com.apollographql.apollo3.api.Logger.Companion.DEBUG
+import com.apollographql.apollo3.api.Logger.Companion.ERROR
+import com.apollographql.apollo3.api.Logger.Companion.WARN
 
 class ApolloLogger(val logger: Logger?) {
 

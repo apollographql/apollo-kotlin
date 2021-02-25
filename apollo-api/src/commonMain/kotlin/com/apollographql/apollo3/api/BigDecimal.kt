@@ -1,8 +1,13 @@
 package com.apollographql.apollo3.api
 
-// BigDecimal cannot subclass `Number` in JS, as it will cause runtime trap in any compiled Kotlin/JS product in the module initialization
-// script.
-
+/**
+ * A multiplatform BigDecimal
+ *
+ * It's here for historical reasons mainly as GraphQL doesn't has Big Decimal types and should be moved to a separate module
+ *
+ * BigDecimal cannot subclass `Number` in JS, as it will cause runtime trap in any compiled Kotlin/JS product in the module initialization
+ * script.
+ */
 expect class BigDecimal {
   constructor(strVal: String)
   constructor(doubleVal: Double)

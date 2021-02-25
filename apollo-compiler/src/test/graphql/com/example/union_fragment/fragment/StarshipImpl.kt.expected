@@ -6,10 +6,10 @@
 package com.example.union_fragment.fragment
 
 import com.apollographql.apollo3.api.Fragment
+import com.apollographql.apollo3.api.ResponseAdapter
 import com.apollographql.apollo3.api.ResponseAdapterCache
 import com.apollographql.apollo3.api.ResponseField
-import com.apollographql.apollo3.api.internal.ResponseAdapter
-import com.apollographql.apollo3.api.internal.json.JsonWriter
+import com.apollographql.apollo3.api.json.JsonWriter
 import com.example.union_fragment.fragment.adapter.StarshipImpl_Adapter
 import com.example.union_fragment.fragment.adapter.StarshipImpl_ResponseAdapter
 import kotlin.String

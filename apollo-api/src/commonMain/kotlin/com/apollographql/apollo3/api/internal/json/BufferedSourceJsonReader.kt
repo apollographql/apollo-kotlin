@@ -15,16 +15,25 @@
  */
 package com.apollographql.apollo3.api.internal.json
 
-import com.apollographql.apollo3.api.internal.Throws
+import com.apollographql.apollo3.api.Throws
+import com.apollographql.apollo3.api.json.JsonDataException
+import com.apollographql.apollo3.api.json.JsonEncodingException
+import com.apollographql.apollo3.api.json.JsonReader
 import okio.Buffer
 import okio.BufferedSource
 import okio.ByteString
 import okio.ByteString.Companion.encodeUtf8
-import okio.ByteString.Companion.toByteString
 import okio.EOFException
 import okio.IOException
-import okio.Options
 
+/**
+ * A [JsonWriter] that reads json from an okio [BufferedSource]
+ *
+ * The base implementation was taken from Moshi and ported to Kotlin multiplatform with some tweaks to make it better suited for GraphQL
+ * (see [JsonReader]).
+ *
+ * To read from a [Map], see also [MapJsonReader]
+ */
 class BufferedSourceJsonReader(private val source: BufferedSource) : JsonReader {
   private val buffer: Buffer = source.buffer
   private var peeked = PEEKED_NONE
@@ -548,49 +557,6 @@ class BufferedSourceJsonReader(private val source: BufferedSource) : JsonReader 
       throw JsonEncodingException("JSON forbids NaN and infinities: $result at path ${getPath()}")
     }
 
-    peekedString = null
-    peeked = PEEKED_NONE
-    pathIndices[stackSize - 1]++
-    return result
-  }
-
-  @Throws(IOException::class)
-  override fun nextLong(): Long {
-    val p = peeked.takeUnless { it == PEEKED_NONE } ?: doPeek()
-    when {
-      p == PEEKED_LONG -> {
-        peeked = PEEKED_NONE
-        pathIndices[stackSize - 1]++
-        return peekedLong
-      }
-      p == PEEKED_NUMBER -> {
-        peekedString = buffer.readUtf8(peekedNumberLength.toLong())
-      }
-      p == PEEKED_DOUBLE_QUOTED || p == PEEKED_SINGLE_QUOTED -> {
-        peekedString = if (p == PEEKED_DOUBLE_QUOTED) nextQuotedValue(DOUBLE_QUOTE_OR_SLASH) else nextQuotedValue(SINGLE_QUOTE_OR_SLASH)
-        try {
-          val result = peekedString!!.toLong()
-          peeked = PEEKED_NONE
-          pathIndices[stackSize - 1]++
-          return result
-        } catch (ignored: NumberFormatException) { // Fall back to parse as a double below.
-        }
-      }
-      p != PEEKED_BUFFERED -> throw JsonDataException("Expected a long but was ${peek()} at path ${getPath()}")
-    }
-
-    peeked = PEEKED_BUFFERED
-
-    val asDouble: Double = try {
-      peekedString!!.toDouble()
-    } catch (e: NumberFormatException) {
-      throw JsonDataException("Expected a long but was $peekedString at path ${getPath()}")
-    }
-
-    val result = asDouble.toLong()
-    if (result.toDouble() != asDouble) { // Make sure no precision was lost casting to 'long'.
-      throw JsonDataException("Expected a long but was $peekedString at path ${getPath()}")
-    }
     peekedString = null
     peeked = PEEKED_NONE
     pathIndices[stackSize - 1]++

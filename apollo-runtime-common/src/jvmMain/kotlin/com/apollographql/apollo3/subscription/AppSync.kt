@@ -1,12 +1,9 @@
 package com.apollographql.apollo3.subscription
 
 import com.apollographql.apollo3.api.internal.json.BufferedSinkJsonWriter
-import com.apollographql.apollo3.api.internal.json.JsonWriter
 import com.apollographql.apollo3.api.internal.json.Utils
 import okhttp3.HttpUrl
 import okio.Buffer
-import okio.ByteString
-import java.util.Base64
 
 /**
  * TODO: move to commonMain.

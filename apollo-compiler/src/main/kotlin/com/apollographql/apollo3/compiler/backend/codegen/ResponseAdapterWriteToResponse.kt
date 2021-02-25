@@ -1,9 +1,8 @@
 package com.apollographql.apollo3.compiler.backend.codegen
 
-import com.apollographql.apollo3.api.internal.json.JsonWriter
+import com.apollographql.apollo3.api.json.JsonWriter
 import com.apollographql.apollo3.compiler.applyIf
 import com.apollographql.apollo3.compiler.backend.ast.CodeGenerationAst
-import com.apollographql.apollo3.compiler.backend.ast.toLowerCamelCase
 import com.apollographql.apollo3.compiler.escapeKotlinReservedWord
 import com.squareup.kotlinpoet.CodeBlock
 import com.squareup.kotlinpoet.FunSpec

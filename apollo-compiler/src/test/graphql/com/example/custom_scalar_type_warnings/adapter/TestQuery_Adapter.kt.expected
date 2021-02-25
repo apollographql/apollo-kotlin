@@ -5,10 +5,10 @@
 //
 package com.example.custom_scalar_type_warnings.adapter
 
+import com.apollographql.apollo3.api.ResponseAdapter
 import com.apollographql.apollo3.api.ResponseAdapterCache
-import com.apollographql.apollo3.api.internal.ResponseAdapter
-import com.apollographql.apollo3.api.internal.json.JsonReader
-import com.apollographql.apollo3.api.internal.json.JsonWriter
+import com.apollographql.apollo3.api.json.JsonReader
+import com.apollographql.apollo3.api.json.JsonWriter
 import com.example.custom_scalar_type_warnings.TestQuery
 import kotlin.IllegalStateException
 

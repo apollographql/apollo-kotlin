@@ -4,7 +4,7 @@ import com.apollographql.apollo3.api.ApolloExperimental
 import com.apollographql.apollo3.api.ResponseAdapterCache
 import com.apollographql.apollo3.api.ExecutionContext
 import com.apollographql.apollo3.api.Operation
-import com.apollographql.apollo3.api.parse
+import com.apollographql.apollo3.api.fromResponse
 import com.apollographql.apollo3.ApolloRequest
 import com.apollographql.apollo3.interceptor.ApolloResponse
 import com.apollographql.apollo3.network.NetworkTransport
@@ -26,7 +26,7 @@ class MockNetworkTransport(
       emit(
           ApolloResponse(
               requestUuid = request.requestUuid,
-              response = request.operation.parse(mockResponseChannel.receive().encodeUtf8()),
+              response = request.operation.fromResponse(mockResponseChannel.receive().encodeUtf8()),
               executionContext = ExecutionContext.Empty
           )
       )

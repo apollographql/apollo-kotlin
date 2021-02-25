@@ -7,7 +7,7 @@ import com.apollographql.apollo3.api.Query
 import com.apollographql.apollo3.api.ResponseField
 import com.apollographql.apollo3.api.cache.http.HttpCachePolicy
 import com.apollographql.apollo3.api.cache.http.HttpCachePolicy.FetchStrategy
-import com.apollographql.apollo3.api.internal.json.JsonWriter
+import com.apollographql.apollo3.api.json.JsonWriter
 import com.apollographql.apollo3.fetcher.ApolloResponseFetchers
 import com.google.common.truth.Truth
 import okhttp3.OkHttpClient

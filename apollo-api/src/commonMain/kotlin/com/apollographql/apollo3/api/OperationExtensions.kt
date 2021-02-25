@@ -1,18 +1,24 @@
 package com.apollographql.apollo3.api
 
 import com.apollographql.apollo3.api.ResponseAdapterCache.Companion.DEFAULT
-import com.apollographql.apollo3.api.internal.MapJsonReader
-import com.apollographql.apollo3.api.internal.MapJsonWriter
 import com.apollographql.apollo3.api.internal.MapResponseParser
-import com.apollographql.apollo3.api.internal.OperationRequestBodyComposer
 import com.apollographql.apollo3.api.internal.StreamResponseParser
 import com.apollographql.apollo3.api.internal.json.BufferedSinkJsonWriter
-import com.apollographql.apollo3.api.internal.json.JsonWriter
+import com.apollographql.apollo3.api.internal.json.MapJsonReader
+import com.apollographql.apollo3.api.internal.json.MapJsonWriter
 import okio.Buffer
 import okio.BufferedSource
 import okio.ByteString
 import okio.IOException
 import kotlin.jvm.JvmOverloads
+
+/**
+ * This file contains extension functions to handle [Operation]. The Operation class is relatively slim on purpose because everything
+ * it contains has to be generated for each generated operation which could end up in significantly larger code size.
+ *
+ * Instead, this files defines extensions function to read/write operation data and variables.
+ * By extension, the equivalent fragment functions are also handled here because they are really similar
+ */
 
 /**
  * Serializes GraphQL operation response data into its equivalent Json representation.
@@ -58,113 +64,11 @@ fun <D : Operation.Data> Operation<D>.toJson(data: D, indent: String = "", respo
 }
 
 /**
- * Composes POST JSON-encoded request body to be sent to the GraphQL server.
+ * Parses GraphQL operation raw response from [map] with provided [responseAdapterCache] and returns result [Operation.Data]
  *
- * In case when [autoPersistQueries] is set to `true` special `extension` attributes, required by query auto persistence,
- * will be encoded along with regular GraphQL request body. If query was previously persisted on the GraphQL server
- * set [withQueryDocument] to `false` to skip query document be sent in the request.
- *
- * Optional [responseAdapterCache] must be provided in case when this operation defines variables with custom GraphQL scalar type.
- *
- * *Example*:
- * ```
- * {
- *    "query": "query TestQuery($episode: Episode) { hero(episode: $episode) { name } }",
- *    "operationName": "TestQuery",
- *    "variables": { "episode": "JEDI" }
- *    "extensions": {
- *      "persistedQuery": {
- *        "version": 1,
- *        "sha256Hash": "32637895609e6c51a2593f5cfb49244fd79358d327ff670b3e930e024c3db8f6"
- *      }
- *    }
- * }
- * ```
+ * @param map: a [Map] representing the response data. It's typically the `data` object of a GraphQL response
  */
-@JvmOverloads
-fun Operation<*>.composeRequestBody(
-    autoPersistQueries: Boolean,
-    withQueryDocument: Boolean,
-    responseAdapterCache: ResponseAdapterCache = DEFAULT
-): ByteString {
-  return OperationRequestBodyComposer.compose(
-      operation = this,
-      autoPersistQueries = autoPersistQueries,
-      withQueryDocument = withQueryDocument,
-      responseAdapterCache = responseAdapterCache
-  ).let {
-    Buffer().apply {
-      it.writeTo(this)
-    }.readByteString()
-  }
-}
-
-@Deprecated("use composeRequestBody instead")
-fun Operation<*>.composeRequestBody(
-    responseAdapterCache: ResponseAdapterCache = DEFAULT
-): ByteString {
-  return OperationRequestBodyComposer.compose(
-      operation = this,
-      autoPersistQueries = false,
-      withQueryDocument = true,
-      responseAdapterCache = responseAdapterCache
-  ).let {
-    Buffer().apply {
-      it.writeTo(this)
-    }.readByteString()
-  }
-}
-/**
- * Parses GraphQL operation raw response from the [source] with provided [responseAdapterCache] and returns result [Response]
- *
- * This will consume [source] so you don't need to close it. Also, you cannot reuse it
- */
-@JvmOverloads
-fun <D : Operation.Data> Operation<D>.parse(
-    source: BufferedSource,
-    responseAdapterCache: ResponseAdapterCache = DEFAULT
-): Response<D> {
-  return StreamResponseParser.parse(source, this, responseAdapterCache)
-}
-
-/**
- * Parses GraphQL operation raw response from [byteString] with provided [responseAdapterCache] and returns result [Response]
- */
-fun <D : Operation.Data> Operation<D>.parse(
-    byteString: ByteString,
-    responseAdapterCache: ResponseAdapterCache = DEFAULT
-): Response<D> {
-  return parse(Buffer().write(byteString), responseAdapterCache)
-}
-
-/**
- * Parses GraphQL operation raw response from [string] with provided [responseAdapterCache] and returns result [Response]
- */
-fun <D : Operation.Data> Operation<D>.parse(
-    string: String,
-    responseAdapterCache: ResponseAdapterCache = DEFAULT
-): Response<D> {
-  return parse(Buffer().writeUtf8(string), responseAdapterCache)
-}
-
-/**
- * Parses GraphQL operation raw response from [map] with provided [responseAdapterCache] and returns result [Response]
- *
- * @param map: a [Map] representing the response. It typically include a "data" field
- */
-fun <D : Operation.Data> Operation<D>.parse(
-    map: Map<String, Any?>,
-    responseAdapterCache: ResponseAdapterCache = DEFAULT
-): Response<D> {
-  return MapResponseParser.parse(map, this, responseAdapterCache)
-}
-
-/**
- * Parses GraphQL operation raw response from [map] with provided [responseAdapterCache] and returns result [Response]
- *
- * @param map: a [Map] representing the response. It typically include a "data" field
- */
-fun <D : Operation.Data, M: Map<String, Any?>> Operation<D>.parseData(
+fun <D : Operation.Data, M: Map<String, Any?>> Operation<D>.fromJson(
     map: M,
     responseAdapterCache: ResponseAdapterCache = DEFAULT,
 ): D {
@@ -175,6 +79,60 @@ fun <D : Operation.Data, M: Map<String, Any?>> Operation<D>.parseData(
   }
 }
 
+/**
+ * Parses GraphQL operation raw response from the [source] with provided [responseAdapterCache] and returns result [Response]
+ *
+ * @param source A [BufferedSource] representing the full response. It typically contains a "data" and/or "errors" field
+ *
+ * This will consume [source] so you don't need to close it and you cannot reuse it.
+ */
+@JvmOverloads
+fun <D : Operation.Data> Operation<D>.fromResponse(
+    source: BufferedSource,
+    responseAdapterCache: ResponseAdapterCache = DEFAULT
+): Response<D> {
+  return StreamResponseParser.parse(source, this, responseAdapterCache)
+}
+
+/**
+ * Parses GraphQL operation raw response from the [byteString] with provided [responseAdapterCache] and returns result [Response]
+ *
+ * @param byteString A [ByteString] representing the full response. It typically contains a "data" and/or "errors" field
+ */
+fun <D : Operation.Data> Operation<D>.fromResponse(
+    byteString: ByteString,
+    responseAdapterCache: ResponseAdapterCache = DEFAULT
+): Response<D> {
+  return fromResponse(Buffer().write(byteString), responseAdapterCache)
+}
+
+/**
+ * Parses GraphQL operation raw response from the [string] with provided [responseAdapterCache] and returns result [Response]
+ *
+ * @param string A [String] representing the full response. It typically contains a "data" and/or "errors" field
+ */
+fun <D : Operation.Data> Operation<D>.fromResponse(
+    string: String,
+    responseAdapterCache: ResponseAdapterCache = DEFAULT
+): Response<D> {
+  return fromResponse(Buffer().writeUtf8(string), responseAdapterCache)
+}
+
+/**
+ * Parses GraphQL operation raw response from [map] with provided [responseAdapterCache] and returns result [Response]
+ *
+ * @param map: a [Map] representing the response. It typically include a "data" field
+ */
+fun <D : Operation.Data> Operation<D>.fromResponse(
+    map: Map<String, Any?>,
+    responseAdapterCache: ResponseAdapterCache = DEFAULT
+): Response<D> {
+  return MapResponseParser.parse(map, this, responseAdapterCache)
+}
+
+/**
+ * Serializes variables to a Json Map
+ */
 fun <D : Operation.Data> Operation<D>.variables(responseAdapterCache: ResponseAdapterCache): Operation.Variables {
   val valueMap = MapJsonWriter().apply {
     serializeVariables(this, responseAdapterCache)
@@ -182,7 +140,9 @@ fun <D : Operation.Data> Operation<D>.variables(responseAdapterCache: ResponseAd
   return Operation.Variables(valueMap)
 }
 
-
+/**
+ * Serializes variables to a Json Map
+ */
 fun <D : Fragment.Data> Fragment<D>.variables(responseAdapterCache: ResponseAdapterCache): Operation.Variables {
   val valueMap = MapJsonWriter().apply {
     serializeVariables(this, responseAdapterCache)
@@ -190,14 +150,18 @@ fun <D : Fragment.Data> Fragment<D>.variables(responseAdapterCache: ResponseAdap
   return Operation.Variables(valueMap)
 }
 
-
+/**
+ * Serializes variables to a Json String
+ */
 fun <D : Operation.Data> Operation<D>.variablesJson(responseAdapterCache: ResponseAdapterCache): String {
   return Buffer().apply {
     serializeVariables(BufferedSinkJsonWriter(this), responseAdapterCache)
   }.readUtf8()
 }
 
-
+/**
+ * Serializes variables to a Json String
+ */
 fun <D : Fragment.Data> Fragment<D>.variablesJson(responseAdapterCache: ResponseAdapterCache): String {
   return Buffer().apply {
     serializeVariables(BufferedSinkJsonWriter(this), responseAdapterCache)

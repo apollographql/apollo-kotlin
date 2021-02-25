@@ -2,7 +2,7 @@ package com.apollographql.apollo3
 
 import com.apollographql.apollo3.Utils.immediateExecutor
 import com.apollographql.apollo3.api.Input
-import com.apollographql.apollo3.api.Response.Companion.builder
+import com.apollographql.apollo3.api.Response
 import com.apollographql.apollo3.exception.ApolloException
 import com.apollographql.apollo3.exception.ApolloGenericException
 import com.apollographql.apollo3.integration.normalizer.EpisodeHeroNameQuery
@@ -144,14 +144,19 @@ class ApolloInterceptorChainTest {
     val request = Request.Builder()
         .url("https://localhost:8080/")
         .build()
-    val okHttpResponse = Response.Builder()
+    val okHttpResponse = okhttp3.Response.Builder()
         .request(request)
         .protocol(Protocol.HTTP_2)
         .code(200)
         .message("Intercepted")
         .body(ResponseBody.create(MediaType.parse("text/plain; charset=utf-8"), "fakeResponse"))
         .build()
-    val apolloResponse = builder<EpisodeHeroNameQuery.Data>(query).build()
-    return InterceptorResponse(okHttpResponse, apolloResponse)
+    return InterceptorResponse(
+        okHttpResponse,
+        Response(
+            operation = query,
+            data = null
+        )
+    )
   }
 }

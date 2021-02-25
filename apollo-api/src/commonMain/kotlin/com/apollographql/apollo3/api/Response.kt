@@ -3,7 +3,7 @@ package com.apollographql.apollo3.api
 import kotlin.jvm.JvmStatic
 
 /**
- * Represents either a successful or failed response received from the GraphQL server.
+ * Represents a GraphQL response. GraphQL responses can be be partial responses so it is valid to have both data != null and errors
  */
 data class Response<D : Operation.Data>(
     /**
@@ -38,81 +38,5 @@ data class Response<D : Operation.Data>(
      */
     val executionContext: ExecutionContext = ExecutionContext.Empty
 ) {
-
-  constructor(builder: Builder<D>) : this(
-      operation = builder.operation,
-      data = builder.data,
-      errors = builder.errors,
-      isFromCache = builder.fromCache,
-      extensions = builder.extensions.orEmpty(),
-      executionContext = builder.executionContext
-  )
-
   fun hasErrors(): Boolean = !errors.isNullOrEmpty()
-
-  fun toBuilder(): Builder<D> = Builder<D>(operation)
-      .data(data)
-      .errors(errors)
-      .fromCache(isFromCache)
-      .extensions(extensions)
-      .executionContext(executionContext)
-
-  override fun equals(other: Any?): Boolean {
-    if (this === other) return true
-    if (other !is Response<*>) return false
-
-    if (operation != other.operation) return false
-    if (data != other.data) return false
-    if (errors != other.errors) return false
-    if (isFromCache != other.isFromCache) return false
-    if (extensions != other.extensions) return false
-    if (executionContext != other.executionContext) return false
-
-    return true
-  }
-
-  override fun hashCode(): Int {
-    var result = operation.hashCode()
-    result = 31 * result + (data?.hashCode() ?: 0)
-    result = 31 * result + (errors?.hashCode() ?: 0)
-    result = 31 * result + isFromCache.hashCode()
-    result = 31 * result + extensions.hashCode()
-    return result
-  }
-
-  class Builder<D : Operation.Data> internal constructor(internal val operation: Operation<*>) {
-    internal var data: D? = null
-    internal var errors: List<Error>? = null
-    internal var fromCache: Boolean = false
-    internal var extensions: Map<String, Any?>? = null
-    internal var executionContext: ExecutionContext = ExecutionContext.Empty
-
-    fun data(data: D?) = apply {
-      this.data = data
-    }
-
-    fun errors(errors: List<Error>?) = apply {
-      this.errors = errors
-    }
-
-    fun fromCache(fromCache: Boolean) = apply {
-      this.fromCache = fromCache
-    }
-
-    fun extensions(extensions: Map<String, Any?>?) = apply {
-      this.extensions = extensions
-    }
-
-    fun executionContext(executionContext: ExecutionContext) = apply {
-      this.executionContext = executionContext
-    }
-
-    fun build(): Response<D> = Response(this)
-  }
-
-  companion object {
-
-    @JvmStatic
-    fun <D : Operation.Data> builder(operation: Operation<*>): Builder<D> = Builder(operation)
-  }
 }

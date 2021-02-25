@@ -1,7 +1,7 @@
 package com.apollographql.apollo3.internal.fetcher
 
 import com.apollographql.apollo3.api.Operation
-import com.apollographql.apollo3.api.Response.Companion.builder
+import com.apollographql.apollo3.api.Response
 import com.apollographql.apollo3.api.internal.ApolloLogger
 import com.apollographql.apollo3.exception.ApolloException
 import com.apollographql.apollo3.fetcher.ResponseFetcher
@@ -19,7 +19,7 @@ import java.util.concurrent.Executor
  * wrapped inside.
  */
 class CacheOnlyFetcher : ResponseFetcher {
-  override fun provideInterceptor(apolloLogger: ApolloLogger?): ApolloInterceptor {
+  override fun provideInterceptor(logger: ApolloLogger?): ApolloInterceptor {
     return CacheOnlyInterceptor()
   }
 
@@ -53,7 +53,14 @@ class CacheOnlyFetcher : ResponseFetcher {
     }
 
     fun cacheMissResponse(operation: Operation<*>?): InterceptorResponse {
-      return InterceptorResponse(null, builder<Operation.Data>(operation!!).fromCache(true).build())
+      return InterceptorResponse(
+          null,
+          Response(
+              operation = operation!!,
+              data = null,
+              isFromCache = true
+          )
+      )
     }
   }
 }

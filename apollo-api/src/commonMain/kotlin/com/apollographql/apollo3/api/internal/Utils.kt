@@ -5,7 +5,7 @@ import kotlin.jvm.JvmName
 import kotlin.jvm.JvmStatic
 
 /**
- * Contains utility methods for checking Preconditions
+ * Contains utility methods for checking Preconditions from Java code. This is only used by the HTTP cache
  */
 @Suppress("FunctionName")
 object Utils {
@@ -44,25 +44,5 @@ object Utils {
       throw NullPointerException()
     }
     return reference
-  }
-
-  fun ResponseField.shouldSkip(variableValues: Map<String, Any?>): Boolean {
-    for (condition in conditions) {
-      if (condition is ResponseField.BooleanCondition) {
-        val conditionValue = variableValues[condition.variableName] as Boolean
-        if (condition.isInverted) {
-          // means it's a skip directive
-          if (conditionValue) {
-            return true
-          }
-        } else {
-          // means it's an include directive
-          if (!conditionValue) {
-            return true
-          }
-        }
-      }
-    }
-    return false
   }
 }

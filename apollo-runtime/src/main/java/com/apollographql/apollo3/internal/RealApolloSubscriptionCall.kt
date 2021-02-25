@@ -25,6 +25,7 @@ class RealApolloSubscriptionCall<D : Operation.Data>(
     private val logger: ApolloLogger) : ApolloSubscriptionCall<D> {
   private val state = AtomicReference(CallState.IDLE)
   private var subscriptionCallback: SubscriptionManagerCallback<D>? = null
+
   @Throws(ApolloCanceledException::class)
   override fun execute(callback: ApolloSubscriptionCall.Callback<D>) {
     synchronized(this) {
@@ -103,10 +104,11 @@ class RealApolloSubscriptionCall<D : Operation.Data>(
         CacheHeaders.NONE)
     return if (data != null) {
       logger.d("Cache HIT for subscription `%s`", subscription)
-      Response.builder<D>(subscription)
-          .data(data)
-          .fromCache(true)
-          .build()
+      Response(
+          operation = subscription,
+          data = data,
+          isFromCache = true
+      )
     } else {
       logger.d("Cache MISS for subscription `%s`", subscription)
       null
@@ -118,7 +120,7 @@ class RealApolloSubscriptionCall<D : Operation.Data>(
       val callback = originalCallback
       val data = response.response.data
       if (callback != null) {
-        if(data != null && delegate!!.cachePolicy != ApolloSubscriptionCall.CachePolicy.NO_CACHE) {
+        if (data != null && delegate!!.cachePolicy != ApolloSubscriptionCall.CachePolicy.NO_CACHE) {
           delegate!!.apolloStore.writeOperation(response.subscription, data)
         }
         callback.onResponse(response.response)

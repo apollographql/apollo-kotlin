@@ -7,11 +7,11 @@ package com.example.fragment_used_twice
 
 import com.apollographql.apollo3.api.Operation
 import com.apollographql.apollo3.api.Query
+import com.apollographql.apollo3.api.QueryDocumentMinifier
+import com.apollographql.apollo3.api.ResponseAdapter
 import com.apollographql.apollo3.api.ResponseAdapterCache
 import com.apollographql.apollo3.api.ResponseField
-import com.apollographql.apollo3.api.internal.QueryDocumentMinifier
-import com.apollographql.apollo3.api.internal.ResponseAdapter
-import com.apollographql.apollo3.api.internal.json.JsonWriter
+import com.apollographql.apollo3.api.json.JsonWriter
 import com.example.fragment_used_twice.adapter.TestQuery_Adapter
 import com.example.fragment_used_twice.adapter.TestQuery_ResponseAdapter
 import com.example.fragment_used_twice.fragment.HeroDetails

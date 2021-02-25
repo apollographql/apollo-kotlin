@@ -84,10 +84,14 @@ class ApolloCacheInterceptor<D : Operation.Data>(
         request.cacheHeaders)
     if (data != null) {
       logger.d("Cache HIT for operation %s", request.operation.name())
-      return InterceptorResponse(null, Response.builder<Operation.Data>(request.operation)
-          .data(data)
-          .fromCache(true)
-          .build())
+      return InterceptorResponse(
+          null,
+          Response(
+              operation = request.operation,
+              data = data,
+              isFromCache = true
+          )
+      )
     }
     logger.d("Cache MISS for operation %s", request.operation.name())
     throw ApolloGenericException(String.format("Cache miss for operation %s", request.operation.name()))

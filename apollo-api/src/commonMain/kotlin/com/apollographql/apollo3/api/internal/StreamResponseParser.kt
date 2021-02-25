@@ -3,17 +3,23 @@ package com.apollographql.apollo3.api.internal
 import com.apollographql.apollo3.api.Error
 import com.apollographql.apollo3.api.Operation
 import com.apollographql.apollo3.api.Response
+import com.apollographql.apollo3.api.ResponseAdapter
 import com.apollographql.apollo3.api.ResponseAdapterCache
+import com.apollographql.apollo3.api.Throws
 import com.apollographql.apollo3.api.internal.json.BufferedSourceJsonReader
-import com.apollographql.apollo3.api.internal.json.JsonReader
+import com.apollographql.apollo3.api.json.JsonReader
 import com.apollographql.apollo3.api.internal.json.Utils.readRecursively
-import com.apollographql.apollo3.api.internal.json.use
+import com.apollographql.apollo3.api.json.use
 import okio.BufferedSource
 import okio.IOException
 import kotlin.jvm.JvmStatic
 
+/**
+ * [StreamResponseParser] parses network responses, including data, errors and extensions from a [JsonReader]
+ *
+ * That will avoid the cost of having to create an entire Map in memory
+ */
 object StreamResponseParser {
-
   @JvmStatic
   @Throws(IOException::class)
   fun <D : Operation.Data> parse(
