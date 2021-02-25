@@ -22,7 +22,7 @@ import com.squareup.kotlinpoet.asTypeName
 internal fun CodeGenerationAst.InputField.asInputTypeName() = if (isRequired) {
   type.asTypeName()
 } else {
-  Input::class.asClassName().parameterizedBy(type.asTypeName().copy(nullable = false))
+  Input::class.asClassName().parameterizedBy(type.asTypeName())
 }
 
 internal fun CodeGenerationAst.InputField.toParameterSpec(): ParameterSpec {
@@ -66,12 +66,6 @@ fun notImplementedFromResponseFunSpec(returnTypeName: TypeName) = FunSpec.builde
     .addCode("throw %T(%S)", ClassName("kotlin", "IllegalStateException"), "Input type used in output position")
     .build()
 
-private fun CodeGenerationAst.InputField.actualType() = if (isRequired) {
-  type.nonNullable()
-} else {
-  type
-}
-
 internal fun List<CodeGenerationAst.InputField>.serializerTypeSpec(
     packageName: String,
     name: String,
@@ -91,7 +85,7 @@ internal fun List<CodeGenerationAst.InputField>.serializerTypeSpec(
   )
 
   map {
-    it.actualType()
+    it.type
   }.distinct()
       .forEach {
         builder.addProperty(it.adapterPropertySpec())
@@ -108,11 +102,11 @@ internal fun List<CodeGenerationAst.InputField>.serializerTypeSpec(
           if (!it.isRequired) {
             beginControlFlow("if (value.%L is %T)", kotlinNameForVariable(it.name), Input.Present::class)
             addStatement("writer.name(%S)", it.name)
-            addStatement("%L.toResponse(writer, value.%L.value)", kotlinNameForAdapterField(it.actualType()), kotlinNameForVariable(it.name))
+            addStatement("%L.toResponse(writer, value.%L.value)", kotlinNameForAdapterField(it.type), kotlinNameForVariable(it.name))
             endControlFlow()
           } else {
             addStatement("writer.name(%S)", it.name)
-            addStatement("%L.toResponse(writer, value.%L)", kotlinNameForAdapterField(it.actualType()), kotlinNameForVariable(it.name))
+            addStatement("%L.toResponse(writer, value.%L)", kotlinNameForAdapterField(it.type), kotlinNameForVariable(it.name))
           }
         }
         addStatement("writer.endObject()")

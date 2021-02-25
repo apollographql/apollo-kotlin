@@ -337,7 +337,7 @@ internal class AstBuilder private constructor(
         deprecationReason = null,
         type = fieldType,
         description = "",
-        isRequired = !fieldType.nullable,
+        isRequired = !fieldType.nullable && !hasDefaultValue,
     )
   }
 

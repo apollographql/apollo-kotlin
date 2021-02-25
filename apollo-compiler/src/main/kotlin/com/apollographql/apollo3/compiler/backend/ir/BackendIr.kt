@@ -52,6 +52,7 @@ internal data class BackendIr(
   data class Variable(
       val name: String,
       val type: IntrospectionSchema.TypeRef,
+      val hasDefaultValue: Boolean
   )
 
   data class Field(

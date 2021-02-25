@@ -44,7 +44,8 @@ internal class BackendIrBuilder constructor(
     val variables = this.variables.map { variable ->
       BackendIr.Variable(
           name = variable.name,
-          type = variable.type.toSchemaType()
+          type = variable.type.toSchemaType(),
+          hasDefaultValue = variable.defaultValue != null
       )
     }
 
@@ -197,7 +198,8 @@ internal class BackendIrBuilder constructor(
         variables = this.variables.map { variable ->
           BackendIr.Variable(
               name = variable.name,
-              type = variable.type.toSchemaType()
+              type = variable.type.toSchemaType(),
+              hasDefaultValue = false
           )
         }
     )
