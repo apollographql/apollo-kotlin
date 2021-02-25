@@ -1,135 +1,120 @@
-package com.apollographql.apollo3.cache.http;
+package com.apollographql.apollo3.cache.http
 
-import com.apollographql.apollo3.api.cache.http.HttpCacheRecordEditor;
-import com.apollographql.apollo3.api.internal.ApolloLogger;
-import okhttp3.MediaType;
-import okhttp3.Response;
-import okhttp3.ResponseBody;
-import okio.Buffer;
-import okio.BufferedSource;
-import okio.Okio;
-import okio.Source;
-import okio.Timeout;
-import org.jetbrains.annotations.NotNull;
+import com.apollographql.apollo3.api.cache.http.HttpCacheRecordEditor
+import com.apollographql.apollo3.api.internal.ApolloLogger
+import com.apollographql.apollo3.api.internal.Utils.__checkNotNull
+import okhttp3.MediaType
+import okhttp3.Response
+import okhttp3.ResponseBody
+import okio.Buffer
+import okio.BufferedSource
+import okio.Source
+import okio.Timeout
+import okio.buffer
+import java.io.IOException
+import java.util.concurrent.TimeUnit
 
-import java.io.IOException;
-
-import static com.apollographql.apollo3.api.internal.Utils.checkNotNull;
-import static com.apollographql.apollo3.cache.http.Utils.closeQuietly;
-import static com.apollographql.apollo3.cache.http.Utils.discard;
-import static java.util.concurrent.TimeUnit.MILLISECONDS;
-
-final class ResponseBodyProxy extends ResponseBody {
-  private final String contentType;
-  private final String contentLength;
-  private final BufferedSource responseBodySource;
-
-  ResponseBodyProxy(@NotNull HttpCacheRecordEditor cacheRecordEditor, @NotNull Response sourceResponse,
-      @NotNull ApolloLogger logger) {
-    checkNotNull(cacheRecordEditor, "cacheRecordEditor == null");
-    checkNotNull(sourceResponse, "sourceResponse == null");
-    checkNotNull(logger, "logger == null");
-    this.contentType = sourceResponse.header("Content-Type");
-    this.contentLength = sourceResponse.header("Content-Length");
-    this.responseBodySource = Okio.buffer(new ProxySource(cacheRecordEditor, sourceResponse.body().source(), logger));
+internal class ResponseBodyProxy(cacheRecordEditor: HttpCacheRecordEditor, sourceResponse: Response,
+                                 logger: ApolloLogger) : ResponseBody() {
+  private val contentType: String?
+  private val contentLength: String?
+  private val responseBodySource: BufferedSource
+  override fun contentType(): MediaType? {
+    return if (contentType != null) MediaType.parse(contentType) else null
   }
 
-  @Override public MediaType contentType() {
-    return contentType != null ? MediaType.parse(contentType) : null;
-  }
-
-  @Override public long contentLength() {
-    try {
-      return contentLength != null ? Long.parseLong(contentLength) : -1;
-    } catch (NumberFormatException e) {
-      return -1;
+  override fun contentLength(): Long {
+    return try {
+      contentLength?.toLong() ?: -1
+    } catch (e: NumberFormatException) {
+      -1
     }
   }
 
-  @NotNull @Override public BufferedSource source() {
-    return responseBodySource;
+  override fun source(): BufferedSource {
+    return responseBodySource
   }
 
-  private static class ProxySource implements Source {
-    private final HttpCacheRecordEditor cacheRecordEditor;
-    private final ResponseBodyCacheSink responseBodyCacheSink;
-    private final BufferedSource responseBodySource;
-    private final ApolloLogger logger;
-    private boolean closed;
-
-    ProxySource(HttpCacheRecordEditor cacheRecordEditor, BufferedSource responseBodySource, final ApolloLogger logger) {
-      this.cacheRecordEditor = cacheRecordEditor;
-      this.responseBodySource = responseBodySource;
-      this.logger = logger;
-      responseBodyCacheSink = new ResponseBodyCacheSink(Okio.buffer(cacheRecordEditor.bodySink())) {
-        @Override void onException(Exception e) {
-          abortCacheQuietly();
-          logger.w(e, "Operation failed");
-        }
-      };
-    }
-
-    @Override public long read(Buffer sink, long byteCount) throws IOException {
-      long bytesRead;
+  private class ProxySource internal constructor(private val cacheRecordEditor: HttpCacheRecordEditor, private val responseBodySource: BufferedSource, private val logger: ApolloLogger) : Source {
+    private val responseBodyCacheSink: ResponseBodyCacheSink
+    private var closed = false
+    @Throws(IOException::class)
+    override fun read(sink: Buffer, byteCount: Long): Long {
+      val bytesRead: Long
       try {
-        bytesRead = responseBodySource.read(sink, byteCount);
-      } catch (IOException e) {
+        bytesRead = responseBodySource.read(sink, byteCount)
+      } catch (e: IOException) {
         if (!closed) {
           // Failed to write a complete cache response.
-          closed = true;
-          abortCacheQuietly();
+          closed = true
+          abortCacheQuietly()
         }
-        throw e;
+        throw e
       }
-
-      if (bytesRead == -1) {
+      if (bytesRead == -1L) {
         if (!closed) {
           // The cache response is complete!
-          closed = true;
-          commitCache();
+          closed = true
+          commitCache()
         }
-        return -1;
+        return -1
       }
-
-      responseBodyCacheSink.copyFrom(sink, sink.size() - bytesRead, bytesRead);
-      return bytesRead;
+      responseBodyCacheSink.copyFrom(sink, sink.size - bytesRead, bytesRead)
+      return bytesRead
     }
 
-    @NotNull @Override public Timeout timeout() {
-      return responseBodySource.timeout();
+    override fun timeout(): Timeout {
+      return responseBodySource.timeout()
     }
 
-    @Override public void close() {
-      if (closed) return;
-      closed = true;
-
-      if (discard(this, 100, MILLISECONDS)) {
-        commitCache();
+    override fun close() {
+      if (closed) return
+      closed = true
+      if (Utils.discard(this, 100, TimeUnit.MILLISECONDS)) {
+        commitCache()
       } else {
-        abortCacheQuietly();
+        abortCacheQuietly()
       }
     }
 
-    private void commitCache() {
-      closeQuietly(responseBodySource);
+    private fun commitCache() {
+      Utils.closeQuietly(responseBodySource)
       try {
-        responseBodyCacheSink.close();
-        cacheRecordEditor.commit();
-      } catch (Exception e) {
-        closeQuietly(responseBodyCacheSink);
-        abortCacheQuietly();
-        logger.e(e, "Failed to commit cache changes");
+        responseBodyCacheSink.close()
+        cacheRecordEditor.commit()
+      } catch (e: Exception) {
+        Utils.closeQuietly(responseBodyCacheSink)
+        abortCacheQuietly()
+        logger.e(e, "Failed to commit cache changes")
       }
     }
 
-    void abortCacheQuietly() {
-      closeQuietly(responseBodySource);
-      closeQuietly(responseBodyCacheSink);
+    fun abortCacheQuietly() {
+      Utils.closeQuietly(responseBodySource)
+      Utils.closeQuietly(responseBodyCacheSink)
       try {
-        cacheRecordEditor.abort();
-      } catch (Exception e) {
-        logger.w(e, "Failed to abort cache edit");
+        cacheRecordEditor.abort()
+      } catch (e: Exception) {
+        logger.w(e, "Failed to abort cache edit")
       }
     }
+
+    init {
+      responseBodyCacheSink = object : ResponseBodyCacheSink(cacheRecordEditor.bodySink().buffer()) {
+        public override fun onException(e: Exception?) {
+          abortCacheQuietly()
+          logger.w(e, "Operation failed")
+        }
+      }
+    }
+  }
+
+  init {
+    __checkNotNull(cacheRecordEditor, "cacheRecordEditor == null")
+    __checkNotNull(sourceResponse, "sourceResponse == null")
+    __checkNotNull(logger, "logger == null")
+    contentType = sourceResponse.header("Content-Type")
+    contentLength = sourceResponse.header("Content-Length")
+    responseBodySource = ProxySource(cacheRecordEditor, sourceResponse.body()!!.source(), logger).buffer()
   }
 }

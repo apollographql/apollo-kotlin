@@ -1,59 +1,56 @@
-package com.apollographql.apollo3.cache.http;
+package com.apollographql.apollo3.cache.http
 
-import java.io.IOException;
+import okio.Buffer
+import okio.BufferedSink
+import okio.ForwardingSink
+import java.io.IOException
 
-import okio.Buffer;
-import okio.BufferedSink;
-import okio.ForwardingSink;
-
-abstract class ResponseBodyCacheSink extends ForwardingSink {
-  private boolean failed;
-
-  ResponseBodyCacheSink(BufferedSink delegate) {
-    super(delegate);
-  }
-
-  @Override public void write(Buffer source, long byteCount) throws IOException {
-    if (failed) return;
+internal abstract class ResponseBodyCacheSink(delegate: BufferedSink?) : ForwardingSink(delegate!!) {
+  private var failed = false
+  @Throws(IOException::class)
+  override fun write(source: Buffer, byteCount: Long) {
+    if (failed) return
     try {
-      super.write(source, byteCount);
-    } catch (Exception e) {
-      failed = true;
-      onException(e);
+      super.write(source, byteCount)
+    } catch (e: Exception) {
+      failed = true
+      onException(e)
     }
   }
 
-  @Override public void flush() throws IOException {
-    if (failed) return;
+  @Throws(IOException::class)
+  override fun flush() {
+    if (failed) return
     try {
-      super.flush();
-    } catch (Exception e) {
-      failed = true;
-      onException(e);
+      super.flush()
+    } catch (e: Exception) {
+      failed = true
+      onException(e)
     }
   }
 
-  @Override public void close() throws IOException {
-    if (failed) return;
+  @Throws(IOException::class)
+  override fun close() {
+    if (failed) return
     try {
-      super.close();
-    } catch (Exception e) {
-      failed = true;
-      onException(e);
+      super.close()
+    } catch (e: Exception) {
+      failed = true
+      onException(e)
     }
   }
 
-  void copyFrom(Buffer buffer, long offset, long bytesCount) {
-    if (failed) return;
+  fun copyFrom(buffer: Buffer, offset: Long, bytesCount: Long) {
+    if (failed) return
     try {
-      BufferedSink outSink = (BufferedSink) delegate();
-      buffer.copyTo(outSink.buffer(), offset, bytesCount);
-      outSink.emitCompleteSegments();
-    } catch (Exception e) {
-      failed = true;
-      onException(e);
+      val outSink = delegate as BufferedSink
+      buffer.copyTo(outSink.buffer(), offset, bytesCount)
+      outSink.emitCompleteSegments()
+    } catch (e: Exception) {
+      failed = true
+      onException(e)
     }
   }
 
-  abstract void onException(Exception e);
+  abstract fun onException(e: Exception?)
 }

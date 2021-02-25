@@ -1,35 +1,34 @@
-package com.apollographql.apollo3.cache.http;
+package com.apollographql.apollo3.cache.http
 
-import okhttp3.MediaType;
-import okhttp3.ResponseBody;
-import okio.BufferedSource;
-import okio.Okio;
-import okio.Source;
+import okhttp3.MediaType
+import okhttp3.ResponseBody
+import okio.BufferedSource
+import okio.Source
+import okio.buffer
 
-final class CacheResponseBody extends ResponseBody {
-  private BufferedSource responseBodySource;
-  private final String contentType;
-  private final String contentLength;
-
-  CacheResponseBody(Source responseBodySource, String contentType, String contentLength) {
-    this.responseBodySource = Okio.buffer(responseBodySource);
-    this.contentType = contentType;
-    this.contentLength = contentLength;
+internal class CacheResponseBody(responseBodySource: Source, contentType: String?, contentLength: String?) : ResponseBody() {
+  private val responseBodySource: BufferedSource
+  private val contentType: String?
+  private val contentLength: String?
+  override fun contentType(): MediaType? {
+    return if (contentType != null) MediaType.parse(contentType) else null
   }
 
-  @Override public MediaType contentType() {
-    return contentType != null ? MediaType.parse(contentType) : null;
-  }
-
-  @Override public long contentLength() {
-    try {
-      return contentLength != null ? Long.parseLong(contentLength) : -1;
-    } catch (NumberFormatException e) {
-      return -1;
+  override fun contentLength(): Long {
+    return try {
+      contentLength?.toLong() ?: -1
+    } catch (e: NumberFormatException) {
+      -1
     }
   }
 
-  @Override public BufferedSource source() {
-    return responseBodySource;
+  override fun source(): BufferedSource {
+    return responseBodySource
+  }
+
+  init {
+    this.responseBodySource = responseBodySource.buffer()
+    this.contentType = contentType
+    this.contentLength = contentLength
   }
 }

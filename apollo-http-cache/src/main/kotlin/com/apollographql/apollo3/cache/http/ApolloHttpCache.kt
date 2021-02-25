@@ -1,181 +1,159 @@
-package com.apollographql.apollo3.cache.http;
+package com.apollographql.apollo3.cache.http
 
-import com.apollographql.apollo3.api.Logger;
-import com.apollographql.apollo3.api.cache.http.HttpCache;
-import com.apollographql.apollo3.api.cache.http.HttpCacheRecord;
-import com.apollographql.apollo3.api.cache.http.HttpCacheRecordEditor;
-import com.apollographql.apollo3.api.cache.http.HttpCacheStore;
-import com.apollographql.apollo3.api.internal.ApolloLogger;
-import okhttp3.Interceptor;
-import okhttp3.Response;
-import okio.ForwardingSource;
-import okio.Sink;
-import okio.Source;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import com.apollographql.apollo3.api.Logger
+import com.apollographql.apollo3.api.cache.http.HttpCache
+import com.apollographql.apollo3.api.cache.http.HttpCacheRecord
+import com.apollographql.apollo3.api.cache.http.HttpCacheRecordEditor
+import com.apollographql.apollo3.api.cache.http.HttpCacheStore
+import com.apollographql.apollo3.api.internal.ApolloLogger
+import com.apollographql.apollo3.api.internal.Utils.__checkNotNull
+import okhttp3.Interceptor
+import okhttp3.Response
+import okio.ForwardingSource
+import okio.Sink
+import okio.Source
+import java.io.IOException
 
-import java.io.IOException;
-
-import static com.apollographql.apollo3.api.internal.Utils.checkNotNull;
-import static com.apollographql.apollo3.cache.http.Utils.copyResponseBody;
-import static com.apollographql.apollo3.cache.http.Utils.skipStoreResponse;
-
-@SuppressWarnings("WeakerAccess")
-public final class ApolloHttpCache implements HttpCache {
-
-  private final HttpCacheStore cacheStore;
-  private final ApolloLogger logger;
-
-  public ApolloHttpCache(@NotNull final HttpCacheStore cacheStore) {
-    this(cacheStore, null);
-  }
-
-  public ApolloHttpCache(@NotNull final HttpCacheStore cacheStore, @Nullable final Logger logger) {
-    this.cacheStore = checkNotNull(cacheStore, "cacheStore == null");
-    this.logger = new ApolloLogger(logger);
-  }
-
-  @Override public void clear() {
+class ApolloHttpCache @JvmOverloads constructor(cacheStore: HttpCacheStore, logger: Logger? = null) : HttpCache {
+  private val cacheStore: HttpCacheStore
+  private val logger: ApolloLogger
+  override fun clear() {
     try {
-      cacheStore.delete();
-    } catch (IOException e) {
-      logger.e(e, "Failed to clear http cache");
+      cacheStore.delete()
+    } catch (e: IOException) {
+      logger.e(e, "Failed to clear http cache")
     }
   }
 
-  @Override public void remove(@NotNull String cacheKey) throws IOException {
-    cacheStore.remove(cacheKey);
+  @Throws(IOException::class)
+  override fun remove(cacheKey: String) {
+    cacheStore.remove(cacheKey)
   }
 
-  @Override public void removeQuietly(@NotNull String cacheKey) {
+  override fun removeQuietly(cacheKey: String) {
     try {
-      remove(cacheKey);
-    } catch (Exception ignore) {
-      logger.w(ignore, "Failed to remove cached record for key: %s", cacheKey);
+      remove(cacheKey)
+    } catch (ignore: Exception) {
+      logger.w(ignore, "Failed to remove cached record for key: %s", cacheKey)
     }
   }
 
-  @Override public Response read(@NotNull final String cacheKey) {
-    return read(cacheKey, false);
+  override fun read(cacheKey: String): Response? {
+    return read(cacheKey, false)
   }
 
-  @Override public Response read(@NotNull final String cacheKey, final boolean expireAfterRead) {
-    HttpCacheRecord responseCacheRecord = null;
-    try {
-      responseCacheRecord = cacheStore.cacheRecord(cacheKey);
+  override fun read(cacheKey: String, expireAfterRead: Boolean): Response? {
+    var responseCacheRecord: HttpCacheRecord? = null
+    return try {
+      responseCacheRecord = cacheStore.cacheRecord(cacheKey)
       if (responseCacheRecord == null) {
-        return null;
+        return null
       }
-
-      final HttpCacheRecord cacheRecord = responseCacheRecord;
-      Source cacheResponseSource = new ForwardingSource(responseCacheRecord.bodySource()) {
-        @Override
-        public void close() throws IOException {
-          super.close();
-          closeQuietly(cacheRecord);
+      val cacheRecord: HttpCacheRecord = responseCacheRecord
+      val cacheResponseSource: Source = object : ForwardingSource(responseCacheRecord.bodySource()) {
+        @Throws(IOException::class)
+        override fun close() {
+          super.close()
+          closeQuietly(cacheRecord)
           if (expireAfterRead) {
-            removeQuietly(cacheKey);
+            removeQuietly(cacheKey)
           }
         }
-      };
-
-      Response response = new ResponseHeaderRecord(responseCacheRecord.headerSource()).response();
-      String contentType = response.header("Content-Type");
-      String contentLength = response.header("Content-Length");
-      return response.newBuilder()
-          .addHeader(FROM_CACHE, "true")
-          .body(new CacheResponseBody(cacheResponseSource, contentType, contentLength))
-          .build();
-    } catch (Exception e) {
-      closeQuietly(responseCacheRecord);
-      logger.e(e, "Failed to read http cache entry for key: %s", cacheKey);
-      return null;
+      }
+      val response = ResponseHeaderRecord(responseCacheRecord.headerSource()).response()
+      val contentType = response.header("Content-Type")
+      val contentLength = response.header("Content-Length")
+      response.newBuilder()
+          .addHeader(HttpCache.FROM_CACHE, "true")
+          .body(CacheResponseBody(cacheResponseSource, contentType, contentLength))
+          .build()
+    } catch (e: Exception) {
+      closeQuietly(responseCacheRecord)
+      logger.e(e, "Failed to read http cache entry for key: %s", cacheKey)
+      null
     }
   }
 
-  @Override public Interceptor interceptor() {
-    return new HttpCacheInterceptor(this, logger);
+  override fun interceptor(): Interceptor {
+    return HttpCacheInterceptor(this, logger)
   }
 
-  Response cacheProxy(@NotNull Response response, @NotNull String cacheKey) {
-    if (skipStoreResponse(response.request())) {
-      return response;
+  fun cacheProxy(response: Response, cacheKey: String): Response {
+    if (Utils.skipStoreResponse(response.request())) {
+      return response
     }
-
-    HttpCacheRecordEditor cacheRecordEditor = null;
+    var cacheRecordEditor: HttpCacheRecordEditor? = null
     try {
-      cacheRecordEditor = cacheStore.cacheRecordEditor(cacheKey);
+      cacheRecordEditor = cacheStore.cacheRecordEditor(cacheKey)
       if (cacheRecordEditor != null) {
-        Sink headerSink = cacheRecordEditor.headerSink();
+        val headerSink = cacheRecordEditor.headerSink()
         try {
-          new ResponseHeaderRecord(response).writeTo(headerSink);
+          ResponseHeaderRecord(response).writeTo(headerSink)
         } finally {
-          closeQuietly(headerSink);
+          closeQuietly(headerSink)
         }
-
         return response.newBuilder()
-            .body(new ResponseBodyProxy(cacheRecordEditor, response, logger))
-            .build();
+            .body(ResponseBodyProxy(cacheRecordEditor, response, logger))
+            .build()
       }
-    } catch (Exception e) {
-      abortQuietly(cacheRecordEditor);
-      logger.e(e, "Failed to proxy http response for key: %s", cacheKey);
+    } catch (e: Exception) {
+      abortQuietly(cacheRecordEditor)
+      logger.e(e, "Failed to proxy http response for key: %s", cacheKey)
     }
-    return response;
+    return response
   }
 
-  void write(@NotNull Response response, @NotNull String cacheKey) {
-    HttpCacheRecordEditor cacheRecordEditor = null;
+  fun write(response: Response, cacheKey: String) {
+    var cacheRecordEditor: HttpCacheRecordEditor? = null
     try {
-      cacheRecordEditor = cacheStore.cacheRecordEditor(cacheKey);
+      cacheRecordEditor = cacheStore.cacheRecordEditor(cacheKey)
       if (cacheRecordEditor != null) {
-        Sink headerSink = cacheRecordEditor.headerSink();
+        val headerSink = cacheRecordEditor.headerSink()
         try {
-          new ResponseHeaderRecord(response).writeTo(headerSink);
+          ResponseHeaderRecord(response).writeTo(headerSink)
         } finally {
-          closeQuietly(headerSink);
+          closeQuietly(headerSink)
         }
-
-        Sink bodySink = cacheRecordEditor.bodySink();
+        val bodySink = cacheRecordEditor.bodySink()
         try {
-          copyResponseBody(response, bodySink);
+          Utils.copyResponseBody(response, bodySink)
         } finally {
-          closeQuietly(bodySink);
+          closeQuietly(bodySink)
         }
-
-        cacheRecordEditor.commit();
+        cacheRecordEditor.commit()
       }
-    } catch (Exception e) {
-      abortQuietly(cacheRecordEditor);
-      logger.e(e, "Failed to cache http response for key: %s", cacheKey);
+    } catch (e: Exception) {
+      abortQuietly(cacheRecordEditor)
+      logger.e(e, "Failed to cache http response for key: %s", cacheKey)
     }
   }
 
-  void closeQuietly(HttpCacheRecord cacheRecord) {
+  fun closeQuietly(cacheRecord: HttpCacheRecord?) {
     try {
-      if (cacheRecord != null) {
-        cacheRecord.close();
-      }
-    } catch (Exception ignore) {
-      logger.w(ignore, "Failed to close cache record");
+      cacheRecord?.close()
+    } catch (ignore: Exception) {
+      logger.w(ignore, "Failed to close cache record")
     }
   }
 
-  private void abortQuietly(HttpCacheRecordEditor cacheRecordEditor) {
+  private fun abortQuietly(cacheRecordEditor: HttpCacheRecordEditor?) {
     try {
-      if (cacheRecordEditor != null) {
-        cacheRecordEditor.abort();
-      }
-    } catch (Exception ignore) {
-      logger.w(ignore, "Failed to abort cache record edit");
+      cacheRecordEditor?.abort()
+    } catch (ignore: Exception) {
+      logger.w(ignore, "Failed to abort cache record edit")
     }
   }
 
-  private void closeQuietly(Sink sink) {
+  private fun closeQuietly(sink: Sink) {
     try {
-      sink.close();
-    } catch (Exception ignore) {
-      logger.w(ignore, "Failed to close sink");
+      sink.close()
+    } catch (ignore: Exception) {
+      logger.w(ignore, "Failed to close sink")
     }
+  }
+
+  init {
+    this.cacheStore = __checkNotNull(cacheStore, "cacheStore == null")
+    this.logger = ApolloLogger(logger)
   }
 }

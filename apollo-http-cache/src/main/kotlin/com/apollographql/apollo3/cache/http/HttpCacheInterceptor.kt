@@ -1,185 +1,158 @@
-package com.apollographql.apollo3.cache.http;
+package com.apollographql.apollo3.cache.http
 
-import com.apollographql.apollo3.api.internal.ApolloLogger;
-import okhttp3.Interceptor;
-import okhttp3.Request;
-import okhttp3.Response;
+import com.apollographql.apollo3.api.cache.http.HttpCache
+import com.apollographql.apollo3.api.internal.ApolloLogger
+import com.apollographql.apollo3.api.internal.Utils.__checkNotNull
+import okhttp3.Interceptor
+import okhttp3.Request
+import okhttp3.Response
+import java.io.IOException
 
-import java.io.IOException;
-
-import static com.apollographql.apollo3.api.cache.http.HttpCache.CACHE_KEY_HEADER;
-import static com.apollographql.apollo3.api.internal.Utils.checkNotNull;
-import static com.apollographql.apollo3.cache.http.Utils.isNetworkFirst;
-import static com.apollographql.apollo3.cache.http.Utils.isNetworkOnly;
-import static com.apollographql.apollo3.cache.http.Utils.isPrefetchResponse;
-import static com.apollographql.apollo3.cache.http.Utils.isStale;
-import static com.apollographql.apollo3.cache.http.Utils.shouldExpireAfterRead;
-import static com.apollographql.apollo3.cache.http.Utils.shouldSkipCache;
-import static com.apollographql.apollo3.cache.http.Utils.shouldSkipNetwork;
-import static com.apollographql.apollo3.cache.http.Utils.strip;
-import static com.apollographql.apollo3.cache.http.Utils.unsatisfiableCacheRequest;
-import static com.apollographql.apollo3.cache.http.Utils.withServedDateHeader;
-
-final class HttpCacheInterceptor implements Interceptor {
-  private final ApolloHttpCache cache;
-  private final ApolloLogger logger;
-
-  HttpCacheInterceptor(ApolloHttpCache cache, ApolloLogger logger) {
-    this.cache = checkNotNull(cache, "cache == null");
-    this.logger = checkNotNull(logger, "logger == null");
-  }
-
-  @Override public Response intercept(Chain chain) throws IOException {
-    Request request = chain.request();
-    if (shouldSkipCache(request)) {
-      logger.d("Skip http cache for request: %s", request);
-      return chain.proceed(request);
+internal class HttpCacheInterceptor(cache: ApolloHttpCache?, logger: ApolloLogger?) : Interceptor {
+  private val cache: ApolloHttpCache
+  private val logger: ApolloLogger
+  @Throws(IOException::class)
+  override fun intercept(chain: Interceptor.Chain): Response {
+    val request = chain.request()
+    if (Utils.shouldSkipCache(request)) {
+      logger.d("Skip http cache for request: %s", request)
+      return chain.proceed(request)
     }
-
-    if (shouldSkipNetwork(request)) {
-      logger.d("Read http cache only for request: %s", request);
-      return cacheOnlyResponse(request);
+    if (Utils.shouldSkipNetwork(request)) {
+      logger.d("Read http cache only for request: %s", request)
+      return cacheOnlyResponse(request)!!
     }
-
-    if (isNetworkOnly(request)) {
-      logger.d("Skip http cache network only request: %s", request);
-      return networkOnly(request, chain);
+    if (Utils.isNetworkOnly(request)) {
+      logger.d("Skip http cache network only request: %s", request)
+      return networkOnly(request, chain)!!
     }
-
-    if (isNetworkFirst(request)) {
-      logger.d("Network first for request: %s", request);
-      return networkFirst(request, chain);
+    return if (Utils.isNetworkFirst(request)) {
+      logger.d("Network first for request: %s", request)
+      networkFirst(request, chain)!!
     } else {
-      logger.d("Cache first for request: %s", request);
-      return cacheFirst(request, chain);
+      logger.d("Cache first for request: %s", request)
+      cacheFirst(request, chain)!!
     }
   }
 
-  private Response cacheOnlyResponse(Request request) throws IOException {
-    Response cacheResponse = cachedResponse(request);
+  @Throws(IOException::class)
+  private fun cacheOnlyResponse(request: Request): Response? {
+    val cacheResponse = cachedResponse(request)
     if (cacheResponse == null) {
-      logCacheMiss(request);
-      return unsatisfiableCacheRequest(request);
+      logCacheMiss(request)
+      return Utils.unsatisfiableCacheRequest(request)
     }
-
-    logCacheHit(request);
+    logCacheHit(request)
     return cacheResponse.newBuilder()
-        .cacheResponse(strip(cacheResponse))
-        .build();
+        .cacheResponse(Utils.strip(cacheResponse))
+        .build()
   }
 
-  private Response networkOnly(Request request, Chain chain) throws IOException {
-    String cacheKey = request.header(CACHE_KEY_HEADER);
-    Response networkResponse = withServedDateHeader(chain.proceed(request));
-    if (isPrefetchResponse(request)) {
-      return prefetch(networkResponse, cacheKey);
-    } else if (networkResponse.isSuccessful()) {
-      logger.d("Network success, skip http cache for request: %s, with cache key: %s", request, cacheKey);
-      return cache.cacheProxy(networkResponse, cacheKey);
+  @Throws(IOException::class)
+  private fun networkOnly(request: Request, chain: Interceptor.Chain): Response? {
+    val cacheKey = request.header(HttpCache.CACHE_KEY_HEADER)
+    val networkResponse = Utils.withServedDateHeader(chain.proceed(request))
+    return if (Utils.isPrefetchResponse(request)) {
+      prefetch(networkResponse, cacheKey)
+    } else if (networkResponse!!.isSuccessful) {
+      logger.d("Network success, skip http cache for request: %s, with cache key: %s", request, cacheKey!!)
+      cache.cacheProxy(networkResponse, cacheKey)
     } else {
-      return networkResponse;
+      networkResponse
     }
   }
 
-  private Response networkFirst(Request request, Chain chain) throws IOException {
-    String cacheKey = request.header(CACHE_KEY_HEADER);
-    IOException rethrowException;
-    Response networkResponse = null;
+  @Throws(IOException::class)
+  private fun networkFirst(request: Request, chain: Interceptor.Chain): Response? {
+    val cacheKey = request.header(HttpCache.CACHE_KEY_HEADER)
+    var rethrowException: IOException?
+    var networkResponse: Response? = null
     try {
-      networkResponse = withServedDateHeader(chain.proceed(request));
-      if (networkResponse.isSuccessful()) {
-        logger.d("Network success, skip http cache for request: %s, with cache key: %s", request, cacheKey);
-        return cache.cacheProxy(networkResponse, cacheKey);
+      networkResponse = Utils.withServedDateHeader(chain.proceed(request))
+      if (networkResponse.isSuccessful) {
+        logger.d("Network success, skip http cache for request: %s, with cache key: %s", request, cacheKey!!)
+        return cache.cacheProxy(networkResponse, cacheKey)
       }
-      rethrowException = null;
-    } catch (IOException e) {
-      rethrowException = e;
+      rethrowException = null
+    } catch (e: IOException) {
+      rethrowException = e
     }
-
-    Response cachedResponse = cachedResponse(request);
+    val cachedResponse = cachedResponse(request)
     if (cachedResponse == null) {
-      logCacheMiss(request);
+      logCacheMiss(request)
       if (rethrowException != null) {
-        throw rethrowException;
+        throw rethrowException
       }
-      return networkResponse;
+      return networkResponse
     }
-
-    logCacheHit(request);
+    logCacheHit(request)
     return cachedResponse.newBuilder()
-        .cacheResponse(strip(cachedResponse))
-        .networkResponse(strip(networkResponse))
+        .cacheResponse(Utils.strip(cachedResponse))
+        .networkResponse(Utils.strip(networkResponse))
         .request(request)
-        .build();
+        .build()
   }
 
-  private Response cacheFirst(Request request, Chain chain) throws IOException {
-    Response cachedResponse = cachedResponse(request);
+  @Throws(IOException::class)
+  private fun cacheFirst(request: Request, chain: Interceptor.Chain): Response? {
+    val cachedResponse = cachedResponse(request)
     if (cachedResponse != null) {
-      logCacheHit(request);
+      logCacheHit(request)
       return cachedResponse.newBuilder()
-          .cacheResponse(strip(cachedResponse))
+          .cacheResponse(Utils.strip(cachedResponse))
           .request(request)
-          .build();
+          .build()
     }
-
-    logCacheMiss(request);
-
-    String cacheKey = request.header(CACHE_KEY_HEADER);
-    Response networkResponse = withServedDateHeader(chain.proceed(request));
-    if (isPrefetchResponse(request)) {
-      return prefetch(networkResponse, cacheKey);
-    } else if (networkResponse.isSuccessful()) {
-      return cache.cacheProxy(networkResponse, cacheKey);
+    logCacheMiss(request)
+    val cacheKey = request.header(HttpCache.CACHE_KEY_HEADER)
+    val networkResponse = Utils.withServedDateHeader(chain.proceed(request))
+    if (Utils.isPrefetchResponse(request)) {
+      return prefetch(networkResponse, cacheKey)
+    } else if (networkResponse!!.isSuccessful) {
+      return cache.cacheProxy(networkResponse, cacheKey!!)
     }
-    return networkResponse;
+    return networkResponse
   }
 
-  private Response prefetch(Response networkResponse, String cacheKey) throws IOException {
-    if (!networkResponse.isSuccessful()) {
-      return networkResponse;
+  @Throws(IOException::class)
+  private fun prefetch(networkResponse: Response?, cacheKey: String?): Response? {
+    if (!networkResponse!!.isSuccessful) {
+      return networkResponse
     }
-
     try {
-      cache.write(networkResponse, cacheKey);
+      cache.write(networkResponse, cacheKey!!)
     } finally {
-      networkResponse.close();
+      networkResponse.close()
     }
-
-    Response cachedResponse = cache.read(cacheKey);
-    if (cachedResponse == null) {
-      throw new IOException("failed to read prefetch cache response");
-    }
-
+    val cachedResponse = cache.read(cacheKey!!) ?: throw IOException("failed to read prefetch cache response")
     return cachedResponse
         .newBuilder()
-        .networkResponse(strip(networkResponse))
-        .build();
+        .networkResponse(Utils.strip(networkResponse))
+        .build()
   }
 
-  private Response cachedResponse(Request request) {
-    String cacheKey = request.header(CACHE_KEY_HEADER);
-
-    Response cachedResponse = cache.read(cacheKey, shouldExpireAfterRead(request));
-    if (cachedResponse == null) {
-      return null;
+  private fun cachedResponse(request: Request): Response? {
+    val cacheKey = request.header(HttpCache.CACHE_KEY_HEADER)
+    val cachedResponse = cache.read(cacheKey!!, Utils.shouldExpireAfterRead(request)) ?: return null
+    if (Utils.isStale(request, cachedResponse)) {
+      Utils.closeQuietly(cachedResponse)
+      return null
     }
-
-    if (isStale(request, cachedResponse)) {
-      Utils.closeQuietly(cachedResponse);
-      return null;
-    }
-
-    return cachedResponse;
+    return cachedResponse
   }
 
-  private void logCacheHit(Request request) {
-    String cacheKey = request.header(CACHE_KEY_HEADER);
-    logger.d("Cache HIT for request: %s, with cache key: %s", request, cacheKey);
+  private fun logCacheHit(request: Request) {
+    val cacheKey = request.header(HttpCache.CACHE_KEY_HEADER)
+    logger.d("Cache HIT for request: %s, with cache key: %s", request, cacheKey!!)
   }
 
-  private void logCacheMiss(Request request) {
-    String cacheKey = request.header(CACHE_KEY_HEADER);
-    logger.d("Cache MISS for request: %s, with cache key: %s", request, cacheKey);
+  private fun logCacheMiss(request: Request) {
+    val cacheKey = request.header(HttpCache.CACHE_KEY_HEADER)
+    logger.d("Cache MISS for request: %s, with cache key: %s", request, cacheKey!!)
+  }
+
+  init {
+    this.cache = __checkNotNull(cache, "cache == null")
+    this.logger = __checkNotNull(logger, "logger == null")
   }
 }

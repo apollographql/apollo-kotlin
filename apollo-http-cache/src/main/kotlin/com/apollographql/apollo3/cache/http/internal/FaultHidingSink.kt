@@ -13,54 +13,51 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.apollographql.apollo3.cache.http.internal;
+package com.apollographql.apollo3.cache.http.internal
 
-import java.io.IOException;
-import okio.Buffer;
-import okio.ForwardingSink;
-import okio.Sink;
+import okio.Buffer
+import okio.ForwardingSink
+import okio.Sink
+import java.io.IOException
 
-/** A sink that never throws IOExceptions, even if the underlying sink does. */
-class FaultHidingSink extends ForwardingSink {
-  private boolean hasErrors;
-
-  FaultHidingSink(Sink delegate) {
-    super(delegate);
-  }
-
-  @Override public void write(Buffer source, long byteCount) throws IOException {
+/** A sink that never throws IOExceptions, even if the underlying sink does.  */
+internal open class FaultHidingSink(delegate: Sink?) : ForwardingSink(delegate!!) {
+  private var hasErrors = false
+  @Throws(IOException::class)
+  override fun write(source: Buffer, byteCount: Long) {
     if (hasErrors) {
-      source.skip(byteCount);
-      return;
+      source.skip(byteCount)
+      return
     }
     try {
-      super.write(source, byteCount);
-    } catch (IOException e) {
-      hasErrors = true;
-      onException(e);
+      super.write(source, byteCount)
+    } catch (e: IOException) {
+      hasErrors = true
+      onException(e)
     }
   }
 
-  @Override public void flush() throws IOException {
-    if (hasErrors) return;
+  @Throws(IOException::class)
+  override fun flush() {
+    if (hasErrors) return
     try {
-      super.flush();
-    } catch (IOException e) {
-      hasErrors = true;
-      onException(e);
+      super.flush()
+    } catch (e: IOException) {
+      hasErrors = true
+      onException(e)
     }
   }
 
-  @Override public void close() throws IOException {
-    if (hasErrors) return;
+  @Throws(IOException::class)
+  override fun close() {
+    if (hasErrors) return
     try {
-      super.close();
-    } catch (IOException e) {
-      hasErrors = true;
-      onException(e);
+      super.close()
+    } catch (e: IOException) {
+      hasErrors = true
+      onException(e)
     }
   }
 
-  protected void onException(IOException e) {
-  }
+  protected open fun onException(e: IOException?) {}
 }

@@ -13,103 +13,96 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.apollographql.apollo3.cache.http.internal;
+package com.apollographql.apollo3.cache.http.internal
 
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.IOException;
-import java.util.LinkedHashSet;
-import java.util.Set;
-import okio.Buffer;
-import okio.ForwardingSink;
-import okio.Sink;
-import okio.Source;
+import okio.Buffer
+import okio.ForwardingSink
+import okio.Sink
+import okio.Source
+import java.io.File
+import java.io.FileNotFoundException
+import java.io.IOException
+import java.util.LinkedHashSet
 
 /**
  * Copied from OkHttp 3.14.2:
  * ttps://github.com/square/okhttp/blob/b8b6ee831c65208940c741f8e091ff02425566d5/okhttp-tests
  * /src/test/java/okhttp3/internal/io/FaultyFileSystem.java
  */
-public final class FaultyFileSystem implements FileSystem {
-  private final FileSystem delegate;
-  private final Set<File> writeFaults = new LinkedHashSet<>();
-  private final Set<File> deleteFaults = new LinkedHashSet<>();
-  private final Set<File> renameFaults = new LinkedHashSet<>();
-
-  public FaultyFileSystem(FileSystem delegate) {
-    this.delegate = delegate;
-  }
-
-  public void setFaultyWrite(File file, boolean faulty) {
+class FaultyFileSystem(private val delegate: FileSystem) : FileSystem {
+  private val writeFaults: MutableSet<File?> = LinkedHashSet()
+  private val deleteFaults: MutableSet<File?> = LinkedHashSet()
+  private val renameFaults: MutableSet<File> = LinkedHashSet()
+  fun setFaultyWrite(file: File?, faulty: Boolean) {
     if (faulty) {
-      writeFaults.add(file);
+      writeFaults.add(file)
     } else {
-      writeFaults.remove(file);
+      writeFaults.remove(file)
     }
   }
 
-  public void setFaultyDelete(File file, boolean faulty) {
+  fun setFaultyDelete(file: File?, faulty: Boolean) {
     if (faulty) {
-      deleteFaults.add(file);
+      deleteFaults.add(file)
     } else {
-      deleteFaults.remove(file);
+      deleteFaults.remove(file)
     }
   }
 
-  public void setFaultyRename(File file, boolean faulty) {
+  fun setFaultyRename(file: File, faulty: Boolean) {
     if (faulty) {
-      renameFaults.add(file);
+      renameFaults.add(file)
     } else {
-      renameFaults.remove(file);
+      renameFaults.remove(file)
     }
   }
 
-  @Override public Source source(File file) throws FileNotFoundException {
-    return delegate.source(file);
+  @Throws(FileNotFoundException::class)
+  override fun source(file: File): Source {
+    return delegate.source(file)
   }
 
-  @Override public Sink sink(File file) throws FileNotFoundException {
-    return new FaultySink(delegate.sink(file), file);
+  @Throws(FileNotFoundException::class)
+  override fun sink(file: File): Sink {
+    return FaultySink(delegate.sink(file), file)
   }
 
-  @Override public Sink appendingSink(File file) throws FileNotFoundException {
-    return new FaultySink(delegate.appendingSink(file), file);
+  @Throws(FileNotFoundException::class)
+  override fun appendingSink(file: File): Sink {
+    return FaultySink(delegate.appendingSink(file), file)
   }
 
-  @Override public void delete(File file) throws IOException {
-    if (deleteFaults.contains(file)) throw new IOException("boom!");
-    delegate.delete(file);
+  @Throws(IOException::class)
+  override fun delete(file: File) {
+    if (deleteFaults.contains(file)) throw IOException("boom!")
+    delegate.delete(file)
   }
 
-  @Override public boolean exists(File file) {
-    return delegate.exists(file);
+  override fun exists(file: File): Boolean {
+    return delegate.exists(file)
   }
 
-  @Override public long size(File file) {
-    return delegate.size(file);
+  override fun size(file: File): Long {
+    return delegate.size(file)
   }
 
-  @Override public void rename(File from, File to) throws IOException {
-    if (renameFaults.contains(from) || renameFaults.contains(to)) throw new IOException("boom!");
-    delegate.rename(from, to);
+  @Throws(IOException::class)
+  override fun rename(from: File, to: File) {
+    if (renameFaults.contains(from) || renameFaults.contains(to)) throw IOException("boom!")
+    delegate.rename(from, to)
   }
 
-  @Override public void deleteContents(File directory) throws IOException {
-    if (deleteFaults.contains(directory)) throw new IOException("boom!");
-    delegate.deleteContents(directory);
+  @Throws(IOException::class)
+  override fun deleteContents(directory: File) {
+    if (deleteFaults.contains(directory)) throw IOException("boom!")
+    delegate.deleteContents(directory)
   }
 
-  private class FaultySink extends ForwardingSink {
-    private final File file;
-
-    FaultySink(Sink delegate, File file) {
-      super(delegate);
-      this.file = file;
-    }
-
-    @Override public void write(Buffer source, long byteCount) throws IOException {
-      if (writeFaults.contains(file)) throw new IOException("boom!");
-      super.write(source, byteCount);
+  private inner class FaultySink internal constructor(delegate: Sink?, private val file: File) : ForwardingSink(delegate!!) {
+    @Throws(IOException::class)
+    override fun write(source: Buffer, byteCount: Long) {
+      if (writeFaults.contains(file)) throw IOException("boom!")
+      super.write(source, byteCount)
     }
   }
 }

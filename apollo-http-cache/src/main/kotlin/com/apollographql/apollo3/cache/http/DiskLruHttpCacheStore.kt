@@ -1,125 +1,114 @@
-package com.apollographql.apollo3.cache.http;
+package com.apollographql.apollo3.cache.http
 
-import com.apollographql.apollo3.api.cache.http.HttpCacheRecord;
-import com.apollographql.apollo3.api.cache.http.HttpCacheRecordEditor;
-import com.apollographql.apollo3.api.cache.http.HttpCacheStore;
-import com.apollographql.apollo3.cache.http.internal.DiskLruCache;
-import com.apollographql.apollo3.cache.http.internal.FileSystem;
-import java.io.File;
-import java.io.IOException;
-import java.util.concurrent.locks.ReadWriteLock;
-import java.util.concurrent.locks.ReentrantReadWriteLock;
-import okio.Sink;
-import okio.Source;
-import org.jetbrains.annotations.NotNull;
+import com.apollographql.apollo3.api.cache.http.HttpCacheRecord
+import com.apollographql.apollo3.api.cache.http.HttpCacheRecordEditor
+import com.apollographql.apollo3.api.cache.http.HttpCacheStore
+import com.apollographql.apollo3.cache.http.internal.DiskLruCache
+import com.apollographql.apollo3.cache.http.internal.FileSystem
+import okio.Sink
+import okio.Source
+import java.io.File
+import java.io.IOException
+import java.util.concurrent.locks.ReadWriteLock
+import java.util.concurrent.locks.ReentrantReadWriteLock
 
-public final class DiskLruHttpCacheStore implements HttpCacheStore {
-  private static final int VERSION = 99991;
-  private static final int ENTRY_HEADERS = 0;
-  private static final int ENTRY_BODY = 1;
-  private static final int ENTRY_COUNT = 2;
+class DiskLruHttpCacheStore(private val fileSystem: FileSystem, private val directory: File, private val maxSize: Long) : HttpCacheStore {
+  private var cache: DiskLruCache
+  private val cacheLock: ReadWriteLock = ReentrantReadWriteLock()
 
-  private final FileSystem fileSystem;
-  private final File directory;
-  private final long maxSize;
-  private DiskLruCache cache;
-  private final ReadWriteLock cacheLock = new ReentrantReadWriteLock();
+  constructor(directory: File, maxSize: Long) : this(FileSystem.Companion.SYSTEM, directory, maxSize) {}
 
-  public DiskLruHttpCacheStore(@NotNull File directory, long maxSize) {
-    this(FileSystem.SYSTEM, directory, maxSize);
-  }
-
-  public DiskLruHttpCacheStore(@NotNull FileSystem fileSystem, @NotNull File directory, long maxSize) {
-    this.fileSystem = fileSystem;
-    this.directory = directory;
-    this.maxSize = maxSize;
-
-    cache = createDiskLruCache();
-  }
-
-  @Override public HttpCacheRecord cacheRecord(@NotNull String cacheKey) throws IOException {
-    final DiskLruCache.Snapshot snapshot;
-
-    cacheLock.readLock().lock();
-    try {
-      snapshot = cache.get(cacheKey);
+  @Throws(IOException::class)
+  override fun cacheRecord(cacheKey: String): HttpCacheRecord? {
+    val snapshot: DiskLruCache.Snapshot?
+    cacheLock.readLock().lock()
+    snapshot = try {
+      cache[cacheKey]
     } finally {
-      cacheLock.readLock().unlock();
+      cacheLock.readLock().unlock()
     }
+    return if (snapshot == null) {
+      null
+    } else object : HttpCacheRecord {
+      override fun headerSource(): Source {
+        return snapshot.getSource(ENTRY_HEADERS)
+      }
 
-    if (snapshot == null) {
-      return null;
+      override fun bodySource(): Source {
+        return snapshot.getSource(ENTRY_BODY)
+      }
+
+      override fun close() {
+        snapshot.close()
+      }
     }
-    final HttpCacheRecord responseCacheRecord = new HttpCacheRecord() {
-      @NotNull @Override public Source headerSource() {
-        return snapshot.getSource(ENTRY_HEADERS);
-      }
-
-      @NotNull @Override public Source bodySource() {
-        return snapshot.getSource(ENTRY_BODY);
-      }
-
-      @Override public void close() {
-        snapshot.close();
-      }
-    };
-
-    return responseCacheRecord;
   }
 
-  @Override public HttpCacheRecordEditor cacheRecordEditor(@NotNull String cacheKey) throws IOException {
-    final DiskLruCache.Editor editor;
-
-    cacheLock.readLock().lock();
-    try {
-      editor = cache.edit(cacheKey);
+  @Throws(IOException::class)
+  override fun cacheRecordEditor(cacheKey: String): HttpCacheRecordEditor? {
+    val editor: DiskLruCache.Editor?
+    cacheLock.readLock().lock()
+    editor = try {
+      cache.edit(cacheKey)
     } finally {
-      cacheLock.readLock().unlock();
+      cacheLock.readLock().unlock()
     }
+    return if (editor == null) {
+      null
+    } else object : HttpCacheRecordEditor {
+      override fun headerSink(): Sink {
+        return editor.newSink(ENTRY_HEADERS)
+      }
 
-    if (editor == null) {
-      return null;
+      override fun bodySink(): Sink {
+        return editor.newSink(ENTRY_BODY)
+      }
+
+      @Throws(IOException::class)
+      override fun abort() {
+        editor.abort()
+      }
+
+      @Throws(IOException::class)
+      override fun commit() {
+        editor.commit()
+      }
     }
-
-    return new HttpCacheRecordEditor() {
-      @NotNull @Override public Sink headerSink() {
-        return editor.newSink(ENTRY_HEADERS);
-      }
-
-      @NotNull @Override public Sink bodySink() {
-        return editor.newSink(ENTRY_BODY);
-      }
-
-      @Override public void abort() throws IOException {
-        editor.abort();
-      }
-
-      @Override public void commit() throws IOException {
-        editor.commit();
-      }
-    };
   }
 
-  @Override public void delete() throws IOException {
-    cacheLock.writeLock().lock();
-    try {
-      cache.delete();
-      cache = createDiskLruCache();
+  @Throws(IOException::class)
+  override fun delete() {
+    cacheLock.writeLock().lock()
+    cache = try {
+      cache.delete()
+      createDiskLruCache()
     } finally {
-      cacheLock.writeLock().unlock();
+      cacheLock.writeLock().unlock()
     }
   }
 
-  @Override public void remove(@NotNull String cacheKey) throws IOException {
-    cacheLock.readLock().lock();
+  @Throws(IOException::class)
+  override fun remove(cacheKey: String) {
+    cacheLock.readLock().lock()
     try {
-      cache.remove(cacheKey);
+      cache.remove(cacheKey)
     } finally {
-      cacheLock.readLock().unlock();
+      cacheLock.readLock().unlock()
     }
   }
 
-  private DiskLruCache createDiskLruCache() {
-    return DiskLruCache.create(fileSystem, directory, VERSION, ENTRY_COUNT, maxSize);
+  private fun createDiskLruCache(): DiskLruCache {
+    return DiskLruCache.Companion.create(fileSystem, directory, VERSION, ENTRY_COUNT, maxSize)
+  }
+
+  companion object {
+    private const val VERSION = 99991
+    private const val ENTRY_HEADERS = 0
+    private const val ENTRY_BODY = 1
+    private const val ENTRY_COUNT = 2
+  }
+
+  init {
+    cache = createDiskLruCache()
   }
 }

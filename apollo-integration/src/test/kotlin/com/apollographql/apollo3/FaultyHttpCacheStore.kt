@@ -12,7 +12,7 @@ import okio.Timeout
 import java.io.File
 import java.io.IOException
 
-class FaultyHttpCacheStore(fileSystem: FileSystem?) : HttpCacheStore {
+class FaultyHttpCacheStore(fileSystem: FileSystem) : HttpCacheStore {
   private val cache: DiskLruCache
   val faultySource = FaultySource()
   val faultySink = FaultySink()
