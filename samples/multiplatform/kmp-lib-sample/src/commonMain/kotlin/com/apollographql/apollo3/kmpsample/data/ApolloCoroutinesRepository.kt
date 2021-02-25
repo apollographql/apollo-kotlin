@@ -12,7 +12,7 @@ import com.apollographql.apollo3.kmpsample.fragment.RepositoryFragment
 import com.apollographql.apollo3.kmpsample.type.OrderDirection
 import com.apollographql.apollo3.kmpsample.type.PullRequestState
 import com.apollographql.apollo3.kmpsample.type.RepositoryOrderField
-import com.apollographql.apollo3.network.HttpExecutionContext
+import com.apollographql.apollo3.network.HttpResponseInfo
 import com.apollographql.apollo3.network.http.ApolloHttpNetworkTransport
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.single
@@ -41,7 +41,7 @@ class ApolloCoroutinesRepository {
         orderDirection = OrderDirection.DESC
     )
     val response = apolloClient.query(repositoriesQuery).execute().single()
-    println("Http response: " + response.executionContext[HttpExecutionContext.Response])
+    println("Http response: " + response.executionContext[HttpResponseInfo])
     return response.data?.viewer?.repositories?.nodes?.mapNotNull { it as RepositoryFragment? }.orEmpty()
   }
 

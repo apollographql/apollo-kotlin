@@ -1,7 +1,6 @@
 package com.apollographql.apollo3
 
 import com.apollographql.apollo3.api.ApolloExperimental
-import com.apollographql.apollo3.api.CustomScalarAdapter
 import com.apollographql.apollo3.api.ExecutionContext
 import com.apollographql.apollo3.api.Mutation
 import com.apollographql.apollo3.api.Operation
@@ -10,7 +9,7 @@ import com.apollographql.apollo3.api.CustomScalar
 import com.apollographql.apollo3.api.ResponseAdapter
 import com.apollographql.apollo3.api.ResponseAdapterCache
 import com.apollographql.apollo3.api.Subscription
-import com.apollographql.apollo3.dispatcher.ApolloCoroutineDispatcherContext
+import com.apollographql.apollo3.dispatcher.ApolloCoroutineDispatcher
 import com.apollographql.apollo3.interceptor.ApolloRequestInterceptor
 import com.apollographql.apollo3.interceptor.NetworkRequestInterceptor
 import com.apollographql.apollo3.internal.RealApolloCall
@@ -29,8 +28,11 @@ class ApolloClient private constructor(
     private val interceptors: List<ApolloRequestInterceptor>,
     private val executionContext: ExecutionContext
 ) {
-  private val coroutineDispatcherContext = executionContext[ApolloCoroutineDispatcherContext]
-      ?: ApolloCoroutineDispatcherContext(Dispatchers.Default)
+  private val executionContextWithDefaults: ExecutionContext = if (executionContext[ApolloCoroutineDispatcher] == null) {
+    executionContext + ApolloCoroutineDispatcher(Dispatchers.Default)
+  } else {
+    executionContext
+  }
 
   fun <D : Operation.Data> query(query: Query<D>): ApolloQueryCall<D> {
     return ApolloQueryRequest.Builder(query).build().prepareCall()
@@ -60,11 +62,10 @@ class ApolloClient private constructor(
 
   private fun <D : Operation.Data> ApolloRequest<D>.prepareCall(): RealApolloCall<D> {
     return RealApolloCall(
-        request = this,
+        request = this.newBuilder().addExecutionContext(executionContextWithDefaults).build(),
         interceptors = interceptors + NetworkRequestInterceptor(
             networkTransport = networkTransport,
             subscriptionNetworkTransport = subscriptionNetworkTransport,
-            coroutineDispatcherContext = coroutineDispatcherContext
         ),
         responseAdapterCache = responseAdapterCache
     )

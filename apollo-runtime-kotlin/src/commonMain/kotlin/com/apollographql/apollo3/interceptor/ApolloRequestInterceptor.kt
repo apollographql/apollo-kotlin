@@ -2,6 +2,7 @@ package com.apollographql.apollo3.interceptor
 
 import com.apollographql.apollo3.ApolloRequest
 import com.apollographql.apollo3.api.ApolloExperimental
+import com.apollographql.apollo3.api.ExecutionContext
 import com.apollographql.apollo3.api.ResponseAdapterCache
 import com.apollographql.apollo3.api.Operation
 import kotlinx.coroutines.flow.Flow
@@ -35,7 +36,7 @@ internal class RealInterceptorChain(
         RealInterceptorChain(
             interceptors = interceptors,
             index = index + 1,
-            responseAdapterCache = responseAdapterCache
+            responseAdapterCache = responseAdapterCache,
         )
     )
   }

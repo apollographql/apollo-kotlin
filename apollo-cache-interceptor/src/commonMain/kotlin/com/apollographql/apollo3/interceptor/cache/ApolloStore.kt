@@ -1,12 +1,14 @@
 package com.apollographql.apollo3.interceptor.cache
 
+import com.apollographql.apollo3.api.ClientContext
+import com.apollographql.apollo3.api.ExecutionContext
 import com.apollographql.apollo3.cache.CacheHeaders
 import com.apollographql.apollo3.cache.normalized.NormalizedCache
 import com.apollographql.apollo3.cache.normalized.Record
 import com.apollographql.apollo3.cache.normalized.internal.ReadableStore
 import com.apollographql.apollo3.cache.normalized.internal.WriteableStore
 
-class ApolloStore(private val normalizedCache: NormalizedCache): ReadableStore, WriteableStore {
+class ApolloStore(private val normalizedCache: NormalizedCache): ReadableStore, WriteableStore, ClientContext(ApolloStore) {
   override fun merge(recordCollection: Collection<Record>, cacheHeaders: CacheHeaders): Set<String> {
     return normalizedCache.merge(recordCollection, cacheHeaders)
   }
@@ -22,4 +24,6 @@ class ApolloStore(private val normalizedCache: NormalizedCache): ReadableStore, 
   override fun read(keys: Collection<String>, cacheHeaders: CacheHeaders): Collection<Record> {
     return keys.mapNotNull { normalizedCache.loadRecord(it, cacheHeaders) }
   }
+
+  companion object Key: ExecutionContext.Key<ApolloStore>
 }

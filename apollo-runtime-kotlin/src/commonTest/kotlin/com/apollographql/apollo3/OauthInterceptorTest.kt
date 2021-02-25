@@ -8,7 +8,7 @@ import com.apollographql.apollo3.api.fromResponse
 import com.apollographql.apollo3.exception.ApolloHttpException
 import com.apollographql.apollo3.interceptor.ApolloResponse
 import com.apollographql.apollo3.interceptor.BearerTokenInterceptor
-import com.apollographql.apollo3.network.HttpExecutionContext
+import com.apollographql.apollo3.network.HttpRequestParameters
 import com.apollographql.apollo3.network.NetworkTransport
 import com.apollographql.apollo3.testing.MockQuery
 import com.apollographql.apollo3.testing.TestTokenProvider
@@ -33,8 +33,8 @@ class OauthInterceptorTest {
       const val INVALID_ACCESS_TOKEN = "INVALID_ACCESS_TOKEN"
     }
 
-    override fun <D : Operation.Data> execute(request: ApolloRequest<D>, responseAdapterCache: ResponseAdapterCache, executionContext: ExecutionContext): Flow<ApolloResponse<D>> {
-      val authorization = executionContext[HttpExecutionContext.Request]?.headers?.get("Authorization")
+    override fun <D : Operation.Data> execute(request: ApolloRequest<D>, responseAdapterCache: ResponseAdapterCache): Flow<ApolloResponse<D>> {
+      val authorization = request.executionContext[HttpRequestParameters]?.headers?.get("Authorization")
 
       return flow {
         when (authorization) {

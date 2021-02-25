@@ -21,7 +21,7 @@ class MockNetworkTransport(
     private val mockResponseChannel: Channel<String> = Channel(capacity = Channel.BUFFERED)
 ) : NetworkTransport, SendChannel<String> by mockResponseChannel {
 
-  override fun <D : Operation.Data> execute(request: ApolloRequest<D>, responseAdapterCache: ResponseAdapterCache, executionContext: ExecutionContext): Flow<ApolloResponse<D>> {
+  override fun <D : Operation.Data> execute(request: ApolloRequest<D>, responseAdapterCache: ResponseAdapterCache): Flow<ApolloResponse<D>> {
     return flow {
       emit(
           ApolloResponse(

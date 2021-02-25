@@ -4,17 +4,13 @@ import com.apollographql.apollo3.Utils.checkTestFixture
 import com.apollographql.apollo3.Utils.immediateExecutor
 import com.apollographql.apollo3.Utils.immediateExecutorService
 import com.apollographql.apollo3.Utils.readFileToString
-import com.apollographql.apollo3.api.CustomScalarAdapter
 import com.apollographql.apollo3.api.Input
-import com.apollographql.apollo3.api.JsonElement
-import com.apollographql.apollo3.api.JsonString
 import com.apollographql.apollo3.api.Operation
 import com.apollographql.apollo3.api.Response
 import com.apollographql.apollo3.api.ResponseAdapter
 import com.apollographql.apollo3.api.ResponseAdapterCache
 import com.apollographql.apollo3.api.json.JsonReader
 import com.apollographql.apollo3.api.json.JsonWriter
-import com.apollographql.apollo3.api.variables
 import com.apollographql.apollo3.api.variablesJson
 import com.apollographql.apollo3.cache.normalized.MemoryCacheFactory
 import com.apollographql.apollo3.coroutines.await
@@ -38,7 +34,6 @@ import org.junit.Test
 import java.io.IOException
 import java.text.SimpleDateFormat
 import java.util.ArrayList
-import java.util.Arrays
 import java.util.Date
 import java.util.Locale
 
@@ -103,9 +98,9 @@ class IntegrationTest {
     assertResponse(
         apolloClient.query(AllPlanetsQuery())
     ) { response ->
-      assertThat(response.executionContext[OkHttpExecutionContext.KEY]).isNotNull()
-      assertThat(response.executionContext[OkHttpExecutionContext.KEY]!!.response).isNotNull()
-      assertThat(response.executionContext[OkHttpExecutionContext.KEY]!!.response.headers().toString())
+      assertThat(response.executionContext[OkHttpExecutionContext]).isNotNull()
+      assertThat(response.executionContext[OkHttpExecutionContext]!!.response).isNotNull()
+      assertThat(response.executionContext[OkHttpExecutionContext]!!.response.headers().toString())
           .isEqualTo(
               """
               Transfer-encoding: chunked
@@ -114,7 +109,7 @@ class IntegrationTest {
               
               """.trimIndent()
           )
-      assertThat(response.executionContext[OkHttpExecutionContext.KEY]!!.response.body()).isNull()
+      assertThat(response.executionContext[OkHttpExecutionContext]!!.response.body()).isNull()
     }
   }
 

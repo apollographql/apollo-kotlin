@@ -2,6 +2,7 @@ package com.apollographql.apollo3.http
 
 import com.apollographql.apollo3.api.ApolloExperimental
 import com.apollographql.apollo3.api.ExecutionContext
+import com.apollographql.apollo3.api.ResponseContext
 import okhttp3.Response
 
 /**
@@ -10,15 +11,10 @@ import okhttp3.Response
 @ApolloExperimental
 class OkHttpExecutionContext(
     response: Response
-) : ExecutionContext.Element {
+) : ResponseContext(OkHttpExecutionContext) {
+  companion object Key : ExecutionContext.Key<OkHttpExecutionContext>
+
   val response: Response = response.strip()
-
-  override val key: ExecutionContext.Key<*> = Key
-
-  companion object Key : ExecutionContext.Key<OkHttpExecutionContext> {
-    @JvmField
-    val KEY: Key = Key
-  }
 
   private fun Response.strip(): Response {
     val builder = newBuilder()
