@@ -53,6 +53,14 @@ gradlePlugin {
   }
 }
 
+tasks.withType(org.jetbrains.kotlin.gradle.tasks.KotlinCompile::class.java) {
+  kotlinOptions {
+    // Gradle forces 1.3.72 for the time being so compile against 1.3 stdlib for the time being
+    // See https://issuetracker.google.com/issues/166582569
+    apiVersion = "1.3"
+  }
+}
+
 /**
  * This is so that the plugin marker pom contains a <scm> tag
  * It was recommended by the Gradle support team.

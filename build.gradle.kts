@@ -40,9 +40,6 @@ subprojects {
   afterEvaluate {
     tasks.withType<KotlinCompile> {
       kotlinOptions {
-        // Gradle forces 1.3.72 for the time being so compile against 1.3 stdlib for the time being
-        // See https://issuetracker.google.com/issues/166582569
-        apiVersion = "1.3"
         jvmTarget = JavaVersion.VERSION_1_8.toString()
         freeCompilerArgs = freeCompilerArgs + "-Xopt-in=kotlin.RequiresOptIn"
       }
@@ -50,10 +47,7 @@ subprojects {
     (project.extensions.findByName("kotlin")
         as? org.jetbrains.kotlin.gradle.dsl.KotlinMultiplatformExtension)?.run {
       sourceSets.all {
-        languageSettings.apply {
-          apiVersion = "1.3"
-          this.useExperimentalAnnotation("kotlin.RequiresOptIn")
-        }
+        languageSettings.useExperimentalAnnotation("kotlin.RequiresOptIn")
       }
     }
   }
