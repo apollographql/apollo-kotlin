@@ -37,7 +37,7 @@ configure<ApolloExtension> {
             }
             "upload" -> {
               customScalarsMapping.set(mapOf(
-                  "Upload" to "com.apollographql.apollo3.api.FileUpload"
+                  "Upload" to "com.apollographql.apollo3.api.Upload"
               ))
             }
             "sealedclasses" -> {

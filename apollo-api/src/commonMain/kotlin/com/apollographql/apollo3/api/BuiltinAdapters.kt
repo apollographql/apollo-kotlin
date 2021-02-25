@@ -1,6 +1,6 @@
 package com.apollographql.apollo3.api
 
-import com.apollographql.apollo3.api.internal.json.JsonWriter
+import com.apollographql.apollo3.api.internal.json.BufferedSinkJsonWriter
 import com.apollographql.apollo3.api.internal.json.Utils
 import com.apollographql.apollo3.api.internal.json.use
 import okio.Buffer
@@ -19,7 +19,7 @@ object BuiltinCustomScalarAdapters {
       is JsonObject,
       is JsonList -> {
         val buffer = Buffer()
-        JsonWriter.of(buffer).use { writer ->
+        BufferedSinkJsonWriter(buffer).use { writer ->
           Utils.writeToJson(jsonElement.toRawValue(), writer)
         }
         buffer.readUtf8()
@@ -85,16 +85,6 @@ object BuiltinCustomScalarAdapters {
 
   val FALLBACK_ADAPTER = adapterWithDefaultEncode { jsonElement ->
     jsonElement.toRawValue()
-  }
-
-  val FILE_UPLOAD_ADAPTER = object : CustomScalarAdapter<FileUpload> {
-    override fun decode(jsonElement: JsonElement): FileUpload {
-      throw IllegalStateException("ApolloGraphQL: cannot decode FileUpload")
-    }
-
-    override fun encode(value: FileUpload): JsonElement {
-      return JsonNull
-    }
   }
 }
 

@@ -46,14 +46,18 @@ object JsonScope {
    * pathIndices when doing so isn't useful.
    */
   fun getPath(stackSize: Int, stack: IntArray, pathNames: Array<String?>, pathIndices: IntArray): String {
-    val result = StringBuilder().append('$')
+    val result = StringBuilder()
+    var isRoot = true
     for (i in 0 until stackSize) {
       when (stack[i]) {
-        EMPTY_ARRAY, NONEMPTY_ARRAY -> result.append('[').append(pathIndices[i]).append(']')
+        EMPTY_ARRAY, NONEMPTY_ARRAY -> result.append('.').append(pathIndices[i])
         EMPTY_OBJECT, DANGLING_NAME, NONEMPTY_OBJECT -> {
-          result.append('.')
+          if (!isRoot) {
+            result.append('.')
+          }
           if (pathNames[i] != null) {
             result.append(pathNames[i])
+            isRoot = false
           }
         }
         NONEMPTY_DOCUMENT, EMPTY_DOCUMENT, CLOSED -> Unit

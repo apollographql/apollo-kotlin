@@ -15,11 +15,9 @@
  */
 package com.apollographql.apollo3.api.internal.json
 
+import com.apollographql.apollo3.api.Upload
 import com.apollographql.apollo3.api.internal.Throws
-import com.apollographql.apollo3.api.internal.json.JsonScope.getPath
-import okio.BufferedSink
 import okio.IOException
-import kotlin.jvm.JvmStatic
 
 /**
  * Writes a JSON [RFC 7159](http://www.ietf.org/rfc/rfc7159.txt) encoded value to a stream, one token at a time.
@@ -41,105 +39,54 @@ import kotlin.jvm.JvmStatic
  * Each `JsonWriter` may be used to write a single JSON stream. Instances of this class are not thread safe. Calls that would result in a
  * malformed JSON string will fail with an [IllegalStateException].
  */
-abstract class JsonWriter : Closeable, Flushable {
-  // The nesting stack. Using a manual array rather than an ArrayList saves 20%. This stack permits  up to 32 levels of nesting including
-  // the top-level document. Deeper nesting is prone to trigger StackOverflowErrors.
-  protected var stackSize = 0
-  protected val scopes = IntArray(32)
-  protected val pathNames = arrayOfNulls<String>(32)
-  protected val pathIndices = IntArray(32)
-
-  /**
-   * A string containing a full set of spaces for a single level of indentation, or null for no pretty printing.
-   */
-  var indent: String? = null
-
-  /**
-   * Configure this writer to relax its syntax rules.
-   *
-   * By default, this writer only emits well-formed JSON as specified by [RFC 7159](http://www.ietf.org/rfc/rfc7159.txt).
-   */
-  var isLenient = false
-
-  /**
-   * Sets whether object members are serialized when their value is null. This has no impact on array elements.
-   *
-   * The default is false.
-   */
-  var serializeNulls = false
-
-  /**
-   * Returns the scope on the top of the stack.
-   */
-  fun peekScope(): Int {
-    check(stackSize != 0) { "JsonWriter is closed." }
-    return scopes[stackSize - 1]
-  }
-
-  fun pushScope(newTop: Int) {
-    if (stackSize == scopes.size) {
-      throw JsonDataException("Nesting too deep at $path: circular reference?")
-    }
-    scopes[stackSize++] = newTop
-  }
-
-  /**
-   * Replace the value on the top of the stack with the given value.
-   */
-  fun replaceTop(topOfStack: Int) {
-    scopes[stackSize - 1] = topOfStack
-  }
-
+interface JsonWriter : Closeable, Flushable {
   /**
    * Begins encoding a new array. Each call to this method must be paired with a call to [endArray].
    */
   @Throws(IOException::class)
-  abstract fun beginArray(): JsonWriter
+  fun beginArray(): JsonWriter
 
   /**
    * Ends encoding the current array.
    */
   @Throws(IOException::class)
-  abstract fun endArray(): JsonWriter
+  fun endArray(): JsonWriter
 
   /**
    * Begins encoding a new object. Each call to this method must be paired with a call to [endObject].
    */
   @Throws(IOException::class)
-  abstract fun beginObject(): JsonWriter
+  fun beginObject(): JsonWriter
 
   /**
    * Ends encoding the current object.
    */
   @Throws(IOException::class)
-  abstract fun endObject(): JsonWriter
+  fun endObject(): JsonWriter
 
   /**
    * Encodes the property name.
    */
   @Throws(IOException::class)
-  abstract fun name(name: String): JsonWriter
+  fun name(name: String): JsonWriter
 
   /**
    * Encodes the literal string `value`, or null to encode a null literal.
    */
   @Throws(IOException::class)
-  abstract fun value(value: String?): JsonWriter
-
-  @Throws(IOException::class)
-  abstract fun jsonValue(value: String?): JsonWriter
-
+  fun value(value: String): JsonWriter
+  
   /**
    * Encodes `null`.
    */
   @Throws(IOException::class)
-  abstract fun nullValue(): JsonWriter
+  fun nullValue(): JsonWriter
 
   /**
    * Encodes boolean `value`.
    */
   @Throws(IOException::class)
-  abstract fun value(value: Boolean?): JsonWriter
+  fun value(value: Boolean): JsonWriter
 
   /**
    * Encodes a finite double `value`.
@@ -147,35 +94,17 @@ abstract class JsonWriter : Closeable, Flushable {
    * May not be [Double.isNaN] or [Double.isInfinite].
    */
   @Throws(IOException::class)
-  abstract fun value(value: Double): JsonWriter
+  fun value(value: Double): JsonWriter
 
   /**
-   * Encodes long `value`.
+   * Encodes int `value`.
    */
   @Throws(IOException::class)
-  abstract fun value(value: Long): JsonWriter
+  fun value(value: Int): JsonWriter
 
   /**
-   * Encodes number `value`.
-   *
-   * May not be [Double.isNaN] or [Double.isInfinite].
+   * Encodes a [Upload].
    */
   @Throws(IOException::class)
-  abstract fun value(value: Number?): JsonWriter
-
-  /**
-   * Returns a [JsonPath](http://goessner.net/articles/JsonPath/) to the current location in the JSON value.
-   */
-  val path: String
-    get() = getPath(stackSize, scopes, pathNames, pathIndices)
-
-  companion object {
-    /**
-     * Returns a new instance that writes UTF-8 encoded JSON to `sink`.
-     */
-    @JvmStatic
-    fun of(sink: BufferedSink): JsonWriter {
-      return JsonUtf8Writer(sink)
-    }
-  }
+  fun value(value: Upload): JsonWriter
 }

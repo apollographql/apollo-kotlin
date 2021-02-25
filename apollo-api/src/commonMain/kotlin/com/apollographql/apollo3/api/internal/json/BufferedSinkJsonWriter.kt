@@ -15,81 +15,58 @@
  */
 package com.apollographql.apollo3.api.internal.json
 
+import com.apollographql.apollo3.api.Upload
 import com.apollographql.apollo3.api.internal.Throws
 import okio.BufferedSink
-import okio.ByteString
 import okio.IOException
 
-internal class JsonUtf8Writer(private val sink: BufferedSink) : JsonWriter() {
-  companion object {
-    private const val HEX_ARRAY = "0123456789abcdef"
+class BufferedSinkJsonWriter(private val sink: BufferedSink) : JsonWriter {
+  // The nesting stack. Using a manual array rather than an ArrayList saves 20%. This stack permits  up to 32 levels of nesting including
+  // the top-level document. Deeper nesting is prone to trigger StackOverflowErrors.
+  private var stackSize = 0
+  private val scopes = IntArray(32)
+  private val pathNames = arrayOfNulls<String>(32)
+  private val pathIndices = IntArray(32)
 
-    private fun Byte.hexString(): String {
-      val value = toInt()
-      return "${HEX_ARRAY[value.ushr(4)]}${HEX_ARRAY[value and 0x0F]}"
-    }
+  /**
+   * A string containing a full set of spaces for a single level of indentation, or null for no pretty printing.
+   */
+  var indent: String? = null
 
-    /**
-     * From RFC 7159, "All Unicode characters may be placed within the quotation marks except for the characters that must be escaped:
-     * quotation mark, reverse solidus, and the control characters (U+0000 through U+001F)."
-     *
-     * We also escape '\u2028' and '\u2029', which JavaScript interprets as newline characters. This prevents eval() from failing with a
-     * syntax error. http://code.google.com/p/google-gson/issues/detail?id=341
-     */
-    private val REPLACEMENT_CHARS: Array<String?> = arrayOfNulls<String?>(128).apply {
-      for (i in 0..0x1f) {
-        this[i] = "\\u00${i.toByte().hexString()}"
-      }
-      this['"'.toInt()] = "\\\""
-      this['\\'.toInt()] = "\\\\"
-      this['\t'.toInt()] = "\\t"
-      this['\b'.toInt()] = "\\b"
-      this['\n'.toInt()] = "\\n"
-      this['\r'.toInt()] = "\\r"
-    }
+  /**
+   * Configure this writer to relax its syntax rules.
+   *
+   * By default, this writer only emits well-formed JSON as specified by [RFC 7159](http://www.ietf.org/rfc/rfc7159.txt).
+   */
+  private var isLenient = false
 
-    /**
-     * Writes `value` as a string literal to `sink`. This wraps the value in double quotes and escapes those characters that require it.
-     */
-    @Throws(IOException::class)
-    fun string(sink: BufferedSink, value: String) {
-      val replacements = REPLACEMENT_CHARS
-      sink.writeByte('"'.toInt())
-      var last = 0
-      val length = value.length
-      for (i in 0 until length) {
-        val c = value[i]
-        var replacement: String?
-        if (c.toInt() < 128) {
-          replacement = replacements[c.toInt()]
-          if (replacement == null) {
-            continue
-          }
-        } else if (c == '\u2028') {
-          replacement = "\\u2028"
-        } else if (c == '\u2029') {
-          replacement = "\\u2029"
-        } else {
-          continue
-        }
-        if (last < i) {
-          sink.writeUtf8(value, last, i)
-        }
-        sink.writeUtf8(replacement)
-        last = i + 1
-      }
-      if (last < length) {
-        sink.writeUtf8(value, last, length)
-      }
-      sink.writeByte('"'.toInt())
-    }
-  }
+  /**
+   * Sets whether object members are serialized when their value is null. This has no impact on array elements.
+   *
+   * The default is false.
+   */
+  var serializeNulls = false
 
   /** The name/value separator; either ":" or ": ".  */
   val separator: String
     get() = if (indent.isNullOrEmpty()) ":" else ": "
 
   private var deferredName: String? = null
+
+  /**
+   * Returns a [JsonPath](http://goessner.net/articles/JsonPath/) to the current location in the JSON value.
+   *
+   * Note: the implementation is modified from the Moshi implementation to:
+   * - Remove the leading "$."
+   * - Remove square brackets in lists. This isn't great because it doesn't allow to distinguish lists from "0" keys but
+   * this is how File Upload works: https://github.com/jaydenseric/graphql-multipart-request-spec
+   */
+  val path: String
+    get() = JsonScope.getPath(stackSize, scopes, pathNames, pathIndices)
+
+  init {
+    pushScope(JsonScope.EMPTY_DOCUMENT)
+  }
 
   @Throws(IOException::class)
   override fun beginArray(): JsonWriter {
@@ -162,25 +139,10 @@ internal class JsonUtf8Writer(private val sink: BufferedSink) : JsonWriter() {
   }
 
   @Throws(IOException::class)
-  override fun value(value: String?): JsonWriter {
-    if (value == null) {
-      return nullValue()
-    }
+  override fun value(value: String): JsonWriter {
     writeDeferredName()
     beforeValue()
     string(sink, value)
-    pathIndices[stackSize - 1]++
-    return this
-  }
-
-  @Throws(IOException::class)
-  override fun jsonValue(value: String?): JsonWriter {
-    if (value == null) {
-      return nullValue()
-    }
-    writeDeferredName()
-    beforeValue()
-    sink.writeUtf8(value)
     pathIndices[stackSize - 1]++
     return this
   }
@@ -202,10 +164,8 @@ internal class JsonUtf8Writer(private val sink: BufferedSink) : JsonWriter() {
   }
 
   @Throws(IOException::class)
-  override fun value(value: Boolean?): JsonWriter {
-    return if (value == null) {
-      nullValue()
-    } else {
+  override fun value(value: Boolean): JsonWriter {
+    return run {
       writeDeferredName()
       beforeValue()
       sink.writeUtf8(if (value) "true" else "false")
@@ -227,7 +187,7 @@ internal class JsonUtf8Writer(private val sink: BufferedSink) : JsonWriter() {
   }
 
   @Throws(IOException::class)
-  override fun value(value: Long): JsonWriter {
+  override fun value(value: Int): JsonWriter {
     writeDeferredName()
     beforeValue()
     sink.writeUtf8(value.toString())
@@ -235,20 +195,8 @@ internal class JsonUtf8Writer(private val sink: BufferedSink) : JsonWriter() {
     return this
   }
 
-  @Throws(IOException::class)
-  override fun value(value: Number?): JsonWriter {
-    if (value == null) {
-      return nullValue()
-    }
-    val string = value.toString()
-    require(!(!isLenient && (string == "-Infinity" || string == "Infinity" || string == "NaN"))) {
-      "Numeric values must be finite, but was $value"
-    }
-    writeDeferredName()
-    beforeValue()
-    sink.writeUtf8(string)
-    pathIndices[stackSize - 1]++
-    return this
+  override fun value(value: Upload) = apply {
+    nullValue()
   }
 
   /**
@@ -334,7 +282,89 @@ internal class JsonUtf8Writer(private val sink: BufferedSink) : JsonWriter() {
     }
   }
 
-  init {
-    pushScope(JsonScope.EMPTY_DOCUMENT)
+  /**
+   * Returns the scope on the top of the stack.
+   */
+  private fun peekScope(): Int {
+    check(stackSize != 0) { "JsonWriter is closed." }
+    return scopes[stackSize - 1]
+  }
+
+  private fun pushScope(newTop: Int) {
+    if (stackSize == scopes.size) {
+      throw JsonDataException("Nesting too deep at $path: circular reference?")
+    }
+    scopes[stackSize++] = newTop
+  }
+
+  /**
+   * Replace the value on the top of the stack with the given value.
+   */
+  private fun replaceTop(topOfStack: Int) {
+    scopes[stackSize - 1] = topOfStack
+  }
+
+  companion object {
+    private const val HEX_ARRAY = "0123456789abcdef"
+
+    private fun Byte.hexString(): String {
+      val value = toInt()
+      return "${HEX_ARRAY[value.ushr(4)]}${HEX_ARRAY[value and 0x0F]}"
+    }
+
+    /**
+     * From RFC 7159, "All Unicode characters may be placed within the quotation marks except for the characters that must be escaped:
+     * quotation mark, reverse solidus, and the control characters (U+0000 through U+001F)."
+     *
+     * We also escape '\u2028' and '\u2029', which JavaScript interprets as newline characters. This prevents eval() from failing with a
+     * syntax error. http://code.google.com/p/google-gson/issues/detail?id=341
+     */
+    private val REPLACEMENT_CHARS: Array<String?> = arrayOfNulls<String?>(128).apply {
+      for (i in 0..0x1f) {
+        this[i] = "\\u00${i.toByte().hexString()}"
+      }
+      this['"'.toInt()] = "\\\""
+      this['\\'.toInt()] = "\\\\"
+      this['\t'.toInt()] = "\\t"
+      this['\b'.toInt()] = "\\b"
+      this['\n'.toInt()] = "\\n"
+      this['\r'.toInt()] = "\\r"
+    }
+
+    /**
+     * Writes `value` as a string literal to `sink`. This wraps the value in double quotes and escapes those characters that require it.
+     */
+    @Throws(IOException::class)
+    fun string(sink: BufferedSink, value: String) {
+      val replacements = REPLACEMENT_CHARS
+      sink.writeByte('"'.toInt())
+      var last = 0
+      val length = value.length
+      for (i in 0 until length) {
+        val c = value[i]
+        var replacement: String?
+        if (c.toInt() < 128) {
+          replacement = replacements[c.toInt()]
+          if (replacement == null) {
+            continue
+          }
+        } else if (c == '\u2028') {
+          replacement = "\\u2028"
+        } else if (c == '\u2029') {
+          replacement = "\\u2029"
+        } else {
+          continue
+        }
+        if (last < i) {
+          sink.writeUtf8(value, last, i)
+        }
+        sink.writeUtf8(replacement)
+        last = i + 1
+      }
+      if (last < length) {
+        sink.writeUtf8(value, last, length)
+      }
+      sink.writeByte('"'.toInt())
+    }
   }
 }

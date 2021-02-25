@@ -336,9 +336,9 @@ class NormalizedCacheTestCase {
     enqueueAndAssertResponse(
         server,
         "HeroAndFriendsWithFragmentResponse.json",
-        apolloClient.query(HeroAndFriendsNamesWithIDsQuery(Input.Present(Episode.NEWHOPE))),
-         { response -> !response.hasErrors() }
-    )
+        apolloClient.query(HeroAndFriendsNamesWithIDsQuery(Input.Present(Episode.NEWHOPE)))
+    ) { response -> !response.hasErrors() }
+
     val heroWithFriendsFragment = apolloClient.apolloStore.readFragment(
         HeroWithFriendsFragmentImpl(),
         from("2001"),
@@ -382,27 +382,22 @@ class NormalizedCacheTestCase {
     enqueueAndAssertResponse(
         server,
         "HeroNameResponse.json",
-        apolloClient.query(EpisodeHeroNameQuery(Input.Present(Episode.EMPIRE))),
-         { response -> !response.isFromCache }
-    )
+        apolloClient.query(EpisodeHeroNameQuery(Input.Present(Episode.EMPIRE)))
+    ) { response -> !response.isFromCache }
     enqueueAndAssertResponse(
         server,
         "HeroNameResponse.json",
-        apolloClient.query(EpisodeHeroNameQuery(Input.Present(Episode.EMPIRE))).responseFetcher(ApolloResponseFetchers.NETWORK_ONLY),
-         { response -> !response.isFromCache }
-    )
+        apolloClient.query(EpisodeHeroNameQuery(Input.Present(Episode.EMPIRE))).responseFetcher(ApolloResponseFetchers.NETWORK_ONLY)
+    ) { response -> !response.isFromCache }
     assertResponse(
-        apolloClient.query(EpisodeHeroNameQuery(Input.Present(Episode.EMPIRE))).responseFetcher(ApolloResponseFetchers.CACHE_ONLY),
-         { response -> response.isFromCache }
-    )
+        apolloClient.query(EpisodeHeroNameQuery(Input.Present(Episode.EMPIRE))).responseFetcher(ApolloResponseFetchers.CACHE_ONLY)
+    ) { response -> response.isFromCache }
     assertResponse(
-        apolloClient.query(EpisodeHeroNameQuery(Input.Present(Episode.EMPIRE))).responseFetcher(ApolloResponseFetchers.CACHE_FIRST),
-         { response -> response.isFromCache }
-    )
+        apolloClient.query(EpisodeHeroNameQuery(Input.Present(Episode.EMPIRE))).responseFetcher(ApolloResponseFetchers.CACHE_FIRST)
+    ) { response -> response.isFromCache }
     assertResponse(
-        apolloClient.query(EpisodeHeroNameQuery(Input.Present(Episode.EMPIRE))).responseFetcher(ApolloResponseFetchers.NETWORK_FIRST),
-         { response -> response.isFromCache }
-    )
+        apolloClient.query(EpisodeHeroNameQuery(Input.Present(Episode.EMPIRE))).responseFetcher(ApolloResponseFetchers.NETWORK_FIRST)
+    ) { response -> response.isFromCache }
   }
 
   @Test

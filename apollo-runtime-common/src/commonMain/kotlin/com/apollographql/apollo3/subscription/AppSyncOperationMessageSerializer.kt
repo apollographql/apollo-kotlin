@@ -1,5 +1,6 @@
 package com.apollographql.apollo3.subscription
 
+import com.apollographql.apollo3.api.internal.json.BufferedSinkJsonWriter
 import com.apollographql.apollo3.api.internal.json.JsonWriter
 import com.apollographql.apollo3.api.internal.json.Utils
 import com.apollographql.apollo3.api.internal.json.use
@@ -24,7 +25,7 @@ class AppSyncOperationMessageSerializer(
 ) : OperationMessageSerializer {
   override fun writeClientMessage(message: OperationClientMessage, sink: BufferedSink) {
     when (message) {
-      is OperationClientMessage.Start -> JsonWriter.of(sink).use { message.writeTo(it) }
+      is OperationClientMessage.Start -> BufferedSinkJsonWriter(sink).use { message.writeTo(it) }
       is OperationClientMessage.Init,
       is OperationClientMessage.Stop,
       is OperationClientMessage.Terminate -> ApolloOperationMessageSerializer.writeClientMessage(message, sink)
@@ -51,7 +52,7 @@ class AppSyncOperationMessageSerializer(
 
   private fun OperationClientMessage.Start.serializePayload(): String =
       Buffer().okioUse { buffer ->
-        JsonWriter.of(buffer).use { dataWriter ->
+        BufferedSinkJsonWriter(buffer).use { dataWriter ->
           dataWriter.writeObject { writePayloadContentsTo(dataWriter) }
         }
         buffer.readUtf8()

@@ -25,8 +25,9 @@ object Utils {
         }
       }
 
-      is Boolean -> jsonWriter.value(value as Boolean?)
-      is Number -> jsonWriter.value(value as Number?)
+      is Boolean -> jsonWriter.value(value)
+      is Int -> jsonWriter.value(value)
+      is Double -> jsonWriter.value(value)
       is EnumValue -> jsonWriter.value(value.rawValue)
       else -> jsonWriter.value(value.toString())
     }

@@ -1,6 +1,7 @@
 package com.apollographql.apollo3.api
 
 import com.apollographql.apollo3.api.internal.ResponseAdapter
+import com.apollographql.apollo3.api.internal.UploadResponseAdapter
 import com.apollographql.apollo3.api.internal.json.JsonReader
 import com.apollographql.apollo3.api.internal.json.JsonWriter
 import com.apollographql.apollo3.api.internal.json.Utils.readRecursively
@@ -18,6 +19,8 @@ class ResponseAdapterCache(val customScalarAdapters: Map<CustomScalar, CustomSca
 
   private val adapterByClass = ThreadSafeMap<KClass<*>, ResponseAdapter<*>>()
   private val variableAdapterByClass = ThreadSafeMap<KClass<*>, ResponseAdapter<*>>()
+
+  private val responseAdapterByGraphQLName = mutableMapOf<String, ResponseAdapter<*>>()
 
   @Suppress("UNCHECKED_CAST")
   fun <T : Any> adapterFor(customScalar: CustomScalar): CustomScalarAdapter<T> {
@@ -39,9 +42,16 @@ class ResponseAdapterCache(val customScalarAdapters: Map<CustomScalar, CustomSca
       "Can't map GraphQL type: `${customScalar.graphqlName}` to: `${customScalar.className}`. Did you forget to add a CustomScalarAdapter?"
     } as CustomScalarAdapter<T>
   }
-
-
+  fun registerCustomScalarResponseAdapter(scalar: String, adapter: ResponseAdapter<*>) {
+    responseAdapterByGraphQLName[scalar] = adapter
+  }
   fun <T : Any> responseAdapterFor(customScalar: CustomScalar): ResponseAdapter<T> {
+    if (responseAdapterByGraphQLName[customScalar.graphqlName] != null) {
+      return responseAdapterByGraphQLName[customScalar.graphqlName] as ResponseAdapter<T>
+    }
+    if (customScalar.className == "com.apollographql.apollo3.api.Upload") {
+      return UploadResponseAdapter as ResponseAdapter<T>
+    }
     return CustomResponseAdapter(adapterFor(customScalar))
   }
 
@@ -56,7 +66,7 @@ class ResponseAdapterCache(val customScalarAdapters: Map<CustomScalar, CustomSca
   }
 
 
-  private class CustomResponseAdapter<T: Any>(private val wrappedAdapter: CustomScalarAdapter<T>) : ResponseAdapter<T> {
+  class CustomResponseAdapter<T: Any>(private val wrappedAdapter: CustomScalarAdapter<T>) : ResponseAdapter<T> {
     override fun fromResponse(reader: JsonReader): T {
       return wrappedAdapter.decode(JsonElement.fromRawValue(reader.readRecursively()))
     }
@@ -108,8 +118,6 @@ class ResponseAdapterCache(val customScalarAdapters: Map<CustomScalar, CustomSca
 
         "java.util.List" to BuiltinCustomScalarAdapters.LIST_ADAPTER,
         "kotlin.collections.List" to  BuiltinCustomScalarAdapters.LIST_ADAPTER,
-
-        "com.apollographql.apollo3.api.FileUpload" to  BuiltinCustomScalarAdapters.FILE_UPLOAD_ADAPTER,
 
         "java.lang.Object" to  BuiltinCustomScalarAdapters.FALLBACK_ADAPTER,
         "kotlin.Any" to  BuiltinCustomScalarAdapters.FALLBACK_ADAPTER,

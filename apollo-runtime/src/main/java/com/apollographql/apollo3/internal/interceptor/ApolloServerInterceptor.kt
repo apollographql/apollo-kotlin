@@ -1,17 +1,14 @@
 package com.apollographql.apollo3.internal.interceptor
 
 import com.apollographql.apollo3.api.ResponseAdapterCache
-import com.apollographql.apollo3.api.FileUpload
-import com.apollographql.apollo3.api.Input
-import com.apollographql.apollo3.api.InputType
+import com.apollographql.apollo3.api.Upload
 import com.apollographql.apollo3.api.Operation
 import com.apollographql.apollo3.api.Query
 import com.apollographql.apollo3.api.cache.http.HttpCache
 import com.apollographql.apollo3.api.cache.http.HttpCachePolicy
-import com.apollographql.apollo3.api.composeRequestBody
 import com.apollographql.apollo3.api.internal.ApolloLogger
-import com.apollographql.apollo3.api.internal.json.JsonWriter.Companion.of
-import com.apollographql.apollo3.api.variables
+import com.apollographql.apollo3.api.internal.OperationRequestBodyComposer
+import com.apollographql.apollo3.api.internal.json.BufferedSinkJsonWriter
 import com.apollographql.apollo3.cache.ApolloCacheHeaders
 import com.apollographql.apollo3.cache.CacheHeaders
 import com.apollographql.apollo3.exception.ApolloNetworkException
@@ -26,16 +23,12 @@ import okhttp3.Call
 import okhttp3.Callback
 import okhttp3.HttpUrl
 import okhttp3.MediaType
-import okhttp3.MultipartBody
 import okhttp3.Request
 import okhttp3.RequestBody
 import okhttp3.Response
 import okio.Buffer
 import okio.BufferedSink
-import okio.ByteString
-import java.io.File
 import java.io.IOException
-import java.util.ArrayList
 import java.util.concurrent.Executor
 import java.util.concurrent.atomic.AtomicReference
 
@@ -46,9 +39,9 @@ import java.util.concurrent.atomic.AtomicReference
  * on the interceptor chain.
  */
 class ApolloServerInterceptor(
-    val serverUrl: HttpUrl,
-    val httpCallFactory: Call.Factory,
-    val cachePolicy: HttpCachePolicy.Policy?,
+    private val serverUrl: HttpUrl,
+    private val httpCallFactory: Call.Factory,
+    private val cachePolicy: HttpCachePolicy.Policy?,
     val prefetch: Boolean,
     val responseAdapterCache: ResponseAdapterCache,
     val logger: ApolloLogger
@@ -124,12 +117,22 @@ class ApolloServerInterceptor(
   @Throws(IOException::class)
   fun httpPostCall(operation: Operation<*>, cacheHeaders: CacheHeaders, requestHeaders: RequestHeaders,
                    writeQueryDocument: Boolean, autoPersistQueries: Boolean): Call {
-    var requestBody = RequestBody.create(MEDIA_TYPE, httpPostRequestBody(operation, responseAdapterCache,
-        writeQueryDocument, autoPersistQueries))
-    requestBody = transformToMultiPartIfUploadExists(requestBody, operation)
+    val body = OperationRequestBodyComposer.compose(
+        operation = operation,
+        autoPersistQueries = autoPersistQueries,
+        withQueryDocument = writeQueryDocument,
+        responseAdapterCache = responseAdapterCache
+    )
+
+    val requestBody = object : RequestBody() {
+      override fun contentType() = MediaType.parse(body.contentType)
+
+      override fun writeTo(sink: BufferedSink) {
+        body.writeTo(bufferedSink = sink)
+      }
+    }
     val requestBuilder = Request.Builder()
         .url(serverUrl)
-        .header(HEADER_CONTENT_TYPE, CONTENT_TYPE)
         .post(requestBody)
     decorateRequest(requestBuilder, operation, cacheHeaders, requestHeaders)
     return httpCallFactory.newCall(requestBuilder.build())
@@ -161,25 +164,21 @@ class ApolloServerInterceptor(
     }
   }
 
-  class FileUploadMeta internal constructor(val key: String, val mimetype: String, val fileUpload: FileUpload)
   companion object {
     const val HEADER_ACCEPT_TYPE = "Accept"
-    const val HEADER_CONTENT_TYPE = "Content-Type"
     const val HEADER_APOLLO_OPERATION_ID = "X-APOLLO-OPERATION-ID"
     const val HEADER_APOLLO_OPERATION_NAME = "X-APOLLO-OPERATION-NAME"
     const val ACCEPT_TYPE = "application/json"
-    const val CONTENT_TYPE = "application/json"
-    val MEDIA_TYPE = MediaType.parse("application/json; charset=utf-8")
+    val MEDIA_TYPE = MediaType.parse("application/json")
 
     @Throws(IOException::class)
-    fun cacheKey(operation: Operation<*>, responseAdapterCache: ResponseAdapterCache?): String {
-      return httpPostRequestBody(operation, responseAdapterCache, true, true).md5().hex()
-    }
-
-    @Throws(IOException::class)
-    fun httpPostRequestBody(operation: Operation<*>, responseAdapterCache: ResponseAdapterCache?,
-                            writeQueryDocument: Boolean, autoPersistQueries: Boolean): ByteString {
-      return operation.composeRequestBody(autoPersistQueries, writeQueryDocument, responseAdapterCache!!)
+    fun cacheKey(operation: Operation<*>, responseAdapterCache: ResponseAdapterCache): String {
+      return OperationRequestBodyComposer.compose(
+          operation = operation,
+          autoPersistQueries = true,
+          withQueryDocument = true,
+          responseAdapterCache = responseAdapterCache
+      ).operations.md5().hex()
     }
 
     @Throws(IOException::class)
@@ -204,7 +203,7 @@ class ApolloServerInterceptor(
                                       operation: Operation<*>,
                                       responseAdapterCache: ResponseAdapterCache?) {
       val buffer = Buffer()
-      val jsonWriter = of(buffer)
+      val jsonWriter = BufferedSinkJsonWriter(buffer)
       jsonWriter.serializeNulls = true
       operation.serializeVariables(jsonWriter, responseAdapterCache!!)
       jsonWriter.close()
@@ -214,7 +213,7 @@ class ApolloServerInterceptor(
     @Throws(IOException::class)
     fun addExtensionsUrlQueryParameter(urlBuilder: HttpUrl.Builder, operation: Operation<*>) {
       val buffer = Buffer()
-      val jsonWriter = of(buffer)
+      val jsonWriter = BufferedSinkJsonWriter(buffer)
       jsonWriter.serializeNulls = true
       jsonWriter.beginObject()
       jsonWriter.name("persistedQuery")
@@ -225,106 +224,6 @@ class ApolloServerInterceptor(
       jsonWriter.endObject()
       jsonWriter.close()
       urlBuilder.addQueryParameter("extensions", buffer.readUtf8())
-    }
-
-    private fun recursiveGetUploadData(value: Any?, variableName: String, allUploads: ArrayList<FileUploadMeta>) {
-      when (value) {
-        is InputType -> {
-          // Input object
-          try {
-            val fields = value.javaClass.declaredFields
-            for (field in fields) {
-              field.isAccessible = true
-              val subValue = field[value]
-              val key = field.name
-              recursiveGetUploadData(subValue, "$variableName.$key", allUploads)
-            }
-          } catch (e: IllegalAccessException) {
-            // never happen
-          }
-        }
-        is Input<*> -> {
-          if (value is Input.Present<*>) {
-            recursiveGetUploadData(value.value, variableName, allUploads)
-          }
-        }
-        is FileUpload -> {
-          val upload = value
-          allUploads.add(FileUploadMeta(variableName, upload.mimetype, upload))
-        }
-        is Array<*> -> {
-          // TODO: when does this case happen?
-          var varFileIndex = 0
-          value.filterIsInstance<FileUpload>().forEach { upload ->
-            val key = "$variableName.$varFileIndex"
-            allUploads.add(FileUploadMeta(key, upload.mimetype, upload))
-            println(key)
-            varFileIndex++
-          }
-        }
-        is Collection<*> -> {
-          value.forEachIndexed { index, element ->
-            recursiveGetUploadData(element, "$variableName.$index", allUploads)
-          }
-        }
-      }
-    }
-
-    @Throws(IOException::class)
-    fun transformToMultiPartIfUploadExists(originalBody: RequestBody?, operation: Operation<*>): RequestBody? {
-      val allUploads = ArrayList<FileUploadMeta>()
-      val valueMap = operation.variables(ResponseAdapterCache.DEFAULT).valueMap
-      for (variableName in valueMap.keys) {
-        val value = valueMap[variableName]
-        recursiveGetUploadData(value, "variables.$variableName", allUploads)
-      }
-      return if (allUploads.isEmpty()) {
-        originalBody
-      } else {
-        httpMultipartRequestBody(originalBody, allUploads)
-      }
-    }
-
-    @Throws(IOException::class)
-    fun httpMultipartRequestBody(operations: RequestBody?, fileUploadMetaList: ArrayList<FileUploadMeta>): RequestBody {
-      val buffer = Buffer()
-      val jsonWriter = of(buffer)
-      jsonWriter.beginObject()
-      fileUploadMetaList.forEachIndexed { i, fileUploadMeta ->
-        jsonWriter.name(i.toString()).beginArray()
-        jsonWriter.value(fileUploadMeta.key)
-        jsonWriter.endArray()
-      }
-
-      jsonWriter.endObject()
-      jsonWriter.close()
-      val multipartBodyBuilder = MultipartBody.Builder()
-          .setType(MultipartBody.FORM)
-          .addFormDataPart("operations", null, operations)
-          .addFormDataPart("map", null, RequestBody.create(MEDIA_TYPE, buffer.readByteString()))
-
-      fileUploadMetaList.forEachIndexed { i, fileUploadMeta ->
-        val file = fileUploadMeta.fileUpload.filePath?.let { File(it) }
-        val mimetype = MediaType.parse(fileUploadMeta.fileUpload.mimetype)
-        if (file != null) {
-          multipartBodyBuilder.addFormDataPart(
-              i.toString(),
-              file.name,
-              RequestBody.create(mimetype, file)
-          )
-        } else {
-          multipartBodyBuilder.addFormDataPart(
-              i.toString(),
-              fileUploadMeta.fileUpload.fileName(),
-              object : RequestBody() {
-                override fun contentType() = mimetype
-                override fun contentLength() = fileUploadMeta.fileUpload.contentLength()
-                override fun writeTo(sink: BufferedSink) = fileUploadMeta.fileUpload.writeTo(sink)
-              }
-          )
-        }
-      }
-      return multipartBodyBuilder.build()
     }
   }
 }

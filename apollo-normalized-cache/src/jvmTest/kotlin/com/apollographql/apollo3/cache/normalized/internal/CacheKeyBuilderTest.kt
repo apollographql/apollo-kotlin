@@ -159,9 +159,7 @@ class CacheKeyBuilderTest {
     val testInput = mapOf(
         "string" to "string",
         "int" to 1,
-        "long" to 2L,
         "double" to 3.0,
-        "number" to BigDecimal.valueOf(4),
         "boolean" to true,
         "custom" to "JEDI",
         "object" to mapOf(
@@ -171,9 +169,7 @@ class CacheKeyBuilderTest {
         "list" to listOf(
             "string",
             1,
-            2L,
             3.0,
-            BigDecimal.valueOf(4),
             true,
             "JEDI",
             mapOf(
@@ -190,7 +186,7 @@ class CacheKeyBuilderTest {
     val variables = Operation.Variables(mapOf( "testInput" to testInput))
 
     Truth.assertThat(cacheKeyBuilder.build(field, variables)).isEqualTo(
-        "hero({\"episode\":\"JEDI\",\"nested\":{\"bar\":\"2\",\"foo\":{\"string\":\"string\",\"int\":1,\"long\":2,\"double\":3.0,\"number\":4,\"boolean\":true,\"custom\":\"JEDI\",\"object\":{\"string\":\"string\",\"int\":1},\"list\":[\"string\",1,2,3.0,4,true,\"JEDI\",{\"string\":\"string\",\"int\":1},[\"string\",1]]}}})")
+        "hero({\"episode\":\"JEDI\",\"nested\":{\"bar\":\"2\",\"foo\":{\"string\":\"string\",\"int\":1,\"double\":3.0,\"boolean\":true,\"custom\":\"JEDI\",\"object\":{\"string\":\"string\",\"int\":1},\"list\":[\"string\",1,3.0,true,\"JEDI\",{\"string\":\"string\",\"int\":1},[\"string\",1]]}}})")
   }
 
   @Test
