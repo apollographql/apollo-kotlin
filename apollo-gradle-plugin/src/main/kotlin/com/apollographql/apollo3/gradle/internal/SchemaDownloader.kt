@@ -15,7 +15,12 @@ object SchemaDownloader {
     }
   }
 
-  fun downloadRegistry(key: String, graph: String, variant: String): String? {
+  fun downloadRegistry(
+      key: String,
+      graph: String,
+      variant: String,
+      endpoint: String = "https://graphql.api.apollographql.com/api/graphql"
+  ): String {
     val query = """
     query DownloadSchema(${'$'}graphID: ID!, ${'$'}variant: String!) {
       service(id: ${'$'}graphID) {
@@ -31,7 +36,7 @@ object SchemaDownloader {
   """.trimIndent()
     val variables = mapOf("graphID" to graph, "variant" to variant)
 
-    val response = SchemaHelper.executeQuery(query, variables, "https://graphql.api.apollographql.com/api/graphql", mapOf("x-api-key" to key))
+    val response = SchemaHelper.executeQuery(query, variables, endpoint, mapOf("x-api-key" to key))
 
     val responseString = response.body.use { it?.string() }
 
@@ -52,7 +57,7 @@ object SchemaDownloader {
 
   inline fun <reified T> Any?.cast() = this as? T
 
-  val introspectionQuery = """
+  private val introspectionQuery = """
     query IntrospectionQuery {
       __schema {
         queryType { name }
