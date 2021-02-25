@@ -1,6 +1,5 @@
 package com.apollographql.apollo3.compiler.backend.codegen
 
-import com.apollographql.apollo3.api.EnumValue
 import com.apollographql.apollo3.api.internal.ResponseAdapter
 import com.apollographql.apollo3.api.internal.json.JsonReader
 import com.apollographql.apollo3.api.internal.json.JsonWriter
@@ -43,7 +42,6 @@ private fun CodeGenerationAst.EnumType.toEnumTypeSpec(generateAsInternal: Boolea
       .applyIf(description.isNotBlank()) { addKdoc("%L\n", description) }
       .applyIf(generateAsInternal) { addModifiers(KModifier.INTERNAL) }
       .primaryConstructor(primaryConstructorWithOverriddenParamSpec)
-      .addSuperinterface(EnumValue::class)
       .addProperty(rawValuePropertySpec)
       .apply {
         consts.forEach { value -> addEnumConstant(value.constName, value.enumConstTypeSpec) }
@@ -96,7 +94,7 @@ private val primaryConstructorSpec =
 private val primaryConstructorWithOverriddenParamSpec =
     FunSpec
         .constructorBuilder()
-        .addParameter("rawValue", String::class, KModifier.OVERRIDE)
+        .addParameter("rawValue", String::class)
         .build()
 
 private val rawValuePropertySpec =
@@ -131,7 +129,6 @@ private fun CodeGenerationAst.EnumType.toSealedClassTypeSpec(generateAsInternal:
       .applyIf(generateAsInternal) { addModifiers(KModifier.INTERNAL) }
       .addModifiers(KModifier.SEALED)
       .primaryConstructor(primaryConstructorWithOverriddenParamSpec)
-      .addSuperinterface(EnumValue::class)
       .addProperty(rawValuePropertySpec)
       .addTypes(consts.map { value -> value.toObjectTypeSpec(ClassName("", kotlinNameForEnum(name))) })
       .addType(unknownValueTypeSpec)
