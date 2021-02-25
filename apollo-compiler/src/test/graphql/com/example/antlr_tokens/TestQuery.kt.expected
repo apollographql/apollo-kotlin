@@ -10,16 +10,14 @@ import com.apollographql.apollo3.api.Operation
 import com.apollographql.apollo3.api.Query
 import com.apollographql.apollo3.api.ResponseAdapterCache
 import com.apollographql.apollo3.api.ResponseField
-import com.apollographql.apollo3.api.internal.InputFieldMarshaller
 import com.apollographql.apollo3.api.internal.QueryDocumentMinifier
 import com.apollographql.apollo3.api.internal.ResponseAdapter
+import com.apollographql.apollo3.api.internal.json.JsonWriter
+import com.example.antlr_tokens.adapter.TestQuery_Adapter
 import com.example.antlr_tokens.adapter.TestQuery_ResponseAdapter
-import kotlin.Any
 import kotlin.String
 import kotlin.Suppress
 import kotlin.collections.List
-import kotlin.collections.Map
-import kotlin.jvm.Transient
 
 @Suppress("NAME_SHADOWING", "UNUSED_ANONYMOUS_PARAMETER", "LocalVariableName",
     "RemoveExplicitTypeArguments", "NestedLambdaShadowedImplicitParameter", "PropertyName",
@@ -27,34 +25,21 @@ import kotlin.jvm.Transient
 data class TestQuery(
   val operation: Input<String> = Input.Absent
 ) : Query<TestQuery.Data> {
-  @Transient
-  private val variables: Operation.Variables = object : Operation.Variables() {
-    override fun valueMap(): Map<String, Any?> = mutableMapOf<String, Any?>().apply {
-      if (this@TestQuery.operation is Input.Present) {
-        this["operation"] = this@TestQuery.operation.value
-      }
-    }
-
-    override fun marshaller(): InputFieldMarshaller {
-      return InputFieldMarshaller.invoke { writer ->
-        if (this@TestQuery.operation is Input.Present) {
-          writer.writeString("operation", this@TestQuery.operation.value)
-        }
-      }
-    }
-  }
-
   override fun operationId(): String = OPERATION_ID
 
   override fun queryDocument(): String = QUERY_DOCUMENT
 
-  override fun variables(): Operation.Variables = variables
+  override fun serializeVariables(writer: JsonWriter, responseAdapterCache: ResponseAdapterCache) {
+    responseAdapterCache.getVariablesAdapterFor(this::class) {
+      TestQuery_Adapter(responseAdapterCache)
+    }.toResponse(writer, this)
+  }
 
   override fun name(): String = OPERATION_NAME
 
-  override fun adapter(customScalarAdapters: ResponseAdapterCache): ResponseAdapter<Data> {
-    val adapter = customScalarAdapters.getOperationAdapter(name()) {
-      TestQuery_ResponseAdapter(customScalarAdapters)
+  override fun adapter(responseAdapterCache: ResponseAdapterCache): ResponseAdapter<Data> {
+    val adapter = responseAdapterCache.getAdapterFor(this::class) {
+      TestQuery_ResponseAdapter(responseAdapterCache)
     }
     return adapter
   }

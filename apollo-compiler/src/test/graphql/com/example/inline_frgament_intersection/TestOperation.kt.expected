@@ -11,6 +11,8 @@ import com.apollographql.apollo3.api.ResponseAdapterCache
 import com.apollographql.apollo3.api.ResponseField
 import com.apollographql.apollo3.api.internal.QueryDocumentMinifier
 import com.apollographql.apollo3.api.internal.ResponseAdapter
+import com.apollographql.apollo3.api.internal.json.JsonWriter
+import com.example.inline_frgament_intersection.adapter.TestOperation_Adapter
 import com.example.inline_frgament_intersection.adapter.TestOperation_ResponseAdapter
 import com.example.inline_frgament_intersection.type.Race
 import kotlin.Boolean
@@ -27,13 +29,17 @@ class TestOperation : Query<TestOperation.Data> {
 
   override fun queryDocument(): String = QUERY_DOCUMENT
 
-  override fun variables(): Operation.Variables = Operation.EMPTY_VARIABLES
+  override fun serializeVariables(writer: JsonWriter, responseAdapterCache: ResponseAdapterCache) {
+    responseAdapterCache.getVariablesAdapterFor(this::class) {
+      TestOperation_Adapter(responseAdapterCache)
+    }.toResponse(writer, this)
+  }
 
   override fun name(): String = OPERATION_NAME
 
-  override fun adapter(customScalarAdapters: ResponseAdapterCache): ResponseAdapter<Data> {
-    val adapter = customScalarAdapters.getOperationAdapter(name()) {
-      TestOperation_ResponseAdapter(customScalarAdapters)
+  override fun adapter(responseAdapterCache: ResponseAdapterCache): ResponseAdapter<Data> {
+    val adapter = responseAdapterCache.getAdapterFor(this::class) {
+      TestOperation_ResponseAdapter(responseAdapterCache)
     }
     return adapter
   }

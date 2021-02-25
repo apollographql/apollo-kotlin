@@ -7,6 +7,7 @@ import com.apollographql.apollo3.compiler.backend.codegen.patchKotlinNativeOptio
 import com.apollographql.apollo3.compiler.backend.codegen.responseAdapterTypeSpec
 import com.apollographql.apollo3.compiler.backend.codegen.typeSpec
 import com.apollographql.apollo3.compiler.backend.codegen.typeSpecs
+import com.apollographql.apollo3.compiler.backend.codegen.serializerTypeSpec
 import com.apollographql.apollo3.compiler.backend.ir.BackendIr
 import com.apollographql.apollo3.compiler.escapeKotlinReservedWord
 import com.apollographql.apollo3.compiler.frontend.Schema
@@ -69,6 +70,9 @@ internal class GraphQLCodeGenerator(
               .typeSpec(generateAsInternal)
               .fileSpec(typesPackageName)
               .writeTo(outputDir)
+          inputType.fields.serializerTypeSpec(typesPackageName, inputType.name, generateAsInternal)
+              .fileSpec("${typesPackageName}.adapter")
+              .writeTo(outputDir)
         }
 
     ast.fragmentTypes
@@ -82,6 +86,10 @@ internal class GraphQLCodeGenerator(
             fragmentType
                 .implementationTypeSpec(generateAsInternal = generateAsInternal)
                 .fileSpec(fragmentsPackageName)
+                .writeTo(outputDir)
+
+            fragmentType.variables.serializerTypeSpec(fragmentsPackageName, fragmentType.implementationType.name, generateAsInternal)
+                .fileSpec("${fragmentsPackageName}.adapter")
                 .writeTo(outputDir)
 
             fragmentType
@@ -104,9 +112,10 @@ internal class GraphQLCodeGenerator(
           }
           .fileSpec(operationType.packageName)
           .writeTo(outputDir)
-    }
 
-    ast.operationTypes.forEach { operationType ->
+      operationType.variables.serializerTypeSpec(operationType.packageName, operationType.name, generateAsInternal)
+          .fileSpec("${operationType.packageName}.adapter")
+          .writeTo(outputDir)
       operationType.responseAdapterTypeSpec(generateAsInternal)
           .fileSpec("${operationType.packageName}.adapter")
           .writeTo(outputDir)

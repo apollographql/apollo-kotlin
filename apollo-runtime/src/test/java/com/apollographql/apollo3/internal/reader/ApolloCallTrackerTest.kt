@@ -6,6 +6,7 @@ import com.apollographql.apollo3.api.ResponseAdapterCache
 import com.apollographql.apollo3.api.Operation
 import com.apollographql.apollo3.api.Query
 import com.apollographql.apollo3.api.ResponseField
+import com.apollographql.apollo3.api.internal.json.JsonWriter
 import com.apollographql.apollo3.rx2.Rx2Apollo
 import com.google.common.truth.Truth
 import okhttp3.Interceptor
@@ -127,8 +128,9 @@ class ApolloCallTrackerTest {
         return ""
       }
 
-      override fun variables(): Operation.Variables {
-        return Operation.EMPTY_VARIABLES
+      override fun serializeVariables(writer: JsonWriter, responseAdapterCache: ResponseAdapterCache) {
+        writer.beginObject()
+        writer.endObject()
       }
 
       override fun adapter(responseAdapterCache: ResponseAdapterCache) = throw UnsupportedOperationException()

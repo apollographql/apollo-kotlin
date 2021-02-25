@@ -6,18 +6,19 @@
 package com.example.named_fragment_inside_inline_fragment.fragment
 
 import com.apollographql.apollo3.api.Fragment
-import com.apollographql.apollo3.api.Operation
 import com.apollographql.apollo3.api.ResponseAdapterCache
 import com.apollographql.apollo3.api.ResponseField
 import com.apollographql.apollo3.api.internal.ResponseAdapter
+import com.apollographql.apollo3.api.internal.json.JsonWriter
+import com.example.named_fragment_inside_inline_fragment.fragment.adapter.CharacterNameImpl_Adapter
 import com.example.named_fragment_inside_inline_fragment.fragment.adapter.CharacterNameImpl_ResponseAdapter
 import kotlin.String
 import kotlin.collections.List
 
 class CharacterNameImpl : Fragment<CharacterNameImpl.Data> {
-  override fun adapter(customScalarAdapters: ResponseAdapterCache): ResponseAdapter<Data> {
-    val adapter = customScalarAdapters.getFragmentAdapter("CharacterNameImpl") {
-      CharacterNameImpl_ResponseAdapter(customScalarAdapters)
+  override fun adapter(responseAdapterCache: ResponseAdapterCache): ResponseAdapter<Data> {
+    val adapter = responseAdapterCache.getAdapterFor(this::class) {
+      CharacterNameImpl_ResponseAdapter(responseAdapterCache)
     }
     return adapter
   }
@@ -25,7 +26,11 @@ class CharacterNameImpl : Fragment<CharacterNameImpl.Data> {
   override fun responseFields(): List<ResponseField.FieldSet> = listOf(
     ResponseField.FieldSet(null, CharacterNameImpl_ResponseAdapter.RESPONSE_FIELDS)
   )
-  override fun variables(): Operation.Variables = Operation.EMPTY_VARIABLES
+  override fun serializeVariables(writer: JsonWriter, responseAdapterCache: ResponseAdapterCache) {
+    responseAdapterCache.getVariablesAdapterFor(this::class) {
+      CharacterNameImpl_Adapter(responseAdapterCache)
+    }.toResponse(writer, this)
+  }
 
   /**
    * A character from the Star Wars universe

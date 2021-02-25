@@ -33,7 +33,7 @@ class RealCacheKeyBuilder : CacheKeyBuilder {
     return when (value) {
       null -> null
       is Variable -> {
-        resolveVariable(value.name, variables)
+        variables.valueMap[value.name]
       }
       is Map<*, *> -> {
         value as Map<String, Any?>
@@ -49,18 +49,6 @@ class RealCacheKeyBuilder : CacheKeyBuilder {
         }
       }
       else -> value
-    }
-  }
-
-  @Suppress("UNCHECKED_CAST")
-  private fun resolveVariable(name: String, variables: Operation.Variables): Any? {
-    return when (val resolvedVariable = variables.valueMap()[name]) {
-      is InputType -> {
-        val inputFieldMapWriter = SortedInputFieldMapWriter()
-        resolvedVariable.marshaller().marshal(inputFieldMapWriter)
-        inputFieldMapWriter.map()
-      }
-      else -> resolvedVariable
     }
   }
 }

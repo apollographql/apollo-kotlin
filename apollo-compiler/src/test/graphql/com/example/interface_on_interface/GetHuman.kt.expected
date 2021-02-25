@@ -11,6 +11,8 @@ import com.apollographql.apollo3.api.ResponseAdapterCache
 import com.apollographql.apollo3.api.ResponseField
 import com.apollographql.apollo3.api.internal.QueryDocumentMinifier
 import com.apollographql.apollo3.api.internal.ResponseAdapter
+import com.apollographql.apollo3.api.internal.json.JsonWriter
+import com.example.interface_on_interface.adapter.GetHuman_Adapter
 import com.example.interface_on_interface.adapter.GetHuman_ResponseAdapter
 import kotlin.Double
 import kotlin.String
@@ -25,13 +27,17 @@ class GetHuman : Query<GetHuman.Data> {
 
   override fun queryDocument(): String = QUERY_DOCUMENT
 
-  override fun variables(): Operation.Variables = Operation.EMPTY_VARIABLES
+  override fun serializeVariables(writer: JsonWriter, responseAdapterCache: ResponseAdapterCache) {
+    responseAdapterCache.getVariablesAdapterFor(this::class) {
+      GetHuman_Adapter(responseAdapterCache)
+    }.toResponse(writer, this)
+  }
 
   override fun name(): String = OPERATION_NAME
 
-  override fun adapter(customScalarAdapters: ResponseAdapterCache): ResponseAdapter<Data> {
-    val adapter = customScalarAdapters.getOperationAdapter(name()) {
-      GetHuman_ResponseAdapter(customScalarAdapters)
+  override fun adapter(responseAdapterCache: ResponseAdapterCache): ResponseAdapter<Data> {
+    val adapter = responseAdapterCache.getAdapterFor(this::class) {
+      GetHuman_ResponseAdapter(responseAdapterCache)
     }
     return adapter
   }

@@ -5,6 +5,7 @@ import com.apollographql.apollo3.api.Operation
 import com.apollographql.apollo3.api.ResponseField
 import com.apollographql.apollo3.api.Subscription
 import com.apollographql.apollo3.api.internal.ResponseAdapter
+import com.apollographql.apollo3.api.internal.json.JsonWriter
 import com.apollographql.apollo3.cache.normalized.CacheKeyResolver
 import com.apollographql.apollo3.subscription.ApolloOperationMessageSerializer
 import com.apollographql.apollo3.subscription.OperationClientMessage
@@ -154,8 +155,9 @@ class SubscriptionAutoPersistTest {
       return "subscription{\ncommentAdded(repoFullName:\"repo\"){\n__typename\nid\ncontent\n}\n}"
     }
 
-    override fun variables(): Operation.Variables {
-      return Operation.EMPTY_VARIABLES
+    override fun serializeVariables(writer: JsonWriter, responseAdapterCache: ResponseAdapterCache) {
+      writer.beginObject()
+      writer.endObject()
     }
 
     override fun adapter(responseAdapterCache: ResponseAdapterCache): ResponseAdapter<Operation.Data> {

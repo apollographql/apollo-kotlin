@@ -6,7 +6,9 @@ import com.apollographql.apollo3.api.Operation
 import com.apollographql.apollo3.cache.normalized.Record
 import com.apollographql.apollo3.api.ResponseField
 import com.apollographql.apollo3.api.internal.MapJsonReader
+import com.apollographql.apollo3.api.internal.MapJsonWriter
 import com.apollographql.apollo3.api.internal.ResponseAdapter
+import com.apollographql.apollo3.api.variables
 import com.apollographql.apollo3.cache.CacheHeaders
 import com.apollographql.apollo3.cache.normalized.CacheKey
 import com.apollographql.apollo3.cache.normalized.CacheKeyResolver
@@ -15,14 +17,14 @@ fun <D : Operation.Data> Operation<D>.normalize(
     data: D,
     responseAdapterCache: ResponseAdapterCache,
     cacheKeyResolver: CacheKeyResolver
-) = normalizeInternal(data, cacheKeyResolver, CacheKeyResolver.rootKey().key, adapter(responseAdapterCache), variables(), responseFields())
+) = normalizeInternal(data, cacheKeyResolver, CacheKeyResolver.rootKey().key, adapter(responseAdapterCache), variables(responseAdapterCache), responseFields())
 
 fun <D : Fragment.Data> Fragment<D>.normalize(
     data: D,
     responseAdapterCache: ResponseAdapterCache,
     cacheKeyResolver: CacheKeyResolver,
     rootKey: String
-) = normalizeInternal(data, cacheKeyResolver, rootKey, adapter(responseAdapterCache), variables(), responseFields())
+) = normalizeInternal(data, cacheKeyResolver, rootKey, adapter(responseAdapterCache), variables(responseAdapterCache), responseFields())
 
 private fun <D> normalizeInternal(
     data: D,
@@ -60,7 +62,7 @@ fun <D : Operation.Data> Operation<D>.readDataFromCache(
     readableStore = readableStore,
     cacheKeyResolver = cacheKeyResolver,
     cacheHeaders = cacheHeaders,
-    variables = variables(),
+    variables = variables(responseAdapterCache),
     adapter = adapter(responseAdapterCache),
     mode = mode,
     cacheKey = CacheKeyResolver.rootKey(),
@@ -79,7 +81,7 @@ fun <D : Fragment.Data> Fragment<D>.readDataFromCache(
     readableStore = readableStore,
     cacheKeyResolver = cacheKeyResolver,
     cacheHeaders = cacheHeaders,
-    variables = variables(),
+    variables = variables(responseAdapterCache),
     adapter = adapter(responseAdapterCache),
     mode = mode,
     fieldSets = responseFields()

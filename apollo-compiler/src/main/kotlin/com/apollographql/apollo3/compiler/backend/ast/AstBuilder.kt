@@ -1,6 +1,7 @@
 package com.apollographql.apollo3.compiler.backend.ast
 
 import com.apollographql.apollo3.api.Operation
+import com.apollographql.apollo3.compiler.applyIf
 import com.apollographql.apollo3.compiler.backend.ir.BackendIr
 import com.apollographql.apollo3.compiler.backend.ir.SelectionKey
 import com.apollographql.apollo3.compiler.introspection.IntrospectionSchema
@@ -111,16 +112,14 @@ internal class AstBuilder private constructor(
                     typesPackageName = typesPackageName,
                 )
                 val deprecationReason = field.deprecationReason?.takeIf { field.isDeprecated }
-                val defaultValue = field.defaultValue
-                    .takeUnless { fieldType.isCustomScalarField() }
-                    ?.normalizeDefaultValue(fieldSchemaTypeRef)
                 CodeGenerationAst.InputField(
                     name = fieldName,
                     schemaName = field.name,
                     deprecationReason = deprecationReason,
                     type = fieldType,
                     description = field.description ?: "",
-                    defaultValue = defaultValue,
+                    // https://spec.graphql.org/draft/#sec-Input-Object-Required-Fields
+                    isRequired = !fieldType.nullable && field.defaultValue == null,
                 )
               }
           )
@@ -203,7 +202,7 @@ internal class AstBuilder private constructor(
       )
 
       IntrospectionSchema.Kind.INPUT_OBJECT -> {
-        CodeGenerationAst.FieldType.Object(
+        CodeGenerationAst.FieldType.InputObject(
             nullable = true,
             typeRef = CodeGenerationAst.TypeRef(
                 name = this.name!!.toUpperCamelCase(),
@@ -338,7 +337,7 @@ internal class AstBuilder private constructor(
         deprecationReason = null,
         type = fieldType,
         description = "",
-        defaultValue = null,
+        isRequired = !fieldType.nullable,
     )
   }
 

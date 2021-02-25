@@ -6,38 +6,22 @@
 package com.example.named_fragment_with_variables.fragment
 
 import com.apollographql.apollo3.api.Fragment
-import com.apollographql.apollo3.api.Operation
 import com.apollographql.apollo3.api.ResponseAdapterCache
 import com.apollographql.apollo3.api.ResponseField
-import com.apollographql.apollo3.api.internal.InputFieldMarshaller
 import com.apollographql.apollo3.api.internal.ResponseAdapter
+import com.apollographql.apollo3.api.internal.json.JsonWriter
+import com.example.named_fragment_with_variables.fragment.adapter.UserFragmentImpl_Adapter
 import com.example.named_fragment_with_variables.fragment.adapter.UserFragmentImpl_ResponseAdapter
-import kotlin.Any
 import kotlin.Int
 import kotlin.String
 import kotlin.collections.List
-import kotlin.collections.Map
-import kotlin.jvm.Transient
 
 data class UserFragmentImpl(
   val size: Int
 ) : Fragment<UserFragmentImpl.Data> {
-  @Transient
-  private val variables: Operation.Variables = object : Operation.Variables() {
-    override fun valueMap(): Map<String, Any?> = mutableMapOf<String, Any?>().apply {
-      this["size"] = this@UserFragmentImpl.size
-    }
-
-    override fun marshaller(): InputFieldMarshaller {
-      return InputFieldMarshaller.invoke { writer ->
-        writer.writeInt("size", this@UserFragmentImpl.size)
-      }
-    }
-  }
-
-  override fun adapter(customScalarAdapters: ResponseAdapterCache): ResponseAdapter<Data> {
-    val adapter = customScalarAdapters.getFragmentAdapter("UserFragmentImpl") {
-      UserFragmentImpl_ResponseAdapter(customScalarAdapters)
+  override fun adapter(responseAdapterCache: ResponseAdapterCache): ResponseAdapter<Data> {
+    val adapter = responseAdapterCache.getAdapterFor(this::class) {
+      UserFragmentImpl_ResponseAdapter(responseAdapterCache)
     }
     return adapter
   }
@@ -45,7 +29,11 @@ data class UserFragmentImpl(
   override fun responseFields(): List<ResponseField.FieldSet> = listOf(
     ResponseField.FieldSet(null, UserFragmentImpl_ResponseAdapter.RESPONSE_FIELDS)
   )
-  override fun variables(): Operation.Variables = variables
+  override fun serializeVariables(writer: JsonWriter, responseAdapterCache: ResponseAdapterCache) {
+    responseAdapterCache.getVariablesAdapterFor(this::class) {
+      UserFragmentImpl_Adapter(responseAdapterCache)
+    }.toResponse(writer, this)
+  }
 
   data class Data(
     override val __typename: String = "User",

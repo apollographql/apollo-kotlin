@@ -115,6 +115,9 @@ internal fun CodeGenerationAst.TypeRef.asEnumAdapterTypeName(): ClassName {
   return ClassName(packageName = packageName, "${this.name.escapeKotlinReservedWord()}_ResponseAdapter")
 }
 
+internal fun CodeGenerationAst.TypeRef.asInputAdapterTypeName(): ClassName {
+  return ClassName(packageName = "$packageName.adapter", kotlinNameForSerializer(this.name))
+}
 
 private fun responseFieldsPropertySpec(objectType: CodeGenerationAst.ObjectType): PropertySpec {
   val fields = objectType.fields
@@ -144,7 +147,7 @@ private fun adapterPropertySpecs(objectType: CodeGenerationAst.ObjectType): List
   return objectType.fields.map { it.type }.toSet().map { it.adapterPropertySpec() }
 }
 
-private fun adapterInitializer(type: CodeGenerationAst.FieldType): CodeBlock {
+internal fun adapterInitializer(type: CodeGenerationAst.FieldType): CodeBlock {
   if (type.nullable) {
     return CodeBlock.of("%T(%L)", NullableResponseAdapter::class.asClassName(), adapterInitializer(type.nonNullable()))
   }
@@ -157,6 +160,7 @@ private fun adapterInitializer(type: CodeGenerationAst.FieldType): CodeBlock {
     is CodeGenerationAst.FieldType.Scalar.Float -> CodeBlock.of("%M", MemberName("com.apollographql.apollo3.api.internal", "DoubleResponseAdapter"))
     is CodeGenerationAst.FieldType.Scalar.Enum -> CodeBlock.of("%T", type.typeRef.asEnumAdapterTypeName().copy(nullable = false))
     is CodeGenerationAst.FieldType.Object -> CodeBlock.of("%T(responseAdapterCache)", type.typeRef.asAdapterTypeName().copy(nullable = false))
+    is CodeGenerationAst.FieldType.InputObject -> CodeBlock.of("%T(responseAdapterCache)", type.typeRef.asInputAdapterTypeName().copy(nullable = false))
     is CodeGenerationAst.FieldType.Scalar.Custom -> CodeBlock.of(
         "responseAdapterCache.responseAdapterFor<%T>(%T)",
         ClassName.bestGuess(type.type),
@@ -165,7 +169,7 @@ private fun adapterInitializer(type: CodeGenerationAst.FieldType): CodeBlock {
   }
 }
 
-private fun CodeGenerationAst.FieldType.adapterPropertySpec(): PropertySpec {
+internal fun CodeGenerationAst.FieldType.adapterPropertySpec(): PropertySpec {
   return PropertySpec
       .builder(
           name = kotlinNameForAdapterField(this),
@@ -279,6 +283,7 @@ private fun fieldSetsCode(type: CodeGenerationAst.FieldType, objectType: CodeGen
 private fun CodeGenerationAst.FieldType.leafType(): CodeGenerationAst.FieldType = when (this) {
   is CodeGenerationAst.FieldType.Scalar -> this
   is CodeGenerationAst.FieldType.Object -> this
+  is CodeGenerationAst.FieldType.InputObject -> this
   is CodeGenerationAst.FieldType.Array -> rawType.leafType()
 }
 

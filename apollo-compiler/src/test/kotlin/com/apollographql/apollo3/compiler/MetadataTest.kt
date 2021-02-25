@@ -71,6 +71,10 @@ class MetadataTest {
         "SendMessageMutation.kt",
         "Body0.kt",
         "User0.kt",
+        "MessageInput0_Adapter.kt",
+        "SendMessageMutation_Adapter.kt",
+        "Body0_Adapter.kt",
+        "User0_Adapter.kt",
         "Encoding.kt",
         "SendMessageMutation_ResponseAdapter.kt"
     )
@@ -84,18 +88,25 @@ class MetadataTest {
     // but not Encoding
     rootSourcesDir.assertContents(
         "MessageInput1.kt",
+        "MessageInput1_Adapter.kt",
         "Body1.kt",
+        "Body1_Adapter.kt",
         "User1.kt",
+        "User1_Adapter.kt",
         "CustomScalars.kt"
     )
 
     // Leaf contains Encoding and other used types (.*0) but not .*1
     leafSourcesDir.assertContents(
         "MessageInput0.kt",
+        "MessageInput0_Adapter.kt",
         "SendMessageMutation.kt",
+        "SendMessageMutation_Adapter.kt",
         "Encoding.kt",
         "Body0.kt",
+        "Body0_Adapter.kt",
         "User0.kt",
+        "User0_Adapter.kt",
         "SendMessageMutation_ResponseAdapter.kt",
     )
   }
@@ -141,6 +152,7 @@ class MetadataTest {
     // Leaf contains the query but not the fragment
     leafSourcesDir.assertContents(
         "GetHeroQuery.kt",
+        "GetHeroQuery_Adapter.kt",
         "GetHeroQuery_ResponseAdapter.kt",
     )
   }
@@ -182,9 +194,10 @@ class MetadataTest {
 
     leafSourcesDir.assertContents(
         "GetHeroQuery.kt",
+        "GetHeroQuery_Adapter.kt",
         "Episode.kt",
         "HumanFragment.kt",
-        "GetHeroQuery_ResponseAdapter.kt"
+        "GetHeroQuery_ResponseAdapter.kt",
     )
   }
 

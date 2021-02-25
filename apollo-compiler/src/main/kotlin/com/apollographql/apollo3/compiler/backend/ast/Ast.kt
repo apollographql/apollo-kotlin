@@ -105,13 +105,17 @@ internal data class CodeGenerationAst(
       val fields: List<InputField>
   )
 
+  /**
+   * Represents either an input field or a variable
+   *
+   */
   data class InputField(
       val name: String,
       val schemaName: String,
       val deprecationReason: String?,
       val type: FieldType,
       val description: String,
-      val defaultValue: Any?
+      val isRequired: Boolean
   )
 
   data class EnumType(
@@ -141,6 +145,7 @@ internal data class CodeGenerationAst(
         is Scalar.Enum -> copy(nullable = false)
         is Scalar.Custom -> copy(nullable = false)
         is Object -> copy(nullable = false)
+        is InputObject -> copy(nullable = false)
         is Array -> copy(nullable = false)
       }
     }
@@ -155,6 +160,7 @@ internal data class CodeGenerationAst(
         is Scalar.Enum -> copy(nullable = true)
         is Scalar.Custom -> copy(nullable = true)
         is Object -> copy(nullable = true)
+        is InputObject -> copy(nullable = true)
         is Array -> copy(nullable = true)
       }
     }
@@ -206,6 +212,12 @@ internal data class CodeGenerationAst(
           val typeRef: TypeRef,
       ) : Scalar()
     }
+
+    data class InputObject(
+        override val nullable: Boolean,
+        val schemaTypeName: kotlin.String,
+        val typeRef: TypeRef
+    ) : FieldType()
 
     data class Object(
         override val nullable: Boolean,

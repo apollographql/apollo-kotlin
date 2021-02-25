@@ -9,20 +9,18 @@ import com.apollographql.apollo3.api.Operation
 import com.apollographql.apollo3.api.Query
 import com.apollographql.apollo3.api.ResponseAdapterCache
 import com.apollographql.apollo3.api.ResponseField
-import com.apollographql.apollo3.api.internal.InputFieldMarshaller
 import com.apollographql.apollo3.api.internal.QueryDocumentMinifier
 import com.apollographql.apollo3.api.internal.ResponseAdapter
+import com.apollographql.apollo3.api.internal.json.JsonWriter
+import com.example.named_fragment_with_variables.adapter.GetUser_Adapter
 import com.example.named_fragment_with_variables.adapter.GetUser_ResponseAdapter
 import com.example.named_fragment_with_variables.fragment.QueryFragment
 import com.example.named_fragment_with_variables.fragment.UserFragment
 import com.example.named_fragment_with_variables.type.UserQuery
-import kotlin.Any
 import kotlin.Int
 import kotlin.String
 import kotlin.Suppress
 import kotlin.collections.List
-import kotlin.collections.Map
-import kotlin.jvm.Transient
 
 @Suppress("NAME_SHADOWING", "UNUSED_ANONYMOUS_PARAMETER", "LocalVariableName",
     "RemoveExplicitTypeArguments", "NestedLambdaShadowedImplicitParameter", "PropertyName",
@@ -32,34 +30,21 @@ data class GetUser(
   val query: UserQuery,
   val size: Int
 ) : Query<GetUser.Data> {
-  @Transient
-  private val variables: Operation.Variables = object : Operation.Variables() {
-    override fun valueMap(): Map<String, Any?> = mutableMapOf<String, Any?>().apply {
-      this["organizationId"] = this@GetUser.organizationId
-      this["query"] = this@GetUser.query
-      this["size"] = this@GetUser.size
-    }
-
-    override fun marshaller(): InputFieldMarshaller {
-      return InputFieldMarshaller.invoke { writer ->
-        writer.writeString("organizationId", this@GetUser.organizationId)
-        writer.writeObject("query", this@GetUser.query.marshaller())
-        writer.writeInt("size", this@GetUser.size)
-      }
-    }
-  }
-
   override fun operationId(): String = OPERATION_ID
 
   override fun queryDocument(): String = QUERY_DOCUMENT
 
-  override fun variables(): Operation.Variables = variables
+  override fun serializeVariables(writer: JsonWriter, responseAdapterCache: ResponseAdapterCache) {
+    responseAdapterCache.getVariablesAdapterFor(this::class) {
+      GetUser_Adapter(responseAdapterCache)
+    }.toResponse(writer, this)
+  }
 
   override fun name(): String = OPERATION_NAME
 
-  override fun adapter(customScalarAdapters: ResponseAdapterCache): ResponseAdapter<Data> {
-    val adapter = customScalarAdapters.getOperationAdapter(name()) {
-      GetUser_ResponseAdapter(customScalarAdapters)
+  override fun adapter(responseAdapterCache: ResponseAdapterCache): ResponseAdapter<Data> {
+    val adapter = responseAdapterCache.getAdapterFor(this::class) {
+      GetUser_ResponseAdapter(responseAdapterCache)
     }
     return adapter
   }

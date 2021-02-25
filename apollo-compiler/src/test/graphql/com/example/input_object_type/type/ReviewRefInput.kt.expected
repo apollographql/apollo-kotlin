@@ -7,7 +7,6 @@ package com.example.input_object_type.type
 
 import com.apollographql.apollo3.api.Input
 import com.apollographql.apollo3.api.InputType
-import com.apollographql.apollo3.api.internal.InputFieldMarshaller
 import kotlin.Suppress
 
 /**
@@ -18,10 +17,4 @@ import kotlin.Suppress
     "RemoveRedundantQualifierName")
 data class ReviewRefInput(
   val reviewInput: Input<ReviewInput> = Input.Absent
-) : InputType {
-  override fun marshaller(): InputFieldMarshaller = InputFieldMarshaller.invoke { writer ->
-    if (this@ReviewRefInput.reviewInput is Input.Present) {
-      writer.writeObject("reviewInput", this@ReviewRefInput.reviewInput.value?.marshaller())
-    }
-  }
-}
+) : InputType

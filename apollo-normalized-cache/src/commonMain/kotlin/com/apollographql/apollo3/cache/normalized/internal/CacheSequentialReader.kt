@@ -37,7 +37,7 @@ class CacheSequentialReader(
         ?: fieldSets.first { it.typeCondition == null }
 
     return fieldSet.responseFields.mapNotNull {
-      if (it.shouldSkip(variables.valueMap())) {
+      if (it.shouldSkip(variables.valueMap)) {
         return@mapNotNull null
       }
 

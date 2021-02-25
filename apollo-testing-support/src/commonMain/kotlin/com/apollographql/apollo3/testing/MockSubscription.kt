@@ -4,7 +4,7 @@ import com.apollographql.apollo3.api.ResponseAdapterCache
 import com.apollographql.apollo3.api.Operation
 import com.apollographql.apollo3.api.ResponseField
 import com.apollographql.apollo3.api.Subscription
-import com.apollographql.apollo3.api.internal.InputFieldMarshaller
+import com.apollographql.apollo3.api.internal.AnyResponseAdapter
 import com.apollographql.apollo3.api.internal.ResponseAdapter
 import com.apollographql.apollo3.api.internal.json.JsonReader
 import com.apollographql.apollo3.api.internal.json.JsonWriter
@@ -17,19 +17,8 @@ class MockSubscription(
 
   override fun queryDocument(): String = queryDocument
 
-  override fun variables(): Operation.Variables = object: Operation.Variables() {
-    override fun valueMap() = variables
-
-    override fun marshaller(): InputFieldMarshaller =
-        InputFieldMarshaller { writer ->
-          for ((name, value) in variables.entries) {
-            when (value) {
-              is Number -> writer.writeNumber(name, value)
-              is Boolean -> writer.writeBoolean(name, value)
-              else -> writer.writeString(name, value.toString())
-            }
-          }
-        }
+  override fun serializeVariables(writer: JsonWriter, responseAdapterCache: ResponseAdapterCache) {
+    AnyResponseAdapter.toResponse(writer, variables)
   }
 
   override fun adapter(responseAdapterCache: ResponseAdapterCache): ResponseAdapter<Data> {

@@ -12,7 +12,8 @@ class MockQuery : Query<MockQuery.Data> {
 
   override fun queryDocument(): String = "query MockQuery { name }"
 
-  override fun variables(): Operation.Variables = Operation.EMPTY_VARIABLES
+  override fun serializeVariables(writer: JsonWriter, responseAdapterCache: ResponseAdapterCache) {
+  }
 
   override fun adapter(responseAdapterCache: ResponseAdapterCache): ResponseAdapter<Data> {
     return object : ResponseAdapter<Data> {

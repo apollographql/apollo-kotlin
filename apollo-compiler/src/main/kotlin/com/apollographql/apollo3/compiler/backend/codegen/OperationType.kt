@@ -24,13 +24,14 @@ import com.squareup.kotlinpoet.asTypeName
 
 internal fun CodeGenerationAst.OperationType.typeSpec(targetPackage: String, generateAsInternal: Boolean = false): TypeSpec {
   val operationResponseAdapter = CodeGenerationAst.TypeRef(name = name, packageName = targetPackage).asAdapterTypeName()
+
   return TypeSpec
-      .classBuilder(name.escapeKotlinReservedWord())
+      .classBuilder(kotlinNameForOperation(name))
       .addAnnotation(suppressWarningsAnnotation)
       .addSuperinterface(superInterfaceType(targetPackage))
       .applyIf(generateAsInternal) { addModifiers(KModifier.INTERNAL) }
       .applyIf(description.isNotBlank()) { addKdoc("%L", description) }
-      .addVariablesIfNeeded(variables, name)
+      .makeDataClass(variables.map { it.toParameterSpec() })
       .addFunction(FunSpec.builder("operationId")
           .addModifiers(KModifier.OVERRIDE)
           .returns(String::class)
@@ -43,7 +44,11 @@ internal fun CodeGenerationAst.OperationType.typeSpec(targetPackage: String, gen
           .addStatement("return QUERY_DOCUMENT")
           .build()
       )
-      .addFunction(variables.variablesFunSpec())
+      .addFunction(serializeVariablesFunSpec(
+          funName = "serializeVariables",
+          packageName = targetPackage,
+          name = name,
+      ))
       .addFunction(FunSpec.builder("name")
           .addModifiers(KModifier.OVERRIDE)
           .returns(String::class)
@@ -95,9 +100,9 @@ internal fun CodeGenerationAst.OperationType.typeSpec(targetPackage: String, gen
 
 private fun adapterFunSpec(operationResponseAdapter: ClassName): FunSpec {
   val body = CodeBlock.builder().apply {
-    addStatement("val adapter = customScalarAdapters.getOperationAdapter(name()) {")
+    addStatement("val adapter = ${Identifier.RESPONSE_ADAPTER_CACHE}.getAdapterFor(this::class) {")
     indent()
-    addStatement("%T(customScalarAdapters)", operationResponseAdapter)
+    addStatement("%T(${Identifier.RESPONSE_ADAPTER_CACHE})", operationResponseAdapter)
     unindent()
     addStatement("}")
     addStatement("return adapter")
@@ -105,7 +110,7 @@ private fun adapterFunSpec(operationResponseAdapter: ClassName): FunSpec {
 
   return FunSpec.builder("adapter")
       .addModifiers(KModifier.OVERRIDE)
-      .addParameter(ParameterSpec.builder("customScalarAdapters", ResponseAdapterCache::class.asTypeName()).build())
+      .addParameter(ParameterSpec.builder(Identifier.RESPONSE_ADAPTER_CACHE, ResponseAdapterCache::class.asTypeName()).build())
       .returns(ResponseAdapter::class.asClassName().parameterizedBy(ClassName(packageName = "", "Data")))
       .addCode(body)
       .build()

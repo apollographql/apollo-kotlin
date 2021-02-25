@@ -12,12 +12,19 @@ import com.apollographql.apollo3.compiler.escapeKotlinReservedWord
 internal fun kotlinNameForEnumValue(graphqlEnumValue: String) = graphqlEnumValue.toUpperCase()
 internal fun kotlinNameForEnum(graphqlEnum: String) = graphqlEnum.escapeKotlinReservedWord()
 internal fun kotlinNameForField(responseName: String) = responseName.escapeKotlinReservedWord()
+internal fun kotlinNameForOperation(operationName: String) = operationName.escapeKotlinReservedWord()
 internal fun kotlinNameForAdapterField(type: CodeGenerationAst.FieldType): String {
   return kotlinNameForAdapterFieldRecursive(type).decapitalize() + "Adapter"
 }
 internal fun kotlinNameForTypeCaseAdapterField(typeRef: CodeGenerationAst.TypeRef): String {
   return typeRef.name.escapeKotlinReservedWord() + "Adapter"
 }
+internal fun kotlinNameForInputObjectType(name: String) = capitalizedIdentifier(name)
+internal fun kotlinNameForSerializer(operationName: String) = kotlinNameForOperation(operationName) + "_Adapter"
+internal fun kotlinNameForVariable(variableName: String) = decapitalizedIdentifier(variableName)
+
+private fun decapitalizedIdentifier(name: String) = name.decapitalize().escapeKotlinReservedWord()
+private fun capitalizedIdentifier(name: String) = name.capitalize().escapeKotlinReservedWord()
 
 private fun kotlinNameForAdapterFieldRecursive(type: CodeGenerationAst.FieldType): String {
   if (type.nullable) {
@@ -27,6 +34,7 @@ private fun kotlinNameForAdapterFieldRecursive(type: CodeGenerationAst.FieldType
   return when (type) {
     is CodeGenerationAst.FieldType.Array -> "ListOf" + kotlinNameForAdapterFieldRecursive(type.rawType)
     is CodeGenerationAst.FieldType.Object -> type.typeRef.name.capitalize()
+    is CodeGenerationAst.FieldType.InputObject -> type.typeRef.name.capitalize()
     is CodeGenerationAst.FieldType.Scalar -> type.schemaTypeName.capitalize()
   }
 }

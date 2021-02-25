@@ -34,6 +34,7 @@ internal fun CodeGenerationAst.FieldType.asTypeName(): TypeName {
       is CodeGenerationAst.FieldType.Scalar.Custom -> ClassName.bestGuess(type.escapeKotlinReservedWord())
     }
     is CodeGenerationAst.FieldType.Object -> typeRef.asTypeName()
+    is CodeGenerationAst.FieldType.InputObject -> typeRef.asTypeName()
     is CodeGenerationAst.FieldType.Array -> List::class.asClassName().parameterizedBy(rawType.asTypeName())
   }.copy(nullable = nullable)
 }
@@ -147,11 +148,31 @@ internal fun TypeSpec.patchKotlinNativeOptionalArrayProperties(): TypeSpec {
       .build()
 }
 
-private val MULTIPLATFORM_THROWS = ClassName("com.apollographql.apollo3.api.internal", "Throws")
-
 internal fun CodeGenerationAst.Field.asOptionalParameterSpec(withDefaultValue: Boolean = true): ParameterSpec {
   return ParameterSpec
       .builder(this.responseName, this.type.asTypeName().copy(nullable = true))
       .applyIf(withDefaultValue) { defaultValue("null") }
       .build()
+}
+
+/**
+ * Makes this [TypeSpec.Builder] a data class and add a primary constructor using the given parameter spec
+ * as well as the corresponding properties
+ */
+fun TypeSpec.Builder.makeDataClass(parameters: List<ParameterSpec>) = apply {
+  if (parameters.isNotEmpty()) {
+    addModifiers(KModifier.DATA)
+  }
+  primaryConstructor(FunSpec.constructorBuilder()
+      .apply {
+        parameters.forEach {
+          addParameter(it)
+        }
+      }
+      .build())
+  parameters.forEach {
+    addProperty(PropertySpec.builder(it.name, it.type)
+        .initializer(CodeBlock.of(it.name))
+        .build())
+  }
 }

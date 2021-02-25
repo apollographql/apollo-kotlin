@@ -1,6 +1,7 @@
 package com.apollographql.apollo3.subscription
 
 import com.apollographql.apollo3.api.ResponseAdapterCache
+import com.apollographql.apollo3.api.variables
 import com.apollographql.apollo3.api.internal.json.BufferedSourceJsonReader
 import com.apollographql.apollo3.api.internal.json.Utils.readRecursively
 import com.apollographql.apollo3.testing.MockSubscription
@@ -52,7 +53,7 @@ class ApolloOperationMessageSerializerTest {
         "id" to regularQuery.subscriptionId,
         "type" to "start",
         "payload" to mapOf(
-            "variables" to subscription.variables().valueMap(),
+            "variables" to subscription.variables(ResponseAdapterCache.DEFAULT).valueMap,
             "operationName" to subscription.name(),
             "query" to subscription.queryDocument()
         )
@@ -61,7 +62,7 @@ class ApolloOperationMessageSerializerTest {
         "id" to persistedQueryWithoutDocument.subscriptionId,
         "type" to "start",
         "payload" to mapOf(
-            "variables" to subscription.variables().valueMap(),
+            "variables" to subscription.variables(ResponseAdapterCache.DEFAULT).valueMap,
             "operationName" to subscription.name(),
             "extensions" to mapOf(
                 "persistedQuery" to mapOf(
@@ -75,7 +76,7 @@ class ApolloOperationMessageSerializerTest {
         "id" to persistedQueryWithDocument.subscriptionId,
         "type" to "start",
         "payload" to mapOf(
-            "variables" to subscription.variables().valueMap(),
+            "variables" to subscription.variables(ResponseAdapterCache.DEFAULT).valueMap,
             "operationName" to subscription.name(),
             "query" to subscription.queryDocument(),
             "extensions" to mapOf(

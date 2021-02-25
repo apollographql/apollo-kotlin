@@ -4,6 +4,7 @@ import com.apollographql.apollo3.api.ResponseAdapterCache
 import com.apollographql.apollo3.api.Operation
 import com.apollographql.apollo3.api.ResponseField
 import com.apollographql.apollo3.api.Subscription
+import com.apollographql.apollo3.api.internal.json.JsonWriter
 import com.apollographql.apollo3.cache.normalized.CacheKeyResolver
 import com.apollographql.apollo3.subscription.OperationClientMessage
 import com.apollographql.apollo3.subscription.OperationServerMessage
@@ -353,7 +354,10 @@ class SubscriptionManagerTest {
       return "subscription {\n  commentAdded(repoFullName: \"repo\") {\n    __typename\n    id\n    content\n  }\n}"
     }
 
-    override fun variables() = Operation.EMPTY_VARIABLES
+    override fun serializeVariables(writer: JsonWriter, responseAdapterCache: ResponseAdapterCache) {
+      writer.beginObject()
+      writer.endObject()
+    }
 
     override fun adapter(responseAdapterCache: ResponseAdapterCache) = throw UnsupportedOperationException()
 

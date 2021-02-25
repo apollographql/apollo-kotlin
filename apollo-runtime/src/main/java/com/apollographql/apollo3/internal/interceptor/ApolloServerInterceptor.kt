@@ -10,8 +10,8 @@ import com.apollographql.apollo3.api.cache.http.HttpCache
 import com.apollographql.apollo3.api.cache.http.HttpCachePolicy
 import com.apollographql.apollo3.api.composeRequestBody
 import com.apollographql.apollo3.api.internal.ApolloLogger
-import com.apollographql.apollo3.api.internal.json.InputFieldJsonWriter
 import com.apollographql.apollo3.api.internal.json.JsonWriter.Companion.of
+import com.apollographql.apollo3.api.variables
 import com.apollographql.apollo3.cache.ApolloCacheHeaders
 import com.apollographql.apollo3.cache.CacheHeaders
 import com.apollographql.apollo3.exception.ApolloNetworkException
@@ -190,9 +190,8 @@ class ApolloServerInterceptor(
       if (!autoPersistQueries || writeQueryDocument) {
         urlBuilder.addQueryParameter("query", operation.queryDocument())
       }
-      if (operation.variables() !== Operation.EMPTY_VARIABLES) {
-        addVariablesUrlQueryParameter(urlBuilder, operation, responseAdapterCache)
-      }
+      addVariablesUrlQueryParameter(urlBuilder, operation, responseAdapterCache)
+
       urlBuilder.addQueryParameter("operationName", operation.name())
       if (autoPersistQueries) {
         addExtensionsUrlQueryParameter(urlBuilder, operation)
@@ -201,14 +200,13 @@ class ApolloServerInterceptor(
     }
 
     @Throws(IOException::class)
-    fun addVariablesUrlQueryParameter(urlBuilder: HttpUrl.Builder, operation: Operation<*>,
+    fun addVariablesUrlQueryParameter(urlBuilder: HttpUrl.Builder,
+                                      operation: Operation<*>,
                                       responseAdapterCache: ResponseAdapterCache?) {
       val buffer = Buffer()
       val jsonWriter = of(buffer)
       jsonWriter.serializeNulls = true
-      jsonWriter.beginObject()
-      operation.variables().marshaller().marshal(InputFieldJsonWriter(jsonWriter, responseAdapterCache!!))
-      jsonWriter.endObject()
+      operation.serializeVariables(jsonWriter, responseAdapterCache!!)
       jsonWriter.close()
       urlBuilder.addQueryParameter("variables", buffer.readUtf8())
     }
@@ -275,8 +273,9 @@ class ApolloServerInterceptor(
     @Throws(IOException::class)
     fun transformToMultiPartIfUploadExists(originalBody: RequestBody?, operation: Operation<*>): RequestBody? {
       val allUploads = ArrayList<FileUploadMeta>()
-      for (variableName in operation.variables().valueMap().keys) {
-        val value = operation.variables().valueMap()[variableName]
+      val valueMap = operation.variables(ResponseAdapterCache.DEFAULT).valueMap
+      for (variableName in valueMap.keys) {
+        val value = valueMap[variableName]
         recursiveGetUploadData(value, "variables.$variableName", allUploads)
       }
       return if (allUploads.isEmpty()) {

@@ -2,9 +2,9 @@
   <configuration default="false" name="Codegen" type="GradleRunConfiguration" factoryName="Gradle">
     <ExternalSystemSettings>
       <option name="executionName" />
-      <option name="externalProjectPath" value="$PROJECT_DIR$/apollo-compiler" />
+      <option name="externalProjectPath" value="$PROJECT_DIR$/.." />
       <option name="externalSystemIdString" value="GRADLE" />
-      <option name="scriptParameters" value="--tests &quot;CodegenTest&quot; -DupdateTestFixtures=true -DcodegenTests=inline_frgament_intersection" />
+      <option name="scriptParameters" value="--tests &quot;*CodegenTest*&quot; -DupdateTestFixtures=true -DcodegenTests=input_object_type" />
       <option name="taskDescriptions">
         <list />
       </option>

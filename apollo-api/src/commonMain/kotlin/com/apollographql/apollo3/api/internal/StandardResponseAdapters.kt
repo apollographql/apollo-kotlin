@@ -1,5 +1,6 @@
 package com.apollographql.apollo3.api.internal
 
+import com.apollographql.apollo3.api.Input
 import com.apollographql.apollo3.api.internal.json.JsonReader
 import com.apollographql.apollo3.api.internal.json.JsonWriter
 import com.apollographql.apollo3.api.internal.json.Utils

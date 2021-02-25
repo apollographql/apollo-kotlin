@@ -5,6 +5,7 @@ import com.apollographql.apollo3.api.Operation
 import com.apollographql.apollo3.api.Query
 import com.apollographql.apollo3.api.ResponseField
 import com.apollographql.apollo3.api.internal.json.JsonEncodingException
+import com.apollographql.apollo3.api.internal.json.JsonWriter
 import com.apollographql.apollo3.exception.ApolloHttpException
 import com.apollographql.apollo3.exception.ApolloNetworkException
 import com.apollographql.apollo3.exception.ApolloParseException
@@ -33,8 +34,9 @@ class ApolloExceptionTest {
       return ""
     }
 
-    override fun variables(): Operation.Variables {
-      return Operation.EMPTY_VARIABLES
+    override fun serializeVariables(writer: JsonWriter, responseAdapterCache: ResponseAdapterCache) {
+      writer.beginObject()
+      writer.endObject()
     }
 
     override fun adapter(responseAdapterCache: ResponseAdapterCache) = throw UnsupportedOperationException()
