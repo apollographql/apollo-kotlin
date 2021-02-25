@@ -1,6 +1,5 @@
 package com.apollographql.apollo3
 
-import com.apollographql.apollo3.api.ApolloExperimental
 import com.apollographql.apollo3.api.ExecutionContext
 import com.apollographql.apollo3.api.Operation
 import com.apollographql.apollo3.api.Mutation
@@ -9,7 +8,6 @@ import com.apollographql.apollo3.api.Subscription
 import com.benasher44.uuid.Uuid
 import com.benasher44.uuid.uuid4
 
-@ApolloExperimental
 sealed class ApolloRequest<D : Operation.Data> {
   abstract val requestUuid: Uuid
   abstract val operation: Operation<D>
@@ -23,7 +21,6 @@ sealed class ApolloRequest<D : Operation.Data> {
   }
 }
 
-@ApolloExperimental
 class ApolloQueryRequest<D : Operation.Data> internal constructor(
     val query: Query<D>,
     override val executionContext: ExecutionContext
@@ -48,7 +45,6 @@ class ApolloQueryRequest<D : Operation.Data> internal constructor(
   }
 }
 
-@ApolloExperimental
 class ApolloMutationRequest<D : Operation.Data> internal constructor(
     val mutation: Mutation<D>,
     override val executionContext: ExecutionContext
@@ -73,7 +69,6 @@ class ApolloMutationRequest<D : Operation.Data> internal constructor(
   }
 }
 
-@ApolloExperimental
 class ApolloSubscriptionRequest<D : Operation.Data> internal constructor(
     val subscription: Subscription<D>,
     override val executionContext: ExecutionContext

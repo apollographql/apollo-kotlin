@@ -1,7 +1,6 @@
 package com.apollographql.apollo3.kmpsample.data
 
 import com.apollographql.apollo3.ApolloClient
-import com.apollographql.apollo3.api.ApolloExperimental
 import com.apollographql.apollo3.kmpsample.GithubRepositoriesQuery
 import com.apollographql.apollo3.kmpsample.GithubRepositoryCommitsQuery
 import com.apollographql.apollo3.kmpsample.GithubRepositoryCommitsQuery.Data.Viewer.Repository.Ref.Target.Companion.asCommitTarget
@@ -20,7 +19,6 @@ import kotlinx.coroutines.flow.single
 /**
  * An implementation of a [GitHubDataSource] that shows how we can use coroutines to make our apollo requests.
  */
-@OptIn(ApolloExperimental::class, ExperimentalCoroutinesApi::class)
 class ApolloCoroutinesRepository {
   private val apolloClient = ApolloClient.Builder()
       .networkTransport(

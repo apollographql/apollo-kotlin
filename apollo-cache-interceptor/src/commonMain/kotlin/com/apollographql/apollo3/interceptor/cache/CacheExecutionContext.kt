@@ -1,7 +1,6 @@
 package com.apollographql.apollo3.interceptor.cache
 
 import com.apollographql.apollo3.ApolloClient
-import com.apollographql.apollo3.api.ApolloExperimental
 import com.apollographql.apollo3.api.ExecutionContext
 import com.apollographql.apollo3.api.Operation
 import com.apollographql.apollo3.api.Response
@@ -52,25 +51,21 @@ sealed class FetchPolicy : RequestContext(Key) {
   companion object Key : ExecutionContext.Key<FetchPolicy>
 }
 
-@ApolloExperimental
 data class CacheInfo(
     val fromCache: Boolean
 ) : ResponseContext(CacheInfo) {
   companion object Key : ExecutionContext.Key<CacheInfo>
 }
 
-@ApolloExperimental
 fun <D : Operation.Data> ApolloQueryRequest.Builder<D>.fetchPolicy(policy: FetchPolicy) = apply {
   addExecutionContext(policy)
 }
 
-@ApolloExperimental
 val <D : Operation.Data> Response<D>.fromCache
   get() = executionContext[CacheInfo]?.fromCache ?: throw IllegalStateException("ApolloGraphQL: no CacheInfo")
 
 
 @ExperimentalCoroutinesApi
-@ApolloExperimental
 fun ApolloClient.Builder.normalizedCache(normalizedCache: NormalizedCache): ApolloClient.Builder {
   return addInterceptor(ApolloCacheInterceptor(), ApolloStore(normalizedCache))
 }

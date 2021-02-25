@@ -2,7 +2,6 @@ package com.apollographql.apollo3.network.ws
 
 import com.apollographql.apollo3.exception.ApolloWebSocketException
 import com.apollographql.apollo3.exception.ApolloWebSocketServerException
-import com.apollographql.apollo3.api.ApolloExperimental
 import com.apollographql.apollo3.api.ResponseAdapterCache
 import com.apollographql.apollo3.api.ExecutionContext
 import com.apollographql.apollo3.api.Operation
@@ -49,7 +48,6 @@ import kotlinx.coroutines.withTimeout
 import okio.Buffer
 import okio.ByteString
 
-@ApolloExperimental
 @ExperimentalCoroutinesApi
 /**
  * Apollo GraphQL WS protocol implementation:

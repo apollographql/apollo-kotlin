@@ -1,6 +1,5 @@
 package com.apollographql.apollo3
 
-import com.apollographql.apollo3.api.ApolloExperimental
 import com.apollographql.apollo3.api.ResponseAdapterCache
 import com.apollographql.apollo3.api.ExecutionContext
 import com.apollographql.apollo3.api.Operation
@@ -24,7 +23,6 @@ import kotlin.test.assertNotNull
 import kotlin.test.assertTrue
 
 @ExperimentalCoroutinesApi
-@ApolloExperimental
 class OauthInterceptorTest {
   class AuthenticatedNetworkTransport : NetworkTransport {
     companion object {

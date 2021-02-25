@@ -1,6 +1,5 @@
 package com.apollographql.apollo3.http
 
-import com.apollographql.apollo3.api.ApolloExperimental
 import com.apollographql.apollo3.api.ExecutionContext
 import com.apollographql.apollo3.api.ResponseContext
 import okhttp3.Response
@@ -8,7 +7,6 @@ import okhttp3.Response
 /**
  * Http GraphQL execution context, provides access to the raw {@link okhttp3.Response} response.
  */
-@ApolloExperimental
 class OkHttpExecutionContext(
     response: Response
 ) : ResponseContext(OkHttpExecutionContext) {

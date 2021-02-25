@@ -4,13 +4,11 @@ import com.apollographql.apollo3.ApolloMutationRequest
 import com.apollographql.apollo3.ApolloQueryRequest
 import com.apollographql.apollo3.ApolloRequest
 import com.apollographql.apollo3.ApolloSubscriptionRequest
-import com.apollographql.apollo3.api.ApolloExperimental
 import com.apollographql.apollo3.api.Operation
 import com.apollographql.apollo3.network.NetworkTransport
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.emptyFlow
 
-@ApolloExperimental
 class NetworkRequestInterceptor(
     private val networkTransport: NetworkTransport,
     private val subscriptionNetworkTransport: NetworkTransport,

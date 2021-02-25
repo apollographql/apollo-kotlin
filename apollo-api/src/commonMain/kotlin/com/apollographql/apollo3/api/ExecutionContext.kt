@@ -4,17 +4,13 @@ import com.apollographql.apollo3.api.ExecutionContext.Element
 import com.apollographql.apollo3.api.ExecutionContext.Key
 import kotlin.jvm.JvmField
 
-@ApolloExperimental
 abstract class ClientContext(override val key: Key<*>): Element
-@ApolloExperimental
 abstract class RequestContext(override val key: Key<*>): Element
-@ApolloExperimental
 abstract class ResponseContext(override val key: Key<*>): Element
 
 /**
  * A context of GraphQL operation execution, represented as a set of [Key] keys and corresponding [Element] values.
  */
-@ApolloExperimental
 interface ExecutionContext {
 
   /**
@@ -82,7 +78,6 @@ interface ExecutionContext {
   }
 }
 
-@ApolloExperimental
 internal object EmptyExecutionContext : ExecutionContext {
   override fun <E : Element> get(key: Key<E>): E? = null
   override fun <R> fold(initial: R, operation: (R, Element) -> R): R = initial
@@ -90,7 +85,6 @@ internal object EmptyExecutionContext : ExecutionContext {
   override fun minusKey(key: Key<*>): ExecutionContext = this
 }
 
-@ApolloExperimental
 internal class CombinedExecutionContext(
     private val left: ExecutionContext,
     private val element: Element

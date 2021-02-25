@@ -1,6 +1,5 @@
 package com.apollographql.apollo3.testing
 
-import com.apollographql.apollo3.api.ApolloExperimental
 import com.apollographql.apollo3.api.Operation
 import com.apollographql.apollo3.interceptor.ApolloInterceptorChain
 import com.apollographql.apollo3.ApolloRequest
@@ -12,7 +11,6 @@ import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.flow.onStart
 
-@ApolloExperimental
 @ExperimentalCoroutinesApi
 object TestLoggerExecutor : ApolloRequestInterceptor {
 

@@ -1,13 +1,11 @@
 package com.apollographql.apollo3.interceptor
 
 import com.apollographql.apollo3.ApolloRequest
-import com.apollographql.apollo3.api.ApolloExperimental
 import com.apollographql.apollo3.api.ExecutionContext
 import com.apollographql.apollo3.api.ResponseAdapterCache
 import com.apollographql.apollo3.api.Operation
 import kotlinx.coroutines.flow.Flow
 
-@ApolloExperimental
 interface ApolloInterceptorChain {
   val responseAdapterCache: ResponseAdapterCache
 
@@ -17,12 +15,10 @@ interface ApolloInterceptorChain {
 
 }
 
-@ApolloExperimental
 interface ApolloRequestInterceptor {
   fun <D : Operation.Data> intercept(request: ApolloRequest<D>, chain: ApolloInterceptorChain): Flow<ApolloResponse<D>>
 }
 
-@ApolloExperimental
 internal class RealInterceptorChain(
     private val interceptors: List<ApolloRequestInterceptor>,
     private val index: Int,

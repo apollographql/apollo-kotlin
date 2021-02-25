@@ -3,7 +3,6 @@ package com.apollographql.apollo3.internal
 import com.apollographql.apollo3.ApolloMutationCall
 import com.apollographql.apollo3.ApolloQueryCall
 import com.apollographql.apollo3.ApolloSubscriptionCall
-import com.apollographql.apollo3.api.ApolloExperimental
 import com.apollographql.apollo3.api.Operation
 import com.apollographql.apollo3.api.Response
 import com.apollographql.apollo3.api.ResponseAdapterCache
@@ -16,7 +15,6 @@ import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.map
 
-@ApolloExperimental
 @OptIn(ExperimentalCoroutinesApi::class)
 class RealApolloCall<D : Operation.Data> constructor(
     val request: ApolloRequest<D>,
@@ -24,8 +22,7 @@ class RealApolloCall<D : Operation.Data> constructor(
     private val responseAdapterCache: ResponseAdapterCache
 ) : ApolloQueryCall<D>, ApolloMutationCall<D>, ApolloSubscriptionCall<D> {
 
-  @ApolloExperimental
-  override fun execute(): Flow<Response<D>> {
+    override fun execute(): Flow<Response<D>> {
     return flow {
       emit(
           RealInterceptorChain(
