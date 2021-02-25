@@ -7,6 +7,7 @@ import com.apollographql.apollo3.api.Mutation
 import com.apollographql.apollo3.api.Operation
 import com.apollographql.apollo3.api.Query
 import com.apollographql.apollo3.api.CustomScalar
+import com.apollographql.apollo3.api.ResponseAdapter
 import com.apollographql.apollo3.api.ResponseAdapterCache
 import com.apollographql.apollo3.api.Subscription
 import com.apollographql.apollo3.dispatcher.ApolloCoroutineDispatcherContext
@@ -73,13 +74,13 @@ class ApolloClient private constructor(
     return Builder()
         .networkTransport(networkTransport)
         .subscriptionNetworkTransport(subscriptionNetworkTransport)
-        .scalarTypeAdapters(responseAdapterCache.customScalarAdapters)
+        .scalarTypeAdapters(responseAdapterCache.customScalarResponseAdapters)
         .interceptors(interceptors)
         .executionContext(executionContext)
   }
 
   class Builder {
-    private var customScalarAdapters = emptyMap<CustomScalar, CustomScalarAdapter<*>>()
+    private var customScalarAdapters = emptyMap<CustomScalar, ResponseAdapter<*>>()
 
     private var networkTransport: NetworkTransport? = null
     private var subscriptionNetworkTransport: NetworkTransport? = null
@@ -90,7 +91,7 @@ class ApolloClient private constructor(
       networkTransport(ApolloHttpNetworkTransport(serverUrl = serverUrl, headers = emptyMap()))
     }
 
-    fun addScalarTypeAdapter(customScalar: CustomScalar, customScalarAdapter: CustomScalarAdapter<*>) = apply {
+    fun <T> addScalarTypeAdapter(customScalar: CustomScalar, customScalarAdapter: ResponseAdapter<T>) = apply {
       this.customScalarAdapters = this.customScalarAdapters + (customScalar to customScalarAdapter)
     }
 
@@ -159,7 +160,7 @@ class ApolloClient private constructor(
     /**
      * internal because only used from tests
      */
-    fun scalarTypeAdapters(customScalarAdapters: Map<CustomScalar, CustomScalarAdapter<*>>) = apply {
+    fun scalarTypeAdapters(customScalarAdapters: Map<CustomScalar, ResponseAdapter<*>>) = apply {
       this.customScalarAdapters = customScalarAdapters
     }
   }

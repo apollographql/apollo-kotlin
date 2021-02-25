@@ -28,7 +28,7 @@ private fun currentThreadId(): Int {
 class ResponseAdapterCacheTest {
   @Test
   fun `accessing ResponseAdapterCache from 2 threads`() {
-    val cache = ResponseAdapterCache(emptyMap())
+    val cache = ResponseAdapterCache.DEFAULT
 
     println("Main thread is: ${currentThreadId()}")
 

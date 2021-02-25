@@ -1,6 +1,7 @@
 package com.apollographql.apollo3.internal.interceptor
 
 import com.apollographql.apollo3.Utils.checkTestFixture
+import com.apollographql.apollo3.api.CustomScalar
 import com.apollographql.apollo3.api.FileUpload
 import com.apollographql.apollo3.api.Input
 import com.apollographql.apollo3.api.Operation
@@ -66,9 +67,10 @@ class ApolloServerInterceptorFileUploadTest {
 
   private val mutationNested = NestedUploadMutation(nested = Input.Present(nestedObject2), topFile = Input.Present(upload2), topFileList = Input.Present(listOf(upload1, upload0)))
 
-  private val adapterCache = ResponseAdapterCache(emptyMap()).apply {
-    registerCustomScalarResponseAdapter("Upload", UploadResponseAdapter)
-  }
+  private val adapterCache = ResponseAdapterCache(mapOf(
+      CustomScalar("Upload", "com.apollographql.apollo3.api.Upload") to UploadResponseAdapter
+  ))
+
   
   private fun createFile(fileName: String, content: String): File {
     val tempDir = System.getProperty("java.io.tmpdir")
