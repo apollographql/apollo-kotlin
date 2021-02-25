@@ -37,7 +37,7 @@ interface Operation<D : Operation.Data> {
   /**
    * A helper class to hold variables
    */
-  class Variables(val valueMap: Map<String, Any?>)
+  class Variables(val valueMap: Map<String, Any?>): Map<String, Any?> by valueMap
 
   /**
    * The tree of fields used for normalizing/reading from the cache
