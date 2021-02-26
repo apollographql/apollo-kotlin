@@ -87,7 +87,7 @@ class ApolloClient private constructor(
     private var executionContext: ExecutionContext = ExecutionContext.Empty
 
     fun serverUrl(serverUrl: String) = apply {
-      networkTransport(ApolloHttpNetworkTransport(serverUrl = serverUrl, headers = emptyMap()))
+      networkTransport(ApolloHttpNetworkTransport(serverUrl = serverUrl))
     }
 
     fun <T> addScalarTypeAdapter(customScalar: CustomScalar, customScalarAdapter: ResponseAdapter<T>) = apply {

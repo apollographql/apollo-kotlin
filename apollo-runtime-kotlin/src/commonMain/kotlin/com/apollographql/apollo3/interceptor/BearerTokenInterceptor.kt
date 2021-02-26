@@ -5,8 +5,8 @@ import com.apollographql.apollo3.exception.ApolloHttpException
 import com.apollographql.apollo3.exception.ApolloBearerTokenException
 import com.apollographql.apollo3.api.Operation
 import com.apollographql.apollo3.api.Response
-import com.apollographql.apollo3.network.HttpRequestParameters
-import com.apollographql.apollo3.network.withHeader
+import com.apollographql.apollo3.network.http.HttpRequestParameters
+import com.apollographql.apollo3.network.http.withHeader
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.FlowPreview
 import kotlinx.coroutines.flow.Flow

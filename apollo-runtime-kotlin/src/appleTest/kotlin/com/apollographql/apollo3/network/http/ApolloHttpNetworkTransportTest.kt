@@ -9,7 +9,6 @@ import com.apollographql.apollo3.ApolloQueryRequest
 import com.apollographql.apollo3.ApolloRequest
 import com.apollographql.apollo3.testing.MockQuery
 import com.apollographql.apollo3.network.HttpExecutionContext
-import com.apollographql.apollo3.network.HttpMethod
 import com.apollographql.apollo3.network.mock.MockHttpResponse
 import com.apollographql.apollo3.network.mock.MockSessionDataTask
 import com.apollographql.apollo3.network.toNSData

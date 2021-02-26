@@ -21,6 +21,7 @@ object OperationRequestBodyComposer {
   interface Body {
     val operations: ByteString
     val contentType: String
+    val contentLength: Long
 
     fun writeTo(bufferedSink: BufferedSink)
   }
@@ -75,6 +76,7 @@ object OperationRequestBodyComposer {
       return object : Body {
         override val operations = operationByteString
         override val contentType = "application/json"
+        override val contentLength = operationByteString.size.toLong()
 
         override fun writeTo(bufferedSink: BufferedSink) {
           bufferedSink.write(operationByteString)
@@ -86,6 +88,8 @@ object OperationRequestBodyComposer {
 
         override val operations = operationByteString
         override val contentType = "multipart/form-data; boundary=$boundary"
+        // XXX: support non-chunked multipart
+        override val contentLength = -1L
 
         override fun writeTo(bufferedSink: BufferedSink) {
           bufferedSink.writeUtf8("--$boundary\r\n")
