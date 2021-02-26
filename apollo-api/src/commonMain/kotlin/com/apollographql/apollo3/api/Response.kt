@@ -19,14 +19,9 @@ data class Response<D : Operation.Data>(
 
     /**
      * GraphQL [operation] execution errors returned by the server to let client know that something has gone wrong.
+     * This can either be null or empty depending what you server sends back
      */
     val errors: List<Error>? = null,
-
-    /**
-     * Indicates if response is resolved from the cache.
-     * // TODO remove as it is now in the ExecutionContext
-     */
-    val isFromCache: Boolean = false,
 
     /**
      * Extensions of GraphQL protocol, arbitrary map of key [String] / value [Any] sent by server along with the response.
@@ -35,6 +30,7 @@ data class Response<D : Operation.Data>(
 
     /**
      * The context of GraphQL [operation] execution.
+     * This can contain additional data contributed by interceptors.
      */
     val executionContext: ExecutionContext = ExecutionContext.Empty
 ) {

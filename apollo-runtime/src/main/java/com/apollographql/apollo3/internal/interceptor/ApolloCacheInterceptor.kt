@@ -14,6 +14,7 @@ import com.apollographql.apollo3.interceptor.ApolloInterceptor.FetchSourceType
 import com.apollographql.apollo3.interceptor.ApolloInterceptor.InterceptorRequest
 import com.apollographql.apollo3.interceptor.ApolloInterceptor.InterceptorResponse
 import com.apollographql.apollo3.interceptor.ApolloInterceptorChain
+import com.apollographql.apollo3.withCacheInfo
 import java.lang.Runnable
 import java.util.concurrent.Executor
 import java.util.concurrent.atomic.AtomicReference
@@ -89,8 +90,7 @@ class ApolloCacheInterceptor<D : Operation.Data>(
           Response(
               operation = request.operation,
               data = data,
-              isFromCache = true
-          )
+          ).withCacheInfo(true)
       )
     }
     logger.d("Cache MISS for operation %s", request.operation.name())

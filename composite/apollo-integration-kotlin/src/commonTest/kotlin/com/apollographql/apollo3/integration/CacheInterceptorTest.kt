@@ -6,9 +6,9 @@ import com.apollographql.apollo3.cache.normalized.NormalizedCache
 import com.apollographql.apollo3.cache.normalized.MemoryCache
 import com.apollographql.apollo3.ApolloQueryRequest
 import com.apollographql.apollo3.interceptor.cache.FetchPolicy
-import com.apollographql.apollo3.interceptor.cache.fromCache
 import com.apollographql.apollo3.interceptor.cache.normalizedCache
 import com.apollographql.apollo3.interceptor.cache.fetchPolicy
+import com.apollographql.apollo3.interceptor.cache.isFromCache
 import com.apollographql.apollo3.testing.MockNetworkTransport
 import com.apollographql.apollo3.testing.TestLoggerExecutor
 import com.apollographql.apollo3.testing.runBlocking
@@ -50,7 +50,7 @@ class CacheInterceptorTest {
           .single()
 
       assertNotNull(response.data)
-      assertFalse(response.fromCache)
+      assertFalse(response.isFromCache)
 
       response = apolloClient
           .query(HeroNameQuery())
@@ -58,7 +58,7 @@ class CacheInterceptorTest {
           .single()
 
       assertNotNull(response.data)
-      assertTrue(response.fromCache)
+      assertTrue(response.isFromCache)
     }
   }
 
@@ -77,7 +77,7 @@ class CacheInterceptorTest {
 
       assertEquals(1, responses.size)
       assertNotNull(responses[0].data)
-      assertFalse(responses[0].fromCache)
+      assertFalse(responses[0].isFromCache)
 
       // Now data is cached but it shouldn't be used since network will go through
       networkTransport.offer(fixtureResponse("HeroNameResponse.json"))
@@ -88,7 +88,7 @@ class CacheInterceptorTest {
 
       assertEquals(1, responses.size)
       assertNotNull(responses[0].data)
-      assertFalse(responses[0].fromCache)
+      assertFalse(responses[0].isFromCache)
 
       // Network error -> we should hit the cache
       networkTransport.offer("malformed")
@@ -99,7 +99,7 @@ class CacheInterceptorTest {
 
       assertEquals(1, responses.size)
       assertNotNull(responses[0].data)
-      assertTrue(responses[0].fromCache)
+      assertTrue(responses[0].isFromCache)
 
       // Network error and no cache -> we should get an error
       networkTransport.offer("malformed")
@@ -131,7 +131,7 @@ class CacheInterceptorTest {
 
       assertEquals(1, responses.size)
       assertNotNull(responses[0].data)
-      assertFalse(responses[0].fromCache)
+      assertFalse(responses[0].isFromCache)
 
       // Now make the request cache only
       request = request.newBuilder()
@@ -147,7 +147,7 @@ class CacheInterceptorTest {
       // And make sure we don't read the network
       assertEquals(1, responses.size)
       assertNotNull(responses[0].data)
-      assertTrue(responses[0].fromCache)
+      assertTrue(responses[0].isFromCache)
     }
   }
 
@@ -167,7 +167,7 @@ class CacheInterceptorTest {
 
       assertEquals(1, responses.size)
       assertNotNull(responses[0].data)
-      assertFalse(responses[0].fromCache)
+      assertFalse(responses[0].isFromCache)
 
       // Offer a malformed response, it should fail
       networkTransport.offer("malformed")
@@ -199,7 +199,7 @@ class CacheInterceptorTest {
 
       assertEquals(1, responses.size)
       assertNotNull(responses[0].data)
-      assertFalse(responses[0].fromCache)
+      assertFalse(responses[0].isFromCache)
 
       // Now make the request cache and network
       request = request.newBuilder()
@@ -215,9 +215,9 @@ class CacheInterceptorTest {
       // We should have 2 responses
       assertEquals(2, responses.size)
       assertNotNull(responses[0].data)
-      assertTrue(responses[0].fromCache)
+      assertTrue(responses[0].isFromCache)
       assertNotNull(responses[1].data)
-      assertFalse(responses[1].fromCache)
+      assertFalse(responses[1].isFromCache)
     }
   }
 }

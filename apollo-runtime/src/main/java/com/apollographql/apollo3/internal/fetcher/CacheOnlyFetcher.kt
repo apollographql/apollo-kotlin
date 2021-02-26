@@ -11,6 +11,7 @@ import com.apollographql.apollo3.interceptor.ApolloInterceptor.FetchSourceType
 import com.apollographql.apollo3.interceptor.ApolloInterceptor.InterceptorRequest
 import com.apollographql.apollo3.interceptor.ApolloInterceptor.InterceptorResponse
 import com.apollographql.apollo3.interceptor.ApolloInterceptorChain
+import com.apollographql.apollo3.withCacheInfo
 import java.util.concurrent.Executor
 
 /**
@@ -58,8 +59,7 @@ class CacheOnlyFetcher : ResponseFetcher {
           Response(
               operation = operation!!,
               data = null,
-              isFromCache = true
-          )
+          ).withCacheInfo(true)
       )
     }
   }

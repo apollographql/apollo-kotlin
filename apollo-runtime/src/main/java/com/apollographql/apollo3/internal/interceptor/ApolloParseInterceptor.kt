@@ -1,5 +1,6 @@
 package com.apollographql.apollo3.internal.interceptor
 
+import com.apollographql.apollo3.CacheInfo
 import com.apollographql.apollo3.api.ResponseAdapterCache
 import com.apollographql.apollo3.api.Operation
 import com.apollographql.apollo3.api.cache.http.HttpCache
@@ -15,6 +16,7 @@ import com.apollographql.apollo3.interceptor.ApolloInterceptor.FetchSourceType
 import com.apollographql.apollo3.interceptor.ApolloInterceptor.InterceptorRequest
 import com.apollographql.apollo3.interceptor.ApolloInterceptor.InterceptorResponse
 import com.apollographql.apollo3.interceptor.ApolloInterceptorChain
+import com.apollographql.apollo3.withCacheInfo
 import okhttp3.Headers
 import okhttp3.Response
 import java.io.Closeable
@@ -73,8 +75,7 @@ class ApolloParseInterceptor(private val httpCache: HttpCache?,
         var parsedResponse = operation.fromResponse(httpResponse.body()!!.source(), responseAdapterCache)
 
         parsedResponse = parsedResponse.copy(
-            isFromCache = httpResponse.cacheResponse() != null,
-            executionContext = parsedResponse.executionContext.plus(httpExecutionContext)
+            executionContext = parsedResponse.executionContext.plus(httpExecutionContext) + CacheInfo(httpResponse.cacheResponse() != null)
         )
 
         if (parsedResponse.hasErrors() && httpCache != null) {

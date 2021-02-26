@@ -13,6 +13,7 @@ import com.apollographql.apollo3.internal.CallState.IllegalStateMessage.Companio
 import com.apollographql.apollo3.internal.subscription.ApolloSubscriptionException
 import com.apollographql.apollo3.internal.subscription.SubscriptionManager
 import com.apollographql.apollo3.internal.subscription.SubscriptionResponse
+import com.apollographql.apollo3.withCacheInfo
 import java.util.concurrent.Executor
 import java.util.concurrent.atomic.AtomicReference
 
@@ -107,8 +108,7 @@ class RealApolloSubscriptionCall<D : Operation.Data>(
       Response(
           operation = subscription,
           data = data,
-          isFromCache = true
-      )
+      ).withCacheInfo(true)
     } else {
       logger.d("Cache MISS for subscription `%s`", subscription)
       null

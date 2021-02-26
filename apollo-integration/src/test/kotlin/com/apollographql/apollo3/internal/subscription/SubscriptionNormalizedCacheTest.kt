@@ -9,6 +9,7 @@ import com.apollographql.apollo3.cache.normalized.NormalizedCache
 import com.apollographql.apollo3.cache.normalized.MemoryCacheFactory
 import com.apollographql.apollo3.exception.ApolloException
 import com.apollographql.apollo3.integration.subscription.NewRepoCommentSubscription
+import com.apollographql.apollo3.isFromCache
 import com.apollographql.apollo3.subscription.OperationClientMessage
 import com.apollographql.apollo3.subscription.OperationServerMessage
 import com.apollographql.apollo3.subscription.SubscriptionTransport
