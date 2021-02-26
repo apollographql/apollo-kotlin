@@ -9,6 +9,7 @@ import com.apollographql.apollo3.api.ResponseAdapter
 import com.apollographql.apollo3.api.json.JsonReader
 import com.apollographql.apollo3.api.json.JsonWriter
 
+@Deprecated("Tests using MockQuery are very fragile to codegen changes, use integration tests instead")
 class MockSubscription(
     private val queryDocument: String = "subscription MockSubscription { name }",
     private val variables: Map<String, Any?> = emptyMap(),

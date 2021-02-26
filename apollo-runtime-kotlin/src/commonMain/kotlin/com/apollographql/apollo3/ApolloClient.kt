@@ -1,5 +1,6 @@
 package com.apollographql.apollo3
 
+import com.apollographql.apollo3.api.ApolloInternal
 import com.apollographql.apollo3.api.ExecutionContext
 import com.apollographql.apollo3.api.Mutation
 import com.apollographql.apollo3.api.Operation
@@ -69,6 +70,7 @@ class ApolloClient private constructor(
     )
   }
 
+  @OptIn(ApolloInternal::class)
   fun newBuilder(): Builder {
     return Builder()
         .networkTransport(networkTransport)
@@ -129,27 +131,21 @@ class ApolloClient private constructor(
       )
     }
 
-    /**
-     * internal because only used from tests
-     */
-    internal fun interceptors(interceptors: List<ApolloRequestInterceptor>) = apply {
+    @ApolloInternal
+    fun interceptors(interceptors: List<ApolloRequestInterceptor>) = apply {
       check(this.interceptors.isEmpty()) {
         "ApolloGraphQL: interceptors is already set"
       }
       this.interceptors = interceptors
     }
 
-    /**
-     * Convenience overload of [interceptors] with variadic parameters
-     */
-    internal fun interceptors(vararg interceptors: ApolloRequestInterceptor) = apply {
+    @ApolloInternal
+    fun interceptors(vararg interceptors: ApolloRequestInterceptor) = apply {
       interceptors(interceptors.toList())
     }
 
-    /**
-     * internal because only used from tests
-     */
-    internal fun executionContext(executionContext: ExecutionContext) = apply {
+    @ApolloInternal
+    fun executionContext(executionContext: ExecutionContext) = apply {
       check(this.executionContext == ExecutionContext.Empty) {
         "ApolloGraphQL: executionContext is already set."
       }

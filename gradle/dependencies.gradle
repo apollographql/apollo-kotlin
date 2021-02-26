@@ -23,7 +23,7 @@ def versions = [
     rxjava3               : '3.0.7',
     rxandroid             : '2.0.1',
     sqldelight            : '1.4.4',
-    truth                 : '0.30'
+    truth                 : '0.30',
 ]
 
 ext.dep = [
@@ -96,7 +96,7 @@ ext.dep = [
     ],
     truth                 : "com.google.truth:truth:$versions.truth",
     uuid                  : "com.benasher44:uuid:0.2.2",
-    benManesVersions      : "com.github.ben-manes:gradle-versions-plugin:0.33.0"
+    benManesVersions      : "com.github.ben-manes:gradle-versions-plugin:0.33.0",
 ]
 ext.androidConfig = [
     compileSdkVersion: 30,

@@ -8,6 +8,7 @@ import com.apollographql.apollo3.api.ResponseAdapter
 import com.apollographql.apollo3.api.json.JsonReader
 import com.apollographql.apollo3.api.json.JsonWriter
 
+@Deprecated("Tests using MockQuery are very fragile to codegen changes, use integration tests instead")
 class MockQuery : Query<MockQuery.Data> {
 
   override fun queryDocument(): String = "query MockQuery { name }"

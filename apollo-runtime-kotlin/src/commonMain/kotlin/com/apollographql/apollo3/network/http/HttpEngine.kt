@@ -50,7 +50,7 @@ class HttpResponse(
     val headers: Map<String, String>,
     /**
      * The actual body
-     * It must always be closed
+     * It must always be closed if not null
      */
-    val body: BufferedSource,
+    val body: BufferedSource?,
 )

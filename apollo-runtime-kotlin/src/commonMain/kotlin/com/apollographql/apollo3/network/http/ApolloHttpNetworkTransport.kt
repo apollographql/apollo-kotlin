@@ -54,12 +54,12 @@ class ApolloHttpNetworkTransport(
             throw ApolloHttpException(
                 statusCode = statusCode,
                 headers = headers,
-                message = "Http request failed with status code `${statusCode} (${body.readUtf8()})`"
+                message = "Http request failed with status code `${statusCode} (${body?.readUtf8()})`"
             )
         }
 
         return request.operation.fromResponse(
-            source = body,
+            source = body!!,
             responseAdapterCache = responseAdapterCache
         ).copy(
             requestUuid = request.requestUuid,
