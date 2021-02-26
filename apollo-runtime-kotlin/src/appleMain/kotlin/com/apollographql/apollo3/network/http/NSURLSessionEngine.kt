@@ -204,8 +204,8 @@ actual class DefaultHttpEngine(
 
 @Suppress("NAME_SHADOWING")
 @ExperimentalCoroutinesApi
-internal fun <R> HttpEngine.Result<R>.dispatch(continuationPtr: COpaquePointer) {
-  val continuationRef = continuationPtr.asStableRef<Continuation<HttpEngine.Result<R>>>()
+internal fun <R> DefaultHttpEngine.Result<R>.dispatch(continuationPtr: COpaquePointer) {
+  val continuationRef = continuationPtr.asStableRef<Continuation<DefaultHttpEngine.Result<R>>>()
   val continuation = continuationRef.get()
   continuationRef.dispose()
 

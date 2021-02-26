@@ -35,7 +35,7 @@ class ApolloHttpNetworkTransport(
      */
     readTimeoutMillis: Long = 60_000,
 
-    val engine:HttpEngine = HttpEngine(connectTimeoutMillis, readTimeoutMillis)
+    val engine: HttpEngine = DefaultHttpEngine(connectTimeoutMillis, readTimeoutMillis)
 ) : NetworkTransport {
     override fun <D : Operation.Data> execute(request: ApolloRequest<D>, responseAdapterCache: ResponseAdapterCache): Flow<Response<D>> {
         val httpRequest = request.toHttpRequest(responseAdapterCache)

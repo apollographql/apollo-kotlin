@@ -1,7 +1,8 @@
 package com.apollographql.apollo3
 
-import com.apollographql.apollo3.testing.MockNetworkTransport
+import com.apollographql.apollo3.network.http.ApolloHttpNetworkTransport
 import com.apollographql.apollo3.testing.MockQuery
+import com.apollographql.apollo3.testing.TestHttpEngine
 import com.apollographql.apollo3.testing.TestLoggerExecutor
 import com.apollographql.apollo3.testing.runBlocking
 import kotlinx.coroutines.flow.retryWhen
@@ -14,21 +15,21 @@ import kotlin.test.assertTrue
 
 @Suppress("EXPERIMENTAL_API_USAGE")
 class ApolloClientTest {
-  private lateinit var networkTransport: MockNetworkTransport
+  private lateinit var testHttpEngine: TestHttpEngine
   private lateinit var apolloClient: ApolloClient
 
   @BeforeTest
   fun setUp() {
-    networkTransport = MockNetworkTransport()
+    testHttpEngine = TestHttpEngine()
     apolloClient = ApolloClient.Builder()
-        .networkTransport(networkTransport)
+        .networkTransport(ApolloHttpNetworkTransport(serverUrl = "https://test", engine = testHttpEngine))
         .interceptors(TestLoggerExecutor)
         .build()
   }
 
   @Test
   fun `when query and success network response, assert success`() {
-    networkTransport.offer("{\"data\":{\"name\":\"MockQuery\"}}")
+    testHttpEngine.offer("{\"data\":{\"name\":\"MockQuery\"}}")
 
     val response = runBlocking {
       apolloClient
@@ -43,7 +44,7 @@ class ApolloClientTest {
 
   @Test
   fun `when query and malformed network response, assert parse error`() {
-    networkTransport.offer("malformed")
+    testHttpEngine.offer("malformed")
 
     val result = runBlocking {
       kotlin.runCatching {
@@ -59,8 +60,8 @@ class ApolloClientTest {
 
   @Test
   fun `when query and malformed network response, assert success after retry`() {
-    networkTransport.offer("")
-    networkTransport.offer("{\"data\":{\"name\":\"MockQuery\"}}")
+    testHttpEngine.offer("")
+    testHttpEngine.offer("{\"data\":{\"name\":\"MockQuery\"}}")
 
     val response = runBlocking {
       apolloClient
