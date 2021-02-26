@@ -13,6 +13,7 @@ import com.apollographql.apollo3.kmpsample.type.PullRequestState
 import com.apollographql.apollo3.kmpsample.type.RepositoryOrderField
 import com.apollographql.apollo3.network.http.HttpResponseInfo
 import com.apollographql.apollo3.network.http.ApolloHttpNetworkTransport
+import kotlinx.coroutines.flow.single
 
 /**
  * An implementation of a [GitHubDataSource] that shows how we can use coroutines to make our apollo requests.

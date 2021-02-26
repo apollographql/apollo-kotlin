@@ -1,9 +1,9 @@
 package com.apollographql.apollo3.integration
 
+import HeroNameQuery
 import com.apollographql.apollo3.ApolloClient
 import com.apollographql.apollo3.api.ApolloInternal
 import com.apollographql.apollo3.network.http.ApolloHttpNetworkTransport
-import com.apollographql.apollo3.testing.MockQuery
 import com.apollographql.apollo3.testing.TestHttpEngine
 import com.apollographql.apollo3.testing.TestLoggerExecutor
 import com.apollographql.apollo3.testing.runBlocking
@@ -12,7 +12,6 @@ import kotlinx.coroutines.flow.single
 import kotlin.test.BeforeTest
 import kotlin.test.Test
 import kotlin.test.assertEquals
-import kotlin.test.assertNotNull
 import kotlin.test.assertTrue
 
 @OptIn(ApolloInternal::class)
@@ -31,17 +30,16 @@ class ApolloClientTest {
 
   @Test
   fun `when query and success network response, assert success`() {
-    testHttpEngine.offer("{\"data\":{\"name\":\"MockQuery\"}}")
+    testHttpEngine.offer(fixtureResponse("HeroNameResponse.json"))
 
     val response = runBlocking {
       apolloClient
-          .query(MockQuery())
+          .query(HeroNameQuery())
           .execute()
           .single()
     }
 
-    assertNotNull(response.data)
-    assertEquals(expected = MockQuery.Data, actual = response.data)
+    assertEquals(response.data?.hero?.name, "R2-D2")
   }
 
   @Test
@@ -51,7 +49,7 @@ class ApolloClientTest {
     val result = runBlocking {
       kotlin.runCatching {
         apolloClient
-            .query(MockQuery())
+            .query(HeroNameQuery())
             .execute()
             .single()
       }
@@ -63,17 +61,16 @@ class ApolloClientTest {
   @Test
   fun `when query and malformed network response, assert success after retry`() {
     testHttpEngine.offer("")
-    testHttpEngine.offer("{\"data\":{\"name\":\"MockQuery\"}}")
+    testHttpEngine.offer(fixtureResponse("HeroNameResponse.json"))
 
     val response = runBlocking {
       apolloClient
-          .query(MockQuery())
+          .query(HeroNameQuery())
           .execute()
           .retryWhen { _, attempt -> attempt == 0L }
           .single()
     }
 
-    assertNotNull(response.data)
-    assertEquals(expected = MockQuery.Data, actual = response.data)
+    assertEquals(response.data?.hero?.name, "R2-D2")
   }
 }

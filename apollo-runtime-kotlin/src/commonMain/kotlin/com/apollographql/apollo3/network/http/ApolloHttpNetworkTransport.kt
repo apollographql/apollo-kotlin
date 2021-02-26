@@ -19,6 +19,7 @@ import okio.ByteString
 class ApolloHttpNetworkTransport(
     val serverUrl: String,
     val httpMethod: HttpMethod = HttpMethod.Post,
+    val headers: Map<String, String> = emptyMap(),
 
     /**
      * The timeout interval to use when connecting
@@ -98,7 +99,7 @@ class ApolloHttpNetworkTransport(
         return HttpRequest(
             method = HttpMethod.Get,
             url =  url,
-            headers = executionContext[HttpRequestParameters]?.headers ?: emptyMap(),
+            headers = headers + (executionContext[HttpRequestParameters]?.headers ?: emptyMap()),
             body = null
         )
     }
@@ -116,7 +117,7 @@ class ApolloHttpNetworkTransport(
         return HttpRequest(
             method = HttpMethod.Post,
             url = serverUrl,
-            headers = executionContext[HttpRequestParameters]?.headers ?: emptyMap(),
+            headers = headers + (executionContext[HttpRequestParameters]?.headers ?: emptyMap()),
             body = object : HttpBody {
                 override val contentType = requestBody.contentType
                 override val contentLength = -1L
