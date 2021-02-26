@@ -58,10 +58,10 @@ fun interface DataTaskFactory {
 }
 
 @ExperimentalCoroutinesApi
-actual class HttpEngine(
+actual class DefaultHttpEngine(
     private val dataTaskFactory: DataTaskFactory,
     private val connectTimeoutMillis: Long = 60_000,
-) {
+): HttpEngine {
 
   actual constructor(
       connectTimeoutMillis: Long,
@@ -82,7 +82,7 @@ actual class HttpEngine(
   }
 
   @Suppress("UNCHECKED_CAST")
-  actual suspend fun <R> execute(request: HttpRequest, block: (HttpResponse) -> R): R {
+  override suspend fun <R> execute(request: HttpRequest, block: (HttpResponse) -> R): R {
     assert(NSThread.isMainThread())
 
     request.freeze()

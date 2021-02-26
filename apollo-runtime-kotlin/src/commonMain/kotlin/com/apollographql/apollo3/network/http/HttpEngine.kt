@@ -6,7 +6,16 @@ import okio.BufferedSource
 /**
  * A wrapper around platform specific engines
  */
-expect class HttpEngine(
+interface HttpEngine {
+
+  /**
+   * @param block a function that will transform the response. Implementations can decide to run this in the IO thread
+   * to keep the main thread free
+   */
+  suspend fun <R> execute(request: HttpRequest, block: (HttpResponse) -> R): R
+}
+
+expect class DefaultHttpEngine(
     /**
      * The timeout interval to use when connecting
      *
@@ -21,14 +30,7 @@ expect class HttpEngine(
      * - on Android, it is used to set  [OkHttpClient.readTimeout]
      */
     readTimeoutMillis: Long = 60_000,
-    ) {
-
-  /**
-   * @param block a function that will transform the response. Implementations can decide to run this in the IO thread
-   * to keep the main thread free
-   */
-  suspend fun <R> execute(request: HttpRequest, block: (HttpResponse) -> R): R
-}
+): HttpEngine
 
 interface HttpBody {
   val contentType: String

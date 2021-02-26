@@ -34,8 +34,9 @@ class ApolloHttpNetworkTransport(
      * - on Android, it is used to set  [OkHttpClient.readTimeout]
      */
     readTimeoutMillis: Long = 60_000,
+
+    val engine:HttpEngine = HttpEngine(connectTimeoutMillis, readTimeoutMillis)
 ) : NetworkTransport {
-    val engine = HttpEngine(connectTimeoutMillis, readTimeoutMillis)
     override fun <D : Operation.Data> execute(request: ApolloRequest<D>, responseAdapterCache: ResponseAdapterCache): Flow<Response<D>> {
         val httpRequest = request.toHttpRequest(responseAdapterCache)
         return flow {

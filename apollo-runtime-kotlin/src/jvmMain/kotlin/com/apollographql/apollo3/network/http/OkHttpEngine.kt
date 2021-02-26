@@ -35,9 +35,9 @@ import kotlin.coroutines.resumeWithException
 private const val MEDIA_TYPE = "application/json; charset=utf-8"
 
 @ExperimentalCoroutinesApi
-actual class HttpEngine(
+actual class DefaultHttpEngine(
     private val httpCallFactory: Call.Factory,
-) {
+): HttpEngine {
 
   actual constructor(
       connectTimeoutMillis: Long,
@@ -49,7 +49,7 @@ actual class HttpEngine(
           .build(),
   )
 
-  actual suspend fun <R> execute(request: HttpRequest, block: (HttpResponse) -> R): R {
+  override suspend fun <R> execute(request: HttpRequest, block: (HttpResponse) -> R): R {
     return suspendCancellableCoroutine { continuation ->
       val httpRequest = Request.Builder()
           .url(request.url)
