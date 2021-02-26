@@ -1,11 +1,13 @@
 package com.apollographql.apollo3.api
 
-import kotlin.jvm.JvmStatic
+import com.benasher44.uuid.Uuid
 
 /**
  * Represents a GraphQL response. GraphQL responses can be be partial responses so it is valid to have both data != null and errors
  */
 data class Response<D : Operation.Data>(
+    val requestUuid: Uuid,
+
     /**
      * GraphQL operation this response represents of
      */

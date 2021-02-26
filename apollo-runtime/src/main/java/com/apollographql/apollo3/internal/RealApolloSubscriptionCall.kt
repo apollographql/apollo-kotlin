@@ -14,6 +14,7 @@ import com.apollographql.apollo3.internal.subscription.ApolloSubscriptionExcepti
 import com.apollographql.apollo3.internal.subscription.SubscriptionManager
 import com.apollographql.apollo3.internal.subscription.SubscriptionResponse
 import com.apollographql.apollo3.withCacheInfo
+import com.benasher44.uuid.uuid4
 import java.util.concurrent.Executor
 import java.util.concurrent.atomic.AtomicReference
 
@@ -106,6 +107,7 @@ class RealApolloSubscriptionCall<D : Operation.Data>(
     return if (data != null) {
       logger.d("Cache HIT for subscription `%s`", subscription)
       Response(
+          requestUuid = uuid4(),
           operation = subscription,
           data = data,
       ).withCacheInfo(true)

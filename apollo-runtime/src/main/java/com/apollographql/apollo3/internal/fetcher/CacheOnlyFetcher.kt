@@ -12,6 +12,7 @@ import com.apollographql.apollo3.interceptor.ApolloInterceptor.InterceptorReques
 import com.apollographql.apollo3.interceptor.ApolloInterceptor.InterceptorResponse
 import com.apollographql.apollo3.interceptor.ApolloInterceptorChain
 import com.apollographql.apollo3.withCacheInfo
+import com.benasher44.uuid.uuid4
 import java.util.concurrent.Executor
 
 /**
@@ -57,6 +58,7 @@ class CacheOnlyFetcher : ResponseFetcher {
       return InterceptorResponse(
           null,
           Response(
+              requestUuid = uuid4(),
               operation = operation!!,
               data = null,
           ).withCacheInfo(true)

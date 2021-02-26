@@ -5,6 +5,7 @@ import com.apollographql.apollo3.api.Error
 import com.apollographql.apollo3.api.Operation
 import com.apollographql.apollo3.api.Response
 import com.apollographql.apollo3.api.fromJson
+import com.benasher44.uuid.uuid4
 
 /**
  * [MapResponseParser] parses network responses, including data, errors and extensions from a regular Map<String, Any?>.
@@ -35,6 +36,7 @@ object MapResponseParser {
     }
 
     return Response(
+        requestUuid = uuid4(),
         operation = operation,
         data = data,
         errors = errors,

@@ -4,10 +4,7 @@ import com.apollographql.apollo3.Utils.assertResponse
 import com.apollographql.apollo3.Utils.enqueueAndAssertResponse
 import com.apollographql.apollo3.Utils.immediateExecutor
 import com.apollographql.apollo3.Utils.immediateExecutorService
-import com.apollographql.apollo3.api.CustomScalarAdapter
 import com.apollographql.apollo3.api.Input
-import com.apollographql.apollo3.api.JsonElement
-import com.apollographql.apollo3.api.JsonString
 import com.apollographql.apollo3.api.Operation
 import com.apollographql.apollo3.api.Query
 import com.apollographql.apollo3.api.Response
@@ -31,15 +28,12 @@ import com.apollographql.apollo3.integration.normalizer.fragment.HumanWithIdFrag
 import com.apollographql.apollo3.integration.normalizer.type.CustomScalars
 import com.apollographql.apollo3.integration.normalizer.type.Episode
 import com.google.common.truth.Truth.assertThat
-import io.reactivex.functions.Predicate
 import okhttp3.Dispatcher
 import okhttp3.OkHttpClient
 import okhttp3.mockwebserver.MockWebServer
 import org.junit.Before
 import org.junit.Test
-import java.text.ParseException
 import java.text.SimpleDateFormat
-import java.util.Arrays
 import java.util.Date
 import java.util.Locale
 
@@ -82,13 +76,13 @@ class ResponseWriteTestCase {
         server,
         "EpisodeHeroWithDatesResponse.json",
         apolloClient!!.query(query)
-    ) { (_, data) ->
-      assertThat(data!!.hero?.heroName).isEqualTo("R2-D2")
-      assertThat(DATE_TIME_FORMAT.format(data.hero?.birthDate)).isEqualTo("1984-04-16")
-      assertThat(data.hero?.showUpDates).hasSize(3)
-      assertThat(DATE_TIME_FORMAT.format(data.hero?.showUpDates?.get(0))).isEqualTo("2017-01-16")
-      assertThat(DATE_TIME_FORMAT.format(data.hero?.showUpDates?.get(1))).isEqualTo("2017-02-16")
-      assertThat(DATE_TIME_FORMAT.format(data.hero?.showUpDates?.get(2))).isEqualTo("2017-03-16")
+    ) {
+      assertThat(it.data?.hero?.heroName).isEqualTo("R2-D2")
+      assertThat(DATE_TIME_FORMAT.format(it.data?.hero?.birthDate)).isEqualTo("1984-04-16")
+      assertThat(it.data?.hero?.showUpDates).hasSize(3)
+      assertThat(DATE_TIME_FORMAT.format(it.data?.hero?.showUpDates?.get(0))).isEqualTo("2017-01-16")
+      assertThat(DATE_TIME_FORMAT.format(it.data?.hero?.showUpDates?.get(1))).isEqualTo("2017-02-16")
+      assertThat(DATE_TIME_FORMAT.format(it.data?.hero?.showUpDates?.get(2))).isEqualTo("2017-03-16")
     }
     var hero = EpisodeHeroWithDatesQuery.Data.Hero(
         "R222-D222",
@@ -96,11 +90,10 @@ class ResponseWriteTestCase {
     apolloClient!!.apolloStore.writeOperation(query, EpisodeHeroWithDatesQuery.Data(hero))
     assertCachedQueryResponse(
         query
-    ) { (_, data) ->
-      assertThat(data!!.hero?.heroName).isEqualTo("R222-D222")
-      assertThat(DATE_TIME_FORMAT.format(data.hero?.birthDate)).isEqualTo("1985-04-16")
-      assertThat(data.hero?.showUpDates).hasSize(0)
-      true
+    ) {
+      assertThat(it.data?.hero?.heroName).isEqualTo("R222-D222")
+      assertThat(DATE_TIME_FORMAT.format(it.data?.hero?.birthDate)).isEqualTo("1985-04-16")
+      assertThat(it.data?.hero?.showUpDates).hasSize(0)
     }
     hero = EpisodeHeroWithDatesQuery.Data.Hero(
         "R22-D22",
@@ -113,13 +106,12 @@ class ResponseWriteTestCase {
     apolloClient!!.apolloStore.writeOperation(query, EpisodeHeroWithDatesQuery.Data(hero))
     assertCachedQueryResponse(
         query
-    ) { (_, data) ->
-      assertThat(data!!.hero?.heroName).isEqualTo("R22-D22")
-      assertThat(DATE_TIME_FORMAT.format(data.hero?.birthDate)).isEqualTo("1986-04-16")
-      assertThat(data.hero?.showUpDates).hasSize(2)
-      assertThat(DATE_TIME_FORMAT.format(data.hero?.showUpDates?.get(0))).isEqualTo("2017-04-16")
-      assertThat(DATE_TIME_FORMAT.format(data.hero?.showUpDates?.get(1))).isEqualTo("2017-05-16")
-      true
+    ) {
+      assertThat(it.data?.hero?.heroName).isEqualTo("R22-D22")
+      assertThat(DATE_TIME_FORMAT.format(it.data?.hero?.birthDate)).isEqualTo("1986-04-16")
+      assertThat(it.data?.hero?.showUpDates).hasSize(2)
+      assertThat(DATE_TIME_FORMAT.format(it.data?.hero?.showUpDates?.get(0))).isEqualTo("2017-04-16")
+      assertThat(DATE_TIME_FORMAT.format(it.data?.hero?.showUpDates?.get(1))).isEqualTo("2017-05-16")
     }
   }
 
@@ -131,14 +123,13 @@ class ResponseWriteTestCase {
         server,
         "HeroNameWithEnumsResponse.json",
         apolloClient!!.query(query)
-    ) { (_, data) ->
-      assertThat(data!!.hero?.name).isEqualTo("R2-D2")
-      assertThat(data.hero?.firstAppearsIn).isEqualTo(Episode.EMPIRE)
-      assertThat(data.hero?.appearsIn).hasSize(3)
-      assertThat(data.hero?.appearsIn?.get(0)).isEqualTo(Episode.NEWHOPE)
-      assertThat(data.hero?.appearsIn?.get(1)).isEqualTo(Episode.EMPIRE)
-      assertThat(data.hero?.appearsIn?.get(2)).isEqualTo(Episode.JEDI)
-      true
+    ) {
+      assertThat(it.data?.hero?.name).isEqualTo("R2-D2")
+      assertThat(it.data?.hero?.firstAppearsIn).isEqualTo(Episode.EMPIRE)
+      assertThat(it.data?.hero?.appearsIn).hasSize(3)
+      assertThat(it.data?.hero?.appearsIn?.get(0)).isEqualTo(Episode.NEWHOPE)
+      assertThat(it.data?.hero?.appearsIn?.get(1)).isEqualTo(Episode.EMPIRE)
+      assertThat(it.data?.hero?.appearsIn?.get(2)).isEqualTo(Episode.JEDI)
     }
     var hero = HeroNameWithEnumsQuery.Data.Hero(
         "R222-D222",
@@ -146,26 +137,24 @@ class ResponseWriteTestCase {
     apolloClient!!.apolloStore.writeOperation(query, HeroNameWithEnumsQuery.Data(hero))
     assertCachedQueryResponse(
         query
-    ) { (_, data) ->
-      assertThat(data!!.hero?.name).isEqualTo("R222-D222")
-      assertThat(data.hero?.firstAppearsIn).isEqualTo(Episode.JEDI)
-      assertThat(data.hero?.appearsIn).hasSize(0)
-      true
+    ) {
+      assertThat(it.data?.hero?.name).isEqualTo("R222-D222")
+      assertThat(it.data?.hero?.firstAppearsIn).isEqualTo(Episode.JEDI)
+      assertThat(it.data?.hero?.appearsIn).hasSize(0)
     }
     hero = HeroNameWithEnumsQuery.Data.Hero(
         "R22-D22",
         Episode.JEDI,
-        Arrays.asList(Episode.EMPIRE)
+        listOf(Episode.EMPIRE)
     )
     apolloClient!!.apolloStore.writeOperation(query, HeroNameWithEnumsQuery.Data(hero))
     assertCachedQueryResponse(
         query
-    ) { (_, data) ->
-      assertThat(data!!.hero?.name).isEqualTo("R22-D22")
-      assertThat(data.hero?.firstAppearsIn).isEqualTo(Episode.JEDI)
-      assertThat(data.hero?.appearsIn).hasSize(1)
-      assertThat(data.hero?.appearsIn?.get(0)).isEqualTo(Episode.EMPIRE)
-      true
+    ) {
+      assertThat(it.data?.hero?.name).isEqualTo("R22-D22")
+      assertThat(it.data?.hero?.firstAppearsIn).isEqualTo(Episode.JEDI)
+      assertThat(it.data?.hero?.appearsIn).hasSize(1)
+      assertThat(it.data?.hero?.appearsIn?.get(0)).isEqualTo(Episode.EMPIRE)
     }
   }
 
@@ -177,17 +166,16 @@ class ResponseWriteTestCase {
         server,
         "HeroAndFriendsNameWithIdsResponse.json",
         apolloClient!!.query(query)
-    ) { (_, data) ->
-      assertThat(data!!.hero?.name).isEqualTo("R2-D2")
-      assertThat(data.hero?.id).isEqualTo("2001")
-      assertThat(data.hero?.friends).hasSize(3)
-      assertThat(data.hero?.friends?.get(0)?.id).isEqualTo("1000")
-      assertThat(data.hero?.friends?.get(0)?.name).isEqualTo("Luke Skywalker")
-      assertThat(data.hero?.friends?.get(1)?.id).isEqualTo("1002")
-      assertThat(data.hero?.friends?.get(1)?.name).isEqualTo("Han Solo")
-      assertThat(data.hero?.friends?.get(2)?.id).isEqualTo("1003")
-      assertThat(data.hero?.friends?.get(2)?.name).isEqualTo("Leia Organa")
-      true
+    ) {
+      assertThat(it.data?.hero?.name).isEqualTo("R2-D2")
+      assertThat(it.data?.hero?.id).isEqualTo("2001")
+      assertThat(it.data?.hero?.friends).hasSize(3)
+      assertThat(it.data?.hero?.friends?.get(0)?.id).isEqualTo("1000")
+      assertThat(it.data?.hero?.friends?.get(0)?.name).isEqualTo("Luke Skywalker")
+      assertThat(it.data?.hero?.friends?.get(1)?.id).isEqualTo("1002")
+      assertThat(it.data?.hero?.friends?.get(1)?.name).isEqualTo("Han Solo")
+      assertThat(it.data?.hero?.friends?.get(2)?.id).isEqualTo("1003")
+      assertThat(it.data?.hero?.friends?.get(2)?.name).isEqualTo("Leia Organa")
     }
     var hero = HeroAndFriendsNamesWithIDsQuery.Data.Hero(
         "2001",
@@ -197,11 +185,10 @@ class ResponseWriteTestCase {
     apolloClient!!.apolloStore.writeOperation(query, HeroAndFriendsNamesWithIDsQuery.Data(hero))
     assertCachedQueryResponse(
         query
-    ) { (_, data) ->
-      assertThat(data!!.hero?.name).isEqualTo("R222-D222")
-      assertThat(data.hero?.id).isEqualTo("2001")
-      assertThat(data.hero?.friends).isNull()
-      true
+    ) {
+      assertThat(it.data?.hero?.name).isEqualTo("R222-D222")
+      assertThat(it.data?.hero?.id).isEqualTo("2001")
+      assertThat(it.data?.hero?.friends).isNull()
     }
     val friend = HeroAndFriendsNamesWithIDsQuery.Data.Hero.Friends(
         "1002",
@@ -215,13 +202,12 @@ class ResponseWriteTestCase {
     apolloClient!!.apolloStore.writeOperation(query, HeroAndFriendsNamesWithIDsQuery.Data(hero))
     assertCachedQueryResponse(
         query
-    ) { (_, data) ->
-      assertThat(data!!.hero?.name).isEqualTo("R222-D222")
-      assertThat(data.hero?.id).isEqualTo("2001")
-      assertThat(data.hero?.friends).hasSize(1)
-      assertThat(data.hero?.friends?.get(0)?.id).isEqualTo("1002")
-      assertThat(data.hero?.friends?.get(0)?.name).isEqualTo("Han Soloooo")
-      true
+    ) {
+      assertThat(it.data?.hero?.name).isEqualTo("R222-D222")
+      assertThat(it.data?.hero?.id).isEqualTo("2001")
+      assertThat(it.data?.hero?.friends).hasSize(1)
+      assertThat(it.data?.hero?.friends?.get(0)?.id).isEqualTo("1002")
+      assertThat(it.data?.hero?.friends?.get(0)?.name).isEqualTo("Han Soloooo")
     }
   }
 
@@ -233,22 +219,21 @@ class ResponseWriteTestCase {
         server,
         "HeroAndFriendsWithFragmentResponse.json",
         apolloClient!!.query(query)
-    ) { (_, data) ->
-      assertThat(data!!.hero?.__typename).isEqualTo("Droid")
-      assertThat((data.hero as? HeroWithFriendsFragment)?.__typename).isEqualTo("Droid")
-      assertThat((data.hero as? HeroWithFriendsFragment)?.id).isEqualTo("2001")
-      assertThat((data.hero as? HeroWithFriendsFragment)?.name).isEqualTo("R2-D2")
-      assertThat((data.hero as? HeroWithFriendsFragment)?.friends).hasSize(3)
-      assertThat(((data.hero as? HeroWithFriendsFragment)?.friends?.get(0) as? HumanWithIdFragment)?.__typename).isEqualTo("Human")
-      assertThat(((data.hero as? HeroWithFriendsFragment)?.friends?.get(0) as? HumanWithIdFragment)?.id).isEqualTo("1000")
-      assertThat(((data.hero as? HeroWithFriendsFragment)?.friends?.get(0) as? HumanWithIdFragment)?.name).isEqualTo("Luke Skywalker")
-      assertThat(((data.hero as? HeroWithFriendsFragment)?.friends?.get(1) as? HumanWithIdFragment)?.__typename).isEqualTo("Human")
-      assertThat(((data.hero as? HeroWithFriendsFragment)?.friends?.get(1) as? HumanWithIdFragment)?.id).isEqualTo("1002")
-      assertThat(((data.hero as? HeroWithFriendsFragment)?.friends?.get(1) as? HumanWithIdFragment)?.name).isEqualTo("Han Solo")
-      assertThat(((data.hero as? HeroWithFriendsFragment)?.friends?.get(2) as? HumanWithIdFragment)?.__typename).isEqualTo("Human")
-      assertThat(((data.hero as? HeroWithFriendsFragment)?.friends?.get(2) as? HumanWithIdFragment)?.id).isEqualTo("1003")
-      assertThat(((data.hero as? HeroWithFriendsFragment)?.friends?.get(2) as? HumanWithIdFragment)?.name).isEqualTo("Leia Organa")
-      true
+    ) {
+      assertThat(it.data?.hero?.__typename).isEqualTo("Droid")
+      assertThat((it.data?.hero as? HeroWithFriendsFragment)?.__typename).isEqualTo("Droid")
+      assertThat((it.data?.hero as? HeroWithFriendsFragment)?.id).isEqualTo("2001")
+      assertThat((it.data?.hero as? HeroWithFriendsFragment)?.name).isEqualTo("R2-D2")
+      assertThat((it.data?.hero as? HeroWithFriendsFragment)?.friends).hasSize(3)
+      assertThat(((it.data?.hero as? HeroWithFriendsFragment)?.friends?.get(0) as? HumanWithIdFragment)?.__typename).isEqualTo("Human")
+      assertThat(((it.data?.hero as? HeroWithFriendsFragment)?.friends?.get(0) as? HumanWithIdFragment)?.id).isEqualTo("1000")
+      assertThat(((it.data?.hero as? HeroWithFriendsFragment)?.friends?.get(0) as? HumanWithIdFragment)?.name).isEqualTo("Luke Skywalker")
+      assertThat(((it.data?.hero as? HeroWithFriendsFragment)?.friends?.get(1) as? HumanWithIdFragment)?.__typename).isEqualTo("Human")
+      assertThat(((it.data?.hero as? HeroWithFriendsFragment)?.friends?.get(1) as? HumanWithIdFragment)?.id).isEqualTo("1002")
+      assertThat(((it.data?.hero as? HeroWithFriendsFragment)?.friends?.get(1) as? HumanWithIdFragment)?.name).isEqualTo("Han Solo")
+      assertThat(((it.data?.hero as? HeroWithFriendsFragment)?.friends?.get(2) as? HumanWithIdFragment)?.__typename).isEqualTo("Human")
+      assertThat(((it.data?.hero as? HeroWithFriendsFragment)?.friends?.get(2) as? HumanWithIdFragment)?.id).isEqualTo("1003")
+      assertThat(((it.data?.hero as? HeroWithFriendsFragment)?.friends?.get(2) as? HumanWithIdFragment)?.name).isEqualTo("Leia Organa")
     }
     val hero = HeroAndFriendsWithFragmentsQuery.Data.Hero.CharacterHero(
         __typename = "Droid",
@@ -270,19 +255,18 @@ class ResponseWriteTestCase {
     apolloClient!!.apolloStore.writeOperation(query, HeroAndFriendsWithFragmentsQuery.Data(hero))
     assertCachedQueryResponse(
         query
-    ) { (_, data) ->
-      assertThat(data?.hero?.__typename).isEqualTo("Droid")
-      assertThat((data?.hero as? HeroWithFriendsFragment)?.__typename).isEqualTo("Droid")
-      assertThat((data?.hero as? HeroWithFriendsFragment)?.id).isEqualTo("2001")
-      assertThat((data?.hero as? HeroWithFriendsFragment)?.name).isEqualTo("R222-D222")
-      assertThat((data?.hero as? HeroWithFriendsFragment)?.friends).hasSize(2)
-      assertThat(((data?.hero as? HeroWithFriendsFragment)?.friends?.get(0) as? HumanWithIdFragment)?.__typename).isEqualTo("Human")
-      assertThat(((data?.hero as? HeroWithFriendsFragment)?.friends?.get(0) as? HumanWithIdFragment)?.id).isEqualTo("1006")
-      assertThat(((data?.hero as? HeroWithFriendsFragment)?.friends?.get(0) as? HumanWithIdFragment)?.name).isEqualTo("SuperMan")
-      assertThat(((data?.hero as? HeroWithFriendsFragment)?.friends?.get(1) as? HumanWithIdFragment)?.__typename).isEqualTo("Human")
-      assertThat(((data?.hero as? HeroWithFriendsFragment)?.friends?.get(1) as? HumanWithIdFragment)?.id).isEqualTo("1004")
-      assertThat(((data?.hero as? HeroWithFriendsFragment)?.friends?.get(1) as? HumanWithIdFragment)?.name).isEqualTo("Beast")
-      true
+    ) {
+      assertThat(it.data?.hero?.__typename).isEqualTo("Droid")
+      assertThat((it.data?.hero as? HeroWithFriendsFragment)?.__typename).isEqualTo("Droid")
+      assertThat((it.data?.hero as? HeroWithFriendsFragment)?.id).isEqualTo("2001")
+      assertThat((it.data?.hero as? HeroWithFriendsFragment)?.name).isEqualTo("R222-D222")
+      assertThat((it.data?.hero as? HeroWithFriendsFragment)?.friends).hasSize(2)
+      assertThat(((it.data?.hero as? HeroWithFriendsFragment)?.friends?.get(0) as? HumanWithIdFragment)?.__typename).isEqualTo("Human")
+      assertThat(((it.data?.hero as? HeroWithFriendsFragment)?.friends?.get(0) as? HumanWithIdFragment)?.id).isEqualTo("1006")
+      assertThat(((it.data?.hero as? HeroWithFriendsFragment)?.friends?.get(0) as? HumanWithIdFragment)?.name).isEqualTo("SuperMan")
+      assertThat(((it.data?.hero as? HeroWithFriendsFragment)?.friends?.get(1) as? HumanWithIdFragment)?.__typename).isEqualTo("Human")
+      assertThat(((it.data?.hero as? HeroWithFriendsFragment)?.friends?.get(1) as? HumanWithIdFragment)?.id).isEqualTo("1004")
+      assertThat(((it.data?.hero as? HeroWithFriendsFragment)?.friends?.get(1) as? HumanWithIdFragment)?.name).isEqualTo("Beast")
     }
   }
 
@@ -294,23 +278,22 @@ class ResponseWriteTestCase {
         server,
         "EpisodeHeroWithInlineFragmentResponse.json",
         apolloClient!!.query(query)
-    ) { (_, data) ->
-      assertThat(data!!.hero?.name).isEqualTo("R2-D2")
-      assertThat(data.hero?.friends).hasSize(3)
-      val asHuman = data.hero?.friends?.get(0) as? EpisodeHeroWithInlineFragmentQuery.Data.Hero.Friends.HumanFriends
+    ) {
+      assertThat(it.data?.hero?.name).isEqualTo("R2-D2")
+      assertThat(it.data?.hero?.friends).hasSize(3)
+      val asHuman = it.data?.hero?.friends?.get(0) as? EpisodeHeroWithInlineFragmentQuery.Data.Hero.Friends.HumanFriends
       assertThat(asHuman?.__typename).isEqualTo("Human")
       assertThat(asHuman?.id).isEqualTo("1000")
       assertThat(asHuman?.name).isEqualTo("Luke Skywalker")
       assertThat(asHuman?.height).isWithin(1.5)
-      val asDroid1 = data.hero?.friends?.get(1) as? EpisodeHeroWithInlineFragmentQuery.Data.Hero.Friends.DroidFriends
+      val asDroid1 = it.data?.hero?.friends?.get(1) as? EpisodeHeroWithInlineFragmentQuery.Data.Hero.Friends.DroidFriends
       assertThat(asDroid1?.__typename).isEqualTo("Droid")
       assertThat(asDroid1?.name).isEqualTo("Android")
       assertThat(asDroid1?.primaryFunction).isEqualTo("Hunt and destroy iOS devices")
-      val asDroid2 = data.hero?.friends?.get(2) as EpisodeHeroWithInlineFragmentQuery.Data.Hero.Friends.DroidFriends
+      val asDroid2 = it.data?.hero?.friends?.get(2) as EpisodeHeroWithInlineFragmentQuery.Data.Hero.Friends.DroidFriends
       assertThat(asDroid2.__typename).isEqualTo("Droid")
       assertThat(asDroid2.name).isEqualTo("Battle Droid")
       assertThat(asDroid2.primaryFunction).isEqualTo("Controlled alternative to human soldiers")
-      true
     }
     val hero = EpisodeHeroWithInlineFragmentQuery.Data.Hero(
         name = "R22-D22",
@@ -331,19 +314,18 @@ class ResponseWriteTestCase {
     apolloClient!!.apolloStore.writeOperation(query, EpisodeHeroWithInlineFragmentQuery.Data(hero))
     assertCachedQueryResponse(
         query
-    ) { (_, data) ->
-      assertThat(data!!.hero?.name).isEqualTo("R22-D22")
-      assertThat(data.hero?.friends).hasSize(2)
-      val asHuman = data.hero?.friends?.get(0) as? EpisodeHeroWithInlineFragmentQuery.Data.Hero.Friends.HumanFriends
+    ) {
+      assertThat(it.data?.hero?.name).isEqualTo("R22-D22")
+      assertThat(it.data?.hero?.friends).hasSize(2)
+      val asHuman = it.data?.hero?.friends?.get(0) as? EpisodeHeroWithInlineFragmentQuery.Data.Hero.Friends.HumanFriends
       assertThat(asHuman?.__typename).isEqualTo("Human")
       assertThat(asHuman?.id).isEqualTo("1002")
       assertThat(asHuman?.name).isEqualTo("Han Solo")
       assertThat(asHuman?.height).isWithin(2.5)
-      val asDroid = data.hero?.friends?.get(1) as? EpisodeHeroWithInlineFragmentQuery.Data.Hero.Friends.DroidFriends
+      val asDroid = it.data?.hero?.friends?.get(1) as? EpisodeHeroWithInlineFragmentQuery.Data.Hero.Friends.DroidFriends
       assertThat(asDroid?.__typename).isEqualTo("Droid")
       assertThat(asDroid?.name).isEqualTo("RD")
       assertThat(asDroid?.primaryFunction).isEqualTo("Entertainment")
-      true
     }
   }
 
@@ -355,22 +337,21 @@ class ResponseWriteTestCase {
         server,
         "HeroAndFriendsWithFragmentResponse.json",
         apolloClient!!.query(query)
-    ) { (_, data) ->
-      assertThat(data!!.hero?.__typename).isEqualTo("Droid")
-      assertThat((data.hero as HeroWithFriendsFragment).__typename).isEqualTo("Droid")
-      assertThat((data.hero as HeroWithFriendsFragment).id).isEqualTo("2001")
-      assertThat((data.hero as HeroWithFriendsFragment).name).isEqualTo("R2-D2")
-      assertThat((data.hero as HeroWithFriendsFragment).friends).hasSize(3)
-      assertThat(((data.hero as HeroWithFriendsFragment).friends?.get(0) as HumanWithIdFragment).__typename).isEqualTo("Human")
-      assertThat(((data.hero as HeroWithFriendsFragment).friends?.get(0) as HumanWithIdFragment).id).isEqualTo("1000")
-      assertThat(((data.hero as HeroWithFriendsFragment).friends?.get(0) as HumanWithIdFragment).name).isEqualTo("Luke Skywalker")
-      assertThat(((data.hero as HeroWithFriendsFragment).friends?.get(1) as HumanWithIdFragment).__typename).isEqualTo("Human")
-      assertThat(((data.hero as HeroWithFriendsFragment).friends?.get(1) as HumanWithIdFragment).id).isEqualTo("1002")
-      assertThat(((data.hero as HeroWithFriendsFragment).friends?.get(1) as HumanWithIdFragment).name).isEqualTo("Han Solo")
-      assertThat(((data.hero as HeroWithFriendsFragment).friends?.get(2) as HumanWithIdFragment).__typename).isEqualTo("Human")
-      assertThat(((data.hero as HeroWithFriendsFragment).friends?.get(2) as HumanWithIdFragment).id).isEqualTo("1003")
-      assertThat(((data.hero as HeroWithFriendsFragment).friends?.get(2) as HumanWithIdFragment).name).isEqualTo("Leia Organa")
-      true
+    ) {
+      assertThat(it.data?.hero?.__typename).isEqualTo("Droid")
+      assertThat((it.data?.hero as HeroWithFriendsFragment).__typename).isEqualTo("Droid")
+      assertThat((it.data?.hero as HeroWithFriendsFragment).id).isEqualTo("2001")
+      assertThat((it.data?.hero as HeroWithFriendsFragment).name).isEqualTo("R2-D2")
+      assertThat((it.data?.hero as HeroWithFriendsFragment).friends).hasSize(3)
+      assertThat(((it.data?.hero as HeroWithFriendsFragment).friends?.get(0) as HumanWithIdFragment).__typename).isEqualTo("Human")
+      assertThat(((it.data?.hero as HeroWithFriendsFragment).friends?.get(0) as HumanWithIdFragment).id).isEqualTo("1000")
+      assertThat(((it.data?.hero as HeroWithFriendsFragment).friends?.get(0) as HumanWithIdFragment).name).isEqualTo("Luke Skywalker")
+      assertThat(((it.data?.hero as HeroWithFriendsFragment).friends?.get(1) as HumanWithIdFragment).__typename).isEqualTo("Human")
+      assertThat(((it.data?.hero as HeroWithFriendsFragment).friends?.get(1) as HumanWithIdFragment).id).isEqualTo("1002")
+      assertThat(((it.data?.hero as HeroWithFriendsFragment).friends?.get(1) as HumanWithIdFragment).name).isEqualTo("Han Solo")
+      assertThat(((it.data?.hero as HeroWithFriendsFragment).friends?.get(2) as HumanWithIdFragment).__typename).isEqualTo("Human")
+      assertThat(((it.data?.hero as HeroWithFriendsFragment).friends?.get(2) as HumanWithIdFragment).id).isEqualTo("1003")
+      assertThat(((it.data?.hero as HeroWithFriendsFragment).friends?.get(2) as HumanWithIdFragment).name).isEqualTo("Leia Organa")
     }
 
     apolloClient!!.apolloStore.writeFragment(
@@ -405,18 +386,18 @@ class ResponseWriteTestCase {
     )
     assertCachedQueryResponse(
         query
-    ) { (_, data) ->
-      assertThat(data!!.hero?.__typename).isEqualTo("Droid")
-      assertThat((data.hero as HeroWithFriendsFragment).__typename).isEqualTo("Droid")
-      assertThat((data.hero as HeroWithFriendsFragment).id).isEqualTo("2001")
-      assertThat((data.hero as HeroWithFriendsFragment).name).isEqualTo("R222-D222")
-      assertThat((data.hero as HeroWithFriendsFragment).friends).hasSize(2)
-      assertThat(((data.hero as HeroWithFriendsFragment).friends?.get(0) as HumanWithIdFragment).__typename).isEqualTo("Human")
-      assertThat(((data.hero as HeroWithFriendsFragment).friends?.get(0) as HumanWithIdFragment).id).isEqualTo("1000")
-      assertThat(((data.hero as HeroWithFriendsFragment).friends?.get(0) as HumanWithIdFragment).name).isEqualTo("SuperMan")
-      assertThat(((data.hero as HeroWithFriendsFragment).friends?.get(1) as HumanWithIdFragment).__typename).isEqualTo("Human")
-      assertThat(((data.hero as HeroWithFriendsFragment).friends?.get(1) as HumanWithIdFragment).id).isEqualTo("1002")
-      assertThat(((data.hero as HeroWithFriendsFragment).friends?.get(1) as HumanWithIdFragment).name).isEqualTo("Beast")
+    ) {
+      assertThat(it.data?.hero?.__typename).isEqualTo("Droid")
+      assertThat((it.data?.hero as HeroWithFriendsFragment).__typename).isEqualTo("Droid")
+      assertThat((it.data?.hero as HeroWithFriendsFragment).id).isEqualTo("2001")
+      assertThat((it.data?.hero as HeroWithFriendsFragment).name).isEqualTo("R222-D222")
+      assertThat((it.data?.hero as HeroWithFriendsFragment).friends).hasSize(2)
+      assertThat(((it.data?.hero as HeroWithFriendsFragment).friends?.get(0) as HumanWithIdFragment).__typename).isEqualTo("Human")
+      assertThat(((it.data?.hero as HeroWithFriendsFragment).friends?.get(0) as HumanWithIdFragment).id).isEqualTo("1000")
+      assertThat(((it.data?.hero as HeroWithFriendsFragment).friends?.get(0) as HumanWithIdFragment).name).isEqualTo("SuperMan")
+      assertThat(((it.data?.hero as HeroWithFriendsFragment).friends?.get(1) as HumanWithIdFragment).__typename).isEqualTo("Human")
+      assertThat(((it.data?.hero as HeroWithFriendsFragment).friends?.get(1) as HumanWithIdFragment).id).isEqualTo("1002")
+      assertThat(((it.data?.hero as HeroWithFriendsFragment).friends?.get(1) as HumanWithIdFragment).name).isEqualTo("Beast")
     }
   }
 
@@ -429,10 +410,9 @@ class ResponseWriteTestCase {
         "StarshipByIdResponse.json",
         apolloClient!!.query(query).responseFetcher(ApolloResponseFetchers.NETWORK_ONLY)
     ) {
-      val data = it.data
-      assertThat(data!!.starship?.name).isEqualTo("SuperRocket")
-      assertThat(data.starship?.coordinates).hasSize(3)
-      assertThat(data.starship?.coordinates).containsExactly(
+      assertThat(it.data?.starship?.name).isEqualTo("SuperRocket")
+      assertThat(it.data?.starship?.coordinates).hasSize(3)
+      assertThat(it.data?.starship?.coordinates).containsExactly(
           listOf(100.0, 200.0),
           listOf(300.0, 400.0),
           listOf(500.0, 600.0)
@@ -450,10 +430,9 @@ class ResponseWriteTestCase {
     assertCachedQueryResponse(
         query
     ) {
-      val data = it.data
-      assertThat(data!!.starship?.name).isEqualTo("SuperRocket")
-      assertThat(data.starship?.coordinates).hasSize(2)
-      assertThat(data.starship?.coordinates).containsExactly(
+      assertThat(it.data?.starship?.name).isEqualTo("SuperRocket")
+      assertThat(it.data?.starship?.coordinates).hasSize(2)
+      assertThat(it.data?.starship?.coordinates).containsExactly(
           listOf(900.0, 800.0),
           listOf(700.0, 600.0)
       )

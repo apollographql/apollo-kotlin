@@ -10,23 +10,27 @@ import com.apollographql.apollo3.api.Response
 import com.apollographql.apollo3.cache.normalized.MemoryCacheFactory
 import com.apollographql.apollo3.exception.ApolloException
 import com.apollographql.apollo3.fetcher.ApolloResponseFetchers
-import com.apollographql.apollo3.integration.normalizer.*
+import com.apollographql.apollo3.integration.normalizer.HeroAndFriendsNamesQuery
+import com.apollographql.apollo3.integration.normalizer.HeroAndFriendsNamesWithIDsQuery
+import com.apollographql.apollo3.integration.normalizer.HeroNameQuery
+import com.apollographql.apollo3.integration.normalizer.HeroNameWithEnumsQuery
+import com.apollographql.apollo3.integration.normalizer.HeroNameWithIdQuery
+import com.apollographql.apollo3.integration.normalizer.ReviewsByEpisodeQuery
+import com.apollographql.apollo3.integration.normalizer.UpdateReviewMutation
 import com.apollographql.apollo3.integration.normalizer.UpdateReviewMutation.Data.UpdateReview
 import com.apollographql.apollo3.integration.normalizer.type.ColorInput
 import com.apollographql.apollo3.integration.normalizer.type.Episode
 import com.apollographql.apollo3.integration.normalizer.type.ReviewInput
-import com.google.common.truth.Truth
 import com.google.common.truth.Truth.assertThat
-import io.reactivex.functions.Predicate
 import okhttp3.Dispatcher
 import okhttp3.OkHttpClient
 import okhttp3.mockwebserver.MockResponse
 import okhttp3.mockwebserver.MockWebServer
 import org.junit.Before
-import org.junit.Rule
 import org.junit.Test
 import java.io.IOException
-import java.util.*
+import java.util.ArrayList
+import java.util.UUID
 
 class OptimisticCacheTestCase {
   private var apolloClient: ApolloClient? = null
@@ -62,7 +66,7 @@ class OptimisticCacheTestCase {
     val mutationId = UUID.randomUUID()
     val data = HeroAndFriendsNamesQuery.Data(HeroAndFriendsNamesQuery.Data.Hero(
         "R222-D222",
-        Arrays.asList(
+        listOf(
             HeroAndFriendsNamesQuery.Data.Hero.Friends(
                 "SuperMan"
             ),
@@ -74,23 +78,21 @@ class OptimisticCacheTestCase {
     apolloClient!!.apolloStore.writeOptimisticUpdates(query, data, mutationId, true)
     assertResponse(
         apolloClient!!.query(query).responseFetcher(ApolloResponseFetchers.CACHE_ONLY)
-    ) { (_, data1) ->
-      assertThat(data1!!.hero?.name).isEqualTo("R222-D222")
-      assertThat(data1.hero?.friends).hasSize(2)
-      assertThat(data1.hero?.friends?.get(0)?.name).isEqualTo("SuperMan")
-      assertThat(data1.hero?.friends?.get(1)?.name).isEqualTo("Batman")
-      true
+    ) { 
+      assertThat(it.data?.hero?.name).isEqualTo("R222-D222")
+      assertThat(it.data?.hero?.friends).hasSize(2)
+      assertThat(it.data?.hero?.friends?.get(0)?.name).isEqualTo("SuperMan")
+      assertThat(it.data?.hero?.friends?.get(1)?.name).isEqualTo("Batman")
     }
     apolloClient!!.apolloStore.rollbackOptimisticUpdates(mutationId, false)
     assertResponse(
         apolloClient!!.query(query).responseFetcher(ApolloResponseFetchers.CACHE_ONLY)
-    ) { (_, data1) ->
-      assertThat(data1!!.hero?.name).isEqualTo("R2-D2")
-      assertThat(data1.hero?.friends).hasSize(3)
-      assertThat(data1.hero?.friends?.get(0)?.name).isEqualTo("Luke Skywalker")
-      assertThat(data1.hero?.friends?.get(1)?.name).isEqualTo("Han Solo")
-      assertThat(data1.hero?.friends?.get(2)?.name).isEqualTo("Leia Organa")
-      true
+    ) { 
+      assertThat(it.data?.hero?.name).isEqualTo("R2-D2")
+      assertThat(it.data?.hero?.friends).hasSize(3)
+      assertThat(it.data?.hero?.friends?.get(0)?.name).isEqualTo("Luke Skywalker")
+      assertThat(it.data?.hero?.friends?.get(1)?.name).isEqualTo("Han Solo")
+      assertThat(it.data?.hero?.friends?.get(2)?.name).isEqualTo("Leia Organa")
     }
   }
 
@@ -112,7 +114,7 @@ class OptimisticCacheTestCase {
         HeroAndFriendsNamesWithIDsQuery.Data.Hero(
             "2001",
             "R222-D222",
-            Arrays.asList(
+            listOf(
                 HeroAndFriendsNamesWithIDsQuery.Data.Hero.Friends(
                     "1000",
                     "SuperMan"
@@ -129,15 +131,14 @@ class OptimisticCacheTestCase {
     // check if query1 see optimistic updates
     assertResponse(
         apolloClient!!.query(query1).responseFetcher(ApolloResponseFetchers.CACHE_ONLY)
-    ) { (_, data) ->
-      assertThat(data!!.hero?.id).isEqualTo("2001")
-      assertThat(data.hero?.name).isEqualTo("R222-D222")
-      assertThat(data.hero?.friends).hasSize(2)
-      assertThat(data.hero?.friends?.get(0)?.id).isEqualTo("1000")
-      assertThat(data.hero?.friends?.get(0)?.name).isEqualTo("SuperMan")
-      assertThat(data.hero?.friends?.get(1)?.id).isEqualTo("1003")
-      assertThat(data.hero?.friends?.get(1)?.name).isEqualTo("Batman")
-      true
+    ) { 
+      assertThat(it.data?.hero?.id).isEqualTo("2001")
+      assertThat(it.data?.hero?.name).isEqualTo("R222-D222")
+      assertThat(it.data?.hero?.friends).hasSize(2)
+      assertThat(it.data?.hero?.friends?.get(0)?.id).isEqualTo("1000")
+      assertThat(it.data?.hero?.friends?.get(0)?.name).isEqualTo("SuperMan")
+      assertThat(it.data?.hero?.friends?.get(1)?.id).isEqualTo("1003")
+      assertThat(it.data?.hero?.friends?.get(1)?.name).isEqualTo("Batman")
     }
 
     // execute query2
@@ -161,24 +162,22 @@ class OptimisticCacheTestCase {
     // check if query1 sees data2
     assertResponse(
         apolloClient!!.query(query1).responseFetcher(ApolloResponseFetchers.CACHE_ONLY)
-    ) { (_, data) ->
-      assertThat(data!!.hero?.id).isEqualTo("2001")
-      assertThat(data.hero?.name).isEqualTo("R222-D222")
-      assertThat(data.hero?.friends).hasSize(2)
-      assertThat(data.hero?.friends?.get(0)?.id).isEqualTo("1000")
-      assertThat(data.hero?.friends?.get(0)?.name).isEqualTo("Beast")
-      assertThat(data.hero?.friends?.get(1)?.id).isEqualTo("1003")
-      assertThat(data.hero?.friends?.get(1)?.name).isEqualTo("Batman")
-      true
+    ) { 
+      assertThat(it.data?.hero?.id).isEqualTo("2001")
+      assertThat(it.data?.hero?.name).isEqualTo("R222-D222")
+      assertThat(it.data?.hero?.friends).hasSize(2)
+      assertThat(it.data?.hero?.friends?.get(0)?.id).isEqualTo("1000")
+      assertThat(it.data?.hero?.friends?.get(0)?.name).isEqualTo("Beast")
+      assertThat(it.data?.hero?.friends?.get(1)?.id).isEqualTo("1003")
+      assertThat(it.data?.hero?.friends?.get(1)?.name).isEqualTo("Batman")
     }
 
     // check if query2 sees data2
     assertResponse(
         apolloClient!!.query(query2).responseFetcher(ApolloResponseFetchers.CACHE_ONLY)
-    ) { (_, data) ->
-      assertThat(data!!.hero?.id).isEqualTo("1000")
-      assertThat(data.hero?.name).isEqualTo("Beast")
-      true
+    ) { 
+      assertThat(it.data?.hero?.id).isEqualTo("1000")
+      assertThat(it.data?.hero?.name).isEqualTo("Beast")
     }
 
     // rollback data1
@@ -187,26 +186,24 @@ class OptimisticCacheTestCase {
     // check if query2 sees the rollback
     assertResponse(
         apolloClient!!.query(query1).responseFetcher(ApolloResponseFetchers.CACHE_ONLY)
-    ) { (_, data) ->
-      assertThat(data!!.hero?.id).isEqualTo("2001")
-      assertThat(data.hero?.name).isEqualTo("R2-D2")
-      assertThat(data.hero?.friends).hasSize(3)
-      assertThat(data.hero?.friends?.get(0)?.id).isEqualTo("1000")
-      assertThat(data.hero?.friends?.get(0)?.name).isEqualTo("Beast")
-      assertThat(data.hero?.friends?.get(1)?.id).isEqualTo("1002")
-      assertThat(data.hero?.friends?.get(1)?.name).isEqualTo("Han Solo")
-      assertThat(data.hero?.friends?.get(2)?.id).isEqualTo("1003")
-      assertThat(data.hero?.friends?.get(2)?.name).isEqualTo("Leia Organa")
-      true
+    ) { 
+      assertThat(it.data?.hero?.id).isEqualTo("2001")
+      assertThat(it.data?.hero?.name).isEqualTo("R2-D2")
+      assertThat(it.data?.hero?.friends).hasSize(3)
+      assertThat(it.data?.hero?.friends?.get(0)?.id).isEqualTo("1000")
+      assertThat(it.data?.hero?.friends?.get(0)?.name).isEqualTo("Beast")
+      assertThat(it.data?.hero?.friends?.get(1)?.id).isEqualTo("1002")
+      assertThat(it.data?.hero?.friends?.get(1)?.name).isEqualTo("Han Solo")
+      assertThat(it.data?.hero?.friends?.get(2)?.id).isEqualTo("1003")
+      assertThat(it.data?.hero?.friends?.get(2)?.name).isEqualTo("Leia Organa")
     }
 
     // check if query2 see the latest optimistic updates
     assertResponse(
         apolloClient!!.query(query2).responseFetcher(ApolloResponseFetchers.CACHE_ONLY)
-    ) { (_, data) ->
-      assertThat(data!!.hero?.id).isEqualTo("1000")
-      assertThat(data.hero?.name).isEqualTo("Beast")
-      true
+    ) { 
+      assertThat(it.data?.hero?.id).isEqualTo("1000")
+      assertThat(it.data?.hero?.name).isEqualTo("Beast")
     }
 
     // rollback query2 optimistic updates
@@ -215,10 +212,9 @@ class OptimisticCacheTestCase {
     // check if query2 see the latest optimistic updates
     assertResponse(
         apolloClient!!.query(query2).responseFetcher(ApolloResponseFetchers.CACHE_ONLY)
-    ) { (_, data) ->
-      assertThat(data!!.hero?.id).isEqualTo("1000")
-      assertThat(data.hero?.name).isEqualTo("SuperMan")
-      true
+    ) { 
+      assertThat(it.data?.hero?.id).isEqualTo("1000")
+      assertThat(it.data?.hero?.name).isEqualTo("SuperMan")
     }
   }
 
@@ -239,20 +235,18 @@ class OptimisticCacheTestCase {
     )
     assertResponse(
         apolloClient!!.query(HeroNameWithEnumsQuery()).responseFetcher(ApolloResponseFetchers.CACHE_ONLY)
-    ) { (_, data) ->
-      assertThat(data!!.hero?.name).isEqualTo("R22-D22")
-      assertThat(data.hero?.firstAppearsIn).isEqualTo(Episode.EMPIRE)
-      assertThat(data.hero?.appearsIn).isEqualTo(Arrays.asList(Episode.NEWHOPE, Episode.EMPIRE, Episode.JEDI))
-      true
+    ) { 
+      assertThat(it.data?.hero?.name).isEqualTo("R22-D22")
+      assertThat(it.data?.hero?.firstAppearsIn).isEqualTo(Episode.EMPIRE)
+      assertThat(it.data?.hero?.appearsIn).isEqualTo(listOf(Episode.NEWHOPE, Episode.EMPIRE, Episode.JEDI))
     }
     apolloClient!!.apolloStore.rollbackOptimisticUpdates(mutationId, false)
     assertResponse(
         apolloClient!!.query(HeroNameWithEnumsQuery()).responseFetcher(ApolloResponseFetchers.CACHE_ONLY)
-    ) { (_, data) ->
-      assertThat(data!!.hero?.name).isEqualTo("R2-D2")
-      assertThat(data.hero?.firstAppearsIn).isEqualTo(Episode.EMPIRE)
-      assertThat(data.hero?.appearsIn).isEqualTo(Arrays.asList(Episode.NEWHOPE, Episode.EMPIRE, Episode.JEDI))
-      true
+    ) { 
+      assertThat(it.data?.hero?.name).isEqualTo("R2-D2")
+      assertThat(it.data?.hero?.firstAppearsIn).isEqualTo(Episode.EMPIRE)
+      assertThat(it.data?.hero?.appearsIn).isEqualTo(listOf(Episode.NEWHOPE, Episode.EMPIRE, Episode.JEDI))
     }
   }
 
@@ -377,24 +371,22 @@ class OptimisticCacheTestCase {
     // check if query1 see optimistic updates
     assertResponse(
         apolloClient!!.query(query1).responseFetcher(ApolloResponseFetchers.CACHE_ONLY)
-    ) { (_, data) ->
-      assertThat(data!!.hero?.id).isEqualTo("2001")
-      assertThat(data.hero?.name).isEqualTo("R222-D222")
-      assertThat(data.hero?.friends).hasSize(2)
-      assertThat(data.hero?.friends?.get(0)?.id).isEqualTo("1000")
-      assertThat(data.hero?.friends?.get(0)?.name).isEqualTo("Spiderman")
-      assertThat(data.hero?.friends?.get(1)?.id).isEqualTo("1003")
-      assertThat(data.hero?.friends?.get(1)?.name).isEqualTo("Batman")
-      true
+    ) { 
+      assertThat(it.data?.hero?.id).isEqualTo("2001")
+      assertThat(it.data?.hero?.name).isEqualTo("R222-D222")
+      assertThat(it.data?.hero?.friends).hasSize(2)
+      assertThat(it.data?.hero?.friends?.get(0)?.id).isEqualTo("1000")
+      assertThat(it.data?.hero?.friends?.get(0)?.name).isEqualTo("Spiderman")
+      assertThat(it.data?.hero?.friends?.get(1)?.id).isEqualTo("1003")
+      assertThat(it.data?.hero?.friends?.get(1)?.name).isEqualTo("Batman")
     }
 
     // check if query2 see the latest optimistic updates
     assertResponse(
         apolloClient!!.query(query2).responseFetcher(ApolloResponseFetchers.CACHE_ONLY)
-    ) { (_, data) ->
-      assertThat(data!!.hero?.id).isEqualTo("1000")
-      assertThat(data.hero?.name).isEqualTo("Spiderman")
-      true
+    ) { 
+      assertThat(it.data?.hero?.id).isEqualTo("1000")
+      assertThat(it.data?.hero?.name).isEqualTo("Spiderman")
     }
 
     // rollback query2 optimistic updates
@@ -403,24 +395,22 @@ class OptimisticCacheTestCase {
     // check if query1 see the latest optimistic updates
     assertResponse(
         apolloClient!!.query(query1).responseFetcher(ApolloResponseFetchers.CACHE_ONLY)
-    ) { (_, data) ->
-      assertThat(data!!.hero?.id).isEqualTo("2001")
-      assertThat(data.hero?.name).isEqualTo("R222-D222")
-      assertThat(data.hero?.friends).hasSize(2)
-      assertThat(data.hero?.friends?.get(0)?.id).isEqualTo("1000")
-      assertThat(data.hero?.friends?.get(0)?.name).isEqualTo("Robocop")
-      assertThat(data.hero?.friends?.get(1)?.id).isEqualTo("1003")
-      assertThat(data.hero?.friends?.get(1)?.name).isEqualTo("Batman")
-      true
+    ) { 
+      assertThat(it.data?.hero?.id).isEqualTo("2001")
+      assertThat(it.data?.hero?.name).isEqualTo("R222-D222")
+      assertThat(it.data?.hero?.friends).hasSize(2)
+      assertThat(it.data?.hero?.friends?.get(0)?.id).isEqualTo("1000")
+      assertThat(it.data?.hero?.friends?.get(0)?.name).isEqualTo("Robocop")
+      assertThat(it.data?.hero?.friends?.get(1)?.id).isEqualTo("1003")
+      assertThat(it.data?.hero?.friends?.get(1)?.name).isEqualTo("Batman")
     }
 
     // check if query2 see the latest optimistic updates
     assertResponse(
         apolloClient!!.query(query2).responseFetcher(ApolloResponseFetchers.CACHE_ONLY)
-    ) { (_, data) ->
-      assertThat(data!!.hero?.id).isEqualTo("1000")
-      assertThat(data.hero?.name).isEqualTo("Robocop")
-      true
+    ) { 
+      assertThat(it.data?.hero?.id).isEqualTo("1000")
+      assertThat(it.data?.hero?.name).isEqualTo("Robocop")
     }
 
     // rollback query1 optimistic updates
@@ -429,26 +419,24 @@ class OptimisticCacheTestCase {
     // check if query1 see the latest non-optimistic updates
     assertResponse(
         apolloClient!!.query(query1).responseFetcher(ApolloResponseFetchers.CACHE_ONLY)
-    ) { (_, data) ->
-      assertThat(data!!.hero?.id).isEqualTo("2001")
-      assertThat(data.hero?.name).isEqualTo("R2-D2")
-      assertThat(data.hero?.friends).hasSize(3)
-      assertThat(data.hero?.friends?.get(0)?.id).isEqualTo("1000")
-      assertThat(data.hero?.friends?.get(0)?.name).isEqualTo("SuperMan")
-      assertThat(data.hero?.friends?.get(1)?.id).isEqualTo("1002")
-      assertThat(data.hero?.friends?.get(1)?.name).isEqualTo("Han Solo")
-      assertThat(data.hero?.friends?.get(2)?.id).isEqualTo("1003")
-      assertThat(data.hero?.friends?.get(2)?.name).isEqualTo("Leia Organa")
-      true
+    ) { 
+      assertThat(it.data?.hero?.id).isEqualTo("2001")
+      assertThat(it.data?.hero?.name).isEqualTo("R2-D2")
+      assertThat(it.data?.hero?.friends).hasSize(3)
+      assertThat(it.data?.hero?.friends?.get(0)?.id).isEqualTo("1000")
+      assertThat(it.data?.hero?.friends?.get(0)?.name).isEqualTo("SuperMan")
+      assertThat(it.data?.hero?.friends?.get(1)?.id).isEqualTo("1002")
+      assertThat(it.data?.hero?.friends?.get(1)?.name).isEqualTo("Han Solo")
+      assertThat(it.data?.hero?.friends?.get(2)?.id).isEqualTo("1003")
+      assertThat(it.data?.hero?.friends?.get(2)?.name).isEqualTo("Leia Organa")
     }
 
     // check if query2 see the latest non-optimistic updates
     assertResponse(
         apolloClient!!.query(query2).responseFetcher(ApolloResponseFetchers.CACHE_ONLY)
-    ) { (_, data) ->
-      assertThat(data!!.hero?.id).isEqualTo("1000")
-      assertThat(data.hero?.name).isEqualTo("SuperMan")
-      true
+    ) { 
+      assertThat(it.data?.hero?.id).isEqualTo("1000")
+      assertThat(it.data?.hero?.name).isEqualTo("SuperMan")
     }
   }
 }

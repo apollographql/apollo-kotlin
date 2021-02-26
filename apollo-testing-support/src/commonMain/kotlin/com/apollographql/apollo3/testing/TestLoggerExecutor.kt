@@ -3,8 +3,8 @@ package com.apollographql.apollo3.testing
 import com.apollographql.apollo3.api.Operation
 import com.apollographql.apollo3.interceptor.ApolloInterceptorChain
 import com.apollographql.apollo3.ApolloRequest
+import com.apollographql.apollo3.api.Response
 import com.apollographql.apollo3.interceptor.ApolloRequestInterceptor
-import com.apollographql.apollo3.interceptor.ApolloResponse
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.catch
@@ -14,7 +14,7 @@ import kotlinx.coroutines.flow.onStart
 @ExperimentalCoroutinesApi
 object TestLoggerExecutor : ApolloRequestInterceptor {
 
-  override fun <D : Operation.Data> intercept(request: ApolloRequest<D>, chain: ApolloInterceptorChain): Flow<ApolloResponse<D>> {
+  override fun <D : Operation.Data> intercept(request: ApolloRequest<D>, chain: ApolloInterceptorChain): Flow<Response<D>> {
     println("Preparing `${request.operation.name()}` GraphQL operation for execution ...")
     return chain.proceed(request)
         .onStart { println("Started `${request.operation.name()}` GraphQL operation execution ...") }

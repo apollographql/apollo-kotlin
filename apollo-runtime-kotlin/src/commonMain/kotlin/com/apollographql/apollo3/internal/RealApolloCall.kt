@@ -33,10 +33,6 @@ class RealApolloCall<D : Operation.Data> constructor(
       )
     }.flatMapLatest { interceptorChain ->
       interceptorChain.proceed(request)
-    }.map { apolloResponse ->
-      apolloResponse.response.copy(
-          executionContext = apolloResponse.executionContext
-      )
     }
   }
 }

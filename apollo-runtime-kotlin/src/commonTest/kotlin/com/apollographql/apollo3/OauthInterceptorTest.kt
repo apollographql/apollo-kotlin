@@ -31,7 +31,7 @@ class OauthInterceptorTest {
       const val INVALID_ACCESS_TOKEN = "INVALID_ACCESS_TOKEN"
     }
 
-    override fun <D : Operation.Data> execute(request: ApolloRequest<D>, responseAdapterCache: ResponseAdapterCache): Flow<ApolloResponse<D>> {
+    override fun <D : Operation.Data> execute(request: ApolloRequest<D>, responseAdapterCache: ResponseAdapterCache): Flow<Response<D>> {
       val authorization = request.executionContext[HttpRequestParameters]?.headers?.get("Authorization")
 
       return flow {
@@ -39,7 +39,7 @@ class OauthInterceptorTest {
           "Bearer $VALID_ACCESS_TOKEN1",
           "Bearer $VALID_ACCESS_TOKEN2" -> {
             emit(
-                ApolloResponse(
+                Response(
                     requestUuid = request.requestUuid,
                     response = request.operation.fromResponse("{\"data\":{\"name\":\"MockQuery\"}}".encodeUtf8()),
                     executionContext = ExecutionContext.Empty

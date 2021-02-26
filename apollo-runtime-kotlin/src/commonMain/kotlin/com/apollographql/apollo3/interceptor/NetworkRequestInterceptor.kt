@@ -5,6 +5,7 @@ import com.apollographql.apollo3.ApolloQueryRequest
 import com.apollographql.apollo3.ApolloRequest
 import com.apollographql.apollo3.ApolloSubscriptionRequest
 import com.apollographql.apollo3.api.Operation
+import com.apollographql.apollo3.api.Response
 import com.apollographql.apollo3.network.NetworkTransport
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.emptyFlow
@@ -14,7 +15,7 @@ class NetworkRequestInterceptor(
     private val subscriptionNetworkTransport: NetworkTransport,
 ) : ApolloRequestInterceptor {
 
-  override fun <D : Operation.Data> intercept(request: ApolloRequest<D>, chain: ApolloInterceptorChain): Flow<ApolloResponse<D>> {
+  override fun <D : Operation.Data> intercept(request: ApolloRequest<D>, chain: ApolloInterceptorChain): Flow<Response<D>> {
     return when (request) {
       is ApolloQueryRequest -> networkTransport.execute(request = request, responseAdapterCache = chain.responseAdapterCache)
       is ApolloMutationRequest -> networkTransport.execute(request = request, responseAdapterCache = chain.responseAdapterCache)
