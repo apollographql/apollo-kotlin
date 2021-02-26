@@ -59,7 +59,7 @@ class ApolloWebSocketNetworkTransportTest {
           request = expectedRequest,
           responseAdapterCache = ResponseAdapterCache.DEFAULT,
       ).collectIndexed { index, actualResponse ->
-        assertEquals("MockQuery${index + 1}", actualResponse.response.data?.name)
+        assertEquals("MockQuery${index + 1}", actualResponse.data?.name)
         if (index < expectedResponses.size - 1) {
           webSocketConnection.enqueueResponse(expectedResponses[index + 1])
         } else {
@@ -119,7 +119,7 @@ class ApolloWebSocketNetworkTransportTest {
             request = expectedRequest,
             responseAdapterCache = ResponseAdapterCache.DEFAULT,
         ).collect { actualResponse ->
-          assertEquals("MockQuery", actualResponse.response.data?.name)
+          assertEquals("MockQuery", actualResponse.data?.name)
           webSocketConnection.enqueueError("{\"key1\":\"value1\", \"key2\":\"value2\"}")
         }
       }
@@ -154,7 +154,7 @@ class ApolloWebSocketNetworkTransportTest {
           request = expectedRequest,
           responseAdapterCache = ResponseAdapterCache.DEFAULT,
       ).collect { actualResponse ->
-        assertEquals("MockQuery", actualResponse.response.data?.name)
+        assertEquals("MockQuery", actualResponse.data?.name)
         webSocketConnection.enqueueComplete()
       }
 
@@ -186,7 +186,7 @@ class ApolloWebSocketNetworkTransportTest {
           request = expectedRequest,
           responseAdapterCache = ResponseAdapterCache.DEFAULT,
       ).collect { actualResponse ->
-        assertEquals("MockQuery", actualResponse.response.data?.name)
+        assertEquals("MockQuery", actualResponse.data?.name)
         webSocketConnection.enqueueConnectionKeepAlive()
       }
 
