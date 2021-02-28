@@ -2,7 +2,7 @@ package com.apollographql.apollo3
 
 import com.apollographql.apollo3.ApolloSubscriptionCall.Callback
 import com.apollographql.apollo3.api.Operation
-import com.apollographql.apollo3.api.Response
+import com.apollographql.apollo3.api.ApolloResponse
 import com.apollographql.apollo3.api.Subscription
 import com.apollographql.apollo3.exception.ApolloCanceledException
 import com.apollographql.apollo3.exception.ApolloException
@@ -87,7 +87,7 @@ interface ApolloSubscriptionCall<D : Operation.Data> : Cancelable {
      *
      * @param response the GraphQL response
      */
-    fun onResponse(response: Response<D>)
+    fun onResponse(response: ApolloResponse<D>)
 
     /**
      * Gets called when an unexpected exception occurs while creating the request or processing the response. Will be

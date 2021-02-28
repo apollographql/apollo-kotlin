@@ -2,7 +2,7 @@ package com.apollographql.apollo3.internal.interceptor
 
 import com.apollographql.apollo3.ApolloCall
 import com.apollographql.apollo3.api.Operation
-import com.apollographql.apollo3.api.Response
+import com.apollographql.apollo3.api.ApolloResponse
 import com.apollographql.apollo3.api.internal.ApolloLogger
 import com.apollographql.apollo3.cache.ApolloCacheHeaders
 import com.apollographql.apollo3.cache.normalized.ApolloStore
@@ -88,7 +88,7 @@ class ApolloCacheInterceptor<D : Operation.Data>(
       logger.d("Cache HIT for operation %s", request.operation.name())
       return InterceptorResponse(
           null,
-          Response(
+          ApolloResponse(
               requestUuid = uuid4(),
               operation = request.operation,
               data = data,

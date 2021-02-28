@@ -2,7 +2,7 @@ package com.apollographql.apollo3.network.http
 
 import com.apollographql.apollo3.ApolloRequest
 import com.apollographql.apollo3.api.Operation
-import com.apollographql.apollo3.api.Response
+import com.apollographql.apollo3.api.ApolloResponse
 import com.apollographql.apollo3.api.ResponseAdapterCache
 import com.apollographql.apollo3.api.fromResponse
 import com.apollographql.apollo3.api.internal.OperationRequestBodyComposer
@@ -12,9 +12,7 @@ import com.apollographql.apollo3.exception.ApolloSerializationException
 import com.apollographql.apollo3.network.NetworkTransport
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
-import okio.Buffer
 import okio.BufferedSink
-import okio.ByteString
 
 class ApolloHttpNetworkTransport(
     private val serverUrl: String,
@@ -38,7 +36,7 @@ class ApolloHttpNetworkTransport(
 
     private val engine: HttpEngine = DefaultHttpEngine(connectTimeoutMillis, readTimeoutMillis)
 ) : NetworkTransport {
-    override fun <D : Operation.Data> execute(request: ApolloRequest<D>, responseAdapterCache: ResponseAdapterCache): Flow<Response<D>> {
+    override fun <D : Operation.Data> execute(request: ApolloRequest<D>, responseAdapterCache: ResponseAdapterCache): Flow<ApolloResponse<D>> {
         val httpRequest = request.toHttpRequest(responseAdapterCache)
         return flow {
             emit(engine.execute(httpRequest) {
@@ -50,7 +48,7 @@ class ApolloHttpNetworkTransport(
     private fun <D : Operation.Data> HttpResponse.parse(
         request: ApolloRequest<D>,
         responseAdapterCache: ResponseAdapterCache
-    ): Response<D> {
+    ): ApolloResponse<D> {
         if (statusCode !in 200..299) {
             throw ApolloHttpException(
                 statusCode = statusCode,

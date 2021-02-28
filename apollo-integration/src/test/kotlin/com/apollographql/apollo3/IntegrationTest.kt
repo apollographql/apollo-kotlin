@@ -6,7 +6,7 @@ import com.apollographql.apollo3.Utils.immediateExecutorService
 import com.apollographql.apollo3.Utils.readFileToString
 import com.apollographql.apollo3.api.Input
 import com.apollographql.apollo3.api.Operation
-import com.apollographql.apollo3.api.Response
+import com.apollographql.apollo3.api.ApolloResponse
 import com.apollographql.apollo3.api.ResponseAdapter
 import com.apollographql.apollo3.api.ResponseAdapterCache
 import com.apollographql.apollo3.api.json.JsonReader
@@ -132,7 +132,7 @@ class IntegrationTest {
   private fun <D : Operation.Data> enqueueCall(call: ApolloQueryCall<D>): List<ApolloCall.StatusEvent?> {
     val statusEvents: MutableList<ApolloCall.StatusEvent?> = ArrayList()
     call.enqueue(object : ApolloCall.Callback<D>() {
-      override fun onResponse(response: Response<D>) {}
+      override fun onResponse(response: ApolloResponse<D>) {}
       override fun onFailure(e: ApolloException) {}
       override fun onStatusEvent(event: ApolloCall.StatusEvent) {
         statusEvents.add(event)
@@ -142,7 +142,7 @@ class IntegrationTest {
   }
 
   companion object {
-    private fun <D : Operation.Data> assertResponse(call: ApolloCall<D>, block: (Response<D>) -> Unit) {
+    private fun <D : Operation.Data> assertResponse(call: ApolloCall<D>, block: (ApolloResponse<D>) -> Unit) {
       val response = runBlocking {
         call.await()
       }

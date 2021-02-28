@@ -2,7 +2,7 @@ package com.apollographql.apollo3.internal
 
 import com.apollographql.apollo3.ApolloSubscriptionCall
 import com.apollographql.apollo3.api.Operation
-import com.apollographql.apollo3.api.Response
+import com.apollographql.apollo3.api.ApolloResponse
 import com.apollographql.apollo3.api.Subscription
 import com.apollographql.apollo3.api.internal.ApolloLogger
 import com.apollographql.apollo3.cache.CacheHeaders
@@ -100,13 +100,13 @@ class RealApolloSubscriptionCall<D : Operation.Data>(
     }
   }
 
-  private fun resolveFromCache(): Response<D>? {
+  private fun resolveFromCache(): ApolloResponse<D>? {
     val data = apolloStore.readOperation(
         subscription,
         CacheHeaders.NONE)
     return if (data != null) {
       logger.d("Cache HIT for subscription `%s`", subscription)
-      Response(
+      ApolloResponse(
           requestUuid = uuid4(),
           operation = subscription,
           data = data,

@@ -3,7 +3,7 @@ package com.apollographql.apollo3
 import com.apollographql.apollo3.api.ResponseAdapterCache
 import com.apollographql.apollo3.api.ExecutionContext
 import com.apollographql.apollo3.api.Operation
-import com.apollographql.apollo3.api.Response
+import com.apollographql.apollo3.api.ApolloResponse
 import com.apollographql.apollo3.api.fromResponse
 import com.apollographql.apollo3.exception.ApolloHttpException
 import com.apollographql.apollo3.interceptor.BearerTokenInterceptor
@@ -12,7 +12,6 @@ import com.apollographql.apollo3.network.NetworkTransport
 import com.apollographql.apollo3.testing.MockQuery
 import com.apollographql.apollo3.testing.TestTokenProvider
 import com.apollographql.apollo3.testing.runBlocking
-import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.single
@@ -30,7 +29,7 @@ class OauthInterceptorTest {
       const val INVALID_ACCESS_TOKEN = "INVALID_ACCESS_TOKEN"
     }
 
-    override fun <D : Operation.Data> execute(request: ApolloRequest<D>, responseAdapterCache: ResponseAdapterCache): Flow<Response<D>> {
+    override fun <D : Operation.Data> execute(request: ApolloRequest<D>, responseAdapterCache: ResponseAdapterCache): Flow<ApolloResponse<D>> {
       val authorization = request.executionContext[HttpRequestParameters]?.headers?.get("Authorization")
 
       return flow {

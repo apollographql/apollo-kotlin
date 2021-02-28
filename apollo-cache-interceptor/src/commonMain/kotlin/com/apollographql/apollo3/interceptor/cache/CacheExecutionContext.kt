@@ -3,7 +3,7 @@ package com.apollographql.apollo3.interceptor.cache
 import com.apollographql.apollo3.ApolloClient
 import com.apollographql.apollo3.api.ExecutionContext
 import com.apollographql.apollo3.api.Operation
-import com.apollographql.apollo3.api.Response
+import com.apollographql.apollo3.api.ApolloResponse
 import com.apollographql.apollo3.cache.normalized.NormalizedCache
 import com.apollographql.apollo3.ApolloQueryRequest
 import com.apollographql.apollo3.api.RequestContext
@@ -60,7 +60,7 @@ fun <D : Operation.Data> ApolloQueryRequest.Builder<D>.fetchPolicy(policy: Fetch
   addExecutionContext(policy)
 }
 
-val <D : Operation.Data> Response<D>.isFromCache
+val <D : Operation.Data> ApolloResponse<D>.isFromCache
   get() = executionContext[CacheInfo]?.isFromCache ?: false
 
 

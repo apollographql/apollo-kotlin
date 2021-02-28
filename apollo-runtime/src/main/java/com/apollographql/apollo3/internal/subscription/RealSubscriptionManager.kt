@@ -2,7 +2,7 @@ package com.apollographql.apollo3.internal.subscription
 
 import com.apollographql.apollo3.api.ResponseAdapterCache
 import com.apollographql.apollo3.api.Operation
-import com.apollographql.apollo3.api.Response
+import com.apollographql.apollo3.api.ApolloResponse
 import com.apollographql.apollo3.api.Subscription
 import com.apollographql.apollo3.api.internal.MapResponseParser
 import com.apollographql.apollo3.cache.normalized.CacheKeyResolver
@@ -380,8 +380,8 @@ class RealSubscriptionManager(private val responseAdapterCache: ResponseAdapterC
   }
 
   class SubscriptionRecord internal constructor(val id: UUID, val subscription: Subscription<Operation.Data>, val callback: SubscriptionManager.Callback<Operation.Data>) {
-    fun notifyOnResponse(response: Response<*>?) {
-      callback.onResponse(SubscriptionResponse(subscription, response as Response<Operation.Data>))
+    fun notifyOnResponse(response: ApolloResponse<*>?) {
+      callback.onResponse(SubscriptionResponse(subscription, response as ApolloResponse<Operation.Data>))
     }
 
     fun notifyOnError(error: ApolloSubscriptionException?) {

@@ -7,7 +7,7 @@ import com.apollographql.apollo3.Utils.immediateExecutorService
 import com.apollographql.apollo3.api.Input
 import com.apollographql.apollo3.api.Operation
 import com.apollographql.apollo3.api.Query
-import com.apollographql.apollo3.api.Response
+import com.apollographql.apollo3.api.ApolloResponse
 import com.apollographql.apollo3.api.ResponseAdapter
 import com.apollographql.apollo3.api.json.JsonReader
 import com.apollographql.apollo3.api.json.JsonWriter
@@ -440,7 +440,7 @@ class ResponseWriteTestCase {
   }
 
   @Throws(Exception::class)
-  private fun <D: Operation.Data> assertCachedQueryResponse(query: Query<D>, block: (Response<D>) -> Unit) {
+  private fun <D: Operation.Data> assertCachedQueryResponse(query: Query<D>, block: (ApolloResponse<D>) -> Unit) {
     assertResponse(
         apolloClient!!.query(query).responseFetcher(ApolloResponseFetchers.CACHE_ONLY), block
     )

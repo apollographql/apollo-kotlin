@@ -9,7 +9,7 @@ import com.apollographql.apollo3.Utils.immediateExecutor
 import com.apollographql.apollo3.Utils.immediateExecutorService
 import com.apollographql.apollo3.Utils.mockResponse
 import com.apollographql.apollo3.api.Input
-import com.apollographql.apollo3.api.Response
+import com.apollographql.apollo3.api.ApolloResponse
 import com.apollographql.apollo3.cache.normalized.MemoryCacheFactory
 import com.apollographql.apollo3.exception.ApolloException
 import com.apollographql.apollo3.fetcher.ApolloResponseFetchers
@@ -120,12 +120,12 @@ class QueryRefetchTest {
     server.enqueue(mockResponse("ReviewsEmpireEpisodeResponse.json"))
     server.enqueue(mockResponse("CreateReviewResponse.json"))
     server.enqueue(mockResponse("ReviewsEmpireEpisodeResponseUpdated.json"))
-    val empireReviewsWatchResponse = AtomicReference<Response<ReviewsByEpisodeQuery.Data>>()
+    val empireReviewsWatchResponse = AtomicReference<ApolloResponse<ReviewsByEpisodeQuery.Data>>()
     val queryWatcher = apolloClient.query(ReviewsByEpisodeQuery(Episode.EMPIRE))
         .watcher()
         .refetchResponseFetcher(ApolloResponseFetchers.NETWORK_FIRST)
         .enqueueAndWatch(object : ApolloCall.Callback<ReviewsByEpisodeQuery.Data>() {
-          override fun onResponse(response: Response<ReviewsByEpisodeQuery.Data>) {
+          override fun onResponse(response: ApolloResponse<ReviewsByEpisodeQuery.Data>) {
             empireReviewsWatchResponse.set(response)
           }
 

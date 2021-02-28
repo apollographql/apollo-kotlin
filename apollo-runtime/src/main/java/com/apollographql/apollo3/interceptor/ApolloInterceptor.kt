@@ -85,10 +85,10 @@ interface ApolloInterceptor {
   /**
    * InterceptorResponse class represents the response returned by the [ApolloInterceptor].
    */
-  class InterceptorResponse @JvmOverloads constructor(httpResponse: Response?, parsedResponse: com.apollographql.apollo3.api.Response<*>? = null) {
+  class InterceptorResponse @JvmOverloads constructor(httpResponse: Response?, parsedResponse: com.apollographql.apollo3.api.ApolloResponse<*>? = null) {
     val httpResponse: Optional<Response>
     @JvmField
-    val parsedResponse: Optional<com.apollographql.apollo3.api.Response<*>?>
+    val parsedResponse: Optional<com.apollographql.apollo3.api.ApolloResponse<*>?>
 
     init {
       this.httpResponse = Optional.fromNullable(httpResponse)

@@ -7,7 +7,7 @@ import com.apollographql.apollo3.api.ResponseAdapterCache
 import com.apollographql.apollo3.api.Mutation
 import com.apollographql.apollo3.api.Operation
 import com.apollographql.apollo3.api.Query
-import com.apollographql.apollo3.api.Response
+import com.apollographql.apollo3.api.ApolloResponse
 import com.apollographql.apollo3.api.cache.http.HttpCache
 import com.apollographql.apollo3.api.cache.http.HttpCachePolicy
 import com.apollographql.apollo3.api.internal.Action
@@ -178,7 +178,7 @@ class RealApolloCall<D : Operation.Data> internal constructor(builder: Builder<D
           logger!!.d("onResponse for operation: %s. No callback present.", operation().name())
           return
         }
-        callback.get().onResponse(response.parsedResponse.get() as Response<D>)
+        callback.get().onResponse(response.parsedResponse.get() as ApolloResponse<D>)
       }
 
       override fun onFailure(e: ApolloException) {

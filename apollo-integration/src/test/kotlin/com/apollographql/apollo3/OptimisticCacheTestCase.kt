@@ -6,7 +6,7 @@ import com.apollographql.apollo3.Utils.immediateExecutor
 import com.apollographql.apollo3.Utils.immediateExecutorService
 import com.apollographql.apollo3.Utils.readFileToString
 import com.apollographql.apollo3.api.Input
-import com.apollographql.apollo3.api.Response
+import com.apollographql.apollo3.api.ApolloResponse
 import com.apollographql.apollo3.cache.normalized.MemoryCacheFactory
 import com.apollographql.apollo3.exception.ApolloException
 import com.apollographql.apollo3.fetcher.ApolloResponseFetchers
@@ -258,7 +258,7 @@ class OptimisticCacheTestCase {
     apolloClient!!.query(ReviewsByEpisodeQuery(Episode.EMPIRE)).responseFetcher(ApolloResponseFetchers.NETWORK_FIRST)
         .watcher().refetchResponseFetcher(ApolloResponseFetchers.CACHE_FIRST)
         .enqueueAndWatch(object : ApolloCall.Callback<ReviewsByEpisodeQuery.Data>() {
-          override fun onResponse(response: Response<ReviewsByEpisodeQuery.Data>) {
+          override fun onResponse(response: ApolloResponse<ReviewsByEpisodeQuery.Data>) {
             watcherData.add(response.data!!)
           }
 
@@ -284,7 +284,7 @@ class OptimisticCacheTestCase {
         )
     ).enqueue(
         object : ApolloCall.Callback<UpdateReviewMutation.Data>() {
-          override fun onResponse(response: Response<UpdateReviewMutation.Data>) {}
+          override fun onResponse(response: ApolloResponse<UpdateReviewMutation.Data>) {}
           override fun onFailure(e: ApolloException) {}
         }
     )

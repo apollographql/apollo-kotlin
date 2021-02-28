@@ -11,7 +11,7 @@ import com.apollographql.apollo3.api.fromResponse
 import com.apollographql.apollo3.dispatcher.ApolloCoroutineDispatcher
 import com.apollographql.apollo3.exception.ApolloParseException
 import com.apollographql.apollo3.ApolloRequest
-import com.apollographql.apollo3.api.Response
+import com.apollographql.apollo3.api.ApolloResponse
 import com.apollographql.apollo3.api.internal.json.BufferedSinkJsonWriter
 import com.apollographql.apollo3.network.NetworkTransport
 import com.apollographql.apollo3.subscription.ApolloOperationMessageSerializer
@@ -67,7 +67,7 @@ class ApolloWebSocketNetworkTransport(
   override fun <D : Operation.Data> execute(
       request: ApolloRequest<D>,
       responseAdapterCache: ResponseAdapterCache,
-  ): Flow<Response<D>> {
+  ): Flow<ApolloResponse<D>> {
     val dispatcherContext = requireNotNull(
         request.executionContext[ApolloCoroutineDispatcher] ?: request.executionContext[ApolloCoroutineDispatcher]
     )
@@ -100,7 +100,7 @@ class ApolloWebSocketNetworkTransport(
   private fun <D : Operation.Data> OperationServerMessage.process(
       request: ApolloRequest<D>,
       responseAdapterCache: ResponseAdapterCache
-  ): Response<D>? {
+  ): ApolloResponse<D>? {
     return when (this) {
       is OperationServerMessage.Error -> {
         if (id == request.requestUuid.toString()) {

@@ -4,7 +4,7 @@ import com.apollographql.apollo3.Utils.immediateExecutorService
 import com.apollographql.apollo3.Utils.readFileToString
 import com.apollographql.apollo3.api.Input
 import com.apollographql.apollo3.api.Operation
-import com.apollographql.apollo3.api.Response
+import com.apollographql.apollo3.api.ApolloResponse
 import com.apollographql.apollo3.cache.http.ApolloHttpCache
 import com.apollographql.apollo3.cache.http.DiskLruHttpCacheStore
 import com.apollographql.apollo3.exception.ApolloCanceledException
@@ -50,10 +50,10 @@ class ApolloCancelCallTest {
   class TestableCallback<D: Operation.Data> : ApolloCall.Callback<D>() {
     val lock = Object()
     var completed = false
-    val responses = mutableListOf<Response<D>>()
+    val responses = mutableListOf<ApolloResponse<D>>()
     val errors = mutableListOf<ApolloException>()
 
-    override fun onResponse(response: Response<D>) {
+    override fun onResponse(response: ApolloResponse<D>) {
       synchronized(lock) {
         responses.add(response)
       }

@@ -2,7 +2,7 @@ package com.apollographql.apollo3.api.internal
 
 import com.apollographql.apollo3.api.Error
 import com.apollographql.apollo3.api.Operation
-import com.apollographql.apollo3.api.Response
+import com.apollographql.apollo3.api.ApolloResponse
 import com.apollographql.apollo3.api.ResponseAdapter
 import com.apollographql.apollo3.api.ResponseAdapterCache
 import com.apollographql.apollo3.api.Throws
@@ -27,7 +27,7 @@ object StreamResponseParser {
       source: BufferedSource,
       operation: Operation<D>,
       responseAdapterCache: ResponseAdapterCache
-  ): Response<D> {
+  ): ApolloResponse<D> {
     return BufferedSourceJsonReader(source).use { jsonReader ->
       jsonReader.beginObject()
 
@@ -47,7 +47,7 @@ object StreamResponseParser {
 
       jsonReader.endObject()
 
-      Response(
+      ApolloResponse(
           requestUuid = uuid4(),
           operation = operation,
           data = data,

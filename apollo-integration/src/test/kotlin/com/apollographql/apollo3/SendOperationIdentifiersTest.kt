@@ -4,15 +4,12 @@ import com.apollographql.apollo3.Utils.enqueueAndAssertResponse
 import com.apollographql.apollo3.Utils.immediateExecutor
 import com.apollographql.apollo3.Utils.immediateExecutorService
 import com.apollographql.apollo3.api.Input
-import com.apollographql.apollo3.api.Response
 import com.apollographql.apollo3.integration.normalizer.HeroAndFriendsNamesQuery
 import com.apollographql.apollo3.integration.normalizer.type.Episode
 import com.google.common.truth.Truth
-import io.reactivex.functions.Predicate
 import okhttp3.Dispatcher
 import okhttp3.OkHttpClient
 import okhttp3.mockwebserver.MockWebServer
-import org.junit.Rule
 import org.junit.Test
 import java.util.concurrent.atomic.AtomicBoolean
 

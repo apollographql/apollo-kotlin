@@ -4,14 +4,8 @@ import com.apollographql.apollo3.Utils.immediateExecutor
 import com.apollographql.apollo3.Utils.immediateExecutorService
 import com.apollographql.apollo3.Utils.mockResponse
 import com.apollographql.apollo3.api.Input
-import com.apollographql.apollo3.api.Response
-import com.apollographql.apollo3.cache.CacheHeaders
-import com.apollographql.apollo3.cache.normalized.Record
-import com.apollographql.apollo3.cache.normalized.CacheKey
-import com.apollographql.apollo3.cache.normalized.NormalizedCache
-import com.apollographql.apollo3.cache.normalized.RecordFieldJsonAdapter
+import com.apollographql.apollo3.api.ApolloResponse
 import com.apollographql.apollo3.cache.normalized.MemoryCacheFactory
-import com.apollographql.apollo3.cache.normalized.NormalizedCacheFactory
 import com.apollographql.apollo3.fetcher.ApolloResponseFetchers.NETWORK_ONLY
 import com.apollographql.apollo3.integration.normalizer.EpisodeHeroNameQuery
 import com.apollographql.apollo3.integration.normalizer.EpisodeHeroNameWithIdQuery
@@ -23,7 +17,6 @@ import com.google.common.truth.Truth
 import com.google.common.truth.Truth.assertThat
 import io.reactivex.disposables.Disposable
 import io.reactivex.observers.TestObserver
-import io.reactivex.plugins.RxJavaPlugins
 import io.reactivex.schedulers.TestScheduler
 import okhttp3.Dispatcher
 import okhttp3.OkHttpClient
@@ -71,7 +64,7 @@ class Rx2ApolloTest {
   @Throws(Exception::class)
   fun callIsCanceledWhenDisposed() {
     server.enqueue(mockResponse(FILE_EPISODE_HERO_NAME_WITH_ID))
-    val testObserver: TestObserver<Response<EpisodeHeroNameQuery.Data>> = TestObserver<Response<EpisodeHeroNameQuery.Data>>()
+    val testObserver: TestObserver<ApolloResponse<EpisodeHeroNameQuery.Data>> = TestObserver<ApolloResponse<EpisodeHeroNameQuery.Data>>()
     val disposable: Disposable = Rx2Apollo
         .from(apolloClient.query(EpisodeHeroNameQuery(Input.Present(EMPIRE))))
         .subscribeWith(testObserver)

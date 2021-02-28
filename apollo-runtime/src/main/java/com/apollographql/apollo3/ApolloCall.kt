@@ -1,7 +1,7 @@
 package com.apollographql.apollo3
 
 import com.apollographql.apollo3.api.Operation
-import com.apollographql.apollo3.api.Response
+import com.apollographql.apollo3.api.ApolloResponse
 import com.apollographql.apollo3.cache.CacheHeaders
 import com.apollographql.apollo3.cache.normalized.Record
 import com.apollographql.apollo3.exception.ApolloCanceledException
@@ -92,7 +92,7 @@ interface ApolloCall<D : Operation.Data> : Cancelable {
      *
      * @param response the GraphQL response
      */
-    abstract fun onResponse(response: Response<D>)
+    abstract fun onResponse(response: ApolloResponse<D>)
 
     /**
      * Gets called when the GraphQL response has been cached successfully.
