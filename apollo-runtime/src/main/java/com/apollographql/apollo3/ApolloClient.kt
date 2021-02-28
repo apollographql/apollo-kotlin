@@ -114,18 +114,18 @@ class ApolloClient internal constructor(
   private val useHttpGetMethodForQueries: Boolean
   private val useHttpGetMethodForPersistedQueries: Boolean
   private val writeToNormalizedCacheAsynchronously: Boolean
-  override fun <D : Operation.Data> mutate(
+  override fun <D : Mutation.Data> mutate(
       mutation: Mutation<D>): ApolloMutationCall<D> {
     return newCall(mutation).responseFetcher(ApolloResponseFetchers.NETWORK_ONLY)
   }
 
-  override fun <D : Operation.Data> mutate(
+  override fun <D : Mutation.Data> mutate(
       mutation: Mutation<D>, withOptimisticUpdates: D): ApolloMutationCall<D> {
     return newCall(mutation).toBuilder().responseFetcher(ApolloResponseFetchers.NETWORK_ONLY)
         .optimisticUpdates(fromNullable(withOptimisticUpdates)).build()
   }
 
-  override fun <D : Operation.Data> query(query: Query<D>): ApolloQueryCall<D> {
+  override fun <D : Query.Data> query(query: Query<D>): ApolloQueryCall<D> {
     return newCall(query)
   }
 
@@ -135,7 +135,7 @@ class ApolloClient internal constructor(
         tracker)
   }
 
-  override fun <D : Operation.Data> subscribe(
+  override fun <D : Subscription.Data> subscribe(
       subscription: Subscription<D>): ApolloSubscriptionCall<D> {
     return RealApolloSubscriptionCall(subscription, subscriptionManager, apolloStore, ApolloSubscriptionCall.CachePolicy.NO_CACHE,
         dispatcher!!, logger)

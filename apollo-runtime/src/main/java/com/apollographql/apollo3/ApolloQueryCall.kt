@@ -119,6 +119,6 @@ interface ApolloQueryCall<D : Operation.Data> : ApolloCall<D> {
      * @param query the operation which needs to be performed
      * @return prepared [ApolloQueryCall] call to be executed at some point in the future
      */
-    fun <D : Operation.Data> query(query: Query<D>): ApolloQueryCall<D>
+    fun <D : Query.Data> query(query: Query<D>): ApolloQueryCall<D>
   }
 }

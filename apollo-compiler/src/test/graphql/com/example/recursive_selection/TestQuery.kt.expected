@@ -5,7 +5,6 @@
 //
 package com.example.recursive_selection
 
-import com.apollographql.apollo3.api.Operation
 import com.apollographql.apollo3.api.Query
 import com.apollographql.apollo3.api.QueryDocumentMinifier
 import com.apollographql.apollo3.api.ResponseAdapter
@@ -49,7 +48,7 @@ class TestQuery : Query<TestQuery.Data> {
    */
   data class Data(
     val tree: Tree?
-  ) : Operation.Data {
+  ) : Query.Data {
     /**
      * To test recursive structures
      */

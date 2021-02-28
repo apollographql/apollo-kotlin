@@ -6,6 +6,7 @@ import com.apollographql.apollo3.ApolloQueryWatcher;
 import com.apollographql.apollo3.ApolloSubscriptionCall;
 import com.apollographql.apollo3.api.Operation;
 import com.apollographql.apollo3.api.ApolloResponse;
+import com.apollographql.apollo3.api.Query;
 import com.apollographql.apollo3.exception.ApolloException;
 import com.apollographql.apollo3.internal.subscription.ApolloSubscriptionTerminatedException;
 import com.apollographql.apollo3.internal.util.Cancelable;
@@ -46,7 +47,7 @@ public class Rx3Apollo {
    */
   @NotNull
   @CheckReturnValue
-  public static <D extends Operation.Data> Observable<ApolloResponse<D>> from(@NotNull final ApolloQueryWatcher<D> watcher) {
+  public static <D extends Query.Data> Observable<ApolloResponse<D>> from(@NotNull final ApolloQueryWatcher<D> watcher) {
     checkNotNull(watcher, "watcher == null");
     return Observable.create(new ObservableOnSubscribe<ApolloResponse<D>>() {
       @Override public void subscribe(final ObservableEmitter<ApolloResponse<D>> emitter) throws Exception {
@@ -54,9 +55,10 @@ public class Rx3Apollo {
         cancelOnObservableDisposed(emitter, clone);
 
         clone.enqueueAndWatch(new ApolloCall.Callback<D>() {
-          @Override public void onResponse(@NotNull ApolloResponse<D> response) {
+
+          @Override public void onResponse(@NotNull ApolloResponse<? extends D> response) {
             if (!emitter.isDisposed()) {
-              emitter.onNext(response);
+              emitter.onNext((ApolloResponse<D>)response);
             }
           }
 
@@ -90,9 +92,9 @@ public class Rx3Apollo {
         ApolloCall<D> clone = call.clone();
         cancelOnObservableDisposed(emitter, clone);
         clone.enqueue(new ApolloCall.Callback<D>() {
-          @Override public void onResponse(@NotNull ApolloResponse<D> response) {
+          @Override public void onResponse(@NotNull ApolloResponse<? extends D> response) {
             if (!emitter.isDisposed()) {
-              emitter.onNext(response);
+              emitter.onNext((ApolloResponse<D>) response);
             }
           }
 
@@ -165,9 +167,9 @@ public class Rx3Apollo {
         cancelOnFlowableDisposed(emitter, clone);
         clone.execute(
             new ApolloSubscriptionCall.Callback<D>() {
-              @Override public void onResponse(@NotNull ApolloResponse<D> response) {
+              @Override public void onResponse(@NotNull ApolloResponse<? extends D> response) {
                 if (!emitter.isCancelled()) {
-                  emitter.onNext(response);
+                  emitter.onNext((ApolloResponse<D>) response);
                 }
               }
 

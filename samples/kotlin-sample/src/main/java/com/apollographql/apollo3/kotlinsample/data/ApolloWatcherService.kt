@@ -4,7 +4,7 @@ import android.util.Log
 import com.apollographql.apollo3.ApolloCall
 import com.apollographql.apollo3.ApolloClient
 import com.apollographql.apollo3.api.Operation
-import com.apollographql.apollo3.api.Response
+import com.apollographql.apollo3.api.ApolloResponse
 import com.apollographql.apollo3.exception.ApolloException
 import com.apollographql.apollo3.fetcher.ApolloResponseFetchers
 import com.apollographql.apollo3.kotlinsample.GithubRepositoriesQuery
@@ -72,9 +72,9 @@ class ApolloWatcherService(apolloClient: ApolloClient) : GitHubDataSource(apollo
         .enqueueAndWatch(callback)
   }
 
-  private fun <T : Operation.Data> createCallback(onResponse: (response: Response<T>) -> Unit) =
+  private fun <T : Operation.Data> createCallback(onResponse: (response: ApolloResponse<T>) -> Unit) =
       object : ApolloCall.Callback<T>() {
-        override fun onResponse(response: Response<T>) = onResponse(response)
+        override fun onResponse(response: ApolloResponse<T>) = onResponse(response)
 
         override fun onFailure(e: ApolloException) {
           exceptionSubject.onNext(e)

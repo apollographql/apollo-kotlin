@@ -39,7 +39,7 @@ class MockQuery : Query<MockQuery.Data> {
 
   override fun operationId(): String = "MockQuery".hashCode().toString()
 
-  object Data : Operation.Data
+  object Data : Query.Data
 
   override fun responseFields(): List<ResponseField.FieldSet> {
     return emptyList()

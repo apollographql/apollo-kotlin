@@ -43,7 +43,7 @@ class RealSubscriptionManager(private val responseAdapterCache: ResponseAdapterC
   private val connectionHeartbeatTimeoutTimerTask = Runnable { onConnectionHeartbeatTimeout() }
   private val onStateChangeListeners: MutableList<OnSubscriptionManagerStateChangeListener> = CopyOnWriteArrayList()
 
-  override fun <D : Operation.Data> subscribe(subscription: Subscription<D>, callback: SubscriptionManager.Callback<D>) {
+  override fun <D : Subscription.Data> subscribe(subscription: Subscription<D>, callback: SubscriptionManager.Callback<D>) {
     dispatcher.execute { doSubscribe(subscription, callback) }
   }
 
@@ -92,7 +92,7 @@ class RealSubscriptionManager(private val responseAdapterCache: ResponseAdapterC
       if (state != SubscriptionManagerState.STOPPING && state != SubscriptionManagerState.STOPPED) {
         timer.cancelTask(INACTIVITY_TIMEOUT_TIMER_TASK_ID)
         val subscriptionId = UUID.randomUUID()
-        subscriptions[subscriptionId] = SubscriptionRecord(subscriptionId, subscription as Subscription<Operation.Data>, callback as SubscriptionManager.Callback<Operation.Data>)
+        subscriptions[subscriptionId] = SubscriptionRecord(subscriptionId, subscription as Subscription<Subscription.Data>, callback as SubscriptionManager.Callback<Subscription.Data>)
         if (state == SubscriptionManagerState.DISCONNECTED) {
           state = SubscriptionManagerState.CONNECTING
           transport.connect()
@@ -379,9 +379,9 @@ class RealSubscriptionManager(private val responseAdapterCache: ResponseAdapterC
     }
   }
 
-  class SubscriptionRecord internal constructor(val id: UUID, val subscription: Subscription<Operation.Data>, val callback: SubscriptionManager.Callback<Operation.Data>) {
+  class SubscriptionRecord internal constructor(val id: UUID, val subscription: Subscription<Subscription.Data>, val callback: SubscriptionManager.Callback<Subscription.Data>) {
     fun notifyOnResponse(response: ApolloResponse<*>?) {
-      callback.onResponse(SubscriptionResponse(subscription, response as ApolloResponse<Operation.Data>))
+      callback.onResponse(SubscriptionResponse(subscription, response as ApolloResponse<Subscription.Data>))
     }
 
     fun notifyOnError(error: ApolloSubscriptionException?) {

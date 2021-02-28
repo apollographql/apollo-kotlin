@@ -2,12 +2,11 @@ package com.apollographql.apollo3.integration
 
 import HeroNameQuery
 import com.apollographql.apollo3.ApolloClient
+import com.apollographql.apollo3.ApolloRequest
 import com.apollographql.apollo3.network.http.ApolloHttpNetworkTransport
 import com.apollographql.apollo3.testing.TestHttpEngine
 import com.apollographql.apollo3.testing.TestLoggerExecutor
 import com.apollographql.apollo3.testing.runBlocking
-import kotlinx.coroutines.flow.retryWhen
-import kotlinx.coroutines.flow.single
 import kotlin.test.BeforeTest
 import kotlin.test.Test
 import kotlin.test.assertEquals
@@ -32,8 +31,7 @@ class ApolloClientTest {
 
     val response = runBlocking {
       apolloClient
-          .query(HeroNameQuery())
-          .execute()
+          .query(ApolloRequest(HeroNameQuery()))
           .single()
     }
 
@@ -47,8 +45,7 @@ class ApolloClientTest {
     val result = runBlocking {
       kotlin.runCatching {
         apolloClient
-            .query(HeroNameQuery())
-            .execute()
+            .query(ApolloRequest(HeroNameQuery()))
             .single()
       }
     }
@@ -63,8 +60,7 @@ class ApolloClientTest {
 
     val response = runBlocking {
       apolloClient
-          .query(HeroNameQuery())
-          .execute()
+          .query(ApolloRequest(HeroNameQuery()))
           .retryWhen { _, attempt -> attempt == 0L }
           .single()
     }

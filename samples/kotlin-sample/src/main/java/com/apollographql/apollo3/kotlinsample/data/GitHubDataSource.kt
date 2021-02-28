@@ -1,7 +1,7 @@
 package com.apollographql.apollo3.kotlinsample.data
 
 import com.apollographql.apollo3.ApolloClient
-import com.apollographql.apollo3.api.Response
+import com.apollographql.apollo3.api.ApolloResponse
 import com.apollographql.apollo3.kotlinsample.GithubRepositoriesQuery
 import com.apollographql.apollo3.kotlinsample.GithubRepositoryCommitsQuery
 import com.apollographql.apollo3.kotlinsample.GithubRepositoryDetailQuery
@@ -16,12 +16,12 @@ import io.reactivex.subjects.PublishSubject
  */
 abstract class  GitHubDataSource(protected val apolloClient: ApolloClient) {
   protected val repositoriesSubject: PublishSubject<List<RepositoryFragment>> = PublishSubject.create()
-  protected val repositoryDetailSubject: PublishSubject<Response<GithubRepositoryDetailQuery.Data>> = PublishSubject.create()
+  protected val repositoryDetailSubject: PublishSubject<ApolloResponse<GithubRepositoryDetailQuery.Data>> = PublishSubject.create()
   protected val commitsSubject: PublishSubject<List<GithubRepositoryCommitsQuery.Data.Viewer.Repository.Ref.Target.CommitTarget.History.Edges>> = PublishSubject.create()
   protected val exceptionSubject: PublishSubject<Throwable> = PublishSubject.create()
 
   val repositories: Observable<List<RepositoryFragment>> = repositoriesSubject.hide()
-  val repositoryDetail: Observable<Response<GithubRepositoryDetailQuery.Data>> = repositoryDetailSubject.hide()
+  val repositoryDetail: Observable<ApolloResponse<GithubRepositoryDetailQuery.Data>> = repositoryDetailSubject.hide()
   val commits: Observable<List<GithubRepositoryCommitsQuery.Data.Viewer.Repository.Ref.Target.CommitTarget.History.Edges>> = commitsSubject.hide()
   val error: Observable<Throwable> = exceptionSubject.hide()
 
@@ -30,7 +30,7 @@ abstract class  GitHubDataSource(protected val apolloClient: ApolloClient) {
   abstract fun fetchCommits(repositoryName: String)
   abstract fun cancelFetching()
 
-  protected fun mapRepositoriesResponseToRepositories(response: Response<GithubRepositoriesQuery.Data>): List<RepositoryFragment> {
+  protected fun mapRepositoriesResponseToRepositories(response: ApolloResponse<GithubRepositoriesQuery.Data>): List<RepositoryFragment> {
     return response.data?.viewer?.repositories?.nodes?.mapNotNull { it as RepositoryFragment? } ?: emptyList()
   }
 }

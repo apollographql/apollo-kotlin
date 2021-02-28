@@ -6,7 +6,6 @@
 package com.example.hero_with_review
 
 import com.apollographql.apollo3.api.Mutation
-import com.apollographql.apollo3.api.Operation
 import com.apollographql.apollo3.api.QueryDocumentMinifier
 import com.apollographql.apollo3.api.ResponseAdapter
 import com.apollographql.apollo3.api.ResponseAdapterCache
@@ -53,7 +52,7 @@ data class TestQuery(
    */
   data class Data(
     val createReview: CreateReview?
-  ) : Operation.Data {
+  ) : Mutation.Data {
     /**
      * Represents a review for a movie
      */

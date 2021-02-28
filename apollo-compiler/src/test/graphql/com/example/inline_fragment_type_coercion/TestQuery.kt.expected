@@ -5,7 +5,6 @@
 //
 package com.example.inline_fragment_type_coercion
 
-import com.apollographql.apollo3.api.Operation
 import com.apollographql.apollo3.api.Query
 import com.apollographql.apollo3.api.QueryDocumentMinifier
 import com.apollographql.apollo3.api.ResponseAdapter
@@ -52,7 +51,7 @@ class TestQuery : Query<TestQuery.Data> {
      * For testing fragment type coercion
      */
     val foo: Foo?
-  ) : Operation.Data {
+  ) : Query.Data {
     /**
      * For testing fragment type coercion
      */

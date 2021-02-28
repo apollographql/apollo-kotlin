@@ -21,9 +21,7 @@ class BearerTokenInterceptor(private val tokenProvider: TokenProvider) : ApolloR
   private val mutex = Mutex()
 
   private fun <D : Operation.Data> ApolloRequest<D>.withHeader(name: String, value: String): ApolloRequest<D> {
-    return newBuilder()
-        .addExecutionContext(executionContext[HttpRequestParameters].withHeader(name, value))
-        .build()
+    return withExecutionContext(executionContext[HttpRequestParameters].withHeader(name, value))
   }
 
   private fun <D : Operation.Data> proceedWithToken(

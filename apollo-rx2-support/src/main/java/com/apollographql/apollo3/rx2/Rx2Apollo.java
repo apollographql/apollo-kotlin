@@ -54,9 +54,9 @@ public class Rx2Apollo {
         cancelOnObservableDisposed(emitter, clone);
 
         clone.enqueueAndWatch(new ApolloCall.Callback<D>() {
-          @Override public void onResponse(@NotNull ApolloResponse<D> response) {
+          @Override public void onResponse(@NotNull ApolloResponse<? extends D> response) {
             if (!emitter.isDisposed()) {
-              emitter.onNext(response);
+              emitter.onNext((ApolloResponse<D>) response);
             }
           }
 
@@ -91,9 +91,9 @@ public class Rx2Apollo {
         cancelOnObservableDisposed(emitter, clone);
 
         clone.enqueue(new ApolloCall.Callback<D>() {
-          @Override public void onResponse(@NotNull ApolloResponse<D> response) {
+          @Override public void onResponse(@NotNull ApolloResponse<? extends D> response) {
             if (!emitter.isDisposed()) {
-              emitter.onNext(response);
+              emitter.onNext((ApolloResponse<D>) response);
             }
           }
 
@@ -166,9 +166,9 @@ public class Rx2Apollo {
         cancelOnFlowableDisposed(emitter, clone);
         clone.execute(
             new ApolloSubscriptionCall.Callback<D>() {
-              @Override public void onResponse(@NotNull ApolloResponse<D> response) {
+              @Override public void onResponse(@NotNull ApolloResponse<? extends D> response) {
                 if (!emitter.isCancelled()) {
-                  emitter.onNext(response);
+                  emitter.onNext((ApolloResponse<D>) response);
                 }
               }
 

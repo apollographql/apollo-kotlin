@@ -243,7 +243,7 @@ internal class AstBuilder private constructor(
           implements = implements + CodeGenerationAst.TypeRef(
               name = "Data",
               enclosingType = CodeGenerationAst.TypeRef(
-                  name = Operation::class.java.simpleName,
+                  name = operationType.name.toLowerCase().capitalize(),
                   packageName = Operation::class.java.`package`.name
               )
           )

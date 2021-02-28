@@ -5,7 +5,7 @@ import com.apollographql.apollo3.ApolloCall
 import com.apollographql.apollo3.ApolloClient
 import com.apollographql.apollo3.api.Operation
 import com.apollographql.apollo3.api.Query
-import com.apollographql.apollo3.api.Response
+import com.apollographql.apollo3.api.ApolloResponse
 import com.apollographql.apollo3.api.ResponseField
 import com.apollographql.apollo3.api.ResponseAdapterCache
 import com.apollographql.apollo3.api.json.JsonReader
@@ -64,8 +64,8 @@ class ApolloIdlingResourceTest {
         .build()
     val idlingResource = ApolloIdlingResource.create(IDLING_RESOURCE_NAME, apolloClient)
     Truth.assertThat(idlingResource.isIdleNow()).isTrue()
-    apolloClient.query(EMPTY_QUERY).enqueue(object : ApolloCall.Callback<Operation.Data>() {
-      override fun onResponse(response: Response<Operation.Data>) {
+    apolloClient.query(EMPTY_QUERY).enqueue(object : ApolloCall.Callback<Query.Data>() {
+      override fun onResponse(response: ApolloResponse<Query.Data>) {
         latch.countDown()
       }
 
@@ -90,8 +90,8 @@ class ApolloIdlingResourceTest {
 
     val idlingResource = ApolloIdlingResource.create(IDLING_RESOURCE_NAME, apolloClient)
     Truth.assertThat(idlingResource.isIdleNow()).isTrue()
-    apolloClient.query(EMPTY_QUERY).watcher().enqueueAndWatch(object : ApolloCall.Callback<Operation.Data>() {
-      override fun onResponse(response: Response<Operation.Data>) {
+    apolloClient.query(EMPTY_QUERY).watcher().enqueueAndWatch(object : ApolloCall.Callback<Query.Data>() {
+      override fun onResponse(response: ApolloResponse<Query.Data>) {
         latch.countDown()
       }
 
@@ -143,7 +143,7 @@ class ApolloIdlingResourceTest {
   companion object {
     private const val TIME_OUT_SECONDS: Long = 3
     private const val IDLING_RESOURCE_NAME = "apolloIdlingResource"
-    private val EMPTY_QUERY: Query<Operation.Data> = object : Query<Operation.Data> {
+    private val EMPTY_QUERY: Query<Query.Data> = object : Query<Query.Data> {
       override fun queryDocument(): String {
         return ""
       }
@@ -153,16 +153,16 @@ class ApolloIdlingResourceTest {
         writer.endObject()
       }
 
-      override fun adapter(responseAdapterCache: ResponseAdapterCache): ResponseAdapter<Operation.Data> {
-        return object: ResponseAdapter<Operation.Data> {
-          override fun fromResponse(reader: JsonReader): Operation.Data {
+      override fun adapter(responseAdapterCache: ResponseAdapterCache): ResponseAdapter<Query.Data> {
+        return object: ResponseAdapter<Query.Data> {
+          override fun fromResponse(reader: JsonReader): Query.Data {
             while (reader.selectName(emptyList()) != -1) {
               // consume the json stream
             }
-            return object: Operation.Data {}
+            return object: Query.Data {}
           }
 
-          override fun toResponse(writer: JsonWriter, value: Operation.Data) {
+          override fun toResponse(writer: JsonWriter, value: Query.Data) {
             TODO("Not yet implemented")
           }
         }

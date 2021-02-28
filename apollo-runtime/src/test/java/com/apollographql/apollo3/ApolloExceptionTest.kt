@@ -27,7 +27,7 @@ class ApolloExceptionTest {
 
   private lateinit var apolloClient: ApolloClient
 
-  private val emptyQuery = object : Query<Operation.Data> {
+  private val emptyQuery = object : Query<Query.Data> {
     var operationName: String = "emptyQuery"
 
     override fun queryDocument(): String {

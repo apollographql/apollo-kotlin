@@ -2,11 +2,10 @@ package com.apollographql.apollo3.integration
 
 import HeroNameQuery
 import com.apollographql.apollo3.ApolloClient
-import com.apollographql.apollo3.ApolloQueryRequest
+import com.apollographql.apollo3.ApolloRequest
 import com.apollographql.apollo3.cache.normalized.MemoryCache
 import com.apollographql.apollo3.cache.normalized.NormalizedCache
 import com.apollographql.apollo3.interceptor.cache.FetchPolicy
-import com.apollographql.apollo3.interceptor.cache.fetchPolicy
 import com.apollographql.apollo3.interceptor.cache.isFromCache
 import com.apollographql.apollo3.interceptor.cache.normalizedCache
 import com.apollographql.apollo3.network.http.ApolloHttpNetworkTransport
@@ -46,16 +45,14 @@ class CacheInterceptorTest {
 
     runBlocking {
       var response = apolloClient
-          .query(HeroNameQuery())
-          .execute()
+          .query(ApolloRequest(HeroNameQuery()))
           .single()
 
       assertNotNull(response.data)
       assertFalse(response.isFromCache)
 
       response = apolloClient
-          .query(HeroNameQuery())
-          .execute()
+          .query(ApolloRequest(HeroNameQuery()))
           .single()
 
       assertNotNull(response.data)
@@ -66,14 +63,12 @@ class CacheInterceptorTest {
   @Test
   fun `NETWORK_FIRST test`() {
     runBlocking {
-      val request = ApolloQueryRequest.Builder(query = HeroNameQuery())
-          .fetchPolicy(FetchPolicy.NETWORK_FIRST)
-          .build()
+      val request = ApolloRequest(HeroNameQuery())
+          .withExecutionContext(FetchPolicy.NETWORK_FIRST)
 
       testHttpEngine.offer(fixtureResponse("HeroNameResponse.json"))
       var responses = apolloClient
           .query(request)
-          .execute()
           .toList()
 
       assertEquals(1, responses.size)
@@ -84,7 +79,6 @@ class CacheInterceptorTest {
       testHttpEngine.offer(fixtureResponse("HeroNameResponse.json"))
       responses = apolloClient
           .query(request)
-          .execute()
           .toList()
 
       assertEquals(1, responses.size)
@@ -95,7 +89,6 @@ class CacheInterceptorTest {
       testHttpEngine.offer("malformed")
       responses = apolloClient
           .query(request)
-          .execute()
           .toList()
 
       assertEquals(1, responses.size)
@@ -108,8 +101,7 @@ class CacheInterceptorTest {
       try {
         responses = apolloClient
             .query(request)
-            .execute()
-            .toList()
+              .toList()
         fail("NETWORK_FIRST should throw the network exception if nothing is in the cache")
       } catch (e: Exception) {
 
@@ -120,14 +112,12 @@ class CacheInterceptorTest {
   @Test
   fun `CACHE_ONLY test`() {
     runBlocking {
-      var request = ApolloQueryRequest.Builder(query = HeroNameQuery())
-          .build()
+      var request = ApolloRequest(HeroNameQuery())
 
       // First cache the response
       testHttpEngine.offer(fixtureResponse("HeroNameResponse.json"))
       var responses = apolloClient
           .query(request)
-          .execute()
           .toList()
 
       assertEquals(1, responses.size)
@@ -135,14 +125,11 @@ class CacheInterceptorTest {
       assertFalse(responses[0].isFromCache)
 
       // Now make the request cache only
-      request = request.newBuilder()
-          .fetchPolicy(FetchPolicy.CACHE_ONLY)
-          .build()
+      request = request.withExecutionContext(FetchPolicy.CACHE_ONLY)
 
       testHttpEngine.offer(fixtureResponse("HeroNameResponse.json"))
       responses = apolloClient
           .query(request)
-          .execute()
           .toList()
 
       // And make sure we don't read the network
@@ -155,15 +142,13 @@ class CacheInterceptorTest {
   @Test
   fun `NETWORK_ONLY test`() {
     runBlocking {
-      val request = ApolloQueryRequest.Builder(query = HeroNameQuery())
-          .fetchPolicy(FetchPolicy.NETWORK_ONLY)
-          .build()
+      val request = ApolloRequest(HeroNameQuery())
+          .withExecutionContext(FetchPolicy.NETWORK_ONLY)
 
       // cache the response
       testHttpEngine.offer(fixtureResponse("HeroNameResponse.json"))
       var responses = apolloClient
           .query(request)
-          .execute()
           .toList()
 
       assertEquals(1, responses.size)
@@ -175,8 +160,7 @@ class CacheInterceptorTest {
       try {
         responses = apolloClient
             .query(request)
-            .execute()
-            .toList()
+              .toList()
         fail("we expected a failure")
       } catch (e: Exception) {
 
@@ -187,15 +171,13 @@ class CacheInterceptorTest {
   @Test
   fun `cache_and_network test`() {
     runBlocking {
-      var request = ApolloQueryRequest.Builder(query = HeroNameQuery())
-          .fetchPolicy(FetchPolicy.CACHE_FIRST)
-          .build()
+      var request = ApolloRequest(HeroNameQuery())
+          .withExecutionContext(FetchPolicy.CACHE_FIRST)
 
       // cache the response
       testHttpEngine.offer(fixtureResponse("HeroNameResponse.json"))
       var responses = apolloClient
           .query(request)
-          .execute()
           .toList()
 
       assertEquals(1, responses.size)
@@ -203,14 +185,11 @@ class CacheInterceptorTest {
       assertFalse(responses[0].isFromCache)
 
       // Now make the request cache and network
-      request = request.newBuilder()
-          .fetchPolicy(FetchPolicy.CACHE_AND_NETWORK)
-          .build()
+      request = request.withExecutionContext(FetchPolicy.CACHE_AND_NETWORK)
 
       testHttpEngine.offer(fixtureResponse("HeroNameResponse.json"))
       responses = apolloClient
           .query(request)
-          .execute()
           .toList()
 
       // We should have 2 responses

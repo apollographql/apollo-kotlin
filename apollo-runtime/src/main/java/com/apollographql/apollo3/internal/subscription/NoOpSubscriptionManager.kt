@@ -8,7 +8,7 @@ import com.apollographql.apollo3.subscription.SubscriptionManagerState
 class NoOpSubscriptionManager : SubscriptionManager {
   private val errorMessage = "No `SubscriptionTransport.Factory` found, please add one to your `ApolloClient` with `ApolloClient.Builder.subscriptionTransportFactory`"
 
-  override fun <D : Operation.Data> subscribe(subscription: Subscription<D>, callback: SubscriptionManager.Callback<D>) {
+  override fun <D : Subscription.Data> subscribe(subscription: Subscription<D>, callback: SubscriptionManager.Callback<D>) {
     throw IllegalStateException(errorMessage)
   }
 

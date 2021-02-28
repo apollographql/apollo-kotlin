@@ -15,7 +15,7 @@ import org.junit.Test
 
 class ResponseFetcherTest {
 
-  private val emptyQuery = object : Query<Operation.Data> {
+  private val emptyQuery = object : Query<Query.Data> {
     var operationName: String  ="emptyQuery"
 
     override fun queryDocument(): String {
@@ -61,7 +61,7 @@ class ResponseFetcherTest {
         .serverUrl("http://google.com")
         .okHttpClient(OkHttpClient())
         .build()
-    val realApolloCall = apolloClient.query<Operation.Data>(emptyQuery) as RealApolloCall<*>
+    val realApolloCall = apolloClient.query(emptyQuery) as RealApolloCall<*>
     Truth.assertThat(realApolloCall.httpCachePolicy!!.fetchStrategy).isEqualTo(FetchStrategy.NETWORK_ONLY)
     Truth.assertThat(realApolloCall.responseFetcher).isEqualTo(ApolloResponseFetchers.CACHE_FIRST)
   }

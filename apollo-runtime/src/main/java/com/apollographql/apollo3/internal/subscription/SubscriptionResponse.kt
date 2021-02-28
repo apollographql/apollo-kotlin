@@ -4,4 +4,4 @@ import com.apollographql.apollo3.api.Operation
 import com.apollographql.apollo3.api.ApolloResponse
 import com.apollographql.apollo3.api.Subscription
 
-class SubscriptionResponse<D : Operation.Data>(val subscription: Subscription<D>, val response: ApolloResponse<D>)
+class SubscriptionResponse<D : Subscription.Data>(val subscription: Subscription<D>, val response: ApolloResponse<D>)

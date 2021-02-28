@@ -18,7 +18,7 @@ import com.benasher44.uuid.uuid4
 import java.util.concurrent.Executor
 import java.util.concurrent.atomic.AtomicReference
 
-class RealApolloSubscriptionCall<D : Operation.Data>(
+class RealApolloSubscriptionCall<D : Subscription.Data>(
     private val subscription: Subscription<D>,
     private val subscriptionManager: SubscriptionManager,
     private val apolloStore: ApolloStore,
@@ -117,7 +117,7 @@ class RealApolloSubscriptionCall<D : Operation.Data>(
     }
   }
 
-  private class SubscriptionManagerCallback<D : Operation.Data>(private var originalCallback: ApolloSubscriptionCall.Callback<D>?, private var delegate: RealApolloSubscriptionCall<D>?) : SubscriptionManager.Callback<D> {
+  private class SubscriptionManagerCallback<D : Subscription.Data>(private var originalCallback: ApolloSubscriptionCall.Callback<D>?, private var delegate: RealApolloSubscriptionCall<D>?) : SubscriptionManager.Callback<D> {
     override fun onResponse(response: SubscriptionResponse<D>) {
       val callback = originalCallback
       val data = response.response.data

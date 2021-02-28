@@ -6,7 +6,6 @@
 package com.example.antlr_tokens
 
 import com.apollographql.apollo3.api.Input
-import com.apollographql.apollo3.api.Operation
 import com.apollographql.apollo3.api.Query
 import com.apollographql.apollo3.api.QueryDocumentMinifier
 import com.apollographql.apollo3.api.ResponseAdapter
@@ -52,7 +51,7 @@ data class TestQuery(
    */
   data class Data(
     val typeWithGraphQLKeywords: TypeWithGraphQLKeywords?
-  ) : Operation.Data {
+  ) : Query.Data {
     data class TypeWithGraphQLKeywords(
       val on: String?,
       val null_: String?,

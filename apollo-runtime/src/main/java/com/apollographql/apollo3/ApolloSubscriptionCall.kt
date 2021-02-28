@@ -54,7 +54,7 @@ interface ApolloSubscriptionCall<D : Operation.Data> : Cancelable {
      * @param subscription to be sent to the subscription server to start listening pushed updates
      * @return prepared [ApolloSubscriptionCall] call to be executed
      */
-    fun <D : Operation.Data> subscribe(
+    fun <D : Subscription.Data> subscribe(
         subscription: Subscription<D>): ApolloSubscriptionCall<D>
   }
 

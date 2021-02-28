@@ -29,7 +29,7 @@ inline fun ApolloPrefetch.rx(): Completable =
 
 @JvmSynthetic
 @CheckReturnValue
-inline fun <D : Operation.Data> ApolloQueryWatcher<D>.rx(): Observable<ApolloResponse<D>> =
+inline fun <D : Query.Data> ApolloQueryWatcher<D>.rx(): Observable<ApolloResponse<D>> =
     Rx3Apollo.from(this)
 
 @JvmSynthetic
@@ -51,7 +51,7 @@ inline fun <D : Operation.Data> ApolloSubscriptionCall<D>.rx(
  */
 @JvmSynthetic
 @CheckReturnValue
-inline fun <D : Operation.Data> ApolloClient.rxQuery(
+inline fun <D : Query.Data> ApolloClient.rxQuery(
     query: Query<D>,
     configure: ApolloQueryCall<D>.() -> ApolloQueryCall<D> = { this }
 ): Observable<ApolloResponse<D>> = query(query).configure().rx()
@@ -61,7 +61,7 @@ inline fun <D : Operation.Data> ApolloClient.rxQuery(
  */
 @JvmSynthetic
 @CheckReturnValue
-inline fun <D : Operation.Data> ApolloClient.rxMutate(
+inline fun <D : Mutation.Data> ApolloClient.rxMutate(
     mutation: Mutation<D>,
     configure: ApolloMutationCall<D>.() -> ApolloMutationCall<D> = { this }
 ): Single<ApolloResponse<D>> = mutate(mutation).configure().rx().singleOrError()
@@ -75,7 +75,7 @@ inline fun <D : Operation.Data> ApolloClient.rxMutate(
  */
 @JvmSynthetic
 @CheckReturnValue
-inline fun <D : Operation.Data> ApolloClient.rxMutate(
+inline fun <D : Mutation.Data> ApolloClient.rxMutate(
     mutation: Mutation<D>,
     withOptimisticUpdates: D,
     configure: ApolloMutationCall<D>.() -> ApolloMutationCall<D> = { this }
@@ -97,7 +97,7 @@ inline fun <D : Operation.Data> ApolloClient.rxPrefetch(
  */
 @JvmSynthetic
 @CheckReturnValue
-inline fun <D : Operation.Data> ApolloClient.rxSubscribe(
+inline fun <D : Subscription.Data> ApolloClient.rxSubscribe(
     subscription: Subscription<D>,
     backpressureStrategy: BackpressureStrategy = BackpressureStrategy.LATEST
 ): Flowable<ApolloResponse<D>> = subscribe(subscription).rx(backpressureStrategy)

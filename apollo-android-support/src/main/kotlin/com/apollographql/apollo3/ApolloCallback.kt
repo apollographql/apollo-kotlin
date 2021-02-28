@@ -3,7 +3,7 @@ package com.apollographql.apollo3
 import android.os.Handler
 import android.os.Looper
 import com.apollographql.apollo3.ApolloCallback
-import com.apollographql.apollo3.api.Response
+import com.apollographql.apollo3.api.ApolloResponse
 import com.apollographql.apollo3.api.Operation
 import com.apollographql.apollo3.exception.ApolloException
 import com.apollographql.apollo3.exception.ApolloHttpException
@@ -21,7 +21,7 @@ import com.apollographql.apollo3.exception.ApolloParseException
 class ApolloCallback<D: Operation.Data>(callback: ApolloCall.Callback<D>, handler: Handler) : ApolloCall.Callback<D>() {
   val delegate: ApolloCall.Callback<D>
   private val handler: Handler
-  override fun onResponse(response: Response<D>) {
+  override fun onResponse(response: ApolloResponse<D>) {
     handler.post { delegate.onResponse(response) }
   }
 

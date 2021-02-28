@@ -6,7 +6,6 @@
 package com.example.mutation_create_review_semantic_naming
 
 import com.apollographql.apollo3.api.Mutation
-import com.apollographql.apollo3.api.Operation
 import com.apollographql.apollo3.api.QueryDocumentMinifier
 import com.apollographql.apollo3.api.ResponseAdapter
 import com.apollographql.apollo3.api.ResponseAdapterCache
@@ -55,7 +54,7 @@ data class CreateReviewForEpisodeMutation(
    */
   data class Data(
     val createReview: CreateReview?
-  ) : Operation.Data {
+  ) : Mutation.Data {
     /**
      * Represents a review for a movie
      */

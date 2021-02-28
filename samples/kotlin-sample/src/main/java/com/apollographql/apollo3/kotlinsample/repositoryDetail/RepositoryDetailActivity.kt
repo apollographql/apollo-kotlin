@@ -6,7 +6,7 @@ import android.content.Intent
 import android.os.Bundle
 import android.view.View
 import androidx.appcompat.app.AppCompatActivity
-import com.apollographql.apollo3.api.Response
+import com.apollographql.apollo3.api.ApolloResponse
 import com.apollographql.apollo3.kotlinsample.GithubRepositoryDetailQuery
 import com.apollographql.apollo3.kotlinsample.fragment.RepositoryDetail
 import com.apollographql.apollo3.kotlinsample.KotlinSampleApp
@@ -58,7 +58,7 @@ class RepositoryDetailActivity : AppCompatActivity() {
     compositeDisposable.add(errorDisposable)
   }
 
-  private fun handleDetailResponse(response: Response<GithubRepositoryDetailQuery.Data>) {
+  private fun handleDetailResponse(response: ApolloResponse<GithubRepositoryDetailQuery.Data>) {
     progressBar.visibility = View.GONE
     tvError.visibility = View.GONE
     buttonCommits.visibility = View.VISIBLE
@@ -79,7 +79,7 @@ class RepositoryDetailActivity : AppCompatActivity() {
   }
 
   @SuppressLint("SetTextI18n")
-  private fun updateUI(response: Response<GithubRepositoryDetailQuery.Data>) {
+  private fun updateUI(response: ApolloResponse<GithubRepositoryDetailQuery.Data>) {
     (response.data?.viewer?.repository as RepositoryDetail?)?.run {
       tvRepositoryName.text = name
       tvRepositoryDescription.text = description

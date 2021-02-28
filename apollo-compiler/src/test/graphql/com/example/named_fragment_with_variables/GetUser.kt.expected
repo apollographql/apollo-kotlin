@@ -5,7 +5,6 @@
 //
 package com.example.named_fragment_with_variables
 
-import com.apollographql.apollo3.api.Operation
 import com.apollographql.apollo3.api.Query
 import com.apollographql.apollo3.api.QueryDocumentMinifier
 import com.apollographql.apollo3.api.ResponseAdapter
@@ -53,7 +52,7 @@ data class GetUser(
     ResponseField.FieldSet("Query", GetUser_ResponseAdapter.QueryData.RESPONSE_FIELDS),
     ResponseField.FieldSet(null, GetUser_ResponseAdapter.OtherData.RESPONSE_FIELDS),
   )
-  interface Data : Operation.Data {
+  interface Data : Query.Data {
     val __typename: String
 
     data class QueryData(
