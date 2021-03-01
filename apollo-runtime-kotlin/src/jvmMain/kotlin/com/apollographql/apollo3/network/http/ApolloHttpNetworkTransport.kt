@@ -6,13 +6,12 @@ import com.apollographql.apollo3.exception.ApolloNetworkException
 import com.apollographql.apollo3.exception.ApolloParseException
 import com.apollographql.apollo3.exception.ApolloSerializationException
 import com.apollographql.apollo3.api.ResponseAdapterCache
-import com.apollographql.apollo3.api.ExecutionContext
 import com.apollographql.apollo3.api.Operation
 import com.apollographql.apollo3.api.fromResponse
 import com.apollographql.apollo3.ApolloRequest
+import com.apollographql.apollo3.api.Response
 import com.apollographql.apollo3.api.internal.OperationRequestBodyComposer
 import com.apollographql.apollo3.api.variablesJson
-import com.apollographql.apollo3.interceptor.ApolloResponse
 import com.apollographql.apollo3.network.HttpMethod
 import com.apollographql.apollo3.network.HttpRequestParameters
 import com.apollographql.apollo3.network.HttpResponseInfo
@@ -29,7 +28,6 @@ import okhttp3.MediaType
 import okhttp3.OkHttpClient
 import okhttp3.Request
 import okhttp3.RequestBody
-import okhttp3.Response
 import okio.Buffer
 import okio.ByteString
 import java.io.IOException
@@ -66,9 +64,9 @@ actual class ApolloHttpNetworkTransport(
   override fun <D : Operation.Data> execute(
       request: ApolloRequest<D>,
       responseAdapterCache: ResponseAdapterCache,
-  ): Flow<ApolloResponse<D>> {
+  ): Flow<Response<D>> {
     return flow {
-      val response = suspendCancellableCoroutine<ApolloResponse<D>> { continuation ->
+      val response = suspendCancellableCoroutine<Response<D>> { continuation ->
         val httpRequest = request.toHttpRequest(
             responseAdapterCache
         )
@@ -90,7 +88,7 @@ actual class ApolloHttpNetworkTransport(
                     )
                   }
 
-                  override fun onResponse(call: Call, response: Response) {
+                  override fun onResponse(call: Call, response: okhttp3.Response) {
                     if (continuation.isCancelled) return
                     runCatching { response.parse(request, responseAdapterCache) }
                         .onSuccess { graphQlResponse -> continuation.resume(graphQlResponse) }
@@ -122,10 +120,10 @@ actual class ApolloHttpNetworkTransport(
   }
 
   @Suppress("UNCHECKED_CAST")
-  private fun <D : Operation.Data> Response.parse(
+  private fun <D : Operation.Data> okhttp3.Response.parse(
       request: ApolloRequest<D>,
       responseAdapterCache: ResponseAdapterCache
-  ): ApolloResponse<D> {
+  ): Response<D> {
     if (!isSuccessful) throw ApolloHttpException(
         statusCode = code(),
         headers = headers.toMap(),
@@ -138,13 +136,11 @@ actual class ApolloHttpNetworkTransport(
         message = "Failed to parse GraphQL http network response: EOF"
     )
 
-    val response = request.operation.fromResponse(
+    return request.operation.fromResponse(
         source = responseBody.source(),
         responseAdapterCache = responseAdapterCache
-    )
-    return ApolloResponse(
+    ).copy(
         requestUuid = request.requestUuid,
-        response = response,
         executionContext = request.executionContext + HttpResponseInfo(
             statusCode = code(),
             headers = headers.toMap()

@@ -8,7 +8,6 @@ import com.apollographql.apollo3.cache.normalized.NormalizedCache
 import com.apollographql.apollo3.ApolloQueryRequest
 import com.apollographql.apollo3.api.RequestContext
 import com.apollographql.apollo3.api.ResponseContext
-import kotlinx.coroutines.ExperimentalCoroutinesApi
 
 sealed class FetchPolicy : RequestContext(Key) {
   /**
@@ -52,7 +51,7 @@ sealed class FetchPolicy : RequestContext(Key) {
 }
 
 data class CacheInfo(
-    val fromCache: Boolean
+    val isFromCache: Boolean
 ) : ResponseContext(CacheInfo) {
   companion object Key : ExecutionContext.Key<CacheInfo>
 }
@@ -61,11 +60,10 @@ fun <D : Operation.Data> ApolloQueryRequest.Builder<D>.fetchPolicy(policy: Fetch
   addExecutionContext(policy)
 }
 
-val <D : Operation.Data> Response<D>.fromCache
-  get() = executionContext[CacheInfo]?.fromCache ?: throw IllegalStateException("ApolloGraphQL: no CacheInfo")
+val <D : Operation.Data> Response<D>.isFromCache
+  get() = executionContext[CacheInfo]?.isFromCache ?: false
 
 
-@ExperimentalCoroutinesApi
 fun ApolloClient.Builder.normalizedCache(normalizedCache: NormalizedCache): ApolloClient.Builder {
   return addInterceptor(ApolloCacheInterceptor(), ApolloStore(normalizedCache))
 }

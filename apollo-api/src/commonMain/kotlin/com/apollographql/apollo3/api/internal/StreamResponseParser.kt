@@ -10,6 +10,7 @@ import com.apollographql.apollo3.api.internal.json.BufferedSourceJsonReader
 import com.apollographql.apollo3.api.json.JsonReader
 import com.apollographql.apollo3.api.internal.json.Utils.readRecursively
 import com.apollographql.apollo3.api.json.use
+import com.benasher44.uuid.uuid4
 import okio.BufferedSource
 import okio.IOException
 import kotlin.jvm.JvmStatic
@@ -47,6 +48,7 @@ object StreamResponseParser {
       jsonReader.endObject()
 
       Response(
+          requestUuid = uuid4(),
           operation = operation,
           data = data,
           errors = errors,

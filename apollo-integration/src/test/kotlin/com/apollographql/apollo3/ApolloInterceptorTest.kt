@@ -18,6 +18,7 @@ import com.apollographql.apollo3.interceptor.ApolloInterceptor.InterceptorReques
 import com.apollographql.apollo3.interceptor.ApolloInterceptor.InterceptorResponse
 import com.apollographql.apollo3.interceptor.ApolloInterceptorChain
 import com.apollographql.apollo3.rx2.Rx2Apollo
+import com.benasher44.uuid.uuid4
 import com.google.common.truth.Truth
 import com.google.common.truth.Truth.assertThat
 import okhttp3.Dispatcher
@@ -141,9 +142,8 @@ class ApolloInterceptorTest {
         server,
         FILE_EPISODE_HERO_NAME_WITH_ID,
         client.query(query)
-    ) { (_, data) ->
-      assertThat(data!!.hero?.name).isEqualTo("Artoo")
-      true
+    ) {
+      assertThat(it.data?.hero?.name).isEqualTo("Artoo")
     }
   }
 
@@ -213,6 +213,7 @@ class ApolloInterceptorTest {
     return InterceptorResponse(
         okHttpResponse,
         Response(
+            requestUuid = uuid4(),
             operation = query,
             data = null
         )

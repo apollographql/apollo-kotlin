@@ -19,9 +19,7 @@ import com.apollographql.apollo3.integration.normalizer.type.ColorInput
 import com.apollographql.apollo3.integration.normalizer.type.Episode
 import com.apollographql.apollo3.integration.normalizer.type.ReviewInput
 import com.apollographql.apollo3.rx2.Rx2Apollo
-import com.google.common.truth.Truth
 import com.google.common.truth.Truth.assertThat
-import io.reactivex.functions.Predicate
 import okhttp3.Dispatcher
 import okhttp3.OkHttpClient
 import okhttp3.mockwebserver.MockWebServer
@@ -71,14 +69,13 @@ class QueryRefetchTest {
     Rx2Apollo
         .from(call)
         .test()
-    Truth.assertThat(server.requestCount).isEqualTo(2)
+    assertThat(server.requestCount).isEqualTo(2)
     assertResponse(
         apolloClient.query(ReviewsByEpisodeQuery(Episode.EMPIRE)).responseFetcher(ApolloResponseFetchers.CACHE_ONLY)
-    ) { (_, data) ->
-      assertThat(data!!.reviews).hasSize(3)
-      assertThat(data.reviews?.get(2)?.stars).isEqualTo(5)
-      assertThat(data.reviews?.get(2)?.commentary).isEqualTo("Amazing")
-      true
+    ) { 
+      assertThat(it.data?.reviews).hasSize(3)
+      assertThat(it.data?.reviews?.get(2)?.stars).isEqualTo(5)
+      assertThat(it.data?.reviews?.get(2)?.commentary).isEqualTo("Amazing")
     }
   }
 
@@ -92,10 +89,10 @@ class QueryRefetchTest {
     ) { response -> !response.hasErrors() }
     assertResponse(
         apolloClient.query(ReviewsByEpisodeQuery(Episode.EMPIRE)).responseFetcher(ApolloResponseFetchers.CACHE_ONLY)
-    ) { (_, data) ->
-      assertThat(data!!.reviews).hasSize(3)
-      assertThat(data.reviews?.get(2)?.stars).isEqualTo(5)
-      assertThat(data.reviews?.get(2)?.commentary).isEqualTo("Amazing")
+    ) { 
+      assertThat(it.data?.reviews).hasSize(3)
+      assertThat(it.data?.reviews?.get(2)?.stars).isEqualTo(5)
+      assertThat(it.data?.reviews?.get(2)?.commentary).isEqualTo("Amazing")
     }
     val mutation = CreateReviewMutation(
         Episode.EMPIRE,
@@ -107,14 +104,13 @@ class QueryRefetchTest {
     Rx2Apollo
         .from(call)
         .test()
-    Truth.assertThat(server.requestCount).isEqualTo(3)
+    assertThat(server.requestCount).isEqualTo(3)
     assertResponse(
         apolloClient.query(ReviewsByEpisodeQuery(Episode.EMPIRE)).responseFetcher(ApolloResponseFetchers.CACHE_ONLY)
-    ) { (_, data) ->
-      assertThat(data!!.reviews).hasSize(4)
-      assertThat(data.reviews?.get(3)?.stars).isEqualTo(5)
-      assertThat(data.reviews?.get(3)?.commentary).isEqualTo("Awesome")
-      true
+    ) { 
+      assertThat(it.data?.reviews).hasSize(4)
+      assertThat(it.data?.reviews?.get(3)?.stars).isEqualTo(5)
+      assertThat(it.data?.reviews?.get(3)?.commentary).isEqualTo("Awesome")
     }
   }
 
@@ -142,11 +138,11 @@ class QueryRefetchTest {
     Rx2Apollo
         .from(apolloClient.mutate(mutation).refetchQueries(queryWatcher.operation().name()))
         .test()
-    Truth.assertThat(server.requestCount).isEqualTo(3)
-    val (_, data) = empireReviewsWatchResponse.get()
-    assertThat(data!!.reviews).hasSize(4)
-    assertThat(data.reviews?.get(3)?.stars).isEqualTo(5)
-    assertThat(data.reviews?.get(3)?.commentary).isEqualTo("Awesome")
+    assertThat(server.requestCount).isEqualTo(3)
+    val data  = empireReviewsWatchResponse.get().data
+    assertThat(data?.reviews).hasSize(4)
+    assertThat(data?.reviews?.get(3)?.stars).isEqualTo(5)
+    assertThat(data?.reviews?.get(3)?.commentary).isEqualTo("Awesome")
     queryWatcher.cancel()
   }
 }

@@ -2,6 +2,7 @@ package com.apollographql.apollo3.network.http
 
 import com.apollographql.apollo3.ApolloRequest
 import com.apollographql.apollo3.api.Operation
+import com.apollographql.apollo3.api.Response
 import com.apollographql.apollo3.api.ResponseAdapterCache
 import com.apollographql.apollo3.api.fromResponse
 import com.apollographql.apollo3.api.internal.OperationRequestBodyComposer
@@ -11,7 +12,6 @@ import com.apollographql.apollo3.exception.ApolloHttpException
 import com.apollographql.apollo3.exception.ApolloNetworkException
 import com.apollographql.apollo3.exception.ApolloParseException
 import com.apollographql.apollo3.exception.ApolloSerializationException
-import com.apollographql.apollo3.interceptor.ApolloResponse
 import com.apollographql.apollo3.network.HttpMethod
 import com.apollographql.apollo3.network.HttpRequestParameters
 import com.apollographql.apollo3.network.HttpResponseInfo
@@ -95,7 +95,7 @@ actual class ApolloHttpNetworkTransport(
   }
 
   @Suppress("UNCHECKED_CAST")
-  override fun <D : Operation.Data> execute(request: ApolloRequest<D>, responseAdapterCache: ResponseAdapterCache): Flow<ApolloResponse<D>> {
+  override fun <D : Operation.Data> execute(request: ApolloRequest<D>, responseAdapterCache: ResponseAdapterCache): Flow<Response<D>> {
     return flow {
       assert(NSThread.isMainThread())
 
@@ -137,7 +137,7 @@ actual class ApolloHttpNetworkTransport(
       }
 
       when (result) {
-        is Result.Success -> emit(result.response as ApolloResponse<D>)
+        is Result.Success -> emit(result.response as Response<D>)
         is Result.Failure -> throw result.cause
       }
     }
@@ -250,14 +250,12 @@ actual class ApolloHttpNetworkTransport(
     )
 
     return try {
-      val response = request.operation.fromResponse(
-          source = Buffer().write(data.toByteString()).apply { flush() },
-          responseAdapterCache = responseAdapterCache
-      )
       Result.Success(
-          ApolloResponse(
+          request.operation.fromResponse(
+              source = Buffer().write(data.toByteString()).apply { flush() },
+              responseAdapterCache = responseAdapterCache
+          ).copy(
               requestUuid = request.requestUuid,
-              response = response,
               executionContext = request.executionContext + HttpResponseInfo(
                   statusCode = httpResponse.statusCode.toInt(),
                   headers = httpHeaders
@@ -275,7 +273,7 @@ actual class ApolloHttpNetworkTransport(
   }
 
   sealed class Result {
-    class Success(val response: ApolloResponse<*>) : Result()
+    class Success(val response: Response<*>) : Result()
 
     class Failure(val cause: ApolloException) : Result()
   }

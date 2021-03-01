@@ -5,7 +5,7 @@ import com.apollographql.apollo3.api.ExecutionContext
 import com.apollographql.apollo3.api.Operation
 import com.apollographql.apollo3.api.fromResponse
 import com.apollographql.apollo3.ApolloRequest
-import com.apollographql.apollo3.interceptor.ApolloResponse
+import com.apollographql.apollo3.api.Response
 import com.apollographql.apollo3.network.NetworkTransport
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.channels.Channel
@@ -19,12 +19,11 @@ class MockNetworkTransport(
     private val mockResponseChannel: Channel<String> = Channel(capacity = Channel.BUFFERED)
 ) : NetworkTransport, SendChannel<String> by mockResponseChannel {
 
-  override fun <D : Operation.Data> execute(request: ApolloRequest<D>, responseAdapterCache: ResponseAdapterCache): Flow<ApolloResponse<D>> {
+  override fun <D : Operation.Data> execute(request: ApolloRequest<D>, responseAdapterCache: ResponseAdapterCache): Flow<Response<D>> {
     return flow {
       emit(
-          ApolloResponse(
+          request.operation.fromResponse(mockResponseChannel.receive().encodeUtf8()).copy(
               requestUuid = request.requestUuid,
-              response = request.operation.fromResponse(mockResponseChannel.receive().encodeUtf8()),
               executionContext = ExecutionContext.Empty
           )
       )

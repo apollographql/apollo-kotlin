@@ -11,8 +11,8 @@ import com.apollographql.apollo3.api.fromResponse
 import com.apollographql.apollo3.dispatcher.ApolloCoroutineDispatcher
 import com.apollographql.apollo3.exception.ApolloParseException
 import com.apollographql.apollo3.ApolloRequest
+import com.apollographql.apollo3.api.Response
 import com.apollographql.apollo3.api.internal.json.BufferedSinkJsonWriter
-import com.apollographql.apollo3.interceptor.ApolloResponse
 import com.apollographql.apollo3.network.NetworkTransport
 import com.apollographql.apollo3.subscription.ApolloOperationMessageSerializer
 import com.apollographql.apollo3.subscription.OperationClientMessage
@@ -67,7 +67,7 @@ class ApolloWebSocketNetworkTransport(
   override fun <D : Operation.Data> execute(
       request: ApolloRequest<D>,
       responseAdapterCache: ResponseAdapterCache,
-  ): Flow<ApolloResponse<D>> {
+  ): Flow<Response<D>> {
     val dispatcherContext = requireNotNull(
         request.executionContext[ApolloCoroutineDispatcher] ?: request.executionContext[ApolloCoroutineDispatcher]
     )
@@ -100,7 +100,7 @@ class ApolloWebSocketNetworkTransport(
   private fun <D : Operation.Data> OperationServerMessage.process(
       request: ApolloRequest<D>,
       responseAdapterCache: ResponseAdapterCache
-  ): ApolloResponse<D>? {
+  ): Response<D>? {
     return when (this) {
       is OperationServerMessage.Error -> {
         if (id == request.requestUuid.toString()) {
@@ -132,9 +132,8 @@ class ApolloWebSocketNetworkTransport(
             )
           }
 
-          ApolloResponse(
+          response.copy(
               requestUuid = request.requestUuid,
-              response = response,
               executionContext = ExecutionContext.Empty
           )
         } else null

@@ -11,6 +11,7 @@ import com.apollographql.apollo3.interceptor.ApolloInterceptor
 import com.apollographql.apollo3.interceptor.ApolloInterceptor.*
 import com.apollographql.apollo3.interceptor.ApolloInterceptorChain
 import com.apollographql.apollo3.internal.interceptor.RealApolloInterceptorChain
+import com.benasher44.uuid.uuid4
 import com.google.common.truth.Truth
 import com.google.common.truth.Truth.assertThat
 import okhttp3.*
@@ -154,6 +155,7 @@ class ApolloInterceptorChainTest {
     return InterceptorResponse(
         okHttpResponse,
         Response(
+            requestUuid = uuid4(),
             operation = query,
             data = null
         )

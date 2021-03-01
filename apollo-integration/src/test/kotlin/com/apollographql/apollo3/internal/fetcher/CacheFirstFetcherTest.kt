@@ -5,6 +5,7 @@ import com.apollographql.apollo3.exception.ApolloException
 import com.apollographql.apollo3.fetcher.ApolloResponseFetchers
 import com.apollographql.apollo3.integration.normalizer.EpisodeHeroNameQuery
 import com.apollographql.apollo3.integration.normalizer.type.Episode
+import com.apollographql.apollo3.isFromCache
 import com.google.common.truth.Truth
 import com.google.common.truth.Truth.assertThat
 import okhttp3.mockwebserver.MockResponse

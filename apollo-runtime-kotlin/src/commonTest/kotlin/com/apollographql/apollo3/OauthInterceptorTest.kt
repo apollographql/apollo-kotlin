@@ -3,9 +3,9 @@ package com.apollographql.apollo3
 import com.apollographql.apollo3.api.ResponseAdapterCache
 import com.apollographql.apollo3.api.ExecutionContext
 import com.apollographql.apollo3.api.Operation
+import com.apollographql.apollo3.api.Response
 import com.apollographql.apollo3.api.fromResponse
 import com.apollographql.apollo3.exception.ApolloHttpException
-import com.apollographql.apollo3.interceptor.ApolloResponse
 import com.apollographql.apollo3.interceptor.BearerTokenInterceptor
 import com.apollographql.apollo3.network.HttpRequestParameters
 import com.apollographql.apollo3.network.NetworkTransport
@@ -31,26 +31,23 @@ class OauthInterceptorTest {
       const val INVALID_ACCESS_TOKEN = "INVALID_ACCESS_TOKEN"
     }
 
-    override fun <D : Operation.Data> execute(request: ApolloRequest<D>, responseAdapterCache: ResponseAdapterCache): Flow<ApolloResponse<D>> {
+    override fun <D : Operation.Data> execute(request: ApolloRequest<D>, responseAdapterCache: ResponseAdapterCache): Flow<Response<D>> {
       val authorization = request.executionContext[HttpRequestParameters]?.headers?.get("Authorization")
 
       return flow {
         when (authorization) {
           "Bearer $VALID_ACCESS_TOKEN1",
           "Bearer $VALID_ACCESS_TOKEN2" -> {
-            emit(
-                ApolloResponse(
-                    requestUuid = request.requestUuid,
-                    response = request.operation.fromResponse("{\"data\":{\"name\":\"MockQuery\"}}".encodeUtf8()),
-                    executionContext = ExecutionContext.Empty
-                )
-            )
+            emit(request.operation.fromResponse("{\"data\":{\"name\":\"MockQuery\"}}".encodeUtf8()).copy(
+                requestUuid = request.requestUuid,
+                executionContext = ExecutionContext.Empty
+            ))
           }
           else -> {
             throw ApolloHttpException(
                 message = "Http request failed with status code `401`",
                 statusCode = 401,
-                headers = emptyMap<String, String>()
+                headers = emptyMap()
             )
           }
         }
