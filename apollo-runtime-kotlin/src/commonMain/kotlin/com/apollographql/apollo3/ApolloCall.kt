@@ -1,14 +1,12 @@
 package com.apollographql.apollo3
 
-import com.apollographql.apollo3.api.ApolloExperimental
 import com.apollographql.apollo3.api.ExecutionContext
 import com.apollographql.apollo3.api.Operation
 import com.apollographql.apollo3.api.Response
 import kotlinx.coroutines.flow.Flow
 
 interface ApolloCall<D: Operation.Data> {
-  @ApolloExperimental
-  fun execute(): Flow<Response<D>>
+    fun execute(): Flow<Response<D>>
 }
 
 interface ApolloQueryCall<D: Operation.Data> : ApolloCall<D>

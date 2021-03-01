@@ -1,6 +1,5 @@
 package com.apollographql.apollo3
 
-import com.apollographql.apollo3.api.ApolloExperimental
 import com.apollographql.apollo3.api.ExecutionContext
 import com.apollographql.apollo3.api.Mutation
 import com.apollographql.apollo3.api.Operation
@@ -20,7 +19,6 @@ import kotlinx.coroutines.Dispatchers
 /**
  * The main entry point for the Apollo runtime. An [ApolloClient] is responsible for executing queries, mutations and subscriptions
  */
-@ApolloExperimental
 class ApolloClient private constructor(
     private val networkTransport: NetworkTransport,
     private val subscriptionNetworkTransport: NetworkTransport,

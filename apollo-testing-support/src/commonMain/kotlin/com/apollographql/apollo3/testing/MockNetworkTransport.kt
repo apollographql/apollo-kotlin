@@ -1,6 +1,5 @@
 package com.apollographql.apollo3.testing
 
-import com.apollographql.apollo3.api.ApolloExperimental
 import com.apollographql.apollo3.api.ResponseAdapterCache
 import com.apollographql.apollo3.api.ExecutionContext
 import com.apollographql.apollo3.api.Operation
@@ -15,7 +14,6 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
 import okio.ByteString.Companion.encodeUtf8
 
-@ApolloExperimental
 @ExperimentalCoroutinesApi
 class MockNetworkTransport(
     private val mockResponseChannel: Channel<String> = Channel(capacity = Channel.BUFFERED)

@@ -5,7 +5,6 @@ import com.apollographql.apollo3.exception.ApolloHttpException
 import com.apollographql.apollo3.exception.ApolloNetworkException
 import com.apollographql.apollo3.exception.ApolloParseException
 import com.apollographql.apollo3.exception.ApolloSerializationException
-import com.apollographql.apollo3.api.ApolloExperimental
 import com.apollographql.apollo3.api.ResponseAdapterCache
 import com.apollographql.apollo3.api.ExecutionContext
 import com.apollographql.apollo3.api.Operation
@@ -40,7 +39,6 @@ import kotlin.coroutines.resumeWithException
 
 private const val MEDIA_TYPE = "application/json; charset=utf-8"
 
-@ApolloExperimental
 @ExperimentalCoroutinesApi
 actual class ApolloHttpNetworkTransport(
     private val serverUrl: HttpUrl,

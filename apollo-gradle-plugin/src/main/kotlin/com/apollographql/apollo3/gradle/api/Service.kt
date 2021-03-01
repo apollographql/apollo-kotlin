@@ -1,6 +1,5 @@
 package com.apollographql.apollo3.gradle.api
 
-import com.apollographql.apollo3.api.ApolloExperimental
 import com.apollographql.apollo3.compiler.OperationIdGenerator
 import com.apollographql.apollo3.compiler.OperationOutputGenerator
 import org.gradle.api.Action
@@ -180,8 +179,7 @@ interface Service {
    *
    * Default value: false
    */
-  @ApolloExperimental
-  val generateApolloMetadata: Property<Boolean>
+    val generateApolloMetadata: Property<Boolean>
 
   /**
    * A list of [Regex] patterns for input/scalar/enum types that should be generated whether or not they are used by queries/fragments
@@ -194,8 +192,7 @@ interface Service {
    *
    * Default value: if (generateApolloMetadata) listOf(".*") else listOf()
    */
-  @ApolloExperimental
-  val alwaysGenerateTypesMatching: SetProperty<String>
+    val alwaysGenerateTypesMatching: SetProperty<String>
 
   /**
    * Whether or not generate default implementation classes for GraphQL fragments.

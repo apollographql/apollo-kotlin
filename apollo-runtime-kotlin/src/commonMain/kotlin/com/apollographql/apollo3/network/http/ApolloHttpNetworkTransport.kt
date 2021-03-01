@@ -1,10 +1,8 @@
 package com.apollographql.apollo3.network.http
 
-import com.apollographql.apollo3.api.ApolloExperimental
 import com.apollographql.apollo3.network.HttpMethod
 import com.apollographql.apollo3.network.NetworkTransport
 
-@ApolloExperimental
 expect class ApolloHttpNetworkTransport constructor(
     serverUrl: String,
     headers: Map<String, String>,

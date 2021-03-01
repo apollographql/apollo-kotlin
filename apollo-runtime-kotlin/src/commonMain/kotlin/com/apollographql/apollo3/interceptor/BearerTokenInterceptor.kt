@@ -3,7 +3,6 @@ package com.apollographql.apollo3.interceptor
 import com.apollographql.apollo3.ApolloRequest
 import com.apollographql.apollo3.exception.ApolloHttpException
 import com.apollographql.apollo3.exception.ApolloBearerTokenException
-import com.apollographql.apollo3.api.ApolloExperimental
 import com.apollographql.apollo3.api.Operation
 import com.apollographql.apollo3.network.HttpRequestParameters
 import com.apollographql.apollo3.network.withHeader
@@ -17,7 +16,6 @@ import kotlinx.coroutines.flow.retry
 import kotlinx.coroutines.sync.Mutex
 import kotlinx.coroutines.sync.withLock
 
-@ApolloExperimental
 class BearerTokenInterceptor(private val tokenProvider: TokenProvider) : ApolloRequestInterceptor {
   private val mutex = Mutex()
 

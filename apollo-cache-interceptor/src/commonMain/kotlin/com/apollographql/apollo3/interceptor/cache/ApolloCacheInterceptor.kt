@@ -1,6 +1,5 @@
 package com.apollographql.apollo3.interceptor.cache
 
-import com.apollographql.apollo3.api.ApolloExperimental
 import com.apollographql.apollo3.api.ResponseAdapterCache
 import com.apollographql.apollo3.api.Operation
 import com.apollographql.apollo3.cache.CacheHeaders
@@ -20,7 +19,6 @@ import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.map
 
-@ApolloExperimental
 class ApolloCacheInterceptor : ApolloRequestInterceptor {
 
   override fun <D : Operation.Data> intercept(request: ApolloRequest<D>, chain: ApolloInterceptorChain): Flow<ApolloResponse<D>> {

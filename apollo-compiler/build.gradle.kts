@@ -49,6 +49,13 @@ configure<org.jetbrains.kotlin.gradle.dsl.KotlinJvmProjectExtension> {
   sourceSets.getByName("main").kotlin.srcDir(versionFileProvider)
 }
 
+tasks.withType(KotlinCompile::class.java) {
+  kotlinOptions {
+    // Gradle forces 1.3.72 for the time being so compile against 1.3 stdlib for the time being
+    // See https://issuetracker.google.com/issues/166582569
+    apiVersion = "1.3"
+  }
+}
 
 // since test/graphql is not an input to Test tasks, they're not run with the changes made in there.
 tasks.withType<Test>().configureEach {

@@ -1,7 +1,6 @@
 package com.apollographql.apollo3.network.http
 
 import com.apollographql.apollo3.ApolloRequest
-import com.apollographql.apollo3.api.ApolloExperimental
 import com.apollographql.apollo3.api.Operation
 import com.apollographql.apollo3.api.ResponseAdapterCache
 import com.apollographql.apollo3.api.fromResponse
@@ -61,7 +60,6 @@ fun interface DataTaskFactory {
   fun dataTask(request: NSURLRequest, completionHandler: UrlSessionDataTaskCompletionHandler): NSURLSessionDataTask
 }
 
-@ApolloExperimental
 @ExperimentalCoroutinesApi
 actual class ApolloHttpNetworkTransport(
     private val serverUrl: NSURL,
@@ -304,7 +302,6 @@ actual class ApolloHttpNetworkTransport(
 }
 
 @Suppress("NAME_SHADOWING")
-@ApolloExperimental
 @ExperimentalCoroutinesApi
 internal fun ApolloHttpNetworkTransport.Result.dispatch(continuationPtr: COpaquePointer) {
   val continuationRef = continuationPtr.asStableRef<Continuation<ApolloHttpNetworkTransport.Result>>()
