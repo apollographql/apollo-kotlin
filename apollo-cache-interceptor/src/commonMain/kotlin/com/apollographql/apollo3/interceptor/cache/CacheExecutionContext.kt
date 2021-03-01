@@ -61,7 +61,7 @@ fun <D : Operation.Data> ApolloQueryRequest.Builder<D>.fetchPolicy(policy: Fetch
 }
 
 val <D : Operation.Data> Response<D>.isFromCache
-  get() = requireNotNull(executionContext[CacheInfo]?.isFromCache)
+  get() = executionContext[CacheInfo]?.isFromCache ?: false
 
 
 fun ApolloClient.Builder.normalizedCache(normalizedCache: NormalizedCache): ApolloClient.Builder {
