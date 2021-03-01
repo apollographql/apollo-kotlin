@@ -17,9 +17,9 @@ import okio.BufferedSink
 import okio.ByteString
 
 class ApolloHttpNetworkTransport(
-    val serverUrl: String,
-    val httpMethod: HttpMethod = HttpMethod.Post,
-    val headers: Map<String, String> = emptyMap(),
+    private val serverUrl: String,
+    private val httpMethod: HttpMethod = HttpMethod.Post,
+    private val headers: Map<String, String> = emptyMap(),
 
     /**
      * The timeout interval to use when connecting
@@ -36,7 +36,7 @@ class ApolloHttpNetworkTransport(
      */
     readTimeoutMillis: Long = 60_000,
 
-    val engine: HttpEngine = DefaultHttpEngine(connectTimeoutMillis, readTimeoutMillis)
+    private val engine: HttpEngine = DefaultHttpEngine(connectTimeoutMillis, readTimeoutMillis)
 ) : NetworkTransport {
     override fun <D : Operation.Data> execute(request: ApolloRequest<D>, responseAdapterCache: ResponseAdapterCache): Flow<Response<D>> {
         val httpRequest = request.toHttpRequest(responseAdapterCache)
