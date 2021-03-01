@@ -18,25 +18,25 @@ sealed class FetchPolicy : RequestContext(Key) {
    *
    * This is the default behaviour
    */
-  object CACHE_FIRST : FetchPolicy()
+  object CacheFirst : FetchPolicy()
 
   /**
    * Only fetch the data from the normalized cache.
    */
-  object CACHE_ONLY : FetchPolicy()
+  object CacheOnly : FetchPolicy()
 
   /**
    * Fetch the data from the network firsts. If network request fails, then the
    * data is fetched from the normalized cache. If the data is not present in the normalized cache, then the
    * exception which led to the network request failure is rethrown.
    */
-  object NETWORK_FIRST : FetchPolicy()
+  object NetworkFirst : FetchPolicy()
 
   /**
    * Only etch the GraphQL data from the network. If network request fails, an
    * exception is thrown.
    */
-  object NETWORK_ONLY : FetchPolicy()
+  object NetworkOnly : FetchPolicy()
 
   /**
    * Signal the apollo client to fetch the data from both the network and the cache. If cached data is not
@@ -45,7 +45,7 @@ sealed class FetchPolicy : RequestContext(Key) {
    * data is not available, the error of the network request will be propagated. If both network and cache
    * are available, both will be returned. Cache data is guaranteed to be returned first.
    */
-  object CACHE_AND_NETWORK : FetchPolicy()
+  object CacheAndNetwork : FetchPolicy()
 
   companion object Key : ExecutionContext.Key<FetchPolicy>
 }

@@ -66,7 +66,7 @@ class FetchPolicyTest {
       val data = HeroNameQuery.Data(HeroNameQuery.Data.Hero("R2-D2"))
 
       val request = ApolloRequest(query)
-          .withExecutionContext(FetchPolicy.NETWORK_FIRST)
+          .withExecutionContext(FetchPolicy.NetworkFirst)
 
       testHttpEngine.enqueue(query, data)
       var responses = apolloClient
@@ -130,7 +130,7 @@ class FetchPolicyTest {
       assertFalse(responses[0].isFromCache)
 
       // Now make the request cache only
-      request = request.withExecutionContext(FetchPolicy.CACHE_ONLY)
+      request = request.withExecutionContext(FetchPolicy.CacheOnly)
 
       responses = apolloClient
           .query(request)
@@ -150,7 +150,7 @@ class FetchPolicyTest {
       val data = HeroNameQuery.Data(HeroNameQuery.Data.Hero("R2-D2"))
 
       val request = ApolloRequest(query)
-          .withExecutionContext(FetchPolicy.NETWORK_ONLY)
+          .withExecutionContext(FetchPolicy.NetworkOnly)
 
       // cache the response
       testHttpEngine.enqueue(query, data)
@@ -182,7 +182,7 @@ class FetchPolicyTest {
       val data = HeroNameQuery.Data(HeroNameQuery.Data.Hero("R2-D2"))
 
       var request = ApolloRequest(query)
-          .withExecutionContext(FetchPolicy.CACHE_FIRST)
+          .withExecutionContext(FetchPolicy.CacheFirst)
 
       // cache the response
       testHttpEngine.enqueue(query, data)
@@ -195,7 +195,7 @@ class FetchPolicyTest {
       assertFalse(responses[0].isFromCache)
 
       // Now make the request cache and network
-      request = request.withExecutionContext(FetchPolicy.CACHE_AND_NETWORK)
+      request = request.withExecutionContext(FetchPolicy.CacheAndNetwork)
 
       testHttpEngine.enqueue(query, data)
       responses = apolloClient
