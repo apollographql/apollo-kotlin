@@ -1,6 +1,5 @@
 package com.apollographql.apollo3
 
-import com.apollographql.apollo3.api.ApolloInternal
 import com.apollographql.apollo3.api.ExecutionContext
 import com.apollographql.apollo3.api.Mutation
 import com.apollographql.apollo3.api.Operation
@@ -70,7 +69,6 @@ class ApolloClient private constructor(
     )
   }
 
-  @OptIn(ApolloInternal::class)
   fun newBuilder(): Builder {
     return Builder()
         .networkTransport(networkTransport)
@@ -131,31 +129,25 @@ class ApolloClient private constructor(
       )
     }
 
-    @ApolloInternal
-    fun interceptors(interceptors: List<ApolloRequestInterceptor>) = apply {
+    internal fun interceptors(interceptors: List<ApolloRequestInterceptor>) = apply {
       check(this.interceptors.isEmpty()) {
         "ApolloGraphQL: interceptors is already set"
       }
       this.interceptors = interceptors
     }
 
-    @ApolloInternal
-    fun interceptors(vararg interceptors: ApolloRequestInterceptor) = apply {
+    internal fun interceptors(vararg interceptors: ApolloRequestInterceptor) = apply {
       interceptors(interceptors.toList())
     }
 
-    @ApolloInternal
-    fun executionContext(executionContext: ExecutionContext) = apply {
+    internal fun executionContext(executionContext: ExecutionContext) = apply {
       check(this.executionContext == ExecutionContext.Empty) {
         "ApolloGraphQL: executionContext is already set."
       }
       this.executionContext = executionContext
     }
 
-    /**
-     * internal because only used from tests
-     */
-    fun scalarTypeAdapters(customScalarAdapters: Map<CustomScalar, ResponseAdapter<*>>) = apply {
+    internal fun scalarTypeAdapters(customScalarAdapters: Map<CustomScalar, ResponseAdapter<*>>) = apply {
       this.customScalarAdapters = customScalarAdapters
     }
   }

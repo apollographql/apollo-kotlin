@@ -2,7 +2,6 @@ package com.apollographql.apollo3.integration
 
 import HeroNameQuery
 import com.apollographql.apollo3.ApolloClient
-import com.apollographql.apollo3.api.ApolloInternal
 import com.apollographql.apollo3.network.http.ApolloHttpNetworkTransport
 import com.apollographql.apollo3.testing.TestHttpEngine
 import com.apollographql.apollo3.testing.TestLoggerExecutor
@@ -14,7 +13,6 @@ import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertTrue
 
-@OptIn(ApolloInternal::class)
 class ApolloClientTest {
   private lateinit var testHttpEngine: TestHttpEngine
   private lateinit var apolloClient: ApolloClient
@@ -24,7 +22,7 @@ class ApolloClientTest {
     testHttpEngine = TestHttpEngine()
     apolloClient = ApolloClient.Builder()
         .networkTransport(ApolloHttpNetworkTransport(serverUrl = "https://test", engine = testHttpEngine))
-        .interceptors(TestLoggerExecutor)
+        .addInterceptor(TestLoggerExecutor)
         .build()
   }
 
