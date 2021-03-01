@@ -14,6 +14,5 @@ interface NetworkTransport {
   fun <D : Operation.Data> execute(
       request: ApolloRequest<D>,
       responseAdapterCache: ResponseAdapterCache,
-      executionContext: ExecutionContext
   ): Flow<ApolloResponse<D>>
 }

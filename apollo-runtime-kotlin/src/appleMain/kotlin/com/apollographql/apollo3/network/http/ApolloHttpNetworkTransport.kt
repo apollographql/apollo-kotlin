@@ -1,21 +1,21 @@
 package com.apollographql.apollo3.network.http
 
+import com.apollographql.apollo3.ApolloRequest
+import com.apollographql.apollo3.api.ApolloExperimental
+import com.apollographql.apollo3.api.Operation
+import com.apollographql.apollo3.api.ResponseAdapterCache
+import com.apollographql.apollo3.api.fromResponse
+import com.apollographql.apollo3.api.internal.OperationRequestBodyComposer
+import com.apollographql.apollo3.api.variablesJson
 import com.apollographql.apollo3.exception.ApolloException
 import com.apollographql.apollo3.exception.ApolloHttpException
 import com.apollographql.apollo3.exception.ApolloNetworkException
 import com.apollographql.apollo3.exception.ApolloParseException
 import com.apollographql.apollo3.exception.ApolloSerializationException
-import com.apollographql.apollo3.api.ApolloExperimental
-import com.apollographql.apollo3.api.ResponseAdapterCache
-import com.apollographql.apollo3.api.ExecutionContext
-import com.apollographql.apollo3.api.Operation
-import com.apollographql.apollo3.api.fromResponse
-import com.apollographql.apollo3.ApolloRequest
-import com.apollographql.apollo3.api.internal.OperationRequestBodyComposer
-import com.apollographql.apollo3.api.variablesJson
 import com.apollographql.apollo3.interceptor.ApolloResponse
-import com.apollographql.apollo3.network.HttpExecutionContext
 import com.apollographql.apollo3.network.HttpMethod
+import com.apollographql.apollo3.network.HttpRequestParameters
+import com.apollographql.apollo3.network.HttpResponseInfo
 import com.apollographql.apollo3.network.NetworkTransport
 import com.apollographql.apollo3.network.toNSData
 import kotlinx.cinterop.COpaquePointer
@@ -97,7 +97,7 @@ actual class ApolloHttpNetworkTransport(
   }
 
   @Suppress("UNCHECKED_CAST")
-  override fun <D : Operation.Data> execute(request: ApolloRequest<D>, responseAdapterCache: ResponseAdapterCache, executionContext: ExecutionContext): Flow<ApolloResponse<D>> {
+  override fun <D : Operation.Data> execute(request: ApolloRequest<D>, responseAdapterCache: ResponseAdapterCache): Flow<ApolloResponse<D>> {
     return flow {
       assert(NSThread.isMainThread())
 
@@ -118,7 +118,7 @@ actual class ApolloHttpNetworkTransport(
         }
 
         val httpRequest = try {
-          request.toHttpRequest(executionContext[HttpExecutionContext.Request], responseAdapterCache)
+          request.toHttpRequest(responseAdapterCache)
         } catch (e: Exception) {
           continuation.resumeWithException(
               ApolloSerializationException(
@@ -146,17 +146,15 @@ actual class ApolloHttpNetworkTransport(
   }
 
   private fun ApolloRequest<*>.toHttpRequest(
-      httpExecutionContext: HttpExecutionContext.Request?,
       responseAdapterCache: ResponseAdapterCache
   ): NSURLRequest {
     return when (httpMethod) {
-      HttpMethod.Get -> toHttpGetRequest(httpExecutionContext, responseAdapterCache)
-      HttpMethod.Post -> toHttpPostRequest(httpExecutionContext, responseAdapterCache)
+      HttpMethod.Get -> toHttpGetRequest(responseAdapterCache)
+      HttpMethod.Post -> toHttpPostRequest(responseAdapterCache)
     }
   }
 
   private fun ApolloRequest<*>.toHttpGetRequest(
-      httpExecutionContext: HttpExecutionContext.Request?,
       responseAdapterCache: ResponseAdapterCache
   ): NSURLRequest {
     val urlComponents = NSURLComponents(uRL = serverUrl, resolvingAgainstBaseURL = false)
@@ -165,13 +163,14 @@ actual class ApolloHttpNetworkTransport(
         NSURLQueryItem(name = "operationName", value = operation.name()),
         NSURLQueryItem(name = "variables", value = operation.variablesJson(responseAdapterCache))
     )
+
     return NSMutableURLRequest.requestWithURL(
         URL = urlComponents.URL!!
     ).apply {
       setHTTPMethod("GET")
       setTimeoutInterval(connectTimeoutMillis.toDouble() / 1000)
       headers
-          .plus(httpExecutionContext?.headers ?: emptyMap())
+          .plus(executionContext[HttpRequestParameters]?.headers ?: emptyMap())
           .forEach { (key, value) -> setValue(value, forHTTPHeaderField = key) }
       setCachePolicy(NSURLRequestReloadIgnoringCacheData)
     }
@@ -194,15 +193,19 @@ actual class ApolloHttpNetworkTransport(
   }
 
   private fun ApolloRequest<*>.toHttpPostRequest(
-      httpExecutionContext: HttpExecutionContext.Request?,
       responseAdapterCache: ResponseAdapterCache
   ): NSURLRequest {
     return NSMutableURLRequest.requestWithURL(serverUrl).apply {
-      val postBody = operation.composeRequestBody(responseAdapterCache).toByteArray().toNSData()
+      val postBody = try {
+        operation.composeRequestBody(responseAdapterCache).toByteArray().toNSData()
+      } catch (e: Exception) {
+        e.printStackTrace()
+        throw e
+      }
       setHTTPMethod("POST")
       headers
           .plus("Content-Type" to "application/json; charset=utf-8")
-          .plus(httpExecutionContext?.headers ?: emptyMap())
+          .plus(executionContext[HttpRequestParameters]?.headers ?: emptyMap())
           .forEach { (key, value) -> setValue(value, forHTTPHeaderField = key) }
       setCachePolicy(NSURLRequestReloadIgnoringCacheData)
       setHTTPBody(postBody)
@@ -254,10 +257,10 @@ actual class ApolloHttpNetworkTransport(
           responseAdapterCache = responseAdapterCache
       )
       Result.Success(
-          ApolloResponse<D>(
+          ApolloResponse(
               requestUuid = request.requestUuid,
               response = response,
-              executionContext = request.executionContext + HttpExecutionContext.Response(
+              executionContext = request.executionContext + HttpResponseInfo(
                   statusCode = httpResponse.statusCode.toInt(),
                   headers = httpHeaders
               )

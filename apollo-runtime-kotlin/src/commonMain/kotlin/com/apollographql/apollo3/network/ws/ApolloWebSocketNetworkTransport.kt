@@ -9,7 +9,7 @@ import com.apollographql.apollo3.api.Operation
 import com.apollographql.apollo3.api.Subscription
 import com.apollographql.apollo3.api.internal.json.Utils
 import com.apollographql.apollo3.api.fromResponse
-import com.apollographql.apollo3.dispatcher.ApolloCoroutineDispatcherContext
+import com.apollographql.apollo3.dispatcher.ApolloCoroutineDispatcher
 import com.apollographql.apollo3.exception.ApolloParseException
 import com.apollographql.apollo3.ApolloRequest
 import com.apollographql.apollo3.api.internal.json.BufferedSinkJsonWriter
@@ -69,10 +69,9 @@ class ApolloWebSocketNetworkTransport(
   override fun <D : Operation.Data> execute(
       request: ApolloRequest<D>,
       responseAdapterCache: ResponseAdapterCache,
-      executionContext: ExecutionContext
   ): Flow<ApolloResponse<D>> {
     val dispatcherContext = requireNotNull(
-        executionContext[ApolloCoroutineDispatcherContext] ?: request.executionContext[ApolloCoroutineDispatcherContext]
+        request.executionContext[ApolloCoroutineDispatcher] ?: request.executionContext[ApolloCoroutineDispatcher]
     )
     return getServerConnection(dispatcherContext).flatMapLatest { serverConnection ->
       serverConnection
@@ -147,11 +146,11 @@ class ApolloWebSocketNetworkTransport(
     }
   }
 
-  private fun getServerConnection(dispatcherContext: ApolloCoroutineDispatcherContext): Flow<GraphQLWebsocketConnection> {
+  private fun getServerConnection(dispatcher: ApolloCoroutineDispatcher): Flow<GraphQLWebsocketConnection> {
     return flow {
       val connection = mutex.withLock {
         if (graphQLWebsocketConnection?.isClosedForReceive() != false) {
-          graphQLWebsocketConnection = openServerConnection(dispatcherContext)
+          graphQLWebsocketConnection = openServerConnection(dispatcher)
         }
         graphQLWebsocketConnection
       }
@@ -159,7 +158,7 @@ class ApolloWebSocketNetworkTransport(
     }.filterNotNull()
   }
 
-  private suspend fun openServerConnection(dispatcherContext: ApolloCoroutineDispatcherContext): GraphQLWebsocketConnection {
+  private suspend fun openServerConnection(dispatcher: ApolloCoroutineDispatcher): GraphQLWebsocketConnection {
     return try {
       withTimeout(connectionAcknowledgeTimeoutMs) {
         val webSocketConnection = webSocketFactory.open(
@@ -176,7 +175,7 @@ class ApolloWebSocketNetworkTransport(
             webSocketConnection = webSocketConnection,
             idleTimeoutMs = idleTimeoutMs,
             connectionKeepAliveTimeoutMs = connectionKeepAliveTimeoutMs,
-            defaultDispatcher = dispatcherContext.default,
+            defaultDispatcher = dispatcher.coroutineDispatcher,
             serializer = serializer
         )
       }

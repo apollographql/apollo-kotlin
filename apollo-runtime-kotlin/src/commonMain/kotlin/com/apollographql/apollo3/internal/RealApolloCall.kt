@@ -31,7 +31,7 @@ class RealApolloCall<D : Operation.Data> constructor(
           RealInterceptorChain(
               interceptors,
               0,
-              responseAdapterCache
+              responseAdapterCache,
           )
       )
     }.flatMapLatest { interceptorChain ->

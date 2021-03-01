@@ -21,22 +21,11 @@ import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.map
 
 @ApolloExperimental
-class ApolloCacheInterceptor<S>(private val store: S) : ApolloRequestInterceptor where S : WriteableStore, S : ReadableStore {
-
-  private fun <D : Operation.Data> proceed(request: ApolloRequest<D>, chain: ApolloInterceptorChain): Flow<ApolloResponse<D>> {
-    return chain.proceed(request).map {
-      if (it.response.data != null) {
-        writeToCache(request, it.response.data!!, chain.responseAdapterCache)
-      }
-      it.setFromCache(false)
-    }
-  }
+class ApolloCacheInterceptor : ApolloRequestInterceptor {
 
   override fun <D : Operation.Data> intercept(request: ApolloRequest<D>, chain: ApolloInterceptorChain): Flow<ApolloResponse<D>> {
     return flow {
-      val policy = request.executionContext[CacheRequestExecutionContext]?.policy ?: FetchPolicy.CACHE_FIRST
-
-      when (policy) {
+      when (request.executionContext[FetchPolicy] ?: FetchPolicy.CACHE_FIRST) {
         FetchPolicy.CACHE_FIRST -> {
           val response = readFromCache(request, chain.responseAdapterCache)
           if (response?.response?.data != null) {
@@ -87,11 +76,23 @@ class ApolloCacheInterceptor<S>(private val store: S) : ApolloRequestInterceptor
     }
   }
 
+  private fun <D : Operation.Data> proceed(request: ApolloRequest<D>, chain: ApolloInterceptorChain): Flow<ApolloResponse<D>> {
+    return chain.proceed(request).map {
+      if (it.response.data != null) {
+        writeToCache(request, it.response.data!!, chain.responseAdapterCache)
+      }
+      it.setFromCache(false)
+    }
+  }
+
+
   private fun <D : Operation.Data> ApolloResponse<D>.setFromCache(fromCache: Boolean): ApolloResponse<D> {
-    return copy(executionContext = executionContext + CacheResponseExecutionContext(fromCache))
+    return copy(executionContext = executionContext + CacheInfo(fromCache))
   }
 
   private fun <D : Operation.Data> writeToCache(request: ApolloRequest<D>, data: D, responseAdapterCache: ResponseAdapterCache) {
+    val store = request.executionContext[ApolloStore] ?: error("No ApolloStore found")
+
     val operation = request.operation
     val records = operation.normalize(data, responseAdapterCache, CacheKeyResolver.DEFAULT)
 
@@ -99,6 +100,7 @@ class ApolloCacheInterceptor<S>(private val store: S) : ApolloRequestInterceptor
   }
 
   private fun <D : Operation.Data> readFromCache(request: ApolloRequest<D>, responseAdapterCache: ResponseAdapterCache): ApolloResponse<D>? {
+    val store = request.executionContext[ApolloStore] ?: error("No ApolloStore found")
     val operation = request.operation
 
     val data = operation.readDataFromCache(responseAdapterCache, store, CacheKeyResolver.DEFAULT, CacheHeaders.NONE)

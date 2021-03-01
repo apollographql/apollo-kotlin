@@ -6,7 +6,7 @@ import com.apollographql.apollo3.api.ApolloExperimental
 import com.apollographql.apollo3.api.ExecutionContext
 import com.apollographql.apollo3.api.ResponseAdapterCache
 import com.apollographql.apollo3.api.Subscription
-import com.apollographql.apollo3.dispatcher.ApolloCoroutineDispatcherContext
+import com.apollographql.apollo3.dispatcher.ApolloCoroutineDispatcher
 import com.apollographql.apollo3.ApolloRequest
 import com.apollographql.apollo3.ApolloSubscriptionRequest
 import com.apollographql.apollo3.subscription.ApolloOperationMessageSerializer
@@ -39,7 +39,7 @@ class ApolloWebSocketNetworkTransportTest {
     runBlocking {
       val expectedRequest = ApolloSubscriptionRequest(
           subscription = MockSubscription(),
-          executionContext = ApolloCoroutineDispatcherContext(Dispatchers.Unconfined)
+          executionContext = ApolloCoroutineDispatcher(Dispatchers.Unconfined)
       )
       val expectedResponses = listOf(
           "{\"data\":{\"name\":\"MockQuery1\"}}",
@@ -60,7 +60,6 @@ class ApolloWebSocketNetworkTransportTest {
       ).execute(
           request = expectedRequest,
           responseAdapterCache = ResponseAdapterCache.DEFAULT,
-          executionContext = ExecutionContext.Empty
       ).collectIndexed { index, actualResponse ->
         assertEquals("MockQuery${index + 1}", actualResponse.response.data?.name)
         if (index < expectedResponses.size - 1) {
@@ -77,7 +76,7 @@ class ApolloWebSocketNetworkTransportTest {
     runBlocking {
       val expectedRequest = ApolloSubscriptionRequest(
           subscription = MockSubscription(),
-          executionContext = ApolloCoroutineDispatcherContext(Dispatchers.Unconfined)
+          executionContext = ApolloCoroutineDispatcher(Dispatchers.Unconfined)
       )
 
       val result = runCatching {
@@ -90,7 +89,6 @@ class ApolloWebSocketNetworkTransportTest {
         ).execute(
             request = expectedRequest,
             responseAdapterCache = ResponseAdapterCache.DEFAULT,
-            executionContext = ApolloCoroutineDispatcherContext(Dispatchers.Unconfined)
         ).toList()
       }
 
@@ -104,7 +102,7 @@ class ApolloWebSocketNetworkTransportTest {
     val result = runBlocking {
       val expectedRequest = ApolloSubscriptionRequest(
           subscription = MockSubscription(),
-          executionContext = ApolloCoroutineDispatcherContext(Dispatchers.Unconfined)
+          executionContext = ApolloCoroutineDispatcher(Dispatchers.Unconfined)
       )
       val expectedOnStartResponse = "{\"data\":{\"name\":\"MockQuery\"}}"
       val webSocketConnection = WebSocketConnectionMock(
@@ -122,7 +120,6 @@ class ApolloWebSocketNetworkTransportTest {
         ).execute(
             request = expectedRequest,
             responseAdapterCache = ResponseAdapterCache.DEFAULT,
-            executionContext = ExecutionContext.Empty
         ).collect { actualResponse ->
           assertEquals("MockQuery", actualResponse.response.data?.name)
           webSocketConnection.enqueueError("{\"key1\":\"value1\", \"key2\":\"value2\"}")
@@ -141,7 +138,7 @@ class ApolloWebSocketNetworkTransportTest {
     runBlocking {
       val expectedRequest = ApolloSubscriptionRequest(
           subscription = MockSubscription(),
-          executionContext = ApolloCoroutineDispatcherContext(Dispatchers.Unconfined)
+          executionContext = ApolloCoroutineDispatcher(Dispatchers.Unconfined)
       )
       val expectedOnStartResponse = "{\"data\":{\"name\":\"MockQuery\"}}"
       val webSocketConnection = WebSocketConnectionMock(
@@ -158,7 +155,6 @@ class ApolloWebSocketNetworkTransportTest {
       ).execute(
           request = expectedRequest,
           responseAdapterCache = ResponseAdapterCache.DEFAULT,
-          executionContext = ExecutionContext.Empty
       ).collect { actualResponse ->
         assertEquals("MockQuery", actualResponse.response.data?.name)
         webSocketConnection.enqueueComplete()
@@ -173,7 +169,7 @@ class ApolloWebSocketNetworkTransportTest {
     runBlocking {
       val expectedRequest = ApolloSubscriptionRequest(
           subscription = MockSubscription(),
-          executionContext = ApolloCoroutineDispatcherContext(Dispatchers.Unconfined)
+          executionContext = ApolloCoroutineDispatcher(Dispatchers.Unconfined)
       )
       val expectedOnStartResponse = "{\"data\":{\"name\":\"MockQuery\"}}"
       val webSocketConnection = WebSocketConnectionMock(
@@ -191,7 +187,6 @@ class ApolloWebSocketNetworkTransportTest {
       ).execute(
           request = expectedRequest,
           responseAdapterCache = ResponseAdapterCache.DEFAULT,
-          executionContext = ExecutionContext.Empty
       ).collect { actualResponse ->
         assertEquals("MockQuery", actualResponse.response.data?.name)
         webSocketConnection.enqueueConnectionKeepAlive()

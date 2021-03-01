@@ -5,7 +5,8 @@ import com.apollographql.apollo3.exception.ApolloHttpException
 import com.apollographql.apollo3.exception.ApolloBearerTokenException
 import com.apollographql.apollo3.api.ApolloExperimental
 import com.apollographql.apollo3.api.Operation
-import com.apollographql.apollo3.network.HttpExecutionContext
+import com.apollographql.apollo3.network.HttpRequestParameters
+import com.apollographql.apollo3.network.withHeader
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.FlowPreview
 import kotlinx.coroutines.flow.Flow
@@ -21,14 +22,8 @@ class BearerTokenInterceptor(private val tokenProvider: TokenProvider) : ApolloR
   private val mutex = Mutex()
 
   private fun <D : Operation.Data> ApolloRequest<D>.withHeader(name: String, value: String): ApolloRequest<D> {
-    val httpRequestContext = (executionContext[HttpExecutionContext.Request]
-        ?: HttpExecutionContext.Request(emptyMap()))
-        .let {
-          it.copy(headers = it.headers + (name to value))
-        }
-
     return newBuilder()
-        .addExecutionContext(httpRequestContext)
+        .addExecutionContext(executionContext[HttpRequestParameters].withHeader(name, value))
         .build()
   }
 

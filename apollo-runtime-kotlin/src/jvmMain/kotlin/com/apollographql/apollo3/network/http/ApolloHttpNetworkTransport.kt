@@ -14,8 +14,9 @@ import com.apollographql.apollo3.ApolloRequest
 import com.apollographql.apollo3.api.internal.OperationRequestBodyComposer
 import com.apollographql.apollo3.api.variablesJson
 import com.apollographql.apollo3.interceptor.ApolloResponse
-import com.apollographql.apollo3.network.HttpExecutionContext
 import com.apollographql.apollo3.network.HttpMethod
+import com.apollographql.apollo3.network.HttpRequestParameters
+import com.apollographql.apollo3.network.HttpResponseInfo
 import com.apollographql.apollo3.network.NetworkTransport
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.Flow
@@ -67,12 +68,10 @@ actual class ApolloHttpNetworkTransport(
   override fun <D : Operation.Data> execute(
       request: ApolloRequest<D>,
       responseAdapterCache: ResponseAdapterCache,
-      executionContext: ExecutionContext
   ): Flow<ApolloResponse<D>> {
     return flow {
       val response = suspendCancellableCoroutine<ApolloResponse<D>> { continuation ->
         val httpRequest = request.toHttpRequest(
-            executionContext[HttpExecutionContext.Request],
             responseAdapterCache
         )
         httpCallFactory.newCall(httpRequest)
@@ -148,7 +147,7 @@ actual class ApolloHttpNetworkTransport(
     return ApolloResponse(
         requestUuid = request.requestUuid,
         response = response,
-        executionContext = request.executionContext + HttpExecutionContext.Response(
+        executionContext = request.executionContext + HttpResponseInfo(
             statusCode = code(),
             headers = headers.toMap()
         )
@@ -156,13 +155,12 @@ actual class ApolloHttpNetworkTransport(
   }
 
   private fun <D : Operation.Data> ApolloRequest<D>.toHttpRequest(
-      httpExecutionContext: HttpExecutionContext.Request?,
       responseAdapterCache: ResponseAdapterCache
   ): Request {
     try {
       return when (httpMethod) {
-        HttpMethod.Get -> toHttpGetRequest(httpExecutionContext, responseAdapterCache)
-        HttpMethod.Post -> toHttpPostRequest(httpExecutionContext, responseAdapterCache)
+        HttpMethod.Get -> toHttpGetRequest(responseAdapterCache)
+        HttpMethod.Post -> toHttpPostRequest(responseAdapterCache)
       }
     } catch (e: Exception) {
       throw ApolloSerializationException(
@@ -173,7 +171,6 @@ actual class ApolloHttpNetworkTransport(
   }
 
   private fun <D : Operation.Data> ApolloRequest<D>.toHttpGetRequest(
-      httpExecutionContext: HttpExecutionContext.Request?,
       responseAdapterCache: ResponseAdapterCache
   ): Request {
     val url = serverUrl.newBuilder()
@@ -185,7 +182,7 @@ actual class ApolloHttpNetworkTransport(
         .url(url)
         .headers(headers)
         .apply {
-          httpExecutionContext?.headers?.forEach { (name, value) ->
+          executionContext[HttpRequestParameters]?.headers?.forEach { (name, value) ->
             header(name, value)
           }
         }
@@ -209,7 +206,6 @@ actual class ApolloHttpNetworkTransport(
   }
 
   private fun <D : Operation.Data> ApolloRequest<D>.toHttpPostRequest(
-      httpExecutionContext: HttpExecutionContext.Request?,
       responseAdapterCache: ResponseAdapterCache
   ): Request {
     val requestBody = operation.composeRequestBody(responseAdapterCache)
@@ -224,7 +220,7 @@ actual class ApolloHttpNetworkTransport(
         .url(serverUrl)
         .headers(headers)
         .apply {
-          httpExecutionContext?.headers?.forEach { (name, value) ->
+          executionContext[HttpRequestParameters]?.headers?.forEach { (name, value) ->
             header(name, value)
           }
         }

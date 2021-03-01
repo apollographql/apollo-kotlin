@@ -4,6 +4,13 @@ import com.apollographql.apollo3.api.ExecutionContext.Element
 import com.apollographql.apollo3.api.ExecutionContext.Key
 import kotlin.jvm.JvmField
 
+@ApolloExperimental
+abstract class ClientContext(override val key: Key<*>): Element
+@ApolloExperimental
+abstract class RequestContext(override val key: Key<*>): Element
+@ApolloExperimental
+abstract class ResponseContext(override val key: Key<*>): Element
+
 /**
  * A context of GraphQL operation execution, represented as a set of [Key] keys and corresponding [Element] values.
  */
