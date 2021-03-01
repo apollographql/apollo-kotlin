@@ -4,6 +4,7 @@ import com.apollographql.apollo3.api.ResponseAdapterCache.Companion.DEFAULT
 import com.apollographql.apollo3.api.internal.MapResponseParser
 import com.apollographql.apollo3.api.internal.StreamResponseParser
 import com.apollographql.apollo3.api.internal.json.BufferedSinkJsonWriter
+import com.apollographql.apollo3.api.internal.json.BufferedSourceJsonReader
 import com.apollographql.apollo3.api.internal.json.MapJsonReader
 import com.apollographql.apollo3.api.internal.json.MapJsonWriter
 import okio.Buffer
@@ -66,17 +67,29 @@ fun <D : Operation.Data> Operation<D>.toJson(data: D, indent: String = "", respo
 /**
  * Parses GraphQL operation raw response from [map] with provided [responseAdapterCache] and returns result [Operation.Data]
  *
+ * throws if the Data cannot be parsed
+ *
  * @param map: a [Map] representing the response data. It's typically the `data` object of a GraphQL response
  */
 fun <D : Operation.Data, M: Map<String, Any?>> Operation<D>.fromJson(
     map: M,
     responseAdapterCache: ResponseAdapterCache = DEFAULT,
 ): D {
-  return MapJsonReader(
-      map,
-  ).let {
-    adapter(responseAdapterCache).fromResponse(it)
-  }
+  return adapter(responseAdapterCache).fromResponse(MapJsonReader(map))
+}
+
+/**
+ * Parses GraphQL operation raw response from [map] with provided [responseAdapterCache] and returns result [Operation.Data]
+ *
+ * throws if the Data cannot be parsed
+ *
+ * @param map: a [Map] representing the response data. It's typically the `data` object of a GraphQL response
+ */
+fun <D : Operation.Data> Operation<D>.fromJson(
+    bufferedSource: BufferedSource,
+    responseAdapterCache: ResponseAdapterCache = DEFAULT,
+): D {
+  return adapter(responseAdapterCache).fromResponse(BufferedSourceJsonReader(bufferedSource))
 }
 
 /**
