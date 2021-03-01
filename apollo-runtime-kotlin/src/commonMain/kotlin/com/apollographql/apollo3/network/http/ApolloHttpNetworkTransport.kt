@@ -90,11 +90,11 @@ class ApolloHttpNetworkTransport(
     private fun <D : Operation.Data> ApolloRequest<D>.toHttpGetRequest(
         responseAdapterCache: ResponseAdapterCache
     ): HttpRequest {
-        val url = HttpUrlBuilder(serverUrl, mapOf(
+        val url = buildUrl(serverUrl, mapOf(
             "query" to operation.queryDocument(),
             "operationName" to operation.name(),
             "variables" to operation.variablesJson(responseAdapterCache)
-        )).build()
+        ))
 
         return HttpRequest(
             method = HttpMethod.Get,
