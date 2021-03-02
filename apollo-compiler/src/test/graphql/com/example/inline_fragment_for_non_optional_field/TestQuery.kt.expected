@@ -53,38 +53,25 @@ class TestQuery : Query<TestQuery.Data> {
     /**
      * A character from the Star Wars universe
      */
-    interface NonOptionalHero {
-      val __typename: String
-
+    data class NonOptionalHero(
+      val __typename: String = "Character",
       /**
        * The name of the character
        */
-      val name: String
-
-      data class HumanNonOptionalHero(
-        override val __typename: String,
+      val name: String,
+      val asAsHuman: AsHuman?
+    ) {
+      data class AsHuman(
+        val __typename: String,
         /**
          * The name of the character
          */
-        override val name: String,
+        val name: String,
         /**
          * Height in the preferred unit, default is meters
          */
         val height: Double?
-      ) : NonOptionalHero
-
-      data class OtherNonOptionalHero(
-        override val __typename: String,
-        /**
-         * The name of the character
-         */
-        override val name: String
-      ) : NonOptionalHero
-
-      companion object {
-        fun NonOptionalHero.asHumanNonOptionalHero(): HumanNonOptionalHero? = this as?
-            HumanNonOptionalHero
-      }
+      )
     }
   }
 

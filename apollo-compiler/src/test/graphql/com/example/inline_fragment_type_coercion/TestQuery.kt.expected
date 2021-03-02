@@ -55,25 +55,16 @@ class TestQuery : Query<TestQuery.Data> {
     /**
      * For testing fragment type coercion
      */
-    interface Foo {
-      val __typename: String
-
-      val foo: String
-
-      data class BarFoo(
-        override val __typename: String,
-        override val foo: String,
+    data class Foo(
+      val __typename: String = "Foo",
+      val foo: String,
+      val asAsBar: AsBar?
+    ) {
+      data class AsBar(
+        val __typename: String,
+        val foo: String,
         val bar: String
-      ) : Foo
-
-      data class OtherFoo(
-        override val __typename: String,
-        override val foo: String
-      ) : Foo
-
-      companion object {
-        fun Foo.asBarFoo(): BarFoo? = this as? BarFoo
-      }
+      )
     }
   }
 

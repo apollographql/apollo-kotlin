@@ -37,7 +37,7 @@ internal fun CodeGenerationAst.FragmentType.interfaceTypeSpec(generateAsInternal
       )
       .addTypes(
           this.interfaceType.nestedObjects.map { nestedObject ->
-            nestedObject.typeSpec()
+            nestedObject.typeSpec(generateFragmentsAsInterfaces = true)
           }
       )
       .addType(
@@ -80,10 +80,13 @@ private fun adapterFunSpec(fragmentName: String, adapterClassName: TypeName): Fu
       .build()
 }
 
-internal fun CodeGenerationAst.FragmentType.implementationTypeSpec(generateAsInternal: Boolean): TypeSpec {
+internal fun CodeGenerationAst.FragmentType.implementationTypeSpec(
+    generateAsInternal: Boolean,
+    generateFragmentsAsInterfaces: Boolean,
+): TypeSpec {
   val dataTypeName = this.implementationType.nestedObjects.single().typeRef.asTypeName()
   return this.implementationType
-      .typeSpec()
+      .typeSpec(generateFragmentsAsInterfaces)
       .toBuilder()
       .apply {
         val dataTypeSpec = typeSpecs.single().addSuperinterface(Fragment.Data::class)
@@ -130,11 +133,15 @@ private fun CodeGenerationAst.FragmentType.responseFieldsCode(): CodeBlock {
     is CodeGenerationAst.ObjectType.Kind.Object -> {
       builder.add("%T(null, %T.RESPONSE_FIELDS)\n", ResponseField.FieldSet::class, dataObject.typeRef.asAdapterTypeName())
     }
-    is CodeGenerationAst.ObjectType.Kind.Fragment -> {
-      kind.possibleImplementations.forEach {
-        builder.add("%T(%S, %T.RESPONSE_FIELDS),\n", ResponseField.FieldSet::class, it.key, it.value.asAdapterTypeName())
+    is CodeGenerationAst.ObjectType.Kind.ObjectWithFragments -> {
+      kind.possibleImplementations.forEach { (possibleTypes, typeRef) ->
+        possibleTypes.forEach { possibleType ->
+          builder.add("%T(%S, %T.RESPONSE_FIELDS),\n", ResponseField.FieldSet::class, possibleType, typeRef.asAdapterTypeName())
+        }
       }
-      builder.add("%T(null, %T.RESPONSE_FIELDS),\n", ResponseField.FieldSet::class, kind.defaultImplementation.asAdapterTypeName())
+      if (kind.defaultImplementation != null) {
+        builder.add("%T(null, %T.RESPONSE_FIELDS),\n", ResponseField.FieldSet::class, kind.defaultImplementation.asAdapterTypeName())
+      }
     }
   }
   builder.unindent()

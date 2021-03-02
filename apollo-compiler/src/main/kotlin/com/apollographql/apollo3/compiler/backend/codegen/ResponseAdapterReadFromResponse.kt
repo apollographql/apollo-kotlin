@@ -1,6 +1,7 @@
 package com.apollographql.apollo3.compiler.backend.codegen
 
 import com.apollographql.apollo3.api.ResponseField
+import com.apollographql.apollo3.api.internal.json.MapJsonReader
 import com.apollographql.apollo3.api.json.JsonReader
 import com.apollographql.apollo3.compiler.applyIf
 import com.apollographql.apollo3.compiler.backend.ast.CodeGenerationAst
@@ -8,54 +9,24 @@ import com.apollographql.apollo3.compiler.escapeKotlinReservedWord
 import com.squareup.kotlinpoet.CodeBlock
 import com.squareup.kotlinpoet.FunSpec
 import com.squareup.kotlinpoet.KModifier
+import com.squareup.kotlinpoet.MemberName
 import com.squareup.kotlinpoet.ParameterSpec
+import com.squareup.kotlinpoet.asClassName
 import com.squareup.kotlinpoet.joinToCode
 
-internal fun CodeGenerationAst.ObjectType.readFromResponseFunSpec(): FunSpec {
+internal fun CodeGenerationAst.ObjectType.readFromResponseFunSpec(generateFragmentsAsInterfaces: Boolean): FunSpec {
   return when (this.kind) {
-    is CodeGenerationAst.ObjectType.Kind.Fragment -> readFragmentFromResponseFunSpec()
+    is CodeGenerationAst.ObjectType.Kind.ObjectWithFragments -> {
+      if (generateFragmentsAsInterfaces) readFragmentFromStreamResponseFunSpec() else readFragmentFromBufferedResponseFunSpec()
+    }
     is CodeGenerationAst.ObjectType.Kind.FragmentDelegate -> readFragmentDelegateFromResponseFunSpec()
     else -> readObjectFromResponseFunSpec()
   }
 }
 
 private fun CodeGenerationAst.ObjectType.readObjectFromResponseFunSpec(): FunSpec {
-  val fieldVariablesCode = this.fields
-      .map { field ->
-        if (field.responseName == CodeGenerationAst.typenameField.responseName) {
-          CodeBlock.of(
-              "var·%L:·%T·=·%L",
-              field.name.escapeKotlinReservedWord(),
-              field.type.asTypeName().copy(nullable = true),
-              if (isTypeCase) "__typename" else "null"
-          )
-        } else {
-          CodeBlock.of(
-              "var·%L:·%T·=·null",
-              field.name.escapeKotlinReservedWord(),
-              field.type.asTypeName().copy(nullable = true)
-          )
-        }
-      }
-      .joinToCode(separator = "\n", suffix = "\n")
-
-  val selectFieldsCode = CodeBlock.builder()
-      .beginControlFlow("while(true)")
-      .beginControlFlow("when·(reader.selectName(RESPONSE_NAMES))")
-      .add(
-          this.fields.mapIndexed { fieldIndex, field ->
-            CodeBlock.of(
-                "%L·->·%L·=·%L",
-                fieldIndex,
-                field.name.escapeKotlinReservedWord(),
-                field.type.fromResponseCode()
-            )
-          }.joinToCode(separator = "\n", suffix = "\n")
-      )
-      .addStatement("else -> break")
-      .endControlFlow()
-      .endControlFlow()
-      .build()
+  val fieldVariablesCode = this.fieldVariablesCode()
+  val selectFieldsCode = this.selectFieldsCode()
 
   val typeConstructorCode = CodeBlock.builder()
       .addStatement("%T(", this.typeRef.asTypeName())
@@ -85,17 +56,59 @@ private fun CodeGenerationAst.ObjectType.readObjectFromResponseFunSpec(): FunSpe
       .addCode(CodeBlock
           .builder()
           .add(fieldVariablesCode)
-          .applyIf(!isTypeCase) {addStatement("reader.beginObject()")}
+          .addStatement("")
+          .applyIf(!isTypeCase) { addStatement("reader.beginObject()") }
           .add(selectFieldsCode)
-          .applyIf(!isTypeCase) {addStatement("reader.endObject()")}
+          .applyIf(!isTypeCase) { addStatement("reader.endObject()") }
           .add("return·%L", typeConstructorCode)
           .build()
       )
       .build()
 }
 
-private fun CodeGenerationAst.ObjectType.readFragmentFromResponseFunSpec(): FunSpec {
-  val (defaultImplementation, possibleImplementations) = with(this.kind as CodeGenerationAst.ObjectType.Kind.Fragment) {
+private fun CodeGenerationAst.ObjectType.fieldVariablesCode(): CodeBlock {
+  return this.fields
+      .map { field ->
+        if (field.responseName == CodeGenerationAst.typenameField.responseName) {
+          CodeBlock.of(
+              "var·%L:·%T·=·%L",
+              field.name.escapeKotlinReservedWord(),
+              field.type.asTypeName().copy(nullable = true),
+              if (isTypeCase) "__typename" else "null"
+          )
+        } else {
+          CodeBlock.of(
+              "var·%L:·%T·=·null",
+              field.name.escapeKotlinReservedWord(),
+              field.type.asTypeName().copy(nullable = true)
+          )
+        }
+      }
+      .joinToCode(separator = "\n")
+}
+
+private fun CodeGenerationAst.ObjectType.selectFieldsCode(): CodeBlock {
+  return CodeBlock.builder()
+      .beginControlFlow("while(true)")
+      .beginControlFlow("when·(reader.selectName(RESPONSE_NAMES))")
+      .add(
+          this.fields.mapIndexed { fieldIndex, field ->
+            CodeBlock.of(
+                "%L·->·%L·=·%L",
+                fieldIndex,
+                field.name.escapeKotlinReservedWord(),
+                field.type.fromResponseCode()
+            )
+          }.joinToCode(separator = "\n", suffix = "\n")
+      )
+      .addStatement("else -> break")
+      .endControlFlow()
+      .endControlFlow()
+      .build()
+}
+
+private fun CodeGenerationAst.ObjectType.readFragmentFromStreamResponseFunSpec(): FunSpec {
+  val (defaultImplementation, possibleImplementations) = with(this.kind as CodeGenerationAst.ObjectType.Kind.ObjectWithFragments) {
     defaultImplementation to possibleImplementations
   }
   return FunSpec.builder("fromResponse")
@@ -105,37 +118,111 @@ private fun CodeGenerationAst.ObjectType.readFragmentFromResponseFunSpec(): FunS
       .applyIf(possibleImplementations.isEmpty()) {
         addStatement(
             "return·%T.fromResponse(reader)",
-            defaultImplementation.asAdapterTypeName()
+            defaultImplementation!!.asAdapterTypeName()
         )
       }
       .applyIf(possibleImplementations.isNotEmpty()) {
         addStatement("reader.beginObject()")
         addStatement("check(reader.nextName() == \"__typename\")")
         addStatement("val·typename·=·reader.nextString()")
-        addStatement(
-            "",
-            CodeGenerationAst.typenameField.responseName.escapeKotlinReservedWord(),
-            ResponseField::class.java
-        )
         beginControlFlow("return·when(typename)")
         addCode(
             possibleImplementations
-                .map { (typeCondition, typeRef) ->
-                  CodeBlock.of(
-                      "%S·->·${kotlinNameForTypeCaseAdapterField(typeRef)}.fromResponse(reader,·typename)",
-                      typeCondition,
-                  )
+                .flatMap { fragmentImplementation ->
+                  fragmentImplementation.typeConditions.map { typeCondition ->
+                    CodeBlock.of(
+                        "%S·->·%L.fromResponse(reader,·typename)",
+                        typeCondition,
+                        kotlinNameForTypeCaseAdapterField(fragmentImplementation.typeRef),
+                    )
+                  }
                 }
                 .joinToCode(separator = "\n", suffix = "\n")
         )
         addStatement(
-            "else·->·${kotlinNameForTypeCaseAdapterField(defaultImplementation)}.fromResponse(reader,·typename)",
+            "else·->·${kotlinNameForTypeCaseAdapterField(defaultImplementation!!)}.fromResponse(reader,·typename)",
             defaultImplementation.asAdapterTypeName()
         )
         endControlFlow()
         addStatement(".also { reader.endObject() }")
 
       }
+      .build()
+}
+
+private fun CodeGenerationAst.ObjectType.readFragmentFromBufferedResponseFunSpec(): FunSpec {
+  val possibleImplementations = (this.kind as CodeGenerationAst.ObjectType.Kind.ObjectWithFragments).possibleImplementations
+
+  val fragmentVariablesCode = possibleImplementations.map { fragmentImplementation ->
+    CodeBlock.of(
+        "var·%L:·%T·=·null",
+        fragmentImplementation.typeRef.fragmentVariableName(),
+        fragmentImplementation.typeRef.asTypeName().copy(nullable = true)
+    )
+  }.joinToCode(separator = "\n", suffix = "\n")
+
+  val readFragmentsCode = possibleImplementations.map { fragmentImplementation ->
+    val possibleTypenamesArray = fragmentImplementation.typeConditions
+        .map { CodeBlock.of("%S", it) }
+        .joinToCode(separator = ", ")
+    CodeBlock.builder()
+        .beginControlFlow("if·(__typename in arrayOf(%L))", possibleTypenamesArray)
+        .addStatement("reader.rewind()")
+        .run {
+          if (fragmentImplementation.typeRef.isNamedFragmentDataRef) {
+            addStatement(
+                "%L·=·%L.fromResponse(reader)",
+                fragmentImplementation.typeRef.fragmentVariableName(),
+                kotlinNameForTypeCaseAdapterField(fragmentImplementation.typeRef.enclosingType!!)
+            )
+          } else {
+            addStatement(
+                "%L·=·%L.fromResponse(reader,·__typename)",
+                fragmentImplementation.typeRef.fragmentVariableName(),
+                kotlinNameForTypeCaseAdapterField(fragmentImplementation.typeRef)
+            )
+          }
+        }
+        .endControlFlow()
+        .build()
+  }.joinToCode(separator = "", suffix = "\n")
+
+  val typeConstructorCode = CodeBlock.builder()
+      .addStatement("return·%T(", this.typeRef.asTypeName())
+      .indent()
+      .add(
+          this.fields.map { field ->
+            CodeBlock.of(
+                "%L·=·%L%L",
+                field.name.escapeKotlinReservedWord(),
+                field.name.escapeKotlinReservedWord(),
+                "!!".takeUnless { field.type.nullable } ?: ""
+            )
+          }.joinToCode(separator = ",\n", suffix = ",\n")
+      )
+      .add(
+          possibleImplementations.map { fragmentImplementation ->
+            val propertyName = fragmentImplementation.typeRef.fragmentVariableName()
+            CodeBlock.of("%L·=·%L", propertyName, propertyName)
+          }.joinToCode(separator = ",\n", suffix = "\n")
+      )
+      .unindent()
+      .addStatement(")")
+      .build()
+
+  return FunSpec.builder("fromResponse")
+      .addModifiers(KModifier.OVERRIDE)
+      .returns(this.typeRef.asTypeName())
+      .addParameter(ParameterSpec.builder("reader", JsonReader::class).build())
+      .addStatement("val reader = reader.%M()", MemberName(MapJsonReader.Companion::class.asClassName(), "buffer"))
+      .addStatement("reader.beginObject()\n")
+      .addCode(this.fieldVariablesCode())
+      .addStatement("")
+      .addCode(fragmentVariablesCode)
+      .addCode(this.selectFieldsCode())
+      .addCode(readFragmentsCode)
+      .addCode(typeConstructorCode)
+      .addStatement(".also { reader.endObject() }")
       .build()
 }
 

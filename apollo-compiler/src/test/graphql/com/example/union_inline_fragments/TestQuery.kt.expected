@@ -52,11 +52,13 @@ class TestQuery : Query<TestQuery.Data> {
   ) : Query.Data {
     fun searchFilterNotNull(): List<Search>? = search?.filterNotNull()
 
-    interface Search {
-      val __typename: String
-
-      data class CharacterSearch(
-        override val __typename: String,
+    data class Search(
+      val __typename: String = "SearchResult",
+      val asAsCharacter: AsCharacter?,
+      val asAsStarship: AsStarship?
+    ) {
+      data class AsCharacter(
+        val __typename: String,
         /**
          * The ID of the character
          */
@@ -69,19 +71,58 @@ class TestQuery : Query<TestQuery.Data> {
          * The friends of the character, or an empty list if they have none
          */
         val friends: List<Friends?>?
-      ) : Search {
+      ) {
+        fun friendsFilterNotNull(): List<Friends>? = friends?.filterNotNull()
+
         /**
          * A character from the Star Wars universe
          */
-        interface Friends {
-          val __typename: String
-
-          data class CharacterDroidFriends(
-            override val __typename: String,
+        data class Friends(
+          val __typename: String = "Character",
+          val asAsCharacter: AsCharacter?,
+          val asAsHuman: AsHuman?,
+          val asAsDroid: AsDroid?
+        ) {
+          data class AsCharacter(
+            val __typename: String,
             /**
              * The name of the character
              */
-            val name: String,
+            val name: String
+          )
+
+          data class AsHuman(
+            val __typename: String,
+            /**
+             * The home planet of the human, or null if unknown
+             */
+            val homePlanet: String?,
+            /**
+             * This human's friends, or an empty list if they have none
+             */
+            val friends: List<Friends?>?
+          ) {
+            fun friendsFilterNotNull(): List<Friends>? = friends?.filterNotNull()
+
+            /**
+             * A character from the Star Wars universe
+             */
+            data class Friends(
+              val __typename: String = "Character",
+              val asAsCharacter: AsCharacter?
+            ) {
+              data class AsCharacter(
+                val __typename: String,
+                /**
+                 * The movie this character first appears in
+                 */
+                val firstAppearsIn: Episode
+              )
+            }
+          }
+
+          data class AsDroid(
+            val __typename: String,
             /**
              * This droid's primary function
              */
@@ -90,7 +131,9 @@ class TestQuery : Query<TestQuery.Data> {
              * This droid's friends, or an empty list if they have none
              */
             val friends: List<Friends?>?
-          ) : Friends {
+          ) {
+            fun friendsFilterNotNull(): List<Friends>? = friends?.filterNotNull()
+
             /**
              * A character from the Star Wars universe
              */
@@ -101,77 +144,16 @@ class TestQuery : Query<TestQuery.Data> {
               val id: String
             )
           }
-
-          data class CharacterHumanFriends(
-            override val __typename: String,
-            /**
-             * The name of the character
-             */
-            val name: String,
-            /**
-             * The home planet of the human, or null if unknown
-             */
-            val homePlanet: String?,
-            /**
-             * This human's friends, or an empty list if they have none
-             */
-            val friends: List<Friends?>?
-          ) : Friends {
-            /**
-             * A character from the Star Wars universe
-             */
-            interface Friends {
-              val __typename: String
-
-              data class CharacterFriends(
-                override val __typename: String,
-                /**
-                 * The movie this character first appears in
-                 */
-                val firstAppearsIn: Episode
-              ) : Friends
-
-              data class OtherFriends(
-                override val __typename: String
-              ) : Friends
-
-              companion object {
-                fun Friends.asCharacterFriends(): CharacterFriends? = this as? CharacterFriends
-              }
-            }
-          }
-
-          data class OtherFriends(
-            override val __typename: String
-          ) : Friends
-
-          companion object {
-            fun Friends.asCharacterDroidFriends(): CharacterDroidFriends? = this as?
-                CharacterDroidFriends
-
-            fun Friends.asCharacterHumanFriends(): CharacterHumanFriends? = this as?
-                CharacterHumanFriends
-          }
         }
       }
 
-      data class StarshipSearch(
-        override val __typename: String,
+      data class AsStarship(
+        val __typename: String,
         /**
          * The name of the starship
          */
         val name: String
-      ) : Search
-
-      data class OtherSearch(
-        override val __typename: String
-      ) : Search
-
-      companion object {
-        fun Search.asCharacterSearch(): CharacterSearch? = this as? CharacterSearch
-
-        fun Search.asStarshipSearch(): StarshipSearch? = this as? StarshipSearch
-      }
+      )
     }
   }
 

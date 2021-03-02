@@ -62,9 +62,8 @@ internal data class CodeGenerationAst(
       val schemaTypename: String?,
       val fragmentAccessors: List<FragmentAccessor>,
       val isTypeCase: Boolean,
+      val abstract: Boolean
   ) {
-    val abstract: Boolean = kind == Kind.Interface || kind is Kind.Fragment
-
     data class FragmentAccessor(val name: String, val typeRef: TypeRef)
 
     sealed class Kind {
@@ -72,13 +71,18 @@ internal data class CodeGenerationAst(
 
       object Object : Kind()
 
-      data class Fragment(
-          val defaultImplementation: TypeRef,
-          val possibleImplementations: Map<String, TypeRef>,
+      data class ObjectWithFragments(
+          val defaultImplementation: TypeRef?,
+          val possibleImplementations: List<FragmentImplementation>,
       ) : Kind()
 
       data class FragmentDelegate(val fragmentTypeRef: TypeRef) : Kind()
     }
+
+    data class FragmentImplementation(
+        val typeConditions: List<String>,
+        val typeRef: TypeRef
+    )
   }
 
   data class Field(
@@ -90,7 +94,7 @@ internal data class CodeGenerationAst(
       val deprecationReason: String?,
       val arguments: Map<String, Any?>,
       val conditions: Set<Condition>,
-      val override: Boolean
+      val override: Boolean,
   ) {
     sealed class Condition {
       data class Directive(val variableName: String, val inverted: Boolean) : Condition()
@@ -252,6 +256,10 @@ internal data class CodeGenerationAst(
        * Example: for a 'friend: Character' field, name will be "Friend"
        */
       val name: String,
+      /**
+       * Indicates if this is the reference to named fragment 'Data' type
+       */
+      val isNamedFragmentDataRef: Boolean
   )
 
   companion object {

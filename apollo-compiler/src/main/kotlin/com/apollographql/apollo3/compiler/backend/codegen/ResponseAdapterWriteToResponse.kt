@@ -11,9 +11,11 @@ import com.squareup.kotlinpoet.ParameterSpec
 import com.squareup.kotlinpoet.asTypeName
 import com.squareup.kotlinpoet.joinToCode
 
-internal fun CodeGenerationAst.ObjectType.writeToResponseFunSpec(): FunSpec {
+internal fun CodeGenerationAst.ObjectType.writeToResponseFunSpec(generateFragmentsAsInterfaces: Boolean): FunSpec {
   return when (this.kind) {
-    is CodeGenerationAst.ObjectType.Kind.Fragment -> writeFragmentToResponseFunSpec()
+    is CodeGenerationAst.ObjectType.Kind.ObjectWithFragments -> {
+      if (generateFragmentsAsInterfaces) writeFragmentAsInterfacesToResponseFunSpec() else writeFragmentAsClassesToResponseFunSpec()
+    }
     is CodeGenerationAst.ObjectType.Kind.FragmentDelegate -> writeFragmentDelegateToResponseFunSpec()
     else -> writeObjectToResponseFunSpec()
   }
@@ -38,8 +40,8 @@ private fun CodeGenerationAst.ObjectType.writeFragmentDelegateToResponseFunSpec(
       .build()
 }
 
-private fun CodeGenerationAst.ObjectType.writeFragmentToResponseFunSpec(): FunSpec {
-  val (defaultImplementation, possibleImplementations) = with(this.kind as CodeGenerationAst.ObjectType.Kind.Fragment) {
+private fun CodeGenerationAst.ObjectType.writeFragmentAsInterfacesToResponseFunSpec(): FunSpec {
+  val (defaultImplementation, possibleImplementations) = with(this.kind as CodeGenerationAst.ObjectType.Kind.ObjectWithFragments) {
     defaultImplementation to possibleImplementations
   }
   return FunSpec.builder("toResponse")
@@ -48,29 +50,54 @@ private fun CodeGenerationAst.ObjectType.writeFragmentToResponseFunSpec(): FunSp
       .addParameter(ParameterSpec(name = "value", type = this.typeRef.asTypeName()))
       .applyIf(possibleImplementations.isEmpty()) {
         addCode(
-            this@writeFragmentToResponseFunSpec.fields.writeCode()
+            this@writeFragmentAsInterfacesToResponseFunSpec.fields.writeCode()
         )
       }
       .applyIf(possibleImplementations.isNotEmpty()) {
         beginControlFlow("when(value)")
         addCode(
-            possibleImplementations
-                .values
-                .distinct()
-                .map { type ->
-                  CodeBlock.of(
-                      "is·%T·->·${kotlinNameForTypeCaseAdapterField(type)}.toResponse(writer,·value)",
-                      type.asTypeName(),
-                  )
-                }
-                .joinToCode(separator = "\n", suffix = "\n")
+            possibleImplementations.map { fragmentImplementation ->
+              CodeBlock.of(
+                  "is·%T·->·%L.toResponse(writer,·value)",
+                  fragmentImplementation.typeRef.asTypeName(),
+                  kotlinNameForTypeCaseAdapterField(fragmentImplementation.typeRef),
+              )
+            }.joinToCode(separator = "\n", suffix = "\n")
         )
         addStatement(
-            "is·%T·->·${kotlinNameForTypeCaseAdapterField(defaultImplementation)}.toResponse(writer,·value)",
+            "is·%T·->·${kotlinNameForTypeCaseAdapterField(defaultImplementation!!)}.toResponse(writer,·value)",
             defaultImplementation.asTypeName(),
         )
         endControlFlow()
       }
+      .build()
+}
+
+private fun CodeGenerationAst.ObjectType.writeFragmentAsClassesToResponseFunSpec(): FunSpec {
+  val writeFieldsCode = this.fields
+      .map { field -> field.writeCode() }
+      .joinToCode(separator = "\n")
+
+  val possibleImplementations = (this.kind as CodeGenerationAst.ObjectType.Kind.ObjectWithFragments).possibleImplementations
+
+  val writeFragmentsCode = possibleImplementations.map { fragmentImplementation ->
+    val propertyName = fragmentImplementation.typeRef.fragmentVariableName()
+    CodeBlock.of(
+        "if (value.%L != null) %L.toResponse(writer, value.%L)",
+        propertyName,
+        fragmentImplementation.typeRef.fragmentResponseAdapterVariableName(),
+        propertyName,
+    )
+  }.joinToCode(separator = "\n", suffix = "\n")
+
+  return FunSpec.builder("toResponse")
+      .addModifiers(KModifier.OVERRIDE)
+      .addParameter(ParameterSpec(name = "writer", type = JsonWriter::class.asTypeName()))
+      .addParameter(ParameterSpec(name = "value", type = this.typeRef.asTypeName()))
+      .addStatement("writer.beginObject()")
+      .addCode(writeFieldsCode)
+      .addCode(writeFragmentsCode)
+      .addStatement("writer.endObject()")
       .build()
 }
 
@@ -83,6 +110,7 @@ internal fun List<CodeGenerationAst.Field>.writeCode(): CodeBlock {
   builder.addStatement("writer.endObject()")
   return builder.build()
 }
+
 private fun CodeGenerationAst.Field.writeCode(): CodeBlock {
   return CodeBlock.builder().apply {
     addStatement("writer.name(%S)", name)

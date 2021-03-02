@@ -14,7 +14,6 @@ import com.apollographql.apollo3.api.json.JsonWriter
 import com.example.inline_frgament_intersection.adapter.TestOperation_Adapter
 import com.example.inline_frgament_intersection.adapter.TestOperation_ResponseAdapter
 import com.example.inline_frgament_intersection.type.Race
-import kotlin.Boolean
 import kotlin.Double
 import kotlin.String
 import kotlin.Suppress
@@ -49,81 +48,37 @@ class TestOperation : Query<TestOperation.Data> {
   data class Data(
     val random: Random
   ) : Query.Data {
-    interface Random {
-      val __typename: String
-
-      data class BeingHumanRandom(
-        override val __typename: String,
+    data class Random(
+      val __typename: String = "Anything",
+      val asAsBeing: AsBeing?,
+      val asAsWookie: AsWookie?
+    ) {
+      data class AsBeing(
+        val __typename: String,
         val name: String,
-        val friends: List<Friends>,
-        val profilePictureUrl: String?
-      ) : Random {
-        interface Friends {
-          val __typename: String
-
-          val name: String
-
-          val isFamous: Boolean?
-
-          data class WookieFriends(
-            override val __typename: String,
-            override val name: String,
-            override val isFamous: Boolean?,
-            val lifeExpectancy: Double?,
-            val race: Race
-          ) : Friends
-
-          data class OtherFriends(
-            override val __typename: String,
-            override val name: String,
-            override val isFamous: Boolean?
-          ) : Friends
-
-          companion object {
-            fun Friends.asWookieFriends(): WookieFriends? = this as? WookieFriends
-          }
+        val friends: List<Friends>
+      ) {
+        data class Friends(
+          val __typename: String = "Being",
+          val name: String,
+          val asAsWookie: AsWookie?
+        ) {
+          data class AsWookie(
+            val __typename: String,
+            val name: String,
+            val lifeExpectancy: Double?
+          )
         }
       }
 
-      data class BeingWookieRandom(
-        override val __typename: String,
-        val name: String,
-        val friends: List<Friends>,
-        val race: Race
-      ) : Random {
-        interface Friends {
-          val __typename: String
-
-          val name: String
-
+      data class AsWookie(
+        val __typename: String,
+        val race: Race,
+        val friends: List<Friends>
+      ) {
+        data class Friends(
           val lifeExpectancy: Double?
-
-          data class WookieFriends(
-            override val __typename: String,
-            override val name: String,
-            override val lifeExpectancy: Double?
-          ) : Friends
-
-          data class OtherFriends(
-            override val __typename: String,
-            override val name: String,
-            override val lifeExpectancy: Double?
-          ) : Friends
-
-          companion object {
-            fun Friends.asWookieFriends(): WookieFriends? = this as? WookieFriends
-          }
-        }
-      }
-
-      data class OtherRandom(
-        override val __typename: String
-      ) : Random
-
-      companion object {
-        fun Random.asBeingHumanRandom(): BeingHumanRandom? = this as? BeingHumanRandom
-
-        fun Random.asBeingWookieRandom(): BeingWookieRandom? = this as? BeingWookieRandom
+        )
       }
     }
   }

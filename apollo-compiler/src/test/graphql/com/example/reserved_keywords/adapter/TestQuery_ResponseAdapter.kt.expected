@@ -11,6 +11,7 @@ import com.apollographql.apollo3.api.ResponseAdapter
 import com.apollographql.apollo3.api.ResponseAdapterCache
 import com.apollographql.apollo3.api.ResponseField
 import com.apollographql.apollo3.api.StringResponseAdapter
+import com.apollographql.apollo3.api.internal.json.MapJsonReader.Companion.buffer
 import com.apollographql.apollo3.api.json.JsonReader
 import com.apollographql.apollo3.api.json.JsonWriter
 import com.example.reserved_keywords.TestQuery
@@ -76,9 +77,8 @@ class TestQuery_ResponseAdapter(
         arguments = mapOf<String, Any?>(
           "text" to "abc"),
         fieldSets = listOf(
-          ResponseField.FieldSet("Human", Objects.CharacterObjects.RESPONSE_FIELDS),
-          ResponseField.FieldSet("Droid", Objects.CharacterObjects.RESPONSE_FIELDS),
-          ResponseField.FieldSet(null, Objects.OtherObjects.RESPONSE_FIELDS),
+          ResponseField.FieldSet("Droid", Objects.AsCharacter.RESPONSE_FIELDS),
+          ResponseField.FieldSet("Human", Objects.AsCharacter.RESPONSE_FIELDS),
         ),
       )
     )
@@ -138,39 +138,58 @@ class TestQuery_ResponseAdapter(
   class Objects(
     responseAdapterCache: ResponseAdapterCache
   ) : ResponseAdapter<TestQuery.Data.Objects> {
-    val CharacterObjectsAdapter: CharacterObjects =
-        com.example.reserved_keywords.adapter.TestQuery_ResponseAdapter.Objects.CharacterObjects(responseAdapterCache)
+    private val stringAdapter: ResponseAdapter<String> = StringResponseAdapter
 
-    val OtherObjectsAdapter: OtherObjects =
-        com.example.reserved_keywords.adapter.TestQuery_ResponseAdapter.Objects.OtherObjects(responseAdapterCache)
+    private val AsCharacterAdapter: AsCharacter =
+        com.example.reserved_keywords.adapter.TestQuery_ResponseAdapter.Objects.AsCharacter(responseAdapterCache)
 
     override fun fromResponse(reader: JsonReader): TestQuery.Data.Objects {
+      val reader = reader.buffer()
       reader.beginObject()
-      check(reader.nextName() == "__typename")
-      val typename = reader.nextString()
 
-      return when(typename) {
-        "Human" -> CharacterObjectsAdapter.fromResponse(reader, typename)
-        "Droid" -> CharacterObjectsAdapter.fromResponse(reader, typename)
-        else -> OtherObjectsAdapter.fromResponse(reader, typename)
+      var __typename: String? = null
+      var asAsCharacter: TestQuery.Data.Objects.AsCharacter? = null
+      while(true) {
+        when (reader.selectName(RESPONSE_NAMES)) {
+          0 -> __typename = stringAdapter.fromResponse(reader)
+          else -> break
+        }
       }
+      if (__typename in arrayOf("Droid", "Human")) {
+        reader.rewind()
+        asAsCharacter = AsCharacterAdapter.fromResponse(reader, __typename)
+      }
+
+      return TestQuery.Data.Objects(
+        __typename = __typename!!,
+        asAsCharacter = asAsCharacter
+      )
       .also { reader.endObject() }
     }
 
     override fun toResponse(writer: JsonWriter, value: TestQuery.Data.Objects) {
-      when(value) {
-        is TestQuery.Data.Objects.CharacterObjects -> CharacterObjectsAdapter.toResponse(writer, value)
-        is TestQuery.Data.Objects.OtherObjects -> OtherObjectsAdapter.toResponse(writer, value)
-      }
+      writer.beginObject()
+      writer.name("__typename")
+      stringAdapter.toResponse(writer, value.__typename)
+      if (value.asAsCharacter != null) AsCharacterAdapter.toResponse(writer, value.asAsCharacter)
+      writer.endObject()
     }
 
-    class CharacterObjects(
+    companion object {
+      val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
+        ResponseField.Typename
+      )
+
+      val RESPONSE_NAMES: List<String> = RESPONSE_FIELDS.map { it.responseName }
+    }
+
+    class AsCharacter(
       responseAdapterCache: ResponseAdapterCache
     ) {
       private val stringAdapter: ResponseAdapter<String> = StringResponseAdapter
 
       fun fromResponse(reader: JsonReader, __typename: String?):
-          TestQuery.Data.Objects.CharacterObjects {
+          TestQuery.Data.Objects.AsCharacter {
         var __typename: String? = __typename
         var name: String? = null
         while(true) {
@@ -180,13 +199,13 @@ class TestQuery_ResponseAdapter(
             else -> break
           }
         }
-        return TestQuery.Data.Objects.CharacterObjects(
+        return TestQuery.Data.Objects.AsCharacter(
           __typename = __typename!!,
           name = name!!
         )
       }
 
-      fun toResponse(writer: JsonWriter, value: TestQuery.Data.Objects.CharacterObjects) {
+      fun toResponse(writer: JsonWriter, value: TestQuery.Data.Objects.AsCharacter) {
         writer.beginObject()
         writer.name("__typename")
         stringAdapter.toResponse(writer, value.__typename)
@@ -202,41 +221,6 @@ class TestQuery_ResponseAdapter(
             type = ResponseField.Type.NotNull(ResponseField.Type.Named.Other("String")),
             fieldName = "name",
           )
-        )
-
-        val RESPONSE_NAMES: List<String> = RESPONSE_FIELDS.map { it.responseName }
-      }
-    }
-
-    class OtherObjects(
-      responseAdapterCache: ResponseAdapterCache
-    ) {
-      private val stringAdapter: ResponseAdapter<String> = StringResponseAdapter
-
-      fun fromResponse(reader: JsonReader, __typename: String?):
-          TestQuery.Data.Objects.OtherObjects {
-        var __typename: String? = __typename
-        while(true) {
-          when (reader.selectName(RESPONSE_NAMES)) {
-            0 -> __typename = stringAdapter.fromResponse(reader)
-            else -> break
-          }
-        }
-        return TestQuery.Data.Objects.OtherObjects(
-          __typename = __typename!!
-        )
-      }
-
-      fun toResponse(writer: JsonWriter, value: TestQuery.Data.Objects.OtherObjects) {
-        writer.beginObject()
-        writer.name("__typename")
-        stringAdapter.toResponse(writer, value.__typename)
-        writer.endObject()
-      }
-
-      companion object {
-        val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
-          ResponseField.Typename
         )
 
         val RESPONSE_NAMES: List<String> = RESPONSE_FIELDS.map { it.responseName }

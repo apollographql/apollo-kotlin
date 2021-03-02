@@ -17,7 +17,6 @@ import com.squareup.kotlinpoet.ClassName
 import com.squareup.kotlinpoet.CodeBlock
 import com.squareup.kotlinpoet.FunSpec
 import com.squareup.kotlinpoet.KModifier
-import com.squareup.kotlinpoet.MemberName
 import com.squareup.kotlinpoet.ParameterSpec
 import com.squareup.kotlinpoet.ParameterizedTypeName.Companion.parameterizedBy
 import com.squareup.kotlinpoet.PropertySpec
@@ -26,29 +25,37 @@ import com.squareup.kotlinpoet.asClassName
 import com.squareup.kotlinpoet.asTypeName
 import com.squareup.kotlinpoet.joinToCode
 
-internal fun CodeGenerationAst.OperationType.responseAdapterTypeSpec(generateAsInternal: Boolean = false): TypeSpec {
+internal fun CodeGenerationAst.OperationType.responseAdapterTypeSpec(
+    generateAsInternal: Boolean,
+    generateFragmentsAsInterfaces: Boolean,
+): TypeSpec {
   return this.dataType
       .copy(name = "${this.name.escapeKotlinReservedWord()}_ResponseAdapter")
-      .rootResponseAdapterTypeSpec(generateAsInternal)
+      .rootResponseAdapterTypeSpec(generateAsInternal, generateFragmentsAsInterfaces)
 }
 
-internal fun CodeGenerationAst.FragmentType.responseAdapterTypeSpec(generateAsInternal: Boolean = false): TypeSpec {
+internal fun CodeGenerationAst.FragmentType.responseAdapterTypeSpec(
+    generateAsInternal: Boolean,
+    generateFragmentsAsInterfaces: Boolean,
+): TypeSpec {
   val dataType = this.implementationType.nestedObjects.single()
   return dataType
       .copy(name = "${this.implementationType.name.escapeKotlinReservedWord()}_ResponseAdapter")
-      .rootResponseAdapterTypeSpec(generateAsInternal)
+      .rootResponseAdapterTypeSpec(generateAsInternal, generateFragmentsAsInterfaces)
 }
 
-private fun CodeGenerationAst.ObjectType.rootResponseAdapterTypeSpec(generateAsInternal: Boolean = false): TypeSpec {
-  return this.responseAdapterTypeSpec()
+private fun CodeGenerationAst.ObjectType.rootResponseAdapterTypeSpec(
+    generateAsInternal: Boolean,
+    generateFragmentsAsInterfaces: Boolean,
+): TypeSpec {
+  return this.responseAdapterTypeSpec(generateFragmentsAsInterfaces)
       .toBuilder()
       .applyIf(generateAsInternal) { addModifiers(KModifier.INTERNAL) }
       .addAnnotation(suppressWarningsAnnotation)
       .build()
 }
 
-private fun CodeGenerationAst.ObjectType.responseAdapterTypeSpec(): TypeSpec {
-
+private fun CodeGenerationAst.ObjectType.responseAdapterTypeSpec(generateFragmentsAsInterfaces: Boolean): TypeSpec {
   return TypeSpec.classBuilder(this.name)
       .primaryConstructor(
           FunSpec.constructorBuilder()
@@ -58,34 +65,34 @@ private fun CodeGenerationAst.ObjectType.responseAdapterTypeSpec(): TypeSpec {
       .applyIf(!isTypeCase) { addSuperinterface(ResponseAdapter::class.asTypeName().parameterizedBy(this@responseAdapterTypeSpec.typeRef.asTypeName())) }
       .apply {
         if (fields.isNotEmpty()) {
-          if (kind is CodeGenerationAst.ObjectType.Kind.Object) {
+          if (kind is CodeGenerationAst.ObjectType.Kind.Object ||
+              (kind is CodeGenerationAst.ObjectType.Kind.ObjectWithFragments && !generateFragmentsAsInterfaces)) {
             addType(companionObjectTypeSpec(this@responseAdapterTypeSpec))
             addProperties(adapterPropertySpecs(this@responseAdapterTypeSpec))
-          } else if (kind is CodeGenerationAst.ObjectType.Kind.Fragment) {
+          }
+
+          if (kind is CodeGenerationAst.ObjectType.Kind.ObjectWithFragments) {
             addProperties(objectAdapterPropertySpecs(kind))
           }
         }
       }
-      .addFunction(readFromResponseFunSpec())
-      .addFunction(writeToResponseFunSpec())
+      .addFunction(readFromResponseFunSpec(generateFragmentsAsInterfaces))
+      .addFunction(writeToResponseFunSpec(generateFragmentsAsInterfaces))
       .addTypes(
-          this.nestedObjects
-              .mapNotNull { nestedObject ->
-                when {
-                  nestedObject.kind is CodeGenerationAst.ObjectType.Kind.Object ||
-                  (nestedObject.kind is CodeGenerationAst.ObjectType.Kind.Fragment && nestedObject.kind.possibleImplementations.isNotEmpty()) -> {
-                    nestedObject.responseAdapterTypeSpec()
-                  }
-                  else -> null
-                }
-              }
+          this.nestedObjects.mapNotNull { nestedObject ->
+            if (nestedObject.kind is CodeGenerationAst.ObjectType.Kind.Object ||
+                (nestedObject.kind is CodeGenerationAst.ObjectType.Kind.ObjectWithFragments && nestedObject.kind.possibleImplementations.isNotEmpty())) {
+              nestedObject.responseAdapterTypeSpec(generateFragmentsAsInterfaces)
+            } else null
+          }
       )
       .build()
 }
 
-private fun objectAdapterPropertySpecs(kind: CodeGenerationAst.ObjectType.Kind.Fragment): Iterable<PropertySpec> {
-  return (kind.possibleImplementations.values.distinct() + kind.defaultImplementation).map { typeRef ->
-    PropertySpec.builder(kotlinNameForTypeCaseAdapterField(typeRef), typeRef.asAdapterTypeName())
+private fun objectAdapterPropertySpecs(kind: CodeGenerationAst.ObjectType.Kind.ObjectWithFragments): Iterable<PropertySpec> {
+  return (kind.possibleImplementations.map { it.typeRef } + kind.defaultImplementation).distinct().filterNotNull().map { typeRef ->
+    PropertySpec.builder(typeRef.fragmentResponseAdapterVariableName(), typeRef.asAdapterTypeName())
+        .addModifiers(KModifier.PRIVATE)
         .initializer("%L(responseAdapterCache)", typeRef.asAdapterTypeName())
         .build()
   }
@@ -269,11 +276,15 @@ private fun fieldSetsCode(type: CodeGenerationAst.FieldType, objectType: CodeGen
         is CodeGenerationAst.ObjectType.Kind.Object -> {
           builder.add("%T(null, %T.RESPONSE_FIELDS)\n", ResponseField.FieldSet::class, leafType.typeRef.asAdapterTypeName())
         }
-        is CodeGenerationAst.ObjectType.Kind.Fragment -> {
-          kind.possibleImplementations.forEach {
-            builder.add("%T(%S, %T.RESPONSE_FIELDS),\n", ResponseField.FieldSet::class, it.key, it.value.asAdapterTypeName())
+        is CodeGenerationAst.ObjectType.Kind.ObjectWithFragments -> {
+          kind.possibleImplementations.forEach { (possibleTypes, typeRef) ->
+            possibleTypes.forEach { possibleType ->
+              builder.add("%T(%S, %T.RESPONSE_FIELDS),\n", ResponseField.FieldSet::class, possibleType, typeRef.asAdapterTypeName())
+            }
           }
-          builder.add("%T(null, %T.RESPONSE_FIELDS),\n", ResponseField.FieldSet::class, kind.defaultImplementation.asAdapterTypeName())
+          if (kind.defaultImplementation != null) {
+            builder.add("%T(null, %T.RESPONSE_FIELDS),\n", ResponseField.FieldSet::class, kind.defaultImplementation.asAdapterTypeName())
+          }
         }
       }
       builder.unindent()

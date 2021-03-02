@@ -103,7 +103,8 @@ class GraphQLCompiler(val logger: Logger = NoOpLogger) {
     val backendIr = BackendIrBuilder(
         schema = schema,
         useSemanticNaming = args.useSemanticNaming,
-        packageNameProvider = packageNameProvider
+        packageNameProvider = packageNameProvider,
+        generateFragmentsAsInterfaces = args.generateFragmentsAsInterfaces,
     ).buildBackendIR(frontendIr)
 
     val operationOutput = backendIr.operations.map {
@@ -162,6 +163,7 @@ class GraphQLCompiler(val logger: Logger = NoOpLogger) {
         typesPackageName = "$schemaPackageName.type".removePrefix("."),
         fragmentsPackageName = "$schemaPackageName.fragment".removePrefix("."),
         generateFragmentImplementations = args.generateFragmentImplementations,
+        generateFragmentsAsInterfaces = args.generateFragmentsAsInterfaces,
     ).write(args.outputDir)
 
     args.metadataOutputFile.parentFile.mkdirs()
@@ -308,5 +310,6 @@ class GraphQLCompiler(val logger: Logger = NoOpLogger) {
        */
       val generateFilterNotNull: Boolean = false,
       val enumAsSealedClassPatternFilters: Set<String> = emptySet(),
+      val generateFragmentsAsInterfaces: Boolean = true
   )
 }

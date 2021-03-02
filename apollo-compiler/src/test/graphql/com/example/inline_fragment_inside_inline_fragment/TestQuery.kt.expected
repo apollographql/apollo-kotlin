@@ -51,42 +51,17 @@ class TestQuery : Query<TestQuery.Data> {
   ) : Query.Data {
     fun searchFilterNotNull(): List<Search>? = search?.filterNotNull()
 
-    interface Search {
-      val __typename: String
-
-      data class CharacterDroidSearch(
-        override val __typename: String,
+    data class Search(
+      val __typename: String = "SearchResult",
+      val asAsCharacter: AsCharacter?
+    ) {
+      data class AsCharacter(
+        val __typename: String,
         /**
          * The name of the character
          */
-        val name: String,
-        /**
-         * This droid's primary function
-         */
-        val primaryFunction: String?
-      ) : Search
-
-      data class CharacterHumanSearch(
-        override val __typename: String,
-        /**
-         * The name of the character
-         */
-        val name: String,
-        /**
-         * The home planet of the human, or null if unknown
-         */
-        val homePlanet: String?
-      ) : Search
-
-      data class OtherSearch(
-        override val __typename: String
-      ) : Search
-
-      companion object {
-        fun Search.asCharacterDroidSearch(): CharacterDroidSearch? = this as? CharacterDroidSearch
-
-        fun Search.asCharacterHumanSearch(): CharacterHumanSearch? = this as? CharacterHumanSearch
-      }
+        val name: String
+      )
     }
   }
 

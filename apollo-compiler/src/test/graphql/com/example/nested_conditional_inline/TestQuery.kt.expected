@@ -57,122 +57,89 @@ data class TestQuery(
     /**
      * A character from the Star Wars universe
      */
-    interface Hero {
-      val __typename: String
-
+    data class Hero(
+      val __typename: String = "Character",
       /**
        * The name of the character
        */
-      val name: String
-
-      data class HumanHero(
-        override val __typename: String,
+      val name: String,
+      val asAsHuman: AsHuman?,
+      val asAsDroid: AsDroid?
+    ) {
+      data class AsHuman(
+        val __typename: String,
         /**
          * The name of the character
          */
-        override val name: String,
+        val name: String,
         /**
          * This human's friends, or an empty list if they have none
          */
         val friends: List<Friends?>?
-      ) : Hero {
+      ) {
+        fun friendsFilterNotNull(): List<Friends>? = friends?.filterNotNull()
+
         /**
          * A character from the Star Wars universe
          */
-        interface Friends {
-          val __typename: String
-
+        data class Friends(
+          val __typename: String = "Character",
           /**
            * The name of the character
            */
-          val name: String
-
-          data class HumanFriends(
-            override val __typename: String,
+          val name: String,
+          val asAsHuman: AsHuman?
+        ) {
+          data class AsHuman(
+            val __typename: String,
             /**
              * The name of the character
              */
-            override val name: String,
+            val name: String,
             /**
              * Height in the preferred unit, default is meters
              */
             val height: Double?
-          ) : Friends
-
-          data class OtherFriends(
-            override val __typename: String,
-            /**
-             * The name of the character
-             */
-            override val name: String
-          ) : Friends
-
-          companion object {
-            fun Friends.asHumanFriends(): HumanFriends? = this as? HumanFriends
-          }
+          )
         }
       }
 
-      data class DroidHero(
-        override val __typename: String,
+      data class AsDroid(
+        val __typename: String,
         /**
          * The name of the character
          */
-        override val name: String,
+        val name: String,
         /**
          * This droid's friends, or an empty list if they have none
          */
         val friends: List<Friends?>?
-      ) : Hero {
+      ) {
+        fun friendsFilterNotNull(): List<Friends>? = friends?.filterNotNull()
+
         /**
          * A character from the Star Wars universe
          */
-        interface Friends {
-          val __typename: String
-
+        data class Friends(
+          val __typename: String = "Character",
           /**
            * The name of the character
            */
-          val name: String
-
-          data class HumanFriends(
-            override val __typename: String,
+          val name: String,
+          val asAsHuman: AsHuman?
+        ) {
+          data class AsHuman(
+            val __typename: String,
             /**
              * The name of the character
              */
-            override val name: String,
+            val name: String,
             /**
              * Height in the preferred unit, default is meters
              */
             val height: Double?
-          ) : Friends
-
-          data class OtherFriends(
-            override val __typename: String,
-            /**
-             * The name of the character
-             */
-            override val name: String
-          ) : Friends
-
-          companion object {
-            fun Friends.asHumanFriends(): HumanFriends? = this as? HumanFriends
-          }
+          )
         }
-      }
-
-      data class OtherHero(
-        override val __typename: String,
-        /**
-         * The name of the character
-         */
-        override val name: String
-      ) : Hero
-
-      companion object {
-        fun Hero.asHumanHero(): HumanHero? = this as? HumanHero
-
-        fun Hero.asDroidHero(): DroidHero? = this as? DroidHero
       }
     }
   }

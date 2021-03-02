@@ -1,58 +1,78 @@
-fragment_in_fragment                                              100ms                1.87s
-root_query_fragment_with_nested_fragments                        74.9ms                1.27s
-arguments_simple                                                 72.1ms                1.87s
-fragment_with_inline_fragment                                    69.6ms                1.80s
-named_fragment_delegate                                          39.6ms                936ms
-fragments_with_type_condition                                    37.9ms                865ms
-nested_conditional_inline                                        36.4ms                1.06s
-union_inline_fragments                                           34.8ms                675ms
-fragment_used_twice                                              34.5ms                1.11s
-directive_with_fragment                                          34.4ms                985ms
-named_fragment_with_variables                                    31.4ms                975ms
-fragment_friends_connection                                      30.4ms                997ms
-simple_fragment_with_inline_fragments                            29.6ms                761ms
-unique_type_name                                                 27.5ms                984ms
-inline_fragment_merge_fields                                     26.3ms                847ms
-root_query_inline_fragment                                       25.1ms                615ms
-inline_frgament_intersection                                     25.0ms                764ms
-antlr_tokens                                                     24.0ms                782ms
-inline_fragments_with_friends                                    23.8ms                643ms
-arguments_complex                                                23.7ms                1.05s
-mutation_create_review_semantic_naming                           23.0ms                969ms
-directive_with_inline_fragment                                   22.7ms                795ms
-simple_fragment                                                  22.2ms                541ms
-mutation_create_review                                           21.8ms                1.36s
-deprecation                                                      21.3ms                658ms
-arguments_hardcoded                                              21.3ms                851ms
-operation_id_generator                                           21.1ms                437ms
-hero_details_semantic_naming                                     20.4ms                539ms
-named_fragment_inside_inline_fragment                            18.2ms                534ms
-inline_fragment_inside_inline_fragment                           17.8ms                551ms
-inline_fragment_for_non_optional_field                           17.3ms                495ms
-inline_fragment_type_coercion                                    17.3ms                535ms
-hero_with_review                                                 17.0ms                662ms
-hero_details                                                     16.9ms                585ms
-introspection_query                                              16.7ms                621ms
-fragments_same_type_condition                                    16.6ms                675ms
-root_query_fragment                                              16.4ms                480ms
-custom_scalar_type_warnings                                      16.4ms                543ms
-two_heroes_with_friends                                          16.0ms                558ms
-input_object_type                                                15.6ms                1.37s
-test_inline                                                      15.2ms                498ms
-interface_on_interface                                           14.6ms                585ms
-named_fragment_without_implementation                            14.3ms                572ms
-hero_name                                                        14.3ms                446ms
-custom_scalar_type                                               14.2ms                601ms
-directives                                                       13.6ms                726ms
-reserved_keywords                                                13.4ms                468ms
-enum_type                                                        13.2ms                526ms
-typename_always_first                                            12.9ms                451ms
-simple_inline_fragment                                           12.6ms                438ms
-starships                                                        12.2ms                424ms
-union_fragment                                                   11.8ms                474ms
-recursive_selection                                              11.8ms                401ms
-merged_include                                                   11.3ms                515ms
-two_heroes_unique                                                10.4ms                358ms
-hero_name_query_long_name                                        10.0ms                517ms
-subscriptions                                                    6.25ms                403ms
-empty                                                            5.73ms                289ms
+Test:                                                                            Total LOC:             Codegen:         Compilation:
+antlr_tokens (Default)                                                                  267                348ms                4.53s
+arguments_complex (Default)                                                             374               45.2ms                1.39s
+arguments_hardcoded (Default)                                                           275               26.7ms                867ms
+arguments_simple (FragmentsAsInterfaces)                                               1188               65.3ms                1.98s
+arguments_simple (FragmentsAsDataClasses)                                               823               40.4ms                1.31s
+custom_scalar_type (Default)                                                            319               25.5ms                755ms
+custom_scalar_type_warnings (Default)                                                   231               16.4ms                593ms
+deprecation (Default)                                                                   349               25.3ms                747ms
+directive_with_fragment (FragmentsAsInterfaces)                                         789               35.5ms                1.07s
+directive_with_fragment (FragmentsAsDataClasses)                                        565               25.0ms                813ms
+directive_with_inline_fragment (Default)                                                522               22.8ms                867ms
+directives (Default)                                                                    321               19.7ms                607ms
+empty (Default)                                                                          19               7.46ms                338ms
+enum_type (Default)                                                                     316               17.0ms                602ms
+fragment_friends_connection (FragmentsAsInterfaces)                                     942               42.8ms                1.04s
+fragment_friends_connection (FragmentsAsDataClasses)                                    586               20.8ms                829ms
+fragment_in_fragment (FragmentsAsInterfaces)                                           2109                110ms                1.85s
+fragment_in_fragment (FragmentsAsDataClasses)                                          1072               37.5ms                1.14s
+fragment_used_twice (FragmentsAsInterfaces)                                            1159               32.2ms                1.05s
+fragment_used_twice (FragmentsAsDataClasses)                                            734               24.7ms                776ms
+fragment_with_inline_fragment (FragmentsAsInterfaces)                                  2408               71.8ms                1.62s
+fragment_with_inline_fragment (FragmentsAsDataClasses)                                 1276               33.0ms                1.05s
+fragments_same_type_condition (FragmentsAsInterfaces)                                   672               20.9ms                664ms
+fragments_same_type_condition (FragmentsAsDataClasses)                                  537               16.6ms                661ms
+fragments_with_type_condition (FragmentsAsInterfaces)                                  1045               28.1ms                819ms
+fragments_with_type_condition (FragmentsAsDataClasses)                                  665               19.8ms                713ms
+hero_details (Default)                                                                  497               15.7ms                609ms
+hero_details_semantic_naming (Default)                                                  438               22.8ms                605ms
+hero_name (Default)                                                                     357               16.2ms                569ms
+hero_name_query_long_name (Default)                                                     343               14.3ms                538ms
+hero_with_review (Default)                                                              350               12.2ms                593ms
+inline_fragment_for_non_optional_field (Default)                                        326               12.0ms                555ms
+inline_fragment_inside_inline_fragment (Default)                                        299               13.6ms                572ms
+inline_fragment_merge_fields (Default)                                                  707               26.2ms                720ms
+inline_fragment_type_coercion (Default)                                                 311               11.6ms                489ms
+inline_fragments_with_friends (Default)                                                 630               20.2ms                652ms
+inline_frgament_intersection (Default)                                                  632               22.3ms                673ms
+input_object_type (Default)                                                             783               24.4ms                703ms
+interface_on_interface (Default)                                                        349               20.2ms                531ms
+introspection_query (Default)                                                           399               20.7ms                663ms
+merged_include (Default)                                                                229               8.60ms                438ms
+mutation_create_review (Default)                                                        919               26.7ms                739ms
+mutation_create_review_semantic_naming (Default)                                        786               20.8ms                650ms
+named_fragment_delegate (FragmentsAsInterfaces)                                        1373               45.5ms                879ms
+named_fragment_delegate (FragmentsAsDataClasses)                                        832               23.1ms                712ms
+named_fragment_inside_inline_fragment (FragmentsAsInterfaces)                           758               22.5ms                842ms
+named_fragment_inside_inline_fragment (FragmentsAsDataClasses)                          635               19.3ms                584ms
+named_fragment_with_variables (FragmentsAsInterfaces)                                  1179               33.2ms                917ms
+named_fragment_with_variables (FragmentsAsDataClasses)                                  709               19.6ms                659ms
+named_fragment_without_implementation (FragmentsAsInterfaces)                           496               15.0ms                534ms
+named_fragment_without_implementation (FragmentsAsDataClasses)                          559               16.2ms                542ms
+nested_conditional_inline (Default)                                                     800               20.8ms                945ms
+operation_id_generator (Default)                                                        239               9.83ms                444ms
+recursive_selection (Default)                                                           355               12.6ms                483ms
+reserved_keywords (Default)                                                             379               12.8ms                490ms
+root_query_fragment (FragmentsAsInterfaces)                                             543               13.8ms                524ms
+root_query_fragment (FragmentsAsDataClasses)                                            381               11.7ms                475ms
+root_query_fragment_with_nested_fragments (FragmentsAsInterfaces)                      1802               54.5ms                1.25s
+root_query_fragment_with_nested_fragments (FragmentsAsDataClasses)                      919               23.0ms                929ms
+root_query_inline_fragment (Default)                                                    653               18.3ms                651ms
+simple_fragment (FragmentsAsInterfaces)                                                 778               23.6ms                689ms
+simple_fragment (FragmentsAsDataClasses)                                                542               16.3ms                535ms
+simple_fragment_with_inline_fragments (FragmentsAsInterfaces)                          1061               27.4ms                997ms
+simple_fragment_with_inline_fragments (FragmentsAsDataClasses)                          632               23.5ms                712ms
+simple_inline_fragment (Default)                                                        431               13.4ms                572ms
+starships (Default)                                                                     267               10.8ms                466ms
+subscriptions (Default)                                                                 237               8.94ms                479ms
+test_inline (Default)                                                                   470               11.8ms                562ms
+two_heroes_unique (Default)                                                             312               16.5ms                451ms
+two_heroes_with_friends (Default)                                                       726               18.5ms                650ms
+typename_always_first (Default)                                                         390               11.7ms                508ms
+union_fragment (FragmentsAsInterfaces)                                                  495               15.0ms                526ms
+union_fragment (FragmentsAsDataClasses)                                                 441               11.3ms                544ms
+union_inline_fragments (Default)                                                        948               24.8ms                999ms
+unique_type_name (FragmentsAsInterfaces)                                               1419               56.9ms                880ms
+unique_type_name (FragmentsAsDataClasses)                                              1017               24.8ms                728ms
+variable_default_value (Default)                                                        311               10.5ms                492ms
