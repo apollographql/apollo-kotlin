@@ -280,3 +280,33 @@ tasks.register("rmbuild") {
         }
   }
 }
+
+tasks.register("fullCheck") {
+  subprojects {
+    tasks.all {
+      if (this.name == "build") {
+        this@register.dependsOn(this)
+      }
+    }
+  }
+}
+
+/**
+ * A task to do (relatively) fast checks when iterating
+ */
+tasks.register("quickCheck") {
+  subprojects {
+    tasks.all {
+      if (this@subprojects.name in listOf("apollo-compiler", "apollo-gradle-plugin")) {
+        if (this.name == "jar") {
+          // build the jar but do not test
+          this@register.dependsOn(this)
+        }
+      } else {
+        if (this.name == "test" || this.name == "jvmTest") {
+          this@register.dependsOn(this)
+        }
+      }
+    }
+  }
+}
