@@ -1,6 +1,6 @@
 buildscript {
   project.apply {
-    from(rootProject.file("../gradle/dependencies.gradle"))
+    from(rootProject.file("gradle/dependencies.gradle"))
   }
 
   repositories {
@@ -14,6 +14,7 @@ buildscript {
     classpath(groovy.util.Eval.x(project, "x.dep.android.plugin"))
     classpath(groovy.util.Eval.x(project, "x.dep.kotlin.plugin"))
     classpath("com.apollographql.apollo3:apollo-gradle-plugin")
+    classpath("com.apollographql.apollo:build-logic")
   }
 }
 
@@ -66,5 +67,14 @@ tasks.register("quickCheck") {
         this@register.dependsOn(this)
       }
     }
+  }
+}
+
+tasks.register("rmbuild") {
+  doLast {
+    projectDir.walk().filter { it.isDirectory && it.name == "build" }
+        .forEach {
+          it.deleteRecursively()
+        }
   }
 }
