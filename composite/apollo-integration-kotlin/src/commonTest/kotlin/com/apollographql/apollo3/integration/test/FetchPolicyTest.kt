@@ -1,16 +1,15 @@
-package com.apollographql.apollo3.integration
+package com.apollographql.apollo3.integration.test
 
 import HeroNameQuery
 import com.apollographql.apollo3.ApolloClient
 import com.apollographql.apollo3.ApolloRequest
 import com.apollographql.apollo3.cache.normalized.MemoryCache
 import com.apollographql.apollo3.cache.normalized.NormalizedCache
+import com.apollographql.apollo3.integration.TestApolloClient
 import com.apollographql.apollo3.interceptor.cache.FetchPolicy
 import com.apollographql.apollo3.interceptor.cache.isFromCache
 import com.apollographql.apollo3.interceptor.cache.normalizedCache
-import com.apollographql.apollo3.network.http.ApolloHttpNetworkTransport
 import com.apollographql.apollo3.testing.TestHttpEngine
-import com.apollographql.apollo3.testing.TestLoggerExecutor
 import com.apollographql.apollo3.testing.runBlocking
 import kotlinx.coroutines.flow.single
 import kotlinx.coroutines.flow.toList
@@ -22,8 +21,7 @@ import kotlin.test.assertNotNull
 import kotlin.test.assertTrue
 import kotlin.test.fail
 
-@Suppress("EXPERIMENTAL_API_USAGE")
-class CacheInterceptorTest {
+class FetchPolicyTest {
   private lateinit var testHttpEngine: TestHttpEngine
   private lateinit var apolloClient: ApolloClient
   private lateinit var cache: NormalizedCache
@@ -32,27 +30,28 @@ class CacheInterceptorTest {
   fun setUp() {
     cache = MemoryCache(maxSizeBytes = Int.MAX_VALUE)
     testHttpEngine = TestHttpEngine()
-    apolloClient = ApolloClient.Builder()
-        .networkTransport(ApolloHttpNetworkTransport(serverUrl = "https://example", engine = testHttpEngine))
-        .addInterceptor(TestLoggerExecutor)
+    apolloClient = TestApolloClient(testHttpEngine)
+        .newBuilder()
         .normalizedCache(cache)
         .build()
   }
 
   @Test
   fun `CACHE_FIRST test`() {
-    testHttpEngine.offer(fixtureResponse("HeroNameResponse.json"))
+    val query = HeroNameQuery()
+    val data = HeroNameQuery.Data(HeroNameQuery.Data.Hero("R2-D2"))
+    testHttpEngine.enqueue(query, data)
 
     runBlocking {
       var response = apolloClient
-          .query(ApolloRequest(HeroNameQuery()))
+          .query(query)
           .single()
 
       assertNotNull(response.data)
       assertFalse(response.isFromCache)
 
       response = apolloClient
-          .query(ApolloRequest(HeroNameQuery()))
+          .query(query)
           .single()
 
       assertNotNull(response.data)
@@ -63,10 +62,13 @@ class CacheInterceptorTest {
   @Test
   fun `NETWORK_FIRST test`() {
     runBlocking {
-      val request = ApolloRequest(HeroNameQuery())
+      val query = HeroNameQuery()
+      val data = HeroNameQuery.Data(HeroNameQuery.Data.Hero("R2-D2"))
+
+      val request = ApolloRequest(query)
           .withExecutionContext(FetchPolicy.NETWORK_FIRST)
 
-      testHttpEngine.offer(fixtureResponse("HeroNameResponse.json"))
+      testHttpEngine.enqueue(query, data)
       var responses = apolloClient
           .query(request)
           .toList()
@@ -76,7 +78,7 @@ class CacheInterceptorTest {
       assertFalse(responses[0].isFromCache)
 
       // Now data is cached but it shouldn't be used since network will go through
-      testHttpEngine.offer(fixtureResponse("HeroNameResponse.json"))
+      testHttpEngine.enqueue(query, data)
       responses = apolloClient
           .query(request)
           .toList()
@@ -86,7 +88,7 @@ class CacheInterceptorTest {
       assertFalse(responses[0].isFromCache)
 
       // Network error -> we should hit the cache
-      testHttpEngine.offer("malformed")
+      testHttpEngine.enqueue("malformed")
       responses = apolloClient
           .query(request)
           .toList()
@@ -96,12 +98,12 @@ class CacheInterceptorTest {
       assertTrue(responses[0].isFromCache)
 
       // Network error and no cache -> we should get an error
-      testHttpEngine.offer("malformed")
+      testHttpEngine.enqueue("malformed")
       cache.clearAll()
       try {
-        responses = apolloClient
+        apolloClient
             .query(request)
-              .toList()
+            .toList()
         fail("NETWORK_FIRST should throw the network exception if nothing is in the cache")
       } catch (e: Exception) {
 
@@ -112,10 +114,13 @@ class CacheInterceptorTest {
   @Test
   fun `CACHE_ONLY test`() {
     runBlocking {
-      var request = ApolloRequest(HeroNameQuery())
+      val query = HeroNameQuery()
+      val data = HeroNameQuery.Data(HeroNameQuery.Data.Hero("R2-D2"))
+
+      var request = ApolloRequest(query)
 
       // First cache the response
-      testHttpEngine.offer(fixtureResponse("HeroNameResponse.json"))
+      testHttpEngine.enqueue(query, data)
       var responses = apolloClient
           .query(request)
           .toList()
@@ -127,7 +132,6 @@ class CacheInterceptorTest {
       // Now make the request cache only
       request = request.withExecutionContext(FetchPolicy.CACHE_ONLY)
 
-      testHttpEngine.offer(fixtureResponse("HeroNameResponse.json"))
       responses = apolloClient
           .query(request)
           .toList()
@@ -142,12 +146,15 @@ class CacheInterceptorTest {
   @Test
   fun `NETWORK_ONLY test`() {
     runBlocking {
-      val request = ApolloRequest(HeroNameQuery())
+      val query = HeroNameQuery()
+      val data = HeroNameQuery.Data(HeroNameQuery.Data.Hero("R2-D2"))
+
+      val request = ApolloRequest(query)
           .withExecutionContext(FetchPolicy.NETWORK_ONLY)
 
       // cache the response
-      testHttpEngine.offer(fixtureResponse("HeroNameResponse.json"))
-      var responses = apolloClient
+      testHttpEngine.enqueue(query, data)
+      val responses = apolloClient
           .query(request)
           .toList()
 
@@ -156,26 +163,29 @@ class CacheInterceptorTest {
       assertFalse(responses[0].isFromCache)
 
       // Offer a malformed response, it should fail
-      testHttpEngine.offer("malformed")
-      try {
-        responses = apolloClient
+      testHttpEngine.enqueue("malformed")
+      val result = kotlin.runCatching {
+        apolloClient
             .query(request)
-              .toList()
+            .toList()
         fail("we expected a failure")
-      } catch (e: Exception) {
-
       }
+
+      assertTrue(result.isFailure)
     }
   }
 
   @Test
   fun `cache_and_network test`() {
     runBlocking {
-      var request = ApolloRequest(HeroNameQuery())
+      val query = HeroNameQuery()
+      val data = HeroNameQuery.Data(HeroNameQuery.Data.Hero("R2-D2"))
+
+      var request = ApolloRequest(query)
           .withExecutionContext(FetchPolicy.CACHE_FIRST)
 
       // cache the response
-      testHttpEngine.offer(fixtureResponse("HeroNameResponse.json"))
+      testHttpEngine.enqueue(query, data)
       var responses = apolloClient
           .query(request)
           .toList()
@@ -187,7 +197,7 @@ class CacheInterceptorTest {
       // Now make the request cache and network
       request = request.withExecutionContext(FetchPolicy.CACHE_AND_NETWORK)
 
-      testHttpEngine.offer(fixtureResponse("HeroNameResponse.json"))
+      testHttpEngine.enqueue(query, data)
       responses = apolloClient
           .query(request)
           .toList()

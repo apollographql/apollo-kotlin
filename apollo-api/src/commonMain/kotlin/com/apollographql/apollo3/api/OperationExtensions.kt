@@ -7,7 +7,9 @@ import com.apollographql.apollo3.api.internal.json.BufferedSinkJsonWriter
 import com.apollographql.apollo3.api.internal.json.BufferedSourceJsonReader
 import com.apollographql.apollo3.api.internal.json.MapJsonReader
 import com.apollographql.apollo3.api.internal.json.MapJsonWriter
+import com.apollographql.apollo3.api.json.use
 import okio.Buffer
+import okio.BufferedSink
 import okio.BufferedSource
 import okio.ByteString
 import okio.IOException
@@ -141,6 +143,31 @@ fun <D : Operation.Data> Operation<D>.fromResponse(
     responseAdapterCache: ResponseAdapterCache = DEFAULT
 ): ApolloResponse<D> {
   return MapResponseParser.parse(map, this, responseAdapterCache)
+}
+
+fun <D : Operation.Data> Operation<D>.toResponse(
+    sink: BufferedSink,
+    data: D,
+    indent: String = "",
+    responseAdapterCache: ResponseAdapterCache = DEFAULT
+) {
+  BufferedSinkJsonWriter(sink).use {
+    it.indent = indent
+    it.beginObject()
+    it.name("data")
+    adapter(responseAdapterCache).toResponse(it, data)
+    it.endObject()
+  }
+}
+
+fun <D : Operation.Data> Operation<D>.toResponse(
+    data: D,
+    indent: String = "",
+    responseAdapterCache: ResponseAdapterCache = DEFAULT
+): String {
+  return Buffer().apply {
+    toResponse(this, data, indent, responseAdapterCache)
+  }.readUtf8()
 }
 
 /**
