@@ -55,13 +55,13 @@ abstract class NormalizedCache {
    * @param cacheHeaders The [CacheHeaders] associated with the request which generated this record.
    * @return A set of record field keys that have changed. This set is returned by [Record.mergeWith].
    */
-  open fun merge(record: Record, cacheHeaders: CacheHeaders): Set<String?> {
+  open fun merge(record: Record, cacheHeaders: CacheHeaders): Set<String> {
     if (cacheHeaders.hasHeader(ApolloCacheHeaders.DO_NOT_STORE)) {
-      return emptySet<String>()
+      return emptySet()
     }
     val nextCacheChangedKeys = nextCache?.merge(record, cacheHeaders).orEmpty()
     val currentCacheChangedKeys = performMerge(record, loadRecord(record.key, cacheHeaders), cacheHeaders)
-    val changedKeys: MutableSet<String?> = HashSet()
+    val changedKeys: MutableSet<String> = HashSet()
     changedKeys.addAll(nextCacheChangedKeys)
     changedKeys.addAll(currentCacheChangedKeys)
     return changedKeys
