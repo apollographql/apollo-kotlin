@@ -6,7 +6,7 @@ import com.apollographql.apollo3.IdFieldCacheKeyResolver
 import com.apollographql.apollo3.Utils.immediateExecutor
 import com.apollographql.apollo3.Utils.immediateExecutorService
 import com.apollographql.apollo3.Utils.readFileToString
-import com.apollographql.apollo3.api.Response
+import com.apollographql.apollo3.api.ApolloResponse
 import com.apollographql.apollo3.cache.normalized.MemoryCacheFactory
 import com.apollographql.apollo3.exception.ApolloException
 import com.apollographql.apollo3.integration.normalizer.EpisodeHeroNameQuery
@@ -47,13 +47,13 @@ open class BaseFetcherTest {
   }
 
   internal class TrackingCallback : ApolloCall.Callback<EpisodeHeroNameQuery.Data>() {
-    val responseList: MutableList<Response<EpisodeHeroNameQuery.Data>> = ArrayList()
+    val responseList: MutableList<ApolloResponse<EpisodeHeroNameQuery.Data>> = ArrayList()
     val exceptions: MutableList<Exception> = ArrayList()
 
     @Volatile
     var completed = false
 
-    override fun onResponse(response: Response<EpisodeHeroNameQuery.Data>) {
+    override fun onResponse(response: ApolloResponse<EpisodeHeroNameQuery.Data>) {
       check(!completed) { "onCompleted already called Do not reuse tracking callback." }
       responseList.add(response)
     }

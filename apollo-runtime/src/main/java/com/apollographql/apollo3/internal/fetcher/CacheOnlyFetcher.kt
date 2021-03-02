@@ -1,7 +1,7 @@
 package com.apollographql.apollo3.internal.fetcher
 
 import com.apollographql.apollo3.api.Operation
-import com.apollographql.apollo3.api.Response
+import com.apollographql.apollo3.api.ApolloResponse
 import com.apollographql.apollo3.api.internal.ApolloLogger
 import com.apollographql.apollo3.exception.ApolloException
 import com.apollographql.apollo3.fetcher.ResponseFetcher
@@ -57,7 +57,7 @@ class CacheOnlyFetcher : ResponseFetcher {
     fun cacheMissResponse(operation: Operation<*>?): InterceptorResponse {
       return InterceptorResponse(
           null,
-          Response(
+          ApolloResponse(
               requestUuid = uuid4(),
               operation = operation!!,
               data = null,

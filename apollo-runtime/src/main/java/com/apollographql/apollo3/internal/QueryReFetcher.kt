@@ -4,7 +4,7 @@ import com.apollographql.apollo3.ApolloCall
 import com.apollographql.apollo3.api.ResponseAdapterCache
 import com.apollographql.apollo3.api.Operation
 import com.apollographql.apollo3.api.Query
-import com.apollographql.apollo3.api.Response
+import com.apollographql.apollo3.api.ApolloResponse
 import com.apollographql.apollo3.api.cache.http.HttpCachePolicy
 import com.apollographql.apollo3.api.internal.ApolloLogger
 import com.apollographql.apollo3.cache.CacheHeaders
@@ -58,7 +58,7 @@ class QueryReFetcher(builder: Builder) {
     val callsLeft = AtomicInteger(calls.size)
     for (call in calls) {
       call.enqueue(object : ApolloCall.Callback<Operation.Data>() {
-        override fun onResponse(response: Response<Operation.Data>) {
+        override fun onResponse(response: ApolloResponse<Operation.Data>) {
           if (callsLeft.decrementAndGet() == 0 && completeCallback != null) {
             completeCallback.onFetchComplete()
           }

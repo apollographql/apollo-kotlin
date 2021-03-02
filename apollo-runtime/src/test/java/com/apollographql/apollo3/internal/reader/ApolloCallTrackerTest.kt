@@ -21,7 +21,7 @@ import java.util.concurrent.TimeoutException
 import java.util.concurrent.atomic.AtomicBoolean
 
 class ApolloCallTrackerTest {
-  internal class QueryData : Operation.Data {
+  internal class QueryData : Query.Data {
   }
 
   @get:Rule

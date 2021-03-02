@@ -6,7 +6,6 @@
 package com.example.arguments_complex
 
 import com.apollographql.apollo3.api.Input
-import com.apollographql.apollo3.api.Operation
 import com.apollographql.apollo3.api.Query
 import com.apollographql.apollo3.api.QueryDocumentMinifier
 import com.apollographql.apollo3.api.ResponseAdapter
@@ -57,7 +56,7 @@ data class TestQuery(
    */
   data class Data(
     val heroWithReview: HeroWithReview?
-  ) : Operation.Data {
+  ) : Query.Data {
     /**
      * A humanoid creature from the Star Wars universe
      */

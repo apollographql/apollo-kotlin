@@ -5,7 +5,6 @@
 //
 package com.example.inline_fragment_for_non_optional_field
 
-import com.apollographql.apollo3.api.Operation
 import com.apollographql.apollo3.api.Query
 import com.apollographql.apollo3.api.QueryDocumentMinifier
 import com.apollographql.apollo3.api.ResponseAdapter
@@ -50,7 +49,7 @@ class TestQuery : Query<TestQuery.Data> {
    */
   data class Data(
     val nonOptionalHero: NonOptionalHero
-  ) : Operation.Data {
+  ) : Query.Data {
     /**
      * A character from the Star Wars universe
      */

@@ -5,7 +5,6 @@
 //
 package com.example.fragments_with_type_condition
 
-import com.apollographql.apollo3.api.Operation
 import com.apollographql.apollo3.api.Query
 import com.apollographql.apollo3.api.QueryDocumentMinifier
 import com.apollographql.apollo3.api.ResponseAdapter
@@ -53,7 +52,7 @@ class TestQuery : Query<TestQuery.Data> {
   data class Data(
     val r2: R2?,
     val luke: Luke?
-  ) : Operation.Data {
+  ) : Query.Data {
     /**
      * A character from the Star Wars universe
      */

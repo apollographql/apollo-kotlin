@@ -102,7 +102,7 @@ interface ApolloMutationCall<D : Operation.Data> : ApolloCall<D> {
      * @param mutation the [Mutation] which needs to be performed
      * @return prepared [ApolloMutationCall] call to be executed at some point in the future
      */
-    fun <D : Operation.Data> mutate(
+    fun <D : Mutation.Data> mutate(
         mutation: Mutation<D>): ApolloMutationCall<D>
 
     /**
@@ -117,7 +117,7 @@ interface ApolloMutationCall<D : Operation.Data> : ApolloCall<D> {
      * @param withOptimisticUpdates optimistic updates for this mutation
      * @return prepared [ApolloMutationCall] call to be executed at some point in the future
      */
-    fun <D : Operation.Data> mutate(
+    fun <D : Mutation.Data> mutate(
         mutation: Mutation<D>, withOptimisticUpdates: D): ApolloMutationCall<D>
   }
 }

@@ -4,7 +4,7 @@ import com.apollographql.apollo3.Utils.immediateExecutor
 import com.apollographql.apollo3.Utils.immediateExecutorService
 import com.apollographql.apollo3.Utils.mockResponse
 import com.apollographql.apollo3.api.Input
-import com.apollographql.apollo3.api.Response
+import com.apollographql.apollo3.api.ApolloResponse
 import com.apollographql.apollo3.cache.normalized.MemoryCacheFactory
 import com.apollographql.apollo3.coroutines.await
 import com.apollographql.apollo3.coroutines.toFlow
@@ -57,7 +57,7 @@ class CoroutinesApolloTest {
     server.enqueue(mockResponse(FILE_EPISODE_HERO_NAME_WITH_ID))
 
     runBlocking {
-      val response: Response<EpisodeHeroNameQuery.Data> =
+      val response: ApolloResponse<EpisodeHeroNameQuery.Data> =
       apolloClient.query(EpisodeHeroNameQuery(Input.Present(Episode.EMPIRE))).await()
       assertThat(response.data!!.hero!!.name).isEqualTo("R2-D2")
     }
@@ -68,7 +68,7 @@ class CoroutinesApolloTest {
     server.enqueue(mockResponse(FILE_EPISODE_HERO_NAME_WITH_ID))
 
     runBlocking {
-        val response: Response<EpisodeHeroNameQuery.Data> =
+        val response: ApolloResponse<EpisodeHeroNameQuery.Data> =
         apolloClient.query(EpisodeHeroNameQuery(Input.Present(Episode.EMPIRE))).toDeferred().await()
         assertThat(response.data!!.hero!!.name).isEqualTo("R2-D2")
     }
@@ -116,7 +116,7 @@ class CoroutinesApolloTest {
     val flow = apolloClient.query(EpisodeHeroNameQuery(Input.Present(Episode.EMPIRE))).toFlow()
 
     runBlocking {
-      val result = mutableListOf<Response<EpisodeHeroNameQuery.Data>>()
+      val result = mutableListOf<ApolloResponse<EpisodeHeroNameQuery.Data>>()
       flow.toList(result)
       assertThat(result.size).isEqualTo(1)
       assertThat(result[0].data?.hero?.name).isEqualTo("R2-D2")
@@ -131,7 +131,7 @@ class CoroutinesApolloTest {
     val flow = apolloClient.query(EpisodeHeroNameQuery(Input.Present(Episode.EMPIRE))).toFlow()
 
     runBlocking {
-      val result = mutableListOf<Response<EpisodeHeroNameQuery.Data>>()
+      val result = mutableListOf<ApolloResponse<EpisodeHeroNameQuery.Data>>()
       try {
         flow.toList(result)
       } catch (e: ApolloException) {
@@ -148,7 +148,7 @@ class CoroutinesApolloTest {
     server.enqueue(MockResponse().setResponseCode(200).setBody("nonsense"))
     server.enqueue(mockResponse(FILE_EPISODE_HERO_NAME_WITH_ID))
 
-    val response: Response<EpisodeHeroNameQuery.Data> = runBlocking {
+    val response: ApolloResponse<EpisodeHeroNameQuery.Data> = runBlocking {
       apolloClient
           .query(EpisodeHeroNameQuery(Input.Present(Episode.EMPIRE)))
           .toFlow()
@@ -165,7 +165,7 @@ class CoroutinesApolloTest {
     server.enqueue(MockResponse().setResponseCode(200).setBody("nonsense"))
     server.enqueue(mockResponse(FILE_EPISODE_HERO_NAME_WITH_ID))
 
-    val response: Response<EpisodeHeroNameQuery.Data> = runBlocking {
+    val response: ApolloResponse<EpisodeHeroNameQuery.Data> = runBlocking {
       apolloClient
           .query(EpisodeHeroNameQuery(Input.Present(Episode.EMPIRE)))
           .watcher()

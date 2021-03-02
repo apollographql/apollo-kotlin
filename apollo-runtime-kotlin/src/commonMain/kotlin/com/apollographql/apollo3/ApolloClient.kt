@@ -1,5 +1,6 @@
 package com.apollographql.apollo3
 
+import com.apollographql.apollo3.api.ApolloResponse
 import com.apollographql.apollo3.api.ExecutionContext
 import com.apollographql.apollo3.api.Mutation
 import com.apollographql.apollo3.api.Operation
@@ -11,10 +12,13 @@ import com.apollographql.apollo3.api.Subscription
 import com.apollographql.apollo3.dispatcher.ApolloCoroutineDispatcher
 import com.apollographql.apollo3.interceptor.ApolloRequestInterceptor
 import com.apollographql.apollo3.interceptor.NetworkRequestInterceptor
-import com.apollographql.apollo3.internal.RealApolloCall
+import com.apollographql.apollo3.interceptor.RealInterceptorChain
 import com.apollographql.apollo3.network.NetworkTransport
 import com.apollographql.apollo3.network.http.ApolloHttpNetworkTransport
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.flatMapLatest
+import kotlinx.coroutines.flow.flow
 
 /**
  * The main entry point for the Apollo runtime. An [ApolloClient] is responsible for executing queries, mutations and subscriptions
@@ -32,41 +36,42 @@ class ApolloClient private constructor(
     executionContext
   }
 
-  fun <D : Operation.Data> query(query: Query<D>): ApolloQueryCall<D> {
-    return ApolloQueryRequest.Builder(query).build().prepareCall()
+  fun <D : Query.Data> query(query: Query<D>): Flow<ApolloResponse<D>> = query(ApolloRequest(query))
+
+  fun <D : Mutation.Data> mutate(mutation: Mutation<D>): Flow<ApolloResponse<D>> = mutate(ApolloRequest(mutation))
+
+  fun <D : Subscription.Data> subscribe(subscription: Subscription<D>): Flow<ApolloResponse<D>> = subscribe(ApolloRequest(subscription))
+
+  fun <D : Query.Data> query(queryRequest: ApolloRequest<D>): Flow<ApolloResponse<D>> {
+    return queryRequest.execute()
   }
 
-  fun <D : Operation.Data> mutate(mutation: Mutation<D>): ApolloMutationCall<D> {
-    return ApolloMutationRequest.Builder(mutation).build().prepareCall()
+  fun <D : Mutation.Data> mutate(mutationRequest: ApolloRequest<D>): Flow<ApolloResponse<D>> {
+    return mutationRequest.execute()
   }
 
-
-  fun <D : Operation.Data> subscribe(query: Subscription<D>): ApolloQueryCall<D> {
-    return ApolloSubscriptionRequest.Builder(query).build().prepareCall()
+  fun <D : Operation.Data> subscribe(subscriptionRequest: ApolloRequest<D>): Flow<ApolloResponse<D>> {
+    return subscriptionRequest.execute()
   }
 
-  fun <D : Operation.Data> query(queryRequest: ApolloQueryRequest<D>): ApolloQueryCall<D> {
-    return queryRequest.prepareCall()
-  }
-
-  fun <D : Operation.Data> mutate(mutationRequest: ApolloMutationRequest<D>): ApolloMutationCall<D> {
-    return mutationRequest.prepareCall()
-  }
-
-
-  fun <D : Operation.Data> subscribe(subscriptionRequest: ApolloSubscriptionRequest<D>): ApolloQueryCall<D> {
-    return subscriptionRequest.prepareCall()
-  }
-
-  private fun <D : Operation.Data> ApolloRequest<D>.prepareCall(): RealApolloCall<D> {
-    return RealApolloCall(
-        request = this.newBuilder().addExecutionContext(executionContextWithDefaults).build(),
-        interceptors = interceptors + NetworkRequestInterceptor(
-            networkTransport = networkTransport,
-            subscriptionNetworkTransport = subscriptionNetworkTransport,
-        ),
-        responseAdapterCache = responseAdapterCache
+  private fun <D : Operation.Data> ApolloRequest<D>.execute(): Flow<ApolloResponse<D>> {
+    val request = withExecutionContext(executionContextWithDefaults)
+    val interceptors = interceptors + NetworkRequestInterceptor(
+        networkTransport = networkTransport,
+        subscriptionNetworkTransport = subscriptionNetworkTransport,
     )
+
+    return flow {
+      emit(
+          RealInterceptorChain(
+              interceptors,
+              0,
+              responseAdapterCache,
+          )
+      )
+    }.flatMapLatest { interceptorChain ->
+      interceptorChain.proceed(request)
+    }
   }
 
   fun newBuilder(): Builder {

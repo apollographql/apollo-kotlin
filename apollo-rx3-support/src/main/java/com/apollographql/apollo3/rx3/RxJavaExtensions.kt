@@ -13,7 +13,7 @@ import com.apollographql.apollo3.ApolloSubscriptionCall
 import com.apollographql.apollo3.api.Mutation
 import com.apollographql.apollo3.api.Operation
 import com.apollographql.apollo3.api.Query
-import com.apollographql.apollo3.api.Response
+import com.apollographql.apollo3.api.ApolloResponse
 import com.apollographql.apollo3.api.Subscription
 import io.reactivex.rxjava3.annotations.CheckReturnValue
 import io.reactivex.rxjava3.core.BackpressureStrategy
@@ -29,19 +29,19 @@ inline fun ApolloPrefetch.rx(): Completable =
 
 @JvmSynthetic
 @CheckReturnValue
-inline fun <D : Operation.Data> ApolloQueryWatcher<D>.rx(): Observable<Response<D>> =
+inline fun <D : Query.Data> ApolloQueryWatcher<D>.rx(): Observable<ApolloResponse<D>> =
     Rx3Apollo.from(this)
 
 @JvmSynthetic
 @CheckReturnValue
-inline fun <D : Operation.Data> ApolloCall<D>.rx(): Observable<Response<D>> =
+inline fun <D : Operation.Data> ApolloCall<D>.rx(): Observable<ApolloResponse<D>> =
     Rx3Apollo.from(this)
 
 @JvmSynthetic
 @CheckReturnValue
 inline fun <D : Operation.Data> ApolloSubscriptionCall<D>.rx(
     backpressureStrategy: BackpressureStrategy = BackpressureStrategy.LATEST
-): Flowable<Response<D>> = Rx3Apollo.from(this, backpressureStrategy)
+): Flowable<ApolloResponse<D>> = Rx3Apollo.from(this, backpressureStrategy)
 
 /**
  * Creates a new [ApolloQueryCall] call and then converts it to an [Observable].
@@ -51,20 +51,20 @@ inline fun <D : Operation.Data> ApolloSubscriptionCall<D>.rx(
  */
 @JvmSynthetic
 @CheckReturnValue
-inline fun <D : Operation.Data> ApolloClient.rxQuery(
+inline fun <D : Query.Data> ApolloClient.rxQuery(
     query: Query<D>,
     configure: ApolloQueryCall<D>.() -> ApolloQueryCall<D> = { this }
-): Observable<Response<D>> = query(query).configure().rx()
+): Observable<ApolloResponse<D>> = query(query).configure().rx()
 
 /**
  * Creates a new [ApolloMutationCall] call and then converts it to a [Single].
  */
 @JvmSynthetic
 @CheckReturnValue
-inline fun <D : Operation.Data> ApolloClient.rxMutate(
+inline fun <D : Mutation.Data> ApolloClient.rxMutate(
     mutation: Mutation<D>,
     configure: ApolloMutationCall<D>.() -> ApolloMutationCall<D> = { this }
-): Single<Response<D>> = mutate(mutation).configure().rx().singleOrError()
+): Single<ApolloResponse<D>> = mutate(mutation).configure().rx().singleOrError()
 
 /**
  * Creates a new [ApolloMutationCall] call and then converts it to a [Single].
@@ -75,11 +75,11 @@ inline fun <D : Operation.Data> ApolloClient.rxMutate(
  */
 @JvmSynthetic
 @CheckReturnValue
-inline fun <D : Operation.Data> ApolloClient.rxMutate(
+inline fun <D : Mutation.Data> ApolloClient.rxMutate(
     mutation: Mutation<D>,
     withOptimisticUpdates: D,
     configure: ApolloMutationCall<D>.() -> ApolloMutationCall<D> = { this }
-): Single<Response<D>> = mutate(mutation, withOptimisticUpdates).configure().rx().singleOrError()
+): Single<ApolloResponse<D>> = mutate(mutation, withOptimisticUpdates).configure().rx().singleOrError()
 
 /**
  * Creates the [ApolloPrefetch] by wrapping the operation object inside and then converts it to a [Completable].
@@ -97,7 +97,7 @@ inline fun <D : Operation.Data> ApolloClient.rxPrefetch(
  */
 @JvmSynthetic
 @CheckReturnValue
-inline fun <D : Operation.Data> ApolloClient.rxSubscribe(
+inline fun <D : Subscription.Data> ApolloClient.rxSubscribe(
     subscription: Subscription<D>,
     backpressureStrategy: BackpressureStrategy = BackpressureStrategy.LATEST
-): Flowable<Response<D>> = subscribe(subscription).rx(backpressureStrategy)
+): Flowable<ApolloResponse<D>> = subscribe(subscription).rx(backpressureStrategy)

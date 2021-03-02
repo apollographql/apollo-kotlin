@@ -1,7 +1,6 @@
 package com.apollographql.apollo3.integration
 
 import HeroNameQuery
-import com.apollographql.apollo3.ApolloQueryRequest
 import com.apollographql.apollo3.ApolloRequest
 import com.apollographql.apollo3.api.ResponseAdapterCache
 import com.apollographql.apollo3.exception.ApolloHttpException
@@ -96,6 +95,6 @@ class ApolloHttpNetworkTransportTest {
   }
 
   private fun request(): ApolloRequest<HeroNameQuery.Data> {
-    return ApolloQueryRequest.Builder(HeroNameQuery()).build()
+    return ApolloRequest(HeroNameQuery())
   }
 }

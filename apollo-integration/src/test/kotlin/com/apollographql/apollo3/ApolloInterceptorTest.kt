@@ -6,7 +6,7 @@ import com.apollographql.apollo3.Utils.immediateExecutor
 import com.apollographql.apollo3.Utils.immediateExecutorService
 import com.apollographql.apollo3.Utils.readFileToString
 import com.apollographql.apollo3.api.Input
-import com.apollographql.apollo3.api.Response
+import com.apollographql.apollo3.api.ApolloResponse
 import com.apollographql.apollo3.exception.ApolloException
 import com.apollographql.apollo3.exception.ApolloParseException
 import com.apollographql.apollo3.integration.normalizer.EpisodeHeroNameQuery
@@ -57,7 +57,7 @@ class ApolloInterceptorTest {
     val expectedResponse = prepareInterceptorResponse(query)
     val interceptor = createShortcutInterceptor(expectedResponse)
     client = createApolloClient(interceptor)
-    Rx2Apollo.from(client.query(query)).test().assertValue(expectedResponse.parsedResponse.get() as Response<EpisodeHeroNameQuery.Data>)
+    Rx2Apollo.from(client.query(query)).test().assertValue(expectedResponse.parsedResponse.get() as ApolloResponse<EpisodeHeroNameQuery.Data>)
   }
 
   @Test
@@ -91,7 +91,7 @@ class ApolloInterceptorTest {
       override fun dispose() {}
     }
     client = createApolloClient(interceptor)
-    Rx2Apollo.from(client.query(query)).test().assertValue(rewrittenResponse.parsedResponse.get() as Response<EpisodeHeroNameQuery.Data>)
+    Rx2Apollo.from(client.query(query)).test().assertValue(rewrittenResponse.parsedResponse.get() as ApolloResponse<EpisodeHeroNameQuery.Data>)
   }
 
   @Test
@@ -177,7 +177,7 @@ class ApolloInterceptorTest {
     client = createApolloClient(interceptor, testExecutor)
     val apolloCall: ApolloCall<EpisodeHeroNameQuery.Data> = client.query(query)
     apolloCall.enqueue(object : ApolloCall.Callback<EpisodeHeroNameQuery.Data>() {
-      override fun onResponse(response: Response<EpisodeHeroNameQuery.Data>) {}
+      override fun onResponse(response: ApolloResponse<EpisodeHeroNameQuery.Data>) {}
       override fun onFailure(e: ApolloException) {}
     })
     apolloCall.cancel()
@@ -212,7 +212,7 @@ class ApolloInterceptorTest {
 
     return InterceptorResponse(
         okHttpResponse,
-        Response(
+        ApolloResponse(
             requestUuid = uuid4(),
             operation = query,
             data = null

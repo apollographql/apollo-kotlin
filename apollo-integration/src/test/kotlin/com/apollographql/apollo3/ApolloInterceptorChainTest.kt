@@ -2,7 +2,7 @@ package com.apollographql.apollo3
 
 import com.apollographql.apollo3.Utils.immediateExecutor
 import com.apollographql.apollo3.api.Input
-import com.apollographql.apollo3.api.Response
+import com.apollographql.apollo3.api.ApolloResponse
 import com.apollographql.apollo3.exception.ApolloException
 import com.apollographql.apollo3.exception.ApolloGenericException
 import com.apollographql.apollo3.integration.normalizer.EpisodeHeroNameQuery
@@ -154,7 +154,7 @@ class ApolloInterceptorChainTest {
         .build()
     return InterceptorResponse(
         okHttpResponse,
-        Response(
+        ApolloResponse(
             requestUuid = uuid4(),
             operation = query,
             data = null

@@ -4,7 +4,7 @@ import com.apollographql.apollo3.ApolloCall.Callback
 import com.apollographql.apollo3.Utils.receiveOrTimeout
 import com.apollographql.apollo3.api.Input
 import com.apollographql.apollo3.api.Logger
-import com.apollographql.apollo3.api.Response
+import com.apollographql.apollo3.api.ApolloResponse
 import com.apollographql.apollo3.cache.CacheHeaders
 import com.apollographql.apollo3.cache.normalized.MemoryCacheFactory
 import com.apollographql.apollo3.cache.normalized.Record
@@ -69,7 +69,7 @@ class ApolloWatcherTest {
     val watcher = apolloClient.query(query).watcher()
     watcher.enqueueAndWatch(
         object : Callback<EpisodeHeroNameQuery.Data>() {
-          override fun onResponse(response: Response<EpisodeHeroNameQuery.Data>) {
+          override fun onResponse(response: ApolloResponse<EpisodeHeroNameQuery.Data>) {
             heroNameList.add(response.data!!.hero!!.name)
           }
 
@@ -132,7 +132,7 @@ class ApolloWatcherTest {
     val watcher: ApolloQueryWatcher<EpisodeHeroNameQuery.Data> = apolloClient.query(query).watcher()
     watcher.enqueueAndWatch(
         object : Callback<EpisodeHeroNameQuery.Data>() {
-          override fun onResponse(response: Response<EpisodeHeroNameQuery.Data>) {
+          override fun onResponse(response: ApolloResponse<EpisodeHeroNameQuery.Data>) {
             heroNameList.add(response.data!!.hero!!.name)
           }
 
@@ -183,7 +183,7 @@ class ApolloWatcherTest {
     val watcher: ApolloQueryWatcher<EpisodeHeroNameQuery.Data> = apolloClient.query(query).watcher()
     watcher.enqueueAndWatch(
         object : Callback<EpisodeHeroNameQuery.Data>() {
-          override fun onResponse(response: Response<EpisodeHeroNameQuery.Data>) {
+          override fun onResponse(response: ApolloResponse<EpisodeHeroNameQuery.Data>) {
             heroNameList.add(response.data!!.hero!!.name)
           }
 
@@ -208,7 +208,7 @@ class ApolloWatcherTest {
     watcher.refetchResponseFetcher(ApolloResponseFetchers.NETWORK_ONLY) //Force network instead of CACHE_FIRST default
         .enqueueAndWatch(
             object : Callback<EpisodeHeroNameQuery.Data>() {
-              override fun onResponse(response: Response<EpisodeHeroNameQuery.Data>) {
+              override fun onResponse(response: ApolloResponse<EpisodeHeroNameQuery.Data>) {
                 heroNameList.add(response.data!!.hero!!.name)
               }
 
@@ -236,7 +236,7 @@ class ApolloWatcherTest {
     val query = EpisodeHeroNameQuery(Input.Present(Episode.EMPIRE))
     server.enqueue(Utils.mockResponse("EpisodeHeroNameResponseWithId.json"))
     apolloClient.query(query).enqueue(object : Callback<EpisodeHeroNameQuery.Data>() {
-      override fun onResponse(response: Response<EpisodeHeroNameQuery.Data>) {}
+      override fun onResponse(response: ApolloResponse<EpisodeHeroNameQuery.Data>) {}
       override fun onFailure(e: ApolloException) {
         Assert.fail(e.message)
       }
@@ -245,7 +245,7 @@ class ApolloWatcherTest {
         .responseFetcher(ApolloResponseFetchers.CACHE_ONLY).watcher()
     watcher.enqueueAndWatch(
         object : Callback<EpisodeHeroNameQuery.Data>() {
-          override fun onResponse(response: Response<EpisodeHeroNameQuery.Data>) {
+          override fun onResponse(response: ApolloResponse<EpisodeHeroNameQuery.Data>) {
             heroNameList.add(response.data!!.hero!!.name)
           }
 
@@ -271,7 +271,7 @@ class ApolloWatcherTest {
     val watcher: ApolloQueryWatcher<EpisodeHeroNameQuery.Data> = apolloClient.query(query).watcher()
     watcher.enqueueAndWatch(
         object : Callback<EpisodeHeroNameQuery.Data>() {
-          override fun onResponse(response: Response<EpisodeHeroNameQuery.Data>) {
+          override fun onResponse(response: ApolloResponse<EpisodeHeroNameQuery.Data>) {
             heroNameList.add(response.data!!.hero!!.name)
           }
 
@@ -298,7 +298,7 @@ class ApolloWatcherTest {
         .responseFetcher(ApolloResponseFetchers.CACHE_ONLY)
         .watcher()
         .enqueueAndWatch(object : Callback<EpisodeHeroNameQuery.Data>() {
-          override fun onResponse(response: Response<EpisodeHeroNameQuery.Data>) {
+          override fun onResponse(response: ApolloResponse<EpisodeHeroNameQuery.Data>) {
             if (response.data != null) {
               watchedHeroes.add(response.data!!.hero!!)
             }
@@ -310,7 +310,7 @@ class ApolloWatcherTest {
         })
     server.enqueue(Utils.mockResponse("EpisodeHeroNameResponseWithId.json"))
     apolloClient.query(query).enqueue(object : Callback<EpisodeHeroNameQuery.Data>() {
-      override fun onResponse(response: Response<EpisodeHeroNameQuery.Data>) {
+      override fun onResponse(response: ApolloResponse<EpisodeHeroNameQuery.Data>) {
         assertThat(response.data).isNotNull()
         assertThat(response.data?.hero).isNotNull()
       }
@@ -326,7 +326,7 @@ class ApolloWatcherTest {
   @Test
   fun queryWatcherWithCacheOnlyNeverGoesToTheNetwork() {
     runBlocking {
-      val channel = Channel<Response<EpisodeHeroNameQuery.Data>>(capacity = Channel.UNLIMITED)
+      val channel = Channel<ApolloResponse<EpisodeHeroNameQuery.Data>>(capacity = Channel.UNLIMITED)
       val job = launch {
         apolloClient.query(EpisodeHeroNameQuery(Input.Present(Episode.EMPIRE)))
             .responseFetcher(ApolloResponseFetchers.CACHE_ONLY)
@@ -361,7 +361,7 @@ class ApolloWatcherTest {
   @Test
   fun queryWatcherWithCacheOnlyCanBeUpdatedFromAnotherQuery() {
     runBlocking {
-      val channel = Channel<Response<EpisodeHeroNameQuery.Data>>(capacity = Channel.UNLIMITED)
+      val channel = Channel<ApolloResponse<EpisodeHeroNameQuery.Data>>(capacity = Channel.UNLIMITED)
       val job = launch {
         apolloClient.query(EpisodeHeroNameQuery(Input.Present(Episode.EMPIRE)))
             .responseFetcher(ApolloResponseFetchers.CACHE_ONLY)

@@ -5,7 +5,6 @@
 //
 package com.example.arguments_hardcoded
 
-import com.apollographql.apollo3.api.Operation
 import com.apollographql.apollo3.api.Query
 import com.apollographql.apollo3.api.QueryDocumentMinifier
 import com.apollographql.apollo3.api.ResponseAdapter
@@ -51,7 +50,7 @@ class TestQuery : Query<TestQuery.Data> {
   data class Data(
     val reviews: List<Reviews?>?,
     val testNullableArguments: Int
-  ) : Operation.Data {
+  ) : Query.Data {
     fun reviewsFilterNotNull(): List<Reviews>? = reviews?.filterNotNull()
 
     /**

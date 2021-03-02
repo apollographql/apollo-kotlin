@@ -4,7 +4,7 @@ import com.apollographql.apollo3.ApolloClient
 import com.apollographql.apollo3.ApolloSubscriptionCall
 import com.apollographql.apollo3.IdFieldCacheKeyResolver
 import com.apollographql.apollo3.api.Operation
-import com.apollographql.apollo3.api.Response
+import com.apollographql.apollo3.api.ApolloResponse
 import com.apollographql.apollo3.cache.normalized.NormalizedCache
 import com.apollographql.apollo3.cache.normalized.MemoryCacheFactory
 import com.apollographql.apollo3.exception.ApolloException
@@ -16,7 +16,6 @@ import com.apollographql.apollo3.subscription.SubscriptionTransport
 import com.google.common.truth.Truth.assertThat
 import org.junit.Before
 import org.junit.Test
-import java.math.BigDecimal
 import java.util.concurrent.AbstractExecutorService
 import java.util.concurrent.TimeUnit
 
@@ -180,7 +179,7 @@ class SubscriptionNormalizedCacheTest {
     """.trimIndent())
   }
 
-  private fun Response<NewRepoCommentSubscription.Data>?.assertResponse(expectedFromCache: Boolean, expectedContent: String) {
+  private fun ApolloResponse<NewRepoCommentSubscription.Data>?.assertResponse(expectedFromCache: Boolean, expectedContent: String) {
     assertThat(this).isNotNull()
     assertThat(this!!.isFromCache).isEqualTo(expectedFromCache)
     assertThat(data).isNotNull()
@@ -243,12 +242,12 @@ private class MockSubscriptionTransport : SubscriptionTransport {
 }
 
 private class SubscriptionManagerCallbackAdapter<D: Operation.Data> : ApolloSubscriptionCall.Callback<D> {
-  var response: Response<D>? = null
+  var response: ApolloResponse<D>? = null
   var completed = false
   var terminated = false
   var connected = false
 
-  override fun onResponse(response: Response<D>) {
+  override fun onResponse(response: ApolloResponse<D>) {
     this.response = response
   }
 

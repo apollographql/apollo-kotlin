@@ -1,29 +1,15 @@
 package com.apollographql.apollo3.network.http
 
-import com.apollographql.apollo3.ApolloRequest
-import com.apollographql.apollo3.api.Operation
-import com.apollographql.apollo3.api.Response
-import com.apollographql.apollo3.api.ResponseAdapterCache
-import com.apollographql.apollo3.api.fromResponse
-import com.apollographql.apollo3.api.internal.OperationRequestBodyComposer
-import com.apollographql.apollo3.api.variablesJson
 import com.apollographql.apollo3.exception.ApolloException
 import com.apollographql.apollo3.exception.ApolloHttpException
 import com.apollographql.apollo3.exception.ApolloNetworkException
-import com.apollographql.apollo3.exception.ApolloParseException
-import com.apollographql.apollo3.exception.ApolloSerializationException
-import com.apollographql.apollo3.network.NetworkTransport
-import com.apollographql.apollo3.network.toNSData
 import kotlinx.cinterop.COpaquePointer
 import kotlinx.cinterop.StableRef
 import kotlinx.cinterop.asStableRef
 import kotlinx.cinterop.staticCFunction
 import kotlinx.coroutines.ExperimentalCoroutinesApi
-import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.suspendCancellableCoroutine
 import okio.Buffer
-import okio.ByteString
 import okio.IOException
 import okio.toByteString
 import platform.Foundation.NSData
@@ -32,8 +18,6 @@ import platform.Foundation.NSHTTPURLResponse
 import platform.Foundation.NSMutableURLRequest
 import platform.Foundation.NSThread
 import platform.Foundation.NSURL
-import platform.Foundation.NSURLComponents
-import platform.Foundation.NSURLQueryItem
 import platform.Foundation.NSURLRequest
 import platform.Foundation.NSURLRequestReloadIgnoringCacheData
 import platform.Foundation.NSURLResponse
@@ -41,14 +25,12 @@ import platform.Foundation.NSURLSession
 import platform.Foundation.NSURLSessionConfiguration
 import platform.Foundation.NSURLSessionDataTask
 import platform.Foundation.dataTaskWithRequest
-import platform.Foundation.setHTTPBody
 import platform.Foundation.setHTTPMethod
 import platform.Foundation.setValue
 import platform.darwin.dispatch_async_f
 import platform.darwin.dispatch_get_main_queue
 import kotlin.coroutines.Continuation
 import kotlin.coroutines.resume
-import kotlin.coroutines.resumeWithException
 import kotlin.native.concurrent.freeze
 
 typealias UrlSessionDataTaskCompletionHandler = (NSData?, NSURLResponse?, NSError?) -> Unit

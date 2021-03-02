@@ -44,7 +44,7 @@ class MockSubscription(
 
   override fun operationId(): String = name.hashCode().toString()
 
-  data class Data(val name: String) : Operation.Data
+  data class Data(val name: String) : Subscription.Data
 
   override fun responseFields(): List<ResponseField.FieldSet> {
     return emptyList()

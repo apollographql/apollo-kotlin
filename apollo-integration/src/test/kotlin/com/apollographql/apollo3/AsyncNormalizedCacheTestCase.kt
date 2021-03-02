@@ -2,7 +2,7 @@ package com.apollographql.apollo3
 
 import com.apollographql.apollo3.Utils.readFileToString
 import com.apollographql.apollo3.api.Input
-import com.apollographql.apollo3.api.Response
+import com.apollographql.apollo3.api.ApolloResponse
 import com.apollographql.apollo3.cache.normalized.MemoryCacheFactory
 import com.apollographql.apollo3.exception.ApolloException
 import com.apollographql.apollo3.fetcher.ApolloResponseFetchers
@@ -16,7 +16,6 @@ import okhttp3.OkHttpClient
 import okhttp3.mockwebserver.MockResponse
 import okhttp3.mockwebserver.MockWebServer
 import org.junit.Before
-import org.junit.Rule
 import org.junit.Test
 import java.io.IOException
 import java.util.*
@@ -48,18 +47,18 @@ class AsyncNormalizedCacheTestCase {
     for (i in 0..499) {
       server.enqueue(mockResponse("HeroNameResponse.json"))
     }
-    val calls: MutableList<Observable<Response<EpisodeHeroNameQuery.Data>>> = ArrayList()
+    val calls: MutableList<Observable<ApolloResponse<EpisodeHeroNameQuery.Data>>> = ArrayList()
     for (i in 0..999) {
       val queryCall = apolloClient
           .query(query)
           .responseFetcher(if (i % 2 == 0) ApolloResponseFetchers.NETWORK_FIRST else ApolloResponseFetchers.CACHE_ONLY)
       calls.add(Rx2Apollo.from(queryCall))
     }
-    val observer = TestObserver<Response<EpisodeHeroNameQuery.Data>>()
+    val observer = TestObserver<ApolloResponse<EpisodeHeroNameQuery.Data>>()
     Observable.merge(calls).subscribe(observer)
     observer.awaitTerminalEvent()
     observer.assertNoErrors()
     observer.assertValueCount(1000)
-    observer.assertNever(Predicate<Response<EpisodeHeroNameQuery.Data>> { dataResponse -> dataResponse.hasErrors() })
+    observer.assertNever(Predicate<ApolloResponse<EpisodeHeroNameQuery.Data>> { dataResponse -> dataResponse.hasErrors() })
   }
 }

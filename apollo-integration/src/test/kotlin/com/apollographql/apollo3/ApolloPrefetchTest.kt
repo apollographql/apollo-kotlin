@@ -6,7 +6,6 @@ import com.apollographql.apollo3.Utils.immediateExecutor
 import com.apollographql.apollo3.Utils.immediateExecutorService
 import com.apollographql.apollo3.Utils.mockResponse
 import com.apollographql.apollo3.Utils.readFileToString
-import com.apollographql.apollo3.api.Response
 import com.apollographql.apollo3.api.cache.http.HttpCache
 import com.apollographql.apollo3.api.cache.http.HttpCachePolicy
 import com.apollographql.apollo3.cache.http.ApolloHttpCache
@@ -16,14 +15,12 @@ import com.apollographql.apollo3.exception.ApolloException
 import com.apollographql.apollo3.integration.httpcache.AllPlanetsQuery
 import com.apollographql.apollo3.rx2.Rx2Apollo
 import com.google.common.truth.Truth
-import io.reactivex.functions.Predicate
 import okhttp3.Dispatcher
 import okhttp3.OkHttpClient
 import okhttp3.Request
 import okhttp3.mockwebserver.MockWebServer
 import org.junit.After
 import org.junit.Before
-import org.junit.Rule
 import org.junit.Test
 import java.io.File
 import java.io.IOException

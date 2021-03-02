@@ -4,7 +4,7 @@ import com.apollographql.apollo3.ApolloCall
 import com.apollographql.apollo3.ApolloQueryWatcher
 import com.apollographql.apollo3.api.ResponseAdapterCache
 import com.apollographql.apollo3.api.Operation
-import com.apollographql.apollo3.api.Response
+import com.apollographql.apollo3.api.ApolloResponse
 import com.apollographql.apollo3.api.internal.ApolloLogger
 import com.apollographql.apollo3.api.internal.Optional
 import com.apollographql.apollo3.cache.normalized.ApolloStore
@@ -103,7 +103,7 @@ class RealApolloQueryWatcher<D : Operation.Data>(
 
   private fun callbackProxy(): ApolloCall.Callback<D> {
     return object : ApolloCall.Callback<D>() {
-      override fun onResponse(response: Response<D>) {
+      override fun onResponse(response: ApolloResponse<D>) {
         val callback = responseCallback()
         if (!callback.isPresent) {
           logger.d("onResponse for watched operation: %s. No callback present.", operation().name())

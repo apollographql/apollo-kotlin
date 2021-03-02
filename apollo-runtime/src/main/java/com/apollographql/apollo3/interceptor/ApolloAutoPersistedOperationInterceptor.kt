@@ -4,7 +4,7 @@ import com.apollographql.apollo3.api.Error
 import com.apollographql.apollo3.api.Mutation
 import com.apollographql.apollo3.api.Operation
 import com.apollographql.apollo3.api.Query
-import com.apollographql.apollo3.api.Response
+import com.apollographql.apollo3.api.ApolloResponse
 import com.apollographql.apollo3.api.internal.ApolloLogger
 import com.apollographql.apollo3.api.internal.Function
 import com.apollographql.apollo3.api.internal.Optional
@@ -58,8 +58,8 @@ class ApolloAutoPersistedOperationInterceptor(private val logger: ApolloLogger,
 
   fun handleProtocolNegotiation(request: InterceptorRequest,
                                 response: InterceptorResponse): Optional<InterceptorRequest> {
-    return (response.parsedResponse as Optional<Response<Operation.Data>>).flatMap(object: Function<Response<Operation.Data>, Optional<InterceptorRequest>> {
-      override fun apply(response: Response<Operation.Data>): Optional<InterceptorRequest> {
+    return (response.parsedResponse as Optional<ApolloResponse<Operation.Data>>).flatMap(object: Function<ApolloResponse<Operation.Data>, Optional<InterceptorRequest>> {
+      override fun apply(response: ApolloResponse<Operation.Data>): Optional<InterceptorRequest> {
         if (response.hasErrors()) {
           if (isPersistedQueryNotFound(response.errors)) {
             logger.w("GraphQL server couldn't find Automatic Persisted Query for operation name: "

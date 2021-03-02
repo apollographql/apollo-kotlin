@@ -12,7 +12,7 @@ class MockSubscription(
     private val variables: Map<String, Any?> = emptyMap(),
     private val name: String = "SomeSubscription",
     private val operationId: String = "someId"
-) : Subscription<Operation.Data> {
+) : Subscription<Subscription.Data> {
   override fun queryDocument(): String = queryDocument
 
   override fun serializeVariables(writer: JsonWriter, responseAdapterCache: ResponseAdapterCache) {

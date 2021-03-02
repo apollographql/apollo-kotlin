@@ -3,7 +3,7 @@ package com.apollographql.apollo3.api.internal
 import com.apollographql.apollo3.api.ResponseAdapterCache
 import com.apollographql.apollo3.api.Error
 import com.apollographql.apollo3.api.Operation
-import com.apollographql.apollo3.api.Response
+import com.apollographql.apollo3.api.ApolloResponse
 import com.apollographql.apollo3.api.fromJson
 import com.benasher44.uuid.uuid4
 
@@ -22,7 +22,7 @@ object MapResponseParser {
       payload: Map<String, Any?>,
       operation: Operation<D>,
       responseAdapterCache: ResponseAdapterCache,
-  ): Response<D> {
+  ): ApolloResponse<D> {
     val data = (payload["data"] as Map<String, Any?>?)?.let {
       operation.fromJson(it, responseAdapterCache)
     }
@@ -35,7 +35,7 @@ object MapResponseParser {
       null
     }
 
-    return Response(
+    return ApolloResponse(
         requestUuid = uuid4(),
         operation = operation,
         data = data,

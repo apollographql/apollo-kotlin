@@ -1,11 +1,10 @@
 package com.apollographql.apollo3
 
 import com.apollographql.apollo3.api.Operation
-import com.apollographql.apollo3.api.Response
+import com.apollographql.apollo3.api.ApolloResponse
 import com.apollographql.apollo3.coroutines.await
 import com.apollographql.apollo3.fetcher.ApolloResponseFetchers.CACHE_ONLY
 import com.apollographql.apollo3.fetcher.ApolloResponseFetchers.NETWORK_ONLY
-import com.google.common.io.CharStreams
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.withTimeout
@@ -50,7 +49,7 @@ object Utils {
     return MockResponse().setChunkedBody(readFileToString(Utils::class.java, "/$fileName"), 32)
   }
 
-  fun <D: Operation.Data> assertResponse(call: ApolloCall<D>, block: (Response<D>) -> Unit) {
+  fun <D: Operation.Data> assertResponse(call: ApolloCall<D>, block: (ApolloResponse<D>) -> Unit) {
     runBlocking {
       block.invoke(call.await())
     }
@@ -60,7 +59,7 @@ object Utils {
   fun <D: Operation.Data> enqueueAndAssertResponse(
       server: MockWebServer,
       mockResponse: String, call: ApolloCall<D>,
-      block: (Response<D>) -> Unit) {
+      block: (ApolloResponse<D>) -> Unit) {
     server.enqueue(mockResponse(mockResponse))
     assertResponse(call) {
       block(it)
@@ -72,7 +71,7 @@ object Utils {
       server: MockWebServer,
       mockResponse: String,
       call: ApolloQueryCall<D>,
-      block: (Response<D>) -> Unit
+      block: (ApolloResponse<D>) -> Unit
   ) {
     server.enqueue(mockResponse(mockResponse))
     runBlocking {

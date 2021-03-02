@@ -48,12 +48,12 @@ class SubscriptionManagerTest {
 
   @Test
   fun connecting() {
-    subscriptionManager.subscribe(subscription1, SubscriptionManagerCallbackAdapter<Operation.Data>())
+    subscriptionManager.subscribe(subscription1, SubscriptionManagerCallbackAdapter())
     assertThat(subscriptionTransportFactory.subscriptionTransport).isNotNull()
     assertThat(subscriptionTransportFactory.subscriptionTransport.connected).isTrue()
     assertThat(subscriptionTransportFactory.subscriptionTransport.lastSentMessage).isNull()
     assertThat(subscriptionManager.state).isEqualTo(SubscriptionManagerState.CONNECTING)
-    subscriptionManager.subscribe(subscription2, SubscriptionManagerCallbackAdapter<Operation.Data>())
+    subscriptionManager.subscribe(subscription2, SubscriptionManagerCallbackAdapter())
     assertThat(subscriptionTransportFactory.subscriptionTransport.connected).isTrue()
     assertThat(subscriptionTransportFactory.subscriptionTransport.lastSentMessage).isNull()
     assertThat(subscriptionManager.state).isEqualTo(SubscriptionManagerState.CONNECTING)
@@ -63,7 +63,7 @@ class SubscriptionManagerTest {
 
   @Test
   fun connected() {
-    subscriptionManager.subscribe(subscription1, SubscriptionManagerCallbackAdapter<Operation.Data>())
+    subscriptionManager.subscribe(subscription1, SubscriptionManagerCallbackAdapter())
     subscriptionTransportFactory.callback.onConnected()
     assertThat(subscriptionManager.state).isEqualTo(SubscriptionManagerState.CONNECTED)
     assertThat(subscriptionTransportFactory.subscriptionTransport.lastSentMessage).isInstanceOf(OperationClientMessage.Init::class.java)
@@ -72,7 +72,7 @@ class SubscriptionManagerTest {
 
   @Test
   fun active() {
-    subscriptionManager.subscribe(subscription1, SubscriptionManagerCallbackAdapter<Operation.Data>())
+    subscriptionManager.subscribe(subscription1, SubscriptionManagerCallbackAdapter())
     subscriptionTransportFactory.callback.onConnected()
     subscriptionTransportFactory.callback.onMessage(OperationServerMessage.ConnectionAcknowledge)
     assertThat(subscriptionManager.state).isEqualTo(SubscriptionManagerState.ACTIVE)
@@ -83,7 +83,7 @@ class SubscriptionManagerTest {
   @Test
   @Throws(Exception::class)
   fun disconnected() {
-    subscriptionManager.subscribe(subscription1, SubscriptionManagerCallbackAdapter<Operation.Data>())
+    subscriptionManager.subscribe(subscription1, SubscriptionManagerCallbackAdapter())
     subscriptionTransportFactory.callback.onConnected()
     subscriptionTransportFactory.callback.onMessage(OperationServerMessage.ConnectionAcknowledge)
     subscriptionManager.unsubscribe(subscription1)
@@ -98,12 +98,12 @@ class SubscriptionManagerTest {
   @Test
   @Throws(Exception::class)
   fun reconnect() {
-    subscriptionManager.subscribe(subscription1, SubscriptionManagerCallbackAdapter<Operation.Data>())
+    subscriptionManager.subscribe(subscription1, SubscriptionManagerCallbackAdapter())
     subscriptionTransportFactory.callback.onConnected()
     subscriptionTransportFactory.callback.onMessage(OperationServerMessage.ConnectionAcknowledge)
     subscriptionManager.unsubscribe(subscription1)
     onStateChangeListener.awaitState(SubscriptionManagerState.DISCONNECTED, RealSubscriptionManager.INACTIVITY_TIMEOUT + 800, TimeUnit.MILLISECONDS)
-    subscriptionManager.subscribe(subscription2, SubscriptionManagerCallbackAdapter<Operation.Data>())
+    subscriptionManager.subscribe(subscription2, SubscriptionManagerCallbackAdapter())
     subscriptionTransportFactory.callback.onConnected()
     subscriptionTransportFactory.callback.onMessage(OperationServerMessage.ConnectionAcknowledge)
     assertThat(subscriptionManager.state).isEqualTo(SubscriptionManagerState.ACTIVE)
@@ -114,7 +114,7 @@ class SubscriptionManagerTest {
   @Test
   @Throws(Exception::class)
   fun disconnectedOnConnectionAcknowledgeTimeout() {
-    subscriptionManager.subscribe(subscription1, SubscriptionManagerCallbackAdapter<Operation.Data>())
+    subscriptionManager.subscribe(subscription1, SubscriptionManagerCallbackAdapter())
     subscriptionTransportFactory.callback.onConnected()
     assertThat(subscriptionManager.timer.tasks).containsKey(RealSubscriptionManager.CONNECTION_ACKNOWLEDGE_TIMEOUT_TIMER_TASK_ID)
     onStateChangeListener.awaitState(SubscriptionManagerState.DISCONNECTED, RealSubscriptionManager.CONNECTION_ACKNOWLEDGE_TIMEOUT + 800, TimeUnit.MILLISECONDS)
@@ -125,9 +125,9 @@ class SubscriptionManagerTest {
 
   @Test
   fun disconnectedOnTransportFailure() {
-    val subscriptionManagerCallback1 = SubscriptionManagerCallbackAdapter<Operation.Data>()
+    val subscriptionManagerCallback1 = SubscriptionManagerCallbackAdapter<Subscription.Data>()
     subscriptionManager.subscribe(subscription1, subscriptionManagerCallback1)
-    val subscriptionManagerCallback2 = SubscriptionManagerCallbackAdapter<Operation.Data>()
+    val subscriptionManagerCallback2 = SubscriptionManagerCallbackAdapter<Subscription.Data>()
     subscriptionManager.subscribe(subscription2, subscriptionManagerCallback2)
     subscriptionTransportFactory.callback.onConnected()
     subscriptionTransportFactory.callback.onMessage(OperationServerMessage.ConnectionAcknowledge)
@@ -142,9 +142,9 @@ class SubscriptionManagerTest {
 
   @Test
   fun unsubscribeOnComplete() {
-    val subscriptionManagerCallback1 = SubscriptionManagerCallbackAdapter<Operation.Data>()
+    val subscriptionManagerCallback1 = SubscriptionManagerCallbackAdapter<Subscription.Data>()
     subscriptionManager.subscribe(subscription1, subscriptionManagerCallback1)
-    val subscriptionManagerCallback2 = SubscriptionManagerCallbackAdapter<Operation.Data>()
+    val subscriptionManagerCallback2 = SubscriptionManagerCallbackAdapter<Subscription.Data>()
     subscriptionManager.subscribe(subscription2, subscriptionManagerCallback2)
     val subscriptionIds: List<UUID> = ArrayList(subscriptionManager.subscriptions.keys)
     subscriptionTransportFactory.callback.onConnected()
@@ -157,9 +157,9 @@ class SubscriptionManagerTest {
 
   @Test
   fun unsubscribeOnError() {
-    val subscriptionManagerCallback1 = SubscriptionManagerCallbackAdapter<Operation.Data>()
+    val subscriptionManagerCallback1 = SubscriptionManagerCallbackAdapter<Subscription.Data>()
     subscriptionManager.subscribe(subscription1, subscriptionManagerCallback1)
-    val subscriptionManagerCallback2 = SubscriptionManagerCallbackAdapter<Operation.Data>()
+    val subscriptionManagerCallback2 = SubscriptionManagerCallbackAdapter<Subscription.Data>()
     subscriptionManager.subscribe(subscription2, subscriptionManagerCallback2)
     val subscriptionIds: List<UUID> = ArrayList(subscriptionManager.subscriptions.keys)
     subscriptionTransportFactory.callback.onConnected()
@@ -175,7 +175,7 @@ class SubscriptionManagerTest {
 
   @Test
   fun notifyOnData() {
-    val subscriptionManagerCallback1 = SubscriptionManagerCallbackAdapter<Operation.Data>()
+    val subscriptionManagerCallback1 = SubscriptionManagerCallbackAdapter<Subscription.Data>()
     subscriptionManager.subscribe(subscription1, subscriptionManagerCallback1)
     val subscriptionIds: List<UUID> = ArrayList(subscriptionManager.subscriptions.keys)
     subscriptionTransportFactory.callback.onConnected()
@@ -186,7 +186,7 @@ class SubscriptionManagerTest {
 
   @Test
   fun notifyOnConnected() {
-    val subscriptionManagerCallback1 = SubscriptionManagerCallbackAdapter<Operation.Data>()
+    val subscriptionManagerCallback1 = SubscriptionManagerCallbackAdapter<Subscription.Data>()
     subscriptionManager.subscribe(subscription1, subscriptionManagerCallback1)
     subscriptionTransportFactory.callback.onConnected()
     assertThat(subscriptionManagerCallback1.connected).isTrue()
@@ -194,9 +194,9 @@ class SubscriptionManagerTest {
 
   @Test
   fun duplicateSubscriptions() {
-    val subscriptionManagerCallback1 = SubscriptionManagerCallbackAdapter<Operation.Data>()
+    val subscriptionManagerCallback1 = SubscriptionManagerCallbackAdapter<Subscription.Data>()
     subscriptionManager.subscribe(subscription1, subscriptionManagerCallback1)
-    val subscriptionManagerCallback2 = SubscriptionManagerCallbackAdapter<Operation.Data>()
+    val subscriptionManagerCallback2 = SubscriptionManagerCallbackAdapter<Subscription.Data>()
     subscriptionManager.subscribe(subscription1, subscriptionManagerCallback2)
     assertThat(subscriptionManagerCallback2.error).isNull()
   }
@@ -204,7 +204,7 @@ class SubscriptionManagerTest {
   @Test
   @Throws(Exception::class)
   fun reconnectingAfterHeartbeatTimeout() {
-    subscriptionManager.subscribe(subscription1, SubscriptionManagerCallbackAdapter<Operation.Data>())
+    subscriptionManager.subscribe(subscription1, SubscriptionManagerCallbackAdapter())
     subscriptionTransportFactory.callback.onConnected()
     subscriptionTransportFactory.callback.onMessage(OperationServerMessage.ConnectionAcknowledge)
     subscriptionTransportFactory.callback.onMessage(OperationServerMessage.ConnectionKeepAlive)
@@ -223,7 +223,7 @@ class SubscriptionManagerTest {
 
   @Test
   fun startWhenConnected() {
-    subscriptionManager.subscribe(subscription1, SubscriptionManagerCallbackAdapter<Operation.Data>())
+    subscriptionManager.subscribe(subscription1, SubscriptionManagerCallbackAdapter())
     subscriptionTransportFactory.callback.onConnected()
     assertThat(subscriptionManager.state).isEqualTo(SubscriptionManagerState.CONNECTED)
     subscriptionManager.start()
@@ -232,7 +232,7 @@ class SubscriptionManagerTest {
 
   @Test
   fun startWhenActive() {
-    subscriptionManager.subscribe(subscription1, SubscriptionManagerCallbackAdapter<Operation.Data>())
+    subscriptionManager.subscribe(subscription1, SubscriptionManagerCallbackAdapter())
     subscriptionTransportFactory.callback.onConnected()
     subscriptionTransportFactory.callback.onMessage(OperationServerMessage.ConnectionAcknowledge)
     assertThat(subscriptionManager.state).isEqualTo(SubscriptionManagerState.ACTIVE)
@@ -242,7 +242,7 @@ class SubscriptionManagerTest {
 
   @Test
   fun startWhenStopped() {
-    subscriptionManager.subscribe(subscription1, SubscriptionManagerCallbackAdapter<Operation.Data>())
+    subscriptionManager.subscribe(subscription1, SubscriptionManagerCallbackAdapter())
     subscriptionTransportFactory.callback.onConnected()
     subscriptionTransportFactory.callback.onMessage(OperationServerMessage.ConnectionAcknowledge)
     subscriptionManager.stop()
@@ -260,8 +260,8 @@ class SubscriptionManagerTest {
 
   @Test
   fun stopWhenConnected() {
-    subscriptionManager.subscribe(subscription1, SubscriptionManagerCallbackAdapter<Operation.Data>())
-    subscriptionManager.subscribe(subscription2, SubscriptionManagerCallbackAdapter<Operation.Data>())
+    subscriptionManager.subscribe(subscription1, SubscriptionManagerCallbackAdapter())
+    subscriptionManager.subscribe(subscription2, SubscriptionManagerCallbackAdapter())
     subscriptionTransportFactory.callback.onConnected()
     assertThat(subscriptionManager.state).isEqualTo(SubscriptionManagerState.CONNECTED)
     subscriptionManager.stop()
@@ -270,7 +270,7 @@ class SubscriptionManagerTest {
 
   @Test
   fun stopWhenActive() {
-    subscriptionManager.subscribe(subscription1, SubscriptionManagerCallbackAdapter<Operation.Data>())
+    subscriptionManager.subscribe(subscription1, SubscriptionManagerCallbackAdapter())
     subscriptionTransportFactory.callback.onConnected()
     subscriptionTransportFactory.callback.onMessage(OperationServerMessage.ConnectionAcknowledge)
     assertThat(subscriptionManager.state).isEqualTo(SubscriptionManagerState.ACTIVE)
@@ -280,7 +280,7 @@ class SubscriptionManagerTest {
 
   @Test
   fun stopWhenStopped() {
-    subscriptionManager.subscribe(subscription1, SubscriptionManagerCallbackAdapter<Operation.Data>())
+    subscriptionManager.subscribe(subscription1, SubscriptionManagerCallbackAdapter())
     subscriptionTransportFactory.callback.onConnected()
     subscriptionTransportFactory.callback.onMessage(OperationServerMessage.ConnectionAcknowledge)
     subscriptionManager.stop()
@@ -292,7 +292,7 @@ class SubscriptionManagerTest {
   @Test
   fun subscriptionWhenStopped() {
     subscriptionManager.stop()
-    val subscriptionManagerCallback = SubscriptionManagerCallbackAdapter<Operation.Data>()
+    val subscriptionManagerCallback = SubscriptionManagerCallbackAdapter<Subscription.Data>()
     subscriptionManager.subscribe(subscription1, subscriptionManagerCallback)
     assertThat(subscriptionManager.state).isEqualTo(SubscriptionManagerState.STOPPED)
     assertThat(subscriptionManagerCallback.error).isInstanceOf(ApolloSubscriptionException::class.java)
@@ -301,7 +301,7 @@ class SubscriptionManagerTest {
 
   @Test
   fun connectionTerminated() {
-    val subscriptionManagerCallback = SubscriptionManagerCallbackAdapter<Operation.Data>()
+    val subscriptionManagerCallback = SubscriptionManagerCallbackAdapter<Subscription.Data>()
     subscriptionManager.subscribe(subscription1, subscriptionManagerCallback)
     subscriptionTransportFactory.callback.onConnected()
     subscriptionTransportFactory.callback.onMessage(OperationServerMessage.ConnectionAcknowledge)
@@ -349,7 +349,7 @@ class SubscriptionManagerTest {
     }
   }
 
-  private class MockSubscription(val operationId: String) : Subscription<Operation.Data> {
+  private class MockSubscription(val operationId: String) : Subscription<Subscription.Data> {
     override fun queryDocument(): String {
       return "subscription {\n  commentAdded(repoFullName: \"repo\") {\n    __typename\n    id\n    content\n  }\n}"
     }
@@ -369,7 +369,7 @@ class SubscriptionManagerTest {
     }
   }
 
-  private class SubscriptionManagerCallbackAdapter<D : Operation.Data> : SubscriptionManager.Callback<D> {
+  private class SubscriptionManagerCallbackAdapter<D : Subscription.Data> : SubscriptionManager.Callback<D> {
     @Volatile
     var response: SubscriptionResponse<D>? = null
 

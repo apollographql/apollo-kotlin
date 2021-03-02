@@ -1,6 +1,7 @@
 package com.apollographql.apollo3.kmpsample.data
 
 import com.apollographql.apollo3.ApolloClient
+import com.apollographql.apollo3.ApolloRequest
 import com.apollographql.apollo3.kmpsample.GithubRepositoriesQuery
 import com.apollographql.apollo3.kmpsample.GithubRepositoryCommitsQuery
 import com.apollographql.apollo3.kmpsample.GithubRepositoryCommitsQuery.Data.Viewer.Repository.Ref.Target.Companion.asCommitTarget
@@ -37,7 +38,7 @@ class ApolloCoroutinesRepository {
         orderBy = RepositoryOrderField.UPDATED_AT,
         orderDirection = OrderDirection.DESC
     )
-    val response = apolloClient.query(repositoriesQuery).execute().single()
+    val response = apolloClient.query(ApolloRequest(repositoriesQuery)).single()
     println("Http response: " + response.executionContext[HttpResponseInfo])
     return response.data?.viewer?.repositories?.nodes?.mapNotNull { it as RepositoryFragment? }.orEmpty()
   }
@@ -47,12 +48,12 @@ class ApolloCoroutinesRepository {
         name = repositoryName,
         pullRequestStates = listOf(PullRequestState.OPEN)
     )
-    val response = apolloClient.query(repositoryDetailQuery).execute().single()
+    val response = apolloClient.query(ApolloRequest(repositoryDetailQuery)).single()
     return response.data?.viewer?.repository?.asRepositoryRepository()
   }
 
   suspend fun fetchCommits(repositoryName: String): List<GithubRepositoryCommitsQuery.Data.Viewer.Repository.Ref.Target.CommitTarget.History.Edges?> {
-    val response = apolloClient.query(GithubRepositoryCommitsQuery(repositoryName)).execute().single()
+    val response = apolloClient.query(ApolloRequest(GithubRepositoryCommitsQuery(repositoryName))).single()
     val headCommit = response.data?.viewer?.repository?.ref?.target?.asCommitTarget()
     return headCommit?.history?.edges.orEmpty()
   }

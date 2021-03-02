@@ -2,12 +2,10 @@ package com.apollographql.apollo3.network.ws
 
 import com.apollographql.apollo3.exception.ApolloWebSocketException
 import com.apollographql.apollo3.exception.ApolloWebSocketServerException
-import com.apollographql.apollo3.api.ExecutionContext
 import com.apollographql.apollo3.api.ResponseAdapterCache
 import com.apollographql.apollo3.api.Subscription
 import com.apollographql.apollo3.dispatcher.ApolloCoroutineDispatcher
 import com.apollographql.apollo3.ApolloRequest
-import com.apollographql.apollo3.ApolloSubscriptionRequest
 import com.apollographql.apollo3.subscription.ApolloOperationMessageSerializer
 import com.apollographql.apollo3.subscription.OperationClientMessage
 import com.apollographql.apollo3.subscription.OperationMessageSerializer.Companion.toByteString
@@ -35,8 +33,8 @@ class ApolloWebSocketNetworkTransportTest {
   @Test
   fun `when multiple responses, assert all delivered and completed`() {
     runBlocking {
-      val expectedRequest = ApolloSubscriptionRequest(
-          subscription = MockSubscription(),
+      val expectedRequest = ApolloRequest(
+          operation = MockSubscription(),
           executionContext = ApolloCoroutineDispatcher(Dispatchers.Unconfined)
       )
       val expectedResponses = listOf(
@@ -72,8 +70,8 @@ class ApolloWebSocketNetworkTransportTest {
   @Test
   fun `when connection ack timeout, assert completed with exception`() {
     runBlocking {
-      val expectedRequest = ApolloSubscriptionRequest(
-          subscription = MockSubscription(),
+      val expectedRequest = ApolloRequest(
+          operation = MockSubscription(),
           executionContext = ApolloCoroutineDispatcher(Dispatchers.Unconfined)
       )
 
@@ -98,8 +96,8 @@ class ApolloWebSocketNetworkTransportTest {
   @Test
   fun `when subscription error, assert completed with exception and payload`() {
     val result = runBlocking {
-      val expectedRequest = ApolloSubscriptionRequest(
-          subscription = MockSubscription(),
+      val expectedRequest = ApolloRequest(
+          operation = MockSubscription(),
           executionContext = ApolloCoroutineDispatcher(Dispatchers.Unconfined)
       )
       val expectedOnStartResponse = "{\"data\":{\"name\":\"MockQuery\"}}"
@@ -134,8 +132,8 @@ class ApolloWebSocketNetworkTransportTest {
   @Test
   fun `when no active subscriptions, assert web socket connection closed`() {
     runBlocking {
-      val expectedRequest = ApolloSubscriptionRequest(
-          subscription = MockSubscription(),
+      val expectedRequest = ApolloRequest(
+          operation = MockSubscription(),
           executionContext = ApolloCoroutineDispatcher(Dispatchers.Unconfined)
       )
       val expectedOnStartResponse = "{\"data\":{\"name\":\"MockQuery\"}}"
@@ -165,8 +163,8 @@ class ApolloWebSocketNetworkTransportTest {
   @Test
   fun `when connection keep alive timeout, assert web socket connection closed`() {
     runBlocking {
-      val expectedRequest = ApolloSubscriptionRequest(
-          subscription = MockSubscription(),
+      val expectedRequest = ApolloRequest(
+          operation = MockSubscription(),
           executionContext = ApolloCoroutineDispatcher(Dispatchers.Unconfined)
       )
       val expectedOnStartResponse = "{\"data\":{\"name\":\"MockQuery\"}}"

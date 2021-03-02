@@ -5,8 +5,7 @@ import com.apollographql.apollo3.ApolloPrefetch
 import com.apollographql.apollo3.ApolloQueryWatcher
 import com.apollographql.apollo3.ApolloSubscriptionCall
 import com.apollographql.apollo3.api.Operation
-import com.apollographql.apollo3.api.Query
-import com.apollographql.apollo3.api.Response
+import com.apollographql.apollo3.api.ApolloResponse
 import com.apollographql.apollo3.exception.ApolloException
 import kotlinx.coroutines.CompletableDeferred
 import kotlinx.coroutines.Deferred
@@ -28,11 +27,11 @@ import kotlin.coroutines.resume
  * @return a flow which emits [Responses<D>]
  */
 @ExperimentalCoroutinesApi
-fun <D: Operation.Data> ApolloCall<D>.toFlow(): Flow<Response<D>> = callbackFlow {
+fun <D: Operation.Data> ApolloCall<D>.toFlow(): Flow<ApolloResponse<D>> = callbackFlow {
   val clone = clone()
   clone.enqueue(
       object : ApolloCall.Callback<D>() {
-        override fun onResponse(response: Response<D>) {
+        override fun onResponse(response: ApolloResponse<D>) {
           runCatching {
             offer(response)
           }
@@ -59,11 +58,11 @@ fun <D: Operation.Data> ApolloCall<D>.toFlow(): Flow<Response<D>> = callbackFlow
  * @return a flow which emits [Responses<D>]
  */
 @ExperimentalCoroutinesApi
-fun <D: Operation.Data> ApolloQueryWatcher<D>.toFlow(): Flow<Response<D>> = callbackFlow {
+fun <D: Operation.Data> ApolloQueryWatcher<D>.toFlow(): Flow<ApolloResponse<D>> = callbackFlow {
   val clone = clone()
   clone.enqueueAndWatch(
       object : ApolloCall.Callback<D>() {
-        override fun onResponse(response: Response<D>) {
+        override fun onResponse(response: ApolloResponse<D>) {
           runCatching {
             offer(response)
           }
@@ -89,7 +88,7 @@ fun <D: Operation.Data> ApolloQueryWatcher<D>.toFlow(): Flow<Response<D>> = call
  * @return the response on success.
  * @throws ApolloException on failure.
  */
-suspend fun <D: Operation.Data> ApolloCall<D>.await(): Response<D> = suspendCancellableCoroutine { cont ->
+suspend fun <D: Operation.Data> ApolloCall<D>.await(): ApolloResponse<D> = suspendCancellableCoroutine { cont ->
 
   cont.invokeOnCancellation {
     cancel()
@@ -99,7 +98,7 @@ suspend fun <D: Operation.Data> ApolloCall<D>.await(): Response<D> = suspendCanc
 
     private val wasCalled = AtomicBoolean(false)
 
-    override fun onResponse(response: Response<D>) {
+    override fun onResponse(response: ApolloResponse<D>) {
       if (!wasCalled.getAndSet(true)) {
         cont.resume(response)
       }
@@ -121,8 +120,8 @@ suspend fun <D: Operation.Data> ApolloCall<D>.await(): Response<D> = suspendCanc
  * @return the deferred
  */
 @Deprecated("Use await() instead.")
-fun <D: Operation.Data> ApolloCall<D>.toDeferred(): Deferred<Response<D>> {
-  val deferred = CompletableDeferred<Response<D>>()
+fun <D: Operation.Data> ApolloCall<D>.toDeferred(): Deferred<ApolloResponse<D>> {
+  val deferred = CompletableDeferred<ApolloResponse<D>>()
 
   deferred.invokeOnCompletion {
     if (deferred.isCancelled) {
@@ -130,7 +129,7 @@ fun <D: Operation.Data> ApolloCall<D>.toDeferred(): Deferred<Response<D>> {
     }
   }
   enqueue(object : ApolloCall.Callback<D>() {
-    override fun onResponse(response: Response<D>) {
+    override fun onResponse(response: ApolloResponse<D>) {
       if (deferred.isActive) {
         deferred.complete(response)
       }
@@ -153,14 +152,14 @@ fun <D: Operation.Data> ApolloCall<D>.toDeferred(): Deferred<Response<D>> {
  * @return a flow which emits [Responses<D>]
  */
 @ExperimentalCoroutinesApi
-fun <D: Operation.Data> ApolloSubscriptionCall<D>.toFlow(): Flow<Response<D>> = callbackFlow {
+fun <D: Operation.Data> ApolloSubscriptionCall<D>.toFlow(): Flow<ApolloResponse<D>> = callbackFlow {
   val clone = clone()
   clone.execute(
       object : ApolloSubscriptionCall.Callback<D> {
         override fun onConnected() {
         }
 
-        override fun onResponse(response: Response<D>) {
+        override fun onResponse(response: ApolloResponse<D>) {
           runCatching {
             channel.offer(response)
           }

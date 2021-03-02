@@ -5,7 +5,6 @@
 //
 package com.example.starships
 
-import com.apollographql.apollo3.api.Operation
 import com.apollographql.apollo3.api.Query
 import com.apollographql.apollo3.api.QueryDocumentMinifier
 import com.apollographql.apollo3.api.ResponseAdapter
@@ -52,7 +51,7 @@ data class TestQuery(
    */
   data class Data(
     val starship: Starship?
-  ) : Operation.Data {
+  ) : Query.Data {
     data class Starship(
       /**
        * The ID of the starship

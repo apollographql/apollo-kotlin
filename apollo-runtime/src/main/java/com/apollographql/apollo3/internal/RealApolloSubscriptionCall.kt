@@ -2,7 +2,7 @@ package com.apollographql.apollo3.internal
 
 import com.apollographql.apollo3.ApolloSubscriptionCall
 import com.apollographql.apollo3.api.Operation
-import com.apollographql.apollo3.api.Response
+import com.apollographql.apollo3.api.ApolloResponse
 import com.apollographql.apollo3.api.Subscription
 import com.apollographql.apollo3.api.internal.ApolloLogger
 import com.apollographql.apollo3.cache.CacheHeaders
@@ -18,7 +18,7 @@ import com.benasher44.uuid.uuid4
 import java.util.concurrent.Executor
 import java.util.concurrent.atomic.AtomicReference
 
-class RealApolloSubscriptionCall<D : Operation.Data>(
+class RealApolloSubscriptionCall<D : Subscription.Data>(
     private val subscription: Subscription<D>,
     private val subscriptionManager: SubscriptionManager,
     private val apolloStore: ApolloStore,
@@ -100,13 +100,13 @@ class RealApolloSubscriptionCall<D : Operation.Data>(
     }
   }
 
-  private fun resolveFromCache(): Response<D>? {
+  private fun resolveFromCache(): ApolloResponse<D>? {
     val data = apolloStore.readOperation(
         subscription,
         CacheHeaders.NONE)
     return if (data != null) {
       logger.d("Cache HIT for subscription `%s`", subscription)
-      Response(
+      ApolloResponse(
           requestUuid = uuid4(),
           operation = subscription,
           data = data,
@@ -117,7 +117,7 @@ class RealApolloSubscriptionCall<D : Operation.Data>(
     }
   }
 
-  private class SubscriptionManagerCallback<D : Operation.Data>(private var originalCallback: ApolloSubscriptionCall.Callback<D>?, private var delegate: RealApolloSubscriptionCall<D>?) : SubscriptionManager.Callback<D> {
+  private class SubscriptionManagerCallback<D : Subscription.Data>(private var originalCallback: ApolloSubscriptionCall.Callback<D>?, private var delegate: RealApolloSubscriptionCall<D>?) : SubscriptionManager.Callback<D> {
     override fun onResponse(response: SubscriptionResponse<D>) {
       val callback = originalCallback
       val data = response.response.data

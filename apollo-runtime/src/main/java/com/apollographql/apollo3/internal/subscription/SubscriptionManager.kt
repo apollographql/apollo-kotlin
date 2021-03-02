@@ -12,7 +12,7 @@ interface SubscriptionManager {
    * @param subscription to start
    * @param callback to be called on result
    */
-  fun <D : Operation.Data> subscribe(subscription: Subscription<D>, callback: Callback<D>)
+  fun <D : Subscription.Data> subscribe(subscription: Subscription<D>, callback: Callback<D>)
 
   /**
    * Stops provided subscription. If there are no active subscriptions left, disconnects from the subscription server.
@@ -56,7 +56,7 @@ interface SubscriptionManager {
    * Reconnect the web socket. Use this together with SubscriptionConnectionParamsProvider if you need to update connectionParams.
    */
   fun reconnect()
-  interface Callback<D : Operation.Data> {
+  interface Callback<D : Subscription.Data> {
     fun onResponse(response: SubscriptionResponse<D>)
     fun onError(error: ApolloSubscriptionException)
     fun onNetworkError(t: Throwable)

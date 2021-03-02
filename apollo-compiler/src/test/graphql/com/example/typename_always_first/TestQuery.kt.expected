@@ -5,7 +5,6 @@
 //
 package com.example.typename_always_first
 
-import com.apollographql.apollo3.api.Operation
 import com.apollographql.apollo3.api.Query
 import com.apollographql.apollo3.api.QueryDocumentMinifier
 import com.apollographql.apollo3.api.ResponseAdapter
@@ -51,7 +50,7 @@ class TestQuery : Query<TestQuery.Data> {
   data class Data(
     val hero: Hero?,
     val __typename: String = "Query"
-  ) : Operation.Data {
+  ) : Query.Data {
     /**
      * A character from the Star Wars universe
      */

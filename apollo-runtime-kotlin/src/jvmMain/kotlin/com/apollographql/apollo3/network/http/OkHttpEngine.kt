@@ -1,21 +1,9 @@
 package com.apollographql.apollo3.network.http
 
 import com.apollographql.apollo3.exception.ApolloException
-import com.apollographql.apollo3.exception.ApolloHttpException
 import com.apollographql.apollo3.exception.ApolloNetworkException
 import com.apollographql.apollo3.exception.ApolloParseException
-import com.apollographql.apollo3.exception.ApolloSerializationException
-import com.apollographql.apollo3.api.ResponseAdapterCache
-import com.apollographql.apollo3.api.Operation
-import com.apollographql.apollo3.api.fromResponse
-import com.apollographql.apollo3.ApolloRequest
-import com.apollographql.apollo3.api.Response
-import com.apollographql.apollo3.api.internal.OperationRequestBodyComposer
-import com.apollographql.apollo3.api.variablesJson
-import com.apollographql.apollo3.network.NetworkTransport
 import kotlinx.coroutines.ExperimentalCoroutinesApi
-import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.suspendCancellableCoroutine
 import okhttp3.Call
 import okhttp3.Callback
@@ -24,9 +12,7 @@ import okhttp3.MediaType
 import okhttp3.OkHttpClient
 import okhttp3.Request
 import okhttp3.RequestBody
-import okio.Buffer
 import okio.BufferedSink
-import okio.ByteString
 import java.io.IOException
 import java.util.concurrent.TimeUnit
 import kotlin.coroutines.resume

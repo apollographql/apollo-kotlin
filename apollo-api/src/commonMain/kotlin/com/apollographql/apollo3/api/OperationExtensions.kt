@@ -93,7 +93,7 @@ fun <D : Operation.Data> Operation<D>.fromJson(
 }
 
 /**
- * Parses GraphQL operation raw response from the [source] with provided [responseAdapterCache] and returns result [Response]
+ * Parses GraphQL operation raw response from the [source] with provided [responseAdapterCache] and returns result [ApolloResponse]
  *
  * @param source A [BufferedSource] representing the full response. It typically contains a "data" and/or "errors" field
  *
@@ -103,43 +103,43 @@ fun <D : Operation.Data> Operation<D>.fromJson(
 fun <D : Operation.Data> Operation<D>.fromResponse(
     source: BufferedSource,
     responseAdapterCache: ResponseAdapterCache = DEFAULT
-): Response<D> {
+): ApolloResponse<D> {
   return StreamResponseParser.parse(source, this, responseAdapterCache)
 }
 
 /**
- * Parses GraphQL operation raw response from the [byteString] with provided [responseAdapterCache] and returns result [Response]
+ * Parses GraphQL operation raw response from the [byteString] with provided [responseAdapterCache] and returns result [ApolloResponse]
  *
  * @param byteString A [ByteString] representing the full response. It typically contains a "data" and/or "errors" field
  */
 fun <D : Operation.Data> Operation<D>.fromResponse(
     byteString: ByteString,
     responseAdapterCache: ResponseAdapterCache = DEFAULT
-): Response<D> {
+): ApolloResponse<D> {
   return fromResponse(Buffer().write(byteString), responseAdapterCache)
 }
 
 /**
- * Parses GraphQL operation raw response from the [string] with provided [responseAdapterCache] and returns result [Response]
+ * Parses GraphQL operation raw response from the [string] with provided [responseAdapterCache] and returns result [ApolloResponse]
  *
  * @param string A [String] representing the full response. It typically contains a "data" and/or "errors" field
  */
 fun <D : Operation.Data> Operation<D>.fromResponse(
     string: String,
     responseAdapterCache: ResponseAdapterCache = DEFAULT
-): Response<D> {
+): ApolloResponse<D> {
   return fromResponse(Buffer().writeUtf8(string), responseAdapterCache)
 }
 
 /**
- * Parses GraphQL operation raw response from [map] with provided [responseAdapterCache] and returns result [Response]
+ * Parses GraphQL operation raw response from [map] with provided [responseAdapterCache] and returns result [ApolloResponse]
  *
  * @param map: a [Map] representing the response. It typically include a "data" field
  */
 fun <D : Operation.Data> Operation<D>.fromResponse(
     map: Map<String, Any?>,
     responseAdapterCache: ResponseAdapterCache = DEFAULT
-): Response<D> {
+): ApolloResponse<D> {
   return MapResponseParser.parse(map, this, responseAdapterCache)
 }
 

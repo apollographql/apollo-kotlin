@@ -4,14 +4,8 @@ import com.apollographql.apollo3.Utils.immediateExecutor
 import com.apollographql.apollo3.Utils.immediateExecutorService
 import com.apollographql.apollo3.Utils.mockResponse
 import com.apollographql.apollo3.api.Input
-import com.apollographql.apollo3.api.Response
-import com.apollographql.apollo3.cache.CacheHeaders
-import com.apollographql.apollo3.cache.normalized.Record
-import com.apollographql.apollo3.cache.normalized.CacheKey
-import com.apollographql.apollo3.cache.normalized.NormalizedCache
-import com.apollographql.apollo3.cache.normalized.RecordFieldJsonAdapter
+import com.apollographql.apollo3.api.ApolloResponse
 import com.apollographql.apollo3.cache.normalized.MemoryCacheFactory
-import com.apollographql.apollo3.cache.normalized.NormalizedCacheFactory
 import com.apollographql.apollo3.fetcher.ApolloResponseFetchers.NETWORK_ONLY
 import com.apollographql.apollo3.integration.normalizer.EpisodeHeroNameQuery
 import com.apollographql.apollo3.integration.normalizer.EpisodeHeroNameWithIdQuery
@@ -22,11 +16,8 @@ import com.apollographql.apollo3.rx3.Rx3Apollo
 import com.google.common.truth.Truth
 import com.google.common.truth.Truth.assertThat
 import io.reactivex.rxjava3.disposables.Disposable
-import io.reactivex.rxjava3.functions.Function
-import io.reactivex.rxjava3.functions.Predicate
 import io.reactivex.rxjava3.observers.TestObserver
 import io.reactivex.rxjava3.schedulers.TestScheduler
-import io.reactivex.rxjava3.plugins.RxJavaPlugins
 import okhttp3.Dispatcher
 import okhttp3.OkHttpClient
 import okhttp3.mockwebserver.MockWebServer
@@ -73,7 +64,7 @@ class Rx3ApolloTest {
   @Throws(Exception::class)
   fun callIsCanceledWhenDisposed() {
     server.enqueue(mockResponse(FILE_EPISODE_HERO_NAME_WITH_ID))
-    val testObserver = TestObserver<Response<EpisodeHeroNameQuery.Data>>()
+    val testObserver = TestObserver<ApolloResponse<EpisodeHeroNameQuery.Data>>()
     val disposable: Disposable = Rx3Apollo
         .from(apolloClient.query(EpisodeHeroNameQuery(Input.Present(EMPIRE))))
         .subscribeWith(testObserver)

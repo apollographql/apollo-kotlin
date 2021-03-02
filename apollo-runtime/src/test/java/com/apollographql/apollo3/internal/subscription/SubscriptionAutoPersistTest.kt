@@ -26,7 +26,7 @@ class SubscriptionAutoPersistTest {
   private var subscriptionTransportFactory: MockSubscriptionTransportFactory? = null
   private var subscriptionManager: RealSubscriptionManager? = null
   private val subscription = MockSubscription("MockSubscription")
-  private var callbackAdapter: SubscriptionManagerCallbackAdapter<Operation.Data>? = null
+  private var callbackAdapter: SubscriptionManagerCallbackAdapter<Subscription.Data>? = null
   @Before
   fun setUp() {
     subscriptionTransportFactory = MockSubscriptionTransportFactory()
@@ -150,7 +150,7 @@ class SubscriptionAutoPersistTest {
     }
   }
 
-  private class MockSubscription(val operationId: String) : Subscription<Operation.Data> {
+  private class MockSubscription(val operationId: String) : Subscription<Subscription.Data> {
     override fun queryDocument(): String {
       return "subscription{\ncommentAdded(repoFullName:\"repo\"){\n__typename\nid\ncontent\n}\n}"
     }
@@ -160,7 +160,7 @@ class SubscriptionAutoPersistTest {
       writer.endObject()
     }
 
-    override fun adapter(responseAdapterCache: ResponseAdapterCache): ResponseAdapter<Operation.Data> {
+    override fun adapter(responseAdapterCache: ResponseAdapterCache): ResponseAdapter<Subscription.Data> {
       throw UnsupportedOperationException()
     }
 
@@ -177,7 +177,7 @@ class SubscriptionAutoPersistTest {
     }
   }
 
-  private class SubscriptionManagerCallbackAdapter<D : Operation.Data> : SubscriptionManager.Callback<D> {
+  private class SubscriptionManagerCallbackAdapter<D : Subscription.Data> : SubscriptionManager.Callback<D> {
     @Volatile
     var response: SubscriptionResponse<D>? = null
 

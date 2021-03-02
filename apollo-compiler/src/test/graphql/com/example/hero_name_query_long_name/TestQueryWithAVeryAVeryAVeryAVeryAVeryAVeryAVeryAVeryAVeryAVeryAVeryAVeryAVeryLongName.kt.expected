@@ -6,7 +6,6 @@
 package com.example.hero_name_query_long_name
 
 import com.apollographql.apollo3.api.Input
-import com.apollographql.apollo3.api.Operation
 import com.apollographql.apollo3.api.Query
 import com.apollographql.apollo3.api.QueryDocumentMinifier
 import com.apollographql.apollo3.api.ResponseAdapter
@@ -57,7 +56,7 @@ data class TestQueryWithAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryA
    */
   data class Data(
     val heroAVeryAVeryAVeryAVeryAVeryAVeryAV: HeroAVeryAVeryAVeryAVeryAVeryAVeryAV?
-  ) : Operation.Data {
+  ) : Query.Data {
     /**
      * A character from the Star Wars universe
      */

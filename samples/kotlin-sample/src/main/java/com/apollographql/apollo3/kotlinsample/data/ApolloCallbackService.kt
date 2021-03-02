@@ -2,7 +2,7 @@ package com.apollographql.apollo3.kotlinsample.data
 
 import com.apollographql.apollo3.ApolloCall
 import com.apollographql.apollo3.ApolloClient
-import com.apollographql.apollo3.api.Response
+import com.apollographql.apollo3.api.ApolloResponse
 import com.apollographql.apollo3.api.cache.http.HttpCachePolicy
 import com.apollographql.apollo3.exception.ApolloException
 import com.apollographql.apollo3.kotlinsample.GithubRepositoriesQuery
@@ -29,7 +29,7 @@ class ApolloCallbackService(apolloClient: ApolloClient) : GitHubDataSource(apoll
         exceptionSubject.onNext(e)
       }
 
-      override fun onResponse(response: Response<GithubRepositoriesQuery.Data>) {
+      override fun onResponse(response: ApolloResponse<GithubRepositoriesQuery.Data>) {
         repositoriesSubject.onNext(mapRepositoriesResponseToRepositories(response))
       }
     }
@@ -51,7 +51,7 @@ class ApolloCallbackService(apolloClient: ApolloClient) : GitHubDataSource(apoll
         exceptionSubject.onNext(e)
       }
 
-      override fun onResponse(response: Response<GithubRepositoryDetailQuery.Data>) {
+      override fun onResponse(response: ApolloResponse<GithubRepositoryDetailQuery.Data>) {
         repositoryDetailSubject.onNext(response)
       }
     }
@@ -72,7 +72,7 @@ class ApolloCallbackService(apolloClient: ApolloClient) : GitHubDataSource(apoll
         exceptionSubject.onNext(e)
       }
 
-      override fun onResponse(response: Response<GithubRepositoryCommitsQuery.Data>) {
+      override fun onResponse(response: ApolloResponse<GithubRepositoryCommitsQuery.Data>) {
         val headCommit = response.data?.viewer?.repository?.ref?.target?.asCommitTarget()
         val commits = headCommit?.history?.edges?.filterNotNull().orEmpty()
         commitsSubject.onNext(commits)
