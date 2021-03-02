@@ -7,7 +7,7 @@ import com.apollographql.apollo3.api.Response
 import com.apollographql.apollo3.api.fromResponse
 import com.apollographql.apollo3.exception.ApolloHttpException
 import com.apollographql.apollo3.interceptor.BearerTokenInterceptor
-import com.apollographql.apollo3.network.HttpRequestParameters
+import com.apollographql.apollo3.network.http.HttpRequestParameters
 import com.apollographql.apollo3.network.NetworkTransport
 import com.apollographql.apollo3.testing.MockQuery
 import com.apollographql.apollo3.testing.TestTokenProvider
@@ -22,7 +22,6 @@ import kotlin.test.assertEquals
 import kotlin.test.assertNotNull
 import kotlin.test.assertTrue
 
-@ExperimentalCoroutinesApi
 class OauthInterceptorTest {
   class AuthenticatedNetworkTransport : NetworkTransport {
     companion object {
@@ -59,7 +58,7 @@ class OauthInterceptorTest {
     val networkTransport = AuthenticatedNetworkTransport()
     return ApolloClient.Builder()
         .networkTransport(networkTransport)
-        .interceptors(
+        .addInterceptor(
             BearerTokenInterceptor(
                 TestTokenProvider(
                     currentAccessToken,

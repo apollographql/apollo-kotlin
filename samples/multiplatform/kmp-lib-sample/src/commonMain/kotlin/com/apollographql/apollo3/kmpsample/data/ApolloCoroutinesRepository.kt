@@ -11,9 +11,8 @@ import com.apollographql.apollo3.kmpsample.fragment.RepositoryFragment
 import com.apollographql.apollo3.kmpsample.type.OrderDirection
 import com.apollographql.apollo3.kmpsample.type.PullRequestState
 import com.apollographql.apollo3.kmpsample.type.RepositoryOrderField
-import com.apollographql.apollo3.network.HttpResponseInfo
+import com.apollographql.apollo3.network.http.HttpResponseInfo
 import com.apollographql.apollo3.network.http.ApolloHttpNetworkTransport
-import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.single
 
 /**

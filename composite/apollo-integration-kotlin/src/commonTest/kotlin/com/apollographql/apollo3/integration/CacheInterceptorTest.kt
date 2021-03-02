@@ -2,14 +2,15 @@ package com.apollographql.apollo3.integration
 
 import HeroNameQuery
 import com.apollographql.apollo3.ApolloClient
-import com.apollographql.apollo3.cache.normalized.NormalizedCache
-import com.apollographql.apollo3.cache.normalized.MemoryCache
 import com.apollographql.apollo3.ApolloQueryRequest
+import com.apollographql.apollo3.cache.normalized.MemoryCache
+import com.apollographql.apollo3.cache.normalized.NormalizedCache
 import com.apollographql.apollo3.interceptor.cache.FetchPolicy
-import com.apollographql.apollo3.interceptor.cache.normalizedCache
 import com.apollographql.apollo3.interceptor.cache.fetchPolicy
 import com.apollographql.apollo3.interceptor.cache.isFromCache
-import com.apollographql.apollo3.testing.MockNetworkTransport
+import com.apollographql.apollo3.interceptor.cache.normalizedCache
+import com.apollographql.apollo3.network.http.ApolloHttpNetworkTransport
+import com.apollographql.apollo3.testing.TestHttpEngine
 import com.apollographql.apollo3.testing.TestLoggerExecutor
 import com.apollographql.apollo3.testing.runBlocking
 import kotlinx.coroutines.flow.single
@@ -24,16 +25,16 @@ import kotlin.test.fail
 
 @Suppress("EXPERIMENTAL_API_USAGE")
 class CacheInterceptorTest {
-  private lateinit var networkTransport: MockNetworkTransport
+  private lateinit var testHttpEngine: TestHttpEngine
   private lateinit var apolloClient: ApolloClient
   private lateinit var cache: NormalizedCache
 
   @BeforeTest
   fun setUp() {
     cache = MemoryCache(maxSizeBytes = Int.MAX_VALUE)
-    networkTransport = MockNetworkTransport()
+    testHttpEngine = TestHttpEngine()
     apolloClient = ApolloClient.Builder()
-        .networkTransport(networkTransport)
+        .networkTransport(ApolloHttpNetworkTransport(serverUrl = "https://example", engine = testHttpEngine))
         .addInterceptor(TestLoggerExecutor)
         .normalizedCache(cache)
         .build()
@@ -41,7 +42,7 @@ class CacheInterceptorTest {
 
   @Test
   fun `CACHE_FIRST test`() {
-    networkTransport.offer(fixtureResponse("HeroNameResponse.json"))
+    testHttpEngine.offer(fixtureResponse("HeroNameResponse.json"))
 
     runBlocking {
       var response = apolloClient
@@ -69,7 +70,7 @@ class CacheInterceptorTest {
           .fetchPolicy(FetchPolicy.NETWORK_FIRST)
           .build()
 
-      networkTransport.offer(fixtureResponse("HeroNameResponse.json"))
+      testHttpEngine.offer(fixtureResponse("HeroNameResponse.json"))
       var responses = apolloClient
           .query(request)
           .execute()
@@ -80,7 +81,7 @@ class CacheInterceptorTest {
       assertFalse(responses[0].isFromCache)
 
       // Now data is cached but it shouldn't be used since network will go through
-      networkTransport.offer(fixtureResponse("HeroNameResponse.json"))
+      testHttpEngine.offer(fixtureResponse("HeroNameResponse.json"))
       responses = apolloClient
           .query(request)
           .execute()
@@ -91,7 +92,7 @@ class CacheInterceptorTest {
       assertFalse(responses[0].isFromCache)
 
       // Network error -> we should hit the cache
-      networkTransport.offer("malformed")
+      testHttpEngine.offer("malformed")
       responses = apolloClient
           .query(request)
           .execute()
@@ -102,7 +103,7 @@ class CacheInterceptorTest {
       assertTrue(responses[0].isFromCache)
 
       // Network error and no cache -> we should get an error
-      networkTransport.offer("malformed")
+      testHttpEngine.offer("malformed")
       cache.clearAll()
       try {
         responses = apolloClient
@@ -123,7 +124,7 @@ class CacheInterceptorTest {
           .build()
 
       // First cache the response
-      networkTransport.offer(fixtureResponse("HeroNameResponse.json"))
+      testHttpEngine.offer(fixtureResponse("HeroNameResponse.json"))
       var responses = apolloClient
           .query(request)
           .execute()
@@ -138,7 +139,7 @@ class CacheInterceptorTest {
           .fetchPolicy(FetchPolicy.CACHE_ONLY)
           .build()
 
-      networkTransport.offer(fixtureResponse("HeroNameResponse.json"))
+      testHttpEngine.offer(fixtureResponse("HeroNameResponse.json"))
       responses = apolloClient
           .query(request)
           .execute()
@@ -159,7 +160,7 @@ class CacheInterceptorTest {
           .build()
 
       // cache the response
-      networkTransport.offer(fixtureResponse("HeroNameResponse.json"))
+      testHttpEngine.offer(fixtureResponse("HeroNameResponse.json"))
       var responses = apolloClient
           .query(request)
           .execute()
@@ -170,7 +171,7 @@ class CacheInterceptorTest {
       assertFalse(responses[0].isFromCache)
 
       // Offer a malformed response, it should fail
-      networkTransport.offer("malformed")
+      testHttpEngine.offer("malformed")
       try {
         responses = apolloClient
             .query(request)
@@ -191,7 +192,7 @@ class CacheInterceptorTest {
           .build()
 
       // cache the response
-      networkTransport.offer(fixtureResponse("HeroNameResponse.json"))
+      testHttpEngine.offer(fixtureResponse("HeroNameResponse.json"))
       var responses = apolloClient
           .query(request)
           .execute()
@@ -206,7 +207,7 @@ class CacheInterceptorTest {
           .fetchPolicy(FetchPolicy.CACHE_AND_NETWORK)
           .build()
 
-      networkTransport.offer(fixtureResponse("HeroNameResponse.json"))
+      testHttpEngine.offer(fixtureResponse("HeroNameResponse.json"))
       responses = apolloClient
           .query(request)
           .execute()

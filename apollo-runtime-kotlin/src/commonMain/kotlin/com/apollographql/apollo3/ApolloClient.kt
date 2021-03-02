@@ -87,7 +87,7 @@ class ApolloClient private constructor(
     private var executionContext: ExecutionContext = ExecutionContext.Empty
 
     fun serverUrl(serverUrl: String) = apply {
-      networkTransport(ApolloHttpNetworkTransport(serverUrl = serverUrl, headers = emptyMap()))
+      networkTransport(ApolloHttpNetworkTransport(serverUrl = serverUrl))
     }
 
     fun <T> addScalarTypeAdapter(customScalar: CustomScalar, customScalarAdapter: ResponseAdapter<T>) = apply {
@@ -129,9 +129,6 @@ class ApolloClient private constructor(
       )
     }
 
-    /**
-     * internal because only used from tests
-     */
     internal fun interceptors(interceptors: List<ApolloRequestInterceptor>) = apply {
       check(this.interceptors.isEmpty()) {
         "ApolloGraphQL: interceptors is already set"
@@ -139,16 +136,10 @@ class ApolloClient private constructor(
       this.interceptors = interceptors
     }
 
-    /**
-     * Convenience overload of [interceptors] with variadic parameters
-     */
     internal fun interceptors(vararg interceptors: ApolloRequestInterceptor) = apply {
       interceptors(interceptors.toList())
     }
 
-    /**
-     * internal because only used from tests
-     */
     internal fun executionContext(executionContext: ExecutionContext) = apply {
       check(this.executionContext == ExecutionContext.Empty) {
         "ApolloGraphQL: executionContext is already set."
@@ -156,10 +147,7 @@ class ApolloClient private constructor(
       this.executionContext = executionContext
     }
 
-    /**
-     * internal because only used from tests
-     */
-    fun scalarTypeAdapters(customScalarAdapters: Map<CustomScalar, ResponseAdapter<*>>) = apply {
+    internal fun scalarTypeAdapters(customScalarAdapters: Map<CustomScalar, ResponseAdapter<*>>) = apply {
       this.customScalarAdapters = customScalarAdapters
     }
   }

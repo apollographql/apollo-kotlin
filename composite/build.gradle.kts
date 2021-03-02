@@ -27,6 +27,20 @@ subprojects {
       }
     }
   }
+
+  afterEvaluate {
+    tasks.withType<org.jetbrains.kotlin.gradle.tasks.KotlinCompile> {
+      kotlinOptions {
+        freeCompilerArgs = freeCompilerArgs + "-Xopt-in=kotlin.RequiresOptIn"
+      }
+    }
+    (project.extensions.findByName("kotlin")
+        as? org.jetbrains.kotlin.gradle.dsl.KotlinMultiplatformExtension)?.run {
+      sourceSets.all {
+        languageSettings.useExperimentalAnnotation("kotlin.RequiresOptIn")
+      }
+    }
+  }
 }
 
 tasks.register("fullCheck") {
