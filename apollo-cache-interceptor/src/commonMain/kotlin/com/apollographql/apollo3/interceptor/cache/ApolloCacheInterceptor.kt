@@ -20,8 +20,8 @@ class ApolloCacheInterceptor : ApolloRequestInterceptor {
 
   override fun <D : Operation.Data> intercept(request: ApolloRequest<D>, chain: ApolloInterceptorChain): Flow<ApolloResponse<D>> {
     return flow {
-      when (request.executionContext[FetchPolicy] ?: FetchPolicy.CACHE_FIRST) {
-        FetchPolicy.CACHE_FIRST -> {
+      when (request.executionContext[FetchPolicy] ?: FetchPolicy.CacheFirst) {
+        FetchPolicy.CacheFirst -> {
           val response = readFromCache(request, chain.responseAdapterCache)
           if (response.data != null) {
             emit(response)
@@ -29,7 +29,7 @@ class ApolloCacheInterceptor : ApolloRequestInterceptor {
             proceed(request, chain).collect { emit(it) }
           }
         }
-        FetchPolicy.NETWORK_FIRST -> {
+        FetchPolicy.NetworkFirst -> {
           proceed(request, chain)
               .catch {
                 val response = readFromCache(request, chain.responseAdapterCache)
@@ -45,19 +45,19 @@ class ApolloCacheInterceptor : ApolloRequestInterceptor {
                 emit(it)
               }
         }
-        FetchPolicy.CACHE_ONLY -> {
+        FetchPolicy.CacheOnly -> {
           val response = readFromCache(request, chain.responseAdapterCache)
           if (response.data != null) {
             emit(response)
           }
         }
-        FetchPolicy.NETWORK_ONLY -> {
+        FetchPolicy.NetworkOnly -> {
           proceed(request, chain)
               .collect {
                 emit(it)
               }
         }
-        FetchPolicy.CACHE_AND_NETWORK -> {
+        FetchPolicy.CacheAndNetwork -> {
           val response = readFromCache(request, chain.responseAdapterCache)
           if (response.data != null) {
             emit(response)
