@@ -9,7 +9,7 @@ import com.squareup.sqldelight.db.SqlDriver
 
 actual class SqlNormalizedCacheFactory internal actual constructor(
     driver: SqlDriver
-) : NormalizedCacheFactory<SqlNormalizedCache>() {
+) : NormalizedCacheFactory() {
 
   /**
    * @param [name] Name of the database file, or null for an in-memory database (as per Android framework implementation).

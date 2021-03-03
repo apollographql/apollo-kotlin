@@ -12,6 +12,8 @@ import com.apollographql.apollo3.api.variables
 import com.apollographql.apollo3.cache.CacheHeaders
 import com.apollographql.apollo3.cache.normalized.CacheKey
 import com.apollographql.apollo3.cache.normalized.CacheKeyResolver
+import com.apollographql.apollo3.cache.normalized.NormalizedCache
+import com.apollographql.apollo3.cache.normalized.ReadOnlyNormalizedCache
 
 fun <D : Operation.Data> Operation<D>.normalize(
     data: D,
@@ -54,12 +56,12 @@ enum class ReadMode {
 
 fun <D : Operation.Data> Operation<D>.readDataFromCache(
     responseAdapterCache: ResponseAdapterCache,
-    readableStore: ReadableStore,
+    cache: ReadOnlyNormalizedCache,
     cacheKeyResolver: CacheKeyResolver,
     cacheHeaders: CacheHeaders,
     mode: ReadMode = ReadMode.BATCH,
 ) = readInternal(
-    readableStore = readableStore,
+    cache = cache,
     cacheKeyResolver = cacheKeyResolver,
     cacheHeaders = cacheHeaders,
     variables = variables(responseAdapterCache),
@@ -72,13 +74,13 @@ fun <D : Operation.Data> Operation<D>.readDataFromCache(
 fun <D : Fragment.Data> Fragment<D>.readDataFromCache(
     cacheKey: CacheKey,
     responseAdapterCache: ResponseAdapterCache,
-    readableStore: ReadableStore,
+    cache: ReadOnlyNormalizedCache,
     cacheKeyResolver: CacheKeyResolver,
     cacheHeaders: CacheHeaders,
     mode: ReadMode = ReadMode.SEQUENTIAL
 ) = readInternal(
     cacheKey = cacheKey,
-    readableStore = readableStore,
+    cache = cache,
     cacheKeyResolver = cacheKeyResolver,
     cacheHeaders = cacheHeaders,
     variables = variables(responseAdapterCache),
@@ -90,7 +92,7 @@ fun <D : Fragment.Data> Fragment<D>.readDataFromCache(
 
 private fun <D> readInternal(
     cacheKey: CacheKey,
-    readableStore: ReadableStore,
+    cache: ReadOnlyNormalizedCache,
     cacheKeyResolver: CacheKeyResolver,
     cacheHeaders: CacheHeaders,
     variables: Operation.Variables,
@@ -100,7 +102,7 @@ private fun <D> readInternal(
 ): D? = try {
     val map = if (mode == ReadMode.BATCH) {
       CacheBatchReader(
-          readableStore = readableStore,
+          cache = cache,
           cacheHeaders = cacheHeaders,
           cacheKeyResolver = cacheKeyResolver,
           variables = variables,
@@ -109,7 +111,7 @@ private fun <D> readInternal(
       ).toMap()
     } else {
       CacheSequentialReader(
-          readableStore = readableStore,
+          cache = cache,
           cacheHeaders = cacheHeaders,
           cacheKeyResolver = cacheKeyResolver,
           variables = variables,

@@ -3,6 +3,7 @@ package com.apollographql.apollo3.internal
 import com.apollographql.apollo3.ApolloSubscriptionCall
 import com.apollographql.apollo3.api.Operation
 import com.apollographql.apollo3.api.ApolloResponse
+import com.apollographql.apollo3.api.ResponseAdapterCache
 import com.apollographql.apollo3.api.Subscription
 import com.apollographql.apollo3.api.internal.ApolloLogger
 import com.apollographql.apollo3.cache.CacheHeaders
@@ -24,7 +25,9 @@ class RealApolloSubscriptionCall<D : Subscription.Data>(
     private val apolloStore: ApolloStore,
     private val cachePolicy: ApolloSubscriptionCall.CachePolicy,
     private val dispatcher: Executor,
-    private val logger: ApolloLogger) : ApolloSubscriptionCall<D> {
+    private val logger: ApolloLogger,
+    private val responseAdapterCache: ResponseAdapterCache
+) : ApolloSubscriptionCall<D> {
   private val state = AtomicReference(CallState.IDLE)
   private var subscriptionCallback: SubscriptionManagerCallback<D>? = null
 
@@ -74,14 +77,14 @@ class RealApolloSubscriptionCall<D : Subscription.Data>(
   }
 
   override fun clone(): ApolloSubscriptionCall<D> {
-    return RealApolloSubscriptionCall(subscription, subscriptionManager, apolloStore, cachePolicy, dispatcher, logger)
+    return RealApolloSubscriptionCall(subscription, subscriptionManager, apolloStore, cachePolicy, dispatcher, logger, responseAdapterCache)
   }
 
   override val isCanceled: Boolean
     get() = state.get() === CallState.CANCELED
 
   override fun cachePolicy(cachePolicy: ApolloSubscriptionCall.CachePolicy): ApolloSubscriptionCall<D> {
-    return RealApolloSubscriptionCall(subscription, subscriptionManager, apolloStore, cachePolicy, dispatcher, logger)
+    return RealApolloSubscriptionCall(subscription, subscriptionManager, apolloStore, cachePolicy, dispatcher, logger, responseAdapterCache)
   }
 
   private fun terminate() {
@@ -103,7 +106,9 @@ class RealApolloSubscriptionCall<D : Subscription.Data>(
   private fun resolveFromCache(): ApolloResponse<D>? {
     val data = apolloStore.readOperation(
         subscription,
-        CacheHeaders.NONE)
+        responseAdapterCache,
+        CacheHeaders.NONE,
+    )
     return if (data != null) {
       logger.d("Cache HIT for subscription `%s`", subscription)
       ApolloResponse(
@@ -123,7 +128,13 @@ class RealApolloSubscriptionCall<D : Subscription.Data>(
       val data = response.response.data
       if (callback != null) {
         if (data != null && delegate!!.cachePolicy != ApolloSubscriptionCall.CachePolicy.NO_CACHE) {
-          delegate!!.apolloStore.writeOperation(response.subscription, data)
+          delegate!!.apolloStore.writeOperation(
+              response.subscription,
+              data,
+              delegate!!.responseAdapterCache,
+              CacheHeaders.NONE,
+              true,
+              )
         }
         callback.onResponse(response.response)
       }

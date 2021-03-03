@@ -9,6 +9,7 @@ import com.apollographql.apollo3.api.Operation
 import com.apollographql.apollo3.api.Query
 import com.apollographql.apollo3.api.ApolloResponse
 import com.apollographql.apollo3.api.ResponseAdapter
+import com.apollographql.apollo3.api.ResponseAdapterCache
 import com.apollographql.apollo3.api.json.JsonReader
 import com.apollographql.apollo3.api.json.JsonWriter
 import com.apollographql.apollo3.cache.normalized.CacheKey.Companion.from
@@ -53,6 +54,7 @@ class ResponseWriteTestCase {
       writer.value(DATE_TIME_FORMAT.format(value))
     }
   }
+  private val responseAdapterCache = ResponseAdapterCache(mapOf(CustomScalars.Date to dateCustomScalarAdapter))
 
   @Before
   fun setUp() {
@@ -87,7 +89,7 @@ class ResponseWriteTestCase {
     var hero = EpisodeHeroWithDatesQuery.Data.Hero(
         "R222-D222",
         DATE_TIME_FORMAT.parse("1985-04-16"), emptyList())
-    apolloClient!!.apolloStore.writeOperation(query, EpisodeHeroWithDatesQuery.Data(hero))
+    apolloClient!!.apolloStore.writeOperation(query, EpisodeHeroWithDatesQuery.Data(hero), responseAdapterCache)
     assertCachedQueryResponse(
         query
     ) {
@@ -103,7 +105,7 @@ class ResponseWriteTestCase {
             DATE_TIME_FORMAT.parse("2017-05-16")
         )
     )
-    apolloClient!!.apolloStore.writeOperation(query, EpisodeHeroWithDatesQuery.Data(hero))
+    apolloClient!!.apolloStore.writeOperation(query, EpisodeHeroWithDatesQuery.Data(hero), responseAdapterCache)
     assertCachedQueryResponse(
         query
     ) {
@@ -134,7 +136,7 @@ class ResponseWriteTestCase {
     var hero = HeroNameWithEnumsQuery.Data.Hero(
         "R222-D222",
         Episode.JEDI, emptyList<Episode>())
-    apolloClient!!.apolloStore.writeOperation(query, HeroNameWithEnumsQuery.Data(hero))
+    apolloClient!!.apolloStore.writeOperation(query, HeroNameWithEnumsQuery.Data(hero), responseAdapterCache)
     assertCachedQueryResponse(
         query
     ) {
@@ -147,7 +149,7 @@ class ResponseWriteTestCase {
         Episode.JEDI,
         listOf(Episode.EMPIRE)
     )
-    apolloClient!!.apolloStore.writeOperation(query, HeroNameWithEnumsQuery.Data(hero))
+    apolloClient!!.apolloStore.writeOperation(query, HeroNameWithEnumsQuery.Data(hero), responseAdapterCache)
     assertCachedQueryResponse(
         query
     ) {
@@ -182,7 +184,7 @@ class ResponseWriteTestCase {
         "R222-D222",
         null
     )
-    apolloClient!!.apolloStore.writeOperation(query, HeroAndFriendsNamesWithIDsQuery.Data(hero))
+    apolloClient!!.apolloStore.writeOperation(query, HeroAndFriendsNamesWithIDsQuery.Data(hero), responseAdapterCache)
     assertCachedQueryResponse(
         query
     ) {
@@ -199,7 +201,7 @@ class ResponseWriteTestCase {
         "R222-D222",
         listOf(friend)
     )
-    apolloClient!!.apolloStore.writeOperation(query, HeroAndFriendsNamesWithIDsQuery.Data(hero))
+    apolloClient!!.apolloStore.writeOperation(query, HeroAndFriendsNamesWithIDsQuery.Data(hero), responseAdapterCache)
     assertCachedQueryResponse(
         query
     ) {
@@ -252,7 +254,7 @@ class ResponseWriteTestCase {
             )
         )
     )
-    apolloClient!!.apolloStore.writeOperation(query, HeroAndFriendsWithFragmentsQuery.Data(hero))
+    apolloClient!!.apolloStore.writeOperation(query, HeroAndFriendsWithFragmentsQuery.Data(hero), responseAdapterCache)
     assertCachedQueryResponse(
         query
     ) {
@@ -311,7 +313,7 @@ class ResponseWriteTestCase {
             ),
         )
     )
-    apolloClient!!.apolloStore.writeOperation(query, EpisodeHeroWithInlineFragmentQuery.Data(hero))
+    apolloClient!!.apolloStore.writeOperation(query, EpisodeHeroWithInlineFragmentQuery.Data(hero), responseAdapterCache)
     assertCachedQueryResponse(
         query
     ) {
@@ -373,7 +375,8 @@ class ResponseWriteTestCase {
                     name = "Han Solo"
                 ),
             )
-        )
+        ),
+        responseAdapterCache
     )
     apolloClient!!.apolloStore.writeFragment(
         HumanWithIdFragmentImpl(),
@@ -382,7 +385,8 @@ class ResponseWriteTestCase {
             __typename = "Human",
             id = "1002",
             name = "Beast"
-        )
+        ),
+        responseAdapterCache
     )
     assertCachedQueryResponse(
         query
@@ -426,7 +430,7 @@ class ResponseWriteTestCase {
             listOf(700.0, 600.0)
         )
     )
-    apolloClient!!.apolloStore.writeOperation(query, StarshipByIdQuery.Data(starship))
+    apolloClient!!.apolloStore.writeOperation(query, StarshipByIdQuery.Data(starship), responseAdapterCache)
     assertCachedQueryResponse(
         query
     ) {
@@ -440,7 +444,7 @@ class ResponseWriteTestCase {
   }
 
   @Throws(Exception::class)
-  private fun <D: Query.Data> assertCachedQueryResponse(query: Query<D>, block: (ApolloResponse<D>) -> Unit) {
+  private fun <D : Query.Data> assertCachedQueryResponse(query: Query<D>, block: (ApolloResponse<D>) -> Unit) {
     assertResponse(
         apolloClient!!.query(query).responseFetcher(ApolloResponseFetchers.CACHE_ONLY), block
     )

@@ -5,4 +5,4 @@ import com.squareup.sqldelight.db.SqlDriver
 
 expect class SqlNormalizedCacheFactory internal constructor(
     driver: SqlDriver
-) : NormalizedCacheFactory<SqlNormalizedCache>
+) : NormalizedCacheFactory

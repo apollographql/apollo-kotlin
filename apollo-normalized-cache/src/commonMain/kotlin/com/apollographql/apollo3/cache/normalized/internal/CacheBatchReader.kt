@@ -7,11 +7,13 @@ import com.apollographql.apollo3.cache.CacheHeaders
 import com.apollographql.apollo3.cache.normalized.CacheKey
 import com.apollographql.apollo3.cache.normalized.CacheKeyResolver
 import com.apollographql.apollo3.cache.normalized.CacheReference
+import com.apollographql.apollo3.cache.normalized.NormalizedCache
+import com.apollographql.apollo3.cache.normalized.ReadOnlyNormalizedCache
 import com.apollographql.apollo3.exception.FieldMissingException
 import com.apollographql.apollo3.exception.ObjectMissingException
 
 /**
- * Reads [rootFieldSets] starting at [rootKey] from [readableStore]
+ * Reads [rootFieldSets] starting at [rootKey] from [cache]
  *
  * This is a resolver that solves the "N+1" problem by batching all SQL queries at a given depth
  * It respects skip/include directives
@@ -19,7 +21,7 @@ import com.apollographql.apollo3.exception.ObjectMissingException
  * Returns the data in [toMap]
  */
 class CacheBatchReader(
-    private val readableStore: ReadableStore,
+    private val cache: ReadOnlyNormalizedCache,
     private val rootKey: String,
     private val variables: Operation.Variables,
     private val cacheKeyResolver: CacheKeyResolver,
@@ -52,7 +54,7 @@ class CacheBatchReader(
     )
 
     while (pendingReferences.isNotEmpty()) {
-      val records = readableStore.read(pendingReferences.map { it.key }, cacheHeaders).associateBy { it.key }
+      val records = cache.loadRecords(pendingReferences.map { it.key }, cacheHeaders).associateBy { it.key }
 
       val copy = pendingReferences.toList()
       pendingReferences.clear()

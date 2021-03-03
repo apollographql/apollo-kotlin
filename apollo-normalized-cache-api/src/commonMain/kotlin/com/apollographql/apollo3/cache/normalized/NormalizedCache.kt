@@ -18,25 +18,9 @@ import kotlin.reflect.KClass
  *
  * A [NormalizedCache] can choose to store records in any manner.
  */
-abstract class NormalizedCache {
+abstract class NormalizedCache: ReadOnlyNormalizedCache {
   var nextCache: NormalizedCache? = null
     private set
-
-  /**
-   * @param key          The key of the record to read.
-   * @param cacheHeaders The cache headers associated with the request which generated this record.
-   * @return The [Record] for key. If not present return null.
-   */
-  abstract fun loadRecord(key: String, cacheHeaders: CacheHeaders): Record?
-
-  /**
-   * Calls through to [NormalizedCache.loadRecord]. Implementations should override this
-   * method if the underlying storage technology can offer an optimized manner to read multiple records.
-   *
-   * @param keys         The set of [Record] keys to read.
-   * @param cacheHeaders The cache headers associated with the request which generated this record.
-   */
-  abstract fun loadRecords(keys: Collection<String>, cacheHeaders: CacheHeaders): Collection<Record>
 
   /**
    * @param record       The [Record] to merge.

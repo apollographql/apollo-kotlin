@@ -3,8 +3,13 @@ package com.apollographql.apollo3.integration.test
 import HeroNameQuery
 import com.apollographql.apollo3.ApolloClient
 import com.apollographql.apollo3.ApolloRequest
+import com.apollographql.apollo3.cache.normalized.ApolloStore
+import com.apollographql.apollo3.cache.normalized.CacheKeyResolver
 import com.apollographql.apollo3.cache.normalized.MemoryCache
+import com.apollographql.apollo3.cache.normalized.MemoryCacheFactory
 import com.apollographql.apollo3.cache.normalized.NormalizedCache
+import com.apollographql.apollo3.cache.normalized.NormalizedCacheFactory
+import com.apollographql.apollo3.cache.normalized.internal.ApolloStore
 import com.apollographql.apollo3.integration.TestApolloClient
 import com.apollographql.apollo3.interceptor.cache.FetchPolicy
 import com.apollographql.apollo3.interceptor.cache.isFromCache
@@ -24,15 +29,15 @@ import kotlin.test.fail
 class FetchPolicyTest {
   private lateinit var testHttpEngine: TestHttpEngine
   private lateinit var apolloClient: ApolloClient
-  private lateinit var cache: NormalizedCache
+  private lateinit var store: ApolloStore
 
   @BeforeTest
   fun setUp() {
-    cache = MemoryCache(maxSizeBytes = Int.MAX_VALUE)
+    store = ApolloStore(MemoryCacheFactory(maxSizeBytes = Int.MAX_VALUE), CacheKeyResolver.DEFAULT)
     testHttpEngine = TestHttpEngine()
     apolloClient = TestApolloClient(testHttpEngine)
         .newBuilder()
-        .normalizedCache(cache)
+        .normalizedCache(store)
         .build()
   }
 
@@ -99,7 +104,7 @@ class FetchPolicyTest {
 
       // Network error and no cache -> we should get an error
       testHttpEngine.enqueue("malformed")
-      cache.clearAll()
+      store.clearAll()
       try {
         apolloClient
             .query(request)

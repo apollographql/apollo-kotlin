@@ -9,7 +9,7 @@ class LruNormalizedCacheFactory(
      * [EvictionPolicy] to manage the primary cache.
      */
     private val evictionPolicy: EvictionPolicy
-) : NormalizedCacheFactory<LruNormalizedCache>() {
+) : NormalizedCacheFactory() {
 
   override fun create(): LruNormalizedCache = LruNormalizedCache(evictionPolicy)
 }

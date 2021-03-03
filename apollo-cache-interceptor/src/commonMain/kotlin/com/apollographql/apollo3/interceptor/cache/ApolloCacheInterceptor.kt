@@ -1,13 +1,11 @@
 package com.apollographql.apollo3.interceptor.cache
 
 import com.apollographql.apollo3.ApolloRequest
-import com.apollographql.apollo3.api.Operation
 import com.apollographql.apollo3.api.ApolloResponse
+import com.apollographql.apollo3.api.Operation
 import com.apollographql.apollo3.api.ResponseAdapterCache
 import com.apollographql.apollo3.cache.CacheHeaders
-import com.apollographql.apollo3.cache.normalized.CacheKeyResolver
-import com.apollographql.apollo3.cache.normalized.internal.normalize
-import com.apollographql.apollo3.cache.normalized.internal.readDataFromCache
+import com.apollographql.apollo3.cache.normalized.ApolloStore
 import com.apollographql.apollo3.interceptor.ApolloInterceptorChain
 import com.apollographql.apollo3.interceptor.ApolloRequestInterceptor
 import kotlinx.coroutines.flow.Flow
@@ -86,19 +84,17 @@ class ApolloCacheInterceptor : ApolloRequestInterceptor {
   }
 
   private fun <D : Operation.Data> writeToCache(request: ApolloRequest<D>, data: D, responseAdapterCache: ResponseAdapterCache) {
-    val store = request.executionContext[ApolloStore] ?: error("No ApolloStore found")
+    val store = request.executionContext[ApolloStore] ?: error("No RealApolloStore found")
 
-    val operation = request.operation
-    val records = operation.normalize(data, responseAdapterCache, CacheKeyResolver.DEFAULT)
-
-    store.merge(records.values.toList(), CacheHeaders.NONE)
+    store.writeOperation(request.operation, data, responseAdapterCache, CacheHeaders.NONE, true)
   }
 
   private fun <D : Operation.Data> readFromCache(request: ApolloRequest<D>, responseAdapterCache: ResponseAdapterCache): ApolloResponse<D> {
-    val store = request.executionContext[ApolloStore] ?: error("No ApolloStore found")
+    val store = request.executionContext[ApolloStore] ?: error("No RealApolloStore found")
+
     val operation = request.operation
 
-    val data = operation.readDataFromCache(responseAdapterCache, store, CacheKeyResolver.DEFAULT, CacheHeaders.NONE)
+    val data = store.readOperation(operation, responseAdapterCache)
 
     return ApolloResponse(
         requestUuid = request.requestUuid,
