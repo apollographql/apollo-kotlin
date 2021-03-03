@@ -126,6 +126,8 @@ class ApolloServerInterceptor(
     val requestBody = object : RequestBody() {
       override fun contentType() = MediaType.parse(body.contentType)
 
+      override fun contentLength() = body.contentLength
+      
       override fun writeTo(sink: BufferedSink) {
         body.writeTo(bufferedSink = sink)
       }
