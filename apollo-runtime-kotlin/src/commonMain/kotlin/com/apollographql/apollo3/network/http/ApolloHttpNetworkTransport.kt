@@ -12,6 +12,7 @@ import com.apollographql.apollo3.exception.ApolloSerializationException
 import com.apollographql.apollo3.network.NetworkTransport
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
+import okio.Buffer
 import okio.BufferedSink
 
 class ApolloHttpNetworkTransport(
@@ -39,9 +40,11 @@ class ApolloHttpNetworkTransport(
     override fun <D : Operation.Data> execute(request: ApolloRequest<D>, responseAdapterCache: ResponseAdapterCache): Flow<ApolloResponse<D>> {
         val httpRequest = request.toHttpRequest(responseAdapterCache)
         return flow {
-            emit(engine.execute(httpRequest) {
+            val response = engine.execute(httpRequest) {
                 it.parse(request, responseAdapterCache)
-            })
+            }
+
+            emit(response)
         }
     }
 
@@ -118,7 +121,7 @@ class ApolloHttpNetworkTransport(
             headers = headers + (executionContext[HttpRequestParameters]?.headers ?: emptyMap()),
             body = object : HttpBody {
                 override val contentType = requestBody.contentType
-                override val contentLength = -1L
+                override val contentLength = requestBody.contentLength
 
                 override fun writeTo(bufferedSink: BufferedSink) {
                     requestBody.writeTo(bufferedSink)

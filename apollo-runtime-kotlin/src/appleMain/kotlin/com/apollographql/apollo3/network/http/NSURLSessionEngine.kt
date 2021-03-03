@@ -3,9 +3,11 @@ package com.apollographql.apollo3.network.http
 import com.apollographql.apollo3.exception.ApolloException
 import com.apollographql.apollo3.exception.ApolloHttpException
 import com.apollographql.apollo3.exception.ApolloNetworkException
+import com.apollographql.apollo3.network.toNSData
 import kotlinx.cinterop.COpaquePointer
 import kotlinx.cinterop.StableRef
 import kotlinx.cinterop.asStableRef
+import kotlinx.cinterop.convert
 import kotlinx.cinterop.staticCFunction
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.suspendCancellableCoroutine
@@ -25,6 +27,7 @@ import platform.Foundation.NSURLSession
 import platform.Foundation.NSURLSessionConfiguration
 import platform.Foundation.NSURLSessionDataTask
 import platform.Foundation.dataTaskWithRequest
+import platform.Foundation.setHTTPBody
 import platform.Foundation.setHTTPMethod
 import platform.Foundation.setValue
 import platform.darwin.dispatch_async_f
@@ -43,7 +46,7 @@ fun interface DataTaskFactory {
 actual class DefaultHttpEngine(
     private val dataTaskFactory: DataTaskFactory,
     private val connectTimeoutMillis: Long = 60_000,
-): HttpEngine {
+) : HttpEngine {
 
   actual constructor(
       connectTimeoutMillis: Long,
@@ -86,13 +89,24 @@ actual class DefaultHttpEngine(
           URL = NSURL(string = request.url)
       ).apply {
         setTimeoutInterval(connectTimeoutMillis.toDouble() / 1000)
+
+        request.headers.forEach {
+          setValue(it.value, forHTTPHeaderField = it.key)
+        }
+
         if (request.method == HttpMethod.Get) {
           setHTTPMethod("GET")
         } else {
           setHTTPMethod("POST")
-        }
-        request.headers.forEach {
-          setValue(it.value, forHTTPHeaderField = it.key)
+          if (request.body != null) {
+            setValue(request.body.contentType, forHTTPHeaderField = "Content-Type")
+
+            if (request.body.contentLength >= 0) {
+              setValue(request.body.contentLength.toString(), forHTTPHeaderField = "Content-Length")
+            }
+            val body = Buffer().apply { request.body.writeTo(this) }.readByteArray().toNSData()
+            setHTTPBody(body)
+          }
         }
         setCachePolicy(NSURLRequestReloadIgnoringCacheData)
       }
@@ -107,11 +121,14 @@ actual class DefaultHttpEngine(
     }
 
     when (result) {
-      is Result.Success -> return result.response as R
-      is Result.Failure -> throw result.cause
+      is Result.Success -> {
+        return result.response
+      }
+      is Result.Failure -> {
+        throw result.cause
+      }
     }
   }
-
 
   private fun <R> parse(
       data: NSData?,
@@ -119,16 +136,21 @@ actual class DefaultHttpEngine(
       error: NSError?,
       block: (HttpResponse) -> R
   ): Result<R> {
-    if (error != null) return Result.Failure(
-        cause = ApolloNetworkException(
-            message = "Failed to execute GraphQL http network request",
-            cause = IOException(error.localizedDescription)
-        )
-    )
 
-    if (httpResponse == null) return Result.Failure(
-        cause = ApolloNetworkException("Failed to parse GraphQL http network response: EOF")
-    )
+    if (error != null) {
+      return Result.Failure(
+          cause = ApolloNetworkException(
+              message = "Failed to execute GraphQL http network request",
+              cause = IOException(error.localizedDescription)
+          )
+      )
+    }
+
+    if (httpResponse == null) {
+      return Result.Failure(
+          cause = ApolloNetworkException("Failed to parse GraphQL http network response: EOF")
+      )
+    }
 
     val httpHeaders = httpResponse.allHeaderFields
         .map { (key, value) -> key.toString() to value.toString() }
@@ -137,24 +159,36 @@ actual class DefaultHttpEngine(
     val statusCode = httpResponse.statusCode.toInt()
 
     /**
-     * XXX: Can data be null?
+     * data can be empty if there is no body.
+     * In that case, trying to create a ByteString later on fails
+     * So fail early instead
      */
-    if (data == null) return Result.Failure(
-        cause = ApolloHttpException(
-            statusCode = httpResponse.statusCode.toInt(),
-            headers = httpHeaders,
-            message = "Failed to parse GraphQL http network response: EOF"
-        )
-    )
+    if (data == null || data.length.toInt() == 0) {
+      return Result.Failure(
+          cause = ApolloHttpException(
+              statusCode = httpResponse.statusCode.toInt(),
+              headers = httpHeaders,
+              message = "Failed to parse GraphQL http network response: EOF"
+          )
+      )
+    }
 
-    return Result.Success(
-        block(
-            HttpResponse(
-                statusCode = statusCode,
-                headers = httpHeaders,
-                body = Buffer().write(data.toByteString()))
-        )
-    )
+    /**
+     * block can fail so wrap everything
+     */
+    val result = kotlin.runCatching {
+      block(
+          HttpResponse(
+              statusCode = statusCode,
+              headers = httpHeaders,
+              body = Buffer().write(data.toByteString()))
+      )
+    }
+    return if (result.isSuccess) {
+      Result.Success(result.getOrNull()!!)
+    } else {
+      Result.Failure(wrapThrowableIfNeeded(result.exceptionOrNull()!!))
+    }
   }
 
   sealed class Result<R> {
@@ -169,6 +203,7 @@ actual class DefaultHttpEngine(
       dispatch(continuationPtr)
     } else {
       val continuationWithResultRef = StableRef.create((continuationPtr to this).freeze())
+
       dispatch_async_f(
           queue = dispatch_get_main_queue(),
           context = continuationWithResultRef.asCPointer(),

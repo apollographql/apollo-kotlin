@@ -1,8 +1,6 @@
 package com.apollographql.apollo3.network.http
 
-import com.apollographql.apollo3.exception.ApolloException
 import com.apollographql.apollo3.exception.ApolloNetworkException
-import com.apollographql.apollo3.exception.ApolloParseException
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.suspendCancellableCoroutine
 import okhttp3.Call
@@ -17,8 +15,6 @@ import java.io.IOException
 import java.util.concurrent.TimeUnit
 import kotlin.coroutines.resume
 import kotlin.coroutines.resumeWithException
-
-private const val MEDIA_TYPE = "application/json; charset=utf-8"
 
 @ExperimentalCoroutinesApi
 actual class DefaultHttpEngine(
@@ -90,18 +86,7 @@ actual class DefaultHttpEngine(
                   }
                       .onSuccess { continuation.resume(it) }
                       .onFailure { e ->
-                        if (e is ApolloException) {
-                          continuation.resumeWithException(e)
-                        } else {
-                          // Most likely a Json error, we should make them ApolloException
-                          @Suppress("ThrowableNotThrown")
-                          continuation.resumeWithException(
-                              ApolloParseException(
-                                  message = "Failed to parse GraphQL http network response",
-                                  cause = e
-                              )
-                          )
-                        }
+                        continuation.resumeWithException(wrapThrowableIfNeeded(e))
                       }
                 }
               }
