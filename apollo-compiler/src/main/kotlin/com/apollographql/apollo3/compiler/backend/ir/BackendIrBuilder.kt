@@ -787,10 +787,10 @@ internal class BackendIrBuilder constructor(
             .filter { fragment -> fragment.type == BackendIr.Fragment.Type.Interface }
             .flatMap { fragmentInterface -> fragmentInterface.selectionKeys }
             .filter { key -> key != selectionKey }
-            .map { key ->
+            .mapNotNull { key ->
               when {
                 key.type == SelectionKey.Type.Fragment && key.keys.size == 1 -> key.root.decapitalize() to key
-                else -> "as${key.keys.last().capitalize()}" to key
+                else -> null
               }
             }
             .toMap()
