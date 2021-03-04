@@ -51,12 +51,12 @@ Apollo-android will generate a `FeedQuery` class that you can construct (with va
 ```kotlin
 apolloClient().query(feedQuery)
         .enqueue(object: ApolloCall.Callback<FeedQuery.Data>() {
-             override fun onFailure(e: ApolloException) {
-                 Log.i(TAG, response.toString());
-             }
-
              override fun onResponse(response: Response<UpvotePost.Data>) {
-                 Log.e(TAG, e.getMessage(), e);
+                  Log.i(TAG, response.toString());
+             }
+             
+             override fun onFailure(e: ApolloException) {
+                Log.e(TAG, e.getMessage(), e);
              }
          }, uiHandler);
 ```
