@@ -146,14 +146,14 @@ class ApolloServerInterceptorTest {
   }
 
   private fun assertDefaultRequestHeaders(request: Request?) {
-    Truth.assertThat(request!!.header(ApolloServerInterceptor.HEADER_ACCEPT_TYPE)).isEqualTo(ApolloServerInterceptor.ACCEPT_TYPE)
+    Truth.assertThat(request!!.header(ApolloServerInterceptor.HEADER_ACCEPT_TYPE)).isEqualTo(ApolloServerInterceptor.JSON_CONTENT_TYPE)
     Truth.assertThat(request.header(ApolloServerInterceptor.HEADER_APOLLO_OPERATION_ID)).isEqualTo(query.operationId())
     Truth.assertThat(request.header(ApolloServerInterceptor.HEADER_APOLLO_OPERATION_NAME)).isEqualTo(query.name())
     Truth.assertThat(request.tag()).isEqualTo(query.operationId())
   }
 
   private fun assertRequestBody(request: Request?) {
-    Truth.assertThat(request!!.body()!!.contentType()).isEqualTo(ApolloServerInterceptor.MEDIA_TYPE)
+    Truth.assertThat(request!!.body()!!.contentType().toString()).isEqualTo(ApolloServerInterceptor.JSON_CONTENT_TYPE)
     val bodyBuffer = Buffer()
     try {
       request.body()!!.writeTo(bodyBuffer)

@@ -143,7 +143,12 @@ class ApolloServerInterceptor(
   fun decorateRequest(requestBuilder: Request.Builder, operation: Operation<*>, cacheHeaders: CacheHeaders,
                       requestHeaders: RequestHeaders) {
     requestBuilder
-        .header(HEADER_ACCEPT_TYPE, ACCEPT_TYPE)
+        .header(HEADER_ACCEPT_TYPE, JSON_CONTENT_TYPE)
+        /**
+         * Content-Type is usually taken from the RequestBody but some implementation might not use OkHttp as a CallFactory
+         * and therefore use this
+         */
+        .header(HEADER_CONTENT_TYPE, JSON_CONTENT_TYPE)
         .header(HEADER_APOLLO_OPERATION_ID, operation.operationId())
         .header(HEADER_APOLLO_OPERATION_NAME, operation.name())
         .tag(operation.operationId())
@@ -167,10 +172,10 @@ class ApolloServerInterceptor(
 
   companion object {
     const val HEADER_ACCEPT_TYPE = "Accept"
+    const val HEADER_CONTENT_TYPE = "Content-Type"
     const val HEADER_APOLLO_OPERATION_ID = "X-APOLLO-OPERATION-ID"
     const val HEADER_APOLLO_OPERATION_NAME = "X-APOLLO-OPERATION-NAME"
-    const val ACCEPT_TYPE = "application/json"
-    val MEDIA_TYPE = MediaType.parse("application/json")
+    const val JSON_CONTENT_TYPE = "application/json"
 
     @Throws(IOException::class)
     fun cacheKey(operation: Operation<*>, responseAdapterCache: ResponseAdapterCache): String {
