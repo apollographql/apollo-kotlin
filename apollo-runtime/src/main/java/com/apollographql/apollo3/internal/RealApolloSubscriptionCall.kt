@@ -84,7 +84,15 @@ class RealApolloSubscriptionCall<D : Subscription.Data>(
     get() = state.get() === CallState.CANCELED
 
   override fun cachePolicy(cachePolicy: ApolloSubscriptionCall.CachePolicy): ApolloSubscriptionCall<D> {
-    return RealApolloSubscriptionCall(subscription, subscriptionManager, apolloStore, cachePolicy, dispatcher, logger, responseAdapterCache)
+    return RealApolloSubscriptionCall(
+        subscription = subscription,
+        subscriptionManager = subscriptionManager,
+        apolloStore = apolloStore,
+        cachePolicy = cachePolicy,
+        dispatcher = dispatcher,
+        logger = logger,
+        responseAdapterCache = responseAdapterCache
+    )
   }
 
   private fun terminate() {
@@ -129,11 +137,11 @@ class RealApolloSubscriptionCall<D : Subscription.Data>(
       if (callback != null) {
         if (data != null && delegate!!.cachePolicy != ApolloSubscriptionCall.CachePolicy.NO_CACHE) {
           delegate!!.apolloStore.writeOperation(
-              response.subscription,
-              data,
-              delegate!!.responseAdapterCache,
-              CacheHeaders.NONE,
-              true,
+              operation = response.subscription,
+              operationData = data,
+              responseAdapterCache = delegate!!.responseAdapterCache,
+              cacheHeaders = CacheHeaders.NONE,
+              publish = true,
               )
         }
         callback.onResponse(response.response)
