@@ -5,6 +5,7 @@ import com.apollographql.apollo3.api.Operation
 import com.apollographql.apollo3.cache.CacheHeaders
 import com.apollographql.apollo3.cache.normalized.ApolloStore.RecordChangeSubscriber
 import com.apollographql.apollo3.cache.normalized.internal.NoOpApolloStore
+import com.apollographql.apollo3.cache.normalized.internal.ReadMode
 import com.benasher44.uuid.Uuid
 
 /**
@@ -79,7 +80,8 @@ interface ApolloStore {
    */
   fun <D : Operation.Data> readOperation(
       operation: Operation<D>,
-      cacheHeaders: CacheHeaders = CacheHeaders.NONE
+      cacheHeaders: CacheHeaders = CacheHeaders.NONE,
+      mode: ReadMode = ReadMode.BATCH
   ): D?
 
   /**

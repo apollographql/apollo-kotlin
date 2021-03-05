@@ -6,6 +6,7 @@ import com.apollographql.apollo3.api.ApolloResponse
 import com.apollographql.apollo3.api.internal.ApolloLogger
 import com.apollographql.apollo3.cache.ApolloCacheHeaders
 import com.apollographql.apollo3.cache.normalized.ApolloStore
+import com.apollographql.apollo3.cache.normalized.internal.ReadMode
 import com.apollographql.apollo3.exception.ApolloException
 import com.apollographql.apollo3.exception.ApolloGenericException
 import com.apollographql.apollo3.interceptor.ApolloInterceptor
@@ -82,8 +83,10 @@ class ApolloCacheInterceptor<D : Operation.Data>(
   @Throws(ApolloException::class)
   fun resolveFromCache(request: InterceptorRequest): InterceptorResponse {
     val data = apolloStore.readOperation(
-        request.operation,
-        request.cacheHeaders)
+        operation = request.operation,
+        cacheHeaders = request.cacheHeaders,
+        mode = ReadMode.BATCH
+    )
     if (data != null) {
       logger.d("Cache HIT for operation %s", request.operation.name())
       return InterceptorResponse(

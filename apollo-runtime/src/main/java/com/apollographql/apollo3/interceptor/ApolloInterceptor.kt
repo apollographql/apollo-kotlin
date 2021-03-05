@@ -3,6 +3,7 @@ package com.apollographql.apollo3.interceptor
 import com.apollographql.apollo3.api.Operation
 import com.apollographql.apollo3.api.internal.Optional
 import com.apollographql.apollo3.cache.CacheHeaders
+import com.apollographql.apollo3.cache.normalized.internal.ReadMode
 import com.apollographql.apollo3.exception.ApolloException
 import com.apollographql.apollo3.request.RequestHeaders
 import okhttp3.Response
@@ -99,9 +100,15 @@ interface ApolloInterceptor {
   /**
    * Request to be proceed with [ApolloInterceptor]
    */
-  class InterceptorRequest internal constructor(val operation: Operation<*>, val cacheHeaders: CacheHeaders, val requestHeaders: RequestHeaders,
-                                                val optimisticUpdates: Optional<Operation.Data>, val fetchFromCache: Boolean,
-                                                val sendQueryDocument: Boolean, val useHttpGetMethodForQueries: Boolean, val autoPersistQueries: Boolean) {
+  class InterceptorRequest internal constructor(val operation: Operation<*>,
+                                                val cacheHeaders: CacheHeaders,
+                                                val requestHeaders: RequestHeaders,
+                                                val optimisticUpdates: Optional<Operation.Data>,
+                                                val fetchFromCache: Boolean,
+                                                val sendQueryDocument: Boolean,
+                                                val useHttpGetMethodForQueries: Boolean,
+                                                val autoPersistQueries: Boolean,
+                                                ) {
     val uniqueId = UUID.randomUUID()
     fun toBuilder(): Builder {
       return Builder(operation)
@@ -164,8 +171,16 @@ interface ApolloInterceptor {
       }
 
       fun build(): InterceptorRequest {
-        return InterceptorRequest(operation, cacheHeaders, requestHeaders, optimisticUpdates,
-            fetchFromCache, sendQueryDocument, useHttpGetMethodForQueries, autoPersistQueries)
+        return InterceptorRequest(
+            operation,
+            cacheHeaders,
+            requestHeaders,
+            optimisticUpdates,
+            fetchFromCache,
+            sendQueryDocument,
+            useHttpGetMethodForQueries,
+            autoPersistQueries,
+        )
       }
 
       init {
