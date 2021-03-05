@@ -165,7 +165,7 @@ abstract class DefaultCompilationUnit @Inject constructor(
         }
       } else {
         val candidates = directories.flatMap { srcDir ->
-          srcDir.walkTopDown().filter { it.name == "schema.json" || it.name == "schema.sdl" }.toList()
+          srcDir.walkTopDown().filter { it.name == "schema.json" || it.name == "schema.sdl" || it.name == "schema.graphqls" }.toList()
         }
 
         require(candidates.size <= 1) {
