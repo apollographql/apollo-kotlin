@@ -28,8 +28,6 @@ internal interface HeroDetails {
         |}
         """.trimMargin()
 
-    fun HeroDetails.asHuman(): Human? = this as? Human
-
     fun HeroDetails.humanDetails(): HumanDetails? = this as? HumanDetails
   }
 }

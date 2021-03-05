@@ -181,10 +181,6 @@ interface HeroDetails {
         |}
         """.trimMargin()
 
-    fun HeroDetails.asDroid(): Droid? = this as? Droid
-
-    fun HeroDetails.asHuman(): Human? = this as? Human
-
     fun HeroDetails.humanDetails(): HumanDetails? = this as? HumanDetails
   }
 }

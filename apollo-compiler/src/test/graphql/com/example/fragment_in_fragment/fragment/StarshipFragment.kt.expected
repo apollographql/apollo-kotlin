@@ -66,16 +66,12 @@ interface StarshipFragment {
                 PilotFragment.Homeworld
 
             companion object {
-              fun Homeworld.asPlanet(): Planet? = this as? Planet
-
               fun Homeworld.planetFragment(): PlanetFragment? = this as? PlanetFragment
             }
           }
         }
 
         companion object {
-          fun Node.asPerson(): Person? = this as? Person
-
           fun Node.pilotFragment(): PilotFragment? = this as? PilotFragment
         }
       }

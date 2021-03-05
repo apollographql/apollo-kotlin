@@ -30,8 +30,6 @@ interface HeroDetails {
         |}
         """.trimMargin()
 
-    fun HeroDetails.asCharacter(): Character? = this as? Character
-
     fun HeroDetails.characterDetails(): CharacterDetails? = this as? CharacterDetails
   }
 }

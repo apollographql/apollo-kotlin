@@ -34,8 +34,6 @@ interface PilotFragment {
     interface Planet : Homeworld, PlanetFragment
 
     companion object {
-      fun Homeworld.asPlanet(): Planet? = this as? Planet
-
       fun Homeworld.planetFragment(): PlanetFragment? = this as? PlanetFragment
     }
   }

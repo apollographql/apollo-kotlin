@@ -50,12 +50,6 @@ interface HeroDetails {
        */
       val primaryFunction: String?
     }
-
-    companion object {
-      fun Friends.asHuman(): Human? = this as? Human
-
-      fun Friends.asDroid(): Droid? = this as? Droid
-    }
   }
 
   companion object {

@@ -29,8 +29,6 @@ interface QueryFragment {
     interface Character : Hero, HeroFragment
 
     companion object {
-      fun Hero.asCharacter(): Character? = this as? Character
-
       fun Hero.heroFragment(): HeroFragment? = this as? HeroFragment
     }
   }
@@ -44,8 +42,6 @@ interface QueryFragment {
     interface Droid : QueryFragment.Droid, DroidFragment
 
     companion object {
-      fun QueryFragment.Droid.asDroid(): Droid? = this as? Droid
-
       fun QueryFragment.Droid.droidFragment(): DroidFragment? = this as? DroidFragment
     }
   }
@@ -66,10 +62,6 @@ interface QueryFragment {
        * The home planet of the human, or null if unknown
        */
       val homePlanet: String?
-    }
-
-    companion object {
-      fun QueryFragment.Human.asHuman(): Human? = this as? Human
     }
   }
 

@@ -28,8 +28,6 @@ interface QueryFragment {
       interface User : Organization.User, UserFragment
 
       companion object {
-        fun Organization.User.asUser(): User? = this as? User
-
         fun Organization.User.userFragment(): UserFragment? = this as? UserFragment
       }
     }
