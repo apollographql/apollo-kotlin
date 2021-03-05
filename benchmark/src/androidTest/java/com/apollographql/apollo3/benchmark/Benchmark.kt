@@ -4,8 +4,8 @@ import Utils.bufferedSource
 import androidx.benchmark.junit4.BenchmarkRule
 import androidx.benchmark.junit4.measureRepeated
 import androidx.test.platform.app.InstrumentationRegistry
-import com.apollographql.apollo3.api.CustomScalarAdapters
-import com.apollographql.apollo3.api.parse
+import com.apollographql.apollo3.api.ResponseAdapterCache
+import com.apollographql.apollo3.api.fromResponse
 import com.apollographql.apollo3.benchmark.moshi.Query
 import com.apollographql.apollo3.cache.CacheHeaders
 import com.apollographql.apollo3.cache.normalized.CacheKeyResolver
@@ -41,7 +41,7 @@ class Benchmark {
       bufferedSource()
     }
 
-    operation.parse(bufferedSource, customScalarAdapters)
+    operation.fromResponse(bufferedSource, customScalarAdapters)
   }
 
   @Test
@@ -50,8 +50,8 @@ class Benchmark {
       bufferedSource()
     }
 
-    val data = operation.parse(bufferedSource, customScalarAdapters).data!!
-    val records = operation.normalize(data, CustomScalarAdapters.DEFAULT, CacheKeyResolver.DEFAULT)
+    val data = operation.fromResponse(bufferedSource, customScalarAdapters).data!!
+    val records = operation.normalize(data, ResponseAdapterCache.DEFAULT, CacheKeyResolver.DEFAULT)
   }
 
   companion object {
@@ -59,13 +59,13 @@ class Benchmark {
     lateinit var memoryReadableStore: ReadableStore
     private val operation = GetResponseQuery()
     private val moshiAdapter = Moshi.Builder().build().adapter(Query::class.java)
-    private val customScalarAdapters = CustomScalarAdapters(emptyMap())
+    private val customScalarAdapters = ResponseAdapterCache(emptyMap())
 
     @BeforeClass
     @JvmStatic
     fun setup() {
-      val data = operation.parse(bufferedSource()).data!!
-      val records = operation.normalize(data, CustomScalarAdapters.DEFAULT, CacheKeyResolver.DEFAULT).values
+      val data = operation.fromResponse(bufferedSource()).data!!
+      val records = operation.normalize(data, ResponseAdapterCache.DEFAULT, CacheKeyResolver.DEFAULT).values
 
       // warm the adapter
       operation.adapter(customScalarAdapters)
@@ -99,21 +99,21 @@ class Benchmark {
 
   @Test
   fun apolloReadCacheSql() = benchmarkRule.measureRepeated {
-    val data2 = operation.readDataFromCache(CustomScalarAdapters.DEFAULT, sqlReadableStore, CacheKeyResolver.DEFAULT, CacheHeaders.NONE)
+    val data2 = operation.readDataFromCache(ResponseAdapterCache.DEFAULT, sqlReadableStore, CacheKeyResolver.DEFAULT, CacheHeaders.NONE)
   }
 
   @Test
   fun apolloBatchCacheSql() = benchmarkRule.measureRepeated {
-    val data2 = operation.readDataFromCache(CustomScalarAdapters.DEFAULT, sqlReadableStore, CacheKeyResolver.DEFAULT, CacheHeaders.NONE, ReadMode.BATCH)
+    val data2 = operation.readDataFromCache(ResponseAdapterCache.DEFAULT, sqlReadableStore, CacheKeyResolver.DEFAULT, CacheHeaders.NONE, ReadMode.BATCH)
   }
 
   @Test
   fun apolloReadCacheMemory() = benchmarkRule.measureRepeated {
-    val data2 = operation.readDataFromCache(CustomScalarAdapters.DEFAULT, memoryReadableStore, CacheKeyResolver.DEFAULT, CacheHeaders.NONE)
+    val data2 = operation.readDataFromCache(ResponseAdapterCache.DEFAULT, memoryReadableStore, CacheKeyResolver.DEFAULT, CacheHeaders.NONE)
   }
 
   @Test
   fun apolloBatchCacheMemory() = benchmarkRule.measureRepeated {
-    val data2 = operation.readDataFromCache(CustomScalarAdapters.DEFAULT, memoryReadableStore, CacheKeyResolver.DEFAULT, CacheHeaders.NONE, ReadMode.BATCH)
+    val data2 = operation.readDataFromCache(ResponseAdapterCache.DEFAULT, memoryReadableStore, CacheKeyResolver.DEFAULT, CacheHeaders.NONE, ReadMode.BATCH)
   }
 }
