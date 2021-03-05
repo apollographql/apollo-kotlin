@@ -94,7 +94,13 @@ class CacheBatchReader(
           it.responseName to value
         }.toMap()
 
-        data[record.key] = map
+        val existingValue = data[record.key]
+        val newValue = if (existingValue != null) {
+          existingValue + map
+        } else {
+          map
+        }
+        data[record.key] = newValue
       }
     }
 
