@@ -127,7 +127,8 @@ class RealApolloStore(
 
   override fun <D : Operation.Data> readOperation(
       operation: Operation<D>,
-      cacheHeaders: CacheHeaders
+      cacheHeaders: CacheHeaders,
+      mode: ReadMode
   ): D? {
     return readTransaction { cache ->
       try {
@@ -135,7 +136,8 @@ class RealApolloStore(
             responseAdapterCache = responseAdapterCache,
             readableStore = cache,
             cacheKeyResolver = cacheKeyResolver(),
-            cacheHeaders = cacheHeaders
+            cacheHeaders = cacheHeaders,
+            mode = mode
         )
       } catch (e: Exception) {
         logger.e(e, "Failed to read cache response")

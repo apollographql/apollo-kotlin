@@ -57,7 +57,7 @@ fun <D : Operation.Data> Operation<D>.readDataFromCache(
     readableStore: ReadableStore,
     cacheKeyResolver: CacheKeyResolver,
     cacheHeaders: CacheHeaders,
-    mode: ReadMode = ReadMode.SEQUENTIAL,
+    mode: ReadMode = ReadMode.BATCH,
 ) = readInternal(
     readableStore = readableStore,
     cacheKeyResolver = cacheKeyResolver,

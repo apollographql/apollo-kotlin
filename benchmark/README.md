@@ -13,11 +13,22 @@ You can run the tests from Android Studio by clicking the "run" icon in the gutt
 Run on a Pixel 3 XL. Feel free to update/commit new results and we can get the history using `git annotate`
 
 ```
-benchmark:    12,879,429 ns Benchmark.moshi
-benchmark:    14,009,115 ns Benchmark.apollo
-benchmark:    21,726,616 ns Benchmark.apolloParseAndNormalize
-benchmark:     4,549,636 ns Benchmark.apolloReadCacheMemory
-benchmark:     6,607,240 ns Benchmark.apolloBatchCacheMemory
-benchmark:   226,512,470 ns Benchmark.apolloReadCacheSql
-benchmark:    71,638,132 ns Benchmark.apolloBatchCacheSql
+benchmark:    13,211,251 ns Benchmark.moshi
+benchmark:    14,380,314 ns Benchmark.apollo
+benchmark:    21,947,658 ns Benchmark.apolloParseAndNormalize
+benchmark:     4,431,407 ns Benchmark.apolloReadCacheMemory
+benchmark:     6,436,980 ns Benchmark.apolloBatchCacheMemory
+benchmark:   222,846,324 ns Benchmark.apolloReadCacheSql
+benchmark:    71,024,538 ns Benchmark.apolloBatchCacheSql
+```
+
+Same thing on a Samsung A5 2017 SM-A520F
+```
+benchmark:    27,272,962 ns Benchmark.moshi
+benchmark:    28,992,191 ns Benchmark.apollo
+benchmark:    43,999,000 ns Benchmark.apolloParseAndNormalize
+benchmark:    12,343,846 ns Benchmark.apolloReadCacheMemory
+benchmark:    16,767,616 ns Benchmark.apolloBatchCacheMemory
+benchmark:   485,456,115 ns Benchmark.apolloReadCacheSql
+benchmark:   125,179,230 ns Benchmark.apolloBatchCacheSql
 ```

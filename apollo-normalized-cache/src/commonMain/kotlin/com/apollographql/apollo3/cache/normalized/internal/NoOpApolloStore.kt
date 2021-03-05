@@ -55,7 +55,8 @@ internal class NoOpApolloStore : ApolloStore, ReadableStore, WriteableStore {
 
   override fun <D : Operation.Data> readOperation(
       operation: Operation<D>,
-      cacheHeaders: CacheHeaders
+      cacheHeaders: CacheHeaders,
+      mode: ReadMode
   ): D? {
     // This will be seen as a cache MISS and the request will go to the network.
     return null
