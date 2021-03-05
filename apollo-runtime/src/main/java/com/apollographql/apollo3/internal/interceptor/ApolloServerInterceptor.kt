@@ -144,6 +144,10 @@ class ApolloServerInterceptor(
                       requestHeaders: RequestHeaders) {
     requestBuilder
         .header(HEADER_ACCEPT_TYPE, JSON_CONTENT_TYPE)
+        /**
+         * Content-Type is usually taken from the RequestBody but some implementation might not use OkHttp as a CallFactory
+         * and therefore use this
+         */
         .header(HEADER_CONTENT_TYPE, JSON_CONTENT_TYPE)
         .header(HEADER_APOLLO_OPERATION_ID, operation.operationId())
         .header(HEADER_APOLLO_OPERATION_NAME, operation.name())
