@@ -11,6 +11,7 @@ import com.apollographql.apollo3.integration.enqueue
 import com.apollographql.apollo3.interceptor.cache.isFromCache
 import com.apollographql.apollo3.interceptor.cache.normalizedCache
 import com.apollographql.apollo3.testing.runBlocking
+import com.apollographql.apollo3.testing.runWithMainLoop
 import kotlinx.coroutines.flow.single
 import kotlin.test.BeforeTest
 import kotlin.test.Test
@@ -39,7 +40,7 @@ class HTTPHeadersTest {
 
     mockServer.enqueue(query, data)
 
-    runBlocking {
+    runWithMainLoop {
       val response = apolloClient
           .query(query)
           .single()

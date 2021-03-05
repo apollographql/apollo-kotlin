@@ -7,7 +7,7 @@ import com.apollographql.apollo3.exception.ApolloNetworkException
 import com.apollographql.apollo3.integration.MockResponse
 import com.apollographql.apollo3.integration.MockServer
 import com.apollographql.apollo3.integration.enqueue
-import com.apollographql.apollo3.testing.runBlocking
+import com.apollographql.apollo3.testing.runWithMainLoop
 import kotlinx.coroutines.flow.retryWhen
 import kotlinx.coroutines.flow.single
 import kotlin.test.BeforeTest
@@ -28,7 +28,7 @@ class ExceptionsTest {
   }
 
   @Test
-  fun `when query and malformed network response, assert Exception`() = runBlocking {
+  fun `when query and malformed network response, assert Exception`() = runWithMainLoop {
     mockServer.enqueue("malformed")
 
     val result = kotlin.runCatching {
@@ -41,7 +41,7 @@ class ExceptionsTest {
   }
 
   @Test
-  fun `when http error, assert execute fails`() = runBlocking {
+  fun `when http error, assert execute fails`() = runWithMainLoop {
     mockServer.enqueue(MockResponse(statusCode = 404))
 
     val result = kotlin.runCatching {
@@ -56,7 +56,7 @@ class ExceptionsTest {
   }
 
   @Test
-  fun `when network error, assert ApolloNetworkException`() = runBlocking {
+  fun `when network error, assert ApolloNetworkException`() = runWithMainLoop {
     mockServer.stop()
 
     val result = kotlin.runCatching {
@@ -76,7 +76,7 @@ class ExceptionsTest {
     val data = HeroNameQuery.Data(HeroNameQuery.Data.Hero("R2-D2"))
     mockServer.enqueue(query, data)
 
-    val response = runBlocking {
+    val response = runWithMainLoop {
       apolloClient
           .query(query)
           .retryWhen { _, attempt -> attempt == 0L }

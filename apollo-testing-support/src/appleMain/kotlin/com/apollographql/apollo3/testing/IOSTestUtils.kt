@@ -19,25 +19,24 @@ import platform.darwin.dispatch_get_main_queue
 import platform.darwin.dispatch_time
 import kotlin.coroutines.CoroutineContext
 
-actual fun <T> runBlocking(context: CoroutineContext, block: suspend CoroutineScope.() -> T): T {
+/**
+ * A specialized version of `runBlocking` that keeps a CFRunLoop alive so that apple code can dispatch on the main
+ * queue. There is more to the story and this might hopefully be merged with runBlocking below
+ * but for now that allows us to run integration tests against a mocked server
+ */
+actual fun <T> runWithMainLoop(context: CoroutineContext, block: suspend CoroutineScope.() -> T): T {
   var value: T? = null
-  var exception: Throwable? = null
   GlobalScope.launch(MainLoopDispatcher) {
-    try {
-      value = block()
-    } catch (throwable: Throwable) {
-      exception = throwable
-    }
+    value = block()
     CFRunLoopStop(CFRunLoopGetCurrent())
   }
   CFRunLoopRun()
 
-  if (exception != null) {
-    throw exception!!
-  } else {
-    return value!!
-  }
+  return value!!
 }
+
+actual fun <T> runBlocking(context: CoroutineContext, block: suspend CoroutineScope.() -> T) = kotlinx.coroutines.runBlocking { block() }
+
 
 @OptIn(InternalCoroutinesApi::class)
 private object MainLoopDispatcher : CoroutineDispatcher(), Delay {

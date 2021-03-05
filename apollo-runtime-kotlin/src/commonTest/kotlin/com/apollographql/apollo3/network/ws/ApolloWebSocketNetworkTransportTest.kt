@@ -20,6 +20,7 @@ import kotlinx.coroutines.channels.ReceiveChannel
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.collectIndexed
 import kotlinx.coroutines.flow.toList
+import kotlinx.coroutines.withTimeout
 import okio.ByteString
 import okio.ByteString.Companion.encodeUtf8
 import kotlin.test.Test
@@ -156,7 +157,9 @@ class ApolloWebSocketNetworkTransportTest {
         webSocketConnection.enqueueComplete()
       }
 
-      webSocketConnection.isClosed.await()
+      withTimeout(2000) {
+        webSocketConnection.isClosed.await()
+      }
     }
   }
 
