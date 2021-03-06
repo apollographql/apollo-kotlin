@@ -1,7 +1,6 @@
 package com.apollographql.apollo3.internal
 
 import com.apollographql.apollo3.ApolloSubscriptionCall
-import com.apollographql.apollo3.api.Operation
 import com.apollographql.apollo3.api.ApolloResponse
 import com.apollographql.apollo3.api.ResponseAdapterCache
 import com.apollographql.apollo3.api.Subscription
@@ -18,6 +17,7 @@ import com.apollographql.apollo3.withCacheInfo
 import com.benasher44.uuid.uuid4
 import java.util.concurrent.Executor
 import java.util.concurrent.atomic.AtomicReference
+import kotlinx.coroutines.runBlocking
 
 class RealApolloSubscriptionCall<D : Subscription.Data>(
     private val subscription: Subscription<D>,
@@ -112,11 +112,13 @@ class RealApolloSubscriptionCall<D : Subscription.Data>(
   }
 
   private fun resolveFromCache(): ApolloResponse<D>? {
-    val data = apolloStore.readOperation(
-        subscription,
-        responseAdapterCache,
-        CacheHeaders.NONE,
-    )
+    val data = runBlocking {
+      apolloStore.readOperation(
+          subscription,
+          responseAdapterCache,
+          CacheHeaders.NONE,
+      )
+    }
     return if (data != null) {
       logger.d("Cache HIT for subscription `%s`", subscription)
       ApolloResponse(
@@ -136,13 +138,15 @@ class RealApolloSubscriptionCall<D : Subscription.Data>(
       val data = response.response.data
       if (callback != null) {
         if (data != null && delegate!!.cachePolicy != ApolloSubscriptionCall.CachePolicy.NO_CACHE) {
-          delegate!!.apolloStore.writeOperation(
-              operation = response.subscription,
-              operationData = data,
-              responseAdapterCache = delegate!!.responseAdapterCache,
-              cacheHeaders = CacheHeaders.NONE,
-              publish = true,
-              )
+          runBlocking {
+            delegate!!.apolloStore.writeOperation(
+                operation = response.subscription,
+                operationData = data,
+                responseAdapterCache = delegate!!.responseAdapterCache,
+                cacheHeaders = CacheHeaders.NONE,
+                publish = true,
+            )
+          }
         }
         callback.onResponse(response.response)
       }

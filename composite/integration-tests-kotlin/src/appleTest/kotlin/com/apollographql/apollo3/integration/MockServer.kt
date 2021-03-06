@@ -76,8 +76,6 @@ actual class MockServer {
       networkPort.and(0xff).shl(8).or(networkPort.and(0xff00).shr(8))
     }
 
-    println("Bound to port $port")
-
     listen(socketFd, 1)
 
     pthreadT = nativeHeap.alloc()
@@ -137,6 +135,12 @@ class Socket(private val socketFd: Int) {
     }
   }
 
+  private inline fun debug(message: String) {
+    if (false) {
+      println(message)
+    }
+  }
+
   fun run() {
     while (running.value != 0) {
       memScoped {
@@ -189,7 +193,11 @@ class Socket(private val socketFd: Int) {
           return@memScoped
         }
 
+        debug("Read request")
+
         val request = readRequest(source)
+
+        debug("Got request: ${request.method} ${request.path}")
 
         val mockResponse = synchronized(lock) {
           val requests = requestQueue.value
@@ -206,7 +214,11 @@ class Socket(private val socketFd: Int) {
           response
         }
 
+        debug("Write response: ${mockResponse.statusCode}")
+
         writeResponse(sink, mockResponse, request.version)
+
+        debug("Response Written")
       }
     }
   }
