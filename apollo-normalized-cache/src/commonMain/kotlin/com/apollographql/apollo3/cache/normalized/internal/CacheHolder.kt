@@ -2,25 +2,10 @@ package com.apollographql.apollo3.cache.normalized.internal
 
 import com.apollographql.apollo3.cache.normalized.ReadOnlyNormalizedCache
 
-class CacheHolder(private val optimisticCache: OptimisticCache) {
-  private val lock = ReentrantReadWriteLock()
+expect class DefaultCacheHolder(producer: () -> OptimisticCache) {
+  suspend fun <T> read(block: (ReadOnlyNormalizedCache) -> T): T
 
-  fun <T> read(block: (ReadOnlyNormalizedCache) -> T): T {
-    return lock.read {
-      block(optimisticCache)
-    }
-  }
+  suspend fun <T> write(block: (OptimisticCache) -> T): T
 
-  fun <T> write(block: (OptimisticCache) -> T): T {
-    return lock.write {
-      block(optimisticCache)
-    }
-  }
-
-  fun writeAndForget(block: (OptimisticCache) -> Unit) {
-    lock.write {
-      block(optimisticCache)
-    }
-  }
-
+  fun writeAndForget(block: (OptimisticCache) -> Unit)
 }

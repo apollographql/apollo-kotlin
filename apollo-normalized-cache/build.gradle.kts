@@ -12,6 +12,7 @@ kotlin {
       dependencies {
         api(project(":apollo-api"))
         api(project(":apollo-normalized-cache-api"))
+        api(groovy.util.Eval.x(project, "x.dep.kotlin.coroutines"))
         implementation(groovy.util.Eval.x(project, "x.dep.kotlin.atomic"))
       }
     }

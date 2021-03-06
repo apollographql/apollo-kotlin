@@ -24,9 +24,9 @@ class RealApolloStore(
   private val subscribersLock = reentrantLock()
   private val subscribers = mutableSetOf<RecordChangeSubscriber>()
 
-  private val cacheHolder = CacheHolder (
+  private val cacheHolder = DefaultCacheHolder {
     OptimisticCache().chain(normalizedCacheFactory.createChain()) as OptimisticCache
-  )
+  }
 
   override fun subscribe(subscriber: RecordChangeSubscriber) {
     subscribersLock.withLock {
