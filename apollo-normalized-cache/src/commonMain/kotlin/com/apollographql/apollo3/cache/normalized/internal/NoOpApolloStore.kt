@@ -23,15 +23,15 @@ internal class NoOpApolloStore : ApolloStore() {
     return false
   }
 
-  override fun remove(cacheKey: CacheKey, cascade: Boolean): Boolean {
+  override suspend fun remove(cacheKey: CacheKey, cascade: Boolean): Boolean {
     return false
   }
 
-  override fun remove(cacheKeys: List<CacheKey>, cascade: Boolean): Int {
+  override suspend fun remove(cacheKeys: List<CacheKey>, cascade: Boolean): Int {
     return 0
   }
 
-  override fun <D : Operation.Data> readOperation(
+  override suspend fun <D : Operation.Data> readOperation(
       operation: Operation<D>,
       responseAdapterCache: ResponseAdapterCache,
       cacheHeaders: CacheHeaders,
@@ -41,7 +41,7 @@ internal class NoOpApolloStore : ApolloStore() {
     return null
   }
 
-  override fun <D : Fragment.Data> readFragment(
+  override suspend fun <D : Fragment.Data> readFragment(
       fragment: Fragment<D>,
       cacheKey: CacheKey,
       responseAdapterCache: ResponseAdapterCache,
@@ -50,7 +50,7 @@ internal class NoOpApolloStore : ApolloStore() {
     return null
   }
 
-  override fun <D : Operation.Data> writeOperation(
+  override suspend fun <D : Operation.Data> writeOperation(
       operation: Operation<D>,
       operationData: D,
       responseAdapterCache: ResponseAdapterCache,
@@ -60,7 +60,7 @@ internal class NoOpApolloStore : ApolloStore() {
     return emptySet()
   }
 
-  override fun <D : Fragment.Data> writeFragment(
+  override suspend fun <D : Fragment.Data> writeFragment(
       fragment: Fragment<D>,
       cacheKey: CacheKey,
       fragmentData: D,
@@ -72,7 +72,7 @@ internal class NoOpApolloStore : ApolloStore() {
   }
 
 
-  override fun <D : Operation.Data> writeOptimisticUpdates(
+  override suspend fun <D : Operation.Data> writeOptimisticUpdates(
       operation: Operation<D>,
       operationData: D,
       mutationId: Uuid,
@@ -82,14 +82,14 @@ internal class NoOpApolloStore : ApolloStore() {
     return emptySet()
   }
 
-  override fun rollbackOptimisticUpdates(
+  override suspend fun rollbackOptimisticUpdates(
       mutationId: Uuid,
       publish: Boolean
   ): Set<String> {
     return emptySet()
   }
 
-  override fun dump(): Map<KClass<*>, Map<String, Record>> {
+  override suspend fun dump(): Map<KClass<*>, Map<String, Record>> {
     return emptyMap()
   }
 }

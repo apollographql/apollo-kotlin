@@ -5,17 +5,14 @@ import com.apollographql.apollo3.ApolloClient
 import com.apollographql.apollo3.ApolloRequest
 import com.apollographql.apollo3.cache.normalized.ApolloStore
 import com.apollographql.apollo3.cache.normalized.CacheKeyResolver
-import com.apollographql.apollo3.cache.normalized.MemoryCache
 import com.apollographql.apollo3.cache.normalized.MemoryCacheFactory
-import com.apollographql.apollo3.cache.normalized.NormalizedCache
-import com.apollographql.apollo3.cache.normalized.NormalizedCacheFactory
 import com.apollographql.apollo3.cache.normalized.internal.ApolloStore
 import com.apollographql.apollo3.integration.TestApolloClient
 import com.apollographql.apollo3.interceptor.cache.FetchPolicy
 import com.apollographql.apollo3.interceptor.cache.isFromCache
 import com.apollographql.apollo3.interceptor.cache.normalizedCache
 import com.apollographql.apollo3.testing.TestHttpEngine
-import com.apollographql.apollo3.testing.runBlocking
+import com.apollographql.apollo3.testing.runWithMainLoop
 import kotlinx.coroutines.flow.single
 import kotlinx.coroutines.flow.toList
 import kotlin.test.BeforeTest
@@ -47,7 +44,7 @@ class FetchPolicyTest {
     val data = HeroNameQuery.Data(HeroNameQuery.Data.Hero("R2-D2"))
     testHttpEngine.enqueue(query, data)
 
-    runBlocking {
+    runWithMainLoop {
       var response = apolloClient
           .query(query)
           .single()
@@ -66,7 +63,7 @@ class FetchPolicyTest {
 
   @Test
   fun `NETWORK_FIRST test`() {
-    runBlocking {
+    runWithMainLoop {
       val query = HeroNameQuery()
       val data = HeroNameQuery.Data(HeroNameQuery.Data.Hero("R2-D2"))
 
@@ -118,7 +115,7 @@ class FetchPolicyTest {
 
   @Test
   fun `CACHE_ONLY test`() {
-    runBlocking {
+    runWithMainLoop {
       val query = HeroNameQuery()
       val data = HeroNameQuery.Data(HeroNameQuery.Data.Hero("R2-D2"))
 
@@ -150,7 +147,7 @@ class FetchPolicyTest {
 
   @Test
   fun `NETWORK_ONLY test`() {
-    runBlocking {
+    runWithMainLoop {
       val query = HeroNameQuery()
       val data = HeroNameQuery.Data(HeroNameQuery.Data.Hero("R2-D2"))
 
@@ -182,7 +179,7 @@ class FetchPolicyTest {
 
   @Test
   fun `cache_and_network test`() {
-    runBlocking {
+    runWithMainLoop {
       val query = HeroNameQuery()
       val data = HeroNameQuery.Data(HeroNameQuery.Data.Hero("R2-D2"))
 

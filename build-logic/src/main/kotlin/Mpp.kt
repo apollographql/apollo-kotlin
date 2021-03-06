@@ -62,4 +62,17 @@ fun Project.configureMppDefaults(withJs: Boolean = true) {
       }
     }
   }
+
+  if (System.getProperty("idea.sync.active") == null) {
+    /**
+     * Evil tasks to fool IntelliJ into running the appropriate tests when clicking the green triangle in the gutter
+     * IntelliJ "sees" apple during sync but the actual tasks are macosX64
+     */
+    tasks.register("cleanAppleTest") {
+      it.dependsOn("cleanMacosX64Test")
+    }
+    tasks.register("appleTest") {
+      it.dependsOn("macosX64Test")
+    }
+  }
 }
