@@ -14,6 +14,7 @@ import platform.darwin.dispatch_queue_create
 import platform.darwin.dispatch_queue_t
 import platform.posix.QOS_CLASS_DEFAULT
 import platform.posix.open
+import platform.posix.pthread_self
 import kotlin.coroutines.Continuation
 import kotlin.coroutines.suspendCoroutine
 import kotlin.native.concurrent.DetachedObjectGraph
@@ -24,6 +25,9 @@ import kotlin.native.concurrent.freeze
  * Performs IO operation on background thread by dispatching to global queue.
  * This executor requires caller thread to be main.
  * After operation executed it resumes on the main queue.
+ *
+ * In order to not freeze the continuation, it passes it around as a [COpaquePointer]
+ * so that the coroutine can ultimately resume
  */
 actual class IOTaskExecutor actual constructor(name: String){
   private val queue = dispatch_queue_create(name, null)
@@ -82,4 +86,8 @@ actual class IOTaskExecutor actual constructor(name: String){
       )
     }
   }
+}
+
+fun currentThreadId(): String {
+  return pthread_self()?.rawValue.toString()
 }
