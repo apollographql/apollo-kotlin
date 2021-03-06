@@ -7,6 +7,7 @@ import kotlinx.cinterop.autoreleasepool
 import kotlinx.cinterop.convert
 import kotlinx.cinterop.staticCFunction
 import platform.Foundation.NSThread
+import platform.darwin.DISPATCH_QUEUE_PRIORITY_DEFAULT
 import platform.darwin.dispatch_async_f
 import platform.darwin.dispatch_get_global_queue
 import platform.darwin.dispatch_get_main_queue
@@ -30,14 +31,12 @@ import kotlin.native.concurrent.freeze
  * so that the coroutine can ultimately resume
  */
 actual class IOTaskExecutor actual constructor(name: String){
-  private val queue = dispatch_queue_create(name, null)
-
   actual suspend fun <R> execute(operation: () -> R): R {
     assert(NSThread.isMainThread())
     return suspendCoroutine { continuation ->
       val continuationRef = StableRef.create(continuation)
       dispatchInQueue(
-          queue = queue,
+          queue = dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT.convert(), 0.convert()),
           continuationPtr = continuationRef.asCPointer(),
           operation = operation,
       )
