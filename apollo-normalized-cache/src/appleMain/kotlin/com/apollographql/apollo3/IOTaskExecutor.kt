@@ -31,12 +31,13 @@ import kotlin.native.concurrent.freeze
  * so that the coroutine can ultimately resume
  */
 actual class IOTaskExecutor actual constructor(name: String){
+  val queue = dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT.convert(), 0.convert())
   actual suspend fun <R> execute(operation: () -> R): R {
     assert(NSThread.isMainThread())
     return suspendCoroutine { continuation ->
       val continuationRef = StableRef.create(continuation)
       dispatchInQueue(
-          queue = dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT.convert(), 0.convert()),
+          queue = queue,
           continuationPtr = continuationRef.asCPointer(),
           operation = operation,
       )

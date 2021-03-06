@@ -108,8 +108,9 @@ actual class MockServer {
   }
 
   /**
-   * Since Okio does not support timeout, this might hang if the socket is waiting
-   * during a request.
+   * [MockServer] can only stop in between complete request/responses pairs
+   * If stop() is called while we're reading a request, this might wait forever
+   * Revisit once okio has native Timeout
    */
   actual fun stop() {
     socket.stop()
@@ -146,7 +147,8 @@ class Socket(private val socketFd: Int) {
         fdSet[1].fd = pipeFd[0]
         fdSet[1].events = POLLIN.convert()
 
-        // the timeout is certainly not required, better safe than sorry I guess...
+        // the timeout is certainly not required but since we're not locking running.value
+        // I guess there's a chance for a small race
         poll(fdSet, 2.convert(), 1000.convert())
 
         if (fdSet[0].revents.and(POLLIN.convert()).toInt() == 0) {
@@ -159,10 +161,33 @@ class Socket(private val socketFd: Int) {
         check(connectionFd >= 0) {
           "Cannot accept socket (errno = $errno)"
         }
-        println("Connection established")
 
-        val source = FileDescriptorSource(connectionFd).buffer()
-        val sink = FileDescriptorSink(connectionFd).buffer()
+        handleConnection(connectionFd)
+      }
+    }
+    close(socketFd)
+  }
+
+  private fun handleConnection(connectionFd: Int) {
+    val source = FileDescriptorSource(connectionFd).buffer()
+    val sink = FileDescriptorSink(connectionFd).buffer()
+
+    while (running.value != 0) {
+      memScoped {
+        val fdSet = allocArray<pollfd>(2)
+
+        fdSet[0].fd = connectionFd
+        fdSet[0].events = POLLIN.convert()
+        fdSet[1].fd = pipeFd[0]
+        fdSet[1].events = POLLIN.convert()
+
+        // the timeout is certainly not required but since we're not locking running.value
+        // I guess there's a chance for a small race
+        poll(fdSet, 2.convert(), 1000.convert())
+
+        if (fdSet[0].revents.and(POLLIN.convert()).toInt() == 0) {
+          return@memScoped
+        }
 
         val request = readRequest(source)
 
@@ -182,16 +207,8 @@ class Socket(private val socketFd: Int) {
         }
 
         writeResponse(sink, mockResponse, request.version)
-
-        /**
-         * Give some time to the client to download data and
-         * close the connection, we are a very bad server...
-         */
-        sleep(2.convert())
-        close(connectionFd)
       }
     }
-    close(socketFd)
   }
 
   fun stop() {
@@ -216,7 +233,7 @@ class Socket(private val socketFd: Int) {
   fun takeRequest(): RecordedRequest {
     return synchronized(lock) {
       val requests = requestQueue.value
-      check (requests.isNotEmpty())
+      check(requests.isNotEmpty())
 
       val request = requests.last()
       requestQueue.value = requests.dropLast(1)

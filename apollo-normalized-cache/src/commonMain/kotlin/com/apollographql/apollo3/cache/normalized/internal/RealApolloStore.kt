@@ -259,5 +259,7 @@ class RealApolloStore(
   }
 }
 
-fun ApolloStore(normalizedCacheFactory: NormalizedCacheFactory,
-                cacheKeyResolver: CacheKeyResolver): ApolloStore = RealApolloStore(normalizedCacheFactory, cacheKeyResolver)
+fun ApolloStore(
+    normalizedCacheFactory: NormalizedCacheFactory,
+    cacheKeyResolver: CacheKeyResolver
+): ApolloStore = RealApolloStore(normalizedCacheFactory, cacheKeyResolver)
