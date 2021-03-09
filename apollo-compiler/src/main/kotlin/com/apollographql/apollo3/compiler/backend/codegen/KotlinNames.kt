@@ -16,9 +16,11 @@ internal fun kotlinNameForOperation(operationName: String) = operationName.escap
 internal fun kotlinNameForAdapterField(type: CodeGenerationAst.FieldType): String {
   return kotlinNameForAdapterFieldRecursive(type).decapitalize() + "Adapter"
 }
+
 internal fun kotlinNameForTypeCaseAdapterField(typeRef: CodeGenerationAst.TypeRef): String {
   return typeRef.name.escapeKotlinReservedWord() + "Adapter"
 }
+
 internal fun kotlinNameForInputObjectType(name: String) = capitalizedIdentifier(name)
 internal fun kotlinNameForSerializer(operationName: String) = kotlinNameForOperation(operationName) + "_Adapter"
 // variables keep the same case as their declared name
@@ -37,5 +39,21 @@ private fun kotlinNameForAdapterFieldRecursive(type: CodeGenerationAst.FieldType
     is CodeGenerationAst.FieldType.Object -> type.typeRef.name.capitalize()
     is CodeGenerationAst.FieldType.InputObject -> type.typeRef.name.capitalize()
     is CodeGenerationAst.FieldType.Scalar -> type.schemaTypeName.capitalize()
+  }
+}
+
+internal fun CodeGenerationAst.TypeRef.fragmentVariableName(): String {
+  return if (this.isNamedFragmentDataRef) {
+    this.enclosingType!!.name.decapitalize().escapeKotlinReservedWord()
+  } else {
+    "as${this.name.capitalize().escapeKotlinReservedWord()}"
+  }
+}
+
+internal fun CodeGenerationAst.TypeRef.fragmentResponseAdapterVariableName(): String {
+  return if (this.isNamedFragmentDataRef) {
+    "${this.enclosingType!!.name.escapeKotlinReservedWord()}Adapter"
+  } else {
+    "${this.name.escapeKotlinReservedWord()}Adapter"
   }
 }

@@ -54,20 +54,21 @@ class TestQuery : Query<TestQuery.Data> {
     /**
      * A character from the Star Wars universe
      */
-    interface Hero {
-      val __typename: String
-
+    data class Hero(
+      val __typename: String = "Character",
       /**
        * The name of the character
        */
-      val name: String
-
-      data class HumanHero(
-        override val __typename: String,
+      val name: String,
+      val asAsHuman: AsHuman?,
+      val asAsDroid: AsDroid?
+    ) {
+      data class AsHuman(
+        val __typename: String,
         /**
          * The name of the character
          */
-        override val name: String,
+        val name: String,
         /**
          * Height in the preferred unit, default is meters
          */
@@ -76,7 +77,9 @@ class TestQuery : Query<TestQuery.Data> {
          * This human's friends, or an empty list if they have none
          */
         val friends: List<Friends?>?
-      ) : Hero {
+      ) {
+        fun friendsFilterNotNull(): List<Friends>? = friends?.filterNotNull()
+
         /**
          * A character from the Star Wars universe
          */
@@ -85,15 +88,17 @@ class TestQuery : Query<TestQuery.Data> {
            * The movies this character appears in
            */
           val appearsIn: List<Episode?>
-        )
+        ) {
+          fun appearsInFilterNotNull(): List<Episode> = appearsIn.filterNotNull()
+        }
       }
 
-      data class DroidHero(
-        override val __typename: String,
+      data class AsDroid(
+        val __typename: String,
         /**
          * The name of the character
          */
-        override val name: String,
+        val name: String,
         /**
          * This droid's primary function
          */
@@ -102,7 +107,9 @@ class TestQuery : Query<TestQuery.Data> {
          * This droid's friends, or an empty list if they have none
          */
         val friends: List<Friends?>?
-      ) : Hero {
+      ) {
+        fun friendsFilterNotNull(): List<Friends>? = friends?.filterNotNull()
+
         /**
          * A character from the Star Wars universe
          */
@@ -112,20 +119,6 @@ class TestQuery : Query<TestQuery.Data> {
            */
           val id: String
         )
-      }
-
-      data class OtherHero(
-        override val __typename: String,
-        /**
-         * The name of the character
-         */
-        override val name: String
-      ) : Hero
-
-      companion object {
-        fun Hero.asHumanHero(): HumanHero? = this as? HumanHero
-
-        fun Hero.asDroidHero(): DroidHero? = this as? DroidHero
       }
     }
   }

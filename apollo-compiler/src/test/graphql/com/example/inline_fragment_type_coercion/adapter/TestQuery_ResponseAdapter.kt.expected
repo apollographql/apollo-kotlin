@@ -10,6 +10,7 @@ import com.apollographql.apollo3.api.ResponseAdapter
 import com.apollographql.apollo3.api.ResponseAdapterCache
 import com.apollographql.apollo3.api.ResponseField
 import com.apollographql.apollo3.api.StringResponseAdapter
+import com.apollographql.apollo3.api.internal.json.MapJsonReader.Companion.buffer
 import com.apollographql.apollo3.api.json.JsonReader
 import com.apollographql.apollo3.api.json.JsonWriter
 import com.example.inline_fragment_type_coercion.TestQuery
@@ -55,8 +56,7 @@ class TestQuery_ResponseAdapter(
         type = ResponseField.Type.Named.Object("Foo"),
         fieldName = "foo",
         fieldSets = listOf(
-          ResponseField.FieldSet("FooBar", Foo.BarFoo.RESPONSE_FIELDS),
-          ResponseField.FieldSet(null, Foo.OtherFoo.RESPONSE_FIELDS),
+          ResponseField.FieldSet("FooBar", Foo.AsBar.RESPONSE_FIELDS),
         ),
       )
     )
@@ -67,37 +67,67 @@ class TestQuery_ResponseAdapter(
   class Foo(
     responseAdapterCache: ResponseAdapterCache
   ) : ResponseAdapter<TestQuery.Data.Foo> {
-    val BarFooAdapter: BarFoo =
-        com.example.inline_fragment_type_coercion.adapter.TestQuery_ResponseAdapter.Foo.BarFoo(responseAdapterCache)
+    private val stringAdapter: ResponseAdapter<String> = StringResponseAdapter
 
-    val OtherFooAdapter: OtherFoo =
-        com.example.inline_fragment_type_coercion.adapter.TestQuery_ResponseAdapter.Foo.OtherFoo(responseAdapterCache)
+    private val AsBarAdapter: AsBar =
+        com.example.inline_fragment_type_coercion.adapter.TestQuery_ResponseAdapter.Foo.AsBar(responseAdapterCache)
 
     override fun fromResponse(reader: JsonReader): TestQuery.Data.Foo {
+      val reader = reader.buffer()
       reader.beginObject()
-      check(reader.nextName() == "__typename")
-      val typename = reader.nextString()
 
-      return when(typename) {
-        "FooBar" -> BarFooAdapter.fromResponse(reader, typename)
-        else -> OtherFooAdapter.fromResponse(reader, typename)
+      var __typename: String? = null
+      var foo: String? = null
+      var asAsBar: TestQuery.Data.Foo.AsBar? = null
+      while(true) {
+        when (reader.selectName(RESPONSE_NAMES)) {
+          0 -> __typename = stringAdapter.fromResponse(reader)
+          1 -> foo = stringAdapter.fromResponse(reader)
+          else -> break
+        }
       }
+      if (__typename in arrayOf("FooBar")) {
+        reader.rewind()
+        asAsBar = AsBarAdapter.fromResponse(reader, __typename)
+      }
+
+      return TestQuery.Data.Foo(
+        __typename = __typename!!,
+        foo = foo!!,
+        asAsBar = asAsBar
+      )
       .also { reader.endObject() }
     }
 
     override fun toResponse(writer: JsonWriter, value: TestQuery.Data.Foo) {
-      when(value) {
-        is TestQuery.Data.Foo.BarFoo -> BarFooAdapter.toResponse(writer, value)
-        is TestQuery.Data.Foo.OtherFoo -> OtherFooAdapter.toResponse(writer, value)
-      }
+      writer.beginObject()
+      writer.name("__typename")
+      stringAdapter.toResponse(writer, value.__typename)
+
+      writer.name("foo")
+      stringAdapter.toResponse(writer, value.foo)
+      if (value.asAsBar != null) AsBarAdapter.toResponse(writer, value.asAsBar)
+      writer.endObject()
     }
 
-    class BarFoo(
+    companion object {
+      val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
+        ResponseField.Typename,
+        ResponseField(
+          type = ResponseField.Type.NotNull(ResponseField.Type.Named.Other("String")),
+          fieldName = "foo",
+        )
+      )
+
+      val RESPONSE_NAMES: List<String> = RESPONSE_FIELDS.map { it.responseName }
+    }
+
+    class AsBar(
       responseAdapterCache: ResponseAdapterCache
     ) {
       private val stringAdapter: ResponseAdapter<String> = StringResponseAdapter
 
-      fun fromResponse(reader: JsonReader, __typename: String?): TestQuery.Data.Foo.BarFoo {
+      fun fromResponse(reader: JsonReader, __typename: String?): TestQuery.Data.Foo.AsBar {
         var __typename: String? = __typename
         var foo: String? = null
         var bar: String? = null
@@ -109,14 +139,14 @@ class TestQuery_ResponseAdapter(
             else -> break
           }
         }
-        return TestQuery.Data.Foo.BarFoo(
+        return TestQuery.Data.Foo.AsBar(
           __typename = __typename!!,
           foo = foo!!,
           bar = bar!!
         )
       }
 
-      fun toResponse(writer: JsonWriter, value: TestQuery.Data.Foo.BarFoo) {
+      fun toResponse(writer: JsonWriter, value: TestQuery.Data.Foo.AsBar) {
         writer.beginObject()
         writer.name("__typename")
         stringAdapter.toResponse(writer, value.__typename)
@@ -137,49 +167,6 @@ class TestQuery_ResponseAdapter(
           ResponseField(
             type = ResponseField.Type.NotNull(ResponseField.Type.Named.Other("String")),
             fieldName = "bar",
-          )
-        )
-
-        val RESPONSE_NAMES: List<String> = RESPONSE_FIELDS.map { it.responseName }
-      }
-    }
-
-    class OtherFoo(
-      responseAdapterCache: ResponseAdapterCache
-    ) {
-      private val stringAdapter: ResponseAdapter<String> = StringResponseAdapter
-
-      fun fromResponse(reader: JsonReader, __typename: String?): TestQuery.Data.Foo.OtherFoo {
-        var __typename: String? = __typename
-        var foo: String? = null
-        while(true) {
-          when (reader.selectName(RESPONSE_NAMES)) {
-            0 -> __typename = stringAdapter.fromResponse(reader)
-            1 -> foo = stringAdapter.fromResponse(reader)
-            else -> break
-          }
-        }
-        return TestQuery.Data.Foo.OtherFoo(
-          __typename = __typename!!,
-          foo = foo!!
-        )
-      }
-
-      fun toResponse(writer: JsonWriter, value: TestQuery.Data.Foo.OtherFoo) {
-        writer.beginObject()
-        writer.name("__typename")
-        stringAdapter.toResponse(writer, value.__typename)
-        writer.name("foo")
-        stringAdapter.toResponse(writer, value.foo)
-        writer.endObject()
-      }
-
-      companion object {
-        val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
-          ResponseField.Typename,
-          ResponseField(
-            type = ResponseField.Type.NotNull(ResponseField.Type.Named.Other("String")),
-            fieldName = "foo",
           )
         )
 

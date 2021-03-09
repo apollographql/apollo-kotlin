@@ -31,6 +31,7 @@ internal class GraphQLCodeGenerator(
     private val typesPackageName: String,
     private val fragmentsPackageName: String,
     private val generateFragmentImplementations: Boolean,
+    private val generateFragmentsAsInterfaces: Boolean,
 ) {
   fun write(outputDir: File) {
 
@@ -40,7 +41,8 @@ internal class GraphQLCodeGenerator(
         customScalarsMapping = customScalarsMapping,
         operationOutput = operationOutput,
         typesPackageName = typesPackageName,
-        fragmentsPackage = fragmentsPackageName
+        fragmentsPackage = fragmentsPackageName,
+        generateFragmentsAsInterfaces = generateFragmentsAsInterfaces,
     )
 
     if (generateScalarMapping && ast.customScalarTypes.isNotEmpty()) {
@@ -77,14 +79,16 @@ internal class GraphQLCodeGenerator(
 
     ast.fragmentTypes
         .forEach { fragmentType ->
-          fragmentType
-              .interfaceTypeSpec(generateAsInternal)
-              .fileSpec(fragmentsPackageName)
-              .writeTo(outputDir)
-
-          if (generateFragmentImplementations) {
+          if (generateFragmentsAsInterfaces) {
             fragmentType
-                .implementationTypeSpec(generateAsInternal = generateAsInternal)
+                .interfaceTypeSpec(generateAsInternal)
+                .fileSpec(fragmentsPackageName)
+                .writeTo(outputDir)
+          }
+
+          if (generateFragmentImplementations || !generateFragmentsAsInterfaces) {
+            fragmentType
+                .implementationTypeSpec(generateAsInternal, generateFragmentsAsInterfaces)
                 .fileSpec(fragmentsPackageName)
                 .writeTo(outputDir)
 
@@ -93,7 +97,7 @@ internal class GraphQLCodeGenerator(
                 .writeTo(outputDir)
 
             fragmentType
-                .responseAdapterTypeSpec(generateAsInternal)
+                .responseAdapterTypeSpec(generateAsInternal, generateFragmentsAsInterfaces)
                 .fileSpec("${fragmentsPackageName}.adapter")
                 .writeTo(outputDir)
           }
@@ -103,7 +107,8 @@ internal class GraphQLCodeGenerator(
       operationType
           .typeSpec(
               targetPackage = operationType.packageName,
-              generateAsInternal = generateAsInternal
+              generateAsInternal = generateAsInternal,
+              generateFragmentsAsInterfaces = generateFragmentsAsInterfaces,
           )
           .let {
             if (generateFilterNotNull) {
@@ -116,7 +121,7 @@ internal class GraphQLCodeGenerator(
       operationType.variables.serializerTypeSpec(operationType.packageName, operationType.name, generateAsInternal)
           .fileSpec("${operationType.packageName}.adapter")
           .writeTo(outputDir)
-      operationType.responseAdapterTypeSpec(generateAsInternal)
+      operationType.responseAdapterTypeSpec(generateAsInternal, generateFragmentsAsInterfaces)
           .fileSpec("${operationType.packageName}.adapter")
           .writeTo(outputDir)
     }

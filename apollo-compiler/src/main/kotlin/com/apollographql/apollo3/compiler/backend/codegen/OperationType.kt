@@ -22,8 +22,16 @@ import com.squareup.kotlinpoet.TypeSpec
 import com.squareup.kotlinpoet.asClassName
 import com.squareup.kotlinpoet.asTypeName
 
-internal fun CodeGenerationAst.OperationType.typeSpec(targetPackage: String, generateAsInternal: Boolean = false): TypeSpec {
-  val operationResponseAdapter = CodeGenerationAst.TypeRef(name = name, packageName = targetPackage).asAdapterTypeName()
+internal fun CodeGenerationAst.OperationType.typeSpec(
+    targetPackage: String,
+    generateAsInternal: Boolean,
+    generateFragmentsAsInterfaces: Boolean,
+): TypeSpec {
+  val operationResponseAdapter = CodeGenerationAst.TypeRef(
+      name = name,
+      packageName = targetPackage,
+      isNamedFragmentDataRef = false,
+  ).asAdapterTypeName()
 
   return TypeSpec
       .classBuilder(kotlinNameForOperation(name))
@@ -69,7 +77,7 @@ internal fun CodeGenerationAst.OperationType.typeSpec(targetPackage: String, gen
               .addCode("return %L", responseFieldsCode())
               .build()
       )
-      .addType(this.dataType.typeSpec())
+      .addType(this.dataType.typeSpec(generateFragmentsAsInterfaces))
       .addType(TypeSpec.companionObjectBuilder()
           .addProperty(PropertySpec.builder("OPERATION_ID", String::class)
               .addModifiers(KModifier.CONST)
@@ -135,11 +143,15 @@ private fun CodeGenerationAst.OperationType.responseFieldsCode(): CodeBlock {
     is CodeGenerationAst.ObjectType.Kind.Object -> {
       builder.add("%T(null, %T.RESPONSE_FIELDS)\n", ResponseField.FieldSet::class, dataType.typeRef.asAdapterTypeName())
     }
-    is CodeGenerationAst.ObjectType.Kind.Fragment -> {
-      kind.possibleImplementations.forEach {
-        builder.add("%T(%S, %T.RESPONSE_FIELDS),\n", ResponseField.FieldSet::class, it.key, it.value.asAdapterTypeName())
+    is CodeGenerationAst.ObjectType.Kind.ObjectWithFragments -> {
+      kind.possibleImplementations.forEach { (possibleTypes, typeRef) ->
+        possibleTypes.forEach { possibleType ->
+          builder.add("%T(%S, %T.RESPONSE_FIELDS),\n", ResponseField.FieldSet::class, possibleType, typeRef.asAdapterTypeName())
+        }
       }
-      builder.add("%T(null, %T.RESPONSE_FIELDS),\n", ResponseField.FieldSet::class, kind.defaultImplementation.asAdapterTypeName())
+      if (kind.defaultImplementation != null) {
+        builder.add("%T(null, %T.RESPONSE_FIELDS),\n", ResponseField.FieldSet::class, kind.defaultImplementation.asAdapterTypeName())
+      }
     }
   }
   builder.unindent()

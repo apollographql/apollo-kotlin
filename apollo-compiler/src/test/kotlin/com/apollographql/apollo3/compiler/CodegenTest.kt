@@ -14,12 +14,21 @@ import kotlin.time.measureTime
 
 @RunWith(Parameterized::class)
 @OptIn(ExperimentalTime::class)
-class CodegenTest(private val folder: File) {
-  private class Measurement(val name: String, val codegenDuration: Duration, val compileDuration: Duration)
+class CodegenTest(private val folder: File, private val fragmentsCodegenMode: FragmentsCodegenMode) {
+  private class Measurement(
+      val name: String,
+      val fragmentsCodegenMode: FragmentsCodegenMode,
+      val totalLineOfCode: Int,
+      val codegenDuration: Duration,
+      val compileDuration: Duration,
+  )
 
   @Test
   fun generateExpectedClasses() {
-    val args = arguments(folder = folder)
+    val args = arguments(
+        folder = folder,
+        fragmentAsInterfaces = fragmentsCodegenMode == FragmentsCodegenMode.FragmentsAsInterfaces,
+    )
     generateExpectedClasses(args)
   }
 
@@ -31,7 +40,7 @@ class CodegenTest(private val folder: File) {
     }
 
     val expectedRoot = folder.parentFile.parentFile.parentFile
-    val expectedFiles = folder.walk().filter { it.isFile && it.extension == "expected" }
+    val expectedRelativeRoot = folder.relativeTo(expectedRoot)
 
     val actualRoot = args.outputDir
     val actualFiles = actualRoot.walk().filter {
@@ -39,9 +48,19 @@ class CodegenTest(private val folder: File) {
       it.isFile && it.name != "metadata"
     }
 
+    val expectedFiles = if (fragmentsCodegenMode == FragmentsCodegenMode.Default) {
+      folder.walk().filter { it.isFile && it.extension == "expected" }
+    } else {
+      folder.resolve(fragmentsCodegenMode.name.decapitalize()).walk().filter { it.isFile && it.extension == "expected" }
+    }
+
     expectedFiles.forEach { expected ->
-      val relativePath = expected.relativeTo(expectedRoot).path.removeSuffix(".expected")
-      val actual = File(actualRoot, relativePath)
+      val relativePath = if (fragmentsCodegenMode == FragmentsCodegenMode.Default) {
+        expected.relativeTo(folder).path.removeSuffix(".expected")
+      } else {
+        expected.relativeTo(folder.resolve(fragmentsCodegenMode.name.decapitalize())).path.removeSuffix(".expected")
+      }
+      val actual = actualRoot.resolve(expectedRelativeRoot).resolve(relativePath)
       if (!actual.exists()) {
         if (shouldUpdateTestFixtures()) {
           println("removing actual file: ${expected.absolutePath}")
@@ -53,9 +72,14 @@ class CodegenTest(private val folder: File) {
       }
       checkTestFixture(actual = actual, expected = expected)
     }
+
     actualFiles.forEach { actual ->
-      val relativePath = actual.relativeTo(actualRoot).path
-      val expected = File(expectedRoot, "$relativePath.expected")
+      val relativePath = actual.relativeTo(actualRoot).relativeTo(expectedRelativeRoot).path
+      val expected = if (fragmentsCodegenMode == FragmentsCodegenMode.Default) {
+        expectedRoot.resolve(expectedRelativeRoot).resolve("$relativePath.expected")
+      } else {
+        expectedRoot.resolve(expectedRelativeRoot).resolve(fragmentsCodegenMode.name.decapitalize()).resolve("$relativePath.expected")
+      }
       if (!expected.exists()) {
         if (shouldUpdateTestFixtures()) {
           println("adding expected file: ${actual.absolutePath} - ${actual.path}")
@@ -68,12 +92,29 @@ class CodegenTest(private val folder: File) {
       // no need to call checkTestFixture again, this has been taken care of
     }
 
+    val totalLineOfCode = if (shouldUpdateMeasurements()) {
+      expectedFiles.fold(0) { totalCount, file -> totalCount + file.readLines().size }
+    } else -1
+
     // And that they compile
     val expectedWarnings = folder.name in listOf("deprecation", "custom_scalar_type_warnings", "arguments_complex", "arguments_simple")
     val compileDuration = measureTime {
       KotlinCompiler.assertCompiles(actualFiles.toSet(), !expectedWarnings)
     }
-    measurements.add(Measurement(args.rootFolders.first().name.substringAfterLast("."), codegenDuration, compileDuration))
+
+    measurements.add(
+        Measurement(
+            name = args.rootFolders.first().name.substringAfterLast("."),
+            fragmentsCodegenMode = fragmentsCodegenMode,
+            totalLineOfCode = totalLineOfCode,
+            codegenDuration = codegenDuration,
+            compileDuration = compileDuration,
+        )
+    )
+  }
+
+  enum class FragmentsCodegenMode {
+    FragmentsAsInterfaces, FragmentsAsDataClasses, Default
   }
 
   companion object {
@@ -83,19 +124,32 @@ class CodegenTest(private val folder: File) {
     @JvmStatic
     fun dumpTimes() {
       if (shouldUpdateMeasurements()) {
-        File("src/test/graphql/com/example/measurements").writeText(
-            measurements
-                .sortedByDescending {
-                  it.codegenDuration
-                }
-                .map {
-                  String.format("%-50s %20s %20s", it.name, it.codegenDuration.toString(), it.compileDuration.toString())
-                }.joinToString("\n")
-        )
+        File("src/test/graphql/com/example/measurements").apply {
+          writeText(
+              String.format(
+                  "%-70s %20s %20s %20s\n",
+                  "Test:",
+                  "Total LOC:",
+                  "Codegen:",
+                  "Compilation:",
+              )
+          )
+          appendText(
+              measurements.joinToString("\n") { measurement ->
+                String.format(
+                    "%-70s %20s %20s %20s",
+                    "${measurement.name} (${measurement.fragmentsCodegenMode})",
+                    measurement.totalLineOfCode.toString(),
+                    measurement.codegenDuration.toString(),
+                    measurement.compileDuration.toString(),
+                )
+              }
+          )
+        }
       }
     }
 
-    fun arguments(folder: File): GraphQLCompiler.Arguments {
+    fun arguments(folder: File, fragmentAsInterfaces: Boolean): GraphQLCompiler.Arguments {
       val customScalarsMapping = if (folder.name in listOf(
               "custom_scalar_type",
               "input_object_type",
@@ -161,13 +215,15 @@ class CodegenTest(private val folder: File) {
           metadataOutputFile = File("build/generated/test/${folder.name}/metadata"),
           dumpIR = false,
           generateFragmentImplementations = generateFragmentImplementations,
+          generateFragmentsAsInterfaces = fragmentAsInterfaces,
       )
     }
 
     @JvmStatic
-    @Parameterized.Parameters(name = "{0}")
+    @Parameterized.Parameters(name = "{0} ({1})")
     fun data(): Collection<*> {
       val filterRegex = System.getProperty("codegenTests")?.takeIf { it.isNotEmpty() }?.trim()?.let { Regex(it) }
+      val fragmentsCodegenMode = System.getProperty("fragmentsCodegenMode")?.trim()?.let { FragmentsCodegenMode.valueOf(it) }
       return File("src/test/graphql/com/example/")
           .listFiles()!!
           .sortedBy {
@@ -180,6 +236,27 @@ class CodegenTest(private val folder: File) {
              * ./gradlew :apollo-compiler:test -DcodegenTests="fragments_with_type_condition" --tests '*Codegen*'
              */
             file.isDirectory && (filterRegex == null || filterRegex.matchEntire(file.name) != null)
+          }
+          .flatMap { file ->
+            val queryFile = checkNotNull(file.walk().find { it.extension == "graphql" })
+            val hasFragments = queryFile.readText().contains("fragment\\s\\w*\\son\\s\\w*".toRegex())
+            if (hasFragments) {
+              if (fragmentsCodegenMode == null) {
+                listOf(
+                    arrayOf(file, FragmentsCodegenMode.FragmentsAsInterfaces),
+                    arrayOf(file, FragmentsCodegenMode.FragmentsAsDataClasses)
+                )
+              } else {
+                listOf(
+                    arrayOf(file, fragmentsCodegenMode)
+                )
+              }
+            } else {
+              listOf(
+                  // when there are no fragments we don't really care what fragment codegen mode is
+                  arrayOf(file, FragmentsCodegenMode.Default),
+              )
+            }
           }
     }
   }

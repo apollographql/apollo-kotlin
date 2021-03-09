@@ -1,5 +1,6 @@
 package com.apollographql.apollo3.api.internal.json
 
+import com.apollographql.apollo3.api.internal.json.Utils.readRecursively
 import com.apollographql.apollo3.api.json.JsonReader
 
 /**
@@ -44,7 +45,6 @@ class MapJsonReader(val root: Map<String, Any?>) : JsonReader {
   }
 
   private var nameIndexStackSize = 1
-
 
   private fun push(data: Any) {
     dataStack.add(currentData)
@@ -105,7 +105,7 @@ class MapJsonReader(val root: Map<String, Any?>) : JsonReader {
     nameIndexStackSize--
   }
 
-  private fun anyToToken(any: Any?) = when(any) {
+  private fun anyToToken(any: Any?) = when (any) {
     null -> JsonReader.Token.NULL
     is List<*> -> JsonReader.Token.BEGIN_ARRAY
     is Map<*, *> -> JsonReader.Token.BEGIN_OBJECT
@@ -115,6 +115,7 @@ class MapJsonReader(val root: Map<String, Any?>) : JsonReader {
     is Boolean -> JsonReader.Token.BOOLEAN
     else -> error("")
   }
+
   override fun hasNext(): Boolean {
     return when (val data = currentData) {
       is List<*> -> {
@@ -236,5 +237,26 @@ class MapJsonReader(val root: Map<String, Any?>) : JsonReader {
       }
     }
     return -1
+  }
+
+  fun rewind() {
+    currentIndex = 0
+    currentName = null
+  }
+
+  companion object {
+
+    @Suppress("UNCHECKED_CAST")
+    fun JsonReader.buffer(): MapJsonReader {
+      if (this is MapJsonReader) return this
+
+      val token = this.peek()
+      check(token == JsonReader.Token.BEGIN_OBJECT) {
+        "Failed to buffer json reader, expected `BEGIN_OBJECT` but found `$token` json token"
+      }
+
+      val data = this.readRecursively() as Map<String, Any?>
+      return MapJsonReader(data)
+    }
   }
 }

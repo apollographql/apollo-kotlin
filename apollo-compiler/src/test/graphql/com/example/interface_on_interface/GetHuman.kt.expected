@@ -54,21 +54,14 @@ class GetHuman : Query<GetHuman.Data> {
       val height: Double
     )
 
-    interface Node {
-      val __typename: String
-
-      data class HumanNode(
-        override val __typename: String,
+    data class Node(
+      val __typename: String = "Node",
+      val asAsHuman: AsHuman?
+    ) {
+      data class AsHuman(
+        val __typename: String,
         val height: Double
-      ) : Node
-
-      data class OtherNode(
-        override val __typename: String
-      ) : Node
-
-      companion object {
-        fun Node.asHumanNode(): HumanNode? = this as? HumanNode
-      }
+      )
     }
   }
 

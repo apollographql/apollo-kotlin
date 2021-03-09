@@ -56,20 +56,22 @@ data class TestQuery(
     /**
      * A character from the Star Wars universe
      */
-    interface Hero {
-      val __typename: String
-
+    data class Hero(
+      val __typename: String = "Character",
       /**
        * The ID of the character
        */
-      val id: String
-
-      data class HumanCharacterHero(
-        override val __typename: String,
+      val id: String,
+      val asAsHuman: AsHuman?,
+      val asAsDroid: AsDroid?,
+      val asAsCharacter: AsCharacter?
+    ) {
+      data class AsHuman(
+        val __typename: String,
         /**
          * The ID of the character
          */
-        override val id: String,
+        val id: String,
         /**
          * What this human calls themselves
          */
@@ -78,14 +80,14 @@ data class TestQuery(
          * The home planet of the human, or null if unknown
          */
         val homePlanet: String?
-      ) : Hero
+      )
 
-      data class DroidCharacterHero(
-        override val __typename: String,
+      data class AsDroid(
+        val __typename: String,
         /**
          * The ID of the character
          */
-        override val id: String,
+        val id: String,
         /**
          * What others call this droid
          */
@@ -94,21 +96,19 @@ data class TestQuery(
          * This droid's primary function
          */
         val primaryFunction: String?
-      ) : Hero
+      )
 
-      data class OtherHero(
-        override val __typename: String,
+      data class AsCharacter(
+        val __typename: String,
         /**
          * The ID of the character
          */
-        override val id: String
-      ) : Hero
-
-      companion object {
-        fun Hero.asHumanCharacterHero(): HumanCharacterHero? = this as? HumanCharacterHero
-
-        fun Hero.asDroidCharacterHero(): DroidCharacterHero? = this as? DroidCharacterHero
-      }
+        val id: String,
+        /**
+         * The name of the character
+         */
+        val name: String
+      )
     }
   }
 

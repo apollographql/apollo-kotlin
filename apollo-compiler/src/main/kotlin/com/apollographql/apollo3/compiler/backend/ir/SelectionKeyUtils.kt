@@ -15,12 +15,7 @@ internal object SelectionKeyUtils {
         fields = this.fields.addFieldSelectionKey(selectionKey),
         fragments = this.fragments.copy(
             fragments = this.fragments.fragments
-                .addFragmentSelectionKey(selectionKey)
-                .map { fragment ->
-                  fragment.copy(
-                      selectionKeys = fragment.selectionKeys + selectionKey
-                  )
-                },
+                .addFragmentSelectionKey(selectionKey),
         ),
         selectionKeys = this.selectionKeys + selectionKey
     )

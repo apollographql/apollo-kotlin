@@ -10,58 +10,49 @@ import com.squareup.kotlinpoet.ParameterSpec
 import com.squareup.kotlinpoet.PropertySpec
 import com.squareup.kotlinpoet.TypeSpec
 
-internal fun CodeGenerationAst.ObjectType.typeSpec(): TypeSpec {
+internal fun CodeGenerationAst.ObjectType.typeSpec(generateFragmentsAsInterfaces: Boolean): TypeSpec {
   return if (kind is CodeGenerationAst.ObjectType.Kind.FragmentDelegate) {
     fragmentDelegateTypeSpec()
   } else {
-    objectTypeSpec()
+    objectTypeSpec(generateFragmentsAsInterfaces)
   }
 }
 
-private fun CodeGenerationAst.ObjectType.objectTypeSpec(): TypeSpec {
-  val builder = if (abstract)
+private fun CodeGenerationAst.ObjectType.objectTypeSpec(generateFragmentsAsInterfaces: Boolean): TypeSpec {
+  val builder = if (abstract) {
     TypeSpec.interfaceBuilder(name.escapeKotlinReservedWord())
-  else
+  } else {
     TypeSpec.classBuilder(name.escapeKotlinReservedWord())
+  }
+
+  val nestedTypes = this.nestedObjects.map { nestedObject ->
+    nestedObject.objectTypeSpec(generateFragmentsAsInterfaces)
+  }
+
+  val companionObject = if (this.fragmentAccessors.isNotEmpty() && generateFragmentsAsInterfaces) {
+    TypeSpec.companionObjectBuilder()
+        .addFunctions(
+            this@objectTypeSpec.fragmentAccessors.map { accessor ->
+              FunSpec
+                  .builder(accessor.name.escapeKotlinReservedWord())
+                  .receiver(typeRef.asTypeName())
+                  .returns(accessor.typeRef.asTypeName().copy(nullable = true))
+                  .addStatement("return this as? %T", accessor.typeRef.asTypeName())
+                  .build()
+
+            }
+        )
+        .build()
+  } else null
+
   return builder
       .addSuperinterfaces(implements.map { type -> type.asTypeName() })
       .applyIf(!abstract && this.fields.isNotEmpty()) { addModifiers(KModifier.DATA) }
       .apply { if (description.isNotBlank()) addKdoc("%L\n", description) }
-      .applyIf(!abstract) { primaryConstructor(primaryConstructorSpec) }
-      .addProperties(
-          fields
-              .filter {
-                it.type is CodeGenerationAst.FieldType.Object ||
-                    (it.type is CodeGenerationAst.FieldType.Array && it.type.leafType is CodeGenerationAst.FieldType.Object) ||
-                    !it.override ||
-                    !abstract
-              }.map { field ->
-                field.asPropertySpec(
-                    initializer = CodeBlock.of(field.name.escapeKotlinReservedWord()).takeUnless { abstract }
-                )
-              }
-      )
-      .addTypes(
-          this.nestedObjects
-              .map { nestedObject -> nestedObject.objectTypeSpec() }
-      )
-      .applyIf(this.fragmentAccessors.isNotEmpty()) {
-        addType(
-            TypeSpec.companionObjectBuilder()
-                .addFunctions(
-                    this@objectTypeSpec.fragmentAccessors.map { accessor ->
-                      FunSpec
-                          .builder(accessor.name.escapeKotlinReservedWord())
-                          .receiver(typeRef.asTypeName())
-                          .returns(accessor.typeRef.asTypeName().copy(nullable = true))
-                          .addStatement("return this as? %T", accessor.typeRef.asTypeName())
-                          .build()
-
-                    }
-                )
-                .build()
-        )
-      }
+      .applyIf(!abstract) { primaryConstructor(primaryConstructorSpec(generateFragmentsAsInterfaces)) }
+      .addProperties(propertySpecs(generateFragmentsAsInterfaces))
+      .addTypes(nestedTypes)
+      .apply { if (companionObject != null) addType(companionObject) }
       .build()
 }
 
@@ -89,24 +80,61 @@ private fun CodeGenerationAst.ObjectType.fragmentDelegateTypeSpec(): TypeSpec {
       .build()
 }
 
-private val CodeGenerationAst.ObjectType.primaryConstructorSpec: FunSpec
-  get() {
-    return FunSpec.constructorBuilder()
-        .addParameters(fields.map { field ->
-          ParameterSpec
-              .builder(
-                  name = field.name.escapeKotlinReservedWord(),
-                  type = field.type.asTypeName()
-              )
-              .apply {
-                if (field.responseName == "__typename" &&
-                    field.type is CodeGenerationAst.FieldType.Scalar.String &&
-                    this@primaryConstructorSpec.schemaTypename != null
-                ) {
-                  defaultValue("%S", this@primaryConstructorSpec.schemaTypename)
-                }
-              }
-              .build()
-        })
-        .build()
+private fun CodeGenerationAst.ObjectType.primaryConstructorSpec(fragmentAsInterfaces: Boolean): FunSpec {
+  val fieldParams = fields.map { field -> field.asParameterSpec(schemaTypename) }
+  val fragmentParams = if (this.kind is CodeGenerationAst.ObjectType.Kind.ObjectWithFragments && !fragmentAsInterfaces) {
+    this.kind.possibleImplementations.map { fragmentImplementation ->
+      val propertyName = fragmentImplementation.typeRef.fragmentVariableName()
+      ParameterSpec.builder(
+          name = propertyName,
+          type = fragmentImplementation.typeRef.asTypeName().copy(nullable = true)
+      ).build()
+    }
+  } else emptyList()
+  return FunSpec.constructorBuilder()
+      .addParameters(fieldParams + fragmentParams)
+      .build()
+}
+
+private fun CodeGenerationAst.Field.asParameterSpec(schemaTypenameDefaultValue: String?): ParameterSpec {
+  val defaultValue = schemaTypenameDefaultValue?.takeIf {
+    this.responseName == "__typename" && this.type is CodeGenerationAst.FieldType.Scalar.String
   }
+  return ParameterSpec
+      .builder(
+          name = this.name.escapeKotlinReservedWord(),
+          type = this.type.asTypeName()
+      )
+      .apply {
+        if (defaultValue != null) {
+          defaultValue("%S", defaultValue)
+        }
+      }
+      .build()
+}
+
+private fun CodeGenerationAst.ObjectType.propertySpecs(fragmentAsInterfaces: Boolean): List<PropertySpec> {
+  val fieldProps = fields
+      .filter {
+        it.type is CodeGenerationAst.FieldType.Object ||
+            (it.type is CodeGenerationAst.FieldType.Array && (it.type.leafType is CodeGenerationAst.FieldType.Object)) ||
+            !it.override ||
+            !abstract
+      }.map { field ->
+        field.asPropertySpec(
+            initializer = CodeBlock.of(field.name.escapeKotlinReservedWord()).takeUnless { abstract }
+        )
+      }
+  val fragmentProps = if (this.kind is CodeGenerationAst.ObjectType.Kind.ObjectWithFragments && !fragmentAsInterfaces) {
+    this.kind.possibleImplementations.map { fragmentImplementation ->
+      PropertySpec
+          .builder(
+              name = fragmentImplementation.typeRef.fragmentVariableName(),
+              type = fragmentImplementation.typeRef.asTypeName().copy(nullable = true)
+          )
+          .initializer(fragmentImplementation.typeRef.fragmentVariableName())
+          .build()
+    }
+  } else emptyList()
+  return fieldProps + fragmentProps
+}

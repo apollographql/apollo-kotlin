@@ -116,8 +116,11 @@ internal data class BackendIr(
       val description: String?,
       val type: Type,
   ) {
-    enum class Type {
-      Interface, Implementation, Fallback
+    sealed class Type {
+      object Interface : Type()
+      object Implementation : Type()
+      object Fallback : Type()
+      data class Delegate(val fragmentSelectionKey: SelectionKey) : Type()
     }
   }
 

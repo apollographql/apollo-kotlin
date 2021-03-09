@@ -43,77 +43,65 @@ class TestQuery : Query<TestQuery.Data> {
   }
 
   override fun responseFields(): List<ResponseField.FieldSet> = listOf(
-    ResponseField.FieldSet("Query", TestQuery_ResponseAdapter.QueryData.RESPONSE_FIELDS),
-    ResponseField.FieldSet(null, TestQuery_ResponseAdapter.OtherData.RESPONSE_FIELDS),
+    ResponseField.FieldSet("Query", TestQuery_ResponseAdapter.AsQuery.RESPONSE_FIELDS),
   )
   /**
    * The query type, represents all of the entry points into our object graph
    */
-  interface Data : Query.Data {
-    val __typename: String
-
-    data class QueryData(
-      override val __typename: String,
+  data class Data(
+    val __typename: String = "Query",
+    val asAsQuery: AsQuery?
+  ) : Query.Data {
+    data class AsQuery(
+      val __typename: String,
       val hero: Hero?,
       val droid: Droid?
-    ) : Data {
+    ) {
       /**
        * A character from the Star Wars universe
        */
-      interface Hero {
-        val __typename: String
-
+      data class Hero(
+        val __typename: String = "Character",
         /**
          * The name of the character
          */
-        val name: String
-
+        val name: String,
         /**
          * The movies this character appears in
          */
-        val appearsIn: List<Episode?>
+        val appearsIn: List<Episode?>,
+        val asAsHuman: AsHuman?
+      ) {
+        fun appearsInFilterNotNull(): List<Episode> = appearsIn.filterNotNull()
 
-        data class HumanHero(
-          override val __typename: String,
+        data class AsHuman(
+          val __typename: String,
           /**
            * The name of the character
            */
-          override val name: String,
+          val name: String,
           /**
            * The movies this character appears in
            */
-          override val appearsIn: List<Episode?>,
+          val appearsIn: List<Episode?>,
           /**
            * Height in the preferred unit, default is meters
            */
           val height: Double?
-        ) : Hero
-
-        data class OtherHero(
-          override val __typename: String,
-          /**
-           * The name of the character
-           */
-          override val name: String,
-          /**
-           * The movies this character appears in
-           */
-          override val appearsIn: List<Episode?>
-        ) : Hero
-
-        companion object {
-          fun Hero.asHumanHero(): HumanHero? = this as? HumanHero
+        ) {
+          fun appearsInFilterNotNull(): List<Episode> = appearsIn.filterNotNull()
         }
       }
 
       /**
        * An autonomous mechanical character in the Star Wars universe
        */
-      interface Droid {
-        val __typename: String
-
-        data class DroidDroid(
-          override val __typename: String,
+      data class Droid(
+        val __typename: String = "Droid",
+        val asAsDroid: AsDroid?
+      ) {
+        data class AsDroid(
+          val __typename: String,
           /**
            * What others call this droid
            */
@@ -122,24 +110,8 @@ class TestQuery : Query<TestQuery.Data> {
            * This droid's primary function
            */
           val primaryFunction: String?
-        ) : Droid
-
-        data class OtherDroid(
-          override val __typename: String
-        ) : Droid
-
-        companion object {
-          fun Droid.asDroidDroid(): DroidDroid? = this as? DroidDroid
-        }
+        )
       }
-    }
-
-    data class OtherData(
-      override val __typename: String
-    ) : Data
-
-    companion object {
-      fun Data.asQueryData(): QueryData? = this as? QueryData
     }
   }
 
