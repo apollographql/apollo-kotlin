@@ -2,6 +2,7 @@ package com.apollographql.apollo3.compiler.backend.ast
 
 import com.apollographql.apollo3.api.Operation
 import com.apollographql.apollo3.compiler.applyIf
+import com.apollographql.apollo3.compiler.backend.codegen.kotlinNameForVariable
 import com.apollographql.apollo3.compiler.backend.ir.BackendIr
 import com.apollographql.apollo3.compiler.backend.ir.SelectionKey
 import com.apollographql.apollo3.compiler.introspection.IntrospectionSchema
@@ -332,7 +333,7 @@ internal class AstBuilder private constructor(
         typesPackageName = typesPackageName,
     )
     return CodeGenerationAst.InputField(
-        name = name.toLowerCamelCase(),
+        name = kotlinNameForVariable(name),
         schemaName = name,
         deprecationReason = null,
         type = fieldType,

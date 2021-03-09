@@ -34,8 +34,8 @@ class HeroDetailsImpl_Adapter(
       writer.name("friendsCount")
       nullableIntAdapter.toResponse(writer, value.friendsCount.value)
     }
-    writer.name("includeName")
-    booleanAdapter.toResponse(writer, value.includeName)
+    writer.name("IncludeName")
+    booleanAdapter.toResponse(writer, value.IncludeName)
     writer.endObject()
   }
 }
