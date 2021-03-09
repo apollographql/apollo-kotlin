@@ -21,7 +21,8 @@ internal fun kotlinNameForTypeCaseAdapterField(typeRef: CodeGenerationAst.TypeRe
 }
 internal fun kotlinNameForInputObjectType(name: String) = capitalizedIdentifier(name)
 internal fun kotlinNameForSerializer(operationName: String) = kotlinNameForOperation(operationName) + "_Adapter"
-internal fun kotlinNameForVariable(variableName: String) = decapitalizedIdentifier(variableName)
+// variables keep the same case as their declared name
+internal fun kotlinNameForVariable(variableName: String) = variableName.escapeKotlinReservedWord()
 
 private fun decapitalizedIdentifier(name: String) = name.decapitalize().escapeKotlinReservedWord()
 private fun capitalizedIdentifier(name: String) = name.capitalize().escapeKotlinReservedWord()

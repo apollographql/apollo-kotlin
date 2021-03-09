@@ -101,11 +101,11 @@ internal fun List<CodeGenerationAst.InputField>.serializerTypeSpec(
         forEach {
           if (!it.isRequired) {
             beginControlFlow("if (value.%L is %T)", kotlinNameForVariable(it.name), Input.Present::class)
-            addStatement("writer.name(%S)", it.name)
+            addStatement("writer.name(%S)", it.schemaName)
             addStatement("%L.toResponse(writer, value.%L.value)", kotlinNameForAdapterField(it.type), kotlinNameForVariable(it.name))
             endControlFlow()
           } else {
-            addStatement("writer.name(%S)", it.name)
+            addStatement("writer.name(%S)", it.schemaName)
             addStatement("%L.toResponse(writer, value.%L)", kotlinNameForAdapterField(it.type), kotlinNameForVariable(it.name))
           }
         }

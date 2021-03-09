@@ -20,7 +20,7 @@ import kotlin.collections.List
 
 data class HeroDetailsImpl(
   val friendsCount: Input<Int?> = Input.Absent,
-  val includeName: Boolean
+  val IncludeName: Boolean
 ) : Fragment<HeroDetailsImpl.Data> {
   override fun adapter(responseAdapterCache: ResponseAdapterCache): ResponseAdapter<Data> {
     val adapter = responseAdapterCache.getAdapterFor(this::class) {

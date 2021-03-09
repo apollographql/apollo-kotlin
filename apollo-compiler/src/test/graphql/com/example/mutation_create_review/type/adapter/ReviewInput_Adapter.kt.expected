@@ -161,11 +161,11 @@ internal class ReviewInput_Adapter(
       nullableListOfListOfColorInputAdapter.toResponse(writer, value.listOfListOfObject.value)
     }
     if (value.capitalizedField is Input.Present) {
-      writer.name("capitalizedField")
+      writer.name("CapitalizedField")
       nullableStringAdapter.toResponse(writer, value.capitalizedField.value)
     }
     if (value.capitalizedInt is Input.Present) {
-      writer.name("capitalizedInt")
+      writer.name("CapitalizedInt")
       nullableIntAdapter.toResponse(writer, value.capitalizedInt.value)
     }
     writer.endObject()

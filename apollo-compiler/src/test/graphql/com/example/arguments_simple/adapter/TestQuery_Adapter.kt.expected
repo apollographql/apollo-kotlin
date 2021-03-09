@@ -45,8 +45,8 @@ class TestQuery_Adapter(
       writer.name("episode")
       nullableEpisodeAdapter.toResponse(writer, value.episode.value)
     }
-    writer.name("includeName")
-    booleanAdapter.toResponse(writer, value.includeName)
+    writer.name("IncludeName")
+    booleanAdapter.toResponse(writer, value.IncludeName)
     writer.name("friendsCount")
     intAdapter.toResponse(writer, value.friendsCount)
     writer.name("listOfListOfStringArgs")
