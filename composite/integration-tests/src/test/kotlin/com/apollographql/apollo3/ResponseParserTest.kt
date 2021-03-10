@@ -117,7 +117,7 @@ class ResponseParserTest {
   private fun <T> ResponseAdapter<T>.toJsonString(t: T): String {
     val buffer = Buffer()
     BufferedSinkJsonWriter(buffer).use {
-      toResponse(it, t)
+      toResponse(it, ResponseAdapterCache.DEFAULT, t)
     }
     return buffer.readUtf8()
   }
@@ -127,11 +127,11 @@ class ResponseParserTest {
   fun allFilmsWithDate() {
     val dateCustomScalarAdapter = object : ResponseAdapter<Date> {
       private val DATE_FORMAT = SimpleDateFormat("yyyy-MM-dd", Locale.US)
-      override fun fromResponse(reader: JsonReader): Date {
+      override fun fromResponse(reader: JsonReader, responseAdapterCache: ResponseAdapterCache): Date {
         return  DATE_FORMAT.parse(reader.nextString())
       }
 
-      override fun toResponse(writer: JsonWriter, value: Date) {
+      override fun toResponse(writer: JsonWriter, responseAdapterCache: ResponseAdapterCache, value: Date) {
         writer.value(DATE_FORMAT.format(value))
       }
     }

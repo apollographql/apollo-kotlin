@@ -98,16 +98,16 @@ class MetadataTest {
 
     // Leaf contains Encoding and other used types (.*0) but not .*1
     leafSourcesDir.assertContents(
-        "MessageInput0.kt",
-        "MessageInput0_Adapter.kt",
-        "SendMessageMutation.kt",
-        "SendMessageMutation_Adapter.kt",
-        "Encoding.kt",
         "Body0.kt",
-        "Body0_VariablesAdapter.kt",
-        "User0.kt",
-        "User0_VariablesAdapter.kt",
+        "Body0_InputAdapter.kt",
+        "Encoding.kt",
+        "MessageInput0.kt",
+        "MessageInput0_InputAdapter.kt",
+        "SendMessageMutation.kt",
         "SendMessageMutation_ResponseAdapter.kt",
+        "SendMessageMutation_VariablesAdapter.kt",
+        "User0.kt",
+        "User0_InputAdapter.kt"
     )
   }
 
