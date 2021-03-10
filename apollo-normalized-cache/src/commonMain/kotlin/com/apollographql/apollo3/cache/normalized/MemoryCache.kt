@@ -126,7 +126,7 @@ class MemoryCache(
 class MemoryCacheFactory(
     private val maxSizeBytes: Int,
     private val expireAfterMillis: Long = -1,
-) : NormalizedCacheFactory<MemoryCache>() {
+) : NormalizedCacheFactory() {
 
   override fun create(): MemoryCache {
     return MemoryCache(

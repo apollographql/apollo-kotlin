@@ -7,7 +7,7 @@ import java.util.Properties
 
 actual class SqlNormalizedCacheFactory internal actual constructor(
     driver: SqlDriver
-) : NormalizedCacheFactory<SqlNormalizedCache>() {
+) : NormalizedCacheFactory() {
 
   @JvmOverloads
   constructor(

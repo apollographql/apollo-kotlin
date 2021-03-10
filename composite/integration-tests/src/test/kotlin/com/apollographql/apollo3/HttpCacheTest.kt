@@ -17,6 +17,7 @@ import com.apollographql.apollo3.cache.http.ApolloHttpCache
 import com.apollographql.apollo3.cache.http.DiskLruHttpCacheStore
 import com.apollographql.apollo3.cache.http.internal.FileSystem
 import com.apollographql.apollo3.coroutines.await
+import com.apollographql.apollo3.coroutines.toDeferred
 import com.apollographql.apollo3.exception.ApolloException
 import com.apollographql.apollo3.exception.ApolloHttpException
 import com.apollographql.apollo3.integration.httpcache.AllFilmsQuery
@@ -169,12 +170,13 @@ class HttpCacheTest {
 
   @Test
   @Throws(Exception::class)
-  fun networkOnly() {
+  fun networkOnly() = runBlocking {
     enqueueResponse("/HttpCacheTestAllPlanets.json")
-    Rx2Apollo.from(apolloClient
-        .query(AllPlanetsQuery()).httpCachePolicy(HttpCachePolicy.NETWORK_ONLY))
-        .test()
-        .assertValue { response -> !response.hasErrors() }
+    apolloClient.query(AllPlanetsQuery())
+        .httpCachePolicy(HttpCachePolicy.NETWORK_ONLY)
+        .toDeferred()
+        .await()
+
     Truth.assertThat(server.requestCount).isEqualTo(1)
     Truth.assertThat(lastHttResponse!!.networkResponse()).isNotNull()
     Truth.assertThat(lastHttResponse!!.cacheResponse()).isNull()

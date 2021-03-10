@@ -6,7 +6,7 @@ import com.squareup.sqldelight.drivers.native.NativeSqliteDriver
 
 actual class SqlNormalizedCacheFactory internal actual constructor(
     driver: SqlDriver
-) : NormalizedCacheFactory<SqlNormalizedCache>() {
+) : NormalizedCacheFactory() {
 
   constructor() : this("apollo.db")
 

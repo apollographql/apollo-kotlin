@@ -68,7 +68,7 @@ class SubscriptionNormalizedCacheTest {
         expectedContent = "Network comment content"
     )
 
-    val cacheDump = apolloClient.apolloStore.normalizedCache().dump()
+    val cacheDump = apolloClient.apolloStore.dump()
     assertThat(NormalizedCache.prettifyDump(cacheDump)).isEqualTo("""
       OptimisticCache {}
       MemoryCache {}
@@ -104,7 +104,7 @@ class SubscriptionNormalizedCacheTest {
         expectedContent = "Network comment content"
     )
 
-    val cacheDump = apolloClient.apolloStore.normalizedCache().dump()
+    val cacheDump = apolloClient.apolloStore.dump()
     assertThat(NormalizedCache.prettifyDump(cacheDump)).isEqualTo("""
       OptimisticCache {}
       MemoryCache {
@@ -157,7 +157,7 @@ class SubscriptionNormalizedCacheTest {
         expectedContent = "Network comment content"
     )
 
-    val cacheDump = apolloClient.apolloStore.normalizedCache().dump()
+    val cacheDump = apolloClient.apolloStore.dump()
     assertThat(NormalizedCache.prettifyDump(cacheDump)).isEqualTo("""
       OptimisticCache {}
       MemoryCache {

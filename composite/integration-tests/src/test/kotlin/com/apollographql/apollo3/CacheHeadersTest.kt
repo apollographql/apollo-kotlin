@@ -62,7 +62,7 @@ class CacheHeadersTest {
         return emptyMap()
       }
     }
-    val cacheFactory: NormalizedCacheFactory<NormalizedCache> = object : NormalizedCacheFactory<NormalizedCache>() {
+    val cacheFactory: NormalizedCacheFactory = object : NormalizedCacheFactory() {
       override fun create(): NormalizedCache {
         return normalizedCache
       }
@@ -116,7 +116,7 @@ class CacheHeadersTest {
         return emptyMap()
       }
     }
-    val cacheFactory: NormalizedCacheFactory<NormalizedCache> = object : NormalizedCacheFactory<NormalizedCache>() {
+    val cacheFactory: NormalizedCacheFactory = object : NormalizedCacheFactory() {
       override fun create(): NormalizedCache {
         return normalizedCache
       }

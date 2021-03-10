@@ -612,7 +612,7 @@ class NormalizedCacheTestCase {
             .responseFetcher(ApolloResponseFetchers.NETWORK_ONLY)
     ) { response -> !response.hasErrors() }
 
-    val dump = apolloClient.apolloStore.normalizedCache().dump()
+    val dump = apolloClient.apolloStore.dump()
     assertThat(prettifyDump(dump)).isEqualTo(
         """
           OptimisticCache {}
@@ -707,7 +707,7 @@ class NormalizedCacheTestCase {
       assertThat(response.isFromCache).isTrue()
       assertThat(response.data).isNull()
     }
-    assertThat(prettifyDump(apolloClient.apolloStore.normalizedCache().dump())).isEqualTo("""OptimisticCache {}
+    assertThat(prettifyDump(apolloClient.apolloStore.dump())).isEqualTo("""OptimisticCache {}
 MemoryCache {
   "QUERY_ROOT" : {
     "hero({"episode":"NEWHOPE"})" : CacheRecordRef(2001)

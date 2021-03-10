@@ -2,6 +2,7 @@ package com.apollographql.apollo3
 
 import com.apollographql.apollo3.ApolloCall.Callback
 import com.apollographql.apollo3.Utils.receiveOrTimeout
+import com.apollographql.apollo3.api.ApolloInternal
 import com.apollographql.apollo3.api.Input
 import com.apollographql.apollo3.api.Logger
 import com.apollographql.apollo3.api.ApolloResponse
@@ -92,6 +93,7 @@ class ApolloWatcherTest {
     assertThat(heroNameList.size).isEqualTo(2)
   }
 
+  @ApolloInternal
   @Test
   @Throws(IOException::class, InterruptedException::class, TimeoutException::class, ApolloException::class)
   fun testQueryWatcherUpdated_Store_write() = runBlocking {
@@ -110,13 +112,11 @@ class ApolloWatcherTest {
     assertThat(channel.receiveOrTimeout()?.hero?.name).isEqualTo("R2-D2")
 
     // Someone writes to the store directly
-    val changedKeys: Set<String> = (apolloClient.apolloStore as RealApolloStore).writeTransaction {
-        val record: Record = Record(
-            key = "2001",
-            fields = mapOf("name" to "Artoo")
-        )
-        it.merge(listOf(record), CacheHeaders.NONE)
-    }
+    val record = Record(
+        key = "2001",
+        fields = mapOf("name" to "Artoo")
+    )
+    val changedKeys = (apolloClient.apolloStore as RealApolloStore).merge(record, CacheHeaders.NONE)
 
     apolloClient.apolloStore.publish(changedKeys)
     assertThat(channel.receiveOrTimeout()?.hero?.name).isEqualTo("Artoo")

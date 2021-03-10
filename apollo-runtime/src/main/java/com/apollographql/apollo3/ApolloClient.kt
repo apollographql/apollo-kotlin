@@ -2,18 +2,16 @@ package com.apollographql.apollo3
 
 import com.apollographql.apollo3.ApolloClient.Builder
 import com.apollographql.apollo3.api.CustomScalar
-import com.apollographql.apollo3.api.CustomScalarAdapter
+import com.apollographql.apollo3.api.Logger
 import com.apollographql.apollo3.api.Mutation
 import com.apollographql.apollo3.api.Operation
 import com.apollographql.apollo3.api.Query
+import com.apollographql.apollo3.api.ResponseAdapter
 import com.apollographql.apollo3.api.ResponseAdapterCache
 import com.apollographql.apollo3.api.Subscription
 import com.apollographql.apollo3.api.cache.http.HttpCache
 import com.apollographql.apollo3.api.cache.http.HttpCachePolicy
 import com.apollographql.apollo3.api.internal.ApolloLogger
-import com.apollographql.apollo3.api.Logger
-import com.apollographql.apollo3.api.ResponseAdapter
-import com.apollographql.apollo3.api.internal.Optional
 import com.apollographql.apollo3.api.internal.Optional.Companion.absent
 import com.apollographql.apollo3.api.internal.Optional.Companion.fromNullable
 import com.apollographql.apollo3.api.internal.Optional.Companion.of
@@ -46,7 +44,6 @@ import okhttp3.Response
 import java.io.IOException
 import java.util.ArrayList
 import java.util.Collections
-import java.util.LinkedHashMap
 import java.util.concurrent.Executor
 import java.util.concurrent.SynchronousQueue
 import java.util.concurrent.ThreadPoolExecutor
@@ -84,7 +81,7 @@ class ApolloClient internal constructor(
     /**
      * @return The [ResponseAdapterCache] scalarTypeAdapters
      */
-    val scalarTypeAdapters: ResponseAdapterCache,
+    val responseAdapterCache: ResponseAdapterCache,
     private val dispatcher: Executor?,
     private val defaultHttpCachePolicy: HttpCachePolicy.Policy,
     private val defaultResponseFetcher: ResponseFetcher,
@@ -131,14 +128,21 @@ class ApolloClient internal constructor(
 
   override fun <D : Operation.Data> prefetch(
       operation: Operation<D>): ApolloPrefetch {
-    return RealApolloPrefetch(operation, serverUrl!!, httpCallFactory!!, scalarTypeAdapters, dispatcher!!, logger,
+    return RealApolloPrefetch(operation, serverUrl!!, httpCallFactory!!, responseAdapterCache, dispatcher!!, logger,
         tracker)
   }
 
   override fun <D : Subscription.Data> subscribe(
       subscription: Subscription<D>): ApolloSubscriptionCall<D> {
-    return RealApolloSubscriptionCall(subscription, subscriptionManager, apolloStore, ApolloSubscriptionCall.CachePolicy.NO_CACHE,
-        dispatcher!!, logger)
+    return RealApolloSubscriptionCall(
+        subscription,
+        subscriptionManager,
+        apolloStore,
+        ApolloSubscriptionCall.CachePolicy.NO_CACHE,
+        dispatcher!!,
+        logger,
+        responseAdapterCache
+    )
   }
 
   /**
@@ -237,7 +241,7 @@ class ApolloClient internal constructor(
         .httpCallFactory(httpCallFactory)
         .httpCache(httpCache)
         .httpCachePolicy(defaultHttpCachePolicy)
-        .scalarTypeAdapters(scalarTypeAdapters)
+        .scalarTypeAdapters(responseAdapterCache)
         .apolloStore(apolloStore)
         .responseFetcher(defaultResponseFetcher)
         .cacheHeaders(defaultCacheHeaders)
@@ -261,7 +265,7 @@ class ApolloClient internal constructor(
     var serverUrl: HttpUrl? = null
     var httpCache: HttpCache? = null
     var apolloStore: ApolloStore = ApolloStore.emptyApolloStore
-    var cacheFactory = absent<NormalizedCacheFactory<*>>()
+    var cacheFactory = absent<NormalizedCacheFactory>()
     var cacheKeyResolver = absent<CacheKeyResolver>()
     var defaultHttpCachePolicy = HttpCachePolicy.NETWORK_ONLY
     var defaultResponseFetcher = ApolloResponseFetchers.CACHE_FIRST
@@ -292,7 +296,7 @@ class ApolloClient internal constructor(
       defaultHttpCachePolicy = apolloClient.defaultHttpCachePolicy
       defaultResponseFetcher = apolloClient.defaultResponseFetcher
       defaultCacheHeaders = apolloClient.defaultCacheHeaders
-      customScalarAdapters.putAll(apolloClient.scalarTypeAdapters.customScalarResponseAdapters)
+      customScalarAdapters.putAll(apolloClient.responseAdapterCache.customScalarResponseAdapters)
       dispatcher = apolloClient.dispatcher
       logger = apolloClient.logger.logger
       applicationInterceptors.addAll(apolloClient.applicationInterceptors)
@@ -384,10 +388,10 @@ class ApolloClient internal constructor(
      * @return The [Builder] object to be used for chaining method calls
      */
     @JvmOverloads
-    fun normalizedCache(normalizedCacheFactory: NormalizedCacheFactory<*>,
+    fun normalizedCache(normalizedCacheFactory: NormalizedCacheFactory,
                         keyResolver: CacheKeyResolver = CacheKeyResolver.DEFAULT, writeToCacheAsynchronously: Boolean = false): Builder {
-      cacheFactory = Optional.fromNullable(normalizedCacheFactory)
-      cacheKeyResolver = Optional.fromNullable((keyResolver))
+      cacheFactory = fromNullable(normalizedCacheFactory)
+      cacheKeyResolver = fromNullable((keyResolver))
       writeToNormalizedCacheAsynchronously = writeToCacheAsynchronously
       return this
     }
@@ -628,8 +632,7 @@ class ApolloClient internal constructor(
       val cacheFactory = cacheFactory
       val cacheKeyResolver = cacheKeyResolver
       if (cacheFactory.isPresent && cacheKeyResolver.isPresent) {
-        val normalizedCache = cacheFactory.get().createChain()
-        apolloStore = RealApolloStore(normalizedCache, cacheKeyResolver.get(), customScalarAdapters, apolloLogger)
+        apolloStore = RealApolloStore(cacheFactory.get(), cacheKeyResolver.get(), apolloLogger)
       }
       var subscriptionManager = subscriptionManager
       val subscriptionTransportFactory = subscriptionTransportFactory

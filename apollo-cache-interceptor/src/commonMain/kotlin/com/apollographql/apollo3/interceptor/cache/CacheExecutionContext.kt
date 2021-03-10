@@ -8,6 +8,10 @@ import com.apollographql.apollo3.cache.normalized.NormalizedCache
 import com.apollographql.apollo3.ApolloRequest
 import com.apollographql.apollo3.api.RequestContext
 import com.apollographql.apollo3.api.ResponseContext
+import com.apollographql.apollo3.cache.normalized.ApolloStore
+import com.apollographql.apollo3.cache.normalized.CacheKeyResolver
+import com.apollographql.apollo3.cache.normalized.NormalizedCacheFactory
+import com.apollographql.apollo3.cache.normalized.internal.RealApolloStore
 
 sealed class FetchPolicy : RequestContext(Key) {
   /**
@@ -59,6 +63,9 @@ data class CacheInfo(
 val <D : Operation.Data> ApolloResponse<D>.isFromCache
   get() = executionContext[CacheInfo]?.isFromCache ?: false
 
-fun ApolloClient.Builder.normalizedCache(normalizedCache: NormalizedCache): ApolloClient.Builder {
-  return addInterceptor(ApolloCacheInterceptor(), ApolloStore(normalizedCache))
+fun ApolloClient.Builder.normalizedCache(store: ApolloStore): ApolloClient.Builder {
+  return addInterceptor(
+      ApolloCacheInterceptor(),
+      store
+  )
 }

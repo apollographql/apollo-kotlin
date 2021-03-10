@@ -75,7 +75,11 @@ class OptimisticCacheTestCase {
             )
         )
     ))
-    apolloClient!!.apolloStore.writeOptimisticUpdates(query, data, mutationId, true)
+    apolloClient!!.apolloStore.writeOptimisticUpdates(
+        operation = query,
+        operationData = data,
+        mutationId = mutationId,
+        publish = true)
     assertResponse(
         apolloClient!!.query(query).responseFetcher(ApolloResponseFetchers.CACHE_ONLY)
     ) { 
@@ -126,7 +130,11 @@ class OptimisticCacheTestCase {
             )
         )
     )
-    apolloClient!!.apolloStore.writeOptimisticUpdates(query1, data1, mutationId1, true)
+    apolloClient!!.apolloStore.writeOptimisticUpdates(
+        operation = query1,
+        operationData= data1,
+        mutationId = mutationId1,
+        publish = true)
 
     // check if query1 see optimistic updates
     assertResponse(
@@ -157,7 +165,11 @@ class OptimisticCacheTestCase {
         "1000",
         "Beast"
     ))
-    apolloClient!!.apolloStore.writeOptimisticUpdates(query2, data2, mutationId2, true)
+    apolloClient!!.apolloStore.writeOptimisticUpdates(
+        operation = query2,
+        operationData = data2,
+        mutationId = mutationId2,
+        publish = true)
 
     // check if query1 sees data2
     assertResponse(
@@ -228,10 +240,10 @@ class OptimisticCacheTestCase {
     ) { response -> !response.hasErrors() }
     val mutationId = UUID.randomUUID()
     apolloClient!!.apolloStore.writeOptimisticUpdates(
-        HeroNameQuery(),
-        HeroNameQuery.Data(HeroNameQuery.Data.Hero("R22-D22")),
-        mutationId,
-        false
+        operation = HeroNameQuery(),
+        operationData = HeroNameQuery.Data(HeroNameQuery.Data.Hero("R22-D22")),
+        mutationId = mutationId,
+        publish = false
     )
     assertResponse(
         apolloClient!!.query(HeroNameWithEnumsQuery()).responseFetcher(ApolloResponseFetchers.CACHE_ONLY)
@@ -361,12 +373,20 @@ class OptimisticCacheTestCase {
             )
         )
     )
-    apolloClient!!.apolloStore.writeOptimisticUpdates(query1, data1, mutationId1, true)
+    apolloClient!!.apolloStore.writeOptimisticUpdates(
+        operation = query1,
+        operationData = data1,
+        mutationId = mutationId1,
+        publish = true)
     val data2 = HeroNameWithIdQuery.Data(HeroNameWithIdQuery.Data.Hero(
         "1000",
         "Spiderman"
     ))
-    apolloClient!!.apolloStore.writeOptimisticUpdates(query2, data2, mutationId2, true)
+    apolloClient!!.apolloStore.writeOptimisticUpdates(
+        operation = query2,
+        operationData = data2,
+        mutationId = mutationId2,
+        publish = true)
 
     // check if query1 see optimistic updates
     assertResponse(
