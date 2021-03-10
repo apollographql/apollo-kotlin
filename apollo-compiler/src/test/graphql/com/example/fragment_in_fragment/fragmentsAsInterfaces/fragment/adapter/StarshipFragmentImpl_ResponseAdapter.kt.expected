@@ -175,8 +175,8 @@ object StarshipFragmentImpl_ResponseAdapter : ResponseAdapter<StarshipFragmentIm
           check(reader.nextName() == "__typename")
           val typename = reader.nextString()
           return when(typename) {
-            "Person" -> PersonNodeAdapter.fromResponse(reader, typename)
-            else -> OtherNodeAdapter.fromResponse(reader, typename)
+            "Person" -> PersonNode.fromResponse(reader, responseAdapterCache, typename)
+            else -> OtherNode.fromResponse(reader, responseAdapterCache, typename)
           }
           .also { reader.endObject() }
         }
@@ -188,7 +188,7 @@ object StarshipFragmentImpl_ResponseAdapter : ResponseAdapter<StarshipFragmentIm
         ) {
           when(value) {
             is StarshipFragmentImpl.Data.PilotConnection.Edges.Node.PersonNode -> PersonNode.toResponse(writer, responseAdapterCache, value)
-            is StarshipFragmentImpl.Data.PilotConnection.Edges.Node.OtherNode -> OtherNodeAdapter.toResponse(writer, responseAdapterCache, value)
+            is StarshipFragmentImpl.Data.PilotConnection.Edges.Node.OtherNode -> OtherNode.toResponse(writer, responseAdapterCache, value)
           }
         }
 
@@ -259,8 +259,8 @@ object StarshipFragmentImpl_ResponseAdapter : ResponseAdapter<StarshipFragmentIm
               check(reader.nextName() == "__typename")
               val typename = reader.nextString()
               return when(typename) {
-                "Planet" -> PlanetHomeworldAdapter.fromResponse(reader, typename)
-                else -> OtherHomeworldAdapter.fromResponse(reader, typename)
+                "Planet" -> PlanetHomeworld.fromResponse(reader, responseAdapterCache, typename)
+                else -> OtherHomeworld.fromResponse(reader, responseAdapterCache, typename)
               }
               .also { reader.endObject() }
             }
@@ -272,7 +272,7 @@ object StarshipFragmentImpl_ResponseAdapter : ResponseAdapter<StarshipFragmentIm
             ) {
               when(value) {
                 is StarshipFragmentImpl.Data.PilotConnection.Edges.Node.PersonNode.Homeworld.PlanetHomeworld -> PlanetHomeworld.toResponse(writer, responseAdapterCache, value)
-                is StarshipFragmentImpl.Data.PilotConnection.Edges.Node.PersonNode.Homeworld.OtherHomeworld -> OtherHomeworldAdapter.toResponse(writer, responseAdapterCache, value)
+                is StarshipFragmentImpl.Data.PilotConnection.Edges.Node.PersonNode.Homeworld.OtherHomeworld -> OtherHomeworld.toResponse(writer, responseAdapterCache, value)
               }
             }
 

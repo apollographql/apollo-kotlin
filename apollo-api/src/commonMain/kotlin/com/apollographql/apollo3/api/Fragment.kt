@@ -11,7 +11,7 @@ interface Fragment<D: Fragment.Data> {
    */
   fun serializeVariables(jsonWriter: JsonWriter, responseAdapterCache: ResponseAdapterCache)
 
-  fun adapter(responseAdapterCache: ResponseAdapterCache): ResponseAdapter<D>
+  fun adapter(): ResponseAdapter<D>
 
   fun responseFields(): List<ResponseField.FieldSet>
 

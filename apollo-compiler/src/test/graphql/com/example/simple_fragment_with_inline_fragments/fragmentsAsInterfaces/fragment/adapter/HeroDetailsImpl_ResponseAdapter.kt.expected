@@ -90,9 +90,9 @@ object HeroDetailsImpl_ResponseAdapter : ResponseAdapter<HeroDetailsImpl.Data> {
       check(reader.nextName() == "__typename")
       val typename = reader.nextString()
       return when(typename) {
-        "Human" -> HumanFriendsAdapter.fromResponse(reader, typename)
-        "Droid" -> DroidFriendsAdapter.fromResponse(reader, typename)
-        else -> OtherFriendsAdapter.fromResponse(reader, typename)
+        "Human" -> HumanFriends.fromResponse(reader, responseAdapterCache, typename)
+        "Droid" -> DroidFriends.fromResponse(reader, responseAdapterCache, typename)
+        else -> OtherFriends.fromResponse(reader, responseAdapterCache, typename)
       }
       .also { reader.endObject() }
     }
@@ -105,7 +105,7 @@ object HeroDetailsImpl_ResponseAdapter : ResponseAdapter<HeroDetailsImpl.Data> {
       when(value) {
         is HeroDetailsImpl.Data.Friends.HumanFriends -> HumanFriends.toResponse(writer, responseAdapterCache, value)
         is HeroDetailsImpl.Data.Friends.DroidFriends -> DroidFriends.toResponse(writer, responseAdapterCache, value)
-        is HeroDetailsImpl.Data.Friends.OtherFriends -> OtherFriendsAdapter.toResponse(writer, responseAdapterCache, value)
+        is HeroDetailsImpl.Data.Friends.OtherFriends -> OtherFriends.toResponse(writer, responseAdapterCache, value)
       }
     }
 

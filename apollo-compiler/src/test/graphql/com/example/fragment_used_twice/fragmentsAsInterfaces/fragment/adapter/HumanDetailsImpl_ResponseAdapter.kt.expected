@@ -29,8 +29,8 @@ object HumanDetailsImpl_ResponseAdapter : ResponseAdapter<HumanDetailsImpl.Data>
     check(reader.nextName() == "__typename")
     val typename = reader.nextString()
     return when(typename) {
-      "Human" -> CharacterDataAdapter.fromResponse(reader, typename)
-      else -> OtherDataAdapter.fromResponse(reader, typename)
+      "Human" -> CharacterData.fromResponse(reader, responseAdapterCache, typename)
+      else -> OtherData.fromResponse(reader, responseAdapterCache, typename)
     }
     .also { reader.endObject() }
   }
@@ -42,7 +42,7 @@ object HumanDetailsImpl_ResponseAdapter : ResponseAdapter<HumanDetailsImpl.Data>
   ) {
     when(value) {
       is HumanDetailsImpl.Data.CharacterData -> CharacterData.toResponse(writer, responseAdapterCache, value)
-      is HumanDetailsImpl.Data.OtherData -> OtherDataAdapter.toResponse(writer, responseAdapterCache, value)
+      is HumanDetailsImpl.Data.OtherData -> OtherData.toResponse(writer, responseAdapterCache, value)
     }
   }
 

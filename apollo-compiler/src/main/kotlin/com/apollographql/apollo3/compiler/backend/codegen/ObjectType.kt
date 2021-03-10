@@ -84,7 +84,7 @@ private fun CodeGenerationAst.ObjectType.primaryConstructorSpec(fragmentAsInterf
   val fieldParams = fields.map { field -> field.asParameterSpec(schemaTypename) }
   val fragmentParams = if (this.kind is CodeGenerationAst.ObjectType.Kind.ObjectWithFragments && !fragmentAsInterfaces) {
     this.kind.possibleImplementations.map { fragmentImplementation ->
-      val propertyName = fragmentImplementation.typeRef.fragmentVariableName()
+      val propertyName = fragmentImplementation.typeRef.fragmentPropertyName()
       ParameterSpec.builder(
           name = propertyName,
           type = fragmentImplementation.typeRef.asTypeName().copy(nullable = true)
@@ -129,10 +129,10 @@ private fun CodeGenerationAst.ObjectType.propertySpecs(fragmentAsInterfaces: Boo
     this.kind.possibleImplementations.map { fragmentImplementation ->
       PropertySpec
           .builder(
-              name = fragmentImplementation.typeRef.fragmentVariableName(),
+              name = fragmentImplementation.typeRef.fragmentPropertyName(),
               type = fragmentImplementation.typeRef.asTypeName().copy(nullable = true)
           )
-          .initializer(fragmentImplementation.typeRef.fragmentVariableName())
+          .initializer(fragmentImplementation.typeRef.fragmentPropertyName())
           .build()
     }
   } else emptyList()

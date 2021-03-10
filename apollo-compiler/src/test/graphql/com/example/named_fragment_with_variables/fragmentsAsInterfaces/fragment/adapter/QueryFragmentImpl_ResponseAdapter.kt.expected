@@ -131,8 +131,8 @@ object QueryFragmentImpl_ResponseAdapter : ResponseAdapter<QueryFragmentImpl.Dat
         check(reader.nextName() == "__typename")
         val typename = reader.nextString()
         return when(typename) {
-          "User" -> UserUserAdapter.fromResponse(reader, typename)
-          else -> OtherUserAdapter.fromResponse(reader, typename)
+          "User" -> UserUser.fromResponse(reader, responseAdapterCache, typename)
+          else -> OtherUser.fromResponse(reader, responseAdapterCache, typename)
         }
         .also { reader.endObject() }
       }
@@ -144,7 +144,7 @@ object QueryFragmentImpl_ResponseAdapter : ResponseAdapter<QueryFragmentImpl.Dat
       ) {
         when(value) {
           is QueryFragmentImpl.Data.Organization.User.UserUser -> UserUser.toResponse(writer, responseAdapterCache, value)
-          is QueryFragmentImpl.Data.Organization.User.OtherUser -> OtherUserAdapter.toResponse(writer, responseAdapterCache, value)
+          is QueryFragmentImpl.Data.Organization.User.OtherUser -> OtherUser.toResponse(writer, responseAdapterCache, value)
         }
       }
 

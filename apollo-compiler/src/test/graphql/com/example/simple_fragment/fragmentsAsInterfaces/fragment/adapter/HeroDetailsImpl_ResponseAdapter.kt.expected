@@ -27,8 +27,8 @@ internal object HeroDetailsImpl_ResponseAdapter : ResponseAdapter<HeroDetailsImp
     check(reader.nextName() == "__typename")
     val typename = reader.nextString()
     return when(typename) {
-      "Human" -> HumanDataAdapter.fromResponse(reader, typename)
-      else -> OtherDataAdapter.fromResponse(reader, typename)
+      "Human" -> HumanData.fromResponse(reader, responseAdapterCache, typename)
+      else -> OtherData.fromResponse(reader, responseAdapterCache, typename)
     }
     .also { reader.endObject() }
   }
@@ -40,7 +40,7 @@ internal object HeroDetailsImpl_ResponseAdapter : ResponseAdapter<HeroDetailsImp
   ) {
     when(value) {
       is HeroDetailsImpl.Data.HumanData -> HumanData.toResponse(writer, responseAdapterCache, value)
-      is HeroDetailsImpl.Data.OtherData -> OtherDataAdapter.toResponse(writer, responseAdapterCache, value)
+      is HeroDetailsImpl.Data.OtherData -> OtherData.toResponse(writer, responseAdapterCache, value)
     }
   }
 

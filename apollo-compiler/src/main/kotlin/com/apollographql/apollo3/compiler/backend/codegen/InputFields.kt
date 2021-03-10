@@ -46,15 +46,15 @@ fun serializeVariablesFunSpec(
   return FunSpec.builder(funName)
       .addModifiers(KModifier.OVERRIDE)
       .addParameter("writer", JsonWriter::class)
-      .addParameter(Identifier.RESPONSE_ADAPTER_CACHE, ResponseAdapterCache::class.asTypeName())
-      .addCode("%T.toResponse(writer, ${Identifier.RESPONSE_ADAPTER_CACHE}, this)", serializerClassName)
+      .addParameter(Identifier.responseAdapterCache, ResponseAdapterCache::class.asTypeName())
+      .addCode("%T.toResponse(writer, ${Identifier.responseAdapterCache}, this)", serializerClassName)
       .build()
 }
 
 fun notImplementedFromResponseFunSpec(returnTypeName: TypeName) = FunSpec.builder("fromResponse")
     .addModifiers(KModifier.OVERRIDE)
-    .addParameter(Identifier.READER, JsonReader::class)
-    .addParameter(Identifier.RESPONSE_ADAPTER_CACHE, ResponseAdapterCache::class.asTypeName())
+    .addParameter(Identifier.reader, JsonReader::class)
+    .addParameter(Identifier.responseAdapterCache, ResponseAdapterCache::class.asTypeName())
     .returns(returnTypeName)
     .addCode("throw %T(%S)", ClassName("kotlin", "IllegalStateException"), "Input type used in output position")
     .build()
@@ -100,10 +100,10 @@ private fun List<CodeGenerationAst.InputField>.inputFieldsAdapterTypeSpec(
   builder.addSuperinterface(ResponseAdapter::class.asClassName().parameterizedBy(className))
 
   builder.addFunction(notImplementedFromResponseFunSpec(className))
-  builder.addFunction(FunSpec.builder(Identifier.TO_RESPONSE)
-      .addParameter(Identifier.WRITER, JsonWriter::class)
-      .addParameter(Identifier.RESPONSE_ADAPTER_CACHE, ResponseAdapterCache::class.asTypeName())
-      .addParameter(Identifier.VALUE, className)
+  builder.addFunction(FunSpec.builder(Identifier.toResponse)
+      .addParameter(Identifier.writer, JsonWriter::class)
+      .addParameter(Identifier.responseAdapterCache, ResponseAdapterCache::class.asTypeName())
+      .addParameter(Identifier.value, className)
       .addModifiers(KModifier.OVERRIDE)
       .addCode(CodeBlock.Builder().apply {
         addStatement("writer.beginObject()")
@@ -111,11 +111,11 @@ private fun List<CodeGenerationAst.InputField>.inputFieldsAdapterTypeSpec(
           if (!it.isRequired) {
             beginControlFlow("if (value.%L is %T)", kotlinNameForVariable(it.name), Input.Present::class)
             addStatement("writer.name(%S)", it.schemaName)
-            addStatement("%L.toResponse(writer, ${Identifier.RESPONSE_ADAPTER_CACHE}, value.%L.value)", adapterInitializer(it.type), kotlinNameForVariable(it.name))
+            addStatement("%L.toResponse(writer, ${Identifier.responseAdapterCache}, value.%L.value)", adapterInitializer(it.type), kotlinNameForVariable(it.name))
             endControlFlow()
           } else {
             addStatement("writer.name(%S)", it.schemaName)
-            addStatement("%L.toResponse(writer, ${Identifier.RESPONSE_ADAPTER_CACHE}, value.%L)", adapterInitializer(it.type), kotlinNameForVariable(it.name))
+            addStatement("%L.toResponse(writer, ${Identifier.responseAdapterCache}, value.%L)", adapterInitializer(it.type), kotlinNameForVariable(it.name))
           }
         }
         addStatement("writer.endObject()")

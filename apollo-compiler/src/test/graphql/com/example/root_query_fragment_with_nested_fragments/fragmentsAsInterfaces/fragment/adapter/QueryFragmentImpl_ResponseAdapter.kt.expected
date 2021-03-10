@@ -107,9 +107,9 @@ object QueryFragmentImpl_ResponseAdapter : ResponseAdapter<QueryFragmentImpl.Dat
       check(reader.nextName() == "__typename")
       val typename = reader.nextString()
       return when(typename) {
-        "Droid" -> CharacterHeroAdapter.fromResponse(reader, typename)
-        "Human" -> CharacterHeroAdapter.fromResponse(reader, typename)
-        else -> OtherHeroAdapter.fromResponse(reader, typename)
+        "Droid" -> CharacterHero.fromResponse(reader, responseAdapterCache, typename)
+        "Human" -> CharacterHero.fromResponse(reader, responseAdapterCache, typename)
+        else -> OtherHero.fromResponse(reader, responseAdapterCache, typename)
       }
       .also { reader.endObject() }
     }
@@ -121,7 +121,7 @@ object QueryFragmentImpl_ResponseAdapter : ResponseAdapter<QueryFragmentImpl.Dat
     ) {
       when(value) {
         is QueryFragmentImpl.Data.Hero.CharacterHero -> CharacterHero.toResponse(writer, responseAdapterCache, value)
-        is QueryFragmentImpl.Data.Hero.OtherHero -> OtherHeroAdapter.toResponse(writer, responseAdapterCache, value)
+        is QueryFragmentImpl.Data.Hero.OtherHero -> OtherHero.toResponse(writer, responseAdapterCache, value)
       }
     }
 
@@ -214,8 +214,8 @@ object QueryFragmentImpl_ResponseAdapter : ResponseAdapter<QueryFragmentImpl.Dat
       check(reader.nextName() == "__typename")
       val typename = reader.nextString()
       return when(typename) {
-        "Droid" -> DroidDroidAdapter.fromResponse(reader, typename)
-        else -> OtherDroidAdapter.fromResponse(reader, typename)
+        "Droid" -> DroidDroid.fromResponse(reader, responseAdapterCache, typename)
+        else -> OtherDroid.fromResponse(reader, responseAdapterCache, typename)
       }
       .also { reader.endObject() }
     }
@@ -227,7 +227,7 @@ object QueryFragmentImpl_ResponseAdapter : ResponseAdapter<QueryFragmentImpl.Dat
     ) {
       when(value) {
         is QueryFragmentImpl.Data.Droid.DroidDroid -> DroidDroid.toResponse(writer, responseAdapterCache, value)
-        is QueryFragmentImpl.Data.Droid.OtherDroid -> OtherDroidAdapter.toResponse(writer, responseAdapterCache, value)
+        is QueryFragmentImpl.Data.Droid.OtherDroid -> OtherDroid.toResponse(writer, responseAdapterCache, value)
       }
     }
 
@@ -331,8 +331,8 @@ object QueryFragmentImpl_ResponseAdapter : ResponseAdapter<QueryFragmentImpl.Dat
       check(reader.nextName() == "__typename")
       val typename = reader.nextString()
       return when(typename) {
-        "Human" -> HumanHumanAdapter.fromResponse(reader, typename)
-        else -> OtherHumanAdapter.fromResponse(reader, typename)
+        "Human" -> HumanHuman.fromResponse(reader, responseAdapterCache, typename)
+        else -> OtherHuman.fromResponse(reader, responseAdapterCache, typename)
       }
       .also { reader.endObject() }
     }
@@ -344,7 +344,7 @@ object QueryFragmentImpl_ResponseAdapter : ResponseAdapter<QueryFragmentImpl.Dat
     ) {
       when(value) {
         is QueryFragmentImpl.Data.Human.HumanHuman -> HumanHuman.toResponse(writer, responseAdapterCache, value)
-        is QueryFragmentImpl.Data.Human.OtherHuman -> OtherHumanAdapter.toResponse(writer, responseAdapterCache, value)
+        is QueryFragmentImpl.Data.Human.OtherHuman -> OtherHuman.toResponse(writer, responseAdapterCache, value)
       }
     }
 

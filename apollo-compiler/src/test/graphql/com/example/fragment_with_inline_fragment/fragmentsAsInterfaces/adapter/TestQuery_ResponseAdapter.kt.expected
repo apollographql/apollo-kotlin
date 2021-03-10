@@ -76,9 +76,9 @@ object TestQuery_ResponseAdapter : ResponseAdapter<TestQuery.Data> {
       check(reader.nextName() == "__typename")
       val typename = reader.nextString()
       return when(typename) {
-        "Droid" -> CharacterDroidHeroAdapter.fromResponse(reader, typename)
-        "Human" -> CharacterHumanHeroAdapter.fromResponse(reader, typename)
-        else -> OtherHeroAdapter.fromResponse(reader, typename)
+        "Droid" -> CharacterDroidHero.fromResponse(reader, responseAdapterCache, typename)
+        "Human" -> CharacterHumanHero.fromResponse(reader, responseAdapterCache, typename)
+        else -> OtherHero.fromResponse(reader, responseAdapterCache, typename)
       }
       .also { reader.endObject() }
     }
@@ -91,7 +91,7 @@ object TestQuery_ResponseAdapter : ResponseAdapter<TestQuery.Data> {
       when(value) {
         is TestQuery.Data.Hero.CharacterDroidHero -> CharacterDroidHero.toResponse(writer, responseAdapterCache, value)
         is TestQuery.Data.Hero.CharacterHumanHero -> CharacterHumanHero.toResponse(writer, responseAdapterCache, value)
-        is TestQuery.Data.Hero.OtherHero -> OtherHeroAdapter.toResponse(writer, responseAdapterCache, value)
+        is TestQuery.Data.Hero.OtherHero -> OtherHero.toResponse(writer, responseAdapterCache, value)
       }
     }
 

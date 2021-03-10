@@ -89,9 +89,9 @@ object TestQuery_ResponseAdapter : ResponseAdapter<TestQuery.Data> {
       check(reader.nextName() == "__typename")
       val typename = reader.nextString()
       return when(typename) {
-        "Human" -> HumanR2Adapter.fromResponse(reader, typename)
-        "Droid" -> DroidR2Adapter.fromResponse(reader, typename)
-        else -> OtherR2Adapter.fromResponse(reader, typename)
+        "Human" -> HumanR2.fromResponse(reader, responseAdapterCache, typename)
+        "Droid" -> DroidR2.fromResponse(reader, responseAdapterCache, typename)
+        else -> OtherR2.fromResponse(reader, responseAdapterCache, typename)
       }
       .also { reader.endObject() }
     }
@@ -104,7 +104,7 @@ object TestQuery_ResponseAdapter : ResponseAdapter<TestQuery.Data> {
       when(value) {
         is TestQuery.Data.R2.HumanR2 -> HumanR2.toResponse(writer, responseAdapterCache, value)
         is TestQuery.Data.R2.DroidR2 -> DroidR2.toResponse(writer, responseAdapterCache, value)
-        is TestQuery.Data.R2.OtherR2 -> OtherR2Adapter.toResponse(writer, responseAdapterCache, value)
+        is TestQuery.Data.R2.OtherR2 -> OtherR2.toResponse(writer, responseAdapterCache, value)
       }
     }
 
@@ -262,9 +262,9 @@ object TestQuery_ResponseAdapter : ResponseAdapter<TestQuery.Data> {
       check(reader.nextName() == "__typename")
       val typename = reader.nextString()
       return when(typename) {
-        "Human" -> HumanLukeAdapter.fromResponse(reader, typename)
-        "Droid" -> DroidLukeAdapter.fromResponse(reader, typename)
-        else -> OtherLukeAdapter.fromResponse(reader, typename)
+        "Human" -> HumanLuke.fromResponse(reader, responseAdapterCache, typename)
+        "Droid" -> DroidLuke.fromResponse(reader, responseAdapterCache, typename)
+        else -> OtherLuke.fromResponse(reader, responseAdapterCache, typename)
       }
       .also { reader.endObject() }
     }
@@ -277,7 +277,7 @@ object TestQuery_ResponseAdapter : ResponseAdapter<TestQuery.Data> {
       when(value) {
         is TestQuery.Data.Luke.HumanLuke -> HumanLuke.toResponse(writer, responseAdapterCache, value)
         is TestQuery.Data.Luke.DroidLuke -> DroidLuke.toResponse(writer, responseAdapterCache, value)
-        is TestQuery.Data.Luke.OtherLuke -> OtherLukeAdapter.toResponse(writer, responseAdapterCache, value)
+        is TestQuery.Data.Luke.OtherLuke -> OtherLuke.toResponse(writer, responseAdapterCache, value)
       }
     }
 

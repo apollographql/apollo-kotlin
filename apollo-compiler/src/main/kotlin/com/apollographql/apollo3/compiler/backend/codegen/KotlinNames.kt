@@ -43,18 +43,10 @@ private fun kotlinNameForAdapterFieldRecursive(type: CodeGenerationAst.FieldType
   }
 }
 
-internal fun CodeGenerationAst.TypeRef.fragmentVariableName(): String {
+internal fun CodeGenerationAst.TypeRef.fragmentPropertyName(): String {
   return if (this.isNamedFragmentDataRef) {
     this.enclosingType!!.name.decapitalize().escapeKotlinReservedWord()
   } else {
     "as${this.name.capitalize().escapeKotlinReservedWord()}"
-  }
-}
-
-internal fun CodeGenerationAst.TypeRef.fragmentResponseAdapterVariableName(): String {
-  return if (this.isNamedFragmentDataRef) {
-    "${this.enclosingType!!.name.escapeKotlinReservedWord()}Adapter"
-  } else {
-    "${this.name.escapeKotlinReservedWord()}Adapter"
   }
 }

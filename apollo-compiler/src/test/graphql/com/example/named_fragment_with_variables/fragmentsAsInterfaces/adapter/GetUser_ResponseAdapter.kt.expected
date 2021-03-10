@@ -30,8 +30,8 @@ object GetUser_ResponseAdapter : ResponseAdapter<GetUser.Data> {
     check(reader.nextName() == "__typename")
     val typename = reader.nextString()
     return when(typename) {
-      "Query" -> QueryDataAdapter.fromResponse(reader, typename)
-      else -> OtherDataAdapter.fromResponse(reader, typename)
+      "Query" -> QueryData.fromResponse(reader, responseAdapterCache, typename)
+      else -> OtherData.fromResponse(reader, responseAdapterCache, typename)
     }
     .also { reader.endObject() }
   }
@@ -43,7 +43,7 @@ object GetUser_ResponseAdapter : ResponseAdapter<GetUser.Data> {
   ) {
     when(value) {
       is GetUser.Data.QueryData -> QueryData.toResponse(writer, responseAdapterCache, value)
-      is GetUser.Data.OtherData -> OtherDataAdapter.toResponse(writer, responseAdapterCache, value)
+      is GetUser.Data.OtherData -> OtherData.toResponse(writer, responseAdapterCache, value)
     }
   }
 
@@ -156,8 +156,8 @@ object GetUser_ResponseAdapter : ResponseAdapter<GetUser.Data> {
           check(reader.nextName() == "__typename")
           val typename = reader.nextString()
           return when(typename) {
-            "User" -> UserUserAdapter.fromResponse(reader, typename)
-            else -> OtherUserAdapter.fromResponse(reader, typename)
+            "User" -> UserUser.fromResponse(reader, responseAdapterCache, typename)
+            else -> OtherUser.fromResponse(reader, responseAdapterCache, typename)
           }
           .also { reader.endObject() }
         }
@@ -169,7 +169,7 @@ object GetUser_ResponseAdapter : ResponseAdapter<GetUser.Data> {
         ) {
           when(value) {
             is GetUser.Data.QueryData.Organization.User.UserUser -> UserUser.toResponse(writer, responseAdapterCache, value)
-            is GetUser.Data.QueryData.Organization.User.OtherUser -> OtherUserAdapter.toResponse(writer, responseAdapterCache, value)
+            is GetUser.Data.QueryData.Organization.User.OtherUser -> OtherUser.toResponse(writer, responseAdapterCache, value)
           }
         }
 

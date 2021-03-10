@@ -29,8 +29,8 @@ object TestQuery_ResponseAdapter : ResponseAdapter<TestQuery.Data> {
     check(reader.nextName() == "__typename")
     val typename = reader.nextString()
     return when(typename) {
-      "Query" -> QueryDataAdapter.fromResponse(reader, typename)
-      else -> OtherDataAdapter.fromResponse(reader, typename)
+      "Query" -> QueryData.fromResponse(reader, responseAdapterCache, typename)
+      else -> OtherData.fromResponse(reader, responseAdapterCache, typename)
     }
     .also { reader.endObject() }
   }
@@ -42,7 +42,7 @@ object TestQuery_ResponseAdapter : ResponseAdapter<TestQuery.Data> {
   ) {
     when(value) {
       is TestQuery.Data.QueryData -> QueryData.toResponse(writer, responseAdapterCache, value)
-      is TestQuery.Data.OtherData -> OtherDataAdapter.toResponse(writer, responseAdapterCache, value)
+      is TestQuery.Data.OtherData -> OtherData.toResponse(writer, responseAdapterCache, value)
     }
   }
 
@@ -132,9 +132,9 @@ object TestQuery_ResponseAdapter : ResponseAdapter<TestQuery.Data> {
         check(reader.nextName() == "__typename")
         val typename = reader.nextString()
         return when(typename) {
-          "Droid" -> CharacterHeroAdapter.fromResponse(reader, typename)
-          "Human" -> CharacterHeroAdapter.fromResponse(reader, typename)
-          else -> OtherHeroAdapter.fromResponse(reader, typename)
+          "Droid" -> CharacterHero.fromResponse(reader, responseAdapterCache, typename)
+          "Human" -> CharacterHero.fromResponse(reader, responseAdapterCache, typename)
+          else -> OtherHero.fromResponse(reader, responseAdapterCache, typename)
         }
         .also { reader.endObject() }
       }
@@ -146,7 +146,7 @@ object TestQuery_ResponseAdapter : ResponseAdapter<TestQuery.Data> {
       ) {
         when(value) {
           is TestQuery.Data.QueryData.Hero.CharacterHero -> CharacterHero.toResponse(writer, responseAdapterCache, value)
-          is TestQuery.Data.QueryData.Hero.OtherHero -> OtherHeroAdapter.toResponse(writer, responseAdapterCache, value)
+          is TestQuery.Data.QueryData.Hero.OtherHero -> OtherHero.toResponse(writer, responseAdapterCache, value)
         }
       }
 
@@ -239,8 +239,8 @@ object TestQuery_ResponseAdapter : ResponseAdapter<TestQuery.Data> {
         check(reader.nextName() == "__typename")
         val typename = reader.nextString()
         return when(typename) {
-          "Droid" -> DroidDroidAdapter.fromResponse(reader, typename)
-          else -> OtherDroidAdapter.fromResponse(reader, typename)
+          "Droid" -> DroidDroid.fromResponse(reader, responseAdapterCache, typename)
+          else -> OtherDroid.fromResponse(reader, responseAdapterCache, typename)
         }
         .also { reader.endObject() }
       }
@@ -252,7 +252,7 @@ object TestQuery_ResponseAdapter : ResponseAdapter<TestQuery.Data> {
       ) {
         when(value) {
           is TestQuery.Data.QueryData.Droid.DroidDroid -> DroidDroid.toResponse(writer, responseAdapterCache, value)
-          is TestQuery.Data.QueryData.Droid.OtherDroid -> OtherDroidAdapter.toResponse(writer, responseAdapterCache, value)
+          is TestQuery.Data.QueryData.Droid.OtherDroid -> OtherDroid.toResponse(writer, responseAdapterCache, value)
         }
       }
 
@@ -356,8 +356,8 @@ object TestQuery_ResponseAdapter : ResponseAdapter<TestQuery.Data> {
         check(reader.nextName() == "__typename")
         val typename = reader.nextString()
         return when(typename) {
-          "Human" -> HumanHumanAdapter.fromResponse(reader, typename)
-          else -> OtherHumanAdapter.fromResponse(reader, typename)
+          "Human" -> HumanHuman.fromResponse(reader, responseAdapterCache, typename)
+          else -> OtherHuman.fromResponse(reader, responseAdapterCache, typename)
         }
         .also { reader.endObject() }
       }
@@ -369,7 +369,7 @@ object TestQuery_ResponseAdapter : ResponseAdapter<TestQuery.Data> {
       ) {
         when(value) {
           is TestQuery.Data.QueryData.Human.HumanHuman -> HumanHuman.toResponse(writer, responseAdapterCache, value)
-          is TestQuery.Data.QueryData.Human.OtherHuman -> OtherHumanAdapter.toResponse(writer, responseAdapterCache, value)
+          is TestQuery.Data.QueryData.Human.OtherHuman -> OtherHuman.toResponse(writer, responseAdapterCache, value)
         }
       }
 

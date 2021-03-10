@@ -85,8 +85,8 @@ object PilotFragmentImpl_ResponseAdapter : ResponseAdapter<PilotFragmentImpl.Dat
       check(reader.nextName() == "__typename")
       val typename = reader.nextString()
       return when(typename) {
-        "Planet" -> PlanetHomeworldAdapter.fromResponse(reader, typename)
-        else -> OtherHomeworldAdapter.fromResponse(reader, typename)
+        "Planet" -> PlanetHomeworld.fromResponse(reader, responseAdapterCache, typename)
+        else -> OtherHomeworld.fromResponse(reader, responseAdapterCache, typename)
       }
       .also { reader.endObject() }
     }
@@ -98,7 +98,7 @@ object PilotFragmentImpl_ResponseAdapter : ResponseAdapter<PilotFragmentImpl.Dat
     ) {
       when(value) {
         is PilotFragmentImpl.Data.Homeworld.PlanetHomeworld -> PlanetHomeworld.toResponse(writer, responseAdapterCache, value)
-        is PilotFragmentImpl.Data.Homeworld.OtherHomeworld -> OtherHomeworldAdapter.toResponse(writer, responseAdapterCache, value)
+        is PilotFragmentImpl.Data.Homeworld.OtherHomeworld -> OtherHomeworld.toResponse(writer, responseAdapterCache, value)
       }
     }
 

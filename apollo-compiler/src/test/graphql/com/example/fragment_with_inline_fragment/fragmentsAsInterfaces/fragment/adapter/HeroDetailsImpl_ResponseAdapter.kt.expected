@@ -32,9 +32,9 @@ object HeroDetailsImpl_ResponseAdapter : ResponseAdapter<HeroDetailsImpl.Data> {
     check(reader.nextName() == "__typename")
     val typename = reader.nextString()
     return when(typename) {
-      "Droid" -> DroidDataAdapter.fromResponse(reader, typename)
-      "Human" -> HumanDataAdapter.fromResponse(reader, typename)
-      else -> OtherDataAdapter.fromResponse(reader, typename)
+      "Droid" -> DroidData.fromResponse(reader, responseAdapterCache, typename)
+      "Human" -> HumanData.fromResponse(reader, responseAdapterCache, typename)
+      else -> OtherData.fromResponse(reader, responseAdapterCache, typename)
     }
     .also { reader.endObject() }
   }
@@ -47,7 +47,7 @@ object HeroDetailsImpl_ResponseAdapter : ResponseAdapter<HeroDetailsImpl.Data> {
     when(value) {
       is HeroDetailsImpl.Data.DroidData -> DroidData.toResponse(writer, responseAdapterCache, value)
       is HeroDetailsImpl.Data.HumanData -> HumanData.toResponse(writer, responseAdapterCache, value)
-      is HeroDetailsImpl.Data.OtherData -> OtherDataAdapter.toResponse(writer, responseAdapterCache, value)
+      is HeroDetailsImpl.Data.OtherData -> OtherData.toResponse(writer, responseAdapterCache, value)
     }
   }
 

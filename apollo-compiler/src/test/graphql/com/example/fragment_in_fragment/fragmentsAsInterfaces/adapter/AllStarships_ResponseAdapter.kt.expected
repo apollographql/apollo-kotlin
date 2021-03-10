@@ -157,8 +157,8 @@ object AllStarships_ResponseAdapter : ResponseAdapter<AllStarships.Data> {
           check(reader.nextName() == "__typename")
           val typename = reader.nextString()
           return when(typename) {
-            "Starship" -> StarshipNodeAdapter.fromResponse(reader, typename)
-            else -> OtherNodeAdapter.fromResponse(reader, typename)
+            "Starship" -> StarshipNode.fromResponse(reader, responseAdapterCache, typename)
+            else -> OtherNode.fromResponse(reader, responseAdapterCache, typename)
           }
           .also { reader.endObject() }
         }
@@ -170,7 +170,7 @@ object AllStarships_ResponseAdapter : ResponseAdapter<AllStarships.Data> {
         ) {
           when(value) {
             is com.example.fragment_in_fragment.AllStarships.Data.AllStarships.Edges.Node.StarshipNode -> StarshipNode.toResponse(writer, responseAdapterCache, value)
-            is com.example.fragment_in_fragment.AllStarships.Data.AllStarships.Edges.Node.OtherNode -> OtherNodeAdapter.toResponse(writer, responseAdapterCache, value)
+            is com.example.fragment_in_fragment.AllStarships.Data.AllStarships.Edges.Node.OtherNode -> OtherNode.toResponse(writer, responseAdapterCache, value)
           }
         }
 
@@ -342,8 +342,8 @@ object AllStarships_ResponseAdapter : ResponseAdapter<AllStarships.Data> {
                   check(reader.nextName() == "__typename")
                   val typename = reader.nextString()
                   return when(typename) {
-                    "Person" -> PersonNodeAdapter.fromResponse(reader, typename)
-                    else -> OtherNodeAdapter.fromResponse(reader, typename)
+                    "Person" -> PersonNode.fromResponse(reader, responseAdapterCache, typename)
+                    else -> OtherNode.fromResponse(reader, responseAdapterCache, typename)
                   }
                   .also { reader.endObject() }
                 }
@@ -355,7 +355,7 @@ object AllStarships_ResponseAdapter : ResponseAdapter<AllStarships.Data> {
                 ) {
                   when(value) {
                     is com.example.fragment_in_fragment.AllStarships.Data.AllStarships.Edges.Node.StarshipNode.PilotConnection.Edges.Node.PersonNode -> PersonNode.toResponse(writer, responseAdapterCache, value)
-                    is com.example.fragment_in_fragment.AllStarships.Data.AllStarships.Edges.Node.StarshipNode.PilotConnection.Edges.Node.OtherNode -> OtherNodeAdapter.toResponse(writer, responseAdapterCache, value)
+                    is com.example.fragment_in_fragment.AllStarships.Data.AllStarships.Edges.Node.StarshipNode.PilotConnection.Edges.Node.OtherNode -> OtherNode.toResponse(writer, responseAdapterCache, value)
                   }
                 }
 
@@ -431,8 +431,8 @@ object AllStarships_ResponseAdapter : ResponseAdapter<AllStarships.Data> {
                       check(reader.nextName() == "__typename")
                       val typename = reader.nextString()
                       return when(typename) {
-                        "Planet" -> PlanetHomeworldAdapter.fromResponse(reader, typename)
-                        else -> OtherHomeworldAdapter.fromResponse(reader, typename)
+                        "Planet" -> PlanetHomeworld.fromResponse(reader, responseAdapterCache, typename)
+                        else -> OtherHomeworld.fromResponse(reader, responseAdapterCache, typename)
                       }
                       .also { reader.endObject() }
                     }
@@ -444,7 +444,7 @@ object AllStarships_ResponseAdapter : ResponseAdapter<AllStarships.Data> {
                     ) {
                       when(value) {
                         is com.example.fragment_in_fragment.AllStarships.Data.AllStarships.Edges.Node.StarshipNode.PilotConnection.Edges.Node.PersonNode.Homeworld.PlanetHomeworld -> PlanetHomeworld.toResponse(writer, responseAdapterCache, value)
-                        is com.example.fragment_in_fragment.AllStarships.Data.AllStarships.Edges.Node.StarshipNode.PilotConnection.Edges.Node.PersonNode.Homeworld.OtherHomeworld -> OtherHomeworldAdapter.toResponse(writer, responseAdapterCache, value)
+                        is com.example.fragment_in_fragment.AllStarships.Data.AllStarships.Edges.Node.StarshipNode.PilotConnection.Edges.Node.PersonNode.Homeworld.OtherHomeworld -> OtherHomeworld.toResponse(writer, responseAdapterCache, value)
                       }
                     }
 

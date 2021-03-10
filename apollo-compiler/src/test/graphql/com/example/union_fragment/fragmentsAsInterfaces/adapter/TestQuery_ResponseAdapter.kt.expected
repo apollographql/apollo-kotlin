@@ -72,8 +72,8 @@ object TestQuery_ResponseAdapter : ResponseAdapter<TestQuery.Data> {
       check(reader.nextName() == "__typename")
       val typename = reader.nextString()
       return when(typename) {
-        "Starship" -> StarshipSearchAdapter.fromResponse(reader, typename)
-        else -> OtherSearchAdapter.fromResponse(reader, typename)
+        "Starship" -> StarshipSearch.fromResponse(reader, responseAdapterCache, typename)
+        else -> OtherSearch.fromResponse(reader, responseAdapterCache, typename)
       }
       .also { reader.endObject() }
     }
@@ -85,7 +85,7 @@ object TestQuery_ResponseAdapter : ResponseAdapter<TestQuery.Data> {
     ) {
       when(value) {
         is TestQuery.Data.Search.StarshipSearch -> StarshipSearch.toResponse(writer, responseAdapterCache, value)
-        is TestQuery.Data.Search.OtherSearch -> OtherSearchAdapter.toResponse(writer, responseAdapterCache, value)
+        is TestQuery.Data.Search.OtherSearch -> OtherSearch.toResponse(writer, responseAdapterCache, value)
       }
     }
 

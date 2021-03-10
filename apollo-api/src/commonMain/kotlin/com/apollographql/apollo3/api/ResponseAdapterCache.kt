@@ -10,9 +10,6 @@ import kotlin.reflect.KClass
  */
 class ResponseAdapterCache(val customScalarResponseAdapters: Map<CustomScalar, ResponseAdapter<*>>) {
 
-  private val adapterByClass = ThreadSafeMap<KClass<*>, ResponseAdapter<*>>()
-  private val variableAdapterByClass = ThreadSafeMap<KClass<*>, ResponseAdapter<*>>()
-
   fun <T : Any> responseAdapterFor(customScalar: CustomScalar): ResponseAdapter<T> {
     return when {
       customScalarResponseAdapters[customScalar] != null -> {
@@ -29,26 +26,6 @@ class ResponseAdapterCache(val customScalarResponseAdapters: Map<CustomScalar, R
       else -> error("Can't map GraphQL type: `${customScalar.graphqlName}` to: `${customScalar.className}`. Did you forget to add a CustomScalarAdapter?")
     }
 
-  }
-
-  @Suppress("UNCHECKED_CAST")
-  fun <D> getAdapterFor(klass: KClass<*>, defaultValue: () -> ResponseAdapter<D>): ResponseAdapter<D> {
-    return adapterByClass.getOrPut(klass, defaultValue) as ResponseAdapter<D>
-  }
-
-  @Suppress("UNCHECKED_CAST")
-  fun <D> getVariablesAdapterFor(klass: KClass<*>, defaultValue: () -> ResponseAdapter<D>): ResponseAdapter<D> {
-    return variableAdapterByClass.getOrPut(klass, defaultValue) as ResponseAdapter<D>
-  }
-
-  /**
-   * releases resources associated with this [ResponseAdapterCache].
-   *
-   * Use it on native to release the [kotlinx.cinterop.StableRef]
-   */
-  fun dispose() {
-    variableAdapterByClass.dispose()
-    adapterByClass.dispose()
   }
 
   companion object {
