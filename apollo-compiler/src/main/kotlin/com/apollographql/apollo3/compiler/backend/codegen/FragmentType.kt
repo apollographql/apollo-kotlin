@@ -62,21 +62,11 @@ internal fun CodeGenerationAst.FragmentType.interfaceTypeSpec(generateAsInternal
       .build()
 }
 
-private fun adapterFunSpec(fragmentName: String, adapterClassName: TypeName): FunSpec {
-  val body = CodeBlock.builder().apply {
-    addStatement("val adapter = ${Identifier.RESPONSE_ADAPTER_CACHE}.getAdapterFor(this::class) {", fragmentName)
-    indent()
-    addStatement("%T(${Identifier.RESPONSE_ADAPTER_CACHE})", adapterClassName)
-    unindent()
-    addStatement("}")
-    addStatement("return adapter")
-  }.build()
-
+private fun adapterFunSpec(adapterClassName: TypeName): FunSpec {
   return FunSpec.builder("adapter")
       .addModifiers(KModifier.OVERRIDE)
-      .addParameter(ParameterSpec.builder(Identifier.RESPONSE_ADAPTER_CACHE, ResponseAdapterCache::class.asTypeName()).build())
       .returns(ResponseAdapter::class.asClassName().parameterizedBy(ClassName(packageName = "", "Data")))
-      .addCode(body)
+      .addCode("return %T",adapterClassName)
       .build()
 }
 
@@ -96,7 +86,7 @@ internal fun CodeGenerationAst.FragmentType.implementationTypeSpec(
       .applyIf(generateAsInternal) { addModifiers(KModifier.INTERNAL) }
       .makeDataClass(variables.map { it.toParameterSpec() })
       .addFunction(
-          adapterFunSpec(this.implementationType.name, this.implementationType.typeRef.asAdapterTypeName())
+          adapterFunSpec(this.implementationType.typeRef.asAdapterTypeName())
       )
       .addFunction(
           FunSpec.builder(

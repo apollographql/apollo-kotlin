@@ -222,20 +222,13 @@ class CodegenTest(private val folder: File, private val fragmentsCodegenMode: Fr
     @JvmStatic
     @Parameterized.Parameters(name = "{0} ({1})")
     fun data(): Collection<*> {
-      val filterRegex = System.getProperty("codegenTests")?.takeIf { it.isNotEmpty() }?.trim()?.let { Regex(it) }
       val fragmentsCodegenMode = System.getProperty("fragmentsCodegenMode")?.trim()?.let { FragmentsCodegenMode.valueOf(it) }
       return File("src/test/graphql/com/example/")
           .listFiles()!!
-          .sortedBy {
-            it.name
-          }
+          .filter { it.isDirectory }
+          .sortedBy { it.name }
           .filter { file ->
-            /**
-             * This allows to run a specific test from the command line by using something like:
-             *
-             * ./gradlew :apollo-compiler:test -DcodegenTests="fragments_with_type_condition" --tests '*Codegen*'
-             */
-            file.isDirectory && (filterRegex == null || filterRegex.matchEntire(file.name) != null)
+            TestUtils.testFilterMatches(file.absolutePath)
           }
           .flatMap { file ->
             val queryFile = checkNotNull(file.walk().find { it.extension == "graphql" })

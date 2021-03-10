@@ -5,8 +5,7 @@
 //
 package com.example.fragments_with_type_condition.fragment.adapter
 
-import com.apollographql.apollo3.api.DoubleResponseAdapter
-import com.apollographql.apollo3.api.NullableResponseAdapter
+import com.apollographql.apollo3.api.NullableDoubleResponseAdapter
 import com.apollographql.apollo3.api.ResponseAdapter
 import com.apollographql.apollo3.api.ResponseAdapterCache
 import com.apollographql.apollo3.api.ResponseField
@@ -23,24 +22,32 @@ import kotlin.collections.List
 @Suppress("NAME_SHADOWING", "UNUSED_ANONYMOUS_PARAMETER", "LocalVariableName",
     "RemoveExplicitTypeArguments", "NestedLambdaShadowedImplicitParameter", "PropertyName",
     "RemoveRedundantQualifierName")
-class HumanDetailsImpl_ResponseAdapter(
-  responseAdapterCache: ResponseAdapterCache
-) : ResponseAdapter<HumanDetailsImpl.Data> {
-  private val stringAdapter: ResponseAdapter<String> = StringResponseAdapter
+object HumanDetailsImpl_ResponseAdapter : ResponseAdapter<HumanDetailsImpl.Data> {
+  val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
+    ResponseField.Typename,
+    ResponseField(
+      type = ResponseField.Type.NotNull(ResponseField.Type.Named.Other("String")),
+      fieldName = "name",
+    ),
+    ResponseField(
+      type = ResponseField.Type.Named.Other("Float"),
+      fieldName = "height",
+    )
+  )
 
-  private val nullableFloatAdapter: ResponseAdapter<Double?> =
-      NullableResponseAdapter(DoubleResponseAdapter)
+  val RESPONSE_NAMES: List<String> = RESPONSE_FIELDS.map { it.responseName }
 
-  override fun fromResponse(reader: JsonReader): HumanDetailsImpl.Data {
+  override fun fromResponse(reader: JsonReader, responseAdapterCache: ResponseAdapterCache):
+      HumanDetailsImpl.Data {
     var __typename: String? = null
     var name: String? = null
     var height: Double? = null
     reader.beginObject()
     while(true) {
       when (reader.selectName(RESPONSE_NAMES)) {
-        0 -> __typename = stringAdapter.fromResponse(reader)
-        1 -> name = stringAdapter.fromResponse(reader)
-        2 -> height = nullableFloatAdapter.fromResponse(reader)
+        0 -> __typename = StringResponseAdapter.fromResponse(reader, responseAdapterCache)
+        1 -> name = StringResponseAdapter.fromResponse(reader, responseAdapterCache)
+        2 -> height = NullableDoubleResponseAdapter.fromResponse(reader, responseAdapterCache)
         else -> break
       }
     }
@@ -52,30 +59,18 @@ class HumanDetailsImpl_ResponseAdapter(
     )
   }
 
-  override fun toResponse(writer: JsonWriter, value: HumanDetailsImpl.Data) {
+  override fun toResponse(
+    writer: JsonWriter,
+    responseAdapterCache: ResponseAdapterCache,
+    value: HumanDetailsImpl.Data
+  ) {
     writer.beginObject()
     writer.name("__typename")
-    stringAdapter.toResponse(writer, value.__typename)
+    StringResponseAdapter.toResponse(writer, responseAdapterCache, value.__typename)
     writer.name("name")
-    stringAdapter.toResponse(writer, value.name)
+    StringResponseAdapter.toResponse(writer, responseAdapterCache, value.name)
     writer.name("height")
-    nullableFloatAdapter.toResponse(writer, value.height)
+    NullableDoubleResponseAdapter.toResponse(writer, responseAdapterCache, value.height)
     writer.endObject()
-  }
-
-  companion object {
-    val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
-      ResponseField.Typename,
-      ResponseField(
-        type = ResponseField.Type.NotNull(ResponseField.Type.Named.Other("String")),
-        fieldName = "name",
-      ),
-      ResponseField(
-        type = ResponseField.Type.Named.Other("Float"),
-        fieldName = "height",
-      )
-    )
-
-    val RESPONSE_NAMES: List<String> = RESPONSE_FIELDS.map { it.responseName }
   }
 }

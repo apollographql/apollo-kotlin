@@ -10,26 +10,18 @@ import com.apollographql.apollo3.api.ResponseAdapter
 import com.apollographql.apollo3.api.ResponseAdapterCache
 import com.apollographql.apollo3.api.ResponseField
 import com.apollographql.apollo3.api.json.JsonWriter
-import com.example.fragment_in_fragment.fragment.adapter.StarshipFragment_Adapter
 import com.example.fragment_in_fragment.fragment.adapter.StarshipFragment_ResponseAdapter
+import com.example.fragment_in_fragment.fragment.adapter.StarshipFragment_VariablesAdapter
 import kotlin.String
 import kotlin.collections.List
 
 class StarshipFragment : Fragment<StarshipFragment.Data> {
-  override fun adapter(responseAdapterCache: ResponseAdapterCache): ResponseAdapter<Data> {
-    val adapter = responseAdapterCache.getAdapterFor(this::class) {
-      StarshipFragment_ResponseAdapter(responseAdapterCache)
-    }
-    return adapter
-  }
-
+  override fun adapter(): ResponseAdapter<Data> = StarshipFragment_ResponseAdapter
   override fun responseFields(): List<ResponseField.FieldSet> = listOf(
     ResponseField.FieldSet(null, StarshipFragment_ResponseAdapter.RESPONSE_FIELDS)
   )
   override fun serializeVariables(writer: JsonWriter, responseAdapterCache: ResponseAdapterCache) {
-    responseAdapterCache.getVariablesAdapterFor(this::class) {
-      StarshipFragment_Adapter(responseAdapterCache)
-    }.toResponse(writer, this)
+    StarshipFragment_VariablesAdapter.toResponse(writer, responseAdapterCache, this)
   }
 
   /**

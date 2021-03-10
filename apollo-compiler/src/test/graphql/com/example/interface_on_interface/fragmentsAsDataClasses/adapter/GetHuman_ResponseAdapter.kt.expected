@@ -23,21 +23,35 @@ import kotlin.collections.List
 @Suppress("NAME_SHADOWING", "UNUSED_ANONYMOUS_PARAMETER", "LocalVariableName",
     "RemoveExplicitTypeArguments", "NestedLambdaShadowedImplicitParameter", "PropertyName",
     "RemoveRedundantQualifierName")
-class GetHuman_ResponseAdapter(
-  responseAdapterCache: ResponseAdapterCache
-) : ResponseAdapter<GetHuman.Data> {
-  private val humanAdapter: ResponseAdapter<GetHuman.Data.Human> = Human(responseAdapterCache)
+object GetHuman_ResponseAdapter : ResponseAdapter<GetHuman.Data> {
+  val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
+    ResponseField(
+      type = ResponseField.Type.NotNull(ResponseField.Type.Named.Object("Human")),
+      fieldName = "human",
+      fieldSets = listOf(
+        ResponseField.FieldSet(null, Human.RESPONSE_FIELDS)
+      ),
+    ),
+    ResponseField(
+      type = ResponseField.Type.NotNull(ResponseField.Type.Named.Object("Node")),
+      fieldName = "node",
+      fieldSets = listOf(
+        ResponseField.FieldSet("Human", Node.AsHuman.RESPONSE_FIELDS),
+      ),
+    )
+  )
 
-  private val nodeAdapter: ResponseAdapter<GetHuman.Data.Node> = Node(responseAdapterCache)
+  val RESPONSE_NAMES: List<String> = RESPONSE_FIELDS.map { it.responseName }
 
-  override fun fromResponse(reader: JsonReader): GetHuman.Data {
+  override fun fromResponse(reader: JsonReader, responseAdapterCache: ResponseAdapterCache):
+      GetHuman.Data {
     var human: GetHuman.Data.Human? = null
     var node: GetHuman.Data.Node? = null
     reader.beginObject()
     while(true) {
       when (reader.selectName(RESPONSE_NAMES)) {
-        0 -> human = humanAdapter.fromResponse(reader)
-        1 -> node = nodeAdapter.fromResponse(reader)
+        0 -> human = Human.fromResponse(reader, responseAdapterCache)
+        1 -> node = Node.fromResponse(reader, responseAdapterCache)
         else -> break
       }
     }
@@ -48,53 +62,48 @@ class GetHuman_ResponseAdapter(
     )
   }
 
-  override fun toResponse(writer: JsonWriter, value: GetHuman.Data) {
+  override fun toResponse(
+    writer: JsonWriter,
+    responseAdapterCache: ResponseAdapterCache,
+    value: GetHuman.Data
+  ) {
     writer.beginObject()
     writer.name("human")
-    humanAdapter.toResponse(writer, value.human)
+    Human.toResponse(writer, responseAdapterCache, value.human)
     writer.name("node")
-    nodeAdapter.toResponse(writer, value.node)
+    Node.toResponse(writer, responseAdapterCache, value.node)
     writer.endObject()
   }
 
-  companion object {
+  object Human : ResponseAdapter<GetHuman.Data.Human> {
     val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
       ResponseField(
-        type = ResponseField.Type.NotNull(ResponseField.Type.Named.Object("Human")),
-        fieldName = "human",
-        fieldSets = listOf(
-          ResponseField.FieldSet(null, Human.RESPONSE_FIELDS)
-        ),
+        type = ResponseField.Type.NotNull(ResponseField.Type.Named.Other("String")),
+        fieldName = "id",
       ),
       ResponseField(
-        type = ResponseField.Type.NotNull(ResponseField.Type.Named.Object("Node")),
-        fieldName = "node",
-        fieldSets = listOf(
-          ResponseField.FieldSet("Human", Node.AsHuman.RESPONSE_FIELDS),
-        ),
+        type = ResponseField.Type.NotNull(ResponseField.Type.Named.Other("String")),
+        fieldName = "name",
+      ),
+      ResponseField(
+        type = ResponseField.Type.NotNull(ResponseField.Type.Named.Other("Float")),
+        fieldName = "height",
       )
     )
 
     val RESPONSE_NAMES: List<String> = RESPONSE_FIELDS.map { it.responseName }
-  }
 
-  class Human(
-    responseAdapterCache: ResponseAdapterCache
-  ) : ResponseAdapter<GetHuman.Data.Human> {
-    private val stringAdapter: ResponseAdapter<String> = StringResponseAdapter
-
-    private val floatAdapter: ResponseAdapter<Double> = DoubleResponseAdapter
-
-    override fun fromResponse(reader: JsonReader): GetHuman.Data.Human {
+    override fun fromResponse(reader: JsonReader, responseAdapterCache: ResponseAdapterCache):
+        GetHuman.Data.Human {
       var id: String? = null
       var name: String? = null
       var height: Double? = null
       reader.beginObject()
       while(true) {
         when (reader.selectName(RESPONSE_NAMES)) {
-          0 -> id = stringAdapter.fromResponse(reader)
-          1 -> name = stringAdapter.fromResponse(reader)
-          2 -> height = floatAdapter.fromResponse(reader)
+          0 -> id = StringResponseAdapter.fromResponse(reader, responseAdapterCache)
+          1 -> name = StringResponseAdapter.fromResponse(reader, responseAdapterCache)
+          2 -> height = DoubleResponseAdapter.fromResponse(reader, responseAdapterCache)
           else -> break
         }
       }
@@ -106,46 +115,31 @@ class GetHuman_ResponseAdapter(
       )
     }
 
-    override fun toResponse(writer: JsonWriter, value: GetHuman.Data.Human) {
+    override fun toResponse(
+      writer: JsonWriter,
+      responseAdapterCache: ResponseAdapterCache,
+      value: GetHuman.Data.Human
+    ) {
       writer.beginObject()
       writer.name("id")
-      stringAdapter.toResponse(writer, value.id)
+      StringResponseAdapter.toResponse(writer, responseAdapterCache, value.id)
       writer.name("name")
-      stringAdapter.toResponse(writer, value.name)
+      StringResponseAdapter.toResponse(writer, responseAdapterCache, value.name)
       writer.name("height")
-      floatAdapter.toResponse(writer, value.height)
+      DoubleResponseAdapter.toResponse(writer, responseAdapterCache, value.height)
       writer.endObject()
-    }
-
-    companion object {
-      val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
-        ResponseField(
-          type = ResponseField.Type.NotNull(ResponseField.Type.Named.Other("String")),
-          fieldName = "id",
-        ),
-        ResponseField(
-          type = ResponseField.Type.NotNull(ResponseField.Type.Named.Other("String")),
-          fieldName = "name",
-        ),
-        ResponseField(
-          type = ResponseField.Type.NotNull(ResponseField.Type.Named.Other("Float")),
-          fieldName = "height",
-        )
-      )
-
-      val RESPONSE_NAMES: List<String> = RESPONSE_FIELDS.map { it.responseName }
     }
   }
 
-  class Node(
-    responseAdapterCache: ResponseAdapterCache
-  ) : ResponseAdapter<GetHuman.Data.Node> {
-    private val stringAdapter: ResponseAdapter<String> = StringResponseAdapter
+  object Node : ResponseAdapter<GetHuman.Data.Node> {
+    val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
+      ResponseField.Typename
+    )
 
-    private val AsHumanAdapter: AsHuman =
-        com.example.interface_on_interface.adapter.GetHuman_ResponseAdapter.Node.AsHuman(responseAdapterCache)
+    val RESPONSE_NAMES: List<String> = RESPONSE_FIELDS.map { it.responseName }
 
-    override fun fromResponse(reader: JsonReader): GetHuman.Data.Node {
+    override fun fromResponse(reader: JsonReader, responseAdapterCache: ResponseAdapterCache):
+        GetHuman.Data.Node {
       val reader = reader.buffer()
       reader.beginObject()
 
@@ -153,13 +147,13 @@ class GetHuman_ResponseAdapter(
       var asAsHuman: GetHuman.Data.Node.AsHuman? = null
       while(true) {
         when (reader.selectName(RESPONSE_NAMES)) {
-          0 -> __typename = stringAdapter.fromResponse(reader)
+          0 -> __typename = StringResponseAdapter.fromResponse(reader, responseAdapterCache)
           else -> break
         }
       }
       if (__typename in arrayOf("Human")) {
         reader.rewind()
-        asAsHuman = AsHumanAdapter.fromResponse(reader, __typename)
+        asAsHuman = AsHuman.fromResponse(reader, responseAdapterCache, __typename)
       }
 
       return GetHuman.Data.Node(
@@ -169,36 +163,40 @@ class GetHuman_ResponseAdapter(
       .also { reader.endObject() }
     }
 
-    override fun toResponse(writer: JsonWriter, value: GetHuman.Data.Node) {
+    override fun toResponse(
+      writer: JsonWriter,
+      responseAdapterCache: ResponseAdapterCache,
+      value: GetHuman.Data.Node
+    ) {
       writer.beginObject()
       writer.name("__typename")
-      stringAdapter.toResponse(writer, value.__typename)
-      if (value.asAsHuman != null) AsHumanAdapter.toResponse(writer, value.asAsHuman)
+      StringResponseAdapter.toResponse(writer, responseAdapterCache, value.__typename)
+      if (value.asAsHuman != null) AsHuman.toResponse(writer, responseAdapterCache, value.asAsHuman)
       writer.endObject()
     }
 
-    companion object {
+    object AsHuman {
       val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
-        ResponseField.Typename
+        ResponseField.Typename,
+        ResponseField(
+          type = ResponseField.Type.NotNull(ResponseField.Type.Named.Other("Float")),
+          fieldName = "height",
+        )
       )
 
       val RESPONSE_NAMES: List<String> = RESPONSE_FIELDS.map { it.responseName }
-    }
 
-    class AsHuman(
-      responseAdapterCache: ResponseAdapterCache
-    ) {
-      private val stringAdapter: ResponseAdapter<String> = StringResponseAdapter
-
-      private val floatAdapter: ResponseAdapter<Double> = DoubleResponseAdapter
-
-      fun fromResponse(reader: JsonReader, __typename: String?): GetHuman.Data.Node.AsHuman {
+      fun fromResponse(
+        reader: JsonReader,
+        responseAdapterCache: ResponseAdapterCache,
+        __typename: String?
+      ): GetHuman.Data.Node.AsHuman {
         var __typename: String? = __typename
         var height: Double? = null
         while(true) {
           when (reader.selectName(RESPONSE_NAMES)) {
-            0 -> __typename = stringAdapter.fromResponse(reader)
-            1 -> height = floatAdapter.fromResponse(reader)
+            0 -> __typename = StringResponseAdapter.fromResponse(reader, responseAdapterCache)
+            1 -> height = DoubleResponseAdapter.fromResponse(reader, responseAdapterCache)
             else -> break
           }
         }
@@ -208,25 +206,17 @@ class GetHuman_ResponseAdapter(
         )
       }
 
-      fun toResponse(writer: JsonWriter, value: GetHuman.Data.Node.AsHuman) {
+      fun toResponse(
+        writer: JsonWriter,
+        responseAdapterCache: ResponseAdapterCache,
+        value: GetHuman.Data.Node.AsHuman
+      ) {
         writer.beginObject()
         writer.name("__typename")
-        stringAdapter.toResponse(writer, value.__typename)
+        StringResponseAdapter.toResponse(writer, responseAdapterCache, value.__typename)
         writer.name("height")
-        floatAdapter.toResponse(writer, value.height)
+        DoubleResponseAdapter.toResponse(writer, responseAdapterCache, value.height)
         writer.endObject()
-      }
-
-      companion object {
-        val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
-          ResponseField.Typename,
-          ResponseField(
-            type = ResponseField.Type.NotNull(ResponseField.Type.Named.Other("Float")),
-            fieldName = "height",
-          )
-        )
-
-        val RESPONSE_NAMES: List<String> = RESPONSE_FIELDS.map { it.responseName }
       }
     }
   }

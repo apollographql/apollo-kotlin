@@ -38,6 +38,16 @@ internal object TestUtils {
     }
   }
 
+  /**
+   * This allows to run a specific test from the command line by using something like:
+   *
+   * ./gradlew :apollo-compiler:test -testFilter="fragments_with_type_condition" --tests '*Codegen*'
+   */
+  fun testFilterMatches(value: String): Boolean {
+    val testFilter = System.getProperty("testFilter") ?: return true
+
+    return Regex(testFilter).containsMatchIn(value)
+  }
   fun testParametersForGraphQLFilesIn(path: String): Collection<Array<Any>> {
     return File(path)
         .walk()
@@ -45,12 +55,7 @@ internal object TestUtils {
         .filter { it.isFile }
         .filter { it.extension == "graphql" }
         .filter {
-          val testFilter = System.getProperty("testFilter")
-          if (testFilter != null) {
-            it.name.contains(testFilter)
-          } else {
-            true
-          }
+          testFilterMatches(it.name)
         }
         .sortedBy { it.name }
         .map { arrayOf(it.nameWithoutExtension, it) }

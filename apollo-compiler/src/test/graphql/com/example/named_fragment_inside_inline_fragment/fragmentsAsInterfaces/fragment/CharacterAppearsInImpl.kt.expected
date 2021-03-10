@@ -10,27 +10,19 @@ import com.apollographql.apollo3.api.ResponseAdapter
 import com.apollographql.apollo3.api.ResponseAdapterCache
 import com.apollographql.apollo3.api.ResponseField
 import com.apollographql.apollo3.api.json.JsonWriter
-import com.example.named_fragment_inside_inline_fragment.fragment.adapter.CharacterAppearsInImpl_Adapter
 import com.example.named_fragment_inside_inline_fragment.fragment.adapter.CharacterAppearsInImpl_ResponseAdapter
+import com.example.named_fragment_inside_inline_fragment.fragment.adapter.CharacterAppearsInImpl_VariablesAdapter
 import com.example.named_fragment_inside_inline_fragment.type.Episode
 import kotlin.String
 import kotlin.collections.List
 
 class CharacterAppearsInImpl : Fragment<CharacterAppearsInImpl.Data> {
-  override fun adapter(responseAdapterCache: ResponseAdapterCache): ResponseAdapter<Data> {
-    val adapter = responseAdapterCache.getAdapterFor(this::class) {
-      CharacterAppearsInImpl_ResponseAdapter(responseAdapterCache)
-    }
-    return adapter
-  }
-
+  override fun adapter(): ResponseAdapter<Data> = CharacterAppearsInImpl_ResponseAdapter
   override fun responseFields(): List<ResponseField.FieldSet> = listOf(
     ResponseField.FieldSet(null, CharacterAppearsInImpl_ResponseAdapter.RESPONSE_FIELDS)
   )
   override fun serializeVariables(writer: JsonWriter, responseAdapterCache: ResponseAdapterCache) {
-    responseAdapterCache.getVariablesAdapterFor(this::class) {
-      CharacterAppearsInImpl_Adapter(responseAdapterCache)
-    }.toResponse(writer, this)
+    CharacterAppearsInImpl_VariablesAdapter.toResponse(writer, responseAdapterCache, this)
   }
 
   /**

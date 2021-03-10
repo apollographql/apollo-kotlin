@@ -1,5 +1,6 @@
 package com.apollographql.apollo3.compiler.backend.codegen
 
+import com.apollographql.apollo3.api.ResponseAdapterCache
 import com.apollographql.apollo3.api.ResponseField
 import com.apollographql.apollo3.api.internal.json.MapJsonReader
 import com.apollographql.apollo3.api.json.JsonReader
@@ -45,7 +46,8 @@ private fun CodeGenerationAst.ObjectType.readObjectFromResponseFunSpec(): FunSpe
 
   return FunSpec.builder("fromResponse")
       .returns(this.typeRef.asTypeName())
-      .addParameter(ParameterSpec.builder("reader", JsonReader::class).build())
+      .addParameter("reader", JsonReader::class)
+      .addParameter(Identifier.RESPONSE_ADAPTER_CACHE, ResponseAdapterCache::class)
       .apply {
         if (isTypeCase) {
           addParameter(CodeGenerationAst.typenameField.asOptionalParameterSpec(withDefaultValue = false))
@@ -115,6 +117,7 @@ private fun CodeGenerationAst.ObjectType.readFragmentFromStreamResponseFunSpec()
       .addModifiers(KModifier.OVERRIDE)
       .returns(this.typeRef.asTypeName())
       .addParameter(ParameterSpec.builder("reader", JsonReader::class).build())
+      .addParameter(Identifier.RESPONSE_ADAPTER_CACHE, ResponseAdapterCache::class)
       .applyIf(possibleImplementations.isEmpty()) {
         addStatement(
             "return·%T.fromResponse(reader)",
@@ -166,20 +169,20 @@ private fun CodeGenerationAst.ObjectType.readFragmentFromBufferedResponseFunSpec
         .map { CodeBlock.of("%S", it) }
         .joinToCode(separator = ", ")
     CodeBlock.builder()
-        .beginControlFlow("if·(__typename in arrayOf(%L))", possibleTypenamesArray)
+        .beginControlFlow("if·(__typename·in·arrayOf(%L))", possibleTypenamesArray)
         .addStatement("reader.rewind()")
         .run {
           if (fragmentImplementation.typeRef.isNamedFragmentDataRef) {
             addStatement(
-                "%L·=·%L.fromResponse(reader)",
+                "%L·=·%T.fromResponse(reader,·${Identifier.RESPONSE_ADAPTER_CACHE})",
                 fragmentImplementation.typeRef.fragmentVariableName(),
-                kotlinNameForTypeCaseAdapterField(fragmentImplementation.typeRef.enclosingType!!)
+                fragmentImplementation.typeRef.enclosingType!!.asAdapterTypeName()
             )
           } else {
             addStatement(
-                "%L·=·%L.fromResponse(reader,·__typename)",
+                "%L·=·%T.fromResponse(reader,·${Identifier.RESPONSE_ADAPTER_CACHE},·__typename)",
                 fragmentImplementation.typeRef.fragmentVariableName(),
-                kotlinNameForTypeCaseAdapterField(fragmentImplementation.typeRef)
+                fragmentImplementation.typeRef.asAdapterTypeName()
             )
           }
         }
@@ -214,6 +217,7 @@ private fun CodeGenerationAst.ObjectType.readFragmentFromBufferedResponseFunSpec
       .addModifiers(KModifier.OVERRIDE)
       .returns(this.typeRef.asTypeName())
       .addParameter(ParameterSpec.builder("reader", JsonReader::class).build())
+      .addParameter(Identifier.RESPONSE_ADAPTER_CACHE, ResponseAdapterCache::class)
       .addStatement("val reader = reader.%M()", MemberName(MapJsonReader.Companion::class.asClassName(), "buffer"))
       .addStatement("reader.beginObject()\n")
       .addCode(this.fieldVariablesCode())
@@ -228,11 +232,9 @@ private fun CodeGenerationAst.ObjectType.readFragmentFromBufferedResponseFunSpec
 
 private fun CodeGenerationAst.ObjectType.readFragmentDelegateFromResponseFunSpec(): FunSpec {
   val fragmentRef = (this.kind as CodeGenerationAst.ObjectType.Kind.FragmentDelegate).fragmentTypeRef
-  return FunSpec.builder("fromResponse")
-      .addModifiers(KModifier.OVERRIDE)
-      .returns(this.typeRef.asTypeName())
-      .addParameter(ParameterSpec.builder("reader", JsonReader::class).build())
+  return fromResponseFunSpecBuilder()
       .addParameter(CodeGenerationAst.typenameField.asOptionalParameterSpec(withDefaultValue = false))
+      .returns(this.typeRef.asTypeName())
       .addStatement(
           "return·%T(%T.fromResponse(reader,·%L))",
           this.typeRef.asTypeName(),
@@ -244,7 +246,12 @@ private fun CodeGenerationAst.ObjectType.readFragmentDelegateFromResponseFunSpec
 
 private fun CodeGenerationAst.FieldType.fromResponseCode(): CodeBlock {
   val builder = CodeBlock.builder()
-  builder.add("${kotlinNameForAdapterField(this)}.fromResponse(reader)")
+  builder.add("%L.fromResponse(reader, ${Identifier.RESPONSE_ADAPTER_CACHE})", adapterInitializer(this))
   return builder.build()
 }
+
+internal fun fromResponseFunSpecBuilder() = FunSpec.builder("fromResponse")
+    .addModifiers(KModifier.OVERRIDE)
+    .addParameter(ParameterSpec.builder("reader", JsonReader::class).build())
+    .addParameter(Identifier.RESPONSE_ADAPTER_CACHE, ResponseAdapterCache::class)
 

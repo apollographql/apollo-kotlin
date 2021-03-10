@@ -5,8 +5,6 @@
 //
 package com.example.named_fragment_with_variables.adapter
 
-import com.apollographql.apollo3.api.ListResponseAdapter
-import com.apollographql.apollo3.api.NullableResponseAdapter
 import com.apollographql.apollo3.api.ResponseAdapter
 import com.apollographql.apollo3.api.ResponseAdapterCache
 import com.apollographql.apollo3.api.ResponseField
@@ -14,6 +12,8 @@ import com.apollographql.apollo3.api.StringResponseAdapter
 import com.apollographql.apollo3.api.Variable
 import com.apollographql.apollo3.api.json.JsonReader
 import com.apollographql.apollo3.api.json.JsonWriter
+import com.apollographql.apollo3.api.list
+import com.apollographql.apollo3.api.nullable
 import com.example.named_fragment_with_variables.GetUser
 import kotlin.Array
 import kotlin.String
@@ -23,16 +23,9 @@ import kotlin.collections.List
 @Suppress("NAME_SHADOWING", "UNUSED_ANONYMOUS_PARAMETER", "LocalVariableName",
     "RemoveExplicitTypeArguments", "NestedLambdaShadowedImplicitParameter", "PropertyName",
     "RemoveRedundantQualifierName")
-class GetUser_ResponseAdapter(
-  responseAdapterCache: ResponseAdapterCache
-) : ResponseAdapter<GetUser.Data> {
-  private val QueryDataAdapter: QueryData =
-      com.example.named_fragment_with_variables.adapter.GetUser_ResponseAdapter.QueryData(responseAdapterCache)
-
-  private val OtherDataAdapter: OtherData =
-      com.example.named_fragment_with_variables.adapter.GetUser_ResponseAdapter.OtherData(responseAdapterCache)
-
-  override fun fromResponse(reader: JsonReader): GetUser.Data {
+object GetUser_ResponseAdapter : ResponseAdapter<GetUser.Data> {
+  override fun fromResponse(reader: JsonReader, responseAdapterCache: ResponseAdapterCache):
+      GetUser.Data {
     reader.beginObject()
     check(reader.nextName() == "__typename")
     val typename = reader.nextString()
@@ -43,28 +36,44 @@ class GetUser_ResponseAdapter(
     .also { reader.endObject() }
   }
 
-  override fun toResponse(writer: JsonWriter, value: GetUser.Data) {
+  override fun toResponse(
+    writer: JsonWriter,
+    responseAdapterCache: ResponseAdapterCache,
+    value: GetUser.Data
+  ) {
     when(value) {
-      is GetUser.Data.QueryData -> QueryDataAdapter.toResponse(writer, value)
-      is GetUser.Data.OtherData -> OtherDataAdapter.toResponse(writer, value)
+      is GetUser.Data.QueryData -> QueryData.toResponse(writer, responseAdapterCache, value)
+      is GetUser.Data.OtherData -> OtherDataAdapter.toResponse(writer, responseAdapterCache, value)
     }
   }
 
-  class QueryData(
-    responseAdapterCache: ResponseAdapterCache
-  ) {
-    private val stringAdapter: ResponseAdapter<String> = StringResponseAdapter
+  object QueryData {
+    val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
+      ResponseField.Typename,
+      ResponseField(
+        type = ResponseField.Type.Named.Object("Organization"),
+        fieldName = "organization",
+        arguments = mapOf<String, Any?>(
+          "id" to Variable("organizationId")),
+        fieldSets = listOf(
+          ResponseField.FieldSet(null, Organization.RESPONSE_FIELDS)
+        ),
+      )
+    )
 
-    private val nullableOrganizationAdapter: ResponseAdapter<GetUser.Data.QueryData.Organization?> =
-        NullableResponseAdapter(Organization(responseAdapterCache))
+    val RESPONSE_NAMES: List<String> = RESPONSE_FIELDS.map { it.responseName }
 
-    fun fromResponse(reader: JsonReader, __typename: String?): GetUser.Data.QueryData {
+    fun fromResponse(
+      reader: JsonReader,
+      responseAdapterCache: ResponseAdapterCache,
+      __typename: String?
+    ): GetUser.Data.QueryData {
       var __typename: String? = __typename
       var organization: GetUser.Data.QueryData.Organization? = null
       while(true) {
         when (reader.selectName(RESPONSE_NAMES)) {
-          0 -> __typename = stringAdapter.fromResponse(reader)
-          1 -> organization = nullableOrganizationAdapter.fromResponse(reader)
+          0 -> __typename = StringResponseAdapter.fromResponse(reader, responseAdapterCache)
+          1 -> organization = Organization.nullable().fromResponse(reader, responseAdapterCache)
           else -> break
         }
       }
@@ -74,48 +83,49 @@ class GetUser_ResponseAdapter(
       )
     }
 
-    fun toResponse(writer: JsonWriter, value: GetUser.Data.QueryData) {
+    fun toResponse(
+      writer: JsonWriter,
+      responseAdapterCache: ResponseAdapterCache,
+      value: GetUser.Data.QueryData
+    ) {
       writer.beginObject()
       writer.name("__typename")
-      stringAdapter.toResponse(writer, value.__typename)
+      StringResponseAdapter.toResponse(writer, responseAdapterCache, value.__typename)
       writer.name("organization")
-      nullableOrganizationAdapter.toResponse(writer, value.organization)
+      Organization.nullable().toResponse(writer, responseAdapterCache, value.organization)
       writer.endObject()
     }
 
-    companion object {
+    object Organization : ResponseAdapter<GetUser.Data.QueryData.Organization> {
       val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
-        ResponseField.Typename,
         ResponseField(
-          type = ResponseField.Type.Named.Object("Organization"),
-          fieldName = "organization",
+          type = ResponseField.Type.NotNull(ResponseField.Type.Named.Other("String")),
+          fieldName = "id",
+        ),
+        ResponseField(
+          type =
+              ResponseField.Type.NotNull(ResponseField.Type.List(ResponseField.Type.NotNull(ResponseField.Type.Named.Object("User")))),
+          fieldName = "user",
           arguments = mapOf<String, Any?>(
-            "id" to Variable("organizationId")),
+            "query" to Variable("query")),
           fieldSets = listOf(
-            ResponseField.FieldSet(null, Organization.RESPONSE_FIELDS)
+            ResponseField.FieldSet("User", User.UserUser.RESPONSE_FIELDS),
+            ResponseField.FieldSet(null, User.OtherUser.RESPONSE_FIELDS),
           ),
         )
       )
 
       val RESPONSE_NAMES: List<String> = RESPONSE_FIELDS.map { it.responseName }
-    }
 
-    class Organization(
-      responseAdapterCache: ResponseAdapterCache
-    ) : ResponseAdapter<GetUser.Data.QueryData.Organization> {
-      private val stringAdapter: ResponseAdapter<String> = StringResponseAdapter
-
-      private val listOfUserAdapter: ResponseAdapter<List<GetUser.Data.QueryData.Organization.User>>
-          = ListResponseAdapter(User(responseAdapterCache))
-
-      override fun fromResponse(reader: JsonReader): GetUser.Data.QueryData.Organization {
+      override fun fromResponse(reader: JsonReader, responseAdapterCache: ResponseAdapterCache):
+          GetUser.Data.QueryData.Organization {
         var id: String? = null
         var user: List<GetUser.Data.QueryData.Organization.User>? = null
         reader.beginObject()
         while(true) {
           when (reader.selectName(RESPONSE_NAMES)) {
-            0 -> id = stringAdapter.fromResponse(reader)
-            1 -> user = listOfUserAdapter.fromResponse(reader)
+            0 -> id = StringResponseAdapter.fromResponse(reader, responseAdapterCache)
+            1 -> user = User.list().fromResponse(reader, responseAdapterCache)
             else -> break
           }
         }
@@ -126,47 +136,22 @@ class GetUser_ResponseAdapter(
         )
       }
 
-      override fun toResponse(writer: JsonWriter, value: GetUser.Data.QueryData.Organization) {
+      override fun toResponse(
+        writer: JsonWriter,
+        responseAdapterCache: ResponseAdapterCache,
+        value: GetUser.Data.QueryData.Organization
+      ) {
         writer.beginObject()
         writer.name("id")
-        stringAdapter.toResponse(writer, value.id)
+        StringResponseAdapter.toResponse(writer, responseAdapterCache, value.id)
         writer.name("user")
-        listOfUserAdapter.toResponse(writer, value.user)
+        User.list().toResponse(writer, responseAdapterCache, value.user)
         writer.endObject()
       }
 
-      companion object {
-        val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
-          ResponseField(
-            type = ResponseField.Type.NotNull(ResponseField.Type.Named.Other("String")),
-            fieldName = "id",
-          ),
-          ResponseField(
-            type =
-                ResponseField.Type.NotNull(ResponseField.Type.List(ResponseField.Type.NotNull(ResponseField.Type.Named.Object("User")))),
-            fieldName = "user",
-            arguments = mapOf<String, Any?>(
-              "query" to Variable("query")),
-            fieldSets = listOf(
-              ResponseField.FieldSet("User", User.UserUser.RESPONSE_FIELDS),
-              ResponseField.FieldSet(null, User.OtherUser.RESPONSE_FIELDS),
-            ),
-          )
-        )
-
-        val RESPONSE_NAMES: List<String> = RESPONSE_FIELDS.map { it.responseName }
-      }
-
-      class User(
-        responseAdapterCache: ResponseAdapterCache
-      ) : ResponseAdapter<GetUser.Data.QueryData.Organization.User> {
-        private val UserUserAdapter: UserUser =
-            com.example.named_fragment_with_variables.adapter.GetUser_ResponseAdapter.QueryData.Organization.User.UserUser(responseAdapterCache)
-
-        private val OtherUserAdapter: OtherUser =
-            com.example.named_fragment_with_variables.adapter.GetUser_ResponseAdapter.QueryData.Organization.User.OtherUser(responseAdapterCache)
-
-        override fun fromResponse(reader: JsonReader): GetUser.Data.QueryData.Organization.User {
+      object User : ResponseAdapter<GetUser.Data.QueryData.Organization.User> {
+        override fun fromResponse(reader: JsonReader, responseAdapterCache: ResponseAdapterCache):
+            GetUser.Data.QueryData.Organization.User {
           reader.beginObject()
           check(reader.nextName() == "__typename")
           val typename = reader.nextString()
@@ -177,31 +162,53 @@ class GetUser_ResponseAdapter(
           .also { reader.endObject() }
         }
 
-        override fun toResponse(writer: JsonWriter,
-            value: GetUser.Data.QueryData.Organization.User) {
+        override fun toResponse(
+          writer: JsonWriter,
+          responseAdapterCache: ResponseAdapterCache,
+          value: GetUser.Data.QueryData.Organization.User
+        ) {
           when(value) {
-            is GetUser.Data.QueryData.Organization.User.UserUser -> UserUserAdapter.toResponse(writer, value)
-            is GetUser.Data.QueryData.Organization.User.OtherUser -> OtherUserAdapter.toResponse(writer, value)
+            is GetUser.Data.QueryData.Organization.User.UserUser -> UserUser.toResponse(writer, responseAdapterCache, value)
+            is GetUser.Data.QueryData.Organization.User.OtherUser -> OtherUserAdapter.toResponse(writer, responseAdapterCache, value)
           }
         }
 
-        class UserUser(
-          responseAdapterCache: ResponseAdapterCache
-        ) {
-          private val stringAdapter: ResponseAdapter<String> = StringResponseAdapter
+        object UserUser {
+          val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
+            ResponseField.Typename,
+            ResponseField(
+              type = ResponseField.Type.NotNull(ResponseField.Type.Named.Other("String")),
+              fieldName = "firstName",
+            ),
+            ResponseField(
+              type = ResponseField.Type.NotNull(ResponseField.Type.Named.Other("String")),
+              fieldName = "lastName",
+            ),
+            ResponseField(
+              type = ResponseField.Type.NotNull(ResponseField.Type.Named.Other("String")),
+              fieldName = "avatar",
+              arguments = mapOf<String, Any?>(
+                "size" to Variable("size")),
+            )
+          )
 
-          fun fromResponse(reader: JsonReader, __typename: String?):
-              GetUser.Data.QueryData.Organization.User.UserUser {
+          val RESPONSE_NAMES: List<String> = RESPONSE_FIELDS.map { it.responseName }
+
+          fun fromResponse(
+            reader: JsonReader,
+            responseAdapterCache: ResponseAdapterCache,
+            __typename: String?
+          ): GetUser.Data.QueryData.Organization.User.UserUser {
             var __typename: String? = __typename
             var firstName: String? = null
             var lastName: String? = null
             var avatar: String? = null
             while(true) {
               when (reader.selectName(RESPONSE_NAMES)) {
-                0 -> __typename = stringAdapter.fromResponse(reader)
-                1 -> firstName = stringAdapter.fromResponse(reader)
-                2 -> lastName = stringAdapter.fromResponse(reader)
-                3 -> avatar = stringAdapter.fromResponse(reader)
+                0 -> __typename = StringResponseAdapter.fromResponse(reader, responseAdapterCache)
+                1 -> firstName = StringResponseAdapter.fromResponse(reader, responseAdapterCache)
+                2 -> lastName = StringResponseAdapter.fromResponse(reader, responseAdapterCache)
+                3 -> avatar = StringResponseAdapter.fromResponse(reader, responseAdapterCache)
                 else -> break
               }
             }
@@ -213,54 +220,40 @@ class GetUser_ResponseAdapter(
             )
           }
 
-          fun toResponse(writer: JsonWriter,
-              value: GetUser.Data.QueryData.Organization.User.UserUser) {
+          fun toResponse(
+            writer: JsonWriter,
+            responseAdapterCache: ResponseAdapterCache,
+            value: GetUser.Data.QueryData.Organization.User.UserUser
+          ) {
             writer.beginObject()
             writer.name("__typename")
-            stringAdapter.toResponse(writer, value.__typename)
+            StringResponseAdapter.toResponse(writer, responseAdapterCache, value.__typename)
             writer.name("firstName")
-            stringAdapter.toResponse(writer, value.firstName)
+            StringResponseAdapter.toResponse(writer, responseAdapterCache, value.firstName)
             writer.name("lastName")
-            stringAdapter.toResponse(writer, value.lastName)
+            StringResponseAdapter.toResponse(writer, responseAdapterCache, value.lastName)
             writer.name("avatar")
-            stringAdapter.toResponse(writer, value.avatar)
+            StringResponseAdapter.toResponse(writer, responseAdapterCache, value.avatar)
             writer.endObject()
-          }
-
-          companion object {
-            val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
-              ResponseField.Typename,
-              ResponseField(
-                type = ResponseField.Type.NotNull(ResponseField.Type.Named.Other("String")),
-                fieldName = "firstName",
-              ),
-              ResponseField(
-                type = ResponseField.Type.NotNull(ResponseField.Type.Named.Other("String")),
-                fieldName = "lastName",
-              ),
-              ResponseField(
-                type = ResponseField.Type.NotNull(ResponseField.Type.Named.Other("String")),
-                fieldName = "avatar",
-                arguments = mapOf<String, Any?>(
-                  "size" to Variable("size")),
-              )
-            )
-
-            val RESPONSE_NAMES: List<String> = RESPONSE_FIELDS.map { it.responseName }
           }
         }
 
-        class OtherUser(
-          responseAdapterCache: ResponseAdapterCache
-        ) {
-          private val stringAdapter: ResponseAdapter<String> = StringResponseAdapter
+        object OtherUser {
+          val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
+            ResponseField.Typename
+          )
 
-          fun fromResponse(reader: JsonReader, __typename: String?):
-              GetUser.Data.QueryData.Organization.User.OtherUser {
+          val RESPONSE_NAMES: List<String> = RESPONSE_FIELDS.map { it.responseName }
+
+          fun fromResponse(
+            reader: JsonReader,
+            responseAdapterCache: ResponseAdapterCache,
+            __typename: String?
+          ): GetUser.Data.QueryData.Organization.User.OtherUser {
             var __typename: String? = __typename
             while(true) {
               when (reader.selectName(RESPONSE_NAMES)) {
-                0 -> __typename = stringAdapter.fromResponse(reader)
+                0 -> __typename = StringResponseAdapter.fromResponse(reader, responseAdapterCache)
                 else -> break
               }
             }
@@ -269,36 +262,37 @@ class GetUser_ResponseAdapter(
             )
           }
 
-          fun toResponse(writer: JsonWriter,
-              value: GetUser.Data.QueryData.Organization.User.OtherUser) {
+          fun toResponse(
+            writer: JsonWriter,
+            responseAdapterCache: ResponseAdapterCache,
+            value: GetUser.Data.QueryData.Organization.User.OtherUser
+          ) {
             writer.beginObject()
             writer.name("__typename")
-            stringAdapter.toResponse(writer, value.__typename)
+            StringResponseAdapter.toResponse(writer, responseAdapterCache, value.__typename)
             writer.endObject()
-          }
-
-          companion object {
-            val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
-              ResponseField.Typename
-            )
-
-            val RESPONSE_NAMES: List<String> = RESPONSE_FIELDS.map { it.responseName }
           }
         }
       }
     }
   }
 
-  class OtherData(
-    responseAdapterCache: ResponseAdapterCache
-  ) {
-    private val stringAdapter: ResponseAdapter<String> = StringResponseAdapter
+  object OtherData {
+    val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
+      ResponseField.Typename
+    )
 
-    fun fromResponse(reader: JsonReader, __typename: String?): GetUser.Data.OtherData {
+    val RESPONSE_NAMES: List<String> = RESPONSE_FIELDS.map { it.responseName }
+
+    fun fromResponse(
+      reader: JsonReader,
+      responseAdapterCache: ResponseAdapterCache,
+      __typename: String?
+    ): GetUser.Data.OtherData {
       var __typename: String? = __typename
       while(true) {
         when (reader.selectName(RESPONSE_NAMES)) {
-          0 -> __typename = stringAdapter.fromResponse(reader)
+          0 -> __typename = StringResponseAdapter.fromResponse(reader, responseAdapterCache)
           else -> break
         }
       }
@@ -307,19 +301,15 @@ class GetUser_ResponseAdapter(
       )
     }
 
-    fun toResponse(writer: JsonWriter, value: GetUser.Data.OtherData) {
+    fun toResponse(
+      writer: JsonWriter,
+      responseAdapterCache: ResponseAdapterCache,
+      value: GetUser.Data.OtherData
+    ) {
       writer.beginObject()
       writer.name("__typename")
-      stringAdapter.toResponse(writer, value.__typename)
+      StringResponseAdapter.toResponse(writer, responseAdapterCache, value.__typename)
       writer.endObject()
-    }
-
-    companion object {
-      val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
-        ResponseField.Typename
-      )
-
-      val RESPONSE_NAMES: List<String> = RESPONSE_FIELDS.map { it.responseName }
     }
   }
 }

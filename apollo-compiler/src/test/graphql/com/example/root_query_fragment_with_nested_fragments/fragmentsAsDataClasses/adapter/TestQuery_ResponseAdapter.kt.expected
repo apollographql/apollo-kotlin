@@ -23,15 +23,15 @@ import kotlin.collections.List
 @Suppress("NAME_SHADOWING", "UNUSED_ANONYMOUS_PARAMETER", "LocalVariableName",
     "RemoveExplicitTypeArguments", "NestedLambdaShadowedImplicitParameter", "PropertyName",
     "RemoveRedundantQualifierName")
-class TestQuery_ResponseAdapter(
-  responseAdapterCache: ResponseAdapterCache
-) : ResponseAdapter<TestQuery.Data> {
-  private val stringAdapter: ResponseAdapter<String> = StringResponseAdapter
+object TestQuery_ResponseAdapter : ResponseAdapter<TestQuery.Data> {
+  val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
+    ResponseField.Typename
+  )
 
-  private val QueryFragmentAdapter: QueryFragment_ResponseAdapter =
-      com.example.root_query_fragment_with_nested_fragments.fragment.adapter.QueryFragment_ResponseAdapter(responseAdapterCache)
+  val RESPONSE_NAMES: List<String> = RESPONSE_FIELDS.map { it.responseName }
 
-  override fun fromResponse(reader: JsonReader): TestQuery.Data {
+  override fun fromResponse(reader: JsonReader, responseAdapterCache: ResponseAdapterCache):
+      TestQuery.Data {
     val reader = reader.buffer()
     reader.beginObject()
 
@@ -39,13 +39,13 @@ class TestQuery_ResponseAdapter(
     var queryFragment: QueryFragment.Data? = null
     while(true) {
       when (reader.selectName(RESPONSE_NAMES)) {
-        0 -> __typename = stringAdapter.fromResponse(reader)
+        0 -> __typename = StringResponseAdapter.fromResponse(reader, responseAdapterCache)
         else -> break
       }
     }
     if (__typename in arrayOf("Query")) {
       reader.rewind()
-      queryFragment = QueryFragmentAdapter.fromResponse(reader)
+      queryFragment = QueryFragment_ResponseAdapter.fromResponse(reader, responseAdapterCache)
     }
 
     return TestQuery.Data(
@@ -55,19 +55,16 @@ class TestQuery_ResponseAdapter(
     .also { reader.endObject() }
   }
 
-  override fun toResponse(writer: JsonWriter, value: TestQuery.Data) {
+  override fun toResponse(
+    writer: JsonWriter,
+    responseAdapterCache: ResponseAdapterCache,
+    value: TestQuery.Data
+  ) {
     writer.beginObject()
     writer.name("__typename")
-    stringAdapter.toResponse(writer, value.__typename)
-    if (value.queryFragment != null) QueryFragmentAdapter.toResponse(writer, value.queryFragment)
+    StringResponseAdapter.toResponse(writer, responseAdapterCache, value.__typename)
+    if (value.queryFragment != null)
+        QueryFragment_ResponseAdapter.toResponse(writer, responseAdapterCache, value.queryFragment)
     writer.endObject()
-  }
-
-  companion object {
-    val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
-      ResponseField.Typename
-    )
-
-    val RESPONSE_NAMES: List<String> = RESPONSE_FIELDS.map { it.responseName }
   }
 }

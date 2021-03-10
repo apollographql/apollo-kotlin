@@ -16,6 +16,7 @@ import okio.Buffer
  * - deserialize records
  */
 interface ResponseAdapter<T> {
-  fun fromResponse(reader: JsonReader): T
-  fun toResponse(writer: JsonWriter, value: T)
+  fun fromResponse(reader: JsonReader, responseAdapterCache: ResponseAdapterCache): T
+  fun toResponse(writer: JsonWriter, responseAdapterCache: ResponseAdapterCache, value: T)
 }
+

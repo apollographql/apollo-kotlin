@@ -5,9 +5,7 @@
 //
 package com.example.inline_frgament_intersection.adapter
 
-import com.apollographql.apollo3.api.DoubleResponseAdapter
-import com.apollographql.apollo3.api.ListResponseAdapter
-import com.apollographql.apollo3.api.NullableResponseAdapter
+import com.apollographql.apollo3.api.NullableDoubleResponseAdapter
 import com.apollographql.apollo3.api.ResponseAdapter
 import com.apollographql.apollo3.api.ResponseAdapterCache
 import com.apollographql.apollo3.api.ResponseField
@@ -16,6 +14,7 @@ import com.apollographql.apollo3.api.internal.json.MapJsonReader
 import com.apollographql.apollo3.api.internal.json.MapJsonReader.Companion.buffer
 import com.apollographql.apollo3.api.json.JsonReader
 import com.apollographql.apollo3.api.json.JsonWriter
+import com.apollographql.apollo3.api.list
 import com.example.inline_frgament_intersection.TestOperation
 import com.example.inline_frgament_intersection.type.Race
 import com.example.inline_frgament_intersection.type.Race_ResponseAdapter
@@ -28,18 +27,28 @@ import kotlin.collections.List
 @Suppress("NAME_SHADOWING", "UNUSED_ANONYMOUS_PARAMETER", "LocalVariableName",
     "RemoveExplicitTypeArguments", "NestedLambdaShadowedImplicitParameter", "PropertyName",
     "RemoveRedundantQualifierName")
-class TestOperation_ResponseAdapter(
-  responseAdapterCache: ResponseAdapterCache
-) : ResponseAdapter<TestOperation.Data> {
-  private val randomAdapter: ResponseAdapter<TestOperation.Data.Random> =
-      Random(responseAdapterCache)
+object TestOperation_ResponseAdapter : ResponseAdapter<TestOperation.Data> {
+  val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
+    ResponseField(
+      type = ResponseField.Type.NotNull(ResponseField.Type.Named.Object("Anything")),
+      fieldName = "random",
+      fieldSets = listOf(
+        ResponseField.FieldSet("Human", Random.AsBeing.RESPONSE_FIELDS),
+        ResponseField.FieldSet("Wookie", Random.AsBeing.RESPONSE_FIELDS),
+        ResponseField.FieldSet("Wookie", Random.AsWookie.RESPONSE_FIELDS),
+      ),
+    )
+  )
 
-  override fun fromResponse(reader: JsonReader): TestOperation.Data {
+  val RESPONSE_NAMES: List<String> = RESPONSE_FIELDS.map { it.responseName }
+
+  override fun fromResponse(reader: JsonReader, responseAdapterCache: ResponseAdapterCache):
+      TestOperation.Data {
     var random: TestOperation.Data.Random? = null
     reader.beginObject()
     while(true) {
       when (reader.selectName(RESPONSE_NAMES)) {
-        0 -> random = randomAdapter.fromResponse(reader)
+        0 -> random = Random.fromResponse(reader, responseAdapterCache)
         else -> break
       }
     }
@@ -49,41 +58,26 @@ class TestOperation_ResponseAdapter(
     )
   }
 
-  override fun toResponse(writer: JsonWriter, value: TestOperation.Data) {
+  override fun toResponse(
+    writer: JsonWriter,
+    responseAdapterCache: ResponseAdapterCache,
+    value: TestOperation.Data
+  ) {
     writer.beginObject()
     writer.name("random")
-    randomAdapter.toResponse(writer, value.random)
+    Random.toResponse(writer, responseAdapterCache, value.random)
     writer.endObject()
   }
 
-  companion object {
+  object Random : ResponseAdapter<TestOperation.Data.Random> {
     val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
-      ResponseField(
-        type = ResponseField.Type.NotNull(ResponseField.Type.Named.Object("Anything")),
-        fieldName = "random",
-        fieldSets = listOf(
-          ResponseField.FieldSet("Human", Random.AsBeing.RESPONSE_FIELDS),
-          ResponseField.FieldSet("Wookie", Random.AsBeing.RESPONSE_FIELDS),
-          ResponseField.FieldSet("Wookie", Random.AsWookie.RESPONSE_FIELDS),
-        ),
-      )
+      ResponseField.Typename
     )
 
     val RESPONSE_NAMES: List<String> = RESPONSE_FIELDS.map { it.responseName }
-  }
 
-  class Random(
-    responseAdapterCache: ResponseAdapterCache
-  ) : ResponseAdapter<TestOperation.Data.Random> {
-    private val stringAdapter: ResponseAdapter<String> = StringResponseAdapter
-
-    private val AsBeingAdapter: AsBeing =
-        com.example.inline_frgament_intersection.adapter.TestOperation_ResponseAdapter.Random.AsBeing(responseAdapterCache)
-
-    private val AsWookieAdapter: AsWookie =
-        com.example.inline_frgament_intersection.adapter.TestOperation_ResponseAdapter.Random.AsWookie(responseAdapterCache)
-
-    override fun fromResponse(reader: JsonReader): TestOperation.Data.Random {
+    override fun fromResponse(reader: JsonReader, responseAdapterCache: ResponseAdapterCache):
+        TestOperation.Data.Random {
       val reader = reader.buffer()
       reader.beginObject()
 
@@ -92,17 +86,17 @@ class TestOperation_ResponseAdapter(
       var asAsWookie: TestOperation.Data.Random.AsWookie? = null
       while(true) {
         when (reader.selectName(RESPONSE_NAMES)) {
-          0 -> __typename = stringAdapter.fromResponse(reader)
+          0 -> __typename = StringResponseAdapter.fromResponse(reader, responseAdapterCache)
           else -> break
         }
       }
       if (__typename in arrayOf("Human", "Wookie")) {
         reader.rewind()
-        asAsBeing = AsBeingAdapter.fromResponse(reader, __typename)
+        asAsBeing = AsBeing.fromResponse(reader, responseAdapterCache, __typename)
       }
       if (__typename in arrayOf("Wookie")) {
         reader.rewind()
-        asAsWookie = AsWookieAdapter.fromResponse(reader, __typename)
+        asAsWookie = AsWookie.fromResponse(reader, responseAdapterCache, __typename)
       }
 
       return TestOperation.Data.Random(
@@ -113,41 +107,52 @@ class TestOperation_ResponseAdapter(
       .also { reader.endObject() }
     }
 
-    override fun toResponse(writer: JsonWriter, value: TestOperation.Data.Random) {
+    override fun toResponse(
+      writer: JsonWriter,
+      responseAdapterCache: ResponseAdapterCache,
+      value: TestOperation.Data.Random
+    ) {
       writer.beginObject()
       writer.name("__typename")
-      stringAdapter.toResponse(writer, value.__typename)
-      if (value.asAsBeing != null) AsBeingAdapter.toResponse(writer, value.asAsBeing)
-      if (value.asAsWookie != null) AsWookieAdapter.toResponse(writer, value.asAsWookie)
+      StringResponseAdapter.toResponse(writer, responseAdapterCache, value.__typename)
+      if (value.asAsBeing != null) AsBeing.toResponse(writer, responseAdapterCache, value.asAsBeing)
+      if (value.asAsWookie != null)
+          AsWookie.toResponse(writer, responseAdapterCache, value.asAsWookie)
       writer.endObject()
     }
 
-    companion object {
+    object AsBeing {
       val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
-        ResponseField.Typename
+        ResponseField.Typename,
+        ResponseField(
+          type = ResponseField.Type.NotNull(ResponseField.Type.Named.Other("String")),
+          fieldName = "name",
+        ),
+        ResponseField(
+          type =
+              ResponseField.Type.NotNull(ResponseField.Type.List(ResponseField.Type.NotNull(ResponseField.Type.Named.Object("Being")))),
+          fieldName = "friends",
+          fieldSets = listOf(
+            ResponseField.FieldSet("Wookie", Friends.AsWookie.RESPONSE_FIELDS),
+          ),
+        )
       )
 
       val RESPONSE_NAMES: List<String> = RESPONSE_FIELDS.map { it.responseName }
-    }
 
-    class AsBeing(
-      responseAdapterCache: ResponseAdapterCache
-    ) {
-      private val stringAdapter: ResponseAdapter<String> = StringResponseAdapter
-
-      private val listOfFriendsAdapter:
-          ResponseAdapter<List<TestOperation.Data.Random.AsBeing.Friends>> =
-          ListResponseAdapter(Friends(responseAdapterCache))
-
-      fun fromResponse(reader: JsonReader, __typename: String?): TestOperation.Data.Random.AsBeing {
+      fun fromResponse(
+        reader: JsonReader,
+        responseAdapterCache: ResponseAdapterCache,
+        __typename: String?
+      ): TestOperation.Data.Random.AsBeing {
         var __typename: String? = __typename
         var name: String? = null
         var friends: List<TestOperation.Data.Random.AsBeing.Friends>? = null
         while(true) {
           when (reader.selectName(RESPONSE_NAMES)) {
-            0 -> __typename = stringAdapter.fromResponse(reader)
-            1 -> name = stringAdapter.fromResponse(reader)
-            2 -> friends = listOfFriendsAdapter.fromResponse(reader)
+            0 -> __typename = StringResponseAdapter.fromResponse(reader, responseAdapterCache)
+            1 -> name = StringResponseAdapter.fromResponse(reader, responseAdapterCache)
+            2 -> friends = Friends.list().fromResponse(reader, responseAdapterCache)
             else -> break
           }
         }
@@ -158,46 +163,34 @@ class TestOperation_ResponseAdapter(
         )
       }
 
-      fun toResponse(writer: JsonWriter, value: TestOperation.Data.Random.AsBeing) {
+      fun toResponse(
+        writer: JsonWriter,
+        responseAdapterCache: ResponseAdapterCache,
+        value: TestOperation.Data.Random.AsBeing
+      ) {
         writer.beginObject()
         writer.name("__typename")
-        stringAdapter.toResponse(writer, value.__typename)
+        StringResponseAdapter.toResponse(writer, responseAdapterCache, value.__typename)
         writer.name("name")
-        stringAdapter.toResponse(writer, value.name)
+        StringResponseAdapter.toResponse(writer, responseAdapterCache, value.name)
         writer.name("friends")
-        listOfFriendsAdapter.toResponse(writer, value.friends)
+        Friends.list().toResponse(writer, responseAdapterCache, value.friends)
         writer.endObject()
       }
 
-      companion object {
+      object Friends : ResponseAdapter<TestOperation.Data.Random.AsBeing.Friends> {
         val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
           ResponseField.Typename,
           ResponseField(
             type = ResponseField.Type.NotNull(ResponseField.Type.Named.Other("String")),
             fieldName = "name",
-          ),
-          ResponseField(
-            type =
-                ResponseField.Type.NotNull(ResponseField.Type.List(ResponseField.Type.NotNull(ResponseField.Type.Named.Object("Being")))),
-            fieldName = "friends",
-            fieldSets = listOf(
-              ResponseField.FieldSet("Wookie", Friends.AsWookie.RESPONSE_FIELDS),
-            ),
           )
         )
 
         val RESPONSE_NAMES: List<String> = RESPONSE_FIELDS.map { it.responseName }
-      }
 
-      class Friends(
-        responseAdapterCache: ResponseAdapterCache
-      ) : ResponseAdapter<TestOperation.Data.Random.AsBeing.Friends> {
-        private val stringAdapter: ResponseAdapter<String> = StringResponseAdapter
-
-        private val AsWookieAdapter: AsWookie =
-            com.example.inline_frgament_intersection.adapter.TestOperation_ResponseAdapter.Random.AsBeing.Friends.AsWookie(responseAdapterCache)
-
-        override fun fromResponse(reader: JsonReader): TestOperation.Data.Random.AsBeing.Friends {
+        override fun fromResponse(reader: JsonReader, responseAdapterCache: ResponseAdapterCache):
+            TestOperation.Data.Random.AsBeing.Friends {
           val reader = reader.buffer()
           reader.beginObject()
 
@@ -206,14 +199,14 @@ class TestOperation_ResponseAdapter(
           var asAsWookie: TestOperation.Data.Random.AsBeing.Friends.AsWookie? = null
           while(true) {
             when (reader.selectName(RESPONSE_NAMES)) {
-              0 -> __typename = stringAdapter.fromResponse(reader)
-              1 -> name = stringAdapter.fromResponse(reader)
+              0 -> __typename = StringResponseAdapter.fromResponse(reader, responseAdapterCache)
+              1 -> name = StringResponseAdapter.fromResponse(reader, responseAdapterCache)
               else -> break
             }
           }
           if (__typename in arrayOf("Wookie")) {
             reader.rewind()
-            asAsWookie = AsWookieAdapter.fromResponse(reader, __typename)
+            asAsWookie = AsWookie.fromResponse(reader, responseAdapterCache, __typename)
           }
 
           return TestOperation.Data.Random.AsBeing.Friends(
@@ -224,48 +217,51 @@ class TestOperation_ResponseAdapter(
           .also { reader.endObject() }
         }
 
-        override fun toResponse(writer: JsonWriter,
-            value: TestOperation.Data.Random.AsBeing.Friends) {
+        override fun toResponse(
+          writer: JsonWriter,
+          responseAdapterCache: ResponseAdapterCache,
+          value: TestOperation.Data.Random.AsBeing.Friends
+        ) {
           writer.beginObject()
           writer.name("__typename")
-          stringAdapter.toResponse(writer, value.__typename)
+          StringResponseAdapter.toResponse(writer, responseAdapterCache, value.__typename)
 
           writer.name("name")
-          stringAdapter.toResponse(writer, value.name)
-          if (value.asAsWookie != null) AsWookieAdapter.toResponse(writer, value.asAsWookie)
+          StringResponseAdapter.toResponse(writer, responseAdapterCache, value.name)
+          if (value.asAsWookie != null)
+              AsWookie.toResponse(writer, responseAdapterCache, value.asAsWookie)
           writer.endObject()
         }
 
-        companion object {
+        object AsWookie {
           val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
             ResponseField.Typename,
             ResponseField(
               type = ResponseField.Type.NotNull(ResponseField.Type.Named.Other("String")),
               fieldName = "name",
+            ),
+            ResponseField(
+              type = ResponseField.Type.Named.Other("Float"),
+              fieldName = "lifeExpectancy",
             )
           )
 
           val RESPONSE_NAMES: List<String> = RESPONSE_FIELDS.map { it.responseName }
-        }
 
-        class AsWookie(
-          responseAdapterCache: ResponseAdapterCache
-        ) {
-          private val stringAdapter: ResponseAdapter<String> = StringResponseAdapter
-
-          private val nullableFloatAdapter: ResponseAdapter<Double?> =
-              NullableResponseAdapter(DoubleResponseAdapter)
-
-          fun fromResponse(reader: JsonReader, __typename: String?):
-              TestOperation.Data.Random.AsBeing.Friends.AsWookie {
+          fun fromResponse(
+            reader: JsonReader,
+            responseAdapterCache: ResponseAdapterCache,
+            __typename: String?
+          ): TestOperation.Data.Random.AsBeing.Friends.AsWookie {
             var __typename: String? = __typename
             var name: String? = null
             var lifeExpectancy: Double? = null
             while(true) {
               when (reader.selectName(RESPONSE_NAMES)) {
-                0 -> __typename = stringAdapter.fromResponse(reader)
-                1 -> name = stringAdapter.fromResponse(reader)
-                2 -> lifeExpectancy = nullableFloatAdapter.fromResponse(reader)
+                0 -> __typename = StringResponseAdapter.fromResponse(reader, responseAdapterCache)
+                1 -> name = StringResponseAdapter.fromResponse(reader, responseAdapterCache)
+                2 -> lifeExpectancy = NullableDoubleResponseAdapter.fromResponse(reader,
+                    responseAdapterCache)
                 else -> break
               }
             }
@@ -276,58 +272,57 @@ class TestOperation_ResponseAdapter(
             )
           }
 
-          fun toResponse(writer: JsonWriter,
-              value: TestOperation.Data.Random.AsBeing.Friends.AsWookie) {
+          fun toResponse(
+            writer: JsonWriter,
+            responseAdapterCache: ResponseAdapterCache,
+            value: TestOperation.Data.Random.AsBeing.Friends.AsWookie
+          ) {
             writer.beginObject()
             writer.name("__typename")
-            stringAdapter.toResponse(writer, value.__typename)
+            StringResponseAdapter.toResponse(writer, responseAdapterCache, value.__typename)
             writer.name("name")
-            stringAdapter.toResponse(writer, value.name)
+            StringResponseAdapter.toResponse(writer, responseAdapterCache, value.name)
             writer.name("lifeExpectancy")
-            nullableFloatAdapter.toResponse(writer, value.lifeExpectancy)
+            NullableDoubleResponseAdapter.toResponse(writer, responseAdapterCache,
+                value.lifeExpectancy)
             writer.endObject()
-          }
-
-          companion object {
-            val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
-              ResponseField.Typename,
-              ResponseField(
-                type = ResponseField.Type.NotNull(ResponseField.Type.Named.Other("String")),
-                fieldName = "name",
-              ),
-              ResponseField(
-                type = ResponseField.Type.Named.Other("Float"),
-                fieldName = "lifeExpectancy",
-              )
-            )
-
-            val RESPONSE_NAMES: List<String> = RESPONSE_FIELDS.map { it.responseName }
           }
         }
       }
     }
 
-    class AsWookie(
-      responseAdapterCache: ResponseAdapterCache
-    ) {
-      private val stringAdapter: ResponseAdapter<String> = StringResponseAdapter
+    object AsWookie {
+      val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
+        ResponseField.Typename,
+        ResponseField(
+          type = ResponseField.Type.NotNull(ResponseField.Type.Named.Other("Race")),
+          fieldName = "race",
+        ),
+        ResponseField(
+          type =
+              ResponseField.Type.NotNull(ResponseField.Type.List(ResponseField.Type.NotNull(ResponseField.Type.Named.Object("Being")))),
+          fieldName = "friends",
+          fieldSets = listOf(
+            ResponseField.FieldSet(null, Friends.RESPONSE_FIELDS)
+          ),
+        )
+      )
 
-      private val raceAdapter: ResponseAdapter<Race> = Race_ResponseAdapter
+      val RESPONSE_NAMES: List<String> = RESPONSE_FIELDS.map { it.responseName }
 
-      private val listOfFriendsAdapter:
-          ResponseAdapter<List<TestOperation.Data.Random.AsWookie.Friends>> =
-          ListResponseAdapter(Friends(responseAdapterCache))
-
-      fun fromResponse(reader: JsonReader, __typename: String?):
-          TestOperation.Data.Random.AsWookie {
+      fun fromResponse(
+        reader: JsonReader,
+        responseAdapterCache: ResponseAdapterCache,
+        __typename: String?
+      ): TestOperation.Data.Random.AsWookie {
         var __typename: String? = __typename
         var race: Race? = null
         var friends: List<TestOperation.Data.Random.AsWookie.Friends>? = null
         while(true) {
           when (reader.selectName(RESPONSE_NAMES)) {
-            0 -> __typename = stringAdapter.fromResponse(reader)
-            1 -> race = raceAdapter.fromResponse(reader)
-            2 -> friends = listOfFriendsAdapter.fromResponse(reader)
+            0 -> __typename = StringResponseAdapter.fromResponse(reader, responseAdapterCache)
+            1 -> race = Race_ResponseAdapter.fromResponse(reader, responseAdapterCache)
+            2 -> friends = Friends.list().fromResponse(reader, responseAdapterCache)
             else -> break
           }
         }
@@ -338,49 +333,39 @@ class TestOperation_ResponseAdapter(
         )
       }
 
-      fun toResponse(writer: JsonWriter, value: TestOperation.Data.Random.AsWookie) {
+      fun toResponse(
+        writer: JsonWriter,
+        responseAdapterCache: ResponseAdapterCache,
+        value: TestOperation.Data.Random.AsWookie
+      ) {
         writer.beginObject()
         writer.name("__typename")
-        stringAdapter.toResponse(writer, value.__typename)
+        StringResponseAdapter.toResponse(writer, responseAdapterCache, value.__typename)
         writer.name("race")
-        raceAdapter.toResponse(writer, value.race)
+        Race_ResponseAdapter.toResponse(writer, responseAdapterCache, value.race)
         writer.name("friends")
-        listOfFriendsAdapter.toResponse(writer, value.friends)
+        Friends.list().toResponse(writer, responseAdapterCache, value.friends)
         writer.endObject()
       }
 
-      companion object {
+      object Friends : ResponseAdapter<TestOperation.Data.Random.AsWookie.Friends> {
         val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
-          ResponseField.Typename,
           ResponseField(
-            type = ResponseField.Type.NotNull(ResponseField.Type.Named.Other("Race")),
-            fieldName = "race",
-          ),
-          ResponseField(
-            type =
-                ResponseField.Type.NotNull(ResponseField.Type.List(ResponseField.Type.NotNull(ResponseField.Type.Named.Object("Being")))),
-            fieldName = "friends",
-            fieldSets = listOf(
-              ResponseField.FieldSet(null, Friends.RESPONSE_FIELDS)
-            ),
+            type = ResponseField.Type.Named.Other("Float"),
+            fieldName = "lifeExpectancy",
           )
         )
 
         val RESPONSE_NAMES: List<String> = RESPONSE_FIELDS.map { it.responseName }
-      }
 
-      class Friends(
-        responseAdapterCache: ResponseAdapterCache
-      ) : ResponseAdapter<TestOperation.Data.Random.AsWookie.Friends> {
-        private val nullableFloatAdapter: ResponseAdapter<Double?> =
-            NullableResponseAdapter(DoubleResponseAdapter)
-
-        override fun fromResponse(reader: JsonReader): TestOperation.Data.Random.AsWookie.Friends {
+        override fun fromResponse(reader: JsonReader, responseAdapterCache: ResponseAdapterCache):
+            TestOperation.Data.Random.AsWookie.Friends {
           var lifeExpectancy: Double? = null
           reader.beginObject()
           while(true) {
             when (reader.selectName(RESPONSE_NAMES)) {
-              0 -> lifeExpectancy = nullableFloatAdapter.fromResponse(reader)
+              0 -> lifeExpectancy = NullableDoubleResponseAdapter.fromResponse(reader,
+                  responseAdapterCache)
               else -> break
             }
           }
@@ -390,23 +375,16 @@ class TestOperation_ResponseAdapter(
           )
         }
 
-        override fun toResponse(writer: JsonWriter,
-            value: TestOperation.Data.Random.AsWookie.Friends) {
+        override fun toResponse(
+          writer: JsonWriter,
+          responseAdapterCache: ResponseAdapterCache,
+          value: TestOperation.Data.Random.AsWookie.Friends
+        ) {
           writer.beginObject()
           writer.name("lifeExpectancy")
-          nullableFloatAdapter.toResponse(writer, value.lifeExpectancy)
+          NullableDoubleResponseAdapter.toResponse(writer, responseAdapterCache,
+              value.lifeExpectancy)
           writer.endObject()
-        }
-
-        companion object {
-          val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
-            ResponseField(
-              type = ResponseField.Type.Named.Other("Float"),
-              fieldName = "lifeExpectancy",
-            )
-          )
-
-          val RESPONSE_NAMES: List<String> = RESPONSE_FIELDS.map { it.responseName }
         }
       }
     }

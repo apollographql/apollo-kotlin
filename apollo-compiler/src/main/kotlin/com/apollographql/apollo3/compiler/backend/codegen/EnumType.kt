@@ -50,8 +50,7 @@ private fun CodeGenerationAst.EnumType.toEnumTypeSpec(generateAsInternal: Boolea
 }
 
 private fun CodeGenerationAst.EnumType.adapterTypeSpec(generateAsInternal: Boolean, asSealedClass: Boolean, packageName: String): TypeSpec {
-  val fromResponseFunSpec = FunSpec.builder("fromResponse")
-      .addParameter("reader", JsonReader::class)
+  val fromResponseFunSpec = fromResponseFunSpecBuilder()
       .returns(ClassName(packageName, name.escapeKotlinReservedWord()))
       .addCode(
           CodeBlock.builder()
@@ -68,11 +67,9 @@ private fun CodeGenerationAst.EnumType.adapterTypeSpec(generateAsInternal: Boole
       )
       .addModifiers(KModifier.OVERRIDE)
       .build()
-  val toResponseFunSpec = FunSpec.builder("toResponse")
-      .addParameter("writer", JsonWriter::class)
+  val toResponseFunSpec = toResponseFunSpecBuilder()
       .addParameter("value", ClassName(packageName, name.escapeKotlinReservedWord()))
       .addCode("writer.value(value.rawValue)")
-      .addModifiers(KModifier.OVERRIDE)
       .build()
 
   return TypeSpec

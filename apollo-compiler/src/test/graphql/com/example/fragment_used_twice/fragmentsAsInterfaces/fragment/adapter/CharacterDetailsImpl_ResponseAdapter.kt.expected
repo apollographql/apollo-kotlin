@@ -22,24 +22,33 @@ import kotlin.collections.List
 @Suppress("NAME_SHADOWING", "UNUSED_ANONYMOUS_PARAMETER", "LocalVariableName",
     "RemoveExplicitTypeArguments", "NestedLambdaShadowedImplicitParameter", "PropertyName",
     "RemoveRedundantQualifierName")
-class CharacterDetailsImpl_ResponseAdapter(
-  responseAdapterCache: ResponseAdapterCache
-) : ResponseAdapter<CharacterDetailsImpl.Data> {
-  private val stringAdapter: ResponseAdapter<String> = StringResponseAdapter
+object CharacterDetailsImpl_ResponseAdapter : ResponseAdapter<CharacterDetailsImpl.Data> {
+  val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
+    ResponseField.Typename,
+    ResponseField(
+      type = ResponseField.Type.NotNull(ResponseField.Type.Named.Other("String")),
+      fieldName = "name",
+    ),
+    ResponseField(
+      type = ResponseField.Type.NotNull(ResponseField.Type.Named.Other("Date")),
+      fieldName = "birthDate",
+    )
+  )
 
-  private val dateAdapter: ResponseAdapter<Any> =
-      responseAdapterCache.responseAdapterFor<Any>(CustomScalars.Date)
+  val RESPONSE_NAMES: List<String> = RESPONSE_FIELDS.map { it.responseName }
 
-  override fun fromResponse(reader: JsonReader): CharacterDetailsImpl.Data {
+  override fun fromResponse(reader: JsonReader, responseAdapterCache: ResponseAdapterCache):
+      CharacterDetailsImpl.Data {
     var __typename: String? = null
     var name: String? = null
     var birthDate: Any? = null
     reader.beginObject()
     while(true) {
       when (reader.selectName(RESPONSE_NAMES)) {
-        0 -> __typename = stringAdapter.fromResponse(reader)
-        1 -> name = stringAdapter.fromResponse(reader)
-        2 -> birthDate = dateAdapter.fromResponse(reader)
+        0 -> __typename = StringResponseAdapter.fromResponse(reader, responseAdapterCache)
+        1 -> name = StringResponseAdapter.fromResponse(reader, responseAdapterCache)
+        2 -> birthDate = responseAdapterCache.responseAdapterFor<Any>(CustomScalars.Date).fromResponse(reader,
+            responseAdapterCache)
         else -> break
       }
     }
@@ -51,30 +60,19 @@ class CharacterDetailsImpl_ResponseAdapter(
     )
   }
 
-  override fun toResponse(writer: JsonWriter, value: CharacterDetailsImpl.Data) {
+  override fun toResponse(
+    writer: JsonWriter,
+    responseAdapterCache: ResponseAdapterCache,
+    value: CharacterDetailsImpl.Data
+  ) {
     writer.beginObject()
     writer.name("__typename")
-    stringAdapter.toResponse(writer, value.__typename)
+    StringResponseAdapter.toResponse(writer, responseAdapterCache, value.__typename)
     writer.name("name")
-    stringAdapter.toResponse(writer, value.name)
+    StringResponseAdapter.toResponse(writer, responseAdapterCache, value.name)
     writer.name("birthDate")
-    dateAdapter.toResponse(writer, value.birthDate)
+    responseAdapterCache.responseAdapterFor<Any>(CustomScalars.Date).toResponse(writer,
+        responseAdapterCache, value.birthDate)
     writer.endObject()
-  }
-
-  companion object {
-    val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
-      ResponseField.Typename,
-      ResponseField(
-        type = ResponseField.Type.NotNull(ResponseField.Type.Named.Other("String")),
-        fieldName = "name",
-      ),
-      ResponseField(
-        type = ResponseField.Type.NotNull(ResponseField.Type.Named.Other("Date")),
-        fieldName = "birthDate",
-      )
-    )
-
-    val RESPONSE_NAMES: List<String> = RESPONSE_FIELDS.map { it.responseName }
   }
 }

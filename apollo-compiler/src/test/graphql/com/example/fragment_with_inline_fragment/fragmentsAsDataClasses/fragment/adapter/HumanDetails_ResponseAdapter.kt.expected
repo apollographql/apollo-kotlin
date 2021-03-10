@@ -20,19 +20,26 @@ import kotlin.collections.List
 @Suppress("NAME_SHADOWING", "UNUSED_ANONYMOUS_PARAMETER", "LocalVariableName",
     "RemoveExplicitTypeArguments", "NestedLambdaShadowedImplicitParameter", "PropertyName",
     "RemoveRedundantQualifierName")
-class HumanDetails_ResponseAdapter(
-  responseAdapterCache: ResponseAdapterCache
-) : ResponseAdapter<HumanDetails.Data> {
-  private val stringAdapter: ResponseAdapter<String> = StringResponseAdapter
+object HumanDetails_ResponseAdapter : ResponseAdapter<HumanDetails.Data> {
+  val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
+    ResponseField.Typename,
+    ResponseField(
+      type = ResponseField.Type.NotNull(ResponseField.Type.Named.Other("String")),
+      fieldName = "name",
+    )
+  )
 
-  override fun fromResponse(reader: JsonReader): HumanDetails.Data {
+  val RESPONSE_NAMES: List<String> = RESPONSE_FIELDS.map { it.responseName }
+
+  override fun fromResponse(reader: JsonReader, responseAdapterCache: ResponseAdapterCache):
+      HumanDetails.Data {
     var __typename: String? = null
     var name: String? = null
     reader.beginObject()
     while(true) {
       when (reader.selectName(RESPONSE_NAMES)) {
-        0 -> __typename = stringAdapter.fromResponse(reader)
-        1 -> name = stringAdapter.fromResponse(reader)
+        0 -> __typename = StringResponseAdapter.fromResponse(reader, responseAdapterCache)
+        1 -> name = StringResponseAdapter.fromResponse(reader, responseAdapterCache)
         else -> break
       }
     }
@@ -43,24 +50,16 @@ class HumanDetails_ResponseAdapter(
     )
   }
 
-  override fun toResponse(writer: JsonWriter, value: HumanDetails.Data) {
+  override fun toResponse(
+    writer: JsonWriter,
+    responseAdapterCache: ResponseAdapterCache,
+    value: HumanDetails.Data
+  ) {
     writer.beginObject()
     writer.name("__typename")
-    stringAdapter.toResponse(writer, value.__typename)
+    StringResponseAdapter.toResponse(writer, responseAdapterCache, value.__typename)
     writer.name("name")
-    stringAdapter.toResponse(writer, value.name)
+    StringResponseAdapter.toResponse(writer, responseAdapterCache, value.name)
     writer.endObject()
-  }
-
-  companion object {
-    val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
-      ResponseField.Typename,
-      ResponseField(
-        type = ResponseField.Type.NotNull(ResponseField.Type.Named.Other("String")),
-        fieldName = "name",
-      )
-    )
-
-    val RESPONSE_NAMES: List<String> = RESPONSE_FIELDS.map { it.responseName }
   }
 }

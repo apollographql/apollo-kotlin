@@ -41,59 +41,68 @@ fun serializeVariablesFunSpec(
     packageName: String,
     name: String,
 ): FunSpec {
-  val serializerClassName = ClassName("$packageName.adapter", kotlinNameForSerializer(name))
-  val body = CodeBlock.builder().apply {
-    addStatement("${Identifier.RESPONSE_ADAPTER_CACHE}.getVariablesAdapterFor(this::class) {")
-    indent()
-    addStatement("%T(${Identifier.RESPONSE_ADAPTER_CACHE})", serializerClassName)
-    unindent()
-    addStatement("}.toResponse(writer, this)")
-  }.build()
+  val serializerClassName = ClassName("$packageName.adapter", kotlinNameForVariablesAdapter(name))
 
   return FunSpec.builder(funName)
       .addModifiers(KModifier.OVERRIDE)
       .addParameter("writer", JsonWriter::class)
-      .addParameter(ParameterSpec.builder(Identifier.RESPONSE_ADAPTER_CACHE, ResponseAdapterCache::class.asTypeName()).build())
-      .addCode(body)
+      .addParameter(Identifier.RESPONSE_ADAPTER_CACHE, ResponseAdapterCache::class.asTypeName())
+      .addCode("%T.toResponse(writer, ${Identifier.RESPONSE_ADAPTER_CACHE}, this)", serializerClassName)
       .build()
-
 }
 
 fun notImplementedFromResponseFunSpec(returnTypeName: TypeName) = FunSpec.builder("fromResponse")
     .addModifiers(KModifier.OVERRIDE)
-    .addParameter(ParameterSpec.builder(Identifier.READER, JsonReader::class).build())
+    .addParameter(Identifier.READER, JsonReader::class)
+    .addParameter(Identifier.RESPONSE_ADAPTER_CACHE, ResponseAdapterCache::class.asTypeName())
     .returns(returnTypeName)
     .addCode("throw %T(%S)", ClassName("kotlin", "IllegalStateException"), "Input type used in output position")
     .build()
 
-internal fun List<CodeGenerationAst.InputField>.serializerTypeSpec(
+internal fun List<CodeGenerationAst.InputField>.variablesAdapterTypeSpec(
     packageName: String,
     name: String,
     generateAsInternal: Boolean
 ): TypeSpec {
+  return inputFieldsAdapterTypeSpec(
+      packageName = packageName,
+      name = name,
+      adapterName = kotlinNameForVariablesAdapter(name),
+      generateAsInternal = generateAsInternal
+  )
+}
+
+internal fun List<CodeGenerationAst.InputField>.inputObjectAdapterTypeSpec(
+    packageName: String,
+    name: String,
+    generateAsInternal: Boolean
+): TypeSpec {
+  return inputFieldsAdapterTypeSpec(
+      packageName = packageName,
+      name = name,
+      adapterName = kotlinNameForInputObjectAdapter(name),
+      generateAsInternal = generateAsInternal
+  )
+}
+
+private fun List<CodeGenerationAst.InputField>.inputFieldsAdapterTypeSpec(
+    packageName: String,
+    name: String,
+    adapterName: String,
+    generateAsInternal: Boolean
+): TypeSpec {
   val className = ClassName(packageName, name)
-  val builder = TypeSpec.classBuilder(kotlinNameForSerializer(name))
+  val builder = TypeSpec.objectBuilder(adapterName)
 
   if (generateAsInternal) {
     builder.addModifiers(KModifier.INTERNAL)
   }
   builder.addSuperinterface(ResponseAdapter::class.asClassName().parameterizedBy(className))
 
-  builder.primaryConstructor(FunSpec.constructorBuilder()
-      .addParameter(Identifier.RESPONSE_ADAPTER_CACHE, ResponseAdapterCache::class)
-      .build()
-  )
-
-  map {
-    it.type
-  }.distinct()
-      .forEach {
-        builder.addProperty(it.adapterPropertySpec())
-      }
-
   builder.addFunction(notImplementedFromResponseFunSpec(className))
   builder.addFunction(FunSpec.builder(Identifier.TO_RESPONSE)
       .addParameter(Identifier.WRITER, JsonWriter::class)
+      .addParameter(Identifier.RESPONSE_ADAPTER_CACHE, ResponseAdapterCache::class.asTypeName())
       .addParameter(Identifier.VALUE, className)
       .addModifiers(KModifier.OVERRIDE)
       .addCode(CodeBlock.Builder().apply {
@@ -102,11 +111,11 @@ internal fun List<CodeGenerationAst.InputField>.serializerTypeSpec(
           if (!it.isRequired) {
             beginControlFlow("if (value.%L is %T)", kotlinNameForVariable(it.name), Input.Present::class)
             addStatement("writer.name(%S)", it.schemaName)
-            addStatement("%L.toResponse(writer, value.%L.value)", kotlinNameForAdapterField(it.type), kotlinNameForVariable(it.name))
+            addStatement("%L.toResponse(writer, ${Identifier.RESPONSE_ADAPTER_CACHE}, value.%L.value)", adapterInitializer(it.type), kotlinNameForVariable(it.name))
             endControlFlow()
           } else {
             addStatement("writer.name(%S)", it.schemaName)
-            addStatement("%L.toResponse(writer, value.%L)", kotlinNameForAdapterField(it.type), kotlinNameForVariable(it.name))
+            addStatement("%L.toResponse(writer, ${Identifier.RESPONSE_ADAPTER_CACHE}, value.%L)", adapterInitializer(it.type), kotlinNameForVariable(it.name))
           }
         }
         addStatement("writer.endObject()")

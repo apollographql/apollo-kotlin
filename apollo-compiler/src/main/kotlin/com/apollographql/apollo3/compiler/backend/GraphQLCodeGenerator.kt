@@ -2,12 +2,13 @@ package com.apollographql.apollo3.compiler.backend
 
 import com.apollographql.apollo3.compiler.backend.ast.AstBuilder.Companion.buildAst
 import com.apollographql.apollo3.compiler.backend.codegen.implementationTypeSpec
+import com.apollographql.apollo3.compiler.backend.codegen.inputObjectAdapterTypeSpec
 import com.apollographql.apollo3.compiler.backend.codegen.interfaceTypeSpec
 import com.apollographql.apollo3.compiler.backend.codegen.patchKotlinNativeOptionalArrayProperties
 import com.apollographql.apollo3.compiler.backend.codegen.responseAdapterTypeSpec
 import com.apollographql.apollo3.compiler.backend.codegen.typeSpec
 import com.apollographql.apollo3.compiler.backend.codegen.typeSpecs
-import com.apollographql.apollo3.compiler.backend.codegen.serializerTypeSpec
+import com.apollographql.apollo3.compiler.backend.codegen.variablesAdapterTypeSpec
 import com.apollographql.apollo3.compiler.backend.ir.BackendIr
 import com.apollographql.apollo3.compiler.escapeKotlinReservedWord
 import com.apollographql.apollo3.compiler.frontend.Schema
@@ -72,7 +73,7 @@ internal class GraphQLCodeGenerator(
               .typeSpec(generateAsInternal)
               .fileSpec(typesPackageName)
               .writeTo(outputDir)
-          inputType.fields.serializerTypeSpec(typesPackageName, inputType.name, generateAsInternal)
+          inputType.fields.inputObjectAdapterTypeSpec(typesPackageName, inputType.name, generateAsInternal)
               .fileSpec("${typesPackageName}.adapter")
               .writeTo(outputDir)
         }
@@ -92,7 +93,7 @@ internal class GraphQLCodeGenerator(
                 .fileSpec(fragmentsPackageName)
                 .writeTo(outputDir)
 
-            fragmentType.variables.serializerTypeSpec(fragmentsPackageName, fragmentType.implementationType.name, generateAsInternal)
+            fragmentType.variables.variablesAdapterTypeSpec(fragmentsPackageName, fragmentType.implementationType.name, generateAsInternal)
                 .fileSpec("${fragmentsPackageName}.adapter")
                 .writeTo(outputDir)
 
@@ -118,7 +119,7 @@ internal class GraphQLCodeGenerator(
           .fileSpec(operationType.packageName)
           .writeTo(outputDir)
 
-      operationType.variables.serializerTypeSpec(operationType.packageName, operationType.name, generateAsInternal)
+      operationType.variables.variablesAdapterTypeSpec(operationType.packageName, operationType.name, generateAsInternal)
           .fileSpec("${operationType.packageName}.adapter")
           .writeTo(outputDir)
       operationType.responseAdapterTypeSpec(generateAsInternal, generateFragmentsAsInterfaces)
