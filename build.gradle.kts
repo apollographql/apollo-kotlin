@@ -6,14 +6,21 @@ import org.gradle.api.tasks.testing.logging.TestExceptionFormat
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 
 buildscript {
+  repositories {
+    gradlePluginPortal()
+    mavenCentral()
+    google()
+  }
   project.apply {
     from(rootProject.file("gradle/dependencies.gradle"))
   }
+  dependencies {
+    classpath("com.apollographql.apollo:build-logic")
+  }
 }
 
-plugins {
-  id("com.github.ben-manes.versions")
-}
+apply(plugin = "com.github.ben-manes.versions")
+
 ApiCompatibility.configure(rootProject)
 
 subprojects {
@@ -98,13 +105,13 @@ fun Project.configurePublishing() {
   }
 
   tasks.withType(Jar::class.java) {
-      manifest {
-        attributes["Built-By"] = findProperty("POM_DEVELOPER_ID") as String?
-        attributes["Build-Jdk"] = "${System.getProperty("java.version")} (${System.getProperty("java.vendor")} ${System.getProperty("java.vm.version")})"
-        attributes["Created-By"] = "Gradle ${gradle.gradleVersion}"
-        attributes["Implementation-Title"] = findProperty("POM_NAME") as String?
-        attributes["Implementation-Version"] = findProperty("VERSION_NAME") as String?
-      }
+    manifest {
+      attributes["Built-By"] = findProperty("POM_DEVELOPER_ID") as String?
+      attributes["Build-Jdk"] = "${System.getProperty("java.version")} (${System.getProperty("java.vendor")} ${System.getProperty("java.vm.version")})"
+      attributes["Created-By"] = "Gradle ${gradle.gradleVersion}"
+      attributes["Implementation-Title"] = findProperty("POM_NAME") as String?
+      attributes["Implementation-Version"] = findProperty("VERSION_NAME") as String?
+    }
   }
 
   configure<PublishingExtension> {

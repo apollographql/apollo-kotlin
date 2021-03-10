@@ -1,23 +1,17 @@
+@file:Suppress("RECEIVER_NULLABILITY_MISMATCH_BASED_ON_JAVA_ANNOTATIONS")
+
 rootProject.name = "apollo-android"
 
-include("apollo-api")
-include("apollo-cache-interceptor")
-include("apollo-compiler")
-include("apollo-coroutines-support")
-include("apollo-gradle-plugin")
-include("apollo-http-cache")
-include("apollo-http-cache-api")
-include("apollo-rx2-support")
-include("apollo-rx3-support")
-include("apollo-normalized-cache")
-include("apollo-normalized-cache-api")
-include("apollo-normalized-cache-sqlite")
-include("apollo-runtime")
-include("apollo-runtime-common")
-include("apollo-runtime-kotlin")
-include("apollo-testing-support")
+rootProject.projectDir
+    .listFiles()
+    .filter { it.isDirectory }
+    .filter { it.name.startsWith("apollo-") }
+    .forEach {
+      if (System.getProperty("idea.sync.active") != null
+          && it.name in listOf("apollo-android-support", "apollo-idling-resource")) {
+        return@forEach
+      }
+      include(it.name)
+    }
 
-if (System.getProperty("idea.sync.active") == null) {
-  include("apollo-android-support")
-  include("apollo-idling-resource")
-}
+includeBuild("build-logic")

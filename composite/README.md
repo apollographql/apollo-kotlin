@@ -1,3 +1,5 @@
-# Composite Build
+# Composite
 
-Use this composite build to develop for the samples and/or integration-tests. They allow to use the plugin compiled from sources without having to deploy it to sonatype or somewhere else.
+A composite build that includes the main build so that it can use the `apollo-gradle-plugin` main module using dependency substitution. Use this to develop for samples or integration tests.
+
+This build shares some IDEA configuration and the Gradle wrapper with the main build using symlinks.
