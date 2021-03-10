@@ -55,31 +55,42 @@ data class GetUser(
   interface Data : Query.Data {
     val __typename: String
 
+    interface Query : Data, QueryFragment {
+      override val organization: Organization?
+
+      interface Organization : QueryFragment.Organization {
+        override val user: List<User>
+
+        interface User : QueryFragment.Organization.User {
+          interface User : Organization.User, UserFragment, QueryFragment.Organization.User.User
+
+          companion object {
+            fun Organization.User.userFragment(): UserFragment? = this as? UserFragment
+          }
+        }
+      }
+    }
+
     data class QueryData(
       override val __typename: String,
       override val organization: Organization?
-    ) : Data, QueryFragment {
+    ) : Data, Query, QueryFragment {
       data class Organization(
         override val id: String,
         override val user: List<User>
-      ) : QueryFragment.Organization {
-        interface User : QueryFragment.Organization.User {
+      ) : Query.Organization, QueryFragment.Organization {
+        interface User : Query.Organization.User, QueryFragment.Organization.User {
           data class UserUser(
             override val __typename: String,
             override val firstName: String,
             override val lastName: String,
             override val avatar: String
-          ) : UserFragment, QueryFragment.Organization.User.User, User
+          ) : Query.Organization.User, Query.Organization.User.User, UserFragment,
+              QueryFragment.Organization.User.User, User
 
           data class OtherUser(
             override val __typename: String
-          ) : QueryFragment.Organization.User, User
-
-          companion object {
-            fun User.asUserUser(): UserUser? = this as? UserUser
-
-            fun User.asUserFragment(): UserFragment? = this as? UserFragment
-          }
+          ) : Query.Organization.User, QueryFragment.Organization.User, User
         }
       }
     }
@@ -89,9 +100,7 @@ data class GetUser(
     ) : Data
 
     companion object {
-      fun Data.asQueryData(): QueryData? = this as? QueryData
-
-      fun Data.asQueryFragment(): QueryFragment? = this as? QueryFragment
+      fun Data.queryFragment(): QueryFragment? = this as? QueryFragment
     }
   }
 

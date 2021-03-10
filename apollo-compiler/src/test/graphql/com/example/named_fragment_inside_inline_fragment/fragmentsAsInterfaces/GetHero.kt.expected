@@ -58,6 +58,10 @@ class GetHero : Query<GetHero.Data> {
     interface Hero {
       val __typename: String
 
+      interface Character : Hero {
+        interface Character : Hero.Character, CharacterName, CharacterAppearsIn
+      }
+
       data class CharacterHero(
         override val __typename: String,
         /**
@@ -68,19 +72,11 @@ class GetHero : Query<GetHero.Data> {
          * The movies this character appears in
          */
         override val appearsIn: List<Episode?>
-      ) : Hero, CharacterName, CharacterAppearsIn
+      ) : Hero, Character, Character.Character, CharacterName, CharacterAppearsIn
 
       data class OtherHero(
         override val __typename: String
       ) : Hero
-
-      companion object {
-        fun Hero.asCharacterHero(): CharacterHero? = this as? CharacterHero
-
-        fun Hero.asCharacterName(): CharacterName? = this as? CharacterName
-
-        fun Hero.asCharacterAppearsIn(): CharacterAppearsIn? = this as? CharacterAppearsIn
-      }
     }
   }
 

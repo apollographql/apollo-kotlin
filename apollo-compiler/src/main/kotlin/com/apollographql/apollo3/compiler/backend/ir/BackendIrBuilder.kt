@@ -5,7 +5,6 @@ import com.apollographql.apollo3.compiler.backend.ir.BackendIrMergeUtils.mergeFi
 import com.apollographql.apollo3.compiler.backend.ir.SelectionKeyUtils.addFieldSelectionKey
 import com.apollographql.apollo3.compiler.backend.ir.SelectionKeyUtils.attachToNewSelectionRoot
 import com.apollographql.apollo3.compiler.backend.ir.SelectionKeyUtils.isBelongToNamedFragment
-import com.apollographql.apollo3.compiler.backend.ir.SelectionKeyUtils.removeFragmentSelectionKeys
 import com.apollographql.apollo3.compiler.frontend.GQLNamedType
 import com.apollographql.apollo3.compiler.frontend.Schema
 import com.apollographql.apollo3.compiler.frontend.SourceLocation
@@ -473,57 +472,24 @@ internal class BackendIrBuilder(
     val fragmentInterfaces = this.fragments
         .mergeInterfaceFragmentsWithTheSameName()
 
-    val fragmentInterfaceRootSelectionKeys = fragmentInterfaces
-        .map { selectionKey + it.name }
-
     val fragmentImplementations = fragmentInterfaces
         .flattenBackendFragments()
         .buildFragmentImplementations(
             parentName = this.typeName,
-            // NOTE: required by new version that removes interfaces
-            parentFields = this.fields.addFieldSelectionKey(selectionKey),
+            parentFields = this.fields,
             parentPossibleSchemaTypes = fieldPossibleSchemaTypes,
             parentSelectionKeys = this.selectionKeys,
             selectionKey = selectionKey,
         )
-        // NOTE: new version that removes interfaces
-        .map { it.removeFragmentSelectionKeys(fragmentInterfaceRootSelectionKeys) }
 
-    // NOTE: new version that removes interfaces
     return this.copy(
-        fields = this.fields,
+        fields = this.fields.takeIf { keepInterfaces } ?: this.fields.filter { it.name == "__typename" },
         fragments = BackendIr.Fragments(
-            fragments = fragmentImplementations,
-            accessors = fragmentImplementations
-                .filterNot { it.type == BackendIr.Fragment.Type.Fallback }
-                .map { "as${it.name.capitalize()}" to selectionKey + it.name }
-                .plus(
-                    // add accessors for named fragment interfaces
-                    fragmentImplementations
-                        .flatMap { fragment ->
-                          fragment.selectionKeys.filter { fragmentSelectionKey ->
-                            // filter only root named fragment keys that doesn't belong to current one
-                            fragmentSelectionKey.type == SelectionKey.Type.Fragment &&
-                                fragmentSelectionKey.keys.size == 1 &&
-                                (selectionKey.type != SelectionKey.Type.Fragment || selectionKey.root != fragmentSelectionKey.root)
-                          }
-                        }
-                        .map { fragmentSelectionKey -> "as${fragmentSelectionKey.root.capitalize()}" to fragmentSelectionKey }
-                )
-                .toMap()
+            fragments = (fragmentInterfaces.takeIf { keepInterfaces } ?: emptyList()) + fragmentImplementations,
+            accessors = (this.fragments.accessors.takeIf { keepInterfaces } ?: emptyMap()),
         ),
         selectionKeys = this.selectionKeys + selectionKey,
     )
-
-    // NOTE: this is old version that keeps interfaces
-//    return this.copy(
-//        fields = this.fields.takeIf { keepInterfaces } ?: this.fields.filter { it.name == "__typename" },
-//        fragments = BackendIr.Fragments(
-//            fragments = (fragmentInterfaces.takeIf { keepInterfaces } ?: emptyList()) + fragmentImplementations,
-//            accessors = (this.fragments.accessors.takeIf { keepInterfaces } ?: emptyMap()),
-//        ),
-//        selectionKeys = this.selectionKeys + selectionKey,
-//    )
   }
 
   private fun List<BackendIr.Fragment>.buildFragmentImplementations(
@@ -819,10 +785,6 @@ internal class BackendIrBuilder(
         selectionKeys = selectionKeys,
         namedFragmentSelectionKey = namedFragmentSelectionKey
     )
-  }
-
-  private fun List<GenericFragment>.flattenGenericFragments(): List<GenericFragment> {
-    return this + this.flatMap { fragment -> fragment.fragments.flattenGenericFragments() }
   }
 
   /**
