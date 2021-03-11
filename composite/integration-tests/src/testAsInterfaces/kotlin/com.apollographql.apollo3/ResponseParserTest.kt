@@ -193,7 +193,7 @@ class ResponseParserTest {
   @Throws(Exception::class)
   fun parseErrorOperationRawResponse() {
     val response = EpisodeHeroNameQuery(Input.Present(Episode.EMPIRE)).fromResponse(
-        Buffer().readFrom(javaClass.getResourceAsStream("/ResponseErrorWithData.json")),
+        Utils.readResource("/ResponseErrorWithData.json"),
         ResponseAdapterCache.DEFAULT
     )
     val data = response.data

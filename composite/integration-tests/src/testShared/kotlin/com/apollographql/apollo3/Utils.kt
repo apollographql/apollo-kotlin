@@ -27,15 +27,7 @@ object Utils {
   fun readFileToString(contextClass: Class<*>,
                        streamIdentifier: String): String {
 
-    var inputStreamReader: InputStreamReader? = null
-    try {
-      inputStreamReader = InputStreamReader(contextClass.getResourceAsStream(streamIdentifier), Charset.defaultCharset())
-      return inputStreamReader.readText()
-    } catch (e: IOException) {
-      throw IOException()
-    } finally {
-      inputStreamReader?.close()
-    }
+    return File("testFixtures/resources/$streamIdentifier").readText()
   }
 
   fun readResource(name: String) = readFileToString(this::class.java, "/$name")
@@ -115,7 +107,7 @@ object Utils {
   }
 
   fun checkTestFixture(actualText: String, expectedPath: String) {
-    val expected = File("src/test/fixtures/$expectedPath")
+    val expected = File("testFixtures/$expectedPath")
     val expectedText = try {
       expected.readText().removeSuffix("\n")
     } catch (e: FileNotFoundException) {

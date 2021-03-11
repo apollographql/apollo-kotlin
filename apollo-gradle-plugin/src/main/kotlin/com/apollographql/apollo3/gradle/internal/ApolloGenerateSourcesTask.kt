@@ -103,6 +103,10 @@ abstract class ApolloGenerateSourcesTask : DefaultTask() {
   @get:Optional
   abstract val generateFragmentImplementations: Property<Boolean>
 
+  @get:Input
+  @get:Optional
+  abstract val generateFragmentsAsInterfaces: Property<Boolean>
+
   @get:Inject
   abstract val objectFactory: ObjectFactory
 
@@ -136,6 +140,7 @@ abstract class ApolloGenerateSourcesTask : DefaultTask() {
         generateFilterNotNull = generateFilterNotNull.getOrElse(false),
         enumAsSealedClassPatternFilters = sealedClassesForEnumsMatching.getOrElse(emptyList()).toSet(),
         generateFragmentImplementations = generateFragmentImplementations.getOrElse(false),
+        generateFragmentsAsInterfaces = generateFragmentsAsInterfaces.getOrElse(true)
     )
 
     val logger = object :GraphQLCompiler.Logger {
