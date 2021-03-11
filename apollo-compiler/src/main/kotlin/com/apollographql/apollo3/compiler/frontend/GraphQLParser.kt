@@ -231,7 +231,7 @@ object GraphQLParser {
       val sameChannel = lastToken.channel == documentStopToken.channel
       if (!eof && lastToken.tokenIndex > documentStopToken.tokenIndex && sameChannel) {
         throw AntlrParseException(
-            message = "Unsupported token `${lastToken.text}`",
+            error = "Unsupported token `${lastToken.text}`",
             sourceLocation = SourceLocation(lastToken.line, lastToken.charPositionInLine, filePath)
         )
       }
