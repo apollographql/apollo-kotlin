@@ -56,7 +56,7 @@ class GraphQLCompiler(val logger: Logger = NoOpLogger) {
     val firstError = errors.firstOrNull()
     if (firstError != null) {
       throw SourceAwareException(
-          message = firstError.message,
+          error = firstError.message,
           sourceLocation = firstError.sourceLocation,
       )
     }

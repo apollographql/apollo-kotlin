@@ -23,7 +23,7 @@ internal fun GQLDocument.rootOperationTypeDefinition(operationType: String): GQL
         definitions.filterIsInstance<GQLObjectTypeDefinition>()
             .firstOrNull { it.name == namedType }
             ?: throw SchemaValidationException(
-                message = "Schema defines `$namedType` as root for `$operationType` but `$namedType` is not defined",
+                error = "Schema defines `$namedType` as root for `$operationType` but `$namedType` is not defined",
                 sourceLocation = sourceLocation
             )
       }
