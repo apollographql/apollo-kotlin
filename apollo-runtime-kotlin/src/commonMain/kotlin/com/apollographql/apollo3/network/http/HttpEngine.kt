@@ -1,5 +1,7 @@
 package com.apollographql.apollo3.network.http
 
+import com.apollographql.apollo3.exception.ApolloException
+import com.apollographql.apollo3.exception.ApolloParseException
 import okio.BufferedSink
 import okio.BufferedSource
 
@@ -54,3 +56,15 @@ class HttpResponse(
      */
     val body: BufferedSource?,
 )
+
+fun wrapThrowableIfNeeded(throwable: Throwable): ApolloException {
+  return if (throwable is ApolloException) {
+    throwable
+  } else {
+    // Most likely a Json error, we should make them ApolloException
+    ApolloParseException(
+        message = "Failed to parse GraphQL http network response",
+        cause = throwable
+    )
+  }
+}
