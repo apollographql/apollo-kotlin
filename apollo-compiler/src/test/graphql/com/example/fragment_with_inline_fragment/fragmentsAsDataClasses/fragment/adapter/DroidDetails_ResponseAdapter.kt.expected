@@ -5,7 +5,7 @@
 //
 package com.example.fragment_with_inline_fragment.fragment.adapter
 
-import com.apollographql.apollo3.api.NullableResponseAdapter
+import com.apollographql.apollo3.api.NullableStringResponseAdapter
 import com.apollographql.apollo3.api.ResponseAdapter
 import com.apollographql.apollo3.api.ResponseAdapterCache
 import com.apollographql.apollo3.api.ResponseField
@@ -21,24 +21,33 @@ import kotlin.collections.List
 @Suppress("NAME_SHADOWING", "UNUSED_ANONYMOUS_PARAMETER", "LocalVariableName",
     "RemoveExplicitTypeArguments", "NestedLambdaShadowedImplicitParameter", "PropertyName",
     "RemoveRedundantQualifierName")
-class DroidDetails_ResponseAdapter(
-  responseAdapterCache: ResponseAdapterCache
-) : ResponseAdapter<DroidDetails.Data> {
-  private val stringAdapter: ResponseAdapter<String> = StringResponseAdapter
+object DroidDetails_ResponseAdapter : ResponseAdapter<DroidDetails.Data> {
+  val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
+    ResponseField.Typename,
+    ResponseField(
+      type = ResponseField.Type.NotNull(ResponseField.Type.Named.Other("String")),
+      fieldName = "name",
+    ),
+    ResponseField(
+      type = ResponseField.Type.Named.Other("String"),
+      fieldName = "primaryFunction",
+    )
+  )
 
-  private val nullableStringAdapter: ResponseAdapter<String?> =
-      NullableResponseAdapter(StringResponseAdapter)
+  val RESPONSE_NAMES: List<String> = RESPONSE_FIELDS.map { it.responseName }
 
-  override fun fromResponse(reader: JsonReader): DroidDetails.Data {
+  override fun fromResponse(reader: JsonReader, responseAdapterCache: ResponseAdapterCache):
+      DroidDetails.Data {
     var __typename: String? = null
     var name: String? = null
     var primaryFunction: String? = null
     reader.beginObject()
     while(true) {
       when (reader.selectName(RESPONSE_NAMES)) {
-        0 -> __typename = stringAdapter.fromResponse(reader)
-        1 -> name = stringAdapter.fromResponse(reader)
-        2 -> primaryFunction = nullableStringAdapter.fromResponse(reader)
+        0 -> __typename = StringResponseAdapter.fromResponse(reader, responseAdapterCache)
+        1 -> name = StringResponseAdapter.fromResponse(reader, responseAdapterCache)
+        2 -> primaryFunction = NullableStringResponseAdapter.fromResponse(reader,
+            responseAdapterCache)
         else -> break
       }
     }
@@ -50,30 +59,18 @@ class DroidDetails_ResponseAdapter(
     )
   }
 
-  override fun toResponse(writer: JsonWriter, value: DroidDetails.Data) {
+  override fun toResponse(
+    writer: JsonWriter,
+    responseAdapterCache: ResponseAdapterCache,
+    value: DroidDetails.Data
+  ) {
     writer.beginObject()
     writer.name("__typename")
-    stringAdapter.toResponse(writer, value.__typename)
+    StringResponseAdapter.toResponse(writer, responseAdapterCache, value.__typename)
     writer.name("name")
-    stringAdapter.toResponse(writer, value.name)
+    StringResponseAdapter.toResponse(writer, responseAdapterCache, value.name)
     writer.name("primaryFunction")
-    nullableStringAdapter.toResponse(writer, value.primaryFunction)
+    NullableStringResponseAdapter.toResponse(writer, responseAdapterCache, value.primaryFunction)
     writer.endObject()
-  }
-
-  companion object {
-    val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
-      ResponseField.Typename,
-      ResponseField(
-        type = ResponseField.Type.NotNull(ResponseField.Type.Named.Other("String")),
-        fieldName = "name",
-      ),
-      ResponseField(
-        type = ResponseField.Type.Named.Other("String"),
-        fieldName = "primaryFunction",
-      )
-    )
-
-    val RESPONSE_NAMES: List<String> = RESPONSE_FIELDS.map { it.responseName }
   }
 }

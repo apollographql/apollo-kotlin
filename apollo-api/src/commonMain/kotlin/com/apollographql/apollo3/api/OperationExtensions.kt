@@ -58,7 +58,7 @@ fun <D : Operation.Data> Operation<D>.toJson(data: D, indent: String = "", respo
     // Do we need to wrap in data?
     writer.beginObject()
     writer.name("data")
-    adapter(responseAdapterCache).toResponse(writer, data)
+    adapter().toResponse(writer, responseAdapterCache, data)
     writer.endObject()
     buffer.readUtf8()
   } catch (e: IOException) {
@@ -77,7 +77,7 @@ fun <D : Operation.Data, M: Map<String, Any?>> Operation<D>.fromJson(
     map: M,
     responseAdapterCache: ResponseAdapterCache = DEFAULT,
 ): D {
-  return adapter(responseAdapterCache).fromResponse(MapJsonReader(map))
+  return adapter().fromResponse(MapJsonReader(map), responseAdapterCache)
 }
 
 /**
@@ -91,7 +91,7 @@ fun <D : Operation.Data> Operation<D>.fromJson(
     bufferedSource: BufferedSource,
     responseAdapterCache: ResponseAdapterCache = DEFAULT,
 ): D {
-  return adapter(responseAdapterCache).fromResponse(BufferedSourceJsonReader(bufferedSource))
+  return adapter().fromResponse(BufferedSourceJsonReader(bufferedSource), responseAdapterCache)
 }
 
 /**
@@ -155,7 +155,7 @@ fun <D : Operation.Data> Operation<D>.toResponse(
     it.indent = indent
     it.beginObject()
     it.name("data")
-    adapter(responseAdapterCache).toResponse(it, data)
+    adapter().toResponse(it, responseAdapterCache, data)
     it.endObject()
   }
 }

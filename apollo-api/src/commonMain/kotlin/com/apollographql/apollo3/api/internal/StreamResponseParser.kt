@@ -10,6 +10,7 @@ import com.apollographql.apollo3.api.internal.json.BufferedSourceJsonReader
 import com.apollographql.apollo3.api.json.JsonReader
 import com.apollographql.apollo3.api.internal.json.Utils.readRecursively
 import com.apollographql.apollo3.api.json.use
+import com.apollographql.apollo3.api.nullable
 import com.benasher44.uuid.uuid4
 import okio.BufferedSource
 import okio.IOException
@@ -36,9 +37,7 @@ object StreamResponseParser {
       var extensions: Map<String, Any?>? = null
       while (jsonReader.hasNext()) {
         when (jsonReader.nextName()) {
-          "data" -> data = jsonReader.readData(
-              adapter = operation.adapter(responseAdapterCache),
-          )
+          "data" -> data = operation.adapter().nullable().fromResponse(jsonReader, responseAdapterCache)
           "errors" -> errors = jsonReader.readErrors()
           "extensions" -> extensions = jsonReader.readRecursively() as Map<String, Any?>
           else -> jsonReader.skipValue()
@@ -55,16 +54,6 @@ object StreamResponseParser {
           extensions = extensions.orEmpty()
       )
     }
-  }
-
-  private fun <D : Operation.Data> JsonReader.readData(
-      adapter: ResponseAdapter<D>,
-  ): D? {
-    if (peek() == JsonReader.Token.NULL) {
-      return nextNull<D>()
-    }
-
-    return adapter.fromResponse(this)
   }
 
   @Suppress("UNCHECKED_CAST")

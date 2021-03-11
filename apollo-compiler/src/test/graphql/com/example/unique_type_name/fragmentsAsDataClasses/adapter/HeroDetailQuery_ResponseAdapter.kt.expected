@@ -5,9 +5,7 @@
 //
 package com.example.unique_type_name.adapter
 
-import com.apollographql.apollo3.api.DoubleResponseAdapter
-import com.apollographql.apollo3.api.ListResponseAdapter
-import com.apollographql.apollo3.api.NullableResponseAdapter
+import com.apollographql.apollo3.api.NullableDoubleResponseAdapter
 import com.apollographql.apollo3.api.ResponseAdapter
 import com.apollographql.apollo3.api.ResponseAdapterCache
 import com.apollographql.apollo3.api.ResponseField
@@ -16,6 +14,8 @@ import com.apollographql.apollo3.api.internal.json.MapJsonReader
 import com.apollographql.apollo3.api.internal.json.MapJsonReader.Companion.buffer
 import com.apollographql.apollo3.api.json.JsonReader
 import com.apollographql.apollo3.api.json.JsonWriter
+import com.apollographql.apollo3.api.list
+import com.apollographql.apollo3.api.nullable
 import com.example.unique_type_name.HeroDetailQuery
 import com.example.unique_type_name.fragment.HeroDetails
 import com.example.unique_type_name.fragment.adapter.HeroDetails_ResponseAdapter
@@ -30,19 +30,26 @@ import kotlin.collections.List
 @Suppress("NAME_SHADOWING", "UNUSED_ANONYMOUS_PARAMETER", "LocalVariableName",
     "RemoveExplicitTypeArguments", "NestedLambdaShadowedImplicitParameter", "PropertyName",
     "RemoveRedundantQualifierName")
-class HeroDetailQuery_ResponseAdapter(
-  responseAdapterCache: ResponseAdapterCache
-) : ResponseAdapter<HeroDetailQuery.Data> {
-  private val nullableHeroDetailQueryAdapter:
-      ResponseAdapter<com.example.unique_type_name.HeroDetailQuery.Data.HeroDetailQuery?> =
-      NullableResponseAdapter(HeroDetailQuery(responseAdapterCache))
+object HeroDetailQuery_ResponseAdapter : ResponseAdapter<HeroDetailQuery.Data> {
+  val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
+    ResponseField(
+      type = ResponseField.Type.Named.Object("Character"),
+      fieldName = "heroDetailQuery",
+      fieldSets = listOf(
+        ResponseField.FieldSet("Human", HeroDetailQuery.AsHuman.RESPONSE_FIELDS),
+      ),
+    )
+  )
 
-  override fun fromResponse(reader: JsonReader): com.example.unique_type_name.HeroDetailQuery.Data {
+  val RESPONSE_NAMES: List<String> = RESPONSE_FIELDS.map { it.responseName }
+
+  override fun fromResponse(reader: JsonReader, responseAdapterCache: ResponseAdapterCache):
+      com.example.unique_type_name.HeroDetailQuery.Data {
     var heroDetailQuery: com.example.unique_type_name.HeroDetailQuery.Data.HeroDetailQuery? = null
     reader.beginObject()
     while(true) {
       when (reader.selectName(RESPONSE_NAMES)) {
-        0 -> heroDetailQuery = nullableHeroDetailQueryAdapter.fromResponse(reader)
+        0 -> heroDetailQuery = HeroDetailQuery.nullable().fromResponse(reader, responseAdapterCache)
         else -> break
       }
     }
@@ -52,42 +59,37 @@ class HeroDetailQuery_ResponseAdapter(
     )
   }
 
-  override fun toResponse(writer: JsonWriter,
-      value: com.example.unique_type_name.HeroDetailQuery.Data) {
+  override fun toResponse(
+    writer: JsonWriter,
+    responseAdapterCache: ResponseAdapterCache,
+    value: com.example.unique_type_name.HeroDetailQuery.Data
+  ) {
     writer.beginObject()
     writer.name("heroDetailQuery")
-    nullableHeroDetailQueryAdapter.toResponse(writer, value.heroDetailQuery)
+    HeroDetailQuery.nullable().toResponse(writer, responseAdapterCache, value.heroDetailQuery)
     writer.endObject()
   }
 
-  companion object {
+  object HeroDetailQuery :
+      ResponseAdapter<com.example.unique_type_name.HeroDetailQuery.Data.HeroDetailQuery> {
     val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
+      ResponseField.Typename,
       ResponseField(
-        type = ResponseField.Type.Named.Object("Character"),
-        fieldName = "heroDetailQuery",
+        type = ResponseField.Type.NotNull(ResponseField.Type.Named.Other("String")),
+        fieldName = "name",
+      ),
+      ResponseField(
+        type = ResponseField.Type.List(ResponseField.Type.Named.Object("Character")),
+        fieldName = "friends",
         fieldSets = listOf(
-          ResponseField.FieldSet("Human", HeroDetailQuery.AsHuman.RESPONSE_FIELDS),
+          ResponseField.FieldSet(null, Friends.RESPONSE_FIELDS)
         ),
       )
     )
 
     val RESPONSE_NAMES: List<String> = RESPONSE_FIELDS.map { it.responseName }
-  }
 
-  class HeroDetailQuery(
-    responseAdapterCache: ResponseAdapterCache
-  ) : ResponseAdapter<com.example.unique_type_name.HeroDetailQuery.Data.HeroDetailQuery> {
-    private val stringAdapter: ResponseAdapter<String> = StringResponseAdapter
-
-    private val nullableListOfNullableFriendsAdapter:
-        ResponseAdapter<List<com.example.unique_type_name.HeroDetailQuery.Data.HeroDetailQuery.Friends?>?>
-        =
-        NullableResponseAdapter(ListResponseAdapter(NullableResponseAdapter(Friends(responseAdapterCache))))
-
-    private val AsHumanAdapter: AsHuman =
-        com.example.unique_type_name.adapter.HeroDetailQuery_ResponseAdapter.HeroDetailQuery.AsHuman(responseAdapterCache)
-
-    override fun fromResponse(reader: JsonReader):
+    override fun fromResponse(reader: JsonReader, responseAdapterCache: ResponseAdapterCache):
         com.example.unique_type_name.HeroDetailQuery.Data.HeroDetailQuery {
       val reader = reader.buffer()
       reader.beginObject()
@@ -98,15 +100,16 @@ class HeroDetailQuery_ResponseAdapter(
       var asAsHuman: com.example.unique_type_name.HeroDetailQuery.Data.HeroDetailQuery.AsHuman? = null
       while(true) {
         when (reader.selectName(RESPONSE_NAMES)) {
-          0 -> __typename = stringAdapter.fromResponse(reader)
-          1 -> name = stringAdapter.fromResponse(reader)
-          2 -> friends = nullableListOfNullableFriendsAdapter.fromResponse(reader)
+          0 -> __typename = StringResponseAdapter.fromResponse(reader, responseAdapterCache)
+          1 -> name = StringResponseAdapter.fromResponse(reader, responseAdapterCache)
+          2 -> friends = Friends.nullable().list().nullable().fromResponse(reader,
+              responseAdapterCache)
           else -> break
         }
       }
       if (__typename in arrayOf("Human")) {
         reader.rewind()
-        asAsHuman = AsHumanAdapter.fromResponse(reader, __typename)
+        asAsHuman = AsHuman.fromResponse(reader, responseAdapterCache, __typename)
       }
 
       return com.example.unique_type_name.HeroDetailQuery.Data.HeroDetailQuery(
@@ -118,22 +121,64 @@ class HeroDetailQuery_ResponseAdapter(
       .also { reader.endObject() }
     }
 
-    override fun toResponse(writer: JsonWriter,
-        value: com.example.unique_type_name.HeroDetailQuery.Data.HeroDetailQuery) {
+    override fun toResponse(
+      writer: JsonWriter,
+      responseAdapterCache: ResponseAdapterCache,
+      value: com.example.unique_type_name.HeroDetailQuery.Data.HeroDetailQuery
+    ) {
       writer.beginObject()
       writer.name("__typename")
-      stringAdapter.toResponse(writer, value.__typename)
+      StringResponseAdapter.toResponse(writer, responseAdapterCache, value.__typename)
 
       writer.name("name")
-      stringAdapter.toResponse(writer, value.name)
+      StringResponseAdapter.toResponse(writer, responseAdapterCache, value.name)
 
       writer.name("friends")
-      nullableListOfNullableFriendsAdapter.toResponse(writer, value.friends)
-      if (value.asAsHuman != null) AsHumanAdapter.toResponse(writer, value.asAsHuman)
+      Friends.nullable().list().nullable().toResponse(writer, responseAdapterCache, value.friends)
+      if (value.asAsHuman != null) AsHuman.toResponse(writer, responseAdapterCache, value.asAsHuman)
       writer.endObject()
     }
 
-    companion object {
+    object Friends :
+        ResponseAdapter<com.example.unique_type_name.HeroDetailQuery.Data.HeroDetailQuery.Friends> {
+      val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
+        ResponseField(
+          type = ResponseField.Type.NotNull(ResponseField.Type.Named.Other("String")),
+          fieldName = "name",
+        )
+      )
+
+      val RESPONSE_NAMES: List<String> = RESPONSE_FIELDS.map { it.responseName }
+
+      override fun fromResponse(reader: JsonReader, responseAdapterCache: ResponseAdapterCache):
+          com.example.unique_type_name.HeroDetailQuery.Data.HeroDetailQuery.Friends {
+        var name: String? = null
+        reader.beginObject()
+        while(true) {
+          when (reader.selectName(RESPONSE_NAMES)) {
+            0 -> name = StringResponseAdapter.fromResponse(reader, responseAdapterCache)
+            else -> break
+          }
+        }
+        reader.endObject()
+        return com.example.unique_type_name.HeroDetailQuery.Data.HeroDetailQuery.Friends(
+          name = name!!
+        )
+      }
+
+      override fun toResponse(
+        writer: JsonWriter,
+        responseAdapterCache: ResponseAdapterCache,
+        value: com.example.unique_type_name.HeroDetailQuery.Data.HeroDetailQuery.Friends
+      ) {
+        writer.beginObject()
+        writer.name("name")
+        StringResponseAdapter.toResponse(writer, responseAdapterCache, value.name)
+        writer.endObject()
+      }
+    }
+
+    object AsHuman {
       val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
         ResponseField.Typename,
         ResponseField(
@@ -146,78 +191,31 @@ class HeroDetailQuery_ResponseAdapter(
           fieldSets = listOf(
             ResponseField.FieldSet(null, Friends.RESPONSE_FIELDS)
           ),
+        ),
+        ResponseField(
+          type = ResponseField.Type.Named.Other("Float"),
+          fieldName = "height",
         )
       )
 
       val RESPONSE_NAMES: List<String> = RESPONSE_FIELDS.map { it.responseName }
-    }
 
-    class Friends(
-      responseAdapterCache: ResponseAdapterCache
-    ) : ResponseAdapter<com.example.unique_type_name.HeroDetailQuery.Data.HeroDetailQuery.Friends> {
-      private val stringAdapter: ResponseAdapter<String> = StringResponseAdapter
-
-      override fun fromResponse(reader: JsonReader):
-          com.example.unique_type_name.HeroDetailQuery.Data.HeroDetailQuery.Friends {
-        var name: String? = null
-        reader.beginObject()
-        while(true) {
-          when (reader.selectName(RESPONSE_NAMES)) {
-            0 -> name = stringAdapter.fromResponse(reader)
-            else -> break
-          }
-        }
-        reader.endObject()
-        return com.example.unique_type_name.HeroDetailQuery.Data.HeroDetailQuery.Friends(
-          name = name!!
-        )
-      }
-
-      override fun toResponse(writer: JsonWriter,
-          value: com.example.unique_type_name.HeroDetailQuery.Data.HeroDetailQuery.Friends) {
-        writer.beginObject()
-        writer.name("name")
-        stringAdapter.toResponse(writer, value.name)
-        writer.endObject()
-      }
-
-      companion object {
-        val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
-          ResponseField(
-            type = ResponseField.Type.NotNull(ResponseField.Type.Named.Other("String")),
-            fieldName = "name",
-          )
-        )
-
-        val RESPONSE_NAMES: List<String> = RESPONSE_FIELDS.map { it.responseName }
-      }
-    }
-
-    class AsHuman(
-      responseAdapterCache: ResponseAdapterCache
-    ) {
-      private val stringAdapter: ResponseAdapter<String> = StringResponseAdapter
-
-      private val nullableListOfNullableFriendsAdapter:
-          ResponseAdapter<List<com.example.unique_type_name.HeroDetailQuery.Data.HeroDetailQuery.AsHuman.Friends?>?>
-          =
-          NullableResponseAdapter(ListResponseAdapter(NullableResponseAdapter(Friends(responseAdapterCache))))
-
-      private val nullableFloatAdapter: ResponseAdapter<Double?> =
-          NullableResponseAdapter(DoubleResponseAdapter)
-
-      fun fromResponse(reader: JsonReader, __typename: String?):
-          com.example.unique_type_name.HeroDetailQuery.Data.HeroDetailQuery.AsHuman {
+      fun fromResponse(
+        reader: JsonReader,
+        responseAdapterCache: ResponseAdapterCache,
+        __typename: String?
+      ): com.example.unique_type_name.HeroDetailQuery.Data.HeroDetailQuery.AsHuman {
         var __typename: String? = __typename
         var name: String? = null
         var friends: List<com.example.unique_type_name.HeroDetailQuery.Data.HeroDetailQuery.AsHuman.Friends?>? = null
         var height: Double? = null
         while(true) {
           when (reader.selectName(RESPONSE_NAMES)) {
-            0 -> __typename = stringAdapter.fromResponse(reader)
-            1 -> name = stringAdapter.fromResponse(reader)
-            2 -> friends = nullableListOfNullableFriendsAdapter.fromResponse(reader)
-            3 -> height = nullableFloatAdapter.fromResponse(reader)
+            0 -> __typename = StringResponseAdapter.fromResponse(reader, responseAdapterCache)
+            1 -> name = StringResponseAdapter.fromResponse(reader, responseAdapterCache)
+            2 -> friends = Friends.nullable().list().nullable().fromResponse(reader,
+                responseAdapterCache)
+            3 -> height = NullableDoubleResponseAdapter.fromResponse(reader, responseAdapterCache)
             else -> break
           }
         }
@@ -229,59 +227,49 @@ class HeroDetailQuery_ResponseAdapter(
         )
       }
 
-      fun toResponse(writer: JsonWriter,
-          value: com.example.unique_type_name.HeroDetailQuery.Data.HeroDetailQuery.AsHuman) {
+      fun toResponse(
+        writer: JsonWriter,
+        responseAdapterCache: ResponseAdapterCache,
+        value: com.example.unique_type_name.HeroDetailQuery.Data.HeroDetailQuery.AsHuman
+      ) {
         writer.beginObject()
         writer.name("__typename")
-        stringAdapter.toResponse(writer, value.__typename)
+        StringResponseAdapter.toResponse(writer, responseAdapterCache, value.__typename)
         writer.name("name")
-        stringAdapter.toResponse(writer, value.name)
+        StringResponseAdapter.toResponse(writer, responseAdapterCache, value.name)
         writer.name("friends")
-        nullableListOfNullableFriendsAdapter.toResponse(writer, value.friends)
+        Friends.nullable().list().nullable().toResponse(writer, responseAdapterCache, value.friends)
         writer.name("height")
-        nullableFloatAdapter.toResponse(writer, value.height)
+        NullableDoubleResponseAdapter.toResponse(writer, responseAdapterCache, value.height)
         writer.endObject()
       }
 
-      companion object {
+      object Friends :
+          ResponseAdapter<com.example.unique_type_name.HeroDetailQuery.Data.HeroDetailQuery.AsHuman.Friends>
+          {
         val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
-          ResponseField.Typename,
           ResponseField(
             type = ResponseField.Type.NotNull(ResponseField.Type.Named.Other("String")),
             fieldName = "name",
           ),
           ResponseField(
+            type =
+                ResponseField.Type.NotNull(ResponseField.Type.List(ResponseField.Type.Named.Other("Episode"))),
+            fieldName = "appearsIn",
+          ),
+          ResponseField(
             type = ResponseField.Type.List(ResponseField.Type.Named.Object("Character")),
             fieldName = "friends",
             fieldSets = listOf(
-              ResponseField.FieldSet(null, Friends.RESPONSE_FIELDS)
+              ResponseField.FieldSet("Droid", HeroDetails_ResponseAdapter.RESPONSE_FIELDS),
+              ResponseField.FieldSet("Human", HeroDetails_ResponseAdapter.RESPONSE_FIELDS),
             ),
-          ),
-          ResponseField(
-            type = ResponseField.Type.Named.Other("Float"),
-            fieldName = "height",
           )
         )
 
         val RESPONSE_NAMES: List<String> = RESPONSE_FIELDS.map { it.responseName }
-      }
 
-      class Friends(
-        responseAdapterCache: ResponseAdapterCache
-      ) :
-          ResponseAdapter<com.example.unique_type_name.HeroDetailQuery.Data.HeroDetailQuery.AsHuman.Friends>
-          {
-        private val stringAdapter: ResponseAdapter<String> = StringResponseAdapter
-
-        private val listOfNullableEpisodeAdapter: ResponseAdapter<List<Episode?>> =
-            ListResponseAdapter(NullableResponseAdapter(Episode_ResponseAdapter))
-
-        private val nullableListOfNullableFriendsAdapter:
-            ResponseAdapter<List<com.example.unique_type_name.HeroDetailQuery.Data.HeroDetailQuery.AsHuman.Friends.Friends?>?>
-            =
-            NullableResponseAdapter(ListResponseAdapter(NullableResponseAdapter(Friends(responseAdapterCache))))
-
-        override fun fromResponse(reader: JsonReader):
+        override fun fromResponse(reader: JsonReader, responseAdapterCache: ResponseAdapterCache):
             com.example.unique_type_name.HeroDetailQuery.Data.HeroDetailQuery.AsHuman.Friends {
           var name: String? = null
           var appearsIn: List<Episode?>? = null
@@ -289,9 +277,11 @@ class HeroDetailQuery_ResponseAdapter(
           reader.beginObject()
           while(true) {
             when (reader.selectName(RESPONSE_NAMES)) {
-              0 -> name = stringAdapter.fromResponse(reader)
-              1 -> appearsIn = listOfNullableEpisodeAdapter.fromResponse(reader)
-              2 -> friends = nullableListOfNullableFriendsAdapter.fromResponse(reader)
+              0 -> name = StringResponseAdapter.fromResponse(reader, responseAdapterCache)
+              1 -> appearsIn = Episode_ResponseAdapter.nullable().list().fromResponse(reader,
+                  responseAdapterCache)
+              2 -> friends = Friends.nullable().list().nullable().fromResponse(reader,
+                  responseAdapterCache)
               else -> break
             }
           }
@@ -303,53 +293,33 @@ class HeroDetailQuery_ResponseAdapter(
           )
         }
 
-        override fun toResponse(writer: JsonWriter,
-            value: com.example.unique_type_name.HeroDetailQuery.Data.HeroDetailQuery.AsHuman.Friends) {
+        override fun toResponse(
+          writer: JsonWriter,
+          responseAdapterCache: ResponseAdapterCache,
+          value: com.example.unique_type_name.HeroDetailQuery.Data.HeroDetailQuery.AsHuman.Friends
+        ) {
           writer.beginObject()
           writer.name("name")
-          stringAdapter.toResponse(writer, value.name)
+          StringResponseAdapter.toResponse(writer, responseAdapterCache, value.name)
           writer.name("appearsIn")
-          listOfNullableEpisodeAdapter.toResponse(writer, value.appearsIn)
+          Episode_ResponseAdapter.nullable().list().toResponse(writer, responseAdapterCache,
+              value.appearsIn)
           writer.name("friends")
-          nullableListOfNullableFriendsAdapter.toResponse(writer, value.friends)
+          Friends.nullable().list().nullable().toResponse(writer, responseAdapterCache,
+              value.friends)
           writer.endObject()
         }
 
-        companion object {
+        object Friends :
+            ResponseAdapter<com.example.unique_type_name.HeroDetailQuery.Data.HeroDetailQuery.AsHuman.Friends.Friends>
+            {
           val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
-            ResponseField(
-              type = ResponseField.Type.NotNull(ResponseField.Type.Named.Other("String")),
-              fieldName = "name",
-            ),
-            ResponseField(
-              type =
-                  ResponseField.Type.NotNull(ResponseField.Type.List(ResponseField.Type.Named.Other("Episode"))),
-              fieldName = "appearsIn",
-            ),
-            ResponseField(
-              type = ResponseField.Type.List(ResponseField.Type.Named.Object("Character")),
-              fieldName = "friends",
-              fieldSets = listOf(
-                ResponseField.FieldSet("Droid", HeroDetails_ResponseAdapter.RESPONSE_FIELDS),
-                ResponseField.FieldSet("Human", HeroDetails_ResponseAdapter.RESPONSE_FIELDS),
-              ),
-            )
+            ResponseField.Typename
           )
 
           val RESPONSE_NAMES: List<String> = RESPONSE_FIELDS.map { it.responseName }
-        }
 
-        class Friends(
-          responseAdapterCache: ResponseAdapterCache
-        ) :
-            ResponseAdapter<com.example.unique_type_name.HeroDetailQuery.Data.HeroDetailQuery.AsHuman.Friends.Friends>
-            {
-          private val stringAdapter: ResponseAdapter<String> = StringResponseAdapter
-
-          private val HeroDetailsAdapter: HeroDetails_ResponseAdapter =
-              com.example.unique_type_name.fragment.adapter.HeroDetails_ResponseAdapter(responseAdapterCache)
-
-          override fun fromResponse(reader: JsonReader):
+          override fun fromResponse(reader: JsonReader, responseAdapterCache: ResponseAdapterCache):
               com.example.unique_type_name.HeroDetailQuery.Data.HeroDetailQuery.AsHuman.Friends.Friends {
             val reader = reader.buffer()
             reader.beginObject()
@@ -358,13 +328,13 @@ class HeroDetailQuery_ResponseAdapter(
             var heroDetails: HeroDetails.Data? = null
             while(true) {
               when (reader.selectName(RESPONSE_NAMES)) {
-                0 -> __typename = stringAdapter.fromResponse(reader)
+                0 -> __typename = StringResponseAdapter.fromResponse(reader, responseAdapterCache)
                 else -> break
               }
             }
             if (__typename in arrayOf("Droid", "Human")) {
               reader.rewind()
-              heroDetails = HeroDetailsAdapter.fromResponse(reader)
+              heroDetails = HeroDetails_ResponseAdapter.fromResponse(reader, responseAdapterCache)
             }
 
             return com.example.unique_type_name.HeroDetailQuery.Data.HeroDetailQuery.AsHuman.Friends.Friends(
@@ -374,21 +344,17 @@ class HeroDetailQuery_ResponseAdapter(
             .also { reader.endObject() }
           }
 
-          override fun toResponse(writer: JsonWriter,
-              value: com.example.unique_type_name.HeroDetailQuery.Data.HeroDetailQuery.AsHuman.Friends.Friends) {
+          override fun toResponse(
+            writer: JsonWriter,
+            responseAdapterCache: ResponseAdapterCache,
+            value: com.example.unique_type_name.HeroDetailQuery.Data.HeroDetailQuery.AsHuman.Friends.Friends
+          ) {
             writer.beginObject()
             writer.name("__typename")
-            stringAdapter.toResponse(writer, value.__typename)
-            if (value.heroDetails != null) HeroDetailsAdapter.toResponse(writer, value.heroDetails)
+            StringResponseAdapter.toResponse(writer, responseAdapterCache, value.__typename)
+            if (value.heroDetails != null)
+                HeroDetails_ResponseAdapter.toResponse(writer, responseAdapterCache, value.heroDetails)
             writer.endObject()
-          }
-
-          companion object {
-            val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
-              ResponseField.Typename
-            )
-
-            val RESPONSE_NAMES: List<String> = RESPONSE_FIELDS.map { it.responseName }
           }
         }
       }

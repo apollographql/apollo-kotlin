@@ -16,9 +16,9 @@ class MockQuery : Query<MockQuery.Data> {
   override fun serializeVariables(writer: JsonWriter, responseAdapterCache: ResponseAdapterCache) {
   }
 
-  override fun adapter(responseAdapterCache: ResponseAdapterCache): ResponseAdapter<Data> {
+  override fun adapter(): ResponseAdapter<Data> {
     return object : ResponseAdapter<Data> {
-      override fun fromResponse(reader: JsonReader): Data {
+      override fun fromResponse(reader: JsonReader, responseAdapterCache: ResponseAdapterCache): Data {
         reader.beginObject()
         // consume the json stream
         while (reader.hasNext()) {
@@ -29,7 +29,7 @@ class MockQuery : Query<MockQuery.Data> {
         return Data
       }
 
-      override fun toResponse(writer: JsonWriter, value: Data) {
+      override fun toResponse(writer: JsonWriter, responseAdapterCache: ResponseAdapterCache, value: Data) {
         TODO("Not yet implemented")
       }
     }

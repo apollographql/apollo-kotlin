@@ -5,7 +5,6 @@
 //
 package com.example.named_fragment_delegate.adapter
 
-import com.apollographql.apollo3.api.NullableResponseAdapter
 import com.apollographql.apollo3.api.ResponseAdapter
 import com.apollographql.apollo3.api.ResponseAdapterCache
 import com.apollographql.apollo3.api.ResponseField
@@ -13,6 +12,7 @@ import com.apollographql.apollo3.api.StringResponseAdapter
 import com.apollographql.apollo3.api.internal.json.MapJsonReader.Companion.buffer
 import com.apollographql.apollo3.api.json.JsonReader
 import com.apollographql.apollo3.api.json.JsonWriter
+import com.apollographql.apollo3.api.nullable
 import com.example.named_fragment_delegate.TestQuery
 import com.example.named_fragment_delegate.fragment.DroidDetails
 import com.example.named_fragment_delegate.fragment.HumanDetails
@@ -26,18 +26,27 @@ import kotlin.collections.List
 @Suppress("NAME_SHADOWING", "UNUSED_ANONYMOUS_PARAMETER", "LocalVariableName",
     "RemoveExplicitTypeArguments", "NestedLambdaShadowedImplicitParameter", "PropertyName",
     "RemoveRedundantQualifierName")
-class TestQuery_ResponseAdapter(
-  responseAdapterCache: ResponseAdapterCache
-) : ResponseAdapter<TestQuery.Data> {
-  private val nullableHeroAdapter: ResponseAdapter<TestQuery.Data.Hero?> =
-      NullableResponseAdapter(Hero(responseAdapterCache))
+object TestQuery_ResponseAdapter : ResponseAdapter<TestQuery.Data> {
+  val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
+    ResponseField(
+      type = ResponseField.Type.Named.Object("Character"),
+      fieldName = "hero",
+      fieldSets = listOf(
+        ResponseField.FieldSet("Droid", DroidDetails_ResponseAdapter.RESPONSE_FIELDS),
+        ResponseField.FieldSet("Human", HumanDetails_ResponseAdapter.RESPONSE_FIELDS),
+      ),
+    )
+  )
 
-  override fun fromResponse(reader: JsonReader): TestQuery.Data {
+  val RESPONSE_NAMES: List<String> = RESPONSE_FIELDS.map { it.responseName }
+
+  override fun fromResponse(reader: JsonReader, responseAdapterCache: ResponseAdapterCache):
+      TestQuery.Data {
     var hero: TestQuery.Data.Hero? = null
     reader.beginObject()
     while(true) {
       when (reader.selectName(RESPONSE_NAMES)) {
-        0 -> hero = nullableHeroAdapter.fromResponse(reader)
+        0 -> hero = Hero.nullable().fromResponse(reader, responseAdapterCache)
         else -> break
       }
     }
@@ -47,40 +56,26 @@ class TestQuery_ResponseAdapter(
     )
   }
 
-  override fun toResponse(writer: JsonWriter, value: TestQuery.Data) {
+  override fun toResponse(
+    writer: JsonWriter,
+    responseAdapterCache: ResponseAdapterCache,
+    value: TestQuery.Data
+  ) {
     writer.beginObject()
     writer.name("hero")
-    nullableHeroAdapter.toResponse(writer, value.hero)
+    Hero.nullable().toResponse(writer, responseAdapterCache, value.hero)
     writer.endObject()
   }
 
-  companion object {
+  object Hero : ResponseAdapter<TestQuery.Data.Hero> {
     val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
-      ResponseField(
-        type = ResponseField.Type.Named.Object("Character"),
-        fieldName = "hero",
-        fieldSets = listOf(
-          ResponseField.FieldSet("Droid", DroidDetails_ResponseAdapter.RESPONSE_FIELDS),
-          ResponseField.FieldSet("Human", HumanDetails_ResponseAdapter.RESPONSE_FIELDS),
-        ),
-      )
+      ResponseField.Typename
     )
 
     val RESPONSE_NAMES: List<String> = RESPONSE_FIELDS.map { it.responseName }
-  }
 
-  class Hero(
-    responseAdapterCache: ResponseAdapterCache
-  ) : ResponseAdapter<TestQuery.Data.Hero> {
-    private val stringAdapter: ResponseAdapter<String> = StringResponseAdapter
-
-    private val DroidDetailsAdapter: DroidDetails_ResponseAdapter =
-        com.example.named_fragment_delegate.fragment.adapter.DroidDetails_ResponseAdapter(responseAdapterCache)
-
-    private val HumanDetailsAdapter: HumanDetails_ResponseAdapter =
-        com.example.named_fragment_delegate.fragment.adapter.HumanDetails_ResponseAdapter(responseAdapterCache)
-
-    override fun fromResponse(reader: JsonReader): TestQuery.Data.Hero {
+    override fun fromResponse(reader: JsonReader, responseAdapterCache: ResponseAdapterCache):
+        TestQuery.Data.Hero {
       val reader = reader.buffer()
       reader.beginObject()
 
@@ -89,17 +84,17 @@ class TestQuery_ResponseAdapter(
       var humanDetails: HumanDetails.Data? = null
       while(true) {
         when (reader.selectName(RESPONSE_NAMES)) {
-          0 -> __typename = stringAdapter.fromResponse(reader)
+          0 -> __typename = StringResponseAdapter.fromResponse(reader, responseAdapterCache)
           else -> break
         }
       }
       if (__typename in arrayOf("Droid")) {
         reader.rewind()
-        droidDetails = DroidDetailsAdapter.fromResponse(reader)
+        droidDetails = DroidDetails_ResponseAdapter.fromResponse(reader, responseAdapterCache)
       }
       if (__typename in arrayOf("Human")) {
         reader.rewind()
-        humanDetails = HumanDetailsAdapter.fromResponse(reader)
+        humanDetails = HumanDetails_ResponseAdapter.fromResponse(reader, responseAdapterCache)
       }
 
       return TestQuery.Data.Hero(
@@ -110,21 +105,19 @@ class TestQuery_ResponseAdapter(
       .also { reader.endObject() }
     }
 
-    override fun toResponse(writer: JsonWriter, value: TestQuery.Data.Hero) {
+    override fun toResponse(
+      writer: JsonWriter,
+      responseAdapterCache: ResponseAdapterCache,
+      value: TestQuery.Data.Hero
+    ) {
       writer.beginObject()
       writer.name("__typename")
-      stringAdapter.toResponse(writer, value.__typename)
-      if (value.droidDetails != null) DroidDetailsAdapter.toResponse(writer, value.droidDetails)
-      if (value.humanDetails != null) HumanDetailsAdapter.toResponse(writer, value.humanDetails)
+      StringResponseAdapter.toResponse(writer, responseAdapterCache, value.__typename)
+      if (value.droidDetails != null)
+          DroidDetails_ResponseAdapter.toResponse(writer, responseAdapterCache, value.droidDetails)
+      if (value.humanDetails != null)
+          HumanDetails_ResponseAdapter.toResponse(writer, responseAdapterCache, value.humanDetails)
       writer.endObject()
-    }
-
-    companion object {
-      val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
-        ResponseField.Typename
-      )
-
-      val RESPONSE_NAMES: List<String> = RESPONSE_FIELDS.map { it.responseName }
     }
   }
 }

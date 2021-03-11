@@ -11,8 +11,8 @@ import com.apollographql.apollo3.api.ResponseAdapter
 import com.apollographql.apollo3.api.ResponseAdapterCache
 import com.apollographql.apollo3.api.ResponseField
 import com.apollographql.apollo3.api.json.JsonWriter
-import com.example.mutation_create_review_semantic_naming.adapter.CreateReviewForEpisodeMutation_Adapter
 import com.example.mutation_create_review_semantic_naming.adapter.CreateReviewForEpisodeMutation_ResponseAdapter
+import com.example.mutation_create_review_semantic_naming.adapter.CreateReviewForEpisodeMutation_VariablesAdapter
 import com.example.mutation_create_review_semantic_naming.type.Episode
 import com.example.mutation_create_review_semantic_naming.type.ReviewInput
 import kotlin.Int
@@ -32,20 +32,12 @@ data class CreateReviewForEpisodeMutation(
   override fun queryDocument(): String = QUERY_DOCUMENT
 
   override fun serializeVariables(writer: JsonWriter, responseAdapterCache: ResponseAdapterCache) {
-    responseAdapterCache.getVariablesAdapterFor(this::class) {
-      CreateReviewForEpisodeMutation_Adapter(responseAdapterCache)
-    }.toResponse(writer, this)
+    CreateReviewForEpisodeMutation_VariablesAdapter.toResponse(writer, responseAdapterCache, this)
   }
 
   override fun name(): String = OPERATION_NAME
 
-  override fun adapter(responseAdapterCache: ResponseAdapterCache): ResponseAdapter<Data> {
-    val adapter = responseAdapterCache.getAdapterFor(this::class) {
-      CreateReviewForEpisodeMutation_ResponseAdapter(responseAdapterCache)
-    }
-    return adapter
-  }
-
+  override fun adapter(): ResponseAdapter<Data> = CreateReviewForEpisodeMutation_ResponseAdapter
   override fun responseFields(): List<ResponseField.FieldSet> = listOf(
     ResponseField.FieldSet(null, CreateReviewForEpisodeMutation_ResponseAdapter.RESPONSE_FIELDS)
   )

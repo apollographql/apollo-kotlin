@@ -5,13 +5,13 @@
 //
 package com.example.root_query_fragment.adapter
 
-import com.apollographql.apollo3.api.NullableResponseAdapter
 import com.apollographql.apollo3.api.ResponseAdapter
 import com.apollographql.apollo3.api.ResponseAdapterCache
 import com.apollographql.apollo3.api.ResponseField
 import com.apollographql.apollo3.api.StringResponseAdapter
 import com.apollographql.apollo3.api.json.JsonReader
 import com.apollographql.apollo3.api.json.JsonWriter
+import com.apollographql.apollo3.api.nullable
 import com.example.root_query_fragment.TestQuery
 import kotlin.Array
 import kotlin.String
@@ -21,48 +21,55 @@ import kotlin.collections.List
 @Suppress("NAME_SHADOWING", "UNUSED_ANONYMOUS_PARAMETER", "LocalVariableName",
     "RemoveExplicitTypeArguments", "NestedLambdaShadowedImplicitParameter", "PropertyName",
     "RemoveRedundantQualifierName")
-class TestQuery_ResponseAdapter(
-  responseAdapterCache: ResponseAdapterCache
-) : ResponseAdapter<TestQuery.Data> {
-  private val QueryDataAdapter: QueryData =
-      com.example.root_query_fragment.adapter.TestQuery_ResponseAdapter.QueryData(responseAdapterCache)
-
-  private val OtherDataAdapter: OtherData =
-      com.example.root_query_fragment.adapter.TestQuery_ResponseAdapter.OtherData(responseAdapterCache)
-
-  override fun fromResponse(reader: JsonReader): TestQuery.Data {
+object TestQuery_ResponseAdapter : ResponseAdapter<TestQuery.Data> {
+  override fun fromResponse(reader: JsonReader, responseAdapterCache: ResponseAdapterCache):
+      TestQuery.Data {
     reader.beginObject()
     check(reader.nextName() == "__typename")
     val typename = reader.nextString()
     return when(typename) {
-      "Query" -> QueryDataAdapter.fromResponse(reader, typename)
-      else -> OtherDataAdapter.fromResponse(reader, typename)
+      "Query" -> QueryData.fromResponse(reader, responseAdapterCache, typename)
+      else -> OtherData.fromResponse(reader, responseAdapterCache, typename)
     }
     .also { reader.endObject() }
   }
 
-  override fun toResponse(writer: JsonWriter, value: TestQuery.Data) {
+  override fun toResponse(
+    writer: JsonWriter,
+    responseAdapterCache: ResponseAdapterCache,
+    value: TestQuery.Data
+  ) {
     when(value) {
-      is TestQuery.Data.QueryData -> QueryDataAdapter.toResponse(writer, value)
-      is TestQuery.Data.OtherData -> OtherDataAdapter.toResponse(writer, value)
+      is TestQuery.Data.QueryData -> QueryData.toResponse(writer, responseAdapterCache, value)
+      is TestQuery.Data.OtherData -> OtherData.toResponse(writer, responseAdapterCache, value)
     }
   }
 
-  class QueryData(
-    responseAdapterCache: ResponseAdapterCache
-  ) {
-    private val stringAdapter: ResponseAdapter<String> = StringResponseAdapter
+  object QueryData {
+    val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
+      ResponseField.Typename,
+      ResponseField(
+        type = ResponseField.Type.Named.Object("Character"),
+        fieldName = "hero",
+        fieldSets = listOf(
+          ResponseField.FieldSet(null, Hero.RESPONSE_FIELDS)
+        ),
+      )
+    )
 
-    private val nullableHeroAdapter: ResponseAdapter<TestQuery.Data.QueryData.Hero?> =
-        NullableResponseAdapter(Hero(responseAdapterCache))
+    val RESPONSE_NAMES: List<String> = RESPONSE_FIELDS.map { it.responseName }
 
-    fun fromResponse(reader: JsonReader, __typename: String?): TestQuery.Data.QueryData {
+    fun fromResponse(
+      reader: JsonReader,
+      responseAdapterCache: ResponseAdapterCache,
+      __typename: String?
+    ): TestQuery.Data.QueryData {
       var __typename: String? = __typename
       var hero: TestQuery.Data.QueryData.Hero? = null
       while(true) {
         when (reader.selectName(RESPONSE_NAMES)) {
-          0 -> __typename = stringAdapter.fromResponse(reader)
-          1 -> hero = nullableHeroAdapter.fromResponse(reader)
+          0 -> __typename = StringResponseAdapter.fromResponse(reader, responseAdapterCache)
+          1 -> hero = Hero.nullable().fromResponse(reader, responseAdapterCache)
           else -> break
         }
       }
@@ -72,41 +79,36 @@ class TestQuery_ResponseAdapter(
       )
     }
 
-    fun toResponse(writer: JsonWriter, value: TestQuery.Data.QueryData) {
+    fun toResponse(
+      writer: JsonWriter,
+      responseAdapterCache: ResponseAdapterCache,
+      value: TestQuery.Data.QueryData
+    ) {
       writer.beginObject()
       writer.name("__typename")
-      stringAdapter.toResponse(writer, value.__typename)
+      StringResponseAdapter.toResponse(writer, responseAdapterCache, value.__typename)
       writer.name("hero")
-      nullableHeroAdapter.toResponse(writer, value.hero)
+      Hero.nullable().toResponse(writer, responseAdapterCache, value.hero)
       writer.endObject()
     }
 
-    companion object {
+    object Hero : ResponseAdapter<TestQuery.Data.QueryData.Hero> {
       val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
-        ResponseField.Typename,
         ResponseField(
-          type = ResponseField.Type.Named.Object("Character"),
-          fieldName = "hero",
-          fieldSets = listOf(
-            ResponseField.FieldSet(null, Hero.RESPONSE_FIELDS)
-          ),
+          type = ResponseField.Type.NotNull(ResponseField.Type.Named.Other("String")),
+          fieldName = "name",
         )
       )
 
       val RESPONSE_NAMES: List<String> = RESPONSE_FIELDS.map { it.responseName }
-    }
 
-    class Hero(
-      responseAdapterCache: ResponseAdapterCache
-    ) : ResponseAdapter<TestQuery.Data.QueryData.Hero> {
-      private val stringAdapter: ResponseAdapter<String> = StringResponseAdapter
-
-      override fun fromResponse(reader: JsonReader): TestQuery.Data.QueryData.Hero {
+      override fun fromResponse(reader: JsonReader, responseAdapterCache: ResponseAdapterCache):
+          TestQuery.Data.QueryData.Hero {
         var name: String? = null
         reader.beginObject()
         while(true) {
           when (reader.selectName(RESPONSE_NAMES)) {
-            0 -> name = stringAdapter.fromResponse(reader)
+            0 -> name = StringResponseAdapter.fromResponse(reader, responseAdapterCache)
             else -> break
           }
         }
@@ -116,36 +118,35 @@ class TestQuery_ResponseAdapter(
         )
       }
 
-      override fun toResponse(writer: JsonWriter, value: TestQuery.Data.QueryData.Hero) {
+      override fun toResponse(
+        writer: JsonWriter,
+        responseAdapterCache: ResponseAdapterCache,
+        value: TestQuery.Data.QueryData.Hero
+      ) {
         writer.beginObject()
         writer.name("name")
-        stringAdapter.toResponse(writer, value.name)
+        StringResponseAdapter.toResponse(writer, responseAdapterCache, value.name)
         writer.endObject()
-      }
-
-      companion object {
-        val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
-          ResponseField(
-            type = ResponseField.Type.NotNull(ResponseField.Type.Named.Other("String")),
-            fieldName = "name",
-          )
-        )
-
-        val RESPONSE_NAMES: List<String> = RESPONSE_FIELDS.map { it.responseName }
       }
     }
   }
 
-  class OtherData(
-    responseAdapterCache: ResponseAdapterCache
-  ) {
-    private val stringAdapter: ResponseAdapter<String> = StringResponseAdapter
+  object OtherData {
+    val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
+      ResponseField.Typename
+    )
 
-    fun fromResponse(reader: JsonReader, __typename: String?): TestQuery.Data.OtherData {
+    val RESPONSE_NAMES: List<String> = RESPONSE_FIELDS.map { it.responseName }
+
+    fun fromResponse(
+      reader: JsonReader,
+      responseAdapterCache: ResponseAdapterCache,
+      __typename: String?
+    ): TestQuery.Data.OtherData {
       var __typename: String? = __typename
       while(true) {
         when (reader.selectName(RESPONSE_NAMES)) {
-          0 -> __typename = stringAdapter.fromResponse(reader)
+          0 -> __typename = StringResponseAdapter.fromResponse(reader, responseAdapterCache)
           else -> break
         }
       }
@@ -154,19 +155,15 @@ class TestQuery_ResponseAdapter(
       )
     }
 
-    fun toResponse(writer: JsonWriter, value: TestQuery.Data.OtherData) {
+    fun toResponse(
+      writer: JsonWriter,
+      responseAdapterCache: ResponseAdapterCache,
+      value: TestQuery.Data.OtherData
+    ) {
       writer.beginObject()
       writer.name("__typename")
-      stringAdapter.toResponse(writer, value.__typename)
+      StringResponseAdapter.toResponse(writer, responseAdapterCache, value.__typename)
       writer.endObject()
-    }
-
-    companion object {
-      val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
-        ResponseField.Typename
-      )
-
-      val RESPONSE_NAMES: List<String> = RESPONSE_FIELDS.map { it.responseName }
     }
   }
 }

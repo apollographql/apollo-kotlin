@@ -359,7 +359,7 @@ class SubscriptionManagerTest {
       writer.endObject()
     }
 
-    override fun adapter(responseAdapterCache: ResponseAdapterCache) = throw UnsupportedOperationException()
+    override fun adapter() = throw UnsupportedOperationException()
 
     override fun name(): String = "SomeSubscription"
 

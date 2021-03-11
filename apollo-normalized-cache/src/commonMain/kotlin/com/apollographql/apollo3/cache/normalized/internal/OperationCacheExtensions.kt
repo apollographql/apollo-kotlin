@@ -19,17 +19,32 @@ fun <D : Operation.Data> Operation<D>.normalize(
     data: D,
     responseAdapterCache: ResponseAdapterCache,
     cacheKeyResolver: CacheKeyResolver
-) = normalizeInternal(data, cacheKeyResolver, CacheKeyResolver.rootKey().key, adapter(responseAdapterCache), variables(responseAdapterCache), responseFields())
+) = normalizeInternal(
+    data,
+    responseAdapterCache,
+    cacheKeyResolver,
+    CacheKeyResolver.rootKey().key,
+    adapter(),
+    variables(responseAdapterCache),
+    responseFields())
 
 fun <D : Fragment.Data> Fragment<D>.normalize(
     data: D,
     responseAdapterCache: ResponseAdapterCache,
     cacheKeyResolver: CacheKeyResolver,
     rootKey: String
-) = normalizeInternal(data, cacheKeyResolver, rootKey, adapter(responseAdapterCache), variables(responseAdapterCache), responseFields())
+) = normalizeInternal(
+    data,
+    responseAdapterCache,
+    cacheKeyResolver,
+    rootKey,
+    adapter(),
+    variables(responseAdapterCache),
+    responseFields())
 
 private fun <D> normalizeInternal(
     data: D,
+    responseAdapterCache: ResponseAdapterCache,
     cacheKeyResolver: CacheKeyResolver,
     rootKey: String,
     adapter: ResponseAdapter<D>,
@@ -37,7 +52,7 @@ private fun <D> normalizeInternal(
     fieldSets: List<ResponseField.FieldSet>
 ): Map<String, Record>  {
   val writer = MapJsonWriter()
-  adapter.toResponse(writer, data)
+  adapter.toResponse(writer, responseAdapterCache, data)
   return Normalizer(variables) { responseField, fields ->
     cacheKeyResolver.fromFieldRecordSet(responseField, fields).let { if (it == CacheKey.NO_KEY) null else it.key}
   }.normalize(writer.root() as Map<String, Any?>, null, rootKey, fieldSets)
@@ -65,7 +80,8 @@ fun <D : Operation.Data> Operation<D>.readDataFromCache(
     cacheKeyResolver = cacheKeyResolver,
     cacheHeaders = cacheHeaders,
     variables = variables(responseAdapterCache),
-    adapter = adapter(responseAdapterCache),
+    adapter = adapter(),
+    responseAdapterCache = responseAdapterCache,
     mode = mode,
     cacheKey = CacheKeyResolver.rootKey(),
     fieldSets = responseFields()
@@ -84,7 +100,8 @@ fun <D : Fragment.Data> Fragment<D>.readDataFromCache(
     cacheKeyResolver = cacheKeyResolver,
     cacheHeaders = cacheHeaders,
     variables = variables(responseAdapterCache),
-    adapter = adapter(responseAdapterCache),
+    adapter = adapter(),
+    responseAdapterCache = responseAdapterCache,
     mode = mode,
     fieldSets = responseFields()
 )
@@ -97,6 +114,7 @@ private fun <D> readInternal(
     cacheHeaders: CacheHeaders,
     variables: Operation.Variables,
     adapter: ResponseAdapter<D>,
+    responseAdapterCache: ResponseAdapterCache,
     mode: ReadMode = ReadMode.SEQUENTIAL,
     fieldSets: List<ResponseField.FieldSet>,
 ): D? = try {
@@ -123,7 +141,7 @@ private fun <D> readInternal(
     val reader = MapJsonReader(
         root = map,
     )
-    adapter.fromResponse(reader)
+    adapter.fromResponse(reader, responseAdapterCache)
   } catch (e: Exception) {
     null
   }

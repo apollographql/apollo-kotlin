@@ -5,14 +5,14 @@
 //
 package com.example.antlr_tokens.adapter
 
-import com.apollographql.apollo3.api.NullableResponseAdapter
+import com.apollographql.apollo3.api.NullableStringResponseAdapter
 import com.apollographql.apollo3.api.ResponseAdapter
 import com.apollographql.apollo3.api.ResponseAdapterCache
 import com.apollographql.apollo3.api.ResponseField
-import com.apollographql.apollo3.api.StringResponseAdapter
 import com.apollographql.apollo3.api.Variable
 import com.apollographql.apollo3.api.json.JsonReader
 import com.apollographql.apollo3.api.json.JsonWriter
+import com.apollographql.apollo3.api.nullable
 import com.example.antlr_tokens.TestQuery
 import kotlin.Array
 import kotlin.String
@@ -22,19 +22,27 @@ import kotlin.collections.List
 @Suppress("NAME_SHADOWING", "UNUSED_ANONYMOUS_PARAMETER", "LocalVariableName",
     "RemoveExplicitTypeArguments", "NestedLambdaShadowedImplicitParameter", "PropertyName",
     "RemoveRedundantQualifierName")
-class TestQuery_ResponseAdapter(
-  responseAdapterCache: ResponseAdapterCache
-) : ResponseAdapter<TestQuery.Data> {
-  private val nullableTypeWithGraphQLKeywordsAdapter:
-      ResponseAdapter<TestQuery.Data.TypeWithGraphQLKeywords?> =
-      NullableResponseAdapter(TypeWithGraphQLKeywords(responseAdapterCache))
+object TestQuery_ResponseAdapter : ResponseAdapter<TestQuery.Data> {
+  val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
+    ResponseField(
+      type = ResponseField.Type.Named.Object("TypeWithGraphQLKeywords"),
+      fieldName = "typeWithGraphQLKeywords",
+      fieldSets = listOf(
+        ResponseField.FieldSet(null, TypeWithGraphQLKeywords.RESPONSE_FIELDS)
+      ),
+    )
+  )
 
-  override fun fromResponse(reader: JsonReader): TestQuery.Data {
+  val RESPONSE_NAMES: List<String> = RESPONSE_FIELDS.map { it.responseName }
+
+  override fun fromResponse(reader: JsonReader, responseAdapterCache: ResponseAdapterCache):
+      TestQuery.Data {
     var typeWithGraphQLKeywords: TestQuery.Data.TypeWithGraphQLKeywords? = null
     reader.beginObject()
     while(true) {
       when (reader.selectName(RESPONSE_NAMES)) {
-        0 -> typeWithGraphQLKeywords = nullableTypeWithGraphQLKeywordsAdapter.fromResponse(reader)
+        0 -> typeWithGraphQLKeywords = TypeWithGraphQLKeywords.nullable().fromResponse(reader,
+            responseAdapterCache)
         else -> break
       }
     }
@@ -44,43 +52,55 @@ class TestQuery_ResponseAdapter(
     )
   }
 
-  override fun toResponse(writer: JsonWriter, value: TestQuery.Data) {
+  override fun toResponse(
+    writer: JsonWriter,
+    responseAdapterCache: ResponseAdapterCache,
+    value: TestQuery.Data
+  ) {
     writer.beginObject()
     writer.name("typeWithGraphQLKeywords")
-    nullableTypeWithGraphQLKeywordsAdapter.toResponse(writer, value.typeWithGraphQLKeywords)
+    TypeWithGraphQLKeywords.nullable().toResponse(writer, responseAdapterCache,
+        value.typeWithGraphQLKeywords)
     writer.endObject()
   }
 
-  companion object {
+  object TypeWithGraphQLKeywords : ResponseAdapter<TestQuery.Data.TypeWithGraphQLKeywords> {
     val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
       ResponseField(
-        type = ResponseField.Type.Named.Object("TypeWithGraphQLKeywords"),
-        fieldName = "typeWithGraphQLKeywords",
-        fieldSets = listOf(
-          ResponseField.FieldSet(null, TypeWithGraphQLKeywords.RESPONSE_FIELDS)
-        ),
+        type = ResponseField.Type.Named.Other("String"),
+        fieldName = "on",
+      ),
+      ResponseField(
+        type = ResponseField.Type.Named.Other("String"),
+        fieldName = "null",
+        arguments = mapOf<String, Any?>(
+          "fragment" to Variable("operation")),
+      ),
+      ResponseField(
+        type = ResponseField.Type.Named.Other("String"),
+        fieldName = "null",
+        responseName = "alias",
+        arguments = mapOf<String, Any?>(
+          "fragment" to """
+          |A string
+          |with a new line
+          """.trimMargin()),
       )
     )
 
     val RESPONSE_NAMES: List<String> = RESPONSE_FIELDS.map { it.responseName }
-  }
 
-  class TypeWithGraphQLKeywords(
-    responseAdapterCache: ResponseAdapterCache
-  ) : ResponseAdapter<TestQuery.Data.TypeWithGraphQLKeywords> {
-    private val nullableStringAdapter: ResponseAdapter<String?> =
-        NullableResponseAdapter(StringResponseAdapter)
-
-    override fun fromResponse(reader: JsonReader): TestQuery.Data.TypeWithGraphQLKeywords {
+    override fun fromResponse(reader: JsonReader, responseAdapterCache: ResponseAdapterCache):
+        TestQuery.Data.TypeWithGraphQLKeywords {
       var on: String? = null
       var null_: String? = null
       var alias: String? = null
       reader.beginObject()
       while(true) {
         when (reader.selectName(RESPONSE_NAMES)) {
-          0 -> on = nullableStringAdapter.fromResponse(reader)
-          1 -> null_ = nullableStringAdapter.fromResponse(reader)
-          2 -> alias = nullableStringAdapter.fromResponse(reader)
+          0 -> on = NullableStringResponseAdapter.fromResponse(reader, responseAdapterCache)
+          1 -> null_ = NullableStringResponseAdapter.fromResponse(reader, responseAdapterCache)
+          2 -> alias = NullableStringResponseAdapter.fromResponse(reader, responseAdapterCache)
           else -> break
         }
       }
@@ -92,42 +112,19 @@ class TestQuery_ResponseAdapter(
       )
     }
 
-    override fun toResponse(writer: JsonWriter, value: TestQuery.Data.TypeWithGraphQLKeywords) {
+    override fun toResponse(
+      writer: JsonWriter,
+      responseAdapterCache: ResponseAdapterCache,
+      value: TestQuery.Data.TypeWithGraphQLKeywords
+    ) {
       writer.beginObject()
       writer.name("on")
-      nullableStringAdapter.toResponse(writer, value.on)
+      NullableStringResponseAdapter.toResponse(writer, responseAdapterCache, value.on)
       writer.name("null")
-      nullableStringAdapter.toResponse(writer, value.null_)
+      NullableStringResponseAdapter.toResponse(writer, responseAdapterCache, value.null_)
       writer.name("alias")
-      nullableStringAdapter.toResponse(writer, value.alias)
+      NullableStringResponseAdapter.toResponse(writer, responseAdapterCache, value.alias)
       writer.endObject()
-    }
-
-    companion object {
-      val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
-        ResponseField(
-          type = ResponseField.Type.Named.Other("String"),
-          fieldName = "on",
-        ),
-        ResponseField(
-          type = ResponseField.Type.Named.Other("String"),
-          fieldName = "null",
-          arguments = mapOf<String, Any?>(
-            "fragment" to Variable("operation")),
-        ),
-        ResponseField(
-          type = ResponseField.Type.Named.Other("String"),
-          fieldName = "null",
-          responseName = "alias",
-          arguments = mapOf<String, Any?>(
-            "fragment" to """
-            |A string
-            |with a new line
-            """.trimMargin()),
-        )
-      )
-
-      val RESPONSE_NAMES: List<String> = RESPONSE_FIELDS.map { it.responseName }
     }
   }
 }

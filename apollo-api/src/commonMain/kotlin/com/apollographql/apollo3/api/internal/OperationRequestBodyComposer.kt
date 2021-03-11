@@ -132,7 +132,7 @@ object OperationRequestBodyComposer {
     val buffer = Buffer()
 
     BufferedSinkJsonWriter(buffer).use {
-      AnyResponseAdapter.toResponse(it, entries.mapIndexed { index, entry ->
+      AnyResponseAdapter.toResponse(it, ResponseAdapterCache.DEFAULT, entries.mapIndexed { index, entry ->
         index.toString() to listOf(entry.key)
       }.toMap())
     }

@@ -5,14 +5,14 @@
 //
 package com.example.recursive_selection.adapter
 
-import com.apollographql.apollo3.api.ListResponseAdapter
-import com.apollographql.apollo3.api.NullableResponseAdapter
 import com.apollographql.apollo3.api.ResponseAdapter
 import com.apollographql.apollo3.api.ResponseAdapterCache
 import com.apollographql.apollo3.api.ResponseField
 import com.apollographql.apollo3.api.StringResponseAdapter
 import com.apollographql.apollo3.api.json.JsonReader
 import com.apollographql.apollo3.api.json.JsonWriter
+import com.apollographql.apollo3.api.list
+import com.apollographql.apollo3.api.nullable
 import com.example.recursive_selection.TestQuery
 import kotlin.Array
 import kotlin.String
@@ -22,18 +22,26 @@ import kotlin.collections.List
 @Suppress("NAME_SHADOWING", "UNUSED_ANONYMOUS_PARAMETER", "LocalVariableName",
     "RemoveExplicitTypeArguments", "NestedLambdaShadowedImplicitParameter", "PropertyName",
     "RemoveRedundantQualifierName")
-class TestQuery_ResponseAdapter(
-  responseAdapterCache: ResponseAdapterCache
-) : ResponseAdapter<TestQuery.Data> {
-  private val nullableTreeAdapter: ResponseAdapter<TestQuery.Data.Tree?> =
-      NullableResponseAdapter(Tree(responseAdapterCache))
+object TestQuery_ResponseAdapter : ResponseAdapter<TestQuery.Data> {
+  val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
+    ResponseField(
+      type = ResponseField.Type.Named.Object("Tree"),
+      fieldName = "tree",
+      fieldSets = listOf(
+        ResponseField.FieldSet(null, Tree.RESPONSE_FIELDS)
+      ),
+    )
+  )
 
-  override fun fromResponse(reader: JsonReader): TestQuery.Data {
+  val RESPONSE_NAMES: List<String> = RESPONSE_FIELDS.map { it.responseName }
+
+  override fun fromResponse(reader: JsonReader, responseAdapterCache: ResponseAdapterCache):
+      TestQuery.Data {
     var tree: TestQuery.Data.Tree? = null
     reader.beginObject()
     while(true) {
       when (reader.selectName(RESPONSE_NAMES)) {
-        0 -> tree = nullableTreeAdapter.fromResponse(reader)
+        0 -> tree = Tree.nullable().fromResponse(reader, responseAdapterCache)
         else -> break
       }
     }
@@ -43,48 +51,53 @@ class TestQuery_ResponseAdapter(
     )
   }
 
-  override fun toResponse(writer: JsonWriter, value: TestQuery.Data) {
+  override fun toResponse(
+    writer: JsonWriter,
+    responseAdapterCache: ResponseAdapterCache,
+    value: TestQuery.Data
+  ) {
     writer.beginObject()
     writer.name("tree")
-    nullableTreeAdapter.toResponse(writer, value.tree)
+    Tree.nullable().toResponse(writer, responseAdapterCache, value.tree)
     writer.endObject()
   }
 
-  companion object {
+  object Tree : ResponseAdapter<TestQuery.Data.Tree> {
     val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
       ResponseField(
-        type = ResponseField.Type.Named.Object("Tree"),
-        fieldName = "tree",
+        type = ResponseField.Type.NotNull(ResponseField.Type.Named.Other("String")),
+        fieldName = "name",
+      ),
+      ResponseField(
+        type =
+            ResponseField.Type.NotNull(ResponseField.Type.List(ResponseField.Type.NotNull(ResponseField.Type.Named.Object("Tree")))),
+        fieldName = "children",
         fieldSets = listOf(
-          ResponseField.FieldSet(null, Tree.RESPONSE_FIELDS)
+          ResponseField.FieldSet(null, Children.RESPONSE_FIELDS)
+        ),
+      ),
+      ResponseField(
+        type = ResponseField.Type.Named.Object("Tree"),
+        fieldName = "parent",
+        fieldSets = listOf(
+          ResponseField.FieldSet(null, Parent.RESPONSE_FIELDS)
         ),
       )
     )
 
     val RESPONSE_NAMES: List<String> = RESPONSE_FIELDS.map { it.responseName }
-  }
 
-  class Tree(
-    responseAdapterCache: ResponseAdapterCache
-  ) : ResponseAdapter<TestQuery.Data.Tree> {
-    private val stringAdapter: ResponseAdapter<String> = StringResponseAdapter
-
-    private val listOfChildrenAdapter: ResponseAdapter<List<TestQuery.Data.Tree.Children>> =
-        ListResponseAdapter(Children(responseAdapterCache))
-
-    private val nullableParentAdapter: ResponseAdapter<TestQuery.Data.Tree.Parent?> =
-        NullableResponseAdapter(Parent(responseAdapterCache))
-
-    override fun fromResponse(reader: JsonReader): TestQuery.Data.Tree {
+    override fun fromResponse(reader: JsonReader, responseAdapterCache: ResponseAdapterCache):
+        TestQuery.Data.Tree {
       var name: String? = null
       var children: List<TestQuery.Data.Tree.Children>? = null
       var parent: TestQuery.Data.Tree.Parent? = null
       reader.beginObject()
       while(true) {
         when (reader.selectName(RESPONSE_NAMES)) {
-          0 -> name = stringAdapter.fromResponse(reader)
-          1 -> children = listOfChildrenAdapter.fromResponse(reader)
-          2 -> parent = nullableParentAdapter.fromResponse(reader)
+          0 -> name = StringResponseAdapter.fromResponse(reader, responseAdapterCache)
+          1 -> children = Children.list().fromResponse(reader, responseAdapterCache)
+          2 -> parent = Parent.nullable().fromResponse(reader, responseAdapterCache)
           else -> break
         }
       }
@@ -96,54 +109,38 @@ class TestQuery_ResponseAdapter(
       )
     }
 
-    override fun toResponse(writer: JsonWriter, value: TestQuery.Data.Tree) {
+    override fun toResponse(
+      writer: JsonWriter,
+      responseAdapterCache: ResponseAdapterCache,
+      value: TestQuery.Data.Tree
+    ) {
       writer.beginObject()
       writer.name("name")
-      stringAdapter.toResponse(writer, value.name)
+      StringResponseAdapter.toResponse(writer, responseAdapterCache, value.name)
       writer.name("children")
-      listOfChildrenAdapter.toResponse(writer, value.children)
+      Children.list().toResponse(writer, responseAdapterCache, value.children)
       writer.name("parent")
-      nullableParentAdapter.toResponse(writer, value.parent)
+      Parent.nullable().toResponse(writer, responseAdapterCache, value.parent)
       writer.endObject()
     }
 
-    companion object {
+    object Children : ResponseAdapter<TestQuery.Data.Tree.Children> {
       val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
         ResponseField(
           type = ResponseField.Type.NotNull(ResponseField.Type.Named.Other("String")),
           fieldName = "name",
-        ),
-        ResponseField(
-          type =
-              ResponseField.Type.NotNull(ResponseField.Type.List(ResponseField.Type.NotNull(ResponseField.Type.Named.Object("Tree")))),
-          fieldName = "children",
-          fieldSets = listOf(
-            ResponseField.FieldSet(null, Children.RESPONSE_FIELDS)
-          ),
-        ),
-        ResponseField(
-          type = ResponseField.Type.Named.Object("Tree"),
-          fieldName = "parent",
-          fieldSets = listOf(
-            ResponseField.FieldSet(null, Parent.RESPONSE_FIELDS)
-          ),
         )
       )
 
       val RESPONSE_NAMES: List<String> = RESPONSE_FIELDS.map { it.responseName }
-    }
 
-    class Children(
-      responseAdapterCache: ResponseAdapterCache
-    ) : ResponseAdapter<TestQuery.Data.Tree.Children> {
-      private val stringAdapter: ResponseAdapter<String> = StringResponseAdapter
-
-      override fun fromResponse(reader: JsonReader): TestQuery.Data.Tree.Children {
+      override fun fromResponse(reader: JsonReader, responseAdapterCache: ResponseAdapterCache):
+          TestQuery.Data.Tree.Children {
         var name: String? = null
         reader.beginObject()
         while(true) {
           when (reader.selectName(RESPONSE_NAMES)) {
-            0 -> name = stringAdapter.fromResponse(reader)
+            0 -> name = StringResponseAdapter.fromResponse(reader, responseAdapterCache)
             else -> break
           }
         }
@@ -153,36 +150,35 @@ class TestQuery_ResponseAdapter(
         )
       }
 
-      override fun toResponse(writer: JsonWriter, value: TestQuery.Data.Tree.Children) {
+      override fun toResponse(
+        writer: JsonWriter,
+        responseAdapterCache: ResponseAdapterCache,
+        value: TestQuery.Data.Tree.Children
+      ) {
         writer.beginObject()
         writer.name("name")
-        stringAdapter.toResponse(writer, value.name)
+        StringResponseAdapter.toResponse(writer, responseAdapterCache, value.name)
         writer.endObject()
-      }
-
-      companion object {
-        val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
-          ResponseField(
-            type = ResponseField.Type.NotNull(ResponseField.Type.Named.Other("String")),
-            fieldName = "name",
-          )
-        )
-
-        val RESPONSE_NAMES: List<String> = RESPONSE_FIELDS.map { it.responseName }
       }
     }
 
-    class Parent(
-      responseAdapterCache: ResponseAdapterCache
-    ) : ResponseAdapter<TestQuery.Data.Tree.Parent> {
-      private val stringAdapter: ResponseAdapter<String> = StringResponseAdapter
+    object Parent : ResponseAdapter<TestQuery.Data.Tree.Parent> {
+      val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
+        ResponseField(
+          type = ResponseField.Type.NotNull(ResponseField.Type.Named.Other("String")),
+          fieldName = "name",
+        )
+      )
 
-      override fun fromResponse(reader: JsonReader): TestQuery.Data.Tree.Parent {
+      val RESPONSE_NAMES: List<String> = RESPONSE_FIELDS.map { it.responseName }
+
+      override fun fromResponse(reader: JsonReader, responseAdapterCache: ResponseAdapterCache):
+          TestQuery.Data.Tree.Parent {
         var name: String? = null
         reader.beginObject()
         while(true) {
           when (reader.selectName(RESPONSE_NAMES)) {
-            0 -> name = stringAdapter.fromResponse(reader)
+            0 -> name = StringResponseAdapter.fromResponse(reader, responseAdapterCache)
             else -> break
           }
         }
@@ -192,22 +188,15 @@ class TestQuery_ResponseAdapter(
         )
       }
 
-      override fun toResponse(writer: JsonWriter, value: TestQuery.Data.Tree.Parent) {
+      override fun toResponse(
+        writer: JsonWriter,
+        responseAdapterCache: ResponseAdapterCache,
+        value: TestQuery.Data.Tree.Parent
+      ) {
         writer.beginObject()
         writer.name("name")
-        stringAdapter.toResponse(writer, value.name)
+        StringResponseAdapter.toResponse(writer, responseAdapterCache, value.name)
         writer.endObject()
-      }
-
-      companion object {
-        val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
-          ResponseField(
-            type = ResponseField.Type.NotNull(ResponseField.Type.Named.Other("String")),
-            fieldName = "name",
-          )
-        )
-
-        val RESPONSE_NAMES: List<String> = RESPONSE_FIELDS.map { it.responseName }
       }
     }
   }

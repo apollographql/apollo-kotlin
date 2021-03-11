@@ -160,7 +160,7 @@ class SubscriptionAutoPersistTest {
       writer.endObject()
     }
 
-    override fun adapter(responseAdapterCache: ResponseAdapterCache): ResponseAdapter<Subscription.Data> {
+    override fun adapter(): ResponseAdapter<Subscription.Data> {
       throw UnsupportedOperationException()
     }
 

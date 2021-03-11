@@ -107,20 +107,10 @@ internal fun CodeGenerationAst.OperationType.typeSpec(
 }
 
 private fun adapterFunSpec(operationResponseAdapter: ClassName): FunSpec {
-  val body = CodeBlock.builder().apply {
-    addStatement("val adapter = ${Identifier.RESPONSE_ADAPTER_CACHE}.getAdapterFor(this::class) {")
-    indent()
-    addStatement("%T(${Identifier.RESPONSE_ADAPTER_CACHE})", operationResponseAdapter)
-    unindent()
-    addStatement("}")
-    addStatement("return adapter")
-  }.build()
-
   return FunSpec.builder("adapter")
       .addModifiers(KModifier.OVERRIDE)
-      .addParameter(ParameterSpec.builder(Identifier.RESPONSE_ADAPTER_CACHE, ResponseAdapterCache::class.asTypeName()).build())
       .returns(ResponseAdapter::class.asClassName().parameterizedBy(ClassName(packageName = "", "Data")))
-      .addCode(body)
+      .addCode("return %T", operationResponseAdapter)
       .build()
 
 }

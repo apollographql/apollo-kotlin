@@ -3,11 +3,12 @@ package com.apollographql.apollo3.compiler.backend.codegen
 import com.apollographql.apollo3.api.BooleanResponseAdapter
 import com.apollographql.apollo3.api.DoubleResponseAdapter
 import com.apollographql.apollo3.api.IntResponseAdapter
-import com.apollographql.apollo3.api.ResponseAdapterCache
 import com.apollographql.apollo3.api.ResponseField
 import com.apollographql.apollo3.api.Variable
-import com.apollographql.apollo3.api.ListResponseAdapter
-import com.apollographql.apollo3.api.NullableResponseAdapter
+import com.apollographql.apollo3.api.NullableBooleanResponseAdapter
+import com.apollographql.apollo3.api.NullableDoubleResponseAdapter
+import com.apollographql.apollo3.api.NullableIntResponseAdapter
+import com.apollographql.apollo3.api.NullableStringResponseAdapter
 import com.apollographql.apollo3.api.ResponseAdapter
 import com.apollographql.apollo3.api.StringResponseAdapter
 import com.apollographql.apollo3.compiler.applyIf
@@ -17,7 +18,7 @@ import com.squareup.kotlinpoet.ClassName
 import com.squareup.kotlinpoet.CodeBlock
 import com.squareup.kotlinpoet.FunSpec
 import com.squareup.kotlinpoet.KModifier
-import com.squareup.kotlinpoet.ParameterSpec
+import com.squareup.kotlinpoet.MemberName
 import com.squareup.kotlinpoet.ParameterizedTypeName.Companion.parameterizedBy
 import com.squareup.kotlinpoet.PropertySpec
 import com.squareup.kotlinpoet.TypeSpec
@@ -56,23 +57,14 @@ private fun CodeGenerationAst.ObjectType.rootResponseAdapterTypeSpec(
 }
 
 private fun CodeGenerationAst.ObjectType.responseAdapterTypeSpec(generateFragmentsAsInterfaces: Boolean): TypeSpec {
-  return TypeSpec.classBuilder(this.name)
-      .primaryConstructor(
-          FunSpec.constructorBuilder()
-              .addParameter(ParameterSpec.builder("responseAdapterCache", ResponseAdapterCache::class.asTypeName()).build())
-              .build()
-      )
+  return TypeSpec.objectBuilder(this.name)
       .applyIf(!isTypeCase) { addSuperinterface(ResponseAdapter::class.asTypeName().parameterizedBy(this@responseAdapterTypeSpec.typeRef.asTypeName())) }
       .apply {
         if (fields.isNotEmpty()) {
           if (kind is CodeGenerationAst.ObjectType.Kind.Object ||
               (kind is CodeGenerationAst.ObjectType.Kind.ObjectWithFragments && !generateFragmentsAsInterfaces)) {
-            addType(companionObjectTypeSpec(this@responseAdapterTypeSpec))
-            addProperties(adapterPropertySpecs(this@responseAdapterTypeSpec))
-          }
-
-          if (kind is CodeGenerationAst.ObjectType.Kind.ObjectWithFragments) {
-            addProperties(objectAdapterPropertySpecs(kind))
+            addProperty(responseFieldsPropertySpec(this@responseAdapterTypeSpec))
+            addProperty(responseNamesPropertySpec())
           }
         }
       }
@@ -87,22 +79,6 @@ private fun CodeGenerationAst.ObjectType.responseAdapterTypeSpec(generateFragmen
           }
       )
       .build()
-}
-
-private fun objectAdapterPropertySpecs(kind: CodeGenerationAst.ObjectType.Kind.ObjectWithFragments): Iterable<PropertySpec> {
-  return (kind.possibleImplementations.map { it.typeRef } + kind.defaultImplementation).distinct().filterNotNull().map { typeRef ->
-    PropertySpec.builder(typeRef.fragmentResponseAdapterVariableName(), typeRef.asAdapterTypeName())
-        .addModifiers(KModifier.PRIVATE)
-        .initializer("%L(responseAdapterCache)", typeRef.asAdapterTypeName())
-        .build()
-  }
-}
-
-private fun companionObjectTypeSpec(objectType: CodeGenerationAst.ObjectType): TypeSpec {
-  return TypeSpec.companionObjectBuilder().apply {
-    addProperty(responseFieldsPropertySpec(objectType))
-    addProperty(responseNamesPropertySpec())
-  }.build()
 }
 
 internal fun CodeGenerationAst.TypeRef.asAdapterTypeName(): ClassName {
@@ -127,7 +103,7 @@ internal fun CodeGenerationAst.TypeRef.asEnumAdapterTypeName(): ClassName {
 }
 
 internal fun CodeGenerationAst.TypeRef.asInputAdapterTypeName(): ClassName {
-  return ClassName(packageName = "$packageName.adapter", kotlinNameForSerializer(this.name))
+  return ClassName(packageName = "$packageName.adapter", kotlinNameForInputObjectAdapter(this.name))
 }
 
 private fun responseFieldsPropertySpec(objectType: CodeGenerationAst.ObjectType): PropertySpec {
@@ -151,43 +127,6 @@ private fun responseFieldsPropertySpec(objectType: CodeGenerationAst.ObjectType)
           ),
       )
       .initializer(initializer)
-      .build()
-}
-
-private fun adapterPropertySpecs(objectType: CodeGenerationAst.ObjectType): List<PropertySpec> {
-  return objectType.fields.map { it.type }.toSet().map { it.adapterPropertySpec() }
-}
-
-internal fun adapterInitializer(type: CodeGenerationAst.FieldType): CodeBlock {
-  if (type.nullable) {
-    return CodeBlock.of("%T(%L)", NullableResponseAdapter::class.asClassName(), adapterInitializer(type.nonNullable()))
-  }
-  return when (type) {
-    is CodeGenerationAst.FieldType.Array -> CodeBlock.of("%T(%L)", ListResponseAdapter::class.asClassName(), adapterInitializer(type.rawType))
-    is CodeGenerationAst.FieldType.Scalar.Boolean -> CodeBlock.of("%T", BooleanResponseAdapter::class)
-    is CodeGenerationAst.FieldType.Scalar.ID -> CodeBlock.of("%T", StringResponseAdapter::class)
-    is CodeGenerationAst.FieldType.Scalar.String -> CodeBlock.of("%T", StringResponseAdapter::class)
-    is CodeGenerationAst.FieldType.Scalar.Int -> CodeBlock.of("%T", IntResponseAdapter::class)
-    is CodeGenerationAst.FieldType.Scalar.Float -> CodeBlock.of("%T", DoubleResponseAdapter::class)
-    is CodeGenerationAst.FieldType.Scalar.Enum -> CodeBlock.of("%T", type.typeRef.asEnumAdapterTypeName().copy(nullable = false))
-    is CodeGenerationAst.FieldType.Object -> CodeBlock.of("%T(responseAdapterCache)", type.typeRef.asAdapterTypeName().copy(nullable = false))
-    is CodeGenerationAst.FieldType.InputObject -> CodeBlock.of("%T(responseAdapterCache)", type.typeRef.asInputAdapterTypeName().copy(nullable = false))
-    is CodeGenerationAst.FieldType.Scalar.Custom -> CodeBlock.of(
-        "responseAdapterCache.responseAdapterFor<%T>(%T)",
-        ClassName.bestGuess(type.type),
-        type.typeRef.asTypeName()
-    )
-  }
-}
-
-internal fun CodeGenerationAst.FieldType.adapterPropertySpec(): PropertySpec {
-  return PropertySpec
-      .builder(
-          name = kotlinNameForAdapterField(this),
-          type = ResponseAdapter::class.asClassName().parameterizedBy(asTypeName())
-      )
-      .addModifiers(KModifier.PRIVATE)
-      .initializer(adapterInitializer(this))
       .build()
 }
 
@@ -363,5 +302,42 @@ private fun valueToCode(any: Any?): CodeBlock {
       this is Variable -> CodeBlock.of("%T(%S)", Variable::class, name)
       else -> throw IllegalStateException("Cannot generate code for $this")
     }
+  }
+}
+
+private fun nullableScalarAdapter(name: String) = CodeBlock.of("%M", MemberName("com.apollographql.apollo3.api", name))
+
+internal fun adapterInitializer(type: CodeGenerationAst.FieldType): CodeBlock {
+  if (type.nullable) {
+    return when (type) {
+      is CodeGenerationAst.FieldType.Scalar.ID -> nullableScalarAdapter("NullableStringResponseAdapter")
+      is CodeGenerationAst.FieldType.Scalar.Boolean -> nullableScalarAdapter("NullableBooleanResponseAdapter")
+      is CodeGenerationAst.FieldType.Scalar.String -> nullableScalarAdapter("NullableStringResponseAdapter")
+      is CodeGenerationAst.FieldType.Scalar.Int -> nullableScalarAdapter("NullableIntResponseAdapter")
+      is CodeGenerationAst.FieldType.Scalar.Float -> nullableScalarAdapter("NullableDoubleResponseAdapter")
+      else -> {
+        val nullableFun = MemberName("com.apollographql.apollo3.api", "nullable")
+        CodeBlock.of("%L.%M()", adapterInitializer(type.nonNullable()), nullableFun)
+      }
+    }
+  }
+  return when (type) {
+    is CodeGenerationAst.FieldType.Array -> {
+      val nullableFun = MemberName("com.apollographql.apollo3.api", "list")
+      CodeBlock.of("%L.%M()", adapterInitializer(type.rawType), nullableFun)
+    }
+    is CodeGenerationAst.FieldType.Scalar.Boolean -> CodeBlock.of("%T", BooleanResponseAdapter::class)
+    is CodeGenerationAst.FieldType.Scalar.ID -> CodeBlock.of("%T", StringResponseAdapter::class)
+    is CodeGenerationAst.FieldType.Scalar.String -> CodeBlock.of("%T", StringResponseAdapter::class)
+    is CodeGenerationAst.FieldType.Scalar.Int -> CodeBlock.of("%T", IntResponseAdapter::class)
+    is CodeGenerationAst.FieldType.Scalar.Float -> CodeBlock.of("%T", DoubleResponseAdapter::class)
+    is CodeGenerationAst.FieldType.Scalar.Enum -> CodeBlock.of("%T", type.typeRef.asEnumAdapterTypeName().copy(nullable = false))
+    is CodeGenerationAst.FieldType.Object -> CodeBlock.of("%T", type.typeRef.asAdapterTypeName().copy(nullable = false))
+    is CodeGenerationAst.FieldType.InputObject -> CodeBlock.of("%T", type.typeRef.asInputAdapterTypeName().copy(nullable = false))
+    is CodeGenerationAst.FieldType.Scalar.Custom -> CodeBlock.of(
+        "responseAdapterCache.responseAdapterFor<%T>(%T)",
+        ClassName.bestGuess(type.type),
+        type.typeRef.asTypeName()
+    )
   }
 }

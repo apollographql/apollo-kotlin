@@ -153,16 +153,16 @@ class ApolloIdlingResourceTest {
         writer.endObject()
       }
 
-      override fun adapter(responseAdapterCache: ResponseAdapterCache): ResponseAdapter<Query.Data> {
+      override fun adapter(): ResponseAdapter<Query.Data> {
         return object: ResponseAdapter<Query.Data> {
-          override fun fromResponse(reader: JsonReader): Query.Data {
+          override fun fromResponse(reader: JsonReader, responseAdapterCache: ResponseAdapterCache): Query.Data {
             while (reader.selectName(emptyList()) != -1) {
               // consume the json stream
             }
             return object: Query.Data {}
           }
 
-          override fun toResponse(writer: JsonWriter, value: Query.Data) {
+          override fun toResponse(writer: JsonWriter, responseAdapterCache: ResponseAdapterCache, value: Query.Data) {
             TODO("Not yet implemented")
           }
         }

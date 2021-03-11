@@ -22,9 +22,9 @@ class MockSubscription(
     AnyResponseAdapter.toResponse(writer, variables)
   }
 
-  override fun adapter(responseAdapterCache: ResponseAdapterCache): ResponseAdapter<Data> {
+  override fun adapter(): ResponseAdapter<Data> {
     return object : ResponseAdapter<Data> {
-      override fun fromResponse(reader: JsonReader): Data {
+      override fun fromResponse(reader: JsonReader, responseAdapterCache: ResponseAdapterCache): Data {
         reader.beginObject()
         reader.nextName()
         return Data(
@@ -34,7 +34,7 @@ class MockSubscription(
         }
       }
 
-      override fun toResponse(writer: JsonWriter, value: Data) {
+      override fun toResponse(writer: JsonWriter, responseAdapterCache: ResponseAdapterCache, value: Data) {
         TODO("Not yet implemented")
       }
     }

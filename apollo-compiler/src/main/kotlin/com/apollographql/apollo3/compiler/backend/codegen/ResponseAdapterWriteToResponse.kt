@@ -1,5 +1,6 @@
 package com.apollographql.apollo3.compiler.backend.codegen
 
+import com.apollographql.apollo3.api.ResponseAdapterCache
 import com.apollographql.apollo3.api.json.JsonWriter
 import com.apollographql.apollo3.compiler.applyIf
 import com.apollographql.apollo3.compiler.backend.ast.CodeGenerationAst
@@ -7,7 +8,7 @@ import com.apollographql.apollo3.compiler.escapeKotlinReservedWord
 import com.squareup.kotlinpoet.CodeBlock
 import com.squareup.kotlinpoet.FunSpec
 import com.squareup.kotlinpoet.KModifier
-import com.squareup.kotlinpoet.ParameterSpec
+import com.squareup.kotlinpoet.TypeName
 import com.squareup.kotlinpoet.asTypeName
 import com.squareup.kotlinpoet.joinToCode
 
@@ -24,8 +25,9 @@ internal fun CodeGenerationAst.ObjectType.writeToResponseFunSpec(generateFragmen
 private fun CodeGenerationAst.ObjectType.writeObjectToResponseFunSpec(): FunSpec {
   return FunSpec.builder("toResponse")
       .applyIf(!isTypeCase) { addModifiers(KModifier.OVERRIDE) }
-      .addParameter(ParameterSpec(name = "writer", type = JsonWriter::class.asTypeName()))
-      .addParameter(ParameterSpec(name = "value", type = this.typeRef.asTypeName()))
+      .addParameter("writer", JsonWriter::class.asTypeName())
+      .addParameter(Identifier.responseAdapterCache, ResponseAdapterCache::class)
+      .addParameter("value", this.typeRef.asTypeName())
       .addCode(this.fields.writeCode())
       .build()
 }
@@ -34,9 +36,10 @@ private fun CodeGenerationAst.ObjectType.writeFragmentDelegateToResponseFunSpec(
   val fragmentRef = (this.kind as CodeGenerationAst.ObjectType.Kind.FragmentDelegate).fragmentTypeRef
   return FunSpec.builder("toResponse")
       .addModifiers(KModifier.OVERRIDE)
-      .addParameter(ParameterSpec(name = "writer", type = JsonWriter::class.asTypeName()))
-      .addParameter(ParameterSpec(name = "value", type = this.typeRef.asTypeName()))
-      .addStatement("%T.toResponse(writer,·value.delegate)", fragmentRef.enclosingType!!.asAdapterTypeName())
+      .addParameter("writer", JsonWriter::class.asTypeName())
+      .addParameter(Identifier.responseAdapterCache, ResponseAdapterCache::class)
+      .addParameter("value", this.typeRef.asTypeName())
+      .addStatement("%T.toResponse(writer,·${Identifier.responseAdapterCache},·value.delegate)", fragmentRef.enclosingType!!.asAdapterTypeName())
       .build()
 }
 
@@ -44,10 +47,7 @@ private fun CodeGenerationAst.ObjectType.writeFragmentAsInterfacesToResponseFunS
   val (defaultImplementation, possibleImplementations) = with(this.kind as CodeGenerationAst.ObjectType.Kind.ObjectWithFragments) {
     defaultImplementation to possibleImplementations
   }
-  return FunSpec.builder("toResponse")
-      .addModifiers(KModifier.OVERRIDE)
-      .addParameter(ParameterSpec(name = "writer", type = JsonWriter::class.asTypeName()))
-      .addParameter(ParameterSpec(name = "value", type = this.typeRef.asTypeName()))
+  return toResponseFunSpecBuilder(this.typeRef.asTypeName())
       .applyIf(possibleImplementations.isEmpty()) {
         addCode(
             this@writeFragmentAsInterfacesToResponseFunSpec.fields.writeCode()
@@ -58,15 +58,16 @@ private fun CodeGenerationAst.ObjectType.writeFragmentAsInterfacesToResponseFunS
         addCode(
             possibleImplementations.map { fragmentImplementation ->
               CodeBlock.of(
-                  "is·%T·->·%L.toResponse(writer,·value)",
+                  "is·%T·->·%T.toResponse(writer,·${Identifier.responseAdapterCache},·value)",
                   fragmentImplementation.typeRef.asTypeName(),
-                  kotlinNameForTypeCaseAdapterField(fragmentImplementation.typeRef),
+                  fragmentImplementation.typeRef.asAdapterTypeName(),
               )
             }.joinToCode(separator = "\n", suffix = "\n")
         )
         addStatement(
-            "is·%T·->·${kotlinNameForTypeCaseAdapterField(defaultImplementation!!)}.toResponse(writer,·value)",
-            defaultImplementation.asTypeName(),
+            "is·%T·->·%T.toResponse(writer,·responseAdapterCache,·value)",
+            defaultImplementation!!.asTypeName(),
+            defaultImplementation.asAdapterTypeName()
         )
         endControlFlow()
       }
@@ -81,19 +82,16 @@ private fun CodeGenerationAst.ObjectType.writeFragmentAsClassesToResponseFunSpec
   val possibleImplementations = (this.kind as CodeGenerationAst.ObjectType.Kind.ObjectWithFragments).possibleImplementations
 
   val writeFragmentsCode = possibleImplementations.map { fragmentImplementation ->
-    val propertyName = fragmentImplementation.typeRef.fragmentVariableName()
+    val propertyName = fragmentImplementation.typeRef.fragmentPropertyName()
     CodeBlock.of(
-        "if (value.%L != null) %L.toResponse(writer, value.%L)",
+        "if (value.%L != null) %T.toResponse(writer,·${Identifier.responseAdapterCache},·value.%L)",
         propertyName,
-        fragmentImplementation.typeRef.fragmentResponseAdapterVariableName(),
+        fragmentImplementation.typeRef.asAdapterTypeName(),
         propertyName,
     )
   }.joinToCode(separator = "\n", suffix = "\n")
 
-  return FunSpec.builder("toResponse")
-      .addModifiers(KModifier.OVERRIDE)
-      .addParameter(ParameterSpec(name = "writer", type = JsonWriter::class.asTypeName()))
-      .addParameter(ParameterSpec(name = "value", type = this.typeRef.asTypeName()))
+  return toResponseFunSpecBuilder(typeRef.asTypeName())
       .addStatement("writer.beginObject()")
       .addCode(writeFieldsCode)
       .addCode(writeFragmentsCode)
@@ -114,6 +112,15 @@ internal fun List<CodeGenerationAst.Field>.writeCode(): CodeBlock {
 private fun CodeGenerationAst.Field.writeCode(): CodeBlock {
   return CodeBlock.builder().apply {
     addStatement("writer.name(%S)", name)
-    addStatement("${kotlinNameForAdapterField(type)}.toResponse(writer, value.${name.escapeKotlinReservedWord()})")
+    addStatement(
+        "%L.toResponse(writer, ${Identifier.responseAdapterCache}, value.${name.escapeKotlinReservedWord()})",
+        adapterInitializer(type)
+    )
   }.build()
 }
+
+internal fun toResponseFunSpecBuilder(typeName: TypeName) = FunSpec.builder("toResponse")
+    .addModifiers(KModifier.OVERRIDE)
+    .addParameter(name = "writer", type = JsonWriter::class.asTypeName())
+    .addParameter(name = Identifier.responseAdapterCache, type = ResponseAdapterCache::class)
+    .addParameter("value", typeName)

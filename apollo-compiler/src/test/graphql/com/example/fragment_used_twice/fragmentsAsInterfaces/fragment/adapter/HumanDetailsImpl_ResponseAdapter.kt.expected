@@ -22,50 +22,59 @@ import kotlin.collections.List
 @Suppress("NAME_SHADOWING", "UNUSED_ANONYMOUS_PARAMETER", "LocalVariableName",
     "RemoveExplicitTypeArguments", "NestedLambdaShadowedImplicitParameter", "PropertyName",
     "RemoveRedundantQualifierName")
-class HumanDetailsImpl_ResponseAdapter(
-  responseAdapterCache: ResponseAdapterCache
-) : ResponseAdapter<HumanDetailsImpl.Data> {
-  private val CharacterDataAdapter: CharacterData =
-      com.example.fragment_used_twice.fragment.adapter.HumanDetailsImpl_ResponseAdapter.CharacterData(responseAdapterCache)
-
-  private val OtherDataAdapter: OtherData =
-      com.example.fragment_used_twice.fragment.adapter.HumanDetailsImpl_ResponseAdapter.OtherData(responseAdapterCache)
-
-  override fun fromResponse(reader: JsonReader): HumanDetailsImpl.Data {
+object HumanDetailsImpl_ResponseAdapter : ResponseAdapter<HumanDetailsImpl.Data> {
+  override fun fromResponse(reader: JsonReader, responseAdapterCache: ResponseAdapterCache):
+      HumanDetailsImpl.Data {
     reader.beginObject()
     check(reader.nextName() == "__typename")
     val typename = reader.nextString()
     return when(typename) {
-      "Human" -> CharacterDataAdapter.fromResponse(reader, typename)
-      else -> OtherDataAdapter.fromResponse(reader, typename)
+      "Human" -> CharacterData.fromResponse(reader, responseAdapterCache, typename)
+      else -> OtherData.fromResponse(reader, responseAdapterCache, typename)
     }
     .also { reader.endObject() }
   }
 
-  override fun toResponse(writer: JsonWriter, value: HumanDetailsImpl.Data) {
+  override fun toResponse(
+    writer: JsonWriter,
+    responseAdapterCache: ResponseAdapterCache,
+    value: HumanDetailsImpl.Data
+  ) {
     when(value) {
-      is HumanDetailsImpl.Data.CharacterData -> CharacterDataAdapter.toResponse(writer, value)
-      is HumanDetailsImpl.Data.OtherData -> OtherDataAdapter.toResponse(writer, value)
+      is HumanDetailsImpl.Data.CharacterData -> CharacterData.toResponse(writer, responseAdapterCache, value)
+      is HumanDetailsImpl.Data.OtherData -> OtherData.toResponse(writer, responseAdapterCache, value)
     }
   }
 
-  class CharacterData(
-    responseAdapterCache: ResponseAdapterCache
-  ) {
-    private val stringAdapter: ResponseAdapter<String> = StringResponseAdapter
+  object CharacterData {
+    val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
+      ResponseField.Typename,
+      ResponseField(
+        type = ResponseField.Type.NotNull(ResponseField.Type.Named.Other("String")),
+        fieldName = "name",
+      ),
+      ResponseField(
+        type = ResponseField.Type.NotNull(ResponseField.Type.Named.Other("Date")),
+        fieldName = "birthDate",
+      )
+    )
 
-    private val dateAdapter: ResponseAdapter<Any> =
-        responseAdapterCache.responseAdapterFor<Any>(CustomScalars.Date)
+    val RESPONSE_NAMES: List<String> = RESPONSE_FIELDS.map { it.responseName }
 
-    fun fromResponse(reader: JsonReader, __typename: String?): HumanDetailsImpl.Data.CharacterData {
+    fun fromResponse(
+      reader: JsonReader,
+      responseAdapterCache: ResponseAdapterCache,
+      __typename: String?
+    ): HumanDetailsImpl.Data.CharacterData {
       var __typename: String? = __typename
       var name: String? = null
       var birthDate: Any? = null
       while(true) {
         when (reader.selectName(RESPONSE_NAMES)) {
-          0 -> __typename = stringAdapter.fromResponse(reader)
-          1 -> name = stringAdapter.fromResponse(reader)
-          2 -> birthDate = dateAdapter.fromResponse(reader)
+          0 -> __typename = StringResponseAdapter.fromResponse(reader, responseAdapterCache)
+          1 -> name = StringResponseAdapter.fromResponse(reader, responseAdapterCache)
+          2 -> birthDate = responseAdapterCache.responseAdapterFor<Any>(CustomScalars.Date).fromResponse(reader,
+              responseAdapterCache)
           else -> break
         }
       }
@@ -76,46 +85,45 @@ class HumanDetailsImpl_ResponseAdapter(
       )
     }
 
-    fun toResponse(writer: JsonWriter, value: HumanDetailsImpl.Data.CharacterData) {
+    fun toResponse(
+      writer: JsonWriter,
+      responseAdapterCache: ResponseAdapterCache,
+      value: HumanDetailsImpl.Data.CharacterData
+    ) {
       writer.beginObject()
       writer.name("__typename")
-      stringAdapter.toResponse(writer, value.__typename)
+      StringResponseAdapter.toResponse(writer, responseAdapterCache, value.__typename)
       writer.name("name")
-      stringAdapter.toResponse(writer, value.name)
+      StringResponseAdapter.toResponse(writer, responseAdapterCache, value.name)
       writer.name("birthDate")
-      dateAdapter.toResponse(writer, value.birthDate)
+      responseAdapterCache.responseAdapterFor<Any>(CustomScalars.Date).toResponse(writer,
+          responseAdapterCache, value.birthDate)
       writer.endObject()
-    }
-
-    companion object {
-      val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
-        ResponseField.Typename,
-        ResponseField(
-          type = ResponseField.Type.NotNull(ResponseField.Type.Named.Other("String")),
-          fieldName = "name",
-        ),
-        ResponseField(
-          type = ResponseField.Type.NotNull(ResponseField.Type.Named.Other("Date")),
-          fieldName = "birthDate",
-        )
-      )
-
-      val RESPONSE_NAMES: List<String> = RESPONSE_FIELDS.map { it.responseName }
     }
   }
 
-  class OtherData(
-    responseAdapterCache: ResponseAdapterCache
-  ) {
-    private val stringAdapter: ResponseAdapter<String> = StringResponseAdapter
+  object OtherData {
+    val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
+      ResponseField.Typename,
+      ResponseField(
+        type = ResponseField.Type.NotNull(ResponseField.Type.Named.Other("String")),
+        fieldName = "name",
+      )
+    )
 
-    fun fromResponse(reader: JsonReader, __typename: String?): HumanDetailsImpl.Data.OtherData {
+    val RESPONSE_NAMES: List<String> = RESPONSE_FIELDS.map { it.responseName }
+
+    fun fromResponse(
+      reader: JsonReader,
+      responseAdapterCache: ResponseAdapterCache,
+      __typename: String?
+    ): HumanDetailsImpl.Data.OtherData {
       var __typename: String? = __typename
       var name: String? = null
       while(true) {
         when (reader.selectName(RESPONSE_NAMES)) {
-          0 -> __typename = stringAdapter.fromResponse(reader)
-          1 -> name = stringAdapter.fromResponse(reader)
+          0 -> __typename = StringResponseAdapter.fromResponse(reader, responseAdapterCache)
+          1 -> name = StringResponseAdapter.fromResponse(reader, responseAdapterCache)
           else -> break
         }
       }
@@ -125,25 +133,17 @@ class HumanDetailsImpl_ResponseAdapter(
       )
     }
 
-    fun toResponse(writer: JsonWriter, value: HumanDetailsImpl.Data.OtherData) {
+    fun toResponse(
+      writer: JsonWriter,
+      responseAdapterCache: ResponseAdapterCache,
+      value: HumanDetailsImpl.Data.OtherData
+    ) {
       writer.beginObject()
       writer.name("__typename")
-      stringAdapter.toResponse(writer, value.__typename)
+      StringResponseAdapter.toResponse(writer, responseAdapterCache, value.__typename)
       writer.name("name")
-      stringAdapter.toResponse(writer, value.name)
+      StringResponseAdapter.toResponse(writer, responseAdapterCache, value.name)
       writer.endObject()
-    }
-
-    companion object {
-      val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
-        ResponseField.Typename,
-        ResponseField(
-          type = ResponseField.Type.NotNull(ResponseField.Type.Named.Other("String")),
-          fieldName = "name",
-        )
-      )
-
-      val RESPONSE_NAMES: List<String> = RESPONSE_FIELDS.map { it.responseName }
     }
   }
 }

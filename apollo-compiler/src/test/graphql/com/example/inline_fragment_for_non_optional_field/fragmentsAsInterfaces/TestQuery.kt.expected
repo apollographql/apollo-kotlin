@@ -11,8 +11,8 @@ import com.apollographql.apollo3.api.ResponseAdapter
 import com.apollographql.apollo3.api.ResponseAdapterCache
 import com.apollographql.apollo3.api.ResponseField
 import com.apollographql.apollo3.api.json.JsonWriter
-import com.example.inline_fragment_for_non_optional_field.adapter.TestQuery_Adapter
 import com.example.inline_fragment_for_non_optional_field.adapter.TestQuery_ResponseAdapter
+import com.example.inline_fragment_for_non_optional_field.adapter.TestQuery_VariablesAdapter
 import kotlin.Double
 import kotlin.String
 import kotlin.Suppress
@@ -27,20 +27,12 @@ class TestQuery : Query<TestQuery.Data> {
   override fun queryDocument(): String = QUERY_DOCUMENT
 
   override fun serializeVariables(writer: JsonWriter, responseAdapterCache: ResponseAdapterCache) {
-    responseAdapterCache.getVariablesAdapterFor(this::class) {
-      TestQuery_Adapter(responseAdapterCache)
-    }.toResponse(writer, this)
+    TestQuery_VariablesAdapter.toResponse(writer, responseAdapterCache, this)
   }
 
   override fun name(): String = OPERATION_NAME
 
-  override fun adapter(responseAdapterCache: ResponseAdapterCache): ResponseAdapter<Data> {
-    val adapter = responseAdapterCache.getAdapterFor(this::class) {
-      TestQuery_ResponseAdapter(responseAdapterCache)
-    }
-    return adapter
-  }
-
+  override fun adapter(): ResponseAdapter<Data> = TestQuery_ResponseAdapter
   override fun responseFields(): List<ResponseField.FieldSet> = listOf(
     ResponseField.FieldSet(null, TestQuery_ResponseAdapter.RESPONSE_FIELDS)
   )

@@ -1,8 +1,6 @@
 package com.apollographql.apollo3.compiler.backend.codegen
 
 import com.apollographql.apollo3.api.ResponseAdapter
-import com.apollographql.apollo3.api.json.JsonReader
-import com.apollographql.apollo3.api.json.JsonWriter
 import com.apollographql.apollo3.compiler.applyIf
 import com.apollographql.apollo3.compiler.backend.ast.CodeGenerationAst
 import com.apollographql.apollo3.compiler.escapeKotlinReservedWord
@@ -50,8 +48,7 @@ private fun CodeGenerationAst.EnumType.toEnumTypeSpec(generateAsInternal: Boolea
 }
 
 private fun CodeGenerationAst.EnumType.adapterTypeSpec(generateAsInternal: Boolean, asSealedClass: Boolean, packageName: String): TypeSpec {
-  val fromResponseFunSpec = FunSpec.builder("fromResponse")
-      .addParameter("reader", JsonReader::class)
+  val fromResponseFunSpec = fromResponseFunSpecBuilder()
       .returns(ClassName(packageName, name.escapeKotlinReservedWord()))
       .addCode(
           CodeBlock.builder()
@@ -68,11 +65,8 @@ private fun CodeGenerationAst.EnumType.adapterTypeSpec(generateAsInternal: Boole
       )
       .addModifiers(KModifier.OVERRIDE)
       .build()
-  val toResponseFunSpec = FunSpec.builder("toResponse")
-      .addParameter("writer", JsonWriter::class)
-      .addParameter("value", ClassName(packageName, name.escapeKotlinReservedWord()))
+  val toResponseFunSpec = toResponseFunSpecBuilder(ClassName(packageName, name.escapeKotlinReservedWord()))
       .addCode("writer.value(value.rawValue)")
-      .addModifiers(KModifier.OVERRIDE)
       .build()
 
   return TypeSpec

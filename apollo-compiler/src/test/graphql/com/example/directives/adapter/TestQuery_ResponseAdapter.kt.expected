@@ -5,14 +5,14 @@
 //
 package com.example.directives.adapter
 
-import com.apollographql.apollo3.api.IntResponseAdapter
-import com.apollographql.apollo3.api.NullableResponseAdapter
+import com.apollographql.apollo3.api.NullableIntResponseAdapter
+import com.apollographql.apollo3.api.NullableStringResponseAdapter
 import com.apollographql.apollo3.api.ResponseAdapter
 import com.apollographql.apollo3.api.ResponseAdapterCache
 import com.apollographql.apollo3.api.ResponseField
-import com.apollographql.apollo3.api.StringResponseAdapter
 import com.apollographql.apollo3.api.json.JsonReader
 import com.apollographql.apollo3.api.json.JsonWriter
+import com.apollographql.apollo3.api.nullable
 import com.example.directives.TestQuery
 import kotlin.Array
 import kotlin.Int
@@ -23,18 +23,26 @@ import kotlin.collections.List
 @Suppress("NAME_SHADOWING", "UNUSED_ANONYMOUS_PARAMETER", "LocalVariableName",
     "RemoveExplicitTypeArguments", "NestedLambdaShadowedImplicitParameter", "PropertyName",
     "RemoveRedundantQualifierName")
-class TestQuery_ResponseAdapter(
-  responseAdapterCache: ResponseAdapterCache
-) : ResponseAdapter<TestQuery.Data> {
-  private val nullableHeroAdapter: ResponseAdapter<TestQuery.Data.Hero?> =
-      NullableResponseAdapter(Hero(responseAdapterCache))
+object TestQuery_ResponseAdapter : ResponseAdapter<TestQuery.Data> {
+  val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
+    ResponseField(
+      type = ResponseField.Type.Named.Object("Character"),
+      fieldName = "hero",
+      fieldSets = listOf(
+        ResponseField.FieldSet(null, Hero.RESPONSE_FIELDS)
+      ),
+    )
+  )
 
-  override fun fromResponse(reader: JsonReader): TestQuery.Data {
+  val RESPONSE_NAMES: List<String> = RESPONSE_FIELDS.map { it.responseName }
+
+  override fun fromResponse(reader: JsonReader, responseAdapterCache: ResponseAdapterCache):
+      TestQuery.Data {
     var hero: TestQuery.Data.Hero? = null
     reader.beginObject()
     while(true) {
       when (reader.selectName(RESPONSE_NAMES)) {
-        0 -> hero = nullableHeroAdapter.fromResponse(reader)
+        0 -> hero = Hero.nullable().fromResponse(reader, responseAdapterCache)
         else -> break
       }
     }
@@ -44,45 +52,50 @@ class TestQuery_ResponseAdapter(
     )
   }
 
-  override fun toResponse(writer: JsonWriter, value: TestQuery.Data) {
+  override fun toResponse(
+    writer: JsonWriter,
+    responseAdapterCache: ResponseAdapterCache,
+    value: TestQuery.Data
+  ) {
     writer.beginObject()
     writer.name("hero")
-    nullableHeroAdapter.toResponse(writer, value.hero)
+    Hero.nullable().toResponse(writer, responseAdapterCache, value.hero)
     writer.endObject()
   }
 
-  companion object {
+  object Hero : ResponseAdapter<TestQuery.Data.Hero> {
     val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
       ResponseField(
-        type = ResponseField.Type.Named.Object("Character"),
-        fieldName = "hero",
+        type = ResponseField.Type.Named.Other("String"),
+        fieldName = "name",
+        conditions = listOf(
+          ResponseField.Condition.booleanCondition("includeName", false)
+        ),
+      ),
+      ResponseField(
+        type = ResponseField.Type.Named.Object("FriendsConnection"),
+        fieldName = "friendsConnection",
+        conditions = listOf(
+          ResponseField.Condition.booleanCondition("skipFriends", true)
+        ),
         fieldSets = listOf(
-          ResponseField.FieldSet(null, Hero.RESPONSE_FIELDS)
+          ResponseField.FieldSet(null, FriendsConnection.RESPONSE_FIELDS)
         ),
       )
     )
 
     val RESPONSE_NAMES: List<String> = RESPONSE_FIELDS.map { it.responseName }
-  }
 
-  class Hero(
-    responseAdapterCache: ResponseAdapterCache
-  ) : ResponseAdapter<TestQuery.Data.Hero> {
-    private val nullableStringAdapter: ResponseAdapter<String?> =
-        NullableResponseAdapter(StringResponseAdapter)
-
-    private val nullableFriendsConnectionAdapter:
-        ResponseAdapter<TestQuery.Data.Hero.FriendsConnection?> =
-        NullableResponseAdapter(FriendsConnection(responseAdapterCache))
-
-    override fun fromResponse(reader: JsonReader): TestQuery.Data.Hero {
+    override fun fromResponse(reader: JsonReader, responseAdapterCache: ResponseAdapterCache):
+        TestQuery.Data.Hero {
       var name: String? = null
       var friendsConnection: TestQuery.Data.Hero.FriendsConnection? = null
       reader.beginObject()
       while(true) {
         when (reader.selectName(RESPONSE_NAMES)) {
-          0 -> name = nullableStringAdapter.fromResponse(reader)
-          1 -> friendsConnection = nullableFriendsConnectionAdapter.fromResponse(reader)
+          0 -> name = NullableStringResponseAdapter.fromResponse(reader, responseAdapterCache)
+          1 -> friendsConnection = FriendsConnection.nullable().fromResponse(reader,
+              responseAdapterCache)
           else -> break
         }
       }
@@ -93,51 +106,36 @@ class TestQuery_ResponseAdapter(
       )
     }
 
-    override fun toResponse(writer: JsonWriter, value: TestQuery.Data.Hero) {
+    override fun toResponse(
+      writer: JsonWriter,
+      responseAdapterCache: ResponseAdapterCache,
+      value: TestQuery.Data.Hero
+    ) {
       writer.beginObject()
       writer.name("name")
-      nullableStringAdapter.toResponse(writer, value.name)
+      NullableStringResponseAdapter.toResponse(writer, responseAdapterCache, value.name)
       writer.name("friendsConnection")
-      nullableFriendsConnectionAdapter.toResponse(writer, value.friendsConnection)
+      FriendsConnection.nullable().toResponse(writer, responseAdapterCache, value.friendsConnection)
       writer.endObject()
     }
 
-    companion object {
+    object FriendsConnection : ResponseAdapter<TestQuery.Data.Hero.FriendsConnection> {
       val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
         ResponseField(
-          type = ResponseField.Type.Named.Other("String"),
-          fieldName = "name",
-          conditions = listOf(
-            ResponseField.Condition.booleanCondition("includeName", false)
-          ),
-        ),
-        ResponseField(
-          type = ResponseField.Type.Named.Object("FriendsConnection"),
-          fieldName = "friendsConnection",
-          conditions = listOf(
-            ResponseField.Condition.booleanCondition("skipFriends", true)
-          ),
-          fieldSets = listOf(
-            ResponseField.FieldSet(null, FriendsConnection.RESPONSE_FIELDS)
-          ),
+          type = ResponseField.Type.Named.Other("Int"),
+          fieldName = "totalCount",
         )
       )
 
       val RESPONSE_NAMES: List<String> = RESPONSE_FIELDS.map { it.responseName }
-    }
 
-    class FriendsConnection(
-      responseAdapterCache: ResponseAdapterCache
-    ) : ResponseAdapter<TestQuery.Data.Hero.FriendsConnection> {
-      private val nullableIntAdapter: ResponseAdapter<Int?> =
-          NullableResponseAdapter(IntResponseAdapter)
-
-      override fun fromResponse(reader: JsonReader): TestQuery.Data.Hero.FriendsConnection {
+      override fun fromResponse(reader: JsonReader, responseAdapterCache: ResponseAdapterCache):
+          TestQuery.Data.Hero.FriendsConnection {
         var totalCount: Int? = null
         reader.beginObject()
         while(true) {
           when (reader.selectName(RESPONSE_NAMES)) {
-            0 -> totalCount = nullableIntAdapter.fromResponse(reader)
+            0 -> totalCount = NullableIntResponseAdapter.fromResponse(reader, responseAdapterCache)
             else -> break
           }
         }
@@ -147,22 +145,15 @@ class TestQuery_ResponseAdapter(
         )
       }
 
-      override fun toResponse(writer: JsonWriter, value: TestQuery.Data.Hero.FriendsConnection) {
+      override fun toResponse(
+        writer: JsonWriter,
+        responseAdapterCache: ResponseAdapterCache,
+        value: TestQuery.Data.Hero.FriendsConnection
+      ) {
         writer.beginObject()
         writer.name("totalCount")
-        nullableIntAdapter.toResponse(writer, value.totalCount)
+        NullableIntResponseAdapter.toResponse(writer, responseAdapterCache, value.totalCount)
         writer.endObject()
-      }
-
-      companion object {
-        val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
-          ResponseField(
-            type = ResponseField.Type.Named.Other("Int"),
-            fieldName = "totalCount",
-          )
-        )
-
-        val RESPONSE_NAMES: List<String> = RESPONSE_FIELDS.map { it.responseName }
       }
     }
   }

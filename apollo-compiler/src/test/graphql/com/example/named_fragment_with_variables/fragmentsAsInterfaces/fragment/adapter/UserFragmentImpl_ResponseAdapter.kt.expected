@@ -21,12 +21,29 @@ import kotlin.collections.List
 @Suppress("NAME_SHADOWING", "UNUSED_ANONYMOUS_PARAMETER", "LocalVariableName",
     "RemoveExplicitTypeArguments", "NestedLambdaShadowedImplicitParameter", "PropertyName",
     "RemoveRedundantQualifierName")
-class UserFragmentImpl_ResponseAdapter(
-  responseAdapterCache: ResponseAdapterCache
-) : ResponseAdapter<UserFragmentImpl.Data> {
-  private val stringAdapter: ResponseAdapter<String> = StringResponseAdapter
+object UserFragmentImpl_ResponseAdapter : ResponseAdapter<UserFragmentImpl.Data> {
+  val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
+    ResponseField.Typename,
+    ResponseField(
+      type = ResponseField.Type.NotNull(ResponseField.Type.Named.Other("String")),
+      fieldName = "firstName",
+    ),
+    ResponseField(
+      type = ResponseField.Type.NotNull(ResponseField.Type.Named.Other("String")),
+      fieldName = "lastName",
+    ),
+    ResponseField(
+      type = ResponseField.Type.NotNull(ResponseField.Type.Named.Other("String")),
+      fieldName = "avatar",
+      arguments = mapOf<String, Any?>(
+        "size" to Variable("size")),
+    )
+  )
 
-  override fun fromResponse(reader: JsonReader): UserFragmentImpl.Data {
+  val RESPONSE_NAMES: List<String> = RESPONSE_FIELDS.map { it.responseName }
+
+  override fun fromResponse(reader: JsonReader, responseAdapterCache: ResponseAdapterCache):
+      UserFragmentImpl.Data {
     var __typename: String? = null
     var firstName: String? = null
     var lastName: String? = null
@@ -34,10 +51,10 @@ class UserFragmentImpl_ResponseAdapter(
     reader.beginObject()
     while(true) {
       when (reader.selectName(RESPONSE_NAMES)) {
-        0 -> __typename = stringAdapter.fromResponse(reader)
-        1 -> firstName = stringAdapter.fromResponse(reader)
-        2 -> lastName = stringAdapter.fromResponse(reader)
-        3 -> avatar = stringAdapter.fromResponse(reader)
+        0 -> __typename = StringResponseAdapter.fromResponse(reader, responseAdapterCache)
+        1 -> firstName = StringResponseAdapter.fromResponse(reader, responseAdapterCache)
+        2 -> lastName = StringResponseAdapter.fromResponse(reader, responseAdapterCache)
+        3 -> avatar = StringResponseAdapter.fromResponse(reader, responseAdapterCache)
         else -> break
       }
     }
@@ -50,38 +67,20 @@ class UserFragmentImpl_ResponseAdapter(
     )
   }
 
-  override fun toResponse(writer: JsonWriter, value: UserFragmentImpl.Data) {
+  override fun toResponse(
+    writer: JsonWriter,
+    responseAdapterCache: ResponseAdapterCache,
+    value: UserFragmentImpl.Data
+  ) {
     writer.beginObject()
     writer.name("__typename")
-    stringAdapter.toResponse(writer, value.__typename)
+    StringResponseAdapter.toResponse(writer, responseAdapterCache, value.__typename)
     writer.name("firstName")
-    stringAdapter.toResponse(writer, value.firstName)
+    StringResponseAdapter.toResponse(writer, responseAdapterCache, value.firstName)
     writer.name("lastName")
-    stringAdapter.toResponse(writer, value.lastName)
+    StringResponseAdapter.toResponse(writer, responseAdapterCache, value.lastName)
     writer.name("avatar")
-    stringAdapter.toResponse(writer, value.avatar)
+    StringResponseAdapter.toResponse(writer, responseAdapterCache, value.avatar)
     writer.endObject()
-  }
-
-  companion object {
-    val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
-      ResponseField.Typename,
-      ResponseField(
-        type = ResponseField.Type.NotNull(ResponseField.Type.Named.Other("String")),
-        fieldName = "firstName",
-      ),
-      ResponseField(
-        type = ResponseField.Type.NotNull(ResponseField.Type.Named.Other("String")),
-        fieldName = "lastName",
-      ),
-      ResponseField(
-        type = ResponseField.Type.NotNull(ResponseField.Type.Named.Other("String")),
-        fieldName = "avatar",
-        arguments = mapOf<String, Any?>(
-          "size" to Variable("size")),
-      )
-    )
-
-    val RESPONSE_NAMES: List<String> = RESPONSE_FIELDS.map { it.responseName }
   }
 }

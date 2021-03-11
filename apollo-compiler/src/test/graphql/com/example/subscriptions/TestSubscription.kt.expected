@@ -11,8 +11,8 @@ import com.apollographql.apollo3.api.ResponseAdapterCache
 import com.apollographql.apollo3.api.ResponseField
 import com.apollographql.apollo3.api.Subscription
 import com.apollographql.apollo3.api.json.JsonWriter
-import com.example.subscriptions.adapter.TestSubscription_Adapter
 import com.example.subscriptions.adapter.TestSubscription_ResponseAdapter
+import com.example.subscriptions.adapter.TestSubscription_VariablesAdapter
 import kotlin.Int
 import kotlin.String
 import kotlin.Suppress
@@ -29,20 +29,12 @@ data class TestSubscription(
   override fun queryDocument(): String = QUERY_DOCUMENT
 
   override fun serializeVariables(writer: JsonWriter, responseAdapterCache: ResponseAdapterCache) {
-    responseAdapterCache.getVariablesAdapterFor(this::class) {
-      TestSubscription_Adapter(responseAdapterCache)
-    }.toResponse(writer, this)
+    TestSubscription_VariablesAdapter.toResponse(writer, responseAdapterCache, this)
   }
 
   override fun name(): String = OPERATION_NAME
 
-  override fun adapter(responseAdapterCache: ResponseAdapterCache): ResponseAdapter<Data> {
-    val adapter = responseAdapterCache.getAdapterFor(this::class) {
-      TestSubscription_ResponseAdapter(responseAdapterCache)
-    }
-    return adapter
-  }
-
+  override fun adapter(): ResponseAdapter<Data> = TestSubscription_ResponseAdapter
   override fun responseFields(): List<ResponseField.FieldSet> = listOf(
     ResponseField.FieldSet(null, TestSubscription_ResponseAdapter.RESPONSE_FIELDS)
   )

@@ -47,11 +47,11 @@ class ResponseWriteTestCase {
 
   private val dateCustomScalarAdapter: ResponseAdapter<Date> = object : ResponseAdapter<Date> {
 
-    override fun fromResponse(reader: JsonReader): Date {
+    override fun fromResponse(reader: JsonReader, responseAdapterCache: ResponseAdapterCache): Date {
       return DATE_TIME_FORMAT.parse(reader.nextString())
     }
 
-    override fun toResponse(writer: JsonWriter, value: Date) {
+    override fun toResponse(writer: JsonWriter, responseAdapterCache: ResponseAdapterCache, value: Date) {
       writer.value(DATE_TIME_FORMAT.format(value))
     }
   }

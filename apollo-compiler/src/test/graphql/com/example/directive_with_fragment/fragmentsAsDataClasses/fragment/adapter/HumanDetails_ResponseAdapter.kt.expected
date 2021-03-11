@@ -5,7 +5,7 @@
 //
 package com.example.directive_with_fragment.fragment.adapter
 
-import com.apollographql.apollo3.api.NullableResponseAdapter
+import com.apollographql.apollo3.api.NullableStringResponseAdapter
 import com.apollographql.apollo3.api.ResponseAdapter
 import com.apollographql.apollo3.api.ResponseAdapterCache
 import com.apollographql.apollo3.api.ResponseField
@@ -21,22 +21,26 @@ import kotlin.collections.List
 @Suppress("NAME_SHADOWING", "UNUSED_ANONYMOUS_PARAMETER", "LocalVariableName",
     "RemoveExplicitTypeArguments", "NestedLambdaShadowedImplicitParameter", "PropertyName",
     "RemoveRedundantQualifierName")
-class HumanDetails_ResponseAdapter(
-  responseAdapterCache: ResponseAdapterCache
-) : ResponseAdapter<HumanDetails.Data> {
-  private val stringAdapter: ResponseAdapter<String> = StringResponseAdapter
+object HumanDetails_ResponseAdapter : ResponseAdapter<HumanDetails.Data> {
+  val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
+    ResponseField.Typename,
+    ResponseField(
+      type = ResponseField.Type.Named.Other("String"),
+      fieldName = "homePlanet",
+    )
+  )
 
-  private val nullableStringAdapter: ResponseAdapter<String?> =
-      NullableResponseAdapter(StringResponseAdapter)
+  val RESPONSE_NAMES: List<String> = RESPONSE_FIELDS.map { it.responseName }
 
-  override fun fromResponse(reader: JsonReader): HumanDetails.Data {
+  override fun fromResponse(reader: JsonReader, responseAdapterCache: ResponseAdapterCache):
+      HumanDetails.Data {
     var __typename: String? = null
     var homePlanet: String? = null
     reader.beginObject()
     while(true) {
       when (reader.selectName(RESPONSE_NAMES)) {
-        0 -> __typename = stringAdapter.fromResponse(reader)
-        1 -> homePlanet = nullableStringAdapter.fromResponse(reader)
+        0 -> __typename = StringResponseAdapter.fromResponse(reader, responseAdapterCache)
+        1 -> homePlanet = NullableStringResponseAdapter.fromResponse(reader, responseAdapterCache)
         else -> break
       }
     }
@@ -47,24 +51,16 @@ class HumanDetails_ResponseAdapter(
     )
   }
 
-  override fun toResponse(writer: JsonWriter, value: HumanDetails.Data) {
+  override fun toResponse(
+    writer: JsonWriter,
+    responseAdapterCache: ResponseAdapterCache,
+    value: HumanDetails.Data
+  ) {
     writer.beginObject()
     writer.name("__typename")
-    stringAdapter.toResponse(writer, value.__typename)
+    StringResponseAdapter.toResponse(writer, responseAdapterCache, value.__typename)
     writer.name("homePlanet")
-    nullableStringAdapter.toResponse(writer, value.homePlanet)
+    NullableStringResponseAdapter.toResponse(writer, responseAdapterCache, value.homePlanet)
     writer.endObject()
-  }
-
-  companion object {
-    val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
-      ResponseField.Typename,
-      ResponseField(
-        type = ResponseField.Type.Named.Other("String"),
-        fieldName = "homePlanet",
-      )
-    )
-
-    val RESPONSE_NAMES: List<String> = RESPONSE_FIELDS.map { it.responseName }
   }
 }

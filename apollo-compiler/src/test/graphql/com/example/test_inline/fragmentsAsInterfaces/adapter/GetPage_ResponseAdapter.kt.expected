@@ -5,13 +5,13 @@
 //
 package com.example.test_inline.adapter
 
-import com.apollographql.apollo3.api.ListResponseAdapter
 import com.apollographql.apollo3.api.ResponseAdapter
 import com.apollographql.apollo3.api.ResponseAdapterCache
 import com.apollographql.apollo3.api.ResponseField
 import com.apollographql.apollo3.api.StringResponseAdapter
 import com.apollographql.apollo3.api.json.JsonReader
 import com.apollographql.apollo3.api.json.JsonWriter
+import com.apollographql.apollo3.api.list
 import com.example.test_inline.GetPage
 import kotlin.Array
 import kotlin.String
@@ -21,18 +21,28 @@ import kotlin.collections.List
 @Suppress("NAME_SHADOWING", "UNUSED_ANONYMOUS_PARAMETER", "LocalVariableName",
     "RemoveExplicitTypeArguments", "NestedLambdaShadowedImplicitParameter", "PropertyName",
     "RemoveRedundantQualifierName")
-class GetPage_ResponseAdapter(
-  responseAdapterCache: ResponseAdapterCache
-) : ResponseAdapter<GetPage.Data> {
-  private val collectionAdapter: ResponseAdapter<GetPage.Data.Collection> =
-      Collection(responseAdapterCache)
+object GetPage_ResponseAdapter : ResponseAdapter<GetPage.Data> {
+  val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
+    ResponseField(
+      type = ResponseField.Type.NotNull(ResponseField.Type.Named.Object("Collection")),
+      fieldName = "collection",
+      fieldSets = listOf(
+        ResponseField.FieldSet("ParticularCollection",
+            Collection.ParticularCollectionCollection.RESPONSE_FIELDS),
+        ResponseField.FieldSet(null, Collection.OtherCollection.RESPONSE_FIELDS),
+      ),
+    )
+  )
 
-  override fun fromResponse(reader: JsonReader): GetPage.Data {
+  val RESPONSE_NAMES: List<String> = RESPONSE_FIELDS.map { it.responseName }
+
+  override fun fromResponse(reader: JsonReader, responseAdapterCache: ResponseAdapterCache):
+      GetPage.Data {
     var collection: GetPage.Data.Collection? = null
     reader.beginObject()
     while(true) {
       when (reader.selectName(RESPONSE_NAMES)) {
-        0 -> collection = collectionAdapter.fromResponse(reader)
+        0 -> collection = Collection.fromResponse(reader, responseAdapterCache)
         else -> break
       }
     }
@@ -42,73 +52,68 @@ class GetPage_ResponseAdapter(
     )
   }
 
-  override fun toResponse(writer: JsonWriter, value: GetPage.Data) {
+  override fun toResponse(
+    writer: JsonWriter,
+    responseAdapterCache: ResponseAdapterCache,
+    value: GetPage.Data
+  ) {
     writer.beginObject()
     writer.name("collection")
-    collectionAdapter.toResponse(writer, value.collection)
+    Collection.toResponse(writer, responseAdapterCache, value.collection)
     writer.endObject()
   }
 
-  companion object {
-    val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
-      ResponseField(
-        type = ResponseField.Type.NotNull(ResponseField.Type.Named.Object("Collection")),
-        fieldName = "collection",
-        fieldSets = listOf(
-          ResponseField.FieldSet("ParticularCollection",
-              Collection.ParticularCollectionCollection.RESPONSE_FIELDS),
-          ResponseField.FieldSet(null, Collection.OtherCollection.RESPONSE_FIELDS),
-        ),
-      )
-    )
-
-    val RESPONSE_NAMES: List<String> = RESPONSE_FIELDS.map { it.responseName }
-  }
-
-  class Collection(
-    responseAdapterCache: ResponseAdapterCache
-  ) : ResponseAdapter<GetPage.Data.Collection> {
-    private val ParticularCollectionCollectionAdapter: ParticularCollectionCollection =
-        com.example.test_inline.adapter.GetPage_ResponseAdapter.Collection.ParticularCollectionCollection(responseAdapterCache)
-
-    private val OtherCollectionAdapter: OtherCollection =
-        com.example.test_inline.adapter.GetPage_ResponseAdapter.Collection.OtherCollection(responseAdapterCache)
-
-    override fun fromResponse(reader: JsonReader): GetPage.Data.Collection {
+  object Collection : ResponseAdapter<GetPage.Data.Collection> {
+    override fun fromResponse(reader: JsonReader, responseAdapterCache: ResponseAdapterCache):
+        GetPage.Data.Collection {
       reader.beginObject()
       check(reader.nextName() == "__typename")
       val typename = reader.nextString()
       return when(typename) {
-        "ParticularCollection" -> ParticularCollectionCollectionAdapter.fromResponse(reader, typename)
-        else -> OtherCollectionAdapter.fromResponse(reader, typename)
+        "ParticularCollection" -> ParticularCollectionCollection.fromResponse(reader, responseAdapterCache, typename)
+        else -> OtherCollection.fromResponse(reader, responseAdapterCache, typename)
       }
       .also { reader.endObject() }
     }
 
-    override fun toResponse(writer: JsonWriter, value: GetPage.Data.Collection) {
+    override fun toResponse(
+      writer: JsonWriter,
+      responseAdapterCache: ResponseAdapterCache,
+      value: GetPage.Data.Collection
+    ) {
       when(value) {
-        is GetPage.Data.Collection.ParticularCollectionCollection -> ParticularCollectionCollectionAdapter.toResponse(writer, value)
-        is GetPage.Data.Collection.OtherCollection -> OtherCollectionAdapter.toResponse(writer, value)
+        is GetPage.Data.Collection.ParticularCollectionCollection -> ParticularCollectionCollection.toResponse(writer, responseAdapterCache, value)
+        is GetPage.Data.Collection.OtherCollection -> OtherCollection.toResponse(writer, responseAdapterCache, value)
       }
     }
 
-    class ParticularCollectionCollection(
-      responseAdapterCache: ResponseAdapterCache
-    ) {
-      private val stringAdapter: ResponseAdapter<String> = StringResponseAdapter
+    object ParticularCollectionCollection {
+      val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
+        ResponseField.Typename,
+        ResponseField(
+          type =
+              ResponseField.Type.NotNull(ResponseField.Type.List(ResponseField.Type.NotNull(ResponseField.Type.Named.Object("Item")))),
+          fieldName = "items",
+          fieldSets = listOf(
+            ResponseField.FieldSet("ParticularItem", Items.ParticularItemItems.RESPONSE_FIELDS),
+            ResponseField.FieldSet(null, Items.OtherItems.RESPONSE_FIELDS),
+          ),
+        )
+      )
 
-      private val listOfItemsAdapter:
-          ResponseAdapter<List<GetPage.Data.Collection.ParticularCollectionCollection.Items>> =
-          ListResponseAdapter(Items(responseAdapterCache))
+      val RESPONSE_NAMES: List<String> = RESPONSE_FIELDS.map { it.responseName }
 
-      fun fromResponse(reader: JsonReader, __typename: String?):
-          GetPage.Data.Collection.ParticularCollectionCollection {
+      fun fromResponse(
+        reader: JsonReader,
+        responseAdapterCache: ResponseAdapterCache,
+        __typename: String?
+      ): GetPage.Data.Collection.ParticularCollectionCollection {
         var __typename: String? = __typename
         var items: List<GetPage.Data.Collection.ParticularCollectionCollection.Items>? = null
         while(true) {
           when (reader.selectName(RESPONSE_NAMES)) {
-            0 -> __typename = stringAdapter.fromResponse(reader)
-            1 -> items = listOfItemsAdapter.fromResponse(reader)
+            0 -> __typename = StringResponseAdapter.fromResponse(reader, responseAdapterCache)
+            1 -> items = Items.list().fromResponse(reader, responseAdapterCache)
             else -> break
           }
         }
@@ -118,77 +123,71 @@ class GetPage_ResponseAdapter(
         )
       }
 
-      fun toResponse(writer: JsonWriter,
-          value: GetPage.Data.Collection.ParticularCollectionCollection) {
+      fun toResponse(
+        writer: JsonWriter,
+        responseAdapterCache: ResponseAdapterCache,
+        value: GetPage.Data.Collection.ParticularCollectionCollection
+      ) {
         writer.beginObject()
         writer.name("__typename")
-        stringAdapter.toResponse(writer, value.__typename)
+        StringResponseAdapter.toResponse(writer, responseAdapterCache, value.__typename)
         writer.name("items")
-        listOfItemsAdapter.toResponse(writer, value.items)
+        Items.list().toResponse(writer, responseAdapterCache, value.items)
         writer.endObject()
       }
 
-      companion object {
-        val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
-          ResponseField.Typename,
-          ResponseField(
-            type =
-                ResponseField.Type.NotNull(ResponseField.Type.List(ResponseField.Type.NotNull(ResponseField.Type.Named.Object("Item")))),
-            fieldName = "items",
-            fieldSets = listOf(
-              ResponseField.FieldSet("ParticularItem", Items.ParticularItemItems.RESPONSE_FIELDS),
-              ResponseField.FieldSet(null, Items.OtherItems.RESPONSE_FIELDS),
-            ),
-          )
-        )
-
-        val RESPONSE_NAMES: List<String> = RESPONSE_FIELDS.map { it.responseName }
-      }
-
-      class Items(
-        responseAdapterCache: ResponseAdapterCache
-      ) : ResponseAdapter<GetPage.Data.Collection.ParticularCollectionCollection.Items> {
-        private val ParticularItemItemsAdapter: ParticularItemItems =
-            com.example.test_inline.adapter.GetPage_ResponseAdapter.Collection.ParticularCollectionCollection.Items.ParticularItemItems(responseAdapterCache)
-
-        private val OtherItemsAdapter: OtherItems =
-            com.example.test_inline.adapter.GetPage_ResponseAdapter.Collection.ParticularCollectionCollection.Items.OtherItems(responseAdapterCache)
-
-        override fun fromResponse(reader: JsonReader):
+      object Items : ResponseAdapter<GetPage.Data.Collection.ParticularCollectionCollection.Items> {
+        override fun fromResponse(reader: JsonReader, responseAdapterCache: ResponseAdapterCache):
             GetPage.Data.Collection.ParticularCollectionCollection.Items {
           reader.beginObject()
           check(reader.nextName() == "__typename")
           val typename = reader.nextString()
           return when(typename) {
-            "ParticularItem" -> ParticularItemItemsAdapter.fromResponse(reader, typename)
-            else -> OtherItemsAdapter.fromResponse(reader, typename)
+            "ParticularItem" -> ParticularItemItems.fromResponse(reader, responseAdapterCache, typename)
+            else -> OtherItems.fromResponse(reader, responseAdapterCache, typename)
           }
           .also { reader.endObject() }
         }
 
-        override fun toResponse(writer: JsonWriter,
-            value: GetPage.Data.Collection.ParticularCollectionCollection.Items) {
+        override fun toResponse(
+          writer: JsonWriter,
+          responseAdapterCache: ResponseAdapterCache,
+          value: GetPage.Data.Collection.ParticularCollectionCollection.Items
+        ) {
           when(value) {
-            is GetPage.Data.Collection.ParticularCollectionCollection.Items.ParticularItemItems -> ParticularItemItemsAdapter.toResponse(writer, value)
-            is GetPage.Data.Collection.ParticularCollectionCollection.Items.OtherItems -> OtherItemsAdapter.toResponse(writer, value)
+            is GetPage.Data.Collection.ParticularCollectionCollection.Items.ParticularItemItems -> ParticularItemItems.toResponse(writer, responseAdapterCache, value)
+            is GetPage.Data.Collection.ParticularCollectionCollection.Items.OtherItems -> OtherItems.toResponse(writer, responseAdapterCache, value)
           }
         }
 
-        class ParticularItemItems(
-          responseAdapterCache: ResponseAdapterCache
-        ) {
-          private val stringAdapter: ResponseAdapter<String> = StringResponseAdapter
+        object ParticularItemItems {
+          val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
+            ResponseField(
+              type = ResponseField.Type.NotNull(ResponseField.Type.Named.Other("String")),
+              fieldName = "title",
+            ),
+            ResponseField.Typename,
+            ResponseField(
+              type = ResponseField.Type.NotNull(ResponseField.Type.Named.Other("String")),
+              fieldName = "image",
+            )
+          )
 
-          fun fromResponse(reader: JsonReader, __typename: String?):
-              GetPage.Data.Collection.ParticularCollectionCollection.Items.ParticularItemItems {
+          val RESPONSE_NAMES: List<String> = RESPONSE_FIELDS.map { it.responseName }
+
+          fun fromResponse(
+            reader: JsonReader,
+            responseAdapterCache: ResponseAdapterCache,
+            __typename: String?
+          ): GetPage.Data.Collection.ParticularCollectionCollection.Items.ParticularItemItems {
             var title: String? = null
             var __typename: String? = __typename
             var image: String? = null
             while(true) {
               when (reader.selectName(RESPONSE_NAMES)) {
-                0 -> title = stringAdapter.fromResponse(reader)
-                1 -> __typename = stringAdapter.fromResponse(reader)
-                2 -> image = stringAdapter.fromResponse(reader)
+                0 -> title = StringResponseAdapter.fromResponse(reader, responseAdapterCache)
+                1 -> __typename = StringResponseAdapter.fromResponse(reader, responseAdapterCache)
+                2 -> image = StringResponseAdapter.fromResponse(reader, responseAdapterCache)
                 else -> break
               }
             }
@@ -199,48 +198,44 @@ class GetPage_ResponseAdapter(
             )
           }
 
-          fun toResponse(writer: JsonWriter,
-              value: GetPage.Data.Collection.ParticularCollectionCollection.Items.ParticularItemItems) {
+          fun toResponse(
+            writer: JsonWriter,
+            responseAdapterCache: ResponseAdapterCache,
+            value: GetPage.Data.Collection.ParticularCollectionCollection.Items.ParticularItemItems
+          ) {
             writer.beginObject()
             writer.name("title")
-            stringAdapter.toResponse(writer, value.title)
+            StringResponseAdapter.toResponse(writer, responseAdapterCache, value.title)
             writer.name("__typename")
-            stringAdapter.toResponse(writer, value.__typename)
+            StringResponseAdapter.toResponse(writer, responseAdapterCache, value.__typename)
             writer.name("image")
-            stringAdapter.toResponse(writer, value.image)
+            StringResponseAdapter.toResponse(writer, responseAdapterCache, value.image)
             writer.endObject()
-          }
-
-          companion object {
-            val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
-              ResponseField(
-                type = ResponseField.Type.NotNull(ResponseField.Type.Named.Other("String")),
-                fieldName = "title",
-              ),
-              ResponseField.Typename,
-              ResponseField(
-                type = ResponseField.Type.NotNull(ResponseField.Type.Named.Other("String")),
-                fieldName = "image",
-              )
-            )
-
-            val RESPONSE_NAMES: List<String> = RESPONSE_FIELDS.map { it.responseName }
           }
         }
 
-        class OtherItems(
-          responseAdapterCache: ResponseAdapterCache
-        ) {
-          private val stringAdapter: ResponseAdapter<String> = StringResponseAdapter
+        object OtherItems {
+          val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
+            ResponseField(
+              type = ResponseField.Type.NotNull(ResponseField.Type.Named.Other("String")),
+              fieldName = "title",
+            ),
+            ResponseField.Typename
+          )
 
-          fun fromResponse(reader: JsonReader, __typename: String?):
-              GetPage.Data.Collection.ParticularCollectionCollection.Items.OtherItems {
+          val RESPONSE_NAMES: List<String> = RESPONSE_FIELDS.map { it.responseName }
+
+          fun fromResponse(
+            reader: JsonReader,
+            responseAdapterCache: ResponseAdapterCache,
+            __typename: String?
+          ): GetPage.Data.Collection.ParticularCollectionCollection.Items.OtherItems {
             var title: String? = null
             var __typename: String? = __typename
             while(true) {
               when (reader.selectName(RESPONSE_NAMES)) {
-                0 -> title = stringAdapter.fromResponse(reader)
-                1 -> __typename = stringAdapter.fromResponse(reader)
+                0 -> title = StringResponseAdapter.fromResponse(reader, responseAdapterCache)
+                1 -> __typename = StringResponseAdapter.fromResponse(reader, responseAdapterCache)
                 else -> break
               }
             }
@@ -250,48 +245,48 @@ class GetPage_ResponseAdapter(
             )
           }
 
-          fun toResponse(writer: JsonWriter,
-              value: GetPage.Data.Collection.ParticularCollectionCollection.Items.OtherItems) {
+          fun toResponse(
+            writer: JsonWriter,
+            responseAdapterCache: ResponseAdapterCache,
+            value: GetPage.Data.Collection.ParticularCollectionCollection.Items.OtherItems
+          ) {
             writer.beginObject()
             writer.name("title")
-            stringAdapter.toResponse(writer, value.title)
+            StringResponseAdapter.toResponse(writer, responseAdapterCache, value.title)
             writer.name("__typename")
-            stringAdapter.toResponse(writer, value.__typename)
+            StringResponseAdapter.toResponse(writer, responseAdapterCache, value.__typename)
             writer.endObject()
-          }
-
-          companion object {
-            val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
-              ResponseField(
-                type = ResponseField.Type.NotNull(ResponseField.Type.Named.Other("String")),
-                fieldName = "title",
-              ),
-              ResponseField.Typename
-            )
-
-            val RESPONSE_NAMES: List<String> = RESPONSE_FIELDS.map { it.responseName }
           }
         }
       }
     }
 
-    class OtherCollection(
-      responseAdapterCache: ResponseAdapterCache
-    ) {
-      private val stringAdapter: ResponseAdapter<String> = StringResponseAdapter
+    object OtherCollection {
+      val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
+        ResponseField.Typename,
+        ResponseField(
+          type =
+              ResponseField.Type.NotNull(ResponseField.Type.List(ResponseField.Type.NotNull(ResponseField.Type.Named.Object("Item")))),
+          fieldName = "items",
+          fieldSets = listOf(
+            ResponseField.FieldSet(null, Items.RESPONSE_FIELDS)
+          ),
+        )
+      )
 
-      private val listOfItemsAdapter:
-          ResponseAdapter<List<GetPage.Data.Collection.OtherCollection.Items>> =
-          ListResponseAdapter(Items(responseAdapterCache))
+      val RESPONSE_NAMES: List<String> = RESPONSE_FIELDS.map { it.responseName }
 
-      fun fromResponse(reader: JsonReader, __typename: String?):
-          GetPage.Data.Collection.OtherCollection {
+      fun fromResponse(
+        reader: JsonReader,
+        responseAdapterCache: ResponseAdapterCache,
+        __typename: String?
+      ): GetPage.Data.Collection.OtherCollection {
         var __typename: String? = __typename
         var items: List<GetPage.Data.Collection.OtherCollection.Items>? = null
         while(true) {
           when (reader.selectName(RESPONSE_NAMES)) {
-            0 -> __typename = stringAdapter.fromResponse(reader)
-            1 -> items = listOfItemsAdapter.fromResponse(reader)
+            0 -> __typename = StringResponseAdapter.fromResponse(reader, responseAdapterCache)
+            1 -> items = Items.list().fromResponse(reader, responseAdapterCache)
             else -> break
           }
         }
@@ -301,43 +296,36 @@ class GetPage_ResponseAdapter(
         )
       }
 
-      fun toResponse(writer: JsonWriter, value: GetPage.Data.Collection.OtherCollection) {
+      fun toResponse(
+        writer: JsonWriter,
+        responseAdapterCache: ResponseAdapterCache,
+        value: GetPage.Data.Collection.OtherCollection
+      ) {
         writer.beginObject()
         writer.name("__typename")
-        stringAdapter.toResponse(writer, value.__typename)
+        StringResponseAdapter.toResponse(writer, responseAdapterCache, value.__typename)
         writer.name("items")
-        listOfItemsAdapter.toResponse(writer, value.items)
+        Items.list().toResponse(writer, responseAdapterCache, value.items)
         writer.endObject()
       }
 
-      companion object {
+      object Items : ResponseAdapter<GetPage.Data.Collection.OtherCollection.Items> {
         val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
-          ResponseField.Typename,
           ResponseField(
-            type =
-                ResponseField.Type.NotNull(ResponseField.Type.List(ResponseField.Type.NotNull(ResponseField.Type.Named.Object("Item")))),
-            fieldName = "items",
-            fieldSets = listOf(
-              ResponseField.FieldSet(null, Items.RESPONSE_FIELDS)
-            ),
+            type = ResponseField.Type.NotNull(ResponseField.Type.Named.Other("String")),
+            fieldName = "title",
           )
         )
 
         val RESPONSE_NAMES: List<String> = RESPONSE_FIELDS.map { it.responseName }
-      }
 
-      class Items(
-        responseAdapterCache: ResponseAdapterCache
-      ) : ResponseAdapter<GetPage.Data.Collection.OtherCollection.Items> {
-        private val stringAdapter: ResponseAdapter<String> = StringResponseAdapter
-
-        override fun fromResponse(reader: JsonReader):
+        override fun fromResponse(reader: JsonReader, responseAdapterCache: ResponseAdapterCache):
             GetPage.Data.Collection.OtherCollection.Items {
           var title: String? = null
           reader.beginObject()
           while(true) {
             when (reader.selectName(RESPONSE_NAMES)) {
-              0 -> title = stringAdapter.fromResponse(reader)
+              0 -> title = StringResponseAdapter.fromResponse(reader, responseAdapterCache)
               else -> break
             }
           }
@@ -347,23 +335,15 @@ class GetPage_ResponseAdapter(
           )
         }
 
-        override fun toResponse(writer: JsonWriter,
-            value: GetPage.Data.Collection.OtherCollection.Items) {
+        override fun toResponse(
+          writer: JsonWriter,
+          responseAdapterCache: ResponseAdapterCache,
+          value: GetPage.Data.Collection.OtherCollection.Items
+        ) {
           writer.beginObject()
           writer.name("title")
-          stringAdapter.toResponse(writer, value.title)
+          StringResponseAdapter.toResponse(writer, responseAdapterCache, value.title)
           writer.endObject()
-        }
-
-        companion object {
-          val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
-            ResponseField(
-              type = ResponseField.Type.NotNull(ResponseField.Type.Named.Other("String")),
-              fieldName = "title",
-            )
-          )
-
-          val RESPONSE_NAMES: List<String> = RESPONSE_FIELDS.map { it.responseName }
         }
       }
     }

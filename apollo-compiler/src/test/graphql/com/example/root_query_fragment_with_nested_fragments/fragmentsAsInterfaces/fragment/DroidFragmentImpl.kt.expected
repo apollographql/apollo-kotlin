@@ -10,26 +10,18 @@ import com.apollographql.apollo3.api.ResponseAdapter
 import com.apollographql.apollo3.api.ResponseAdapterCache
 import com.apollographql.apollo3.api.ResponseField
 import com.apollographql.apollo3.api.json.JsonWriter
-import com.example.root_query_fragment_with_nested_fragments.fragment.adapter.DroidFragmentImpl_Adapter
 import com.example.root_query_fragment_with_nested_fragments.fragment.adapter.DroidFragmentImpl_ResponseAdapter
+import com.example.root_query_fragment_with_nested_fragments.fragment.adapter.DroidFragmentImpl_VariablesAdapter
 import kotlin.String
 import kotlin.collections.List
 
 class DroidFragmentImpl : Fragment<DroidFragmentImpl.Data> {
-  override fun adapter(responseAdapterCache: ResponseAdapterCache): ResponseAdapter<Data> {
-    val adapter = responseAdapterCache.getAdapterFor(this::class) {
-      DroidFragmentImpl_ResponseAdapter(responseAdapterCache)
-    }
-    return adapter
-  }
-
+  override fun adapter(): ResponseAdapter<Data> = DroidFragmentImpl_ResponseAdapter
   override fun responseFields(): List<ResponseField.FieldSet> = listOf(
     ResponseField.FieldSet(null, DroidFragmentImpl_ResponseAdapter.RESPONSE_FIELDS)
   )
   override fun serializeVariables(writer: JsonWriter, responseAdapterCache: ResponseAdapterCache) {
-    responseAdapterCache.getVariablesAdapterFor(this::class) {
-      DroidFragmentImpl_Adapter(responseAdapterCache)
-    }.toResponse(writer, this)
+    DroidFragmentImpl_VariablesAdapter.toResponse(writer, responseAdapterCache, this)
   }
 
   /**

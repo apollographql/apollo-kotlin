@@ -67,16 +67,16 @@ class MetadataTest {
 
     // Leaf contains its referenced types but not the unused ones
     leafSourcesDir.assertContents(
-        "MessageInput0.kt",
-        "SendMessageMutation.kt",
         "Body0.kt",
-        "User0.kt",
-        "MessageInput0_Adapter.kt",
-        "SendMessageMutation_Adapter.kt",
-        "Body0_Adapter.kt",
-        "User0_Adapter.kt",
+        "Body0_InputAdapter.kt",
         "Encoding.kt",
-        "SendMessageMutation_ResponseAdapter.kt"
+        "MessageInput0.kt",
+        "MessageInput0_InputAdapter.kt",
+        "SendMessageMutation.kt",
+        "SendMessageMutation_ResponseAdapter.kt",
+        "SendMessageMutation_VariablesAdapter.kt",
+        "User0.kt",
+        "User0_InputAdapter.kt"
     )
   }
 
@@ -87,27 +87,27 @@ class MetadataTest {
     // types ending with "1" end up in root
     // but not Encoding
     rootSourcesDir.assertContents(
-        "MessageInput1.kt",
-        "MessageInput1_Adapter.kt",
         "Body1.kt",
-        "Body1_Adapter.kt",
+        "Body1_InputAdapter.kt",
+        "CustomScalars.kt",
+        "MessageInput1.kt",
+        "MessageInput1_InputAdapter.kt",
         "User1.kt",
-        "User1_Adapter.kt",
-        "CustomScalars.kt"
+        "User1_InputAdapter.kt"
     )
 
     // Leaf contains Encoding and other used types (.*0) but not .*1
     leafSourcesDir.assertContents(
-        "MessageInput0.kt",
-        "MessageInput0_Adapter.kt",
-        "SendMessageMutation.kt",
-        "SendMessageMutation_Adapter.kt",
-        "Encoding.kt",
         "Body0.kt",
-        "Body0_Adapter.kt",
-        "User0.kt",
-        "User0_Adapter.kt",
+        "Body0_InputAdapter.kt",
+        "Encoding.kt",
+        "MessageInput0.kt",
+        "MessageInput0_InputAdapter.kt",
+        "SendMessageMutation.kt",
         "SendMessageMutation_ResponseAdapter.kt",
+        "SendMessageMutation_VariablesAdapter.kt",
+        "User0.kt",
+        "User0_InputAdapter.kt"
     )
   }
 
@@ -152,7 +152,7 @@ class MetadataTest {
     // Leaf contains the query but not the fragment
     leafSourcesDir.assertContents(
         "GetHeroQuery.kt",
-        "GetHeroQuery_Adapter.kt",
+        "GetHeroQuery_VariablesAdapter.kt",
         "GetHeroQuery_ResponseAdapter.kt",
     )
   }
@@ -194,7 +194,7 @@ class MetadataTest {
 
     leafSourcesDir.assertContents(
         "GetHeroQuery.kt",
-        "GetHeroQuery_Adapter.kt",
+        "GetHeroQuery_VariablesAdapter.kt",
         "Episode.kt",
         "HumanFragment.kt",
         "GetHeroQuery_ResponseAdapter.kt",
@@ -215,9 +215,15 @@ class MetadataTest {
     }
 
     private fun File.assertContents(vararg files: String) {
-      Truth.assertThat(walk().filter { it.isFile }.map { it.name }.toSet()).isEqualTo(
-          files.toSet()
-      )
+      val expected = files.toSet()
+      val actual = walk().filter { it.isFile }.map { it.name }.toSet()
+
+      check(expected == actual) {
+        "expected:\n${expected.prettify()}\nactual:\n${actual.prettify()}"
+      }
     }
+
+    // A method that makes it easy to copy/paste the results when updating the codegen
+    private fun Set<String>.prettify() = sortedBy { it }.map { "\"$it\"" }.joinToString(",\n")
   }
 }
