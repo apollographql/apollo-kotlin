@@ -48,12 +48,15 @@ class TestQuery : Query<TestQuery.Data> {
     interface Hero {
       val __typename: String
 
-      interface Character : Hero {
-        /**
-         * The name of the character
-         */
-        val name: String
-      }
+      /**
+       * The ID of the character
+       */
+      val id: String
+
+      /**
+       * The name of the character
+       */
+      val name: String
 
       interface Human : Hero {
         /**
@@ -69,20 +72,12 @@ class TestQuery : Query<TestQuery.Data> {
         val primaryFunction: String?
       }
 
-      data class CharacterDroidHero(
+      data class HumanHero(
         override val __typename: String,
         /**
-         * The name of the character
+         * The ID of the character
          */
-        override val name: String,
-        /**
-         * This droid's primary function
-         */
-        override val primaryFunction: String?
-      ) : Hero, Character, Droid
-
-      data class CharacterHumanHero(
-        override val __typename: String,
+        override val id: String,
         /**
          * The name of the character
          */
@@ -91,17 +86,41 @@ class TestQuery : Query<TestQuery.Data> {
          * Height in the preferred unit, default is meters
          */
         override val height: Double?
-      ) : Hero, Character, Human
+      ) : Hero, Human
+
+      data class DroidHero(
+        override val __typename: String,
+        /**
+         * The ID of the character
+         */
+        override val id: String,
+        /**
+         * The name of the character
+         */
+        override val name: String,
+        /**
+         * This droid's primary function
+         */
+        override val primaryFunction: String?
+      ) : Hero, Droid
 
       data class OtherHero(
-        override val __typename: String
+        override val __typename: String,
+        /**
+         * The ID of the character
+         */
+        override val id: String,
+        /**
+         * The name of the character
+         */
+        override val name: String
       ) : Hero
     }
   }
 
   companion object {
     const val OPERATION_ID: String =
-        "5474e96626eb1bd3adbb1a3bc28419597638a648778d634ed80a485b9586ec89"
+        "9788d8cb5185e8875c193d2e8aa5cb15fb66916d00f51b55a037b5b8ebffc788"
 
     val QUERY_DOCUMENT: String = QueryDocumentMinifier.minify(
           """
@@ -109,7 +128,11 @@ class TestQuery : Query<TestQuery.Data> {
           |  hero {
           |    __typename
           |    ... on Character {
-          |      name
+          |      __typename
+          |      id
+          |      ... on Character {
+          |        name
+          |      }
           |    }
           |    ... on Human {
           |      height

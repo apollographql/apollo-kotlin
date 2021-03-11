@@ -54,9 +54,12 @@ data class TestQuery(
        * The ID of the character
        */
       val id: String,
+      /**
+       * The name of the character
+       */
+      val name: String,
       val asAsHuman: AsHuman?,
-      val asAsDroid: AsDroid?,
-      val asAsCharacter: AsCharacter?
+      val asAsDroid: AsDroid?
     ) {
       data class AsHuman(
         val __typename: String,
@@ -65,7 +68,7 @@ data class TestQuery(
          */
         val id: String,
         /**
-         * What this human calls themselves
+         * The name of the character
          */
         val name: String,
         /**
@@ -81,25 +84,13 @@ data class TestQuery(
          */
         val id: String,
         /**
-         * What others call this droid
+         * The name of the character
          */
         val name: String,
         /**
          * This droid's primary function
          */
         val primaryFunction: String?
-      )
-
-      data class AsCharacter(
-        val __typename: String,
-        /**
-         * The ID of the character
-         */
-        val id: String,
-        /**
-         * The name of the character
-         */
-        val name: String
       )
     }
   }

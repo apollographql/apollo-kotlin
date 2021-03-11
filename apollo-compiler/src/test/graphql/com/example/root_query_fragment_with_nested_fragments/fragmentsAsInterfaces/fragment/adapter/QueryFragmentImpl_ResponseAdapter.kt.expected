@@ -50,8 +50,7 @@ object QueryFragmentImpl_ResponseAdapter : ResponseAdapter<QueryFragmentImpl.Dat
       arguments = mapOf<String, Any?>(
         "id" to 1),
       fieldSets = listOf(
-        ResponseField.FieldSet("Human", Human.HumanHuman.RESPONSE_FIELDS),
-        ResponseField.FieldSet(null, Human.OtherHuman.RESPONSE_FIELDS),
+        ResponseField.FieldSet(null, Human.RESPONSE_FIELDS)
       ),
     )
   )
@@ -325,16 +324,40 @@ object QueryFragmentImpl_ResponseAdapter : ResponseAdapter<QueryFragmentImpl.Dat
   }
 
   object Human : ResponseAdapter<QueryFragmentImpl.Data.Human> {
+    val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
+      ResponseField.Typename,
+      ResponseField(
+        type = ResponseField.Type.NotNull(ResponseField.Type.Named.Other("String")),
+        fieldName = "name",
+      ),
+      ResponseField(
+        type = ResponseField.Type.Named.Other("String"),
+        fieldName = "homePlanet",
+      )
+    )
+
+    val RESPONSE_NAMES: List<String> = RESPONSE_FIELDS.map { it.responseName }
+
     override fun fromResponse(reader: JsonReader, responseAdapterCache: ResponseAdapterCache):
         QueryFragmentImpl.Data.Human {
+      var __typename: String? = null
+      var name: String? = null
+      var homePlanet: String? = null
       reader.beginObject()
-      check(reader.nextName() == "__typename")
-      val typename = reader.nextString()
-      return when(typename) {
-        "Human" -> HumanHuman.fromResponse(reader, responseAdapterCache, typename)
-        else -> OtherHuman.fromResponse(reader, responseAdapterCache, typename)
+      while(true) {
+        when (reader.selectName(RESPONSE_NAMES)) {
+          0 -> __typename = StringResponseAdapter.fromResponse(reader, responseAdapterCache)
+          1 -> name = StringResponseAdapter.fromResponse(reader, responseAdapterCache)
+          2 -> homePlanet = NullableStringResponseAdapter.fromResponse(reader, responseAdapterCache)
+          else -> break
+        }
       }
-      .also { reader.endObject() }
+      reader.endObject()
+      return QueryFragmentImpl.Data.Human(
+        __typename = __typename!!,
+        name = name!!,
+        homePlanet = homePlanet
+      )
     }
 
     override fun toResponse(
@@ -342,101 +365,14 @@ object QueryFragmentImpl_ResponseAdapter : ResponseAdapter<QueryFragmentImpl.Dat
       responseAdapterCache: ResponseAdapterCache,
       value: QueryFragmentImpl.Data.Human
     ) {
-      when(value) {
-        is QueryFragmentImpl.Data.Human.HumanHuman -> HumanHuman.toResponse(writer, responseAdapterCache, value)
-        is QueryFragmentImpl.Data.Human.OtherHuman -> OtherHuman.toResponse(writer, responseAdapterCache, value)
-      }
-    }
-
-    object HumanHuman {
-      val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
-        ResponseField.Typename,
-        ResponseField(
-          type = ResponseField.Type.NotNull(ResponseField.Type.Named.Other("String")),
-          fieldName = "name",
-        ),
-        ResponseField(
-          type = ResponseField.Type.Named.Other("String"),
-          fieldName = "homePlanet",
-        )
-      )
-
-      val RESPONSE_NAMES: List<String> = RESPONSE_FIELDS.map { it.responseName }
-
-      fun fromResponse(
-        reader: JsonReader,
-        responseAdapterCache: ResponseAdapterCache,
-        __typename: String?
-      ): QueryFragmentImpl.Data.Human.HumanHuman {
-        var __typename: String? = __typename
-        var name: String? = null
-        var homePlanet: String? = null
-        while(true) {
-          when (reader.selectName(RESPONSE_NAMES)) {
-            0 -> __typename = StringResponseAdapter.fromResponse(reader, responseAdapterCache)
-            1 -> name = StringResponseAdapter.fromResponse(reader, responseAdapterCache)
-            2 -> homePlanet = NullableStringResponseAdapter.fromResponse(reader,
-                responseAdapterCache)
-            else -> break
-          }
-        }
-        return QueryFragmentImpl.Data.Human.HumanHuman(
-          __typename = __typename!!,
-          name = name!!,
-          homePlanet = homePlanet
-        )
-      }
-
-      fun toResponse(
-        writer: JsonWriter,
-        responseAdapterCache: ResponseAdapterCache,
-        value: QueryFragmentImpl.Data.Human.HumanHuman
-      ) {
-        writer.beginObject()
-        writer.name("__typename")
-        StringResponseAdapter.toResponse(writer, responseAdapterCache, value.__typename)
-        writer.name("name")
-        StringResponseAdapter.toResponse(writer, responseAdapterCache, value.name)
-        writer.name("homePlanet")
-        NullableStringResponseAdapter.toResponse(writer, responseAdapterCache, value.homePlanet)
-        writer.endObject()
-      }
-    }
-
-    object OtherHuman {
-      val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
-        ResponseField.Typename
-      )
-
-      val RESPONSE_NAMES: List<String> = RESPONSE_FIELDS.map { it.responseName }
-
-      fun fromResponse(
-        reader: JsonReader,
-        responseAdapterCache: ResponseAdapterCache,
-        __typename: String?
-      ): QueryFragmentImpl.Data.Human.OtherHuman {
-        var __typename: String? = __typename
-        while(true) {
-          when (reader.selectName(RESPONSE_NAMES)) {
-            0 -> __typename = StringResponseAdapter.fromResponse(reader, responseAdapterCache)
-            else -> break
-          }
-        }
-        return QueryFragmentImpl.Data.Human.OtherHuman(
-          __typename = __typename!!
-        )
-      }
-
-      fun toResponse(
-        writer: JsonWriter,
-        responseAdapterCache: ResponseAdapterCache,
-        value: QueryFragmentImpl.Data.Human.OtherHuman
-      ) {
-        writer.beginObject()
-        writer.name("__typename")
-        StringResponseAdapter.toResponse(writer, responseAdapterCache, value.__typename)
-        writer.endObject()
-      }
+      writer.beginObject()
+      writer.name("__typename")
+      StringResponseAdapter.toResponse(writer, responseAdapterCache, value.__typename)
+      writer.name("name")
+      StringResponseAdapter.toResponse(writer, responseAdapterCache, value.name)
+      writer.name("homePlanet")
+      NullableStringResponseAdapter.toResponse(writer, responseAdapterCache, value.homePlanet)
+      writer.endObject()
     }
   }
 }

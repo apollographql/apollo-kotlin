@@ -18,7 +18,6 @@ import com.apollographql.apollo3.compiler.frontend.GQLTypeDefinition
 import com.apollographql.apollo3.compiler.frontend.GQLVariableDefinition
 import com.apollographql.apollo3.compiler.frontend.GQLVariableValue
 import com.apollographql.apollo3.compiler.frontend.Schema
-import com.apollographql.apollo3.compiler.frontend.SourceAwareException
 import com.apollographql.apollo3.compiler.frontend.definitionFromScope
 import com.apollographql.apollo3.compiler.frontend.findDeprecationReason
 import com.apollographql.apollo3.compiler.frontend.inferVariables
@@ -40,6 +39,8 @@ internal class FrontendIrBuilder(
 
   private val irFragmentDefinitions = fragmentDefinitions.map {
     it.toIr()
+        .flattenNestedInlineFragmentsOnSameTypeCondition()
+        .mergeInlineFragmentSelectionWithSameTypeCondition()
         .mergeFieldsAndInlineFragments()
         .simplifyConditions()
   }
@@ -56,6 +57,8 @@ internal class FrontendIrBuilder(
     return FrontendIr(
         operations = operationDefinitions.map {
           it.toIr()
+              .flattenNestedInlineFragmentsOnSameTypeCondition()
+              .mergeInlineFragmentSelectionWithSameTypeCondition()
               .mergeFieldsAndInlineFragments()
               .simplifyConditions()
         },
@@ -164,7 +167,7 @@ internal class FrontendIrBuilder(
         value = value.coerce(inputValueDefinition.type, schema).orThrow(),
         defaultValue = inputValueDefinition.defaultValue?.coerce(inputValueDefinition.type, schema)?.orThrow(),
         type = inputValueDefinition.type.toIr(),
-        )
+    )
   }
 
   private fun List<FrontendIr.Selection>.mergeFieldsAndInlineFragments(): List<FrontendIr.Selection> {
@@ -303,22 +306,105 @@ internal class FrontendIrBuilder(
     )
   }
 
-  private fun FrontendIr.NamedFragmentDefinition.mergeWith(other: FrontendIr.NamedFragmentDefinition): FrontendIr.NamedFragmentDefinition {
-    return copy(
-        selections = (selections + other.selections).mergeFieldsAndInlineFragments()
-    )
-  }
-
-  private fun FrontendIr.NamedFragmentDefinition.addCondition(condition: FrontendIr.Condition): FrontendIr.NamedFragmentDefinition {
-    return copy(
-        selections = selections.addCondition(condition)
-    )
-  }
-
   private fun FrontendIr.InlineFragmentDefinition.addCondition(condition: FrontendIr.Condition): FrontendIr.InlineFragmentDefinition {
     return copy(
         selections = selections.addCondition(condition)
     )
+  }
+
+  private fun FrontendIr.Operation.flattenNestedInlineFragmentsOnSameTypeCondition(): FrontendIr.Operation {
+    return this.copy(
+        selections = selections.map { selection -> selection.flattenNestedInlineFragmentsOnSameTypeCondition() }
+    )
+  }
+
+  private fun FrontendIr.NamedFragmentDefinition.flattenNestedInlineFragmentsOnSameTypeCondition(): FrontendIr.NamedFragmentDefinition {
+    return this.copy(
+        selections = selections.map { selection -> selection.flattenNestedInlineFragmentsOnSameTypeCondition() }
+    )
+  }
+
+  private fun FrontendIr.Selection.flattenNestedInlineFragmentsOnSameTypeCondition(): FrontendIr.Selection {
+    fun FrontendIr.Selection.inlineSelectionSet(typeCondition: GQLTypeDefinition): List<FrontendIr.Selection> {
+      return if (this is FrontendIr.Selection.InlineFragment && this.fragmentDefinition.typeCondition == typeCondition) {
+        this.fragmentDefinition.selections.flatMap { selection ->
+          selection.inlineSelectionSet(typeCondition)
+        }
+      } else {
+        listOf(this)
+      }
+    }
+
+    return when (this) {
+      is FrontendIr.Selection.InlineFragment -> this.copy(
+          fragmentDefinition = this.fragmentDefinition.copy(
+              selections = this.fragmentDefinition.selections
+                  .flatMap { selection -> selection.inlineSelectionSet(this.fragmentDefinition.typeCondition) }
+                  .map { selection -> selection.flattenNestedInlineFragmentsOnSameTypeCondition() }
+          )
+      )
+
+      is FrontendIr.Selection.Field -> {
+        this.copy(
+            selections = selections.map { selection -> selection.flattenNestedInlineFragmentsOnSameTypeCondition() }
+        )
+      }
+
+      else -> this
+    }
+  }
+
+  private fun FrontendIr.Operation.mergeInlineFragmentSelectionWithSameTypeCondition(): FrontendIr.Operation {
+    return copy(
+        selections = this.selections.mergeInlineFragmentSelectionForTypeCondition(
+            typeCondition = this.typeDefinition.name
+        )
+    )
+  }
+
+  private fun FrontendIr.NamedFragmentDefinition.mergeInlineFragmentSelectionWithSameTypeCondition(): FrontendIr.NamedFragmentDefinition {
+    return copy(
+        selections = this.selections.mergeInlineFragmentSelectionForTypeCondition(
+            typeCondition = this.typeCondition.name
+        )
+    )
+  }
+
+  private fun List<FrontendIr.Selection>.mergeInlineFragmentSelectionForTypeCondition(
+      typeCondition: String
+  ): List<FrontendIr.Selection> {
+    return this
+        .flatMap { selection ->
+          if (selection is FrontendIr.Selection.InlineFragment &&
+              selection.fragmentDefinition.typeCondition.name == typeCondition) {
+            selection.fragmentDefinition.selections
+          } else {
+            listOf(selection)
+          }
+        }
+        .map { selection -> selection.mergeInlineFragmentSelectionWithSameTypeCondition() }
+  }
+
+  private fun FrontendIr.Selection.mergeInlineFragmentSelectionWithSameTypeCondition(): FrontendIr.Selection {
+    return when (this) {
+      is FrontendIr.Selection.InlineFragment -> {
+        this.copy(
+            fragmentDefinition = fragmentDefinition.copy(
+                selections = this.fragmentDefinition.selections.map { selection ->
+                  selection.mergeInlineFragmentSelectionWithSameTypeCondition()
+                }
+            )
+        )
+      }
+
+      is FrontendIr.Selection.Field -> {
+        this.copy(
+            selections = this.selections.mergeInlineFragmentSelectionForTypeCondition(typeCondition = this.type.leafTypeDefinition.name)
+        )
+      }
+
+      else -> this
+    }
   }
 
   /**

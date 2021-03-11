@@ -13,6 +13,8 @@ import com.apollographql.apollo3.api.ResponseField
 import com.apollographql.apollo3.api.json.JsonWriter
 import com.example.named_fragment_inside_inline_fragment.adapter.GetHero_ResponseAdapter
 import com.example.named_fragment_inside_inline_fragment.adapter.GetHero_VariablesAdapter
+import com.example.named_fragment_inside_inline_fragment.fragment.CharacterAppearsIn
+import com.example.named_fragment_inside_inline_fragment.fragment.CharacterName
 import kotlin.String
 import kotlin.Suppress
 import kotlin.collections.List
@@ -46,12 +48,9 @@ class GetHero : Query<GetHero.Data> {
      */
     data class Hero(
       val __typename: String = "Character",
-      val asAsCharacter: AsCharacter?
-    ) {
-      data class AsCharacter(
-        val __typename: String
-      )
-    }
+      val characterName: CharacterName.Data?,
+      val characterAppearsIn: CharacterAppearsIn.Data?
+    )
   }
 
   companion object {

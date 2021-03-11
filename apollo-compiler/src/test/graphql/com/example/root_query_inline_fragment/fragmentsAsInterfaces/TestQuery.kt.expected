@@ -35,127 +35,82 @@ class TestQuery : Query<TestQuery.Data> {
 
   override fun adapter(): ResponseAdapter<Data> = TestQuery_ResponseAdapter
   override fun responseFields(): List<ResponseField.FieldSet> = listOf(
-    ResponseField.FieldSet("Query", TestQuery_ResponseAdapter.QueryData.RESPONSE_FIELDS),
-    ResponseField.FieldSet(null, TestQuery_ResponseAdapter.OtherData.RESPONSE_FIELDS),
+    ResponseField.FieldSet(null, TestQuery_ResponseAdapter.RESPONSE_FIELDS)
   )
   /**
    * The query type, represents all of the entry points into our object graph
    */
-  interface Data : Query.Data {
-    val __typename: String
-
-    interface Query : Data {
-      val hero: Hero?
-
-      val droid: Droid?
+  data class Data(
+    val __typename: String = "Query",
+    val hero: Hero?,
+    val droid: Droid?
+  ) : Query.Data {
+    /**
+     * A character from the Star Wars universe
+     */
+    interface Hero {
+      val __typename: String
 
       /**
-       * A character from the Star Wars universe
+       * The name of the character
        */
-      interface Hero {
-        val __typename: String
+      val name: String
 
+      /**
+       * The movies this character appears in
+       */
+      val appearsIn: List<Episode?>
+
+      interface Human : Hero {
+        /**
+         * Height in the preferred unit, default is meters
+         */
+        val height: Double?
+      }
+
+      data class HumanHero(
+        override val __typename: String,
         /**
          * The name of the character
          */
-        val name: String
-
+        override val name: String,
         /**
          * The movies this character appears in
          */
-        val appearsIn: List<Episode?>
+        override val appearsIn: List<Episode?>,
+        /**
+         * Height in the preferred unit, default is meters
+         */
+        override val height: Double?
+      ) : Hero, Human
 
-        interface Human : Hero {
-          /**
-           * Height in the preferred unit, default is meters
-           */
-          val height: Double?
-        }
-      }
-
-      /**
-       * An autonomous mechanical character in the Star Wars universe
-       */
-      interface Droid {
-        val __typename: String
-
-        interface Droid : Query.Droid {
-          /**
-           * What others call this droid
-           */
-          val name: String
-
-          /**
-           * This droid's primary function
-           */
-          val primaryFunction: String?
-        }
-      }
+      data class OtherHero(
+        override val __typename: String,
+        /**
+         * The name of the character
+         */
+        override val name: String,
+        /**
+         * The movies this character appears in
+         */
+        override val appearsIn: List<Episode?>
+      ) : Hero
     }
 
-    data class QueryData(
-      override val __typename: String,
-      override val hero: Hero?,
-      override val droid: Droid?
-    ) : Data, Query {
+    /**
+     * An autonomous mechanical character in the Star Wars universe
+     */
+    data class Droid(
+      val __typename: String = "Droid",
       /**
-       * A character from the Star Wars universe
+       * What others call this droid
        */
-      interface Hero : Query.Hero {
-        data class HumanHero(
-          override val __typename: String,
-          /**
-           * The name of the character
-           */
-          override val name: String,
-          /**
-           * The movies this character appears in
-           */
-          override val appearsIn: List<Episode?>,
-          /**
-           * Height in the preferred unit, default is meters
-           */
-          override val height: Double?
-        ) : Query.Hero, Query.Hero.Human, Hero
-
-        data class OtherHero(
-          override val __typename: String,
-          /**
-           * The name of the character
-           */
-          override val name: String,
-          /**
-           * The movies this character appears in
-           */
-          override val appearsIn: List<Episode?>
-        ) : Query.Hero, Hero
-      }
-
+      val name: String,
       /**
-       * An autonomous mechanical character in the Star Wars universe
+       * This droid's primary function
        */
-      interface Droid : Query.Droid {
-        data class DroidDroid(
-          override val __typename: String,
-          /**
-           * What others call this droid
-           */
-          override val name: String,
-          /**
-           * This droid's primary function
-           */
-          override val primaryFunction: String?
-        ) : Query.Droid, Query.Droid.Droid, Droid
-
-        data class OtherDroid(
-          override val __typename: String
-        ) : Query.Droid, Droid
-      }
-    }
-
-    data class OtherData(
-      override val __typename: String
-    ) : Data
+      val primaryFunction: String?
+    )
   }
 
   companion object {

@@ -77,9 +77,7 @@ class TestQuery : Query<TestQuery.Data> {
       /**
        * A humanoid creature from the Star Wars universe
        */
-      interface Human : QueryFragment.Human {
-        interface Human : Query.Human, QueryFragment.Human.Human
-      }
+      interface Human : QueryFragment.Human
     }
 
     data class QueryData(
@@ -129,23 +127,17 @@ class TestQuery : Query<TestQuery.Data> {
       /**
        * A humanoid creature from the Star Wars universe
        */
-      interface Human : Query.Human, QueryFragment.Human {
-        data class HumanHuman(
-          override val __typename: String,
-          /**
-           * What this human calls themselves
-           */
-          override val name: String,
-          /**
-           * The home planet of the human, or null if unknown
-           */
-          override val homePlanet: String?
-        ) : Query.Human, Query.Human.Human, QueryFragment.Human.Human, Human
-
-        data class OtherHuman(
-          override val __typename: String
-        ) : Query.Human, QueryFragment.Human, Human
-      }
+      data class Human(
+        override val __typename: String = "Human",
+        /**
+         * What this human calls themselves
+         */
+        override val name: String,
+        /**
+         * The home planet of the human, or null if unknown
+         */
+        override val homePlanet: String?
+      ) : Query.Human, QueryFragment.Human
     }
 
     data class OtherData(

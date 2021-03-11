@@ -11,7 +11,6 @@ import com.apollographql.apollo3.api.ResponseAdapter
 import com.apollographql.apollo3.api.ResponseAdapterCache
 import com.apollographql.apollo3.api.ResponseField
 import com.apollographql.apollo3.api.StringResponseAdapter
-import com.apollographql.apollo3.api.internal.json.MapJsonReader
 import com.apollographql.apollo3.api.internal.json.MapJsonReader.Companion.buffer
 import com.apollographql.apollo3.api.json.JsonReader
 import com.apollographql.apollo3.api.json.JsonWriter
@@ -31,34 +30,47 @@ import kotlin.collections.List
     "RemoveRedundantQualifierName")
 object TestQuery_ResponseAdapter : ResponseAdapter<TestQuery.Data> {
   val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
-    ResponseField.Typename
+    ResponseField.Typename,
+    ResponseField(
+      type = ResponseField.Type.Named.Object("Character"),
+      fieldName = "hero",
+      fieldSets = listOf(
+        ResponseField.FieldSet("Human", Hero.AsHuman.RESPONSE_FIELDS),
+      ),
+    ),
+    ResponseField(
+      type = ResponseField.Type.Named.Object("Droid"),
+      fieldName = "droid",
+      arguments = mapOf<String, Any?>(
+        "id" to 1),
+      fieldSets = listOf(
+        ResponseField.FieldSet(null, Droid.RESPONSE_FIELDS)
+      ),
+    )
   )
 
   val RESPONSE_NAMES: List<String> = RESPONSE_FIELDS.map { it.responseName }
 
   override fun fromResponse(reader: JsonReader, responseAdapterCache: ResponseAdapterCache):
       TestQuery.Data {
-    val reader = reader.buffer()
-    reader.beginObject()
-
     var __typename: String? = null
-    var asAsQuery: TestQuery.Data.AsQuery? = null
+    var hero: TestQuery.Data.Hero? = null
+    var droid: TestQuery.Data.Droid? = null
+    reader.beginObject()
     while(true) {
       when (reader.selectName(RESPONSE_NAMES)) {
         0 -> __typename = StringResponseAdapter.fromResponse(reader, responseAdapterCache)
+        1 -> hero = Hero.nullable().fromResponse(reader, responseAdapterCache)
+        2 -> droid = Droid.nullable().fromResponse(reader, responseAdapterCache)
         else -> break
       }
     }
-    if (__typename in arrayOf("Query")) {
-      reader.rewind()
-      asAsQuery = AsQuery.fromResponse(reader, responseAdapterCache, __typename)
-    }
-
+    reader.endObject()
     return TestQuery.Data(
       __typename = __typename!!,
-      asAsQuery = asAsQuery
+      hero = hero,
+      droid = droid
     )
-    .also { reader.endObject() }
   }
 
   override fun toResponse(
@@ -69,72 +81,81 @@ object TestQuery_ResponseAdapter : ResponseAdapter<TestQuery.Data> {
     writer.beginObject()
     writer.name("__typename")
     StringResponseAdapter.toResponse(writer, responseAdapterCache, value.__typename)
-    if (value.asAsQuery != null) AsQuery.toResponse(writer, responseAdapterCache, value.asAsQuery)
+    writer.name("hero")
+    Hero.nullable().toResponse(writer, responseAdapterCache, value.hero)
+    writer.name("droid")
+    Droid.nullable().toResponse(writer, responseAdapterCache, value.droid)
     writer.endObject()
   }
 
-  object AsQuery {
+  object Hero : ResponseAdapter<TestQuery.Data.Hero> {
     val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
       ResponseField.Typename,
       ResponseField(
-        type = ResponseField.Type.Named.Object("Character"),
-        fieldName = "hero",
-        fieldSets = listOf(
-          ResponseField.FieldSet("Human", Hero.AsHuman.RESPONSE_FIELDS),
-        ),
+        type = ResponseField.Type.NotNull(ResponseField.Type.Named.Other("String")),
+        fieldName = "name",
       ),
       ResponseField(
-        type = ResponseField.Type.Named.Object("Droid"),
-        fieldName = "droid",
-        arguments = mapOf<String, Any?>(
-          "id" to 1),
-        fieldSets = listOf(
-          ResponseField.FieldSet("Droid", Droid.AsDroid.RESPONSE_FIELDS),
-        ),
+        type =
+            ResponseField.Type.NotNull(ResponseField.Type.List(ResponseField.Type.Named.Other("Episode"))),
+        fieldName = "appearsIn",
       )
     )
 
     val RESPONSE_NAMES: List<String> = RESPONSE_FIELDS.map { it.responseName }
 
-    fun fromResponse(
-      reader: JsonReader,
-      responseAdapterCache: ResponseAdapterCache,
-      __typename: String?
-    ): TestQuery.Data.AsQuery {
-      var __typename: String? = __typename
-      var hero: TestQuery.Data.AsQuery.Hero? = null
-      var droid: TestQuery.Data.AsQuery.Droid? = null
+    override fun fromResponse(reader: JsonReader, responseAdapterCache: ResponseAdapterCache):
+        TestQuery.Data.Hero {
+      val reader = reader.buffer()
+      reader.beginObject()
+
+      var __typename: String? = null
+      var name: String? = null
+      var appearsIn: List<Episode?>? = null
+      var asAsHuman: TestQuery.Data.Hero.AsHuman? = null
       while(true) {
         when (reader.selectName(RESPONSE_NAMES)) {
           0 -> __typename = StringResponseAdapter.fromResponse(reader, responseAdapterCache)
-          1 -> hero = Hero.nullable().fromResponse(reader, responseAdapterCache)
-          2 -> droid = Droid.nullable().fromResponse(reader, responseAdapterCache)
+          1 -> name = StringResponseAdapter.fromResponse(reader, responseAdapterCache)
+          2 -> appearsIn = Episode_ResponseAdapter.nullable().list().fromResponse(reader,
+              responseAdapterCache)
           else -> break
         }
       }
-      return TestQuery.Data.AsQuery(
+      if (__typename in arrayOf("Human")) {
+        reader.rewind()
+        asAsHuman = AsHuman.fromResponse(reader, responseAdapterCache, __typename)
+      }
+
+      return TestQuery.Data.Hero(
         __typename = __typename!!,
-        hero = hero,
-        droid = droid
+        name = name!!,
+        appearsIn = appearsIn!!,
+        asAsHuman = asAsHuman
       )
+      .also { reader.endObject() }
     }
 
-    fun toResponse(
+    override fun toResponse(
       writer: JsonWriter,
       responseAdapterCache: ResponseAdapterCache,
-      value: TestQuery.Data.AsQuery
+      value: TestQuery.Data.Hero
     ) {
       writer.beginObject()
       writer.name("__typename")
       StringResponseAdapter.toResponse(writer, responseAdapterCache, value.__typename)
-      writer.name("hero")
-      Hero.nullable().toResponse(writer, responseAdapterCache, value.hero)
-      writer.name("droid")
-      Droid.nullable().toResponse(writer, responseAdapterCache, value.droid)
+
+      writer.name("name")
+      StringResponseAdapter.toResponse(writer, responseAdapterCache, value.name)
+
+      writer.name("appearsIn")
+      Episode_ResponseAdapter.nullable().list().toResponse(writer, responseAdapterCache,
+          value.appearsIn)
+      if (value.asAsHuman != null) AsHuman.toResponse(writer, responseAdapterCache, value.asAsHuman)
       writer.endObject()
     }
 
-    object Hero : ResponseAdapter<TestQuery.Data.AsQuery.Hero> {
+    object AsHuman {
       val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
         ResponseField.Typename,
         ResponseField(
@@ -145,230 +166,113 @@ object TestQuery_ResponseAdapter : ResponseAdapter<TestQuery.Data> {
           type =
               ResponseField.Type.NotNull(ResponseField.Type.List(ResponseField.Type.Named.Other("Episode"))),
           fieldName = "appearsIn",
+        ),
+        ResponseField(
+          type = ResponseField.Type.Named.Other("Float"),
+          fieldName = "height",
         )
       )
 
       val RESPONSE_NAMES: List<String> = RESPONSE_FIELDS.map { it.responseName }
 
-      override fun fromResponse(reader: JsonReader, responseAdapterCache: ResponseAdapterCache):
-          TestQuery.Data.AsQuery.Hero {
-        val reader = reader.buffer()
-        reader.beginObject()
-
-        var __typename: String? = null
+      fun fromResponse(
+        reader: JsonReader,
+        responseAdapterCache: ResponseAdapterCache,
+        __typename: String?
+      ): TestQuery.Data.Hero.AsHuman {
+        var __typename: String? = __typename
         var name: String? = null
         var appearsIn: List<Episode?>? = null
-        var asAsHuman: TestQuery.Data.AsQuery.Hero.AsHuman? = null
+        var height: Double? = null
         while(true) {
           when (reader.selectName(RESPONSE_NAMES)) {
             0 -> __typename = StringResponseAdapter.fromResponse(reader, responseAdapterCache)
             1 -> name = StringResponseAdapter.fromResponse(reader, responseAdapterCache)
             2 -> appearsIn = Episode_ResponseAdapter.nullable().list().fromResponse(reader,
                 responseAdapterCache)
+            3 -> height = NullableDoubleResponseAdapter.fromResponse(reader, responseAdapterCache)
             else -> break
           }
         }
-        if (__typename in arrayOf("Human")) {
-          reader.rewind()
-          asAsHuman = AsHuman.fromResponse(reader, responseAdapterCache, __typename)
-        }
-
-        return TestQuery.Data.AsQuery.Hero(
+        return TestQuery.Data.Hero.AsHuman(
           __typename = __typename!!,
           name = name!!,
           appearsIn = appearsIn!!,
-          asAsHuman = asAsHuman
+          height = height
         )
-        .also { reader.endObject() }
       }
 
-      override fun toResponse(
+      fun toResponse(
         writer: JsonWriter,
         responseAdapterCache: ResponseAdapterCache,
-        value: TestQuery.Data.AsQuery.Hero
+        value: TestQuery.Data.Hero.AsHuman
       ) {
         writer.beginObject()
         writer.name("__typename")
         StringResponseAdapter.toResponse(writer, responseAdapterCache, value.__typename)
-
         writer.name("name")
         StringResponseAdapter.toResponse(writer, responseAdapterCache, value.name)
-
         writer.name("appearsIn")
         Episode_ResponseAdapter.nullable().list().toResponse(writer, responseAdapterCache,
             value.appearsIn)
-        if (value.asAsHuman != null)
-            AsHuman.toResponse(writer, responseAdapterCache, value.asAsHuman)
+        writer.name("height")
+        NullableDoubleResponseAdapter.toResponse(writer, responseAdapterCache, value.height)
         writer.endObject()
-      }
-
-      object AsHuman {
-        val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
-          ResponseField.Typename,
-          ResponseField(
-            type = ResponseField.Type.NotNull(ResponseField.Type.Named.Other("String")),
-            fieldName = "name",
-          ),
-          ResponseField(
-            type =
-                ResponseField.Type.NotNull(ResponseField.Type.List(ResponseField.Type.Named.Other("Episode"))),
-            fieldName = "appearsIn",
-          ),
-          ResponseField(
-            type = ResponseField.Type.Named.Other("Float"),
-            fieldName = "height",
-          )
-        )
-
-        val RESPONSE_NAMES: List<String> = RESPONSE_FIELDS.map { it.responseName }
-
-        fun fromResponse(
-          reader: JsonReader,
-          responseAdapterCache: ResponseAdapterCache,
-          __typename: String?
-        ): TestQuery.Data.AsQuery.Hero.AsHuman {
-          var __typename: String? = __typename
-          var name: String? = null
-          var appearsIn: List<Episode?>? = null
-          var height: Double? = null
-          while(true) {
-            when (reader.selectName(RESPONSE_NAMES)) {
-              0 -> __typename = StringResponseAdapter.fromResponse(reader, responseAdapterCache)
-              1 -> name = StringResponseAdapter.fromResponse(reader, responseAdapterCache)
-              2 -> appearsIn = Episode_ResponseAdapter.nullable().list().fromResponse(reader,
-                  responseAdapterCache)
-              3 -> height = NullableDoubleResponseAdapter.fromResponse(reader, responseAdapterCache)
-              else -> break
-            }
-          }
-          return TestQuery.Data.AsQuery.Hero.AsHuman(
-            __typename = __typename!!,
-            name = name!!,
-            appearsIn = appearsIn!!,
-            height = height
-          )
-        }
-
-        fun toResponse(
-          writer: JsonWriter,
-          responseAdapterCache: ResponseAdapterCache,
-          value: TestQuery.Data.AsQuery.Hero.AsHuman
-        ) {
-          writer.beginObject()
-          writer.name("__typename")
-          StringResponseAdapter.toResponse(writer, responseAdapterCache, value.__typename)
-          writer.name("name")
-          StringResponseAdapter.toResponse(writer, responseAdapterCache, value.name)
-          writer.name("appearsIn")
-          Episode_ResponseAdapter.nullable().list().toResponse(writer, responseAdapterCache,
-              value.appearsIn)
-          writer.name("height")
-          NullableDoubleResponseAdapter.toResponse(writer, responseAdapterCache, value.height)
-          writer.endObject()
-        }
       }
     }
+  }
 
-    object Droid : ResponseAdapter<TestQuery.Data.AsQuery.Droid> {
-      val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
-        ResponseField.Typename
+  object Droid : ResponseAdapter<TestQuery.Data.Droid> {
+    val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
+      ResponseField.Typename,
+      ResponseField(
+        type = ResponseField.Type.NotNull(ResponseField.Type.Named.Other("String")),
+        fieldName = "name",
+      ),
+      ResponseField(
+        type = ResponseField.Type.Named.Other("String"),
+        fieldName = "primaryFunction",
       )
+    )
 
-      val RESPONSE_NAMES: List<String> = RESPONSE_FIELDS.map { it.responseName }
+    val RESPONSE_NAMES: List<String> = RESPONSE_FIELDS.map { it.responseName }
 
-      override fun fromResponse(reader: JsonReader, responseAdapterCache: ResponseAdapterCache):
-          TestQuery.Data.AsQuery.Droid {
-        val reader = reader.buffer()
-        reader.beginObject()
-
-        var __typename: String? = null
-        var asAsDroid: TestQuery.Data.AsQuery.Droid.AsDroid? = null
-        while(true) {
-          when (reader.selectName(RESPONSE_NAMES)) {
-            0 -> __typename = StringResponseAdapter.fromResponse(reader, responseAdapterCache)
-            else -> break
-          }
-        }
-        if (__typename in arrayOf("Droid")) {
-          reader.rewind()
-          asAsDroid = AsDroid.fromResponse(reader, responseAdapterCache, __typename)
-        }
-
-        return TestQuery.Data.AsQuery.Droid(
-          __typename = __typename!!,
-          asAsDroid = asAsDroid
-        )
-        .also { reader.endObject() }
-      }
-
-      override fun toResponse(
-        writer: JsonWriter,
-        responseAdapterCache: ResponseAdapterCache,
-        value: TestQuery.Data.AsQuery.Droid
-      ) {
-        writer.beginObject()
-        writer.name("__typename")
-        StringResponseAdapter.toResponse(writer, responseAdapterCache, value.__typename)
-        if (value.asAsDroid != null)
-            AsDroid.toResponse(writer, responseAdapterCache, value.asAsDroid)
-        writer.endObject()
-      }
-
-      object AsDroid {
-        val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
-          ResponseField.Typename,
-          ResponseField(
-            type = ResponseField.Type.NotNull(ResponseField.Type.Named.Other("String")),
-            fieldName = "name",
-          ),
-          ResponseField(
-            type = ResponseField.Type.Named.Other("String"),
-            fieldName = "primaryFunction",
-          )
-        )
-
-        val RESPONSE_NAMES: List<String> = RESPONSE_FIELDS.map { it.responseName }
-
-        fun fromResponse(
-          reader: JsonReader,
-          responseAdapterCache: ResponseAdapterCache,
-          __typename: String?
-        ): TestQuery.Data.AsQuery.Droid.AsDroid {
-          var __typename: String? = __typename
-          var name: String? = null
-          var primaryFunction: String? = null
-          while(true) {
-            when (reader.selectName(RESPONSE_NAMES)) {
-              0 -> __typename = StringResponseAdapter.fromResponse(reader, responseAdapterCache)
-              1 -> name = StringResponseAdapter.fromResponse(reader, responseAdapterCache)
-              2 -> primaryFunction = NullableStringResponseAdapter.fromResponse(reader,
-                  responseAdapterCache)
-              else -> break
-            }
-          }
-          return TestQuery.Data.AsQuery.Droid.AsDroid(
-            __typename = __typename!!,
-            name = name!!,
-            primaryFunction = primaryFunction
-          )
-        }
-
-        fun toResponse(
-          writer: JsonWriter,
-          responseAdapterCache: ResponseAdapterCache,
-          value: TestQuery.Data.AsQuery.Droid.AsDroid
-        ) {
-          writer.beginObject()
-          writer.name("__typename")
-          StringResponseAdapter.toResponse(writer, responseAdapterCache, value.__typename)
-          writer.name("name")
-          StringResponseAdapter.toResponse(writer, responseAdapterCache, value.name)
-          writer.name("primaryFunction")
-          NullableStringResponseAdapter.toResponse(writer, responseAdapterCache,
-              value.primaryFunction)
-          writer.endObject()
+    override fun fromResponse(reader: JsonReader, responseAdapterCache: ResponseAdapterCache):
+        TestQuery.Data.Droid {
+      var __typename: String? = null
+      var name: String? = null
+      var primaryFunction: String? = null
+      reader.beginObject()
+      while(true) {
+        when (reader.selectName(RESPONSE_NAMES)) {
+          0 -> __typename = StringResponseAdapter.fromResponse(reader, responseAdapterCache)
+          1 -> name = StringResponseAdapter.fromResponse(reader, responseAdapterCache)
+          2 -> primaryFunction = NullableStringResponseAdapter.fromResponse(reader,
+              responseAdapterCache)
+          else -> break
         }
       }
+      reader.endObject()
+      return TestQuery.Data.Droid(
+        __typename = __typename!!,
+        name = name!!,
+        primaryFunction = primaryFunction
+      )
+    }
+
+    override fun toResponse(
+      writer: JsonWriter,
+      responseAdapterCache: ResponseAdapterCache,
+      value: TestQuery.Data.Droid
+    ) {
+      writer.beginObject()
+      writer.name("__typename")
+      StringResponseAdapter.toResponse(writer, responseAdapterCache, value.__typename)
+      writer.name("name")
+      StringResponseAdapter.toResponse(writer, responseAdapterCache, value.name)
+      writer.name("primaryFunction")
+      NullableStringResponseAdapter.toResponse(writer, responseAdapterCache, value.primaryFunction)
+      writer.endObject()
     }
   }
 }

@@ -139,8 +139,6 @@ object TestQuery_ResponseAdapter : ResponseAdapter<TestQuery.Data> {
           type = ResponseField.Type.List(ResponseField.Type.Named.Object("Character")),
           fieldName = "friends",
           fieldSets = listOf(
-            ResponseField.FieldSet("Droid", Friends.AsCharacter.RESPONSE_FIELDS),
-            ResponseField.FieldSet("Human", Friends.AsCharacter.RESPONSE_FIELDS),
             ResponseField.FieldSet("Human", Friends.AsHuman.RESPONSE_FIELDS),
             ResponseField.FieldSet("Droid", Friends.AsDroid.RESPONSE_FIELDS),
           ),
@@ -195,7 +193,11 @@ object TestQuery_ResponseAdapter : ResponseAdapter<TestQuery.Data> {
 
       object Friends : ResponseAdapter<TestQuery.Data.Search.AsCharacter.Friends> {
         val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
-          ResponseField.Typename
+          ResponseField.Typename,
+          ResponseField(
+            type = ResponseField.Type.NotNull(ResponseField.Type.Named.Other("String")),
+            fieldName = "name",
+          )
         )
 
         val RESPONSE_NAMES: List<String> = RESPONSE_FIELDS.map { it.responseName }
@@ -206,18 +208,15 @@ object TestQuery_ResponseAdapter : ResponseAdapter<TestQuery.Data> {
           reader.beginObject()
 
           var __typename: String? = null
-          var asAsCharacter: TestQuery.Data.Search.AsCharacter.Friends.AsCharacter? = null
+          var name: String? = null
           var asAsHuman: TestQuery.Data.Search.AsCharacter.Friends.AsHuman? = null
           var asAsDroid: TestQuery.Data.Search.AsCharacter.Friends.AsDroid? = null
           while(true) {
             when (reader.selectName(RESPONSE_NAMES)) {
               0 -> __typename = StringResponseAdapter.fromResponse(reader, responseAdapterCache)
+              1 -> name = StringResponseAdapter.fromResponse(reader, responseAdapterCache)
               else -> break
             }
-          }
-          if (__typename in arrayOf("Droid", "Human")) {
-            reader.rewind()
-            asAsCharacter = AsCharacter.fromResponse(reader, responseAdapterCache, __typename)
           }
           if (__typename in arrayOf("Human")) {
             reader.rewind()
@@ -230,7 +229,7 @@ object TestQuery_ResponseAdapter : ResponseAdapter<TestQuery.Data> {
 
           return TestQuery.Data.Search.AsCharacter.Friends(
             __typename = __typename!!,
-            asAsCharacter = asAsCharacter,
+            name = name!!,
             asAsHuman = asAsHuman,
             asAsDroid = asAsDroid
           )
@@ -245,8 +244,9 @@ object TestQuery_ResponseAdapter : ResponseAdapter<TestQuery.Data> {
           writer.beginObject()
           writer.name("__typename")
           StringResponseAdapter.toResponse(writer, responseAdapterCache, value.__typename)
-          if (value.asAsCharacter != null)
-              AsCharacter.toResponse(writer, responseAdapterCache, value.asAsCharacter)
+
+          writer.name("name")
+          StringResponseAdapter.toResponse(writer, responseAdapterCache, value.name)
           if (value.asAsHuman != null)
               AsHuman.toResponse(writer, responseAdapterCache, value.asAsHuman)
           if (value.asAsDroid != null)
@@ -254,54 +254,13 @@ object TestQuery_ResponseAdapter : ResponseAdapter<TestQuery.Data> {
           writer.endObject()
         }
 
-        object AsCharacter {
+        object AsHuman {
           val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
             ResponseField.Typename,
             ResponseField(
               type = ResponseField.Type.NotNull(ResponseField.Type.Named.Other("String")),
               fieldName = "name",
-            )
-          )
-
-          val RESPONSE_NAMES: List<String> = RESPONSE_FIELDS.map { it.responseName }
-
-          fun fromResponse(
-            reader: JsonReader,
-            responseAdapterCache: ResponseAdapterCache,
-            __typename: String?
-          ): TestQuery.Data.Search.AsCharacter.Friends.AsCharacter {
-            var __typename: String? = __typename
-            var name: String? = null
-            while(true) {
-              when (reader.selectName(RESPONSE_NAMES)) {
-                0 -> __typename = StringResponseAdapter.fromResponse(reader, responseAdapterCache)
-                1 -> name = StringResponseAdapter.fromResponse(reader, responseAdapterCache)
-                else -> break
-              }
-            }
-            return TestQuery.Data.Search.AsCharacter.Friends.AsCharacter(
-              __typename = __typename!!,
-              name = name!!
-            )
-          }
-
-          fun toResponse(
-            writer: JsonWriter,
-            responseAdapterCache: ResponseAdapterCache,
-            value: TestQuery.Data.Search.AsCharacter.Friends.AsCharacter
-          ) {
-            writer.beginObject()
-            writer.name("__typename")
-            StringResponseAdapter.toResponse(writer, responseAdapterCache, value.__typename)
-            writer.name("name")
-            StringResponseAdapter.toResponse(writer, responseAdapterCache, value.name)
-            writer.endObject()
-          }
-        }
-
-        object AsHuman {
-          val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
-            ResponseField.Typename,
+            ),
             ResponseField(
               type = ResponseField.Type.Named.Other("String"),
               fieldName = "homePlanet",
@@ -310,8 +269,7 @@ object TestQuery_ResponseAdapter : ResponseAdapter<TestQuery.Data> {
               type = ResponseField.Type.List(ResponseField.Type.Named.Object("Character")),
               fieldName = "friends",
               fieldSets = listOf(
-                ResponseField.FieldSet("Droid", Friends.AsCharacter.RESPONSE_FIELDS),
-                ResponseField.FieldSet("Human", Friends.AsCharacter.RESPONSE_FIELDS),
+                ResponseField.FieldSet(null, Friends.RESPONSE_FIELDS)
               ),
             )
           )
@@ -324,20 +282,23 @@ object TestQuery_ResponseAdapter : ResponseAdapter<TestQuery.Data> {
             __typename: String?
           ): TestQuery.Data.Search.AsCharacter.Friends.AsHuman {
             var __typename: String? = __typename
+            var name: String? = null
             var homePlanet: String? = null
             var friends: List<TestQuery.Data.Search.AsCharacter.Friends.AsHuman.Friends?>? = null
             while(true) {
               when (reader.selectName(RESPONSE_NAMES)) {
                 0 -> __typename = StringResponseAdapter.fromResponse(reader, responseAdapterCache)
-                1 -> homePlanet = NullableStringResponseAdapter.fromResponse(reader,
+                1 -> name = StringResponseAdapter.fromResponse(reader, responseAdapterCache)
+                2 -> homePlanet = NullableStringResponseAdapter.fromResponse(reader,
                     responseAdapterCache)
-                2 -> friends = Friends.nullable().list().nullable().fromResponse(reader,
+                3 -> friends = Friends.nullable().list().nullable().fromResponse(reader,
                     responseAdapterCache)
                 else -> break
               }
             }
             return TestQuery.Data.Search.AsCharacter.Friends.AsHuman(
               __typename = __typename!!,
+              name = name!!,
               homePlanet = homePlanet,
               friends = friends
             )
@@ -351,6 +312,8 @@ object TestQuery_ResponseAdapter : ResponseAdapter<TestQuery.Data> {
             writer.beginObject()
             writer.name("__typename")
             StringResponseAdapter.toResponse(writer, responseAdapterCache, value.__typename)
+            writer.name("name")
+            StringResponseAdapter.toResponse(writer, responseAdapterCache, value.name)
             writer.name("homePlanet")
             NullableStringResponseAdapter.toResponse(writer, responseAdapterCache, value.homePlanet)
             writer.name("friends")
@@ -362,7 +325,11 @@ object TestQuery_ResponseAdapter : ResponseAdapter<TestQuery.Data> {
           object Friends :
               ResponseAdapter<TestQuery.Data.Search.AsCharacter.Friends.AsHuman.Friends> {
             val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
-              ResponseField.Typename
+              ResponseField.Typename,
+              ResponseField(
+                type = ResponseField.Type.NotNull(ResponseField.Type.Named.Other("Episode")),
+                fieldName = "firstAppearsIn",
+              )
             )
 
             val RESPONSE_NAMES: List<String> = RESPONSE_FIELDS.map { it.responseName }
@@ -370,27 +337,22 @@ object TestQuery_ResponseAdapter : ResponseAdapter<TestQuery.Data> {
             override fun fromResponse(reader: JsonReader,
                 responseAdapterCache: ResponseAdapterCache):
                 TestQuery.Data.Search.AsCharacter.Friends.AsHuman.Friends {
-              val reader = reader.buffer()
-              reader.beginObject()
-
               var __typename: String? = null
-              var asAsCharacter: TestQuery.Data.Search.AsCharacter.Friends.AsHuman.Friends.AsCharacter? = null
+              var firstAppearsIn: Episode? = null
+              reader.beginObject()
               while(true) {
                 when (reader.selectName(RESPONSE_NAMES)) {
                   0 -> __typename = StringResponseAdapter.fromResponse(reader, responseAdapterCache)
+                  1 -> firstAppearsIn = Episode_ResponseAdapter.fromResponse(reader,
+                      responseAdapterCache)
                   else -> break
                 }
               }
-              if (__typename in arrayOf("Droid", "Human")) {
-                reader.rewind()
-                asAsCharacter = AsCharacter.fromResponse(reader, responseAdapterCache, __typename)
-              }
-
+              reader.endObject()
               return TestQuery.Data.Search.AsCharacter.Friends.AsHuman.Friends(
                 __typename = __typename!!,
-                asAsCharacter = asAsCharacter
+                firstAppearsIn = firstAppearsIn!!
               )
-              .also { reader.endObject() }
             }
 
             override fun toResponse(
@@ -401,57 +363,9 @@ object TestQuery_ResponseAdapter : ResponseAdapter<TestQuery.Data> {
               writer.beginObject()
               writer.name("__typename")
               StringResponseAdapter.toResponse(writer, responseAdapterCache, value.__typename)
-              if (value.asAsCharacter != null)
-                  AsCharacter.toResponse(writer, responseAdapterCache, value.asAsCharacter)
+              writer.name("firstAppearsIn")
+              Episode_ResponseAdapter.toResponse(writer, responseAdapterCache, value.firstAppearsIn)
               writer.endObject()
-            }
-
-            object AsCharacter {
-              val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
-                ResponseField.Typename,
-                ResponseField(
-                  type = ResponseField.Type.NotNull(ResponseField.Type.Named.Other("Episode")),
-                  fieldName = "firstAppearsIn",
-                )
-              )
-
-              val RESPONSE_NAMES: List<String> = RESPONSE_FIELDS.map { it.responseName }
-
-              fun fromResponse(
-                reader: JsonReader,
-                responseAdapterCache: ResponseAdapterCache,
-                __typename: String?
-              ): TestQuery.Data.Search.AsCharacter.Friends.AsHuman.Friends.AsCharacter {
-                var __typename: String? = __typename
-                var firstAppearsIn: Episode? = null
-                while(true) {
-                  when (reader.selectName(RESPONSE_NAMES)) {
-                    0 -> __typename = StringResponseAdapter.fromResponse(reader,
-                        responseAdapterCache)
-                    1 -> firstAppearsIn = Episode_ResponseAdapter.fromResponse(reader,
-                        responseAdapterCache)
-                    else -> break
-                  }
-                }
-                return TestQuery.Data.Search.AsCharacter.Friends.AsHuman.Friends.AsCharacter(
-                  __typename = __typename!!,
-                  firstAppearsIn = firstAppearsIn!!
-                )
-              }
-
-              fun toResponse(
-                writer: JsonWriter,
-                responseAdapterCache: ResponseAdapterCache,
-                value: TestQuery.Data.Search.AsCharacter.Friends.AsHuman.Friends.AsCharacter
-              ) {
-                writer.beginObject()
-                writer.name("__typename")
-                StringResponseAdapter.toResponse(writer, responseAdapterCache, value.__typename)
-                writer.name("firstAppearsIn")
-                Episode_ResponseAdapter.toResponse(writer, responseAdapterCache,
-                    value.firstAppearsIn)
-                writer.endObject()
-              }
             }
           }
         }
@@ -459,6 +373,10 @@ object TestQuery_ResponseAdapter : ResponseAdapter<TestQuery.Data> {
         object AsDroid {
           val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
             ResponseField.Typename,
+            ResponseField(
+              type = ResponseField.Type.NotNull(ResponseField.Type.Named.Other("String")),
+              fieldName = "name",
+            ),
             ResponseField(
               type = ResponseField.Type.Named.Other("String"),
               fieldName = "primaryFunction",
@@ -480,20 +398,23 @@ object TestQuery_ResponseAdapter : ResponseAdapter<TestQuery.Data> {
             __typename: String?
           ): TestQuery.Data.Search.AsCharacter.Friends.AsDroid {
             var __typename: String? = __typename
+            var name: String? = null
             var primaryFunction: String? = null
             var friends: List<TestQuery.Data.Search.AsCharacter.Friends.AsDroid.Friends?>? = null
             while(true) {
               when (reader.selectName(RESPONSE_NAMES)) {
                 0 -> __typename = StringResponseAdapter.fromResponse(reader, responseAdapterCache)
-                1 -> primaryFunction = NullableStringResponseAdapter.fromResponse(reader,
+                1 -> name = StringResponseAdapter.fromResponse(reader, responseAdapterCache)
+                2 -> primaryFunction = NullableStringResponseAdapter.fromResponse(reader,
                     responseAdapterCache)
-                2 -> friends = Friends.nullable().list().nullable().fromResponse(reader,
+                3 -> friends = Friends.nullable().list().nullable().fromResponse(reader,
                     responseAdapterCache)
                 else -> break
               }
             }
             return TestQuery.Data.Search.AsCharacter.Friends.AsDroid(
               __typename = __typename!!,
+              name = name!!,
               primaryFunction = primaryFunction,
               friends = friends
             )
@@ -507,6 +428,8 @@ object TestQuery_ResponseAdapter : ResponseAdapter<TestQuery.Data> {
             writer.beginObject()
             writer.name("__typename")
             StringResponseAdapter.toResponse(writer, responseAdapterCache, value.__typename)
+            writer.name("name")
+            StringResponseAdapter.toResponse(writer, responseAdapterCache, value.name)
             writer.name("primaryFunction")
             NullableStringResponseAdapter.toResponse(writer, responseAdapterCache,
                 value.primaryFunction)
