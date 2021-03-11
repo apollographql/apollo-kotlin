@@ -1,6 +1,8 @@
 package com.apollographql.apollo3.cache.normalized
 
 import com.apollographql.apollo3.cache.CacheHeaders
+import kotlin.jvm.JvmSuppressWildcards
+import kotlin.reflect.KClass
 
 interface ReadOnlyNormalizedCache {
   /**
@@ -19,4 +21,5 @@ interface ReadOnlyNormalizedCache {
    */
   fun loadRecords(keys: Collection<String>, cacheHeaders: CacheHeaders): Collection<Record>
 
+  fun dump(): Map<@JvmSuppressWildcards KClass<*>, Map<String, Record>>
 }

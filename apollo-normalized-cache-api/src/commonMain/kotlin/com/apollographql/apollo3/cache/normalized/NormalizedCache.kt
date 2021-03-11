@@ -63,8 +63,6 @@ abstract class NormalizedCache: ReadOnlyNormalizedCache {
     leafCache.nextCache = cache
   }
 
-  abstract fun dump(): Map<@JvmSuppressWildcards KClass<*>, Map<String, Record>>
-
   companion object {
 
     @JvmStatic

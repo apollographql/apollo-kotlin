@@ -24,9 +24,9 @@ class RealApolloStore(
   private val subscribersLock = reentrantLock()
   private val subscribers = mutableSetOf<RecordChangeSubscriber>()
 
-  private val cacheHolder = CacheHolder (
+  private val cacheHolder = DefaultCacheHolder {
     OptimisticCache().chain(normalizedCacheFactory.createChain()) as OptimisticCache
-  )
+  }
 
   override fun subscribe(subscriber: RecordChangeSubscriber) {
     subscribersLock.withLock {
@@ -61,7 +61,7 @@ class RealApolloStore(
     return true
   }
 
-  override fun remove(
+  override suspend fun remove(
       cacheKey: CacheKey,
       cascade: Boolean
   ): Boolean {
@@ -70,7 +70,7 @@ class RealApolloStore(
     }
   }
 
-  override fun remove(
+  override suspend fun remove(
       cacheKeys: List<CacheKey>,
       cascade: Boolean
   ): Int {
@@ -85,7 +85,7 @@ class RealApolloStore(
     }
   }
 
-  override fun <D : Operation.Data> readOperation(
+  override suspend fun <D : Operation.Data> readOperation(
       operation: Operation<D>,
       responseAdapterCache: ResponseAdapterCache,
       cacheHeaders: CacheHeaders,
@@ -107,7 +107,7 @@ class RealApolloStore(
     }
   }
 
-  override fun <D : Fragment.Data> readFragment(
+  override suspend fun <D : Fragment.Data> readFragment(
       fragment: Fragment<D>,
       cacheKey: CacheKey,
       responseAdapterCache: ResponseAdapterCache,
@@ -130,7 +130,7 @@ class RealApolloStore(
   }
 
   @OptIn(ApolloInternal::class)
-  override fun <D : Operation.Data> writeOperation(
+  override suspend fun <D : Operation.Data> writeOperation(
       operation: Operation<D>,
       operationData: D,
       responseAdapterCache: ResponseAdapterCache,
@@ -146,7 +146,7 @@ class RealApolloStore(
     ).second
   }
 
-  override fun <D : Fragment.Data> writeFragment(
+  override suspend fun <D : Fragment.Data> writeFragment(
       fragment: Fragment<D>,
       cacheKey: CacheKey,
       fragmentData: D,
@@ -175,7 +175,7 @@ class RealApolloStore(
     }
   }
 
-  fun <D : Operation.Data> writeOperationWithRecords(
+  suspend fun <D : Operation.Data> writeOperationWithRecords(
       operation: Operation<D>,
       operationData: D,
       cacheHeaders: CacheHeaders,
@@ -198,7 +198,7 @@ class RealApolloStore(
     return records.values.toSet() to changedKeys
   }
 
-  override fun <D : Operation.Data> writeOptimisticUpdates(
+  override suspend fun <D : Operation.Data> writeOptimisticUpdates(
       operation: Operation<D>,
       operationData: D,
       mutationId: Uuid,
@@ -231,7 +231,7 @@ class RealApolloStore(
     return changedKeys
   }
 
-  override fun rollbackOptimisticUpdates(
+  override suspend fun rollbackOptimisticUpdates(
       mutationId: Uuid,
       publish: Boolean
   ): Set<String> {
@@ -246,18 +246,20 @@ class RealApolloStore(
     return changedKeys
   }
 
-  fun merge(record: Record, cacheHeaders: CacheHeaders): Set<String> {
+  suspend fun merge(record: Record, cacheHeaders: CacheHeaders): Set<String> {
     return cacheHolder.write { cache ->
       cache.merge(record, cacheHeaders)
     }
   }
 
-  override fun dump(): Map<KClass<*>, Map<String, Record>> {
-    return cacheHolder.write { cache ->
+  override suspend fun dump(): Map<KClass<*>, Map<String, Record>> {
+    return cacheHolder.read { cache ->
       cache.dump()
     }
   }
 }
 
-fun ApolloStore(normalizedCacheFactory: NormalizedCacheFactory,
-                cacheKeyResolver: CacheKeyResolver): ApolloStore = RealApolloStore(normalizedCacheFactory, cacheKeyResolver)
+fun ApolloStore(
+    normalizedCacheFactory: NormalizedCacheFactory,
+    cacheKeyResolver: CacheKeyResolver
+): ApolloStore = RealApolloStore(normalizedCacheFactory, cacheKeyResolver)

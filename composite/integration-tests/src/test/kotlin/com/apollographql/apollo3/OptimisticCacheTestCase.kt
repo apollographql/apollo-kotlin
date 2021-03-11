@@ -31,6 +31,7 @@ import org.junit.Test
 import java.io.IOException
 import java.util.ArrayList
 import java.util.UUID
+import kotlinx.coroutines.runBlocking
 
 class OptimisticCacheTestCase {
   private var apolloClient: ApolloClient? = null
@@ -56,7 +57,7 @@ class OptimisticCacheTestCase {
 
   @Test
   @Throws(Exception::class)
-  fun simple() {
+  fun simple() = runBlocking {
     val query = HeroAndFriendsNamesQuery(Input.Present(Episode.JEDI))
     enqueueAndAssertResponse(
         server,
@@ -102,7 +103,7 @@ class OptimisticCacheTestCase {
 
   @Test
   @Throws(Exception::class)
-  fun two_optimistic_two_rollback() {
+  fun two_optimistic_two_rollback() = runBlocking {
     val query1 = HeroAndFriendsNamesWithIDsQuery(Input.Present(Episode.JEDI))
     val mutationId1 = UUID.randomUUID()
 
@@ -232,7 +233,7 @@ class OptimisticCacheTestCase {
 
   @Test
   @Throws(Exception::class)
-  fun full_persisted_partial_optimistic() {
+  fun full_persisted_partial_optimistic() = runBlocking {
     enqueueAndAssertResponse(
         server,
         "HeroNameWithEnumsResponse.json",
@@ -264,7 +265,7 @@ class OptimisticCacheTestCase {
 
   @Test
   @Throws(Exception::class)
-  fun mutation_and_query_watcher() {
+  fun mutation_and_query_watcher() = runBlocking {
     server.enqueue(mockResponse("ReviewsEmpireEpisodeResponse.json"))
     val watcherData: MutableList<ReviewsByEpisodeQuery.Data> = ArrayList()
     apolloClient!!.query(ReviewsByEpisodeQuery(Episode.EMPIRE)).responseFetcher(ApolloResponseFetchers.NETWORK_FIRST)
@@ -341,7 +342,7 @@ class OptimisticCacheTestCase {
 
   @Test
   @Throws(Exception::class)
-  fun two_optimistic_reverse_rollback_order() {
+  fun two_optimistic_reverse_rollback_order() = runBlocking {
     val query1 = HeroAndFriendsNamesWithIDsQuery(Input.Present(Episode.JEDI))
     val mutationId1 = UUID.randomUUID()
     val query2 = HeroNameWithIdQuery()

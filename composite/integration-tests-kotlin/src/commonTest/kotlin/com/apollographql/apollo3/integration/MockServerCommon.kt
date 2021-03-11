@@ -75,13 +75,17 @@ fun readRequest(source: BufferedSource): RecordedRequest {
 
 fun writeResponse(sink: BufferedSink, mockResponse: MockResponse, version: String) {
   sink.writeUtf8("${version} ${mockResponse.statusCode}\r\n")
-  mockResponse.headers.forEach {
+  val contentLengthHeader = mapOf("Content-Length" to mockResponse.body.size.toString())
+
+  (contentLengthHeader + mockResponse.headers).forEach {
     sink.writeUtf8("${it.key}: ${it.value}\r\n")
   }
   sink.writeUtf8("\r\n")
   sink.flush()
 
-  sink.write(mockResponse.body)
+  if (mockResponse.body.size > 0) {
+    sink.write(mockResponse.body)
+  }
   sink.flush()
 }
 

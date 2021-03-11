@@ -37,6 +37,7 @@ import org.junit.Test
 import java.text.SimpleDateFormat
 import java.util.Date
 import java.util.Locale
+import kotlinx.coroutines.runBlocking
 
 class ResponseWriteTestCase {
   private var apolloClient: ApolloClient? = null
@@ -72,7 +73,7 @@ class ResponseWriteTestCase {
 
   @Test
   @Throws(Exception::class)
-  fun customScalar() {
+  fun customScalar() = runBlocking {
     val query = EpisodeHeroWithDatesQuery(Input.Present(Episode.JEDI))
     enqueueAndAssertResponse(
         server,
@@ -119,7 +120,7 @@ class ResponseWriteTestCase {
 
   @Test
   @Throws(Exception::class)
-  fun enums() {
+  fun enums() = runBlocking {
     val query = HeroNameWithEnumsQuery()
     enqueueAndAssertResponse(
         server,
@@ -162,7 +163,7 @@ class ResponseWriteTestCase {
 
   @Test
   @Throws(Exception::class)
-  fun objects() {
+  fun objects() = runBlocking {
     val query = HeroAndFriendsNamesWithIDsQuery(Input.Present(Episode.JEDI))
     enqueueAndAssertResponse(
         server,
@@ -215,7 +216,7 @@ class ResponseWriteTestCase {
 
   @Test
   @Throws(Exception::class)
-  fun operation_with_fragments() {
+  fun operation_with_fragments() = runBlocking {
     val query = HeroAndFriendsWithFragmentsQuery(Input.Present(Episode.NEWHOPE))
     enqueueAndAssertResponse(
         server,
@@ -274,7 +275,7 @@ class ResponseWriteTestCase {
 
   @Test
   @Throws(Exception::class)
-  fun operation_with_inline_fragments() {
+  fun operation_with_inline_fragments() = runBlocking {
     val query = EpisodeHeroWithInlineFragmentQuery(Input.Present(Episode.NEWHOPE))
     enqueueAndAssertResponse(
         server,
@@ -333,7 +334,7 @@ class ResponseWriteTestCase {
 
   @Test
   @Throws(Exception::class)
-  fun fragments() {
+  fun fragments() = runBlocking {
     val query = HeroAndFriendsWithFragmentsQuery(Input.Present(Episode.NEWHOPE))
     enqueueAndAssertResponse(
         server,
@@ -407,7 +408,7 @@ class ResponseWriteTestCase {
 
   @Test
   @Throws(Exception::class)
-  fun listOfList() {
+  fun listOfList() = runBlocking {
     val query = StarshipByIdQuery("Starship1")
     enqueueAndAssertResponse(
         server,

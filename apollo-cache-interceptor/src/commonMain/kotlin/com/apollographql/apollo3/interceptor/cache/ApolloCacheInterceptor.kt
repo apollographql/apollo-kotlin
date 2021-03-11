@@ -83,13 +83,13 @@ class ApolloCacheInterceptor : ApolloRequestInterceptor {
     return copy(executionContext = executionContext + CacheInfo(fromCache))
   }
 
-  private fun <D : Operation.Data> writeToCache(request: ApolloRequest<D>, data: D, responseAdapterCache: ResponseAdapterCache) {
+  private suspend fun <D : Operation.Data> writeToCache(request: ApolloRequest<D>, data: D, responseAdapterCache: ResponseAdapterCache) {
     val store = request.executionContext[ApolloStore] ?: error("No RealApolloStore found")
 
     store.writeOperation(request.operation, data, responseAdapterCache, CacheHeaders.NONE, true)
   }
 
-  private fun <D : Operation.Data> readFromCache(request: ApolloRequest<D>, responseAdapterCache: ResponseAdapterCache): ApolloResponse<D> {
+  private suspend fun <D : Operation.Data> readFromCache(request: ApolloRequest<D>, responseAdapterCache: ResponseAdapterCache): ApolloResponse<D> {
     val store = request.executionContext[ApolloStore] ?: error("No RealApolloStore found")
 
     val operation = request.operation

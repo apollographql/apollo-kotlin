@@ -40,7 +40,7 @@ abstract class ApolloStore: ClientContext(ApolloStore) {
    * @param operation to be read
    * @return {@ApolloStoreOperation} to be performed, that will be resolved with cached data for specified operation
    */
-  abstract fun <D : Operation.Data> readOperation(
+  abstract suspend fun <D : Operation.Data> readOperation(
       operation: Operation<D>,
       responseAdapterCache: ResponseAdapterCache,
       cacheHeaders: CacheHeaders = CacheHeaders.NONE,
@@ -55,7 +55,7 @@ abstract class ApolloStore: ClientContext(ApolloStore) {
    * @param <F>         type of fragment to be read
    * @return the fragment's data or null if it's a cache miss
    */
-  abstract fun <D : Fragment.Data> readFragment(
+  abstract suspend fun <D : Fragment.Data> readFragment(
       fragment: Fragment<D>,
       cacheKey: CacheKey,
       responseAdapterCache: ResponseAdapterCache = ResponseAdapterCache.DEFAULT,
@@ -72,7 +72,7 @@ abstract class ApolloStore: ClientContext(ApolloStore) {
    * @param publish       whether or not to publish the changed keys to listeners
    * @return the changed keys
    */
-  abstract fun <D : Operation.Data> writeOperation(
+  abstract suspend fun <D : Operation.Data> writeOperation(
       operation: Operation<D>,
       operationData: D,
       responseAdapterCache: ResponseAdapterCache = ResponseAdapterCache.DEFAULT,
@@ -91,7 +91,7 @@ abstract class ApolloStore: ClientContext(ApolloStore) {
    * @param publish whether or not to publish the changed keys to listeners
    * @return the changed keys
    */
-  abstract fun <D : Fragment.Data> writeFragment(
+  abstract suspend fun <D : Fragment.Data> writeFragment(
       fragment: Fragment<D>,
       cacheKey: CacheKey,
       fragmentData: D,
@@ -108,7 +108,7 @@ abstract class ApolloStore: ClientContext(ApolloStore) {
    * @param mutationId    mutation unique identifier
    * @return the changed keys
    */
-  abstract fun <D : Operation.Data> writeOptimisticUpdates(
+  abstract suspend fun <D : Operation.Data> writeOptimisticUpdates(
       operation: Operation<D>,
       operationData: D,
       mutationId: Uuid,
@@ -122,7 +122,7 @@ abstract class ApolloStore: ClientContext(ApolloStore) {
    * @param mutationId mutation unique identifier
    * @return the changed keys
    */
-  abstract fun rollbackOptimisticUpdates(
+  abstract suspend fun rollbackOptimisticUpdates(
       mutationId: Uuid,
       publish: Boolean = true
   ): Set<String>
@@ -144,7 +144,7 @@ abstract class ApolloStore: ClientContext(ApolloStore) {
    * @param cascade defines if remove operation is propagated to the referenced entities
    * @return `true` if the record was successfully removed, `false` otherwise
    */
-  abstract fun remove(cacheKey: CacheKey, cascade: Boolean = true): Boolean
+  abstract suspend fun remove(cacheKey: CacheKey, cascade: Boolean = true): Boolean
 
   /**
    * Remove a list of cache records
@@ -154,14 +154,14 @@ abstract class ApolloStore: ClientContext(ApolloStore) {
    * @param cacheKeys keys of records to be removed
    * @return the number of records that have been removed
    */
-  abstract fun remove(cacheKeys: List<CacheKey>, cascade: Boolean = true): Int
+  abstract suspend fun remove(cacheKeys: List<CacheKey>, cascade: Boolean = true): Int
 
   /**
    * @param keys A set of keys of [Record] which have changed.
    */
   abstract fun publish(keys: Set<String>)
 
-  abstract fun dump(): Map<KClass<*>, Map<String, Record>>
+  abstract suspend fun dump(): Map<KClass<*>, Map<String, Record>>
 
   companion object Key : ExecutionContext.Key<RealApolloStore> {
     val emptyApolloStore: ApolloStore = NoOpApolloStore()

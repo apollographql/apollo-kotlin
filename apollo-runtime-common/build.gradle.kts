@@ -10,6 +10,7 @@ kotlin {
     val commonMain by getting {
       dependencies {
         api(project(":apollo-api"))
+        api(groovy.util.Eval.x(project, "x.dep.kotlin.coroutines"))
       }
     }
 

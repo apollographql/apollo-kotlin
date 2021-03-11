@@ -38,6 +38,7 @@ import org.junit.Ignore
 import org.junit.Test
 import java.util.Arrays
 import java.util.concurrent.TimeUnit
+import kotlinx.coroutines.runBlocking
 
 class NormalizedCacheTestCase {
   private lateinit var apolloClient: ApolloClient
@@ -329,7 +330,7 @@ class NormalizedCacheTestCase {
   // So we can't query it from HeroWithFriendsFragment
   @Ignore
   @Throws(Exception::class)
-  fun readFragmentFromStore() {
+  fun readFragmentFromStore() = runBlocking {
     enqueueAndAssertResponse(
         server,
         "HeroAndFriendsWithFragmentResponse.json",
@@ -399,7 +400,7 @@ class NormalizedCacheTestCase {
 
   @Test
   @Throws(Exception::class)
-  fun removeFromStore() {
+  fun removeFromStore() = runBlocking {
     enqueueAndAssertResponse(
         server,
         "HeroAndFriendsNameWithIdsResponse.json",
@@ -465,7 +466,7 @@ class NormalizedCacheTestCase {
 
   @Test
   @Throws(Exception::class)
-  fun removeMultipleFromStore() {
+  fun removeMultipleFromStore() = runBlocking {
     enqueueAndAssertResponse(
         server,
         "HeroAndFriendsNameWithIdsResponse.json",
@@ -604,7 +605,7 @@ class NormalizedCacheTestCase {
 
   @Test
   @Throws(Exception::class)
-  fun dump() {
+  fun dump() = runBlocking {
     enqueueAndAssertResponse(
         server,
         "HeroAndFriendsNameWithIdsResponse.json",
@@ -653,7 +654,7 @@ class NormalizedCacheTestCase {
 
   @Test
   @Throws(Exception::class)
-  fun cascadeRemove() {
+  fun cascadeRemove() = runBlocking {
     enqueueAndAssertResponse(
         server,
         "HeroAndFriendsNameWithIdsResponse.json",

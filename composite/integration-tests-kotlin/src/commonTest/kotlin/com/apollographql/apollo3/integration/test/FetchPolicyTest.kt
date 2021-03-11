@@ -5,20 +5,18 @@ import com.apollographql.apollo3.ApolloClient
 import com.apollographql.apollo3.ApolloRequest
 import com.apollographql.apollo3.cache.normalized.ApolloStore
 import com.apollographql.apollo3.cache.normalized.CacheKeyResolver
-import com.apollographql.apollo3.cache.normalized.MemoryCache
 import com.apollographql.apollo3.cache.normalized.MemoryCacheFactory
-import com.apollographql.apollo3.cache.normalized.NormalizedCache
-import com.apollographql.apollo3.cache.normalized.NormalizedCacheFactory
 import com.apollographql.apollo3.cache.normalized.internal.ApolloStore
-import com.apollographql.apollo3.integration.TestApolloClient
+import com.apollographql.apollo3.integration.MockServer
+import com.apollographql.apollo3.integration.enqueue
 import com.apollographql.apollo3.interceptor.cache.FetchPolicy
 import com.apollographql.apollo3.interceptor.cache.isFromCache
 import com.apollographql.apollo3.interceptor.cache.normalizedCache
-import com.apollographql.apollo3.testing.TestHttpEngine
-import com.apollographql.apollo3.testing.runBlocking
+import com.apollographql.apollo3.testing.runWithMainLoop
 import kotlinx.coroutines.flow.single
 import kotlinx.coroutines.flow.toList
 import kotlin.test.BeforeTest
+import kotlin.test.Ignore
 import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertFalse
@@ -27,16 +25,16 @@ import kotlin.test.assertTrue
 import kotlin.test.fail
 
 class FetchPolicyTest {
-  private lateinit var testHttpEngine: TestHttpEngine
+  private lateinit var mockServer: MockServer
   private lateinit var apolloClient: ApolloClient
   private lateinit var store: ApolloStore
 
   @BeforeTest
   fun setUp() {
     store = ApolloStore(MemoryCacheFactory(maxSizeBytes = Int.MAX_VALUE), CacheKeyResolver.DEFAULT)
-    testHttpEngine = TestHttpEngine()
-    apolloClient = TestApolloClient(testHttpEngine)
-        .newBuilder()
+    mockServer = MockServer()
+    apolloClient = ApolloClient.Builder()
+        .serverUrl(mockServer.url())
         .normalizedCache(store)
         .build()
   }
@@ -45,9 +43,9 @@ class FetchPolicyTest {
   fun `CACHE_FIRST test`() {
     val query = HeroNameQuery()
     val data = HeroNameQuery.Data(HeroNameQuery.Data.Hero("R2-D2"))
-    testHttpEngine.enqueue(query, data)
+    mockServer.enqueue(query, data)
 
-    runBlocking {
+    runWithMainLoop {
       var response = apolloClient
           .query(query)
           .single()
@@ -66,14 +64,14 @@ class FetchPolicyTest {
 
   @Test
   fun `NETWORK_FIRST test`() {
-    runBlocking {
+    runWithMainLoop {
       val query = HeroNameQuery()
       val data = HeroNameQuery.Data(HeroNameQuery.Data.Hero("R2-D2"))
 
       val request = ApolloRequest(query)
           .withExecutionContext(FetchPolicy.NetworkFirst)
 
-      testHttpEngine.enqueue(query, data)
+      mockServer.enqueue(query, data)
       var responses = apolloClient
           .query(request)
           .toList()
@@ -83,7 +81,7 @@ class FetchPolicyTest {
       assertFalse(responses[0].isFromCache)
 
       // Now data is cached but it shouldn't be used since network will go through
-      testHttpEngine.enqueue(query, data)
+      mockServer.enqueue(query, data)
       responses = apolloClient
           .query(request)
           .toList()
@@ -93,7 +91,7 @@ class FetchPolicyTest {
       assertFalse(responses[0].isFromCache)
 
       // Network error -> we should hit the cache
-      testHttpEngine.enqueue("malformed")
+      mockServer.enqueue("malformed")
       responses = apolloClient
           .query(request)
           .toList()
@@ -103,7 +101,7 @@ class FetchPolicyTest {
       assertTrue(responses[0].isFromCache)
 
       // Network error and no cache -> we should get an error
-      testHttpEngine.enqueue("malformed")
+      mockServer.enqueue("malformed")
       store.clearAll()
       try {
         apolloClient
@@ -118,14 +116,14 @@ class FetchPolicyTest {
 
   @Test
   fun `CACHE_ONLY test`() {
-    runBlocking {
+    runWithMainLoop {
       val query = HeroNameQuery()
       val data = HeroNameQuery.Data(HeroNameQuery.Data.Hero("R2-D2"))
 
       var request = ApolloRequest(query)
 
       // First cache the response
-      testHttpEngine.enqueue(query, data)
+      mockServer.enqueue(query, data)
       var responses = apolloClient
           .query(request)
           .toList()
@@ -150,7 +148,7 @@ class FetchPolicyTest {
 
   @Test
   fun `NETWORK_ONLY test`() {
-    runBlocking {
+    runWithMainLoop {
       val query = HeroNameQuery()
       val data = HeroNameQuery.Data(HeroNameQuery.Data.Hero("R2-D2"))
 
@@ -158,7 +156,7 @@ class FetchPolicyTest {
           .withExecutionContext(FetchPolicy.NetworkOnly)
 
       // cache the response
-      testHttpEngine.enqueue(query, data)
+      mockServer.enqueue(query, data)
       val responses = apolloClient
           .query(request)
           .toList()
@@ -168,7 +166,7 @@ class FetchPolicyTest {
       assertFalse(responses[0].isFromCache)
 
       // Offer a malformed response, it should fail
-      testHttpEngine.enqueue("malformed")
+      mockServer.enqueue("malformed")
       val result = kotlin.runCatching {
         apolloClient
             .query(request)
@@ -182,7 +180,7 @@ class FetchPolicyTest {
 
   @Test
   fun `cache_and_network test`() {
-    runBlocking {
+    runWithMainLoop {
       val query = HeroNameQuery()
       val data = HeroNameQuery.Data(HeroNameQuery.Data.Hero("R2-D2"))
 
@@ -190,7 +188,7 @@ class FetchPolicyTest {
           .withExecutionContext(FetchPolicy.CacheFirst)
 
       // cache the response
-      testHttpEngine.enqueue(query, data)
+      mockServer.enqueue(query, data)
       var responses = apolloClient
           .query(request)
           .toList()
@@ -202,7 +200,7 @@ class FetchPolicyTest {
       // Now make the request cache and network
       request = request.withExecutionContext(FetchPolicy.CacheAndNetwork)
 
-      testHttpEngine.enqueue(query, data)
+      mockServer.enqueue(query, data)
       responses = apolloClient
           .query(request)
           .toList()

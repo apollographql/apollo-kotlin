@@ -18,6 +18,7 @@ import org.junit.Before
 import org.junit.Test
 import java.util.concurrent.AbstractExecutorService
 import java.util.concurrent.TimeUnit
+import kotlinx.coroutines.runBlocking
 
 class SubscriptionNormalizedCacheTest {
   private lateinit var subscriptionTransportFactory: MockSubscriptionTransportFactory
@@ -49,7 +50,7 @@ class SubscriptionNormalizedCacheTest {
   }
 
   @Test
-  fun `when no cache policy then response not cached`() {
+  fun `when no cache policy then response not cached`() = runBlocking {
     val callback = SubscriptionManagerCallbackAdapter<NewRepoCommentSubscription.Data>()
     subscriptionCall.execute(callback)
 
@@ -77,7 +78,7 @@ class SubscriptionNormalizedCacheTest {
   }
 
   @Test
-  fun `when network only cache policy then response is cached`() {
+  fun `when network only cache policy then response is cached`() = runBlocking  {
     val operation = NewRepoCommentSubscription("repo")
     val data = NewRepoCommentSubscription.Data(
         NewRepoCommentSubscription.Data.CommentAdded(
@@ -127,7 +128,7 @@ class SubscriptionNormalizedCacheTest {
   }
 
   @Test
-  fun `when cache and network policy then first response from cache next one from network`() {
+  fun `when cache and network policy then first response from cache next one from network`() = runBlocking  {
     val operation = NewRepoCommentSubscription("repo")
     val data = NewRepoCommentSubscription.Data(
         NewRepoCommentSubscription.Data.CommentAdded(

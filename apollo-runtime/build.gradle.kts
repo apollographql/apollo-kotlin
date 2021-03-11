@@ -12,6 +12,7 @@ dependencies {
   api(project(":apollo-normalized-cache"))
   api(project(":apollo-runtime-common"))
   api(groovy.util.Eval.x(project, "x.dep.okHttp.okHttp"))
+  implementation(groovy.util.Eval.x(project, "x.dep.kotlin.coroutines"))
 
   testImplementation(groovy.util.Eval.x(project, "x.dep.junit"))
   testImplementation(groovy.util.Eval.x(project, "x.dep.truth"))
