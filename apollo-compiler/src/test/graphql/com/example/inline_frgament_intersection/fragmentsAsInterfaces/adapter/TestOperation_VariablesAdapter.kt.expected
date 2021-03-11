@@ -12,12 +12,14 @@ import com.apollographql.apollo3.api.json.JsonWriter
 import com.example.inline_frgament_intersection.TestOperation
 import kotlin.IllegalStateException
 
-class TestOperation_Adapter(
-  responseAdapterCache: ResponseAdapterCache
-) : ResponseAdapter<TestOperation> {
-  override fun fromResponse(reader: JsonReader): TestOperation = throw
-      IllegalStateException("Input type used in output position")
-  override fun toResponse(writer: JsonWriter, value: TestOperation) {
+object TestOperation_VariablesAdapter : ResponseAdapter<TestOperation> {
+  override fun fromResponse(reader: JsonReader, responseAdapterCache: ResponseAdapterCache):
+      TestOperation = throw IllegalStateException("Input type used in output position")
+  override fun toResponse(
+    writer: JsonWriter,
+    responseAdapterCache: ResponseAdapterCache,
+    value: TestOperation
+  ) {
     writer.beginObject()
     writer.endObject()
   }

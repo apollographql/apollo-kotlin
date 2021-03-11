@@ -12,11 +12,7 @@ import com.apollographql.apollo3.api.ResponseAdapterCache
 import com.apollographql.apollo3.api.ResponseField
 import com.apollographql.apollo3.api.json.JsonWriter
 import com.example.union_fragment.adapter.TestQuery_ResponseAdapter
-<<<<<<< HEAD
-=======
 import com.example.union_fragment.adapter.TestQuery_VariablesAdapter
-import com.example.union_fragment.fragment.Starship
->>>>>>> 527788cf5... make the adapters stateless again
 import kotlin.String
 import kotlin.Suppress
 import kotlin.collections.List
