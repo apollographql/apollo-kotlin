@@ -24,17 +24,22 @@ import com.apollographql.apollo3.api.json.JsonReader
  * To read from a [okio.BufferedSource], see also [BufferedSourceJsonReader]
  */
 class MapJsonReader(val root: Map<String, Any?>) : JsonReader {
+  // Like a Map but easier to access sequentially
   private class OrderedMap(val entries: List<Entry>)
   private class Entry(val key: String, val value: Any?)
 
   private val dataStack = ArrayList<Any>()
   private val indexStack = ArrayList<Int>()
-  private val nameStack = ArrayList<String?>()
 
+  // A simple holder to kick things off
   private val sentinel = OrderedMap(listOf(Entry("root", root)))
 
+  // Either a List or an [OrderedMap]
   private var currentData: Any = sentinel
+  // The current index in the List or [OrderedMap]
   private var currentIndex = 0
+  // Will be non-null if a name has been read
+  // No need to stack this, when we pop, we know we have to read a new name
   private var currentName: String? = "root"
 
   /**
@@ -49,7 +54,6 @@ class MapJsonReader(val root: Map<String, Any?>) : JsonReader {
   private fun push(data: Any) {
     dataStack.add(currentData)
     indexStack.add(currentIndex)
-    nameStack.add(currentName)
 
     currentData = data
     currentIndex = 0
@@ -59,7 +63,7 @@ class MapJsonReader(val root: Map<String, Any?>) : JsonReader {
   private fun pop() {
     currentData = dataStack.removeAt(dataStack.size - 1)
     currentIndex = indexStack.removeAt(indexStack.size - 1)
-    currentName = nameStack.removeAt(nameStack.size - 1)
+    currentName = null
   }
 
   private fun nextValue() = when (val data = currentData) {
@@ -239,9 +243,22 @@ class MapJsonReader(val root: Map<String, Any?>) : JsonReader {
     return -1
   }
 
+  /**
+   * Rewinds to the beginning of the current object. Callers have to call beginObject() before calling nextName()
+   * This is needed so we can use the same adapter from a query or to read a standalone fragment
+   */
   fun rewind() {
-    currentIndex = 0
-    currentName = null
+    pop()
+    check(currentIndex > 0) {
+      "Cannot call rewind() outside of an object"
+    }
+    currentIndex--
+
+    when(val data = currentData) {
+      is OrderedMap -> {
+        currentName = data.entries[currentIndex].key
+      }
+    }
   }
 
   companion object {
