@@ -31,8 +31,6 @@ object TestQuery_ResponseAdapter : ResponseAdapter<TestQuery.Data> {
       fieldSets = listOf(
         ResponseField.FieldSet("Human", Hero.AsHuman.RESPONSE_FIELDS),
         ResponseField.FieldSet("Droid", Hero.AsDroid.RESPONSE_FIELDS),
-        ResponseField.FieldSet("Droid", Hero.AsCharacter.RESPONSE_FIELDS),
-        ResponseField.FieldSet("Human", Hero.AsCharacter.RESPONSE_FIELDS),
       ),
     )
   )
@@ -72,6 +70,10 @@ object TestQuery_ResponseAdapter : ResponseAdapter<TestQuery.Data> {
       ResponseField(
         type = ResponseField.Type.NotNull(ResponseField.Type.Named.Other("String")),
         fieldName = "id",
+      ),
+      ResponseField(
+        type = ResponseField.Type.NotNull(ResponseField.Type.Named.Other("String")),
+        fieldName = "name",
       )
     )
 
@@ -84,13 +86,14 @@ object TestQuery_ResponseAdapter : ResponseAdapter<TestQuery.Data> {
 
       var __typename: String? = null
       var id: String? = null
+      var name: String? = null
       var asAsHuman: TestQuery.Data.Hero.AsHuman? = null
       var asAsDroid: TestQuery.Data.Hero.AsDroid? = null
-      var asAsCharacter: TestQuery.Data.Hero.AsCharacter? = null
       while(true) {
         when (reader.selectName(RESPONSE_NAMES)) {
           0 -> __typename = StringResponseAdapter.fromResponse(reader, responseAdapterCache)
           1 -> id = StringResponseAdapter.fromResponse(reader, responseAdapterCache)
+          2 -> name = StringResponseAdapter.fromResponse(reader, responseAdapterCache)
           else -> break
         }
       }
@@ -102,17 +105,13 @@ object TestQuery_ResponseAdapter : ResponseAdapter<TestQuery.Data> {
         reader.rewind()
         asAsDroid = AsDroid.fromResponse(reader, responseAdapterCache, __typename)
       }
-      if (__typename in arrayOf("Droid", "Human")) {
-        reader.rewind()
-        asAsCharacter = AsCharacter.fromResponse(reader, responseAdapterCache, __typename)
-      }
 
       return TestQuery.Data.Hero(
         __typename = __typename!!,
         id = id!!,
+        name = name!!,
         asAsHuman = asAsHuman,
-        asAsDroid = asAsDroid,
-        asAsCharacter = asAsCharacter
+        asAsDroid = asAsDroid
       )
       .also { reader.endObject() }
     }
@@ -128,10 +127,11 @@ object TestQuery_ResponseAdapter : ResponseAdapter<TestQuery.Data> {
 
       writer.name("id")
       StringResponseAdapter.toResponse(writer, responseAdapterCache, value.id)
+
+      writer.name("name")
+      StringResponseAdapter.toResponse(writer, responseAdapterCache, value.name)
       if (value.asAsHuman != null) AsHuman.toResponse(writer, responseAdapterCache, value.asAsHuman)
       if (value.asAsDroid != null) AsDroid.toResponse(writer, responseAdapterCache, value.asAsDroid)
-      if (value.asAsCharacter != null)
-          AsCharacter.toResponse(writer, responseAdapterCache, value.asAsCharacter)
       writer.endObject()
     }
 
@@ -260,60 +260,6 @@ object TestQuery_ResponseAdapter : ResponseAdapter<TestQuery.Data> {
         writer.name("primaryFunction")
         NullableStringResponseAdapter.toResponse(writer, responseAdapterCache,
             value.primaryFunction)
-        writer.endObject()
-      }
-    }
-
-    object AsCharacter {
-      val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
-        ResponseField.Typename,
-        ResponseField(
-          type = ResponseField.Type.NotNull(ResponseField.Type.Named.Other("String")),
-          fieldName = "id",
-        ),
-        ResponseField(
-          type = ResponseField.Type.NotNull(ResponseField.Type.Named.Other("String")),
-          fieldName = "name",
-        )
-      )
-
-      val RESPONSE_NAMES: List<String> = RESPONSE_FIELDS.map { it.responseName }
-
-      fun fromResponse(
-        reader: JsonReader,
-        responseAdapterCache: ResponseAdapterCache,
-        __typename: String?
-      ): TestQuery.Data.Hero.AsCharacter {
-        var __typename: String? = __typename
-        var id: String? = null
-        var name: String? = null
-        while(true) {
-          when (reader.selectName(RESPONSE_NAMES)) {
-            0 -> __typename = StringResponseAdapter.fromResponse(reader, responseAdapterCache)
-            1 -> id = StringResponseAdapter.fromResponse(reader, responseAdapterCache)
-            2 -> name = StringResponseAdapter.fromResponse(reader, responseAdapterCache)
-            else -> break
-          }
-        }
-        return TestQuery.Data.Hero.AsCharacter(
-          __typename = __typename!!,
-          id = id!!,
-          name = name!!
-        )
-      }
-
-      fun toResponse(
-        writer: JsonWriter,
-        responseAdapterCache: ResponseAdapterCache,
-        value: TestQuery.Data.Hero.AsCharacter
-      ) {
-        writer.beginObject()
-        writer.name("__typename")
-        StringResponseAdapter.toResponse(writer, responseAdapterCache, value.__typename)
-        writer.name("id")
-        StringResponseAdapter.toResponse(writer, responseAdapterCache, value.id)
-        writer.name("name")
-        StringResponseAdapter.toResponse(writer, responseAdapterCache, value.name)
         writer.endObject()
       }
     }

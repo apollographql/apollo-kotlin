@@ -1,7 +1,10 @@
 query TestQuery {
   hero {
     ... on Character {
-      name
+      id
+      ... on Character {
+        name
+      }
     }
     ... on Human {
       height

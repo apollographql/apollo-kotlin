@@ -14,6 +14,10 @@ import com.apollographql.apollo3.api.json.JsonReader
 import com.apollographql.apollo3.api.json.JsonWriter
 import com.apollographql.apollo3.api.nullable
 import com.example.named_fragment_inside_inline_fragment.GetHero
+import com.example.named_fragment_inside_inline_fragment.fragment.CharacterAppearsIn
+import com.example.named_fragment_inside_inline_fragment.fragment.CharacterName
+import com.example.named_fragment_inside_inline_fragment.fragment.adapter.CharacterAppearsIn_ResponseAdapter
+import com.example.named_fragment_inside_inline_fragment.fragment.adapter.CharacterName_ResponseAdapter
 import kotlin.Array
 import kotlin.String
 import kotlin.Suppress
@@ -28,8 +32,10 @@ object GetHero_ResponseAdapter : ResponseAdapter<GetHero.Data> {
       type = ResponseField.Type.Named.Object("Character"),
       fieldName = "hero",
       fieldSets = listOf(
-        ResponseField.FieldSet("Droid", Hero.AsCharacter.RESPONSE_FIELDS),
-        ResponseField.FieldSet("Human", Hero.AsCharacter.RESPONSE_FIELDS),
+        ResponseField.FieldSet("Droid", CharacterName_ResponseAdapter.RESPONSE_FIELDS),
+        ResponseField.FieldSet("Human", CharacterName_ResponseAdapter.RESPONSE_FIELDS),
+        ResponseField.FieldSet("Droid", CharacterAppearsIn_ResponseAdapter.RESPONSE_FIELDS),
+        ResponseField.FieldSet("Human", CharacterAppearsIn_ResponseAdapter.RESPONSE_FIELDS),
       ),
     )
   )
@@ -76,7 +82,8 @@ object GetHero_ResponseAdapter : ResponseAdapter<GetHero.Data> {
       reader.beginObject()
 
       var __typename: String? = null
-      var asAsCharacter: GetHero.Data.Hero.AsCharacter? = null
+      var characterName: CharacterName.Data? = null
+      var characterAppearsIn: CharacterAppearsIn.Data? = null
       while(true) {
         when (reader.selectName(RESPONSE_NAMES)) {
           0 -> __typename = StringResponseAdapter.fromResponse(reader, responseAdapterCache)
@@ -85,12 +92,17 @@ object GetHero_ResponseAdapter : ResponseAdapter<GetHero.Data> {
       }
       if (__typename in arrayOf("Droid", "Human")) {
         reader.rewind()
-        asAsCharacter = AsCharacter.fromResponse(reader, responseAdapterCache, __typename)
+        characterName = CharacterName_ResponseAdapter.fromResponse(reader, responseAdapterCache)
+      }
+      if (__typename in arrayOf("Droid", "Human")) {
+        reader.rewind()
+        characterAppearsIn = CharacterAppearsIn_ResponseAdapter.fromResponse(reader, responseAdapterCache)
       }
 
       return GetHero.Data.Hero(
         __typename = __typename!!,
-        asAsCharacter = asAsCharacter
+        characterName = characterName,
+        characterAppearsIn = characterAppearsIn
       )
       .also { reader.endObject() }
     }
@@ -103,45 +115,11 @@ object GetHero_ResponseAdapter : ResponseAdapter<GetHero.Data> {
       writer.beginObject()
       writer.name("__typename")
       StringResponseAdapter.toResponse(writer, responseAdapterCache, value.__typename)
-      if (value.asAsCharacter != null)
-          AsCharacter.toResponse(writer, responseAdapterCache, value.asAsCharacter)
+      if (value.characterName != null)
+          CharacterName_ResponseAdapter.toResponse(writer, responseAdapterCache, value.characterName)
+      if (value.characterAppearsIn != null)
+          CharacterAppearsIn_ResponseAdapter.toResponse(writer, responseAdapterCache, value.characterAppearsIn)
       writer.endObject()
-    }
-
-    object AsCharacter {
-      val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
-        ResponseField.Typename
-      )
-
-      val RESPONSE_NAMES: List<String> = RESPONSE_FIELDS.map { it.responseName }
-
-      fun fromResponse(
-        reader: JsonReader,
-        responseAdapterCache: ResponseAdapterCache,
-        __typename: String?
-      ): GetHero.Data.Hero.AsCharacter {
-        var __typename: String? = __typename
-        while(true) {
-          when (reader.selectName(RESPONSE_NAMES)) {
-            0 -> __typename = StringResponseAdapter.fromResponse(reader, responseAdapterCache)
-            else -> break
-          }
-        }
-        return GetHero.Data.Hero.AsCharacter(
-          __typename = __typename!!
-        )
-      }
-
-      fun toResponse(
-        writer: JsonWriter,
-        responseAdapterCache: ResponseAdapterCache,
-        value: GetHero.Data.Hero.AsCharacter
-      ) {
-        writer.beginObject()
-        writer.name("__typename")
-        StringResponseAdapter.toResponse(writer, responseAdapterCache, value.__typename)
-        writer.endObject()
-      }
     }
   }
 }

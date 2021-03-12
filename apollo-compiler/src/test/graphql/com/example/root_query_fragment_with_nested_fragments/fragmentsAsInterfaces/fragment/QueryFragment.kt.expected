@@ -52,17 +52,15 @@ interface QueryFragment {
   interface Human {
     val __typename: String
 
-    interface Human : QueryFragment.Human {
-      /**
-       * What this human calls themselves
-       */
-      val name: String
+    /**
+     * What this human calls themselves
+     */
+    val name: String
 
-      /**
-       * The home planet of the human, or null if unknown
-       */
-      val homePlanet: String?
-    }
+    /**
+     * The home planet of the human, or null if unknown
+     */
+    val homePlanet: String?
   }
 
   companion object {

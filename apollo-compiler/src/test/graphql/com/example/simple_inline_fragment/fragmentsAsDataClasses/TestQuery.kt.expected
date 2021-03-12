@@ -47,20 +47,27 @@ class TestQuery : Query<TestQuery.Data> {
      */
     data class Hero(
       val __typename: String = "Character",
-      val asAsCharacter: AsCharacter?,
+      /**
+       * The ID of the character
+       */
+      val id: String,
+      /**
+       * The name of the character
+       */
+      val name: String,
       val asAsHuman: AsHuman?,
       val asAsDroid: AsDroid?
     ) {
-      data class AsCharacter(
+      data class AsHuman(
         val __typename: String,
+        /**
+         * The ID of the character
+         */
+        val id: String,
         /**
          * The name of the character
          */
-        val name: String
-      )
-
-      data class AsHuman(
-        val __typename: String,
+        val name: String,
         /**
          * Height in the preferred unit, default is meters
          */
@@ -69,6 +76,14 @@ class TestQuery : Query<TestQuery.Data> {
 
       data class AsDroid(
         val __typename: String,
+        /**
+         * The ID of the character
+         */
+        val id: String,
+        /**
+         * The name of the character
+         */
+        val name: String,
         /**
          * This droid's primary function
          */
@@ -79,7 +94,7 @@ class TestQuery : Query<TestQuery.Data> {
 
   companion object {
     const val OPERATION_ID: String =
-        "5474e96626eb1bd3adbb1a3bc28419597638a648778d634ed80a485b9586ec89"
+        "9788d8cb5185e8875c193d2e8aa5cb15fb66916d00f51b55a037b5b8ebffc788"
 
     val QUERY_DOCUMENT: String = QueryDocumentMinifier.minify(
           """
@@ -87,7 +102,11 @@ class TestQuery : Query<TestQuery.Data> {
           |  hero {
           |    __typename
           |    ... on Character {
-          |      name
+          |      __typename
+          |      id
+          |      ... on Character {
+          |        name
+          |      }
           |    }
           |    ... on Human {
           |      height

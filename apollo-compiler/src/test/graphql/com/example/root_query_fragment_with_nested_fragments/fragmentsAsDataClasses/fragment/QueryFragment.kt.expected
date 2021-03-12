@@ -54,19 +54,14 @@ class QueryFragment : Fragment<QueryFragment.Data> {
      */
     data class Human(
       val __typename: String = "Human",
-      val asAsHuman: AsHuman?
-    ) {
-      data class AsHuman(
-        val __typename: String,
-        /**
-         * What this human calls themselves
-         */
-        val name: String,
-        /**
-         * The home planet of the human, or null if unknown
-         */
-        val homePlanet: String?
-      )
-    }
+      /**
+       * What this human calls themselves
+       */
+      val name: String,
+      /**
+       * The home planet of the human, or null if unknown
+       */
+      val homePlanet: String?
+    )
   }
 }

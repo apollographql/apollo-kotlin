@@ -71,20 +71,19 @@ class TestQuery : Query<TestQuery.Data> {
          */
         data class Friends(
           val __typename: String = "Character",
-          val asAsCharacter: AsCharacter?,
+          /**
+           * The name of the character
+           */
+          val name: String,
           val asAsHuman: AsHuman?,
           val asAsDroid: AsDroid?
         ) {
-          data class AsCharacter(
+          data class AsHuman(
             val __typename: String,
             /**
              * The name of the character
              */
-            val name: String
-          )
-
-          data class AsHuman(
-            val __typename: String,
+            val name: String,
             /**
              * The home planet of the human, or null if unknown
              */
@@ -101,20 +100,19 @@ class TestQuery : Query<TestQuery.Data> {
              */
             data class Friends(
               val __typename: String = "Character",
-              val asAsCharacter: AsCharacter?
-            ) {
-              data class AsCharacter(
-                val __typename: String,
-                /**
-                 * The movie this character first appears in
-                 */
-                val firstAppearsIn: Episode
-              )
-            }
+              /**
+               * The movie this character first appears in
+               */
+              val firstAppearsIn: Episode
+            )
           }
 
           data class AsDroid(
             val __typename: String,
+            /**
+             * The name of the character
+             */
+            val name: String,
             /**
              * This droid's primary function
              */
