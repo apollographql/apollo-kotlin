@@ -35,7 +35,6 @@ object DroidDetails1Impl_ResponseAdapter : ResponseAdapter<DroidDetails1Impl.Dat
       DroidDetails1Impl.Data {
     var __typename: String? = null
     var name: String? = null
-    reader.beginObject()
     while(true) {
       when (reader.selectName(RESPONSE_NAMES)) {
         0 -> __typename = StringResponseAdapter.fromResponse(reader, responseAdapterCache)
@@ -43,7 +42,6 @@ object DroidDetails1Impl_ResponseAdapter : ResponseAdapter<DroidDetails1Impl.Dat
         else -> break
       }
     }
-    reader.endObject()
     return DroidDetails1Impl.Data(
       __typename = __typename!!,
       name = name!!

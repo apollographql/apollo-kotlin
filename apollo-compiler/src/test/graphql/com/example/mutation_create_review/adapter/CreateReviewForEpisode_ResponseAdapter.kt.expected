@@ -16,6 +16,7 @@ import com.apollographql.apollo3.api.json.JsonReader
 import com.apollographql.apollo3.api.json.JsonWriter
 import com.apollographql.apollo3.api.list
 import com.apollographql.apollo3.api.nullable
+import com.apollographql.apollo3.api.obj
 import com.example.mutation_create_review.CreateReviewForEpisode
 import com.example.mutation_create_review.type.CustomScalars
 import com.example.mutation_create_review.type.Episode
@@ -50,14 +51,12 @@ internal object CreateReviewForEpisode_ResponseAdapter :
   override fun fromResponse(reader: JsonReader, responseAdapterCache: ResponseAdapterCache):
       CreateReviewForEpisode.Data {
     var createReview: CreateReviewForEpisode.Data.CreateReview? = null
-    reader.beginObject()
     while(true) {
       when (reader.selectName(RESPONSE_NAMES)) {
-        0 -> createReview = CreateReview.nullable().fromResponse(reader, responseAdapterCache)
+        0 -> createReview = CreateReview.obj().nullable().fromResponse(reader, responseAdapterCache)
         else -> break
       }
     }
-    reader.endObject()
     return CreateReviewForEpisode.Data(
       createReview = createReview
     )
@@ -70,7 +69,7 @@ internal object CreateReviewForEpisode_ResponseAdapter :
   ) {
     writer.beginObject()
     writer.name("createReview")
-    CreateReview.nullable().toResponse(writer, responseAdapterCache, value.createReview)
+    CreateReview.obj().nullable().toResponse(writer, responseAdapterCache, value.createReview)
     writer.endObject()
   }
 
@@ -119,7 +118,6 @@ internal object CreateReviewForEpisode_ResponseAdapter :
       var listOfListOfEnum: List<List<Episode>>? = null
       var listOfListOfCustom: List<List<Date>>? = null
       var listOfListOfObject: List<List<CreateReviewForEpisode.Data.CreateReview.ListOfListOfObject>>? = null
-      reader.beginObject()
       while(true) {
         when (reader.selectName(RESPONSE_NAMES)) {
           0 -> stars = IntResponseAdapter.fromResponse(reader, responseAdapterCache)
@@ -130,12 +128,11 @@ internal object CreateReviewForEpisode_ResponseAdapter :
               responseAdapterCache)
           4 -> listOfListOfCustom = responseAdapterCache.responseAdapterFor<Date>(CustomScalars.Date).list().list().nullable().fromResponse(reader,
               responseAdapterCache)
-          5 -> listOfListOfObject = ListOfListOfObject.list().list().nullable().fromResponse(reader,
+          5 -> listOfListOfObject = ListOfListOfObject.obj().list().list().nullable().fromResponse(reader,
               responseAdapterCache)
           else -> break
         }
       }
-      reader.endObject()
       return CreateReviewForEpisode.Data.CreateReview(
         stars = stars!!,
         commentary = commentary,
@@ -166,7 +163,7 @@ internal object CreateReviewForEpisode_ResponseAdapter :
       responseAdapterCache.responseAdapterFor<Date>(CustomScalars.Date).list().list().nullable().toResponse(writer,
           responseAdapterCache, value.listOfListOfCustom)
       writer.name("listOfListOfObject")
-      ListOfListOfObject.list().list().nullable().toResponse(writer, responseAdapterCache,
+      ListOfListOfObject.obj().list().list().nullable().toResponse(writer, responseAdapterCache,
           value.listOfListOfObject)
       writer.endObject()
     }
@@ -185,14 +182,12 @@ internal object CreateReviewForEpisode_ResponseAdapter :
       override fun fromResponse(reader: JsonReader, responseAdapterCache: ResponseAdapterCache):
           CreateReviewForEpisode.Data.CreateReview.ListOfListOfObject {
         var name: String? = null
-        reader.beginObject()
         while(true) {
           when (reader.selectName(RESPONSE_NAMES)) {
             0 -> name = StringResponseAdapter.fromResponse(reader, responseAdapterCache)
             else -> break
           }
         }
-        reader.endObject()
         return CreateReviewForEpisode.Data.CreateReview.ListOfListOfObject(
           name = name!!
         )

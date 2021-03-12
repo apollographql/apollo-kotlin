@@ -13,6 +13,7 @@ import com.apollographql.apollo3.api.StringResponseAdapter
 import com.apollographql.apollo3.api.json.JsonReader
 import com.apollographql.apollo3.api.json.JsonWriter
 import com.apollographql.apollo3.api.nullable
+import com.apollographql.apollo3.api.obj
 import com.example.root_query_fragment_with_nested_fragments.fragment.QueryFragmentImpl
 import kotlin.Array
 import kotlin.String
@@ -63,17 +64,15 @@ object QueryFragmentImpl_ResponseAdapter : ResponseAdapter<QueryFragmentImpl.Dat
     var hero: QueryFragmentImpl.Data.Hero? = null
     var droid: QueryFragmentImpl.Data.Droid? = null
     var human: QueryFragmentImpl.Data.Human? = null
-    reader.beginObject()
     while(true) {
       when (reader.selectName(RESPONSE_NAMES)) {
         0 -> __typename = StringResponseAdapter.fromResponse(reader, responseAdapterCache)
-        1 -> hero = Hero.nullable().fromResponse(reader, responseAdapterCache)
-        2 -> droid = Droid.nullable().fromResponse(reader, responseAdapterCache)
-        3 -> human = Human.nullable().fromResponse(reader, responseAdapterCache)
+        1 -> hero = Hero.obj().nullable().fromResponse(reader, responseAdapterCache)
+        2 -> droid = Droid.obj().nullable().fromResponse(reader, responseAdapterCache)
+        3 -> human = Human.obj().nullable().fromResponse(reader, responseAdapterCache)
         else -> break
       }
     }
-    reader.endObject()
     return QueryFragmentImpl.Data(
       __typename = __typename!!,
       hero = hero,
@@ -91,18 +90,17 @@ object QueryFragmentImpl_ResponseAdapter : ResponseAdapter<QueryFragmentImpl.Dat
     writer.name("__typename")
     StringResponseAdapter.toResponse(writer, responseAdapterCache, value.__typename)
     writer.name("hero")
-    Hero.nullable().toResponse(writer, responseAdapterCache, value.hero)
+    Hero.obj().nullable().toResponse(writer, responseAdapterCache, value.hero)
     writer.name("droid")
-    Droid.nullable().toResponse(writer, responseAdapterCache, value.droid)
+    Droid.obj().nullable().toResponse(writer, responseAdapterCache, value.droid)
     writer.name("human")
-    Human.nullable().toResponse(writer, responseAdapterCache, value.human)
+    Human.obj().nullable().toResponse(writer, responseAdapterCache, value.human)
     writer.endObject()
   }
 
   object Hero : ResponseAdapter<QueryFragmentImpl.Data.Hero> {
     override fun fromResponse(reader: JsonReader, responseAdapterCache: ResponseAdapterCache):
         QueryFragmentImpl.Data.Hero {
-      reader.beginObject()
       check(reader.nextName() == "__typename")
       val typename = reader.nextString()!!
       return when(typename) {
@@ -110,7 +108,6 @@ object QueryFragmentImpl_ResponseAdapter : ResponseAdapter<QueryFragmentImpl.Dat
         "Human" -> CharacterHero.fromResponse(reader, responseAdapterCache, typename)
         else -> OtherHero.fromResponse(reader, responseAdapterCache, typename)
       }
-      .also { reader.endObject() }
     }
 
     override fun toResponse(
@@ -142,7 +139,6 @@ object QueryFragmentImpl_ResponseAdapter : ResponseAdapter<QueryFragmentImpl.Dat
       ): QueryFragmentImpl.Data.Hero.CharacterHero {
         var __typename: String? = __typename
         var name: String? = null
-        reader.beginObject()
         while(true) {
           when (reader.selectName(RESPONSE_NAMES)) {
             0 -> __typename = StringResponseAdapter.fromResponse(reader, responseAdapterCache)
@@ -150,7 +146,6 @@ object QueryFragmentImpl_ResponseAdapter : ResponseAdapter<QueryFragmentImpl.Dat
             else -> break
           }
         }
-        reader.endObject()
         return QueryFragmentImpl.Data.Hero.CharacterHero(
           __typename = __typename!!,
           name = name!!
@@ -184,14 +179,12 @@ object QueryFragmentImpl_ResponseAdapter : ResponseAdapter<QueryFragmentImpl.Dat
         __typename: String?
       ): QueryFragmentImpl.Data.Hero.OtherHero {
         var __typename: String? = __typename
-        reader.beginObject()
         while(true) {
           when (reader.selectName(RESPONSE_NAMES)) {
             0 -> __typename = StringResponseAdapter.fromResponse(reader, responseAdapterCache)
             else -> break
           }
         }
-        reader.endObject()
         return QueryFragmentImpl.Data.Hero.OtherHero(
           __typename = __typename!!
         )
@@ -213,14 +206,12 @@ object QueryFragmentImpl_ResponseAdapter : ResponseAdapter<QueryFragmentImpl.Dat
   object Droid : ResponseAdapter<QueryFragmentImpl.Data.Droid> {
     override fun fromResponse(reader: JsonReader, responseAdapterCache: ResponseAdapterCache):
         QueryFragmentImpl.Data.Droid {
-      reader.beginObject()
       check(reader.nextName() == "__typename")
       val typename = reader.nextString()!!
       return when(typename) {
         "Droid" -> DroidDroid.fromResponse(reader, responseAdapterCache, typename)
         else -> OtherDroid.fromResponse(reader, responseAdapterCache, typename)
       }
-      .also { reader.endObject() }
     }
 
     override fun toResponse(
@@ -257,7 +248,6 @@ object QueryFragmentImpl_ResponseAdapter : ResponseAdapter<QueryFragmentImpl.Dat
         var __typename: String? = __typename
         var name: String? = null
         var primaryFunction: String? = null
-        reader.beginObject()
         while(true) {
           when (reader.selectName(RESPONSE_NAMES)) {
             0 -> __typename = StringResponseAdapter.fromResponse(reader, responseAdapterCache)
@@ -267,7 +257,6 @@ object QueryFragmentImpl_ResponseAdapter : ResponseAdapter<QueryFragmentImpl.Dat
             else -> break
           }
         }
-        reader.endObject()
         return QueryFragmentImpl.Data.Droid.DroidDroid(
           __typename = __typename!!,
           name = name!!,
@@ -305,14 +294,12 @@ object QueryFragmentImpl_ResponseAdapter : ResponseAdapter<QueryFragmentImpl.Dat
         __typename: String?
       ): QueryFragmentImpl.Data.Droid.OtherDroid {
         var __typename: String? = __typename
-        reader.beginObject()
         while(true) {
           when (reader.selectName(RESPONSE_NAMES)) {
             0 -> __typename = StringResponseAdapter.fromResponse(reader, responseAdapterCache)
             else -> break
           }
         }
-        reader.endObject()
         return QueryFragmentImpl.Data.Droid.OtherDroid(
           __typename = __typename!!
         )
@@ -348,6 +335,7 @@ object QueryFragmentImpl_ResponseAdapter : ResponseAdapter<QueryFragmentImpl.Dat
 
     override fun fromResponse(reader: JsonReader, responseAdapterCache: ResponseAdapterCache):
         QueryFragmentImpl.Data.Human {
+<<<<<<< HEAD
       var __typename: String? = null
       var name: String? = null
       var homePlanet: String? = null
@@ -368,6 +356,8 @@ object QueryFragmentImpl_ResponseAdapter : ResponseAdapter<QueryFragmentImpl.Dat
         homePlanet = homePlanet
       )
 =======
+=======
+>>>>>>> 528df6e0d... wip
       check(reader.nextName() == "__typename")
       val typename = reader.nextString()!!
       return when(typename) {
@@ -375,11 +365,14 @@ object QueryFragmentImpl_ResponseAdapter : ResponseAdapter<QueryFragmentImpl.Dat
         else -> OtherHuman.fromResponse(reader, responseAdapterCache, typename)
       }
 <<<<<<< HEAD
+<<<<<<< HEAD
       reader.endObject()
 >>>>>>> ab5258fe0... all compiler tests pass
 =======
       .also { reader.endObject() }
 >>>>>>> ef2ead98d... everything works, yay \o/
+=======
+>>>>>>> 528df6e0d... wip
     }
 
     override fun toResponse(
@@ -426,7 +419,6 @@ object QueryFragmentImpl_ResponseAdapter : ResponseAdapter<QueryFragmentImpl.Dat
         var __typename: String? = __typename
         var name: String? = null
         var homePlanet: String? = null
-        reader.beginObject()
         while(true) {
           when (reader.selectName(RESPONSE_NAMES)) {
             0 -> __typename = StringResponseAdapter.fromResponse(reader, responseAdapterCache)
@@ -436,7 +428,6 @@ object QueryFragmentImpl_ResponseAdapter : ResponseAdapter<QueryFragmentImpl.Dat
             else -> break
           }
         }
-        reader.endObject()
         return QueryFragmentImpl.Data.Human.HumanHuman(
           __typename = __typename!!,
           name = name!!,
@@ -473,14 +464,12 @@ object QueryFragmentImpl_ResponseAdapter : ResponseAdapter<QueryFragmentImpl.Dat
         __typename: String?
       ): QueryFragmentImpl.Data.Human.OtherHuman {
         var __typename: String? = __typename
-        reader.beginObject()
         while(true) {
           when (reader.selectName(RESPONSE_NAMES)) {
             0 -> __typename = StringResponseAdapter.fromResponse(reader, responseAdapterCache)
             else -> break
           }
         }
-        reader.endObject()
         return QueryFragmentImpl.Data.Human.OtherHuman(
           __typename = __typename!!
         )

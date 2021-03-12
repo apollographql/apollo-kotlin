@@ -6,44 +6,32 @@ import com.apollographql.apollo3.api.json.JsonReader
 import com.apollographql.apollo3.compiler.applyIf
 import com.apollographql.apollo3.compiler.backend.ast.CodeGenerationAst
 import com.apollographql.apollo3.compiler.backend.codegen.Identifier.__typename
-import com.apollographql.apollo3.compiler.backend.codegen.Identifier.reader
 import com.apollographql.apollo3.compiler.backend.codegen.Identifier.responseAdapterCache
 import com.apollographql.apollo3.compiler.escapeKotlinReservedWord
 import com.squareup.kotlinpoet.CodeBlock
 import com.squareup.kotlinpoet.FunSpec
 import com.squareup.kotlinpoet.KModifier
-import com.squareup.kotlinpoet.MemberName
 import com.squareup.kotlinpoet.ParameterSpec
-import com.squareup.kotlinpoet.asClassName
 import com.squareup.kotlinpoet.asTypeName
 import com.squareup.kotlinpoet.joinToCode
 
 /**
  * A top level method that generates the different read functions
- *
- * @param addFromFields: set to true to generate an additional `fromFields`
- * method that will read fields without calling [JsonReader.beginObject]
  */
-internal fun CodeGenerationAst.ObjectType.readFromResponseFunSpecs(
+internal fun CodeGenerationAst.ObjectType.readFromResponseFunSpec(
     generateFragmentsAsInterfaces: Boolean,
-    addFromFields: Boolean,
-): List<FunSpec> {
+): FunSpec {
   if (kind is CodeGenerationAst.ObjectType.Kind.FragmentDelegate) {
-    return listOf(readFragmentDelegateFromResponseFunSpec())
+    return readFragmentDelegateFromResponseFunSpec()
   }
 
   val override: Boolean
   val withTypeName: Boolean
-  if (isTypeCase && generateFragmentsAsInterfaces) {
+  if (isShape && generateFragmentsAsInterfaces) {
     // This is a type case. Since we can't rewind, we have to pass the typename
     // to sub adapter
     override = false
     withTypeName = true
-  } else if (addFromFields) {
-    // We are generating fromFields, this never overides
-    // And we can re-read typename if needed
-    override = false
-    withTypeName = false
   } else {
     // general case
     override = true
@@ -54,13 +42,11 @@ internal fun CodeGenerationAst.ObjectType.readFromResponseFunSpecs(
     is CodeGenerationAst.ObjectType.Kind.ObjectWithFragments -> {
       if (generateFragmentsAsInterfaces) {
         readStreamedPolymorphicObjectCode(
-            objectType = this,
-            consumeObject = !addFromFields
+            objectType = this
         )
       } else {
         readBufferedPolymorphicObjectCode(
             objectType = this,
-            consumeObject = !addFromFields
         )
       }
     }
@@ -69,25 +55,11 @@ internal fun CodeGenerationAst.ObjectType.readFromResponseFunSpecs(
           fields = fields,
           returnTypeRef = typeRef,
           initializeTypename = withTypeName,
-          consumeObject = !addFromFields
       )
     }
   }
 
-  val functionName: String
-
-  if (addFromFields) {
-    functionName = "fromFields"
-  } else {
-    functionName = "fromResponse"
-  }
-
-  val list = mutableListOf<FunSpec>()
-  if (addFromFields) {
-    val buffer = kind is CodeGenerationAst.ObjectType.Kind.ObjectWithFragments && !generateFragmentsAsInterfaces
-    list.add(readFromResponseWrapperFunSpec(typeRef, buffer ))
-  }
-  list.add(FunSpec.builder(functionName)
+  return FunSpec.builder("fromResponse")
       .returns(typeRef.asTypeName())
       .addParameter("reader", JsonReader::class)
       .addParameter(responseAdapterCache, ResponseAdapterCache::class)
@@ -99,39 +71,18 @@ internal fun CodeGenerationAst.ObjectType.readFromResponseFunSpecs(
       }
       .addCode(body)
       .build()
-  )
-
-  return list
-}
-
-internal fun readFromResponseWrapperFunSpec(typeRef: CodeGenerationAst.TypeRef, buffer: Boolean): FunSpec {
-  return FunSpec.builder("fromResponse")
-      .returns(typeRef.asTypeName())
-      .addParameter("reader", JsonReader::class)
-      .addParameter(responseAdapterCache, ResponseAdapterCache::class)
-      .addModifiers(KModifier.OVERRIDE)
-      .applyIf(buffer) {
-        addStatement("val·reader·=·reader.%M()", MemberName(MapJsonReader.Companion::class.asClassName(), "buffer"))
-      }
-      .addStatement("reader.beginObject()")
-      .addStatement("return·fromFields($reader, $responseAdapterCache).also { reader.endObject() }")
-      .build()
 }
 
 /**
  * Creates a function body that reads an object from a JsonReader. This is the core of the generated parsers
  *
- * @param functionName: the function name. Most of the times, it's fromResponse except when it's called after a rewind() and it shouldn't
- * @param override: whether this needs the override modifier. This is not always the case. For an example in polymorphic cases
  * @param initializeTypename: whether to generate a method that takes an additional __typename argument from the enclosing type case
  * call readObject()
- * @param readObject: whether to read the object
  */
 internal fun readObjectCode(
     fields: List<CodeGenerationAst.Field>,
     returnTypeRef: CodeGenerationAst.TypeRef,
     initializeTypename: Boolean,
-    consumeObject: Boolean,
 ): CodeBlock {
   val prefix = prefixCode(fields, initializeTypename)
 
@@ -154,19 +105,16 @@ internal fun readObjectCode(
 
   return CodeBlock.builder()
       .add(prefix)
-      .applyIf(consumeObject) { addStatement("reader.beginObject()") }
       .add(loop)
-      .applyIf(consumeObject) { addStatement("reader.endObject()") }
       .add(suffix)
       .build()
 }
 
-internal fun readStreamedPolymorphicObjectCode(objectType: CodeGenerationAst.ObjectType, consumeObject: Boolean): CodeBlock {
+internal fun readStreamedPolymorphicObjectCode(objectType: CodeGenerationAst.ObjectType): CodeBlock {
   val (defaultImplementation, possibleImplementations) = with(objectType.kind as CodeGenerationAst.ObjectType.Kind.ObjectWithFragments) {
     defaultImplementation to possibleImplementations
   }
   return CodeBlock.builder()
-      .applyIf(consumeObject) { addStatement("reader.beginObject()") }
       .addStatement("check(reader.nextName() == \"__typename\")")
       // calling nextString() directly here certainly breaks the optimization to read fields in order
       .addStatement("val·typename·=·reader.nextString()!!")
@@ -189,7 +137,6 @@ internal fun readStreamedPolymorphicObjectCode(objectType: CodeGenerationAst.Obj
           defaultImplementation!!.asAdapterTypeName()
       )
       .endControlFlow()
-      .applyIf(consumeObject) { addStatement(".also { reader.endObject() }") }
       .build()
 }
 
@@ -215,7 +162,7 @@ private fun loopCode(fields: List<CodeGenerationAst.Field>): CodeBlock {
                 "%L·->·%L·=·%L.fromResponse(reader, $responseAdapterCache)",
                 fieldIndex,
                 field.name.escapeKotlinReservedWord(),
-                adapterInitializer(field.type)
+                adapterInitializer(field.type, field.requiresBufferedReader)
             )
           }.joinToCode(separator = "\n", suffix = "\n")
       )
@@ -227,7 +174,6 @@ private fun loopCode(fields: List<CodeGenerationAst.Field>): CodeBlock {
 
 internal fun readBufferedPolymorphicObjectCode(
     objectType: CodeGenerationAst.ObjectType,
-    consumeObject: Boolean
 ): CodeBlock {
   val possibleImplementations = (objectType.kind as CodeGenerationAst.ObjectType.Kind.ObjectWithFragments).possibleImplementations
 
@@ -250,13 +196,13 @@ internal fun readBufferedPolymorphicObjectCode(
         .run {
           if (fragmentImplementation.typeRef.isNamedFragmentDataRef) {
             addStatement(
-                "%L·=·%T.fromFields(reader,·$responseAdapterCache)",
+                "%L·=·%T.fromResponse(reader,·$responseAdapterCache)",
                 fragmentImplementation.typeRef.fragmentPropertyName(),
                 fragmentImplementation.typeRef.enclosingType!!.asAdapterTypeName()
             )
           } else {
             addStatement(
-                "%L·=·%T.fromFields(reader,·$responseAdapterCache)",
+                "%L·=·%T.fromResponse(reader,·$responseAdapterCache)",
                 fragmentImplementation.typeRef.fragmentPropertyName(),
                 fragmentImplementation.typeRef.asAdapterTypeName()
             )
@@ -290,18 +236,11 @@ internal fun readBufferedPolymorphicObjectCode(
       .build()
 
   return CodeBlock.builder()
-      .applyIf(consumeObject) {
-        addStatement("val·reader·=·reader.%M()", MemberName(MapJsonReader.Companion::class.asClassName(), "buffer"))
-        addStatement("reader.beginObject()")
-      }
       .add(prefixCode(objectType.fields, false))
       .addStatement("")
       .add(fragmentVariablesCode)
       .add(loopCode(objectType.fields))
       .add(readFragmentsCode)
-      .applyIf(consumeObject) {
-        addStatement("reader.endObject()")
-      }
       .add(typeConstructorCode)
       .build()
 }

@@ -24,7 +24,7 @@ internal fun CodeGenerationAst.ObjectType.writeToResponseFunSpec(generateFragmen
 
 private fun CodeGenerationAst.ObjectType.writeObjectToResponseFunSpec(): FunSpec {
   return FunSpec.builder("toResponse")
-      .applyIf(!isTypeCase) { addModifiers(KModifier.OVERRIDE) }
+      .applyIf(!isShape) { addModifiers(KModifier.OVERRIDE) }
       .addParameter("writer", JsonWriter::class.asTypeName())
       .addParameter(Identifier.responseAdapterCache, ResponseAdapterCache::class)
       .addParameter("value", this.typeRef.asTypeName())
@@ -114,7 +114,7 @@ private fun CodeGenerationAst.Field.writeCode(): CodeBlock {
     addStatement("writer.name(%S)", name)
     addStatement(
         "%L.toResponse(writer, ${Identifier.responseAdapterCache}, value.${name.escapeKotlinReservedWord()})",
-        adapterInitializer(type)
+        adapterInitializer(type, requiresBufferedReader)
     )
   }.build()
 }

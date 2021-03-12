@@ -10,7 +10,6 @@ import com.apollographql.apollo3.api.ResponseAdapterCache
 import com.apollographql.apollo3.api.ResponseField
 import com.apollographql.apollo3.api.StringResponseAdapter
 import com.apollographql.apollo3.api.internal.json.MapJsonReader
-import com.apollographql.apollo3.api.internal.json.MapJsonReader.Companion.buffer
 import com.apollographql.apollo3.api.json.JsonReader
 import com.apollographql.apollo3.api.json.JsonWriter
 import com.example.simple_fragment.fragment.HeroDetails
@@ -32,12 +31,6 @@ internal object HeroDetails_ResponseAdapter : ResponseAdapter<HeroDetails.Data> 
 
   override fun fromResponse(reader: JsonReader, responseAdapterCache: ResponseAdapterCache):
       HeroDetails.Data {
-    val reader = reader.buffer()
-    reader.beginObject()
-    return fromFields(reader, responseAdapterCache).also { reader.endObject() }
-  }
-
-  fun fromFields(reader: JsonReader, responseAdapterCache: ResponseAdapterCache): HeroDetails.Data {
     var __typename: String? = null
 
     var humanDetails: HumanDetails.Data? = null
@@ -49,7 +42,7 @@ internal object HeroDetails_ResponseAdapter : ResponseAdapter<HeroDetails.Data> 
     }
     if (__typename in arrayOf("Human")) {
       (reader as MapJsonReader).rewind()
-      humanDetails = HumanDetails_ResponseAdapter.fromFields(reader, responseAdapterCache)
+      humanDetails = HumanDetails_ResponseAdapter.fromResponse(reader, responseAdapterCache)
     }
 
     return HeroDetails.Data(

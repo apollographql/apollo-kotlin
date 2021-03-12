@@ -14,6 +14,7 @@ import com.apollographql.apollo3.api.ResponseAdapterCache
 import com.apollographql.apollo3.api.json.JsonReader
 import com.apollographql.apollo3.api.json.JsonWriter
 import com.apollographql.apollo3.api.nullable
+import com.apollographql.apollo3.api.obj
 import com.example.input_object_type.type.ColorInput
 import com.example.input_object_type.type.Episode_ResponseAdapter
 import kotlin.IllegalStateException
@@ -46,7 +47,7 @@ object ColorInput_InputAdapter : ResponseAdapter<ColorInput> {
     }
     if (value.reviewRefInput is Input.Present) {
       writer.name("reviewRefInput")
-      ReviewRefInput_InputAdapter.nullable().toResponse(writer, responseAdapterCache,
+      ReviewRefInput_InputAdapter.obj().nullable().toResponse(writer, responseAdapterCache,
           value.reviewRefInput.value)
     }
     writer.endObject()

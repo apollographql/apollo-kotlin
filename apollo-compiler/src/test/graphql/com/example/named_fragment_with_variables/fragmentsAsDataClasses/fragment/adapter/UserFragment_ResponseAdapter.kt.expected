@@ -44,12 +44,6 @@ object UserFragment_ResponseAdapter : ResponseAdapter<UserFragment.Data> {
 
   override fun fromResponse(reader: JsonReader, responseAdapterCache: ResponseAdapterCache):
       UserFragment.Data {
-    reader.beginObject()
-    return fromFields(reader, responseAdapterCache).also { reader.endObject() }
-  }
-
-  fun fromFields(reader: JsonReader, responseAdapterCache: ResponseAdapterCache):
-      UserFragment.Data {
     var __typename: String? = null
     var firstName: String? = null
     var lastName: String? = null

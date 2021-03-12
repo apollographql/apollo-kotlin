@@ -34,12 +34,6 @@ object PlanetFragment_ResponseAdapter : ResponseAdapter<PlanetFragment.Data> {
 
   override fun fromResponse(reader: JsonReader, responseAdapterCache: ResponseAdapterCache):
       PlanetFragment.Data {
-    reader.beginObject()
-    return fromFields(reader, responseAdapterCache).also { reader.endObject() }
-  }
-
-  fun fromFields(reader: JsonReader, responseAdapterCache: ResponseAdapterCache):
-      PlanetFragment.Data {
     var __typename: String? = null
     var name: String? = null
     while(true) {

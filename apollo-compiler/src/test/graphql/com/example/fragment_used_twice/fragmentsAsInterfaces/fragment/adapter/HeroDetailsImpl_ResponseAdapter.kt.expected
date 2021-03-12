@@ -25,7 +25,6 @@ import kotlin.collections.List
 object HeroDetailsImpl_ResponseAdapter : ResponseAdapter<HeroDetailsImpl.Data> {
   override fun fromResponse(reader: JsonReader, responseAdapterCache: ResponseAdapterCache):
       HeroDetailsImpl.Data {
-    reader.beginObject()
     check(reader.nextName() == "__typename")
     val typename = reader.nextString()!!
     return when(typename) {
@@ -33,7 +32,6 @@ object HeroDetailsImpl_ResponseAdapter : ResponseAdapter<HeroDetailsImpl.Data> {
       "Human" -> CharacterData.fromResponse(reader, responseAdapterCache, typename)
       else -> OtherData.fromResponse(reader, responseAdapterCache, typename)
     }
-    .also { reader.endObject() }
   }
 
   override fun toResponse(
@@ -70,7 +68,6 @@ object HeroDetailsImpl_ResponseAdapter : ResponseAdapter<HeroDetailsImpl.Data> {
       var __typename: String? = __typename
       var name: String? = null
       var birthDate: Any? = null
-      reader.beginObject()
       while(true) {
         when (reader.selectName(RESPONSE_NAMES)) {
           0 -> __typename = StringResponseAdapter.fromResponse(reader, responseAdapterCache)
@@ -80,7 +77,6 @@ object HeroDetailsImpl_ResponseAdapter : ResponseAdapter<HeroDetailsImpl.Data> {
           else -> break
         }
       }
-      reader.endObject()
       return HeroDetailsImpl.Data.CharacterData(
         __typename = __typename!!,
         name = name!!,
@@ -123,7 +119,6 @@ object HeroDetailsImpl_ResponseAdapter : ResponseAdapter<HeroDetailsImpl.Data> {
     ): HeroDetailsImpl.Data.OtherData {
       var __typename: String? = __typename
       var name: String? = null
-      reader.beginObject()
       while(true) {
         when (reader.selectName(RESPONSE_NAMES)) {
           0 -> __typename = StringResponseAdapter.fromResponse(reader, responseAdapterCache)
@@ -131,7 +126,6 @@ object HeroDetailsImpl_ResponseAdapter : ResponseAdapter<HeroDetailsImpl.Data> {
           else -> break
         }
       }
-      reader.endObject()
       return HeroDetailsImpl.Data.OtherData(
         __typename = __typename!!,
         name = name!!

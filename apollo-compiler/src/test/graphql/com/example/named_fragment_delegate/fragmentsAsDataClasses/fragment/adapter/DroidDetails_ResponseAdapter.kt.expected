@@ -14,6 +14,7 @@ import com.apollographql.apollo3.api.json.JsonReader
 import com.apollographql.apollo3.api.json.JsonWriter
 import com.apollographql.apollo3.api.list
 import com.apollographql.apollo3.api.nullable
+import com.apollographql.apollo3.api.obj
 import com.example.named_fragment_delegate.fragment.DroidDetails
 import kotlin.Array
 import kotlin.String
@@ -47,12 +48,6 @@ object DroidDetails_ResponseAdapter : ResponseAdapter<DroidDetails.Data> {
 
   override fun fromResponse(reader: JsonReader, responseAdapterCache: ResponseAdapterCache):
       DroidDetails.Data {
-    reader.beginObject()
-    return fromFields(reader, responseAdapterCache).also { reader.endObject() }
-  }
-
-  fun fromFields(reader: JsonReader, responseAdapterCache: ResponseAdapterCache):
-      DroidDetails.Data {
     var __typename: String? = null
     var name: String? = null
     var primaryFunction: String? = null
@@ -63,7 +58,7 @@ object DroidDetails_ResponseAdapter : ResponseAdapter<DroidDetails.Data> {
         1 -> name = StringResponseAdapter.fromResponse(reader, responseAdapterCache)
         2 -> primaryFunction = NullableStringResponseAdapter.fromResponse(reader,
             responseAdapterCache)
-        3 -> friends = Friends.nullable().list().nullable().fromResponse(reader,
+        3 -> friends = Friends.obj().nullable().list().nullable().fromResponse(reader,
             responseAdapterCache)
         else -> break
       }
@@ -89,7 +84,8 @@ object DroidDetails_ResponseAdapter : ResponseAdapter<DroidDetails.Data> {
     writer.name("primaryFunction")
     NullableStringResponseAdapter.toResponse(writer, responseAdapterCache, value.primaryFunction)
     writer.name("friends")
-    Friends.nullable().list().nullable().toResponse(writer, responseAdapterCache, value.friends)
+    Friends.obj().nullable().list().nullable().toResponse(writer, responseAdapterCache,
+        value.friends)
     writer.endObject()
   }
 
@@ -106,14 +102,12 @@ object DroidDetails_ResponseAdapter : ResponseAdapter<DroidDetails.Data> {
     override fun fromResponse(reader: JsonReader, responseAdapterCache: ResponseAdapterCache):
         DroidDetails.Data.Friends {
       var name: String? = null
-      reader.beginObject()
       while(true) {
         when (reader.selectName(RESPONSE_NAMES)) {
           0 -> name = StringResponseAdapter.fromResponse(reader, responseAdapterCache)
           else -> break
         }
       }
-      reader.endObject()
       return DroidDetails.Data.Friends(
         name = name!!
       )

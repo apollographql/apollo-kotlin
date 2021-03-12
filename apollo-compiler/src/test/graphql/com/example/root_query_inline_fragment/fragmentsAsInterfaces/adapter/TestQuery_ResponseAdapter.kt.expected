@@ -15,6 +15,7 @@ import com.apollographql.apollo3.api.json.JsonReader
 import com.apollographql.apollo3.api.json.JsonWriter
 import com.apollographql.apollo3.api.list
 import com.apollographql.apollo3.api.nullable
+import com.apollographql.apollo3.api.obj
 import com.example.root_query_inline_fragment.TestQuery
 import com.example.root_query_inline_fragment.type.Episode
 import com.example.root_query_inline_fragment.type.Episode_ResponseAdapter
@@ -53,6 +54,7 @@ object TestQuery_ResponseAdapter : ResponseAdapter<TestQuery.Data> {
 
   override fun fromResponse(reader: JsonReader, responseAdapterCache: ResponseAdapterCache):
       TestQuery.Data {
+<<<<<<< HEAD
     var __typename: String? = null
     var hero: TestQuery.Data.Hero? = null
     var droid: TestQuery.Data.Droid? = null
@@ -73,6 +75,8 @@ object TestQuery_ResponseAdapter : ResponseAdapter<TestQuery.Data> {
       droid = droid
     )
 =======
+=======
+>>>>>>> 528df6e0d... wip
     check(reader.nextName() == "__typename")
     val typename = reader.nextString()!!
     return when(typename) {
@@ -80,11 +84,14 @@ object TestQuery_ResponseAdapter : ResponseAdapter<TestQuery.Data> {
       else -> OtherData.fromResponse(reader, responseAdapterCache, typename)
     }
 <<<<<<< HEAD
+<<<<<<< HEAD
     reader.endObject()
 >>>>>>> ab5258fe0... all compiler tests pass
 =======
     .also { reader.endObject() }
 >>>>>>> ef2ead98d... everything works, yay \o/
+=======
+>>>>>>> 528df6e0d... wip
   }
 
   override fun toResponse(
@@ -148,16 +155,14 @@ object TestQuery_ResponseAdapter : ResponseAdapter<TestQuery.Data> {
       var __typename: String? = __typename
       var hero: TestQuery.Data.QueryData.Hero? = null
       var droid: TestQuery.Data.QueryData.Droid? = null
-      reader.beginObject()
       while(true) {
         when (reader.selectName(RESPONSE_NAMES)) {
           0 -> __typename = StringResponseAdapter.fromResponse(reader, responseAdapterCache)
-          1 -> hero = Hero.nullable().fromResponse(reader, responseAdapterCache)
-          2 -> droid = Droid.nullable().fromResponse(reader, responseAdapterCache)
+          1 -> hero = Hero.obj().nullable().fromResponse(reader, responseAdapterCache)
+          2 -> droid = Droid.obj().nullable().fromResponse(reader, responseAdapterCache)
           else -> break
         }
       }
-      reader.endObject()
       return TestQuery.Data.QueryData(
         __typename = __typename!!,
         hero = hero,
@@ -184,23 +189,21 @@ object TestQuery_ResponseAdapter : ResponseAdapter<TestQuery.Data> {
       writer.name("__typename")
       StringResponseAdapter.toResponse(writer, responseAdapterCache, value.__typename)
       writer.name("hero")
-      Hero.nullable().toResponse(writer, responseAdapterCache, value.hero)
+      Hero.obj().nullable().toResponse(writer, responseAdapterCache, value.hero)
       writer.name("droid")
-      Droid.nullable().toResponse(writer, responseAdapterCache, value.droid)
+      Droid.obj().nullable().toResponse(writer, responseAdapterCache, value.droid)
       writer.endObject()
     }
 
     object Hero : ResponseAdapter<TestQuery.Data.QueryData.Hero> {
       override fun fromResponse(reader: JsonReader, responseAdapterCache: ResponseAdapterCache):
           TestQuery.Data.QueryData.Hero {
-        reader.beginObject()
         check(reader.nextName() == "__typename")
         val typename = reader.nextString()!!
         return when(typename) {
           "Human" -> HumanHero.fromResponse(reader, responseAdapterCache, typename)
           else -> OtherHero.fromResponse(reader, responseAdapterCache, typename)
         }
-        .also { reader.endObject() }
       }
 
       override fun toResponse(
@@ -265,7 +268,6 @@ object TestQuery_ResponseAdapter : ResponseAdapter<TestQuery.Data> {
           var name: String? = null
           var appearsIn: List<Episode?>? = null
           var height: Double? = null
-          reader.beginObject()
           while(true) {
             when (reader.selectName(RESPONSE_NAMES)) {
               0 -> __typename = StringResponseAdapter.fromResponse(reader, responseAdapterCache)
@@ -276,7 +278,6 @@ object TestQuery_ResponseAdapter : ResponseAdapter<TestQuery.Data> {
               else -> break
             }
           }
-          reader.endObject()
           return TestQuery.Data.QueryData.Hero.HumanHero(
             __typename = __typename!!,
             name = name!!,
@@ -308,7 +309,6 @@ object TestQuery_ResponseAdapter : ResponseAdapter<TestQuery.Data> {
           var __typename: String? = __typename
           var name: String? = null
           var appearsIn: List<Episode?>? = null
-          reader.beginObject()
           while(true) {
             when (reader.selectName(RESPONSE_NAMES)) {
               0 -> __typename = StringResponseAdapter.fromResponse(reader, responseAdapterCache)
@@ -318,7 +318,6 @@ object TestQuery_ResponseAdapter : ResponseAdapter<TestQuery.Data> {
               else -> break
             }
           }
-          reader.endObject()
           return TestQuery.Data.QueryData.Hero.OtherHero(
             __typename = __typename!!,
             name = name!!,
@@ -347,7 +346,6 @@ object TestQuery_ResponseAdapter : ResponseAdapter<TestQuery.Data> {
     object Droid : ResponseAdapter<TestQuery.Data.QueryData.Droid> {
       override fun fromResponse(reader: JsonReader, responseAdapterCache: ResponseAdapterCache):
           TestQuery.Data.QueryData.Droid {
-        reader.beginObject()
         check(reader.nextName() == "__typename")
         val typename = reader.nextString()!!
         return when(typename) {
@@ -355,11 +353,14 @@ object TestQuery_ResponseAdapter : ResponseAdapter<TestQuery.Data> {
           else -> OtherDroid.fromResponse(reader, responseAdapterCache, typename)
         }
 <<<<<<< HEAD
+<<<<<<< HEAD
         reader.endObject()
 >>>>>>> ab5258fe0... all compiler tests pass
 =======
         .also { reader.endObject() }
 >>>>>>> ef2ead98d... everything works, yay \o/
+=======
+>>>>>>> 528df6e0d... wip
       }
 
       fun toResponse(
@@ -423,7 +424,6 @@ object TestQuery_ResponseAdapter : ResponseAdapter<TestQuery.Data> {
           var __typename: String? = __typename
           var name: String? = null
           var primaryFunction: String? = null
-          reader.beginObject()
           while(true) {
             when (reader.selectName(RESPONSE_NAMES)) {
               0 -> __typename = StringResponseAdapter.fromResponse(reader, responseAdapterCache)
@@ -433,7 +433,6 @@ object TestQuery_ResponseAdapter : ResponseAdapter<TestQuery.Data> {
               else -> break
             }
           }
-          reader.endObject()
           return TestQuery.Data.QueryData.Droid.DroidDroid(
             __typename = __typename!!,
             name = name!!,
@@ -488,14 +487,12 @@ object TestQuery_ResponseAdapter : ResponseAdapter<TestQuery.Data> {
           __typename: String?
         ): TestQuery.Data.QueryData.Droid.OtherDroid {
           var __typename: String? = __typename
-          reader.beginObject()
           while(true) {
             when (reader.selectName(RESPONSE_NAMES)) {
               0 -> __typename = StringResponseAdapter.fromResponse(reader, responseAdapterCache)
               else -> break
             }
           }
-          reader.endObject()
           return TestQuery.Data.QueryData.Droid.OtherDroid(
             __typename = __typename!!
           )
@@ -546,10 +543,13 @@ object TestQuery_ResponseAdapter : ResponseAdapter<TestQuery.Data> {
     ): TestQuery.Data.OtherData {
       var __typename: String? = __typename
 <<<<<<< HEAD
+<<<<<<< HEAD
 >>>>>>> ab5258fe0... all compiler tests pass
 =======
       reader.beginObject()
 >>>>>>> ef2ead98d... everything works, yay \o/
+=======
+>>>>>>> 528df6e0d... wip
       while(true) {
         when (reader.selectName(RESPONSE_NAMES)) {
           0 -> __typename = StringResponseAdapter.fromResponse(reader, responseAdapterCache)
@@ -559,6 +559,7 @@ object TestQuery_ResponseAdapter : ResponseAdapter<TestQuery.Data> {
           else -> break
         }
       }
+<<<<<<< HEAD
       reader.endObject()
 <<<<<<< HEAD
       return TestQuery.Data.Droid(
@@ -566,6 +567,8 @@ object TestQuery_ResponseAdapter : ResponseAdapter<TestQuery.Data> {
         name = name!!,
         primaryFunction = primaryFunction
 =======
+=======
+>>>>>>> 528df6e0d... wip
       return TestQuery.Data.OtherData(
         __typename = __typename!!
 >>>>>>> ef2ead98d... everything works, yay \o/

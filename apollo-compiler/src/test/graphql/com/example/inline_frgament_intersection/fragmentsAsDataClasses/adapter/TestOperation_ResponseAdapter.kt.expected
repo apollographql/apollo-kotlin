@@ -11,10 +11,10 @@ import com.apollographql.apollo3.api.ResponseAdapterCache
 import com.apollographql.apollo3.api.ResponseField
 import com.apollographql.apollo3.api.StringResponseAdapter
 import com.apollographql.apollo3.api.internal.json.MapJsonReader
-import com.apollographql.apollo3.api.internal.json.MapJsonReader.Companion.buffer
 import com.apollographql.apollo3.api.json.JsonReader
 import com.apollographql.apollo3.api.json.JsonWriter
 import com.apollographql.apollo3.api.list
+import com.apollographql.apollo3.api.obj
 import com.example.inline_frgament_intersection.TestOperation
 import com.example.inline_frgament_intersection.type.Race
 import com.example.inline_frgament_intersection.type.Race_ResponseAdapter
@@ -45,14 +45,12 @@ object TestOperation_ResponseAdapter : ResponseAdapter<TestOperation.Data> {
   override fun fromResponse(reader: JsonReader, responseAdapterCache: ResponseAdapterCache):
       TestOperation.Data {
     var random: TestOperation.Data.Random? = null
-    reader.beginObject()
     while(true) {
       when (reader.selectName(RESPONSE_NAMES)) {
-        0 -> random = Random.fromResponse(reader, responseAdapterCache)
+        0 -> random = Random.obj(true).fromResponse(reader, responseAdapterCache)
         else -> break
       }
     }
-    reader.endObject()
     return TestOperation.Data(
       random = random!!
     )
@@ -65,7 +63,7 @@ object TestOperation_ResponseAdapter : ResponseAdapter<TestOperation.Data> {
   ) {
     writer.beginObject()
     writer.name("random")
-    Random.toResponse(writer, responseAdapterCache, value.random)
+    Random.obj(true).toResponse(writer, responseAdapterCache, value.random)
     writer.endObject()
   }
 
@@ -78,8 +76,6 @@ object TestOperation_ResponseAdapter : ResponseAdapter<TestOperation.Data> {
 
     override fun fromResponse(reader: JsonReader, responseAdapterCache: ResponseAdapterCache):
         TestOperation.Data.Random {
-      val reader = reader.buffer()
-      reader.beginObject()
       var __typename: String? = null
 
       var asAsBeing: TestOperation.Data.Random.AsBeing? = null
@@ -92,14 +88,13 @@ object TestOperation_ResponseAdapter : ResponseAdapter<TestOperation.Data> {
       }
       if (__typename in arrayOf("Human", "Wookie")) {
         (reader as MapJsonReader).rewind()
-        asAsBeing = AsBeing.fromFields(reader, responseAdapterCache)
+        asAsBeing = AsBeing.fromResponse(reader, responseAdapterCache)
       }
       if (__typename in arrayOf("Wookie")) {
         (reader as MapJsonReader).rewind()
-        asAsWookie = AsWookie.fromFields(reader, responseAdapterCache)
+        asAsWookie = AsWookie.fromResponse(reader, responseAdapterCache)
       }
 
-      reader.endObject()
       return TestOperation.Data.Random(
         __typename = __typename!!,
         asAsBeing = asAsBeing,
@@ -142,12 +137,6 @@ object TestOperation_ResponseAdapter : ResponseAdapter<TestOperation.Data> {
 
       override fun fromResponse(reader: JsonReader, responseAdapterCache: ResponseAdapterCache):
           TestOperation.Data.Random.AsBeing {
-        reader.beginObject()
-        return fromFields(reader, responseAdapterCache).also { reader.endObject() }
-      }
-
-      fun fromFields(reader: JsonReader, responseAdapterCache: ResponseAdapterCache):
-          TestOperation.Data.Random.AsBeing {
         var __typename: String? = null
         var name: String? = null
         var friends: List<TestOperation.Data.Random.AsBeing.Friends>? = null
@@ -155,7 +144,7 @@ object TestOperation_ResponseAdapter : ResponseAdapter<TestOperation.Data> {
           when (reader.selectName(RESPONSE_NAMES)) {
             0 -> __typename = StringResponseAdapter.fromResponse(reader, responseAdapterCache)
             1 -> name = StringResponseAdapter.fromResponse(reader, responseAdapterCache)
-            2 -> friends = Friends.list().fromResponse(reader, responseAdapterCache)
+            2 -> friends = Friends.obj(true).list().fromResponse(reader, responseAdapterCache)
             else -> break
           }
         }
@@ -177,7 +166,7 @@ object TestOperation_ResponseAdapter : ResponseAdapter<TestOperation.Data> {
         writer.name("name")
         StringResponseAdapter.toResponse(writer, responseAdapterCache, value.name)
         writer.name("friends")
-        Friends.list().toResponse(writer, responseAdapterCache, value.friends)
+        Friends.obj(true).list().toResponse(writer, responseAdapterCache, value.friends)
         writer.endObject()
       }
 
@@ -194,8 +183,6 @@ object TestOperation_ResponseAdapter : ResponseAdapter<TestOperation.Data> {
 
         override fun fromResponse(reader: JsonReader, responseAdapterCache: ResponseAdapterCache):
             TestOperation.Data.Random.AsBeing.Friends {
-          val reader = reader.buffer()
-          reader.beginObject()
           var __typename: String? = null
           var name: String? = null
 
@@ -209,10 +196,9 @@ object TestOperation_ResponseAdapter : ResponseAdapter<TestOperation.Data> {
           }
           if (__typename in arrayOf("Wookie")) {
             (reader as MapJsonReader).rewind()
-            asAsWookie = AsWookie.fromFields(reader, responseAdapterCache)
+            asAsWookie = AsWookie.fromResponse(reader, responseAdapterCache)
           }
 
-          reader.endObject()
           return TestOperation.Data.Random.AsBeing.Friends(
             __typename = __typename!!,
             name = name!!,
@@ -252,12 +238,6 @@ object TestOperation_ResponseAdapter : ResponseAdapter<TestOperation.Data> {
           val RESPONSE_NAMES: List<String> = RESPONSE_FIELDS.map { it.responseName }
 
           override fun fromResponse(reader: JsonReader, responseAdapterCache: ResponseAdapterCache):
-              TestOperation.Data.Random.AsBeing.Friends.AsWookie {
-            reader.beginObject()
-            return fromFields(reader, responseAdapterCache).also { reader.endObject() }
-          }
-
-          fun fromFields(reader: JsonReader, responseAdapterCache: ResponseAdapterCache):
               TestOperation.Data.Random.AsBeing.Friends.AsWookie {
             var __typename: String? = null
             var name: String? = null
@@ -318,12 +298,6 @@ object TestOperation_ResponseAdapter : ResponseAdapter<TestOperation.Data> {
 
       override fun fromResponse(reader: JsonReader, responseAdapterCache: ResponseAdapterCache):
           TestOperation.Data.Random.AsWookie {
-        reader.beginObject()
-        return fromFields(reader, responseAdapterCache).also { reader.endObject() }
-      }
-
-      fun fromFields(reader: JsonReader, responseAdapterCache: ResponseAdapterCache):
-          TestOperation.Data.Random.AsWookie {
         var __typename: String? = null
         var race: Race? = null
         var friends: List<TestOperation.Data.Random.AsWookie.Friends>? = null
@@ -331,7 +305,7 @@ object TestOperation_ResponseAdapter : ResponseAdapter<TestOperation.Data> {
           when (reader.selectName(RESPONSE_NAMES)) {
             0 -> __typename = StringResponseAdapter.fromResponse(reader, responseAdapterCache)
             1 -> race = Race_ResponseAdapter.fromResponse(reader, responseAdapterCache)
-            2 -> friends = Friends.list().fromResponse(reader, responseAdapterCache)
+            2 -> friends = Friends.obj().list().fromResponse(reader, responseAdapterCache)
             else -> break
           }
         }
@@ -353,7 +327,7 @@ object TestOperation_ResponseAdapter : ResponseAdapter<TestOperation.Data> {
         writer.name("race")
         Race_ResponseAdapter.toResponse(writer, responseAdapterCache, value.race)
         writer.name("friends")
-        Friends.list().toResponse(writer, responseAdapterCache, value.friends)
+        Friends.obj().list().toResponse(writer, responseAdapterCache, value.friends)
         writer.endObject()
       }
 
@@ -370,7 +344,6 @@ object TestOperation_ResponseAdapter : ResponseAdapter<TestOperation.Data> {
         override fun fromResponse(reader: JsonReader, responseAdapterCache: ResponseAdapterCache):
             TestOperation.Data.Random.AsWookie.Friends {
           var lifeExpectancy: Double? = null
-          reader.beginObject()
           while(true) {
             when (reader.selectName(RESPONSE_NAMES)) {
               0 -> lifeExpectancy = NullableDoubleResponseAdapter.fromResponse(reader,
@@ -378,7 +351,6 @@ object TestOperation_ResponseAdapter : ResponseAdapter<TestOperation.Data> {
               else -> break
             }
           }
-          reader.endObject()
           return TestOperation.Data.Random.AsWookie.Friends(
             lifeExpectancy = lifeExpectancy
           )

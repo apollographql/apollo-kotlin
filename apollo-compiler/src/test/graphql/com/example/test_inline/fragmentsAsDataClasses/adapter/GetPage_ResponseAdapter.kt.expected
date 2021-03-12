@@ -10,10 +10,10 @@ import com.apollographql.apollo3.api.ResponseAdapterCache
 import com.apollographql.apollo3.api.ResponseField
 import com.apollographql.apollo3.api.StringResponseAdapter
 import com.apollographql.apollo3.api.internal.json.MapJsonReader
-import com.apollographql.apollo3.api.internal.json.MapJsonReader.Companion.buffer
 import com.apollographql.apollo3.api.json.JsonReader
 import com.apollographql.apollo3.api.json.JsonWriter
 import com.apollographql.apollo3.api.list
+import com.apollographql.apollo3.api.obj
 import com.example.test_inline.GetPage
 import kotlin.Array
 import kotlin.String
@@ -40,14 +40,12 @@ object GetPage_ResponseAdapter : ResponseAdapter<GetPage.Data> {
   override fun fromResponse(reader: JsonReader, responseAdapterCache: ResponseAdapterCache):
       GetPage.Data {
     var collection: GetPage.Data.Collection? = null
-    reader.beginObject()
     while(true) {
       when (reader.selectName(RESPONSE_NAMES)) {
-        0 -> collection = Collection.fromResponse(reader, responseAdapterCache)
+        0 -> collection = Collection.obj(true).fromResponse(reader, responseAdapterCache)
         else -> break
       }
     }
-    reader.endObject()
     return GetPage.Data(
       collection = collection!!
     )
@@ -60,7 +58,7 @@ object GetPage_ResponseAdapter : ResponseAdapter<GetPage.Data> {
   ) {
     writer.beginObject()
     writer.name("collection")
-    Collection.toResponse(writer, responseAdapterCache, value.collection)
+    Collection.obj(true).toResponse(writer, responseAdapterCache, value.collection)
     writer.endObject()
   }
 
@@ -81,8 +79,6 @@ object GetPage_ResponseAdapter : ResponseAdapter<GetPage.Data> {
 
     override fun fromResponse(reader: JsonReader, responseAdapterCache: ResponseAdapterCache):
         GetPage.Data.Collection {
-      val reader = reader.buffer()
-      reader.beginObject()
       var __typename: String? = null
       var items: List<GetPage.Data.Collection.Items>? = null
 
@@ -90,16 +86,15 @@ object GetPage_ResponseAdapter : ResponseAdapter<GetPage.Data> {
       while(true) {
         when (reader.selectName(RESPONSE_NAMES)) {
           0 -> __typename = StringResponseAdapter.fromResponse(reader, responseAdapterCache)
-          1 -> items = Items.list().fromResponse(reader, responseAdapterCache)
+          1 -> items = Items.obj().list().fromResponse(reader, responseAdapterCache)
           else -> break
         }
       }
       if (__typename in arrayOf("ParticularCollection")) {
         (reader as MapJsonReader).rewind()
-        asAsParticularCollection = AsParticularCollection.fromFields(reader, responseAdapterCache)
+        asAsParticularCollection = AsParticularCollection.fromResponse(reader, responseAdapterCache)
       }
 
-      reader.endObject()
       return GetPage.Data.Collection(
         __typename = __typename!!,
         items = items!!,
@@ -117,7 +112,7 @@ object GetPage_ResponseAdapter : ResponseAdapter<GetPage.Data> {
       StringResponseAdapter.toResponse(writer, responseAdapterCache, value.__typename)
 
       writer.name("items")
-      Items.list().toResponse(writer, responseAdapterCache, value.items)
+      Items.obj().list().toResponse(writer, responseAdapterCache, value.items)
       if (value.asAsParticularCollection != null)
           AsParticularCollection.toResponse(writer, responseAdapterCache, value.asAsParticularCollection)
       writer.endObject()
@@ -134,12 +129,6 @@ object GetPage_ResponseAdapter : ResponseAdapter<GetPage.Data> {
       val RESPONSE_NAMES: List<String> = RESPONSE_FIELDS.map { it.responseName }
 
       override fun fromResponse(reader: JsonReader, responseAdapterCache: ResponseAdapterCache):
-          GetPage.Data.Collection.Items {
-        reader.beginObject()
-        return fromFields(reader, responseAdapterCache).also { reader.endObject() }
-      }
-
-      fun fromFields(reader: JsonReader, responseAdapterCache: ResponseAdapterCache):
           GetPage.Data.Collection.Items {
         var title: String? = null
         while(true) {
@@ -183,18 +172,12 @@ object GetPage_ResponseAdapter : ResponseAdapter<GetPage.Data> {
 
       override fun fromResponse(reader: JsonReader, responseAdapterCache: ResponseAdapterCache):
           GetPage.Data.Collection.AsParticularCollection {
-        reader.beginObject()
-        return fromFields(reader, responseAdapterCache).also { reader.endObject() }
-      }
-
-      fun fromFields(reader: JsonReader, responseAdapterCache: ResponseAdapterCache):
-          GetPage.Data.Collection.AsParticularCollection {
         var __typename: String? = null
         var items: List<GetPage.Data.Collection.AsParticularCollection.Items>? = null
         while(true) {
           when (reader.selectName(RESPONSE_NAMES)) {
             0 -> __typename = StringResponseAdapter.fromResponse(reader, responseAdapterCache)
-            1 -> items = Items.list().fromResponse(reader, responseAdapterCache)
+            1 -> items = Items.obj(true).list().fromResponse(reader, responseAdapterCache)
             else -> break
           }
         }
@@ -213,7 +196,7 @@ object GetPage_ResponseAdapter : ResponseAdapter<GetPage.Data> {
         writer.name("__typename")
         StringResponseAdapter.toResponse(writer, responseAdapterCache, value.__typename)
         writer.name("items")
-        Items.list().toResponse(writer, responseAdapterCache, value.items)
+        Items.obj(true).list().toResponse(writer, responseAdapterCache, value.items)
         writer.endObject()
       }
 
@@ -230,8 +213,6 @@ object GetPage_ResponseAdapter : ResponseAdapter<GetPage.Data> {
 
         override fun fromResponse(reader: JsonReader, responseAdapterCache: ResponseAdapterCache):
             GetPage.Data.Collection.AsParticularCollection.Items {
-          val reader = reader.buffer()
-          reader.beginObject()
           var title: String? = null
           var __typename: String? = null
 
@@ -245,10 +226,9 @@ object GetPage_ResponseAdapter : ResponseAdapter<GetPage.Data> {
           }
           if (__typename in arrayOf("ParticularItem")) {
             (reader as MapJsonReader).rewind()
-            asAsParticularItem = AsParticularItem.fromFields(reader, responseAdapterCache)
+            asAsParticularItem = AsParticularItem.fromResponse(reader, responseAdapterCache)
           }
 
-          reader.endObject()
           return GetPage.Data.Collection.AsParticularCollection.Items(
             title = title!!,
             __typename = __typename!!,
@@ -289,12 +269,6 @@ object GetPage_ResponseAdapter : ResponseAdapter<GetPage.Data> {
           val RESPONSE_NAMES: List<String> = RESPONSE_FIELDS.map { it.responseName }
 
           override fun fromResponse(reader: JsonReader, responseAdapterCache: ResponseAdapterCache):
-              GetPage.Data.Collection.AsParticularCollection.Items.AsParticularItem {
-            reader.beginObject()
-            return fromFields(reader, responseAdapterCache).also { reader.endObject() }
-          }
-
-          fun fromFields(reader: JsonReader, responseAdapterCache: ResponseAdapterCache):
               GetPage.Data.Collection.AsParticularCollection.Items.AsParticularItem {
             var __typename: String? = null
             var image: String? = null

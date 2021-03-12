@@ -11,11 +11,11 @@ import com.apollographql.apollo3.api.ResponseAdapterCache
 import com.apollographql.apollo3.api.ResponseField
 import com.apollographql.apollo3.api.StringResponseAdapter
 import com.apollographql.apollo3.api.internal.json.MapJsonReader
-import com.apollographql.apollo3.api.internal.json.MapJsonReader.Companion.buffer
 import com.apollographql.apollo3.api.json.JsonReader
 import com.apollographql.apollo3.api.json.JsonWriter
 import com.apollographql.apollo3.api.list
 import com.apollographql.apollo3.api.nullable
+import com.apollographql.apollo3.api.obj
 import com.example.fragment_in_fragment.fragment.PilotFragment
 import com.example.fragment_in_fragment.fragment.StarshipFragment
 import kotlin.Array
@@ -50,12 +50,6 @@ object StarshipFragment_ResponseAdapter : ResponseAdapter<StarshipFragment.Data>
 
   override fun fromResponse(reader: JsonReader, responseAdapterCache: ResponseAdapterCache):
       StarshipFragment.Data {
-    reader.beginObject()
-    return fromFields(reader, responseAdapterCache).also { reader.endObject() }
-  }
-
-  fun fromFields(reader: JsonReader, responseAdapterCache: ResponseAdapterCache):
-      StarshipFragment.Data {
     var __typename: String? = null
     var id: String? = null
     var name: String? = null
@@ -65,7 +59,8 @@ object StarshipFragment_ResponseAdapter : ResponseAdapter<StarshipFragment.Data>
         0 -> __typename = StringResponseAdapter.fromResponse(reader, responseAdapterCache)
         1 -> id = StringResponseAdapter.fromResponse(reader, responseAdapterCache)
         2 -> name = NullableStringResponseAdapter.fromResponse(reader, responseAdapterCache)
-        3 -> pilotConnection = PilotConnection.nullable().fromResponse(reader, responseAdapterCache)
+        3 -> pilotConnection = PilotConnection.obj().nullable().fromResponse(reader,
+            responseAdapterCache)
         else -> break
       }
     }
@@ -90,7 +85,7 @@ object StarshipFragment_ResponseAdapter : ResponseAdapter<StarshipFragment.Data>
     writer.name("name")
     NullableStringResponseAdapter.toResponse(writer, responseAdapterCache, value.name)
     writer.name("pilotConnection")
-    PilotConnection.nullable().toResponse(writer, responseAdapterCache, value.pilotConnection)
+    PilotConnection.obj().nullable().toResponse(writer, responseAdapterCache, value.pilotConnection)
     writer.endObject()
   }
 
@@ -110,14 +105,13 @@ object StarshipFragment_ResponseAdapter : ResponseAdapter<StarshipFragment.Data>
     override fun fromResponse(reader: JsonReader, responseAdapterCache: ResponseAdapterCache):
         StarshipFragment.Data.PilotConnection {
       var edges: List<StarshipFragment.Data.PilotConnection.Edges?>? = null
-      reader.beginObject()
       while(true) {
         when (reader.selectName(RESPONSE_NAMES)) {
-          0 -> edges = Edges.nullable().list().nullable().fromResponse(reader, responseAdapterCache)
+          0 -> edges = Edges.obj().nullable().list().nullable().fromResponse(reader,
+              responseAdapterCache)
           else -> break
         }
       }
-      reader.endObject()
       return StarshipFragment.Data.PilotConnection(
         edges = edges
       )
@@ -130,7 +124,7 @@ object StarshipFragment_ResponseAdapter : ResponseAdapter<StarshipFragment.Data>
     ) {
       writer.beginObject()
       writer.name("edges")
-      Edges.nullable().list().nullable().toResponse(writer, responseAdapterCache, value.edges)
+      Edges.obj().nullable().list().nullable().toResponse(writer, responseAdapterCache, value.edges)
       writer.endObject()
     }
 
@@ -150,14 +144,12 @@ object StarshipFragment_ResponseAdapter : ResponseAdapter<StarshipFragment.Data>
       override fun fromResponse(reader: JsonReader, responseAdapterCache: ResponseAdapterCache):
           StarshipFragment.Data.PilotConnection.Edges {
         var node: StarshipFragment.Data.PilotConnection.Edges.Node? = null
-        reader.beginObject()
         while(true) {
           when (reader.selectName(RESPONSE_NAMES)) {
-            0 -> node = Node.nullable().fromResponse(reader, responseAdapterCache)
+            0 -> node = Node.obj(true).nullable().fromResponse(reader, responseAdapterCache)
             else -> break
           }
         }
-        reader.endObject()
         return StarshipFragment.Data.PilotConnection.Edges(
           node = node
         )
@@ -170,7 +162,7 @@ object StarshipFragment_ResponseAdapter : ResponseAdapter<StarshipFragment.Data>
       ) {
         writer.beginObject()
         writer.name("node")
-        Node.nullable().toResponse(writer, responseAdapterCache, value.node)
+        Node.obj(true).nullable().toResponse(writer, responseAdapterCache, value.node)
         writer.endObject()
       }
 
@@ -183,8 +175,6 @@ object StarshipFragment_ResponseAdapter : ResponseAdapter<StarshipFragment.Data>
 
         override fun fromResponse(reader: JsonReader, responseAdapterCache: ResponseAdapterCache):
             StarshipFragment.Data.PilotConnection.Edges.Node {
-          val reader = reader.buffer()
-          reader.beginObject()
           var __typename: String? = null
 
           var pilotFragment: PilotFragment.Data? = null
@@ -196,10 +186,9 @@ object StarshipFragment_ResponseAdapter : ResponseAdapter<StarshipFragment.Data>
           }
           if (__typename in arrayOf("Person")) {
             (reader as MapJsonReader).rewind()
-            pilotFragment = PilotFragment_ResponseAdapter.fromFields(reader, responseAdapterCache)
+            pilotFragment = PilotFragment_ResponseAdapter.fromResponse(reader, responseAdapterCache)
           }
 
-          reader.endObject()
           return StarshipFragment.Data.PilotConnection.Edges.Node(
             __typename = __typename!!,
             pilotFragment = pilotFragment

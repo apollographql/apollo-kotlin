@@ -15,6 +15,7 @@ import com.apollographql.apollo3.api.json.JsonReader
 import com.apollographql.apollo3.api.json.JsonWriter
 import com.apollographql.apollo3.api.list
 import com.apollographql.apollo3.api.nullable
+import com.apollographql.apollo3.api.obj
 import com.example.unique_type_name.HeroDetailQuery
 import com.example.unique_type_name.type.Episode
 import com.example.unique_type_name.type.Episode_ResponseAdapter
@@ -45,14 +46,13 @@ object HeroDetailQuery_ResponseAdapter : ResponseAdapter<HeroDetailQuery.Data> {
   override fun fromResponse(reader: JsonReader, responseAdapterCache: ResponseAdapterCache):
       com.example.unique_type_name.HeroDetailQuery.Data {
     var heroDetailQuery: com.example.unique_type_name.HeroDetailQuery.Data.HeroDetailQuery? = null
-    reader.beginObject()
     while(true) {
       when (reader.selectName(RESPONSE_NAMES)) {
-        0 -> heroDetailQuery = HeroDetailQuery.nullable().fromResponse(reader, responseAdapterCache)
+        0 -> heroDetailQuery = HeroDetailQuery.obj().nullable().fromResponse(reader,
+            responseAdapterCache)
         else -> break
       }
     }
-    reader.endObject()
     return com.example.unique_type_name.HeroDetailQuery.Data(
       heroDetailQuery = heroDetailQuery
     )
@@ -65,7 +65,7 @@ object HeroDetailQuery_ResponseAdapter : ResponseAdapter<HeroDetailQuery.Data> {
   ) {
     writer.beginObject()
     writer.name("heroDetailQuery")
-    HeroDetailQuery.nullable().toResponse(writer, responseAdapterCache, value.heroDetailQuery)
+    HeroDetailQuery.obj().nullable().toResponse(writer, responseAdapterCache, value.heroDetailQuery)
     writer.endObject()
   }
 
@@ -73,14 +73,12 @@ object HeroDetailQuery_ResponseAdapter : ResponseAdapter<HeroDetailQuery.Data> {
       ResponseAdapter<com.example.unique_type_name.HeroDetailQuery.Data.HeroDetailQuery> {
     override fun fromResponse(reader: JsonReader, responseAdapterCache: ResponseAdapterCache):
         com.example.unique_type_name.HeroDetailQuery.Data.HeroDetailQuery {
-      reader.beginObject()
       check(reader.nextName() == "__typename")
       val typename = reader.nextString()!!
       return when(typename) {
         "Human" -> HumanHeroDetailQuery.fromResponse(reader, responseAdapterCache, typename)
         else -> OtherHeroDetailQuery.fromResponse(reader, responseAdapterCache, typename)
       }
-      .also { reader.endObject() }
     }
 
     override fun toResponse(
@@ -125,18 +123,16 @@ object HeroDetailQuery_ResponseAdapter : ResponseAdapter<HeroDetailQuery.Data> {
         var name: String? = null
         var friends: List<com.example.unique_type_name.HeroDetailQuery.Data.HeroDetailQuery.HumanHeroDetailQuery.Friends?>? = null
         var height: Double? = null
-        reader.beginObject()
         while(true) {
           when (reader.selectName(RESPONSE_NAMES)) {
             0 -> __typename = StringResponseAdapter.fromResponse(reader, responseAdapterCache)
             1 -> name = StringResponseAdapter.fromResponse(reader, responseAdapterCache)
-            2 -> friends = Friends.nullable().list().nullable().fromResponse(reader,
+            2 -> friends = Friends.obj().nullable().list().nullable().fromResponse(reader,
                 responseAdapterCache)
             3 -> height = NullableDoubleResponseAdapter.fromResponse(reader, responseAdapterCache)
             else -> break
           }
         }
-        reader.endObject()
         return com.example.unique_type_name.HeroDetailQuery.Data.HeroDetailQuery.HumanHeroDetailQuery(
           __typename = __typename!!,
           name = name!!,
@@ -156,7 +152,8 @@ object HeroDetailQuery_ResponseAdapter : ResponseAdapter<HeroDetailQuery.Data> {
         writer.name("name")
         StringResponseAdapter.toResponse(writer, responseAdapterCache, value.name)
         writer.name("friends")
-        Friends.nullable().list().nullable().toResponse(writer, responseAdapterCache, value.friends)
+        Friends.obj().nullable().list().nullable().toResponse(writer, responseAdapterCache,
+            value.friends)
         writer.name("height")
         NullableDoubleResponseAdapter.toResponse(writer, responseAdapterCache, value.height)
         writer.endObject()
@@ -193,18 +190,16 @@ object HeroDetailQuery_ResponseAdapter : ResponseAdapter<HeroDetailQuery.Data> {
           var name: String? = null
           var appearsIn: List<Episode?>? = null
           var friends: List<com.example.unique_type_name.HeroDetailQuery.Data.HeroDetailQuery.HumanHeroDetailQuery.Friends.Friends?>? = null
-          reader.beginObject()
           while(true) {
             when (reader.selectName(RESPONSE_NAMES)) {
               0 -> name = StringResponseAdapter.fromResponse(reader, responseAdapterCache)
               1 -> appearsIn = Episode_ResponseAdapter.nullable().list().fromResponse(reader,
                   responseAdapterCache)
-              2 -> friends = Friends.nullable().list().nullable().fromResponse(reader,
+              2 -> friends = Friends.obj().nullable().list().nullable().fromResponse(reader,
                   responseAdapterCache)
               else -> break
             }
           }
-          reader.endObject()
           return com.example.unique_type_name.HeroDetailQuery.Data.HeroDetailQuery.HumanHeroDetailQuery.Friends(
             name = name!!,
             appearsIn = appearsIn!!,
@@ -224,7 +219,7 @@ object HeroDetailQuery_ResponseAdapter : ResponseAdapter<HeroDetailQuery.Data> {
           Episode_ResponseAdapter.nullable().list().toResponse(writer, responseAdapterCache,
               value.appearsIn)
           writer.name("friends")
-          Friends.nullable().list().nullable().toResponse(writer, responseAdapterCache,
+          Friends.obj().nullable().list().nullable().toResponse(writer, responseAdapterCache,
               value.friends)
           writer.endObject()
         }
@@ -234,7 +229,6 @@ object HeroDetailQuery_ResponseAdapter : ResponseAdapter<HeroDetailQuery.Data> {
             {
           override fun fromResponse(reader: JsonReader, responseAdapterCache: ResponseAdapterCache):
               com.example.unique_type_name.HeroDetailQuery.Data.HeroDetailQuery.HumanHeroDetailQuery.Friends.Friends {
-            reader.beginObject()
             check(reader.nextName() == "__typename")
             val typename = reader.nextString()!!
             return when(typename) {
@@ -242,7 +236,6 @@ object HeroDetailQuery_ResponseAdapter : ResponseAdapter<HeroDetailQuery.Data> {
               "Human" -> CharacterFriends.fromResponse(reader, responseAdapterCache, typename)
               else -> OtherFriends.fromResponse(reader, responseAdapterCache, typename)
             }
-            .also { reader.endObject() }
           }
 
           override fun toResponse(
@@ -284,17 +277,15 @@ object HeroDetailQuery_ResponseAdapter : ResponseAdapter<HeroDetailQuery.Data> {
               var __typename: String? = __typename
               var name: String? = null
               var friendsConnection: com.example.unique_type_name.HeroDetailQuery.Data.HeroDetailQuery.HumanHeroDetailQuery.Friends.Friends.CharacterFriends.FriendsConnection? = null
-              reader.beginObject()
               while(true) {
                 when (reader.selectName(RESPONSE_NAMES)) {
                   0 -> __typename = StringResponseAdapter.fromResponse(reader, responseAdapterCache)
                   1 -> name = StringResponseAdapter.fromResponse(reader, responseAdapterCache)
-                  2 -> friendsConnection = FriendsConnection.fromResponse(reader,
+                  2 -> friendsConnection = FriendsConnection.obj().fromResponse(reader,
                       responseAdapterCache)
                   else -> break
                 }
               }
-              reader.endObject()
               return com.example.unique_type_name.HeroDetailQuery.Data.HeroDetailQuery.HumanHeroDetailQuery.Friends.Friends.CharacterFriends(
                 __typename = __typename!!,
                 name = name!!,
@@ -313,7 +304,8 @@ object HeroDetailQuery_ResponseAdapter : ResponseAdapter<HeroDetailQuery.Data> {
               writer.name("name")
               StringResponseAdapter.toResponse(writer, responseAdapterCache, value.name)
               writer.name("friendsConnection")
-              FriendsConnection.toResponse(writer, responseAdapterCache, value.friendsConnection)
+              FriendsConnection.obj().toResponse(writer, responseAdapterCache,
+                  value.friendsConnection)
               writer.endObject()
             }
 
@@ -341,17 +333,15 @@ object HeroDetailQuery_ResponseAdapter : ResponseAdapter<HeroDetailQuery.Data> {
                   com.example.unique_type_name.HeroDetailQuery.Data.HeroDetailQuery.HumanHeroDetailQuery.Friends.Friends.CharacterFriends.FriendsConnection {
                 var totalCount: Int? = null
                 var edges: List<com.example.unique_type_name.HeroDetailQuery.Data.HeroDetailQuery.HumanHeroDetailQuery.Friends.Friends.CharacterFriends.FriendsConnection.Edges?>? = null
-                reader.beginObject()
                 while(true) {
                   when (reader.selectName(RESPONSE_NAMES)) {
                     0 -> totalCount = NullableIntResponseAdapter.fromResponse(reader,
                         responseAdapterCache)
-                    1 -> edges = Edges.nullable().list().nullable().fromResponse(reader,
+                    1 -> edges = Edges.obj().nullable().list().nullable().fromResponse(reader,
                         responseAdapterCache)
                     else -> break
                   }
                 }
-                reader.endObject()
                 return com.example.unique_type_name.HeroDetailQuery.Data.HeroDetailQuery.HumanHeroDetailQuery.Friends.Friends.CharacterFriends.FriendsConnection(
                   totalCount = totalCount,
                   edges = edges
@@ -368,7 +358,7 @@ object HeroDetailQuery_ResponseAdapter : ResponseAdapter<HeroDetailQuery.Data> {
                 NullableIntResponseAdapter.toResponse(writer, responseAdapterCache,
                     value.totalCount)
                 writer.name("edges")
-                Edges.nullable().list().nullable().toResponse(writer, responseAdapterCache,
+                Edges.obj().nullable().list().nullable().toResponse(writer, responseAdapterCache,
                     value.edges)
                 writer.endObject()
               }
@@ -392,14 +382,12 @@ object HeroDetailQuery_ResponseAdapter : ResponseAdapter<HeroDetailQuery.Data> {
                     responseAdapterCache: ResponseAdapterCache):
                     com.example.unique_type_name.HeroDetailQuery.Data.HeroDetailQuery.HumanHeroDetailQuery.Friends.Friends.CharacterFriends.FriendsConnection.Edges {
                   var node: com.example.unique_type_name.HeroDetailQuery.Data.HeroDetailQuery.HumanHeroDetailQuery.Friends.Friends.CharacterFriends.FriendsConnection.Edges.Node? = null
-                  reader.beginObject()
                   while(true) {
                     when (reader.selectName(RESPONSE_NAMES)) {
-                      0 -> node = Node.nullable().fromResponse(reader, responseAdapterCache)
+                      0 -> node = Node.obj().nullable().fromResponse(reader, responseAdapterCache)
                       else -> break
                     }
                   }
-                  reader.endObject()
                   return com.example.unique_type_name.HeroDetailQuery.Data.HeroDetailQuery.HumanHeroDetailQuery.Friends.Friends.CharacterFriends.FriendsConnection.Edges(
                     node = node
                   )
@@ -412,7 +400,7 @@ object HeroDetailQuery_ResponseAdapter : ResponseAdapter<HeroDetailQuery.Data> {
                 ) {
                   writer.beginObject()
                   writer.name("node")
-                  Node.nullable().toResponse(writer, responseAdapterCache, value.node)
+                  Node.obj().nullable().toResponse(writer, responseAdapterCache, value.node)
                   writer.endObject()
                 }
 
@@ -432,14 +420,12 @@ object HeroDetailQuery_ResponseAdapter : ResponseAdapter<HeroDetailQuery.Data> {
                       responseAdapterCache: ResponseAdapterCache):
                       com.example.unique_type_name.HeroDetailQuery.Data.HeroDetailQuery.HumanHeroDetailQuery.Friends.Friends.CharacterFriends.FriendsConnection.Edges.Node {
                     var name: String? = null
-                    reader.beginObject()
                     while(true) {
                       when (reader.selectName(RESPONSE_NAMES)) {
                         0 -> name = StringResponseAdapter.fromResponse(reader, responseAdapterCache)
                         else -> break
                       }
                     }
-                    reader.endObject()
                     return com.example.unique_type_name.HeroDetailQuery.Data.HeroDetailQuery.HumanHeroDetailQuery.Friends.Friends.CharacterFriends.FriendsConnection.Edges.Node(
                       name = name!!
                     )
@@ -474,14 +460,12 @@ object HeroDetailQuery_ResponseAdapter : ResponseAdapter<HeroDetailQuery.Data> {
             ):
                 com.example.unique_type_name.HeroDetailQuery.Data.HeroDetailQuery.HumanHeroDetailQuery.Friends.Friends.OtherFriends {
               var __typename: String? = __typename
-              reader.beginObject()
               while(true) {
                 when (reader.selectName(RESPONSE_NAMES)) {
                   0 -> __typename = StringResponseAdapter.fromResponse(reader, responseAdapterCache)
                   else -> break
                 }
               }
-              reader.endObject()
               return com.example.unique_type_name.HeroDetailQuery.Data.HeroDetailQuery.HumanHeroDetailQuery.Friends.Friends.OtherFriends(
                 __typename = __typename!!
               )
@@ -528,17 +512,15 @@ object HeroDetailQuery_ResponseAdapter : ResponseAdapter<HeroDetailQuery.Data> {
         var __typename: String? = __typename
         var name: String? = null
         var friends: List<com.example.unique_type_name.HeroDetailQuery.Data.HeroDetailQuery.OtherHeroDetailQuery.Friends?>? = null
-        reader.beginObject()
         while(true) {
           when (reader.selectName(RESPONSE_NAMES)) {
             0 -> __typename = StringResponseAdapter.fromResponse(reader, responseAdapterCache)
             1 -> name = StringResponseAdapter.fromResponse(reader, responseAdapterCache)
-            2 -> friends = Friends.nullable().list().nullable().fromResponse(reader,
+            2 -> friends = Friends.obj().nullable().list().nullable().fromResponse(reader,
                 responseAdapterCache)
             else -> break
           }
         }
-        reader.endObject()
         return com.example.unique_type_name.HeroDetailQuery.Data.HeroDetailQuery.OtherHeroDetailQuery(
           __typename = __typename!!,
           name = name!!,
@@ -557,7 +539,8 @@ object HeroDetailQuery_ResponseAdapter : ResponseAdapter<HeroDetailQuery.Data> {
         writer.name("name")
         StringResponseAdapter.toResponse(writer, responseAdapterCache, value.name)
         writer.name("friends")
-        Friends.nullable().list().nullable().toResponse(writer, responseAdapterCache, value.friends)
+        Friends.obj().nullable().list().nullable().toResponse(writer, responseAdapterCache,
+            value.friends)
         writer.endObject()
       }
 
@@ -576,14 +559,12 @@ object HeroDetailQuery_ResponseAdapter : ResponseAdapter<HeroDetailQuery.Data> {
         override fun fromResponse(reader: JsonReader, responseAdapterCache: ResponseAdapterCache):
             com.example.unique_type_name.HeroDetailQuery.Data.HeroDetailQuery.OtherHeroDetailQuery.Friends {
           var name: String? = null
-          reader.beginObject()
           while(true) {
             when (reader.selectName(RESPONSE_NAMES)) {
               0 -> name = StringResponseAdapter.fromResponse(reader, responseAdapterCache)
               else -> break
             }
           }
-          reader.endObject()
           return com.example.unique_type_name.HeroDetailQuery.Data.HeroDetailQuery.OtherHeroDetailQuery.Friends(
             name = name!!
           )

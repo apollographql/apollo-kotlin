@@ -13,6 +13,7 @@ import com.apollographql.apollo3.api.json.JsonReader
 import com.apollographql.apollo3.api.json.JsonWriter
 import com.apollographql.apollo3.api.list
 import com.apollographql.apollo3.api.nullable
+import com.apollographql.apollo3.api.obj
 import com.example.named_fragment_delegate.fragment.HumanDetails
 import com.example.named_fragment_delegate.type.CustomScalars
 import kotlin.Any
@@ -48,12 +49,6 @@ object HumanDetails_ResponseAdapter : ResponseAdapter<HumanDetails.Data> {
 
   override fun fromResponse(reader: JsonReader, responseAdapterCache: ResponseAdapterCache):
       HumanDetails.Data {
-    reader.beginObject()
-    return fromFields(reader, responseAdapterCache).also { reader.endObject() }
-  }
-
-  fun fromFields(reader: JsonReader, responseAdapterCache: ResponseAdapterCache):
-      HumanDetails.Data {
     var __typename: String? = null
     var name: String? = null
     var profileLink: Any? = null
@@ -64,7 +59,7 @@ object HumanDetails_ResponseAdapter : ResponseAdapter<HumanDetails.Data> {
         1 -> name = StringResponseAdapter.fromResponse(reader, responseAdapterCache)
         2 -> profileLink = responseAdapterCache.responseAdapterFor<Any>(CustomScalars.URL).fromResponse(reader,
             responseAdapterCache)
-        3 -> friendsConnection = FriendsConnection.fromResponse(reader, responseAdapterCache)
+        3 -> friendsConnection = FriendsConnection.obj().fromResponse(reader, responseAdapterCache)
         else -> break
       }
     }
@@ -90,7 +85,7 @@ object HumanDetails_ResponseAdapter : ResponseAdapter<HumanDetails.Data> {
     responseAdapterCache.responseAdapterFor<Any>(CustomScalars.URL).toResponse(writer,
         responseAdapterCache, value.profileLink)
     writer.name("friendsConnection")
-    FriendsConnection.toResponse(writer, responseAdapterCache, value.friendsConnection)
+    FriendsConnection.obj().toResponse(writer, responseAdapterCache, value.friendsConnection)
     writer.endObject()
   }
 
@@ -110,14 +105,13 @@ object HumanDetails_ResponseAdapter : ResponseAdapter<HumanDetails.Data> {
     override fun fromResponse(reader: JsonReader, responseAdapterCache: ResponseAdapterCache):
         HumanDetails.Data.FriendsConnection {
       var edges: List<HumanDetails.Data.FriendsConnection.Edges?>? = null
-      reader.beginObject()
       while(true) {
         when (reader.selectName(RESPONSE_NAMES)) {
-          0 -> edges = Edges.nullable().list().nullable().fromResponse(reader, responseAdapterCache)
+          0 -> edges = Edges.obj().nullable().list().nullable().fromResponse(reader,
+              responseAdapterCache)
           else -> break
         }
       }
-      reader.endObject()
       return HumanDetails.Data.FriendsConnection(
         edges = edges
       )
@@ -130,7 +124,7 @@ object HumanDetails_ResponseAdapter : ResponseAdapter<HumanDetails.Data> {
     ) {
       writer.beginObject()
       writer.name("edges")
-      Edges.nullable().list().nullable().toResponse(writer, responseAdapterCache, value.edges)
+      Edges.obj().nullable().list().nullable().toResponse(writer, responseAdapterCache, value.edges)
       writer.endObject()
     }
 
@@ -150,14 +144,12 @@ object HumanDetails_ResponseAdapter : ResponseAdapter<HumanDetails.Data> {
       override fun fromResponse(reader: JsonReader, responseAdapterCache: ResponseAdapterCache):
           HumanDetails.Data.FriendsConnection.Edges {
         var node: HumanDetails.Data.FriendsConnection.Edges.Node? = null
-        reader.beginObject()
         while(true) {
           when (reader.selectName(RESPONSE_NAMES)) {
-            0 -> node = Node.nullable().fromResponse(reader, responseAdapterCache)
+            0 -> node = Node.obj().nullable().fromResponse(reader, responseAdapterCache)
             else -> break
           }
         }
-        reader.endObject()
         return HumanDetails.Data.FriendsConnection.Edges(
           node = node
         )
@@ -170,7 +162,7 @@ object HumanDetails_ResponseAdapter : ResponseAdapter<HumanDetails.Data> {
       ) {
         writer.beginObject()
         writer.name("node")
-        Node.nullable().toResponse(writer, responseAdapterCache, value.node)
+        Node.obj().nullable().toResponse(writer, responseAdapterCache, value.node)
         writer.endObject()
       }
 
@@ -187,14 +179,12 @@ object HumanDetails_ResponseAdapter : ResponseAdapter<HumanDetails.Data> {
         override fun fromResponse(reader: JsonReader, responseAdapterCache: ResponseAdapterCache):
             HumanDetails.Data.FriendsConnection.Edges.Node {
           var name: String? = null
-          reader.beginObject()
           while(true) {
             when (reader.selectName(RESPONSE_NAMES)) {
               0 -> name = StringResponseAdapter.fromResponse(reader, responseAdapterCache)
               else -> break
             }
           }
-          reader.endObject()
           return HumanDetails.Data.FriendsConnection.Edges.Node(
             name = name!!
           )

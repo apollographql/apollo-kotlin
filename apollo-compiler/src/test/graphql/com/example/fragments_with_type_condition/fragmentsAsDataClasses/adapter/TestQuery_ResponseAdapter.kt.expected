@@ -10,10 +10,10 @@ import com.apollographql.apollo3.api.ResponseAdapterCache
 import com.apollographql.apollo3.api.ResponseField
 import com.apollographql.apollo3.api.StringResponseAdapter
 import com.apollographql.apollo3.api.internal.json.MapJsonReader
-import com.apollographql.apollo3.api.internal.json.MapJsonReader.Companion.buffer
 import com.apollographql.apollo3.api.json.JsonReader
 import com.apollographql.apollo3.api.json.JsonWriter
 import com.apollographql.apollo3.api.nullable
+import com.apollographql.apollo3.api.obj
 import com.example.fragments_with_type_condition.TestQuery
 import com.example.fragments_with_type_condition.fragment.DroidDetails
 import com.example.fragments_with_type_condition.fragment.HumanDetails
@@ -55,15 +55,13 @@ object TestQuery_ResponseAdapter : ResponseAdapter<TestQuery.Data> {
       TestQuery.Data {
     var r2: TestQuery.Data.R2? = null
     var luke: TestQuery.Data.Luke? = null
-    reader.beginObject()
     while(true) {
       when (reader.selectName(RESPONSE_NAMES)) {
-        0 -> r2 = R2.nullable().fromResponse(reader, responseAdapterCache)
-        1 -> luke = Luke.nullable().fromResponse(reader, responseAdapterCache)
+        0 -> r2 = R2.obj(true).nullable().fromResponse(reader, responseAdapterCache)
+        1 -> luke = Luke.obj(true).nullable().fromResponse(reader, responseAdapterCache)
         else -> break
       }
     }
-    reader.endObject()
     return TestQuery.Data(
       r2 = r2,
       luke = luke
@@ -77,9 +75,9 @@ object TestQuery_ResponseAdapter : ResponseAdapter<TestQuery.Data> {
   ) {
     writer.beginObject()
     writer.name("r2")
-    R2.nullable().toResponse(writer, responseAdapterCache, value.r2)
+    R2.obj(true).nullable().toResponse(writer, responseAdapterCache, value.r2)
     writer.name("luke")
-    Luke.nullable().toResponse(writer, responseAdapterCache, value.luke)
+    Luke.obj(true).nullable().toResponse(writer, responseAdapterCache, value.luke)
     writer.endObject()
   }
 
@@ -92,8 +90,6 @@ object TestQuery_ResponseAdapter : ResponseAdapter<TestQuery.Data> {
 
     override fun fromResponse(reader: JsonReader, responseAdapterCache: ResponseAdapterCache):
         TestQuery.Data.R2 {
-      val reader = reader.buffer()
-      reader.beginObject()
       var __typename: String? = null
 
       var humanDetails: HumanDetails.Data? = null
@@ -106,14 +102,13 @@ object TestQuery_ResponseAdapter : ResponseAdapter<TestQuery.Data> {
       }
       if (__typename in arrayOf("Human")) {
         (reader as MapJsonReader).rewind()
-        humanDetails = HumanDetails_ResponseAdapter.fromFields(reader, responseAdapterCache)
+        humanDetails = HumanDetails_ResponseAdapter.fromResponse(reader, responseAdapterCache)
       }
       if (__typename in arrayOf("Droid")) {
         (reader as MapJsonReader).rewind()
-        droidDetails = DroidDetails_ResponseAdapter.fromFields(reader, responseAdapterCache)
+        droidDetails = DroidDetails_ResponseAdapter.fromResponse(reader, responseAdapterCache)
       }
 
-      reader.endObject()
       return TestQuery.Data.R2(
         __typename = __typename!!,
         humanDetails = humanDetails,
@@ -146,8 +141,6 @@ object TestQuery_ResponseAdapter : ResponseAdapter<TestQuery.Data> {
 
     override fun fromResponse(reader: JsonReader, responseAdapterCache: ResponseAdapterCache):
         TestQuery.Data.Luke {
-      val reader = reader.buffer()
-      reader.beginObject()
       var __typename: String? = null
 
       var humanDetails: HumanDetails.Data? = null
@@ -160,14 +153,13 @@ object TestQuery_ResponseAdapter : ResponseAdapter<TestQuery.Data> {
       }
       if (__typename in arrayOf("Human")) {
         (reader as MapJsonReader).rewind()
-        humanDetails = HumanDetails_ResponseAdapter.fromFields(reader, responseAdapterCache)
+        humanDetails = HumanDetails_ResponseAdapter.fromResponse(reader, responseAdapterCache)
       }
       if (__typename in arrayOf("Droid")) {
         (reader as MapJsonReader).rewind()
-        droidDetails = DroidDetails_ResponseAdapter.fromFields(reader, responseAdapterCache)
+        droidDetails = DroidDetails_ResponseAdapter.fromResponse(reader, responseAdapterCache)
       }
 
-      reader.endObject()
       return TestQuery.Data.Luke(
         __typename = __typename!!,
         humanDetails = humanDetails,

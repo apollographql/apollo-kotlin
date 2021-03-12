@@ -62,14 +62,6 @@ internal fun CodeGenerationAst.FragmentType.interfaceTypeSpec(generateAsInternal
       .build()
 }
 
-private fun adapterFunSpec(adapterClassName: TypeName): FunSpec {
-  return FunSpec.builder("adapter")
-      .addModifiers(KModifier.OVERRIDE)
-      .returns(ResponseAdapter::class.asClassName().parameterizedBy(ClassName(packageName = "", "Data")))
-      .addCode("return %T",adapterClassName)
-      .build()
-}
-
 internal fun CodeGenerationAst.FragmentType.implementationTypeSpec(
     generateAsInternal: Boolean,
     generateFragmentsAsInterfaces: Boolean,
@@ -85,9 +77,12 @@ internal fun CodeGenerationAst.FragmentType.implementationTypeSpec(
       .addSuperinterface(Fragment::class.java.asClassName().parameterizedBy(dataTypeName))
       .applyIf(generateAsInternal) { addModifiers(KModifier.INTERNAL) }
       .makeDataClass(variables.map { it.toParameterSpec() })
-      .addFunction(
-          adapterFunSpec(this.implementationType.typeRef.asAdapterTypeName())
-      )
+      .apply {
+        val buffered = implementationType.kind is CodeGenerationAst.ObjectType.Kind.ObjectWithFragments && !generateFragmentsAsInterfaces
+        addFunction(
+            adapterFunSpec(implementationType.typeRef.asAdapterTypeName(), buffered)
+        )
+      }
       .addFunction(
           FunSpec.builder(
               "responseFields",

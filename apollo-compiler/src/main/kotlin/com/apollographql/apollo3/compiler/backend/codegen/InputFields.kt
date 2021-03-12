@@ -111,11 +111,17 @@ private fun List<CodeGenerationAst.InputField>.inputFieldsAdapterTypeSpec(
           if (!it.isRequired) {
             beginControlFlow("if (value.%L is %T)", kotlinNameForVariable(it.name), Input.Present::class)
             addStatement("writer.name(%S)", it.schemaName)
-            addStatement("%L.toResponse(writer, ${Identifier.responseAdapterCache}, value.%L.value)", adapterInitializer(it.type), kotlinNameForVariable(it.name))
+            addStatement(
+                "%L.toResponse(writer, ${Identifier.responseAdapterCache}, value.%L.value)",
+                adapterInitializer(it.type, false),
+                kotlinNameForVariable(it.name))
             endControlFlow()
           } else {
             addStatement("writer.name(%S)", it.schemaName)
-            addStatement("%L.toResponse(writer, ${Identifier.responseAdapterCache}, value.%L)", adapterInitializer(it.type), kotlinNameForVariable(it.name))
+            addStatement(
+                "%L.toResponse(writer, ${Identifier.responseAdapterCache}, value.%L)",
+                adapterInitializer(it.type, false),
+                kotlinNameForVariable(it.name))
           }
         }
         addStatement("writer.endObject()")

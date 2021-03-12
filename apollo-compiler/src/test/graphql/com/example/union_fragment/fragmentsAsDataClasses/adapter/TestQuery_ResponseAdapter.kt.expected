@@ -10,11 +10,11 @@ import com.apollographql.apollo3.api.ResponseAdapterCache
 import com.apollographql.apollo3.api.ResponseField
 import com.apollographql.apollo3.api.StringResponseAdapter
 import com.apollographql.apollo3.api.internal.json.MapJsonReader
-import com.apollographql.apollo3.api.internal.json.MapJsonReader.Companion.buffer
 import com.apollographql.apollo3.api.json.JsonReader
 import com.apollographql.apollo3.api.json.JsonWriter
 import com.apollographql.apollo3.api.list
 import com.apollographql.apollo3.api.nullable
+import com.apollographql.apollo3.api.obj
 import com.example.union_fragment.TestQuery
 import kotlin.Array
 import kotlin.String
@@ -42,14 +42,13 @@ object TestQuery_ResponseAdapter : ResponseAdapter<TestQuery.Data> {
   override fun fromResponse(reader: JsonReader, responseAdapterCache: ResponseAdapterCache):
       TestQuery.Data {
     var search: List<TestQuery.Data.Search?>? = null
-    reader.beginObject()
     while(true) {
       when (reader.selectName(RESPONSE_NAMES)) {
-        0 -> search = Search.nullable().list().nullable().fromResponse(reader, responseAdapterCache)
+        0 -> search = Search.obj(true).nullable().list().nullable().fromResponse(reader,
+            responseAdapterCache)
         else -> break
       }
     }
-    reader.endObject()
     return TestQuery.Data(
       search = search
     )
@@ -62,7 +61,8 @@ object TestQuery_ResponseAdapter : ResponseAdapter<TestQuery.Data> {
   ) {
     writer.beginObject()
     writer.name("search")
-    Search.nullable().list().nullable().toResponse(writer, responseAdapterCache, value.search)
+    Search.obj(true).nullable().list().nullable().toResponse(writer, responseAdapterCache,
+        value.search)
     writer.endObject()
   }
 
@@ -75,8 +75,6 @@ object TestQuery_ResponseAdapter : ResponseAdapter<TestQuery.Data> {
 
     override fun fromResponse(reader: JsonReader, responseAdapterCache: ResponseAdapterCache):
         TestQuery.Data.Search {
-      val reader = reader.buffer()
-      reader.beginObject()
       var __typename: String? = null
 
       var asAsStarship: TestQuery.Data.Search.AsStarship? = null
@@ -88,10 +86,9 @@ object TestQuery_ResponseAdapter : ResponseAdapter<TestQuery.Data> {
       }
       if (__typename in arrayOf("Starship")) {
         (reader as MapJsonReader).rewind()
-        asAsStarship = AsStarship.fromFields(reader, responseAdapterCache)
+        asAsStarship = AsStarship.fromResponse(reader, responseAdapterCache)
       }
 
-      reader.endObject()
       return TestQuery.Data.Search(
         __typename = __typename!!,
         asAsStarship = asAsStarship
@@ -127,12 +124,6 @@ object TestQuery_ResponseAdapter : ResponseAdapter<TestQuery.Data> {
       val RESPONSE_NAMES: List<String> = RESPONSE_FIELDS.map { it.responseName }
 
       override fun fromResponse(reader: JsonReader, responseAdapterCache: ResponseAdapterCache):
-          TestQuery.Data.Search.AsStarship {
-        reader.beginObject()
-        return fromFields(reader, responseAdapterCache).also { reader.endObject() }
-      }
-
-      fun fromFields(reader: JsonReader, responseAdapterCache: ResponseAdapterCache):
           TestQuery.Data.Search.AsStarship {
         var __typename: String? = null
         var id: String? = null

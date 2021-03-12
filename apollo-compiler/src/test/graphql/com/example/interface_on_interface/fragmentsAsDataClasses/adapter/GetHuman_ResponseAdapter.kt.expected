@@ -11,9 +11,9 @@ import com.apollographql.apollo3.api.ResponseAdapterCache
 import com.apollographql.apollo3.api.ResponseField
 import com.apollographql.apollo3.api.StringResponseAdapter
 import com.apollographql.apollo3.api.internal.json.MapJsonReader
-import com.apollographql.apollo3.api.internal.json.MapJsonReader.Companion.buffer
 import com.apollographql.apollo3.api.json.JsonReader
 import com.apollographql.apollo3.api.json.JsonWriter
+import com.apollographql.apollo3.api.obj
 import com.example.interface_on_interface.GetHuman
 import kotlin.Array
 import kotlin.Double
@@ -48,15 +48,13 @@ object GetHuman_ResponseAdapter : ResponseAdapter<GetHuman.Data> {
       GetHuman.Data {
     var human: GetHuman.Data.Human? = null
     var node: GetHuman.Data.Node? = null
-    reader.beginObject()
     while(true) {
       when (reader.selectName(RESPONSE_NAMES)) {
-        0 -> human = Human.fromResponse(reader, responseAdapterCache)
-        1 -> node = Node.fromResponse(reader, responseAdapterCache)
+        0 -> human = Human.obj().fromResponse(reader, responseAdapterCache)
+        1 -> node = Node.obj(true).fromResponse(reader, responseAdapterCache)
         else -> break
       }
     }
-    reader.endObject()
     return GetHuman.Data(
       human = human!!,
       node = node!!
@@ -70,9 +68,9 @@ object GetHuman_ResponseAdapter : ResponseAdapter<GetHuman.Data> {
   ) {
     writer.beginObject()
     writer.name("human")
-    Human.toResponse(writer, responseAdapterCache, value.human)
+    Human.obj().toResponse(writer, responseAdapterCache, value.human)
     writer.name("node")
-    Node.toResponse(writer, responseAdapterCache, value.node)
+    Node.obj(true).toResponse(writer, responseAdapterCache, value.node)
     writer.endObject()
   }
 
@@ -99,7 +97,6 @@ object GetHuman_ResponseAdapter : ResponseAdapter<GetHuman.Data> {
       var id: String? = null
       var name: String? = null
       var height: Double? = null
-      reader.beginObject()
       while(true) {
         when (reader.selectName(RESPONSE_NAMES)) {
           0 -> id = StringResponseAdapter.fromResponse(reader, responseAdapterCache)
@@ -108,7 +105,6 @@ object GetHuman_ResponseAdapter : ResponseAdapter<GetHuman.Data> {
           else -> break
         }
       }
-      reader.endObject()
       return GetHuman.Data.Human(
         id = id!!,
         name = name!!,
@@ -141,8 +137,6 @@ object GetHuman_ResponseAdapter : ResponseAdapter<GetHuman.Data> {
 
     override fun fromResponse(reader: JsonReader, responseAdapterCache: ResponseAdapterCache):
         GetHuman.Data.Node {
-      val reader = reader.buffer()
-      reader.beginObject()
       var __typename: String? = null
 
       var asAsHuman: GetHuman.Data.Node.AsHuman? = null
@@ -154,10 +148,9 @@ object GetHuman_ResponseAdapter : ResponseAdapter<GetHuman.Data> {
       }
       if (__typename in arrayOf("Human")) {
         (reader as MapJsonReader).rewind()
-        asAsHuman = AsHuman.fromFields(reader, responseAdapterCache)
+        asAsHuman = AsHuman.fromResponse(reader, responseAdapterCache)
       }
 
-      reader.endObject()
       return GetHuman.Data.Node(
         __typename = __typename!!,
         asAsHuman = asAsHuman
@@ -188,12 +181,6 @@ object GetHuman_ResponseAdapter : ResponseAdapter<GetHuman.Data> {
       val RESPONSE_NAMES: List<String> = RESPONSE_FIELDS.map { it.responseName }
 
       override fun fromResponse(reader: JsonReader, responseAdapterCache: ResponseAdapterCache):
-          GetHuman.Data.Node.AsHuman {
-        reader.beginObject()
-        return fromFields(reader, responseAdapterCache).also { reader.endObject() }
-      }
-
-      fun fromFields(reader: JsonReader, responseAdapterCache: ResponseAdapterCache):
           GetHuman.Data.Node.AsHuman {
         var __typename: String? = null
         var height: Double? = null

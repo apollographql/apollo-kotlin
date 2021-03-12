@@ -12,6 +12,7 @@ import com.apollographql.apollo3.api.StringResponseAdapter
 import com.apollographql.apollo3.api.json.JsonReader
 import com.apollographql.apollo3.api.json.JsonWriter
 import com.apollographql.apollo3.api.nullable
+import com.apollographql.apollo3.api.obj
 import com.example.root_query_fragment.TestQuery
 import kotlin.Array
 import kotlin.String
@@ -24,14 +25,12 @@ import kotlin.collections.List
 object TestQuery_ResponseAdapter : ResponseAdapter<TestQuery.Data> {
   override fun fromResponse(reader: JsonReader, responseAdapterCache: ResponseAdapterCache):
       TestQuery.Data {
-    reader.beginObject()
     check(reader.nextName() == "__typename")
     val typename = reader.nextString()!!
     return when(typename) {
       "Query" -> QueryData.fromResponse(reader, responseAdapterCache, typename)
       else -> OtherData.fromResponse(reader, responseAdapterCache, typename)
     }
-    .also { reader.endObject() }
   }
 
   override fun toResponse(
@@ -66,15 +65,13 @@ object TestQuery_ResponseAdapter : ResponseAdapter<TestQuery.Data> {
     ): TestQuery.Data.QueryData {
       var __typename: String? = __typename
       var hero: TestQuery.Data.QueryData.Hero? = null
-      reader.beginObject()
       while(true) {
         when (reader.selectName(RESPONSE_NAMES)) {
           0 -> __typename = StringResponseAdapter.fromResponse(reader, responseAdapterCache)
-          1 -> hero = Hero.nullable().fromResponse(reader, responseAdapterCache)
+          1 -> hero = Hero.obj().nullable().fromResponse(reader, responseAdapterCache)
           else -> break
         }
       }
-      reader.endObject()
       return TestQuery.Data.QueryData(
         __typename = __typename!!,
         hero = hero
@@ -90,7 +87,7 @@ object TestQuery_ResponseAdapter : ResponseAdapter<TestQuery.Data> {
       writer.name("__typename")
       StringResponseAdapter.toResponse(writer, responseAdapterCache, value.__typename)
       writer.name("hero")
-      Hero.nullable().toResponse(writer, responseAdapterCache, value.hero)
+      Hero.obj().nullable().toResponse(writer, responseAdapterCache, value.hero)
       writer.endObject()
     }
 
@@ -107,14 +104,12 @@ object TestQuery_ResponseAdapter : ResponseAdapter<TestQuery.Data> {
       override fun fromResponse(reader: JsonReader, responseAdapterCache: ResponseAdapterCache):
           TestQuery.Data.QueryData.Hero {
         var name: String? = null
-        reader.beginObject()
         while(true) {
           when (reader.selectName(RESPONSE_NAMES)) {
             0 -> name = StringResponseAdapter.fromResponse(reader, responseAdapterCache)
             else -> break
           }
         }
-        reader.endObject()
         return TestQuery.Data.QueryData.Hero(
           name = name!!
         )
@@ -146,14 +141,12 @@ object TestQuery_ResponseAdapter : ResponseAdapter<TestQuery.Data> {
       __typename: String?
     ): TestQuery.Data.OtherData {
       var __typename: String? = __typename
-      reader.beginObject()
       while(true) {
         when (reader.selectName(RESPONSE_NAMES)) {
           0 -> __typename = StringResponseAdapter.fromResponse(reader, responseAdapterCache)
           else -> break
         }
       }
-      reader.endObject()
       return TestQuery.Data.OtherData(
         __typename = __typename!!
       )

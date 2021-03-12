@@ -35,7 +35,6 @@ internal object HumanDetailsImpl_ResponseAdapter : ResponseAdapter<HumanDetailsI
       HumanDetailsImpl.Data {
     var __typename: String? = null
     var name: String? = null
-    reader.beginObject()
     while(true) {
       when (reader.selectName(RESPONSE_NAMES)) {
         0 -> __typename = StringResponseAdapter.fromResponse(reader, responseAdapterCache)
@@ -43,7 +42,6 @@ internal object HumanDetailsImpl_ResponseAdapter : ResponseAdapter<HumanDetailsI
         else -> break
       }
     }
-    reader.endObject()
     return HumanDetailsImpl.Data(
       __typename = __typename!!,
       name = name!!

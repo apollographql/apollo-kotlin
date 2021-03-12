@@ -13,6 +13,7 @@ import com.apollographql.apollo3.api.json.JsonReader
 import com.apollographql.apollo3.api.json.JsonWriter
 import com.apollographql.apollo3.api.list
 import com.apollographql.apollo3.api.nullable
+import com.apollographql.apollo3.api.obj
 import com.example.enum_type.TestQuery
 import com.example.enum_type.type.Episode
 import com.example.enum_type.type.Episode_ResponseAdapter
@@ -40,14 +41,12 @@ object TestQuery_ResponseAdapter : ResponseAdapter<TestQuery.Data> {
   override fun fromResponse(reader: JsonReader, responseAdapterCache: ResponseAdapterCache):
       TestQuery.Data {
     var hero: TestQuery.Data.Hero? = null
-    reader.beginObject()
     while(true) {
       when (reader.selectName(RESPONSE_NAMES)) {
-        0 -> hero = Hero.nullable().fromResponse(reader, responseAdapterCache)
+        0 -> hero = Hero.obj().nullable().fromResponse(reader, responseAdapterCache)
         else -> break
       }
     }
-    reader.endObject()
     return TestQuery.Data(
       hero = hero
     )
@@ -60,7 +59,7 @@ object TestQuery_ResponseAdapter : ResponseAdapter<TestQuery.Data> {
   ) {
     writer.beginObject()
     writer.name("hero")
-    Hero.nullable().toResponse(writer, responseAdapterCache, value.hero)
+    Hero.obj().nullable().toResponse(writer, responseAdapterCache, value.hero)
     writer.endObject()
   }
 
@@ -88,7 +87,6 @@ object TestQuery_ResponseAdapter : ResponseAdapter<TestQuery.Data> {
       var name: String? = null
       var appearsIn: List<Episode?>? = null
       var firstAppearsIn: Episode? = null
-      reader.beginObject()
       while(true) {
         when (reader.selectName(RESPONSE_NAMES)) {
           0 -> name = StringResponseAdapter.fromResponse(reader, responseAdapterCache)
@@ -98,7 +96,6 @@ object TestQuery_ResponseAdapter : ResponseAdapter<TestQuery.Data> {
           else -> break
         }
       }
-      reader.endObject()
       return TestQuery.Data.Hero(
         name = name!!,
         appearsIn = appearsIn!!,

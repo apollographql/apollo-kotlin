@@ -14,6 +14,7 @@ import com.apollographql.apollo3.api.Variable
 import com.apollographql.apollo3.api.json.JsonReader
 import com.apollographql.apollo3.api.json.JsonWriter
 import com.apollographql.apollo3.api.nullable
+import com.apollographql.apollo3.api.obj
 import com.example.input_object_type.TestQuery
 import kotlin.Array
 import kotlin.Int
@@ -43,14 +44,12 @@ object TestQuery_ResponseAdapter : ResponseAdapter<TestQuery.Data> {
   override fun fromResponse(reader: JsonReader, responseAdapterCache: ResponseAdapterCache):
       TestQuery.Data {
     var createReview: TestQuery.Data.CreateReview? = null
-    reader.beginObject()
     while(true) {
       when (reader.selectName(RESPONSE_NAMES)) {
-        0 -> createReview = CreateReview.nullable().fromResponse(reader, responseAdapterCache)
+        0 -> createReview = CreateReview.obj().nullable().fromResponse(reader, responseAdapterCache)
         else -> break
       }
     }
-    reader.endObject()
     return TestQuery.Data(
       createReview = createReview
     )
@@ -63,7 +62,7 @@ object TestQuery_ResponseAdapter : ResponseAdapter<TestQuery.Data> {
   ) {
     writer.beginObject()
     writer.name("createReview")
-    CreateReview.nullable().toResponse(writer, responseAdapterCache, value.createReview)
+    CreateReview.obj().nullable().toResponse(writer, responseAdapterCache, value.createReview)
     writer.endObject()
   }
 
@@ -85,7 +84,6 @@ object TestQuery_ResponseAdapter : ResponseAdapter<TestQuery.Data> {
         TestQuery.Data.CreateReview {
       var stars: Int? = null
       var commentary: String? = null
-      reader.beginObject()
       while(true) {
         when (reader.selectName(RESPONSE_NAMES)) {
           0 -> stars = IntResponseAdapter.fromResponse(reader, responseAdapterCache)
@@ -93,7 +91,6 @@ object TestQuery_ResponseAdapter : ResponseAdapter<TestQuery.Data> {
           else -> break
         }
       }
-      reader.endObject()
       return TestQuery.Data.CreateReview(
         stars = stars!!,
         commentary = commentary

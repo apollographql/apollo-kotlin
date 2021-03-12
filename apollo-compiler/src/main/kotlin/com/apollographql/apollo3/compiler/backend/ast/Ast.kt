@@ -51,7 +51,7 @@ internal data class CodeGenerationAst(
   )
 
   /**
-   * @param isTypeCase: true if this is a type case of a polymorphic field
+   * @param isShape: true if this is a type case of a polymorphic field
    */
   data class ObjectType(
       val name: String,
@@ -64,7 +64,7 @@ internal data class CodeGenerationAst(
       val typeRef: TypeRef,
       val schemaTypename: String?,
       val fragmentAccessors: List<FragmentAccessor>,
-      val isTypeCase: Boolean,
+      val isShape: Boolean,
       val abstract: Boolean
   ) {
     data class FragmentAccessor(val name: String, val typeRef: TypeRef)
@@ -88,6 +88,10 @@ internal data class CodeGenerationAst(
     )
   }
 
+  /**
+   * @param requiresBufferedReader: true if this field can take multiple forms and should
+   * therefore be buffered
+   */
   data class Field(
       val name: String,
       val responseName: String,
@@ -98,6 +102,7 @@ internal data class CodeGenerationAst(
       val arguments: Map<String, Any?>,
       val conditions: Set<Condition>,
       val override: Boolean,
+      val requiresBufferedReader: Boolean
   ) {
     sealed class Condition {
       data class Directive(val variableName: String, val inverted: Boolean) : Condition()
@@ -275,7 +280,8 @@ internal data class CodeGenerationAst(
         deprecationReason = null,
         arguments = emptyMap(),
         conditions = emptySet(),
-        override = false
+        override = false,
+        requiresBufferedReader = false
     )
   }
 }

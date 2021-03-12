@@ -11,10 +11,10 @@ import com.apollographql.apollo3.api.ResponseAdapterCache
 import com.apollographql.apollo3.api.ResponseField
 import com.apollographql.apollo3.api.StringResponseAdapter
 import com.apollographql.apollo3.api.internal.json.MapJsonReader
-import com.apollographql.apollo3.api.internal.json.MapJsonReader.Companion.buffer
 import com.apollographql.apollo3.api.json.JsonReader
 import com.apollographql.apollo3.api.json.JsonWriter
 import com.apollographql.apollo3.api.nullable
+import com.apollographql.apollo3.api.obj
 import com.example.fragment_in_fragment.fragment.PilotFragment
 import com.example.fragment_in_fragment.fragment.PlanetFragment
 import kotlin.Array
@@ -45,12 +45,6 @@ object PilotFragment_ResponseAdapter : ResponseAdapter<PilotFragment.Data> {
 
   override fun fromResponse(reader: JsonReader, responseAdapterCache: ResponseAdapterCache):
       PilotFragment.Data {
-    reader.beginObject()
-    return fromFields(reader, responseAdapterCache).also { reader.endObject() }
-  }
-
-  fun fromFields(reader: JsonReader, responseAdapterCache: ResponseAdapterCache):
-      PilotFragment.Data {
     var __typename: String? = null
     var name: String? = null
     var homeworld: PilotFragment.Data.Homeworld? = null
@@ -58,7 +52,7 @@ object PilotFragment_ResponseAdapter : ResponseAdapter<PilotFragment.Data> {
       when (reader.selectName(RESPONSE_NAMES)) {
         0 -> __typename = StringResponseAdapter.fromResponse(reader, responseAdapterCache)
         1 -> name = NullableStringResponseAdapter.fromResponse(reader, responseAdapterCache)
-        2 -> homeworld = Homeworld.nullable().fromResponse(reader, responseAdapterCache)
+        2 -> homeworld = Homeworld.obj(true).nullable().fromResponse(reader, responseAdapterCache)
         else -> break
       }
     }
@@ -80,7 +74,7 @@ object PilotFragment_ResponseAdapter : ResponseAdapter<PilotFragment.Data> {
     writer.name("name")
     NullableStringResponseAdapter.toResponse(writer, responseAdapterCache, value.name)
     writer.name("homeworld")
-    Homeworld.nullable().toResponse(writer, responseAdapterCache, value.homeworld)
+    Homeworld.obj(true).nullable().toResponse(writer, responseAdapterCache, value.homeworld)
     writer.endObject()
   }
 
@@ -93,8 +87,6 @@ object PilotFragment_ResponseAdapter : ResponseAdapter<PilotFragment.Data> {
 
     override fun fromResponse(reader: JsonReader, responseAdapterCache: ResponseAdapterCache):
         PilotFragment.Data.Homeworld {
-      val reader = reader.buffer()
-      reader.beginObject()
       var __typename: String? = null
 
       var planetFragment: PlanetFragment.Data? = null
@@ -106,10 +98,9 @@ object PilotFragment_ResponseAdapter : ResponseAdapter<PilotFragment.Data> {
       }
       if (__typename in arrayOf("Planet")) {
         (reader as MapJsonReader).rewind()
-        planetFragment = PlanetFragment_ResponseAdapter.fromFields(reader, responseAdapterCache)
+        planetFragment = PlanetFragment_ResponseAdapter.fromResponse(reader, responseAdapterCache)
       }
 
-      reader.endObject()
       return PilotFragment.Data.Homeworld(
         __typename = __typename!!,
         planetFragment = planetFragment

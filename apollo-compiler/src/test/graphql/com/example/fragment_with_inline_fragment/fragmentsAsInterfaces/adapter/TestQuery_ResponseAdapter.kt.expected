@@ -15,6 +15,7 @@ import com.apollographql.apollo3.api.json.JsonReader
 import com.apollographql.apollo3.api.json.JsonWriter
 import com.apollographql.apollo3.api.list
 import com.apollographql.apollo3.api.nullable
+import com.apollographql.apollo3.api.obj
 import com.example.fragment_with_inline_fragment.TestQuery
 import com.example.fragment_with_inline_fragment.type.Episode
 import com.example.fragment_with_inline_fragment.type.Episode_ResponseAdapter
@@ -45,14 +46,12 @@ object TestQuery_ResponseAdapter : ResponseAdapter<TestQuery.Data> {
   override fun fromResponse(reader: JsonReader, responseAdapterCache: ResponseAdapterCache):
       TestQuery.Data {
     var hero: TestQuery.Data.Hero? = null
-    reader.beginObject()
     while(true) {
       when (reader.selectName(RESPONSE_NAMES)) {
-        0 -> hero = Hero.nullable().fromResponse(reader, responseAdapterCache)
+        0 -> hero = Hero.obj().nullable().fromResponse(reader, responseAdapterCache)
         else -> break
       }
     }
-    reader.endObject()
     return TestQuery.Data(
       hero = hero
     )
@@ -65,14 +64,13 @@ object TestQuery_ResponseAdapter : ResponseAdapter<TestQuery.Data> {
   ) {
     writer.beginObject()
     writer.name("hero")
-    Hero.nullable().toResponse(writer, responseAdapterCache, value.hero)
+    Hero.obj().nullable().toResponse(writer, responseAdapterCache, value.hero)
     writer.endObject()
   }
 
   object Hero : ResponseAdapter<TestQuery.Data.Hero> {
     override fun fromResponse(reader: JsonReader, responseAdapterCache: ResponseAdapterCache):
         TestQuery.Data.Hero {
-      reader.beginObject()
       check(reader.nextName() == "__typename")
       val typename = reader.nextString()!!
       return when(typename) {
@@ -80,7 +78,6 @@ object TestQuery_ResponseAdapter : ResponseAdapter<TestQuery.Data> {
         "Human" -> CharacterHumanHero.fromResponse(reader, responseAdapterCache, typename)
         else -> OtherHero.fromResponse(reader, responseAdapterCache, typename)
       }
-      .also { reader.endObject() }
     }
 
     override fun toResponse(
@@ -132,20 +129,19 @@ object TestQuery_ResponseAdapter : ResponseAdapter<TestQuery.Data> {
         var appearsIn: List<Episode?>? = null
         var friendsConnection: TestQuery.Data.Hero.CharacterDroidHero.FriendsConnection? = null
         var primaryFunction: String? = null
-        reader.beginObject()
         while(true) {
           when (reader.selectName(RESPONSE_NAMES)) {
             0 -> __typename = StringResponseAdapter.fromResponse(reader, responseAdapterCache)
             1 -> name = StringResponseAdapter.fromResponse(reader, responseAdapterCache)
             2 -> appearsIn = Episode_ResponseAdapter.nullable().list().fromResponse(reader,
                 responseAdapterCache)
-            3 -> friendsConnection = FriendsConnection.fromResponse(reader, responseAdapterCache)
+            3 -> friendsConnection = FriendsConnection.obj().fromResponse(reader,
+                responseAdapterCache)
             4 -> primaryFunction = NullableStringResponseAdapter.fromResponse(reader,
                 responseAdapterCache)
             else -> break
           }
         }
-        reader.endObject()
         return TestQuery.Data.Hero.CharacterDroidHero(
           __typename = __typename!!,
           name = name!!,
@@ -169,7 +165,7 @@ object TestQuery_ResponseAdapter : ResponseAdapter<TestQuery.Data> {
         Episode_ResponseAdapter.nullable().list().toResponse(writer, responseAdapterCache,
             value.appearsIn)
         writer.name("friendsConnection")
-        FriendsConnection.toResponse(writer, responseAdapterCache, value.friendsConnection)
+        FriendsConnection.obj().toResponse(writer, responseAdapterCache, value.friendsConnection)
         writer.name("primaryFunction")
         NullableStringResponseAdapter.toResponse(writer, responseAdapterCache,
             value.primaryFunction)
@@ -198,17 +194,15 @@ object TestQuery_ResponseAdapter : ResponseAdapter<TestQuery.Data> {
             TestQuery.Data.Hero.CharacterDroidHero.FriendsConnection {
           var totalCount: Int? = null
           var edges: List<TestQuery.Data.Hero.CharacterDroidHero.FriendsConnection.Edges?>? = null
-          reader.beginObject()
           while(true) {
             when (reader.selectName(RESPONSE_NAMES)) {
               0 -> totalCount = NullableIntResponseAdapter.fromResponse(reader,
                   responseAdapterCache)
-              1 -> edges = Edges.nullable().list().nullable().fromResponse(reader,
+              1 -> edges = Edges.obj().nullable().list().nullable().fromResponse(reader,
                   responseAdapterCache)
               else -> break
             }
           }
-          reader.endObject()
           return TestQuery.Data.Hero.CharacterDroidHero.FriendsConnection(
             totalCount = totalCount,
             edges = edges
@@ -224,7 +218,8 @@ object TestQuery_ResponseAdapter : ResponseAdapter<TestQuery.Data> {
           writer.name("totalCount")
           NullableIntResponseAdapter.toResponse(writer, responseAdapterCache, value.totalCount)
           writer.name("edges")
-          Edges.nullable().list().nullable().toResponse(writer, responseAdapterCache, value.edges)
+          Edges.obj().nullable().list().nullable().toResponse(writer, responseAdapterCache,
+              value.edges)
           writer.endObject()
         }
 
@@ -245,14 +240,12 @@ object TestQuery_ResponseAdapter : ResponseAdapter<TestQuery.Data> {
           override fun fromResponse(reader: JsonReader, responseAdapterCache: ResponseAdapterCache):
               TestQuery.Data.Hero.CharacterDroidHero.FriendsConnection.Edges {
             var node: TestQuery.Data.Hero.CharacterDroidHero.FriendsConnection.Edges.Node? = null
-            reader.beginObject()
             while(true) {
               when (reader.selectName(RESPONSE_NAMES)) {
-                0 -> node = Node.nullable().fromResponse(reader, responseAdapterCache)
+                0 -> node = Node.obj().nullable().fromResponse(reader, responseAdapterCache)
                 else -> break
               }
             }
-            reader.endObject()
             return TestQuery.Data.Hero.CharacterDroidHero.FriendsConnection.Edges(
               node = node
             )
@@ -265,7 +258,7 @@ object TestQuery_ResponseAdapter : ResponseAdapter<TestQuery.Data> {
           ) {
             writer.beginObject()
             writer.name("node")
-            Node.nullable().toResponse(writer, responseAdapterCache, value.node)
+            Node.obj().nullable().toResponse(writer, responseAdapterCache, value.node)
             writer.endObject()
           }
 
@@ -284,14 +277,12 @@ object TestQuery_ResponseAdapter : ResponseAdapter<TestQuery.Data> {
                 responseAdapterCache: ResponseAdapterCache):
                 TestQuery.Data.Hero.CharacterDroidHero.FriendsConnection.Edges.Node {
               var name: String? = null
-              reader.beginObject()
               while(true) {
                 when (reader.selectName(RESPONSE_NAMES)) {
                   0 -> name = StringResponseAdapter.fromResponse(reader, responseAdapterCache)
                   else -> break
                 }
               }
-              reader.endObject()
               return TestQuery.Data.Hero.CharacterDroidHero.FriendsConnection.Edges.Node(
                 name = name!!
               )
@@ -344,18 +335,17 @@ object TestQuery_ResponseAdapter : ResponseAdapter<TestQuery.Data> {
         var name: String? = null
         var appearsIn: List<Episode?>? = null
         var friendsConnection: TestQuery.Data.Hero.CharacterHumanHero.FriendsConnection? = null
-        reader.beginObject()
         while(true) {
           when (reader.selectName(RESPONSE_NAMES)) {
             0 -> __typename = StringResponseAdapter.fromResponse(reader, responseAdapterCache)
             1 -> name = StringResponseAdapter.fromResponse(reader, responseAdapterCache)
             2 -> appearsIn = Episode_ResponseAdapter.nullable().list().fromResponse(reader,
                 responseAdapterCache)
-            3 -> friendsConnection = FriendsConnection.fromResponse(reader, responseAdapterCache)
+            3 -> friendsConnection = FriendsConnection.obj().fromResponse(reader,
+                responseAdapterCache)
             else -> break
           }
         }
-        reader.endObject()
         return TestQuery.Data.Hero.CharacterHumanHero(
           __typename = __typename!!,
           name = name!!,
@@ -378,7 +368,7 @@ object TestQuery_ResponseAdapter : ResponseAdapter<TestQuery.Data> {
         Episode_ResponseAdapter.nullable().list().toResponse(writer, responseAdapterCache,
             value.appearsIn)
         writer.name("friendsConnection")
-        FriendsConnection.toResponse(writer, responseAdapterCache, value.friendsConnection)
+        FriendsConnection.obj().toResponse(writer, responseAdapterCache, value.friendsConnection)
         writer.endObject()
       }
 
@@ -404,17 +394,15 @@ object TestQuery_ResponseAdapter : ResponseAdapter<TestQuery.Data> {
             TestQuery.Data.Hero.CharacterHumanHero.FriendsConnection {
           var totalCount: Int? = null
           var edges: List<TestQuery.Data.Hero.CharacterHumanHero.FriendsConnection.Edges?>? = null
-          reader.beginObject()
           while(true) {
             when (reader.selectName(RESPONSE_NAMES)) {
               0 -> totalCount = NullableIntResponseAdapter.fromResponse(reader,
                   responseAdapterCache)
-              1 -> edges = Edges.nullable().list().nullable().fromResponse(reader,
+              1 -> edges = Edges.obj().nullable().list().nullable().fromResponse(reader,
                   responseAdapterCache)
               else -> break
             }
           }
-          reader.endObject()
           return TestQuery.Data.Hero.CharacterHumanHero.FriendsConnection(
             totalCount = totalCount,
             edges = edges
@@ -430,7 +418,8 @@ object TestQuery_ResponseAdapter : ResponseAdapter<TestQuery.Data> {
           writer.name("totalCount")
           NullableIntResponseAdapter.toResponse(writer, responseAdapterCache, value.totalCount)
           writer.name("edges")
-          Edges.nullable().list().nullable().toResponse(writer, responseAdapterCache, value.edges)
+          Edges.obj().nullable().list().nullable().toResponse(writer, responseAdapterCache,
+              value.edges)
           writer.endObject()
         }
 
@@ -451,14 +440,12 @@ object TestQuery_ResponseAdapter : ResponseAdapter<TestQuery.Data> {
           override fun fromResponse(reader: JsonReader, responseAdapterCache: ResponseAdapterCache):
               TestQuery.Data.Hero.CharacterHumanHero.FriendsConnection.Edges {
             var node: TestQuery.Data.Hero.CharacterHumanHero.FriendsConnection.Edges.Node? = null
-            reader.beginObject()
             while(true) {
               when (reader.selectName(RESPONSE_NAMES)) {
-                0 -> node = Node.nullable().fromResponse(reader, responseAdapterCache)
+                0 -> node = Node.obj().nullable().fromResponse(reader, responseAdapterCache)
                 else -> break
               }
             }
-            reader.endObject()
             return TestQuery.Data.Hero.CharacterHumanHero.FriendsConnection.Edges(
               node = node
             )
@@ -471,7 +458,7 @@ object TestQuery_ResponseAdapter : ResponseAdapter<TestQuery.Data> {
           ) {
             writer.beginObject()
             writer.name("node")
-            Node.nullable().toResponse(writer, responseAdapterCache, value.node)
+            Node.obj().nullable().toResponse(writer, responseAdapterCache, value.node)
             writer.endObject()
           }
 
@@ -490,14 +477,12 @@ object TestQuery_ResponseAdapter : ResponseAdapter<TestQuery.Data> {
                 responseAdapterCache: ResponseAdapterCache):
                 TestQuery.Data.Hero.CharacterHumanHero.FriendsConnection.Edges.Node {
               var name: String? = null
-              reader.beginObject()
               while(true) {
                 when (reader.selectName(RESPONSE_NAMES)) {
                   0 -> name = StringResponseAdapter.fromResponse(reader, responseAdapterCache)
                   else -> break
                 }
               }
-              reader.endObject()
               return TestQuery.Data.Hero.CharacterHumanHero.FriendsConnection.Edges.Node(
                 name = name!!
               )
@@ -542,7 +527,6 @@ object TestQuery_ResponseAdapter : ResponseAdapter<TestQuery.Data> {
         var __typename: String? = __typename
         var name: String? = null
         var appearsIn: List<Episode?>? = null
-        reader.beginObject()
         while(true) {
           when (reader.selectName(RESPONSE_NAMES)) {
             0 -> __typename = StringResponseAdapter.fromResponse(reader, responseAdapterCache)
@@ -552,7 +536,6 @@ object TestQuery_ResponseAdapter : ResponseAdapter<TestQuery.Data> {
             else -> break
           }
         }
-        reader.endObject()
         return TestQuery.Data.Hero.OtherHero(
           __typename = __typename!!,
           name = name!!,

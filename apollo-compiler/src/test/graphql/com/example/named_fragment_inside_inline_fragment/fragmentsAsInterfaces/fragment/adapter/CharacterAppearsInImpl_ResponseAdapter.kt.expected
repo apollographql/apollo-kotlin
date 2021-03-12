@@ -40,7 +40,6 @@ object CharacterAppearsInImpl_ResponseAdapter : ResponseAdapter<CharacterAppears
       CharacterAppearsInImpl.Data {
     var __typename: String? = null
     var appearsIn: List<Episode?>? = null
-    reader.beginObject()
     while(true) {
       when (reader.selectName(RESPONSE_NAMES)) {
         0 -> __typename = StringResponseAdapter.fromResponse(reader, responseAdapterCache)
@@ -49,7 +48,6 @@ object CharacterAppearsInImpl_ResponseAdapter : ResponseAdapter<CharacterAppears
         else -> break
       }
     }
-    reader.endObject()
     return CharacterAppearsInImpl.Data(
       __typename = __typename!!,
       appearsIn = appearsIn!!

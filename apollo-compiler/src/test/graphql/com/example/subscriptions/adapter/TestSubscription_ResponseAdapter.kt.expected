@@ -14,6 +14,7 @@ import com.apollographql.apollo3.api.Variable
 import com.apollographql.apollo3.api.json.JsonReader
 import com.apollographql.apollo3.api.json.JsonWriter
 import com.apollographql.apollo3.api.nullable
+import com.apollographql.apollo3.api.obj
 import com.example.subscriptions.TestSubscription
 import kotlin.Array
 import kotlin.Int
@@ -42,14 +43,12 @@ object TestSubscription_ResponseAdapter : ResponseAdapter<TestSubscription.Data>
   override fun fromResponse(reader: JsonReader, responseAdapterCache: ResponseAdapterCache):
       TestSubscription.Data {
     var commentAdded: TestSubscription.Data.CommentAdded? = null
-    reader.beginObject()
     while(true) {
       when (reader.selectName(RESPONSE_NAMES)) {
-        0 -> commentAdded = CommentAdded.nullable().fromResponse(reader, responseAdapterCache)
+        0 -> commentAdded = CommentAdded.obj().nullable().fromResponse(reader, responseAdapterCache)
         else -> break
       }
     }
-    reader.endObject()
     return TestSubscription.Data(
       commentAdded = commentAdded
     )
@@ -62,7 +61,7 @@ object TestSubscription_ResponseAdapter : ResponseAdapter<TestSubscription.Data>
   ) {
     writer.beginObject()
     writer.name("commentAdded")
-    CommentAdded.nullable().toResponse(writer, responseAdapterCache, value.commentAdded)
+    CommentAdded.obj().nullable().toResponse(writer, responseAdapterCache, value.commentAdded)
     writer.endObject()
   }
 
@@ -84,7 +83,6 @@ object TestSubscription_ResponseAdapter : ResponseAdapter<TestSubscription.Data>
         TestSubscription.Data.CommentAdded {
       var id: Int? = null
       var content: String? = null
-      reader.beginObject()
       while(true) {
         when (reader.selectName(RESPONSE_NAMES)) {
           0 -> id = IntResponseAdapter.fromResponse(reader, responseAdapterCache)
@@ -92,7 +90,6 @@ object TestSubscription_ResponseAdapter : ResponseAdapter<TestSubscription.Data>
           else -> break
         }
       }
-      reader.endObject()
       return TestSubscription.Data.CommentAdded(
         id = id!!,
         content = content!!

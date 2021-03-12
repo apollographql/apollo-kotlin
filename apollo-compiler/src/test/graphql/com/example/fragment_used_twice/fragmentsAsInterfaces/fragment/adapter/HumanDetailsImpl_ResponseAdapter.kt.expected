@@ -25,14 +25,12 @@ import kotlin.collections.List
 object HumanDetailsImpl_ResponseAdapter : ResponseAdapter<HumanDetailsImpl.Data> {
   override fun fromResponse(reader: JsonReader, responseAdapterCache: ResponseAdapterCache):
       HumanDetailsImpl.Data {
-    reader.beginObject()
     check(reader.nextName() == "__typename")
     val typename = reader.nextString()!!
     return when(typename) {
       "Human" -> CharacterData.fromResponse(reader, responseAdapterCache, typename)
       else -> OtherData.fromResponse(reader, responseAdapterCache, typename)
     }
-    .also { reader.endObject() }
   }
 
   override fun toResponse(
@@ -69,7 +67,6 @@ object HumanDetailsImpl_ResponseAdapter : ResponseAdapter<HumanDetailsImpl.Data>
       var __typename: String? = __typename
       var name: String? = null
       var birthDate: Any? = null
-      reader.beginObject()
       while(true) {
         when (reader.selectName(RESPONSE_NAMES)) {
           0 -> __typename = StringResponseAdapter.fromResponse(reader, responseAdapterCache)
@@ -79,7 +76,6 @@ object HumanDetailsImpl_ResponseAdapter : ResponseAdapter<HumanDetailsImpl.Data>
           else -> break
         }
       }
-      reader.endObject()
       return HumanDetailsImpl.Data.CharacterData(
         __typename = __typename!!,
         name = name!!,
@@ -122,7 +118,6 @@ object HumanDetailsImpl_ResponseAdapter : ResponseAdapter<HumanDetailsImpl.Data>
     ): HumanDetailsImpl.Data.OtherData {
       var __typename: String? = __typename
       var name: String? = null
-      reader.beginObject()
       while(true) {
         when (reader.selectName(RESPONSE_NAMES)) {
           0 -> __typename = StringResponseAdapter.fromResponse(reader, responseAdapterCache)
@@ -130,7 +125,6 @@ object HumanDetailsImpl_ResponseAdapter : ResponseAdapter<HumanDetailsImpl.Data>
           else -> break
         }
       }
-      reader.endObject()
       return HumanDetailsImpl.Data.OtherData(
         __typename = __typename!!,
         name = name!!

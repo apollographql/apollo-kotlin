@@ -13,6 +13,7 @@ import com.apollographql.apollo3.api.json.JsonReader
 import com.apollographql.apollo3.api.json.JsonWriter
 import com.apollographql.apollo3.api.list
 import com.apollographql.apollo3.api.nullable
+import com.apollographql.apollo3.api.obj
 import com.example.reserved_keywords.TestQuery
 import kotlin.Array
 import kotlin.String
@@ -52,16 +53,14 @@ object TestQuery_ResponseAdapter : ResponseAdapter<TestQuery.Data> {
       TestQuery.Data {
     var yield_: TestQuery.Data.Yield? = null
     var objects: List<TestQuery.Data.Objects?>? = null
-    reader.beginObject()
     while(true) {
       when (reader.selectName(RESPONSE_NAMES)) {
-        0 -> yield_ = Yield.nullable().fromResponse(reader, responseAdapterCache)
-        1 -> objects = Objects.nullable().list().nullable().fromResponse(reader,
+        0 -> yield_ = Yield.obj().nullable().fromResponse(reader, responseAdapterCache)
+        1 -> objects = Objects.obj().nullable().list().nullable().fromResponse(reader,
             responseAdapterCache)
         else -> break
       }
     }
-    reader.endObject()
     return TestQuery.Data(
       yield_ = yield_,
       objects = objects
@@ -75,9 +74,10 @@ object TestQuery_ResponseAdapter : ResponseAdapter<TestQuery.Data> {
   ) {
     writer.beginObject()
     writer.name("yield")
-    Yield.nullable().toResponse(writer, responseAdapterCache, value.yield_)
+    Yield.obj().nullable().toResponse(writer, responseAdapterCache, value.yield_)
     writer.name("objects")
-    Objects.nullable().list().nullable().toResponse(writer, responseAdapterCache, value.objects)
+    Objects.obj().nullable().list().nullable().toResponse(writer, responseAdapterCache,
+        value.objects)
     writer.endObject()
   }
 
@@ -100,7 +100,6 @@ object TestQuery_ResponseAdapter : ResponseAdapter<TestQuery.Data> {
         TestQuery.Data.Yield {
       var it_: String? = null
       var name: String? = null
-      reader.beginObject()
       while(true) {
         when (reader.selectName(RESPONSE_NAMES)) {
           0 -> it_ = StringResponseAdapter.fromResponse(reader, responseAdapterCache)
@@ -108,7 +107,6 @@ object TestQuery_ResponseAdapter : ResponseAdapter<TestQuery.Data> {
           else -> break
         }
       }
-      reader.endObject()
       return TestQuery.Data.Yield(
         it_ = it_!!,
         name = name!!
@@ -132,7 +130,6 @@ object TestQuery_ResponseAdapter : ResponseAdapter<TestQuery.Data> {
   object Objects : ResponseAdapter<TestQuery.Data.Objects> {
     override fun fromResponse(reader: JsonReader, responseAdapterCache: ResponseAdapterCache):
         TestQuery.Data.Objects {
-      reader.beginObject()
       check(reader.nextName() == "__typename")
       val typename = reader.nextString()!!
       return when(typename) {
@@ -140,7 +137,6 @@ object TestQuery_ResponseAdapter : ResponseAdapter<TestQuery.Data> {
         "Droid" -> CharacterObjects.fromResponse(reader, responseAdapterCache, typename)
         else -> OtherObjects.fromResponse(reader, responseAdapterCache, typename)
       }
-      .also { reader.endObject() }
     }
 
     override fun toResponse(
@@ -172,7 +168,6 @@ object TestQuery_ResponseAdapter : ResponseAdapter<TestQuery.Data> {
       ): TestQuery.Data.Objects.CharacterObjects {
         var __typename: String? = __typename
         var name: String? = null
-        reader.beginObject()
         while(true) {
           when (reader.selectName(RESPONSE_NAMES)) {
             0 -> __typename = StringResponseAdapter.fromResponse(reader, responseAdapterCache)
@@ -180,7 +175,6 @@ object TestQuery_ResponseAdapter : ResponseAdapter<TestQuery.Data> {
             else -> break
           }
         }
-        reader.endObject()
         return TestQuery.Data.Objects.CharacterObjects(
           __typename = __typename!!,
           name = name!!
@@ -214,14 +208,12 @@ object TestQuery_ResponseAdapter : ResponseAdapter<TestQuery.Data> {
         __typename: String?
       ): TestQuery.Data.Objects.OtherObjects {
         var __typename: String? = __typename
-        reader.beginObject()
         while(true) {
           when (reader.selectName(RESPONSE_NAMES)) {
             0 -> __typename = StringResponseAdapter.fromResponse(reader, responseAdapterCache)
             else -> break
           }
         }
-        reader.endObject()
         return TestQuery.Data.Objects.OtherObjects(
           __typename = __typename!!
         )

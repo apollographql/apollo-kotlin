@@ -15,6 +15,7 @@ import com.apollographql.apollo3.api.json.JsonReader
 import com.apollographql.apollo3.api.json.JsonWriter
 import com.apollographql.apollo3.api.list
 import com.apollographql.apollo3.api.nullable
+import com.apollographql.apollo3.api.obj
 import com.example.simple_fragment_with_inline_fragments.fragment.HeroDetailsImpl
 import kotlin.Array
 import kotlin.Double
@@ -50,17 +51,15 @@ object HeroDetailsImpl_ResponseAdapter : ResponseAdapter<HeroDetailsImpl.Data> {
     var __typename: String? = null
     var name: String? = null
     var friends: List<HeroDetailsImpl.Data.Friends?>? = null
-    reader.beginObject()
     while(true) {
       when (reader.selectName(RESPONSE_NAMES)) {
         0 -> __typename = StringResponseAdapter.fromResponse(reader, responseAdapterCache)
         1 -> name = StringResponseAdapter.fromResponse(reader, responseAdapterCache)
-        2 -> friends = Friends.nullable().list().nullable().fromResponse(reader,
+        2 -> friends = Friends.obj().nullable().list().nullable().fromResponse(reader,
             responseAdapterCache)
         else -> break
       }
     }
-    reader.endObject()
     return HeroDetailsImpl.Data(
       __typename = __typename!!,
       name = name!!,
@@ -79,14 +78,14 @@ object HeroDetailsImpl_ResponseAdapter : ResponseAdapter<HeroDetailsImpl.Data> {
     writer.name("name")
     StringResponseAdapter.toResponse(writer, responseAdapterCache, value.name)
     writer.name("friends")
-    Friends.nullable().list().nullable().toResponse(writer, responseAdapterCache, value.friends)
+    Friends.obj().nullable().list().nullable().toResponse(writer, responseAdapterCache,
+        value.friends)
     writer.endObject()
   }
 
   object Friends : ResponseAdapter<HeroDetailsImpl.Data.Friends> {
     override fun fromResponse(reader: JsonReader, responseAdapterCache: ResponseAdapterCache):
         HeroDetailsImpl.Data.Friends {
-      reader.beginObject()
       check(reader.nextName() == "__typename")
       val typename = reader.nextString()!!
       return when(typename) {
@@ -94,7 +93,6 @@ object HeroDetailsImpl_ResponseAdapter : ResponseAdapter<HeroDetailsImpl.Data> {
         "Droid" -> DroidFriends.fromResponse(reader, responseAdapterCache, typename)
         else -> OtherFriends.fromResponse(reader, responseAdapterCache, typename)
       }
-      .also { reader.endObject() }
     }
 
     override fun toResponse(
@@ -132,7 +130,6 @@ object HeroDetailsImpl_ResponseAdapter : ResponseAdapter<HeroDetailsImpl.Data> {
         var __typename: String? = __typename
         var name: String? = null
         var height: Double? = null
-        reader.beginObject()
         while(true) {
           when (reader.selectName(RESPONSE_NAMES)) {
             0 -> __typename = StringResponseAdapter.fromResponse(reader, responseAdapterCache)
@@ -141,7 +138,6 @@ object HeroDetailsImpl_ResponseAdapter : ResponseAdapter<HeroDetailsImpl.Data> {
             else -> break
           }
         }
-        reader.endObject()
         return HeroDetailsImpl.Data.Friends.HumanFriends(
           __typename = __typename!!,
           name = name!!,
@@ -188,7 +184,6 @@ object HeroDetailsImpl_ResponseAdapter : ResponseAdapter<HeroDetailsImpl.Data> {
         var __typename: String? = __typename
         var name: String? = null
         var primaryFunction: String? = null
-        reader.beginObject()
         while(true) {
           when (reader.selectName(RESPONSE_NAMES)) {
             0 -> __typename = StringResponseAdapter.fromResponse(reader, responseAdapterCache)
@@ -198,7 +193,6 @@ object HeroDetailsImpl_ResponseAdapter : ResponseAdapter<HeroDetailsImpl.Data> {
             else -> break
           }
         }
-        reader.endObject()
         return HeroDetailsImpl.Data.Friends.DroidFriends(
           __typename = __typename!!,
           name = name!!,
@@ -241,7 +235,6 @@ object HeroDetailsImpl_ResponseAdapter : ResponseAdapter<HeroDetailsImpl.Data> {
       ): HeroDetailsImpl.Data.Friends.OtherFriends {
         var __typename: String? = __typename
         var name: String? = null
-        reader.beginObject()
         while(true) {
           when (reader.selectName(RESPONSE_NAMES)) {
             0 -> __typename = StringResponseAdapter.fromResponse(reader, responseAdapterCache)
@@ -249,7 +242,6 @@ object HeroDetailsImpl_ResponseAdapter : ResponseAdapter<HeroDetailsImpl.Data> {
             else -> break
           }
         }
-        reader.endObject()
         return HeroDetailsImpl.Data.Friends.OtherFriends(
           __typename = __typename!!,
           name = name!!

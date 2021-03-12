@@ -33,11 +33,6 @@ object Starship_ResponseAdapter : ResponseAdapter<Starship.Data> {
 
   override fun fromResponse(reader: JsonReader, responseAdapterCache: ResponseAdapterCache):
       Starship.Data {
-    reader.beginObject()
-    return fromFields(reader, responseAdapterCache).also { reader.endObject() }
-  }
-
-  fun fromFields(reader: JsonReader, responseAdapterCache: ResponseAdapterCache): Starship.Data {
     var __typename: String? = null
     var name: String? = null
     while(true) {

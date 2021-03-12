@@ -12,6 +12,7 @@ import com.apollographql.apollo3.api.ResponseField
 import com.apollographql.apollo3.api.json.JsonReader
 import com.apollographql.apollo3.api.json.JsonWriter
 import com.apollographql.apollo3.api.list
+import com.apollographql.apollo3.api.obj
 import com.example.introspection_query.TestQuery
 import kotlin.Array
 import kotlin.String
@@ -47,15 +48,13 @@ object TestQuery_ResponseAdapter : ResponseAdapter<TestQuery.Data> {
       TestQuery.Data {
     var __schema: TestQuery.Data.__Schema? = null
     var __type: TestQuery.Data.__Type? = null
-    reader.beginObject()
     while(true) {
       when (reader.selectName(RESPONSE_NAMES)) {
-        0 -> __schema = __Schema.fromResponse(reader, responseAdapterCache)
-        1 -> __type = __Type.fromResponse(reader, responseAdapterCache)
+        0 -> __schema = __Schema.obj().fromResponse(reader, responseAdapterCache)
+        1 -> __type = __Type.obj().fromResponse(reader, responseAdapterCache)
         else -> break
       }
     }
-    reader.endObject()
     return TestQuery.Data(
       __schema = __schema!!,
       __type = __type!!
@@ -69,9 +68,9 @@ object TestQuery_ResponseAdapter : ResponseAdapter<TestQuery.Data> {
   ) {
     writer.beginObject()
     writer.name("__schema")
-    __Schema.toResponse(writer, responseAdapterCache, value.__schema)
+    __Schema.obj().toResponse(writer, responseAdapterCache, value.__schema)
     writer.name("__type")
-    __Type.toResponse(writer, responseAdapterCache, value.__type)
+    __Type.obj().toResponse(writer, responseAdapterCache, value.__type)
     writer.endObject()
   }
 
@@ -100,15 +99,13 @@ object TestQuery_ResponseAdapter : ResponseAdapter<TestQuery.Data> {
         TestQuery.Data.__Schema {
       var queryType: TestQuery.Data.__Schema.QueryType? = null
       var types: List<TestQuery.Data.__Schema.Types>? = null
-      reader.beginObject()
       while(true) {
         when (reader.selectName(RESPONSE_NAMES)) {
-          0 -> queryType = QueryType.fromResponse(reader, responseAdapterCache)
-          1 -> types = Types.list().fromResponse(reader, responseAdapterCache)
+          0 -> queryType = QueryType.obj().fromResponse(reader, responseAdapterCache)
+          1 -> types = Types.obj().list().fromResponse(reader, responseAdapterCache)
           else -> break
         }
       }
-      reader.endObject()
       return TestQuery.Data.__Schema(
         queryType = queryType!!,
         types = types!!
@@ -122,9 +119,9 @@ object TestQuery_ResponseAdapter : ResponseAdapter<TestQuery.Data> {
     ) {
       writer.beginObject()
       writer.name("queryType")
-      QueryType.toResponse(writer, responseAdapterCache, value.queryType)
+      QueryType.obj().toResponse(writer, responseAdapterCache, value.queryType)
       writer.name("types")
-      Types.list().toResponse(writer, responseAdapterCache, value.types)
+      Types.obj().list().toResponse(writer, responseAdapterCache, value.types)
       writer.endObject()
     }
 
@@ -141,14 +138,12 @@ object TestQuery_ResponseAdapter : ResponseAdapter<TestQuery.Data> {
       override fun fromResponse(reader: JsonReader, responseAdapterCache: ResponseAdapterCache):
           TestQuery.Data.__Schema.QueryType {
         var name: String? = null
-        reader.beginObject()
         while(true) {
           when (reader.selectName(RESPONSE_NAMES)) {
             0 -> name = NullableStringResponseAdapter.fromResponse(reader, responseAdapterCache)
             else -> break
           }
         }
-        reader.endObject()
         return TestQuery.Data.__Schema.QueryType(
           name = name
         )
@@ -179,14 +174,12 @@ object TestQuery_ResponseAdapter : ResponseAdapter<TestQuery.Data> {
       override fun fromResponse(reader: JsonReader, responseAdapterCache: ResponseAdapterCache):
           TestQuery.Data.__Schema.Types {
         var name: String? = null
-        reader.beginObject()
         while(true) {
           when (reader.selectName(RESPONSE_NAMES)) {
             0 -> name = NullableStringResponseAdapter.fromResponse(reader, responseAdapterCache)
             else -> break
           }
         }
-        reader.endObject()
         return TestQuery.Data.__Schema.Types(
           name = name
         )
@@ -218,14 +211,12 @@ object TestQuery_ResponseAdapter : ResponseAdapter<TestQuery.Data> {
     override fun fromResponse(reader: JsonReader, responseAdapterCache: ResponseAdapterCache):
         TestQuery.Data.__Type {
       var name: String? = null
-      reader.beginObject()
       while(true) {
         when (reader.selectName(RESPONSE_NAMES)) {
           0 -> name = NullableStringResponseAdapter.fromResponse(reader, responseAdapterCache)
           else -> break
         }
       }
-      reader.endObject()
       return TestQuery.Data.__Type(
         name = name
       )

@@ -14,6 +14,7 @@ import com.apollographql.apollo3.api.json.JsonReader
 import com.apollographql.apollo3.api.json.JsonWriter
 import com.apollographql.apollo3.api.list
 import com.apollographql.apollo3.api.nullable
+import com.apollographql.apollo3.api.obj
 import com.example.inline_fragment_inside_inline_fragment.TestQuery
 import kotlin.Array
 import kotlin.String
@@ -43,14 +44,13 @@ object TestQuery_ResponseAdapter : ResponseAdapter<TestQuery.Data> {
   override fun fromResponse(reader: JsonReader, responseAdapterCache: ResponseAdapterCache):
       TestQuery.Data {
     var search: List<TestQuery.Data.Search?>? = null
-    reader.beginObject()
     while(true) {
       when (reader.selectName(RESPONSE_NAMES)) {
-        0 -> search = Search.nullable().list().nullable().fromResponse(reader, responseAdapterCache)
+        0 -> search = Search.obj().nullable().list().nullable().fromResponse(reader,
+            responseAdapterCache)
         else -> break
       }
     }
-    reader.endObject()
     return TestQuery.Data(
       search = search
     )
@@ -63,14 +63,13 @@ object TestQuery_ResponseAdapter : ResponseAdapter<TestQuery.Data> {
   ) {
     writer.beginObject()
     writer.name("search")
-    Search.nullable().list().nullable().toResponse(writer, responseAdapterCache, value.search)
+    Search.obj().nullable().list().nullable().toResponse(writer, responseAdapterCache, value.search)
     writer.endObject()
   }
 
   object Search : ResponseAdapter<TestQuery.Data.Search> {
     override fun fromResponse(reader: JsonReader, responseAdapterCache: ResponseAdapterCache):
         TestQuery.Data.Search {
-      reader.beginObject()
       check(reader.nextName() == "__typename")
       val typename = reader.nextString()!!
       return when(typename) {
@@ -78,7 +77,6 @@ object TestQuery_ResponseAdapter : ResponseAdapter<TestQuery.Data> {
         "Human" -> CharacterHumanSearch.fromResponse(reader, responseAdapterCache, typename)
         else -> OtherSearch.fromResponse(reader, responseAdapterCache, typename)
       }
-      .also { reader.endObject() }
     }
 
     override fun toResponse(
@@ -116,7 +114,6 @@ object TestQuery_ResponseAdapter : ResponseAdapter<TestQuery.Data> {
         var __typename: String? = __typename
         var name: String? = null
         var primaryFunction: String? = null
-        reader.beginObject()
         while(true) {
           when (reader.selectName(RESPONSE_NAMES)) {
             0 -> __typename = StringResponseAdapter.fromResponse(reader, responseAdapterCache)
@@ -126,7 +123,6 @@ object TestQuery_ResponseAdapter : ResponseAdapter<TestQuery.Data> {
             else -> break
           }
         }
-        reader.endObject()
         return TestQuery.Data.Search.CharacterDroidSearch(
           __typename = __typename!!,
           name = name!!,
@@ -174,7 +170,6 @@ object TestQuery_ResponseAdapter : ResponseAdapter<TestQuery.Data> {
         var __typename: String? = __typename
         var name: String? = null
         var homePlanet: String? = null
-        reader.beginObject()
         while(true) {
           when (reader.selectName(RESPONSE_NAMES)) {
             0 -> __typename = StringResponseAdapter.fromResponse(reader, responseAdapterCache)
@@ -184,7 +179,6 @@ object TestQuery_ResponseAdapter : ResponseAdapter<TestQuery.Data> {
             else -> break
           }
         }
-        reader.endObject()
         return TestQuery.Data.Search.CharacterHumanSearch(
           __typename = __typename!!,
           name = name!!,
@@ -221,14 +215,12 @@ object TestQuery_ResponseAdapter : ResponseAdapter<TestQuery.Data> {
         __typename: String?
       ): TestQuery.Data.Search.OtherSearch {
         var __typename: String? = __typename
-        reader.beginObject()
         while(true) {
           when (reader.selectName(RESPONSE_NAMES)) {
             0 -> __typename = StringResponseAdapter.fromResponse(reader, responseAdapterCache)
             else -> break
           }
         }
-        reader.endObject()
         return TestQuery.Data.Search.OtherSearch(
           __typename = __typename!!
         )

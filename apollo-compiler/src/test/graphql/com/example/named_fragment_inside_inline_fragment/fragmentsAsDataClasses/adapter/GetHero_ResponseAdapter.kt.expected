@@ -10,10 +10,10 @@ import com.apollographql.apollo3.api.ResponseAdapterCache
 import com.apollographql.apollo3.api.ResponseField
 import com.apollographql.apollo3.api.StringResponseAdapter
 import com.apollographql.apollo3.api.internal.json.MapJsonReader
-import com.apollographql.apollo3.api.internal.json.MapJsonReader.Companion.buffer
 import com.apollographql.apollo3.api.json.JsonReader
 import com.apollographql.apollo3.api.json.JsonWriter
 import com.apollographql.apollo3.api.nullable
+import com.apollographql.apollo3.api.obj
 import com.example.named_fragment_inside_inline_fragment.GetHero
 import com.example.named_fragment_inside_inline_fragment.fragment.CharacterAppearsIn
 import com.example.named_fragment_inside_inline_fragment.fragment.CharacterName
@@ -46,14 +46,12 @@ object GetHero_ResponseAdapter : ResponseAdapter<GetHero.Data> {
   override fun fromResponse(reader: JsonReader, responseAdapterCache: ResponseAdapterCache):
       GetHero.Data {
     var hero: GetHero.Data.Hero? = null
-    reader.beginObject()
     while(true) {
       when (reader.selectName(RESPONSE_NAMES)) {
-        0 -> hero = Hero.nullable().fromResponse(reader, responseAdapterCache)
+        0 -> hero = Hero.obj(true).nullable().fromResponse(reader, responseAdapterCache)
         else -> break
       }
     }
-    reader.endObject()
     return GetHero.Data(
       hero = hero
     )
@@ -66,7 +64,7 @@ object GetHero_ResponseAdapter : ResponseAdapter<GetHero.Data> {
   ) {
     writer.beginObject()
     writer.name("hero")
-    Hero.nullable().toResponse(writer, responseAdapterCache, value.hero)
+    Hero.obj(true).nullable().toResponse(writer, responseAdapterCache, value.hero)
     writer.endObject()
   }
 
@@ -79,8 +77,6 @@ object GetHero_ResponseAdapter : ResponseAdapter<GetHero.Data> {
 
     override fun fromResponse(reader: JsonReader, responseAdapterCache: ResponseAdapterCache):
         GetHero.Data.Hero {
-      val reader = reader.buffer()
-      reader.beginObject()
       var __typename: String? = null
 <<<<<<< HEAD
       var characterName: CharacterName.Data? = null
@@ -107,12 +103,15 @@ object GetHero_ResponseAdapter : ResponseAdapter<GetHero.Data> {
 =======
 =======
         (reader as MapJsonReader).rewind()
+<<<<<<< HEAD
 >>>>>>> ef2ead98d... everything works, yay \o/
         asAsCharacter = AsCharacter.fromFields(reader, responseAdapterCache)
 >>>>>>> ab5258fe0... all compiler tests pass
+=======
+        asAsCharacter = AsCharacter.fromResponse(reader, responseAdapterCache)
+>>>>>>> 528df6e0d... wip
       }
 
-      reader.endObject()
       return GetHero.Data.Hero(
         __typename = __typename!!,
         characterName = characterName,
@@ -145,12 +144,6 @@ object GetHero_ResponseAdapter : ResponseAdapter<GetHero.Data> {
       val RESPONSE_NAMES: List<String> = RESPONSE_FIELDS.map { it.responseName }
 
       override fun fromResponse(reader: JsonReader, responseAdapterCache: ResponseAdapterCache):
-          GetHero.Data.Hero.AsCharacter {
-        reader.beginObject()
-        return fromFields(reader, responseAdapterCache).also { reader.endObject() }
-      }
-
-      fun fromFields(reader: JsonReader, responseAdapterCache: ResponseAdapterCache):
           GetHero.Data.Hero.AsCharacter {
         var __typename: String? = null
         while(true) {

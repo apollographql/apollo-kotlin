@@ -10,11 +10,11 @@ import com.apollographql.apollo3.api.ResponseAdapterCache
 import com.apollographql.apollo3.api.ResponseField
 import com.apollographql.apollo3.api.StringResponseAdapter
 import com.apollographql.apollo3.api.internal.json.MapJsonReader
-import com.apollographql.apollo3.api.internal.json.MapJsonReader.Companion.buffer
 import com.apollographql.apollo3.api.json.JsonReader
 import com.apollographql.apollo3.api.json.JsonWriter
 import com.apollographql.apollo3.api.list
 import com.apollographql.apollo3.api.nullable
+import com.apollographql.apollo3.api.obj
 import com.example.fragment_in_fragment.AllStarships
 import com.example.fragment_in_fragment.fragment.StarshipFragment
 import com.example.fragment_in_fragment.fragment.adapter.StarshipFragment_ResponseAdapter
@@ -44,14 +44,12 @@ object AllStarships_ResponseAdapter : ResponseAdapter<AllStarships.Data> {
   override fun fromResponse(reader: JsonReader, responseAdapterCache: ResponseAdapterCache):
       com.example.fragment_in_fragment.AllStarships.Data {
     var allStarships: com.example.fragment_in_fragment.AllStarships.Data.AllStarships? = null
-    reader.beginObject()
     while(true) {
       when (reader.selectName(RESPONSE_NAMES)) {
-        0 -> allStarships = AllStarships.nullable().fromResponse(reader, responseAdapterCache)
+        0 -> allStarships = AllStarships.obj().nullable().fromResponse(reader, responseAdapterCache)
         else -> break
       }
     }
-    reader.endObject()
     return com.example.fragment_in_fragment.AllStarships.Data(
       allStarships = allStarships
     )
@@ -64,7 +62,7 @@ object AllStarships_ResponseAdapter : ResponseAdapter<AllStarships.Data> {
   ) {
     writer.beginObject()
     writer.name("allStarships")
-    AllStarships.nullable().toResponse(writer, responseAdapterCache, value.allStarships)
+    AllStarships.obj().nullable().toResponse(writer, responseAdapterCache, value.allStarships)
     writer.endObject()
   }
 
@@ -85,14 +83,13 @@ object AllStarships_ResponseAdapter : ResponseAdapter<AllStarships.Data> {
     override fun fromResponse(reader: JsonReader, responseAdapterCache: ResponseAdapterCache):
         com.example.fragment_in_fragment.AllStarships.Data.AllStarships {
       var edges: List<com.example.fragment_in_fragment.AllStarships.Data.AllStarships.Edges?>? = null
-      reader.beginObject()
       while(true) {
         when (reader.selectName(RESPONSE_NAMES)) {
-          0 -> edges = Edges.nullable().list().nullable().fromResponse(reader, responseAdapterCache)
+          0 -> edges = Edges.obj().nullable().list().nullable().fromResponse(reader,
+              responseAdapterCache)
           else -> break
         }
       }
-      reader.endObject()
       return com.example.fragment_in_fragment.AllStarships.Data.AllStarships(
         edges = edges
       )
@@ -105,7 +102,7 @@ object AllStarships_ResponseAdapter : ResponseAdapter<AllStarships.Data> {
     ) {
       writer.beginObject()
       writer.name("edges")
-      Edges.nullable().list().nullable().toResponse(writer, responseAdapterCache, value.edges)
+      Edges.obj().nullable().list().nullable().toResponse(writer, responseAdapterCache, value.edges)
       writer.endObject()
     }
 
@@ -126,14 +123,12 @@ object AllStarships_ResponseAdapter : ResponseAdapter<AllStarships.Data> {
       override fun fromResponse(reader: JsonReader, responseAdapterCache: ResponseAdapterCache):
           com.example.fragment_in_fragment.AllStarships.Data.AllStarships.Edges {
         var node: com.example.fragment_in_fragment.AllStarships.Data.AllStarships.Edges.Node? = null
-        reader.beginObject()
         while(true) {
           when (reader.selectName(RESPONSE_NAMES)) {
-            0 -> node = Node.nullable().fromResponse(reader, responseAdapterCache)
+            0 -> node = Node.obj(true).nullable().fromResponse(reader, responseAdapterCache)
             else -> break
           }
         }
-        reader.endObject()
         return com.example.fragment_in_fragment.AllStarships.Data.AllStarships.Edges(
           node = node
         )
@@ -146,7 +141,7 @@ object AllStarships_ResponseAdapter : ResponseAdapter<AllStarships.Data> {
       ) {
         writer.beginObject()
         writer.name("node")
-        Node.nullable().toResponse(writer, responseAdapterCache, value.node)
+        Node.obj(true).nullable().toResponse(writer, responseAdapterCache, value.node)
         writer.endObject()
       }
 
@@ -161,8 +156,6 @@ object AllStarships_ResponseAdapter : ResponseAdapter<AllStarships.Data> {
 
         override fun fromResponse(reader: JsonReader, responseAdapterCache: ResponseAdapterCache):
             com.example.fragment_in_fragment.AllStarships.Data.AllStarships.Edges.Node {
-          val reader = reader.buffer()
-          reader.beginObject()
           var __typename: String? = null
 
           var starshipFragment: StarshipFragment.Data? = null
@@ -174,10 +167,9 @@ object AllStarships_ResponseAdapter : ResponseAdapter<AllStarships.Data> {
           }
           if (__typename in arrayOf("Starship")) {
             (reader as MapJsonReader).rewind()
-            starshipFragment = StarshipFragment_ResponseAdapter.fromFields(reader, responseAdapterCache)
+            starshipFragment = StarshipFragment_ResponseAdapter.fromResponse(reader, responseAdapterCache)
           }
 
-          reader.endObject()
           return com.example.fragment_in_fragment.AllStarships.Data.AllStarships.Edges.Node(
             __typename = __typename!!,
             starshipFragment = starshipFragment

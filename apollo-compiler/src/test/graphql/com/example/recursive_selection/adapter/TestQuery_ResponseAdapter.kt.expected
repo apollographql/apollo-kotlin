@@ -13,6 +13,7 @@ import com.apollographql.apollo3.api.json.JsonReader
 import com.apollographql.apollo3.api.json.JsonWriter
 import com.apollographql.apollo3.api.list
 import com.apollographql.apollo3.api.nullable
+import com.apollographql.apollo3.api.obj
 import com.example.recursive_selection.TestQuery
 import kotlin.Array
 import kotlin.String
@@ -38,14 +39,12 @@ object TestQuery_ResponseAdapter : ResponseAdapter<TestQuery.Data> {
   override fun fromResponse(reader: JsonReader, responseAdapterCache: ResponseAdapterCache):
       TestQuery.Data {
     var tree: TestQuery.Data.Tree? = null
-    reader.beginObject()
     while(true) {
       when (reader.selectName(RESPONSE_NAMES)) {
-        0 -> tree = Tree.nullable().fromResponse(reader, responseAdapterCache)
+        0 -> tree = Tree.obj().nullable().fromResponse(reader, responseAdapterCache)
         else -> break
       }
     }
-    reader.endObject()
     return TestQuery.Data(
       tree = tree
     )
@@ -58,7 +57,7 @@ object TestQuery_ResponseAdapter : ResponseAdapter<TestQuery.Data> {
   ) {
     writer.beginObject()
     writer.name("tree")
-    Tree.nullable().toResponse(writer, responseAdapterCache, value.tree)
+    Tree.obj().nullable().toResponse(writer, responseAdapterCache, value.tree)
     writer.endObject()
   }
 
@@ -92,16 +91,14 @@ object TestQuery_ResponseAdapter : ResponseAdapter<TestQuery.Data> {
       var name: String? = null
       var children: List<TestQuery.Data.Tree.Children>? = null
       var parent: TestQuery.Data.Tree.Parent? = null
-      reader.beginObject()
       while(true) {
         when (reader.selectName(RESPONSE_NAMES)) {
           0 -> name = StringResponseAdapter.fromResponse(reader, responseAdapterCache)
-          1 -> children = Children.list().fromResponse(reader, responseAdapterCache)
-          2 -> parent = Parent.nullable().fromResponse(reader, responseAdapterCache)
+          1 -> children = Children.obj().list().fromResponse(reader, responseAdapterCache)
+          2 -> parent = Parent.obj().nullable().fromResponse(reader, responseAdapterCache)
           else -> break
         }
       }
-      reader.endObject()
       return TestQuery.Data.Tree(
         name = name!!,
         children = children!!,
@@ -118,9 +115,9 @@ object TestQuery_ResponseAdapter : ResponseAdapter<TestQuery.Data> {
       writer.name("name")
       StringResponseAdapter.toResponse(writer, responseAdapterCache, value.name)
       writer.name("children")
-      Children.list().toResponse(writer, responseAdapterCache, value.children)
+      Children.obj().list().toResponse(writer, responseAdapterCache, value.children)
       writer.name("parent")
-      Parent.nullable().toResponse(writer, responseAdapterCache, value.parent)
+      Parent.obj().nullable().toResponse(writer, responseAdapterCache, value.parent)
       writer.endObject()
     }
 
@@ -137,14 +134,12 @@ object TestQuery_ResponseAdapter : ResponseAdapter<TestQuery.Data> {
       override fun fromResponse(reader: JsonReader, responseAdapterCache: ResponseAdapterCache):
           TestQuery.Data.Tree.Children {
         var name: String? = null
-        reader.beginObject()
         while(true) {
           when (reader.selectName(RESPONSE_NAMES)) {
             0 -> name = StringResponseAdapter.fromResponse(reader, responseAdapterCache)
             else -> break
           }
         }
-        reader.endObject()
         return TestQuery.Data.Tree.Children(
           name = name!!
         )
@@ -175,14 +170,12 @@ object TestQuery_ResponseAdapter : ResponseAdapter<TestQuery.Data> {
       override fun fromResponse(reader: JsonReader, responseAdapterCache: ResponseAdapterCache):
           TestQuery.Data.Tree.Parent {
         var name: String? = null
-        reader.beginObject()
         while(true) {
           when (reader.selectName(RESPONSE_NAMES)) {
             0 -> name = StringResponseAdapter.fromResponse(reader, responseAdapterCache)
             else -> break
           }
         }
-        reader.endObject()
         return TestQuery.Data.Tree.Parent(
           name = name!!
         )

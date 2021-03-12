@@ -33,12 +33,6 @@ object DroidDetails1_ResponseAdapter : ResponseAdapter<DroidDetails1.Data> {
 
   override fun fromResponse(reader: JsonReader, responseAdapterCache: ResponseAdapterCache):
       DroidDetails1.Data {
-    reader.beginObject()
-    return fromFields(reader, responseAdapterCache).also { reader.endObject() }
-  }
-
-  fun fromFields(reader: JsonReader, responseAdapterCache: ResponseAdapterCache):
-      DroidDetails1.Data {
     var __typename: String? = null
     var name: String? = null
     while(true) {
