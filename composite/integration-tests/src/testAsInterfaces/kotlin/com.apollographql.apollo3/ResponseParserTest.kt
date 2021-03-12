@@ -1,11 +1,8 @@
 package com.apollographql.apollo3
 
-import com.apollographql.apollo3.api.CustomScalarAdapter
 import com.apollographql.apollo3.api.ResponseAdapterCache
 import com.apollographql.apollo3.api.Error
 import com.apollographql.apollo3.api.Input
-import com.apollographql.apollo3.api.JsonElement
-import com.apollographql.apollo3.api.JsonString
 import com.apollographql.apollo3.api.ResponseAdapter
 import com.apollographql.apollo3.api.fromResponse
 import com.apollographql.apollo3.api.internal.json.BufferedSinkJsonWriter
