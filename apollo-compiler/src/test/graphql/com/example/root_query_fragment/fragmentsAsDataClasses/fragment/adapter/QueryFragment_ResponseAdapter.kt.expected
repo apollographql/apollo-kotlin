@@ -83,18 +83,18 @@ object QueryFragment_ResponseAdapter : ResponseAdapter<QueryFragment.Data> {
 
     override fun fromResponse(reader: JsonReader, responseAdapterCache: ResponseAdapterCache):
         QueryFragment.Data.Hero {
-      reader.beginObject()
       var name: String? = null
+      reader.beginObject()
       while(true) {
         when (reader.selectName(RESPONSE_NAMES)) {
           0 -> name = StringResponseAdapter.fromResponse(reader, responseAdapterCache)
           else -> break
         }
       }
+      reader.endObject()
       return QueryFragment.Data.Hero(
         name = name!!
       )
-      reader.endObject()
     }
 
     override fun toResponse(

@@ -237,7 +237,7 @@ class CodegenTest(private val folder: File, private val fragmentsCodegenMode: Fr
             if (hasNamedFragments || hasInlineFragments) {
               if (fragmentsCodegenMode == null) {
                 listOf(
-                    @arrayOf(file, FragmentsCodegenMode.FragmentsAsInterfaces),
+                    arrayOf(file, FragmentsCodegenMode.FragmentsAsInterfaces),
                     arrayOf(file, FragmentsCodegenMode.FragmentsAsDataClasses)
                 )
               } else {

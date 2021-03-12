@@ -9,6 +9,7 @@ import com.apollographql.apollo3.api.ResponseAdapter
 import com.apollographql.apollo3.api.ResponseAdapterCache
 import com.apollographql.apollo3.api.ResponseField
 import com.apollographql.apollo3.api.StringResponseAdapter
+import com.apollographql.apollo3.api.internal.json.MapJsonReader
 import com.apollographql.apollo3.api.internal.json.MapJsonReader.Companion.buffer
 import com.apollographql.apollo3.api.json.JsonReader
 import com.apollographql.apollo3.api.json.JsonWriter
@@ -42,18 +43,18 @@ object AllStarships_ResponseAdapter : ResponseAdapter<AllStarships.Data> {
 
   override fun fromResponse(reader: JsonReader, responseAdapterCache: ResponseAdapterCache):
       com.example.fragment_in_fragment.AllStarships.Data {
-    reader.beginObject()
     var allStarships: com.example.fragment_in_fragment.AllStarships.Data.AllStarships? = null
+    reader.beginObject()
     while(true) {
       when (reader.selectName(RESPONSE_NAMES)) {
         0 -> allStarships = AllStarships.nullable().fromResponse(reader, responseAdapterCache)
         else -> break
       }
     }
+    reader.endObject()
     return com.example.fragment_in_fragment.AllStarships.Data(
       allStarships = allStarships
     )
-    reader.endObject()
   }
 
   override fun toResponse(
@@ -83,18 +84,18 @@ object AllStarships_ResponseAdapter : ResponseAdapter<AllStarships.Data> {
 
     override fun fromResponse(reader: JsonReader, responseAdapterCache: ResponseAdapterCache):
         com.example.fragment_in_fragment.AllStarships.Data.AllStarships {
-      reader.beginObject()
       var edges: List<com.example.fragment_in_fragment.AllStarships.Data.AllStarships.Edges?>? = null
+      reader.beginObject()
       while(true) {
         when (reader.selectName(RESPONSE_NAMES)) {
           0 -> edges = Edges.nullable().list().nullable().fromResponse(reader, responseAdapterCache)
           else -> break
         }
       }
+      reader.endObject()
       return com.example.fragment_in_fragment.AllStarships.Data.AllStarships(
         edges = edges
       )
-      reader.endObject()
     }
 
     override fun toResponse(
@@ -124,18 +125,18 @@ object AllStarships_ResponseAdapter : ResponseAdapter<AllStarships.Data> {
 
       override fun fromResponse(reader: JsonReader, responseAdapterCache: ResponseAdapterCache):
           com.example.fragment_in_fragment.AllStarships.Data.AllStarships.Edges {
-        reader.beginObject()
         var node: com.example.fragment_in_fragment.AllStarships.Data.AllStarships.Edges.Node? = null
+        reader.beginObject()
         while(true) {
           when (reader.selectName(RESPONSE_NAMES)) {
             0 -> node = Node.nullable().fromResponse(reader, responseAdapterCache)
             else -> break
           }
         }
+        reader.endObject()
         return com.example.fragment_in_fragment.AllStarships.Data.AllStarships.Edges(
           node = node
         )
-        reader.endObject()
       }
 
       override fun toResponse(
@@ -160,8 +161,8 @@ object AllStarships_ResponseAdapter : ResponseAdapter<AllStarships.Data> {
 
         override fun fromResponse(reader: JsonReader, responseAdapterCache: ResponseAdapterCache):
             com.example.fragment_in_fragment.AllStarships.Data.AllStarships.Edges.Node {
-          reader.beginObject()
           val reader = reader.buffer()
+          reader.beginObject()
           var __typename: String? = null
 
           var starshipFragment: StarshipFragment.Data? = null
@@ -172,15 +173,15 @@ object AllStarships_ResponseAdapter : ResponseAdapter<AllStarships.Data> {
             }
           }
           if (__typename in arrayOf("Starship")) {
-            reader.rewind()
+            (reader as MapJsonReader).rewind()
             starshipFragment = StarshipFragment_ResponseAdapter.fromFields(reader, responseAdapterCache)
           }
 
+          reader.endObject()
           return com.example.fragment_in_fragment.AllStarships.Data.AllStarships.Edges.Node(
             __typename = __typename!!,
             starshipFragment = starshipFragment
           )
-          reader.endObject()
         }
 
         override fun toResponse(

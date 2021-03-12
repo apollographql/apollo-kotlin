@@ -43,18 +43,18 @@ object CreateReviewForEpisodeMutation_ResponseAdapter :
 
   override fun fromResponse(reader: JsonReader, responseAdapterCache: ResponseAdapterCache):
       CreateReviewForEpisodeMutation.Data {
-    reader.beginObject()
     var createReview: CreateReviewForEpisodeMutation.Data.CreateReview? = null
+    reader.beginObject()
     while(true) {
       when (reader.selectName(RESPONSE_NAMES)) {
         0 -> createReview = CreateReview.nullable().fromResponse(reader, responseAdapterCache)
         else -> break
       }
     }
+    reader.endObject()
     return CreateReviewForEpisodeMutation.Data(
       createReview = createReview
     )
-    reader.endObject()
   }
 
   override fun toResponse(
@@ -84,9 +84,9 @@ object CreateReviewForEpisodeMutation_ResponseAdapter :
 
     override fun fromResponse(reader: JsonReader, responseAdapterCache: ResponseAdapterCache):
         CreateReviewForEpisodeMutation.Data.CreateReview {
-      reader.beginObject()
       var stars: Int? = null
       var commentary: String? = null
+      reader.beginObject()
       while(true) {
         when (reader.selectName(RESPONSE_NAMES)) {
           0 -> stars = IntResponseAdapter.fromResponse(reader, responseAdapterCache)
@@ -94,11 +94,11 @@ object CreateReviewForEpisodeMutation_ResponseAdapter :
           else -> break
         }
       }
+      reader.endObject()
       return CreateReviewForEpisodeMutation.Data.CreateReview(
         stars = stars!!,
         commentary = commentary
       )
-      reader.endObject()
     }
 
     override fun toResponse(

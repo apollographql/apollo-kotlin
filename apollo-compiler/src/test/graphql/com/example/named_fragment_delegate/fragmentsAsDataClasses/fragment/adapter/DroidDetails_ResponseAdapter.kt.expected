@@ -105,18 +105,18 @@ object DroidDetails_ResponseAdapter : ResponseAdapter<DroidDetails.Data> {
 
     override fun fromResponse(reader: JsonReader, responseAdapterCache: ResponseAdapterCache):
         DroidDetails.Data.Friends {
-      reader.beginObject()
       var name: String? = null
+      reader.beginObject()
       while(true) {
         when (reader.selectName(RESPONSE_NAMES)) {
           0 -> name = StringResponseAdapter.fromResponse(reader, responseAdapterCache)
           else -> break
         }
       }
+      reader.endObject()
       return DroidDetails.Data.Friends(
         name = name!!
       )
-      reader.endObject()
     }
 
     override fun toResponse(

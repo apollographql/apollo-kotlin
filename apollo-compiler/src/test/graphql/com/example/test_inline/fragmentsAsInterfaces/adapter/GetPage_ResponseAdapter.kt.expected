@@ -38,18 +38,18 @@ object GetPage_ResponseAdapter : ResponseAdapter<GetPage.Data> {
 
   override fun fromResponse(reader: JsonReader, responseAdapterCache: ResponseAdapterCache):
       GetPage.Data {
-    reader.beginObject()
     var collection: GetPage.Data.Collection? = null
+    reader.beginObject()
     while(true) {
       when (reader.selectName(RESPONSE_NAMES)) {
         0 -> collection = Collection.fromResponse(reader, responseAdapterCache)
         else -> break
       }
     }
+    reader.endObject()
     return GetPage.Data(
       collection = collection!!
     )
-    reader.endObject()
   }
 
   override fun toResponse(
@@ -73,7 +73,7 @@ object GetPage_ResponseAdapter : ResponseAdapter<GetPage.Data> {
         "ParticularCollection" -> ParticularCollectionCollection.fromResponse(reader, responseAdapterCache, typename)
         else -> OtherCollection.fromResponse(reader, responseAdapterCache, typename)
       }
-      reader.endObject()
+      .also { reader.endObject() }
     }
 
     override fun toResponse(
@@ -108,9 +108,9 @@ object GetPage_ResponseAdapter : ResponseAdapter<GetPage.Data> {
         responseAdapterCache: ResponseAdapterCache,
         __typename: String?
       ): GetPage.Data.Collection.ParticularCollectionCollection {
-        reader.beginObject()
         var __typename: String? = __typename
         var items: List<GetPage.Data.Collection.ParticularCollectionCollection.Items>? = null
+        reader.beginObject()
         while(true) {
           when (reader.selectName(RESPONSE_NAMES)) {
             0 -> __typename = StringResponseAdapter.fromResponse(reader, responseAdapterCache)
@@ -118,11 +118,11 @@ object GetPage_ResponseAdapter : ResponseAdapter<GetPage.Data> {
             else -> break
           }
         }
+        reader.endObject()
         return GetPage.Data.Collection.ParticularCollectionCollection(
           __typename = __typename!!,
           items = items!!
         )
-        reader.endObject()
       }
 
       fun toResponse(
@@ -148,7 +148,7 @@ object GetPage_ResponseAdapter : ResponseAdapter<GetPage.Data> {
             "ParticularItem" -> ParticularItemItems.fromResponse(reader, responseAdapterCache, typename)
             else -> OtherItems.fromResponse(reader, responseAdapterCache, typename)
           }
-          reader.endObject()
+          .also { reader.endObject() }
         }
 
         override fun toResponse(
@@ -182,10 +182,10 @@ object GetPage_ResponseAdapter : ResponseAdapter<GetPage.Data> {
             responseAdapterCache: ResponseAdapterCache,
             __typename: String?
           ): GetPage.Data.Collection.ParticularCollectionCollection.Items.ParticularItemItems {
-            reader.beginObject()
             var title: String? = null
             var __typename: String? = __typename
             var image: String? = null
+            reader.beginObject()
             while(true) {
               when (reader.selectName(RESPONSE_NAMES)) {
                 0 -> title = StringResponseAdapter.fromResponse(reader, responseAdapterCache)
@@ -194,12 +194,12 @@ object GetPage_ResponseAdapter : ResponseAdapter<GetPage.Data> {
                 else -> break
               }
             }
+            reader.endObject()
             return GetPage.Data.Collection.ParticularCollectionCollection.Items.ParticularItemItems(
               title = title!!,
               __typename = __typename!!,
               image = image!!
             )
-            reader.endObject()
           }
 
           fun toResponse(
@@ -234,9 +234,9 @@ object GetPage_ResponseAdapter : ResponseAdapter<GetPage.Data> {
             responseAdapterCache: ResponseAdapterCache,
             __typename: String?
           ): GetPage.Data.Collection.ParticularCollectionCollection.Items.OtherItems {
-            reader.beginObject()
             var title: String? = null
             var __typename: String? = __typename
+            reader.beginObject()
             while(true) {
               when (reader.selectName(RESPONSE_NAMES)) {
                 0 -> title = StringResponseAdapter.fromResponse(reader, responseAdapterCache)
@@ -244,11 +244,11 @@ object GetPage_ResponseAdapter : ResponseAdapter<GetPage.Data> {
                 else -> break
               }
             }
+            reader.endObject()
             return GetPage.Data.Collection.ParticularCollectionCollection.Items.OtherItems(
               title = title!!,
               __typename = __typename!!
             )
-            reader.endObject()
           }
 
           fun toResponse(
@@ -287,9 +287,9 @@ object GetPage_ResponseAdapter : ResponseAdapter<GetPage.Data> {
         responseAdapterCache: ResponseAdapterCache,
         __typename: String?
       ): GetPage.Data.Collection.OtherCollection {
-        reader.beginObject()
         var __typename: String? = __typename
         var items: List<GetPage.Data.Collection.OtherCollection.Items>? = null
+        reader.beginObject()
         while(true) {
           when (reader.selectName(RESPONSE_NAMES)) {
             0 -> __typename = StringResponseAdapter.fromResponse(reader, responseAdapterCache)
@@ -297,11 +297,11 @@ object GetPage_ResponseAdapter : ResponseAdapter<GetPage.Data> {
             else -> break
           }
         }
+        reader.endObject()
         return GetPage.Data.Collection.OtherCollection(
           __typename = __typename!!,
           items = items!!
         )
-        reader.endObject()
       }
 
       fun toResponse(
@@ -329,18 +329,18 @@ object GetPage_ResponseAdapter : ResponseAdapter<GetPage.Data> {
 
         override fun fromResponse(reader: JsonReader, responseAdapterCache: ResponseAdapterCache):
             GetPage.Data.Collection.OtherCollection.Items {
-          reader.beginObject()
           var title: String? = null
+          reader.beginObject()
           while(true) {
             when (reader.selectName(RESPONSE_NAMES)) {
               0 -> title = StringResponseAdapter.fromResponse(reader, responseAdapterCache)
               else -> break
             }
           }
+          reader.endObject()
           return GetPage.Data.Collection.OtherCollection.Items(
             title = title!!
           )
-          reader.endObject()
         }
 
         override fun toResponse(

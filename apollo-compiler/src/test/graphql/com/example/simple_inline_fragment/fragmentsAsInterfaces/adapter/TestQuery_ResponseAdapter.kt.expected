@@ -41,18 +41,18 @@ object TestQuery_ResponseAdapter : ResponseAdapter<TestQuery.Data> {
 
   override fun fromResponse(reader: JsonReader, responseAdapterCache: ResponseAdapterCache):
       TestQuery.Data {
-    reader.beginObject()
     var hero: TestQuery.Data.Hero? = null
+    reader.beginObject()
     while(true) {
       when (reader.selectName(RESPONSE_NAMES)) {
         0 -> hero = Hero.nullable().fromResponse(reader, responseAdapterCache)
         else -> break
       }
     }
+    reader.endObject()
     return TestQuery.Data(
       hero = hero
     )
-    reader.endObject()
   }
 
   override fun toResponse(
@@ -77,7 +77,7 @@ object TestQuery_ResponseAdapter : ResponseAdapter<TestQuery.Data> {
         "Droid" -> DroidHero.fromResponse(reader, responseAdapterCache, typename)
         else -> OtherHero.fromResponse(reader, responseAdapterCache, typename)
       }
-      reader.endObject()
+      .also { reader.endObject() }
     }
 
     override fun toResponse(
@@ -119,12 +119,20 @@ object TestQuery_ResponseAdapter : ResponseAdapter<TestQuery.Data> {
       ): TestQuery.Data.Hero.HumanHero {
 =======
       ): TestQuery.Data.Hero.CharacterDroidHero {
+<<<<<<< HEAD
         reader.beginObject()
 >>>>>>> ab5258fe0... all compiler tests pass
+=======
+>>>>>>> ef2ead98d... everything works, yay \o/
         var __typename: String? = __typename
         var id: String? = null
         var name: String? = null
+<<<<<<< HEAD
         var height: Double? = null
+=======
+        var primaryFunction: String? = null
+        reader.beginObject()
+>>>>>>> ef2ead98d... everything works, yay \o/
         while(true) {
           when (reader.selectName(RESPONSE_NAMES)) {
             0 -> __typename = StringResponseAdapter.fromResponse(reader, responseAdapterCache)
@@ -134,13 +142,17 @@ object TestQuery_ResponseAdapter : ResponseAdapter<TestQuery.Data> {
             else -> break
           }
         }
+<<<<<<< HEAD
         return TestQuery.Data.Hero.HumanHero(
+=======
+        reader.endObject()
+        return TestQuery.Data.Hero.CharacterDroidHero(
+>>>>>>> ef2ead98d... everything works, yay \o/
           __typename = __typename!!,
           id = id!!,
           name = name!!,
           height = height
         )
-        reader.endObject()
       }
 
       fun toResponse(
@@ -188,12 +200,20 @@ object TestQuery_ResponseAdapter : ResponseAdapter<TestQuery.Data> {
       ): TestQuery.Data.Hero.DroidHero {
 =======
       ): TestQuery.Data.Hero.CharacterHumanHero {
+<<<<<<< HEAD
         reader.beginObject()
 >>>>>>> ab5258fe0... all compiler tests pass
+=======
+>>>>>>> ef2ead98d... everything works, yay \o/
         var __typename: String? = __typename
         var id: String? = null
         var name: String? = null
+<<<<<<< HEAD
         var primaryFunction: String? = null
+=======
+        var height: Double? = null
+        reader.beginObject()
+>>>>>>> ef2ead98d... everything works, yay \o/
         while(true) {
           when (reader.selectName(RESPONSE_NAMES)) {
             0 -> __typename = StringResponseAdapter.fromResponse(reader, responseAdapterCache)
@@ -204,13 +224,17 @@ object TestQuery_ResponseAdapter : ResponseAdapter<TestQuery.Data> {
             else -> break
           }
         }
+<<<<<<< HEAD
         return TestQuery.Data.Hero.DroidHero(
+=======
+        reader.endObject()
+        return TestQuery.Data.Hero.CharacterHumanHero(
+>>>>>>> ef2ead98d... everything works, yay \o/
           __typename = __typename!!,
           id = id!!,
           name = name!!,
           primaryFunction = primaryFunction
         )
-        reader.endObject()
       }
 
       fun toResponse(
@@ -252,10 +276,13 @@ object TestQuery_ResponseAdapter : ResponseAdapter<TestQuery.Data> {
         responseAdapterCache: ResponseAdapterCache,
         __typename: String?
       ): TestQuery.Data.Hero.OtherHero {
-        reader.beginObject()
         var __typename: String? = __typename
+<<<<<<< HEAD
         var id: String? = null
         var name: String? = null
+=======
+        reader.beginObject()
+>>>>>>> ef2ead98d... everything works, yay \o/
         while(true) {
           when (reader.selectName(RESPONSE_NAMES)) {
             0 -> __typename = StringResponseAdapter.fromResponse(reader, responseAdapterCache)
@@ -264,12 +291,12 @@ object TestQuery_ResponseAdapter : ResponseAdapter<TestQuery.Data> {
             else -> break
           }
         }
+        reader.endObject()
         return TestQuery.Data.Hero.OtherHero(
           __typename = __typename!!,
           id = id!!,
           name = name!!
         )
-        reader.endObject()
       }
 
       fun toResponse(

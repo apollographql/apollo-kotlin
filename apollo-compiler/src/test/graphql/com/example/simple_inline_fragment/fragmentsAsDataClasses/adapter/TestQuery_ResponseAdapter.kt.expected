@@ -11,6 +11,7 @@ import com.apollographql.apollo3.api.ResponseAdapter
 import com.apollographql.apollo3.api.ResponseAdapterCache
 import com.apollographql.apollo3.api.ResponseField
 import com.apollographql.apollo3.api.StringResponseAdapter
+import com.apollographql.apollo3.api.internal.json.MapJsonReader
 import com.apollographql.apollo3.api.internal.json.MapJsonReader.Companion.buffer
 import com.apollographql.apollo3.api.json.JsonReader
 import com.apollographql.apollo3.api.json.JsonWriter
@@ -41,18 +42,18 @@ object TestQuery_ResponseAdapter : ResponseAdapter<TestQuery.Data> {
 
   override fun fromResponse(reader: JsonReader, responseAdapterCache: ResponseAdapterCache):
       TestQuery.Data {
-    reader.beginObject()
     var hero: TestQuery.Data.Hero? = null
+    reader.beginObject()
     while(true) {
       when (reader.selectName(RESPONSE_NAMES)) {
         0 -> hero = Hero.nullable().fromResponse(reader, responseAdapterCache)
         else -> break
       }
     }
+    reader.endObject()
     return TestQuery.Data(
       hero = hero
     )
-    reader.endObject()
   }
 
   override fun toResponse(
@@ -83,8 +84,8 @@ object TestQuery_ResponseAdapter : ResponseAdapter<TestQuery.Data> {
 
     override fun fromResponse(reader: JsonReader, responseAdapterCache: ResponseAdapterCache):
         TestQuery.Data.Hero {
-      reader.beginObject()
       val reader = reader.buffer()
+      reader.beginObject()
       var __typename: String? = null
 <<<<<<< HEAD
       var id: String? = null
@@ -106,19 +107,20 @@ object TestQuery_ResponseAdapter : ResponseAdapter<TestQuery.Data> {
 <<<<<<< HEAD
 =======
       if (__typename in arrayOf("Droid", "Human")) {
-        reader.rewind()
+        (reader as MapJsonReader).rewind()
         asAsCharacter = AsCharacter.fromFields(reader, responseAdapterCache)
       }
 >>>>>>> ab5258fe0... all compiler tests pass
       if (__typename in arrayOf("Human")) {
-        reader.rewind()
+        (reader as MapJsonReader).rewind()
         asAsHuman = AsHuman.fromFields(reader, responseAdapterCache)
       }
       if (__typename in arrayOf("Droid")) {
-        reader.rewind()
+        (reader as MapJsonReader).rewind()
         asAsDroid = AsDroid.fromFields(reader, responseAdapterCache)
       }
 
+      reader.endObject()
       return TestQuery.Data.Hero(
         __typename = __typename!!,
         id = id!!,
@@ -126,7 +128,6 @@ object TestQuery_ResponseAdapter : ResponseAdapter<TestQuery.Data> {
         asAsHuman = asAsHuman,
         asAsDroid = asAsDroid
       )
-      reader.endObject()
     }
 
     override fun toResponse(

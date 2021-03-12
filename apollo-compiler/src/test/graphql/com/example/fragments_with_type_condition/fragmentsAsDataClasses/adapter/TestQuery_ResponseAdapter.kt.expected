@@ -53,9 +53,9 @@ object TestQuery_ResponseAdapter : ResponseAdapter<TestQuery.Data> {
 
   override fun fromResponse(reader: JsonReader, responseAdapterCache: ResponseAdapterCache):
       TestQuery.Data {
-    reader.beginObject()
     var r2: TestQuery.Data.R2? = null
     var luke: TestQuery.Data.Luke? = null
+    reader.beginObject()
     while(true) {
       when (reader.selectName(RESPONSE_NAMES)) {
         0 -> r2 = R2.nullable().fromResponse(reader, responseAdapterCache)
@@ -63,11 +63,11 @@ object TestQuery_ResponseAdapter : ResponseAdapter<TestQuery.Data> {
         else -> break
       }
     }
+    reader.endObject()
     return TestQuery.Data(
       r2 = r2,
       luke = luke
     )
-    reader.endObject()
   }
 
   override fun toResponse(
@@ -92,8 +92,8 @@ object TestQuery_ResponseAdapter : ResponseAdapter<TestQuery.Data> {
 
     override fun fromResponse(reader: JsonReader, responseAdapterCache: ResponseAdapterCache):
         TestQuery.Data.R2 {
-      reader.beginObject()
       val reader = reader.buffer()
+      reader.beginObject()
       var __typename: String? = null
 
       var humanDetails: HumanDetails.Data? = null
@@ -105,20 +105,20 @@ object TestQuery_ResponseAdapter : ResponseAdapter<TestQuery.Data> {
         }
       }
       if (__typename in arrayOf("Human")) {
-        reader.rewind()
+        (reader as MapJsonReader).rewind()
         humanDetails = HumanDetails_ResponseAdapter.fromFields(reader, responseAdapterCache)
       }
       if (__typename in arrayOf("Droid")) {
-        reader.rewind()
+        (reader as MapJsonReader).rewind()
         droidDetails = DroidDetails_ResponseAdapter.fromFields(reader, responseAdapterCache)
       }
 
+      reader.endObject()
       return TestQuery.Data.R2(
         __typename = __typename!!,
         humanDetails = humanDetails,
         droidDetails = droidDetails
       )
-      reader.endObject()
     }
 
     override fun toResponse(
@@ -146,8 +146,8 @@ object TestQuery_ResponseAdapter : ResponseAdapter<TestQuery.Data> {
 
     override fun fromResponse(reader: JsonReader, responseAdapterCache: ResponseAdapterCache):
         TestQuery.Data.Luke {
-      reader.beginObject()
       val reader = reader.buffer()
+      reader.beginObject()
       var __typename: String? = null
 
       var humanDetails: HumanDetails.Data? = null
@@ -159,20 +159,20 @@ object TestQuery_ResponseAdapter : ResponseAdapter<TestQuery.Data> {
         }
       }
       if (__typename in arrayOf("Human")) {
-        reader.rewind()
+        (reader as MapJsonReader).rewind()
         humanDetails = HumanDetails_ResponseAdapter.fromFields(reader, responseAdapterCache)
       }
       if (__typename in arrayOf("Droid")) {
-        reader.rewind()
+        (reader as MapJsonReader).rewind()
         droidDetails = DroidDetails_ResponseAdapter.fromFields(reader, responseAdapterCache)
       }
 
+      reader.endObject()
       return TestQuery.Data.Luke(
         __typename = __typename!!,
         humanDetails = humanDetails,
         droidDetails = droidDetails
       )
-      reader.endObject()
     }
 
     override fun toResponse(

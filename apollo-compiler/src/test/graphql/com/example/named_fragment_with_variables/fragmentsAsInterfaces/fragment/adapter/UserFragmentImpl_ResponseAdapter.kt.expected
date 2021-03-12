@@ -44,11 +44,11 @@ object UserFragmentImpl_ResponseAdapter : ResponseAdapter<UserFragmentImpl.Data>
 
   override fun fromResponse(reader: JsonReader, responseAdapterCache: ResponseAdapterCache):
       UserFragmentImpl.Data {
-    reader.beginObject()
     var __typename: String? = null
     var firstName: String? = null
     var lastName: String? = null
     var avatar: String? = null
+    reader.beginObject()
     while(true) {
       when (reader.selectName(RESPONSE_NAMES)) {
         0 -> __typename = StringResponseAdapter.fromResponse(reader, responseAdapterCache)
@@ -58,13 +58,13 @@ object UserFragmentImpl_ResponseAdapter : ResponseAdapter<UserFragmentImpl.Data>
         else -> break
       }
     }
+    reader.endObject()
     return UserFragmentImpl.Data(
       __typename = __typename!!,
       firstName = firstName!!,
       lastName = lastName!!,
       avatar = avatar!!
     )
-    reader.endObject()
   }
 
   override fun toResponse(

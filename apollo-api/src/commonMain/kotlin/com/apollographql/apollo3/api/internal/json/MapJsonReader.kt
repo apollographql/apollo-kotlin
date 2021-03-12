@@ -187,7 +187,12 @@ class MapJsonReader(val root: Map<String, Any?>) : JsonReader {
   }
 
   override fun nextDouble(): Double {
-    return nextValue() as Double
+    return when (val value = nextValue()) {
+      is Double -> value
+      // Coerce Int to Double https://spec.graphql.org/draft/#sec-Float.Result-Coercion
+      is Int -> value.toDouble()
+      else -> error("Cannot coerce $value to Double")
+    }
   }
 
   override fun nextInt(): Int {
@@ -253,7 +258,11 @@ class MapJsonReader(val root: Map<String, Any?>) : JsonReader {
 
   companion object {
 
-    @Suppress("UNCHECKED_CAST")
+    /**
+     * buffers the next Object. Has to be called in `BEGIN_OBJECT` position.
+     * The return [MapJsonReader] can use [MapJsonReader.rewind] to read fields
+     * multiple times
+     */
     fun JsonReader.buffer(): MapJsonReader {
       if (this is MapJsonReader) return this
 
@@ -262,6 +271,7 @@ class MapJsonReader(val root: Map<String, Any?>) : JsonReader {
         "Failed to buffer json reader, expected `BEGIN_OBJECT` but found `$token` json token"
       }
 
+      @Suppress("UNCHECKED_CAST")
       val data = this.readRecursively() as Map<String, Any?>
       return MapJsonReader(data)
     }

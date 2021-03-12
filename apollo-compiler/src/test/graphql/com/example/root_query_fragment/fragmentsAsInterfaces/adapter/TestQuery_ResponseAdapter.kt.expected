@@ -31,7 +31,7 @@ object TestQuery_ResponseAdapter : ResponseAdapter<TestQuery.Data> {
       "Query" -> QueryData.fromResponse(reader, responseAdapterCache, typename)
       else -> OtherData.fromResponse(reader, responseAdapterCache, typename)
     }
-    reader.endObject()
+    .also { reader.endObject() }
   }
 
   override fun toResponse(
@@ -64,9 +64,9 @@ object TestQuery_ResponseAdapter : ResponseAdapter<TestQuery.Data> {
       responseAdapterCache: ResponseAdapterCache,
       __typename: String?
     ): TestQuery.Data.QueryData {
-      reader.beginObject()
       var __typename: String? = __typename
       var hero: TestQuery.Data.QueryData.Hero? = null
+      reader.beginObject()
       while(true) {
         when (reader.selectName(RESPONSE_NAMES)) {
           0 -> __typename = StringResponseAdapter.fromResponse(reader, responseAdapterCache)
@@ -74,11 +74,11 @@ object TestQuery_ResponseAdapter : ResponseAdapter<TestQuery.Data> {
           else -> break
         }
       }
+      reader.endObject()
       return TestQuery.Data.QueryData(
         __typename = __typename!!,
         hero = hero
       )
-      reader.endObject()
     }
 
     fun toResponse(
@@ -106,18 +106,18 @@ object TestQuery_ResponseAdapter : ResponseAdapter<TestQuery.Data> {
 
       override fun fromResponse(reader: JsonReader, responseAdapterCache: ResponseAdapterCache):
           TestQuery.Data.QueryData.Hero {
-        reader.beginObject()
         var name: String? = null
+        reader.beginObject()
         while(true) {
           when (reader.selectName(RESPONSE_NAMES)) {
             0 -> name = StringResponseAdapter.fromResponse(reader, responseAdapterCache)
             else -> break
           }
         }
+        reader.endObject()
         return TestQuery.Data.QueryData.Hero(
           name = name!!
         )
-        reader.endObject()
       }
 
       override fun toResponse(
@@ -145,18 +145,18 @@ object TestQuery_ResponseAdapter : ResponseAdapter<TestQuery.Data> {
       responseAdapterCache: ResponseAdapterCache,
       __typename: String?
     ): TestQuery.Data.OtherData {
-      reader.beginObject()
       var __typename: String? = __typename
+      reader.beginObject()
       while(true) {
         when (reader.selectName(RESPONSE_NAMES)) {
           0 -> __typename = StringResponseAdapter.fromResponse(reader, responseAdapterCache)
           else -> break
         }
       }
+      reader.endObject()
       return TestQuery.Data.OtherData(
         __typename = __typename!!
       )
-      reader.endObject()
     }
 
     fun toResponse(

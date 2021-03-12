@@ -9,6 +9,7 @@ import com.apollographql.apollo3.api.ResponseAdapter
 import com.apollographql.apollo3.api.ResponseAdapterCache
 import com.apollographql.apollo3.api.ResponseField
 import com.apollographql.apollo3.api.StringResponseAdapter
+import com.apollographql.apollo3.api.internal.json.MapJsonReader
 import com.apollographql.apollo3.api.internal.json.MapJsonReader.Companion.buffer
 import com.apollographql.apollo3.api.json.JsonReader
 import com.apollographql.apollo3.api.json.JsonWriter
@@ -35,13 +36,13 @@ object HumanDetails_ResponseAdapter : ResponseAdapter<HumanDetails.Data> {
 
   override fun fromResponse(reader: JsonReader, responseAdapterCache: ResponseAdapterCache):
       HumanDetails.Data {
+    val reader = reader.buffer()
     reader.beginObject()
     return fromFields(reader, responseAdapterCache).also { reader.endObject() }
   }
 
   fun fromFields(reader: JsonReader, responseAdapterCache: ResponseAdapterCache):
       HumanDetails.Data {
-    val reader = reader.buffer()
     var __typename: String? = null
     var name: String? = null
 
@@ -54,7 +55,7 @@ object HumanDetails_ResponseAdapter : ResponseAdapter<HumanDetails.Data> {
       }
     }
     if (__typename in arrayOf("Human")) {
-      reader.rewind()
+      (reader as MapJsonReader).rewind()
       characterDetails = CharacterDetails_ResponseAdapter.fromFields(reader, responseAdapterCache)
     }
 

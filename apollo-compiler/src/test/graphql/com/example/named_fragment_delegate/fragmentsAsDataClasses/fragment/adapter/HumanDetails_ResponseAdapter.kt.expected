@@ -109,18 +109,18 @@ object HumanDetails_ResponseAdapter : ResponseAdapter<HumanDetails.Data> {
 
     override fun fromResponse(reader: JsonReader, responseAdapterCache: ResponseAdapterCache):
         HumanDetails.Data.FriendsConnection {
-      reader.beginObject()
       var edges: List<HumanDetails.Data.FriendsConnection.Edges?>? = null
+      reader.beginObject()
       while(true) {
         when (reader.selectName(RESPONSE_NAMES)) {
           0 -> edges = Edges.nullable().list().nullable().fromResponse(reader, responseAdapterCache)
           else -> break
         }
       }
+      reader.endObject()
       return HumanDetails.Data.FriendsConnection(
         edges = edges
       )
-      reader.endObject()
     }
 
     override fun toResponse(
@@ -149,18 +149,18 @@ object HumanDetails_ResponseAdapter : ResponseAdapter<HumanDetails.Data> {
 
       override fun fromResponse(reader: JsonReader, responseAdapterCache: ResponseAdapterCache):
           HumanDetails.Data.FriendsConnection.Edges {
-        reader.beginObject()
         var node: HumanDetails.Data.FriendsConnection.Edges.Node? = null
+        reader.beginObject()
         while(true) {
           when (reader.selectName(RESPONSE_NAMES)) {
             0 -> node = Node.nullable().fromResponse(reader, responseAdapterCache)
             else -> break
           }
         }
+        reader.endObject()
         return HumanDetails.Data.FriendsConnection.Edges(
           node = node
         )
-        reader.endObject()
       }
 
       override fun toResponse(
@@ -186,18 +186,18 @@ object HumanDetails_ResponseAdapter : ResponseAdapter<HumanDetails.Data> {
 
         override fun fromResponse(reader: JsonReader, responseAdapterCache: ResponseAdapterCache):
             HumanDetails.Data.FriendsConnection.Edges.Node {
-          reader.beginObject()
           var name: String? = null
+          reader.beginObject()
           while(true) {
             when (reader.selectName(RESPONSE_NAMES)) {
               0 -> name = StringResponseAdapter.fromResponse(reader, responseAdapterCache)
               else -> break
             }
           }
+          reader.endObject()
           return HumanDetails.Data.FriendsConnection.Edges.Node(
             name = name!!
           )
-          reader.endObject()
         }
 
         override fun toResponse(

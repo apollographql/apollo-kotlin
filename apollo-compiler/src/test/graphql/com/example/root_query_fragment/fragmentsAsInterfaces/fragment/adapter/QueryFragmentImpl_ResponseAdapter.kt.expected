@@ -37,9 +37,9 @@ object QueryFragmentImpl_ResponseAdapter : ResponseAdapter<QueryFragmentImpl.Dat
 
   override fun fromResponse(reader: JsonReader, responseAdapterCache: ResponseAdapterCache):
       QueryFragmentImpl.Data {
-    reader.beginObject()
     var __typename: String? = null
     var hero: QueryFragmentImpl.Data.Hero? = null
+    reader.beginObject()
     while(true) {
       when (reader.selectName(RESPONSE_NAMES)) {
         0 -> __typename = StringResponseAdapter.fromResponse(reader, responseAdapterCache)
@@ -47,11 +47,11 @@ object QueryFragmentImpl_ResponseAdapter : ResponseAdapter<QueryFragmentImpl.Dat
         else -> break
       }
     }
+    reader.endObject()
     return QueryFragmentImpl.Data(
       __typename = __typename!!,
       hero = hero
     )
-    reader.endObject()
   }
 
   override fun toResponse(
@@ -79,18 +79,18 @@ object QueryFragmentImpl_ResponseAdapter : ResponseAdapter<QueryFragmentImpl.Dat
 
     override fun fromResponse(reader: JsonReader, responseAdapterCache: ResponseAdapterCache):
         QueryFragmentImpl.Data.Hero {
-      reader.beginObject()
       var name: String? = null
+      reader.beginObject()
       while(true) {
         when (reader.selectName(RESPONSE_NAMES)) {
           0 -> name = StringResponseAdapter.fromResponse(reader, responseAdapterCache)
           else -> break
         }
       }
+      reader.endObject()
       return QueryFragmentImpl.Data.Hero(
         name = name!!
       )
-      reader.endObject()
     }
 
     override fun toResponse(

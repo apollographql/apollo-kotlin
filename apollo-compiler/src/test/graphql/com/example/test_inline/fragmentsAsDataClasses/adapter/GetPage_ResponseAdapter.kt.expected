@@ -39,18 +39,18 @@ object GetPage_ResponseAdapter : ResponseAdapter<GetPage.Data> {
 
   override fun fromResponse(reader: JsonReader, responseAdapterCache: ResponseAdapterCache):
       GetPage.Data {
-    reader.beginObject()
     var collection: GetPage.Data.Collection? = null
+    reader.beginObject()
     while(true) {
       when (reader.selectName(RESPONSE_NAMES)) {
         0 -> collection = Collection.fromResponse(reader, responseAdapterCache)
         else -> break
       }
     }
+    reader.endObject()
     return GetPage.Data(
       collection = collection!!
     )
-    reader.endObject()
   }
 
   override fun toResponse(
@@ -81,8 +81,8 @@ object GetPage_ResponseAdapter : ResponseAdapter<GetPage.Data> {
 
     override fun fromResponse(reader: JsonReader, responseAdapterCache: ResponseAdapterCache):
         GetPage.Data.Collection {
-      reader.beginObject()
       val reader = reader.buffer()
+      reader.beginObject()
       var __typename: String? = null
       var items: List<GetPage.Data.Collection.Items>? = null
 
@@ -95,16 +95,16 @@ object GetPage_ResponseAdapter : ResponseAdapter<GetPage.Data> {
         }
       }
       if (__typename in arrayOf("ParticularCollection")) {
-        reader.rewind()
+        (reader as MapJsonReader).rewind()
         asAsParticularCollection = AsParticularCollection.fromFields(reader, responseAdapterCache)
       }
 
+      reader.endObject()
       return GetPage.Data.Collection(
         __typename = __typename!!,
         items = items!!,
         asAsParticularCollection = asAsParticularCollection
       )
-      reader.endObject()
     }
 
     override fun toResponse(
@@ -230,8 +230,8 @@ object GetPage_ResponseAdapter : ResponseAdapter<GetPage.Data> {
 
         override fun fromResponse(reader: JsonReader, responseAdapterCache: ResponseAdapterCache):
             GetPage.Data.Collection.AsParticularCollection.Items {
-          reader.beginObject()
           val reader = reader.buffer()
+          reader.beginObject()
           var title: String? = null
           var __typename: String? = null
 
@@ -244,16 +244,16 @@ object GetPage_ResponseAdapter : ResponseAdapter<GetPage.Data> {
             }
           }
           if (__typename in arrayOf("ParticularItem")) {
-            reader.rewind()
+            (reader as MapJsonReader).rewind()
             asAsParticularItem = AsParticularItem.fromFields(reader, responseAdapterCache)
           }
 
+          reader.endObject()
           return GetPage.Data.Collection.AsParticularCollection.Items(
             title = title!!,
             __typename = __typename!!,
             asAsParticularItem = asAsParticularItem
           )
-          reader.endObject()
         }
 
         override fun toResponse(

@@ -41,18 +41,18 @@ object TestQuery_ResponseAdapter : ResponseAdapter<TestQuery.Data> {
 
   override fun fromResponse(reader: JsonReader, responseAdapterCache: ResponseAdapterCache):
       TestQuery.Data {
-    reader.beginObject()
     var hero: TestQuery.Data.Hero? = null
+    reader.beginObject()
     while(true) {
       when (reader.selectName(RESPONSE_NAMES)) {
         0 -> hero = Hero.nullable().fromResponse(reader, responseAdapterCache)
         else -> break
       }
     }
+    reader.endObject()
     return TestQuery.Data(
       hero = hero
     )
-    reader.endObject()
   }
 
   override fun toResponse(
@@ -77,7 +77,7 @@ object TestQuery_ResponseAdapter : ResponseAdapter<TestQuery.Data> {
         "Human" -> CharacterHero.fromResponse(reader, responseAdapterCache, typename)
         else -> OtherHero.fromResponse(reader, responseAdapterCache, typename)
       }
-      reader.endObject()
+      .also { reader.endObject() }
     }
 
     override fun toResponse(
@@ -114,10 +114,10 @@ object TestQuery_ResponseAdapter : ResponseAdapter<TestQuery.Data> {
         responseAdapterCache: ResponseAdapterCache,
         __typename: String?
       ): TestQuery.Data.Hero.CharacterHero {
-        reader.beginObject()
         var __typename: String? = __typename
         var name: String? = null
         var friendsConnection: TestQuery.Data.Hero.CharacterHero.FriendsConnection? = null
+        reader.beginObject()
         while(true) {
           when (reader.selectName(RESPONSE_NAMES)) {
             0 -> __typename = StringResponseAdapter.fromResponse(reader, responseAdapterCache)
@@ -126,12 +126,12 @@ object TestQuery_ResponseAdapter : ResponseAdapter<TestQuery.Data> {
             else -> break
           }
         }
+        reader.endObject()
         return TestQuery.Data.Hero.CharacterHero(
           __typename = __typename!!,
           name = name!!,
           friendsConnection = friendsConnection!!
         )
-        reader.endObject()
       }
 
       fun toResponse(
@@ -169,9 +169,9 @@ object TestQuery_ResponseAdapter : ResponseAdapter<TestQuery.Data> {
 
         override fun fromResponse(reader: JsonReader, responseAdapterCache: ResponseAdapterCache):
             TestQuery.Data.Hero.CharacterHero.FriendsConnection {
-          reader.beginObject()
           var totalCount: Int? = null
           var edges: List<TestQuery.Data.Hero.CharacterHero.FriendsConnection.Edges?>? = null
+          reader.beginObject()
           while(true) {
             when (reader.selectName(RESPONSE_NAMES)) {
               0 -> totalCount = NullableIntResponseAdapter.fromResponse(reader,
@@ -181,11 +181,11 @@ object TestQuery_ResponseAdapter : ResponseAdapter<TestQuery.Data> {
               else -> break
             }
           }
+          reader.endObject()
           return TestQuery.Data.Hero.CharacterHero.FriendsConnection(
             totalCount = totalCount,
             edges = edges
           )
-          reader.endObject()
         }
 
         override fun toResponse(
@@ -216,18 +216,18 @@ object TestQuery_ResponseAdapter : ResponseAdapter<TestQuery.Data> {
 
           override fun fromResponse(reader: JsonReader, responseAdapterCache: ResponseAdapterCache):
               TestQuery.Data.Hero.CharacterHero.FriendsConnection.Edges {
-            reader.beginObject()
             var node: TestQuery.Data.Hero.CharacterHero.FriendsConnection.Edges.Node? = null
+            reader.beginObject()
             while(true) {
               when (reader.selectName(RESPONSE_NAMES)) {
                 0 -> node = Node.nullable().fromResponse(reader, responseAdapterCache)
                 else -> break
               }
             }
+            reader.endObject()
             return TestQuery.Data.Hero.CharacterHero.FriendsConnection.Edges(
               node = node
             )
-            reader.endObject()
           }
 
           override fun toResponse(
@@ -255,18 +255,18 @@ object TestQuery_ResponseAdapter : ResponseAdapter<TestQuery.Data> {
             override fun fromResponse(reader: JsonReader,
                 responseAdapterCache: ResponseAdapterCache):
                 TestQuery.Data.Hero.CharacterHero.FriendsConnection.Edges.Node {
-              reader.beginObject()
               var name: String? = null
+              reader.beginObject()
               while(true) {
                 when (reader.selectName(RESPONSE_NAMES)) {
                   0 -> name = StringResponseAdapter.fromResponse(reader, responseAdapterCache)
                   else -> break
                 }
               }
+              reader.endObject()
               return TestQuery.Data.Hero.CharacterHero.FriendsConnection.Edges.Node(
                 name = name!!
               )
-              reader.endObject()
             }
 
             override fun toResponse(
@@ -296,18 +296,18 @@ object TestQuery_ResponseAdapter : ResponseAdapter<TestQuery.Data> {
         responseAdapterCache: ResponseAdapterCache,
         __typename: String?
       ): TestQuery.Data.Hero.OtherHero {
-        reader.beginObject()
         var __typename: String? = __typename
+        reader.beginObject()
         while(true) {
           when (reader.selectName(RESPONSE_NAMES)) {
             0 -> __typename = StringResponseAdapter.fromResponse(reader, responseAdapterCache)
             else -> break
           }
         }
+        reader.endObject()
         return TestQuery.Data.Hero.OtherHero(
           __typename = __typename!!
         )
-        reader.endObject()
       }
 
       fun toResponse(

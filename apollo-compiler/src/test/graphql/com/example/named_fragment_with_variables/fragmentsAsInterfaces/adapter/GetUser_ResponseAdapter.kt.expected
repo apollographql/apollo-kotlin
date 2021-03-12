@@ -33,7 +33,7 @@ object GetUser_ResponseAdapter : ResponseAdapter<GetUser.Data> {
       "Query" -> QueryData.fromResponse(reader, responseAdapterCache, typename)
       else -> OtherData.fromResponse(reader, responseAdapterCache, typename)
     }
-    reader.endObject()
+    .also { reader.endObject() }
   }
 
   override fun toResponse(
@@ -68,9 +68,9 @@ object GetUser_ResponseAdapter : ResponseAdapter<GetUser.Data> {
       responseAdapterCache: ResponseAdapterCache,
       __typename: String?
     ): GetUser.Data.QueryData {
-      reader.beginObject()
       var __typename: String? = __typename
       var organization: GetUser.Data.QueryData.Organization? = null
+      reader.beginObject()
       while(true) {
         when (reader.selectName(RESPONSE_NAMES)) {
           0 -> __typename = StringResponseAdapter.fromResponse(reader, responseAdapterCache)
@@ -78,11 +78,11 @@ object GetUser_ResponseAdapter : ResponseAdapter<GetUser.Data> {
           else -> break
         }
       }
+      reader.endObject()
       return GetUser.Data.QueryData(
         __typename = __typename!!,
         organization = organization
       )
-      reader.endObject()
     }
 
     fun toResponse(
@@ -121,9 +121,9 @@ object GetUser_ResponseAdapter : ResponseAdapter<GetUser.Data> {
 
       override fun fromResponse(reader: JsonReader, responseAdapterCache: ResponseAdapterCache):
           GetUser.Data.QueryData.Organization {
-        reader.beginObject()
         var id: String? = null
         var user: List<GetUser.Data.QueryData.Organization.User>? = null
+        reader.beginObject()
         while(true) {
           when (reader.selectName(RESPONSE_NAMES)) {
             0 -> id = StringResponseAdapter.fromResponse(reader, responseAdapterCache)
@@ -131,11 +131,11 @@ object GetUser_ResponseAdapter : ResponseAdapter<GetUser.Data> {
             else -> break
           }
         }
+        reader.endObject()
         return GetUser.Data.QueryData.Organization(
           id = id!!,
           user = user!!
         )
-        reader.endObject()
       }
 
       override fun toResponse(
@@ -161,7 +161,7 @@ object GetUser_ResponseAdapter : ResponseAdapter<GetUser.Data> {
             "User" -> UserUser.fromResponse(reader, responseAdapterCache, typename)
             else -> OtherUser.fromResponse(reader, responseAdapterCache, typename)
           }
-          reader.endObject()
+          .also { reader.endObject() }
         }
 
         override fun toResponse(
@@ -201,11 +201,11 @@ object GetUser_ResponseAdapter : ResponseAdapter<GetUser.Data> {
             responseAdapterCache: ResponseAdapterCache,
             __typename: String?
           ): GetUser.Data.QueryData.Organization.User.UserUser {
-            reader.beginObject()
             var __typename: String? = __typename
             var firstName: String? = null
             var lastName: String? = null
             var avatar: String? = null
+            reader.beginObject()
             while(true) {
               when (reader.selectName(RESPONSE_NAMES)) {
                 0 -> __typename = StringResponseAdapter.fromResponse(reader, responseAdapterCache)
@@ -215,13 +215,13 @@ object GetUser_ResponseAdapter : ResponseAdapter<GetUser.Data> {
                 else -> break
               }
             }
+            reader.endObject()
             return GetUser.Data.QueryData.Organization.User.UserUser(
               __typename = __typename!!,
               firstName = firstName!!,
               lastName = lastName!!,
               avatar = avatar!!
             )
-            reader.endObject()
           }
 
           fun toResponse(
@@ -254,18 +254,18 @@ object GetUser_ResponseAdapter : ResponseAdapter<GetUser.Data> {
             responseAdapterCache: ResponseAdapterCache,
             __typename: String?
           ): GetUser.Data.QueryData.Organization.User.OtherUser {
-            reader.beginObject()
             var __typename: String? = __typename
+            reader.beginObject()
             while(true) {
               when (reader.selectName(RESPONSE_NAMES)) {
                 0 -> __typename = StringResponseAdapter.fromResponse(reader, responseAdapterCache)
                 else -> break
               }
             }
+            reader.endObject()
             return GetUser.Data.QueryData.Organization.User.OtherUser(
               __typename = __typename!!
             )
-            reader.endObject()
           }
 
           fun toResponse(
@@ -295,18 +295,18 @@ object GetUser_ResponseAdapter : ResponseAdapter<GetUser.Data> {
       responseAdapterCache: ResponseAdapterCache,
       __typename: String?
     ): GetUser.Data.OtherData {
-      reader.beginObject()
       var __typename: String? = __typename
+      reader.beginObject()
       while(true) {
         when (reader.selectName(RESPONSE_NAMES)) {
           0 -> __typename = StringResponseAdapter.fromResponse(reader, responseAdapterCache)
           else -> break
         }
       }
+      reader.endObject()
       return GetUser.Data.OtherData(
         __typename = __typename!!
       )
-      reader.endObject()
     }
 
     fun toResponse(

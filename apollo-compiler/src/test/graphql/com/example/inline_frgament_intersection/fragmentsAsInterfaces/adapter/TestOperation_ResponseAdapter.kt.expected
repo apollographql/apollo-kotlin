@@ -45,18 +45,18 @@ object TestOperation_ResponseAdapter : ResponseAdapter<TestOperation.Data> {
 
   override fun fromResponse(reader: JsonReader, responseAdapterCache: ResponseAdapterCache):
       TestOperation.Data {
-    reader.beginObject()
     var random: TestOperation.Data.Random? = null
+    reader.beginObject()
     while(true) {
       when (reader.selectName(RESPONSE_NAMES)) {
         0 -> random = Random.fromResponse(reader, responseAdapterCache)
         else -> break
       }
     }
+    reader.endObject()
     return TestOperation.Data(
       random = random!!
     )
-    reader.endObject()
   }
 
   override fun toResponse(
@@ -81,7 +81,7 @@ object TestOperation_ResponseAdapter : ResponseAdapter<TestOperation.Data> {
         "Wookie" -> BeingWookieRandom.fromResponse(reader, responseAdapterCache, typename)
         else -> OtherRandom.fromResponse(reader, responseAdapterCache, typename)
       }
-      reader.endObject()
+      .also { reader.endObject() }
     }
 
     override fun toResponse(
@@ -125,11 +125,11 @@ object TestOperation_ResponseAdapter : ResponseAdapter<TestOperation.Data> {
         responseAdapterCache: ResponseAdapterCache,
         __typename: String?
       ): TestOperation.Data.Random.BeingHumanRandom {
-        reader.beginObject()
         var __typename: String? = __typename
         var name: String? = null
         var friends: List<TestOperation.Data.Random.BeingHumanRandom.Friends>? = null
         var profilePictureUrl: String? = null
+        reader.beginObject()
         while(true) {
           when (reader.selectName(RESPONSE_NAMES)) {
             0 -> __typename = StringResponseAdapter.fromResponse(reader, responseAdapterCache)
@@ -140,13 +140,13 @@ object TestOperation_ResponseAdapter : ResponseAdapter<TestOperation.Data> {
             else -> break
           }
         }
+        reader.endObject()
         return TestOperation.Data.Random.BeingHumanRandom(
           __typename = __typename!!,
           name = name!!,
           friends = friends!!,
           profilePictureUrl = profilePictureUrl
         )
-        reader.endObject()
       }
 
       fun toResponse(
@@ -177,7 +177,7 @@ object TestOperation_ResponseAdapter : ResponseAdapter<TestOperation.Data> {
             "Wookie" -> WookieFriends.fromResponse(reader, responseAdapterCache, typename)
             else -> OtherFriends.fromResponse(reader, responseAdapterCache, typename)
           }
-          reader.endObject()
+          .also { reader.endObject() }
         }
 
         override fun toResponse(
@@ -219,12 +219,12 @@ object TestOperation_ResponseAdapter : ResponseAdapter<TestOperation.Data> {
             responseAdapterCache: ResponseAdapterCache,
             __typename: String?
           ): TestOperation.Data.Random.BeingHumanRandom.Friends.WookieFriends {
-            reader.beginObject()
             var __typename: String? = __typename
             var name: String? = null
             var isFamous: Boolean? = null
             var lifeExpectancy: Double? = null
             var race: Race? = null
+            reader.beginObject()
             while(true) {
               when (reader.selectName(RESPONSE_NAMES)) {
                 0 -> __typename = StringResponseAdapter.fromResponse(reader, responseAdapterCache)
@@ -237,6 +237,7 @@ object TestOperation_ResponseAdapter : ResponseAdapter<TestOperation.Data> {
                 else -> break
               }
             }
+            reader.endObject()
             return TestOperation.Data.Random.BeingHumanRandom.Friends.WookieFriends(
               __typename = __typename!!,
               name = name!!,
@@ -244,7 +245,6 @@ object TestOperation_ResponseAdapter : ResponseAdapter<TestOperation.Data> {
               lifeExpectancy = lifeExpectancy,
               race = race!!
             )
-            reader.endObject()
           }
 
           fun toResponse(
@@ -288,10 +288,10 @@ object TestOperation_ResponseAdapter : ResponseAdapter<TestOperation.Data> {
             responseAdapterCache: ResponseAdapterCache,
             __typename: String?
           ): TestOperation.Data.Random.BeingHumanRandom.Friends.OtherFriends {
-            reader.beginObject()
             var __typename: String? = __typename
             var name: String? = null
             var isFamous: Boolean? = null
+            reader.beginObject()
             while(true) {
               when (reader.selectName(RESPONSE_NAMES)) {
                 0 -> __typename = StringResponseAdapter.fromResponse(reader, responseAdapterCache)
@@ -301,12 +301,12 @@ object TestOperation_ResponseAdapter : ResponseAdapter<TestOperation.Data> {
                 else -> break
               }
             }
+            reader.endObject()
             return TestOperation.Data.Random.BeingHumanRandom.Friends.OtherFriends(
               __typename = __typename!!,
               name = name!!,
               isFamous = isFamous
             )
-            reader.endObject()
           }
 
           fun toResponse(
@@ -356,11 +356,11 @@ object TestOperation_ResponseAdapter : ResponseAdapter<TestOperation.Data> {
         responseAdapterCache: ResponseAdapterCache,
         __typename: String?
       ): TestOperation.Data.Random.BeingWookieRandom {
-        reader.beginObject()
         var __typename: String? = __typename
         var name: String? = null
         var friends: List<TestOperation.Data.Random.BeingWookieRandom.Friends>? = null
         var race: Race? = null
+        reader.beginObject()
         while(true) {
           when (reader.selectName(RESPONSE_NAMES)) {
             0 -> __typename = StringResponseAdapter.fromResponse(reader, responseAdapterCache)
@@ -370,13 +370,13 @@ object TestOperation_ResponseAdapter : ResponseAdapter<TestOperation.Data> {
             else -> break
           }
         }
+        reader.endObject()
         return TestOperation.Data.Random.BeingWookieRandom(
           __typename = __typename!!,
           name = name!!,
           friends = friends!!,
           race = race!!
         )
-        reader.endObject()
       }
 
       fun toResponse(
@@ -406,7 +406,7 @@ object TestOperation_ResponseAdapter : ResponseAdapter<TestOperation.Data> {
             "Wookie" -> WookieFriends.fromResponse(reader, responseAdapterCache, typename)
             else -> OtherFriends.fromResponse(reader, responseAdapterCache, typename)
           }
-          reader.endObject()
+          .also { reader.endObject() }
         }
 
         override fun toResponse(
@@ -440,10 +440,10 @@ object TestOperation_ResponseAdapter : ResponseAdapter<TestOperation.Data> {
             responseAdapterCache: ResponseAdapterCache,
             __typename: String?
           ): TestOperation.Data.Random.BeingWookieRandom.Friends.WookieFriends {
-            reader.beginObject()
             var __typename: String? = __typename
             var name: String? = null
             var lifeExpectancy: Double? = null
+            reader.beginObject()
             while(true) {
               when (reader.selectName(RESPONSE_NAMES)) {
                 0 -> __typename = StringResponseAdapter.fromResponse(reader, responseAdapterCache)
@@ -453,12 +453,12 @@ object TestOperation_ResponseAdapter : ResponseAdapter<TestOperation.Data> {
                 else -> break
               }
             }
+            reader.endObject()
             return TestOperation.Data.Random.BeingWookieRandom.Friends.WookieFriends(
               __typename = __typename!!,
               name = name!!,
               lifeExpectancy = lifeExpectancy
             )
-            reader.endObject()
           }
 
           fun toResponse(
@@ -498,10 +498,10 @@ object TestOperation_ResponseAdapter : ResponseAdapter<TestOperation.Data> {
             responseAdapterCache: ResponseAdapterCache,
             __typename: String?
           ): TestOperation.Data.Random.BeingWookieRandom.Friends.OtherFriends {
-            reader.beginObject()
             var __typename: String? = __typename
             var name: String? = null
             var lifeExpectancy: Double? = null
+            reader.beginObject()
             while(true) {
               when (reader.selectName(RESPONSE_NAMES)) {
                 0 -> __typename = StringResponseAdapter.fromResponse(reader, responseAdapterCache)
@@ -511,12 +511,12 @@ object TestOperation_ResponseAdapter : ResponseAdapter<TestOperation.Data> {
                 else -> break
               }
             }
+            reader.endObject()
             return TestOperation.Data.Random.BeingWookieRandom.Friends.OtherFriends(
               __typename = __typename!!,
               name = name!!,
               lifeExpectancy = lifeExpectancy
             )
-            reader.endObject()
           }
 
           fun toResponse(
@@ -550,18 +550,18 @@ object TestOperation_ResponseAdapter : ResponseAdapter<TestOperation.Data> {
         responseAdapterCache: ResponseAdapterCache,
         __typename: String?
       ): TestOperation.Data.Random.OtherRandom {
-        reader.beginObject()
         var __typename: String? = __typename
+        reader.beginObject()
         while(true) {
           when (reader.selectName(RESPONSE_NAMES)) {
             0 -> __typename = StringResponseAdapter.fromResponse(reader, responseAdapterCache)
             else -> break
           }
         }
+        reader.endObject()
         return TestOperation.Data.Random.OtherRandom(
           __typename = __typename!!
         )
-        reader.endObject()
       }
 
       fun toResponse(

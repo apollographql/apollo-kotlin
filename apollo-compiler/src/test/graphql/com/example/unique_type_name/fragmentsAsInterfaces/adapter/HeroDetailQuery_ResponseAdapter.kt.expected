@@ -44,18 +44,18 @@ object HeroDetailQuery_ResponseAdapter : ResponseAdapter<HeroDetailQuery.Data> {
 
   override fun fromResponse(reader: JsonReader, responseAdapterCache: ResponseAdapterCache):
       com.example.unique_type_name.HeroDetailQuery.Data {
-    reader.beginObject()
     var heroDetailQuery: com.example.unique_type_name.HeroDetailQuery.Data.HeroDetailQuery? = null
+    reader.beginObject()
     while(true) {
       when (reader.selectName(RESPONSE_NAMES)) {
         0 -> heroDetailQuery = HeroDetailQuery.nullable().fromResponse(reader, responseAdapterCache)
         else -> break
       }
     }
+    reader.endObject()
     return com.example.unique_type_name.HeroDetailQuery.Data(
       heroDetailQuery = heroDetailQuery
     )
-    reader.endObject()
   }
 
   override fun toResponse(
@@ -80,7 +80,7 @@ object HeroDetailQuery_ResponseAdapter : ResponseAdapter<HeroDetailQuery.Data> {
         "Human" -> HumanHeroDetailQuery.fromResponse(reader, responseAdapterCache, typename)
         else -> OtherHeroDetailQuery.fromResponse(reader, responseAdapterCache, typename)
       }
-      reader.endObject()
+      .also { reader.endObject() }
     }
 
     override fun toResponse(
@@ -121,11 +121,11 @@ object HeroDetailQuery_ResponseAdapter : ResponseAdapter<HeroDetailQuery.Data> {
         responseAdapterCache: ResponseAdapterCache,
         __typename: String?
       ): com.example.unique_type_name.HeroDetailQuery.Data.HeroDetailQuery.HumanHeroDetailQuery {
-        reader.beginObject()
         var __typename: String? = __typename
         var name: String? = null
         var friends: List<com.example.unique_type_name.HeroDetailQuery.Data.HeroDetailQuery.HumanHeroDetailQuery.Friends?>? = null
         var height: Double? = null
+        reader.beginObject()
         while(true) {
           when (reader.selectName(RESPONSE_NAMES)) {
             0 -> __typename = StringResponseAdapter.fromResponse(reader, responseAdapterCache)
@@ -136,13 +136,13 @@ object HeroDetailQuery_ResponseAdapter : ResponseAdapter<HeroDetailQuery.Data> {
             else -> break
           }
         }
+        reader.endObject()
         return com.example.unique_type_name.HeroDetailQuery.Data.HeroDetailQuery.HumanHeroDetailQuery(
           __typename = __typename!!,
           name = name!!,
           friends = friends,
           height = height
         )
-        reader.endObject()
       }
 
       fun toResponse(
@@ -190,10 +190,10 @@ object HeroDetailQuery_ResponseAdapter : ResponseAdapter<HeroDetailQuery.Data> {
 
         override fun fromResponse(reader: JsonReader, responseAdapterCache: ResponseAdapterCache):
             com.example.unique_type_name.HeroDetailQuery.Data.HeroDetailQuery.HumanHeroDetailQuery.Friends {
-          reader.beginObject()
           var name: String? = null
           var appearsIn: List<Episode?>? = null
           var friends: List<com.example.unique_type_name.HeroDetailQuery.Data.HeroDetailQuery.HumanHeroDetailQuery.Friends.Friends?>? = null
+          reader.beginObject()
           while(true) {
             when (reader.selectName(RESPONSE_NAMES)) {
               0 -> name = StringResponseAdapter.fromResponse(reader, responseAdapterCache)
@@ -204,12 +204,12 @@ object HeroDetailQuery_ResponseAdapter : ResponseAdapter<HeroDetailQuery.Data> {
               else -> break
             }
           }
+          reader.endObject()
           return com.example.unique_type_name.HeroDetailQuery.Data.HeroDetailQuery.HumanHeroDetailQuery.Friends(
             name = name!!,
             appearsIn = appearsIn!!,
             friends = friends
           )
-          reader.endObject()
         }
 
         override fun toResponse(
@@ -242,7 +242,7 @@ object HeroDetailQuery_ResponseAdapter : ResponseAdapter<HeroDetailQuery.Data> {
               "Human" -> CharacterFriends.fromResponse(reader, responseAdapterCache, typename)
               else -> OtherFriends.fromResponse(reader, responseAdapterCache, typename)
             }
-            reader.endObject()
+            .also { reader.endObject() }
           }
 
           override fun toResponse(
@@ -281,10 +281,10 @@ object HeroDetailQuery_ResponseAdapter : ResponseAdapter<HeroDetailQuery.Data> {
               __typename: String?
             ):
                 com.example.unique_type_name.HeroDetailQuery.Data.HeroDetailQuery.HumanHeroDetailQuery.Friends.Friends.CharacterFriends {
-              reader.beginObject()
               var __typename: String? = __typename
               var name: String? = null
               var friendsConnection: com.example.unique_type_name.HeroDetailQuery.Data.HeroDetailQuery.HumanHeroDetailQuery.Friends.Friends.CharacterFriends.FriendsConnection? = null
+              reader.beginObject()
               while(true) {
                 when (reader.selectName(RESPONSE_NAMES)) {
                   0 -> __typename = StringResponseAdapter.fromResponse(reader, responseAdapterCache)
@@ -294,12 +294,12 @@ object HeroDetailQuery_ResponseAdapter : ResponseAdapter<HeroDetailQuery.Data> {
                   else -> break
                 }
               }
+              reader.endObject()
               return com.example.unique_type_name.HeroDetailQuery.Data.HeroDetailQuery.HumanHeroDetailQuery.Friends.Friends.CharacterFriends(
                 __typename = __typename!!,
                 name = name!!,
                 friendsConnection = friendsConnection!!
               )
-              reader.endObject()
             }
 
             fun toResponse(
@@ -339,9 +339,9 @@ object HeroDetailQuery_ResponseAdapter : ResponseAdapter<HeroDetailQuery.Data> {
               override fun fromResponse(reader: JsonReader,
                   responseAdapterCache: ResponseAdapterCache):
                   com.example.unique_type_name.HeroDetailQuery.Data.HeroDetailQuery.HumanHeroDetailQuery.Friends.Friends.CharacterFriends.FriendsConnection {
-                reader.beginObject()
                 var totalCount: Int? = null
                 var edges: List<com.example.unique_type_name.HeroDetailQuery.Data.HeroDetailQuery.HumanHeroDetailQuery.Friends.Friends.CharacterFriends.FriendsConnection.Edges?>? = null
+                reader.beginObject()
                 while(true) {
                   when (reader.selectName(RESPONSE_NAMES)) {
                     0 -> totalCount = NullableIntResponseAdapter.fromResponse(reader,
@@ -351,11 +351,11 @@ object HeroDetailQuery_ResponseAdapter : ResponseAdapter<HeroDetailQuery.Data> {
                     else -> break
                   }
                 }
+                reader.endObject()
                 return com.example.unique_type_name.HeroDetailQuery.Data.HeroDetailQuery.HumanHeroDetailQuery.Friends.Friends.CharacterFriends.FriendsConnection(
                   totalCount = totalCount,
                   edges = edges
                 )
-                reader.endObject()
               }
 
               override fun toResponse(
@@ -391,18 +391,18 @@ object HeroDetailQuery_ResponseAdapter : ResponseAdapter<HeroDetailQuery.Data> {
                 override fun fromResponse(reader: JsonReader,
                     responseAdapterCache: ResponseAdapterCache):
                     com.example.unique_type_name.HeroDetailQuery.Data.HeroDetailQuery.HumanHeroDetailQuery.Friends.Friends.CharacterFriends.FriendsConnection.Edges {
-                  reader.beginObject()
                   var node: com.example.unique_type_name.HeroDetailQuery.Data.HeroDetailQuery.HumanHeroDetailQuery.Friends.Friends.CharacterFriends.FriendsConnection.Edges.Node? = null
+                  reader.beginObject()
                   while(true) {
                     when (reader.selectName(RESPONSE_NAMES)) {
                       0 -> node = Node.nullable().fromResponse(reader, responseAdapterCache)
                       else -> break
                     }
                   }
+                  reader.endObject()
                   return com.example.unique_type_name.HeroDetailQuery.Data.HeroDetailQuery.HumanHeroDetailQuery.Friends.Friends.CharacterFriends.FriendsConnection.Edges(
                     node = node
                   )
-                  reader.endObject()
                 }
 
                 override fun toResponse(
@@ -431,18 +431,18 @@ object HeroDetailQuery_ResponseAdapter : ResponseAdapter<HeroDetailQuery.Data> {
                   override fun fromResponse(reader: JsonReader,
                       responseAdapterCache: ResponseAdapterCache):
                       com.example.unique_type_name.HeroDetailQuery.Data.HeroDetailQuery.HumanHeroDetailQuery.Friends.Friends.CharacterFriends.FriendsConnection.Edges.Node {
-                    reader.beginObject()
                     var name: String? = null
+                    reader.beginObject()
                     while(true) {
                       when (reader.selectName(RESPONSE_NAMES)) {
                         0 -> name = StringResponseAdapter.fromResponse(reader, responseAdapterCache)
                         else -> break
                       }
                     }
+                    reader.endObject()
                     return com.example.unique_type_name.HeroDetailQuery.Data.HeroDetailQuery.HumanHeroDetailQuery.Friends.Friends.CharacterFriends.FriendsConnection.Edges.Node(
                       name = name!!
                     )
-                    reader.endObject()
                   }
 
                   override fun toResponse(
@@ -473,18 +473,18 @@ object HeroDetailQuery_ResponseAdapter : ResponseAdapter<HeroDetailQuery.Data> {
               __typename: String?
             ):
                 com.example.unique_type_name.HeroDetailQuery.Data.HeroDetailQuery.HumanHeroDetailQuery.Friends.Friends.OtherFriends {
-              reader.beginObject()
               var __typename: String? = __typename
+              reader.beginObject()
               while(true) {
                 when (reader.selectName(RESPONSE_NAMES)) {
                   0 -> __typename = StringResponseAdapter.fromResponse(reader, responseAdapterCache)
                   else -> break
                 }
               }
+              reader.endObject()
               return com.example.unique_type_name.HeroDetailQuery.Data.HeroDetailQuery.HumanHeroDetailQuery.Friends.Friends.OtherFriends(
                 __typename = __typename!!
               )
-              reader.endObject()
             }
 
             fun toResponse(
@@ -525,10 +525,10 @@ object HeroDetailQuery_ResponseAdapter : ResponseAdapter<HeroDetailQuery.Data> {
         responseAdapterCache: ResponseAdapterCache,
         __typename: String?
       ): com.example.unique_type_name.HeroDetailQuery.Data.HeroDetailQuery.OtherHeroDetailQuery {
-        reader.beginObject()
         var __typename: String? = __typename
         var name: String? = null
         var friends: List<com.example.unique_type_name.HeroDetailQuery.Data.HeroDetailQuery.OtherHeroDetailQuery.Friends?>? = null
+        reader.beginObject()
         while(true) {
           when (reader.selectName(RESPONSE_NAMES)) {
             0 -> __typename = StringResponseAdapter.fromResponse(reader, responseAdapterCache)
@@ -538,12 +538,12 @@ object HeroDetailQuery_ResponseAdapter : ResponseAdapter<HeroDetailQuery.Data> {
             else -> break
           }
         }
+        reader.endObject()
         return com.example.unique_type_name.HeroDetailQuery.Data.HeroDetailQuery.OtherHeroDetailQuery(
           __typename = __typename!!,
           name = name!!,
           friends = friends
         )
-        reader.endObject()
       }
 
       fun toResponse(
@@ -575,18 +575,18 @@ object HeroDetailQuery_ResponseAdapter : ResponseAdapter<HeroDetailQuery.Data> {
 
         override fun fromResponse(reader: JsonReader, responseAdapterCache: ResponseAdapterCache):
             com.example.unique_type_name.HeroDetailQuery.Data.HeroDetailQuery.OtherHeroDetailQuery.Friends {
-          reader.beginObject()
           var name: String? = null
+          reader.beginObject()
           while(true) {
             when (reader.selectName(RESPONSE_NAMES)) {
               0 -> name = StringResponseAdapter.fromResponse(reader, responseAdapterCache)
               else -> break
             }
           }
+          reader.endObject()
           return com.example.unique_type_name.HeroDetailQuery.Data.HeroDetailQuery.OtherHeroDetailQuery.Friends(
             name = name!!
           )
-          reader.endObject()
         }
 
         override fun toResponse(

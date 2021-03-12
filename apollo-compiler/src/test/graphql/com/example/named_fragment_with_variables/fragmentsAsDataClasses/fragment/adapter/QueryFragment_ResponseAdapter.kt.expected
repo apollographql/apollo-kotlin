@@ -10,6 +10,7 @@ import com.apollographql.apollo3.api.ResponseAdapterCache
 import com.apollographql.apollo3.api.ResponseField
 import com.apollographql.apollo3.api.StringResponseAdapter
 import com.apollographql.apollo3.api.Variable
+import com.apollographql.apollo3.api.internal.json.MapJsonReader
 import com.apollographql.apollo3.api.internal.json.MapJsonReader.Companion.buffer
 import com.apollographql.apollo3.api.json.JsonReader
 import com.apollographql.apollo3.api.json.JsonWriter
@@ -99,9 +100,9 @@ object QueryFragment_ResponseAdapter : ResponseAdapter<QueryFragment.Data> {
 
     override fun fromResponse(reader: JsonReader, responseAdapterCache: ResponseAdapterCache):
         QueryFragment.Data.Organization {
-      reader.beginObject()
       var id: String? = null
       var user: List<QueryFragment.Data.Organization.User>? = null
+      reader.beginObject()
       while(true) {
         when (reader.selectName(RESPONSE_NAMES)) {
           0 -> id = StringResponseAdapter.fromResponse(reader, responseAdapterCache)
@@ -109,11 +110,11 @@ object QueryFragment_ResponseAdapter : ResponseAdapter<QueryFragment.Data> {
           else -> break
         }
       }
+      reader.endObject()
       return QueryFragment.Data.Organization(
         id = id!!,
         user = user!!
       )
-      reader.endObject()
     }
 
     override fun toResponse(
@@ -138,8 +139,8 @@ object QueryFragment_ResponseAdapter : ResponseAdapter<QueryFragment.Data> {
 
       override fun fromResponse(reader: JsonReader, responseAdapterCache: ResponseAdapterCache):
           QueryFragment.Data.Organization.User {
-        reader.beginObject()
         val reader = reader.buffer()
+        reader.beginObject()
         var __typename: String? = null
 
         var userFragment: UserFragment.Data? = null
@@ -150,15 +151,15 @@ object QueryFragment_ResponseAdapter : ResponseAdapter<QueryFragment.Data> {
           }
         }
         if (__typename in arrayOf("User")) {
-          reader.rewind()
+          (reader as MapJsonReader).rewind()
           userFragment = UserFragment_ResponseAdapter.fromFields(reader, responseAdapterCache)
         }
 
+        reader.endObject()
         return QueryFragment.Data.Organization.User(
           __typename = __typename!!,
           userFragment = userFragment
         )
-        reader.endObject()
       }
 
       override fun toResponse(

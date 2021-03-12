@@ -40,18 +40,18 @@ object TestQuery_ResponseAdapter : ResponseAdapter<TestQuery.Data> {
 
   override fun fromResponse(reader: JsonReader, responseAdapterCache: ResponseAdapterCache):
       TestQuery.Data {
-    reader.beginObject()
     var nonOptionalHero: TestQuery.Data.NonOptionalHero? = null
+    reader.beginObject()
     while(true) {
       when (reader.selectName(RESPONSE_NAMES)) {
         0 -> nonOptionalHero = NonOptionalHero.fromResponse(reader, responseAdapterCache)
         else -> break
       }
     }
+    reader.endObject()
     return TestQuery.Data(
       nonOptionalHero = nonOptionalHero!!
     )
-    reader.endObject()
   }
 
   override fun toResponse(
@@ -75,7 +75,7 @@ object TestQuery_ResponseAdapter : ResponseAdapter<TestQuery.Data> {
         "Human" -> HumanNonOptionalHero.fromResponse(reader, responseAdapterCache, typename)
         else -> OtherNonOptionalHero.fromResponse(reader, responseAdapterCache, typename)
       }
-      reader.endObject()
+      .also { reader.endObject() }
     }
 
     override fun toResponse(
@@ -109,10 +109,10 @@ object TestQuery_ResponseAdapter : ResponseAdapter<TestQuery.Data> {
         responseAdapterCache: ResponseAdapterCache,
         __typename: String?
       ): TestQuery.Data.NonOptionalHero.HumanNonOptionalHero {
-        reader.beginObject()
         var __typename: String? = __typename
         var name: String? = null
         var height: Double? = null
+        reader.beginObject()
         while(true) {
           when (reader.selectName(RESPONSE_NAMES)) {
             0 -> __typename = StringResponseAdapter.fromResponse(reader, responseAdapterCache)
@@ -121,12 +121,12 @@ object TestQuery_ResponseAdapter : ResponseAdapter<TestQuery.Data> {
             else -> break
           }
         }
+        reader.endObject()
         return TestQuery.Data.NonOptionalHero.HumanNonOptionalHero(
           __typename = __typename!!,
           name = name!!,
           height = height
         )
-        reader.endObject()
       }
 
       fun toResponse(
@@ -161,9 +161,9 @@ object TestQuery_ResponseAdapter : ResponseAdapter<TestQuery.Data> {
         responseAdapterCache: ResponseAdapterCache,
         __typename: String?
       ): TestQuery.Data.NonOptionalHero.OtherNonOptionalHero {
-        reader.beginObject()
         var __typename: String? = __typename
         var name: String? = null
+        reader.beginObject()
         while(true) {
           when (reader.selectName(RESPONSE_NAMES)) {
             0 -> __typename = StringResponseAdapter.fromResponse(reader, responseAdapterCache)
@@ -171,11 +171,11 @@ object TestQuery_ResponseAdapter : ResponseAdapter<TestQuery.Data> {
             else -> break
           }
         }
+        reader.endObject()
         return TestQuery.Data.NonOptionalHero.OtherNonOptionalHero(
           __typename = __typename!!,
           name = name!!
         )
-        reader.endObject()
       }
 
       fun toResponse(

@@ -37,8 +37,8 @@ object TestQuery_ResponseAdapter : ResponseAdapter<TestQuery.Data> {
 
   override fun fromResponse(reader: JsonReader, responseAdapterCache: ResponseAdapterCache):
       TestQuery.Data {
-    reader.beginObject()
     var typeWithGraphQLKeywords: TestQuery.Data.TypeWithGraphQLKeywords? = null
+    reader.beginObject()
     while(true) {
       when (reader.selectName(RESPONSE_NAMES)) {
         0 -> typeWithGraphQLKeywords = TypeWithGraphQLKeywords.nullable().fromResponse(reader,
@@ -46,10 +46,10 @@ object TestQuery_ResponseAdapter : ResponseAdapter<TestQuery.Data> {
         else -> break
       }
     }
+    reader.endObject()
     return TestQuery.Data(
       typeWithGraphQLKeywords = typeWithGraphQLKeywords
     )
-    reader.endObject()
   }
 
   override fun toResponse(
@@ -92,10 +92,10 @@ object TestQuery_ResponseAdapter : ResponseAdapter<TestQuery.Data> {
 
     override fun fromResponse(reader: JsonReader, responseAdapterCache: ResponseAdapterCache):
         TestQuery.Data.TypeWithGraphQLKeywords {
-      reader.beginObject()
       var on: String? = null
       var null_: String? = null
       var alias: String? = null
+      reader.beginObject()
       while(true) {
         when (reader.selectName(RESPONSE_NAMES)) {
           0 -> on = NullableStringResponseAdapter.fromResponse(reader, responseAdapterCache)
@@ -104,12 +104,12 @@ object TestQuery_ResponseAdapter : ResponseAdapter<TestQuery.Data> {
           else -> break
         }
       }
+      reader.endObject()
       return TestQuery.Data.TypeWithGraphQLKeywords(
         on = on,
         null_ = null_,
         alias = alias
       )
-      reader.endObject()
     }
 
     override fun toResponse(

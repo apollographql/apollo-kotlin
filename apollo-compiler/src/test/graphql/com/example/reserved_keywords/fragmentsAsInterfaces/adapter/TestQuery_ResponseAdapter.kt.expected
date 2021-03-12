@@ -50,9 +50,9 @@ object TestQuery_ResponseAdapter : ResponseAdapter<TestQuery.Data> {
 
   override fun fromResponse(reader: JsonReader, responseAdapterCache: ResponseAdapterCache):
       TestQuery.Data {
-    reader.beginObject()
     var yield_: TestQuery.Data.Yield? = null
     var objects: List<TestQuery.Data.Objects?>? = null
+    reader.beginObject()
     while(true) {
       when (reader.selectName(RESPONSE_NAMES)) {
         0 -> yield_ = Yield.nullable().fromResponse(reader, responseAdapterCache)
@@ -61,11 +61,11 @@ object TestQuery_ResponseAdapter : ResponseAdapter<TestQuery.Data> {
         else -> break
       }
     }
+    reader.endObject()
     return TestQuery.Data(
       yield_ = yield_,
       objects = objects
     )
-    reader.endObject()
   }
 
   override fun toResponse(
@@ -98,9 +98,9 @@ object TestQuery_ResponseAdapter : ResponseAdapter<TestQuery.Data> {
 
     override fun fromResponse(reader: JsonReader, responseAdapterCache: ResponseAdapterCache):
         TestQuery.Data.Yield {
-      reader.beginObject()
       var it_: String? = null
       var name: String? = null
+      reader.beginObject()
       while(true) {
         when (reader.selectName(RESPONSE_NAMES)) {
           0 -> it_ = StringResponseAdapter.fromResponse(reader, responseAdapterCache)
@@ -108,11 +108,11 @@ object TestQuery_ResponseAdapter : ResponseAdapter<TestQuery.Data> {
           else -> break
         }
       }
+      reader.endObject()
       return TestQuery.Data.Yield(
         it_ = it_!!,
         name = name!!
       )
-      reader.endObject()
     }
 
     override fun toResponse(
@@ -140,7 +140,7 @@ object TestQuery_ResponseAdapter : ResponseAdapter<TestQuery.Data> {
         "Droid" -> CharacterObjects.fromResponse(reader, responseAdapterCache, typename)
         else -> OtherObjects.fromResponse(reader, responseAdapterCache, typename)
       }
-      reader.endObject()
+      .also { reader.endObject() }
     }
 
     override fun toResponse(
@@ -170,9 +170,9 @@ object TestQuery_ResponseAdapter : ResponseAdapter<TestQuery.Data> {
         responseAdapterCache: ResponseAdapterCache,
         __typename: String?
       ): TestQuery.Data.Objects.CharacterObjects {
-        reader.beginObject()
         var __typename: String? = __typename
         var name: String? = null
+        reader.beginObject()
         while(true) {
           when (reader.selectName(RESPONSE_NAMES)) {
             0 -> __typename = StringResponseAdapter.fromResponse(reader, responseAdapterCache)
@@ -180,11 +180,11 @@ object TestQuery_ResponseAdapter : ResponseAdapter<TestQuery.Data> {
             else -> break
           }
         }
+        reader.endObject()
         return TestQuery.Data.Objects.CharacterObjects(
           __typename = __typename!!,
           name = name!!
         )
-        reader.endObject()
       }
 
       fun toResponse(
@@ -213,18 +213,18 @@ object TestQuery_ResponseAdapter : ResponseAdapter<TestQuery.Data> {
         responseAdapterCache: ResponseAdapterCache,
         __typename: String?
       ): TestQuery.Data.Objects.OtherObjects {
-        reader.beginObject()
         var __typename: String? = __typename
+        reader.beginObject()
         while(true) {
           when (reader.selectName(RESPONSE_NAMES)) {
             0 -> __typename = StringResponseAdapter.fromResponse(reader, responseAdapterCache)
             else -> break
           }
         }
+        reader.endObject()
         return TestQuery.Data.Objects.OtherObjects(
           __typename = __typename!!
         )
-        reader.endObject()
       }
 
       fun toResponse(
