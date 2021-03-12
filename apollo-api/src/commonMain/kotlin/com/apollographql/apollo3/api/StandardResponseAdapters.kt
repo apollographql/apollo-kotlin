@@ -151,6 +151,7 @@ class ObjectResponseAdapter<T>(
        */
       val mapWriter = MapJsonWriter()
       mapWriter.beginObject()
+      wrappedAdapter.toResponse(mapWriter, responseAdapterCache, value)
       mapWriter.endObject()
 
       /**
