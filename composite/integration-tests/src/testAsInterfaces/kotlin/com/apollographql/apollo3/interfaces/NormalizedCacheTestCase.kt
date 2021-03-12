@@ -1,5 +1,7 @@
-package com.apollographql.apollo3
+package com.apollographql.apollo3.interfaces
 
+import com.apollographql.apollo3.ApolloClient
+import com.apollographql.apollo3.IdFieldCacheKeyResolver
 import com.apollographql.apollo3.Utils.assertResponse
 import com.apollographql.apollo3.Utils.cacheAndAssertCachedResponse
 import com.apollographql.apollo3.Utils.enqueueAndAssertResponse
@@ -28,6 +30,7 @@ import com.apollographql.apollo3.integration.normalizer.fragment.HeroWithFriends
 import com.apollographql.apollo3.integration.normalizer.fragment.HumanWithIdFragment
 import com.apollographql.apollo3.integration.normalizer.fragment.HumanWithIdFragmentImpl
 import com.apollographql.apollo3.integration.normalizer.type.Episode
+import com.apollographql.apollo3.isFromCache
 import com.google.common.truth.Truth
 import com.google.common.truth.Truth.assertThat
 import okhttp3.Dispatcher
