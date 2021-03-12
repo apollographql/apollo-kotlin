@@ -57,10 +57,8 @@ object TestQuery_ResponseAdapter : ResponseAdapter<TestQuery.Data> {
     responseAdapterCache: ResponseAdapterCache,
     value: TestQuery.Data
   ) {
-    writer.beginObject()
     writer.name("hero")
     Hero.obj().nullable().toResponse(writer, responseAdapterCache, value.hero)
-    writer.endObject()
   }
 
   object Hero : ResponseAdapter<TestQuery.Data.Hero> {
@@ -108,7 +106,6 @@ object TestQuery_ResponseAdapter : ResponseAdapter<TestQuery.Data> {
       responseAdapterCache: ResponseAdapterCache,
       value: TestQuery.Data.Hero
     ) {
-      writer.beginObject()
       writer.name("name")
       StringResponseAdapter.toResponse(writer, responseAdapterCache, value.name)
       writer.name("appearsIn")
@@ -116,7 +113,6 @@ object TestQuery_ResponseAdapter : ResponseAdapter<TestQuery.Data> {
           value.appearsIn)
       writer.name("firstAppearsIn")
       Episode_ResponseAdapter.toResponse(writer, responseAdapterCache, value.firstAppearsIn)
-      writer.endObject()
     }
   }
 }

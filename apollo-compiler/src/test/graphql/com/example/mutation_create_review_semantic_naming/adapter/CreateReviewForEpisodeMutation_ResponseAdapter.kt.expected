@@ -61,10 +61,8 @@ object CreateReviewForEpisodeMutation_ResponseAdapter :
     responseAdapterCache: ResponseAdapterCache,
     value: CreateReviewForEpisodeMutation.Data
   ) {
-    writer.beginObject()
     writer.name("createReview")
     CreateReview.obj().nullable().toResponse(writer, responseAdapterCache, value.createReview)
-    writer.endObject()
   }
 
   object CreateReview : ResponseAdapter<CreateReviewForEpisodeMutation.Data.CreateReview> {
@@ -103,12 +101,10 @@ object CreateReviewForEpisodeMutation_ResponseAdapter :
       responseAdapterCache: ResponseAdapterCache,
       value: CreateReviewForEpisodeMutation.Data.CreateReview
     ) {
-      writer.beginObject()
       writer.name("stars")
       IntResponseAdapter.toResponse(writer, responseAdapterCache, value.stars)
       writer.name("commentary")
       NullableStringResponseAdapter.toResponse(writer, responseAdapterCache, value.commentary)
-      writer.endObject()
     }
   }
 }

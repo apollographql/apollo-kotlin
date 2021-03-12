@@ -67,10 +67,8 @@ internal object CreateReviewForEpisode_ResponseAdapter :
     responseAdapterCache: ResponseAdapterCache,
     value: CreateReviewForEpisode.Data
   ) {
-    writer.beginObject()
     writer.name("createReview")
     CreateReview.obj().nullable().toResponse(writer, responseAdapterCache, value.createReview)
-    writer.endObject()
   }
 
   object CreateReview : ResponseAdapter<CreateReviewForEpisode.Data.CreateReview> {
@@ -148,7 +146,6 @@ internal object CreateReviewForEpisode_ResponseAdapter :
       responseAdapterCache: ResponseAdapterCache,
       value: CreateReviewForEpisode.Data.CreateReview
     ) {
-      writer.beginObject()
       writer.name("stars")
       IntResponseAdapter.toResponse(writer, responseAdapterCache, value.stars)
       writer.name("commentary")
@@ -165,7 +162,6 @@ internal object CreateReviewForEpisode_ResponseAdapter :
       writer.name("listOfListOfObject")
       ListOfListOfObject.obj().list().list().nullable().toResponse(writer, responseAdapterCache,
           value.listOfListOfObject)
-      writer.endObject()
     }
 
     object ListOfListOfObject :
@@ -198,10 +194,8 @@ internal object CreateReviewForEpisode_ResponseAdapter :
         responseAdapterCache: ResponseAdapterCache,
         value: CreateReviewForEpisode.Data.CreateReview.ListOfListOfObject
       ) {
-        writer.beginObject()
         writer.name("name")
         StringResponseAdapter.toResponse(writer, responseAdapterCache, value.name)
-        writer.endObject()
       }
     }
   }

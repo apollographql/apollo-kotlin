@@ -57,10 +57,8 @@ object TestQuery_ResponseAdapter : ResponseAdapter<TestQuery.Data> {
     responseAdapterCache: ResponseAdapterCache,
     value: TestQuery.Data
   ) {
-    writer.beginObject()
     writer.name("hero")
     Hero.obj().nullable().toResponse(writer, responseAdapterCache, value.hero)
-    writer.endObject()
   }
 
   object Hero : ResponseAdapter<TestQuery.Data.Hero> {
@@ -222,11 +220,14 @@ object TestQuery_ResponseAdapter : ResponseAdapter<TestQuery.Data> {
         responseAdapterCache: ResponseAdapterCache,
         value: TestQuery.Data.Hero.FriendsConnection
       ) {
+<<<<<<< HEAD
         writer.beginObject()
 <<<<<<< HEAD
         writer.name("edges")
         Edges.nullable().list().nullable().toResponse(writer, responseAdapterCache, value.edges)
 =======
+=======
+>>>>>>> 3b08746b2... add ObjectResponseAdapter
         writer.name("__typename")
         StringResponseAdapter.toResponse(writer, responseAdapterCache, value.__typename)
         writer.name("name")
@@ -236,8 +237,11 @@ object TestQuery_ResponseAdapter : ResponseAdapter<TestQuery.Data> {
         writer.name("profileLink")
         responseAdapterCache.responseAdapterFor<Any>(CustomScalars.URL).toResponse(writer,
             responseAdapterCache, value.profileLink)
+<<<<<<< HEAD
 >>>>>>> 528df6e0d... wip
         writer.endObject()
+=======
+>>>>>>> 3b08746b2... add ObjectResponseAdapter
       }
 
       object Edges : ResponseAdapter<TestQuery.Data.Hero.FriendsConnection.Edges> {
@@ -299,6 +303,7 @@ object TestQuery_ResponseAdapter : ResponseAdapter<TestQuery.Data> {
           responseAdapterCache: ResponseAdapterCache,
           value: TestQuery.Data.Hero.FriendsConnection.Edges
         ) {
+<<<<<<< HEAD
           writer.beginObject()
 <<<<<<< HEAD
           writer.name("node")
@@ -309,6 +314,11 @@ object TestQuery_ResponseAdapter : ResponseAdapter<TestQuery.Data> {
               value.edges)
 >>>>>>> 528df6e0d... wip
           writer.endObject()
+=======
+          writer.name("edges")
+          Edges.obj().nullable().list().nullable().toResponse(writer, responseAdapterCache,
+              value.edges)
+>>>>>>> 3b08746b2... add ObjectResponseAdapter
         }
 
         object Node : ResponseAdapter<TestQuery.Data.Hero.FriendsConnection.Edges.Node> {
@@ -366,6 +376,7 @@ object TestQuery_ResponseAdapter : ResponseAdapter<TestQuery.Data> {
             responseAdapterCache: ResponseAdapterCache,
             value: TestQuery.Data.Hero.FriendsConnection.Edges.Node
           ) {
+<<<<<<< HEAD
             writer.beginObject()
 <<<<<<< HEAD
             writer.name("name")
@@ -375,6 +386,10 @@ object TestQuery_ResponseAdapter : ResponseAdapter<TestQuery.Data> {
             Node.obj().nullable().toResponse(writer, responseAdapterCache, value.node)
 >>>>>>> 528df6e0d... wip
             writer.endObject()
+=======
+            writer.name("node")
+            Node.obj().nullable().toResponse(writer, responseAdapterCache, value.node)
+>>>>>>> 3b08746b2... add ObjectResponseAdapter
           }
 <<<<<<< HEAD
 =======
@@ -410,10 +425,8 @@ object TestQuery_ResponseAdapter : ResponseAdapter<TestQuery.Data> {
               responseAdapterCache: ResponseAdapterCache,
               value: TestQuery.Data.Hero.CharacterHero.FriendsConnection.Edges.Node
             ) {
-              writer.beginObject()
               writer.name("name")
               StringResponseAdapter.toResponse(writer, responseAdapterCache, value.name)
-              writer.endObject()
             }
           }
         }
@@ -467,14 +480,12 @@ object TestQuery_ResponseAdapter : ResponseAdapter<TestQuery.Data> {
         responseAdapterCache: ResponseAdapterCache,
         value: TestQuery.Data.Hero.OtherHero
       ) {
-        writer.beginObject()
         writer.name("__typename")
         StringResponseAdapter.toResponse(writer, responseAdapterCache, value.__typename)
         writer.name("name")
         StringResponseAdapter.toResponse(writer, responseAdapterCache, value.name)
         writer.name("friendsConnection")
         FriendsConnection.obj().toResponse(writer, responseAdapterCache, value.friendsConnection)
-        writer.endObject()
       }
 
       object FriendsConnection : ResponseAdapter<TestQuery.Data.Hero.OtherHero.FriendsConnection> {
@@ -510,11 +521,9 @@ object TestQuery_ResponseAdapter : ResponseAdapter<TestQuery.Data> {
           responseAdapterCache: ResponseAdapterCache,
           value: TestQuery.Data.Hero.OtherHero.FriendsConnection
         ) {
-          writer.beginObject()
           writer.name("edges")
           Edges.obj().nullable().list().nullable().toResponse(writer, responseAdapterCache,
               value.edges)
-          writer.endObject()
         }
 
         object Edges : ResponseAdapter<TestQuery.Data.Hero.OtherHero.FriendsConnection.Edges> {
@@ -549,10 +558,8 @@ object TestQuery_ResponseAdapter : ResponseAdapter<TestQuery.Data> {
             responseAdapterCache: ResponseAdapterCache,
             value: TestQuery.Data.Hero.OtherHero.FriendsConnection.Edges
           ) {
-            writer.beginObject()
             writer.name("node")
             Node.obj().nullable().toResponse(writer, responseAdapterCache, value.node)
-            writer.endObject()
           }
 
           object Node : ResponseAdapter<TestQuery.Data.Hero.OtherHero.FriendsConnection.Edges.Node>
@@ -586,10 +593,8 @@ object TestQuery_ResponseAdapter : ResponseAdapter<TestQuery.Data> {
               responseAdapterCache: ResponseAdapterCache,
               value: TestQuery.Data.Hero.OtherHero.FriendsConnection.Edges.Node
             ) {
-              writer.beginObject()
               writer.name("name")
               StringResponseAdapter.toResponse(writer, responseAdapterCache, value.name)
-              writer.endObject()
             }
           }
 >>>>>>> ab5258fe0... all compiler tests pass

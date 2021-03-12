@@ -68,14 +68,12 @@ object PilotFragment_ResponseAdapter : ResponseAdapter<PilotFragment.Data> {
     responseAdapterCache: ResponseAdapterCache,
     value: PilotFragment.Data
   ) {
-    writer.beginObject()
     writer.name("__typename")
     StringResponseAdapter.toResponse(writer, responseAdapterCache, value.__typename)
     writer.name("name")
     NullableStringResponseAdapter.toResponse(writer, responseAdapterCache, value.name)
     writer.name("homeworld")
     Homeworld.obj(true).nullable().toResponse(writer, responseAdapterCache, value.homeworld)
-    writer.endObject()
   }
 
   object Homeworld : ResponseAdapter<PilotFragment.Data.Homeworld> {
@@ -112,12 +110,10 @@ object PilotFragment_ResponseAdapter : ResponseAdapter<PilotFragment.Data> {
       responseAdapterCache: ResponseAdapterCache,
       value: PilotFragment.Data.Homeworld
     ) {
-      writer.beginObject()
       writer.name("__typename")
       StringResponseAdapter.toResponse(writer, responseAdapterCache, value.__typename)
       if (value.planetFragment != null)
           PlanetFragment_ResponseAdapter.toResponse(writer, responseAdapterCache, value.planetFragment)
-      writer.endObject()
     }
   }
 }

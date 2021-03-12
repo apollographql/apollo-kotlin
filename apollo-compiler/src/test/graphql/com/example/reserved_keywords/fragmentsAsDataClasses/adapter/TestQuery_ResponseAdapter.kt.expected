@@ -72,13 +72,11 @@ object TestQuery_ResponseAdapter : ResponseAdapter<TestQuery.Data> {
     responseAdapterCache: ResponseAdapterCache,
     value: TestQuery.Data
   ) {
-    writer.beginObject()
     writer.name("yield")
     Yield.obj().nullable().toResponse(writer, responseAdapterCache, value.yield_)
     writer.name("objects")
     Objects.obj(true).nullable().list().nullable().toResponse(writer, responseAdapterCache,
         value.objects)
-    writer.endObject()
   }
 
   object Yield : ResponseAdapter<TestQuery.Data.Yield> {
@@ -118,12 +116,10 @@ object TestQuery_ResponseAdapter : ResponseAdapter<TestQuery.Data> {
       responseAdapterCache: ResponseAdapterCache,
       value: TestQuery.Data.Yield
     ) {
-      writer.beginObject()
       writer.name("it")
       StringResponseAdapter.toResponse(writer, responseAdapterCache, value.it_)
       writer.name("name")
       StringResponseAdapter.toResponse(writer, responseAdapterCache, value.name)
-      writer.endObject()
     }
   }
 
@@ -161,12 +157,10 @@ object TestQuery_ResponseAdapter : ResponseAdapter<TestQuery.Data> {
       responseAdapterCache: ResponseAdapterCache,
       value: TestQuery.Data.Objects
     ) {
-      writer.beginObject()
       writer.name("__typename")
       StringResponseAdapter.toResponse(writer, responseAdapterCache, value.__typename)
       if (value.asAsCharacter != null)
           AsCharacter.toResponse(writer, responseAdapterCache, value.asAsCharacter)
-      writer.endObject()
     }
 
     object AsCharacter : ResponseAdapter<TestQuery.Data.Objects.AsCharacter> {
@@ -202,12 +196,10 @@ object TestQuery_ResponseAdapter : ResponseAdapter<TestQuery.Data> {
         responseAdapterCache: ResponseAdapterCache,
         value: TestQuery.Data.Objects.AsCharacter
       ) {
-        writer.beginObject()
         writer.name("__typename")
         StringResponseAdapter.toResponse(writer, responseAdapterCache, value.__typename)
         writer.name("name")
         StringResponseAdapter.toResponse(writer, responseAdapterCache, value.name)
-        writer.endObject()
       }
     }
   }

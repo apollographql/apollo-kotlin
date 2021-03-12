@@ -59,10 +59,8 @@ object TestSubscription_ResponseAdapter : ResponseAdapter<TestSubscription.Data>
     responseAdapterCache: ResponseAdapterCache,
     value: TestSubscription.Data
   ) {
-    writer.beginObject()
     writer.name("commentAdded")
     CommentAdded.obj().nullable().toResponse(writer, responseAdapterCache, value.commentAdded)
-    writer.endObject()
   }
 
   object CommentAdded : ResponseAdapter<TestSubscription.Data.CommentAdded> {
@@ -101,12 +99,10 @@ object TestSubscription_ResponseAdapter : ResponseAdapter<TestSubscription.Data>
       responseAdapterCache: ResponseAdapterCache,
       value: TestSubscription.Data.CommentAdded
     ) {
-      writer.beginObject()
       writer.name("id")
       IntResponseAdapter.toResponse(writer, responseAdapterCache, value.id)
       writer.name("content")
       StringResponseAdapter.toResponse(writer, responseAdapterCache, value.content)
-      writer.endObject()
     }
   }
 }

@@ -55,10 +55,8 @@ object TestQuery_ResponseAdapter : ResponseAdapter<TestQuery.Data> {
     responseAdapterCache: ResponseAdapterCache,
     value: TestQuery.Data
   ) {
-    writer.beginObject()
     writer.name("foo")
     Foo.obj(true).nullable().toResponse(writer, responseAdapterCache, value.foo)
-    writer.endObject()
   }
 
   object Foo : ResponseAdapter<TestQuery.Data.Foo> {
@@ -102,14 +100,12 @@ object TestQuery_ResponseAdapter : ResponseAdapter<TestQuery.Data> {
       responseAdapterCache: ResponseAdapterCache,
       value: TestQuery.Data.Foo
     ) {
-      writer.beginObject()
       writer.name("__typename")
       StringResponseAdapter.toResponse(writer, responseAdapterCache, value.__typename)
 
       writer.name("foo")
       StringResponseAdapter.toResponse(writer, responseAdapterCache, value.foo)
       if (value.asAsBar != null) AsBar.toResponse(writer, responseAdapterCache, value.asAsBar)
-      writer.endObject()
     }
 
     object AsBar : ResponseAdapter<TestQuery.Data.Foo.AsBar> {
@@ -152,14 +148,12 @@ object TestQuery_ResponseAdapter : ResponseAdapter<TestQuery.Data> {
         responseAdapterCache: ResponseAdapterCache,
         value: TestQuery.Data.Foo.AsBar
       ) {
-        writer.beginObject()
         writer.name("__typename")
         StringResponseAdapter.toResponse(writer, responseAdapterCache, value.__typename)
         writer.name("foo")
         StringResponseAdapter.toResponse(writer, responseAdapterCache, value.foo)
         writer.name("bar")
         StringResponseAdapter.toResponse(writer, responseAdapterCache, value.bar)
-        writer.endObject()
       }
     }
   }

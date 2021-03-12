@@ -10,6 +10,7 @@ import com.apollographql.apollo3.api.ResponseAdapter
 import com.apollographql.apollo3.api.ResponseAdapterCache
 import com.apollographql.apollo3.api.ResponseField
 import com.apollographql.apollo3.api.json.JsonWriter
+import com.apollographql.apollo3.api.obj
 import com.example.simple_fragment.fragment.adapter.HeroDetails_ResponseAdapter
 import com.example.simple_fragment.fragment.adapter.HeroDetails_VariablesAdapter
 import com.example.simple_fragment.fragment.adapter.HumanDetails_ResponseAdapter
@@ -17,12 +18,15 @@ import kotlin.String
 import kotlin.collections.List
 
 internal class HeroDetails : Fragment<HeroDetails.Data> {
-  override fun adapter(): ResponseAdapter<Data> = HeroDetails_ResponseAdapter
+  override fun adapter(): ResponseAdapter<Data> {
+    return HeroDetails_ResponseAdapter.obj()
+  }
+
   override fun responseFields(): List<ResponseField.FieldSet> = listOf(
     ResponseField.FieldSet("Human", HumanDetails_ResponseAdapter.RESPONSE_FIELDS),
   )
   override fun serializeVariables(writer: JsonWriter, responseAdapterCache: ResponseAdapterCache) {
-    HeroDetails_VariablesAdapter.toResponse(writer, responseAdapterCache, this)
+    HeroDetails_VariablesAdapter.obj().toResponse(writer, responseAdapterCache, this)
   }
 
   /**

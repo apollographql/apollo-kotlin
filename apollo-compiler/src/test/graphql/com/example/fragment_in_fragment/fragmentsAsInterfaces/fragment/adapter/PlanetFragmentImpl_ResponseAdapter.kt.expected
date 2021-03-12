@@ -54,11 +54,9 @@ object PlanetFragmentImpl_ResponseAdapter : ResponseAdapter<PlanetFragmentImpl.D
     responseAdapterCache: ResponseAdapterCache,
     value: PlanetFragmentImpl.Data
   ) {
-    writer.beginObject()
     writer.name("__typename")
     StringResponseAdapter.toResponse(writer, responseAdapterCache, value.__typename)
     writer.name("name")
     NullableStringResponseAdapter.toResponse(writer, responseAdapterCache, value.name)
-    writer.endObject()
   }
 }

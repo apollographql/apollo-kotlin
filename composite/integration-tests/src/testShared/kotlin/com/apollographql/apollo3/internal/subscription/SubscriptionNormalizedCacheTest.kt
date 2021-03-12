@@ -5,8 +5,11 @@ import com.apollographql.apollo3.ApolloSubscriptionCall
 import com.apollographql.apollo3.IdFieldCacheKeyResolver
 import com.apollographql.apollo3.api.Operation
 import com.apollographql.apollo3.api.ApolloResponse
+import com.apollographql.apollo3.api.ResponseAdapterCache
+import com.apollographql.apollo3.cache.normalized.CacheKeyResolver
 import com.apollographql.apollo3.cache.normalized.NormalizedCache
 import com.apollographql.apollo3.cache.normalized.MemoryCacheFactory
+import com.apollographql.apollo3.cache.normalized.internal.normalize
 import com.apollographql.apollo3.exception.ApolloException
 import com.apollographql.apollo3.integration.subscription.NewRepoCommentSubscription
 import com.apollographql.apollo3.isFromCache
@@ -85,6 +88,7 @@ class SubscriptionNormalizedCacheTest {
             100, "Cached comment content", NewRepoCommentSubscription.Data.CommentAdded.PostedBy("user@user.com")
         )
     )
+    
     apolloClient.apolloStore.writeOperation(operation, data)
 
     val callback = SubscriptionManagerCallbackAdapter<NewRepoCommentSubscription.Data>()

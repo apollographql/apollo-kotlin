@@ -15,7 +15,7 @@ import com.squareup.kotlinpoet.joinToCode
 internal fun CodeGenerationAst.ObjectType.writeToResponseFunSpec(generateFragmentsAsInterfaces: Boolean): FunSpec {
   return when (this.kind) {
     is CodeGenerationAst.ObjectType.Kind.ObjectWithFragments -> {
-      if (generateFragmentsAsInterfaces) writeFragmentAsInterfacesToResponseFunSpec() else writeFragmentAsClassesToResponseFunSpec()
+      if (generateFragmentsAsInterfaces) writeStreamedPolymorphicObjectFunSpec() else writeBufferedPolymorphicObjectFunSpec()
     }
     is CodeGenerationAst.ObjectType.Kind.FragmentDelegate -> writeFragmentDelegateToResponseFunSpec()
     else -> writeObjectToResponseFunSpec()
@@ -43,14 +43,14 @@ private fun CodeGenerationAst.ObjectType.writeFragmentDelegateToResponseFunSpec(
       .build()
 }
 
-private fun CodeGenerationAst.ObjectType.writeFragmentAsInterfacesToResponseFunSpec(): FunSpec {
+private fun CodeGenerationAst.ObjectType.writeStreamedPolymorphicObjectFunSpec(): FunSpec {
   val (defaultImplementation, possibleImplementations) = with(this.kind as CodeGenerationAst.ObjectType.Kind.ObjectWithFragments) {
     defaultImplementation to possibleImplementations
   }
   return toResponseFunSpecBuilder(this.typeRef.asTypeName())
       .applyIf(possibleImplementations.isEmpty()) {
         addCode(
-            this@writeFragmentAsInterfacesToResponseFunSpec.fields.writeCode()
+            this@writeStreamedPolymorphicObjectFunSpec.fields.writeCode()
         )
       }
       .applyIf(possibleImplementations.isNotEmpty()) {
@@ -74,7 +74,7 @@ private fun CodeGenerationAst.ObjectType.writeFragmentAsInterfacesToResponseFunS
       .build()
 }
 
-private fun CodeGenerationAst.ObjectType.writeFragmentAsClassesToResponseFunSpec(): FunSpec {
+private fun CodeGenerationAst.ObjectType.writeBufferedPolymorphicObjectFunSpec(): FunSpec {
   val writeFieldsCode = this.fields
       .map { field -> field.writeCode() }
       .joinToCode(separator = "\n")
@@ -92,20 +92,16 @@ private fun CodeGenerationAst.ObjectType.writeFragmentAsClassesToResponseFunSpec
   }.joinToCode(separator = "\n", suffix = "\n")
 
   return toResponseFunSpecBuilder(typeRef.asTypeName())
-      .addStatement("writer.beginObject()")
       .addCode(writeFieldsCode)
       .addCode(writeFragmentsCode)
-      .addStatement("writer.endObject()")
       .build()
 }
 
 internal fun List<CodeGenerationAst.Field>.writeCode(): CodeBlock {
   val builder = CodeBlock.builder()
-  builder.addStatement("writer.beginObject()")
   forEach {
     builder.add(it.writeCode())
   }
-  builder.addStatement("writer.endObject()")
   return builder.build()
 }
 
@@ -114,7 +110,7 @@ private fun CodeGenerationAst.Field.writeCode(): CodeBlock {
     addStatement("writer.name(%S)", name)
     addStatement(
         "%L.toResponse(writer, ${Identifier.responseAdapterCache}, value.${name.escapeKotlinReservedWord()})",
-        adapterInitializer(type, requiresBufferedReader)
+        adapterInitializer(type, requiresBuffering)
     )
   }.build()
 }

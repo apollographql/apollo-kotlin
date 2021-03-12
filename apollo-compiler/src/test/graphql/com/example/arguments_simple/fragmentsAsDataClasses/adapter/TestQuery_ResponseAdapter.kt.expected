@@ -82,12 +82,10 @@ object TestQuery_ResponseAdapter : ResponseAdapter<TestQuery.Data> {
     responseAdapterCache: ResponseAdapterCache,
     value: TestQuery.Data
   ) {
-    writer.beginObject()
     writer.name("hero")
     Hero.obj(true).nullable().toResponse(writer, responseAdapterCache, value.hero)
     writer.name("heroWithReview")
     HeroWithReview.obj().nullable().toResponse(writer, responseAdapterCache, value.heroWithReview)
-    writer.endObject()
   }
 
   object Hero : ResponseAdapter<TestQuery.Data.Hero> {
@@ -134,7 +132,6 @@ object TestQuery_ResponseAdapter : ResponseAdapter<TestQuery.Data> {
       responseAdapterCache: ResponseAdapterCache,
       value: TestQuery.Data.Hero
     ) {
-      writer.beginObject()
       writer.name("__typename")
       StringResponseAdapter.toResponse(writer, responseAdapterCache, value.__typename)
 
@@ -142,7 +139,6 @@ object TestQuery_ResponseAdapter : ResponseAdapter<TestQuery.Data> {
       NullableStringResponseAdapter.toResponse(writer, responseAdapterCache, value.name)
       if (value.heroDetails != null)
           HeroDetails_ResponseAdapter.toResponse(writer, responseAdapterCache, value.heroDetails)
-      writer.endObject()
     }
   }
 
@@ -175,10 +171,8 @@ object TestQuery_ResponseAdapter : ResponseAdapter<TestQuery.Data> {
       responseAdapterCache: ResponseAdapterCache,
       value: TestQuery.Data.HeroWithReview
     ) {
-      writer.beginObject()
       writer.name("name")
       StringResponseAdapter.toResponse(writer, responseAdapterCache, value.name)
-      writer.endObject()
     }
   }
 }

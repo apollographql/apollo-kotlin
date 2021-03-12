@@ -23,11 +23,9 @@ object TestQuery_VariablesAdapter : ResponseAdapter<TestQuery> {
     responseAdapterCache: ResponseAdapterCache,
     value: TestQuery
   ) {
-    writer.beginObject()
     writer.name("ep")
     Episode_ResponseAdapter.toResponse(writer, responseAdapterCache, value.ep)
     writer.name("review")
     ReviewInput_InputAdapter.obj().toResponse(writer, responseAdapterCache, value.review)
-    writer.endObject()
   }
 }

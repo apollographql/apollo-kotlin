@@ -63,10 +63,8 @@ object TestOperation_ResponseAdapter : ResponseAdapter<TestOperation.Data> {
     responseAdapterCache: ResponseAdapterCache,
     value: TestOperation.Data
   ) {
-    writer.beginObject()
     writer.name("random")
     Random.obj().toResponse(writer, responseAdapterCache, value.random)
-    writer.endObject()
   }
 
   object Random : ResponseAdapter<TestOperation.Data.Random> {
@@ -149,7 +147,6 @@ object TestOperation_ResponseAdapter : ResponseAdapter<TestOperation.Data> {
         responseAdapterCache: ResponseAdapterCache,
         value: TestOperation.Data.Random.BeingHumanRandom
       ) {
-        writer.beginObject()
         writer.name("__typename")
         StringResponseAdapter.toResponse(writer, responseAdapterCache, value.__typename)
         writer.name("name")
@@ -159,7 +156,6 @@ object TestOperation_ResponseAdapter : ResponseAdapter<TestOperation.Data> {
         writer.name("profilePictureUrl")
         NullableStringResponseAdapter.toResponse(writer, responseAdapterCache,
             value.profilePictureUrl)
-        writer.endObject()
       }
 
       object Friends : ResponseAdapter<TestOperation.Data.Random.BeingHumanRandom.Friends> {
@@ -243,7 +239,6 @@ object TestOperation_ResponseAdapter : ResponseAdapter<TestOperation.Data> {
             responseAdapterCache: ResponseAdapterCache,
             value: TestOperation.Data.Random.BeingHumanRandom.Friends.WookieFriends
           ) {
-            writer.beginObject()
             writer.name("__typename")
             StringResponseAdapter.toResponse(writer, responseAdapterCache, value.__typename)
             writer.name("name")
@@ -255,7 +250,6 @@ object TestOperation_ResponseAdapter : ResponseAdapter<TestOperation.Data> {
                 value.lifeExpectancy)
             writer.name("race")
             Race_ResponseAdapter.toResponse(writer, responseAdapterCache, value.race)
-            writer.endObject()
           }
         }
 
@@ -303,14 +297,12 @@ object TestOperation_ResponseAdapter : ResponseAdapter<TestOperation.Data> {
             responseAdapterCache: ResponseAdapterCache,
             value: TestOperation.Data.Random.BeingHumanRandom.Friends.OtherFriends
           ) {
-            writer.beginObject()
             writer.name("__typename")
             StringResponseAdapter.toResponse(writer, responseAdapterCache, value.__typename)
             writer.name("name")
             StringResponseAdapter.toResponse(writer, responseAdapterCache, value.name)
             writer.name("isFamous")
             NullableBooleanResponseAdapter.toResponse(writer, responseAdapterCache, value.isFamous)
-            writer.endObject()
           }
         }
       }
@@ -371,7 +363,6 @@ object TestOperation_ResponseAdapter : ResponseAdapter<TestOperation.Data> {
         responseAdapterCache: ResponseAdapterCache,
         value: TestOperation.Data.Random.BeingWookieRandom
       ) {
-        writer.beginObject()
         writer.name("__typename")
         StringResponseAdapter.toResponse(writer, responseAdapterCache, value.__typename)
         writer.name("name")
@@ -380,7 +371,6 @@ object TestOperation_ResponseAdapter : ResponseAdapter<TestOperation.Data> {
         Friends.obj().list().toResponse(writer, responseAdapterCache, value.friends)
         writer.name("race")
         Race_ResponseAdapter.toResponse(writer, responseAdapterCache, value.race)
-        writer.endObject()
       }
 
       object Friends : ResponseAdapter<TestOperation.Data.Random.BeingWookieRandom.Friends> {
@@ -449,7 +439,6 @@ object TestOperation_ResponseAdapter : ResponseAdapter<TestOperation.Data> {
             responseAdapterCache: ResponseAdapterCache,
             value: TestOperation.Data.Random.BeingWookieRandom.Friends.WookieFriends
           ) {
-            writer.beginObject()
             writer.name("__typename")
             StringResponseAdapter.toResponse(writer, responseAdapterCache, value.__typename)
             writer.name("name")
@@ -457,7 +446,6 @@ object TestOperation_ResponseAdapter : ResponseAdapter<TestOperation.Data> {
             writer.name("lifeExpectancy")
             NullableDoubleResponseAdapter.toResponse(writer, responseAdapterCache,
                 value.lifeExpectancy)
-            writer.endObject()
           }
         }
 
@@ -505,7 +493,6 @@ object TestOperation_ResponseAdapter : ResponseAdapter<TestOperation.Data> {
             responseAdapterCache: ResponseAdapterCache,
             value: TestOperation.Data.Random.BeingWookieRandom.Friends.OtherFriends
           ) {
-            writer.beginObject()
             writer.name("__typename")
             StringResponseAdapter.toResponse(writer, responseAdapterCache, value.__typename)
             writer.name("name")
@@ -513,7 +500,6 @@ object TestOperation_ResponseAdapter : ResponseAdapter<TestOperation.Data> {
             writer.name("lifeExpectancy")
             NullableDoubleResponseAdapter.toResponse(writer, responseAdapterCache,
                 value.lifeExpectancy)
-            writer.endObject()
           }
         }
       }
@@ -548,10 +534,8 @@ object TestOperation_ResponseAdapter : ResponseAdapter<TestOperation.Data> {
         responseAdapterCache: ResponseAdapterCache,
         value: TestOperation.Data.Random.OtherRandom
       ) {
-        writer.beginObject()
         writer.name("__typename")
         StringResponseAdapter.toResponse(writer, responseAdapterCache, value.__typename)
-        writer.endObject()
       }
     }
   }

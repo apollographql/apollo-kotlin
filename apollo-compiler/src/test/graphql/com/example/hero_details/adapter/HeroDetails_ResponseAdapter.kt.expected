@@ -59,10 +59,8 @@ object HeroDetails_ResponseAdapter : ResponseAdapter<HeroDetails.Data> {
     responseAdapterCache: ResponseAdapterCache,
     value: HeroDetails.Data
   ) {
-    writer.beginObject()
     writer.name("hero")
     Hero.obj().nullable().toResponse(writer, responseAdapterCache, value.hero)
-    writer.endObject()
   }
 
   object Hero : ResponseAdapter<HeroDetails.Data.Hero> {
@@ -112,14 +110,12 @@ object HeroDetails_ResponseAdapter : ResponseAdapter<HeroDetails.Data> {
       responseAdapterCache: ResponseAdapterCache,
       value: HeroDetails.Data.Hero
     ) {
-      writer.beginObject()
       writer.name("type")
       Hero_type_ResponseAdapter.toResponse(writer, responseAdapterCache, value.type)
       writer.name("name")
       StringResponseAdapter.toResponse(writer, responseAdapterCache, value.name)
       writer.name("friendsConnection")
       FriendsConnection.obj().toResponse(writer, responseAdapterCache, value.friendsConnection)
-      writer.endObject()
     }
 
     object FriendsConnection : ResponseAdapter<HeroDetails.Data.Hero.FriendsConnection> {
@@ -162,13 +158,11 @@ object HeroDetails_ResponseAdapter : ResponseAdapter<HeroDetails.Data> {
         responseAdapterCache: ResponseAdapterCache,
         value: HeroDetails.Data.Hero.FriendsConnection
       ) {
-        writer.beginObject()
         writer.name("totalCount")
         NullableIntResponseAdapter.toResponse(writer, responseAdapterCache, value.totalCount)
         writer.name("edges")
         Edges.obj().nullable().list().nullable().toResponse(writer, responseAdapterCache,
             value.edges)
-        writer.endObject()
       }
 
       object Edges : ResponseAdapter<HeroDetails.Data.Hero.FriendsConnection.Edges> {
@@ -203,10 +197,8 @@ object HeroDetails_ResponseAdapter : ResponseAdapter<HeroDetails.Data> {
           responseAdapterCache: ResponseAdapterCache,
           value: HeroDetails.Data.Hero.FriendsConnection.Edges
         ) {
-          writer.beginObject()
           writer.name("node")
           Node.obj().nullable().toResponse(writer, responseAdapterCache, value.node)
-          writer.endObject()
         }
 
         object Node : ResponseAdapter<HeroDetails.Data.Hero.FriendsConnection.Edges.Node> {
@@ -238,10 +230,8 @@ object HeroDetails_ResponseAdapter : ResponseAdapter<HeroDetails.Data> {
             responseAdapterCache: ResponseAdapterCache,
             value: HeroDetails.Data.Hero.FriendsConnection.Edges.Node
           ) {
-            writer.beginObject()
             writer.name("name")
             StringResponseAdapter.toResponse(writer, responseAdapterCache, value.name)
-            writer.endObject()
           }
         }
       }

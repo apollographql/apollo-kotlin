@@ -77,13 +77,11 @@ object TestQuery_ResponseAdapter : ResponseAdapter<TestQuery.Data> {
     responseAdapterCache: ResponseAdapterCache,
     value: TestQuery.Data
   ) {
-    writer.beginObject()
     writer.name("reviews")
     Reviews.obj().nullable().list().nullable().toResponse(writer, responseAdapterCache,
         value.reviews)
     writer.name("testNullableArguments")
     IntResponseAdapter.toResponse(writer, responseAdapterCache, value.testNullableArguments)
-    writer.endObject()
   }
 
   object Reviews : ResponseAdapter<TestQuery.Data.Reviews> {
@@ -122,12 +120,10 @@ object TestQuery_ResponseAdapter : ResponseAdapter<TestQuery.Data> {
       responseAdapterCache: ResponseAdapterCache,
       value: TestQuery.Data.Reviews
     ) {
-      writer.beginObject()
       writer.name("stars")
       IntResponseAdapter.toResponse(writer, responseAdapterCache, value.stars)
       writer.name("commentary")
       NullableStringResponseAdapter.toResponse(writer, responseAdapterCache, value.commentary)
-      writer.endObject()
     }
   }
 }

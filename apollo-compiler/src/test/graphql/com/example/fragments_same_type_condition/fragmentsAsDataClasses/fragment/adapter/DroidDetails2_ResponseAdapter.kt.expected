@@ -55,11 +55,9 @@ object DroidDetails2_ResponseAdapter : ResponseAdapter<DroidDetails2.Data> {
     responseAdapterCache: ResponseAdapterCache,
     value: DroidDetails2.Data
   ) {
-    writer.beginObject()
     writer.name("__typename")
     StringResponseAdapter.toResponse(writer, responseAdapterCache, value.__typename)
     writer.name("primaryFunction")
     NullableStringResponseAdapter.toResponse(writer, responseAdapterCache, value.primaryFunction)
-    writer.endObject()
   }
 }

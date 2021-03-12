@@ -20,7 +20,5 @@ object CharacterAppearsIn_VariablesAdapter : ResponseAdapter<CharacterAppearsIn>
     responseAdapterCache: ResponseAdapterCache,
     value: CharacterAppearsIn
   ) {
-    writer.beginObject()
-    writer.endObject()
   }
 }

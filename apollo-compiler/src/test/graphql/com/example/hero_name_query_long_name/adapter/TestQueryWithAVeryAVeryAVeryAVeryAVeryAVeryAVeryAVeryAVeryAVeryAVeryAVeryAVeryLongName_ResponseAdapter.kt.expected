@@ -64,11 +64,9 @@ object
     responseAdapterCache: ResponseAdapterCache,
     value: TestQueryWithAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryLongName.Data
   ) {
-    writer.beginObject()
     writer.name("heroAVeryAVeryAVeryAVeryAVeryAVeryAV")
     HeroAVeryAVeryAVeryAVeryAVeryAVeryAV.obj().nullable().toResponse(writer, responseAdapterCache,
         value.heroAVeryAVeryAVeryAVeryAVeryAVeryAV)
-    writer.endObject()
   }
 
   object HeroAVeryAVeryAVeryAVeryAVeryAVeryAV :
@@ -105,11 +103,9 @@ object
       responseAdapterCache: ResponseAdapterCache,
       value: TestQueryWithAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryLongName.Data.HeroAVeryAVeryAVeryAVeryAVeryAVeryAV
     ) {
-      writer.beginObject()
       writer.name("nameAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryLongName")
       StringResponseAdapter.toResponse(writer, responseAdapterCache,
           value.nameAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryLongName)
-      writer.endObject()
     }
   }
 }

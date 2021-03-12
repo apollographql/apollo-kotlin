@@ -60,11 +60,9 @@ object TestQuery_ResponseAdapter : ResponseAdapter<TestQuery.Data> {
     responseAdapterCache: ResponseAdapterCache,
     value: TestQuery.Data
   ) {
-    writer.beginObject()
     writer.name("search")
     Search.obj(true).nullable().list().nullable().toResponse(writer, responseAdapterCache,
         value.search)
-    writer.endObject()
   }
 
   object Search : ResponseAdapter<TestQuery.Data.Search> {
@@ -101,12 +99,10 @@ object TestQuery_ResponseAdapter : ResponseAdapter<TestQuery.Data> {
       responseAdapterCache: ResponseAdapterCache,
       value: TestQuery.Data.Search
     ) {
-      writer.beginObject()
       writer.name("__typename")
       StringResponseAdapter.toResponse(writer, responseAdapterCache, value.__typename)
       if (value.asAsCharacter != null)
           AsCharacter.toResponse(writer, responseAdapterCache, value.asAsCharacter)
-      writer.endObject()
     }
 
     object AsCharacter : ResponseAdapter<TestQuery.Data.Search.AsCharacter> {
@@ -142,12 +138,10 @@ object TestQuery_ResponseAdapter : ResponseAdapter<TestQuery.Data> {
         responseAdapterCache: ResponseAdapterCache,
         value: TestQuery.Data.Search.AsCharacter
       ) {
-        writer.beginObject()
         writer.name("__typename")
         StringResponseAdapter.toResponse(writer, responseAdapterCache, value.__typename)
         writer.name("name")
         StringResponseAdapter.toResponse(writer, responseAdapterCache, value.name)
-        writer.endObject()
       }
     }
   }

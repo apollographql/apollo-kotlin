@@ -105,7 +105,6 @@ object HeroDetailsImpl_ResponseAdapter : ResponseAdapter<HeroDetailsImpl.Data> {
       responseAdapterCache: ResponseAdapterCache,
       value: HeroDetailsImpl.Data.DroidData
     ) {
-      writer.beginObject()
       writer.name("__typename")
       StringResponseAdapter.toResponse(writer, responseAdapterCache, value.__typename)
       writer.name("name")
@@ -114,7 +113,6 @@ object HeroDetailsImpl_ResponseAdapter : ResponseAdapter<HeroDetailsImpl.Data> {
       FriendsConnection.obj().toResponse(writer, responseAdapterCache, value.friendsConnection)
       writer.name("primaryFunction")
       NullableStringResponseAdapter.toResponse(writer, responseAdapterCache, value.primaryFunction)
-      writer.endObject()
     }
 
     object FriendsConnection : ResponseAdapter<HeroDetailsImpl.Data.DroidData.FriendsConnection> {
@@ -157,13 +155,11 @@ object HeroDetailsImpl_ResponseAdapter : ResponseAdapter<HeroDetailsImpl.Data> {
         responseAdapterCache: ResponseAdapterCache,
         value: HeroDetailsImpl.Data.DroidData.FriendsConnection
       ) {
-        writer.beginObject()
         writer.name("totalCount")
         NullableIntResponseAdapter.toResponse(writer, responseAdapterCache, value.totalCount)
         writer.name("edges")
         Edges.obj().nullable().list().nullable().toResponse(writer, responseAdapterCache,
             value.edges)
-        writer.endObject()
       }
 
       object Edges : ResponseAdapter<HeroDetailsImpl.Data.DroidData.FriendsConnection.Edges> {
@@ -198,10 +194,8 @@ object HeroDetailsImpl_ResponseAdapter : ResponseAdapter<HeroDetailsImpl.Data> {
           responseAdapterCache: ResponseAdapterCache,
           value: HeroDetailsImpl.Data.DroidData.FriendsConnection.Edges
         ) {
-          writer.beginObject()
           writer.name("node")
           Node.obj().nullable().toResponse(writer, responseAdapterCache, value.node)
-          writer.endObject()
         }
 
         object Node : ResponseAdapter<HeroDetailsImpl.Data.DroidData.FriendsConnection.Edges.Node> {
@@ -233,10 +227,8 @@ object HeroDetailsImpl_ResponseAdapter : ResponseAdapter<HeroDetailsImpl.Data> {
             responseAdapterCache: ResponseAdapterCache,
             value: HeroDetailsImpl.Data.DroidData.FriendsConnection.Edges.Node
           ) {
-            writer.beginObject()
             writer.name("name")
             StringResponseAdapter.toResponse(writer, responseAdapterCache, value.name)
-            writer.endObject()
           }
         }
       }
@@ -290,14 +282,12 @@ object HeroDetailsImpl_ResponseAdapter : ResponseAdapter<HeroDetailsImpl.Data> {
       responseAdapterCache: ResponseAdapterCache,
       value: HeroDetailsImpl.Data.HumanData
     ) {
-      writer.beginObject()
       writer.name("__typename")
       StringResponseAdapter.toResponse(writer, responseAdapterCache, value.__typename)
       writer.name("name")
       StringResponseAdapter.toResponse(writer, responseAdapterCache, value.name)
       writer.name("friendsConnection")
       FriendsConnection.obj().toResponse(writer, responseAdapterCache, value.friendsConnection)
-      writer.endObject()
     }
 
     object FriendsConnection : ResponseAdapter<HeroDetailsImpl.Data.HumanData.FriendsConnection> {
@@ -340,13 +330,11 @@ object HeroDetailsImpl_ResponseAdapter : ResponseAdapter<HeroDetailsImpl.Data> {
         responseAdapterCache: ResponseAdapterCache,
         value: HeroDetailsImpl.Data.HumanData.FriendsConnection
       ) {
-        writer.beginObject()
         writer.name("totalCount")
         NullableIntResponseAdapter.toResponse(writer, responseAdapterCache, value.totalCount)
         writer.name("edges")
         Edges.obj().nullable().list().nullable().toResponse(writer, responseAdapterCache,
             value.edges)
-        writer.endObject()
       }
 
       object Edges : ResponseAdapter<HeroDetailsImpl.Data.HumanData.FriendsConnection.Edges> {
@@ -381,10 +369,8 @@ object HeroDetailsImpl_ResponseAdapter : ResponseAdapter<HeroDetailsImpl.Data> {
           responseAdapterCache: ResponseAdapterCache,
           value: HeroDetailsImpl.Data.HumanData.FriendsConnection.Edges
         ) {
-          writer.beginObject()
           writer.name("node")
           Node.obj().nullable().toResponse(writer, responseAdapterCache, value.node)
-          writer.endObject()
         }
 
         object Node : ResponseAdapter<HeroDetailsImpl.Data.HumanData.FriendsConnection.Edges.Node> {
@@ -416,10 +402,8 @@ object HeroDetailsImpl_ResponseAdapter : ResponseAdapter<HeroDetailsImpl.Data> {
             responseAdapterCache: ResponseAdapterCache,
             value: HeroDetailsImpl.Data.HumanData.FriendsConnection.Edges.Node
           ) {
-            writer.beginObject()
             writer.name("name")
             StringResponseAdapter.toResponse(writer, responseAdapterCache, value.name)
-            writer.endObject()
           }
         }
       }
@@ -473,14 +457,12 @@ object HeroDetailsImpl_ResponseAdapter : ResponseAdapter<HeroDetailsImpl.Data> {
       responseAdapterCache: ResponseAdapterCache,
       value: HeroDetailsImpl.Data.OtherData
     ) {
-      writer.beginObject()
       writer.name("__typename")
       StringResponseAdapter.toResponse(writer, responseAdapterCache, value.__typename)
       writer.name("name")
       StringResponseAdapter.toResponse(writer, responseAdapterCache, value.name)
       writer.name("friendsConnection")
       FriendsConnection.obj().toResponse(writer, responseAdapterCache, value.friendsConnection)
-      writer.endObject()
     }
 
     object FriendsConnection : ResponseAdapter<HeroDetailsImpl.Data.OtherData.FriendsConnection> {
@@ -523,13 +505,11 @@ object HeroDetailsImpl_ResponseAdapter : ResponseAdapter<HeroDetailsImpl.Data> {
         responseAdapterCache: ResponseAdapterCache,
         value: HeroDetailsImpl.Data.OtherData.FriendsConnection
       ) {
-        writer.beginObject()
         writer.name("totalCount")
         NullableIntResponseAdapter.toResponse(writer, responseAdapterCache, value.totalCount)
         writer.name("edges")
         Edges.obj().nullable().list().nullable().toResponse(writer, responseAdapterCache,
             value.edges)
-        writer.endObject()
       }
 
       object Edges : ResponseAdapter<HeroDetailsImpl.Data.OtherData.FriendsConnection.Edges> {
@@ -564,10 +544,8 @@ object HeroDetailsImpl_ResponseAdapter : ResponseAdapter<HeroDetailsImpl.Data> {
           responseAdapterCache: ResponseAdapterCache,
           value: HeroDetailsImpl.Data.OtherData.FriendsConnection.Edges
         ) {
-          writer.beginObject()
           writer.name("node")
           Node.obj().nullable().toResponse(writer, responseAdapterCache, value.node)
-          writer.endObject()
         }
 
         object Node : ResponseAdapter<HeroDetailsImpl.Data.OtherData.FriendsConnection.Edges.Node> {
@@ -599,10 +577,8 @@ object HeroDetailsImpl_ResponseAdapter : ResponseAdapter<HeroDetailsImpl.Data> {
             responseAdapterCache: ResponseAdapterCache,
             value: HeroDetailsImpl.Data.OtherData.FriendsConnection.Edges.Node
           ) {
-            writer.beginObject()
             writer.name("name")
             StringResponseAdapter.toResponse(writer, responseAdapterCache, value.name)
-            writer.endObject()
           }
         }
       }

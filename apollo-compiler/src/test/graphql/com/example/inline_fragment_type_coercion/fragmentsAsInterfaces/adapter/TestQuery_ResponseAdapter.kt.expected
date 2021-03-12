@@ -55,10 +55,8 @@ object TestQuery_ResponseAdapter : ResponseAdapter<TestQuery.Data> {
     responseAdapterCache: ResponseAdapterCache,
     value: TestQuery.Data
   ) {
-    writer.beginObject()
     writer.name("foo")
     Foo.obj().nullable().toResponse(writer, responseAdapterCache, value.foo)
-    writer.endObject()
   }
 
   object Foo : ResponseAdapter<TestQuery.Data.Foo> {
@@ -126,14 +124,12 @@ object TestQuery_ResponseAdapter : ResponseAdapter<TestQuery.Data> {
         responseAdapterCache: ResponseAdapterCache,
         value: TestQuery.Data.Foo.BarFoo
       ) {
-        writer.beginObject()
         writer.name("__typename")
         StringResponseAdapter.toResponse(writer, responseAdapterCache, value.__typename)
         writer.name("foo")
         StringResponseAdapter.toResponse(writer, responseAdapterCache, value.foo)
         writer.name("bar")
         StringResponseAdapter.toResponse(writer, responseAdapterCache, value.bar)
-        writer.endObject()
       }
     }
 
@@ -173,12 +169,10 @@ object TestQuery_ResponseAdapter : ResponseAdapter<TestQuery.Data> {
         responseAdapterCache: ResponseAdapterCache,
         value: TestQuery.Data.Foo.OtherFoo
       ) {
-        writer.beginObject()
         writer.name("__typename")
         StringResponseAdapter.toResponse(writer, responseAdapterCache, value.__typename)
         writer.name("foo")
         StringResponseAdapter.toResponse(writer, responseAdapterCache, value.foo)
-        writer.endObject()
       }
     }
   }

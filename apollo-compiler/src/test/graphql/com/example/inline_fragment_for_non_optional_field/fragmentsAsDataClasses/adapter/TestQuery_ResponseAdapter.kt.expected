@@ -58,10 +58,8 @@ object TestQuery_ResponseAdapter : ResponseAdapter<TestQuery.Data> {
     responseAdapterCache: ResponseAdapterCache,
     value: TestQuery.Data
   ) {
-    writer.beginObject()
     writer.name("nonOptionalHero")
     NonOptionalHero.obj(true).toResponse(writer, responseAdapterCache, value.nonOptionalHero)
-    writer.endObject()
   }
 
   object NonOptionalHero : ResponseAdapter<TestQuery.Data.NonOptionalHero> {
@@ -105,14 +103,12 @@ object TestQuery_ResponseAdapter : ResponseAdapter<TestQuery.Data> {
       responseAdapterCache: ResponseAdapterCache,
       value: TestQuery.Data.NonOptionalHero
     ) {
-      writer.beginObject()
       writer.name("__typename")
       StringResponseAdapter.toResponse(writer, responseAdapterCache, value.__typename)
 
       writer.name("name")
       StringResponseAdapter.toResponse(writer, responseAdapterCache, value.name)
       if (value.asAsHuman != null) AsHuman.toResponse(writer, responseAdapterCache, value.asAsHuman)
-      writer.endObject()
     }
 
     object AsHuman : ResponseAdapter<TestQuery.Data.NonOptionalHero.AsHuman> {
@@ -155,14 +151,12 @@ object TestQuery_ResponseAdapter : ResponseAdapter<TestQuery.Data> {
         responseAdapterCache: ResponseAdapterCache,
         value: TestQuery.Data.NonOptionalHero.AsHuman
       ) {
-        writer.beginObject()
         writer.name("__typename")
         StringResponseAdapter.toResponse(writer, responseAdapterCache, value.__typename)
         writer.name("name")
         StringResponseAdapter.toResponse(writer, responseAdapterCache, value.name)
         writer.name("height")
         NullableDoubleResponseAdapter.toResponse(writer, responseAdapterCache, value.height)
-        writer.endObject()
       }
     }
   }

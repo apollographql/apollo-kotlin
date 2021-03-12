@@ -23,13 +23,11 @@ object HeroDetails_VariablesAdapter : ResponseAdapter<HeroDetails> {
     responseAdapterCache: ResponseAdapterCache,
     value: HeroDetails
   ) {
-    writer.beginObject()
     if (value.friendsCount is Input.Present) {
       writer.name("friendsCount")
       NullableIntResponseAdapter.toResponse(writer, responseAdapterCache, value.friendsCount.value)
     }
     writer.name("IncludeName")
     BooleanResponseAdapter.toResponse(writer, responseAdapterCache, value.IncludeName)
-    writer.endObject()
   }
 }

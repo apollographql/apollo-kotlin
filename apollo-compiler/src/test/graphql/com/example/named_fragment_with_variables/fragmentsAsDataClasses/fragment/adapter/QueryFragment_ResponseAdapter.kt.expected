@@ -64,12 +64,10 @@ object QueryFragment_ResponseAdapter : ResponseAdapter<QueryFragment.Data> {
     responseAdapterCache: ResponseAdapterCache,
     value: QueryFragment.Data
   ) {
-    writer.beginObject()
     writer.name("__typename")
     StringResponseAdapter.toResponse(writer, responseAdapterCache, value.__typename)
     writer.name("organization")
     Organization.obj().nullable().toResponse(writer, responseAdapterCache, value.organization)
-    writer.endObject()
   }
 
   object Organization : ResponseAdapter<QueryFragment.Data.Organization> {
@@ -114,12 +112,10 @@ object QueryFragment_ResponseAdapter : ResponseAdapter<QueryFragment.Data> {
       responseAdapterCache: ResponseAdapterCache,
       value: QueryFragment.Data.Organization
     ) {
-      writer.beginObject()
       writer.name("id")
       StringResponseAdapter.toResponse(writer, responseAdapterCache, value.id)
       writer.name("user")
       User.obj(true).list().toResponse(writer, responseAdapterCache, value.user)
-      writer.endObject()
     }
 
     object User : ResponseAdapter<QueryFragment.Data.Organization.User> {
@@ -156,12 +152,10 @@ object QueryFragment_ResponseAdapter : ResponseAdapter<QueryFragment.Data> {
         responseAdapterCache: ResponseAdapterCache,
         value: QueryFragment.Data.Organization.User
       ) {
-        writer.beginObject()
         writer.name("__typename")
         StringResponseAdapter.toResponse(writer, responseAdapterCache, value.__typename)
         if (value.userFragment != null)
             UserFragment_ResponseAdapter.toResponse(writer, responseAdapterCache, value.userFragment)
-        writer.endObject()
       }
     }
   }

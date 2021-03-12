@@ -59,10 +59,8 @@ object TestQuery_ResponseAdapter : ResponseAdapter<TestQuery.Data> {
     responseAdapterCache: ResponseAdapterCache,
     value: TestQuery.Data
   ) {
-    writer.beginObject()
     writer.name("hero")
     Hero.obj().nullable().toResponse(writer, responseAdapterCache, value.hero)
-    writer.endObject()
   }
 
   object Hero : ResponseAdapter<TestQuery.Data.Hero> {
@@ -163,16 +161,21 @@ object TestQuery_ResponseAdapter : ResponseAdapter<TestQuery.Data> {
         responseAdapterCache: ResponseAdapterCache,
         value: TestQuery.Data.Hero.HumanHero
       ) {
-        writer.beginObject()
         writer.name("__typename")
         StringResponseAdapter.toResponse(writer, responseAdapterCache, value.__typename)
         writer.name("id")
         StringResponseAdapter.toResponse(writer, responseAdapterCache, value.id)
         writer.name("name")
         StringResponseAdapter.toResponse(writer, responseAdapterCache, value.name)
+<<<<<<< HEAD
         writer.name("height")
         NullableDoubleResponseAdapter.toResponse(writer, responseAdapterCache, value.height)
         writer.endObject()
+=======
+        writer.name("primaryFunction")
+        NullableStringResponseAdapter.toResponse(writer, responseAdapterCache,
+            value.primaryFunction)
+>>>>>>> 3b08746b2... add ObjectResponseAdapter
       }
     }
 
@@ -251,17 +254,21 @@ object TestQuery_ResponseAdapter : ResponseAdapter<TestQuery.Data> {
         responseAdapterCache: ResponseAdapterCache,
         value: TestQuery.Data.Hero.DroidHero
       ) {
-        writer.beginObject()
         writer.name("__typename")
         StringResponseAdapter.toResponse(writer, responseAdapterCache, value.__typename)
         writer.name("id")
         StringResponseAdapter.toResponse(writer, responseAdapterCache, value.id)
         writer.name("name")
         StringResponseAdapter.toResponse(writer, responseAdapterCache, value.name)
+<<<<<<< HEAD
         writer.name("primaryFunction")
         NullableStringResponseAdapter.toResponse(writer, responseAdapterCache,
             value.primaryFunction)
         writer.endObject()
+=======
+        writer.name("height")
+        NullableDoubleResponseAdapter.toResponse(writer, responseAdapterCache, value.height)
+>>>>>>> 3b08746b2... add ObjectResponseAdapter
       }
     }
 
@@ -315,14 +322,16 @@ object TestQuery_ResponseAdapter : ResponseAdapter<TestQuery.Data> {
         responseAdapterCache: ResponseAdapterCache,
         value: TestQuery.Data.Hero.OtherHero
       ) {
-        writer.beginObject()
         writer.name("__typename")
         StringResponseAdapter.toResponse(writer, responseAdapterCache, value.__typename)
+<<<<<<< HEAD
         writer.name("id")
         StringResponseAdapter.toResponse(writer, responseAdapterCache, value.id)
         writer.name("name")
         StringResponseAdapter.toResponse(writer, responseAdapterCache, value.name)
         writer.endObject()
+=======
+>>>>>>> 3b08746b2... add ObjectResponseAdapter
       }
     }
   }

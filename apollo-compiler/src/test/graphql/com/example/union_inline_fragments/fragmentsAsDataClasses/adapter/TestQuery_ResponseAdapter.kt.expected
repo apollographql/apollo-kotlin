@@ -64,11 +64,9 @@ object TestQuery_ResponseAdapter : ResponseAdapter<TestQuery.Data> {
     responseAdapterCache: ResponseAdapterCache,
     value: TestQuery.Data
   ) {
-    writer.beginObject()
     writer.name("search")
     Search.obj(true).nullable().list().nullable().toResponse(writer, responseAdapterCache,
         value.search)
-    writer.endObject()
   }
 
   object Search : ResponseAdapter<TestQuery.Data.Search> {
@@ -111,14 +109,12 @@ object TestQuery_ResponseAdapter : ResponseAdapter<TestQuery.Data> {
       responseAdapterCache: ResponseAdapterCache,
       value: TestQuery.Data.Search
     ) {
-      writer.beginObject()
       writer.name("__typename")
       StringResponseAdapter.toResponse(writer, responseAdapterCache, value.__typename)
       if (value.asAsCharacter != null)
           AsCharacter.toResponse(writer, responseAdapterCache, value.asAsCharacter)
       if (value.asAsStarship != null)
           AsStarship.toResponse(writer, responseAdapterCache, value.asAsStarship)
-      writer.endObject()
     }
 
     object AsCharacter : ResponseAdapter<TestQuery.Data.Search.AsCharacter> {
@@ -173,7 +169,6 @@ object TestQuery_ResponseAdapter : ResponseAdapter<TestQuery.Data> {
         responseAdapterCache: ResponseAdapterCache,
         value: TestQuery.Data.Search.AsCharacter
       ) {
-        writer.beginObject()
         writer.name("__typename")
         StringResponseAdapter.toResponse(writer, responseAdapterCache, value.__typename)
         writer.name("id")
@@ -183,7 +178,6 @@ object TestQuery_ResponseAdapter : ResponseAdapter<TestQuery.Data> {
         writer.name("friends")
         Friends.obj(true).nullable().list().nullable().toResponse(writer, responseAdapterCache,
             value.friends)
-        writer.endObject()
       }
 
       object Friends : ResponseAdapter<TestQuery.Data.Search.AsCharacter.Friends> {
@@ -244,7 +238,6 @@ object TestQuery_ResponseAdapter : ResponseAdapter<TestQuery.Data> {
           responseAdapterCache: ResponseAdapterCache,
           value: TestQuery.Data.Search.AsCharacter.Friends
         ) {
-          writer.beginObject()
           writer.name("__typename")
           StringResponseAdapter.toResponse(writer, responseAdapterCache, value.__typename)
 
@@ -254,7 +247,6 @@ object TestQuery_ResponseAdapter : ResponseAdapter<TestQuery.Data> {
               AsHuman.toResponse(writer, responseAdapterCache, value.asAsHuman)
           if (value.asAsDroid != null)
               AsDroid.toResponse(writer, responseAdapterCache, value.asAsDroid)
-          writer.endObject()
         }
 
 <<<<<<< HEAD
@@ -298,12 +290,10 @@ object TestQuery_ResponseAdapter : ResponseAdapter<TestQuery.Data> {
             responseAdapterCache: ResponseAdapterCache,
             value: TestQuery.Data.Search.AsCharacter.Friends.AsCharacter
           ) {
-            writer.beginObject()
             writer.name("__typename")
             StringResponseAdapter.toResponse(writer, responseAdapterCache, value.__typename)
             writer.name("name")
             StringResponseAdapter.toResponse(writer, responseAdapterCache, value.name)
-            writer.endObject()
           }
         }
 
@@ -369,7 +359,6 @@ object TestQuery_ResponseAdapter : ResponseAdapter<TestQuery.Data> {
             responseAdapterCache: ResponseAdapterCache,
             value: TestQuery.Data.Search.AsCharacter.Friends.AsHuman
           ) {
-            writer.beginObject()
             writer.name("__typename")
             StringResponseAdapter.toResponse(writer, responseAdapterCache, value.__typename)
             writer.name("name")
@@ -379,7 +368,6 @@ object TestQuery_ResponseAdapter : ResponseAdapter<TestQuery.Data> {
             writer.name("friends")
             Friends.obj(true).nullable().list().nullable().toResponse(writer, responseAdapterCache,
                 value.friends)
-            writer.endObject()
           }
 
           object Friends :
@@ -457,12 +445,16 @@ object TestQuery_ResponseAdapter : ResponseAdapter<TestQuery.Data> {
               responseAdapterCache: ResponseAdapterCache,
               value: TestQuery.Data.Search.AsCharacter.Friends.AsHuman.Friends
             ) {
-              writer.beginObject()
               writer.name("__typename")
               StringResponseAdapter.toResponse(writer, responseAdapterCache, value.__typename)
+<<<<<<< HEAD
               writer.name("firstAppearsIn")
               Episode_ResponseAdapter.toResponse(writer, responseAdapterCache, value.firstAppearsIn)
               writer.endObject()
+=======
+              if (value.asAsCharacter != null)
+                  AsCharacter.toResponse(writer, responseAdapterCache, value.asAsCharacter)
+>>>>>>> 3b08746b2... add ObjectResponseAdapter
             }
 <<<<<<< HEAD
 =======
@@ -505,13 +497,11 @@ object TestQuery_ResponseAdapter : ResponseAdapter<TestQuery.Data> {
                 responseAdapterCache: ResponseAdapterCache,
                 value: TestQuery.Data.Search.AsCharacter.Friends.AsHuman.Friends.AsCharacter
               ) {
-                writer.beginObject()
                 writer.name("__typename")
                 StringResponseAdapter.toResponse(writer, responseAdapterCache, value.__typename)
                 writer.name("firstAppearsIn")
                 Episode_ResponseAdapter.toResponse(writer, responseAdapterCache,
                     value.firstAppearsIn)
-                writer.endObject()
               }
             }
 >>>>>>> ab5258fe0... all compiler tests pass
@@ -583,7 +573,6 @@ object TestQuery_ResponseAdapter : ResponseAdapter<TestQuery.Data> {
             responseAdapterCache: ResponseAdapterCache,
             value: TestQuery.Data.Search.AsCharacter.Friends.AsDroid
           ) {
-            writer.beginObject()
             writer.name("__typename")
             StringResponseAdapter.toResponse(writer, responseAdapterCache, value.__typename)
             writer.name("name")
@@ -594,7 +583,6 @@ object TestQuery_ResponseAdapter : ResponseAdapter<TestQuery.Data> {
             writer.name("friends")
             Friends.obj().nullable().list().nullable().toResponse(writer, responseAdapterCache,
                 value.friends)
-            writer.endObject()
           }
 
           object Friends :
@@ -628,10 +616,8 @@ object TestQuery_ResponseAdapter : ResponseAdapter<TestQuery.Data> {
               responseAdapterCache: ResponseAdapterCache,
               value: TestQuery.Data.Search.AsCharacter.Friends.AsDroid.Friends
             ) {
-              writer.beginObject()
               writer.name("id")
               StringResponseAdapter.toResponse(writer, responseAdapterCache, value.id)
-              writer.endObject()
             }
           }
         }
@@ -671,12 +657,10 @@ object TestQuery_ResponseAdapter : ResponseAdapter<TestQuery.Data> {
         responseAdapterCache: ResponseAdapterCache,
         value: TestQuery.Data.Search.AsStarship
       ) {
-        writer.beginObject()
         writer.name("__typename")
         StringResponseAdapter.toResponse(writer, responseAdapterCache, value.__typename)
         writer.name("name")
         StringResponseAdapter.toResponse(writer, responseAdapterCache, value.name)
-        writer.endObject()
       }
     }
   }

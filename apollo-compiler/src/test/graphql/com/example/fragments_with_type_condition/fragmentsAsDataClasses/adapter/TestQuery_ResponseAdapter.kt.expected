@@ -73,12 +73,10 @@ object TestQuery_ResponseAdapter : ResponseAdapter<TestQuery.Data> {
     responseAdapterCache: ResponseAdapterCache,
     value: TestQuery.Data
   ) {
-    writer.beginObject()
     writer.name("r2")
     R2.obj(true).nullable().toResponse(writer, responseAdapterCache, value.r2)
     writer.name("luke")
     Luke.obj(true).nullable().toResponse(writer, responseAdapterCache, value.luke)
-    writer.endObject()
   }
 
   object R2 : ResponseAdapter<TestQuery.Data.R2> {
@@ -121,14 +119,12 @@ object TestQuery_ResponseAdapter : ResponseAdapter<TestQuery.Data> {
       responseAdapterCache: ResponseAdapterCache,
       value: TestQuery.Data.R2
     ) {
-      writer.beginObject()
       writer.name("__typename")
       StringResponseAdapter.toResponse(writer, responseAdapterCache, value.__typename)
       if (value.humanDetails != null)
           HumanDetails_ResponseAdapter.toResponse(writer, responseAdapterCache, value.humanDetails)
       if (value.droidDetails != null)
           DroidDetails_ResponseAdapter.toResponse(writer, responseAdapterCache, value.droidDetails)
-      writer.endObject()
     }
   }
 
@@ -172,14 +168,12 @@ object TestQuery_ResponseAdapter : ResponseAdapter<TestQuery.Data> {
       responseAdapterCache: ResponseAdapterCache,
       value: TestQuery.Data.Luke
     ) {
-      writer.beginObject()
       writer.name("__typename")
       StringResponseAdapter.toResponse(writer, responseAdapterCache, value.__typename)
       if (value.humanDetails != null)
           HumanDetails_ResponseAdapter.toResponse(writer, responseAdapterCache, value.humanDetails)
       if (value.droidDetails != null)
           DroidDetails_ResponseAdapter.toResponse(writer, responseAdapterCache, value.droidDetails)
-      writer.endObject()
     }
   }
 }

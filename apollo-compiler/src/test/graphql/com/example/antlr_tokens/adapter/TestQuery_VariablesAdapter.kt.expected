@@ -22,11 +22,9 @@ object TestQuery_VariablesAdapter : ResponseAdapter<TestQuery> {
     responseAdapterCache: ResponseAdapterCache,
     value: TestQuery
   ) {
-    writer.beginObject()
     if (value.operation is Input.Present) {
       writer.name("operation")
       NullableStringResponseAdapter.toResponse(writer, responseAdapterCache, value.operation.value)
     }
-    writer.endObject()
   }
 }

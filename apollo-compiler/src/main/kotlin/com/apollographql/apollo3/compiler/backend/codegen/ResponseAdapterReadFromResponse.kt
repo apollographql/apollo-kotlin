@@ -74,10 +74,11 @@ internal fun CodeGenerationAst.ObjectType.readFromResponseFunSpec(
 }
 
 /**
- * Creates a function body that reads an object from a JsonReader. This is the core of the generated parsers
+ * Creates a function body that reads an object from a JsonReader.
+ * Does not call beginObject()/endObject() so that it be called several times in the same object
+ * for buffered readers
  *
  * @param initializeTypename: whether to generate a method that takes an additional __typename argument from the enclosing type case
- * call readObject()
  */
 internal fun readObjectCode(
     fields: List<CodeGenerationAst.Field>,
@@ -110,6 +111,10 @@ internal fun readObjectCode(
       .build()
 }
 
+/**
+ * Reads a streamed polymorphic object
+ *
+ */
 internal fun readStreamedPolymorphicObjectCode(objectType: CodeGenerationAst.ObjectType): CodeBlock {
   val (defaultImplementation, possibleImplementations) = with(objectType.kind as CodeGenerationAst.ObjectType.Kind.ObjectWithFragments) {
     defaultImplementation to possibleImplementations
@@ -162,7 +167,7 @@ private fun loopCode(fields: List<CodeGenerationAst.Field>): CodeBlock {
                 "%L·->·%L·=·%L.fromResponse(reader, $responseAdapterCache)",
                 fieldIndex,
                 field.name.escapeKotlinReservedWord(),
-                adapterInitializer(field.type, field.requiresBufferedReader)
+                adapterInitializer(field.type, field.requiresBuffering)
             )
           }.joinToCode(separator = "\n", suffix = "\n")
       )
@@ -172,6 +177,9 @@ private fun loopCode(fields: List<CodeGenerationAst.Field>): CodeBlock {
       .build()
 }
 
+/**
+ * Reads a streamed polymorphic object
+ */
 internal fun readBufferedPolymorphicObjectCode(
     objectType: CodeGenerationAst.ObjectType,
 ): CodeBlock {

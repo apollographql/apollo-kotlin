@@ -71,12 +71,10 @@ object TestQuery_ResponseAdapter : ResponseAdapter<TestQuery.Data> {
     responseAdapterCache: ResponseAdapterCache,
     value: TestQuery.Data
   ) {
-    writer.beginObject()
     writer.name("r2")
     R2.obj().nullable().toResponse(writer, responseAdapterCache, value.r2)
     writer.name("luke")
     Luke.obj().nullable().toResponse(writer, responseAdapterCache, value.luke)
-    writer.endObject()
   }
 
   object R2 : ResponseAdapter<TestQuery.Data.R2> {
@@ -119,12 +117,10 @@ object TestQuery_ResponseAdapter : ResponseAdapter<TestQuery.Data> {
       responseAdapterCache: ResponseAdapterCache,
       value: TestQuery.Data.R2
     ) {
-      writer.beginObject()
       writer.name("name")
       StringResponseAdapter.toResponse(writer, responseAdapterCache, value.name)
       writer.name("friendsConnection")
       FriendsConnection.obj().toResponse(writer, responseAdapterCache, value.friendsConnection)
-      writer.endObject()
     }
 
     object FriendsConnection : ResponseAdapter<TestQuery.Data.R2.FriendsConnection> {
@@ -167,13 +163,11 @@ object TestQuery_ResponseAdapter : ResponseAdapter<TestQuery.Data> {
         responseAdapterCache: ResponseAdapterCache,
         value: TestQuery.Data.R2.FriendsConnection
       ) {
-        writer.beginObject()
         writer.name("totalCount")
         NullableIntResponseAdapter.toResponse(writer, responseAdapterCache, value.totalCount)
         writer.name("edges")
         Edges.obj().nullable().list().nullable().toResponse(writer, responseAdapterCache,
             value.edges)
-        writer.endObject()
       }
 
       object Edges : ResponseAdapter<TestQuery.Data.R2.FriendsConnection.Edges> {
@@ -208,10 +202,8 @@ object TestQuery_ResponseAdapter : ResponseAdapter<TestQuery.Data> {
           responseAdapterCache: ResponseAdapterCache,
           value: TestQuery.Data.R2.FriendsConnection.Edges
         ) {
-          writer.beginObject()
           writer.name("node")
           Node.obj().nullable().toResponse(writer, responseAdapterCache, value.node)
-          writer.endObject()
         }
 
         object Node : ResponseAdapter<TestQuery.Data.R2.FriendsConnection.Edges.Node> {
@@ -243,10 +235,8 @@ object TestQuery_ResponseAdapter : ResponseAdapter<TestQuery.Data> {
             responseAdapterCache: ResponseAdapterCache,
             value: TestQuery.Data.R2.FriendsConnection.Edges.Node
           ) {
-            writer.beginObject()
             writer.name("name")
             StringResponseAdapter.toResponse(writer, responseAdapterCache, value.name)
-            writer.endObject()
           }
         }
       }
@@ -300,14 +290,12 @@ object TestQuery_ResponseAdapter : ResponseAdapter<TestQuery.Data> {
       responseAdapterCache: ResponseAdapterCache,
       value: TestQuery.Data.Luke
     ) {
-      writer.beginObject()
       writer.name("id")
       StringResponseAdapter.toResponse(writer, responseAdapterCache, value.id)
       writer.name("name")
       StringResponseAdapter.toResponse(writer, responseAdapterCache, value.name)
       writer.name("friendsConnection")
       FriendsConnection.obj().toResponse(writer, responseAdapterCache, value.friendsConnection)
-      writer.endObject()
     }
 
     object FriendsConnection : ResponseAdapter<TestQuery.Data.Luke.FriendsConnection> {
@@ -350,13 +338,11 @@ object TestQuery_ResponseAdapter : ResponseAdapter<TestQuery.Data> {
         responseAdapterCache: ResponseAdapterCache,
         value: TestQuery.Data.Luke.FriendsConnection
       ) {
-        writer.beginObject()
         writer.name("totalCount")
         NullableIntResponseAdapter.toResponse(writer, responseAdapterCache, value.totalCount)
         writer.name("edges")
         Edges.obj().nullable().list().nullable().toResponse(writer, responseAdapterCache,
             value.edges)
-        writer.endObject()
       }
 
       object Edges : ResponseAdapter<TestQuery.Data.Luke.FriendsConnection.Edges> {
@@ -391,10 +377,8 @@ object TestQuery_ResponseAdapter : ResponseAdapter<TestQuery.Data> {
           responseAdapterCache: ResponseAdapterCache,
           value: TestQuery.Data.Luke.FriendsConnection.Edges
         ) {
-          writer.beginObject()
           writer.name("node")
           Node.obj().nullable().toResponse(writer, responseAdapterCache, value.node)
-          writer.endObject()
         }
 
         object Node : ResponseAdapter<TestQuery.Data.Luke.FriendsConnection.Edges.Node> {
@@ -426,10 +410,8 @@ object TestQuery_ResponseAdapter : ResponseAdapter<TestQuery.Data> {
             responseAdapterCache: ResponseAdapterCache,
             value: TestQuery.Data.Luke.FriendsConnection.Edges.Node
           ) {
-            writer.beginObject()
             writer.name("name")
             StringResponseAdapter.toResponse(writer, responseAdapterCache, value.name)
-            writer.endObject()
           }
         }
       }

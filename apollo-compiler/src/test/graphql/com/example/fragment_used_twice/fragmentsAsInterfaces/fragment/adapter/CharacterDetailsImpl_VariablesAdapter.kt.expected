@@ -20,7 +20,5 @@ object CharacterDetailsImpl_VariablesAdapter : ResponseAdapter<CharacterDetailsI
     responseAdapterCache: ResponseAdapterCache,
     value: CharacterDetailsImpl
   ) {
-    writer.beginObject()
-    writer.endObject()
   }
 }

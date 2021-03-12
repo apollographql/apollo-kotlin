@@ -23,11 +23,9 @@ internal object CreateReviewForEpisode_VariablesAdapter : ResponseAdapter<Create
     responseAdapterCache: ResponseAdapterCache,
     value: CreateReviewForEpisode
   ) {
-    writer.beginObject()
     writer.name("ep")
     Episode_ResponseAdapter.toResponse(writer, responseAdapterCache, value.ep)
     writer.name("review")
     ReviewInput_InputAdapter.obj().toResponse(writer, responseAdapterCache, value.review)
-    writer.endObject()
   }
 }

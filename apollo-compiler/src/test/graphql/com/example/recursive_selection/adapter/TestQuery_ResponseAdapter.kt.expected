@@ -55,10 +55,8 @@ object TestQuery_ResponseAdapter : ResponseAdapter<TestQuery.Data> {
     responseAdapterCache: ResponseAdapterCache,
     value: TestQuery.Data
   ) {
-    writer.beginObject()
     writer.name("tree")
     Tree.obj().nullable().toResponse(writer, responseAdapterCache, value.tree)
-    writer.endObject()
   }
 
   object Tree : ResponseAdapter<TestQuery.Data.Tree> {
@@ -111,14 +109,12 @@ object TestQuery_ResponseAdapter : ResponseAdapter<TestQuery.Data> {
       responseAdapterCache: ResponseAdapterCache,
       value: TestQuery.Data.Tree
     ) {
-      writer.beginObject()
       writer.name("name")
       StringResponseAdapter.toResponse(writer, responseAdapterCache, value.name)
       writer.name("children")
       Children.obj().list().toResponse(writer, responseAdapterCache, value.children)
       writer.name("parent")
       Parent.obj().nullable().toResponse(writer, responseAdapterCache, value.parent)
-      writer.endObject()
     }
 
     object Children : ResponseAdapter<TestQuery.Data.Tree.Children> {
@@ -150,10 +146,8 @@ object TestQuery_ResponseAdapter : ResponseAdapter<TestQuery.Data> {
         responseAdapterCache: ResponseAdapterCache,
         value: TestQuery.Data.Tree.Children
       ) {
-        writer.beginObject()
         writer.name("name")
         StringResponseAdapter.toResponse(writer, responseAdapterCache, value.name)
-        writer.endObject()
       }
     }
 
@@ -186,10 +180,8 @@ object TestQuery_ResponseAdapter : ResponseAdapter<TestQuery.Data> {
         responseAdapterCache: ResponseAdapterCache,
         value: TestQuery.Data.Tree.Parent
       ) {
-        writer.beginObject()
         writer.name("name")
         StringResponseAdapter.toResponse(writer, responseAdapterCache, value.name)
-        writer.endObject()
       }
     }
   }

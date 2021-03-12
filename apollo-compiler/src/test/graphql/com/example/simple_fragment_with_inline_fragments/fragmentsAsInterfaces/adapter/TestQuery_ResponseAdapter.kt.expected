@@ -60,10 +60,8 @@ object TestQuery_ResponseAdapter : ResponseAdapter<TestQuery.Data> {
     responseAdapterCache: ResponseAdapterCache,
     value: TestQuery.Data
   ) {
-    writer.beginObject()
     writer.name("hero")
     Hero.obj().nullable().toResponse(writer, responseAdapterCache, value.hero)
-    writer.endObject()
   }
 
   object Hero : ResponseAdapter<TestQuery.Data.Hero> {
@@ -138,7 +136,6 @@ object TestQuery_ResponseAdapter : ResponseAdapter<TestQuery.Data> {
         responseAdapterCache: ResponseAdapterCache,
         value: TestQuery.Data.Hero.CharacterHero
       ) {
-        writer.beginObject()
         writer.name("__typename")
         StringResponseAdapter.toResponse(writer, responseAdapterCache, value.__typename)
         writer.name("name")
@@ -146,7 +143,6 @@ object TestQuery_ResponseAdapter : ResponseAdapter<TestQuery.Data> {
         writer.name("friends")
         Friends.obj().nullable().list().nullable().toResponse(writer, responseAdapterCache,
             value.friends)
-        writer.endObject()
       }
 
       object Friends : ResponseAdapter<TestQuery.Data.Hero.CharacterHero.Friends> {
@@ -217,14 +213,12 @@ object TestQuery_ResponseAdapter : ResponseAdapter<TestQuery.Data> {
             responseAdapterCache: ResponseAdapterCache,
             value: TestQuery.Data.Hero.CharacterHero.Friends.HumanFriends
           ) {
-            writer.beginObject()
             writer.name("__typename")
             StringResponseAdapter.toResponse(writer, responseAdapterCache, value.__typename)
             writer.name("name")
             StringResponseAdapter.toResponse(writer, responseAdapterCache, value.name)
             writer.name("height")
             NullableDoubleResponseAdapter.toResponse(writer, responseAdapterCache, value.height)
-            writer.endObject()
           }
         }
 
@@ -272,7 +266,6 @@ object TestQuery_ResponseAdapter : ResponseAdapter<TestQuery.Data> {
             responseAdapterCache: ResponseAdapterCache,
             value: TestQuery.Data.Hero.CharacterHero.Friends.DroidFriends
           ) {
-            writer.beginObject()
             writer.name("__typename")
             StringResponseAdapter.toResponse(writer, responseAdapterCache, value.__typename)
             writer.name("name")
@@ -280,7 +273,6 @@ object TestQuery_ResponseAdapter : ResponseAdapter<TestQuery.Data> {
             writer.name("primaryFunction")
             NullableStringResponseAdapter.toResponse(writer, responseAdapterCache,
                 value.primaryFunction)
-            writer.endObject()
           }
         }
 
@@ -320,12 +312,10 @@ object TestQuery_ResponseAdapter : ResponseAdapter<TestQuery.Data> {
             responseAdapterCache: ResponseAdapterCache,
             value: TestQuery.Data.Hero.CharacterHero.Friends.OtherFriends
           ) {
-            writer.beginObject()
             writer.name("__typename")
             StringResponseAdapter.toResponse(writer, responseAdapterCache, value.__typename)
             writer.name("name")
             StringResponseAdapter.toResponse(writer, responseAdapterCache, value.name)
-            writer.endObject()
           }
         }
       }
@@ -360,10 +350,8 @@ object TestQuery_ResponseAdapter : ResponseAdapter<TestQuery.Data> {
         responseAdapterCache: ResponseAdapterCache,
         value: TestQuery.Data.Hero.OtherHero
       ) {
-        writer.beginObject()
         writer.name("__typename")
         StringResponseAdapter.toResponse(writer, responseAdapterCache, value.__typename)
-        writer.endObject()
       }
     }
   }

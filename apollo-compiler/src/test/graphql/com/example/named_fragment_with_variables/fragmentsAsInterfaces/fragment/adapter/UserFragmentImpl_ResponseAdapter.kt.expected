@@ -70,7 +70,6 @@ object UserFragmentImpl_ResponseAdapter : ResponseAdapter<UserFragmentImpl.Data>
     responseAdapterCache: ResponseAdapterCache,
     value: UserFragmentImpl.Data
   ) {
-    writer.beginObject()
     writer.name("__typename")
     StringResponseAdapter.toResponse(writer, responseAdapterCache, value.__typename)
     writer.name("firstName")
@@ -79,6 +78,5 @@ object UserFragmentImpl_ResponseAdapter : ResponseAdapter<UserFragmentImpl.Data>
     StringResponseAdapter.toResponse(writer, responseAdapterCache, value.lastName)
     writer.name("avatar")
     StringResponseAdapter.toResponse(writer, responseAdapterCache, value.avatar)
-    writer.endObject()
   }
 }

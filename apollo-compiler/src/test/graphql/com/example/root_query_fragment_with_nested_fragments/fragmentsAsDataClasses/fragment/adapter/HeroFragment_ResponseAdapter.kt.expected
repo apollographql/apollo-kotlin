@@ -53,11 +53,9 @@ object HeroFragment_ResponseAdapter : ResponseAdapter<HeroFragment.Data> {
     responseAdapterCache: ResponseAdapterCache,
     value: HeroFragment.Data
   ) {
-    writer.beginObject()
     writer.name("__typename")
     StringResponseAdapter.toResponse(writer, responseAdapterCache, value.__typename)
     writer.name("name")
     StringResponseAdapter.toResponse(writer, responseAdapterCache, value.name)
-    writer.endObject()
   }
 }

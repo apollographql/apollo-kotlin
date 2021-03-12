@@ -62,10 +62,8 @@ object TestQuery_ResponseAdapter : ResponseAdapter<TestQuery.Data> {
     responseAdapterCache: ResponseAdapterCache,
     value: TestQuery.Data
   ) {
-    writer.beginObject()
     writer.name("hero")
     Hero.obj().nullable().toResponse(writer, responseAdapterCache, value.hero)
-    writer.endObject()
   }
 
   object Hero : ResponseAdapter<TestQuery.Data.Hero> {
@@ -156,7 +154,6 @@ object TestQuery_ResponseAdapter : ResponseAdapter<TestQuery.Data> {
         responseAdapterCache: ResponseAdapterCache,
         value: TestQuery.Data.Hero.CharacterDroidHero
       ) {
-        writer.beginObject()
         writer.name("__typename")
         StringResponseAdapter.toResponse(writer, responseAdapterCache, value.__typename)
         writer.name("name")
@@ -169,7 +166,6 @@ object TestQuery_ResponseAdapter : ResponseAdapter<TestQuery.Data> {
         writer.name("primaryFunction")
         NullableStringResponseAdapter.toResponse(writer, responseAdapterCache,
             value.primaryFunction)
-        writer.endObject()
       }
 
       object FriendsConnection :
@@ -214,13 +210,11 @@ object TestQuery_ResponseAdapter : ResponseAdapter<TestQuery.Data> {
           responseAdapterCache: ResponseAdapterCache,
           value: TestQuery.Data.Hero.CharacterDroidHero.FriendsConnection
         ) {
-          writer.beginObject()
           writer.name("totalCount")
           NullableIntResponseAdapter.toResponse(writer, responseAdapterCache, value.totalCount)
           writer.name("edges")
           Edges.obj().nullable().list().nullable().toResponse(writer, responseAdapterCache,
               value.edges)
-          writer.endObject()
         }
 
         object Edges :
@@ -256,10 +250,8 @@ object TestQuery_ResponseAdapter : ResponseAdapter<TestQuery.Data> {
             responseAdapterCache: ResponseAdapterCache,
             value: TestQuery.Data.Hero.CharacterDroidHero.FriendsConnection.Edges
           ) {
-            writer.beginObject()
             writer.name("node")
             Node.obj().nullable().toResponse(writer, responseAdapterCache, value.node)
-            writer.endObject()
           }
 
           object Node :
@@ -293,10 +285,8 @@ object TestQuery_ResponseAdapter : ResponseAdapter<TestQuery.Data> {
               responseAdapterCache: ResponseAdapterCache,
               value: TestQuery.Data.Hero.CharacterDroidHero.FriendsConnection.Edges.Node
             ) {
-              writer.beginObject()
               writer.name("name")
               StringResponseAdapter.toResponse(writer, responseAdapterCache, value.name)
-              writer.endObject()
             }
           }
         }
@@ -359,7 +349,6 @@ object TestQuery_ResponseAdapter : ResponseAdapter<TestQuery.Data> {
         responseAdapterCache: ResponseAdapterCache,
         value: TestQuery.Data.Hero.CharacterHumanHero
       ) {
-        writer.beginObject()
         writer.name("__typename")
         StringResponseAdapter.toResponse(writer, responseAdapterCache, value.__typename)
         writer.name("name")
@@ -369,7 +358,6 @@ object TestQuery_ResponseAdapter : ResponseAdapter<TestQuery.Data> {
             value.appearsIn)
         writer.name("friendsConnection")
         FriendsConnection.obj().toResponse(writer, responseAdapterCache, value.friendsConnection)
-        writer.endObject()
       }
 
       object FriendsConnection :
@@ -414,13 +402,11 @@ object TestQuery_ResponseAdapter : ResponseAdapter<TestQuery.Data> {
           responseAdapterCache: ResponseAdapterCache,
           value: TestQuery.Data.Hero.CharacterHumanHero.FriendsConnection
         ) {
-          writer.beginObject()
           writer.name("totalCount")
           NullableIntResponseAdapter.toResponse(writer, responseAdapterCache, value.totalCount)
           writer.name("edges")
           Edges.obj().nullable().list().nullable().toResponse(writer, responseAdapterCache,
               value.edges)
-          writer.endObject()
         }
 
         object Edges :
@@ -456,10 +442,8 @@ object TestQuery_ResponseAdapter : ResponseAdapter<TestQuery.Data> {
             responseAdapterCache: ResponseAdapterCache,
             value: TestQuery.Data.Hero.CharacterHumanHero.FriendsConnection.Edges
           ) {
-            writer.beginObject()
             writer.name("node")
             Node.obj().nullable().toResponse(writer, responseAdapterCache, value.node)
-            writer.endObject()
           }
 
           object Node :
@@ -493,10 +477,8 @@ object TestQuery_ResponseAdapter : ResponseAdapter<TestQuery.Data> {
               responseAdapterCache: ResponseAdapterCache,
               value: TestQuery.Data.Hero.CharacterHumanHero.FriendsConnection.Edges.Node
             ) {
-              writer.beginObject()
               writer.name("name")
               StringResponseAdapter.toResponse(writer, responseAdapterCache, value.name)
-              writer.endObject()
             }
           }
         }
@@ -548,7 +530,6 @@ object TestQuery_ResponseAdapter : ResponseAdapter<TestQuery.Data> {
         responseAdapterCache: ResponseAdapterCache,
         value: TestQuery.Data.Hero.OtherHero
       ) {
-        writer.beginObject()
         writer.name("__typename")
         StringResponseAdapter.toResponse(writer, responseAdapterCache, value.__typename)
         writer.name("name")
@@ -556,7 +537,6 @@ object TestQuery_ResponseAdapter : ResponseAdapter<TestQuery.Data> {
         writer.name("appearsIn")
         Episode_ResponseAdapter.nullable().list().toResponse(writer, responseAdapterCache,
             value.appearsIn)
-        writer.endObject()
       }
     }
   }

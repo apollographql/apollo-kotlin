@@ -66,12 +66,10 @@ object GetHuman_ResponseAdapter : ResponseAdapter<GetHuman.Data> {
     responseAdapterCache: ResponseAdapterCache,
     value: GetHuman.Data
   ) {
-    writer.beginObject()
     writer.name("human")
     Human.obj().toResponse(writer, responseAdapterCache, value.human)
     writer.name("node")
     Node.obj().toResponse(writer, responseAdapterCache, value.node)
-    writer.endObject()
   }
 
   object Human : ResponseAdapter<GetHuman.Data.Human> {
@@ -117,14 +115,12 @@ object GetHuman_ResponseAdapter : ResponseAdapter<GetHuman.Data> {
       responseAdapterCache: ResponseAdapterCache,
       value: GetHuman.Data.Human
     ) {
-      writer.beginObject()
       writer.name("id")
       StringResponseAdapter.toResponse(writer, responseAdapterCache, value.id)
       writer.name("name")
       StringResponseAdapter.toResponse(writer, responseAdapterCache, value.name)
       writer.name("height")
       DoubleResponseAdapter.toResponse(writer, responseAdapterCache, value.height)
-      writer.endObject()
     }
   }
 
@@ -186,12 +182,10 @@ object GetHuman_ResponseAdapter : ResponseAdapter<GetHuman.Data> {
         responseAdapterCache: ResponseAdapterCache,
         value: GetHuman.Data.Node.HumanNode
       ) {
-        writer.beginObject()
         writer.name("__typename")
         StringResponseAdapter.toResponse(writer, responseAdapterCache, value.__typename)
         writer.name("height")
         DoubleResponseAdapter.toResponse(writer, responseAdapterCache, value.height)
-        writer.endObject()
       }
     }
 
@@ -224,10 +218,8 @@ object GetHuman_ResponseAdapter : ResponseAdapter<GetHuman.Data> {
         responseAdapterCache: ResponseAdapterCache,
         value: GetHuman.Data.Node.OtherNode
       ) {
-        writer.beginObject()
         writer.name("__typename")
         StringResponseAdapter.toResponse(writer, responseAdapterCache, value.__typename)
-        writer.endObject()
       }
     }
   }

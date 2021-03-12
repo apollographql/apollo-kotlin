@@ -32,7 +32,6 @@ object ReviewInput_InputAdapter : ResponseAdapter<ReviewInput> {
     responseAdapterCache: ResponseAdapterCache,
     value: ReviewInput
   ) {
-    writer.beginObject()
     writer.name("stars")
     IntResponseAdapter.toResponse(writer, responseAdapterCache, value.stars)
     if (value.nullableIntFieldWithDefaultValue is Input.Present) {
@@ -134,6 +133,5 @@ object ReviewInput_InputAdapter : ResponseAdapter<ReviewInput> {
       NullableIntResponseAdapter.toResponse(writer, responseAdapterCache,
           value.capitalizedInt.value)
     }
-    writer.endObject()
   }
 }

@@ -28,7 +28,6 @@ object
     responseAdapterCache: ResponseAdapterCache,
     value: TestQueryWithAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryLongName
   ) {
-    writer.beginObject()
     if
         (value.episodeAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryLongName
         is Input.Present) {
@@ -36,6 +35,5 @@ object
       Episode_ResponseAdapter.nullable().toResponse(writer, responseAdapterCache,
           value.episodeAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryLongName.value)
     }
-    writer.endObject()
   }
 }

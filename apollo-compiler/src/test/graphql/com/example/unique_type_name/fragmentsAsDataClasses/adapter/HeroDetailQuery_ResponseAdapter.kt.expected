@@ -63,11 +63,9 @@ object HeroDetailQuery_ResponseAdapter : ResponseAdapter<HeroDetailQuery.Data> {
     responseAdapterCache: ResponseAdapterCache,
     value: com.example.unique_type_name.HeroDetailQuery.Data
   ) {
-    writer.beginObject()
     writer.name("heroDetailQuery")
     HeroDetailQuery.obj(true).nullable().toResponse(writer, responseAdapterCache,
         value.heroDetailQuery)
-    writer.endObject()
   }
 
   object HeroDetailQuery :
@@ -123,7 +121,6 @@ object HeroDetailQuery_ResponseAdapter : ResponseAdapter<HeroDetailQuery.Data> {
       responseAdapterCache: ResponseAdapterCache,
       value: com.example.unique_type_name.HeroDetailQuery.Data.HeroDetailQuery
     ) {
-      writer.beginObject()
       writer.name("__typename")
       StringResponseAdapter.toResponse(writer, responseAdapterCache, value.__typename)
 
@@ -134,7 +131,6 @@ object HeroDetailQuery_ResponseAdapter : ResponseAdapter<HeroDetailQuery.Data> {
       Friends.obj().nullable().list().nullable().toResponse(writer, responseAdapterCache,
           value.friends)
       if (value.asAsHuman != null) AsHuman.toResponse(writer, responseAdapterCache, value.asAsHuman)
-      writer.endObject()
     }
 
     object Friends :
@@ -167,10 +163,8 @@ object HeroDetailQuery_ResponseAdapter : ResponseAdapter<HeroDetailQuery.Data> {
         responseAdapterCache: ResponseAdapterCache,
         value: com.example.unique_type_name.HeroDetailQuery.Data.HeroDetailQuery.Friends
       ) {
-        writer.beginObject()
         writer.name("name")
         StringResponseAdapter.toResponse(writer, responseAdapterCache, value.name)
-        writer.endObject()
       }
     }
 
@@ -226,7 +220,6 @@ object HeroDetailQuery_ResponseAdapter : ResponseAdapter<HeroDetailQuery.Data> {
         responseAdapterCache: ResponseAdapterCache,
         value: com.example.unique_type_name.HeroDetailQuery.Data.HeroDetailQuery.AsHuman
       ) {
-        writer.beginObject()
         writer.name("__typename")
         StringResponseAdapter.toResponse(writer, responseAdapterCache, value.__typename)
         writer.name("name")
@@ -236,7 +229,6 @@ object HeroDetailQuery_ResponseAdapter : ResponseAdapter<HeroDetailQuery.Data> {
             value.friends)
         writer.name("height")
         NullableDoubleResponseAdapter.toResponse(writer, responseAdapterCache, value.height)
-        writer.endObject()
       }
 
       object Friends :
@@ -291,7 +283,6 @@ object HeroDetailQuery_ResponseAdapter : ResponseAdapter<HeroDetailQuery.Data> {
           responseAdapterCache: ResponseAdapterCache,
           value: com.example.unique_type_name.HeroDetailQuery.Data.HeroDetailQuery.AsHuman.Friends
         ) {
-          writer.beginObject()
           writer.name("name")
           StringResponseAdapter.toResponse(writer, responseAdapterCache, value.name)
           writer.name("appearsIn")
@@ -300,7 +291,6 @@ object HeroDetailQuery_ResponseAdapter : ResponseAdapter<HeroDetailQuery.Data> {
           writer.name("friends")
           Friends.obj(true).nullable().list().nullable().toResponse(writer, responseAdapterCache,
               value.friends)
-          writer.endObject()
         }
 
         object Friends :
@@ -339,12 +329,10 @@ object HeroDetailQuery_ResponseAdapter : ResponseAdapter<HeroDetailQuery.Data> {
             responseAdapterCache: ResponseAdapterCache,
             value: com.example.unique_type_name.HeroDetailQuery.Data.HeroDetailQuery.AsHuman.Friends.Friends
           ) {
-            writer.beginObject()
             writer.name("__typename")
             StringResponseAdapter.toResponse(writer, responseAdapterCache, value.__typename)
             if (value.heroDetails != null)
                 HeroDetails_ResponseAdapter.toResponse(writer, responseAdapterCache, value.heroDetails)
-            writer.endObject()
           }
         }
       }

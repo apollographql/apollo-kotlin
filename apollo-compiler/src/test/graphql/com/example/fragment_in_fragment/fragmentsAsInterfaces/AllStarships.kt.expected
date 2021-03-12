@@ -11,6 +11,7 @@ import com.apollographql.apollo3.api.ResponseAdapter
 import com.apollographql.apollo3.api.ResponseAdapterCache
 import com.apollographql.apollo3.api.ResponseField
 import com.apollographql.apollo3.api.json.JsonWriter
+import com.apollographql.apollo3.api.obj
 import com.example.fragment_in_fragment.adapter.AllStarships_ResponseAdapter
 import com.example.fragment_in_fragment.adapter.AllStarships_VariablesAdapter
 import com.example.fragment_in_fragment.fragment.PilotFragment
@@ -29,12 +30,15 @@ class AllStarships : Query<AllStarships.Data> {
   override fun queryDocument(): String = QUERY_DOCUMENT
 
   override fun serializeVariables(writer: JsonWriter, responseAdapterCache: ResponseAdapterCache) {
-    AllStarships_VariablesAdapter.toResponse(writer, responseAdapterCache, this)
+    AllStarships_VariablesAdapter.obj().toResponse(writer, responseAdapterCache, this)
   }
 
   override fun name(): String = OPERATION_NAME
 
-  override fun adapter(): ResponseAdapter<Data> = AllStarships_ResponseAdapter
+  override fun adapter(): ResponseAdapter<Data> {
+    return AllStarships_ResponseAdapter.obj()
+  }
+
   override fun responseFields(): List<ResponseField.FieldSet> = listOf(
     ResponseField.FieldSet(null, AllStarships_ResponseAdapter.RESPONSE_FIELDS)
   )

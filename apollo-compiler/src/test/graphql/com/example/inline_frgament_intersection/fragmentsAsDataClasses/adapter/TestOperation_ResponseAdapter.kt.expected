@@ -61,10 +61,8 @@ object TestOperation_ResponseAdapter : ResponseAdapter<TestOperation.Data> {
     responseAdapterCache: ResponseAdapterCache,
     value: TestOperation.Data
   ) {
-    writer.beginObject()
     writer.name("random")
     Random.obj(true).toResponse(writer, responseAdapterCache, value.random)
-    writer.endObject()
   }
 
   object Random : ResponseAdapter<TestOperation.Data.Random> {
@@ -107,13 +105,11 @@ object TestOperation_ResponseAdapter : ResponseAdapter<TestOperation.Data> {
       responseAdapterCache: ResponseAdapterCache,
       value: TestOperation.Data.Random
     ) {
-      writer.beginObject()
       writer.name("__typename")
       StringResponseAdapter.toResponse(writer, responseAdapterCache, value.__typename)
       if (value.asAsBeing != null) AsBeing.toResponse(writer, responseAdapterCache, value.asAsBeing)
       if (value.asAsWookie != null)
           AsWookie.toResponse(writer, responseAdapterCache, value.asAsWookie)
-      writer.endObject()
     }
 
     object AsBeing : ResponseAdapter<TestOperation.Data.Random.AsBeing> {
@@ -160,14 +156,12 @@ object TestOperation_ResponseAdapter : ResponseAdapter<TestOperation.Data> {
         responseAdapterCache: ResponseAdapterCache,
         value: TestOperation.Data.Random.AsBeing
       ) {
-        writer.beginObject()
         writer.name("__typename")
         StringResponseAdapter.toResponse(writer, responseAdapterCache, value.__typename)
         writer.name("name")
         StringResponseAdapter.toResponse(writer, responseAdapterCache, value.name)
         writer.name("friends")
         Friends.obj(true).list().toResponse(writer, responseAdapterCache, value.friends)
-        writer.endObject()
       }
 
       object Friends : ResponseAdapter<TestOperation.Data.Random.AsBeing.Friends> {
@@ -211,7 +205,6 @@ object TestOperation_ResponseAdapter : ResponseAdapter<TestOperation.Data> {
           responseAdapterCache: ResponseAdapterCache,
           value: TestOperation.Data.Random.AsBeing.Friends
         ) {
-          writer.beginObject()
           writer.name("__typename")
           StringResponseAdapter.toResponse(writer, responseAdapterCache, value.__typename)
 
@@ -219,7 +212,6 @@ object TestOperation_ResponseAdapter : ResponseAdapter<TestOperation.Data> {
           StringResponseAdapter.toResponse(writer, responseAdapterCache, value.name)
           if (value.asAsWookie != null)
               AsWookie.toResponse(writer, responseAdapterCache, value.asAsWookie)
-          writer.endObject()
         }
 
         object AsWookie : ResponseAdapter<TestOperation.Data.Random.AsBeing.Friends.AsWookie> {
@@ -263,7 +255,6 @@ object TestOperation_ResponseAdapter : ResponseAdapter<TestOperation.Data> {
             responseAdapterCache: ResponseAdapterCache,
             value: TestOperation.Data.Random.AsBeing.Friends.AsWookie
           ) {
-            writer.beginObject()
             writer.name("__typename")
             StringResponseAdapter.toResponse(writer, responseAdapterCache, value.__typename)
             writer.name("name")
@@ -271,7 +262,6 @@ object TestOperation_ResponseAdapter : ResponseAdapter<TestOperation.Data> {
             writer.name("lifeExpectancy")
             NullableDoubleResponseAdapter.toResponse(writer, responseAdapterCache,
                 value.lifeExpectancy)
-            writer.endObject()
           }
         }
       }
@@ -321,14 +311,12 @@ object TestOperation_ResponseAdapter : ResponseAdapter<TestOperation.Data> {
         responseAdapterCache: ResponseAdapterCache,
         value: TestOperation.Data.Random.AsWookie
       ) {
-        writer.beginObject()
         writer.name("__typename")
         StringResponseAdapter.toResponse(writer, responseAdapterCache, value.__typename)
         writer.name("race")
         Race_ResponseAdapter.toResponse(writer, responseAdapterCache, value.race)
         writer.name("friends")
         Friends.obj().list().toResponse(writer, responseAdapterCache, value.friends)
-        writer.endObject()
       }
 
       object Friends : ResponseAdapter<TestOperation.Data.Random.AsWookie.Friends> {
@@ -361,11 +349,9 @@ object TestOperation_ResponseAdapter : ResponseAdapter<TestOperation.Data> {
           responseAdapterCache: ResponseAdapterCache,
           value: TestOperation.Data.Random.AsWookie.Friends
         ) {
-          writer.beginObject()
           writer.name("lifeExpectancy")
           NullableDoubleResponseAdapter.toResponse(writer, responseAdapterCache,
               value.lifeExpectancy)
-          writer.endObject()
         }
       }
     }

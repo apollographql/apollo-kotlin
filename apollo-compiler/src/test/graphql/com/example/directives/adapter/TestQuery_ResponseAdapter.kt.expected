@@ -56,10 +56,8 @@ object TestQuery_ResponseAdapter : ResponseAdapter<TestQuery.Data> {
     responseAdapterCache: ResponseAdapterCache,
     value: TestQuery.Data
   ) {
-    writer.beginObject()
     writer.name("hero")
     Hero.obj().nullable().toResponse(writer, responseAdapterCache, value.hero)
-    writer.endObject()
   }
 
   object Hero : ResponseAdapter<TestQuery.Data.Hero> {
@@ -108,13 +106,11 @@ object TestQuery_ResponseAdapter : ResponseAdapter<TestQuery.Data> {
       responseAdapterCache: ResponseAdapterCache,
       value: TestQuery.Data.Hero
     ) {
-      writer.beginObject()
       writer.name("name")
       NullableStringResponseAdapter.toResponse(writer, responseAdapterCache, value.name)
       writer.name("friendsConnection")
       FriendsConnection.obj().nullable().toResponse(writer, responseAdapterCache,
           value.friendsConnection)
-      writer.endObject()
     }
 
     object FriendsConnection : ResponseAdapter<TestQuery.Data.Hero.FriendsConnection> {
@@ -146,10 +142,8 @@ object TestQuery_ResponseAdapter : ResponseAdapter<TestQuery.Data> {
         responseAdapterCache: ResponseAdapterCache,
         value: TestQuery.Data.Hero.FriendsConnection
       ) {
-        writer.beginObject()
         writer.name("totalCount")
         NullableIntResponseAdapter.toResponse(writer, responseAdapterCache, value.totalCount)
-        writer.endObject()
       }
     }
   }

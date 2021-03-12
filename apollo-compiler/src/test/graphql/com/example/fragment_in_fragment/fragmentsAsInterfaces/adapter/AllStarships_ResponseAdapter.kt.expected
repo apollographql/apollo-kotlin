@@ -58,10 +58,8 @@ object AllStarships_ResponseAdapter : ResponseAdapter<AllStarships.Data> {
     responseAdapterCache: ResponseAdapterCache,
     value: com.example.fragment_in_fragment.AllStarships.Data
   ) {
-    writer.beginObject()
     writer.name("allStarships")
     AllStarships.obj().nullable().toResponse(writer, responseAdapterCache, value.allStarships)
-    writer.endObject()
   }
 
   object AllStarships :
@@ -98,10 +96,8 @@ object AllStarships_ResponseAdapter : ResponseAdapter<AllStarships.Data> {
       responseAdapterCache: ResponseAdapterCache,
       value: com.example.fragment_in_fragment.AllStarships.Data.AllStarships
     ) {
-      writer.beginObject()
       writer.name("edges")
       Edges.obj().nullable().list().nullable().toResponse(writer, responseAdapterCache, value.edges)
-      writer.endObject()
     }
 
     object Edges :
@@ -138,10 +134,8 @@ object AllStarships_ResponseAdapter : ResponseAdapter<AllStarships.Data> {
         responseAdapterCache: ResponseAdapterCache,
         value: com.example.fragment_in_fragment.AllStarships.Data.AllStarships.Edges
       ) {
-        writer.beginObject()
         writer.name("node")
         Node.obj().nullable().toResponse(writer, responseAdapterCache, value.node)
-        writer.endObject()
       }
 
       object Node :
@@ -223,7 +217,6 @@ object AllStarships_ResponseAdapter : ResponseAdapter<AllStarships.Data> {
             responseAdapterCache: ResponseAdapterCache,
             value: com.example.fragment_in_fragment.AllStarships.Data.AllStarships.Edges.Node.StarshipNode
           ) {
-            writer.beginObject()
             writer.name("__typename")
             StringResponseAdapter.toResponse(writer, responseAdapterCache, value.__typename)
             writer.name("id")
@@ -233,7 +226,6 @@ object AllStarships_ResponseAdapter : ResponseAdapter<AllStarships.Data> {
             writer.name("pilotConnection")
             PilotConnection.obj().nullable().toResponse(writer, responseAdapterCache,
                 value.pilotConnection)
-            writer.endObject()
           }
 
           object PilotConnection :
@@ -273,11 +265,9 @@ object AllStarships_ResponseAdapter : ResponseAdapter<AllStarships.Data> {
               responseAdapterCache: ResponseAdapterCache,
               value: com.example.fragment_in_fragment.AllStarships.Data.AllStarships.Edges.Node.StarshipNode.PilotConnection
             ) {
-              writer.beginObject()
               writer.name("edges")
               Edges.obj().nullable().list().nullable().toResponse(writer, responseAdapterCache,
                   value.edges)
-              writer.endObject()
             }
 
             object Edges :
@@ -316,10 +306,8 @@ object AllStarships_ResponseAdapter : ResponseAdapter<AllStarships.Data> {
                 responseAdapterCache: ResponseAdapterCache,
                 value: com.example.fragment_in_fragment.AllStarships.Data.AllStarships.Edges.Node.StarshipNode.PilotConnection.Edges
               ) {
-                writer.beginObject()
                 writer.name("node")
                 Node.obj().nullable().toResponse(writer, responseAdapterCache, value.node)
-                writer.endObject()
               }
 
               object Node :
@@ -398,7 +386,6 @@ object AllStarships_ResponseAdapter : ResponseAdapter<AllStarships.Data> {
                     responseAdapterCache: ResponseAdapterCache,
                     value: com.example.fragment_in_fragment.AllStarships.Data.AllStarships.Edges.Node.StarshipNode.PilotConnection.Edges.Node.PersonNode
                   ) {
-                    writer.beginObject()
                     writer.name("__typename")
                     StringResponseAdapter.toResponse(writer, responseAdapterCache, value.__typename)
                     writer.name("name")
@@ -407,7 +394,6 @@ object AllStarships_ResponseAdapter : ResponseAdapter<AllStarships.Data> {
                     writer.name("homeworld")
                     Homeworld.obj().nullable().toResponse(writer, responseAdapterCache,
                         value.homeworld)
-                    writer.endObject()
                   }
 
                   object Homeworld :
@@ -474,14 +460,12 @@ object AllStarships_ResponseAdapter : ResponseAdapter<AllStarships.Data> {
                         responseAdapterCache: ResponseAdapterCache,
                         value: com.example.fragment_in_fragment.AllStarships.Data.AllStarships.Edges.Node.StarshipNode.PilotConnection.Edges.Node.PersonNode.Homeworld.PlanetHomeworld
                       ) {
-                        writer.beginObject()
                         writer.name("__typename")
                         StringResponseAdapter.toResponse(writer, responseAdapterCache,
                             value.__typename)
                         writer.name("name")
                         NullableStringResponseAdapter.toResponse(writer, responseAdapterCache,
                             value.name)
-                        writer.endObject()
                       }
                     }
 
@@ -516,11 +500,9 @@ object AllStarships_ResponseAdapter : ResponseAdapter<AllStarships.Data> {
                         responseAdapterCache: ResponseAdapterCache,
                         value: com.example.fragment_in_fragment.AllStarships.Data.AllStarships.Edges.Node.StarshipNode.PilotConnection.Edges.Node.PersonNode.Homeworld.OtherHomeworld
                       ) {
-                        writer.beginObject()
                         writer.name("__typename")
                         StringResponseAdapter.toResponse(writer, responseAdapterCache,
                             value.__typename)
-                        writer.endObject()
                       }
                     }
                   }
@@ -557,10 +539,8 @@ object AllStarships_ResponseAdapter : ResponseAdapter<AllStarships.Data> {
                     responseAdapterCache: ResponseAdapterCache,
                     value: com.example.fragment_in_fragment.AllStarships.Data.AllStarships.Edges.Node.StarshipNode.PilotConnection.Edges.Node.OtherNode
                   ) {
-                    writer.beginObject()
                     writer.name("__typename")
                     StringResponseAdapter.toResponse(writer, responseAdapterCache, value.__typename)
-                    writer.endObject()
                   }
                 }
               }
@@ -597,10 +577,8 @@ object AllStarships_ResponseAdapter : ResponseAdapter<AllStarships.Data> {
             responseAdapterCache: ResponseAdapterCache,
             value: com.example.fragment_in_fragment.AllStarships.Data.AllStarships.Edges.Node.OtherNode
           ) {
-            writer.beginObject()
             writer.name("__typename")
             StringResponseAdapter.toResponse(writer, responseAdapterCache, value.__typename)
-            writer.endObject()
           }
         }
       }

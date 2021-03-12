@@ -20,7 +20,5 @@ object PlanetFragmentImpl_VariablesAdapter : ResponseAdapter<PlanetFragmentImpl>
     responseAdapterCache: ResponseAdapterCache,
     value: PlanetFragmentImpl
   ) {
-    writer.beginObject()
-    writer.endObject()
   }
 }

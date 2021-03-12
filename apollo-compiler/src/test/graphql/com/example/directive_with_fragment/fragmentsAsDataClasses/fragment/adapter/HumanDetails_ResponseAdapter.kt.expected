@@ -54,11 +54,9 @@ object HumanDetails_ResponseAdapter : ResponseAdapter<HumanDetails.Data> {
     responseAdapterCache: ResponseAdapterCache,
     value: HumanDetails.Data
   ) {
-    writer.beginObject()
     writer.name("__typename")
     StringResponseAdapter.toResponse(writer, responseAdapterCache, value.__typename)
     writer.name("homePlanet")
     NullableStringResponseAdapter.toResponse(writer, responseAdapterCache, value.homePlanet)
-    writer.endObject()
   }
 }

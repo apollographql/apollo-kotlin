@@ -60,10 +60,8 @@ object TestQuery_ResponseAdapter : ResponseAdapter<TestQuery.Data> {
     responseAdapterCache: ResponseAdapterCache,
     value: TestQuery.Data
   ) {
-    writer.beginObject()
     writer.name("createReview")
     CreateReview.obj().nullable().toResponse(writer, responseAdapterCache, value.createReview)
-    writer.endObject()
   }
 
   object CreateReview : ResponseAdapter<TestQuery.Data.CreateReview> {
@@ -102,12 +100,10 @@ object TestQuery_ResponseAdapter : ResponseAdapter<TestQuery.Data> {
       responseAdapterCache: ResponseAdapterCache,
       value: TestQuery.Data.CreateReview
     ) {
-      writer.beginObject()
       writer.name("stars")
       IntResponseAdapter.toResponse(writer, responseAdapterCache, value.stars)
       writer.name("commentary")
       NullableStringResponseAdapter.toResponse(writer, responseAdapterCache, value.commentary)
-      writer.endObject()
     }
   }
 }

@@ -63,7 +63,6 @@ object CharacterDetails_ResponseAdapter : ResponseAdapter<CharacterDetails.Data>
     responseAdapterCache: ResponseAdapterCache,
     value: CharacterDetails.Data
   ) {
-    writer.beginObject()
     writer.name("__typename")
     StringResponseAdapter.toResponse(writer, responseAdapterCache, value.__typename)
     writer.name("name")
@@ -71,6 +70,5 @@ object CharacterDetails_ResponseAdapter : ResponseAdapter<CharacterDetails.Data>
     writer.name("birthDate")
     responseAdapterCache.responseAdapterFor<Any>(CustomScalars.Date).toResponse(writer,
         responseAdapterCache, value.birthDate)
-    writer.endObject()
   }
 }

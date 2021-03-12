@@ -371,6 +371,6 @@ internal fun adapterFunSpec(operationResponseAdapter: ClassName, buffered: Boole
   return FunSpec.builder("adapter")
       .addModifiers(KModifier.OVERRIDE)
       .returns(ResponseAdapter::class.asClassName().parameterizedBy(ClassName(packageName = "", "Data")))
-      .addCode(CodeBlock.of("return %T", operationResponseAdapter).obj(buffered))
+      .addCode(CodeBlock.of("return·%T", operationResponseAdapter).obj(buffered))
       .build()
 }

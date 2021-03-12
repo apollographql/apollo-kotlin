@@ -20,7 +20,5 @@ object TestOperation_VariablesAdapter : ResponseAdapter<TestOperation> {
     responseAdapterCache: ResponseAdapterCache,
     value: TestOperation
   ) {
-    writer.beginObject()
-    writer.endObject()
   }
 }

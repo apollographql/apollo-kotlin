@@ -47,7 +47,10 @@ fun serializeVariablesFunSpec(
       .addModifiers(KModifier.OVERRIDE)
       .addParameter("writer", JsonWriter::class)
       .addParameter(Identifier.responseAdapterCache, ResponseAdapterCache::class.asTypeName())
-      .addCode("%T.toResponse(writer, ${Identifier.responseAdapterCache}, this)", serializerClassName)
+      .addCode(
+          "%L.toResponse(writer, ${Identifier.responseAdapterCache}, this)",
+          CodeBlock.of("%T", serializerClassName).obj(false)
+      )
       .build()
 }
 
@@ -106,7 +109,6 @@ private fun List<CodeGenerationAst.InputField>.inputFieldsAdapterTypeSpec(
       .addParameter(Identifier.value, className)
       .addModifiers(KModifier.OVERRIDE)
       .addCode(CodeBlock.Builder().apply {
-        addStatement("writer.beginObject()")
         forEach {
           if (!it.isRequired) {
             beginControlFlow("if (value.%L is %T)", kotlinNameForVariable(it.name), Input.Present::class)
@@ -124,7 +126,6 @@ private fun List<CodeGenerationAst.InputField>.inputFieldsAdapterTypeSpec(
                 kotlinNameForVariable(it.name))
           }
         }
-        addStatement("writer.endObject()")
       }.build())
       .build()
   )

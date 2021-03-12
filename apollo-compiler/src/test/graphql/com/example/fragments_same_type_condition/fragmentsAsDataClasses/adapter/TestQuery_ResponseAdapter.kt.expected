@@ -60,10 +60,8 @@ object TestQuery_ResponseAdapter : ResponseAdapter<TestQuery.Data> {
     responseAdapterCache: ResponseAdapterCache,
     value: TestQuery.Data
   ) {
-    writer.beginObject()
     writer.name("hero")
     Hero.obj(true).nullable().toResponse(writer, responseAdapterCache, value.hero)
-    writer.endObject()
   }
 
   object Hero : ResponseAdapter<TestQuery.Data.Hero> {
@@ -106,14 +104,12 @@ object TestQuery_ResponseAdapter : ResponseAdapter<TestQuery.Data> {
       responseAdapterCache: ResponseAdapterCache,
       value: TestQuery.Data.Hero
     ) {
-      writer.beginObject()
       writer.name("__typename")
       StringResponseAdapter.toResponse(writer, responseAdapterCache, value.__typename)
       if (value.droidDetails1 != null)
           DroidDetails1_ResponseAdapter.toResponse(writer, responseAdapterCache, value.droidDetails1)
       if (value.droidDetails2 != null)
           DroidDetails2_ResponseAdapter.toResponse(writer, responseAdapterCache, value.droidDetails2)
-      writer.endObject()
     }
   }
 }

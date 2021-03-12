@@ -88,12 +88,10 @@ object GetUser_ResponseAdapter : ResponseAdapter<GetUser.Data> {
       responseAdapterCache: ResponseAdapterCache,
       value: GetUser.Data.QueryData
     ) {
-      writer.beginObject()
       writer.name("__typename")
       StringResponseAdapter.toResponse(writer, responseAdapterCache, value.__typename)
       writer.name("organization")
       Organization.obj().nullable().toResponse(writer, responseAdapterCache, value.organization)
-      writer.endObject()
     }
 
     object Organization : ResponseAdapter<GetUser.Data.QueryData.Organization> {
@@ -139,12 +137,10 @@ object GetUser_ResponseAdapter : ResponseAdapter<GetUser.Data> {
         responseAdapterCache: ResponseAdapterCache,
         value: GetUser.Data.QueryData.Organization
       ) {
-        writer.beginObject()
         writer.name("id")
         StringResponseAdapter.toResponse(writer, responseAdapterCache, value.id)
         writer.name("user")
         User.obj().list().toResponse(writer, responseAdapterCache, value.user)
-        writer.endObject()
       }
 
       object User : ResponseAdapter<GetUser.Data.QueryData.Organization.User> {
@@ -221,7 +217,6 @@ object GetUser_ResponseAdapter : ResponseAdapter<GetUser.Data> {
             responseAdapterCache: ResponseAdapterCache,
             value: GetUser.Data.QueryData.Organization.User.UserUser
           ) {
-            writer.beginObject()
             writer.name("__typename")
             StringResponseAdapter.toResponse(writer, responseAdapterCache, value.__typename)
             writer.name("firstName")
@@ -230,7 +225,6 @@ object GetUser_ResponseAdapter : ResponseAdapter<GetUser.Data> {
             StringResponseAdapter.toResponse(writer, responseAdapterCache, value.lastName)
             writer.name("avatar")
             StringResponseAdapter.toResponse(writer, responseAdapterCache, value.avatar)
-            writer.endObject()
           }
         }
 
@@ -263,10 +257,8 @@ object GetUser_ResponseAdapter : ResponseAdapter<GetUser.Data> {
             responseAdapterCache: ResponseAdapterCache,
             value: GetUser.Data.QueryData.Organization.User.OtherUser
           ) {
-            writer.beginObject()
             writer.name("__typename")
             StringResponseAdapter.toResponse(writer, responseAdapterCache, value.__typename)
-            writer.endObject()
           }
         }
       }
@@ -302,10 +294,8 @@ object GetUser_ResponseAdapter : ResponseAdapter<GetUser.Data> {
       responseAdapterCache: ResponseAdapterCache,
       value: GetUser.Data.OtherData
     ) {
-      writer.beginObject()
       writer.name("__typename")
       StringResponseAdapter.toResponse(writer, responseAdapterCache, value.__typename)
-      writer.endObject()
     }
   }
 }

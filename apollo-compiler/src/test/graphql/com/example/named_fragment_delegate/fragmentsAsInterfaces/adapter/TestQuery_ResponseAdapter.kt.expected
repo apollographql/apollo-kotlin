@@ -60,10 +60,8 @@ object TestQuery_ResponseAdapter : ResponseAdapter<TestQuery.Data> {
     responseAdapterCache: ResponseAdapterCache,
     value: TestQuery.Data
   ) {
-    writer.beginObject()
     writer.name("hero")
     Hero.obj().nullable().toResponse(writer, responseAdapterCache, value.hero)
-    writer.endObject()
   }
 
   object Hero : ResponseAdapter<TestQuery.Data.Hero> {
@@ -145,7 +143,6 @@ object TestQuery_ResponseAdapter : ResponseAdapter<TestQuery.Data> {
         responseAdapterCache: ResponseAdapterCache,
         value: TestQuery.Data.Hero.DroidHero
       ) {
-        writer.beginObject()
         writer.name("__typename")
         StringResponseAdapter.toResponse(writer, responseAdapterCache, value.__typename)
         writer.name("name")
@@ -156,7 +153,6 @@ object TestQuery_ResponseAdapter : ResponseAdapter<TestQuery.Data> {
         writer.name("friends")
         Friends.obj().nullable().list().nullable().toResponse(writer, responseAdapterCache,
             value.friends)
-        writer.endObject()
       }
 
       object Friends : ResponseAdapter<TestQuery.Data.Hero.DroidHero.Friends> {
@@ -188,10 +184,8 @@ object TestQuery_ResponseAdapter : ResponseAdapter<TestQuery.Data> {
           responseAdapterCache: ResponseAdapterCache,
           value: TestQuery.Data.Hero.DroidHero.Friends
         ) {
-          writer.beginObject()
           writer.name("name")
           StringResponseAdapter.toResponse(writer, responseAdapterCache, value.name)
-          writer.endObject()
         }
       }
     }
@@ -251,7 +245,6 @@ object TestQuery_ResponseAdapter : ResponseAdapter<TestQuery.Data> {
         responseAdapterCache: ResponseAdapterCache,
         value: TestQuery.Data.Hero.HumanHero
       ) {
-        writer.beginObject()
         writer.name("__typename")
         StringResponseAdapter.toResponse(writer, responseAdapterCache, value.__typename)
         writer.name("name")
@@ -261,7 +254,6 @@ object TestQuery_ResponseAdapter : ResponseAdapter<TestQuery.Data> {
             responseAdapterCache, value.profileLink)
         writer.name("friendsConnection")
         FriendsConnection.obj().toResponse(writer, responseAdapterCache, value.friendsConnection)
-        writer.endObject()
       }
 
       object FriendsConnection : ResponseAdapter<TestQuery.Data.Hero.HumanHero.FriendsConnection> {
@@ -297,11 +289,9 @@ object TestQuery_ResponseAdapter : ResponseAdapter<TestQuery.Data> {
           responseAdapterCache: ResponseAdapterCache,
           value: TestQuery.Data.Hero.HumanHero.FriendsConnection
         ) {
-          writer.beginObject()
           writer.name("edges")
           Edges.obj().nullable().list().nullable().toResponse(writer, responseAdapterCache,
               value.edges)
-          writer.endObject()
         }
 
         object Edges : ResponseAdapter<TestQuery.Data.Hero.HumanHero.FriendsConnection.Edges> {
@@ -336,10 +326,8 @@ object TestQuery_ResponseAdapter : ResponseAdapter<TestQuery.Data> {
             responseAdapterCache: ResponseAdapterCache,
             value: TestQuery.Data.Hero.HumanHero.FriendsConnection.Edges
           ) {
-            writer.beginObject()
             writer.name("node")
             Node.obj().nullable().toResponse(writer, responseAdapterCache, value.node)
-            writer.endObject()
           }
 
           object Node : ResponseAdapter<TestQuery.Data.Hero.HumanHero.FriendsConnection.Edges.Node>
@@ -373,10 +361,8 @@ object TestQuery_ResponseAdapter : ResponseAdapter<TestQuery.Data> {
               responseAdapterCache: ResponseAdapterCache,
               value: TestQuery.Data.Hero.HumanHero.FriendsConnection.Edges.Node
             ) {
-              writer.beginObject()
               writer.name("name")
               StringResponseAdapter.toResponse(writer, responseAdapterCache, value.name)
-              writer.endObject()
             }
           }
         }
@@ -412,10 +398,8 @@ object TestQuery_ResponseAdapter : ResponseAdapter<TestQuery.Data> {
         responseAdapterCache: ResponseAdapterCache,
         value: TestQuery.Data.Hero.OtherHero
       ) {
-        writer.beginObject()
         writer.name("__typename")
         StringResponseAdapter.toResponse(writer, responseAdapterCache, value.__typename)
-        writer.endObject()
       }
     }
   }

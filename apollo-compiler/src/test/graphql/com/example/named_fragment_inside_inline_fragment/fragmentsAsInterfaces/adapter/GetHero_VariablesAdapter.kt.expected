@@ -20,7 +20,5 @@ object GetHero_VariablesAdapter : ResponseAdapter<GetHero> {
     responseAdapterCache: ResponseAdapterCache,
     value: GetHero
   ) {
-    writer.beginObject()
-    writer.endObject()
   }
 }

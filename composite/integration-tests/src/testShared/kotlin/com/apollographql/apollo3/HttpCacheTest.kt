@@ -120,7 +120,6 @@ class HttpCacheTest {
   @Test
   @Throws(Exception::class)
   fun cacheDefault() {
-    AllPlanetsQuery().fromResponse(Utils.readResource("HttpCacheTestAllPlanets.json"))
     enqueueResponse("/HttpCacheTestAllPlanets.json")
     Rx2Apollo.from(apolloClient
         .query(AllPlanetsQuery()))

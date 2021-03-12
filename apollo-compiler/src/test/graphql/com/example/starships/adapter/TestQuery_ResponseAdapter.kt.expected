@@ -60,10 +60,8 @@ object TestQuery_ResponseAdapter : ResponseAdapter<TestQuery.Data> {
     responseAdapterCache: ResponseAdapterCache,
     value: TestQuery.Data
   ) {
-    writer.beginObject()
     writer.name("starship")
     Starship.obj().nullable().toResponse(writer, responseAdapterCache, value.starship)
-    writer.endObject()
   }
 
   object Starship : ResponseAdapter<TestQuery.Data.Starship> {
@@ -111,7 +109,6 @@ object TestQuery_ResponseAdapter : ResponseAdapter<TestQuery.Data> {
       responseAdapterCache: ResponseAdapterCache,
       value: TestQuery.Data.Starship
     ) {
-      writer.beginObject()
       writer.name("id")
       StringResponseAdapter.toResponse(writer, responseAdapterCache, value.id)
       writer.name("name")
@@ -119,7 +116,6 @@ object TestQuery_ResponseAdapter : ResponseAdapter<TestQuery.Data> {
       writer.name("coordinates")
       DoubleResponseAdapter.list().list().nullable().toResponse(writer, responseAdapterCache,
           value.coordinates)
-      writer.endObject()
     }
   }
 }

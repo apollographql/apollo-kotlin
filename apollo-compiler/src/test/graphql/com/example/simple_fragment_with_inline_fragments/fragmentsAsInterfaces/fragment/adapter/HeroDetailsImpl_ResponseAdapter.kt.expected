@@ -72,7 +72,6 @@ object HeroDetailsImpl_ResponseAdapter : ResponseAdapter<HeroDetailsImpl.Data> {
     responseAdapterCache: ResponseAdapterCache,
     value: HeroDetailsImpl.Data
   ) {
-    writer.beginObject()
     writer.name("__typename")
     StringResponseAdapter.toResponse(writer, responseAdapterCache, value.__typename)
     writer.name("name")
@@ -80,7 +79,6 @@ object HeroDetailsImpl_ResponseAdapter : ResponseAdapter<HeroDetailsImpl.Data> {
     writer.name("friends")
     Friends.obj().nullable().list().nullable().toResponse(writer, responseAdapterCache,
         value.friends)
-    writer.endObject()
   }
 
   object Friends : ResponseAdapter<HeroDetailsImpl.Data.Friends> {
@@ -150,14 +148,12 @@ object HeroDetailsImpl_ResponseAdapter : ResponseAdapter<HeroDetailsImpl.Data> {
         responseAdapterCache: ResponseAdapterCache,
         value: HeroDetailsImpl.Data.Friends.HumanFriends
       ) {
-        writer.beginObject()
         writer.name("__typename")
         StringResponseAdapter.toResponse(writer, responseAdapterCache, value.__typename)
         writer.name("name")
         StringResponseAdapter.toResponse(writer, responseAdapterCache, value.name)
         writer.name("height")
         NullableDoubleResponseAdapter.toResponse(writer, responseAdapterCache, value.height)
-        writer.endObject()
       }
     }
 
@@ -205,7 +201,6 @@ object HeroDetailsImpl_ResponseAdapter : ResponseAdapter<HeroDetailsImpl.Data> {
         responseAdapterCache: ResponseAdapterCache,
         value: HeroDetailsImpl.Data.Friends.DroidFriends
       ) {
-        writer.beginObject()
         writer.name("__typename")
         StringResponseAdapter.toResponse(writer, responseAdapterCache, value.__typename)
         writer.name("name")
@@ -213,7 +208,6 @@ object HeroDetailsImpl_ResponseAdapter : ResponseAdapter<HeroDetailsImpl.Data> {
         writer.name("primaryFunction")
         NullableStringResponseAdapter.toResponse(writer, responseAdapterCache,
             value.primaryFunction)
-        writer.endObject()
       }
     }
 
@@ -253,12 +247,10 @@ object HeroDetailsImpl_ResponseAdapter : ResponseAdapter<HeroDetailsImpl.Data> {
         responseAdapterCache: ResponseAdapterCache,
         value: HeroDetailsImpl.Data.Friends.OtherFriends
       ) {
-        writer.beginObject()
         writer.name("__typename")
         StringResponseAdapter.toResponse(writer, responseAdapterCache, value.__typename)
         writer.name("name")
         StringResponseAdapter.toResponse(writer, responseAdapterCache, value.name)
-        writer.endObject()
       }
     }
   }

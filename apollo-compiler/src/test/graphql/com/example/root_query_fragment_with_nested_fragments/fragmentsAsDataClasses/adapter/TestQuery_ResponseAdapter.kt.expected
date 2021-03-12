@@ -57,11 +57,9 @@ object TestQuery_ResponseAdapter : ResponseAdapter<TestQuery.Data> {
     responseAdapterCache: ResponseAdapterCache,
     value: TestQuery.Data
   ) {
-    writer.beginObject()
     writer.name("__typename")
     StringResponseAdapter.toResponse(writer, responseAdapterCache, value.__typename)
     if (value.queryFragment != null)
         QueryFragment_ResponseAdapter.toResponse(writer, responseAdapterCache, value.queryFragment)
-    writer.endObject()
   }
 }

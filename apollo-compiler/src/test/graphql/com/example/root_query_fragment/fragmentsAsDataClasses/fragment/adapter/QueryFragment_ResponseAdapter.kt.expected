@@ -58,12 +58,10 @@ object QueryFragment_ResponseAdapter : ResponseAdapter<QueryFragment.Data> {
     responseAdapterCache: ResponseAdapterCache,
     value: QueryFragment.Data
   ) {
-    writer.beginObject()
     writer.name("__typename")
     StringResponseAdapter.toResponse(writer, responseAdapterCache, value.__typename)
     writer.name("hero")
     Hero.obj().nullable().toResponse(writer, responseAdapterCache, value.hero)
-    writer.endObject()
   }
 
   object Hero : ResponseAdapter<QueryFragment.Data.Hero> {
@@ -95,10 +93,8 @@ object QueryFragment_ResponseAdapter : ResponseAdapter<QueryFragment.Data> {
       responseAdapterCache: ResponseAdapterCache,
       value: QueryFragment.Data.Hero
     ) {
-      writer.beginObject()
       writer.name("name")
       StringResponseAdapter.toResponse(writer, responseAdapterCache, value.name)
-      writer.endObject()
     }
   }
 }

@@ -56,10 +56,8 @@ object GetPage_ResponseAdapter : ResponseAdapter<GetPage.Data> {
     responseAdapterCache: ResponseAdapterCache,
     value: GetPage.Data
   ) {
-    writer.beginObject()
     writer.name("collection")
     Collection.obj(true).toResponse(writer, responseAdapterCache, value.collection)
-    writer.endObject()
   }
 
   object Collection : ResponseAdapter<GetPage.Data.Collection> {
@@ -107,7 +105,6 @@ object GetPage_ResponseAdapter : ResponseAdapter<GetPage.Data> {
       responseAdapterCache: ResponseAdapterCache,
       value: GetPage.Data.Collection
     ) {
-      writer.beginObject()
       writer.name("__typename")
       StringResponseAdapter.toResponse(writer, responseAdapterCache, value.__typename)
 
@@ -115,7 +112,6 @@ object GetPage_ResponseAdapter : ResponseAdapter<GetPage.Data> {
       Items.obj().list().toResponse(writer, responseAdapterCache, value.items)
       if (value.asAsParticularCollection != null)
           AsParticularCollection.toResponse(writer, responseAdapterCache, value.asAsParticularCollection)
-      writer.endObject()
     }
 
     object Items : ResponseAdapter<GetPage.Data.Collection.Items> {
@@ -147,10 +143,8 @@ object GetPage_ResponseAdapter : ResponseAdapter<GetPage.Data> {
         responseAdapterCache: ResponseAdapterCache,
         value: GetPage.Data.Collection.Items
       ) {
-        writer.beginObject()
         writer.name("title")
         StringResponseAdapter.toResponse(writer, responseAdapterCache, value.title)
-        writer.endObject()
       }
     }
 
@@ -192,12 +186,10 @@ object GetPage_ResponseAdapter : ResponseAdapter<GetPage.Data> {
         responseAdapterCache: ResponseAdapterCache,
         value: GetPage.Data.Collection.AsParticularCollection
       ) {
-        writer.beginObject()
         writer.name("__typename")
         StringResponseAdapter.toResponse(writer, responseAdapterCache, value.__typename)
         writer.name("items")
         Items.obj(true).list().toResponse(writer, responseAdapterCache, value.items)
-        writer.endObject()
       }
 
       object Items : ResponseAdapter<GetPage.Data.Collection.AsParticularCollection.Items> {
@@ -241,7 +233,6 @@ object GetPage_ResponseAdapter : ResponseAdapter<GetPage.Data> {
           responseAdapterCache: ResponseAdapterCache,
           value: GetPage.Data.Collection.AsParticularCollection.Items
         ) {
-          writer.beginObject()
           writer.name("title")
           StringResponseAdapter.toResponse(writer, responseAdapterCache, value.title)
 
@@ -249,7 +240,6 @@ object GetPage_ResponseAdapter : ResponseAdapter<GetPage.Data> {
           StringResponseAdapter.toResponse(writer, responseAdapterCache, value.__typename)
           if (value.asAsParticularItem != null)
               AsParticularItem.toResponse(writer, responseAdapterCache, value.asAsParticularItem)
-          writer.endObject()
         }
 
         object AsParticularItem :
@@ -293,14 +283,12 @@ object GetPage_ResponseAdapter : ResponseAdapter<GetPage.Data> {
             responseAdapterCache: ResponseAdapterCache,
             value: GetPage.Data.Collection.AsParticularCollection.Items.AsParticularItem
           ) {
-            writer.beginObject()
             writer.name("__typename")
             StringResponseAdapter.toResponse(writer, responseAdapterCache, value.__typename)
             writer.name("image")
             StringResponseAdapter.toResponse(writer, responseAdapterCache, value.image)
             writer.name("title")
             StringResponseAdapter.toResponse(writer, responseAdapterCache, value.title)
-            writer.endObject()
           }
         }
       }

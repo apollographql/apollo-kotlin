@@ -640,7 +640,7 @@ internal class AstBuilder private constructor(
         arguments = this.args.associate { argument -> argument.name to argument.value },
         conditions = this.condition.toAst().toSet(),
         override = generateFragmentsAsInterfaces && this.selectionKeys.any { key -> key != selectionKey },
-        requiresBufferedReader = !generateFragmentsAsInterfaces && this.fragments.isNotEmpty()
+        requiresBuffering = !generateFragmentsAsInterfaces && this.fragments.isNotEmpty()
     )
   }
 

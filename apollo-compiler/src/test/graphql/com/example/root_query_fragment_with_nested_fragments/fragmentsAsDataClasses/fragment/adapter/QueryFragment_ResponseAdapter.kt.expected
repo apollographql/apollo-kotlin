@@ -87,7 +87,6 @@ object QueryFragment_ResponseAdapter : ResponseAdapter<QueryFragment.Data> {
     responseAdapterCache: ResponseAdapterCache,
     value: QueryFragment.Data
   ) {
-    writer.beginObject()
     writer.name("__typename")
     StringResponseAdapter.toResponse(writer, responseAdapterCache, value.__typename)
     writer.name("hero")
@@ -96,7 +95,6 @@ object QueryFragment_ResponseAdapter : ResponseAdapter<QueryFragment.Data> {
     Droid.obj(true).nullable().toResponse(writer, responseAdapterCache, value.droid)
     writer.name("human")
     Human.obj(true).nullable().toResponse(writer, responseAdapterCache, value.human)
-    writer.endObject()
   }
 
   object Hero : ResponseAdapter<QueryFragment.Data.Hero> {
@@ -133,12 +131,10 @@ object QueryFragment_ResponseAdapter : ResponseAdapter<QueryFragment.Data> {
       responseAdapterCache: ResponseAdapterCache,
       value: QueryFragment.Data.Hero
     ) {
-      writer.beginObject()
       writer.name("__typename")
       StringResponseAdapter.toResponse(writer, responseAdapterCache, value.__typename)
       if (value.heroFragment != null)
           HeroFragment_ResponseAdapter.toResponse(writer, responseAdapterCache, value.heroFragment)
-      writer.endObject()
     }
   }
 
@@ -176,12 +172,10 @@ object QueryFragment_ResponseAdapter : ResponseAdapter<QueryFragment.Data> {
       responseAdapterCache: ResponseAdapterCache,
       value: QueryFragment.Data.Droid
     ) {
-      writer.beginObject()
       writer.name("__typename")
       StringResponseAdapter.toResponse(writer, responseAdapterCache, value.__typename)
       if (value.droidFragment != null)
           DroidFragment_ResponseAdapter.toResponse(writer, responseAdapterCache, value.droidFragment)
-      writer.endObject()
     }
   }
 
@@ -264,14 +258,17 @@ object QueryFragment_ResponseAdapter : ResponseAdapter<QueryFragment.Data> {
       responseAdapterCache: ResponseAdapterCache,
       value: QueryFragment.Data.Human
     ) {
-      writer.beginObject()
       writer.name("__typename")
       StringResponseAdapter.toResponse(writer, responseAdapterCache, value.__typename)
+<<<<<<< HEAD
       writer.name("name")
       StringResponseAdapter.toResponse(writer, responseAdapterCache, value.name)
       writer.name("homePlanet")
       NullableStringResponseAdapter.toResponse(writer, responseAdapterCache, value.homePlanet)
       writer.endObject()
+=======
+      if (value.asAsHuman != null) AsHuman.toResponse(writer, responseAdapterCache, value.asAsHuman)
+>>>>>>> 3b08746b2... add ObjectResponseAdapter
     }
 <<<<<<< HEAD
 =======
@@ -317,14 +314,12 @@ object QueryFragment_ResponseAdapter : ResponseAdapter<QueryFragment.Data> {
         responseAdapterCache: ResponseAdapterCache,
         value: QueryFragment.Data.Human.AsHuman
       ) {
-        writer.beginObject()
         writer.name("__typename")
         StringResponseAdapter.toResponse(writer, responseAdapterCache, value.__typename)
         writer.name("name")
         StringResponseAdapter.toResponse(writer, responseAdapterCache, value.name)
         writer.name("homePlanet")
         NullableStringResponseAdapter.toResponse(writer, responseAdapterCache, value.homePlanet)
-        writer.endObject()
       }
     }
 >>>>>>> ab5258fe0... all compiler tests pass

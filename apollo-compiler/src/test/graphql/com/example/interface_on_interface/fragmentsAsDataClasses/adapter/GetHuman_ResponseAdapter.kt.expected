@@ -66,12 +66,10 @@ object GetHuman_ResponseAdapter : ResponseAdapter<GetHuman.Data> {
     responseAdapterCache: ResponseAdapterCache,
     value: GetHuman.Data
   ) {
-    writer.beginObject()
     writer.name("human")
     Human.obj().toResponse(writer, responseAdapterCache, value.human)
     writer.name("node")
     Node.obj(true).toResponse(writer, responseAdapterCache, value.node)
-    writer.endObject()
   }
 
   object Human : ResponseAdapter<GetHuman.Data.Human> {
@@ -117,14 +115,12 @@ object GetHuman_ResponseAdapter : ResponseAdapter<GetHuman.Data> {
       responseAdapterCache: ResponseAdapterCache,
       value: GetHuman.Data.Human
     ) {
-      writer.beginObject()
       writer.name("id")
       StringResponseAdapter.toResponse(writer, responseAdapterCache, value.id)
       writer.name("name")
       StringResponseAdapter.toResponse(writer, responseAdapterCache, value.name)
       writer.name("height")
       DoubleResponseAdapter.toResponse(writer, responseAdapterCache, value.height)
-      writer.endObject()
     }
   }
 
@@ -162,11 +158,9 @@ object GetHuman_ResponseAdapter : ResponseAdapter<GetHuman.Data> {
       responseAdapterCache: ResponseAdapterCache,
       value: GetHuman.Data.Node
     ) {
-      writer.beginObject()
       writer.name("__typename")
       StringResponseAdapter.toResponse(writer, responseAdapterCache, value.__typename)
       if (value.asAsHuman != null) AsHuman.toResponse(writer, responseAdapterCache, value.asAsHuman)
-      writer.endObject()
     }
 
     object AsHuman : ResponseAdapter<GetHuman.Data.Node.AsHuman> {
@@ -202,12 +196,10 @@ object GetHuman_ResponseAdapter : ResponseAdapter<GetHuman.Data> {
         responseAdapterCache: ResponseAdapterCache,
         value: GetHuman.Data.Node.AsHuman
       ) {
-        writer.beginObject()
         writer.name("__typename")
         StringResponseAdapter.toResponse(writer, responseAdapterCache, value.__typename)
         writer.name("height")
         DoubleResponseAdapter.toResponse(writer, responseAdapterCache, value.height)
-        writer.endObject()
       }
     }
   }

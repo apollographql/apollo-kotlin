@@ -27,7 +27,6 @@ object ColorInput_InputAdapter : ResponseAdapter<ColorInput> {
     responseAdapterCache: ResponseAdapterCache,
     value: ColorInput
   ) {
-    writer.beginObject()
     if (value.red is Input.Present) {
       writer.name("red")
       IntResponseAdapter.toResponse(writer, responseAdapterCache, value.red.value)
@@ -50,6 +49,5 @@ object ColorInput_InputAdapter : ResponseAdapter<ColorInput> {
       ReviewRefInput_InputAdapter.obj().nullable().toResponse(writer, responseAdapterCache,
           value.reviewRefInput.value)
     }
-    writer.endObject()
   }
 }

@@ -24,13 +24,11 @@ object QueryFragment_VariablesAdapter : ResponseAdapter<QueryFragment> {
     responseAdapterCache: ResponseAdapterCache,
     value: QueryFragment
   ) {
-    writer.beginObject()
     writer.name("organizationId")
     StringResponseAdapter.toResponse(writer, responseAdapterCache, value.organizationId)
     writer.name("query")
     UserQuery_InputAdapter.obj().toResponse(writer, responseAdapterCache, value.query)
     writer.name("size")
     IntResponseAdapter.toResponse(writer, responseAdapterCache, value.size)
-    writer.endObject()
   }
 }

@@ -21,11 +21,9 @@ object TestQuery_VariablesAdapter : ResponseAdapter<TestQuery> {
     responseAdapterCache: ResponseAdapterCache,
     value: TestQuery
   ) {
-    writer.beginObject()
     writer.name("includeName")
     BooleanResponseAdapter.toResponse(writer, responseAdapterCache, value.includeName)
     writer.name("skipFriends")
     BooleanResponseAdapter.toResponse(writer, responseAdapterCache, value.skipFriends)
-    writer.endObject()
   }
 }

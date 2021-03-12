@@ -86,7 +86,6 @@ object QueryFragmentImpl_ResponseAdapter : ResponseAdapter<QueryFragmentImpl.Dat
     responseAdapterCache: ResponseAdapterCache,
     value: QueryFragmentImpl.Data
   ) {
-    writer.beginObject()
     writer.name("__typename")
     StringResponseAdapter.toResponse(writer, responseAdapterCache, value.__typename)
     writer.name("hero")
@@ -95,7 +94,6 @@ object QueryFragmentImpl_ResponseAdapter : ResponseAdapter<QueryFragmentImpl.Dat
     Droid.obj().nullable().toResponse(writer, responseAdapterCache, value.droid)
     writer.name("human")
     Human.obj().nullable().toResponse(writer, responseAdapterCache, value.human)
-    writer.endObject()
   }
 
   object Hero : ResponseAdapter<QueryFragmentImpl.Data.Hero> {
@@ -157,12 +155,10 @@ object QueryFragmentImpl_ResponseAdapter : ResponseAdapter<QueryFragmentImpl.Dat
         responseAdapterCache: ResponseAdapterCache,
         value: QueryFragmentImpl.Data.Hero.CharacterHero
       ) {
-        writer.beginObject()
         writer.name("__typename")
         StringResponseAdapter.toResponse(writer, responseAdapterCache, value.__typename)
         writer.name("name")
         StringResponseAdapter.toResponse(writer, responseAdapterCache, value.name)
-        writer.endObject()
       }
     }
 
@@ -195,10 +191,8 @@ object QueryFragmentImpl_ResponseAdapter : ResponseAdapter<QueryFragmentImpl.Dat
         responseAdapterCache: ResponseAdapterCache,
         value: QueryFragmentImpl.Data.Hero.OtherHero
       ) {
-        writer.beginObject()
         writer.name("__typename")
         StringResponseAdapter.toResponse(writer, responseAdapterCache, value.__typename)
-        writer.endObject()
       }
     }
   }
@@ -269,7 +263,6 @@ object QueryFragmentImpl_ResponseAdapter : ResponseAdapter<QueryFragmentImpl.Dat
         responseAdapterCache: ResponseAdapterCache,
         value: QueryFragmentImpl.Data.Droid.DroidDroid
       ) {
-        writer.beginObject()
         writer.name("__typename")
         StringResponseAdapter.toResponse(writer, responseAdapterCache, value.__typename)
         writer.name("name")
@@ -277,7 +270,6 @@ object QueryFragmentImpl_ResponseAdapter : ResponseAdapter<QueryFragmentImpl.Dat
         writer.name("primaryFunction")
         NullableStringResponseAdapter.toResponse(writer, responseAdapterCache,
             value.primaryFunction)
-        writer.endObject()
       }
     }
 
@@ -310,10 +302,8 @@ object QueryFragmentImpl_ResponseAdapter : ResponseAdapter<QueryFragmentImpl.Dat
         responseAdapterCache: ResponseAdapterCache,
         value: QueryFragmentImpl.Data.Droid.OtherDroid
       ) {
-        writer.beginObject()
         writer.name("__typename")
         StringResponseAdapter.toResponse(writer, responseAdapterCache, value.__typename)
-        writer.endObject()
       }
     }
   }
@@ -440,14 +430,12 @@ object QueryFragmentImpl_ResponseAdapter : ResponseAdapter<QueryFragmentImpl.Dat
         responseAdapterCache: ResponseAdapterCache,
         value: QueryFragmentImpl.Data.Human.HumanHuman
       ) {
-        writer.beginObject()
         writer.name("__typename")
         StringResponseAdapter.toResponse(writer, responseAdapterCache, value.__typename)
         writer.name("name")
         StringResponseAdapter.toResponse(writer, responseAdapterCache, value.name)
         writer.name("homePlanet")
         NullableStringResponseAdapter.toResponse(writer, responseAdapterCache, value.homePlanet)
-        writer.endObject()
       }
     }
 
@@ -480,10 +468,8 @@ object QueryFragmentImpl_ResponseAdapter : ResponseAdapter<QueryFragmentImpl.Dat
         responseAdapterCache: ResponseAdapterCache,
         value: QueryFragmentImpl.Data.Human.OtherHuman
       ) {
-        writer.beginObject()
         writer.name("__typename")
         StringResponseAdapter.toResponse(writer, responseAdapterCache, value.__typename)
-        writer.endObject()
       }
 >>>>>>> ab5258fe0... all compiler tests pass
     }

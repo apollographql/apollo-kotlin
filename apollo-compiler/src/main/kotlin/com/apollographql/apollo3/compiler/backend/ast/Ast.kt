@@ -89,7 +89,7 @@ internal data class CodeGenerationAst(
   }
 
   /**
-   * @param requiresBufferedReader: true if this field can take multiple forms and should
+   * @param requiresBuffering: true if this field can take multiple forms and should
    * therefore be buffered
    */
   data class Field(
@@ -102,7 +102,7 @@ internal data class CodeGenerationAst(
       val arguments: Map<String, Any?>,
       val conditions: Set<Condition>,
       val override: Boolean,
-      val requiresBufferedReader: Boolean
+      val requiresBuffering: Boolean
   ) {
     sealed class Condition {
       data class Directive(val variableName: String, val inverted: Boolean) : Condition()
@@ -281,7 +281,7 @@ internal data class CodeGenerationAst(
         arguments = emptyMap(),
         conditions = emptySet(),
         override = false,
-        requiresBufferedReader = false
+        requiresBuffering = false
     )
   }
 }

@@ -20,7 +20,5 @@ object AllStarships_VariablesAdapter : ResponseAdapter<AllStarships> {
     responseAdapterCache: ResponseAdapterCache,
     value: AllStarships
   ) {
-    writer.beginObject()
-    writer.endObject()
   }
 }

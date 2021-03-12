@@ -11,6 +11,7 @@ import com.apollographql.apollo3.api.ResponseAdapter
 import com.apollographql.apollo3.api.ResponseAdapterCache
 import com.apollographql.apollo3.api.ResponseField
 import com.apollographql.apollo3.api.json.JsonWriter
+import com.apollographql.apollo3.api.obj
 import com.example.hero_details.adapter.HeroDetails_ResponseAdapter
 import com.example.hero_details.adapter.HeroDetails_VariablesAdapter
 import com.example.hero_details.type.Hero_type
@@ -28,12 +29,15 @@ class HeroDetails : Query<HeroDetails.Data> {
   override fun queryDocument(): String = QUERY_DOCUMENT
 
   override fun serializeVariables(writer: JsonWriter, responseAdapterCache: ResponseAdapterCache) {
-    HeroDetails_VariablesAdapter.toResponse(writer, responseAdapterCache, this)
+    HeroDetails_VariablesAdapter.obj().toResponse(writer, responseAdapterCache, this)
   }
 
   override fun name(): String = OPERATION_NAME
 
-  override fun adapter(): ResponseAdapter<Data> = HeroDetails_ResponseAdapter
+  override fun adapter(): ResponseAdapter<Data> {
+    return HeroDetails_ResponseAdapter.obj()
+  }
+
   override fun responseFields(): List<ResponseField.FieldSet> = listOf(
     ResponseField.FieldSet(null, HeroDetails_ResponseAdapter.RESPONSE_FIELDS)
   )

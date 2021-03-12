@@ -53,11 +53,9 @@ object StarshipImpl_ResponseAdapter : ResponseAdapter<StarshipImpl.Data> {
     responseAdapterCache: ResponseAdapterCache,
     value: StarshipImpl.Data
   ) {
-    writer.beginObject()
     writer.name("__typename")
     StringResponseAdapter.toResponse(writer, responseAdapterCache, value.__typename)
     writer.name("name")
     StringResponseAdapter.toResponse(writer, responseAdapterCache, value.name)
-    writer.endObject()
   }
 }

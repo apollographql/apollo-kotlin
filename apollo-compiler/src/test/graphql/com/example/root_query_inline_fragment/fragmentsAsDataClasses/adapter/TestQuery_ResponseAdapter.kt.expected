@@ -120,14 +120,17 @@ object TestQuery_ResponseAdapter : ResponseAdapter<TestQuery.Data> {
     responseAdapterCache: ResponseAdapterCache,
     value: TestQuery.Data
   ) {
-    writer.beginObject()
     writer.name("__typename")
     StringResponseAdapter.toResponse(writer, responseAdapterCache, value.__typename)
+<<<<<<< HEAD
     writer.name("hero")
     Hero.nullable().toResponse(writer, responseAdapterCache, value.hero)
     writer.name("droid")
     Droid.nullable().toResponse(writer, responseAdapterCache, value.droid)
     writer.endObject()
+=======
+    if (value.asAsQuery != null) AsQuery.toResponse(writer, responseAdapterCache, value.asAsQuery)
+>>>>>>> 3b08746b2... add ObjectResponseAdapter
   }
 
 <<<<<<< HEAD
@@ -199,7 +202,6 @@ object TestQuery_ResponseAdapter : ResponseAdapter<TestQuery.Data> {
       responseAdapterCache: ResponseAdapterCache,
       value: TestQuery.Data.Hero
     ) {
-      writer.beginObject()
       writer.name("__typename")
       StringResponseAdapter.toResponse(writer, responseAdapterCache, value.__typename)
 <<<<<<< HEAD
@@ -216,8 +218,11 @@ object TestQuery_ResponseAdapter : ResponseAdapter<TestQuery.Data> {
       Hero.obj(true).nullable().toResponse(writer, responseAdapterCache, value.hero)
       writer.name("droid")
       Droid.obj(true).nullable().toResponse(writer, responseAdapterCache, value.droid)
+<<<<<<< HEAD
 >>>>>>> 528df6e0d... wip
       writer.endObject()
+=======
+>>>>>>> 3b08746b2... add ObjectResponseAdapter
     }
 
     object AsHuman {
@@ -298,7 +303,6 @@ object TestQuery_ResponseAdapter : ResponseAdapter<TestQuery.Data> {
         responseAdapterCache: ResponseAdapterCache,
         value: TestQuery.Data.Hero.AsHuman
       ) {
-        writer.beginObject()
         writer.name("__typename")
         StringResponseAdapter.toResponse(writer, responseAdapterCache, value.__typename)
         writer.name("name")
@@ -306,9 +310,14 @@ object TestQuery_ResponseAdapter : ResponseAdapter<TestQuery.Data> {
         writer.name("appearsIn")
         Episode_ResponseAdapter.nullable().list().toResponse(writer, responseAdapterCache,
             value.appearsIn)
+<<<<<<< HEAD
         writer.name("height")
         NullableDoubleResponseAdapter.toResponse(writer, responseAdapterCache, value.height)
         writer.endObject()
+=======
+        if (value.asAsHuman != null)
+            AsHuman.toResponse(writer, responseAdapterCache, value.asAsHuman)
+>>>>>>> 3b08746b2... add ObjectResponseAdapter
       }
 <<<<<<< HEAD
 =======
@@ -362,7 +371,6 @@ object TestQuery_ResponseAdapter : ResponseAdapter<TestQuery.Data> {
           responseAdapterCache: ResponseAdapterCache,
           value: TestQuery.Data.AsQuery.Hero.AsHuman
         ) {
-          writer.beginObject()
           writer.name("__typename")
           StringResponseAdapter.toResponse(writer, responseAdapterCache, value.__typename)
           writer.name("name")
@@ -372,7 +380,6 @@ object TestQuery_ResponseAdapter : ResponseAdapter<TestQuery.Data> {
               value.appearsIn)
           writer.name("height")
           NullableDoubleResponseAdapter.toResponse(writer, responseAdapterCache, value.height)
-          writer.endObject()
         }
       }
 >>>>>>> ab5258fe0... all compiler tests pass
@@ -439,13 +446,15 @@ object TestQuery_ResponseAdapter : ResponseAdapter<TestQuery.Data> {
         responseAdapterCache: ResponseAdapterCache,
         value: TestQuery.Data.AsQuery.Droid
       ) {
-        writer.beginObject()
         writer.name("__typename")
         StringResponseAdapter.toResponse(writer, responseAdapterCache, value.__typename)
         if (value.asAsDroid != null)
             AsDroid.toResponse(writer, responseAdapterCache, value.asAsDroid)
+<<<<<<< HEAD
         writer.endObject()
 >>>>>>> ab5258fe0... all compiler tests pass
+=======
+>>>>>>> 3b08746b2... add ObjectResponseAdapter
       }
       reader.endObject()
       return TestQuery.Data.Droid(
@@ -511,7 +520,6 @@ object TestQuery_ResponseAdapter : ResponseAdapter<TestQuery.Data> {
           responseAdapterCache: ResponseAdapterCache,
           value: TestQuery.Data.AsQuery.Droid.AsDroid
         ) {
-          writer.beginObject()
           writer.name("__typename")
           StringResponseAdapter.toResponse(writer, responseAdapterCache, value.__typename)
           writer.name("name")
@@ -519,7 +527,6 @@ object TestQuery_ResponseAdapter : ResponseAdapter<TestQuery.Data> {
           writer.name("primaryFunction")
           NullableStringResponseAdapter.toResponse(writer, responseAdapterCache,
               value.primaryFunction)
-          writer.endObject()
         }
       }
 >>>>>>> ab5258fe0... all compiler tests pass

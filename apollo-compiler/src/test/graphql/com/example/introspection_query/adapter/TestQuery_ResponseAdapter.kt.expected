@@ -66,12 +66,10 @@ object TestQuery_ResponseAdapter : ResponseAdapter<TestQuery.Data> {
     responseAdapterCache: ResponseAdapterCache,
     value: TestQuery.Data
   ) {
-    writer.beginObject()
     writer.name("__schema")
     __Schema.obj().toResponse(writer, responseAdapterCache, value.__schema)
     writer.name("__type")
     __Type.obj().toResponse(writer, responseAdapterCache, value.__type)
-    writer.endObject()
   }
 
   object __Schema : ResponseAdapter<TestQuery.Data.__Schema> {
@@ -117,12 +115,10 @@ object TestQuery_ResponseAdapter : ResponseAdapter<TestQuery.Data> {
       responseAdapterCache: ResponseAdapterCache,
       value: TestQuery.Data.__Schema
     ) {
-      writer.beginObject()
       writer.name("queryType")
       QueryType.obj().toResponse(writer, responseAdapterCache, value.queryType)
       writer.name("types")
       Types.obj().list().toResponse(writer, responseAdapterCache, value.types)
-      writer.endObject()
     }
 
     object QueryType : ResponseAdapter<TestQuery.Data.__Schema.QueryType> {
@@ -154,10 +150,8 @@ object TestQuery_ResponseAdapter : ResponseAdapter<TestQuery.Data> {
         responseAdapterCache: ResponseAdapterCache,
         value: TestQuery.Data.__Schema.QueryType
       ) {
-        writer.beginObject()
         writer.name("name")
         NullableStringResponseAdapter.toResponse(writer, responseAdapterCache, value.name)
-        writer.endObject()
       }
     }
 
@@ -190,10 +184,8 @@ object TestQuery_ResponseAdapter : ResponseAdapter<TestQuery.Data> {
         responseAdapterCache: ResponseAdapterCache,
         value: TestQuery.Data.__Schema.Types
       ) {
-        writer.beginObject()
         writer.name("name")
         NullableStringResponseAdapter.toResponse(writer, responseAdapterCache, value.name)
-        writer.endObject()
       }
     }
   }
@@ -227,10 +219,8 @@ object TestQuery_ResponseAdapter : ResponseAdapter<TestQuery.Data> {
       responseAdapterCache: ResponseAdapterCache,
       value: TestQuery.Data.__Type
     ) {
-      writer.beginObject()
       writer.name("name")
       NullableStringResponseAdapter.toResponse(writer, responseAdapterCache, value.name)
-      writer.endObject()
     }
   }
 }

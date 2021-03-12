@@ -24,13 +24,11 @@ object GetUser_VariablesAdapter : ResponseAdapter<GetUser> {
     responseAdapterCache: ResponseAdapterCache,
     value: GetUser
   ) {
-    writer.beginObject()
     writer.name("organizationId")
     StringResponseAdapter.toResponse(writer, responseAdapterCache, value.organizationId)
     writer.name("query")
     UserQuery_InputAdapter.obj().toResponse(writer, responseAdapterCache, value.query)
     writer.name("size")
     IntResponseAdapter.toResponse(writer, responseAdapterCache, value.size)
-    writer.endObject()
   }
 }

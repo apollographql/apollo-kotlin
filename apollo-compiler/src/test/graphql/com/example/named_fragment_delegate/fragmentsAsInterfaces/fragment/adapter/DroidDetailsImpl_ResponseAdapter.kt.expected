@@ -76,7 +76,6 @@ object DroidDetailsImpl_ResponseAdapter : ResponseAdapter<DroidDetailsImpl.Data>
     responseAdapterCache: ResponseAdapterCache,
     value: DroidDetailsImpl.Data
   ) {
-    writer.beginObject()
     writer.name("__typename")
     StringResponseAdapter.toResponse(writer, responseAdapterCache, value.__typename)
     writer.name("name")
@@ -86,7 +85,6 @@ object DroidDetailsImpl_ResponseAdapter : ResponseAdapter<DroidDetailsImpl.Data>
     writer.name("friends")
     Friends.obj().nullable().list().nullable().toResponse(writer, responseAdapterCache,
         value.friends)
-    writer.endObject()
   }
 
   object Friends : ResponseAdapter<DroidDetailsImpl.Data.Friends> {
@@ -118,10 +116,8 @@ object DroidDetailsImpl_ResponseAdapter : ResponseAdapter<DroidDetailsImpl.Data>
       responseAdapterCache: ResponseAdapterCache,
       value: DroidDetailsImpl.Data.Friends
     ) {
-      writer.beginObject()
       writer.name("name")
       StringResponseAdapter.toResponse(writer, responseAdapterCache, value.name)
-      writer.endObject()
     }
   }
 }

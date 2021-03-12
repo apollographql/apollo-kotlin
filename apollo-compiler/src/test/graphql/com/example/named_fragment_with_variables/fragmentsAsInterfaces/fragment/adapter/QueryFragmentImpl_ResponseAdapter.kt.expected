@@ -62,12 +62,10 @@ object QueryFragmentImpl_ResponseAdapter : ResponseAdapter<QueryFragmentImpl.Dat
     responseAdapterCache: ResponseAdapterCache,
     value: QueryFragmentImpl.Data
   ) {
-    writer.beginObject()
     writer.name("__typename")
     StringResponseAdapter.toResponse(writer, responseAdapterCache, value.__typename)
     writer.name("organization")
     Organization.obj().nullable().toResponse(writer, responseAdapterCache, value.organization)
-    writer.endObject()
   }
 
   object Organization : ResponseAdapter<QueryFragmentImpl.Data.Organization> {
@@ -113,12 +111,10 @@ object QueryFragmentImpl_ResponseAdapter : ResponseAdapter<QueryFragmentImpl.Dat
       responseAdapterCache: ResponseAdapterCache,
       value: QueryFragmentImpl.Data.Organization
     ) {
-      writer.beginObject()
       writer.name("id")
       StringResponseAdapter.toResponse(writer, responseAdapterCache, value.id)
       writer.name("user")
       User.obj().list().toResponse(writer, responseAdapterCache, value.user)
-      writer.endObject()
     }
 
     object User : ResponseAdapter<QueryFragmentImpl.Data.Organization.User> {
@@ -195,7 +191,6 @@ object QueryFragmentImpl_ResponseAdapter : ResponseAdapter<QueryFragmentImpl.Dat
           responseAdapterCache: ResponseAdapterCache,
           value: QueryFragmentImpl.Data.Organization.User.UserUser
         ) {
-          writer.beginObject()
           writer.name("__typename")
           StringResponseAdapter.toResponse(writer, responseAdapterCache, value.__typename)
           writer.name("firstName")
@@ -204,7 +199,6 @@ object QueryFragmentImpl_ResponseAdapter : ResponseAdapter<QueryFragmentImpl.Dat
           StringResponseAdapter.toResponse(writer, responseAdapterCache, value.lastName)
           writer.name("avatar")
           StringResponseAdapter.toResponse(writer, responseAdapterCache, value.avatar)
-          writer.endObject()
         }
       }
 
@@ -237,10 +231,8 @@ object QueryFragmentImpl_ResponseAdapter : ResponseAdapter<QueryFragmentImpl.Dat
           responseAdapterCache: ResponseAdapterCache,
           value: QueryFragmentImpl.Data.Organization.User.OtherUser
         ) {
-          writer.beginObject()
           writer.name("__typename")
           StringResponseAdapter.toResponse(writer, responseAdapterCache, value.__typename)
-          writer.endObject()
         }
       }
     }

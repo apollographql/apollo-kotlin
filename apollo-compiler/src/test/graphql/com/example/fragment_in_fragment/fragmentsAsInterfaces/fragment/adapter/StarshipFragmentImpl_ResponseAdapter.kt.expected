@@ -75,7 +75,6 @@ object StarshipFragmentImpl_ResponseAdapter : ResponseAdapter<StarshipFragmentIm
     responseAdapterCache: ResponseAdapterCache,
     value: StarshipFragmentImpl.Data
   ) {
-    writer.beginObject()
     writer.name("__typename")
     StringResponseAdapter.toResponse(writer, responseAdapterCache, value.__typename)
     writer.name("id")
@@ -84,7 +83,6 @@ object StarshipFragmentImpl_ResponseAdapter : ResponseAdapter<StarshipFragmentIm
     NullableStringResponseAdapter.toResponse(writer, responseAdapterCache, value.name)
     writer.name("pilotConnection")
     PilotConnection.obj().nullable().toResponse(writer, responseAdapterCache, value.pilotConnection)
-    writer.endObject()
   }
 
   object PilotConnection : ResponseAdapter<StarshipFragmentImpl.Data.PilotConnection> {
@@ -120,10 +118,8 @@ object StarshipFragmentImpl_ResponseAdapter : ResponseAdapter<StarshipFragmentIm
       responseAdapterCache: ResponseAdapterCache,
       value: StarshipFragmentImpl.Data.PilotConnection
     ) {
-      writer.beginObject()
       writer.name("edges")
       Edges.obj().nullable().list().nullable().toResponse(writer, responseAdapterCache, value.edges)
-      writer.endObject()
     }
 
     object Edges : ResponseAdapter<StarshipFragmentImpl.Data.PilotConnection.Edges> {
@@ -159,10 +155,8 @@ object StarshipFragmentImpl_ResponseAdapter : ResponseAdapter<StarshipFragmentIm
         responseAdapterCache: ResponseAdapterCache,
         value: StarshipFragmentImpl.Data.PilotConnection.Edges
       ) {
-        writer.beginObject()
         writer.name("node")
         Node.obj().nullable().toResponse(writer, responseAdapterCache, value.node)
-        writer.endObject()
       }
 
       object Node : ResponseAdapter<StarshipFragmentImpl.Data.PilotConnection.Edges.Node> {
@@ -235,14 +229,12 @@ object StarshipFragmentImpl_ResponseAdapter : ResponseAdapter<StarshipFragmentIm
             responseAdapterCache: ResponseAdapterCache,
             value: StarshipFragmentImpl.Data.PilotConnection.Edges.Node.PersonNode
           ) {
-            writer.beginObject()
             writer.name("__typename")
             StringResponseAdapter.toResponse(writer, responseAdapterCache, value.__typename)
             writer.name("name")
             NullableStringResponseAdapter.toResponse(writer, responseAdapterCache, value.name)
             writer.name("homeworld")
             Homeworld.obj().nullable().toResponse(writer, responseAdapterCache, value.homeworld)
-            writer.endObject()
           }
 
           object Homeworld :
@@ -309,12 +301,10 @@ object StarshipFragmentImpl_ResponseAdapter : ResponseAdapter<StarshipFragmentIm
                 responseAdapterCache: ResponseAdapterCache,
                 value: StarshipFragmentImpl.Data.PilotConnection.Edges.Node.PersonNode.Homeworld.PlanetHomeworld
               ) {
-                writer.beginObject()
                 writer.name("__typename")
                 StringResponseAdapter.toResponse(writer, responseAdapterCache, value.__typename)
                 writer.name("name")
                 NullableStringResponseAdapter.toResponse(writer, responseAdapterCache, value.name)
-                writer.endObject()
               }
             }
 
@@ -349,10 +339,8 @@ object StarshipFragmentImpl_ResponseAdapter : ResponseAdapter<StarshipFragmentIm
                 responseAdapterCache: ResponseAdapterCache,
                 value: StarshipFragmentImpl.Data.PilotConnection.Edges.Node.PersonNode.Homeworld.OtherHomeworld
               ) {
-                writer.beginObject()
                 writer.name("__typename")
                 StringResponseAdapter.toResponse(writer, responseAdapterCache, value.__typename)
-                writer.endObject()
               }
             }
           }
@@ -387,10 +375,8 @@ object StarshipFragmentImpl_ResponseAdapter : ResponseAdapter<StarshipFragmentIm
             responseAdapterCache: ResponseAdapterCache,
             value: StarshipFragmentImpl.Data.PilotConnection.Edges.Node.OtherNode
           ) {
-            writer.beginObject()
             writer.name("__typename")
             StringResponseAdapter.toResponse(writer, responseAdapterCache, value.__typename)
-            writer.endObject()
           }
         }
       }

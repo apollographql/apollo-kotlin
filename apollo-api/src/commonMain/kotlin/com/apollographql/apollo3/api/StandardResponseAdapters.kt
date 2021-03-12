@@ -145,9 +145,25 @@ class ObjectResponseAdapter<T>(
   }
 
   override fun toResponse(writer: JsonWriter, responseAdapterCache: ResponseAdapterCache, value: T) {
-    writer.beginObject()
-    wrappedAdapter.toResponse(writer, responseAdapterCache, value)
-    writer.endObject()
+    if (buffered && writer !is MapJsonWriter) {
+      /**
+       * Convert to a Map first
+       */
+      val mapWriter = MapJsonWriter()
+      mapWriter.beginObject()
+      mapWriter.endObject()
+
+      /**
+       * And write to the original writer
+       */
+      writer.beginObject()
+      AnyResponseAdapter.toResponse(writer, mapWriter.root())
+      writer.endObject()
+    } else {
+      writer.beginObject()
+      wrappedAdapter.toResponse(writer, responseAdapterCache, value)
+      writer.endObject()
+    }
   }
 }
 
