@@ -1,12 +1,10 @@
 package com.apollographql.apollo3.compiler.backend.codegen
 
-import com.apollographql.apollo3.api.ResponseAdapterCache
 import com.apollographql.apollo3.api.Mutation
 import com.apollographql.apollo3.api.Query
+import com.apollographql.apollo3.api.QueryDocumentMinifier
 import com.apollographql.apollo3.api.ResponseField
 import com.apollographql.apollo3.api.Subscription
-import com.apollographql.apollo3.api.QueryDocumentMinifier
-import com.apollographql.apollo3.api.ResponseAdapter
 import com.apollographql.apollo3.compiler.applyIf
 import com.apollographql.apollo3.compiler.backend.ast.CodeGenerationAst
 import com.apollographql.apollo3.compiler.escapeKotlinReservedWord
@@ -14,18 +12,14 @@ import com.squareup.kotlinpoet.ClassName
 import com.squareup.kotlinpoet.CodeBlock
 import com.squareup.kotlinpoet.FunSpec
 import com.squareup.kotlinpoet.KModifier
-import com.squareup.kotlinpoet.MemberName
-import com.squareup.kotlinpoet.ParameterSpec
 import com.squareup.kotlinpoet.ParameterizedTypeName.Companion.parameterizedBy
 import com.squareup.kotlinpoet.PropertySpec
 import com.squareup.kotlinpoet.TypeName
 import com.squareup.kotlinpoet.TypeSpec
 import com.squareup.kotlinpoet.asClassName
-import com.squareup.kotlinpoet.asTypeName
 
 internal fun CodeGenerationAst.OperationType.typeSpec(
     targetPackage: String,
-    generateAsInternal: Boolean,
     generateFragmentsAsInterfaces: Boolean,
 ): TypeSpec {
   val operationResponseAdapter = CodeGenerationAst.TypeRef(
@@ -38,7 +32,6 @@ internal fun CodeGenerationAst.OperationType.typeSpec(
       .classBuilder(kotlinNameForOperation(name))
       .addAnnotation(suppressWarningsAnnotation)
       .addSuperinterface(superInterfaceType(targetPackage))
-      .applyIf(generateAsInternal) { addModifiers(KModifier.INTERNAL) }
       .applyIf(description.isNotBlank()) { addKdoc("%L", description) }
       .makeDataClass(variables.map { it.toParameterSpec() })
       .addFunction(FunSpec.builder("operationId")

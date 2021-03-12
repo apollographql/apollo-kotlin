@@ -1,30 +1,23 @@
 package com.apollographql.apollo3.compiler.backend.codegen
 
-import com.apollographql.apollo3.api.ResponseAdapterCache
 import com.apollographql.apollo3.api.Fragment
 import com.apollographql.apollo3.api.ResponseField
-import com.apollographql.apollo3.api.ResponseAdapter
 import com.apollographql.apollo3.compiler.applyIf
 import com.apollographql.apollo3.compiler.backend.ast.CodeGenerationAst
 import com.apollographql.apollo3.compiler.escapeKotlinReservedWord
-import com.squareup.kotlinpoet.ClassName
 import com.squareup.kotlinpoet.CodeBlock
 import com.squareup.kotlinpoet.FunSpec
 import com.squareup.kotlinpoet.KModifier
-import com.squareup.kotlinpoet.ParameterSpec
 import com.squareup.kotlinpoet.ParameterizedTypeName.Companion.parameterizedBy
 import com.squareup.kotlinpoet.PropertySpec
-import com.squareup.kotlinpoet.TypeName
 import com.squareup.kotlinpoet.TypeSpec
 import com.squareup.kotlinpoet.asClassName
-import com.squareup.kotlinpoet.asTypeName
 import kotlin.reflect.KClass
 
-internal fun CodeGenerationAst.FragmentType.interfaceTypeSpec(generateAsInternal: Boolean): TypeSpec {
+internal fun CodeGenerationAst.FragmentType.interfaceTypeSpec(): TypeSpec {
   return TypeSpec
       .interfaceBuilder((this.interfaceType.name).escapeKotlinReservedWord())
       .addAnnotation(suppressWarningsAnnotation)
-      .applyIf(generateAsInternal) { addModifiers(KModifier.INTERNAL) }
       .applyIf(this.description.isNotBlank()) { addKdoc("%L\n", this@interfaceTypeSpec.description) }
       .addProperties(
           this.interfaceType.fields
@@ -63,7 +56,6 @@ internal fun CodeGenerationAst.FragmentType.interfaceTypeSpec(generateAsInternal
 }
 
 internal fun CodeGenerationAst.FragmentType.implementationTypeSpec(
-    generateAsInternal: Boolean,
     generateFragmentsAsInterfaces: Boolean,
 ): TypeSpec {
   val dataTypeName = this.implementationType.nestedObjects.single().typeRef.asTypeName()
@@ -75,7 +67,6 @@ internal fun CodeGenerationAst.FragmentType.implementationTypeSpec(
         typeSpecs[0] = dataTypeSpec
       }
       .addSuperinterface(Fragment::class.java.asClassName().parameterizedBy(dataTypeName))
-      .applyIf(generateAsInternal) { addModifiers(KModifier.INTERNAL) }
       .makeDataClass(variables.map { it.toParameterSpec() })
       .apply {
         val buffered = implementationType.kind is CodeGenerationAst.ObjectType.Kind.ObjectWithFragments && !generateFragmentsAsInterfaces
