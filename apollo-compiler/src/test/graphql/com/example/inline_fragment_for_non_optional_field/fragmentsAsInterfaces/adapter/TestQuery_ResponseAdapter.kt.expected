@@ -40,18 +40,18 @@ object TestQuery_ResponseAdapter : ResponseAdapter<TestQuery.Data> {
 
   override fun fromResponse(reader: JsonReader, responseAdapterCache: ResponseAdapterCache):
       TestQuery.Data {
-    var nonOptionalHero: TestQuery.Data.NonOptionalHero? = null
     reader.beginObject()
+    var nonOptionalHero: TestQuery.Data.NonOptionalHero? = null
     while(true) {
       when (reader.selectName(RESPONSE_NAMES)) {
         0 -> nonOptionalHero = NonOptionalHero.fromResponse(reader, responseAdapterCache)
         else -> break
       }
     }
-    reader.endObject()
     return TestQuery.Data(
       nonOptionalHero = nonOptionalHero!!
     )
+    reader.endObject()
   }
 
   override fun toResponse(
@@ -70,12 +70,12 @@ object TestQuery_ResponseAdapter : ResponseAdapter<TestQuery.Data> {
         TestQuery.Data.NonOptionalHero {
       reader.beginObject()
       check(reader.nextName() == "__typename")
-      val typename = reader.nextString()
+      val typename = reader.nextString()!!
       return when(typename) {
         "Human" -> HumanNonOptionalHero.fromResponse(reader, responseAdapterCache, typename)
         else -> OtherNonOptionalHero.fromResponse(reader, responseAdapterCache, typename)
       }
-      .also { reader.endObject() }
+      reader.endObject()
     }
 
     override fun toResponse(
@@ -109,6 +109,7 @@ object TestQuery_ResponseAdapter : ResponseAdapter<TestQuery.Data> {
         responseAdapterCache: ResponseAdapterCache,
         __typename: String?
       ): TestQuery.Data.NonOptionalHero.HumanNonOptionalHero {
+        reader.beginObject()
         var __typename: String? = __typename
         var name: String? = null
         var height: Double? = null
@@ -125,6 +126,7 @@ object TestQuery_ResponseAdapter : ResponseAdapter<TestQuery.Data> {
           name = name!!,
           height = height
         )
+        reader.endObject()
       }
 
       fun toResponse(
@@ -159,6 +161,7 @@ object TestQuery_ResponseAdapter : ResponseAdapter<TestQuery.Data> {
         responseAdapterCache: ResponseAdapterCache,
         __typename: String?
       ): TestQuery.Data.NonOptionalHero.OtherNonOptionalHero {
+        reader.beginObject()
         var __typename: String? = __typename
         var name: String? = null
         while(true) {
@@ -172,6 +175,7 @@ object TestQuery_ResponseAdapter : ResponseAdapter<TestQuery.Data> {
           __typename = __typename!!,
           name = name!!
         )
+        reader.endObject()
       }
 
       fun toResponse(

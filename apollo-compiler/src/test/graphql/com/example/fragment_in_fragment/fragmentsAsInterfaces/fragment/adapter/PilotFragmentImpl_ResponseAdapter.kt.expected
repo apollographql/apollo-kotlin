@@ -43,10 +43,10 @@ object PilotFragmentImpl_ResponseAdapter : ResponseAdapter<PilotFragmentImpl.Dat
 
   override fun fromResponse(reader: JsonReader, responseAdapterCache: ResponseAdapterCache):
       PilotFragmentImpl.Data {
+    reader.beginObject()
     var __typename: String? = null
     var name: String? = null
     var homeworld: PilotFragmentImpl.Data.Homeworld? = null
-    reader.beginObject()
     while(true) {
       when (reader.selectName(RESPONSE_NAMES)) {
         0 -> __typename = StringResponseAdapter.fromResponse(reader, responseAdapterCache)
@@ -55,12 +55,12 @@ object PilotFragmentImpl_ResponseAdapter : ResponseAdapter<PilotFragmentImpl.Dat
         else -> break
       }
     }
-    reader.endObject()
     return PilotFragmentImpl.Data(
       __typename = __typename!!,
       name = name,
       homeworld = homeworld
     )
+    reader.endObject()
   }
 
   override fun toResponse(
@@ -83,12 +83,12 @@ object PilotFragmentImpl_ResponseAdapter : ResponseAdapter<PilotFragmentImpl.Dat
         PilotFragmentImpl.Data.Homeworld {
       reader.beginObject()
       check(reader.nextName() == "__typename")
-      val typename = reader.nextString()
+      val typename = reader.nextString()!!
       return when(typename) {
         "Planet" -> PlanetHomeworld.fromResponse(reader, responseAdapterCache, typename)
         else -> OtherHomeworld.fromResponse(reader, responseAdapterCache, typename)
       }
-      .also { reader.endObject() }
+      reader.endObject()
     }
 
     override fun toResponse(
@@ -118,6 +118,7 @@ object PilotFragmentImpl_ResponseAdapter : ResponseAdapter<PilotFragmentImpl.Dat
         responseAdapterCache: ResponseAdapterCache,
         __typename: String?
       ): PilotFragmentImpl.Data.Homeworld.PlanetHomeworld {
+        reader.beginObject()
         var __typename: String? = __typename
         var name: String? = null
         while(true) {
@@ -131,6 +132,7 @@ object PilotFragmentImpl_ResponseAdapter : ResponseAdapter<PilotFragmentImpl.Dat
           __typename = __typename!!,
           name = name
         )
+        reader.endObject()
       }
 
       fun toResponse(
@@ -159,6 +161,7 @@ object PilotFragmentImpl_ResponseAdapter : ResponseAdapter<PilotFragmentImpl.Dat
         responseAdapterCache: ResponseAdapterCache,
         __typename: String?
       ): PilotFragmentImpl.Data.Homeworld.OtherHomeworld {
+        reader.beginObject()
         var __typename: String? = __typename
         while(true) {
           when (reader.selectName(RESPONSE_NAMES)) {
@@ -169,6 +172,7 @@ object PilotFragmentImpl_ResponseAdapter : ResponseAdapter<PilotFragmentImpl.Dat
         return PilotFragmentImpl.Data.Homeworld.OtherHomeworld(
           __typename = __typename!!
         )
+        reader.endObject()
       }
 
       fun toResponse(

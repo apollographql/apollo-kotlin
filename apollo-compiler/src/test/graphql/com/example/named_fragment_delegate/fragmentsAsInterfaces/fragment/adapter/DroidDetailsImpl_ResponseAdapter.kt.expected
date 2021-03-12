@@ -47,11 +47,11 @@ object DroidDetailsImpl_ResponseAdapter : ResponseAdapter<DroidDetailsImpl.Data>
 
   override fun fromResponse(reader: JsonReader, responseAdapterCache: ResponseAdapterCache):
       DroidDetailsImpl.Data {
+    reader.beginObject()
     var __typename: String? = null
     var name: String? = null
     var primaryFunction: String? = null
     var friends: List<DroidDetailsImpl.Data.Friends?>? = null
-    reader.beginObject()
     while(true) {
       when (reader.selectName(RESPONSE_NAMES)) {
         0 -> __typename = StringResponseAdapter.fromResponse(reader, responseAdapterCache)
@@ -63,13 +63,13 @@ object DroidDetailsImpl_ResponseAdapter : ResponseAdapter<DroidDetailsImpl.Data>
         else -> break
       }
     }
-    reader.endObject()
     return DroidDetailsImpl.Data(
       __typename = __typename!!,
       name = name!!,
       primaryFunction = primaryFunction,
       friends = friends
     )
+    reader.endObject()
   }
 
   override fun toResponse(
@@ -101,18 +101,18 @@ object DroidDetailsImpl_ResponseAdapter : ResponseAdapter<DroidDetailsImpl.Data>
 
     override fun fromResponse(reader: JsonReader, responseAdapterCache: ResponseAdapterCache):
         DroidDetailsImpl.Data.Friends {
-      var name: String? = null
       reader.beginObject()
+      var name: String? = null
       while(true) {
         when (reader.selectName(RESPONSE_NAMES)) {
           0 -> name = StringResponseAdapter.fromResponse(reader, responseAdapterCache)
           else -> break
         }
       }
-      reader.endObject()
       return DroidDetailsImpl.Data.Friends(
         name = name!!
       )
+      reader.endObject()
     }
 
     override fun toResponse(

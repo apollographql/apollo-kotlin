@@ -38,10 +38,15 @@ object DroidFragment_ResponseAdapter : ResponseAdapter<DroidFragment.Data> {
 
   override fun fromResponse(reader: JsonReader, responseAdapterCache: ResponseAdapterCache):
       DroidFragment.Data {
+    reader.beginObject()
+    return fromFields(reader, responseAdapterCache).also { reader.endObject() }
+  }
+
+  fun fromFields(reader: JsonReader, responseAdapterCache: ResponseAdapterCache):
+      DroidFragment.Data {
     var __typename: String? = null
     var name: String? = null
     var primaryFunction: String? = null
-    reader.beginObject()
     while(true) {
       when (reader.selectName(RESPONSE_NAMES)) {
         0 -> __typename = StringResponseAdapter.fromResponse(reader, responseAdapterCache)
@@ -51,7 +56,6 @@ object DroidFragment_ResponseAdapter : ResponseAdapter<DroidFragment.Data> {
         else -> break
       }
     }
-    reader.endObject()
     return DroidFragment.Data(
       __typename = __typename!!,
       name = name!!,

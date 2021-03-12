@@ -32,10 +32,10 @@ object GetUser_ResponseAdapter : ResponseAdapter<GetUser.Data> {
 
   override fun fromResponse(reader: JsonReader, responseAdapterCache: ResponseAdapterCache):
       GetUser.Data {
-    val reader = reader.buffer()
     reader.beginObject()
-
+    val reader = reader.buffer()
     var __typename: String? = null
+
     var queryFragment: QueryFragment.Data? = null
     while(true) {
       when (reader.selectName(RESPONSE_NAMES)) {
@@ -45,14 +45,14 @@ object GetUser_ResponseAdapter : ResponseAdapter<GetUser.Data> {
     }
     if (__typename in arrayOf("Query")) {
       reader.rewind()
-      queryFragment = QueryFragment_ResponseAdapter.fromResponse(reader, responseAdapterCache)
+      queryFragment = QueryFragment_ResponseAdapter.fromFields(reader, responseAdapterCache)
     }
 
     return GetUser.Data(
       __typename = __typename!!,
       queryFragment = queryFragment
     )
-    .also { reader.endObject() }
+    reader.endObject()
   }
 
   override fun toResponse(

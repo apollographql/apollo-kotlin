@@ -6,4 +6,7 @@ internal object Identifier {
   const val reader = "reader"
   const val writer = "writer"
   const val toResponse = "toResponse"
+  const val fromResponse = "fromResponse"
+  const val fromFields = "fromFields"
+  const val __typename = "__typename"
 }

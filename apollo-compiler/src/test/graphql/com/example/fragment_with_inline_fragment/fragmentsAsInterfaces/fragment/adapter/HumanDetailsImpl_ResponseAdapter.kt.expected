@@ -33,9 +33,9 @@ object HumanDetailsImpl_ResponseAdapter : ResponseAdapter<HumanDetailsImpl.Data>
 
   override fun fromResponse(reader: JsonReader, responseAdapterCache: ResponseAdapterCache):
       HumanDetailsImpl.Data {
+    reader.beginObject()
     var __typename: String? = null
     var name: String? = null
-    reader.beginObject()
     while(true) {
       when (reader.selectName(RESPONSE_NAMES)) {
         0 -> __typename = StringResponseAdapter.fromResponse(reader, responseAdapterCache)
@@ -43,11 +43,11 @@ object HumanDetailsImpl_ResponseAdapter : ResponseAdapter<HumanDetailsImpl.Data>
         else -> break
       }
     }
-    reader.endObject()
     return HumanDetailsImpl.Data(
       __typename = __typename!!,
       name = name!!
     )
+    reader.endObject()
   }
 
   override fun toResponse(

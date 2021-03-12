@@ -32,10 +32,10 @@ object TestQuery_ResponseAdapter : ResponseAdapter<TestQuery.Data> {
 
   override fun fromResponse(reader: JsonReader, responseAdapterCache: ResponseAdapterCache):
       TestQuery.Data {
-    val reader = reader.buffer()
     reader.beginObject()
-
+    val reader = reader.buffer()
     var __typename: String? = null
+
     var queryFragment: QueryFragment.Data? = null
     while(true) {
       when (reader.selectName(RESPONSE_NAMES)) {
@@ -45,14 +45,14 @@ object TestQuery_ResponseAdapter : ResponseAdapter<TestQuery.Data> {
     }
     if (__typename in arrayOf("Query")) {
       reader.rewind()
-      queryFragment = QueryFragment_ResponseAdapter.fromResponse(reader, responseAdapterCache)
+      queryFragment = QueryFragment_ResponseAdapter.fromFields(reader, responseAdapterCache)
     }
 
     return TestQuery.Data(
       __typename = __typename!!,
       queryFragment = queryFragment
     )
-    .also { reader.endObject() }
+    reader.endObject()
   }
 
   override fun toResponse(

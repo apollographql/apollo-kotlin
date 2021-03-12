@@ -49,18 +49,18 @@ internal object CreateReviewForEpisode_ResponseAdapter :
 
   override fun fromResponse(reader: JsonReader, responseAdapterCache: ResponseAdapterCache):
       CreateReviewForEpisode.Data {
-    var createReview: CreateReviewForEpisode.Data.CreateReview? = null
     reader.beginObject()
+    var createReview: CreateReviewForEpisode.Data.CreateReview? = null
     while(true) {
       when (reader.selectName(RESPONSE_NAMES)) {
         0 -> createReview = CreateReview.nullable().fromResponse(reader, responseAdapterCache)
         else -> break
       }
     }
-    reader.endObject()
     return CreateReviewForEpisode.Data(
       createReview = createReview
     )
+    reader.endObject()
   }
 
   override fun toResponse(
@@ -113,13 +113,13 @@ internal object CreateReviewForEpisode_ResponseAdapter :
 
     override fun fromResponse(reader: JsonReader, responseAdapterCache: ResponseAdapterCache):
         CreateReviewForEpisode.Data.CreateReview {
+      reader.beginObject()
       var stars: Int? = null
       var commentary: String? = null
       var listOfListOfString: List<List<String>>? = null
       var listOfListOfEnum: List<List<Episode>>? = null
       var listOfListOfCustom: List<List<Date>>? = null
       var listOfListOfObject: List<List<CreateReviewForEpisode.Data.CreateReview.ListOfListOfObject>>? = null
-      reader.beginObject()
       while(true) {
         when (reader.selectName(RESPONSE_NAMES)) {
           0 -> stars = IntResponseAdapter.fromResponse(reader, responseAdapterCache)
@@ -135,7 +135,6 @@ internal object CreateReviewForEpisode_ResponseAdapter :
           else -> break
         }
       }
-      reader.endObject()
       return CreateReviewForEpisode.Data.CreateReview(
         stars = stars!!,
         commentary = commentary,
@@ -144,6 +143,7 @@ internal object CreateReviewForEpisode_ResponseAdapter :
         listOfListOfCustom = listOfListOfCustom,
         listOfListOfObject = listOfListOfObject
       )
+      reader.endObject()
     }
 
     override fun toResponse(
@@ -184,18 +184,18 @@ internal object CreateReviewForEpisode_ResponseAdapter :
 
       override fun fromResponse(reader: JsonReader, responseAdapterCache: ResponseAdapterCache):
           CreateReviewForEpisode.Data.CreateReview.ListOfListOfObject {
-        var name: String? = null
         reader.beginObject()
+        var name: String? = null
         while(true) {
           when (reader.selectName(RESPONSE_NAMES)) {
             0 -> name = StringResponseAdapter.fromResponse(reader, responseAdapterCache)
             else -> break
           }
         }
-        reader.endObject()
         return CreateReviewForEpisode.Data.CreateReview.ListOfListOfObject(
           name = name!!
         )
+        reader.endObject()
       }
 
       override fun toResponse(

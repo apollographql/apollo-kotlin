@@ -39,10 +39,15 @@ object HumanDetails_ResponseAdapter : ResponseAdapter<HumanDetails.Data> {
 
   override fun fromResponse(reader: JsonReader, responseAdapterCache: ResponseAdapterCache):
       HumanDetails.Data {
+    reader.beginObject()
+    return fromFields(reader, responseAdapterCache).also { reader.endObject() }
+  }
+
+  fun fromFields(reader: JsonReader, responseAdapterCache: ResponseAdapterCache):
+      HumanDetails.Data {
     var __typename: String? = null
     var name: String? = null
     var height: Double? = null
-    reader.beginObject()
     while(true) {
       when (reader.selectName(RESPONSE_NAMES)) {
         0 -> __typename = StringResponseAdapter.fromResponse(reader, responseAdapterCache)
@@ -51,7 +56,6 @@ object HumanDetails_ResponseAdapter : ResponseAdapter<HumanDetails.Data> {
         else -> break
       }
     }
-    reader.endObject()
     return HumanDetails.Data(
       __typename = __typename!!,
       name = name!!,

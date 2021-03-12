@@ -41,18 +41,18 @@ object TestQuery_ResponseAdapter : ResponseAdapter<TestQuery.Data> {
 
   override fun fromResponse(reader: JsonReader, responseAdapterCache: ResponseAdapterCache):
       TestQuery.Data {
-    var hero: TestQuery.Data.Hero? = null
     reader.beginObject()
+    var hero: TestQuery.Data.Hero? = null
     while(true) {
       when (reader.selectName(RESPONSE_NAMES)) {
         0 -> hero = Hero.nullable().fromResponse(reader, responseAdapterCache)
         else -> break
       }
     }
-    reader.endObject()
     return TestQuery.Data(
       hero = hero
     )
+    reader.endObject()
   }
 
   override fun toResponse(
@@ -71,13 +71,13 @@ object TestQuery_ResponseAdapter : ResponseAdapter<TestQuery.Data> {
         TestQuery.Data.Hero {
       reader.beginObject()
       check(reader.nextName() == "__typename")
-      val typename = reader.nextString()
+      val typename = reader.nextString()!!
       return when(typename) {
         "Human" -> HumanHero.fromResponse(reader, responseAdapterCache, typename)
         "Droid" -> DroidHero.fromResponse(reader, responseAdapterCache, typename)
         else -> OtherHero.fromResponse(reader, responseAdapterCache, typename)
       }
-      .also { reader.endObject() }
+      reader.endObject()
     }
 
     override fun toResponse(
@@ -115,7 +115,12 @@ object TestQuery_ResponseAdapter : ResponseAdapter<TestQuery.Data> {
         reader: JsonReader,
         responseAdapterCache: ResponseAdapterCache,
         __typename: String?
+<<<<<<< HEAD
       ): TestQuery.Data.Hero.HumanHero {
+=======
+      ): TestQuery.Data.Hero.CharacterDroidHero {
+        reader.beginObject()
+>>>>>>> ab5258fe0... all compiler tests pass
         var __typename: String? = __typename
         var id: String? = null
         var name: String? = null
@@ -135,6 +140,7 @@ object TestQuery_ResponseAdapter : ResponseAdapter<TestQuery.Data> {
           name = name!!,
           height = height
         )
+        reader.endObject()
       }
 
       fun toResponse(
@@ -178,7 +184,12 @@ object TestQuery_ResponseAdapter : ResponseAdapter<TestQuery.Data> {
         reader: JsonReader,
         responseAdapterCache: ResponseAdapterCache,
         __typename: String?
+<<<<<<< HEAD
       ): TestQuery.Data.Hero.DroidHero {
+=======
+      ): TestQuery.Data.Hero.CharacterHumanHero {
+        reader.beginObject()
+>>>>>>> ab5258fe0... all compiler tests pass
         var __typename: String? = __typename
         var id: String? = null
         var name: String? = null
@@ -199,6 +210,7 @@ object TestQuery_ResponseAdapter : ResponseAdapter<TestQuery.Data> {
           name = name!!,
           primaryFunction = primaryFunction
         )
+        reader.endObject()
       }
 
       fun toResponse(
@@ -240,6 +252,7 @@ object TestQuery_ResponseAdapter : ResponseAdapter<TestQuery.Data> {
         responseAdapterCache: ResponseAdapterCache,
         __typename: String?
       ): TestQuery.Data.Hero.OtherHero {
+        reader.beginObject()
         var __typename: String? = __typename
         var id: String? = null
         var name: String? = null
@@ -256,6 +269,7 @@ object TestQuery_ResponseAdapter : ResponseAdapter<TestQuery.Data> {
           id = id!!,
           name = name!!
         )
+        reader.endObject()
       }
 
       fun toResponse(

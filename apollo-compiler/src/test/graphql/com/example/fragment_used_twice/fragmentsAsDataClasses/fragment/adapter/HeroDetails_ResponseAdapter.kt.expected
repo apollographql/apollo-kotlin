@@ -35,11 +35,15 @@ object HeroDetails_ResponseAdapter : ResponseAdapter<HeroDetails.Data> {
 
   override fun fromResponse(reader: JsonReader, responseAdapterCache: ResponseAdapterCache):
       HeroDetails.Data {
-    val reader = reader.buffer()
     reader.beginObject()
+    return fromFields(reader, responseAdapterCache).also { reader.endObject() }
+  }
 
+  fun fromFields(reader: JsonReader, responseAdapterCache: ResponseAdapterCache): HeroDetails.Data {
+    val reader = reader.buffer()
     var __typename: String? = null
     var name: String? = null
+
     var characterDetails: CharacterDetails.Data? = null
     while(true) {
       when (reader.selectName(RESPONSE_NAMES)) {
@@ -50,7 +54,7 @@ object HeroDetails_ResponseAdapter : ResponseAdapter<HeroDetails.Data> {
     }
     if (__typename in arrayOf("Droid", "Human")) {
       reader.rewind()
-      characterDetails = CharacterDetails_ResponseAdapter.fromResponse(reader, responseAdapterCache)
+      characterDetails = CharacterDetails_ResponseAdapter.fromFields(reader, responseAdapterCache)
     }
 
     return HeroDetails.Data(
@@ -58,7 +62,6 @@ object HeroDetails_ResponseAdapter : ResponseAdapter<HeroDetails.Data> {
       name = name!!,
       characterDetails = characterDetails
     )
-    .also { reader.endObject() }
   }
 
   override fun toResponse(

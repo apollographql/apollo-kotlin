@@ -47,10 +47,10 @@ object HeroDetailsImpl_ResponseAdapter : ResponseAdapter<HeroDetailsImpl.Data> {
 
   override fun fromResponse(reader: JsonReader, responseAdapterCache: ResponseAdapterCache):
       HeroDetailsImpl.Data {
+    reader.beginObject()
     var __typename: String? = null
     var name: String? = null
     var friends: List<HeroDetailsImpl.Data.Friends?>? = null
-    reader.beginObject()
     while(true) {
       when (reader.selectName(RESPONSE_NAMES)) {
         0 -> __typename = StringResponseAdapter.fromResponse(reader, responseAdapterCache)
@@ -60,12 +60,12 @@ object HeroDetailsImpl_ResponseAdapter : ResponseAdapter<HeroDetailsImpl.Data> {
         else -> break
       }
     }
-    reader.endObject()
     return HeroDetailsImpl.Data(
       __typename = __typename!!,
       name = name!!,
       friends = friends
     )
+    reader.endObject()
   }
 
   override fun toResponse(
@@ -88,13 +88,13 @@ object HeroDetailsImpl_ResponseAdapter : ResponseAdapter<HeroDetailsImpl.Data> {
         HeroDetailsImpl.Data.Friends {
       reader.beginObject()
       check(reader.nextName() == "__typename")
-      val typename = reader.nextString()
+      val typename = reader.nextString()!!
       return when(typename) {
         "Human" -> HumanFriends.fromResponse(reader, responseAdapterCache, typename)
         "Droid" -> DroidFriends.fromResponse(reader, responseAdapterCache, typename)
         else -> OtherFriends.fromResponse(reader, responseAdapterCache, typename)
       }
-      .also { reader.endObject() }
+      reader.endObject()
     }
 
     override fun toResponse(
@@ -129,6 +129,7 @@ object HeroDetailsImpl_ResponseAdapter : ResponseAdapter<HeroDetailsImpl.Data> {
         responseAdapterCache: ResponseAdapterCache,
         __typename: String?
       ): HeroDetailsImpl.Data.Friends.HumanFriends {
+        reader.beginObject()
         var __typename: String? = __typename
         var name: String? = null
         var height: Double? = null
@@ -145,6 +146,7 @@ object HeroDetailsImpl_ResponseAdapter : ResponseAdapter<HeroDetailsImpl.Data> {
           name = name!!,
           height = height
         )
+        reader.endObject()
       }
 
       fun toResponse(
@@ -183,6 +185,7 @@ object HeroDetailsImpl_ResponseAdapter : ResponseAdapter<HeroDetailsImpl.Data> {
         responseAdapterCache: ResponseAdapterCache,
         __typename: String?
       ): HeroDetailsImpl.Data.Friends.DroidFriends {
+        reader.beginObject()
         var __typename: String? = __typename
         var name: String? = null
         var primaryFunction: String? = null
@@ -200,6 +203,7 @@ object HeroDetailsImpl_ResponseAdapter : ResponseAdapter<HeroDetailsImpl.Data> {
           name = name!!,
           primaryFunction = primaryFunction
         )
+        reader.endObject()
       }
 
       fun toResponse(
@@ -235,6 +239,7 @@ object HeroDetailsImpl_ResponseAdapter : ResponseAdapter<HeroDetailsImpl.Data> {
         responseAdapterCache: ResponseAdapterCache,
         __typename: String?
       ): HeroDetailsImpl.Data.Friends.OtherFriends {
+        reader.beginObject()
         var __typename: String? = __typename
         var name: String? = null
         while(true) {
@@ -248,6 +253,7 @@ object HeroDetailsImpl_ResponseAdapter : ResponseAdapter<HeroDetailsImpl.Data> {
           __typename = __typename!!,
           name = name!!
         )
+        reader.endObject()
       }
 
       fun toResponse(

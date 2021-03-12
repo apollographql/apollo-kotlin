@@ -52,18 +52,18 @@ object TestQuery_ResponseAdapter : ResponseAdapter<TestQuery.Data> {
 
   override fun fromResponse(reader: JsonReader, responseAdapterCache: ResponseAdapterCache):
       TestQuery.Data {
-    var heroWithReview: TestQuery.Data.HeroWithReview? = null
     reader.beginObject()
+    var heroWithReview: TestQuery.Data.HeroWithReview? = null
     while(true) {
       when (reader.selectName(RESPONSE_NAMES)) {
         0 -> heroWithReview = HeroWithReview.nullable().fromResponse(reader, responseAdapterCache)
         else -> break
       }
     }
-    reader.endObject()
     return TestQuery.Data(
       heroWithReview = heroWithReview
     )
+    reader.endObject()
   }
 
   override fun toResponse(
@@ -95,9 +95,9 @@ object TestQuery_ResponseAdapter : ResponseAdapter<TestQuery.Data> {
 
     override fun fromResponse(reader: JsonReader, responseAdapterCache: ResponseAdapterCache):
         TestQuery.Data.HeroWithReview {
+      reader.beginObject()
       var name: String? = null
       var height: Double? = null
-      reader.beginObject()
       while(true) {
         when (reader.selectName(RESPONSE_NAMES)) {
           0 -> name = StringResponseAdapter.fromResponse(reader, responseAdapterCache)
@@ -105,11 +105,11 @@ object TestQuery_ResponseAdapter : ResponseAdapter<TestQuery.Data> {
           else -> break
         }
       }
-      reader.endObject()
       return TestQuery.Data.HeroWithReview(
         name = name!!,
         height = height
       )
+      reader.endObject()
     }
 
     override fun toResponse(

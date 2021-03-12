@@ -34,9 +34,9 @@ object PlanetFragmentImpl_ResponseAdapter : ResponseAdapter<PlanetFragmentImpl.D
 
   override fun fromResponse(reader: JsonReader, responseAdapterCache: ResponseAdapterCache):
       PlanetFragmentImpl.Data {
+    reader.beginObject()
     var __typename: String? = null
     var name: String? = null
-    reader.beginObject()
     while(true) {
       when (reader.selectName(RESPONSE_NAMES)) {
         0 -> __typename = StringResponseAdapter.fromResponse(reader, responseAdapterCache)
@@ -44,11 +44,11 @@ object PlanetFragmentImpl_ResponseAdapter : ResponseAdapter<PlanetFragmentImpl.D
         else -> break
       }
     }
-    reader.endObject()
     return PlanetFragmentImpl.Data(
       __typename = __typename!!,
       name = name
     )
+    reader.endObject()
   }
 
   override fun toResponse(

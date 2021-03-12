@@ -27,13 +27,13 @@ object HeroDetailsImpl_ResponseAdapter : ResponseAdapter<HeroDetailsImpl.Data> {
       HeroDetailsImpl.Data {
     reader.beginObject()
     check(reader.nextName() == "__typename")
-    val typename = reader.nextString()
+    val typename = reader.nextString()!!
     return when(typename) {
       "Droid" -> CharacterData.fromResponse(reader, responseAdapterCache, typename)
       "Human" -> CharacterData.fromResponse(reader, responseAdapterCache, typename)
       else -> OtherData.fromResponse(reader, responseAdapterCache, typename)
     }
-    .also { reader.endObject() }
+    reader.endObject()
   }
 
   override fun toResponse(
@@ -67,6 +67,7 @@ object HeroDetailsImpl_ResponseAdapter : ResponseAdapter<HeroDetailsImpl.Data> {
       responseAdapterCache: ResponseAdapterCache,
       __typename: String?
     ): HeroDetailsImpl.Data.CharacterData {
+      reader.beginObject()
       var __typename: String? = __typename
       var name: String? = null
       var birthDate: Any? = null
@@ -84,6 +85,7 @@ object HeroDetailsImpl_ResponseAdapter : ResponseAdapter<HeroDetailsImpl.Data> {
         name = name!!,
         birthDate = birthDate!!
       )
+      reader.endObject()
     }
 
     fun toResponse(
@@ -119,6 +121,7 @@ object HeroDetailsImpl_ResponseAdapter : ResponseAdapter<HeroDetailsImpl.Data> {
       responseAdapterCache: ResponseAdapterCache,
       __typename: String?
     ): HeroDetailsImpl.Data.OtherData {
+      reader.beginObject()
       var __typename: String? = __typename
       var name: String? = null
       while(true) {
@@ -132,6 +135,7 @@ object HeroDetailsImpl_ResponseAdapter : ResponseAdapter<HeroDetailsImpl.Data> {
         __typename = __typename!!,
         name = name!!
       )
+      reader.endObject()
     }
 
     fun toResponse(

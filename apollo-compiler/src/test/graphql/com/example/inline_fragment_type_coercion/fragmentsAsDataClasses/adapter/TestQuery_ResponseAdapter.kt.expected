@@ -37,18 +37,18 @@ object TestQuery_ResponseAdapter : ResponseAdapter<TestQuery.Data> {
 
   override fun fromResponse(reader: JsonReader, responseAdapterCache: ResponseAdapterCache):
       TestQuery.Data {
-    var foo: TestQuery.Data.Foo? = null
     reader.beginObject()
+    var foo: TestQuery.Data.Foo? = null
     while(true) {
       when (reader.selectName(RESPONSE_NAMES)) {
         0 -> foo = Foo.nullable().fromResponse(reader, responseAdapterCache)
         else -> break
       }
     }
-    reader.endObject()
     return TestQuery.Data(
       foo = foo
     )
+    reader.endObject()
   }
 
   override fun toResponse(
@@ -75,11 +75,11 @@ object TestQuery_ResponseAdapter : ResponseAdapter<TestQuery.Data> {
 
     override fun fromResponse(reader: JsonReader, responseAdapterCache: ResponseAdapterCache):
         TestQuery.Data.Foo {
-      val reader = reader.buffer()
       reader.beginObject()
-
+      val reader = reader.buffer()
       var __typename: String? = null
       var foo: String? = null
+
       var asAsBar: TestQuery.Data.Foo.AsBar? = null
       while(true) {
         when (reader.selectName(RESPONSE_NAMES)) {
@@ -90,7 +90,7 @@ object TestQuery_ResponseAdapter : ResponseAdapter<TestQuery.Data> {
       }
       if (__typename in arrayOf("FooBar")) {
         reader.rewind()
-        asAsBar = AsBar.fromResponse(reader, responseAdapterCache, __typename)
+        asAsBar = AsBar.fromFields(reader, responseAdapterCache)
       }
 
       return TestQuery.Data.Foo(
@@ -98,7 +98,7 @@ object TestQuery_ResponseAdapter : ResponseAdapter<TestQuery.Data> {
         foo = foo!!,
         asAsBar = asAsBar
       )
-      .also { reader.endObject() }
+      reader.endObject()
     }
 
     override fun toResponse(
@@ -116,7 +116,7 @@ object TestQuery_ResponseAdapter : ResponseAdapter<TestQuery.Data> {
       writer.endObject()
     }
 
-    object AsBar {
+    object AsBar : ResponseAdapter<TestQuery.Data.Foo.AsBar> {
       val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
         ResponseField.Typename,
         ResponseField(
@@ -131,12 +131,15 @@ object TestQuery_ResponseAdapter : ResponseAdapter<TestQuery.Data> {
 
       val RESPONSE_NAMES: List<String> = RESPONSE_FIELDS.map { it.responseName }
 
-      fun fromResponse(
-        reader: JsonReader,
-        responseAdapterCache: ResponseAdapterCache,
-        __typename: String?
-      ): TestQuery.Data.Foo.AsBar {
-        var __typename: String? = __typename
+      override fun fromResponse(reader: JsonReader, responseAdapterCache: ResponseAdapterCache):
+          TestQuery.Data.Foo.AsBar {
+        reader.beginObject()
+        return fromFields(reader, responseAdapterCache).also { reader.endObject() }
+      }
+
+      fun fromFields(reader: JsonReader, responseAdapterCache: ResponseAdapterCache):
+          TestQuery.Data.Foo.AsBar {
+        var __typename: String? = null
         var foo: String? = null
         var bar: String? = null
         while(true) {
@@ -154,7 +157,7 @@ object TestQuery_ResponseAdapter : ResponseAdapter<TestQuery.Data> {
         )
       }
 
-      fun toResponse(
+      override fun toResponse(
         writer: JsonWriter,
         responseAdapterCache: ResponseAdapterCache,
         value: TestQuery.Data.Foo.AsBar

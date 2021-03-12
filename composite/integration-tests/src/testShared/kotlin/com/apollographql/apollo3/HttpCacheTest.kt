@@ -10,6 +10,7 @@ import com.apollographql.apollo3.api.ResponseAdapter
 import com.apollographql.apollo3.api.ResponseAdapterCache
 import com.apollographql.apollo3.api.cache.http.HttpCache
 import com.apollographql.apollo3.api.cache.http.HttpCachePolicy
+import com.apollographql.apollo3.api.fromResponse
 import com.apollographql.apollo3.api.json.JsonReader
 import com.apollographql.apollo3.api.json.JsonWriter
 import com.apollographql.apollo3.cache.ApolloCacheHeaders
@@ -172,6 +173,8 @@ class HttpCacheTest {
   @Test
   @Throws(Exception::class)
   fun networkOnly() = runBlocking {
+    AllPlanetsQuery().fromResponse(Utils.readResource("HttpCacheTestAllPlanets.json"))
+
     enqueueResponse("/HttpCacheTestAllPlanets.json")
     apolloClient.query(AllPlanetsQuery())
         .httpCachePolicy(HttpCachePolicy.NETWORK_ONLY)

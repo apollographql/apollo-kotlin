@@ -44,18 +44,18 @@ object TestOperation_ResponseAdapter : ResponseAdapter<TestOperation.Data> {
 
   override fun fromResponse(reader: JsonReader, responseAdapterCache: ResponseAdapterCache):
       TestOperation.Data {
-    var random: TestOperation.Data.Random? = null
     reader.beginObject()
+    var random: TestOperation.Data.Random? = null
     while(true) {
       when (reader.selectName(RESPONSE_NAMES)) {
         0 -> random = Random.fromResponse(reader, responseAdapterCache)
         else -> break
       }
     }
-    reader.endObject()
     return TestOperation.Data(
       random = random!!
     )
+    reader.endObject()
   }
 
   override fun toResponse(
@@ -78,10 +78,10 @@ object TestOperation_ResponseAdapter : ResponseAdapter<TestOperation.Data> {
 
     override fun fromResponse(reader: JsonReader, responseAdapterCache: ResponseAdapterCache):
         TestOperation.Data.Random {
-      val reader = reader.buffer()
       reader.beginObject()
-
+      val reader = reader.buffer()
       var __typename: String? = null
+
       var asAsBeing: TestOperation.Data.Random.AsBeing? = null
       var asAsWookie: TestOperation.Data.Random.AsWookie? = null
       while(true) {
@@ -92,11 +92,11 @@ object TestOperation_ResponseAdapter : ResponseAdapter<TestOperation.Data> {
       }
       if (__typename in arrayOf("Human", "Wookie")) {
         reader.rewind()
-        asAsBeing = AsBeing.fromResponse(reader, responseAdapterCache, __typename)
+        asAsBeing = AsBeing.fromFields(reader, responseAdapterCache)
       }
       if (__typename in arrayOf("Wookie")) {
         reader.rewind()
-        asAsWookie = AsWookie.fromResponse(reader, responseAdapterCache, __typename)
+        asAsWookie = AsWookie.fromFields(reader, responseAdapterCache)
       }
 
       return TestOperation.Data.Random(
@@ -104,7 +104,7 @@ object TestOperation_ResponseAdapter : ResponseAdapter<TestOperation.Data> {
         asAsBeing = asAsBeing,
         asAsWookie = asAsWookie
       )
-      .also { reader.endObject() }
+      reader.endObject()
     }
 
     override fun toResponse(
@@ -121,7 +121,7 @@ object TestOperation_ResponseAdapter : ResponseAdapter<TestOperation.Data> {
       writer.endObject()
     }
 
-    object AsBeing {
+    object AsBeing : ResponseAdapter<TestOperation.Data.Random.AsBeing> {
       val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
         ResponseField.Typename,
         ResponseField(
@@ -140,12 +140,15 @@ object TestOperation_ResponseAdapter : ResponseAdapter<TestOperation.Data> {
 
       val RESPONSE_NAMES: List<String> = RESPONSE_FIELDS.map { it.responseName }
 
-      fun fromResponse(
-        reader: JsonReader,
-        responseAdapterCache: ResponseAdapterCache,
-        __typename: String?
-      ): TestOperation.Data.Random.AsBeing {
-        var __typename: String? = __typename
+      override fun fromResponse(reader: JsonReader, responseAdapterCache: ResponseAdapterCache):
+          TestOperation.Data.Random.AsBeing {
+        reader.beginObject()
+        return fromFields(reader, responseAdapterCache).also { reader.endObject() }
+      }
+
+      fun fromFields(reader: JsonReader, responseAdapterCache: ResponseAdapterCache):
+          TestOperation.Data.Random.AsBeing {
+        var __typename: String? = null
         var name: String? = null
         var friends: List<TestOperation.Data.Random.AsBeing.Friends>? = null
         while(true) {
@@ -163,7 +166,7 @@ object TestOperation_ResponseAdapter : ResponseAdapter<TestOperation.Data> {
         )
       }
 
-      fun toResponse(
+      override fun toResponse(
         writer: JsonWriter,
         responseAdapterCache: ResponseAdapterCache,
         value: TestOperation.Data.Random.AsBeing
@@ -191,11 +194,11 @@ object TestOperation_ResponseAdapter : ResponseAdapter<TestOperation.Data> {
 
         override fun fromResponse(reader: JsonReader, responseAdapterCache: ResponseAdapterCache):
             TestOperation.Data.Random.AsBeing.Friends {
-          val reader = reader.buffer()
           reader.beginObject()
-
+          val reader = reader.buffer()
           var __typename: String? = null
           var name: String? = null
+
           var asAsWookie: TestOperation.Data.Random.AsBeing.Friends.AsWookie? = null
           while(true) {
             when (reader.selectName(RESPONSE_NAMES)) {
@@ -206,7 +209,7 @@ object TestOperation_ResponseAdapter : ResponseAdapter<TestOperation.Data> {
           }
           if (__typename in arrayOf("Wookie")) {
             reader.rewind()
-            asAsWookie = AsWookie.fromResponse(reader, responseAdapterCache, __typename)
+            asAsWookie = AsWookie.fromFields(reader, responseAdapterCache)
           }
 
           return TestOperation.Data.Random.AsBeing.Friends(
@@ -214,7 +217,7 @@ object TestOperation_ResponseAdapter : ResponseAdapter<TestOperation.Data> {
             name = name!!,
             asAsWookie = asAsWookie
           )
-          .also { reader.endObject() }
+          reader.endObject()
         }
 
         override fun toResponse(
@@ -233,7 +236,7 @@ object TestOperation_ResponseAdapter : ResponseAdapter<TestOperation.Data> {
           writer.endObject()
         }
 
-        object AsWookie {
+        object AsWookie : ResponseAdapter<TestOperation.Data.Random.AsBeing.Friends.AsWookie> {
           val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
             ResponseField.Typename,
             ResponseField(
@@ -248,12 +251,15 @@ object TestOperation_ResponseAdapter : ResponseAdapter<TestOperation.Data> {
 
           val RESPONSE_NAMES: List<String> = RESPONSE_FIELDS.map { it.responseName }
 
-          fun fromResponse(
-            reader: JsonReader,
-            responseAdapterCache: ResponseAdapterCache,
-            __typename: String?
-          ): TestOperation.Data.Random.AsBeing.Friends.AsWookie {
-            var __typename: String? = __typename
+          override fun fromResponse(reader: JsonReader, responseAdapterCache: ResponseAdapterCache):
+              TestOperation.Data.Random.AsBeing.Friends.AsWookie {
+            reader.beginObject()
+            return fromFields(reader, responseAdapterCache).also { reader.endObject() }
+          }
+
+          fun fromFields(reader: JsonReader, responseAdapterCache: ResponseAdapterCache):
+              TestOperation.Data.Random.AsBeing.Friends.AsWookie {
+            var __typename: String? = null
             var name: String? = null
             var lifeExpectancy: Double? = null
             while(true) {
@@ -272,7 +278,7 @@ object TestOperation_ResponseAdapter : ResponseAdapter<TestOperation.Data> {
             )
           }
 
-          fun toResponse(
+          override fun toResponse(
             writer: JsonWriter,
             responseAdapterCache: ResponseAdapterCache,
             value: TestOperation.Data.Random.AsBeing.Friends.AsWookie
@@ -291,7 +297,7 @@ object TestOperation_ResponseAdapter : ResponseAdapter<TestOperation.Data> {
       }
     }
 
-    object AsWookie {
+    object AsWookie : ResponseAdapter<TestOperation.Data.Random.AsWookie> {
       val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
         ResponseField.Typename,
         ResponseField(
@@ -310,12 +316,15 @@ object TestOperation_ResponseAdapter : ResponseAdapter<TestOperation.Data> {
 
       val RESPONSE_NAMES: List<String> = RESPONSE_FIELDS.map { it.responseName }
 
-      fun fromResponse(
-        reader: JsonReader,
-        responseAdapterCache: ResponseAdapterCache,
-        __typename: String?
-      ): TestOperation.Data.Random.AsWookie {
-        var __typename: String? = __typename
+      override fun fromResponse(reader: JsonReader, responseAdapterCache: ResponseAdapterCache):
+          TestOperation.Data.Random.AsWookie {
+        reader.beginObject()
+        return fromFields(reader, responseAdapterCache).also { reader.endObject() }
+      }
+
+      fun fromFields(reader: JsonReader, responseAdapterCache: ResponseAdapterCache):
+          TestOperation.Data.Random.AsWookie {
+        var __typename: String? = null
         var race: Race? = null
         var friends: List<TestOperation.Data.Random.AsWookie.Friends>? = null
         while(true) {
@@ -333,7 +342,7 @@ object TestOperation_ResponseAdapter : ResponseAdapter<TestOperation.Data> {
         )
       }
 
-      fun toResponse(
+      override fun toResponse(
         writer: JsonWriter,
         responseAdapterCache: ResponseAdapterCache,
         value: TestOperation.Data.Random.AsWookie
@@ -360,8 +369,8 @@ object TestOperation_ResponseAdapter : ResponseAdapter<TestOperation.Data> {
 
         override fun fromResponse(reader: JsonReader, responseAdapterCache: ResponseAdapterCache):
             TestOperation.Data.Random.AsWookie.Friends {
-          var lifeExpectancy: Double? = null
           reader.beginObject()
+          var lifeExpectancy: Double? = null
           while(true) {
             when (reader.selectName(RESPONSE_NAMES)) {
               0 -> lifeExpectancy = NullableDoubleResponseAdapter.fromResponse(reader,
@@ -369,10 +378,10 @@ object TestOperation_ResponseAdapter : ResponseAdapter<TestOperation.Data> {
               else -> break
             }
           }
-          reader.endObject()
           return TestOperation.Data.Random.AsWookie.Friends(
             lifeExpectancy = lifeExpectancy
           )
+          reader.endObject()
         }
 
         override fun toResponse(

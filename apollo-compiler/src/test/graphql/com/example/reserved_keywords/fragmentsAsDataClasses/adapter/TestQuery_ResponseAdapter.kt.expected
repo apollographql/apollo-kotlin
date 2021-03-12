@@ -50,9 +50,9 @@ object TestQuery_ResponseAdapter : ResponseAdapter<TestQuery.Data> {
 
   override fun fromResponse(reader: JsonReader, responseAdapterCache: ResponseAdapterCache):
       TestQuery.Data {
+    reader.beginObject()
     var yield_: TestQuery.Data.Yield? = null
     var objects: List<TestQuery.Data.Objects?>? = null
-    reader.beginObject()
     while(true) {
       when (reader.selectName(RESPONSE_NAMES)) {
         0 -> yield_ = Yield.nullable().fromResponse(reader, responseAdapterCache)
@@ -61,11 +61,11 @@ object TestQuery_ResponseAdapter : ResponseAdapter<TestQuery.Data> {
         else -> break
       }
     }
-    reader.endObject()
     return TestQuery.Data(
       yield_ = yield_,
       objects = objects
     )
+    reader.endObject()
   }
 
   override fun toResponse(
@@ -98,9 +98,9 @@ object TestQuery_ResponseAdapter : ResponseAdapter<TestQuery.Data> {
 
     override fun fromResponse(reader: JsonReader, responseAdapterCache: ResponseAdapterCache):
         TestQuery.Data.Yield {
+      reader.beginObject()
       var it_: String? = null
       var name: String? = null
-      reader.beginObject()
       while(true) {
         when (reader.selectName(RESPONSE_NAMES)) {
           0 -> it_ = StringResponseAdapter.fromResponse(reader, responseAdapterCache)
@@ -108,11 +108,11 @@ object TestQuery_ResponseAdapter : ResponseAdapter<TestQuery.Data> {
           else -> break
         }
       }
-      reader.endObject()
       return TestQuery.Data.Yield(
         it_ = it_!!,
         name = name!!
       )
+      reader.endObject()
     }
 
     override fun toResponse(
@@ -138,10 +138,10 @@ object TestQuery_ResponseAdapter : ResponseAdapter<TestQuery.Data> {
 
     override fun fromResponse(reader: JsonReader, responseAdapterCache: ResponseAdapterCache):
         TestQuery.Data.Objects {
-      val reader = reader.buffer()
       reader.beginObject()
-
+      val reader = reader.buffer()
       var __typename: String? = null
+
       var asAsCharacter: TestQuery.Data.Objects.AsCharacter? = null
       while(true) {
         when (reader.selectName(RESPONSE_NAMES)) {
@@ -151,14 +151,14 @@ object TestQuery_ResponseAdapter : ResponseAdapter<TestQuery.Data> {
       }
       if (__typename in arrayOf("Droid", "Human")) {
         reader.rewind()
-        asAsCharacter = AsCharacter.fromResponse(reader, responseAdapterCache, __typename)
+        asAsCharacter = AsCharacter.fromFields(reader, responseAdapterCache)
       }
 
       return TestQuery.Data.Objects(
         __typename = __typename!!,
         asAsCharacter = asAsCharacter
       )
-      .also { reader.endObject() }
+      reader.endObject()
     }
 
     override fun toResponse(
@@ -174,7 +174,7 @@ object TestQuery_ResponseAdapter : ResponseAdapter<TestQuery.Data> {
       writer.endObject()
     }
 
-    object AsCharacter {
+    object AsCharacter : ResponseAdapter<TestQuery.Data.Objects.AsCharacter> {
       val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
         ResponseField.Typename,
         ResponseField(
@@ -185,12 +185,15 @@ object TestQuery_ResponseAdapter : ResponseAdapter<TestQuery.Data> {
 
       val RESPONSE_NAMES: List<String> = RESPONSE_FIELDS.map { it.responseName }
 
-      fun fromResponse(
-        reader: JsonReader,
-        responseAdapterCache: ResponseAdapterCache,
-        __typename: String?
-      ): TestQuery.Data.Objects.AsCharacter {
-        var __typename: String? = __typename
+      override fun fromResponse(reader: JsonReader, responseAdapterCache: ResponseAdapterCache):
+          TestQuery.Data.Objects.AsCharacter {
+        reader.beginObject()
+        return fromFields(reader, responseAdapterCache).also { reader.endObject() }
+      }
+
+      fun fromFields(reader: JsonReader, responseAdapterCache: ResponseAdapterCache):
+          TestQuery.Data.Objects.AsCharacter {
+        var __typename: String? = null
         var name: String? = null
         while(true) {
           when (reader.selectName(RESPONSE_NAMES)) {
@@ -205,7 +208,7 @@ object TestQuery_ResponseAdapter : ResponseAdapter<TestQuery.Data> {
         )
       }
 
-      fun toResponse(
+      override fun toResponse(
         writer: JsonWriter,
         responseAdapterCache: ResponseAdapterCache,
         value: TestQuery.Data.Objects.AsCharacter
