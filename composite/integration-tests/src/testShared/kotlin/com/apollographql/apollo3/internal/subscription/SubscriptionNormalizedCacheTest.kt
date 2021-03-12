@@ -3,13 +3,10 @@ package com.apollographql.apollo3.internal.subscription
 import com.apollographql.apollo3.ApolloClient
 import com.apollographql.apollo3.ApolloSubscriptionCall
 import com.apollographql.apollo3.IdFieldCacheKeyResolver
-import com.apollographql.apollo3.api.Operation
 import com.apollographql.apollo3.api.ApolloResponse
-import com.apollographql.apollo3.api.ResponseAdapterCache
-import com.apollographql.apollo3.cache.normalized.CacheKeyResolver
-import com.apollographql.apollo3.cache.normalized.NormalizedCache
+import com.apollographql.apollo3.api.Operation
 import com.apollographql.apollo3.cache.normalized.MemoryCacheFactory
-import com.apollographql.apollo3.cache.normalized.internal.normalize
+import com.apollographql.apollo3.cache.normalized.NormalizedCache
 import com.apollographql.apollo3.exception.ApolloException
 import com.apollographql.apollo3.integration.subscription.NewRepoCommentSubscription
 import com.apollographql.apollo3.isFromCache
@@ -17,11 +14,11 @@ import com.apollographql.apollo3.subscription.OperationClientMessage
 import com.apollographql.apollo3.subscription.OperationServerMessage
 import com.apollographql.apollo3.subscription.SubscriptionTransport
 import com.google.common.truth.Truth.assertThat
+import kotlinx.coroutines.runBlocking
 import org.junit.Before
 import org.junit.Test
 import java.util.concurrent.AbstractExecutorService
 import java.util.concurrent.TimeUnit
-import kotlinx.coroutines.runBlocking
 
 class SubscriptionNormalizedCacheTest {
   private lateinit var subscriptionTransportFactory: MockSubscriptionTransportFactory
