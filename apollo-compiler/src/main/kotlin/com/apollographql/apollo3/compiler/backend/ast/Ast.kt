@@ -51,7 +51,7 @@ internal data class CodeGenerationAst(
   )
 
   /**
-   * @param isShape: true if this is a type case of a polymorphic field
+   * @param isShape: true if this is a one of the shapes a polymorphic field
    */
   data class ObjectType(
       val name: String,
@@ -89,8 +89,8 @@ internal data class CodeGenerationAst(
   }
 
   /**
-   * @param requiresBuffering: true if this field can take multiple forms and should
-   * therefore be buffered
+   * @param requiresBuffering: true if this is a polymorphic field that will use synthetic fragments
+   * that require a [JsonReader]/[JsonWriter] that can buffer.
    */
   data class Field(
       val name: String,

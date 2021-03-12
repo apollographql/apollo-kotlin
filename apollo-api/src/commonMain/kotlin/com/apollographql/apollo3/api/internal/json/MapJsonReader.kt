@@ -260,7 +260,7 @@ class MapJsonReader(val root: Map<String, Any?>) : JsonReader {
 
     /**
      * buffers the next Object. Has to be called in `BEGIN_OBJECT` position.
-     * The return [MapJsonReader] can use [MapJsonReader.rewind] to read fields
+     * The returned [MapJsonReader] can use [MapJsonReader.rewind] to read fields
      * multiple times
      */
     fun JsonReader.buffer(): MapJsonReader {
