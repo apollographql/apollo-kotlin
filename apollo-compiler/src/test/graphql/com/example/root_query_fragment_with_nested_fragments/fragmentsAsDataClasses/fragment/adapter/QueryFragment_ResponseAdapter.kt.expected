@@ -114,8 +114,8 @@ object QueryFragment_ResponseAdapter : ResponseAdapter<QueryFragment.Data> {
 
     override fun fromResponse(reader: JsonReader, responseAdapterCache: ResponseAdapterCache):
         QueryFragment.Data.Hero {
-      reader.beginObject()
       val reader = reader.buffer()
+      reader.beginObject()
       var __typename: String? = null
 
       var heroFragment: HeroFragment.Data? = null
@@ -126,15 +126,15 @@ object QueryFragment_ResponseAdapter : ResponseAdapter<QueryFragment.Data> {
         }
       }
       if (__typename in arrayOf("Droid", "Human")) {
-        reader.rewind()
+        (reader as MapJsonReader).rewind()
         heroFragment = HeroFragment_ResponseAdapter.fromFields(reader, responseAdapterCache)
       }
 
+      reader.endObject()
       return QueryFragment.Data.Hero(
         __typename = __typename!!,
         heroFragment = heroFragment
       )
-      reader.endObject()
     }
 
     override fun toResponse(
@@ -160,8 +160,8 @@ object QueryFragment_ResponseAdapter : ResponseAdapter<QueryFragment.Data> {
 
     override fun fromResponse(reader: JsonReader, responseAdapterCache: ResponseAdapterCache):
         QueryFragment.Data.Droid {
-      reader.beginObject()
       val reader = reader.buffer()
+      reader.beginObject()
       var __typename: String? = null
 
       var droidFragment: DroidFragment.Data? = null
@@ -172,15 +172,15 @@ object QueryFragment_ResponseAdapter : ResponseAdapter<QueryFragment.Data> {
         }
       }
       if (__typename in arrayOf("Droid")) {
-        reader.rewind()
+        (reader as MapJsonReader).rewind()
         droidFragment = DroidFragment_ResponseAdapter.fromFields(reader, responseAdapterCache)
       }
 
+      reader.endObject()
       return QueryFragment.Data.Droid(
         __typename = __typename!!,
         droidFragment = droidFragment
       )
-      reader.endObject()
     }
 
     override fun toResponse(
@@ -206,8 +206,8 @@ object QueryFragment_ResponseAdapter : ResponseAdapter<QueryFragment.Data> {
 
     override fun fromResponse(reader: JsonReader, responseAdapterCache: ResponseAdapterCache):
         QueryFragment.Data.Human {
-      reader.beginObject()
       val reader = reader.buffer()
+      reader.beginObject()
       var __typename: String? = null
 
       var asAsHuman: QueryFragment.Data.Human.AsHuman? = null
@@ -218,15 +218,15 @@ object QueryFragment_ResponseAdapter : ResponseAdapter<QueryFragment.Data> {
         }
       }
       if (__typename in arrayOf("Human")) {
-        reader.rewind()
+        (reader as MapJsonReader).rewind()
         asAsHuman = AsHuman.fromFields(reader, responseAdapterCache)
       }
 
+      reader.endObject()
       return QueryFragment.Data.Human(
         __typename = __typename!!,
         asAsHuman = asAsHuman
       )
-      reader.endObject()
     }
 
     override fun toResponse(

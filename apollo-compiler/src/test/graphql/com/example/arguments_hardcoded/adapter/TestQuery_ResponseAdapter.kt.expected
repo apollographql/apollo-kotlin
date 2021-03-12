@@ -55,9 +55,9 @@ object TestQuery_ResponseAdapter : ResponseAdapter<TestQuery.Data> {
 
   override fun fromResponse(reader: JsonReader, responseAdapterCache: ResponseAdapterCache):
       TestQuery.Data {
-    reader.beginObject()
     var reviews: List<TestQuery.Data.Reviews?>? = null
     var testNullableArguments: Int? = null
+    reader.beginObject()
     while(true) {
       when (reader.selectName(RESPONSE_NAMES)) {
         0 -> reviews = Reviews.nullable().list().nullable().fromResponse(reader,
@@ -66,11 +66,11 @@ object TestQuery_ResponseAdapter : ResponseAdapter<TestQuery.Data> {
         else -> break
       }
     }
+    reader.endObject()
     return TestQuery.Data(
       reviews = reviews,
       testNullableArguments = testNullableArguments!!
     )
-    reader.endObject()
   }
 
   override fun toResponse(
@@ -102,9 +102,9 @@ object TestQuery_ResponseAdapter : ResponseAdapter<TestQuery.Data> {
 
     override fun fromResponse(reader: JsonReader, responseAdapterCache: ResponseAdapterCache):
         TestQuery.Data.Reviews {
-      reader.beginObject()
       var stars: Int? = null
       var commentary: String? = null
+      reader.beginObject()
       while(true) {
         when (reader.selectName(RESPONSE_NAMES)) {
           0 -> stars = IntResponseAdapter.fromResponse(reader, responseAdapterCache)
@@ -112,11 +112,11 @@ object TestQuery_ResponseAdapter : ResponseAdapter<TestQuery.Data> {
           else -> break
         }
       }
+      reader.endObject()
       return TestQuery.Data.Reviews(
         stars = stars!!,
         commentary = commentary
       )
-      reader.endObject()
     }
 
     override fun toResponse(

@@ -10,6 +10,7 @@ import com.apollographql.apollo3.api.ResponseAdapter
 import com.apollographql.apollo3.api.ResponseAdapterCache
 import com.apollographql.apollo3.api.ResponseField
 import com.apollographql.apollo3.api.StringResponseAdapter
+import com.apollographql.apollo3.api.internal.json.MapJsonReader
 import com.apollographql.apollo3.api.internal.json.MapJsonReader.Companion.buffer
 import com.apollographql.apollo3.api.json.JsonReader
 import com.apollographql.apollo3.api.json.JsonWriter
@@ -92,8 +93,8 @@ object PilotFragment_ResponseAdapter : ResponseAdapter<PilotFragment.Data> {
 
     override fun fromResponse(reader: JsonReader, responseAdapterCache: ResponseAdapterCache):
         PilotFragment.Data.Homeworld {
-      reader.beginObject()
       val reader = reader.buffer()
+      reader.beginObject()
       var __typename: String? = null
 
       var planetFragment: PlanetFragment.Data? = null
@@ -104,15 +105,15 @@ object PilotFragment_ResponseAdapter : ResponseAdapter<PilotFragment.Data> {
         }
       }
       if (__typename in arrayOf("Planet")) {
-        reader.rewind()
+        (reader as MapJsonReader).rewind()
         planetFragment = PlanetFragment_ResponseAdapter.fromFields(reader, responseAdapterCache)
       }
 
+      reader.endObject()
       return PilotFragment.Data.Homeworld(
         __typename = __typename!!,
         planetFragment = planetFragment
       )
-      reader.endObject()
     }
 
     override fun toResponse(

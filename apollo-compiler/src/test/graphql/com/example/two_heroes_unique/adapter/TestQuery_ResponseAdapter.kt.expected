@@ -47,9 +47,9 @@ object TestQuery_ResponseAdapter : ResponseAdapter<TestQuery.Data> {
 
   override fun fromResponse(reader: JsonReader, responseAdapterCache: ResponseAdapterCache):
       TestQuery.Data {
-    reader.beginObject()
     var r2: TestQuery.Data.R2? = null
     var luke: TestQuery.Data.Luke? = null
+    reader.beginObject()
     while(true) {
       when (reader.selectName(RESPONSE_NAMES)) {
         0 -> r2 = R2.nullable().fromResponse(reader, responseAdapterCache)
@@ -57,11 +57,11 @@ object TestQuery_ResponseAdapter : ResponseAdapter<TestQuery.Data> {
         else -> break
       }
     }
+    reader.endObject()
     return TestQuery.Data(
       r2 = r2,
       luke = luke
     )
-    reader.endObject()
   }
 
   override fun toResponse(
@@ -89,18 +89,18 @@ object TestQuery_ResponseAdapter : ResponseAdapter<TestQuery.Data> {
 
     override fun fromResponse(reader: JsonReader, responseAdapterCache: ResponseAdapterCache):
         TestQuery.Data.R2 {
-      reader.beginObject()
       var name: String? = null
+      reader.beginObject()
       while(true) {
         when (reader.selectName(RESPONSE_NAMES)) {
           0 -> name = StringResponseAdapter.fromResponse(reader, responseAdapterCache)
           else -> break
         }
       }
+      reader.endObject()
       return TestQuery.Data.R2(
         name = name!!
       )
-      reader.endObject()
     }
 
     override fun toResponse(
@@ -131,9 +131,9 @@ object TestQuery_ResponseAdapter : ResponseAdapter<TestQuery.Data> {
 
     override fun fromResponse(reader: JsonReader, responseAdapterCache: ResponseAdapterCache):
         TestQuery.Data.Luke {
-      reader.beginObject()
       var id: String? = null
       var name: String? = null
+      reader.beginObject()
       while(true) {
         when (reader.selectName(RESPONSE_NAMES)) {
           0 -> id = StringResponseAdapter.fromResponse(reader, responseAdapterCache)
@@ -141,11 +141,11 @@ object TestQuery_ResponseAdapter : ResponseAdapter<TestQuery.Data> {
           else -> break
         }
       }
+      reader.endObject()
       return TestQuery.Data.Luke(
         id = id!!,
         name = name!!
       )
-      reader.endObject()
     }
 
     override fun toResponse(

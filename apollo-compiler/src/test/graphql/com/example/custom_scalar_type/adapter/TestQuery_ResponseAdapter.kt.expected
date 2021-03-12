@@ -40,18 +40,18 @@ object TestQuery_ResponseAdapter : ResponseAdapter<TestQuery.Data> {
 
   override fun fromResponse(reader: JsonReader, responseAdapterCache: ResponseAdapterCache):
       TestQuery.Data {
-    reader.beginObject()
     var hero: TestQuery.Data.Hero? = null
+    reader.beginObject()
     while(true) {
       when (reader.selectName(RESPONSE_NAMES)) {
         0 -> hero = Hero.nullable().fromResponse(reader, responseAdapterCache)
         else -> break
       }
     }
+    reader.endObject()
     return TestQuery.Data(
       hero = hero
     )
-    reader.endObject()
   }
 
   override fun toResponse(
@@ -99,13 +99,13 @@ object TestQuery_ResponseAdapter : ResponseAdapter<TestQuery.Data> {
 
     override fun fromResponse(reader: JsonReader, responseAdapterCache: ResponseAdapterCache):
         TestQuery.Data.Hero {
-      reader.beginObject()
       var name: String? = null
       var birthDate: Date? = null
       var appearanceDates: List<Date>? = null
       var fieldWithUnsupportedType: Any? = null
       var profileLink: java.lang.String? = null
       var links: List<java.lang.String>? = null
+      reader.beginObject()
       while(true) {
         when (reader.selectName(RESPONSE_NAMES)) {
           0 -> name = StringResponseAdapter.fromResponse(reader, responseAdapterCache)
@@ -122,6 +122,7 @@ object TestQuery_ResponseAdapter : ResponseAdapter<TestQuery.Data> {
           else -> break
         }
       }
+      reader.endObject()
       return TestQuery.Data.Hero(
         name = name!!,
         birthDate = birthDate!!,
@@ -130,7 +131,6 @@ object TestQuery_ResponseAdapter : ResponseAdapter<TestQuery.Data> {
         profileLink = profileLink!!,
         links = links!!
       )
-      reader.endObject()
     }
 
     override fun toResponse(

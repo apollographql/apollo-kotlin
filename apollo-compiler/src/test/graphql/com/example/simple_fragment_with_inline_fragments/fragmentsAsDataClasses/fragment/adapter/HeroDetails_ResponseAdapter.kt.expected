@@ -11,6 +11,7 @@ import com.apollographql.apollo3.api.ResponseAdapter
 import com.apollographql.apollo3.api.ResponseAdapterCache
 import com.apollographql.apollo3.api.ResponseField
 import com.apollographql.apollo3.api.StringResponseAdapter
+import com.apollographql.apollo3.api.internal.json.MapJsonReader
 import com.apollographql.apollo3.api.internal.json.MapJsonReader.Companion.buffer
 import com.apollographql.apollo3.api.json.JsonReader
 import com.apollographql.apollo3.api.json.JsonWriter
@@ -99,8 +100,8 @@ object HeroDetails_ResponseAdapter : ResponseAdapter<HeroDetails.Data> {
 
     override fun fromResponse(reader: JsonReader, responseAdapterCache: ResponseAdapterCache):
         HeroDetails.Data.Friends {
-      reader.beginObject()
       val reader = reader.buffer()
+      reader.beginObject()
       var __typename: String? = null
       var name: String? = null
 
@@ -114,21 +115,21 @@ object HeroDetails_ResponseAdapter : ResponseAdapter<HeroDetails.Data> {
         }
       }
       if (__typename in arrayOf("Human")) {
-        reader.rewind()
+        (reader as MapJsonReader).rewind()
         asAsHuman = AsHuman.fromFields(reader, responseAdapterCache)
       }
       if (__typename in arrayOf("Droid")) {
-        reader.rewind()
+        (reader as MapJsonReader).rewind()
         asAsDroid = AsDroid.fromFields(reader, responseAdapterCache)
       }
 
+      reader.endObject()
       return HeroDetails.Data.Friends(
         __typename = __typename!!,
         name = name!!,
         asAsHuman = asAsHuman,
         asAsDroid = asAsDroid
       )
-      reader.endObject()
     }
 
     override fun toResponse(

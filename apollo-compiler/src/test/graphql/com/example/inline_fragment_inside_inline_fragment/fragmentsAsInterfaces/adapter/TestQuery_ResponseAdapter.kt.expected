@@ -42,18 +42,18 @@ object TestQuery_ResponseAdapter : ResponseAdapter<TestQuery.Data> {
 
   override fun fromResponse(reader: JsonReader, responseAdapterCache: ResponseAdapterCache):
       TestQuery.Data {
-    reader.beginObject()
     var search: List<TestQuery.Data.Search?>? = null
+    reader.beginObject()
     while(true) {
       when (reader.selectName(RESPONSE_NAMES)) {
         0 -> search = Search.nullable().list().nullable().fromResponse(reader, responseAdapterCache)
         else -> break
       }
     }
+    reader.endObject()
     return TestQuery.Data(
       search = search
     )
-    reader.endObject()
   }
 
   override fun toResponse(
@@ -78,7 +78,7 @@ object TestQuery_ResponseAdapter : ResponseAdapter<TestQuery.Data> {
         "Human" -> CharacterHumanSearch.fromResponse(reader, responseAdapterCache, typename)
         else -> OtherSearch.fromResponse(reader, responseAdapterCache, typename)
       }
-      reader.endObject()
+      .also { reader.endObject() }
     }
 
     override fun toResponse(
@@ -113,10 +113,10 @@ object TestQuery_ResponseAdapter : ResponseAdapter<TestQuery.Data> {
         responseAdapterCache: ResponseAdapterCache,
         __typename: String?
       ): TestQuery.Data.Search.CharacterDroidSearch {
-        reader.beginObject()
         var __typename: String? = __typename
         var name: String? = null
         var primaryFunction: String? = null
+        reader.beginObject()
         while(true) {
           when (reader.selectName(RESPONSE_NAMES)) {
             0 -> __typename = StringResponseAdapter.fromResponse(reader, responseAdapterCache)
@@ -126,12 +126,12 @@ object TestQuery_ResponseAdapter : ResponseAdapter<TestQuery.Data> {
             else -> break
           }
         }
+        reader.endObject()
         return TestQuery.Data.Search.CharacterDroidSearch(
           __typename = __typename!!,
           name = name!!,
           primaryFunction = primaryFunction
         )
-        reader.endObject()
       }
 
       fun toResponse(
@@ -171,10 +171,10 @@ object TestQuery_ResponseAdapter : ResponseAdapter<TestQuery.Data> {
         responseAdapterCache: ResponseAdapterCache,
         __typename: String?
       ): TestQuery.Data.Search.CharacterHumanSearch {
-        reader.beginObject()
         var __typename: String? = __typename
         var name: String? = null
         var homePlanet: String? = null
+        reader.beginObject()
         while(true) {
           when (reader.selectName(RESPONSE_NAMES)) {
             0 -> __typename = StringResponseAdapter.fromResponse(reader, responseAdapterCache)
@@ -184,12 +184,12 @@ object TestQuery_ResponseAdapter : ResponseAdapter<TestQuery.Data> {
             else -> break
           }
         }
+        reader.endObject()
         return TestQuery.Data.Search.CharacterHumanSearch(
           __typename = __typename!!,
           name = name!!,
           homePlanet = homePlanet
         )
-        reader.endObject()
       }
 
       fun toResponse(
@@ -220,18 +220,18 @@ object TestQuery_ResponseAdapter : ResponseAdapter<TestQuery.Data> {
         responseAdapterCache: ResponseAdapterCache,
         __typename: String?
       ): TestQuery.Data.Search.OtherSearch {
-        reader.beginObject()
         var __typename: String? = __typename
+        reader.beginObject()
         while(true) {
           when (reader.selectName(RESPONSE_NAMES)) {
             0 -> __typename = StringResponseAdapter.fromResponse(reader, responseAdapterCache)
             else -> break
           }
         }
+        reader.endObject()
         return TestQuery.Data.Search.OtherSearch(
           __typename = __typename!!
         )
-        reader.endObject()
       }
 
       fun toResponse(

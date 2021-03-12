@@ -39,10 +39,10 @@ object CharacterDetailsImpl_ResponseAdapter : ResponseAdapter<CharacterDetailsIm
 
   override fun fromResponse(reader: JsonReader, responseAdapterCache: ResponseAdapterCache):
       CharacterDetailsImpl.Data {
-    reader.beginObject()
     var __typename: String? = null
     var name: String? = null
     var birthDate: Any? = null
+    reader.beginObject()
     while(true) {
       when (reader.selectName(RESPONSE_NAMES)) {
         0 -> __typename = StringResponseAdapter.fromResponse(reader, responseAdapterCache)
@@ -52,12 +52,12 @@ object CharacterDetailsImpl_ResponseAdapter : ResponseAdapter<CharacterDetailsIm
         else -> break
       }
     }
+    reader.endObject()
     return CharacterDetailsImpl.Data(
       __typename = __typename!!,
       name = name!!,
       birthDate = birthDate!!
     )
-    reader.endObject()
   }
 
   override fun toResponse(

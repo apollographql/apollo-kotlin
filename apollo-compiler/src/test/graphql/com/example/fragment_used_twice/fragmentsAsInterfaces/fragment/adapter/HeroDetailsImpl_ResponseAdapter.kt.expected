@@ -33,7 +33,7 @@ object HeroDetailsImpl_ResponseAdapter : ResponseAdapter<HeroDetailsImpl.Data> {
       "Human" -> CharacterData.fromResponse(reader, responseAdapterCache, typename)
       else -> OtherData.fromResponse(reader, responseAdapterCache, typename)
     }
-    reader.endObject()
+    .also { reader.endObject() }
   }
 
   override fun toResponse(
@@ -67,10 +67,10 @@ object HeroDetailsImpl_ResponseAdapter : ResponseAdapter<HeroDetailsImpl.Data> {
       responseAdapterCache: ResponseAdapterCache,
       __typename: String?
     ): HeroDetailsImpl.Data.CharacterData {
-      reader.beginObject()
       var __typename: String? = __typename
       var name: String? = null
       var birthDate: Any? = null
+      reader.beginObject()
       while(true) {
         when (reader.selectName(RESPONSE_NAMES)) {
           0 -> __typename = StringResponseAdapter.fromResponse(reader, responseAdapterCache)
@@ -80,12 +80,12 @@ object HeroDetailsImpl_ResponseAdapter : ResponseAdapter<HeroDetailsImpl.Data> {
           else -> break
         }
       }
+      reader.endObject()
       return HeroDetailsImpl.Data.CharacterData(
         __typename = __typename!!,
         name = name!!,
         birthDate = birthDate!!
       )
-      reader.endObject()
     }
 
     fun toResponse(
@@ -121,9 +121,9 @@ object HeroDetailsImpl_ResponseAdapter : ResponseAdapter<HeroDetailsImpl.Data> {
       responseAdapterCache: ResponseAdapterCache,
       __typename: String?
     ): HeroDetailsImpl.Data.OtherData {
-      reader.beginObject()
       var __typename: String? = __typename
       var name: String? = null
+      reader.beginObject()
       while(true) {
         when (reader.selectName(RESPONSE_NAMES)) {
           0 -> __typename = StringResponseAdapter.fromResponse(reader, responseAdapterCache)
@@ -131,11 +131,11 @@ object HeroDetailsImpl_ResponseAdapter : ResponseAdapter<HeroDetailsImpl.Data> {
           else -> break
         }
       }
+      reader.endObject()
       return HeroDetailsImpl.Data.OtherData(
         __typename = __typename!!,
         name = name!!
       )
-      reader.endObject()
     }
 
     fun toResponse(

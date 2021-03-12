@@ -40,18 +40,18 @@ object AllStarships_ResponseAdapter : ResponseAdapter<AllStarships.Data> {
 
   override fun fromResponse(reader: JsonReader, responseAdapterCache: ResponseAdapterCache):
       com.example.fragment_in_fragment.AllStarships.Data {
-    reader.beginObject()
     var allStarships: com.example.fragment_in_fragment.AllStarships.Data.AllStarships? = null
+    reader.beginObject()
     while(true) {
       when (reader.selectName(RESPONSE_NAMES)) {
         0 -> allStarships = AllStarships.nullable().fromResponse(reader, responseAdapterCache)
         else -> break
       }
     }
+    reader.endObject()
     return com.example.fragment_in_fragment.AllStarships.Data(
       allStarships = allStarships
     )
-    reader.endObject()
   }
 
   override fun toResponse(
@@ -81,18 +81,18 @@ object AllStarships_ResponseAdapter : ResponseAdapter<AllStarships.Data> {
 
     override fun fromResponse(reader: JsonReader, responseAdapterCache: ResponseAdapterCache):
         com.example.fragment_in_fragment.AllStarships.Data.AllStarships {
-      reader.beginObject()
       var edges: List<com.example.fragment_in_fragment.AllStarships.Data.AllStarships.Edges?>? = null
+      reader.beginObject()
       while(true) {
         when (reader.selectName(RESPONSE_NAMES)) {
           0 -> edges = Edges.nullable().list().nullable().fromResponse(reader, responseAdapterCache)
           else -> break
         }
       }
+      reader.endObject()
       return com.example.fragment_in_fragment.AllStarships.Data.AllStarships(
         edges = edges
       )
-      reader.endObject()
     }
 
     override fun toResponse(
@@ -123,18 +123,18 @@ object AllStarships_ResponseAdapter : ResponseAdapter<AllStarships.Data> {
 
       override fun fromResponse(reader: JsonReader, responseAdapterCache: ResponseAdapterCache):
           com.example.fragment_in_fragment.AllStarships.Data.AllStarships.Edges {
-        reader.beginObject()
         var node: com.example.fragment_in_fragment.AllStarships.Data.AllStarships.Edges.Node? = null
+        reader.beginObject()
         while(true) {
           when (reader.selectName(RESPONSE_NAMES)) {
             0 -> node = Node.nullable().fromResponse(reader, responseAdapterCache)
             else -> break
           }
         }
+        reader.endObject()
         return com.example.fragment_in_fragment.AllStarships.Data.AllStarships.Edges(
           node = node
         )
-        reader.endObject()
       }
 
       override fun toResponse(
@@ -160,7 +160,7 @@ object AllStarships_ResponseAdapter : ResponseAdapter<AllStarships.Data> {
             "Starship" -> StarshipNode.fromResponse(reader, responseAdapterCache, typename)
             else -> OtherNode.fromResponse(reader, responseAdapterCache, typename)
           }
-          reader.endObject()
+          .also { reader.endObject() }
         }
 
         override fun toResponse(
@@ -202,11 +202,11 @@ object AllStarships_ResponseAdapter : ResponseAdapter<AllStarships.Data> {
             __typename: String?
           ):
               com.example.fragment_in_fragment.AllStarships.Data.AllStarships.Edges.Node.StarshipNode {
-            reader.beginObject()
             var __typename: String? = __typename
             var id: String? = null
             var name: String? = null
             var pilotConnection: com.example.fragment_in_fragment.AllStarships.Data.AllStarships.Edges.Node.StarshipNode.PilotConnection? = null
+            reader.beginObject()
             while(true) {
               when (reader.selectName(RESPONSE_NAMES)) {
                 0 -> __typename = StringResponseAdapter.fromResponse(reader, responseAdapterCache)
@@ -217,13 +217,13 @@ object AllStarships_ResponseAdapter : ResponseAdapter<AllStarships.Data> {
                 else -> break
               }
             }
+            reader.endObject()
             return com.example.fragment_in_fragment.AllStarships.Data.AllStarships.Edges.Node.StarshipNode(
               __typename = __typename!!,
               id = id!!,
               name = name,
               pilotConnection = pilotConnection
             )
-            reader.endObject()
           }
 
           fun toResponse(
@@ -263,8 +263,8 @@ object AllStarships_ResponseAdapter : ResponseAdapter<AllStarships.Data> {
             override fun fromResponse(reader: JsonReader,
                 responseAdapterCache: ResponseAdapterCache):
                 com.example.fragment_in_fragment.AllStarships.Data.AllStarships.Edges.Node.StarshipNode.PilotConnection {
-              reader.beginObject()
               var edges: List<com.example.fragment_in_fragment.AllStarships.Data.AllStarships.Edges.Node.StarshipNode.PilotConnection.Edges?>? = null
+              reader.beginObject()
               while(true) {
                 when (reader.selectName(RESPONSE_NAMES)) {
                   0 -> edges = Edges.nullable().list().nullable().fromResponse(reader,
@@ -272,10 +272,10 @@ object AllStarships_ResponseAdapter : ResponseAdapter<AllStarships.Data> {
                   else -> break
                 }
               }
+              reader.endObject()
               return com.example.fragment_in_fragment.AllStarships.Data.AllStarships.Edges.Node.StarshipNode.PilotConnection(
                 edges = edges
               )
-              reader.endObject()
             }
 
             override fun toResponse(
@@ -309,18 +309,18 @@ object AllStarships_ResponseAdapter : ResponseAdapter<AllStarships.Data> {
               override fun fromResponse(reader: JsonReader,
                   responseAdapterCache: ResponseAdapterCache):
                   com.example.fragment_in_fragment.AllStarships.Data.AllStarships.Edges.Node.StarshipNode.PilotConnection.Edges {
-                reader.beginObject()
                 var node: com.example.fragment_in_fragment.AllStarships.Data.AllStarships.Edges.Node.StarshipNode.PilotConnection.Edges.Node? = null
+                reader.beginObject()
                 while(true) {
                   when (reader.selectName(RESPONSE_NAMES)) {
                     0 -> node = Node.nullable().fromResponse(reader, responseAdapterCache)
                     else -> break
                   }
                 }
+                reader.endObject()
                 return com.example.fragment_in_fragment.AllStarships.Data.AllStarships.Edges.Node.StarshipNode.PilotConnection.Edges(
                   node = node
                 )
-                reader.endObject()
               }
 
               override fun toResponse(
@@ -347,7 +347,7 @@ object AllStarships_ResponseAdapter : ResponseAdapter<AllStarships.Data> {
                     "Person" -> PersonNode.fromResponse(reader, responseAdapterCache, typename)
                     else -> OtherNode.fromResponse(reader, responseAdapterCache, typename)
                   }
-                  reader.endObject()
+                  .also { reader.endObject() }
                 }
 
                 override fun toResponse(
@@ -386,10 +386,10 @@ object AllStarships_ResponseAdapter : ResponseAdapter<AllStarships.Data> {
                     __typename: String?
                   ):
                       com.example.fragment_in_fragment.AllStarships.Data.AllStarships.Edges.Node.StarshipNode.PilotConnection.Edges.Node.PersonNode {
-                    reader.beginObject()
                     var __typename: String? = __typename
                     var name: String? = null
                     var homeworld: com.example.fragment_in_fragment.AllStarships.Data.AllStarships.Edges.Node.StarshipNode.PilotConnection.Edges.Node.PersonNode.Homeworld? = null
+                    reader.beginObject()
                     while(true) {
                       when (reader.selectName(RESPONSE_NAMES)) {
                         0 -> __typename = StringResponseAdapter.fromResponse(reader,
@@ -401,12 +401,12 @@ object AllStarships_ResponseAdapter : ResponseAdapter<AllStarships.Data> {
                         else -> break
                       }
                     }
+                    reader.endObject()
                     return com.example.fragment_in_fragment.AllStarships.Data.AllStarships.Edges.Node.StarshipNode.PilotConnection.Edges.Node.PersonNode(
                       __typename = __typename!!,
                       name = name,
                       homeworld = homeworld
                     )
-                    reader.endObject()
                   }
 
                   fun toResponse(
@@ -438,7 +438,7 @@ object AllStarships_ResponseAdapter : ResponseAdapter<AllStarships.Data> {
                         "Planet" -> PlanetHomeworld.fromResponse(reader, responseAdapterCache, typename)
                         else -> OtherHomeworld.fromResponse(reader, responseAdapterCache, typename)
                       }
-                      reader.endObject()
+                      .also { reader.endObject() }
                     }
 
                     override fun toResponse(
@@ -469,9 +469,9 @@ object AllStarships_ResponseAdapter : ResponseAdapter<AllStarships.Data> {
                         __typename: String?
                       ):
                           com.example.fragment_in_fragment.AllStarships.Data.AllStarships.Edges.Node.StarshipNode.PilotConnection.Edges.Node.PersonNode.Homeworld.PlanetHomeworld {
-                        reader.beginObject()
                         var __typename: String? = __typename
                         var name: String? = null
+                        reader.beginObject()
                         while(true) {
                           when (reader.selectName(RESPONSE_NAMES)) {
                             0 -> __typename = StringResponseAdapter.fromResponse(reader,
@@ -481,11 +481,11 @@ object AllStarships_ResponseAdapter : ResponseAdapter<AllStarships.Data> {
                             else -> break
                           }
                         }
+                        reader.endObject()
                         return com.example.fragment_in_fragment.AllStarships.Data.AllStarships.Edges.Node.StarshipNode.PilotConnection.Edges.Node.PersonNode.Homeworld.PlanetHomeworld(
                           __typename = __typename!!,
                           name = name
                         )
-                        reader.endObject()
                       }
 
                       fun toResponse(
@@ -517,8 +517,8 @@ object AllStarships_ResponseAdapter : ResponseAdapter<AllStarships.Data> {
                         __typename: String?
                       ):
                           com.example.fragment_in_fragment.AllStarships.Data.AllStarships.Edges.Node.StarshipNode.PilotConnection.Edges.Node.PersonNode.Homeworld.OtherHomeworld {
-                        reader.beginObject()
                         var __typename: String? = __typename
+                        reader.beginObject()
                         while(true) {
                           when (reader.selectName(RESPONSE_NAMES)) {
                             0 -> __typename = StringResponseAdapter.fromResponse(reader,
@@ -526,10 +526,10 @@ object AllStarships_ResponseAdapter : ResponseAdapter<AllStarships.Data> {
                             else -> break
                           }
                         }
+                        reader.endObject()
                         return com.example.fragment_in_fragment.AllStarships.Data.AllStarships.Edges.Node.StarshipNode.PilotConnection.Edges.Node.PersonNode.Homeworld.OtherHomeworld(
                           __typename = __typename!!
                         )
-                        reader.endObject()
                       }
 
                       fun toResponse(
@@ -560,8 +560,8 @@ object AllStarships_ResponseAdapter : ResponseAdapter<AllStarships.Data> {
                     __typename: String?
                   ):
                       com.example.fragment_in_fragment.AllStarships.Data.AllStarships.Edges.Node.StarshipNode.PilotConnection.Edges.Node.OtherNode {
-                    reader.beginObject()
                     var __typename: String? = __typename
+                    reader.beginObject()
                     while(true) {
                       when (reader.selectName(RESPONSE_NAMES)) {
                         0 -> __typename = StringResponseAdapter.fromResponse(reader,
@@ -569,10 +569,10 @@ object AllStarships_ResponseAdapter : ResponseAdapter<AllStarships.Data> {
                         else -> break
                       }
                     }
+                    reader.endObject()
                     return com.example.fragment_in_fragment.AllStarships.Data.AllStarships.Edges.Node.StarshipNode.PilotConnection.Edges.Node.OtherNode(
                       __typename = __typename!!
                     )
-                    reader.endObject()
                   }
 
                   fun toResponse(
@@ -603,18 +603,18 @@ object AllStarships_ResponseAdapter : ResponseAdapter<AllStarships.Data> {
             responseAdapterCache: ResponseAdapterCache,
             __typename: String?
           ): com.example.fragment_in_fragment.AllStarships.Data.AllStarships.Edges.Node.OtherNode {
-            reader.beginObject()
             var __typename: String? = __typename
+            reader.beginObject()
             while(true) {
               when (reader.selectName(RESPONSE_NAMES)) {
                 0 -> __typename = StringResponseAdapter.fromResponse(reader, responseAdapterCache)
                 else -> break
               }
             }
+            reader.endObject()
             return com.example.fragment_in_fragment.AllStarships.Data.AllStarships.Edges.Node.OtherNode(
               __typename = __typename!!
             )
-            reader.endObject()
           }
 
           fun toResponse(

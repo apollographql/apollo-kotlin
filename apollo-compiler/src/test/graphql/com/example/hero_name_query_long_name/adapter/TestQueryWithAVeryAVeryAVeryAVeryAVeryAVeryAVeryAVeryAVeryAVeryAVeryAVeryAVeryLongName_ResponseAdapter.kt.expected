@@ -45,8 +45,8 @@ object
 
   override fun fromResponse(reader: JsonReader, responseAdapterCache: ResponseAdapterCache):
       TestQueryWithAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryLongName.Data {
-    reader.beginObject()
     var heroAVeryAVeryAVeryAVeryAVeryAVeryAV: TestQueryWithAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryLongName.Data.HeroAVeryAVeryAVeryAVeryAVeryAVeryAV? = null
+    reader.beginObject()
     while(true) {
       when (reader.selectName(RESPONSE_NAMES)) {
         0 -> heroAVeryAVeryAVeryAVeryAVeryAVeryAV = HeroAVeryAVeryAVeryAVeryAVeryAVeryAV.nullable().fromResponse(reader,
@@ -54,10 +54,10 @@ object
         else -> break
       }
     }
+    reader.endObject()
     return TestQueryWithAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryLongName.Data(
       heroAVeryAVeryAVeryAVeryAVeryAVeryAV = heroAVeryAVeryAVeryAVeryAVeryAVeryAV
     )
-    reader.endObject()
   }
 
   override fun toResponse(
@@ -88,8 +88,8 @@ object
 
     override fun fromResponse(reader: JsonReader, responseAdapterCache: ResponseAdapterCache):
         TestQueryWithAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryLongName.Data.HeroAVeryAVeryAVeryAVeryAVeryAVeryAV {
-      reader.beginObject()
       var nameAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryLongName: String? = null
+      reader.beginObject()
       while(true) {
         when (reader.selectName(RESPONSE_NAMES)) {
           0 -> nameAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryLongName = StringResponseAdapter.fromResponse(reader,
@@ -97,10 +97,10 @@ object
           else -> break
         }
       }
+      reader.endObject()
       return TestQueryWithAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryLongName.Data.HeroAVeryAVeryAVeryAVeryAVeryAVeryAV(
         nameAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryLongName = nameAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryLongName!!
       )
-      reader.endObject()
     }
 
     override fun toResponse(

@@ -60,11 +60,11 @@ object QueryFragmentImpl_ResponseAdapter : ResponseAdapter<QueryFragmentImpl.Dat
 
   override fun fromResponse(reader: JsonReader, responseAdapterCache: ResponseAdapterCache):
       QueryFragmentImpl.Data {
-    reader.beginObject()
     var __typename: String? = null
     var hero: QueryFragmentImpl.Data.Hero? = null
     var droid: QueryFragmentImpl.Data.Droid? = null
     var human: QueryFragmentImpl.Data.Human? = null
+    reader.beginObject()
     while(true) {
       when (reader.selectName(RESPONSE_NAMES)) {
         0 -> __typename = StringResponseAdapter.fromResponse(reader, responseAdapterCache)
@@ -74,13 +74,13 @@ object QueryFragmentImpl_ResponseAdapter : ResponseAdapter<QueryFragmentImpl.Dat
         else -> break
       }
     }
+    reader.endObject()
     return QueryFragmentImpl.Data(
       __typename = __typename!!,
       hero = hero,
       droid = droid,
       human = human
     )
-    reader.endObject()
   }
 
   override fun toResponse(
@@ -111,7 +111,7 @@ object QueryFragmentImpl_ResponseAdapter : ResponseAdapter<QueryFragmentImpl.Dat
         "Human" -> CharacterHero.fromResponse(reader, responseAdapterCache, typename)
         else -> OtherHero.fromResponse(reader, responseAdapterCache, typename)
       }
-      reader.endObject()
+      .also { reader.endObject() }
     }
 
     override fun toResponse(
@@ -141,9 +141,9 @@ object QueryFragmentImpl_ResponseAdapter : ResponseAdapter<QueryFragmentImpl.Dat
         responseAdapterCache: ResponseAdapterCache,
         __typename: String?
       ): QueryFragmentImpl.Data.Hero.CharacterHero {
-        reader.beginObject()
         var __typename: String? = __typename
         var name: String? = null
+        reader.beginObject()
         while(true) {
           when (reader.selectName(RESPONSE_NAMES)) {
             0 -> __typename = StringResponseAdapter.fromResponse(reader, responseAdapterCache)
@@ -151,11 +151,11 @@ object QueryFragmentImpl_ResponseAdapter : ResponseAdapter<QueryFragmentImpl.Dat
             else -> break
           }
         }
+        reader.endObject()
         return QueryFragmentImpl.Data.Hero.CharacterHero(
           __typename = __typename!!,
           name = name!!
         )
-        reader.endObject()
       }
 
       fun toResponse(
@@ -184,18 +184,18 @@ object QueryFragmentImpl_ResponseAdapter : ResponseAdapter<QueryFragmentImpl.Dat
         responseAdapterCache: ResponseAdapterCache,
         __typename: String?
       ): QueryFragmentImpl.Data.Hero.OtherHero {
-        reader.beginObject()
         var __typename: String? = __typename
+        reader.beginObject()
         while(true) {
           when (reader.selectName(RESPONSE_NAMES)) {
             0 -> __typename = StringResponseAdapter.fromResponse(reader, responseAdapterCache)
             else -> break
           }
         }
+        reader.endObject()
         return QueryFragmentImpl.Data.Hero.OtherHero(
           __typename = __typename!!
         )
-        reader.endObject()
       }
 
       fun toResponse(
@@ -221,7 +221,7 @@ object QueryFragmentImpl_ResponseAdapter : ResponseAdapter<QueryFragmentImpl.Dat
         "Droid" -> DroidDroid.fromResponse(reader, responseAdapterCache, typename)
         else -> OtherDroid.fromResponse(reader, responseAdapterCache, typename)
       }
-      reader.endObject()
+      .also { reader.endObject() }
     }
 
     override fun toResponse(
@@ -255,10 +255,10 @@ object QueryFragmentImpl_ResponseAdapter : ResponseAdapter<QueryFragmentImpl.Dat
         responseAdapterCache: ResponseAdapterCache,
         __typename: String?
       ): QueryFragmentImpl.Data.Droid.DroidDroid {
-        reader.beginObject()
         var __typename: String? = __typename
         var name: String? = null
         var primaryFunction: String? = null
+        reader.beginObject()
         while(true) {
           when (reader.selectName(RESPONSE_NAMES)) {
             0 -> __typename = StringResponseAdapter.fromResponse(reader, responseAdapterCache)
@@ -268,12 +268,12 @@ object QueryFragmentImpl_ResponseAdapter : ResponseAdapter<QueryFragmentImpl.Dat
             else -> break
           }
         }
+        reader.endObject()
         return QueryFragmentImpl.Data.Droid.DroidDroid(
           __typename = __typename!!,
           name = name!!,
           primaryFunction = primaryFunction
         )
-        reader.endObject()
       }
 
       fun toResponse(
@@ -305,18 +305,18 @@ object QueryFragmentImpl_ResponseAdapter : ResponseAdapter<QueryFragmentImpl.Dat
         responseAdapterCache: ResponseAdapterCache,
         __typename: String?
       ): QueryFragmentImpl.Data.Droid.OtherDroid {
-        reader.beginObject()
         var __typename: String? = __typename
+        reader.beginObject()
         while(true) {
           when (reader.selectName(RESPONSE_NAMES)) {
             0 -> __typename = StringResponseAdapter.fromResponse(reader, responseAdapterCache)
             else -> break
           }
         }
+        reader.endObject()
         return QueryFragmentImpl.Data.Droid.OtherDroid(
           __typename = __typename!!
         )
-        reader.endObject()
       }
 
       fun toResponse(
@@ -342,7 +342,7 @@ object QueryFragmentImpl_ResponseAdapter : ResponseAdapter<QueryFragmentImpl.Dat
         "Human" -> HumanHuman.fromResponse(reader, responseAdapterCache, typename)
         else -> OtherHuman.fromResponse(reader, responseAdapterCache, typename)
       }
-      reader.endObject()
+      .also { reader.endObject() }
     }
 
     override fun toResponse(
@@ -376,10 +376,10 @@ object QueryFragmentImpl_ResponseAdapter : ResponseAdapter<QueryFragmentImpl.Dat
         responseAdapterCache: ResponseAdapterCache,
         __typename: String?
       ): QueryFragmentImpl.Data.Human.HumanHuman {
-        reader.beginObject()
         var __typename: String? = __typename
         var name: String? = null
         var homePlanet: String? = null
+        reader.beginObject()
         while(true) {
           when (reader.selectName(RESPONSE_NAMES)) {
             0 -> __typename = StringResponseAdapter.fromResponse(reader, responseAdapterCache)
@@ -389,12 +389,12 @@ object QueryFragmentImpl_ResponseAdapter : ResponseAdapter<QueryFragmentImpl.Dat
             else -> break
           }
         }
+        reader.endObject()
         return QueryFragmentImpl.Data.Human.HumanHuman(
           __typename = __typename!!,
           name = name!!,
           homePlanet = homePlanet
         )
-        reader.endObject()
       }
 
       fun toResponse(
@@ -425,18 +425,18 @@ object QueryFragmentImpl_ResponseAdapter : ResponseAdapter<QueryFragmentImpl.Dat
         responseAdapterCache: ResponseAdapterCache,
         __typename: String?
       ): QueryFragmentImpl.Data.Human.OtherHuman {
-        reader.beginObject()
         var __typename: String? = __typename
+        reader.beginObject()
         while(true) {
           when (reader.selectName(RESPONSE_NAMES)) {
             0 -> __typename = StringResponseAdapter.fromResponse(reader, responseAdapterCache)
             else -> break
           }
         }
+        reader.endObject()
         return QueryFragmentImpl.Data.Human.OtherHuman(
           __typename = __typename!!
         )
-        reader.endObject()
       }
 
       fun toResponse(

@@ -47,11 +47,11 @@ object StarshipFragmentImpl_ResponseAdapter : ResponseAdapter<StarshipFragmentIm
 
   override fun fromResponse(reader: JsonReader, responseAdapterCache: ResponseAdapterCache):
       StarshipFragmentImpl.Data {
-    reader.beginObject()
     var __typename: String? = null
     var id: String? = null
     var name: String? = null
     var pilotConnection: StarshipFragmentImpl.Data.PilotConnection? = null
+    reader.beginObject()
     while(true) {
       when (reader.selectName(RESPONSE_NAMES)) {
         0 -> __typename = StringResponseAdapter.fromResponse(reader, responseAdapterCache)
@@ -61,13 +61,13 @@ object StarshipFragmentImpl_ResponseAdapter : ResponseAdapter<StarshipFragmentIm
         else -> break
       }
     }
+    reader.endObject()
     return StarshipFragmentImpl.Data(
       __typename = __typename!!,
       id = id!!,
       name = name,
       pilotConnection = pilotConnection
     )
-    reader.endObject()
   }
 
   override fun toResponse(
@@ -102,18 +102,18 @@ object StarshipFragmentImpl_ResponseAdapter : ResponseAdapter<StarshipFragmentIm
 
     override fun fromResponse(reader: JsonReader, responseAdapterCache: ResponseAdapterCache):
         StarshipFragmentImpl.Data.PilotConnection {
-      reader.beginObject()
       var edges: List<StarshipFragmentImpl.Data.PilotConnection.Edges?>? = null
+      reader.beginObject()
       while(true) {
         when (reader.selectName(RESPONSE_NAMES)) {
           0 -> edges = Edges.nullable().list().nullable().fromResponse(reader, responseAdapterCache)
           else -> break
         }
       }
+      reader.endObject()
       return StarshipFragmentImpl.Data.PilotConnection(
         edges = edges
       )
-      reader.endObject()
     }
 
     override fun toResponse(
@@ -143,18 +143,18 @@ object StarshipFragmentImpl_ResponseAdapter : ResponseAdapter<StarshipFragmentIm
 
       override fun fromResponse(reader: JsonReader, responseAdapterCache: ResponseAdapterCache):
           StarshipFragmentImpl.Data.PilotConnection.Edges {
-        reader.beginObject()
         var node: StarshipFragmentImpl.Data.PilotConnection.Edges.Node? = null
+        reader.beginObject()
         while(true) {
           when (reader.selectName(RESPONSE_NAMES)) {
             0 -> node = Node.nullable().fromResponse(reader, responseAdapterCache)
             else -> break
           }
         }
+        reader.endObject()
         return StarshipFragmentImpl.Data.PilotConnection.Edges(
           node = node
         )
-        reader.endObject()
       }
 
       override fun toResponse(
@@ -178,7 +178,7 @@ object StarshipFragmentImpl_ResponseAdapter : ResponseAdapter<StarshipFragmentIm
             "Person" -> PersonNode.fromResponse(reader, responseAdapterCache, typename)
             else -> OtherNode.fromResponse(reader, responseAdapterCache, typename)
           }
-          reader.endObject()
+          .also { reader.endObject() }
         }
 
         override fun toResponse(
@@ -216,10 +216,10 @@ object StarshipFragmentImpl_ResponseAdapter : ResponseAdapter<StarshipFragmentIm
             responseAdapterCache: ResponseAdapterCache,
             __typename: String?
           ): StarshipFragmentImpl.Data.PilotConnection.Edges.Node.PersonNode {
-            reader.beginObject()
             var __typename: String? = __typename
             var name: String? = null
             var homeworld: StarshipFragmentImpl.Data.PilotConnection.Edges.Node.PersonNode.Homeworld? = null
+            reader.beginObject()
             while(true) {
               when (reader.selectName(RESPONSE_NAMES)) {
                 0 -> __typename = StringResponseAdapter.fromResponse(reader, responseAdapterCache)
@@ -228,12 +228,12 @@ object StarshipFragmentImpl_ResponseAdapter : ResponseAdapter<StarshipFragmentIm
                 else -> break
               }
             }
+            reader.endObject()
             return StarshipFragmentImpl.Data.PilotConnection.Edges.Node.PersonNode(
               __typename = __typename!!,
               name = name,
               homeworld = homeworld
             )
-            reader.endObject()
           }
 
           fun toResponse(
@@ -264,7 +264,7 @@ object StarshipFragmentImpl_ResponseAdapter : ResponseAdapter<StarshipFragmentIm
                 "Planet" -> PlanetHomeworld.fromResponse(reader, responseAdapterCache, typename)
                 else -> OtherHomeworld.fromResponse(reader, responseAdapterCache, typename)
               }
-              reader.endObject()
+              .also { reader.endObject() }
             }
 
             override fun toResponse(
@@ -295,9 +295,9 @@ object StarshipFragmentImpl_ResponseAdapter : ResponseAdapter<StarshipFragmentIm
                 __typename: String?
               ):
                   StarshipFragmentImpl.Data.PilotConnection.Edges.Node.PersonNode.Homeworld.PlanetHomeworld {
-                reader.beginObject()
                 var __typename: String? = __typename
                 var name: String? = null
+                reader.beginObject()
                 while(true) {
                   when (reader.selectName(RESPONSE_NAMES)) {
                     0 -> __typename = StringResponseAdapter.fromResponse(reader,
@@ -307,11 +307,11 @@ object StarshipFragmentImpl_ResponseAdapter : ResponseAdapter<StarshipFragmentIm
                     else -> break
                   }
                 }
+                reader.endObject()
                 return StarshipFragmentImpl.Data.PilotConnection.Edges.Node.PersonNode.Homeworld.PlanetHomeworld(
                   __typename = __typename!!,
                   name = name
                 )
-                reader.endObject()
               }
 
               fun toResponse(
@@ -341,8 +341,8 @@ object StarshipFragmentImpl_ResponseAdapter : ResponseAdapter<StarshipFragmentIm
                 __typename: String?
               ):
                   StarshipFragmentImpl.Data.PilotConnection.Edges.Node.PersonNode.Homeworld.OtherHomeworld {
-                reader.beginObject()
                 var __typename: String? = __typename
+                reader.beginObject()
                 while(true) {
                   when (reader.selectName(RESPONSE_NAMES)) {
                     0 -> __typename = StringResponseAdapter.fromResponse(reader,
@@ -350,10 +350,10 @@ object StarshipFragmentImpl_ResponseAdapter : ResponseAdapter<StarshipFragmentIm
                     else -> break
                   }
                 }
+                reader.endObject()
                 return StarshipFragmentImpl.Data.PilotConnection.Edges.Node.PersonNode.Homeworld.OtherHomeworld(
                   __typename = __typename!!
                 )
-                reader.endObject()
               }
 
               fun toResponse(
@@ -382,18 +382,18 @@ object StarshipFragmentImpl_ResponseAdapter : ResponseAdapter<StarshipFragmentIm
             responseAdapterCache: ResponseAdapterCache,
             __typename: String?
           ): StarshipFragmentImpl.Data.PilotConnection.Edges.Node.OtherNode {
-            reader.beginObject()
             var __typename: String? = __typename
+            reader.beginObject()
             while(true) {
               when (reader.selectName(RESPONSE_NAMES)) {
                 0 -> __typename = StringResponseAdapter.fromResponse(reader, responseAdapterCache)
                 else -> break
               }
             }
+            reader.endObject()
             return StarshipFragmentImpl.Data.PilotConnection.Edges.Node.OtherNode(
               __typename = __typename!!
             )
-            reader.endObject()
           }
 
           fun toResponse(

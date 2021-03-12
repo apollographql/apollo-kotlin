@@ -10,6 +10,7 @@ import com.apollographql.apollo3.api.ResponseAdapter
 import com.apollographql.apollo3.api.ResponseAdapterCache
 import com.apollographql.apollo3.api.ResponseField
 import com.apollographql.apollo3.api.StringResponseAdapter
+import com.apollographql.apollo3.api.internal.json.MapJsonReader
 import com.apollographql.apollo3.api.internal.json.MapJsonReader.Companion.buffer
 import com.apollographql.apollo3.api.json.JsonReader
 import com.apollographql.apollo3.api.json.JsonWriter
@@ -40,18 +41,18 @@ object TestQuery_ResponseAdapter : ResponseAdapter<TestQuery.Data> {
 
   override fun fromResponse(reader: JsonReader, responseAdapterCache: ResponseAdapterCache):
       TestQuery.Data {
-    reader.beginObject()
     var nonOptionalHero: TestQuery.Data.NonOptionalHero? = null
+    reader.beginObject()
     while(true) {
       when (reader.selectName(RESPONSE_NAMES)) {
         0 -> nonOptionalHero = NonOptionalHero.fromResponse(reader, responseAdapterCache)
         else -> break
       }
     }
+    reader.endObject()
     return TestQuery.Data(
       nonOptionalHero = nonOptionalHero!!
     )
-    reader.endObject()
   }
 
   override fun toResponse(
@@ -78,8 +79,8 @@ object TestQuery_ResponseAdapter : ResponseAdapter<TestQuery.Data> {
 
     override fun fromResponse(reader: JsonReader, responseAdapterCache: ResponseAdapterCache):
         TestQuery.Data.NonOptionalHero {
-      reader.beginObject()
       val reader = reader.buffer()
+      reader.beginObject()
       var __typename: String? = null
       var name: String? = null
 
@@ -92,16 +93,16 @@ object TestQuery_ResponseAdapter : ResponseAdapter<TestQuery.Data> {
         }
       }
       if (__typename in arrayOf("Human")) {
-        reader.rewind()
+        (reader as MapJsonReader).rewind()
         asAsHuman = AsHuman.fromFields(reader, responseAdapterCache)
       }
 
+      reader.endObject()
       return TestQuery.Data.NonOptionalHero(
         __typename = __typename!!,
         name = name!!,
         asAsHuman = asAsHuman
       )
-      reader.endObject()
     }
 
     override fun toResponse(

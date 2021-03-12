@@ -9,6 +9,7 @@ import com.apollographql.apollo3.api.ResponseAdapter
 import com.apollographql.apollo3.api.ResponseAdapterCache
 import com.apollographql.apollo3.api.ResponseField
 import com.apollographql.apollo3.api.StringResponseAdapter
+import com.apollographql.apollo3.api.internal.json.MapJsonReader
 import com.apollographql.apollo3.api.internal.json.MapJsonReader.Companion.buffer
 import com.apollographql.apollo3.api.json.JsonReader
 import com.apollographql.apollo3.api.json.JsonWriter
@@ -50,9 +51,9 @@ object TestQuery_ResponseAdapter : ResponseAdapter<TestQuery.Data> {
 
   override fun fromResponse(reader: JsonReader, responseAdapterCache: ResponseAdapterCache):
       TestQuery.Data {
-    reader.beginObject()
     var yield_: TestQuery.Data.Yield? = null
     var objects: List<TestQuery.Data.Objects?>? = null
+    reader.beginObject()
     while(true) {
       when (reader.selectName(RESPONSE_NAMES)) {
         0 -> yield_ = Yield.nullable().fromResponse(reader, responseAdapterCache)
@@ -61,11 +62,11 @@ object TestQuery_ResponseAdapter : ResponseAdapter<TestQuery.Data> {
         else -> break
       }
     }
+    reader.endObject()
     return TestQuery.Data(
       yield_ = yield_,
       objects = objects
     )
-    reader.endObject()
   }
 
   override fun toResponse(
@@ -98,9 +99,9 @@ object TestQuery_ResponseAdapter : ResponseAdapter<TestQuery.Data> {
 
     override fun fromResponse(reader: JsonReader, responseAdapterCache: ResponseAdapterCache):
         TestQuery.Data.Yield {
-      reader.beginObject()
       var it_: String? = null
       var name: String? = null
+      reader.beginObject()
       while(true) {
         when (reader.selectName(RESPONSE_NAMES)) {
           0 -> it_ = StringResponseAdapter.fromResponse(reader, responseAdapterCache)
@@ -108,11 +109,11 @@ object TestQuery_ResponseAdapter : ResponseAdapter<TestQuery.Data> {
           else -> break
         }
       }
+      reader.endObject()
       return TestQuery.Data.Yield(
         it_ = it_!!,
         name = name!!
       )
-      reader.endObject()
     }
 
     override fun toResponse(
@@ -138,8 +139,8 @@ object TestQuery_ResponseAdapter : ResponseAdapter<TestQuery.Data> {
 
     override fun fromResponse(reader: JsonReader, responseAdapterCache: ResponseAdapterCache):
         TestQuery.Data.Objects {
-      reader.beginObject()
       val reader = reader.buffer()
+      reader.beginObject()
       var __typename: String? = null
 
       var asAsCharacter: TestQuery.Data.Objects.AsCharacter? = null
@@ -150,15 +151,15 @@ object TestQuery_ResponseAdapter : ResponseAdapter<TestQuery.Data> {
         }
       }
       if (__typename in arrayOf("Droid", "Human")) {
-        reader.rewind()
+        (reader as MapJsonReader).rewind()
         asAsCharacter = AsCharacter.fromFields(reader, responseAdapterCache)
       }
 
+      reader.endObject()
       return TestQuery.Data.Objects(
         __typename = __typename!!,
         asAsCharacter = asAsCharacter
       )
-      reader.endObject()
     }
 
     override fun toResponse(

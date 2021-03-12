@@ -38,18 +38,18 @@ object TestQuery_ResponseAdapter : ResponseAdapter<TestQuery.Data> {
 
   override fun fromResponse(reader: JsonReader, responseAdapterCache: ResponseAdapterCache):
       TestQuery.Data {
-    reader.beginObject()
     var hero: TestQuery.Data.Hero? = null
+    reader.beginObject()
     while(true) {
       when (reader.selectName(RESPONSE_NAMES)) {
         0 -> hero = Hero.nullable().fromResponse(reader, responseAdapterCache)
         else -> break
       }
     }
+    reader.endObject()
     return TestQuery.Data(
       hero = hero
     )
-    reader.endObject()
   }
 
   override fun toResponse(
@@ -88,9 +88,9 @@ object TestQuery_ResponseAdapter : ResponseAdapter<TestQuery.Data> {
 
     override fun fromResponse(reader: JsonReader, responseAdapterCache: ResponseAdapterCache):
         TestQuery.Data.Hero {
-      reader.beginObject()
       var name: String? = null
       var friendsConnection: TestQuery.Data.Hero.FriendsConnection? = null
+      reader.beginObject()
       while(true) {
         when (reader.selectName(RESPONSE_NAMES)) {
           0 -> name = NullableStringResponseAdapter.fromResponse(reader, responseAdapterCache)
@@ -99,11 +99,11 @@ object TestQuery_ResponseAdapter : ResponseAdapter<TestQuery.Data> {
           else -> break
         }
       }
+      reader.endObject()
       return TestQuery.Data.Hero(
         name = name,
         friendsConnection = friendsConnection
       )
-      reader.endObject()
     }
 
     override fun toResponse(
@@ -131,18 +131,18 @@ object TestQuery_ResponseAdapter : ResponseAdapter<TestQuery.Data> {
 
       override fun fromResponse(reader: JsonReader, responseAdapterCache: ResponseAdapterCache):
           TestQuery.Data.Hero.FriendsConnection {
-        reader.beginObject()
         var totalCount: Int? = null
+        reader.beginObject()
         while(true) {
           when (reader.selectName(RESPONSE_NAMES)) {
             0 -> totalCount = NullableIntResponseAdapter.fromResponse(reader, responseAdapterCache)
             else -> break
           }
         }
+        reader.endObject()
         return TestQuery.Data.Hero.FriendsConnection(
           totalCount = totalCount
         )
-        reader.endObject()
       }
 
       override fun toResponse(

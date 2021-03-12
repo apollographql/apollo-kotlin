@@ -45,18 +45,18 @@ object HeroDetailQuery_ResponseAdapter : ResponseAdapter<HeroDetailQuery.Data> {
 
   override fun fromResponse(reader: JsonReader, responseAdapterCache: ResponseAdapterCache):
       com.example.unique_type_name.HeroDetailQuery.Data {
-    reader.beginObject()
     var heroDetailQuery: com.example.unique_type_name.HeroDetailQuery.Data.HeroDetailQuery? = null
+    reader.beginObject()
     while(true) {
       when (reader.selectName(RESPONSE_NAMES)) {
         0 -> heroDetailQuery = HeroDetailQuery.nullable().fromResponse(reader, responseAdapterCache)
         else -> break
       }
     }
+    reader.endObject()
     return com.example.unique_type_name.HeroDetailQuery.Data(
       heroDetailQuery = heroDetailQuery
     )
-    reader.endObject()
   }
 
   override fun toResponse(
@@ -91,8 +91,8 @@ object HeroDetailQuery_ResponseAdapter : ResponseAdapter<HeroDetailQuery.Data> {
 
     override fun fromResponse(reader: JsonReader, responseAdapterCache: ResponseAdapterCache):
         com.example.unique_type_name.HeroDetailQuery.Data.HeroDetailQuery {
-      reader.beginObject()
       val reader = reader.buffer()
+      reader.beginObject()
       var __typename: String? = null
       var name: String? = null
       var friends: List<com.example.unique_type_name.HeroDetailQuery.Data.HeroDetailQuery.Friends?>? = null
@@ -108,17 +108,17 @@ object HeroDetailQuery_ResponseAdapter : ResponseAdapter<HeroDetailQuery.Data> {
         }
       }
       if (__typename in arrayOf("Human")) {
-        reader.rewind()
+        (reader as MapJsonReader).rewind()
         asAsHuman = AsHuman.fromFields(reader, responseAdapterCache)
       }
 
+      reader.endObject()
       return com.example.unique_type_name.HeroDetailQuery.Data.HeroDetailQuery(
         __typename = __typename!!,
         name = name!!,
         friends = friends,
         asAsHuman = asAsHuman
       )
-      reader.endObject()
     }
 
     override fun toResponse(
@@ -279,10 +279,10 @@ object HeroDetailQuery_ResponseAdapter : ResponseAdapter<HeroDetailQuery.Data> {
 
         override fun fromResponse(reader: JsonReader, responseAdapterCache: ResponseAdapterCache):
             com.example.unique_type_name.HeroDetailQuery.Data.HeroDetailQuery.AsHuman.Friends {
-          reader.beginObject()
           var name: String? = null
           var appearsIn: List<Episode?>? = null
           var friends: List<com.example.unique_type_name.HeroDetailQuery.Data.HeroDetailQuery.AsHuman.Friends.Friends?>? = null
+          reader.beginObject()
           while(true) {
             when (reader.selectName(RESPONSE_NAMES)) {
               0 -> name = StringResponseAdapter.fromResponse(reader, responseAdapterCache)
@@ -293,12 +293,12 @@ object HeroDetailQuery_ResponseAdapter : ResponseAdapter<HeroDetailQuery.Data> {
               else -> break
             }
           }
+          reader.endObject()
           return com.example.unique_type_name.HeroDetailQuery.Data.HeroDetailQuery.AsHuman.Friends(
             name = name!!,
             appearsIn = appearsIn!!,
             friends = friends
           )
-          reader.endObject()
         }
 
         override fun toResponse(
@@ -329,8 +329,8 @@ object HeroDetailQuery_ResponseAdapter : ResponseAdapter<HeroDetailQuery.Data> {
 
           override fun fromResponse(reader: JsonReader, responseAdapterCache: ResponseAdapterCache):
               com.example.unique_type_name.HeroDetailQuery.Data.HeroDetailQuery.AsHuman.Friends.Friends {
-            reader.beginObject()
             val reader = reader.buffer()
+            reader.beginObject()
             var __typename: String? = null
 
             var heroDetails: HeroDetails.Data? = null
@@ -341,15 +341,15 @@ object HeroDetailQuery_ResponseAdapter : ResponseAdapter<HeroDetailQuery.Data> {
               }
             }
             if (__typename in arrayOf("Droid", "Human")) {
-              reader.rewind()
+              (reader as MapJsonReader).rewind()
               heroDetails = HeroDetails_ResponseAdapter.fromFields(reader, responseAdapterCache)
             }
 
+            reader.endObject()
             return com.example.unique_type_name.HeroDetailQuery.Data.HeroDetailQuery.AsHuman.Friends.Friends(
               __typename = __typename!!,
               heroDetails = heroDetails
             )
-            reader.endObject()
           }
 
           override fun toResponse(

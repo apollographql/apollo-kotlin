@@ -53,38 +53,39 @@ internal fun CodeGenerationAst.ObjectType.readFromResponseFunSpecs(
   val body = when (this.kind) {
     is CodeGenerationAst.ObjectType.Kind.ObjectWithFragments -> {
       if (generateFragmentsAsInterfaces) {
-        readStreamedPolymorphicObjectCode(this)
+        readStreamedPolymorphicObjectCode(
+            objectType = this,
+            consumeObject = !addFromFields
+        )
       } else {
-        readBufferedPolymorphicObjectCode(this)
+        readBufferedPolymorphicObjectCode(
+            objectType = this,
+            consumeObject = !addFromFields
+        )
       }
     }
     else -> {
       readObjectCode(
           fields = fields,
           returnTypeRef = typeRef,
-          initializeTypename = withTypeName
+          initializeTypename = withTypeName,
+          consumeObject = !addFromFields
       )
     }
   }
 
   val functionName: String
-  val wrappedBody: CodeBlock
 
   if (addFromFields) {
     functionName = "fromFields"
-    wrappedBody = body
   } else {
     functionName = "fromResponse"
-    wrappedBody = CodeBlock.builder()
-        .addStatement("reader.beginObject()")
-        .add(body)
-        .addStatement("reader.endObject()")
-        .build()
   }
 
   val list = mutableListOf<FunSpec>()
   if (addFromFields) {
-    list.add(readFromResponseWrapperFunSpec(typeRef))
+    val buffer = kind is CodeGenerationAst.ObjectType.Kind.ObjectWithFragments && !generateFragmentsAsInterfaces
+    list.add(readFromResponseWrapperFunSpec(typeRef, buffer ))
   }
   list.add(FunSpec.builder(functionName)
       .returns(typeRef.asTypeName())
@@ -96,19 +97,22 @@ internal fun CodeGenerationAst.ObjectType.readFromResponseFunSpecs(
       .applyIf(override) {
         addModifiers(KModifier.OVERRIDE)
       }
-      .addCode(wrappedBody)
+      .addCode(body)
       .build()
   )
 
   return list
 }
 
-internal fun readFromResponseWrapperFunSpec(typeRef: CodeGenerationAst.TypeRef): FunSpec {
+internal fun readFromResponseWrapperFunSpec(typeRef: CodeGenerationAst.TypeRef, buffer: Boolean): FunSpec {
   return FunSpec.builder("fromResponse")
       .returns(typeRef.asTypeName())
       .addParameter("reader", JsonReader::class)
       .addParameter(responseAdapterCache, ResponseAdapterCache::class)
       .addModifiers(KModifier.OVERRIDE)
+      .applyIf(buffer) {
+        addStatement("val·reader·=·reader.%M()", MemberName(MapJsonReader.Companion::class.asClassName(), "buffer"))
+      }
       .addStatement("reader.beginObject()")
       .addStatement("return·fromFields($reader, $responseAdapterCache).also { reader.endObject() }")
       .build()
@@ -127,6 +131,7 @@ internal fun readObjectCode(
     fields: List<CodeGenerationAst.Field>,
     returnTypeRef: CodeGenerationAst.TypeRef,
     initializeTypename: Boolean,
+    consumeObject: Boolean,
 ): CodeBlock {
   val prefix = prefixCode(fields, initializeTypename)
 
@@ -149,16 +154,19 @@ internal fun readObjectCode(
 
   return CodeBlock.builder()
       .add(prefix)
+      .applyIf(consumeObject) { addStatement("reader.beginObject()") }
       .add(loop)
+      .applyIf(consumeObject) { addStatement("reader.endObject()") }
       .add(suffix)
       .build()
 }
 
-internal fun readStreamedPolymorphicObjectCode(objectType: CodeGenerationAst.ObjectType): CodeBlock {
+internal fun readStreamedPolymorphicObjectCode(objectType: CodeGenerationAst.ObjectType, consumeObject: Boolean): CodeBlock {
   val (defaultImplementation, possibleImplementations) = with(objectType.kind as CodeGenerationAst.ObjectType.Kind.ObjectWithFragments) {
     defaultImplementation to possibleImplementations
   }
   return CodeBlock.builder()
+      .applyIf(consumeObject) { addStatement("reader.beginObject()") }
       .addStatement("check(reader.nextName() == \"__typename\")")
       // calling nextString() directly here certainly breaks the optimization to read fields in order
       .addStatement("val·typename·=·reader.nextString()!!")
@@ -181,6 +189,7 @@ internal fun readStreamedPolymorphicObjectCode(objectType: CodeGenerationAst.Obj
           defaultImplementation!!.asAdapterTypeName()
       )
       .endControlFlow()
+      .applyIf(consumeObject) { addStatement(".also { reader.endObject() }") }
       .build()
 }
 
@@ -216,7 +225,10 @@ private fun loopCode(fields: List<CodeGenerationAst.Field>): CodeBlock {
       .build()
 }
 
-internal fun readBufferedPolymorphicObjectCode(objectType: CodeGenerationAst.ObjectType): CodeBlock {
+internal fun readBufferedPolymorphicObjectCode(
+    objectType: CodeGenerationAst.ObjectType,
+    consumeObject: Boolean
+): CodeBlock {
   val possibleImplementations = (objectType.kind as CodeGenerationAst.ObjectType.Kind.ObjectWithFragments).possibleImplementations
 
   val fragmentVariablesCode = possibleImplementations.map { fragmentImplementation ->
@@ -233,7 +245,8 @@ internal fun readBufferedPolymorphicObjectCode(objectType: CodeGenerationAst.Obj
         .joinToCode(separator = ", ")
     CodeBlock.builder()
         .beginControlFlow("if·(__typename·in·arrayOf(%L))", possibleTypenamesArray)
-        .addStatement("reader.rewind()")
+        // If this cast fails it means we've been wrong somewhere else in the codegen
+        .addStatement("(reader·as·%T).rewind()", MapJsonReader::class)
         .run {
           if (fragmentImplementation.typeRef.isNamedFragmentDataRef) {
             addStatement(
@@ -277,12 +290,18 @@ internal fun readBufferedPolymorphicObjectCode(objectType: CodeGenerationAst.Obj
       .build()
 
   return CodeBlock.builder()
-      .addStatement("val·reader·=·reader.%M()", MemberName(MapJsonReader.Companion::class.asClassName(), "buffer"))
+      .applyIf(consumeObject) {
+        addStatement("val·reader·=·reader.%M()", MemberName(MapJsonReader.Companion::class.asClassName(), "buffer"))
+        addStatement("reader.beginObject()")
+      }
       .add(prefixCode(objectType.fields, false))
       .addStatement("")
       .add(fragmentVariablesCode)
       .add(loopCode(objectType.fields))
       .add(readFragmentsCode)
+      .applyIf(consumeObject) {
+        addStatement("reader.endObject()")
+      }
       .add(typeConstructorCode)
       .build()
 }

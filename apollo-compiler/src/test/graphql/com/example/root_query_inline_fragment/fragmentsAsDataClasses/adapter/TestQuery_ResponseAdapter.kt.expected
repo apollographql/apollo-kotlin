@@ -38,8 +38,8 @@ object TestQuery_ResponseAdapter : ResponseAdapter<TestQuery.Data> {
 
   override fun fromResponse(reader: JsonReader, responseAdapterCache: ResponseAdapterCache):
       TestQuery.Data {
-    reader.beginObject()
     val reader = reader.buffer()
+    reader.beginObject()
     var __typename: String? = null
 
     var asAsQuery: TestQuery.Data.AsQuery? = null
@@ -50,15 +50,15 @@ object TestQuery_ResponseAdapter : ResponseAdapter<TestQuery.Data> {
       }
     }
     if (__typename in arrayOf("Query")) {
-      reader.rewind()
+      (reader as MapJsonReader).rewind()
       asAsQuery = AsQuery.fromFields(reader, responseAdapterCache)
     }
 
+    reader.endObject()
     return TestQuery.Data(
       __typename = __typename!!,
       asAsQuery = asAsQuery
     )
-    reader.endObject()
   }
 
   override fun toResponse(
@@ -155,8 +155,8 @@ object TestQuery_ResponseAdapter : ResponseAdapter<TestQuery.Data> {
 
       override fun fromResponse(reader: JsonReader, responseAdapterCache: ResponseAdapterCache):
           TestQuery.Data.AsQuery.Hero {
-        reader.beginObject()
         val reader = reader.buffer()
+        reader.beginObject()
         var __typename: String? = null
         var name: String? = null
         var appearsIn: List<Episode?>? = null
@@ -172,17 +172,17 @@ object TestQuery_ResponseAdapter : ResponseAdapter<TestQuery.Data> {
           }
         }
         if (__typename in arrayOf("Human")) {
-          reader.rewind()
+          (reader as MapJsonReader).rewind()
           asAsHuman = AsHuman.fromFields(reader, responseAdapterCache)
         }
 
+        reader.endObject()
         return TestQuery.Data.AsQuery.Hero(
           __typename = __typename!!,
           name = name!!,
           appearsIn = appearsIn!!,
           asAsHuman = asAsHuman
         )
-        reader.endObject()
       }
 
       override fun toResponse(
@@ -284,8 +284,8 @@ object TestQuery_ResponseAdapter : ResponseAdapter<TestQuery.Data> {
 
       override fun fromResponse(reader: JsonReader, responseAdapterCache: ResponseAdapterCache):
           TestQuery.Data.AsQuery.Droid {
-        reader.beginObject()
         val reader = reader.buffer()
+        reader.beginObject()
         var __typename: String? = null
 
         var asAsDroid: TestQuery.Data.AsQuery.Droid.AsDroid? = null
@@ -296,15 +296,15 @@ object TestQuery_ResponseAdapter : ResponseAdapter<TestQuery.Data> {
           }
         }
         if (__typename in arrayOf("Droid")) {
-          reader.rewind()
+          (reader as MapJsonReader).rewind()
           asAsDroid = AsDroid.fromFields(reader, responseAdapterCache)
         }
 
+        reader.endObject()
         return TestQuery.Data.AsQuery.Droid(
           __typename = __typename!!,
           asAsDroid = asAsDroid
         )
-        reader.endObject()
       }
 
       override fun toResponse(

@@ -42,18 +42,18 @@ object TestQuery_ResponseAdapter : ResponseAdapter<TestQuery.Data> {
 
   override fun fromResponse(reader: JsonReader, responseAdapterCache: ResponseAdapterCache):
       TestQuery.Data {
-    reader.beginObject()
     var hero: TestQuery.Data.Hero? = null
+    reader.beginObject()
     while(true) {
       when (reader.selectName(RESPONSE_NAMES)) {
         0 -> hero = Hero.nullable().fromResponse(reader, responseAdapterCache)
         else -> break
       }
     }
+    reader.endObject()
     return TestQuery.Data(
       hero = hero
     )
-    reader.endObject()
   }
 
   override fun toResponse(
@@ -78,7 +78,7 @@ object TestQuery_ResponseAdapter : ResponseAdapter<TestQuery.Data> {
         "Human" -> CharacterHero.fromResponse(reader, responseAdapterCache, typename)
         else -> OtherHero.fromResponse(reader, responseAdapterCache, typename)
       }
-      reader.endObject()
+      .also { reader.endObject() }
     }
 
     override fun toResponse(
@@ -117,10 +117,10 @@ object TestQuery_ResponseAdapter : ResponseAdapter<TestQuery.Data> {
         responseAdapterCache: ResponseAdapterCache,
         __typename: String?
       ): TestQuery.Data.Hero.CharacterHero {
-        reader.beginObject()
         var __typename: String? = __typename
         var name: String? = null
         var friends: List<TestQuery.Data.Hero.CharacterHero.Friends?>? = null
+        reader.beginObject()
         while(true) {
           when (reader.selectName(RESPONSE_NAMES)) {
             0 -> __typename = StringResponseAdapter.fromResponse(reader, responseAdapterCache)
@@ -130,12 +130,12 @@ object TestQuery_ResponseAdapter : ResponseAdapter<TestQuery.Data> {
             else -> break
           }
         }
+        reader.endObject()
         return TestQuery.Data.Hero.CharacterHero(
           __typename = __typename!!,
           name = name!!,
           friends = friends
         )
-        reader.endObject()
       }
 
       fun toResponse(
@@ -164,7 +164,7 @@ object TestQuery_ResponseAdapter : ResponseAdapter<TestQuery.Data> {
             "Droid" -> DroidFriends.fromResponse(reader, responseAdapterCache, typename)
             else -> OtherFriends.fromResponse(reader, responseAdapterCache, typename)
           }
-          reader.endObject()
+          .also { reader.endObject() }
         }
 
         override fun toResponse(
@@ -199,10 +199,10 @@ object TestQuery_ResponseAdapter : ResponseAdapter<TestQuery.Data> {
             responseAdapterCache: ResponseAdapterCache,
             __typename: String?
           ): TestQuery.Data.Hero.CharacterHero.Friends.HumanFriends {
-            reader.beginObject()
             var __typename: String? = __typename
             var name: String? = null
             var height: Double? = null
+            reader.beginObject()
             while(true) {
               when (reader.selectName(RESPONSE_NAMES)) {
                 0 -> __typename = StringResponseAdapter.fromResponse(reader, responseAdapterCache)
@@ -212,12 +212,12 @@ object TestQuery_ResponseAdapter : ResponseAdapter<TestQuery.Data> {
                 else -> break
               }
             }
+            reader.endObject()
             return TestQuery.Data.Hero.CharacterHero.Friends.HumanFriends(
               __typename = __typename!!,
               name = name!!,
               height = height
             )
-            reader.endObject()
           }
 
           fun toResponse(
@@ -256,10 +256,10 @@ object TestQuery_ResponseAdapter : ResponseAdapter<TestQuery.Data> {
             responseAdapterCache: ResponseAdapterCache,
             __typename: String?
           ): TestQuery.Data.Hero.CharacterHero.Friends.DroidFriends {
-            reader.beginObject()
             var __typename: String? = __typename
             var name: String? = null
             var primaryFunction: String? = null
+            reader.beginObject()
             while(true) {
               when (reader.selectName(RESPONSE_NAMES)) {
                 0 -> __typename = StringResponseAdapter.fromResponse(reader, responseAdapterCache)
@@ -269,12 +269,12 @@ object TestQuery_ResponseAdapter : ResponseAdapter<TestQuery.Data> {
                 else -> break
               }
             }
+            reader.endObject()
             return TestQuery.Data.Hero.CharacterHero.Friends.DroidFriends(
               __typename = __typename!!,
               name = name!!,
               primaryFunction = primaryFunction
             )
-            reader.endObject()
           }
 
           fun toResponse(
@@ -310,9 +310,9 @@ object TestQuery_ResponseAdapter : ResponseAdapter<TestQuery.Data> {
             responseAdapterCache: ResponseAdapterCache,
             __typename: String?
           ): TestQuery.Data.Hero.CharacterHero.Friends.OtherFriends {
-            reader.beginObject()
             var __typename: String? = __typename
             var name: String? = null
+            reader.beginObject()
             while(true) {
               when (reader.selectName(RESPONSE_NAMES)) {
                 0 -> __typename = StringResponseAdapter.fromResponse(reader, responseAdapterCache)
@@ -320,11 +320,11 @@ object TestQuery_ResponseAdapter : ResponseAdapter<TestQuery.Data> {
                 else -> break
               }
             }
+            reader.endObject()
             return TestQuery.Data.Hero.CharacterHero.Friends.OtherFriends(
               __typename = __typename!!,
               name = name!!
             )
-            reader.endObject()
           }
 
           fun toResponse(
@@ -355,18 +355,18 @@ object TestQuery_ResponseAdapter : ResponseAdapter<TestQuery.Data> {
         responseAdapterCache: ResponseAdapterCache,
         __typename: String?
       ): TestQuery.Data.Hero.OtherHero {
-        reader.beginObject()
         var __typename: String? = __typename
+        reader.beginObject()
         while(true) {
           when (reader.selectName(RESPONSE_NAMES)) {
             0 -> __typename = StringResponseAdapter.fromResponse(reader, responseAdapterCache)
             else -> break
           }
         }
+        reader.endObject()
         return TestQuery.Data.Hero.OtherHero(
           __typename = __typename!!
         )
-        reader.endObject()
       }
 
       fun toResponse(
