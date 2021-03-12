@@ -45,9 +45,9 @@ object GetHuman_ResponseAdapter : ResponseAdapter<GetHuman.Data> {
 
   override fun fromResponse(reader: JsonReader, responseAdapterCache: ResponseAdapterCache):
       GetHuman.Data {
+    reader.beginObject()
     var human: GetHuman.Data.Human? = null
     var node: GetHuman.Data.Node? = null
-    reader.beginObject()
     while(true) {
       when (reader.selectName(RESPONSE_NAMES)) {
         0 -> human = Human.fromResponse(reader, responseAdapterCache)
@@ -55,11 +55,11 @@ object GetHuman_ResponseAdapter : ResponseAdapter<GetHuman.Data> {
         else -> break
       }
     }
-    reader.endObject()
     return GetHuman.Data(
       human = human!!,
       node = node!!
     )
+    reader.endObject()
   }
 
   override fun toResponse(
@@ -95,10 +95,10 @@ object GetHuman_ResponseAdapter : ResponseAdapter<GetHuman.Data> {
 
     override fun fromResponse(reader: JsonReader, responseAdapterCache: ResponseAdapterCache):
         GetHuman.Data.Human {
+      reader.beginObject()
       var id: String? = null
       var name: String? = null
       var height: Double? = null
-      reader.beginObject()
       while(true) {
         when (reader.selectName(RESPONSE_NAMES)) {
           0 -> id = StringResponseAdapter.fromResponse(reader, responseAdapterCache)
@@ -107,12 +107,12 @@ object GetHuman_ResponseAdapter : ResponseAdapter<GetHuman.Data> {
           else -> break
         }
       }
-      reader.endObject()
       return GetHuman.Data.Human(
         id = id!!,
         name = name!!,
         height = height!!
       )
+      reader.endObject()
     }
 
     override fun toResponse(
@@ -136,12 +136,12 @@ object GetHuman_ResponseAdapter : ResponseAdapter<GetHuman.Data> {
         GetHuman.Data.Node {
       reader.beginObject()
       check(reader.nextName() == "__typename")
-      val typename = reader.nextString()
+      val typename = reader.nextString()!!
       return when(typename) {
         "Human" -> HumanNode.fromResponse(reader, responseAdapterCache, typename)
         else -> OtherNode.fromResponse(reader, responseAdapterCache, typename)
       }
-      .also { reader.endObject() }
+      reader.endObject()
     }
 
     override fun toResponse(
@@ -171,6 +171,7 @@ object GetHuman_ResponseAdapter : ResponseAdapter<GetHuman.Data> {
         responseAdapterCache: ResponseAdapterCache,
         __typename: String?
       ): GetHuman.Data.Node.HumanNode {
+        reader.beginObject()
         var __typename: String? = __typename
         var height: Double? = null
         while(true) {
@@ -184,6 +185,7 @@ object GetHuman_ResponseAdapter : ResponseAdapter<GetHuman.Data> {
           __typename = __typename!!,
           height = height!!
         )
+        reader.endObject()
       }
 
       fun toResponse(
@@ -212,6 +214,7 @@ object GetHuman_ResponseAdapter : ResponseAdapter<GetHuman.Data> {
         responseAdapterCache: ResponseAdapterCache,
         __typename: String?
       ): GetHuman.Data.Node.OtherNode {
+        reader.beginObject()
         var __typename: String? = __typename
         while(true) {
           when (reader.selectName(RESPONSE_NAMES)) {
@@ -222,6 +225,7 @@ object GetHuman_ResponseAdapter : ResponseAdapter<GetHuman.Data> {
         return GetHuman.Data.Node.OtherNode(
           __typename = __typename!!
         )
+        reader.endObject()
       }
 
       fun toResponse(

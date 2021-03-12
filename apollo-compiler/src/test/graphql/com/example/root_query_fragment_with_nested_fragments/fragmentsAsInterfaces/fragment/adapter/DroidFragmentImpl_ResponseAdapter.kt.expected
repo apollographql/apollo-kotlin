@@ -38,10 +38,10 @@ object DroidFragmentImpl_ResponseAdapter : ResponseAdapter<DroidFragmentImpl.Dat
 
   override fun fromResponse(reader: JsonReader, responseAdapterCache: ResponseAdapterCache):
       DroidFragmentImpl.Data {
+    reader.beginObject()
     var __typename: String? = null
     var name: String? = null
     var primaryFunction: String? = null
-    reader.beginObject()
     while(true) {
       when (reader.selectName(RESPONSE_NAMES)) {
         0 -> __typename = StringResponseAdapter.fromResponse(reader, responseAdapterCache)
@@ -51,12 +51,12 @@ object DroidFragmentImpl_ResponseAdapter : ResponseAdapter<DroidFragmentImpl.Dat
         else -> break
       }
     }
-    reader.endObject()
     return DroidFragmentImpl.Data(
       __typename = __typename!!,
       name = name!!,
       primaryFunction = primaryFunction
     )
+    reader.endObject()
   }
 
   override fun toResponse(

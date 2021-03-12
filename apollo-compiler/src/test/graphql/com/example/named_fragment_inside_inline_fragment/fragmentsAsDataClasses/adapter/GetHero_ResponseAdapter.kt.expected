@@ -38,18 +38,18 @@ object GetHero_ResponseAdapter : ResponseAdapter<GetHero.Data> {
 
   override fun fromResponse(reader: JsonReader, responseAdapterCache: ResponseAdapterCache):
       GetHero.Data {
-    var hero: GetHero.Data.Hero? = null
     reader.beginObject()
+    var hero: GetHero.Data.Hero? = null
     while(true) {
       when (reader.selectName(RESPONSE_NAMES)) {
         0 -> hero = Hero.nullable().fromResponse(reader, responseAdapterCache)
         else -> break
       }
     }
-    reader.endObject()
     return GetHero.Data(
       hero = hero
     )
+    reader.endObject()
   }
 
   override fun toResponse(
@@ -72,10 +72,10 @@ object GetHero_ResponseAdapter : ResponseAdapter<GetHero.Data> {
 
     override fun fromResponse(reader: JsonReader, responseAdapterCache: ResponseAdapterCache):
         GetHero.Data.Hero {
-      val reader = reader.buffer()
       reader.beginObject()
-
+      val reader = reader.buffer()
       var __typename: String? = null
+
       var asAsCharacter: GetHero.Data.Hero.AsCharacter? = null
       while(true) {
         when (reader.selectName(RESPONSE_NAMES)) {
@@ -85,14 +85,14 @@ object GetHero_ResponseAdapter : ResponseAdapter<GetHero.Data> {
       }
       if (__typename in arrayOf("Droid", "Human")) {
         reader.rewind()
-        asAsCharacter = AsCharacter.fromResponse(reader, responseAdapterCache, __typename)
+        asAsCharacter = AsCharacter.fromFields(reader, responseAdapterCache)
       }
 
       return GetHero.Data.Hero(
         __typename = __typename!!,
         asAsCharacter = asAsCharacter
       )
-      .also { reader.endObject() }
+      reader.endObject()
     }
 
     override fun toResponse(
@@ -108,19 +108,22 @@ object GetHero_ResponseAdapter : ResponseAdapter<GetHero.Data> {
       writer.endObject()
     }
 
-    object AsCharacter {
+    object AsCharacter : ResponseAdapter<GetHero.Data.Hero.AsCharacter> {
       val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
         ResponseField.Typename
       )
 
       val RESPONSE_NAMES: List<String> = RESPONSE_FIELDS.map { it.responseName }
 
-      fun fromResponse(
-        reader: JsonReader,
-        responseAdapterCache: ResponseAdapterCache,
-        __typename: String?
-      ): GetHero.Data.Hero.AsCharacter {
-        var __typename: String? = __typename
+      override fun fromResponse(reader: JsonReader, responseAdapterCache: ResponseAdapterCache):
+          GetHero.Data.Hero.AsCharacter {
+        reader.beginObject()
+        return fromFields(reader, responseAdapterCache).also { reader.endObject() }
+      }
+
+      fun fromFields(reader: JsonReader, responseAdapterCache: ResponseAdapterCache):
+          GetHero.Data.Hero.AsCharacter {
+        var __typename: String? = null
         while(true) {
           when (reader.selectName(RESPONSE_NAMES)) {
             0 -> __typename = StringResponseAdapter.fromResponse(reader, responseAdapterCache)
@@ -132,7 +135,7 @@ object GetHero_ResponseAdapter : ResponseAdapter<GetHero.Data> {
         )
       }
 
-      fun toResponse(
+      override fun toResponse(
         writer: JsonWriter,
         responseAdapterCache: ResponseAdapterCache,
         value: GetHero.Data.Hero.AsCharacter

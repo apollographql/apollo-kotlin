@@ -26,12 +26,12 @@ object TestQuery_ResponseAdapter : ResponseAdapter<TestQuery.Data> {
       TestQuery.Data {
     reader.beginObject()
     check(reader.nextName() == "__typename")
-    val typename = reader.nextString()
+    val typename = reader.nextString()!!
     return when(typename) {
       "Query" -> QueryData.fromResponse(reader, responseAdapterCache, typename)
       else -> OtherData.fromResponse(reader, responseAdapterCache, typename)
     }
-    .also { reader.endObject() }
+    reader.endObject()
   }
 
   override fun toResponse(
@@ -64,6 +64,7 @@ object TestQuery_ResponseAdapter : ResponseAdapter<TestQuery.Data> {
       responseAdapterCache: ResponseAdapterCache,
       __typename: String?
     ): TestQuery.Data.QueryData {
+      reader.beginObject()
       var __typename: String? = __typename
       var hero: TestQuery.Data.QueryData.Hero? = null
       while(true) {
@@ -77,6 +78,7 @@ object TestQuery_ResponseAdapter : ResponseAdapter<TestQuery.Data> {
         __typename = __typename!!,
         hero = hero
       )
+      reader.endObject()
     }
 
     fun toResponse(
@@ -104,18 +106,18 @@ object TestQuery_ResponseAdapter : ResponseAdapter<TestQuery.Data> {
 
       override fun fromResponse(reader: JsonReader, responseAdapterCache: ResponseAdapterCache):
           TestQuery.Data.QueryData.Hero {
-        var name: String? = null
         reader.beginObject()
+        var name: String? = null
         while(true) {
           when (reader.selectName(RESPONSE_NAMES)) {
             0 -> name = StringResponseAdapter.fromResponse(reader, responseAdapterCache)
             else -> break
           }
         }
-        reader.endObject()
         return TestQuery.Data.QueryData.Hero(
           name = name!!
         )
+        reader.endObject()
       }
 
       override fun toResponse(
@@ -143,6 +145,7 @@ object TestQuery_ResponseAdapter : ResponseAdapter<TestQuery.Data> {
       responseAdapterCache: ResponseAdapterCache,
       __typename: String?
     ): TestQuery.Data.OtherData {
+      reader.beginObject()
       var __typename: String? = __typename
       while(true) {
         when (reader.selectName(RESPONSE_NAMES)) {
@@ -153,6 +156,7 @@ object TestQuery_ResponseAdapter : ResponseAdapter<TestQuery.Data> {
       return TestQuery.Data.OtherData(
         __typename = __typename!!
       )
+      reader.endObject()
     }
 
     fun toResponse(

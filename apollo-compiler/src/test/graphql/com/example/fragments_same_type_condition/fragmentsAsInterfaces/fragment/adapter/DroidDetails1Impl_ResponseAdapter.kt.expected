@@ -33,9 +33,9 @@ object DroidDetails1Impl_ResponseAdapter : ResponseAdapter<DroidDetails1Impl.Dat
 
   override fun fromResponse(reader: JsonReader, responseAdapterCache: ResponseAdapterCache):
       DroidDetails1Impl.Data {
+    reader.beginObject()
     var __typename: String? = null
     var name: String? = null
-    reader.beginObject()
     while(true) {
       when (reader.selectName(RESPONSE_NAMES)) {
         0 -> __typename = StringResponseAdapter.fromResponse(reader, responseAdapterCache)
@@ -43,11 +43,11 @@ object DroidDetails1Impl_ResponseAdapter : ResponseAdapter<DroidDetails1Impl.Dat
         else -> break
       }
     }
-    reader.endObject()
     return DroidDetails1Impl.Data(
       __typename = __typename!!,
       name = name!!
     )
+    reader.endObject()
   }
 
   override fun toResponse(

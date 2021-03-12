@@ -41,18 +41,18 @@ object TestSubscription_ResponseAdapter : ResponseAdapter<TestSubscription.Data>
 
   override fun fromResponse(reader: JsonReader, responseAdapterCache: ResponseAdapterCache):
       TestSubscription.Data {
-    var commentAdded: TestSubscription.Data.CommentAdded? = null
     reader.beginObject()
+    var commentAdded: TestSubscription.Data.CommentAdded? = null
     while(true) {
       when (reader.selectName(RESPONSE_NAMES)) {
         0 -> commentAdded = CommentAdded.nullable().fromResponse(reader, responseAdapterCache)
         else -> break
       }
     }
-    reader.endObject()
     return TestSubscription.Data(
       commentAdded = commentAdded
     )
+    reader.endObject()
   }
 
   override fun toResponse(
@@ -82,9 +82,9 @@ object TestSubscription_ResponseAdapter : ResponseAdapter<TestSubscription.Data>
 
     override fun fromResponse(reader: JsonReader, responseAdapterCache: ResponseAdapterCache):
         TestSubscription.Data.CommentAdded {
+      reader.beginObject()
       var id: Int? = null
       var content: String? = null
-      reader.beginObject()
       while(true) {
         when (reader.selectName(RESPONSE_NAMES)) {
           0 -> id = IntResponseAdapter.fromResponse(reader, responseAdapterCache)
@@ -92,11 +92,11 @@ object TestSubscription_ResponseAdapter : ResponseAdapter<TestSubscription.Data>
           else -> break
         }
       }
-      reader.endObject()
       return TestSubscription.Data.CommentAdded(
         id = id!!,
         content = content!!
       )
+      reader.endObject()
     }
 
     override fun toResponse(

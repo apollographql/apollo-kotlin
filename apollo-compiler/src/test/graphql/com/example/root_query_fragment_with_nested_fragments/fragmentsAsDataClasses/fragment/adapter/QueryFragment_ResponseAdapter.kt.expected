@@ -61,11 +61,16 @@ object QueryFragment_ResponseAdapter : ResponseAdapter<QueryFragment.Data> {
 
   override fun fromResponse(reader: JsonReader, responseAdapterCache: ResponseAdapterCache):
       QueryFragment.Data {
+    reader.beginObject()
+    return fromFields(reader, responseAdapterCache).also { reader.endObject() }
+  }
+
+  fun fromFields(reader: JsonReader, responseAdapterCache: ResponseAdapterCache):
+      QueryFragment.Data {
     var __typename: String? = null
     var hero: QueryFragment.Data.Hero? = null
     var droid: QueryFragment.Data.Droid? = null
     var human: QueryFragment.Data.Human? = null
-    reader.beginObject()
     while(true) {
       when (reader.selectName(RESPONSE_NAMES)) {
         0 -> __typename = StringResponseAdapter.fromResponse(reader, responseAdapterCache)
@@ -75,7 +80,6 @@ object QueryFragment_ResponseAdapter : ResponseAdapter<QueryFragment.Data> {
         else -> break
       }
     }
-    reader.endObject()
     return QueryFragment.Data(
       __typename = __typename!!,
       hero = hero,
@@ -110,10 +114,10 @@ object QueryFragment_ResponseAdapter : ResponseAdapter<QueryFragment.Data> {
 
     override fun fromResponse(reader: JsonReader, responseAdapterCache: ResponseAdapterCache):
         QueryFragment.Data.Hero {
-      val reader = reader.buffer()
       reader.beginObject()
-
+      val reader = reader.buffer()
       var __typename: String? = null
+
       var heroFragment: HeroFragment.Data? = null
       while(true) {
         when (reader.selectName(RESPONSE_NAMES)) {
@@ -123,14 +127,14 @@ object QueryFragment_ResponseAdapter : ResponseAdapter<QueryFragment.Data> {
       }
       if (__typename in arrayOf("Droid", "Human")) {
         reader.rewind()
-        heroFragment = HeroFragment_ResponseAdapter.fromResponse(reader, responseAdapterCache)
+        heroFragment = HeroFragment_ResponseAdapter.fromFields(reader, responseAdapterCache)
       }
 
       return QueryFragment.Data.Hero(
         __typename = __typename!!,
         heroFragment = heroFragment
       )
-      .also { reader.endObject() }
+      reader.endObject()
     }
 
     override fun toResponse(
@@ -156,10 +160,10 @@ object QueryFragment_ResponseAdapter : ResponseAdapter<QueryFragment.Data> {
 
     override fun fromResponse(reader: JsonReader, responseAdapterCache: ResponseAdapterCache):
         QueryFragment.Data.Droid {
-      val reader = reader.buffer()
       reader.beginObject()
-
+      val reader = reader.buffer()
       var __typename: String? = null
+
       var droidFragment: DroidFragment.Data? = null
       while(true) {
         when (reader.selectName(RESPONSE_NAMES)) {
@@ -169,14 +173,14 @@ object QueryFragment_ResponseAdapter : ResponseAdapter<QueryFragment.Data> {
       }
       if (__typename in arrayOf("Droid")) {
         reader.rewind()
-        droidFragment = DroidFragment_ResponseAdapter.fromResponse(reader, responseAdapterCache)
+        droidFragment = DroidFragment_ResponseAdapter.fromFields(reader, responseAdapterCache)
       }
 
       return QueryFragment.Data.Droid(
         __typename = __typename!!,
         droidFragment = droidFragment
       )
-      .also { reader.endObject() }
+      reader.endObject()
     }
 
     override fun toResponse(
@@ -202,10 +206,10 @@ object QueryFragment_ResponseAdapter : ResponseAdapter<QueryFragment.Data> {
 
     override fun fromResponse(reader: JsonReader, responseAdapterCache: ResponseAdapterCache):
         QueryFragment.Data.Human {
-      val reader = reader.buffer()
       reader.beginObject()
-
+      val reader = reader.buffer()
       var __typename: String? = null
+
       var asAsHuman: QueryFragment.Data.Human.AsHuman? = null
       while(true) {
         when (reader.selectName(RESPONSE_NAMES)) {
@@ -215,14 +219,14 @@ object QueryFragment_ResponseAdapter : ResponseAdapter<QueryFragment.Data> {
       }
       if (__typename in arrayOf("Human")) {
         reader.rewind()
-        asAsHuman = AsHuman.fromResponse(reader, responseAdapterCache, __typename)
+        asAsHuman = AsHuman.fromFields(reader, responseAdapterCache)
       }
 
       return QueryFragment.Data.Human(
         __typename = __typename!!,
         asAsHuman = asAsHuman
       )
-      .also { reader.endObject() }
+      reader.endObject()
     }
 
     override fun toResponse(
@@ -237,7 +241,7 @@ object QueryFragment_ResponseAdapter : ResponseAdapter<QueryFragment.Data> {
       writer.endObject()
     }
 
-    object AsHuman {
+    object AsHuman : ResponseAdapter<QueryFragment.Data.Human.AsHuman> {
       val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
         ResponseField.Typename,
         ResponseField(
@@ -252,12 +256,15 @@ object QueryFragment_ResponseAdapter : ResponseAdapter<QueryFragment.Data> {
 
       val RESPONSE_NAMES: List<String> = RESPONSE_FIELDS.map { it.responseName }
 
-      fun fromResponse(
-        reader: JsonReader,
-        responseAdapterCache: ResponseAdapterCache,
-        __typename: String?
-      ): QueryFragment.Data.Human.AsHuman {
-        var __typename: String? = __typename
+      override fun fromResponse(reader: JsonReader, responseAdapterCache: ResponseAdapterCache):
+          QueryFragment.Data.Human.AsHuman {
+        reader.beginObject()
+        return fromFields(reader, responseAdapterCache).also { reader.endObject() }
+      }
+
+      fun fromFields(reader: JsonReader, responseAdapterCache: ResponseAdapterCache):
+          QueryFragment.Data.Human.AsHuman {
+        var __typename: String? = null
         var name: String? = null
         var homePlanet: String? = null
         while(true) {
@@ -276,7 +283,7 @@ object QueryFragment_ResponseAdapter : ResponseAdapter<QueryFragment.Data> {
         )
       }
 
-      fun toResponse(
+      override fun toResponse(
         writer: JsonWriter,
         responseAdapterCache: ResponseAdapterCache,
         value: QueryFragment.Data.Human.AsHuman

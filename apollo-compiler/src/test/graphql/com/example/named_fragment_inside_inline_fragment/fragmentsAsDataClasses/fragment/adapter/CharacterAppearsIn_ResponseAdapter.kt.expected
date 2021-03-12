@@ -38,9 +38,14 @@ object CharacterAppearsIn_ResponseAdapter : ResponseAdapter<CharacterAppearsIn.D
 
   override fun fromResponse(reader: JsonReader, responseAdapterCache: ResponseAdapterCache):
       CharacterAppearsIn.Data {
+    reader.beginObject()
+    return fromFields(reader, responseAdapterCache).also { reader.endObject() }
+  }
+
+  fun fromFields(reader: JsonReader, responseAdapterCache: ResponseAdapterCache):
+      CharacterAppearsIn.Data {
     var __typename: String? = null
     var appearsIn: List<Episode?>? = null
-    reader.beginObject()
     while(true) {
       when (reader.selectName(RESPONSE_NAMES)) {
         0 -> __typename = StringResponseAdapter.fromResponse(reader, responseAdapterCache)
@@ -49,7 +54,6 @@ object CharacterAppearsIn_ResponseAdapter : ResponseAdapter<CharacterAppearsIn.D
         else -> break
       }
     }
-    reader.endObject()
     return CharacterAppearsIn.Data(
       __typename = __typename!!,
       appearsIn = appearsIn!!

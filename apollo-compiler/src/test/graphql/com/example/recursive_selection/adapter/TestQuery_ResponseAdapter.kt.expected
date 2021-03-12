@@ -37,18 +37,18 @@ object TestQuery_ResponseAdapter : ResponseAdapter<TestQuery.Data> {
 
   override fun fromResponse(reader: JsonReader, responseAdapterCache: ResponseAdapterCache):
       TestQuery.Data {
-    var tree: TestQuery.Data.Tree? = null
     reader.beginObject()
+    var tree: TestQuery.Data.Tree? = null
     while(true) {
       when (reader.selectName(RESPONSE_NAMES)) {
         0 -> tree = Tree.nullable().fromResponse(reader, responseAdapterCache)
         else -> break
       }
     }
-    reader.endObject()
     return TestQuery.Data(
       tree = tree
     )
+    reader.endObject()
   }
 
   override fun toResponse(
@@ -89,10 +89,10 @@ object TestQuery_ResponseAdapter : ResponseAdapter<TestQuery.Data> {
 
     override fun fromResponse(reader: JsonReader, responseAdapterCache: ResponseAdapterCache):
         TestQuery.Data.Tree {
+      reader.beginObject()
       var name: String? = null
       var children: List<TestQuery.Data.Tree.Children>? = null
       var parent: TestQuery.Data.Tree.Parent? = null
-      reader.beginObject()
       while(true) {
         when (reader.selectName(RESPONSE_NAMES)) {
           0 -> name = StringResponseAdapter.fromResponse(reader, responseAdapterCache)
@@ -101,12 +101,12 @@ object TestQuery_ResponseAdapter : ResponseAdapter<TestQuery.Data> {
           else -> break
         }
       }
-      reader.endObject()
       return TestQuery.Data.Tree(
         name = name!!,
         children = children!!,
         parent = parent
       )
+      reader.endObject()
     }
 
     override fun toResponse(
@@ -136,18 +136,18 @@ object TestQuery_ResponseAdapter : ResponseAdapter<TestQuery.Data> {
 
       override fun fromResponse(reader: JsonReader, responseAdapterCache: ResponseAdapterCache):
           TestQuery.Data.Tree.Children {
-        var name: String? = null
         reader.beginObject()
+        var name: String? = null
         while(true) {
           when (reader.selectName(RESPONSE_NAMES)) {
             0 -> name = StringResponseAdapter.fromResponse(reader, responseAdapterCache)
             else -> break
           }
         }
-        reader.endObject()
         return TestQuery.Data.Tree.Children(
           name = name!!
         )
+        reader.endObject()
       }
 
       override fun toResponse(
@@ -174,18 +174,18 @@ object TestQuery_ResponseAdapter : ResponseAdapter<TestQuery.Data> {
 
       override fun fromResponse(reader: JsonReader, responseAdapterCache: ResponseAdapterCache):
           TestQuery.Data.Tree.Parent {
-        var name: String? = null
         reader.beginObject()
+        var name: String? = null
         while(true) {
           when (reader.selectName(RESPONSE_NAMES)) {
             0 -> name = StringResponseAdapter.fromResponse(reader, responseAdapterCache)
             else -> break
           }
         }
-        reader.endObject()
         return TestQuery.Data.Tree.Parent(
           name = name!!
         )
+        reader.endObject()
       }
 
       override fun toResponse(

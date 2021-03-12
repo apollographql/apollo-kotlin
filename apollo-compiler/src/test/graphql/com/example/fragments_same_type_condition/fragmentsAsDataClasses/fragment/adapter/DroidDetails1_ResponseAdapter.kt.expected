@@ -33,9 +33,14 @@ object DroidDetails1_ResponseAdapter : ResponseAdapter<DroidDetails1.Data> {
 
   override fun fromResponse(reader: JsonReader, responseAdapterCache: ResponseAdapterCache):
       DroidDetails1.Data {
+    reader.beginObject()
+    return fromFields(reader, responseAdapterCache).also { reader.endObject() }
+  }
+
+  fun fromFields(reader: JsonReader, responseAdapterCache: ResponseAdapterCache):
+      DroidDetails1.Data {
     var __typename: String? = null
     var name: String? = null
-    reader.beginObject()
     while(true) {
       when (reader.selectName(RESPONSE_NAMES)) {
         0 -> __typename = StringResponseAdapter.fromResponse(reader, responseAdapterCache)
@@ -43,7 +48,6 @@ object DroidDetails1_ResponseAdapter : ResponseAdapter<DroidDetails1.Data> {
         else -> break
       }
     }
-    reader.endObject()
     return DroidDetails1.Data(
       __typename = __typename!!,
       name = name!!

@@ -44,10 +44,15 @@ object PilotFragment_ResponseAdapter : ResponseAdapter<PilotFragment.Data> {
 
   override fun fromResponse(reader: JsonReader, responseAdapterCache: ResponseAdapterCache):
       PilotFragment.Data {
+    reader.beginObject()
+    return fromFields(reader, responseAdapterCache).also { reader.endObject() }
+  }
+
+  fun fromFields(reader: JsonReader, responseAdapterCache: ResponseAdapterCache):
+      PilotFragment.Data {
     var __typename: String? = null
     var name: String? = null
     var homeworld: PilotFragment.Data.Homeworld? = null
-    reader.beginObject()
     while(true) {
       when (reader.selectName(RESPONSE_NAMES)) {
         0 -> __typename = StringResponseAdapter.fromResponse(reader, responseAdapterCache)
@@ -56,7 +61,6 @@ object PilotFragment_ResponseAdapter : ResponseAdapter<PilotFragment.Data> {
         else -> break
       }
     }
-    reader.endObject()
     return PilotFragment.Data(
       __typename = __typename!!,
       name = name,
@@ -88,10 +92,10 @@ object PilotFragment_ResponseAdapter : ResponseAdapter<PilotFragment.Data> {
 
     override fun fromResponse(reader: JsonReader, responseAdapterCache: ResponseAdapterCache):
         PilotFragment.Data.Homeworld {
-      val reader = reader.buffer()
       reader.beginObject()
-
+      val reader = reader.buffer()
       var __typename: String? = null
+
       var planetFragment: PlanetFragment.Data? = null
       while(true) {
         when (reader.selectName(RESPONSE_NAMES)) {
@@ -101,14 +105,14 @@ object PilotFragment_ResponseAdapter : ResponseAdapter<PilotFragment.Data> {
       }
       if (__typename in arrayOf("Planet")) {
         reader.rewind()
-        planetFragment = PlanetFragment_ResponseAdapter.fromResponse(reader, responseAdapterCache)
+        planetFragment = PlanetFragment_ResponseAdapter.fromFields(reader, responseAdapterCache)
       }
 
       return PilotFragment.Data.Homeworld(
         __typename = __typename!!,
         planetFragment = planetFragment
       )
-      .also { reader.endObject() }
+      reader.endObject()
     }
 
     override fun toResponse(

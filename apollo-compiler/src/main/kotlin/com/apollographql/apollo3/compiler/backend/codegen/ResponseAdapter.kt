@@ -5,10 +5,6 @@ import com.apollographql.apollo3.api.DoubleResponseAdapter
 import com.apollographql.apollo3.api.IntResponseAdapter
 import com.apollographql.apollo3.api.ResponseField
 import com.apollographql.apollo3.api.Variable
-import com.apollographql.apollo3.api.NullableBooleanResponseAdapter
-import com.apollographql.apollo3.api.NullableDoubleResponseAdapter
-import com.apollographql.apollo3.api.NullableIntResponseAdapter
-import com.apollographql.apollo3.api.NullableStringResponseAdapter
 import com.apollographql.apollo3.api.ResponseAdapter
 import com.apollographql.apollo3.api.StringResponseAdapter
 import com.apollographql.apollo3.compiler.applyIf
@@ -16,7 +12,6 @@ import com.apollographql.apollo3.compiler.backend.ast.CodeGenerationAst
 import com.apollographql.apollo3.compiler.escapeKotlinReservedWord
 import com.squareup.kotlinpoet.ClassName
 import com.squareup.kotlinpoet.CodeBlock
-import com.squareup.kotlinpoet.FunSpec
 import com.squareup.kotlinpoet.KModifier
 import com.squareup.kotlinpoet.MemberName
 import com.squareup.kotlinpoet.ParameterizedTypeName.Companion.parameterizedBy
@@ -32,7 +27,11 @@ internal fun CodeGenerationAst.OperationType.responseAdapterTypeSpec(
 ): TypeSpec {
   return this.dataType
       .copy(name = "${this.name.escapeKotlinReservedWord()}_ResponseAdapter")
-      .rootResponseAdapterTypeSpec(generateAsInternal, generateFragmentsAsInterfaces)
+      .rootResponseAdapterTypeSpec(
+          generateAsInternal = generateAsInternal,
+          generateFragmentsAsInterfaces = generateFragmentsAsInterfaces,
+          isFragment = false
+      )
 }
 
 internal fun CodeGenerationAst.FragmentType.responseAdapterTypeSpec(
@@ -42,21 +41,36 @@ internal fun CodeGenerationAst.FragmentType.responseAdapterTypeSpec(
   val dataType = this.implementationType.nestedObjects.single()
   return dataType
       .copy(name = "${this.implementationType.name.escapeKotlinReservedWord()}_ResponseAdapter")
-      .rootResponseAdapterTypeSpec(generateAsInternal, generateFragmentsAsInterfaces)
+      .rootResponseAdapterTypeSpec(
+          generateAsInternal = generateAsInternal,
+          generateFragmentsAsInterfaces = generateFragmentsAsInterfaces,
+          isFragment = true
+      )
 }
 
+/**
+ * @param generateFragmentsAsInterfaces: whether to generate the rewind() code or not
+ * @param isFragment: for fragmentsAsClasses and fragments, this generates a
+ * `fromFields` method that doesn't call beginObject()/endObject()
+ */
 private fun CodeGenerationAst.ObjectType.rootResponseAdapterTypeSpec(
     generateAsInternal: Boolean,
     generateFragmentsAsInterfaces: Boolean,
+    isFragment: Boolean
 ): TypeSpec {
-  return this.responseAdapterTypeSpec(generateFragmentsAsInterfaces)
+  val adapterTypeSpec = this.responseAdapterTypeSpec(
+      generateFragmentsAsInterfaces = generateFragmentsAsInterfaces,
+      addFromFields = isFragment && !generateFragmentsAsInterfaces
+  )
       .toBuilder()
       .applyIf(generateAsInternal) { addModifiers(KModifier.INTERNAL) }
       .addAnnotation(suppressWarningsAnnotation)
       .build()
+
+  return adapterTypeSpec
 }
 
-private fun CodeGenerationAst.ObjectType.responseAdapterTypeSpec(generateFragmentsAsInterfaces: Boolean): TypeSpec {
+private fun CodeGenerationAst.ObjectType.responseAdapterTypeSpec(generateFragmentsAsInterfaces: Boolean, addFromFields: Boolean): TypeSpec {
   return TypeSpec.objectBuilder(this.name)
       .applyIf(!isTypeCase) { addSuperinterface(ResponseAdapter::class.asTypeName().parameterizedBy(this@responseAdapterTypeSpec.typeRef.asTypeName())) }
       .apply {
@@ -68,13 +82,16 @@ private fun CodeGenerationAst.ObjectType.responseAdapterTypeSpec(generateFragmen
           }
         }
       }
-      .addFunction(readFromResponseFunSpec(generateFragmentsAsInterfaces))
+      .addFunctions(readFromResponseFunSpecs(generateFragmentsAsInterfaces, addFromFields))
       .addFunction(writeToResponseFunSpec(generateFragmentsAsInterfaces))
       .addTypes(
           this.nestedObjects.mapNotNull { nestedObject ->
             if (nestedObject.kind is CodeGenerationAst.ObjectType.Kind.Object ||
                 (nestedObject.kind is CodeGenerationAst.ObjectType.Kind.ObjectWithFragments && nestedObject.kind.possibleImplementations.isNotEmpty())) {
-              nestedObject.responseAdapterTypeSpec(generateFragmentsAsInterfaces)
+              nestedObject.responseAdapterTypeSpec(
+                  generateFragmentsAsInterfaces = generateFragmentsAsInterfaces,
+                  addFromFields = !generateFragmentsAsInterfaces && kind is CodeGenerationAst.ObjectType.Kind.ObjectWithFragments
+              )
             } else null
           }
       )

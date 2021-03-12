@@ -32,12 +32,12 @@ object TestQuery_ResponseAdapter : ResponseAdapter<TestQuery.Data> {
       TestQuery.Data {
     reader.beginObject()
     check(reader.nextName() == "__typename")
-    val typename = reader.nextString()
+    val typename = reader.nextString()!!
     return when(typename) {
       "Query" -> QueryData.fromResponse(reader, responseAdapterCache, typename)
       else -> OtherData.fromResponse(reader, responseAdapterCache, typename)
     }
-    .also { reader.endObject() }
+    reader.endObject()
   }
 
   override fun toResponse(
@@ -81,6 +81,7 @@ object TestQuery_ResponseAdapter : ResponseAdapter<TestQuery.Data> {
       responseAdapterCache: ResponseAdapterCache,
       __typename: String?
     ): TestQuery.Data.QueryData {
+      reader.beginObject()
       var __typename: String? = __typename
       var hero: TestQuery.Data.QueryData.Hero? = null
       var droid: TestQuery.Data.QueryData.Droid? = null
@@ -97,6 +98,7 @@ object TestQuery_ResponseAdapter : ResponseAdapter<TestQuery.Data> {
         hero = hero,
         droid = droid
       )
+      reader.endObject()
     }
 
     fun toResponse(
@@ -119,12 +121,12 @@ object TestQuery_ResponseAdapter : ResponseAdapter<TestQuery.Data> {
           TestQuery.Data.QueryData.Hero {
         reader.beginObject()
         check(reader.nextName() == "__typename")
-        val typename = reader.nextString()
+        val typename = reader.nextString()!!
         return when(typename) {
           "Human" -> HumanHero.fromResponse(reader, responseAdapterCache, typename)
           else -> OtherHero.fromResponse(reader, responseAdapterCache, typename)
         }
-        .also { reader.endObject() }
+        reader.endObject()
       }
 
       override fun toResponse(
@@ -163,6 +165,7 @@ object TestQuery_ResponseAdapter : ResponseAdapter<TestQuery.Data> {
           responseAdapterCache: ResponseAdapterCache,
           __typename: String?
         ): TestQuery.Data.QueryData.Hero.HumanHero {
+          reader.beginObject()
           var __typename: String? = __typename
           var name: String? = null
           var appearsIn: List<Episode?>? = null
@@ -183,6 +186,7 @@ object TestQuery_ResponseAdapter : ResponseAdapter<TestQuery.Data> {
             appearsIn = appearsIn!!,
             height = height
           )
+          reader.endObject()
         }
 
         fun toResponse(
@@ -225,6 +229,7 @@ object TestQuery_ResponseAdapter : ResponseAdapter<TestQuery.Data> {
           responseAdapterCache: ResponseAdapterCache,
           __typename: String?
         ): TestQuery.Data.QueryData.Hero.OtherHero {
+          reader.beginObject()
           var __typename: String? = __typename
           var name: String? = null
           var appearsIn: List<Episode?>? = null
@@ -242,6 +247,7 @@ object TestQuery_ResponseAdapter : ResponseAdapter<TestQuery.Data> {
             name = name!!,
             appearsIn = appearsIn!!
           )
+          reader.endObject()
         }
 
         fun toResponse(
@@ -267,12 +273,12 @@ object TestQuery_ResponseAdapter : ResponseAdapter<TestQuery.Data> {
           TestQuery.Data.QueryData.Droid {
         reader.beginObject()
         check(reader.nextName() == "__typename")
-        val typename = reader.nextString()
+        val typename = reader.nextString()!!
         return when(typename) {
           "Droid" -> DroidDroid.fromResponse(reader, responseAdapterCache, typename)
           else -> OtherDroid.fromResponse(reader, responseAdapterCache, typename)
         }
-        .also { reader.endObject() }
+        reader.endObject()
       }
 
       override fun toResponse(
@@ -306,6 +312,7 @@ object TestQuery_ResponseAdapter : ResponseAdapter<TestQuery.Data> {
           responseAdapterCache: ResponseAdapterCache,
           __typename: String?
         ): TestQuery.Data.QueryData.Droid.DroidDroid {
+          reader.beginObject()
           var __typename: String? = __typename
           var name: String? = null
           var primaryFunction: String? = null
@@ -323,6 +330,7 @@ object TestQuery_ResponseAdapter : ResponseAdapter<TestQuery.Data> {
             name = name!!,
             primaryFunction = primaryFunction
           )
+          reader.endObject()
         }
 
         fun toResponse(
@@ -354,6 +362,7 @@ object TestQuery_ResponseAdapter : ResponseAdapter<TestQuery.Data> {
           responseAdapterCache: ResponseAdapterCache,
           __typename: String?
         ): TestQuery.Data.QueryData.Droid.OtherDroid {
+          reader.beginObject()
           var __typename: String? = __typename
           while(true) {
             when (reader.selectName(RESPONSE_NAMES)) {
@@ -364,6 +373,7 @@ object TestQuery_ResponseAdapter : ResponseAdapter<TestQuery.Data> {
           return TestQuery.Data.QueryData.Droid.OtherDroid(
             __typename = __typename!!
           )
+          reader.endObject()
         }
 
         fun toResponse(
@@ -392,6 +402,7 @@ object TestQuery_ResponseAdapter : ResponseAdapter<TestQuery.Data> {
       responseAdapterCache: ResponseAdapterCache,
       __typename: String?
     ): TestQuery.Data.OtherData {
+      reader.beginObject()
       var __typename: String? = __typename
       while(true) {
         when (reader.selectName(RESPONSE_NAMES)) {
@@ -402,6 +413,7 @@ object TestQuery_ResponseAdapter : ResponseAdapter<TestQuery.Data> {
       return TestQuery.Data.OtherData(
         __typename = __typename!!
       )
+      reader.endObject()
     }
 
     fun toResponse(

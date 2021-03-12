@@ -50,6 +50,9 @@ internal data class CodeGenerationAst(
       val variables: List<InputField>,
   )
 
+  /**
+   * @param isTypeCase: true if this is a type case of a polymorphic field
+   */
   data class ObjectType(
       val name: String,
       val description: String,

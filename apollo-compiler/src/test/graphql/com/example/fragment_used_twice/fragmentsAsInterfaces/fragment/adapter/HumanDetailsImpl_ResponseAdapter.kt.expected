@@ -27,12 +27,12 @@ object HumanDetailsImpl_ResponseAdapter : ResponseAdapter<HumanDetailsImpl.Data>
       HumanDetailsImpl.Data {
     reader.beginObject()
     check(reader.nextName() == "__typename")
-    val typename = reader.nextString()
+    val typename = reader.nextString()!!
     return when(typename) {
       "Human" -> CharacterData.fromResponse(reader, responseAdapterCache, typename)
       else -> OtherData.fromResponse(reader, responseAdapterCache, typename)
     }
-    .also { reader.endObject() }
+    reader.endObject()
   }
 
   override fun toResponse(
@@ -66,6 +66,7 @@ object HumanDetailsImpl_ResponseAdapter : ResponseAdapter<HumanDetailsImpl.Data>
       responseAdapterCache: ResponseAdapterCache,
       __typename: String?
     ): HumanDetailsImpl.Data.CharacterData {
+      reader.beginObject()
       var __typename: String? = __typename
       var name: String? = null
       var birthDate: Any? = null
@@ -83,6 +84,7 @@ object HumanDetailsImpl_ResponseAdapter : ResponseAdapter<HumanDetailsImpl.Data>
         name = name!!,
         birthDate = birthDate!!
       )
+      reader.endObject()
     }
 
     fun toResponse(
@@ -118,6 +120,7 @@ object HumanDetailsImpl_ResponseAdapter : ResponseAdapter<HumanDetailsImpl.Data>
       responseAdapterCache: ResponseAdapterCache,
       __typename: String?
     ): HumanDetailsImpl.Data.OtherData {
+      reader.beginObject()
       var __typename: String? = __typename
       var name: String? = null
       while(true) {
@@ -131,6 +134,7 @@ object HumanDetailsImpl_ResponseAdapter : ResponseAdapter<HumanDetailsImpl.Data>
         __typename = __typename!!,
         name = name!!
       )
+      reader.endObject()
     }
 
     fun toResponse(

@@ -47,11 +47,16 @@ object DroidDetails_ResponseAdapter : ResponseAdapter<DroidDetails.Data> {
 
   override fun fromResponse(reader: JsonReader, responseAdapterCache: ResponseAdapterCache):
       DroidDetails.Data {
+    reader.beginObject()
+    return fromFields(reader, responseAdapterCache).also { reader.endObject() }
+  }
+
+  fun fromFields(reader: JsonReader, responseAdapterCache: ResponseAdapterCache):
+      DroidDetails.Data {
     var __typename: String? = null
     var name: String? = null
     var primaryFunction: String? = null
     var friends: List<DroidDetails.Data.Friends?>? = null
-    reader.beginObject()
     while(true) {
       when (reader.selectName(RESPONSE_NAMES)) {
         0 -> __typename = StringResponseAdapter.fromResponse(reader, responseAdapterCache)
@@ -63,7 +68,6 @@ object DroidDetails_ResponseAdapter : ResponseAdapter<DroidDetails.Data> {
         else -> break
       }
     }
-    reader.endObject()
     return DroidDetails.Data(
       __typename = __typename!!,
       name = name!!,
@@ -101,18 +105,18 @@ object DroidDetails_ResponseAdapter : ResponseAdapter<DroidDetails.Data> {
 
     override fun fromResponse(reader: JsonReader, responseAdapterCache: ResponseAdapterCache):
         DroidDetails.Data.Friends {
-      var name: String? = null
       reader.beginObject()
+      var name: String? = null
       while(true) {
         when (reader.selectName(RESPONSE_NAMES)) {
           0 -> name = StringResponseAdapter.fromResponse(reader, responseAdapterCache)
           else -> break
         }
       }
-      reader.endObject()
       return DroidDetails.Data.Friends(
         name = name!!
       )
+      reader.endObject()
     }
 
     override fun toResponse(

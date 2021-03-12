@@ -31,10 +31,14 @@ internal object HeroDetails_ResponseAdapter : ResponseAdapter<HeroDetails.Data> 
 
   override fun fromResponse(reader: JsonReader, responseAdapterCache: ResponseAdapterCache):
       HeroDetails.Data {
-    val reader = reader.buffer()
     reader.beginObject()
+    return fromFields(reader, responseAdapterCache).also { reader.endObject() }
+  }
 
+  fun fromFields(reader: JsonReader, responseAdapterCache: ResponseAdapterCache): HeroDetails.Data {
+    val reader = reader.buffer()
     var __typename: String? = null
+
     var humanDetails: HumanDetails.Data? = null
     while(true) {
       when (reader.selectName(RESPONSE_NAMES)) {
@@ -44,14 +48,13 @@ internal object HeroDetails_ResponseAdapter : ResponseAdapter<HeroDetails.Data> 
     }
     if (__typename in arrayOf("Human")) {
       reader.rewind()
-      humanDetails = HumanDetails_ResponseAdapter.fromResponse(reader, responseAdapterCache)
+      humanDetails = HumanDetails_ResponseAdapter.fromFields(reader, responseAdapterCache)
     }
 
     return HeroDetails.Data(
       __typename = __typename!!,
       humanDetails = humanDetails
     )
-    .also { reader.endObject() }
   }
 
   override fun toResponse(

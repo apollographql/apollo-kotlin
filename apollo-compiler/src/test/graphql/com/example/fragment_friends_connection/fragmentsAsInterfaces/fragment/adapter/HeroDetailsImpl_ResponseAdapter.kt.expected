@@ -44,10 +44,10 @@ object HeroDetailsImpl_ResponseAdapter : ResponseAdapter<HeroDetailsImpl.Data> {
 
   override fun fromResponse(reader: JsonReader, responseAdapterCache: ResponseAdapterCache):
       HeroDetailsImpl.Data {
+    reader.beginObject()
     var __typename: String? = null
     var name: String? = null
     var friendsConnection: HeroDetailsImpl.Data.FriendsConnection? = null
-    reader.beginObject()
     while(true) {
       when (reader.selectName(RESPONSE_NAMES)) {
         0 -> __typename = StringResponseAdapter.fromResponse(reader, responseAdapterCache)
@@ -56,12 +56,12 @@ object HeroDetailsImpl_ResponseAdapter : ResponseAdapter<HeroDetailsImpl.Data> {
         else -> break
       }
     }
-    reader.endObject()
     return HeroDetailsImpl.Data(
       __typename = __typename!!,
       name = name!!,
       friendsConnection = friendsConnection!!
     )
+    reader.endObject()
   }
 
   override fun toResponse(
@@ -98,9 +98,9 @@ object HeroDetailsImpl_ResponseAdapter : ResponseAdapter<HeroDetailsImpl.Data> {
 
     override fun fromResponse(reader: JsonReader, responseAdapterCache: ResponseAdapterCache):
         HeroDetailsImpl.Data.FriendsConnection {
+      reader.beginObject()
       var totalCount: Int? = null
       var edges: List<HeroDetailsImpl.Data.FriendsConnection.Edges?>? = null
-      reader.beginObject()
       while(true) {
         when (reader.selectName(RESPONSE_NAMES)) {
           0 -> totalCount = NullableIntResponseAdapter.fromResponse(reader, responseAdapterCache)
@@ -108,11 +108,11 @@ object HeroDetailsImpl_ResponseAdapter : ResponseAdapter<HeroDetailsImpl.Data> {
           else -> break
         }
       }
-      reader.endObject()
       return HeroDetailsImpl.Data.FriendsConnection(
         totalCount = totalCount,
         edges = edges
       )
+      reader.endObject()
     }
 
     override fun toResponse(
@@ -143,18 +143,18 @@ object HeroDetailsImpl_ResponseAdapter : ResponseAdapter<HeroDetailsImpl.Data> {
 
       override fun fromResponse(reader: JsonReader, responseAdapterCache: ResponseAdapterCache):
           HeroDetailsImpl.Data.FriendsConnection.Edges {
-        var node: HeroDetailsImpl.Data.FriendsConnection.Edges.Node? = null
         reader.beginObject()
+        var node: HeroDetailsImpl.Data.FriendsConnection.Edges.Node? = null
         while(true) {
           when (reader.selectName(RESPONSE_NAMES)) {
             0 -> node = Node.nullable().fromResponse(reader, responseAdapterCache)
             else -> break
           }
         }
-        reader.endObject()
         return HeroDetailsImpl.Data.FriendsConnection.Edges(
           node = node
         )
+        reader.endObject()
       }
 
       override fun toResponse(
@@ -180,18 +180,18 @@ object HeroDetailsImpl_ResponseAdapter : ResponseAdapter<HeroDetailsImpl.Data> {
 
         override fun fromResponse(reader: JsonReader, responseAdapterCache: ResponseAdapterCache):
             HeroDetailsImpl.Data.FriendsConnection.Edges.Node {
-          var name: String? = null
           reader.beginObject()
+          var name: String? = null
           while(true) {
             when (reader.selectName(RESPONSE_NAMES)) {
               0 -> name = StringResponseAdapter.fromResponse(reader, responseAdapterCache)
               else -> break
             }
           }
-          reader.endObject()
           return HeroDetailsImpl.Data.FriendsConnection.Edges.Node(
             name = name!!
           )
+          reader.endObject()
         }
 
         override fun toResponse(

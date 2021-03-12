@@ -560,7 +560,7 @@ internal class AstBuilder private constructor(
           targetPackageName = targetPackageName,
           abstract = abstract,
           selectionKey = selectionKey,
-          isTypeCase = true
+          isTypeCase = generateFragmentsAsInterfaces
       )
     }
     val fieldNestedObjects = fields

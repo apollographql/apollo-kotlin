@@ -46,18 +46,18 @@ object TestQuery_ResponseAdapter : ResponseAdapter<TestQuery.Data> {
 
   override fun fromResponse(reader: JsonReader, responseAdapterCache: ResponseAdapterCache):
       TestQuery.Data {
-    var search: List<TestQuery.Data.Search?>? = null
     reader.beginObject()
+    var search: List<TestQuery.Data.Search?>? = null
     while(true) {
       when (reader.selectName(RESPONSE_NAMES)) {
         0 -> search = Search.nullable().list().nullable().fromResponse(reader, responseAdapterCache)
         else -> break
       }
     }
-    reader.endObject()
     return TestQuery.Data(
       search = search
     )
+    reader.endObject()
   }
 
   override fun toResponse(
@@ -80,10 +80,10 @@ object TestQuery_ResponseAdapter : ResponseAdapter<TestQuery.Data> {
 
     override fun fromResponse(reader: JsonReader, responseAdapterCache: ResponseAdapterCache):
         TestQuery.Data.Search {
-      val reader = reader.buffer()
       reader.beginObject()
-
+      val reader = reader.buffer()
       var __typename: String? = null
+
       var asAsCharacter: TestQuery.Data.Search.AsCharacter? = null
       var asAsStarship: TestQuery.Data.Search.AsStarship? = null
       while(true) {
@@ -94,11 +94,11 @@ object TestQuery_ResponseAdapter : ResponseAdapter<TestQuery.Data> {
       }
       if (__typename in arrayOf("Droid", "Human")) {
         reader.rewind()
-        asAsCharacter = AsCharacter.fromResponse(reader, responseAdapterCache, __typename)
+        asAsCharacter = AsCharacter.fromFields(reader, responseAdapterCache)
       }
       if (__typename in arrayOf("Starship")) {
         reader.rewind()
-        asAsStarship = AsStarship.fromResponse(reader, responseAdapterCache, __typename)
+        asAsStarship = AsStarship.fromFields(reader, responseAdapterCache)
       }
 
       return TestQuery.Data.Search(
@@ -106,7 +106,7 @@ object TestQuery_ResponseAdapter : ResponseAdapter<TestQuery.Data> {
         asAsCharacter = asAsCharacter,
         asAsStarship = asAsStarship
       )
-      .also { reader.endObject() }
+      reader.endObject()
     }
 
     override fun toResponse(
@@ -124,7 +124,7 @@ object TestQuery_ResponseAdapter : ResponseAdapter<TestQuery.Data> {
       writer.endObject()
     }
 
-    object AsCharacter {
+    object AsCharacter : ResponseAdapter<TestQuery.Data.Search.AsCharacter> {
       val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
         ResponseField.Typename,
         ResponseField(
@@ -149,12 +149,15 @@ object TestQuery_ResponseAdapter : ResponseAdapter<TestQuery.Data> {
 
       val RESPONSE_NAMES: List<String> = RESPONSE_FIELDS.map { it.responseName }
 
-      fun fromResponse(
-        reader: JsonReader,
-        responseAdapterCache: ResponseAdapterCache,
-        __typename: String?
-      ): TestQuery.Data.Search.AsCharacter {
-        var __typename: String? = __typename
+      override fun fromResponse(reader: JsonReader, responseAdapterCache: ResponseAdapterCache):
+          TestQuery.Data.Search.AsCharacter {
+        reader.beginObject()
+        return fromFields(reader, responseAdapterCache).also { reader.endObject() }
+      }
+
+      fun fromFields(reader: JsonReader, responseAdapterCache: ResponseAdapterCache):
+          TestQuery.Data.Search.AsCharacter {
+        var __typename: String? = null
         var id: String? = null
         var name: String? = null
         var friends: List<TestQuery.Data.Search.AsCharacter.Friends?>? = null
@@ -176,7 +179,7 @@ object TestQuery_ResponseAdapter : ResponseAdapter<TestQuery.Data> {
         )
       }
 
-      fun toResponse(
+      override fun toResponse(
         writer: JsonWriter,
         responseAdapterCache: ResponseAdapterCache,
         value: TestQuery.Data.Search.AsCharacter
@@ -202,10 +205,10 @@ object TestQuery_ResponseAdapter : ResponseAdapter<TestQuery.Data> {
 
         override fun fromResponse(reader: JsonReader, responseAdapterCache: ResponseAdapterCache):
             TestQuery.Data.Search.AsCharacter.Friends {
-          val reader = reader.buffer()
           reader.beginObject()
-
+          val reader = reader.buffer()
           var __typename: String? = null
+
           var asAsCharacter: TestQuery.Data.Search.AsCharacter.Friends.AsCharacter? = null
           var asAsHuman: TestQuery.Data.Search.AsCharacter.Friends.AsHuman? = null
           var asAsDroid: TestQuery.Data.Search.AsCharacter.Friends.AsDroid? = null
@@ -217,15 +220,15 @@ object TestQuery_ResponseAdapter : ResponseAdapter<TestQuery.Data> {
           }
           if (__typename in arrayOf("Droid", "Human")) {
             reader.rewind()
-            asAsCharacter = AsCharacter.fromResponse(reader, responseAdapterCache, __typename)
+            asAsCharacter = AsCharacter.fromFields(reader, responseAdapterCache)
           }
           if (__typename in arrayOf("Human")) {
             reader.rewind()
-            asAsHuman = AsHuman.fromResponse(reader, responseAdapterCache, __typename)
+            asAsHuman = AsHuman.fromFields(reader, responseAdapterCache)
           }
           if (__typename in arrayOf("Droid")) {
             reader.rewind()
-            asAsDroid = AsDroid.fromResponse(reader, responseAdapterCache, __typename)
+            asAsDroid = AsDroid.fromFields(reader, responseAdapterCache)
           }
 
           return TestQuery.Data.Search.AsCharacter.Friends(
@@ -234,7 +237,7 @@ object TestQuery_ResponseAdapter : ResponseAdapter<TestQuery.Data> {
             asAsHuman = asAsHuman,
             asAsDroid = asAsDroid
           )
-          .also { reader.endObject() }
+          reader.endObject()
         }
 
         override fun toResponse(
@@ -254,7 +257,8 @@ object TestQuery_ResponseAdapter : ResponseAdapter<TestQuery.Data> {
           writer.endObject()
         }
 
-        object AsCharacter {
+        object AsCharacter : ResponseAdapter<TestQuery.Data.Search.AsCharacter.Friends.AsCharacter>
+            {
           val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
             ResponseField.Typename,
             ResponseField(
@@ -265,12 +269,15 @@ object TestQuery_ResponseAdapter : ResponseAdapter<TestQuery.Data> {
 
           val RESPONSE_NAMES: List<String> = RESPONSE_FIELDS.map { it.responseName }
 
-          fun fromResponse(
-            reader: JsonReader,
-            responseAdapterCache: ResponseAdapterCache,
-            __typename: String?
-          ): TestQuery.Data.Search.AsCharacter.Friends.AsCharacter {
-            var __typename: String? = __typename
+          override fun fromResponse(reader: JsonReader, responseAdapterCache: ResponseAdapterCache):
+              TestQuery.Data.Search.AsCharacter.Friends.AsCharacter {
+            reader.beginObject()
+            return fromFields(reader, responseAdapterCache).also { reader.endObject() }
+          }
+
+          fun fromFields(reader: JsonReader, responseAdapterCache: ResponseAdapterCache):
+              TestQuery.Data.Search.AsCharacter.Friends.AsCharacter {
+            var __typename: String? = null
             var name: String? = null
             while(true) {
               when (reader.selectName(RESPONSE_NAMES)) {
@@ -285,7 +292,7 @@ object TestQuery_ResponseAdapter : ResponseAdapter<TestQuery.Data> {
             )
           }
 
-          fun toResponse(
+          override fun toResponse(
             writer: JsonWriter,
             responseAdapterCache: ResponseAdapterCache,
             value: TestQuery.Data.Search.AsCharacter.Friends.AsCharacter
@@ -299,7 +306,7 @@ object TestQuery_ResponseAdapter : ResponseAdapter<TestQuery.Data> {
           }
         }
 
-        object AsHuman {
+        object AsHuman : ResponseAdapter<TestQuery.Data.Search.AsCharacter.Friends.AsHuman> {
           val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
             ResponseField.Typename,
             ResponseField(
@@ -318,12 +325,15 @@ object TestQuery_ResponseAdapter : ResponseAdapter<TestQuery.Data> {
 
           val RESPONSE_NAMES: List<String> = RESPONSE_FIELDS.map { it.responseName }
 
-          fun fromResponse(
-            reader: JsonReader,
-            responseAdapterCache: ResponseAdapterCache,
-            __typename: String?
-          ): TestQuery.Data.Search.AsCharacter.Friends.AsHuman {
-            var __typename: String? = __typename
+          override fun fromResponse(reader: JsonReader, responseAdapterCache: ResponseAdapterCache):
+              TestQuery.Data.Search.AsCharacter.Friends.AsHuman {
+            reader.beginObject()
+            return fromFields(reader, responseAdapterCache).also { reader.endObject() }
+          }
+
+          fun fromFields(reader: JsonReader, responseAdapterCache: ResponseAdapterCache):
+              TestQuery.Data.Search.AsCharacter.Friends.AsHuman {
+            var __typename: String? = null
             var homePlanet: String? = null
             var friends: List<TestQuery.Data.Search.AsCharacter.Friends.AsHuman.Friends?>? = null
             while(true) {
@@ -343,7 +353,7 @@ object TestQuery_ResponseAdapter : ResponseAdapter<TestQuery.Data> {
             )
           }
 
-          fun toResponse(
+          override fun toResponse(
             writer: JsonWriter,
             responseAdapterCache: ResponseAdapterCache,
             value: TestQuery.Data.Search.AsCharacter.Friends.AsHuman
@@ -370,10 +380,10 @@ object TestQuery_ResponseAdapter : ResponseAdapter<TestQuery.Data> {
             override fun fromResponse(reader: JsonReader,
                 responseAdapterCache: ResponseAdapterCache):
                 TestQuery.Data.Search.AsCharacter.Friends.AsHuman.Friends {
-              val reader = reader.buffer()
               reader.beginObject()
-
+              val reader = reader.buffer()
               var __typename: String? = null
+
               var asAsCharacter: TestQuery.Data.Search.AsCharacter.Friends.AsHuman.Friends.AsCharacter? = null
               while(true) {
                 when (reader.selectName(RESPONSE_NAMES)) {
@@ -383,14 +393,14 @@ object TestQuery_ResponseAdapter : ResponseAdapter<TestQuery.Data> {
               }
               if (__typename in arrayOf("Droid", "Human")) {
                 reader.rewind()
-                asAsCharacter = AsCharacter.fromResponse(reader, responseAdapterCache, __typename)
+                asAsCharacter = AsCharacter.fromFields(reader, responseAdapterCache)
               }
 
               return TestQuery.Data.Search.AsCharacter.Friends.AsHuman.Friends(
                 __typename = __typename!!,
                 asAsCharacter = asAsCharacter
               )
-              .also { reader.endObject() }
+              reader.endObject()
             }
 
             override fun toResponse(
@@ -406,7 +416,9 @@ object TestQuery_ResponseAdapter : ResponseAdapter<TestQuery.Data> {
               writer.endObject()
             }
 
-            object AsCharacter {
+            object AsCharacter :
+                ResponseAdapter<TestQuery.Data.Search.AsCharacter.Friends.AsHuman.Friends.AsCharacter>
+                {
               val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
                 ResponseField.Typename,
                 ResponseField(
@@ -417,12 +429,16 @@ object TestQuery_ResponseAdapter : ResponseAdapter<TestQuery.Data> {
 
               val RESPONSE_NAMES: List<String> = RESPONSE_FIELDS.map { it.responseName }
 
-              fun fromResponse(
-                reader: JsonReader,
-                responseAdapterCache: ResponseAdapterCache,
-                __typename: String?
-              ): TestQuery.Data.Search.AsCharacter.Friends.AsHuman.Friends.AsCharacter {
-                var __typename: String? = __typename
+              override fun fromResponse(reader: JsonReader,
+                  responseAdapterCache: ResponseAdapterCache):
+                  TestQuery.Data.Search.AsCharacter.Friends.AsHuman.Friends.AsCharacter {
+                reader.beginObject()
+                return fromFields(reader, responseAdapterCache).also { reader.endObject() }
+              }
+
+              fun fromFields(reader: JsonReader, responseAdapterCache: ResponseAdapterCache):
+                  TestQuery.Data.Search.AsCharacter.Friends.AsHuman.Friends.AsCharacter {
+                var __typename: String? = null
                 var firstAppearsIn: Episode? = null
                 while(true) {
                   when (reader.selectName(RESPONSE_NAMES)) {
@@ -439,7 +455,7 @@ object TestQuery_ResponseAdapter : ResponseAdapter<TestQuery.Data> {
                 )
               }
 
-              fun toResponse(
+              override fun toResponse(
                 writer: JsonWriter,
                 responseAdapterCache: ResponseAdapterCache,
                 value: TestQuery.Data.Search.AsCharacter.Friends.AsHuman.Friends.AsCharacter
@@ -456,7 +472,7 @@ object TestQuery_ResponseAdapter : ResponseAdapter<TestQuery.Data> {
           }
         }
 
-        object AsDroid {
+        object AsDroid : ResponseAdapter<TestQuery.Data.Search.AsCharacter.Friends.AsDroid> {
           val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
             ResponseField.Typename,
             ResponseField(
@@ -474,12 +490,15 @@ object TestQuery_ResponseAdapter : ResponseAdapter<TestQuery.Data> {
 
           val RESPONSE_NAMES: List<String> = RESPONSE_FIELDS.map { it.responseName }
 
-          fun fromResponse(
-            reader: JsonReader,
-            responseAdapterCache: ResponseAdapterCache,
-            __typename: String?
-          ): TestQuery.Data.Search.AsCharacter.Friends.AsDroid {
-            var __typename: String? = __typename
+          override fun fromResponse(reader: JsonReader, responseAdapterCache: ResponseAdapterCache):
+              TestQuery.Data.Search.AsCharacter.Friends.AsDroid {
+            reader.beginObject()
+            return fromFields(reader, responseAdapterCache).also { reader.endObject() }
+          }
+
+          fun fromFields(reader: JsonReader, responseAdapterCache: ResponseAdapterCache):
+              TestQuery.Data.Search.AsCharacter.Friends.AsDroid {
+            var __typename: String? = null
             var primaryFunction: String? = null
             var friends: List<TestQuery.Data.Search.AsCharacter.Friends.AsDroid.Friends?>? = null
             while(true) {
@@ -499,7 +518,7 @@ object TestQuery_ResponseAdapter : ResponseAdapter<TestQuery.Data> {
             )
           }
 
-          fun toResponse(
+          override fun toResponse(
             writer: JsonWriter,
             responseAdapterCache: ResponseAdapterCache,
             value: TestQuery.Data.Search.AsCharacter.Friends.AsDroid
@@ -530,18 +549,18 @@ object TestQuery_ResponseAdapter : ResponseAdapter<TestQuery.Data> {
             override fun fromResponse(reader: JsonReader,
                 responseAdapterCache: ResponseAdapterCache):
                 TestQuery.Data.Search.AsCharacter.Friends.AsDroid.Friends {
-              var id: String? = null
               reader.beginObject()
+              var id: String? = null
               while(true) {
                 when (reader.selectName(RESPONSE_NAMES)) {
                   0 -> id = StringResponseAdapter.fromResponse(reader, responseAdapterCache)
                   else -> break
                 }
               }
-              reader.endObject()
               return TestQuery.Data.Search.AsCharacter.Friends.AsDroid.Friends(
                 id = id!!
               )
+              reader.endObject()
             }
 
             override fun toResponse(
@@ -559,7 +578,7 @@ object TestQuery_ResponseAdapter : ResponseAdapter<TestQuery.Data> {
       }
     }
 
-    object AsStarship {
+    object AsStarship : ResponseAdapter<TestQuery.Data.Search.AsStarship> {
       val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
         ResponseField.Typename,
         ResponseField(
@@ -570,12 +589,15 @@ object TestQuery_ResponseAdapter : ResponseAdapter<TestQuery.Data> {
 
       val RESPONSE_NAMES: List<String> = RESPONSE_FIELDS.map { it.responseName }
 
-      fun fromResponse(
-        reader: JsonReader,
-        responseAdapterCache: ResponseAdapterCache,
-        __typename: String?
-      ): TestQuery.Data.Search.AsStarship {
-        var __typename: String? = __typename
+      override fun fromResponse(reader: JsonReader, responseAdapterCache: ResponseAdapterCache):
+          TestQuery.Data.Search.AsStarship {
+        reader.beginObject()
+        return fromFields(reader, responseAdapterCache).also { reader.endObject() }
+      }
+
+      fun fromFields(reader: JsonReader, responseAdapterCache: ResponseAdapterCache):
+          TestQuery.Data.Search.AsStarship {
+        var __typename: String? = null
         var name: String? = null
         while(true) {
           when (reader.selectName(RESPONSE_NAMES)) {
@@ -590,7 +612,7 @@ object TestQuery_ResponseAdapter : ResponseAdapter<TestQuery.Data> {
         )
       }
 
-      fun toResponse(
+      override fun toResponse(
         writer: JsonWriter,
         responseAdapterCache: ResponseAdapterCache,
         value: TestQuery.Data.Search.AsStarship

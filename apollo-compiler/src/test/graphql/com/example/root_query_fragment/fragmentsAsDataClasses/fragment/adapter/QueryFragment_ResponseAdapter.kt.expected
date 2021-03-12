@@ -37,9 +37,14 @@ object QueryFragment_ResponseAdapter : ResponseAdapter<QueryFragment.Data> {
 
   override fun fromResponse(reader: JsonReader, responseAdapterCache: ResponseAdapterCache):
       QueryFragment.Data {
+    reader.beginObject()
+    return fromFields(reader, responseAdapterCache).also { reader.endObject() }
+  }
+
+  fun fromFields(reader: JsonReader, responseAdapterCache: ResponseAdapterCache):
+      QueryFragment.Data {
     var __typename: String? = null
     var hero: QueryFragment.Data.Hero? = null
-    reader.beginObject()
     while(true) {
       when (reader.selectName(RESPONSE_NAMES)) {
         0 -> __typename = StringResponseAdapter.fromResponse(reader, responseAdapterCache)
@@ -47,7 +52,6 @@ object QueryFragment_ResponseAdapter : ResponseAdapter<QueryFragment.Data> {
         else -> break
       }
     }
-    reader.endObject()
     return QueryFragment.Data(
       __typename = __typename!!,
       hero = hero
@@ -79,18 +83,18 @@ object QueryFragment_ResponseAdapter : ResponseAdapter<QueryFragment.Data> {
 
     override fun fromResponse(reader: JsonReader, responseAdapterCache: ResponseAdapterCache):
         QueryFragment.Data.Hero {
-      var name: String? = null
       reader.beginObject()
+      var name: String? = null
       while(true) {
         when (reader.selectName(RESPONSE_NAMES)) {
           0 -> name = StringResponseAdapter.fromResponse(reader, responseAdapterCache)
           else -> break
         }
       }
-      reader.endObject()
       return QueryFragment.Data.Hero(
         name = name!!
       )
+      reader.endObject()
     }
 
     override fun toResponse(

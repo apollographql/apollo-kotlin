@@ -244,21 +244,11 @@ class MapJsonReader(val root: Map<String, Any?>) : JsonReader {
   }
 
   /**
-   * Rewinds to the beginning of the current object. Callers have to call beginObject() before calling nextName()
-   * This is needed so we can use the same adapter from a query or to read a standalone fragment
+   * Rewinds to the beginning of the current object.
    */
   fun rewind() {
-    pop()
-    check(currentIndex > 0) {
-      "Cannot call rewind() outside of an object"
-    }
-    currentIndex--
-
-    when(val data = currentData) {
-      is OrderedMap -> {
-        currentName = data.entries[currentIndex].key
-      }
-    }
+    currentIndex = 0
+    currentName = null
   }
 
   companion object {

@@ -42,18 +42,18 @@ object TestQuery_ResponseAdapter : ResponseAdapter<TestQuery.Data> {
 
   override fun fromResponse(reader: JsonReader, responseAdapterCache: ResponseAdapterCache):
       TestQuery.Data {
-    var starship: TestQuery.Data.Starship? = null
     reader.beginObject()
+    var starship: TestQuery.Data.Starship? = null
     while(true) {
       when (reader.selectName(RESPONSE_NAMES)) {
         0 -> starship = Starship.nullable().fromResponse(reader, responseAdapterCache)
         else -> break
       }
     }
-    reader.endObject()
     return TestQuery.Data(
       starship = starship
     )
+    reader.endObject()
   }
 
   override fun toResponse(
@@ -88,10 +88,10 @@ object TestQuery_ResponseAdapter : ResponseAdapter<TestQuery.Data> {
 
     override fun fromResponse(reader: JsonReader, responseAdapterCache: ResponseAdapterCache):
         TestQuery.Data.Starship {
+      reader.beginObject()
       var id: String? = null
       var name: String? = null
       var coordinates: List<List<Double>>? = null
-      reader.beginObject()
       while(true) {
         when (reader.selectName(RESPONSE_NAMES)) {
           0 -> id = StringResponseAdapter.fromResponse(reader, responseAdapterCache)
@@ -101,12 +101,12 @@ object TestQuery_ResponseAdapter : ResponseAdapter<TestQuery.Data> {
           else -> break
         }
       }
-      reader.endObject()
       return TestQuery.Data.Starship(
         id = id!!,
         name = name!!,
         coordinates = coordinates
       )
+      reader.endObject()
     }
 
     override fun toResponse(
