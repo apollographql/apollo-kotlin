@@ -157,9 +157,7 @@ class ObjectResponseAdapter<T>(
       /**
        * And write to the original writer
        */
-      writer.beginObject()
       AnyResponseAdapter.toResponse(writer, mapWriter.root())
-      writer.endObject()
     } else {
       writer.beginObject()
       wrappedAdapter.toResponse(writer, responseAdapterCache, value)
