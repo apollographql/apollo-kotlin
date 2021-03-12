@@ -12,7 +12,7 @@ import com.squareup.kotlinpoet.asTypeName
 internal fun Collection<CodeGenerationAst.CustomScalarType>.typeSpec(generateAsInternal: Boolean): TypeSpec {
   return TypeSpec.objectBuilder("CustomScalars")
       .applyIf(generateAsInternal) { addModifiers(KModifier.INTERNAL) }
-      .addKdoc("Auto generated constants for custom scalars. Use them to register your [CustomScalarAdapter]s")
+      .addKdoc("Auto generated constants for custom scalars. Use them to register your [ResponseAdapter]s")
       .apply {
         forEach {
           addProperty(it.propertySpec())
