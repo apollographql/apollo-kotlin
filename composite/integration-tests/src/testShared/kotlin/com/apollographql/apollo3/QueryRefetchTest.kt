@@ -1,8 +1,5 @@
-package com.apollographql.apollo3.internal
+package com.apollographql.apollo3
 
-import com.apollographql.apollo3.ApolloCall
-import com.apollographql.apollo3.ApolloClient
-import com.apollographql.apollo3.IdFieldCacheKeyResolver
 import com.apollographql.apollo3.Utils.assertResponse
 import com.apollographql.apollo3.Utils.enqueueAndAssertResponse
 import com.apollographql.apollo3.Utils.immediateExecutor
@@ -18,6 +15,7 @@ import com.apollographql.apollo3.integration.normalizer.ReviewsByEpisodeQuery
 import com.apollographql.apollo3.integration.normalizer.type.ColorInput
 import com.apollographql.apollo3.integration.normalizer.type.Episode
 import com.apollographql.apollo3.integration.normalizer.type.ReviewInput
+import com.apollographql.apollo3.internal.RealApolloCall
 import com.apollographql.apollo3.rx2.Rx2Apollo
 import com.google.common.truth.Truth.assertThat
 import okhttp3.Dispatcher

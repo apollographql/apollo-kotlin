@@ -1,4 +1,4 @@
-package com.apollographql.apollo3.internal.interceptor
+package com.apollographql.apollo3
 
 import com.apollographql.apollo3.Utils.checkTestFixture
 import com.apollographql.apollo3.api.Input
@@ -9,6 +9,7 @@ import com.apollographql.apollo3.api.internal.ApolloLogger
 import com.apollographql.apollo3.cache.ApolloCacheHeaders
 import com.apollographql.apollo3.cache.CacheHeaders
 import com.apollographql.apollo3.integration.interceptor.AllFilmsQuery
+import com.apollographql.apollo3.internal.interceptor.ApolloServerInterceptor
 import com.apollographql.apollo3.request.RequestHeaders
 import com.google.common.base.Predicate
 import com.google.common.truth.Truth

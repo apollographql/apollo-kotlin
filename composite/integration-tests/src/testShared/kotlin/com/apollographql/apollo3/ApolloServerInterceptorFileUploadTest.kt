@@ -1,4 +1,4 @@
-package com.apollographql.apollo3.internal.interceptor
+package com.apollographql.apollo3
 
 import com.apollographql.apollo3.Utils.checkTestFixture
 import com.apollographql.apollo3.api.CustomScalar
@@ -16,6 +16,7 @@ import com.apollographql.apollo3.integration.upload.NestedUploadMutation
 import com.apollographql.apollo3.integration.upload.SingleUploadMutation
 import com.apollographql.apollo3.integration.upload.SingleUploadTwiceMutation
 import com.apollographql.apollo3.integration.upload.type.NestedObject
+import com.apollographql.apollo3.internal.interceptor.ApolloServerInterceptor
 import com.apollographql.apollo3.request.RequestHeaders
 import com.google.common.base.Predicate
 import com.google.common.truth.Truth.assertThat
@@ -24,7 +25,6 @@ import okhttp3.*
 import okio.*
 import okio.ByteString.Companion.encodeUtf8
 import org.junit.Before
-import org.junit.Ignore
 import org.junit.Test
 import java.io.File
 import java.lang.UnsupportedOperationException
