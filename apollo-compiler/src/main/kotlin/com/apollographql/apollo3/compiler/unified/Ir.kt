@@ -80,13 +80,14 @@ enum class IrOperationType {
 data class IrField(
     val name: String,
     val alias: String?,
+    val arguments: List<IrArgument>,
     // from the fieldDefinition
     val description: String?,
     // from the fieldDefinition
     val type: IrType,
-    // from the GQL directives
+    // from the fieldDefinition directives
     val deprecationReason: String?,
-    val arguments: List<IrArgument>,
+
     val condition: BooleanExpression,
     // empty for a scalar field
     val fieldSets: List<IrFieldSet>,
@@ -97,7 +98,6 @@ data class IrField(
 data class IrFieldSet(
     val typeConditions: Set<String>,
     val possibleTypes: Set<String>,
-    val extends: List<IrFieldSet>,
     val fields: List<IrField>,
 )
 

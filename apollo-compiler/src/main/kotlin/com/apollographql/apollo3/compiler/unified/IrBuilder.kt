@@ -1,6 +1,7 @@
 package com.apollographql.apollo3.compiler.unified
 
 import com.apollographql.apollo3.compiler.frontend.GQLBooleanValue
+import com.apollographql.apollo3.compiler.frontend.GQLDirective
 import com.apollographql.apollo3.compiler.frontend.GQLEnumTypeDefinition
 import com.apollographql.apollo3.compiler.frontend.GQLEnumValue
 import com.apollographql.apollo3.compiler.frontend.GQLEnumValueDefinition
@@ -32,6 +33,7 @@ import com.apollographql.apollo3.compiler.frontend.coerce
 import com.apollographql.apollo3.compiler.frontend.findDeprecationReason
 import com.apollographql.apollo3.compiler.frontend.inferVariables
 import com.apollographql.apollo3.compiler.frontend.rootTypeDefinition
+import com.apollographql.apollo3.compiler.frontend.toUtf8
 import com.apollographql.apollo3.compiler.frontend.toUtf8WithIndents
 
 class IrBuilder(
@@ -42,7 +44,9 @@ class IrBuilder(
     private val alwaysGenerateTypesMatching: Set<String>
 ) {
   private val allGQLFragmentDefinitions = (metadataFragmentDefinitions + fragmentDefinitions).associateBy { it.name }
-  private var usedTypes = UsedReferences.Empty
+  private var usedEnums = mutableSetOf<String>()
+  private var usedInputObjects = mutableSetOf<String>()
+  private var usedCustomScalars = mutableSetOf<String>()
 
   private fun shouldAlwaysGenerate(name: String) = alwaysGenerateTypesMatching.map { Regex(it) }.any { it.matches(name) }
 
@@ -52,18 +56,18 @@ class IrBuilder(
 
     val enums = schema.typeDefinitions.values
         .filterIsInstance<GQLEnumTypeDefinition>()
-        .filter { usedTypes.enums.contains(it.name) || shouldAlwaysGenerate(it.name) }
+        .filter { usedEnums.contains(it.name) || shouldAlwaysGenerate(it.name) }
         .map { it.toIr() }
 
     val inputObjects = schema.typeDefinitions.values
         .filterIsInstance<GQLInputObjectTypeDefinition>()
-        .filter { usedTypes.inputObjects.contains(it.name) || shouldAlwaysGenerate(it.name) }
+        .filter { usedInputObjects.contains(it.name) || shouldAlwaysGenerate(it.name) }
         .map { it.toIr() }
 
     val customScalars = schema.typeDefinitions.values
         .filterIsInstance<GQLScalarTypeDefinition>()
         .filter { !it.isBuiltIn() }
-        .filter { usedTypes.customScalars.contains(it.name) || shouldAlwaysGenerate(it.name) }
+        .filter { usedCustomScalars.contains(it.name) || shouldAlwaysGenerate(it.name) }
         .map { it.toIr() }
 
     return UnifiedIr(
@@ -164,10 +168,12 @@ class IrBuilder(
   )
 
   private fun createDataField(selectionSet: GQLSelectionSet, typeCondition: String): DataFieldResult {
-    val builder = FieldSetsBuilder(schema, allGQLFragmentDefinitions, selectionSet, typeCondition)
+    val builder = FieldSetsBuilder(schema, allGQLFragmentDefinitions, selectionSet, typeCondition) {
+      toIr()
+    }
+
     val result = builder.build()
 
-    usedTypes += result.usedReferences
 
     val field = IrField(
         name = "data",
@@ -180,7 +186,7 @@ class IrBuilder(
         fieldSets = result.fieldSets,
     )
 
-    return DataFieldResult(field, result.usedReferences.namedFragments)
+    return DataFieldResult(field, result.usedNamedFragments)
   }
 
   private fun InputValueScope.VariableReference.toIr(): IrVariable {
@@ -201,6 +207,7 @@ class IrBuilder(
     )
   }
 
+
   private fun GQLType.toIr(): IrType {
     return when (this) {
       is GQLNonNullType -> NonNullIrType(ofType = type.toIr())
@@ -213,33 +220,91 @@ class IrBuilder(
             "Int" -> IntIrType
             "Float" -> FloatIrType
             "ID" -> IdIrType
-            else -> CustomScalarIrType(name)
+            else -> {
+              usedCustomScalars.add(name)
+              CustomScalarIrType(name)
+            }
           }
         }
-        is GQLEnumTypeDefinition -> EnumIrType(name)
+        is GQLEnumTypeDefinition -> {
+          usedEnums.add(name)
+          EnumIrType(name)
+        }
         is GQLObjectTypeDefinition -> ObjectIrType(name)
         is GQLInterfaceTypeDefinition -> InterfaceIrType(name)
         is GQLUnionTypeDefinition -> UnionIrType(name)
-        is GQLInputObjectTypeDefinition -> InputObjectIrType(name)
+        is GQLInputObjectTypeDefinition -> {
+          usedInputObjects.add(name)
+          InputObjectIrType(name)
+        }
       }
     }
   }
+}
 
-  private fun GQLValue.toIr(): IrValue {
-    return when (this) {
-      is GQLIntValue -> IntIrValue(value = value)
-      is GQLStringValue -> StringIrValue(value = value)
-      is GQLFloatValue -> FloatIrValue(value = value)
-      is GQLBooleanValue -> BooleanIrValue(value = value)
-      is GQLEnumValue -> EnumIrValue(value = value)
-      is GQLNullValue -> NullIrValue
-      is GQLVariableValue -> VariableIrValue(name = name)
-      is GQLListValue -> ListIrValue(values = values.map { it.toIr() })
-      is GQLObjectValue -> ObjectIrValue(
-          fields = fields.map {
-            ObjectIrValue.Field(name = it.name, value = it.value.toIr())
-          }
-      )
+internal fun GQLValue.toIr(): IrValue {
+  return when (this) {
+    is GQLIntValue -> IntIrValue(value = value)
+    is GQLStringValue -> StringIrValue(value = value)
+    is GQLFloatValue -> FloatIrValue(value = value)
+    is GQLBooleanValue -> BooleanIrValue(value = value)
+    is GQLEnumValue -> EnumIrValue(value = value)
+    is GQLNullValue -> NullIrValue
+    is GQLVariableValue -> VariableIrValue(name = name)
+    is GQLListValue -> ListIrValue(values = values.map { it.toIr() })
+    is GQLObjectValue -> ObjectIrValue(
+        fields = fields.map {
+          ObjectIrValue.Field(name = it.name, value = it.value.toIr())
+        }
+    )
+  }
+}
+
+/**
+ * This is guaranteed to return one of:
+ * - True
+ * - False
+ * - (!)Variable
+ * - (!)Variable & (!)Variable
+ *
+ */
+internal fun List<GQLDirective>.toBooleanExpression(): BooleanExpression {
+  val conditions = mapNotNull {
+    it.toBooleanExpression()
+  }
+  return if (conditions.isEmpty()) {
+    BooleanExpression.True
+  } else {
+    check(conditions.toSet().size == conditions.size) {
+      "ApolloGraphQL: duplicate @skip/@include directives are not allowed"
     }
+    // Having both @skip and @include is allowed
+    // In that case, it's equivalent to a "And"
+    // See https://spec.graphql.org/draft/#sec--include
+    BooleanExpression.And(conditions.toSet()).simplify()
+  }
+}
+
+internal  fun GQLDirective.toBooleanExpression(): BooleanExpression? {
+  if (setOf("skip", "include").contains(name).not()) {
+    // not a condition directive
+    return null
+  }
+  if (arguments?.arguments?.size != 1) {
+    throw IllegalStateException("ApolloGraphQL: wrong number of arguments for '$name' directive: ${arguments?.arguments?.size}")
+  }
+
+  val argument = arguments.arguments.first()
+
+  return when (val value = argument.value) {
+    is GQLBooleanValue -> {
+      if (value.value) BooleanExpression.True else BooleanExpression.False
+    }
+    is GQLVariableValue -> BooleanExpression.Variable(
+        name = value.name,
+    ).let {
+      if (name == "skip") it.not() else it
+    }
+    else -> throw IllegalStateException("ApolloGraphQL: cannot pass ${value.toUtf8()} to '$name' directive")
   }
 }
