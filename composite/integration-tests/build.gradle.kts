@@ -48,7 +48,7 @@ fun addTests(asInterfaces: Boolean, sourceSetName: String, addTask: Boolean) {
 }
 
 addTests(false, "testAsClasses", true)
-addTests(true, "testAsInterfaces", true)
+//addTests(true, "testAsInterfaces", true)
 
 fun configureApollo(asInterfaces: Boolean, sourceSetName: String) {
   configure<ApolloExtension> {
