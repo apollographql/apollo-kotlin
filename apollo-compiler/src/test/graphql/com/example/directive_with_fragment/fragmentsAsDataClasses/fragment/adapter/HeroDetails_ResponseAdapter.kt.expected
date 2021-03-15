@@ -35,7 +35,6 @@ object HeroDetails_ResponseAdapter : ResponseAdapter<HeroDetails.Data> {
       HeroDetails.Data {
     var __typename: String? = null
     var name: String? = null
-    reader.beginObject()
     while(true) {
       when (reader.selectName(RESPONSE_NAMES)) {
         0 -> __typename = StringResponseAdapter.fromResponse(reader, responseAdapterCache)
@@ -43,7 +42,6 @@ object HeroDetails_ResponseAdapter : ResponseAdapter<HeroDetails.Data> {
         else -> break
       }
     }
-    reader.endObject()
     return HeroDetails.Data(
       __typename = __typename!!,
       name = name!!
@@ -55,11 +53,9 @@ object HeroDetails_ResponseAdapter : ResponseAdapter<HeroDetails.Data> {
     responseAdapterCache: ResponseAdapterCache,
     value: HeroDetails.Data
   ) {
-    writer.beginObject()
     writer.name("__typename")
     StringResponseAdapter.toResponse(writer, responseAdapterCache, value.__typename)
     writer.name("name")
     StringResponseAdapter.toResponse(writer, responseAdapterCache, value.name)
-    writer.endObject()
   }
 }

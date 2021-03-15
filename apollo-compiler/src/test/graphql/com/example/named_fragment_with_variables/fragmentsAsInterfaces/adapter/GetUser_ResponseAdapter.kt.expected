@@ -14,6 +14,7 @@ import com.apollographql.apollo3.api.json.JsonReader
 import com.apollographql.apollo3.api.json.JsonWriter
 import com.apollographql.apollo3.api.list
 import com.apollographql.apollo3.api.nullable
+import com.apollographql.apollo3.api.obj
 import com.example.named_fragment_with_variables.GetUser
 import kotlin.Array
 import kotlin.String
@@ -26,14 +27,12 @@ import kotlin.collections.List
 object GetUser_ResponseAdapter : ResponseAdapter<GetUser.Data> {
   override fun fromResponse(reader: JsonReader, responseAdapterCache: ResponseAdapterCache):
       GetUser.Data {
-    reader.beginObject()
     check(reader.nextName() == "__typename")
-    val typename = reader.nextString()
+    val typename = reader.nextString()!!
     return when(typename) {
       "Query" -> QueryData.fromResponse(reader, responseAdapterCache, typename)
       else -> OtherData.fromResponse(reader, responseAdapterCache, typename)
     }
-    .also { reader.endObject() }
   }
 
   override fun toResponse(
@@ -73,7 +72,8 @@ object GetUser_ResponseAdapter : ResponseAdapter<GetUser.Data> {
       while(true) {
         when (reader.selectName(RESPONSE_NAMES)) {
           0 -> __typename = StringResponseAdapter.fromResponse(reader, responseAdapterCache)
-          1 -> organization = Organization.nullable().fromResponse(reader, responseAdapterCache)
+          1 -> organization = Organization.obj().nullable().fromResponse(reader,
+              responseAdapterCache)
           else -> break
         }
       }
@@ -88,12 +88,10 @@ object GetUser_ResponseAdapter : ResponseAdapter<GetUser.Data> {
       responseAdapterCache: ResponseAdapterCache,
       value: GetUser.Data.QueryData
     ) {
-      writer.beginObject()
       writer.name("__typename")
       StringResponseAdapter.toResponse(writer, responseAdapterCache, value.__typename)
       writer.name("organization")
-      Organization.nullable().toResponse(writer, responseAdapterCache, value.organization)
-      writer.endObject()
+      Organization.obj().nullable().toResponse(writer, responseAdapterCache, value.organization)
     }
 
     object Organization : ResponseAdapter<GetUser.Data.QueryData.Organization> {
@@ -121,15 +119,13 @@ object GetUser_ResponseAdapter : ResponseAdapter<GetUser.Data> {
           GetUser.Data.QueryData.Organization {
         var id: String? = null
         var user: List<GetUser.Data.QueryData.Organization.User>? = null
-        reader.beginObject()
         while(true) {
           when (reader.selectName(RESPONSE_NAMES)) {
             0 -> id = StringResponseAdapter.fromResponse(reader, responseAdapterCache)
-            1 -> user = User.list().fromResponse(reader, responseAdapterCache)
+            1 -> user = User.obj().list().fromResponse(reader, responseAdapterCache)
             else -> break
           }
         }
-        reader.endObject()
         return GetUser.Data.QueryData.Organization(
           id = id!!,
           user = user!!
@@ -141,25 +137,21 @@ object GetUser_ResponseAdapter : ResponseAdapter<GetUser.Data> {
         responseAdapterCache: ResponseAdapterCache,
         value: GetUser.Data.QueryData.Organization
       ) {
-        writer.beginObject()
         writer.name("id")
         StringResponseAdapter.toResponse(writer, responseAdapterCache, value.id)
         writer.name("user")
-        User.list().toResponse(writer, responseAdapterCache, value.user)
-        writer.endObject()
+        User.obj().list().toResponse(writer, responseAdapterCache, value.user)
       }
 
       object User : ResponseAdapter<GetUser.Data.QueryData.Organization.User> {
         override fun fromResponse(reader: JsonReader, responseAdapterCache: ResponseAdapterCache):
             GetUser.Data.QueryData.Organization.User {
-          reader.beginObject()
           check(reader.nextName() == "__typename")
-          val typename = reader.nextString()
+          val typename = reader.nextString()!!
           return when(typename) {
             "User" -> UserUser.fromResponse(reader, responseAdapterCache, typename)
             else -> OtherUser.fromResponse(reader, responseAdapterCache, typename)
           }
-          .also { reader.endObject() }
         }
 
         override fun toResponse(
@@ -225,7 +217,6 @@ object GetUser_ResponseAdapter : ResponseAdapter<GetUser.Data> {
             responseAdapterCache: ResponseAdapterCache,
             value: GetUser.Data.QueryData.Organization.User.UserUser
           ) {
-            writer.beginObject()
             writer.name("__typename")
             StringResponseAdapter.toResponse(writer, responseAdapterCache, value.__typename)
             writer.name("firstName")
@@ -234,7 +225,6 @@ object GetUser_ResponseAdapter : ResponseAdapter<GetUser.Data> {
             StringResponseAdapter.toResponse(writer, responseAdapterCache, value.lastName)
             writer.name("avatar")
             StringResponseAdapter.toResponse(writer, responseAdapterCache, value.avatar)
-            writer.endObject()
           }
         }
 
@@ -267,10 +257,8 @@ object GetUser_ResponseAdapter : ResponseAdapter<GetUser.Data> {
             responseAdapterCache: ResponseAdapterCache,
             value: GetUser.Data.QueryData.Organization.User.OtherUser
           ) {
-            writer.beginObject()
             writer.name("__typename")
             StringResponseAdapter.toResponse(writer, responseAdapterCache, value.__typename)
-            writer.endObject()
           }
         }
       }
@@ -306,10 +294,8 @@ object GetUser_ResponseAdapter : ResponseAdapter<GetUser.Data> {
       responseAdapterCache: ResponseAdapterCache,
       value: GetUser.Data.OtherData
     ) {
-      writer.beginObject()
       writer.name("__typename")
       StringResponseAdapter.toResponse(writer, responseAdapterCache, value.__typename)
-      writer.endObject()
     }
   }
 }

@@ -25,7 +25,6 @@ object TestQuery_VariablesAdapter : ResponseAdapter<TestQuery> {
     responseAdapterCache: ResponseAdapterCache,
     value: TestQuery
   ) {
-    writer.beginObject()
     if (value.episode is Input.Present) {
       writer.name("episode")
       Episode_ResponseAdapter.nullable().toResponse(writer, responseAdapterCache,
@@ -35,6 +34,5 @@ object TestQuery_VariablesAdapter : ResponseAdapter<TestQuery> {
     IntResponseAdapter.toResponse(writer, responseAdapterCache, value.stars)
     writer.name("greenValue")
     DoubleResponseAdapter.toResponse(writer, responseAdapterCache, value.greenValue)
-    writer.endObject()
   }
 }

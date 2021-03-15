@@ -42,7 +42,6 @@ object HumanDetails_ResponseAdapter : ResponseAdapter<HumanDetails.Data> {
     var __typename: String? = null
     var name: String? = null
     var height: Double? = null
-    reader.beginObject()
     while(true) {
       when (reader.selectName(RESPONSE_NAMES)) {
         0 -> __typename = StringResponseAdapter.fromResponse(reader, responseAdapterCache)
@@ -51,7 +50,6 @@ object HumanDetails_ResponseAdapter : ResponseAdapter<HumanDetails.Data> {
         else -> break
       }
     }
-    reader.endObject()
     return HumanDetails.Data(
       __typename = __typename!!,
       name = name!!,
@@ -64,13 +62,11 @@ object HumanDetails_ResponseAdapter : ResponseAdapter<HumanDetails.Data> {
     responseAdapterCache: ResponseAdapterCache,
     value: HumanDetails.Data
   ) {
-    writer.beginObject()
     writer.name("__typename")
     StringResponseAdapter.toResponse(writer, responseAdapterCache, value.__typename)
     writer.name("name")
     StringResponseAdapter.toResponse(writer, responseAdapterCache, value.name)
     writer.name("height")
     NullableDoubleResponseAdapter.toResponse(writer, responseAdapterCache, value.height)
-    writer.endObject()
   }
 }

@@ -15,6 +15,7 @@ import com.apollographql.apollo3.api.StringResponseAdapter
 import com.apollographql.apollo3.api.json.JsonReader
 import com.apollographql.apollo3.api.json.JsonWriter
 import com.apollographql.apollo3.api.list
+import com.apollographql.apollo3.api.obj
 import com.example.inline_frgament_intersection.TestOperation
 import com.example.inline_frgament_intersection.type.Race
 import com.example.inline_frgament_intersection.type.Race_ResponseAdapter
@@ -46,14 +47,12 @@ object TestOperation_ResponseAdapter : ResponseAdapter<TestOperation.Data> {
   override fun fromResponse(reader: JsonReader, responseAdapterCache: ResponseAdapterCache):
       TestOperation.Data {
     var random: TestOperation.Data.Random? = null
-    reader.beginObject()
     while(true) {
       when (reader.selectName(RESPONSE_NAMES)) {
-        0 -> random = Random.fromResponse(reader, responseAdapterCache)
+        0 -> random = Random.obj().fromResponse(reader, responseAdapterCache)
         else -> break
       }
     }
-    reader.endObject()
     return TestOperation.Data(
       random = random!!
     )
@@ -64,24 +63,20 @@ object TestOperation_ResponseAdapter : ResponseAdapter<TestOperation.Data> {
     responseAdapterCache: ResponseAdapterCache,
     value: TestOperation.Data
   ) {
-    writer.beginObject()
     writer.name("random")
-    Random.toResponse(writer, responseAdapterCache, value.random)
-    writer.endObject()
+    Random.obj().toResponse(writer, responseAdapterCache, value.random)
   }
 
   object Random : ResponseAdapter<TestOperation.Data.Random> {
     override fun fromResponse(reader: JsonReader, responseAdapterCache: ResponseAdapterCache):
         TestOperation.Data.Random {
-      reader.beginObject()
       check(reader.nextName() == "__typename")
-      val typename = reader.nextString()
+      val typename = reader.nextString()!!
       return when(typename) {
         "Human" -> BeingHumanRandom.fromResponse(reader, responseAdapterCache, typename)
         "Wookie" -> BeingWookieRandom.fromResponse(reader, responseAdapterCache, typename)
         else -> OtherRandom.fromResponse(reader, responseAdapterCache, typename)
       }
-      .also { reader.endObject() }
     }
 
     override fun toResponse(
@@ -133,7 +128,7 @@ object TestOperation_ResponseAdapter : ResponseAdapter<TestOperation.Data> {
           when (reader.selectName(RESPONSE_NAMES)) {
             0 -> __typename = StringResponseAdapter.fromResponse(reader, responseAdapterCache)
             1 -> name = StringResponseAdapter.fromResponse(reader, responseAdapterCache)
-            2 -> friends = Friends.list().fromResponse(reader, responseAdapterCache)
+            2 -> friends = Friends.obj().list().fromResponse(reader, responseAdapterCache)
             3 -> profilePictureUrl = NullableStringResponseAdapter.fromResponse(reader,
                 responseAdapterCache)
             else -> break
@@ -152,30 +147,26 @@ object TestOperation_ResponseAdapter : ResponseAdapter<TestOperation.Data> {
         responseAdapterCache: ResponseAdapterCache,
         value: TestOperation.Data.Random.BeingHumanRandom
       ) {
-        writer.beginObject()
         writer.name("__typename")
         StringResponseAdapter.toResponse(writer, responseAdapterCache, value.__typename)
         writer.name("name")
         StringResponseAdapter.toResponse(writer, responseAdapterCache, value.name)
         writer.name("friends")
-        Friends.list().toResponse(writer, responseAdapterCache, value.friends)
+        Friends.obj().list().toResponse(writer, responseAdapterCache, value.friends)
         writer.name("profilePictureUrl")
         NullableStringResponseAdapter.toResponse(writer, responseAdapterCache,
             value.profilePictureUrl)
-        writer.endObject()
       }
 
       object Friends : ResponseAdapter<TestOperation.Data.Random.BeingHumanRandom.Friends> {
         override fun fromResponse(reader: JsonReader, responseAdapterCache: ResponseAdapterCache):
             TestOperation.Data.Random.BeingHumanRandom.Friends {
-          reader.beginObject()
           check(reader.nextName() == "__typename")
-          val typename = reader.nextString()
+          val typename = reader.nextString()!!
           return when(typename) {
             "Wookie" -> WookieFriends.fromResponse(reader, responseAdapterCache, typename)
             else -> OtherFriends.fromResponse(reader, responseAdapterCache, typename)
           }
-          .also { reader.endObject() }
         }
 
         override fun toResponse(
@@ -248,7 +239,6 @@ object TestOperation_ResponseAdapter : ResponseAdapter<TestOperation.Data> {
             responseAdapterCache: ResponseAdapterCache,
             value: TestOperation.Data.Random.BeingHumanRandom.Friends.WookieFriends
           ) {
-            writer.beginObject()
             writer.name("__typename")
             StringResponseAdapter.toResponse(writer, responseAdapterCache, value.__typename)
             writer.name("name")
@@ -260,7 +250,6 @@ object TestOperation_ResponseAdapter : ResponseAdapter<TestOperation.Data> {
                 value.lifeExpectancy)
             writer.name("race")
             Race_ResponseAdapter.toResponse(writer, responseAdapterCache, value.race)
-            writer.endObject()
           }
         }
 
@@ -308,14 +297,12 @@ object TestOperation_ResponseAdapter : ResponseAdapter<TestOperation.Data> {
             responseAdapterCache: ResponseAdapterCache,
             value: TestOperation.Data.Random.BeingHumanRandom.Friends.OtherFriends
           ) {
-            writer.beginObject()
             writer.name("__typename")
             StringResponseAdapter.toResponse(writer, responseAdapterCache, value.__typename)
             writer.name("name")
             StringResponseAdapter.toResponse(writer, responseAdapterCache, value.name)
             writer.name("isFamous")
             NullableBooleanResponseAdapter.toResponse(writer, responseAdapterCache, value.isFamous)
-            writer.endObject()
           }
         }
       }
@@ -358,7 +345,7 @@ object TestOperation_ResponseAdapter : ResponseAdapter<TestOperation.Data> {
           when (reader.selectName(RESPONSE_NAMES)) {
             0 -> __typename = StringResponseAdapter.fromResponse(reader, responseAdapterCache)
             1 -> name = StringResponseAdapter.fromResponse(reader, responseAdapterCache)
-            2 -> friends = Friends.list().fromResponse(reader, responseAdapterCache)
+            2 -> friends = Friends.obj().list().fromResponse(reader, responseAdapterCache)
             3 -> race = Race_ResponseAdapter.fromResponse(reader, responseAdapterCache)
             else -> break
           }
@@ -376,29 +363,25 @@ object TestOperation_ResponseAdapter : ResponseAdapter<TestOperation.Data> {
         responseAdapterCache: ResponseAdapterCache,
         value: TestOperation.Data.Random.BeingWookieRandom
       ) {
-        writer.beginObject()
         writer.name("__typename")
         StringResponseAdapter.toResponse(writer, responseAdapterCache, value.__typename)
         writer.name("name")
         StringResponseAdapter.toResponse(writer, responseAdapterCache, value.name)
         writer.name("friends")
-        Friends.list().toResponse(writer, responseAdapterCache, value.friends)
+        Friends.obj().list().toResponse(writer, responseAdapterCache, value.friends)
         writer.name("race")
         Race_ResponseAdapter.toResponse(writer, responseAdapterCache, value.race)
-        writer.endObject()
       }
 
       object Friends : ResponseAdapter<TestOperation.Data.Random.BeingWookieRandom.Friends> {
         override fun fromResponse(reader: JsonReader, responseAdapterCache: ResponseAdapterCache):
             TestOperation.Data.Random.BeingWookieRandom.Friends {
-          reader.beginObject()
           check(reader.nextName() == "__typename")
-          val typename = reader.nextString()
+          val typename = reader.nextString()!!
           return when(typename) {
             "Wookie" -> WookieFriends.fromResponse(reader, responseAdapterCache, typename)
             else -> OtherFriends.fromResponse(reader, responseAdapterCache, typename)
           }
-          .also { reader.endObject() }
         }
 
         override fun toResponse(
@@ -456,7 +439,6 @@ object TestOperation_ResponseAdapter : ResponseAdapter<TestOperation.Data> {
             responseAdapterCache: ResponseAdapterCache,
             value: TestOperation.Data.Random.BeingWookieRandom.Friends.WookieFriends
           ) {
-            writer.beginObject()
             writer.name("__typename")
             StringResponseAdapter.toResponse(writer, responseAdapterCache, value.__typename)
             writer.name("name")
@@ -464,7 +446,6 @@ object TestOperation_ResponseAdapter : ResponseAdapter<TestOperation.Data> {
             writer.name("lifeExpectancy")
             NullableDoubleResponseAdapter.toResponse(writer, responseAdapterCache,
                 value.lifeExpectancy)
-            writer.endObject()
           }
         }
 
@@ -512,7 +493,6 @@ object TestOperation_ResponseAdapter : ResponseAdapter<TestOperation.Data> {
             responseAdapterCache: ResponseAdapterCache,
             value: TestOperation.Data.Random.BeingWookieRandom.Friends.OtherFriends
           ) {
-            writer.beginObject()
             writer.name("__typename")
             StringResponseAdapter.toResponse(writer, responseAdapterCache, value.__typename)
             writer.name("name")
@@ -520,7 +500,6 @@ object TestOperation_ResponseAdapter : ResponseAdapter<TestOperation.Data> {
             writer.name("lifeExpectancy")
             NullableDoubleResponseAdapter.toResponse(writer, responseAdapterCache,
                 value.lifeExpectancy)
-            writer.endObject()
           }
         }
       }
@@ -555,10 +534,8 @@ object TestOperation_ResponseAdapter : ResponseAdapter<TestOperation.Data> {
         responseAdapterCache: ResponseAdapterCache,
         value: TestOperation.Data.Random.OtherRandom
       ) {
-        writer.beginObject()
         writer.name("__typename")
         StringResponseAdapter.toResponse(writer, responseAdapterCache, value.__typename)
-        writer.endObject()
       }
     }
   }

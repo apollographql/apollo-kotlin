@@ -9,7 +9,7 @@ import com.apollographql.apollo3.api.ResponseAdapter
 import com.apollographql.apollo3.api.ResponseAdapterCache
 import com.apollographql.apollo3.api.ResponseField
 import com.apollographql.apollo3.api.StringResponseAdapter
-import com.apollographql.apollo3.api.internal.json.MapJsonReader.Companion.buffer
+import com.apollographql.apollo3.api.internal.json.MapJsonReader
 import com.apollographql.apollo3.api.json.JsonReader
 import com.apollographql.apollo3.api.json.JsonWriter
 import com.example.root_query_fragment_with_nested_fragments.TestQuery
@@ -32,10 +32,8 @@ object TestQuery_ResponseAdapter : ResponseAdapter<TestQuery.Data> {
 
   override fun fromResponse(reader: JsonReader, responseAdapterCache: ResponseAdapterCache):
       TestQuery.Data {
-    val reader = reader.buffer()
-    reader.beginObject()
-
     var __typename: String? = null
+
     var queryFragment: QueryFragment.Data? = null
     while(true) {
       when (reader.selectName(RESPONSE_NAMES)) {
@@ -44,7 +42,7 @@ object TestQuery_ResponseAdapter : ResponseAdapter<TestQuery.Data> {
       }
     }
     if (__typename in arrayOf("Query")) {
-      reader.rewind()
+      (reader as MapJsonReader).rewind()
       queryFragment = QueryFragment_ResponseAdapter.fromResponse(reader, responseAdapterCache)
     }
 
@@ -52,7 +50,6 @@ object TestQuery_ResponseAdapter : ResponseAdapter<TestQuery.Data> {
       __typename = __typename!!,
       queryFragment = queryFragment
     )
-    .also { reader.endObject() }
   }
 
   override fun toResponse(
@@ -60,11 +57,8 @@ object TestQuery_ResponseAdapter : ResponseAdapter<TestQuery.Data> {
     responseAdapterCache: ResponseAdapterCache,
     value: TestQuery.Data
   ) {
-    writer.beginObject()
     writer.name("__typename")
     StringResponseAdapter.toResponse(writer, responseAdapterCache, value.__typename)
-    if (value.queryFragment != null)
-        QueryFragment_ResponseAdapter.toResponse(writer, responseAdapterCache, value.queryFragment)
-    writer.endObject()
+    if (value.queryFragment != null) QueryFragment_ResponseAdapter.toResponse(writer, responseAdapterCache, value.queryFragment)
   }
 }

@@ -20,7 +20,5 @@ object QueryFragment_VariablesAdapter : ResponseAdapter<QueryFragment> {
     responseAdapterCache: ResponseAdapterCache,
     value: QueryFragment
   ) {
-    writer.beginObject()
-    writer.endObject()
   }
 }

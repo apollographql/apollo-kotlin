@@ -20,7 +20,5 @@ object HumanDetailsImpl_VariablesAdapter : ResponseAdapter<HumanDetailsImpl> {
     responseAdapterCache: ResponseAdapterCache,
     value: HumanDetailsImpl
   ) {
-    writer.beginObject()
-    writer.endObject()
   }
 }

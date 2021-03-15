@@ -11,6 +11,7 @@ import com.apollographql.apollo3.api.ResponseAdapterCache
 import com.apollographql.apollo3.api.json.JsonReader
 import com.apollographql.apollo3.api.json.JsonWriter
 import com.apollographql.apollo3.api.nullable
+import com.apollographql.apollo3.api.obj
 import com.example.mutation_create_review.type.ReviewRefInput
 import kotlin.IllegalStateException
 
@@ -22,12 +23,10 @@ internal object ReviewRefInput_InputAdapter : ResponseAdapter<ReviewRefInput> {
     responseAdapterCache: ResponseAdapterCache,
     value: ReviewRefInput
   ) {
-    writer.beginObject()
     if (value.reviewInput is Input.Present) {
       writer.name("reviewInput")
-      ReviewInput_InputAdapter.nullable().toResponse(writer, responseAdapterCache,
+      ReviewInput_InputAdapter.obj().nullable().toResponse(writer, responseAdapterCache,
           value.reviewInput.value)
     }
-    writer.endObject()
   }
 }

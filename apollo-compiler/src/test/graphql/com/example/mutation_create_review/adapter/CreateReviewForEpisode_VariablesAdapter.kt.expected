@@ -9,6 +9,7 @@ import com.apollographql.apollo3.api.ResponseAdapter
 import com.apollographql.apollo3.api.ResponseAdapterCache
 import com.apollographql.apollo3.api.json.JsonReader
 import com.apollographql.apollo3.api.json.JsonWriter
+import com.apollographql.apollo3.api.obj
 import com.example.mutation_create_review.CreateReviewForEpisode
 import com.example.mutation_create_review.type.Episode_ResponseAdapter
 import com.example.mutation_create_review.type.adapter.ReviewInput_InputAdapter
@@ -22,11 +23,9 @@ internal object CreateReviewForEpisode_VariablesAdapter : ResponseAdapter<Create
     responseAdapterCache: ResponseAdapterCache,
     value: CreateReviewForEpisode
   ) {
-    writer.beginObject()
     writer.name("ep")
     Episode_ResponseAdapter.toResponse(writer, responseAdapterCache, value.ep)
     writer.name("review")
-    ReviewInput_InputAdapter.toResponse(writer, responseAdapterCache, value.review)
-    writer.endObject()
+    ReviewInput_InputAdapter.obj().toResponse(writer, responseAdapterCache, value.review)
   }
 }

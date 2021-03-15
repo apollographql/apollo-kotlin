@@ -35,7 +35,6 @@ object CharacterNameImpl_ResponseAdapter : ResponseAdapter<CharacterNameImpl.Dat
       CharacterNameImpl.Data {
     var __typename: String? = null
     var name: String? = null
-    reader.beginObject()
     while(true) {
       when (reader.selectName(RESPONSE_NAMES)) {
         0 -> __typename = StringResponseAdapter.fromResponse(reader, responseAdapterCache)
@@ -43,7 +42,6 @@ object CharacterNameImpl_ResponseAdapter : ResponseAdapter<CharacterNameImpl.Dat
         else -> break
       }
     }
-    reader.endObject()
     return CharacterNameImpl.Data(
       __typename = __typename!!,
       name = name!!
@@ -55,11 +53,9 @@ object CharacterNameImpl_ResponseAdapter : ResponseAdapter<CharacterNameImpl.Dat
     responseAdapterCache: ResponseAdapterCache,
     value: CharacterNameImpl.Data
   ) {
-    writer.beginObject()
     writer.name("__typename")
     StringResponseAdapter.toResponse(writer, responseAdapterCache, value.__typename)
     writer.name("name")
     StringResponseAdapter.toResponse(writer, responseAdapterCache, value.name)
-    writer.endObject()
   }
 }

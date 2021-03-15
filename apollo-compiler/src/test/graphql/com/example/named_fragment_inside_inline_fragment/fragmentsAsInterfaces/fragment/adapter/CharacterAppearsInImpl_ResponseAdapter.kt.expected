@@ -40,7 +40,6 @@ object CharacterAppearsInImpl_ResponseAdapter : ResponseAdapter<CharacterAppears
       CharacterAppearsInImpl.Data {
     var __typename: String? = null
     var appearsIn: List<Episode?>? = null
-    reader.beginObject()
     while(true) {
       when (reader.selectName(RESPONSE_NAMES)) {
         0 -> __typename = StringResponseAdapter.fromResponse(reader, responseAdapterCache)
@@ -49,7 +48,6 @@ object CharacterAppearsInImpl_ResponseAdapter : ResponseAdapter<CharacterAppears
         else -> break
       }
     }
-    reader.endObject()
     return CharacterAppearsInImpl.Data(
       __typename = __typename!!,
       appearsIn = appearsIn!!
@@ -61,12 +59,10 @@ object CharacterAppearsInImpl_ResponseAdapter : ResponseAdapter<CharacterAppears
     responseAdapterCache: ResponseAdapterCache,
     value: CharacterAppearsInImpl.Data
   ) {
-    writer.beginObject()
     writer.name("__typename")
     StringResponseAdapter.toResponse(writer, responseAdapterCache, value.__typename)
     writer.name("appearsIn")
     Episode_ResponseAdapter.nullable().list().toResponse(writer, responseAdapterCache,
         value.appearsIn)
-    writer.endObject()
   }
 }

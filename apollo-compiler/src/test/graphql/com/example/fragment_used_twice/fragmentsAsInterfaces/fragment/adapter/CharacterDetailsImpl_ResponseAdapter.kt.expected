@@ -42,7 +42,6 @@ object CharacterDetailsImpl_ResponseAdapter : ResponseAdapter<CharacterDetailsIm
     var __typename: String? = null
     var name: String? = null
     var birthDate: Any? = null
-    reader.beginObject()
     while(true) {
       when (reader.selectName(RESPONSE_NAMES)) {
         0 -> __typename = StringResponseAdapter.fromResponse(reader, responseAdapterCache)
@@ -52,7 +51,6 @@ object CharacterDetailsImpl_ResponseAdapter : ResponseAdapter<CharacterDetailsIm
         else -> break
       }
     }
-    reader.endObject()
     return CharacterDetailsImpl.Data(
       __typename = __typename!!,
       name = name!!,
@@ -65,7 +63,6 @@ object CharacterDetailsImpl_ResponseAdapter : ResponseAdapter<CharacterDetailsIm
     responseAdapterCache: ResponseAdapterCache,
     value: CharacterDetailsImpl.Data
   ) {
-    writer.beginObject()
     writer.name("__typename")
     StringResponseAdapter.toResponse(writer, responseAdapterCache, value.__typename)
     writer.name("name")
@@ -73,6 +70,5 @@ object CharacterDetailsImpl_ResponseAdapter : ResponseAdapter<CharacterDetailsIm
     writer.name("birthDate")
     responseAdapterCache.responseAdapterFor<Any>(CustomScalars.Date).toResponse(writer,
         responseAdapterCache, value.birthDate)
-    writer.endObject()
   }
 }

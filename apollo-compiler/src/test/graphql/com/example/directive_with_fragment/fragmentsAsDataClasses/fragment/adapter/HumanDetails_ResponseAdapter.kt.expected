@@ -36,7 +36,6 @@ object HumanDetails_ResponseAdapter : ResponseAdapter<HumanDetails.Data> {
       HumanDetails.Data {
     var __typename: String? = null
     var homePlanet: String? = null
-    reader.beginObject()
     while(true) {
       when (reader.selectName(RESPONSE_NAMES)) {
         0 -> __typename = StringResponseAdapter.fromResponse(reader, responseAdapterCache)
@@ -44,7 +43,6 @@ object HumanDetails_ResponseAdapter : ResponseAdapter<HumanDetails.Data> {
         else -> break
       }
     }
-    reader.endObject()
     return HumanDetails.Data(
       __typename = __typename!!,
       homePlanet = homePlanet
@@ -56,11 +54,9 @@ object HumanDetails_ResponseAdapter : ResponseAdapter<HumanDetails.Data> {
     responseAdapterCache: ResponseAdapterCache,
     value: HumanDetails.Data
   ) {
-    writer.beginObject()
     writer.name("__typename")
     StringResponseAdapter.toResponse(writer, responseAdapterCache, value.__typename)
     writer.name("homePlanet")
     NullableStringResponseAdapter.toResponse(writer, responseAdapterCache, value.homePlanet)
-    writer.endObject()
   }
 }

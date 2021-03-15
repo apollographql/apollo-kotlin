@@ -14,6 +14,7 @@ import com.apollographql.apollo3.api.json.JsonReader
 import com.apollographql.apollo3.api.json.JsonWriter
 import com.apollographql.apollo3.api.list
 import com.apollographql.apollo3.api.nullable
+import com.apollographql.apollo3.api.obj
 import com.example.union_inline_fragments.TestQuery
 import com.example.union_inline_fragments.type.Episode
 import com.example.union_inline_fragments.type.Episode_ResponseAdapter
@@ -46,14 +47,13 @@ object TestQuery_ResponseAdapter : ResponseAdapter<TestQuery.Data> {
   override fun fromResponse(reader: JsonReader, responseAdapterCache: ResponseAdapterCache):
       TestQuery.Data {
     var search: List<TestQuery.Data.Search?>? = null
-    reader.beginObject()
     while(true) {
       when (reader.selectName(RESPONSE_NAMES)) {
-        0 -> search = Search.nullable().list().nullable().fromResponse(reader, responseAdapterCache)
+        0 -> search = Search.obj().nullable().list().nullable().fromResponse(reader,
+            responseAdapterCache)
         else -> break
       }
     }
-    reader.endObject()
     return TestQuery.Data(
       search = search
     )
@@ -64,25 +64,21 @@ object TestQuery_ResponseAdapter : ResponseAdapter<TestQuery.Data> {
     responseAdapterCache: ResponseAdapterCache,
     value: TestQuery.Data
   ) {
-    writer.beginObject()
     writer.name("search")
-    Search.nullable().list().nullable().toResponse(writer, responseAdapterCache, value.search)
-    writer.endObject()
+    Search.obj().nullable().list().nullable().toResponse(writer, responseAdapterCache, value.search)
   }
 
   object Search : ResponseAdapter<TestQuery.Data.Search> {
     override fun fromResponse(reader: JsonReader, responseAdapterCache: ResponseAdapterCache):
         TestQuery.Data.Search {
-      reader.beginObject()
       check(reader.nextName() == "__typename")
-      val typename = reader.nextString()
+      val typename = reader.nextString()!!
       return when(typename) {
         "Human" -> CharacterSearch.fromResponse(reader, responseAdapterCache, typename)
         "Droid" -> CharacterSearch.fromResponse(reader, responseAdapterCache, typename)
         "Starship" -> StarshipSearch.fromResponse(reader, responseAdapterCache, typename)
         else -> OtherSearch.fromResponse(reader, responseAdapterCache, typename)
       }
-      .also { reader.endObject() }
     }
 
     override fun toResponse(
@@ -135,7 +131,7 @@ object TestQuery_ResponseAdapter : ResponseAdapter<TestQuery.Data> {
             0 -> __typename = StringResponseAdapter.fromResponse(reader, responseAdapterCache)
             1 -> id = StringResponseAdapter.fromResponse(reader, responseAdapterCache)
             2 -> name = StringResponseAdapter.fromResponse(reader, responseAdapterCache)
-            3 -> friends = Friends.nullable().list().nullable().fromResponse(reader,
+            3 -> friends = Friends.obj().nullable().list().nullable().fromResponse(reader,
                 responseAdapterCache)
             else -> break
           }
@@ -153,7 +149,6 @@ object TestQuery_ResponseAdapter : ResponseAdapter<TestQuery.Data> {
         responseAdapterCache: ResponseAdapterCache,
         value: TestQuery.Data.Search.CharacterSearch
       ) {
-        writer.beginObject()
         writer.name("__typename")
         StringResponseAdapter.toResponse(writer, responseAdapterCache, value.__typename)
         writer.name("id")
@@ -161,22 +156,20 @@ object TestQuery_ResponseAdapter : ResponseAdapter<TestQuery.Data> {
         writer.name("name")
         StringResponseAdapter.toResponse(writer, responseAdapterCache, value.name)
         writer.name("friends")
-        Friends.nullable().list().nullable().toResponse(writer, responseAdapterCache, value.friends)
-        writer.endObject()
+        Friends.obj().nullable().list().nullable().toResponse(writer, responseAdapterCache,
+            value.friends)
       }
 
       object Friends : ResponseAdapter<TestQuery.Data.Search.CharacterSearch.Friends> {
         override fun fromResponse(reader: JsonReader, responseAdapterCache: ResponseAdapterCache):
             TestQuery.Data.Search.CharacterSearch.Friends {
-          reader.beginObject()
           check(reader.nextName() == "__typename")
-          val typename = reader.nextString()
+          val typename = reader.nextString()!!
           return when(typename) {
             "Human" -> HumanFriends.fromResponse(reader, responseAdapterCache, typename)
             "Droid" -> DroidFriends.fromResponse(reader, responseAdapterCache, typename)
             else -> OtherFriends.fromResponse(reader, responseAdapterCache, typename)
           }
-          .also { reader.endObject() }
         }
 
         override fun toResponse(
@@ -228,7 +221,7 @@ object TestQuery_ResponseAdapter : ResponseAdapter<TestQuery.Data> {
                 1 -> name = StringResponseAdapter.fromResponse(reader, responseAdapterCache)
                 2 -> homePlanet = NullableStringResponseAdapter.fromResponse(reader,
                     responseAdapterCache)
-                3 -> friends = Friends.nullable().list().nullable().fromResponse(reader,
+                3 -> friends = Friends.obj().nullable().list().nullable().fromResponse(reader,
                     responseAdapterCache)
                 else -> break
               }
@@ -246,7 +239,6 @@ object TestQuery_ResponseAdapter : ResponseAdapter<TestQuery.Data> {
             responseAdapterCache: ResponseAdapterCache,
             value: TestQuery.Data.Search.CharacterSearch.Friends.HumanFriends
           ) {
-            writer.beginObject()
             writer.name("__typename")
             StringResponseAdapter.toResponse(writer, responseAdapterCache, value.__typename)
             writer.name("name")
@@ -254,9 +246,8 @@ object TestQuery_ResponseAdapter : ResponseAdapter<TestQuery.Data> {
             writer.name("homePlanet")
             NullableStringResponseAdapter.toResponse(writer, responseAdapterCache, value.homePlanet)
             writer.name("friends")
-            Friends.nullable().list().nullable().toResponse(writer, responseAdapterCache,
+            Friends.obj().nullable().list().nullable().toResponse(writer, responseAdapterCache,
                 value.friends)
-            writer.endObject()
           }
 
           object Friends :
@@ -276,7 +267,6 @@ object TestQuery_ResponseAdapter : ResponseAdapter<TestQuery.Data> {
                 TestQuery.Data.Search.CharacterSearch.Friends.HumanFriends.Friends {
               var __typename: String? = null
               var firstAppearsIn: Episode? = null
-              reader.beginObject()
               while(true) {
                 when (reader.selectName(RESPONSE_NAMES)) {
                   0 -> __typename = StringResponseAdapter.fromResponse(reader, responseAdapterCache)
@@ -285,7 +275,6 @@ object TestQuery_ResponseAdapter : ResponseAdapter<TestQuery.Data> {
                   else -> break
                 }
               }
-              reader.endObject()
               return TestQuery.Data.Search.CharacterSearch.Friends.HumanFriends.Friends(
                 __typename = __typename!!,
                 firstAppearsIn = firstAppearsIn!!
@@ -297,12 +286,10 @@ object TestQuery_ResponseAdapter : ResponseAdapter<TestQuery.Data> {
               responseAdapterCache: ResponseAdapterCache,
               value: TestQuery.Data.Search.CharacterSearch.Friends.HumanFriends.Friends
             ) {
-              writer.beginObject()
               writer.name("__typename")
               StringResponseAdapter.toResponse(writer, responseAdapterCache, value.__typename)
               writer.name("firstAppearsIn")
               Episode_ResponseAdapter.toResponse(writer, responseAdapterCache, value.firstAppearsIn)
-              writer.endObject()
             }
           }
         }
@@ -344,7 +331,7 @@ object TestQuery_ResponseAdapter : ResponseAdapter<TestQuery.Data> {
                 1 -> name = StringResponseAdapter.fromResponse(reader, responseAdapterCache)
                 2 -> primaryFunction = NullableStringResponseAdapter.fromResponse(reader,
                     responseAdapterCache)
-                3 -> friends = Friends.nullable().list().nullable().fromResponse(reader,
+                3 -> friends = Friends.obj().nullable().list().nullable().fromResponse(reader,
                     responseAdapterCache)
                 else -> break
               }
@@ -362,7 +349,6 @@ object TestQuery_ResponseAdapter : ResponseAdapter<TestQuery.Data> {
             responseAdapterCache: ResponseAdapterCache,
             value: TestQuery.Data.Search.CharacterSearch.Friends.DroidFriends
           ) {
-            writer.beginObject()
             writer.name("__typename")
             StringResponseAdapter.toResponse(writer, responseAdapterCache, value.__typename)
             writer.name("name")
@@ -371,9 +357,8 @@ object TestQuery_ResponseAdapter : ResponseAdapter<TestQuery.Data> {
             NullableStringResponseAdapter.toResponse(writer, responseAdapterCache,
                 value.primaryFunction)
             writer.name("friends")
-            Friends.nullable().list().nullable().toResponse(writer, responseAdapterCache,
+            Friends.obj().nullable().list().nullable().toResponse(writer, responseAdapterCache,
                 value.friends)
-            writer.endObject()
           }
 
           object Friends :
@@ -391,14 +376,12 @@ object TestQuery_ResponseAdapter : ResponseAdapter<TestQuery.Data> {
                 responseAdapterCache: ResponseAdapterCache):
                 TestQuery.Data.Search.CharacterSearch.Friends.DroidFriends.Friends {
               var id: String? = null
-              reader.beginObject()
               while(true) {
                 when (reader.selectName(RESPONSE_NAMES)) {
                   0 -> id = StringResponseAdapter.fromResponse(reader, responseAdapterCache)
                   else -> break
                 }
               }
-              reader.endObject()
               return TestQuery.Data.Search.CharacterSearch.Friends.DroidFriends.Friends(
                 id = id!!
               )
@@ -409,10 +392,8 @@ object TestQuery_ResponseAdapter : ResponseAdapter<TestQuery.Data> {
               responseAdapterCache: ResponseAdapterCache,
               value: TestQuery.Data.Search.CharacterSearch.Friends.DroidFriends.Friends
             ) {
-              writer.beginObject()
               writer.name("id")
               StringResponseAdapter.toResponse(writer, responseAdapterCache, value.id)
-              writer.endObject()
             }
           }
         }
@@ -453,12 +434,10 @@ object TestQuery_ResponseAdapter : ResponseAdapter<TestQuery.Data> {
             responseAdapterCache: ResponseAdapterCache,
             value: TestQuery.Data.Search.CharacterSearch.Friends.OtherFriends
           ) {
-            writer.beginObject()
             writer.name("__typename")
             StringResponseAdapter.toResponse(writer, responseAdapterCache, value.__typename)
             writer.name("name")
             StringResponseAdapter.toResponse(writer, responseAdapterCache, value.name)
-            writer.endObject()
           }
         }
       }
@@ -500,12 +479,10 @@ object TestQuery_ResponseAdapter : ResponseAdapter<TestQuery.Data> {
         responseAdapterCache: ResponseAdapterCache,
         value: TestQuery.Data.Search.StarshipSearch
       ) {
-        writer.beginObject()
         writer.name("__typename")
         StringResponseAdapter.toResponse(writer, responseAdapterCache, value.__typename)
         writer.name("name")
         StringResponseAdapter.toResponse(writer, responseAdapterCache, value.name)
-        writer.endObject()
       }
     }
 
@@ -538,10 +515,8 @@ object TestQuery_ResponseAdapter : ResponseAdapter<TestQuery.Data> {
         responseAdapterCache: ResponseAdapterCache,
         value: TestQuery.Data.Search.OtherSearch
       ) {
-        writer.beginObject()
         writer.name("__typename")
         StringResponseAdapter.toResponse(writer, responseAdapterCache, value.__typename)
-        writer.endObject()
       }
     }
   }

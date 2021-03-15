@@ -12,6 +12,7 @@ import com.apollographql.apollo3.api.StringResponseAdapter
 import com.apollographql.apollo3.api.json.JsonReader
 import com.apollographql.apollo3.api.json.JsonWriter
 import com.apollographql.apollo3.api.nullable
+import com.apollographql.apollo3.api.obj
 import com.example.inline_fragment_type_coercion.TestQuery
 import kotlin.Array
 import kotlin.String
@@ -38,14 +39,12 @@ object TestQuery_ResponseAdapter : ResponseAdapter<TestQuery.Data> {
   override fun fromResponse(reader: JsonReader, responseAdapterCache: ResponseAdapterCache):
       TestQuery.Data {
     var foo: TestQuery.Data.Foo? = null
-    reader.beginObject()
     while(true) {
       when (reader.selectName(RESPONSE_NAMES)) {
-        0 -> foo = Foo.nullable().fromResponse(reader, responseAdapterCache)
+        0 -> foo = Foo.obj().nullable().fromResponse(reader, responseAdapterCache)
         else -> break
       }
     }
-    reader.endObject()
     return TestQuery.Data(
       foo = foo
     )
@@ -56,23 +55,19 @@ object TestQuery_ResponseAdapter : ResponseAdapter<TestQuery.Data> {
     responseAdapterCache: ResponseAdapterCache,
     value: TestQuery.Data
   ) {
-    writer.beginObject()
     writer.name("foo")
-    Foo.nullable().toResponse(writer, responseAdapterCache, value.foo)
-    writer.endObject()
+    Foo.obj().nullable().toResponse(writer, responseAdapterCache, value.foo)
   }
 
   object Foo : ResponseAdapter<TestQuery.Data.Foo> {
     override fun fromResponse(reader: JsonReader, responseAdapterCache: ResponseAdapterCache):
         TestQuery.Data.Foo {
-      reader.beginObject()
       check(reader.nextName() == "__typename")
-      val typename = reader.nextString()
+      val typename = reader.nextString()!!
       return when(typename) {
         "FooBar" -> BarFoo.fromResponse(reader, responseAdapterCache, typename)
         else -> OtherFoo.fromResponse(reader, responseAdapterCache, typename)
       }
-      .also { reader.endObject() }
     }
 
     override fun toResponse(
@@ -129,14 +124,12 @@ object TestQuery_ResponseAdapter : ResponseAdapter<TestQuery.Data> {
         responseAdapterCache: ResponseAdapterCache,
         value: TestQuery.Data.Foo.BarFoo
       ) {
-        writer.beginObject()
         writer.name("__typename")
         StringResponseAdapter.toResponse(writer, responseAdapterCache, value.__typename)
         writer.name("foo")
         StringResponseAdapter.toResponse(writer, responseAdapterCache, value.foo)
         writer.name("bar")
         StringResponseAdapter.toResponse(writer, responseAdapterCache, value.bar)
-        writer.endObject()
       }
     }
 
@@ -176,12 +169,10 @@ object TestQuery_ResponseAdapter : ResponseAdapter<TestQuery.Data> {
         responseAdapterCache: ResponseAdapterCache,
         value: TestQuery.Data.Foo.OtherFoo
       ) {
-        writer.beginObject()
         writer.name("__typename")
         StringResponseAdapter.toResponse(writer, responseAdapterCache, value.__typename)
         writer.name("foo")
         StringResponseAdapter.toResponse(writer, responseAdapterCache, value.foo)
-        writer.endObject()
       }
     }
   }

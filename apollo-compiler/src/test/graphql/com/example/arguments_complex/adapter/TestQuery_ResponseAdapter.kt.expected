@@ -14,6 +14,7 @@ import com.apollographql.apollo3.api.Variable
 import com.apollographql.apollo3.api.json.JsonReader
 import com.apollographql.apollo3.api.json.JsonWriter
 import com.apollographql.apollo3.api.nullable
+import com.apollographql.apollo3.api.obj
 import com.example.arguments_complex.TestQuery
 import kotlin.Array
 import kotlin.Double
@@ -53,14 +54,13 @@ object TestQuery_ResponseAdapter : ResponseAdapter<TestQuery.Data> {
   override fun fromResponse(reader: JsonReader, responseAdapterCache: ResponseAdapterCache):
       TestQuery.Data {
     var heroWithReview: TestQuery.Data.HeroWithReview? = null
-    reader.beginObject()
     while(true) {
       when (reader.selectName(RESPONSE_NAMES)) {
-        0 -> heroWithReview = HeroWithReview.nullable().fromResponse(reader, responseAdapterCache)
+        0 -> heroWithReview = HeroWithReview.obj().nullable().fromResponse(reader,
+            responseAdapterCache)
         else -> break
       }
     }
-    reader.endObject()
     return TestQuery.Data(
       heroWithReview = heroWithReview
     )
@@ -71,10 +71,8 @@ object TestQuery_ResponseAdapter : ResponseAdapter<TestQuery.Data> {
     responseAdapterCache: ResponseAdapterCache,
     value: TestQuery.Data
   ) {
-    writer.beginObject()
     writer.name("heroWithReview")
-    HeroWithReview.nullable().toResponse(writer, responseAdapterCache, value.heroWithReview)
-    writer.endObject()
+    HeroWithReview.obj().nullable().toResponse(writer, responseAdapterCache, value.heroWithReview)
   }
 
   object HeroWithReview : ResponseAdapter<TestQuery.Data.HeroWithReview> {
@@ -97,7 +95,6 @@ object TestQuery_ResponseAdapter : ResponseAdapter<TestQuery.Data> {
         TestQuery.Data.HeroWithReview {
       var name: String? = null
       var height: Double? = null
-      reader.beginObject()
       while(true) {
         when (reader.selectName(RESPONSE_NAMES)) {
           0 -> name = StringResponseAdapter.fromResponse(reader, responseAdapterCache)
@@ -105,7 +102,6 @@ object TestQuery_ResponseAdapter : ResponseAdapter<TestQuery.Data> {
           else -> break
         }
       }
-      reader.endObject()
       return TestQuery.Data.HeroWithReview(
         name = name!!,
         height = height
@@ -117,12 +113,10 @@ object TestQuery_ResponseAdapter : ResponseAdapter<TestQuery.Data> {
       responseAdapterCache: ResponseAdapterCache,
       value: TestQuery.Data.HeroWithReview
     ) {
-      writer.beginObject()
       writer.name("name")
       StringResponseAdapter.toResponse(writer, responseAdapterCache, value.name)
       writer.name("height")
       NullableDoubleResponseAdapter.toResponse(writer, responseAdapterCache, value.height)
-      writer.endObject()
     }
   }
 }

@@ -36,7 +36,6 @@ object DroidDetails_ResponseAdapter : ResponseAdapter<DroidDetails.Data> {
       DroidDetails.Data {
     var __typename: String? = null
     var primaryFunction: String? = null
-    reader.beginObject()
     while(true) {
       when (reader.selectName(RESPONSE_NAMES)) {
         0 -> __typename = StringResponseAdapter.fromResponse(reader, responseAdapterCache)
@@ -45,7 +44,6 @@ object DroidDetails_ResponseAdapter : ResponseAdapter<DroidDetails.Data> {
         else -> break
       }
     }
-    reader.endObject()
     return DroidDetails.Data(
       __typename = __typename!!,
       primaryFunction = primaryFunction
@@ -57,11 +55,9 @@ object DroidDetails_ResponseAdapter : ResponseAdapter<DroidDetails.Data> {
     responseAdapterCache: ResponseAdapterCache,
     value: DroidDetails.Data
   ) {
-    writer.beginObject()
     writer.name("__typename")
     StringResponseAdapter.toResponse(writer, responseAdapterCache, value.__typename)
     writer.name("primaryFunction")
     NullableStringResponseAdapter.toResponse(writer, responseAdapterCache, value.primaryFunction)
-    writer.endObject()
   }
 }

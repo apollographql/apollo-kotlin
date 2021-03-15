@@ -20,7 +20,5 @@ internal object TestQuery_VariablesAdapter : ResponseAdapter<TestQuery> {
     responseAdapterCache: ResponseAdapterCache,
     value: TestQuery
   ) {
-    writer.beginObject()
-    writer.endObject()
   }
 }

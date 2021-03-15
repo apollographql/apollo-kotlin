@@ -12,6 +12,7 @@ import com.apollographql.apollo3.api.ResponseField
 import com.apollographql.apollo3.api.StringResponseAdapter
 import com.apollographql.apollo3.api.json.JsonReader
 import com.apollographql.apollo3.api.json.JsonWriter
+import com.apollographql.apollo3.api.obj
 import com.example.interface_on_interface.GetHuman
 import kotlin.Array
 import kotlin.Double
@@ -47,15 +48,13 @@ object GetHuman_ResponseAdapter : ResponseAdapter<GetHuman.Data> {
       GetHuman.Data {
     var human: GetHuman.Data.Human? = null
     var node: GetHuman.Data.Node? = null
-    reader.beginObject()
     while(true) {
       when (reader.selectName(RESPONSE_NAMES)) {
-        0 -> human = Human.fromResponse(reader, responseAdapterCache)
-        1 -> node = Node.fromResponse(reader, responseAdapterCache)
+        0 -> human = Human.obj().fromResponse(reader, responseAdapterCache)
+        1 -> node = Node.obj().fromResponse(reader, responseAdapterCache)
         else -> break
       }
     }
-    reader.endObject()
     return GetHuman.Data(
       human = human!!,
       node = node!!
@@ -67,12 +66,10 @@ object GetHuman_ResponseAdapter : ResponseAdapter<GetHuman.Data> {
     responseAdapterCache: ResponseAdapterCache,
     value: GetHuman.Data
   ) {
-    writer.beginObject()
     writer.name("human")
-    Human.toResponse(writer, responseAdapterCache, value.human)
+    Human.obj().toResponse(writer, responseAdapterCache, value.human)
     writer.name("node")
-    Node.toResponse(writer, responseAdapterCache, value.node)
-    writer.endObject()
+    Node.obj().toResponse(writer, responseAdapterCache, value.node)
   }
 
   object Human : ResponseAdapter<GetHuman.Data.Human> {
@@ -98,7 +95,6 @@ object GetHuman_ResponseAdapter : ResponseAdapter<GetHuman.Data> {
       var id: String? = null
       var name: String? = null
       var height: Double? = null
-      reader.beginObject()
       while(true) {
         when (reader.selectName(RESPONSE_NAMES)) {
           0 -> id = StringResponseAdapter.fromResponse(reader, responseAdapterCache)
@@ -107,7 +103,6 @@ object GetHuman_ResponseAdapter : ResponseAdapter<GetHuman.Data> {
           else -> break
         }
       }
-      reader.endObject()
       return GetHuman.Data.Human(
         id = id!!,
         name = name!!,
@@ -120,28 +115,24 @@ object GetHuman_ResponseAdapter : ResponseAdapter<GetHuman.Data> {
       responseAdapterCache: ResponseAdapterCache,
       value: GetHuman.Data.Human
     ) {
-      writer.beginObject()
       writer.name("id")
       StringResponseAdapter.toResponse(writer, responseAdapterCache, value.id)
       writer.name("name")
       StringResponseAdapter.toResponse(writer, responseAdapterCache, value.name)
       writer.name("height")
       DoubleResponseAdapter.toResponse(writer, responseAdapterCache, value.height)
-      writer.endObject()
     }
   }
 
   object Node : ResponseAdapter<GetHuman.Data.Node> {
     override fun fromResponse(reader: JsonReader, responseAdapterCache: ResponseAdapterCache):
         GetHuman.Data.Node {
-      reader.beginObject()
       check(reader.nextName() == "__typename")
-      val typename = reader.nextString()
+      val typename = reader.nextString()!!
       return when(typename) {
         "Human" -> HumanNode.fromResponse(reader, responseAdapterCache, typename)
         else -> OtherNode.fromResponse(reader, responseAdapterCache, typename)
       }
-      .also { reader.endObject() }
     }
 
     override fun toResponse(
@@ -191,12 +182,10 @@ object GetHuman_ResponseAdapter : ResponseAdapter<GetHuman.Data> {
         responseAdapterCache: ResponseAdapterCache,
         value: GetHuman.Data.Node.HumanNode
       ) {
-        writer.beginObject()
         writer.name("__typename")
         StringResponseAdapter.toResponse(writer, responseAdapterCache, value.__typename)
         writer.name("height")
         DoubleResponseAdapter.toResponse(writer, responseAdapterCache, value.height)
-        writer.endObject()
       }
     }
 
@@ -229,10 +218,8 @@ object GetHuman_ResponseAdapter : ResponseAdapter<GetHuman.Data> {
         responseAdapterCache: ResponseAdapterCache,
         value: GetHuman.Data.Node.OtherNode
       ) {
-        writer.beginObject()
         writer.name("__typename")
         StringResponseAdapter.toResponse(writer, responseAdapterCache, value.__typename)
-        writer.endObject()
       }
     }
   }

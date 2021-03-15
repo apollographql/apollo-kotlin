@@ -20,7 +20,5 @@ object HeroDetailsQuery_VariablesAdapter : ResponseAdapter<HeroDetailsQuery> {
     responseAdapterCache: ResponseAdapterCache,
     value: HeroDetailsQuery
   ) {
-    writer.beginObject()
-    writer.endObject()
   }
 }

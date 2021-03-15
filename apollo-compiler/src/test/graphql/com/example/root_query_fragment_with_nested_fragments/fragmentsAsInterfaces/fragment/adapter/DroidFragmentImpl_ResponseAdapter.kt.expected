@@ -41,7 +41,6 @@ object DroidFragmentImpl_ResponseAdapter : ResponseAdapter<DroidFragmentImpl.Dat
     var __typename: String? = null
     var name: String? = null
     var primaryFunction: String? = null
-    reader.beginObject()
     while(true) {
       when (reader.selectName(RESPONSE_NAMES)) {
         0 -> __typename = StringResponseAdapter.fromResponse(reader, responseAdapterCache)
@@ -51,7 +50,6 @@ object DroidFragmentImpl_ResponseAdapter : ResponseAdapter<DroidFragmentImpl.Dat
         else -> break
       }
     }
-    reader.endObject()
     return DroidFragmentImpl.Data(
       __typename = __typename!!,
       name = name!!,
@@ -64,13 +62,11 @@ object DroidFragmentImpl_ResponseAdapter : ResponseAdapter<DroidFragmentImpl.Dat
     responseAdapterCache: ResponseAdapterCache,
     value: DroidFragmentImpl.Data
   ) {
-    writer.beginObject()
     writer.name("__typename")
     StringResponseAdapter.toResponse(writer, responseAdapterCache, value.__typename)
     writer.name("name")
     StringResponseAdapter.toResponse(writer, responseAdapterCache, value.name)
     writer.name("primaryFunction")
     NullableStringResponseAdapter.toResponse(writer, responseAdapterCache, value.primaryFunction)
-    writer.endObject()
   }
 }

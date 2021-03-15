@@ -11,11 +11,12 @@ import com.apollographql.apollo3.api.ResponseAdapter
 import com.apollographql.apollo3.api.ResponseAdapterCache
 import com.apollographql.apollo3.api.ResponseField
 import com.apollographql.apollo3.api.StringResponseAdapter
-import com.apollographql.apollo3.api.internal.json.MapJsonReader.Companion.buffer
+import com.apollographql.apollo3.api.internal.json.MapJsonReader
 import com.apollographql.apollo3.api.json.JsonReader
 import com.apollographql.apollo3.api.json.JsonWriter
 import com.apollographql.apollo3.api.list
 import com.apollographql.apollo3.api.nullable
+import com.apollographql.apollo3.api.obj
 import com.example.inline_fragments_with_friends.TestQuery
 import com.example.inline_fragments_with_friends.type.Episode
 import com.example.inline_fragments_with_friends.type.Episode_ResponseAdapter
@@ -45,14 +46,12 @@ object TestQuery_ResponseAdapter : ResponseAdapter<TestQuery.Data> {
   override fun fromResponse(reader: JsonReader, responseAdapterCache: ResponseAdapterCache):
       TestQuery.Data {
     var hero: TestQuery.Data.Hero? = null
-    reader.beginObject()
     while(true) {
       when (reader.selectName(RESPONSE_NAMES)) {
-        0 -> hero = Hero.nullable().fromResponse(reader, responseAdapterCache)
+        0 -> hero = Hero.obj(true).nullable().fromResponse(reader, responseAdapterCache)
         else -> break
       }
     }
-    reader.endObject()
     return TestQuery.Data(
       hero = hero
     )
@@ -63,10 +62,8 @@ object TestQuery_ResponseAdapter : ResponseAdapter<TestQuery.Data> {
     responseAdapterCache: ResponseAdapterCache,
     value: TestQuery.Data
   ) {
-    writer.beginObject()
     writer.name("hero")
-    Hero.nullable().toResponse(writer, responseAdapterCache, value.hero)
-    writer.endObject()
+    Hero.obj(true).nullable().toResponse(writer, responseAdapterCache, value.hero)
   }
 
   object Hero : ResponseAdapter<TestQuery.Data.Hero> {
@@ -82,11 +79,9 @@ object TestQuery_ResponseAdapter : ResponseAdapter<TestQuery.Data> {
 
     override fun fromResponse(reader: JsonReader, responseAdapterCache: ResponseAdapterCache):
         TestQuery.Data.Hero {
-      val reader = reader.buffer()
-      reader.beginObject()
-
       var __typename: String? = null
       var name: String? = null
+
       var asAsHuman: TestQuery.Data.Hero.AsHuman? = null
       var asAsDroid: TestQuery.Data.Hero.AsDroid? = null
       while(true) {
@@ -97,12 +92,12 @@ object TestQuery_ResponseAdapter : ResponseAdapter<TestQuery.Data> {
         }
       }
       if (__typename in arrayOf("Human")) {
-        reader.rewind()
-        asAsHuman = AsHuman.fromResponse(reader, responseAdapterCache, __typename)
+        (reader as MapJsonReader).rewind()
+        asAsHuman = AsHuman.fromResponse(reader, responseAdapterCache)
       }
       if (__typename in arrayOf("Droid")) {
-        reader.rewind()
-        asAsDroid = AsDroid.fromResponse(reader, responseAdapterCache, __typename)
+        (reader as MapJsonReader).rewind()
+        asAsDroid = AsDroid.fromResponse(reader, responseAdapterCache)
       }
 
       return TestQuery.Data.Hero(
@@ -111,7 +106,6 @@ object TestQuery_ResponseAdapter : ResponseAdapter<TestQuery.Data> {
         asAsHuman = asAsHuman,
         asAsDroid = asAsDroid
       )
-      .also { reader.endObject() }
     }
 
     override fun toResponse(
@@ -119,7 +113,6 @@ object TestQuery_ResponseAdapter : ResponseAdapter<TestQuery.Data> {
       responseAdapterCache: ResponseAdapterCache,
       value: TestQuery.Data.Hero
     ) {
-      writer.beginObject()
       writer.name("__typename")
       StringResponseAdapter.toResponse(writer, responseAdapterCache, value.__typename)
 
@@ -127,10 +120,9 @@ object TestQuery_ResponseAdapter : ResponseAdapter<TestQuery.Data> {
       StringResponseAdapter.toResponse(writer, responseAdapterCache, value.name)
       if (value.asAsHuman != null) AsHuman.toResponse(writer, responseAdapterCache, value.asAsHuman)
       if (value.asAsDroid != null) AsDroid.toResponse(writer, responseAdapterCache, value.asAsDroid)
-      writer.endObject()
     }
 
-    object AsHuman {
+    object AsHuman : ResponseAdapter<TestQuery.Data.Hero.AsHuman> {
       val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
         ResponseField.Typename,
         ResponseField(
@@ -152,12 +144,9 @@ object TestQuery_ResponseAdapter : ResponseAdapter<TestQuery.Data> {
 
       val RESPONSE_NAMES: List<String> = RESPONSE_FIELDS.map { it.responseName }
 
-      fun fromResponse(
-        reader: JsonReader,
-        responseAdapterCache: ResponseAdapterCache,
-        __typename: String?
-      ): TestQuery.Data.Hero.AsHuman {
-        var __typename: String? = __typename
+      override fun fromResponse(reader: JsonReader, responseAdapterCache: ResponseAdapterCache):
+          TestQuery.Data.Hero.AsHuman {
+        var __typename: String? = null
         var name: String? = null
         var height: Double? = null
         var friends: List<TestQuery.Data.Hero.AsHuman.Friends?>? = null
@@ -166,7 +155,7 @@ object TestQuery_ResponseAdapter : ResponseAdapter<TestQuery.Data> {
             0 -> __typename = StringResponseAdapter.fromResponse(reader, responseAdapterCache)
             1 -> name = StringResponseAdapter.fromResponse(reader, responseAdapterCache)
             2 -> height = NullableDoubleResponseAdapter.fromResponse(reader, responseAdapterCache)
-            3 -> friends = Friends.nullable().list().nullable().fromResponse(reader,
+            3 -> friends = Friends.obj().nullable().list().nullable().fromResponse(reader,
                 responseAdapterCache)
             else -> break
           }
@@ -179,12 +168,11 @@ object TestQuery_ResponseAdapter : ResponseAdapter<TestQuery.Data> {
         )
       }
 
-      fun toResponse(
+      override fun toResponse(
         writer: JsonWriter,
         responseAdapterCache: ResponseAdapterCache,
         value: TestQuery.Data.Hero.AsHuman
       ) {
-        writer.beginObject()
         writer.name("__typename")
         StringResponseAdapter.toResponse(writer, responseAdapterCache, value.__typename)
         writer.name("name")
@@ -192,8 +180,8 @@ object TestQuery_ResponseAdapter : ResponseAdapter<TestQuery.Data> {
         writer.name("height")
         NullableDoubleResponseAdapter.toResponse(writer, responseAdapterCache, value.height)
         writer.name("friends")
-        Friends.nullable().list().nullable().toResponse(writer, responseAdapterCache, value.friends)
-        writer.endObject()
+        Friends.obj().nullable().list().nullable().toResponse(writer, responseAdapterCache,
+            value.friends)
       }
 
       object Friends : ResponseAdapter<TestQuery.Data.Hero.AsHuman.Friends> {
@@ -210,7 +198,6 @@ object TestQuery_ResponseAdapter : ResponseAdapter<TestQuery.Data> {
         override fun fromResponse(reader: JsonReader, responseAdapterCache: ResponseAdapterCache):
             TestQuery.Data.Hero.AsHuman.Friends {
           var appearsIn: List<Episode?>? = null
-          reader.beginObject()
           while(true) {
             when (reader.selectName(RESPONSE_NAMES)) {
               0 -> appearsIn = Episode_ResponseAdapter.nullable().list().fromResponse(reader,
@@ -218,7 +205,6 @@ object TestQuery_ResponseAdapter : ResponseAdapter<TestQuery.Data> {
               else -> break
             }
           }
-          reader.endObject()
           return TestQuery.Data.Hero.AsHuman.Friends(
             appearsIn = appearsIn!!
           )
@@ -229,16 +215,14 @@ object TestQuery_ResponseAdapter : ResponseAdapter<TestQuery.Data> {
           responseAdapterCache: ResponseAdapterCache,
           value: TestQuery.Data.Hero.AsHuman.Friends
         ) {
-          writer.beginObject()
           writer.name("appearsIn")
           Episode_ResponseAdapter.nullable().list().toResponse(writer, responseAdapterCache,
               value.appearsIn)
-          writer.endObject()
         }
       }
     }
 
-    object AsDroid {
+    object AsDroid : ResponseAdapter<TestQuery.Data.Hero.AsDroid> {
       val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
         ResponseField.Typename,
         ResponseField(
@@ -260,12 +244,9 @@ object TestQuery_ResponseAdapter : ResponseAdapter<TestQuery.Data> {
 
       val RESPONSE_NAMES: List<String> = RESPONSE_FIELDS.map { it.responseName }
 
-      fun fromResponse(
-        reader: JsonReader,
-        responseAdapterCache: ResponseAdapterCache,
-        __typename: String?
-      ): TestQuery.Data.Hero.AsDroid {
-        var __typename: String? = __typename
+      override fun fromResponse(reader: JsonReader, responseAdapterCache: ResponseAdapterCache):
+          TestQuery.Data.Hero.AsDroid {
+        var __typename: String? = null
         var name: String? = null
         var primaryFunction: String? = null
         var friends: List<TestQuery.Data.Hero.AsDroid.Friends?>? = null
@@ -275,7 +256,7 @@ object TestQuery_ResponseAdapter : ResponseAdapter<TestQuery.Data> {
             1 -> name = StringResponseAdapter.fromResponse(reader, responseAdapterCache)
             2 -> primaryFunction = NullableStringResponseAdapter.fromResponse(reader,
                 responseAdapterCache)
-            3 -> friends = Friends.nullable().list().nullable().fromResponse(reader,
+            3 -> friends = Friends.obj().nullable().list().nullable().fromResponse(reader,
                 responseAdapterCache)
             else -> break
           }
@@ -288,12 +269,11 @@ object TestQuery_ResponseAdapter : ResponseAdapter<TestQuery.Data> {
         )
       }
 
-      fun toResponse(
+      override fun toResponse(
         writer: JsonWriter,
         responseAdapterCache: ResponseAdapterCache,
         value: TestQuery.Data.Hero.AsDroid
       ) {
-        writer.beginObject()
         writer.name("__typename")
         StringResponseAdapter.toResponse(writer, responseAdapterCache, value.__typename)
         writer.name("name")
@@ -302,8 +282,8 @@ object TestQuery_ResponseAdapter : ResponseAdapter<TestQuery.Data> {
         NullableStringResponseAdapter.toResponse(writer, responseAdapterCache,
             value.primaryFunction)
         writer.name("friends")
-        Friends.nullable().list().nullable().toResponse(writer, responseAdapterCache, value.friends)
-        writer.endObject()
+        Friends.obj().nullable().list().nullable().toResponse(writer, responseAdapterCache,
+            value.friends)
       }
 
       object Friends : ResponseAdapter<TestQuery.Data.Hero.AsDroid.Friends> {
@@ -319,14 +299,12 @@ object TestQuery_ResponseAdapter : ResponseAdapter<TestQuery.Data> {
         override fun fromResponse(reader: JsonReader, responseAdapterCache: ResponseAdapterCache):
             TestQuery.Data.Hero.AsDroid.Friends {
           var id: String? = null
-          reader.beginObject()
           while(true) {
             when (reader.selectName(RESPONSE_NAMES)) {
               0 -> id = StringResponseAdapter.fromResponse(reader, responseAdapterCache)
               else -> break
             }
           }
-          reader.endObject()
           return TestQuery.Data.Hero.AsDroid.Friends(
             id = id!!
           )
@@ -337,10 +315,8 @@ object TestQuery_ResponseAdapter : ResponseAdapter<TestQuery.Data> {
           responseAdapterCache: ResponseAdapterCache,
           value: TestQuery.Data.Hero.AsDroid.Friends
         ) {
-          writer.beginObject()
           writer.name("id")
           StringResponseAdapter.toResponse(writer, responseAdapterCache, value.id)
-          writer.endObject()
         }
       }
     }

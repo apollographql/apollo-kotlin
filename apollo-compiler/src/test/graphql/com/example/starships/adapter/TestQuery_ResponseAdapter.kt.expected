@@ -15,6 +15,7 @@ import com.apollographql.apollo3.api.json.JsonReader
 import com.apollographql.apollo3.api.json.JsonWriter
 import com.apollographql.apollo3.api.list
 import com.apollographql.apollo3.api.nullable
+import com.apollographql.apollo3.api.obj
 import com.example.starships.TestQuery
 import kotlin.Array
 import kotlin.Double
@@ -43,14 +44,12 @@ object TestQuery_ResponseAdapter : ResponseAdapter<TestQuery.Data> {
   override fun fromResponse(reader: JsonReader, responseAdapterCache: ResponseAdapterCache):
       TestQuery.Data {
     var starship: TestQuery.Data.Starship? = null
-    reader.beginObject()
     while(true) {
       when (reader.selectName(RESPONSE_NAMES)) {
-        0 -> starship = Starship.nullable().fromResponse(reader, responseAdapterCache)
+        0 -> starship = Starship.obj().nullable().fromResponse(reader, responseAdapterCache)
         else -> break
       }
     }
-    reader.endObject()
     return TestQuery.Data(
       starship = starship
     )
@@ -61,10 +60,8 @@ object TestQuery_ResponseAdapter : ResponseAdapter<TestQuery.Data> {
     responseAdapterCache: ResponseAdapterCache,
     value: TestQuery.Data
   ) {
-    writer.beginObject()
     writer.name("starship")
-    Starship.nullable().toResponse(writer, responseAdapterCache, value.starship)
-    writer.endObject()
+    Starship.obj().nullable().toResponse(writer, responseAdapterCache, value.starship)
   }
 
   object Starship : ResponseAdapter<TestQuery.Data.Starship> {
@@ -91,7 +88,6 @@ object TestQuery_ResponseAdapter : ResponseAdapter<TestQuery.Data> {
       var id: String? = null
       var name: String? = null
       var coordinates: List<List<Double>>? = null
-      reader.beginObject()
       while(true) {
         when (reader.selectName(RESPONSE_NAMES)) {
           0 -> id = StringResponseAdapter.fromResponse(reader, responseAdapterCache)
@@ -101,7 +97,6 @@ object TestQuery_ResponseAdapter : ResponseAdapter<TestQuery.Data> {
           else -> break
         }
       }
-      reader.endObject()
       return TestQuery.Data.Starship(
         id = id!!,
         name = name!!,
@@ -114,7 +109,6 @@ object TestQuery_ResponseAdapter : ResponseAdapter<TestQuery.Data> {
       responseAdapterCache: ResponseAdapterCache,
       value: TestQuery.Data.Starship
     ) {
-      writer.beginObject()
       writer.name("id")
       StringResponseAdapter.toResponse(writer, responseAdapterCache, value.id)
       writer.name("name")
@@ -122,7 +116,6 @@ object TestQuery_ResponseAdapter : ResponseAdapter<TestQuery.Data> {
       writer.name("coordinates")
       DoubleResponseAdapter.list().list().nullable().toResponse(writer, responseAdapterCache,
           value.coordinates)
-      writer.endObject()
     }
   }
 }

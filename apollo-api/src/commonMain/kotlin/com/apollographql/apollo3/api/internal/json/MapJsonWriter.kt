@@ -21,10 +21,10 @@ import com.apollographql.apollo3.api.json.JsonWriter
  *
  * To write to a [okio.BufferedSink], see also [BufferedSinkJsonWriter]
  */
-class MapJsonWriter: JsonWriter {
+class MapJsonWriter : JsonWriter {
   sealed class State {
-    class List(val list: MutableList<Any?>): State()
-    class Map(val map: MutableMap<String, Any?>, var name: String?): State()
+    class List(val list: MutableList<Any?>) : State()
+    class Map(val map: MutableMap<String, Any?>, var name: String?) : State()
   }
 
   private var root: Any? = null
@@ -80,7 +80,18 @@ class MapJsonWriter: JsonWriter {
     when (val state = stack.lastOrNull()) {
       is State.Map -> {
         check(state.name != null)
-        state.map[state.name!!] = value
+
+        // We support writing the same fields several time for fragments as classes
+        val existingValue = state.map[state.name!!]
+        if (existingValue != null && existingValue is Map<*, *>) {
+          check(value is Map<*, *>)
+          // merge any incoming object
+          state.map[state.name!!] = existingValue + value
+        } else {
+          // just overwrite what was previously there
+          // by construction it should be either null or the same value
+          state.map[state.name!!] = value
+        }
         state.name = null
       }
       is State.List -> {
@@ -92,6 +103,7 @@ class MapJsonWriter: JsonWriter {
       }
     }
   }
+
   override fun value(value: String) = valueInternal(value)
 
   override fun value(value: Boolean) = valueInternal(value)

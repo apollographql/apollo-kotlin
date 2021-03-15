@@ -23,13 +23,11 @@ object UserQuery_InputAdapter : ResponseAdapter<UserQuery> {
     responseAdapterCache: ResponseAdapterCache,
     value: UserQuery
   ) {
-    writer.beginObject()
     writer.name("name")
     StringResponseAdapter.toResponse(writer, responseAdapterCache, value.name)
     if (value.isAdmin is Input.Present) {
       writer.name("isAdmin")
       NullableBooleanResponseAdapter.toResponse(writer, responseAdapterCache, value.isAdmin.value)
     }
-    writer.endObject()
   }
 }

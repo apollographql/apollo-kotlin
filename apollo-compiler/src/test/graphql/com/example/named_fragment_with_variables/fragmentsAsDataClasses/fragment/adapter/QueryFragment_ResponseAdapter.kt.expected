@@ -10,11 +10,12 @@ import com.apollographql.apollo3.api.ResponseAdapterCache
 import com.apollographql.apollo3.api.ResponseField
 import com.apollographql.apollo3.api.StringResponseAdapter
 import com.apollographql.apollo3.api.Variable
-import com.apollographql.apollo3.api.internal.json.MapJsonReader.Companion.buffer
+import com.apollographql.apollo3.api.internal.json.MapJsonReader
 import com.apollographql.apollo3.api.json.JsonReader
 import com.apollographql.apollo3.api.json.JsonWriter
 import com.apollographql.apollo3.api.list
 import com.apollographql.apollo3.api.nullable
+import com.apollographql.apollo3.api.obj
 import com.example.named_fragment_with_variables.fragment.QueryFragment
 import com.example.named_fragment_with_variables.fragment.UserFragment
 import kotlin.Array
@@ -45,15 +46,13 @@ object QueryFragment_ResponseAdapter : ResponseAdapter<QueryFragment.Data> {
       QueryFragment.Data {
     var __typename: String? = null
     var organization: QueryFragment.Data.Organization? = null
-    reader.beginObject()
     while(true) {
       when (reader.selectName(RESPONSE_NAMES)) {
         0 -> __typename = StringResponseAdapter.fromResponse(reader, responseAdapterCache)
-        1 -> organization = Organization.nullable().fromResponse(reader, responseAdapterCache)
+        1 -> organization = Organization.obj().nullable().fromResponse(reader, responseAdapterCache)
         else -> break
       }
     }
-    reader.endObject()
     return QueryFragment.Data(
       __typename = __typename!!,
       organization = organization
@@ -65,12 +64,10 @@ object QueryFragment_ResponseAdapter : ResponseAdapter<QueryFragment.Data> {
     responseAdapterCache: ResponseAdapterCache,
     value: QueryFragment.Data
   ) {
-    writer.beginObject()
     writer.name("__typename")
     StringResponseAdapter.toResponse(writer, responseAdapterCache, value.__typename)
     writer.name("organization")
-    Organization.nullable().toResponse(writer, responseAdapterCache, value.organization)
-    writer.endObject()
+    Organization.obj().nullable().toResponse(writer, responseAdapterCache, value.organization)
   }
 
   object Organization : ResponseAdapter<QueryFragment.Data.Organization> {
@@ -97,15 +94,13 @@ object QueryFragment_ResponseAdapter : ResponseAdapter<QueryFragment.Data> {
         QueryFragment.Data.Organization {
       var id: String? = null
       var user: List<QueryFragment.Data.Organization.User>? = null
-      reader.beginObject()
       while(true) {
         when (reader.selectName(RESPONSE_NAMES)) {
           0 -> id = StringResponseAdapter.fromResponse(reader, responseAdapterCache)
-          1 -> user = User.list().fromResponse(reader, responseAdapterCache)
+          1 -> user = User.obj(true).list().fromResponse(reader, responseAdapterCache)
           else -> break
         }
       }
-      reader.endObject()
       return QueryFragment.Data.Organization(
         id = id!!,
         user = user!!
@@ -117,12 +112,10 @@ object QueryFragment_ResponseAdapter : ResponseAdapter<QueryFragment.Data> {
       responseAdapterCache: ResponseAdapterCache,
       value: QueryFragment.Data.Organization
     ) {
-      writer.beginObject()
       writer.name("id")
       StringResponseAdapter.toResponse(writer, responseAdapterCache, value.id)
       writer.name("user")
-      User.list().toResponse(writer, responseAdapterCache, value.user)
-      writer.endObject()
+      User.obj(true).list().toResponse(writer, responseAdapterCache, value.user)
     }
 
     object User : ResponseAdapter<QueryFragment.Data.Organization.User> {
@@ -134,10 +127,8 @@ object QueryFragment_ResponseAdapter : ResponseAdapter<QueryFragment.Data> {
 
       override fun fromResponse(reader: JsonReader, responseAdapterCache: ResponseAdapterCache):
           QueryFragment.Data.Organization.User {
-        val reader = reader.buffer()
-        reader.beginObject()
-
         var __typename: String? = null
+
         var userFragment: UserFragment.Data? = null
         while(true) {
           when (reader.selectName(RESPONSE_NAMES)) {
@@ -146,7 +137,7 @@ object QueryFragment_ResponseAdapter : ResponseAdapter<QueryFragment.Data> {
           }
         }
         if (__typename in arrayOf("User")) {
-          reader.rewind()
+          (reader as MapJsonReader).rewind()
           userFragment = UserFragment_ResponseAdapter.fromResponse(reader, responseAdapterCache)
         }
 
@@ -154,7 +145,6 @@ object QueryFragment_ResponseAdapter : ResponseAdapter<QueryFragment.Data> {
           __typename = __typename!!,
           userFragment = userFragment
         )
-        .also { reader.endObject() }
       }
 
       override fun toResponse(
@@ -162,12 +152,9 @@ object QueryFragment_ResponseAdapter : ResponseAdapter<QueryFragment.Data> {
         responseAdapterCache: ResponseAdapterCache,
         value: QueryFragment.Data.Organization.User
       ) {
-        writer.beginObject()
         writer.name("__typename")
         StringResponseAdapter.toResponse(writer, responseAdapterCache, value.__typename)
-        if (value.userFragment != null)
-            UserFragment_ResponseAdapter.toResponse(writer, responseAdapterCache, value.userFragment)
-        writer.endObject()
+        if (value.userFragment != null) UserFragment_ResponseAdapter.toResponse(writer, responseAdapterCache, value.userFragment)
       }
     }
   }

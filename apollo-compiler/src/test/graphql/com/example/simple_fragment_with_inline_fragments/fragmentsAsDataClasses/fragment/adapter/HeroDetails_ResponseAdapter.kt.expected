@@ -11,11 +11,12 @@ import com.apollographql.apollo3.api.ResponseAdapter
 import com.apollographql.apollo3.api.ResponseAdapterCache
 import com.apollographql.apollo3.api.ResponseField
 import com.apollographql.apollo3.api.StringResponseAdapter
-import com.apollographql.apollo3.api.internal.json.MapJsonReader.Companion.buffer
+import com.apollographql.apollo3.api.internal.json.MapJsonReader
 import com.apollographql.apollo3.api.json.JsonReader
 import com.apollographql.apollo3.api.json.JsonWriter
 import com.apollographql.apollo3.api.list
 import com.apollographql.apollo3.api.nullable
+import com.apollographql.apollo3.api.obj
 import com.example.simple_fragment_with_inline_fragments.fragment.HeroDetails
 import kotlin.Array
 import kotlin.Double
@@ -50,17 +51,15 @@ object HeroDetails_ResponseAdapter : ResponseAdapter<HeroDetails.Data> {
     var __typename: String? = null
     var name: String? = null
     var friends: List<HeroDetails.Data.Friends?>? = null
-    reader.beginObject()
     while(true) {
       when (reader.selectName(RESPONSE_NAMES)) {
         0 -> __typename = StringResponseAdapter.fromResponse(reader, responseAdapterCache)
         1 -> name = StringResponseAdapter.fromResponse(reader, responseAdapterCache)
-        2 -> friends = Friends.nullable().list().nullable().fromResponse(reader,
+        2 -> friends = Friends.obj(true).nullable().list().nullable().fromResponse(reader,
             responseAdapterCache)
         else -> break
       }
     }
-    reader.endObject()
     return HeroDetails.Data(
       __typename = __typename!!,
       name = name!!,
@@ -73,14 +72,13 @@ object HeroDetails_ResponseAdapter : ResponseAdapter<HeroDetails.Data> {
     responseAdapterCache: ResponseAdapterCache,
     value: HeroDetails.Data
   ) {
-    writer.beginObject()
     writer.name("__typename")
     StringResponseAdapter.toResponse(writer, responseAdapterCache, value.__typename)
     writer.name("name")
     StringResponseAdapter.toResponse(writer, responseAdapterCache, value.name)
     writer.name("friends")
-    Friends.nullable().list().nullable().toResponse(writer, responseAdapterCache, value.friends)
-    writer.endObject()
+    Friends.obj(true).nullable().list().nullable().toResponse(writer, responseAdapterCache,
+        value.friends)
   }
 
   object Friends : ResponseAdapter<HeroDetails.Data.Friends> {
@@ -96,11 +94,9 @@ object HeroDetails_ResponseAdapter : ResponseAdapter<HeroDetails.Data> {
 
     override fun fromResponse(reader: JsonReader, responseAdapterCache: ResponseAdapterCache):
         HeroDetails.Data.Friends {
-      val reader = reader.buffer()
-      reader.beginObject()
-
       var __typename: String? = null
       var name: String? = null
+
       var asAsHuman: HeroDetails.Data.Friends.AsHuman? = null
       var asAsDroid: HeroDetails.Data.Friends.AsDroid? = null
       while(true) {
@@ -111,12 +107,12 @@ object HeroDetails_ResponseAdapter : ResponseAdapter<HeroDetails.Data> {
         }
       }
       if (__typename in arrayOf("Human")) {
-        reader.rewind()
-        asAsHuman = AsHuman.fromResponse(reader, responseAdapterCache, __typename)
+        (reader as MapJsonReader).rewind()
+        asAsHuman = AsHuman.fromResponse(reader, responseAdapterCache)
       }
       if (__typename in arrayOf("Droid")) {
-        reader.rewind()
-        asAsDroid = AsDroid.fromResponse(reader, responseAdapterCache, __typename)
+        (reader as MapJsonReader).rewind()
+        asAsDroid = AsDroid.fromResponse(reader, responseAdapterCache)
       }
 
       return HeroDetails.Data.Friends(
@@ -125,7 +121,6 @@ object HeroDetails_ResponseAdapter : ResponseAdapter<HeroDetails.Data> {
         asAsHuman = asAsHuman,
         asAsDroid = asAsDroid
       )
-      .also { reader.endObject() }
     }
 
     override fun toResponse(
@@ -133,7 +128,6 @@ object HeroDetails_ResponseAdapter : ResponseAdapter<HeroDetails.Data> {
       responseAdapterCache: ResponseAdapterCache,
       value: HeroDetails.Data.Friends
     ) {
-      writer.beginObject()
       writer.name("__typename")
       StringResponseAdapter.toResponse(writer, responseAdapterCache, value.__typename)
 
@@ -141,10 +135,9 @@ object HeroDetails_ResponseAdapter : ResponseAdapter<HeroDetails.Data> {
       StringResponseAdapter.toResponse(writer, responseAdapterCache, value.name)
       if (value.asAsHuman != null) AsHuman.toResponse(writer, responseAdapterCache, value.asAsHuman)
       if (value.asAsDroid != null) AsDroid.toResponse(writer, responseAdapterCache, value.asAsDroid)
-      writer.endObject()
     }
 
-    object AsHuman {
+    object AsHuman : ResponseAdapter<HeroDetails.Data.Friends.AsHuman> {
       val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
         ResponseField.Typename,
         ResponseField(
@@ -159,12 +152,9 @@ object HeroDetails_ResponseAdapter : ResponseAdapter<HeroDetails.Data> {
 
       val RESPONSE_NAMES: List<String> = RESPONSE_FIELDS.map { it.responseName }
 
-      fun fromResponse(
-        reader: JsonReader,
-        responseAdapterCache: ResponseAdapterCache,
-        __typename: String?
-      ): HeroDetails.Data.Friends.AsHuman {
-        var __typename: String? = __typename
+      override fun fromResponse(reader: JsonReader, responseAdapterCache: ResponseAdapterCache):
+          HeroDetails.Data.Friends.AsHuman {
+        var __typename: String? = null
         var name: String? = null
         var height: Double? = null
         while(true) {
@@ -182,23 +172,21 @@ object HeroDetails_ResponseAdapter : ResponseAdapter<HeroDetails.Data> {
         )
       }
 
-      fun toResponse(
+      override fun toResponse(
         writer: JsonWriter,
         responseAdapterCache: ResponseAdapterCache,
         value: HeroDetails.Data.Friends.AsHuman
       ) {
-        writer.beginObject()
         writer.name("__typename")
         StringResponseAdapter.toResponse(writer, responseAdapterCache, value.__typename)
         writer.name("name")
         StringResponseAdapter.toResponse(writer, responseAdapterCache, value.name)
         writer.name("height")
         NullableDoubleResponseAdapter.toResponse(writer, responseAdapterCache, value.height)
-        writer.endObject()
       }
     }
 
-    object AsDroid {
+    object AsDroid : ResponseAdapter<HeroDetails.Data.Friends.AsDroid> {
       val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
         ResponseField.Typename,
         ResponseField(
@@ -213,12 +201,9 @@ object HeroDetails_ResponseAdapter : ResponseAdapter<HeroDetails.Data> {
 
       val RESPONSE_NAMES: List<String> = RESPONSE_FIELDS.map { it.responseName }
 
-      fun fromResponse(
-        reader: JsonReader,
-        responseAdapterCache: ResponseAdapterCache,
-        __typename: String?
-      ): HeroDetails.Data.Friends.AsDroid {
-        var __typename: String? = __typename
+      override fun fromResponse(reader: JsonReader, responseAdapterCache: ResponseAdapterCache):
+          HeroDetails.Data.Friends.AsDroid {
+        var __typename: String? = null
         var name: String? = null
         var primaryFunction: String? = null
         while(true) {
@@ -237,12 +222,11 @@ object HeroDetails_ResponseAdapter : ResponseAdapter<HeroDetails.Data> {
         )
       }
 
-      fun toResponse(
+      override fun toResponse(
         writer: JsonWriter,
         responseAdapterCache: ResponseAdapterCache,
         value: HeroDetails.Data.Friends.AsDroid
       ) {
-        writer.beginObject()
         writer.name("__typename")
         StringResponseAdapter.toResponse(writer, responseAdapterCache, value.__typename)
         writer.name("name")
@@ -250,7 +234,6 @@ object HeroDetails_ResponseAdapter : ResponseAdapter<HeroDetails.Data> {
         writer.name("primaryFunction")
         NullableStringResponseAdapter.toResponse(writer, responseAdapterCache,
             value.primaryFunction)
-        writer.endObject()
       }
     }
   }

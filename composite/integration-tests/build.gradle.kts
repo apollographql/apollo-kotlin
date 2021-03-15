@@ -50,11 +50,6 @@ fun addTests(asInterfaces: Boolean, sourceSetName: String, addTask: Boolean) {
 addTests(false, "testAsClasses", true)
 addTests(true, "testAsInterfaces", true)
 
-tasks.named("testAsClasses"){
-  // This doesn't work yet, enable when it does
-  enabled = false
-}
-
 fun configureApollo(asInterfaces: Boolean, sourceSetName: String) {
   configure<ApolloExtension> {
     file("src/main/graphql/com/apollographql/apollo3/integration").listFiles()

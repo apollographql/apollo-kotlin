@@ -50,6 +50,9 @@ internal data class CodeGenerationAst(
       val variables: List<InputField>,
   )
 
+  /**
+   * @param isShape: true if this is a one of the shapes a polymorphic field
+   */
   data class ObjectType(
       val name: String,
       val description: String,
@@ -61,7 +64,7 @@ internal data class CodeGenerationAst(
       val typeRef: TypeRef,
       val schemaTypename: String?,
       val fragmentAccessors: List<FragmentAccessor>,
-      val isTypeCase: Boolean,
+      val isShape: Boolean,
       val abstract: Boolean
   ) {
     data class FragmentAccessor(val name: String, val typeRef: TypeRef)
@@ -85,6 +88,10 @@ internal data class CodeGenerationAst(
     )
   }
 
+  /**
+   * @param requiresBuffering: true if this is a polymorphic field that will use synthetic fragments
+   * that require a [JsonReader]/[JsonWriter] that can buffer.
+   */
   data class Field(
       val name: String,
       val responseName: String,
@@ -95,6 +102,7 @@ internal data class CodeGenerationAst(
       val arguments: Map<String, Any?>,
       val conditions: Set<Condition>,
       val override: Boolean,
+      val requiresBuffering: Boolean
   ) {
     sealed class Condition {
       data class Directive(val variableName: String, val inverted: Boolean) : Condition()
@@ -272,7 +280,8 @@ internal data class CodeGenerationAst(
         deprecationReason = null,
         arguments = emptyMap(),
         conditions = emptySet(),
-        override = false
+        override = false,
+        requiresBuffering = false
     )
   }
 }

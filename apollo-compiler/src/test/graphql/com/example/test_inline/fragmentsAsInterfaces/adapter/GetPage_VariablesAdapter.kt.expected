@@ -20,7 +20,5 @@ object GetPage_VariablesAdapter : ResponseAdapter<GetPage> {
     responseAdapterCache: ResponseAdapterCache,
     value: GetPage
   ) {
-    writer.beginObject()
-    writer.endObject()
   }
 }

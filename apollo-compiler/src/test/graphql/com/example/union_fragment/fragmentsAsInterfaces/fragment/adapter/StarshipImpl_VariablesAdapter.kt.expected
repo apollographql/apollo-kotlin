@@ -20,7 +20,5 @@ object StarshipImpl_VariablesAdapter : ResponseAdapter<StarshipImpl> {
     responseAdapterCache: ResponseAdapterCache,
     value: StarshipImpl
   ) {
-    writer.beginObject()
-    writer.endObject()
   }
 }

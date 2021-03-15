@@ -11,6 +11,7 @@ import com.apollographql.apollo3.api.ResponseAdapterCache
 import com.apollographql.apollo3.api.StringResponseAdapter
 import com.apollographql.apollo3.api.json.JsonReader
 import com.apollographql.apollo3.api.json.JsonWriter
+import com.apollographql.apollo3.api.obj
 import com.example.named_fragment_with_variables.fragment.QueryFragmentImpl
 import com.example.named_fragment_with_variables.type.adapter.UserQuery_InputAdapter
 import kotlin.IllegalStateException
@@ -23,13 +24,11 @@ object QueryFragmentImpl_VariablesAdapter : ResponseAdapter<QueryFragmentImpl> {
     responseAdapterCache: ResponseAdapterCache,
     value: QueryFragmentImpl
   ) {
-    writer.beginObject()
     writer.name("organizationId")
     StringResponseAdapter.toResponse(writer, responseAdapterCache, value.organizationId)
     writer.name("query")
-    UserQuery_InputAdapter.toResponse(writer, responseAdapterCache, value.query)
+    UserQuery_InputAdapter.obj().toResponse(writer, responseAdapterCache, value.query)
     writer.name("size")
     IntResponseAdapter.toResponse(writer, responseAdapterCache, value.size)
-    writer.endObject()
   }
 }

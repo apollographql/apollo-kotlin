@@ -321,7 +321,7 @@ internal class AstBuilder private constructor(
         interfaceType = interfaceType,
         implementationType = CodeGenerationAst.ObjectType(
             name = implementationTypeRef.name,
-            isTypeCase = false,
+            isShape = false,
             description = "",
             deprecationReason = null,
             fields = emptyList(),
@@ -460,7 +460,7 @@ internal class AstBuilder private constructor(
         nestedObjects = nestedObjects,
         schemaTypename = schemaTypename,
         fragmentAccessors = emptyList(),
-        isTypeCase = isTypeCase,
+        isShape = isTypeCase,
         abstract = abstract
     )
   }
@@ -543,7 +543,7 @@ internal class AstBuilder private constructor(
         nestedObjects = nestedObjects,
         schemaTypename = schemaTypename,
         fragmentAccessors = fragmentAccessors,
-        isTypeCase = false,
+        isShape = false,
         abstract = generateFragmentsAsInterfaces
     )
   }
@@ -560,7 +560,7 @@ internal class AstBuilder private constructor(
           targetPackageName = targetPackageName,
           abstract = abstract,
           selectionKey = selectionKey,
-          isTypeCase = true
+          isTypeCase = generateFragmentsAsInterfaces
       )
     }
     val fieldNestedObjects = fields
@@ -639,7 +639,8 @@ internal class AstBuilder private constructor(
         deprecationReason = this.deprecationReason,
         arguments = this.args.associate { argument -> argument.name to argument.value },
         conditions = this.condition.toAst().toSet(),
-        override = generateFragmentsAsInterfaces && this.selectionKeys.any { key -> key != selectionKey }
+        override = generateFragmentsAsInterfaces && this.selectionKeys.any { key -> key != selectionKey },
+        requiresBuffering = !generateFragmentsAsInterfaces && this.fragments.isNotEmpty()
     )
   }
 

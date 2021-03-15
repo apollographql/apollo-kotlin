@@ -14,6 +14,7 @@ import com.apollographql.apollo3.api.Variable
 import com.apollographql.apollo3.api.json.JsonReader
 import com.apollographql.apollo3.api.json.JsonWriter
 import com.apollographql.apollo3.api.nullable
+import com.apollographql.apollo3.api.obj
 import com.example.mutation_create_review_semantic_naming.CreateReviewForEpisodeMutation
 import kotlin.Array
 import kotlin.Int
@@ -44,14 +45,12 @@ object CreateReviewForEpisodeMutation_ResponseAdapter :
   override fun fromResponse(reader: JsonReader, responseAdapterCache: ResponseAdapterCache):
       CreateReviewForEpisodeMutation.Data {
     var createReview: CreateReviewForEpisodeMutation.Data.CreateReview? = null
-    reader.beginObject()
     while(true) {
       when (reader.selectName(RESPONSE_NAMES)) {
-        0 -> createReview = CreateReview.nullable().fromResponse(reader, responseAdapterCache)
+        0 -> createReview = CreateReview.obj().nullable().fromResponse(reader, responseAdapterCache)
         else -> break
       }
     }
-    reader.endObject()
     return CreateReviewForEpisodeMutation.Data(
       createReview = createReview
     )
@@ -62,10 +61,8 @@ object CreateReviewForEpisodeMutation_ResponseAdapter :
     responseAdapterCache: ResponseAdapterCache,
     value: CreateReviewForEpisodeMutation.Data
   ) {
-    writer.beginObject()
     writer.name("createReview")
-    CreateReview.nullable().toResponse(writer, responseAdapterCache, value.createReview)
-    writer.endObject()
+    CreateReview.obj().nullable().toResponse(writer, responseAdapterCache, value.createReview)
   }
 
   object CreateReview : ResponseAdapter<CreateReviewForEpisodeMutation.Data.CreateReview> {
@@ -86,7 +83,6 @@ object CreateReviewForEpisodeMutation_ResponseAdapter :
         CreateReviewForEpisodeMutation.Data.CreateReview {
       var stars: Int? = null
       var commentary: String? = null
-      reader.beginObject()
       while(true) {
         when (reader.selectName(RESPONSE_NAMES)) {
           0 -> stars = IntResponseAdapter.fromResponse(reader, responseAdapterCache)
@@ -94,7 +90,6 @@ object CreateReviewForEpisodeMutation_ResponseAdapter :
           else -> break
         }
       }
-      reader.endObject()
       return CreateReviewForEpisodeMutation.Data.CreateReview(
         stars = stars!!,
         commentary = commentary
@@ -106,12 +101,10 @@ object CreateReviewForEpisodeMutation_ResponseAdapter :
       responseAdapterCache: ResponseAdapterCache,
       value: CreateReviewForEpisodeMutation.Data.CreateReview
     ) {
-      writer.beginObject()
       writer.name("stars")
       IntResponseAdapter.toResponse(writer, responseAdapterCache, value.stars)
       writer.name("commentary")
       NullableStringResponseAdapter.toResponse(writer, responseAdapterCache, value.commentary)
-      writer.endObject()
     }
   }
 }

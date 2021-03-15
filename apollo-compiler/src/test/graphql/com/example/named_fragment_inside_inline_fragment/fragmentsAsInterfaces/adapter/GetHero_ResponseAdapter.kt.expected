@@ -13,6 +13,7 @@ import com.apollographql.apollo3.api.json.JsonReader
 import com.apollographql.apollo3.api.json.JsonWriter
 import com.apollographql.apollo3.api.list
 import com.apollographql.apollo3.api.nullable
+import com.apollographql.apollo3.api.obj
 import com.example.named_fragment_inside_inline_fragment.GetHero
 import com.example.named_fragment_inside_inline_fragment.type.Episode
 import com.example.named_fragment_inside_inline_fragment.type.Episode_ResponseAdapter
@@ -42,14 +43,12 @@ object GetHero_ResponseAdapter : ResponseAdapter<GetHero.Data> {
   override fun fromResponse(reader: JsonReader, responseAdapterCache: ResponseAdapterCache):
       GetHero.Data {
     var hero: GetHero.Data.Hero? = null
-    reader.beginObject()
     while(true) {
       when (reader.selectName(RESPONSE_NAMES)) {
-        0 -> hero = Hero.nullable().fromResponse(reader, responseAdapterCache)
+        0 -> hero = Hero.obj().nullable().fromResponse(reader, responseAdapterCache)
         else -> break
       }
     }
-    reader.endObject()
     return GetHero.Data(
       hero = hero
     )
@@ -60,24 +59,20 @@ object GetHero_ResponseAdapter : ResponseAdapter<GetHero.Data> {
     responseAdapterCache: ResponseAdapterCache,
     value: GetHero.Data
   ) {
-    writer.beginObject()
     writer.name("hero")
-    Hero.nullable().toResponse(writer, responseAdapterCache, value.hero)
-    writer.endObject()
+    Hero.obj().nullable().toResponse(writer, responseAdapterCache, value.hero)
   }
 
   object Hero : ResponseAdapter<GetHero.Data.Hero> {
     override fun fromResponse(reader: JsonReader, responseAdapterCache: ResponseAdapterCache):
         GetHero.Data.Hero {
-      reader.beginObject()
       check(reader.nextName() == "__typename")
-      val typename = reader.nextString()
+      val typename = reader.nextString()!!
       return when(typename) {
         "Droid" -> CharacterHero.fromResponse(reader, responseAdapterCache, typename)
         "Human" -> CharacterHero.fromResponse(reader, responseAdapterCache, typename)
         else -> OtherHero.fromResponse(reader, responseAdapterCache, typename)
       }
-      .also { reader.endObject() }
     }
 
     override fun toResponse(
@@ -136,7 +131,6 @@ object GetHero_ResponseAdapter : ResponseAdapter<GetHero.Data> {
         responseAdapterCache: ResponseAdapterCache,
         value: GetHero.Data.Hero.CharacterHero
       ) {
-        writer.beginObject()
         writer.name("__typename")
         StringResponseAdapter.toResponse(writer, responseAdapterCache, value.__typename)
         writer.name("name")
@@ -144,7 +138,6 @@ object GetHero_ResponseAdapter : ResponseAdapter<GetHero.Data> {
         writer.name("appearsIn")
         Episode_ResponseAdapter.nullable().list().toResponse(writer, responseAdapterCache,
             value.appearsIn)
-        writer.endObject()
       }
     }
 
@@ -177,10 +170,8 @@ object GetHero_ResponseAdapter : ResponseAdapter<GetHero.Data> {
         responseAdapterCache: ResponseAdapterCache,
         value: GetHero.Data.Hero.OtherHero
       ) {
-        writer.beginObject()
         writer.name("__typename")
         StringResponseAdapter.toResponse(writer, responseAdapterCache, value.__typename)
-        writer.endObject()
       }
     }
   }

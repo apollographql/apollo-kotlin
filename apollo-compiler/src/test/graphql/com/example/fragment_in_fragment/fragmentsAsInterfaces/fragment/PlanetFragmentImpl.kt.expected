@@ -10,18 +10,22 @@ import com.apollographql.apollo3.api.ResponseAdapter
 import com.apollographql.apollo3.api.ResponseAdapterCache
 import com.apollographql.apollo3.api.ResponseField
 import com.apollographql.apollo3.api.json.JsonWriter
+import com.apollographql.apollo3.api.obj
 import com.example.fragment_in_fragment.fragment.adapter.PlanetFragmentImpl_ResponseAdapter
 import com.example.fragment_in_fragment.fragment.adapter.PlanetFragmentImpl_VariablesAdapter
 import kotlin.String
 import kotlin.collections.List
 
 class PlanetFragmentImpl : Fragment<PlanetFragmentImpl.Data> {
-  override fun adapter(): ResponseAdapter<Data> = PlanetFragmentImpl_ResponseAdapter
+  override fun adapter(): ResponseAdapter<Data> {
+    return PlanetFragmentImpl_ResponseAdapter.obj()
+  }
+
   override fun responseFields(): List<ResponseField.FieldSet> = listOf(
     ResponseField.FieldSet(null, PlanetFragmentImpl_ResponseAdapter.RESPONSE_FIELDS)
   )
   override fun serializeVariables(writer: JsonWriter, responseAdapterCache: ResponseAdapterCache) {
-    PlanetFragmentImpl_VariablesAdapter.toResponse(writer, responseAdapterCache, this)
+    PlanetFragmentImpl_VariablesAdapter.obj().toResponse(writer, responseAdapterCache, this)
   }
 
   /**

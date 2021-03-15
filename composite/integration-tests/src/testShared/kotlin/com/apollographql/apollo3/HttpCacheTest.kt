@@ -3,9 +3,6 @@ package com.apollographql.apollo3
 import com.apollographql.apollo3.Utils.immediateExecutor
 import com.apollographql.apollo3.Utils.immediateExecutorService
 import com.apollographql.apollo3.Utils.readFileToString
-import com.apollographql.apollo3.api.CustomScalarAdapter
-import com.apollographql.apollo3.api.JsonElement
-import com.apollographql.apollo3.api.JsonString
 import com.apollographql.apollo3.api.ResponseAdapter
 import com.apollographql.apollo3.api.ResponseAdapterCache
 import com.apollographql.apollo3.api.cache.http.HttpCache
@@ -41,7 +38,6 @@ import org.junit.Before
 import org.junit.Test
 import java.io.File
 import java.io.IOException
-import java.text.ParseException
 import java.text.SimpleDateFormat
 import java.util.Date
 import java.util.Locale

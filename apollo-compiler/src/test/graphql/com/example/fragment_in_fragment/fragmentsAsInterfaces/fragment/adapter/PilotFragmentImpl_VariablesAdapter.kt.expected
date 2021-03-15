@@ -20,7 +20,5 @@ object PilotFragmentImpl_VariablesAdapter : ResponseAdapter<PilotFragmentImpl> {
     responseAdapterCache: ResponseAdapterCache,
     value: PilotFragmentImpl
   ) {
-    writer.beginObject()
-    writer.endObject()
   }
 }

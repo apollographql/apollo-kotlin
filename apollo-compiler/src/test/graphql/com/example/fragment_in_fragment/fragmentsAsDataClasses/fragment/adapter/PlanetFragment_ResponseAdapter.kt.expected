@@ -36,7 +36,6 @@ object PlanetFragment_ResponseAdapter : ResponseAdapter<PlanetFragment.Data> {
       PlanetFragment.Data {
     var __typename: String? = null
     var name: String? = null
-    reader.beginObject()
     while(true) {
       when (reader.selectName(RESPONSE_NAMES)) {
         0 -> __typename = StringResponseAdapter.fromResponse(reader, responseAdapterCache)
@@ -44,7 +43,6 @@ object PlanetFragment_ResponseAdapter : ResponseAdapter<PlanetFragment.Data> {
         else -> break
       }
     }
-    reader.endObject()
     return PlanetFragment.Data(
       __typename = __typename!!,
       name = name
@@ -56,11 +54,9 @@ object PlanetFragment_ResponseAdapter : ResponseAdapter<PlanetFragment.Data> {
     responseAdapterCache: ResponseAdapterCache,
     value: PlanetFragment.Data
   ) {
-    writer.beginObject()
     writer.name("__typename")
     StringResponseAdapter.toResponse(writer, responseAdapterCache, value.__typename)
     writer.name("name")
     NullableStringResponseAdapter.toResponse(writer, responseAdapterCache, value.name)
-    writer.endObject()
   }
 }

@@ -17,6 +17,7 @@ import com.apollographql.apollo3.api.json.JsonReader
 import com.apollographql.apollo3.api.json.JsonWriter
 import com.apollographql.apollo3.api.list
 import com.apollographql.apollo3.api.nullable
+import com.apollographql.apollo3.api.obj
 import com.example.input_object_type.type.CustomScalars
 import com.example.input_object_type.type.Episode_ResponseAdapter
 import com.example.input_object_type.type.ReviewInput
@@ -31,7 +32,6 @@ object ReviewInput_InputAdapter : ResponseAdapter<ReviewInput> {
     responseAdapterCache: ResponseAdapterCache,
     value: ReviewInput
   ) {
-    writer.beginObject()
     writer.name("stars")
     IntResponseAdapter.toResponse(writer, responseAdapterCache, value.stars)
     if (value.nullableIntFieldWithDefaultValue is Input.Present) {
@@ -44,7 +44,7 @@ object ReviewInput_InputAdapter : ResponseAdapter<ReviewInput> {
       NullableStringResponseAdapter.toResponse(writer, responseAdapterCache, value.commentary.value)
     }
     writer.name("favoriteColor")
-    ColorInput_InputAdapter.toResponse(writer, responseAdapterCache, value.favoriteColor)
+    ColorInput_InputAdapter.obj().toResponse(writer, responseAdapterCache, value.favoriteColor)
     if (value.enumWithDefaultValue is Input.Present) {
       writer.name("enumWithDefaultValue")
       Episode_ResponseAdapter.nullable().toResponse(writer, responseAdapterCache,
@@ -90,8 +90,8 @@ object ReviewInput_InputAdapter : ResponseAdapter<ReviewInput> {
         value.listOfStringNonOptional)
     if (value.listOfInputTypes is Input.Present) {
       writer.name("listOfInputTypes")
-      ColorInput_InputAdapter.nullable().list().nullable().toResponse(writer, responseAdapterCache,
-          value.listOfInputTypes.value)
+      ColorInput_InputAdapter.obj().nullable().list().nullable().toResponse(writer,
+          responseAdapterCache, value.listOfInputTypes.value)
     }
     if (value.booleanWithDefaultValue is Input.Present) {
       writer.name("booleanWithDefaultValue")
@@ -120,8 +120,8 @@ object ReviewInput_InputAdapter : ResponseAdapter<ReviewInput> {
     }
     if (value.listOfListOfObject is Input.Present) {
       writer.name("listOfListOfObject")
-      ColorInput_InputAdapter.list().list().nullable().toResponse(writer, responseAdapterCache,
-          value.listOfListOfObject.value)
+      ColorInput_InputAdapter.obj().list().list().nullable().toResponse(writer,
+          responseAdapterCache, value.listOfListOfObject.value)
     }
     if (value.capitalizedField is Input.Present) {
       writer.name("CapitalizedField")
@@ -133,6 +133,5 @@ object ReviewInput_InputAdapter : ResponseAdapter<ReviewInput> {
       NullableIntResponseAdapter.toResponse(writer, responseAdapterCache,
           value.capitalizedInt.value)
     }
-    writer.endObject()
   }
 }

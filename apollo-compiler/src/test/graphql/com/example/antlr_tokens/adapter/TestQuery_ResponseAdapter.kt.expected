@@ -13,6 +13,7 @@ import com.apollographql.apollo3.api.Variable
 import com.apollographql.apollo3.api.json.JsonReader
 import com.apollographql.apollo3.api.json.JsonWriter
 import com.apollographql.apollo3.api.nullable
+import com.apollographql.apollo3.api.obj
 import com.example.antlr_tokens.TestQuery
 import kotlin.Array
 import kotlin.String
@@ -38,15 +39,13 @@ object TestQuery_ResponseAdapter : ResponseAdapter<TestQuery.Data> {
   override fun fromResponse(reader: JsonReader, responseAdapterCache: ResponseAdapterCache):
       TestQuery.Data {
     var typeWithGraphQLKeywords: TestQuery.Data.TypeWithGraphQLKeywords? = null
-    reader.beginObject()
     while(true) {
       when (reader.selectName(RESPONSE_NAMES)) {
-        0 -> typeWithGraphQLKeywords = TypeWithGraphQLKeywords.nullable().fromResponse(reader,
+        0 -> typeWithGraphQLKeywords = TypeWithGraphQLKeywords.obj().nullable().fromResponse(reader,
             responseAdapterCache)
         else -> break
       }
     }
-    reader.endObject()
     return TestQuery.Data(
       typeWithGraphQLKeywords = typeWithGraphQLKeywords
     )
@@ -57,11 +56,9 @@ object TestQuery_ResponseAdapter : ResponseAdapter<TestQuery.Data> {
     responseAdapterCache: ResponseAdapterCache,
     value: TestQuery.Data
   ) {
-    writer.beginObject()
     writer.name("typeWithGraphQLKeywords")
-    TypeWithGraphQLKeywords.nullable().toResponse(writer, responseAdapterCache,
+    TypeWithGraphQLKeywords.obj().nullable().toResponse(writer, responseAdapterCache,
         value.typeWithGraphQLKeywords)
-    writer.endObject()
   }
 
   object TypeWithGraphQLKeywords : ResponseAdapter<TestQuery.Data.TypeWithGraphQLKeywords> {
@@ -95,7 +92,6 @@ object TestQuery_ResponseAdapter : ResponseAdapter<TestQuery.Data> {
       var on: String? = null
       var null_: String? = null
       var alias: String? = null
-      reader.beginObject()
       while(true) {
         when (reader.selectName(RESPONSE_NAMES)) {
           0 -> on = NullableStringResponseAdapter.fromResponse(reader, responseAdapterCache)
@@ -104,7 +100,6 @@ object TestQuery_ResponseAdapter : ResponseAdapter<TestQuery.Data> {
           else -> break
         }
       }
-      reader.endObject()
       return TestQuery.Data.TypeWithGraphQLKeywords(
         on = on,
         null_ = null_,
@@ -117,14 +112,12 @@ object TestQuery_ResponseAdapter : ResponseAdapter<TestQuery.Data> {
       responseAdapterCache: ResponseAdapterCache,
       value: TestQuery.Data.TypeWithGraphQLKeywords
     ) {
-      writer.beginObject()
       writer.name("on")
       NullableStringResponseAdapter.toResponse(writer, responseAdapterCache, value.on)
       writer.name("null")
       NullableStringResponseAdapter.toResponse(writer, responseAdapterCache, value.null_)
       writer.name("alias")
       NullableStringResponseAdapter.toResponse(writer, responseAdapterCache, value.alias)
-      writer.endObject()
     }
   }
 }

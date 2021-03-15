@@ -1,6 +1,8 @@
 package com.apollographql.apollo3.api
 
 
+import com.apollographql.apollo3.api.internal.json.MapJsonReader.Companion.buffer
+import com.apollographql.apollo3.api.internal.json.MapJsonWriter
 import com.apollographql.apollo3.api.json.JsonReader
 import com.apollographql.apollo3.api.json.JsonWriter
 import com.apollographql.apollo3.api.internal.json.Utils
@@ -35,10 +37,11 @@ class ListResponseAdapter<T>(private val wrappedAdapter: ResponseAdapter<T>) : R
 
 class NullableResponseAdapter<T : Any>(private val wrappedAdapter: ResponseAdapter<T>) : ResponseAdapter<T?> {
   init {
-    check (wrappedAdapter !is NullableResponseAdapter<*>) {
+    check(wrappedAdapter !is NullableResponseAdapter<*>) {
       "The adapter is already nullable"
     }
   }
+
   override fun fromResponse(reader: JsonReader, responseAdapterCache: ResponseAdapterCache): T? {
     return if (reader.peek() == JsonReader.Token.NULL) {
       reader.skipValue()
@@ -125,8 +128,47 @@ object UploadResponseAdapter : ResponseAdapter<Upload> {
   }
 }
 
-fun <T: Any> ResponseAdapter<T>.nullable() = NullableResponseAdapter(this)
+class ObjectResponseAdapter<T>(
+    private val wrappedAdapter: ResponseAdapter<T>,
+    private val buffered: Boolean
+) : ResponseAdapter<T> {
+  override fun fromResponse(reader: JsonReader, responseAdapterCache: ResponseAdapterCache): T {
+    val actualReader = if (buffered) {
+      reader.buffer()
+    } else {
+      reader
+    }
+    actualReader.beginObject()
+    return wrappedAdapter.fromResponse(actualReader, responseAdapterCache).also {
+      actualReader.endObject()
+    }
+  }
+
+  override fun toResponse(writer: JsonWriter, responseAdapterCache: ResponseAdapterCache, value: T) {
+    if (buffered && writer !is MapJsonWriter) {
+      /**
+       * Convert to a Map first
+       */
+      val mapWriter = MapJsonWriter()
+      mapWriter.beginObject()
+      wrappedAdapter.toResponse(mapWriter, responseAdapterCache, value)
+      mapWriter.endObject()
+
+      /**
+       * And write to the original writer
+       */
+      AnyResponseAdapter.toResponse(writer, mapWriter.root())
+    } else {
+      writer.beginObject()
+      wrappedAdapter.toResponse(writer, responseAdapterCache, value)
+      writer.endObject()
+    }
+  }
+}
+
+fun <T : Any> ResponseAdapter<T>.nullable() = NullableResponseAdapter(this)
 fun <T> ResponseAdapter<T>.list() = ListResponseAdapter(this)
+fun <T> ResponseAdapter<T>.obj(buffered: Boolean = false) = ObjectResponseAdapter(this, buffered)
 
 /**
  * Global instances of nullable adapters for built-in scalar types

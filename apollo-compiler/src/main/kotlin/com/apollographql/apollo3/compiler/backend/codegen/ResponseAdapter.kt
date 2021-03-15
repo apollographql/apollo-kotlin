@@ -5,10 +5,6 @@ import com.apollographql.apollo3.api.DoubleResponseAdapter
 import com.apollographql.apollo3.api.IntResponseAdapter
 import com.apollographql.apollo3.api.ResponseField
 import com.apollographql.apollo3.api.Variable
-import com.apollographql.apollo3.api.NullableBooleanResponseAdapter
-import com.apollographql.apollo3.api.NullableDoubleResponseAdapter
-import com.apollographql.apollo3.api.NullableIntResponseAdapter
-import com.apollographql.apollo3.api.NullableStringResponseAdapter
 import com.apollographql.apollo3.api.ResponseAdapter
 import com.apollographql.apollo3.api.StringResponseAdapter
 import com.apollographql.apollo3.compiler.applyIf
@@ -32,7 +28,10 @@ internal fun CodeGenerationAst.OperationType.responseAdapterTypeSpec(
 ): TypeSpec {
   return this.dataType
       .copy(name = "${this.name.escapeKotlinReservedWord()}_ResponseAdapter")
-      .rootResponseAdapterTypeSpec(generateAsInternal, generateFragmentsAsInterfaces)
+      .rootResponseAdapterTypeSpec(
+          generateAsInternal = generateAsInternal,
+          generateFragmentsAsInterfaces = generateFragmentsAsInterfaces
+      )
 }
 
 internal fun CodeGenerationAst.FragmentType.responseAdapterTypeSpec(
@@ -42,23 +41,33 @@ internal fun CodeGenerationAst.FragmentType.responseAdapterTypeSpec(
   val dataType = this.implementationType.nestedObjects.single()
   return dataType
       .copy(name = "${this.implementationType.name.escapeKotlinReservedWord()}_ResponseAdapter")
-      .rootResponseAdapterTypeSpec(generateAsInternal, generateFragmentsAsInterfaces)
+      .rootResponseAdapterTypeSpec(
+          generateAsInternal = generateAsInternal,
+          generateFragmentsAsInterfaces = generateFragmentsAsInterfaces
+      )
 }
 
+/**
+ * @param generateFragmentsAsInterfaces: whether to generate the rewind() code or not
+ */
 private fun CodeGenerationAst.ObjectType.rootResponseAdapterTypeSpec(
     generateAsInternal: Boolean,
-    generateFragmentsAsInterfaces: Boolean,
+    generateFragmentsAsInterfaces: Boolean
 ): TypeSpec {
-  return this.responseAdapterTypeSpec(generateFragmentsAsInterfaces)
+  val adapterTypeSpec = this.responseAdapterTypeSpec(
+      generateFragmentsAsInterfaces = generateFragmentsAsInterfaces
+  )
       .toBuilder()
       .applyIf(generateAsInternal) { addModifiers(KModifier.INTERNAL) }
       .addAnnotation(suppressWarningsAnnotation)
       .build()
+
+  return adapterTypeSpec
 }
 
 private fun CodeGenerationAst.ObjectType.responseAdapterTypeSpec(generateFragmentsAsInterfaces: Boolean): TypeSpec {
   return TypeSpec.objectBuilder(this.name)
-      .applyIf(!isTypeCase) { addSuperinterface(ResponseAdapter::class.asTypeName().parameterizedBy(this@responseAdapterTypeSpec.typeRef.asTypeName())) }
+      .applyIf(!isShape) { addSuperinterface(ResponseAdapter::class.asTypeName().parameterizedBy(this@responseAdapterTypeSpec.typeRef.asTypeName())) }
       .apply {
         if (fields.isNotEmpty()) {
           if (kind is CodeGenerationAst.ObjectType.Kind.Object ||
@@ -74,7 +83,9 @@ private fun CodeGenerationAst.ObjectType.responseAdapterTypeSpec(generateFragmen
           this.nestedObjects.mapNotNull { nestedObject ->
             if (nestedObject.kind is CodeGenerationAst.ObjectType.Kind.Object ||
                 (nestedObject.kind is CodeGenerationAst.ObjectType.Kind.ObjectWithFragments && nestedObject.kind.possibleImplementations.isNotEmpty())) {
-              nestedObject.responseAdapterTypeSpec(generateFragmentsAsInterfaces)
+              nestedObject.responseAdapterTypeSpec(
+                  generateFragmentsAsInterfaces = generateFragmentsAsInterfaces
+              )
             } else null
           }
       )
@@ -307,7 +318,7 @@ private fun valueToCode(any: Any?): CodeBlock {
 
 private fun nullableScalarAdapter(name: String) = CodeBlock.of("%M", MemberName("com.apollographql.apollo3.api", name))
 
-internal fun adapterInitializer(type: CodeGenerationAst.FieldType): CodeBlock {
+internal fun adapterInitializer(type: CodeGenerationAst.FieldType, buffered: Boolean): CodeBlock {
   if (type.nullable) {
     return when (type) {
       is CodeGenerationAst.FieldType.Scalar.ID -> nullableScalarAdapter("NullableStringResponseAdapter")
@@ -317,14 +328,14 @@ internal fun adapterInitializer(type: CodeGenerationAst.FieldType): CodeBlock {
       is CodeGenerationAst.FieldType.Scalar.Float -> nullableScalarAdapter("NullableDoubleResponseAdapter")
       else -> {
         val nullableFun = MemberName("com.apollographql.apollo3.api", "nullable")
-        CodeBlock.of("%L.%M()", adapterInitializer(type.nonNullable()), nullableFun)
+        CodeBlock.of("%L.%M()", adapterInitializer(type.nonNullable(), buffered), nullableFun)
       }
     }
   }
   return when (type) {
     is CodeGenerationAst.FieldType.Array -> {
       val nullableFun = MemberName("com.apollographql.apollo3.api", "list")
-      CodeBlock.of("%L.%M()", adapterInitializer(type.rawType), nullableFun)
+      CodeBlock.of("%L.%M()", adapterInitializer(type.rawType, buffered), nullableFun)
     }
     is CodeGenerationAst.FieldType.Scalar.Boolean -> CodeBlock.of("%T", BooleanResponseAdapter::class)
     is CodeGenerationAst.FieldType.Scalar.ID -> CodeBlock.of("%T", StringResponseAdapter::class)
@@ -332,12 +343,34 @@ internal fun adapterInitializer(type: CodeGenerationAst.FieldType): CodeBlock {
     is CodeGenerationAst.FieldType.Scalar.Int -> CodeBlock.of("%T", IntResponseAdapter::class)
     is CodeGenerationAst.FieldType.Scalar.Float -> CodeBlock.of("%T", DoubleResponseAdapter::class)
     is CodeGenerationAst.FieldType.Scalar.Enum -> CodeBlock.of("%T", type.typeRef.asEnumAdapterTypeName().copy(nullable = false))
-    is CodeGenerationAst.FieldType.Object -> CodeBlock.of("%T", type.typeRef.asAdapterTypeName().copy(nullable = false))
-    is CodeGenerationAst.FieldType.InputObject -> CodeBlock.of("%T", type.typeRef.asInputAdapterTypeName().copy(nullable = false))
+    is CodeGenerationAst.FieldType.Object -> {
+      CodeBlock.of("%T", type.typeRef.asAdapterTypeName().copy(nullable = false)).obj(buffered)
+    }
+    is CodeGenerationAst.FieldType.InputObject -> {
+      CodeBlock.of("%T", type.typeRef.asInputAdapterTypeName().copy(nullable = false)).obj(buffered)
+    }
     is CodeGenerationAst.FieldType.Scalar.Custom -> CodeBlock.of(
         "responseAdapterCache.responseAdapterFor<%T>(%T)",
         ClassName.bestGuess(type.type),
         type.typeRef.asTypeName()
     )
   }
+}
+
+internal fun CodeBlock.obj(buffered: Boolean): CodeBlock {
+  return CodeBlock.Builder()
+      .add("%L", this)
+      .add(
+          ".%M(%L)",
+          MemberName("com.apollographql.apollo3.api", "obj"),
+          if (buffered) "true" else ""
+      ).build()
+}
+
+internal fun adapterFunSpec(operationResponseAdapter: ClassName, buffered: Boolean): FunSpec {
+  return FunSpec.builder("adapter")
+      .addModifiers(KModifier.OVERRIDE)
+      .returns(ResponseAdapter::class.asClassName().parameterizedBy(ClassName(packageName = "", "Data")))
+      .addCode(CodeBlock.of("return·%T", operationResponseAdapter).obj(buffered))
+      .build()
 }

@@ -14,6 +14,7 @@ import com.apollographql.apollo3.api.Variable
 import com.apollographql.apollo3.api.json.JsonReader
 import com.apollographql.apollo3.api.json.JsonWriter
 import com.apollographql.apollo3.api.nullable
+import com.apollographql.apollo3.api.obj
 import com.example.input_object_type.TestQuery
 import kotlin.Array
 import kotlin.Int
@@ -43,14 +44,12 @@ object TestQuery_ResponseAdapter : ResponseAdapter<TestQuery.Data> {
   override fun fromResponse(reader: JsonReader, responseAdapterCache: ResponseAdapterCache):
       TestQuery.Data {
     var createReview: TestQuery.Data.CreateReview? = null
-    reader.beginObject()
     while(true) {
       when (reader.selectName(RESPONSE_NAMES)) {
-        0 -> createReview = CreateReview.nullable().fromResponse(reader, responseAdapterCache)
+        0 -> createReview = CreateReview.obj().nullable().fromResponse(reader, responseAdapterCache)
         else -> break
       }
     }
-    reader.endObject()
     return TestQuery.Data(
       createReview = createReview
     )
@@ -61,10 +60,8 @@ object TestQuery_ResponseAdapter : ResponseAdapter<TestQuery.Data> {
     responseAdapterCache: ResponseAdapterCache,
     value: TestQuery.Data
   ) {
-    writer.beginObject()
     writer.name("createReview")
-    CreateReview.nullable().toResponse(writer, responseAdapterCache, value.createReview)
-    writer.endObject()
+    CreateReview.obj().nullable().toResponse(writer, responseAdapterCache, value.createReview)
   }
 
   object CreateReview : ResponseAdapter<TestQuery.Data.CreateReview> {
@@ -85,7 +82,6 @@ object TestQuery_ResponseAdapter : ResponseAdapter<TestQuery.Data> {
         TestQuery.Data.CreateReview {
       var stars: Int? = null
       var commentary: String? = null
-      reader.beginObject()
       while(true) {
         when (reader.selectName(RESPONSE_NAMES)) {
           0 -> stars = IntResponseAdapter.fromResponse(reader, responseAdapterCache)
@@ -93,7 +89,6 @@ object TestQuery_ResponseAdapter : ResponseAdapter<TestQuery.Data> {
           else -> break
         }
       }
-      reader.endObject()
       return TestQuery.Data.CreateReview(
         stars = stars!!,
         commentary = commentary
@@ -105,12 +100,10 @@ object TestQuery_ResponseAdapter : ResponseAdapter<TestQuery.Data> {
       responseAdapterCache: ResponseAdapterCache,
       value: TestQuery.Data.CreateReview
     ) {
-      writer.beginObject()
       writer.name("stars")
       IntResponseAdapter.toResponse(writer, responseAdapterCache, value.stars)
       writer.name("commentary")
       NullableStringResponseAdapter.toResponse(writer, responseAdapterCache, value.commentary)
-      writer.endObject()
     }
   }
 }

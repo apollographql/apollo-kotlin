@@ -10,6 +10,7 @@ import com.apollographql.apollo3.api.ResponseAdapter
 import com.apollographql.apollo3.api.ResponseAdapterCache
 import com.apollographql.apollo3.api.ResponseField
 import com.apollographql.apollo3.api.json.JsonWriter
+import com.apollographql.apollo3.api.obj
 import com.example.named_fragment_with_variables.fragment.adapter.UserFragmentImpl_ResponseAdapter
 import com.example.named_fragment_with_variables.fragment.adapter.UserFragmentImpl_VariablesAdapter
 import kotlin.Int
@@ -19,12 +20,15 @@ import kotlin.collections.List
 data class UserFragmentImpl(
   val size: Int
 ) : Fragment<UserFragmentImpl.Data> {
-  override fun adapter(): ResponseAdapter<Data> = UserFragmentImpl_ResponseAdapter
+  override fun adapter(): ResponseAdapter<Data> {
+    return UserFragmentImpl_ResponseAdapter.obj()
+  }
+
   override fun responseFields(): List<ResponseField.FieldSet> = listOf(
     ResponseField.FieldSet(null, UserFragmentImpl_ResponseAdapter.RESPONSE_FIELDS)
   )
   override fun serializeVariables(writer: JsonWriter, responseAdapterCache: ResponseAdapterCache) {
-    UserFragmentImpl_VariablesAdapter.toResponse(writer, responseAdapterCache, this)
+    UserFragmentImpl_VariablesAdapter.obj().toResponse(writer, responseAdapterCache, this)
   }
 
   data class Data(

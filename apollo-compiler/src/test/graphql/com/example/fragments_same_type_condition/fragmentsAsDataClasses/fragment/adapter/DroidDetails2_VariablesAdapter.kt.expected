@@ -20,7 +20,5 @@ object DroidDetails2_VariablesAdapter : ResponseAdapter<DroidDetails2> {
     responseAdapterCache: ResponseAdapterCache,
     value: DroidDetails2
   ) {
-    writer.beginObject()
-    writer.endObject()
   }
 }

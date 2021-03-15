@@ -11,6 +11,7 @@ import com.apollographql.apollo3.api.ResponseAdapter
 import com.apollographql.apollo3.api.ResponseAdapterCache
 import com.apollographql.apollo3.api.ResponseField
 import com.apollographql.apollo3.api.json.JsonWriter
+import com.apollographql.apollo3.api.obj
 import com.example.named_fragment_inside_inline_fragment.adapter.GetHero_ResponseAdapter
 import com.example.named_fragment_inside_inline_fragment.adapter.GetHero_VariablesAdapter
 import com.example.named_fragment_inside_inline_fragment.fragment.CharacterAppearsIn
@@ -28,12 +29,15 @@ class GetHero : Query<GetHero.Data> {
   override fun queryDocument(): String = QUERY_DOCUMENT
 
   override fun serializeVariables(writer: JsonWriter, responseAdapterCache: ResponseAdapterCache) {
-    GetHero_VariablesAdapter.toResponse(writer, responseAdapterCache, this)
+    GetHero_VariablesAdapter.obj().toResponse(writer, responseAdapterCache, this)
   }
 
   override fun name(): String = OPERATION_NAME
 
-  override fun adapter(): ResponseAdapter<Data> = GetHero_ResponseAdapter
+  override fun adapter(): ResponseAdapter<Data> {
+    return GetHero_ResponseAdapter.obj()
+  }
+
   override fun responseFields(): List<ResponseField.FieldSet> = listOf(
     ResponseField.FieldSet(null, GetHero_ResponseAdapter.RESPONSE_FIELDS)
   )

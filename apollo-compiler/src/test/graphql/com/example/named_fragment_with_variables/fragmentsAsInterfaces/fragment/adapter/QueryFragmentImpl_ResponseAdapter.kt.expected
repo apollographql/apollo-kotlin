@@ -14,6 +14,7 @@ import com.apollographql.apollo3.api.json.JsonReader
 import com.apollographql.apollo3.api.json.JsonWriter
 import com.apollographql.apollo3.api.list
 import com.apollographql.apollo3.api.nullable
+import com.apollographql.apollo3.api.obj
 import com.example.named_fragment_with_variables.fragment.QueryFragmentImpl
 import kotlin.Array
 import kotlin.String
@@ -43,15 +44,13 @@ object QueryFragmentImpl_ResponseAdapter : ResponseAdapter<QueryFragmentImpl.Dat
       QueryFragmentImpl.Data {
     var __typename: String? = null
     var organization: QueryFragmentImpl.Data.Organization? = null
-    reader.beginObject()
     while(true) {
       when (reader.selectName(RESPONSE_NAMES)) {
         0 -> __typename = StringResponseAdapter.fromResponse(reader, responseAdapterCache)
-        1 -> organization = Organization.nullable().fromResponse(reader, responseAdapterCache)
+        1 -> organization = Organization.obj().nullable().fromResponse(reader, responseAdapterCache)
         else -> break
       }
     }
-    reader.endObject()
     return QueryFragmentImpl.Data(
       __typename = __typename!!,
       organization = organization
@@ -63,12 +62,10 @@ object QueryFragmentImpl_ResponseAdapter : ResponseAdapter<QueryFragmentImpl.Dat
     responseAdapterCache: ResponseAdapterCache,
     value: QueryFragmentImpl.Data
   ) {
-    writer.beginObject()
     writer.name("__typename")
     StringResponseAdapter.toResponse(writer, responseAdapterCache, value.__typename)
     writer.name("organization")
-    Organization.nullable().toResponse(writer, responseAdapterCache, value.organization)
-    writer.endObject()
+    Organization.obj().nullable().toResponse(writer, responseAdapterCache, value.organization)
   }
 
   object Organization : ResponseAdapter<QueryFragmentImpl.Data.Organization> {
@@ -96,15 +93,13 @@ object QueryFragmentImpl_ResponseAdapter : ResponseAdapter<QueryFragmentImpl.Dat
         QueryFragmentImpl.Data.Organization {
       var id: String? = null
       var user: List<QueryFragmentImpl.Data.Organization.User>? = null
-      reader.beginObject()
       while(true) {
         when (reader.selectName(RESPONSE_NAMES)) {
           0 -> id = StringResponseAdapter.fromResponse(reader, responseAdapterCache)
-          1 -> user = User.list().fromResponse(reader, responseAdapterCache)
+          1 -> user = User.obj().list().fromResponse(reader, responseAdapterCache)
           else -> break
         }
       }
-      reader.endObject()
       return QueryFragmentImpl.Data.Organization(
         id = id!!,
         user = user!!
@@ -116,25 +111,21 @@ object QueryFragmentImpl_ResponseAdapter : ResponseAdapter<QueryFragmentImpl.Dat
       responseAdapterCache: ResponseAdapterCache,
       value: QueryFragmentImpl.Data.Organization
     ) {
-      writer.beginObject()
       writer.name("id")
       StringResponseAdapter.toResponse(writer, responseAdapterCache, value.id)
       writer.name("user")
-      User.list().toResponse(writer, responseAdapterCache, value.user)
-      writer.endObject()
+      User.obj().list().toResponse(writer, responseAdapterCache, value.user)
     }
 
     object User : ResponseAdapter<QueryFragmentImpl.Data.Organization.User> {
       override fun fromResponse(reader: JsonReader, responseAdapterCache: ResponseAdapterCache):
           QueryFragmentImpl.Data.Organization.User {
-        reader.beginObject()
         check(reader.nextName() == "__typename")
-        val typename = reader.nextString()
+        val typename = reader.nextString()!!
         return when(typename) {
           "User" -> UserUser.fromResponse(reader, responseAdapterCache, typename)
           else -> OtherUser.fromResponse(reader, responseAdapterCache, typename)
         }
-        .also { reader.endObject() }
       }
 
       override fun toResponse(
@@ -200,7 +191,6 @@ object QueryFragmentImpl_ResponseAdapter : ResponseAdapter<QueryFragmentImpl.Dat
           responseAdapterCache: ResponseAdapterCache,
           value: QueryFragmentImpl.Data.Organization.User.UserUser
         ) {
-          writer.beginObject()
           writer.name("__typename")
           StringResponseAdapter.toResponse(writer, responseAdapterCache, value.__typename)
           writer.name("firstName")
@@ -209,7 +199,6 @@ object QueryFragmentImpl_ResponseAdapter : ResponseAdapter<QueryFragmentImpl.Dat
           StringResponseAdapter.toResponse(writer, responseAdapterCache, value.lastName)
           writer.name("avatar")
           StringResponseAdapter.toResponse(writer, responseAdapterCache, value.avatar)
-          writer.endObject()
         }
       }
 
@@ -242,10 +231,8 @@ object QueryFragmentImpl_ResponseAdapter : ResponseAdapter<QueryFragmentImpl.Dat
           responseAdapterCache: ResponseAdapterCache,
           value: QueryFragmentImpl.Data.Organization.User.OtherUser
         ) {
-          writer.beginObject()
           writer.name("__typename")
           StringResponseAdapter.toResponse(writer, responseAdapterCache, value.__typename)
-          writer.endObject()
         }
       }
     }

@@ -14,6 +14,7 @@ import com.apollographql.apollo3.api.json.JsonReader
 import com.apollographql.apollo3.api.json.JsonWriter
 import com.apollographql.apollo3.api.list
 import com.apollographql.apollo3.api.nullable
+import com.apollographql.apollo3.api.obj
 import com.example.named_fragment_delegate.fragment.DroidDetailsImpl
 import kotlin.Array
 import kotlin.String
@@ -51,19 +52,17 @@ object DroidDetailsImpl_ResponseAdapter : ResponseAdapter<DroidDetailsImpl.Data>
     var name: String? = null
     var primaryFunction: String? = null
     var friends: List<DroidDetailsImpl.Data.Friends?>? = null
-    reader.beginObject()
     while(true) {
       when (reader.selectName(RESPONSE_NAMES)) {
         0 -> __typename = StringResponseAdapter.fromResponse(reader, responseAdapterCache)
         1 -> name = StringResponseAdapter.fromResponse(reader, responseAdapterCache)
         2 -> primaryFunction = NullableStringResponseAdapter.fromResponse(reader,
             responseAdapterCache)
-        3 -> friends = Friends.nullable().list().nullable().fromResponse(reader,
+        3 -> friends = Friends.obj().nullable().list().nullable().fromResponse(reader,
             responseAdapterCache)
         else -> break
       }
     }
-    reader.endObject()
     return DroidDetailsImpl.Data(
       __typename = __typename!!,
       name = name!!,
@@ -77,7 +76,6 @@ object DroidDetailsImpl_ResponseAdapter : ResponseAdapter<DroidDetailsImpl.Data>
     responseAdapterCache: ResponseAdapterCache,
     value: DroidDetailsImpl.Data
   ) {
-    writer.beginObject()
     writer.name("__typename")
     StringResponseAdapter.toResponse(writer, responseAdapterCache, value.__typename)
     writer.name("name")
@@ -85,8 +83,8 @@ object DroidDetailsImpl_ResponseAdapter : ResponseAdapter<DroidDetailsImpl.Data>
     writer.name("primaryFunction")
     NullableStringResponseAdapter.toResponse(writer, responseAdapterCache, value.primaryFunction)
     writer.name("friends")
-    Friends.nullable().list().nullable().toResponse(writer, responseAdapterCache, value.friends)
-    writer.endObject()
+    Friends.obj().nullable().list().nullable().toResponse(writer, responseAdapterCache,
+        value.friends)
   }
 
   object Friends : ResponseAdapter<DroidDetailsImpl.Data.Friends> {
@@ -102,14 +100,12 @@ object DroidDetailsImpl_ResponseAdapter : ResponseAdapter<DroidDetailsImpl.Data>
     override fun fromResponse(reader: JsonReader, responseAdapterCache: ResponseAdapterCache):
         DroidDetailsImpl.Data.Friends {
       var name: String? = null
-      reader.beginObject()
       while(true) {
         when (reader.selectName(RESPONSE_NAMES)) {
           0 -> name = StringResponseAdapter.fromResponse(reader, responseAdapterCache)
           else -> break
         }
       }
-      reader.endObject()
       return DroidDetailsImpl.Data.Friends(
         name = name!!
       )
@@ -120,10 +116,8 @@ object DroidDetailsImpl_ResponseAdapter : ResponseAdapter<DroidDetailsImpl.Data>
       responseAdapterCache: ResponseAdapterCache,
       value: DroidDetailsImpl.Data.Friends
     ) {
-      writer.beginObject()
       writer.name("name")
       StringResponseAdapter.toResponse(writer, responseAdapterCache, value.name)
-      writer.endObject()
     }
   }
 }

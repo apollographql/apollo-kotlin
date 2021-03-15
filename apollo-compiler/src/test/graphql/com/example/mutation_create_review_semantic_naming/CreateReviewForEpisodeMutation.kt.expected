@@ -11,6 +11,7 @@ import com.apollographql.apollo3.api.ResponseAdapter
 import com.apollographql.apollo3.api.ResponseAdapterCache
 import com.apollographql.apollo3.api.ResponseField
 import com.apollographql.apollo3.api.json.JsonWriter
+import com.apollographql.apollo3.api.obj
 import com.example.mutation_create_review_semantic_naming.adapter.CreateReviewForEpisodeMutation_ResponseAdapter
 import com.example.mutation_create_review_semantic_naming.adapter.CreateReviewForEpisodeMutation_VariablesAdapter
 import com.example.mutation_create_review_semantic_naming.type.Episode
@@ -32,12 +33,16 @@ data class CreateReviewForEpisodeMutation(
   override fun queryDocument(): String = QUERY_DOCUMENT
 
   override fun serializeVariables(writer: JsonWriter, responseAdapterCache: ResponseAdapterCache) {
-    CreateReviewForEpisodeMutation_VariablesAdapter.toResponse(writer, responseAdapterCache, this)
+    CreateReviewForEpisodeMutation_VariablesAdapter.obj().toResponse(writer, responseAdapterCache,
+        this)
   }
 
   override fun name(): String = OPERATION_NAME
 
-  override fun adapter(): ResponseAdapter<Data> = CreateReviewForEpisodeMutation_ResponseAdapter
+  override fun adapter(): ResponseAdapter<Data> {
+    return CreateReviewForEpisodeMutation_ResponseAdapter.obj()
+  }
+
   override fun responseFields(): List<ResponseField.FieldSet> = listOf(
     ResponseField.FieldSet(null, CreateReviewForEpisodeMutation_ResponseAdapter.RESPONSE_FIELDS)
   )

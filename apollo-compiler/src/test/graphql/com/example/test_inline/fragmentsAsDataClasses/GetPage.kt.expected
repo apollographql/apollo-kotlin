@@ -11,6 +11,7 @@ import com.apollographql.apollo3.api.ResponseAdapter
 import com.apollographql.apollo3.api.ResponseAdapterCache
 import com.apollographql.apollo3.api.ResponseField
 import com.apollographql.apollo3.api.json.JsonWriter
+import com.apollographql.apollo3.api.obj
 import com.example.test_inline.adapter.GetPage_ResponseAdapter
 import com.example.test_inline.adapter.GetPage_VariablesAdapter
 import kotlin.String
@@ -26,12 +27,15 @@ class GetPage : Query<GetPage.Data> {
   override fun queryDocument(): String = QUERY_DOCUMENT
 
   override fun serializeVariables(writer: JsonWriter, responseAdapterCache: ResponseAdapterCache) {
-    GetPage_VariablesAdapter.toResponse(writer, responseAdapterCache, this)
+    GetPage_VariablesAdapter.obj().toResponse(writer, responseAdapterCache, this)
   }
 
   override fun name(): String = OPERATION_NAME
 
-  override fun adapter(): ResponseAdapter<Data> = GetPage_ResponseAdapter
+  override fun adapter(): ResponseAdapter<Data> {
+    return GetPage_ResponseAdapter.obj()
+  }
+
   override fun responseFields(): List<ResponseField.FieldSet> = listOf(
     ResponseField.FieldSet(null, GetPage_ResponseAdapter.RESPONSE_FIELDS)
   )

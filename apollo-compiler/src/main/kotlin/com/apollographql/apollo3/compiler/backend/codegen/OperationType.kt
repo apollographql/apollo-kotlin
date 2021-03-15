@@ -14,6 +14,7 @@ import com.squareup.kotlinpoet.ClassName
 import com.squareup.kotlinpoet.CodeBlock
 import com.squareup.kotlinpoet.FunSpec
 import com.squareup.kotlinpoet.KModifier
+import com.squareup.kotlinpoet.MemberName
 import com.squareup.kotlinpoet.ParameterSpec
 import com.squareup.kotlinpoet.ParameterizedTypeName.Companion.parameterizedBy
 import com.squareup.kotlinpoet.PropertySpec
@@ -63,7 +64,10 @@ internal fun CodeGenerationAst.OperationType.typeSpec(
           .addStatement("return OPERATION_NAME")
           .build()
       )
-      .addFunction(adapterFunSpec(operationResponseAdapter))
+      .apply {
+        val buffered = dataType.kind is CodeGenerationAst.ObjectType.Kind.ObjectWithFragments && !generateFragmentsAsInterfaces
+        addFunction(adapterFunSpec(operationResponseAdapter, buffered))
+      }
       .addFunction(
           FunSpec.builder(
               "responseFields",
@@ -106,14 +110,6 @@ internal fun CodeGenerationAst.OperationType.typeSpec(
       .build()
 }
 
-private fun adapterFunSpec(operationResponseAdapter: ClassName): FunSpec {
-  return FunSpec.builder("adapter")
-      .addModifiers(KModifier.OVERRIDE)
-      .returns(ResponseAdapter::class.asClassName().parameterizedBy(ClassName(packageName = "", "Data")))
-      .addCode("return %T", operationResponseAdapter)
-      .build()
-
-}
 
 private fun CodeGenerationAst.OperationType.superInterfaceType(targetPackage: String): TypeName {
   val dataTypeName = ClassName(targetPackage, name.escapeKotlinReservedWord(), "Data")

@@ -9,10 +9,11 @@ import com.apollographql.apollo3.api.ResponseAdapter
 import com.apollographql.apollo3.api.ResponseAdapterCache
 import com.apollographql.apollo3.api.ResponseField
 import com.apollographql.apollo3.api.StringResponseAdapter
-import com.apollographql.apollo3.api.internal.json.MapJsonReader.Companion.buffer
+import com.apollographql.apollo3.api.internal.json.MapJsonReader
 import com.apollographql.apollo3.api.json.JsonReader
 import com.apollographql.apollo3.api.json.JsonWriter
 import com.apollographql.apollo3.api.nullable
+import com.apollographql.apollo3.api.obj
 import com.example.fragments_same_type_condition.TestQuery
 import com.example.fragments_same_type_condition.fragment.DroidDetails1
 import com.example.fragments_same_type_condition.fragment.DroidDetails2
@@ -43,14 +44,12 @@ object TestQuery_ResponseAdapter : ResponseAdapter<TestQuery.Data> {
   override fun fromResponse(reader: JsonReader, responseAdapterCache: ResponseAdapterCache):
       TestQuery.Data {
     var hero: TestQuery.Data.Hero? = null
-    reader.beginObject()
     while(true) {
       when (reader.selectName(RESPONSE_NAMES)) {
-        0 -> hero = Hero.nullable().fromResponse(reader, responseAdapterCache)
+        0 -> hero = Hero.obj(true).nullable().fromResponse(reader, responseAdapterCache)
         else -> break
       }
     }
-    reader.endObject()
     return TestQuery.Data(
       hero = hero
     )
@@ -61,10 +60,8 @@ object TestQuery_ResponseAdapter : ResponseAdapter<TestQuery.Data> {
     responseAdapterCache: ResponseAdapterCache,
     value: TestQuery.Data
   ) {
-    writer.beginObject()
     writer.name("hero")
-    Hero.nullable().toResponse(writer, responseAdapterCache, value.hero)
-    writer.endObject()
+    Hero.obj(true).nullable().toResponse(writer, responseAdapterCache, value.hero)
   }
 
   object Hero : ResponseAdapter<TestQuery.Data.Hero> {
@@ -76,10 +73,8 @@ object TestQuery_ResponseAdapter : ResponseAdapter<TestQuery.Data> {
 
     override fun fromResponse(reader: JsonReader, responseAdapterCache: ResponseAdapterCache):
         TestQuery.Data.Hero {
-      val reader = reader.buffer()
-      reader.beginObject()
-
       var __typename: String? = null
+
       var droidDetails1: DroidDetails1.Data? = null
       var droidDetails2: DroidDetails2.Data? = null
       while(true) {
@@ -89,11 +84,11 @@ object TestQuery_ResponseAdapter : ResponseAdapter<TestQuery.Data> {
         }
       }
       if (__typename in arrayOf("Droid")) {
-        reader.rewind()
+        (reader as MapJsonReader).rewind()
         droidDetails1 = DroidDetails1_ResponseAdapter.fromResponse(reader, responseAdapterCache)
       }
       if (__typename in arrayOf("Droid")) {
-        reader.rewind()
+        (reader as MapJsonReader).rewind()
         droidDetails2 = DroidDetails2_ResponseAdapter.fromResponse(reader, responseAdapterCache)
       }
 
@@ -102,7 +97,6 @@ object TestQuery_ResponseAdapter : ResponseAdapter<TestQuery.Data> {
         droidDetails1 = droidDetails1,
         droidDetails2 = droidDetails2
       )
-      .also { reader.endObject() }
     }
 
     override fun toResponse(
@@ -110,14 +104,10 @@ object TestQuery_ResponseAdapter : ResponseAdapter<TestQuery.Data> {
       responseAdapterCache: ResponseAdapterCache,
       value: TestQuery.Data.Hero
     ) {
-      writer.beginObject()
       writer.name("__typename")
       StringResponseAdapter.toResponse(writer, responseAdapterCache, value.__typename)
-      if (value.droidDetails1 != null)
-          DroidDetails1_ResponseAdapter.toResponse(writer, responseAdapterCache, value.droidDetails1)
-      if (value.droidDetails2 != null)
-          DroidDetails2_ResponseAdapter.toResponse(writer, responseAdapterCache, value.droidDetails2)
-      writer.endObject()
+      if (value.droidDetails1 != null) DroidDetails1_ResponseAdapter.toResponse(writer, responseAdapterCache, value.droidDetails1)
+      if (value.droidDetails2 != null) DroidDetails2_ResponseAdapter.toResponse(writer, responseAdapterCache, value.droidDetails2)
     }
   }
 }

@@ -21,9 +21,7 @@ object UserFragmentImpl_VariablesAdapter : ResponseAdapter<UserFragmentImpl> {
     responseAdapterCache: ResponseAdapterCache,
     value: UserFragmentImpl
   ) {
-    writer.beginObject()
     writer.name("size")
     IntResponseAdapter.toResponse(writer, responseAdapterCache, value.size)
-    writer.endObject()
   }
 }

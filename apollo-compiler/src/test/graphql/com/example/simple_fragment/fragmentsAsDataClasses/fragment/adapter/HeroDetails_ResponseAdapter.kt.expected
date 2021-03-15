@@ -9,7 +9,7 @@ import com.apollographql.apollo3.api.ResponseAdapter
 import com.apollographql.apollo3.api.ResponseAdapterCache
 import com.apollographql.apollo3.api.ResponseField
 import com.apollographql.apollo3.api.StringResponseAdapter
-import com.apollographql.apollo3.api.internal.json.MapJsonReader.Companion.buffer
+import com.apollographql.apollo3.api.internal.json.MapJsonReader
 import com.apollographql.apollo3.api.json.JsonReader
 import com.apollographql.apollo3.api.json.JsonWriter
 import com.example.simple_fragment.fragment.HeroDetails
@@ -31,10 +31,8 @@ internal object HeroDetails_ResponseAdapter : ResponseAdapter<HeroDetails.Data> 
 
   override fun fromResponse(reader: JsonReader, responseAdapterCache: ResponseAdapterCache):
       HeroDetails.Data {
-    val reader = reader.buffer()
-    reader.beginObject()
-
     var __typename: String? = null
+
     var humanDetails: HumanDetails.Data? = null
     while(true) {
       when (reader.selectName(RESPONSE_NAMES)) {
@@ -43,7 +41,7 @@ internal object HeroDetails_ResponseAdapter : ResponseAdapter<HeroDetails.Data> 
       }
     }
     if (__typename in arrayOf("Human")) {
-      reader.rewind()
+      (reader as MapJsonReader).rewind()
       humanDetails = HumanDetails_ResponseAdapter.fromResponse(reader, responseAdapterCache)
     }
 
@@ -51,7 +49,6 @@ internal object HeroDetails_ResponseAdapter : ResponseAdapter<HeroDetails.Data> 
       __typename = __typename!!,
       humanDetails = humanDetails
     )
-    .also { reader.endObject() }
   }
 
   override fun toResponse(
@@ -59,11 +56,8 @@ internal object HeroDetails_ResponseAdapter : ResponseAdapter<HeroDetails.Data> 
     responseAdapterCache: ResponseAdapterCache,
     value: HeroDetails.Data
   ) {
-    writer.beginObject()
     writer.name("__typename")
     StringResponseAdapter.toResponse(writer, responseAdapterCache, value.__typename)
-    if (value.humanDetails != null)
-        HumanDetails_ResponseAdapter.toResponse(writer, responseAdapterCache, value.humanDetails)
-    writer.endObject()
+    if (value.humanDetails != null) HumanDetails_ResponseAdapter.toResponse(writer, responseAdapterCache, value.humanDetails)
   }
 }

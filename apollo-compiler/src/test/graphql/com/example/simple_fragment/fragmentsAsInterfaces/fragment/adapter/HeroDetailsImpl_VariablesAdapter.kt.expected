@@ -20,7 +20,5 @@ internal object HeroDetailsImpl_VariablesAdapter : ResponseAdapter<HeroDetailsIm
     responseAdapterCache: ResponseAdapterCache,
     value: HeroDetailsImpl
   ) {
-    writer.beginObject()
-    writer.endObject()
   }
 }

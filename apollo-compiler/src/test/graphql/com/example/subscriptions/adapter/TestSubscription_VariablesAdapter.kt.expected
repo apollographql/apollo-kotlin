@@ -21,9 +21,7 @@ object TestSubscription_VariablesAdapter : ResponseAdapter<TestSubscription> {
     responseAdapterCache: ResponseAdapterCache,
     value: TestSubscription
   ) {
-    writer.beginObject()
     writer.name("repo")
     StringResponseAdapter.toResponse(writer, responseAdapterCache, value.repo)
-    writer.endObject()
   }
 }

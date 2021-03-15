@@ -1,6 +1,8 @@
 package com.apollographql.apollo3.compiler.backend.codegen
 
 import com.apollographql.apollo3.api.ResponseAdapter
+import com.apollographql.apollo3.api.ResponseAdapterCache
+import com.apollographql.apollo3.api.json.JsonReader
 import com.apollographql.apollo3.compiler.applyIf
 import com.apollographql.apollo3.compiler.backend.ast.CodeGenerationAst
 import com.apollographql.apollo3.compiler.escapeKotlinReservedWord
@@ -8,6 +10,7 @@ import com.squareup.kotlinpoet.ClassName
 import com.squareup.kotlinpoet.CodeBlock
 import com.squareup.kotlinpoet.FunSpec
 import com.squareup.kotlinpoet.KModifier
+import com.squareup.kotlinpoet.ParameterSpec
 import com.squareup.kotlinpoet.ParameterizedTypeName.Companion.parameterizedBy
 import com.squareup.kotlinpoet.PropertySpec
 import com.squareup.kotlinpoet.TypeName
@@ -48,7 +51,10 @@ private fun CodeGenerationAst.EnumType.toEnumTypeSpec(generateAsInternal: Boolea
 }
 
 private fun CodeGenerationAst.EnumType.adapterTypeSpec(generateAsInternal: Boolean, asSealedClass: Boolean, packageName: String): TypeSpec {
-  val fromResponseFunSpec = fromResponseFunSpecBuilder()
+  val fromResponseFunSpec = FunSpec.builder("fromResponse")
+      .addModifiers(KModifier.OVERRIDE)
+      .addParameter(ParameterSpec.builder("reader", JsonReader::class).build())
+      .addParameter(Identifier.responseAdapterCache, ResponseAdapterCache::class)
       .returns(ClassName(packageName, name.escapeKotlinReservedWord()))
       .addCode(
           CodeBlock.builder()
