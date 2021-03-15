@@ -7,9 +7,9 @@ import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 
 buildscript {
   repositories {
-    gradlePluginPortal()
     mavenCentral()
     google()
+    gradlePluginPortal()
   }
   project.apply {
     from(rootProject.file("gradle/dependencies.gradle"))

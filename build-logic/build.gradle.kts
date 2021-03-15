@@ -5,9 +5,9 @@ plugins {
 apply(from = "../gradle/dependencies.gradle")
 
 repositories {
-  gradlePluginPortal()
-  google()
   mavenCentral()
+  google()
+  gradlePluginPortal()
 }
 
 group = "com.apollographql.apollo"
