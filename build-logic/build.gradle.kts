@@ -27,7 +27,6 @@ dependencies {
   implementation(groovy.util.Eval.x(project, "x.dep.sqldelight.plugin"))
   implementation(groovy.util.Eval.x(project, "x.dep.gradlePublishPlugin"))
   implementation(groovy.util.Eval.x(project, "x.dep.benManesVersions"))
-  // this plugin is added to the classpath but never applied, it is only used for the closeAndRelease code
   implementation(groovy.util.Eval.x(project, "x.dep.vespene"))
 
   implementation(groovy.util.Eval.x(project, "x.dep.kotlin.atomicGradle"))
