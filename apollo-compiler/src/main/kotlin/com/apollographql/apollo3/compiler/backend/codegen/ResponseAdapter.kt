@@ -23,26 +23,22 @@ import com.squareup.kotlinpoet.asTypeName
 import com.squareup.kotlinpoet.joinToCode
 
 internal fun CodeGenerationAst.OperationType.responseAdapterTypeSpec(
-    generateAsInternal: Boolean,
     generateFragmentsAsInterfaces: Boolean,
 ): TypeSpec {
   return this.dataType
       .copy(name = "${this.name.escapeKotlinReservedWord()}_ResponseAdapter")
       .rootResponseAdapterTypeSpec(
-          generateAsInternal = generateAsInternal,
           generateFragmentsAsInterfaces = generateFragmentsAsInterfaces
       )
 }
 
 internal fun CodeGenerationAst.FragmentType.responseAdapterTypeSpec(
-    generateAsInternal: Boolean,
     generateFragmentsAsInterfaces: Boolean,
 ): TypeSpec {
   val dataType = this.implementationType.nestedObjects.single()
   return dataType
       .copy(name = "${this.implementationType.name.escapeKotlinReservedWord()}_ResponseAdapter")
       .rootResponseAdapterTypeSpec(
-          generateAsInternal = generateAsInternal,
           generateFragmentsAsInterfaces = generateFragmentsAsInterfaces
       )
 }
@@ -51,14 +47,12 @@ internal fun CodeGenerationAst.FragmentType.responseAdapterTypeSpec(
  * @param generateFragmentsAsInterfaces: whether to generate the rewind() code or not
  */
 private fun CodeGenerationAst.ObjectType.rootResponseAdapterTypeSpec(
-    generateAsInternal: Boolean,
     generateFragmentsAsInterfaces: Boolean
 ): TypeSpec {
   val adapterTypeSpec = this.responseAdapterTypeSpec(
       generateFragmentsAsInterfaces = generateFragmentsAsInterfaces
   )
       .toBuilder()
-      .applyIf(generateAsInternal) { addModifiers(KModifier.INTERNAL) }
       .addAnnotation(suppressWarningsAnnotation)
       .build()
 

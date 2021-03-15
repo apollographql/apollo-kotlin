@@ -65,26 +65,22 @@ fun notImplementedFromResponseFunSpec(returnTypeName: TypeName) = FunSpec.builde
 internal fun List<CodeGenerationAst.InputField>.variablesAdapterTypeSpec(
     packageName: String,
     name: String,
-    generateAsInternal: Boolean
 ): TypeSpec {
   return inputFieldsAdapterTypeSpec(
       packageName = packageName,
       name = name,
       adapterName = kotlinNameForVariablesAdapter(name),
-      generateAsInternal = generateAsInternal
   )
 }
 
 internal fun List<CodeGenerationAst.InputField>.inputObjectAdapterTypeSpec(
     packageName: String,
     name: String,
-    generateAsInternal: Boolean
 ): TypeSpec {
   return inputFieldsAdapterTypeSpec(
       packageName = packageName,
       name = name,
       adapterName = kotlinNameForInputObjectAdapter(name),
-      generateAsInternal = generateAsInternal
   )
 }
 
@@ -92,14 +88,10 @@ private fun List<CodeGenerationAst.InputField>.inputFieldsAdapterTypeSpec(
     packageName: String,
     name: String,
     adapterName: String,
-    generateAsInternal: Boolean
 ): TypeSpec {
   val className = ClassName(packageName, name)
   val builder = TypeSpec.objectBuilder(adapterName)
 
-  if (generateAsInternal) {
-    builder.addModifiers(KModifier.INTERNAL)
-  }
   builder.addSuperinterface(ResponseAdapter::class.asClassName().parameterizedBy(className))
 
   builder.addFunction(notImplementedFromResponseFunSpec(className))

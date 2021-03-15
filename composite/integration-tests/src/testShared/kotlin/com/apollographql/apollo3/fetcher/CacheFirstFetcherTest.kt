@@ -1,4 +1,4 @@
-package com.apollographql.apollo3.internal.fetcher
+package com.apollographql.apollo3.fetcher
 
 import com.apollographql.apollo3.api.Input
 import com.apollographql.apollo3.exception.ApolloException

@@ -1,11 +1,12 @@
-package com.apollographql.apollo3
+package com.apollographql.apollo3.interfaces
 
+import com.apollographql.apollo3.ApolloClient
+import com.apollographql.apollo3.IdFieldCacheKeyResolver
 import com.apollographql.apollo3.Utils.assertResponse
 import com.apollographql.apollo3.Utils.enqueueAndAssertResponse
 import com.apollographql.apollo3.Utils.immediateExecutor
 import com.apollographql.apollo3.Utils.immediateExecutorService
 import com.apollographql.apollo3.api.Input
-import com.apollographql.apollo3.api.Operation
 import com.apollographql.apollo3.api.Query
 import com.apollographql.apollo3.api.ApolloResponse
 import com.apollographql.apollo3.api.ResponseAdapter
