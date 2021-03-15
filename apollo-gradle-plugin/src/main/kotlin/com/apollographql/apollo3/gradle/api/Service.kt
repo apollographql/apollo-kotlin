@@ -203,6 +203,10 @@ interface Service {
   val generateFragmentImplementations: Property<Boolean>
 
   /**
+   */
+  val generateFragmentsAsInterfaces: Property<Boolean>
+
+  /**
    * Configures the [Introspection]
    */
   fun introspection(configure: Action<in Introspection>)

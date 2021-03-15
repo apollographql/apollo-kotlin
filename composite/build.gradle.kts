@@ -63,7 +63,16 @@ tasks.register("quickCheck") {
   dependsOn(gradle.includedBuild("apollo-android").task(":quickCheck"))
   subprojects {
     tasks.all {
-      if ((name == "jvmTest" || name == "test") && this@subprojects.name !in listOf("kmp-lib-sample", "java-sample", "kotlin-sample", "kmp-android-app")) {
+      if (this@subprojects.name in listOf("kmp-lib-sample", "java-sample", "kotlin-sample", "kmp-android-app")) {
+        // These are super long to execute, keep them for the full check
+        return@all
+      }
+      if (this is org.jetbrains.kotlin.gradle.targets.native.tasks.KotlinNativeTest) {
+        // Native is slow, keep the for the full check
+        return@all
+      }
+      if (this is Test) {
+        // run all tests
         this@register.dependsOn(this)
       }
     }

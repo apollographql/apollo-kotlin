@@ -9,7 +9,6 @@ import com.apollographql.apollo3.exception.ApolloException
 import com.apollographql.apollo3.fetcher.ApolloResponseFetchers
 import com.apollographql.apollo3.kotlinsample.GithubRepositoriesQuery
 import com.apollographql.apollo3.kotlinsample.GithubRepositoryCommitsQuery
-import com.apollographql.apollo3.kotlinsample.GithubRepositoryCommitsQuery.Data.Viewer.Repository.Ref.Target.Companion.asCommitTarget
 import com.apollographql.apollo3.kotlinsample.GithubRepositoryDetailQuery
 import com.apollographql.apollo3.kotlinsample.type.OrderDirection
 import com.apollographql.apollo3.kotlinsample.type.PullRequestState
@@ -60,7 +59,7 @@ class ApolloWatcherService(apolloClient: ApolloClient) : GitHubDataSource(apollo
     )
 
     val callback = createCallback<GithubRepositoryCommitsQuery.Data> { response ->
-      val headCommit = response.data?.viewer?.repository?.ref?.target?.asCommitTarget()
+      val headCommit = response.data?.viewer?.repository?.ref?.target as? GithubRepositoryCommitsQuery.Data.Viewer.Repository.Ref.Target.CommitTarget
       val commits = headCommit?.history?.edges?.filterNotNull().orEmpty()
       commitsSubject.onNext(commits)
     }

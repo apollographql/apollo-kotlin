@@ -4,7 +4,6 @@ import com.apollographql.apollo3.ApolloClient
 import com.apollographql.apollo3.api.cache.http.HttpCachePolicy
 import com.apollographql.apollo3.kotlinsample.GithubRepositoriesQuery
 import com.apollographql.apollo3.kotlinsample.GithubRepositoryCommitsQuery
-import com.apollographql.apollo3.kotlinsample.GithubRepositoryCommitsQuery.Data.Viewer.Repository.Ref.Target.Companion.asCommitTarget
 import com.apollographql.apollo3.kotlinsample.GithubRepositoryDetailQuery
 import com.apollographql.apollo3.kotlinsample.type.OrderDirection
 import com.apollographql.apollo3.kotlinsample.type.PullRequestState
@@ -72,7 +71,7 @@ class ApolloRxService(
         .subscribeOn(processScheduler)
         .observeOn(resultScheduler)
         .map { response ->
-          val headCommit = response.data?.viewer?.repository?.ref?.target?.asCommitTarget()
+          val headCommit = response.data?.viewer?.repository?.ref?.target as? GithubRepositoryCommitsQuery.Data.Viewer.Repository.Ref.Target.CommitTarget
           headCommit?.history?.edges?.filterNotNull().orEmpty()
         }
         .subscribe(

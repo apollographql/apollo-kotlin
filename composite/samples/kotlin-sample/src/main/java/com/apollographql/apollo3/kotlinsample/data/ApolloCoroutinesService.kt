@@ -4,7 +4,6 @@ import com.apollographql.apollo3.ApolloClient
 import com.apollographql.apollo3.coroutines.await
 import com.apollographql.apollo3.kotlinsample.GithubRepositoriesQuery
 import com.apollographql.apollo3.kotlinsample.GithubRepositoryCommitsQuery
-import com.apollographql.apollo3.kotlinsample.GithubRepositoryCommitsQuery.Data.Viewer.Repository.Ref.Target.Companion.asCommitTarget
 import com.apollographql.apollo3.kotlinsample.GithubRepositoryDetailQuery
 import com.apollographql.apollo3.kotlinsample.type.OrderDirection
 import com.apollographql.apollo3.kotlinsample.type.PullRequestState
@@ -68,7 +67,7 @@ class ApolloCoroutinesService(
     job = CoroutineScope(processContext).launch {
       try {
         val response = apolloClient.query(commitsQuery).await()
-        val headCommit = response.data?.viewer?.repository?.ref?.target?.asCommitTarget()
+        val headCommit = response.data?.viewer?.repository?.ref?.target as? GithubRepositoryCommitsQuery.Data.Viewer.Repository.Ref.Target.CommitTarget
 
         val commits = headCommit?.history?.edges?.filterNotNull().orEmpty()
 

@@ -1,3 +1,4 @@
+import com.android.build.gradle.internal.tasks.factory.dependsOn
 import com.apollographql.apollo3.gradle.api.ApolloExtension
 
 plugins {
@@ -23,38 +24,80 @@ dependencies {
   testImplementation(groovy.util.Eval.x(project, "x.dep.moshi.moshi"))
 }
 
-configure<ApolloExtension> {
-  file("src/main/graphql/com/apollographql/apollo3/integration").listFiles()
-      .filter { it.isDirectory }
-      .forEach {
-        service(it.name) {
-          when (it.name) {
-            "httpcache" -> {
-              withOperationOutput {}
-              customScalarsMapping.set(mapOf(
-                  "Date" to "java.util.Date"
-              ))
+fun addTests(asInterfaces: Boolean, sourceSetName: String, addTask: Boolean) {
+
+  sourceSets.create(sourceSetName)
+  configurations["${sourceSetName}Implementation"].extendsFrom(configurations.testImplementation.get())
+  configurations["${sourceSetName}RuntimeOnly"].extendsFrom(configurations.testRuntimeOnly.get())
+
+  configureApollo(asInterfaces, sourceSetName)
+
+  if (addTask) {
+    sourceSets[sourceSetName].java.srcDir(file("src/testShared/kotlin"))
+
+    val testTask = task<Test>(sourceSetName) {
+      description = "Runs integration tests for $sourceSetName."
+      group = "verification"
+
+      testClassesDirs = sourceSets[sourceSetName].output.classesDirs
+      classpath = sourceSets[sourceSetName].runtimeClasspath
+    }
+
+    tasks.check { dependsOn(testTask) }
+  }
+}
+
+addTests(false, "testAsClasses", true)
+addTests(true, "testAsInterfaces", true)
+
+tasks.named("testAsClasses"){
+  // This doesn't work yet, enable when it does
+  enabled = false
+}
+
+fun configureApollo(asInterfaces: Boolean, sourceSetName: String) {
+  configure<ApolloExtension> {
+    file("src/main/graphql/com/apollographql/apollo3/integration").listFiles()
+        .filter { it.isDirectory }
+        .forEach {
+          service("${it.name}${sourceSetName.capitalize()}") {
+            when (it.name) {
+              "httpcache" -> {
+                withOperationOutput {}
+                customScalarsMapping.set(mapOf(
+                    "Date" to "java.util.Date"
+                ))
+              }
+              "upload" -> {
+                customScalarsMapping.set(mapOf(
+                    "Upload" to "com.apollographql.apollo3.api.Upload"
+                ))
+              }
+              "sealedclasses" -> {
+                sealedClassesForEnumsMatching.set(listOf(".*"))
+              }
+              "normalizer" -> {
+                generateFragmentImplementations.set(true)
+                customScalarsMapping.set(mapOf(
+                    "Date" to "java.util.Date"
+                ))
+              }
             }
-            "upload" -> {
-              customScalarsMapping.set(mapOf(
-                  "Upload" to "com.apollographql.apollo3.api.Upload"
-              ))
-            }
-            "sealedclasses" -> {
-              sealedClassesForEnumsMatching.set(listOf(".*"))
-            }
-            "normalizer" -> {
-              generateFragmentImplementations.set(true)
-              customScalarsMapping.set(mapOf(
-                  "Date" to "java.util.Date"
-              ))
+
+            sourceFolder.set("com/apollographql/apollo3/integration/${it.name}")
+            rootPackageName.set("com.apollographql.apollo3.integration.${it.name}")
+
+            generateFragmentsAsInterfaces.set(asInterfaces)
+
+            withOutputDir {
+              tasks.named("compile${sourceSetName.capitalize()}Kotlin").dependsOn(this.task)
+              kotlin.sourceSets.named(sourceSetName).configure {
+                kotlin.srcDir(outputDir)
+              }
             }
           }
-
-          sourceFolder.set("com/apollographql/apollo3/integration/${it.name}")
-          rootPackageName.set("com.apollographql.apollo3.integration.${it.name}")
         }
-      }
+  }
 }
 
 tasks.withType(org.jetbrains.kotlin.gradle.tasks.KotlinCompile::class.java) {

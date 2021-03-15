@@ -181,7 +181,6 @@ class ApolloServerInterceptorFileUploadTest {
 
   @Test
   @Throws(Exception::class)
-  @Ignore("Creates a stack overflow at the moment")
   fun testDefaultHttpCallWithUploadNested() {
     val requestAssertPredicate = Predicate<Request> { request ->
       assertThat(request).isNotNull()
