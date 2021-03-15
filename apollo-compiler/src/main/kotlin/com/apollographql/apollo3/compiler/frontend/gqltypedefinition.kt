@@ -5,6 +5,10 @@ internal fun GQLTypeDefinition.sharesPossibleTypesWith(other: GQLTypeDefinition,
   return possibleTypes(typeDefinitions).intersect(other.possibleTypes(typeDefinitions)).isNotEmpty()
 }
 
+internal fun GQLTypeDefinition.possibleTypes(schema: Schema): Set<String> {
+  return possibleTypes(schema.typeDefinitions)
+}
+
 // 5.5.2.3 Fragment spread is possible
 internal fun GQLTypeDefinition.possibleTypes(typeDefinitions: Map<String, GQLTypeDefinition>): Set<String> {
   return when (this) {

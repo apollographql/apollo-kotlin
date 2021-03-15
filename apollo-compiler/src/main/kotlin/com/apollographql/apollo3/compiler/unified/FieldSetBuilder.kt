@@ -14,7 +14,7 @@ import com.apollographql.apollo3.compiler.frontend.coerce
 import com.apollographql.apollo3.compiler.frontend.definitionFromScope
 import com.apollographql.apollo3.compiler.frontend.findDeprecationReason
 import com.apollographql.apollo3.compiler.frontend.possibleTypes
-import java.math.BigInteger
+
 
 /**
  * For a "base" selectionSet (either query, named fragment or field), collect all the typeConditions
@@ -34,15 +34,37 @@ class FieldSetsBuilder(
 
   private var usedNamedFragments = mutableListOf<String>()
 
-  private fun List<GQLSelection>.collectTypeConditions(): List<String> {
-    return flatMap {
+  /**
+   * Return a list of set of type conditions.
+   *
+   * Each individual set matches a path for which we need to potentially generate a model
+   *
+   * {# Base type A
+   *   ... on B {
+   *     ... on C {
+   *   }
+   *   ... on B {
+   *     ... on D {
+   *   }
+   * }
+   *
+   * Will return:
+   * [
+   *   [A]
+   *   [A,B]
+   *   [A,B,C]
+   *   [A,B,D]
+   * ]
+   */
+  private fun List<GQLSelection>.collectTypeConditions(path: Set<String>): List<Set<String>> {
+    return listOf(path) + flatMap {
       when (it) {
         is GQLField -> emptyList()
-        is GQLInlineFragment -> listOf(it.typeCondition.name) + it.selectionSet.selections.collectTypeConditions()
+        is GQLInlineFragment -> it.selectionSet.selections.collectTypeConditions(path + it.typeCondition.name)
         is GQLFragmentSpread -> {
           val fragmentDefinition = allGQLFragmentDefinitions[it.name]!!
           usedNamedFragments.add(it.name)
-          listOf(fragmentDefinition.typeCondition.name) + fragmentDefinition.selectionSet.selections.collectTypeConditions()
+          fragmentDefinition.selectionSet.selections.collectTypeConditions(path + fragmentDefinition.typeCondition.name)
         }
       }
     }
@@ -56,18 +78,70 @@ class FieldSetsBuilder(
   }
 
   private fun TypedSelectionSet.toIrFieldSets(): List<IrFieldSet> {
-    val typeConditions = selections.collectTypeConditions()
+    val interfacesTypeSets = selections.collectTypeConditions(setOf(selectionSetTypeCondition)).toSet()
 
-    return typeConditions.combinations().map {
-      toIrFieldSet(it)
+    val shapeTypeSetToPossibleTypes = computeShapes(schema, interfacesTypeSets.union())
+
+    val shapesTypeSets = shapeTypeSetToPossibleTypes.keys
+
+    /**
+     * build the relations of shape to their interfaceTypeSets
+     *
+     * By construction, shapes do not inherit each other
+     */
+    var shapeToFragmentEdges = interfacesTypeSets.flatMap { interfaceTypeSet ->
+      shapesTypeSets.filter { shapeTypeSet ->
+        shapeTypeSet.implements(interfaceTypeSet)
+      }.map { shapesTypeSet ->
+        Edge(
+            source = ShapeNode(shapesTypeSet),
+            target = InterfaceNode(interfaceTypeSet)
+        )
+      }
     }
-  }
-  private fun possibleTypes(typeConditions: List<String>): Set<String> {
-    return typeConditions.map {
-      schema.typeDefinition(it).possibleTypes(schema.typeDefinitions)
-    }.intersection()
-  }
 
+    /**
+     * Prune interfaceTypeSets that are only implemented by one shape or less, we won't need those
+     */
+    val interfaceTypeSetsToGenerate = shapeToFragmentEdges.groupBy(
+        keySelector = { it.target },
+        valueTransform = { it.source }
+    ).filter {
+      it.value.size > 1
+    }.keys
+
+    shapeToFragmentEdges = shapeToFragmentEdges.filter {
+      interfaceTypeSetsToGenerate.contains(it.target)
+    }
+
+    /**
+     * build the internal relations of the different interfaceTypeSets
+     */
+    val fragmentToFragmentEdges = interfacesTypeSets.pairs().mapNotNull {
+      when {
+        it.first.implements(it.second) -> Edge(InterfaceNode(it.first), InterfaceNode(it.second))
+        it.second.implements(it.first) -> Edge(InterfaceNode(it.second), InterfaceNode(it.first))
+        else -> {
+          null
+        }
+      }
+    }
+
+    /**
+     * Try to simplify inheritance relations
+     */
+    val edges = transitiveReduce(shapeToFragmentEdges + fragmentToFragmentEdges)
+
+    edges.flatMap { listOf(it.source, it.target) }.distinct().forEach {
+      toIrFieldSet(
+          typeSet = it.typeSet,
+          possibleTypes = (it as? ShapeNode)?.typeSet?.let { shapeTypeSetToPossibleTypes[it] } ?: emptySet(),
+          implements = edges.filter { edge -> edge.source == it }.map { it.target.typeSet }.toSet()
+      )
+    }
+    return emptyList()
+  }
+  
   /**
    * An intermediate class used during collection
    */
@@ -94,7 +168,7 @@ class FieldSetsBuilder(
 
   private class TypedSelectionSet(val selections: List<GQLSelection>, val selectionSetTypeCondition: String)
 
-  private fun TypedSelectionSet.collectFields(typeConditions: List<String>): List<CollectedField> {
+  private fun TypedSelectionSet.collectFields(typeConditions: TypeSet): List<CollectedField> {
     if (!typeConditions.contains(selectionSetTypeCondition)) {
       return emptyList()
     }
@@ -139,8 +213,8 @@ class FieldSetsBuilder(
     )
   }
 
-  private fun TypedSelectionSet.toIrFieldSet(typeConditions: List<String>): IrFieldSet {
-    val collectedFields = collectFields(typeConditions)
+  private fun TypedSelectionSet.toIrFieldSet(typeSet: TypeSet, possibleTypes: PossibleTypes, implements: Set<TypeSet>): IrFieldSet {
+    val collectedFields = collectFields(typeSet)
 
     val fields = collectedFields.groupBy {
       it.responseName
@@ -172,42 +246,12 @@ class FieldSetsBuilder(
       )
     }
     return IrFieldSet(
-        typeConditions = typeConditions.toSet(),
-        possibleTypes = possibleTypes(typeConditions),
+        typeSet = typeSet.toSet(),
+        possibleTypes = possibleTypes,
+        implements = implements,
         fields = fields
     )
   }
 
-  /**
-   * Helper function to compute the intersection of multiple Sets
-   */
-  private fun <T> Collection<Set<T>>.intersection(): Set<T> {
-    if (isEmpty()) {
-      return emptySet()
-    }
 
-    return drop(1).fold(first()) { acc, list ->
-      acc.intersect(list)
-    }
-  }
-
-  /**
-   * For a list of items, returns all possible combinations as in https://en.wikipedia.org/wiki/Combination
-   */
-  private fun <T> List<T>.combinations(includeEmpty: Boolean = false): List<List<T>> {
-    val start = if (includeEmpty) 0 else 1
-    val end = BigInteger.valueOf(2).pow(size).intValueExact()
-
-    return start.until(end).fold(emptyList()) { acc, bitmask ->
-      acc + listOf(
-          0.until(size).mapNotNull { position ->
-            if (bitmask.and(1.shl(position)) != 0) {
-              get(position)
-            } else {
-              null
-            }
-          }
-      )
-    }
-  }
 }

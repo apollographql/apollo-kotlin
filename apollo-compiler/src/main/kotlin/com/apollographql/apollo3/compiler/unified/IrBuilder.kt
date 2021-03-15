@@ -39,8 +39,8 @@ import com.apollographql.apollo3.compiler.frontend.toUtf8WithIndents
 class IrBuilder(
     private val schema: Schema,
     private val operationDefinitions: List<GQLOperationDefinition>,
-    metadataFragmentDefinitions: List<GQLFragmentDefinition>,
     private val fragmentDefinitions: List<GQLFragmentDefinition>,
+    metadataFragmentDefinitions: List<GQLFragmentDefinition>,
     private val alwaysGenerateTypesMatching: Set<String>
 ) {
   private val allGQLFragmentDefinitions = (metadataFragmentDefinitions + fragmentDefinitions).associateBy { it.name }
@@ -50,7 +50,7 @@ class IrBuilder(
 
   private fun shouldAlwaysGenerate(name: String) = alwaysGenerateTypesMatching.map { Regex(it) }.any { it.matches(name) }
 
-  internal fun build(): UnifiedIr {
+  fun build(): UnifiedIr {
     val operations = operationDefinitions.map { it.toIr() }
     val namedFragments = fragmentDefinitions.map { it.toIr() }
 

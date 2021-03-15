@@ -12,6 +12,7 @@ dependencies {
   implementation(groovy.util.Eval.x(project, "x.dep.moshi.adapters"))
   implementation(groovy.util.Eval.x(project, "x.dep.moshi.moshi"))
   implementation(groovy.util.Eval.x(project, "x.dep.poet.kotlin"))
+  implementation(groovy.util.Eval.x(project, "x.dep.jgrapht"))
   implementation(project(":apollo-api"))
 
   kapt(groovy.util.Eval.x(project, "x.dep.moshi.kotlinCodegen"))

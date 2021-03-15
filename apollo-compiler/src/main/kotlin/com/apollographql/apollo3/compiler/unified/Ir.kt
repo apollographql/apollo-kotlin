@@ -1,7 +1,5 @@
 package com.apollographql.apollo3.compiler.unified
 
-import com.apollographql.apollo3.compiler.backend.ast.CodeGenerationAst
-
 /*
 * Unified IR. This builds all the possible field trees. As polymorphic fields are used, this can become
 * quite large and will be pruned in a later step
@@ -95,10 +93,14 @@ data class IrField(
   val responseName = alias ?: name
 }
 
+/**
+ * @param possibleTypes: the possibleTypes that will map to this [IrFieldSet]. If it is empty,
+ */
 data class IrFieldSet(
-    val typeConditions: Set<String>,
+    val typeSet: Set<String>,
     val possibleTypes: Set<String>,
     val fields: List<IrField>,
+    val implements: Set<TypeSet>,
 )
 
 data class IrInputObject(
@@ -163,6 +165,21 @@ data class ListIrType(val ofType: IrType) : IrType() {
 
 sealed class NamedIrType(val name: String) : IrType() {
   override val leafName = name
+
+  override fun hashCode(): Int {
+    return name.hashCode()
+  }
+
+  /**
+   * Ideally we would have data classes here but having `name` as a base property is useful
+   * Revisit with sealed interfaces
+   */
+  override fun equals(other: Any?): Boolean {
+    if (other !is NamedIrType) {
+      return false
+    }
+    return name == other.name
+  }
 }
 
 object StringIrType : NamedIrType("String")
