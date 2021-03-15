@@ -177,8 +177,7 @@ object AllStarships_ResponseAdapter : ResponseAdapter<AllStarships.Data> {
         ) {
           writer.name("__typename")
           StringResponseAdapter.toResponse(writer, responseAdapterCache, value.__typename)
-          if (value.starshipFragment != null)
-              StarshipFragment_ResponseAdapter.toResponse(writer, responseAdapterCache, value.starshipFragment)
+          if (value.starshipFragment != null) StarshipFragment_ResponseAdapter.toResponse(writer, responseAdapterCache, value.starshipFragment)
         }
       }
     }

@@ -196,8 +196,7 @@ object StarshipFragment_ResponseAdapter : ResponseAdapter<StarshipFragment.Data>
         ) {
           writer.name("__typename")
           StringResponseAdapter.toResponse(writer, responseAdapterCache, value.__typename)
-          if (value.pilotFragment != null)
-              PilotFragment_ResponseAdapter.toResponse(writer, responseAdapterCache, value.pilotFragment)
+          if (value.pilotFragment != null) PilotFragment_ResponseAdapter.toResponse(writer, responseAdapterCache, value.pilotFragment)
         }
       }
     }

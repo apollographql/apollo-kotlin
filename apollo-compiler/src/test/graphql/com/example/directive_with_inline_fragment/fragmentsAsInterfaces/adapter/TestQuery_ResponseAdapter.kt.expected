@@ -29,8 +29,8 @@ object TestQuery_ResponseAdapter : ResponseAdapter<TestQuery.Data> {
       type = ResponseField.Type.Named.Object("Character"),
       fieldName = "hero",
       fieldSets = listOf(
-        ResponseField.FieldSet("Human", Hero.HumanCharacterHero.RESPONSE_FIELDS),
-        ResponseField.FieldSet("Droid", Hero.DroidCharacterHero.RESPONSE_FIELDS),
+        ResponseField.FieldSet("Human", Hero.HumanHero.RESPONSE_FIELDS),
+        ResponseField.FieldSet("Droid", Hero.DroidHero.RESPONSE_FIELDS),
         ResponseField.FieldSet(null, Hero.OtherHero.RESPONSE_FIELDS),
       ),
     )
@@ -67,8 +67,8 @@ object TestQuery_ResponseAdapter : ResponseAdapter<TestQuery.Data> {
       check(reader.nextName() == "__typename")
       val typename = reader.nextString()!!
       return when(typename) {
-        "Human" -> HumanCharacterHero.fromResponse(reader, responseAdapterCache, typename)
-        "Droid" -> DroidCharacterHero.fromResponse(reader, responseAdapterCache, typename)
+        "Human" -> HumanHero.fromResponse(reader, responseAdapterCache, typename)
+        "Droid" -> DroidHero.fromResponse(reader, responseAdapterCache, typename)
         else -> OtherHero.fromResponse(reader, responseAdapterCache, typename)
       }
     }
@@ -79,13 +79,13 @@ object TestQuery_ResponseAdapter : ResponseAdapter<TestQuery.Data> {
       value: TestQuery.Data.Hero
     ) {
       when(value) {
-        is TestQuery.Data.Hero.HumanCharacterHero -> HumanCharacterHero.toResponse(writer, responseAdapterCache, value)
-        is TestQuery.Data.Hero.DroidCharacterHero -> DroidCharacterHero.toResponse(writer, responseAdapterCache, value)
+        is TestQuery.Data.Hero.HumanHero -> HumanHero.toResponse(writer, responseAdapterCache, value)
+        is TestQuery.Data.Hero.DroidHero -> DroidHero.toResponse(writer, responseAdapterCache, value)
         is TestQuery.Data.Hero.OtherHero -> OtherHero.toResponse(writer, responseAdapterCache, value)
       }
     }
 
-    object HumanCharacterHero {
+    object HumanHero {
       val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
         ResponseField.Typename,
         ResponseField(
@@ -108,7 +108,7 @@ object TestQuery_ResponseAdapter : ResponseAdapter<TestQuery.Data> {
         reader: JsonReader,
         responseAdapterCache: ResponseAdapterCache,
         __typename: String?
-      ): TestQuery.Data.Hero.HumanCharacterHero {
+      ): TestQuery.Data.Hero.HumanHero {
         var __typename: String? = __typename
         var id: String? = null
         var name: String? = null
@@ -123,7 +123,7 @@ object TestQuery_ResponseAdapter : ResponseAdapter<TestQuery.Data> {
             else -> break
           }
         }
-        return TestQuery.Data.Hero.HumanCharacterHero(
+        return TestQuery.Data.Hero.HumanHero(
           __typename = __typename!!,
           id = id!!,
           name = name!!,
@@ -134,7 +134,7 @@ object TestQuery_ResponseAdapter : ResponseAdapter<TestQuery.Data> {
       fun toResponse(
         writer: JsonWriter,
         responseAdapterCache: ResponseAdapterCache,
-        value: TestQuery.Data.Hero.HumanCharacterHero
+        value: TestQuery.Data.Hero.HumanHero
       ) {
         writer.name("__typename")
         StringResponseAdapter.toResponse(writer, responseAdapterCache, value.__typename)
@@ -147,7 +147,7 @@ object TestQuery_ResponseAdapter : ResponseAdapter<TestQuery.Data> {
       }
     }
 
-    object DroidCharacterHero {
+    object DroidHero {
       val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
         ResponseField.Typename,
         ResponseField(
@@ -170,7 +170,7 @@ object TestQuery_ResponseAdapter : ResponseAdapter<TestQuery.Data> {
         reader: JsonReader,
         responseAdapterCache: ResponseAdapterCache,
         __typename: String?
-      ): TestQuery.Data.Hero.DroidCharacterHero {
+      ): TestQuery.Data.Hero.DroidHero {
         var __typename: String? = __typename
         var id: String? = null
         var name: String? = null
@@ -185,7 +185,7 @@ object TestQuery_ResponseAdapter : ResponseAdapter<TestQuery.Data> {
             else -> break
           }
         }
-        return TestQuery.Data.Hero.DroidCharacterHero(
+        return TestQuery.Data.Hero.DroidHero(
           __typename = __typename!!,
           id = id!!,
           name = name!!,
@@ -196,7 +196,7 @@ object TestQuery_ResponseAdapter : ResponseAdapter<TestQuery.Data> {
       fun toResponse(
         writer: JsonWriter,
         responseAdapterCache: ResponseAdapterCache,
-        value: TestQuery.Data.Hero.DroidCharacterHero
+        value: TestQuery.Data.Hero.DroidHero
       ) {
         writer.name("__typename")
         StringResponseAdapter.toResponse(writer, responseAdapterCache, value.__typename)
@@ -216,6 +216,10 @@ object TestQuery_ResponseAdapter : ResponseAdapter<TestQuery.Data> {
         ResponseField(
           type = ResponseField.Type.NotNull(ResponseField.Type.Named.Other("String")),
           fieldName = "id",
+        ),
+        ResponseField(
+          type = ResponseField.Type.NotNull(ResponseField.Type.Named.Other("String")),
+          fieldName = "name",
         )
       )
 
@@ -228,16 +232,19 @@ object TestQuery_ResponseAdapter : ResponseAdapter<TestQuery.Data> {
       ): TestQuery.Data.Hero.OtherHero {
         var __typename: String? = __typename
         var id: String? = null
+        var name: String? = null
         while(true) {
           when (reader.selectName(RESPONSE_NAMES)) {
             0 -> __typename = StringResponseAdapter.fromResponse(reader, responseAdapterCache)
             1 -> id = StringResponseAdapter.fromResponse(reader, responseAdapterCache)
+            2 -> name = StringResponseAdapter.fromResponse(reader, responseAdapterCache)
             else -> break
           }
         }
         return TestQuery.Data.Hero.OtherHero(
           __typename = __typename!!,
-          id = id!!
+          id = id!!,
+          name = name!!
         )
       }
 
@@ -250,6 +257,8 @@ object TestQuery_ResponseAdapter : ResponseAdapter<TestQuery.Data> {
         StringResponseAdapter.toResponse(writer, responseAdapterCache, value.__typename)
         writer.name("id")
         StringResponseAdapter.toResponse(writer, responseAdapterCache, value.id)
+        writer.name("name")
+        StringResponseAdapter.toResponse(writer, responseAdapterCache, value.name)
       }
     }
   }

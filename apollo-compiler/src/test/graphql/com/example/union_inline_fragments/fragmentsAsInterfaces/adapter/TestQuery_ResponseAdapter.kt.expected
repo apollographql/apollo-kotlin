@@ -210,27 +210,11 @@ object TestQuery_ResponseAdapter : ResponseAdapter<TestQuery.Data> {
             reader: JsonReader,
             responseAdapterCache: ResponseAdapterCache,
             __typename: String?
-<<<<<<< HEAD
           ): TestQuery.Data.Search.CharacterSearch.Friends.HumanFriends {
-=======
-          ): TestQuery.Data.Search.CharacterSearch.Friends.CharacterDroidFriends {
-<<<<<<< HEAD
-            reader.beginObject()
->>>>>>> ab5258fe0... all compiler tests pass
             var __typename: String? = __typename
             var name: String? = null
             var homePlanet: String? = null
             var friends: List<TestQuery.Data.Search.CharacterSearch.Friends.HumanFriends.Friends?>? = null
-=======
-            var __typename: String? = __typename
-            var name: String? = null
-            var primaryFunction: String? = null
-            var friends: List<TestQuery.Data.Search.CharacterSearch.Friends.CharacterDroidFriends.Friends?>? = null
-<<<<<<< HEAD
-            reader.beginObject()
->>>>>>> ef2ead98d... everything works, yay \o/
-=======
->>>>>>> 528df6e0d... wip
             while(true) {
               when (reader.selectName(RESPONSE_NAMES)) {
                 0 -> __typename = StringResponseAdapter.fromResponse(reader, responseAdapterCache)
@@ -242,15 +226,7 @@ object TestQuery_ResponseAdapter : ResponseAdapter<TestQuery.Data> {
                 else -> break
               }
             }
-<<<<<<< HEAD
-<<<<<<< HEAD
             return TestQuery.Data.Search.CharacterSearch.Friends.HumanFriends(
-=======
-            reader.endObject()
-=======
->>>>>>> 528df6e0d... wip
-            return TestQuery.Data.Search.CharacterSearch.Friends.CharacterDroidFriends(
->>>>>>> ef2ead98d... everything works, yay \o/
               __typename = __typename!!,
               name = name!!,
               homePlanet = homePlanet,
@@ -288,18 +264,9 @@ object TestQuery_ResponseAdapter : ResponseAdapter<TestQuery.Data> {
 
             override fun fromResponse(reader: JsonReader,
                 responseAdapterCache: ResponseAdapterCache):
-<<<<<<< HEAD
                 TestQuery.Data.Search.CharacterSearch.Friends.HumanFriends.Friends {
               var __typename: String? = null
               var firstAppearsIn: Episode? = null
-=======
-                TestQuery.Data.Search.CharacterSearch.Friends.CharacterDroidFriends.Friends {
-<<<<<<< HEAD
->>>>>>> ab5258fe0... all compiler tests pass
-              reader.beginObject()
-=======
->>>>>>> ef2ead98d... everything works, yay \o/
-              var id: String? = null
               while(true) {
                 when (reader.selectName(RESPONSE_NAMES)) {
                   0 -> __typename = StringResponseAdapter.fromResponse(reader, responseAdapterCache)
@@ -308,22 +275,9 @@ object TestQuery_ResponseAdapter : ResponseAdapter<TestQuery.Data> {
                   else -> break
                 }
               }
-<<<<<<< HEAD
-<<<<<<< HEAD
-<<<<<<< HEAD
-              reader.endObject()
               return TestQuery.Data.Search.CharacterSearch.Friends.HumanFriends.Friends(
                 __typename = __typename!!,
                 firstAppearsIn = firstAppearsIn!!
-=======
-=======
-              reader.endObject()
->>>>>>> ef2ead98d... everything works, yay \o/
-=======
->>>>>>> 528df6e0d... wip
-              return TestQuery.Data.Search.CharacterSearch.Friends.CharacterDroidFriends.Friends(
-                id = id!!
->>>>>>> ab5258fe0... all compiler tests pass
               )
             }
 
@@ -332,17 +286,10 @@ object TestQuery_ResponseAdapter : ResponseAdapter<TestQuery.Data> {
               responseAdapterCache: ResponseAdapterCache,
               value: TestQuery.Data.Search.CharacterSearch.Friends.HumanFriends.Friends
             ) {
-<<<<<<< HEAD
-              writer.beginObject()
               writer.name("__typename")
               StringResponseAdapter.toResponse(writer, responseAdapterCache, value.__typename)
               writer.name("firstAppearsIn")
               Episode_ResponseAdapter.toResponse(writer, responseAdapterCache, value.firstAppearsIn)
-              writer.endObject()
-=======
-              writer.name("id")
-              StringResponseAdapter.toResponse(writer, responseAdapterCache, value.id)
->>>>>>> 3b08746b2... add ObjectResponseAdapter
             }
           }
         }
@@ -373,27 +320,11 @@ object TestQuery_ResponseAdapter : ResponseAdapter<TestQuery.Data> {
             reader: JsonReader,
             responseAdapterCache: ResponseAdapterCache,
             __typename: String?
-<<<<<<< HEAD
           ): TestQuery.Data.Search.CharacterSearch.Friends.DroidFriends {
-=======
-          ): TestQuery.Data.Search.CharacterSearch.Friends.CharacterHumanFriends {
-<<<<<<< HEAD
-            reader.beginObject()
->>>>>>> ab5258fe0... all compiler tests pass
             var __typename: String? = __typename
             var name: String? = null
             var primaryFunction: String? = null
             var friends: List<TestQuery.Data.Search.CharacterSearch.Friends.DroidFriends.Friends?>? = null
-=======
-            var __typename: String? = __typename
-            var name: String? = null
-            var homePlanet: String? = null
-            var friends: List<TestQuery.Data.Search.CharacterSearch.Friends.CharacterHumanFriends.Friends?>? = null
-<<<<<<< HEAD
-            reader.beginObject()
->>>>>>> ef2ead98d... everything works, yay \o/
-=======
->>>>>>> 528df6e0d... wip
             while(true) {
               when (reader.selectName(RESPONSE_NAMES)) {
                 0 -> __typename = StringResponseAdapter.fromResponse(reader, responseAdapterCache)
@@ -405,15 +336,7 @@ object TestQuery_ResponseAdapter : ResponseAdapter<TestQuery.Data> {
                 else -> break
               }
             }
-<<<<<<< HEAD
-<<<<<<< HEAD
             return TestQuery.Data.Search.CharacterSearch.Friends.DroidFriends(
-=======
-            reader.endObject()
-=======
->>>>>>> 528df6e0d... wip
-            return TestQuery.Data.Search.CharacterSearch.Friends.CharacterHumanFriends(
->>>>>>> ef2ead98d... everything works, yay \o/
               __typename = __typename!!,
               name = name!!,
               primaryFunction = primaryFunction,
@@ -451,41 +374,17 @@ object TestQuery_ResponseAdapter : ResponseAdapter<TestQuery.Data> {
 
             override fun fromResponse(reader: JsonReader,
                 responseAdapterCache: ResponseAdapterCache):
-<<<<<<< HEAD
                 TestQuery.Data.Search.CharacterSearch.Friends.DroidFriends.Friends {
               var id: String? = null
-              reader.beginObject()
-<<<<<<< HEAD
               while(true) {
                 when (reader.selectName(RESPONSE_NAMES)) {
                   0 -> id = StringResponseAdapter.fromResponse(reader, responseAdapterCache)
                   else -> break
                 }
               }
-              reader.endObject()
               return TestQuery.Data.Search.CharacterSearch.Friends.DroidFriends.Friends(
                 id = id!!
               )
-=======
-=======
-                TestQuery.Data.Search.CharacterSearch.Friends.CharacterHumanFriends.Friends {
->>>>>>> 528df6e0d... wip
-              check(reader.nextName() == "__typename")
-              val typename = reader.nextString()!!
-              return when(typename) {
-                "Droid" -> CharacterFriends.fromResponse(reader, responseAdapterCache, typename)
-                "Human" -> CharacterFriends.fromResponse(reader, responseAdapterCache, typename)
-                else -> OtherFriends.fromResponse(reader, responseAdapterCache, typename)
-              }
-<<<<<<< HEAD
-<<<<<<< HEAD
-              reader.endObject()
->>>>>>> ab5258fe0... all compiler tests pass
-=======
-              .also { reader.endObject() }
->>>>>>> ef2ead98d... everything works, yay \o/
-=======
->>>>>>> 528df6e0d... wip
             }
 
             override fun toResponse(
@@ -493,100 +392,8 @@ object TestQuery_ResponseAdapter : ResponseAdapter<TestQuery.Data> {
               responseAdapterCache: ResponseAdapterCache,
               value: TestQuery.Data.Search.CharacterSearch.Friends.DroidFriends.Friends
             ) {
-<<<<<<< HEAD
-              writer.beginObject()
               writer.name("id")
               StringResponseAdapter.toResponse(writer, responseAdapterCache, value.id)
-              writer.endObject()
-=======
-              when(value) {
-                is TestQuery.Data.Search.CharacterSearch.Friends.CharacterHumanFriends.Friends.CharacterFriends -> CharacterFriends.toResponse(writer, responseAdapterCache, value)
-                is TestQuery.Data.Search.CharacterSearch.Friends.CharacterHumanFriends.Friends.OtherFriends -> OtherFriends.toResponse(writer, responseAdapterCache, value)
-              }
-            }
-
-            object CharacterFriends {
-              val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
-                ResponseField.Typename,
-                ResponseField(
-                  type = ResponseField.Type.NotNull(ResponseField.Type.Named.Other("Episode")),
-                  fieldName = "firstAppearsIn",
-                )
-              )
-
-              val RESPONSE_NAMES: List<String> = RESPONSE_FIELDS.map { it.responseName }
-
-              fun fromResponse(
-                reader: JsonReader,
-                responseAdapterCache: ResponseAdapterCache,
-                __typename: String?
-              ):
-                  TestQuery.Data.Search.CharacterSearch.Friends.CharacterHumanFriends.Friends.CharacterFriends {
-                var __typename: String? = __typename
-                var firstAppearsIn: Episode? = null
-                while(true) {
-                  when (reader.selectName(RESPONSE_NAMES)) {
-                    0 -> __typename = StringResponseAdapter.fromResponse(reader,
-                        responseAdapterCache)
-                    1 -> firstAppearsIn = Episode_ResponseAdapter.fromResponse(reader,
-                        responseAdapterCache)
-                    else -> break
-                  }
-                }
-                return TestQuery.Data.Search.CharacterSearch.Friends.CharacterHumanFriends.Friends.CharacterFriends(
-                  __typename = __typename!!,
-                  firstAppearsIn = firstAppearsIn!!
-                )
-              }
-
-              fun toResponse(
-                writer: JsonWriter,
-                responseAdapterCache: ResponseAdapterCache,
-                value: TestQuery.Data.Search.CharacterSearch.Friends.CharacterHumanFriends.Friends.CharacterFriends
-              ) {
-                writer.name("__typename")
-                StringResponseAdapter.toResponse(writer, responseAdapterCache, value.__typename)
-                writer.name("firstAppearsIn")
-                Episode_ResponseAdapter.toResponse(writer, responseAdapterCache,
-                    value.firstAppearsIn)
-              }
-            }
-
-            object OtherFriends {
-              val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
-                ResponseField.Typename
-              )
-
-              val RESPONSE_NAMES: List<String> = RESPONSE_FIELDS.map { it.responseName }
-
-              fun fromResponse(
-                reader: JsonReader,
-                responseAdapterCache: ResponseAdapterCache,
-                __typename: String?
-              ):
-                  TestQuery.Data.Search.CharacterSearch.Friends.CharacterHumanFriends.Friends.OtherFriends {
-                var __typename: String? = __typename
-                while(true) {
-                  when (reader.selectName(RESPONSE_NAMES)) {
-                    0 -> __typename = StringResponseAdapter.fromResponse(reader,
-                        responseAdapterCache)
-                    else -> break
-                  }
-                }
-                return TestQuery.Data.Search.CharacterSearch.Friends.CharacterHumanFriends.Friends.OtherFriends(
-                  __typename = __typename!!
-                )
-              }
-
-              fun toResponse(
-                writer: JsonWriter,
-                responseAdapterCache: ResponseAdapterCache,
-                value: TestQuery.Data.Search.CharacterSearch.Friends.CharacterHumanFriends.Friends.OtherFriends
-              ) {
-                writer.name("__typename")
-                StringResponseAdapter.toResponse(writer, responseAdapterCache, value.__typename)
-              }
->>>>>>> ab5258fe0... all compiler tests pass
             }
           }
         }
@@ -608,14 +415,7 @@ object TestQuery_ResponseAdapter : ResponseAdapter<TestQuery.Data> {
             __typename: String?
           ): TestQuery.Data.Search.CharacterSearch.Friends.OtherFriends {
             var __typename: String? = __typename
-<<<<<<< HEAD
-<<<<<<< HEAD
             var name: String? = null
-=======
-            reader.beginObject()
->>>>>>> ef2ead98d... everything works, yay \o/
-=======
->>>>>>> 528df6e0d... wip
             while(true) {
               when (reader.selectName(RESPONSE_NAMES)) {
                 0 -> __typename = StringResponseAdapter.fromResponse(reader, responseAdapterCache)
@@ -636,12 +436,8 @@ object TestQuery_ResponseAdapter : ResponseAdapter<TestQuery.Data> {
           ) {
             writer.name("__typename")
             StringResponseAdapter.toResponse(writer, responseAdapterCache, value.__typename)
-<<<<<<< HEAD
             writer.name("name")
             StringResponseAdapter.toResponse(writer, responseAdapterCache, value.name)
-            writer.endObject()
-=======
->>>>>>> 3b08746b2... add ObjectResponseAdapter
           }
         }
       }

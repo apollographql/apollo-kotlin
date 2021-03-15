@@ -85,49 +85,27 @@ object TestQuery_ResponseAdapter : ResponseAdapter<TestQuery.Data> {
 
     override fun fromResponse(reader: JsonReader, responseAdapterCache: ResponseAdapterCache):
         TestQuery.Data.Hero {
-<<<<<<< HEAD
       var __typename: String? = null
       var name: String? = null
       var friendsConnection: TestQuery.Data.Hero.FriendsConnection? = null
       var profileLink: Any? = null
-      reader.beginObject()
-<<<<<<< HEAD
       while(true) {
         when (reader.selectName(RESPONSE_NAMES)) {
           0 -> __typename = StringResponseAdapter.fromResponse(reader, responseAdapterCache)
           1 -> name = StringResponseAdapter.fromResponse(reader, responseAdapterCache)
-          2 -> friendsConnection = FriendsConnection.fromResponse(reader, responseAdapterCache)
+          2 -> friendsConnection = FriendsConnection.obj().fromResponse(reader,
+              responseAdapterCache)
           3 -> profileLink = responseAdapterCache.responseAdapterFor<Any>(CustomScalars.URL).fromResponse(reader,
               responseAdapterCache)
           else -> break
         }
       }
-      reader.endObject()
       return TestQuery.Data.Hero(
         __typename = __typename!!,
         name = name!!,
         friendsConnection = friendsConnection!!,
         profileLink = profileLink!!
       )
-=======
-=======
->>>>>>> 528df6e0d... wip
-      check(reader.nextName() == "__typename")
-      val typename = reader.nextString()!!
-      return when(typename) {
-        "Droid" -> CharacterHero.fromResponse(reader, responseAdapterCache, typename)
-        "Human" -> CharacterHero.fromResponse(reader, responseAdapterCache, typename)
-        else -> OtherHero.fromResponse(reader, responseAdapterCache, typename)
-      }
-<<<<<<< HEAD
-<<<<<<< HEAD
-      reader.endObject()
->>>>>>> ab5258fe0... all compiler tests pass
-=======
-      .also { reader.endObject() }
->>>>>>> ef2ead98d... everything works, yay \o/
-=======
->>>>>>> 528df6e0d... wip
     }
 
     override fun toResponse(
@@ -135,17 +113,15 @@ object TestQuery_ResponseAdapter : ResponseAdapter<TestQuery.Data> {
       responseAdapterCache: ResponseAdapterCache,
       value: TestQuery.Data.Hero
     ) {
-      writer.beginObject()
       writer.name("__typename")
       StringResponseAdapter.toResponse(writer, responseAdapterCache, value.__typename)
       writer.name("name")
       StringResponseAdapter.toResponse(writer, responseAdapterCache, value.name)
       writer.name("friendsConnection")
-      FriendsConnection.toResponse(writer, responseAdapterCache, value.friendsConnection)
+      FriendsConnection.obj().toResponse(writer, responseAdapterCache, value.friendsConnection)
       writer.name("profileLink")
       responseAdapterCache.responseAdapterFor<Any>(CustomScalars.URL).toResponse(writer,
           responseAdapterCache, value.profileLink)
-      writer.endObject()
     }
 
     object FriendsConnection : ResponseAdapter<TestQuery.Data.Hero.FriendsConnection> {
@@ -161,57 +137,18 @@ object TestQuery_ResponseAdapter : ResponseAdapter<TestQuery.Data> {
 
       val RESPONSE_NAMES: List<String> = RESPONSE_FIELDS.map { it.responseName }
 
-<<<<<<< HEAD
       override fun fromResponse(reader: JsonReader, responseAdapterCache: ResponseAdapterCache):
           TestQuery.Data.Hero.FriendsConnection {
         var edges: List<TestQuery.Data.Hero.FriendsConnection.Edges?>? = null
-        reader.beginObject()
-=======
-      fun fromResponse(
-        reader: JsonReader,
-        responseAdapterCache: ResponseAdapterCache,
-        __typename: String?
-      ): TestQuery.Data.Hero.CharacterHero {
-        var __typename: String? = __typename
-        var name: String? = null
-        var friendsConnection: TestQuery.Data.Hero.CharacterHero.FriendsConnection? = null
-        var profileLink: Any? = null
-<<<<<<< HEAD
-<<<<<<< HEAD
->>>>>>> ab5258fe0... all compiler tests pass
-=======
-        reader.beginObject()
->>>>>>> ef2ead98d... everything works, yay \o/
         while(true) {
           when (reader.selectName(RESPONSE_NAMES)) {
-            0 -> edges = Edges.nullable().list().nullable().fromResponse(reader,
-=======
-        while(true) {
-          when (reader.selectName(RESPONSE_NAMES)) {
-            0 -> __typename = StringResponseAdapter.fromResponse(reader, responseAdapterCache)
-            1 -> name = StringResponseAdapter.fromResponse(reader, responseAdapterCache)
-            2 -> friendsConnection = FriendsConnection.obj().fromResponse(reader,
-                responseAdapterCache)
-            3 -> profileLink = responseAdapterCache.responseAdapterFor<Any>(CustomScalars.URL).fromResponse(reader,
->>>>>>> 528df6e0d... wip
+            0 -> edges = Edges.obj().nullable().list().nullable().fromResponse(reader,
                 responseAdapterCache)
             else -> break
           }
         }
-<<<<<<< HEAD
-        reader.endObject()
-<<<<<<< HEAD
         return TestQuery.Data.Hero.FriendsConnection(
           edges = edges
-=======
-=======
->>>>>>> 528df6e0d... wip
-        return TestQuery.Data.Hero.CharacterHero(
-          __typename = __typename!!,
-          name = name!!,
-          friendsConnection = friendsConnection!!,
-          profileLink = profileLink!!
->>>>>>> ef2ead98d... everything works, yay \o/
         )
       }
 
@@ -220,28 +157,9 @@ object TestQuery_ResponseAdapter : ResponseAdapter<TestQuery.Data> {
         responseAdapterCache: ResponseAdapterCache,
         value: TestQuery.Data.Hero.FriendsConnection
       ) {
-<<<<<<< HEAD
-        writer.beginObject()
-<<<<<<< HEAD
         writer.name("edges")
-        Edges.nullable().list().nullable().toResponse(writer, responseAdapterCache, value.edges)
-=======
-=======
->>>>>>> 3b08746b2... add ObjectResponseAdapter
-        writer.name("__typename")
-        StringResponseAdapter.toResponse(writer, responseAdapterCache, value.__typename)
-        writer.name("name")
-        StringResponseAdapter.toResponse(writer, responseAdapterCache, value.name)
-        writer.name("friendsConnection")
-        FriendsConnection.obj().toResponse(writer, responseAdapterCache, value.friendsConnection)
-        writer.name("profileLink")
-        responseAdapterCache.responseAdapterFor<Any>(CustomScalars.URL).toResponse(writer,
-            responseAdapterCache, value.profileLink)
-<<<<<<< HEAD
->>>>>>> 528df6e0d... wip
-        writer.endObject()
-=======
->>>>>>> 3b08746b2... add ObjectResponseAdapter
+        Edges.obj().nullable().list().nullable().toResponse(writer, responseAdapterCache,
+            value.edges)
       }
 
       object Edges : ResponseAdapter<TestQuery.Data.Hero.FriendsConnection.Edges> {
@@ -258,43 +176,16 @@ object TestQuery_ResponseAdapter : ResponseAdapter<TestQuery.Data> {
         val RESPONSE_NAMES: List<String> = RESPONSE_FIELDS.map { it.responseName }
 
         override fun fromResponse(reader: JsonReader, responseAdapterCache: ResponseAdapterCache):
-<<<<<<< HEAD
             TestQuery.Data.Hero.FriendsConnection.Edges {
           var node: TestQuery.Data.Hero.FriendsConnection.Edges.Node? = null
-=======
-            TestQuery.Data.Hero.CharacterHero.FriendsConnection {
-<<<<<<< HEAD
->>>>>>> ab5258fe0... all compiler tests pass
-          reader.beginObject()
-=======
->>>>>>> ef2ead98d... everything works, yay \o/
-          var edges: List<TestQuery.Data.Hero.CharacterHero.FriendsConnection.Edges?>? = null
           while(true) {
             when (reader.selectName(RESPONSE_NAMES)) {
-<<<<<<< HEAD
-              0 -> node = Node.nullable().fromResponse(reader, responseAdapterCache)
+              0 -> node = Node.obj().nullable().fromResponse(reader, responseAdapterCache)
               else -> break
             }
           }
-<<<<<<< HEAD
-<<<<<<< HEAD
-          reader.endObject()
           return TestQuery.Data.Hero.FriendsConnection.Edges(
             node = node
-=======
-=======
-          reader.endObject()
->>>>>>> ef2ead98d... everything works, yay \o/
-=======
-              0 -> edges = Edges.obj().nullable().list().nullable().fromResponse(reader,
-                  responseAdapterCache)
-              else -> break
-            }
-          }
->>>>>>> 528df6e0d... wip
-          return TestQuery.Data.Hero.CharacterHero.FriendsConnection(
-            edges = edges
->>>>>>> ab5258fe0... all compiler tests pass
           )
         }
 
@@ -303,22 +194,8 @@ object TestQuery_ResponseAdapter : ResponseAdapter<TestQuery.Data> {
           responseAdapterCache: ResponseAdapterCache,
           value: TestQuery.Data.Hero.FriendsConnection.Edges
         ) {
-<<<<<<< HEAD
-          writer.beginObject()
-<<<<<<< HEAD
           writer.name("node")
-          Node.nullable().toResponse(writer, responseAdapterCache, value.node)
-=======
-          writer.name("edges")
-          Edges.obj().nullable().list().nullable().toResponse(writer, responseAdapterCache,
-              value.edges)
->>>>>>> 528df6e0d... wip
-          writer.endObject()
-=======
-          writer.name("edges")
-          Edges.obj().nullable().list().nullable().toResponse(writer, responseAdapterCache,
-              value.edges)
->>>>>>> 3b08746b2... add ObjectResponseAdapter
+          Node.obj().nullable().toResponse(writer, responseAdapterCache, value.node)
         }
 
         object Node : ResponseAdapter<TestQuery.Data.Hero.FriendsConnection.Edges.Node> {
@@ -332,42 +209,16 @@ object TestQuery_ResponseAdapter : ResponseAdapter<TestQuery.Data> {
           val RESPONSE_NAMES: List<String> = RESPONSE_FIELDS.map { it.responseName }
 
           override fun fromResponse(reader: JsonReader, responseAdapterCache: ResponseAdapterCache):
-<<<<<<< HEAD
               TestQuery.Data.Hero.FriendsConnection.Edges.Node {
             var name: String? = null
-=======
-              TestQuery.Data.Hero.CharacterHero.FriendsConnection.Edges {
-<<<<<<< HEAD
->>>>>>> ab5258fe0... all compiler tests pass
-            reader.beginObject()
-=======
->>>>>>> ef2ead98d... everything works, yay \o/
-            var node: TestQuery.Data.Hero.CharacterHero.FriendsConnection.Edges.Node? = null
             while(true) {
               when (reader.selectName(RESPONSE_NAMES)) {
-<<<<<<< HEAD
                 0 -> name = StringResponseAdapter.fromResponse(reader, responseAdapterCache)
                 else -> break
               }
             }
-<<<<<<< HEAD
-<<<<<<< HEAD
-            reader.endObject()
             return TestQuery.Data.Hero.FriendsConnection.Edges.Node(
               name = name!!
-=======
-=======
-            reader.endObject()
->>>>>>> ef2ead98d... everything works, yay \o/
-=======
-                0 -> node = Node.obj().nullable().fromResponse(reader, responseAdapterCache)
-                else -> break
-              }
-            }
->>>>>>> 528df6e0d... wip
-            return TestQuery.Data.Hero.CharacterHero.FriendsConnection.Edges(
-              node = node
->>>>>>> ab5258fe0... all compiler tests pass
             )
           }
 
@@ -376,228 +227,9 @@ object TestQuery_ResponseAdapter : ResponseAdapter<TestQuery.Data> {
             responseAdapterCache: ResponseAdapterCache,
             value: TestQuery.Data.Hero.FriendsConnection.Edges.Node
           ) {
-<<<<<<< HEAD
-            writer.beginObject()
-<<<<<<< HEAD
             writer.name("name")
             StringResponseAdapter.toResponse(writer, responseAdapterCache, value.name)
-=======
-            writer.name("node")
-            Node.obj().nullable().toResponse(writer, responseAdapterCache, value.node)
->>>>>>> 528df6e0d... wip
-            writer.endObject()
-=======
-            writer.name("node")
-            Node.obj().nullable().toResponse(writer, responseAdapterCache, value.node)
->>>>>>> 3b08746b2... add ObjectResponseAdapter
           }
-<<<<<<< HEAD
-=======
-
-          object Node :
-              ResponseAdapter<TestQuery.Data.Hero.CharacterHero.FriendsConnection.Edges.Node> {
-            val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
-              ResponseField(
-                type = ResponseField.Type.NotNull(ResponseField.Type.Named.Other("String")),
-                fieldName = "name",
-              )
-            )
-
-            val RESPONSE_NAMES: List<String> = RESPONSE_FIELDS.map { it.responseName }
-
-            override fun fromResponse(reader: JsonReader,
-                responseAdapterCache: ResponseAdapterCache):
-                TestQuery.Data.Hero.CharacterHero.FriendsConnection.Edges.Node {
-              var name: String? = null
-              while(true) {
-                when (reader.selectName(RESPONSE_NAMES)) {
-                  0 -> name = StringResponseAdapter.fromResponse(reader, responseAdapterCache)
-                  else -> break
-                }
-              }
-              return TestQuery.Data.Hero.CharacterHero.FriendsConnection.Edges.Node(
-                name = name!!
-              )
-            }
-
-            override fun toResponse(
-              writer: JsonWriter,
-              responseAdapterCache: ResponseAdapterCache,
-              value: TestQuery.Data.Hero.CharacterHero.FriendsConnection.Edges.Node
-            ) {
-              writer.name("name")
-              StringResponseAdapter.toResponse(writer, responseAdapterCache, value.name)
-            }
-          }
-        }
-      }
-    }
-
-    object OtherHero {
-      val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
-        ResponseField.Typename,
-        ResponseField(
-          type = ResponseField.Type.NotNull(ResponseField.Type.Named.Other("String")),
-          fieldName = "name",
-        ),
-        ResponseField(
-          type = ResponseField.Type.NotNull(ResponseField.Type.Named.Object("FriendsConnection")),
-          fieldName = "friendsConnection",
-          fieldSets = listOf(
-            ResponseField.FieldSet(null, FriendsConnection.RESPONSE_FIELDS)
-          ),
-        )
-      )
-
-      val RESPONSE_NAMES: List<String> = RESPONSE_FIELDS.map { it.responseName }
-
-      fun fromResponse(
-        reader: JsonReader,
-        responseAdapterCache: ResponseAdapterCache,
-        __typename: String?
-      ): TestQuery.Data.Hero.OtherHero {
-        var __typename: String? = __typename
-        var name: String? = null
-        var friendsConnection: TestQuery.Data.Hero.OtherHero.FriendsConnection? = null
-        while(true) {
-          when (reader.selectName(RESPONSE_NAMES)) {
-            0 -> __typename = StringResponseAdapter.fromResponse(reader, responseAdapterCache)
-            1 -> name = StringResponseAdapter.fromResponse(reader, responseAdapterCache)
-            2 -> friendsConnection = FriendsConnection.obj().fromResponse(reader,
-                responseAdapterCache)
-            else -> break
-          }
-        }
-        return TestQuery.Data.Hero.OtherHero(
-          __typename = __typename!!,
-          name = name!!,
-          friendsConnection = friendsConnection!!
-        )
-      }
-
-      fun toResponse(
-        writer: JsonWriter,
-        responseAdapterCache: ResponseAdapterCache,
-        value: TestQuery.Data.Hero.OtherHero
-      ) {
-        writer.name("__typename")
-        StringResponseAdapter.toResponse(writer, responseAdapterCache, value.__typename)
-        writer.name("name")
-        StringResponseAdapter.toResponse(writer, responseAdapterCache, value.name)
-        writer.name("friendsConnection")
-        FriendsConnection.obj().toResponse(writer, responseAdapterCache, value.friendsConnection)
-      }
-
-      object FriendsConnection : ResponseAdapter<TestQuery.Data.Hero.OtherHero.FriendsConnection> {
-        val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
-          ResponseField(
-            type = ResponseField.Type.List(ResponseField.Type.Named.Object("FriendsEdge")),
-            fieldName = "edges",
-            fieldSets = listOf(
-              ResponseField.FieldSet(null, Edges.RESPONSE_FIELDS)
-            ),
-          )
-        )
-
-        val RESPONSE_NAMES: List<String> = RESPONSE_FIELDS.map { it.responseName }
-
-        override fun fromResponse(reader: JsonReader, responseAdapterCache: ResponseAdapterCache):
-            TestQuery.Data.Hero.OtherHero.FriendsConnection {
-          var edges: List<TestQuery.Data.Hero.OtherHero.FriendsConnection.Edges?>? = null
-          while(true) {
-            when (reader.selectName(RESPONSE_NAMES)) {
-              0 -> edges = Edges.obj().nullable().list().nullable().fromResponse(reader,
-                  responseAdapterCache)
-              else -> break
-            }
-          }
-          return TestQuery.Data.Hero.OtherHero.FriendsConnection(
-            edges = edges
-          )
-        }
-
-        override fun toResponse(
-          writer: JsonWriter,
-          responseAdapterCache: ResponseAdapterCache,
-          value: TestQuery.Data.Hero.OtherHero.FriendsConnection
-        ) {
-          writer.name("edges")
-          Edges.obj().nullable().list().nullable().toResponse(writer, responseAdapterCache,
-              value.edges)
-        }
-
-        object Edges : ResponseAdapter<TestQuery.Data.Hero.OtherHero.FriendsConnection.Edges> {
-          val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
-            ResponseField(
-              type = ResponseField.Type.Named.Object("Character"),
-              fieldName = "node",
-              fieldSets = listOf(
-                ResponseField.FieldSet(null, Node.RESPONSE_FIELDS)
-              ),
-            )
-          )
-
-          val RESPONSE_NAMES: List<String> = RESPONSE_FIELDS.map { it.responseName }
-
-          override fun fromResponse(reader: JsonReader, responseAdapterCache: ResponseAdapterCache):
-              TestQuery.Data.Hero.OtherHero.FriendsConnection.Edges {
-            var node: TestQuery.Data.Hero.OtherHero.FriendsConnection.Edges.Node? = null
-            while(true) {
-              when (reader.selectName(RESPONSE_NAMES)) {
-                0 -> node = Node.obj().nullable().fromResponse(reader, responseAdapterCache)
-                else -> break
-              }
-            }
-            return TestQuery.Data.Hero.OtherHero.FriendsConnection.Edges(
-              node = node
-            )
-          }
-
-          override fun toResponse(
-            writer: JsonWriter,
-            responseAdapterCache: ResponseAdapterCache,
-            value: TestQuery.Data.Hero.OtherHero.FriendsConnection.Edges
-          ) {
-            writer.name("node")
-            Node.obj().nullable().toResponse(writer, responseAdapterCache, value.node)
-          }
-
-          object Node : ResponseAdapter<TestQuery.Data.Hero.OtherHero.FriendsConnection.Edges.Node>
-              {
-            val RESPONSE_FIELDS: Array<ResponseField> = arrayOf(
-              ResponseField(
-                type = ResponseField.Type.NotNull(ResponseField.Type.Named.Other("String")),
-                fieldName = "name",
-              )
-            )
-
-            val RESPONSE_NAMES: List<String> = RESPONSE_FIELDS.map { it.responseName }
-
-            override fun fromResponse(reader: JsonReader,
-                responseAdapterCache: ResponseAdapterCache):
-                TestQuery.Data.Hero.OtherHero.FriendsConnection.Edges.Node {
-              var name: String? = null
-              while(true) {
-                when (reader.selectName(RESPONSE_NAMES)) {
-                  0 -> name = StringResponseAdapter.fromResponse(reader, responseAdapterCache)
-                  else -> break
-                }
-              }
-              return TestQuery.Data.Hero.OtherHero.FriendsConnection.Edges.Node(
-                name = name!!
-              )
-            }
-
-            override fun toResponse(
-              writer: JsonWriter,
-              responseAdapterCache: ResponseAdapterCache,
-              value: TestQuery.Data.Hero.OtherHero.FriendsConnection.Edges.Node
-            ) {
-              writer.name("name")
-              StringResponseAdapter.toResponse(writer, responseAdapterCache, value.name)
-            }
-          }
->>>>>>> ab5258fe0... all compiler tests pass
         }
       }
     }

@@ -154,8 +154,7 @@ object QueryFragment_ResponseAdapter : ResponseAdapter<QueryFragment.Data> {
       ) {
         writer.name("__typename")
         StringResponseAdapter.toResponse(writer, responseAdapterCache, value.__typename)
-        if (value.userFragment != null)
-            UserFragment_ResponseAdapter.toResponse(writer, responseAdapterCache, value.userFragment)
+        if (value.userFragment != null) UserFragment_ResponseAdapter.toResponse(writer, responseAdapterCache, value.userFragment)
       }
     }
   }

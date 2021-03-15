@@ -137,8 +137,7 @@ object TestQuery_ResponseAdapter : ResponseAdapter<TestQuery.Data> {
 
       writer.name("name")
       NullableStringResponseAdapter.toResponse(writer, responseAdapterCache, value.name)
-      if (value.heroDetails != null)
-          HeroDetails_ResponseAdapter.toResponse(writer, responseAdapterCache, value.heroDetails)
+      if (value.heroDetails != null) HeroDetails_ResponseAdapter.toResponse(writer, responseAdapterCache, value.heroDetails)
     }
   }
 

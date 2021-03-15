@@ -68,7 +68,6 @@ object HumanDetails_ResponseAdapter : ResponseAdapter<HumanDetails.Data> {
 
     writer.name("name")
     StringResponseAdapter.toResponse(writer, responseAdapterCache, value.name)
-    if (value.characterDetails != null)
-        CharacterDetails_ResponseAdapter.toResponse(writer, responseAdapterCache, value.characterDetails)
+    if (value.characterDetails != null) CharacterDetails_ResponseAdapter.toResponse(writer, responseAdapterCache, value.characterDetails)
   }
 }

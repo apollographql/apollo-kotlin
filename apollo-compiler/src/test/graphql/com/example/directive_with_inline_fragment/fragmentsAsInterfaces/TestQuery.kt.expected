@@ -60,12 +60,12 @@ data class TestQuery(
        */
       val id: String
 
-      interface Human : Hero {
-        /**
-         * What this human calls themselves
-         */
-        val name: String
+      /**
+       * The name of the character
+       */
+      val name: String
 
+      interface Human : Hero {
         /**
          * The home planet of the human, or null if unknown
          */
@@ -74,61 +74,53 @@ data class TestQuery(
 
       interface Droid : Hero {
         /**
-         * What others call this droid
-         */
-        val name: String
-
-        /**
          * This droid's primary function
          */
         val primaryFunction: String?
       }
 
-      interface Character : Hero {
-        /**
-         * The name of the character
-         */
-        val name: String
-      }
-
-      data class HumanCharacterHero(
+      data class HumanHero(
         override val __typename: String,
         /**
          * The ID of the character
          */
         override val id: String,
         /**
-         * What this human calls themselves
+         * The name of the character
          */
         override val name: String,
         /**
          * The home planet of the human, or null if unknown
          */
         override val homePlanet: String?
-      ) : Hero, Human, Character
+      ) : Hero, Human
 
-      data class DroidCharacterHero(
+      data class DroidHero(
         override val __typename: String,
         /**
          * The ID of the character
          */
         override val id: String,
         /**
-         * What others call this droid
+         * The name of the character
          */
         override val name: String,
         /**
          * This droid's primary function
          */
         override val primaryFunction: String?
-      ) : Hero, Droid, Character
+      ) : Hero, Droid
 
       data class OtherHero(
         override val __typename: String,
         /**
          * The ID of the character
          */
-        override val id: String
+        override val id: String,
+        /**
+         * The name of the character
+         */
+        override val name: String
       ) : Hero
     }
   }

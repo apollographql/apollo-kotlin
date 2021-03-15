@@ -110,8 +110,7 @@ object GetPage_ResponseAdapter : ResponseAdapter<GetPage.Data> {
 
       writer.name("items")
       Items.obj().list().toResponse(writer, responseAdapterCache, value.items)
-      if (value.asAsParticularCollection != null)
-          AsParticularCollection.toResponse(writer, responseAdapterCache, value.asAsParticularCollection)
+      if (value.asAsParticularCollection != null) AsParticularCollection.toResponse(writer, responseAdapterCache, value.asAsParticularCollection)
     }
 
     object Items : ResponseAdapter<GetPage.Data.Collection.Items> {
@@ -238,8 +237,7 @@ object GetPage_ResponseAdapter : ResponseAdapter<GetPage.Data> {
 
           writer.name("__typename")
           StringResponseAdapter.toResponse(writer, responseAdapterCache, value.__typename)
-          if (value.asAsParticularItem != null)
-              AsParticularItem.toResponse(writer, responseAdapterCache, value.asAsParticularItem)
+          if (value.asAsParticularItem != null) AsParticularItem.toResponse(writer, responseAdapterCache, value.asAsParticularItem)
         }
 
         object AsParticularItem :

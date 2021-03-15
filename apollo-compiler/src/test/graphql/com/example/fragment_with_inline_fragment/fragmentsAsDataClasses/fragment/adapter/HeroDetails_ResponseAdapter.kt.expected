@@ -93,8 +93,7 @@ object HeroDetails_ResponseAdapter : ResponseAdapter<HeroDetails.Data> {
     writer.name("friendsConnection")
     FriendsConnection.obj().toResponse(writer, responseAdapterCache, value.friendsConnection)
     if (value.asAsDroid != null) AsDroid.toResponse(writer, responseAdapterCache, value.asAsDroid)
-    if (value.humanDetails != null)
-        HumanDetails_ResponseAdapter.toResponse(writer, responseAdapterCache, value.humanDetails)
+    if (value.humanDetails != null) HumanDetails_ResponseAdapter.toResponse(writer, responseAdapterCache, value.humanDetails)
   }
 
   object FriendsConnection : ResponseAdapter<HeroDetails.Data.FriendsConnection> {

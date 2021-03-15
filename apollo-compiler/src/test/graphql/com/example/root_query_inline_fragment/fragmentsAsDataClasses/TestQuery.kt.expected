@@ -35,7 +35,7 @@ class TestQuery : Query<TestQuery.Data> {
   override fun name(): String = OPERATION_NAME
 
   override fun adapter(): ResponseAdapter<Data> {
-    return TestQuery_ResponseAdapter.obj(true)
+    return TestQuery_ResponseAdapter.obj()
   }
 
   override fun responseFields(): List<ResponseField.FieldSet> = listOf(

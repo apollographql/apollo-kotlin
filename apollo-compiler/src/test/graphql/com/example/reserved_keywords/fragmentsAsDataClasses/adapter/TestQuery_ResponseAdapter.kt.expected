@@ -159,8 +159,7 @@ object TestQuery_ResponseAdapter : ResponseAdapter<TestQuery.Data> {
     ) {
       writer.name("__typename")
       StringResponseAdapter.toResponse(writer, responseAdapterCache, value.__typename)
-      if (value.asAsCharacter != null)
-          AsCharacter.toResponse(writer, responseAdapterCache, value.asAsCharacter)
+      if (value.asAsCharacter != null) AsCharacter.toResponse(writer, responseAdapterCache, value.asAsCharacter)
     }
 
     object AsCharacter : ResponseAdapter<TestQuery.Data.Objects.AsCharacter> {

@@ -112,8 +112,7 @@ object PilotFragment_ResponseAdapter : ResponseAdapter<PilotFragment.Data> {
     ) {
       writer.name("__typename")
       StringResponseAdapter.toResponse(writer, responseAdapterCache, value.__typename)
-      if (value.planetFragment != null)
-          PlanetFragment_ResponseAdapter.toResponse(writer, responseAdapterCache, value.planetFragment)
+      if (value.planetFragment != null) PlanetFragment_ResponseAdapter.toResponse(writer, responseAdapterCache, value.planetFragment)
     }
   }
 }

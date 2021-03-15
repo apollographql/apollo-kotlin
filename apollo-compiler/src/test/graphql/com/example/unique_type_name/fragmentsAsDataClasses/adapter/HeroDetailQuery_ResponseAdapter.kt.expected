@@ -331,8 +331,7 @@ object HeroDetailQuery_ResponseAdapter : ResponseAdapter<HeroDetailQuery.Data> {
           ) {
             writer.name("__typename")
             StringResponseAdapter.toResponse(writer, responseAdapterCache, value.__typename)
-            if (value.heroDetails != null)
-                HeroDetails_ResponseAdapter.toResponse(writer, responseAdapterCache, value.heroDetails)
+            if (value.heroDetails != null) HeroDetails_ResponseAdapter.toResponse(writer, responseAdapterCache, value.heroDetails)
           }
         }
       }

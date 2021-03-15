@@ -110,27 +110,11 @@ object TestQuery_ResponseAdapter : ResponseAdapter<TestQuery.Data> {
         reader: JsonReader,
         responseAdapterCache: ResponseAdapterCache,
         __typename: String?
-<<<<<<< HEAD
       ): TestQuery.Data.Hero.HumanHero {
-=======
-      ): TestQuery.Data.Hero.CharacterDroidHero {
-<<<<<<< HEAD
-        reader.beginObject()
->>>>>>> ab5258fe0... all compiler tests pass
-=======
->>>>>>> ef2ead98d... everything works, yay \o/
         var __typename: String? = __typename
         var id: String? = null
         var name: String? = null
-<<<<<<< HEAD
         var height: Double? = null
-=======
-        var primaryFunction: String? = null
-<<<<<<< HEAD
-        reader.beginObject()
->>>>>>> ef2ead98d... everything works, yay \o/
-=======
->>>>>>> 528df6e0d... wip
         while(true) {
           when (reader.selectName(RESPONSE_NAMES)) {
             0 -> __typename = StringResponseAdapter.fromResponse(reader, responseAdapterCache)
@@ -140,15 +124,7 @@ object TestQuery_ResponseAdapter : ResponseAdapter<TestQuery.Data> {
             else -> break
           }
         }
-<<<<<<< HEAD
-<<<<<<< HEAD
         return TestQuery.Data.Hero.HumanHero(
-=======
-        reader.endObject()
-=======
->>>>>>> 528df6e0d... wip
-        return TestQuery.Data.Hero.CharacterDroidHero(
->>>>>>> ef2ead98d... everything works, yay \o/
           __typename = __typename!!,
           id = id!!,
           name = name!!,
@@ -167,15 +143,8 @@ object TestQuery_ResponseAdapter : ResponseAdapter<TestQuery.Data> {
         StringResponseAdapter.toResponse(writer, responseAdapterCache, value.id)
         writer.name("name")
         StringResponseAdapter.toResponse(writer, responseAdapterCache, value.name)
-<<<<<<< HEAD
         writer.name("height")
         NullableDoubleResponseAdapter.toResponse(writer, responseAdapterCache, value.height)
-        writer.endObject()
-=======
-        writer.name("primaryFunction")
-        NullableStringResponseAdapter.toResponse(writer, responseAdapterCache,
-            value.primaryFunction)
->>>>>>> 3b08746b2... add ObjectResponseAdapter
       }
     }
 
@@ -202,27 +171,11 @@ object TestQuery_ResponseAdapter : ResponseAdapter<TestQuery.Data> {
         reader: JsonReader,
         responseAdapterCache: ResponseAdapterCache,
         __typename: String?
-<<<<<<< HEAD
       ): TestQuery.Data.Hero.DroidHero {
-=======
-      ): TestQuery.Data.Hero.CharacterHumanHero {
-<<<<<<< HEAD
-        reader.beginObject()
->>>>>>> ab5258fe0... all compiler tests pass
-=======
->>>>>>> ef2ead98d... everything works, yay \o/
         var __typename: String? = __typename
         var id: String? = null
         var name: String? = null
-<<<<<<< HEAD
         var primaryFunction: String? = null
-=======
-        var height: Double? = null
-<<<<<<< HEAD
-        reader.beginObject()
->>>>>>> ef2ead98d... everything works, yay \o/
-=======
->>>>>>> 528df6e0d... wip
         while(true) {
           when (reader.selectName(RESPONSE_NAMES)) {
             0 -> __typename = StringResponseAdapter.fromResponse(reader, responseAdapterCache)
@@ -233,15 +186,7 @@ object TestQuery_ResponseAdapter : ResponseAdapter<TestQuery.Data> {
             else -> break
           }
         }
-<<<<<<< HEAD
-<<<<<<< HEAD
         return TestQuery.Data.Hero.DroidHero(
-=======
-        reader.endObject()
-=======
->>>>>>> 528df6e0d... wip
-        return TestQuery.Data.Hero.CharacterHumanHero(
->>>>>>> ef2ead98d... everything works, yay \o/
           __typename = __typename!!,
           id = id!!,
           name = name!!,
@@ -260,15 +205,9 @@ object TestQuery_ResponseAdapter : ResponseAdapter<TestQuery.Data> {
         StringResponseAdapter.toResponse(writer, responseAdapterCache, value.id)
         writer.name("name")
         StringResponseAdapter.toResponse(writer, responseAdapterCache, value.name)
-<<<<<<< HEAD
         writer.name("primaryFunction")
         NullableStringResponseAdapter.toResponse(writer, responseAdapterCache,
             value.primaryFunction)
-        writer.endObject()
-=======
-        writer.name("height")
-        NullableDoubleResponseAdapter.toResponse(writer, responseAdapterCache, value.height)
->>>>>>> 3b08746b2... add ObjectResponseAdapter
       }
     }
 
@@ -293,15 +232,8 @@ object TestQuery_ResponseAdapter : ResponseAdapter<TestQuery.Data> {
         __typename: String?
       ): TestQuery.Data.Hero.OtherHero {
         var __typename: String? = __typename
-<<<<<<< HEAD
-<<<<<<< HEAD
         var id: String? = null
         var name: String? = null
-=======
-        reader.beginObject()
->>>>>>> ef2ead98d... everything works, yay \o/
-=======
->>>>>>> 528df6e0d... wip
         while(true) {
           when (reader.selectName(RESPONSE_NAMES)) {
             0 -> __typename = StringResponseAdapter.fromResponse(reader, responseAdapterCache)
@@ -324,14 +256,10 @@ object TestQuery_ResponseAdapter : ResponseAdapter<TestQuery.Data> {
       ) {
         writer.name("__typename")
         StringResponseAdapter.toResponse(writer, responseAdapterCache, value.__typename)
-<<<<<<< HEAD
         writer.name("id")
         StringResponseAdapter.toResponse(writer, responseAdapterCache, value.id)
         writer.name("name")
         StringResponseAdapter.toResponse(writer, responseAdapterCache, value.name)
-        writer.endObject()
-=======
->>>>>>> 3b08746b2... add ObjectResponseAdapter
       }
     }
   }

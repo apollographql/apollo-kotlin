@@ -100,8 +100,7 @@ object TestQuery_ResponseAdapter : ResponseAdapter<TestQuery.Data> {
     ) {
       writer.name("__typename")
       StringResponseAdapter.toResponse(writer, responseAdapterCache, value.__typename)
-      if (value.asAsStarship != null)
-          AsStarship.toResponse(writer, responseAdapterCache, value.asAsStarship)
+      if (value.asAsStarship != null) AsStarship.toResponse(writer, responseAdapterCache, value.asAsStarship)
     }
 
     object AsStarship : ResponseAdapter<TestQuery.Data.Search.AsStarship> {

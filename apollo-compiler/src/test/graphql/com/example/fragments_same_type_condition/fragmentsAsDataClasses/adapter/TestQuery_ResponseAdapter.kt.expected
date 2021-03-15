@@ -106,10 +106,8 @@ object TestQuery_ResponseAdapter : ResponseAdapter<TestQuery.Data> {
     ) {
       writer.name("__typename")
       StringResponseAdapter.toResponse(writer, responseAdapterCache, value.__typename)
-      if (value.droidDetails1 != null)
-          DroidDetails1_ResponseAdapter.toResponse(writer, responseAdapterCache, value.droidDetails1)
-      if (value.droidDetails2 != null)
-          DroidDetails2_ResponseAdapter.toResponse(writer, responseAdapterCache, value.droidDetails2)
+      if (value.droidDetails1 != null) DroidDetails1_ResponseAdapter.toResponse(writer, responseAdapterCache, value.droidDetails1)
+      if (value.droidDetails2 != null) DroidDetails2_ResponseAdapter.toResponse(writer, responseAdapterCache, value.droidDetails2)
     }
   }
 }

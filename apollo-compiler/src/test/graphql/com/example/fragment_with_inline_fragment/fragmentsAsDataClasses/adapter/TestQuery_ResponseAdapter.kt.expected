@@ -124,8 +124,7 @@ object TestQuery_ResponseAdapter : ResponseAdapter<TestQuery.Data> {
       writer.name("appearsIn")
       Episode_ResponseAdapter.nullable().list().toResponse(writer, responseAdapterCache,
           value.appearsIn)
-      if (value.heroDetails != null)
-          HeroDetails_ResponseAdapter.toResponse(writer, responseAdapterCache, value.heroDetails)
+      if (value.heroDetails != null) HeroDetails_ResponseAdapter.toResponse(writer, responseAdapterCache, value.heroDetails)
     }
   }
 }

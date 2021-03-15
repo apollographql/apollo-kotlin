@@ -221,8 +221,7 @@ object TestQuery_ResponseAdapter : ResponseAdapter<TestQuery.Data> {
 
           writer.name("name")
           StringResponseAdapter.toResponse(writer, responseAdapterCache, value.name)
-          if (value.asAsHuman != null)
-              AsHuman.toResponse(writer, responseAdapterCache, value.asAsHuman)
+          if (value.asAsHuman != null) AsHuman.toResponse(writer, responseAdapterCache, value.asAsHuman)
         }
 
         object AsHuman : ResponseAdapter<TestQuery.Data.Hero.AsHuman.Friends.AsHuman> {
@@ -378,8 +377,7 @@ object TestQuery_ResponseAdapter : ResponseAdapter<TestQuery.Data> {
 
           writer.name("name")
           StringResponseAdapter.toResponse(writer, responseAdapterCache, value.name)
-          if (value.asAsHuman != null)
-              AsHuman.toResponse(writer, responseAdapterCache, value.asAsHuman)
+          if (value.asAsHuman != null) AsHuman.toResponse(writer, responseAdapterCache, value.asAsHuman)
         }
 
         object AsHuman : ResponseAdapter<TestQuery.Data.Hero.AsDroid.Friends.AsHuman> {

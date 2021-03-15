@@ -108,8 +108,7 @@ object TestOperation_ResponseAdapter : ResponseAdapter<TestOperation.Data> {
       writer.name("__typename")
       StringResponseAdapter.toResponse(writer, responseAdapterCache, value.__typename)
       if (value.asAsBeing != null) AsBeing.toResponse(writer, responseAdapterCache, value.asAsBeing)
-      if (value.asAsWookie != null)
-          AsWookie.toResponse(writer, responseAdapterCache, value.asAsWookie)
+      if (value.asAsWookie != null) AsWookie.toResponse(writer, responseAdapterCache, value.asAsWookie)
     }
 
     object AsBeing : ResponseAdapter<TestOperation.Data.Random.AsBeing> {
@@ -210,8 +209,7 @@ object TestOperation_ResponseAdapter : ResponseAdapter<TestOperation.Data> {
 
           writer.name("name")
           StringResponseAdapter.toResponse(writer, responseAdapterCache, value.name)
-          if (value.asAsWookie != null)
-              AsWookie.toResponse(writer, responseAdapterCache, value.asAsWookie)
+          if (value.asAsWookie != null) AsWookie.toResponse(writer, responseAdapterCache, value.asAsWookie)
         }
 
         object AsWookie : ResponseAdapter<TestOperation.Data.Random.AsBeing.Friends.AsWookie> {
