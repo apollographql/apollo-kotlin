@@ -50,7 +50,7 @@ class IrBuilder(
 
   private fun shouldAlwaysGenerate(name: String) = alwaysGenerateTypesMatching.map { Regex(it) }.any { it.matches(name) }
 
-  fun build(): UnifiedIr {
+  fun build(): IntermediateRepresentation {
     val operations = operationDefinitions.map { it.toIr() }
     val namedFragments = fragmentDefinitions.map { it.toIr() }
 
@@ -70,7 +70,7 @@ class IrBuilder(
         .filter { usedCustomScalars.contains(it.name) || shouldAlwaysGenerate(it.name) }
         .map { it.toIr() }
 
-    return UnifiedIr(
+    return IntermediateRepresentation(
         operations = operations,
         namedFragments = namedFragments,
         inputObjects = inputObjects,
@@ -142,7 +142,8 @@ class IrBuilder(
         typeCondition = typeDefinition.name,
         variables = variableDefinitions.map { it.toIr() },
         dataField = dataFieldResult.field,
-        sourceWithFragments = sourceWithFragments
+        sourceWithFragments = sourceWithFragments,
+        filePath = sourceLocation.filePath!!
     )
   }
 

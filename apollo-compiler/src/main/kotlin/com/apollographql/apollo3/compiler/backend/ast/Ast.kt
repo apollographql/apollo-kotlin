@@ -267,7 +267,7 @@ internal data class CodeGenerationAst(
       /**
        * Indicates if this is the reference to named fragment 'Data' type
        */
-      val isNamedFragmentDataRef: Boolean
+      val isNamedFragmentDataRef: Boolean = false
   )
 
   companion object {

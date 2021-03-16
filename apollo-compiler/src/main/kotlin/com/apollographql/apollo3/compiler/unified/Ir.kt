@@ -9,7 +9,7 @@ package com.apollographql.apollo3.compiler.unified
 * - infers fragment variables
 * - more generally removes all references to the GraphQL AST and "embeds" type definitions/field definitions
 */
-data class UnifiedIr(
+data class IntermediateRepresentation(
     val operations: List<IrOperation>,
     val namedFragments: List<IrNamedFragment>,
     val inputObjects: List<IrInputObject>,
@@ -47,6 +47,10 @@ data class IrInputField(
     val defaultValue: IrValue?
 )
 
+/**
+ * @param sourceWithFragments the executableDocument
+ * @param filePath the path relative to the source roots
+ */
 data class IrOperation(
     val name: String,
     val operationType: IrOperationType,
@@ -55,6 +59,7 @@ data class IrOperation(
     val description: String?,
     val dataField: IrField,
     val sourceWithFragments: String,
+    val filePath: String
 )
 
 data class IrNamedFragment(
