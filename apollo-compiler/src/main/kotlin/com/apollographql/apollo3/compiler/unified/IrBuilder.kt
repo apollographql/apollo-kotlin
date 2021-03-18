@@ -157,6 +157,7 @@ class IrBuilder(
     return IrNamedFragment(
         name = name,
         description = description,
+        filePath = sourceLocation.filePath!!,
         typeCondition = typeDefinition.name,
         variables = variableDefinitions.map { it.toIr() },
         dataField = dataFieldResult.field,

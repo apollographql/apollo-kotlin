@@ -1,5 +1,9 @@
 package com.apollographql.apollo3.compiler.unified
 
+import com.apollographql.apollo3.compiler.unified.codegen.CGAdapter
+import com.apollographql.apollo3.compiler.unified.codegen.CGImplementation
+import com.apollographql.apollo3.compiler.unified.codegen.CGInterface
+
 internal data class Model(
     val responseName: String,
     val typeSet: TypeSet,
@@ -8,10 +12,16 @@ internal data class Model(
     val children: List<Model>,
 )
 
-internal class AstModelBuilder(val rootField: IrField) {
+internal data class Result(
+    val interfaces: List<CGInterface>,
+    val implementations: List<CGImplementation>,
+    val adapter: CGAdapter,
+)
+
+internal class ModelBuilder(val rootField: IrField) {
   private val edges = mutableListOf<Edge<Model>>()
 
-  fun build(): List<AstExtModel> {
+  fun build(): Result {
     // build the model tree without any inheritance information
     val rootModels = rootField.toAstExtInterfaces()
 

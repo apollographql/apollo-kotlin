@@ -65,6 +65,7 @@ data class IrOperation(
 data class IrNamedFragment(
     val name: String,
     val description: String?,
+    val filePath: String,
     val dataField: IrField,
     /**
      * Fragments do not have variables per-se but we can infer them from the document
