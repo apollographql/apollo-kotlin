@@ -76,3 +76,14 @@ tasks.register("copyFramework", Sync::class) {
     gradlew.setExecutable(true)
   }
 }
+
+apollo {
+  service("github") {
+    sourceFolder.set("com/apollographql/apollo/kmpsample")
+    rootPackageName.set("com.apollographql.apollo.kmpsample")
+  }
+  service("rocketreserver") {
+    sourceFolder.set("com/apollographql/apollo/rocketreserver")
+    rootPackageName.set("com.apollographql.apollo.rocketreserver")
+  }
+}
