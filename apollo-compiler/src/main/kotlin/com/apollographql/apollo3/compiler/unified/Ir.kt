@@ -84,6 +84,7 @@ data class IrField(
     val name: String,
     val alias: String?,
     val arguments: List<IrArgument>,
+
     // from the fieldDefinition
     val description: String?,
     // from the fieldDefinition
