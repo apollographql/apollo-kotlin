@@ -1,10 +1,8 @@
 package com.apollographql.apollo3.compiler.unified.codegen
 
 import com.apollographql.apollo3.compiler.PackageNameProvider
-import com.apollographql.apollo3.compiler.backend.ast.CodeGenerationAst
 import com.apollographql.apollo3.compiler.operationoutput.OperationOutput
 import com.apollographql.apollo3.compiler.operationoutput.findOperationId
-import com.apollographql.apollo3.compiler.unified.AstModelBuilder
 import com.apollographql.apollo3.compiler.unified.BooleanIrType
 import com.apollographql.apollo3.compiler.unified.CustomScalarIrType
 import com.apollographql.apollo3.compiler.unified.EnumIrType
@@ -14,14 +12,10 @@ import com.apollographql.apollo3.compiler.unified.InputObjectIrType
 import com.apollographql.apollo3.compiler.unified.IntIrType
 import com.apollographql.apollo3.compiler.unified.InterfaceIrType
 import com.apollographql.apollo3.compiler.unified.IntermediateRepresentation
-import com.apollographql.apollo3.compiler.unified.IrCustomScalar
 import com.apollographql.apollo3.compiler.unified.IrEnum
 import com.apollographql.apollo3.compiler.unified.IrEnumValue
 import com.apollographql.apollo3.compiler.unified.IrInputField
 import com.apollographql.apollo3.compiler.unified.IrInputObject
-import com.apollographql.apollo3.compiler.unified.IrNamedFragment
-import com.apollographql.apollo3.compiler.unified.IrOperation
-import com.apollographql.apollo3.compiler.unified.IrOperationType
 import com.apollographql.apollo3.compiler.unified.IrType
 import com.apollographql.apollo3.compiler.unified.IrVariable
 import com.apollographql.apollo3.compiler.unified.ListIrType
@@ -46,7 +40,7 @@ class CodegenIrBuilder(
     val operations = ir.operations.map { irOperation ->
       val result = ModelBuilder(irOperation.dataField).build()
 
-      val variables = irOperation.variables.map { it.toCodegenIr() }
+      val variables = irOperation.variables.map { it.toCg() }
       CGOperation(
           name = irOperation.name,
           description = irOperation.description,
@@ -67,7 +61,7 @@ class CodegenIrBuilder(
     val fragments = ir.namedFragments.map { irFragment ->
       val result = ModelBuilder(irFragment.dataField).build()
 
-      val variables = irFragment.variables.map { it.toCodegenIr() }
+      val variables = irFragment.variables.map { it.toCg() }
       CGFragment(
           name = irFragment.name,
           description = irFragment.description,
@@ -81,11 +75,11 @@ class CodegenIrBuilder(
     }
 
     val inputObjectTypes = ir.inputObjects.map { irInputObject ->
-      irInputObject.toCodegenIr()
+      irInputObject.toCg()
     }
 
     val enumTypes = ir.enums.map { irEnum ->
-      irEnum.toCodegenIr()
+      irEnum.toCg()
     }
 
     val customScalarTypes = CGCustomScalars(
@@ -101,36 +95,28 @@ class CodegenIrBuilder(
     )
   }
 
-  private fun IrCustomScalar.toCodegenIr(): CodeGenerationAst.CustomScalarType {
-    return CodeGenerationAst.CustomScalarType(
-        name = name,
-        schemaType = name,
-        mappedType = customScalarsMapping[name]!!,
-    )
-  }
-
-  private fun IrInputObject.toCodegenIr(): CGInputObject {
+  private fun IrInputObject.toCg(): CGInputObject {
     return CGInputObject(
         name = name,
         description = description,
         deprecationReason = deprecationReason,
         inputFields = fields.map { irInputField ->
-          irInputField.toCodegenIr()
+          irInputField.toCg()
         }
     )
   }
 
-  private fun IrEnum.toCodegenIr(): CGEnum {
+  private fun IrEnum.toCg(): CGEnum {
     return CGEnum(
         name = name,
         description = description,
         values = values.map {
-          it.toCodegenIr()
+          it.toCg()
         }
     )
   }
 
-  private fun IrEnumValue.toCodegenIr(): CGEnumValue {
+  private fun IrEnumValue.toCg(): CGEnumValue {
     return CGEnumValue(
         name = name,
         description = description,
@@ -138,119 +124,52 @@ class CodegenIrBuilder(
     )
   }
 
-  private fun IrInputField.toCodegenIr(): CGProperty {
+  private fun IrInputField.toCg(): CGProperty {
     return CGProperty(
         name = name,
         description = description,
         deprecationReason = deprecationReason,
-        type = type.toCodegenIr(null),
         // https://spec.graphql.org/draft/#sec-Input-Object-Required-Fields
-        isRequired = type is NonNullIrType && defaultValue == null,
+        type = type.toInputCgType().optional(type !is NonNullIrType || defaultValue != null),
+        override = false
     )
   }
 
-  private fun IrOperation.toCodegenIr(): CGOperation {
-    val packageName = packageNameProvider.operationPackageName(filePath)
-    return CGOperation(
-        name = name,
-        filePath = filePath,
-        type = when (operationType) {
-          IrOperationType.Query -> CGOperation.Type.QUERY
-          IrOperationType.Mutation -> CGOperation.Type.MUTATION
-          IrOperationType.Subscription -> CGOperation.Type.SUBSCRIPTION
-        },
-        description = description,
-        operationId = operationOutput.findOperationId(name, packageName),
-        operationDocument = sourceWithFragments,
-        variables = variables.map { it.toCodegenIr() },
-        dataImplementation = AstModelBuilder(dataField).build().first() as CGImplementation
-    )
-  }
-
-  private fun IrNamedFragment.toCodegenIr(): Pair<CGFragmentInterface, CGFragmentImplementation> {
-    val models = AstModelBuilder(dataField).build()
-    return CGInterface(
-        interfaces = models.filterIsInstance<CGInterface>()
-    )
-  }
-
-  private fun IrVariable.toCodegenIr(): CGVariable {
+  private fun IrVariable.toCg(): CGVariable {
     return CGVariable(
         name = name,
-        type = type.toCodegenIr(),
-        isRequired = type is NonNullIrType && defaultValue == null
+        type = type.toVariableCgType().optional(type !is NonNullIrType || defaultValue != null),
     )
   }
+}
 
-  private fun IrType.toCodegenIr(filePath: String? = null, modelPath: ModelPath? = null): CGType {
-    return when (this) {
-      is NonNullIrType -> ofType.toCodegenIr(enclosingTypeRef).nonNullable()
-      is ListIrType -> CodeGenerationAst.FieldType.Array(nullable = true, rawType = ofType.toCodegenIr(enclosingTypeRef))
-      is StringIrType -> CodeGenerationAst.FieldType.Scalar.String(nullable = true)
-      is FloatIrType -> CodeGenerationAst.FieldType.Scalar.Float(nullable = true)
-      is IntIrType -> CodeGenerationAst.FieldType.Scalar.Int(nullable = true)
-      is BooleanIrType -> CodeGenerationAst.FieldType.Scalar.Boolean(nullable = true)
-      is IdIrType -> CodeGenerationAst.FieldType.Scalar.String(nullable = true)
-      is CustomScalarIrType -> CodeGenerationAst.FieldType.Scalar.Custom(
-          nullable = true,
-          schemaTypeName = name,
-          type = customScalarsMapping[name]!!,
-          typeRef = CodeGenerationAst.TypeRef(
-              packageName = typesPackageName,
-              enclosingType = null,
-              name = name,
-              isNamedFragmentDataRef = false
-          )
-      )
-      is EnumIrType -> CodeGenerationAst.FieldType.Scalar.Enum(
-          nullable = true,
-          schemaTypeName = name,
-          typeRef = CodeGenerationAst.TypeRef(
-              packageName = typesPackageName,
-              name = name,
-              isNamedFragmentDataRef = false
-          )
-      )
-      is ObjectIrType -> CodeGenerationAst.FieldType.Object(
-          nullable = true,
-          schemaTypeName = name,
-          typeRef = CodeGenerationAst.TypeRef(
-              packageName = fragmentsPackage,
-              name = name,
-              enclosingType = enclosingTypeRef,
-              isNamedFragmentDataRef = false
-          )
-      )
-      is InterfaceIrType -> CodeGenerationAst.FieldType.Object(
-          nullable = true,
-          schemaTypeName = name,
-          typeRef = CodeGenerationAst.TypeRef(
-              packageName = fragmentsPackage,
-              name = name,
-              enclosingType = enclosingTypeRef,
-              isNamedFragmentDataRef = false
-          )
-      )
-      is UnionIrType -> CodeGenerationAst.FieldType.Object(
-          nullable = true,
-          schemaTypeName = name,
-          typeRef = CodeGenerationAst.TypeRef(
-              packageName = fragmentsPackage,
-              name = name,
-              enclosingType = enclosingTypeRef,
-              isNamedFragmentDataRef = false
-          )
-      )
-      is InputObjectIrType -> CodeGenerationAst.FieldType.InputObject(
-          nullable = true,
-          schemaTypeName = name,
-          typeRef = CodeGenerationAst.TypeRef(
-              packageName = typesPackageName,
-              name = name,
-              isNamedFragmentDataRef = false
-          )
-      )
-    }
+fun IrType.toVariableCgType(): CGType {
+  return toCgUnsafe(null)
+}
+
+fun IrType.toInputCgType(): CGType {
+  return toCgUnsafe(null)
+}
+
+fun IrType.toCgUnsafe(leafModelType: CGType?): CGType {
+  if (this is NonNullIrType) {
+    return ofType.toCgUnsafe(leafModelType)
   }
+
+  return when (this) {
+    is NonNullIrType -> error("") // make the compiler happy, this case is handled as a fast path
+    is ListIrType -> CGListType(ofType = ofType.toCgUnsafe(leafModelType))
+    is StringIrType -> CGStringType()
+    is FloatIrType -> CGFloatType()
+    is IntIrType -> CGIntType()
+    is BooleanIrType -> CGBooleanType()
+    is IdIrType -> CGStringType()
+    is CustomScalarIrType -> CGCustomScalarType(name = name)
+    is EnumIrType -> CGEnumType(name = name)
+    is InputObjectIrType -> CGInputObjectType(name = name)
+    is ObjectIrType -> leafModelType ?: error("A modelType is required to build this CGType")
+    is InterfaceIrType ->  leafModelType ?: error("A modelType is required to build this CGType")
+    is UnionIrType ->  leafModelType ?: error("A modelType is required to build this CGType")
+  }.nullable(true)
 }
 

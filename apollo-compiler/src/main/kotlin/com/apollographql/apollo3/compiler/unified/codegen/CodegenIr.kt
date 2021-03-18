@@ -148,24 +148,34 @@ internal data class CGFragment(
 
 sealed class CGType
 
-class CGNullableType(ofType: CGType) : CGType()
+class CGNullableType(val ofType: CGType) : CGType()
+
 /**
  * For input values, we support wrapping them in [Input] to allow differentiating between null and absent
  */
-class CGOptionalType(ofType: CGType) : CGType()
-class CGListType(ofType: CGType) : CGType()
+class CGOptionalType(val ofType: CGType) : CGType()
+class CGListType(val ofType: CGType) : CGType()
 class CGStringType : CGType()
-class CGDoubleType : CGType()
+class CGFloatType : CGType()
 class CGIntType : CGType()
 class CGBooleanType : CGType()
 
 class CGCustomScalarType(val name: String) : CGType()
 class CGEnumType(val name: String) : CGType()
 
-/**
- * @param isRequired will wrap in [Input] if true
- */
-class CGInputObjectType(val name: String, val isRequired: Boolean) : CGType()
+fun CGType.optional(optional: Boolean) = when {
+  optional && this !is CGOptionalType -> CGOptionalType(this)
+  !optional && this is CGOptionalType -> ofType
+  else -> this
+}
+
+fun CGType.nullable(nullable: Boolean) = when {
+  nullable && this !is CGNullableType -> CGNullableType(this)
+  !nullable && this is CGNullableType -> ofType
+  else -> this
+}
+
+class CGInputObjectType(val name: String) : CGType()
 class CGOperationModelType(val filePath: String, modelPath: ModelPath) : CGType()
 class CGFragmentModelType(val filePath: String, modelPath: ModelPath) : CGType()
 
