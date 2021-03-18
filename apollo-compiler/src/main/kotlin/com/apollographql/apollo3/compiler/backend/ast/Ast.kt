@@ -1,10 +1,5 @@
 package com.apollographql.apollo3.compiler.backend.ast
 
-import com.apollographql.apollo3.compiler.unified.AstExtFragmentImplementation
-import com.apollographql.apollo3.compiler.unified.AstExtFragmentInterfaces
-import com.apollographql.apollo3.compiler.unified.AstExtInterface
-import com.apollographql.apollo3.compiler.unified.AstExtOperation
-
 internal typealias CustomScalarTypes = Map<String, CodeGenerationAst.CustomScalarType>
 
 /**
@@ -23,9 +18,6 @@ internal data class CodeGenerationAst(
     val inputTypes: List<InputType>,
     val enumTypes: List<EnumType>,
     val customScalarTypes: CustomScalarTypes,
-    val extOperations: List<AstExtOperation> = emptyList(),
-    val extFragmentInterfaces: List<AstExtFragmentInterfaces> = emptyList(),
-    val extFragmentImplementations: List<AstExtFragmentImplementation> = emptyList(),
 ) {
 
   data class CustomScalarType(

@@ -8,12 +8,12 @@ internal data class Model(
     val children: List<Model>,
 )
 
-internal class ModelBuilder(val rootField: IrField) {
+internal class AstModelBuilder(val rootField: IrField) {
   private val edges = mutableListOf<Edge<Model>>()
 
-  fun build(): Model {
+  fun build(): List<AstExtModel> {
     // build the model tree without any inheritance information
-    val rootModels = rootField.toModels()
+    val rootModels = rootField.toAstExtInterfaces()
 
     // then walk the tree and build the inheritance edges
     walk(rootModels, emptyList())
@@ -23,6 +23,40 @@ internal class ModelBuilder(val rootField: IrField) {
     )
   }
 
+  private fun IrField.toAstField(): AstExtField {
+    return AstExtField(
+        name = name,
+        type = type.toAst(),
+        override =
+    )
+  }
+
+
+  private fun IrField.toAstExtInterfaces(path: ModelPath): List<AstExtInterface> {
+    return fieldSets.map { fieldSet ->
+      val selfPath = path + modelName(fieldSet.typeSet, responseName)
+      AstExtInterface(
+          path = selfPath,
+          description = description ?: "",
+          deprecationReason = deprecationReason,
+          fields = fieldSet.fields.map { it.toAstField() },
+          nestedModels = fieldSet.fields.flatMap { childField ->
+            val neighbourModels = interfaces.mapNotNull { superInterface ->
+              superInterface.nestedModels.firstOrNull { it.path.last() == childField.responseName }
+            }
+            childField.toAstModels(
+                selfPath,
+                forceInterfaces,
+                interfaces.flatMap {
+                  it.fields.filter { it.name == }
+                }
+            )
+          },
+          implements = interfaces
+      )
+
+    }
+  }
   /**
    * @param neighbours all the models with the same responseName path, ordered by common ancestor distance,
    * ie the neighbours with the closest common ancestor will come first

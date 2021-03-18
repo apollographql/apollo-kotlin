@@ -4,6 +4,10 @@ import com.apollographql.apollo3.compiler.backend.ast.CodeGenerationAst
 
 typealias ModelPath = List<String>
 
+fun modelName(typeSet: TypeSet, responseName: String): String {
+  return (typeSet.sorted() + responseName).map { it.capitalize() }.joinToString("")
+}
+
 internal data class AstExtField(
     val name: String,
     val type: CodeGenerationAst.FieldType,
@@ -14,33 +18,31 @@ internal interface AstExtModel {
   /**
    * The path to the model. We need that from codegen to be able to create references to this model
    */
-  val path: List<String>
+  val path: ModelPath
   val description: String
   val deprecationReason: String?
   val fields: List<AstExtField>
   val nestedModels: List<AstExtModel>
-  /**
-   * The list of implemented interfaces ordered by depth (same depth goes first)
-   */
-  val implements: List<AstExtModel>
 }
 
 internal data class AstExtInterface(
-    override val path: List<String>,
+    override val path: ModelPath,
     override val description: String,
     override val deprecationReason: String?,
     override val fields: List<AstExtField>,
-    override val nestedModels: List<AstExtModel>,
-    override val implements: List<AstExtModel>,
+    override val nestedModels: List<AstExtInterface>,
 ) : AstExtModel
 
 internal data class AstExtImplementation(
-    override val path: List<String>,
+    override val path: ModelPath,
     override val description: String,
     override val deprecationReason: String?,
     override val fields: List<AstExtField>,
-    override val nestedModels: List<AstExtModel>,
-    override val implements: List<AstExtModel>,
+    override val nestedModels: List<AstExtImplementation>,
+    /**
+     * The list of implemented interfaces ordered by depth (same depth goes first)
+     */
+    val implements: List<AstExtImplementation>,
 ) : AstExtModel
 
 interface AstExtAdapter
@@ -77,8 +79,7 @@ internal data class AstExtOperation(
 }
 
 internal data class AstExtFragmentInterfaces(
-    val packageName: String,
-    val dataInterfaces: List<AstExtInterface>
+    val interfaces: List<AstExtInterface>
 )
 
 internal data class AstExtFragmentImplementation(
