@@ -12,6 +12,12 @@ import com.apollographql.apollo.kmpsample.type.RepositoryOrderField
 import com.apollographql.apollo.network.http.ApolloHttpNetworkTransport
 import com.apollographql.apollo.network.HttpExecutionContext
 import com.apollographql.apollo.ApolloException
+import com.apollographql.apollo.network.ws.ApolloWebSocketFactory
+import com.apollographql.apollo.network.ws.ApolloWebSocketNetworkTransport
+import com.apollographql.apollo.rocketreserver.TripsBookedSubscription
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.flow.collect
+import kotlinx.coroutines.flow.retryWhen
 import kotlinx.coroutines.flow.single
 
 /**
@@ -29,6 +35,25 @@ class ApolloCoroutinesRepository {
       )
   )
 
+  suspend fun subscribeToBookedTrips() {
+    val apolloClientWebsocketCommunication = ApolloClient(
+      networkTransport = ApolloHttpNetworkTransport(
+        serverUrl = "https://apollo-fullstack-tutorial.herokuapp.com/graphql",
+        headers = emptyMap()
+      ),
+      subscriptionNetworkTransport = ApolloWebSocketNetworkTransport(
+        webSocketFactory = ApolloWebSocketFactory("https://apollo-fullstack-tutorial.herokuapp.com/graphql")
+      )
+    )
+    apolloClientWebsocketCommunication.subscribe(TripsBookedSubscription()).execute()
+      .retryWhen { _, attempt ->
+        delay(attempt * 1000)
+        true
+      }.collect {
+        println("Trip Id: ${it.data?.tripsBooked}")
+      }
+  }
+
   suspend fun fetchRepositories(): List<RepositoryFragment> {
     val repositoriesQuery = GithubRepositoriesQuery(
         repositoriesCount = 50,
@@ -36,7 +61,6 @@ class ApolloCoroutinesRepository {
         orderDirection = OrderDirection.DESC
     )
     val response = apolloClient.query(repositoriesQuery).execute().single()
-    println("Http response: " + response.executionContext[HttpExecutionContext.Response])
     return response.data?.viewer?.repositories?.nodes?.mapNotNull { it?.fragments?.repositoryFragment }.orEmpty()
   }
 

@@ -27,6 +27,12 @@ class ApolloiOSRepository(private val repository: ApolloCoroutinesRepository) {
       success(repository.fetchCommits(repositoryName))
     }
   }
+
+  fun subscribeToBookedTrips() {
+    GlobalScope.launch(MainLoopDispatcher) {
+      repository.subscribeToBookedTrips()
+    }
+  }
 }
 
 @InternalCoroutinesApi

@@ -21,6 +21,7 @@ class RepositoryManager: ObservableObject {
         self.repository.fetchRepositories { [weak self] repos in
             self?.repos = repos
         }
+        self.repository.subscribeToBookedTrips()
     }
     
     func fetchDetails(for repo: RepositoryFragment) {        
