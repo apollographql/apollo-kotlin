@@ -173,8 +173,8 @@ class FieldSetsBuilder(
 
   private class TypedSelectionSet(val selections: List<GQLSelection>, val selectionSetTypeCondition: String)
 
-  private fun TypedSelectionSet.collectFields(typeConditions: TypeSet): List<CollectedField> {
-    if (!typeConditions.contains(selectionSetTypeCondition)) {
+  private fun TypedSelectionSet.collectFields(typeSet: TypeSet): List<CollectedField> {
+    if (!typeSet.contains(selectionSetTypeCondition)) {
       return emptyList()
     }
     val typeDefinition = schema.typeDefinition(selectionSetTypeCondition)
@@ -197,11 +197,11 @@ class FieldSetsBuilder(
           )
         }
         is GQLInlineFragment -> {
-          TypedSelectionSet(it.selectionSet.selections, it.typeCondition.name).collectFields(typeConditions)
+          TypedSelectionSet(it.selectionSet.selections, it.typeCondition.name).collectFields(typeSet)
         }
         is GQLFragmentSpread -> {
           val fragment = allGQLFragmentDefinitions[it.name]!!
-          TypedSelectionSet(fragment.selectionSet.selections, fragment.typeCondition.name).collectFields(typeConditions)
+          TypedSelectionSet(fragment.selectionSet.selections, fragment.typeCondition.name).collectFields(typeSet)
         }
       }
     }
