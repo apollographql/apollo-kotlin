@@ -82,6 +82,13 @@ class FieldSetsBuilder(
 
     val shapeTypeSetToPossibleTypes = computeShapes(schema, interfacesTypeSets.union())
 
+    val interfaceFieldSets = interfacesTypeSets.map {
+      toIrFieldSet(
+          typeSet = it,
+          possibleTypes = emptySet(),
+      )
+    }
+
     val shapesTypeSets = shapeTypeSetToPossibleTypes.keys
 
     /**
@@ -132,14 +139,13 @@ class FieldSetsBuilder(
      */
     val edges = transitiveReduce(shapeToFragmentEdges + fragmentToFragmentEdges)
 
-    edges.flatMap { listOf(it.source, it.target) }.distinct().forEach {
+    return edges.flatMap { listOf(it.source, it.target) }.distinct().map {
       toIrFieldSet(
           typeSet = it.typeSet,
           possibleTypes = (it as? ShapeNode)?.typeSet?.let { shapeTypeSetToPossibleTypes[it] } ?: emptySet(),
           implements = edges.filter { edge -> edge.source == it }.map { it.target.typeSet }.toSet()
       )
     }
-    return emptyList()
   }
   
   /**

@@ -38,7 +38,8 @@ class CodegenIrBuilder(
   internal fun build(): CodegenIr {
 
     val operations = ir.operations.map { irOperation ->
-      val result = ModelBuilder(irOperation.dataField).build()
+      val path = ModelPath(irOperation.filePath, ModelPath.Root.Operation, emptyList())
+      val result = ModelBuilder(irOperation.filePath, irOperation.dataField, path).build()
 
       val variables = irOperation.variables.map { it.toCg() }
       CGOperation(
@@ -52,14 +53,15 @@ class CodegenIrBuilder(
           variablesAdapter = variables.toCGAdapter(irOperation.name),
 
           operationType = CGOperation.OperationType.valueOf(irOperation.operationType.name.toUpperCase()),
-          // TODO: remove the the package name from here
+          // TODO: remove the package name from here
           operationId = operationOutput.findOperationId(irOperation.name, ""),
           operationDocument = irOperation.sourceWithFragments,
       )
     }
 
     val fragments = ir.namedFragments.map { irFragment ->
-      val result = ModelBuilder(irFragment.dataField).build()
+      val path = ModelPath(irFragment.filePath, ModelPath.Root.Fragment, emptyList())
+      val result = ModelBuilder(irFragment.filePath, irFragment.dataField, path).build()
 
       val variables = irFragment.variables.map { it.toCg() }
       CGFragment(
@@ -144,21 +146,24 @@ class CodegenIrBuilder(
 }
 
 fun IrType.toVariableCgType(): CGType {
-  return toCgUnsafe(null)
+  return toCg(null)
 }
 
 fun IrType.toInputCgType(): CGType {
-  return toCgUnsafe(null)
+  return toCg(null)
 }
 
-fun IrType.toCgUnsafe(leafModelType: CGType?): CGType {
+/**
+ * If you expect to have a non-scalar output type somewhere, you **must** pass it in [compoundType]
+ */
+fun IrType.toCg(compoundType: CGType?): CGType {
   if (this is NonNullIrType) {
-    return ofType.toCgUnsafe(leafModelType)
+    return ofType.toCg(compoundType)
   }
 
   return when (this) {
     is NonNullIrType -> error("") // make the compiler happy, this case is handled as a fast path
-    is ListIrType -> CGListType(ofType = ofType.toCgUnsafe(leafModelType))
+    is ListIrType -> CGListType(ofType = ofType.toCg(compoundType))
     is StringIrType -> CGStringType()
     is FloatIrType -> CGFloatType()
     is IntIrType -> CGIntType()
@@ -167,9 +172,9 @@ fun IrType.toCgUnsafe(leafModelType: CGType?): CGType {
     is CustomScalarIrType -> CGCustomScalarType(name = name)
     is EnumIrType -> CGEnumType(name = name)
     is InputObjectIrType -> CGInputObjectType(name = name)
-    is ObjectIrType -> leafModelType ?: error("A modelType is required to build this CGType")
-    is InterfaceIrType ->  leafModelType ?: error("A modelType is required to build this CGType")
-    is UnionIrType ->  leafModelType ?: error("A modelType is required to build this CGType")
+    is ObjectIrType,
+    is InterfaceIrType,
+    is UnionIrType ->  compoundType ?: error("compoundType is required to build this CGType")
   }.nullable(true)
 }
 

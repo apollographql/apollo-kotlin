@@ -22,7 +22,21 @@ internal data class CodegenIr(
     val customScalars: CGCustomScalars,
 )
 
-typealias ModelPath = List<String>
+data class PathElement(
+    val typeSet: TypeSet,
+    val responseName: String,
+)
+
+data class ModelPath(val fileName: String, val root: Root, val elements: List<PathElement>) {
+  constructor(fileName: String, root: Root, vararg elements: PathElement) : this(fileName, root, elements.toList())
+
+  operator fun plus(element: PathElement) = copy(elements = elements + element)
+
+  enum class Root {
+    Operation,
+    Fragment
+  }
+}
 
 fun modelName(typeSet: TypeSet, responseName: String): String {
   return (typeSet.sorted() + responseName).map { it.capitalize() }.joinToString("")
@@ -176,8 +190,7 @@ fun CGType.nullable(nullable: Boolean) = when {
 }
 
 class CGInputObjectType(val name: String) : CGType()
-class CGOperationModelType(val filePath: String, modelPath: ModelPath) : CGType()
-class CGFragmentModelType(val filePath: String, modelPath: ModelPath) : CGType()
+class CGModelType(modelPath: ModelPath) : CGType()
 
 internal data class CGVariable(
     val name: String,

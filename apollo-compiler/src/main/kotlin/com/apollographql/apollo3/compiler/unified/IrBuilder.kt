@@ -176,7 +176,6 @@ class IrBuilder(
 
     val result = builder.build()
 
-
     val field = IrField(
         name = "data",
         alias = null,

@@ -1,16 +1,14 @@
 package com.apollographql.apollo3.compiler.unified
 
 import com.apollographql.apollo3.compiler.unified.codegen.CGAdapter
+import com.apollographql.apollo3.compiler.unified.codegen.CGFragmentModelType
 import com.apollographql.apollo3.compiler.unified.codegen.CGImplementation
 import com.apollographql.apollo3.compiler.unified.codegen.CGInterface
-
-internal data class Model(
-    val responseName: String,
-    val typeSet: TypeSet,
-    val irField: IrField,
-    val irFieldSet: IrFieldSet,
-    val children: List<Model>,
-)
+import com.apollographql.apollo3.compiler.unified.codegen.CGModelType
+import com.apollographql.apollo3.compiler.unified.codegen.CGProperty
+import com.apollographql.apollo3.compiler.unified.codegen.ModelPath
+import com.apollographql.apollo3.compiler.unified.codegen.PathElement
+import com.apollographql.apollo3.compiler.unified.codegen.toCg
 
 internal data class Result(
     val interfaces: List<CGInterface>,
@@ -18,112 +16,68 @@ internal data class Result(
     val adapter: CGAdapter,
 )
 
-internal class ModelBuilder(val rootField: IrField) {
-  private val edges = mutableListOf<Edge<Model>>()
+internal class ModelBuilder(
+    val filePath: String,
+    val rootField: IrField,
+    val path: ModelPath,
+) {
+
+  private fun IrType.toTypeSet() = setOf(leafName)
+
 
   fun build(): Result {
     // build the model tree without any inheritance information
-    val rootModels = rootField.toAstExtInterfaces()
+    val interfaces = rootField.toCGInterfaces(path)
 
-    // then walk the tree and build the inheritance edges
-    walk(rootModels, emptyList())
-
-    return Model(
-
+    return Result(
+        interfaces = interfaces,
+        implementations =
     )
   }
 
-  private fun IrField.toAstField(): AstExtField {
-    return AstExtField(
-        name = name,
-        type = type.toAst(),
-        override =
-    )
-  }
-
-
-  private fun IrField.toAstExtInterfaces(path: ModelPath): List<AstExtInterface> {
+  /**
+   * @param the path leading (but not including) to this field
+   */
+  private fun IrField.toCGInterfaces(path: ModelPath): List<CGInterface> {
     return fieldSets.map { fieldSet ->
-      val selfPath = path + modelName(fieldSet.typeSet, responseName)
-      AstExtInterface(
-          path = selfPath,
-          description = description ?: "",
-          deprecationReason = deprecationReason,
-          fields = fieldSet.fields.map { it.toAstField() },
-          nestedModels = fieldSet.fields.flatMap { childField ->
-            val neighbourModels = interfaces.mapNotNull { superInterface ->
-              superInterface.nestedModels.firstOrNull { it.path.last() == childField.responseName }
-            }
-            childField.toAstModels(
-                selfPath,
-                forceInterfaces,
-                interfaces.flatMap {
-                  it.fields.filter { it.name == }
-                }
-            )
-          },
-          implements = interfaces
-      )
-
+      fieldSet.toCGInterface(path, this)
     }
   }
+
   /**
-   * @param neighbours all the models with the same responseName path, ordered by common ancestor distance,
-   * ie the neighbours with the closest common ancestor will come first
+   * @param the path leading (but not including) to this field
    */
-  @Suppress("NAME_SHADOWING")
-  private fun walk(models: List<Model>, neighbours: List<Model>): Model {
-    val models = models.sortedByDescending { it.typeSet.size }
-    for (i in 0.until(models.size)) {
-      val model = models[i]
-      /**
-       * a model cannot implement itself so start at i + 1
-       * it can implement an interface with the same typeSet though if an implementation implements an interface
-       */
-      val neighbours = models.subList(i + 1, models.size) + neighbours
-      neighbours.forEach {
-        if (model.typeSet.implements(it.typeSet)) {
-          edges.add(Edge(model, it))
+  private fun IrField.toCGProperty(path: ModelPath): CGProperty {
+    val compoundType = when(type) {
+      is ObjectIrType,
+      is InterfaceIrType,
+      is UnionIrType -> CGModelType(path + PathElement(type.toTypeSet(), responseName))
+      else -> null
+    }
+
+    return CGProperty(
+        name = responseName,
+        description = description,
+        deprecationReason = deprecationReason,
+        type = type.toCg(compoundType),
+        override = false,
+    )
+  }
+
+  private fun IrFieldSet.toCGInterface(path: ModelPath, field: IrField): CGInterface {
+    @Suppress("NAME_SHADOWING")
+    val path = path + PathElement(typeSet, field.responseName)
+
+    return CGInterface(
+        path = path,
+        description = field.description,
+        deprecationReason = field.deprecationReason,
+        properties = fields.map {
+          it.toCGProperty(path)
+        },
+        nestedModels = fields.flatMap {
+          it.toCGInterfaces(path)
         }
-      }
-
-      model.children.forEach { childModel ->
-        walk(childModel, )
-      }
-    }
-  }
-
-  /**
-   * @param neighbours all the models with the same responseName path, ordered by common ancestor distance,
-   * that this model must inherit from
-   */
-  private fun walk(model: Model, neighbours: List<Model>): Model {
-    neighbours.forEach {
-      if (model.typeSet.implements(it.typeSet)) {
-        edges.add(Edge(model, it))
-      }
-    }
-
-    model.children.forEach {
-
-    }
-
-      model.children.forEach { childModel ->
-        walk(childModel, )
-      }
-    }
-  }
-  private fun IrField.toModels(): List<Model> {
-    return fieldSets.map { fieldSet ->
-      Model(
-          responseName = responseName,
-          typeSet = fieldSet.typeSet,
-          irField = this,
-          irFieldSet = fieldSet,
-          children = fieldSet.fields.flatMap {
-            it.toModels()
-          }
-      )
-    }
+    )
   }
 }
