@@ -43,8 +43,21 @@ internal object BackendIrMergeUtils {
       if (fragmentToMerge == null) {
         fragment
       } else {
+        val fragmentFields = fragment.fields.mergeFields(fragmentToMerge.fields).mergeFields(parentFields)
+        val nestedFragments = if (fragmentToMerge.nestedFragments == null) {
+          fragment.nestedFragments
+        } else {
+          fragment.nestedFragments?.copy(
+              fragments = fragment.nestedFragments.mergeFragments(
+                  parentFields = fragmentFields,
+                  otherFragments = fragmentToMerge.nestedFragments
+              ),
+              accessors = fragment.nestedFragments.accessors + fragmentToMerge.nestedFragments.accessors,
+          ) ?: fragmentToMerge.nestedFragments
+        }
         fragment.copy(
-            fields = fragment.fields.mergeFields(fragmentToMerge.fields).mergeFields(parentFields),
+            fields = fragmentFields,
+            nestedFragments = nestedFragments,
             selectionKeys = fragment.selectionKeys + fragmentToMerge.selectionKeys,
         )
       }
