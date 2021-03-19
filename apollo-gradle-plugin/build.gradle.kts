@@ -41,7 +41,6 @@ val shadowJarTask = tasks.named("shadowJar", com.github.jengelman.gradle.plugins
 val shadowPrefix = "com.apollographql.relocated"
 
 shadowJarTask.configure {
-  minimize()
   configurations = listOf(shadowImplementation)
   relocate("org.antlr", "com.apollographql.relocated.org.antlr")
   relocate("okio", "com.apollographql.relocated.okio")
