@@ -36,6 +36,7 @@ internal fun computeShapes(schema: Schema, typeConditions: Set<String>): Map<Typ
 
         matchedSupers to concreteType
       }
+      .filter { it.first.isNotEmpty() }
       .groupBy(
           keySelector = { it.first },
           valueTransform = { it.second }
