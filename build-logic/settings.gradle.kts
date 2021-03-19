@@ -4,8 +4,8 @@ apply(from = "../gradle/dependencies.gradle")
 
 pluginManagement {
   repositories {
-    gradlePluginPortal()
     mavenCentral()
+    gradlePluginPortal()
   }
   pluginManagement {
     resolutionStrategy {
