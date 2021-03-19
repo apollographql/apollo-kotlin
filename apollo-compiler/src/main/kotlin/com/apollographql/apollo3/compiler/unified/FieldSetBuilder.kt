@@ -7,7 +7,6 @@ import com.apollographql.apollo3.compiler.frontend.GQLFragmentDefinition
 import com.apollographql.apollo3.compiler.frontend.GQLFragmentSpread
 import com.apollographql.apollo3.compiler.frontend.GQLInlineFragment
 import com.apollographql.apollo3.compiler.frontend.GQLSelection
-import com.apollographql.apollo3.compiler.frontend.GQLSelectionSet
 import com.apollographql.apollo3.compiler.frontend.GQLType
 import com.apollographql.apollo3.compiler.frontend.Schema
 import com.apollographql.apollo3.compiler.frontend.coerce
@@ -16,68 +15,40 @@ import com.apollographql.apollo3.compiler.frontend.findDeprecationReason
 
 
 /**
- * For a "base" selectionSet (either query, named fragment or field), collect all the typeConditions
- * Then for each combination of typeConditions, collect all the fields recursively
+ * For a [TypedSelectionSet]  collect all the typeConditions.
+ * Then for each combination of typeConditions, collect all the fields recursively.
+ *
+ * While doing so, it records all the used fragments and used types
+ *
+ * @param registerFragment a callback to register fragments as we encounter them.
+ * @param registerType a factory for IrType. This is used to track what types are used to only generate those
  */
-class FieldSetsBuilder(
-    val schema: Schema,
-    val allGQLFragmentDefinitions: Map<String, GQLFragmentDefinition>,
-    val baseSelectionSet: GQLSelectionSet,
-    val baseTypeCondition: String,
-    val toIrType: GQLType.() -> IrType
+class IrFieldSetBuilder(
+    private val schema: Schema,
+    private val allGQLFragmentDefinitions: Map<String, GQLFragmentDefinition>,
+    private val baseSelections: List<GQLSelection>,
+    private val baseType: String,
+    private val registerFragment: (String) -> Unit,
+    private val registerType: (GQLType) -> IrType,
 ) {
-  class Result(
-      val fieldSets: List<IrFieldSet>,
-      val usedNamedFragments: Set<String>,
+
+  class TypedSelectionSet(
+      val selections: List<GQLSelection>,
+      val selectionSetTypeCondition: String,
   )
 
-  private var usedNamedFragments = mutableListOf<String>()
-
-  /**
-   * Return a list of set of type conditions.
-   *
-   * Each individual set matches a path for which we need to potentially generate a model
-   *
-   * {# Base type A
-   *   ... on B {
-   *     ... on C {
-   *   }
-   *   ... on B {
-   *     ... on D {
-   *   }
-   * }
-   *
-   * Will return:
-   * [
-   *   [A]
-   *   [A,B]
-   *   [A,B,C]
-   *   [A,B,D]
-   * ]
-   */
-  private fun List<GQLSelection>.collectTypeConditions(path: Set<String>): List<Set<String>> {
-    return listOf(path) + flatMap {
-      when (it) {
-        is GQLField -> emptyList()
-        is GQLInlineFragment -> it.selectionSet.selections.collectTypeConditions(path + it.typeCondition.name)
-        is GQLFragmentSpread -> {
-          val fragmentDefinition = allGQLFragmentDefinitions[it.name]!!
-          usedNamedFragments.add(it.name)
-          fragmentDefinition.selectionSet.selections.collectTypeConditions(path + fragmentDefinition.typeCondition.name)
-        }
-      }
-    }
-  }
-
-  fun build(): Result {
-    return Result(
-        fieldSets = TypedSelectionSet(baseSelectionSet.selections, baseTypeCondition).toIrFieldSets(),
-        usedNamedFragments = usedNamedFragments.toSet(),
-    )
+  fun build(): List<IrFieldSet> {
+    return TypedSelectionSet(baseSelections, baseType).toIrFieldSets()
   }
 
   private fun TypedSelectionSet.toIrFieldSets(): List<IrFieldSet> {
-    val interfacesTypeSets = selections.collectTypeConditions(setOf(selectionSetTypeCondition)).toSet()
+    val fragmentCollectionResult = FragmentCollectionScope(selections, selectionSetTypeCondition, allGQLFragmentDefinitions).collect()
+
+    fragmentCollectionResult.namedFragments.forEach {
+      registerFragment(it.name)
+    }
+
+    val interfacesTypeSets = fragmentCollectionResult.typeSet
 
     val shapeTypeSetToPossibleTypes = computeShapes(schema, interfacesTypeSets.union())
 
@@ -85,68 +56,36 @@ class FieldSetsBuilder(
       toIrFieldSet(
           typeSet = it,
           possibleTypes = emptySet(),
+          superTypeSets = emptySet(),
+          namedFragments = emptySet()
       )
     }
 
     val shapesTypeSets = shapeTypeSetToPossibleTypes.keys
 
-    /**
-     * build the relations of shape to their interfaceTypeSets
-     *
-     * By construction, shapes do not inherit each other
-     */
-    var shapeToFragmentEdges = interfacesTypeSets.flatMap { interfaceTypeSet ->
-      shapesTypeSets.filter { shapeTypeSet ->
-        shapeTypeSet.implements(interfaceTypeSet)
-      }.map { shapesTypeSet ->
-        Edge(
-            source = ShapeNode(shapesTypeSet),
-            target = InterfaceNode(interfaceTypeSet)
-        )
-      }
-    }
+    val shapesFieldSets = shapesTypeSets.map { shapeTypeSet ->
+      /**
+       * TODO: we need to iterate on variables too to support @include directives
+       */
+      val namedFragments = fragmentCollectionResult
+          .namedFragments
+          .filter {
+            it.condition.evaluate(emptySet(), shapeTypeSet)
+          }
+          .map { it.name }
+          .toSet()
 
-    /**
-     * Prune interfaceTypeSets that are only implemented by one shape or less, we won't need those
-     */
-    val interfaceTypeSetsToGenerate = shapeToFragmentEdges.groupBy(
-        keySelector = { it.target },
-        valueTransform = { it.source }
-    ).filter {
-      it.value.size > 1
-    }.keys
-
-    shapeToFragmentEdges = shapeToFragmentEdges.filter {
-      interfaceTypeSetsToGenerate.contains(it.target)
-    }
-
-    /**
-     * build the internal relations of the different interfaceTypeSets
-     */
-    val fragmentToFragmentEdges = interfacesTypeSets.pairs().mapNotNull {
-      when {
-        it.first.implements(it.second) -> Edge(InterfaceNode(it.first), InterfaceNode(it.second))
-        it.second.implements(it.first) -> Edge(InterfaceNode(it.second), InterfaceNode(it.first))
-        else -> {
-          null
-        }
-      }
-    }
-
-    /**
-     * Try to simplify inheritance relations
-     */
-    val edges = transitiveReduce(shapeToFragmentEdges + fragmentToFragmentEdges)
-
-    return edges.flatMap { listOf(it.source, it.target) }.distinct().map {
       toIrFieldSet(
-          typeSet = it.typeSet,
-          possibleTypes = (it as? ShapeNode)?.typeSet?.let { shapeTypeSetToPossibleTypes[it] } ?: emptySet(),
-          inlineFragments = edges.filter { edge -> edge.source == it }.map { it.target.typeSet }.toSet()
+          typeSet = shapeTypeSet,
+          possibleTypes = shapeTypeSetToPossibleTypes[shapeTypeSet]!!,
+          superTypeSets = interfacesTypeSets.filter { shapeTypeSet.implements(it) }.toSet(),
+          namedFragments = namedFragments
       )
     }
+
+    return interfaceFieldSets + shapesFieldSets
   }
-  
+
   /**
    * An intermediate class used during collection
    */
@@ -171,8 +110,6 @@ class FieldSetsBuilder(
     val responseName = alias ?: name
   }
 
-  private class TypedSelectionSet(val selections: List<GQLSelection>, val selectionSetTypeCondition: String)
-
   private fun TypedSelectionSet.collectFields(typeSet: TypeSet): List<CollectedField> {
     if (!typeSet.contains(selectionSetTypeCondition)) {
       return emptyList()
@@ -190,7 +127,7 @@ class FieldSetsBuilder(
                   arguments = it.arguments?.arguments?.map { it.toIr(fieldDefinition) } ?: emptyList(),
                   condition = it.directives.toBooleanExpression(),
                   selections = it.selectionSet?.selections ?: emptyList(),
-                  type = fieldDefinition.type.toIrType(),
+                  type = registerType(fieldDefinition.type),
                   description = fieldDefinition.description,
                   deprecationReason = fieldDefinition.directives.findDeprecationReason(),
               )
@@ -214,16 +151,15 @@ class FieldSetsBuilder(
         name = name,
         value = value.coerce(argumentDefinition.type, schema).orThrow().toIr(),
         defaultValue = argumentDefinition.defaultValue?.coerce(argumentDefinition.type, schema)?.orThrow()?.toIr(),
-        type = argumentDefinition.type.toIrType()
+        type = registerType(argumentDefinition.type)
     )
   }
 
   private fun TypedSelectionSet.toIrFieldSet(
       typeSet: TypeSet,
-      possibleTypes:
-      PossibleTypes,
-      inlineFragments: Set<TypeSet>,
-      namedFragments: 
+      possibleTypes: PossibleTypes,
+      superTypeSets: Set<TypeSet>,
+      namedFragments: Set<String>,
   ): IrFieldSet {
     val collectedFields = collectFields(typeSet)
 
@@ -244,6 +180,7 @@ class FieldSetsBuilder(
       val selections = fieldsWithSameResponseName.flatMap { it.selections }
 
       val fieldSets = TypedSelectionSet(selections, first.type.leafName).toIrFieldSets()
+
       IrField(
           alias = first.alias,
           name = first.name,
@@ -251,16 +188,17 @@ class FieldSetsBuilder(
           description = first.description,
           deprecationReason = first.deprecationReason,
           type = first.type,
-
           condition = BooleanExpression.Or(fieldsWithSameResponseName.map { it.condition }.toSet()),
           fieldSets = fieldSets
       )
     }
+
     return IrFieldSet(
         typeSet = typeSet.toSet(),
         possibleTypes = possibleTypes,
-        implements = inlineFragments,
-        fields = fields
+        superTypeSets = superTypeSets,
+        fields = fields,
+        namedFragments = namedFragments
     )
   }
 

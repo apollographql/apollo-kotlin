@@ -170,11 +170,16 @@ class IrBuilder(
   )
 
   private fun createDataField(selectionSet: GQLSelectionSet, typeCondition: String): DataFieldResult {
-    val builder = FieldSetsBuilder(schema, allGQLFragmentDefinitions, selectionSet, typeCondition) {
-      toIr()
-    }
+    val usedNamedFragments = mutableSetOf<String>()
 
-    val result = builder.build()
+    val irFieldSets = IrFieldSetBuilder(
+        schema,
+        allGQLFragmentDefinitions,
+        selectionSet.selections,
+        typeCondition,
+        { usedNamedFragments.add(it)},
+        { it.toIr() }
+    ).build()
 
     val field = IrField(
         name = "data",
@@ -184,10 +189,10 @@ class IrBuilder(
         type = ObjectIrType(typeCondition),
         condition = BooleanExpression.True,
         description = "Synthetic data field",
-        fieldSets = result.fieldSets,
+        fieldSets = irFieldSets,
     )
 
-    return DataFieldResult(field, result.usedNamedFragments)
+    return DataFieldResult(field, usedNamedFragments)
   }
 
   private fun InputValueScope.VariableReference.toIr(): IrVariable {

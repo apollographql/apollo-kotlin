@@ -3,19 +3,15 @@ package com.apollographql.apollo3.compiler.unified
 import com.apollographql.apollo3.compiler.frontend.GQLObjectTypeDefinition
 import com.apollographql.apollo3.compiler.frontend.Schema
 import com.apollographql.apollo3.compiler.frontend.possibleTypes
-import org.jgrapht.alg.TransitiveReduction
-import org.jgrapht.graph.DefaultDirectedGraph
-import org.jgrapht.graph.DefaultEdge
 
+/**
+ * A list of type conditions resulting from evaluating multiple potentially nested fragments.
+ */
 internal typealias TypeSet = Set<String>
+/**
+ * A list of concrete types, usually used with a a [TypeSet]
+ */
 internal typealias PossibleTypes = Set<String>
-
-
-data class Edge<V>(val source: V, val target: V)
-
-sealed class Node(val typeSet: TypeSet)
-class InterfaceNode(typeSet: TypeSet): Node(typeSet)
-class ShapeNode(typeSet: TypeSet): Node(typeSet)
 
 /**
  * Return the different possible shapes
@@ -48,24 +44,3 @@ internal fun computeShapes(schema: Schema, typeConditions: Set<String>): Map<Typ
 }
 
 internal fun TypeSet.implements(other: TypeSet) = intersect(other) == other
-
-
-fun <V> transitiveReduce(
-    edges: List<Edge<out V>>
-): List<Edge<V>> {
-  val graph = DefaultDirectedGraph<V, DefaultEdge>(DefaultEdge::class.java)
-
-  edges.flatMap { listOf(it.source, it.target) }.distinct()
-      .forEach {
-        graph.addVertex(it)
-      }
-  edges.forEach {
-    graph.addEdge(it.source, it.target)
-  }
-
-  TransitiveReduction.INSTANCE.reduce(graph)
-
-  return graph.edgeSet().map {
-    Edge(graph.getEdgeSource(it), graph.getEdgeTarget(it))
-  }
-}

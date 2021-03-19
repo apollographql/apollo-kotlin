@@ -104,10 +104,10 @@ data class IrField(
  * @param possibleTypes: the possibleTypes that will map to this [IrFieldSet]. If it is empty,
  */
 data class IrFieldSet(
-    val typeSet: Set<String>, // setOf(Animal, Pet)
+    val typeSet: Set<String>,
     val possibleTypes: Set<String>,
     val fields: List<IrField>,
-    val implements: Set<TypeSet>,
+    val superTypeSets: Set<TypeSet>,
     val namedFragments: Set<String>
 )
 
