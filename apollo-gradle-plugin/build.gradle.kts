@@ -56,7 +56,8 @@ configurations {
       val removed = artifacts.removeIf { it.classifier.isNullOrEmpty() }
       if (removed) {
         artifact(tasks.shadowJar) {
-          classifier = "all"
+          // Pom and maven consumers do not like the `-all` default classifier
+          classifier = ""
         }
       }
     }
