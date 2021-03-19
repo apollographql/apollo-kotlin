@@ -24,7 +24,6 @@ internal class ModelBuilder(
 
   private fun IrType.toTypeSet() = setOf(leafName)
 
-
   fun build(): Result {
     // build the model tree without any inheritance information
     val interfaces = rootField.toCGInterfaces(path)

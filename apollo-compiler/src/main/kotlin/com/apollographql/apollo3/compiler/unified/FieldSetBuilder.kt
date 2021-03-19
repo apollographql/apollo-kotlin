@@ -13,7 +13,6 @@ import com.apollographql.apollo3.compiler.frontend.Schema
 import com.apollographql.apollo3.compiler.frontend.coerce
 import com.apollographql.apollo3.compiler.frontend.definitionFromScope
 import com.apollographql.apollo3.compiler.frontend.findDeprecationReason
-import com.apollographql.apollo3.compiler.frontend.possibleTypes
 
 
 /**
@@ -143,7 +142,7 @@ class FieldSetsBuilder(
       toIrFieldSet(
           typeSet = it.typeSet,
           possibleTypes = (it as? ShapeNode)?.typeSet?.let { shapeTypeSetToPossibleTypes[it] } ?: emptySet(),
-          implements = edges.filter { edge -> edge.source == it }.map { it.target.typeSet }.toSet()
+          inlineFragments = edges.filter { edge -> edge.source == it }.map { it.target.typeSet }.toSet()
       )
     }
   }
@@ -219,7 +218,13 @@ class FieldSetsBuilder(
     )
   }
 
-  private fun TypedSelectionSet.toIrFieldSet(typeSet: TypeSet, possibleTypes: PossibleTypes, implements: Set<TypeSet>): IrFieldSet {
+  private fun TypedSelectionSet.toIrFieldSet(
+      typeSet: TypeSet,
+      possibleTypes:
+      PossibleTypes,
+      inlineFragments: Set<TypeSet>,
+      namedFragments: 
+  ): IrFieldSet {
     val collectedFields = collectFields(typeSet)
 
     val fields = collectedFields.groupBy {
@@ -254,7 +259,7 @@ class FieldSetsBuilder(
     return IrFieldSet(
         typeSet = typeSet.toSet(),
         possibleTypes = possibleTypes,
-        implements = implements,
+        implements = inlineFragments,
         fields = fields
     )
   }
