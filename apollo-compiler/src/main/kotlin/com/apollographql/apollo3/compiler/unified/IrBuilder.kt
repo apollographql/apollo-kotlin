@@ -41,7 +41,7 @@ class IrBuilder(
     private val operationDefinitions: List<GQLOperationDefinition>,
     private val fragmentDefinitions: List<GQLFragmentDefinition>,
     metadataFragmentDefinitions: List<GQLFragmentDefinition>,
-    private val alwaysGenerateTypesMatching: Set<String>
+    private val alwaysGenerateTypesMatching: Set<String>,
 ) {
   private val allGQLFragmentDefinitions = (metadataFragmentDefinitions + fragmentDefinitions).associateBy { it.name }
   private var usedEnums = mutableSetOf<String>()
@@ -115,8 +115,8 @@ class IrBuilder(
     )
   }
 
-  private fun GQLEnumValueDefinition.toIr(): IrEnumValue {
-    return IrEnumValue(
+  private fun GQLEnumValueDefinition.toIr(): IrEnum.Value {
+    return IrEnum.Value(
         name = name,
         description = description,
         deprecationReason = directives.findDeprecationReason()
@@ -177,7 +177,7 @@ class IrBuilder(
         allGQLFragmentDefinitions,
         selectionSet.selections,
         typeCondition,
-        { usedNamedFragments.add(it)},
+        { usedNamedFragments.add(it) },
         { it.toIr() }
     ).build()
 
@@ -186,7 +186,7 @@ class IrBuilder(
         alias = null,
         deprecationReason = null,
         arguments = emptyList(),
-        type = ObjectIrType(typeCondition),
+        type = IrObjectType(typeCondition),
         condition = BooleanExpression.True,
         description = "Synthetic data field",
         fieldSets = irFieldSets,
@@ -213,35 +213,37 @@ class IrBuilder(
     )
   }
 
-
+  /**
+   * Maps to [IrType] and also keep tracks of what types are actually used so we only generate those
+   */
   private fun GQLType.toIr(): IrType {
     return when (this) {
-      is GQLNonNullType -> NonNullIrType(ofType = type.toIr())
-      is GQLListType -> ListIrType(ofType = type.toIr())
+      is GQLNonNullType -> IrNonNullType(ofType = type.toIr())
+      is GQLListType -> IrListType(ofType = type.toIr())
       is GQLNamedType -> when (schema.typeDefinition(name)) {
         is GQLScalarTypeDefinition -> {
           when (name) {
-            "String" -> StringIrType
-            "Boolean" -> BooleanIrType
-            "Int" -> IntIrType
-            "Float" -> FloatIrType
-            "ID" -> IdIrType
+            "String" -> IrStringType
+            "Boolean" -> IrBooleanType
+            "Int" -> IrIntType
+            "Float" -> IrFloatType
+            "ID" -> IrIdType
             else -> {
               usedCustomScalars.add(name)
-              CustomScalarIrType(name)
+              IrCustomScalarType(name)
             }
           }
         }
         is GQLEnumTypeDefinition -> {
           usedEnums.add(name)
-          EnumIrType(name)
+          IrEnumType(name)
         }
-        is GQLObjectTypeDefinition -> ObjectIrType(name)
-        is GQLInterfaceTypeDefinition -> InterfaceIrType(name)
-        is GQLUnionTypeDefinition -> UnionIrType(name)
+        is GQLObjectTypeDefinition -> IrObjectType(name)
+        is GQLInterfaceTypeDefinition -> IrInterfaceType(name)
+        is GQLUnionTypeDefinition -> IrUnionType(name)
         is GQLInputObjectTypeDefinition -> {
           usedInputObjects.add(name)
-          InputObjectIrType(name)
+          IrInputObjectType(name)
         }
       }
     }
@@ -250,17 +252,17 @@ class IrBuilder(
 
 internal fun GQLValue.toIr(): IrValue {
   return when (this) {
-    is GQLIntValue -> IntIrValue(value = value)
-    is GQLStringValue -> StringIrValue(value = value)
-    is GQLFloatValue -> FloatIrValue(value = value)
-    is GQLBooleanValue -> BooleanIrValue(value = value)
-    is GQLEnumValue -> EnumIrValue(value = value)
-    is GQLNullValue -> NullIrValue
-    is GQLVariableValue -> VariableIrValue(name = name)
-    is GQLListValue -> ListIrValue(values = values.map { it.toIr() })
-    is GQLObjectValue -> ObjectIrValue(
+    is GQLIntValue -> IrIntValue(value = value)
+    is GQLStringValue -> IrStringValue(value = value)
+    is GQLFloatValue -> IrFloatValue(value = value)
+    is GQLBooleanValue -> IrBooleanValue(value = value)
+    is GQLEnumValue -> IrEnumValue(value = value)
+    is GQLNullValue -> IrNullValue
+    is GQLVariableValue -> IrVariableValue(name = name)
+    is GQLListValue -> IrListValue(values = values.map { it.toIr() })
+    is GQLObjectValue -> IrObjectValue(
         fields = fields.map {
-          ObjectIrValue.Field(name = it.name, value = it.value.toIr())
+          IrObjectValue.Field(name = it.name, value = it.value.toIr())
         }
     )
   }
@@ -291,7 +293,7 @@ internal fun List<GQLDirective>.toBooleanExpression(): BooleanExpression {
   }
 }
 
-internal  fun GQLDirective.toBooleanExpression(): BooleanExpression? {
+internal fun GQLDirective.toBooleanExpression(): BooleanExpression? {
   if (setOf("skip", "include").contains(name).not()) {
     // not a condition directive
     return null

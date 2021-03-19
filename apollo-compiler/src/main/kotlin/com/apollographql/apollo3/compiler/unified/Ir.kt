@@ -1,12 +1,14 @@
 package com.apollographql.apollo3.compiler.unified
 
 /*
-* Unified IR. This builds all the possible field trees. As polymorphic fields are used, this can become
-* quite large and will be pruned in a later step
+* Unified IR. This builds all the possible field trees. As polymorphic fields are encountered, each field can have multiple
+* fieldset, building a tree where node are alternatively [IrField] and [IrFieldSet]
+* Also
 * - moves @include/@skip directives on inline fragments and object fields to their children selections
 * - interprets @deprecated directives
 * - coerce argument values and resolves defaultValue
 * - infers fragment variables
+* - records used types and fragments
 * - more generally removes all references to the GraphQL AST and "embeds" type definitions/field definitions
 */
 data class IntermediateRepresentation(
@@ -14,21 +16,21 @@ data class IntermediateRepresentation(
     val namedFragments: List<IrNamedFragment>,
     val inputObjects: List<IrInputObject>,
     val enums: List<IrEnum>,
-    val customScalars: List<IrCustomScalar>
+    val customScalars: List<IrCustomScalar>,
 )
 
 data class IrEnum(
     val name: String,
     val description: String?,
-    val values: List<IrEnumValue>,
+    val values: List<Value>,
+) {
+  data class Value(
+      val name: String,
+      val description: String?,
+      val deprecationReason: String?,
+  )
+}
 
-    )
-
-data class IrEnumValue(
-    val name: String,
-    val description: String?,
-    val deprecationReason: String?
-)
 
 /**
  * An input field
@@ -44,7 +46,7 @@ data class IrInputField(
     val description: String?,
     val deprecationReason: String?,
     val type: IrType,
-    val defaultValue: IrValue?
+    val defaultValue: IrValue?,
 )
 
 /**
@@ -59,7 +61,7 @@ data class IrOperation(
     val description: String?,
     val dataField: IrField,
     val sourceWithFragments: String,
-    val filePath: String
+    val filePath: String,
 )
 
 data class IrNamedFragment(
@@ -101,21 +103,31 @@ data class IrField(
 }
 
 /**
- * @param possibleTypes: the possibleTypes that will map to this [IrFieldSet]. If it is empty,
+ * An [IrFieldSet] is a list of fields satisfying some conditions.
+ * [IrFieldSet] can either represent:
+ * - a shape, ie a list of fields that map to at least one concrete type and might appear in a json response
+ * - an interface, ie a list of fields common to some shapes but that do not represent a valid json response on their own.
+ *
+ * The returned interfaces might not be all used. The responsibility of pruning the unused interfaces is left to a later stage of
+ * the codegen
+ *
+ * @param possibleTypes: the possibleTypes that will map to this [IrFieldSet]. If empty, this should map to and Interface
+ * @param superTypeSets: the typeSets this [IrFieldSet] inherits from. Only valid for Shapes
+ * @param namedFragments: the named fragments this [IrFieldSet] inherits from. Only valid for Shapes
  */
 data class IrFieldSet(
     val typeSet: Set<String>,
-    val possibleTypes: Set<String>,
     val fields: List<IrField>,
+    val possibleTypes: Set<String>,
     val superTypeSets: Set<TypeSet>,
-    val namedFragments: Set<String>
+    val namedFragments: Set<String>,
 )
 
 data class IrInputObject(
     val name: String,
     val description: String?,
     val deprecationReason: String?,
-    val fields: List<IrInputField>
+    val fields: List<IrInputField>,
 )
 
 data class IrCustomScalar(
@@ -128,8 +140,8 @@ data class IrCustomScalar(
 data class IrVariable(
     val name: String,
     val defaultValue: IrValue?,
-    val type: IrType
-    )
+    val type: IrType,
+)
 
 data class IrArgument(
     val name: String,
@@ -141,37 +153,37 @@ data class IrArgument(
      * The defaultValue from the GQLArgumentDefinition, coerced
      */
     val defaultValue: IrValue?,
-    val type: IrType
+    val type: IrType,
 )
 
 sealed class IrValue
 
-data class IntIrValue(val value: Int) : IrValue()
-data class FloatIrValue(val value: Double) : IrValue()
-data class StringIrValue(val value: String) : IrValue()
-data class BooleanIrValue(val value: Boolean) : IrValue()
-data class EnumIrValue(val value: String) : IrValue()
-object NullIrValue : IrValue()
-data class ObjectIrValue(val fields: List<Field>) : IrValue() {
+data class IrIntValue(val value: Int) : IrValue()
+data class IrFloatValue(val value: Double) : IrValue()
+data class IrStringValue(val value: String) : IrValue()
+data class IrBooleanValue(val value: Boolean) : IrValue()
+data class IrEnumValue(val value: String) : IrValue()
+object IrNullValue : IrValue()
+data class IrObjectValue(val fields: List<Field>) : IrValue() {
   data class Field(val name: String, val value: IrValue)
 }
 
-data class ListIrValue(val values: List<IrValue>) : IrValue()
-data class VariableIrValue(val name: String) : IrValue()
+data class IrListValue(val values: List<IrValue>) : IrValue()
+data class IrVariableValue(val name: String) : IrValue()
 
 sealed class IrType {
   abstract val leafName: String
 }
 
-data class NonNullIrType(val ofType: IrType) : IrType() {
+data class IrNonNullType(val ofType: IrType) : IrType() {
   override val leafName = ofType.leafName
 }
 
-data class ListIrType(val ofType: IrType) : IrType() {
+data class IrListType(val ofType: IrType) : IrType() {
   override val leafName = ofType.leafName
 }
 
-sealed class NamedIrType(val name: String) : IrType() {
+sealed class IrNamedType(val name: String) : IrType() {
   override val leafName = name
 
   override fun hashCode(): Int {
@@ -183,21 +195,21 @@ sealed class NamedIrType(val name: String) : IrType() {
    * Revisit with sealed interfaces
    */
   override fun equals(other: Any?): Boolean {
-    if (other !is NamedIrType) {
+    if (other !is IrNamedType) {
       return false
     }
     return name == other.name
   }
 }
 
-object StringIrType : NamedIrType("String")
-object IntIrType : NamedIrType("Int")
-object FloatIrType : NamedIrType("Float")
-object BooleanIrType : NamedIrType("Boolean")
-object IdIrType : NamedIrType("ID")
-class CustomScalarIrType(name: String) : NamedIrType(name)
-class EnumIrType(name: String) : NamedIrType(name)
-class UnionIrType(name: String) : NamedIrType(name)
-class ObjectIrType(name: String) : NamedIrType(name)
-class InputObjectIrType(name: String) : NamedIrType(name)
-class InterfaceIrType(name: String) : NamedIrType(name)
+object IrStringType : IrNamedType("String")
+object IrIntType : IrNamedType("Int")
+object IrFloatType : IrNamedType("Float")
+object IrBooleanType : IrNamedType("Boolean")
+object IrIdType : IrNamedType("ID")
+class IrCustomScalarType(name: String) : IrNamedType(name)
+class IrEnumType(name: String) : IrNamedType(name)
+class IrUnionType(name: String) : IrNamedType(name)
+class IrObjectType(name: String) : IrNamedType(name)
+class IrInputObjectType(name: String) : IrNamedType(name)
+class IrInterfaceType(name: String) : IrNamedType(name)
