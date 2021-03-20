@@ -13,7 +13,8 @@ package com.apollographql.apollo3.compiler.unified
 */
 data class IntermediateRepresentation(
     val operations: List<IrOperation>,
-    val namedFragments: List<IrNamedFragment>,
+    val allNamedFragments: List<IrNamedFragment>,
+    val namedFragmentsToGenerate: Set<String>,
     val inputObjects: List<IrInputObject>,
     val enums: List<IrEnum>,
     val customScalars: List<IrCustomScalar>,
@@ -100,6 +101,8 @@ data class IrField(
     val fieldSets: List<IrFieldSet>,
 ) {
   val responseName = alias ?: name
+  val interfaceFieldSets = fieldSets.filter { it.possibleTypes.isEmpty() }
+  val shapesFieldSets = fieldSets.filter { it.possibleTypes.isNotEmpty() }
 }
 
 /**

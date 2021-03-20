@@ -52,7 +52,7 @@ class IrBuilder(
 
   fun build(): IntermediateRepresentation {
     val operations = operationDefinitions.map { it.toIr() }
-    val namedFragments = fragmentDefinitions.map { it.toIr() }
+    val allNamedFragments = allGQLFragmentDefinitions.values.map { it.toIr() }
 
     val enums = schema.typeDefinitions.values
         .filterIsInstance<GQLEnumTypeDefinition>()
@@ -72,7 +72,8 @@ class IrBuilder(
 
     return IntermediateRepresentation(
         operations = operations,
-        namedFragments = namedFragments,
+        allNamedFragments = allNamedFragments,
+        namedFragmentsToGenerate = fragmentDefinitions.map { it.name }.toSet(),
         inputObjects = inputObjects,
         enums = enums,
         customScalars = customScalars
