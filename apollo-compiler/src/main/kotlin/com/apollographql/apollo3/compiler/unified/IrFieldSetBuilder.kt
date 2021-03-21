@@ -250,11 +250,8 @@ class IrFieldSetBuilder(
       val first = fieldsWithSameResponseName.first()
       val selections = fieldsWithSameResponseName.flatMap { it.selections }
 
-      val cousinFields = if (superFieldSet == null) {
-        superFieldSets
-      } else {
-        listOf(superFieldSet)
-      }
+      val cousinFields = (superFieldSets + superFieldSet)
+          .filterNotNull()
           .mapNotNull { it.fields.firstOrNull { it.responseName == first.responseName } }
 
       val fieldSets = buildIrFieldSets(
@@ -277,12 +274,20 @@ class IrFieldSetBuilder(
       )
     }
 
+    val implements = if (superFieldSet == null) {
+      // this is a baseFieldSet, pull the superFieldSets
+      superFieldSets
+    } else {
+      // this was already pulled by the baseFieldSet, no need to add superFieldSets
+      listOf(superFieldSet)
+    }.map { it.fullPath }.toSet()
+
     val fieldSet = IrFieldSet(
         typeSet = typeSet.toSet(),
         fieldType = typedSelectionSet.selectionSetTypeCondition,
         possibleTypes = shapeTypeSetToPossibleTypes[typeSet] ?: emptySet(),
         fields = fields,
-        implements = (superFieldSets + superFieldSet).mapNotNull { it?.fullPath }.toSet(),
+        implements = implements,
         path = path,
         responseName = responseName
     )

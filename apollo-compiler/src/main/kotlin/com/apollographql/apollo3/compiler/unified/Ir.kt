@@ -139,6 +139,16 @@ data class IrFieldSet(
     val implements: Set<ModelPath>,
 ) {
   val fullPath = (path + PathElement(typeSet, fieldType, responseName))
+
+  private fun modelName(typeSet: TypeSet, responseName: String): String {
+    return (typeSet.sorted() + responseName).map { it.capitalize() }.joinToString("")
+  }
+
+  override fun toString(): String {
+    return fullPath.elements.map { modelName(it.typeSet - it.fieldType, it.responseName) }
+        .map { it.capitalize() }
+        .joinToString(".")
+  }
 }
 
 data class IrInputObject(
