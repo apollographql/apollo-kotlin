@@ -4,6 +4,8 @@ import com.apollographql.apollo3.compiler.frontend.GQLFragmentDefinition
 import com.apollographql.apollo3.compiler.frontend.GQLOperationDefinition
 import com.apollographql.apollo3.compiler.frontend.GraphQLParser
 import com.apollographql.apollo3.compiler.unified.IrBuilder
+import com.apollographql.apollo3.compiler.unified.codegen.toTypeSpec
+import com.squareup.kotlinpoet.FileSpec
 import org.junit.Test
 import java.io.File
 
@@ -11,10 +13,10 @@ class IrTest {
   @Test
   fun test() {
     val schema = GraphQLParser.parseSchema(
-        File("src/test/graphql/schema.sdl")
+        File("src/test/graphql/com/example/inline_frgament_intersection/schema.sdl")
     )
     val operation = GraphQLParser.parseOperations(
-        File("src/test/graphql/com/example/hero_name/TestOperation.graphql"),
+        File("src/test/graphql/com/example/inline_frgament_intersection/TestOperation.graphql"),
         schema
     )
 
@@ -33,6 +35,14 @@ class IrTest {
       throw UnsupportedOperationException("Multiple operations are not supported")
     }
 
-    println(ir.operations.first())
+    val irOperation = ir.operations.first()
+    val fileSpecBuilder = FileSpec.builder("com.example", irOperation.name)
+        .apply {
+          irOperation.dataField.fieldSets.forEach {
+            addType(it.toTypeSpec())
+          }
+        }
+        .build()
+        .writeTo(File("irTest"))
   }
 }

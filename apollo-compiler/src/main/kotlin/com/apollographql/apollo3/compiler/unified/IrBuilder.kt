@@ -48,6 +48,12 @@ class IrBuilder(
   private var usedInputObjects = mutableSetOf<String>()
   private var usedCustomScalars = mutableSetOf<String>()
 
+  private val fieldSetBuilder = IrFieldSetBuilder(
+      schema = schema,
+      allGQLFragmentDefinitions = allGQLFragmentDefinitions,
+      registerType = { it.toIr() }
+  )
+
   private fun shouldAlwaysGenerate(name: String) = alwaysGenerateTypesMatching.map { Regex(it) }.any { it.matches(name) }
 
   fun build(): IntermediateRepresentation {
@@ -128,9 +134,9 @@ class IrBuilder(
     val typeDefinition = this.rootTypeDefinition(schema)
         ?: throw IllegalStateException("ApolloGraphql: cannot find root type for '$operationType'")
 
-    val dataFieldResult = createDataField(selectionSet, typeDefinition.name)
+    val usedNamedFragments = emptyList<String>()
 
-    val sourceWithFragments = (toUtf8WithIndents() + "\n" + dataFieldResult.usedNamedFragments.joinToString(
+    val sourceWithFragments = (toUtf8WithIndents() + "\n" + usedNamedFragments.joinToString(
         separator = "\n"
     ) { fragmentName ->
       allGQLFragmentDefinitions[fragmentName]!!.toUtf8WithIndents()
@@ -142,16 +148,17 @@ class IrBuilder(
         operationType = IrOperationType.valueOf(operationType.capitalize()),
         typeCondition = typeDefinition.name,
         variables = variableDefinitions.map { it.toIr() },
-        dataField = dataFieldResult.field,
+        dataField = fieldSetBuilder.buildOperation(
+            IrFieldSetBuilder.TypedSelectionSet(selectionSet.selections, typeDefinition.name),
+            filePath = sourceLocation.filePath!!
+        ),
         sourceWithFragments = sourceWithFragments,
-        filePath = sourceLocation.filePath!!
+        filePath = sourceLocation.filePath
     )
   }
 
   private fun GQLFragmentDefinition.toIr(): IrNamedFragment {
     val typeDefinition = schema.typeDefinition(typeCondition.name)
-
-    val dataFieldResult = createDataField(selectionSet, typeDefinition.name)
 
     val variableDefinitions = inferVariables(schema, allGQLFragmentDefinitions)
 
@@ -161,39 +168,12 @@ class IrBuilder(
         filePath = sourceLocation.filePath!!,
         typeCondition = typeDefinition.name,
         variables = variableDefinitions.map { it.toIr() },
-        dataField = dataFieldResult.field,
+        dataField =fieldSetBuilder.buildFragment(
+            name,
+            IrFieldSetBuilder.TypedSelectionSet(selectionSet.selections, typeDefinition.name),
+            filePath = sourceLocation.filePath
+        ),
     )
-  }
-
-  class DataFieldResult(
-      val field: IrField,
-      val usedNamedFragments: Set<String>,
-  )
-
-  private fun createDataField(selectionSet: GQLSelectionSet, typeCondition: String): DataFieldResult {
-    val usedNamedFragments = mutableSetOf<String>()
-
-    val irFieldSets = IrFieldSetBuilder(
-        schema,
-        allGQLFragmentDefinitions,
-        selectionSet.selections,
-        typeCondition,
-        { usedNamedFragments.add(it) },
-        { it.toIr() }
-    ).build()
-
-    val field = IrField(
-        name = "data",
-        alias = null,
-        deprecationReason = null,
-        arguments = emptyList(),
-        type = IrObjectType(typeCondition),
-        condition = BooleanExpression.True,
-        description = "Synthetic data field",
-        fieldSets = irFieldSets,
-    )
-
-    return DataFieldResult(field, usedNamedFragments)
   }
 
   private fun InputValueScope.VariableReference.toIr(): IrVariable {
@@ -211,6 +191,7 @@ class IrBuilder(
         name = name,
         defaultValue = coercedDefaultValue?.toIr(),
         type = type.toIr(),
+
     )
   }
 

@@ -12,6 +12,7 @@ import com.apollographql.apollo3.compiler.frontend.Schema
 import com.apollographql.apollo3.compiler.frontend.coerce
 import com.apollographql.apollo3.compiler.frontend.definitionFromScope
 import com.apollographql.apollo3.compiler.frontend.findDeprecationReason
+import com.apollographql.apollo3.compiler.unified.IrFieldSetBuilder.TypedSelectionSet
 
 
 /**
@@ -26,64 +27,108 @@ import com.apollographql.apollo3.compiler.frontend.findDeprecationReason
 class IrFieldSetBuilder(
     private val schema: Schema,
     private val allGQLFragmentDefinitions: Map<String, GQLFragmentDefinition>,
-    private val baseSelections: List<GQLSelection>,
-    private val baseType: String,
-    private val registerFragment: (String) -> Unit,
     private val registerType: (GQLType) -> IrType,
 ) {
+
+  private var cachedFragments = mutableMapOf<String, IrField>()
 
   class TypedSelectionSet(
       val selections: List<GQLSelection>,
       val selectionSetTypeCondition: String,
   )
 
-  fun build(): List<IrFieldSet> {
-    return TypedSelectionSet(baseSelections, baseType).toIrFieldSets()
+  fun buildOperation(
+      typedSelectionSet: TypedSelectionSet,
+      filePath: String,
+  ): IrField {
+    return buildDataField(
+        typedSelectionSet = typedSelectionSet,
+        path = ModelPath(filePath, ModelPath.Root.OperationInterface)
+    )
   }
 
-  private fun TypedSelectionSet.toIrFieldSets(): List<IrFieldSet> {
-    val fragmentCollectionResult = FragmentCollectionScope(selections, selectionSetTypeCondition, allGQLFragmentDefinitions).collect()
-
-    fragmentCollectionResult.namedFragments.forEach {
-      registerFragment(it.name)
-    }
-
-    val interfacesTypeSets = fragmentCollectionResult.typeSet
-
-    val shapeTypeSetToPossibleTypes = computeShapes(schema, interfacesTypeSets.union())
-
-    val interfaceFieldSets = interfacesTypeSets.map {
-      toIrFieldSet(
-          typeSet = it,
-          possibleTypes = emptySet(),
-          superTypeSets = emptySet(),
-          namedFragments = emptySet()
+  fun buildFragment(
+      name: String,
+      typedSelectionSet: TypedSelectionSet,
+      filePath: String,
+  ): IrField {
+    return cachedFragments.getOrPut(name) {
+      buildDataField(
+          typedSelectionSet = typedSelectionSet,
+          path = ModelPath(filePath, ModelPath.Root.Fragment)
       )
     }
+  }
 
+  private fun buildDataField(
+      typedSelectionSet: TypedSelectionSet,
+      path: ModelPath
+  ): IrField {
+
+    val fieldSets = buildIrFieldSets(
+        typedSelectionSet = typedSelectionSet,
+        superFieldSets = emptyList(),
+        path = path,
+        responseName = "data"
+    )
+
+    return IrField(
+        name = "data",
+        alias = null,
+        deprecationReason = null,
+        arguments = emptyList(),
+        type = IrObjectType(typedSelectionSet.selectionSetTypeCondition),
+        condition = BooleanExpression.True,
+        description = "Synthetic data field",
+        fieldSets = fieldSets,
+        override = false
+    )
+  }
+
+  private fun buildIrFieldSets(
+      typedSelectionSet: TypedSelectionSet,
+      superFieldSets: List<IrFieldSet>,
+      path: ModelPath,
+      responseName: String
+  ): List<IrFieldSet> {
+    val collectionResult = FragmentCollectionScope(typedSelectionSet.selections, typedSelectionSet.selectionSetTypeCondition, allGQLFragmentDefinitions).collect()
+
+    val typeConditions = collectionResult.typeSet.union()
+
+    val shapeTypeSetToPossibleTypes = computeShapes(schema, typeConditions)
     val shapesTypeSets = shapeTypeSetToPossibleTypes.keys
 
-    val shapesFieldSets = shapesTypeSets.map { shapeTypeSet ->
-      /**
-       * TODO: we need to iterate on variables too to support @include directives
-       */
-      val namedFragments = fragmentCollectionResult
-          .namedFragments
-          .filter {
-            it.condition.evaluate(emptySet(), shapeTypeSet)
-          }
-          .map { it.name }
-          .toSet()
+    /**
+     * Only keep the typeSets that are implemented by at least 2 shapes.
+     * We need those to access the shapes in a generic way
+     */
+    val interfaceTypeSetsToGenerate = typeConditions.toList().combinations()
+        .map { it.toSet() }
+        .flatMap { typeSet ->
+          shapesTypeSets.filter { it.implements(typeSet) }.map { typeSet to it }
+        }
+        .groupBy { it.first }
+        .filter { it.value.size > 1 }
+        .keys
 
-      toIrFieldSet(
-          typeSet = shapeTypeSet,
-          possibleTypes = shapeTypeSetToPossibleTypes[shapeTypeSet]!!,
-          superTypeSets = interfacesTypeSets.filter { shapeTypeSet.implements(it) }.toSet(),
-          namedFragments = namedFragments
+    val allTypeSets = interfaceTypeSetsToGenerate + shapesTypeSets
+
+    val fieldSetCache = mutableMapOf<TypeSet, IrFieldSet>()
+
+    allTypeSets.forEach { typeSet ->
+      buildFieldSet(
+          fieldSetCache = fieldSetCache,
+          allTypeSets = allTypeSets,
+          typedSelectionSet = typedSelectionSet,
+          typeSet = typeSet,
+          responseName = responseName,
+          shapeTypeSetToPossibleTypes = shapeTypeSetToPossibleTypes,
+          superFieldSets = superFieldSets,
+          path = path,
       )
     }
 
-    return interfaceFieldSets + shapesFieldSets
+    return fieldSetCache.values.toList()
   }
 
   /**
@@ -155,13 +200,39 @@ class IrFieldSetBuilder(
     )
   }
 
-  private fun TypedSelectionSet.toIrFieldSet(
+  private fun buildFieldSet(
+      fieldSetCache: MutableMap<TypeSet, IrFieldSet>,
+      allTypeSets: Set<Set<String>>,
+      typedSelectionSet: TypedSelectionSet,
       typeSet: TypeSet,
-      possibleTypes: PossibleTypes,
-      superTypeSets: Set<TypeSet>,
-      namedFragments: Set<String>,
+      responseName: String,
+      shapeTypeSetToPossibleTypes: Map<TypeSet, PossibleTypes>,
+      superFieldSets: List<IrFieldSet>,
+      path: ModelPath
   ): IrFieldSet {
-    val collectedFields = collectFields(typeSet)
+    if (fieldSetCache.get(typeSet) != null) {
+      return fieldSetCache.get(typeSet)!!
+    }
+
+    val superTypeSet = allTypeSets.filter {
+      it.size < typeSet.size
+    }.sortedByDescending { it.size }
+        .firstOrNull { typeSet.implements(it) }
+
+    val superFieldSet = superTypeSet?.let {
+      buildFieldSet(
+          fieldSetCache,
+          allTypeSets,
+          typedSelectionSet,
+          it,
+          responseName,
+          shapeTypeSetToPossibleTypes,
+          superFieldSets,
+          path,
+      )
+    }
+
+    val collectedFields = typedSelectionSet.collectFields(typeSet)
 
     val fields = collectedFields.groupBy {
       it.responseName
@@ -179,7 +250,19 @@ class IrFieldSetBuilder(
       val first = fieldsWithSameResponseName.first()
       val selections = fieldsWithSameResponseName.flatMap { it.selections }
 
-      val fieldSets = TypedSelectionSet(selections, first.type.leafName).toIrFieldSets()
+      val cousinFields = if (superFieldSet == null) {
+        superFieldSets
+      } else {
+        listOf(superFieldSet)
+      }
+          .mapNotNull { it.fields.firstOrNull { it.responseName == first.responseName } }
+
+      val fieldSets = buildIrFieldSets(
+          typedSelectionSet = TypedSelectionSet(selections, first.type.leafName),
+          superFieldSets = cousinFields.mapNotNull { it.baseFieldSet },
+          path = path + PathElement(typeSet, responseName),
+          responseName = first.responseName
+      )
 
       IrField(
           alias = first.alias,
@@ -189,18 +272,22 @@ class IrFieldSetBuilder(
           deprecationReason = first.deprecationReason,
           type = first.type,
           condition = BooleanExpression.Or(fieldsWithSameResponseName.map { it.condition }.toSet()),
-          fieldSets = fieldSets
+          fieldSets = fieldSets,
+          override = cousinFields.isNotEmpty()
       )
     }
 
-    return IrFieldSet(
+    val fieldSet = IrFieldSet(
         typeSet = typeSet.toSet(),
-        possibleTypes = possibleTypes,
-        superTypeSets = superTypeSets,
+        possibleTypes = shapeTypeSetToPossibleTypes[typeSet] ?: emptySet(),
         fields = fields,
-        namedFragments = namedFragments
+        implements = (superFieldSets + superFieldSet).mapNotNull { it?.fullPath }.toSet(),
+        path = path,
+        responseName = responseName
     )
+
+    return fieldSet.also {
+      fieldSetCache[typeSet] = it
+    }
   }
-
-
 }

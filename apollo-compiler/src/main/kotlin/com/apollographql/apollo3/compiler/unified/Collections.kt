@@ -41,21 +41,19 @@ internal fun <T> Collection<T>.pairs(): List<Pair<T, T>> {
  *
  * Not an extension function so as not to pollute the List<T> namespace
  */
-internal fun <T> combinations(list: List<T>, includeEmpty: Boolean = false): List<List<T>> {
-  return list.run {
-    val start = if (includeEmpty) 0 else 1
-    val end = BigInteger.valueOf(2).pow(size).intValueExact()
+internal fun <T> List<T>.combinations(includeEmpty: Boolean = false): List<List<T>> {
+  val start = if (includeEmpty) 0 else 1
+  val end = BigInteger.valueOf(2).pow(size).intValueExact()
 
-    start.until(end).fold(emptyList()) { acc, bitmask ->
-      acc + listOf(
-          0.until(size).mapNotNull { position ->
-            if (bitmask.and(1.shl(position)) != 0) {
-              get(position)
-            } else {
-              null
-            }
+  return start.until(end).fold(emptyList()) { acc, bitmask ->
+    acc + listOf(
+        0.until(size).mapNotNull { position ->
+          if (bitmask.and(1.shl(position)) != 0) {
+            get(position)
+          } else {
+            null
           }
-      )
-    }
+        }
+    )
   }
 }

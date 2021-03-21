@@ -32,6 +32,22 @@ data class IrEnum(
   )
 }
 
+data class PathElement(
+    val typeSet: TypeSet,
+    val responseName: String,
+)
+
+data class ModelPath(val fileName: String, val root: Root, val elements: List<PathElement>) {
+  constructor(fileName: String, root: Root, vararg elements: PathElement) : this(fileName, root, elements.toList())
+
+  operator fun plus(element: PathElement) = copy(elements = elements + element)
+
+  enum class Root {
+    OperationInterface,
+    OperationImplementation,
+    Fragment
+  }
+}
 
 /**
  * An input field
@@ -97,34 +113,31 @@ data class IrField(
     val deprecationReason: String?,
 
     val condition: BooleanExpression,
+    // whether this fields needs an override modifier
+    val override: Boolean,
     // empty for a scalar field
     val fieldSets: List<IrFieldSet>,
 ) {
   val responseName = alias ?: name
-  val interfaceFieldSets = fieldSets.filter { it.possibleTypes.isEmpty() }
-  val shapesFieldSets = fieldSets.filter { it.possibleTypes.isNotEmpty() }
+  val baseFieldSet = fieldSets.firstOrNull { it.typeSet.size == 1 }
 }
 
 /**
  * An [IrFieldSet] is a list of fields satisfying some conditions.
- * [IrFieldSet] can either represent:
- * - a shape, ie a list of fields that map to at least one concrete type and might appear in a json response
- * - an interface, ie a list of fields common to some shapes but that do not represent a valid json response on their own.
  *
- * The returned interfaces might not be all used. The responsibility of pruning the unused interfaces is left to a later stage of
- * the codegen
- *
- * @param possibleTypes: the possibleTypes that will map to this [IrFieldSet]. If empty, this should map to and Interface
- * @param superTypeSets: the typeSets this [IrFieldSet] inherits from. Only valid for Shapes
- * @param namedFragments: the named fragments this [IrFieldSet] inherits from. Only valid for Shapes
+ * @param possibleTypes: the possibleTypes that will map to this [IrFieldSet].
+ * @param implements: A list of fragment and operation path that this field set will implement
  */
 data class IrFieldSet(
+    val path: ModelPath,
+    val responseName: String,
     val typeSet: Set<String>,
     val fields: List<IrField>,
     val possibleTypes: Set<String>,
-    val superTypeSets: Set<TypeSet>,
-    val namedFragments: Set<String>,
-)
+    val implements: Set<ModelPath>,
+) {
+  val fullPath = path + PathElement(typeSet, responseName)
+}
 
 data class IrInputObject(
     val name: String,
