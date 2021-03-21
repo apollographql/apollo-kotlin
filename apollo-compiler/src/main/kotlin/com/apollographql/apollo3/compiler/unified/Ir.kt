@@ -34,6 +34,7 @@ data class IrEnum(
 
 data class PathElement(
     val typeSet: TypeSet,
+    val fieldType: String,
     val responseName: String,
 )
 
@@ -132,11 +133,12 @@ data class IrFieldSet(
     val path: ModelPath,
     val responseName: String,
     val typeSet: Set<String>,
+    val fieldType: String,
     val fields: List<IrField>,
     val possibleTypes: Set<String>,
     val implements: Set<ModelPath>,
 ) {
-  val fullPath = path + PathElement(typeSet, responseName)
+  val fullPath = (path + PathElement(typeSet, fieldType, responseName))
 }
 
 data class IrInputObject(

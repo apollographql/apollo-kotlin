@@ -111,7 +111,7 @@ class IrFieldSetBuilder(
         }
         .toSet()
 
-    val allTypeSets = interfaceTypeSetsToGenerate + shapesTypeSets
+    val allTypeSets = (interfaceTypeSetsToGenerate + shapesTypeSets)
 
     val fieldSetCache = mutableMapOf<TypeSet, IrFieldSet>()
 
@@ -260,7 +260,7 @@ class IrFieldSetBuilder(
       val fieldSets = buildIrFieldSets(
           typedSelectionSet = TypedSelectionSet(selections, first.type.leafName),
           superFieldSets = cousinFields.mapNotNull { it.baseFieldSet },
-          path = path + PathElement(typeSet, responseName),
+          path = path + PathElement(typeSet, typedSelectionSet.selectionSetTypeCondition, responseName),
           responseName = first.responseName
       )
 
@@ -279,6 +279,7 @@ class IrFieldSetBuilder(
 
     val fieldSet = IrFieldSet(
         typeSet = typeSet.toSet(),
+        fieldType = typedSelectionSet.selectionSetTypeCondition,
         possibleTypes = shapeTypeSetToPossibleTypes[typeSet] ?: emptySet(),
         fields = fields,
         implements = (superFieldSets + superFieldSet).mapNotNull { it?.fullPath }.toSet(),

@@ -32,11 +32,14 @@ import com.squareup.kotlinpoet.asTypeName
 private fun modelName(typeSet: TypeSet, responseName: String): String {
   return (typeSet.sorted() + responseName).map { it.capitalize() }.joinToString("")
 }
-private fun IrFieldSet.toTypeName() = fullPath.toTypeName()
+
+private fun IrFieldSet.toTypeName(): TypeName {
+  return fullPath.toTypeName()
+}
 
 private fun ModelPath.toTypeName() = ClassName(
     packageName = "com.example",
-    elements.map { modelName(it.typeSet, it.responseName) }
+    elements.map { modelName(it.typeSet - it.fieldType, it.responseName) }
 )
 
 fun IrType.toVariableTypeName(): TypeName {
@@ -78,7 +81,8 @@ fun IrType.toTypeName(compoundTypeName: TypeName?): TypeName {
     )
     is IrObjectType,
     is IrInterfaceType,
-    is IrUnionType -> compoundTypeName ?: error("compoundType is required to build this CgType")
+    is IrUnionType,
+    -> compoundTypeName ?: error("compoundType is required to build this CgType")
   }.copy(nullable = true)
 }
 
@@ -87,7 +91,7 @@ private fun IrField.typeName(): TypeName {
 }
 
 fun IrFieldSet.toTypeSpec(): TypeSpec {
-  return TypeSpec.interfaceBuilder(modelName(typeSet, responseName))
+  return TypeSpec.interfaceBuilder(modelName(typeSet - fieldType, responseName))
       .addProperties(
           fields.map {
             PropertySpec.builder(
