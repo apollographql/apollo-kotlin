@@ -20,7 +20,6 @@ import com.apollographql.apollo3.compiler.frontend.GQLObjectTypeDefinition
 import com.apollographql.apollo3.compiler.frontend.GQLObjectValue
 import com.apollographql.apollo3.compiler.frontend.GQLOperationDefinition
 import com.apollographql.apollo3.compiler.frontend.GQLScalarTypeDefinition
-import com.apollographql.apollo3.compiler.frontend.GQLSelectionSet
 import com.apollographql.apollo3.compiler.frontend.GQLStringValue
 import com.apollographql.apollo3.compiler.frontend.GQLType
 import com.apollographql.apollo3.compiler.frontend.GQLUnionTypeDefinition
@@ -42,6 +41,7 @@ class IrBuilder(
     private val fragmentDefinitions: List<GQLFragmentDefinition>,
     metadataFragmentDefinitions: List<GQLFragmentDefinition>,
     private val alwaysGenerateTypesMatching: Set<String>,
+    private val customScalarToKotlinName: Map<String, String>,
 ) {
   private val allGQLFragmentDefinitions = (metadataFragmentDefinitions + fragmentDefinitions).associateBy { it.name }
   private var usedEnums = mutableSetOf<String>()
@@ -51,7 +51,9 @@ class IrBuilder(
   private val fieldSetBuilder = IrFieldSetBuilder(
       schema = schema,
       allGQLFragmentDefinitions = allGQLFragmentDefinitions,
-      registerType = { it.toIr() }
+      registerType = { gqlType, modelPath ->
+        gqlType.toIr(modelPath)
+      }
   )
 
   private fun shouldAlwaysGenerate(name: String) = alwaysGenerateTypesMatching.map { Regex(it) }.any { it.matches(name) }
@@ -110,7 +112,8 @@ class IrBuilder(
         description = description,
         deprecationReason = directives.findDeprecationReason(),
         type = type.toIr(),
-        defaultValue = coercedDefaultValue?.toIr()
+        defaultValue = coercedDefaultValue?.toIr(),
+        optional = type !is GQLNonNullType || coercedDefaultValue != null
     )
   }
 
@@ -181,6 +184,7 @@ class IrBuilder(
         name = this.variable.name,
         defaultValue = null,
         type = expectedType.toIr(),
+        optional = expectedType !is GQLNonNullType
     )
   }
 
@@ -191,14 +195,14 @@ class IrBuilder(
         name = name,
         defaultValue = coercedDefaultValue?.toIr(),
         type = type.toIr(),
-
+        optional = type !is GQLNonNullType || coercedDefaultValue != null
     )
   }
 
   /**
    * Maps to [IrType] and also keep tracks of what types are actually used so we only generate those
    */
-  private fun GQLType.toIr(): IrType {
+  private fun GQLType.toIr(modelPath: ModelPath? = null): IrType {
     return when (this) {
       is GQLNonNullType -> IrNonNullType(ofType = type.toIr())
       is GQLListType -> IrListType(ofType = type.toIr())
@@ -211,8 +215,13 @@ class IrBuilder(
             "Float" -> IrFloatType
             "ID" -> IrIdType
             else -> {
-              usedCustomScalars.add(name)
-              IrCustomScalarType(name)
+              val kotlinName = customScalarToKotlinName.get(name)
+              if (kotlinName != null) {
+                usedCustomScalars.add(name)
+                IrCustomScalarType(name, kotlinName)
+              } else {
+                IrAnyType
+              }
             }
           }
         }
@@ -220,9 +229,9 @@ class IrBuilder(
           usedEnums.add(name)
           IrEnumType(name)
         }
-        is GQLObjectTypeDefinition -> IrObjectType(name)
-        is GQLInterfaceTypeDefinition -> IrInterfaceType(name)
-        is GQLUnionTypeDefinition -> IrUnionType(name)
+        is GQLObjectTypeDefinition,
+        is GQLInterfaceTypeDefinition,
+        is GQLUnionTypeDefinition -> IrCompoundType(name, modelPath ?: error("Compound object $name needs a modelPath"))
         is GQLInputObjectTypeDefinition -> {
           usedInputObjects.add(name)
           IrInputObjectType(name)

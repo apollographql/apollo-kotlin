@@ -7,11 +7,10 @@ import com.squareup.kotlinpoet.KModifier
 import com.squareup.kotlinpoet.TypeSpec
 
 
-internal fun CodeGenerationAst.InputType.typeSpec(generateAsInternal: Boolean = false) =
+internal fun CodeGenerationAst.InputType.typeSpec() =
     TypeSpec
         .classBuilder(kotlinNameForInputObjectType(name))
         .applyIf(description.isNotBlank()) { addKdoc("%L\n", description) }
-        .applyIf(generateAsInternal) { addModifiers(KModifier.INTERNAL) }
         .addAnnotation(suppressWarningsAnnotation)
         .makeDataClass(fields.map { it.toParameterSpec() })
         .addSuperinterface(InputObject::class)

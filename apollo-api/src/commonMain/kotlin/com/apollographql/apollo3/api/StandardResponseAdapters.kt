@@ -60,6 +60,20 @@ class NullableResponseAdapter<T : Any>(private val wrappedAdapter: ResponseAdapt
   }
 }
 
+
+
+class InputResponseAdapter<T>(private val wrappedAdapter: ResponseAdapter<T>) : ResponseAdapter<Input<T>> {
+  override fun fromResponse(reader: JsonReader, responseAdapterCache: ResponseAdapterCache): Input<T> {
+    error("Input value used in output position")
+  }
+
+  override fun toResponse(writer: JsonWriter, responseAdapterCache: ResponseAdapterCache, value: Input<T>) {
+    if (value is Input.Present) {
+      wrappedAdapter.toResponse(writer, responseAdapterCache, value.value)
+    }
+  }
+}
+
 object StringResponseAdapter : ResponseAdapter<String> {
   override fun fromResponse(reader: JsonReader, responseAdapterCache: ResponseAdapterCache): String {
     return reader.nextString()!!
@@ -169,6 +183,7 @@ class ObjectResponseAdapter<T>(
 fun <T : Any> ResponseAdapter<T>.nullable() = NullableResponseAdapter(this)
 fun <T> ResponseAdapter<T>.list() = ListResponseAdapter(this)
 fun <T> ResponseAdapter<T>.obj(buffered: Boolean = false) = ObjectResponseAdapter(this, buffered)
+fun <T> ResponseAdapter<T>.input() = InputResponseAdapter(this)
 
 /**
  * Global instances of nullable adapters for built-in scalar types

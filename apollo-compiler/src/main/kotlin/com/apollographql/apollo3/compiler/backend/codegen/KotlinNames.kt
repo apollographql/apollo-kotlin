@@ -5,43 +5,22 @@ import com.apollographql.apollo3.compiler.escapeKotlinReservedWord
 
 /**
  * This file contains GraphQL -> Kotlin transformations
- *
- * this is mostly empty right now but it'd be nice to centralize everything here so we can have a central place to
- * control name generation
  */
-internal fun kotlinNameForEnumValue(graphqlEnumValue: String) = graphqlEnumValue.toUpperCase()
-internal fun kotlinNameForEnum(graphqlEnum: String) = graphqlEnum.escapeKotlinReservedWord()
-internal fun kotlinNameForField(responseName: String) = responseName.escapeKotlinReservedWord()
-internal fun kotlinNameForOperation(operationName: String) = operationName.escapeKotlinReservedWord()
-internal fun kotlinNameForAdapterField(type: CodeGenerationAst.FieldType): String {
-  return kotlinNameForAdapterFieldRecursive(type).decapitalize() + "Adapter"
-}
+internal fun kotlinNameForEnumValue(graphqlEnumValue: String) = upperCaseIdentifier(graphqlEnumValue)
+internal fun kotlinNameForEnum(graphqlEnum: String) = regularIdentifier(graphqlEnum)
 
-internal fun kotlinNameForTypeCaseAdapterField(typeRef: CodeGenerationAst.TypeRef): String {
-  return typeRef.name.escapeKotlinReservedWord() + "Adapter"
-}
-
+internal fun kotlinNameForOperation(operationName: String) = capitalizedIdentifier(operationName)
 internal fun kotlinNameForInputObjectType(name: String) = capitalizedIdentifier(name)
-internal fun kotlinNameForInputObjectAdapter(operationName: String) = kotlinNameForOperation(operationName) + "_InputAdapter"
-internal fun kotlinNameForVariablesAdapter(operationName: String) = kotlinNameForOperation(operationName) + "_VariablesAdapter"
+internal fun kotlinNameForInputObjectAdapter(inputObjectName: String) = capitalizedIdentifier(inputObjectName) + "_InputAdapter"
+internal fun kotlinNameForVariablesAdapter(operationName: String) = capitalizedIdentifier(operationName) + "_VariablesAdapter"
+
 // variables keep the same case as their declared name
-internal fun kotlinNameForVariable(variableName: String) = variableName.escapeKotlinReservedWord()
+internal fun kotlinNameForVariable(graphqlName: String) = regularIdentifier(graphqlName)
+internal fun kotlinNameForProperty(graphqlName: String) = regularIdentifier(graphqlName)
 
-private fun decapitalizedIdentifier(name: String) = name.decapitalize().escapeKotlinReservedWord()
+private fun regularIdentifier(name: String) = name.escapeKotlinReservedWord()
+private fun upperCaseIdentifier(name: String) = name.toUpperCase().escapeKotlinReservedWord()
 private fun capitalizedIdentifier(name: String) = name.capitalize().escapeKotlinReservedWord()
-
-private fun kotlinNameForAdapterFieldRecursive(type: CodeGenerationAst.FieldType): String {
-  if (type.nullable) {
-    return "Nullable" + kotlinNameForAdapterFieldRecursive(type.nonNullable())
-  }
-
-  return when (type) {
-    is CodeGenerationAst.FieldType.Array -> "ListOf" + kotlinNameForAdapterFieldRecursive(type.rawType)
-    is CodeGenerationAst.FieldType.Object -> type.typeRef.name.capitalize()
-    is CodeGenerationAst.FieldType.InputObject -> type.typeRef.name.capitalize()
-    is CodeGenerationAst.FieldType.Scalar -> type.schemaTypeName.capitalize()
-  }
-}
 
 internal fun CodeGenerationAst.TypeRef.fragmentPropertyName(): String {
   return if (this.isNamedFragmentDataRef) {

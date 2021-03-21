@@ -65,6 +65,7 @@ data class IrInputField(
     val deprecationReason: String?,
     val type: IrType,
     val defaultValue: IrValue?,
+    val optional: Boolean
 )
 
 /**
@@ -169,6 +170,7 @@ data class IrVariable(
     val name: String,
     val defaultValue: IrValue?,
     val type: IrType,
+    val optional: Boolean,
 )
 
 data class IrArgument(
@@ -200,19 +202,19 @@ data class IrListValue(val values: List<IrValue>) : IrValue()
 data class IrVariableValue(val name: String) : IrValue()
 
 sealed class IrType {
-  abstract val leafName: String
+  abstract val leafType: IrNamedType
 }
 
 data class IrNonNullType(val ofType: IrType) : IrType() {
-  override val leafName = ofType.leafName
+  override val leafType = ofType.leafType
 }
 
 data class IrListType(val ofType: IrType) : IrType() {
-  override val leafName = ofType.leafName
+  override val leafType = ofType.leafType
 }
 
 sealed class IrNamedType(val name: String) : IrType() {
-  override val leafName = name
+  override val leafType = this
 
   override fun hashCode(): Int {
     return name.hashCode()
@@ -235,9 +237,9 @@ object IrIntType : IrNamedType("Int")
 object IrFloatType : IrNamedType("Float")
 object IrBooleanType : IrNamedType("Boolean")
 object IrIdType : IrNamedType("ID")
-class IrCustomScalarType(name: String) : IrNamedType(name)
+object IrAnyType : IrNamedType("Any")
+class IrCustomScalarType(name: String, val kotlinName: String) : IrNamedType(name)
 class IrEnumType(name: String) : IrNamedType(name)
-class IrUnionType(name: String) : IrNamedType(name)
-class IrObjectType(name: String) : IrNamedType(name)
+class IrCompoundType(name: String, val modelPath: ModelPath) : IrNamedType(name)
 class IrInputObjectType(name: String) : IrNamedType(name)
-class IrInterfaceType(name: String) : IrNamedType(name)
+

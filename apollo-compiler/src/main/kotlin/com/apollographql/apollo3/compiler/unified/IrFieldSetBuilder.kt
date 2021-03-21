@@ -12,6 +12,7 @@ import com.apollographql.apollo3.compiler.frontend.Schema
 import com.apollographql.apollo3.compiler.frontend.coerce
 import com.apollographql.apollo3.compiler.frontend.definitionFromScope
 import com.apollographql.apollo3.compiler.frontend.findDeprecationReason
+import com.apollographql.apollo3.compiler.frontend.leafType
 import com.apollographql.apollo3.compiler.unified.IrFieldSetBuilder.TypedSelectionSet
 
 
@@ -27,7 +28,7 @@ import com.apollographql.apollo3.compiler.unified.IrFieldSetBuilder.TypedSelecti
 class IrFieldSetBuilder(
     private val schema: Schema,
     private val allGQLFragmentDefinitions: Map<String, GQLFragmentDefinition>,
-    private val registerType: (GQLType) -> IrType,
+    private val registerType: (GQLType, ModelPath?) -> IrType,
 ) {
 
   private var cachedFragments = mutableMapOf<String, IrField>()
@@ -72,12 +73,14 @@ class IrFieldSetBuilder(
         responseName = "data"
     )
 
+    val modelPath = fieldSets.firstOrNull { it.typeSet.size == 1 }!!.fullPath
+
     return IrField(
         name = "data",
         alias = null,
         deprecationReason = null,
         arguments = emptyList(),
-        type = IrObjectType(typedSelectionSet.selectionSetTypeCondition),
+        type = IrCompoundType(typedSelectionSet.selectionSetTypeCondition, modelPath),
         condition = BooleanExpression.True,
         description = "Synthetic data field",
         fieldSets = fieldSets,
@@ -143,7 +146,7 @@ class IrFieldSetBuilder(
       val arguments: List<IrArgument>,
 
       val description: String?,
-      val type: IrType,
+      val type: GQLType,
       val deprecationReason: String?,
 
       /**
@@ -172,7 +175,7 @@ class IrFieldSetBuilder(
                   arguments = it.arguments?.arguments?.map { it.toIr(fieldDefinition) } ?: emptyList(),
                   condition = it.directives.toBooleanExpression(),
                   selections = it.selectionSet?.selections ?: emptyList(),
-                  type = registerType(fieldDefinition.type),
+                  type = fieldDefinition.type,
                   description = fieldDefinition.description,
                   deprecationReason = fieldDefinition.directives.findDeprecationReason(),
               )
@@ -196,7 +199,7 @@ class IrFieldSetBuilder(
         name = name,
         value = value.coerce(argumentDefinition.type, schema).orThrow().toIr(),
         defaultValue = argumentDefinition.defaultValue?.coerce(argumentDefinition.type, schema)?.orThrow()?.toIr(),
-        type = registerType(argumentDefinition.type)
+        type = registerType(argumentDefinition.type, null)
     )
   }
 
@@ -255,19 +258,20 @@ class IrFieldSetBuilder(
           .mapNotNull { it.fields.firstOrNull { it.responseName == first.responseName } }
 
       val fieldSets = buildIrFieldSets(
-          typedSelectionSet = TypedSelectionSet(selections, first.type.leafName),
+          typedSelectionSet = TypedSelectionSet(selections, first.type.leafType().name),
           superFieldSets = cousinFields.mapNotNull { it.baseFieldSet },
           path = path + PathElement(typeSet, typedSelectionSet.selectionSetTypeCondition, responseName),
           responseName = first.responseName
       )
 
+      val baseFieldSet = fieldSets.firstOrNull { it.typeSet.size == 1 }
       IrField(
           alias = first.alias,
           name = first.name,
           arguments = first.arguments,
           description = first.description,
           deprecationReason = first.deprecationReason,
-          type = first.type,
+          type = registerType(first.type, baseFieldSet?.fullPath),
           condition = BooleanExpression.Or(fieldsWithSameResponseName.map { it.condition }.toSet()),
           fieldSets = fieldSets,
           override = cousinFields.isNotEmpty()
