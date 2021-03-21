@@ -36,13 +36,13 @@ class IrTest {
     }
 
     val irOperation = ir.operations.first()
-    val fileSpecBuilder = FileSpec.builder("com.example", irOperation.name)
+    FileSpec.builder("com.example", irOperation.name)
         .apply {
           irOperation.dataField.fieldSets.forEach {
             addType(it.toTypeSpec())
           }
         }
         .build()
-        .writeTo(File("irTest"))
+        .writeTo(File("build/irTest"))
   }
 }

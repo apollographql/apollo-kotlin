@@ -99,17 +99,17 @@ class IrFieldSetBuilder(
     val shapesTypeSets = shapeTypeSetToPossibleTypes.keys
 
     /**
-     * Only keep the typeSets that are implemented by at least 2 shapes.
+     * Generate the common interfaces
      * We need those to access the shapes in a generic way
      */
-    val interfaceTypeSetsToGenerate = typeConditions.toList().combinations()
-        .map { it.toSet() }
-        .flatMap { typeSet ->
-          shapesTypeSets.filter { it.implements(typeSet) }.map { typeSet to it }
+    val interfaceTypeSetsToGenerate = shapesTypeSets.toList().combinations()
+        .filter {
+          it.size >= 2
         }
-        .groupBy { it.first }
-        .filter { it.value.size > 1 }
-        .keys
+        .map {
+          it.intersection()
+        }
+        .toSet()
 
     val allTypeSets = interfaceTypeSetsToGenerate + shapesTypeSets
 

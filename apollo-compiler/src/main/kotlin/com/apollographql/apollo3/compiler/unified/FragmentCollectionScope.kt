@@ -35,6 +35,7 @@ class FragmentCollectionScope(
    * Collect
    *
    * Each individual set matches a path for which we need to potentially generate a model
+   * TODO: this whole logic isn't reallty used, remove it
    *
    * {# Base type A
    *   ... on B {
