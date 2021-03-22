@@ -24,23 +24,17 @@ import java.io.File
 
 class GraphQLCodegenerator(
     private val ir: IntermediateRepresentation,
-    private val schema: Schema,
-    private val customScalarsMapping: Map<String, String>,
     private val generateAsInternal: Boolean = false,
-    private val operationOutput: OperationOutput,
-    private val generateFilterNotNull: Boolean,
     private val enumAsSealedClassPatternFilters: List<Regex>,
     private val generateScalarMapping: Boolean,
     private val typesPackageName: String,
     private val fragmentsPackageName: String,
     private val packageNameProvider: PackageNameProvider,
-    private val generateFragmentImplementations: Boolean,
-    private val generateFragmentsAsInterfaces: Boolean,
 ) {
   fun write(outputDir: File) {
 
     if (generateScalarMapping && ir.customScalars.isNotEmpty()) {
-      ir.customScalars.typeSpec(customScalarsMapping)
+      ir.customScalars.typeSpec()
           .toFileSpec(typesPackageName)
           .writeTo(outputDir)
     }
@@ -69,50 +63,46 @@ class GraphQLCodegenerator(
               .writeTo(outputDir)
         }
 
-    ast.fragmentTypes
-        .forEach { fragmentType ->
-          if (generateFragmentsAsInterfaces) {
-            fragmentType
-                .interfaceTypeSpec()
-                .toFileSpec(fragmentsPackageName)
-                .writeTo(outputDir)
-          }
+//    ir.allNamedFragments
+//        .filter {  }
+//        .forEach { fragmentType ->
+//          if (generateFragmentsAsInterfaces) {
+//            fragmentType
+//                .interfaceTypeSpec()
+//                .toFileSpec(fragmentsPackageName)
+//                .writeTo(outputDir)
+//          }
+//
+//          if (generateFragmentImplementations || !generateFragmentsAsInterfaces) {
+//            fragmentType
+//                .implementationTypeSpec(generateFragmentsAsInterfaces)
+//                .toFileSpec(fragmentsPackageName)
+//                .writeTo(outputDir)
+//
+//            fragmentType.variables.variablesAdapterTypeSpec(fragmentsPackageName, fragmentType.implementationType.name)
+//                .toFileSpec("${fragmentsPackageName}.adapter")
+//                .writeTo(outputDir)
+//
+//            fragmentType
+//                .responseAdapterTypeSpec(generateFragmentsAsInterfaces)
+//                .toFileSpec("${fragmentsPackageName}.adapter")
+//                .writeTo(outputDir)
+//          }
+//        }
 
-          if (generateFragmentImplementations || !generateFragmentsAsInterfaces) {
-            fragmentType
-                .implementationTypeSpec(generateFragmentsAsInterfaces)
-                .toFileSpec(fragmentsPackageName)
-                .writeTo(outputDir)
+    ir.operations.forEach { operation ->
+      val packageName = packageNameProvider.operationPackageName(operation.filePath)
 
-            fragmentType.variables.variablesAdapterTypeSpec(fragmentsPackageName, fragmentType.implementationType.name)
-                .toFileSpec("${fragmentsPackageName}.adapter")
-                .writeTo(outputDir)
-
-            fragmentType
-                .responseAdapterTypeSpec(generateFragmentsAsInterfaces)
-                .toFileSpec("${fragmentsPackageName}.adapter")
-                .writeTo(outputDir)
-          }
-        }
-
-    ast.operationTypes.forEach { operationType ->
-      operationType.typeSpec(
-          targetPackage = operationType.packageName,
-          generateFragmentsAsInterfaces = generateFragmentsAsInterfaces,
-      )
-          .let {
-            if (generateFilterNotNull) {
-              it.patchKotlinNativeOptionalArrayProperties()
-            } else it
-          }
-          .toFileSpec(operationType.packageName)
+      operation.typeSpec()
+          .toFileSpec(packageName)
           .writeTo(outputDir)
 
-      operationType.variables.variablesAdapterTypeSpec(operationType.packageName, operationType.name)
-          .toFileSpec("${operationType.packageName}.adapter")
+      operation.variablesAdapterTypeSpec(operation.packageName, operation.name)
+          .toFileSpec("${packageName}.adapter")
           .writeTo(outputDir)
-      operationType.responseAdapterTypeSpec(generateFragmentsAsInterfaces)
-          .toFileSpec("${operationType.packageName}.adapter")
+
+      operation.responseAdapterTypeSpec(generateFragmentsAsInterfaces)
+          .toFileSpec("${packageName}.adapter")
           .writeTo(outputDir)
     }
   }
@@ -133,10 +123,10 @@ class GraphQLCodegenerator(
           )
 
   private fun TypeSpec.internal(generateAsInternal: Boolean): TypeSpec {
-    return if (!generateAsInternal) {
-      this
-    } else {
+    return if (generateAsInternal) {
       this.toBuilder().addModifiers(KModifier.INTERNAL).build()
+    } else {
+      this
     }
   }
 }

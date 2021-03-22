@@ -41,7 +41,8 @@ class GraphQLCompiler(val logger: Logger = NoOpLogger) {
 
     val packageNameProvider = DefaultPackageNameProvider(
         roots = roots,
-        rootPackageName = args.rootPackageName
+        rootPackageName = args.rootPackageName,
+        schemaPackageName = schemaPackageName
     )
 
     val metadataFragments = metadata?.fragments ?: emptyList()

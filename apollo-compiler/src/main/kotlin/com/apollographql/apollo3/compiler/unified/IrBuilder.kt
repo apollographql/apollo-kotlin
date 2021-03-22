@@ -1,5 +1,6 @@
 package com.apollographql.apollo3.compiler.unified
 
+import com.apollographql.apollo3.compiler.PackageNameProvider
 import com.apollographql.apollo3.compiler.frontend.GQLBooleanValue
 import com.apollographql.apollo3.compiler.frontend.GQLDirective
 import com.apollographql.apollo3.compiler.frontend.GQLEnumTypeDefinition
@@ -42,6 +43,7 @@ class IrBuilder(
     metadataFragmentDefinitions: List<GQLFragmentDefinition>,
     private val alwaysGenerateTypesMatching: Set<String>,
     private val customScalarToKotlinName: Map<String, String>,
+    private val packageNameProvider: PackageNameProvider
 ) {
   private val allGQLFragmentDefinitions = (metadataFragmentDefinitions + fragmentDefinitions).associateBy { it.name }
   private var usedEnums = mutableSetOf<String>()
@@ -89,7 +91,7 @@ class IrBuilder(
   }
 
   private fun GQLScalarTypeDefinition.toIr(): IrCustomScalar {
-    return IrCustomScalar(name = name)
+    return IrCustomScalar(name = name, customScalarToKotlinName[name] ?: "kotlin.Any")
   }
 
   private fun GQLInputObjectTypeDefinition.toIr(): IrInputObject {

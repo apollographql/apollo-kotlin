@@ -10,7 +10,7 @@ import com.squareup.kotlinpoet.TypeSpec
 
 
 private fun IrField.typeName(): TypeName {
-  return type.typeName(baseFieldSet?.typeName())
+  return type.typeName()
 }
 
 fun IrFieldSet.toTypeSpec(): TypeSpec {

@@ -14,6 +14,8 @@ import com.apollographql.apollo3.compiler.backend.codegen.suppressWarningsAnnota
 import com.apollographql.apollo3.compiler.unified.IrInputField
 import com.apollographql.apollo3.compiler.unified.IrInputObject
 import com.apollographql.apollo3.compiler.unified.IrInputObjectType
+import com.apollographql.apollo3.compiler.unified.codegen.helpers.NamedType
+import com.apollographql.apollo3.compiler.unified.codegen.helpers.toParameterSpec
 import com.squareup.kotlinpoet.ClassName
 import com.squareup.kotlinpoet.CodeBlock
 import com.squareup.kotlinpoet.FunSpec
@@ -45,7 +47,6 @@ fun IrInputField.toNamedType() = NamedType(
     graphQlName = name,
     type = type,
     optional = optional,
-    modelPath = null,
     description = description,
     deprecationReason = deprecationReason,
 )

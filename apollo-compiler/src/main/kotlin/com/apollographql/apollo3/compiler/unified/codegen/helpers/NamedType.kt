@@ -1,10 +1,12 @@
-package com.apollographql.apollo3.compiler.unified.codegen
+package com.apollographql.apollo3.compiler.unified.codegen.helpers
 
 import com.apollographql.apollo3.api.Input
 import com.apollographql.apollo3.compiler.applyIf
 import com.apollographql.apollo3.compiler.backend.codegen.kotlinNameForProperty
 import com.apollographql.apollo3.compiler.unified.IrType
 import com.apollographql.apollo3.compiler.unified.ModelPath
+import com.apollographql.apollo3.compiler.unified.codegen.adapterInitializer
+import com.apollographql.apollo3.compiler.unified.codegen.typeName
 import com.squareup.kotlinpoet.CodeBlock
 import com.squareup.kotlinpoet.MemberName
 import com.squareup.kotlinpoet.ParameterSpec
@@ -17,24 +19,23 @@ class NamedType(
     val description: String?,
     val deprecationReason: String?,
     val type: IrType,
-    val modelPath: ModelPath?,
     val optional: Boolean = false,
 )
 
 fun NamedType.typeName(): TypeName {
   return if (optional) {
-    Input::class.asClassName().parameterizedBy(type.typeName(null))
+    Input::class.asClassName().parameterizedBy(type.typeName())
   } else {
-    type.typeName(modelPath?.typeName())
+    type.typeName()
   }
 }
 
 fun NamedType.adapterInitializer(): CodeBlock {
   return if (optional) {
     val inputFun = MemberName("com.apollographql.apollo3.api", "input")
-    CodeBlock.of("%L.%M()", type.adapterInitializer(modelPath?.typeName()), inputFun)
+    CodeBlock.of("%L.%M()", type.adapterInitializer(), inputFun)
   } else {
-    type.adapterInitializer(modelPath?.typeName())
+    type.adapterInitializer()
   }
 }
 

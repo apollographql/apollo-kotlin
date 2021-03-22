@@ -161,6 +161,7 @@ data class IrInputObject(
 
 data class IrCustomScalar(
     val name: String,
+    val kotlinName: String
 )
 
 /**
