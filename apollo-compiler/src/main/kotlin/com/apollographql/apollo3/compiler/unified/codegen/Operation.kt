@@ -21,6 +21,7 @@ import com.squareup.kotlinpoet.PropertySpec
 import com.squareup.kotlinpoet.TypeName
 import com.squareup.kotlinpoet.TypeSpec
 import com.squareup.kotlinpoet.asClassName
+import com.squareup.kotlinpoet.asTypeName
 
 fun IrOperation.typeSpec(): TypeSpec {
   return TypeSpec.classBuilder(kotlinNameForOperation(name))
@@ -33,11 +34,22 @@ fun IrOperation.typeSpec(): TypeSpec {
       .addFunction(serializeVariablesFunSpec(packageName, name))
       .addFunction(adapterFunSpec(packageName = packageName, name = name, dataField = dataField))
       .addFunction(responseFieldsFunSpec())
-      .addType(dataField.fieldSets.first().typeSpec())
+      .addType(dataTypeSpec())
       .addType(companionTypeSpec())
       .build()
 }
 
+private fun IrOperation.dataTypeSpec(): TypeSpec {
+  val superClass = when (operationType) {
+    IrOperationType.Query -> Query.Data::class.asTypeName()
+    IrOperationType.Mutation -> Mutation.Data::class.asTypeName()
+    IrOperationType.Subscription -> Subscription.Data::class.asTypeName()
+  }
+
+  return dataField.fieldSets.first().typeSpec().toBuilder()
+      .addSuperinterface(superClass)
+      .build()
+}
 private fun IrOperation.superInterfaceType(): TypeName {
   return when (operationType) {
     IrOperationType.Query -> Query::class.asClassName()

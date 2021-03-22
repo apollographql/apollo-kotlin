@@ -21,6 +21,8 @@ internal fun IrCustomScalar.typeName() = ClassName(
     kotlinNameForCustomScalar(name)
 )
 
+internal fun IrCustomScalar.kotlinTypeName() = ClassName.bestGuess(kotlinName ?: error("no kotlinName for $name"))
+
 fun IrCustomScalars.typeSpec() = customScalars.typeSpec()
 
 private fun List<IrCustomScalar>.typeSpec(): TypeSpec {

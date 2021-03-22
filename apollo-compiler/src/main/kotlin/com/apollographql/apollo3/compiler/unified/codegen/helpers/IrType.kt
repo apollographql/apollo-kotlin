@@ -24,6 +24,7 @@ import com.apollographql.apollo3.compiler.unified.IrStringType
 import com.apollographql.apollo3.compiler.unified.IrType
 import com.apollographql.apollo3.compiler.unified.ModelPath
 import com.apollographql.apollo3.compiler.unified.TypeSet
+import com.apollographql.apollo3.compiler.unified.codegen.kotlinTypeName
 import com.apollographql.apollo3.compiler.unified.codegen.typeName
 import com.squareup.kotlinpoet.ClassName
 import com.squareup.kotlinpoet.CodeBlock
@@ -49,7 +50,7 @@ fun IrType.typeName(): TypeName {
     is IrBooleanType -> Boolean::class.asTypeName()
     is IrIdType -> String::class.asTypeName()
     is IrAnyType -> Any::class.asTypeName()
-    is IrCustomScalarType -> customScalar.typeName()
+    is IrCustomScalarType -> customScalar.kotlinTypeName()
     is IrEnumType -> enum.typeName()
     is IrInputObjectType -> inputObject.typeName()
     is IrCompoundType -> fieldSet.fullPath.typeName()

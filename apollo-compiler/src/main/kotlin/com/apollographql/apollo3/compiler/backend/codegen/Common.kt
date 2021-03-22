@@ -190,6 +190,9 @@ fun TypeSpec.Builder.makeDataClassFromProperties(properties: List<PropertySpec>)
       .build())
 
   properties.forEach {
-    addProperty(it)
+    addProperty(it.toBuilder(it.name)
+        .initializer(CodeBlock.of(it.name))
+        .build()
+    )
   }
 }

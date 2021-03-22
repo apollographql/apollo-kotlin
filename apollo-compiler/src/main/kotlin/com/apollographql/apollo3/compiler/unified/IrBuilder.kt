@@ -225,7 +225,11 @@ class IrBuilder(
             "ID" -> IrIdType
             else -> {
               val customScalar = customScalarCache.getOrPut(name) { typeDefinition.toIr() }
-              IrCustomScalarType(customScalar = customScalar)
+              if (customScalar.kotlinName != null) {
+                IrCustomScalarType(customScalar = customScalar)
+              } else {
+                IrAnyType
+              }
             }
           }
         }

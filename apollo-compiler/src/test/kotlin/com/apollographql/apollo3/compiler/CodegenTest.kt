@@ -234,10 +234,10 @@ class CodegenTest(private val folder: File, private val fragmentsCodegenMode: Fr
             val queryFile = checkNotNull(file.walk().find { it.extension == "graphql" })
             val hasNamedFragments = queryFile.readText().contains("fragment\\s\\w*\\son\\s\\w*".toRegex())
             val hasInlineFragments = queryFile.readText().contains("\\.\\.\\.\\s*on\\s\\w*\\s*".toRegex())
-            if ((hasNamedFragments || hasInlineFragments) && false) {
+            if (hasNamedFragments || hasInlineFragments) {
               if (fragmentsCodegenMode == null) {
                 listOf(
-                    arrayOf(file, FragmentsCodegenMode.FragmentsAsInterfaces),
+                    //arrayOf(file, FragmentsCodegenMode.FragmentsAsInterfaces),
                     arrayOf(file, FragmentsCodegenMode.FragmentsAsDataClasses)
                 )
               } else {
