@@ -2,6 +2,7 @@ plugins {
   kotlin("jvm")
   id("java-gradle-plugin")
   id("com.gradle.plugin-publish")
+  id("com.github.johnrengelman.shadow")
 }
 
 
@@ -9,22 +10,62 @@ metalava {
   hiddenPackages += setOf("com.apollographql.apollo3.gradle.internal")
 }
 
+/**
+ * Special configuration to be included in resulting shadowed jar, but not added to the generated pom and gradle
+ * metadata files.
+ * Largely inspired by Ktlint https://github.com/JLLeitschuh/ktlint-gradle/blob/530aa9829abea01e4c91e8798fb7341c438aac3b/plugin/build.gradle.kts
+ */
+val shadowImplementation by configurations.creating
+configurations["compileOnly"].extendsFrom(shadowImplementation)
+configurations["testImplementation"].extendsFrom(shadowImplementation)
+
 dependencies {
+  compileOnly(gradleApi())
   compileOnly(groovy.util.Eval.x(project, "x.dep.kotlin.plugin"))
   compileOnly(groovy.util.Eval.x(project, "x.dep.android.minPlugin"))
   // kotlin-reflect is transitively pulled by the android plugin, make it explicit so that it uses the same version as the rest of kotlin libs
   compileOnly(groovy.util.Eval.x(project, "x.dep.kotlin.reflect"))
 
-  api(project(":apollo-compiler"))
-  implementation(project(":apollo-api")) // for QueryDocumentMinifier
-  implementation(groovy.util.Eval.x(project, "x.dep.okHttp.okHttp4"))
+  shadowImplementation(project(":apollo-compiler"))
+  shadowImplementation(project(":apollo-api"))
+  shadowImplementation(groovy.util.Eval.x(project, "x.dep.okHttp.okHttp4").toString())
   // Needed for manual Json construction in `SchemaDownloader`
-  implementation(groovy.util.Eval.x(project, "x.dep.moshi.moshi"))
+  shadowImplementation(groovy.util.Eval.x(project, "x.dep.moshi.moshi").toString())
 
   testImplementation(groovy.util.Eval.x(project, "x.dep.junit"))
   testImplementation(groovy.util.Eval.x(project, "x.dep.truth"))
-
   testImplementation(groovy.util.Eval.x(project, "x.dep.okHttp.mockWebServer4"))
+}
+
+val shadowJarTask = tasks.named("shadowJar", com.github.jengelman.gradle.plugins.shadow.tasks.ShadowJar::class.java)
+val shadowPrefix = "com.apollographql.relocated"
+
+shadowJarTask.configure {
+  configurations = listOf(shadowImplementation)
+  relocate("org.antlr", "com.apollographql.relocated.org.antlr")
+  relocate("okio", "com.apollographql.relocated.okio")
+  relocate("okhttp3", "com.apollographql.relocated.okhttp3")
+}
+
+tasks.getByName("jar").enabled = false
+tasks.getByName("jar").dependsOn(shadowJarTask)
+
+configurations {
+  configureEach {
+    outgoing {
+      val removed = artifacts.removeIf { it.classifier.isNullOrEmpty() }
+      if (removed) {
+        artifact(tasks.shadowJar) {
+          // Pom and maven consumers do not like the `-all` default classifier
+          classifier = ""
+        }
+      }
+    }
+  }
+  // used by plugin-publish plugin
+  archives {
+    extendsFrom(signatures.get())
+  }
 }
 
 tasks.withType<Test> {
@@ -60,6 +101,7 @@ tasks.withType(org.jetbrains.kotlin.gradle.tasks.KotlinCompile::class.java) {
     apiVersion = "1.3"
   }
 }
+
 
 /**
  * This is so that the plugin marker pom contains a <scm> tag
