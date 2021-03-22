@@ -53,20 +53,10 @@ fun IrType.typeName(): TypeName {
     is IrBooleanType -> Boolean::class.asTypeName()
     is IrIdType -> String::class.asTypeName()
     is IrAnyType -> Any::class.asTypeName()
-    is IrCustomScalarType -> ClassName(
-        packageName = packageName,
-        "Scalars",
-        kotlinNameForCustomScalar(name)
-    )
-    is IrEnumType -> ClassName(
-        packageName = packageName,
-        kotlinNameForEnum(name)
-    )
-    is IrInputObjectType -> ClassName(
-        packageName = packageName,
-        kotlinNameForInputObject(name)
-    )
-    is IrCompoundType -> modelPath.typeName()
+    is IrCustomScalarType -> customScalar.typeName()
+    is IrEnumType -> enum.typeName()
+    is IrInputObjectType -> inputObject.typeName()
+    is IrCompoundType -> fieldSet.fullPath.typeName()
   }.copy(nullable = true)
 }
 
@@ -129,7 +119,7 @@ private fun IrType.nonNullableAdapterInitializer(): CodeBlock {
     is IrNonNullType -> error("")
     is IrListType -> {
       val nullableFun = MemberName("com.apollographql.apollo3.api", "list")
-      CodeBlock.of("%L.%M()", leafType.adapterInitializer(), nullableFun)
+      CodeBlock.of("%L.%M()", ofType.adapterInitializer(), nullableFun)
     }
     is IrBooleanType -> CodeBlock.of("%T", BooleanResponseAdapter::class)
     is IrIdType -> CodeBlock.of("%T", StringResponseAdapter::class)

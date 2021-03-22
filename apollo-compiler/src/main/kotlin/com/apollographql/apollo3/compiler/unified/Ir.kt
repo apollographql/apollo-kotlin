@@ -20,6 +20,7 @@ data class IntermediateRepresentation(
 )
 
 data class IrEnum(
+    val packageName: String,
     val name: String,
     val description: String?,
     val values: List<Value>,

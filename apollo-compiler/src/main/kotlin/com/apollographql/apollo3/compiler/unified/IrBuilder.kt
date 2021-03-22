@@ -110,6 +110,7 @@ class IrBuilder(
 
   private fun GQLEnumTypeDefinition.toIr(): IrEnum {
     return IrEnum(
+        packageName = packageNameProvider.enumPackageName(name),
         name = name,
         description = description,
         values = enumValues.map { it.toIr() }

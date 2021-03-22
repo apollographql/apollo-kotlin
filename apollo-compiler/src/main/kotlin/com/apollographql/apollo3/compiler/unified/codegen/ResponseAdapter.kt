@@ -7,6 +7,9 @@ import com.apollographql.apollo3.api.json.JsonWriter
 import com.apollographql.apollo3.compiler.backend.codegen.Identifier
 import com.apollographql.apollo3.compiler.backend.codegen.kotlinNameForProperty
 import com.apollographql.apollo3.compiler.backend.codegen.kotlinNameForVariable
+import com.apollographql.apollo3.compiler.unified.codegen.helpers.NamedType
+import com.apollographql.apollo3.compiler.unified.codegen.helpers.adapterInitializer
+import com.apollographql.apollo3.compiler.unified.codegen.helpers.typeName
 import com.squareup.kotlinpoet.CodeBlock
 import com.squareup.kotlinpoet.FunSpec
 import com.squareup.kotlinpoet.KModifier

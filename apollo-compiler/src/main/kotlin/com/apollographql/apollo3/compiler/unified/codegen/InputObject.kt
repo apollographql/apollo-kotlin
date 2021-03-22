@@ -34,13 +34,18 @@ internal fun IrInputObject.typeSpec() =
         .addSuperinterface(InputObject::class)
         .build()
 
+internal fun IrInputObject.typeName() =
+    ClassName(
+        packageName = packageName,
+        kotlinNameForInputObject(name)
+    )
+
 internal fun IrInputObject.adapterTypeSpec(): TypeSpec {
   val adapterName = kotlinNameForInputObjectAdapter(name)
-  val adaptedTypeName = IrInputObjectType(name = name, packageName = packageName).typeName()
 
   return fields.map {
     it.toNamedType()
-  }.adapterTypeSpec(adapterName, adaptedTypeName)
+  }.adapterTypeSpec(adapterName, typeName())
 }
 
 fun IrInputField.toNamedType() = NamedType(

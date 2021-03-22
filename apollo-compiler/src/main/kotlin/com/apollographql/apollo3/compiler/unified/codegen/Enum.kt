@@ -23,6 +23,11 @@ import com.squareup.kotlinpoet.TypeSpec
 import com.squareup.kotlinpoet.asClassName
 import com.squareup.kotlinpoet.joinToCode
 
+internal fun IrEnum.typeName() = ClassName(
+    packageName = packageName,
+    kotlinNameForEnum(name)
+)
+
 internal fun IrEnum.typeSpecs(
     generateAsInternal: Boolean = false,
     enumAsSealedClassPatternFilters: List<Regex>,

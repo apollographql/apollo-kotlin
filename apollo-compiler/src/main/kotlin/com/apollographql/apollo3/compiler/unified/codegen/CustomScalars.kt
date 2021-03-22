@@ -2,12 +2,20 @@ package com.apollographql.apollo3.compiler.unified.codegen
 
 import com.apollographql.apollo3.api.CustomScalar
 import com.apollographql.apollo3.compiler.backend.ast.CodeGenerationAst
+import com.apollographql.apollo3.compiler.backend.codegen.kotlinNameForCustomScalar
 import com.apollographql.apollo3.compiler.backend.codegen.kotlinNameForEnum
 import com.apollographql.apollo3.compiler.unified.IrCustomScalar
 import com.apollographql.apollo3.compiler.unified.TypeSet
+import com.squareup.kotlinpoet.ClassName
 import com.squareup.kotlinpoet.PropertySpec
 import com.squareup.kotlinpoet.TypeSpec
 import com.squareup.kotlinpoet.asTypeName
+
+internal fun IrCustomScalar.typeName() = ClassName(
+    packageName = packageName,
+    "Scalars",
+    kotlinNameForCustomScalar(name)
+)
 
 internal fun List<IrCustomScalar>.typeSpec(): TypeSpec {
   return TypeSpec.objectBuilder("CustomScalars")

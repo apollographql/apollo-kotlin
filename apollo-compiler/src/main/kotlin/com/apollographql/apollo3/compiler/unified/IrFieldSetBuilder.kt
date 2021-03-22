@@ -263,7 +263,7 @@ class IrFieldSetBuilder(
       )
 
       val baseFieldSet = fieldSets.firstOrNull { it.typeSet.size == 1 }
-      
+
       IrField(
           alias = first.alias,
           name = first.name,
