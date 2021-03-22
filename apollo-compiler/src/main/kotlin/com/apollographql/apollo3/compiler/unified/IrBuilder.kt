@@ -150,7 +150,9 @@ class IrBuilder(
             packageName = packageName
         ),
         sourceWithFragments = sourceWithFragments,
-        packageName = packageName
+        packageName = packageName,
+        // TODO: operation Id
+        operationId = name
     )
   }
 

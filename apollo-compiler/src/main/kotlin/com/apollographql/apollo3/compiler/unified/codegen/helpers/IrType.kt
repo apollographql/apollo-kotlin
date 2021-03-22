@@ -1,4 +1,4 @@
-package com.apollographql.apollo3.compiler.unified.codegen
+package com.apollographql.apollo3.compiler.unified.codegen.helpers
 
 import com.apollographql.apollo3.api.AnyResponseAdapter
 import com.apollographql.apollo3.api.BooleanResponseAdapter
@@ -7,11 +7,7 @@ import com.apollographql.apollo3.api.IntResponseAdapter
 import com.apollographql.apollo3.api.StringResponseAdapter
 import com.apollographql.apollo3.compiler.backend.codegen.adapterName
 import com.apollographql.apollo3.compiler.backend.codegen.adapterPackageName
-import com.apollographql.apollo3.compiler.backend.codegen.kotlinNameForCustomScalar
-import com.apollographql.apollo3.compiler.backend.codegen.kotlinNameForEnum
 import com.apollographql.apollo3.compiler.backend.codegen.kotlinNameForFragment
-import com.apollographql.apollo3.compiler.backend.codegen.kotlinNameForInputObject
-import com.apollographql.apollo3.compiler.backend.codegen.obj
 import com.apollographql.apollo3.compiler.unified.IrAnyType
 import com.apollographql.apollo3.compiler.unified.IrBooleanType
 import com.apollographql.apollo3.compiler.unified.IrCompoundType
@@ -27,8 +23,8 @@ import com.apollographql.apollo3.compiler.unified.IrNonNullType
 import com.apollographql.apollo3.compiler.unified.IrStringType
 import com.apollographql.apollo3.compiler.unified.IrType
 import com.apollographql.apollo3.compiler.unified.ModelPath
-import com.apollographql.apollo3.compiler.unified.PathElement
 import com.apollographql.apollo3.compiler.unified.TypeSet
+import com.apollographql.apollo3.compiler.unified.codegen.typeName
 import com.squareup.kotlinpoet.ClassName
 import com.squareup.kotlinpoet.CodeBlock
 import com.squareup.kotlinpoet.MemberName
@@ -127,28 +123,9 @@ private fun IrType.nonNullableAdapterInitializer(): CodeBlock {
     is IrIntType -> CodeBlock.of("%T", IntResponseAdapter::class)
     is IrFloatType -> CodeBlock.of("%T", DoubleResponseAdapter::class)
     is IrAnyType -> CodeBlock.of("%T", AnyResponseAdapter::class)
-    is IrEnumType -> {
-      CodeBlock.of(
-          "%T",
-          ClassName(
-              adapterPackageName(packageName),
-              adapterName(kotlinNameForEnum(name))
-          )
-      )
-    }
-    is IrCompoundType -> {
-      CodeBlock.of(
-          "%T",
-          modelPath.adapterTypeName()
-      ).obj(false)
-    }
-    is IrInputObjectType -> {
-      CodeBlock.of("%T", typeName()).obj(false)
-    }
-    is IrCustomScalarType -> CodeBlock.of(
-        "responseAdapterCache.responseAdapterFor<%T>(%T)",
-        ClassName.bestGuess(kotlinName),
-        typeName()
-    )
+    is IrEnumType -> TODO()
+    is IrCompoundType -> TODO()
+    is IrInputObjectType -> TODO()
+    is IrCustomScalarType -> TODO()
   }
 }

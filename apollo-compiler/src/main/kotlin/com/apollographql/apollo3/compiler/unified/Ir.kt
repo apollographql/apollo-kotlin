@@ -76,6 +76,7 @@ data class IrInputField(
 data class IrOperation(
     val name: String,
     val operationType: IrOperationType,
+    val operationId: String,
     val typeCondition: String,
     val variables: List<IrVariable>,
     val description: String?,

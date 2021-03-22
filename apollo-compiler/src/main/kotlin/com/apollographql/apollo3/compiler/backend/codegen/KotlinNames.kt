@@ -17,7 +17,9 @@ internal fun kotlinNameForOperation(operationName: String) = capitalizedIdentifi
 internal fun kotlinNameForFragment(operationName: String) = capitalizedIdentifier(operationName)
 internal fun kotlinNameForInputObject(name: String) = capitalizedIdentifier(name)
 internal fun kotlinNameForInputObjectAdapter(inputObjectName: String) = capitalizedIdentifier(inputObjectName) + "_InputAdapter"
-internal fun kotlinNameForVariablesAdapter(operationName: String) = capitalizedIdentifier(operationName) + "_VariablesAdapter"
+internal fun kotlinNameForVariablesAdapter(name: String) = capitalizedIdentifier(name) + "_VariablesAdapter"
+internal fun kotlinNameForResponseAdapter(name: String) = capitalizedIdentifier(name) + "_ResponseAdapter"
+
 internal fun kotlinNameForModel(typeSet: TypeSet, responseName: String): String {
   return (typeSet.sorted() + responseName).map { it.capitalize() }.joinToString("")
 }

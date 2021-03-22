@@ -6,9 +6,6 @@ import com.apollographql.apollo3.compiler.backend.codegen.kotlinNameForProperty
 import com.apollographql.apollo3.compiler.unified.IrInputField
 import com.apollographql.apollo3.compiler.unified.IrType
 import com.apollographql.apollo3.compiler.unified.IrVariable
-import com.apollographql.apollo3.compiler.unified.ModelPath
-import com.apollographql.apollo3.compiler.unified.codegen.adapterInitializer
-import com.apollographql.apollo3.compiler.unified.codegen.typeName
 import com.squareup.kotlinpoet.CodeBlock
 import com.squareup.kotlinpoet.MemberName
 import com.squareup.kotlinpoet.ParameterSpec
