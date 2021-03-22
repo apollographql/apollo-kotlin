@@ -8,5 +8,6 @@ internal object Identifier {
   const val toResponse = "toResponse"
   const val fromResponse = "fromResponse"
   const val fromFields = "fromFields"
+  const val serializeVariables = "serializeVariables"
   const val __typename = "__typename"
 }

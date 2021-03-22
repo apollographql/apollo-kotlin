@@ -3,7 +3,9 @@ package com.apollographql.apollo3.compiler.unified.codegen.helpers
 import com.apollographql.apollo3.api.Input
 import com.apollographql.apollo3.compiler.applyIf
 import com.apollographql.apollo3.compiler.backend.codegen.kotlinNameForProperty
+import com.apollographql.apollo3.compiler.unified.IrInputField
 import com.apollographql.apollo3.compiler.unified.IrType
+import com.apollographql.apollo3.compiler.unified.IrVariable
 import com.apollographql.apollo3.compiler.unified.ModelPath
 import com.apollographql.apollo3.compiler.unified.codegen.adapterInitializer
 import com.apollographql.apollo3.compiler.unified.codegen.typeName
@@ -50,3 +52,20 @@ internal fun NamedType.toParameterSpec(): ParameterSpec {
       .applyIf(optional) { defaultValue("%T", Input.Absent::class.asClassName()) }
       .build()
 }
+
+
+fun IrInputField.toNamedType() = NamedType(
+    graphQlName = name,
+    type = type,
+    optional = optional,
+    description = description,
+    deprecationReason = deprecationReason,
+)
+
+fun IrVariable.toNamedType() = NamedType(
+    graphQlName = name,
+    type = type,
+    optional = optional,
+    description = null,
+    deprecationReason = null,
+)

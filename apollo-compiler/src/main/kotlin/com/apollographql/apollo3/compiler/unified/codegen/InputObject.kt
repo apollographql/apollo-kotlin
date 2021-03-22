@@ -15,6 +15,7 @@ import com.apollographql.apollo3.compiler.unified.IrInputField
 import com.apollographql.apollo3.compiler.unified.IrInputObject
 import com.apollographql.apollo3.compiler.unified.IrInputObjectType
 import com.apollographql.apollo3.compiler.unified.codegen.helpers.NamedType
+import com.apollographql.apollo3.compiler.unified.codegen.helpers.toNamedType
 import com.apollographql.apollo3.compiler.unified.codegen.helpers.toParameterSpec
 import com.squareup.kotlinpoet.ClassName
 import com.squareup.kotlinpoet.CodeBlock
@@ -48,28 +49,3 @@ internal fun IrInputObject.adapterTypeSpec(): TypeSpec {
   }.adapterTypeSpec(adapterName, typeName())
 }
 
-fun IrInputField.toNamedType() = NamedType(
-    graphQlName = name,
-    type = type,
-    optional = optional,
-    description = description,
-    deprecationReason = deprecationReason,
-)
-
-fun serializeVariablesFunSpec(
-    funName: String,
-    packageName: String,
-    name: String,
-): FunSpec {
-  val serializerClassName = ClassName("$packageName.adapter", kotlinNameForVariablesAdapter(name))
-
-  return FunSpec.builder(funName)
-      .addModifiers(KModifier.OVERRIDE)
-      .addParameter("writer", JsonWriter::class)
-      .addParameter(Identifier.responseAdapterCache, ResponseAdapterCache::class.asTypeName())
-      .addCode(
-          "%L.toResponse(writer, ${Identifier.responseAdapterCache}, this)",
-          CodeBlock.of("%T", serializerClassName).obj(false)
-      )
-      .build()
-}

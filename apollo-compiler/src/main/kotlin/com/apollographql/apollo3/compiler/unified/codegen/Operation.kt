@@ -18,6 +18,8 @@ import com.apollographql.apollo3.compiler.backend.codegen.typeSpec
 import com.apollographql.apollo3.compiler.escapeKotlinReservedWord
 import com.apollographql.apollo3.compiler.unified.IrOperation
 import com.apollographql.apollo3.compiler.unified.IrOperationType
+import com.apollographql.apollo3.compiler.unified.codegen.helpers.toNamedType
+import com.apollographql.apollo3.compiler.unified.codegen.helpers.toParameterSpec
 import com.squareup.kotlinpoet.ClassName
 import com.squareup.kotlinpoet.CodeBlock
 import com.squareup.kotlinpoet.FunSpec
@@ -32,30 +34,15 @@ fun IrOperation.typeSpec(): TypeSpec {
   return TypeSpec.classBuilder(kotlinNameForOperation(name))
       .addSuperinterface(superInterfaceType())
       .applyIf(description?.isNotBlank() == true) { addKdoc("%L", description!!) }
-      .makeDataClass(variables.map { it.toParameterSpec() })
-      .addFunction(FunSpec.builder("operationId")
-          .addModifiers(KModifier.OVERRIDE)
-          .returns(String::class)
-          .addStatement("return OPERATION_ID")
-          .build()
-      )
-      .addFunction(FunSpec.builder("queryDocument")
-          .addModifiers(KModifier.OVERRIDE)
-          .returns(String::class)
-          .addStatement("return QUERY_DOCUMENT")
-          .build()
-      )
-      .addFunction(com.apollographql.apollo3.compiler.backend.codegen.serializeVariablesFunSpec(
+      .makeDataClass(variables.map { it.toNamedType().toParameterSpec() })
+      .addFunction(operationIdFunSpec())
+      .addFunction(queryDocumentFunSpec())
+      .addFunction(nameFunSpec())
+      .addFunction(serializeVariablesFunSpec(
           funName = "serializeVariables",
           packageName = targetPackage,
           name = name,
       ))
-      .addFunction(FunSpec.builder("name")
-          .addModifiers(KModifier.OVERRIDE)
-          .returns(String::class)
-          .addStatement("return OPERATION_NAME")
-          .build()
-      )
       .apply {
         val buffered = dataType.kind is CodeGenerationAst.ObjectType.Kind.ObjectWithFragments && !generateFragmentsAsInterfaces
         addFunction(adapterFunSpec(operationResponseAdapter, buffered))
@@ -109,3 +96,21 @@ private fun IrOperation.superInterfaceType(): TypeName {
     IrOperationType.Subscription -> Subscription::class.asClassName()
   }.parameterizedBy(dataField.baseFieldSet!!.fullPath.typeName())
 }
+
+private fun operationIdFunSpec() = FunSpec.builder("operationId")
+    .addModifiers(KModifier.OVERRIDE)
+    .returns(String::class)
+    .addStatement("return OPERATION_ID")
+    .build()
+
+private fun queryDocumentFunSpec() = FunSpec.builder("queryDocument")
+    .addModifiers(KModifier.OVERRIDE)
+    .returns(String::class)
+    .addStatement("return QUERY_DOCUMENT")
+    .build()
+
+private fun nameFunSpec() = FunSpec.builder("name")
+    .addModifiers(KModifier.OVERRIDE)
+    .returns(String::class)
+    .addStatement("return OPERATION_NAME")
+    .build()
