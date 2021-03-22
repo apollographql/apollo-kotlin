@@ -15,14 +15,12 @@ import com.apollographql.apollo3.compiler.frontend.coerce
 import com.apollographql.apollo3.compiler.frontend.definitionFromScope
 import com.apollographql.apollo3.compiler.frontend.findDeprecationReason
 import com.apollographql.apollo3.compiler.frontend.leafType
-import com.apollographql.apollo3.compiler.unified.IrFieldSetBuilder.TypedSelectionSet
-
 
 /**
- * For a [TypedSelectionSet]  collect all the typeConditions.
+ * For a list of selections collect all the typeConditions.
  * Then for each combination of typeConditions, collect all the fields recursively.
  *
- * While doing so, it records all the used fragments and used types
+ * While doing so, record all the used fragments and used types
  *
  * @param registerType a factory for IrType. This is used to track what types are used to only generate those
  */
@@ -31,13 +29,7 @@ class IrFieldSetBuilder(
     private val allGQLFragmentDefinitions: Map<String, GQLFragmentDefinition>,
     private val registerType: (GQLType, IrFieldSet?) -> IrType,
 ) {
-
   private var cachedFragments = mutableMapOf<String, IrField>()
-
-  class TypedSelectionSet(
-      val selections: List<GQLSelection>,
-      val selectionSetTypeCondition: String,
-  )
 
   fun buildOperation(
       selections: List<GQLSelection>,
