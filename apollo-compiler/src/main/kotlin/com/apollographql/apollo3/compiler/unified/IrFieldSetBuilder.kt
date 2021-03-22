@@ -114,20 +114,29 @@ class IrFieldSetBuilder(
 
     val fieldSetCache = mutableMapOf<TypeSet, IrFieldSet>()
 
-    allTypeSets.forEach { typeSet ->
+    val responseName = alias ?: name
+    /**
+     * Build the interfaces starting from the less qualified so we can look up the super
+     * interfaces in fieldSetCache when needed
+     */
+    val interfaceTypeSets = interfaceTypeSetsToGenerate.sortedBy { it.size }.map { typeSet ->
       buildFieldSet(
           fieldSetCache = fieldSetCache,
           allTypeSets = allTypeSets,
           selections = selections,
           fieldType = type.leafType().name,
           typeSet = typeSet,
-          responseName = alias ?: name,
+          responseName = responseName,
           shapeTypeSetToPossibleTypes = shapeTypeSetToPossibleTypes,
           superFieldSets = superFields.mapNotNull { it.baseFieldSet },
           path = path,
       )
     }
 
+    val allFieldSets = fieldSetCache.values.toList()
+    val implementationsFieldSets = allFieldSets.filter {
+      it.possibleTypes.isNotEmpty()
+    }
     val baseFieldSet = fieldSetCache[setOf(type.leafType().name)]
 
     return IrField(
@@ -138,7 +147,7 @@ class IrFieldSetBuilder(
           deprecationReason = deprecationReason,
           type = registerType(type, baseFieldSet),
           condition = condition,
-          fieldSets = fieldSetCache.values.toList(),
+          fieldSets = allFieldSets,
           override = superFields.isNotEmpty()
       )
   }
@@ -227,10 +236,6 @@ class IrFieldSetBuilder(
       superFieldSets: List<IrFieldSet>,
       path: ModelPath
   ): IrFieldSet {
-    if (fieldSetCache[typeSet] != null) {
-      return fieldSetCache[typeSet]!!
-    }
-
     val superTypeSet = allTypeSets.filter {
       it.size < typeSet.size
     }.sortedByDescending { it.size }
@@ -302,17 +307,15 @@ class IrFieldSetBuilder(
 
     val implements = finalSuperFieldSets.map { it.fullPath }.toSet()
 
-    val fieldSet = IrFieldSet(
+    return IrFieldSet(
         typeSet = typeSet.toSet(),
+        responseName = responseName,
         fieldType = fieldType,
         possibleTypes = shapeTypeSetToPossibleTypes[typeSet] ?: emptySet(),
         fields = fields,
         implements = implements,
         path = path,
-        responseName = responseName
-    )
-
-    return fieldSet.also {
+    ).also {
       fieldSetCache[typeSet] = it
     }
   }

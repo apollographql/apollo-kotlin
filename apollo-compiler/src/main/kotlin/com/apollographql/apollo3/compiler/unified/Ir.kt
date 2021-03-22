@@ -125,12 +125,13 @@ data class IrField(
     val condition: BooleanExpression,
     // whether this fields needs an override modifier
     val override: Boolean,
+
     // empty for a scalar field
     val fieldSets: List<IrFieldSet>,
+
 ) {
   val responseName = alias ?: name
   val baseFieldSet = fieldSets.firstOrNull { it.typeSet.size == 1 }
-  val modelPath = baseFieldSet?.fullPath
 }
 
 /**
