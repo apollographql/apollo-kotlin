@@ -148,7 +148,8 @@ class IrBuilder(
       "Apollo doesn't support anonymous operation."
     }
     val dataField = fieldSetBuilder.buildOperation(
-        typedSelectionSet = IrFieldSetBuilder.TypedSelectionSet(selectionSet.selections, typeDefinition.name),
+        selections = selectionSet.selections,
+        fieldType = typeDefinition.name,
         name = name,
         packageName = packageName
     )
@@ -180,8 +181,9 @@ class IrBuilder(
         typeCondition = typeDefinition.name,
         variables = variableDefinitions.map { it.toIr() },
         dataField = fieldSetBuilder.buildFragment(
+            selections = selectionSet.selections,
+            fieldType = typeDefinition.name,
             name,
-            IrFieldSetBuilder.TypedSelectionSet(selectionSet.selections, typeDefinition.name),
             packageName = packageName
         ),
         packageName = packageName

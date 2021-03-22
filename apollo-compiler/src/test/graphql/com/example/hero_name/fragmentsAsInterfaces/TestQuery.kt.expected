@@ -61,8 +61,19 @@ class TestQuery : Query<TestQuery.Data> {
   companion object {
     const val OPERATION_ID: String = "TestQuery"
 
-    const val QUERY_DOCUMENT: String = QueryDocumentMinifier.minify(
-          "query TestQuery {\n  hero {\n    __typename\n    name\n    birthDate\n    ... on Droid {\n      primaryFunction\n    }\n  }\n}"
+    val QUERY_DOCUMENT: String = QueryDocumentMinifier.minify(
+          """
+          |query TestQuery {
+          |  hero {
+          |    __typename
+          |    name
+          |    birthDate
+          |    ... on Droid {
+          |      primaryFunction
+          |    }
+          |  }
+          |}
+          """.trimMargin()
         )
 
     const val OPERATION_NAME: String = "TestQuery"

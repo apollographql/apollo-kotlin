@@ -6,9 +6,11 @@ import com.apollographql.apollo3.compiler.frontend.GQLFieldDefinition
 import com.apollographql.apollo3.compiler.frontend.GQLFragmentDefinition
 import com.apollographql.apollo3.compiler.frontend.GQLFragmentSpread
 import com.apollographql.apollo3.compiler.frontend.GQLInlineFragment
+import com.apollographql.apollo3.compiler.frontend.GQLNamedType
 import com.apollographql.apollo3.compiler.frontend.GQLSelection
 import com.apollographql.apollo3.compiler.frontend.GQLType
 import com.apollographql.apollo3.compiler.frontend.Schema
+import com.apollographql.apollo3.compiler.frontend.SourceLocation
 import com.apollographql.apollo3.compiler.frontend.coerce
 import com.apollographql.apollo3.compiler.frontend.definitionFromScope
 import com.apollographql.apollo3.compiler.frontend.findDeprecationReason
@@ -38,61 +40,65 @@ class IrFieldSetBuilder(
   )
 
   fun buildOperation(
-      typedSelectionSet: TypedSelectionSet,
+      selections: List<GQLSelection>,
+      fieldType: String,
       name: String,
       packageName: String,
   ): IrField {
     return buildDataField(
-        typedSelectionSet = typedSelectionSet,
+        selections = selections,
+        fieldType = fieldType,
         path = ModelPath(packageName, ModelPath.Root.Operation(name))
     )
   }
 
   fun buildFragment(
+      selections: List<GQLSelection>,
+      fieldType: String,
       name: String,
-      typedSelectionSet: TypedSelectionSet,
       packageName: String,
   ): IrField {
     return cachedFragments.getOrPut(name) {
       buildDataField(
-          typedSelectionSet = typedSelectionSet,
+          selections = selections,
+          fieldType = fieldType,
           path = ModelPath(packageName, ModelPath.Root.Fragment(name))
       )
     }
   }
 
   private fun buildDataField(
-      typedSelectionSet: TypedSelectionSet,
+      selections: List<GQLSelection>,
+      fieldType: String,
       path: ModelPath
   ): IrField {
-
-    val fieldSets = buildIrFieldSets(
-        typedSelectionSet = typedSelectionSet,
-        superFieldSets = emptyList(),
-        path = path,
-        responseName = "data"
-    )
-
-    return IrField(
+    return buildField(
         name = "data",
         alias = null,
+        description = null,
         deprecationReason = null,
         arguments = emptyList(),
-        type = IrCompoundType(fieldSets.firstOrNull { it.typeSet.size == 1 }!!),
+        selections = selections,
+        type = GQLNamedType(SourceLocation.UNKNOWN, fieldType),
+        superFields = emptyList(),
+        path = path,
         condition = BooleanExpression.True,
-        description = "Synthetic data field",
-        fieldSets = fieldSets,
-        override = false
     )
   }
 
-  private fun buildIrFieldSets(
-      typedSelectionSet: TypedSelectionSet,
-      superFieldSets: List<IrFieldSet>,
+  private fun buildField(
+      alias: String?,
+      name: String,
+      arguments: List<IrArgument>,
+      description: String?,
+      deprecationReason: String?,
+      type: GQLType,
+      condition: BooleanExpression,
+      selections: List<GQLSelection>,
+      superFields: List<IrField>,
       path: ModelPath,
-      responseName: String
-  ): List<IrFieldSet> {
-    val collectionResult = FragmentCollectionScope(typedSelectionSet.selections, typedSelectionSet.selectionSetTypeCondition, allGQLFragmentDefinitions).collect()
+  ): IrField {
+    val collectionResult = FragmentCollectionScope(selections, type.leafType().name, allGQLFragmentDefinitions).collect()
 
     val typeConditions = collectionResult.typeSet.union()
 
@@ -120,16 +126,29 @@ class IrFieldSetBuilder(
       buildFieldSet(
           fieldSetCache = fieldSetCache,
           allTypeSets = allTypeSets,
-          typedSelectionSet = typedSelectionSet,
+          selections = selections,
+          fieldType = type.leafType().name,
           typeSet = typeSet,
-          responseName = responseName,
+          responseName = alias ?: name,
           shapeTypeSetToPossibleTypes = shapeTypeSetToPossibleTypes,
-          superFieldSets = superFieldSets,
+          superFieldSets = superFields.mapNotNull { it.baseFieldSet },
           path = path,
       )
     }
 
-    return fieldSetCache.values.toList()
+    val baseFieldSet = fieldSetCache[setOf(type.leafType().name)]
+
+    return IrField(
+          alias = alias,
+          name = name,
+          arguments = arguments,
+          description = description,
+          deprecationReason = deprecationReason,
+          type = registerType(type, baseFieldSet),
+          condition = condition,
+          fieldSets = fieldSetCache.values.toList(),
+          override = superFields.isNotEmpty()
+      )
   }
 
   /**
@@ -156,11 +175,15 @@ class IrFieldSetBuilder(
     val responseName = alias ?: name
   }
 
-  private fun TypedSelectionSet.collectFields(typeSet: TypeSet): List<CollectedField> {
-    if (!typeSet.contains(selectionSetTypeCondition)) {
+  private fun collectFields(
+      selections: List<GQLSelection>,
+      typeCondition: String,
+      typeSet: TypeSet
+  ): List<CollectedField> {
+    if (!typeSet.contains(typeCondition)) {
       return emptyList()
     }
-    val typeDefinition = schema.typeDefinition(selectionSetTypeCondition)
+    val typeDefinition = schema.typeDefinition(typeCondition)
 
     return selections.flatMap {
       when (it) {
@@ -180,11 +203,11 @@ class IrFieldSetBuilder(
           )
         }
         is GQLInlineFragment -> {
-          TypedSelectionSet(it.selectionSet.selections, it.typeCondition.name).collectFields(typeSet)
+          collectFields(it.selectionSet.selections, it.typeCondition.name, typeSet)
         }
         is GQLFragmentSpread -> {
           val fragment = allGQLFragmentDefinitions[it.name]!!
-          TypedSelectionSet(fragment.selectionSet.selections, fragment.typeCondition.name).collectFields(typeSet)
+          collectFields(fragment.selectionSet.selections, fragment.typeCondition.name, typeSet)
         }
       }
     }
@@ -204,7 +227,8 @@ class IrFieldSetBuilder(
   private fun buildFieldSet(
       fieldSetCache: MutableMap<TypeSet, IrFieldSet>,
       allTypeSets: Set<Set<String>>,
-      typedSelectionSet: TypedSelectionSet,
+      selections: List<GQLSelection>,
+      fieldType: String,
       typeSet: TypeSet,
       responseName: String,
       shapeTypeSetToPossibleTypes: Map<TypeSet, PossibleTypes>,
@@ -220,20 +244,23 @@ class IrFieldSetBuilder(
     }.sortedByDescending { it.size }
         .firstOrNull { typeSet.implements(it) }
 
-    val superFieldSet = superTypeSet?.let {
+    val superFieldSet = if (superTypeSet != null)  {
       buildFieldSet(
           fieldSetCache,
           allTypeSets,
-          typedSelectionSet,
-          it,
+          selections,
+          fieldType,
+          superTypeSet,
           responseName,
           shapeTypeSetToPossibleTypes,
           superFieldSets,
           path,
       )
+    } else {
+      null
     }
 
-    val collectedFields = typedSelectionSet.collectFields(typeSet)
+    val collectedFields = collectFields(selections, fieldType, typeSet)
 
     val fields = collectedFields.groupBy {
       it.responseName
@@ -249,31 +276,23 @@ class IrFieldSetBuilder(
       check(fieldsWithSameResponseName.map { it.type }.distinct().size == 1)
 
       val first = fieldsWithSameResponseName.first()
-      val selections = fieldsWithSameResponseName.flatMap { it.selections }
+      val childSelections = fieldsWithSameResponseName.flatMap { it.selections }
 
-      val cousinFields = (superFieldSets + superFieldSet)
+      val superFields = (superFieldSets + superFieldSet)
           .filterNotNull()
           .mapNotNull { it.fields.firstOrNull { it.responseName == first.responseName } }
 
-      val fieldSets = buildIrFieldSets(
-          typedSelectionSet = TypedSelectionSet(selections, first.type.leafType().name),
-          superFieldSets = cousinFields.mapNotNull { it.baseFieldSet },
-          path = path + PathElement(typeSet, typedSelectionSet.selectionSetTypeCondition, responseName),
-          responseName = first.responseName
-      )
-
-      val baseFieldSet = fieldSets.firstOrNull { it.typeSet.size == 1 }
-
-      IrField(
+      buildField(
           alias = first.alias,
           name = first.name,
           arguments = first.arguments,
           description = first.description,
           deprecationReason = first.deprecationReason,
-          type = registerType(first.type, baseFieldSet),
+          type = first.type,
           condition = BooleanExpression.Or(fieldsWithSameResponseName.map { it.condition }.toSet()),
-          fieldSets = fieldSets,
-          override = cousinFields.isNotEmpty()
+          selections = childSelections,
+          superFields = superFields,
+          path = path + PathElement(typeSet, fieldType, responseName),
       )
     }
 
@@ -293,7 +312,7 @@ class IrFieldSetBuilder(
 
     val fieldSet = IrFieldSet(
         typeSet = typeSet.toSet(),
-        fieldType = typedSelectionSet.selectionSetTypeCondition,
+        fieldType = fieldType,
         possibleTypes = shapeTypeSetToPossibleTypes[typeSet] ?: emptySet(),
         fields = fields,
         implements = implements,
