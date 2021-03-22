@@ -8,7 +8,7 @@ import com.apollographql.apollo3.compiler.unified.TypeSet
  * This file contains GraphQL -> Kotlin transformations
  */
 
-internal fun kotlinNameForCustomScalar(graphqlName: String) = upperCaseIdentifier(graphqlName)
+internal fun kotlinNameForCustomScalar(graphqlName: String) = capitalizedIdentifier(graphqlName)
 
 internal fun kotlinNameForEnum(graphqlName: String) = regularIdentifier(graphqlName)
 internal fun kotlinNameForEnumValue(graphqlName: String) = upperCaseIdentifier(graphqlName)

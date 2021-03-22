@@ -32,8 +32,8 @@ class GraphQLCodeGenerator(
 ) {
   fun write(outputDir: File) {
 
-    if (generateScalarMapping && ir.customScalars.customScalars.isNotEmpty()) {
-      ir.customScalars.customScalars.typeSpec()
+    if (generateScalarMapping) {
+      ir.customScalars.typeSpec()
           .toFileSpec(ir.customScalars.packageName)
           .writeTo(outputDir)
     }

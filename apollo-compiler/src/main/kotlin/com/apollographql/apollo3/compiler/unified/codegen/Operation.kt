@@ -72,6 +72,7 @@ private fun IrOperation.companionTypeSpec(): TypeSpec {
           .build()
       )
       .addProperty(PropertySpec.builder("QUERY_DOCUMENT", String::class)
+          .addModifiers(KModifier.CONST)
           .initializer(
               CodeBlock.builder()
                   .add("%T.minify(\n", QueryDocumentMinifier::class.java)
@@ -85,6 +86,7 @@ private fun IrOperation.companionTypeSpec(): TypeSpec {
       )
       .addProperty(PropertySpec
           .builder("OPERATION_NAME", String::class)
+          .addModifiers(KModifier.CONST)
           .initializer("%S", name)
           .build()
       )
