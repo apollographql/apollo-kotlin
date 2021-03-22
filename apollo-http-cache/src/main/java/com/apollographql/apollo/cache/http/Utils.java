@@ -37,7 +37,7 @@ final class Utils {
 
   static Response strip(Response response) {
     return response != null && response.body() != null
-        ? response.newBuilder().body(null).networkResponse(null).cacheResponse(null).build()
+        ? response.newBuilder().body(null).networkResponse(null).cacheResponse(null).priorResponse(null).build()
         : response;
   }
 
