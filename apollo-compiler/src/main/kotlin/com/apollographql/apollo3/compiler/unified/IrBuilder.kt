@@ -147,6 +147,7 @@ class IrBuilder(
       allGQLFragmentDefinitions[fragmentName]!!.toUtf8WithIndents()
     }).trimEnd('\n')
 
+    val packageName = packageNameProvider.operationPackageName(sourceLocation.filePath!!)
     return IrOperation(
         name = name ?: throw IllegalStateException("Apollo doesn't support anonymous operation."),
         description = description,
@@ -155,10 +156,10 @@ class IrBuilder(
         variables = variableDefinitions.map { it.toIr() },
         dataField = fieldSetBuilder.buildOperation(
             IrFieldSetBuilder.TypedSelectionSet(selectionSet.selections, typeDefinition.name),
-            filePath = sourceLocation.filePath!!
+            packageName = packageName
         ),
         sourceWithFragments = sourceWithFragments,
-        filePath = sourceLocation.filePath
+        packageName = packageName
     )
   }
 
@@ -167,6 +168,7 @@ class IrBuilder(
 
     val variableDefinitions = inferVariables(schema, allGQLFragmentDefinitions)
 
+    val packageName = packageNameProvider.fragmentPackageName("unused")
     return IrNamedFragment(
         name = name,
         description = description,
@@ -176,8 +178,9 @@ class IrBuilder(
         dataField =fieldSetBuilder.buildFragment(
             name,
             IrFieldSetBuilder.TypedSelectionSet(selectionSet.selections, typeDefinition.name),
-            filePath = sourceLocation.filePath
+            packageName = packageName
         ),
+        packageName = packageName
     )
   }
 
@@ -220,7 +223,11 @@ class IrBuilder(
               val kotlinName = customScalarToKotlinName.get(name)
               if (kotlinName != null) {
                 usedCustomScalars.add(name)
-                IrCustomScalarType(name, kotlinName)
+                IrCustomScalarType(
+                    name,
+                    kotlinName,
+                    packageNameProvider.customScalarsPackageName()
+                )
               } else {
                 IrAnyType
               }
@@ -229,14 +236,20 @@ class IrBuilder(
         }
         is GQLEnumTypeDefinition -> {
           usedEnums.add(name)
-          IrEnumType(name)
+          IrEnumType(
+              name,
+              packageNameProvider.enumPackageName(name)
+          )
         }
         is GQLObjectTypeDefinition,
         is GQLInterfaceTypeDefinition,
         is GQLUnionTypeDefinition -> IrCompoundType(name, modelPath ?: error("Compound object $name needs a modelPath"))
         is GQLInputObjectTypeDefinition -> {
           usedInputObjects.add(name)
-          IrInputObjectType(name)
+          IrInputObjectType(
+              name,
+              packageNameProvider.inputObjectPackageName(name)
+          )
         }
       }
     }

@@ -6,11 +6,14 @@ import com.apollographql.apollo3.compiler.escapeKotlinReservedWord
 /**
  * This file contains GraphQL -> Kotlin transformations
  */
-internal fun kotlinNameForEnumValue(graphqlEnumValue: String) = upperCaseIdentifier(graphqlEnumValue)
-internal fun kotlinNameForEnum(graphqlEnum: String) = regularIdentifier(graphqlEnum)
+
+internal fun kotlinNameForCustomScalar(graphqlName: String) = upperCaseIdentifier(graphqlName)
+
+internal fun kotlinNameForEnum(graphqlName: String) = regularIdentifier(graphqlName)
+internal fun kotlinNameForEnumValue(graphqlName: String) = upperCaseIdentifier(graphqlName)
 
 internal fun kotlinNameForOperation(operationName: String) = capitalizedIdentifier(operationName)
-internal fun kotlinNameForInputObjectType(name: String) = capitalizedIdentifier(name)
+internal fun kotlinNameForInputObject(name: String) = capitalizedIdentifier(name)
 internal fun kotlinNameForInputObjectAdapter(inputObjectName: String) = capitalizedIdentifier(inputObjectName) + "_InputAdapter"
 internal fun kotlinNameForVariablesAdapter(operationName: String) = capitalizedIdentifier(operationName) + "_VariablesAdapter"
 
@@ -29,3 +32,7 @@ internal fun CodeGenerationAst.TypeRef.fragmentPropertyName(): String {
     "as${this.name.capitalize().escapeKotlinReservedWord()}"
   }
 }
+
+fun adapterPackageName(packageName: String) = "$packageName.adapter"
+fun adapterName(name: String) = "${name}_Adapter"
+fun dataAdapterName(name: String) = "${name}_DataAdapter"

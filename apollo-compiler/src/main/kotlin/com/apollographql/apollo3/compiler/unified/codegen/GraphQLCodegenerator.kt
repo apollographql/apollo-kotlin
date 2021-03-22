@@ -91,10 +91,8 @@ class GraphQLCodegenerator(
 //        }
 
     ir.operations.forEach { operation ->
-      val packageName = packageNameProvider.operationPackageName(operation.filePath)
-
       operation.typeSpec()
-          .toFileSpec(packageName)
+          .toFileSpec(operation.packageName)
           .writeTo(outputDir)
 
       operation.variablesAdapterTypeSpec(operation.packageName, operation.name)

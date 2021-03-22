@@ -6,7 +6,7 @@ import com.apollographql.apollo3.api.json.JsonWriter
 import com.apollographql.apollo3.compiler.applyIf
 import com.apollographql.apollo3.compiler.backend.codegen.Identifier
 import com.apollographql.apollo3.compiler.backend.codegen.kotlinNameForInputObjectAdapter
-import com.apollographql.apollo3.compiler.backend.codegen.kotlinNameForInputObjectType
+import com.apollographql.apollo3.compiler.backend.codegen.kotlinNameForInputObject
 import com.apollographql.apollo3.compiler.backend.codegen.kotlinNameForVariablesAdapter
 import com.apollographql.apollo3.compiler.backend.codegen.makeDataClass
 import com.apollographql.apollo3.compiler.backend.codegen.obj
@@ -25,7 +25,7 @@ import com.squareup.kotlinpoet.asTypeName
 
 internal fun IrInputObject.typeSpec() =
     TypeSpec
-        .classBuilder(kotlinNameForInputObjectType(name))
+        .classBuilder(kotlinNameForInputObject(name))
         .applyIf(description?.isNotBlank()== true)  { addKdoc("%L\n", description!!) }
         .addAnnotation(suppressWarningsAnnotation)
         .makeDataClass(fields.map {

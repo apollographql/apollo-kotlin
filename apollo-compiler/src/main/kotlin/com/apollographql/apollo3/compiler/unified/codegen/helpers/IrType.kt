@@ -5,6 +5,12 @@ import com.apollographql.apollo3.api.BooleanResponseAdapter
 import com.apollographql.apollo3.api.DoubleResponseAdapter
 import com.apollographql.apollo3.api.IntResponseAdapter
 import com.apollographql.apollo3.api.StringResponseAdapter
+import com.apollographql.apollo3.compiler.adapterPackageName
+import com.apollographql.apollo3.compiler.backend.codegen.adapterName
+import com.apollographql.apollo3.compiler.backend.codegen.adapterPackageName
+import com.apollographql.apollo3.compiler.backend.codegen.kotlinNameForCustomScalar
+import com.apollographql.apollo3.compiler.backend.codegen.kotlinNameForEnum
+import com.apollographql.apollo3.compiler.backend.codegen.kotlinNameForInputObject
 import com.apollographql.apollo3.compiler.backend.codegen.obj
 import com.apollographql.apollo3.compiler.unified.IrAnyType
 import com.apollographql.apollo3.compiler.unified.IrBooleanType
@@ -21,6 +27,7 @@ import com.apollographql.apollo3.compiler.unified.IrNonNullType
 import com.apollographql.apollo3.compiler.unified.IrStringType
 import com.apollographql.apollo3.compiler.unified.IrType
 import com.apollographql.apollo3.compiler.unified.ModelPath
+import com.apollographql.apollo3.compiler.unified.PathElement
 import com.apollographql.apollo3.compiler.unified.TypeSet
 import com.squareup.kotlinpoet.ClassName
 import com.squareup.kotlinpoet.CodeBlock
@@ -47,17 +54,17 @@ fun IrType.typeName(): TypeName {
     is IrIdType -> String::class.asTypeName()
     is IrAnyType -> Any::class.asTypeName()
     is IrCustomScalarType -> ClassName(
-        packageName = "com.example.type",
+        packageName = packageName,
         "Scalars",
-        name
+        kotlinNameForCustomScalar(name)
     )
     is IrEnumType -> ClassName(
-        packageName = "com.example.type",
-        name
+        packageName = packageName,
+        kotlinNameForEnum(name)
     )
     is IrInputObjectType -> ClassName(
-        packageName = "com.example.type",
-        name
+        packageName = packageName,
+        kotlinNameForInputObject(name)
     )
     is IrCompoundType -> modelPath.typeName()
   }.copy(nullable = true)
@@ -72,9 +79,15 @@ fun IrFieldSet.typeName(): TypeName {
 }
 
 fun ModelPath.typeName() = ClassName(
-    packageName = "com.example",
+    packageName = packageName,
+    rootNames + elements.map { modelName(it.typeSet - it.fieldType, it.responseName) }
+)
+
+fun ModelPath.adapterTypeName() = ClassName(
+    adapterPackageName(packageName),
     elements.map { modelName(it.typeSet - it.fieldType, it.responseName) }
 )
+
 
 private fun nullableScalarAdapter(name: String) = CodeBlock.of("%M", MemberName("com.apollographql.apollo3.api", name))
 
@@ -104,14 +117,25 @@ private fun IrType.nonNullableAdapterInitializer(): CodeBlock {
       CodeBlock.of("%L.%M()", leafType.adapterInitializer(), nullableFun)
     }
     is IrBooleanType -> CodeBlock.of("%T", BooleanResponseAdapter::class)
-    is IrIdType-> CodeBlock.of("%T", StringResponseAdapter::class)
+    is IrIdType -> CodeBlock.of("%T", StringResponseAdapter::class)
     is IrStringType -> CodeBlock.of("%T", StringResponseAdapter::class)
     is IrIntType -> CodeBlock.of("%T", IntResponseAdapter::class)
     is IrFloatType -> CodeBlock.of("%T", DoubleResponseAdapter::class)
     is IrAnyType -> CodeBlock.of("%T", AnyResponseAdapter::class)
-    is IrEnumType -> CodeBlock.of("%T", typeName())
+    is IrEnumType -> {
+      CodeBlock.of(
+          "%T",
+          ClassName(
+              adapterPackageName(packageName),
+              adapterName(kotlinNameForEnum(name))
+          )
+      )
+    }
     is IrCompoundType -> {
-      CodeBlock.of("%T", typeName()).obj(false)
+      CodeBlock.of(
+          "%T",
+          modelPath.adapterTypeName()
+      ).obj(false)
     }
     is IrInputObjectType -> {
       CodeBlock.of("%T", typeName()).obj(false)

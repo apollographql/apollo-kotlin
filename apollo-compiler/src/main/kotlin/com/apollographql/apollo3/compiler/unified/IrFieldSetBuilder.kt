@@ -22,7 +22,6 @@ import com.apollographql.apollo3.compiler.unified.IrFieldSetBuilder.TypedSelecti
  *
  * While doing so, it records all the used fragments and used types
  *
- * @param registerFragment a callback to register fragments as we encounter them.
  * @param registerType a factory for IrType. This is used to track what types are used to only generate those
  */
 class IrFieldSetBuilder(
@@ -40,23 +39,23 @@ class IrFieldSetBuilder(
 
   fun buildOperation(
       typedSelectionSet: TypedSelectionSet,
-      filePath: String,
+      packageName: String,
   ): IrField {
     return buildDataField(
         typedSelectionSet = typedSelectionSet,
-        path = ModelPath(filePath, ModelPath.Root.OperationInterface)
+        path = ModelPath(packageName, ModelPath.Root.Operation)
     )
   }
 
   fun buildFragment(
       name: String,
       typedSelectionSet: TypedSelectionSet,
-      filePath: String,
+      packageName: String,
   ): IrField {
     return cachedFragments.getOrPut(name) {
       buildDataField(
           typedSelectionSet = typedSelectionSet,
-          path = ModelPath(filePath, ModelPath.Root.Fragment)
+          path = ModelPath(packageName, ModelPath.Root.Fragment)
       )
     }
   }
@@ -213,8 +212,8 @@ class IrFieldSetBuilder(
       superFieldSets: List<IrFieldSet>,
       path: ModelPath
   ): IrFieldSet {
-    if (fieldSetCache.get(typeSet) != null) {
-      return fieldSetCache.get(typeSet)!!
+    if (fieldSetCache[typeSet] != null) {
+      return fieldSetCache[typeSet]!!
     }
 
     val superTypeSet = allTypeSets.filter {

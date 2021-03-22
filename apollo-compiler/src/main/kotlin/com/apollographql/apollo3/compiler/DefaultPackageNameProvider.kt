@@ -8,20 +8,14 @@ class DefaultPackageNameProvider constructor(
 ) : PackageNameProvider {
 
   override fun operationPackageName(filePath: String) = filePackageName(filePath)
-  override fun operationVariablesAdapterPackageName(filePath: String) = adapterPackageName(operationPackageName(filePath))
-  override fun operationResponseAdapterPackageName(filePath: String) = adapterPackageName(operationPackageName(filePath))
 
   override fun fragmentPackageName(filePath: String) = "$schemaPackageName.fragment"
-  override fun fragmentVariablesAdapterPackageName(filePath: String) = adapterPackageName(fragmentPackageName(filePath))
-  override fun fragmentResponseAdapterPackageName(filePath: String) = adapterPackageName(fragmentPackageName(filePath))
 
   override fun inputObjectPackageName(name: String) = "$schemaPackageName.type"
   override fun customScalarsPackageName() = "$schemaPackageName.type"
   override fun enumPackageName(name: String) = "$schemaPackageName.type"
-  override fun enumAdapterPackageName(name: String) = adapterPackageName(enumPackageName(name))
 
   private fun filePackageName(filePath: String) = "$rootPackageName.${roots.filePackageName(filePath)}".removePrefix(".").removeSuffix(".")
-  private fun adapterPackageName(packageName: String) = "$packageName.adapter"
 }
 
 

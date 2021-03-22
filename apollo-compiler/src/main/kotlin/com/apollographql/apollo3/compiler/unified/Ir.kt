@@ -38,14 +38,16 @@ data class PathElement(
     val responseName: String,
 )
 
-data class ModelPath(val fileName: String, val root: Root, val elements: List<PathElement>) {
-  constructor(fileName: String, root: Root, vararg elements: PathElement) : this(fileName, root, elements.toList())
-
+data class ModelPath(
+    val packageName: String,
+    val root: Root,
+    val rootNames: String,
+    val elements: List<PathElement>,
+) {
   operator fun plus(element: PathElement) = copy(elements = elements + element)
 
   enum class Root {
-    OperationInterface,
-    OperationImplementation,
+    Operation,
     Fragment
   }
 }
@@ -65,7 +67,7 @@ data class IrInputField(
     val deprecationReason: String?,
     val type: IrType,
     val defaultValue: IrValue?,
-    val optional: Boolean
+    val optional: Boolean,
 )
 
 /**
@@ -80,7 +82,7 @@ data class IrOperation(
     val description: String?,
     val dataField: IrField,
     val sourceWithFragments: String,
-    val filePath: String,
+    val packageName: String,
 )
 
 data class IrNamedFragment(
@@ -94,6 +96,7 @@ data class IrNamedFragment(
      */
     val variables: List<IrVariable>,
     val typeCondition: String,
+    val packageName: String,
 )
 
 enum class IrOperationType {
@@ -161,7 +164,7 @@ data class IrInputObject(
 
 data class IrCustomScalar(
     val name: String,
-    val kotlinName: String
+    val kotlinName: String,
 )
 
 /**
@@ -239,8 +242,8 @@ object IrFloatType : IrNamedType("Float")
 object IrBooleanType : IrNamedType("Boolean")
 object IrIdType : IrNamedType("ID")
 object IrAnyType : IrNamedType("Any")
-class IrCustomScalarType(name: String, val kotlinName: String) : IrNamedType(name)
-class IrEnumType(name: String) : IrNamedType(name)
+class IrCustomScalarType(name: String, val kotlinName: String, val packageName: String) : IrNamedType(name)
+class IrEnumType(name: String, val packageName: String) : IrNamedType(name)
+class IrInputObjectType(name: String, val packageName: String) : IrNamedType(name)
 class IrCompoundType(name: String, val modelPath: ModelPath) : IrNamedType(name)
-class IrInputObjectType(name: String) : IrNamedType(name)
 
