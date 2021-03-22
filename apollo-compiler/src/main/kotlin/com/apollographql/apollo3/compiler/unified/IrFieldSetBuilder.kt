@@ -27,7 +27,7 @@ import com.apollographql.apollo3.compiler.unified.IrFieldSetBuilder.TypedSelecti
 class IrFieldSetBuilder(
     private val schema: Schema,
     private val allGQLFragmentDefinitions: Map<String, GQLFragmentDefinition>,
-    private val registerType: (GQLType, ModelPath?) -> IrType,
+    private val registerType: (GQLType, IrFieldSet?) -> IrType,
 ) {
 
   private var cachedFragments = mutableMapOf<String, IrField>()
@@ -73,14 +73,12 @@ class IrFieldSetBuilder(
         responseName = "data"
     )
 
-    val modelPath = fieldSets.firstOrNull { it.typeSet.size == 1 }!!.fullPath
-
     return IrField(
         name = "data",
         alias = null,
         deprecationReason = null,
         arguments = emptyList(),
-        type = IrCompoundType(typedSelectionSet.selectionSetTypeCondition, modelPath),
+        type = IrCompoundType(fieldSets.firstOrNull { it.typeSet.size == 1 }!!),
         condition = BooleanExpression.True,
         description = "Synthetic data field",
         fieldSets = fieldSets,
@@ -265,13 +263,14 @@ class IrFieldSetBuilder(
       )
 
       val baseFieldSet = fieldSets.firstOrNull { it.typeSet.size == 1 }
+      
       IrField(
           alias = first.alias,
           name = first.name,
           arguments = first.arguments,
           description = first.description,
           deprecationReason = first.deprecationReason,
-          type = registerType(first.type, baseFieldSet?.fullPath),
+          type = registerType(first.type, baseFieldSet),
           condition = BooleanExpression.Or(fieldsWithSameResponseName.map { it.condition }.toSet()),
           fieldSets = fieldSets,
           override = cousinFields.isNotEmpty()

@@ -43,59 +43,48 @@ class IrBuilder(
     metadataFragmentDefinitions: List<GQLFragmentDefinition>,
     private val alwaysGenerateTypesMatching: Set<String>,
     private val customScalarToKotlinName: Map<String, String>,
-    private val packageNameProvider: PackageNameProvider
+    private val packageNameProvider: PackageNameProvider,
 ) {
   private val allGQLFragmentDefinitions = (metadataFragmentDefinitions + fragmentDefinitions).associateBy { it.name }
-  private var usedEnums = mutableSetOf<String>()
-  private var usedInputObjects = mutableSetOf<String>()
-  private var usedCustomScalars = mutableSetOf<String>()
+  private var enumCache = mutableMapOf<String, IrEnum>()
+  private var inputObjectCache = mutableMapOf<String, IrInputObject>()
+  private var customScalarCache = mutableMapOf<String, IrCustomScalar>()
 
   private val fieldSetBuilder = IrFieldSetBuilder(
       schema = schema,
       allGQLFragmentDefinitions = allGQLFragmentDefinitions,
-      registerType = { gqlType, modelPath ->
-        gqlType.toIr(modelPath)
+      registerType = { gqlType, fieldSet ->
+        gqlType.toIr(fieldSet)
       }
   )
 
   private fun shouldAlwaysGenerate(name: String) = alwaysGenerateTypesMatching.map { Regex(it) }.any { it.matches(name) }
 
   fun build(): IntermediateRepresentation {
+    val fragments = allGQLFragmentDefinitions.values.map { it.toIr() }
     val operations = operationDefinitions.map { it.toIr() }
-    val allNamedFragments = allGQLFragmentDefinitions.values.map { it.toIr() }
-
-    val enums = schema.typeDefinitions.values
-        .filterIsInstance<GQLEnumTypeDefinition>()
-        .filter { usedEnums.contains(it.name) || shouldAlwaysGenerate(it.name) }
-        .map { it.toIr() }
-
-    val inputObjects = schema.typeDefinitions.values
-        .filterIsInstance<GQLInputObjectTypeDefinition>()
-        .filter { usedInputObjects.contains(it.name) || shouldAlwaysGenerate(it.name) }
-        .map { it.toIr() }
-
-    val customScalars = schema.typeDefinitions.values
-        .filterIsInstance<GQLScalarTypeDefinition>()
-        .filter { !it.isBuiltIn() }
-        .filter { usedCustomScalars.contains(it.name) || shouldAlwaysGenerate(it.name) }
-        .map { it.toIr() }
 
     return IntermediateRepresentation(
         operations = operations,
-        allNamedFragments = allNamedFragments,
-        namedFragmentsToGenerate = fragmentDefinitions.map { it.name }.toSet(),
-        inputObjects = inputObjects,
-        enums = enums,
-        customScalars = customScalars
+        // TODO: multi-module
+        fragments = fragments,
+        inputObjects = inputObjectCache.values.toList(),
+        enums = enumCache.values.toList(),
+        customScalars = customScalarCache.values.toList()
     )
   }
 
   private fun GQLScalarTypeDefinition.toIr(): IrCustomScalar {
-    return IrCustomScalar(name = name, customScalarToKotlinName[name] ?: "kotlin.Any")
+    return IrCustomScalar(
+        name = name,
+        kotlinName = customScalarToKotlinName[name],
+        packageName = packageNameProvider.customScalarsPackageName()
+    )
   }
 
   private fun GQLInputObjectTypeDefinition.toIr(): IrInputObject {
     return IrInputObject(
+        packageName = packageNameProvider.inputObjectPackageName(name),
         name = name,
         description = description,
         deprecationReason = directives.findDeprecationReason(),
@@ -176,7 +165,7 @@ class IrBuilder(
         filePath = sourceLocation.filePath!!,
         typeCondition = typeDefinition.name,
         variables = variableDefinitions.map { it.toIr() },
-        dataField =fieldSetBuilder.buildFragment(
+        dataField = fieldSetBuilder.buildFragment(
             name,
             IrFieldSetBuilder.TypedSelectionSet(selectionSet.selections, typeDefinition.name),
             packageName = packageName
@@ -208,11 +197,11 @@ class IrBuilder(
   /**
    * Maps to [IrType] and also keep tracks of what types are actually used so we only generate those
    */
-  private fun GQLType.toIr(modelPath: ModelPath? = null): IrType {
+  private fun GQLType.toIr(fieldSet: IrFieldSet? = null): IrType {
     return when (this) {
       is GQLNonNullType -> IrNonNullType(ofType = type.toIr())
       is GQLListType -> IrListType(ofType = type.toIr())
-      is GQLNamedType -> when (schema.typeDefinition(name)) {
+      is GQLNamedType -> when (val typeDefinition = schema.typeDefinition(name)) {
         is GQLScalarTypeDefinition -> {
           when (name) {
             "String" -> IrStringType
@@ -221,37 +210,22 @@ class IrBuilder(
             "Float" -> IrFloatType
             "ID" -> IrIdType
             else -> {
-              val kotlinName = customScalarToKotlinName.get(name)
-              if (kotlinName != null) {
-                usedCustomScalars.add(name)
-                IrCustomScalarType(
-                    name,
-                    kotlinName,
-                    packageNameProvider.customScalarsPackageName()
-                )
-              } else {
-                IrAnyType
-              }
+              val customScalar = customScalarCache.getOrPut(name) { typeDefinition.toIr() }
+              IrCustomScalarType(customScalar = customScalar)
             }
           }
         }
         is GQLEnumTypeDefinition -> {
-          usedEnums.add(name)
-          IrEnumType(
-              name,
-              packageNameProvider.enumPackageName(name)
-          )
+          val irEnum = enumCache.getOrPut(name) { typeDefinition.toIr() }
+          IrEnumType(enum = irEnum)
+        }
+        is GQLInputObjectTypeDefinition -> {
+          val inputObject = inputObjectCache.getOrPut(name) { typeDefinition.toIr() }
+          IrInputObjectType(inputObject = inputObject)
         }
         is GQLObjectTypeDefinition,
         is GQLInterfaceTypeDefinition,
-        is GQLUnionTypeDefinition -> IrCompoundType(name, modelPath ?: error("Compound object $name needs a modelPath"))
-        is GQLInputObjectTypeDefinition -> {
-          usedInputObjects.add(name)
-          IrInputObjectType(
-              name,
-              packageNameProvider.inputObjectPackageName(name)
-          )
-        }
+        is GQLUnionTypeDefinition -> IrCompoundType(fieldSet ?: error("Compound object $name needs a modelPath"))
       }
     }
   }

@@ -13,8 +13,7 @@ package com.apollographql.apollo3.compiler.unified
 */
 data class IntermediateRepresentation(
     val operations: List<IrOperation>,
-    val allNamedFragments: List<IrNamedFragment>,
-    val namedFragmentsToGenerate: Set<String>,
+    val fragments: List<IrNamedFragment>,
     val inputObjects: List<IrInputObject>,
     val enums: List<IrEnum>,
     val customScalars: List<IrCustomScalar>,
@@ -164,8 +163,9 @@ data class IrInputObject(
 )
 
 data class IrCustomScalar(
+    val packageName: String,
     val name: String,
-    val kotlinName: String,
+    val kotlinName: String?, // might be null if no user mapping is provided
 )
 
 /**
@@ -207,44 +207,26 @@ data class IrListValue(val values: List<IrValue>) : IrValue()
 data class IrVariableValue(val name: String) : IrValue()
 
 sealed class IrType {
-  abstract val leafType: IrNamedType
+  open fun leafType() = this
 }
 
 data class IrNonNullType(val ofType: IrType) : IrType() {
-  override val leafType = ofType.leafType
+  override fun leafType() = ofType.leafType()
 }
 
 data class IrListType(val ofType: IrType) : IrType() {
-  override val leafType = ofType.leafType
+  override fun leafType() = ofType.leafType()
 }
 
-sealed class IrNamedType(val name: String) : IrType() {
-  override val leafType = this
 
-  override fun hashCode(): Int {
-    return name.hashCode()
-  }
-
-  /**
-   * Ideally we would have data classes here but having `name` as a base property is useful
-   * Revisit with sealed interfaces
-   */
-  override fun equals(other: Any?): Boolean {
-    if (other !is IrNamedType) {
-      return false
-    }
-    return name == other.name
-  }
-}
-
-object IrStringType : IrNamedType("String")
-object IrIntType : IrNamedType("Int")
-object IrFloatType : IrNamedType("Float")
-object IrBooleanType : IrNamedType("Boolean")
-object IrIdType : IrNamedType("ID")
-object IrAnyType : IrNamedType("Any")
-class IrCustomScalarType(name: String, val kotlinName: String, val packageName: String) : IrNamedType(name)
-class IrEnumType(name: String, val packageName: String) : IrNamedType(name)
-class IrInputObjectType(name: String, val packageName: String) : IrNamedType(name)
-class IrCompoundType(name: String, val modelPath: ModelPath) : IrNamedType(name)
+object IrStringType : IrType()
+object IrIntType : IrType()
+object IrFloatType : IrType()
+object IrBooleanType : IrType()
+object IrIdType : IrType()
+object IrAnyType : IrType()
+class IrCustomScalarType(val customScalar: IrCustomScalar) : IrType()
+class IrEnumType(val enum: IrEnum) : IrType()
+class IrInputObjectType(val inputObject: IrInputObject) : IrType()
+class IrCompoundType(val fieldSet: IrFieldSet) : IrType()
 
