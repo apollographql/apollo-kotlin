@@ -13,6 +13,7 @@ import com.apollographql.apollo3.compiler.unified.codegen.helpers.toNamedType
 import com.apollographql.apollo3.compiler.unified.codegen.helpers.toParameterSpec
 import com.apollographql.apollo3.compiler.unified.codegen.helpers.typeName
 import com.apollographql.apollo3.compiler.unified.codegen.helpers.typeSpec
+import com.apollographql.apollo3.compiler.unified.codegen.helpers.typeSpecs
 import com.squareup.kotlinpoet.CodeBlock
 import com.squareup.kotlinpoet.FunSpec
 import com.squareup.kotlinpoet.KModifier
@@ -46,7 +47,7 @@ private fun IrOperation.dataTypeSpec(): TypeSpec {
     IrOperationType.Subscription -> Subscription.Data::class.asTypeName()
   }
 
-  return dataField.fieldSets.first().typeSpec().toBuilder()
+  return dataField.typeSpecs().first().toBuilder()
       .addSuperinterface(superClass)
       .build()
 }
@@ -84,7 +85,6 @@ private fun IrOperation.companionTypeSpec(): TypeSpec {
           .build()
       )
       .addProperty(PropertySpec.builder("QUERY_DOCUMENT", String::class)
-          .addModifiers(KModifier.CONST)
           .initializer(
               CodeBlock.builder()
                   .add("%T.minify(\n", QueryDocumentMinifier::class.java)

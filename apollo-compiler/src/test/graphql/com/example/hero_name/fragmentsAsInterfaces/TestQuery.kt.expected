@@ -36,6 +36,14 @@ class TestQuery : Query<TestQuery.Data> {
   data class Data(
     val hero: Hero?
   ) : Query.Data {
+    interface Hero {
+      val __typename: String
+
+      val name: String
+
+      val birthDate: Any
+    }
+
     data class Hero(
       val __typename: String,
       val name: String,

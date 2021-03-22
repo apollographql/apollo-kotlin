@@ -42,7 +42,7 @@ class IrTest {
     FileSpec.builder("com.example", irOperation.name)
         .apply {
           irOperation.dataField.fieldSets.forEach {
-            addType(it.typeSpec())
+            addType(it.typeSpec(true))
           }
         }
         .build()
