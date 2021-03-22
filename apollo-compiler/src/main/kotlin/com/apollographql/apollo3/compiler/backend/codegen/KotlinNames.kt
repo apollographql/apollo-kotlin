@@ -2,6 +2,7 @@ package com.apollographql.apollo3.compiler.backend.codegen
 
 import com.apollographql.apollo3.compiler.backend.ast.CodeGenerationAst
 import com.apollographql.apollo3.compiler.escapeKotlinReservedWord
+import com.apollographql.apollo3.compiler.unified.TypeSet
 
 /**
  * This file contains GraphQL -> Kotlin transformations
@@ -13,9 +14,13 @@ internal fun kotlinNameForEnum(graphqlName: String) = regularIdentifier(graphqlN
 internal fun kotlinNameForEnumValue(graphqlName: String) = upperCaseIdentifier(graphqlName)
 
 internal fun kotlinNameForOperation(operationName: String) = capitalizedIdentifier(operationName)
+internal fun kotlinNameForFragment(operationName: String) = capitalizedIdentifier(operationName)
 internal fun kotlinNameForInputObject(name: String) = capitalizedIdentifier(name)
 internal fun kotlinNameForInputObjectAdapter(inputObjectName: String) = capitalizedIdentifier(inputObjectName) + "_InputAdapter"
 internal fun kotlinNameForVariablesAdapter(operationName: String) = capitalizedIdentifier(operationName) + "_VariablesAdapter"
+internal fun kotlinNameForModel(typeSet: TypeSet, responseName: String): String {
+  return (typeSet.sorted() + responseName).map { it.capitalize() }.joinToString("")
+}
 
 // variables keep the same case as their declared name
 internal fun kotlinNameForVariable(graphqlName: String) = regularIdentifier(graphqlName)

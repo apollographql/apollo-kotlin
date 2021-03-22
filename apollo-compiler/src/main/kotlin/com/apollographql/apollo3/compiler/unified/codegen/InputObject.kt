@@ -36,7 +36,7 @@ internal fun IrInputObject.typeSpec() =
 
 internal fun IrInputObject.adapterTypeSpec(): TypeSpec {
   val adapterName = kotlinNameForInputObjectAdapter(name)
-  val adaptedTypeName = IrInputObjectType(name).typeName()
+  val adaptedTypeName = IrInputObjectType(name = name, packageName = packageName).typeName()
 
   return fields.map {
     it.toNamedType()

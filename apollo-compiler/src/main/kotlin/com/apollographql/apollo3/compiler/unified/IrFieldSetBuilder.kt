@@ -39,11 +39,12 @@ class IrFieldSetBuilder(
 
   fun buildOperation(
       typedSelectionSet: TypedSelectionSet,
+      name: String,
       packageName: String,
   ): IrField {
     return buildDataField(
         typedSelectionSet = typedSelectionSet,
-        path = ModelPath(packageName, ModelPath.Root.Operation)
+        path = ModelPath(packageName, ModelPath.Root.Operation(name))
     )
   }
 
@@ -55,7 +56,7 @@ class IrFieldSetBuilder(
     return cachedFragments.getOrPut(name) {
       buildDataField(
           typedSelectionSet = typedSelectionSet,
-          path = ModelPath(packageName, ModelPath.Root.Fragment)
+          path = ModelPath(packageName, ModelPath.Root.Fragment(name))
       )
     }
   }

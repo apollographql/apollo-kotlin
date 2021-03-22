@@ -1,6 +1,7 @@
 package com.apollographql.apollo3.compiler.unified.codegen
 
 import com.apollographql.apollo3.compiler.applyIf
+import com.apollographql.apollo3.compiler.backend.codegen.kotlinNameForModel
 import com.apollographql.apollo3.compiler.unified.IrField
 import com.apollographql.apollo3.compiler.unified.IrFieldSet
 import com.squareup.kotlinpoet.KModifier
@@ -14,7 +15,7 @@ private fun IrField.typeName(): TypeName {
 }
 
 fun IrFieldSet.toTypeSpec(): TypeSpec {
-  return TypeSpec.interfaceBuilder(modelName(typeSet - fieldType, responseName))
+  return TypeSpec.interfaceBuilder(kotlinNameForModel(typeSet - fieldType, responseName))
       .addProperties(
           fields.map {
             PropertySpec.builder(

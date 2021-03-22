@@ -5,11 +5,11 @@ import com.apollographql.apollo3.api.BooleanResponseAdapter
 import com.apollographql.apollo3.api.DoubleResponseAdapter
 import com.apollographql.apollo3.api.IntResponseAdapter
 import com.apollographql.apollo3.api.StringResponseAdapter
-import com.apollographql.apollo3.compiler.adapterPackageName
 import com.apollographql.apollo3.compiler.backend.codegen.adapterName
 import com.apollographql.apollo3.compiler.backend.codegen.adapterPackageName
 import com.apollographql.apollo3.compiler.backend.codegen.kotlinNameForCustomScalar
 import com.apollographql.apollo3.compiler.backend.codegen.kotlinNameForEnum
+import com.apollographql.apollo3.compiler.backend.codegen.kotlinNameForFragment
 import com.apollographql.apollo3.compiler.backend.codegen.kotlinNameForInputObject
 import com.apollographql.apollo3.compiler.backend.codegen.obj
 import com.apollographql.apollo3.compiler.unified.IrAnyType
@@ -78,15 +78,30 @@ fun IrFieldSet.typeName(): TypeName {
   return fullPath.typeName()
 }
 
-fun ModelPath.typeName() = ClassName(
-    packageName = packageName,
-    rootNames + elements.map { modelName(it.typeSet - it.fieldType, it.responseName) }
-)
+fun ModelPath.typeName(): TypeName {
+  val rootName = when(root) {
+    is ModelPath.Root.Fragment -> kotlinNameForFragment(root.name)
+    is ModelPath.Root.Operation -> kotlinNameForFragment(root.name)
+  }
 
-fun ModelPath.adapterTypeName() = ClassName(
-    adapterPackageName(packageName),
-    elements.map { modelName(it.typeSet - it.fieldType, it.responseName) }
-)
+  return ClassName(
+      packageName = packageName,
+      rootName + elements.map { modelName(it.typeSet - it.fieldType, it.responseName) }
+  )
+}
+
+fun ModelPath.adapterTypeName(): TypeName {
+  val rootName = when(root) {
+    is ModelPath.Root.Fragment -> kotlinNameForFragment(root.name)
+    is ModelPath.Root.Operation -> kotlinNameForFragment(root.name)
+  }
+
+  // remove the fieldType from the
+  return ClassName(
+      packageName = adapterPackageName(packageName),
+      adapterName(rootName) + elements.map { modelName(it.typeSet - it.fieldType, it.responseName) }
+  )
+}
 
 
 private fun nullableScalarAdapter(name: String) = CodeBlock.of("%M", MemberName("com.apollographql.apollo3.api", name))

@@ -155,7 +155,8 @@ class IrBuilder(
         typeCondition = typeDefinition.name,
         variables = variableDefinitions.map { it.toIr() },
         dataField = fieldSetBuilder.buildOperation(
-            IrFieldSetBuilder.TypedSelectionSet(selectionSet.selections, typeDefinition.name),
+            typedSelectionSet = IrFieldSetBuilder.TypedSelectionSet(selectionSet.selections, typeDefinition.name),
+            name = name,
             packageName = packageName
         ),
         sourceWithFragments = sourceWithFragments,

@@ -41,14 +41,13 @@ data class PathElement(
 data class ModelPath(
     val packageName: String,
     val root: Root,
-    val rootNames: String,
-    val elements: List<PathElement>,
+    val elements: List<PathElement> = emptyList(),
 ) {
   operator fun plus(element: PathElement) = copy(elements = elements + element)
 
-  enum class Root {
-    Operation,
-    Fragment
+  sealed class Root {
+    class Operation(val name: String): Root()
+    class Fragment(val name: String): Root()
   }
 }
 
@@ -125,6 +124,7 @@ data class IrField(
 ) {
   val responseName = alias ?: name
   val baseFieldSet = fieldSets.firstOrNull { it.typeSet.size == 1 }
+  val modelPath = baseFieldSet?.fullPath
 }
 
 /**
@@ -156,6 +156,7 @@ data class IrFieldSet(
 }
 
 data class IrInputObject(
+    val packageName: String,
     val name: String,
     val description: String?,
     val deprecationReason: String?,
