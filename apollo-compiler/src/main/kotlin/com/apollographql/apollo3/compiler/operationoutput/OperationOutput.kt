@@ -16,7 +16,6 @@ import java.io.File
 class OperationDescriptor(
     val name: String,
     val packageName: String,
-    val filePath: String,
     val source: String
 )
 

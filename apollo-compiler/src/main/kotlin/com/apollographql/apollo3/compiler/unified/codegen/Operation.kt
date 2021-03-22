@@ -43,7 +43,7 @@ private fun IrOperation.superInterfaceType(): TypeName {
     IrOperationType.Query -> Query::class.asClassName()
     IrOperationType.Mutation -> Mutation::class.asClassName()
     IrOperationType.Subscription -> Subscription::class.asClassName()
-  }.parameterizedBy(dataField.baseFieldSet!!.fullPath.typeName())
+  }.parameterizedBy(dataField.baseFieldSet!!.typeName())
 }
 
 private fun operationIdFunSpec() = FunSpec.builder("operationId")
@@ -68,7 +68,7 @@ private fun IrOperation.companionTypeSpec(): TypeSpec {
   return TypeSpec.companionObjectBuilder()
       .addProperty(PropertySpec.builder("OPERATION_ID", String::class)
           .addModifiers(KModifier.CONST)
-          .initializer("%S", )
+          .initializer("%S", operationId)
           .build()
       )
       .addProperty(PropertySpec.builder("QUERY_DOCUMENT", String::class)

@@ -70,7 +70,10 @@ class IrBuilder(
         fragments = fragments,
         inputObjects = inputObjectCache.values.toList(),
         enums = enumCache.values.toList(),
-        customScalars = customScalarCache.values.toList()
+        customScalars = IrCustomScalars(
+            packageName = packageNameProvider.customScalarsPackageName(),
+            customScalars = customScalarCache.values.toList()
+        )
     )
   }
 
@@ -78,7 +81,9 @@ class IrBuilder(
     return IrCustomScalar(
         name = name,
         kotlinName = customScalarToKotlinName[name],
-        packageName = packageNameProvider.customScalarsPackageName()
+        packageName = packageNameProvider.customScalarsPackageName(),
+        description = description,
+        deprecationReason = directives.findDeprecationReason()
     )
   }
 
@@ -147,7 +152,6 @@ class IrBuilder(
         name = name,
         packageName = packageName
     )
-
 
     return IrOperation(
         name = name,

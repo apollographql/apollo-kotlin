@@ -2,8 +2,6 @@ package com.apollographql.apollo3.compiler
 
 import com.apollographql.apollo3.api.QueryDocumentMinifier
 import com.apollographql.apollo3.compiler.ApolloMetadata.Companion.merge
-import com.apollographql.apollo3.compiler.backend.GraphQLCodeGenerator
-import com.apollographql.apollo3.compiler.backend.ir.BackendIrBuilder
 import com.apollographql.apollo3.compiler.frontend.GQLFragmentDefinition
 import com.apollographql.apollo3.compiler.frontend.GQLOperationDefinition
 import com.apollographql.apollo3.compiler.frontend.GQLTypeDefinition
@@ -11,13 +9,14 @@ import com.apollographql.apollo3.compiler.frontend.GraphQLParser
 import com.apollographql.apollo3.compiler.frontend.Issue
 import com.apollographql.apollo3.compiler.frontend.Schema
 import com.apollographql.apollo3.compiler.frontend.SourceAwareException
-import com.apollographql.apollo3.compiler.frontend.ir.FrontendIrBuilder
 import com.apollographql.apollo3.compiler.frontend.toIntrospectionSchema
 import com.apollographql.apollo3.compiler.frontend.toSchema
 import com.apollographql.apollo3.compiler.frontend.withTypenameWhenNeeded
 import com.apollographql.apollo3.compiler.introspection.IntrospectionSchema
 import com.apollographql.apollo3.compiler.operationoutput.OperationDescriptor
 import com.apollographql.apollo3.compiler.operationoutput.toJson
+import com.apollographql.apollo3.compiler.unified.IrBuilder
+import com.apollographql.apollo3.compiler.unified.codegen.GraphQLCodeGenerator
 import com.squareup.kotlinpoet.asClassName
 import java.io.File
 
@@ -87,37 +86,26 @@ class GraphQLCompiler(val logger: Logger = NoOpLogger) {
       it.withTypenameWhenNeeded(schema)
     }
 
-    val typesToGenerate = computeTypesToGenerate(
-        documents = documents,
-        schema = schema,
-        incomingMetadata = metadata,
-        alwaysGenerateTypesMatching = args.alwaysGenerateTypesMatching
-    )
 
-    val frontendIr = FrontendIrBuilder(
+    val ir = IrBuilder(
         schema = schema,
         operationDefinitions = operations,
         fragmentDefinitions = fragments,
-        metadataFragmentDefinitions = metadataFragments
+        metadataFragmentDefinitions = metadataFragments,
+        alwaysGenerateTypesMatching = args.alwaysGenerateTypesMatching,
+        customScalarToKotlinName = userScalarTypesMap,
+        packageNameProvider = packageNameProvider
     ).build()
 
-    val backendIr = BackendIrBuilder(
-        schema = schema,
-        useSemanticNaming = args.useSemanticNaming,
-        packageNameProvider = packageNameProvider,
-        generateFragmentsAsInterfaces = args.generateFragmentsAsInterfaces,
-    ).buildBackendIR(frontendIr)
-
-    val operationOutput = backendIr.operations.map {
-      OperationDescriptor(
-          name = it.operationName,
-          packageName = it.targetPackageName,
-          filePath = "",
-          source = QueryDocumentMinifier.minify(it.definition)
-      )
-    }.let {
-      args.operationOutputGenerator.generate(it)
-    }
+    val operationOutput = args.operationOutputGenerator.generate(
+        ir.operations.map {
+          OperationDescriptor(
+              name = it.name,
+              packageName = it.packageName,
+              source = QueryDocumentMinifier.minify(it.sourceWithFragments)
+          )
+        }
+    )
 
     check(operationOutput.size == operations.size) {
       """The number of operation IDs (${operationOutput.size}) should match the number of operations (${operations.size}).
@@ -129,42 +117,11 @@ class GraphQLCompiler(val logger: Logger = NoOpLogger) {
       args.operationOutputFile.writeText(operationOutput.toJson("  "))
     }
 
-    // TODO: use another schema for codegen than introspection schema
-    val introspectionSchema = schema.toIntrospectionSchema()
-
-    /**
-     * Generate the mapping for all custom scalars
-     *
-     * If the user specified a mapping, use it, else fallback to [Any]
-     */
-    val schemaScalars = introspectionSchema.types
-        .values
-        .filter { type -> type is IntrospectionSchema.Type.Scalar && !GQLTypeDefinition.builtInTypes.contains(type.name) }
-        .map { type -> type.name }
-    val unknownScalars = userScalarTypesMap.keys.subtract(schemaScalars.toSet())
-    check (unknownScalars.isEmpty()) {
-      "ApolloGraphQL: unknown custom scalar(s): ${unknownScalars.joinToString(",")}"
-    }
-    val customScalarsMapping = schemaScalars
-        .map {
-          it to (userScalarTypesMap[it] ?: anyClassName(generateKotlinModels))
-        }.toMap()
-
     GraphQLCodeGenerator(
-        backendIr = backendIr,
-        schema = schema,
-        enumsToGenerate = typesToGenerate.enumsToGenerate,
-        inputObjectsToGenerate = typesToGenerate.inputObjectsToGenerate,
-        generateScalarMapping = typesToGenerate.generateScalarMapping,
-        customScalarsMapping = customScalarsMapping,
-        operationOutput = operationOutput,
+        ir = ir,
+        generateScalarMapping = true,
         generateAsInternal = args.generateAsInternal,
-        generateFilterNotNull = args.generateFilterNotNull,
         enumAsSealedClassPatternFilters = args.enumAsSealedClassPatternFilters.map { it.toRegex() },
-        typesPackageName = "$schemaPackageName.type".removePrefix("."),
-        fragmentsPackageName = "$schemaPackageName.fragment".removePrefix("."),
-        generateFragmentImplementations = args.generateFragmentImplementations,
-        generateFragmentsAsInterfaces = args.generateFragmentsAsInterfaces,
     ).write(args.outputDir)
 
     args.metadataOutputFile.parentFile.mkdirs()
@@ -172,7 +129,7 @@ class GraphQLCompiler(val logger: Logger = NoOpLogger) {
         schema = if (metadata == null) schema else null,
         schemaPackageName = schemaPackageName,
         moduleName = args.moduleName,
-        types = typesToGenerate.enumsToGenerate + typesToGenerate.inputObjectsToGenerate,
+        types = emptySet(),
         fragments = documents.flatMap { it.definitions.filterIsInstance<GQLFragmentDefinition>() },
         generateKotlinModels = generateKotlinModels,
         customScalarsMapping = args.customScalarsMapping,
@@ -311,6 +268,6 @@ class GraphQLCompiler(val logger: Logger = NoOpLogger) {
        */
       val generateFilterNotNull: Boolean = false,
       val enumAsSealedClassPatternFilters: Set<String> = emptySet(),
-      val generateFragmentsAsInterfaces: Boolean = true
+      val generateFragmentsAsInterfaces: Boolean = true,
   )
 }

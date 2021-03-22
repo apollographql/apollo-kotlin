@@ -3,6 +3,7 @@ package com.apollographql.apollo3.compiler.unified.codegen
 import com.apollographql.apollo3.compiler.PackageNameProvider
 import com.apollographql.apollo3.compiler.VERSION
 import com.apollographql.apollo3.compiler.backend.ast.AstBuilder.Companion.buildAst
+import com.apollographql.apollo3.compiler.backend.codegen.adapterPackageName
 import com.apollographql.apollo3.compiler.backend.codegen.implementationTypeSpec
 import com.apollographql.apollo3.compiler.backend.codegen.inputObjectAdapterTypeSpec
 import com.apollographql.apollo3.compiler.backend.codegen.interfaceTypeSpec
@@ -23,30 +24,27 @@ import com.squareup.kotlinpoet.KModifier
 import com.squareup.kotlinpoet.TypeSpec
 import java.io.File
 
-class GraphQLCodegenerator(
+class GraphQLCodeGenerator(
     private val ir: IntermediateRepresentation,
     private val generateAsInternal: Boolean = false,
     private val enumAsSealedClassPatternFilters: List<Regex>,
     private val generateScalarMapping: Boolean,
-    private val typesPackageName: String,
-    private val fragmentsPackageName: String,
-    private val packageNameProvider: PackageNameProvider,
 ) {
   fun write(outputDir: File) {
 
-    if (generateScalarMapping && ir.customScalars.isNotEmpty()) {
-      ir.customScalars.typeSpec()
-          .toFileSpec(typesPackageName)
+    if (generateScalarMapping && ir.customScalars.customScalars.isNotEmpty()) {
+      ir.customScalars.customScalars.typeSpec()
+          .toFileSpec(ir.customScalars.packageName)
           .writeTo(outputDir)
     }
 
     ir.enums
         .forEach { enum ->
-          fileSpecBuilder(typesPackageName, kotlinNameForEnum(enum.name))
+          fileSpecBuilder(enum.packageName, kotlinNameForEnum(enum.name))
               .apply {
                 enum.typeSpecs(
                     enumAsSealedClassPatternFilters = enumAsSealedClassPatternFilters,
-                    packageName = typesPackageName
+                    packageName = enum.packageName
                 ).forEach {
                   addType(it.internal(generateAsInternal))
                 }
@@ -57,10 +55,10 @@ class GraphQLCodegenerator(
     ir.inputObjects
         .forEach { inputType ->
           inputType.typeSpec()
-              .toFileSpec(typesPackageName)
+              .toFileSpec(inputType.packageName)
               .writeTo(outputDir)
           inputType.adapterTypeSpec()
-              .toFileSpec("${typesPackageName}.adapter")
+              .toFileSpec(adapterPackageName(inputType.packageName))
               .writeTo(outputDir)
         }
 

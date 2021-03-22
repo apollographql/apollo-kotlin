@@ -16,7 +16,7 @@ data class IntermediateRepresentation(
     val fragments: List<IrNamedFragment>,
     val inputObjects: List<IrInputObject>,
     val enums: List<IrEnum>,
-    val customScalars: List<IrCustomScalar>,
+    val customScalars: IrCustomScalars,
 )
 
 data class IrEnum(
@@ -31,6 +31,11 @@ data class IrEnum(
       val deprecationReason: String?,
   )
 }
+
+data class IrCustomScalars(
+    val packageName: String,
+    val customScalars: List<IrCustomScalar>
+)
 
 data class PathElement(
     val typeSet: TypeSet,
@@ -169,6 +174,8 @@ data class IrCustomScalar(
     val packageName: String,
     val name: String,
     val kotlinName: String?, // might be null if no user mapping is provided
+    val description: String?,
+    val deprecationReason: String?
 )
 
 /**

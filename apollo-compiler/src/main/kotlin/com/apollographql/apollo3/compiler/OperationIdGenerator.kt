@@ -13,9 +13,9 @@ interface OperationIdGenerator {
       operationDocument: String,
 
       /**
-       * The path to the GraphQL file
+       * The packageName of the operation
        */
-      operationFilepath: String
+      packageName: String
   ): String
 
   /**
@@ -28,7 +28,7 @@ interface OperationIdGenerator {
   val version: String
 
   class Sha256 : OperationIdGenerator {
-    override fun apply(operationDocument: String, operationFilepath: String): String {
+    override fun apply(operationDocument: String, packageName: String): String {
       return operationDocument.sha256()
     }
 
