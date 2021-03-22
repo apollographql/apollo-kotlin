@@ -46,8 +46,8 @@ data class ModelPath(
   operator fun plus(element: PathElement) = copy(elements = elements + element)
 
   sealed class Root {
-    class Operation(val name: String): Root()
-    class Fragment(val name: String): Root()
+    class Operation(val name: String) : Root()
+    class Fragment(val name: String) : Root()
   }
 }
 
@@ -142,6 +142,7 @@ data class IrFieldSet(
     val fields: List<IrField>,
     val possibleTypes: Set<String>,
     val implements: Set<ModelPath>,
+    var usageCount: Int = 0,
 ) {
   val fullPath = (path + PathElement(typeSet, fieldType, responseName))
 

@@ -12,6 +12,7 @@ import com.apollographql.apollo3.compiler.unified.codegen.helpers.maybeAddDescri
 import com.apollographql.apollo3.compiler.unified.codegen.helpers.toNamedType
 import com.apollographql.apollo3.compiler.unified.codegen.helpers.toParameterSpec
 import com.apollographql.apollo3.compiler.unified.codegen.helpers.typeName
+import com.apollographql.apollo3.compiler.unified.codegen.helpers.typeSpec
 import com.squareup.kotlinpoet.CodeBlock
 import com.squareup.kotlinpoet.FunSpec
 import com.squareup.kotlinpoet.KModifier
@@ -32,7 +33,7 @@ fun IrOperation.typeSpec(): TypeSpec {
       .addFunction(serializeVariablesFunSpec(packageName, name))
       .addFunction(adapterFunSpec(packageName = packageName, name = name, dataField = dataField))
       .addFunction(responseFieldsFunSpec())
-      .addType(this.dataType.typeSpec(generateFragmentsAsInterfaces))
+      .addType(dataField.fieldSets.first().typeSpec())
       .addType(companionTypeSpec())
       .build()
 }

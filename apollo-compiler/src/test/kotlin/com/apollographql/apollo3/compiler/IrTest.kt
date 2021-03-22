@@ -4,7 +4,7 @@ import com.apollographql.apollo3.compiler.frontend.GQLFragmentDefinition
 import com.apollographql.apollo3.compiler.frontend.GQLOperationDefinition
 import com.apollographql.apollo3.compiler.frontend.GraphQLParser
 import com.apollographql.apollo3.compiler.unified.IrBuilder
-import com.apollographql.apollo3.compiler.unified.codegen.toTypeSpec
+import com.apollographql.apollo3.compiler.unified.codegen.helpers.typeSpec
 import com.squareup.kotlinpoet.FileSpec
 import org.junit.Test
 import java.io.File
@@ -20,12 +20,15 @@ class IrTest {
         schema
     )
 
+
     val ir = IrBuilder(
         schema = schema,
         operationDefinitions = operation.orThrow().definitions.filterIsInstance<GQLOperationDefinition>(),
         metadataFragmentDefinitions = emptyList(),
         fragmentDefinitions = operation.orThrow().definitions.filterIsInstance<GQLFragmentDefinition>(),
-        alwaysGenerateTypesMatching = emptySet()
+        alwaysGenerateTypesMatching = emptySet(),
+        customScalarToKotlinName = emptyMap(),
+        packageNameProvider = DefaultPackageNameProvider("com.example", Roots(emptySet()), "com.example")
     ).build()
 
     if (ir.operations.isEmpty()) {
@@ -39,7 +42,7 @@ class IrTest {
     FileSpec.builder("com.example", irOperation.name)
         .apply {
           irOperation.dataField.fieldSets.forEach {
-            addType(it.toTypeSpec())
+            addType(it.typeSpec())
           }
         }
         .build()

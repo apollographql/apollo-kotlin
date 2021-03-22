@@ -277,13 +277,19 @@ class IrFieldSetBuilder(
       )
     }
 
-    val implements = if (superFieldSet == null) {
+    val finalSuperFieldSets = if (superFieldSet == null) {
       // this is a baseFieldSet, pull the superFieldSets
       superFieldSets
     } else {
       // this was already pulled by the baseFieldSet, no need to add superFieldSets
       listOf(superFieldSet)
-    }.map { it.fullPath }.toSet()
+    }
+
+    finalSuperFieldSets.forEach {
+      it.usageCount++
+    }
+
+    val implements = finalSuperFieldSets.map { it.fullPath }.toSet()
 
     val fieldSet = IrFieldSet(
         typeSet = typeSet.toSet(),

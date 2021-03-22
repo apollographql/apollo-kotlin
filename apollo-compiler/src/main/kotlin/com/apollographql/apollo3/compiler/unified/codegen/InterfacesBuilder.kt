@@ -15,27 +15,3 @@ fun IrField.typeName(): TypeName {
   return type.typeName()
 }
 
-fun IrFieldSet.toTypeSpec(): TypeSpec {
-  return TypeSpec.interfaceBuilder(kotlinNameForModel(typeSet - fieldType, responseName))
-      .addProperties(
-          fields.map {
-            PropertySpec.builder(
-                it.responseName,
-                it.typeName()
-            ).applyIf(it.override) {
-              addModifiers(KModifier.OVERRIDE)
-            }.build()
-          }
-      )
-      .addTypes(
-          fields.flatMap {
-            it.fieldSets.map { it.toTypeSpec() }
-          }
-      )
-      .addSuperinterfaces(
-          implements.map {
-            it.typeName()
-          }
-      )
-      .build()
-}

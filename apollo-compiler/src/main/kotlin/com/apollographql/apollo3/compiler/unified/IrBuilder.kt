@@ -138,17 +138,24 @@ class IrBuilder(
     }).trimEnd('\n')
 
     val packageName = packageNameProvider.operationPackageName(sourceLocation.filePath!!)
+
+    check(name != null) {
+      "Apollo doesn't support anonymous operation."
+    }
+    val dataField = fieldSetBuilder.buildOperation(
+        typedSelectionSet = IrFieldSetBuilder.TypedSelectionSet(selectionSet.selections, typeDefinition.name),
+        name = name,
+        packageName = packageName
+    )
+
+
     return IrOperation(
-        name = name ?: throw IllegalStateException("Apollo doesn't support anonymous operation."),
+        name = name,
         description = description,
         operationType = IrOperationType.valueOf(operationType.capitalize()),
         typeCondition = typeDefinition.name,
         variables = variableDefinitions.map { it.toIr() },
-        dataField = fieldSetBuilder.buildOperation(
-            typedSelectionSet = IrFieldSetBuilder.TypedSelectionSet(selectionSet.selections, typeDefinition.name),
-            name = name,
-            packageName = packageName
-        ),
+        dataField = dataField,
         sourceWithFragments = sourceWithFragments,
         packageName = packageName,
         // TODO: operation Id
