@@ -39,21 +39,42 @@ class TestQuery : Query<TestQuery.Data> {
     interface Hero {
       val __typename: String
 
+      /**
+       * The name of the character
+       */
       val name: String
 
+      /**
+       * The date character was born.
+       */
       val birthDate: Any
     }
 
     data class OtherHero(
       override val __typename: String,
+      /**
+       * The name of the character
+       */
       override val name: String,
+      /**
+       * The date character was born.
+       */
       override val birthDate: Any
     ) : Hero
 
     data class DroidHero(
       override val __typename: String,
+      /**
+       * The name of the character
+       */
       override val name: String,
+      /**
+       * The date character was born.
+       */
       override val birthDate: Any,
+      /**
+       * This droid's primary function
+       */
       val primaryFunction: String?
     ) : Hero
   }

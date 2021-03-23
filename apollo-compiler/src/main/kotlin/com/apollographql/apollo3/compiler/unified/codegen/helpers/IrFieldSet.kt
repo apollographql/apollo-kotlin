@@ -62,12 +62,11 @@ fun IrField.typeSpecs(asInterface: Boolean): List<TypeSpec> {
 
 fun IrFieldSet.typeSpec(asInterface: Boolean): TypeSpec {
   val properties = fields.map {
-    PropertySpec.builder(
-        it.responseName,
-        it.typeName()
-    ).applyIf(it.override) {
-      addModifiers(KModifier.OVERRIDE)
-    }.build()
+    PropertySpec.builder(it.responseName, it.typeName())
+        .applyIf(it.override) { addModifiers(KModifier.OVERRIDE) }
+        .maybeAddDescription(it.description)
+        .maybeAddDeprecation(it.deprecationReason)
+        .build()
   }
 
   val nestedTypes = fields.flatMap {
