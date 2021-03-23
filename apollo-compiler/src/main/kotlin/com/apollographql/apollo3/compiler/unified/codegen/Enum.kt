@@ -36,6 +36,12 @@ internal fun IrEnum.typeName() = ClassName(
     kotlinNameForEnum(name)
 )
 
+internal fun IrEnum.adapterTypeName() = ClassName(
+    packageName = adapterPackageName(packageName),
+    kotlinNameForResponseAdapter(name)
+)
+
+
 internal fun IrEnum.qualifiedTypeSpecs(
     enumAsSealedClassPatternFilters: List<Regex>,
 ): List<QualifiedTypeSpec> {

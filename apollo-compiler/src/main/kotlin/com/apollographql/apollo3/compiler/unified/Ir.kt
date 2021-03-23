@@ -37,23 +37,11 @@ data class IrCustomScalars(
     val customScalars: List<IrCustomScalar>
 )
 
-data class PathElement(
-    val typeSet: TypeSet,
-    val fieldType: String,
-    val responseName: String,
-)
-
 data class ModelPath(
     val packageName: String,
-    val root: Root,
     val elements: List<String> = emptyList(),
 ) {
   operator fun plus(element: String) = copy(elements = elements + element)
-
-  sealed class Root {
-    class Operation(val name: String) : Root()
-    class Fragment(val name: String) : Root()
-  }
 }
 
 /**
@@ -127,6 +115,7 @@ data class IrField(
     val override: Boolean,
 
     val baseFieldSet: IrFieldSet?,
+    val fallbackFieldSet: IrFieldSet,
     val interfacesFieldSets: List<IrFieldSet>,
     val implementationFieldSets: List<IrFieldSet>,
 ) {
@@ -146,7 +135,7 @@ data class IrField(
 data class IrFieldSet(
     val path: ModelPath,
     val modelName: String,
-    val fieldType: String,
+    val typeSet: TypeSet,
     val fields: List<IrField>,
     val possibleTypes: Set<String>,
     val implements: Set<ModelPath>,

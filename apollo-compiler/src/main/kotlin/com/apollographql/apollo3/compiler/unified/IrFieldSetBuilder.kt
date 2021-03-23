@@ -1,5 +1,6 @@
 package com.apollographql.apollo3.compiler.unified
 
+import com.apollographql.apollo3.compiler.backend.codegen.kotlinNameForOperation
 import com.apollographql.apollo3.compiler.frontend.GQLArgument
 import com.apollographql.apollo3.compiler.frontend.GQLField
 import com.apollographql.apollo3.compiler.frontend.GQLFieldDefinition
@@ -40,7 +41,7 @@ class IrFieldSetBuilder(
     return buildDataField(
         selections = selections,
         fieldType = fieldType,
-        path = ModelPath(packageName, ModelPath.Root.Operation(name))
+        path = ModelPath(packageName, listOf(kotlinNameForOperation(name)))
     )
   }
 
@@ -54,7 +55,7 @@ class IrFieldSetBuilder(
       buildDataField(
           selections = selections,
           fieldType = fieldType,
-          path = ModelPath(packageName, ModelPath.Root.Fragment(name))
+          path = ModelPath(packageName, listOf(kotlinNameForOperation(name)))
       )
     }
   }
@@ -138,9 +139,10 @@ class IrFieldSetBuilder(
     }
 
     /**
-     * Order doesn't matter much here
+     * Always add the fallback type in case new types are added to the schema
      */
-    val implementationFieldSets = shapesTypeSets.sortedBy { it.size }.map { typeSet ->
+    val implementationToGenerate = shapesTypeSets + setOf(setOf(fieldType))
+    val implementationFieldSets = implementationToGenerate.sortedBy { it.size }.map { typeSet ->
       var modelName = modelName(typeSet, fieldType, responseName)
       if (interfaceFieldSets.any { it.modelName == modelName }) {
         modelName = "Other$modelName"
@@ -159,6 +161,8 @@ class IrFieldSetBuilder(
 
     // Can be null for a scalar type
     val baseFieldSet = interfaceFieldSets.firstOrNull() ?: implementationFieldSets.firstOrNull()
+    // This will never be null
+    val fallbackFieldSet = implementationFieldSets.first()
 
     return IrField(
         alias = alias,
@@ -170,6 +174,7 @@ class IrFieldSetBuilder(
         condition = condition,
         override = superFields.isNotEmpty(),
         baseFieldSet = baseFieldSet,
+        fallbackFieldSet = fallbackFieldSet,
         interfacesFieldSets = interfaceFieldSets,
         implementationFieldSets = implementationFieldSets
     )
@@ -319,7 +324,7 @@ class IrFieldSetBuilder(
 
     return IrFieldSet(
         modelName = modelName,
-        fieldType = fieldType,
+        typeSet = typeSet,
         possibleTypes = possibleTypes,
         fields = fields,
         implements = implements,

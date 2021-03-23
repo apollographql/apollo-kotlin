@@ -6,16 +6,19 @@ import com.apollographql.apollo3.api.QueryDocumentMinifier
 import com.apollographql.apollo3.api.Subscription
 import com.apollographql.apollo3.compiler.backend.codegen.adapterPackageName
 import com.apollographql.apollo3.compiler.backend.codegen.kotlinNameForOperation
+import com.apollographql.apollo3.compiler.backend.codegen.kotlinNameForResponseAdapter
 import com.apollographql.apollo3.compiler.backend.codegen.kotlinNameForVariablesAdapter
 import com.apollographql.apollo3.compiler.backend.codegen.makeDataClass
 import com.apollographql.apollo3.compiler.unified.IrOperation
 import com.apollographql.apollo3.compiler.unified.IrOperationType
+import com.apollographql.apollo3.compiler.unified.codegen.adapter.dataResponseAdapterTypeSpecs
+import com.apollographql.apollo3.compiler.unified.codegen.adapter.inputAdapterTypeSpec
 import com.apollographql.apollo3.compiler.unified.codegen.helpers.maybeAddDescription
 import com.apollographql.apollo3.compiler.unified.codegen.helpers.toNamedType
 import com.apollographql.apollo3.compiler.unified.codegen.helpers.toParameterSpec
 import com.apollographql.apollo3.compiler.unified.codegen.helpers.typeName
-import com.apollographql.apollo3.compiler.unified.codegen.helpers.typeSpec
 import com.apollographql.apollo3.compiler.unified.codegen.helpers.typeSpecs
+import com.squareup.kotlinpoet.ClassName
 import com.squareup.kotlinpoet.CodeBlock
 import com.squareup.kotlinpoet.FunSpec
 import com.squareup.kotlinpoet.KModifier
@@ -34,6 +37,8 @@ fun IrOperation.qualifiedTypeSpecs(): List<QualifiedTypeSpec> {
   if (variables.isNotEmpty()){
     list.add(QualifiedTypeSpec(adapterPackageName(packageName), variablesAdapterTypeSpec()))
   }
+  list.add(QualifiedTypeSpec(adapterPackageName(packageName), responseAdapterTypeSpec()))
+
   return list
 }
 
@@ -55,10 +60,16 @@ private fun IrOperation.typeSpec(): TypeSpec {
 
 private fun IrOperation.variablesAdapterTypeSpec(): TypeSpec {
   return variables.map { it.toNamedType() }
-      .inputOnlyAdapterTypeSpec(
+      .inputAdapterTypeSpec(
           kotlinNameForVariablesAdapter(name),
           adaptedTypeName = dataField.typeName()
       )
+}
+
+private fun IrOperation.responseAdapterTypeSpec(): TypeSpec {
+  return TypeSpec.objectBuilder(kotlinNameForResponseAdapter(name))
+      .addTypes(dataResponseAdapterTypeSpecs(dataField))
+      .build()
 }
 
 private fun IrOperation.serializeVariablesFunSpec(): FunSpec = serializeVariablesFunSpec(
@@ -67,7 +78,10 @@ private fun IrOperation.serializeVariablesFunSpec(): FunSpec = serializeVariable
     isEmpty = variables.isEmpty()
 )
 
-private fun IrOperation.adapterFunSpec(): FunSpec = adapterFunSpec(packageName = packageName, name = name, dataField = dataField)
+private fun IrOperation.adapterFunSpec(): FunSpec {
+  val adapterTypeName = ClassName(adapterPackageName(packageName), kotlinNameForResponseAdapter(name))
+  return adapterFunSpec(adapterTypeName = adapterTypeName, adaptedTypeName = dataField.typeName())
+}
 
 private fun IrOperation.dataTypeSpec(): TypeSpec {
   val superClass = when (operationType) {
@@ -76,7 +90,7 @@ private fun IrOperation.dataTypeSpec(): TypeSpec {
     IrOperationType.Subscription -> Subscription.Data::class.asTypeName()
   }
 
-  return dataField.typeSpecs().first().toBuilder()
+  return dataField.typeSpecs(false).first().toBuilder()
       .addSuperinterface(superClass)
       .build()
 }

@@ -49,15 +49,12 @@ fun serializeVariablesFunSpec(
 }
 
 fun adapterFunSpec(
-    packageName: String,
-    name: String,
-    dataField: IrField,
+    adapterTypeName: TypeName,
+    adaptedTypeName: TypeName
 ): FunSpec {
-  val adapterTypeName = ClassName(adapterPackageName(packageName), kotlinNameForResponseAdapter(name))
-
   return FunSpec.builder("adapter")
       .addModifiers(KModifier.OVERRIDE)
-      .returns(ResponseAdapter::class.asClassName().parameterizedBy(dataField.typeName()))
+      .returns(ResponseAdapter::class.asClassName().parameterizedBy(adaptedTypeName))
       .addCode(CodeBlock.of("return·%T", adapterTypeName).obj(false))
       .build()
 }
@@ -75,3 +72,4 @@ fun responseFieldsFunSpec(): FunSpec {
       .addCode("return %L", "emptyList()")
       .build()
 }
+

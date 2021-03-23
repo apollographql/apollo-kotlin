@@ -9,10 +9,13 @@ import java.io.File
 
 /**
  * KotlinPoet [TypeSpec] are non qualified. This is a simple wrapper that carries a package name so that we can write the file
+ *
+ * If multiple [TypeSpec] are in the same [packageName], [fileName] is mandatory
  */
 class QualifiedTypeSpec(
     val packageName: String,
     val typeSpec: TypeSpec,
+    val fileName: String? = null,
 )
 
 class GraphQLCodeGenerator(
@@ -42,26 +45,20 @@ class GraphQLCodeGenerator(
 
     val qualifiedTypeSpecs = customScalars + enums + inputObjects + operations
 
-    qualifiedTypeSpecs.groupBy { "${it.packageName}.${it.typeSpec.name}" }
-        .forEach {
-          check(it.value.size == 1) {
-            "Duplicate TypeSpec found: ${it.key}"
-          }
-        }
 
-    qualifiedTypeSpecs.forEach {
-      it.typeSpec
-          .fileSpec(it.packageName)
+    qualifiedTypeSpecs.groupBy {
+      it.packageName to (it.fileName ?: it.typeSpec.name!!)
+    }.forEach {
+      fileSpecBuilder(it.key.first, it.key.second)
+          .apply {
+            it.value.forEach {
+              addType(it.typeSpec.internal(generateAsInternal))
+            }
+          }
+          .build()
           .writeTo(outputDir)
     }
   }
-
-  /**
-   * Generates a file with the name of this type and the specified package name
-   */
-  private fun TypeSpec.fileSpec(packageName: String) = fileSpecBuilder(packageName, name!!)
-      .addType(this.internal(generateAsInternal))
-      .build()
 
   private fun fileSpecBuilder(packageName: String, name: String): FileSpec.Builder =
       FileSpec

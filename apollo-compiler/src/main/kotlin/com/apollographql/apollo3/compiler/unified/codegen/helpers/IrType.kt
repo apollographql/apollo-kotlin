@@ -7,7 +7,10 @@ import com.apollographql.apollo3.api.IntResponseAdapter
 import com.apollographql.apollo3.api.StringResponseAdapter
 import com.apollographql.apollo3.compiler.backend.codegen.adapterName
 import com.apollographql.apollo3.compiler.backend.codegen.adapterPackageName
+import com.apollographql.apollo3.compiler.backend.codegen.asTypeName
 import com.apollographql.apollo3.compiler.backend.codegen.kotlinNameForFragment
+import com.apollographql.apollo3.compiler.backend.codegen.kotlinNameForResponseAdapter
+import com.apollographql.apollo3.compiler.backend.codegen.obj
 import com.apollographql.apollo3.compiler.unified.IrAnyType
 import com.apollographql.apollo3.compiler.unified.IrBooleanType
 import com.apollographql.apollo3.compiler.unified.IrCompoundType
@@ -24,6 +27,7 @@ import com.apollographql.apollo3.compiler.unified.IrStringType
 import com.apollographql.apollo3.compiler.unified.IrType
 import com.apollographql.apollo3.compiler.unified.ModelPath
 import com.apollographql.apollo3.compiler.unified.TypeSet
+import com.apollographql.apollo3.compiler.unified.codegen.adapterTypeName
 import com.apollographql.apollo3.compiler.unified.codegen.kotlinTypeName
 import com.apollographql.apollo3.compiler.unified.codegen.typeName
 import com.squareup.kotlinpoet.ClassName
@@ -53,43 +57,9 @@ fun IrType.typeName(): TypeName {
     is IrCustomScalarType -> customScalar.kotlinTypeName()
     is IrEnumType -> enum.typeName()
     is IrInputObjectType -> inputObject.typeName()
-    is IrCompoundType -> fieldSet.fullPath.typeName()
+    is IrCompoundType -> fieldSet.typeName()
   }.copy(nullable = true)
 }
-
-private fun modelName(typeSet: TypeSet, responseName: String): String {
-  return (typeSet.sorted() + responseName).map { it.capitalize() }.joinToString("")
-}
-
-fun IrFieldSet.typeName(): TypeName {
-  return fullPath.typeName()
-}
-
-fun ModelPath.typeName(): TypeName {
-  val rootName = when(root) {
-    is ModelPath.Root.Fragment -> kotlinNameForFragment(root.name)
-    is ModelPath.Root.Operation -> kotlinNameForFragment(root.name)
-  }
-
-  return ClassName(
-      packageName = packageName,
-      listOf(rootName) + elements
-  )
-}
-
-fun ModelPath.adapterTypeName(): TypeName {
-  val rootName = when(root) {
-    is ModelPath.Root.Fragment -> kotlinNameForFragment(root.name)
-    is ModelPath.Root.Operation -> kotlinNameForFragment(root.name)
-  }
-
-  // remove the fieldType from the
-  return ClassName(
-      packageName = adapterPackageName(packageName),
-      listOf(adapterName(rootName)) + elements
-  )
-}
-
 
 private fun nullableScalarAdapter(name: String) = CodeBlock.of("%M", MemberName("com.apollographql.apollo3.api", name))
 
@@ -124,9 +94,15 @@ private fun IrType.nonNullableAdapterInitializer(): CodeBlock {
     is IrIntType -> CodeBlock.of("%T", IntResponseAdapter::class)
     is IrFloatType -> CodeBlock.of("%T", DoubleResponseAdapter::class)
     is IrAnyType -> CodeBlock.of("%T", AnyResponseAdapter::class)
-    is IrEnumType -> TODO()
-    is IrCompoundType -> TODO()
-    is IrInputObjectType -> TODO()
-    is IrCustomScalarType -> TODO()
+    is IrEnumType -> CodeBlock.of("%T", enum.adapterTypeName())
+    is IrCompoundType -> CodeBlock.of("%T", fieldSet.adapterTypeName()).obj(false)
+    is IrInputObjectType -> CodeBlock.of("%T", inputObject.adapterTypeName()).obj(false)
+    is IrCustomScalarType -> {
+      CodeBlock.of(
+          "responseAdapterCache.responseAdapterFor<%T>(%T)",
+          ClassName.bestGuess(customScalar.kotlinName!!),
+          customScalar.typeName()
+      )
+    }
   }
 }

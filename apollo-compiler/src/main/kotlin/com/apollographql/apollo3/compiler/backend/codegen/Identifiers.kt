@@ -9,5 +9,7 @@ internal object Identifier {
   const val fromResponse = "fromResponse"
   const val fromFields = "fromFields"
   const val serializeVariables = "serializeVariables"
+  const val RESPONSE_NAMES = "RESPONSE_NAMES"
+  @Suppress("ObjectPropertyName")
   const val __typename = "__typename"
 }

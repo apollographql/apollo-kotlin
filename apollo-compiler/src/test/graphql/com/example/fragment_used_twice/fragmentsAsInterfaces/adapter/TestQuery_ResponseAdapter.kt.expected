@@ -65,8 +65,12 @@ object TestQuery_ResponseAdapter : ResponseAdapter<TestQuery.Data> {
   object Hero : ResponseAdapter<TestQuery.Data.Hero> {
     override fun fromResponse(reader: JsonReader, responseAdapterCache: ResponseAdapterCache):
         TestQuery.Data.Hero {
-      check(reader.nextName() == "__typename")
-      val typename = reader.nextString()!!
+      reader.selectName(RESPONSE_NAMES).also {
+        check(it == 0) {
+          unexpectedName(RESPONSE_NAMES, index)
+        }
+      }
+      val __typename = reader.nextString()!!
       return when(typename) {
         "Droid" -> CharacterHero.fromResponse(reader, responseAdapterCache, typename)
         "Human" -> CharacterHumanHero.fromResponse(reader, responseAdapterCache, typename)

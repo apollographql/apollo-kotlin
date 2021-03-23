@@ -42,20 +42,40 @@ class TestQuery : Query<TestQuery.Data> {
       val name: String
 
       val birthDate: Any
+
+      interface __typename
+
+      interface Name
+
+      interface BirthDate
     }
 
     data class OtherHero(
       override val __typename: String,
       override val name: String,
       override val birthDate: Any
-    ) : Hero
+    ) : Hero {
+      class __typename : Hero.__typename
+
+      class Name : Hero.Name
+
+      class BirthDate : Hero.BirthDate
+    }
 
     data class DroidHero(
       override val __typename: String,
       override val name: String,
       override val birthDate: Any,
       val primaryFunction: String?
-    ) : Hero
+    ) : Hero {
+      class __typename : Hero.__typename
+
+      class Name : Hero.Name
+
+      class BirthDate : Hero.BirthDate
+
+      class PrimaryFunction
+    }
   }
 
   companion object {
