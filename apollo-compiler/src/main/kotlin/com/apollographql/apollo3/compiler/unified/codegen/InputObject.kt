@@ -5,6 +5,7 @@ import com.apollographql.apollo3.api.ResponseAdapterCache
 import com.apollographql.apollo3.api.json.JsonWriter
 import com.apollographql.apollo3.compiler.applyIf
 import com.apollographql.apollo3.compiler.backend.codegen.Identifier
+import com.apollographql.apollo3.compiler.backend.codegen.adapterPackageName
 import com.apollographql.apollo3.compiler.backend.codegen.kotlinNameForInputObjectAdapter
 import com.apollographql.apollo3.compiler.backend.codegen.kotlinNameForInputObject
 import com.apollographql.apollo3.compiler.backend.codegen.kotlinNameForVariablesAdapter
@@ -49,3 +50,9 @@ internal fun IrInputObject.adapterTypeSpec(): TypeSpec {
   }.adapterTypeSpec(adapterName, typeName())
 }
 
+internal fun IrInputObject.qualifiedTypeSpecs(): List<QualifiedTypeSpec> {
+  return listOf(
+      QualifiedTypeSpec(packageName = packageName, typeSpec()),
+      QualifiedTypeSpec(packageName = adapterPackageName(packageName), adapterTypeSpec())
+  )
+}

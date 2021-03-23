@@ -4,7 +4,9 @@ import com.apollographql.apollo3.api.Mutation
 import com.apollographql.apollo3.api.Query
 import com.apollographql.apollo3.api.QueryDocumentMinifier
 import com.apollographql.apollo3.api.Subscription
+import com.apollographql.apollo3.compiler.backend.codegen.adapterPackageName
 import com.apollographql.apollo3.compiler.backend.codegen.kotlinNameForOperation
+import com.apollographql.apollo3.compiler.backend.codegen.kotlinNameForVariablesAdapter
 import com.apollographql.apollo3.compiler.backend.codegen.makeDataClass
 import com.apollographql.apollo3.compiler.unified.IrOperation
 import com.apollographql.apollo3.compiler.unified.IrOperationType
@@ -24,7 +26,18 @@ import com.squareup.kotlinpoet.TypeSpec
 import com.squareup.kotlinpoet.asClassName
 import com.squareup.kotlinpoet.asTypeName
 
-fun IrOperation.typeSpec(): TypeSpec {
+fun IrOperation.qualifiedTypeSpecs(): List<QualifiedTypeSpec> {
+  val list = mutableListOf<QualifiedTypeSpec>()
+
+  list.add(QualifiedTypeSpec(packageName, typeSpec()))
+
+  if (variables.isNotEmpty()){
+    list.add(QualifiedTypeSpec(adapterPackageName(packageName), variablesAdapterTypeSpec()))
+  }
+  return list
+}
+
+private fun IrOperation.typeSpec(): TypeSpec {
   return TypeSpec.classBuilder(kotlinNameForOperation(name))
       .addSuperinterface(superInterfaceType())
       .maybeAddDescription(description)
@@ -32,13 +45,29 @@ fun IrOperation.typeSpec(): TypeSpec {
       .addFunction(operationIdFunSpec())
       .addFunction(queryDocumentFunSpec())
       .addFunction(nameFunSpec())
-      .addFunction(serializeVariablesFunSpec(packageName, name))
-      .addFunction(adapterFunSpec(packageName = packageName, name = name, dataField = dataField))
+      .addFunction(serializeVariablesFunSpec())
+      .addFunction(adapterFunSpec())
       .addFunction(responseFieldsFunSpec())
       .addType(dataTypeSpec())
       .addType(companionTypeSpec())
       .build()
 }
+
+private fun IrOperation.variablesAdapterTypeSpec(): TypeSpec {
+  return variables.map { it.toNamedType() }
+      .inputOnlyAdapterTypeSpec(
+          kotlinNameForVariablesAdapter(name),
+          adaptedTypeName = dataField.typeName()
+      )
+}
+
+private fun IrOperation.serializeVariablesFunSpec(): FunSpec = serializeVariablesFunSpec(
+    packageName = packageName,
+    name = name,
+    isEmpty = variables.isEmpty()
+)
+
+private fun IrOperation.adapterFunSpec(): FunSpec = adapterFunSpec(packageName = packageName, name = name, dataField = dataField)
 
 private fun IrOperation.dataTypeSpec(): TypeSpec {
   val superClass = when (operationType) {

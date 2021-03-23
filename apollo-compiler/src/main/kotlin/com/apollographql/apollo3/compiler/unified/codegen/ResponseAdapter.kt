@@ -10,6 +10,7 @@ import com.apollographql.apollo3.compiler.backend.codegen.kotlinNameForVariable
 import com.apollographql.apollo3.compiler.unified.codegen.helpers.NamedType
 import com.apollographql.apollo3.compiler.unified.codegen.helpers.adapterInitializer
 import com.apollographql.apollo3.compiler.unified.codegen.helpers.typeName
+import com.squareup.kotlinpoet.ClassName
 import com.squareup.kotlinpoet.CodeBlock
 import com.squareup.kotlinpoet.FunSpec
 import com.squareup.kotlinpoet.KModifier
@@ -42,18 +43,38 @@ internal fun List<NamedType>.adapterTypeSpec(
       .build()
 }
 
-private fun List<NamedType>.prefixCode(): CodeBlock {
-  return map { namedType ->
+internal fun List<NamedType>.inputOnlyAdapterTypeSpec(
+    adapterName: String,
+    adaptedTypeName: TypeName,
+): TypeSpec {
+  return TypeSpec.objectBuilder(adapterName)
+      .addSuperinterface(ResponseAdapter::class.asTypeName().parameterizedBy(adaptedTypeName))
+      .addProperty(responseNamesPropertySpec())
+      .addFunction(readFromResponseFunSpec(adaptedTypeName))
+      .addFunction(notImplementedFromResponseFunSpec(adaptedTypeName))
+      .build()
+}
+
+private fun notImplementedFromResponseFunSpec(adaptedTypeName: TypeName) = FunSpec.builder("fromResponse")
+    .addModifiers(KModifier.OVERRIDE)
+    .addParameter(Identifier.reader, JsonReader::class)
+    .addParameter(Identifier.responseAdapterCache, ResponseAdapterCache::class.asTypeName())
+    .returns(adaptedTypeName)
+    .addCode("throw %T(%S)", ClassName("kotlin", "IllegalStateException"), "Input type used in output position")
+    .build()
+
+internal fun List<NamedType>.readFromResponseBlockCode(
+    adaptedTypeName: TypeName,
+): CodeBlock {
+  val prefix = map { namedType ->
     CodeBlock.of(
         "var·%L:·%T·=·%L",
         kotlinNameForVariable(namedType.graphQlName),
         namedType.typeName().copy(nullable = true),
     )
   }.joinToCode(separator = "\n", suffix = "\n")
-}
 
-private fun List<NamedType>.loopCode(): CodeBlock {
-  return CodeBlock.builder()
+  val loop = CodeBlock.builder()
       .beginControlFlow("while(true)")
       .beginControlFlow("when·(${Identifier.reader}.selectName(RESPONSE_NAMES))")
       .add(
@@ -70,14 +91,6 @@ private fun List<NamedType>.loopCode(): CodeBlock {
       .endControlFlow()
       .endControlFlow()
       .build()
-}
-
-internal fun List<NamedType>.readFromResponseCode(
-    adaptedTypeName: TypeName,
-): CodeBlock {
-  val prefix = prefixCode()
-
-  val loop = loopCode()
 
   val suffix = CodeBlock.builder()
       .addStatement("return·%T(", adaptedTypeName)
@@ -109,10 +122,9 @@ fun List<NamedType>.readFromResponseFunSpec(
       .addParameter(Identifier.reader, JsonReader::class)
       .addParameter(Identifier.responseAdapterCache, ResponseAdapterCache::class)
       .addModifiers(KModifier.OVERRIDE)
-      .addCode(readFromResponseCode(adaptedTypeName))
+      .addCode(readFromResponseBlockCode(adaptedTypeName))
       .build()
 }
-
 
 private fun List<NamedType>.writeToResponseFunSpec(
     adaptedTypeName: TypeName
@@ -122,20 +134,20 @@ private fun List<NamedType>.writeToResponseFunSpec(
       .addParameter(Identifier.writer, JsonWriter::class.asTypeName())
       .addParameter(Identifier.responseAdapterCache, ResponseAdapterCache::class)
       .addParameter(Identifier.value, adaptedTypeName)
-      .addCode(writeToResponseCode())
+      .addCode(writeToResponseBlockCode())
       .build()
 }
 
 
-internal fun List<NamedType>.writeToResponseCode(): CodeBlock {
+internal fun List<NamedType>.writeToResponseBlockCode(): CodeBlock {
   val builder = CodeBlock.builder()
   forEach {
-    builder.add(it.writeToResponseCode())
+    builder.add(it.writeToResponseBlockCode())
   }
   return builder.build()
 }
 
-private fun NamedType.writeToResponseCode(): CodeBlock {
+private fun NamedType.writeToResponseBlockCode(): CodeBlock {
   return CodeBlock.builder().apply {
     addStatement("${Identifier.writer}.name(%S)", graphQlName)
     addStatement(

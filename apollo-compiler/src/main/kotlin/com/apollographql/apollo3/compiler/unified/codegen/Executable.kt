@@ -4,7 +4,12 @@ import com.apollographql.apollo3.api.ResponseAdapter
 import com.apollographql.apollo3.api.ResponseAdapterCache
 import com.apollographql.apollo3.api.ResponseField
 import com.apollographql.apollo3.api.json.JsonWriter
+import com.apollographql.apollo3.compiler.applyIf
 import com.apollographql.apollo3.compiler.backend.codegen.Identifier
+import com.apollographql.apollo3.compiler.backend.codegen.Identifier.responseAdapterCache
+import com.apollographql.apollo3.compiler.backend.codegen.Identifier.serializeVariables
+import com.apollographql.apollo3.compiler.backend.codegen.Identifier.toResponse
+import com.apollographql.apollo3.compiler.backend.codegen.Identifier.writer
 import com.apollographql.apollo3.compiler.backend.codegen.adapterPackageName
 import com.apollographql.apollo3.compiler.backend.codegen.kotlinNameForResponseAdapter
 import com.apollographql.apollo3.compiler.backend.codegen.kotlinNameForVariablesAdapter
@@ -15,23 +20,31 @@ import com.squareup.kotlinpoet.CodeBlock
 import com.squareup.kotlinpoet.FunSpec
 import com.squareup.kotlinpoet.KModifier
 import com.squareup.kotlinpoet.ParameterizedTypeName.Companion.parameterizedBy
+import com.squareup.kotlinpoet.TypeName
+import com.squareup.kotlinpoet.TypeSpec
 import com.squareup.kotlinpoet.asClassName
 import com.squareup.kotlinpoet.asTypeName
 
 fun serializeVariablesFunSpec(
     packageName: String,
     name: String,
+    isEmpty: Boolean
 ): FunSpec {
   val adapterTypeName = ClassName(adapterPackageName(packageName), kotlinNameForVariablesAdapter(name))
 
-  return FunSpec.builder(Identifier.serializeVariables)
+  val body = if (isEmpty) {
+    CodeBlock.of("// This operation doesn't have variables")
+  } else {
+    CodeBlock.of(
+        "%L.$toResponse($writer, $responseAdapterCache, this)",
+            CodeBlock.of("%T", adapterTypeName).obj(false)
+    )
+  }
+  return FunSpec.builder(serializeVariables)
       .addModifiers(KModifier.OVERRIDE)
-      .addParameter("writer", JsonWriter::class)
-      .addParameter(Identifier.responseAdapterCache, ResponseAdapterCache::class.asTypeName())
-      .addCode(
-          "%L.toResponse(writer, ${Identifier.responseAdapterCache}, this)",
-          CodeBlock.of("%T", adapterTypeName).obj(false)
-      )
+      .addParameter(writer, JsonWriter::class)
+      .addParameter(responseAdapterCache, ResponseAdapterCache::class.asTypeName())
+      .addCode(body)
       .build()
 }
 
@@ -61,6 +74,4 @@ fun responseFieldsFunSpec(): FunSpec {
       )
       .addCode("return %L", "emptyList()")
       .build()
-
-
 }

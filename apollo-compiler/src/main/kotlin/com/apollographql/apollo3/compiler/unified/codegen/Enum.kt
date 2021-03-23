@@ -5,12 +5,20 @@ import com.apollographql.apollo3.api.ResponseAdapterCache
 import com.apollographql.apollo3.api.json.JsonReader
 import com.apollographql.apollo3.compiler.applyIf
 import com.apollographql.apollo3.compiler.backend.codegen.Identifier
+import com.apollographql.apollo3.compiler.backend.codegen.Identifier.fromResponse
+import com.apollographql.apollo3.compiler.backend.codegen.Identifier.reader
+import com.apollographql.apollo3.compiler.backend.codegen.Identifier.responseAdapterCache
+import com.apollographql.apollo3.compiler.backend.codegen.Identifier.value
+import com.apollographql.apollo3.compiler.backend.codegen.Identifier.writer
+import com.apollographql.apollo3.compiler.backend.codegen.adapterPackageName
 import com.apollographql.apollo3.compiler.backend.codegen.deprecatedAnnotation
 import com.apollographql.apollo3.compiler.backend.codegen.kotlinNameForEnum
 import com.apollographql.apollo3.compiler.backend.codegen.kotlinNameForEnumValue
+import com.apollographql.apollo3.compiler.backend.codegen.kotlinNameForResponseAdapter
 import com.apollographql.apollo3.compiler.backend.codegen.toResponseFunSpecBuilder
 import com.apollographql.apollo3.compiler.escapeKotlinReservedWord
 import com.apollographql.apollo3.compiler.unified.IrEnum
+import com.apollographql.apollo3.compiler.unified.codegen.helpers.maybeAddDescription
 import com.squareup.kotlinpoet.ClassName
 import com.squareup.kotlinpoet.CodeBlock
 import com.squareup.kotlinpoet.FunSpec
@@ -28,29 +36,27 @@ internal fun IrEnum.typeName() = ClassName(
     kotlinNameForEnum(name)
 )
 
-internal fun IrEnum.typeSpecs(
-    generateAsInternal: Boolean = false,
+internal fun IrEnum.qualifiedTypeSpecs(
     enumAsSealedClassPatternFilters: List<Regex>,
-    packageName: String,
-): List<TypeSpec> {
+): List<QualifiedTypeSpec> {
   val asSealedClass = enumAsSealedClassPatternFilters.isNotEmpty() && enumAsSealedClassPatternFilters.any { pattern ->
     name.matches(pattern)
   }
 
+  val enumTypeSpec =   if (asSealedClass)
+    toSealedClassTypeSpec()
+  else
+    toEnumTypeSpec()
   return listOf(
-      if (asSealedClass)
-        toSealedClassTypeSpec(generateAsInternal)
-      else
-        toEnumTypeSpec(generateAsInternal),
-      adapterTypeSpec(generateAsInternal, asSealedClass, packageName)
+      QualifiedTypeSpec(packageName = packageName, typeSpec = enumTypeSpec),
+      QualifiedTypeSpec(packageName = adapterPackageName(packageName), typeSpec = adapterTypeSpec(asSealedClass))
   )
 }
 
-private fun IrEnum.toEnumTypeSpec(generateAsInternal: Boolean): TypeSpec {
+private fun IrEnum.toEnumTypeSpec(): TypeSpec {
   return TypeSpec
       .enumBuilder(name.escapeKotlinReservedWord())
       .applyIf(description?.isNotBlank() == true) { addKdoc("%L\n", description!!) }
-      .applyIf(generateAsInternal) { addModifiers(KModifier.INTERNAL) }
       .primaryConstructor(primaryConstructorWithOverriddenParamSpec)
       .addProperty(rawValuePropertySpec)
       .apply {
@@ -60,12 +66,13 @@ private fun IrEnum.toEnumTypeSpec(generateAsInternal: Boolean): TypeSpec {
       .build()
 }
 
-private fun IrEnum.adapterTypeSpec(generateAsInternal: Boolean, asSealedClass: Boolean, packageName: String): TypeSpec {
-  val fromResponseFunSpec = FunSpec.builder("fromResponse")
+private fun IrEnum.adapterTypeSpec(asSealedClass: Boolean): TypeSpec {
+  val adaptedTypeName = typeName()
+  val fromResponseFunSpec = FunSpec.builder(fromResponse)
       .addModifiers(KModifier.OVERRIDE)
-      .addParameter(ParameterSpec.builder("reader", JsonReader::class).build())
-      .addParameter(Identifier.responseAdapterCache, ResponseAdapterCache::class)
-      .returns(ClassName(packageName, name.escapeKotlinReservedWord()))
+      .addParameter(reader, JsonReader::class)
+      .addParameter(responseAdapterCache, ResponseAdapterCache::class)
+      .returns(adaptedTypeName)
       .addCode(
           CodeBlock.builder()
               .addStatement("val rawValue = reader.nextString()!!")
@@ -81,14 +88,13 @@ private fun IrEnum.adapterTypeSpec(generateAsInternal: Boolean, asSealedClass: B
       )
       .addModifiers(KModifier.OVERRIDE)
       .build()
-  val toResponseFunSpec = toResponseFunSpecBuilder(ClassName(packageName, name.escapeKotlinReservedWord()))
-      .addCode("writer.value(value.rawValue)")
+  val toResponseFunSpec = toResponseFunSpecBuilder(adaptedTypeName)
+      .addCode("$writer.$value($value.rawValue)")
       .build()
 
   return TypeSpec
-      .objectBuilder("${name.escapeKotlinReservedWord()}_ResponseAdapter")
-      .applyIf(generateAsInternal) { addModifiers(KModifier.INTERNAL) }
-      .addSuperinterface(ResponseAdapter::class.asClassName().parameterizedBy(ClassName(packageName, name.escapeKotlinReservedWord())))
+      .objectBuilder(kotlinNameForResponseAdapter(name))
+      .addSuperinterface(ResponseAdapter::class.asClassName().parameterizedBy(adaptedTypeName))
       .addFunction(fromResponseFunSpec)
       .addFunction(toResponseFunSpec)
       .build()
@@ -130,11 +136,10 @@ private val unknownEnumConstTypeSpec: TypeSpec
         .build()
   }
 
-private fun IrEnum.toSealedClassTypeSpec(generateAsInternal: Boolean): TypeSpec {
+private fun IrEnum.toSealedClassTypeSpec(): TypeSpec {
   return TypeSpec
       .classBuilder(kotlinNameForEnum(name))
-      .applyIf(description?.isNotBlank() == true) { addKdoc("%L\n", description!!) }
-      .applyIf(generateAsInternal) { addModifiers(KModifier.INTERNAL) }
+      .maybeAddDescription(description)
       .addModifiers(KModifier.SEALED)
       .primaryConstructor(primaryConstructorWithOverriddenParamSpec)
       .addProperty(rawValuePropertySpec)

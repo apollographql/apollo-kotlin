@@ -25,6 +25,11 @@ internal fun IrCustomScalar.kotlinTypeName() = ClassName.bestGuess(kotlinName ?:
 
 fun IrCustomScalars.typeSpec() = customScalars.typeSpec()
 
+fun IrCustomScalars.qualifiedTypeSpec() = QualifiedTypeSpec(
+    packageName,
+    customScalars.typeSpec()
+)
+
 private fun List<IrCustomScalar>.typeSpec(): TypeSpec {
   return TypeSpec.objectBuilder("CustomScalars")
       .addKdoc("Auto generated constants for custom scalars. Use them to register your [ResponseAdapter]s")
