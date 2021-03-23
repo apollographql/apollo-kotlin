@@ -13,29 +13,10 @@ import com.squareup.kotlinpoet.PropertySpec
 import com.squareup.kotlinpoet.TypeSpec
 
 fun IrField.typeSpecs(): List<TypeSpec> {
-  val classesFieldSets = fieldSets.filter { it.possibleTypes.isNotEmpty() }
+  val interfacesTypeSpecs = interfacesFieldSets.map { it.typeSpec(true) }
+  val implementationTypeSpecs = implementationFieldSets.map { it.typeSpec(false) }
 
-  val classesTypeSpecs = classesFieldSets.map { it.typeSpec(false) }
-  if (classesFieldSets.size == 1) {
-    return classesTypeSpecs
-  } else {
-    val interfacesToGenerate = classesFieldSets.map { it.typeSet }.combinations()
-        .filter {
-          it.size >= 2
-        }
-        .map {
-          it.intersection()
-        }
-        .toSet()
-
-    val interfacesTypeSpecs = fieldSets.filter {
-      interfacesToGenerate.contains(it.typeSet)
-    }.map {
-      it.typeSpec(true)
-    }
-
-    return interfacesTypeSpecs + classesTypeSpecs
-  }
+  return interfacesTypeSpecs + implementationTypeSpecs
 }
 
 fun IrFieldSet.typeSpec(asInterface: Boolean): TypeSpec {
@@ -54,16 +35,14 @@ fun IrFieldSet.typeSpec(asInterface: Boolean): TypeSpec {
 
   val superInterfaces = implements.map { it.typeName() }
 
-  val kotlinName = kotlinNameForModel(typeSet - fieldType, responseName)
-
   return if (asInterface) {
-    TypeSpec.interfaceBuilder(kotlinName)
+    TypeSpec.interfaceBuilder(modelName)
         .addProperties(properties)
         .addTypes(nestedTypes)
         .addSuperinterfaces(superInterfaces)
         .build()
   } else {
-    TypeSpec.classBuilder(kotlinName)
+    TypeSpec.classBuilder(modelName)
         .makeDataClassFromProperties(properties)
         .addTypes(nestedTypes)
         .addSuperinterfaces(superInterfaces)

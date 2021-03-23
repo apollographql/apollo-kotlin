@@ -62,7 +62,7 @@ class IrFieldSetBuilder(
   private fun buildDataField(
       selections: List<GQLSelection>,
       fieldType: String,
-      path: ModelPath
+      path: ModelPath,
   ): IrField {
     return buildField(
         name = "data",
@@ -76,6 +76,10 @@ class IrFieldSetBuilder(
         path = path,
         condition = BooleanExpression.True,
     )
+  }
+
+  private fun modelName(typeSet: TypeSet, fieldType: String, responseName: String): String {
+    return ((typeSet - fieldType).sorted() + responseName).map { it.capitalize() }.joinToString("")
   }
 
   private fun buildField(
@@ -115,41 +119,62 @@ class IrFieldSetBuilder(
     val fieldSetCache = mutableMapOf<TypeSet, IrFieldSet>()
 
     val responseName = alias ?: name
+    val fieldType = type.leafType().name
+
     /**
      * Build the interfaces starting from the less qualified so we can look up the super
      * interfaces in fieldSetCache when needed
      */
-    val interfaceTypeSets = interfaceTypeSetsToGenerate.sortedBy { it.size }.map { typeSet ->
+    val interfaceFieldSets = interfaceTypeSetsToGenerate.sortedBy { it.size }.map { typeSet ->
+      val modelName = modelName(typeSet, fieldType, responseName)
       buildFieldSet(
           fieldSetCache = fieldSetCache,
-          allTypeSets = allTypeSets,
           selections = selections,
-          fieldType = type.leafType().name,
+          fieldType = fieldType,
           typeSet = typeSet,
-          responseName = responseName,
-          shapeTypeSetToPossibleTypes = shapeTypeSetToPossibleTypes,
+          modelName = modelName,
+          possibleTypes = emptySet(),
           superFieldSets = superFields.mapNotNull { it.baseFieldSet },
           path = path,
       )
     }
 
-    val allFieldSets = fieldSetCache.values.toList()
-    val implementationsFieldSets = allFieldSets.filter {
-      it.possibleTypes.isNotEmpty()
+    /**
+     * Order doesn't matter much here
+     */
+    val implementationFieldSets = shapesTypeSets.sortedBy { it.size }.map { typeSet ->
+      var modelName = modelName(typeSet, fieldType, responseName)
+      if (interfaceFieldSets.any { it.modelName == modelName }) {
+        modelName = "Other$modelName"
+      }
+      buildFieldSet(
+          fieldSetCache = fieldSetCache,
+          selections = selections,
+          fieldType = fieldType,
+          typeSet = typeSet,
+          modelName = modelName,
+          possibleTypes = shapeTypeSetToPossibleTypes[typeSet] ?: emptySet(),
+          superFieldSets = superFields.mapNotNull { it.baseFieldSet },
+          path = path,
+      )
     }
-    val baseFieldSet = fieldSetCache[setOf(type.leafType().name)]
+
+    // Can be null for a scalar type
+    val baseFieldSet = interfaceFieldSets.firstOrNull() ?: implementationFieldSets.firstOrNull()
 
     return IrField(
-          alias = alias,
-          name = name,
-          arguments = arguments,
-          description = description,
-          deprecationReason = deprecationReason,
-          type = registerType(type, baseFieldSet),
-          condition = condition,
-          fieldSets = allFieldSets,
-          override = superFields.isNotEmpty()
-      )
+        alias = alias,
+        name = name,
+        arguments = arguments,
+        description = description,
+        deprecationReason = deprecationReason,
+        type = registerType(type, baseFieldSet),
+        condition = condition,
+        override = superFields.isNotEmpty(),
+        baseFieldSet = baseFieldSet,
+        interfacesFieldSets = interfaceFieldSets,
+        implementationFieldSets = implementationFieldSets
+    )
   }
 
   /**
@@ -179,7 +204,7 @@ class IrFieldSetBuilder(
   private fun collectFields(
       selections: List<GQLSelection>,
       typeCondition: String,
-      typeSet: TypeSet
+      typeSet: TypeSet,
   ): List<CollectedField> {
     if (!typeSet.contains(typeCondition)) {
       return emptyList()
@@ -227,35 +252,24 @@ class IrFieldSetBuilder(
 
   private fun buildFieldSet(
       fieldSetCache: MutableMap<TypeSet, IrFieldSet>,
-      allTypeSets: Set<Set<String>>,
       selections: List<GQLSelection>,
       fieldType: String,
       typeSet: TypeSet,
-      responseName: String,
-      shapeTypeSetToPossibleTypes: Map<TypeSet, PossibleTypes>,
+      modelName: String,
+      possibleTypes: PossibleTypes,
       superFieldSets: List<IrFieldSet>,
-      path: ModelPath
+      path: ModelPath,
   ): IrFieldSet {
-    val superTypeSet = allTypeSets.filter {
-      it.size < typeSet.size
-    }.sortedByDescending { it.size }
-        .firstOrNull { typeSet.implements(it) }
+    val superFieldSet = fieldSetCache.entries.filter {
+      if (possibleTypes.isEmpty()) {
+        it.key.size < typeSet.size
+      } else {
+        it.key.size <= typeSet.size
+      }
+    }.sortedByDescending { it.key.size }
+        .firstOrNull { typeSet.implements(it.key) }
+        ?.value
 
-    val superFieldSet = if (superTypeSet != null)  {
-      buildFieldSet(
-          fieldSetCache,
-          allTypeSets,
-          selections,
-          fieldType,
-          superTypeSet,
-          responseName,
-          shapeTypeSetToPossibleTypes,
-          superFieldSets,
-          path,
-      )
-    } else {
-      null
-    }
 
     val collectedFields = collectFields(selections, fieldType, typeSet)
 
@@ -289,7 +303,7 @@ class IrFieldSetBuilder(
           condition = BooleanExpression.Or(fieldsWithSameResponseName.map { it.condition }.toSet()),
           selections = childSelections,
           superFields = superFields,
-          path = path + PathElement(typeSet, fieldType, responseName),
+          path = path + modelName,
       )
     }
 
@@ -301,22 +315,19 @@ class IrFieldSetBuilder(
       listOf(superFieldSet)
     }
 
-    finalSuperFieldSets.forEach {
-      it.usageCount++
-    }
-
     val implements = finalSuperFieldSets.map { it.fullPath }.toSet()
 
     return IrFieldSet(
-        typeSet = typeSet.toSet(),
-        responseName = responseName,
+        modelName = modelName,
         fieldType = fieldType,
-        possibleTypes = shapeTypeSetToPossibleTypes[typeSet] ?: emptySet(),
+        possibleTypes = possibleTypes,
         fields = fields,
         implements = implements,
         path = path,
     ).also {
-      fieldSetCache[typeSet] = it
+      if (possibleTypes.isEmpty()) {
+        fieldSetCache[typeSet] = it
+      }
     }
   }
 }

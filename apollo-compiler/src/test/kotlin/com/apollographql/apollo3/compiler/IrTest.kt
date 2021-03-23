@@ -5,6 +5,7 @@ import com.apollographql.apollo3.compiler.frontend.GQLOperationDefinition
 import com.apollographql.apollo3.compiler.frontend.GraphQLParser
 import com.apollographql.apollo3.compiler.unified.IrBuilder
 import com.apollographql.apollo3.compiler.unified.codegen.helpers.typeSpec
+import com.apollographql.apollo3.compiler.unified.codegen.helpers.typeSpecs
 import com.squareup.kotlinpoet.FileSpec
 import org.junit.Test
 import java.io.File
@@ -41,8 +42,8 @@ class IrTest {
     val irOperation = ir.operations.first()
     FileSpec.builder("com.example", irOperation.name)
         .apply {
-          irOperation.dataField.fieldSets.forEach {
-            addType(it.typeSpec(true))
+          irOperation.dataField.typeSpecs().forEach {
+            addType(it)
           }
         }
         .build()

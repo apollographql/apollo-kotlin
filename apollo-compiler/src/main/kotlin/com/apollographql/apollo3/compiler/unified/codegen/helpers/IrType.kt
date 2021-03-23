@@ -73,7 +73,7 @@ fun ModelPath.typeName(): TypeName {
 
   return ClassName(
       packageName = packageName,
-      listOf(rootName) + elements.map { modelName(it.typeSet - it.fieldType, it.responseName) }
+      listOf(rootName) + elements
   )
 }
 
@@ -86,7 +86,7 @@ fun ModelPath.adapterTypeName(): TypeName {
   // remove the fieldType from the
   return ClassName(
       packageName = adapterPackageName(packageName),
-      listOf(adapterName(rootName)) + elements.map { modelName(it.typeSet - it.fieldType, it.responseName) }
+      listOf(adapterName(rootName)) + elements
   )
 }
 

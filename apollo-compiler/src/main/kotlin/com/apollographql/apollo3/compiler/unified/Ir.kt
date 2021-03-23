@@ -46,9 +46,9 @@ data class PathElement(
 data class ModelPath(
     val packageName: String,
     val root: Root,
-    val elements: List<PathElement> = emptyList(),
+    val elements: List<String> = emptyList(),
 ) {
-  operator fun plus(element: PathElement) = copy(elements = elements + element)
+  operator fun plus(element: String) = copy(elements = elements + element)
 
   sealed class Root {
     class Operation(val name: String) : Root()
@@ -126,12 +126,11 @@ data class IrField(
     // whether this fields needs an override modifier
     val override: Boolean,
 
-    // empty for a scalar field
-    val fieldSets: List<IrFieldSet>,
-
+    val baseFieldSet: IrFieldSet?,
+    val interfacesFieldSets: List<IrFieldSet>,
+    val implementationFieldSets: List<IrFieldSet>,
 ) {
   val responseName = alias ?: name
-  val baseFieldSet = fieldSets.firstOrNull { it.typeSet.size == 1 }
 }
 
 /**
@@ -139,26 +138,27 @@ data class IrField(
  *
  * @param possibleTypes: the possibleTypes that will map to this [IrFieldSet].
  * @param implements: A list of fragment and operation path that this field set will implement
+ * @param path: The path up (but not including) to the fieldSet. Use [fullPath] to have everything
+ * @param modelName: the name of the model. This is an exception where we format the graphql
+ * names instead of calling kotlinNameForXyz(). This is just easier, especially to handle
+ * the case where there are "Other" implementations
  */
 data class IrFieldSet(
     val path: ModelPath,
-    val responseName: String,
-    val typeSet: Set<String>,
+    val modelName: String,
     val fieldType: String,
     val fields: List<IrField>,
     val possibleTypes: Set<String>,
     val implements: Set<ModelPath>,
-    var usageCount: Int = 0,
 ) {
-  val fullPath = (path + PathElement(typeSet, fieldType, responseName))
+  val fullPath = path + modelName
 
   private fun modelName(typeSet: TypeSet, responseName: String): String {
     return (typeSet.sorted() + responseName).map { it.capitalize() }.joinToString("")
   }
 
   override fun toString(): String {
-    return fullPath.elements.map { modelName(it.typeSet - it.fieldType, it.responseName) }
-        .map { it.capitalize() }
+    return fullPath.elements
         .joinToString(".")
   }
 }
