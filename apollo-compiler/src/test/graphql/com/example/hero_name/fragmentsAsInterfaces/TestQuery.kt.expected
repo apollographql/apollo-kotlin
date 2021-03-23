@@ -28,8 +28,8 @@ class TestQuery : Query<TestQuery.Data> {
     // This operation doesn't have variables
   }
 
-  override fun adapter(): ResponseAdapter<Data?> {
-    return TestQuery_ResponseAdapter.obj()
+  override fun adapter(): ResponseAdapter<Data> {
+    return TestQuery_ResponseAdapter.Data.obj()
   }
 
   override fun responseFields(): List<ResponseField.FieldSet> = emptyList()
@@ -42,40 +42,20 @@ class TestQuery : Query<TestQuery.Data> {
       val name: String
 
       val birthDate: Any
-
-      interface __typename
-
-      interface Name
-
-      interface BirthDate
     }
 
     data class OtherHero(
       override val __typename: String,
       override val name: String,
       override val birthDate: Any
-    ) : Hero {
-      class __typename : Hero.__typename
-
-      class Name : Hero.Name
-
-      class BirthDate : Hero.BirthDate
-    }
+    ) : Hero
 
     data class DroidHero(
       override val __typename: String,
       override val name: String,
       override val birthDate: Any,
       val primaryFunction: String?
-    ) : Hero {
-      class __typename : Hero.__typename
-
-      class Name : Hero.Name
-
-      class BirthDate : Hero.BirthDate
-
-      class PrimaryFunction
-    }
+    ) : Hero
   }
 
   companion object {

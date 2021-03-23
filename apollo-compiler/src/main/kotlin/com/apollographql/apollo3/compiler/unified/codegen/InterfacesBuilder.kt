@@ -11,7 +11,4 @@ import com.squareup.kotlinpoet.TypeName
 import com.squareup.kotlinpoet.TypeSpec
 
 
-fun IrField.typeName(): TypeName {
-  return type.typeName()
-}
 

@@ -95,74 +95,85 @@ class IrFieldSetBuilder(
       superFields: List<IrField>,
       path: ModelPath,
   ): IrField {
-    val collectionResult = FragmentCollectionScope(selections, type.leafType().name, allGQLFragmentDefinitions).collect()
+    val baseFieldSet: IrFieldSet?
+    val fallbackFieldSet: IrFieldSet?
+    val interfaceFieldSets: List<IrFieldSet>
+    val implementationFieldSets: List<IrFieldSet>
 
-    val typeConditions = collectionResult.typeSet.union()
+    if (selections.isNotEmpty()) {
+      val collectionResult = FragmentCollectionScope(selections, type.leafType().name, allGQLFragmentDefinitions).collect()
+      val typeConditions = collectionResult.typeSet.union()
 
-    val shapeTypeSetToPossibleTypes = computeShapes(schema, typeConditions)
-    val shapesTypeSets = shapeTypeSetToPossibleTypes.keys
+      val shapeTypeSetToPossibleTypes = computeShapes(schema, typeConditions)
+      val shapesTypeSets = shapeTypeSetToPossibleTypes.keys
 
-    /**
-     * Generate the common interfaces
-     * We need those to access the shapes in a generic way
-     */
-    val interfaceTypeSetsToGenerate = shapesTypeSets.toList().combinations()
-        .filter {
-          it.size >= 2
-        }
-        .map {
-          it.intersection()
-        }
-        .toSet()
+      /**
+       * Generate the common interfaces
+       * We need those to access the shapes in a generic way
+       */
+      val interfaceTypeSetsToGenerate = shapesTypeSets.toList().combinations()
+          .filter {
+            it.size >= 2
+          }
+          .map {
+            it.intersection()
+          }
+          .toSet()
 
-    val fieldSetCache = mutableMapOf<TypeSet, IrFieldSet>()
+      val fieldSetCache = mutableMapOf<TypeSet, IrFieldSet>()
 
-    val responseName = alias ?: name
-    val fieldType = type.leafType().name
+      val responseName = alias ?: name
+      val fieldType = type.leafType().name
 
-    /**
-     * Build the interfaces starting from the less qualified so we can look up the super
-     * interfaces in fieldSetCache when needed
-     */
-    val interfaceFieldSets = interfaceTypeSetsToGenerate.sortedBy { it.size }.map { typeSet ->
-      val modelName = modelName(typeSet, fieldType, responseName)
-      buildFieldSet(
-          fieldSetCache = fieldSetCache,
-          selections = selections,
-          fieldType = fieldType,
-          typeSet = typeSet,
-          modelName = modelName,
-          possibleTypes = emptySet(),
-          superFieldSets = superFields.mapNotNull { it.baseFieldSet },
-          path = path,
-      )
-    }
-
-    /**
-     * Always add the fallback type in case new types are added to the schema
-     */
-    val implementationToGenerate = shapesTypeSets + setOf(setOf(fieldType))
-    val implementationFieldSets = implementationToGenerate.sortedBy { it.size }.map { typeSet ->
-      var modelName = modelName(typeSet, fieldType, responseName)
-      if (interfaceFieldSets.any { it.modelName == modelName }) {
-        modelName = "Other$modelName"
+      /**
+       * Build the interfaces starting from the less qualified so we can look up the super
+       * interfaces in fieldSetCache when needed
+       */
+      interfaceFieldSets = interfaceTypeSetsToGenerate.sortedBy { it.size }.map { typeSet ->
+        val modelName = modelName(typeSet, fieldType, responseName)
+        buildFieldSet(
+            fieldSetCache = fieldSetCache,
+            selections = selections,
+            fieldType = fieldType,
+            typeSet = typeSet,
+            modelName = modelName,
+            possibleTypes = emptySet(),
+            superFieldSets = superFields.mapNotNull { it.baseFieldSet },
+            path = path,
+        )
       }
-      buildFieldSet(
-          fieldSetCache = fieldSetCache,
-          selections = selections,
-          fieldType = fieldType,
-          typeSet = typeSet,
-          modelName = modelName,
-          possibleTypes = shapeTypeSetToPossibleTypes[typeSet] ?: emptySet(),
-          superFieldSets = superFields.mapNotNull { it.baseFieldSet },
-          path = path,
-      )
+
+      /**
+       * Always add the fallback type in case new types are added to the schema
+       */
+      val implementationToGenerate = shapesTypeSets + setOf(setOf(fieldType))
+      implementationFieldSets = implementationToGenerate.sortedBy { it.size }.map { typeSet ->
+        var modelName = modelName(typeSet, fieldType, responseName)
+        if (interfaceFieldSets.any { it.modelName == modelName }) {
+          modelName = "Other$modelName"
+        }
+        buildFieldSet(
+            fieldSetCache = fieldSetCache,
+            selections = selections,
+            fieldType = fieldType,
+            typeSet = typeSet,
+            modelName = modelName,
+            possibleTypes = shapeTypeSetToPossibleTypes[typeSet] ?: emptySet(),
+            superFieldSets = superFields.mapNotNull { it.baseFieldSet },
+            path = path,
+        )
+      }
+
+      baseFieldSet = interfaceFieldSets.firstOrNull() ?: implementationFieldSets.first()
+      fallbackFieldSet = implementationFieldSets.first()
+    } else {
+      baseFieldSet = null
+      fallbackFieldSet = null
+      interfaceFieldSets = emptyList()
+      implementationFieldSets = emptyList()
     }
 
-    // Can be null for a scalar type
-    val baseFieldSet = interfaceFieldSets.firstOrNull() ?: implementationFieldSets.firstOrNull()
-    // This will never be null
-    val fallbackFieldSet = implementationFieldSets.first()
+
 
     return IrField(
         alias = alias,

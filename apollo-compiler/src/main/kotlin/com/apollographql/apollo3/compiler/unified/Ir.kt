@@ -115,7 +115,7 @@ data class IrField(
     val override: Boolean,
 
     val baseFieldSet: IrFieldSet?,
-    val fallbackFieldSet: IrFieldSet,
+    val fallbackFieldSet: IrFieldSet?,
     val interfacesFieldSets: List<IrFieldSet>,
     val implementationFieldSets: List<IrFieldSet>,
 ) {

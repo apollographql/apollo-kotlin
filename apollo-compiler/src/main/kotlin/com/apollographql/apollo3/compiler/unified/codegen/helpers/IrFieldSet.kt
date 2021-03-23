@@ -21,6 +21,20 @@ fun ModelPath.typeName(): TypeName {
   )
 }
 
+/**
+ * The kotlin [TypeName] decorated with nullable/list as needed
+ */
+fun IrField.typeName(): TypeName {
+  return type.typeName()
+}
+
+/**
+ * The [TypeName] with all nullable/list removed
+ */
+fun IrField.rawTypeName(): TypeName {
+  return type.leafType().typeName().copy(nullable = false)
+}
+
 fun IrFieldSet.typeName(): TypeName {
   return fullPath.typeName()
 }

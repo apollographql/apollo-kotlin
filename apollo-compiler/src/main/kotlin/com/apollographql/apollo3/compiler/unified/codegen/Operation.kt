@@ -13,6 +13,8 @@ import com.apollographql.apollo3.compiler.unified.IrOperation
 import com.apollographql.apollo3.compiler.unified.IrOperationType
 import com.apollographql.apollo3.compiler.unified.codegen.adapter.dataResponseAdapterTypeSpecs
 import com.apollographql.apollo3.compiler.unified.codegen.adapter.inputAdapterTypeSpec
+import com.apollographql.apollo3.compiler.unified.codegen.helpers.adapterTypeName
+import com.apollographql.apollo3.compiler.unified.codegen.helpers.rawTypeName
 import com.apollographql.apollo3.compiler.unified.codegen.helpers.maybeAddDescription
 import com.apollographql.apollo3.compiler.unified.codegen.helpers.toNamedType
 import com.apollographql.apollo3.compiler.unified.codegen.helpers.toParameterSpec
@@ -58,11 +60,13 @@ private fun IrOperation.typeSpec(): TypeSpec {
       .build()
 }
 
+private fun IrOperation.typeName() = ClassName(packageName, kotlinNameForOperation(name))
+
 private fun IrOperation.variablesAdapterTypeSpec(): TypeSpec {
   return variables.map { it.toNamedType() }
       .inputAdapterTypeSpec(
           kotlinNameForVariablesAdapter(name),
-          adaptedTypeName = dataField.typeName()
+          adaptedTypeName = typeName()
       )
 }
 
@@ -79,8 +83,7 @@ private fun IrOperation.serializeVariablesFunSpec(): FunSpec = serializeVariable
 )
 
 private fun IrOperation.adapterFunSpec(): FunSpec {
-  val adapterTypeName = ClassName(adapterPackageName(packageName), kotlinNameForResponseAdapter(name))
-  return adapterFunSpec(adapterTypeName = adapterTypeName, adaptedTypeName = dataField.typeName())
+  return adapterFunSpec(adapterTypeName = dataField.baseFieldSet!!.adapterTypeName(), adaptedTypeName = dataField.rawTypeName())
 }
 
 private fun IrOperation.dataTypeSpec(): TypeSpec {
