@@ -114,8 +114,6 @@ class IrFieldSetBuilder(
         }
         .toSet()
 
-    val allTypeSets = (interfaceTypeSetsToGenerate + shapesTypeSets)
-
     val fieldSetCache = mutableMapOf<TypeSet, IrFieldSet>()
 
     val responseName = alias ?: name
@@ -260,13 +258,15 @@ class IrFieldSetBuilder(
       superFieldSets: List<IrFieldSet>,
       path: ModelPath,
   ): IrFieldSet {
-    val superFieldSet = fieldSetCache.entries.filter {
-      if (possibleTypes.isEmpty()) {
-        it.key.size < typeSet.size
-      } else {
-        it.key.size <= typeSet.size
-      }
-    }.sortedByDescending { it.key.size }
+    val superFieldSet = fieldSetCache
+        .entries
+        .filter {
+          if (possibleTypes.isEmpty()) {
+            it.key.size < typeSet.size
+          } else {
+            it.key.size <= typeSet.size
+          }
+        }.sortedByDescending { it.key.size }
         .firstOrNull { typeSet.implements(it.key) }
         ?.value
 
