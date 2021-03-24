@@ -2,6 +2,7 @@ package com.apollographql.apollo3.compiler.unified.codegen.helpers
 
 import com.apollographql.apollo3.compiler.applyIf
 import com.apollographql.apollo3.compiler.backend.codegen.adapterPackageName
+import com.apollographql.apollo3.compiler.backend.codegen.kotlinNameForProperty
 import com.apollographql.apollo3.compiler.backend.codegen.kotlinNameForResponseAdapter
 import com.apollographql.apollo3.compiler.backend.codegen.makeDataClassFromProperties
 import com.apollographql.apollo3.compiler.unified.IrField
@@ -59,7 +60,7 @@ fun IrField.typeSpecs(): List<TypeSpec> {
 
 fun IrFieldSet.typeSpec(asInterface: Boolean): TypeSpec {
   val properties = fields.map {
-    PropertySpec.builder(it.responseName, it.typeName())
+    PropertySpec.builder(kotlinNameForProperty(it.responseName), it.typeName())
         .applyIf(it.override) { addModifiers(KModifier.OVERRIDE) }
         .maybeAddDescription(it.description)
         .maybeAddDeprecation(it.deprecationReason)
