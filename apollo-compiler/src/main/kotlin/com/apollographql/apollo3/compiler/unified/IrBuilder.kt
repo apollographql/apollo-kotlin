@@ -53,6 +53,7 @@ class IrBuilder(
   private val fieldSetBuilder = IrFieldSetBuilder(
       schema = schema,
       allGQLFragmentDefinitions = allGQLFragmentDefinitions,
+      packageNameProvider = packageNameProvider,
       registerType = { gqlType, fieldSet ->
         gqlType.toIr(fieldSet)
       }
@@ -61,8 +62,8 @@ class IrBuilder(
   private fun shouldAlwaysGenerate(name: String) = alwaysGenerateTypesMatching.map { Regex(it) }.any { it.matches(name) }
 
   fun build(): IntermediateRepresentation {
-    val fragments = allGQLFragmentDefinitions.values.map { it.toIr() }
     val operations = operationDefinitions.map { it.toIr() }
+    val fragments = allGQLFragmentDefinitions.values.map { it.toIr() }
 
     return IntermediateRepresentation(
         operations = operations,
@@ -151,7 +152,6 @@ class IrBuilder(
         selections = selectionSet.selections,
         fieldType = typeDefinition.name,
         name = name,
-        packageName = packageName
     )
 
     return IrOperation(
@@ -173,18 +173,17 @@ class IrBuilder(
 
     val variableDefinitions = inferVariables(schema, allGQLFragmentDefinitions)
 
-    val packageName = packageNameProvider.fragmentPackageName("unused")
+    val packageName = packageNameProvider.fragmentPackageName(sourceLocation.filePath!!)
     return IrNamedFragment(
         name = name,
         description = description,
-        filePath = sourceLocation.filePath!!,
+        filePath = sourceLocation.filePath,
         typeCondition = typeDefinition.name,
         variables = variableDefinitions.map { it.toIr() },
         dataField = fieldSetBuilder.buildFragment(
             selections = selectionSet.selections,
             fieldType = typeDefinition.name,
             name,
-            packageName = packageName
         ),
         packageName = packageName
     )

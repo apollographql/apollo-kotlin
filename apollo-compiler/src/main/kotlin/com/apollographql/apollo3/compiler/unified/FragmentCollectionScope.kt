@@ -14,21 +14,20 @@ class FragmentCollectionScope(
 
   class Result(
       val typeSet: Set<TypeSet>,
-      val namedFragments: Set<CollectedNamedFragment>,
+      val namedFragments: Set<CollectedFragment>,
   )
 
   /**
    * @param condition: the condition of the fragment. This is not used right now but will be needed the day we want to support @include
    * directives on named fragments. The condition also includes the typeset
    */
-  class CollectedNamedFragment(
+  class CollectedFragment(
       val name: String,
-      val typeCondition: String,
       val condition: BooleanExpression,
   )
 
 
-  private var collectedNamedFragments = mutableSetOf<CollectedNamedFragment>()
+  private var collectedNamedFragments = mutableSetOf<CollectedFragment>()
   private var collectedTypeSets = mutableSetOf<TypeSet>()
 
   /**
@@ -68,9 +67,8 @@ class FragmentCollectionScope(
         is GQLFragmentSpread -> {
           val fragmentDefinition = allGQLFragmentDefinitions[it.name]!!
           collectedNamedFragments.add(
-              CollectedNamedFragment(
+              CollectedFragment(
                   it.name,
-                  fragmentDefinition.typeCondition.name,
                   BooleanExpression.And(typeSet.map { BooleanExpression.Type(it) }.toSet())
                       // TODO: allow @include directives on named fragments
                       //.and(it.directives.toBooleanExpression())

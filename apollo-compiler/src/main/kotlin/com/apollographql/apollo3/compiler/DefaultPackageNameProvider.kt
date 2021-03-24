@@ -9,7 +9,7 @@ class DefaultPackageNameProvider constructor(
 
   override fun operationPackageName(filePath: String) = filePackageName(filePath)
 
-  override fun fragmentPackageName(filePath: String) = "$schemaPackageName.fragment"
+  override fun fragmentPackageName(filePath: String) = filePackageName(filePath)
 
   override fun inputObjectPackageName(name: String) = "$schemaPackageName.type"
   override fun customScalarsPackageName() = "$schemaPackageName.type"

@@ -4,7 +4,7 @@
       <option name="executionName" />
       <option name="externalProjectPath" value="$PROJECT_DIR$/.." />
       <option name="externalSystemIdString" value="GRADLE" />
-      <option name="scriptParameters" value="--tests &quot;*CodegenTest*&quot; -DupdateTestFixtures=true -DtestFilter=hero_name$" />
+      <option name="scriptParameters" value="--tests &quot;*CodegenTest*&quot; -DupdateTestFixtures=true -DtestFilter=fragments_with_type" />
       <option name="taskDescriptions">
         <list />
       </option>

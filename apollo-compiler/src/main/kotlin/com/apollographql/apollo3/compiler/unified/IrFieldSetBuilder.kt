@@ -1,5 +1,7 @@
 package com.apollographql.apollo3.compiler.unified
 
+import com.apollographql.apollo3.compiler.PackageNameProvider
+import com.apollographql.apollo3.compiler.backend.codegen.kotlinNameForFragment
 import com.apollographql.apollo3.compiler.backend.codegen.kotlinNameForOperation
 import com.apollographql.apollo3.compiler.frontend.GQLArgument
 import com.apollographql.apollo3.compiler.frontend.GQLField
@@ -28,6 +30,7 @@ import com.apollographql.apollo3.compiler.frontend.leafType
 class IrFieldSetBuilder(
     private val schema: Schema,
     private val allGQLFragmentDefinitions: Map<String, GQLFragmentDefinition>,
+    private val packageNameProvider: PackageNameProvider,
     private val registerType: (GQLType, IrFieldSet?) -> IrType,
 ) {
   private var cachedFragments = mutableMapOf<String, IrField>()
@@ -36,26 +39,41 @@ class IrFieldSetBuilder(
       selections: List<GQLSelection>,
       fieldType: String,
       name: String,
-      packageName: String,
   ): IrField {
+    val path = ModelPath(packageNameProvider.operationPackageName(
+        selections.filePath()),
+        listOf(kotlinNameForOperation(name))
+    )
+
     return buildDataField(
         selections = selections,
         fieldType = fieldType,
-        path = ModelPath(packageName, listOf(kotlinNameForOperation(name)))
+        path = path
     )
   }
+
+  /**
+   * TODO: find a more robust way to get the filePath
+   *
+   * Note: there might be synthetic selections with filePath == null for __typename fields
+   */
+  private fun List<GQLSelection>.filePath() = mapNotNull { it.sourceLocation.filePath }.first()
 
   fun buildFragment(
       selections: List<GQLSelection>,
       fieldType: String,
       name: String,
-      packageName: String,
   ): IrField {
+    val path = ModelPath(packageNameProvider.fragmentPackageName(
+        selections.filePath()),
+        listOf(kotlinNameForFragment(name))
+    )
+
     return cachedFragments.getOrPut(name) {
       buildDataField(
           selections = selections,
           fieldType = fieldType,
-          path = ModelPath(packageName, listOf(kotlinNameForOperation(name)))
+          path = path
       )
     }
   }
@@ -112,15 +130,23 @@ class IrFieldSetBuilder(
        * We need those to access the shapes in a generic way
        */
       val interfaceTypeSetsToGenerate = shapesTypeSets.toList().combinations()
-          .filter {
-            it.size >= 2
-          }
-          .map {
-            it.intersection()
-          }
+          .filter { it.size >= 2 }
+          .map { it.intersection() }
           .toSet()
 
-      val fieldSetCache = mutableMapOf<TypeSet, IrFieldSet>()
+      val fragmentFields = collectionResult.namedFragments.map { collectedFragment ->
+        val gqlFragmentDefinition = allGQLFragmentDefinitions[collectedFragment.name]!!
+        buildFragment(
+            selections = gqlFragmentDefinition.selectionSet.selections,
+            fieldType = gqlFragmentDefinition.typeCondition.name,
+            name = collectedFragment.name,
+        )
+      }
+
+      /**
+       * Create a cache of interface IrFieldSets so that we don't end up building the same FieldSets all the time
+       */
+      val cachedInterfacesFieldSets = mutableMapOf<TypeSet, IrFieldSet>()
 
       val responseName = alias ?: name
       val fieldType = type.leafType().name
@@ -132,34 +158,37 @@ class IrFieldSetBuilder(
       interfaceFieldSets = interfaceTypeSetsToGenerate.sortedBy { it.size }.map { typeSet ->
         val modelName = modelName(typeSet, fieldType, responseName)
         buildFieldSet(
-            fieldSetCache = fieldSetCache,
+            cachedInterfacesFieldSets = cachedInterfacesFieldSets,
             selections = selections,
             fieldType = fieldType,
             typeSet = typeSet,
             modelName = modelName,
             possibleTypes = emptySet(),
-            superFieldSets = superFields.mapNotNull { it.baseFieldSet },
+            superFieldSets = (superFields + fragmentFields).mapNotNull { it.baseFieldSet },
             path = path,
         )
       }
 
       /**
-       * Always add the fallback type in case new types are added to the schema
+       * Build the implementations
+       * Always add the fallback type as an implementation in case new types are added to the schema
        */
       val implementationToGenerate = shapesTypeSets + setOf(setOf(fieldType))
       implementationFieldSets = implementationToGenerate.sortedBy { it.size }.map { typeSet ->
         var modelName = modelName(typeSet, fieldType, responseName)
         if (interfaceFieldSets.any { it.modelName == modelName }) {
+          // We already have an interface with this name
+          // This happens for the base fieldSet but potentially in other cases too
           modelName = "Other$modelName"
         }
         buildFieldSet(
-            fieldSetCache = fieldSetCache,
+            cachedInterfacesFieldSets = cachedInterfacesFieldSets,
             selections = selections,
             fieldType = fieldType,
             typeSet = typeSet,
             modelName = modelName,
             possibleTypes = shapeTypeSetToPossibleTypes[typeSet] ?: emptySet(),
-            superFieldSets = superFields.mapNotNull { it.baseFieldSet },
+            superFieldSets = (superFields + fragmentFields).mapNotNull { it.baseFieldSet },
             path = path,
         )
       }
@@ -172,8 +201,6 @@ class IrFieldSetBuilder(
       interfaceFieldSets = emptyList()
       implementationFieldSets = emptyList()
     }
-
-
 
     return IrField(
         alias = alias,
@@ -265,7 +292,7 @@ class IrFieldSetBuilder(
   }
 
   private fun buildFieldSet(
-      fieldSetCache: MutableMap<TypeSet, IrFieldSet>,
+      cachedInterfacesFieldSets: MutableMap<TypeSet, IrFieldSet>,
       selections: List<GQLSelection>,
       fieldType: String,
       typeSet: TypeSet,
@@ -274,7 +301,7 @@ class IrFieldSetBuilder(
       superFieldSets: List<IrFieldSet>,
       path: ModelPath,
   ): IrFieldSet {
-    val superFieldSet = fieldSetCache
+    val superFieldSet = cachedInterfacesFieldSets
         .entries
         .filter {
           if (possibleTypes.isEmpty()) {
@@ -342,7 +369,7 @@ class IrFieldSetBuilder(
         path = path,
     ).also {
       if (possibleTypes.isEmpty()) {
-        fieldSetCache[typeSet] = it
+        cachedInterfacesFieldSets[typeSet] = it
       }
     }
   }

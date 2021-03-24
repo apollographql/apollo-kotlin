@@ -43,7 +43,11 @@ class GraphQLCodeGenerator(
       operation.qualifiedTypeSpecs()
     }
 
-    val qualifiedTypeSpecs = customScalars + enums + inputObjects + operations
+    val fragments = ir.fragments.flatMap { fragment ->
+      fragment.qualifiedTypeSpecs()
+    }
+
+    val qualifiedTypeSpecs = customScalars + enums + inputObjects + operations + fragments
 
 
     qualifiedTypeSpecs.groupBy {
