@@ -5,18 +5,12 @@ import com.apollographql.apollo3.api.BooleanResponseAdapter
 import com.apollographql.apollo3.api.DoubleResponseAdapter
 import com.apollographql.apollo3.api.IntResponseAdapter
 import com.apollographql.apollo3.api.StringResponseAdapter
-import com.apollographql.apollo3.compiler.backend.codegen.adapterName
-import com.apollographql.apollo3.compiler.backend.codegen.adapterPackageName
-import com.apollographql.apollo3.compiler.backend.codegen.asTypeName
-import com.apollographql.apollo3.compiler.backend.codegen.kotlinNameForFragment
-import com.apollographql.apollo3.compiler.backend.codegen.kotlinNameForResponseAdapter
 import com.apollographql.apollo3.compiler.backend.codegen.obj
 import com.apollographql.apollo3.compiler.unified.IrAnyType
 import com.apollographql.apollo3.compiler.unified.IrBooleanType
 import com.apollographql.apollo3.compiler.unified.IrCompoundType
 import com.apollographql.apollo3.compiler.unified.IrCustomScalarType
 import com.apollographql.apollo3.compiler.unified.IrEnumType
-import com.apollographql.apollo3.compiler.unified.IrFieldSet
 import com.apollographql.apollo3.compiler.unified.IrFloatType
 import com.apollographql.apollo3.compiler.unified.IrIdType
 import com.apollographql.apollo3.compiler.unified.IrInputObjectType
@@ -25,8 +19,6 @@ import com.apollographql.apollo3.compiler.unified.IrListType
 import com.apollographql.apollo3.compiler.unified.IrNonNullType
 import com.apollographql.apollo3.compiler.unified.IrStringType
 import com.apollographql.apollo3.compiler.unified.IrType
-import com.apollographql.apollo3.compiler.unified.ModelPath
-import com.apollographql.apollo3.compiler.unified.TypeSet
 import com.apollographql.apollo3.compiler.unified.codegen.adapterTypeName
 import com.apollographql.apollo3.compiler.unified.codegen.kotlinTypeName
 import com.apollographql.apollo3.compiler.unified.codegen.typeName
@@ -85,8 +77,8 @@ private fun IrType.nonNullableAdapterInitializer(): CodeBlock {
   return when (this) {
     is IrNonNullType -> error("")
     is IrListType -> {
-      val nullableFun = MemberName("com.apollographql.apollo3.api", "list")
-      CodeBlock.of("%L.%M()", ofType.adapterInitializer(), nullableFun)
+      val listFun = MemberName("com.apollographql.apollo3.api", "list")
+      CodeBlock.of("%L.%M()", ofType.adapterInitializer(), listFun)
     }
     is IrBooleanType -> CodeBlock.of("%T", BooleanResponseAdapter::class)
     is IrIdType -> CodeBlock.of("%T", StringResponseAdapter::class)

@@ -7,8 +7,10 @@ import com.apollographql.apollo3.api.Subscription
 import com.apollographql.apollo3.compiler.backend.codegen.adapterPackageName
 import com.apollographql.apollo3.compiler.backend.codegen.kotlinNameForOperation
 import com.apollographql.apollo3.compiler.backend.codegen.kotlinNameForResponseAdapter
+import com.apollographql.apollo3.compiler.backend.codegen.kotlinNameForResponseFields
 import com.apollographql.apollo3.compiler.backend.codegen.kotlinNameForVariablesAdapter
 import com.apollographql.apollo3.compiler.backend.codegen.makeDataClass
+import com.apollographql.apollo3.compiler.backend.codegen.responseFieldsPackageName
 import com.apollographql.apollo3.compiler.unified.IrOperation
 import com.apollographql.apollo3.compiler.unified.IrOperationType
 import com.apollographql.apollo3.compiler.unified.codegen.adapter.dataResponseAdapterTypeSpecs
@@ -35,11 +37,11 @@ fun IrOperation.qualifiedTypeSpecs(): List<QualifiedTypeSpec> {
   val list = mutableListOf<QualifiedTypeSpec>()
 
   list.add(QualifiedTypeSpec(packageName, typeSpec()))
-
   if (variables.isNotEmpty()){
     list.add(QualifiedTypeSpec(adapterPackageName(packageName), variablesAdapterTypeSpec()))
   }
   list.add(QualifiedTypeSpec(adapterPackageName(packageName), responseAdapterTypeSpec()))
+  list.add(QualifiedTypeSpec(responseFieldsPackageName(packageName), responseFieldsTypeSpec()))
 
   return list
 }
@@ -74,6 +76,10 @@ private fun IrOperation.responseAdapterTypeSpec(): TypeSpec {
   return TypeSpec.objectBuilder(kotlinNameForResponseAdapter(name))
       .addTypes(dataResponseAdapterTypeSpecs(dataField))
       .build()
+}
+
+private fun IrOperation.responseFieldsTypeSpec(): TypeSpec {
+  return dataResponseFieldsItemSpec(kotlinNameForResponseFields(name), dataField)
 }
 
 private fun IrOperation.serializeVariablesFunSpec(): FunSpec = serializeVariablesFunSpec(

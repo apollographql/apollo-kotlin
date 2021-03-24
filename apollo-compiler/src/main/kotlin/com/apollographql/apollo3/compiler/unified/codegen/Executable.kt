@@ -4,22 +4,19 @@ import com.apollographql.apollo3.api.ResponseAdapter
 import com.apollographql.apollo3.api.ResponseAdapterCache
 import com.apollographql.apollo3.api.ResponseField
 import com.apollographql.apollo3.api.json.JsonWriter
-import com.apollographql.apollo3.compiler.applyIf
-import com.apollographql.apollo3.compiler.backend.codegen.Identifier
 import com.apollographql.apollo3.compiler.backend.codegen.Identifier.responseAdapterCache
 import com.apollographql.apollo3.compiler.backend.codegen.Identifier.serializeVariables
 import com.apollographql.apollo3.compiler.backend.codegen.Identifier.toResponse
 import com.apollographql.apollo3.compiler.backend.codegen.Identifier.writer
 import com.apollographql.apollo3.compiler.backend.codegen.adapterPackageName
-import com.apollographql.apollo3.compiler.backend.codegen.kotlinNameForResponseAdapter
 import com.apollographql.apollo3.compiler.backend.codegen.kotlinNameForVariablesAdapter
 import com.apollographql.apollo3.compiler.backend.codegen.obj
-import com.apollographql.apollo3.compiler.unified.IrField
 import com.squareup.kotlinpoet.ClassName
 import com.squareup.kotlinpoet.CodeBlock
 import com.squareup.kotlinpoet.FunSpec
 import com.squareup.kotlinpoet.KModifier
 import com.squareup.kotlinpoet.ParameterizedTypeName.Companion.parameterizedBy
+import com.squareup.kotlinpoet.PropertySpec
 import com.squareup.kotlinpoet.TypeName
 import com.squareup.kotlinpoet.TypeSpec
 import com.squareup.kotlinpoet.asClassName
@@ -72,4 +69,3 @@ fun responseFieldsFunSpec(): FunSpec {
       .addCode("return %L", "emptyList()")
       .build()
 }
-

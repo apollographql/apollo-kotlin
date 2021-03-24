@@ -14,7 +14,7 @@ import com.squareup.kotlinpoet.PropertySpec
 import com.squareup.kotlinpoet.TypeName
 import com.squareup.kotlinpoet.TypeSpec
 
-fun ModelPath.typeName(): TypeName {
+fun ModelPath.typeName(): ClassName {
   return ClassName(
       packageName = packageName,
       simpleNames = elements
