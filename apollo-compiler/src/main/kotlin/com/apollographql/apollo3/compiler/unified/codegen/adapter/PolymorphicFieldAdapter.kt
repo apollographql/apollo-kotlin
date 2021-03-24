@@ -27,7 +27,7 @@ import com.squareup.kotlinpoet.TypeSpec
 import com.squareup.kotlinpoet.asTypeName
 
 internal fun IrField.polymorphicAdapterTypeSpecs(): List<TypeSpec> {
-  val implementations = implementationFieldSets.map {
+  val implementations = implementations.map {
     it.implementationAdapterTypeSpec()
   }
 
@@ -70,8 +70,8 @@ private fun IrField.polymorphicReadFromResponseCodeBlock(): CodeBlock {
   builder.addStatement("val $__typename = reader.nextString()!!")
 
   builder.beginControlFlow("return when($__typename) {")
-  implementationFieldSets.sortedByDescending { it.typeSet.size }.forEach { fieldSet ->
-    if (fieldSet != fallbackFieldSet) {
+  implementations.sortedByDescending { it.typeSet.size }.forEach { fieldSet ->
+    if (fieldSet.typeSet.size > 1) {
       fieldSet.possibleTypes.forEach { possibleType ->
         builder.addStatement("%S,", possibleType)
       }
@@ -99,7 +99,7 @@ private fun IrField.polymorphicWriteToResponseCodeBlock(): CodeBlock {
   val builder = CodeBlock.builder()
 
   builder.beginControlFlow("when($value) {")
-  implementationFieldSets.sortedByDescending { it.typeSet.size }.forEach { fieldSet ->
+  implementations.sortedByDescending { it.typeSet.size }.forEach { fieldSet ->
     builder.addStatement("is %T -> %T.$toResponse($writer, $responseAdapterCache, $value)", fieldSet.typeName(), fieldSet.adapterTypeName())
   }
   builder.endControlFlow()

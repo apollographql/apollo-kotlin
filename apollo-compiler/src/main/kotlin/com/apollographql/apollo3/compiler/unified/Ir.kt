@@ -111,12 +111,18 @@ data class IrField(
 
     val condition: BooleanExpression,
 
+    val requiredAsImplementation: Set<TypeSet>,
+    val requiredAsInterface: Set<TypeSet>,
+
     // whether this fields needs an override modifier
     val override: Boolean,
 
     // the field set corresponding to the fieldType
     val baseFieldSet: IrFieldSet?,
     val fieldSets: List<IrFieldSet>,
+
+    val interfaces: List<IrFieldSet>,
+    val implementations: List<IrFieldSet>,
 ) {
   val responseName = alias ?: name
 }

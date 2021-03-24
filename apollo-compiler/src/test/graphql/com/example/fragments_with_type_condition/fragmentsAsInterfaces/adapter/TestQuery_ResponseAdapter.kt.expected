@@ -62,8 +62,6 @@ object TestQuery_ResponseAdapter {
           -> DroidHero.fromResponse(reader, responseAdapterCache, __typename)
           "Human",
           -> HumanHero.fromResponse(reader, responseAdapterCache, __typename)
-          else
-          -> OtherHero.fromResponse(reader, responseAdapterCache, __typename)
         }
       }
 
@@ -75,38 +73,7 @@ object TestQuery_ResponseAdapter {
         when(value) {
           is TestQuery.Data.DroidHero -> DroidHero.toResponse(writer, responseAdapterCache, value)
           is TestQuery.Data.HumanHero -> HumanHero.toResponse(writer, responseAdapterCache, value)
-          is TestQuery.Data.OtherHero -> OtherHero.toResponse(writer, responseAdapterCache, value)
         }
-      }
-    }
-
-    object OtherHero {
-      val RESPONSE_NAMES: List<String> = listOf("__typename")
-
-      fun fromResponse(
-        reader: JsonReader,
-        responseAdapterCache: ResponseAdapterCache,
-        __typename: String
-      ): TestQuery.Data.OtherHero {
-        var __typename: String? = __typename
-        while(true) {
-          when (reader.selectName(RESPONSE_NAMES)) {
-            0 -> __typename = StringResponseAdapter.fromResponse(reader, responseAdapterCache)
-            else -> break
-          }
-        }
-        return TestQuery.Data.OtherHero(
-          __typename = __typename!!
-        )
-      }
-
-      fun toResponse(
-        writer: JsonWriter,
-        responseAdapterCache: ResponseAdapterCache,
-        value: TestQuery.Data.OtherHero
-      ) {
-        writer.name("__typename")
-        StringResponseAdapter.toResponse(writer, responseAdapterCache, value.__typename)
       }
     }
 

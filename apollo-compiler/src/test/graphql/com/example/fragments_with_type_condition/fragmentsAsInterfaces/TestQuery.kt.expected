@@ -38,13 +38,9 @@ class TestQuery : Query<TestQuery.Data> {
   data class Data(
     val hero: Hero?
   ) : Query.Data {
-    interface Hero : HumanDetails.Data, DroidDetails.Data {
-      override val __typename: String
+    interface Hero {
+      val __typename: String
     }
-
-    data class OtherHero(
-      override val __typename: String
-    ) : HumanDetails.Data, DroidDetails.Data
 
     data class DroidHero(
       override val __typename: String,
@@ -56,7 +52,7 @@ class TestQuery : Query<TestQuery.Data> {
        * This droid's primary function
        */
       override val primaryFunction: String?
-    ) : OtherHero
+    ) : DroidDetails.Data, Hero
 
     data class HumanHero(
       override val __typename: String,
@@ -68,7 +64,7 @@ class TestQuery : Query<TestQuery.Data> {
        * Height in the preferred unit, default is meters
        */
       override val height: Double?
-    ) : OtherHero
+    ) : HumanDetails.Data, Hero
   }
 
   companion object {

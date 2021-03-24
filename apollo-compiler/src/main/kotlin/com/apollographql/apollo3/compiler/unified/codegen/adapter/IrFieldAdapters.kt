@@ -36,9 +36,9 @@ internal fun dataResponseAdapterTypeSpecs(
 
 internal fun IrField.responseAdapterTypeSpecs(
 ): List<TypeSpec> {
-  return when (implementationFieldSets.size){
+  return when (implementations.size){
     0 -> emptyList() // scalar
-    1 -> listOf(implementationFieldSets.first().adapterTypeSpec())
+    1 -> listOf(implementations.first().adapterTypeSpec())
     else -> polymorphicAdapterTypeSpecs()
   }
 }

@@ -1,10 +1,6 @@
 package com.apollographql.apollo3.compiler.unified.codegen
 
 import com.apollographql.apollo3.api.Fragment
-import com.apollographql.apollo3.api.Mutation
-import com.apollographql.apollo3.api.Query
-import com.apollographql.apollo3.api.QueryDocumentMinifier
-import com.apollographql.apollo3.api.Subscription
 import com.apollographql.apollo3.compiler.backend.codegen.adapterPackageName
 import com.apollographql.apollo3.compiler.backend.codegen.kotlinNameForFragment
 import com.apollographql.apollo3.compiler.backend.codegen.kotlinNameForResponseAdapter
@@ -21,17 +17,12 @@ import com.apollographql.apollo3.compiler.unified.codegen.helpers.maybeAddDescri
 import com.apollographql.apollo3.compiler.unified.codegen.helpers.toNamedType
 import com.apollographql.apollo3.compiler.unified.codegen.helpers.toParameterSpec
 import com.apollographql.apollo3.compiler.unified.codegen.helpers.typeName
-import com.apollographql.apollo3.compiler.unified.codegen.helpers.typeSpec
 import com.apollographql.apollo3.compiler.unified.codegen.helpers.typeSpecs
 import com.squareup.kotlinpoet.ClassName
-import com.squareup.kotlinpoet.CodeBlock
 import com.squareup.kotlinpoet.FunSpec
-import com.squareup.kotlinpoet.KModifier
 import com.squareup.kotlinpoet.ParameterizedTypeName.Companion.parameterizedBy
-import com.squareup.kotlinpoet.PropertySpec
 import com.squareup.kotlinpoet.TypeName
 import com.squareup.kotlinpoet.TypeSpec
-import com.squareup.kotlinpoet.asClassName
 import com.squareup.kotlinpoet.asTypeName
 
 fun IrNamedFragment.qualifiedTypeSpecs(): List<QualifiedTypeSpec> {
@@ -98,8 +89,8 @@ private fun IrNamedFragment.adapterFunSpec(): FunSpec {
 }
 
 private fun IrNamedFragment.dataTypeSpecs(): List<TypeSpec> {
-  return dataField.implementationFieldSets.map {
-    it.typeSpec(true).toBuilder()
+  return dataField.typeSpecs().map {
+    it.toBuilder()
         .addSuperinterface(Fragment.Data::class)
         .build()
   }

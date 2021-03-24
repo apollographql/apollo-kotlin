@@ -30,14 +30,13 @@ import com.squareup.kotlinpoet.ParameterizedTypeName.Companion.parameterizedBy
 import com.squareup.kotlinpoet.PropertySpec
 import com.squareup.kotlinpoet.TypeName
 import com.squareup.kotlinpoet.TypeSpec
-import com.squareup.kotlinpoet.asClassName
 import com.squareup.kotlinpoet.asTypeName
 
 fun IrOperation.qualifiedTypeSpecs(): List<QualifiedTypeSpec> {
   val list = mutableListOf<QualifiedTypeSpec>()
 
   list.add(QualifiedTypeSpec(packageName, typeSpec()))
-  if (variables.isNotEmpty()){
+  if (variables.isNotEmpty()) {
     list.add(QualifiedTypeSpec(adapterPackageName(packageName), variablesAdapterTypeSpec()))
   }
   list.add(QualifiedTypeSpec(adapterPackageName(packageName), responseAdapterTypeSpec()))
@@ -57,7 +56,7 @@ private fun IrOperation.typeSpec(): TypeSpec {
       .addFunction(serializeVariablesFunSpec())
       .addFunction(adapterFunSpec())
       .addFunction(responseFieldsFunSpec())
-      .addType(dataTypeSpec())
+      .addTypes(dataTypeSpecs())
       .addType(companionTypeSpec())
       .build()
 }
@@ -100,17 +99,20 @@ private fun IrOperation.adapterFunSpec(): FunSpec {
   )
 }
 
-private fun IrOperation.dataTypeSpec(): TypeSpec {
+private fun IrOperation.dataTypeSpecs(): List<TypeSpec> {
   val superClass = when (operationType) {
     IrOperationType.Query -> Query.Data::class
     IrOperationType.Mutation -> Mutation.Data::class
     IrOperationType.Subscription -> Subscription.Data::class
   }
 
-  return dataField.typeSpecs(false).first().toBuilder()
-      .addSuperinterface(superClass)
-      .build()
+  return dataField.typeSpecs().map {
+    it.toBuilder()
+        .addSuperinterface(superClass)
+        .build()
+  }
 }
+
 private fun IrOperation.superInterfaceType(): TypeName {
   return when (operationType) {
     IrOperationType.Query -> Query::class.asTypeName()

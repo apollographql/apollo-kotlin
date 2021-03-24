@@ -49,8 +49,8 @@ private fun IrField.fieldSetsCodeBlock(): CodeBlock {
   return CodeBlock.builder().apply {
     addStatement("listOf(")
     indent()
-    implementationFieldSets.flatMap { fieldSet ->
-      if (fieldSet == fallbackFieldSet) {
+    implementations.flatMap { fieldSet ->
+      if (fieldSet.typeSet.size == 1) {
         listOf(null to fieldSet)
       } else {
         fieldSet.possibleTypes.map {
@@ -75,7 +75,7 @@ private fun fieldSetTypeSpec(modelName: String, fields: List<IrField>): TypeSpec
   return TypeSpec.objectBuilder(modelName)
       .addProperty(responseFieldsPropertySpec(fields))
       .addTypes(fields.flatMap {
-        it.implementationFieldSets.map {
+        it.implementations.map {
           fieldSetTypeSpec(it.modelName, it.fields)
         }
       })
@@ -180,7 +180,7 @@ private fun IrField.responseFieldsCodeBlock(): CodeBlock {
   if (condition != BooleanExpression.True) {
     // TODO builder.add("conditions = %L,\n", conditionsListCode(conditions))
   }
-  if (implementationFieldSets.isNotEmpty()) {
+  if (implementations.isNotEmpty()) {
     builder.add("fieldSets = %L,\n", fieldSetsCodeBlock())
   }
   builder.unindent()

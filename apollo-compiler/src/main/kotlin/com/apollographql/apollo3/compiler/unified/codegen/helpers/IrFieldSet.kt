@@ -49,12 +49,10 @@ fun IrFieldSet.adapterTypeName(): TypeName {
   )
 }
 
-fun IrField.typeSpecs(asInterface: Boolean): List<TypeSpec> {
-  if (asInterface) {
-    return listOfNotNull(baseFieldSet?.typeSpec(true))
-  }
-  val interfacesTypeSpecs = fieldSets.map { it.typeSpec(true) }
-  val implementationTypeSpecs = implementationFieldSets.map { it.typeSpec(false) }
+fun IrField.typeSpecs(): List<TypeSpec> {
+
+  val interfacesTypeSpecs = interfaces.map { it.typeSpec(true) }
+  val implementationTypeSpecs = implementations.map { it.typeSpec(false) }
 
   return interfacesTypeSpecs + implementationTypeSpecs
 }
@@ -69,7 +67,7 @@ fun IrFieldSet.typeSpec(asInterface: Boolean): TypeSpec {
   }
 
   val nestedTypes = fields.flatMap {
-    it.typeSpecs(asInterface)
+    it.typeSpecs()
   }
 
   val superInterfaces = implements.map { it.typeName() }
