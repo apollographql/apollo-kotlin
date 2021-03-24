@@ -7,7 +7,6 @@ import com.apollographql.apollo3.compiler.backend.codegen.makeDataClassFromPrope
 import com.apollographql.apollo3.compiler.unified.IrField
 import com.apollographql.apollo3.compiler.unified.IrFieldSet
 import com.apollographql.apollo3.compiler.unified.ModelPath
-import com.apollographql.apollo3.compiler.unified.codegen.typeName
 import com.squareup.kotlinpoet.ClassName
 import com.squareup.kotlinpoet.KModifier
 import com.squareup.kotlinpoet.PropertySpec
@@ -54,7 +53,7 @@ fun IrField.typeSpecs(asInterface: Boolean): List<TypeSpec> {
   if (asInterface) {
     return listOfNotNull(baseFieldSet?.typeSpec(true))
   }
-  val interfacesTypeSpecs = interfacesFieldSets.map { it.typeSpec(true) }
+  val interfacesTypeSpecs = fieldSets.map { it.typeSpec(true) }
   val implementationTypeSpecs = implementationFieldSets.map { it.typeSpec(false) }
 
   return interfacesTypeSpecs + implementationTypeSpecs

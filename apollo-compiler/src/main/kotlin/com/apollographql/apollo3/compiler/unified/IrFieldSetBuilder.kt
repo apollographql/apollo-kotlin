@@ -113,10 +113,7 @@ class IrFieldSetBuilder(
       superFields: List<IrField>,
       path: ModelPath,
   ): IrField {
-    val baseFieldSet: IrFieldSet?
-    val fallbackFieldSet: IrFieldSet?
-    val interfaceFieldSets: List<IrFieldSet>
-    val implementationFieldSets: List<IrFieldSet>
+    val fieldSets: List<IrFieldSet>
 
     if (selections.isNotEmpty()) {
       val collectionResult = FragmentCollectionScope(selections, type.leafType().name, allGQLFragmentDefinitions).collect()
@@ -129,7 +126,7 @@ class IrFieldSetBuilder(
        * Generate the common interfaces
        * We need those to access the shapes in a generic way
        */
-      val interfaceTypeSetsToGenerate = shapesTypeSets.toList().combinations()
+      val commonTypeSets = shapesTypeSets.toList().combinations()
           .filter { it.size >= 2 }
           .map { it.intersection() }
           .toSet()
@@ -146,62 +143,60 @@ class IrFieldSetBuilder(
       /**
        * Create a cache of interface IrFieldSets so that we don't end up building the same FieldSets all the time
        */
-      val cachedInterfacesFieldSets = mutableMapOf<TypeSet, IrFieldSet>()
+      val cachedFieldSets = mutableMapOf<TypeSet, IrFieldSet>()
 
       val responseName = alias ?: name
       val fieldType = type.leafType().name
 
       /**
-       * Build the interfaces starting from the less qualified so we can look up the super
-       * interfaces in fieldSetCache when needed
+       * Always add the base fieldType in case new types are added to the schema
        */
-      interfaceFieldSets = interfaceTypeSetsToGenerate.sortedBy { it.size }.map { typeSet ->
-        val modelName = modelName(typeSet, fieldType, responseName)
-        buildFieldSet(
-            cachedInterfacesFieldSets = cachedInterfacesFieldSets,
-            selections = selections,
-            fieldType = fieldType,
-            typeSet = typeSet,
-            modelName = modelName,
-            possibleTypes = emptySet(),
-            superFieldSets = (superFields + fragmentFields).mapNotNull { it.baseFieldSet },
-            path = path,
-        )
-      }
+      val allTypeSets = commonTypeSets + shapesTypeSets + setOf(setOf(fieldType))
 
       /**
-       * Build the implementations
-       * Always add the fallback type as an implementation in case new types are added to the schema
+       * Build the field sets starting from the less qualified so we can look up the super
+       * interfaces in fieldSetCache when needed
        */
-      val implementationToGenerate = shapesTypeSets + setOf(setOf(fieldType))
-      implementationFieldSets = implementationToGenerate.sortedBy { it.size }.map { typeSet ->
-        var modelName = modelName(typeSet, fieldType, responseName)
-        if (interfaceFieldSets.any { it.modelName == modelName }) {
-          // We already have an interface with this name
-          // This happens for the base fieldSet but potentially in other cases too
-          modelName = "Other$modelName"
+      fieldSets = allTypeSets.sortedBy { it.size }.map { typeSet ->
+        val modelName = modelName(typeSet, fieldType, responseName)
+
+        val superFieldSet = cachedFieldSets.values
+            .sortedByDescending { it.typeSet.size }
+            .firstOrNull {
+              it.typeSet.size < typeSet.size && typeSet.implements(it.typeSet)
+            }
+
+        val superFragmentFieldSets = fragmentFields.mapNotNull { field ->
+          field.fieldSets.sortedByDescending { it.typeSet.size }
+              .firstOrNull {
+                typeSet.implements(it.typeSet)
+              }
         }
+
+        val relatedFieldSets = if (superFieldSet == null) {
+          // This is the baseFieldSet, add the super fields
+          superFields.mapNotNull { it.baseFieldSet }
+        } else {
+          // We have a superFieldSet that will already implement all the superFields, no need to add it again
+          emptyList()
+        }
+
         buildFieldSet(
-            cachedInterfacesFieldSets = cachedInterfacesFieldSets,
+            cachedInterfacesFieldSets = cachedFieldSets,
             selections = selections,
             fieldType = fieldType,
             typeSet = typeSet,
             modelName = modelName,
             possibleTypes = shapeTypeSetToPossibleTypes[typeSet] ?: emptySet(),
-            superFieldSets = (superFields + fragmentFields).mapNotNull { it.baseFieldSet },
+            superFieldSets = superFragmentFieldSets + listOfNotNull(superFieldSet) + relatedFieldSets,
             path = path,
         )
       }
-
-      baseFieldSet = interfaceFieldSets.firstOrNull() ?: implementationFieldSets.first()
-      fallbackFieldSet = implementationFieldSets.first()
     } else {
-      baseFieldSet = null
-      fallbackFieldSet = null
-      interfaceFieldSets = emptyList()
-      implementationFieldSets = emptyList()
+      fieldSets = emptyList()
     }
 
+    val baseFieldSet = fieldSets.firstOrNull()
     return IrField(
         alias = alias,
         name = name,
@@ -212,9 +207,7 @@ class IrFieldSetBuilder(
         condition = condition,
         override = superFields.isNotEmpty(),
         baseFieldSet = baseFieldSet,
-        fallbackFieldSet = fallbackFieldSet,
-        interfacesFieldSets = interfaceFieldSets,
-        implementationFieldSets = implementationFieldSets
+        fieldSets = fieldSets,
     )
   }
 
@@ -301,19 +294,6 @@ class IrFieldSetBuilder(
       superFieldSets: List<IrFieldSet>,
       path: ModelPath,
   ): IrFieldSet {
-    val superFieldSet = cachedInterfacesFieldSets
-        .entries
-        .filter {
-          if (possibleTypes.isEmpty()) {
-            it.key.size < typeSet.size
-          } else {
-            it.key.size <= typeSet.size
-          }
-        }.sortedByDescending { it.key.size }
-        .firstOrNull { typeSet.implements(it.key) }
-        ?.value
-
-
     val collectedFields = collectFields(selections, fieldType, typeSet)
 
     val fields = collectedFields.groupBy {
@@ -332,8 +312,7 @@ class IrFieldSetBuilder(
       val first = fieldsWithSameResponseName.first()
       val childSelections = fieldsWithSameResponseName.flatMap { it.selections }
 
-      val superFields = (superFieldSets + superFieldSet)
-          .filterNotNull()
+      val superFields = superFieldSets
           .mapNotNull { it.fields.firstOrNull { it.responseName == first.responseName } }
 
       buildField(
@@ -350,15 +329,7 @@ class IrFieldSetBuilder(
       )
     }
 
-    val finalSuperFieldSets = if (superFieldSet == null) {
-      // this is a baseFieldSet, pull the superFieldSets
-      superFieldSets
-    } else {
-      // this was already pulled by the baseFieldSet, no need to add superFieldSets
-      listOf(superFieldSet)
-    }
-
-    val implements = finalSuperFieldSets.map { it.fullPath }.toSet()
+    val implements = superFieldSets.map { it.fullPath }.toSet()
 
     return IrFieldSet(
         modelName = modelName,

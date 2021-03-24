@@ -64,7 +64,6 @@ data class IrInputField(
 
 /**
  * @param sourceWithFragments the executableDocument
- * @param filePath the path relative to the source roots
  */
 data class IrOperation(
     val name: String,
@@ -111,13 +110,13 @@ data class IrField(
     val deprecationReason: String?,
 
     val condition: BooleanExpression,
+
     // whether this fields needs an override modifier
     val override: Boolean,
 
+    // the field set corresponding to the fieldType
     val baseFieldSet: IrFieldSet?,
-    val fallbackFieldSet: IrFieldSet?,
-    val interfacesFieldSets: List<IrFieldSet>,
-    val implementationFieldSets: List<IrFieldSet>,
+    val fieldSets: List<IrFieldSet>,
 ) {
   val responseName = alias ?: name
 }
@@ -142,13 +141,8 @@ data class IrFieldSet(
 ) {
   val fullPath = path + modelName
 
-  private fun modelName(typeSet: TypeSet, responseName: String): String {
-    return (typeSet.sorted() + responseName).map { it.capitalize() }.joinToString("")
-  }
-
   override fun toString(): String {
-    return fullPath.elements
-        .joinToString(".")
+    return fullPath.elements.joinToString(".")
   }
 }
 
