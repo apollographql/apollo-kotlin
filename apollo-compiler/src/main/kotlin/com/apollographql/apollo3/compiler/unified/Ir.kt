@@ -117,10 +117,10 @@ data class IrField(
     // whether this fields needs an override modifier
     val override: Boolean,
 
-    // the field set corresponding to the fieldType
-    val baseFieldSet: IrFieldSet?,
     val fieldSets: List<IrFieldSet>,
 
+    // the field set corresponding to the fieldType
+    val baseFieldSet: IrFieldSet?,
     val interfaces: List<IrFieldSet>,
     val implementations: List<IrFieldSet>,
 ) {

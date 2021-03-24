@@ -13,6 +13,7 @@ import com.apollographql.apollo3.compiler.backend.codegen.makeDataClass
 import com.apollographql.apollo3.compiler.backend.codegen.responseFieldsPackageName
 import com.apollographql.apollo3.compiler.unified.IrOperation
 import com.apollographql.apollo3.compiler.unified.IrOperationType
+import com.apollographql.apollo3.compiler.unified.baseFieldSet
 import com.apollographql.apollo3.compiler.unified.codegen.adapter.dataResponseAdapterTypeSpecs
 import com.apollographql.apollo3.compiler.unified.codegen.adapter.inputAdapterTypeSpec
 import com.apollographql.apollo3.compiler.unified.codegen.helpers.adapterTypeName
@@ -94,7 +95,7 @@ private fun IrOperation.serializeVariablesFunSpec(): FunSpec = serializeVariable
 
 private fun IrOperation.adapterFunSpec(): FunSpec {
   return adapterFunSpec(
-      adapterTypeName = dataField.baseFieldSet!!.adapterTypeName(),
+      adapterTypeName = dataField.implementations.baseFieldSet().adapterTypeName(),
       adaptedTypeName = dataField.rawTypeName()
   )
 }

@@ -9,6 +9,7 @@ import com.apollographql.apollo3.compiler.backend.codegen.kotlinNameForVariables
 import com.apollographql.apollo3.compiler.backend.codegen.makeDataClass
 import com.apollographql.apollo3.compiler.backend.codegen.responseFieldsPackageName
 import com.apollographql.apollo3.compiler.unified.IrNamedFragment
+import com.apollographql.apollo3.compiler.unified.baseFieldSet
 import com.apollographql.apollo3.compiler.unified.codegen.adapter.dataResponseAdapterTypeSpecs
 import com.apollographql.apollo3.compiler.unified.codegen.adapter.inputAdapterTypeSpec
 import com.apollographql.apollo3.compiler.unified.codegen.helpers.adapterTypeName
@@ -83,7 +84,7 @@ private fun IrNamedFragment.serializeVariablesFunSpec(): FunSpec = serializeVari
 
 private fun IrNamedFragment.adapterFunSpec(): FunSpec {
   return adapterFunSpec(
-      adapterTypeName = dataField.baseFieldSet!!.adapterTypeName(),
+      adapterTypeName = dataField.implementations.baseFieldSet().adapterTypeName(),
       adaptedTypeName = dataField.rawTypeName()
   )
 }
