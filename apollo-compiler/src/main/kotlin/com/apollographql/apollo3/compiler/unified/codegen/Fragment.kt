@@ -85,7 +85,7 @@ private fun IrNamedFragment.serializeVariablesFunSpec(): FunSpec = serializeVari
 private fun IrNamedFragment.adapterFunSpec(): FunSpec {
   return adapterFunSpec(
       adapterTypeName = dataField.implementations.baseFieldSet().adapterTypeName(),
-      adaptedTypeName = dataField.rawTypeName()
+      adaptedTypeName = dataField.implementations.baseFieldSet().typeName()
   )
 }
 
@@ -98,5 +98,7 @@ private fun IrNamedFragment.dataTypeSpecs(): List<TypeSpec> {
 }
 
 private fun IrNamedFragment.superInterfaceType(): TypeName {
-  return Fragment::class.asTypeName().parameterizedBy(dataField.baseFieldSet!!.typeName())
+  return Fragment::class.asTypeName().parameterizedBy(
+      dataField.implementations.baseFieldSet().typeName()
+  )
 }

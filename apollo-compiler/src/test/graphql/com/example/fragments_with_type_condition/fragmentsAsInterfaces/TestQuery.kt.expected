@@ -42,6 +42,10 @@ class TestQuery : Query<TestQuery.Data> {
       val __typename: String
     }
 
+    data class OtherHero(
+      override val __typename: String
+    ) : Hero
+
     data class DroidHero(
       override val __typename: String,
       /**

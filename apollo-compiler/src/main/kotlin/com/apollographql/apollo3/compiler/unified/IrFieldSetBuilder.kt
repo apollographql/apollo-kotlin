@@ -238,6 +238,7 @@ class IrFieldSetBuilder(
     val fieldSets: List<IrFieldSet>
     val shapeTypeSetToPossibleTypes: Map<TypeSet, PossibleTypes>
     val commonTypeSets: Set<TypeSet>
+    val fieldType = type.leafType().name
 
     if (selections.isNotEmpty()) {
       val collectionResult = FragmentCollectionScope(selections, type.leafType().name, allGQLFragmentDefinitions).collect()
@@ -270,7 +271,6 @@ class IrFieldSetBuilder(
       val cachedFieldSets = mutableMapOf<TypeSet, IrFieldSet>()
 
       val responseName = alias ?: name
-      val fieldType = type.leafType().name
 
       /**
        * Always add the base fieldType in case new types are added to the schema
@@ -332,7 +332,7 @@ class IrFieldSetBuilder(
         condition = condition,
         override = superFields.isNotEmpty(),
         fieldSets = fieldSets,
-        requiredAsImplementation = shapeTypeSetToPossibleTypes.keys,
+        requiredAsImplementation = shapeTypeSetToPossibleTypes.keys + setOf(setOf(fieldType)),
         requiredAsInterface = commonTypeSets,
         baseFieldSet = null,
         implementations = emptyList(),

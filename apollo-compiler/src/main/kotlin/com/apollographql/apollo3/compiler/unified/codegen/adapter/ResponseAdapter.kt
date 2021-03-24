@@ -4,7 +4,6 @@ import com.apollographql.apollo3.api.ResponseAdapter
 import com.apollographql.apollo3.api.ResponseAdapterCache
 import com.apollographql.apollo3.api.json.JsonReader
 import com.apollographql.apollo3.api.json.JsonWriter
-import com.apollographql.apollo3.compiler.backend.codegen.Identifier
 import com.apollographql.apollo3.compiler.backend.codegen.Identifier.RESPONSE_NAMES
 import com.apollographql.apollo3.compiler.backend.codegen.Identifier.fromResponse
 import com.apollographql.apollo3.compiler.backend.codegen.Identifier.reader
@@ -18,7 +17,6 @@ import com.apollographql.apollo3.compiler.unified.IrField
 import com.apollographql.apollo3.compiler.unified.IrFieldSet
 import com.apollographql.apollo3.compiler.unified.codegen.helpers.adapterInitializer
 import com.apollographql.apollo3.compiler.unified.codegen.helpers.typeName
-import com.apollographql.apollo3.compiler.unified.codegen.typeName
 import com.squareup.kotlinpoet.CodeBlock
 import com.squareup.kotlinpoet.FunSpec
 import com.squareup.kotlinpoet.KModifier
@@ -34,8 +32,7 @@ internal fun dataResponseAdapterTypeSpecs(
   return dataField.responseAdapterTypeSpecs()
 }
 
-internal fun IrField.responseAdapterTypeSpecs(
-): List<TypeSpec> {
+internal fun IrField.responseAdapterTypeSpecs(): List<TypeSpec> {
   return when (implementations.size){
     0 -> emptyList() // scalar
     1 -> listOf(implementations.first().adapterTypeSpec())
