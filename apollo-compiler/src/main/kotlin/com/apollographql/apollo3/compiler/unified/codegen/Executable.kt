@@ -56,16 +56,14 @@ fun adapterFunSpec(
       .build()
 }
 
-fun responseFieldsFunSpec(): FunSpec {
-  return FunSpec.builder(
-      "responseFields",
-  )
+fun responseFieldsFunSpec(typeName: TypeName): FunSpec {
+  return FunSpec.builder("responseFields")
       .addModifiers(KModifier.OVERRIDE)
       .returns(
           List::class.asClassName().parameterizedBy(
               ResponseField.FieldSet::class.asClassName(),
           )
       )
-      .addCode("return %L", "emptyList()")
+      .addCode("return %T.fields.first().fieldSets", typeName)
       .build()
 }

@@ -62,6 +62,7 @@ private fun IrField.fieldSetsCodeBlock(): CodeBlock {
           "%T(%L, %L),",
           ResponseField.FieldSet::class,
           pair.first?.let { "\"$it\"" },
+          // This doesn't use %M on purpose as fields will nameclash 
           "${pair.second.fullPath.elements.last()}.fields"
       )
     }

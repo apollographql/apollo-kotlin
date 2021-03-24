@@ -64,6 +64,11 @@ private fun IrOperation.typeSpec(): TypeSpec {
 
 private fun IrOperation.typeName() = ClassName(packageName, kotlinNameForOperation(name))
 
+private fun IrOperation.responseFieldsFunSpec(): FunSpec {
+  val typeName = ClassName(responseFieldsPackageName(packageName), kotlinNameForResponseFields(name))
+  return responseFieldsFunSpec(typeName)
+}
+
 private fun IrOperation.variablesAdapterTypeSpec(): TypeSpec {
   return variables.map { it.toNamedType() }
       .inputAdapterTypeSpec(
@@ -89,7 +94,10 @@ private fun IrOperation.serializeVariablesFunSpec(): FunSpec = serializeVariable
 )
 
 private fun IrOperation.adapterFunSpec(): FunSpec {
-  return adapterFunSpec(adapterTypeName = dataField.baseFieldSet!!.adapterTypeName(), adaptedTypeName = dataField.rawTypeName())
+  return adapterFunSpec(
+      adapterTypeName = dataField.baseFieldSet!!.adapterTypeName(),
+      adaptedTypeName = dataField.rawTypeName()
+  )
 }
 
 private fun IrOperation.dataTypeSpec(): TypeSpec {
