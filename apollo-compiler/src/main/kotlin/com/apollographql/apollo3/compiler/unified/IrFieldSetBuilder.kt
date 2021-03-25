@@ -1,6 +1,7 @@
 package com.apollographql.apollo3.compiler.unified
 
 import com.apollographql.apollo3.compiler.PackageNameProvider
+import com.apollographql.apollo3.compiler.backend.codegen.capitalizeFirstLetter
 import com.apollographql.apollo3.compiler.backend.codegen.kotlinNameForFragment
 import com.apollographql.apollo3.compiler.backend.codegen.kotlinNameForOperation
 import com.apollographql.apollo3.compiler.frontend.GQLArgument
@@ -231,7 +232,7 @@ class IrFieldSetBuilder(
   }
 
   private fun modelName(typeSet: TypeSet, fieldType: String, responseName: String): String {
-    return ((typeSet - fieldType).sorted() + responseName).map { it.capitalize() }.joinToString("")
+    return ((typeSet - fieldType).sorted() + responseName).map { capitalizeFirstLetter(it) }.joinToString("")
   }
 
   private fun buildField(

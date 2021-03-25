@@ -1,5 +1,8 @@
 package com.apollographql.apollo3.compiler.frontend
 
+import com.apollographql.apollo3.compiler.backend.codegen.decapitalizeFirstLetter
+import com.apollographql.apollo3.compiler.backend.codegen.isFirstLetterUpperCase
+
 /**
  * @param fragmentDefinitions: all the fragments in the current compilation unit. This is required to check the type conditions as well as fields merging
  */
@@ -49,6 +52,22 @@ private class ExecutableDocumentValidator(val schema: Schema, val fragmentDefini
           sourceLocation = sourceLocation
       ))
       return
+    }
+
+    if (alias != null) {
+      if (isFirstLetterUpperCase(alias)) {
+        issues.add(Issue.UpperCaseField(message = """
+                      Capitalized alias '$alias' is not supported as it causes name clashes with the generated models. Use '${decapitalizeFirstLetter(alias)}' instead.
+                    """.trimIndent(),
+            sourceLocation = sourceLocation)
+        )
+      }
+    } else if (isFirstLetterUpperCase(name)) {
+      issues.add(Issue.UpperCaseField(message = """
+                      Capitalized field '$name' is not supported as it causes name clashes with the generated models. Use an alias instead.
+                    """.trimIndent(),
+          sourceLocation = sourceLocation)
+      )
     }
 
     if (fieldDefinition.isDeprecated()) {
@@ -645,11 +664,20 @@ internal fun List<GQLDefinition>.checkDuplicates(): List<Issue> {
   return filterIsInstance<GQLOperationDefinition>().checkDuplicateOperations() + filterIsInstance<GQLFragmentDefinition>().checkDuplicateFragments()
 }
 
-fun GQLOperationDefinition.validate(schema: Schema, fragments: Map<String, GQLFragmentDefinition>) = ExecutableDocumentValidator(schema, fragments).validateOperation(this)
+fun GQLOperationDefinition.validate(
+    schema: Schema,
+    fragments: Map<String, GQLFragmentDefinition>,
+) = ExecutableDocumentValidator(schema, fragments).validateOperation(this)
 
-fun GQLFragmentDefinition.validate(schema: Schema, fragments: Map<String, GQLFragmentDefinition>) = ExecutableDocumentValidator(schema, fragments).validateFragment(this)
+fun GQLFragmentDefinition.validate(
+    schema: Schema,
+    fragments: Map<String, GQLFragmentDefinition>,
+) = ExecutableDocumentValidator(schema, fragments).validateFragment(this)
 
-internal fun GQLFragmentDefinition.inferVariables(schema: Schema, fragments: Map<String, GQLFragmentDefinition>) = ExecutableDocumentValidator(schema, fragments).inferFragmentVariables(this)
+internal fun GQLFragmentDefinition.inferVariables(
+    schema: Schema,
+    fragments: Map<String, GQLFragmentDefinition>,
+) = ExecutableDocumentValidator(schema, fragments).inferFragmentVariables(this)
 
 fun GQLDocument.validateAsOperations(schema: Schema): List<Issue> {
   val fragments = definitions.filterIsInstance<GQLFragmentDefinition>().associateBy { it.name }
