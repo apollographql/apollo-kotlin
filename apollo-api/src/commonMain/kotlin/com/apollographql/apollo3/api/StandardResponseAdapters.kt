@@ -114,21 +114,21 @@ object BooleanResponseAdapter : ResponseAdapter<Boolean> {
   }
 }
 
-object AnyResponseAdapter : ResponseAdapter<Any?> {
-  fun fromResponse(reader: JsonReader): Any? {
-    return reader.readRecursively()
+object AnyResponseAdapter : ResponseAdapter<Any> {
+  fun fromResponse(reader: JsonReader): Any {
+    return reader.readRecursively()!!
   }
 
-  fun toResponse(writer: JsonWriter, value: Any?) {
+  fun toResponse(writer: JsonWriter, value: Any) {
     Utils.writeToJson(value, writer)
   }
 
-  override fun fromResponse(reader: JsonReader, responseAdapterCache: ResponseAdapterCache): Any? {
-    return reader.readRecursively()
+  override fun fromResponse(reader: JsonReader, responseAdapterCache: ResponseAdapterCache): Any {
+    return fromResponse(reader)
   }
 
-  override fun toResponse(writer: JsonWriter, responseAdapterCache: ResponseAdapterCache, value: Any?) {
-    Utils.writeToJson(value, writer)
+  override fun toResponse(writer: JsonWriter, responseAdapterCache: ResponseAdapterCache, value: Any) {
+    toResponse(writer, value)
   }
 }
 
@@ -171,7 +171,7 @@ class ObjectResponseAdapter<T>(
       /**
        * And write to the original writer
        */
-      AnyResponseAdapter.toResponse(writer, mapWriter.root())
+      AnyResponseAdapter.toResponse(writer, mapWriter.root()!!)
     } else {
       writer.beginObject()
       wrappedAdapter.toResponse(writer, responseAdapterCache, value)
@@ -192,3 +192,4 @@ val NullableStringResponseAdapter = StringResponseAdapter.nullable()
 val NullableDoubleResponseAdapter = DoubleResponseAdapter.nullable()
 val NullableIntResponseAdapter = IntResponseAdapter.nullable()
 val NullableBooleanResponseAdapter = BooleanResponseAdapter.nullable()
+val NullableAnyResponseAdapter = AnyResponseAdapter.nullable()

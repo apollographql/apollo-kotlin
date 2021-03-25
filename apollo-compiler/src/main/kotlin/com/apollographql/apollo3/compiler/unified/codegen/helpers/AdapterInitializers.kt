@@ -42,7 +42,7 @@ fun IrType.adapterInitializer(fieldSet: IrFieldSet?): CodeBlock {
       is IrStringType -> nullableScalarAdapter("NullableStringResponseAdapter")
       is IrIntType -> nullableScalarAdapter("NullableIntResponseAdapter")
       is IrFloatType -> nullableScalarAdapter("NullableDoubleResponseAdapter")
-      is IrAnyType -> CodeBlock.of("%T", AnyResponseAdapter::class) // Any is always nullable
+      is IrAnyType -> nullableScalarAdapter("NullableAnyResponseAdapter")
       else -> {
         val nullableFun = MemberName("com.apollographql.apollo3.api", "nullable")
         CodeBlock.of("%L.%M()", IrNonNullType(this).adapterInitializer(fieldSet), nullableFun)
