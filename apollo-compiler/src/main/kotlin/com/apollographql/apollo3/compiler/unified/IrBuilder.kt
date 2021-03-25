@@ -109,7 +109,7 @@ class IrBuilder(
    * This is not named `toIr` as [GQLInputValueDefinition] also maps to variables and arguments
    */
   private fun GQLInputValueDefinition.toIrInputField(): IrInputField {
-    val coercedDefaultValue = defaultValue?.coerce(type, schema)?.coercedValue
+    val coercedDefaultValue = defaultValue?.coerce(type, schema)?.orThrow()
 
     return IrInputField(
         name = name,
