@@ -2,12 +2,9 @@ package com.apollographql.apollo3.compiler.unified.codegen
 
 import com.apollographql.apollo3.api.CustomScalar
 import com.apollographql.apollo3.compiler.applyIf
-import com.apollographql.apollo3.compiler.backend.ast.CodeGenerationAst
 import com.apollographql.apollo3.compiler.backend.codegen.kotlinNameForCustomScalar
-import com.apollographql.apollo3.compiler.backend.codegen.kotlinNameForEnum
 import com.apollographql.apollo3.compiler.unified.IrCustomScalar
 import com.apollographql.apollo3.compiler.unified.IrCustomScalars
-import com.apollographql.apollo3.compiler.unified.TypeSet
 import com.apollographql.apollo3.compiler.unified.codegen.helpers.maybeAddDeprecation
 import com.apollographql.apollo3.compiler.unified.codegen.helpers.maybeAddDescription
 import com.squareup.kotlinpoet.ClassName

@@ -9,11 +9,9 @@ import com.apollographql.apollo3.compiler.backend.codegen.kotlinNameForVariables
 import com.apollographql.apollo3.compiler.backend.codegen.makeDataClass
 import com.apollographql.apollo3.compiler.backend.codegen.responseFieldsPackageName
 import com.apollographql.apollo3.compiler.unified.IrNamedFragment
-import com.apollographql.apollo3.compiler.unified.baseFieldSet
 import com.apollographql.apollo3.compiler.unified.codegen.adapter.dataResponseAdapterTypeSpecs
 import com.apollographql.apollo3.compiler.unified.codegen.adapter.inputAdapterTypeSpec
 import com.apollographql.apollo3.compiler.unified.codegen.helpers.adapterTypeName
-import com.apollographql.apollo3.compiler.unified.codegen.helpers.rawTypeName
 import com.apollographql.apollo3.compiler.unified.codegen.helpers.maybeAddDescription
 import com.apollographql.apollo3.compiler.unified.codegen.helpers.toNamedType
 import com.apollographql.apollo3.compiler.unified.codegen.helpers.toParameterSpec
@@ -83,9 +81,11 @@ private fun IrNamedFragment.serializeVariablesFunSpec(): FunSpec = serializeVari
 )
 
 private fun IrNamedFragment.adapterFunSpec(): FunSpec {
+  check(dataField.typeFieldSet != null) // data is always a compound type
+
   return adapterFunSpec(
-      adapterTypeName = dataField.implementations.baseFieldSet().adapterTypeName(),
-      adaptedTypeName = dataField.implementations.baseFieldSet().typeName()
+      adapterTypeName = dataField.typeFieldSet.adapterTypeName(),
+      adaptedTypeName = dataField.typeFieldSet.typeName()
   )
 }
 
@@ -98,7 +98,9 @@ private fun IrNamedFragment.dataTypeSpecs(): List<TypeSpec> {
 }
 
 private fun IrNamedFragment.superInterfaceType(): TypeName {
+  check(dataField.typeFieldSet != null) // data is always a compound type
+
   return Fragment::class.asTypeName().parameterizedBy(
-      dataField.implementations.baseFieldSet().typeName()
+      dataField.typeFieldSet.typeName()
   )
 }

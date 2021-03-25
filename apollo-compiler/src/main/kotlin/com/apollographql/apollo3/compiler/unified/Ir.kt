@@ -111,18 +111,21 @@ data class IrField(
 
     val condition: BooleanExpression,
 
-    val requiredAsImplementation: Set<TypeSet>,
-    val requiredAsInterface: Set<TypeSet>,
-
     // whether this fields needs an override modifier
     val override: Boolean,
 
-    val fieldSets: List<IrFieldSet>,
-
     // the field set corresponding to the fieldType
-    val baseFieldSet: IrFieldSet?,
+    // null for scalar type
+    val typeFieldSet: IrFieldSet?,
     val interfaces: List<IrFieldSet>,
     val implementations: List<IrFieldSet>,
+
+    /**
+     * Internal state, only to be used from [IrFieldSetBuilder]
+     */
+    val requiredAsImplementation: Set<TypeSet>,
+    val requiredAsInterface: Set<TypeSet>,
+    val fieldSets: List<IrFieldSet>,
 ) {
   val responseName = alias ?: name
 }
@@ -229,5 +232,6 @@ class IrCustomScalarType(val customScalar: IrCustomScalar) : IrType()
 class IrEnumType(val enum: IrEnum) : IrType()
 // InputObjects can have cycles so the inputObject is lazy
 class IrInputObjectType(val inputObject: () -> IrInputObject) : IrType()
-class IrCompoundType(val fieldSet: IrFieldSet) : IrType()
+// A placeholder type
+object IrCompoundType : IrType()
 

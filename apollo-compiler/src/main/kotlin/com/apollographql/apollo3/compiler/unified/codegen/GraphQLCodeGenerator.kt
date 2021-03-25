@@ -49,7 +49,6 @@ class GraphQLCodeGenerator(
 
     val qualifiedTypeSpecs = customScalars + enums + inputObjects + operations + fragments
 
-
     qualifiedTypeSpecs.groupBy {
       it.packageName to (it.fileName ?: it.typeSpec.name!!)
     }.forEach {

@@ -1,3 +1,6 @@
+/**
+ * Functions to get a CodeBlock that initializes an adapter from an IrType or IrField
+ */
 package com.apollographql.apollo3.compiler.unified.codegen.helpers
 
 import com.apollographql.apollo3.api.AnyResponseAdapter
@@ -11,6 +14,8 @@ import com.apollographql.apollo3.compiler.unified.IrBooleanType
 import com.apollographql.apollo3.compiler.unified.IrCompoundType
 import com.apollographql.apollo3.compiler.unified.IrCustomScalarType
 import com.apollographql.apollo3.compiler.unified.IrEnumType
+import com.apollographql.apollo3.compiler.unified.IrField
+import com.apollographql.apollo3.compiler.unified.IrFieldSet
 import com.apollographql.apollo3.compiler.unified.IrFloatType
 import com.apollographql.apollo3.compiler.unified.IrIdType
 import com.apollographql.apollo3.compiler.unified.IrInputObjectType
@@ -20,42 +25,16 @@ import com.apollographql.apollo3.compiler.unified.IrNonNullType
 import com.apollographql.apollo3.compiler.unified.IrStringType
 import com.apollographql.apollo3.compiler.unified.IrType
 import com.apollographql.apollo3.compiler.unified.codegen.adapterTypeName
-import com.apollographql.apollo3.compiler.unified.codegen.kotlinTypeName
 import com.apollographql.apollo3.compiler.unified.codegen.typeName
 import com.squareup.kotlinpoet.ClassName
 import com.squareup.kotlinpoet.CodeBlock
 import com.squareup.kotlinpoet.MemberName
-import com.squareup.kotlinpoet.ParameterizedTypeName.Companion.parameterizedBy
-import com.squareup.kotlinpoet.TypeName
-import com.squareup.kotlinpoet.asClassName
-import com.squareup.kotlinpoet.asTypeName
 
-/**
- */
-fun IrType.typeName(): TypeName {
-  if (this is IrNonNullType) {
-    return ofType.typeName().copy(nullable = false)
-  }
-
-  return when (this) {
-    is IrNonNullType -> error("") // make the compiler happy, this case is handled as a fast path
-    is IrListType -> List::class.asClassName().parameterizedBy(ofType.typeName())
-    is IrStringType -> String::class.asTypeName()
-    is IrFloatType -> Double::class.asTypeName()
-    is IrIntType -> Int::class.asTypeName()
-    is IrBooleanType -> Boolean::class.asTypeName()
-    is IrIdType -> String::class.asTypeName()
-    is IrAnyType -> Any::class.asTypeName()
-    is IrCustomScalarType -> customScalar.kotlinTypeName()
-    is IrEnumType -> enum.typeName()
-    is IrInputObjectType -> inputObject().typeName()
-    is IrCompoundType -> fieldSet.typeName()
-  }.copy(nullable = true)
+fun IrField.adapterInitializer(): CodeBlock {
+  return type.adapterInitializer(typeFieldSet)
 }
 
-private fun nullableScalarAdapter(name: String) = CodeBlock.of("%M", MemberName("com.apollographql.apollo3.api", name))
-
-fun IrType.adapterInitializer(): CodeBlock {
+fun IrType.adapterInitializer(fieldSet: IrFieldSet?): CodeBlock {
   if (this !is IrNonNullType) {
     return when (this) {
       is IrIdType -> nullableScalarAdapter("NullableStringResponseAdapter")
@@ -66,19 +45,19 @@ fun IrType.adapterInitializer(): CodeBlock {
       is IrAnyType -> CodeBlock.of("%T", AnyResponseAdapter::class) // Any is always nullable
       else -> {
         val nullableFun = MemberName("com.apollographql.apollo3.api", "nullable")
-        CodeBlock.of("%L.%M()", IrNonNullType(this).adapterInitializer(), nullableFun)
+        CodeBlock.of("%L.%M()", IrNonNullType(this).adapterInitializer(fieldSet), nullableFun)
       }
     }
   }
-  return ofType.nonNullableAdapterInitializer()
+  return ofType.nonNullableAdapterInitializer(fieldSet)
 }
 
-private fun IrType.nonNullableAdapterInitializer(): CodeBlock {
+private fun IrType.nonNullableAdapterInitializer(fieldSet: IrFieldSet? ): CodeBlock {
   return when (this) {
     is IrNonNullType -> error("")
     is IrListType -> {
       val listFun = MemberName("com.apollographql.apollo3.api", "list")
-      CodeBlock.of("%L.%M()", ofType.adapterInitializer(), listFun)
+      CodeBlock.of("%L.%M()", ofType.adapterInitializer(fieldSet), listFun)
     }
     is IrBooleanType -> CodeBlock.of("%T", BooleanResponseAdapter::class)
     is IrIdType -> CodeBlock.of("%T", StringResponseAdapter::class)
@@ -87,7 +66,7 @@ private fun IrType.nonNullableAdapterInitializer(): CodeBlock {
     is IrFloatType -> CodeBlock.of("%T", DoubleResponseAdapter::class)
     is IrAnyType -> CodeBlock.of("%T", AnyResponseAdapter::class)
     is IrEnumType -> CodeBlock.of("%T", enum.adapterTypeName())
-    is IrCompoundType -> CodeBlock.of("%T", fieldSet.adapterTypeName()).obj(false)
+    is IrCompoundType -> CodeBlock.of("%T", fieldSet?.adapterTypeName() ?: error("Use IrField.adapterInitializer instead"))
     is IrInputObjectType -> CodeBlock.of("%T", inputObject().adapterTypeName()).obj(false)
     is IrCustomScalarType -> {
       CodeBlock.of(
@@ -98,3 +77,5 @@ private fun IrType.nonNullableAdapterInitializer(): CodeBlock {
     }
   }
 }
+
+private fun nullableScalarAdapter(name: String) = CodeBlock.of("%M", MemberName("com.apollographql.apollo3.api", name))

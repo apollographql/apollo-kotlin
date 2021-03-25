@@ -16,7 +16,6 @@ import com.apollographql.apollo3.compiler.backend.codegen.Identifier.writer
 import com.apollographql.apollo3.compiler.unified.IrField
 import com.apollographql.apollo3.compiler.unified.IrFieldSet
 import com.apollographql.apollo3.compiler.unified.codegen.helpers.adapterTypeName
-import com.apollographql.apollo3.compiler.unified.codegen.helpers.rawTypeName
 import com.apollographql.apollo3.compiler.unified.codegen.helpers.typeName
 import com.squareup.kotlinpoet.CodeBlock
 import com.squareup.kotlinpoet.FunSpec
@@ -35,8 +34,8 @@ internal fun IrField.polymorphicAdapterTypeSpecs(): List<TypeSpec> {
 }
 
 private fun IrField.polymorphicAdapterTypeSpec(): TypeSpec {
-  return TypeSpec.objectBuilder(baseFieldSet!!.modelName)
-      .addSuperinterface(ResponseAdapter::class.asTypeName().parameterizedBy(baseFieldSet.typeName()))
+  return TypeSpec.objectBuilder(typeFieldSet!!.modelName)
+      .addSuperinterface(ResponseAdapter::class.asTypeName().parameterizedBy(typeFieldSet.typeName()))
       .addProperty(responseNamesPropertySpec())
       .addFunction(polymorphicReadFromResponseFunSpec())
       .addFunction(polymorphicWriteToResponseFunSpec())
@@ -51,7 +50,7 @@ private fun responseNamesPropertySpec(): PropertySpec {
 
 private fun IrField.polymorphicReadFromResponseFunSpec(): FunSpec {
   return FunSpec.builder(fromResponse)
-      .returns(baseFieldSet!!.typeName())
+      .returns(typeFieldSet!!.typeName())
       .addParameter(reader, JsonReader::class)
       .addParameter(responseAdapterCache, ResponseAdapterCache::class)
       .addModifiers(KModifier.OVERRIDE)
@@ -90,7 +89,7 @@ private fun IrField.polymorphicWriteToResponseFunSpec(): FunSpec {
       .addModifiers(KModifier.OVERRIDE)
       .addParameter(writer, JsonWriter::class.asTypeName())
       .addParameter(responseAdapterCache, ResponseAdapterCache::class)
-      .addParameter(value, rawTypeName())
+      .addParameter(value, typeFieldSet!!.typeName())
       .addCode(polymorphicWriteToResponseCodeBlock())
       .build()
 }

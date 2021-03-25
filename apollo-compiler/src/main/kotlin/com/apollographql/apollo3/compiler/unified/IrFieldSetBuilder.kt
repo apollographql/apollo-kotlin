@@ -32,7 +32,7 @@ class IrFieldSetBuilder(
     private val schema: Schema,
     private val allGQLFragmentDefinitions: Map<String, GQLFragmentDefinition>,
     private val packageNameProvider: PackageNameProvider,
-    private val registerType: (GQLType, IrFieldSet?) -> IrType,
+    private val registerType: (GQLType) -> IrType,
 ) {
   private var cachedFragmentsFields = mutableMapOf<String, IrField>()
 
@@ -122,6 +122,7 @@ class IrFieldSetBuilder(
       // scalar type, exit early
       return this
     }
+
     val interfaces = mutableListOf<IrFieldSet>()
     val implementations = mutableListOf<IrFieldSet>()
 
@@ -169,10 +170,19 @@ class IrFieldSetBuilder(
       }
     }
 
+    /**
+     * By construction, if there is only one implementation
+     */
+    val typeFieldSet = if (implementations.size == 1) {
+      implementations.first()
+    } else {
+      interfaces.first { it.typeSet.size == 1 }
+    }
+
     return this.copy(
         interfaces = interfaces,
         implementations = implementations,
-        baseFieldSet = interfaces.maybeBaseFieldSet() ?: implementations.baseFieldSet()
+        typeFieldSet = typeFieldSet
     )
   }
 
@@ -202,7 +212,7 @@ class IrFieldSetBuilder(
         override = override || superField != null,
         fieldSets = fieldSets.map {
           if (it.typeSet.size == 1 && superField != null) {
-            it.withSuper(superField.fieldSets.baseFieldSet())
+            it.withSuper(superField.fieldSets.first { it.typeSet.size == 1 })
           } else {
             it
           }
@@ -322,20 +332,20 @@ class IrFieldSetBuilder(
       commonTypeSets = emptySet()
     }
 
-    val baseFieldSet = fieldSets.firstOrNull()
     return IrField(
         alias = alias,
         name = name,
         arguments = arguments,
         description = description,
         deprecationReason = deprecationReason,
-        type = registerType(type, baseFieldSet),
+        type = registerType(type),
         condition = condition,
         override = superFields.isNotEmpty(),
         fieldSets = fieldSets,
         requiredAsImplementation = shapeTypeSetToPossibleTypes.keys + setOf(setOf(fieldType)),
         requiredAsInterface = commonTypeSets,
-        baseFieldSet = null,
+        // will be set later on
+        typeFieldSet = null,
         implementations = emptyList(),
         interfaces = emptyList(),
     )
@@ -410,7 +420,7 @@ class IrFieldSetBuilder(
         name = name,
         value = value.coerce(argumentDefinition.type, schema).orThrow().toIr(),
         defaultValue = argumentDefinition.defaultValue?.coerce(argumentDefinition.type, schema)?.orThrow()?.toIr(),
-        type = registerType(argumentDefinition.type, null)
+        type = registerType(argumentDefinition.type)
     )
   }
 
@@ -480,6 +490,3 @@ class IrFieldSetBuilder(
     }
   }
 }
-
-internal fun List<IrFieldSet>.baseFieldSet() = first { it.typeSet.size == 1 }
-internal fun List<IrFieldSet>.maybeBaseFieldSet() = firstOrNull { it.typeSet.size == 1 }

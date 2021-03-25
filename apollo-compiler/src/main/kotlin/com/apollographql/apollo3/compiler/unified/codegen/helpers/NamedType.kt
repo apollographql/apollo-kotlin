@@ -32,9 +32,9 @@ fun NamedType.typeName(): TypeName {
 fun NamedType.adapterInitializer(): CodeBlock {
   return if (optional) {
     val inputFun = MemberName("com.apollographql.apollo3.api", "input")
-    CodeBlock.of("%L.%M()", type.adapterInitializer(), inputFun)
+    CodeBlock.of("%L.%M()", type.adapterInitializer(null), inputFun)
   } else {
-    type.adapterInitializer()
+    type.adapterInitializer(null)
   }
 }
 

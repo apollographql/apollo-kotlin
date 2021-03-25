@@ -13,11 +13,9 @@ import com.apollographql.apollo3.compiler.backend.codegen.makeDataClass
 import com.apollographql.apollo3.compiler.backend.codegen.responseFieldsPackageName
 import com.apollographql.apollo3.compiler.unified.IrOperation
 import com.apollographql.apollo3.compiler.unified.IrOperationType
-import com.apollographql.apollo3.compiler.unified.baseFieldSet
 import com.apollographql.apollo3.compiler.unified.codegen.adapter.dataResponseAdapterTypeSpecs
 import com.apollographql.apollo3.compiler.unified.codegen.adapter.inputAdapterTypeSpec
 import com.apollographql.apollo3.compiler.unified.codegen.helpers.adapterTypeName
-import com.apollographql.apollo3.compiler.unified.codegen.helpers.rawTypeName
 import com.apollographql.apollo3.compiler.unified.codegen.helpers.maybeAddDescription
 import com.apollographql.apollo3.compiler.unified.codegen.helpers.toNamedType
 import com.apollographql.apollo3.compiler.unified.codegen.helpers.toParameterSpec
@@ -94,9 +92,11 @@ private fun IrOperation.serializeVariablesFunSpec(): FunSpec = serializeVariable
 )
 
 private fun IrOperation.adapterFunSpec(): FunSpec {
+  check(dataField.typeFieldSet != null) // data is always a compound type
+
   return adapterFunSpec(
-      adapterTypeName = dataField.implementations.baseFieldSet().adapterTypeName(),
-      adaptedTypeName = dataField.rawTypeName()
+      adapterTypeName = dataField.typeFieldSet.adapterTypeName(),
+      adaptedTypeName = dataField.typeFieldSet.typeName()
   )
 }
 
@@ -115,11 +115,13 @@ private fun IrOperation.dataTypeSpecs(): List<TypeSpec> {
 }
 
 private fun IrOperation.superInterfaceType(): TypeName {
+  check(dataField.typeFieldSet != null) // data is always a compound type
+
   return when (operationType) {
     IrOperationType.Query -> Query::class.asTypeName()
     IrOperationType.Mutation -> Mutation::class.asTypeName()
     IrOperationType.Subscription -> Subscription::class.asTypeName()
-  }.parameterizedBy(dataField.baseFieldSet!!.typeName())
+  }.parameterizedBy(dataField.typeFieldSet.typeName())
 }
 
 private fun operationIdFunSpec() = FunSpec.builder("operationId")

@@ -81,7 +81,7 @@ internal fun IrFieldSet.readFromResponseCodeBlock(variableInitializer: (String) 
                 "%L·->·%L·=·%L.$fromResponse($reader, $responseAdapterCache)",
                 fieldIndex,
                 kotlinNameForVariable(field.responseName),
-                field.type.adapterInitializer()
+                field.adapterInitializer()
             )
           }.joinToCode(separator = "\n", suffix = "\n")
       )
@@ -146,7 +146,7 @@ private fun IrField.writeToResponseCodeBlock(): CodeBlock {
     addStatement("$writer.name(%S)", responseName)
     addStatement(
         "%L.$toResponse($writer, $responseAdapterCache, $value.${kotlinNameForProperty(responseName)})",
-        type.adapterInitializer()
+        adapterInitializer()
     )
   }.build()
 }

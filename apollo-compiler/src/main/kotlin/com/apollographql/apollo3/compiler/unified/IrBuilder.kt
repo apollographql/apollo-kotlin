@@ -54,8 +54,8 @@ class IrBuilder(
       schema = schema,
       allGQLFragmentDefinitions = allGQLFragmentDefinitions,
       packageNameProvider = packageNameProvider,
-      registerType = { gqlType, fieldSet ->
-        gqlType.toIr(fieldSet)
+      registerType = { gqlType ->
+        gqlType.toIr()
       }
   )
 
@@ -212,10 +212,10 @@ class IrBuilder(
   /**
    * Maps to [IrType] and also keep tracks of what types are actually used so we only generate those
    */
-  private fun GQLType.toIr(fieldSet: IrFieldSet? = null): IrType {
+  private fun GQLType.toIr(): IrType {
     return when (this) {
-      is GQLNonNullType -> IrNonNullType(ofType = type.toIr(fieldSet))
-      is GQLListType -> IrListType(ofType = type.toIr(fieldSet))
+      is GQLNonNullType -> IrNonNullType(ofType = type.toIr())
+      is GQLListType -> IrListType(ofType = type.toIr())
       is GQLNamedType -> when (val typeDefinition = schema.typeDefinition(name)) {
         is GQLScalarTypeDefinition -> {
           when (name) {
@@ -248,7 +248,7 @@ class IrBuilder(
         }
         is GQLObjectTypeDefinition,
         is GQLInterfaceTypeDefinition,
-        is GQLUnionTypeDefinition -> IrCompoundType(fieldSet ?: error("Compound object $name needs a modelPath"))
+        is GQLUnionTypeDefinition -> IrCompoundType
       }
     }
   }
