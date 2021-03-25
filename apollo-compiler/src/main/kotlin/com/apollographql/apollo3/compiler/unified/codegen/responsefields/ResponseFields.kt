@@ -3,7 +3,6 @@ package com.apollographql.apollo3.compiler.unified.codegen
 import com.apollographql.apollo3.api.ResponseField
 import com.apollographql.apollo3.api.Variable
 import com.apollographql.apollo3.compiler.backend.codegen.Identifier
-import com.apollographql.apollo3.compiler.backend.codegen.Identifier.fields
 import com.apollographql.apollo3.compiler.backend.codegen.kotlinNameForResponseFields
 import com.apollographql.apollo3.compiler.backend.codegen.responseFieldsPackageName
 import com.apollographql.apollo3.compiler.unified.BooleanExpression
@@ -118,26 +117,43 @@ private fun IrType.codeBlock(): CodeBlock {
   }
 }
 
+private fun IrListValue.codeBlock(): CodeBlock {
+  if (values.isEmpty()) {
+    // TODO: Is Nothing correct here?
+    return CodeBlock.of("emptyList<Nothing>()")
+  }
+
+  return CodeBlock.builder().apply {
+    add("listOf(\n")
+    indent()
+    values.forEach {
+      add("%L,\n", it.codeBlock())
+    }
+    unindent()
+    add(")")
+  }.build()
+}
+private fun IrObjectValue.codeBlock(): CodeBlock {
+  if (fields.isEmpty()) {
+    // TODO: Is Nothing correct here?
+    return CodeBlock.of("emptyMap<Nothing, Nothing>()")
+  }
+
+  return CodeBlock.builder().apply {
+    add("mapOf(\n")
+    indent()
+    fields.forEach {
+      add("%S to %L,\n", it.name, it.value.codeBlock())
+    }
+    unindent()
+    add(")")
+  }.build()
+}
+
 private fun IrValue.codeBlock(): CodeBlock {
   return when(this) {
-    is IrObjectValue -> CodeBlock.builder().apply {
-      addStatement("mapOf(")
-      indent()
-      fields.forEach {
-        addStatement("%S to %L,", it.name, it.value.codeBlock())
-      }
-      unindent()
-      addStatement(")")
-    }.build()
-    is IrListValue -> CodeBlock.builder().apply {
-      addStatement("listOf(")
-      indent()
-      values.forEach {
-        addStatement("%L,", it.codeBlock())
-      }
-      unindent()
-      addStatement(")")
-    }.build()
+    is IrObjectValue -> codeBlock()
+    is IrListValue -> codeBlock()
     is IrEnumValue -> CodeBlock.of("%S", value) // FIXME
     is IrIntValue -> CodeBlock.of("%L", value)
     is IrFloatValue -> CodeBlock.of("%L", value)

@@ -18,6 +18,7 @@ import com.apollographql.apollo3.compiler.frontend.coerce
 import com.apollographql.apollo3.compiler.frontend.definitionFromScope
 import com.apollographql.apollo3.compiler.frontend.findDeprecationReason
 import com.apollographql.apollo3.compiler.frontend.leafType
+import com.apollographql.apollo3.compiler.frontend.pretty
 
 /**
  * For a list of selections collect all the typeConditions.
@@ -434,9 +435,13 @@ class IrFieldSetBuilder(
       check(fieldsWithSameResponseName.map { it.alias }.distinct().size == 1)
       check(fieldsWithSameResponseName.map { it.name }.distinct().size == 1)
       check(fieldsWithSameResponseName.map { it.arguments }.distinct().size == 1)
-      check(fieldsWithSameResponseName.map { it.description }.distinct().size == 1)
+      // TODO: The same field can have different descriptions in two different objects in which case
+      // we should certainly use the interface description
+      // check(fieldsWithSameResponseName.map { it.description }.distinct().size == 1)
       check(fieldsWithSameResponseName.map { it.deprecationReason }.distinct().size == 1)
-      check(fieldsWithSameResponseName.map { it.type }.distinct().size == 1)
+      // GQLTypes might differ because of their source location. Use pretty()
+      // to canonicalize them
+      check(fieldsWithSameResponseName.map { it.type }.distinctBy { it.pretty() }.size == 1)
 
       val first = fieldsWithSameResponseName.first()
       val childSelections = fieldsWithSameResponseName.flatMap { it.selections }

@@ -48,7 +48,7 @@ fun IrType.typeName(): TypeName {
     is IrAnyType -> Any::class.asTypeName()
     is IrCustomScalarType -> customScalar.kotlinTypeName()
     is IrEnumType -> enum.typeName()
-    is IrInputObjectType -> inputObject.typeName()
+    is IrInputObjectType -> inputObject().typeName()
     is IrCompoundType -> fieldSet.typeName()
   }.copy(nullable = true)
 }
@@ -88,7 +88,7 @@ private fun IrType.nonNullableAdapterInitializer(): CodeBlock {
     is IrAnyType -> CodeBlock.of("%T", AnyResponseAdapter::class)
     is IrEnumType -> CodeBlock.of("%T", enum.adapterTypeName())
     is IrCompoundType -> CodeBlock.of("%T", fieldSet.adapterTypeName()).obj(false)
-    is IrInputObjectType -> CodeBlock.of("%T", inputObject.adapterTypeName()).obj(false)
+    is IrInputObjectType -> CodeBlock.of("%T", inputObject().adapterTypeName()).obj(false)
     is IrCustomScalarType -> {
       CodeBlock.of(
           "responseAdapterCache.responseAdapterFor<%T>(%T)",

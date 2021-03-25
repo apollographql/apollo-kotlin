@@ -227,6 +227,7 @@ object IrIdType : IrType()
 object IrAnyType : IrType()
 class IrCustomScalarType(val customScalar: IrCustomScalar) : IrType()
 class IrEnumType(val enum: IrEnum) : IrType()
-class IrInputObjectType(val inputObject: IrInputObject) : IrType()
+// InputObjects can have cycles so the inputObject is lazy
+class IrInputObjectType(val inputObject: () -> IrInputObject) : IrType()
 class IrCompoundType(val fieldSet: IrFieldSet) : IrType()
 

@@ -214,8 +214,8 @@ class IrBuilder(
    */
   private fun GQLType.toIr(fieldSet: IrFieldSet? = null): IrType {
     return when (this) {
-      is GQLNonNullType -> IrNonNullType(ofType = type.toIr())
-      is GQLListType -> IrListType(ofType = type.toIr())
+      is GQLNonNullType -> IrNonNullType(ofType = type.toIr(fieldSet))
+      is GQLListType -> IrListType(ofType = type.toIr(fieldSet))
       is GQLNamedType -> when (val typeDefinition = schema.typeDefinition(name)) {
         is GQLScalarTypeDefinition -> {
           when (name) {
@@ -239,8 +239,12 @@ class IrBuilder(
           IrEnumType(enum = irEnum)
         }
         is GQLInputObjectTypeDefinition -> {
-          val inputObject = inputObjectCache.getOrPut(name) { typeDefinition.toIr() }
-          IrInputObjectType(inputObject = inputObject)
+          // Compute the input object lazily to break circular references
+          IrInputObjectType {
+            inputObjectCache.getOrPut(name) {
+              typeDefinition.toIr()
+            }
+          }
         }
         is GQLObjectTypeDefinition,
         is GQLInterfaceTypeDefinition,
