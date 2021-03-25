@@ -149,7 +149,7 @@ class IrFieldSetBuilder(
           fieldSet
               .withSuper(fieldSet)
               .withInterfacesAndImplementations(
-                  pruneInterfaces = pruneInterfaces,
+                  pruneInterfaces = true, // for fragments we only need top level interfaces
                   addImplementations = true,
                   prefix = prefix,
                   path = path,
@@ -158,7 +158,7 @@ class IrFieldSetBuilder(
         } else {
           // Just take the fieldSet and make it an implementation
           fieldSet.withInterfacesAndImplementations(
-              pruneInterfaces = pruneInterfaces,
+              pruneInterfaces = true, // for fragments we only need top level interfaces
               addImplementations = true,
               prefix = prefix,
               path = path,
