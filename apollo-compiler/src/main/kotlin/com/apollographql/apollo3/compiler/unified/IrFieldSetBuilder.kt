@@ -255,7 +255,7 @@ class IrFieldSetBuilder(
       val collectionResult = FragmentCollectionScope(selections, type.leafType().name, allGQLFragmentDefinitions).collect()
       val typeConditions = collectionResult.typeSet.union()
 
-      shapeTypeSetToPossibleTypes = computeShapes(schema, typeConditions)
+      shapeTypeSetToPossibleTypes = computeShapes(schema, fieldType, typeConditions)
 
       /**
        * Always add the base fieldType in case new types are added to the schema
@@ -268,6 +268,7 @@ class IrFieldSetBuilder(
        */
       commonTypeSets = shapesTypeSets.toList().pairs()
           .map { it.first.intersect(it.second) }
+          .filter { it.isNotEmpty() }
           .toSet()
 
       val fragmentFields = collectionResult.namedFragments.map { collectedFragment ->
@@ -290,7 +291,7 @@ class IrFieldSetBuilder(
 
       /**
        * Build the field sets starting from the less qualified so we can look up the super
-       * interfaces in fieldSetCache when needed
+       * interfaces in cachedFieldSets when needed
        */
       fieldSets = allTypeSets.sortedBy { it.size }.map { typeSet ->
         val modelName = modelName(typeSet, fieldType, responseName)

@@ -14,17 +14,14 @@ internal typealias TypeSet = Set<String>
 internal typealias PossibleTypes = Set<String>
 
 /**
- * Return the different possible shapes
+ * Return the different possible shapes for all concrete types that satisfy [fieldType]
  *
- * Note that this is not linked to the fragments typeSets
- *
- * If fragment typeSets are [[A],[A,B],[A,B,C],[A,B,D]]
- *
- * A type implementing [A,B,C,D] will match to [A,B,C,D]
  */
-internal fun computeShapes(schema: Schema, typeConditions: Set<String>): Map<TypeSet, PossibleTypes> {
+internal fun computeShapes(schema: Schema, fieldType: String, typeConditions: Set<String>): Map<TypeSet, PossibleTypes> {
+  val possibleTypes = schema.typeDefinition(fieldType).possibleTypes(schema)
+
   val typeConditionToPossibleTypes = typeConditions.map {
-    it to schema.typeDefinition(it).possibleTypes(schema)
+    it to schema.typeDefinition(it).possibleTypes(schema).intersect(possibleTypes)
   }
 
   return schema.typeDefinitions.values.filterIsInstance<GQLObjectTypeDefinition>()
