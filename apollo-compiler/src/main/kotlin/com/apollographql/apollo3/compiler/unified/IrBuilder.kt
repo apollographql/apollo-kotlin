@@ -46,9 +46,10 @@ class IrBuilder(
     private val packageNameProvider: PackageNameProvider,
 ) {
   private val allGQLFragmentDefinitions = (metadataFragmentDefinitions + fragmentDefinitions).associateBy { it.name }
-  private var enumCache = mutableMapOf<String, IrEnum>()
-  private var inputObjectCache = mutableMapOf<String, IrInputObject>()
-  private var customScalarCache = mutableMapOf<String, IrCustomScalar>()
+  private val enumCache = mutableMapOf<String, IrEnum>()
+  private val inputObjectCache = mutableMapOf<String, IrInputObject>()
+  private val customScalarCache = mutableMapOf<String, IrCustomScalar>()
+  private val inputObjectsToGenerate = mutableListOf<String>()
 
   private val fieldSetBuilder = IrFieldSetBuilder(
       schema = schema,
@@ -64,6 +65,12 @@ class IrBuilder(
   fun build(): IntermediateRepresentation {
     val operations = operationDefinitions.map { it.toIr() }
     val fragments = allGQLFragmentDefinitions.values.map { it.toIr() }
+
+    // fill in the input object cache before we return
+    while (inputObjectsToGenerate.isNotEmpty()) {
+      val name = inputObjectsToGenerate.removeAt(0)
+      inputObjectCache[name] = (schema.typeDefinition(name) as GQLInputObjectTypeDefinition).toIr()
+    }
 
     return IntermediateRepresentation(
         operations = operations,
@@ -239,11 +246,12 @@ class IrBuilder(
           IrEnumType(enum = irEnum)
         }
         is GQLInputObjectTypeDefinition -> {
+          if (inputObjectCache[name] == null) {
+            inputObjectsToGenerate.add(name)
+          }
           // Compute the input object lazily to break circular references
           IrInputObjectType {
-            inputObjectCache.getOrPut(name) {
-              typeDefinition.toIr()
-            }
+            inputObjectCache[name]!!
           }
         }
         is GQLObjectTypeDefinition,
