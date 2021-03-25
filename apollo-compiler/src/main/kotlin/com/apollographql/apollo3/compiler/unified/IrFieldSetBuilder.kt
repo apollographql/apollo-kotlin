@@ -256,15 +256,18 @@ class IrFieldSetBuilder(
       val typeConditions = collectionResult.typeSet.union()
 
       shapeTypeSetToPossibleTypes = computeShapes(schema, typeConditions)
-      val shapesTypeSets = shapeTypeSetToPossibleTypes.keys
+
+      /**
+       * Always add the base fieldType in case new types are added to the schema
+       */
+      val shapesTypeSets = shapeTypeSetToPossibleTypes.keys + setOf(setOf(fieldType))
 
       /**
        * Generate the common interfaces
        * We need those to access the shapes in a generic way
        */
-      commonTypeSets = shapesTypeSets.toList().combinations()
-          .filter { it.size >= 2 }
-          .map { it.intersection() }
+      commonTypeSets = shapesTypeSets.toList().pairs()
+          .map { it.first.intersect(it.second) }
           .toSet()
 
       val fragmentFields = collectionResult.namedFragments.map { collectedFragment ->
@@ -283,10 +286,7 @@ class IrFieldSetBuilder(
 
       val responseName = alias ?: name
 
-      /**
-       * Always add the base fieldType in case new types are added to the schema
-       */
-      val allTypeSets = commonTypeSets + shapesTypeSets + setOf(setOf(fieldType))
+      val allTypeSets = commonTypeSets + shapesTypeSets
 
       /**
        * Build the field sets starting from the less qualified so we can look up the super
