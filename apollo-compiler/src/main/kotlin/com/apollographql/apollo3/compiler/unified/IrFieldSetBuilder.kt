@@ -171,7 +171,7 @@ class IrFieldSetBuilder(
     }
 
     /**
-     * By construction, if there is only one implementation
+     * By construction, if there is only one implementation it will be used as type
      */
     val typeFieldSet = if (implementations.size == 1) {
       implementations.first()
@@ -316,7 +316,6 @@ class IrFieldSetBuilder(
         }
 
         buildFieldSet(
-            cachedInterfacesFieldSets = cachedFieldSets,
             selections = selections,
             fieldType = fieldType,
             typeSet = typeSet,
@@ -324,7 +323,9 @@ class IrFieldSetBuilder(
             possibleTypes = shapeTypeSetToPossibleTypes[typeSet] ?: emptySet(),
             superFieldSets = superFragmentFieldSets + listOfNotNull(superFieldSet) + relatedFieldSets,
             path = path,
-        )
+        ).also {
+          cachedFieldSets[typeSet] = it
+        }
       }
     } else {
       fieldSets = emptyList()
@@ -425,7 +426,6 @@ class IrFieldSetBuilder(
   }
 
   private fun buildFieldSet(
-      cachedInterfacesFieldSets: MutableMap<TypeSet, IrFieldSet>,
       selections: List<GQLSelection>,
       fieldType: String,
       typeSet: TypeSet,
@@ -483,10 +483,6 @@ class IrFieldSetBuilder(
         fields = fields,
         implements = implements,
         path = path,
-    ).also {
-      if (possibleTypes.isEmpty()) {
-        cachedInterfacesFieldSets[typeSet] = it
-      }
-    }
+    )
   }
 }
