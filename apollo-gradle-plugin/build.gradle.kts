@@ -28,7 +28,7 @@ fun addShadowImplementation(dependency: Dependency) {
    * 1. it's less bytes to download and load as the stdlib should be on the classpath already
    * 2. there's a weird bug where trying to relocate the stdlib will also rename the "kotlin"
    * strings inside the plugin so something like `extensions.findByName("kotlin")` becomes
-   * `extensions.findByName("com.apollographql.relocated")
+   * `extensions.findByName("com.apollographql.relocated.kotlin")
    * See https://github.com/johnrengelman/shadow/issues/232 for more details
    */
   dependency.exclude(group  = "org.jetbrains.kotlin", module = "kotlin-stdlib")
