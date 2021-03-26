@@ -31,10 +31,12 @@ fun addShadowImplementation(dependency: Dependency) {
    * `extensions.findByName("com.apollographql.relocated.kotlin")
    * See https://github.com/johnrengelman/shadow/issues/232 for more details
    */
-  dependency.exclude(group  = "org.jetbrains.kotlin", module = "kotlin-stdlib")
-  dependency.exclude(group  = "org.jetbrains.kotlin", module = "kotlin-stdlib-jdk7")
-  dependency.exclude(group  = "org.jetbrains.kotlin", module = "kotlin-stdlib-jdk8")
-  dependency.exclude(group  = "org.jetbrains.kotlin", module = "kotlin-stdlib-common")
+  dependency.exclude(group = "org.jetbrains.kotlin", module = "kotlin-stdlib")
+  dependency.exclude(group = "org.jetbrains.kotlin", module = "kotlin-stdlib-jdk7")
+  dependency.exclude(group = "org.jetbrains.kotlin", module = "kotlin-stdlib-jdk8")
+  dependency.exclude(group = "org.jetbrains.kotlin", module = "kotlin-stdlib-common")
+  dependency.exclude(group = "org.jetbrains.kotlin", module = "kotlin-reflect")
+
   dependencies.add("shadowImplementation", dependency)
 }
 dependencies {
@@ -59,16 +61,42 @@ val shadowPrefix = "com.apollographql.relocated"
 
 shadowJarTask.configure {
   configurations = listOf(shadowImplementation)
+
+  /**
+   * This list is built by unzipping the fatjar and looking at .class files inside with something like:
+   *
+   * val dir  = args[0]
+   * val classPaths = File(dir).walk().filter { it.isFile }.map {
+   *   it.parentFile.relativeTo(File(dir)).path.replace("/", ".")
+   * }.distinct().sorted()
+   *
+   * Things to consider:
+   * - We do not ship kotlin-stdlib in the fat jar as it should be provided by Gradle already (see [addShadowImplementation])
+   * - I'm hoping kotlin-reflect is also provided by Gradle. In the tests I've made, it looks like it is and relocating it fails
+   * with java.lang.NoSuchMethodError: 'com.apollographql.relocated.kotlin.reflect.KClass kotlin.jvm.internal.Reflection.getOrCreateKotlinClass(java.lang.Class)
+   * - We do not relocate "com.apollographql.apollo.*" as the codegen has a lot of hardcoded strings inside that shouldn't be relocated
+   * as they are used at runtime
+   * - If we relocate a deep dependency (such as okio), we must relocate all intermediate dependencies (such as moshi/okhttp) or else
+   * this will clash with any other version in the classpath
+   * - When there are multiple subpackages, we usually include a shared prefx package to avoid this list being huge... But we don't
+   * want these packages to be too short either as it increases the risk of a string being renamed
+   */
+  listOf(
+      "com.benasher44.uuid",
+      "com.ibm.icu",
+      "com.squareup.kotlinpoet",
+      "com.squareup.moshi",
+      "javax.json",
+      "okhttp3",
+      "okio",
+      "org.abego.treelayout",
+      "org.antlr",
+      "org.glassfish.json",
+      "org.stringtemplate.v4",
+  ).forEach { packageName ->
+    relocate(packageName, "com.apollographql.relocated.$packageName")
+  }
 }
-
-
-val relocateShadowJarTaskProvider = tasks.register(
-    "relocateShadowJar",
-    com.github.jengelman.gradle.plugins.shadow.tasks.ConfigureShadowRelocation::class.java) {
-  target = shadowJarTask.get()
-}
-
-shadowJarTask.dependsOn(relocateShadowJarTaskProvider)
 
 tasks.getByName("jar").enabled = false
 tasks.getByName("jar").dependsOn(shadowJarTask)
