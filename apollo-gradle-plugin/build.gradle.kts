@@ -42,14 +42,14 @@ fun addShadowImplementation(dependency: Dependency) {
 dependencies {
   compileOnly(gradleApi())
   compileOnly(groovy.util.Eval.x(project, "x.dep.kotlin.plugin"))
-  compileOnly(groovy.util.Eval.x(project, "x.dep.android.minPlugin").toString())
+  compileOnly(groovy.util.Eval.x(project, "x.dep.android.minPlugin"))
 
   addShadowImplementation(project(":apollo-compiler"))
   addShadowImplementation(project(":apollo-api"))
 
   addShadowImplementation(create(groovy.util.Eval.x(project, "x.dep.okHttp.okHttp4")))
   // Needed for manual Json construction in `SchemaDownloader`
-  addShadowImplementation(create(groovy.util.Eval.x(project, "x.dep.moshi.moshi").toString()))
+  addShadowImplementation(create(groovy.util.Eval.x(project, "x.dep.moshi.moshi")))
 
   testImplementation(groovy.util.Eval.x(project, "x.dep.junit"))
   testImplementation(groovy.util.Eval.x(project, "x.dep.truth"))
@@ -80,6 +80,7 @@ shadowJarTask.configure {
    * this will clash with any other version in the classpath
    * - When there are multiple subpackages, we usually include a shared prefx package to avoid this list being huge... But we don't
    * want these packages to be too short either as it increases the risk of a string being renamed
+   * - It would be nice to remove antlr4 and just have antlr4-runtime in the classpath ultimately. Not sure how that would work though.
    */
   listOf(
       "com.benasher44.uuid",
