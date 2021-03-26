@@ -8,7 +8,7 @@ plugins {
 
 dependencies {
   antlr(groovy.util.Eval.x(project, "x.dep.antlr.antlr"))
-  api(groovy.util.Eval.x(project, "x.dep.antlr.runtime"))
+  implementation(groovy.util.Eval.x(project, "x.dep.antlr.runtime"))
   implementation(groovy.util.Eval.x(project, "x.dep.moshi.adapters"))
   implementation(groovy.util.Eval.x(project, "x.dep.moshi.moshi"))
   implementation(groovy.util.Eval.x(project, "x.dep.poet.kotlin"))
