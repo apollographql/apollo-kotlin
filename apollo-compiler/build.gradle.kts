@@ -25,7 +25,7 @@ dependencies {
 // Only expose the antlr runtime dependency
 // See https://github.com/gradle/gradle/issues/820#issuecomment-288838412
 configurations[JavaPlugin.API_CONFIGURATION_NAME].let { apiConfiguration ->
-  apiConfiguration.setExtendsFrom(apiConfiguration.extendsFrom.filter { it.name != "antlr" }.toSet())
+  apiConfiguration.setExtendsFrom(apiConfiguration.extendsFrom.filter { it.name != "antlr" })
 }
 
 abstract class GeneratePluginVersion : DefaultTask() {
