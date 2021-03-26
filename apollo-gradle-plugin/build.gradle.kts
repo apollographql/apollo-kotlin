@@ -1,3 +1,5 @@
+import com.android.build.gradle.internal.tasks.factory.dependsOn
+
 plugins {
   kotlin("jvm")
   id("java-gradle-plugin")
@@ -19,18 +21,33 @@ val shadowImplementation by configurations.creating
 configurations["compileOnly"].extendsFrom(shadowImplementation)
 configurations["testImplementation"].extendsFrom(shadowImplementation)
 
+fun addShadowImplementation(dependency: Dependency) {
+  dependency as ModuleDependency
+  /**
+   * Exclude the kotlin-stdlib from the fatjar because:
+   * 1. it's less bytes to download and load as the stdlib should be on the classpath already
+   * 2. there's a weird bug where trying to relocate the stdlib will also rename the "kotlin"
+   * strings inside the plugin so something like `extensions.findByName("kotlin")` becomes
+   * `extensions.findByName("com.apollographql.relocated")
+   * See https://github.com/johnrengelman/shadow/issues/232 for more details
+   */
+  dependency.exclude(group  = "org.jetbrains.kotlin", module = "kotlin-stdlib")
+  dependency.exclude(group  = "org.jetbrains.kotlin", module = "kotlin-stdlib-jdk7")
+  dependency.exclude(group  = "org.jetbrains.kotlin", module = "kotlin-stdlib-jdk8")
+  dependency.exclude(group  = "org.jetbrains.kotlin", module = "kotlin-stdlib-common")
+  dependencies.add("shadowImplementation", dependency)
+}
 dependencies {
   compileOnly(gradleApi())
   compileOnly(groovy.util.Eval.x(project, "x.dep.kotlin.plugin"))
-  compileOnly(groovy.util.Eval.x(project, "x.dep.android.minPlugin"))
-  // kotlin-reflect is transitively pulled by the android plugin, make it explicit so that it uses the same version as the rest of kotlin libs
-  compileOnly(groovy.util.Eval.x(project, "x.dep.kotlin.reflect"))
+  compileOnly(groovy.util.Eval.x(project, "x.dep.android.minPlugin").toString())
 
-  shadowImplementation(project(":apollo-compiler"))
-  shadowImplementation(project(":apollo-api"))
-  shadowImplementation(groovy.util.Eval.x(project, "x.dep.okHttp.okHttp4").toString())
+  addShadowImplementation(project(":apollo-compiler"))
+  addShadowImplementation(project(":apollo-api"))
+
+  addShadowImplementation(create(groovy.util.Eval.x(project, "x.dep.okHttp.okHttp4")))
   // Needed for manual Json construction in `SchemaDownloader`
-  shadowImplementation(groovy.util.Eval.x(project, "x.dep.moshi.moshi").toString())
+  addShadowImplementation(create(groovy.util.Eval.x(project, "x.dep.moshi.moshi").toString()))
 
   testImplementation(groovy.util.Eval.x(project, "x.dep.junit"))
   testImplementation(groovy.util.Eval.x(project, "x.dep.truth"))
@@ -42,10 +59,16 @@ val shadowPrefix = "com.apollographql.relocated"
 
 shadowJarTask.configure {
   configurations = listOf(shadowImplementation)
-  relocate("org.antlr", "com.apollographql.relocated.org.antlr")
-  relocate("okio", "com.apollographql.relocated.okio")
-  relocate("okhttp3", "com.apollographql.relocated.okhttp3")
 }
+
+
+val relocateShadowJarTaskProvider = tasks.register(
+    "relocateShadowJar",
+    com.github.jengelman.gradle.plugins.shadow.tasks.ConfigureShadowRelocation::class.java) {
+  target = shadowJarTask.get()
+}
+
+shadowJarTask.dependsOn(relocateShadowJarTaskProvider)
 
 tasks.getByName("jar").enabled = false
 tasks.getByName("jar").dependsOn(shadowJarTask)
