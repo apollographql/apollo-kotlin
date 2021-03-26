@@ -85,7 +85,6 @@ shadowJarTask.configure {
       "com.benasher44.uuid",
       "com.squareup.kotlinpoet",
       "com.squareup.moshi",
-      "javax.json",
       "okhttp3",
       "okio",
       "org.antlr",
