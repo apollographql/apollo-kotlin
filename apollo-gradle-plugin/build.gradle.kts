@@ -80,20 +80,15 @@ shadowJarTask.configure {
    * this will clash with any other version in the classpath
    * - When there are multiple subpackages, we usually include a shared prefx package to avoid this list being huge... But we don't
    * want these packages to be too short either as it increases the risk of a string being renamed
-   * - It would be nice to remove antlr4 and just have antlr4-runtime in the classpath ultimately. Not sure how that would work though.
    */
   listOf(
       "com.benasher44.uuid",
-      "com.ibm.icu",
       "com.squareup.kotlinpoet",
       "com.squareup.moshi",
       "javax.json",
       "okhttp3",
       "okio",
-      "org.abego.treelayout",
       "org.antlr",
-      "org.glassfish.json",
-      "org.stringtemplate.v4",
   ).forEach { packageName ->
     relocate(packageName, "com.apollographql.relocated.$packageName")
   }
