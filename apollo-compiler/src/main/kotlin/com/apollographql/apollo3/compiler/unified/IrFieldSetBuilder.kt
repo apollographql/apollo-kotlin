@@ -57,7 +57,6 @@ class IrFieldSetBuilder(
         pruneInterfaces = true,
         addImplementations = true,
         prefix = { "Other$it" },
-        path = path
     )
   }
 
@@ -90,7 +89,6 @@ class IrFieldSetBuilder(
         pruneInterfaces = false,
         addImplementations = true,
         prefix = { "${it}Impl" },
-        path = path
     )
   }
 
@@ -117,7 +115,6 @@ class IrFieldSetBuilder(
       pruneInterfaces: Boolean,
       addImplementations: Boolean,
       prefix: (String) -> String,
-      path: ModelPath,
   ): IrField {
     if (fieldSets.isEmpty()) {
       // scalar type, exit early
@@ -138,8 +135,6 @@ class IrFieldSetBuilder(
             pruneInterfaces = false,
             addImplementations = false,
             prefix = prefix,
-            path = path,
-            modelName = fieldSet.modelName,
         )
         interfaces.add(iface)
       }
@@ -149,13 +144,11 @@ class IrFieldSetBuilder(
           // both an interface and an implementation
           // make the implementation inherit the interface
           fieldSet
-              .withSuper(fieldSet)
+              .withSuper(fieldSet.path, prefix(fieldSet.modelName), listOf(fieldSet))
               .withInterfacesAndImplementations(
                   pruneInterfaces = true, // for fragments we only need top level interfaces
                   addImplementations = true,
                   prefix = prefix,
-                  path = path,
-                  modelName = prefix(fieldSet.modelName),
               )
         } else {
           // Just take the fieldSet and make it an implementation
@@ -163,8 +156,6 @@ class IrFieldSetBuilder(
               pruneInterfaces = true, // for fragments we only need top level interfaces
               addImplementations = true,
               prefix = prefix,
-              path = path,
-              modelName = fieldSet.modelName,
           )
         }
         implementations.add(implementation)
@@ -191,43 +182,56 @@ class IrFieldSetBuilder(
       pruneInterfaces: Boolean,
       addImplementations: Boolean,
       prefix: (String) -> String,
-      path: ModelPath,
-      modelName: String,
   ): IrFieldSet {
     return this.copy(
-        modelName = modelName,
         fields = fields.map { field ->
           field.withInterfacesAndImplementations(
               pruneInterfaces,
               addImplementations,
               prefix,
-              path + modelName,
           )
         },
-        path = path,
     )
   }
 
-  private fun IrField.withSuper(superField: IrField?): IrField {
-    return copy(
-        override = override || superField != null,
-        fieldSets = fieldSets.map {
-          if (it.typeSet.size == 1 && superField != null) {
-            it.withSuper(superField.fieldSets.first { it.typeSet.size == 1 })
-          } else {
-            it
-          }
+  private fun IrField.withSuper(path: ModelPath, superFields: List<IrField>): IrField {
+    val cachedFieldSets = mutableListOf<IrFieldSet>()
+
+    val fieldSets = fieldSets.sortedBy { it.typeSet.size }.map { fieldSet ->
+      val relatedFieldSets = superFields.mapNotNull { field ->
+        field.fieldSets.sortedByDescending { it.typeSet.size }
+            .firstOrNull {
+              fieldSet.typeSet.implements(it.typeSet)
+            }
+      }
+
+      val superFieldSet = cachedFieldSets
+        .sortedByDescending { it.typeSet.size }
+        .firstOrNull {
+          it.typeSet.size < fieldSet.typeSet.size && fieldSet.typeSet.implements(it.typeSet)
         }
+
+      fieldSet.withSuper(path, fieldSet.modelName, relatedFieldSets + listOfNotNull(superFieldSet)).also {
+        cachedFieldSets.add(0, it)
+      }
+    }
+    return copy(
+        override = true,
+        fieldSets = fieldSets
     )
   }
 
-  private fun IrFieldSet.withSuper(fieldSet: IrFieldSet): IrFieldSet {
+  private fun IrFieldSet.withSuper(path: ModelPath, modelName: String, superFieldSets: List<IrFieldSet>): IrFieldSet {
     return copy(
+        path = path,
+        modelName = modelName,
         fields = fields.map { field ->
-          val superField = fieldSet.fields.firstOrNull { it.responseName == field.responseName }
-          field.withSuper(superField)
+          val superFields = superFieldSets.mapNotNull {
+            it.fields.firstOrNull { it.responseName == field.responseName }
+          }
+          field.withSuper(path + modelName, superFields)
         },
-        implements = implements + setOf(fieldSet.fullPath)
+        implements = superFieldSets.map { it.fullPath }.toSet()
     )
   }
 
@@ -248,7 +252,7 @@ class IrFieldSetBuilder(
       path: ModelPath,
   ): IrField {
     val fieldSets: List<IrFieldSet>
-    val shapeTypeSetToPossibleTypes: Map<TypeSet, PossibleTypes>
+    val shapesTypeSets: Set<TypeSet>
     val commonTypeSets: Set<TypeSet>
     val fieldType = type.leafType().name
 
@@ -256,12 +260,12 @@ class IrFieldSetBuilder(
       val collectionResult = FragmentCollectionScope(selections, type.leafType().name, allGQLFragmentDefinitions).collect()
       val typeConditions = collectionResult.typeSet.union()
 
-      shapeTypeSetToPossibleTypes = computeShapes(schema, fieldType, typeConditions)
+      val shapeTypeSetToPossibleTypes = computeShapes(schema, fieldType, typeConditions)
 
       /**
        * Always add the base fieldType in case new types are added to the schema
        */
-      val shapesTypeSets = shapeTypeSetToPossibleTypes.keys + setOf(setOf(fieldType))
+      shapesTypeSets = shapeTypeSetToPossibleTypes.keys + setOf(setOf(fieldType))
 
       /**
        * Generate the common interfaces
@@ -331,7 +335,7 @@ class IrFieldSetBuilder(
       }
     } else {
       fieldSets = emptyList()
-      shapeTypeSetToPossibleTypes = emptyMap()
+      shapesTypeSets = emptySet()
       commonTypeSets = emptySet()
     }
 
@@ -345,7 +349,7 @@ class IrFieldSetBuilder(
         condition = condition,
         override = superFields.isNotEmpty(),
         fieldSets = fieldSets,
-        requiredAsImplementation = shapeTypeSetToPossibleTypes.keys + setOf(setOf(fieldType)),
+        requiredAsImplementation = shapesTypeSets,
         requiredAsInterface = commonTypeSets,
         // will be set later on
         typeFieldSet = null,

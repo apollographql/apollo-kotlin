@@ -5,7 +5,17 @@
 //
 package com.example.arguments_simple.type
 
+import com.apollographql.apollo3.api.CustomScalar
+
 /**
  * Auto generated constants for custom scalars. Use them to register your [ResponseAdapter]s
  */
-object CustomScalars
+object CustomScalars {
+  /**
+   * The `Date` scalar type represents date format.
+   *
+   * No mapping was registered for this custom scalar. Use the Gradle plugin [customScalarsMapping]
+   * option to add one.
+   */
+  val Date: CustomScalar = CustomScalar("Date", null)
+}

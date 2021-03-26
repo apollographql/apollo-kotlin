@@ -13,7 +13,6 @@ import com.apollographql.apollo3.api.StringResponseAdapter
 import com.apollographql.apollo3.api.json.JsonReader
 import com.apollographql.apollo3.api.json.JsonWriter
 import com.apollographql.apollo3.api.nullable
-import com.apollographql.apollo3.api.obj
 import com.example.hero_name.TestQuery
 import kotlin.Any
 import kotlin.String
@@ -28,7 +27,7 @@ object TestQuery_ResponseAdapter {
       var hero: TestQuery.Data.Hero? = null
       while(true) {
         when (reader.selectName(RESPONSE_NAMES)) {
-          0 -> hero = Hero.obj().nullable().fromResponse(reader, responseAdapterCache)
+          0 -> hero = Hero.nullable().fromResponse(reader, responseAdapterCache)
           else -> break
         }
       }
@@ -43,7 +42,7 @@ object TestQuery_ResponseAdapter {
       value: TestQuery.Data
     ) {
       writer.name("hero")
-      Hero.obj().nullable().toResponse(writer, responseAdapterCache, value.hero)
+      Hero.nullable().toResponse(writer, responseAdapterCache, value.hero)
     }
 
     object Hero : ResponseAdapter<TestQuery.Data.Hero> {
