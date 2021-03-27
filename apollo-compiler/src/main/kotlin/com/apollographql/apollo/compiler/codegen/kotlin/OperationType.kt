@@ -23,7 +23,6 @@ import com.apollographql.apollo.compiler.codegen.kotlin.KotlinCodeGen.createMapp
 import com.apollographql.apollo.compiler.codegen.kotlin.KotlinCodeGen.marshallerFunSpec
 import com.apollographql.apollo.compiler.codegen.kotlin.KotlinCodeGen.responseFieldsPropertySpec
 import com.apollographql.apollo.compiler.codegen.kotlin.KotlinCodeGen.suppressWarningsAnnotation
-import com.apollographql.apollo.compiler.codegen.kotlin.KotlinCodeGen.toDefaultValueCodeBlock
 import com.apollographql.apollo.compiler.codegen.kotlin.KotlinCodeGen.toMapperFun
 import com.squareup.kotlinpoet.ClassName
 import com.squareup.kotlinpoet.CodeBlock
@@ -38,9 +37,6 @@ import com.squareup.kotlinpoet.TypeSpec
 import com.squareup.kotlinpoet.asClassName
 import com.squareup.kotlinpoet.asTypeName
 import com.squareup.kotlinpoet.joinToCode
-import okio.Buffer
-import okio.BufferedSource
-import okio.ByteString
 
 private val DEFAULT_SCALAR_TYPE_ADAPTERS = MemberName(ScalarTypeAdapters.Companion::class.asClassName(), "DEFAULT")
 
@@ -265,7 +261,7 @@ private fun ObjectType.toOperationDataTypeSpec(name: String, generateAsInternal:
 
 private fun OperationType.parseWithAdaptersFunSpec() = FunSpec.builder("parse")
     .addModifiers(KModifier.OVERRIDE)
-    .addParameter(ParameterSpec("source", BufferedSource::class.asTypeName()))
+    .addParameter(ParameterSpec("source", OkioKotlinTypeName.BufferedSource))
     .addParameter(ParameterSpec("scalarTypeAdapters", ScalarTypeAdapters::class.asTypeName()))
     .throwsMultiplatformIOException()
     .returns(responseReturnType())
@@ -274,16 +270,16 @@ private fun OperationType.parseWithAdaptersFunSpec() = FunSpec.builder("parse")
 
 private fun OperationType.parseByteStringWithAdaptersFunSpec() = FunSpec.builder("parse")
     .addModifiers(KModifier.OVERRIDE)
-    .addParameter(ParameterSpec("byteString", ByteString::class.asTypeName()))
+    .addParameter(ParameterSpec("byteString", OkioKotlinTypeName.ByteString))
     .addParameter(ParameterSpec("scalarTypeAdapters", ScalarTypeAdapters::class.asTypeName()))
     .throwsMultiplatformIOException()
     .returns(responseReturnType())
-    .addStatement("return parse(%T().write(byteString), scalarTypeAdapters)", Buffer::class)
+    .addStatement("return parse(%T().write(byteString), scalarTypeAdapters)", OkioKotlinTypeName.Buffer)
     .build()
 
 private fun OperationType.parseFunSpec() = FunSpec.builder("parse")
     .addModifiers(KModifier.OVERRIDE)
-    .addParameter(ParameterSpec("source", BufferedSource::class.asTypeName()))
+    .addParameter(ParameterSpec("source", OkioKotlinTypeName.BufferedSource))
     .throwsMultiplatformIOException()
     .returns(responseReturnType())
     .addStatement("return parse(source, %M)", DEFAULT_SCALAR_TYPE_ADAPTERS)
@@ -291,7 +287,7 @@ private fun OperationType.parseFunSpec() = FunSpec.builder("parse")
 
 private fun OperationType.parseByteStringFunSpec() = FunSpec.builder("parse")
     .addModifiers(KModifier.OVERRIDE)
-    .addParameter(ParameterSpec("byteString", ByteString::class.asTypeName()))
+    .addParameter(ParameterSpec("byteString", OkioKotlinTypeName.ByteString))
     .throwsMultiplatformIOException()
     .returns(responseReturnType())
     .addStatement("return parse(byteString, %M)", DEFAULT_SCALAR_TYPE_ADAPTERS)
@@ -303,7 +299,7 @@ private fun composeRequestBodyFunSpec(): FunSpec {
   return FunSpec.builder("composeRequestBody")
       .addModifiers(KModifier.OVERRIDE)
       .addParameter(ParameterSpec("scalarTypeAdapters", ScalarTypeAdapters::class.asTypeName()))
-      .returns(ByteString::class)
+      .returns(OkioKotlinTypeName.ByteString)
       .addCode(
           CodeBlock.builder()
               .add("return %T.compose(\n", OperationRequestBodyComposer::class)
@@ -322,7 +318,7 @@ private fun composeRequestBodyFunSpec(): FunSpec {
 private fun composeRequestBodyWithDefaultAdaptersFunSpec(): FunSpec {
   return FunSpec.builder("composeRequestBody")
       .addModifiers(KModifier.OVERRIDE)
-      .returns(ByteString::class)
+      .returns(OkioKotlinTypeName.ByteString)
       .addCode(
           CodeBlock.builder()
               .add("return %T.compose(\n", OperationRequestBodyComposer::class)
@@ -344,7 +340,7 @@ private fun composeRequestBodyFunSpecForQuery(): FunSpec {
       .addParameter(ParameterSpec("autoPersistQueries", Boolean::class.asTypeName()))
       .addParameter(ParameterSpec("withQueryDocument", Boolean::class.asTypeName()))
       .addParameter(ParameterSpec("scalarTypeAdapters", ScalarTypeAdapters::class.asTypeName()))
-      .returns(ByteString::class)
+      .returns(OkioKotlinTypeName.ByteString)
       .addCode(
           CodeBlock.builder()
               .add("return %T.compose(\n", OperationRequestBodyComposer::class)
