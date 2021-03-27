@@ -144,7 +144,7 @@ class IrFieldSetBuilder(
           // both an interface and an implementation
           // make the implementation inherit the interface
           fieldSet
-              .withSuper(fieldSet.path, prefix(fieldSet.modelName), listOf(fieldSet))
+              .duplicate(fieldSet.path, prefix(fieldSet.modelName), listOf(fieldSet))
               .withInterfacesAndImplementations(
                   pruneInterfaces = true, // for fragments we only need top level interfaces
                   addImplementations = true,
@@ -194,7 +194,7 @@ class IrFieldSetBuilder(
     )
   }
 
-  private fun IrField.withSuper(path: ModelPath, superFields: List<IrField>): IrField {
+  private fun IrField.duplicate(path: ModelPath, superFields: List<IrField>): IrField {
     val cachedFieldSets = mutableListOf<IrFieldSet>()
 
     val fieldSets = fieldSets.sortedBy { it.typeSet.size }.map { fieldSet ->
@@ -211,7 +211,7 @@ class IrFieldSetBuilder(
           it.typeSet.size < fieldSet.typeSet.size && fieldSet.typeSet.implements(it.typeSet)
         }
 
-      fieldSet.withSuper(path, fieldSet.modelName, relatedFieldSets + listOfNotNull(superFieldSet)).also {
+      fieldSet.duplicate(path, fieldSet.modelName, relatedFieldSets + listOfNotNull(superFieldSet)).also {
         cachedFieldSets.add(0, it)
       }
     }
@@ -221,7 +221,7 @@ class IrFieldSetBuilder(
     )
   }
 
-  private fun IrFieldSet.withSuper(path: ModelPath, modelName: String, superFieldSets: List<IrFieldSet>): IrFieldSet {
+  private fun IrFieldSet.duplicate(path: ModelPath, modelName: String, superFieldSets: List<IrFieldSet>): IrFieldSet {
     return copy(
         path = path,
         modelName = modelName,
@@ -229,7 +229,7 @@ class IrFieldSetBuilder(
           val superFields = superFieldSets.mapNotNull {
             it.fields.firstOrNull { it.responseName == field.responseName }
           }
-          field.withSuper(path + modelName, superFields)
+          field.duplicate(path + modelName, superFields)
         },
         implements = superFieldSets.map { it.fullPath }.toSet()
     )
