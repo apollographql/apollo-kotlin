@@ -45,9 +45,9 @@ internal fun IrInputObject.adapterTypeSpec(): TypeSpec {
   }.inputAdapterTypeSpec(adapterName, typeName())
 }
 
-internal fun IrInputObject.qualifiedTypeSpecs(): List<QualifiedTypeSpec> {
+internal fun IrInputObject.qualifiedTypeSpecs(): List<ApolloFileSpec> {
   return listOf(
-      QualifiedTypeSpec(packageName = packageName, typeSpec()),
-      QualifiedTypeSpec(packageName = adapterPackageName(packageName), adapterTypeSpec())
+      ApolloFileSpec(packageName = packageName, typeSpec()),
+      ApolloFileSpec(packageName = adapterPackageName(packageName), adapterTypeSpec())
   )
 }

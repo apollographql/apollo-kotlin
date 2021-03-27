@@ -8,15 +8,17 @@ import com.squareup.kotlinpoet.TypeSpec
 import java.io.File
 
 /**
- * KotlinPoet [TypeSpec] are non qualified. This is a simple wrapper that carries a package name so that we can write the file
+ * KotlinPoet [FileSpec] are non qualified. This is a simple wrapper that carries a package name so that we can write the file
  *
  * If multiple [TypeSpec] are in the same [packageName], [fileName] is mandatory
  */
-class QualifiedTypeSpec(
+class ApolloFileSpec(
     val packageName: String,
-    val typeSpec: TypeSpec,
-    val fileName: String? = null,
-)
+    val typeSpec: List<TypeSpec>,
+    val fileName: String,
+) {
+  constructor(packageName: String, typeSpec: TypeSpec): this(packageName, listOf(typeSpec), typeSpec.name!!)
+}
 
 class GraphQLCodeGenerator(
     private val ir: IntermediateRepresentation,
@@ -49,13 +51,18 @@ class GraphQLCodeGenerator(
 
     val qualifiedTypeSpecs = customScalars + enums + inputObjects + operations + fragments
 
-    qualifiedTypeSpecs.groupBy {
-      it.packageName to (it.fileName ?: it.typeSpec.name!!)
-    }.forEach {
-      fileSpecBuilder(it.key.first, it.key.second)
+    // sanity check
+    qualifiedTypeSpecs.groupBy { it.packageName to it.fileName }.forEach {
+      check (it.value.size == 1) {
+        "Duplicate type found: ${it.key}"
+      }
+    }
+
+    qualifiedTypeSpecs.forEach {
+      fileSpecBuilder(it.packageName, it.fileName)
           .apply {
-            it.value.forEach {
-              addType(it.typeSpec.internal(generateAsInternal))
+            it.typeSpec.forEach {
+              addType(it.internal(generateAsInternal))
             }
           }
           .build()

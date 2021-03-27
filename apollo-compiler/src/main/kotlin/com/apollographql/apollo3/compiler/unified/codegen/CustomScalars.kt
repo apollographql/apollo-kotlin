@@ -22,7 +22,7 @@ internal fun IrCustomScalar.kotlinTypeName() = ClassName.bestGuess(kotlinName ?:
 
 fun IrCustomScalars.typeSpec() = customScalars.typeSpec()
 
-fun IrCustomScalars.qualifiedTypeSpec() = QualifiedTypeSpec(
+fun IrCustomScalars.qualifiedTypeSpec() = ApolloFileSpec(
     packageName,
     customScalars.typeSpec()
 )

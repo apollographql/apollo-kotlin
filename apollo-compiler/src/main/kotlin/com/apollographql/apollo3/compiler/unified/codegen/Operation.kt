@@ -31,15 +31,15 @@ import com.squareup.kotlinpoet.TypeName
 import com.squareup.kotlinpoet.TypeSpec
 import com.squareup.kotlinpoet.asTypeName
 
-fun IrOperation.qualifiedTypeSpecs(): List<QualifiedTypeSpec> {
-  val list = mutableListOf<QualifiedTypeSpec>()
+fun IrOperation.qualifiedTypeSpecs(): List<ApolloFileSpec> {
+  val list = mutableListOf<ApolloFileSpec>()
 
-  list.add(QualifiedTypeSpec(packageName, typeSpec()))
+  list.add(ApolloFileSpec(packageName, typeSpec()))
   if (variables.isNotEmpty()) {
-    list.add(QualifiedTypeSpec(adapterPackageName(packageName), variablesAdapterTypeSpec()))
+    list.add(ApolloFileSpec(adapterPackageName(packageName), variablesAdapterTypeSpec()))
   }
-  list.add(QualifiedTypeSpec(adapterPackageName(packageName), responseAdapterTypeSpec()))
-  list.add(QualifiedTypeSpec(responseFieldsPackageName(packageName), responseFieldsTypeSpec()))
+  list.add(ApolloFileSpec(adapterPackageName(packageName), responseAdapterTypeSpec()))
+  list.add(ApolloFileSpec(responseFieldsPackageName(packageName), responseFieldsTypeSpec()))
 
   return list
 }

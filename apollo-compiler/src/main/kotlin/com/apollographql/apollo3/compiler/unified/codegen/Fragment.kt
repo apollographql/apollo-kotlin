@@ -24,17 +24,29 @@ import com.squareup.kotlinpoet.TypeName
 import com.squareup.kotlinpoet.TypeSpec
 import com.squareup.kotlinpoet.asTypeName
 
-fun IrNamedFragment.qualifiedTypeSpecs(): List<QualifiedTypeSpec> {
-  val list = mutableListOf<QualifiedTypeSpec>()
+fun IrNamedFragment.qualifiedTypeSpecs(): List<ApolloFileSpec> {
+  val list = mutableListOf<ApolloFileSpec>()
 
-  list.add(QualifiedTypeSpec(packageName, typeSpec()))
+  list.add(ApolloFileSpec(packageName, typeSpec()))
   if (variables.isNotEmpty()){
-    list.add(QualifiedTypeSpec(adapterPackageName(packageName), variablesAdapterTypeSpec()))
+    list.add(ApolloFileSpec(adapterPackageName(packageName), variablesAdapterTypeSpec()))
   }
-  list.add(QualifiedTypeSpec(adapterPackageName(packageName), responseAdapterTypeSpec()))
-  list.add(QualifiedTypeSpec(responseFieldsPackageName(packageName), responseFieldsTypeSpec()))
+  list.add(ApolloFileSpec(adapterPackageName(packageName), responseAdapterTypeSpec()))
+  list.add(ApolloFileSpec(responseFieldsPackageName(packageName), responseFieldsTypeSpec()))
 
   return list
+}
+
+private fun IrNamedFragment.interfacesTypeSpec(): TypeSpec {
+  return TypeSpec.classBuilder(kotlinNameForFragment(name))
+      .addSuperinterface(superInterfaceType())
+      .maybeAddDescription(description)
+      .makeDataClass(variables.map { it.toNamedType().toParameterSpec() })
+      .addFunction(serializeVariablesFunSpec())
+      .addFunction(adapterFunSpec())
+      .addFunction(responseFieldsFunSpec())
+      .addTypes(dataTypeSpecs()) // Fragments can have multiple data shapes
+      .build()
 }
 
 private fun IrNamedFragment.typeSpec(): TypeSpec {

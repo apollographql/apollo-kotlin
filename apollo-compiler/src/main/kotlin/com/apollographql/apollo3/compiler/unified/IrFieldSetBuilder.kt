@@ -2,7 +2,6 @@ package com.apollographql.apollo3.compiler.unified
 
 import com.apollographql.apollo3.compiler.PackageNameProvider
 import com.apollographql.apollo3.compiler.backend.codegen.capitalizeFirstLetter
-import com.apollographql.apollo3.compiler.backend.codegen.kotlinNameForFragment
 import com.apollographql.apollo3.compiler.backend.codegen.kotlinNameForOperation
 import com.apollographql.apollo3.compiler.frontend.GQLArgument
 import com.apollographql.apollo3.compiler.frontend.GQLField
@@ -47,13 +46,14 @@ class IrFieldSetBuilder(
         listOf(kotlinNameForOperation(name))
     )
 
-    val dataField = buildDataField(
+    val rootField = buildRootField(
+        name = "data",
         selections = selections,
         fieldType = fieldType,
         path = path
     )
 
-    return dataField.withInterfacesAndImplementations(
+    return rootField.withInterfacesAndImplementations(
         pruneInterfaces = true,
         addImplementations = true,
         prefix = { "Other$it" },
@@ -74,31 +74,33 @@ class IrFieldSetBuilder(
   ): IrField {
     val path = ModelPath(packageNameProvider.fragmentPackageName(
         selections.filePath()),
-        listOf(kotlinNameForFragment(name))
+        emptyList()
     )
 
-    val dataField = cachedFragmentsFields.getOrPut(name) {
-      buildDataField(
+    val rootField = cachedFragmentsFields.getOrPut(name) {
+      buildRootField(
+          name = name,
           selections = selections,
           fieldType = fieldType,
           path = path
       )
     }
 
-    return dataField.withInterfacesAndImplementations(
+    return rootField.withInterfacesAndImplementations(
         pruneInterfaces = false,
         addImplementations = true,
         prefix = { "${it}Impl" },
     )
   }
 
-  private fun buildDataField(
+  private fun buildRootField(
+      name: String,
       selections: List<GQLSelection>,
       fieldType: String,
       path: ModelPath,
   ): IrField {
     return buildField(
-        name = "data",
+        name = name,
         alias = null,
         description = null,
         deprecationReason = null,

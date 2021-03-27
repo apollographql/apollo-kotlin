@@ -42,7 +42,7 @@ internal fun IrEnum.adapterTypeName() = ClassName(
 
 internal fun IrEnum.qualifiedTypeSpecs(
     enumAsSealedClassPatternFilters: List<Regex>,
-): List<QualifiedTypeSpec> {
+): List<ApolloFileSpec> {
   val asSealedClass = enumAsSealedClassPatternFilters.isNotEmpty() && enumAsSealedClassPatternFilters.any { pattern ->
     name.matches(pattern)
   }
@@ -52,8 +52,8 @@ internal fun IrEnum.qualifiedTypeSpecs(
   else
     toEnumTypeSpec()
   return listOf(
-      QualifiedTypeSpec(packageName = packageName, typeSpec = enumTypeSpec),
-      QualifiedTypeSpec(packageName = adapterPackageName(packageName), typeSpec = adapterTypeSpec(asSealedClass))
+      ApolloFileSpec(packageName = packageName, typeSpec = enumTypeSpec),
+      ApolloFileSpec(packageName = adapterPackageName(packageName), typeSpec = adapterTypeSpec(asSealedClass))
   )
 }
 
