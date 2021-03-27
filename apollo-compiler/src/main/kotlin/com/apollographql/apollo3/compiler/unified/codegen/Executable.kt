@@ -22,13 +22,14 @@ import com.squareup.kotlinpoet.asTypeName
 
 fun serializeVariablesFunSpec(
     packageName: String,
-    name: String,
-    isEmpty: Boolean
+    adapterName: String,
+    isEmpty: Boolean,
+    emptyMessage: String
 ): FunSpec {
-  val adapterTypeName = ClassName(adapterPackageName(packageName), kotlinNameForVariablesAdapter(name))
+  val adapterTypeName = ClassName(adapterPackageName(packageName), adapterName )
 
   val body = if (isEmpty) {
-    CodeBlock.of("// This operation doesn't have variables")
+    CodeBlock.of(emptyMessage)
   } else {
     CodeBlock.of(
         "%L.$toResponse($writer, $responseAdapterCache, this)",

@@ -87,8 +87,9 @@ private fun IrOperation.responseFieldsTypeSpec(): TypeSpec {
 
 private fun IrOperation.serializeVariablesFunSpec(): FunSpec = serializeVariablesFunSpec(
     packageName = packageName,
-    name = name,
-    isEmpty = variables.isEmpty()
+    adapterName = kotlinNameForVariablesAdapter(name),
+    isEmpty = variables.isEmpty(),
+    emptyMessage = "// This operation doesn't have variables"
 )
 
 private fun IrOperation.adapterFunSpec(): FunSpec {
@@ -107,7 +108,7 @@ private fun IrOperation.dataTypeSpecs(): List<TypeSpec> {
     IrOperationType.Subscription -> Subscription.Data::class
   }
 
-  return dataField.typeSpecs().map {
+  return dataField.typeSpecs(false).map {
     it.toBuilder()
         .addSuperinterface(superClass)
         .build()

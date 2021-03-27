@@ -2,6 +2,7 @@ package com.apollographql.apollo3.compiler.unified
 
 import com.apollographql.apollo3.compiler.PackageNameProvider
 import com.apollographql.apollo3.compiler.backend.codegen.capitalizeFirstLetter
+import com.apollographql.apollo3.compiler.backend.codegen.kotlinNameForFragmentImplementation
 import com.apollographql.apollo3.compiler.backend.codegen.kotlinNameForOperation
 import com.apollographql.apollo3.compiler.frontend.GQLArgument
 import com.apollographql.apollo3.compiler.frontend.GQLField
@@ -46,17 +47,11 @@ class IrFieldSetBuilder(
         listOf(kotlinNameForOperation(name))
     )
 
-    val rootField = buildRootField(
+    return buildRootField(
         name = "data",
         selections = selections,
         fieldType = fieldType,
         path = path
-    )
-
-    return rootField.withInterfacesAndImplementations(
-        pruneInterfaces = true,
-        addImplementations = true,
-        prefix = { "Other$it" },
     )
   }
 
@@ -67,7 +62,8 @@ class IrFieldSetBuilder(
    */
   private fun List<GQLSelection>.filePath() = mapNotNull { it.sourceLocation.filePath }.first()
 
-  fun buildFragment(
+
+  fun getOrBuildFragmentField(
       selections: List<GQLSelection>,
       fieldType: String,
       name: String,
@@ -77,7 +73,7 @@ class IrFieldSetBuilder(
         emptyList()
     )
 
-    val rootField = cachedFragmentsFields.getOrPut(name) {
+    return cachedFragmentsFields.getOrPut(name) {
       buildRootField(
           name = name,
           selections = selections,
@@ -85,12 +81,29 @@ class IrFieldSetBuilder(
           path = path
       )
     }
+  }
 
-    return rootField.withInterfacesAndImplementations(
-        pruneInterfaces = false,
-        addImplementations = true,
-        prefix = { "${it}Impl" },
+  class FragmentFields(val interfaceField: IrField, val dataField: IrField)
+
+  fun buildFragment(
+      selections: List<GQLSelection>,
+      fieldType: String,
+      name: String,
+  ): FragmentFields {
+    val interfaceField = getOrBuildFragmentField(selections, fieldType, name)
+
+    val dataPath =  ModelPath(
+        packageNameProvider.fragmentPackageName(selections.filePath()),
+        listOf(kotlinNameForFragmentImplementation(name))
     )
+    val dataField = buildRootField(
+        name = "data",
+        selections = selections,
+        fieldType = fieldType,
+        path = dataPath,
+        superFields = listOf(interfaceField)
+    )
+    return FragmentFields(interfaceField, dataField)
   }
 
   private fun buildRootField(
@@ -98,6 +111,7 @@ class IrFieldSetBuilder(
       selections: List<GQLSelection>,
       fieldType: String,
       path: ModelPath,
+      superFields: List<IrField> = emptyList(),
   ): IrField {
     return buildField(
         name = name,
@@ -107,96 +121,13 @@ class IrFieldSetBuilder(
         arguments = emptyList(),
         selections = selections,
         type = GQLNamedType(SourceLocation.UNKNOWN, fieldType),
-        superFields = emptyList(),
+        superFields = superFields,
         path = path,
         condition = BooleanExpression.True,
     )
   }
 
-  private fun IrField.withInterfacesAndImplementations(
-      pruneInterfaces: Boolean,
-      addImplementations: Boolean,
-      prefix: (String) -> String,
-  ): IrField {
-    if (fieldSets.isEmpty()) {
-      // scalar type, exit early
-      return this
-    }
-
-    val interfaces = mutableListOf<IrFieldSet>()
-    val implementations = mutableListOf<IrFieldSet>()
-
-    fieldSets.forEach { fieldSet ->
-      var isInterface = false
-      if (requiredAsInterface.contains(fieldSet.typeSet) || !pruneInterfaces) {
-        isInterface = true
-      }
-
-      if (isInterface) {
-        val iface = fieldSet.withInterfacesAndImplementations(
-            pruneInterfaces = false,
-            addImplementations = false,
-            prefix = prefix,
-        )
-        interfaces.add(iface)
-      }
-
-      if (addImplementations && requiredAsImplementation.contains(fieldSet.typeSet)) {
-        val implementation = if (isInterface) {
-          // both an interface and an implementation
-          // make the implementation inherit the interface
-          fieldSet
-              .duplicate(fieldSet.path, prefix(fieldSet.modelName), listOf(fieldSet))
-              .withInterfacesAndImplementations(
-                  pruneInterfaces = true, // for fragments we only need top level interfaces
-                  addImplementations = true,
-                  prefix = prefix,
-              )
-        } else {
-          // Just take the fieldSet and make it an implementation
-          fieldSet.withInterfacesAndImplementations(
-              pruneInterfaces = true, // for fragments we only need top level interfaces
-              addImplementations = true,
-              prefix = prefix,
-          )
-        }
-        implementations.add(implementation)
-      }
-    }
-
-    /**
-     * By construction, if there is only one implementation it will be used as type
-     */
-    val typeFieldSet = if (implementations.size == 1) {
-      implementations.first()
-    } else {
-      interfaces.first { it.typeSet.size == 1 }
-    }
-
-    return this.copy(
-        interfaces = interfaces,
-        implementations = implementations,
-        typeFieldSet = typeFieldSet
-    )
-  }
-
-  private fun IrFieldSet.withInterfacesAndImplementations(
-      pruneInterfaces: Boolean,
-      addImplementations: Boolean,
-      prefix: (String) -> String,
-  ): IrFieldSet {
-    return this.copy(
-        fields = fields.map { field ->
-          field.withInterfacesAndImplementations(
-              pruneInterfaces,
-              addImplementations,
-              prefix,
-          )
-        },
-    )
-  }
-
-  private fun IrField.duplicate(path: ModelPath, superFields: List<IrField>): IrField {
+  private fun IrField.duplicate(path: ModelPath, responseName: String, superFields: List<IrField>): IrField {
     val cachedFieldSets = mutableListOf<IrFieldSet>()
 
     val fieldSets = fieldSets.sortedBy { it.typeSet.size }.map { fieldSet ->
@@ -213,11 +144,15 @@ class IrFieldSetBuilder(
           it.typeSet.size < fieldSet.typeSet.size && fieldSet.typeSet.implements(it.typeSet)
         }
 
-      fieldSet.duplicate(path, fieldSet.modelName, relatedFieldSets + listOfNotNull(superFieldSet)).also {
+      val fieldType = typeFieldSet!!.typeSet.first()
+      val modelName = modelName(fieldSet.typeSet, fieldType, responseName)
+
+      fieldSet.duplicate(path, modelName, relatedFieldSets + listOfNotNull(superFieldSet)).also {
         cachedFieldSets.add(0, it)
       }
     }
     return copy(
+        name = responseName,
         override = true,
         fieldSets = fieldSets
     )
@@ -231,7 +166,7 @@ class IrFieldSetBuilder(
           val superFields = superFieldSets.mapNotNull {
             it.fields.firstOrNull { it.responseName == field.responseName }
           }
-          field.duplicate(path + modelName, superFields)
+          field.duplicate(path + modelName, field.responseName, superFields)
         },
         implements = superFieldSets.map { it.fullPath }.toSet()
     )
@@ -254,8 +189,9 @@ class IrFieldSetBuilder(
       path: ModelPath,
   ): IrField {
     val fieldSets: List<IrFieldSet>
-    val shapesTypeSets: Set<TypeSet>
-    val commonTypeSets: Set<TypeSet>
+    val interfaceFieldSets: List<IrFieldSet>
+    val implementationFieldSets: List<IrFieldSet>
+
     val fieldType = type.leafType().name
 
     if (selections.isNotEmpty()) {
@@ -267,20 +203,20 @@ class IrFieldSetBuilder(
       /**
        * Always add the base fieldType in case new types are added to the schema
        */
-      shapesTypeSets = shapeTypeSetToPossibleTypes.keys + setOf(setOf(fieldType))
+      val shapesTypeSets = shapeTypeSetToPossibleTypes.keys + setOf(setOf(fieldType))
 
       /**
        * Generate the common interfaces
        * We need those to access the shapes in a generic way
        */
-      commonTypeSets = shapesTypeSets.toList().pairs()
+      val commonTypeSets = shapesTypeSets.toList().pairs()
           .map { it.first.intersect(it.second) }
           .filter { it.isNotEmpty() }
           .toSet()
 
       val fragmentFields = collectionResult.namedFragments.map { collectedFragment ->
         val gqlFragmentDefinition = allGQLFragmentDefinitions[collectedFragment.name]!!
-        buildFragment(
+        getOrBuildFragmentField(
             selections = gqlFragmentDefinition.selectionSet.selections,
             fieldType = gqlFragmentDefinition.typeCondition.name,
             name = collectedFragment.name,
@@ -294,13 +230,11 @@ class IrFieldSetBuilder(
 
       val responseName = alias ?: name
 
-      val allTypeSets = commonTypeSets + shapesTypeSets
-
       /**
        * Build the field sets starting from the less qualified so we can look up the super
        * interfaces in cachedFieldSets when needed
        */
-      fieldSets = allTypeSets.sortedBy { it.size }.map { typeSet ->
+      fieldSets = (commonTypeSets + shapesTypeSets).sortedBy { it.size }.map { typeSet ->
         val modelName = modelName(typeSet, fieldType, responseName)
 
         val superFieldSet = cachedFieldSets.values
@@ -335,12 +269,34 @@ class IrFieldSetBuilder(
           cachedFieldSets[typeSet] = it
         }
       }
+
+      val otherFieldSets = commonTypeSets.intersect(shapesTypeSets).map { typeSet ->
+        val modelName = "Other${modelName(typeSet, fieldType, responseName)}"
+        buildFieldSet(
+            selections = selections,
+            fieldType = fieldType,
+            typeSet = typeSet,
+            modelName = modelName,
+            possibleTypes = shapeTypeSetToPossibleTypes[typeSet] ?: emptySet(),
+            superFieldSets = listOf(cachedFieldSets[typeSet]!!),
+            path = path,
+        )
+      }
+
+      interfaceFieldSets = fieldSets.filter {
+        commonTypeSets.contains(it.typeSet)
+      }.sortedBy { it.typeSet.size }
+      implementationFieldSets = otherFieldSets + fieldSets.filter {
+        (shapesTypeSets - commonTypeSets).contains(it.typeSet)
+      }.sortedBy { it.typeSet.size }
+
     } else {
       fieldSets = emptyList()
-      shapesTypeSets = emptySet()
-      commonTypeSets = emptySet()
+      interfaceFieldSets = emptyList()
+      implementationFieldSets = emptyList()
     }
 
+    val typeFieldSet = interfaceFieldSets.firstOrNull() ?: implementationFieldSets.firstOrNull()
     return IrField(
         alias = alias,
         name = name,
@@ -350,13 +306,10 @@ class IrFieldSetBuilder(
         type = registerType(type),
         condition = condition,
         override = superFields.isNotEmpty(),
+        typeFieldSet = typeFieldSet,
         fieldSets = fieldSets,
-        requiredAsImplementation = shapesTypeSets,
-        requiredAsInterface = commonTypeSets,
-        // will be set later on
-        typeFieldSet = null,
-        implementations = emptyList(),
-        interfaces = emptyList(),
+        interfaces = interfaceFieldSets,
+        implementations = implementationFieldSets,
     )
   }
 

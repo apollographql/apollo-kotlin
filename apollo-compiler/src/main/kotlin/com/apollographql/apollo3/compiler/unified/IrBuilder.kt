@@ -181,17 +181,20 @@ class IrBuilder(
     val variableDefinitions = inferVariables(schema, allGQLFragmentDefinitions)
 
     val packageName = packageNameProvider.fragmentPackageName(sourceLocation.filePath!!)
+
+    val fragmentFields = fieldSetBuilder.buildFragment(
+        selections = selectionSet.selections,
+        fieldType = typeDefinition.name,
+        name,
+    )
     return IrNamedFragment(
         name = name,
         description = description,
         filePath = sourceLocation.filePath,
         typeCondition = typeDefinition.name,
         variables = variableDefinitions.map { it.toIr() },
-        dataField = fieldSetBuilder.buildFragment(
-            selections = selectionSet.selections,
-            fieldType = typeDefinition.name,
-            name,
-        ),
+        interfaceField = fragmentFields.interfaceField,
+        dataField = fragmentFields.dataField,
         packageName = packageName
     )
   }

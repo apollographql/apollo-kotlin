@@ -13,13 +13,16 @@ internal fun kotlinNameForEnum(name: String) = regularIdentifier(name)
 internal fun kotlinNameForEnumValue(name: String) = upperCaseIdentifier(name)
 
 internal fun kotlinNameForOperation(name: String) = capitalizedIdentifier(name)
-internal fun kotlinNameForFragment(name: String) = capitalizedIdentifier(name)
+internal fun kotlinNameForFragmentInterfaceFile(name: String) = capitalizedIdentifier(name)
+internal fun kotlinNameForFragmentImplementation(name: String) = capitalizedIdentifier(name) + "Impl"
 internal fun kotlinNameForInputObject(name: String) = capitalizedIdentifier(name)
 
 internal fun kotlinNameForInputObjectAdapter(name: String) = capitalizedIdentifier(name) + "_InputAdapter"
 internal fun kotlinNameForVariablesAdapter(name: String) = capitalizedIdentifier(name) + "_VariablesAdapter"
+internal fun kotlinNameForFragmentVariablesAdapter(name: String) = capitalizedIdentifier(name) + "Impl_VariablesAdapter"
 internal fun kotlinNameForResponseAdapter(name: String) = capitalizedIdentifier(name) + "_ResponseAdapter"
 internal fun kotlinNameForResponseFields(name: String) =  capitalizedIdentifier(name) + "_ResponseFields"
+internal fun kotlinNameForFragmentResponseAdapter(name: String) = capitalizedIdentifier(name) + "Impl_ResponseAdapter"
 
 // variables keep the same case as their declared name
 internal fun kotlinNameForVariable(name: String) = regularIdentifier(name)

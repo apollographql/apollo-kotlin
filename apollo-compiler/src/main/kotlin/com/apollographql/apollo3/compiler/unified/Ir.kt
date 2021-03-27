@@ -81,6 +81,7 @@ data class IrNamedFragment(
     val name: String,
     val description: String?,
     val filePath: String,
+    val interfaceField: IrField,
     val dataField: IrField,
     /**
      * Fragments do not have variables per-se but we can infer them from the document
@@ -117,15 +118,23 @@ data class IrField(
     // the field set corresponding to the fieldType
     // null for scalar type
     val typeFieldSet: IrFieldSet?,
-    val interfaces: List<IrFieldSet>,
-    val implementations: List<IrFieldSet>,
-
     /**
-     * Internal state, only to be used from [IrFieldSetBuilder]
+     * The [IrFieldSet] independently of interfaces or implementations
      */
-    val requiredAsImplementation: Set<TypeSet>,
-    val requiredAsInterface: Set<TypeSet>,
     val fieldSets: List<IrFieldSet>,
+    /**
+     * The [IrFieldSet] to be used as interfaces
+     * Might be empty for scalar fields or monomorphic fields
+     * For polymorphic fields, this will always contain the field type
+     */
+    val interfaces: List<IrFieldSet>,
+    /**
+     * The [IrFieldSet] to be used as implementations
+     * Might contain OtherXyz [IrFieldSet] in case a [TypeSet] needs an interface and
+     * an implementation at the same time
+     * This will only be empty for scalar fields
+     */
+    val implementations: List<IrFieldSet>,
 ) {
   val responseName = alias ?: name
 }

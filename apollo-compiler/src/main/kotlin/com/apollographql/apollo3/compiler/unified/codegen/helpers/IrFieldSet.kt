@@ -9,12 +9,16 @@ import com.squareup.kotlinpoet.KModifier
 import com.squareup.kotlinpoet.PropertySpec
 import com.squareup.kotlinpoet.TypeSpec
 
-fun IrField.typeSpecs(): List<TypeSpec> {
+fun IrField.typeSpecs(asInterface: Boolean): List<TypeSpec> {
 
-  val interfacesTypeSpecs = interfaces.map { it.typeSpec(true) }
-  val implementationTypeSpecs = implementations.map { it.typeSpec(false) }
+  return if (asInterface) {
+    fieldSets.map { it.typeSpec(true) }
+  } else {
+    val interfacesTypeSpecs = interfaces.map { it.typeSpec(true) }
+    val implementationTypeSpecs = implementations.map { it.typeSpec(false) }
 
-  return interfacesTypeSpecs + implementationTypeSpecs
+    interfacesTypeSpecs + implementationTypeSpecs
+  }
 }
 
 fun IrFieldSet.typeSpec(asInterface: Boolean): TypeSpec {
@@ -27,7 +31,7 @@ fun IrFieldSet.typeSpec(asInterface: Boolean): TypeSpec {
   }
 
   val nestedTypes = fields.flatMap {
-    it.typeSpecs()
+    it.typeSpecs(asInterface)
   }
 
   val superInterfaces = implements.map { it.typeName() }
