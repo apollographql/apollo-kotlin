@@ -157,6 +157,15 @@ private fun Project.configurePublishingDelayed() {
           credentials.password = System.getenv("SONATYPE_NEXUS_PASSWORD")
         }
       }
+
+      repositoryHandler.maven { repository ->
+        repository.name = "repsy"
+        repository.setUrl("https://repo.repsy.io/mvn/mbonnin/default")
+        repository.credentials { credentials ->
+          credentials.username = System.getenv("REPSY_USERNAME")
+          credentials.password = System.getenv("REPSY_PASSWORD")
+        }
+      }
     }
   }
 
