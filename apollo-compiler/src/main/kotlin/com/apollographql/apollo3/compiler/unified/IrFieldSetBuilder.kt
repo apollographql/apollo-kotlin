@@ -131,6 +131,19 @@ class IrFieldSetBuilder(
     return ((typeSet - fieldType).sorted() + responseName).map { capitalizeFirstLetter(it) }.joinToString("")
   }
 
+  private fun List<GQLSelection>.collectConditions(typeSet: TypeSet): List<String> {
+    return typeSet.toList() + flatMap {
+      when (it) {
+        is GQLField -> emptyList()
+        is GQLInlineFragment -> it.selectionSet.selections.collectConditions(typeSet + it.typeCondition.name)
+        is GQLFragmentSpread -> {
+          val fragmentDefinition = allGQLFragmentDefinitions[it.name]!!
+          fragmentDefinition.selectionSet.selections.collectConditions(typeSet + fragmentDefinition.typeCondition.name)
+        }
+      }
+    }
+  }
+
   private fun buildField(
       alias: String?,
       name: String,
@@ -152,8 +165,7 @@ class IrFieldSetBuilder(
     val fieldType = type.leafType().name
 
     if (selections.isNotEmpty()) {
-      val collectionResult = FragmentCollectionScope(selections, type.leafType().name, allGQLFragmentDefinitions).collect()
-      val typeConditions = collectionResult.typeSet.union()
+      val typeConditions = selections.collectConditions(setOf(fieldType)).toSet()
 
       val shapeTypeSetToPossibleTypes = computeShapes(schema, fieldType, typeConditions)
 
@@ -171,12 +183,12 @@ class IrFieldSetBuilder(
           .filter { it.isNotEmpty() }
           .toSet()
 
-      val fragmentFields = collectionResult.namedFragments.map { collectedFragment ->
-        val gqlFragmentDefinition = allGQLFragmentDefinitions[collectedFragment.name]!!
+      val fragmentFields = selections.filterIsInstance<GQLFragmentSpread>().map { fragmentSpread ->
+        val gqlFragmentDefinition = allGQLFragmentDefinitions[fragmentSpread.name]!!
         getOrBuildFragmentField(
             selections = gqlFragmentDefinition.selectionSet.selections,
             fieldType = gqlFragmentDefinition.typeCondition.name,
-            name = collectedFragment.name,
+            name = fragmentSpread.name,
         )
       }
 
@@ -262,12 +274,12 @@ class IrFieldSetBuilder(
                 ?: fieldSets.first { it.typeSet == accessorTypeSet }).fullPath
         )
       }
-      fragmentAccessors = collectionResult.namedFragments.distinctBy { it.name }.map { namedFragment ->
+      fragmentAccessors = selections.filterIsInstance<GQLFragmentSpread>().distinctBy { it.name }.map { fragmentSpread ->
         IrFragmentAccessor(
-            name = namedFragment.name,
-            override = (superFields + fragmentFields).any { it.fragmentAccessors.any { it.name == namedFragment.name } },
-            path = cachedFragmentsFields[namedFragment.name]?.typeFieldSet?.fullPath
-                ?: error("cannot find fragment ${namedFragment.name}")
+            name = fragmentSpread.name,
+            override = (superFields + fragmentFields).any { it.fragmentAccessors.any { it.name == fragmentSpread.name } },
+            path = cachedFragmentsFields[fragmentSpread.name]?.typeFieldSet?.fullPath
+                ?: error("cannot find fragment ${fragmentSpread.name}")
         )
       }
     } else {
