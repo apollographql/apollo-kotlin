@@ -34,7 +34,7 @@ data class IrEnum(
 
 data class IrCustomScalars(
     val packageName: String,
-    val customScalars: List<IrCustomScalar>
+    val customScalars: List<IrCustomScalar>,
 )
 
 data class ModelPath(
@@ -98,6 +98,18 @@ enum class IrOperationType {
   Subscription
 }
 
+
+data class IrInlineAccessor(
+    val typeSet: TypeSet,
+    val path: ModelPath,
+    val override: Boolean,
+)
+data class IrFragmentAccessor(
+    val name: String,
+    val path: ModelPath,
+    val override: Boolean,
+)
+
 data class IrField(
     val name: String,
     val alias: String?,
@@ -114,6 +126,9 @@ data class IrField(
 
     // whether this fields needs an override modifier
     val override: Boolean,
+
+    val inlineAccessors: List<IrInlineAccessor>,
+    val fragmentAccessors: List<IrFragmentAccessor>,
 
     // the field set corresponding to the fieldType
     // null for scalar type
@@ -177,7 +192,7 @@ data class IrCustomScalar(
     val name: String,
     val kotlinName: String?, // might be null if no user mapping is provided
     val description: String?,
-    val deprecationReason: String?
+    val deprecationReason: String?,
 )
 
 /**
@@ -239,8 +254,10 @@ object IrIdType : IrType()
 object IrAnyType : IrType()
 class IrCustomScalarType(val customScalar: IrCustomScalar) : IrType()
 class IrEnumType(val enum: IrEnum) : IrType()
+
 // InputObjects can have cycles so the inputObject is lazy
 class IrInputObjectType(val inputObject: () -> IrInputObject) : IrType()
+
 // A placeholder type
 object IrCompoundType : IrType()
 

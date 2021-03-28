@@ -53,9 +53,7 @@ private fun IrNamedFragment.implementationTypeSpec(): TypeSpec {
 }
 
 private fun IrNamedFragment.interfaceTypeSpecs(): List<TypeSpec> {
-  return interfaceField.fieldSets.map {
-    it.typeSpec(true)
-  }
+  return interfaceField.typeSpecs(true)
 }
 
 private fun IrNamedFragment.typeName() = ClassName(packageName, kotlinNameForFragmentImplementation(name))

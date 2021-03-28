@@ -92,7 +92,7 @@ class IrFieldSetBuilder(
   ): FragmentFields {
     val interfaceField = getOrBuildFragmentField(selections, fieldType, name)
 
-    val dataPath =  ModelPath(
+    val dataPath = ModelPath(
         packageNameProvider.fragmentPackageName(selections.filePath()),
         listOf(kotlinNameForFragmentImplementation(name))
     )
@@ -146,6 +146,8 @@ class IrFieldSetBuilder(
     val fieldSets: List<IrFieldSet>
     val interfaceFieldSets: List<IrFieldSet>
     val implementationFieldSets: List<IrFieldSet>
+    val inlineAccessors: List<IrInlineAccessor>
+    val fragmentAccessors: List<IrFragmentAccessor>
 
     val fieldType = type.leafType().name
 
@@ -185,11 +187,13 @@ class IrFieldSetBuilder(
 
       val responseName = alias ?: name
 
+      val allTypeSets = commonTypeSets + shapesTypeSets
+
       /**
        * Build the field sets starting from the less qualified so we can look up the super
        * interfaces in cachedFieldSets when needed
        */
-      fieldSets = (commonTypeSets + shapesTypeSets).sortedBy { it.size }.map { typeSet ->
+      fieldSets = allTypeSets.sortedBy { it.size }.map { typeSet ->
         val modelName = modelName(typeSet, fieldType, responseName)
 
         val superFieldSet = cachedFieldSets.values
@@ -241,17 +245,41 @@ class IrFieldSetBuilder(
       interfaceFieldSets = fieldSets.filter {
         commonTypeSets.contains(it.typeSet)
       }.sortedBy { it.typeSet.size }
+
       implementationFieldSets = otherFieldSets + fieldSets.filter {
         (shapesTypeSets - commonTypeSets).contains(it.typeSet)
       }.sortedBy { it.typeSet.size }
 
+      inlineAccessors = (allTypeSets - setOf(setOf(fieldType))).map { accessorTypeSet ->
+        IrInlineAccessor(
+            typeSet = accessorTypeSet,
+            override = (superFields + fragmentFields).any {
+              it.inlineAccessors.any {
+                it.typeSet == accessorTypeSet
+              }
+            },
+            path = (implementationFieldSets.firstOrNull { it.typeSet == accessorTypeSet }
+                ?: fieldSets.first { it.typeSet == accessorTypeSet }).fullPath
+        )
+      }
+      fragmentAccessors = collectionResult.namedFragments.distinctBy { it.name }.map { namedFragment ->
+        IrFragmentAccessor(
+            name = namedFragment.name,
+            override = (superFields + fragmentFields).any { it.fragmentAccessors.any { it.name == namedFragment.name } },
+            path = cachedFragmentsFields[namedFragment.name]?.typeFieldSet?.fullPath
+                ?: error("cannot find fragment ${namedFragment.name}")
+        )
+      }
     } else {
       fieldSets = emptyList()
       interfaceFieldSets = emptyList()
       implementationFieldSets = emptyList()
+      inlineAccessors = emptyList()
+      fragmentAccessors = emptyList()
     }
 
     val typeFieldSet = interfaceFieldSets.firstOrNull() ?: implementationFieldSets.firstOrNull()
+
     return IrField(
         alias = alias,
         name = name,
@@ -261,10 +289,13 @@ class IrFieldSetBuilder(
         type = registerType(type),
         condition = condition,
         override = superFields.isNotEmpty(),
+
         typeFieldSet = typeFieldSet,
         fieldSets = fieldSets,
         interfaces = interfaceFieldSets,
         implementations = implementationFieldSets,
+        inlineAccessors = inlineAccessors,
+        fragmentAccessors = fragmentAccessors
     )
   }
 
