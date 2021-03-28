@@ -40,7 +40,15 @@ private class ExecutableDocumentValidator(val schema: Schema, val fragmentDefini
     variableReferences.clear()
     fragment.validate()
 
-    return variableReferences
+    variableReferences.groupBy {
+      it.variable.name
+    }.forEach {
+      val types = it.value.map { it.expectedType.pretty() }.distinct()
+      check (types.size == 1) {
+        "Fragment ${fragment.name} uses different types for variable '${it.key}': ${types.joinToString()}"
+      }
+    }
+    return variableReferences.distinctBy { it.variable.name }
   }
 
 
