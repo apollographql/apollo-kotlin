@@ -102,12 +102,11 @@ enum class IrOperationType {
 data class IrInlineAccessor(
     val typeSet: TypeSet,
     val path: ModelPath,
-    val override: Boolean,
 )
+
 data class IrFragmentAccessor(
     val name: String,
     val path: ModelPath,
-    val override: Boolean,
 )
 
 data class IrField(

@@ -9,6 +9,7 @@ import com.apollographql.apollo3.compiler.unified.IrFieldSet
 import com.squareup.kotlinpoet.FunSpec
 import com.squareup.kotlinpoet.KModifier
 import com.squareup.kotlinpoet.PropertySpec
+import com.squareup.kotlinpoet.TypeName
 import com.squareup.kotlinpoet.TypeSpec
 
 fun IrField.typeSpecs(asInterface: Boolean): List<TypeSpec> {
@@ -23,32 +24,26 @@ fun IrField.typeSpecs(asInterface: Boolean): List<TypeSpec> {
   }
 }
 
-private fun TypeSpec.Builder.addAccessors(field: IrField) = apply {
-  field.inlineAccessors.forEach { inlineAccessor ->
-    val name = (inlineAccessor.typeSet /*- field.typeFieldSet!!.typeSet*/).sorted().map { capitalizeFirstLetter(it) }.joinToString("")
-
-    //field.fieldSets.first { it.typeSet == inlineAccessor.typeSet }.modelName
-
-    addFunction(
-        FunSpec.builder("as$name")
-            .addCode("return this as? %T\n", inlineAccessor.path.typeName())
-            .applyIf(inlineAccessor.override) {
-              addModifiers(KModifier.OVERRIDE)
-            }
-            .build()
-    )
+private fun companionTypeSpec(receiverTypeName: TypeName, field: IrField): TypeSpec {
+  val inlineAccessors = field.inlineAccessors.map { inlineAccessor ->
+    val name = inlineAccessor.path.elements.last()
+    FunSpec.builder("as$name")
+        .receiver(receiverTypeName)
+        .addCode("return this as? %T\n", inlineAccessor.path.typeName())
+        .build()
   }
-  field.fragmentAccessors.forEach {
-    val name = it.name.decapitalize()
-    addFunction(
-        FunSpec.builder(name)
-            .addCode("return this as? %T\n", it.path.typeName())
-            .applyIf(it.override) {
-              addModifiers(KModifier.OVERRIDE)
-            }
-            .build()
-    )
+  val fragmentAccessors = field.fragmentAccessors.map { fragmentAccessors ->
+    val name = fragmentAccessors.path.elements.last()
+
+    FunSpec.builder("as$name")
+        .receiver(receiverTypeName)
+        .addCode("return this as? %T\n", fragmentAccessors.path.typeName())
+        .build()
   }
+  return TypeSpec.companionObjectBuilder()
+      .addFunctions(inlineAccessors)
+      .addFunctions(fragmentAccessors)
+      .build()
 }
 
 fun IrFieldSet.typeSpec(asInterface: Boolean, field: IrField): TypeSpec {
@@ -70,8 +65,9 @@ fun IrFieldSet.typeSpec(asInterface: Boolean, field: IrField): TypeSpec {
     TypeSpec.interfaceBuilder(modelName)
         .addProperties(properties)
         .addTypes(nestedTypes)
-        .applyIf(this == field.typeFieldSet) {
-          addAccessors(field)
+        .applyIf(this == field.typeFieldSet
+            && (field.fragmentAccessors.isNotEmpty() || field.inlineAccessors.isNotEmpty())) {
+          addType(companionTypeSpec(fullPath.typeName(), field))
         }
         .addSuperinterfaces(superInterfaces)
         .build()

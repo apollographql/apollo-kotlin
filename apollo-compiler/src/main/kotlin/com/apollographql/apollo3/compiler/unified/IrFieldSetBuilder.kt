@@ -265,11 +265,6 @@ class IrFieldSetBuilder(
       inlineAccessors = (allTypeSets - setOf(setOf(fieldType))).map { accessorTypeSet ->
         IrInlineAccessor(
             typeSet = accessorTypeSet,
-            override = (superFields + fragmentFields).any {
-              it.inlineAccessors.any {
-                it.typeSet == accessorTypeSet
-              }
-            },
             path = (implementationFieldSets.firstOrNull { it.typeSet == accessorTypeSet }
                 ?: fieldSets.first { it.typeSet == accessorTypeSet }).fullPath
         )
@@ -277,7 +272,6 @@ class IrFieldSetBuilder(
       fragmentAccessors = selections.filterIsInstance<GQLFragmentSpread>().distinctBy { it.name }.map { fragmentSpread ->
         IrFragmentAccessor(
             name = fragmentSpread.name,
-            override = (superFields + fragmentFields).any { it.fragmentAccessors.any { it.name == fragmentSpread.name } },
             path = cachedFragmentsFields[fragmentSpread.name]?.typeFieldSet?.fullPath
                 ?: error("cannot find fragment ${fragmentSpread.name}")
         )
