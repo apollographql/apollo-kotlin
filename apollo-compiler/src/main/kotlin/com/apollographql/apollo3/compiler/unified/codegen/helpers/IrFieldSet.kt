@@ -1,7 +1,6 @@
 package com.apollographql.apollo3.compiler.unified.codegen.helpers
 
 import com.apollographql.apollo3.compiler.applyIf
-import com.apollographql.apollo3.compiler.backend.codegen.capitalizeFirstLetter
 import com.apollographql.apollo3.compiler.backend.codegen.kotlinNameForProperty
 import com.apollographql.apollo3.compiler.backend.codegen.makeDataClassFromProperties
 import com.apollographql.apollo3.compiler.unified.IrField
@@ -32,12 +31,12 @@ private fun companionTypeSpec(receiverTypeName: TypeName, field: IrField): TypeS
         .addCode("return this as? %T\n", inlineAccessor.path.typeName())
         .build()
   }
-  val fragmentAccessors = field.fragmentAccessors.map { fragmentAccessors ->
-    val name = fragmentAccessors.path.elements.last()
+  val fragmentAccessors = field.fragmentAccessors.map { fragmentAccessor ->
+    val name = fragmentAccessor.name.decapitalize()
 
-    FunSpec.builder("as$name")
+    FunSpec.builder(name)
         .receiver(receiverTypeName)
-        .addCode("return this as? %T\n", fragmentAccessors.path.typeName())
+        .addCode("return this as? %T\n", fragmentAccessor.path.typeName())
         .build()
   }
   return TypeSpec.companionObjectBuilder()
