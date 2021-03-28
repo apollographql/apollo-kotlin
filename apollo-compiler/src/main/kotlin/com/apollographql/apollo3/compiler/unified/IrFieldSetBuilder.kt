@@ -127,51 +127,6 @@ class IrFieldSetBuilder(
     )
   }
 
-  private fun IrField.duplicate(path: ModelPath, responseName: String, superFields: List<IrField>): IrField {
-    val cachedFieldSets = mutableListOf<IrFieldSet>()
-
-    val fieldSets = fieldSets.sortedBy { it.typeSet.size }.map { fieldSet ->
-      val relatedFieldSets = superFields.mapNotNull { field ->
-        field.fieldSets.sortedByDescending { it.typeSet.size }
-            .firstOrNull {
-              fieldSet.typeSet.implements(it.typeSet)
-            }
-      }
-
-      val superFieldSet = cachedFieldSets
-        .sortedByDescending { it.typeSet.size }
-        .firstOrNull {
-          it.typeSet.size < fieldSet.typeSet.size && fieldSet.typeSet.implements(it.typeSet)
-        }
-
-      val fieldType = typeFieldSet!!.typeSet.first()
-      val modelName = modelName(fieldSet.typeSet, fieldType, responseName)
-
-      fieldSet.duplicate(path, modelName, relatedFieldSets + listOfNotNull(superFieldSet)).also {
-        cachedFieldSets.add(0, it)
-      }
-    }
-    return copy(
-        name = responseName,
-        override = true,
-        fieldSets = fieldSets
-    )
-  }
-
-  private fun IrFieldSet.duplicate(path: ModelPath, modelName: String, superFieldSets: List<IrFieldSet>): IrFieldSet {
-    return copy(
-        path = path,
-        modelName = modelName,
-        fields = fields.map { field ->
-          val superFields = superFieldSets.mapNotNull {
-            it.fields.firstOrNull { it.responseName == field.responseName }
-          }
-          field.duplicate(path + modelName, field.responseName, superFields)
-        },
-        implements = superFieldSets.map { it.fullPath }.toSet()
-    )
-  }
-
   private fun modelName(typeSet: TypeSet, fieldType: String, responseName: String): String {
     return ((typeSet - fieldType).sorted() + responseName).map { capitalizeFirstLetter(it) }.joinToString("")
   }
