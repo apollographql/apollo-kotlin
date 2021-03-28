@@ -14,38 +14,63 @@ import com.squareup.kotlinpoet.TypeSpec
 fun IrField.typeSpecs(asInterface: Boolean): List<TypeSpec> {
 
   return if (asInterface) {
-    fieldSets.map { it.typeSpec(true, this) }
+    fieldSets.map {
+      val accessors = if (it == typeFieldSet) accessors(true) else emptyList()
+      it.typeSpec(true, accessors)
+    }
   } else {
-    val interfacesTypeSpecs = interfaces.map { it.typeSpec(true, this) }
-    val implementationTypeSpecs = implementations.map { it.typeSpec(false, this) }
+    val interfacesTypeSpecs = interfaces.map {
+      val accessors = if (it == typeFieldSet) accessors(false) else emptyList()
+      it.typeSpec(true, accessors)
+    }
+    val implementationTypeSpecs = implementations.map { it.typeSpec(false, emptyList()) }
 
     interfacesTypeSpecs + implementationTypeSpecs
   }
 }
 
-private fun companionTypeSpec(receiverTypeName: TypeName, field: IrField): TypeSpec {
-  val inlineAccessors = field.inlineAccessors.map { inlineAccessor ->
-    val name = inlineAccessor.path.elements.last()
-    FunSpec.builder("as$name")
-        .receiver(receiverTypeName)
-        .addCode("return this as? %T\n", inlineAccessor.path.typeName())
-        .build()
-  }
-  val fragmentAccessors = field.fragmentAccessors.map { fragmentAccessor ->
-    val name = fragmentAccessor.name.decapitalize()
+class Accessor(val name: String, val typeName: TypeName)
 
-    FunSpec.builder(name)
+private fun IrField.accessors(asInterface: Boolean): List<Accessor> {
+  val inlineAccessors = fieldSets.filter { it != typeFieldSet }
+      .map { it.typeSet }
+      .map { typeSet ->
+        val target = if (asInterface) {
+          fieldSets.first { it.typeSet == typeSet }
+        } else {
+          implementations.firstOrNull { it.typeSet == typeSet }
+              ?: interfaces.first { it.typeSet == typeSet }
+        }
+        Accessor(
+            name = "as${target.fullPath.elements.last()}",
+            typeName = target.fullPath.typeName()
+        )
+      }
+
+  val fragmentAccessors = fragmentAccessors.map {
+    Accessor(
+        name = it.name.decapitalize(),
+        typeName = it.path.typeName()
+    )
+  }
+
+  return inlineAccessors + fragmentAccessors
+}
+
+
+private fun companionTypeSpec(receiverTypeName: TypeName, accessors: List<Accessor>): TypeSpec {
+  val funSpecs = accessors.map { accessor ->
+    FunSpec.builder(accessor.name)
         .receiver(receiverTypeName)
-        .addCode("return this as? %T\n", fragmentAccessor.path.typeName())
+        .addCode("return this as? %T\n", accessor.typeName)
         .build()
   }
   return TypeSpec.companionObjectBuilder()
-      .addFunctions(inlineAccessors)
-      .addFunctions(fragmentAccessors)
+      .addFunctions(funSpecs)
       .build()
 }
 
-fun IrFieldSet.typeSpec(asInterface: Boolean, field: IrField): TypeSpec {
+fun IrFieldSet.typeSpec(asInterface: Boolean, accessors: List<Accessor>): TypeSpec {
   val properties = fields.map {
     PropertySpec.builder(kotlinNameForProperty(it.responseName), it.typeName())
         .applyIf(it.override) { addModifiers(KModifier.OVERRIDE) }
@@ -64,9 +89,8 @@ fun IrFieldSet.typeSpec(asInterface: Boolean, field: IrField): TypeSpec {
     TypeSpec.interfaceBuilder(modelName)
         .addProperties(properties)
         .addTypes(nestedTypes)
-        .applyIf(this == field.typeFieldSet
-            && (field.fragmentAccessors.isNotEmpty() || field.inlineAccessors.isNotEmpty())) {
-          addType(companionTypeSpec(fullPath.typeName(), field))
+        .applyIf(accessors.isNotEmpty()) {
+          addType(companionTypeSpec(fullPath.typeName(), accessors))
         }
         .addSuperinterfaces(superInterfaces)
         .build()

@@ -126,7 +126,6 @@ data class IrField(
     // whether this fields needs an override modifier
     val override: Boolean,
 
-    val inlineAccessors: List<IrInlineAccessor>,
     val fragmentAccessors: List<IrFragmentAccessor>,
 
     // the field set corresponding to the fieldType

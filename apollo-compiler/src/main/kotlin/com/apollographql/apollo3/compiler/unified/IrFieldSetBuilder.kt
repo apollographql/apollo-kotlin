@@ -159,7 +159,6 @@ class IrFieldSetBuilder(
     val fieldSets: List<IrFieldSet>
     val interfaceFieldSets: List<IrFieldSet>
     val implementationFieldSets: List<IrFieldSet>
-    val inlineAccessors: List<IrInlineAccessor>
     val fragmentAccessors: List<IrFragmentAccessor>
 
     val fieldType = type.leafType().name
@@ -262,13 +261,6 @@ class IrFieldSetBuilder(
         (shapesTypeSets - commonTypeSets).contains(it.typeSet)
       }.sortedBy { it.typeSet.size }
 
-      inlineAccessors = (allTypeSets - setOf(setOf(fieldType))).map { accessorTypeSet ->
-        IrInlineAccessor(
-            typeSet = accessorTypeSet,
-            path = (implementationFieldSets.firstOrNull { it.typeSet == accessorTypeSet }
-                ?: fieldSets.first { it.typeSet == accessorTypeSet }).fullPath
-        )
-      }
       fragmentAccessors = selections.filterIsInstance<GQLFragmentSpread>().distinctBy { it.name }.map { fragmentSpread ->
         IrFragmentAccessor(
             name = fragmentSpread.name,
@@ -280,7 +272,6 @@ class IrFieldSetBuilder(
       fieldSets = emptyList()
       interfaceFieldSets = emptyList()
       implementationFieldSets = emptyList()
-      inlineAccessors = emptyList()
       fragmentAccessors = emptyList()
     }
 
@@ -300,7 +291,6 @@ class IrFieldSetBuilder(
         fieldSets = fieldSets,
         interfaces = interfaceFieldSets,
         implementations = implementationFieldSets,
-        inlineAccessors = inlineAccessors,
         fragmentAccessors = fragmentAccessors
     )
   }
