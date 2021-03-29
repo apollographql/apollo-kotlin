@@ -2,13 +2,15 @@ package com.apollographql.apollo3.compiler.unified
 
 /*
 * Unified IR. This builds all the possible field trees. As polymorphic fields are encountered, each field can have multiple
-* fieldset, building a tree where node are alternatively [IrField] and [IrFieldSet]
-* Also
+* [IrFieldSet], building a tree where nodes are alternatively [IrField] and [IrFieldSet]
+*
+* In details, compared to the GraphQL AST, the IR:
 * - moves @include/@skip directives on inline fragments and object fields to their children selections
 * - interprets @deprecated directives
-* - coerce argument values and resolves defaultValue
+* - coerces argument values and resolves defaultValue
 * - infers fragment variables
-* - records used types and fragments
+* - registers used types and fragments
+* - compute the packageName
 * - more generally removes all references to the GraphQL AST and "embeds" type definitions/field definitions
 */
 data class IntermediateRepresentation(
@@ -37,6 +39,9 @@ data class IrCustomScalars(
     val customScalars: List<IrCustomScalar>,
 )
 
+/**
+ * The path to a model. This maps 1:1 with a kotlinpoet [com.squareup.kotlinpoet.TypeName]
+ */
 data class ModelPath(
     val packageName: String,
     val elements: List<String> = emptyList(),
@@ -48,8 +53,8 @@ data class ModelPath(
  * An input field
  *
  * Note: [IrInputField], [IrArgument] and [IrVariable] are all very similar since they all share
- * the [com.apollographql.apollo3.compiler.frontend.GQLInputValueDefinition] type but they have
- * also differences:
+ * the [com.apollographql.apollo3.compiler.frontend.GQLInputValueDefinition] type but they also
+ * have differences which is why they are different IR models:
  * - [IrArgument] also has a value in addition to the type definition
  * - [IrVariable] doesn't have a description
  */
@@ -98,17 +103,20 @@ enum class IrOperationType {
   Subscription
 }
 
-
-data class IrInlineAccessor(
-    val typeSet: TypeSet,
-    val path: ModelPath,
-)
-
 data class IrFragmentAccessor(
     val name: String,
     val path: ModelPath,
 )
 
+/**
+ * A field in the IR tree
+ *
+ * A field can be:
+ * - scalar: [fieldSets] will be empty
+ * - monomorphic: [fieldSets] will contain only one [IrFieldSet]
+ * - polymorphic: [fieldSets] will contain all possible shapes and interfaces. [interfaces] and [implementations] will be a super set of [fieldSets]
+ * with possible "OtherFooBar" [IrFieldSet] to account for cases where we need an implementation with the same name as an interface
+ */
 data class IrField(
     val name: String,
     val alias: String?,
@@ -256,6 +264,10 @@ class IrEnumType(val enum: IrEnum) : IrType()
 // InputObjects can have cycles so the inputObject is lazy
 class IrInputObjectType(val inputObject: () -> IrInputObject) : IrType()
 
-// A placeholder type
+/**
+ * A compound type (objects, unions, interfaces)
+ *
+ * Compound types are nested and must be resolved with some context so we just record them with a placeholder
+ */
 object IrCompoundType : IrType()
 

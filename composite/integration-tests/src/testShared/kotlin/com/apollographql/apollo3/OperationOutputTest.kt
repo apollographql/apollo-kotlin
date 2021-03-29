@@ -9,7 +9,7 @@ import java.io.File
 class OperationOutputTest {
   @Test
   fun operationOutputMatchesTheModels() {
-    val operationOutputFile = File("build/generated/operationOutput/apollo/httpcache/operationOutput.json")
+    val operationOutputFile = File("build/generated/operationOutput/apollo/httpcache${sourceSetName.capitalize()}/operationOutput.json")
     val source = OperationOutput(operationOutputFile).values.first { it.name == "AllFilms"}.source
     assertThat(AllFilmsQuery().queryDocument()).isEqualTo(source)
   }

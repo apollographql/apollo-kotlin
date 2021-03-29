@@ -63,7 +63,7 @@ class IrFieldSetBuilder(
   private fun List<GQLSelection>.filePath() = mapNotNull { it.sourceLocation.filePath }.first()
 
 
-  fun getOrBuildFragmentField(
+  private fun getOrBuildFragmentField(
       selections: List<GQLSelection>,
       fieldType: String,
       name: String,

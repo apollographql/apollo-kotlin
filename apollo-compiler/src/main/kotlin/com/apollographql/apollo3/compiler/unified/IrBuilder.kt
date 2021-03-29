@@ -289,7 +289,6 @@ internal fun GQLValue.toIr(): IrValue {
  * - False
  * - (!)Variable
  * - (!)Variable & (!)Variable
- *
  */
 internal fun List<GQLDirective>.toBooleanExpression(): BooleanExpression {
   val conditions = mapNotNull {

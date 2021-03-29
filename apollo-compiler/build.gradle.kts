@@ -57,6 +57,11 @@ configure<org.jetbrains.kotlin.gradle.dsl.KotlinJvmProjectExtension> {
 }
 
 tasks.withType(KotlinCompile::class.java) {
+  // Fixes Task ':apollo-android:apollo-compiler:kaptGenerateStubsKotlin' uses the output of task ':apollo-android:apollo-compiler:pluginVersion', without declaring an explicit dependency
+  dependsOn(pluginVersionTaskProvider)
+}
+
+tasks.withType(KotlinCompile::class.java) {
   kotlinOptions {
     // Gradle forces 1.3.72 for the time being so compile against 1.3 stdlib for the time being
     // See https://issuetracker.google.com/issues/166582569
