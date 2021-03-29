@@ -16,7 +16,7 @@ internal object TestUtils {
     }
   }
   internal fun shouldUpdateMeasurements(): Boolean {
-    return when (System.getProperty("updateTestFixtures")?.trim()) {
+    return when (System.getProperty("updateMeasurements")?.trim()) {
       "on", "true", "1" -> true
       else -> false
     }

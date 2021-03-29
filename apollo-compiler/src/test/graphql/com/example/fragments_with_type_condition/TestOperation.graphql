@@ -1,5 +1,9 @@
 query TestQuery {
-  hero {
+  r2: hero {
+    ...HumanDetails
+    ...DroidDetails
+  }
+  luke: hero {
     ...HumanDetails
     ...DroidDetails
   }
