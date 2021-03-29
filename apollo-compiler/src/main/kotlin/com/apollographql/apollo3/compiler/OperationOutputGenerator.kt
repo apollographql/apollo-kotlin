@@ -12,7 +12,7 @@ interface OperationOutputGenerator {
   class DefaultOperationOuputGenerator(val operationIdGenerator: OperationIdGenerator) : OperationOutputGenerator {
     override fun generate(operationDescriptorList: Collection<OperationDescriptor>): OperationOutput {
       return operationDescriptorList.map {
-        operationIdGenerator.apply(it.source, it.packageName) to it
+        operationIdGenerator.apply(it.source, it.filePath) to it
       }.toMap()
     }
 
