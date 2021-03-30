@@ -8,6 +8,7 @@ import com.apollographql.apollo.api.internal.QueryDocumentMinifier
 import com.apollographql.apollo.api.internal.ResponseFieldMapper
 import com.apollographql.apollo.api.internal.SimpleOperationResponseParser
 import com.apollographql.apollo.compiler.VisitorSpec.VISITOR_CLASSNAME
+import com.apollographql.apollo.compiler.codegen.kotlin.OkioJavaTypeName
 import com.apollographql.apollo.compiler.ir.CodeGenerationContext
 import com.apollographql.apollo.compiler.ir.CodeGenerator
 import com.apollographql.apollo.compiler.ir.Fragment
@@ -23,8 +24,6 @@ import com.squareup.javapoet.ParameterizedTypeName
 import com.squareup.javapoet.TypeName
 import com.squareup.javapoet.TypeSpec
 import okio.Buffer
-import okio.BufferedSource
-import okio.ByteString
 import java.io.IOException
 import javax.lang.model.element.Modifier
 
@@ -303,7 +302,7 @@ class OperationTypeSpecBuilder(
         .addAnnotation(Annotations.NONNULL)
         .addModifiers(Modifier.PUBLIC)
         .addParameter(ParameterSpec
-            .builder(BufferedSource::class.java, "source", Modifier.FINAL)
+            .builder(OkioJavaTypeName.BufferedSource, "source", Modifier.FINAL)
             .addAnnotation(Annotations.NONNULL)
             .build()
         )
@@ -325,7 +324,7 @@ class OperationTypeSpecBuilder(
         .addAnnotation(Annotations.NONNULL)
         .addModifiers(Modifier.PUBLIC)
         .addParameter(ParameterSpec
-            .builder(BufferedSource::class.java, "source", Modifier.FINAL)
+            .builder(OkioJavaTypeName.BufferedSource, "source", Modifier.FINAL)
             .addAnnotation(Annotations.NONNULL)
             .build()
         )
@@ -342,7 +341,7 @@ class OperationTypeSpecBuilder(
         .addAnnotation(Annotations.NONNULL)
         .addModifiers(Modifier.PUBLIC)
         .addParameter(ParameterSpec
-            .builder(ByteString::class.java, "byteString", Modifier.FINAL)
+            .builder(OkioJavaTypeName.ByteString, "byteString", Modifier.FINAL)
             .addAnnotation(Annotations.NONNULL)
             .build()
         )
@@ -353,7 +352,7 @@ class OperationTypeSpecBuilder(
         )
         .addException(IOException::class.java)
         .returns(ParameterizedTypeName.get(ClassName.get(Response::class.java), wrapperType(context)))
-        .addStatement("return parse(new \$T().write(byteString), scalarTypeAdapters)", Buffer::class.java)
+        .addStatement("return parse(new \$T().write(byteString), scalarTypeAdapters)", OkioJavaTypeName.Buffer)
         .build()
   }
 
@@ -364,7 +363,7 @@ class OperationTypeSpecBuilder(
         .addAnnotation(Annotations.NONNULL)
         .addModifiers(Modifier.PUBLIC)
         .addParameter(ParameterSpec
-            .builder(ByteString::class.java, "byteString", Modifier.FINAL)
+            .builder(OkioJavaTypeName.ByteString, "byteString", Modifier.FINAL)
             .addAnnotation(Annotations.NONNULL)
             .build()
         )
@@ -385,7 +384,7 @@ class OperationTypeSpecBuilder(
             .addAnnotation(Annotations.NONNULL)
             .build()
         )
-        .returns(ByteString::class.java)
+        .returns(OkioJavaTypeName.ByteString)
         .addStatement("return \$T.compose(this, false, true, scalarTypeAdapters)", OperationRequestBodyComposer::class.java)
         .build()
   }
@@ -396,7 +395,7 @@ class OperationTypeSpecBuilder(
         .addAnnotation(Annotations.NONNULL)
         .addAnnotation(Annotations.OVERRIDE)
         .addModifiers(Modifier.PUBLIC)
-        .returns(ByteString::class.java)
+        .returns(OkioJavaTypeName.ByteString)
         .addStatement("return \$T.compose(this, false, true, \$T.DEFAULT)", OperationRequestBodyComposer::class.java,
             ScalarTypeAdapters::class.java)
         .build()
@@ -421,7 +420,7 @@ class OperationTypeSpecBuilder(
             .addAnnotation(Annotations.NONNULL)
             .build()
         )
-        .returns(ByteString::class.java)
+        .returns(OkioJavaTypeName.ByteString)
         .addStatement("return \$T.compose(this, autoPersistQueries, withQueryDocument, scalarTypeAdapters)",
             OperationRequestBodyComposer::class.java)
         .build()

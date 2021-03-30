@@ -5,9 +5,8 @@ import com.squareup.kotlinpoet.ClassName
 import com.squareup.kotlinpoet.FunSpec
 
 private val MULTIPLATFORM_THROWS = ClassName("com.apollographql.apollo.api.internal", "Throws")
-private val MULTIPLATFORM_IO_EXCEPTION = ClassName("okio", "IOException")
 
-fun FunSpec.Builder.throwsMultiplatformIOException() = throws(MULTIPLATFORM_IO_EXCEPTION)
+fun FunSpec.Builder.throwsMultiplatformIOException() = throws(OkioKotlinTypeName.IOException)
 
 /**
  * User instead of Kotlin poet throws since we have our own Throws class for Kotlin Multiplatform

@@ -3,6 +3,7 @@ plugins {
   id("org.jetbrains.kotlin.jvm")
   id("java-gradle-plugin")
   id("com.gradle.plugin-publish")
+  id("com.github.johnrengelman.shadow")
   kotlin("kapt")
 }
 
@@ -19,23 +20,107 @@ metalava {
   hiddenPackages += setOf("com.apollographql.apollo.gradle.internal")
 }
 
+/**
+ * Special configuration to be included in resulting shadowed jar, but not added to the generated pom and gradle
+ * metadata files.
+ * Largely inspired by Ktlint https://github.com/JLLeitschuh/ktlint-gradle/blob/530aa9829abea01e4c91e8798fb7341c438aac3b/plugin/build.gradle.kts
+ */
+val shadowImplementation by configurations.creating
+configurations["compileOnly"].extendsFrom(shadowImplementation)
+configurations["testImplementation"].extendsFrom(shadowImplementation)
+
+fun addShadowImplementation(dependency: Dependency) {
+  dependency as ModuleDependency
+  /**
+   * Exclude the kotlin-stdlib from the fatjar because:
+   * 1. it's less bytes to download and load as the stdlib should be on the classpath already
+   * 2. there's a weird bug where trying to relocate the stdlib will also rename the "kotlin"
+   * strings inside the plugin so something like `extensions.findByName("kotlin")` becomes
+   * `extensions.findByName("com.apollographql.relocated.kotlin")
+   * See https://github.com/johnrengelman/shadow/issues/232 for more details
+   */
+  dependency.exclude(group = "org.jetbrains.kotlin", module = "kotlin-stdlib")
+  dependency.exclude(group = "org.jetbrains.kotlin", module = "kotlin-stdlib-jdk7")
+  dependency.exclude(group = "org.jetbrains.kotlin", module = "kotlin-stdlib-jdk8")
+  dependency.exclude(group = "org.jetbrains.kotlin", module = "kotlin-stdlib-common")
+  dependency.exclude(group = "org.jetbrains.kotlin", module = "kotlin-reflect")
+
+  dependencies.add("shadowImplementation", dependency)
+}
 dependencies {
   compileOnly(gradleApi())
-  compileOnly(dep("kotlin").dot("plugin"))
-  compileOnly(dep("android").dot("minPlugin"))
-  // kotlin-reflect is transitively pulled by the android plugin, make it explicit so that it uses the same version as the rest of kotlin libs
-  compileOnly(dep("kotlin").dot("reflect"))
+  compileOnly(groovy.util.Eval.x(project, "x.dep.kotlin.plugin"))
+  compileOnly(groovy.util.Eval.x(project, "x.dep.android.minPlugin"))
 
-  api(project(":apollo-compiler"))
-  implementation(project(":apollo-api")) // for QueryDocumentMinifier
-  implementation(dep("okHttp").dot("okHttp4"))
-  implementation(dep("moshi").dot("moshi"))
-  kapt(groovy.util.Eval.x(project, "x.dep.moshi.kotlinCodegen"))
+  addShadowImplementation(project(":apollo-compiler"))
+  addShadowImplementation(project(":apollo-api"))
 
-  testImplementation(dep("junit"))
+  addShadowImplementation(create(groovy.util.Eval.x(project, "x.dep.okHttp.okHttp4")))
+  // Needed for manual Json construction in `SchemaDownloader`
+  addShadowImplementation(create(groovy.util.Eval.x(project, "x.dep.moshi.moshi")))
+
+  testImplementation(groovy.util.Eval.x(project, "x.dep.junit"))
   testImplementation(groovy.util.Eval.x(project, "x.dep.truth"))
+  testImplementation(groovy.util.Eval.x(project, "x.dep.okHttp.mockWebServer4"))
+}
 
-  testImplementation(dep("okHttp").dot("mockWebServer4"))
+val shadowJarTask = tasks.named("shadowJar", com.github.jengelman.gradle.plugins.shadow.tasks.ShadowJar::class.java)
+val shadowPrefix = "com.apollographql.relocated"
+
+shadowJarTask.configure {
+  configurations = listOf(shadowImplementation)
+
+  /**
+   * This list is built by unzipping the fatjar and looking at .class files inside with something like:
+   *
+   * val dir  = args[0]
+   * val classPaths = File(dir).walk().filter { it.isFile }.map {
+   *   it.parentFile.relativeTo(File(dir)).path.replace("/", ".")
+   * }.distinct().sorted()
+   *
+   * Things to consider:
+   * - We do not ship kotlin-stdlib in the fat jar as it should be provided by Gradle already (see [addShadowImplementation])
+   * - I'm hoping kotlin-reflect is also provided by Gradle. In the tests I've made, it looks like it is and relocating it fails
+   * with java.lang.NoSuchMethodError: 'com.apollographql.relocated.kotlin.reflect.KClass kotlin.jvm.internal.Reflection.getOrCreateKotlinClass(java.lang.Class)
+   * - We do not relocate "com.apollographql.apollo.*" as the codegen has a lot of hardcoded strings inside that shouldn't be relocated
+   * as they are used at runtime
+   * - If we relocate a deep dependency (such as okio), we must relocate all intermediate dependencies (such as moshi/okhttp) or else
+   * this will clash with any other version in the classpath
+   * - When there are multiple subpackages, we usually include a shared prefx package to avoid this list being huge... But we don't
+   * want these packages to be too short either as it increases the risk of a string being renamed
+   */
+  listOf(
+      "com.benasher44.uuid",
+      "com.squareup.kotlinpoet",
+      "com.squareup.javapoet",
+      "com.squareup.moshi",
+      "okhttp3",
+      "okio",
+      "org.antlr"
+  ).forEach { packageName ->
+    relocate(packageName, "com.apollographql.relocated.$packageName")
+  }
+}
+
+tasks.getByName("jar").enabled = false
+tasks.getByName("jar").dependsOn(shadowJarTask)
+
+configurations {
+  configureEach {
+    outgoing {
+      val removed = artifacts.removeIf { it.classifier.isNullOrEmpty() }
+      if (removed) {
+        artifact(tasks.shadowJar) {
+          // Pom and maven consumers do not like the `-all` default classifier
+          classifier = ""
+        }
+      }
+    }
+  }
+  // used by plugin-publish plugin
+  archives {
+    extendsFrom(signatures.get())
+  }
 }
 
 tasks.withType<Test> {
