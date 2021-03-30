@@ -35,7 +35,7 @@ abstract class ApolloCheckDuplicatesTask : DefaultTask() {
         }
 
     metadataList.flatMap { metadata ->
-      metadata.types.map { it to metadata.moduleName }
+      (metadata.generatedInputObjects + metadata.generatedInputObjects).map { it to metadata.moduleName }
     }
         .groupBy { it.first }
         .values

@@ -172,7 +172,7 @@ class CodegenTest(private val folder: File, private val fragmentsCodegenMode: Fr
       }
       val operationIdGenerator = when (folder.name) {
         "operation_id_generator" -> object : OperationIdGenerator {
-          override fun apply(operationDocument: String, operationFilepath: String): String {
+          override fun apply(operationDocument: String, operationName: String): String {
             return "hash"
           }
 

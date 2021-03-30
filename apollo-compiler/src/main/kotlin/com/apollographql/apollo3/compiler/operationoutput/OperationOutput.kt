@@ -15,7 +15,6 @@ import java.io.File
 @JsonClass(generateAdapter = true)
 class OperationDescriptor(
     val name: String,
-    val packageName: String,
     val source: String
 )
 
@@ -44,10 +43,10 @@ fun OperationOutput(file: File): OperationOutput {
   }
 }
 
-fun OperationOutput.findOperationId(name: String, packageName: String): String {
-  val id = entries.find { it.value.name == name && it.value.packageName == packageName }?.key
+fun OperationOutput.findOperationId(name: String): String {
+  val id = entries.find { it.value.name == name }?.key
   check(id != null) {
-    "cannot find operation ID for '$packageName.$name', check your operationOutput.json"
+    "cannot find operation ID for '$name', check your operationOutput.json"
   }
   return id
 }

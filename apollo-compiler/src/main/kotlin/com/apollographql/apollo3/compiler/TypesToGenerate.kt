@@ -37,7 +37,7 @@ internal fun computeTypesToGenerate(
   }.map { it.name }
       .toSet()
 
-  val incomingTypes = incomingMetadata?.types ?: emptySet()
+  val incomingTypes = incomingMetadata?.generatedEnums?.plus(incomingMetadata.generatedInputObjects) ?: emptySet()
 
   val usedTypes = ((documents.flatMap { it.definitions }.usedTypeNames(schema)) + extraTypes).map {
     schema.typeDefinitions[it]!!

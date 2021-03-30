@@ -9,10 +9,10 @@ interface OperationOutputGenerator {
 
   val version: String
 
-  class DefaultOperationOuputGenerator(val operationIdGenerator: OperationIdGenerator) : OperationOutputGenerator {
+  class DefaultOperationOuputGenerator(private val operationIdGenerator: OperationIdGenerator) : OperationOutputGenerator {
     override fun generate(operationDescriptorList: Collection<OperationDescriptor>): OperationOutput {
       return operationDescriptorList.map {
-        operationIdGenerator.apply(it.source, it.packageName) to it
+        operationIdGenerator.apply(it.source, it.name) to it
       }.toMap()
     }
 

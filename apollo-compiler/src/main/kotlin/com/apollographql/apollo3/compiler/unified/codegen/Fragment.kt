@@ -17,7 +17,6 @@ import com.apollographql.apollo3.compiler.unified.codegen.helpers.maybeAddDescri
 import com.apollographql.apollo3.compiler.unified.codegen.helpers.toNamedType
 import com.apollographql.apollo3.compiler.unified.codegen.helpers.toParameterSpec
 import com.apollographql.apollo3.compiler.unified.codegen.helpers.typeName
-import com.apollographql.apollo3.compiler.unified.codegen.helpers.typeSpec
 import com.apollographql.apollo3.compiler.unified.codegen.helpers.typeSpecs
 import com.squareup.kotlinpoet.ClassName
 import com.squareup.kotlinpoet.FunSpec
@@ -26,12 +25,14 @@ import com.squareup.kotlinpoet.TypeName
 import com.squareup.kotlinpoet.TypeSpec
 import com.squareup.kotlinpoet.asTypeName
 
-fun IrNamedFragment.qualifiedTypeSpecs(): List<ApolloFileSpec> {
+fun IrNamedFragment.qualifiedTypeSpecs(generateFilterNotNull: Boolean, generateFragmentImplementations: Boolean): List<ApolloFileSpec> {
   val list = mutableListOf<ApolloFileSpec>()
 
   list.add(ApolloFileSpec(packageName, interfaceTypeSpecs(), kotlinNameForFragmentInterfaceFile(name)))
-  list.add(ApolloFileSpec(packageName, implementationTypeSpec()))
-  if (variables.isNotEmpty()){
+  if (generateFragmentImplementations) {
+    list.add(ApolloFileSpec(packageName, implementationTypeSpec(generateFilterNotNull)))
+  }
+  if (variables.isNotEmpty()) {
     list.add(ApolloFileSpec(adapterPackageName(packageName), variablesAdapterTypeSpec()))
   }
   list.add(ApolloFileSpec(adapterPackageName(packageName), responseAdapterTypeSpec()))
@@ -40,7 +41,7 @@ fun IrNamedFragment.qualifiedTypeSpecs(): List<ApolloFileSpec> {
   return list
 }
 
-private fun IrNamedFragment.implementationTypeSpec(): TypeSpec {
+private fun IrNamedFragment.implementationTypeSpec(generateFilterNotNull: Boolean): TypeSpec {
   return TypeSpec.classBuilder(kotlinNameForFragmentImplementation(name))
       .addSuperinterface(superInterfaceType())
       .maybeAddDescription(description)
@@ -50,6 +51,7 @@ private fun IrNamedFragment.implementationTypeSpec(): TypeSpec {
       .addFunction(responseFieldsFunSpec())
       .addTypes(dataTypeSpecs()) // Fragments can have multiple data shapes
       .build()
+      .maybeAddFilterNotNull(generateFilterNotNull)
 }
 
 private fun IrNamedFragment.interfaceTypeSpecs(): List<TypeSpec> {

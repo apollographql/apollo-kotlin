@@ -1,6 +1,8 @@
 package com.apollographql.apollo3.compiler.unified.codegen
 
 import com.apollographql.apollo3.compiler.VERSION
+import com.apollographql.apollo3.compiler.operationoutput.OperationOutput
+import com.apollographql.apollo3.compiler.operationoutput.findOperationId
 import com.apollographql.apollo3.compiler.unified.IntermediateRepresentation
 import com.squareup.kotlinpoet.FileSpec
 import com.squareup.kotlinpoet.KModifier
@@ -20,11 +22,16 @@ class ApolloFileSpec(
   constructor(packageName: String, typeSpec: TypeSpec): this(packageName, listOf(typeSpec), typeSpec.name!!)
 }
 
-class GraphQLCodeGenerator(
+class KotlinCodeGenerator(
     private val ir: IntermediateRepresentation,
     private val generateAsInternal: Boolean = false,
-    private val enumAsSealedClassPatternFilters: List<Regex>,
+    private val enumAsSealedClassPatternFilters: Set<String>,
     private val generateScalarMapping: Boolean,
+    private val generateFilterNotNull: Boolean,
+    private val operationOutput: OperationOutput,
+    private val generateFragmentImplementations: Boolean,
+    private val generateFragmentsAsInterfaces: Boolean,
+    private val useSemanticNaming: Boolean,
 ) {
   fun write(outputDir: File) {
     val customScalars = if (generateScalarMapping) {
@@ -42,11 +49,11 @@ class GraphQLCodeGenerator(
     }
 
     val operations = ir.operations.flatMap { operation ->
-      operation.qualifiedTypeSpecs()
+      operation.qualifiedTypeSpecs(generateFilterNotNull, operationOutput.findOperationId(operation.name))
     }
 
     val fragments = ir.fragments.flatMap { fragment ->
-      fragment.qualifiedTypeSpecs()
+      fragment.qualifiedTypeSpecs(generateFilterNotNull, generateFragmentImplementations)
     }
 
     val qualifiedTypeSpecs = customScalars + enums + inputObjects + operations + fragments

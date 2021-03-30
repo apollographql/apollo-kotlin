@@ -170,8 +170,6 @@ class IrBuilder(
         dataField = dataField,
         sourceWithFragments = sourceWithFragments,
         packageName = packageName,
-        // TODO: operation Id
-        operationId = name
     )
   }
 

@@ -11,12 +11,14 @@ import com.apollographql.apollo3.compiler.backend.codegen.Identifier.writer
 import com.apollographql.apollo3.compiler.backend.codegen.adapterPackageName
 import com.apollographql.apollo3.compiler.backend.codegen.kotlinNameForVariablesAdapter
 import com.apollographql.apollo3.compiler.backend.codegen.obj
+import com.apollographql.apollo3.compiler.backend.codegen.patchKotlinNativeOptionalArrayProperties
 import com.squareup.kotlinpoet.ClassName
 import com.squareup.kotlinpoet.CodeBlock
 import com.squareup.kotlinpoet.FunSpec
 import com.squareup.kotlinpoet.KModifier
 import com.squareup.kotlinpoet.ParameterizedTypeName.Companion.parameterizedBy
 import com.squareup.kotlinpoet.TypeName
+import com.squareup.kotlinpoet.TypeSpec
 import com.squareup.kotlinpoet.asClassName
 import com.squareup.kotlinpoet.asTypeName
 
@@ -65,4 +67,11 @@ fun responseFieldsFunSpec(typeName: TypeName): FunSpec {
       )
       .addCode("return %T.fields.first().fieldSets", typeName)
       .build()
+}
+
+fun TypeSpec.maybeAddFilterNotNull(generateFilterNotNull: Boolean): TypeSpec {
+  if (!generateFilterNotNull) {
+    return this
+  }
+  return patchKotlinNativeOptionalArrayProperties()
 }

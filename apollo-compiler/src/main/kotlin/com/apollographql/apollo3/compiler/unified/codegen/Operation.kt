@@ -31,10 +31,10 @@ import com.squareup.kotlinpoet.TypeName
 import com.squareup.kotlinpoet.TypeSpec
 import com.squareup.kotlinpoet.asTypeName
 
-fun IrOperation.qualifiedTypeSpecs(): List<ApolloFileSpec> {
+fun IrOperation.qualifiedTypeSpecs(generateFilterNotNull: Boolean, operationId: String): List<ApolloFileSpec> {
   val list = mutableListOf<ApolloFileSpec>()
 
-  list.add(ApolloFileSpec(packageName, typeSpec()))
+  list.add(ApolloFileSpec(packageName, typeSpec(operationId, generateFilterNotNull)))
   if (variables.isNotEmpty()) {
     list.add(ApolloFileSpec(adapterPackageName(packageName), variablesAdapterTypeSpec()))
   }
@@ -44,7 +44,7 @@ fun IrOperation.qualifiedTypeSpecs(): List<ApolloFileSpec> {
   return list
 }
 
-private fun IrOperation.typeSpec(): TypeSpec {
+private fun IrOperation.typeSpec(operationId: String, generateFilterNotNull: Boolean): TypeSpec {
   return TypeSpec.classBuilder(kotlinNameForOperation(name))
       .addSuperinterface(superInterfaceType())
       .maybeAddDescription(description)
@@ -56,8 +56,9 @@ private fun IrOperation.typeSpec(): TypeSpec {
       .addFunction(adapterFunSpec())
       .addFunction(responseFieldsFunSpec())
       .addTypes(dataTypeSpecs())
-      .addType(companionTypeSpec())
+      .addType(companionTypeSpec(operationId))
       .build()
+      .maybeAddFilterNotNull(generateFilterNotNull)
 }
 
 private fun IrOperation.typeName() = ClassName(packageName, kotlinNameForOperation(name))
@@ -143,7 +144,7 @@ private fun nameFunSpec() = FunSpec.builder("name")
     .addStatement("return OPERATION_NAME")
     .build()
 
-private fun IrOperation.companionTypeSpec(): TypeSpec {
+private fun IrOperation.companionTypeSpec(operationId: String): TypeSpec {
   return TypeSpec.companionObjectBuilder()
       .addProperty(PropertySpec.builder("OPERATION_ID", String::class)
           .addModifiers(KModifier.CONST)

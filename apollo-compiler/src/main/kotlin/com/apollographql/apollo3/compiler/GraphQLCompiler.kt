@@ -4,6 +4,7 @@ import com.apollographql.apollo3.api.QueryDocumentMinifier
 import com.apollographql.apollo3.compiler.ApolloMetadata.Companion.merge
 import com.apollographql.apollo3.compiler.backend.GraphQLCodeGenerator
 import com.apollographql.apollo3.compiler.backend.ir.BackendIrBuilder
+import com.apollographql.apollo3.compiler.frontend.GQLDocument
 import com.apollographql.apollo3.compiler.frontend.GQLFragmentDefinition
 import com.apollographql.apollo3.compiler.frontend.GQLOperationDefinition
 import com.apollographql.apollo3.compiler.frontend.GQLTypeDefinition
@@ -18,6 +19,8 @@ import com.apollographql.apollo3.compiler.frontend.withTypenameWhenNeeded
 import com.apollographql.apollo3.compiler.introspection.IntrospectionSchema
 import com.apollographql.apollo3.compiler.operationoutput.OperationDescriptor
 import com.apollographql.apollo3.compiler.operationoutput.toJson
+import com.apollographql.apollo3.compiler.unified.IrBuilder
+import com.apollographql.apollo3.compiler.unified.codegen.KotlinCodeGenerator
 import com.squareup.kotlinpoet.asClassName
 import java.io.File
 
@@ -36,20 +39,16 @@ class GraphQLCompiler(val logger: Logger = NoOpLogger) {
 
     val (schema, schemaPackageName) = getSchemaInfo(roots, args.rootPackageName, args.schemaFile, metadata)
 
-    val generateKotlinModels = metadata?.generateKotlinModels ?: args.generateKotlinModels
-    val userScalarTypesMap = metadata?.customScalarsMapping ?: args.customScalarsMapping
-
     val packageNameProvider = DefaultPackageNameProvider(
         roots = roots,
         rootPackageName = args.rootPackageName,
         schemaPackageName = schemaPackageName
     )
 
-    val metadataFragments = metadata?.fragments ?: emptyList()
     val (documents, issues) = GraphQLParser.parseExecutableFiles(
         args.graphqlFiles,
         schema,
-        metadataFragments
+        metadata?.fragments ?: emptyList()
     )
 
     val (errors, warnings) = issues.partition { it.severity == Issue.Severity.ERROR }
@@ -87,6 +86,100 @@ class GraphQLCompiler(val logger: Logger = NoOpLogger) {
       it.withTypenameWhenNeeded(schema)
     }
 
+    val useUnifiedIr = false
+    val generatedTypes = if (useUnifiedIr) {
+      doWriteUnified(
+          schema = schema,
+          operations = operations,
+          fragments = fragments,
+          metadata = metadata,
+          args = args,
+          packageNameProvider = packageNameProvider
+      )
+    } else {
+      doWrite(
+          schema = schema,
+          documents = documents,
+          operations = operations,
+          fragments = fragments,
+          metadata = metadata,
+          args = args,
+          packageNameProvider = packageNameProvider
+      )
+    }
+
+    args.metadataOutputFile.parentFile.mkdirs()
+    val outgoingMetadata = ApolloMetadata(
+        schema = if (metadata == null) schema else null,
+        schemaPackageName = schemaPackageName,
+        moduleName = args.moduleName,
+        generatedEnums = generatedTypes.enums,
+        generatedInputObjects = generatedTypes.inputObjects,
+        fragments = documents.flatMap { it.definitions.filterIsInstance<GQLFragmentDefinition>() },
+        generateKotlinModels = args.generateKotlinModels,
+        customScalarsMapping = args.customScalarsMapping,
+        pluginVersion = VERSION
+    )
+    outgoingMetadata.writeTo(args.metadataOutputFile)
+
+  }
+
+  private class GeneratedTypes(val enums: Set<String>, val inputObjects: Set<String>)
+
+  private fun doWriteUnified(
+      schema: Schema,
+      operations: List<GQLOperationDefinition>,
+      fragments: List<GQLFragmentDefinition>,
+      metadata: ApolloMetadata?,
+      args: Arguments,
+      packageNameProvider: PackageNameProvider,
+  ): GeneratedTypes {
+    val ir = IrBuilder(
+        schema = schema,
+        operationDefinitions = operations,
+        fragmentDefinitions = fragments,
+        metadataFragmentDefinitions = metadata?.fragments ?: emptyList(),
+        alwaysGenerateTypesMatching = args.alwaysGenerateTypesMatching,
+        customScalarToKotlinName = args.customScalarsMapping,
+        packageNameProvider = packageNameProvider
+    ).build()
+
+    val operationOutput = ir.operations.map {
+      OperationDescriptor(
+          name = it.name,
+          source = QueryDocumentMinifier.minify(it.sourceWithFragments)
+      )
+    }.let {
+      args.operationOutputGenerator.generate(it)
+    }
+
+    KotlinCodeGenerator(
+        ir = ir,
+        generateAsInternal = args.generateAsInternal,
+        enumAsSealedClassPatternFilters = args.enumAsSealedClassPatternFilters,
+        operationOutput = operationOutput,
+        useSemanticNaming = args.useSemanticNaming,
+        generateScalarMapping = metadata == null,
+        generateFilterNotNull = args.generateFilterNotNull,
+        generateFragmentImplementations = args.generateFragmentImplementations,
+        generateFragmentsAsInterfaces = args.generateFragmentsAsInterfaces,
+    )
+
+    return GeneratedTypes(
+        enums = ir.enums.map { it.name }.toSet(),
+        inputObjects = ir.inputObjects.map { it.name }.toSet(),
+    )
+  }
+
+  private fun doWrite(
+      schema: Schema,
+      documents: List<GQLDocument>,
+      operations: List<GQLOperationDefinition>,
+      fragments: List<GQLFragmentDefinition>,
+      metadata: ApolloMetadata?,
+      args: Arguments,
+      packageNameProvider: PackageNameProvider,
+  ): GeneratedTypes {
     val typesToGenerate = computeTypesToGenerate(
         documents = documents,
         schema = schema,
@@ -98,7 +191,7 @@ class GraphQLCompiler(val logger: Logger = NoOpLogger) {
         schema = schema,
         operationDefinitions = operations,
         fragmentDefinitions = fragments,
-        metadataFragmentDefinitions = metadataFragments
+        metadataFragmentDefinitions = metadata?.fragments ?: emptyList()
     ).build()
 
     val backendIr = BackendIrBuilder(
@@ -111,7 +204,6 @@ class GraphQLCompiler(val logger: Logger = NoOpLogger) {
     val operationOutput = backendIr.operations.map {
       OperationDescriptor(
           name = it.operationName,
-          packageName = it.targetPackageName,
           source = QueryDocumentMinifier.minify(it.definition)
       )
     }.let {
@@ -131,6 +223,9 @@ class GraphQLCompiler(val logger: Logger = NoOpLogger) {
     // TODO: use another schema for codegen than introspection schema
     val introspectionSchema = schema.toIntrospectionSchema()
 
+    val generateKotlinModels = metadata?.generateKotlinModels ?: args.generateKotlinModels
+    val userScalarTypesMap = metadata?.customScalarsMapping ?: args.customScalarsMapping
+
     /**
      * Generate the mapping for all custom scalars
      *
@@ -149,6 +244,7 @@ class GraphQLCompiler(val logger: Logger = NoOpLogger) {
           it to (userScalarTypesMap[it] ?: anyClassName(generateKotlinModels))
         }.toMap()
 
+    val schemaPackageName = packageNameProvider.schemaPackageName()
     GraphQLCodeGenerator(
         backendIr = backendIr,
         schema = schema,
@@ -166,18 +262,7 @@ class GraphQLCompiler(val logger: Logger = NoOpLogger) {
         generateFragmentsAsInterfaces = args.generateFragmentsAsInterfaces,
     ).write(args.outputDir)
 
-    args.metadataOutputFile.parentFile.mkdirs()
-    val outgoingMetadata = ApolloMetadata(
-        schema = if (metadata == null) schema else null,
-        schemaPackageName = schemaPackageName,
-        moduleName = args.moduleName,
-        types = typesToGenerate.enumsToGenerate + typesToGenerate.inputObjectsToGenerate,
-        fragments = documents.flatMap { it.definitions.filterIsInstance<GQLFragmentDefinition>() },
-        generateKotlinModels = generateKotlinModels,
-        customScalarsMapping = args.customScalarsMapping,
-        pluginVersion = VERSION
-    )
-    outgoingMetadata.writeTo(args.metadataOutputFile)
+    return GeneratedTypes(enums = typesToGenerate.enumsToGenerate, inputObjects = typesToGenerate.inputObjectsToGenerate)
   }
 
   private fun anyClassName(generateKotlinModels: Boolean) = if (generateKotlinModels) {
@@ -191,7 +276,7 @@ class GraphQLCompiler(val logger: Logger = NoOpLogger) {
   companion object {
 
     private fun collectMetadata(metadata: List<File>): ApolloMetadata? {
-      return metadata.mapNotNull {
+      return metadata.map {
         ApolloMetadata.readFrom(it)
       }.merge()
     }
@@ -289,7 +374,6 @@ class GraphQLCompiler(val logger: Logger = NoOpLogger) {
        * the OperationOutputGenerator used to generate operation Ids
        */
       val operationOutputGenerator: OperationOutputGenerator = OperationOutputGenerator.DefaultOperationOuputGenerator(OperationIdGenerator.Sha256()),
-      val dumpIR: Boolean = false,
 
       //========== global codegen options ============
 
@@ -310,6 +394,10 @@ class GraphQLCompiler(val logger: Logger = NoOpLogger) {
        */
       val generateFilterNotNull: Boolean = false,
       val enumAsSealedClassPatternFilters: Set<String> = emptySet(),
-      val generateFragmentsAsInterfaces: Boolean = true
+      val generateFragmentsAsInterfaces: Boolean = true,
+
+      // Debug options
+      val dumpIR: Boolean = false,
+      val useUnifiedIr: Boolean = true
   )
 }
