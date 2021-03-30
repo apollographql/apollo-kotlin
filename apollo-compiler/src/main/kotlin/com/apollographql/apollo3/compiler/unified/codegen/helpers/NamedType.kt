@@ -2,8 +2,7 @@ package com.apollographql.apollo3.compiler.unified.codegen.helpers
 
 import com.apollographql.apollo3.api.Input
 import com.apollographql.apollo3.compiler.applyIf
-import com.apollographql.apollo3.compiler.backend.codegen.kotlinNameForProperty
-import com.apollographql.apollo3.compiler.unified.ClassLayout
+import com.apollographql.apollo3.compiler.unified.CodegenLayout
 import com.apollographql.apollo3.compiler.unified.IrInputField
 import com.apollographql.apollo3.compiler.unified.IrType
 import com.apollographql.apollo3.compiler.unified.IrVariable
@@ -22,7 +21,7 @@ class NamedType(
     val optional: Boolean = false,
 )
 
-fun NamedType.typeName(layout: ClassLayout): TypeName {
+fun NamedType.typeName(layout: CodegenLayout): TypeName {
   return if (optional) {
     Input::class.asClassName().parameterizedBy(layout.typeTypename(type))
   } else {
@@ -30,7 +29,7 @@ fun NamedType.typeName(layout: ClassLayout): TypeName {
   }
 }
 
-fun NamedType.adapterInitializer(layout: ClassLayout): CodeBlock {
+fun NamedType.adapterInitializer(layout: CodegenLayout): CodeBlock {
   return if (optional) {
     val inputFun = MemberName("com.apollographql.apollo3.api", "input")
     CodeBlock.of("%L.%M()", type.adapterInitializer(layout, null), inputFun)
@@ -39,7 +38,7 @@ fun NamedType.adapterInitializer(layout: ClassLayout): CodeBlock {
   }
 }
 
-internal fun NamedType.toParameterSpec(layout: ClassLayout): ParameterSpec {
+internal fun NamedType.toParameterSpec(layout: CodegenLayout): ParameterSpec {
   return ParameterSpec
       .builder(
           // we use property for parameters as these are ultimately data classes

@@ -11,9 +11,8 @@ import com.apollographql.apollo3.compiler.backend.codegen.Identifier.responseAda
 import com.apollographql.apollo3.compiler.backend.codegen.Identifier.toResponse
 import com.apollographql.apollo3.compiler.backend.codegen.Identifier.value
 import com.apollographql.apollo3.compiler.backend.codegen.Identifier.writer
-import com.apollographql.apollo3.compiler.backend.codegen.kotlinNameForProperty
 import com.apollographql.apollo3.compiler.backend.codegen.kotlinNameForVariable
-import com.apollographql.apollo3.compiler.unified.ClassLayout
+import com.apollographql.apollo3.compiler.unified.CodegenLayout
 import com.apollographql.apollo3.compiler.unified.IrField
 import com.apollographql.apollo3.compiler.unified.IrFieldSet
 import com.apollographql.apollo3.compiler.unified.codegen.helpers.adapterInitializer
@@ -27,13 +26,13 @@ import com.squareup.kotlinpoet.asTypeName
 import com.squareup.kotlinpoet.joinToCode
 
 internal fun dataResponseAdapterTypeSpecs(
-    layout: ClassLayout,
+    layout: CodegenLayout,
     dataField: IrField,
 ): List<TypeSpec> {
   return dataField.responseAdapterTypeSpecs(layout)
 }
 
-internal fun IrField.responseAdapterTypeSpecs(layout: ClassLayout): List<TypeSpec> {
+internal fun IrField.responseAdapterTypeSpecs(layout: CodegenLayout): List<TypeSpec> {
   return when (implementations.size){
     0 -> emptyList() // scalar
     1 -> listOf(implementations.first().adapterTypeSpec(layout))
@@ -51,7 +50,7 @@ internal fun IrFieldSet.responseNamesPropertySpec(): PropertySpec {
       .build()
 }
 
-internal fun IrFieldSet.adapterTypeSpec(layout: ClassLayout): TypeSpec {
+internal fun IrFieldSet.adapterTypeSpec(layout: CodegenLayout): TypeSpec {
   return TypeSpec.objectBuilder(modelName)
       .addSuperinterface(ResponseAdapter::class.asTypeName().parameterizedBy(layout.fieldSetClassName(this)))
       .addProperty(responseNamesPropertySpec())
@@ -63,7 +62,7 @@ internal fun IrFieldSet.adapterTypeSpec(layout: ClassLayout): TypeSpec {
       .build()
 }
 
-internal fun IrFieldSet.readFromResponseCodeBlock(layout: ClassLayout, variableInitializer: (String) -> String): CodeBlock {
+internal fun IrFieldSet.readFromResponseCodeBlock(layout: CodegenLayout, variableInitializer: (String) -> String): CodeBlock {
   val prefix = fields.map { field ->
     CodeBlock.of(
         "var·%L:·%T·=·%L",
@@ -113,7 +112,7 @@ internal fun IrFieldSet.readFromResponseCodeBlock(layout: ClassLayout, variableI
       .build()
 }
 
-private fun IrFieldSet.readFromResponseFunSpec(layout: ClassLayout): FunSpec {
+private fun IrFieldSet.readFromResponseFunSpec(layout: CodegenLayout): FunSpec {
   return FunSpec.builder(fromResponse)
       .returns(layout.fieldSetClassName(this))
       .addParameter(reader, JsonReader::class)
@@ -123,7 +122,7 @@ private fun IrFieldSet.readFromResponseFunSpec(layout: ClassLayout): FunSpec {
       .build()
 }
 
-private fun IrFieldSet.writeToResponseFunSpec(layout: ClassLayout): FunSpec {
+private fun IrFieldSet.writeToResponseFunSpec(layout: CodegenLayout): FunSpec {
   return FunSpec.builder(toResponse)
       .addModifiers(KModifier.OVERRIDE)
       .addParameter(writer, JsonWriter::class.asTypeName())
@@ -134,7 +133,7 @@ private fun IrFieldSet.writeToResponseFunSpec(layout: ClassLayout): FunSpec {
 }
 
 
-internal fun IrFieldSet.writeToResponseCodeBlock(layout: ClassLayout): CodeBlock {
+internal fun IrFieldSet.writeToResponseCodeBlock(layout: CodegenLayout): CodeBlock {
   val builder = CodeBlock.builder()
   fields.forEach {
     builder.add(it.writeToResponseCodeBlock(layout))
@@ -142,7 +141,7 @@ internal fun IrFieldSet.writeToResponseCodeBlock(layout: ClassLayout): CodeBlock
   return builder.build()
 }
 
-private fun IrField.writeToResponseCodeBlock(layout: ClassLayout): CodeBlock {
+private fun IrField.writeToResponseCodeBlock(layout: CodegenLayout): CodeBlock {
   return CodeBlock.builder().apply {
     addStatement("$writer.name(%S)", responseName)
     addStatement(

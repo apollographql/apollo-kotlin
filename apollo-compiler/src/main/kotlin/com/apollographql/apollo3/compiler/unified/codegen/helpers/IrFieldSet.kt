@@ -1,9 +1,8 @@
 package com.apollographql.apollo3.compiler.unified.codegen.helpers
 
 import com.apollographql.apollo3.compiler.applyIf
-import com.apollographql.apollo3.compiler.backend.codegen.kotlinNameForProperty
 import com.apollographql.apollo3.compiler.backend.codegen.makeDataClassFromProperties
-import com.apollographql.apollo3.compiler.unified.ClassLayout
+import com.apollographql.apollo3.compiler.unified.CodegenLayout
 import com.apollographql.apollo3.compiler.unified.IrField
 import com.apollographql.apollo3.compiler.unified.IrFieldSet
 import com.squareup.kotlinpoet.FunSpec
@@ -12,7 +11,7 @@ import com.squareup.kotlinpoet.PropertySpec
 import com.squareup.kotlinpoet.TypeName
 import com.squareup.kotlinpoet.TypeSpec
 
-fun IrField.typeSpecs(layout: ClassLayout, asInterface: Boolean): List<TypeSpec> {
+fun IrField.typeSpecs(layout: CodegenLayout, asInterface: Boolean): List<TypeSpec> {
 
   return if (asInterface) {
     fieldSets.map {
@@ -32,7 +31,7 @@ fun IrField.typeSpecs(layout: ClassLayout, asInterface: Boolean): List<TypeSpec>
 
 class Accessor(val name: String, val typeName: TypeName)
 
-private fun IrField.accessors(layout: ClassLayout, asInterface: Boolean): List<Accessor> {
+private fun IrField.accessors(layout: CodegenLayout, asInterface: Boolean): List<Accessor> {
   val inlineAccessors = fieldSets.filter { it != typeFieldSet }
       .map { it.typeSet }
       .map { typeSet ->
@@ -71,7 +70,7 @@ private fun companionTypeSpec(receiverTypeName: TypeName, accessors: List<Access
       .build()
 }
 
-fun IrFieldSet.typeSpec(layout: ClassLayout, asInterface: Boolean, accessors: List<Accessor>): TypeSpec {
+fun IrFieldSet.typeSpec(layout: CodegenLayout, asInterface: Boolean, accessors: List<Accessor>): TypeSpec {
   val properties = fields.map {
     PropertySpec.builder(layout.propertyName(it.responseName), layout.fieldTypeName(it))
         .applyIf(it.override) { addModifiers(KModifier.OVERRIDE) }

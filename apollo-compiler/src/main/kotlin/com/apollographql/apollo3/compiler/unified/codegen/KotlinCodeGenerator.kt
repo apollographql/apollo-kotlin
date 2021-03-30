@@ -3,7 +3,7 @@ package com.apollographql.apollo3.compiler.unified.codegen
 import com.apollographql.apollo3.compiler.VERSION
 import com.apollographql.apollo3.compiler.operationoutput.OperationOutput
 import com.apollographql.apollo3.compiler.operationoutput.findOperationId
-import com.apollographql.apollo3.compiler.unified.ClassLayout
+import com.apollographql.apollo3.compiler.unified.CodegenLayout
 import com.apollographql.apollo3.compiler.unified.IntermediateRepresentation
 import com.squareup.kotlinpoet.FileSpec
 import com.squareup.kotlinpoet.KModifier
@@ -37,7 +37,7 @@ class KotlinCodeGenerator(
     private val useSemanticNaming: Boolean,
 ) {
   fun write(outputDir: File) {
-    val layout = ClassLayout(
+    val layout = CodegenLayout(
         operations = ir.operations,
         fragments = ir.fragments,
         rootPackageName = rootPackageName,

@@ -9,7 +9,7 @@ import com.apollographql.apollo3.api.DoubleResponseAdapter
 import com.apollographql.apollo3.api.IntResponseAdapter
 import com.apollographql.apollo3.api.StringResponseAdapter
 import com.apollographql.apollo3.compiler.backend.codegen.obj
-import com.apollographql.apollo3.compiler.unified.ClassLayout
+import com.apollographql.apollo3.compiler.unified.CodegenLayout
 import com.apollographql.apollo3.compiler.unified.IrAnyType
 import com.apollographql.apollo3.compiler.unified.IrBooleanType
 import com.apollographql.apollo3.compiler.unified.IrCompoundType
@@ -29,11 +29,11 @@ import com.squareup.kotlinpoet.ClassName
 import com.squareup.kotlinpoet.CodeBlock
 import com.squareup.kotlinpoet.MemberName
 
-fun IrField.adapterInitializer(layout: ClassLayout): CodeBlock {
+fun IrField.adapterInitializer(layout: CodegenLayout): CodeBlock {
   return type.adapterInitializer(layout, typeFieldSet)
 }
 
-fun IrType.adapterInitializer(layout: ClassLayout, fieldSet: IrFieldSet?): CodeBlock {
+fun IrType.adapterInitializer(layout: CodegenLayout, fieldSet: IrFieldSet?): CodeBlock {
   if (this !is IrNonNullType) {
     return when (this) {
       is IrIdType -> nullableScalarAdapter("NullableStringResponseAdapter")
@@ -51,12 +51,12 @@ fun IrType.adapterInitializer(layout: ClassLayout, fieldSet: IrFieldSet?): CodeB
   return ofType.nonNullableAdapterInitializer(layout, fieldSet)
 }
 
-private fun IrType.nonNullableAdapterInitializer(layout: ClassLayout, fieldSet: IrFieldSet?): CodeBlock {
+private fun IrType.nonNullableAdapterInitializer(layout: CodegenLayout, fieldSet: IrFieldSet?): CodeBlock {
   return when (this) {
     is IrNonNullType -> error("")
     is IrListType -> {
       val listFun = MemberName("com.apollographql.apollo3.api", "list")
-      CodeBlock.of("%L.%M()", ofType.nonNullableAdapterInitializer(layout, fieldSet), listFun)
+      CodeBlock.of("%L.%M()", ofType.adapterInitializer(layout, fieldSet), listFun)
     }
     is IrBooleanType -> CodeBlock.of("%T", BooleanResponseAdapter::class)
     is IrIdType -> CodeBlock.of("%T", StringResponseAdapter::class)
@@ -66,7 +66,7 @@ private fun IrType.nonNullableAdapterInitializer(layout: ClassLayout, fieldSet: 
     is IrAnyType -> CodeBlock.of("%T", AnyResponseAdapter::class)
     is IrEnumType -> CodeBlock.of("%T", layout.enumAdapterClassName(enum.name))
     is IrCompoundType -> CodeBlock.of("%T", layout.fieldSetAdapterClassName(fieldSet ?: error("Use IrField.adapterInitializer instead")))
-    is IrInputObjectType -> CodeBlock.of("%T", layout.inputObjectClassName(inputObject().name)).obj(false)
+    is IrInputObjectType -> CodeBlock.of("%T", layout.inputObjectAdapterClassName(inputObject().name)).obj(false)
     is IrCustomScalarType -> {
       CodeBlock.of(
           "responseAdapterCache.responseAdapterFor<%T>(%M)",

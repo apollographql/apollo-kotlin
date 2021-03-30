@@ -11,8 +11,7 @@ import com.apollographql.apollo3.compiler.backend.codegen.Identifier.value
 import com.apollographql.apollo3.compiler.backend.codegen.Identifier.writer
 import com.apollographql.apollo3.compiler.backend.codegen.deprecatedAnnotation
 import com.apollographql.apollo3.compiler.backend.codegen.toResponseFunSpecBuilder
-import com.apollographql.apollo3.compiler.escapeKotlinReservedWord
-import com.apollographql.apollo3.compiler.unified.ClassLayout
+import com.apollographql.apollo3.compiler.unified.CodegenLayout
 import com.apollographql.apollo3.compiler.unified.IrEnum
 import com.apollographql.apollo3.compiler.unified.codegen.helpers.maybeAddDescription
 import com.squareup.kotlinpoet.ClassName
@@ -28,7 +27,7 @@ import com.squareup.kotlinpoet.joinToCode
 
 
 internal fun IrEnum.qualifiedTypeSpecs(
-    layout: ClassLayout,
+    layout: CodegenLayout,
     enumAsSealedClassPatternFilters: Set<String>,
 ): List<ApolloFileSpec> {
   val regexes = enumAsSealedClassPatternFilters.map { Regex(it) }
@@ -53,7 +52,7 @@ internal fun IrEnum.qualifiedTypeSpecs(
   )
 }
 
-private fun IrEnum.toEnumTypeSpec(layout: ClassLayout): TypeSpec {
+private fun IrEnum.toEnumTypeSpec(layout: CodegenLayout): TypeSpec {
   return TypeSpec
       .enumBuilder(layout.enumName(name))
       .applyIf(description?.isNotBlank() == true) { addKdoc("%L\n", description!!) }
@@ -66,7 +65,7 @@ private fun IrEnum.toEnumTypeSpec(layout: ClassLayout): TypeSpec {
       .build()
 }
 
-private fun IrEnum.adapterTypeSpec(layout: ClassLayout, asSealedClass: Boolean): TypeSpec {
+private fun IrEnum.adapterTypeSpec(layout: CodegenLayout, asSealedClass: Boolean): TypeSpec {
   val adaptedTypeName = layout.enumClassName(name)
   val fromResponseFunSpec = FunSpec.builder(fromResponse)
       .addModifiers(KModifier.OVERRIDE)
@@ -136,7 +135,7 @@ private val unknownEnumConstTypeSpec: TypeSpec
         .build()
   }
 
-private fun IrEnum.toSealedClassTypeSpec(layout: ClassLayout): TypeSpec {
+private fun IrEnum.toSealedClassTypeSpec(layout: CodegenLayout): TypeSpec {
   return TypeSpec
       .classBuilder(layout.enumName(name))
       .maybeAddDescription(description)
@@ -150,7 +149,7 @@ private fun IrEnum.toSealedClassTypeSpec(layout: ClassLayout): TypeSpec {
       .build()
 }
 
-private fun IrEnum.Value.toObjectTypeSpec(layout: ClassLayout, superClass: TypeName): TypeSpec {
+private fun IrEnum.Value.toObjectTypeSpec(layout: CodegenLayout, superClass: TypeName): TypeSpec {
   return TypeSpec.objectBuilder(layout.enumValueName(name))
       .applyIf(description?.isNotBlank() == true) { addKdoc("%L\n", description!!) }
       .applyIf(deprecationReason != null) { addAnnotation(deprecatedAnnotation(deprecationReason!!)) }
@@ -159,7 +158,7 @@ private fun IrEnum.Value.toObjectTypeSpec(layout: ClassLayout, superClass: TypeN
       .build()
 }
 
-private fun IrEnum.unknownValueTypeSpec(layout: ClassLayout): TypeSpec {
+private fun IrEnum.unknownValueTypeSpec(layout: CodegenLayout): TypeSpec {
   return TypeSpec.classBuilder("UNKNOWN__")
       .addKdoc("%L", "Auto generated constant for unknown enum values\n")
       .primaryConstructor(primaryConstructorSpec)

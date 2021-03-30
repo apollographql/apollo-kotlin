@@ -12,7 +12,7 @@ import com.apollographql.apollo3.compiler.backend.codegen.Identifier.responseAda
 import com.apollographql.apollo3.compiler.backend.codegen.Identifier.toResponse
 import com.apollographql.apollo3.compiler.backend.codegen.Identifier.value
 import com.apollographql.apollo3.compiler.backend.codegen.Identifier.writer
-import com.apollographql.apollo3.compiler.unified.ClassLayout
+import com.apollographql.apollo3.compiler.unified.CodegenLayout
 import com.apollographql.apollo3.compiler.unified.IrField
 import com.apollographql.apollo3.compiler.unified.IrFieldSet
 import com.squareup.kotlinpoet.CodeBlock
@@ -23,7 +23,7 @@ import com.squareup.kotlinpoet.PropertySpec
 import com.squareup.kotlinpoet.TypeSpec
 import com.squareup.kotlinpoet.asTypeName
 
-internal fun IrField.polymorphicAdapterTypeSpecs(layout: ClassLayout): List<TypeSpec> {
+internal fun IrField.polymorphicAdapterTypeSpecs(layout: CodegenLayout): List<TypeSpec> {
   val implementations = implementations.map {
     it.implementationAdapterTypeSpec(layout)
   }
@@ -31,7 +31,7 @@ internal fun IrField.polymorphicAdapterTypeSpecs(layout: ClassLayout): List<Type
   return listOf(polymorphicAdapterTypeSpec(layout)) + implementations
 }
 
-private fun IrField.polymorphicAdapterTypeSpec(layout: ClassLayout): TypeSpec {
+private fun IrField.polymorphicAdapterTypeSpec(layout: CodegenLayout): TypeSpec {
   return TypeSpec.objectBuilder(typeFieldSet!!.modelName)
       .addSuperinterface(ResponseAdapter::class.asTypeName().parameterizedBy(layout.fieldSetClassName(typeFieldSet)))
       .addProperty(responseNamesPropertySpec())
@@ -46,7 +46,7 @@ private fun responseNamesPropertySpec(): PropertySpec {
       .build()
 }
 
-private fun IrField.polymorphicReadFromResponseFunSpec(layout: ClassLayout): FunSpec {
+private fun IrField.polymorphicReadFromResponseFunSpec(layout: CodegenLayout): FunSpec {
   return FunSpec.builder(fromResponse)
       .returns(layout.fieldSetClassName(typeFieldSet!!))
       .addParameter(reader, JsonReader::class)
@@ -56,7 +56,7 @@ private fun IrField.polymorphicReadFromResponseFunSpec(layout: ClassLayout): Fun
       .build()
 }
 
-private fun IrField.polymorphicReadFromResponseCodeBlock(layout: ClassLayout): CodeBlock {
+private fun IrField.polymorphicReadFromResponseCodeBlock(layout: CodegenLayout): CodeBlock {
   val builder = CodeBlock.builder()
 
   builder.beginControlFlow("$reader.selectName($RESPONSE_NAMES).also {")
@@ -82,7 +82,7 @@ private fun IrField.polymorphicReadFromResponseCodeBlock(layout: ClassLayout): C
   return builder.build()
 }
 
-private fun IrField.polymorphicWriteToResponseFunSpec(layout: ClassLayout): FunSpec {
+private fun IrField.polymorphicWriteToResponseFunSpec(layout: CodegenLayout): FunSpec {
   return FunSpec.builder(toResponse)
       .addModifiers(KModifier.OVERRIDE)
       .addParameter(writer, JsonWriter::class.asTypeName())
@@ -92,7 +92,7 @@ private fun IrField.polymorphicWriteToResponseFunSpec(layout: ClassLayout): FunS
       .build()
 }
 
-private fun IrField.polymorphicWriteToResponseCodeBlock(layout: ClassLayout): CodeBlock {
+private fun IrField.polymorphicWriteToResponseCodeBlock(layout: CodegenLayout): CodeBlock {
   val builder = CodeBlock.builder()
 
   builder.beginControlFlow("when($value) {")
@@ -104,7 +104,7 @@ private fun IrField.polymorphicWriteToResponseCodeBlock(layout: ClassLayout): Co
   return builder.build()
 }
 
-private fun IrFieldSet.implementationAdapterTypeSpec(layout: ClassLayout): TypeSpec {
+private fun IrFieldSet.implementationAdapterTypeSpec(layout: CodegenLayout): TypeSpec {
   return TypeSpec.objectBuilder(modelName)
       .addProperty(responseNamesPropertySpec())
       .addFunction(implementationReadFromResponseFunSpec(layout))
@@ -116,7 +116,7 @@ private fun IrFieldSet.implementationAdapterTypeSpec(layout: ClassLayout): TypeS
 
 }
 
-private fun IrFieldSet.implementationReadFromResponseFunSpec(layout: ClassLayout): FunSpec {
+private fun IrFieldSet.implementationReadFromResponseFunSpec(layout: CodegenLayout): FunSpec {
   return FunSpec.builder(fromResponse)
       .returns(layout.fieldSetClassName(this))
       .addParameter(reader, JsonReader::class)
@@ -132,7 +132,7 @@ private fun IrFieldSet.implementationReadFromResponseFunSpec(layout: ClassLayout
       .build()
 }
 
-private fun IrFieldSet.implementationWriteToResponseFunSpec(layout: ClassLayout): FunSpec {
+private fun IrFieldSet.implementationWriteToResponseFunSpec(layout: CodegenLayout): FunSpec {
   return FunSpec.builder(toResponse)
       .addParameter(writer, JsonWriter::class.asTypeName())
       .addParameter(responseAdapterCache, ResponseAdapterCache::class)

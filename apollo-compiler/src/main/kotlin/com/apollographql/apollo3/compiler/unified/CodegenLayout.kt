@@ -13,8 +13,29 @@ import com.squareup.kotlinpoet.asTypeName
  * The central place where the names/packages of the different classes are decided and escape rules done.
  *
  * Inputs should always be GraphQL identifiers and outputs are valid Kotlin identifiers.
+ *
+ * The layout is like:
+ *
+ * - com.example.TestQuery <- the query
+ * - com.example.TestQuery.Data <- the data for the query
+ * - com.example.TestQuery.Data.Hero <- nested compound fields as required
+ * - com.example.adapter.TestQuery_ResponseAdapter <- a wrapper object to namespace the adapters
+ * - com.example.adapter.TestQuery_ResponseAdapter.Data <- the response adapter for TestQuery
+ * - com.example.adapter.TestQuery_VariablesAdapter <- the variables adapter for TestQuery
+ * - com.example.responsefields.TestQuery_ResponseFields <- the response fields for TestQuery
+ *
+ * - com.example.fragment.HeroDetails <- the fragment interface
+ * - com.example.fragment.HeroDetailsImpl <- the fragment implementation
+ * - com.example.fragment.HeroDetailsImpl.Data <- the data for the fragment implementation
+ * - com.example.fragment.adapter.HeroDetailsImpl <- a wrapper object to name space the adapters
+ * - com.example.fragment.adapter.HeroDetailsImpl.Data <- the response adapter for the fragment
+ *
+ * - com.example.type.CustomScalars <- all the custom scalars
+ * - com.example.type.ReviewInput <- an input type
+ * - com.example.type.Episode <- an enum
  */
-class ClassLayout(
+
+class CodegenLayout(
     private val operations: List<IrOperation>,
     private val fragments: List<IrNamedFragment>,
     private val schemaPackageName: String,
@@ -49,6 +70,13 @@ class ClassLayout(
     return ClassName(
         packageName = typePackageName(),
         inputObjectName(name)
+    )
+  }
+
+  fun inputObjectAdapterClassName(name: String): ClassName {
+    return ClassName(
+        packageName = typeAdapterPackageName(),
+        inputObjectAdapterName(name)
     )
   }
 
@@ -178,16 +206,18 @@ class ClassLayout(
 
   // ------------------------ PackageNames ---------------------------------
 
-  fun typePackageName() = "$schemaPackageName.type"
-  fun typeAdapterPackageName() = "$schemaPackageName.type.adapter"
+  fun typePackageName() = "$schemaPackageName.type".withRootPackageName()
+  fun typeAdapterPackageName() = "$schemaPackageName.type.adapter".withRootPackageName()
 
-  fun operationPackageName(packageName: String) = "$rootPackageName.$packageName".removePrefix(".")
-  fun operationAdapterPackageName(packageName: String) = "$rootPackageName.$packageName.adapter".removePrefix(".")
-  fun operationResponseFieldsPackageName(packageName: String) = "$rootPackageName.$packageName.responsefields".removePrefix(".")
+  fun operationPackageName(packageName: String) = packageName.withRootPackageName()
+  fun operationAdapterPackageName(packageName: String) = "$packageName.adapter".withRootPackageName()
+  fun operationResponseFieldsPackageName(packageName: String) = "$packageName.responsefields".withRootPackageName()
 
-  fun fragmentPackageName() = "$schemaPackageName.fragment"
-  fun fragmentAdapterPackageName() = "$schemaPackageName.fragment.adapter"
-  fun fragmentResponseFieldsPackageName() = "$schemaPackageName.fragment.responsefields"
+  fun fragmentPackageName() = "$schemaPackageName.fragment".withRootPackageName()
+  fun fragmentAdapterPackageName() = "$schemaPackageName.fragment.adapter".withRootPackageName()
+  fun fragmentResponseFieldsPackageName() = "$schemaPackageName.fragment.responsefields".withRootPackageName()
+
+  private fun String.withRootPackageName() = "$rootPackageName.$this".removePrefix(".")
 
   // ------------------------ Names ---------------------------------
 

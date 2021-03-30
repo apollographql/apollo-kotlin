@@ -8,7 +8,7 @@ import com.apollographql.apollo3.api.ResponseAdapterCache
 import com.apollographql.apollo3.api.json.JsonReader
 import com.apollographql.apollo3.api.json.JsonWriter
 import com.apollographql.apollo3.compiler.backend.codegen.Identifier
-import com.apollographql.apollo3.compiler.unified.ClassLayout
+import com.apollographql.apollo3.compiler.unified.CodegenLayout
 import com.apollographql.apollo3.compiler.unified.codegen.helpers.NamedType
 import com.apollographql.apollo3.compiler.unified.codegen.helpers.adapterInitializer
 import com.squareup.kotlinpoet.ClassName
@@ -22,7 +22,7 @@ import com.squareup.kotlinpoet.asTypeName
 
 
 internal fun List<NamedType>.inputAdapterTypeSpec(
-    layout: ClassLayout,
+    layout: CodegenLayout,
     adapterName: String,
     adaptedTypeName: TypeName,
 ): TypeSpec {
@@ -43,7 +43,7 @@ private fun notImplementedFromResponseFunSpec(adaptedTypeName: TypeName) = FunSp
 
 
 private fun List<NamedType>.writeToResponseFunSpec(
-    layout: ClassLayout,
+    layout: CodegenLayout,
     adaptedTypeName: TypeName
 ): FunSpec {
   return FunSpec.builder(Identifier.toResponse)
@@ -56,7 +56,7 @@ private fun List<NamedType>.writeToResponseFunSpec(
 }
 
 
-private fun List<NamedType>.writeToResponseCodeBlock(layout: ClassLayout): CodeBlock {
+private fun List<NamedType>.writeToResponseCodeBlock(layout: CodegenLayout): CodeBlock {
   val builder = CodeBlock.builder()
   forEach {
     builder.add(it.writeToResponseCodeBlock(layout))
@@ -64,7 +64,7 @@ private fun List<NamedType>.writeToResponseCodeBlock(layout: ClassLayout): CodeB
   return builder.build()
 }
 
-private fun NamedType.writeToResponseCodeBlock(layout: ClassLayout): CodeBlock {
+private fun NamedType.writeToResponseCodeBlock(layout: CodegenLayout): CodeBlock {
   return CodeBlock.builder().apply {
     addStatement("${Identifier.writer}.name(%S)", graphQlName)
     addStatement(

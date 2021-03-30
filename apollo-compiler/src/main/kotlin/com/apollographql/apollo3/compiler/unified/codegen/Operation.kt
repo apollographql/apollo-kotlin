@@ -5,7 +5,7 @@ import com.apollographql.apollo3.api.Query
 import com.apollographql.apollo3.api.QueryDocumentMinifier
 import com.apollographql.apollo3.api.Subscription
 import com.apollographql.apollo3.compiler.backend.codegen.makeDataClass
-import com.apollographql.apollo3.compiler.unified.ClassLayout
+import com.apollographql.apollo3.compiler.unified.CodegenLayout
 import com.apollographql.apollo3.compiler.unified.IrOperation
 import com.apollographql.apollo3.compiler.unified.IrOperationType
 import com.apollographql.apollo3.compiler.unified.codegen.adapter.dataResponseAdapterTypeSpecs
@@ -23,7 +23,7 @@ import com.squareup.kotlinpoet.TypeName
 import com.squareup.kotlinpoet.TypeSpec
 import com.squareup.kotlinpoet.asTypeName
 
-fun IrOperation.qualifiedTypeSpecs(layout: ClassLayout, generateFilterNotNull: Boolean, operationId: String): List<ApolloFileSpec> {
+fun IrOperation.qualifiedTypeSpecs(layout: CodegenLayout, generateFilterNotNull: Boolean, operationId: String): List<ApolloFileSpec> {
   val list = mutableListOf<ApolloFileSpec>()
 
   list.add(ApolloFileSpec(layout.operationPackageName(packageName), typeSpec(layout, operationId, generateFilterNotNull)))
@@ -36,7 +36,7 @@ fun IrOperation.qualifiedTypeSpecs(layout: ClassLayout, generateFilterNotNull: B
   return list
 }
 
-private fun IrOperation.typeSpec(layout: ClassLayout, operationId: String, generateFilterNotNull: Boolean): TypeSpec {
+private fun IrOperation.typeSpec(layout: CodegenLayout, operationId: String, generateFilterNotNull: Boolean): TypeSpec {
   return TypeSpec.classBuilder(layout.operationName(this))
       .addSuperinterface(superInterfaceType(layout))
       .maybeAddDescription(description)
@@ -53,11 +53,11 @@ private fun IrOperation.typeSpec(layout: ClassLayout, operationId: String, gener
       .maybeAddFilterNotNull(generateFilterNotNull)
 }
 
-private fun IrOperation.responseFieldsFunSpec(layout: ClassLayout): FunSpec {
+private fun IrOperation.responseFieldsFunSpec(layout: CodegenLayout): FunSpec {
   return responseFieldsFunSpec(layout.operationResponseFieldsClassName(this))
 }
 
-private fun IrOperation.variablesAdapterTypeSpec(layout: ClassLayout): TypeSpec {
+private fun IrOperation.variablesAdapterTypeSpec(layout: CodegenLayout): TypeSpec {
   return variables.map { it.toNamedType() }
       .inputAdapterTypeSpec(
           layout = layout,
@@ -66,24 +66,24 @@ private fun IrOperation.variablesAdapterTypeSpec(layout: ClassLayout): TypeSpec 
       )
 }
 
-private fun IrOperation.responseAdapterTypeSpec(layout: ClassLayout): TypeSpec {
+private fun IrOperation.responseAdapterTypeSpec(layout: CodegenLayout): TypeSpec {
   return TypeSpec.objectBuilder(layout.operationResponseAdapterWrapperName(this))
       .addTypes(dataResponseAdapterTypeSpecs(layout, dataField))
       .build()
 }
 
-private fun IrOperation.responseFieldsTypeSpec(layout: ClassLayout): TypeSpec {
+private fun IrOperation.responseFieldsTypeSpec(layout: CodegenLayout): TypeSpec {
   return dataResponseFieldsItemSpec(layout.operationResponseFieldsName(this), dataField)
 }
 
-private fun IrOperation.serializeVariablesFunSpec(layout: ClassLayout): FunSpec = serializeVariablesFunSpec(
+private fun IrOperation.serializeVariablesFunSpec(layout: CodegenLayout): FunSpec = serializeVariablesFunSpec(
     adapterPackageName = layout.operationAdapterPackageName(this.packageName),
     adapterName = layout.operationVariablesAdapterName(this),
     isEmpty = variables.isEmpty(),
     emptyMessage = "// This operation doesn't have variables"
 )
 
-private fun IrOperation.adapterFunSpec(layout: ClassLayout): FunSpec {
+private fun IrOperation.adapterFunSpec(layout: CodegenLayout): FunSpec {
   check(dataField.typeFieldSet != null) // data is always a compound type
 
   return adapterFunSpec(
@@ -92,7 +92,7 @@ private fun IrOperation.adapterFunSpec(layout: ClassLayout): FunSpec {
   )
 }
 
-private fun IrOperation.dataTypeSpecs(layout: ClassLayout): List<TypeSpec> {
+private fun IrOperation.dataTypeSpecs(layout: CodegenLayout): List<TypeSpec> {
   val superClass = when (operationType) {
     IrOperationType.Query -> Query.Data::class
     IrOperationType.Mutation -> Mutation.Data::class
@@ -106,7 +106,7 @@ private fun IrOperation.dataTypeSpecs(layout: ClassLayout): List<TypeSpec> {
   }
 }
 
-private fun IrOperation.superInterfaceType(layout: ClassLayout): TypeName {
+private fun IrOperation.superInterfaceType(layout: CodegenLayout): TypeName {
   check(dataField.typeFieldSet != null) // data is always a compound type
 
   return when (operationType) {

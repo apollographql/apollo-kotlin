@@ -2,7 +2,7 @@ package com.apollographql.apollo3.compiler.unified.codegen
 
 import com.apollographql.apollo3.api.Fragment
 import com.apollographql.apollo3.compiler.backend.codegen.makeDataClass
-import com.apollographql.apollo3.compiler.unified.ClassLayout
+import com.apollographql.apollo3.compiler.unified.CodegenLayout
 import com.apollographql.apollo3.compiler.unified.IrNamedFragment
 import com.apollographql.apollo3.compiler.unified.codegen.adapter.dataResponseAdapterTypeSpecs
 import com.apollographql.apollo3.compiler.unified.codegen.adapter.inputAdapterTypeSpec
@@ -17,7 +17,7 @@ import com.squareup.kotlinpoet.TypeSpec
 import com.squareup.kotlinpoet.asTypeName
 
 fun IrNamedFragment.qualifiedTypeSpecs(
-    layout: ClassLayout,
+    layout: CodegenLayout,
     generateFilterNotNull: Boolean,
     generateFragmentImplementations: Boolean,
 ): List<ApolloFileSpec> {
@@ -32,17 +32,17 @@ fun IrNamedFragment.qualifiedTypeSpecs(
   )
   if (generateFragmentImplementations) {
     list.add(ApolloFileSpec(layout.fragmentPackageName(), implementationTypeSpec(layout, generateFilterNotNull)))
+    list.add(ApolloFileSpec(layout.fragmentAdapterPackageName(), responseAdapterTypeSpec(layout)))
   }
   if (variables.isNotEmpty()) {
     list.add(ApolloFileSpec(layout.fragmentAdapterPackageName(), variablesAdapterTypeSpec(layout)))
   }
-  list.add(ApolloFileSpec(layout.fragmentAdapterPackageName(), responseAdapterTypeSpec(layout)))
   list.add(ApolloFileSpec(layout.fragmentResponseFieldsPackageName(), responseFieldsTypeSpec(layout)))
 
   return list
 }
 
-private fun IrNamedFragment.implementationTypeSpec(layout: ClassLayout, generateFilterNotNull: Boolean): TypeSpec {
+private fun IrNamedFragment.implementationTypeSpec(layout: CodegenLayout, generateFilterNotNull: Boolean): TypeSpec {
   return TypeSpec.classBuilder(layout.fragmentName(name))
       .addSuperinterface(superInterfaceType(layout))
       .maybeAddDescription(description)
@@ -55,16 +55,16 @@ private fun IrNamedFragment.implementationTypeSpec(layout: ClassLayout, generate
       .maybeAddFilterNotNull(generateFilterNotNull)
 }
 
-private fun IrNamedFragment.interfaceTypeSpecs(layout: ClassLayout): List<TypeSpec> {
+private fun IrNamedFragment.interfaceTypeSpecs(layout: CodegenLayout): List<TypeSpec> {
   return interfaceField.typeSpecs(layout, true)
 }
 
 
-private fun IrNamedFragment.responseFieldsFunSpec(layout: ClassLayout): FunSpec {
+private fun IrNamedFragment.responseFieldsFunSpec(layout: CodegenLayout): FunSpec {
   return responseFieldsFunSpec(layout.fragmentResponseFieldsClassName(name))
 }
 
-private fun IrNamedFragment.variablesAdapterTypeSpec(layout: ClassLayout): TypeSpec {
+private fun IrNamedFragment.variablesAdapterTypeSpec(layout: CodegenLayout): TypeSpec {
   return variables.map { it.toNamedType() }
       .inputAdapterTypeSpec(
           layout = layout,
@@ -73,24 +73,24 @@ private fun IrNamedFragment.variablesAdapterTypeSpec(layout: ClassLayout): TypeS
       )
 }
 
-private fun IrNamedFragment.responseAdapterTypeSpec(layout: ClassLayout): TypeSpec {
+private fun IrNamedFragment.responseAdapterTypeSpec(layout: CodegenLayout): TypeSpec {
   return TypeSpec.objectBuilder(layout.fragmentResponseAdapterWrapperName(name))
       .addTypes(dataResponseAdapterTypeSpecs(layout, dataField))
       .build()
 }
 
-private fun IrNamedFragment.responseFieldsTypeSpec(layout:ClassLayout): TypeSpec {
+private fun IrNamedFragment.responseFieldsTypeSpec(layout:CodegenLayout): TypeSpec {
   return dataResponseFieldsItemSpec(layout.fragmentResponseFieldsName(name), dataField)
 }
 
-private fun IrNamedFragment.serializeVariablesFunSpec(layout: ClassLayout): FunSpec = serializeVariablesFunSpec(
+private fun IrNamedFragment.serializeVariablesFunSpec(layout: CodegenLayout): FunSpec = serializeVariablesFunSpec(
     adapterPackageName = layout.fragmentAdapterPackageName(),
     adapterName = layout.fragmentVariablesAdapterName(name),
     isEmpty = variables.isEmpty(),
     emptyMessage = "// This fragment doesn't have variables",
 )
 
-private fun IrNamedFragment.adapterFunSpec(layout: ClassLayout): FunSpec {
+private fun IrNamedFragment.adapterFunSpec(layout: CodegenLayout): FunSpec {
   check(dataField.typeFieldSet != null) // data is always a compound type
 
   return adapterFunSpec(
@@ -99,7 +99,7 @@ private fun IrNamedFragment.adapterFunSpec(layout: ClassLayout): FunSpec {
   )
 }
 
-private fun IrNamedFragment.dataTypeSpecs(layout: ClassLayout): List<TypeSpec> {
+private fun IrNamedFragment.dataTypeSpecs(layout: CodegenLayout): List<TypeSpec> {
   return dataField.typeSpecs(layout, false).map {
     it.toBuilder()
         .addSuperinterface(Fragment.Data::class)
@@ -107,7 +107,7 @@ private fun IrNamedFragment.dataTypeSpecs(layout: ClassLayout): List<TypeSpec> {
   }
 }
 
-private fun IrNamedFragment.superInterfaceType(layout: ClassLayout): TypeName {
+private fun IrNamedFragment.superInterfaceType(layout: CodegenLayout): TypeName {
   check(dataField.typeFieldSet != null) // data is always a compound type
 
   return Fragment::class.asTypeName().parameterizedBy(
