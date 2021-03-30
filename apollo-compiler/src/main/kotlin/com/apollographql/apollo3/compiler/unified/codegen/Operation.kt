@@ -67,7 +67,7 @@ private fun IrOperation.variablesAdapterTypeSpec(layout: ClassLayout): TypeSpec 
 }
 
 private fun IrOperation.responseAdapterTypeSpec(layout: ClassLayout): TypeSpec {
-  return TypeSpec.objectBuilder(layout.operationResponseAdapterClassName(this))
+  return TypeSpec.objectBuilder(layout.operationResponseAdapterWrapperName(this))
       .addTypes(dataResponseAdapterTypeSpecs(layout, dataField))
       .build()
 }

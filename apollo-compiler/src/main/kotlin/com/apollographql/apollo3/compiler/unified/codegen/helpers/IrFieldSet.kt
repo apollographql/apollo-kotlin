@@ -73,7 +73,7 @@ private fun companionTypeSpec(receiverTypeName: TypeName, accessors: List<Access
 
 fun IrFieldSet.typeSpec(layout: ClassLayout, asInterface: Boolean, accessors: List<Accessor>): TypeSpec {
   val properties = fields.map {
-    PropertySpec.builder(layout.propertyName(it.responseName), layout.fieldSetClassName(this))
+    PropertySpec.builder(layout.propertyName(it.responseName), layout.fieldTypeName(it))
         .applyIf(it.override) { addModifiers(KModifier.OVERRIDE) }
         .maybeAddDescription(it.description)
         .maybeAddDeprecation(it.deprecationReason)

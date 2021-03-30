@@ -10,9 +10,9 @@ import com.squareup.kotlinpoet.asClassName
 import com.squareup.kotlinpoet.asTypeName
 
 /**
- * The central place where the names of the different classes are decided and escape rules done
+ * The central place where the names/packages of the different classes are decided and escape rules done.
  *
- * Inputs should always be GraphQL identifiers and outputs are valid Kotlin identifiers
+ * Inputs should always be GraphQL identifiers and outputs are valid Kotlin identifiers.
  */
 class ClassLayout(
     private val operations: List<IrOperation>,
@@ -66,10 +66,7 @@ class ClassLayout(
   }
 
   fun operationResponseAdapterClassName(operation: IrOperation): ClassName {
-    return ClassName(
-        packageName = operationAdapterPackageName(operation.packageName),
-        operationResponseAdapterName(operation)
-    )
+    return fieldSetAdapterClassName(operation.dataField.typeFieldSet!!)
   }
 
   fun operationVariablesAdapterClassName(operation: IrOperation): ClassName {
@@ -128,7 +125,7 @@ class ClassLayout(
 
   fun modelPathClassName(path: ModelPath): ClassName {
     with (path) {
-      val (packageName, elements) = when (root) {
+      val (packageName, prefix) = when (root) {
         is ModelPath.Root.Operation -> {
           val operation = operations.firstOrNull { it.name == root.name } ?: error("Cannot find operation ${root.name}")
           operationPackageName(operation.packageName) to listOf(operationName(operation))
@@ -143,27 +140,27 @@ class ClassLayout(
 
       return ClassName(
           packageName = packageName,
-          simpleNames = elements
+          simpleNames = prefix + elements
       )
     }
   }
 
   fun modelPathAdapterClassName(path: ModelPath): ClassName {
     with (path) {
-      val (packageName, elements) = when (root) {
+      val (packageName, prefix) = when (root) {
         is ModelPath.Root.Operation -> {
           val operation = operations.firstOrNull { it.name == root.name } ?: error("Cannot find operation ${root.name}")
-          operationPackageName(operation.packageName) to listOf(operationResponseAdapterName(operation))
+          operationAdapterPackageName(operation.packageName) to listOf(operationResponseAdapterWrapperName(operation))
         }
         is ModelPath.Root.FragmentInterface -> error("Fragment interfaces cannot have an adapter")
         is ModelPath.Root.FragmentImplementation -> {
-          fragmentPackageName() to listOf(fragmentResponseAdapterName(root.name))
+          fragmentAdapterPackageName() to listOf(fragmentResponseAdapterWrapperName(root.name))
         }
       }
 
       return ClassName(
           packageName = packageName,
-          simpleNames = elements
+          simpleNames = prefix + elements
       )
     }
   }
@@ -212,12 +209,12 @@ class ClassLayout(
       "$str${operation.operationType.name}"
     }
   }
-  fun operationResponseAdapterName(operation: IrOperation) = operationName(operation) + "_ResponseAdapter"
+  fun operationResponseAdapterWrapperName(operation: IrOperation) = operationName(operation) + "_ResponseAdapter"
   fun operationVariablesAdapterName(operation: IrOperation) = operationName(operation) + "_VariablesAdapter"
   fun operationResponseFieldsName(operation: IrOperation) = operationName(operation) + "_ResponseFields"
 
   internal fun fragmentName(name: String) = capitalizedIdentifier(name) + "Impl"
-  internal fun fragmentResponseAdapterName(name: String) = fragmentName(name) + "_ResponseAdapter"
+  internal fun fragmentResponseAdapterWrapperName(name: String) = fragmentName(name) + "_ResponseAdapter"
   internal fun fragmentVariablesAdapterName(name: String) = fragmentName(name) + "_VariablesAdapter"
   internal fun fragmentResponseFieldsName(name: String) = fragmentName(name) + "_ResponseFields"
 

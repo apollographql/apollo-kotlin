@@ -1,9 +1,6 @@
 package com.apollographql.apollo3.compiler.unified.codegen
 
 import com.apollographql.apollo3.api.Fragment
-import com.apollographql.apollo3.compiler.backend.codegen.kotlinNameForFragmentResponseAdapter
-import com.apollographql.apollo3.compiler.backend.codegen.kotlinNameForFragmentVariablesAdapter
-import com.apollographql.apollo3.compiler.backend.codegen.kotlinNameForResponseFields
 import com.apollographql.apollo3.compiler.backend.codegen.makeDataClass
 import com.apollographql.apollo3.compiler.unified.ClassLayout
 import com.apollographql.apollo3.compiler.unified.IrNamedFragment
@@ -77,7 +74,7 @@ private fun IrNamedFragment.variablesAdapterTypeSpec(layout: ClassLayout): TypeS
 }
 
 private fun IrNamedFragment.responseAdapterTypeSpec(layout: ClassLayout): TypeSpec {
-  return TypeSpec.objectBuilder(layout.fragmentResponseAdapterName(name))
+  return TypeSpec.objectBuilder(layout.fragmentResponseAdapterWrapperName(name))
       .addTypes(dataResponseAdapterTypeSpecs(layout, dataField))
       .build()
 }
