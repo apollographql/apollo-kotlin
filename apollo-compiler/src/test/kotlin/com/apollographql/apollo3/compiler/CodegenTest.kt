@@ -83,6 +83,7 @@ class CodegenTest(private val folder: File, private val fragmentsCodegenMode: Fr
       if (!expected.exists()) {
         if (shouldUpdateTestFixtures()) {
           println("adding expected file: ${actual.absolutePath} - ${actual.path}")
+          expected.parentFile.mkdirs()
           actual.copyTo(expected)
           return@forEach
         } else {
@@ -216,14 +217,14 @@ class CodegenTest(private val folder: File, private val fragmentsCodegenMode: Fr
           dumpIR = false,
           generateFragmentImplementations = generateFragmentImplementations,
           generateFragmentsAsInterfaces = fragmentAsInterfaces,
-          useUnifiedIr = true
+          useUnifiedIr = false
       )
     }
 
     @JvmStatic
     @Parameterized.Parameters(name = "{0} ({1})")
     fun data(): Collection<*> {
-      val fragmentsCodegenMode = System.getProperty("fragmentsCodegenMode")?.trim()?.let { FragmentsCodegenMode.valueOf(it) }
+      val fragmentsCodegenMode = System.getProperty("fragmentsCodegenMode")?.trim()?.let { kotlin.runCatching { FragmentsCodegenMode.valueOf(it) }.getOrNull() }
       return File("src/test/graphql/com/example/")
           .listFiles()!!
           .filter { it.isDirectory }

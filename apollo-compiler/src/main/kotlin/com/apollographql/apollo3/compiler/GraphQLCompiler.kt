@@ -39,12 +39,6 @@ class GraphQLCompiler(val logger: Logger = NoOpLogger) {
 
     val (schema, schemaPackageName) = getSchemaInfo(roots, args.schemaFile, metadata)
 
-    val packageNameProvider = DefaultPackageNameProvider(
-        roots = roots,
-        rootPackageName = args.rootPackageName,
-        schemaPackageName = schemaPackageName
-    )
-
     val (documents, issues) = GraphQLParser.parseExecutableFiles(
         args.graphqlFiles,
         schema,
@@ -105,7 +99,9 @@ class GraphQLCompiler(val logger: Logger = NoOpLogger) {
           fragments = fragments,
           metadata = metadata,
           args = args,
-          packageNameProvider = packageNameProvider
+          roots = roots,
+          schemaPackageName = schemaPackageName,
+          rootPackageName = args.rootPackageName
       )
     }
 
@@ -184,8 +180,15 @@ class GraphQLCompiler(val logger: Logger = NoOpLogger) {
       fragments: List<GQLFragmentDefinition>,
       metadata: ApolloMetadata?,
       args: Arguments,
-      packageNameProvider: PackageNameProvider,
+      roots: Roots,
+      schemaPackageName: String,
+      rootPackageName: String
   ): GeneratedTypes {
+    val packageNameProvider = DefaultPackageNameProvider(
+        roots = roots,
+        rootPackageName = rootPackageName,
+    )
+
     val typesToGenerate = computeTypesToGenerate(
         documents = documents,
         schema = schema,
@@ -250,7 +253,6 @@ class GraphQLCompiler(val logger: Logger = NoOpLogger) {
           it to (userScalarTypesMap[it] ?: anyClassName(generateKotlinModels))
         }.toMap()
 
-    val schemaPackageName = packageNameProvider.schemaPackageName()
     GraphQLCodeGenerator(
         backendIr = backendIr,
         schema = schema,
@@ -262,8 +264,8 @@ class GraphQLCompiler(val logger: Logger = NoOpLogger) {
         generateAsInternal = args.generateAsInternal,
         generateFilterNotNull = args.generateFilterNotNull,
         enumAsSealedClassPatternFilters = args.enumAsSealedClassPatternFilters.map { it.toRegex() },
-        typesPackageName = "$schemaPackageName.type".removePrefix("."),
-        fragmentsPackageName = "$schemaPackageName.fragment".removePrefix("."),
+        typesPackageName = "$rootPackageName.$schemaPackageName.type".removePrefix("."),
+        fragmentsPackageName = "$rootPackageName.$schemaPackageName.fragment".removePrefix("."),
         generateFragmentImplementations = args.generateFragmentImplementations,
         generateFragmentsAsInterfaces = args.generateFragmentsAsInterfaces,
     ).write(args.outputDir)
