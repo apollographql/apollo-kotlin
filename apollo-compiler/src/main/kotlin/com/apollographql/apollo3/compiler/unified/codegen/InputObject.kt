@@ -2,52 +2,37 @@ package com.apollographql.apollo3.compiler.unified.codegen
 
 import com.apollographql.apollo3.api.InputObject
 import com.apollographql.apollo3.compiler.applyIf
-import com.apollographql.apollo3.compiler.backend.codegen.adapterPackageName
-import com.apollographql.apollo3.compiler.backend.codegen.kotlinNameForInputObjectAdapter
-import com.apollographql.apollo3.compiler.backend.codegen.kotlinNameForInputObject
 import com.apollographql.apollo3.compiler.backend.codegen.makeDataClass
 import com.apollographql.apollo3.compiler.backend.codegen.suppressWarningsAnnotation
+import com.apollographql.apollo3.compiler.unified.ClassLayout
 import com.apollographql.apollo3.compiler.unified.IrInputObject
 import com.apollographql.apollo3.compiler.unified.codegen.adapter.inputAdapterTypeSpec
 import com.apollographql.apollo3.compiler.unified.codegen.helpers.toNamedType
 import com.apollographql.apollo3.compiler.unified.codegen.helpers.toParameterSpec
-import com.squareup.kotlinpoet.ClassName
 import com.squareup.kotlinpoet.TypeSpec
 
-internal fun IrInputObject.typeSpec() =
+internal fun IrInputObject.typeSpec(layout: ClassLayout) =
     TypeSpec
-        .classBuilder(kotlinNameForInputObject(name))
+        .classBuilder(layout.inputObjectName(name))
         .applyIf(description?.isNotBlank()== true)  { addKdoc("%L\n", description!!) }
         .addAnnotation(suppressWarningsAnnotation)
         .makeDataClass(fields.map {
-          it.toNamedType().toParameterSpec()
+          it.toNamedType().toParameterSpec(layout)
         })
         .addSuperinterface(InputObject::class)
         .build()
 
-internal fun IrInputObject.typeName() =
-    ClassName(
-        packageName = packageName,
-        kotlinNameForInputObject(name)
-    )
-
-internal fun IrInputObject.adapterTypeName() =
-    ClassName(
-        packageName = adapterPackageName(packageName),
-        kotlinNameForInputObjectAdapter(name)
-    )
-
-internal fun IrInputObject.adapterTypeSpec(): TypeSpec {
-  val adapterName = kotlinNameForInputObjectAdapter(name)
+internal fun IrInputObject.adapterTypeSpec(layout: ClassLayout): TypeSpec {
+  val adapterName = layout.inputObjectAdapterName(name)
 
   return fields.map {
     it.toNamedType()
-  }.inputAdapterTypeSpec(adapterName, typeName())
+  }.inputAdapterTypeSpec(layout, adapterName, layout.inputObjectClassName(name))
 }
 
-internal fun IrInputObject.qualifiedTypeSpecs(): List<ApolloFileSpec> {
+internal fun IrInputObject.qualifiedTypeSpecs(layout: ClassLayout): List<ApolloFileSpec> {
   return listOf(
-      ApolloFileSpec(packageName = packageName, typeSpec()),
-      ApolloFileSpec(packageName = adapterPackageName(packageName), adapterTypeSpec())
+      ApolloFileSpec(packageName = layout.typePackageName(), typeSpec(layout)),
+      ApolloFileSpec(packageName = layout.typeAdapterPackageName(), adapterTypeSpec(layout))
   )
 }

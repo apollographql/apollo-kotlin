@@ -1,116 +1,119 @@
 package com.apollographql.apollo3.compiler.unified.codegen
 
 import com.apollographql.apollo3.api.Fragment
-import com.apollographql.apollo3.compiler.backend.codegen.adapterPackageName
-import com.apollographql.apollo3.compiler.backend.codegen.kotlinNameForFragmentInterfaceFile
-import com.apollographql.apollo3.compiler.backend.codegen.kotlinNameForFragmentImplementation
 import com.apollographql.apollo3.compiler.backend.codegen.kotlinNameForFragmentResponseAdapter
 import com.apollographql.apollo3.compiler.backend.codegen.kotlinNameForFragmentVariablesAdapter
 import com.apollographql.apollo3.compiler.backend.codegen.kotlinNameForResponseFields
 import com.apollographql.apollo3.compiler.backend.codegen.makeDataClass
-import com.apollographql.apollo3.compiler.backend.codegen.responseFieldsPackageName
+import com.apollographql.apollo3.compiler.unified.ClassLayout
 import com.apollographql.apollo3.compiler.unified.IrNamedFragment
 import com.apollographql.apollo3.compiler.unified.codegen.adapter.dataResponseAdapterTypeSpecs
 import com.apollographql.apollo3.compiler.unified.codegen.adapter.inputAdapterTypeSpec
-import com.apollographql.apollo3.compiler.unified.codegen.helpers.adapterTypeName
 import com.apollographql.apollo3.compiler.unified.codegen.helpers.maybeAddDescription
 import com.apollographql.apollo3.compiler.unified.codegen.helpers.toNamedType
 import com.apollographql.apollo3.compiler.unified.codegen.helpers.toParameterSpec
-import com.apollographql.apollo3.compiler.unified.codegen.helpers.typeName
 import com.apollographql.apollo3.compiler.unified.codegen.helpers.typeSpecs
-import com.squareup.kotlinpoet.ClassName
 import com.squareup.kotlinpoet.FunSpec
 import com.squareup.kotlinpoet.ParameterizedTypeName.Companion.parameterizedBy
 import com.squareup.kotlinpoet.TypeName
 import com.squareup.kotlinpoet.TypeSpec
 import com.squareup.kotlinpoet.asTypeName
 
-fun IrNamedFragment.qualifiedTypeSpecs(generateFilterNotNull: Boolean, generateFragmentImplementations: Boolean): List<ApolloFileSpec> {
+fun IrNamedFragment.qualifiedTypeSpecs(
+    layout: ClassLayout,
+    generateFilterNotNull: Boolean,
+    generateFragmentImplementations: Boolean,
+): List<ApolloFileSpec> {
   val list = mutableListOf<ApolloFileSpec>()
 
-  list.add(ApolloFileSpec(packageName, interfaceTypeSpecs(), kotlinNameForFragmentInterfaceFile(name)))
+  list.add(
+      ApolloFileSpec(
+          packageName = layout.fragmentPackageName(),
+          interfaceTypeSpecs(layout),
+          layout.fragmentInterfaceFileName(name)
+      )
+  )
   if (generateFragmentImplementations) {
-    list.add(ApolloFileSpec(packageName, implementationTypeSpec(generateFilterNotNull)))
+    list.add(ApolloFileSpec(layout.fragmentPackageName(), implementationTypeSpec(layout, generateFilterNotNull)))
   }
   if (variables.isNotEmpty()) {
-    list.add(ApolloFileSpec(adapterPackageName(packageName), variablesAdapterTypeSpec()))
+    list.add(ApolloFileSpec(layout.fragmentAdapterPackageName(), variablesAdapterTypeSpec(layout)))
   }
-  list.add(ApolloFileSpec(adapterPackageName(packageName), responseAdapterTypeSpec()))
-  list.add(ApolloFileSpec(responseFieldsPackageName(packageName), responseFieldsTypeSpec()))
+  list.add(ApolloFileSpec(layout.fragmentAdapterPackageName(), responseAdapterTypeSpec(layout)))
+  list.add(ApolloFileSpec(layout.fragmentResponseFieldsPackageName(), responseFieldsTypeSpec(layout)))
 
   return list
 }
 
-private fun IrNamedFragment.implementationTypeSpec(generateFilterNotNull: Boolean): TypeSpec {
-  return TypeSpec.classBuilder(kotlinNameForFragmentImplementation(name))
-      .addSuperinterface(superInterfaceType())
+private fun IrNamedFragment.implementationTypeSpec(layout: ClassLayout, generateFilterNotNull: Boolean): TypeSpec {
+  return TypeSpec.classBuilder(layout.fragmentName(name))
+      .addSuperinterface(superInterfaceType(layout))
       .maybeAddDescription(description)
-      .makeDataClass(variables.map { it.toNamedType().toParameterSpec() })
-      .addFunction(serializeVariablesFunSpec())
-      .addFunction(adapterFunSpec())
-      .addFunction(responseFieldsFunSpec())
-      .addTypes(dataTypeSpecs()) // Fragments can have multiple data shapes
+      .makeDataClass(variables.map { it.toNamedType().toParameterSpec(layout) })
+      .addFunction(serializeVariablesFunSpec(layout))
+      .addFunction(adapterFunSpec(layout))
+      .addFunction(responseFieldsFunSpec(layout))
+      .addTypes(dataTypeSpecs(layout)) // Fragments can have multiple data shapes
       .build()
       .maybeAddFilterNotNull(generateFilterNotNull)
 }
 
-private fun IrNamedFragment.interfaceTypeSpecs(): List<TypeSpec> {
-  return interfaceField.typeSpecs(true)
+private fun IrNamedFragment.interfaceTypeSpecs(layout: ClassLayout): List<TypeSpec> {
+  return interfaceField.typeSpecs(layout, true)
 }
 
-private fun IrNamedFragment.typeName() = ClassName(packageName, kotlinNameForFragmentImplementation(name))
 
-private fun IrNamedFragment.responseFieldsFunSpec(): FunSpec {
-  val typeName = ClassName(responseFieldsPackageName(packageName), kotlinNameForResponseFields(name))
-  return responseFieldsFunSpec(typeName)
+private fun IrNamedFragment.responseFieldsFunSpec(layout: ClassLayout): FunSpec {
+  return responseFieldsFunSpec(layout.fragmentResponseFieldsClassName(name))
 }
 
-private fun IrNamedFragment.variablesAdapterTypeSpec(): TypeSpec {
+private fun IrNamedFragment.variablesAdapterTypeSpec(layout: ClassLayout): TypeSpec {
   return variables.map { it.toNamedType() }
       .inputAdapterTypeSpec(
-          kotlinNameForFragmentVariablesAdapter(name),
-          adaptedTypeName = typeName()
+          layout = layout,
+          adapterName = layout.fragmentVariablesAdapterName(name),
+          adaptedTypeName = layout.fragmentImplementationClassName(name)
       )
 }
 
-private fun IrNamedFragment.responseAdapterTypeSpec(): TypeSpec {
-  return TypeSpec.objectBuilder(kotlinNameForFragmentResponseAdapter(name))
-      .addTypes(dataResponseAdapterTypeSpecs(dataField))
+private fun IrNamedFragment.responseAdapterTypeSpec(layout: ClassLayout): TypeSpec {
+  return TypeSpec.objectBuilder(layout.fragmentResponseAdapterName(name))
+      .addTypes(dataResponseAdapterTypeSpecs(layout, dataField))
       .build()
 }
 
-private fun IrNamedFragment.responseFieldsTypeSpec(): TypeSpec {
-  return dataResponseFieldsItemSpec(kotlinNameForResponseFields(name), dataField)
+private fun IrNamedFragment.responseFieldsTypeSpec(layout:ClassLayout): TypeSpec {
+  return dataResponseFieldsItemSpec(layout.fragmentResponseFieldsName(name), dataField)
 }
 
-private fun IrNamedFragment.serializeVariablesFunSpec(): FunSpec = serializeVariablesFunSpec(
-    packageName = packageName,
-    adapterName = kotlinNameForFragmentVariablesAdapter(name),
+private fun IrNamedFragment.serializeVariablesFunSpec(layout: ClassLayout): FunSpec = serializeVariablesFunSpec(
+    adapterPackageName = layout.fragmentAdapterPackageName(),
+    adapterName = layout.fragmentVariablesAdapterName(name),
     isEmpty = variables.isEmpty(),
     emptyMessage = "// This fragment doesn't have variables",
 )
 
-private fun IrNamedFragment.adapterFunSpec(): FunSpec {
+private fun IrNamedFragment.adapterFunSpec(layout: ClassLayout): FunSpec {
   check(dataField.typeFieldSet != null) // data is always a compound type
 
   return adapterFunSpec(
-      adapterTypeName = dataField.typeFieldSet.adapterTypeName(),
-      adaptedTypeName = dataField.typeFieldSet.typeName()
+      adapterTypeName = layout.fieldSetAdapterClassName(dataField.typeFieldSet),
+      adaptedTypeName = layout.fieldSetClassName(dataField.typeFieldSet)
   )
 }
 
-private fun IrNamedFragment.dataTypeSpecs(): List<TypeSpec> {
-  return dataField.typeSpecs(false).map {
+private fun IrNamedFragment.dataTypeSpecs(layout: ClassLayout): List<TypeSpec> {
+  return dataField.typeSpecs(layout, false).map {
     it.toBuilder()
         .addSuperinterface(Fragment.Data::class)
         .build()
   }
 }
 
-private fun IrNamedFragment.superInterfaceType(): TypeName {
+private fun IrNamedFragment.superInterfaceType(layout: ClassLayout): TypeName {
   check(dataField.typeFieldSet != null) // data is always a compound type
 
   return Fragment::class.asTypeName().parameterizedBy(
-      dataField.typeFieldSet.typeName()
+      layout.fieldSetClassName(dataField.typeFieldSet)
   )
 }

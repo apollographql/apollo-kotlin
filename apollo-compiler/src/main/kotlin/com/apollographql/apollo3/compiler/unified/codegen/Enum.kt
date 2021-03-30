@@ -9,13 +9,10 @@ import com.apollographql.apollo3.compiler.backend.codegen.Identifier.reader
 import com.apollographql.apollo3.compiler.backend.codegen.Identifier.responseAdapterCache
 import com.apollographql.apollo3.compiler.backend.codegen.Identifier.value
 import com.apollographql.apollo3.compiler.backend.codegen.Identifier.writer
-import com.apollographql.apollo3.compiler.backend.codegen.adapterPackageName
 import com.apollographql.apollo3.compiler.backend.codegen.deprecatedAnnotation
-import com.apollographql.apollo3.compiler.backend.codegen.kotlinNameForEnum
-import com.apollographql.apollo3.compiler.backend.codegen.kotlinNameForEnumValue
-import com.apollographql.apollo3.compiler.backend.codegen.kotlinNameForResponseAdapter
 import com.apollographql.apollo3.compiler.backend.codegen.toResponseFunSpecBuilder
 import com.apollographql.apollo3.compiler.escapeKotlinReservedWord
+import com.apollographql.apollo3.compiler.unified.ClassLayout
 import com.apollographql.apollo3.compiler.unified.IrEnum
 import com.apollographql.apollo3.compiler.unified.codegen.helpers.maybeAddDescription
 import com.squareup.kotlinpoet.ClassName
@@ -29,18 +26,9 @@ import com.squareup.kotlinpoet.TypeSpec
 import com.squareup.kotlinpoet.asClassName
 import com.squareup.kotlinpoet.joinToCode
 
-internal fun IrEnum.typeName() = ClassName(
-    packageName = packageName,
-    kotlinNameForEnum(name)
-)
-
-internal fun IrEnum.adapterTypeName() = ClassName(
-    packageName = adapterPackageName(packageName),
-    kotlinNameForResponseAdapter(name)
-)
-
 
 internal fun IrEnum.qualifiedTypeSpecs(
+    layout: ClassLayout,
     enumAsSealedClassPatternFilters: Set<String>,
 ): List<ApolloFileSpec> {
   val regexes = enumAsSealedClassPatternFilters.map { Regex(it) }
@@ -49,30 +37,37 @@ internal fun IrEnum.qualifiedTypeSpecs(
   }
 
   val enumTypeSpec =   if (asSealedClass)
-    toSealedClassTypeSpec()
+    toSealedClassTypeSpec(layout)
   else
-    toEnumTypeSpec()
+    toEnumTypeSpec(layout)
+
   return listOf(
-      ApolloFileSpec(packageName = packageName, typeSpec = enumTypeSpec),
-      ApolloFileSpec(packageName = adapterPackageName(packageName), typeSpec = adapterTypeSpec(asSealedClass))
+      ApolloFileSpec(
+          packageName = layout.enumClassName(name).packageName,
+          typeSpec = enumTypeSpec
+      ),
+      ApolloFileSpec(
+          packageName = layout.enumAdapterClassName(name).packageName,
+          typeSpec = adapterTypeSpec(layout, asSealedClass)
+      )
   )
 }
 
-private fun IrEnum.toEnumTypeSpec(): TypeSpec {
+private fun IrEnum.toEnumTypeSpec(layout: ClassLayout): TypeSpec {
   return TypeSpec
-      .enumBuilder(name.escapeKotlinReservedWord())
+      .enumBuilder(layout.enumName(name))
       .applyIf(description?.isNotBlank() == true) { addKdoc("%L\n", description!!) }
       .primaryConstructor(primaryConstructorWithOverriddenParamSpec)
       .addProperty(rawValuePropertySpec)
       .apply {
-        values.forEach { value -> addEnumConstant(kotlinNameForEnumValue(value.name), value.typeSpec()) }
+        values.forEach { value -> addEnumConstant(layout.enumValueName(value.name), value.typeSpec()) }
         addEnumConstant("UNKNOWN__", unknownEnumConstTypeSpec)
       }
       .build()
 }
 
-private fun IrEnum.adapterTypeSpec(asSealedClass: Boolean): TypeSpec {
-  val adaptedTypeName = typeName()
+private fun IrEnum.adapterTypeSpec(layout: ClassLayout, asSealedClass: Boolean): TypeSpec {
+  val adaptedTypeName = layout.enumClassName(name)
   val fromResponseFunSpec = FunSpec.builder(fromResponse)
       .addModifiers(KModifier.OVERRIDE)
       .addParameter(reader, JsonReader::class)
@@ -84,10 +79,10 @@ private fun IrEnum.adapterTypeSpec(asSealedClass: Boolean): TypeSpec {
               .beginControlFlow("return when(rawValue)")
               .add(
                   values
-                      .map { CodeBlock.of("%S -> %L.%L", it.name, kotlinNameForEnum(name), kotlinNameForEnumValue(it.name)) }
+                      .map { CodeBlock.of("%S -> %L.%L", it.name, layout.enumName(name), layout.enumValueName(it.name)) }
                       .joinToCode(separator = "\n", suffix = "\n")
               )
-              .add("else -> %L.UNKNOWN__%L\n", name.escapeKotlinReservedWord(), if (asSealedClass) "(rawValue)" else "")
+              .add("else -> %L.UNKNOWN__%L\n", layout.enumName(name), if (asSealedClass) "(rawValue)" else "")
               .endControlFlow()
               .build()
       )
@@ -98,7 +93,7 @@ private fun IrEnum.adapterTypeSpec(asSealedClass: Boolean): TypeSpec {
       .build()
 
   return TypeSpec
-      .objectBuilder(kotlinNameForResponseAdapter(name))
+      .objectBuilder(layout.enumResponseAdapterName(name))
       .addSuperinterface(ResponseAdapter::class.asClassName().parameterizedBy(adaptedTypeName))
       .addFunction(fromResponseFunSpec)
       .addFunction(toResponseFunSpec)
@@ -141,22 +136,22 @@ private val unknownEnumConstTypeSpec: TypeSpec
         .build()
   }
 
-private fun IrEnum.toSealedClassTypeSpec(): TypeSpec {
+private fun IrEnum.toSealedClassTypeSpec(layout: ClassLayout): TypeSpec {
   return TypeSpec
-      .classBuilder(kotlinNameForEnum(name))
+      .classBuilder(layout.enumName(name))
       .maybeAddDescription(description)
       .addModifiers(KModifier.SEALED)
       .primaryConstructor(primaryConstructorWithOverriddenParamSpec)
       .addProperty(rawValuePropertySpec)
       .addTypes(values.map { value ->
-        value.toObjectTypeSpec(ClassName("", kotlinNameForEnum(name)))
+        value.toObjectTypeSpec(layout, ClassName("", layout.enumName(name)))
       })
-      .addType(unknownValueTypeSpec())
+      .addType(unknownValueTypeSpec(layout))
       .build()
 }
 
-private fun IrEnum.Value.toObjectTypeSpec(superClass: TypeName): TypeSpec {
-  return TypeSpec.objectBuilder(kotlinNameForEnumValue(name))
+private fun IrEnum.Value.toObjectTypeSpec(layout: ClassLayout, superClass: TypeName): TypeSpec {
+  return TypeSpec.objectBuilder(layout.enumValueName(name))
       .applyIf(description?.isNotBlank() == true) { addKdoc("%L\n", description!!) }
       .applyIf(deprecationReason != null) { addAnnotation(deprecatedAnnotation(deprecationReason!!)) }
       .superclass(superClass)
@@ -164,11 +159,11 @@ private fun IrEnum.Value.toObjectTypeSpec(superClass: TypeName): TypeSpec {
       .build()
 }
 
-private fun IrEnum.unknownValueTypeSpec(): TypeSpec {
+private fun IrEnum.unknownValueTypeSpec(layout: ClassLayout): TypeSpec {
   return TypeSpec.classBuilder("UNKNOWN__")
       .addKdoc("%L", "Auto generated constant for unknown enum values\n")
       .primaryConstructor(primaryConstructorSpec)
-      .superclass(ClassName("", name.escapeKotlinReservedWord()))
+      .superclass(ClassName("", layout.enumName(name)))
       .addSuperclassConstructorParameter("rawValue = rawValue")
       .build()
 }

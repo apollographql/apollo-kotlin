@@ -3,15 +3,12 @@ package com.apollographql.apollo3.compiler.unified.codegen
 import com.apollographql.apollo3.api.ResponseField
 import com.apollographql.apollo3.api.Variable
 import com.apollographql.apollo3.compiler.backend.codegen.Identifier
-import com.apollographql.apollo3.compiler.backend.codegen.kotlinNameForResponseFields
-import com.apollographql.apollo3.compiler.backend.codegen.responseFieldsPackageName
 import com.apollographql.apollo3.compiler.unified.BooleanExpression
 import com.apollographql.apollo3.compiler.unified.IrArgument
 import com.apollographql.apollo3.compiler.unified.IrBooleanValue
 import com.apollographql.apollo3.compiler.unified.IrCompoundType
 import com.apollographql.apollo3.compiler.unified.IrEnumValue
 import com.apollographql.apollo3.compiler.unified.IrField
-import com.apollographql.apollo3.compiler.unified.IrFieldSet
 import com.apollographql.apollo3.compiler.unified.IrFloatValue
 import com.apollographql.apollo3.compiler.unified.IrIntValue
 import com.apollographql.apollo3.compiler.unified.IrListType
@@ -23,8 +20,6 @@ import com.apollographql.apollo3.compiler.unified.IrStringValue
 import com.apollographql.apollo3.compiler.unified.IrType
 import com.apollographql.apollo3.compiler.unified.IrValue
 import com.apollographql.apollo3.compiler.unified.IrVariableValue
-import com.apollographql.apollo3.compiler.unified.codegen.helpers.typeName
-import com.squareup.kotlinpoet.ClassName
 import com.squareup.kotlinpoet.CodeBlock
 import com.squareup.kotlinpoet.MemberName
 import com.squareup.kotlinpoet.ParameterizedTypeName.Companion.parameterizedBy
@@ -32,13 +27,6 @@ import com.squareup.kotlinpoet.PropertySpec
 import com.squareup.kotlinpoet.TypeSpec
 import com.squareup.kotlinpoet.asTypeName
 import com.squareup.kotlinpoet.joinToCode
-
-private fun IrFieldSet.containerTypeName(): ClassName {
-  return fullPath.copy(
-      packageName = responseFieldsPackageName(fullPath.packageName),
-      elements = listOf(kotlinNameForResponseFields(fullPath.elements.first())) + fullPath.elements.drop(1)
-  ).typeName()
-}
 
 internal fun dataResponseFieldsItemSpec(name: String, dataField: IrField): TypeSpec {
   return fieldSetTypeSpec(name, listOf(dataField))

@@ -22,7 +22,6 @@ data class IntermediateRepresentation(
 )
 
 data class IrEnum(
-    val packageName: String,
     val name: String,
     val description: String?,
     val values: List<Value>,
@@ -35,7 +34,6 @@ data class IrEnum(
 }
 
 data class IrCustomScalars(
-    val packageName: String,
     val customScalars: List<IrCustomScalar>,
 )
 
@@ -43,10 +41,16 @@ data class IrCustomScalars(
  * The path to a model. This maps 1:1 with a kotlinpoet [com.squareup.kotlinpoet.TypeName]
  */
 data class ModelPath(
-    val packageName: String,
+    val root: Root,
     val elements: List<String> = emptyList(),
 ) {
   operator fun plus(element: String) = copy(elements = elements + element)
+
+  sealed class Root {
+    class Operation(val name: String): Root()
+    class FragmentInterface(val name: String): Root()
+    class FragmentImplementation(val name: String): Root()
+  }
 }
 
 /**
@@ -93,7 +97,6 @@ data class IrNamedFragment(
      */
     val variables: List<IrVariable>,
     val typeCondition: String,
-    val packageName: String,
 )
 
 enum class IrOperationType {
@@ -165,9 +168,7 @@ data class IrField(
  * @param possibleTypes: the possibleTypes that will map to this [IrFieldSet].
  * @param implements: A list of fragment and operation path that this field set will implement
  * @param path: The path up (but not including) to the fieldSet. Use [fullPath] to have everything
- * @param modelName: the name of the model. This is an exception where we format the graphql
- * names instead of calling kotlinNameForXyz(). This is just easier, especially to handle
- * the case where there are "Other" implementations
+ * @param modelName: the name of the model.
  */
 data class IrFieldSet(
     val path: ModelPath,
@@ -185,7 +186,6 @@ data class IrFieldSet(
 }
 
 data class IrInputObject(
-    val packageName: String,
     val name: String,
     val description: String?,
     val deprecationReason: String?,
@@ -193,7 +193,6 @@ data class IrInputObject(
 )
 
 data class IrCustomScalar(
-    val packageName: String,
     val name: String,
     val kotlinName: String?, // might be null if no user mapping is provided
     val description: String?,

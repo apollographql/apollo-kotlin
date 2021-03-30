@@ -3,6 +3,7 @@ package com.apollographql.apollo3.compiler.unified.codegen.helpers
 import com.apollographql.apollo3.compiler.applyIf
 import com.apollographql.apollo3.compiler.backend.codegen.kotlinNameForProperty
 import com.apollographql.apollo3.compiler.backend.codegen.makeDataClassFromProperties
+import com.apollographql.apollo3.compiler.unified.ClassLayout
 import com.apollographql.apollo3.compiler.unified.IrField
 import com.apollographql.apollo3.compiler.unified.IrFieldSet
 import com.squareup.kotlinpoet.FunSpec
@@ -11,19 +12,19 @@ import com.squareup.kotlinpoet.PropertySpec
 import com.squareup.kotlinpoet.TypeName
 import com.squareup.kotlinpoet.TypeSpec
 
-fun IrField.typeSpecs(asInterface: Boolean): List<TypeSpec> {
+fun IrField.typeSpecs(layout: ClassLayout, asInterface: Boolean): List<TypeSpec> {
 
   return if (asInterface) {
     fieldSets.map {
-      val accessors = if (it == typeFieldSet) accessors(true) else emptyList()
-      it.typeSpec(true, accessors)
+      val accessors = if (it == typeFieldSet) accessors(layout, true) else emptyList()
+      it.typeSpec(layout, true, accessors)
     }
   } else {
     val interfacesTypeSpecs = interfaces.map {
-      val accessors = if (it == typeFieldSet) accessors(false) else emptyList()
-      it.typeSpec(true, accessors)
+      val accessors = if (it == typeFieldSet) accessors(layout, false) else emptyList()
+      it.typeSpec(layout, true, accessors)
     }
-    val implementationTypeSpecs = implementations.map { it.typeSpec(false, emptyList()) }
+    val implementationTypeSpecs = implementations.map { it.typeSpec(layout, false, emptyList()) }
 
     interfacesTypeSpecs + implementationTypeSpecs
   }
@@ -31,7 +32,7 @@ fun IrField.typeSpecs(asInterface: Boolean): List<TypeSpec> {
 
 class Accessor(val name: String, val typeName: TypeName)
 
-private fun IrField.accessors(asInterface: Boolean): List<Accessor> {
+private fun IrField.accessors(layout: ClassLayout, asInterface: Boolean): List<Accessor> {
   val inlineAccessors = fieldSets.filter { it != typeFieldSet }
       .map { it.typeSet }
       .map { typeSet ->
@@ -43,14 +44,14 @@ private fun IrField.accessors(asInterface: Boolean): List<Accessor> {
         }
         Accessor(
             name = "as${target.fullPath.elements.last()}",
-            typeName = target.fullPath.typeName()
+            typeName = layout.fieldSetClassName(target)
         )
       }
 
   val fragmentAccessors = fragmentAccessors.map {
     Accessor(
         name = it.name.decapitalize(),
-        typeName = it.path.typeName()
+        typeName = layout.modelPathClassName(it.path)
     )
   }
 
@@ -70,9 +71,9 @@ private fun companionTypeSpec(receiverTypeName: TypeName, accessors: List<Access
       .build()
 }
 
-fun IrFieldSet.typeSpec(asInterface: Boolean, accessors: List<Accessor>): TypeSpec {
+fun IrFieldSet.typeSpec(layout: ClassLayout, asInterface: Boolean, accessors: List<Accessor>): TypeSpec {
   val properties = fields.map {
-    PropertySpec.builder(kotlinNameForProperty(it.responseName), it.typeName())
+    PropertySpec.builder(layout.propertyName(it.responseName), layout.fieldSetClassName(this))
         .applyIf(it.override) { addModifiers(KModifier.OVERRIDE) }
         .maybeAddDescription(it.description)
         .maybeAddDeprecation(it.deprecationReason)
@@ -80,17 +81,17 @@ fun IrFieldSet.typeSpec(asInterface: Boolean, accessors: List<Accessor>): TypeSp
   }
 
   val nestedTypes = fields.flatMap {
-    it.typeSpecs(asInterface)
+    it.typeSpecs(layout, asInterface)
   }
 
-  val superInterfaces = implements.map { it.typeName() }
+  val superInterfaces = implements.map { layout.modelPathClassName(it) }
 
   return if (asInterface) {
     TypeSpec.interfaceBuilder(modelName)
         .addProperties(properties)
         .addTypes(nestedTypes)
         .applyIf(accessors.isNotEmpty()) {
-          addType(companionTypeSpec(fullPath.typeName(), accessors))
+          addType(companionTypeSpec(layout.modelPathClassName(fullPath), accessors))
         }
         .addSuperinterfaces(superInterfaces)
         .build()

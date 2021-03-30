@@ -3,6 +3,7 @@ package com.apollographql.apollo3.compiler.unified.codegen
 import com.apollographql.apollo3.compiler.VERSION
 import com.apollographql.apollo3.compiler.operationoutput.OperationOutput
 import com.apollographql.apollo3.compiler.operationoutput.findOperationId
+import com.apollographql.apollo3.compiler.unified.ClassLayout
 import com.apollographql.apollo3.compiler.unified.IntermediateRepresentation
 import com.squareup.kotlinpoet.FileSpec
 import com.squareup.kotlinpoet.KModifier
@@ -19,12 +20,14 @@ class ApolloFileSpec(
     val typeSpec: List<TypeSpec>,
     val fileName: String,
 ) {
-  constructor(packageName: String, typeSpec: TypeSpec): this(packageName, listOf(typeSpec), typeSpec.name!!)
+  constructor(packageName: String, typeSpec: TypeSpec) : this(packageName, listOf(typeSpec), typeSpec.name!!)
 }
 
 class KotlinCodeGenerator(
     private val ir: IntermediateRepresentation,
     private val generateAsInternal: Boolean = false,
+    private val rootPackageName: String,
+    private val schemaPackageName: String,
     private val enumAsSealedClassPatternFilters: Set<String>,
     private val generateScalarMapping: Boolean,
     private val generateFilterNotNull: Boolean,
@@ -34,33 +37,41 @@ class KotlinCodeGenerator(
     private val useSemanticNaming: Boolean,
 ) {
   fun write(outputDir: File) {
+    val layout = ClassLayout(
+        operations = ir.operations,
+        fragments = ir.fragments,
+        rootPackageName = rootPackageName,
+        schemaPackageName = schemaPackageName,
+        useSemanticNaming = useSemanticNaming
+    )
+
     val customScalars = if (generateScalarMapping) {
-      listOf(ir.customScalars.qualifiedTypeSpec())
+      listOf(ir.customScalars.qualifiedTypeSpec(layout))
     } else {
       emptyList()
     }
 
     val enums = ir.enums.flatMap { enum ->
-      enum.qualifiedTypeSpecs(enumAsSealedClassPatternFilters = enumAsSealedClassPatternFilters)
+      enum.qualifiedTypeSpecs(layout = layout, enumAsSealedClassPatternFilters = enumAsSealedClassPatternFilters)
     }
 
     val inputObjects = ir.inputObjects.flatMap { inputObject ->
-      inputObject.qualifiedTypeSpecs()
+      inputObject.qualifiedTypeSpecs(layout)
     }
 
     val operations = ir.operations.flatMap { operation ->
-      operation.qualifiedTypeSpecs(generateFilterNotNull, operationOutput.findOperationId(operation.name))
+      operation.qualifiedTypeSpecs(layout, generateFilterNotNull, operationOutput.findOperationId(operation.name))
     }
 
     val fragments = ir.fragments.flatMap { fragment ->
-      fragment.qualifiedTypeSpecs(generateFilterNotNull, generateFragmentImplementations)
+      fragment.qualifiedTypeSpecs(layout, generateFilterNotNull, generateFragmentImplementations)
     }
 
     val qualifiedTypeSpecs = customScalars + enums + inputObjects + operations + fragments
 
     // sanity check
     qualifiedTypeSpecs.groupBy { it.packageName to it.fileName }.forEach {
-      check (it.value.size == 1) {
+      check(it.value.size == 1) {
         "Duplicate type found: ${it.key}"
       }
     }

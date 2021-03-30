@@ -1,9 +1,6 @@
 package com.apollographql.apollo3.compiler.unified
 
-import com.apollographql.apollo3.compiler.PackageNameProvider
 import com.apollographql.apollo3.compiler.backend.codegen.capitalizeFirstLetter
-import com.apollographql.apollo3.compiler.backend.codegen.kotlinNameForFragmentImplementation
-import com.apollographql.apollo3.compiler.backend.codegen.kotlinNameForOperation
 import com.apollographql.apollo3.compiler.frontend.GQLArgument
 import com.apollographql.apollo3.compiler.frontend.GQLField
 import com.apollographql.apollo3.compiler.frontend.GQLFieldDefinition
@@ -32,20 +29,16 @@ import com.apollographql.apollo3.compiler.frontend.pretty
 class IrFieldSetBuilder(
     private val schema: Schema,
     private val allGQLFragmentDefinitions: Map<String, GQLFragmentDefinition>,
-    private val packageNameProvider: PackageNameProvider,
     private val registerType: (GQLType) -> IrType,
 ) {
   private var cachedFragmentsFields = mutableMapOf<String, IrField>()
 
-  fun buildOperation(
+  fun buildOperationField(
       selections: List<GQLSelection>,
       fieldType: String,
       name: String,
   ): IrField {
-    val path = ModelPath(packageNameProvider.operationPackageName(
-        selections.filePath()),
-        listOf(kotlinNameForOperation(name))
-    )
+    val path = ModelPath(root = ModelPath.Root.Operation(name))
 
     return buildRootField(
         name = "data",
@@ -55,23 +48,12 @@ class IrFieldSetBuilder(
     )
   }
 
-  /**
-   * TODO: find a more robust way to get the filePath
-   *
-   * Note: there might be synthetic selections with filePath == null for __typename fields
-   */
-  private fun List<GQLSelection>.filePath() = mapNotNull { it.sourceLocation.filePath }.first()
-
-
   private fun getOrBuildFragmentField(
       selections: List<GQLSelection>,
       fieldType: String,
       name: String,
   ): IrField {
-    val path = ModelPath(packageNameProvider.fragmentPackageName(
-        selections.filePath()),
-        emptyList()
-    )
+    val path =  ModelPath(root = ModelPath.Root.FragmentInterface(name))
 
     return cachedFragmentsFields.getOrPut(name) {
       buildRootField(
@@ -85,22 +67,19 @@ class IrFieldSetBuilder(
 
   class FragmentFields(val interfaceField: IrField, val dataField: IrField)
 
-  fun buildFragment(
+  fun buildFragmentFields(
       selections: List<GQLSelection>,
       fieldType: String,
       name: String,
   ): FragmentFields {
     val interfaceField = getOrBuildFragmentField(selections, fieldType, name)
 
-    val dataPath = ModelPath(
-        packageNameProvider.fragmentPackageName(selections.filePath()),
-        listOf(kotlinNameForFragmentImplementation(name))
-    )
+    val path =  ModelPath(root = ModelPath.Root.FragmentImplementation(name))
     val dataField = buildRootField(
         name = "data",
         selections = selections,
         fieldType = fieldType,
-        path = dataPath,
+        path = path,
         superFields = listOf(interfaceField)
     )
     return FragmentFields(interfaceField, dataField)

@@ -8,8 +8,6 @@ import com.apollographql.apollo3.compiler.backend.codegen.Identifier.responseAda
 import com.apollographql.apollo3.compiler.backend.codegen.Identifier.serializeVariables
 import com.apollographql.apollo3.compiler.backend.codegen.Identifier.toResponse
 import com.apollographql.apollo3.compiler.backend.codegen.Identifier.writer
-import com.apollographql.apollo3.compiler.backend.codegen.adapterPackageName
-import com.apollographql.apollo3.compiler.backend.codegen.kotlinNameForVariablesAdapter
 import com.apollographql.apollo3.compiler.backend.codegen.obj
 import com.apollographql.apollo3.compiler.backend.codegen.patchKotlinNativeOptionalArrayProperties
 import com.squareup.kotlinpoet.ClassName
@@ -23,12 +21,12 @@ import com.squareup.kotlinpoet.asClassName
 import com.squareup.kotlinpoet.asTypeName
 
 fun serializeVariablesFunSpec(
-    packageName: String,
+    adapterPackageName: String,
     adapterName: String,
     isEmpty: Boolean,
     emptyMessage: String
 ): FunSpec {
-  val adapterTypeName = ClassName(adapterPackageName(packageName), adapterName )
+  val adapterTypeName = ClassName(adapterPackageName, adapterName )
 
   val body = if (isEmpty) {
     CodeBlock.of(emptyMessage)

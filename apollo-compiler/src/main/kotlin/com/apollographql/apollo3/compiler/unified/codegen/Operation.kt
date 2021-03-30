@@ -4,24 +4,16 @@ import com.apollographql.apollo3.api.Mutation
 import com.apollographql.apollo3.api.Query
 import com.apollographql.apollo3.api.QueryDocumentMinifier
 import com.apollographql.apollo3.api.Subscription
-import com.apollographql.apollo3.compiler.backend.codegen.adapterPackageName
-import com.apollographql.apollo3.compiler.backend.codegen.kotlinNameForOperation
-import com.apollographql.apollo3.compiler.backend.codegen.kotlinNameForResponseAdapter
-import com.apollographql.apollo3.compiler.backend.codegen.kotlinNameForResponseFields
-import com.apollographql.apollo3.compiler.backend.codegen.kotlinNameForVariablesAdapter
 import com.apollographql.apollo3.compiler.backend.codegen.makeDataClass
-import com.apollographql.apollo3.compiler.backend.codegen.responseFieldsPackageName
+import com.apollographql.apollo3.compiler.unified.ClassLayout
 import com.apollographql.apollo3.compiler.unified.IrOperation
 import com.apollographql.apollo3.compiler.unified.IrOperationType
 import com.apollographql.apollo3.compiler.unified.codegen.adapter.dataResponseAdapterTypeSpecs
 import com.apollographql.apollo3.compiler.unified.codegen.adapter.inputAdapterTypeSpec
-import com.apollographql.apollo3.compiler.unified.codegen.helpers.adapterTypeName
 import com.apollographql.apollo3.compiler.unified.codegen.helpers.maybeAddDescription
 import com.apollographql.apollo3.compiler.unified.codegen.helpers.toNamedType
 import com.apollographql.apollo3.compiler.unified.codegen.helpers.toParameterSpec
-import com.apollographql.apollo3.compiler.unified.codegen.helpers.typeName
 import com.apollographql.apollo3.compiler.unified.codegen.helpers.typeSpecs
-import com.squareup.kotlinpoet.ClassName
 import com.squareup.kotlinpoet.CodeBlock
 import com.squareup.kotlinpoet.FunSpec
 import com.squareup.kotlinpoet.KModifier
@@ -31,99 +23,97 @@ import com.squareup.kotlinpoet.TypeName
 import com.squareup.kotlinpoet.TypeSpec
 import com.squareup.kotlinpoet.asTypeName
 
-fun IrOperation.qualifiedTypeSpecs(generateFilterNotNull: Boolean, operationId: String): List<ApolloFileSpec> {
+fun IrOperation.qualifiedTypeSpecs(layout: ClassLayout, generateFilterNotNull: Boolean, operationId: String): List<ApolloFileSpec> {
   val list = mutableListOf<ApolloFileSpec>()
 
-  list.add(ApolloFileSpec(packageName, typeSpec(operationId, generateFilterNotNull)))
+  list.add(ApolloFileSpec(layout.operationPackageName(packageName), typeSpec(layout, operationId, generateFilterNotNull)))
   if (variables.isNotEmpty()) {
-    list.add(ApolloFileSpec(adapterPackageName(packageName), variablesAdapterTypeSpec()))
+    list.add(ApolloFileSpec(layout.operationAdapterPackageName(packageName), variablesAdapterTypeSpec(layout)))
   }
-  list.add(ApolloFileSpec(adapterPackageName(packageName), responseAdapterTypeSpec()))
-  list.add(ApolloFileSpec(responseFieldsPackageName(packageName), responseFieldsTypeSpec()))
+  list.add(ApolloFileSpec(layout.operationAdapterPackageName(packageName), responseAdapterTypeSpec(layout)))
+  list.add(ApolloFileSpec(layout.operationResponseFieldsPackageName(packageName), responseFieldsTypeSpec(layout)))
 
   return list
 }
 
-private fun IrOperation.typeSpec(operationId: String, generateFilterNotNull: Boolean): TypeSpec {
-  return TypeSpec.classBuilder(kotlinNameForOperation(name))
-      .addSuperinterface(superInterfaceType())
+private fun IrOperation.typeSpec(layout: ClassLayout, operationId: String, generateFilterNotNull: Boolean): TypeSpec {
+  return TypeSpec.classBuilder(layout.operationName(this))
+      .addSuperinterface(superInterfaceType(layout))
       .maybeAddDescription(description)
-      .makeDataClass(variables.map { it.toNamedType().toParameterSpec() })
+      .makeDataClass(variables.map { it.toNamedType().toParameterSpec(layout) })
       .addFunction(operationIdFunSpec())
       .addFunction(queryDocumentFunSpec())
       .addFunction(nameFunSpec())
-      .addFunction(serializeVariablesFunSpec())
-      .addFunction(adapterFunSpec())
-      .addFunction(responseFieldsFunSpec())
-      .addTypes(dataTypeSpecs())
+      .addFunction(serializeVariablesFunSpec(layout))
+      .addFunction(adapterFunSpec(layout))
+      .addFunction(responseFieldsFunSpec(layout))
+      .addTypes(dataTypeSpecs(layout))
       .addType(companionTypeSpec(operationId))
       .build()
       .maybeAddFilterNotNull(generateFilterNotNull)
 }
 
-private fun IrOperation.typeName() = ClassName(packageName, kotlinNameForOperation(name))
-
-private fun IrOperation.responseFieldsFunSpec(): FunSpec {
-  val typeName = ClassName(responseFieldsPackageName(packageName), kotlinNameForResponseFields(name))
-  return responseFieldsFunSpec(typeName)
+private fun IrOperation.responseFieldsFunSpec(layout: ClassLayout): FunSpec {
+  return responseFieldsFunSpec(layout.operationResponseFieldsClassName(this))
 }
 
-private fun IrOperation.variablesAdapterTypeSpec(): TypeSpec {
+private fun IrOperation.variablesAdapterTypeSpec(layout: ClassLayout): TypeSpec {
   return variables.map { it.toNamedType() }
       .inputAdapterTypeSpec(
-          kotlinNameForVariablesAdapter(name),
-          adaptedTypeName = typeName()
+          layout = layout,
+          adapterName = layout.operationVariablesAdapterName(this),
+          adaptedTypeName = layout.operationClassName(this)
       )
 }
 
-private fun IrOperation.responseAdapterTypeSpec(): TypeSpec {
-  return TypeSpec.objectBuilder(kotlinNameForResponseAdapter(name))
-      .addTypes(dataResponseAdapterTypeSpecs(dataField))
+private fun IrOperation.responseAdapterTypeSpec(layout: ClassLayout): TypeSpec {
+  return TypeSpec.objectBuilder(layout.operationResponseAdapterClassName(this))
+      .addTypes(dataResponseAdapterTypeSpecs(layout, dataField))
       .build()
 }
 
-private fun IrOperation.responseFieldsTypeSpec(): TypeSpec {
-  return dataResponseFieldsItemSpec(kotlinNameForResponseFields(name), dataField)
+private fun IrOperation.responseFieldsTypeSpec(layout: ClassLayout): TypeSpec {
+  return dataResponseFieldsItemSpec(layout.operationResponseFieldsName(this), dataField)
 }
 
-private fun IrOperation.serializeVariablesFunSpec(): FunSpec = serializeVariablesFunSpec(
-    packageName = packageName,
-    adapterName = kotlinNameForVariablesAdapter(name),
+private fun IrOperation.serializeVariablesFunSpec(layout: ClassLayout): FunSpec = serializeVariablesFunSpec(
+    adapterPackageName = layout.operationAdapterPackageName(this.packageName),
+    adapterName = layout.operationVariablesAdapterName(this),
     isEmpty = variables.isEmpty(),
     emptyMessage = "// This operation doesn't have variables"
 )
 
-private fun IrOperation.adapterFunSpec(): FunSpec {
+private fun IrOperation.adapterFunSpec(layout: ClassLayout): FunSpec {
   check(dataField.typeFieldSet != null) // data is always a compound type
 
   return adapterFunSpec(
-      adapterTypeName = dataField.typeFieldSet.adapterTypeName(),
-      adaptedTypeName = dataField.typeFieldSet.typeName()
+      adapterTypeName = layout.operationResponseAdapterClassName(this),
+      adaptedTypeName = layout.fieldSetClassName(dataField.typeFieldSet)
   )
 }
 
-private fun IrOperation.dataTypeSpecs(): List<TypeSpec> {
+private fun IrOperation.dataTypeSpecs(layout: ClassLayout): List<TypeSpec> {
   val superClass = when (operationType) {
     IrOperationType.Query -> Query.Data::class
     IrOperationType.Mutation -> Mutation.Data::class
     IrOperationType.Subscription -> Subscription.Data::class
   }
 
-  return dataField.typeSpecs(false).map {
+  return dataField.typeSpecs(layout, false).map {
     it.toBuilder()
         .addSuperinterface(superClass)
         .build()
   }
 }
 
-private fun IrOperation.superInterfaceType(): TypeName {
+private fun IrOperation.superInterfaceType(layout: ClassLayout): TypeName {
   check(dataField.typeFieldSet != null) // data is always a compound type
 
   return when (operationType) {
     IrOperationType.Query -> Query::class.asTypeName()
     IrOperationType.Mutation -> Mutation::class.asTypeName()
     IrOperationType.Subscription -> Subscription::class.asTypeName()
-  }.parameterizedBy(dataField.typeFieldSet.typeName())
+  }.parameterizedBy(layout.fieldSetClassName(dataField.typeFieldSet))
 }
 
 private fun operationIdFunSpec() = FunSpec.builder("operationId")

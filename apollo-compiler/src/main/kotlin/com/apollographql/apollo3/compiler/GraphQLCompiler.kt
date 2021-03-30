@@ -37,7 +37,7 @@ class GraphQLCompiler(val logger: Logger = NoOpLogger) {
     val roots = Roots(args.rootFolders)
     val metadata = collectMetadata(args.metadata)
 
-    val (schema, schemaPackageName) = getSchemaInfo(roots, args.rootPackageName, args.schemaFile, metadata)
+    val (schema, schemaPackageName) = getSchemaInfo(roots, args.schemaFile, metadata)
 
     val packageNameProvider = DefaultPackageNameProvider(
         roots = roots,
@@ -86,15 +86,16 @@ class GraphQLCompiler(val logger: Logger = NoOpLogger) {
       it.withTypenameWhenNeeded(schema)
     }
 
-    val useUnifiedIr = false
-    val generatedTypes = if (useUnifiedIr) {
+    val generatedTypes = if (args.useUnifiedIr) {
       doWriteUnified(
           schema = schema,
           operations = operations,
           fragments = fragments,
           metadata = metadata,
           args = args,
-          packageNameProvider = packageNameProvider
+          roots = roots,
+          schemaPackageName = schemaPackageName,
+          rootPackageName = args.rootPackageName
       )
     } else {
       doWrite(
@@ -112,6 +113,7 @@ class GraphQLCompiler(val logger: Logger = NoOpLogger) {
     val outgoingMetadata = ApolloMetadata(
         schema = if (metadata == null) schema else null,
         schemaPackageName = schemaPackageName,
+        rootPackageName = args.rootPackageName,
         moduleName = args.moduleName,
         generatedEnums = generatedTypes.enums,
         generatedInputObjects = generatedTypes.inputObjects,
@@ -132,7 +134,9 @@ class GraphQLCompiler(val logger: Logger = NoOpLogger) {
       fragments: List<GQLFragmentDefinition>,
       metadata: ApolloMetadata?,
       args: Arguments,
-      packageNameProvider: PackageNameProvider,
+      roots: Roots,
+      schemaPackageName: String,
+      rootPackageName: String
   ): GeneratedTypes {
     val ir = IrBuilder(
         schema = schema,
@@ -141,7 +145,7 @@ class GraphQLCompiler(val logger: Logger = NoOpLogger) {
         metadataFragmentDefinitions = metadata?.fragments ?: emptyList(),
         alwaysGenerateTypesMatching = args.alwaysGenerateTypesMatching,
         customScalarToKotlinName = args.customScalarsMapping,
-        packageNameProvider = packageNameProvider
+        roots = roots
     ).build()
 
     val operationOutput = ir.operations.map {
@@ -163,7 +167,9 @@ class GraphQLCompiler(val logger: Logger = NoOpLogger) {
         generateFilterNotNull = args.generateFilterNotNull,
         generateFragmentImplementations = args.generateFragmentImplementations,
         generateFragmentsAsInterfaces = args.generateFragmentsAsInterfaces,
-    )
+        schemaPackageName = schemaPackageName,
+        rootPackageName = rootPackageName
+    ).write(outputDir = args.outputDir)
 
     return GeneratedTypes(
         enums = ir.enums.map { it.name }.toSet(),
@@ -283,7 +289,7 @@ class GraphQLCompiler(val logger: Logger = NoOpLogger) {
 
     private data class SchemaInfo(val schema: Schema, val schemaPackageName: String)
 
-    private fun getSchemaInfo(roots: Roots, rootPackageName: String, schemaFile: File?, metadata: ApolloMetadata?): SchemaInfo {
+    private fun getSchemaInfo(roots: Roots, schemaFile: File?, metadata: ApolloMetadata?): SchemaInfo {
       check(schemaFile != null || metadata != null) {
         "ApolloGraphQL: cannot find schema.[json | sdl]"
       }
@@ -305,8 +311,7 @@ class GraphQLCompiler(val logger: Logger = NoOpLogger) {
           // Can happen if the schema is not a child of roots
           ""
         }
-        val schemaPackageName = "$rootPackageName.$packageName".removePrefix(".").removeSuffix(".")
-        return SchemaInfo(schema, schemaPackageName)
+        return SchemaInfo(schema, packageName)
       } else if (metadata != null) {
         return SchemaInfo(metadata.schema!!, metadata.schemaPackageName!!)
       } else {
@@ -398,6 +403,6 @@ class GraphQLCompiler(val logger: Logger = NoOpLogger) {
 
       // Debug options
       val dumpIR: Boolean = false,
-      val useUnifiedIr: Boolean = true
+      val useUnifiedIr: Boolean = false
   )
 }

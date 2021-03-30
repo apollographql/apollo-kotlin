@@ -29,6 +29,7 @@ data class ApolloMetadata(
     val generatedEnums: Set<String>,
     val generatedInputObjects: Set<String>,
     val schemaPackageName: String?,
+    val rootPackageName: String?,
     /**
      * The module name, for debug
      */
@@ -44,6 +45,7 @@ data class ApolloMetadata(
       val generatedInputObjects: Set<String>,
       val generatedEnums: Set<String>,
       val schemaPackageName: String?,
+      val rootPackageName: String?,
       val moduleName: String,
       val generateKotlinModels: Boolean,
       val pluginVersion: String,
@@ -105,6 +107,7 @@ data class ApolloMetadata(
             generatedEnums = generatedEnums,
             generatedInputObjects = generatedInputObjects,
             schemaPackageName = schemaPackageName,
+            rootPackageName = rootPackageName,
             moduleName = moduleName,
             generateKotlinModels = generateKotlinModels,
             pluginVersion = pluginVersion,
@@ -121,6 +124,7 @@ data class ApolloMetadata(
         generatedEnums = generatedEnums,
         generatedInputObjects = generatedInputObjects,
         schemaPackageName = schemaPackageName,
+        rootPackageName = rootPackageName,
         moduleName = moduleName,
         generateKotlinModels = generateKotlinModels,
         pluginVersion = pluginVersion,

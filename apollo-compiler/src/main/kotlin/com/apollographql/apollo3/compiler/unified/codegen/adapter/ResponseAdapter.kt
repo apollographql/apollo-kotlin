@@ -13,10 +13,10 @@ import com.apollographql.apollo3.compiler.backend.codegen.Identifier.value
 import com.apollographql.apollo3.compiler.backend.codegen.Identifier.writer
 import com.apollographql.apollo3.compiler.backend.codegen.kotlinNameForProperty
 import com.apollographql.apollo3.compiler.backend.codegen.kotlinNameForVariable
+import com.apollographql.apollo3.compiler.unified.ClassLayout
 import com.apollographql.apollo3.compiler.unified.IrField
 import com.apollographql.apollo3.compiler.unified.IrFieldSet
 import com.apollographql.apollo3.compiler.unified.codegen.helpers.adapterInitializer
-import com.apollographql.apollo3.compiler.unified.codegen.helpers.typeName
 import com.squareup.kotlinpoet.CodeBlock
 import com.squareup.kotlinpoet.FunSpec
 import com.squareup.kotlinpoet.KModifier
@@ -27,16 +27,17 @@ import com.squareup.kotlinpoet.asTypeName
 import com.squareup.kotlinpoet.joinToCode
 
 internal fun dataResponseAdapterTypeSpecs(
+    layout: ClassLayout,
     dataField: IrField,
 ): List<TypeSpec> {
-  return dataField.responseAdapterTypeSpecs()
+  return dataField.responseAdapterTypeSpecs(layout)
 }
 
-internal fun IrField.responseAdapterTypeSpecs(): List<TypeSpec> {
+internal fun IrField.responseAdapterTypeSpecs(layout: ClassLayout): List<TypeSpec> {
   return when (implementations.size){
     0 -> emptyList() // scalar
-    1 -> listOf(implementations.first().adapterTypeSpec())
-    else -> polymorphicAdapterTypeSpecs()
+    1 -> listOf(implementations.first().adapterTypeSpec(layout))
+    else -> polymorphicAdapterTypeSpecs(layout)
   }
 }
 
@@ -50,24 +51,24 @@ internal fun IrFieldSet.responseNamesPropertySpec(): PropertySpec {
       .build()
 }
 
-internal fun IrFieldSet.adapterTypeSpec(): TypeSpec {
+internal fun IrFieldSet.adapterTypeSpec(layout: ClassLayout): TypeSpec {
   return TypeSpec.objectBuilder(modelName)
-      .addSuperinterface(ResponseAdapter::class.asTypeName().parameterizedBy(typeName()))
+      .addSuperinterface(ResponseAdapter::class.asTypeName().parameterizedBy(layout.fieldSetClassName(this)))
       .addProperty(responseNamesPropertySpec())
-      .addFunction(readFromResponseFunSpec())
-      .addFunction(writeToResponseFunSpec())
+      .addFunction(readFromResponseFunSpec(layout))
+      .addFunction(writeToResponseFunSpec(layout))
       .addTypes(fields.flatMap {
-        it.responseAdapterTypeSpecs()
+        it.responseAdapterTypeSpecs(layout)
       })
       .build()
 }
 
-internal fun IrFieldSet.readFromResponseCodeBlock(variableInitializer: (String) -> String): CodeBlock {
+internal fun IrFieldSet.readFromResponseCodeBlock(layout: ClassLayout, variableInitializer: (String) -> String): CodeBlock {
   val prefix = fields.map { field ->
     CodeBlock.of(
         "var·%L:·%T·=·%L",
         kotlinNameForVariable(field.responseName),
-        field.typeName().copy(nullable = true),
+        layout.fieldTypeName(field).copy(nullable = true),
         variableInitializer(field.responseName)
     )
   }.joinToCode(separator = "\n", suffix = "\n")
@@ -80,8 +81,8 @@ internal fun IrFieldSet.readFromResponseCodeBlock(variableInitializer: (String) 
             CodeBlock.of(
                 "%L·->·%L·=·%L.$fromResponse($reader, $responseAdapterCache)",
                 fieldIndex,
-                kotlinNameForVariable(field.responseName),
-                field.adapterInitializer()
+                layout.variableName(field.responseName),
+                field.adapterInitializer(layout)
             )
           }.joinToCode(separator = "\n", suffix = "\n")
       )
@@ -91,14 +92,14 @@ internal fun IrFieldSet.readFromResponseCodeBlock(variableInitializer: (String) 
       .build()
 
   val suffix = CodeBlock.builder()
-      .addStatement("return·%T(", typeName())
+      .addStatement("return·%T(", layout.fieldSetClassName(this))
       .indent()
       .add(fields.map { field ->
         CodeBlock.of(
             "%L·=·%L%L",
-            kotlinNameForProperty(field.responseName),
-            kotlinNameForVariable(field.responseName),
-            if (field.typeName().isNullable) "" else "!!"
+            layout.propertyName(field.responseName),
+            layout.variableName(field.responseName),
+            if (layout.fieldTypeName(field).isNullable) "" else "!!"
         )
       }.joinToCode(separator = ",\n", suffix = "\n"))
       .unindent()
@@ -112,41 +113,41 @@ internal fun IrFieldSet.readFromResponseCodeBlock(variableInitializer: (String) 
       .build()
 }
 
-private fun IrFieldSet.readFromResponseFunSpec(): FunSpec {
+private fun IrFieldSet.readFromResponseFunSpec(layout: ClassLayout): FunSpec {
   return FunSpec.builder(fromResponse)
-      .returns(typeName())
+      .returns(layout.fieldSetClassName(this))
       .addParameter(reader, JsonReader::class)
       .addParameter(responseAdapterCache, ResponseAdapterCache::class)
       .addModifiers(KModifier.OVERRIDE)
-      .addCode(readFromResponseCodeBlock { "null" })
+      .addCode(readFromResponseCodeBlock(layout) { "null" })
       .build()
 }
 
-private fun IrFieldSet.writeToResponseFunSpec(): FunSpec {
+private fun IrFieldSet.writeToResponseFunSpec(layout: ClassLayout): FunSpec {
   return FunSpec.builder(toResponse)
       .addModifiers(KModifier.OVERRIDE)
       .addParameter(writer, JsonWriter::class.asTypeName())
       .addParameter(responseAdapterCache, ResponseAdapterCache::class)
-      .addParameter(value, typeName())
-      .addCode(writeToResponseCodeBlock())
+      .addParameter(value, layout.fieldSetClassName(this))
+      .addCode(writeToResponseCodeBlock(layout))
       .build()
 }
 
 
-internal fun IrFieldSet.writeToResponseCodeBlock(): CodeBlock {
+internal fun IrFieldSet.writeToResponseCodeBlock(layout: ClassLayout): CodeBlock {
   val builder = CodeBlock.builder()
   fields.forEach {
-    builder.add(it.writeToResponseCodeBlock())
+    builder.add(it.writeToResponseCodeBlock(layout))
   }
   return builder.build()
 }
 
-private fun IrField.writeToResponseCodeBlock(): CodeBlock {
+private fun IrField.writeToResponseCodeBlock(layout: ClassLayout): CodeBlock {
   return CodeBlock.builder().apply {
     addStatement("$writer.name(%S)", responseName)
     addStatement(
-        "%L.$toResponse($writer, $responseAdapterCache, $value.${kotlinNameForProperty(responseName)})",
-        adapterInitializer()
+        "%L.$toResponse($writer, $responseAdapterCache, $value.${layout.propertyName(responseName)})",
+        adapterInitializer(layout)
     )
   }.build()
 }
