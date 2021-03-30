@@ -33,11 +33,11 @@ fun IrNamedFragment.qualifiedTypeSpecs(
   if (generateFragmentImplementations) {
     list.add(ApolloFileSpec(layout.fragmentPackageName(), implementationTypeSpec(layout, generateFilterNotNull)))
     list.add(ApolloFileSpec(layout.fragmentAdapterPackageName(), responseAdapterTypeSpec(layout)))
+    if (variables.isNotEmpty()) {
+      list.add(ApolloFileSpec(layout.fragmentAdapterPackageName(), variablesAdapterTypeSpec(layout)))
+    }
+    list.add(ApolloFileSpec(layout.fragmentResponseFieldsPackageName(), responseFieldsTypeSpec(layout)))
   }
-  if (variables.isNotEmpty()) {
-    list.add(ApolloFileSpec(layout.fragmentAdapterPackageName(), variablesAdapterTypeSpec(layout)))
-  }
-  list.add(ApolloFileSpec(layout.fragmentResponseFieldsPackageName(), responseFieldsTypeSpec(layout)))
 
   return list
 }
