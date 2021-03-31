@@ -4,6 +4,7 @@ import com.apollographql.apollo3.api.Mutation
 import com.apollographql.apollo3.api.Query
 import com.apollographql.apollo3.api.QueryDocumentMinifier
 import com.apollographql.apollo3.api.Subscription
+import com.apollographql.apollo3.compiler.applyIf
 import com.apollographql.apollo3.compiler.backend.codegen.makeDataClass
 import com.apollographql.apollo3.compiler.unified.CodegenLayout
 import com.apollographql.apollo3.compiler.unified.IrOperation
@@ -23,32 +24,45 @@ import com.squareup.kotlinpoet.TypeName
 import com.squareup.kotlinpoet.TypeSpec
 import com.squareup.kotlinpoet.asTypeName
 
-fun IrOperation.qualifiedTypeSpecs(layout: CodegenLayout, generateFilterNotNull: Boolean, operationId: String): List<ApolloFileSpec> {
+fun IrOperation.apolloFileSpecs(
+    layout: CodegenLayout,
+    generateFilterNotNull: Boolean,
+    operationId: String,
+    generateResponseFields: Boolean,
+    generateQueryDocument: Boolean,
+): List<ApolloFileSpec> {
   val list = mutableListOf<ApolloFileSpec>()
 
-  list.add(ApolloFileSpec(layout.operationPackageName(packageName), typeSpec(layout, operationId, generateFilterNotNull)))
+  list.add(ApolloFileSpec(layout.operationPackageName(packageName), typeSpec(layout, operationId, generateFilterNotNull, generateQueryDocument)))
   if (variables.isNotEmpty()) {
     list.add(ApolloFileSpec(layout.operationAdapterPackageName(packageName), variablesAdapterTypeSpec(layout)))
   }
   list.add(ApolloFileSpec(layout.operationAdapterPackageName(packageName), responseAdapterTypeSpec(layout)))
-  list.add(ApolloFileSpec(layout.operationResponseFieldsPackageName(packageName), responseFieldsTypeSpec(layout)))
+  if (generateResponseFields) {
+    list.add(ApolloFileSpec(layout.operationResponseFieldsPackageName(packageName), responseFieldsTypeSpec(layout)))
+  }
 
   return list
 }
 
-private fun IrOperation.typeSpec(layout: CodegenLayout, operationId: String, generateFilterNotNull: Boolean): TypeSpec {
+private fun IrOperation.typeSpec(
+    layout: CodegenLayout,
+    operationId: String,
+    generateFilterNotNull: Boolean,
+    generateQueryDocument: Boolean,
+): TypeSpec {
   return TypeSpec.classBuilder(layout.operationName(this))
       .addSuperinterface(superInterfaceType(layout))
       .maybeAddDescription(description)
       .makeDataClass(variables.map { it.toNamedType().toParameterSpec(layout) })
       .addFunction(operationIdFunSpec())
-      .addFunction(queryDocumentFunSpec())
+      .addFunction(queryDocumentFunSpec(generateQueryDocument))
       .addFunction(nameFunSpec())
       .addFunction(serializeVariablesFunSpec(layout))
       .addFunction(adapterFunSpec(layout))
       .addFunction(responseFieldsFunSpec(layout))
       .addTypes(dataTypeSpecs(layout))
-      .addType(companionTypeSpec(operationId))
+      .addType(companionTypeSpec(operationId, generateQueryDocument))
       .build()
       .maybeAddFilterNotNull(generateFilterNotNull)
 }
@@ -122,10 +136,16 @@ private fun operationIdFunSpec() = FunSpec.builder("operationId")
     .addStatement("return OPERATION_ID")
     .build()
 
-private fun queryDocumentFunSpec() = FunSpec.builder("queryDocument")
+private fun queryDocumentFunSpec(generateQueryDocument: Boolean) = FunSpec.builder("queryDocument")
     .addModifiers(KModifier.OVERRIDE)
     .returns(String::class)
-    .addStatement("return QUERY_DOCUMENT")
+    .apply {
+      if (generateQueryDocument) {
+        addStatement("return QUERY_DOCUMENT")
+      } else {
+        addStatement("error(\"The query document was removed from this operation. Use generateQueryDocument = true if you need it\"")
+      }
+    }
     .build()
 
 private fun nameFunSpec() = FunSpec.builder("name")
@@ -134,25 +154,27 @@ private fun nameFunSpec() = FunSpec.builder("name")
     .addStatement("return OPERATION_NAME")
     .build()
 
-private fun IrOperation.companionTypeSpec(operationId: String): TypeSpec {
+private fun IrOperation.companionTypeSpec(operationId: String, generateQueryDocument: Boolean): TypeSpec {
   return TypeSpec.companionObjectBuilder()
       .addProperty(PropertySpec.builder("OPERATION_ID", String::class)
           .addModifiers(KModifier.CONST)
           .initializer("%S", operationId)
           .build()
       )
-      .addProperty(PropertySpec.builder("QUERY_DOCUMENT", String::class)
-          .initializer(
-              CodeBlock.builder()
-                  .add("%T.minify(\n", QueryDocumentMinifier::class.java)
-                  .indent()
-                  .add("%S\n", sourceWithFragments)
-                  .unindent()
-                  .add(")")
-                  .build()
-          )
-          .build()
-      )
+      .applyIf(generateQueryDocument) {
+        addProperty(PropertySpec.builder("QUERY_DOCUMENT", String::class)
+            .initializer(
+                CodeBlock.builder()
+                    .add("%T.minify(\n", QueryDocumentMinifier::class.java)
+                    .indent()
+                    .add("%S\n", sourceWithFragments)
+                    .unindent()
+                    .add(")")
+                    .build()
+            )
+            .build()
+        )
+      }
       .addProperty(PropertySpec
           .builder("OPERATION_NAME", String::class)
           .addModifiers(KModifier.CONST)

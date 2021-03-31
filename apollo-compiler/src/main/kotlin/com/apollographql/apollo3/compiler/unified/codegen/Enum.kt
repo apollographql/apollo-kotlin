@@ -26,7 +26,7 @@ import com.squareup.kotlinpoet.asClassName
 import com.squareup.kotlinpoet.joinToCode
 
 
-internal fun IrEnum.qualifiedTypeSpecs(
+internal fun IrEnum.apolloFileSpecs(
     layout: CodegenLayout,
     enumAsSealedClassPatternFilters: Set<String>,
 ): List<ApolloFileSpec> {

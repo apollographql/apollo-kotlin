@@ -30,7 +30,7 @@ internal fun IrInputObject.adapterTypeSpec(layout: CodegenLayout): TypeSpec {
   }.inputAdapterTypeSpec(layout, adapterName, layout.inputObjectClassName(name))
 }
 
-internal fun IrInputObject.qualifiedTypeSpecs(layout: CodegenLayout): List<ApolloFileSpec> {
+internal fun IrInputObject.apolloFileSpecs(layout: CodegenLayout): List<ApolloFileSpec> {
   return listOf(
       ApolloFileSpec(packageName = layout.typePackageName(), typeSpec(layout)),
       ApolloFileSpec(packageName = layout.typeAdapterPackageName(), adapterTypeSpec(layout))

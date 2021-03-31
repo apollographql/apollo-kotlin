@@ -132,7 +132,7 @@ class GraphQLCompiler(val logger: Logger = NoOpLogger) {
       args: Arguments,
       roots: Roots,
       schemaPackageName: String,
-      rootPackageName: String
+      rootPackageName: String,
   ): GeneratedTypes {
     val ir = IrBuilder(
         schema = schema,
@@ -161,10 +161,12 @@ class GraphQLCompiler(val logger: Logger = NoOpLogger) {
         useSemanticNaming = args.useSemanticNaming,
         generateScalarMapping = metadata == null,
         generateFilterNotNull = args.generateFilterNotNull,
-        generateFragmentImplementations = args.generateFragmentImplementations,
         generateFragmentsAsInterfaces = args.generateFragmentsAsInterfaces,
+        generateFragmentImplementations = args.generateFragmentImplementations,
+        generateResponseFields = args.generateResponseFields,
+        generateQueryDocument = args.generateQueryDocument,
         schemaPackageName = schemaPackageName,
-        rootPackageName = rootPackageName
+        rootPackageName = rootPackageName,
     ).write(outputDir = args.outputDir)
 
     return GeneratedTypes(
@@ -182,7 +184,7 @@ class GraphQLCompiler(val logger: Logger = NoOpLogger) {
       args: Arguments,
       roots: Roots,
       schemaPackageName: String,
-      rootPackageName: String
+      rootPackageName: String,
   ): GeneratedTypes {
     val packageNameProvider = DefaultPackageNameProvider(
         roots = roots,
@@ -245,7 +247,7 @@ class GraphQLCompiler(val logger: Logger = NoOpLogger) {
         .filter { type -> type is IntrospectionSchema.Type.Scalar && !GQLTypeDefinition.builtInTypes.contains(type.name) }
         .map { type -> type.name }
     val unknownScalars = userScalarTypesMap.keys.subtract(schemaScalars.toSet())
-    check (unknownScalars.isEmpty()) {
+    check(unknownScalars.isEmpty()) {
       "ApolloGraphQL: unknown custom scalar(s): ${unknownScalars.joinToString(",")}"
     }
     val customScalarsMapping = schemaScalars
@@ -390,7 +392,24 @@ class GraphQLCompiler(val logger: Logger = NoOpLogger) {
       val useSemanticNaming: Boolean = true,
       val warnOnDeprecatedUsages: Boolean = true,
       val failOnWarnings: Boolean = false,
+      /**
+       * Whether to generate the [com.apollographql.apollo3.api.Fragment] as well as response and variables adapters.
+       * If generateFragmentsAsInterfaces is true, this will also generate data classes for the fragments.
+       *
+       * Set to true if you need to read/write fragments from the cache or if you need to instantiate fragments
+       */
       val generateFragmentImplementations: Boolean = false,
+      /**
+       * Whether to generate the [com.apollographql.apollo3.api.ResponseField]s. [com.apollographql.apollo3.api.ResponseField]s are
+       * used to read/write from the normalized cache. Disable this option if you don't use the normalized cache to save some bytecode
+       */
+      val generateResponseFields: Boolean = true,
+      /**
+       * Whether to embed the query document in the [com.apollographql.apollo3.api.Operation]s. By default this is true as it is needed
+       * to send the operations to the server.
+       * If performance is critical and you have a way to whitelist/read the document from another place, disable this.
+       */
+      val generateQueryDocument: Boolean = true,
 
       //========== Kotlin codegen options ============
 
@@ -405,6 +424,6 @@ class GraphQLCompiler(val logger: Logger = NoOpLogger) {
 
       // Debug options
       val dumpIR: Boolean = false,
-      val useUnifiedIr: Boolean = false
+      val useUnifiedIr: Boolean = false,
   )
 }

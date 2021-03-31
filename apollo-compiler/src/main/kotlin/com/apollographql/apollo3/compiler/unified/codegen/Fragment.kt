@@ -16,10 +16,11 @@ import com.squareup.kotlinpoet.TypeName
 import com.squareup.kotlinpoet.TypeSpec
 import com.squareup.kotlinpoet.asTypeName
 
-fun IrNamedFragment.qualifiedTypeSpecs(
+fun IrNamedFragment.apolloFileSpecs(
     layout: CodegenLayout,
     generateFilterNotNull: Boolean,
     generateFragmentImplementations: Boolean,
+    generateResponseFields: Boolean,
 ): List<ApolloFileSpec> {
   val list = mutableListOf<ApolloFileSpec>()
 
@@ -36,7 +37,9 @@ fun IrNamedFragment.qualifiedTypeSpecs(
     if (variables.isNotEmpty()) {
       list.add(ApolloFileSpec(layout.fragmentAdapterPackageName(), variablesAdapterTypeSpec(layout)))
     }
-    list.add(ApolloFileSpec(layout.fragmentResponseFieldsPackageName(), responseFieldsTypeSpec(layout)))
+    if (generateResponseFields) {
+      list.add(ApolloFileSpec(layout.fragmentResponseFieldsPackageName(), responseFieldsTypeSpec(layout)))
+    }
   }
 
   return list

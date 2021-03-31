@@ -33,6 +33,8 @@ class KotlinCodeGenerator(
     private val generateFilterNotNull: Boolean,
     private val operationOutput: OperationOutput,
     private val generateFragmentImplementations: Boolean,
+    private val generateResponseFields: Boolean,
+    private val generateQueryDocument: Boolean,
     private val generateFragmentsAsInterfaces: Boolean,
     private val useSemanticNaming: Boolean,
 ) {
@@ -52,19 +54,30 @@ class KotlinCodeGenerator(
     }
 
     val enums = ir.enums.flatMap { enum ->
-      enum.qualifiedTypeSpecs(layout = layout, enumAsSealedClassPatternFilters = enumAsSealedClassPatternFilters)
+      enum.apolloFileSpecs(layout = layout, enumAsSealedClassPatternFilters = enumAsSealedClassPatternFilters)
     }
 
     val inputObjects = ir.inputObjects.flatMap { inputObject ->
-      inputObject.qualifiedTypeSpecs(layout)
+      inputObject.apolloFileSpecs(layout)
     }
 
     val operations = ir.operations.flatMap { operation ->
-      operation.qualifiedTypeSpecs(layout, generateFilterNotNull, operationOutput.findOperationId(operation.name))
+      operation.apolloFileSpecs(
+          layout,
+          generateFilterNotNull,
+          operationOutput.findOperationId(operation.name),
+          generateResponseFields,
+          generateQueryDocument
+      )
     }
 
     val fragments = ir.fragments.flatMap { fragment ->
-      fragment.qualifiedTypeSpecs(layout, generateFilterNotNull, generateFragmentImplementations)
+      fragment.apolloFileSpecs(
+          layout,
+          generateFilterNotNull,
+          generateFragmentImplementations,
+          generateResponseFields
+      )
     }
 
     val qualifiedTypeSpecs = customScalars + enums + inputObjects + operations + fragments
