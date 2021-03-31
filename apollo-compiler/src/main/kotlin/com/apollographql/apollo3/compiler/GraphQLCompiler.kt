@@ -251,10 +251,93 @@ class GraphQLCompiler(val logger: Logger = NoOpLogger) {
     }
   }
 
-  /**
-   * For more details about the fields defined here, check the gradle plugin
-   */
   data class Arguments(
+      //========== Inputs/Outputs ============
+      /**
+       * The files where the graphql queries/mutations/subscriptions/fragments are located
+       */
+      val operationFiles: Set<File>,
+
+      /**
+       * The schema. Use [GraphQLParser] to obtain an instance of a schema.
+       */
+      val schema: Schema,
+
+      /**
+       * The folder where to generate the sources
+       */
+      val outputDir: File,
+
+      //========== multi-module ============
+      val metadataFragments: List<MetadataFragment> = emptyList(),
+      val metadataInputObjects: Set<String> = emptySet(),
+      val metadataEnums: Set<String> = emptySet(),
+      val metadataCustomScalars: Boolean = false,
+      val packageNameProvider: PackageNameProvider,
+      val typePackageName: String,
+
+      /**
+       * Additional enum/input types to generate.
+       * For input types, this will recursively add all input fields types/enums.
+       */
+      val alwaysGenerateTypesMatching: Set<String> = emptySet(),
+
+      //========== operation-output ============
+
+      /**
+       * the file where to write the operationOutput or null if no operationOutput is required
+       */
+      val operationOutputFile: File? = null,
+      /**
+       * the OperationOutputGenerator used to generate operation Ids
+       */
+      val operationOutputGenerator: OperationOutputGenerator = OperationOutputGenerator.Default(OperationIdGenerator.Sha256()),
+
+      //========== codegen options ============
+
+      val customScalarsMapping: Map<String, String> = emptyMap(),
+      val useSemanticNaming: Boolean = true,
+      val warnOnDeprecatedUsages: Boolean = true,
+      val failOnWarnings: Boolean = false,
+      val generateAsInternal: Boolean = false,
+      /**
+       * Kotlin native will generate [Any?] for optional types
+       * Setting generateFilterNotNull will generate extra `filterNotNull` functions that will help keep the type information
+       */
+      val generateFilterNotNull: Boolean = false,
+      val enumAsSealedClassPatternFilters: Set<String> = emptySet(),
+      val generateFragmentsAsInterfaces: Boolean = true,
+
+      //========== on/off flags to switch some codegen off ============
+
+      /**
+       * Whether to generate the [com.apollographql.apollo3.api.Fragment] as well as response and variables adapters.
+       * If generateFragmentsAsInterfaces is true, this will also generate data classes for the fragments.
+       *
+       * Set to true if you need to read/write fragments from the cache or if you need to instantiate fragments
+       */
+      val generateFragmentImplementations: Boolean = false,
+      /**
+       * Whether to generate the [com.apollographql.apollo3.api.ResponseField]s. [com.apollographql.apollo3.api.ResponseField]s are
+       * used to read/write from the normalized cache. Disable this option if you don't use the normalized cache to save some bytecode
+       */
+      val generateResponseFields: Boolean = true,
+      /**
+       * Whether to embed the query document in the [com.apollographql.apollo3.api.Operation]s. By default this is true as it is needed
+       * to send the operations to the server.
+       * If performance is critical and you have a way to whitelist/read the document from another place, disable this.
+       */
+      val generateQueryDocument: Boolean = true,
+
+      //========== debug options ============
+      val dumpIR: Boolean = false,
+      val useUnifiedIr: Boolean = false,
+  )
+
+  /**
+   *
+   */
+  data class MetaDataAwareArguments(
       //========== Inputs/Outputs ============
       /**
        * The files where the graphql queries/mutations/subscriptions/fragments are located

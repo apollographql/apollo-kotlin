@@ -11,6 +11,11 @@ import com.apollographql.apollo3.compiler.operationoutput.OperationOutput
  * If you don't need batch compute, use [OperationOutputGenerator.Default]
  */
 interface OperationOutputGenerator {
+  /**
+   * Generate
+   *
+   * If used in a Gradle context, the [generate] function must be pure else up-to-date checks will fail
+   */
   fun generate(operationDescriptorList: Collection<OperationDescriptor>): OperationOutput
 
   /**
