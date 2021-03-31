@@ -380,7 +380,7 @@ class GraphQLCompiler(val logger: Logger = NoOpLogger) {
       /**
        * the OperationOutputGenerator used to generate operation Ids
        */
-      val operationOutputGenerator: OperationOutputGenerator = OperationOutputGenerator.DefaultOperationOuputGenerator(OperationIdGenerator.Sha256()),
+      val operationOutputGenerator: OperationOutputGenerator = OperationOutputGenerator.Default(OperationIdGenerator.Sha256()),
 
       //========== global codegen options ============
 

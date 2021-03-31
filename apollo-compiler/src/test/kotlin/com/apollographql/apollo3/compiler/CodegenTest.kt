@@ -198,7 +198,7 @@ class CodegenTest(private val folder: File, private val fragmentsCodegenMode: Fr
           ?: File("src/test/graphql/schema.sdl")
 
       val graphqlFiles = setOf(File(folder, "TestOperation.graphql"))
-      val operationOutputGenerator = OperationOutputGenerator.DefaultOperationOuputGenerator(operationIdGenerator)
+      val operationOutputGenerator = OperationOutputGenerator.Default(operationIdGenerator)
 
       return GraphQLCompiler.Arguments(
           rootPackageName = "com.example.${folder.name}",
