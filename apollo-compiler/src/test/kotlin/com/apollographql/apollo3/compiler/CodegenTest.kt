@@ -203,12 +203,11 @@ class CodegenTest(private val folder: File, private val fragmentsCodegenMode: Fr
       return GraphQLCompiler.Arguments(
           rootPackageName = "com.example.${folder.name}",
           rootFolders = listOf(folder),
-          graphqlFiles = graphqlFiles,
+          operationFiles = graphqlFiles,
           schemaFile = schemaFile,
           outputDir = File("build/generated/test/${folder.name}"),
           operationOutputGenerator = operationOutputGenerator,
           customScalarsMapping = customScalarsMapping,
-          generateKotlinModels = true,
           useSemanticNaming = useSemanticNaming,
           generateAsInternal = generateAsInternal,
           generateFilterNotNull = true,

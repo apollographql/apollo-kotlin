@@ -1,7 +1,12 @@
 package com.apollographql.apollo3.gradle.internal
 
+import com.apollographql.apollo3.compiler.ApolloMetadata
+import com.apollographql.apollo3.compiler.ApolloMetadata.Companion.merge
+import com.apollographql.apollo3.compiler.DefaultPackageNameProvider
 import com.apollographql.apollo3.compiler.GraphQLCompiler
 import com.apollographql.apollo3.compiler.OperationOutputGenerator
+import com.apollographql.apollo3.compiler.Roots
+import com.apollographql.apollo3.compiler.frontend.Schema
 import org.gradle.api.DefaultTask
 import org.gradle.api.file.ConfigurableFileCollection
 import org.gradle.api.file.DirectoryProperty
@@ -78,6 +83,10 @@ abstract class ApolloGenerateSourcesTask : DefaultTask() {
   @get:Optional
   abstract val generateKotlinModels: Property<Boolean>
 
+  @get:Input
+  @get:Optional
+  abstract val generateQueryDocument: Property<Boolean>
+
   @get:Internal
   abstract val warnOnDeprecatedUsages: Property<Boolean>
 
@@ -115,32 +124,65 @@ abstract class ApolloGenerateSourcesTask : DefaultTask() {
 
   @TaskAction
   fun taskAction() {
+    val rootPackageName = rootPackageName.getOrElse("")
+
+    val metadata = metadataFiles.files.toList().map { ApolloMetadata.readFrom(it) }.merge()
+
+    val roots = Roots(objectFactory.fileCollection().from(rootFolders).files.toList())
+
+    val schema: Schema
+    val typePackageName: String
+    val customScalarsMap: Map<String, String>
+
+    if (metadata != null) {
+      check(!schemaFile.isPresent) {
+        "Specifying 'schemaFile' has no effect as an upstream module already provided a schema"
+      }
+      schema = metadata.schema!!
+
+      typePackageName = metadata.typePackageName
+
+      check(!customScalarsMapping.isPresent) {
+        "Specifying 'customScalarsMapping' has no effect as an upstream module already provided a customScalarsMapping"
+      }
+      customScalarsMap = metadata.customScalarsMapping
+    } else {
+      schema = Schema.fromFile(schemaFile.asFile.get())
+
+      val schemaPackageName = try {
+        roots.filePackageName(schemaFile.asFile.get().absolutePath)
+      } catch (e: Exception) {
+        ""
+      }
+      typePackageName = "$rootPackageName.$schemaPackageName".removePrefix(".").removeSuffix(".")
+      customScalarsMap = customScalarsMapping.getOrElse(emptyMap())
+    }
+
+    val packageNameProvider = DefaultPackageNameProvider(typePackageName, rootPackageName, roots)
+
     val args = GraphQLCompiler.Arguments(
-        rootFolders = objectFactory.fileCollection().from(rootFolders).files.toList(),
-        graphqlFiles = graphqlFiles.files,
-        schemaFile = schemaFile.asFile.orNull,
+        schema = schema,
+        operationFiles = graphqlFiles.files,
         outputDir = outputDir.asFile.get(),
-
-        metadata = metadataFiles.files.toList(),
-        metadataOutputFile = metadataOutputFile.asFile.get(),
         alwaysGenerateTypesMatching = alwaysGenerateTypesMatching.getOrElse(emptySet()),
-        moduleName = projectName.get(),
-
         operationOutputFile = operationOutputFile.asFile.orNull,
         operationOutputGenerator = operationOutputGenerator,
-
-        rootPackageName = rootPackageName.getOrElse(""),
-
-        customScalarsMapping = customScalarsMapping.getOrElse(emptyMap()),
+        customScalarsMapping = customScalarsMap,
         useSemanticNaming = useSemanticNaming.getOrElse(true),
-        generateKotlinModels = generateKotlinModels.getOrElse(false),
         warnOnDeprecatedUsages = warnOnDeprecatedUsages.getOrElse(true),
         failOnWarnings = failOnWarnings.getOrElse(false),
+        typePackageName = typePackageName,
+        packageNameProvider = packageNameProvider,
+        enumAsSealedClassPatternFilters = sealedClassesForEnumsMatching.getOrElse(emptyList()).toSet(),
         generateAsInternal = generateAsInternal.getOrElse(false),
         generateFilterNotNull = generateFilterNotNull.getOrElse(false),
-        enumAsSealedClassPatternFilters = sealedClassesForEnumsMatching.getOrElse(emptyList()).toSet(),
         generateFragmentImplementations = generateFragmentImplementations.getOrElse(false),
-        generateFragmentsAsInterfaces = generateFragmentsAsInterfaces.getOrElse(true)
+        generateFragmentsAsInterfaces = generateFragmentsAsInterfaces.getOrElse(true),
+        metadataFragments = metadata?.fragments ?: emptyList(),
+        metadataEnums = metadata?.generatedEnums ?: emptySet(),
+        metadataInputObjects = metadata?.generatedInputObjects ?: emptySet(),
+        metadataCustomScalars = metadata != null,
+        generateQueryDocument = generateQueryDocument.getOrElse(true)
     )
 
     val logger = object :GraphQLCompiler.Logger {

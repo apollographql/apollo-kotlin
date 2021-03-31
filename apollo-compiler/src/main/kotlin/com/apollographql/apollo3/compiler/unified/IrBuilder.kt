@@ -44,7 +44,6 @@ class IrBuilder(
     metadataFragmentDefinitions: List<GQLFragmentDefinition>,
     private val alwaysGenerateTypesMatching: Set<String>,
     private val customScalarToKotlinName: Map<String, String>,
-    private val roots: Roots,
 ) {
   private val allGQLFragmentDefinitions = (metadataFragmentDefinitions + fragmentDefinitions).associateBy { it.name }
   private val enumCache = mutableMapOf<String, IrEnum>()
@@ -143,8 +142,6 @@ class IrBuilder(
       allGQLFragmentDefinitions[fragmentName]!!.toUtf8WithIndents()
     }).trimEnd('\n')
 
-    val packageName = roots.filePackageName(sourceLocation.filePath!!)
-
     check(name != null) {
       "Apollo doesn't support anonymous operation."
     }
@@ -162,7 +159,7 @@ class IrBuilder(
         variables = variableDefinitions.map { it.toIr() },
         dataField = dataField,
         sourceWithFragments = sourceWithFragments,
-        packageName = packageName,
+        filePath = sourceLocation.filePath!!,
     )
   }
 

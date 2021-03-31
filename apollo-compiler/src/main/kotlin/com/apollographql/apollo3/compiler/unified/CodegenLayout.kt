@@ -1,5 +1,7 @@
 package com.apollographql.apollo3.compiler.unified
 
+import com.apollographql.apollo3.compiler.MetadataFragment
+import com.apollographql.apollo3.compiler.PackageNameProvider
 import com.apollographql.apollo3.compiler.escapeKotlinReservedWord
 import com.apollographql.apollo3.compiler.unified.codegen.kotlinTypeName
 import com.squareup.kotlinpoet.ClassName
@@ -14,7 +16,7 @@ import com.squareup.kotlinpoet.asTypeName
  *
  * Inputs should always be GraphQL identifiers and outputs are valid Kotlin identifiers.
  *
- * The layout is like:
+ * By default, the layout is like:
  *
  * - com.example.TestQuery <- the query
  * - com.example.TestQuery.Data <- the data for the query
@@ -38,8 +40,9 @@ import com.squareup.kotlinpoet.asTypeName
 class CodegenLayout(
     private val operations: List<IrOperation>,
     private val fragments: List<IrNamedFragment>,
-    private val schemaPackageName: String,
-    private val rootPackageName: String,
+    private val metadataFragments: List<MetadataFragment>,
+    private val packageNameProvider: PackageNameProvider,
+    private val typePackageName: String,
     private val useSemanticNaming: Boolean
 ) {
   // ------------------------ ClassNames ---------------------------------
@@ -50,7 +53,6 @@ class CodegenLayout(
         customScalarsName()
     )
   }
-
 
   fun enumClassName(name: String): ClassName {
     return ClassName(
@@ -82,13 +84,13 @@ class CodegenLayout(
 
   fun operationClassName(operation: IrOperation): ClassName {
     return ClassName(
-        packageName = operationPackageName(operation.packageName),
+        packageName = operationPackageName(operation.filePath),
         operationName(operation)
     )
   }
   fun operationResponseFieldsClassName(operation: IrOperation): ClassName {
     return ClassName(
-        packageName = operationResponseFieldsPackageName(operation.packageName),
+        packageName = operationResponseFieldsPackageName(operation.filePath),
         operationResponseFieldsName(operation)
     )
   }
@@ -99,21 +101,21 @@ class CodegenLayout(
 
   fun operationVariablesAdapterClassName(operation: IrOperation): ClassName {
     return ClassName(
-        packageName = operationAdapterPackageName(operation.packageName),
+        packageName = operationAdapterPackageName(operation.filePath),
         operationVariablesAdapterName(operation)
     )
   }
 
   fun fragmentResponseFieldsClassName(name: String): ClassName {
     return ClassName(
-        packageName = fragmentResponseFieldsPackageName(),
+        packageName = fragmentResponseFieldsPackageName(name),
         fragmentResponseFieldsName(name)
     )
   }
 
   fun fragmentImplementationClassName(name: String): ClassName {
     return ClassName(
-        packageName = fragmentPackageName(),
+        packageName = fragmentPackageName(name),
         fragmentName(name)
     )
   }
@@ -156,13 +158,13 @@ class CodegenLayout(
       val (packageName, prefix) = when (root) {
         is ModelPath.Root.Operation -> {
           val operation = operations.firstOrNull { it.name == root.name } ?: error("Cannot find operation ${root.name}")
-          operationPackageName(operation.packageName) to listOf(operationName(operation))
+          operationPackageName(operation.filePath) to listOf(operationName(operation))
         }
         is ModelPath.Root.FragmentInterface -> {
-          fragmentPackageName() to emptyList()
+          fragmentPackageName(root.name) to emptyList()
         }
         is ModelPath.Root.FragmentImplementation -> {
-          fragmentPackageName() to listOf(fragmentName(root.name))
+          fragmentPackageName(root.name) to listOf(fragmentName(root.name))
         }
       }
 
@@ -178,11 +180,11 @@ class CodegenLayout(
       val (packageName, prefix) = when (root) {
         is ModelPath.Root.Operation -> {
           val operation = operations.firstOrNull { it.name == root.name } ?: error("Cannot find operation ${root.name}")
-          operationAdapterPackageName(operation.packageName) to listOf(operationResponseAdapterWrapperName(operation))
+          operationAdapterPackageName(operation.filePath) to listOf(operationResponseAdapterWrapperName(operation))
         }
         is ModelPath.Root.FragmentInterface -> error("Fragment interfaces cannot have an adapter")
         is ModelPath.Root.FragmentImplementation -> {
-          fragmentAdapterPackageName() to listOf(fragmentResponseAdapterWrapperName(root.name))
+          fragmentAdapterPackageName(root.name) to listOf(fragmentResponseAdapterWrapperName(root.name))
         }
       }
 
@@ -206,18 +208,26 @@ class CodegenLayout(
 
   // ------------------------ PackageNames ---------------------------------
 
-  fun typePackageName() = "$schemaPackageName.type".withRootPackageName()
-  fun typeAdapterPackageName() = "$schemaPackageName.type.adapter".withRootPackageName()
+  fun typePackageName() = typePackageName
+  fun typeAdapterPackageName() = "$typePackageName.adapter".stripDots()
 
-  fun operationPackageName(packageName: String) = packageName.withRootPackageName()
-  fun operationAdapterPackageName(packageName: String) = "$packageName.adapter".withRootPackageName()
-  fun operationResponseFieldsPackageName(packageName: String) = "$packageName.responsefields".withRootPackageName()
+  fun operationPackageName(filePath: String) = packageNameProvider.operationPackageName(filePath)
+  fun operationAdapterPackageName(filePath: String) = "${packageNameProvider.operationPackageName(filePath)}.adapter".stripDots()
+  fun operationResponseFieldsPackageName(filePath: String) = "${packageNameProvider.operationPackageName(filePath)}.responsefields".stripDots()
 
-  fun fragmentPackageName() = "$schemaPackageName.fragment".withRootPackageName()
-  fun fragmentAdapterPackageName() = "$schemaPackageName.fragment.adapter".withRootPackageName()
-  fun fragmentResponseFieldsPackageName() = "$schemaPackageName.fragment.responsefields".withRootPackageName()
+  fun fragmentPackageName(name: String): String {
+    val metadataFragment = metadataFragments.firstOrNull { it.name == name }
+    if (metadataFragment != null) {
+      return metadataFragment.packageName
+    } else {
+      val filePath = fragments.firstOrNull { it.name == name }?.filePath ?: error("Cannot find fragment $name")
+      return packageNameProvider.fragmentPackageName(filePath)
+    }
+  }
+  fun fragmentAdapterPackageName(name: String) = "${fragmentPackageName(name)}.adapter".stripDots()
+  fun fragmentResponseFieldsPackageName(name: String) =  "${fragmentPackageName(name)}.responsefields".stripDots()
 
-  private fun String.withRootPackageName() = "$rootPackageName.$this".removePrefix(".")
+  private fun String.stripDots() = this.removePrefix(".").removeSuffix(".")
 
   // ------------------------ Names ---------------------------------
 

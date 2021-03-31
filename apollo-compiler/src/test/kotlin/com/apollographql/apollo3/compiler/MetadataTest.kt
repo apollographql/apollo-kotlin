@@ -31,11 +31,10 @@ class MetadataTest {
 
     val rootArgs = GraphQLCompiler.Arguments(
         rootFolders = emptyList(),
-        graphqlFiles = emptySet(),
+        operationFiles = emptySet(),
         schemaFile = rootSchemaFile,
         alwaysGenerateTypesMatching = alwaysGenerateTypesMatching,
         outputDir = rootSourcesDir,
-        generateKotlinModels = true,
         metadataOutputFile = rootMetadataFile
     )
     GraphQLCompiler().write(rootArgs)
@@ -46,11 +45,10 @@ class MetadataTest {
     File(leafGraphqlDir, "queries.graphql").writeText(SchemaGenerator.generateMutation())
     val leafArgs = GraphQLCompiler.Arguments(
         rootFolders = leafFolders,
-        graphqlFiles = leafFolders.graphqlFiles(),
+        operationFiles = leafFolders.graphqlFiles(),
         schemaFile = null,
         metadata = listOf(rootMetadataFile),
         outputDir = leafSourcesDir,
-        generateKotlinModels = true,
         metadataOutputFile = leafMetadataFile,
     )
     GraphQLCompiler().write(leafArgs)
@@ -115,22 +113,20 @@ class MetadataTest {
     val folder = File("src/test/metadata/$dirName/")
     val rootArgs = GraphQLCompiler.Arguments(
         rootFolders = listOf(folder),
-        graphqlFiles = setOf(File(folder, "root.graphql")),
+        operationFiles = setOf(File(folder, "root.graphql")),
         schemaFile = File("src/test/metadata/schema.sdl"),
         alwaysGenerateTypesMatching = emptySet(),
         outputDir = rootSourcesDir,
-        generateKotlinModels = true,
         metadataOutputFile = rootMetadataFile,
     )
     GraphQLCompiler().write(rootArgs)
 
     val leafArgs = GraphQLCompiler.Arguments(
         rootFolders = listOf(folder),
-        graphqlFiles = setOf(File(folder, "leaf.graphql")),
+        operationFiles = setOf(File(folder, "leaf.graphql")),
         schemaFile = null,
         metadata = listOf(rootMetadataFile),
         outputDir = leafSourcesDir,
-        generateKotlinModels = true,
         metadataOutputFile = leafMetadataFile,
     )
     GraphQLCompiler().write(leafArgs)

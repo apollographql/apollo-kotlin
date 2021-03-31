@@ -26,7 +26,9 @@ internal class TypesToGenerate(
 internal fun computeTypesToGenerate(
     documents: List<GQLDocument>,
     schema: Schema,
-    incomingMetadata: ApolloMetadata?,
+    metadataEnums: Set<String>,
+    metadataInputObjects: Set<String>,
+    metadataCustomScalars: Boolean,
     alwaysGenerateTypesMatching: Set<String>
 ): TypesToGenerate {
   val regexes = alwaysGenerateTypesMatching.map { Regex(it) }
@@ -37,7 +39,7 @@ internal fun computeTypesToGenerate(
   }.map { it.name }
       .toSet()
 
-  val incomingTypes = incomingMetadata?.generatedEnums?.plus(incomingMetadata.generatedInputObjects) ?: emptySet()
+  val incomingTypes = metadataEnums.plus(metadataInputObjects)
 
   val usedTypes = ((documents.flatMap { it.definitions }.usedTypeNames(schema)) + extraTypes).map {
     schema.typeDefinitions[it]!!
@@ -62,7 +64,7 @@ internal fun computeTypesToGenerate(
   return TypesToGenerate(
       enumsToGenerate = enumsToGenerate.toSet(),
       inputObjectsToGenerate = inputObjectsToGenerate.toSet(),
-      generateScalarMapping = incomingMetadata == null,
+      generateScalarMapping = !metadataCustomScalars,
   )
 }
 
