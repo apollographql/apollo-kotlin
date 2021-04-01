@@ -26,19 +26,19 @@ fun IrNamedFragment.apolloFileSpecs(
 
   list.add(
       ApolloFileSpec(
-          packageName = layout.fragmentPackageName(),
+          packageName = layout.fragmentPackageName(name),
           interfaceTypeSpecs(layout),
           layout.fragmentInterfaceFileName(name)
       )
   )
   if (generateFragmentImplementations) {
-    list.add(ApolloFileSpec(layout.fragmentPackageName(), implementationTypeSpec(layout, generateFilterNotNull)))
-    list.add(ApolloFileSpec(layout.fragmentAdapterPackageName(), responseAdapterTypeSpec(layout)))
+    list.add(ApolloFileSpec(layout.fragmentPackageName(name), implementationTypeSpec(layout, generateFilterNotNull)))
+    list.add(ApolloFileSpec(layout.fragmentAdapterPackageName(name), responseAdapterTypeSpec(layout)))
     if (variables.isNotEmpty()) {
-      list.add(ApolloFileSpec(layout.fragmentAdapterPackageName(), variablesAdapterTypeSpec(layout)))
+      list.add(ApolloFileSpec(layout.fragmentAdapterPackageName(name), variablesAdapterTypeSpec(layout)))
     }
     if (generateResponseFields) {
-      list.add(ApolloFileSpec(layout.fragmentResponseFieldsPackageName(), responseFieldsTypeSpec(layout)))
+      list.add(ApolloFileSpec(layout.fragmentResponseFieldsPackageName(name), responseFieldsTypeSpec(layout)))
     }
   }
 
@@ -87,7 +87,7 @@ private fun IrNamedFragment.responseFieldsTypeSpec(layout:CodegenLayout): TypeSp
 }
 
 private fun IrNamedFragment.serializeVariablesFunSpec(layout: CodegenLayout): FunSpec = serializeVariablesFunSpec(
-    adapterPackageName = layout.fragmentAdapterPackageName(),
+    adapterPackageName = layout.fragmentAdapterPackageName(name),
     adapterName = layout.fragmentVariablesAdapterName(name),
     isEmpty = variables.isEmpty(),
     emptyMessage = "// This fragment doesn't have variables",

@@ -12,7 +12,6 @@ import java.io.File
 
 class MetadataTest {
   private val buildDir = File("build/metadata-test/")
-  private val rootGraphqlDir = File(buildDir, "root/graphql")
   private val rootSchemaFile = File(buildDir, "root/graphql/schema.sdl")
   private val rootSourcesDir = File(buildDir, "root/sources")
   private val rootMetadataFile = File(buildDir, "root/metadata/metadata.json")
@@ -26,7 +25,7 @@ class MetadataTest {
     buildDir.mkdirs()
   }
 
-  private fun callCompiler(
+  private fun compile(
       operationFiles: Set<File>,
       outputDir: File,
       rootFolders: List<File>,
@@ -35,8 +34,8 @@ class MetadataTest {
       alwaysGenerateTypesMatching: Set<String> = emptySet(),
       metadataOutputFile: File,
   ) {
-    val rootOptions = if (schemaFile != null) {
-      RootOptions.from(
+    val incomingOptions = if (schemaFile != null) {
+      GraphQLCompiler.IncomingOptions.from(
           roots = Roots(rootFolders),
           schemaFile = schemaFile,
           customScalarsMapping = defaultCustomScalarsMapping,
@@ -46,17 +45,21 @@ class MetadataTest {
     } else {
       val metadata = metadataFiles.map { ApolloMetadata.readFrom(it) }.merge()
       check(metadata != null)
-      RootOptions.fromMetadata(metadata = metadata)
+      GraphQLCompiler.IncomingOptions.fromMetadata(metadata = metadata)
     }
 
-    val arguments = GraphQLCompiler.DefaultArguments(
-        operationFiles = operationFiles,
-        schema = rootOptions.schema,
-        outputDir = outputDir
-    ).copy(
-        alwaysGenerateTypesMatching=  alwaysGenerateTypesMatching,
+    val moduleOptions = GraphQLCompiler.DefaultModuleOptions.copy(
+        alwaysGenerateTypesMatching = alwaysGenerateTypesMatching,
+        metadataOutputFile = metadataOutputFile
     )
-    GraphQLCompiler().write(arguments)
+
+    GraphQLCompiler().write(
+        operationFiles = operationFiles,
+        outputDir = outputDir,
+        incomingOptions = incomingOptions,
+        moduleOptions = moduleOptions,
+        useUnifiedIr = GraphQLCompiler.defaultUseUnifiedIr
+    )
   }
 
   private fun alwaysGenerateTypesMatchingTest(alwaysGenerateTypesMatching: Set<String>) {
@@ -65,7 +68,7 @@ class MetadataTest {
     rootSchemaFile.parentFile.mkdirs()
     rootSchemaFile.writeText(schema)
 
-    callCompiler(
+    compile(
         rootFolders = emptyList(),
         operationFiles = emptySet(),
         schemaFile = rootSchemaFile,
@@ -78,7 +81,7 @@ class MetadataTest {
     val leafFolders = listOf(leafGraphqlDir)
     leafGraphqlDir.mkdirs()
     File(leafGraphqlDir, "queries.graphql").writeText(SchemaGenerator.generateMutation())
-    callCompiler(
+    compile(
         rootFolders = leafFolders,
         operationFiles = leafFolders.graphqlFiles(),
         schemaFile = null,
@@ -145,7 +148,7 @@ class MetadataTest {
 
   private fun fragmentTest(dirName: String) {
     val folder = File("src/test/metadata/$dirName/")
-    callCompiler(
+    compile(
         rootFolders = listOf(folder),
         operationFiles = setOf(File(folder, "root.graphql")),
         schemaFile = File("src/test/metadata/schema.sdl"),
@@ -154,7 +157,7 @@ class MetadataTest {
         metadataOutputFile = rootMetadataFile,
     )
 
-    callCompiler(
+    compile(
         rootFolders = listOf(folder),
         operationFiles = setOf(File(folder, "leaf.graphql")),
         schemaFile = null,

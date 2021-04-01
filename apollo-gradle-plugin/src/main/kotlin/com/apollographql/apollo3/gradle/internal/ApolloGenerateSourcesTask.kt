@@ -12,15 +12,10 @@ import com.apollographql.apollo3.compiler.GraphQLCompiler.Companion.defaultGener
 import com.apollographql.apollo3.compiler.GraphQLCompiler.Companion.defaultGenerateFragmentImplementations
 import com.apollographql.apollo3.compiler.GraphQLCompiler.Companion.defaultGenerateQueryDocument
 import com.apollographql.apollo3.compiler.GraphQLCompiler.Companion.defaultGenerateResponseFields
-import com.apollographql.apollo3.compiler.GraphQLCompiler.Companion.defaultOperationOutputFile
 import com.apollographql.apollo3.compiler.GraphQLCompiler.Companion.defaultUseSemanticNaming
 import com.apollographql.apollo3.compiler.GraphQLCompiler.Companion.defaultWarnOnDeprecatedUsages
 import com.apollographql.apollo3.compiler.OperationOutputGenerator
-import com.apollographql.apollo3.compiler.RootOptions
 import com.apollographql.apollo3.compiler.Roots
-import com.apollographql.apollo3.compiler.VERSION
-import com.apollographql.apollo3.compiler.frontend.Schema
-import com.apollographql.apollo3.compiler.writeWithMetadata
 import org.gradle.api.DefaultTask
 import org.gradle.api.file.ConfigurableFileCollection
 import org.gradle.api.file.DirectoryProperty
@@ -41,7 +36,6 @@ import org.gradle.api.tasks.OutputFile
 import org.gradle.api.tasks.PathSensitive
 import org.gradle.api.tasks.PathSensitivity
 import org.gradle.api.tasks.TaskAction
-import java.io.File
 import javax.inject.Inject
 
 @CacheableTask
@@ -149,7 +143,7 @@ abstract class ApolloGenerateSourcesTask : DefaultTask() {
 
     val roots = Roots(objectFactory.fileCollection().from(rootFolders).files.toList())
 
-    val rootOptions = if (metadata != null) {
+    val incomingOptions = if (metadata != null) {
       check(!schemaFile.isPresent) {
         "Specifying 'schemaFile' has no effect as an upstream module already provided a schema"
       }
@@ -159,9 +153,9 @@ abstract class ApolloGenerateSourcesTask : DefaultTask() {
       check(!generateFragmentsAsInterfaces.isPresent) {
         "Specifying 'generateFragmentsAsInterfaces' has no effect as an upstream module already provided a generateFragmentsAsInterfaces"
       }
-      RootOptions.fromMetadata(metadata)
+      GraphQLCompiler.IncomingOptions.fromMetadata(metadata)
     } else {
-      RootOptions.from(
+      GraphQLCompiler.IncomingOptions.from(
           roots = roots,
           schemaFile = schemaFile.asFile.orNull ?: error("no schemaFile found"),
           customScalarsMapping = customScalarsMapping.getOrElse(emptyMap()),
@@ -171,7 +165,7 @@ abstract class ApolloGenerateSourcesTask : DefaultTask() {
     }
 
     val packageNameProvider = DefaultPackageNameProvider(
-        rootOptions.schemaPackageName,
+        incomingOptions.schemaPackageName,
         rootPackageName,
         roots
     )
@@ -182,10 +176,7 @@ abstract class ApolloGenerateSourcesTask : DefaultTask() {
       }
     }
 
-    GraphQLCompiler.writeWithMetadata(
-        rootOptions = rootOptions,
-        operationFiles = graphqlFiles.files,
-        outputDir = outputDir.asFile.get(),
+    val moduleOptions = GraphQLCompiler.ModuleOptions(
         alwaysGenerateTypesMatching = alwaysGenerateTypesMatching.getOrElse(defaultAlwaysGenerateTypesMatching),
         operationOutputFile = operationOutputFile.asFile.orNull,
         operationOutputGenerator = operationOutputGenerator,
@@ -199,10 +190,17 @@ abstract class ApolloGenerateSourcesTask : DefaultTask() {
         generateFragmentImplementations = generateFragmentImplementations.getOrElse(defaultGenerateFragmentImplementations),
         generateQueryDocument = generateQueryDocument.getOrElse(defaultGenerateQueryDocument),
         generateResponseFields = generateResponseFields.getOrElse(defaultGenerateResponseFields),
-        useUnifiedIr = false,
         logger = logger,
         metadataOutputFile = metadataOutputFile.asFile.orNull,
         moduleName = projectName.get()
+    )
+
+    GraphQLCompiler().write(
+        operationFiles = graphqlFiles.files,
+        outputDir = outputDir.asFile.get(),
+        useUnifiedIr = false,
+        incomingOptions = incomingOptions,
+        moduleOptions = moduleOptions,
     )
   }
 }
