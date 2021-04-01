@@ -1,6 +1,5 @@
 package com.apollographql.apollo3.compiler
 
-import com.apollographql.apollo3.compiler.frontend.GQLDocument
 import com.apollographql.apollo3.compiler.frontend.GQLFragmentDefinition
 import com.apollographql.apollo3.compiler.frontend.GraphQLParser
 import com.apollographql.apollo3.compiler.frontend.Schema
@@ -31,19 +30,20 @@ data class ApolloMetadata(
     /**
      * The fragments
      */
-    val fragments: List<MetadataFragment>,
+    val generatedFragments: List<MetadataFragment>,
     /**
      * The generated input objects, enums
      */
     val generatedEnums: Set<String>,
     val generatedInputObjects: Set<String>,
-    val typePackageName: String,
+    val schemaPackageName: String,
     /**
      * The module name, for debug
      */
     val moduleName: String,
     val pluginVersion: String,
     val customScalarsMapping: Map<String, String>,
+    val generateFragmentsAsInterfaces: Boolean
 ) {
   companion object {
 
@@ -91,7 +91,7 @@ data class ApolloMetadata(
       val rootMetadata = rootMetadataList.first()
 
       // ensure the same schemaPackageName
-      map { it.typePackageName }.filterNotNull().distinct().let {
+      map { it.schemaPackageName }.filterNotNull().distinct().let {
         check(it.size == 1) {
           "Apollo: All modules should have the same schemaPackageName. Found:" + it.joinToString(", ")
         }
@@ -106,7 +106,7 @@ data class ApolloMetadata(
 
       // no need to validate distinct fragment names, this will be done later when aggregating the Fragments
       return rootMetadata.copy(
-          fragments = flatMap { it.fragments },
+          generatedFragments = flatMap { it.generatedFragments },
           moduleName = "*",
           generatedEnums = flatMap { it.generatedEnums }.toSet(),
           generatedInputObjects = flatMap { it.generatedInputObjects }.toSet(),

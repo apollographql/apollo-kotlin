@@ -23,20 +23,20 @@ interface OperationIdGenerator {
    */
   val version: String
 
-  class Sha256 : OperationIdGenerator {
+  object Sha256 : OperationIdGenerator {
     override fun apply(operationDocument: String, operationName: String): String {
       return operationDocument.sha256()
     }
 
     override val version = "sha256-1.0"
+  }
 
-    companion object {
-      private fun String.sha256(): String {
-        val bytes = toByteArray(charset = StandardCharsets.UTF_8)
-        val md = MessageDigest.getInstance("SHA-256")
-        val digest = md.digest(bytes)
-        return digest.fold("") { str, it -> str + "%02x".format(it) }
-      }
+  companion object {
+    private fun String.sha256(): String {
+      val bytes = toByteArray(charset = StandardCharsets.UTF_8)
+      val md = MessageDigest.getInstance("SHA-256")
+      val digest = md.digest(bytes)
+      return digest.fold("") { str, it -> str + "%02x".format(it) }
     }
   }
 }
