@@ -12,7 +12,6 @@ class DefaultPackageNameProvider constructor(
 
   override fun operationPackageName(filePath: String) = filePackageName(filePath).withRootPackageName()
   override fun fragmentPackageName(filePath: String) = "$schemaPackageName.fragment"
-  override fun typePackageName() = "$schemaPackageName.type"
 
   private fun String.withRootPackageName() = "$rootPackageName.$this".removePrefix(".")
   private fun filePackageName(filePath: String) = roots.filePackageName(filePath).removeSuffix(".")

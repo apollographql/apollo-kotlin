@@ -231,7 +231,6 @@ class CodegenTest(private val folder: File, private val fragmentsCodegenMode: Fr
           generateAsInternal = generateAsInternal,
           generateFilterNotNull = true,
           enumAsSealedClassPatternFilters = enumAsSealedClassPatternFilters,
-          metadataOutputFile = File("build/generated/test/${folder.name}/metadata"),
           generateFragmentImplementations = generateFragmentImplementations,
           moduleName = folder.name
       )

@@ -165,6 +165,7 @@ class GraphQLCompiler {
         operationOutput = operationOutput,
         useSemanticNaming = moduleOptions.useSemanticNaming,
         packageNameProvider = moduleOptions.packageNameProvider,
+        typePackageName = "${incomingOptions.schemaPackageName}.type",
         generateCustomScalars = incomingOptions.metadataCustomScalars,
         generateFilterNotNull = moduleOptions.generateFilterNotNull,
         generateFragmentsAsInterfaces = incomingOptions.generateFragmentsAsInterfaces,

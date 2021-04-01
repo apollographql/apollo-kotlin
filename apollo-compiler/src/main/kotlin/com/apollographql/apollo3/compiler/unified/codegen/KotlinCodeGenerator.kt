@@ -30,6 +30,7 @@ class KotlinCodeGenerator(
     private val enumAsSealedClassPatternFilters: Set<String>,
     private val useSemanticNaming: Boolean,
     private val packageNameProvider: PackageNameProvider,
+    private val typePackageName: String,
     private val operationOutput: OperationOutput,
     private val generateCustomScalars: Boolean,
     private val generateFilterNotNull: Boolean,
@@ -45,6 +46,7 @@ class KotlinCodeGenerator(
         metadataFragments = ir.metadataFragments,
         useSemanticNaming = useSemanticNaming,
         packageNameProvider = packageNameProvider,
+        typePackageName = typePackageName
     )
 
     val customScalars = if (generateCustomScalars) {
