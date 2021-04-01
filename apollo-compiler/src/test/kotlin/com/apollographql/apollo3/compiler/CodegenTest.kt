@@ -217,7 +217,6 @@ class CodegenTest(private val folder: File, private val fragmentsCodegenMode: Fr
           dumpIR = false,
           generateFragmentImplementations = generateFragmentImplementations,
           generateFragmentsAsInterfaces = fragmentAsInterfaces,
-          useUnifiedIr = false
       )
     }
 
