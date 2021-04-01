@@ -116,7 +116,11 @@ data class ApolloMetadata(
     fun readFrom(file: File) = adapter.fromJson(file.source().buffer()) ?: error("bad metadata at ${file.absolutePath}")
   }
 
-  fun writeTo(file: File) = adapter.toJson(file.sink().buffer(), this)
+  fun writeTo(file: File) {
+    file.sink().buffer().use {
+      adapter.toJson(it, this)
+    }
+  }
 }
 
 @JsonClass(generateAdapter = true)

@@ -39,7 +39,7 @@ class MetadataTest {
           roots = Roots(rootFolders),
           schemaFile = schemaFile,
           customScalarsMapping = defaultCustomScalarsMapping,
-          generateFragmentsAsInterfaces = defaultGenerateFragmentsAsInterfaces,
+          generateFragmentsAsInterfaces = true, 
           rootPackageName = ""
       )
     } else {

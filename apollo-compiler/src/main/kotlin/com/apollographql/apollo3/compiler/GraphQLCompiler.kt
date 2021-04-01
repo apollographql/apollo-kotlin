@@ -113,6 +113,7 @@ class GraphQLCompiler {
     )
 
     if (moduleOptions.metadataOutputFile != null) {
+      moduleOptions.metadataOutputFile.parentFile.mkdirs()
       check(!moduleOptions.generateAsInternal) {
         "Specifying 'generateAsInternal=true' does not make sense in a multi-module setup"
       }
