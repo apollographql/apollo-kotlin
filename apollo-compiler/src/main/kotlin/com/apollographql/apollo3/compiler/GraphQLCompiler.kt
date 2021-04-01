@@ -102,7 +102,7 @@ class GraphQLCompiler {
     val result = Result(
         generatedEnums = generatedTypes.enums,
         generatedInputObjects = generatedTypes.inputObjects,
-        generatedCustomScalars = incomingOptions.metadataCustomScalars,
+        generatedCustomScalars = incomingOptions.isFromMetadata,
         generatedFragments = fragments.map {
           MetadataFragment(
               name = it.name,
@@ -114,11 +114,18 @@ class GraphQLCompiler {
 
     if (moduleOptions.metadataOutputFile != null) {
       moduleOptions.metadataOutputFile.parentFile.mkdirs()
-      check(!moduleOptions.generateAsInternal) {
-        "Specifying 'generateAsInternal=true' does not make sense in a multi-module setup"
+      // Disable this check for now as we generate the metadata always as it is part of the "assemble" target
+//      check(!moduleOptions.generateAsInternal) {
+//        "Specifying 'generateAsInternal=true' does not make sense in a multi-module setup"
+//      }
+      val schema = if (incomingOptions.isFromMetadata) {
+        // There is already a schema defined in this tree
+        null
+      } else {
+        incomingOptions.schema
       }
       ApolloMetadata(
-          schema = incomingOptions.schema,
+          schema = schema,
           customScalarsMapping = incomingOptions.customScalarsMapping,
           generatedFragments = result.generatedFragments,
           generatedEnums = result.generatedEnums,
@@ -167,7 +174,7 @@ class GraphQLCompiler {
         useSemanticNaming = moduleOptions.useSemanticNaming,
         packageNameProvider = moduleOptions.packageNameProvider,
         typePackageName = "${incomingOptions.schemaPackageName}.type",
-        generateCustomScalars = incomingOptions.metadataCustomScalars,
+        generateCustomScalars = incomingOptions.isFromMetadata,
         generateFilterNotNull = moduleOptions.generateFilterNotNull,
         generateFragmentsAsInterfaces = incomingOptions.generateFragmentsAsInterfaces,
         generateFragmentImplementations = moduleOptions.generateFragmentImplementations,
@@ -196,7 +203,7 @@ class GraphQLCompiler {
         schema = schema,
         metadataEnums = incomingOptions.metadataEnums,
         metadataInputObjects = incomingOptions.metadataInputObjects,
-        metadataCustomScalars = incomingOptions.metadataCustomScalars,
+        metadataCustomScalars = incomingOptions.isFromMetadata,
         alwaysGenerateTypesMatching = moduleOptions.alwaysGenerateTypesMatching
     )
 
@@ -286,7 +293,7 @@ class GraphQLCompiler {
       val generateFragmentsAsInterfaces: Boolean,
       val metadataInputObjects: Set<String>,
       val metadataEnums: Set<String>,
-      val metadataCustomScalars: Boolean,
+      val isFromMetadata: Boolean,
       val metadataFragments: List<MetadataFragment>,
   ) {
     companion object {
@@ -298,7 +305,7 @@ class GraphQLCompiler {
             generateFragmentsAsInterfaces = metadata.generateFragmentsAsInterfaces,
             metadataInputObjects = metadata.generatedInputObjects,
             metadataEnums = metadata.generatedEnums,
-            metadataCustomScalars = true,
+            isFromMetadata = true,
             metadataFragments = metadata.generatedFragments,
         )
       }
@@ -322,7 +329,7 @@ class GraphQLCompiler {
             generateFragmentsAsInterfaces = generateFragmentsAsInterfaces,
             metadataInputObjects = emptySet(),
             metadataEnums = emptySet(),
-            metadataCustomScalars = false,
+            isFromMetadata = false,
             metadataFragments = emptyList(),
         )
       }

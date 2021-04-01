@@ -69,7 +69,7 @@ data class ApolloMetadata(
       }
 
       Moshi.Builder()
-          .add(Schema::class.java, schemaJsonAdapter.nonNull())
+          .add(Schema::class.java, schemaJsonAdapter.nullSafe())
           .add(GQLFragmentDefinition::class.java, gqlFragmentJsonAdapter.nonNull())
           .build()
           .adapter(ApolloMetadata::class.java)
