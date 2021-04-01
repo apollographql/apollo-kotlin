@@ -232,7 +232,8 @@ class CodegenTest(private val folder: File, private val fragmentsCodegenMode: Fr
           generateFilterNotNull = true,
           enumAsSealedClassPatternFilters = enumAsSealedClassPatternFilters,
           generateFragmentImplementations = generateFragmentImplementations,
-          moduleName = folder.name
+          moduleName = folder.name,
+          packageNameProvider = PackageNameProvider.Flat("com.example.${folder.name}")
       )
 
       return Options(
