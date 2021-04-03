@@ -1,22 +1,12 @@
 package com.apollographql.apollo3.compiler.unified
 
 import com.apollographql.apollo3.compiler.backend.codegen.capitalizeFirstLetter
-import com.apollographql.apollo3.compiler.frontend.GQLArgument
 import com.apollographql.apollo3.compiler.frontend.GQLField
-import com.apollographql.apollo3.compiler.frontend.GQLFieldDefinition
 import com.apollographql.apollo3.compiler.frontend.GQLFragmentDefinition
 import com.apollographql.apollo3.compiler.frontend.GQLFragmentSpread
 import com.apollographql.apollo3.compiler.frontend.GQLInlineFragment
-import com.apollographql.apollo3.compiler.frontend.GQLNamedType
 import com.apollographql.apollo3.compiler.frontend.GQLSelection
-import com.apollographql.apollo3.compiler.frontend.GQLType
 import com.apollographql.apollo3.compiler.frontend.Schema
-import com.apollographql.apollo3.compiler.frontend.SourceLocation
-import com.apollographql.apollo3.compiler.frontend.coerce
-import com.apollographql.apollo3.compiler.frontend.definitionFromScope
-import com.apollographql.apollo3.compiler.frontend.findDeprecationReason
-import com.apollographql.apollo3.compiler.frontend.leafType
-import com.apollographql.apollo3.compiler.frontend.pretty
 
 /**
  * For a list of selections collect all the typeConditions.
@@ -24,33 +14,33 @@ import com.apollographql.apollo3.compiler.frontend.pretty
  *
  * While doing so, record all the used fragments and used types
  *
- * @param registerType a factory for IrType. This is used to track what types are used to only generate those
+ * @param fieldCollector a [FieldCollector] that handles the heavy lifting of collecting fields, remember their types, etc...
  */
-class IrFieldSetBuilder(
+class AsInterfacesFieldSetBuilder(
     private val schema: Schema,
     private val allGQLFragmentDefinitions: Map<String, GQLFragmentDefinition>,
-    private val registerType: (GQLType) -> IrType,
+    private val fieldCollector: FieldCollector,
 ) {
   private var cachedFragmentsFields = mutableMapOf<String, IrField>()
 
   fun buildOperationField(
-      selections: List<GQLSelection>,
-      fieldType: String,
       name: String,
+      selections: List<GQLSelection>,
+      type: IrCompoundType,
   ): IrField {
     val path = ModelPath(root = ModelPath.Root.Operation(name))
 
     return buildRootField(
         name = "data",
         selections = selections,
-        fieldType = fieldType,
+        type = type,
         path = path
     )
   }
 
   private fun getOrBuildFragmentField(
       selections: List<GQLSelection>,
-      fieldType: String,
+      type: IrCompoundType,
       name: String,
   ): IrField {
     val path = ModelPath(root = ModelPath.Root.FragmentInterface(name))
@@ -59,7 +49,7 @@ class IrFieldSetBuilder(
       buildRootField(
           name = name,
           selections = selections,
-          fieldType = fieldType,
+          type = type,
           path = path
       )
     }
@@ -69,16 +59,16 @@ class IrFieldSetBuilder(
 
   fun buildFragmentFields(
       selections: List<GQLSelection>,
-      fieldType: String,
+      type: IrCompoundType,
       name: String,
   ): FragmentFields {
-    val interfaceField = getOrBuildFragmentField(selections, fieldType, name)
+    val interfaceField = getOrBuildFragmentField(selections, type, name)
 
     val path = ModelPath(root = ModelPath.Root.FragmentImplementation(name))
     val dataField = buildRootField(
         name = "data",
         selections = selections,
-        fieldType = fieldType,
+        type = type,
         path = path,
         superFields = listOf(interfaceField)
     )
@@ -88,18 +78,22 @@ class IrFieldSetBuilder(
   private fun buildRootField(
       name: String,
       selections: List<GQLSelection>,
-      fieldType: String,
+      type: IrCompoundType,
       path: ModelPath,
       superFields: List<IrField> = emptyList(),
   ): IrField {
-    return buildField(
+    val info = IrFieldInfo(
         name = name,
         alias = null,
         description = null,
         deprecationReason = null,
         arguments = emptyList(),
+        type = type,
+    )
+
+    return buildField(
+        info = info,
         selections = selections,
-        type = GQLNamedType(SourceLocation.UNKNOWN, fieldType),
         superFields = superFields,
         path = path,
         condition = BooleanExpression.True,
@@ -134,19 +128,14 @@ class IrFieldSetBuilder(
             emptySet()
         }
         // We do not recurse here as inheriting the first namedFragment will
-        // intherit nested ones as well
+        // inherit nested ones as well
         is GQLFragmentSpread -> return setOf(it.name)
       }
     }.toSet()
   }
 
   private fun buildField(
-      alias: String?,
-      name: String,
-      arguments: List<IrArgument>,
-      description: String?,
-      deprecationReason: String?,
-      type: GQLType,
+      info: IrFieldInfo,
       condition: BooleanExpression,
       selections: List<GQLSelection>,
       superFields: List<IrField>,
@@ -157,9 +146,10 @@ class IrFieldSetBuilder(
     val implementationFieldSets: List<IrFieldSet>
     val fragmentAccessors = mutableListOf<IrFragmentAccessor>()
 
-    val fieldType = type.leafType().name
 
     if (selections.isNotEmpty()) {
+      val fieldType = (info.type.leafType() as? IrCompoundType)?.name ?: "Got selections on a non-compound type for ${info.responseName}"
+
       val typeConditions = selections.collectConditions(setOf(fieldType)).toSet()
 
       val shapeTypeSetToPossibleTypes = computeShapes(schema, fieldType, typeConditions)
@@ -183,7 +173,7 @@ class IrFieldSetBuilder(
        */
       val cachedFieldSets = mutableMapOf<TypeSet, IrFieldSet>()
 
-      val responseName = alias ?: name
+      val responseName = info.responseName
 
       val allTypeSets = commonTypeSets + shapesTypeSets
 
@@ -204,7 +194,7 @@ class IrFieldSetBuilder(
           val gqlFragmentDefinition = allGQLFragmentDefinitions[fragmentName]!!
           getOrBuildFragmentField(
               selections = gqlFragmentDefinition.selectionSet.selections,
-              fieldType = gqlFragmentDefinition.typeCondition.name,
+              type = IrCompoundType(gqlFragmentDefinition.typeCondition.name),
               name = fragmentName,
           ).also {
             fragmentAccessors.add(
@@ -273,12 +263,7 @@ class IrFieldSetBuilder(
     val typeFieldSet = interfaceFieldSets.firstOrNull() ?: implementationFieldSets.firstOrNull()
 
     return IrField(
-        alias = alias,
-        name = name,
-        arguments = arguments,
-        description = description,
-        deprecationReason = deprecationReason,
-        type = registerType(type),
+        info = info,
         condition = condition,
         override = superFields.isNotEmpty(),
 
@@ -287,79 +272,6 @@ class IrFieldSetBuilder(
         interfaces = interfaceFieldSets,
         implementations = implementationFieldSets,
         fragmentAccessors = fragmentAccessors.distinctBy { it.name }
-    )
-  }
-
-  /**
-   * An intermediate class used during collection
-   */
-  private class CollectedField(
-      /**
-       * All fields with the same response name should have the same infos here
-       */
-      val name: String,
-      val alias: String?,
-      val arguments: List<IrArgument>,
-
-      val description: String?,
-      val type: GQLType,
-      val deprecationReason: String?,
-
-      /**
-       * Merged field will merge their conditions and selectionSets
-       */
-      val condition: BooleanExpression,
-      val selections: List<GQLSelection>,
-  ) {
-    val responseName = alias ?: name
-  }
-
-  private fun collectFields(
-      selections: List<GQLSelection>,
-      typeCondition: String,
-      typeSet: TypeSet,
-  ): List<CollectedField> {
-    if (!typeSet.contains(typeCondition)) {
-      return emptyList()
-    }
-    val typeDefinition = schema.typeDefinition(typeCondition)
-
-    return selections.flatMap {
-      when (it) {
-        is GQLField -> {
-          val fieldDefinition = it.definitionFromScope(schema, typeDefinition)!!
-          listOf(
-              CollectedField(
-                  name = it.name,
-                  alias = it.alias,
-                  arguments = it.arguments?.arguments?.map { it.toIr(fieldDefinition) } ?: emptyList(),
-                  condition = it.directives.toBooleanExpression(),
-                  selections = it.selectionSet?.selections ?: emptyList(),
-                  type = fieldDefinition.type,
-                  description = fieldDefinition.description,
-                  deprecationReason = fieldDefinition.directives.findDeprecationReason(),
-              )
-          )
-        }
-        is GQLInlineFragment -> {
-          collectFields(it.selectionSet.selections, it.typeCondition.name, typeSet)
-        }
-        is GQLFragmentSpread -> {
-          val fragment = allGQLFragmentDefinitions[it.name]!!
-          collectFields(fragment.selectionSet.selections, fragment.typeCondition.name, typeSet)
-        }
-      }
-    }
-  }
-
-  private fun GQLArgument.toIr(fieldDefinition: GQLFieldDefinition): IrArgument {
-    val argumentDefinition = fieldDefinition.arguments.first { it.name == name }
-
-    return IrArgument(
-        name = name,
-        value = value.coerce(argumentDefinition.type, schema).orThrow().toIr(),
-        defaultValue = argumentDefinition.defaultValue?.coerce(argumentDefinition.type, schema)?.orThrow()?.toIr(),
-        type = registerType(argumentDefinition.type)
     )
   }
 
@@ -372,40 +284,20 @@ class IrFieldSetBuilder(
       superFieldSets: List<IrFieldSet>,
       path: ModelPath,
   ): IrFieldSet {
-    val collectedFields = collectFields(selections, fieldType, typeSet)
-
-    val fields = collectedFields.groupBy {
-      it.responseName
-    }.values.map { fieldsWithSameResponseName ->
-      /**
-       * Sanity checks, might be removed as this should be done during validation
-       */
-      check(fieldsWithSameResponseName.map { it.alias }.distinct().size == 1)
-      check(fieldsWithSameResponseName.map { it.name }.distinct().size == 1)
-      check(fieldsWithSameResponseName.map { it.arguments }.distinct().size == 1)
-      // TODO: The same field can have different descriptions in two different objects in which case
-      // we should certainly use the interface description
-      // check(fieldsWithSameResponseName.map { it.description }.distinct().size == 1)
-      check(fieldsWithSameResponseName.map { it.deprecationReason }.distinct().size == 1)
-      // GQLTypes might differ because of their source location. Use pretty()
-      // to canonicalize them
-      check(fieldsWithSameResponseName.map { it.type }.distinctBy { it.pretty() }.size == 1)
-
-      val first = fieldsWithSameResponseName.first()
-      val childSelections = fieldsWithSameResponseName.flatMap { it.selections }
-
+    val fields = fieldCollector.collectFields(
+        selections = selections,
+        typeCondition = fieldType,
+        typeSet = typeSet,
+        collectInlineFragments = true,
+        collectNamedFragments = true
+    ) { info, condition, childSelections ->
       val superFields = superFieldSets.mapNotNull {
-        it.fields.firstOrNull { it.responseName == first.responseName }
+        it.fields.firstOrNull { it.responseName == info.responseName }
       }
 
       buildField(
-          alias = first.alias,
-          name = first.name,
-          arguments = first.arguments,
-          description = first.description,
-          deprecationReason = first.deprecationReason,
-          type = first.type,
-          condition = BooleanExpression.Or(fieldsWithSameResponseName.map { it.condition }.toSet()),
+          info = info,
+          condition = condition,
           selections = childSelections,
           superFields = superFields,
           path = path + modelName,
@@ -419,6 +311,7 @@ class IrFieldSetBuilder(
         typeSet = typeSet,
         possibleTypes = possibleTypes,
         fields = fields,
+        syntheticFields = emptyList(),
         implements = implements,
         path = path,
     )

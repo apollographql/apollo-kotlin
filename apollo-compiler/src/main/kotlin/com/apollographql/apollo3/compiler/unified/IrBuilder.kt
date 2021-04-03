@@ -1,15 +1,18 @@
 package com.apollographql.apollo3.compiler.unified
 
 import com.apollographql.apollo3.compiler.MetadataFragment
-import com.apollographql.apollo3.compiler.PackageNameProvider
-import com.apollographql.apollo3.compiler.Roots
+import com.apollographql.apollo3.compiler.frontend.GQLArgument
 import com.apollographql.apollo3.compiler.frontend.GQLBooleanValue
 import com.apollographql.apollo3.compiler.frontend.GQLDirective
 import com.apollographql.apollo3.compiler.frontend.GQLEnumTypeDefinition
 import com.apollographql.apollo3.compiler.frontend.GQLEnumValue
 import com.apollographql.apollo3.compiler.frontend.GQLEnumValueDefinition
+import com.apollographql.apollo3.compiler.frontend.GQLField
+import com.apollographql.apollo3.compiler.frontend.GQLFieldDefinition
 import com.apollographql.apollo3.compiler.frontend.GQLFloatValue
 import com.apollographql.apollo3.compiler.frontend.GQLFragmentDefinition
+import com.apollographql.apollo3.compiler.frontend.GQLFragmentSpread
+import com.apollographql.apollo3.compiler.frontend.GQLInlineFragment
 import com.apollographql.apollo3.compiler.frontend.GQLInputObjectTypeDefinition
 import com.apollographql.apollo3.compiler.frontend.GQLInputValueDefinition
 import com.apollographql.apollo3.compiler.frontend.GQLIntValue
@@ -23,6 +26,7 @@ import com.apollographql.apollo3.compiler.frontend.GQLObjectTypeDefinition
 import com.apollographql.apollo3.compiler.frontend.GQLObjectValue
 import com.apollographql.apollo3.compiler.frontend.GQLOperationDefinition
 import com.apollographql.apollo3.compiler.frontend.GQLScalarTypeDefinition
+import com.apollographql.apollo3.compiler.frontend.GQLSelection
 import com.apollographql.apollo3.compiler.frontend.GQLStringValue
 import com.apollographql.apollo3.compiler.frontend.GQLType
 import com.apollographql.apollo3.compiler.frontend.GQLUnionTypeDefinition
@@ -32,8 +36,10 @@ import com.apollographql.apollo3.compiler.frontend.GQLVariableValue
 import com.apollographql.apollo3.compiler.frontend.InputValueScope
 import com.apollographql.apollo3.compiler.frontend.Schema
 import com.apollographql.apollo3.compiler.frontend.coerce
+import com.apollographql.apollo3.compiler.frontend.definitionFromScope
 import com.apollographql.apollo3.compiler.frontend.findDeprecationReason
 import com.apollographql.apollo3.compiler.frontend.inferVariables
+import com.apollographql.apollo3.compiler.frontend.pretty
 import com.apollographql.apollo3.compiler.frontend.rootTypeDefinition
 import com.apollographql.apollo3.compiler.frontend.toUtf8
 import com.apollographql.apollo3.compiler.frontend.toUtf8WithIndents
@@ -45,19 +51,18 @@ class IrBuilder(
     private val metadataFragments: List<MetadataFragment>,
     private val alwaysGenerateTypesMatching: Set<String>,
     private val customScalarToKotlinName: Map<String, String>,
-) {
+) : FieldCollector {
   private val allGQLFragmentDefinitions = (metadataFragments.map { it.definition } + fragmentDefinitions).associateBy { it.name }
   private val enumCache = mutableMapOf<String, IrEnum>()
   private val inputObjectCache = mutableMapOf<String, IrInputObject>()
   private val customScalarCache = mutableMapOf<String, IrCustomScalar>()
   private val inputObjectsToGenerate = mutableListOf<String>()
 
-  private val fieldSetBuilder = IrFieldSetBuilder(
+  private val fieldSetBuilder = AsInterfacesFieldSetBuilder(
       schema = schema,
-      allGQLFragmentDefinitions = allGQLFragmentDefinitions
-  ) { gqlType ->
-    gqlType.toIr()
-  }
+      allGQLFragmentDefinitions = allGQLFragmentDefinitions,
+      this
+  )
 
   private fun shouldAlwaysGenerate(name: String) = alwaysGenerateTypesMatching.map { Regex(it) }.any { it.matches(name) }
 
@@ -132,6 +137,13 @@ class IrBuilder(
     )
   }
 
+  /**
+   * We need to call `toIr()` to properly track the used types
+   */
+  private fun rootCompoundType(name: String): IrCompoundType {
+    return GQLNamedType(name = name).toIr() as IrCompoundType
+  }
+
   private fun GQLOperationDefinition.toIr(): IrOperation {
     val typeDefinition = this.rootTypeDefinition(schema)
         ?: throw IllegalStateException("ApolloGraphql: cannot find root type for '$operationType'")
@@ -149,7 +161,7 @@ class IrBuilder(
     }
     val dataField = fieldSetBuilder.buildOperationField(
         selections = selectionSet.selections,
-        fieldType = typeDefinition.name,
+        type = rootCompoundType(typeDefinition.name),
         name = name,
     )
 
@@ -172,7 +184,7 @@ class IrBuilder(
 
     val fragmentFields = fieldSetBuilder.buildFragmentFields(
         selections = selectionSet.selections,
-        fieldType = typeDefinition.name,
+        type = rootCompoundType(typeDefinition.name),
         name,
     )
     return IrNamedFragment(
@@ -182,7 +194,8 @@ class IrBuilder(
         typeCondition = typeDefinition.name,
         variables = variableDefinitions.map { it.toIr() },
         interfaceField = fragmentFields.interfaceField,
-        dataField = fragmentFields.dataField,
+        implementationField = fragmentFields.dataField,
+        modelField = null
     )
   }
 
@@ -246,9 +259,143 @@ class IrBuilder(
         }
         is GQLObjectTypeDefinition,
         is GQLInterfaceTypeDefinition,
-        is GQLUnionTypeDefinition -> IrCompoundType
+        is GQLUnionTypeDefinition,
+        -> IrCompoundType(name)
       }
     }
+  }
+
+  /**
+   * An intermediate class used during collection
+   */
+  private class CollectedField(
+      /**
+       * All fields with the same response name should have the same infos here
+       */
+      val name: String,
+      val alias: String?,
+      val arguments: List<IrArgument>,
+
+      val description: String?,
+      val type: GQLType,
+      val deprecationReason: String?,
+
+      /**
+       * Merged field will merge their conditions and selectionSets
+       */
+      val condition: BooleanExpression,
+      val selections: List<GQLSelection>,
+  ) {
+    val responseName = alias ?: name
+  }
+
+  override fun collectFields(
+      selections: List<GQLSelection>,
+      typeCondition: String,
+      typeSet: TypeSet,
+      collectInlineFragments: Boolean,
+      collectNamedFragments: Boolean,
+      block: (IrFieldInfo, BooleanExpression, List<GQLSelection>) -> IrField,
+  ): List<IrField> {
+    val collectedFields = collectFieldsInternal(
+        selections = selections,
+        typeCondition = typeCondition,
+        typeSet = typeSet,
+        collectInlineFragments = collectInlineFragments,
+        collectNamedFragments = collectNamedFragments
+    )
+
+    return collectedFields.groupBy {
+      it.responseName
+    }.values.map { fieldsWithSameResponseName ->
+      /**
+       * Sanity checks, might be removed as this should be done during validation
+       */
+      check(fieldsWithSameResponseName.map { it.alias }.distinct().size == 1)
+      check(fieldsWithSameResponseName.map { it.name }.distinct().size == 1)
+      check(fieldsWithSameResponseName.map { it.arguments }.distinct().size == 1)
+      // TODO: The same field can have different descriptions in two different objects in which case
+      // we should certainly use the interface description
+      // check(fieldsWithSameResponseName.map { it.description }.distinct().size == 1)
+      check(fieldsWithSameResponseName.map { it.deprecationReason }.distinct().size == 1)
+      // GQLTypes might differ because of their source location. Use pretty()
+      // to canonicalize them
+      check(fieldsWithSameResponseName.map { it.type }.distinctBy { it.pretty() }.size == 1)
+
+      val first = fieldsWithSameResponseName.first()
+      val childSelections = fieldsWithSameResponseName.flatMap { it.selections }
+
+      val info = IrFieldInfo(
+          alias = first.alias,
+          name = first.name,
+          arguments = first.arguments,
+          description = first.description,
+          deprecationReason = first.deprecationReason,
+          type = first.type.toIr(),
+      )
+
+      block(info, BooleanExpression.Or(fieldsWithSameResponseName.map { it.condition }.toSet()), childSelections)
+    }
+  }
+
+  /**
+   *
+   * @param typeSet if non-null, will recurse in all inline and named fragments contained in the [TypeSet]
+   */
+  private fun collectFieldsInternal(
+      selections: List<GQLSelection>,
+      typeCondition: String,
+      typeSet: TypeSet,
+      collectInlineFragments: Boolean,
+      collectNamedFragments: Boolean,
+  ): List<CollectedField> {
+    val typeDefinition = schema.typeDefinition(typeCondition)
+
+    return selections.flatMap {
+      when (it) {
+        is GQLField -> {
+          val fieldDefinition = it.definitionFromScope(schema, typeDefinition)!!
+          listOf(
+              CollectedField(
+                  name = it.name,
+                  alias = it.alias,
+                  arguments = it.arguments?.arguments?.map { it.toIr(fieldDefinition) } ?: emptyList(),
+                  condition = it.directives.toBooleanExpression(),
+                  selections = it.selectionSet?.selections ?: emptyList(),
+                  type = fieldDefinition.type,
+                  description = fieldDefinition.description,
+                  deprecationReason = fieldDefinition.directives.findDeprecationReason(),
+              )
+          )
+        }
+        is GQLInlineFragment -> {
+          if (collectInlineFragments && typeSet.contains(it.typeCondition.name)) {
+            collectFieldsInternal(it.selectionSet.selections, it.typeCondition.name, typeSet, collectInlineFragments, collectNamedFragments)
+          } else {
+            emptyList()
+          }
+        }
+        is GQLFragmentSpread -> {
+          val fragment = allGQLFragmentDefinitions[it.name]!!
+          if (collectNamedFragments && typeSet.contains(fragment.typeCondition.name)) {
+            collectFieldsInternal(fragment.selectionSet.selections, fragment.typeCondition.name, typeSet, collectInlineFragments, collectNamedFragments)
+          } else {
+            emptyList()
+          }
+        }
+      }
+    }
+  }
+
+  private fun GQLArgument.toIr(fieldDefinition: GQLFieldDefinition): IrArgument {
+    val argumentDefinition = fieldDefinition.arguments.first { it.name == name }
+
+    return IrArgument(
+        name = name,
+        value = value.coerce(argumentDefinition.type, schema).orThrow().toIr(),
+        defaultValue = argumentDefinition.defaultValue?.coerce(argumentDefinition.type, schema)?.orThrow()?.toIr(),
+        type = argumentDefinition.type.toIr()
+    )
   }
 }
 

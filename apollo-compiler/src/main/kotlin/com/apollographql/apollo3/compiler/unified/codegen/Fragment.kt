@@ -78,12 +78,12 @@ private fun IrNamedFragment.variablesAdapterTypeSpec(layout: CodegenLayout): Typ
 
 private fun IrNamedFragment.responseAdapterTypeSpec(layout: CodegenLayout): TypeSpec {
   return TypeSpec.objectBuilder(layout.fragmentResponseAdapterWrapperName(name))
-      .addTypes(dataResponseAdapterTypeSpecs(layout, dataField))
+      .addTypes(dataResponseAdapterTypeSpecs(layout, implementationField))
       .build()
 }
 
 private fun IrNamedFragment.responseFieldsTypeSpec(layout:CodegenLayout): TypeSpec {
-  return dataResponseFieldsItemSpec(layout.fragmentResponseFieldsName(name), dataField)
+  return dataResponseFieldsItemSpec(layout.fragmentResponseFieldsName(name), implementationField)
 }
 
 private fun IrNamedFragment.serializeVariablesFunSpec(layout: CodegenLayout): FunSpec = serializeVariablesFunSpec(
@@ -94,16 +94,16 @@ private fun IrNamedFragment.serializeVariablesFunSpec(layout: CodegenLayout): Fu
 )
 
 private fun IrNamedFragment.adapterFunSpec(layout: CodegenLayout): FunSpec {
-  check(dataField.typeFieldSet != null) // data is always a compound type
+  check(implementationField.typeFieldSet != null) // data is always a compound type
 
   return adapterFunSpec(
-      adapterTypeName = layout.fieldSetAdapterClassName(dataField.typeFieldSet),
-      adaptedTypeName = layout.fieldSetClassName(dataField.typeFieldSet)
+      adapterTypeName = layout.fieldSetAdapterClassName(implementationField.typeFieldSet),
+      adaptedTypeName = layout.fieldSetClassName(implementationField.typeFieldSet)
   )
 }
 
 private fun IrNamedFragment.dataTypeSpecs(layout: CodegenLayout): List<TypeSpec> {
-  return dataField.typeSpecs(layout, false).map {
+  return implementationField.typeSpecs(layout, false).map {
     it.toBuilder()
         .addSuperinterface(Fragment.Data::class)
         .build()
@@ -111,9 +111,9 @@ private fun IrNamedFragment.dataTypeSpecs(layout: CodegenLayout): List<TypeSpec>
 }
 
 private fun IrNamedFragment.superInterfaceType(layout: CodegenLayout): TypeName {
-  check(dataField.typeFieldSet != null) // data is always a compound type
+  check(implementationField.typeFieldSet != null) // data is always a compound type
 
   return Fragment::class.asTypeName().parameterizedBy(
-      layout.fieldSetClassName(dataField.typeFieldSet)
+      layout.fieldSetClassName(implementationField.typeFieldSet)
   )
 }

@@ -53,9 +53,10 @@ data class ModelPath(
   operator fun plus(element: String) = copy(elements = elements + element)
 
   sealed class Root {
-    class Operation(val name: String): Root()
-    class FragmentInterface(val name: String): Root()
-    class FragmentImplementation(val name: String): Root()
+    class Operation(val name: String) : Root()
+    class FragmentModel(val name: String) : Root()
+    class FragmentInterface(val name: String) : Root()
+    class FragmentImplementation(val name: String) : Root()
   }
 }
 
@@ -95,14 +96,20 @@ data class IrNamedFragment(
     val name: String,
     val description: String?,
     val filePath: String,
-    val interfaceField: IrField,
-    val dataField: IrField,
     /**
      * Fragments do not have variables per-se but we can infer them from the document
      * Default values will always be null for those
      */
     val variables: List<IrVariable>,
     val typeCondition: String,
+    /**
+     * Either
+     * - modelField will be non-null (for fragments as classes)
+     * - or both interfaceField and implementationField will be non-null (for fragments as interfaces)
+     */
+    val interfaceField: IrField?,
+    val implementationField: IrField?,
+    val modelField: IrField?,
 )
 
 enum class IrOperationType {
@@ -117,6 +124,27 @@ data class IrFragmentAccessor(
 )
 
 /**
+ * When merging fields, [IrFieldInfo] is the information that is common to all merged fields
+ */
+data class IrFieldInfo(
+    val name: String,
+    val alias: String?,
+    val arguments: List<IrArgument>,
+
+    /**
+     * from the fieldDefinition
+     * This can technically differ between different merged fields. For convenience, we taks the first one
+     */
+    val description: String?,
+    // from the fieldDefinition
+    val type: IrType,
+    // from the fieldDefinition directives
+    val deprecationReason: String?,
+) {
+  val responseName = alias ?: name
+}
+
+/**
  * A field in the IR tree
  *
  * A field can be:
@@ -126,16 +154,7 @@ data class IrFragmentAccessor(
  * with possible "OtherFooBar" [IrFieldSet] to account for cases where we need an implementation with the same name as an interface
  */
 data class IrField(
-    val name: String,
-    val alias: String?,
-    val arguments: List<IrArgument>,
-
-    // from the fieldDefinition
-    val description: String?,
-    // from the fieldDefinition
-    val type: IrType,
-    // from the fieldDefinition directives
-    val deprecationReason: String?,
+    val info: IrFieldInfo,
 
     val condition: BooleanExpression,
 
@@ -165,7 +184,7 @@ data class IrField(
      */
     val implementations: List<IrFieldSet>,
 ) {
-  val responseName = alias ?: name
+  val responseName = info.responseName
 }
 
 /**
@@ -174,6 +193,7 @@ data class IrField(
  * @param possibleTypes: the possibleTypes that will map to this [IrFieldSet].
  * @param implements: A list of fragment and operation path that this field set will implement
  * @param path: The path up (but not including) to the fieldSet. Use [fullPath] to have everything
+ * @param syntheticFields: used when generating fragments as data classes.
  * @param modelName: the name of the model.
  */
 data class IrFieldSet(
@@ -181,6 +201,7 @@ data class IrFieldSet(
     val modelName: String,
     val typeSet: TypeSet,
     val fields: List<IrField>,
+    val syntheticFields: List<IrField>,
     val possibleTypes: Set<String>,
     val implements: Set<ModelPath>,
 ) {
@@ -271,7 +292,7 @@ class IrInputObjectType(val inputObject: () -> IrInputObject) : IrType()
 /**
  * A compound type (objects, unions, interfaces)
  *
- * Compound types are nested and must be resolved with some context so we just record them with a placeholder
+ * Compound types are nested and must be resolved with some context
  */
-object IrCompoundType : IrType()
+class IrCompoundType(val name: String) : IrType()
 

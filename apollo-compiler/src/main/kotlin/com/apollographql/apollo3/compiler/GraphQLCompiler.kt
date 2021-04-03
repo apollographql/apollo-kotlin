@@ -33,11 +33,11 @@ class GraphQLCompiler {
       outputDir: File,
       incomingOptions: IncomingOptions,
       useUnifiedIr: Boolean,
-      moduleOptions: ModuleOptions
+      moduleOptions: ModuleOptions,
   ) {
     outputDir.deleteRecursively()
     outputDir.mkdirs()
-    
+
 
     val (documents, issues) = GraphQLParser.parseExecutableFiles(
         operationFiles,
