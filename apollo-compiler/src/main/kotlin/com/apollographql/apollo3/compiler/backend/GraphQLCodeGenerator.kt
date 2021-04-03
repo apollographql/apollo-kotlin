@@ -26,7 +26,6 @@ internal class GraphQLCodeGenerator(
     private val generateAsInternal: Boolean = false,
     private val operationOutput: OperationOutput,
     private val generateFilterNotNull: Boolean,
-    private val enumAsSealedClassPatternFilters: List<Regex>,
     private val enumsToGenerate: Set<String>,
     private val inputObjectsToGenerate: Set<String>,
     private val generateScalarMapping: Boolean,
@@ -59,7 +58,7 @@ internal class GraphQLCodeGenerator(
           fileSpecBuilder(typesPackageName, enumType.name.escapeKotlinReservedWord())
               .apply {
                 enumType.typeSpecs(
-                    enumAsSealedClassPatternFilters = enumAsSealedClassPatternFilters,
+                    enumAsSealedClassPatternFilters = emptyList(),
                     packageName = typesPackageName
                 ).forEach {
                   addType(it.internal(generateAsInternal))

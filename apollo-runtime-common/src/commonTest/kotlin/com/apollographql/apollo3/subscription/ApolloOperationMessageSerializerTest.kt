@@ -55,7 +55,7 @@ class ApolloOperationMessageSerializerTest {
         "payload" to mapOf(
             "variables" to subscription.variables(ResponseAdapterCache.DEFAULT).valueMap,
             "operationName" to subscription.name(),
-            "query" to subscription.queryDocument()
+            "query" to subscription.document()
         )
     ))
     assertEquals(parseJson(serializer.writeClientMessage(persistedQueryWithoutDocument)), mapOf(
@@ -67,7 +67,7 @@ class ApolloOperationMessageSerializerTest {
             "extensions" to mapOf(
                 "persistedQuery" to mapOf(
                     "version" to 1,
-                    "sha256Hash" to subscription.operationId()
+                    "sha256Hash" to subscription.id()
                 )
             )
         )
@@ -78,11 +78,11 @@ class ApolloOperationMessageSerializerTest {
         "payload" to mapOf(
             "variables" to subscription.variables(ResponseAdapterCache.DEFAULT).valueMap,
             "operationName" to subscription.name(),
-            "query" to subscription.queryDocument(),
+            "query" to subscription.document(),
             "extensions" to mapOf(
                 "persistedQuery" to mapOf(
                     "version" to 1,
-                    "sha256Hash" to subscription.operationId()
+                    "sha256Hash" to subscription.id()
                 )
             )
         )

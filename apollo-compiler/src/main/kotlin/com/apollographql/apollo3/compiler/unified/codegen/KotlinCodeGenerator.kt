@@ -4,30 +4,30 @@ import com.apollographql.apollo3.compiler.PackageNameProvider
 import com.apollographql.apollo3.compiler.VERSION
 import com.apollographql.apollo3.compiler.operationoutput.OperationOutput
 import com.apollographql.apollo3.compiler.operationoutput.findOperationId
-import com.apollographql.apollo3.compiler.unified.CodegenLayout
-import com.apollographql.apollo3.compiler.unified.IntermediateRepresentation
+import com.apollographql.apollo3.compiler.unified.codegen.file.CustomScalarsBuilder
+import com.apollographql.apollo3.compiler.unified.codegen.file.EnumBuilder
+import com.apollographql.apollo3.compiler.unified.codegen.adapter.EnumResponseAdapterBuilder
+import com.apollographql.apollo3.compiler.unified.codegen.file.FragmentBuilder
+import com.apollographql.apollo3.compiler.unified.codegen.file.FragmentInterfacesBuilder
+import com.apollographql.apollo3.compiler.unified.codegen.file.FragmentResponseAdapterBuilder
+import com.apollographql.apollo3.compiler.unified.codegen.file.FragmentResponseFieldsBuilder
+import com.apollographql.apollo3.compiler.unified.codegen.file.FragmentVariablesAdapterBuilder
+import com.apollographql.apollo3.compiler.unified.codegen.file.InputObjectAdapterBuilder
+import com.apollographql.apollo3.compiler.unified.codegen.file.InputObjectBuilder
+import com.apollographql.apollo3.compiler.unified.codegen.file.OperationBuilder
+import com.apollographql.apollo3.compiler.unified.codegen.file.OperationResponseAdapterBuilder
+import com.apollographql.apollo3.compiler.unified.codegen.file.OperationResponseFieldsBuilder
+import com.apollographql.apollo3.compiler.unified.codegen.file.OperationVariablesAdapterBuilder
+import com.apollographql.apollo3.compiler.unified.ir.IntermediateRepresentation
 import com.squareup.kotlinpoet.FileSpec
 import com.squareup.kotlinpoet.KModifier
 import com.squareup.kotlinpoet.TypeSpec
 import java.io.File
 
-/**
- * KotlinPoet [FileSpec] are non qualified. This is a simple wrapper that carries a package name so that we can write the file
- *
- * If multiple [TypeSpec] are in the same [packageName], [fileName] is mandatory
- */
-class ApolloFileSpec(
-    val packageName: String,
-    val typeSpec: List<TypeSpec>,
-    val fileName: String,
-) {
-  constructor(packageName: String, typeSpec: TypeSpec) : this(packageName, listOf(typeSpec), typeSpec.name!!)
-}
 
 class KotlinCodeGenerator(
     private val ir: IntermediateRepresentation,
     private val generateAsInternal: Boolean = false,
-    private val enumAsSealedClassPatternFilters: Set<String>,
     private val useSemanticNaming: Boolean,
     private val packageNameProvider: PackageNameProvider,
     private val typePackageName: String,
@@ -40,67 +40,95 @@ class KotlinCodeGenerator(
     private val generateFragmentsAsInterfaces: Boolean,
 ) {
   fun write(outputDir: File) {
-    val layout = CodegenLayout(
-        operations = ir.operations,
-        fragments = ir.fragments,
-        metadataFragments = ir.metadataFragments,
+    val layout = CgLayout(
         useSemanticNaming = useSemanticNaming,
         packageNameProvider = packageNameProvider,
         typePackageName = typePackageName
     )
 
-    val customScalars = if (generateCustomScalars) {
-      listOf(ir.customScalars.qualifiedTypeSpec(layout))
-    } else {
-      emptyList()
+    val context = CgContext(
+        layout = layout,
+        resolver = CgResolver()
+    )
+    val builders = mutableListOf<CgFileBuilder>()
+
+    val customScalarsBuilder = CustomScalarsBuilder(
+        context,
+        ir.customScalars
+    )
+
+    if (generateCustomScalars && ir.customScalars.isNotEmpty()) {
+      builders.add(customScalarsBuilder)
+    }
+    
+    ir.inputObjects.forEach { 
+      builders.add(InputObjectBuilder(context, it))
+      builders.add(InputObjectAdapterBuilder(context, it))
     }
 
-    val enums = ir.enums.flatMap { enum ->
-      enum.apolloFileSpecs(layout = layout, enumAsSealedClassPatternFilters = enumAsSealedClassPatternFilters)
+    ir.enums.forEach { enum ->
+      builders.add(EnumBuilder(context, enum))
+      builders.add(EnumResponseAdapterBuilder(context, enum))
     }
 
-    val inputObjects = ir.inputObjects.flatMap { inputObject ->
-      inputObject.apolloFileSpecs(layout)
-    }
+    ir.fragments.forEach { fragment ->
+      if (fragment.variables.isNotEmpty()) {
+        builders.add(FragmentVariablesAdapterBuilder(context, fragment))
+      }
 
-    val operations = ir.operations.flatMap { operation ->
-      operation.apolloFileSpecs(
-          layout,
+      builders.add(FragmentResponseFieldsBuilder(context, fragment))
+      builders.add(FragmentResponseAdapterBuilder(context, fragment))
+
+      builders.add(FragmentInterfacesBuilder(context, fragment))
+      builders.add(FragmentBuilder(
+          context,
+          generateFilterNotNull,
+          fragment,
+      ))
+    }
+    
+    ir.operations.forEach { operation ->
+      if (operation.variables.isNotEmpty()) {
+        builders.add(OperationVariablesAdapterBuilder(context, operation))
+      }
+      
+      builders.add(OperationResponseFieldsBuilder(context, operation))
+      builders.add(OperationResponseAdapterBuilder(context, operation))
+
+      builders.add(OperationBuilder(
+          context,
           generateFilterNotNull,
           operationOutput.findOperationId(operation.name),
-          generateResponseFields,
-          generateQueryDocument
-      )
+          generateQueryDocument,
+          operation,
+      ))
     }
 
-    val fragments = ir.fragments.flatMap { fragment ->
-      fragment.apolloFileSpecs(
-          layout,
-          generateFilterNotNull,
-          generateFragmentImplementations,
-          generateResponseFields
-      )
-    }
+    builders.forEach { it.prepare() }
+    builders
+        .map {
+          it.build()
+        }.forEach {
+          val builder = FileSpec.builder(
+              packageName = it.packageName,
+              fileName = it.fileName
+          ).addComment(
+              """
+                
+                AUTO-GENERATED FILE. DO NOT MODIFY.
+                
+                This class was automatically generated by Apollo GraphQL version '$VERSION'.
+                
+              """.trimIndent()
+          )
 
-    val qualifiedTypeSpecs = customScalars + enums + inputObjects + operations + fragments
-
-    // sanity check
-    qualifiedTypeSpecs.groupBy { it.packageName to it.fileName }.forEach {
-      check(it.value.size == 1) {
-        "Duplicate type found: ${it.key}"
-      }
-    }
-
-    qualifiedTypeSpecs.forEach {
-      fileSpecBuilder(it.packageName, it.fileName)
-          .apply {
-            it.typeSpec.forEach {
-              addType(it.internal(generateAsInternal))
-            }
+          it.typeSpecs.map { it.internal(generateAsInternal) }.forEach {
+            builder.addType(it)
           }
-          .build()
-          .writeTo(outputDir)
-    }
+          builder
+              .build()
+              .writeTo(outputDir)
+        }
   }
 
   private fun fileSpecBuilder(packageName: String, name: String): FileSpec.Builder =

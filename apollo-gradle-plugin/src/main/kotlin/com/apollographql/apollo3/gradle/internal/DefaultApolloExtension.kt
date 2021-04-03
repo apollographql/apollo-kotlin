@@ -89,7 +89,6 @@ abstract class DefaultApolloExtension(private val project: Project, private val 
             && defaultService.failOnWarnings.isPresent.not()
             && defaultService.generateApolloMetadata.isPresent.not()
             && defaultService.generateAsInternal.isPresent.not()
-            && defaultService.sealedClassesForEnumsMatching.isPresent.not()
         ) {
           """
             Configuring the default service is ignored if you specify other services, remove your configuration from the root of the apollo {} block:
@@ -319,7 +318,6 @@ abstract class DefaultApolloExtension(private val project: Project, private val 
       task.rootPackageName.set(service.rootPackageName)
       task.generateAsInternal.set(service.generateAsInternal)
       task.generateFilterNotNull.set(project.isKotlinMultiplatform)
-      task.sealedClassesForEnumsMatching.set(service.sealedClassesForEnumsMatching)
       task.alwaysGenerateTypesMatching.set(service.alwaysGenerateTypesMatching)
       task.projectName.set(project.name)
       task.generateFragmentImplementations.set(service.generateFragmentImplementations)

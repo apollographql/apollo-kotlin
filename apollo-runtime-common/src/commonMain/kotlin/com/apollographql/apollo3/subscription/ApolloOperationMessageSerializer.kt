@@ -73,7 +73,7 @@ object ApolloOperationMessageSerializer : OperationMessageSerializer {
           name(JSON_KEY_EXTENSIONS).writeObject {
             name(JSON_KEY_EXTENSIONS_PERSISTED_QUERY).writeObject {
               name(JSON_KEY_EXTENSIONS_PERSISTED_QUERY_VERSION).value(1)
-              name(JSON_KEY_EXTENSIONS_PERSISTED_QUERY_HASH).value(subscription.operationId())
+              name(JSON_KEY_EXTENSIONS_PERSISTED_QUERY_HASH).value(subscription.id())
             }
           }
         }
@@ -87,7 +87,7 @@ object ApolloOperationMessageSerializer : OperationMessageSerializer {
       subscription.serializeVariables(this, responseAdapterCache)
       name(JSON_KEY_OPERATION_NAME).value(subscription.name())
       if (!autoPersistSubscription || sendSubscriptionDocument) {
-        name(JSON_KEY_QUERY).value(subscription.queryDocument())
+        name(JSON_KEY_QUERY).value(subscription.document())
       }
     }
   }

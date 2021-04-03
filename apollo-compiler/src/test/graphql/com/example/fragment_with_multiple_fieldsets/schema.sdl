@@ -1,0 +1,21 @@
+type Query {
+  i: I
+}
+
+interface I {
+  fieldI: String
+}
+
+interface J {
+  fieldJ: String
+}
+
+type A implements I {
+  fieldI: String
+  fieldA: String
+}
+
+type B implements I & J {
+  fieldI: String
+  fieldJ: String
+}

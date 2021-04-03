@@ -30,7 +30,7 @@ class ApolloExceptionTest {
   private val emptyQuery = object : Query<Query.Data> {
     var operationName: String = "emptyQuery"
 
-    override fun queryDocument(): String {
+    override fun document(): String {
       return ""
     }
 
@@ -45,7 +45,7 @@ class ApolloExceptionTest {
       return operationName
     }
 
-    override fun operationId(): String {
+    override fun id(): String {
       return ""
     }
 

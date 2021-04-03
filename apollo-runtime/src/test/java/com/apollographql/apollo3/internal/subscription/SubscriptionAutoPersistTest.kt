@@ -151,7 +151,7 @@ class SubscriptionAutoPersistTest {
   }
 
   private class MockSubscription(val operationId: String) : Subscription<Subscription.Data> {
-    override fun queryDocument(): String {
+    override fun document(): String {
       return "subscription{\ncommentAdded(repoFullName:\"repo\"){\n__typename\nid\ncontent\n}\n}"
     }
 
@@ -168,7 +168,7 @@ class SubscriptionAutoPersistTest {
       return "SomeSubscription"
     }
 
-    override fun operationId(): String {
+    override fun id(): String {
       return operationId
     }
 

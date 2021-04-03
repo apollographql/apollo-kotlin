@@ -164,14 +164,6 @@ interface Service {
   val generateAsInternal: Property<Boolean>
 
   /**
-   * A list of [Regex] patterns for GraphQL enums that should be generated as Kotlin sealed classes instead of the default Kotlin enums.
-   *
-   * Use this if you want your client to have access to the rawValue of the enum. This can be useful if new GraphQL enums are added but
-   * the client was compiled against an older schema that doesn't have knowledge of the new enums.
-   */
-  val sealedClassesForEnumsMatching: ListProperty<String>
-
-  /**
    * Whether or not to generate Apollo metadata. Apollo metadata is used for multi-module support. Set this to true if you want other
    * modules to be able to re-use fragments and types from this module.
    *

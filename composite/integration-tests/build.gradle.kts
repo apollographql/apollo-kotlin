@@ -68,9 +68,6 @@ fun configureApollo(asInterfaces: Boolean, sourceSetName: String) {
                     "Upload" to "com.apollographql.apollo3.api.Upload"
                 ))
               }
-              "sealedclasses" -> {
-                sealedClassesForEnumsMatching.set(listOf(".*"))
-              }
               "normalizer" -> {
                 generateFragmentImplementations.set(true)
                 customScalarsMapping.set(mapOf(

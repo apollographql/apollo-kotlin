@@ -11,7 +11,7 @@ import com.apollographql.apollo3.api.json.JsonWriter
 @Deprecated("Tests using MockQuery are very fragile to codegen changes, use integration tests instead")
 class MockQuery : Query<MockQuery.Data> {
 
-  override fun queryDocument(): String = "query MockQuery { name }"
+  override fun document(): String = "query MockQuery { name }"
 
   override fun serializeVariables(writer: JsonWriter, responseAdapterCache: ResponseAdapterCache) {
   }
@@ -37,7 +37,7 @@ class MockQuery : Query<MockQuery.Data> {
 
   override fun name(): String = "MockQuery"
 
-  override fun operationId(): String = "MockQuery".hashCode().toString()
+  override fun id(): String = "MockQuery".hashCode().toString()
 
   object Data : Query.Data
 

@@ -1,0 +1,16 @@
+# This test generating accessors based on the inline fragment path input by the user versus
+# a more global approach. Matching the user input is more predictable but also more verbose
+# User input: root.asA.asB (root.asB.asA doesn't make sense and is not possible)
+# Global: root.asAB (how to end up with AB doesn't matter)
+query TestQuery {
+    root {
+        ... on A {
+            ... on B {
+                fieldB1
+            }
+        }
+        ... on B {
+            fieldB2
+        }
+    }
+}

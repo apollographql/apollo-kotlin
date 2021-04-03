@@ -2,10 +2,10 @@ package com.apollographql.apollo3.compiler.unified.codegen.helpers
 
 import com.apollographql.apollo3.api.Input
 import com.apollographql.apollo3.compiler.applyIf
-import com.apollographql.apollo3.compiler.unified.CodegenLayout
-import com.apollographql.apollo3.compiler.unified.IrInputField
-import com.apollographql.apollo3.compiler.unified.IrType
-import com.apollographql.apollo3.compiler.unified.IrVariable
+import com.apollographql.apollo3.compiler.unified.codegen.CgContext
+import com.apollographql.apollo3.compiler.unified.ir.IrInputField
+import com.apollographql.apollo3.compiler.unified.ir.IrType
+import com.apollographql.apollo3.compiler.unified.ir.IrVariable
 import com.squareup.kotlinpoet.CodeBlock
 import com.squareup.kotlinpoet.MemberName
 import com.squareup.kotlinpoet.ParameterSpec
@@ -21,29 +21,29 @@ class NamedType(
     val optional: Boolean = false,
 )
 
-fun NamedType.typeName(layout: CodegenLayout): TypeName {
+fun NamedType.typeName(context: CgContext): TypeName {
   return if (optional) {
-    Input::class.asClassName().parameterizedBy(layout.typeTypename(type))
+    Input::class.asClassName().parameterizedBy(context.resolver.resolveType(type))
   } else {
-    layout.typeTypename(type)
+    context.resolver.resolveType(type)
   }
 }
 
-fun NamedType.adapterInitializer(layout: CodegenLayout): CodeBlock {
+fun NamedType.adapterInitializer(context: CgContext): CodeBlock {
   return if (optional) {
     val inputFun = MemberName("com.apollographql.apollo3.api", "input")
-    CodeBlock.of("%L.%M()", type.adapterInitializer(layout, null), inputFun)
+    CodeBlock.of("%L.%M()", context.resolver.adapterInitializer(type), inputFun)
   } else {
-    type.adapterInitializer(layout, null)
+    context.resolver.adapterInitializer(type)
   }
 }
 
-internal fun NamedType.toParameterSpec(layout: CodegenLayout): ParameterSpec {
+internal fun NamedType.toParameterSpec(context: CgContext): ParameterSpec {
   return ParameterSpec
       .builder(
           // we use property for parameters as these are ultimately data classes
-          name = layout.propertyName(graphQlName),
-          type = typeName(layout)
+          name = context.layout.propertyName(graphQlName),
+          type = typeName(context)
       )
       .applyIf(description?.isNotBlank() == true) { addKdoc("%L\n", description!!) }
       .applyIf(optional) { defaultValue("%T", Input.Absent::class.asClassName()) }

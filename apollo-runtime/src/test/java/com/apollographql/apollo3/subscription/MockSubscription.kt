@@ -13,7 +13,7 @@ class MockSubscription(
     private val name: String = "SomeSubscription",
     private val operationId: String = "someId"
 ) : Subscription<Subscription.Data> {
-  override fun queryDocument(): String = queryDocument
+  override fun document(): String = queryDocument
 
   override fun serializeVariables(writer: JsonWriter, responseAdapterCache: ResponseAdapterCache) {
     AnyResponseAdapter.toResponse(writer, variables)
@@ -23,7 +23,7 @@ class MockSubscription(
 
   override fun name(): String = name
 
-  override fun operationId(): String = operationId
+  override fun id(): String = operationId
   override fun responseFields(): List<ResponseField.FieldSet> {
     return emptyList()
   }

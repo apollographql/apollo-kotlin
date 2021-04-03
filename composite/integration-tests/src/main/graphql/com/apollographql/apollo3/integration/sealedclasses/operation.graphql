@@ -1,4 +1,0 @@
-#this query is only needed to reference the Direction enum
-query SealedClass($direction: Direction) {
-  path(direction: $direction)
-}

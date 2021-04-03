@@ -9,7 +9,7 @@ interface Operation<D : Operation.Data> {
   /**
    * Returns the raw GraphQL operation String.
    */
-  fun queryDocument(): String
+  fun document(): String
 
   /**
    * Returns GraphQL operation name
@@ -19,7 +19,7 @@ interface Operation<D : Operation.Data> {
   /**
    * Returns a unique identifier for this operation.
    */
-  fun operationId(): String
+  fun id(): String
 
   /**
    * Returns an Adapter that maps the server response data to/from generated model class [D].

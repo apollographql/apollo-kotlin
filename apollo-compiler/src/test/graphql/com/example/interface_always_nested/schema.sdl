@@ -1,0 +1,40 @@
+type Query {
+  root: C
+}
+
+interface A {
+  fieldA1: String
+  fieldA2: String
+}
+
+interface B {
+  fieldB1: String
+  fieldB2: String
+}
+interface C {
+  fieldC: String
+}
+
+type ABC implements A & B & C {
+  fieldA1: String
+  fieldA2: String
+  fieldB1: String
+  fieldB2: String
+  fieldC: String
+}
+
+type AC implements A & C {
+  fieldA1: String
+  fieldA2: String
+  fieldC: String
+}
+
+type BC implements B & C {
+  fieldB1: String
+  fieldB2: String
+  fieldC: String
+}
+
+type SomeC implements C {
+  fieldC: String
+}

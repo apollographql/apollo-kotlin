@@ -17,7 +17,7 @@ import com.apollographql.apollo3.compiler.frontend.withTypenameWhenNeeded
 import com.apollographql.apollo3.compiler.introspection.IntrospectionSchema
 import com.apollographql.apollo3.compiler.operationoutput.OperationDescriptor
 import com.apollographql.apollo3.compiler.operationoutput.toJson
-import com.apollographql.apollo3.compiler.unified.IrBuilder
+import com.apollographql.apollo3.compiler.unified.ir.IrBuilder
 import com.apollographql.apollo3.compiler.unified.codegen.KotlinCodeGenerator
 import com.squareup.kotlinpoet.asClassName
 import java.io.File
@@ -33,11 +33,11 @@ class GraphQLCompiler {
       outputDir: File,
       incomingOptions: IncomingOptions,
       useUnifiedIr: Boolean,
-      moduleOptions: ModuleOptions
+      moduleOptions: ModuleOptions,
   ) {
     outputDir.deleteRecursively()
     outputDir.mkdirs()
-    
+
 
     val (documents, issues) = GraphQLParser.parseExecutableFiles(
         operationFiles,
@@ -155,6 +155,7 @@ class GraphQLCompiler {
         metadataFragments = incomingOptions.metadataFragments,
         alwaysGenerateTypesMatching = moduleOptions.alwaysGenerateTypesMatching,
         customScalarToKotlinName = incomingOptions.customScalarsMapping,
+        generateFragmentAsInterfaces = incomingOptions.generateFragmentsAsInterfaces
     ).build()
 
     val operationOutput = ir.operations.map {
@@ -169,12 +170,11 @@ class GraphQLCompiler {
     KotlinCodeGenerator(
         ir = ir,
         generateAsInternal = moduleOptions.generateAsInternal,
-        enumAsSealedClassPatternFilters = moduleOptions.enumAsSealedClassPatternFilters,
         operationOutput = operationOutput,
         useSemanticNaming = moduleOptions.useSemanticNaming,
         packageNameProvider = moduleOptions.packageNameProvider,
         typePackageName = "${incomingOptions.schemaPackageName}.type",
-        generateCustomScalars = incomingOptions.isFromMetadata,
+        generateCustomScalars = !incomingOptions.isFromMetadata,
         generateFilterNotNull = moduleOptions.generateFilterNotNull,
         generateFragmentsAsInterfaces = incomingOptions.generateFragmentsAsInterfaces,
         generateFragmentImplementations = moduleOptions.generateFragmentImplementations,
@@ -273,7 +273,6 @@ class GraphQLCompiler {
         operationOutput = operationOutput,
         generateAsInternal = moduleOptions.generateAsInternal,
         generateFilterNotNull = moduleOptions.generateFilterNotNull,
-        enumAsSealedClassPatternFilters = moduleOptions.enumAsSealedClassPatternFilters.map { it.toRegex() },
         typesPackageName = "${incomingOptions.schemaPackageName}.type",
         fragmentsPackageName = moduleOptions.packageNameProvider.fragmentPackageName("unused"),
         generateFragmentImplementations = moduleOptions.generateFragmentImplementations,
@@ -373,7 +372,6 @@ class GraphQLCompiler {
        * Setting generateFilterNotNull will generate extra `filterNotNull` functions that will help keep the type information
        */
       val generateFilterNotNull: Boolean,
-      val enumAsSealedClassPatternFilters: Set<String>,
 
       //========== on/off flags to switch some codegen off ============
 
@@ -426,7 +424,6 @@ class GraphQLCompiler {
     val defaultLogger = NoOpLogger
     val defaultGenerateAsInternal = false
     val defaultGenerateFilterNotNull = false
-    val defaultEnumAsSealedClassPatternFilters = emptySet<String>()
     val defaultGenerateFragmentsAsInterfaces = false
     val defaultGenerateFragmentImplementations = false
     val defaultGenerateResponseFields = true
@@ -445,7 +442,6 @@ class GraphQLCompiler {
         logger = defaultLogger,
         generateAsInternal = defaultGenerateAsInternal,
         generateFilterNotNull = defaultGenerateFilterNotNull,
-        enumAsSealedClassPatternFilters = defaultEnumAsSealedClassPatternFilters,
         generateFragmentImplementations = defaultGenerateFragmentImplementations,
         generateResponseFields = defaultGenerateResponseFields,
         generateQueryDocument = defaultGenerateQueryDocument,

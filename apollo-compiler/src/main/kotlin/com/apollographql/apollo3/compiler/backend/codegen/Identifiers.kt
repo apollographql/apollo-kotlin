@@ -7,11 +7,18 @@ internal object Identifier {
   const val writer = "writer"
   const val toResponse = "toResponse"
   const val fromResponse = "fromResponse"
-  const val fromFields = "fromFields"
   const val serializeVariables = "serializeVariables"
-  const val RESPONSE_NAMES = "RESPONSE_NAMES"
   const val fields = "fields"
   const val fieldSets = "fieldSets"
   @Suppress("ObjectPropertyName")
   const val __typename = "__typename"
+
+  const val id = "id"
+  const val name = "name"
+  const val document = "document"
+
+  const val OPERATION_DOCUMENT = "OPERATION_DOCUMENT"
+  const val OPERATION_NAME = "OPERATION_NAME"
+  const val OPERATION_ID = "OPERATION_ID"
+  const val RESPONSE_NAMES = "RESPONSE_NAMES"
 }
