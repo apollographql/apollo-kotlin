@@ -158,7 +158,7 @@ import static com.google.common.truth.Truth.assertThat;
         .assertError(new Predicate<Throwable>() {
           @Override public boolean test(Throwable throwable) throws Exception {
             ApolloNetworkException e = (ApolloNetworkException) throwable;
-            assertThat(e.getMessage()).isEqualTo("Failed to execute http call");
+            assertThat(e.getMessage()).isEqualTo("Failed to execute http call[ for operation 'emptyQuery'");
             assertThat(e.getCause().getClass()).isEqualTo(SocketTimeoutException.class);
             return true;
           }
@@ -174,7 +174,7 @@ import static com.google.common.truth.Truth.assertThat;
         .assertError(new Predicate<Throwable>() {
           @Override public boolean test(Throwable throwable) throws Exception {
             ApolloNetworkException e = (ApolloNetworkException) throwable;
-            assertThat(e.getMessage()).isEqualTo("Failed to execute http call");
+            assertThat(e.getMessage()).isEqualTo("Failed to execute http call[ for operation 'emptyQuery'");
             assertThat(e.getCause().getClass()).isEqualTo(SocketTimeoutException.class);
             return true;
           }
