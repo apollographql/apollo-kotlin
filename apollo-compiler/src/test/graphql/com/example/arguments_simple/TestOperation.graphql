@@ -1,23 +1,11 @@
-query TestQuery($episode: Episode $IncludeName: Boolean! $friendsCount: Int! $listOfListOfStringArgs: [[String]!]!) {
-  hero(episode: $episode listOfListOfStringArgs: $listOfListOfStringArgs) {
-    name @include(if: $IncludeName)
+query TestQuery {
+  hero {
     ...HeroDetails
-  }
-  heroWithReview (
-    episode: $episode
-    review: { stars: 5, favoriteColor: {red: 1, blue: 1}, listOfStringNonOptional: [] },
-  ) {
-    name
   }
 }
 
 fragment HeroDetails on Character {
-  friendsConnection(first: $friendsCount) {
+  friendsConnection {
     totalCount
-    edges {
-      node {
-        name @include(if: $IncludeName)
-      }
-    }
   }
 }

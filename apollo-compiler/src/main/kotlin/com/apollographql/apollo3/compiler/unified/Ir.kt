@@ -292,6 +292,8 @@ class IrInputObjectType(val inputObject: () -> IrInputObject) : IrType()
  * A compound type (objects, unions, interfaces)
  *
  * Compound types are nested and must be resolved with some context
+ *
+ * @param name: the GraphQL name of the compound type. For synthetic fragments this means nothing so we might want to remove this.
  */
 class IrCompoundType(val name: String) : IrType()
 

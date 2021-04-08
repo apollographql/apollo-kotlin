@@ -7,12 +7,9 @@ import com.apollographql.apollo3.compiler.frontend.GQLDirective
 import com.apollographql.apollo3.compiler.frontend.GQLEnumTypeDefinition
 import com.apollographql.apollo3.compiler.frontend.GQLEnumValue
 import com.apollographql.apollo3.compiler.frontend.GQLEnumValueDefinition
-import com.apollographql.apollo3.compiler.frontend.GQLField
 import com.apollographql.apollo3.compiler.frontend.GQLFieldDefinition
 import com.apollographql.apollo3.compiler.frontend.GQLFloatValue
 import com.apollographql.apollo3.compiler.frontend.GQLFragmentDefinition
-import com.apollographql.apollo3.compiler.frontend.GQLFragmentSpread
-import com.apollographql.apollo3.compiler.frontend.GQLInlineFragment
 import com.apollographql.apollo3.compiler.frontend.GQLInputObjectTypeDefinition
 import com.apollographql.apollo3.compiler.frontend.GQLInputValueDefinition
 import com.apollographql.apollo3.compiler.frontend.GQLIntValue
@@ -39,7 +36,9 @@ import com.apollographql.apollo3.compiler.frontend.coerce
 import com.apollographql.apollo3.compiler.frontend.definitionFromScope
 import com.apollographql.apollo3.compiler.frontend.findDeprecationReason
 import com.apollographql.apollo3.compiler.frontend.inferVariables
+import com.apollographql.apollo3.compiler.frontend.leafType
 import com.apollographql.apollo3.compiler.frontend.pretty
+import com.apollographql.apollo3.compiler.frontend.responseName
 import com.apollographql.apollo3.compiler.frontend.rootTypeDefinition
 import com.apollographql.apollo3.compiler.frontend.toUtf8
 import com.apollographql.apollo3.compiler.frontend.toUtf8WithIndents
@@ -51,8 +50,8 @@ class IrBuilder(
     private val metadataFragments: List<MetadataFragment>,
     private val alwaysGenerateTypesMatching: Set<String>,
     private val customScalarToKotlinName: Map<String, String>,
-    private val generateFragmentAsInterfaces: Boolean
-) : FieldCollector {
+    private val generateFragmentAsInterfaces: Boolean,
+) : FieldMerger {
   private val allGQLFragmentDefinitions = (metadataFragments.map { it.definition } + fragmentDefinitions).associateBy { it.name }
   private val enumCache = mutableMapOf<String, IrEnum>()
   private val inputObjectCache = mutableMapOf<String, IrInputObject>()
@@ -314,25 +313,29 @@ class IrBuilder(
     val responseName = alias ?: name
   }
 
-  override fun collectFields(
-      selections: List<GQLSelection>,
-      typeCondition: String,
-      typeSet: TypeSet,
-      collectInlineFragments: Boolean,
-      collectNamedFragments: Boolean,
-      block: (IrFieldInfo, BooleanExpression, List<GQLSelection>) -> IrField,
-  ): List<IrField> {
-    val collectedFields = collectFieldsInternal(
-        selections = selections,
-        typeCondition = typeCondition,
-        typeSet = typeSet,
-        collectInlineFragments = collectInlineFragments,
-        collectNamedFragments = collectNamedFragments
-    )
+  override fun merge(fields: List<FieldWithParent>): List<MergedField> {
+    return fields.map { fieldWithParent ->
+      val gqlField = fieldWithParent.gqlField
+      val typeDefinition = schema.typeDefinition(fieldWithParent.parentType)
+      val fieldDefinition = gqlField.definitionFromScope(schema, typeDefinition)
 
-    return collectedFields.groupBy {
+      check(fieldDefinition != null) {
+        "cannot find field definition for field '${gqlField.responseName()}' of type '${typeDefinition.name}'"
+      }
+      CollectedField(
+          name = gqlField.name,
+          alias = gqlField.alias,
+          arguments = gqlField.arguments?.arguments?.map { it.toIr(fieldDefinition) } ?: emptyList(),
+          condition = gqlField.directives.toBooleanExpression(),
+          selections = gqlField.selectionSet?.selections ?: emptyList(),
+          type = fieldDefinition.type,
+          description = fieldDefinition.description,
+          deprecationReason = fieldDefinition.directives.findDeprecationReason(),
+      )
+    }.groupBy {
       it.responseName
     }.values.map { fieldsWithSameResponseName ->
+
       /**
        * Sanity checks, might be removed as this should be done during validation
        */
@@ -359,56 +362,12 @@ class IrBuilder(
           type = first.type.toIr(),
       )
 
-      block(info, BooleanExpression.Or(fieldsWithSameResponseName.map { it.condition }.toSet()), childSelections)
-    }
-  }
-
-  /**
-   *
-   * @param typeSet if non-null, will recurse in all inline and named fragments contained in the [TypeSet]
-   */
-  private fun collectFieldsInternal(
-      selections: List<GQLSelection>,
-      typeCondition: String,
-      typeSet: TypeSet,
-      collectInlineFragments: Boolean,
-      collectNamedFragments: Boolean,
-  ): List<CollectedField> {
-    val typeDefinition = schema.typeDefinition(typeCondition)
-
-    return selections.flatMap {
-      when (it) {
-        is GQLField -> {
-          val fieldDefinition = it.definitionFromScope(schema, typeDefinition)!!
-          listOf(
-              CollectedField(
-                  name = it.name,
-                  alias = it.alias,
-                  arguments = it.arguments?.arguments?.map { it.toIr(fieldDefinition) } ?: emptyList(),
-                  condition = it.directives.toBooleanExpression(),
-                  selections = it.selectionSet?.selections ?: emptyList(),
-                  type = fieldDefinition.type,
-                  description = fieldDefinition.description,
-                  deprecationReason = fieldDefinition.directives.findDeprecationReason(),
-              )
-          )
-        }
-        is GQLInlineFragment -> {
-          if (collectInlineFragments && typeSet.contains(it.typeCondition.name)) {
-            collectFieldsInternal(it.selectionSet.selections, it.typeCondition.name, typeSet, collectInlineFragments, collectNamedFragments)
-          } else {
-            emptyList()
-          }
-        }
-        is GQLFragmentSpread -> {
-          val fragment = allGQLFragmentDefinitions[it.name]!!
-          if (collectNamedFragments && typeSet.contains(fragment.typeCondition.name)) {
-            collectFieldsInternal(fragment.selectionSet.selections, fragment.typeCondition.name, typeSet, collectInlineFragments, collectNamedFragments)
-          } else {
-            emptyList()
-          }
-        }
-      }
+      MergedField(
+          info = info,
+          condition = BooleanExpression.Or(fieldsWithSameResponseName.map { it.condition }.toSet()),
+          selections = childSelections,
+          rawTypeName = first.type.leafType().name
+      )
     }
   }
 

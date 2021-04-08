@@ -14,12 +14,12 @@ import com.apollographql.apollo3.compiler.frontend.Schema
  *
  * While doing so, record all the used fragments and used types
  *
- * @param fieldCollector a [FieldCollector] that handles the heavy lifting of collecting fields, remember their types, etc...
+ * @param fieldMerger a [FieldMerger] that handles the heavy lifting of collecting fields, remember their types, etc...
  */
 class AsInterfacesFieldSetBuilder(
     private val schema: Schema,
     private val allGQLFragmentDefinitions: Map<String, GQLFragmentDefinition>,
-    private val fieldCollector: FieldCollector,
+    private val fieldMerger: FieldMerger,
 ): FieldSetsBuilder {
   private var cachedFragmentsFields = mutableMapOf<String, IrField>()
 
@@ -275,6 +275,38 @@ class AsInterfacesFieldSetBuilder(
     )
   }
 
+
+  /**
+   *
+   * @param typeSet if non-null, will recurse in all inline and named fragments contained in the [TypeSet]
+   */
+  private fun collectFieldsInternal(
+      selections: List<GQLSelection>,
+      typeCondition: String,
+      typeSet: TypeSet,
+  ): List<FieldWithParent> {
+    return selections.flatMap {
+      when (it) {
+        is GQLField -> listOf(FieldWithParent(it, typeCondition))
+        is GQLInlineFragment -> {
+          if (typeSet.contains(it.typeCondition.name)) {
+            collectFieldsInternal(it.selectionSet.selections, it.typeCondition.name, typeSet)
+          } else {
+            emptyList()
+          }
+        }
+        is GQLFragmentSpread -> {
+          val fragment = allGQLFragmentDefinitions[it.name]!!
+          if (typeSet.contains(fragment.typeCondition.name)) {
+            collectFieldsInternal(fragment.selectionSet.selections, fragment.typeCondition.name, typeSet)
+          } else {
+            emptyList()
+          }
+        }
+      }
+    }
+  }
+
   private fun buildFieldSet(
       selections: List<GQLSelection>,
       fieldType: String,
@@ -284,21 +316,21 @@ class AsInterfacesFieldSetBuilder(
       superFieldSets: List<IrFieldSet>,
       path: ModelPath,
   ): IrFieldSet {
-    val fields = fieldCollector.collectFields(
+    val fields = collectFieldsInternal(
         selections = selections,
         typeCondition = fieldType,
         typeSet = typeSet,
-        collectInlineFragments = true,
-        collectNamedFragments = true
-    ) { info, condition, childSelections ->
+    ).let {
+      fieldMerger.merge(it)
+    }.map { mergedField ->
       val superFields = superFieldSets.mapNotNull {
-        it.fields.firstOrNull { it.responseName == info.responseName }
+        it.fields.firstOrNull { it.responseName == mergedField.info.responseName }
       }
 
       buildField(
-          info = info,
-          condition = condition,
-          selections = childSelections,
+          info = mergedField.info,
+          condition = mergedField.condition,
+          selections = mergedField.selections,
           superFields = superFields,
           path = path + modelName,
       )

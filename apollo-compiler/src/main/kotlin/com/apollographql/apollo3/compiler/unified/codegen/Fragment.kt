@@ -37,7 +37,7 @@ fun IrNamedFragment.apolloFileSpecs(
     list.add(
         ApolloFileSpec(
             packageName = layout.fragmentPackageName(name),
-            implementationField.typeSpecs(layout, false),
+            implementationField.typeSpecs(layout, false).map { it.withFragmentSuperinterface() },
             layout.fragmentInterfaceFileName(name)
         )
     )
@@ -118,11 +118,13 @@ private fun IrNamedFragment.adapterFunSpec(layout: CodegenLayout): FunSpec {
 
 private fun IrNamedFragment.dataTypeSpecs(layout: CodegenLayout): List<TypeSpec> {
   return implementationField.typeSpecs(layout, false).map {
-    it.toBuilder()
-        .addSuperinterface(Fragment.Data::class)
-        .build()
+    it.withFragmentSuperinterface()
   }
 }
+
+private fun TypeSpec.withFragmentSuperinterface() = toBuilder()
+    .addSuperinterface(Fragment.Data::class)
+    .build()
 
 private fun IrNamedFragment.superInterfaceType(layout: CodegenLayout): TypeName {
   check(implementationField.typeFieldSet != null) // data is always a compound type

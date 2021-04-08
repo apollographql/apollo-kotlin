@@ -38,7 +38,7 @@ class CodegenTest(private val folder: File, private val fragmentsCodegenMode: Fr
   fun generateExpectedClasses() {
     val args = arguments(
         folder = folder,
-        fragmentAsInterfaces = fragmentsCodegenMode == FragmentsCodegenMode.FragmentsAsInterfaces,
+        fragmentAsInterfaces = fragmentsCodegenMode == FragmentsCodegenMode.AsInterfaces,
     )
     generateExpectedClasses(args)
   }
@@ -65,18 +65,11 @@ class CodegenTest(private val folder: File, private val fragmentsCodegenMode: Fr
       it.isFile && it.name != "metadata"
     }
 
-    val expectedFiles = if (fragmentsCodegenMode == FragmentsCodegenMode.Default) {
-      folder.walk().filter { it.isFile && it.extension == "expected" }
-    } else {
-      folder.resolve(fragmentsCodegenMode.name.decapitalize()).walk().filter { it.isFile && it.extension == "expected" }
-    }
+    val expectedFiles = folder.resolve(fragmentsCodegenMode.name.decapitalize()).walk().filter { it.isFile && it.extension == "expected" }
 
     expectedFiles.forEach { expected ->
-      val relativePath = if (fragmentsCodegenMode == FragmentsCodegenMode.Default) {
-        expected.relativeTo(folder).path.removeSuffix(".expected")
-      } else {
-        expected.relativeTo(folder.resolve(fragmentsCodegenMode.name.decapitalize())).path.removeSuffix(".expected")
-      }
+      val relativePath = expected.relativeTo(folder.resolve(fragmentsCodegenMode.name.decapitalize())).path.removeSuffix(".expected")
+
       val actual = actualRoot.resolve(expectedRelativeRoot).resolve(relativePath)
       if (!actual.exists()) {
         if (shouldUpdateTestFixtures()) {
@@ -92,11 +85,7 @@ class CodegenTest(private val folder: File, private val fragmentsCodegenMode: Fr
 
     actualFiles.forEach { actual ->
       val relativePath = actual.relativeTo(actualRoot).relativeTo(expectedRelativeRoot).path
-      val expected = if (fragmentsCodegenMode == FragmentsCodegenMode.Default) {
-        expectedRoot.resolve(expectedRelativeRoot).resolve("$relativePath.expected")
-      } else {
-        expectedRoot.resolve(expectedRelativeRoot).resolve(fragmentsCodegenMode.name.decapitalize()).resolve("$relativePath.expected")
-      }
+      val expected = expectedRoot.resolve(expectedRelativeRoot).resolve(fragmentsCodegenMode.name.decapitalize()).resolve("$relativePath.expected")
       if (!expected.exists()) {
         if (shouldUpdateTestFixtures()) {
           println("adding expected file: ${actual.absolutePath} - ${actual.path}")
@@ -132,7 +121,7 @@ class CodegenTest(private val folder: File, private val fragmentsCodegenMode: Fr
   }
 
   enum class FragmentsCodegenMode {
-    FragmentsAsInterfaces, FragmentsAsDataClasses, Default
+    AsInterfaces, AsClasses
   }
 
   companion object {
@@ -239,7 +228,7 @@ class CodegenTest(private val folder: File, private val fragmentsCodegenMode: Fr
       return Options(
           operationFiles = graphqlFiles,
           outputDir = File("build/generated/test/${folder.name}"),
-          useUnifiedIr = false,
+          useUnifiedIr = true,
           incomingOptions = incomingOptions,
           moduleOptions = moduleOptions
       )
@@ -263,8 +252,8 @@ class CodegenTest(private val folder: File, private val fragmentsCodegenMode: Fr
             if (hasNamedFragments || hasInlineFragments) {
               if (fragmentsCodegenMode == null) {
                 listOf(
-                    arrayOf(file, FragmentsCodegenMode.FragmentsAsInterfaces),
-                    arrayOf(file, FragmentsCodegenMode.FragmentsAsDataClasses)
+                    arrayOf(file, FragmentsCodegenMode.AsInterfaces),
+                    arrayOf(file, FragmentsCodegenMode.AsClasses)
                 )
               } else {
                 listOf(
@@ -274,7 +263,7 @@ class CodegenTest(private val folder: File, private val fragmentsCodegenMode: Fr
             } else {
               listOf(
                   // when there are no fragments we don't really care what fragment codegen mode is
-                  arrayOf(file, FragmentsCodegenMode.Default),
+                  arrayOf(file, FragmentsCodegenMode.AsClasses),
               )
             }
           }

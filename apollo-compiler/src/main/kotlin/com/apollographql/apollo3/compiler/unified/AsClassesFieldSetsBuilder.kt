@@ -1,19 +1,25 @@
 package com.apollographql.apollo3.compiler.unified
 
+import com.apollographql.apollo3.compiler.backend.codegen.capitalizeFirstLetter
 import com.apollographql.apollo3.compiler.frontend.GQLField
 import com.apollographql.apollo3.compiler.frontend.GQLFragmentDefinition
 import com.apollographql.apollo3.compiler.frontend.GQLFragmentSpread
 import com.apollographql.apollo3.compiler.frontend.GQLInlineFragment
 import com.apollographql.apollo3.compiler.frontend.GQLSelection
-import com.apollographql.apollo3.compiler.frontend.Schema
+import com.apollographql.apollo3.compiler.frontend.responseName
 
 /**
- * @param fieldCollector a [FieldCollector] that handles the heavy lifting of collecting fields, remember their types, etc...
+ * A [FieldSetsBuilder] that generates fragments as classes. To do so, it maps the query and generates synthetic fields for
+ * inline and named fragments.
+ * - named fragments will generate reusable data classes
+ * - inline fragments will also generate data classes with the difference that these data classes carry over the fields from the enclosing type
+ *
+ * No attempt is made to simplify trivial inline fragments
  */
 class AsClassesFieldSetBuilder(
     private val allGQLFragmentDefinitions: Map<String, GQLFragmentDefinition>,
-    private val fieldCollector: FieldCollector,
-): FieldSetsBuilder {
+    private val fieldMerger: FieldMerger,
+) : FieldSetsBuilder {
   private var cachedFragmentsFields = mutableMapOf<String, IrField>()
 
   override fun buildOperationField(
@@ -27,7 +33,7 @@ class AsClassesFieldSetBuilder(
         name = "data",
         selections = selections,
         type = type,
-        path = path
+        path = path,
     )
   }
 
@@ -68,6 +74,7 @@ class AsClassesFieldSetBuilder(
         selections = selections,
         path = path,
         condition = BooleanExpression.True,
+        fieldType = type.name
     )
   }
 
@@ -75,6 +82,30 @@ class AsClassesFieldSetBuilder(
       info: IrFieldInfo,
       condition: BooleanExpression,
       selections: List<GQLSelection>,
+      fieldType: String?,
+      path: ModelPath,
+  ): IrField {
+    return buildField(
+        info = info,
+        condition = condition,
+        fields = selections.filterIsInstance<GQLField>().map {
+          check(fieldType != null) {
+            "No field type for field with selections: ${it.responseName()}"
+          }
+          FieldWithParent(it, fieldType)
+        },
+        inlineFragments = selections.filterIsInstance<GQLInlineFragment>(),
+        namedFragments = selections.filterIsInstance<GQLFragmentSpread>(),
+        path = path
+    )
+  }
+
+  private fun buildField(
+      info: IrFieldInfo,
+      condition: BooleanExpression,
+      fields: List<FieldWithParent>,
+      inlineFragments: List<GQLInlineFragment>,
+      namedFragments: List<GQLFragmentSpread>,
       path: ModelPath,
   ): IrField {
     val fieldSets: List<IrFieldSet>
@@ -82,59 +113,85 @@ class AsClassesFieldSetBuilder(
     val implementationFieldSets: List<IrFieldSet>
     val fragmentAccessors = mutableListOf<IrFragmentAccessor>()
 
+    val modelName = capitalizeFirstLetter(info.responseName)
 
-    if (selections.isNotEmpty()) {
-      val fieldType = (info.type.leafType() as? IrCompoundType)?.name ?: "Got selections on a non-compound type for ${info.responseName}"
+    val selfFields = fieldMerger.merge(fields).map { mergedField ->
+      buildField(
+          info = mergedField.info,
+          condition = mergedField.condition,
+          selections = mergedField.selections,
+          fieldType = mergedField.rawTypeName,
+          path = path + modelName
+      )
+    }
 
-      val modelName = info.responseName.capitalize()
+    val inlineFields = inlineFragments
+        .groupBy { it.typeCondition.name }
+        .map {
+          val typeCondition = it.key
+          val syntheticName = "as${typeCondition.capitalize()}"
 
-      val selfFields = fieldCollector.collectFields(
-          selections = selections,
-          typeCondition = fieldType,
-          typeSet = setOf(fieldType),
-          collectInlineFragments = false,
-          collectNamedFragments = false
-      ) { childInfo, childCondition, childSelections ->
-        buildField(childInfo, childCondition, childSelections, path + modelName)
-      }
+          val childInfo = IrFieldInfo(
+              alias = null,
+              name = syntheticName,
+              arguments = emptyList(),
+              description = "Synthetic field for inline fragment",
+              deprecationReason = null,
+              type = IrCompoundType("unused")
+          )
 
-      val inlineFields = selections.filterIsInstance<GQLInlineFragment>()
-          .groupBy { it.typeCondition.name }
-          .map {
-            val syntheticName = "as${it.key.capitalize()}"
-            val syntheticModelName = syntheticName.capitalize()
-            val childInfo = IrFieldInfo(
-                alias = null,
-                name = syntheticName,
-                arguments = emptyList(),
-                description = "Synthetic field for inline fragment",
-                deprecationReason = null,
-                type = IrCompoundType(syntheticModelName)
-            )
+          val inlineSelections = it.value.flatMap { it.selectionSet.selections }
 
-            buildField(
-                info = childInfo,
-                condition = BooleanExpression.Or(it.value.map { it.directives.toBooleanExpression() }.toSet()),
-                selections = selections + it.value,
-                path = path + syntheticModelName,
-            )
-          }
+          buildField(
+              info = childInfo,
+              condition = BooleanExpression.Or(it.value.map { it.directives.toBooleanExpression() }.toSet()),
+              fields = fields + inlineSelections.filterIsInstance<GQLField>().map { FieldWithParent(it, typeCondition) },
+              inlineFragments = inlineSelections.filterIsInstance<GQLInlineFragment>(),
+              namedFragments = namedFragments + inlineSelections.filterIsInstance<GQLFragmentSpread>(),
+              path = path + modelName,
+          )
+        }
 
-      val fragmentFields = selections.filterIsInstance<GQLFragmentSpread>()
-          .groupBy { it.name }
-          .map {
-            val fragmentDefinition = allGQLFragmentDefinitions[it.key]!!
-            getOrBuildFragmentField(
-                selections = fragmentDefinition.selectionSet.selections,
-                type = IrCompoundType(fragmentDefinition.typeCondition.name),
-                name = fragmentDefinition.name
-            )
-          }
+    val fragmentFields = namedFragments
+        .groupBy { it.name }
+        .map {
+          val fragmentDefinition = allGQLFragmentDefinitions[it.key]!!
+          val fragmentField = getOrBuildFragmentField(
+              selections = fragmentDefinition.selectionSet.selections,
+              type = IrCompoundType(fragmentDefinition.typeCondition.name),
+              name = fragmentDefinition.name
+          )
+
+          val syntheticName = it.key.decapitalize()
+          val childInfo = IrFieldInfo(
+              alias = null,
+              name = syntheticName,
+              arguments = emptyList(),
+              description = "Synthetic field for inline fragment",
+              deprecationReason = null,
+              type = IrCompoundType("unused")
+          )
+
+          IrField(
+              info = childInfo,
+              typeFieldSet = fragmentField.typeFieldSet,
+              condition = BooleanExpression.Or(it.value.map { it.directives.toBooleanExpression() }.toSet()),
+              override = false,
+              fieldSets = emptyList(),
+              interfaces = emptyList(),
+              implementations = emptyList(),
+              fragmentAccessors = emptyList()
+          )
+        }
+
+    val allFields = selfFields + inlineFields + fragmentFields
+    if (allFields.isNotEmpty()) {
       fieldSets = listOf(
           IrFieldSet(
               path = path,
               modelName = modelName,
-              typeSet = setOf(fieldType),
+              // Pass some identifiable string in case someone bumps into this
+              typeSet = setOf("fieldSets for fragments as classes do not match a single typeSet"),
               fields = selfFields + inlineFields + fragmentFields,
               implements = emptySet(),
               possibleTypes = emptySet(),
