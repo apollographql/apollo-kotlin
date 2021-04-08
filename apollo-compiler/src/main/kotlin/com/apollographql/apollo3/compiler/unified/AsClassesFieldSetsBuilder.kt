@@ -13,10 +13,10 @@ import com.apollographql.apollo3.compiler.frontend.Schema
 class AsClassesFieldSetBuilder(
     private val allGQLFragmentDefinitions: Map<String, GQLFragmentDefinition>,
     private val fieldCollector: FieldCollector,
-) {
+): FieldSetsBuilder {
   private var cachedFragmentsFields = mutableMapOf<String, IrField>()
 
-  fun buildOperationField(
+  override fun buildOperationField(
       name: String,
       selections: List<GQLSelection>,
       type: IrCompoundType,
@@ -31,7 +31,7 @@ class AsClassesFieldSetBuilder(
     )
   }
 
-  private fun getOrBuildFragmentField(
+  fun getOrBuildFragmentField(
       selections: List<GQLSelection>,
       type: IrCompoundType,
       name: String,

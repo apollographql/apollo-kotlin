@@ -1,8 +1,10 @@
 package com.apollographql.apollo3.compiler.unified.codegen
 
 import com.apollographql.apollo3.api.Fragment
+import com.apollographql.apollo3.compiler.applyIf
 import com.apollographql.apollo3.compiler.backend.codegen.makeDataClass
 import com.apollographql.apollo3.compiler.unified.CodegenLayout
+import com.apollographql.apollo3.compiler.unified.IrField
 import com.apollographql.apollo3.compiler.unified.IrNamedFragment
 import com.apollographql.apollo3.compiler.unified.codegen.adapter.dataResponseAdapterTypeSpecs
 import com.apollographql.apollo3.compiler.unified.codegen.adapter.inputAdapterTypeSpec
@@ -24,15 +26,28 @@ fun IrNamedFragment.apolloFileSpecs(
 ): List<ApolloFileSpec> {
   val list = mutableListOf<ApolloFileSpec>()
 
-  list.add(
-      ApolloFileSpec(
-          packageName = layout.fragmentPackageName(name),
-          interfaceTypeSpecs(layout),
-          layout.fragmentInterfaceFileName(name)
-      )
-  )
-  if (generateFragmentImplementations) {
-    list.add(ApolloFileSpec(layout.fragmentPackageName(name), implementationTypeSpec(layout, generateFilterNotNull)))
+  if (interfaceField != null) {
+    list.add(
+        ApolloFileSpec(
+            packageName = layout.fragmentPackageName(name),
+            interfaceField.typeSpecs(layout, true),
+            layout.fragmentInterfaceFileName(name)
+        ))
+  } else {
+    list.add(
+        ApolloFileSpec(
+            packageName = layout.fragmentPackageName(name),
+            implementationField.typeSpecs(layout, false),
+            layout.fragmentInterfaceFileName(name)
+        )
+    )
+  }
+
+  /**
+   * If we're generating fragments as classes, unconditionally generate adapters
+   */
+  if (interfaceField == null || generateFragmentImplementations) {
+    list.add(ApolloFileSpec(layout.fragmentPackageName(name), fragmentTypeSpec(layout, generateFilterNotNull)))
     list.add(ApolloFileSpec(layout.fragmentAdapterPackageName(name), responseAdapterTypeSpec(layout)))
     if (variables.isNotEmpty()) {
       list.add(ApolloFileSpec(layout.fragmentAdapterPackageName(name), variablesAdapterTypeSpec(layout)))
@@ -45,7 +60,7 @@ fun IrNamedFragment.apolloFileSpecs(
   return list
 }
 
-private fun IrNamedFragment.implementationTypeSpec(layout: CodegenLayout, generateFilterNotNull: Boolean): TypeSpec {
+private fun IrNamedFragment.fragmentTypeSpec(layout: CodegenLayout, generateFilterNotNull: Boolean): TypeSpec {
   return TypeSpec.classBuilder(layout.fragmentName(name))
       .addSuperinterface(superInterfaceType(layout))
       .maybeAddDescription(description)
@@ -53,13 +68,12 @@ private fun IrNamedFragment.implementationTypeSpec(layout: CodegenLayout, genera
       .addFunction(serializeVariablesFunSpec(layout))
       .addFunction(adapterFunSpec(layout))
       .addFunction(responseFieldsFunSpec(layout))
-      .addTypes(dataTypeSpecs(layout)) // Fragments can have multiple data shapes
+      .applyIf(interfaceField != null) {
+        // Fragments can have multiple data shapes
+        addTypes(dataTypeSpecs(layout))
+      }
       .build()
       .maybeAddFilterNotNull(generateFilterNotNull)
-}
-
-private fun IrNamedFragment.interfaceTypeSpecs(layout: CodegenLayout): List<TypeSpec> {
-  return interfaceField.typeSpecs(layout, true)
 }
 
 
@@ -82,7 +96,7 @@ private fun IrNamedFragment.responseAdapterTypeSpec(layout: CodegenLayout): Type
       .build()
 }
 
-private fun IrNamedFragment.responseFieldsTypeSpec(layout:CodegenLayout): TypeSpec {
+private fun IrNamedFragment.responseFieldsTypeSpec(layout: CodegenLayout): TypeSpec {
   return dataResponseFieldsItemSpec(layout.fragmentResponseFieldsName(name), implementationField)
 }
 

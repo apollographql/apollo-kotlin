@@ -171,18 +171,18 @@ private fun List<IrArgument>.codeBlock(): CodeBlock {
 }
 
 private fun IrField.responseFieldsCodeBlock(): CodeBlock {
-  if (name == "__typename" && alias == null) {
+  if (info.name == "__typename" && info.alias == null) {
     return CodeBlock.of("%T.Typename", ResponseField::class.asTypeName())
   }
   val builder = CodeBlock.builder().add("%T(\n", ResponseField::class)
   builder.indent()
-  builder.add("type = %L,\n", type.codeBlock())
-  builder.add("fieldName = %S,\n", name)
-  if (responseName != name) {
+  builder.add("type = %L,\n", info.type.codeBlock())
+  builder.add("fieldName = %S,\n", info.name)
+  if (info.responseName != info.name) {
     builder.add("responseName = %S,\n", responseName)
   }
-  if (arguments.isNotEmpty()) {
-    builder.add("arguments = %L,\n", arguments.codeBlock())
+  if (info.arguments.isNotEmpty()) {
+    builder.add("arguments = %L,\n", info.arguments.codeBlock())
   }
 
   if (condition != BooleanExpression.True) {

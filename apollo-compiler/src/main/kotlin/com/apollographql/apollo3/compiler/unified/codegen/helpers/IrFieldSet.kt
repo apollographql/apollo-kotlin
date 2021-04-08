@@ -74,8 +74,8 @@ fun IrFieldSet.typeSpec(layout: CodegenLayout, asInterface: Boolean, accessors: 
   val properties = fields.map {
     PropertySpec.builder(layout.propertyName(it.responseName), layout.fieldTypeName(it))
         .applyIf(it.override) { addModifiers(KModifier.OVERRIDE) }
-        .maybeAddDescription(it.description)
-        .maybeAddDeprecation(it.deprecationReason)
+        .maybeAddDescription(it.info.description)
+        .maybeAddDeprecation(it.info.deprecationReason)
         .build()
   }
 

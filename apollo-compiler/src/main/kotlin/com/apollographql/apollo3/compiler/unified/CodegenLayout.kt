@@ -142,7 +142,7 @@ class CodegenLayout(
   }
 
   fun fieldTypeName(field: IrField): TypeName {
-    return typeTypename(field.type, field.typeFieldSet)
+    return typeTypename(field.info.type, field.typeFieldSet)
   }
 
   fun fieldSetClassName(fieldSet: IrFieldSet): ClassName {
@@ -161,6 +161,9 @@ class CodegenLayout(
           operationPackageName(operation.filePath) to listOf(operationName(operation))
         }
         is ModelPath.Root.FragmentInterface -> {
+          fragmentPackageName(root.name) to emptyList()
+        }
+        is ModelPath.Root.FragmentModel -> {
           fragmentPackageName(root.name) to emptyList()
         }
         is ModelPath.Root.FragmentImplementation -> {
@@ -184,6 +187,9 @@ class CodegenLayout(
         }
         is ModelPath.Root.FragmentInterface -> error("Fragment interfaces cannot have an adapter")
         is ModelPath.Root.FragmentImplementation -> {
+          fragmentAdapterPackageName(root.name) to listOf(fragmentResponseAdapterWrapperName(root.name))
+        }
+        is ModelPath.Root.FragmentModel -> {
           fragmentAdapterPackageName(root.name) to listOf(fragmentResponseAdapterWrapperName(root.name))
         }
       }
@@ -233,7 +239,9 @@ class CodegenLayout(
 
   internal fun customScalarName(name: String) = capitalizedIdentifier(name)
   internal fun enumName(name: String) = regularIdentifier(name)
-  internal fun enumValueName(name: String) = upperCaseIdentifier(name)
+  // We used to write upper case enum values but the server can define different values with different cases
+  // See https://github.com/apollographql/apollo-android/issues/3035
+  internal fun enumValueName(name: String) = regularIdentifier(name)
   internal fun enumResponseAdapterName(name: String) = enumName(name) + "_ResponseAdapter"
 
   internal fun operationName(operation: IrOperation): String {

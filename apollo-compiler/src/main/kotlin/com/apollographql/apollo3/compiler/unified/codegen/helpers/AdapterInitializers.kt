@@ -30,7 +30,7 @@ import com.squareup.kotlinpoet.CodeBlock
 import com.squareup.kotlinpoet.MemberName
 
 fun IrField.adapterInitializer(layout: CodegenLayout): CodeBlock {
-  return type.adapterInitializer(layout, typeFieldSet)
+  return info.type.adapterInitializer(layout, typeFieldSet)
 }
 
 fun IrType.adapterInitializer(layout: CodegenLayout, fieldSet: IrFieldSet?): CodeBlock {

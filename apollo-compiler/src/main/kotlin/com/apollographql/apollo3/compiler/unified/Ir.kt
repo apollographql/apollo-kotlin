@@ -108,8 +108,7 @@ data class IrNamedFragment(
      * - or both interfaceField and implementationField will be non-null (for fragments as interfaces)
      */
     val interfaceField: IrField?,
-    val implementationField: IrField?,
-    val modelField: IrField?,
+    val implementationField: IrField,
 )
 
 enum class IrOperationType {

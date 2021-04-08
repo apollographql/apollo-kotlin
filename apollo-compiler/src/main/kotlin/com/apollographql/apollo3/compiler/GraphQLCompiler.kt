@@ -155,6 +155,7 @@ class GraphQLCompiler {
         metadataFragments = incomingOptions.metadataFragments,
         alwaysGenerateTypesMatching = moduleOptions.alwaysGenerateTypesMatching,
         customScalarToKotlinName = incomingOptions.customScalarsMapping,
+        generateFragmentAsInterfaces = incomingOptions.generateFragmentsAsInterfaces
     ).build()
 
     val operationOutput = ir.operations.map {

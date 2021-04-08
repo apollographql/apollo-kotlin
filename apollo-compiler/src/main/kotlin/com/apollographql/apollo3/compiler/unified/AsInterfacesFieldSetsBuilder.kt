@@ -20,10 +20,10 @@ class AsInterfacesFieldSetBuilder(
     private val schema: Schema,
     private val allGQLFragmentDefinitions: Map<String, GQLFragmentDefinition>,
     private val fieldCollector: FieldCollector,
-) {
+): FieldSetsBuilder {
   private var cachedFragmentsFields = mutableMapOf<String, IrField>()
 
-  fun buildOperationField(
+  override fun buildOperationField(
       name: String,
       selections: List<GQLSelection>,
       type: IrCompoundType,

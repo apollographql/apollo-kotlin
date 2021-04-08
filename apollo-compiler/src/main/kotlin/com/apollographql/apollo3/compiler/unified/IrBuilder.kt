@@ -51,6 +51,7 @@ class IrBuilder(
     private val metadataFragments: List<MetadataFragment>,
     private val alwaysGenerateTypesMatching: Set<String>,
     private val customScalarToKotlinName: Map<String, String>,
+    private val generateFragmentAsInterfaces: Boolean
 ) : FieldCollector {
   private val allGQLFragmentDefinitions = (metadataFragments.map { it.definition } + fragmentDefinitions).associateBy { it.name }
   private val enumCache = mutableMapOf<String, IrEnum>()
@@ -58,11 +59,18 @@ class IrBuilder(
   private val customScalarCache = mutableMapOf<String, IrCustomScalar>()
   private val inputObjectsToGenerate = mutableListOf<String>()
 
-  private val fieldSetBuilder = AsInterfacesFieldSetBuilder(
-      schema = schema,
-      allGQLFragmentDefinitions = allGQLFragmentDefinitions,
-      this
-  )
+  private val fieldSetBuilder: FieldSetsBuilder = if (generateFragmentAsInterfaces) {
+    AsInterfacesFieldSetBuilder(
+        schema = schema,
+        allGQLFragmentDefinitions = allGQLFragmentDefinitions,
+        this
+    )
+  } else {
+    AsClassesFieldSetBuilder(
+        allGQLFragmentDefinitions = allGQLFragmentDefinitions,
+        this
+    )
+  }
 
   private fun shouldAlwaysGenerate(name: String) = alwaysGenerateTypesMatching.map { Regex(it) }.any { it.matches(name) }
 
@@ -182,20 +190,37 @@ class IrBuilder(
 
     val variableDefinitions = inferVariables(schema, allGQLFragmentDefinitions)
 
-    val fragmentFields = fieldSetBuilder.buildFragmentFields(
-        selections = selectionSet.selections,
-        type = rootCompoundType(typeDefinition.name),
-        name,
-    )
+    val interfaceField: IrField?
+    val implementationField: IrField?
+
+    when (fieldSetBuilder) {
+      is AsInterfacesFieldSetBuilder -> {
+        val fragmentFields = fieldSetBuilder.buildFragmentFields(
+            selections = selectionSet.selections,
+            type = rootCompoundType(typeDefinition.name),
+            name = name,
+        )
+        interfaceField = fragmentFields.interfaceField
+        implementationField = fragmentFields.dataField
+      }
+      is AsClassesFieldSetBuilder -> {
+        interfaceField = null
+        implementationField = fieldSetBuilder.getOrBuildFragmentField(
+            selections = selectionSet.selections,
+            type = rootCompoundType(typeDefinition.name),
+            name = name,
+        )
+      }
+      else -> error("")
+    }
     return IrNamedFragment(
         name = name,
         description = description,
         filePath = sourceLocation.filePath!!,
         typeCondition = typeDefinition.name,
         variables = variableDefinitions.map { it.toIr() },
-        interfaceField = fragmentFields.interfaceField,
-        implementationField = fragmentFields.dataField,
-        modelField = null
+        interfaceField = interfaceField,
+        implementationField = implementationField,
     )
   }
 
