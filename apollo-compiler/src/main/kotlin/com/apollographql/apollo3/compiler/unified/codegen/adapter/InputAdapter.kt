@@ -8,7 +8,7 @@ import com.apollographql.apollo3.api.ResponseAdapterCache
 import com.apollographql.apollo3.api.json.JsonReader
 import com.apollographql.apollo3.api.json.JsonWriter
 import com.apollographql.apollo3.compiler.backend.codegen.Identifier
-import com.apollographql.apollo3.compiler.backend.codegen.kotlinNameForProperty
+import com.apollographql.apollo3.compiler.unified.CodegenLayout
 import com.apollographql.apollo3.compiler.unified.codegen.helpers.NamedType
 import com.apollographql.apollo3.compiler.unified.codegen.helpers.adapterInitializer
 import com.squareup.kotlinpoet.ClassName
@@ -22,13 +22,14 @@ import com.squareup.kotlinpoet.asTypeName
 
 
 internal fun List<NamedType>.inputAdapterTypeSpec(
+    layout: CodegenLayout,
     adapterName: String,
     adaptedTypeName: TypeName,
 ): TypeSpec {
   return TypeSpec.objectBuilder(adapterName)
       .addSuperinterface(ResponseAdapter::class.asTypeName().parameterizedBy(adaptedTypeName))
       .addFunction(notImplementedFromResponseFunSpec(adaptedTypeName))
-      .addFunction(writeToResponseFunSpec(adaptedTypeName))
+      .addFunction(writeToResponseFunSpec(layout, adaptedTypeName))
       .build()
 }
 
@@ -42,6 +43,7 @@ private fun notImplementedFromResponseFunSpec(adaptedTypeName: TypeName) = FunSp
 
 
 private fun List<NamedType>.writeToResponseFunSpec(
+    layout: CodegenLayout,
     adaptedTypeName: TypeName
 ): FunSpec {
   return FunSpec.builder(Identifier.toResponse)
@@ -49,25 +51,25 @@ private fun List<NamedType>.writeToResponseFunSpec(
       .addParameter(Identifier.writer, JsonWriter::class.asTypeName())
       .addParameter(Identifier.responseAdapterCache, ResponseAdapterCache::class)
       .addParameter(Identifier.value, adaptedTypeName)
-      .addCode(writeToResponseCodeBlock())
+      .addCode(writeToResponseCodeBlock(layout))
       .build()
 }
 
 
-private fun List<NamedType>.writeToResponseCodeBlock(): CodeBlock {
+private fun List<NamedType>.writeToResponseCodeBlock(layout: CodegenLayout): CodeBlock {
   val builder = CodeBlock.builder()
   forEach {
-    builder.add(it.writeToResponseCodeBlock())
+    builder.add(it.writeToResponseCodeBlock(layout))
   }
   return builder.build()
 }
 
-private fun NamedType.writeToResponseCodeBlock(): CodeBlock {
+private fun NamedType.writeToResponseCodeBlock(layout: CodegenLayout): CodeBlock {
   return CodeBlock.builder().apply {
     addStatement("${Identifier.writer}.name(%S)", graphQlName)
     addStatement(
-        "%L.${Identifier.toResponse}(${Identifier.writer}, ${Identifier.responseAdapterCache}, value.${kotlinNameForProperty(graphQlName)})",
-        adapterInitializer()
+        "%L.${Identifier.toResponse}(${Identifier.writer}, ${Identifier.responseAdapterCache}, value.${layout.propertyName(graphQlName)})",
+        adapterInitializer(layout)
     )
   }.build()
 }

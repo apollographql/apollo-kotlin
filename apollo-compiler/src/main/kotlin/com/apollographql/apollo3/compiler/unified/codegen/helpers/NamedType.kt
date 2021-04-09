@@ -2,7 +2,7 @@ package com.apollographql.apollo3.compiler.unified.codegen.helpers
 
 import com.apollographql.apollo3.api.Input
 import com.apollographql.apollo3.compiler.applyIf
-import com.apollographql.apollo3.compiler.backend.codegen.kotlinNameForProperty
+import com.apollographql.apollo3.compiler.unified.CodegenLayout
 import com.apollographql.apollo3.compiler.unified.IrInputField
 import com.apollographql.apollo3.compiler.unified.IrType
 import com.apollographql.apollo3.compiler.unified.IrVariable
@@ -21,29 +21,29 @@ class NamedType(
     val optional: Boolean = false,
 )
 
-fun NamedType.typeName(): TypeName {
+fun NamedType.typeName(layout: CodegenLayout): TypeName {
   return if (optional) {
-    Input::class.asClassName().parameterizedBy(type.typeName())
+    Input::class.asClassName().parameterizedBy(layout.typeTypename(type))
   } else {
-    type.typeName()
+    layout.typeTypename(type)
   }
 }
 
-fun NamedType.adapterInitializer(): CodeBlock {
+fun NamedType.adapterInitializer(layout: CodegenLayout): CodeBlock {
   return if (optional) {
     val inputFun = MemberName("com.apollographql.apollo3.api", "input")
-    CodeBlock.of("%L.%M()", type.adapterInitializer(null), inputFun)
+    CodeBlock.of("%L.%M()", type.adapterInitializer(layout, null), inputFun)
   } else {
-    type.adapterInitializer(null)
+    type.adapterInitializer(layout, null)
   }
 }
 
-internal fun NamedType.toParameterSpec(): ParameterSpec {
+internal fun NamedType.toParameterSpec(layout: CodegenLayout): ParameterSpec {
   return ParameterSpec
       .builder(
           // we use property for parameters as these are ultimately data classes
-          name = kotlinNameForProperty(graphQlName),
-          type = typeName()
+          name = layout.propertyName(graphQlName),
+          type = typeName(layout)
       )
       .applyIf(description?.isNotBlank() == true) { addKdoc("%L\n", description!!) }
       .applyIf(optional) { defaultValue("%T", Input.Absent::class.asClassName()) }

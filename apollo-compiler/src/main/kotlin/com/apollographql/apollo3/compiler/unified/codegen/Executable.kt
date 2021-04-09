@@ -8,25 +8,25 @@ import com.apollographql.apollo3.compiler.backend.codegen.Identifier.responseAda
 import com.apollographql.apollo3.compiler.backend.codegen.Identifier.serializeVariables
 import com.apollographql.apollo3.compiler.backend.codegen.Identifier.toResponse
 import com.apollographql.apollo3.compiler.backend.codegen.Identifier.writer
-import com.apollographql.apollo3.compiler.backend.codegen.adapterPackageName
-import com.apollographql.apollo3.compiler.backend.codegen.kotlinNameForVariablesAdapter
 import com.apollographql.apollo3.compiler.backend.codegen.obj
+import com.apollographql.apollo3.compiler.backend.codegen.patchKotlinNativeOptionalArrayProperties
 import com.squareup.kotlinpoet.ClassName
 import com.squareup.kotlinpoet.CodeBlock
 import com.squareup.kotlinpoet.FunSpec
 import com.squareup.kotlinpoet.KModifier
 import com.squareup.kotlinpoet.ParameterizedTypeName.Companion.parameterizedBy
 import com.squareup.kotlinpoet.TypeName
+import com.squareup.kotlinpoet.TypeSpec
 import com.squareup.kotlinpoet.asClassName
 import com.squareup.kotlinpoet.asTypeName
 
 fun serializeVariablesFunSpec(
-    packageName: String,
+    adapterPackageName: String,
     adapterName: String,
     isEmpty: Boolean,
     emptyMessage: String
 ): FunSpec {
-  val adapterTypeName = ClassName(adapterPackageName(packageName), adapterName )
+  val adapterTypeName = ClassName(adapterPackageName, adapterName )
 
   val body = if (isEmpty) {
     CodeBlock.of(emptyMessage)
@@ -65,4 +65,11 @@ fun responseFieldsFunSpec(typeName: TypeName): FunSpec {
       )
       .addCode("return %T.fields.first().fieldSets", typeName)
       .build()
+}
+
+fun TypeSpec.maybeAddFilterNotNull(generateFilterNotNull: Boolean): TypeSpec {
+  if (!generateFilterNotNull) {
+    return this
+  }
+  return patchKotlinNativeOptionalArrayProperties()
 }

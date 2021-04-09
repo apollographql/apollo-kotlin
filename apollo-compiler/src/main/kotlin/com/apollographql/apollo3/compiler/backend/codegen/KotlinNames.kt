@@ -2,6 +2,7 @@ package com.apollographql.apollo3.compiler.backend.codegen
 
 import com.apollographql.apollo3.compiler.backend.ast.CodeGenerationAst
 import com.apollographql.apollo3.compiler.escapeKotlinReservedWord
+import com.apollographql.apollo3.compiler.unified.IrOperation
 
 /**
  * This file contains GraphQL -> Kotlin transformations
@@ -12,7 +13,8 @@ internal fun kotlinNameForCustomScalar(name: String) = capitalizedIdentifier(nam
 internal fun kotlinNameForEnum(name: String) = regularIdentifier(name)
 internal fun kotlinNameForEnumValue(name: String) = upperCaseIdentifier(name)
 
-internal fun kotlinNameForOperation(name: String) = capitalizedIdentifier(name)
+internal fun kotlinNameForOperation(name: String) =  capitalizedIdentifier(name)
+
 internal fun kotlinNameForFragmentInterfaceFile(name: String) = capitalizedIdentifier(name)
 internal fun kotlinNameForFragmentImplementation(name: String) = capitalizedIdentifier(name) + "Impl"
 internal fun kotlinNameForInputObject(name: String) = capitalizedIdentifier(name)
@@ -79,5 +81,3 @@ internal fun CodeGenerationAst.TypeRef.fragmentPropertyName(): String {
   }
 }
 
-fun adapterPackageName(packageName: String) = "$packageName.adapter"
-fun responseFieldsPackageName(packageName: String) = "$packageName.responsefields"

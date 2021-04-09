@@ -1,6 +1,7 @@
 package com.apollographql.apollo3.compiler.unified
 
 import com.apollographql.apollo3.compiler.PackageNameProvider
+import com.apollographql.apollo3.compiler.Roots
 import com.apollographql.apollo3.compiler.frontend.GQLBooleanValue
 import com.apollographql.apollo3.compiler.frontend.GQLDirective
 import com.apollographql.apollo3.compiler.frontend.GQLEnumTypeDefinition
@@ -43,7 +44,7 @@ class IrBuilder(
     metadataFragmentDefinitions: List<GQLFragmentDefinition>,
     private val alwaysGenerateTypesMatching: Set<String>,
     private val customScalarToKotlinName: Map<String, String>,
-    private val packageNameProvider: PackageNameProvider,
+    private val roots: Roots,
 ) {
   private val allGQLFragmentDefinitions = (metadataFragmentDefinitions + fragmentDefinitions).associateBy { it.name }
   private val enumCache = mutableMapOf<String, IrEnum>()
@@ -53,12 +54,10 @@ class IrBuilder(
 
   private val fieldSetBuilder = IrFieldSetBuilder(
       schema = schema,
-      allGQLFragmentDefinitions = allGQLFragmentDefinitions,
-      packageNameProvider = packageNameProvider,
-      registerType = { gqlType ->
-        gqlType.toIr()
-      }
-  )
+      allGQLFragmentDefinitions = allGQLFragmentDefinitions
+  ) { gqlType ->
+    gqlType.toIr()
+  }
 
   private fun shouldAlwaysGenerate(name: String) = alwaysGenerateTypesMatching.map { Regex(it) }.any { it.matches(name) }
 
@@ -78,10 +77,7 @@ class IrBuilder(
         fragments = fragments,
         inputObjects = inputObjectCache.values.toList(),
         enums = enumCache.values.toList(),
-        customScalars = IrCustomScalars(
-            packageName = packageNameProvider.customScalarsPackageName(),
-            customScalars = customScalarCache.values.toList()
-        )
+        customScalars = IrCustomScalars(customScalars = customScalarCache.values.toList())
     )
   }
 
@@ -89,7 +85,6 @@ class IrBuilder(
     return IrCustomScalar(
         name = name,
         kotlinName = customScalarToKotlinName[name],
-        packageName = packageNameProvider.customScalarsPackageName(),
         description = description,
         deprecationReason = directives.findDeprecationReason()
     )
@@ -97,7 +92,6 @@ class IrBuilder(
 
   private fun GQLInputObjectTypeDefinition.toIr(): IrInputObject {
     return IrInputObject(
-        packageName = packageNameProvider.inputObjectPackageName(name),
         name = name,
         description = description,
         deprecationReason = directives.findDeprecationReason(),
@@ -123,7 +117,6 @@ class IrBuilder(
 
   private fun GQLEnumTypeDefinition.toIr(): IrEnum {
     return IrEnum(
-        packageName = packageNameProvider.enumPackageName(name),
         name = name,
         description = description,
         values = enumValues.map { it.toIr() }
@@ -150,12 +143,12 @@ class IrBuilder(
       allGQLFragmentDefinitions[fragmentName]!!.toUtf8WithIndents()
     }).trimEnd('\n')
 
-    val packageName = packageNameProvider.operationPackageName(sourceLocation.filePath!!)
+    val packageName = roots.filePackageName(sourceLocation.filePath!!)
 
     check(name != null) {
       "Apollo doesn't support anonymous operation."
     }
-    val dataField = fieldSetBuilder.buildOperation(
+    val dataField = fieldSetBuilder.buildOperationField(
         selections = selectionSet.selections,
         fieldType = typeDefinition.name,
         name = name,
@@ -170,8 +163,6 @@ class IrBuilder(
         dataField = dataField,
         sourceWithFragments = sourceWithFragments,
         packageName = packageName,
-        // TODO: operation Id
-        operationId = name
     )
   }
 
@@ -180,9 +171,7 @@ class IrBuilder(
 
     val variableDefinitions = inferVariables(schema, allGQLFragmentDefinitions)
 
-    val packageName = packageNameProvider.fragmentPackageName(sourceLocation.filePath!!)
-
-    val fragmentFields = fieldSetBuilder.buildFragment(
+    val fragmentFields = fieldSetBuilder.buildFragmentFields(
         selections = selectionSet.selections,
         fieldType = typeDefinition.name,
         name,
@@ -190,12 +179,11 @@ class IrBuilder(
     return IrNamedFragment(
         name = name,
         description = description,
-        filePath = sourceLocation.filePath,
+        filePath = sourceLocation.filePath!!,
         typeCondition = typeDefinition.name,
         variables = variableDefinitions.map { it.toIr() },
         interfaceField = fragmentFields.interfaceField,
         dataField = fragmentFields.dataField,
-        packageName = packageName
     )
   }
 

@@ -83,6 +83,7 @@ class CodegenTest(private val folder: File, private val fragmentsCodegenMode: Fr
       if (!expected.exists()) {
         if (shouldUpdateTestFixtures()) {
           println("adding expected file: ${actual.absolutePath} - ${actual.path}")
+          expected.parentFile.mkdirs()
           actual.copyTo(expected)
           return@forEach
         } else {
@@ -172,7 +173,7 @@ class CodegenTest(private val folder: File, private val fragmentsCodegenMode: Fr
       }
       val operationIdGenerator = when (folder.name) {
         "operation_id_generator" -> object : OperationIdGenerator {
-          override fun apply(operationDocument: String, operationFilepath: String): String {
+          override fun apply(operationDocument: String, operationName: String): String {
             return "hash"
           }
 
@@ -197,7 +198,7 @@ class CodegenTest(private val folder: File, private val fragmentsCodegenMode: Fr
           ?: File("src/test/graphql/schema.sdl")
 
       val graphqlFiles = setOf(File(folder, "TestOperation.graphql"))
-      val operationOutputGenerator = OperationOutputGenerator.DefaultOperationOuputGenerator(operationIdGenerator)
+      val operationOutputGenerator = OperationOutputGenerator.Default(operationIdGenerator)
 
       return GraphQLCompiler.Arguments(
           rootPackageName = "com.example.${folder.name}",
@@ -216,13 +217,14 @@ class CodegenTest(private val folder: File, private val fragmentsCodegenMode: Fr
           dumpIR = false,
           generateFragmentImplementations = generateFragmentImplementations,
           generateFragmentsAsInterfaces = fragmentAsInterfaces,
+          useUnifiedIr = false
       )
     }
 
     @JvmStatic
     @Parameterized.Parameters(name = "{0} ({1})")
     fun data(): Collection<*> {
-      val fragmentsCodegenMode = System.getProperty("fragmentsCodegenMode")?.trim()?.let { FragmentsCodegenMode.valueOf(it) }
+      val fragmentsCodegenMode = System.getProperty("fragmentsCodegenMode")?.trim()?.let { kotlin.runCatching { FragmentsCodegenMode.valueOf(it) }.getOrNull() }
       return File("src/test/graphql/com/example/")
           .listFiles()!!
           .filter { it.isDirectory }

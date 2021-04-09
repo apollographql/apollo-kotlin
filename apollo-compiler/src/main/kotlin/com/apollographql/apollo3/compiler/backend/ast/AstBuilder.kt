@@ -243,7 +243,6 @@ internal class AstBuilder private constructor(
     }
     val operationId = operationOutput.findOperationId(
         name = this.operationName,
-        packageName = this.targetPackageName,
     )
     val operationDataType = this.astOperationDataObjectType(this.targetPackageName).run {
       copy(
