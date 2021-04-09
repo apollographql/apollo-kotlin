@@ -15,9 +15,9 @@ internal class InputValueScope(val schema: Schema) {
       val issues: List<Issue>
   ) {
     fun orThrow(): GQLValue {
-      if (issues.isNotEmpty()) {
-        // In case the schema is bad
-        // Double check the default value here
+      // Let warnings go through.
+      // Especially deprecation warnings are ok.
+      if (issues.any { it.severity == Issue.Severity.ERROR }) {
         throw SourceAwareException(issues.first().message, issues.first().sourceLocation)
       }
       return coercedValue

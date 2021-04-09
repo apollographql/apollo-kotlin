@@ -205,32 +205,8 @@ class ResponseNormalizationTest {
     Truth.assertThat(friends[2]).isEqualTo(CacheReference("$TEST_FIELD_KEY_JEDI.friends.2"))
   }
 
-  @Test
-  @Throws(Exception::class)
-  fun testHeroParentTypeDependentFieldHuman() {
-    val records = records(HeroParentTypeDependentFieldQuery(Input.Present(Episode.EMPIRE)), "HeroParentTypeDependentFieldHumanResponse.json")
-
-    val lukeRecord = records.get("$TEST_FIELD_KEY_EMPIRE.friends.0")
-    Truth.assertThat(lukeRecord!!["name"]).isEqualTo("Han Solo")
-    Truth.assertThat(lukeRecord["height({\"unit\":\"FOOT\"})"]).isEqualTo(5.905512)
-  }
-
-  @Test
-  fun list_of_objects_with_null_object() {
-    val records = records(AllPlanetsQuery(), "AllPlanetsListOfObjectWithNullObject.json")
-    val fieldKey = "allPlanets({\"first\":300})"
-    var record: Record?
-
-    record = records.get("$fieldKey.planets.0")
-    Truth.assertThat(record?.get("filmConnection")).isNull()
-    record = records.get("$fieldKey.planets.0.filmConnection")
-    Truth.assertThat(record).isNull()
-    record = records.get("$fieldKey.planets.1.filmConnection")
-    Truth.assertThat(record).isNotNull()
-  }
-
   companion object {
-    private fun <D : Operation.Data> records(operation: Operation<D>, name: String): Map<String, Record> {
+    internal fun <D : Operation.Data> records(operation: Operation<D>, name: String): Map<String, Record> {
       val data = operation.fromResponse(Utils.readResource(name))
       return operation.normalize(data = data.data!!, ResponseAdapterCache.DEFAULT, IdFieldCacheKeyResolver())
     }

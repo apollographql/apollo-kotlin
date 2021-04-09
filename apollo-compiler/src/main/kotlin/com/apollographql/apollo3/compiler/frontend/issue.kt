@@ -60,11 +60,21 @@ sealed class Issue(
   class ParsingError(message: String, sourceLocation: SourceLocation) : Issue(message, sourceLocation, Severity.ERROR)
   class DeprecatedUsage(message: String, sourceLocation: SourceLocation) : Issue(message, sourceLocation, Severity.WARNING)
   /**
+   * An unknown directive was found.
+   *
    * In a perfect world everyone uses SDL schemas and we can validate directives but in this world, a lot of users rely
    * on introspection schemas that do not contain directives. If this happens, we pass them through without validation.
    */
   class UnknownDirective(message: String, sourceLocation: SourceLocation) : Issue(message, sourceLocation, Severity.WARNING)
   class UnusedVariable(message: String, sourceLocation: SourceLocation) : Issue(message, sourceLocation, Severity.WARNING)
+
+  /**
+   * Upper case fields are not supported as Kotlin doesn't allow a property name with the same name as a nested class.
+   * If this happens, the easiest solution is to add an alias with a lower case first letter.
+   *
+   * This error is an Apollo Android specific error
+   */
+  class UpperCaseField(message: String, sourceLocation: SourceLocation) : Issue(message, sourceLocation, Severity.ERROR)
 
   enum class Severity {
     WARNING,

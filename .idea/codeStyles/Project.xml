@@ -18,6 +18,7 @@
       </option>
       <option name="NAME_COUNT_TO_USE_STAR_IMPORT" value="50" />
       <option name="NAME_COUNT_TO_USE_STAR_IMPORT_FOR_MEMBERS" value="50" />
+      <option name="ALLOW_TRAILING_COMMA" value="true" />
     </JetCodeStyleSettings>
     <XML>
       <option name="XML_SPACE_INSIDE_EMPTY_TAG" value="true" />
@@ -40,6 +41,7 @@
       </indentOptions>
     </codeStyleSettings>
     <codeStyleSettings language="kotlin">
+      <option name="METHOD_PARAMETERS_WRAP" value="5" />
       <indentOptions>
         <option name="INDENT_SIZE" value="2" />
         <option name="CONTINUATION_INDENT_SIZE" value="4" />

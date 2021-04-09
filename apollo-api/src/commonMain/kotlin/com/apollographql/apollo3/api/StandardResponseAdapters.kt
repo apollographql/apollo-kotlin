@@ -60,6 +60,20 @@ class NullableResponseAdapter<T : Any>(private val wrappedAdapter: ResponseAdapt
   }
 }
 
+
+
+class InputResponseAdapter<T>(private val wrappedAdapter: ResponseAdapter<T>) : ResponseAdapter<Input<T>> {
+  override fun fromResponse(reader: JsonReader, responseAdapterCache: ResponseAdapterCache): Input<T> {
+    error("Input value used in output position")
+  }
+
+  override fun toResponse(writer: JsonWriter, responseAdapterCache: ResponseAdapterCache, value: Input<T>) {
+    if (value is Input.Present) {
+      wrappedAdapter.toResponse(writer, responseAdapterCache, value.value)
+    }
+  }
+}
+
 object StringResponseAdapter : ResponseAdapter<String> {
   override fun fromResponse(reader: JsonReader, responseAdapterCache: ResponseAdapterCache): String {
     return reader.nextString()!!
@@ -100,21 +114,21 @@ object BooleanResponseAdapter : ResponseAdapter<Boolean> {
   }
 }
 
-object AnyResponseAdapter : ResponseAdapter<Any?> {
-  fun fromResponse(reader: JsonReader): Any? {
-    return reader.readRecursively()
+object AnyResponseAdapter : ResponseAdapter<Any> {
+  fun fromResponse(reader: JsonReader): Any {
+    return reader.readRecursively()!!
   }
 
-  fun toResponse(writer: JsonWriter, value: Any?) {
+  fun toResponse(writer: JsonWriter, value: Any) {
     Utils.writeToJson(value, writer)
   }
 
-  override fun fromResponse(reader: JsonReader, responseAdapterCache: ResponseAdapterCache): Any? {
-    return reader.readRecursively()
+  override fun fromResponse(reader: JsonReader, responseAdapterCache: ResponseAdapterCache): Any {
+    return fromResponse(reader)
   }
 
-  override fun toResponse(writer: JsonWriter, responseAdapterCache: ResponseAdapterCache, value: Any?) {
-    Utils.writeToJson(value, writer)
+  override fun toResponse(writer: JsonWriter, responseAdapterCache: ResponseAdapterCache, value: Any) {
+    toResponse(writer, value)
   }
 }
 
@@ -157,7 +171,7 @@ class ObjectResponseAdapter<T>(
       /**
        * And write to the original writer
        */
-      AnyResponseAdapter.toResponse(writer, mapWriter.root())
+      AnyResponseAdapter.toResponse(writer, mapWriter.root()!!)
     } else {
       writer.beginObject()
       wrappedAdapter.toResponse(writer, responseAdapterCache, value)
@@ -169,6 +183,7 @@ class ObjectResponseAdapter<T>(
 fun <T : Any> ResponseAdapter<T>.nullable() = NullableResponseAdapter(this)
 fun <T> ResponseAdapter<T>.list() = ListResponseAdapter(this)
 fun <T> ResponseAdapter<T>.obj(buffered: Boolean = false) = ObjectResponseAdapter(this, buffered)
+fun <T> ResponseAdapter<T>.input() = InputResponseAdapter(this)
 
 /**
  * Global instances of nullable adapters for built-in scalar types
@@ -177,3 +192,4 @@ val NullableStringResponseAdapter = StringResponseAdapter.nullable()
 val NullableDoubleResponseAdapter = DoubleResponseAdapter.nullable()
 val NullableIntResponseAdapter = IntResponseAdapter.nullable()
 val NullableBooleanResponseAdapter = BooleanResponseAdapter.nullable()
+val NullableAnyResponseAdapter = AnyResponseAdapter.nullable()

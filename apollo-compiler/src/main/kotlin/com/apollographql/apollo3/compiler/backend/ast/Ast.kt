@@ -17,7 +17,7 @@ internal data class CodeGenerationAst(
     val fragmentTypes: List<FragmentType>,
     val inputTypes: List<InputType>,
     val enumTypes: List<EnumType>,
-    val customScalarTypes: CustomScalarTypes
+    val customScalarTypes: CustomScalarTypes,
 ) {
 
   data class CustomScalarType(
@@ -267,7 +267,7 @@ internal data class CodeGenerationAst(
       /**
        * Indicates if this is the reference to named fragment 'Data' type
        */
-      val isNamedFragmentDataRef: Boolean
+      val isNamedFragmentDataRef: Boolean = false
   )
 
   companion object {

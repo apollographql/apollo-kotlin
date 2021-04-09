@@ -539,6 +539,10 @@ data class GQLInputValueDefinition(
   }
 }
 
+/**
+ * A variable definition is very similar to an InputValue definition except it doesn't
+ * have a description
+ */
 data class GQLVariableDefinition(
     override val sourceLocation: SourceLocation = SourceLocation.UNKNOWN,
     val name: String,

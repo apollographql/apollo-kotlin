@@ -12,5 +12,5 @@ data class CustomScalar(
   /**
    * Fully qualified class name this GraphQL scalar type is mapped to (e.g. `java.lang.String`, `java.net.URL`, `java.util.DateTime`)
    */
-  val className: String
-) 
+  val className: String?,
+)

@@ -97,3 +97,6 @@ class ResponseField(
     )
   }
 }
+
+fun ResponseField.Type.notNull() = ResponseField.Type.NotNull(this)
+fun ResponseField.Type.list() = ResponseField.Type.List(this)

@@ -176,3 +176,23 @@ fun TypeSpec.Builder.makeDataClass(parameters: List<ParameterSpec>) = apply {
         .build())
   }
 }
+
+fun TypeSpec.Builder.makeDataClassFromProperties(properties: List<PropertySpec>) = apply {
+  if (properties.isNotEmpty()) {
+    addModifiers(KModifier.DATA)
+  }
+  primaryConstructor(FunSpec.constructorBuilder()
+      .apply {
+        properties.forEach {
+          addParameter(it.name, it.type)
+        }
+      }
+      .build())
+
+  properties.forEach {
+    addProperty(it.toBuilder(it.name)
+        .initializer(CodeBlock.of(it.name))
+        .build()
+    )
+  }
+}
