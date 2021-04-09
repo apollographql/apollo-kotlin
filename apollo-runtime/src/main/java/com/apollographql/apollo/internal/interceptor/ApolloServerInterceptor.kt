@@ -85,8 +85,10 @@ class ApolloServerInterceptor(serverUrl: HttpUrl, httpCallFactory: Call.Factory,
             request.sendQueryDocument, request.autoPersistQueries)
       }
     } catch (e: IOException) {
-      logger.e(e, "Failed to prepare http call for operation %s", request.operation.name().name())
-      callBack.onFailure(ApolloNetworkException("Failed to prepare http call", e))
+      val operationName = request.operation.name().name()
+      val message = "Failed to prepare http call for operation '$operationName'"
+      logger.e(e, message);
+      callBack.onFailure( ApolloNetworkException(message, e))
       return
     }
     val previousCall = httpCallRef.getAndSet(httpCall)
@@ -99,8 +101,10 @@ class ApolloServerInterceptor(serverUrl: HttpUrl, httpCallFactory: Call.Factory,
       override fun onFailure(call: Call, e: IOException) {
         if (disposed) return
         if (httpCallRef.compareAndSet(httpCall, null)) {
-          logger.e(e, "Failed to execute http call for operation %s", request.operation.name().name())
-          callBack.onFailure(ApolloNetworkException("Failed to execute http call", e))
+          val operationName = request.operation.name().name()
+          val message = "Failed to execute http call for operation '$operationName'"
+          logger.e(e, message);
+          callBack.onFailure( ApolloNetworkException(message, e))
         }
       }
 
