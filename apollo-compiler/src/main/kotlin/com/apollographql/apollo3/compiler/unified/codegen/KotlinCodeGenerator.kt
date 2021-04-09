@@ -1,5 +1,6 @@
 package com.apollographql.apollo3.compiler.unified.codegen
 
+import com.apollographql.apollo3.compiler.PackageNameProvider
 import com.apollographql.apollo3.compiler.VERSION
 import com.apollographql.apollo3.compiler.operationoutput.OperationOutput
 import com.apollographql.apollo3.compiler.operationoutput.findOperationId
@@ -26,28 +27,29 @@ class ApolloFileSpec(
 class KotlinCodeGenerator(
     private val ir: IntermediateRepresentation,
     private val generateAsInternal: Boolean = false,
-    private val rootPackageName: String,
-    private val schemaPackageName: String,
     private val enumAsSealedClassPatternFilters: Set<String>,
-    private val generateScalarMapping: Boolean,
-    private val generateFilterNotNull: Boolean,
+    private val useSemanticNaming: Boolean,
+    private val packageNameProvider: PackageNameProvider,
+    private val typePackageName: String,
     private val operationOutput: OperationOutput,
+    private val generateCustomScalars: Boolean,
+    private val generateFilterNotNull: Boolean,
     private val generateFragmentImplementations: Boolean,
     private val generateResponseFields: Boolean,
     private val generateQueryDocument: Boolean,
     private val generateFragmentsAsInterfaces: Boolean,
-    private val useSemanticNaming: Boolean,
 ) {
   fun write(outputDir: File) {
     val layout = CodegenLayout(
         operations = ir.operations,
         fragments = ir.fragments,
-        rootPackageName = rootPackageName,
-        schemaPackageName = schemaPackageName,
-        useSemanticNaming = useSemanticNaming
+        metadataFragments = ir.metadataFragments,
+        useSemanticNaming = useSemanticNaming,
+        packageNameProvider = packageNameProvider,
+        typePackageName = typePackageName
     )
 
-    val customScalars = if (generateScalarMapping) {
+    val customScalars = if (generateCustomScalars) {
       listOf(ir.customScalars.qualifiedTypeSpec(layout))
     } else {
       emptyList()

@@ -23,6 +23,17 @@ class CodegenTest(private val folder: File, private val fragmentsCodegenMode: Fr
       val compileDuration: Duration,
   )
 
+
+  private class Options(
+      val operationFiles: Set<File>,
+      val outputDir: File,
+
+      val useUnifiedIr: Boolean = GraphQLCompiler.defaultUseUnifiedIr,
+      val incomingOptions: GraphQLCompiler.IncomingOptions,
+      val moduleOptions: GraphQLCompiler.ModuleOptions,
+  )
+
+
   @Test
   fun generateExpectedClasses() {
     val args = arguments(
@@ -32,17 +43,23 @@ class CodegenTest(private val folder: File, private val fragmentsCodegenMode: Fr
     generateExpectedClasses(args)
   }
 
-  private fun generateExpectedClasses(args: GraphQLCompiler.Arguments) {
-    args.outputDir.deleteRecursively()
+  private fun generateExpectedClasses(options: Options) {
+    options.outputDir.deleteRecursively()
 
     val codegenDuration = measureTime {
-      GraphQLCompiler().write(args)
+      GraphQLCompiler().write(
+          operationFiles = options.operationFiles,
+          outputDir = options.outputDir,
+          useUnifiedIr = options.useUnifiedIr,
+          incomingOptions = options.incomingOptions,
+          moduleOptions = options.moduleOptions
+      )
     }
 
     val expectedRoot = folder.parentFile.parentFile.parentFile
     val expectedRelativeRoot = folder.relativeTo(expectedRoot)
 
-    val actualRoot = args.outputDir
+    val actualRoot = options.outputDir
     val actualFiles = actualRoot.walk().filter {
       // extension should always be the correct one, it's a bug else
       it.isFile && it.name != "metadata"
@@ -105,7 +122,7 @@ class CodegenTest(private val folder: File, private val fragmentsCodegenMode: Fr
 
     measurements.add(
         Measurement(
-            name = args.rootFolders.first().name.substringAfterLast("."),
+            name = options.moduleOptions.moduleName,
             fragmentsCodegenMode = fragmentsCodegenMode,
             totalLineOfCode = totalLineOfCode,
             codegenDuration = codegenDuration,
@@ -150,7 +167,7 @@ class CodegenTest(private val folder: File, private val fragmentsCodegenMode: Fr
       }
     }
 
-    fun arguments(folder: File, fragmentAsInterfaces: Boolean): GraphQLCompiler.Arguments {
+    private fun arguments(folder: File, fragmentAsInterfaces: Boolean): Options {
       val customScalarsMapping = if (folder.name in listOf(
               "custom_scalar_type",
               "input_object_type",
@@ -179,7 +196,7 @@ class CodegenTest(private val folder: File, private val fragmentsCodegenMode: Fr
 
           override val version: String = "1"
         }
-        else -> OperationIdGenerator.Sha256()
+        else -> OperationIdGenerator.Sha256
       }
 
       val enumAsSealedClassPatternFilters = when (folder.name) {
@@ -200,23 +217,31 @@ class CodegenTest(private val folder: File, private val fragmentsCodegenMode: Fr
       val graphqlFiles = setOf(File(folder, "TestOperation.graphql"))
       val operationOutputGenerator = OperationOutputGenerator.Default(operationIdGenerator)
 
-      return GraphQLCompiler.Arguments(
-          rootPackageName = "com.example.${folder.name}",
-          rootFolders = listOf(folder),
-          graphqlFiles = graphqlFiles,
+      val incomingOptions = GraphQLCompiler.IncomingOptions.from(
+          roots = Roots(listOf(folder)),
           schemaFile = schemaFile,
-          outputDir = File("build/generated/test/${folder.name}"),
-          operationOutputGenerator = operationOutputGenerator,
           customScalarsMapping = customScalarsMapping,
-          generateKotlinModels = true,
+          generateFragmentsAsInterfaces = fragmentAsInterfaces,
+          rootPackageName = "com.example.${folder.name}"
+      )
+
+      val moduleOptions = GraphQLCompiler.DefaultModuleOptions.copy(
+          operationOutputGenerator = operationOutputGenerator,
           useSemanticNaming = useSemanticNaming,
           generateAsInternal = generateAsInternal,
           generateFilterNotNull = true,
           enumAsSealedClassPatternFilters = enumAsSealedClassPatternFilters,
-          metadataOutputFile = File("build/generated/test/${folder.name}/metadata"),
-          dumpIR = false,
           generateFragmentImplementations = generateFragmentImplementations,
-          generateFragmentsAsInterfaces = fragmentAsInterfaces,
+          moduleName = folder.name,
+          packageNameProvider = PackageNameProvider.Flat("com.example.${folder.name}")
+      )
+
+      return Options(
+          operationFiles = graphqlFiles,
+          outputDir = File("build/generated/test/${folder.name}"),
+          useUnifiedIr = false,
+          incomingOptions = incomingOptions,
+          moduleOptions = moduleOptions
       )
     }
 

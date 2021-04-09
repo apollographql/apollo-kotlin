@@ -28,6 +28,9 @@ class Roots(rootFolders: Collection<File>) {
     throw IllegalArgumentException("$filePath is not found in:\n${roots.joinToString("\n")}\n")
   }
 
+  /**
+   * Return the packageName if this file is in these [Roots] or throw else
+   */
   fun filePackageName(filePath: String): String {
     val relative = relativeToRoots(filePath)
 

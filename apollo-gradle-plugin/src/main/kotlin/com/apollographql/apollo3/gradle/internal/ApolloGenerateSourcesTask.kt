@@ -1,7 +1,21 @@
 package com.apollographql.apollo3.gradle.internal
 
+import com.apollographql.apollo3.compiler.ApolloMetadata
+import com.apollographql.apollo3.compiler.ApolloMetadata.Companion.merge
+import com.apollographql.apollo3.compiler.DefaultPackageNameProvider
 import com.apollographql.apollo3.compiler.GraphQLCompiler
+import com.apollographql.apollo3.compiler.GraphQLCompiler.Companion.defaultAlwaysGenerateTypesMatching
+import com.apollographql.apollo3.compiler.GraphQLCompiler.Companion.defaultEnumAsSealedClassPatternFilters
+import com.apollographql.apollo3.compiler.GraphQLCompiler.Companion.defaultFailOnWarnings
+import com.apollographql.apollo3.compiler.GraphQLCompiler.Companion.defaultGenerateAsInternal
+import com.apollographql.apollo3.compiler.GraphQLCompiler.Companion.defaultGenerateFilterNotNull
+import com.apollographql.apollo3.compiler.GraphQLCompiler.Companion.defaultGenerateFragmentImplementations
+import com.apollographql.apollo3.compiler.GraphQLCompiler.Companion.defaultGenerateQueryDocument
+import com.apollographql.apollo3.compiler.GraphQLCompiler.Companion.defaultGenerateResponseFields
+import com.apollographql.apollo3.compiler.GraphQLCompiler.Companion.defaultUseSemanticNaming
+import com.apollographql.apollo3.compiler.GraphQLCompiler.Companion.defaultWarnOnDeprecatedUsages
 import com.apollographql.apollo3.compiler.OperationOutputGenerator
+import com.apollographql.apollo3.compiler.Roots
 import org.gradle.api.DefaultTask
 import org.gradle.api.file.ConfigurableFileCollection
 import org.gradle.api.file.DirectoryProperty
@@ -78,6 +92,14 @@ abstract class ApolloGenerateSourcesTask : DefaultTask() {
   @get:Optional
   abstract val generateKotlinModels: Property<Boolean>
 
+  @get:Input
+  @get:Optional
+  abstract val generateQueryDocument: Property<Boolean>
+
+  @get:Input
+  @get:Optional
+  abstract val generateResponseFields: Property<Boolean>
+
   @get:Internal
   abstract val warnOnDeprecatedUsages: Property<Boolean>
 
@@ -115,32 +137,37 @@ abstract class ApolloGenerateSourcesTask : DefaultTask() {
 
   @TaskAction
   fun taskAction() {
-    val args = GraphQLCompiler.Arguments(
-        rootFolders = objectFactory.fileCollection().from(rootFolders).files.toList(),
-        graphqlFiles = graphqlFiles.files,
-        schemaFile = schemaFile.asFile.orNull,
-        outputDir = outputDir.asFile.get(),
+    val rootPackageName = rootPackageName.getOrElse("")
 
-        metadata = metadataFiles.files.toList(),
-        metadataOutputFile = metadataOutputFile.asFile.get(),
-        alwaysGenerateTypesMatching = alwaysGenerateTypesMatching.getOrElse(emptySet()),
-        moduleName = projectName.get(),
+    val metadata = metadataFiles.files.toList().map { ApolloMetadata.readFrom(it) }.merge()
 
-        operationOutputFile = operationOutputFile.asFile.orNull,
-        operationOutputGenerator = operationOutputGenerator,
+    val roots = Roots(objectFactory.fileCollection().from(rootFolders).files.toList())
 
-        rootPackageName = rootPackageName.getOrElse(""),
+    val incomingOptions = if (metadata != null) {
+      check(!schemaFile.isPresent) {
+        "Specifying 'schemaFile' has no effect as an upstream module already provided a schema"
+      }
+      check(!customScalarsMapping.isPresent) {
+        "Specifying 'customScalarsMapping' has no effect as an upstream module already provided a customScalarsMapping"
+      }
+      check(!generateFragmentsAsInterfaces.isPresent) {
+        "Specifying 'generateFragmentsAsInterfaces' has no effect as an upstream module already provided a generateFragmentsAsInterfaces"
+      }
+      GraphQLCompiler.IncomingOptions.fromMetadata(metadata)
+    } else {
+      GraphQLCompiler.IncomingOptions.from(
+          roots = roots,
+          schemaFile = schemaFile.asFile.orNull ?: error("no schemaFile found"),
+          customScalarsMapping = customScalarsMapping.getOrElse(emptyMap()),
+          generateFragmentsAsInterfaces = generateFragmentsAsInterfaces.getOrElse(true),
+          rootPackageName = rootPackageName
+      )
+    }
 
-        customScalarsMapping = customScalarsMapping.getOrElse(emptyMap()),
-        useSemanticNaming = useSemanticNaming.getOrElse(true),
-        generateKotlinModels = generateKotlinModels.getOrElse(false),
-        warnOnDeprecatedUsages = warnOnDeprecatedUsages.getOrElse(true),
-        failOnWarnings = failOnWarnings.getOrElse(false),
-        generateAsInternal = generateAsInternal.getOrElse(false),
-        generateFilterNotNull = generateFilterNotNull.getOrElse(false),
-        enumAsSealedClassPatternFilters = sealedClassesForEnumsMatching.getOrElse(emptyList()).toSet(),
-        generateFragmentImplementations = generateFragmentImplementations.getOrElse(false),
-        generateFragmentsAsInterfaces = generateFragmentsAsInterfaces.getOrElse(true)
+    val packageNameProvider = DefaultPackageNameProvider(
+        incomingOptions.schemaPackageName,
+        rootPackageName,
+        roots
     )
 
     val logger = object :GraphQLCompiler.Logger {
@@ -149,6 +176,31 @@ abstract class ApolloGenerateSourcesTask : DefaultTask() {
       }
     }
 
-    GraphQLCompiler(logger).write(args)
+    val moduleOptions = GraphQLCompiler.ModuleOptions(
+        alwaysGenerateTypesMatching = alwaysGenerateTypesMatching.getOrElse(defaultAlwaysGenerateTypesMatching),
+        operationOutputFile = operationOutputFile.asFile.orNull,
+        operationOutputGenerator = operationOutputGenerator,
+        useSemanticNaming = useSemanticNaming.getOrElse(defaultUseSemanticNaming),
+        warnOnDeprecatedUsages = warnOnDeprecatedUsages.getOrElse(defaultWarnOnDeprecatedUsages),
+        failOnWarnings = failOnWarnings.getOrElse(defaultFailOnWarnings),
+        packageNameProvider = packageNameProvider,
+        enumAsSealedClassPatternFilters = sealedClassesForEnumsMatching.map { it.toSet() }.getOrElse(defaultEnumAsSealedClassPatternFilters),
+        generateAsInternal = generateAsInternal.getOrElse(defaultGenerateAsInternal),
+        generateFilterNotNull = generateFilterNotNull.getOrElse(defaultGenerateFilterNotNull),
+        generateFragmentImplementations = generateFragmentImplementations.getOrElse(defaultGenerateFragmentImplementations),
+        generateQueryDocument = generateQueryDocument.getOrElse(defaultGenerateQueryDocument),
+        generateResponseFields = generateResponseFields.getOrElse(defaultGenerateResponseFields),
+        logger = logger,
+        metadataOutputFile = metadataOutputFile.asFile.orNull,
+        moduleName = projectName.get()
+    )
+
+    GraphQLCompiler().write(
+        operationFiles = graphqlFiles.files,
+        outputDir = outputDir.asFile.get(),
+        useUnifiedIr = false,
+        incomingOptions = incomingOptions,
+        moduleOptions = moduleOptions,
+    )
   }
 }

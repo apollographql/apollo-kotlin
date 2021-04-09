@@ -288,7 +288,7 @@ abstract class DefaultApolloExtension(private val project: Project, private val 
       task.schemaFile.set(service.resolvedSchemaProvider(project))
       task.operationOutputGenerator = service.operationOutputGenerator.getOrElse(
           OperationOutputGenerator.Default(
-              service.operationIdGenerator.orElse(OperationIdGenerator.Sha256()).get()
+              service.operationIdGenerator.orElse(OperationIdGenerator.Sha256).get()
           )
       )
 

@@ -4,7 +4,14 @@ import com.apollographql.apollo3.compiler.frontend.GQLFragmentDefinition
 import com.apollographql.apollo3.compiler.frontend.GraphQLParser
 import com.apollographql.apollo3.compiler.frontend.Schema
 import com.apollographql.apollo3.compiler.frontend.toUtf8
+import com.squareup.moshi.JsonAdapter
 import com.squareup.moshi.JsonClass
+import com.squareup.moshi.JsonReader
+import com.squareup.moshi.JsonWriter
+import com.squareup.moshi.Moshi
+import okio.buffer
+import okio.sink
+import okio.source
 import java.io.File
 
 /**
@@ -14,6 +21,7 @@ import java.io.File
  *
  * This also means that we need to ensure the types references will stay valid so we enforce that schemaPackageName is always the same.
  */
+@JsonClass(generateAdapter = true)
 data class ApolloMetadata(
     /**
      * Might be null if the schema is coming from upstream
@@ -22,37 +30,51 @@ data class ApolloMetadata(
     /**
      * The fragments
      */
-    val fragments: List<GQLFragmentDefinition>,
+    val generatedFragments: List<MetadataFragment>,
     /**
      * The generated input objects, enums
      */
     val generatedEnums: Set<String>,
     val generatedInputObjects: Set<String>,
-    val schemaPackageName: String?,
-    val rootPackageName: String?,
+    val schemaPackageName: String,
     /**
      * The module name, for debug
      */
     val moduleName: String,
-    val generateKotlinModels: Boolean,
     val pluginVersion: String,
-    val customScalarsMapping: Map<String, String>
+    val customScalarsMapping: Map<String, String>,
+    val generateFragmentsAsInterfaces: Boolean
 ) {
-  @JsonClass(generateAdapter = true)
-  internal class JsonMetadata(
-      val schema: String?,
-      val fragments: String,
-      val generatedInputObjects: Set<String>,
-      val generatedEnums: Set<String>,
-      val schemaPackageName: String?,
-      val rootPackageName: String?,
-      val moduleName: String,
-      val generateKotlinModels: Boolean,
-      val pluginVersion: String,
-      val customScalarsMapping: Map<String, String>
-  )
-
   companion object {
+
+    private val adapter by lazy {
+      val schemaJsonAdapter = object : JsonAdapter<Schema>() {
+        override fun fromJson(p0: JsonReader): Schema {
+          return GraphQLParser.parseSchema(p0.nextString())
+        }
+
+        override fun toJson(p0: JsonWriter, p1: Schema?) {
+          p0.value(p1!!.toDocument().toUtf8())
+        }
+      }
+
+      val gqlFragmentJsonAdapter = object : JsonAdapter<GQLFragmentDefinition>() {
+        override fun fromJson(p0: JsonReader): GQLFragmentDefinition {
+          return GraphQLParser.parseDocument(p0.nextString()).orThrow().definitions.first() as GQLFragmentDefinition
+        }
+
+        override fun toJson(p0: JsonWriter, p1: GQLFragmentDefinition?) {
+          p0.value(p1!!.toUtf8())
+        }
+      }
+
+      Moshi.Builder()
+          .add(Schema::class.java, schemaJsonAdapter.nullSafe())
+          .add(GQLFragmentDefinition::class.java, gqlFragmentJsonAdapter.nonNull())
+          .build()
+          .adapter(ApolloMetadata::class.java)
+    }
+
     fun List<ApolloMetadata>.merge(): ApolloMetadata? {
       if (isEmpty()) {
         return null
@@ -75,13 +97,6 @@ data class ApolloMetadata(
         }
       }
 
-      // ensure the same generateKotlinModels
-      map { it.generateKotlinModels }.distinct().let {
-        check(it.size == 1) {
-          "Apollo: All modules should have the same generateKotlinModels. Found:" + it.joinToString(", ")
-        }
-      }
-
       // ensure the same pluginVersion
       map { it.pluginVersion }.distinct().let {
         check(it.size == 1) {
@@ -91,46 +106,26 @@ data class ApolloMetadata(
 
       // no need to validate distinct fragment names, this will be done later when aggregating the Fragments
       return rootMetadata.copy(
-          fragments = flatMap { it.fragments },
+          generatedFragments = flatMap { it.generatedFragments },
           moduleName = "*",
           generatedEnums = flatMap { it.generatedEnums }.toSet(),
           generatedInputObjects = flatMap { it.generatedInputObjects }.toSet(),
       )
     }
 
-    fun readFrom(file: File): ApolloMetadata {
-      val serializedMetadata = file.fromJson<JsonMetadata>()
-      return with(serializedMetadata) {
-        ApolloMetadata(
-            schema = schema?.let { GraphQLParser.parseSchema(it) },
-            fragments = GraphQLParser.parseDocument(fragments).orThrow().definitions.map { it as GQLFragmentDefinition },
-            generatedEnums = generatedEnums,
-            generatedInputObjects = generatedInputObjects,
-            schemaPackageName = schemaPackageName,
-            rootPackageName = rootPackageName,
-            moduleName = moduleName,
-            generateKotlinModels = generateKotlinModels,
-            pluginVersion = pluginVersion,
-            customScalarsMapping = customScalarsMapping
-        )
-      }
-    }
+    fun readFrom(file: File) = adapter.fromJson(file.source().buffer()) ?: error("bad metadata at ${file.absolutePath}")
   }
 
   fun writeTo(file: File) {
-    val serializedMetadata = JsonMetadata(
-        schema = schema?.toDocument()?.toUtf8(),
-        fragments = fragments.map { it.toUtf8() }.joinToString("\n"),
-        generatedEnums = generatedEnums,
-        generatedInputObjects = generatedInputObjects,
-        schemaPackageName = schemaPackageName,
-        rootPackageName = rootPackageName,
-        moduleName = moduleName,
-        generateKotlinModels = generateKotlinModels,
-        pluginVersion = pluginVersion,
-        customScalarsMapping = customScalarsMapping
-    )
-    serializedMetadata.toJson(file)
+    file.sink().buffer().use {
+      adapter.toJson(it, this)
+    }
   }
-
 }
+
+@JsonClass(generateAdapter = true)
+data class MetadataFragment(
+    val name: String,
+    val definition: GQLFragmentDefinition,
+    val packageName: String,
+)

@@ -1,5 +1,6 @@
 package com.apollographql.apollo3.compiler.unified
 
+import com.apollographql.apollo3.compiler.MetadataFragment
 import com.apollographql.apollo3.compiler.PackageNameProvider
 import com.apollographql.apollo3.compiler.Roots
 import com.apollographql.apollo3.compiler.frontend.GQLBooleanValue
@@ -41,12 +42,11 @@ class IrBuilder(
     private val schema: Schema,
     private val operationDefinitions: List<GQLOperationDefinition>,
     private val fragmentDefinitions: List<GQLFragmentDefinition>,
-    metadataFragmentDefinitions: List<GQLFragmentDefinition>,
+    private val metadataFragments: List<MetadataFragment>,
     private val alwaysGenerateTypesMatching: Set<String>,
     private val customScalarToKotlinName: Map<String, String>,
-    private val roots: Roots,
 ) {
-  private val allGQLFragmentDefinitions = (metadataFragmentDefinitions + fragmentDefinitions).associateBy { it.name }
+  private val allGQLFragmentDefinitions = (metadataFragments.map { it.definition } + fragmentDefinitions).associateBy { it.name }
   private val enumCache = mutableMapOf<String, IrEnum>()
   private val inputObjectCache = mutableMapOf<String, IrInputObject>()
   private val customScalarCache = mutableMapOf<String, IrCustomScalar>()
@@ -77,7 +77,8 @@ class IrBuilder(
         fragments = fragments,
         inputObjects = inputObjectCache.values.toList(),
         enums = enumCache.values.toList(),
-        customScalars = IrCustomScalars(customScalars = customScalarCache.values.toList())
+        customScalars = IrCustomScalars(customScalars = customScalarCache.values.toList()),
+        metadataFragments = metadataFragments
     )
   }
 
@@ -143,8 +144,6 @@ class IrBuilder(
       allGQLFragmentDefinitions[fragmentName]!!.toUtf8WithIndents()
     }).trimEnd('\n')
 
-    val packageName = roots.filePackageName(sourceLocation.filePath!!)
-
     check(name != null) {
       "Apollo doesn't support anonymous operation."
     }
@@ -162,7 +161,7 @@ class IrBuilder(
         variables = variableDefinitions.map { it.toIr() },
         dataField = dataField,
         sourceWithFragments = sourceWithFragments,
-        packageName = packageName,
+        filePath = sourceLocation.filePath!!,
     )
   }
 

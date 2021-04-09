@@ -1,5 +1,7 @@
 package com.apollographql.apollo3.compiler.unified
 
+import com.apollographql.apollo3.compiler.MetadataFragment
+
 /*
 * Unified IR. This builds all the possible field trees. As polymorphic fields are encountered, each field can have multiple
 * [IrFieldSet], building a tree where nodes are alternatively [IrField] and [IrFieldSet]
@@ -12,10 +14,14 @@ package com.apollographql.apollo3.compiler.unified
 * - registers used types and fragments
 * - compute the packageName
 * - more generally removes all references to the GraphQL AST and "embeds" type definitions/field definitions
+*
+* @param metadataFragments: the metadata fragments carried over from the previous step. This is needed by the final codegen step
+* to retrieve the package name if any
 */
 data class IntermediateRepresentation(
     val operations: List<IrOperation>,
     val fragments: List<IrNamedFragment>,
+    val metadataFragments: List<MetadataFragment>,
     val inputObjects: List<IrInputObject>,
     val enums: List<IrEnum>,
     val customScalars: IrCustomScalars,
@@ -82,7 +88,7 @@ data class IrOperation(
     val description: String?,
     val dataField: IrField,
     val sourceWithFragments: String,
-    val packageName: String,
+    val filePath: String,
 )
 
 data class IrNamedFragment(

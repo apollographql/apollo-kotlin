@@ -33,13 +33,13 @@ fun IrOperation.apolloFileSpecs(
 ): List<ApolloFileSpec> {
   val list = mutableListOf<ApolloFileSpec>()
 
-  list.add(ApolloFileSpec(layout.operationPackageName(packageName), typeSpec(layout, operationId, generateFilterNotNull, generateQueryDocument)))
+  list.add(ApolloFileSpec(layout.operationPackageName(filePath), typeSpec(layout, operationId, generateFilterNotNull, generateQueryDocument)))
   if (variables.isNotEmpty()) {
-    list.add(ApolloFileSpec(layout.operationAdapterPackageName(packageName), variablesAdapterTypeSpec(layout)))
+    list.add(ApolloFileSpec(layout.operationAdapterPackageName(filePath), variablesAdapterTypeSpec(layout)))
   }
-  list.add(ApolloFileSpec(layout.operationAdapterPackageName(packageName), responseAdapterTypeSpec(layout)))
+  list.add(ApolloFileSpec(layout.operationAdapterPackageName(filePath), responseAdapterTypeSpec(layout)))
   if (generateResponseFields) {
-    list.add(ApolloFileSpec(layout.operationResponseFieldsPackageName(packageName), responseFieldsTypeSpec(layout)))
+    list.add(ApolloFileSpec(layout.operationResponseFieldsPackageName(filePath), responseFieldsTypeSpec(layout)))
   }
 
   return list
@@ -91,7 +91,7 @@ private fun IrOperation.responseFieldsTypeSpec(layout: CodegenLayout): TypeSpec 
 }
 
 private fun IrOperation.serializeVariablesFunSpec(layout: CodegenLayout): FunSpec = serializeVariablesFunSpec(
-    adapterPackageName = layout.operationAdapterPackageName(this.packageName),
+    adapterPackageName = layout.operationAdapterPackageName(this.filePath),
     adapterName = layout.operationVariablesAdapterName(this),
     isEmpty = variables.isEmpty(),
     emptyMessage = "// This operation doesn't have variables"

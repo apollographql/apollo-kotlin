@@ -1,5 +1,8 @@
 package com.apollographql.apollo3.compiler.frontend
 
+import com.apollographql.apollo3.compiler.introspection.IntrospectionSchema
+import java.io.File
+
 /**
  * a very thin wrapper around a schema GQLDocument
  *
@@ -54,5 +57,15 @@ class Schema(
   fun typeDefinition(name: String): GQLTypeDefinition {
     return typeDefinitions[name]
         ?: throw SchemaValidationException("Cannot find type `$name`")
+  }
+
+  companion object {
+    fun fromFile(file: File): Schema {
+      if (file.extension == "json") {
+        return IntrospectionSchema(file).toSchema()
+      } else {
+        return GraphQLParser.parseSchema(file)
+      }
+    }
   }
 }
