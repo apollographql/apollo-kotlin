@@ -53,7 +53,7 @@ class IrFieldSetBuilder(
       fieldType: String,
       name: String,
   ): IrField {
-    val path =  ModelPath(root = ModelPath.Root.FragmentInterface(name))
+    val path = ModelPath(root = ModelPath.Root.FragmentInterface(name))
 
     return cachedFragmentsFields.getOrPut(name) {
       buildRootField(
@@ -74,7 +74,7 @@ class IrFieldSetBuilder(
   ): FragmentFields {
     val interfaceField = getOrBuildFragmentField(selections, fieldType, name)
 
-    val path =  ModelPath(root = ModelPath.Root.FragmentImplementation(name))
+    val path = ModelPath(root = ModelPath.Root.FragmentImplementation(name))
     val dataField = buildRootField(
         name = "data",
         selections = selections,
@@ -123,6 +123,23 @@ class IrFieldSetBuilder(
     }
   }
 
+  private fun List<GQLSelection>.collectFragments(typeSet: TypeSet): Set<String> {
+    return flatMap {
+      when (it) {
+        is GQLField -> emptySet()
+        is GQLInlineFragment -> {
+          if (typeSet.contains(it.typeCondition.name))
+            it.selectionSet.selections.collectFragments(typeSet)
+          else
+            emptySet()
+        }
+        // We do not recurse here as inheriting the first namedFragment will
+        // intherit nested ones as well
+        is GQLFragmentSpread -> return setOf(it.name)
+      }
+    }.toSet()
+  }
+
   private fun buildField(
       alias: String?,
       name: String,
@@ -138,7 +155,7 @@ class IrFieldSetBuilder(
     val fieldSets: List<IrFieldSet>
     val interfaceFieldSets: List<IrFieldSet>
     val implementationFieldSets: List<IrFieldSet>
-    val fragmentAccessors: List<IrFragmentAccessor>
+    val fragmentAccessors = mutableListOf<IrFragmentAccessor>()
 
     val fieldType = type.leafType().name
 
@@ -160,15 +177,6 @@ class IrFieldSetBuilder(
           .map { it.first.intersect(it.second) }
           .filter { it.isNotEmpty() }
           .toSet()
-
-      val fragmentFields = selections.filterIsInstance<GQLFragmentSpread>().map { fragmentSpread ->
-        val gqlFragmentDefinition = allGQLFragmentDefinitions[fragmentSpread.name]!!
-        getOrBuildFragmentField(
-            selections = gqlFragmentDefinition.selectionSet.selections,
-            fieldType = gqlFragmentDefinition.typeCondition.name,
-            name = fragmentSpread.name,
-        )
-      }
 
       /**
        * Create a cache of interface IrFieldSets so that we don't end up building the same FieldSets all the time
@@ -192,12 +200,29 @@ class IrFieldSetBuilder(
               it.typeSet.size < typeSet.size && typeSet.implements(it.typeSet)
             }
 
+        val fragmentFields = selections.collectFragments(typeSet).map { fragmentName ->
+          val gqlFragmentDefinition = allGQLFragmentDefinitions[fragmentName]!!
+          getOrBuildFragmentField(
+              selections = gqlFragmentDefinition.selectionSet.selections,
+              fieldType = gqlFragmentDefinition.typeCondition.name,
+              name = fragmentName,
+          ).also {
+            fragmentAccessors.add(
+                IrFragmentAccessor(
+                    name = fragmentName,
+                    path = it.typeFieldSet!!.fullPath
+                )
+            )
+          }
+        }
+
         val superFragmentFieldSets = fragmentFields.mapNotNull { field ->
           field.fieldSets.sortedByDescending { it.typeSet.size }
               .firstOrNull {
                 typeSet.implements(it.typeSet)
               }
         }
+
 
         val relatedFieldSets = superFields.mapNotNull { field ->
           field.fieldSets.sortedByDescending { it.typeSet.size }
@@ -239,19 +264,10 @@ class IrFieldSetBuilder(
       implementationFieldSets = otherFieldSets + fieldSets.filter {
         (shapesTypeSets - commonTypeSets).contains(it.typeSet)
       }.sortedBy { it.typeSet.size }
-
-      fragmentAccessors = selections.filterIsInstance<GQLFragmentSpread>().distinctBy { it.name }.map { fragmentSpread ->
-        IrFragmentAccessor(
-            name = fragmentSpread.name,
-            path = cachedFragmentsFields[fragmentSpread.name]?.typeFieldSet?.fullPath
-                ?: error("cannot find fragment ${fragmentSpread.name}")
-        )
-      }
     } else {
       fieldSets = emptyList()
       interfaceFieldSets = emptyList()
       implementationFieldSets = emptyList()
-      fragmentAccessors = emptyList()
     }
 
     val typeFieldSet = interfaceFieldSets.firstOrNull() ?: implementationFieldSets.firstOrNull()
@@ -270,7 +286,7 @@ class IrFieldSetBuilder(
         fieldSets = fieldSets,
         interfaces = interfaceFieldSets,
         implementations = implementationFieldSets,
-        fragmentAccessors = fragmentAccessors
+        fragmentAccessors = fragmentAccessors.distinctBy { it.name }
     )
   }
 
