@@ -103,7 +103,7 @@ If you'd like to contribute, please see [Contributing.md](https://github.com/apo
 
 ## Community integrations
 
-* If you're using the [Maven] build tool, https://github.com/aoudiamoncef/apollo-client-maven-plugin is a Maven plugin that calls the Apollo Android compiler to generate your Java/Kotlin sources.
+* If you're using the [Maven](https://maven.apache.org/) build tool, https://github.com/aoudiamoncef/apollo-client-maven-plugin is a Maven plugin that calls the Apollo Android compiler to generate your Java/Kotlin sources.
 
 ## Additional resources
 
