@@ -11,7 +11,7 @@ def versions = [
     javaPoet              : '1.9.0',
     jetbrainsAnnotations  : '13.0',
     junit                 : '4.13.1',
-    kotlin                : '1.4.31',
+    kotlin                : '1.4.32',
     kotlinAtomic          : '0.15.1',
     kotlinCoroutines      : '1.4.2',
     kotlinPoet            : '1.6.0',
