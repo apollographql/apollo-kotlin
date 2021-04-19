@@ -56,12 +56,12 @@ class CgLayout(
   fun operationAdapterPackageName(filePath: String) = "${packageNameProvider.operationPackageName(filePath)}.adapter".stripDots()
   fun operationResponseFieldsPackageName(filePath: String) = "${packageNameProvider.operationPackageName(filePath)}.responsefields".stripDots()
 
-  fun fragmentPackageName(filePath: String): String {
+  fun fragmentPackageName(filePath: String?): String {
     return packageNameProvider.fragmentPackageName(filePath)
   }
 
-  fun fragmentAdapterPackageName(filePath: String) = "${fragmentPackageName(filePath)}.adapter".stripDots()
-  fun fragmentResponseFieldsPackageName(filePath: String) = "${fragmentPackageName(filePath)}.responsefields".stripDots()
+  fun fragmentAdapterPackageName(filePath: String?) = "${fragmentPackageName(filePath)}.adapter".stripDots()
+  fun fragmentResponseFieldsPackageName(filePath: String?) = "${fragmentPackageName(filePath)}.responsefields".stripDots()
 
   private fun String.stripDots() = this.removePrefix(".").removeSuffix(".")
 

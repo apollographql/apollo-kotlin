@@ -51,40 +51,72 @@ class KotlinCodeGenerator(
         resolver = CgResolver()
     )
     val builders = mutableListOf<CgFileBuilder>()
+    val ignoredBuilders = mutableListOf<CgFileBuilder>()
+    val metadataFragmentNames = ir.metadataFragments.map { it.name }.toSet()
 
     val customScalarsBuilder = CustomScalarsBuilder(
         context,
         ir.customScalars
     )
 
-    if (generateCustomScalars && ir.customScalars.isNotEmpty()) {
+    if (generateCustomScalars
+        && ir.customScalars.isNotEmpty()
+        && !ir.metadataSchema
+    ) {
       builders.add(customScalarsBuilder)
     }
     
     ir.inputObjects.forEach { 
       builders.add(InputObjectBuilder(context, it))
+      if (ir.metadataInputObjects.contains(it.name)) {
+        ignoredBuilders.add(builders.last())
+      }
       builders.add(InputObjectAdapterBuilder(context, it))
+      if (ir.metadataInputObjects.contains(it.name)) {
+        ignoredBuilders.add(builders.last())
+      }
     }
 
     ir.enums.forEach { enum ->
       builders.add(EnumBuilder(context, enum))
+      if (ir.metadataEnums.contains(enum.name)) {
+        ignoredBuilders.add(builders.last())
+      }
       builders.add(EnumResponseAdapterBuilder(context, enum))
+      if (ir.metadataEnums.contains(enum.name)) {
+        ignoredBuilders.add(builders.last())
+      }
     }
 
     ir.fragments.forEach { fragment ->
       if (fragment.variables.isNotEmpty()) {
         builders.add(FragmentVariablesAdapterBuilder(context, fragment))
+        if (metadataFragmentNames.contains(fragment.name)) {
+          ignoredBuilders.add(builders.last())
+        }
       }
 
       builders.add(FragmentResponseFieldsBuilder(context, fragment))
+      if (metadataFragmentNames.contains(fragment.name)) {
+        ignoredBuilders.add(builders.last())
+      }
       builders.add(FragmentResponseAdapterBuilder(context, fragment))
+      if (metadataFragmentNames.contains(fragment.name)) {
+        ignoredBuilders.add(builders.last())
+      }
 
       builders.add(FragmentInterfacesBuilder(context, fragment))
+      if (metadataFragmentNames.contains(fragment.name)) {
+        ignoredBuilders.add(builders.last())
+      }
       builders.add(FragmentBuilder(
           context,
           generateFilterNotNull,
           fragment,
       ))
+      if (metadataFragmentNames.contains(fragment.name)) {
+        ignoredBuilders.add(builders.last())
+      }
     }
     
     ir.operations.forEach { operation ->
@@ -106,8 +138,12 @@ class KotlinCodeGenerator(
 
     builders.forEach { it.prepare() }
     builders
-        .map {
-          it.build()
+        .mapNotNull {
+          if (!ignoredBuilders.contains(it)) {
+            it.build()
+          } else {
+            null
+          }
         }.forEach {
           val builder = FileSpec.builder(
               packageName = it.packageName,

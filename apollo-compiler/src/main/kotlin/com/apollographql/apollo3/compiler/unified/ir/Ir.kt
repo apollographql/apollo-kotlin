@@ -21,10 +21,13 @@ import com.apollographql.apollo3.compiler.MetadataFragment
 data class IntermediateRepresentation(
     val operations: List<IrOperation>,
     val fragments: List<IrNamedFragment>,
-    val metadataFragments: List<MetadataFragment>,
     val inputObjects: List<IrInputObject>,
     val enums: List<IrEnum>,
     val customScalars: List<IrCustomScalar>,
+    val metadataFragments: List<MetadataFragment>,
+    val metadataEnums: Set<String>,
+    val metadataInputObjects: Set<String>,
+    val metadataSchema: Boolean
 )
 
 data class IrEnum(
@@ -79,7 +82,7 @@ data class IrOperation(
 data class IrNamedFragment(
     val name: String,
     val description: String?,
-    val filePath: String,
+    val filePath: String?,
     /**
      * Fragments do not have variables per-se but we can infer them from the document
      * Default values will always be null for those

@@ -47,10 +47,13 @@ class IrBuilder(
     private val schema: Schema,
     private val operationDefinitions: List<GQLOperationDefinition>,
     private val fragmentDefinitions: List<GQLFragmentDefinition>,
-    private val metadataFragments: List<MetadataFragment>,
     private val alwaysGenerateTypesMatching: Set<String>,
     private val customScalarToKotlinName: Map<String, String>,
+    private val metadataFragments: List<MetadataFragment>,
+    private val metadataEnums: Set<String>,
+    private val metadataInputObjects: Set<String>,
     private val generateFragmentAsInterfaces: Boolean,
+    private val metadataSchema: Boolean
 ) : FieldMerger {
   private val allGQLFragmentDefinitions = (metadataFragments.map { it.definition } + fragmentDefinitions).associateBy { it.name }
 
@@ -83,7 +86,11 @@ class IrBuilder(
 
     val visitedInputObjects = mutableSetOf<String>()
 
-    // Input objects contain (possible reentrant) references so build them first
+    // Input objects contain (possible reentrant) references so build them before enums as they could add some
+    val extraInputObjects = schema.typeDefinitions.values.filterIsInstance<GQLInputObjectTypeDefinition>()
+        .map { it.name }
+        .filter { shouldAlwaysGenerate(it) }
+    inputObjectsToGenerate.addAll(extraInputObjects)
     val inputObjects = mutableListOf<IrInputObject>()
     while (inputObjectsToGenerate.isNotEmpty()) {
       val name = inputObjectsToGenerate.removeAt(0)
@@ -94,7 +101,10 @@ class IrBuilder(
       inputObjects.add((schema.typeDefinition(name) as GQLInputObjectTypeDefinition).toIr())
     }
 
-    val enums = usedEnums.map { name ->
+    val extraEnums = schema.typeDefinitions.values.filterIsInstance<GQLEnumTypeDefinition>()
+        .map { it.name }
+        .filter { shouldAlwaysGenerate(it) }
+    val enums = (usedEnums + extraEnums).map { name ->
       (schema.typeDefinition(name) as GQLEnumTypeDefinition).toIr()
     }
 
@@ -111,7 +121,10 @@ class IrBuilder(
         inputObjects = inputObjects,
         enums = enums,
         customScalars = customScalars,
-        metadataFragments = metadataFragments
+        metadataFragments = metadataFragments,
+        metadataEnums = metadataEnums,
+        metadataInputObjects = metadataInputObjects,
+        metadataSchema = metadataSchema
     )
   }
 
@@ -222,7 +235,7 @@ class IrBuilder(
     return IrNamedFragment(
         name = name,
         description = description,
-        filePath = sourceLocation.filePath!!,
+        filePath = sourceLocation.filePath,
         typeCondition = typeDefinition.name,
         variables = variableDefinitions.map { it.toIr() },
         field = field,

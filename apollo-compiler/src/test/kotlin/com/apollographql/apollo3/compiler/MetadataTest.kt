@@ -104,10 +104,12 @@ class MetadataTest {
         "Body0.kt",
         "Body0_InputAdapter.kt",
         "Encoding.kt",
+        "Encoding_ResponseAdapter.kt",
         "MessageInput0.kt",
         "MessageInput0_InputAdapter.kt",
         "SendMessageMutation.kt",
         "SendMessageMutation_ResponseAdapter.kt",
+        "SendMessageMutation_ResponseFields.kt",
         "SendMessageMutation_VariablesAdapter.kt",
         "User0.kt",
         "User0_InputAdapter.kt"
@@ -119,26 +121,29 @@ class MetadataTest {
     alwaysGenerateTypesMatchingTest(setOf(".*1"))
 
     // types ending with "1" end up in root
-    // but not Encoding
+    // Encoding is present as well because it is referenced from MessageInput
     rootSourcesDir.assertContents(
         "Body1.kt",
         "Body1_InputAdapter.kt",
         "CustomScalars.kt",
+        "Encoding.kt",
+        "Encoding_ResponseAdapter.kt",
         "MessageInput1.kt",
         "MessageInput1_InputAdapter.kt",
         "User1.kt",
         "User1_InputAdapter.kt"
     )
 
-    // Leaf contains Encoding and other used types (.*0) but not .*1
+    // Leaf contains .*0 but not .*1
+    // Encoding shouldn't be written as it was already generated
     leafSourcesDir.assertContents(
         "Body0.kt",
         "Body0_InputAdapter.kt",
-        "Encoding.kt",
         "MessageInput0.kt",
         "MessageInput0_InputAdapter.kt",
         "SendMessageMutation.kt",
         "SendMessageMutation_ResponseAdapter.kt",
+        "SendMessageMutation_ResponseFields.kt",
         "SendMessageMutation_VariablesAdapter.kt",
         "User0.kt",
         "User0_InputAdapter.kt"
@@ -174,16 +179,20 @@ class MetadataTest {
 
     // Root generates the fragment
     rootSourcesDir.assertContents(
-        "Episode.kt",
-        "CustomScalars.kt",
         "CharacterFragment.kt",
+        "CharacterFragmentImpl.kt",
+        "CharacterFragmentImpl_ResponseAdapter.kt",
+        "CharacterFragmentImpl_ResponseFields.kt",
+        "CustomScalars.kt",
+        "Episode.kt",
+        "Episode_ResponseAdapter.kt"
     )
 
     // Leaf contains the query but not the fragment
     leafSourcesDir.assertContents(
         "GetHeroQuery.kt",
-        "GetHeroQuery_VariablesAdapter.kt",
         "GetHeroQuery_ResponseAdapter.kt",
+        "GetHeroQuery_ResponseFields.kt"
     )
   }
 
@@ -218,16 +227,23 @@ class MetadataTest {
     fragmentTest("fragment-multiple")
 
     rootSourcesDir.assertContents(
-        "CustomScalars.kt",
         "CharacterFragment.kt",
+        "CharacterFragmentImpl.kt",
+        "CharacterFragmentImpl_ResponseAdapter.kt",
+        "CharacterFragmentImpl_ResponseFields.kt",
+        "CustomScalars.kt"
     )
 
     leafSourcesDir.assertContents(
-        "GetHeroQuery.kt",
-        "GetHeroQuery_VariablesAdapter.kt",
         "Episode.kt",
-        "HumanFragment.kt",
+        "Episode_ResponseAdapter.kt",
+        "GetHeroQuery.kt",
         "GetHeroQuery_ResponseAdapter.kt",
+        "GetHeroQuery_ResponseFields.kt",
+        "HumanFragment.kt",
+        "HumanFragmentImpl.kt",
+        "HumanFragmentImpl_ResponseAdapter.kt",
+        "HumanFragmentImpl_ResponseFields.kt"
     )
   }
 
@@ -248,7 +264,7 @@ class MetadataTest {
       val expected = files.toSet()
       val actual = walk().filter { it.isFile }.map { it.name }.toSet()
 
-      check(expected == actual) {
+      assert(expected == actual) {
         "expected:\n${expected.prettify()}\nactual:\n${actual.prettify()}"
       }
     }

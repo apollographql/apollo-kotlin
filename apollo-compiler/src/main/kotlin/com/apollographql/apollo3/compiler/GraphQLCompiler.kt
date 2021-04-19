@@ -131,10 +131,13 @@ class GraphQLCompiler {
         schema = incomingOptions.schema,
         operationDefinitions = operations,
         fragmentDefinitions = fragments,
-        metadataFragments = incomingOptions.metadataFragments,
         alwaysGenerateTypesMatching = moduleOptions.alwaysGenerateTypesMatching,
         customScalarToKotlinName = incomingOptions.customScalarsMapping,
-        generateFragmentAsInterfaces = incomingOptions.generateFragmentsAsInterfaces
+        generateFragmentAsInterfaces = incomingOptions.generateFragmentsAsInterfaces,
+        metadataFragments = incomingOptions.metadataFragments,
+        metadataEnums = incomingOptions.metadataEnums,
+        metadataInputObjects = incomingOptions.metadataInputObjects,
+        metadataSchema = incomingOptions.isFromMetadata
     ).build()
 
     val operationOutput = ir.operations.map {
