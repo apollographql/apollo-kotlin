@@ -39,7 +39,7 @@ class HumanDetailsImpl : Fragment<HumanDetailsImpl.Data> {
     companion object {
       fun Data.CharacterDetails() = this as? CharacterDetails
 
-      fun Data.asHumanCharacter() = this as? CharacterData
+      fun Data.asCharacter() = this as? CharacterData
     }
   }
 

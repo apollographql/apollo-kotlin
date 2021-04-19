@@ -23,7 +23,11 @@ import com.apollographql.apollo3.integration.normalizer.HeroAndFriendsNamesWithI
 import com.apollographql.apollo3.integration.normalizer.HeroAndFriendsNamesWithIDsQuery
 import com.apollographql.apollo3.integration.normalizer.HeroAppearsInQuery
 import com.apollographql.apollo3.integration.normalizer.HeroParentTypeDependentFieldQuery
+import com.apollographql.apollo3.integration.normalizer.HeroParentTypeDependentFieldQuery.Data.DroidHero.Friend.Companion.asHuman
+import com.apollographql.apollo3.integration.normalizer.HeroParentTypeDependentFieldQuery.Data.Hero.Companion.asDroid
 import com.apollographql.apollo3.integration.normalizer.HeroTypeDependentAliasedFieldQuery
+import com.apollographql.apollo3.integration.normalizer.HeroTypeDependentAliasedFieldQuery.Data.Hero.Companion.asDroid
+import com.apollographql.apollo3.integration.normalizer.HeroTypeDependentAliasedFieldQuery.Data.Hero.Companion.asHuman
 import com.apollographql.apollo3.integration.normalizer.SameHeroTwiceQuery
 import com.apollographql.apollo3.integration.normalizer.StarshipByIdQuery
 import com.apollographql.apollo3.integration.normalizer.fragment.HeroWithFriendsFragmentImpl
@@ -141,9 +145,9 @@ class NormalizedCacheTestCase {
     ) { response ->
       assertThat(response.hasErrors()).isFalse()
       assertThat(response.data?.hero?.appearsIn).hasSize(3)
-      assertThat(response.data?.hero?.appearsIn?.get(0)?.name).isEqualTo("NEWHOPE")
-      assertThat(response.data?.hero?.appearsIn?.get(1)?.name).isEqualTo("EMPIRE")
-      assertThat(response.data?.hero?.appearsIn?.get(2)?.name).isEqualTo("JEDI")
+      assertThat(response.data?.hero?.appearsIn?.get(0)).isEqualTo(Episode.NEWHOPE)
+      assertThat(response.data?.hero?.appearsIn?.get(1)).isEqualTo(Episode.EMPIRE)
+      assertThat(response.data?.hero?.appearsIn?.get(2)).isEqualTo(Episode.JEDI)
     }
   }
 
@@ -158,10 +162,10 @@ class NormalizedCacheTestCase {
       assertThat(response.hasErrors()).isFalse()
       assertThat(response.data?.hero?.appearsIn).hasSize(6)
       assertThat(response.data?.hero?.appearsIn?.get(0)).isNull()
-      assertThat(response.data?.hero?.appearsIn?.get(1)?.name).isEqualTo("NEWHOPE")
-      assertThat(response.data?.hero?.appearsIn?.get(2)?.name).isEqualTo("EMPIRE")
+      assertThat(response.data?.hero?.appearsIn?.get(1)).isEqualTo(Episode.NEWHOPE)
+      assertThat(response.data?.hero?.appearsIn?.get(2)).isEqualTo(Episode.EMPIRE)
       assertThat(response.data?.hero?.appearsIn?.get(3)).isNull()
-      assertThat(response.data?.hero?.appearsIn?.get(4)?.name).isEqualTo("JEDI")
+      assertThat(response.data?.hero?.appearsIn?.get(4)).isEqualTo(Episode.JEDI)
       assertThat(response.data?.hero?.appearsIn?.get(5)).isNull()
     }
   }
@@ -177,11 +181,11 @@ class NormalizedCacheTestCase {
       assertThat(response.hasErrors()).isFalse()
       assertThat(response.data?.hero?.name).isEqualTo("R2-D2")
       assertThat(response.data?.hero?.name).isEqualTo("R2-D2")
-      val hero = response.data?.hero as HeroParentTypeDependentFieldQuery.Data.Hero.DroidHero
+      val hero = response.data?.hero?.asDroid()!!
       assertThat(hero.friends).hasSize(3)
       assertThat(hero.friends?.get(0)?.name).isEqualTo("Luke Skywalker")
       assertThat(hero.friends?.get(0)?.name).isEqualTo("Luke Skywalker")
-      assertThat((hero.friends?.get(0) as HeroParentTypeDependentFieldQuery.Data.Hero.DroidHero.Friends.HumanFriends).height).isWithin(1.72)
+      assertThat((hero.friends?.get(0)?.asHuman())?.height).isWithin(1.72)
     }
   }
 
@@ -194,8 +198,8 @@ class NormalizedCacheTestCase {
         apolloClient.query(HeroTypeDependentAliasedFieldQuery(Input.Present(Episode.NEWHOPE)))
     ) { response ->
       assertThat(response.hasErrors()).isFalse()
-      assertThat(response.data?.hero).isInstanceOf(HeroTypeDependentAliasedFieldQuery.Data.Hero.DroidHero::class.java)
-      assertThat((response.data?.hero as HeroTypeDependentAliasedFieldQuery.Data.Hero.DroidHero?)?.property).isEqualTo("Astromech")
+      assertThat(response.data?.hero).isInstanceOf(HeroTypeDependentAliasedFieldQuery.Data.DroidHero::class.java)
+      assertThat(response.data?.hero?.asDroid()?.property).isEqualTo("Astromech")
     }
     server.enqueue(mockResponse("HeroTypeDependentAliasedFieldResponseHuman.json"))
     cacheAndAssertCachedResponse(
@@ -204,8 +208,8 @@ class NormalizedCacheTestCase {
         apolloClient.query(HeroTypeDependentAliasedFieldQuery(Input.Present(Episode.NEWHOPE)))
     ) { response ->
       assertThat(response.hasErrors()).isFalse()
-      assertThat(response.data?.hero).isInstanceOf(HeroTypeDependentAliasedFieldQuery.Data.Hero.HumanHero::class.java)
-      assertThat((response.data?.hero as HeroTypeDependentAliasedFieldQuery.Data.Hero.HumanHero?)?.property).isEqualTo("Tatooine")
+      assertThat(response.data?.hero).isInstanceOf(HeroTypeDependentAliasedFieldQuery.Data.HumanHero::class.java)
+      assertThat(response.data?.hero?.asHuman()?.property).isEqualTo("Tatooine")
     }
   }
 
@@ -220,9 +224,9 @@ class NormalizedCacheTestCase {
       assertThat(response.hasErrors()).isFalse()
       assertThat(response.data?.hero?.name).isEqualTo("R2-D2")
       assertThat(response.data?.r2?.appearsIn).hasSize(3)
-      assertThat(response.data?.r2?.appearsIn?.get(0)?.name).isEqualTo("NEWHOPE")
-      assertThat(response.data?.r2?.appearsIn?.get(1)?.name).isEqualTo("EMPIRE")
-      assertThat(response.data?.r2?.appearsIn?.get(2)?.name).isEqualTo("JEDI")
+      assertThat(response.data?.r2?.appearsIn?.get(0)).isEqualTo(Episode.NEWHOPE)
+      assertThat(response.data?.r2?.appearsIn?.get(1)).isEqualTo(Episode.EMPIRE)
+      assertThat(response.data?.r2?.appearsIn?.get(2)).isEqualTo(Episode.JEDI)
     }
   }
 

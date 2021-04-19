@@ -49,7 +49,7 @@ class GetHuman : Query<GetHuman.Data> {
       val __typename: String
 
       companion object {
-        fun Node.asNodeHuman() = this as? HumanNode
+        fun Node.asHuman() = this as? HumanNode
       }
     }
 

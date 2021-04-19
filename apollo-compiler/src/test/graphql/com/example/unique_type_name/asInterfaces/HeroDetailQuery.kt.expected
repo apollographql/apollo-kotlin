@@ -62,7 +62,7 @@ class HeroDetailQuery : Query<HeroDetailQuery.Data> {
       }
 
       companion object {
-        fun HeroDetailQuery.asCharacterHuman() = this as? HumanHeroDetailQuery
+        fun HeroDetailQuery.asHuman() = this as? HumanHeroDetailQuery
       }
     }
 
@@ -170,7 +170,7 @@ class HeroDetailQuery : Query<HeroDetailQuery.Data> {
 
   companion object {
     const val OPERATION_ID: String =
-        "9c330cc4e43ed8887546ccd95fb638afaf447285b3f00715118de9e475413aee"
+        "69ef2ada86ec094537d524f05f680155b2331dabf1b8420f7f63a84202ed34f7"
 
     /**
      * The minimized GraphQL document being sent to the server to save a few bytes.
@@ -195,9 +195,21 @@ class HeroDetailQuery : Query<HeroDetailQuery.Data> {
      *     }
      *   }
      * }
+     * fragment HeroDetails on Character {
+     *   __typename
+     *   name
+     *   friendsConnection {
+     *     totalCount
+     *     edges {
+     *       node {
+     *         name
+     *       }
+     *     }
+     *   }
+     * }
      */
     const val OPERATION_DOCUMENT: String =
-        "query HeroDetailQuery { heroDetailQuery { __typename name friends { name } ... on Human { height friends { appearsIn friends { __typename ...HeroDetails } } } } }"
+        "query HeroDetailQuery { heroDetailQuery { __typename name friends { name } ... on Human { height friends { appearsIn friends { __typename ...HeroDetails } } } } } fragment HeroDetails on Character { __typename name friendsConnection { totalCount edges { node { name } } } }"
 
     const val OPERATION_NAME: String = "HeroDetailQuery"
   }

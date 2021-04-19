@@ -261,7 +261,7 @@ private class FieldNodeBuilder(
         }.map {
           IrSubtypeAccessor(
               returnedModelId = getModelId(fieldSetNodes, it),
-              typeSet = it
+              typeSet = it - field.info.rawTypeName
           )
         }
 

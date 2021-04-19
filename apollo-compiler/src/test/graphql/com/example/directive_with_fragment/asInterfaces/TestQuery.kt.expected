@@ -59,7 +59,7 @@ data class TestQuery(
       companion object {
         fun Hero.HeroDetails() = this as? HeroDetails
 
-        fun Hero.asCharacterHuman() = this as? HumanHero
+        fun Hero.asHuman() = this as? HumanHero
       }
     }
 
@@ -94,7 +94,7 @@ data class TestQuery(
 
   companion object {
     const val OPERATION_ID: String =
-        "30b62a50ac3a1f769261a0eb5dc47fc918356f893cd4fa4d5e554dba405df74c"
+        "8f79c7203afc35079ccb88d398694334c9904f43358af3a6ec894cd303e3c51e"
 
     /**
      * The minimized GraphQL document being sent to the server to save a few bytes.
@@ -108,9 +108,17 @@ data class TestQuery(
      *     ...HumanDetails @include(if: $withDetails)
      *   }
      * }
+     * fragment HeroDetails on Character {
+     *   __typename
+     *   name
+     * }
+     * fragment HumanDetails on Human {
+     *   __typename
+     *   homePlanet
+     * }
      */
     const val OPERATION_DOCUMENT: String =
-        "query TestQuery(${'$'}withDetails: Boolean!, ${'$'}skipHumanDetails: Boolean!) { hero { __typename id ...HeroDetails @include(if: ${'$'}withDetails) @skip(if: ${'$'}skipHumanDetails) ...HumanDetails @include(if: ${'$'}withDetails) } }"
+        "query TestQuery(${'$'}withDetails: Boolean!, ${'$'}skipHumanDetails: Boolean!) { hero { __typename id ...HeroDetails @include(if: ${'$'}withDetails) @skip(if: ${'$'}skipHumanDetails) ...HumanDetails @include(if: ${'$'}withDetails) } } fragment HeroDetails on Character { __typename name } fragment HumanDetails on Human { __typename homePlanet }"
 
     const val OPERATION_NAME: String = "TestQuery"
   }

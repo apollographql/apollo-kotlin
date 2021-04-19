@@ -41,11 +41,11 @@ class TestQuery : Query<TestQuery.Data> {
       val __typename: String
 
       companion object {
-        fun Root.asCA() = this as? ARoot
+        fun Root.asA() = this as? ARoot
 
-        fun Root.asCAB() = this as? ABRoot
+        fun Root.asAB() = this as? ABRoot
 
-        fun Root.asCB() = this as? BRoot
+        fun Root.asB() = this as? BRoot
       }
     }
 

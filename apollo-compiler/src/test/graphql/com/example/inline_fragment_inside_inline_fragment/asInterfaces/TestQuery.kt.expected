@@ -52,11 +52,11 @@ class TestQuery : Query<TestQuery.Data> {
       val __typename: String
 
       companion object {
-        fun Search.asSearchResultCharacter() = this as? CharacterSearch
+        fun Search.asCharacter() = this as? CharacterSearch
 
-        fun Search.asSearchResultCharacterHuman() = this as? CharacterHumanSearch
+        fun Search.asCharacterHuman() = this as? CharacterHumanSearch
 
-        fun Search.asSearchResultCharacterDroid() = this as? CharacterDroidSearch
+        fun Search.asCharacterDroid() = this as? CharacterDroidSearch
       }
     }
 

@@ -119,7 +119,7 @@ class IntegrationTest {
     val query = EpisodeHeroNameQuery(Input.Present(Episode.EMPIRE))
 
     assertThat(query.name()).isEqualTo("EpisodeHeroName")
-    assertThat(query.queryDocument()).isEqualTo("query EpisodeHeroName(\$episode: Episode) { hero(episode: \$episode) { name } }")
+    assertThat(query.document()).isEqualTo("query EpisodeHeroName(\$episode: Episode) { hero(episode: \$episode) { name } }")
     assertThat(query.variablesJson(ResponseAdapterCache.DEFAULT)).isEqualTo("{\"episode\":\"EMPIRE\"}")
   }
 

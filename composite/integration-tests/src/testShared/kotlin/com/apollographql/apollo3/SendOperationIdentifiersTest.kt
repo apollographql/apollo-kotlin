@@ -27,7 +27,7 @@ class SendOperationIdentifiersTest {
     val serverRequest = server.takeRequest().body.readUtf8()
     Truth.assertThat(serverRequest.contains("extensions")).isTrue()
     Truth.assertThat(serverRequest.contains("persistedQuery")).isTrue()
-    Truth.assertThat(serverRequest.contains(String.format("\"sha256Hash\":\"%s\"", query.operationId()))).isTrue()
+    Truth.assertThat(serverRequest.contains(String.format("\"sha256Hash\":\"%s\"", query.id()))).isTrue()
     Truth.assertThat(serverRequest.contains("\"query\":")).isFalse()
   }
 
@@ -57,14 +57,14 @@ class SendOperationIdentifiersTest {
         .dispatcher(Dispatcher(immediateExecutorService()))
         .addInterceptor { chain ->
           val request = chain.request()
-          if (request.header("X-APOLLO-OPERATION-ID") == heroAndFriendsNamesQuery.operationId()) {
+          if (request.header("X-APOLLO-OPERATION-ID") == heroAndFriendsNamesQuery.id()) {
             applicationInterceptorHeader.set(true)
           }
           chain.proceed(chain.request())
         }
         .addNetworkInterceptor { chain ->
           val request = chain.request()
-          if (request.header("X-APOLLO-OPERATION-ID") == heroAndFriendsNamesQuery.operationId()) {
+          if (request.header("X-APOLLO-OPERATION-ID") == heroAndFriendsNamesQuery.id()) {
             networkInterceptorHeader.set(true)
           }
           chain.proceed(chain.request())

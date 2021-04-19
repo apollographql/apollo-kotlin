@@ -61,9 +61,9 @@ class TestQuery : Query<TestQuery.Data> {
         override val name: String
 
         companion object {
-          fun Friend.asCharacterHuman() = this as? HumanFriend
+          fun Friend.asHuman() = this as? HumanFriend
 
-          fun Friend.asCharacterDroid() = this as? DroidFriend
+          fun Friend.asDroid() = this as? DroidFriend
         }
       }
 
@@ -107,7 +107,7 @@ class TestQuery : Query<TestQuery.Data> {
 
   companion object {
     const val OPERATION_ID: String =
-        "0e584759228847090738fc1466ca7378a2efb56afd87b5a4a195a7957ec5783a"
+        "d5cb325c69027e05bed9d8cbfa589f8c521df26be01c87bf9169d7c931f04489"
 
     /**
      * The minimized GraphQL document being sent to the server to save a few bytes.
@@ -119,8 +119,23 @@ class TestQuery : Query<TestQuery.Data> {
      *     ...HeroDetails
      *   }
      * }
+     * fragment HeroDetails on Character {
+     *   __typename
+     *   name
+     *   friends {
+     *     __typename
+     *     name
+     *     ... on Human {
+     *       height
+     *     }
+     *     ... on Droid {
+     *       primaryFunction
+     *     }
+     *   }
+     * }
      */
-    const val OPERATION_DOCUMENT: String = "query TestQuery { hero { __typename ...HeroDetails } }"
+    const val OPERATION_DOCUMENT: String =
+        "query TestQuery { hero { __typename ...HeroDetails } } fragment HeroDetails on Character { __typename name friends { __typename name ... on Human { height } ... on Droid { primaryFunction } } }"
 
     const val OPERATION_NAME: String = "TestQuery"
   }

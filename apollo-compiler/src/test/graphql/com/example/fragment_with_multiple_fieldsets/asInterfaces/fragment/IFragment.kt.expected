@@ -11,7 +11,7 @@ interface IFragment {
   val __typename: String
 
   companion object {
-    fun IFragment.asIA() = this as? AIFragment
+    fun IFragment.asA() = this as? AIFragment
   }
 }
 

@@ -45,7 +45,7 @@ class TestQuery : Query<TestQuery.Data> {
       companion object {
         fun I.iFragment() = this as? IFragment
 
-        fun I.asIA() = this as? AI
+        fun I.asA() = this as? AI
       }
     }
 
@@ -61,7 +61,7 @@ class TestQuery : Query<TestQuery.Data> {
 
   companion object {
     const val OPERATION_ID: String =
-        "cb10af0a63f7b999674f99aafddf7f7c54f88224cdcb8409bedbb03cdc5d7213"
+        "d52bb2abaea86ba4daef0234c77a8590751e7239e2af4ccae82798ad3bca4f2c"
 
     /**
      * The minimized GraphQL document being sent to the server to save a few bytes.
@@ -73,8 +73,15 @@ class TestQuery : Query<TestQuery.Data> {
      *     ...iFragment
      *   }
      * }
+     * fragment iFragment on I {
+     *   __typename
+     *   ... on A {
+     *     fieldA
+     *   }
+     * }
      */
-    const val OPERATION_DOCUMENT: String = "query TestQuery { i { __typename ...iFragment } }"
+    const val OPERATION_DOCUMENT: String =
+        "query TestQuery { i { __typename ...iFragment } } fragment iFragment on I { __typename ... on A { fieldA } }"
 
     const val OPERATION_NAME: String = "TestQuery"
   }

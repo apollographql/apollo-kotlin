@@ -52,7 +52,7 @@ class TestQuery : Query<TestQuery.Data> {
       val birthDate: Any
 
       companion object {
-        fun Hero.asCharacterDroid() = this as? DroidHero
+        fun Hero.asDroid() = this as? DroidHero
       }
     }
 

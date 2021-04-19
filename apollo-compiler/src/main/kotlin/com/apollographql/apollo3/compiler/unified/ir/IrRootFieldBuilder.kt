@@ -12,14 +12,14 @@ import com.apollographql.apollo3.compiler.frontend.Schema
  * Then for each combination of typeConditions, collect all the fields recursively.
  *
  * While doing so, record all the used fragments and used types
- *
- * @param fieldMerger a [FieldMerger] that handles the heavy lifting of collecting fields, remember their types, etc...
  */
-class IrFieldBuilder(
+class IrRootFieldBuilder(
     private val schema: Schema,
     private val allGQLFragmentDefinitions: Map<String, GQLFragmentDefinition>,
     private val fieldMerger: FieldMerger,
 ) : RootFieldBuilder {
+
+  val collectedFragments = mutableSetOf<String>()
 
   override fun build(
       selections: List<GQLSelection>,
@@ -48,6 +48,7 @@ class IrFieldBuilder(
         is GQLField -> emptyList()
         is GQLInlineFragment -> it.selectionSet.selections.collectUserTypeSets(currentTypeSet + it.typeCondition.name)
         is GQLFragmentSpread -> {
+          collectedFragments.add(it.name)
           val fragmentDefinition = allGQLFragmentDefinitions[it.name]!!
           fragmentDefinition.selectionSet.selections.collectUserTypeSets(currentTypeSet + fragmentDefinition.typeCondition.name)
         }

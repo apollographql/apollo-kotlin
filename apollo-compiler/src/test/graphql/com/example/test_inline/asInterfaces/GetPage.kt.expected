@@ -47,7 +47,7 @@ class GetPage : Query<GetPage.Data> {
       }
 
       companion object {
-        fun Collection.asCollectionParticularCollection() = this as? ParticularCollectionCollection
+        fun Collection.asParticularCollection() = this as? ParticularCollectionCollection
       }
     }
 
@@ -61,7 +61,7 @@ class GetPage : Query<GetPage.Data> {
         val __typename: String
 
         companion object {
-          fun Item.asItemParticularItem() = this as? ParticularItemItem
+          fun Item.asParticularItem() = this as? ParticularItemItem
         }
       }
 

@@ -53,14 +53,14 @@ class IrBuilder(
     private val metadataEnums: Set<String>,
     private val metadataInputObjects: Set<String>,
     private val generateFragmentAsInterfaces: Boolean,
-    private val metadataSchema: Boolean
+    private val metadataSchema: Boolean,
 ) : FieldMerger {
   private val allGQLFragmentDefinitions = (metadataFragments.map { it.definition } + fragmentDefinitions).associateBy { it.name }
 
   private val usedEnums = mutableSetOf<String>()
   private val inputObjectsToGenerate = mutableListOf<String>()
 
-  private val irFieldBuilder = IrFieldBuilder(
+  private val irFieldBuilder = IrRootFieldBuilder(
       schema = schema,
       allGQLFragmentDefinitions = allGQLFragmentDefinitions,
       fieldMerger = this,
@@ -182,30 +182,30 @@ class IrBuilder(
     val typeDefinition = this.rootTypeDefinition(schema)
         ?: throw IllegalStateException("ApolloGraphql: cannot find root type for '$operationType'")
 
-    val usedNamedFragments = emptyList<String>()
+    check(name != null) {
+      "Apollo doesn't support anonymous operation."
+    }
 
-    val sourceWithFragments = (toUtf8WithIndents() + "\n" + usedNamedFragments.joinToString(
+    val builder = IrRootFieldBuilder(
+        schema = schema,
+        allGQLFragmentDefinitions = allGQLFragmentDefinitions,
+        fieldMerger = this@IrBuilder,
+    )
+
+    val dataField = builder.build(
+        selections = selectionSet.selections,
+        rawTypeName = typeDefinition.name,
+    )
+
+    val sourceWithFragments = (toUtf8WithIndents() + "\n" + builder.collectedFragments.joinToString(
         separator = "\n"
     ) { fragmentName ->
       allGQLFragmentDefinitions[fragmentName]!!.toUtf8WithIndents()
     }).trimEnd('\n')
 
-    check(name != null) {
-      "Apollo doesn't support anonymous operation."
-    }
-
-    val dataField = IrFieldBuilder(
-        schema = schema,
-        allGQLFragmentDefinitions = allGQLFragmentDefinitions,
-        fieldMerger = this@IrBuilder,
-    ).build(
-        selections = selectionSet.selections,
-        rawTypeName = typeDefinition.name,
-    )
-
     val result = modelGroupsBuilder.buildOperationModelGroups(
         field = dataField,
-        operationName =  name
+        operationName = name
     )
     return IrOperation(
         name = name,

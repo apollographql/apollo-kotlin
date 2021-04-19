@@ -19,7 +19,7 @@ interface HumanDetails {
   companion object {
     fun HumanDetails.CharacterDetails() = this as? CharacterDetails
 
-    fun HumanDetails.asHumanCharacter() = this as? CharacterHumanDetails
+    fun HumanDetails.asCharacter() = this as? CharacterHumanDetails
   }
 }
 

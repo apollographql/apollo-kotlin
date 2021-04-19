@@ -48,7 +48,7 @@ class TestQuery : Query<TestQuery.Data> {
         val scalar1: String?
 
         companion object {
-          fun Iface2.asIface2Impl2() = this as? Impl2Iface2
+          fun Iface2.asImpl2() = this as? Impl2Iface2
         }
       }
 
@@ -61,7 +61,7 @@ class TestQuery : Query<TestQuery.Data> {
       }
 
       companion object {
-        fun Iface1.asIface1Impl1() = this as? Impl1Iface1
+        fun Iface1.asImpl1() = this as? Impl1Iface1
       }
     }
 
@@ -77,7 +77,7 @@ class TestQuery : Query<TestQuery.Data> {
         val scalar3: String?
 
         companion object {
-          fun Iface2.asIface2Impl2() = this as? Impl2Iface2
+          fun Iface2.asImpl2() = this as? Impl2Iface2
         }
       }
 
@@ -106,7 +106,7 @@ class TestQuery : Query<TestQuery.Data> {
         override val scalar1: String?
 
         companion object {
-          fun Iface2.asIface2Impl2() = this as? Impl2Iface2
+          fun Iface2.asImpl2() = this as? Impl2Iface2
         }
       }
 

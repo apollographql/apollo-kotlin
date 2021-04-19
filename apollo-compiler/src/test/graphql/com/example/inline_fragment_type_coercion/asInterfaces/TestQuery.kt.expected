@@ -46,7 +46,7 @@ class TestQuery : Query<TestQuery.Data> {
       val foo: String
 
       companion object {
-        fun Foo.asFooBar() = this as? BarFoo
+        fun Foo.asBar() = this as? BarFoo
       }
     }
 

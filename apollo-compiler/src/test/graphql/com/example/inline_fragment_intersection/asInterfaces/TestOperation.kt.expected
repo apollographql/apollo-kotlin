@@ -53,7 +53,7 @@ class TestOperation : Query<TestOperation.Data> {
         val name: String
 
         companion object {
-          fun Friend.asBeingWookie() = this as? WookieFriend
+          fun Friend.asWookie() = this as? WookieFriend
         }
       }
 
@@ -82,13 +82,13 @@ class TestOperation : Query<TestOperation.Data> {
       val __typename: String
 
       companion object {
-        fun Random.asAnythingBeing() = this as? BeingRandom
+        fun Random.asBeing() = this as? BeingRandom
 
-        fun Random.asAnythingBeingHuman() = this as? BeingHumanRandom
+        fun Random.asBeingHuman() = this as? BeingHumanRandom
 
-        fun Random.asAnythingWookie() = this as? WookieRandom
+        fun Random.asWookie() = this as? WookieRandom
 
-        fun Random.asAnythingBeingWookie() = this as? BeingWookieRandom
+        fun Random.asBeingWookie() = this as? BeingWookieRandom
       }
     }
 
@@ -106,7 +106,7 @@ class TestOperation : Query<TestOperation.Data> {
         val isFamous: Boolean?
 
         companion object {
-          fun Friend.asBeingWookie() = this as? WookieFriend
+          fun Friend.asWookie() = this as? WookieFriend
         }
       }
 
@@ -139,7 +139,7 @@ class TestOperation : Query<TestOperation.Data> {
         override val lifeExpectancy: Double?
 
         companion object {
-          fun Friend.asBeingWookie() = this as? WookieFriend
+          fun Friend.asWookie() = this as? WookieFriend
         }
       }
 

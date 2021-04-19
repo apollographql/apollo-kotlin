@@ -121,7 +121,7 @@ class AllStarships : Query<AllStarships.Data> {
 
   companion object {
     const val OPERATION_ID: String =
-        "88aabbadffd1dadb4b2648ef7bcabfee944049e66fba7007d73466e8cfb2c1c1"
+        "3d7fa8ee44e23f44c0605c01b0db776614b2dd3d78541751c50cb04d9ba4c4cc"
 
     /**
      * The minimized GraphQL document being sent to the server to save a few bytes.
@@ -137,9 +137,34 @@ class AllStarships : Query<AllStarships.Data> {
      *     }
      *   }
      * }
+     * fragment starshipFragment on Starship {
+     *   __typename
+     *   id
+     *   name
+     *   pilotConnection {
+     *     edges {
+     *       node {
+     *         __typename
+     *         ...pilotFragment
+     *       }
+     *     }
+     *   }
+     * }
+     * fragment pilotFragment on Person {
+     *   __typename
+     *   name
+     *   homeworld {
+     *     __typename
+     *     ...planetFragment
+     *   }
+     * }
+     * fragment planetFragment on Planet {
+     *   __typename
+     *   name
+     * }
      */
     const val OPERATION_DOCUMENT: String =
-        "query AllStarships { allStarships(first: 7) { edges { node { __typename ...starshipFragment } } } }"
+        "query AllStarships { allStarships(first: 7) { edges { node { __typename ...starshipFragment } } } } fragment starshipFragment on Starship { __typename id name pilotConnection { edges { node { __typename ...pilotFragment } } } } fragment pilotFragment on Person { __typename name homeworld { __typename ...planetFragment } } fragment planetFragment on Planet { __typename name }"
 
     const val OPERATION_NAME: String = "AllStarships"
   }

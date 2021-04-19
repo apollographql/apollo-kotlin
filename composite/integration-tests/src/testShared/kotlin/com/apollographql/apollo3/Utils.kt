@@ -125,7 +125,7 @@ object Utils {
       |If you changed the compiler recently, you need to update the testFixtures.
       |Run the tests with `-DupdateTestFixtures=true` to do so.
       |generatedText: $actualText
-      |expectedText: $expectedText""".trimMargin())
+      |expectedText : $expectedText""".trimMargin())
         }
       }
     }

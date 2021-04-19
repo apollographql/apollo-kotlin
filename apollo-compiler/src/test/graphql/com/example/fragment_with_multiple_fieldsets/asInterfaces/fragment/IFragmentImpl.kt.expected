@@ -31,7 +31,7 @@ class IFragmentImpl : Fragment<IFragmentImpl.Data> {
     override val __typename: String
 
     companion object {
-      fun Data.asIA() = this as? AData
+      fun Data.asA() = this as? AData
     }
   }
 

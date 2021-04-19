@@ -13,7 +13,7 @@ internal interface HeroDetails {
   companion object {
     fun HeroDetails.HumanDetails() = this as? HumanDetails
 
-    fun HeroDetails.asCharacterHuman() = this as? HumanHeroDetails
+    fun HeroDetails.asHuman() = this as? HumanHeroDetails
   }
 }
 

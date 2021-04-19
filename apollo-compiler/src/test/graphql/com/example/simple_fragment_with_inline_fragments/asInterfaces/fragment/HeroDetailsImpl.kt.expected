@@ -50,9 +50,9 @@ class HeroDetailsImpl : Fragment<HeroDetailsImpl.Data> {
       override val name: String
 
       companion object {
-        fun Friend.asCharacterHuman() = this as? HumanFriend
+        fun Friend.asHuman() = this as? HumanFriend
 
-        fun Friend.asCharacterDroid() = this as? DroidFriend
+        fun Friend.asDroid() = this as? DroidFriend
       }
     }
 

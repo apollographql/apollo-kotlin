@@ -52,9 +52,9 @@ data class TestQuery(
       val name: String
 
       companion object {
-        fun Hero.asCharacterHuman() = this as? HumanHero
+        fun Hero.asHuman() = this as? HumanHero
 
-        fun Hero.asCharacterDroid() = this as? DroidHero
+        fun Hero.asDroid() = this as? DroidHero
       }
     }
 
@@ -80,7 +80,7 @@ data class TestQuery(
         val name: String
 
         companion object {
-          fun Friend.asCharacterHuman() = this as? HumanFriend
+          fun Friend.asHuman() = this as? HumanFriend
         }
       }
 
@@ -127,7 +127,7 @@ data class TestQuery(
         val name: String
 
         companion object {
-          fun Friend.asCharacterHuman() = this as? HumanFriend
+          fun Friend.asHuman() = this as? HumanFriend
         }
       }
 
