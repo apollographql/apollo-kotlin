@@ -68,7 +68,7 @@ ext.dep = [
     ],
     moshi                 : [
         adapters     : "com.squareup.moshi:moshi-adapters:$versions.moshi",
-        kotlinCodegen: "com.squareup.moshi:moshi-kotlin-codegen:$versions.moshi",
+        kotlinCodegen: "dev.zacsweers.moshix:moshi-ksp:0.10.0",
         moshi        : "com.squareup.moshi:moshi:$versions.moshi",
     ],
     okHttp                : [
@@ -99,6 +99,7 @@ ext.dep = [
     uuid                  : "com.benasher44:uuid:0.2.2",
     benManesVersions      : "com.github.ben-manes:gradle-versions-plugin:0.33.0",
     shadow                : "com.github.jengelman.gradle.plugins:shadow:6.1.0",
+    kspGradlePlugin: "com.google.devtools.ksp:symbol-processing-gradle-plugin:1.4.32-1.0.0-alpha07"
 ]
 ext.androidConfig = [
     compileSdkVersion: 30,

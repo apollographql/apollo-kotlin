@@ -29,6 +29,7 @@ dependencies {
   implementation(groovy.util.Eval.x(project, "x.dep.benManesVersions"))
   implementation(groovy.util.Eval.x(project, "x.dep.vespene"))
   implementation(groovy.util.Eval.x(project, "x.dep.shadow"))
+  implementation(groovy.util.Eval.x(project, "x.dep.kspGradlePlugin"))
 
   implementation(groovy.util.Eval.x(project, "x.dep.kotlin.atomicGradle"))
 }
