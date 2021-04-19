@@ -192,7 +192,6 @@ abstract class ApolloGenerateSourcesTask : DefaultTask() {
     GraphQLCompiler().write(
         operationFiles = graphqlFiles.files,
         outputDir = outputDir.asFile.get(),
-        useUnifiedIr = false,
         incomingOptions = incomingOptions,
         moduleOptions = moduleOptions,
     )

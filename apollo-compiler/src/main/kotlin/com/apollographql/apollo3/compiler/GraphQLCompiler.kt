@@ -1,25 +1,16 @@
 package com.apollographql.apollo3.compiler
 
 import com.apollographql.apollo3.api.QueryDocumentMinifier
-import com.apollographql.apollo3.compiler.backend.GraphQLCodeGenerator
-import com.apollographql.apollo3.compiler.backend.ir.BackendIrBuilder
-import com.apollographql.apollo3.compiler.frontend.GQLDocument
 import com.apollographql.apollo3.compiler.frontend.GQLFragmentDefinition
 import com.apollographql.apollo3.compiler.frontend.GQLOperationDefinition
-import com.apollographql.apollo3.compiler.frontend.GQLTypeDefinition
 import com.apollographql.apollo3.compiler.frontend.GraphQLParser
 import com.apollographql.apollo3.compiler.frontend.Issue
 import com.apollographql.apollo3.compiler.frontend.Schema
 import com.apollographql.apollo3.compiler.frontend.SourceAwareException
-import com.apollographql.apollo3.compiler.frontend.ir.FrontendIrBuilder
-import com.apollographql.apollo3.compiler.frontend.toIntrospectionSchema
 import com.apollographql.apollo3.compiler.frontend.withTypenameWhenNeeded
-import com.apollographql.apollo3.compiler.introspection.IntrospectionSchema
 import com.apollographql.apollo3.compiler.operationoutput.OperationDescriptor
-import com.apollographql.apollo3.compiler.operationoutput.toJson
 import com.apollographql.apollo3.compiler.unified.ir.IrBuilder
 import com.apollographql.apollo3.compiler.unified.codegen.KotlinCodeGenerator
-import com.squareup.kotlinpoet.asClassName
 import java.io.File
 
 class GraphQLCompiler {
@@ -32,7 +23,6 @@ class GraphQLCompiler {
       operationFiles: Set<File>,
       outputDir: File,
       incomingOptions: IncomingOptions,
-      useUnifiedIr: Boolean,
       moduleOptions: ModuleOptions,
   ) {
     outputDir.deleteRecursively()
@@ -80,24 +70,13 @@ class GraphQLCompiler {
       it.withTypenameWhenNeeded(incomingOptions.schema)
     }
 
-    val generatedTypes = if (useUnifiedIr) {
-      doWriteUnified(
+    val generatedTypes = doWrite(
           operations = operations,
           fragments = fragments,
           moduleOptions = moduleOptions,
           incomingOptions = incomingOptions,
           outputDir = outputDir,
       )
-    } else {
-      doWrite(
-          documents = documents,
-          operations = operations,
-          fragments = fragments,
-          moduleOptions = moduleOptions,
-          incomingOptions = incomingOptions,
-          outputDir = outputDir,
-      )
-    }
 
     val result = Result(
         generatedEnums = generatedTypes.enums,
@@ -141,7 +120,7 @@ class GraphQLCompiler {
 
   private class GeneratedTypes(val enums: Set<String>, val inputObjects: Set<String>)
 
-  private fun doWriteUnified(
+  private fun doWrite(
       outputDir: File,
       operations: List<GQLOperationDefinition>,
       fragments: List<GQLFragmentDefinition>,
@@ -186,100 +165,6 @@ class GraphQLCompiler {
         enums = ir.enums.map { it.name }.toSet(),
         inputObjects = ir.inputObjects.map { it.name }.toSet(),
     )
-  }
-
-  private fun doWrite(
-      documents: List<GQLDocument>,
-      operations: List<GQLOperationDefinition>,
-      fragments: List<GQLFragmentDefinition>,
-      outputDir: File,
-      moduleOptions: ModuleOptions,
-      incomingOptions: IncomingOptions,
-  ): GeneratedTypes {
-    val schema = incomingOptions.schema
-
-    val typesToGenerate = computeTypesToGenerate(
-        documents = documents,
-        schema = schema,
-        metadataEnums = incomingOptions.metadataEnums,
-        metadataInputObjects = incomingOptions.metadataInputObjects,
-        metadataCustomScalars = incomingOptions.isFromMetadata,
-        alwaysGenerateTypesMatching = moduleOptions.alwaysGenerateTypesMatching
-    )
-
-    val frontendIr = FrontendIrBuilder(
-        schema = schema,
-        operationDefinitions = operations,
-        fragmentDefinitions = fragments,
-        metadataFragmentDefinitions = incomingOptions.metadataFragments.map { it.definition }
-    ).build()
-
-    val backendIr = BackendIrBuilder(
-        schema = schema,
-        useSemanticNaming = moduleOptions.useSemanticNaming,
-        packageNameProvider = moduleOptions.packageNameProvider,
-        generateFragmentsAsInterfaces = incomingOptions.generateFragmentsAsInterfaces,
-    ).buildBackendIR(frontendIr)
-
-    val operationOutput = backendIr.operations.map {
-      OperationDescriptor(
-          name = it.operationName,
-          source = QueryDocumentMinifier.minify(it.definition)
-      )
-    }.let {
-      moduleOptions.operationOutputGenerator.generate(it)
-    }
-
-    check(operationOutput.size == operations.size) {
-      """The number of operation IDs (${operationOutput.size}) should match the number of operations (${operations.size}).
-        |Check that all your IDs are unique.
-      """.trimMargin()
-    }
-
-    if (moduleOptions.operationOutputFile != null) {
-      moduleOptions.operationOutputFile.writeText(operationOutput.toJson("  "))
-    }
-
-    // TODO: use another schema for codegen than introspection schema
-    val introspectionSchema = schema.toIntrospectionSchema()
-
-    val userScalarTypesMap = incomingOptions.customScalarsMapping
-
-    /**
-     * Generate the mapping for all custom scalars
-     *
-     * If the user specified a mapping, use it, else fallback to [Any]
-     */
-    val schemaScalars = introspectionSchema.types
-        .values
-        .filter { type -> type is IntrospectionSchema.Type.Scalar && !GQLTypeDefinition.builtInTypes.contains(type.name) }
-        .map { type -> type.name }
-    val unknownScalars = userScalarTypesMap.keys.subtract(schemaScalars.toSet())
-    check(unknownScalars.isEmpty()) {
-      "ApolloGraphQL: unknown custom scalar(s): ${unknownScalars.joinToString(",")}"
-    }
-    val customScalarsMapping = schemaScalars
-        .map {
-          it to (userScalarTypesMap[it] ?: Any::class.asClassName().toString())
-        }.toMap()
-
-    GraphQLCodeGenerator(
-        backendIr = backendIr,
-        schema = schema,
-        enumsToGenerate = typesToGenerate.enumsToGenerate,
-        inputObjectsToGenerate = typesToGenerate.inputObjectsToGenerate,
-        generateScalarMapping = typesToGenerate.generateScalarMapping,
-        customScalarsMapping = customScalarsMapping,
-        operationOutput = operationOutput,
-        generateAsInternal = moduleOptions.generateAsInternal,
-        generateFilterNotNull = moduleOptions.generateFilterNotNull,
-        typesPackageName = "${incomingOptions.schemaPackageName}.type",
-        fragmentsPackageName = moduleOptions.packageNameProvider.fragmentPackageName("unused"),
-        generateFragmentImplementations = moduleOptions.generateFragmentImplementations,
-        generateFragmentsAsInterfaces = incomingOptions.generateFragmentsAsInterfaces,
-    ).write(outputDir)
-
-    return GeneratedTypes(enums = typesToGenerate.enumsToGenerate, inputObjects = typesToGenerate.inputObjectsToGenerate)
   }
 
   /**
