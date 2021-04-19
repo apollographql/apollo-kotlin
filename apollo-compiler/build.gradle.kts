@@ -57,8 +57,12 @@ configure<org.jetbrains.kotlin.gradle.dsl.KotlinJvmProjectExtension> {
 }
 
 tasks.withType(KotlinCompile::class.java) {
-  // Fixes Task ':apollo-android:apollo-compiler:kaptGenerateStubsKotlin' uses the output of task ':apollo-android:apollo-compiler:pluginVersion', without declaring an explicit dependency
+  // Fixes the warning below:
+  // "Task ':apollo-android:apollo-compiler:kaptGenerateStubsKotlin' uses the output of task ':apollo-android:apollo-compiler:pluginVersion', without declaring an explicit dependency"
   dependsOn(pluginVersionTaskProvider)
+  // This used to work and fails now. Strangely enough, it fails on both `dev-3.x` and `main` as of writing while both these branches have
+  // compiled successfully before...
+  dependsOn("generateGrammarSource")
 }
 
 tasks.withType(KotlinCompile::class.java) {
