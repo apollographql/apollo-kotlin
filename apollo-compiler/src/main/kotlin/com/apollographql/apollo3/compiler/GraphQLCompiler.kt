@@ -9,6 +9,7 @@ import com.apollographql.apollo3.compiler.frontend.Schema
 import com.apollographql.apollo3.compiler.frontend.SourceAwareException
 import com.apollographql.apollo3.compiler.frontend.withTypenameWhenNeeded
 import com.apollographql.apollo3.compiler.operationoutput.OperationDescriptor
+import com.apollographql.apollo3.compiler.operationoutput.toJson
 import com.apollographql.apollo3.compiler.unified.ir.IrBuilder
 import com.apollographql.apollo3.compiler.unified.codegen.KotlinCodeGenerator
 import java.io.File
@@ -147,6 +148,16 @@ class GraphQLCompiler {
       )
     }.let {
       moduleOptions.operationOutputGenerator.generate(it)
+    }
+
+    check(operationOutput.size == operations.size) {
+      """The number of operation IDs (${operationOutput.size}) should match the number of operations (${operations.size}).
+        |Check that all your IDs are unique.
+      """.trimMargin()
+    }
+
+    if (moduleOptions.operationOutputFile != null) {
+      moduleOptions.operationOutputFile.writeText(operationOutput.toJson("  "))
     }
 
     KotlinCodeGenerator(
