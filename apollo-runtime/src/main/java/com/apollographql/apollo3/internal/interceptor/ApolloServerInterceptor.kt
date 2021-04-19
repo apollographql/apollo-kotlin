@@ -211,7 +211,9 @@ class ApolloServerInterceptor(
       val buffer = Buffer()
       val jsonWriter = BufferedSinkJsonWriter(buffer)
       jsonWriter.serializeNulls = true
+      jsonWriter.beginObject()
       operation.serializeVariables(jsonWriter, responseAdapterCache!!)
+      jsonWriter.endObject()
       jsonWriter.close()
       urlBuilder.addQueryParameter("variables", buffer.readUtf8())
     }

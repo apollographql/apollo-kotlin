@@ -21,7 +21,7 @@ data class UserFragmentImpl(
   val size: Int
 ) : Fragment<UserFragmentImpl.Data> {
   override fun serializeVariables(writer: JsonWriter, responseAdapterCache: ResponseAdapterCache) {
-    UserFragmentImpl_VariablesAdapter.obj().toResponse(writer, responseAdapterCache, this)
+    UserFragmentImpl_VariablesAdapter.toResponse(writer, responseAdapterCache, this)
   }
 
   override fun adapter(): ResponseAdapter<Data> {

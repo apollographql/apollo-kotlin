@@ -78,7 +78,7 @@ class FragmentBuilder(
 
   private fun IrNamedFragment.serializeVariablesFunSpec(): FunSpec = serializeVariablesFunSpec(
       adapterClassName = context.resolver.resolveFragmentVariablesAdapter(name),
-      emptyMessage = "// This fragment doesn't have variables",
+      emptyMessage = "This fragment doesn't have any variable",
   )
 
   private fun IrNamedFragment.adapterFunSpec(): FunSpec {

@@ -313,7 +313,6 @@ class GraphQLCompiler {
     val defaultGenerateFragmentImplementations = false
     val defaultGenerateResponseFields = true
     val defaultGenerateQueryDocument = true
-    val defaultUseUnifiedIr = false
     val defaultModuleName = "apollographql"
     val defaultMetadataOutputFile = null
 

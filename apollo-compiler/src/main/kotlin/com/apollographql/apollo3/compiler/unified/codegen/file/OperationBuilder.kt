@@ -96,7 +96,7 @@ class OperationBuilder(
 
   private fun serializeVariablesFunSpec(): FunSpec = serializeVariablesFunSpec(
       adapterClassName = context.resolver.resolveOperationVariablesAdapter(operation.name),
-      emptyMessage = "// This operation doesn't have variables"
+      emptyMessage = "This operation doesn't have any variable"
   )
 
   private fun adapterFunSpec(): FunSpec {

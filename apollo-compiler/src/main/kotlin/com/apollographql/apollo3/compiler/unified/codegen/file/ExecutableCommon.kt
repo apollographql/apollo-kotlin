@@ -26,11 +26,13 @@ fun serializeVariablesFunSpec(
 ): FunSpec {
 
   val body = if (adapterClassName == null) {
-    CodeBlock.of(emptyMessage)
+    CodeBlock.of("""
+      // $emptyMessage
+    """.trimIndent())
   } else {
     CodeBlock.of(
         "%L.$toResponse($writer, $responseAdapterCache, this)",
-            CodeBlock.of("%T", adapterClassName).obj(false)
+            CodeBlock.of("%T", adapterClassName)
     )
   }
   return FunSpec.builder(serializeVariables)

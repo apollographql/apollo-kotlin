@@ -17,7 +17,7 @@ import kotlin.collections.List
 
 class DroidFragmentImpl : Fragment<DroidFragmentImpl.Data> {
   override fun serializeVariables(writer: JsonWriter, responseAdapterCache: ResponseAdapterCache) {
-    // This fragment doesn't have variables
+    // This fragment doesn't have any variable
   }
 
   override fun adapter(): ResponseAdapter<Data> {

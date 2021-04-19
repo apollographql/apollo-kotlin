@@ -84,7 +84,9 @@ object ApolloOperationMessageSerializer : OperationMessageSerializer {
   internal fun OperationClientMessage.Start.writePayloadContentsTo(writer: JsonWriter) {
     with(writer) {
       name(JSON_KEY_VARIABLES)
+      beginObject()
       subscription.serializeVariables(this, responseAdapterCache)
+      endObject()
       name(JSON_KEY_OPERATION_NAME).value(subscription.name())
       if (!autoPersistSubscription || sendSubscriptionDocument) {
         name(JSON_KEY_QUERY).value(subscription.document())

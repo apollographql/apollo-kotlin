@@ -26,7 +26,7 @@ class TestQuery : Query<TestQuery.Data> {
   override fun name(): String = OPERATION_NAME
 
   override fun serializeVariables(writer: JsonWriter, responseAdapterCache: ResponseAdapterCache) {
-    // This operation doesn't have variables
+    // This operation doesn't have any variable
   }
 
   override fun adapter(): ResponseAdapter<Data> {

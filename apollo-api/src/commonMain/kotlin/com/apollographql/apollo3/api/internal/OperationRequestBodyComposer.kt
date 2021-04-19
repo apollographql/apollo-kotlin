@@ -50,7 +50,9 @@ object OperationRequestBodyComposer {
         beginObject()
         name("operationName").value(operation.name())
         name("variables")
+        beginObject()
         operation.serializeVariables(this, responseAdapterCache)
+        endObject()
         if (autoPersistQueries) {
           name("extensions")
           beginObject()

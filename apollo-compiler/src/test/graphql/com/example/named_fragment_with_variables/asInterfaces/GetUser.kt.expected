@@ -33,7 +33,7 @@ data class GetUser(
   override fun name(): String = OPERATION_NAME
 
   override fun serializeVariables(writer: JsonWriter, responseAdapterCache: ResponseAdapterCache) {
-    GetUser_VariablesAdapter.obj().toResponse(writer, responseAdapterCache, this)
+    GetUser_VariablesAdapter.toResponse(writer, responseAdapterCache, this)
   }
 
   override fun adapter(): ResponseAdapter<Data> {

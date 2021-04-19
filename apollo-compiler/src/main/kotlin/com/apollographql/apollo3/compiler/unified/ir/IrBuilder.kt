@@ -101,6 +101,7 @@ class IrBuilder(
     val customScalars = schema.typeDefinitions
         .values
         .filterIsInstance<GQLScalarTypeDefinition>()
+        .filter { !it.isBuiltIn() }
         .map { it.toIr() }
 
     return IntermediateRepresentation(

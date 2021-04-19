@@ -175,7 +175,9 @@ fun <D : Operation.Data> Operation<D>.toResponse(
  */
 fun <D : Operation.Data> Operation<D>.variables(responseAdapterCache: ResponseAdapterCache): Operation.Variables {
   val valueMap = MapJsonWriter().apply {
+    beginObject()
     serializeVariables(this, responseAdapterCache)
+    endObject()
   }.root() as Map<String, Any?>
   return Operation.Variables(valueMap)
 }
@@ -185,7 +187,9 @@ fun <D : Operation.Data> Operation<D>.variables(responseAdapterCache: ResponseAd
  */
 fun <D : Fragment.Data> Fragment<D>.variables(responseAdapterCache: ResponseAdapterCache): Operation.Variables {
   val valueMap = MapJsonWriter().apply {
+    beginObject()
     serializeVariables(this, responseAdapterCache)
+    endObject()
   }.root() as Map<String, Any?>
   return Operation.Variables(valueMap)
 }
@@ -194,16 +198,24 @@ fun <D : Fragment.Data> Fragment<D>.variables(responseAdapterCache: ResponseAdap
  * Serializes variables to a Json String
  */
 fun <D : Operation.Data> Operation<D>.variablesJson(responseAdapterCache: ResponseAdapterCache): String {
-  return Buffer().apply {
-    serializeVariables(BufferedSinkJsonWriter(this), responseAdapterCache)
-  }.readUtf8()
+  val buffer = Buffer()
+  BufferedSinkJsonWriter(buffer).apply {
+    beginObject()
+    serializeVariables(this, responseAdapterCache)
+    endObject()
+  }
+  return buffer.readUtf8()
 }
 
 /**
  * Serializes variables to a Json String
  */
 fun <D : Fragment.Data> Fragment<D>.variablesJson(responseAdapterCache: ResponseAdapterCache): String {
-  return Buffer().apply {
-    serializeVariables(BufferedSinkJsonWriter(this), responseAdapterCache)
-  }.readUtf8()
+  val buffer = Buffer()
+  BufferedSinkJsonWriter(buffer).apply {
+    beginObject()
+    serializeVariables(this, responseAdapterCache)
+    endObject()
+  }
+  return buffer.readUtf8()
 }

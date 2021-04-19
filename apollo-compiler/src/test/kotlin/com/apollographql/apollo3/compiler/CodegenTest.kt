@@ -28,7 +28,6 @@ class CodegenTest(private val folder: File, private val fragmentsCodegenMode: Fr
       val operationFiles: Set<File>,
       val outputDir: File,
 
-      val useUnifiedIr: Boolean = GraphQLCompiler.defaultUseUnifiedIr,
       val incomingOptions: GraphQLCompiler.IncomingOptions,
       val moduleOptions: GraphQLCompiler.ModuleOptions,
   )
@@ -50,7 +49,6 @@ class CodegenTest(private val folder: File, private val fragmentsCodegenMode: Fr
       GraphQLCompiler().write(
           operationFiles = options.operationFiles,
           outputDir = options.outputDir,
-          useUnifiedIr = options.useUnifiedIr,
           incomingOptions = options.incomingOptions,
           moduleOptions = options.moduleOptions
       )
@@ -220,7 +218,6 @@ class CodegenTest(private val folder: File, private val fragmentsCodegenMode: Fr
       return Options(
           operationFiles = graphqlFiles,
           outputDir = File("build/generated/test/${folder.name}"),
-          useUnifiedIr = true,
           incomingOptions = incomingOptions,
           moduleOptions = moduleOptions
       )
@@ -241,7 +238,7 @@ class CodegenTest(private val folder: File, private val fragmentsCodegenMode: Fr
             val queryFile = checkNotNull(file.walk().find { it.extension == "graphql" })
             val hasNamedFragments = queryFile.readText().contains("fragment\\s\\w*\\son\\s\\w*".toRegex())
             val hasInlineFragments = queryFile.readText().contains("\\.\\.\\.\\s*on\\s\\w*\\s*".toRegex())
-            if (hasNamedFragments || hasInlineFragments) {
+            if (false && (hasNamedFragments || hasInlineFragments)) {
               if (fragmentsCodegenMode == null) {
                 listOf(
                     arrayOf(file, FragmentsCodegenMode.AsInterfaces),
@@ -254,8 +251,7 @@ class CodegenTest(private val folder: File, private val fragmentsCodegenMode: Fr
               }
             } else {
               listOf(
-                  // when there are no fragments we don't really care what fragment codegen mode is
-                  arrayOf(file, FragmentsCodegenMode.AsClasses),
+                  arrayOf(file, FragmentsCodegenMode.AsInterfaces),
               )
             }
           }

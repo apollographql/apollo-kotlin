@@ -58,7 +58,6 @@ class MetadataTest {
         outputDir = outputDir,
         incomingOptions = incomingOptions,
         moduleOptions = moduleOptions,
-        useUnifiedIr = GraphQLCompiler.defaultUseUnifiedIr
     )
   }
 
