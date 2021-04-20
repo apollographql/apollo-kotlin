@@ -12,6 +12,7 @@ internal object Identifier {
   const val fieldSets = "fieldSets"
   @Suppress("ObjectPropertyName")
   const val __typename = "__typename"
+  const val typename = "typename"
 
   const val id = "id"
   const val name = "name"

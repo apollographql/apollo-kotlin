@@ -44,5 +44,4 @@ class MockQuery : Query<MockQuery.Data> {
   override fun responseFields(): List<ResponseField.FieldSet> {
     return emptyList()
   }
-
 }

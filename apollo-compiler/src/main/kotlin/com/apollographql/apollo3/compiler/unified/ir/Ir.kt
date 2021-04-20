@@ -25,6 +25,9 @@ data class IntermediateRepresentation(
     val inputObjects: List<IrInputObject>,
     val enums: List<IrEnum>,
     val customScalars: List<IrCustomScalar>,
+    val objects: List<IrObject>,
+    val unions: List<IrUnion>,
+    val interfaces: List<IrInterface>,
     val metadataFragments: List<MetadataFragment>,
     val metadataEnums: Set<String>,
     val metadataInputObjects: Set<String>,
@@ -197,6 +200,27 @@ data class IrInputObject(
     val description: String?,
     val deprecationReason: String?,
     val fields: List<IrInputField>,
+)
+
+data class IrObject(
+    val name: String,
+    val implements: List<String>,
+    val description: String?,
+    val deprecationReason: String?,
+)
+
+data class IrInterface(
+    val name: String,
+    val implements: List<String>,
+    val description: String?,
+    val deprecationReason: String?,
+)
+
+data class IrUnion(
+    val name: String,
+    val members: List<String>,
+    val description: String?,
+    val deprecationReason: String?,
 )
 
 data class IrCustomScalar(

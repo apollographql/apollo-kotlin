@@ -109,9 +109,23 @@ class IrBuilder(
       (schema.typeDefinition(name) as GQLEnumTypeDefinition).toIr()
     }
 
-    val customScalars = schema.typeDefinitions
-        .values
+    val customScalars = schema.typeDefinitions.values
         .filterIsInstance<GQLScalarTypeDefinition>()
+        .filter { !it.isBuiltIn() }
+        .map { it.toIr() }
+
+    val objects = schema.typeDefinitions.values
+        .filterIsInstance<GQLObjectTypeDefinition>()
+        .filter { !it.isBuiltIn() }
+        .map { it.toIr() }
+
+    val interfaces = schema.typeDefinitions.values
+        .filterIsInstance<GQLInterfaceTypeDefinition>()
+        .filter { !it.isBuiltIn() }
+        .map { it.toIr() }
+
+    val unions = schema.typeDefinitions.values
+        .filterIsInstance<GQLUnionTypeDefinition>()
         .filter { !it.isBuiltIn() }
         .map { it.toIr() }
 
@@ -122,10 +136,41 @@ class IrBuilder(
         inputObjects = inputObjects,
         enums = enums,
         customScalars = customScalars,
+        objects = objects,
+        interfaces = interfaces,
+        unions = unions,
         metadataFragments = metadataFragments,
         metadataEnums = metadataEnums,
         metadataInputObjects = metadataInputObjects,
         metadataSchema = metadataSchema
+    )
+  }
+
+
+  private fun GQLObjectTypeDefinition.toIr(): IrObject {
+    return IrObject(
+        name = name,
+        implements = implementsInterfaces,
+        description = description,
+        deprecationReason = directives.findDeprecationReason()
+    )
+  }
+
+  private fun GQLInterfaceTypeDefinition.toIr(): IrInterface {
+    return IrInterface(
+        name = name,
+        implements = implementsInterfaces,
+        description = description,
+        deprecationReason = directives.findDeprecationReason()
+    )
+  }
+
+  private fun GQLUnionTypeDefinition.toIr(): IrUnion {
+    return IrUnion(
+        name = name,
+        members = memberTypes.map { it.name },
+        description = description,
+        deprecationReason = directives.findDeprecationReason()
     )
   }
 

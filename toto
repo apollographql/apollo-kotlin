@@ -1,0 +1,1903 @@
+
+> Task :dependencies
+
+------------------------------------------------------------
+Root project 'build-logic'
+------------------------------------------------------------
+
+annotationProcessor - Annotation processors and their dependencies for source set 'main'.
+No dependencies
+
+api - API dependencies for compilation 'main' (target  (jvm)). (n)
+No dependencies
+
+apiDependenciesMetadata
+\--- org.jetbrains.kotlin:kotlin-stdlib:1.4.32
+     +--- org.jetbrains.kotlin:kotlin-stdlib-common:1.4.32
+     \--- org.jetbrains:annotations:13.0
+
+apiElements - API elements for main. (n)
+No dependencies
+
+apiElements-published (n)
+No dependencies
+
+archives - Configuration for archive artifacts. (n)
+No dependencies
+
+compile - Dependencies for compilation 'main' (target  (jvm)) (deprecated, use 'implementation ' instead).
+No dependencies
+
+compileClasspath - Compile classpath for compilation 'main' (target  (jvm)).
++--- org.jetbrains.kotlin:kotlin-stdlib:1.4.32
+|    +--- org.jetbrains.kotlin:kotlin-stdlib-common:1.4.32
+|    \--- org.jetbrains:annotations:13.0
++--- com.squareup.okhttp3:okhttp:4.9.0
+|    +--- com.squareup.okio:okio:2.8.0
+|    |    +--- org.jetbrains.kotlin:kotlin-stdlib:1.4.0 -> 1.4.32 (*)
+|    |    \--- org.jetbrains.kotlin:kotlin-stdlib-common:1.4.0 -> 1.4.32
+|    \--- org.jetbrains.kotlin:kotlin-stdlib:1.4.10 -> 1.4.32 (*)
++--- com.squareup.moshi:moshi:1.11.0
+|    \--- com.squareup.okio:okio:1.17.5 -> 2.8.0 (*)
++--- com.android.tools.build:gradle:4.1.3
+|    +--- com.android.tools.build:builder:4.1.3
+|    |    +--- com.android.tools.build:builder-model:4.1.3
+|    |    |    \--- com.android.tools:annotations:27.1.3
+|    |    +--- com.android.tools.build:builder-test-api:4.1.3
+|    |    |    \--- com.android.tools.ddms:ddmlib:27.1.3
+|    |    |         +--- com.android.tools:common:27.1.3
+|    |    |         |    +--- com.android.tools:annotations:27.1.3
+|    |    |         |    \--- com.google.guava:guava:28.1-jre
+|    |    |         |         +--- com.google.guava:failureaccess:1.0.1
+|    |    |         |         +--- com.google.guava:listenablefuture:9999.0-empty-to-avoid-conflict-with-guava
+|    |    |         |         +--- com.google.code.findbugs:jsr305:3.0.2
+|    |    |         |         +--- org.checkerframework:checker-qual:2.8.1
+|    |    |         |         +--- com.google.errorprone:error_prone_annotations:2.3.2
+|    |    |         |         +--- com.google.j2objc:j2objc-annotations:1.3
+|    |    |         |         \--- org.codehaus.mojo:animal-sniffer-annotations:1.18
+|    |    |         +--- net.sf.kxml:kxml2:2.3.0
+|    |    |         \--- com.google.protobuf:protobuf-java:3.10.0
+|    |    +--- com.android.tools:sdklib:27.1.3
+|    |    |    +--- com.android.tools.layoutlib:layoutlib-api:27.1.3
+|    |    |    |    +--- com.android.tools:common:27.1.3 (*)
+|    |    |    |    +--- net.sf.kxml:kxml2:2.3.0
+|    |    |    |    +--- com.android.tools:annotations:27.1.3
+|    |    |    |    \--- org.jetbrains:annotations:13.0
+|    |    |    +--- com.android.tools:dvlib:27.1.3
+|    |    |    |    \--- com.android.tools:common:27.1.3 (*)
+|    |    |    +--- com.android.tools:repository:27.1.3
+|    |    |    |    +--- com.android.tools:common:27.1.3 (*)
+|    |    |    |    +--- com.sun.activation:javax.activation:1.2.0
+|    |    |    |    +--- org.apache.commons:commons-compress:1.12
+|    |    |    |    +--- org.glassfish.jaxb:jaxb-runtime:2.3.1
+|    |    |    |    |    +--- javax.xml.bind:jaxb-api:2.3.1
+|    |    |    |    |    |    \--- javax.activation:javax.activation-api:1.2.0
+|    |    |    |    |    +--- org.glassfish.jaxb:txw2:2.3.1
+|    |    |    |    |    +--- com.sun.istack:istack-commons-runtime:3.0.7
+|    |    |    |    |    +--- org.jvnet.staxex:stax-ex:1.8
+|    |    |    |    |    +--- com.sun.xml.fastinfoset:FastInfoset:1.2.15
+|    |    |    |    |    \--- javax.activation:javax.activation-api:1.2.0
+|    |    |    |    +--- com.google.jimfs:jimfs:1.1
+|    |    |    |    |    \--- com.google.guava:guava:18.0 -> 28.1-jre (*)
+|    |    |    |    \--- org.jetbrains.kotlin:kotlin-stdlib-jdk8:1.3.72 -> 1.4.32
+|    |    |    |         +--- org.jetbrains.kotlin:kotlin-stdlib:1.4.32 (*)
+|    |    |    |         \--- org.jetbrains.kotlin:kotlin-stdlib-jdk7:1.4.32
+|    |    |    |              \--- org.jetbrains.kotlin:kotlin-stdlib:1.4.32 (*)
+|    |    |    +--- com.google.code.gson:gson:2.8.5 -> 2.8.6
+|    |    |    +--- org.apache.commons:commons-compress:1.12
+|    |    |    +--- org.apache.httpcomponents:httpmime:4.5.6
+|    |    |    |    \--- org.apache.httpcomponents:httpclient:4.5.6
+|    |    |    |         +--- org.apache.httpcomponents:httpcore:4.4.10
+|    |    |    |         +--- commons-logging:commons-logging:1.2
+|    |    |    |         \--- commons-codec:commons-codec:1.10
+|    |    |    \--- org.apache.httpcomponents:httpcore:4.4.10
+|    |    +--- com.android.tools:sdk-common:27.1.3
+|    |    |    +--- com.android.tools:sdklib:27.1.3 (*)
+|    |    |    +--- com.android.tools.build:builder-test-api:4.1.3 (*)
+|    |    |    +--- com.android.tools.build:builder-model:4.1.3 (*)
+|    |    |    +--- com.android.tools.ddms:ddmlib:27.1.3 (*)
+|    |    |    +--- com.android.tools.analytics-library:shared:27.1.3
+|    |    |    |    +--- com.android.tools.analytics-library:protos:27.1.3
+|    |    |    |    |    \--- com.google.protobuf:protobuf-java:3.10.0
+|    |    |    |    +--- com.android.tools:annotations:27.1.3
+|    |    |    |    +--- com.android.tools:common:27.1.3 (*)
+|    |    |    |    +--- com.google.guava:guava:28.1-jre (*)
+|    |    |    |    +--- com.google.code.gson:gson:2.8.5 -> 2.8.6
+|    |    |    |    \--- org.jetbrains.kotlin:kotlin-stdlib-jdk8:1.3.72 -> 1.4.32 (*)
+|    |    |    +--- org.bouncycastle:bcpkix-jdk15on:1.56
+|    |    |    |    \--- org.bouncycastle:bcprov-jdk15on:1.56
+|    |    |    +--- org.bouncycastle:bcprov-jdk15on:1.56
+|    |    |    +--- org.jetbrains.kotlin:kotlin-stdlib-jdk8:1.3.72 -> 1.4.32 (*)
+|    |    |    +--- org.jetbrains.kotlin:kotlin-reflect:1.3.72
+|    |    |    |    \--- org.jetbrains.kotlin:kotlin-stdlib:1.3.72 -> 1.4.32 (*)
+|    |    |    +--- com.google.protobuf:protobuf-java:3.10.0
+|    |    |    +--- javax.inject:javax.inject:1
+|    |    |    +--- org.jetbrains.trove4j:trove4j:20160824
+|    |    |    \--- com.android.tools.build:aapt2-proto:4.1.0-alpha01-6193524 -> 4.1.3-6503028
+|    |    |         \--- com.google.protobuf:protobuf-java:3.10.0
+|    |    +--- com.android.tools:common:27.1.3 (*)
+|    |    +--- com.android.tools.build:manifest-merger:27.1.3
+|    |    |    +--- com.android.tools:common:27.1.3 (*)
+|    |    |    +--- com.android.tools:sdklib:27.1.3 (*)
+|    |    |    +--- com.android.tools:sdk-common:27.1.3 (*)
+|    |    |    +--- com.google.code.gson:gson:2.8.5 -> 2.8.6
+|    |    |    +--- org.jetbrains.kotlin:kotlin-stdlib-jdk8:1.3.72 -> 1.4.32 (*)
+|    |    |    \--- net.sf.kxml:kxml2:2.3.0
+|    |    +--- com.android.tools.ddms:ddmlib:27.1.3 (*)
+|    |    +--- com.android:zipflinger:4.1.3
+|    |    |    \--- com.android.tools:common:27.1.3 (*)
+|    |    +--- com.android:signflinger:4.1.3
+|    |    |    +--- com.android.tools.build:apksig:4.1.3
+|    |    |    \--- com.android:zipflinger:4.1.3 (*)
+|    |    +--- com.android.tools.analytics-library:protos:27.1.3 (*)
+|    |    +--- com.android.tools.analytics-library:tracker:27.1.3
+|    |    |    +--- com.android.tools:annotations:27.1.3
+|    |    |    +--- com.android.tools:common:27.1.3 (*)
+|    |    |    +--- com.android.tools.analytics-library:protos:27.1.3 (*)
+|    |    |    +--- com.android.tools.analytics-library:shared:27.1.3 (*)
+|    |    |    +--- com.google.protobuf:protobuf-java:3.10.0
+|    |    |    +--- com.google.guava:guava:28.1-jre (*)
+|    |    |    \--- org.jetbrains.kotlin:kotlin-stdlib-jdk8:1.3.72 -> 1.4.32 (*)
+|    |    +--- com.android.tools.build:apksig:4.1.3
+|    |    +--- com.android.tools.build:apkzlib:4.1.3
+|    |    |    +--- com.google.code.findbugs:jsr305:1.3.9 -> 3.0.2
+|    |    |    +--- com.google.guava:guava:23.0 -> 28.1-jre (*)
+|    |    |    +--- org.bouncycastle:bcpkix-jdk15on:1.56 (*)
+|    |    |    +--- org.bouncycastle:bcprov-jdk15on:1.56
+|    |    |    \--- com.android.tools.build:apksig:4.1.3
+|    |    +--- org.jetbrains.kotlin:kotlin-stdlib-jdk8:1.3.72 -> 1.4.32 (*)
+|    |    +--- com.squareup:javawriter:2.5.0
+|    |    +--- org.bouncycastle:bcpkix-jdk15on:1.56 (*)
+|    |    +--- org.bouncycastle:bcprov-jdk15on:1.56
+|    |    +--- org.ow2.asm:asm:7.0 -> 7.2
+|    |    +--- org.ow2.asm:asm-tree:7.0 -> 7.2
+|    |    |    \--- org.ow2.asm:asm:7.2
+|    |    +--- javax.inject:javax.inject:1
+|    |    +--- org.ow2.asm:asm-commons:7.0 -> 7.2
+|    |    |    +--- org.ow2.asm:asm:7.2
+|    |    |    +--- org.ow2.asm:asm-tree:7.2 (*)
+|    |    |    \--- org.ow2.asm:asm-analysis:7.2
+|    |    |         \--- org.ow2.asm:asm-tree:7.2 (*)
+|    |    +--- org.ow2.asm:asm-util:7.0 -> 7.2
+|    |    |    +--- org.ow2.asm:asm:7.2
+|    |    |    +--- org.ow2.asm:asm-tree:7.2 (*)
+|    |    |    \--- org.ow2.asm:asm-analysis:7.2 (*)
+|    |    +--- it.unimi.dsi:fastutil:7.2.0
+|    |    +--- net.sf.jopt-simple:jopt-simple:4.9
+|    |    \--- com.googlecode.json-simple:json-simple:1.1
+|    +--- com.android.tools.build:aapt2-proto:4.1.3-6503028 (*)
+|    +--- com.android.tools.build:aaptcompiler:4.1.3
+|    |    +--- com.android.tools.build:aapt2-proto:4.1.3-6503028 (*)
+|    |    +--- com.android.tools.layoutlib:layoutlib-api:27.1.3 (*)
+|    |    +--- com.google.guava:guava:28.1-jre (*)
+|    |    \--- org.jetbrains.kotlin:kotlin-stdlib-jdk8:1.3.72 -> 1.4.32 (*)
+|    +--- com.android.tools.analytics-library:crash:27.1.3
+|    |    +--- com.android.tools:annotations:27.1.3
+|    |    +--- com.google.guava:guava:28.1-jre (*)
+|    |    +--- org.apache.httpcomponents:httpmime:4.5.6 (*)
+|    |    +--- org.apache.httpcomponents:httpcore:4.4.10
+|    |    \--- org.apache.httpcomponents:httpclient:4.5.6 (*)
+|    +--- com.android.tools.lint:lint-gradle-api:27.1.3
+|    |    +--- com.android.tools:sdklib:27.1.3 (*)
+|    |    +--- com.android.tools.lint:lint-model:27.1.3
+|    |    |    +--- com.android.tools:common:27.1.3 (*)
+|    |    |    +--- com.android.tools:sdk-common:27.1.3 (*)
+|    |    |    +--- com.android.tools.build:builder-model:4.1.3 (*)
+|    |    |    +--- org.jetbrains.kotlin:kotlin-stdlib-jdk8:1.3.72 -> 1.4.32 (*)
+|    |    |    \--- net.sf.kxml:kxml2:2.3.0
+|    |    +--- com.android.tools.build:gradle-api:4.1.3
+|    |    |    +--- com.android.tools.build:builder-test-api:4.1.3 (*)
+|    |    |    +--- com.google.guava:guava:28.1-jre (*)
+|    |    |    \--- org.jetbrains.kotlin:kotlin-stdlib-jdk8:1.3.72 -> 1.4.32 (*)
+|    |    +--- org.jetbrains.kotlin:kotlin-reflect:1.3.72 (*)
+|    |    +--- org.jetbrains.kotlin:kotlin-stdlib-jdk8:1.3.72 -> 1.4.32 (*)
+|    |    \--- com.google.guava:guava:28.1-jre (*)
+|    +--- com.android.tools.build:gradle-api:4.1.3 (*)
+|    +--- androidx.databinding:databinding-compiler-common:4.1.3
+|    |    +--- androidx.databinding:databinding-common:4.1.3
+|    |    +--- com.android.databinding:baseLibrary:4.1.3
+|    |    +--- org.antlr:antlr4:4.5.3
+|    |    +--- commons-io:commons-io:2.4
+|    |    +--- com.googlecode.juniversalchardet:juniversalchardet:1.0.3
+|    |    +--- com.google.guava:guava:28.1-jre (*)
+|    |    +--- com.squareup:javapoet:1.10.0
+|    |    +--- org.jetbrains.kotlin:kotlin-stdlib-jdk8:1.3.72 -> 1.4.32 (*)
+|    |    +--- com.google.code.gson:gson:2.8.5 -> 2.8.6
+|    |    +--- org.glassfish.jaxb:jaxb-runtime:2.3.1 (*)
+|    |    +--- com.android.tools:annotations:27.1.3
+|    |    \--- com.android.tools.build.jetifier:jetifier-core:1.0.0-beta09
+|    |         +--- com.google.code.gson:gson:2.8.0 -> 2.8.6
+|    |         \--- org.jetbrains.kotlin:kotlin-stdlib:1.3.60 -> 1.4.32 (*)
+|    +--- org.jetbrains.kotlin:kotlin-stdlib-jdk8:1.3.72 -> 1.4.32 (*)
+|    +--- com.android.tools.build:transform-api:2.0.0-deprecated-use-gradle-api
+|    +--- org.ow2.asm:asm:7.0 -> 7.2
+|    +--- org.ow2.asm:asm-analysis:7.0 -> 7.2 (*)
+|    +--- org.ow2.asm:asm-commons:7.0 -> 7.2 (*)
+|    +--- org.ow2.asm:asm-util:7.0 -> 7.2 (*)
+|    +--- net.sf.jopt-simple:jopt-simple:4.9
+|    +--- net.sf.proguard:proguard-gradle:6.0.3
+|    |    \--- net.sf.proguard:proguard-base:6.0.3
+|    +--- com.android.tools.build:bundletool:0.14.0
+|    +--- com.android.tools.build.jetifier:jetifier-core:1.0.0-beta09 (*)
+|    +--- com.android.tools.build.jetifier:jetifier-processor:1.0.0-beta09
+|    |    +--- com.android.tools.build.jetifier:jetifier-core:1.0.0-beta09 (*)
+|    |    +--- org.ow2.asm:asm:6.0 -> 7.2
+|    |    +--- org.ow2.asm:asm-util:6.0 -> 7.2 (*)
+|    |    +--- org.ow2.asm:asm-commons:6.0 -> 7.2 (*)
+|    |    +--- org.jdom:jdom2:2.0.6
+|    |    \--- org.jetbrains.kotlin:kotlin-stdlib:1.3.60 -> 1.4.32 (*)
+|    +--- com.squareup:javapoet:1.10.0
+|    +--- com.google.protobuf:protobuf-java:3.10.0
+|    +--- com.google.protobuf:protobuf-java-util:3.10.0
+|    |    +--- com.google.protobuf:protobuf-java:3.10.0
+|    |    +--- com.google.guava:guava:28.0-android -> 28.1-jre (*)
+|    |    +--- com.google.errorprone:error_prone_annotations:2.3.2
+|    |    \--- com.google.code.gson:gson:2.8.5 -> 2.8.6
+|    +--- com.google.crypto.tink:tink:1.3.0-rc2
+|    |    +--- com.google.protobuf:protobuf-java:3.10.0
+|    |    \--- org.json:json:20180813
+|    \--- com.google.test.platform:core-proto:0.0.2-dev
++--- me.champeau.gradle:japicmp-gradle-plugin:0.2.8
+|    \--- com.github.siom79.japicmp:japicmp:0.13.1
+|         +--- org.javassist:javassist:3.23.1-GA
+|         \--- javax.activation:activation:1.1
++--- me.tylerbwong.gradle:metalava-gradle:0.1.5
++--- org.jetbrains.kotlin:kotlin-gradle-plugin:1.4.32
+|    +--- org.jetbrains.kotlin:kotlin-gradle-plugin-api:1.4.32
+|    |    \--- org.jetbrains.kotlin:kotlin-stdlib:1.4.32 (*)
+|    +--- org.jetbrains.kotlin:kotlin-gradle-plugin-model:1.4.32
+|    |    \--- org.jetbrains.kotlin:kotlin-stdlib:1.4.32 (*)
+|    +--- org.jetbrains.kotlin:kotlin-stdlib:1.4.32 (*)
+|    +--- org.jetbrains.kotlin:kotlin-util-klib:1.4.32
+|    |    +--- org.jetbrains.kotlin:kotlin-stdlib:1.4.32 (*)
+|    |    \--- org.jetbrains.kotlin:kotlin-util-io:1.4.32
+|    |         \--- org.jetbrains.kotlin:kotlin-stdlib:1.4.32 (*)
+|    +--- com.google.code.gson:gson:2.8.6
+|    \--- de.undercouch:gradle-download-task:4.0.2
++--- org.jetbrains.kotlinx:kotlinx-coroutines-core:1.4.2
+|    \--- org.jetbrains.kotlinx:kotlinx-coroutines-core-jvm:1.4.2
+|         +--- org.jetbrains.kotlin:kotlin-stdlib:1.4.0 -> 1.4.32 (*)
+|         \--- org.jetbrains.kotlin:kotlin-stdlib-common:1.4.0 -> 1.4.32
++--- com.squareup.sqldelight:gradle-plugin:1.4.4
+|    \--- org.jetbrains.kotlin:kotlin-stdlib-jdk8:1.4.0 -> 1.4.32 (*)
++--- com.gradle.publish:plugin-publish-plugin:0.12.0
++--- com.github.ben-manes:gradle-versions-plugin:0.33.0
++--- net.mbonnin.vespene:vespene-lib:0.5
+|    +--- org.jetbrains.kotlinx:kotlinx-coroutines-core:1.4.2 (*)
+|    +--- com.squareup.retrofit2:retrofit:2.9.0
+|    |    \--- com.squareup.okhttp3:okhttp:3.14.9 -> 4.9.0 (*)
+|    \--- org.jetbrains.kotlin:kotlin-stdlib-jdk8:1.4.30 -> 1.4.32 (*)
++--- com.github.jengelman.gradle.plugins:shadow:6.1.0
++--- com.google.devtools.ksp:symbol-processing-gradle-plugin:1.4.32-1.0.0-alpha07
+|    \--- org.jetbrains.kotlin:kotlin-stdlib-jdk8:1.4.32 (*)
+\--- org.jetbrains.kotlinx:atomicfu-gradle-plugin:0.15.1
+     +--- org.jetbrains.kotlinx:atomicfu-transformer:0.15.1
+     |    +--- org.slf4j:slf4j-simple:1.8.0-alpha2
+     |    |    \--- org.slf4j:slf4j-api:1.8.0-alpha2
+     |    +--- org.jetbrains.kotlin:kotlin-stdlib:1.4.10 -> 1.4.32 (*)
+     |    +--- org.ow2.asm:asm:7.2
+     |    +--- org.ow2.asm:asm-commons:7.2 (*)
+     |    +--- org.ow2.asm:asm-tree:7.2 (*)
+     |    +--- org.ow2.asm:asm-util:7.2 (*)
+     |    +--- org.slf4j:slf4j-api:1.8.0-alpha2
+     |    +--- org.mozilla:rhino:1.7.10
+     |    \--- org.jetbrains.kotlinx:kotlinx-metadata-jvm:0.1.0
+     |         \--- org.jetbrains.kotlin:kotlin-stdlib:1.3.31 -> 1.4.32 (*)
+     \--- org.jetbrains.kotlin:kotlin-stdlib:1.4.10 -> 1.4.32 (*)
+
+compileOnly - Compile only dependencies for compilation 'main' (target  (jvm)).
+No dependencies
+
+compileOnlyDependenciesMetadata
+No dependencies
+
+default - Configuration for default artifacts. (n)
+No dependencies
+
+implementation - Implementation only dependencies for compilation 'main' (target  (jvm)). (n)
++--- unspecified (n)
++--- com.squareup.okhttp3:okhttp:4.9.0 (n)
++--- com.squareup.moshi:moshi:1.11.0 (n)
++--- com.android.tools.build:gradle:4.1.3 (n)
++--- me.champeau.gradle:japicmp-gradle-plugin:0.2.8 (n)
++--- me.tylerbwong.gradle:metalava-gradle:0.1.5 (n)
++--- org.jetbrains.kotlin:kotlin-gradle-plugin:1.4.32 (n)
++--- org.jetbrains.kotlinx:kotlinx-coroutines-core:1.4.2 (n)
++--- com.squareup.sqldelight:gradle-plugin:1.4.4 (n)
++--- com.gradle.publish:plugin-publish-plugin:0.12.0 (n)
++--- com.github.ben-manes:gradle-versions-plugin:0.33.0 (n)
++--- net.mbonnin.vespene:vespene-lib:0.5 (n)
++--- com.github.jengelman.gradle.plugins:shadow:6.1.0 (n)
++--- com.google.devtools.ksp:symbol-processing-gradle-plugin:1.4.32-1.0.0-alpha07 (n)
+\--- org.jetbrains.kotlinx:atomicfu-gradle-plugin:0.15.1 (n)
+
+implementationDependenciesMetadata
++--- org.jetbrains.kotlin:kotlin-stdlib:1.4.32
+|    +--- org.jetbrains.kotlin:kotlin-stdlib-common:1.4.32
+|    \--- org.jetbrains:annotations:13.0
++--- com.squareup.okhttp3:okhttp:4.9.0
+|    +--- com.squareup.okio:okio:2.8.0
+|    |    \--- com.squareup.okio:okio-metadata:2.8.0
+|    |         \--- org.jetbrains.kotlin:kotlin-stdlib-common:1.4.0 -> 1.4.32
+|    \--- org.jetbrains.kotlin:kotlin-stdlib:1.4.10 -> 1.4.32 (*)
++--- com.squareup.moshi:moshi:1.11.0
+|    \--- com.squareup.okio:okio:1.17.5 -> 2.8.0 (*)
++--- com.android.tools.build:gradle:4.1.3
+|    +--- com.android.tools.build:builder:4.1.3
+|    |    +--- com.android.tools.build:builder-model:4.1.3
+|    |    |    \--- com.android.tools:annotations:27.1.3
+|    |    +--- com.android.tools.build:builder-test-api:4.1.3
+|    |    |    \--- com.android.tools.ddms:ddmlib:27.1.3
+|    |    |         +--- com.android.tools:common:27.1.3
+|    |    |         |    +--- com.android.tools:annotations:27.1.3
+|    |    |         |    \--- com.google.guava:guava:28.1-jre
+|    |    |         |         +--- com.google.guava:failureaccess:1.0.1
+|    |    |         |         +--- com.google.guava:listenablefuture:9999.0-empty-to-avoid-conflict-with-guava
+|    |    |         |         +--- com.google.code.findbugs:jsr305:3.0.2
+|    |    |         |         +--- org.checkerframework:checker-qual:2.8.1
+|    |    |         |         +--- com.google.errorprone:error_prone_annotations:2.3.2
+|    |    |         |         +--- com.google.j2objc:j2objc-annotations:1.3
+|    |    |         |         \--- org.codehaus.mojo:animal-sniffer-annotations:1.18
+|    |    |         +--- net.sf.kxml:kxml2:2.3.0
+|    |    |         \--- com.google.protobuf:protobuf-java:3.10.0
+|    |    +--- com.android.tools:sdklib:27.1.3
+|    |    |    +--- com.android.tools.layoutlib:layoutlib-api:27.1.3
+|    |    |    |    +--- com.android.tools:common:27.1.3 (*)
+|    |    |    |    +--- net.sf.kxml:kxml2:2.3.0
+|    |    |    |    +--- com.android.tools:annotations:27.1.3
+|    |    |    |    \--- org.jetbrains:annotations:13.0
+|    |    |    +--- com.android.tools:dvlib:27.1.3
+|    |    |    |    \--- com.android.tools:common:27.1.3 (*)
+|    |    |    +--- com.android.tools:repository:27.1.3
+|    |    |    |    +--- com.android.tools:common:27.1.3 (*)
+|    |    |    |    +--- com.sun.activation:javax.activation:1.2.0
+|    |    |    |    +--- org.apache.commons:commons-compress:1.12
+|    |    |    |    +--- org.glassfish.jaxb:jaxb-runtime:2.3.1
+|    |    |    |    |    +--- javax.xml.bind:jaxb-api:2.3.1
+|    |    |    |    |    |    \--- javax.activation:javax.activation-api:1.2.0
+|    |    |    |    |    +--- org.glassfish.jaxb:txw2:2.3.1
+|    |    |    |    |    +--- com.sun.istack:istack-commons-runtime:3.0.7
+|    |    |    |    |    +--- org.jvnet.staxex:stax-ex:1.8
+|    |    |    |    |    +--- com.sun.xml.fastinfoset:FastInfoset:1.2.15
+|    |    |    |    |    \--- javax.activation:javax.activation-api:1.2.0
+|    |    |    |    +--- com.google.jimfs:jimfs:1.1
+|    |    |    |    |    \--- com.google.guava:guava:18.0 -> 28.1-jre (*)
+|    |    |    |    \--- org.jetbrains.kotlin:kotlin-stdlib-jdk8:1.3.72 -> 1.4.32
+|    |    |    |         +--- org.jetbrains.kotlin:kotlin-stdlib:1.4.32 (*)
+|    |    |    |         \--- org.jetbrains.kotlin:kotlin-stdlib-jdk7:1.4.32
+|    |    |    |              \--- org.jetbrains.kotlin:kotlin-stdlib:1.4.32 (*)
+|    |    |    +--- com.google.code.gson:gson:2.8.5 -> 2.8.6
+|    |    |    +--- org.apache.commons:commons-compress:1.12
+|    |    |    +--- org.apache.httpcomponents:httpmime:4.5.6
+|    |    |    |    \--- org.apache.httpcomponents:httpclient:4.5.6
+|    |    |    |         +--- org.apache.httpcomponents:httpcore:4.4.10
+|    |    |    |         +--- commons-logging:commons-logging:1.2
+|    |    |    |         \--- commons-codec:commons-codec:1.10
+|    |    |    \--- org.apache.httpcomponents:httpcore:4.4.10
+|    |    +--- com.android.tools:sdk-common:27.1.3
+|    |    |    +--- com.android.tools:sdklib:27.1.3 (*)
+|    |    |    +--- com.android.tools.build:builder-test-api:4.1.3 (*)
+|    |    |    +--- com.android.tools.build:builder-model:4.1.3 (*)
+|    |    |    +--- com.android.tools.ddms:ddmlib:27.1.3 (*)
+|    |    |    +--- com.android.tools.analytics-library:shared:27.1.3
+|    |    |    |    +--- com.android.tools.analytics-library:protos:27.1.3
+|    |    |    |    |    \--- com.google.protobuf:protobuf-java:3.10.0
+|    |    |    |    +--- com.android.tools:annotations:27.1.3
+|    |    |    |    +--- com.android.tools:common:27.1.3 (*)
+|    |    |    |    +--- com.google.guava:guava:28.1-jre (*)
+|    |    |    |    +--- com.google.code.gson:gson:2.8.5 -> 2.8.6
+|    |    |    |    \--- org.jetbrains.kotlin:kotlin-stdlib-jdk8:1.3.72 -> 1.4.32 (*)
+|    |    |    +--- org.bouncycastle:bcpkix-jdk15on:1.56
+|    |    |    |    \--- org.bouncycastle:bcprov-jdk15on:1.56
+|    |    |    +--- org.bouncycastle:bcprov-jdk15on:1.56
+|    |    |    +--- org.jetbrains.kotlin:kotlin-stdlib-jdk8:1.3.72 -> 1.4.32 (*)
+|    |    |    +--- org.jetbrains.kotlin:kotlin-reflect:1.3.72
+|    |    |    |    \--- org.jetbrains.kotlin:kotlin-stdlib:1.3.72 -> 1.4.32 (*)
+|    |    |    +--- com.google.protobuf:protobuf-java:3.10.0
+|    |    |    +--- javax.inject:javax.inject:1
+|    |    |    +--- org.jetbrains.trove4j:trove4j:20160824
+|    |    |    \--- com.android.tools.build:aapt2-proto:4.1.0-alpha01-6193524 -> 4.1.3-6503028
+|    |    |         \--- com.google.protobuf:protobuf-java:3.10.0
+|    |    +--- com.android.tools:common:27.1.3 (*)
+|    |    +--- com.android.tools.build:manifest-merger:27.1.3
+|    |    |    +--- com.android.tools:common:27.1.3 (*)
+|    |    |    +--- com.android.tools:sdklib:27.1.3 (*)
+|    |    |    +--- com.android.tools:sdk-common:27.1.3 (*)
+|    |    |    +--- com.google.code.gson:gson:2.8.5 -> 2.8.6
+|    |    |    +--- org.jetbrains.kotlin:kotlin-stdlib-jdk8:1.3.72 -> 1.4.32 (*)
+|    |    |    \--- net.sf.kxml:kxml2:2.3.0
+|    |    +--- com.android.tools.ddms:ddmlib:27.1.3 (*)
+|    |    +--- com.android:zipflinger:4.1.3
+|    |    |    \--- com.android.tools:common:27.1.3 (*)
+|    |    +--- com.android:signflinger:4.1.3
+|    |    |    +--- com.android.tools.build:apksig:4.1.3
+|    |    |    \--- com.android:zipflinger:4.1.3 (*)
+|    |    +--- com.android.tools.analytics-library:protos:27.1.3 (*)
+|    |    +--- com.android.tools.analytics-library:tracker:27.1.3
+|    |    |    +--- com.android.tools:annotations:27.1.3
+|    |    |    +--- com.android.tools:common:27.1.3 (*)
+|    |    |    +--- com.android.tools.analytics-library:protos:27.1.3 (*)
+|    |    |    +--- com.android.tools.analytics-library:shared:27.1.3 (*)
+|    |    |    +--- com.google.protobuf:protobuf-java:3.10.0
+|    |    |    +--- com.google.guava:guava:28.1-jre (*)
+|    |    |    \--- org.jetbrains.kotlin:kotlin-stdlib-jdk8:1.3.72 -> 1.4.32 (*)
+|    |    +--- com.android.tools.build:apksig:4.1.3
+|    |    +--- com.android.tools.build:apkzlib:4.1.3
+|    |    |    +--- com.google.code.findbugs:jsr305:1.3.9 -> 3.0.2
+|    |    |    +--- com.google.guava:guava:23.0 -> 28.1-jre (*)
+|    |    |    +--- org.bouncycastle:bcpkix-jdk15on:1.56 (*)
+|    |    |    +--- org.bouncycastle:bcprov-jdk15on:1.56
+|    |    |    \--- com.android.tools.build:apksig:4.1.3
+|    |    +--- org.jetbrains.kotlin:kotlin-stdlib-jdk8:1.3.72 -> 1.4.32 (*)
+|    |    +--- com.squareup:javawriter:2.5.0
+|    |    +--- org.bouncycastle:bcpkix-jdk15on:1.56 (*)
+|    |    +--- org.bouncycastle:bcprov-jdk15on:1.56
+|    |    +--- org.ow2.asm:asm:7.0 -> 7.2
+|    |    +--- org.ow2.asm:asm-tree:7.0 -> 7.2
+|    |    |    \--- org.ow2.asm:asm:7.2
+|    |    +--- javax.inject:javax.inject:1
+|    |    +--- org.ow2.asm:asm-commons:7.0 -> 7.2
+|    |    |    +--- org.ow2.asm:asm:7.2
+|    |    |    +--- org.ow2.asm:asm-tree:7.2 (*)
+|    |    |    \--- org.ow2.asm:asm-analysis:7.2
+|    |    |         \--- org.ow2.asm:asm-tree:7.2 (*)
+|    |    +--- org.ow2.asm:asm-util:7.0 -> 7.2
+|    |    |    +--- org.ow2.asm:asm:7.2
+|    |    |    +--- org.ow2.asm:asm-tree:7.2 (*)
+|    |    |    \--- org.ow2.asm:asm-analysis:7.2 (*)
+|    |    +--- it.unimi.dsi:fastutil:7.2.0
+|    |    +--- net.sf.jopt-simple:jopt-simple:4.9
+|    |    \--- com.googlecode.json-simple:json-simple:1.1
+|    +--- com.android.tools.build:aapt2-proto:4.1.3-6503028 (*)
+|    +--- com.android.tools.build:aaptcompiler:4.1.3
+|    |    +--- com.android.tools.build:aapt2-proto:4.1.3-6503028 (*)
+|    |    +--- com.android.tools.layoutlib:layoutlib-api:27.1.3 (*)
+|    |    +--- com.google.guava:guava:28.1-jre (*)
+|    |    \--- org.jetbrains.kotlin:kotlin-stdlib-jdk8:1.3.72 -> 1.4.32 (*)
+|    +--- com.android.tools.analytics-library:crash:27.1.3
+|    |    +--- com.android.tools:annotations:27.1.3
+|    |    +--- com.google.guava:guava:28.1-jre (*)
+|    |    +--- org.apache.httpcomponents:httpmime:4.5.6 (*)
+|    |    +--- org.apache.httpcomponents:httpcore:4.4.10
+|    |    \--- org.apache.httpcomponents:httpclient:4.5.6 (*)
+|    +--- com.android.tools.lint:lint-gradle-api:27.1.3
+|    |    +--- com.android.tools:sdklib:27.1.3 (*)
+|    |    +--- com.android.tools.lint:lint-model:27.1.3
+|    |    |    +--- com.android.tools:common:27.1.3 (*)
+|    |    |    +--- com.android.tools:sdk-common:27.1.3 (*)
+|    |    |    +--- com.android.tools.build:builder-model:4.1.3 (*)
+|    |    |    +--- org.jetbrains.kotlin:kotlin-stdlib-jdk8:1.3.72 -> 1.4.32 (*)
+|    |    |    \--- net.sf.kxml:kxml2:2.3.0
+|    |    +--- com.android.tools.build:gradle-api:4.1.3
+|    |    |    +--- com.android.tools.build:builder-test-api:4.1.3 (*)
+|    |    |    +--- com.google.guava:guava:28.1-jre (*)
+|    |    |    \--- org.jetbrains.kotlin:kotlin-stdlib-jdk8:1.3.72 -> 1.4.32 (*)
+|    |    +--- org.jetbrains.kotlin:kotlin-reflect:1.3.72 (*)
+|    |    +--- org.jetbrains.kotlin:kotlin-stdlib-jdk8:1.3.72 -> 1.4.32 (*)
+|    |    \--- com.google.guava:guava:28.1-jre (*)
+|    +--- com.android.tools.build:gradle-api:4.1.3 (*)
+|    +--- androidx.databinding:databinding-compiler-common:4.1.3
+|    |    +--- androidx.databinding:databinding-common:4.1.3
+|    |    +--- com.android.databinding:baseLibrary:4.1.3
+|    |    +--- org.antlr:antlr4:4.5.3
+|    |    +--- commons-io:commons-io:2.4
+|    |    +--- com.googlecode.juniversalchardet:juniversalchardet:1.0.3
+|    |    +--- com.google.guava:guava:28.1-jre (*)
+|    |    +--- com.squareup:javapoet:1.10.0
+|    |    +--- org.jetbrains.kotlin:kotlin-stdlib-jdk8:1.3.72 -> 1.4.32 (*)
+|    |    +--- com.google.code.gson:gson:2.8.5 -> 2.8.6
+|    |    +--- org.glassfish.jaxb:jaxb-runtime:2.3.1 (*)
+|    |    +--- com.android.tools:annotations:27.1.3
+|    |    \--- com.android.tools.build.jetifier:jetifier-core:1.0.0-beta09
+|    |         +--- com.google.code.gson:gson:2.8.0 -> 2.8.6
+|    |         \--- org.jetbrains.kotlin:kotlin-stdlib:1.3.60 -> 1.4.32 (*)
+|    +--- org.jetbrains.kotlin:kotlin-stdlib-jdk8:1.3.72 -> 1.4.32 (*)
+|    +--- com.android.tools.build:transform-api:2.0.0-deprecated-use-gradle-api
+|    +--- org.ow2.asm:asm:7.0 -> 7.2
+|    +--- org.ow2.asm:asm-analysis:7.0 -> 7.2 (*)
+|    +--- org.ow2.asm:asm-commons:7.0 -> 7.2 (*)
+|    +--- org.ow2.asm:asm-util:7.0 -> 7.2 (*)
+|    +--- net.sf.jopt-simple:jopt-simple:4.9
+|    +--- net.sf.proguard:proguard-gradle:6.0.3
+|    |    \--- net.sf.proguard:proguard-base:6.0.3
+|    +--- com.android.tools.build:bundletool:0.14.0
+|    +--- com.android.tools.build.jetifier:jetifier-core:1.0.0-beta09 (*)
+|    +--- com.android.tools.build.jetifier:jetifier-processor:1.0.0-beta09
+|    |    +--- com.android.tools.build.jetifier:jetifier-core:1.0.0-beta09 (*)
+|    |    +--- org.ow2.asm:asm:6.0 -> 7.2
+|    |    +--- org.ow2.asm:asm-util:6.0 -> 7.2 (*)
+|    |    +--- org.ow2.asm:asm-commons:6.0 -> 7.2 (*)
+|    |    +--- org.jdom:jdom2:2.0.6
+|    |    \--- org.jetbrains.kotlin:kotlin-stdlib:1.3.60 -> 1.4.32 (*)
+|    +--- com.squareup:javapoet:1.10.0
+|    +--- com.google.protobuf:protobuf-java:3.10.0
+|    +--- com.google.protobuf:protobuf-java-util:3.10.0
+|    |    +--- com.google.protobuf:protobuf-java:3.10.0
+|    |    +--- com.google.guava:guava:28.0-android -> 28.1-jre (*)
+|    |    +--- com.google.errorprone:error_prone_annotations:2.3.2
+|    |    \--- com.google.code.gson:gson:2.8.5 -> 2.8.6
+|    +--- com.google.crypto.tink:tink:1.3.0-rc2
+|    |    +--- com.google.protobuf:protobuf-java:3.10.0
+|    |    \--- org.json:json:20180813
+|    \--- com.google.test.platform:core-proto:0.0.2-dev
++--- me.champeau.gradle:japicmp-gradle-plugin:0.2.8
+|    \--- com.github.siom79.japicmp:japicmp:0.13.1
+|         +--- org.javassist:javassist:3.23.1-GA
+|         \--- javax.activation:activation:1.1
++--- me.tylerbwong.gradle:metalava-gradle:0.1.5
++--- org.jetbrains.kotlin:kotlin-gradle-plugin:1.4.32
+|    +--- org.jetbrains.kotlin:kotlin-gradle-plugin-api:1.4.32
+|    |    \--- org.jetbrains.kotlin:kotlin-stdlib:1.4.32 (*)
+|    +--- org.jetbrains.kotlin:kotlin-gradle-plugin-model:1.4.32
+|    |    \--- org.jetbrains.kotlin:kotlin-stdlib:1.4.32 (*)
+|    +--- org.jetbrains.kotlin:kotlin-stdlib:1.4.32 (*)
+|    +--- org.jetbrains.kotlin:kotlin-util-klib:1.4.32
+|    |    +--- org.jetbrains.kotlin:kotlin-stdlib:1.4.32 (*)
+|    |    \--- org.jetbrains.kotlin:kotlin-util-io:1.4.32
+|    |         \--- org.jetbrains.kotlin:kotlin-stdlib:1.4.32 (*)
+|    +--- com.google.code.gson:gson:2.8.6
+|    \--- de.undercouch:gradle-download-task:4.0.2
++--- org.jetbrains.kotlinx:kotlinx-coroutines-core:1.4.2
+|    \--- org.jetbrains.kotlinx:kotlinx-coroutines-core-metadata:1.4.2
+|         \--- org.jetbrains.kotlin:kotlin-stdlib-common:1.4.0 -> 1.4.32
++--- com.squareup.sqldelight:gradle-plugin:1.4.4
+|    \--- org.jetbrains.kotlin:kotlin-stdlib-jdk8:1.4.0 -> 1.4.32 (*)
++--- com.gradle.publish:plugin-publish-plugin:0.12.0
++--- com.github.ben-manes:gradle-versions-plugin:0.33.0
++--- net.mbonnin.vespene:vespene-lib:0.5
+|    +--- org.jetbrains.kotlinx:kotlinx-coroutines-core:1.4.2 (*)
+|    +--- com.squareup.retrofit2:retrofit:2.9.0
+|    |    \--- com.squareup.okhttp3:okhttp:3.14.9 -> 4.9.0 (*)
+|    \--- org.jetbrains.kotlin:kotlin-stdlib-jdk8:1.4.30 -> 1.4.32 (*)
++--- com.github.jengelman.gradle.plugins:shadow:6.1.0
++--- com.google.devtools.ksp:symbol-processing-gradle-plugin:1.4.32-1.0.0-alpha07
+|    \--- org.jetbrains.kotlin:kotlin-stdlib-jdk8:1.4.32 (*)
+\--- org.jetbrains.kotlinx:atomicfu-gradle-plugin:0.15.1
+     +--- org.jetbrains.kotlinx:atomicfu-transformer:0.15.1
+     |    +--- org.slf4j:slf4j-simple:1.8.0-alpha2
+     |    |    \--- org.slf4j:slf4j-api:1.8.0-alpha2
+     |    +--- org.jetbrains.kotlin:kotlin-stdlib:1.4.10 -> 1.4.32 (*)
+     |    +--- org.ow2.asm:asm:7.2
+     |    +--- org.ow2.asm:asm-commons:7.2 (*)
+     |    +--- org.ow2.asm:asm-tree:7.2 (*)
+     |    +--- org.ow2.asm:asm-util:7.2 (*)
+     |    +--- org.slf4j:slf4j-api:1.8.0-alpha2
+     |    +--- org.mozilla:rhino:1.7.10
+     |    \--- org.jetbrains.kotlinx:kotlinx-metadata-jvm:0.1.0
+     |         \--- org.jetbrains.kotlin:kotlin-stdlib:1.3.31 -> 1.4.32 (*)
+     \--- org.jetbrains.kotlin:kotlin-stdlib:1.4.10 -> 1.4.32 (*)
+
+kotlinCompilerClasspath
+\--- org.jetbrains.kotlin:kotlin-compiler-embeddable:1.4.32
+     +--- org.jetbrains.kotlin:kotlin-stdlib:1.4.32
+     |    +--- org.jetbrains.kotlin:kotlin-stdlib-common:1.4.32
+     |    \--- org.jetbrains:annotations:13.0
+     +--- org.jetbrains.kotlin:kotlin-script-runtime:1.4.32
+     +--- org.jetbrains.kotlin:kotlin-reflect:1.4.32
+     |    \--- org.jetbrains.kotlin:kotlin-stdlib:1.4.32 (*)
+     +--- org.jetbrains.kotlin:kotlin-daemon-embeddable:1.4.32
+     \--- org.jetbrains.intellij.deps:trove4j:1.0.20181211
+
+kotlinCompilerPluginClasspath
+\--- org.jetbrains.kotlin:kotlin-scripting-compiler-embeddable:1.4.32
+     +--- org.jetbrains.kotlin:kotlin-scripting-compiler-impl-embeddable:1.4.32
+     |    +--- org.jetbrains.kotlin:kotlin-scripting-common:1.4.32
+     |    |    +--- org.jetbrains.kotlin:kotlin-stdlib:1.4.32
+     |    |    |    +--- org.jetbrains.kotlin:kotlin-stdlib-common:1.4.32
+     |    |    |    \--- org.jetbrains:annotations:13.0
+     |    |    \--- org.jetbrains.kotlinx:kotlinx-coroutines-core:1.3.8
+     |    |         +--- org.jetbrains.kotlin:kotlin-stdlib:1.3.71 -> 1.4.32 (*)
+     |    |         \--- org.jetbrains.kotlin:kotlin-stdlib-common:1.3.71 -> 1.4.32
+     |    +--- org.jetbrains.kotlin:kotlin-scripting-jvm:1.4.32
+     |    |    +--- org.jetbrains.kotlin:kotlin-script-runtime:1.4.32
+     |    |    +--- org.jetbrains.kotlin:kotlin-stdlib:1.4.32 (*)
+     |    |    \--- org.jetbrains.kotlin:kotlin-scripting-common:1.4.32 (*)
+     |    +--- org.jetbrains.kotlin:kotlin-stdlib:1.4.32 (*)
+     |    \--- org.jetbrains.kotlinx:kotlinx-coroutines-core:1.3.8 (*)
+     \--- org.jetbrains.kotlin:kotlin-stdlib:1.4.32 (*)
+
+kotlinKlibCommonizerClasspath
+\--- org.jetbrains.kotlin:kotlin-klib-commonizer-embeddable:1.4.32
+     +--- org.jetbrains.kotlin:kotlin-stdlib:1.4.32
+     |    +--- org.jetbrains.kotlin:kotlin-stdlib-common:1.4.32
+     |    \--- org.jetbrains:annotations:13.0
+     \--- org.jetbrains.kotlin:kotlin-compiler-embeddable:1.4.32
+          +--- org.jetbrains.kotlin:kotlin-stdlib:1.4.32 (*)
+          +--- org.jetbrains.kotlin:kotlin-script-runtime:1.4.32
+          +--- org.jetbrains.kotlin:kotlin-reflect:1.4.32
+          |    \--- org.jetbrains.kotlin:kotlin-stdlib:1.4.32 (*)
+          +--- org.jetbrains.kotlin:kotlin-daemon-embeddable:1.4.32
+          \--- org.jetbrains.intellij.deps:trove4j:1.0.20181211
+
+kotlinNativeCompilerPluginClasspath
+No dependencies
+
+kotlinScriptDef - Script filename extensions discovery classpath configuration
+No dependencies
+
+kotlinScriptDefExtensions
+No dependencies
+
+runtime - Runtime dependencies for compilation 'main' (target  (jvm)) (deprecated, use 'runtimeOnly ' instead).
+No dependencies
+
+runtimeClasspath - Runtime classpath of compilation 'main' (target  (jvm)).
++--- org.jetbrains.kotlin:kotlin-stdlib:1.4.32
+|    +--- org.jetbrains.kotlin:kotlin-stdlib-common:1.4.32
+|    \--- org.jetbrains:annotations:13.0
++--- com.squareup.okhttp3:okhttp:4.9.0
+|    +--- com.squareup.okio:okio:2.8.0
+|    |    +--- org.jetbrains.kotlin:kotlin-stdlib:1.4.0 -> 1.4.32 (*)
+|    |    \--- org.jetbrains.kotlin:kotlin-stdlib-common:1.4.0 -> 1.4.32
+|    \--- org.jetbrains.kotlin:kotlin-stdlib:1.4.10 -> 1.4.32 (*)
++--- com.squareup.moshi:moshi:1.11.0
+|    \--- com.squareup.okio:okio:1.17.5 -> 2.8.0 (*)
++--- com.android.tools.build:gradle:4.1.3
+|    +--- com.android.tools.build:builder:4.1.3
+|    |    +--- com.android.tools.build:builder-model:4.1.3
+|    |    |    +--- com.android.tools:annotations:27.1.3
+|    |    |    \--- org.jetbrains.kotlin:kotlin-stdlib-jdk8:1.3.72 -> 1.4.32
+|    |    |         +--- org.jetbrains.kotlin:kotlin-stdlib:1.4.32 (*)
+|    |    |         \--- org.jetbrains.kotlin:kotlin-stdlib-jdk7:1.4.32
+|    |    |              \--- org.jetbrains.kotlin:kotlin-stdlib:1.4.32 (*)
+|    |    +--- com.android.tools.build:builder-test-api:4.1.3
+|    |    |    \--- com.android.tools.ddms:ddmlib:27.1.3
+|    |    |         +--- com.android.tools:common:27.1.3
+|    |    |         |    +--- com.android.tools:annotations:27.1.3
+|    |    |         |    +--- com.google.guava:guava:28.1-jre
+|    |    |         |    |    +--- com.google.guava:failureaccess:1.0.1
+|    |    |         |    |    +--- com.google.guava:listenablefuture:9999.0-empty-to-avoid-conflict-with-guava
+|    |    |         |    |    +--- com.google.code.findbugs:jsr305:3.0.2
+|    |    |         |    |    +--- org.checkerframework:checker-qual:2.8.1
+|    |    |         |    |    +--- com.google.errorprone:error_prone_annotations:2.3.2
+|    |    |         |    |    +--- com.google.j2objc:j2objc-annotations:1.3
+|    |    |         |    |    \--- org.codehaus.mojo:animal-sniffer-annotations:1.18
+|    |    |         |    \--- org.jetbrains.kotlin:kotlin-stdlib-jdk8:1.3.72 -> 1.4.32 (*)
+|    |    |         +--- net.sf.kxml:kxml2:2.3.0
+|    |    |         \--- com.google.protobuf:protobuf-java:3.10.0
+|    |    +--- com.android.tools:sdklib:27.1.3
+|    |    |    +--- com.android.tools.layoutlib:layoutlib-api:27.1.3
+|    |    |    |    +--- com.android.tools:common:27.1.3 (*)
+|    |    |    |    +--- net.sf.kxml:kxml2:2.3.0
+|    |    |    |    +--- com.android.tools:annotations:27.1.3
+|    |    |    |    \--- org.jetbrains:annotations:13.0
+|    |    |    +--- com.android.tools:dvlib:27.1.3
+|    |    |    |    \--- com.android.tools:common:27.1.3 (*)
+|    |    |    +--- com.android.tools:repository:27.1.3
+|    |    |    |    +--- com.android.tools:common:27.1.3 (*)
+|    |    |    |    +--- com.sun.activation:javax.activation:1.2.0
+|    |    |    |    +--- org.apache.commons:commons-compress:1.12
+|    |    |    |    +--- org.glassfish.jaxb:jaxb-runtime:2.3.1
+|    |    |    |    |    +--- javax.xml.bind:jaxb-api:2.3.1
+|    |    |    |    |    |    \--- javax.activation:javax.activation-api:1.2.0
+|    |    |    |    |    +--- org.glassfish.jaxb:txw2:2.3.1
+|    |    |    |    |    +--- com.sun.istack:istack-commons-runtime:3.0.7
+|    |    |    |    |    +--- org.jvnet.staxex:stax-ex:1.8
+|    |    |    |    |    +--- com.sun.xml.fastinfoset:FastInfoset:1.2.15
+|    |    |    |    |    \--- javax.activation:javax.activation-api:1.2.0
+|    |    |    |    +--- com.google.jimfs:jimfs:1.1
+|    |    |    |    |    \--- com.google.guava:guava:18.0 -> 28.1-jre (*)
+|    |    |    |    \--- org.jetbrains.kotlin:kotlin-stdlib-jdk8:1.3.72 -> 1.4.32 (*)
+|    |    |    +--- com.google.code.gson:gson:2.8.5 -> 2.8.6
+|    |    |    +--- org.apache.commons:commons-compress:1.12
+|    |    |    +--- org.apache.httpcomponents:httpmime:4.5.6
+|    |    |    |    \--- org.apache.httpcomponents:httpclient:4.5.6
+|    |    |    |         +--- org.apache.httpcomponents:httpcore:4.4.10
+|    |    |    |         +--- commons-logging:commons-logging:1.2
+|    |    |    |         \--- commons-codec:commons-codec:1.10
+|    |    |    \--- org.apache.httpcomponents:httpcore:4.4.10
+|    |    +--- com.android.tools:sdk-common:27.1.3
+|    |    |    +--- com.android.tools:sdklib:27.1.3 (*)
+|    |    |    +--- com.android.tools.build:builder-test-api:4.1.3 (*)
+|    |    |    +--- com.android.tools.build:builder-model:4.1.3 (*)
+|    |    |    +--- com.android.tools.ddms:ddmlib:27.1.3 (*)
+|    |    |    +--- com.android.tools.analytics-library:shared:27.1.3
+|    |    |    |    +--- com.android.tools.analytics-library:protos:27.1.3
+|    |    |    |    |    \--- com.google.protobuf:protobuf-java:3.10.0
+|    |    |    |    +--- com.android.tools:annotations:27.1.3
+|    |    |    |    +--- com.android.tools:common:27.1.3 (*)
+|    |    |    |    +--- com.google.guava:guava:28.1-jre (*)
+|    |    |    |    +--- com.google.code.gson:gson:2.8.5 -> 2.8.6
+|    |    |    |    \--- org.jetbrains.kotlin:kotlin-stdlib-jdk8:1.3.72 -> 1.4.32 (*)
+|    |    |    +--- org.bouncycastle:bcpkix-jdk15on:1.56
+|    |    |    |    \--- org.bouncycastle:bcprov-jdk15on:1.56 -> 1.64
+|    |    |    +--- org.bouncycastle:bcprov-jdk15on:1.56 -> 1.64
+|    |    |    +--- org.jetbrains.kotlin:kotlin-stdlib-jdk8:1.3.72 -> 1.4.32 (*)
+|    |    |    +--- org.jetbrains.kotlin:kotlin-reflect:1.3.72 -> 1.4.32
+|    |    |    |    \--- org.jetbrains.kotlin:kotlin-stdlib:1.4.32 (*)
+|    |    |    +--- com.google.protobuf:protobuf-java:3.10.0
+|    |    |    +--- javax.inject:javax.inject:1
+|    |    |    +--- org.jetbrains.trove4j:trove4j:20160824
+|    |    |    \--- com.android.tools.build:aapt2-proto:4.1.0-alpha01-6193524 -> 4.1.3-6503028
+|    |    |         \--- com.google.protobuf:protobuf-java:3.10.0
+|    |    +--- com.android.tools:common:27.1.3 (*)
+|    |    +--- com.android.tools.build:manifest-merger:27.1.3
+|    |    |    +--- com.android.tools:common:27.1.3 (*)
+|    |    |    +--- com.android.tools:sdklib:27.1.3 (*)
+|    |    |    +--- com.android.tools:sdk-common:27.1.3 (*)
+|    |    |    +--- com.google.code.gson:gson:2.8.5 -> 2.8.6
+|    |    |    +--- org.jetbrains.kotlin:kotlin-stdlib-jdk8:1.3.72 -> 1.4.32 (*)
+|    |    |    \--- net.sf.kxml:kxml2:2.3.0
+|    |    +--- com.android.tools.ddms:ddmlib:27.1.3 (*)
+|    |    +--- com.android:zipflinger:4.1.3
+|    |    |    \--- com.android.tools:common:27.1.3 (*)
+|    |    +--- com.android:signflinger:4.1.3
+|    |    |    +--- com.android.tools.build:apksig:4.1.3
+|    |    |    \--- com.android:zipflinger:4.1.3 (*)
+|    |    +--- com.android.tools.analytics-library:protos:27.1.3 (*)
+|    |    +--- com.android.tools.analytics-library:tracker:27.1.3
+|    |    |    +--- com.android.tools:annotations:27.1.3
+|    |    |    +--- com.android.tools:common:27.1.3 (*)
+|    |    |    +--- com.android.tools.analytics-library:protos:27.1.3 (*)
+|    |    |    +--- com.android.tools.analytics-library:shared:27.1.3 (*)
+|    |    |    +--- com.google.protobuf:protobuf-java:3.10.0
+|    |    |    +--- com.google.guava:guava:28.1-jre (*)
+|    |    |    \--- org.jetbrains.kotlin:kotlin-stdlib-jdk8:1.3.72 -> 1.4.32 (*)
+|    |    +--- com.android.tools.build:apksig:4.1.3
+|    |    +--- com.android.tools.build:apkzlib:4.1.3
+|    |    |    +--- com.google.code.findbugs:jsr305:1.3.9 -> 3.0.2
+|    |    |    +--- com.google.guava:guava:23.0 -> 28.1-jre (*)
+|    |    |    +--- org.bouncycastle:bcpkix-jdk15on:1.56 (*)
+|    |    |    +--- org.bouncycastle:bcprov-jdk15on:1.56 -> 1.64
+|    |    |    \--- com.android.tools.build:apksig:4.1.3
+|    |    +--- org.jetbrains.kotlin:kotlin-stdlib-jdk8:1.3.72 -> 1.4.32 (*)
+|    |    +--- com.squareup:javawriter:2.5.0
+|    |    +--- org.bouncycastle:bcpkix-jdk15on:1.56 (*)
+|    |    +--- org.bouncycastle:bcprov-jdk15on:1.56 -> 1.64
+|    |    +--- org.ow2.asm:asm:7.0 -> 9.0
+|    |    +--- org.ow2.asm:asm-tree:7.0 -> 9.0
+|    |    |    \--- org.ow2.asm:asm:9.0
+|    |    +--- javax.inject:javax.inject:1
+|    |    +--- org.ow2.asm:asm-commons:7.0 -> 9.0
+|    |    |    +--- org.ow2.asm:asm:9.0
+|    |    |    +--- org.ow2.asm:asm-tree:9.0 (*)
+|    |    |    \--- org.ow2.asm:asm-analysis:9.0
+|    |    |         \--- org.ow2.asm:asm-tree:9.0 (*)
+|    |    +--- org.ow2.asm:asm-util:7.0 -> 7.2
+|    |    |    +--- org.ow2.asm:asm:7.2 -> 9.0
+|    |    |    +--- org.ow2.asm:asm-tree:7.2 -> 9.0 (*)
+|    |    |    \--- org.ow2.asm:asm-analysis:7.2 -> 9.0 (*)
+|    |    +--- it.unimi.dsi:fastutil:7.2.0
+|    |    +--- net.sf.jopt-simple:jopt-simple:4.9
+|    |    \--- com.googlecode.json-simple:json-simple:1.1
+|    +--- com.android.tools.build:aapt2-proto:4.1.3-6503028 (*)
+|    +--- com.android.tools.build:aaptcompiler:4.1.3
+|    |    +--- com.android.tools.build:aapt2-proto:4.1.3-6503028 (*)
+|    |    +--- com.android.tools.layoutlib:layoutlib-api:27.1.3 (*)
+|    |    +--- com.google.guava:guava:28.1-jre (*)
+|    |    \--- org.jetbrains.kotlin:kotlin-stdlib-jdk8:1.3.72 -> 1.4.32 (*)
+|    +--- com.android.tools.analytics-library:crash:27.1.3
+|    |    +--- com.android.tools:annotations:27.1.3
+|    |    +--- com.google.guava:guava:28.1-jre (*)
+|    |    +--- org.apache.httpcomponents:httpmime:4.5.6 (*)
+|    |    +--- org.apache.httpcomponents:httpcore:4.4.10
+|    |    \--- org.apache.httpcomponents:httpclient:4.5.6 (*)
+|    +--- com.android.tools.lint:lint-gradle-api:27.1.3
+|    |    +--- com.android.tools:sdklib:27.1.3 (*)
+|    |    +--- com.android.tools.lint:lint-model:27.1.3
+|    |    |    +--- com.android.tools:common:27.1.3 (*)
+|    |    |    +--- com.android.tools:sdk-common:27.1.3 (*)
+|    |    |    +--- com.android.tools.build:builder-model:4.1.3 (*)
+|    |    |    +--- org.jetbrains.kotlin:kotlin-stdlib-jdk8:1.3.72 -> 1.4.32 (*)
+|    |    |    \--- net.sf.kxml:kxml2:2.3.0
+|    |    +--- com.android.tools.build:gradle-api:4.1.3
+|    |    |    +--- com.android.tools.build:builder-test-api:4.1.3 (*)
+|    |    |    +--- com.google.guava:guava:28.1-jre (*)
+|    |    |    \--- org.jetbrains.kotlin:kotlin-stdlib-jdk8:1.3.72 -> 1.4.32 (*)
+|    |    +--- org.jetbrains.kotlin:kotlin-reflect:1.3.72 -> 1.4.32 (*)
+|    |    +--- org.jetbrains.kotlin:kotlin-stdlib-jdk8:1.3.72 -> 1.4.32 (*)
+|    |    \--- com.google.guava:guava:28.1-jre (*)
+|    +--- com.android.tools.build:gradle-api:4.1.3 (*)
+|    +--- androidx.databinding:databinding-compiler-common:4.1.3
+|    |    +--- androidx.databinding:databinding-common:4.1.3
+|    |    +--- com.android.databinding:baseLibrary:4.1.3
+|    |    +--- org.antlr:antlr4:4.5.3
+|    |    +--- commons-io:commons-io:2.4 -> 2.6
+|    |    +--- com.googlecode.juniversalchardet:juniversalchardet:1.0.3
+|    |    +--- com.google.guava:guava:28.1-jre (*)
+|    |    +--- com.squareup:javapoet:1.10.0
+|    |    +--- org.jetbrains.kotlin:kotlin-stdlib-jdk8:1.3.72 -> 1.4.32 (*)
+|    |    +--- com.google.code.gson:gson:2.8.5 -> 2.8.6
+|    |    +--- org.glassfish.jaxb:jaxb-runtime:2.3.1 (*)
+|    |    +--- com.android.tools:annotations:27.1.3
+|    |    \--- com.android.tools.build.jetifier:jetifier-core:1.0.0-beta09
+|    |         +--- com.google.code.gson:gson:2.8.0 -> 2.8.6
+|    |         \--- org.jetbrains.kotlin:kotlin-stdlib:1.3.60 -> 1.4.32 (*)
+|    +--- org.jetbrains.kotlin:kotlin-stdlib-jdk8:1.3.72 -> 1.4.32 (*)
+|    +--- com.android.tools.build:transform-api:2.0.0-deprecated-use-gradle-api
+|    +--- org.ow2.asm:asm:7.0 -> 9.0
+|    +--- org.ow2.asm:asm-analysis:7.0 -> 9.0 (*)
+|    +--- org.ow2.asm:asm-commons:7.0 -> 9.0 (*)
+|    +--- org.ow2.asm:asm-util:7.0 -> 7.2 (*)
+|    +--- net.sf.jopt-simple:jopt-simple:4.9
+|    +--- net.sf.proguard:proguard-gradle:6.0.3
+|    |    \--- net.sf.proguard:proguard-base:6.0.3
+|    +--- com.android.tools.build:bundletool:0.14.0
+|    |    +--- com.android.tools.build:aapt2-proto:4.1.0-alpha01-6193524 -> 4.1.3-6503028 (*)
+|    |    +--- com.google.auto.value:auto-value-annotations:1.6.2
+|    |    +--- com.google.errorprone:error_prone_annotations:2.3.1 -> 2.3.2
+|    |    +--- com.google.guava:guava:27.0.1-jre -> 28.1-jre (*)
+|    |    +--- com.google.protobuf:protobuf-java:3.4.0 -> 3.10.0
+|    |    \--- com.google.protobuf:protobuf-java-util:3.4.0 -> 3.10.0
+|    |         +--- com.google.protobuf:protobuf-java:3.10.0
+|    |         +--- com.google.guava:guava:28.0-android -> 28.1-jre (*)
+|    |         +--- com.google.errorprone:error_prone_annotations:2.3.2
+|    |         \--- com.google.code.gson:gson:2.8.5 -> 2.8.6
+|    +--- com.android.tools.build.jetifier:jetifier-core:1.0.0-beta09 (*)
+|    +--- com.android.tools.build.jetifier:jetifier-processor:1.0.0-beta09
+|    |    +--- com.android.tools.build.jetifier:jetifier-core:1.0.0-beta09 (*)
+|    |    +--- org.ow2.asm:asm:6.0 -> 9.0
+|    |    +--- org.ow2.asm:asm-util:6.0 -> 7.2 (*)
+|    |    +--- org.ow2.asm:asm-commons:6.0 -> 9.0 (*)
+|    |    +--- org.jdom:jdom2:2.0.6
+|    |    \--- org.jetbrains.kotlin:kotlin-stdlib:1.3.60 -> 1.4.32 (*)
+|    +--- com.squareup:javapoet:1.10.0
+|    +--- com.google.protobuf:protobuf-java:3.10.0
+|    +--- com.google.protobuf:protobuf-java-util:3.10.0 (*)
+|    +--- com.google.crypto.tink:tink:1.3.0-rc2
+|    |    +--- com.google.protobuf:protobuf-java:3.10.0
+|    |    \--- org.json:json:20180813
+|    +--- com.google.test.platform:core-proto:0.0.2-dev
+|    +--- com.google.flatbuffers:flatbuffers-java:1.12.0
+|    \--- org.tensorflow:tensorflow-lite-metadata:0.1.0-rc1
+|         +--- org.checkerframework:checker-qual:2.5.8 -> 2.8.1
+|         \--- com.google.flatbuffers:flatbuffers-java:1.12.0
++--- me.champeau.gradle:japicmp-gradle-plugin:0.2.8
+|    \--- com.github.siom79.japicmp:japicmp:0.13.1
+|         +--- org.javassist:javassist:3.23.1-GA
+|         \--- javax.activation:activation:1.1
++--- me.tylerbwong.gradle:metalava-gradle:0.1.5
++--- org.jetbrains.kotlin:kotlin-gradle-plugin:1.4.32
+|    +--- org.jetbrains.kotlin:kotlin-gradle-plugin-api:1.4.32
+|    |    \--- org.jetbrains.kotlin:kotlin-stdlib:1.4.32 (*)
+|    +--- org.jetbrains.kotlin:kotlin-gradle-plugin-model:1.4.32
+|    |    \--- org.jetbrains.kotlin:kotlin-stdlib:1.4.32 (*)
+|    +--- org.jetbrains.kotlin:kotlin-stdlib:1.4.32 (*)
+|    +--- org.jetbrains.kotlin:kotlin-util-klib:1.4.32
+|    |    +--- org.jetbrains.kotlin:kotlin-stdlib:1.4.32 (*)
+|    |    \--- org.jetbrains.kotlin:kotlin-util-io:1.4.32
+|    |         \--- org.jetbrains.kotlin:kotlin-stdlib:1.4.32 (*)
+|    +--- com.google.code.gson:gson:2.8.6
+|    +--- de.undercouch:gradle-download-task:4.0.2
+|    +--- com.github.gundy:semver4j:0.16.4
+|    |    \--- org.antlr:antlr4-runtime:4.5.2-1
+|    +--- org.jetbrains.kotlin:kotlin-compiler-embeddable:1.4.32
+|    |    +--- org.jetbrains.kotlin:kotlin-stdlib:1.4.32 (*)
+|    |    +--- org.jetbrains.kotlin:kotlin-script-runtime:1.4.32
+|    |    +--- org.jetbrains.kotlin:kotlin-reflect:1.4.32 (*)
+|    |    +--- org.jetbrains.kotlin:kotlin-daemon-embeddable:1.4.32
+|    |    \--- org.jetbrains.intellij.deps:trove4j:1.0.20181211
+|    +--- org.jetbrains.kotlin:kotlin-annotation-processing-gradle:1.4.32
+|    |    +--- org.jetbrains.kotlin:kotlin-stdlib:1.4.32 (*)
+|    |    \--- org.jetbrains.kotlin:kotlin-compiler-embeddable:1.4.32 (*)
+|    +--- org.jetbrains.kotlin:kotlin-android-extensions:1.4.32
+|    |    \--- org.jetbrains.kotlin:kotlin-compiler-embeddable:1.4.32 (*)
+|    +--- org.jetbrains.kotlin:kotlin-compiler-runner:1.4.32
+|    |    +--- org.jetbrains.kotlin:kotlin-build-common:1.4.32
+|    |    +--- org.jetbrains.kotlin:kotlin-daemon-client:1.4.32
+|    |    |    +--- org.jetbrains.kotlinx:kotlinx-coroutines-core:1.3.8 -> 1.4.2
+|    |    |    |    \--- org.jetbrains.kotlinx:kotlinx-coroutines-core-jvm:1.4.2
+|    |    |    |         +--- org.jetbrains.kotlin:kotlin-stdlib:1.4.0 -> 1.4.32 (*)
+|    |    |    |         \--- org.jetbrains.kotlin:kotlin-stdlib-common:1.4.0 -> 1.4.32
+|    |    |    \--- org.jetbrains.kotlin:kotlin-reflect:1.4.32 (*)
+|    |    +--- org.jetbrains.kotlinx:kotlinx-coroutines-core:1.3.8 -> 1.4.2 (*)
+|    |    \--- org.jetbrains.kotlin:kotlin-compiler-embeddable:1.4.32 (*)
+|    +--- org.jetbrains.kotlin:kotlin-scripting-compiler-embeddable:1.4.32
+|    |    +--- org.jetbrains.kotlin:kotlin-scripting-compiler-impl-embeddable:1.4.32
+|    |    |    +--- org.jetbrains.kotlin:kotlin-scripting-common:1.4.32
+|    |    |    |    +--- org.jetbrains.kotlin:kotlin-stdlib:1.4.32 (*)
+|    |    |    |    \--- org.jetbrains.kotlinx:kotlinx-coroutines-core:1.3.8 -> 1.4.2 (*)
+|    |    |    +--- org.jetbrains.kotlin:kotlin-scripting-jvm:1.4.32
+|    |    |    |    +--- org.jetbrains.kotlin:kotlin-script-runtime:1.4.32
+|    |    |    |    +--- org.jetbrains.kotlin:kotlin-stdlib:1.4.32 (*)
+|    |    |    |    \--- org.jetbrains.kotlin:kotlin-scripting-common:1.4.32 (*)
+|    |    |    +--- org.jetbrains.kotlin:kotlin-stdlib:1.4.32 (*)
+|    |    |    \--- org.jetbrains.kotlinx:kotlinx-coroutines-core:1.3.8 -> 1.4.2 (*)
+|    |    \--- org.jetbrains.kotlin:kotlin-stdlib:1.4.32 (*)
+|    +--- org.jetbrains.kotlin:kotlin-scripting-compiler-impl-embeddable:1.4.32 (*)
+|    \--- org.jetbrains.kotlin:kotlin-reflect:1.4.32 (*)
++--- org.jetbrains.kotlinx:kotlinx-coroutines-core:1.4.2 (*)
++--- com.squareup.sqldelight:gradle-plugin:1.4.4
+|    +--- com.squareup.sqldelight:core:1.4.4
+|    |    +--- com.squareup:kotlinpoet:1.5.0
+|    |    |    +--- org.jetbrains.kotlin:kotlin-stdlib-jdk8:1.3.61 -> 1.4.32 (*)
+|    |    |    \--- org.jetbrains.kotlin:kotlin-reflect:1.3.61 -> 1.4.32 (*)
+|    |    +--- org.xerial:sqlite-jdbc:3.21.0.1
+|    |    +--- com.alecstrong:sqlite-psi-core:0.3.10
+|    |    |    \--- org.jetbrains.kotlin:kotlin-stdlib-jdk8:1.3.72 -> 1.4.32 (*)
+|    |    \--- org.jetbrains.kotlin:kotlin-stdlib-jdk8:1.4.0 -> 1.4.32 (*)
+|    +--- com.squareup.sqldelight:migrations:1.4.4
+|    |    +--- org.xerial:sqlite-jdbc:3.21.0.1
+|    |    +--- de.danielbechler:java-object-diff:0.95
+|    |    |    \--- org.slf4j:slf4j-api:1.7.22 -> 1.8.0-alpha2
+|    |    +--- us.fatehi:schemacrawler-tools:14.16.04.01-java7
+|    |    |    \--- us.fatehi:schemacrawler-api:14.16.04.01-java7
+|    |    |         +--- org.threeten:threetenbp:1.3.3
+|    |    |         \--- com.annimon:stream:1.1.7
+|    |    +--- us.fatehi:schemacrawler-sqlite:14.16.04.01-java7
+|    |    |    +--- us.fatehi:schemacrawler-tools:14.16.04.01-java7 (*)
+|    |    |    \--- org.xerial:sqlite-jdbc:3.7.8 -> 3.21.0.1
+|    |    +--- com.alecstrong:sqlite-psi-core:0.3.10 (*)
+|    |    \--- org.jetbrains.kotlin:kotlin-stdlib-jdk8:1.4.0 -> 1.4.32 (*)
+|    +--- org.jetbrains.kotlin:kotlin-native-utils:1.4.0
+|    |    \--- org.jetbrains.kotlin:kotlin-util-io:1.4.0 -> 1.4.32 (*)
+|    +--- com.alecstrong:sqlite-psi-core:0.3.10 (*)
+|    +--- com.google.guava:guava:23.0 -> 28.1-jre (*)
+|    +--- org.jetbrains.kotlin:kotlin-gradle-plugin:1.4.0 -> 1.4.32 (*)
+|    \--- org.jetbrains.kotlin:kotlin-stdlib-jdk8:1.4.0 -> 1.4.32 (*)
++--- com.gradle.publish:plugin-publish-plugin:0.12.0
+|    \--- org.apache.maven:maven-model:3.0.4
++--- com.github.ben-manes:gradle-versions-plugin:0.33.0
+|    \--- com.thoughtworks.xstream:xstream:1.4.10
+|         +--- xmlpull:xmlpull:1.1.3.1
+|         \--- xpp3:xpp3_min:1.1.4c
++--- net.mbonnin.vespene:vespene-lib:0.5
+|    +--- com.squareup.okhttp3:okhttp:4.9.0 (*)
+|    +--- com.squareup.retrofit2:converter-moshi:2.9.0
+|    |    +--- com.squareup.retrofit2:retrofit:2.9.0
+|    |    |    \--- com.squareup.okhttp3:okhttp:3.14.9 -> 4.9.0 (*)
+|    |    \--- com.squareup.moshi:moshi:1.8.0 -> 1.11.0 (*)
+|    +--- org.bouncycastle:bcprov-jdk15on:1.64
+|    +--- org.bouncycastle:bcpg-jdk15on:1.64
+|    |    \--- org.bouncycastle:bcprov-jdk15on:1.64
+|    +--- com.squareup.moshi:moshi:1.11.0 (*)
+|    +--- org.jetbrains.kotlinx:kotlinx-coroutines-core:1.4.2 (*)
+|    +--- com.squareup.retrofit2:retrofit:2.9.0 (*)
+|    \--- org.jetbrains.kotlin:kotlin-stdlib-jdk8:1.4.30 -> 1.4.32 (*)
++--- com.github.jengelman.gradle.plugins:shadow:6.1.0
+|    +--- org.jdom:jdom2:2.0.6
+|    +--- org.ow2.asm:asm:9.0
+|    +--- org.ow2.asm:asm-commons:9.0 (*)
+|    +--- commons-io:commons-io:2.5 -> 2.6
+|    +--- org.apache.ant:ant:1.9.7
+|    |    \--- org.apache.ant:ant-launcher:1.9.7
+|    +--- org.codehaus.plexus:plexus-utils:3.0.24
+|    +--- org.apache.logging.log4j:log4j-core:2.13.3
+|    |    \--- org.apache.logging.log4j:log4j-api:2.13.3
+|    \--- org.vafer:jdependency:2.1.1
+|         \--- commons-io:commons-io:2.6
++--- com.google.devtools.ksp:symbol-processing-gradle-plugin:1.4.32-1.0.0-alpha07
+|    +--- org.jetbrains.kotlin:kotlin-gradle-plugin-api:1.4.32 (*)
+|    +--- org.jetbrains.kotlin:kotlin-gradle-plugin:1.4.32 (*)
+|    \--- org.jetbrains.kotlin:kotlin-stdlib-jdk8:1.4.32 (*)
+\--- org.jetbrains.kotlinx:atomicfu-gradle-plugin:0.15.1
+     +--- org.jetbrains.kotlinx:atomicfu-transformer:0.15.1
+     |    +--- org.jetbrains.kotlin:kotlin-stdlib:1.4.10 -> 1.4.32 (*)
+     |    +--- org.ow2.asm:asm:7.2 -> 9.0
+     |    +--- org.ow2.asm:asm-commons:7.2 -> 9.0 (*)
+     |    +--- org.ow2.asm:asm-tree:7.2 -> 9.0 (*)
+     |    +--- org.ow2.asm:asm-util:7.2 (*)
+     |    +--- org.slf4j:slf4j-api:1.8.0-alpha2
+     |    +--- org.mozilla:rhino:1.7.10
+     |    +--- org.jetbrains.kotlinx:kotlinx-metadata-jvm:0.1.0
+     |    |    \--- org.jetbrains.kotlin:kotlin-stdlib:1.3.31 -> 1.4.32 (*)
+     |    \--- org.slf4j:slf4j-simple:1.8.0-alpha2
+     |         \--- org.slf4j:slf4j-api:1.8.0-alpha2
+     \--- org.jetbrains.kotlin:kotlin-stdlib:1.4.10 -> 1.4.32 (*)
+
+runtimeElements - Elements of runtime for main. (n)
+No dependencies
+
+runtimeElements-published (n)
+No dependencies
+
+runtimeOnly - Runtime only dependencies for compilation 'main' (target  (jvm)). (n)
+No dependencies
+
+runtimeOnlyDependenciesMetadata
+No dependencies
+
+sourceArtifacts (n)
+No dependencies
+
+testAnnotationProcessor - Annotation processors and their dependencies for source set 'test'.
+No dependencies
+
+testApi - API dependencies for compilation 'test' (target  (jvm)). (n)
+No dependencies
+
+testApiDependenciesMetadata
+No dependencies
+
+testCompile - Dependencies for compilation 'test' (target  (jvm)) (deprecated, use 'testImplementation ' instead).
+No dependencies
+
+testCompileClasspath - Compile classpath for compilation 'test' (target  (jvm)).
++--- org.jetbrains.kotlin:kotlin-stdlib:1.4.32
+|    +--- org.jetbrains.kotlin:kotlin-stdlib-common:1.4.32
+|    \--- org.jetbrains:annotations:13.0
++--- com.squareup.okhttp3:okhttp:4.9.0
+|    +--- com.squareup.okio:okio:2.8.0
+|    |    +--- org.jetbrains.kotlin:kotlin-stdlib:1.4.0 -> 1.4.32 (*)
+|    |    \--- org.jetbrains.kotlin:kotlin-stdlib-common:1.4.0 -> 1.4.32
+|    \--- org.jetbrains.kotlin:kotlin-stdlib:1.4.10 -> 1.4.32 (*)
++--- com.squareup.moshi:moshi:1.11.0
+|    \--- com.squareup.okio:okio:1.17.5 -> 2.8.0 (*)
++--- com.android.tools.build:gradle:4.1.3
+|    +--- com.android.tools.build:builder:4.1.3
+|    |    +--- com.android.tools.build:builder-model:4.1.3
+|    |    |    \--- com.android.tools:annotations:27.1.3
+|    |    +--- com.android.tools.build:builder-test-api:4.1.3
+|    |    |    \--- com.android.tools.ddms:ddmlib:27.1.3
+|    |    |         +--- com.android.tools:common:27.1.3
+|    |    |         |    +--- com.android.tools:annotations:27.1.3
+|    |    |         |    \--- com.google.guava:guava:28.1-jre
+|    |    |         |         +--- com.google.guava:failureaccess:1.0.1
+|    |    |         |         +--- com.google.guava:listenablefuture:9999.0-empty-to-avoid-conflict-with-guava
+|    |    |         |         +--- com.google.code.findbugs:jsr305:3.0.2
+|    |    |         |         +--- org.checkerframework:checker-qual:2.8.1
+|    |    |         |         +--- com.google.errorprone:error_prone_annotations:2.3.2
+|    |    |         |         +--- com.google.j2objc:j2objc-annotations:1.3
+|    |    |         |         \--- org.codehaus.mojo:animal-sniffer-annotations:1.18
+|    |    |         +--- net.sf.kxml:kxml2:2.3.0
+|    |    |         \--- com.google.protobuf:protobuf-java:3.10.0
+|    |    +--- com.android.tools:sdklib:27.1.3
+|    |    |    +--- com.android.tools.layoutlib:layoutlib-api:27.1.3
+|    |    |    |    +--- com.android.tools:common:27.1.3 (*)
+|    |    |    |    +--- net.sf.kxml:kxml2:2.3.0
+|    |    |    |    +--- com.android.tools:annotations:27.1.3
+|    |    |    |    \--- org.jetbrains:annotations:13.0
+|    |    |    +--- com.android.tools:dvlib:27.1.3
+|    |    |    |    \--- com.android.tools:common:27.1.3 (*)
+|    |    |    +--- com.android.tools:repository:27.1.3
+|    |    |    |    +--- com.android.tools:common:27.1.3 (*)
+|    |    |    |    +--- com.sun.activation:javax.activation:1.2.0
+|    |    |    |    +--- org.apache.commons:commons-compress:1.12
+|    |    |    |    +--- org.glassfish.jaxb:jaxb-runtime:2.3.1
+|    |    |    |    |    +--- javax.xml.bind:jaxb-api:2.3.1
+|    |    |    |    |    |    \--- javax.activation:javax.activation-api:1.2.0
+|    |    |    |    |    +--- org.glassfish.jaxb:txw2:2.3.1
+|    |    |    |    |    +--- com.sun.istack:istack-commons-runtime:3.0.7
+|    |    |    |    |    +--- org.jvnet.staxex:stax-ex:1.8
+|    |    |    |    |    +--- com.sun.xml.fastinfoset:FastInfoset:1.2.15
+|    |    |    |    |    \--- javax.activation:javax.activation-api:1.2.0
+|    |    |    |    +--- com.google.jimfs:jimfs:1.1
+|    |    |    |    |    \--- com.google.guava:guava:18.0 -> 28.1-jre (*)
+|    |    |    |    \--- org.jetbrains.kotlin:kotlin-stdlib-jdk8:1.3.72 -> 1.4.32
+|    |    |    |         +--- org.jetbrains.kotlin:kotlin-stdlib:1.4.32 (*)
+|    |    |    |         \--- org.jetbrains.kotlin:kotlin-stdlib-jdk7:1.4.32
+|    |    |    |              \--- org.jetbrains.kotlin:kotlin-stdlib:1.4.32 (*)
+|    |    |    +--- com.google.code.gson:gson:2.8.5 -> 2.8.6
+|    |    |    +--- org.apache.commons:commons-compress:1.12
+|    |    |    +--- org.apache.httpcomponents:httpmime:4.5.6
+|    |    |    |    \--- org.apache.httpcomponents:httpclient:4.5.6
+|    |    |    |         +--- org.apache.httpcomponents:httpcore:4.4.10
+|    |    |    |         +--- commons-logging:commons-logging:1.2
+|    |    |    |         \--- commons-codec:commons-codec:1.10
+|    |    |    \--- org.apache.httpcomponents:httpcore:4.4.10
+|    |    +--- com.android.tools:sdk-common:27.1.3
+|    |    |    +--- com.android.tools:sdklib:27.1.3 (*)
+|    |    |    +--- com.android.tools.build:builder-test-api:4.1.3 (*)
+|    |    |    +--- com.android.tools.build:builder-model:4.1.3 (*)
+|    |    |    +--- com.android.tools.ddms:ddmlib:27.1.3 (*)
+|    |    |    +--- com.android.tools.analytics-library:shared:27.1.3
+|    |    |    |    +--- com.android.tools.analytics-library:protos:27.1.3
+|    |    |    |    |    \--- com.google.protobuf:protobuf-java:3.10.0
+|    |    |    |    +--- com.android.tools:annotations:27.1.3
+|    |    |    |    +--- com.android.tools:common:27.1.3 (*)
+|    |    |    |    +--- com.google.guava:guava:28.1-jre (*)
+|    |    |    |    +--- com.google.code.gson:gson:2.8.5 -> 2.8.6
+|    |    |    |    \--- org.jetbrains.kotlin:kotlin-stdlib-jdk8:1.3.72 -> 1.4.32 (*)
+|    |    |    +--- org.bouncycastle:bcpkix-jdk15on:1.56
+|    |    |    |    \--- org.bouncycastle:bcprov-jdk15on:1.56
+|    |    |    +--- org.bouncycastle:bcprov-jdk15on:1.56
+|    |    |    +--- org.jetbrains.kotlin:kotlin-stdlib-jdk8:1.3.72 -> 1.4.32 (*)
+|    |    |    +--- org.jetbrains.kotlin:kotlin-reflect:1.3.72
+|    |    |    |    \--- org.jetbrains.kotlin:kotlin-stdlib:1.3.72 -> 1.4.32 (*)
+|    |    |    +--- com.google.protobuf:protobuf-java:3.10.0
+|    |    |    +--- javax.inject:javax.inject:1
+|    |    |    +--- org.jetbrains.trove4j:trove4j:20160824
+|    |    |    \--- com.android.tools.build:aapt2-proto:4.1.0-alpha01-6193524 -> 4.1.3-6503028
+|    |    |         \--- com.google.protobuf:protobuf-java:3.10.0
+|    |    +--- com.android.tools:common:27.1.3 (*)
+|    |    +--- com.android.tools.build:manifest-merger:27.1.3
+|    |    |    +--- com.android.tools:common:27.1.3 (*)
+|    |    |    +--- com.android.tools:sdklib:27.1.3 (*)
+|    |    |    +--- com.android.tools:sdk-common:27.1.3 (*)
+|    |    |    +--- com.google.code.gson:gson:2.8.5 -> 2.8.6
+|    |    |    +--- org.jetbrains.kotlin:kotlin-stdlib-jdk8:1.3.72 -> 1.4.32 (*)
+|    |    |    \--- net.sf.kxml:kxml2:2.3.0
+|    |    +--- com.android.tools.ddms:ddmlib:27.1.3 (*)
+|    |    +--- com.android:zipflinger:4.1.3
+|    |    |    \--- com.android.tools:common:27.1.3 (*)
+|    |    +--- com.android:signflinger:4.1.3
+|    |    |    +--- com.android.tools.build:apksig:4.1.3
+|    |    |    \--- com.android:zipflinger:4.1.3 (*)
+|    |    +--- com.android.tools.analytics-library:protos:27.1.3 (*)
+|    |    +--- com.android.tools.analytics-library:tracker:27.1.3
+|    |    |    +--- com.android.tools:annotations:27.1.3
+|    |    |    +--- com.android.tools:common:27.1.3 (*)
+|    |    |    +--- com.android.tools.analytics-library:protos:27.1.3 (*)
+|    |    |    +--- com.android.tools.analytics-library:shared:27.1.3 (*)
+|    |    |    +--- com.google.protobuf:protobuf-java:3.10.0
+|    |    |    +--- com.google.guava:guava:28.1-jre (*)
+|    |    |    \--- org.jetbrains.kotlin:kotlin-stdlib-jdk8:1.3.72 -> 1.4.32 (*)
+|    |    +--- com.android.tools.build:apksig:4.1.3
+|    |    +--- com.android.tools.build:apkzlib:4.1.3
+|    |    |    +--- com.google.code.findbugs:jsr305:1.3.9 -> 3.0.2
+|    |    |    +--- com.google.guava:guava:23.0 -> 28.1-jre (*)
+|    |    |    +--- org.bouncycastle:bcpkix-jdk15on:1.56 (*)
+|    |    |    +--- org.bouncycastle:bcprov-jdk15on:1.56
+|    |    |    \--- com.android.tools.build:apksig:4.1.3
+|    |    +--- org.jetbrains.kotlin:kotlin-stdlib-jdk8:1.3.72 -> 1.4.32 (*)
+|    |    +--- com.squareup:javawriter:2.5.0
+|    |    +--- org.bouncycastle:bcpkix-jdk15on:1.56 (*)
+|    |    +--- org.bouncycastle:bcprov-jdk15on:1.56
+|    |    +--- org.ow2.asm:asm:7.0 -> 7.2
+|    |    +--- org.ow2.asm:asm-tree:7.0 -> 7.2
+|    |    |    \--- org.ow2.asm:asm:7.2
+|    |    +--- javax.inject:javax.inject:1
+|    |    +--- org.ow2.asm:asm-commons:7.0 -> 7.2
+|    |    |    +--- org.ow2.asm:asm:7.2
+|    |    |    +--- org.ow2.asm:asm-tree:7.2 (*)
+|    |    |    \--- org.ow2.asm:asm-analysis:7.2
+|    |    |         \--- org.ow2.asm:asm-tree:7.2 (*)
+|    |    +--- org.ow2.asm:asm-util:7.0 -> 7.2
+|    |    |    +--- org.ow2.asm:asm:7.2
+|    |    |    +--- org.ow2.asm:asm-tree:7.2 (*)
+|    |    |    \--- org.ow2.asm:asm-analysis:7.2 (*)
+|    |    +--- it.unimi.dsi:fastutil:7.2.0
+|    |    +--- net.sf.jopt-simple:jopt-simple:4.9
+|    |    \--- com.googlecode.json-simple:json-simple:1.1
+|    +--- com.android.tools.build:aapt2-proto:4.1.3-6503028 (*)
+|    +--- com.android.tools.build:aaptcompiler:4.1.3
+|    |    +--- com.android.tools.build:aapt2-proto:4.1.3-6503028 (*)
+|    |    +--- com.android.tools.layoutlib:layoutlib-api:27.1.3 (*)
+|    |    +--- com.google.guava:guava:28.1-jre (*)
+|    |    \--- org.jetbrains.kotlin:kotlin-stdlib-jdk8:1.3.72 -> 1.4.32 (*)
+|    +--- com.android.tools.analytics-library:crash:27.1.3
+|    |    +--- com.android.tools:annotations:27.1.3
+|    |    +--- com.google.guava:guava:28.1-jre (*)
+|    |    +--- org.apache.httpcomponents:httpmime:4.5.6 (*)
+|    |    +--- org.apache.httpcomponents:httpcore:4.4.10
+|    |    \--- org.apache.httpcomponents:httpclient:4.5.6 (*)
+|    +--- com.android.tools.lint:lint-gradle-api:27.1.3
+|    |    +--- com.android.tools:sdklib:27.1.3 (*)
+|    |    +--- com.android.tools.lint:lint-model:27.1.3
+|    |    |    +--- com.android.tools:common:27.1.3 (*)
+|    |    |    +--- com.android.tools:sdk-common:27.1.3 (*)
+|    |    |    +--- com.android.tools.build:builder-model:4.1.3 (*)
+|    |    |    +--- org.jetbrains.kotlin:kotlin-stdlib-jdk8:1.3.72 -> 1.4.32 (*)
+|    |    |    \--- net.sf.kxml:kxml2:2.3.0
+|    |    +--- com.android.tools.build:gradle-api:4.1.3
+|    |    |    +--- com.android.tools.build:builder-test-api:4.1.3 (*)
+|    |    |    +--- com.google.guava:guava:28.1-jre (*)
+|    |    |    \--- org.jetbrains.kotlin:kotlin-stdlib-jdk8:1.3.72 -> 1.4.32 (*)
+|    |    +--- org.jetbrains.kotlin:kotlin-reflect:1.3.72 (*)
+|    |    +--- org.jetbrains.kotlin:kotlin-stdlib-jdk8:1.3.72 -> 1.4.32 (*)
+|    |    \--- com.google.guava:guava:28.1-jre (*)
+|    +--- com.android.tools.build:gradle-api:4.1.3 (*)
+|    +--- androidx.databinding:databinding-compiler-common:4.1.3
+|    |    +--- androidx.databinding:databinding-common:4.1.3
+|    |    +--- com.android.databinding:baseLibrary:4.1.3
+|    |    +--- org.antlr:antlr4:4.5.3
+|    |    +--- commons-io:commons-io:2.4
+|    |    +--- com.googlecode.juniversalchardet:juniversalchardet:1.0.3
+|    |    +--- com.google.guava:guava:28.1-jre (*)
+|    |    +--- com.squareup:javapoet:1.10.0
+|    |    +--- org.jetbrains.kotlin:kotlin-stdlib-jdk8:1.3.72 -> 1.4.32 (*)
+|    |    +--- com.google.code.gson:gson:2.8.5 -> 2.8.6
+|    |    +--- org.glassfish.jaxb:jaxb-runtime:2.3.1 (*)
+|    |    +--- com.android.tools:annotations:27.1.3
+|    |    \--- com.android.tools.build.jetifier:jetifier-core:1.0.0-beta09
+|    |         +--- com.google.code.gson:gson:2.8.0 -> 2.8.6
+|    |         \--- org.jetbrains.kotlin:kotlin-stdlib:1.3.60 -> 1.4.32 (*)
+|    +--- org.jetbrains.kotlin:kotlin-stdlib-jdk8:1.3.72 -> 1.4.32 (*)
+|    +--- com.android.tools.build:transform-api:2.0.0-deprecated-use-gradle-api
+|    +--- org.ow2.asm:asm:7.0 -> 7.2
+|    +--- org.ow2.asm:asm-analysis:7.0 -> 7.2 (*)
+|    +--- org.ow2.asm:asm-commons:7.0 -> 7.2 (*)
+|    +--- org.ow2.asm:asm-util:7.0 -> 7.2 (*)
+|    +--- net.sf.jopt-simple:jopt-simple:4.9
+|    +--- net.sf.proguard:proguard-gradle:6.0.3
+|    |    \--- net.sf.proguard:proguard-base:6.0.3
+|    +--- com.android.tools.build:bundletool:0.14.0
+|    +--- com.android.tools.build.jetifier:jetifier-core:1.0.0-beta09 (*)
+|    +--- com.android.tools.build.jetifier:jetifier-processor:1.0.0-beta09
+|    |    +--- com.android.tools.build.jetifier:jetifier-core:1.0.0-beta09 (*)
+|    |    +--- org.ow2.asm:asm:6.0 -> 7.2
+|    |    +--- org.ow2.asm:asm-util:6.0 -> 7.2 (*)
+|    |    +--- org.ow2.asm:asm-commons:6.0 -> 7.2 (*)
+|    |    +--- org.jdom:jdom2:2.0.6
+|    |    \--- org.jetbrains.kotlin:kotlin-stdlib:1.3.60 -> 1.4.32 (*)
+|    +--- com.squareup:javapoet:1.10.0
+|    +--- com.google.protobuf:protobuf-java:3.10.0
+|    +--- com.google.protobuf:protobuf-java-util:3.10.0
+|    |    +--- com.google.protobuf:protobuf-java:3.10.0
+|    |    +--- com.google.guava:guava:28.0-android -> 28.1-jre (*)
+|    |    +--- com.google.errorprone:error_prone_annotations:2.3.2
+|    |    \--- com.google.code.gson:gson:2.8.5 -> 2.8.6
+|    +--- com.google.crypto.tink:tink:1.3.0-rc2
+|    |    +--- com.google.protobuf:protobuf-java:3.10.0
+|    |    \--- org.json:json:20180813
+|    \--- com.google.test.platform:core-proto:0.0.2-dev
++--- me.champeau.gradle:japicmp-gradle-plugin:0.2.8
+|    \--- com.github.siom79.japicmp:japicmp:0.13.1
+|         +--- org.javassist:javassist:3.23.1-GA
+|         \--- javax.activation:activation:1.1
++--- me.tylerbwong.gradle:metalava-gradle:0.1.5
++--- org.jetbrains.kotlin:kotlin-gradle-plugin:1.4.32
+|    +--- org.jetbrains.kotlin:kotlin-gradle-plugin-api:1.4.32
+|    |    \--- org.jetbrains.kotlin:kotlin-stdlib:1.4.32 (*)
+|    +--- org.jetbrains.kotlin:kotlin-gradle-plugin-model:1.4.32
+|    |    \--- org.jetbrains.kotlin:kotlin-stdlib:1.4.32 (*)
+|    +--- org.jetbrains.kotlin:kotlin-stdlib:1.4.32 (*)
+|    +--- org.jetbrains.kotlin:kotlin-util-klib:1.4.32
+|    |    +--- org.jetbrains.kotlin:kotlin-stdlib:1.4.32 (*)
+|    |    \--- org.jetbrains.kotlin:kotlin-util-io:1.4.32
+|    |         \--- org.jetbrains.kotlin:kotlin-stdlib:1.4.32 (*)
+|    +--- com.google.code.gson:gson:2.8.6
+|    \--- de.undercouch:gradle-download-task:4.0.2
++--- org.jetbrains.kotlinx:kotlinx-coroutines-core:1.4.2
+|    \--- org.jetbrains.kotlinx:kotlinx-coroutines-core-jvm:1.4.2
+|         +--- org.jetbrains.kotlin:kotlin-stdlib:1.4.0 -> 1.4.32 (*)
+|         \--- org.jetbrains.kotlin:kotlin-stdlib-common:1.4.0 -> 1.4.32
++--- com.squareup.sqldelight:gradle-plugin:1.4.4
+|    \--- org.jetbrains.kotlin:kotlin-stdlib-jdk8:1.4.0 -> 1.4.32 (*)
++--- com.gradle.publish:plugin-publish-plugin:0.12.0
++--- com.github.ben-manes:gradle-versions-plugin:0.33.0
++--- net.mbonnin.vespene:vespene-lib:0.5
+|    +--- org.jetbrains.kotlinx:kotlinx-coroutines-core:1.4.2 (*)
+|    +--- com.squareup.retrofit2:retrofit:2.9.0
+|    |    \--- com.squareup.okhttp3:okhttp:3.14.9 -> 4.9.0 (*)
+|    \--- org.jetbrains.kotlin:kotlin-stdlib-jdk8:1.4.30 -> 1.4.32 (*)
++--- com.github.jengelman.gradle.plugins:shadow:6.1.0
++--- com.google.devtools.ksp:symbol-processing-gradle-plugin:1.4.32-1.0.0-alpha07
+|    \--- org.jetbrains.kotlin:kotlin-stdlib-jdk8:1.4.32 (*)
+\--- org.jetbrains.kotlinx:atomicfu-gradle-plugin:0.15.1
+     +--- org.jetbrains.kotlinx:atomicfu-transformer:0.15.1
+     |    +--- org.slf4j:slf4j-simple:1.8.0-alpha2
+     |    |    \--- org.slf4j:slf4j-api:1.8.0-alpha2
+     |    +--- org.jetbrains.kotlin:kotlin-stdlib:1.4.10 -> 1.4.32 (*)
+     |    +--- org.ow2.asm:asm:7.2
+     |    +--- org.ow2.asm:asm-commons:7.2 (*)
+     |    +--- org.ow2.asm:asm-tree:7.2 (*)
+     |    +--- org.ow2.asm:asm-util:7.2 (*)
+     |    +--- org.slf4j:slf4j-api:1.8.0-alpha2
+     |    +--- org.mozilla:rhino:1.7.10
+     |    \--- org.jetbrains.kotlinx:kotlinx-metadata-jvm:0.1.0
+     |         \--- org.jetbrains.kotlin:kotlin-stdlib:1.3.31 -> 1.4.32 (*)
+     \--- org.jetbrains.kotlin:kotlin-stdlib:1.4.10 -> 1.4.32 (*)
+
+testCompileOnly - Compile only dependencies for compilation 'test' (target  (jvm)).
+No dependencies
+
+testCompileOnlyDependenciesMetadata
+No dependencies
+
+testImplementation - Implementation only dependencies for compilation 'test' (target  (jvm)). (n)
+No dependencies
+
+testImplementationDependenciesMetadata
++--- org.jetbrains.kotlin:kotlin-stdlib:1.4.32
+|    +--- org.jetbrains.kotlin:kotlin-stdlib-common:1.4.32
+|    \--- org.jetbrains:annotations:13.0
++--- com.squareup.okhttp3:okhttp:4.9.0
+|    +--- com.squareup.okio:okio:2.8.0
+|    |    \--- com.squareup.okio:okio-metadata:2.8.0
+|    |         \--- org.jetbrains.kotlin:kotlin-stdlib-common:1.4.0 -> 1.4.32
+|    \--- org.jetbrains.kotlin:kotlin-stdlib:1.4.10 -> 1.4.32 (*)
++--- com.squareup.moshi:moshi:1.11.0
+|    \--- com.squareup.okio:okio:1.17.5 -> 2.8.0 (*)
++--- com.android.tools.build:gradle:4.1.3
+|    +--- com.android.tools.build:builder:4.1.3
+|    |    +--- com.android.tools.build:builder-model:4.1.3
+|    |    |    \--- com.android.tools:annotations:27.1.3
+|    |    +--- com.android.tools.build:builder-test-api:4.1.3
+|    |    |    \--- com.android.tools.ddms:ddmlib:27.1.3
+|    |    |         +--- com.android.tools:common:27.1.3
+|    |    |         |    +--- com.android.tools:annotations:27.1.3
+|    |    |         |    \--- com.google.guava:guava:28.1-jre
+|    |    |         |         +--- com.google.guava:failureaccess:1.0.1
+|    |    |         |         +--- com.google.guava:listenablefuture:9999.0-empty-to-avoid-conflict-with-guava
+|    |    |         |         +--- com.google.code.findbugs:jsr305:3.0.2
+|    |    |         |         +--- org.checkerframework:checker-qual:2.8.1
+|    |    |         |         +--- com.google.errorprone:error_prone_annotations:2.3.2
+|    |    |         |         +--- com.google.j2objc:j2objc-annotations:1.3
+|    |    |         |         \--- org.codehaus.mojo:animal-sniffer-annotations:1.18
+|    |    |         +--- net.sf.kxml:kxml2:2.3.0
+|    |    |         \--- com.google.protobuf:protobuf-java:3.10.0
+|    |    +--- com.android.tools:sdklib:27.1.3
+|    |    |    +--- com.android.tools.layoutlib:layoutlib-api:27.1.3
+|    |    |    |    +--- com.android.tools:common:27.1.3 (*)
+|    |    |    |    +--- net.sf.kxml:kxml2:2.3.0
+|    |    |    |    +--- com.android.tools:annotations:27.1.3
+|    |    |    |    \--- org.jetbrains:annotations:13.0
+|    |    |    +--- com.android.tools:dvlib:27.1.3
+|    |    |    |    \--- com.android.tools:common:27.1.3 (*)
+|    |    |    +--- com.android.tools:repository:27.1.3
+|    |    |    |    +--- com.android.tools:common:27.1.3 (*)
+|    |    |    |    +--- com.sun.activation:javax.activation:1.2.0
+|    |    |    |    +--- org.apache.commons:commons-compress:1.12
+|    |    |    |    +--- org.glassfish.jaxb:jaxb-runtime:2.3.1
+|    |    |    |    |    +--- javax.xml.bind:jaxb-api:2.3.1
+|    |    |    |    |    |    \--- javax.activation:javax.activation-api:1.2.0
+|    |    |    |    |    +--- org.glassfish.jaxb:txw2:2.3.1
+|    |    |    |    |    +--- com.sun.istack:istack-commons-runtime:3.0.7
+|    |    |    |    |    +--- org.jvnet.staxex:stax-ex:1.8
+|    |    |    |    |    +--- com.sun.xml.fastinfoset:FastInfoset:1.2.15
+|    |    |    |    |    \--- javax.activation:javax.activation-api:1.2.0
+|    |    |    |    +--- com.google.jimfs:jimfs:1.1
+|    |    |    |    |    \--- com.google.guava:guava:18.0 -> 28.1-jre (*)
+|    |    |    |    \--- org.jetbrains.kotlin:kotlin-stdlib-jdk8:1.3.72 -> 1.4.32
+|    |    |    |         +--- org.jetbrains.kotlin:kotlin-stdlib:1.4.32 (*)
+|    |    |    |         \--- org.jetbrains.kotlin:kotlin-stdlib-jdk7:1.4.32
+|    |    |    |              \--- org.jetbrains.kotlin:kotlin-stdlib:1.4.32 (*)
+|    |    |    +--- com.google.code.gson:gson:2.8.5 -> 2.8.6
+|    |    |    +--- org.apache.commons:commons-compress:1.12
+|    |    |    +--- org.apache.httpcomponents:httpmime:4.5.6
+|    |    |    |    \--- org.apache.httpcomponents:httpclient:4.5.6
+|    |    |    |         +--- org.apache.httpcomponents:httpcore:4.4.10
+|    |    |    |         +--- commons-logging:commons-logging:1.2
+|    |    |    |         \--- commons-codec:commons-codec:1.10
+|    |    |    \--- org.apache.httpcomponents:httpcore:4.4.10
+|    |    +--- com.android.tools:sdk-common:27.1.3
+|    |    |    +--- com.android.tools:sdklib:27.1.3 (*)
+|    |    |    +--- com.android.tools.build:builder-test-api:4.1.3 (*)
+|    |    |    +--- com.android.tools.build:builder-model:4.1.3 (*)
+|    |    |    +--- com.android.tools.ddms:ddmlib:27.1.3 (*)
+|    |    |    +--- com.android.tools.analytics-library:shared:27.1.3
+|    |    |    |    +--- com.android.tools.analytics-library:protos:27.1.3
+|    |    |    |    |    \--- com.google.protobuf:protobuf-java:3.10.0
+|    |    |    |    +--- com.android.tools:annotations:27.1.3
+|    |    |    |    +--- com.android.tools:common:27.1.3 (*)
+|    |    |    |    +--- com.google.guava:guava:28.1-jre (*)
+|    |    |    |    +--- com.google.code.gson:gson:2.8.5 -> 2.8.6
+|    |    |    |    \--- org.jetbrains.kotlin:kotlin-stdlib-jdk8:1.3.72 -> 1.4.32 (*)
+|    |    |    +--- org.bouncycastle:bcpkix-jdk15on:1.56
+|    |    |    |    \--- org.bouncycastle:bcprov-jdk15on:1.56
+|    |    |    +--- org.bouncycastle:bcprov-jdk15on:1.56
+|    |    |    +--- org.jetbrains.kotlin:kotlin-stdlib-jdk8:1.3.72 -> 1.4.32 (*)
+|    |    |    +--- org.jetbrains.kotlin:kotlin-reflect:1.3.72
+|    |    |    |    \--- org.jetbrains.kotlin:kotlin-stdlib:1.3.72 -> 1.4.32 (*)
+|    |    |    +--- com.google.protobuf:protobuf-java:3.10.0
+|    |    |    +--- javax.inject:javax.inject:1
+|    |    |    +--- org.jetbrains.trove4j:trove4j:20160824
+|    |    |    \--- com.android.tools.build:aapt2-proto:4.1.0-alpha01-6193524 -> 4.1.3-6503028
+|    |    |         \--- com.google.protobuf:protobuf-java:3.10.0
+|    |    +--- com.android.tools:common:27.1.3 (*)
+|    |    +--- com.android.tools.build:manifest-merger:27.1.3
+|    |    |    +--- com.android.tools:common:27.1.3 (*)
+|    |    |    +--- com.android.tools:sdklib:27.1.3 (*)
+|    |    |    +--- com.android.tools:sdk-common:27.1.3 (*)
+|    |    |    +--- com.google.code.gson:gson:2.8.5 -> 2.8.6
+|    |    |    +--- org.jetbrains.kotlin:kotlin-stdlib-jdk8:1.3.72 -> 1.4.32 (*)
+|    |    |    \--- net.sf.kxml:kxml2:2.3.0
+|    |    +--- com.android.tools.ddms:ddmlib:27.1.3 (*)
+|    |    +--- com.android:zipflinger:4.1.3
+|    |    |    \--- com.android.tools:common:27.1.3 (*)
+|    |    +--- com.android:signflinger:4.1.3
+|    |    |    +--- com.android.tools.build:apksig:4.1.3
+|    |    |    \--- com.android:zipflinger:4.1.3 (*)
+|    |    +--- com.android.tools.analytics-library:protos:27.1.3 (*)
+|    |    +--- com.android.tools.analytics-library:tracker:27.1.3
+|    |    |    +--- com.android.tools:annotations:27.1.3
+|    |    |    +--- com.android.tools:common:27.1.3 (*)
+|    |    |    +--- com.android.tools.analytics-library:protos:27.1.3 (*)
+|    |    |    +--- com.android.tools.analytics-library:shared:27.1.3 (*)
+|    |    |    +--- com.google.protobuf:protobuf-java:3.10.0
+|    |    |    +--- com.google.guava:guava:28.1-jre (*)
+|    |    |    \--- org.jetbrains.kotlin:kotlin-stdlib-jdk8:1.3.72 -> 1.4.32 (*)
+|    |    +--- com.android.tools.build:apksig:4.1.3
+|    |    +--- com.android.tools.build:apkzlib:4.1.3
+|    |    |    +--- com.google.code.findbugs:jsr305:1.3.9 -> 3.0.2
+|    |    |    +--- com.google.guava:guava:23.0 -> 28.1-jre (*)
+|    |    |    +--- org.bouncycastle:bcpkix-jdk15on:1.56 (*)
+|    |    |    +--- org.bouncycastle:bcprov-jdk15on:1.56
+|    |    |    \--- com.android.tools.build:apksig:4.1.3
+|    |    +--- org.jetbrains.kotlin:kotlin-stdlib-jdk8:1.3.72 -> 1.4.32 (*)
+|    |    +--- com.squareup:javawriter:2.5.0
+|    |    +--- org.bouncycastle:bcpkix-jdk15on:1.56 (*)
+|    |    +--- org.bouncycastle:bcprov-jdk15on:1.56
+|    |    +--- org.ow2.asm:asm:7.0 -> 7.2
+|    |    +--- org.ow2.asm:asm-tree:7.0 -> 7.2
+|    |    |    \--- org.ow2.asm:asm:7.2
+|    |    +--- javax.inject:javax.inject:1
+|    |    +--- org.ow2.asm:asm-commons:7.0 -> 7.2
+|    |    |    +--- org.ow2.asm:asm:7.2
+|    |    |    +--- org.ow2.asm:asm-tree:7.2 (*)
+|    |    |    \--- org.ow2.asm:asm-analysis:7.2
+|    |    |         \--- org.ow2.asm:asm-tree:7.2 (*)
+|    |    +--- org.ow2.asm:asm-util:7.0 -> 7.2
+|    |    |    +--- org.ow2.asm:asm:7.2
+|    |    |    +--- org.ow2.asm:asm-tree:7.2 (*)
+|    |    |    \--- org.ow2.asm:asm-analysis:7.2 (*)
+|    |    +--- it.unimi.dsi:fastutil:7.2.0
+|    |    +--- net.sf.jopt-simple:jopt-simple:4.9
+|    |    \--- com.googlecode.json-simple:json-simple:1.1
+|    +--- com.android.tools.build:aapt2-proto:4.1.3-6503028 (*)
+|    +--- com.android.tools.build:aaptcompiler:4.1.3
+|    |    +--- com.android.tools.build:aapt2-proto:4.1.3-6503028 (*)
+|    |    +--- com.android.tools.layoutlib:layoutlib-api:27.1.3 (*)
+|    |    +--- com.google.guava:guava:28.1-jre (*)
+|    |    \--- org.jetbrains.kotlin:kotlin-stdlib-jdk8:1.3.72 -> 1.4.32 (*)
+|    +--- com.android.tools.analytics-library:crash:27.1.3
+|    |    +--- com.android.tools:annotations:27.1.3
+|    |    +--- com.google.guava:guava:28.1-jre (*)
+|    |    +--- org.apache.httpcomponents:httpmime:4.5.6 (*)
+|    |    +--- org.apache.httpcomponents:httpcore:4.4.10
+|    |    \--- org.apache.httpcomponents:httpclient:4.5.6 (*)
+|    +--- com.android.tools.lint:lint-gradle-api:27.1.3
+|    |    +--- com.android.tools:sdklib:27.1.3 (*)
+|    |    +--- com.android.tools.lint:lint-model:27.1.3
+|    |    |    +--- com.android.tools:common:27.1.3 (*)
+|    |    |    +--- com.android.tools:sdk-common:27.1.3 (*)
+|    |    |    +--- com.android.tools.build:builder-model:4.1.3 (*)
+|    |    |    +--- org.jetbrains.kotlin:kotlin-stdlib-jdk8:1.3.72 -> 1.4.32 (*)
+|    |    |    \--- net.sf.kxml:kxml2:2.3.0
+|    |    +--- com.android.tools.build:gradle-api:4.1.3
+|    |    |    +--- com.android.tools.build:builder-test-api:4.1.3 (*)
+|    |    |    +--- com.google.guava:guava:28.1-jre (*)
+|    |    |    \--- org.jetbrains.kotlin:kotlin-stdlib-jdk8:1.3.72 -> 1.4.32 (*)
+|    |    +--- org.jetbrains.kotlin:kotlin-reflect:1.3.72 (*)
+|    |    +--- org.jetbrains.kotlin:kotlin-stdlib-jdk8:1.3.72 -> 1.4.32 (*)
+|    |    \--- com.google.guava:guava:28.1-jre (*)
+|    +--- com.android.tools.build:gradle-api:4.1.3 (*)
+|    +--- androidx.databinding:databinding-compiler-common:4.1.3
+|    |    +--- androidx.databinding:databinding-common:4.1.3
+|    |    +--- com.android.databinding:baseLibrary:4.1.3
+|    |    +--- org.antlr:antlr4:4.5.3
+|    |    +--- commons-io:commons-io:2.4
+|    |    +--- com.googlecode.juniversalchardet:juniversalchardet:1.0.3
+|    |    +--- com.google.guava:guava:28.1-jre (*)
+|    |    +--- com.squareup:javapoet:1.10.0
+|    |    +--- org.jetbrains.kotlin:kotlin-stdlib-jdk8:1.3.72 -> 1.4.32 (*)
+|    |    +--- com.google.code.gson:gson:2.8.5 -> 2.8.6
+|    |    +--- org.glassfish.jaxb:jaxb-runtime:2.3.1 (*)
+|    |    +--- com.android.tools:annotations:27.1.3
+|    |    \--- com.android.tools.build.jetifier:jetifier-core:1.0.0-beta09
+|    |         +--- com.google.code.gson:gson:2.8.0 -> 2.8.6
+|    |         \--- org.jetbrains.kotlin:kotlin-stdlib:1.3.60 -> 1.4.32 (*)
+|    +--- org.jetbrains.kotlin:kotlin-stdlib-jdk8:1.3.72 -> 1.4.32 (*)
+|    +--- com.android.tools.build:transform-api:2.0.0-deprecated-use-gradle-api
+|    +--- org.ow2.asm:asm:7.0 -> 7.2
+|    +--- org.ow2.asm:asm-analysis:7.0 -> 7.2 (*)
+|    +--- org.ow2.asm:asm-commons:7.0 -> 7.2 (*)
+|    +--- org.ow2.asm:asm-util:7.0 -> 7.2 (*)
+|    +--- net.sf.jopt-simple:jopt-simple:4.9
+|    +--- net.sf.proguard:proguard-gradle:6.0.3
+|    |    \--- net.sf.proguard:proguard-base:6.0.3
+|    +--- com.android.tools.build:bundletool:0.14.0
+|    +--- com.android.tools.build.jetifier:jetifier-core:1.0.0-beta09 (*)
+|    +--- com.android.tools.build.jetifier:jetifier-processor:1.0.0-beta09
+|    |    +--- com.android.tools.build.jetifier:jetifier-core:1.0.0-beta09 (*)
+|    |    +--- org.ow2.asm:asm:6.0 -> 7.2
+|    |    +--- org.ow2.asm:asm-util:6.0 -> 7.2 (*)
+|    |    +--- org.ow2.asm:asm-commons:6.0 -> 7.2 (*)
+|    |    +--- org.jdom:jdom2:2.0.6
+|    |    \--- org.jetbrains.kotlin:kotlin-stdlib:1.3.60 -> 1.4.32 (*)
+|    +--- com.squareup:javapoet:1.10.0
+|    +--- com.google.protobuf:protobuf-java:3.10.0
+|    +--- com.google.protobuf:protobuf-java-util:3.10.0
+|    |    +--- com.google.protobuf:protobuf-java:3.10.0
+|    |    +--- com.google.guava:guava:28.0-android -> 28.1-jre (*)
+|    |    +--- com.google.errorprone:error_prone_annotations:2.3.2
+|    |    \--- com.google.code.gson:gson:2.8.5 -> 2.8.6
+|    +--- com.google.crypto.tink:tink:1.3.0-rc2
+|    |    +--- com.google.protobuf:protobuf-java:3.10.0
+|    |    \--- org.json:json:20180813
+|    \--- com.google.test.platform:core-proto:0.0.2-dev
++--- me.champeau.gradle:japicmp-gradle-plugin:0.2.8
+|    \--- com.github.siom79.japicmp:japicmp:0.13.1
+|         +--- org.javassist:javassist:3.23.1-GA
+|         \--- javax.activation:activation:1.1
++--- me.tylerbwong.gradle:metalava-gradle:0.1.5
++--- org.jetbrains.kotlin:kotlin-gradle-plugin:1.4.32
+|    +--- org.jetbrains.kotlin:kotlin-gradle-plugin-api:1.4.32
+|    |    \--- org.jetbrains.kotlin:kotlin-stdlib:1.4.32 (*)
+|    +--- org.jetbrains.kotlin:kotlin-gradle-plugin-model:1.4.32
+|    |    \--- org.jetbrains.kotlin:kotlin-stdlib:1.4.32 (*)
+|    +--- org.jetbrains.kotlin:kotlin-stdlib:1.4.32 (*)
+|    +--- org.jetbrains.kotlin:kotlin-util-klib:1.4.32
+|    |    +--- org.jetbrains.kotlin:kotlin-stdlib:1.4.32 (*)
+|    |    \--- org.jetbrains.kotlin:kotlin-util-io:1.4.32
+|    |         \--- org.jetbrains.kotlin:kotlin-stdlib:1.4.32 (*)
+|    +--- com.google.code.gson:gson:2.8.6
+|    \--- de.undercouch:gradle-download-task:4.0.2
++--- org.jetbrains.kotlinx:kotlinx-coroutines-core:1.4.2
+|    \--- org.jetbrains.kotlinx:kotlinx-coroutines-core-metadata:1.4.2
+|         \--- org.jetbrains.kotlin:kotlin-stdlib-common:1.4.0 -> 1.4.32
++--- com.squareup.sqldelight:gradle-plugin:1.4.4
+|    \--- org.jetbrains.kotlin:kotlin-stdlib-jdk8:1.4.0 -> 1.4.32 (*)
++--- com.gradle.publish:plugin-publish-plugin:0.12.0
++--- com.github.ben-manes:gradle-versions-plugin:0.33.0
++--- net.mbonnin.vespene:vespene-lib:0.5
+|    +--- org.jetbrains.kotlinx:kotlinx-coroutines-core:1.4.2 (*)
+|    +--- com.squareup.retrofit2:retrofit:2.9.0
+|    |    \--- com.squareup.okhttp3:okhttp:3.14.9 -> 4.9.0 (*)
+|    \--- org.jetbrains.kotlin:kotlin-stdlib-jdk8:1.4.30 -> 1.4.32 (*)
++--- com.github.jengelman.gradle.plugins:shadow:6.1.0
++--- com.google.devtools.ksp:symbol-processing-gradle-plugin:1.4.32-1.0.0-alpha07
+|    \--- org.jetbrains.kotlin:kotlin-stdlib-jdk8:1.4.32 (*)
+\--- org.jetbrains.kotlinx:atomicfu-gradle-plugin:0.15.1
+     +--- org.jetbrains.kotlinx:atomicfu-transformer:0.15.1
+     |    +--- org.slf4j:slf4j-simple:1.8.0-alpha2
+     |    |    \--- org.slf4j:slf4j-api:1.8.0-alpha2
+     |    +--- org.jetbrains.kotlin:kotlin-stdlib:1.4.10 -> 1.4.32 (*)
+     |    +--- org.ow2.asm:asm:7.2
+     |    +--- org.ow2.asm:asm-commons:7.2 (*)
+     |    +--- org.ow2.asm:asm-tree:7.2 (*)
+     |    +--- org.ow2.asm:asm-util:7.2 (*)
+     |    +--- org.slf4j:slf4j-api:1.8.0-alpha2
+     |    +--- org.mozilla:rhino:1.7.10
+     |    \--- org.jetbrains.kotlinx:kotlinx-metadata-jvm:0.1.0
+     |         \--- org.jetbrains.kotlin:kotlin-stdlib:1.3.31 -> 1.4.32 (*)
+     \--- org.jetbrains.kotlin:kotlin-stdlib:1.4.10 -> 1.4.32 (*)
+
+testKotlinScriptDef - Script filename extensions discovery classpath configuration
+No dependencies
+
+testKotlinScriptDefExtensions
+No dependencies
+
+testRuntime - Runtime dependencies for compilation 'test' (target  (jvm)) (deprecated, use 'testRuntimeOnly ' instead).
+No dependencies
+
+testRuntimeClasspath - Runtime classpath of compilation 'test' (target  (jvm)).
++--- org.jetbrains.kotlin:kotlin-stdlib:1.4.32
+|    +--- org.jetbrains.kotlin:kotlin-stdlib-common:1.4.32
+|    \--- org.jetbrains:annotations:13.0
++--- com.squareup.okhttp3:okhttp:4.9.0
+|    +--- com.squareup.okio:okio:2.8.0
+|    |    +--- org.jetbrains.kotlin:kotlin-stdlib:1.4.0 -> 1.4.32 (*)
+|    |    \--- org.jetbrains.kotlin:kotlin-stdlib-common:1.4.0 -> 1.4.32
+|    \--- org.jetbrains.kotlin:kotlin-stdlib:1.4.10 -> 1.4.32 (*)
++--- com.squareup.moshi:moshi:1.11.0
+|    \--- com.squareup.okio:okio:1.17.5 -> 2.8.0 (*)
++--- com.android.tools.build:gradle:4.1.3
+|    +--- com.android.tools.build:builder:4.1.3
+|    |    +--- com.android.tools.build:builder-model:4.1.3
+|    |    |    +--- com.android.tools:annotations:27.1.3
+|    |    |    \--- org.jetbrains.kotlin:kotlin-stdlib-jdk8:1.3.72 -> 1.4.32
+|    |    |         +--- org.jetbrains.kotlin:kotlin-stdlib:1.4.32 (*)
+|    |    |         \--- org.jetbrains.kotlin:kotlin-stdlib-jdk7:1.4.32
+|    |    |              \--- org.jetbrains.kotlin:kotlin-stdlib:1.4.32 (*)
+|    |    +--- com.android.tools.build:builder-test-api:4.1.3
+|    |    |    \--- com.android.tools.ddms:ddmlib:27.1.3
+|    |    |         +--- com.android.tools:common:27.1.3
+|    |    |         |    +--- com.android.tools:annotations:27.1.3
+|    |    |         |    +--- com.google.guava:guava:28.1-jre
+|    |    |         |    |    +--- com.google.guava:failureaccess:1.0.1
+|    |    |         |    |    +--- com.google.guava:listenablefuture:9999.0-empty-to-avoid-conflict-with-guava
+|    |    |         |    |    +--- com.google.code.findbugs:jsr305:3.0.2
+|    |    |         |    |    +--- org.checkerframework:checker-qual:2.8.1
+|    |    |         |    |    +--- com.google.errorprone:error_prone_annotations:2.3.2
+|    |    |         |    |    +--- com.google.j2objc:j2objc-annotations:1.3
+|    |    |         |    |    \--- org.codehaus.mojo:animal-sniffer-annotations:1.18
+|    |    |         |    \--- org.jetbrains.kotlin:kotlin-stdlib-jdk8:1.3.72 -> 1.4.32 (*)
+|    |    |         +--- net.sf.kxml:kxml2:2.3.0
+|    |    |         \--- com.google.protobuf:protobuf-java:3.10.0
+|    |    +--- com.android.tools:sdklib:27.1.3
+|    |    |    +--- com.android.tools.layoutlib:layoutlib-api:27.1.3
+|    |    |    |    +--- com.android.tools:common:27.1.3 (*)
+|    |    |    |    +--- net.sf.kxml:kxml2:2.3.0
+|    |    |    |    +--- com.android.tools:annotations:27.1.3
+|    |    |    |    \--- org.jetbrains:annotations:13.0
+|    |    |    +--- com.android.tools:dvlib:27.1.3
+|    |    |    |    \--- com.android.tools:common:27.1.3 (*)
+|    |    |    +--- com.android.tools:repository:27.1.3
+|    |    |    |    +--- com.android.tools:common:27.1.3 (*)
+|    |    |    |    +--- com.sun.activation:javax.activation:1.2.0
+|    |    |    |    +--- org.apache.commons:commons-compress:1.12
+|    |    |    |    +--- org.glassfish.jaxb:jaxb-runtime:2.3.1
+|    |    |    |    |    +--- javax.xml.bind:jaxb-api:2.3.1
+|    |    |    |    |    |    \--- javax.activation:javax.activation-api:1.2.0
+|    |    |    |    |    +--- org.glassfish.jaxb:txw2:2.3.1
+|    |    |    |    |    +--- com.sun.istack:istack-commons-runtime:3.0.7
+|    |    |    |    |    +--- org.jvnet.staxex:stax-ex:1.8
+|    |    |    |    |    +--- com.sun.xml.fastinfoset:FastInfoset:1.2.15
+|    |    |    |    |    \--- javax.activation:javax.activation-api:1.2.0
+|    |    |    |    +--- com.google.jimfs:jimfs:1.1
+|    |    |    |    |    \--- com.google.guava:guava:18.0 -> 28.1-jre (*)
+|    |    |    |    \--- org.jetbrains.kotlin:kotlin-stdlib-jdk8:1.3.72 -> 1.4.32 (*)
+|    |    |    +--- com.google.code.gson:gson:2.8.5 -> 2.8.6
+|    |    |    +--- org.apache.commons:commons-compress:1.12
+|    |    |    +--- org.apache.httpcomponents:httpmime:4.5.6
+|    |    |    |    \--- org.apache.httpcomponents:httpclient:4.5.6
+|    |    |    |         +--- org.apache.httpcomponents:httpcore:4.4.10
+|    |    |    |         +--- commons-logging:commons-logging:1.2
+|    |    |    |         \--- commons-codec:commons-codec:1.10
+|    |    |    \--- org.apache.httpcomponents:httpcore:4.4.10
+|    |    +--- com.android.tools:sdk-common:27.1.3
+|    |    |    +--- com.android.tools:sdklib:27.1.3 (*)
+|    |    |    +--- com.android.tools.build:builder-test-api:4.1.3 (*)
+|    |    |    +--- com.android.tools.build:builder-model:4.1.3 (*)
+|    |    |    +--- com.android.tools.ddms:ddmlib:27.1.3 (*)
+|    |    |    +--- com.android.tools.analytics-library:shared:27.1.3
+|    |    |    |    +--- com.android.tools.analytics-library:protos:27.1.3
+|    |    |    |    |    \--- com.google.protobuf:protobuf-java:3.10.0
+|    |    |    |    +--- com.android.tools:annotations:27.1.3
+|    |    |    |    +--- com.android.tools:common:27.1.3 (*)
+|    |    |    |    +--- com.google.guava:guava:28.1-jre (*)
+|    |    |    |    +--- com.google.code.gson:gson:2.8.5 -> 2.8.6
+|    |    |    |    \--- org.jetbrains.kotlin:kotlin-stdlib-jdk8:1.3.72 -> 1.4.32 (*)
+|    |    |    +--- org.bouncycastle:bcpkix-jdk15on:1.56
+|    |    |    |    \--- org.bouncycastle:bcprov-jdk15on:1.56 -> 1.64
+|    |    |    +--- org.bouncycastle:bcprov-jdk15on:1.56 -> 1.64
+|    |    |    +--- org.jetbrains.kotlin:kotlin-stdlib-jdk8:1.3.72 -> 1.4.32 (*)
+|    |    |    +--- org.jetbrains.kotlin:kotlin-reflect:1.3.72 -> 1.4.32
+|    |    |    |    \--- org.jetbrains.kotlin:kotlin-stdlib:1.4.32 (*)
+|    |    |    +--- com.google.protobuf:protobuf-java:3.10.0
+|    |    |    +--- javax.inject:javax.inject:1
+|    |    |    +--- org.jetbrains.trove4j:trove4j:20160824
+|    |    |    \--- com.android.tools.build:aapt2-proto:4.1.0-alpha01-6193524 -> 4.1.3-6503028
+|    |    |         \--- com.google.protobuf:protobuf-java:3.10.0
+|    |    +--- com.android.tools:common:27.1.3 (*)
+|    |    +--- com.android.tools.build:manifest-merger:27.1.3
+|    |    |    +--- com.android.tools:common:27.1.3 (*)
+|    |    |    +--- com.android.tools:sdklib:27.1.3 (*)
+|    |    |    +--- com.android.tools:sdk-common:27.1.3 (*)
+|    |    |    +--- com.google.code.gson:gson:2.8.5 -> 2.8.6
+|    |    |    +--- org.jetbrains.kotlin:kotlin-stdlib-jdk8:1.3.72 -> 1.4.32 (*)
+|    |    |    \--- net.sf.kxml:kxml2:2.3.0
+|    |    +--- com.android.tools.ddms:ddmlib:27.1.3 (*)
+|    |    +--- com.android:zipflinger:4.1.3
+|    |    |    \--- com.android.tools:common:27.1.3 (*)
+|    |    +--- com.android:signflinger:4.1.3
+|    |    |    +--- com.android.tools.build:apksig:4.1.3
+|    |    |    \--- com.android:zipflinger:4.1.3 (*)
+|    |    +--- com.android.tools.analytics-library:protos:27.1.3 (*)
+|    |    +--- com.android.tools.analytics-library:tracker:27.1.3
+|    |    |    +--- com.android.tools:annotations:27.1.3
+|    |    |    +--- com.android.tools:common:27.1.3 (*)
+|    |    |    +--- com.android.tools.analytics-library:protos:27.1.3 (*)
+|    |    |    +--- com.android.tools.analytics-library:shared:27.1.3 (*)
+|    |    |    +--- com.google.protobuf:protobuf-java:3.10.0
+|    |    |    +--- com.google.guava:guava:28.1-jre (*)
+|    |    |    \--- org.jetbrains.kotlin:kotlin-stdlib-jdk8:1.3.72 -> 1.4.32 (*)
+|    |    +--- com.android.tools.build:apksig:4.1.3
+|    |    +--- com.android.tools.build:apkzlib:4.1.3
+|    |    |    +--- com.google.code.findbugs:jsr305:1.3.9 -> 3.0.2
+|    |    |    +--- com.google.guava:guava:23.0 -> 28.1-jre (*)
+|    |    |    +--- org.bouncycastle:bcpkix-jdk15on:1.56 (*)
+|    |    |    +--- org.bouncycastle:bcprov-jdk15on:1.56 -> 1.64
+|    |    |    \--- com.android.tools.build:apksig:4.1.3
+|    |    +--- org.jetbrains.kotlin:kotlin-stdlib-jdk8:1.3.72 -> 1.4.32 (*)
+|    |    +--- com.squareup:javawriter:2.5.0
+|    |    +--- org.bouncycastle:bcpkix-jdk15on:1.56 (*)
+|    |    +--- org.bouncycastle:bcprov-jdk15on:1.56 -> 1.64
+|    |    +--- org.ow2.asm:asm:7.0 -> 9.0
+|    |    +--- org.ow2.asm:asm-tree:7.0 -> 9.0
+|    |    |    \--- org.ow2.asm:asm:9.0
+|    |    +--- javax.inject:javax.inject:1
+|    |    +--- org.ow2.asm:asm-commons:7.0 -> 9.0
+|    |    |    +--- org.ow2.asm:asm:9.0
+|    |    |    +--- org.ow2.asm:asm-tree:9.0 (*)
+|    |    |    \--- org.ow2.asm:asm-analysis:9.0
+|    |    |         \--- org.ow2.asm:asm-tree:9.0 (*)
+|    |    +--- org.ow2.asm:asm-util:7.0 -> 7.2
+|    |    |    +--- org.ow2.asm:asm:7.2 -> 9.0
+|    |    |    +--- org.ow2.asm:asm-tree:7.2 -> 9.0 (*)
+|    |    |    \--- org.ow2.asm:asm-analysis:7.2 -> 9.0 (*)
+|    |    +--- it.unimi.dsi:fastutil:7.2.0
+|    |    +--- net.sf.jopt-simple:jopt-simple:4.9
+|    |    \--- com.googlecode.json-simple:json-simple:1.1
+|    +--- com.android.tools.build:aapt2-proto:4.1.3-6503028 (*)
+|    +--- com.android.tools.build:aaptcompiler:4.1.3
+|    |    +--- com.android.tools.build:aapt2-proto:4.1.3-6503028 (*)
+|    |    +--- com.android.tools.layoutlib:layoutlib-api:27.1.3 (*)
+|    |    +--- com.google.guava:guava:28.1-jre (*)
+|    |    \--- org.jetbrains.kotlin:kotlin-stdlib-jdk8:1.3.72 -> 1.4.32 (*)
+|    +--- com.android.tools.analytics-library:crash:27.1.3
+|    |    +--- com.android.tools:annotations:27.1.3
+|    |    +--- com.google.guava:guava:28.1-jre (*)
+|    |    +--- org.apache.httpcomponents:httpmime:4.5.6 (*)
+|    |    +--- org.apache.httpcomponents:httpcore:4.4.10
+|    |    \--- org.apache.httpcomponents:httpclient:4.5.6 (*)
+|    +--- com.android.tools.lint:lint-gradle-api:27.1.3
+|    |    +--- com.android.tools:sdklib:27.1.3 (*)
+|    |    +--- com.android.tools.lint:lint-model:27.1.3
+|    |    |    +--- com.android.tools:common:27.1.3 (*)
+|    |    |    +--- com.android.tools:sdk-common:27.1.3 (*)
+|    |    |    +--- com.android.tools.build:builder-model:4.1.3 (*)
+|    |    |    +--- org.jetbrains.kotlin:kotlin-stdlib-jdk8:1.3.72 -> 1.4.32 (*)
+|    |    |    \--- net.sf.kxml:kxml2:2.3.0
+|    |    +--- com.android.tools.build:gradle-api:4.1.3
+|    |    |    +--- com.android.tools.build:builder-test-api:4.1.3 (*)
+|    |    |    +--- com.google.guava:guava:28.1-jre (*)
+|    |    |    \--- org.jetbrains.kotlin:kotlin-stdlib-jdk8:1.3.72 -> 1.4.32 (*)
+|    |    +--- org.jetbrains.kotlin:kotlin-reflect:1.3.72 -> 1.4.32 (*)
+|    |    +--- org.jetbrains.kotlin:kotlin-stdlib-jdk8:1.3.72 -> 1.4.32 (*)
+|    |    \--- com.google.guava:guava:28.1-jre (*)
+|    +--- com.android.tools.build:gradle-api:4.1.3 (*)
+|    +--- androidx.databinding:databinding-compiler-common:4.1.3
+|    |    +--- androidx.databinding:databinding-common:4.1.3
+|    |    +--- com.android.databinding:baseLibrary:4.1.3
+|    |    +--- org.antlr:antlr4:4.5.3
+|    |    +--- commons-io:commons-io:2.4 -> 2.6
+|    |    +--- com.googlecode.juniversalchardet:juniversalchardet:1.0.3
+|    |    +--- com.google.guava:guava:28.1-jre (*)
+|    |    +--- com.squareup:javapoet:1.10.0
+|    |    +--- org.jetbrains.kotlin:kotlin-stdlib-jdk8:1.3.72 -> 1.4.32 (*)
+|    |    +--- com.google.code.gson:gson:2.8.5 -> 2.8.6
+|    |    +--- org.glassfish.jaxb:jaxb-runtime:2.3.1 (*)
+|    |    +--- com.android.tools:annotations:27.1.3
+|    |    \--- com.android.tools.build.jetifier:jetifier-core:1.0.0-beta09
+|    |         +--- com.google.code.gson:gson:2.8.0 -> 2.8.6
+|    |         \--- org.jetbrains.kotlin:kotlin-stdlib:1.3.60 -> 1.4.32 (*)
+|    +--- org.jetbrains.kotlin:kotlin-stdlib-jdk8:1.3.72 -> 1.4.32 (*)
+|    +--- com.android.tools.build:transform-api:2.0.0-deprecated-use-gradle-api
+|    +--- org.ow2.asm:asm:7.0 -> 9.0
+|    +--- org.ow2.asm:asm-analysis:7.0 -> 9.0 (*)
+|    +--- org.ow2.asm:asm-commons:7.0 -> 9.0 (*)
+|    +--- org.ow2.asm:asm-util:7.0 -> 7.2 (*)
+|    +--- net.sf.jopt-simple:jopt-simple:4.9
+|    +--- net.sf.proguard:proguard-gradle:6.0.3
+|    |    \--- net.sf.proguard:proguard-base:6.0.3
+|    +--- com.android.tools.build:bundletool:0.14.0
+|    |    +--- com.android.tools.build:aapt2-proto:4.1.0-alpha01-6193524 -> 4.1.3-6503028 (*)
+|    |    +--- com.google.auto.value:auto-value-annotations:1.6.2
+|    |    +--- com.google.errorprone:error_prone_annotations:2.3.1 -> 2.3.2
+|    |    +--- com.google.guava:guava:27.0.1-jre -> 28.1-jre (*)
+|    |    +--- com.google.protobuf:protobuf-java:3.4.0 -> 3.10.0
+|    |    \--- com.google.protobuf:protobuf-java-util:3.4.0 -> 3.10.0
+|    |         +--- com.google.protobuf:protobuf-java:3.10.0
+|    |         +--- com.google.guava:guava:28.0-android -> 28.1-jre (*)
+|    |         +--- com.google.errorprone:error_prone_annotations:2.3.2
+|    |         \--- com.google.code.gson:gson:2.8.5 -> 2.8.6
+|    +--- com.android.tools.build.jetifier:jetifier-core:1.0.0-beta09 (*)
+|    +--- com.android.tools.build.jetifier:jetifier-processor:1.0.0-beta09
+|    |    +--- com.android.tools.build.jetifier:jetifier-core:1.0.0-beta09 (*)
+|    |    +--- org.ow2.asm:asm:6.0 -> 9.0
+|    |    +--- org.ow2.asm:asm-util:6.0 -> 7.2 (*)
+|    |    +--- org.ow2.asm:asm-commons:6.0 -> 9.0 (*)
+|    |    +--- org.jdom:jdom2:2.0.6
+|    |    \--- org.jetbrains.kotlin:kotlin-stdlib:1.3.60 -> 1.4.32 (*)
+|    +--- com.squareup:javapoet:1.10.0
+|    +--- com.google.protobuf:protobuf-java:3.10.0
+|    +--- com.google.protobuf:protobuf-java-util:3.10.0 (*)
+|    +--- com.google.crypto.tink:tink:1.3.0-rc2
+|    |    +--- com.google.protobuf:protobuf-java:3.10.0
+|    |    \--- org.json:json:20180813
+|    +--- com.google.test.platform:core-proto:0.0.2-dev
+|    +--- com.google.flatbuffers:flatbuffers-java:1.12.0
+|    \--- org.tensorflow:tensorflow-lite-metadata:0.1.0-rc1
+|         +--- org.checkerframework:checker-qual:2.5.8 -> 2.8.1
+|         \--- com.google.flatbuffers:flatbuffers-java:1.12.0
++--- me.champeau.gradle:japicmp-gradle-plugin:0.2.8
+|    \--- com.github.siom79.japicmp:japicmp:0.13.1
+|         +--- org.javassist:javassist:3.23.1-GA
+|         \--- javax.activation:activation:1.1
++--- me.tylerbwong.gradle:metalava-gradle:0.1.5
++--- org.jetbrains.kotlin:kotlin-gradle-plugin:1.4.32
+|    +--- org.jetbrains.kotlin:kotlin-gradle-plugin-api:1.4.32
+|    |    \--- org.jetbrains.kotlin:kotlin-stdlib:1.4.32 (*)
+|    +--- org.jetbrains.kotlin:kotlin-gradle-plugin-model:1.4.32
+|    |    \--- org.jetbrains.kotlin:kotlin-stdlib:1.4.32 (*)
+|    +--- org.jetbrains.kotlin:kotlin-stdlib:1.4.32 (*)
+|    +--- org.jetbrains.kotlin:kotlin-util-klib:1.4.32
+|    |    +--- org.jetbrains.kotlin:kotlin-stdlib:1.4.32 (*)
+|    |    \--- org.jetbrains.kotlin:kotlin-util-io:1.4.32
+|    |         \--- org.jetbrains.kotlin:kotlin-stdlib:1.4.32 (*)
+|    +--- com.google.code.gson:gson:2.8.6
+|    +--- de.undercouch:gradle-download-task:4.0.2
+|    +--- com.github.gundy:semver4j:0.16.4
+|    |    \--- org.antlr:antlr4-runtime:4.5.2-1
+|    +--- org.jetbrains.kotlin:kotlin-compiler-embeddable:1.4.32
+|    |    +--- org.jetbrains.kotlin:kotlin-stdlib:1.4.32 (*)
+|    |    +--- org.jetbrains.kotlin:kotlin-script-runtime:1.4.32
+|    |    +--- org.jetbrains.kotlin:kotlin-reflect:1.4.32 (*)
+|    |    +--- org.jetbrains.kotlin:kotlin-daemon-embeddable:1.4.32
+|    |    \--- org.jetbrains.intellij.deps:trove4j:1.0.20181211
+|    +--- org.jetbrains.kotlin:kotlin-annotation-processing-gradle:1.4.32
+|    |    +--- org.jetbrains.kotlin:kotlin-stdlib:1.4.32 (*)
+|    |    \--- org.jetbrains.kotlin:kotlin-compiler-embeddable:1.4.32 (*)
+|    +--- org.jetbrains.kotlin:kotlin-android-extensions:1.4.32
+|    |    \--- org.jetbrains.kotlin:kotlin-compiler-embeddable:1.4.32 (*)
+|    +--- org.jetbrains.kotlin:kotlin-compiler-runner:1.4.32
+|    |    +--- org.jetbrains.kotlin:kotlin-build-common:1.4.32
+|    |    +--- org.jetbrains.kotlin:kotlin-daemon-client:1.4.32
+|    |    |    +--- org.jetbrains.kotlinx:kotlinx-coroutines-core:1.3.8 -> 1.4.2
+|    |    |    |    \--- org.jetbrains.kotlinx:kotlinx-coroutines-core-jvm:1.4.2
+|    |    |    |         +--- org.jetbrains.kotlin:kotlin-stdlib:1.4.0 -> 1.4.32 (*)
+|    |    |    |         \--- org.jetbrains.kotlin:kotlin-stdlib-common:1.4.0 -> 1.4.32
+|    |    |    \--- org.jetbrains.kotlin:kotlin-reflect:1.4.32 (*)
+|    |    +--- org.jetbrains.kotlinx:kotlinx-coroutines-core:1.3.8 -> 1.4.2 (*)
+|    |    \--- org.jetbrains.kotlin:kotlin-compiler-embeddable:1.4.32 (*)
+|    +--- org.jetbrains.kotlin:kotlin-scripting-compiler-embeddable:1.4.32
+|    |    +--- org.jetbrains.kotlin:kotlin-scripting-compiler-impl-embeddable:1.4.32
+|    |    |    +--- org.jetbrains.kotlin:kotlin-scripting-common:1.4.32
+|    |    |    |    +--- org.jetbrains.kotlin:kotlin-stdlib:1.4.32 (*)
+|    |    |    |    \--- org.jetbrains.kotlinx:kotlinx-coroutines-core:1.3.8 -> 1.4.2 (*)
+|    |    |    +--- org.jetbrains.kotlin:kotlin-scripting-jvm:1.4.32
+|    |    |    |    +--- org.jetbrains.kotlin:kotlin-script-runtime:1.4.32
+|    |    |    |    +--- org.jetbrains.kotlin:kotlin-stdlib:1.4.32 (*)
+|    |    |    |    \--- org.jetbrains.kotlin:kotlin-scripting-common:1.4.32 (*)
+|    |    |    +--- org.jetbrains.kotlin:kotlin-stdlib:1.4.32 (*)
+|    |    |    \--- org.jetbrains.kotlinx:kotlinx-coroutines-core:1.3.8 -> 1.4.2 (*)
+|    |    \--- org.jetbrains.kotlin:kotlin-stdlib:1.4.32 (*)
+|    +--- org.jetbrains.kotlin:kotlin-scripting-compiler-impl-embeddable:1.4.32 (*)
+|    \--- org.jetbrains.kotlin:kotlin-reflect:1.4.32 (*)
++--- org.jetbrains.kotlinx:kotlinx-coroutines-core:1.4.2 (*)
++--- com.squareup.sqldelight:gradle-plugin:1.4.4
+|    +--- com.squareup.sqldelight:core:1.4.4
+|    |    +--- com.squareup:kotlinpoet:1.5.0
+|    |    |    +--- org.jetbrains.kotlin:kotlin-stdlib-jdk8:1.3.61 -> 1.4.32 (*)
+|    |    |    \--- org.jetbrains.kotlin:kotlin-reflect:1.3.61 -> 1.4.32 (*)
+|    |    +--- org.xerial:sqlite-jdbc:3.21.0.1
+|    |    +--- com.alecstrong:sqlite-psi-core:0.3.10
+|    |    |    \--- org.jetbrains.kotlin:kotlin-stdlib-jdk8:1.3.72 -> 1.4.32 (*)
+|    |    \--- org.jetbrains.kotlin:kotlin-stdlib-jdk8:1.4.0 -> 1.4.32 (*)
+|    +--- com.squareup.sqldelight:migrations:1.4.4
+|    |    +--- org.xerial:sqlite-jdbc:3.21.0.1
+|    |    +--- de.danielbechler:java-object-diff:0.95
+|    |    |    \--- org.slf4j:slf4j-api:1.7.22 -> 1.8.0-alpha2
+|    |    +--- us.fatehi:schemacrawler-tools:14.16.04.01-java7
+|    |    |    \--- us.fatehi:schemacrawler-api:14.16.04.01-java7
+|    |    |         +--- org.threeten:threetenbp:1.3.3
+|    |    |         \--- com.annimon:stream:1.1.7
+|    |    +--- us.fatehi:schemacrawler-sqlite:14.16.04.01-java7
+|    |    |    +--- us.fatehi:schemacrawler-tools:14.16.04.01-java7 (*)
+|    |    |    \--- org.xerial:sqlite-jdbc:3.7.8 -> 3.21.0.1
+|    |    +--- com.alecstrong:sqlite-psi-core:0.3.10 (*)
+|    |    \--- org.jetbrains.kotlin:kotlin-stdlib-jdk8:1.4.0 -> 1.4.32 (*)
+|    +--- org.jetbrains.kotlin:kotlin-native-utils:1.4.0
+|    |    \--- org.jetbrains.kotlin:kotlin-util-io:1.4.0 -> 1.4.32 (*)
+|    +--- com.alecstrong:sqlite-psi-core:0.3.10 (*)
+|    +--- com.google.guava:guava:23.0 -> 28.1-jre (*)
+|    +--- org.jetbrains.kotlin:kotlin-gradle-plugin:1.4.0 -> 1.4.32 (*)
+|    \--- org.jetbrains.kotlin:kotlin-stdlib-jdk8:1.4.0 -> 1.4.32 (*)
++--- com.gradle.publish:plugin-publish-plugin:0.12.0
+|    \--- org.apache.maven:maven-model:3.0.4
++--- com.github.ben-manes:gradle-versions-plugin:0.33.0
+|    \--- com.thoughtworks.xstream:xstream:1.4.10
+|         +--- xmlpull:xmlpull:1.1.3.1
+|         \--- xpp3:xpp3_min:1.1.4c
++--- net.mbonnin.vespene:vespene-lib:0.5
+|    +--- com.squareup.okhttp3:okhttp:4.9.0 (*)
+|    +--- com.squareup.retrofit2:converter-moshi:2.9.0
+|    |    +--- com.squareup.retrofit2:retrofit:2.9.0
+|    |    |    \--- com.squareup.okhttp3:okhttp:3.14.9 -> 4.9.0 (*)
+|    |    \--- com.squareup.moshi:moshi:1.8.0 -> 1.11.0 (*)
+|    +--- org.bouncycastle:bcprov-jdk15on:1.64
+|    +--- org.bouncycastle:bcpg-jdk15on:1.64
+|    |    \--- org.bouncycastle:bcprov-jdk15on:1.64
+|    +--- com.squareup.moshi:moshi:1.11.0 (*)
+|    +--- org.jetbrains.kotlinx:kotlinx-coroutines-core:1.4.2 (*)
+|    +--- com.squareup.retrofit2:retrofit:2.9.0 (*)
+|    \--- org.jetbrains.kotlin:kotlin-stdlib-jdk8:1.4.30 -> 1.4.32 (*)
++--- com.github.jengelman.gradle.plugins:shadow:6.1.0
+|    +--- org.jdom:jdom2:2.0.6
+|    +--- org.ow2.asm:asm:9.0
+|    +--- org.ow2.asm:asm-commons:9.0 (*)
+|    +--- commons-io:commons-io:2.5 -> 2.6
+|    +--- org.apache.ant:ant:1.9.7
+|    |    \--- org.apache.ant:ant-launcher:1.9.7
+|    +--- org.codehaus.plexus:plexus-utils:3.0.24
+|    +--- org.apache.logging.log4j:log4j-core:2.13.3
+|    |    \--- org.apache.logging.log4j:log4j-api:2.13.3
+|    \--- org.vafer:jdependency:2.1.1
+|         \--- commons-io:commons-io:2.6
++--- com.google.devtools.ksp:symbol-processing-gradle-plugin:1.4.32-1.0.0-alpha07
+|    +--- org.jetbrains.kotlin:kotlin-gradle-plugin-api:1.4.32 (*)
+|    +--- org.jetbrains.kotlin:kotlin-gradle-plugin:1.4.32 (*)
+|    \--- org.jetbrains.kotlin:kotlin-stdlib-jdk8:1.4.32 (*)
+\--- org.jetbrains.kotlinx:atomicfu-gradle-plugin:0.15.1
+     +--- org.jetbrains.kotlinx:atomicfu-transformer:0.15.1
+     |    +--- org.jetbrains.kotlin:kotlin-stdlib:1.4.10 -> 1.4.32 (*)
+     |    +--- org.ow2.asm:asm:7.2 -> 9.0
+     |    +--- org.ow2.asm:asm-commons:7.2 -> 9.0 (*)
+     |    +--- org.ow2.asm:asm-tree:7.2 -> 9.0 (*)
+     |    +--- org.ow2.asm:asm-util:7.2 (*)
+     |    +--- org.slf4j:slf4j-api:1.8.0-alpha2
+     |    +--- org.mozilla:rhino:1.7.10
+     |    +--- org.jetbrains.kotlinx:kotlinx-metadata-jvm:0.1.0
+     |    |    \--- org.jetbrains.kotlin:kotlin-stdlib:1.3.31 -> 1.4.32 (*)
+     |    \--- org.slf4j:slf4j-simple:1.8.0-alpha2
+     |         \--- org.slf4j:slf4j-api:1.8.0-alpha2
+     \--- org.jetbrains.kotlin:kotlin-stdlib:1.4.10 -> 1.4.32 (*)
+
+testRuntimeOnly - Runtime only dependencies for compilation 'test' (target  (jvm)). (n)
+No dependencies
+
+testRuntimeOnlyDependenciesMetadata
+No dependencies
+
+(*) - dependencies omitted (listed previously)
+
+(n) - Not resolved (configuration is not meant to be resolved)
+
+A web-based, searchable dependency report is available by adding the --scan option.
+
+BUILD SUCCESSFUL in 809ms
+1 actionable task: 1 executed
