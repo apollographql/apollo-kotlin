@@ -42,10 +42,12 @@ class ApolloServerInterceptorTest {
       assertRequestBody(request)
       true
     }
-    val interceptor = ApolloServerInterceptor(serverUrl,
+    val interceptor = ApolloServerInterceptor(
+        serverUrl,
         AssertHttpCallFactory(requestAssertPredicate), null, false,
         ResponseAdapterCache.DEFAULT,
-        ApolloLogger(null))
+        ApolloLogger(null)
+    )
     interceptor.httpPostCall(query, CacheHeaders.NONE, RequestHeaders.NONE, true, false)
   }
 
@@ -54,6 +56,7 @@ class ApolloServerInterceptorTest {
   fun testCachedHttpCall() {
     val scalarTypeAdapters = ResponseAdapterCache.DEFAULT
     val cacheKey: String = ApolloServerInterceptor.cacheKey(query, scalarTypeAdapters)
+
     val requestAssertPredicate = Predicate<Request?> { request ->
       Truth.assertThat(request).isNotNull()
       assertDefaultRequestHeaders(request)
@@ -68,19 +71,23 @@ class ApolloServerInterceptorTest {
       assertRequestBody(request)
       true
     }
-    val interceptor = ApolloServerInterceptor(serverUrl,
+
+    val interceptor = ApolloServerInterceptor(
+        serverUrl,
         AssertHttpCallFactory(requestAssertPredicate),
         HttpCachePolicy.NETWORK_FIRST.expireAfter(10, TimeUnit.SECONDS),
         false,
         scalarTypeAdapters,
-        ApolloLogger(null))
+        ApolloLogger(null)
+    )
 
     interceptor.httpPostCall(
         operation = query,
         cacheHeaders = CacheHeaders.builder().addHeader(ApolloCacheHeaders.DO_NOT_STORE, "true").build(),
         requestHeaders = RequestHeaders.NONE,
         writeQueryDocument = true,
-        autoPersistQueries = false)
+        autoPersistQueries = false
+    )
   }
 
   @Test
@@ -140,7 +147,9 @@ class ApolloServerInterceptorTest {
       true
     }
     val interceptor = ApolloServerInterceptor(serverUrl,
-        AssertHttpCallFactory(requestAssertPredicate), null, false,
+        AssertHttpCallFactory(requestAssertPredicate),
+        null,
+        false,
         ResponseAdapterCache.DEFAULT,
         ApolloLogger(null))
     interceptor.httpGetCall(query, CacheHeaders.NONE, RequestHeaders.NONE, true, true)
@@ -148,7 +157,7 @@ class ApolloServerInterceptorTest {
 
   private fun assertDefaultRequestHeaders(request: Request?) {
     Truth.assertThat(request!!.header(ApolloServerInterceptor.HEADER_ACCEPT_TYPE)).isEqualTo(ApolloServerInterceptor.JSON_CONTENT_TYPE)
-    Truth.assertThat(request.header(ApolloServerInterceptor.HEADER_APOLLO_OPERATION_ID)).isEqualTo(query.document())
+    Truth.assertThat(request.header(ApolloServerInterceptor.HEADER_APOLLO_OPERATION_ID)).isEqualTo(query.id())
     Truth.assertThat(request.header(ApolloServerInterceptor.HEADER_APOLLO_OPERATION_NAME)).isEqualTo(query.name())
     Truth.assertThat(request.tag()).isEqualTo(query.id())
   }

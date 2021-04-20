@@ -8,14 +8,16 @@ import com.apollographql.apollo3.api.ResponseAdapterCache
 import com.apollographql.apollo3.api.json.JsonReader
 import com.apollographql.apollo3.api.json.JsonWriter
 import com.apollographql.apollo3.compiler.backend.codegen.Identifier
+import com.apollographql.apollo3.compiler.backend.codegen.Identifier.responseAdapterCache
+import com.apollographql.apollo3.compiler.backend.codegen.Identifier.toResponse
+import com.apollographql.apollo3.compiler.backend.codegen.Identifier.writer
 import com.apollographql.apollo3.compiler.unified.codegen.CgContext
-import com.apollographql.apollo3.compiler.unified.codegen.CgLayout
 import com.apollographql.apollo3.compiler.unified.codegen.helpers.NamedType
-import com.apollographql.apollo3.compiler.unified.codegen.helpers.adapterInitializer
 import com.squareup.kotlinpoet.ClassName
 import com.squareup.kotlinpoet.CodeBlock
 import com.squareup.kotlinpoet.FunSpec
 import com.squareup.kotlinpoet.KModifier
+import com.squareup.kotlinpoet.MemberName
 import com.squareup.kotlinpoet.ParameterizedTypeName.Companion.parameterizedBy
 import com.squareup.kotlinpoet.TypeName
 import com.squareup.kotlinpoet.TypeSpec
@@ -45,11 +47,11 @@ private fun notImplementedFromResponseFunSpec(adaptedTypeName: TypeName) = FunSp
 
 private fun List<NamedType>.writeToResponseFunSpec(
     context: CgContext,
-    adaptedTypeName: TypeName
+    adaptedTypeName: TypeName,
 ): FunSpec {
   return FunSpec.builder(Identifier.toResponse)
       .addModifiers(KModifier.OVERRIDE)
-      .addParameter(Identifier.writer, JsonWriter::class.asTypeName())
+      .addParameter(writer, JsonWriter::class.asTypeName())
       .addParameter(Identifier.responseAdapterCache, ResponseAdapterCache::class)
       .addParameter(Identifier.value, adaptedTypeName)
       .addCode(writeToResponseCodeBlock(context))
@@ -66,12 +68,20 @@ private fun List<NamedType>.writeToResponseCodeBlock(context: CgContext): CodeBl
 }
 
 private fun NamedType.writeToResponseCodeBlock(context: CgContext): CodeBlock {
-  return CodeBlock.builder().apply {
-    addStatement("${Identifier.writer}.name(%S)", graphQlName)
-    addStatement(
-        "%L.${Identifier.toResponse}(${Identifier.writer}, ${Identifier.responseAdapterCache}, value.${context.layout.propertyName(graphQlName)})",
-        adapterInitializer(context)
-    )
-  }.build()
+  var adapterInitializer = context.resolver.adapterInitializer(type)
+  val builder = CodeBlock.builder()
+
+  if (optional) {
+    val inputFun = MemberName("com.apollographql.apollo3.api", "input")
+    adapterInitializer = CodeBlock.of("%L.%M(%S)", adapterInitializer, inputFun, graphQlName)
+  } else {
+    builder.addStatement("$writer.name(%S)", graphQlName)
+  }
+  builder.addStatement(
+      "%L.$toResponse($writer, $responseAdapterCache, value.${context.layout.propertyName(graphQlName)})",
+      adapterInitializer
+  )
+
+  return builder.build()
 }
 

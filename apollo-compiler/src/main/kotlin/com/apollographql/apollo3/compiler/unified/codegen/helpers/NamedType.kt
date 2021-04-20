@@ -29,14 +29,6 @@ fun NamedType.typeName(context: CgContext): TypeName {
   }
 }
 
-fun NamedType.adapterInitializer(context: CgContext): CodeBlock {
-  return if (optional) {
-    val inputFun = MemberName("com.apollographql.apollo3.api", "input")
-    CodeBlock.of("%L.%M()", context.resolver.adapterInitializer(type), inputFun)
-  } else {
-    context.resolver.adapterInitializer(type)
-  }
-}
 
 internal fun NamedType.toParameterSpec(context: CgContext): ParameterSpec {
   return ParameterSpec
