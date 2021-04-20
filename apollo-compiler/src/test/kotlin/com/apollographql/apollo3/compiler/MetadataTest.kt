@@ -180,9 +180,6 @@ class MetadataTest {
     // Root generates the fragment
     rootSourcesDir.assertContents(
         "CharacterFragment.kt",
-        "CharacterFragmentImpl.kt",
-        "CharacterFragmentImpl_ResponseAdapter.kt",
-        "CharacterFragmentImpl_ResponseFields.kt",
         "CustomScalars.kt",
         "Episode.kt",
         "Episode_ResponseAdapter.kt"
@@ -228,9 +225,6 @@ class MetadataTest {
 
     rootSourcesDir.assertContents(
         "CharacterFragment.kt",
-        "CharacterFragmentImpl.kt",
-        "CharacterFragmentImpl_ResponseAdapter.kt",
-        "CharacterFragmentImpl_ResponseFields.kt",
         "CustomScalars.kt"
     )
 
@@ -241,9 +235,6 @@ class MetadataTest {
         "GetHeroQuery_ResponseAdapter.kt",
         "GetHeroQuery_ResponseFields.kt",
         "HumanFragment.kt",
-        "HumanFragmentImpl.kt",
-        "HumanFragmentImpl_ResponseAdapter.kt",
-        "HumanFragmentImpl_ResponseFields.kt"
     )
   }
 

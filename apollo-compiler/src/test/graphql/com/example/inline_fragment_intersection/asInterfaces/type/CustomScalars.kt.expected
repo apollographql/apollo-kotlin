@@ -17,5 +17,5 @@ object CustomScalars {
    * No mapping was registered for this custom scalar. Use the Gradle plugin [customScalarsMapping]
    * option to add one.
    */
-  val Long: CustomScalar = CustomScalar("Long", null)
+  val Long: CustomScalar = CustomScalar("Long", "kotlin.Any")
 }

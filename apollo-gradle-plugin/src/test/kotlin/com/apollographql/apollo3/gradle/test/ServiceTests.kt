@@ -11,6 +11,7 @@ import org.gradle.testkit.runner.TaskOutcome
 import org.gradle.testkit.runner.UnexpectedBuildFailure
 import org.hamcrest.CoreMatchers.containsString
 import org.junit.Assert.assertEquals
+import org.junit.Assert.assertFalse
 import org.junit.Assert.assertNotNull
 import org.junit.Assert.assertThat
 import org.junit.Assert.assertTrue
@@ -404,7 +405,7 @@ class ServiceTests {
   fun `when generateFragmentImplementations is not set, it defaults to false`() {
     withSimpleProject { dir ->
       TestUtils.executeTask("generateApolloSources", dir)
-      assertTrue(!dir.generatedChild("service/com/example/fragment/SpeciesInformationImpl.kt").exists())
+      assertFalse(dir.generatedChild("service/com/example/fragment/SpeciesInformationImpl.kt").exists())
     }
   }
 

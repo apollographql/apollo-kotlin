@@ -89,33 +89,35 @@ class KotlinCodeGenerator(
     }
 
     ir.fragments.forEach { fragment ->
-      if (fragment.variables.isNotEmpty()) {
-        builders.add(FragmentVariablesAdapterBuilder(context, fragment))
-        if (metadataFragmentNames.contains(fragment.name)) {
-          ignoredBuilders.add(builders.last())
-        }
-      }
-
-      builders.add(FragmentResponseFieldsBuilder(context, fragment))
-      if (metadataFragmentNames.contains(fragment.name)) {
-        ignoredBuilders.add(builders.last())
-      }
-      builders.add(FragmentResponseAdapterBuilder(context, fragment))
-      if (metadataFragmentNames.contains(fragment.name)) {
-        ignoredBuilders.add(builders.last())
-      }
-
       builders.add(FragmentInterfacesBuilder(context, fragment))
       if (metadataFragmentNames.contains(fragment.name)) {
         ignoredBuilders.add(builders.last())
       }
-      builders.add(FragmentBuilder(
-          context,
-          generateFilterNotNull,
-          fragment,
-      ))
-      if (metadataFragmentNames.contains(fragment.name)) {
-        ignoredBuilders.add(builders.last())
+
+      if (generateFragmentImplementations) {
+        builders.add(FragmentBuilder(
+            context,
+            generateFilterNotNull,
+            fragment,
+        ))
+        if (metadataFragmentNames.contains(fragment.name)) {
+          ignoredBuilders.add(builders.last())
+        }
+        if (fragment.variables.isNotEmpty()) {
+          builders.add(FragmentVariablesAdapterBuilder(context, fragment))
+          if (metadataFragmentNames.contains(fragment.name)) {
+            ignoredBuilders.add(builders.last())
+          }
+        }
+
+        builders.add(FragmentResponseFieldsBuilder(context, fragment))
+        if (metadataFragmentNames.contains(fragment.name)) {
+          ignoredBuilders.add(builders.last())
+        }
+        builders.add(FragmentResponseAdapterBuilder(context, fragment))
+        if (metadataFragmentNames.contains(fragment.name)) {
+          ignoredBuilders.add(builders.last())
+        }
       }
     }
     

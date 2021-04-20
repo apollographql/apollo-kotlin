@@ -22,7 +22,7 @@ internal object CustomScalars {
    * No mapping was registered for this custom scalar. Use the Gradle plugin [customScalarsMapping]
    * option to add one.
    */
-  val UnsupportedType: CustomScalar = CustomScalar("UnsupportedType", null)
+  val UnsupportedType: CustomScalar = CustomScalar("UnsupportedType", "kotlin.Any")
 
   /**
    * URL for testing
