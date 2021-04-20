@@ -3,7 +3,7 @@ import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 plugins {
   antlr
   kotlin("jvm")
-  kotlin("kapt")
+  id("com.google.devtools.ksp")
 }
 
 dependencies {
@@ -14,7 +14,7 @@ dependencies {
   implementation(groovy.util.Eval.x(project, "x.dep.poet.kotlin"))
   implementation(project(":apollo-api"))
 
-  kapt(groovy.util.Eval.x(project, "x.dep.moshi.kotlinCodegen"))
+  ksp(groovy.util.Eval.x(project, "x.dep.moshi.kotlinCodegen"))
 
   testImplementation(groovy.util.Eval.x(project, "x.dep.compiletesting"))
   testImplementation(groovy.util.Eval.x(project, "x.dep.kotlinCompileTesting"))
@@ -57,8 +57,12 @@ configure<org.jetbrains.kotlin.gradle.dsl.KotlinJvmProjectExtension> {
 }
 
 tasks.withType(KotlinCompile::class.java) {
-  // Fixes Task ':apollo-android:apollo-compiler:kaptGenerateStubsKotlin' uses the output of task ':apollo-android:apollo-compiler:pluginVersion', without declaring an explicit dependency
+  // Fixes the warning below:
+  // "Task ':apollo-android:apollo-compiler:kaptGenerateStubsKotlin' uses the output of task ':apollo-android:apollo-compiler:pluginVersion', without declaring an explicit dependency"
   dependsOn(pluginVersionTaskProvider)
+  // This used to work and fails now. Strangely enough, it fails on both `dev-3.x` and `main` as of writing while both these branches have
+  // compiled successfully before...
+  dependsOn("generateGrammarSource")
 }
 
 tasks.withType(KotlinCompile::class.java) {
