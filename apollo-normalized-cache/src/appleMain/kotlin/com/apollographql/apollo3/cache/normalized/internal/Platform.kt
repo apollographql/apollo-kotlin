@@ -17,7 +17,7 @@ actual class ReentrantReadWriteLock {
   internal val lock = reentrantLock()
 }
 
-internal actual inline fun <T> ReentrantReadWriteLock.read(action: () -> T): T {
+internal actual inline fun <T> ReentrantReadWriteLock.access(action: () -> T): T {
   return lock.withLock(action)
 }
 

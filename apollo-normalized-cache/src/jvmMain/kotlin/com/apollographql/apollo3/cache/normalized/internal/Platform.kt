@@ -12,7 +12,7 @@ internal actual object Platform {
 
 actual typealias ReentrantReadWriteLock = ReentrantReadWriteLock
 
-internal actual inline fun <T> ReentrantReadWriteLock.read(action: () -> T): T {
+internal actual inline fun <T> ReentrantReadWriteLock.access(action: () -> T): T {
   return this.read(action)
 }
 

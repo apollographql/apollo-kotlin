@@ -6,6 +6,6 @@ internal expect object Platform {
 
 expect class ReentrantReadWriteLock constructor()
 
-internal expect inline fun <T> ReentrantReadWriteLock.read(action: () -> T): T
+internal expect inline fun <T> ReentrantReadWriteLock.access(action: () -> T): T
 
 internal expect inline fun <T> ReentrantReadWriteLock.write(action: () -> T): T

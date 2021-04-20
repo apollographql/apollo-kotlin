@@ -12,31 +12,30 @@ import com.apollographql.apollo3.cache.normalized.CacheKeyResolver
 import com.apollographql.apollo3.cache.normalized.NormalizedCacheFactory
 import com.apollographql.apollo3.cache.normalized.Record
 import com.benasher44.uuid.Uuid
-import kotlinx.atomicfu.locks.reentrantLock
-import kotlinx.atomicfu.locks.withLock
 import kotlin.reflect.KClass
 
 class RealApolloStore(
     normalizedCacheFactory: NormalizedCacheFactory,
     private val cacheKeyResolver: CacheKeyResolver,
-    val logger: ApolloLogger = ApolloLogger(null)
+    val logger: ApolloLogger = ApolloLogger(null),
 ) : ApolloStore() {
-  private val subscribersLock = reentrantLock()
-  private val subscribers = mutableSetOf<RecordChangeSubscriber>()
+  private val subscribers = Guard("RealApolloStore") {
+    mutableSetOf<RecordChangeSubscriber>()
+  }
 
-  private val cacheHolder = DefaultCacheHolder {
+  private val cacheHolder = Guard("OptimisticCache") {
     OptimisticCache().chain(normalizedCacheFactory.createChain()) as OptimisticCache
   }
 
   override fun subscribe(subscriber: RecordChangeSubscriber) {
-    subscribersLock.withLock {
-      subscribers.add(subscriber)
+    subscribers.access {
+      it.add(subscriber)
     }
   }
 
   override fun unsubscribe(subscriber: RecordChangeSubscriber) {
-    subscribersLock.withLock {
-      subscribers.remove(subscriber)
+    subscribers.access {
+      it.remove(subscriber)
     }
   }
 
@@ -45,8 +44,8 @@ class RealApolloStore(
       return
     }
 
-    val subscribers = subscribersLock.withLock {
-      subscribers.toList()
+    val subscribers = subscribers.access {
+      it.toList()
     }
 
     subscribers.forEach { subscriber ->
@@ -63,18 +62,18 @@ class RealApolloStore(
 
   override suspend fun remove(
       cacheKey: CacheKey,
-      cascade: Boolean
+      cascade: Boolean,
   ): Boolean {
-    return cacheHolder.write {
+    return cacheHolder.access {
       it.remove(cacheKey, cascade)
     }
   }
 
   override suspend fun remove(
       cacheKeys: List<CacheKey>,
-      cascade: Boolean
+      cascade: Boolean,
   ): Int {
-    return cacheHolder.write {
+    return cacheHolder.access {
       var count = 0
       for (cacheKey in cacheKeys) {
         if (it.remove(cacheKey, cascade = cascade)) {
@@ -91,7 +90,7 @@ class RealApolloStore(
       cacheHeaders: CacheHeaders,
       mode: ReadMode,
   ): D? {
-    return cacheHolder.read { cache ->
+    return cacheHolder.access { cache ->
       try {
         operation.readDataFromCache(
             responseAdapterCache = responseAdapterCache,
@@ -113,7 +112,7 @@ class RealApolloStore(
       responseAdapterCache: ResponseAdapterCache,
       cacheHeaders: CacheHeaders,
   ): D? {
-    return cacheHolder.read { cache ->
+    return cacheHolder.access { cache ->
       try {
         fragment.readDataFromCache(
             responseAdapterCache = responseAdapterCache,
@@ -158,7 +157,7 @@ class RealApolloStore(
       "ApolloGraphQL: writing a fragment requires a valid cache key"
     }
 
-    return cacheHolder.write { cache ->
+    return cacheHolder.access { cache ->
       val records = fragment.normalize(
           data = fragmentData,
           responseAdapterCache = responseAdapterCache,
@@ -182,7 +181,7 @@ class RealApolloStore(
       publish: Boolean,
       responseAdapterCache: ResponseAdapterCache,
   ): Pair<Set<Record>, Set<String>> {
-    val (records, changedKeys) = cacheHolder.write { cache ->
+    val (records, changedKeys) = cacheHolder.access { cache ->
       val records = operation.normalize(
           data = operationData,
           responseAdapterCache = responseAdapterCache,
@@ -205,7 +204,7 @@ class RealApolloStore(
       responseAdapterCache: ResponseAdapterCache,
       publish: Boolean,
   ): Set<String> {
-    val changedKeys = cacheHolder.write { cache ->
+    val changedKeys = cacheHolder.access { cache ->
       val records = operation.normalize(
           data = operationData,
           responseAdapterCache = responseAdapterCache,
@@ -233,9 +232,9 @@ class RealApolloStore(
 
   override suspend fun rollbackOptimisticUpdates(
       mutationId: Uuid,
-      publish: Boolean
+      publish: Boolean,
   ): Set<String> {
-    val changedKeys = cacheHolder.write { cache ->
+    val changedKeys = cacheHolder.access { cache ->
       cache.removeOptimisticUpdates(mutationId)
     }
 
@@ -247,13 +246,13 @@ class RealApolloStore(
   }
 
   suspend fun merge(record: Record, cacheHeaders: CacheHeaders): Set<String> {
-    return cacheHolder.write { cache ->
+    return cacheHolder.access { cache ->
       cache.merge(record, cacheHeaders)
     }
   }
 
   override suspend fun dump(): Map<KClass<*>, Map<String, Record>> {
-    return cacheHolder.read { cache ->
+    return cacheHolder.access { cache ->
       cache.dump()
     }
   }
@@ -261,5 +260,5 @@ class RealApolloStore(
 
 fun ApolloStore(
     normalizedCacheFactory: NormalizedCacheFactory,
-    cacheKeyResolver: CacheKeyResolver
+    cacheKeyResolver: CacheKeyResolver,
 ): ApolloStore = RealApolloStore(normalizedCacheFactory, cacheKeyResolver)
