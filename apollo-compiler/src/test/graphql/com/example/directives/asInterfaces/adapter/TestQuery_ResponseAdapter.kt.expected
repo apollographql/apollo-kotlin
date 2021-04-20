@@ -6,9 +6,9 @@
 package com.example.directives.adapter
 
 import com.apollographql.apollo3.api.NullableIntResponseAdapter
+import com.apollographql.apollo3.api.NullableStringResponseAdapter
 import com.apollographql.apollo3.api.ResponseAdapter
 import com.apollographql.apollo3.api.ResponseAdapterCache
-import com.apollographql.apollo3.api.StringResponseAdapter
 import com.apollographql.apollo3.api.json.JsonReader
 import com.apollographql.apollo3.api.json.JsonWriter
 import com.apollographql.apollo3.api.nullable
@@ -54,15 +54,15 @@ object TestQuery_ResponseAdapter {
         var friendsConnection: TestQuery.Data.Hero.FriendsConnection? = null
         while(true) {
           when (reader.selectName(RESPONSE_NAMES)) {
-            0 -> name = StringResponseAdapter.fromResponse(reader, responseAdapterCache)
-            1 -> friendsConnection = FriendsConnection.obj().fromResponse(reader,
+            0 -> name = NullableStringResponseAdapter.fromResponse(reader, responseAdapterCache)
+            1 -> friendsConnection = FriendsConnection.obj().nullable().fromResponse(reader,
                 responseAdapterCache)
             else -> break
           }
         }
         return TestQuery.Data.Hero(
-          name = name!!,
-          friendsConnection = friendsConnection!!
+          name = name,
+          friendsConnection = friendsConnection
         )
       }
 
@@ -72,9 +72,10 @@ object TestQuery_ResponseAdapter {
         value: TestQuery.Data.Hero
       ) {
         writer.name("name")
-        StringResponseAdapter.toResponse(writer, responseAdapterCache, value.name)
+        NullableStringResponseAdapter.toResponse(writer, responseAdapterCache, value.name)
         writer.name("friendsConnection")
-        FriendsConnection.obj().toResponse(writer, responseAdapterCache, value.friendsConnection)
+        FriendsConnection.obj().nullable().toResponse(writer, responseAdapterCache,
+            value.friendsConnection)
       }
 
       object FriendsConnection : ResponseAdapter<TestQuery.Data.Hero.FriendsConnection> {

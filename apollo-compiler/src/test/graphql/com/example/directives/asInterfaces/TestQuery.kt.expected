@@ -47,11 +47,11 @@ data class TestQuery(
       /**
        * The name of the character
        */
-      val name: String,
+      val name: String?,
       /**
        * The friends of the character exposed as a connection with edges
        */
-      val friendsConnection: FriendsConnection
+      val friendsConnection: FriendsConnection?
     ) {
       data class FriendsConnection(
         /**

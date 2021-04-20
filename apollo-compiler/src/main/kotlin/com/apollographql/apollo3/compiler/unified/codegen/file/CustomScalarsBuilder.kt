@@ -53,6 +53,12 @@ class CustomScalarsBuilder(
         .addKdoc("Auto generated constants for custom scalars. Use them to register your [ResponseAdapter]s")
         .addProperties(
             map {
+              /**
+               * Custom Scalars without a mapping will generate code using [AnyResponseAdapter] directly
+               * so the fallback isn't really required here. We still write it as a way to hint the user
+               * to what's happening behind the scenes
+               */
+              val kotlinName = it.kotlinName ?: "kotlin.Any"
               PropertySpec
                   .builder(layout.customScalarName(it.name), CustomScalar::class)
                   .maybeAddDescription(it.description)
@@ -60,7 +66,7 @@ class CustomScalarsBuilder(
                   .applyIf(it.kotlinName == null) {
                     addKdoc("\n\nNo mapping was registered for this custom scalar. Use the Gradle plugin [customScalarsMapping] option to add one.")
                   }
-                  .initializer("%T(%S, %S)", CustomScalar::class.asTypeName(), it.name, it.kotlinName)
+                  .initializer("%T(%S, %S)", CustomScalar::class.asTypeName(), it.name, kotlinName)
                   .build()
             }
         )

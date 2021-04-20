@@ -3,11 +3,14 @@ package com.apollographql.apollo3.compiler
 import com.apollographql.apollo3.api.QueryDocumentMinifier
 import com.apollographql.apollo3.compiler.frontend.GQLFragmentDefinition
 import com.apollographql.apollo3.compiler.frontend.GQLOperationDefinition
+import com.apollographql.apollo3.compiler.frontend.GQLScalarTypeDefinition
+import com.apollographql.apollo3.compiler.frontend.GQLTypeDefinition
 import com.apollographql.apollo3.compiler.frontend.GraphQLParser
 import com.apollographql.apollo3.compiler.frontend.Issue
 import com.apollographql.apollo3.compiler.frontend.Schema
 import com.apollographql.apollo3.compiler.frontend.SourceAwareException
 import com.apollographql.apollo3.compiler.frontend.withTypenameWhenNeeded
+import com.apollographql.apollo3.compiler.introspection.IntrospectionSchema
 import com.apollographql.apollo3.compiler.operationoutput.OperationDescriptor
 import com.apollographql.apollo3.compiler.operationoutput.toJson
 import com.apollographql.apollo3.compiler.unified.ir.IrBuilder
@@ -26,9 +29,10 @@ class GraphQLCompiler {
       incomingOptions: IncomingOptions,
       moduleOptions: ModuleOptions,
   ) {
+    checkCustomScalars(incomingOptions)
+
     outputDir.deleteRecursively()
     outputDir.mkdirs()
-
 
     val (documents, issues) = GraphQLParser.parseExecutableFiles(
         operationFiles,
@@ -104,6 +108,7 @@ class GraphQLCompiler {
       } else {
         incomingOptions.schema
       }
+
       ApolloMetadata(
           schema = schema,
           customScalarsMapping = incomingOptions.customScalarsMapping,
@@ -115,6 +120,25 @@ class GraphQLCompiler {
           pluginVersion = VERSION,
           schemaPackageName = incomingOptions.schemaPackageName
       ).writeTo(moduleOptions.metadataOutputFile)
+    }
+  }
+
+  private fun checkCustomScalars(incomingOptions: IncomingOptions) {
+    /**
+     * Generate the mapping for all custom scalars
+     *
+     * If the user specified a mapping, use it, else fallback to [Any]
+     */
+    val schemaScalars = incomingOptions.schema
+        .typeDefinitions
+        .values
+        .filterIsInstance<GQLScalarTypeDefinition>()
+        .filter { !it.isBuiltIn() }
+        .map { type -> type.name }
+        .toSet()
+    val unknownScalars = incomingOptions.customScalarsMapping.keys.subtract(schemaScalars)
+    check(unknownScalars.isEmpty()) {
+      "ApolloGraphQL: unknown custom scalar(s): ${unknownScalars.joinToString(",")}"
     }
   }
 
