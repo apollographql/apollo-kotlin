@@ -35,8 +35,6 @@ class ApolloExceptionTest {
     }
 
     override fun serializeVariables(writer: JsonWriter, responseAdapterCache: ResponseAdapterCache) {
-      writer.beginObject()
-      writer.endObject()
     }
 
     override fun adapter() = throw UnsupportedOperationException()
