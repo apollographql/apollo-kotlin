@@ -1,4 +1,4 @@
-package com.apollographql.apollo3.compiler.unified.ir
+package com.apollographql.apollo3.api
 
 /**
  * A condition.

@@ -4,7 +4,7 @@ import com.apollographql.apollo3.api.ResponseField
 import com.apollographql.apollo3.api.Variable
 import com.apollographql.apollo3.compiler.backend.codegen.Identifier
 import com.apollographql.apollo3.compiler.unified.codegen.CgLayout.Companion.modelName
-import com.apollographql.apollo3.compiler.unified.ir.BooleanExpression
+import com.apollographql.apollo3.api.BooleanExpression
 import com.apollographql.apollo3.compiler.unified.ir.IrArgument
 import com.apollographql.apollo3.compiler.unified.ir.IrBooleanValue
 import com.apollographql.apollo3.compiler.unified.ir.IrEnumValue
@@ -204,9 +204,8 @@ class ResponseFieldsBuilder(
       builder.add("arguments = %L,\n", info.arguments.codeBlock())
     }
 
-    @Suppress("ControlFlowWithEmptyBody")
     if (condition != BooleanExpression.True) {
-      // TODO builder.add("conditions = %L,\n", conditionsListCode(conditions))
+      builder.add("condition = %L,\n", condition.codeBlock())
     }
     if (possibleFieldSets().isNotEmpty()) {
       builder.add("fieldSets = %L,\n", fieldSetsCodeBlock(this))
@@ -218,3 +217,24 @@ class ResponseFieldsBuilder(
   }
 }
 
+private fun BooleanExpression.codeBlock(): CodeBlock {
+  return when(this) {
+    is BooleanExpression.False -> CodeBlock.of("%T", BooleanExpression.False::class.asTypeName())
+    is BooleanExpression.True -> CodeBlock.of("%T", BooleanExpression.True::class.asTypeName())
+    is BooleanExpression.And -> {
+      val parameters = booleanExpressions.map {
+        it.codeBlock()
+      }.joinToCode(",")
+      CodeBlock.of("%T(setOf(%L))", BooleanExpression.And::class.asTypeName(), parameters)
+    }
+    is BooleanExpression.Or -> {
+      val parameters = booleanExpressions.map {
+        it.codeBlock()
+      }.joinToCode(",")
+      CodeBlock.of("%T(setOf(%L))", BooleanExpression.Or::class.asTypeName(), parameters)
+    }
+    is BooleanExpression.Not -> CodeBlock.of("%T(%L)", BooleanExpression.Not::class.asTypeName(), booleanExpression.codeBlock())
+    is BooleanExpression.Type -> CodeBlock.of("%T(%S)", BooleanExpression.Type::class.asTypeName(), name)
+    is BooleanExpression.Variable -> CodeBlock.of("%T(%S)", BooleanExpression.Variable::class.asTypeName(), name)
+  }
+}

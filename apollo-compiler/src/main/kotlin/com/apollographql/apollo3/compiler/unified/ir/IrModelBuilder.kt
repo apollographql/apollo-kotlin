@@ -1,5 +1,6 @@
 package com.apollographql.apollo3.compiler.unified.ir
 
+import com.apollographql.apollo3.api.BooleanExpression
 import com.apollographql.apollo3.compiler.unified.codegen.CgLayout.Companion.modelName
 import com.apollographql.apollo3.compiler.unified.codegen.CgLayout.Companion.upperCamelCaseIgnoringNonLetters
 
@@ -438,8 +439,16 @@ private fun FieldSetNode.toIrModel(parentFieldNode: FieldNode): IrModel {
 }
 
 private fun FieldNode.toIrProperty(): IrProperty {
+  var type = info.type
+  if (condition != BooleanExpression.True) {
+    // Consecutive IrNonNullType are most likely an error at this point but do not fail if
+    // that happens
+    while (type is IrNonNullType) {
+      type = type.ofType
+    }
+  }
   return IrProperty(
-      info = info,
+      info = info.copy(type = type),
       override = override,
       condition = condition
   )

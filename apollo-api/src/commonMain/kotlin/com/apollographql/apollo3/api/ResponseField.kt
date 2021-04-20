@@ -17,7 +17,7 @@ class ResponseField(
     val fieldName: String,
     val responseName: String = fieldName,
     val arguments: Map<String, Any?> = emptyMap(),
-    val conditions: List<Condition> = emptyList(),
+    val condition: BooleanExpression = BooleanExpression.True,
     val fieldSets: List<FieldSet> = emptyList(),
 ) {
 
@@ -59,28 +59,6 @@ class ResponseField(
       class Other(name: String): Named(name)
     }
   }
-  /**
-   * Abstraction for condition to be associated with field
-   */
-  open class Condition internal constructor() {
-    companion object {
-      /**
-       * Creates new [BooleanCondition] for provided [variableName].
-       */
-      @JvmStatic
-      fun booleanCondition(variableName: String, inverted: Boolean): BooleanCondition {
-        return BooleanCondition(variableName, inverted)
-      }
-    }
-  }
-
-  /**
-   * Abstraction for boolean condition
-   */
-  data class BooleanCondition internal constructor(
-      val variableName: String,
-      val isInverted: Boolean
-  ) : Condition()
 
   companion object {
     /**
@@ -92,7 +70,7 @@ class ResponseField(
         responseName = "__typename",
         fieldName = "__typename",
         arguments = emptyMap(),
-        conditions = emptyList(),
+        condition = BooleanExpression.True,
         fieldSets = emptyList(),
     )
   }

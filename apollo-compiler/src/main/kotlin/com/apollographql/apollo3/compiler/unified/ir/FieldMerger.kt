@@ -1,5 +1,6 @@
 package com.apollographql.apollo3.compiler.unified.ir
 
+import com.apollographql.apollo3.api.BooleanExpression
 import com.apollographql.apollo3.compiler.frontend.GQLField
 import com.apollographql.apollo3.compiler.frontend.GQLSelection
 

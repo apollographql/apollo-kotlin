@@ -1,5 +1,6 @@
 package com.apollographql.apollo3.compiler.unified.ir
 
+import com.apollographql.apollo3.api.BooleanExpression
 import com.apollographql.apollo3.compiler.MetadataFragment
 import com.apollographql.apollo3.compiler.frontend.GQLArgument
 import com.apollographql.apollo3.compiler.frontend.GQLBooleanValue
@@ -382,7 +383,7 @@ class IrBuilder(
 
       MergedField(
           info = info,
-          condition = BooleanExpression.Or(fieldsWithSameResponseName.map { it.condition }.toSet()),
+          condition = BooleanExpression.Or(fieldsWithSameResponseName.map { it.condition }.toSet()).simplify(),
           selections = childSelections,
       )
     }

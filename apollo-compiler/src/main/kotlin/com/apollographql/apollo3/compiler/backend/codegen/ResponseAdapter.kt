@@ -251,7 +251,7 @@ private fun conditionsListCode(conditions: Set<CodeGenerationAst.Field.Condition
       .map { condition ->
         when (condition) {
           is CodeGenerationAst.Field.Condition.Directive -> CodeBlock.of("%T.booleanCondition(%S,·%L)",
-              ResponseField.Condition::class, condition.variableName.escapeKotlinReservedWord(), condition.inverted)
+              ResponseField::class, condition.variableName.escapeKotlinReservedWord(), condition.inverted)
         }
       }
       .joinToCode(separator = ",\n")
