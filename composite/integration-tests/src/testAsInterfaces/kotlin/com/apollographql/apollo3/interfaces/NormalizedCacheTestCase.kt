@@ -500,7 +500,7 @@ class NormalizedCacheTestCase {
       assertThat(response.isFromCache).isTrue()
       assertThat(response.data?.character!!.name).isEqualTo("Leia Organa")
     }
-    Truth.assertThat(apolloClient.apolloStore.remove(listOf(from("1002"), from("1000")))).isEqualTo(2)
+    assertThat(apolloClient.apolloStore.remove(listOf(from("1002"), from("1000")))).isEqualTo(2)
     assertResponse(
         apolloClient.query(CharacterNameByIdQuery("1000")).responseFetcher(ApolloResponseFetchers.CACHE_ONLY)
     ) { response ->
