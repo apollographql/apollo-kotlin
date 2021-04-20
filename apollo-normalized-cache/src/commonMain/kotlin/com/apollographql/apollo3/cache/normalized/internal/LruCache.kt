@@ -1,7 +1,5 @@
 package com.apollographql.apollo3.cache.normalized.internal
 
-import kotlinx.atomicfu.locks.reentrantLock
-import kotlinx.atomicfu.locks.withLock
 
 internal typealias Weigher<Key, Value> = (Key, Value?) -> Int
 
@@ -15,8 +13,6 @@ internal typealias Weigher<Key, Value> = (Key, Value?) -> Int
  * [weigher] - to be called to calculate the estimated size (weight) of the cache entry defined by its [Key] and [Value].
  *             By default it returns 1.
  *
- * This implementation is thread safe guaranteed by global lock used for both read / write operations.
- *
  * Cache trim performed only on new entry insertion.
  */
 internal class LruCache<Key, Value>(
@@ -26,21 +22,17 @@ internal class LruCache<Key, Value>(
   private val cache = LinkedHashMap<Key, Node<Key, Value>>(0, 0.75f)
   private var headNode: Node<Key, Value>? = null
   private var tailNode: Node<Key, Value>? = null
-  private val lock = reentrantLock()
   private var size: Int = 0
 
   operator fun get(key: Key): Value? {
-    return lock.withLock {
-      val node = cache[key]
-      if (node != null) {
-        moveNodeToHead(node)
-      }
-      node?.value
+    val node = cache[key]
+    if (node != null) {
+      moveNodeToHead(node)
     }
+    return node?.value
   }
 
   operator fun set(key: Key, value: Value) {
-    lock.withLock {
       val node = cache[key]
       if (node == null) {
         cache[key] = addNode(key, value)
@@ -50,13 +42,10 @@ internal class LruCache<Key, Value>(
       }
 
       trim()
-    }
   }
 
   fun remove(key: Key): Value? {
-    return lock.withLock {
-      removeUnsafe(key)
-    }
+    return removeUnsafe(key)
   }
 
   private fun removeUnsafe(key: Key): Value? {
@@ -69,30 +58,22 @@ internal class LruCache<Key, Value>(
   }
 
   fun remove(keys: Collection<Key>) {
-    lock.withLock {
-      keys.forEach { key -> removeUnsafe(key) }
-    }
+    keys.forEach { key -> removeUnsafe(key) }
   }
 
   fun clear() {
-    lock.withLock {
-      cache.clear()
-      headNode = null
-      tailNode = null
-      size = 0
-    }
+    cache.clear()
+    headNode = null
+    tailNode = null
+    size = 0
   }
 
   fun size(): Int {
-    return lock.withLock {
-      size
-    }
+    return size
   }
 
   fun dump(): Map<Key, Value> {
-    return lock.withLock {
-      cache.mapValues { (_, value) -> value.value as Value }
-    }
+    return cache.mapValues { (_, value) -> value.value as Value }
   }
 
   private fun trim() {
