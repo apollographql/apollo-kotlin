@@ -4,7 +4,7 @@ import com.apollographql.apollo3.compiler.PackageNameProvider
 import com.apollographql.apollo3.compiler.VERSION
 import com.apollographql.apollo3.compiler.operationoutput.OperationOutput
 import com.apollographql.apollo3.compiler.operationoutput.findOperationId
-import com.apollographql.apollo3.compiler.unified.codegen.file.CustomScalarsBuilder
+import com.apollographql.apollo3.compiler.unified.codegen.file.SchemaBuilder
 import com.apollographql.apollo3.compiler.unified.codegen.file.EnumBuilder
 import com.apollographql.apollo3.compiler.unified.codegen.adapter.EnumResponseAdapterBuilder
 import com.apollographql.apollo3.compiler.unified.codegen.file.FragmentBuilder
@@ -32,7 +32,7 @@ class KotlinCodeGenerator(
     private val packageNameProvider: PackageNameProvider,
     private val typePackageName: String,
     private val operationOutput: OperationOutput,
-    private val generateCustomScalars: Boolean,
+    private val generateSchema: Boolean,
     private val generateFilterNotNull: Boolean,
     private val generateFragmentImplementations: Boolean,
     private val generateResponseFields: Boolean,
@@ -54,12 +54,15 @@ class KotlinCodeGenerator(
     val ignoredBuilders = mutableListOf<CgFileBuilder>()
     val metadataFragmentNames = ir.metadataFragments.map { it.name }.toSet()
 
-    val customScalarsBuilder = CustomScalarsBuilder(
+    val customScalarsBuilder = SchemaBuilder(
         context,
-        ir.customScalars
+        ir.customScalars,
+        ir.objects,
+        ir.interfaces,
+        ir.unions
     )
 
-    if (generateCustomScalars
+    if (generateSchema
         && ir.customScalars.isNotEmpty()
         && !ir.metadataSchema
     ) {
