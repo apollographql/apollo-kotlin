@@ -108,6 +108,10 @@ abstract class ApolloGenerateSourcesTask : DefaultTask() {
   @get:OutputDirectory
   abstract val outputDir: DirectoryProperty
 
+  @get:OutputDirectory
+  @get:Optional
+  abstract val debugDir: DirectoryProperty
+
   @get:Input
   @get:Optional
   abstract val generateAsInternal: Property<Boolean>
@@ -192,6 +196,7 @@ abstract class ApolloGenerateSourcesTask : DefaultTask() {
     GraphQLCompiler().write(
         operationFiles = graphqlFiles.files,
         outputDir = outputDir.asFile.get(),
+        debugDir = debugDir.asFile.orNull,
         incomingOptions = incomingOptions,
         moduleOptions = moduleOptions,
     )

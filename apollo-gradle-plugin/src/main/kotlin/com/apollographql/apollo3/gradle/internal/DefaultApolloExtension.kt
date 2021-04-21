@@ -300,6 +300,10 @@ abstract class DefaultApolloExtension(private val project: Project, private val 
         set(BuildDirLayout.sources(project, service))
         disallowChanges()
       }
+      task.debugDir.apply {
+        set(service.debugDir)
+        disallowChanges()
+      }
       if (service.operationOutputAction != null) {
         task.operationOutputFile.apply {
           set(BuildDirLayout.operationOuput(project, service))

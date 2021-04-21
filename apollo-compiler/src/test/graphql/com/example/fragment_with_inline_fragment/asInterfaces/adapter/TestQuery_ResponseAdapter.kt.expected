@@ -90,9 +90,9 @@ object TestQuery_ResponseAdapter {
       fun fromResponse(
         reader: JsonReader,
         responseAdapterCache: ResponseAdapterCache,
-        __typename: String
+        typename: String
       ): TestQuery.Data.HumanHero {
-        var __typename: String? = __typename
+        var __typename: String? = typename
         var name: String? = null
         var friendsConnection: TestQuery.Data.HumanHero.FriendsConnection? = null
         var appearsIn: List<Episode?>? = null
@@ -229,9 +229,9 @@ object TestQuery_ResponseAdapter {
       fun fromResponse(
         reader: JsonReader,
         responseAdapterCache: ResponseAdapterCache,
-        __typename: String
+        typename: String
       ): TestQuery.Data.DroidHero {
-        var __typename: String? = __typename
+        var __typename: String? = typename
         var name: String? = null
         var primaryFunction: String? = null
         var friendsConnection: TestQuery.Data.DroidHero.FriendsConnection? = null
@@ -375,9 +375,9 @@ object TestQuery_ResponseAdapter {
       fun fromResponse(
         reader: JsonReader,
         responseAdapterCache: ResponseAdapterCache,
-        __typename: String
+        typename: String
       ): TestQuery.Data.OtherHero {
-        var __typename: String? = __typename
+        var __typename: String? = typename
         var name: String? = null
         var friendsConnection: TestQuery.Data.OtherHero.FriendsConnection? = null
         var appearsIn: List<Episode?>? = null

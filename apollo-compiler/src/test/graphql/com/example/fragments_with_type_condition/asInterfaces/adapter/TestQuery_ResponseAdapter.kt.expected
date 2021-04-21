@@ -91,9 +91,9 @@ object TestQuery_ResponseAdapter {
       fun fromResponse(
         reader: JsonReader,
         responseAdapterCache: ResponseAdapterCache,
-        __typename: String
+        typename: String
       ): TestQuery.Data.HumanR2 {
-        var __typename: String? = __typename
+        var __typename: String? = typename
         var name: String? = null
         var height: Double? = null
         while(true) {
@@ -131,9 +131,9 @@ object TestQuery_ResponseAdapter {
       fun fromResponse(
         reader: JsonReader,
         responseAdapterCache: ResponseAdapterCache,
-        __typename: String
+        typename: String
       ): TestQuery.Data.DroidR2 {
-        var __typename: String? = __typename
+        var __typename: String? = typename
         var name: String? = null
         var primaryFunction: String? = null
         while(true) {
@@ -173,9 +173,9 @@ object TestQuery_ResponseAdapter {
       fun fromResponse(
         reader: JsonReader,
         responseAdapterCache: ResponseAdapterCache,
-        __typename: String
+        typename: String
       ): TestQuery.Data.OtherR2 {
-        var __typename: String? = __typename
+        var __typename: String? = typename
         while(true) {
           when (reader.selectName(RESPONSE_NAMES)) {
             0 -> __typename = StringResponseAdapter.fromResponse(reader, responseAdapterCache)
@@ -237,9 +237,9 @@ object TestQuery_ResponseAdapter {
       fun fromResponse(
         reader: JsonReader,
         responseAdapterCache: ResponseAdapterCache,
-        __typename: String
+        typename: String
       ): TestQuery.Data.HumanLuke {
-        var __typename: String? = __typename
+        var __typename: String? = typename
         var name: String? = null
         var height: Double? = null
         while(true) {
@@ -277,9 +277,9 @@ object TestQuery_ResponseAdapter {
       fun fromResponse(
         reader: JsonReader,
         responseAdapterCache: ResponseAdapterCache,
-        __typename: String
+        typename: String
       ): TestQuery.Data.DroidLuke {
-        var __typename: String? = __typename
+        var __typename: String? = typename
         var name: String? = null
         var primaryFunction: String? = null
         while(true) {
@@ -319,9 +319,9 @@ object TestQuery_ResponseAdapter {
       fun fromResponse(
         reader: JsonReader,
         responseAdapterCache: ResponseAdapterCache,
-        __typename: String
+        typename: String
       ): TestQuery.Data.OtherLuke {
-        var __typename: String? = __typename
+        var __typename: String? = typename
         while(true) {
           when (reader.selectName(RESPONSE_NAMES)) {
             0 -> __typename = StringResponseAdapter.fromResponse(reader, responseAdapterCache)

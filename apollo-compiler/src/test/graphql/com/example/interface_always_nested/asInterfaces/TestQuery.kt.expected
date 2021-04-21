@@ -44,8 +44,6 @@ class TestQuery : Query<TestQuery.Data> {
         fun Root.asA() = this as? ARoot
 
         fun Root.asAB() = this as? ABRoot
-
-        fun Root.asB() = this as? BRoot
       }
     }
 
@@ -55,15 +53,11 @@ class TestQuery : Query<TestQuery.Data> {
       val fieldA1: String?
     }
 
-    interface BRoot : Root {
-      override val __typename: String
-    }
-
     data class ABRoot(
       override val __typename: String,
       override val fieldA1: String?,
       val fieldB1: String?
-    ) : ARoot, BRoot
+    ) : ARoot
 
     data class OtherRoot(
       override val __typename: String
@@ -73,10 +67,6 @@ class TestQuery : Query<TestQuery.Data> {
       override val __typename: String,
       override val fieldA1: String?
     ) : ARoot
-
-    data class OtherBRoot(
-      override val __typename: String
-    ) : BRoot
   }
 
   companion object {

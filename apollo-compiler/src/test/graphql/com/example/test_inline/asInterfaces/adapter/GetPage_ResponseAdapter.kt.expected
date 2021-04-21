@@ -82,9 +82,9 @@ object GetPage_ResponseAdapter {
       fun fromResponse(
         reader: JsonReader,
         responseAdapterCache: ResponseAdapterCache,
-        __typename: String
+        typename: String
       ): GetPage.Data.ParticularCollectionCollection {
-        var __typename: String? = __typename
+        var __typename: String? = typename
         var items: List<GetPage.Data.ParticularCollectionCollection.Item>? = null
         while(true) {
           when (reader.selectName(RESPONSE_NAMES)) {
@@ -149,10 +149,10 @@ object GetPage_ResponseAdapter {
         fun fromResponse(
           reader: JsonReader,
           responseAdapterCache: ResponseAdapterCache,
-          __typename: String
+          typename: String
         ): GetPage.Data.ParticularCollectionCollection.ParticularItemItem {
           var title: String? = null
-          var __typename: String? = __typename
+          var __typename: String? = typename
           var image: String? = null
           while(true) {
             when (reader.selectName(RESPONSE_NAMES)) {
@@ -189,10 +189,10 @@ object GetPage_ResponseAdapter {
         fun fromResponse(
           reader: JsonReader,
           responseAdapterCache: ResponseAdapterCache,
-          __typename: String
+          typename: String
         ): GetPage.Data.ParticularCollectionCollection.OtherItem {
           var title: String? = null
-          var __typename: String? = __typename
+          var __typename: String? = typename
           while(true) {
             when (reader.selectName(RESPONSE_NAMES)) {
               0 -> title = StringResponseAdapter.fromResponse(reader, responseAdapterCache)
@@ -225,9 +225,9 @@ object GetPage_ResponseAdapter {
       fun fromResponse(
         reader: JsonReader,
         responseAdapterCache: ResponseAdapterCache,
-        __typename: String
+        typename: String
       ): GetPage.Data.OtherCollection {
-        var __typename: String? = __typename
+        var __typename: String? = typename
         var items: List<GetPage.Data.OtherCollection.Item>? = null
         while(true) {
           when (reader.selectName(RESPONSE_NAMES)) {

@@ -304,6 +304,7 @@ private class FieldNodeBuilder(
     val isOther = entry.isOther
     val isInterface = entry.isInterface
     val fieldSet = entry.fieldSet
+
     val superTypeSets = if (isOther) {
       setOf(typeSet)
     } else {

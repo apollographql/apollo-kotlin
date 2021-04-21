@@ -123,9 +123,9 @@ object GetHuman_ResponseAdapter {
       fun fromResponse(
         reader: JsonReader,
         responseAdapterCache: ResponseAdapterCache,
-        __typename: String
+        typename: String
       ): GetHuman.Data.HumanNode {
-        var __typename: String? = __typename
+        var __typename: String? = typename
         var height: Double? = null
         while(true) {
           when (reader.selectName(RESPONSE_NAMES)) {
@@ -158,9 +158,9 @@ object GetHuman_ResponseAdapter {
       fun fromResponse(
         reader: JsonReader,
         responseAdapterCache: ResponseAdapterCache,
-        __typename: String
+        typename: String
       ): GetHuman.Data.OtherNode {
-        var __typename: String? = __typename
+        var __typename: String? = typename
         while(true) {
           when (reader.selectName(RESPONSE_NAMES)) {
             0 -> __typename = StringResponseAdapter.fromResponse(reader, responseAdapterCache)

@@ -89,9 +89,9 @@ object TestQuery_ResponseAdapter {
       fun fromResponse(
         reader: JsonReader,
         responseAdapterCache: ResponseAdapterCache,
-        __typename: String
+        typename: String
       ): TestQuery.Data.HumanHero {
-        var __typename: String? = __typename
+        var __typename: String? = typename
         var name: String? = null
         var height: Double? = null
         var friends: List<TestQuery.Data.HumanHero.Friend?>? = null
@@ -165,9 +165,9 @@ object TestQuery_ResponseAdapter {
       fun fromResponse(
         reader: JsonReader,
         responseAdapterCache: ResponseAdapterCache,
-        __typename: String
+        typename: String
       ): TestQuery.Data.DroidHero {
-        var __typename: String? = __typename
+        var __typename: String? = typename
         var name: String? = null
         var primaryFunction: String? = null
         var friends: List<TestQuery.Data.DroidHero.Friend?>? = null
@@ -241,9 +241,9 @@ object TestQuery_ResponseAdapter {
       fun fromResponse(
         reader: JsonReader,
         responseAdapterCache: ResponseAdapterCache,
-        __typename: String
+        typename: String
       ): TestQuery.Data.OtherHero {
-        var __typename: String? = __typename
+        var __typename: String? = typename
         var name: String? = null
         while(true) {
           when (reader.selectName(RESPONSE_NAMES)) {

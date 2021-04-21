@@ -6,7 +6,9 @@ import com.apollographql.apollo3.compiler.frontend.GQLFragmentDefinition
 import com.apollographql.apollo3.compiler.frontend.GQLFragmentSpread
 import com.apollographql.apollo3.compiler.frontend.GQLInlineFragment
 import com.apollographql.apollo3.compiler.frontend.GQLSelection
+import com.apollographql.apollo3.compiler.frontend.GQLTypeDefinition
 import com.apollographql.apollo3.compiler.frontend.Schema
+import com.apollographql.apollo3.compiler.frontend.possibleTypes
 
 /**
  * For a list of selections collect all the typeConditions.
@@ -71,6 +73,8 @@ class IrRootFieldBuilder(
     }.toSet()
   }
 
+  data class Shape(val typeSet: TypeSet, val schemaPossibleTypes: PossibleTypes, val actualPossibleTypes: PossibleTypes)
+
   private fun buildField(
       info: IrFieldInfo,
       condition: BooleanExpression,
@@ -87,17 +91,62 @@ class IrRootFieldBuilder(
 
     val rawTypeName = info.rawTypeName
     val userTypeSets = selections.collectUserTypeSets(setOf(rawTypeName)).distinct().toSet()
-    val typeConditions = userTypeSets.union()
 
-    val shapeTypeSetToPossibleTypes = computeShapes(schema, rawTypeName, typeConditions)
-    val shapeTypeSets = shapeTypeSetToPossibleTypes.keys
+    val typeConditionToPossibleTypes = userTypeSets.union().map {
+      it to schema.typeDefinition(it).possibleTypes(schema)
+    }.toMap()
 
-    val fieldSets = (userTypeSets + shapeTypeSets).map { typeSet ->
+    val shapes = userTypeSets.map {
+      Shape(
+          it,
+          it.map { typeConditionToPossibleTypes[it]!! }.intersection(),
+          emptySet()
+      )
+    }.toMutableList()
+
+    schema.typeDefinitions.values.filterIsInstance<GQLTypeDefinition>().forEach { objectTypeDefinition ->
+      val concreteType = objectTypeDefinition.name
+      val superShapes = mutableListOf<Shape>()
+      shapes.forEachIndexed { index, shape ->
+        if (shapes[index].schemaPossibleTypes.contains(concreteType)) {
+          superShapes.add(shape)
+        }
+      }
+
+      if(superShapes.isEmpty()) {
+        // This type will not be included in this query
+        return@forEach
+      }
+
+      /**
+       * This type will fall in the bucket that has all the typeConditions. It might be that we have to create a new bucket
+       * if two leaf fragments point to the same type
+       */
+      val bucketTypeSet = superShapes.fold(emptySet<String>()) { acc, shape ->
+        acc.union(shape.typeSet)
+      }
+
+      val index = shapes.indexOfFirst { it.typeSet == bucketTypeSet }
+      if (index < 0) {
+        shapes.add(
+            Shape(
+                bucketTypeSet,
+                bucketTypeSet.map { typeConditionToPossibleTypes[it]!! }.intersection(),
+                setOf(concreteType)
+            )
+        )
+      } else {
+        val existingShape = shapes[index]
+        shapes[index] = existingShape.copy(actualPossibleTypes = existingShape.actualPossibleTypes + concreteType)
+      }
+    }
+
+    val fieldSets = shapes.map { shape ->
       buildFieldSet(
           selections = selections,
           rawTypeName = rawTypeName,
-          typeSet = typeSet,
-          possibleTypes = shapeTypeSetToPossibleTypes[typeSet] ?: emptySet(),
+          typeSet = shape.typeSet,
+          possibleTypes = shape.actualPossibleTypes,
       )
     }
 

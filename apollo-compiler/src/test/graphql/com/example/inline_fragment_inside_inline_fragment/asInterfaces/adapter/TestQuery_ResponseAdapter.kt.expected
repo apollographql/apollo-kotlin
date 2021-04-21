@@ -90,9 +90,9 @@ object TestQuery_ResponseAdapter {
       fun fromResponse(
         reader: JsonReader,
         responseAdapterCache: ResponseAdapterCache,
-        __typename: String
+        typename: String
       ): TestQuery.Data.CharacterHumanSearch {
-        var __typename: String? = __typename
+        var __typename: String? = typename
         var name: String? = null
         var homePlanet: String? = null
         while(true) {
@@ -131,9 +131,9 @@ object TestQuery_ResponseAdapter {
       fun fromResponse(
         reader: JsonReader,
         responseAdapterCache: ResponseAdapterCache,
-        __typename: String
+        typename: String
       ): TestQuery.Data.CharacterDroidSearch {
-        var __typename: String? = __typename
+        var __typename: String? = typename
         var name: String? = null
         var primaryFunction: String? = null
         while(true) {
@@ -173,9 +173,9 @@ object TestQuery_ResponseAdapter {
       fun fromResponse(
         reader: JsonReader,
         responseAdapterCache: ResponseAdapterCache,
-        __typename: String
+        typename: String
       ): TestQuery.Data.OtherSearch {
-        var __typename: String? = __typename
+        var __typename: String? = typename
         while(true) {
           when (reader.selectName(RESPONSE_NAMES)) {
             0 -> __typename = StringResponseAdapter.fromResponse(reader, responseAdapterCache)

@@ -83,9 +83,9 @@ object TestQuery_ResponseAdapter {
       fun fromResponse(
         reader: JsonReader,
         responseAdapterCache: ResponseAdapterCache,
-        __typename: String
+        typename: String
       ): TestQuery.Data.Impl1Iface1 {
-        var __typename: String? = __typename
+        var __typename: String? = typename
         var iface2: TestQuery.Data.Impl1Iface1.Iface2? = null
         while(true) {
           when (reader.selectName(RESPONSE_NAMES)) {
@@ -151,9 +151,9 @@ object TestQuery_ResponseAdapter {
         fun fromResponse(
           reader: JsonReader,
           responseAdapterCache: ResponseAdapterCache,
-          __typename: String
+          typename: String
         ): TestQuery.Data.Impl1Iface1.Impl2Iface2 {
-          var __typename: String? = __typename
+          var __typename: String? = typename
           var scalar1: String? = null
           var scalar2: String? = null
           var scalar3: String? = null
@@ -205,9 +205,9 @@ object TestQuery_ResponseAdapter {
         fun fromResponse(
           reader: JsonReader,
           responseAdapterCache: ResponseAdapterCache,
-          __typename: String
+          typename: String
         ): TestQuery.Data.Impl1Iface1.OtherIface2 {
-          var __typename: String? = __typename
+          var __typename: String? = typename
           var scalar1: String? = null
           var scalar3: String? = null
           while(true) {
@@ -248,9 +248,9 @@ object TestQuery_ResponseAdapter {
       fun fromResponse(
         reader: JsonReader,
         responseAdapterCache: ResponseAdapterCache,
-        __typename: String
+        typename: String
       ): TestQuery.Data.OtherIface1 {
-        var __typename: String? = __typename
+        var __typename: String? = typename
         var iface2: TestQuery.Data.OtherIface1.Iface2? = null
         while(true) {
           when (reader.selectName(RESPONSE_NAMES)) {
@@ -315,9 +315,9 @@ object TestQuery_ResponseAdapter {
         fun fromResponse(
           reader: JsonReader,
           responseAdapterCache: ResponseAdapterCache,
-          __typename: String
+          typename: String
         ): TestQuery.Data.OtherIface1.Impl2Iface2 {
-          var __typename: String? = __typename
+          var __typename: String? = typename
           var scalar1: String? = null
           var scalar2: String? = null
           while(true) {
@@ -357,9 +357,9 @@ object TestQuery_ResponseAdapter {
         fun fromResponse(
           reader: JsonReader,
           responseAdapterCache: ResponseAdapterCache,
-          __typename: String
+          typename: String
         ): TestQuery.Data.OtherIface1.OtherIface2 {
-          var __typename: String? = __typename
+          var __typename: String? = typename
           var scalar1: String? = null
           while(true) {
             when (reader.selectName(RESPONSE_NAMES)) {

@@ -5,6 +5,7 @@ import com.apollographql.apollo3.compiler.OperationOutputGenerator
 import org.gradle.api.Action
 import org.gradle.api.Task
 import org.gradle.api.file.Directory
+import org.gradle.api.file.DirectoryProperty
 import org.gradle.api.file.RegularFile
 import org.gradle.api.file.RegularFileProperty
 import org.gradle.api.file.SourceDirectorySet
@@ -247,4 +248,6 @@ interface Service {
        */
       val outputDir: Provider<Directory>
   )
+
+  val debugDir: DirectoryProperty
 }

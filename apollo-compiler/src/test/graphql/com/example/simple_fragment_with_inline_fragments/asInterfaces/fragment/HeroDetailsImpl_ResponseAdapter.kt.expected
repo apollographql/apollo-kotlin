@@ -101,9 +101,9 @@ object HeroDetailsImpl_ResponseAdapter {
       fun fromResponse(
         reader: JsonReader,
         responseAdapterCache: ResponseAdapterCache,
-        __typename: String
+        typename: String
       ): HeroDetailsImpl.Data.HumanFriend {
-        var __typename: String? = __typename
+        var __typename: String? = typename
         var name: String? = null
         var height: Double? = null
         while(true) {
@@ -141,9 +141,9 @@ object HeroDetailsImpl_ResponseAdapter {
       fun fromResponse(
         reader: JsonReader,
         responseAdapterCache: ResponseAdapterCache,
-        __typename: String
+        typename: String
       ): HeroDetailsImpl.Data.DroidFriend {
-        var __typename: String? = __typename
+        var __typename: String? = typename
         var name: String? = null
         var primaryFunction: String? = null
         while(true) {
@@ -183,9 +183,9 @@ object HeroDetailsImpl_ResponseAdapter {
       fun fromResponse(
         reader: JsonReader,
         responseAdapterCache: ResponseAdapterCache,
-        __typename: String
+        typename: String
       ): HeroDetailsImpl.Data.OtherFriend {
-        var __typename: String? = __typename
+        var __typename: String? = typename
         var name: String? = null
         while(true) {
           when (reader.selectName(RESPONSE_NAMES)) {
