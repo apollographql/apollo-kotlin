@@ -14,15 +14,19 @@ import platform.posix.ftell
 import platform.posix.rewind
 
 actual fun fixtureResponse(name: String): String {
-  val file = fopen("./integration-tests/src/test/resources/$name", "r")
+  val file = fopen("../integration-tests/testFixtures/$name", "r")
 
-    fseek(file, 0, SEEK_END)
-    val size = ftell(file)
-    rewind(file)
+  check (file != null) {
+    "Cannot open fixture $name"
+  }
 
-    return memScoped {
-      val tmp = allocArray<ByteVar>(size)
-      fread(tmp, sizeOf<ByteVar>().convert(), size.convert(), file)
-      tmp.toKString()
-    }
+  fseek(file, 0, SEEK_END)
+  val size = ftell(file)
+  rewind(file)
+
+  return memScoped {
+    val tmp = allocArray<ByteVar>(size)
+    fread(tmp, sizeOf<ByteVar>().convert(), size.convert(), file)
+    tmp.toKString()
+  }
 }
