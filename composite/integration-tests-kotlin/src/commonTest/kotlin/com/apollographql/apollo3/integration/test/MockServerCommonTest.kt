@@ -1,7 +1,6 @@
 package com.apollographql.apollo3.integration.test
 
-import com.apollographql.apollo3.integration.parseHeader
-import com.apollographql.apollo3.integration.readRequest
+import com.apollographql.apollo3.integration.mockserver.readRequest
 import okio.Buffer
 import kotlin.test.Test
 import kotlin.test.assertEquals

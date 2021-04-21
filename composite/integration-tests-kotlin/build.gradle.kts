@@ -6,10 +6,14 @@ plugins {
   kotlin("multiplatform")
 }
 
-configureMppDefaults(withJs = false)
 
 kotlin {
+  jvm()
+  macosX64("apple")
+
   sourceSets {
+
+    addTestDependencies(false)
 
     val commonTest by getting {
       dependencies {

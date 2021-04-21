@@ -1,4 +1,4 @@
-package com.apollographql.apollo3.integration
+package com.apollographql.apollo3.integration.mockserver
 
 /**
  * From org.jetbrains.kotlinx:atomicfu:0.15.1
@@ -8,7 +8,7 @@ import interop.*
 import kotlinx.cinterop.*
 import kotlin.native.concurrent.*
 import kotlin.native.internal.NativePtr
-import com.apollographql.apollo3.integration.SynchronizedObject.Status.*
+import com.apollographql.apollo3.integration.mockserver.SynchronizedObject.Status.*
 
 class SynchronizedObject {
 

@@ -15,7 +15,7 @@ import platform.posix.rewind
 
 actual fun fixtureResponse(name: String): String {
   val file = fopen("../integration-tests/testFixtures/$name", "r")
-
+  println("cwd is ${cwd()}")
   check (file != null) {
     "Cannot open fixture $name"
   }
