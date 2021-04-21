@@ -92,9 +92,9 @@ object HeroDetailQuery_ResponseAdapter {
       fun fromResponse(
         reader: JsonReader,
         responseAdapterCache: ResponseAdapterCache,
-        __typename: String
+        typename: String
       ): com.example.unique_type_name.HeroDetailQuery.Data.HumanHeroDetailQuery {
-        var __typename: String? = __typename
+        var __typename: String? = typename
         var name: String? = null
         var friends: List<com.example.unique_type_name.HeroDetailQuery.Data.HumanHeroDetailQuery.Friend?>? = null
         var height: Double? = null
@@ -321,9 +321,9 @@ object HeroDetailQuery_ResponseAdapter {
       fun fromResponse(
         reader: JsonReader,
         responseAdapterCache: ResponseAdapterCache,
-        __typename: String
+        typename: String
       ): com.example.unique_type_name.HeroDetailQuery.Data.OtherHeroDetailQuery {
-        var __typename: String? = __typename
+        var __typename: String? = typename
         var name: String? = null
         var friends: List<com.example.unique_type_name.HeroDetailQuery.Data.OtherHeroDetailQuery.Friend?>? = null
         while(true) {

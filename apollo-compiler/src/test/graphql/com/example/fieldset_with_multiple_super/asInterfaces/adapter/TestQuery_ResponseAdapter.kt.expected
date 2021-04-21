@@ -88,9 +88,9 @@ object TestQuery_ResponseAdapter {
       fun fromResponse(
         reader: JsonReader,
         responseAdapterCache: ResponseAdapterCache,
-        __typename: String
+        typename: String
       ): TestQuery.Data.ABC {
-        var __typename: String? = __typename
+        var __typename: String? = typename
         var fieldA1: String? = null
         var fieldB1: String? = null
         var fieldB2: String? = null
@@ -138,9 +138,9 @@ object TestQuery_ResponseAdapter {
       fun fromResponse(
         reader: JsonReader,
         responseAdapterCache: ResponseAdapterCache,
-        __typename: String
+        typename: String
       ): TestQuery.Data.OtherC {
-        var __typename: String? = __typename
+        var __typename: String? = typename
         while(true) {
           when (reader.selectName(RESPONSE_NAMES)) {
             0 -> __typename = StringResponseAdapter.fromResponse(reader, responseAdapterCache)
@@ -168,9 +168,9 @@ object TestQuery_ResponseAdapter {
       fun fromResponse(
         reader: JsonReader,
         responseAdapterCache: ResponseAdapterCache,
-        __typename: String
+        typename: String
       ): TestQuery.Data.OtherAC {
-        var __typename: String? = __typename
+        var __typename: String? = typename
         var fieldA1: String? = null
         while(true) {
           when (reader.selectName(RESPONSE_NAMES)) {
@@ -203,9 +203,9 @@ object TestQuery_ResponseAdapter {
       fun fromResponse(
         reader: JsonReader,
         responseAdapterCache: ResponseAdapterCache,
-        __typename: String
+        typename: String
       ): TestQuery.Data.OtherBC {
-        var __typename: String? = __typename
+        var __typename: String? = typename
         var fieldB2: String? = null
         while(true) {
           when (reader.selectName(RESPONSE_NAMES)) {

@@ -47,10 +47,10 @@ class ImplementationAdapterBuilder(
         .returns(adaptedClassName)
         .addParameter(Identifier.reader, JsonReader::class)
         .addParameter(Identifier.responseAdapterCache, ResponseAdapterCache::class)
-        .addParameter(Identifier.__typename, String::class)
+        .addParameter(Identifier.typename, String::class)
         .addCode(readFromResponseCodeBlock(model, context) {
           if (it == "__typename") {
-            Identifier.__typename
+            Identifier.typename
           } else {
             "null"
           }

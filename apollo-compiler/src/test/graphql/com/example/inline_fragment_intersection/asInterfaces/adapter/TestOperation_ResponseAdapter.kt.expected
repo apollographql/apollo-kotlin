@@ -94,9 +94,9 @@ object TestOperation_ResponseAdapter {
       fun fromResponse(
         reader: JsonReader,
         responseAdapterCache: ResponseAdapterCache,
-        __typename: String
+        typename: String
       ): TestOperation.Data.BeingHumanRandom {
-        var __typename: String? = __typename
+        var __typename: String? = typename
         var name: String? = null
         var friends: List<TestOperation.Data.BeingHumanRandom.Friend>? = null
         var profilePictureUrl: String? = null
@@ -174,9 +174,9 @@ object TestOperation_ResponseAdapter {
         fun fromResponse(
           reader: JsonReader,
           responseAdapterCache: ResponseAdapterCache,
-          __typename: String
+          typename: String
         ): TestOperation.Data.BeingHumanRandom.WookieFriend {
-          var __typename: String? = __typename
+          var __typename: String? = typename
           var name: String? = null
           var lifeExpectancy: Double? = null
           var isFamous: Boolean? = null
@@ -227,9 +227,9 @@ object TestOperation_ResponseAdapter {
         fun fromResponse(
           reader: JsonReader,
           responseAdapterCache: ResponseAdapterCache,
-          __typename: String
+          typename: String
         ): TestOperation.Data.BeingHumanRandom.OtherFriend {
-          var __typename: String? = __typename
+          var __typename: String? = typename
           var name: String? = null
           var isFamous: Boolean? = null
           while(true) {
@@ -269,9 +269,9 @@ object TestOperation_ResponseAdapter {
       fun fromResponse(
         reader: JsonReader,
         responseAdapterCache: ResponseAdapterCache,
-        __typename: String
+        typename: String
       ): TestOperation.Data.BeingWookieRandom {
-        var __typename: String? = __typename
+        var __typename: String? = typename
         var name: String? = null
         var friends: List<TestOperation.Data.BeingWookieRandom.Friend>? = null
         var race: Race? = null
@@ -346,9 +346,9 @@ object TestOperation_ResponseAdapter {
         fun fromResponse(
           reader: JsonReader,
           responseAdapterCache: ResponseAdapterCache,
-          __typename: String
+          typename: String
         ): TestOperation.Data.BeingWookieRandom.WookieFriend {
-          var __typename: String? = __typename
+          var __typename: String? = typename
           var name: String? = null
           var lifeExpectancy: Double? = null
           while(true) {
@@ -388,9 +388,9 @@ object TestOperation_ResponseAdapter {
         fun fromResponse(
           reader: JsonReader,
           responseAdapterCache: ResponseAdapterCache,
-          __typename: String
+          typename: String
         ): TestOperation.Data.BeingWookieRandom.OtherFriend {
-          var __typename: String? = __typename
+          var __typename: String? = typename
           var name: String? = null
           var lifeExpectancy: Double? = null
           while(true) {
@@ -431,9 +431,9 @@ object TestOperation_ResponseAdapter {
       fun fromResponse(
         reader: JsonReader,
         responseAdapterCache: ResponseAdapterCache,
-        __typename: String
+        typename: String
       ): TestOperation.Data.OtherRandom {
-        var __typename: String? = __typename
+        var __typename: String? = typename
         while(true) {
           when (reader.selectName(RESPONSE_NAMES)) {
             0 -> __typename = StringResponseAdapter.fromResponse(reader, responseAdapterCache)

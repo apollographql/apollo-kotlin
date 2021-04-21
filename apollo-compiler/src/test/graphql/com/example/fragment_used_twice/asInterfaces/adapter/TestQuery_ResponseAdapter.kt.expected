@@ -82,9 +82,9 @@ object TestQuery_ResponseAdapter {
       fun fromResponse(
         reader: JsonReader,
         responseAdapterCache: ResponseAdapterCache,
-        __typename: String
+        typename: String
       ): TestQuery.Data.HumanHero {
-        var __typename: String? = __typename
+        var __typename: String? = typename
         var name: String? = null
         var birthDate: Any? = null
         while(true) {
@@ -122,9 +122,9 @@ object TestQuery_ResponseAdapter {
       fun fromResponse(
         reader: JsonReader,
         responseAdapterCache: ResponseAdapterCache,
-        __typename: String
+        typename: String
       ): TestQuery.Data.OtherHero {
-        var __typename: String? = __typename
+        var __typename: String? = typename
         var name: String? = null
         var birthDate: Any? = null
         while(true) {

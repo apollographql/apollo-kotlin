@@ -93,9 +93,9 @@ object TestQuery_ResponseAdapter {
       fun fromResponse(
         reader: JsonReader,
         responseAdapterCache: ResponseAdapterCache,
-        __typename: String
+        typename: String
       ): TestQuery.Data.CharacterSearch {
-        var __typename: String? = __typename
+        var __typename: String? = typename
         var id: String? = null
         var name: String? = null
         var friends: List<TestQuery.Data.CharacterSearch.Friend?>? = null
@@ -176,9 +176,9 @@ object TestQuery_ResponseAdapter {
         fun fromResponse(
           reader: JsonReader,
           responseAdapterCache: ResponseAdapterCache,
-          __typename: String
+          typename: String
         ): TestQuery.Data.CharacterSearch.HumanFriend {
-          var __typename: String? = __typename
+          var __typename: String? = typename
           var name: String? = null
           var homePlanet: String? = null
           var friends: List<TestQuery.Data.CharacterSearch.HumanFriend.Friend?>? = null
@@ -258,9 +258,9 @@ object TestQuery_ResponseAdapter {
         fun fromResponse(
           reader: JsonReader,
           responseAdapterCache: ResponseAdapterCache,
-          __typename: String
+          typename: String
         ): TestQuery.Data.CharacterSearch.DroidFriend {
-          var __typename: String? = __typename
+          var __typename: String? = typename
           var name: String? = null
           var primaryFunction: String? = null
           var friends: List<TestQuery.Data.CharacterSearch.DroidFriend.Friend?>? = null
@@ -334,9 +334,9 @@ object TestQuery_ResponseAdapter {
         fun fromResponse(
           reader: JsonReader,
           responseAdapterCache: ResponseAdapterCache,
-          __typename: String
+          typename: String
         ): TestQuery.Data.CharacterSearch.OtherFriend {
-          var __typename: String? = __typename
+          var __typename: String? = typename
           var name: String? = null
           while(true) {
             when (reader.selectName(RESPONSE_NAMES)) {
@@ -370,9 +370,9 @@ object TestQuery_ResponseAdapter {
       fun fromResponse(
         reader: JsonReader,
         responseAdapterCache: ResponseAdapterCache,
-        __typename: String
+        typename: String
       ): TestQuery.Data.StarshipSearch {
-        var __typename: String? = __typename
+        var __typename: String? = typename
         var name: String? = null
         while(true) {
           when (reader.selectName(RESPONSE_NAMES)) {
@@ -405,9 +405,9 @@ object TestQuery_ResponseAdapter {
       fun fromResponse(
         reader: JsonReader,
         responseAdapterCache: ResponseAdapterCache,
-        __typename: String
+        typename: String
       ): TestQuery.Data.OtherSearch {
-        var __typename: String? = __typename
+        var __typename: String? = typename
         while(true) {
           when (reader.selectName(RESPONSE_NAMES)) {
             0 -> __typename = StringResponseAdapter.fromResponse(reader, responseAdapterCache)

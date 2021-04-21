@@ -52,9 +52,9 @@ object IFragmentImpl_ResponseAdapter {
     fun fromResponse(
       reader: JsonReader,
       responseAdapterCache: ResponseAdapterCache,
-      __typename: String
+      typename: String
     ): IFragmentImpl.AData {
-      var __typename: String? = __typename
+      var __typename: String? = typename
       var fieldA: String? = null
       while(true) {
         when (reader.selectName(RESPONSE_NAMES)) {
@@ -87,9 +87,9 @@ object IFragmentImpl_ResponseAdapter {
     fun fromResponse(
       reader: JsonReader,
       responseAdapterCache: ResponseAdapterCache,
-      __typename: String
+      typename: String
     ): IFragmentImpl.OtherData {
-      var __typename: String? = __typename
+      var __typename: String? = typename
       while(true) {
         when (reader.selectName(RESPONSE_NAMES)) {
           0 -> __typename = StringResponseAdapter.fromResponse(reader, responseAdapterCache)
