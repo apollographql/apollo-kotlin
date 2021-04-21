@@ -68,10 +68,10 @@ class OptimisticCacheTestCase {
     val data = HeroAndFriendsNamesQuery.Data(HeroAndFriendsNamesQuery.Data.Hero(
         "R222-D222",
         listOf(
-            HeroAndFriendsNamesQuery.Data.Hero.Friends(
+            HeroAndFriendsNamesQuery.Data.Hero.Friend(
                 "SuperMan"
             ),
-            HeroAndFriendsNamesQuery.Data.Hero.Friends(
+            HeroAndFriendsNamesQuery.Data.Hero.Friend(
                 "Batman"
             )
         )
@@ -120,11 +120,11 @@ class OptimisticCacheTestCase {
             "2001",
             "R222-D222",
             listOf(
-                HeroAndFriendsNamesWithIDsQuery.Data.Hero.Friends(
+                HeroAndFriendsNamesWithIDsQuery.Data.Hero.Friend(
                     "1000",
                     "SuperMan"
                 ),
-                HeroAndFriendsNamesWithIDsQuery.Data.Hero.Friends(
+                HeroAndFriendsNamesWithIDsQuery.Data.Hero.Friend(
                     "1003",
                     "Batman"
                 )
@@ -363,11 +363,11 @@ class OptimisticCacheTestCase {
             "2001",
             "R222-D222",
             listOf(
-                HeroAndFriendsNamesWithIDsQuery.Data.Hero.Friends(
+                HeroAndFriendsNamesWithIDsQuery.Data.Hero.Friend(
                     "1000",
                     "Robocop"
                 ),
-                HeroAndFriendsNamesWithIDsQuery.Data.Hero.Friends(
+                HeroAndFriendsNamesWithIDsQuery.Data.Hero.Friend(
                     "1003",
                     "Batman"
                 )

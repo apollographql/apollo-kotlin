@@ -30,13 +30,11 @@ class ApolloExceptionTest {
   private val emptyQuery = object : Query<Query.Data> {
     var operationName: String = "emptyQuery"
 
-    override fun queryDocument(): String {
+    override fun document(): String {
       return ""
     }
 
     override fun serializeVariables(writer: JsonWriter, responseAdapterCache: ResponseAdapterCache) {
-      writer.beginObject()
-      writer.endObject()
     }
 
     override fun adapter() = throw UnsupportedOperationException()
@@ -45,7 +43,7 @@ class ApolloExceptionTest {
       return operationName
     }
 
-    override fun operationId(): String {
+    override fun id(): String {
       return ""
     }
 

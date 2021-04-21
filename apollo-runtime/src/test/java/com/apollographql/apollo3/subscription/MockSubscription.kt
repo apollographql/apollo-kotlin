@@ -6,6 +6,7 @@ import com.apollographql.apollo3.api.ResponseField
 import com.apollographql.apollo3.api.Subscription
 import com.apollographql.apollo3.api.AnyResponseAdapter
 import com.apollographql.apollo3.api.json.JsonWriter
+import com.apollographql.apollo3.api.nullable
 
 class MockSubscription(
     private val queryDocument: String = "subscription{commentAdded{id  name}",
@@ -13,17 +14,20 @@ class MockSubscription(
     private val name: String = "SomeSubscription",
     private val operationId: String = "someId"
 ) : Subscription<Subscription.Data> {
-  override fun queryDocument(): String = queryDocument
+  override fun document(): String = queryDocument
 
   override fun serializeVariables(writer: JsonWriter, responseAdapterCache: ResponseAdapterCache) {
-    AnyResponseAdapter.toResponse(writer, variables)
+    variables.forEach {
+      writer.name(it.key)
+      AnyResponseAdapter.nullable().toResponse(writer, responseAdapterCache, it.value)
+    }
   }
 
   override fun adapter() = throw UnsupportedOperationException()
 
   override fun name(): String = name
 
-  override fun operationId(): String = operationId
+  override fun id(): String = operationId
   override fun responseFields(): List<ResponseField.FieldSet> {
     return emptyList()
   }

@@ -144,13 +144,11 @@ class ApolloIdlingResourceTest {
     private const val TIME_OUT_SECONDS: Long = 3
     private const val IDLING_RESOURCE_NAME = "apolloIdlingResource"
     private val EMPTY_QUERY: Query<Query.Data> = object : Query<Query.Data> {
-      override fun queryDocument(): String {
+      override fun document(): String {
         return ""
       }
 
       override fun serializeVariables(writer: JsonWriter, responseAdapterCache: ResponseAdapterCache) {
-        writer.beginObject()
-        writer.endObject()
       }
 
       override fun adapter(): ResponseAdapter<Query.Data> {
@@ -170,7 +168,7 @@ class ApolloIdlingResourceTest {
 
       override fun name(): String = "EmptyQuery"
 
-      override fun operationId(): String {
+      override fun id(): String {
         return ""
       }
       override fun responseFields(): List<ResponseField.FieldSet> {

@@ -8,6 +8,7 @@ import com.apollographql.apollo3.api.AnyResponseAdapter
 import com.apollographql.apollo3.api.ResponseAdapter
 import com.apollographql.apollo3.api.json.JsonReader
 import com.apollographql.apollo3.api.json.JsonWriter
+import com.apollographql.apollo3.api.nullable
 
 @Deprecated("Tests using MockQuery are very fragile to codegen changes, use integration tests instead")
 class MockSubscription(
@@ -16,10 +17,13 @@ class MockSubscription(
     private val name: String = "MockSubscription",
 ) : Subscription<MockSubscription.Data> {
 
-  override fun queryDocument(): String = queryDocument
+  override fun document(): String = queryDocument
 
   override fun serializeVariables(writer: JsonWriter, responseAdapterCache: ResponseAdapterCache) {
-    AnyResponseAdapter.toResponse(writer, variables)
+    variables.forEach {
+      writer.name(it.key)
+      AnyResponseAdapter.nullable().toResponse(writer, responseAdapterCache, it.value)
+    }
   }
 
   override fun adapter(): ResponseAdapter<Data> {
@@ -42,7 +46,7 @@ class MockSubscription(
 
   override fun name(): String = name
 
-  override fun operationId(): String = name.hashCode().toString()
+  override fun id(): String = name.hashCode().toString()
 
   data class Data(val name: String) : Subscription.Data
 

@@ -50,19 +50,21 @@ object OperationRequestBodyComposer {
         beginObject()
         name("operationName").value(operation.name())
         name("variables")
+        beginObject()
         operation.serializeVariables(this, responseAdapterCache)
+        endObject()
         if (autoPersistQueries) {
           name("extensions")
           beginObject()
           name("persistedQuery")
           beginObject()
           name("version").value(1)
-          name("sha256Hash").value(operation.operationId())
+          name("sha256Hash").value(operation.id())
           endObject()
           endObject()
         }
         if (!autoPersistQueries || withQueryDocument) {
-          name("query").value(operation.queryDocument())
+          name("query").value(operation.document())
         }
         endObject()
       }

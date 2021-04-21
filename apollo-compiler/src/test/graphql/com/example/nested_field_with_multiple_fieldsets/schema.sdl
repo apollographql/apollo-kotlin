@@ -1,0 +1,23 @@
+type Query {
+  iface1: Iface1
+}
+
+interface Iface1 {
+  iface2: Iface2
+}
+
+type Impl1 implements Iface1 {
+  iface2: Iface2
+}
+
+interface Iface2 {
+  scalar1: String
+  scalar3: String
+}
+
+type Impl2 implements Iface2 {
+  scalar1: String
+  scalar2: String
+  scalar3: String
+  scalar4: String
+}

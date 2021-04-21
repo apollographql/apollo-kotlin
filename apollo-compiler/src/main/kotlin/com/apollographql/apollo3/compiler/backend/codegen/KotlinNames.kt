@@ -2,7 +2,6 @@ package com.apollographql.apollo3.compiler.backend.codegen
 
 import com.apollographql.apollo3.compiler.backend.ast.CodeGenerationAst
 import com.apollographql.apollo3.compiler.escapeKotlinReservedWord
-import com.apollographql.apollo3.compiler.unified.IrOperation
 
 /**
  * This file contains GraphQL -> Kotlin transformations

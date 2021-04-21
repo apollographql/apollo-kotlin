@@ -151,13 +151,11 @@ class SubscriptionAutoPersistTest {
   }
 
   private class MockSubscription(val operationId: String) : Subscription<Subscription.Data> {
-    override fun queryDocument(): String {
+    override fun document(): String {
       return "subscription{\ncommentAdded(repoFullName:\"repo\"){\n__typename\nid\ncontent\n}\n}"
     }
 
     override fun serializeVariables(writer: JsonWriter, responseAdapterCache: ResponseAdapterCache) {
-      writer.beginObject()
-      writer.endObject()
     }
 
     override fun adapter(): ResponseAdapter<Subscription.Data> {
@@ -168,7 +166,7 @@ class SubscriptionAutoPersistTest {
       return "SomeSubscription"
     }
 
-    override fun operationId(): String {
+    override fun id(): String {
       return operationId
     }
 

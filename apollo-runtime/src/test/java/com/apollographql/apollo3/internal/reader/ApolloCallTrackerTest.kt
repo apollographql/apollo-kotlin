@@ -124,13 +124,11 @@ class ApolloCallTrackerTest {
     private val EMPTY_QUERY: Query<QueryData> = object : Query<QueryData> {
       var operationName: String  = "EmptyQuery"
 
-      override fun queryDocument(): String {
+      override fun document(): String {
         return ""
       }
 
       override fun serializeVariables(writer: JsonWriter, responseAdapterCache: ResponseAdapterCache) {
-        writer.beginObject()
-        writer.endObject()
       }
 
       override fun adapter() = throw UnsupportedOperationException()
@@ -139,7 +137,7 @@ class ApolloCallTrackerTest {
         return operationName
       }
 
-      override fun operationId(): String {
+      override fun id(): String {
         return ""
       }
 

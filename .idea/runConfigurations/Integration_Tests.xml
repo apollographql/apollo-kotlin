@@ -10,7 +10,7 @@
       </option>
       <option name="taskNames">
         <list>
-          <option value=":apollo-integration:test" />
+          <option value=":integration-tests:testAsInterfaces" />
         </list>
       </option>
       <option name="vmOptions" value="" />

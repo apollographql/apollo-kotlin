@@ -1,8 +1,5 @@
 package com.apollographql.apollo3.api
 
-import com.apollographql.apollo3.api.internal.ThreadSafeMap
-import kotlin.reflect.KClass
-
 /**
  * A cache of [ResponseAdapter] so that they are only built once for each query/fragments
  *
@@ -16,12 +13,8 @@ class ResponseAdapterCache(val customScalarResponseAdapters: Map<CustomScalar, R
         customScalarResponseAdapters[customScalar] as ResponseAdapter<T>
       }
       customScalar.className == "com.apollographql.apollo3.api.Upload" -> {
+        // Shortcut to save users a call to `registerCustomScalarAdapter`
         UploadResponseAdapter as ResponseAdapter<T>
-      }
-      customScalar.className == "kotlin.Any" -> {
-        // Fallback adapter
-        // This could be determined at compile time to avoid a lookup
-        AnyResponseAdapter as ResponseAdapter<T>
       }
       else -> error("Can't map GraphQL type: `${customScalar.graphqlName}` to: `${customScalar.className}`. Did you forget to add a CustomScalarAdapter?")
     }

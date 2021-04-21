@@ -12,7 +12,6 @@ import com.apollographql.apollo3.exception.ApolloSerializationException
 import com.apollographql.apollo3.network.NetworkTransport
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
-import okio.Buffer
 import okio.BufferedSink
 
 class ApolloHttpNetworkTransport(
@@ -92,7 +91,7 @@ class ApolloHttpNetworkTransport(
         responseAdapterCache: ResponseAdapterCache
     ): HttpRequest {
         val url = buildUrl(serverUrl, mapOf(
-            "query" to operation.queryDocument(),
+            "query" to operation.document(),
             "operationName" to operation.name(),
             "variables" to operation.variablesJson(responseAdapterCache)
         ))

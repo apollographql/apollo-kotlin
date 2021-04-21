@@ -43,7 +43,7 @@ class ResponseParserTest {
   @Test
   fun `forgetting to add a runtime adapter for a scalar registered in the plugin fails`() {
     val data = CharacterDetailsQuery.Data(
-        CharacterDetailsQuery.Data.Character.HumanCharacter(
+        CharacterDetailsQuery.Data.HumanCharacter(
             __typename = "Human",
             name = "Luke",
             birthDate = Date(),

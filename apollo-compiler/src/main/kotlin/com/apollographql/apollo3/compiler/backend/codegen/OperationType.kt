@@ -7,7 +7,13 @@ import com.apollographql.apollo3.api.ResponseField
 import com.apollographql.apollo3.api.Subscription
 import com.apollographql.apollo3.compiler.applyIf
 import com.apollographql.apollo3.compiler.backend.ast.CodeGenerationAst
+import com.apollographql.apollo3.compiler.backend.codegen.Identifier.OPERATION_DOCUMENT
+import com.apollographql.apollo3.compiler.backend.codegen.Identifier.OPERATION_ID
+import com.apollographql.apollo3.compiler.backend.codegen.Identifier.OPERATION_NAME
+import com.apollographql.apollo3.compiler.backend.codegen.Identifier.document
+import com.apollographql.apollo3.compiler.backend.codegen.Identifier.id
 import com.apollographql.apollo3.compiler.escapeKotlinReservedWord
+import com.apollographql.apollo3.compiler.unified.codegen.helpers.maybeAddDescription
 import com.squareup.kotlinpoet.ClassName
 import com.squareup.kotlinpoet.CodeBlock
 import com.squareup.kotlinpoet.FunSpec
@@ -32,18 +38,18 @@ internal fun CodeGenerationAst.OperationType.typeSpec(
       .classBuilder(kotlinNameForOperation(name))
       .addAnnotation(suppressWarningsAnnotation)
       .addSuperinterface(superInterfaceType(targetPackage))
-      .applyIf(description.isNotBlank()) { addKdoc("%L", description) }
+      .maybeAddDescription(description)
       .makeDataClass(variables.map { it.toParameterSpec() })
-      .addFunction(FunSpec.builder("operationId")
+      .addFunction(FunSpec.builder(id)
           .addModifiers(KModifier.OVERRIDE)
           .returns(String::class)
-          .addStatement("return OPERATION_ID")
+          .addStatement("return $OPERATION_ID")
           .build()
       )
-      .addFunction(FunSpec.builder("queryDocument")
+      .addFunction(FunSpec.builder(document)
           .addModifiers(KModifier.OVERRIDE)
           .returns(String::class)
-          .addStatement("return QUERY_DOCUMENT")
+          .addStatement("return $OPERATION_DOCUMENT")
           .build()
       )
       .addFunction(serializeVariablesFunSpec(
@@ -51,10 +57,10 @@ internal fun CodeGenerationAst.OperationType.typeSpec(
           packageName = targetPackage,
           name = name,
       ))
-      .addFunction(FunSpec.builder("name")
+      .addFunction(FunSpec.builder(name)
           .addModifiers(KModifier.OVERRIDE)
           .returns(String::class)
-          .addStatement("return OPERATION_NAME")
+          .addStatement("return $OPERATION_NAME")
           .build()
       )
       .apply {
@@ -81,7 +87,7 @@ internal fun CodeGenerationAst.OperationType.typeSpec(
               .initializer("%S", operationId)
               .build()
           )
-          .addProperty(PropertySpec.builder("QUERY_DOCUMENT", String::class)
+          .addProperty(PropertySpec.builder("OPERATION_DOCUMENT", String::class)
               .initializer(
                   CodeBlock.builder()
                       .add("%T.minify(\n", QueryDocumentMinifier::class.java)

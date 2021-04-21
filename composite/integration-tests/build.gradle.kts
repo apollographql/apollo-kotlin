@@ -47,7 +47,7 @@ fun addTests(asInterfaces: Boolean, sourceSetName: String, addTask: Boolean) {
   }
 }
 
-addTests(false, "testAsClasses", true)
+//addTests(false, "testAsClasses", true)
 addTests(true, "testAsInterfaces", true)
 
 fun configureApollo(asInterfaces: Boolean, sourceSetName: String) {
@@ -67,9 +67,6 @@ fun configureApollo(asInterfaces: Boolean, sourceSetName: String) {
                 customScalarsMapping.set(mapOf(
                     "Upload" to "com.apollographql.apollo3.api.Upload"
                 ))
-              }
-              "sealedclasses" -> {
-                sealedClassesForEnumsMatching.set(listOf(".*"))
               }
               "normalizer" -> {
                 generateFragmentImplementations.set(true)

@@ -1,8 +1,0 @@
-type Query {
-    path(direction: Direction): String
-}
-
-enum Direction {
-    SOUTH
-    NORTH
-}

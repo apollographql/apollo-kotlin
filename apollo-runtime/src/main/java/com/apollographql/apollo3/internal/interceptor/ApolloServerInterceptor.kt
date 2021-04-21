@@ -149,9 +149,9 @@ class ApolloServerInterceptor(
          * and therefore use this
          */
         .header(HEADER_CONTENT_TYPE, JSON_CONTENT_TYPE)
-        .header(HEADER_APOLLO_OPERATION_ID, operation.operationId())
+        .header(HEADER_APOLLO_OPERATION_ID, operation.id())
         .header(HEADER_APOLLO_OPERATION_NAME, operation.name())
-        .tag(operation.operationId())
+        .tag(operation.id())
     for (header in requestHeaders.headers()) {
       val value = requestHeaders.headerValue(header)
       requestBuilder.header(header, value)
@@ -193,7 +193,7 @@ class ApolloServerInterceptor(
                    autoPersistQueries: Boolean): HttpUrl {
       val urlBuilder = serverUrl.newBuilder()
       if (!autoPersistQueries || writeQueryDocument) {
-        urlBuilder.addQueryParameter("query", operation.queryDocument())
+        urlBuilder.addQueryParameter("query", operation.document())
       }
       addVariablesUrlQueryParameter(urlBuilder, operation, responseAdapterCache)
 
@@ -211,7 +211,9 @@ class ApolloServerInterceptor(
       val buffer = Buffer()
       val jsonWriter = BufferedSinkJsonWriter(buffer)
       jsonWriter.serializeNulls = true
+      jsonWriter.beginObject()
       operation.serializeVariables(jsonWriter, responseAdapterCache!!)
+      jsonWriter.endObject()
       jsonWriter.close()
       urlBuilder.addQueryParameter("variables", buffer.readUtf8())
     }
@@ -225,7 +227,7 @@ class ApolloServerInterceptor(
       jsonWriter.name("persistedQuery")
           .beginObject()
           .name("version").value(1)
-          .name("sha256Hash").value(operation.operationId())
+          .name("sha256Hash").value(operation.id())
           .endObject()
       jsonWriter.endObject()
       jsonWriter.close()

@@ -350,7 +350,7 @@ class SubscriptionManagerTest {
   }
 
   private class MockSubscription(val operationId: String) : Subscription<Subscription.Data> {
-    override fun queryDocument(): String {
+    override fun document(): String {
       return "subscription {\n  commentAdded(repoFullName: \"repo\") {\n    __typename\n    id\n    content\n  }\n}"
     }
 
@@ -363,7 +363,7 @@ class SubscriptionManagerTest {
 
     override fun name(): String = "SomeSubscription"
 
-    override fun operationId() = operationId
+    override fun id() = operationId
     override fun responseFields(): List<ResponseField.FieldSet> {
       return emptyList()
     }

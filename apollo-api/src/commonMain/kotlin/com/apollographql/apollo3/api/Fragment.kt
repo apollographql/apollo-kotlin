@@ -4,11 +4,10 @@ import com.apollographql.apollo3.api.json.JsonWriter
 
 /**
  * Base interface for a fragment implementation.
+ * Fragments do not have variables per the GraphQL spec but they are inferred from arguments and used when reading the cache
+ * See https://github.com/graphql/graphql-spec/issues/204
  */
 interface Fragment<D: Fragment.Data> {
-  /**
-   * Fragments do not have variable per the GraphQL spec but they are infered from arguments and used when reading the cache
-   */
   fun serializeVariables(jsonWriter: JsonWriter, responseAdapterCache: ResponseAdapterCache)
 
   fun adapter(): ResponseAdapter<D>
@@ -20,3 +19,4 @@ interface Fragment<D: Fragment.Data> {
    */
   interface Data
 }
+

@@ -24,6 +24,7 @@ import com.apollographql.apollo3.integration.normalizer.HeroNameQuery
 import com.apollographql.apollo3.integration.normalizer.type.Episode
 import com.google.common.base.Charsets
 import com.google.common.truth.Truth.assertThat
+import kotlinx.coroutines.async
 import kotlinx.coroutines.runBlocking
 import okhttp3.Dispatcher
 import okhttp3.OkHttpClient
@@ -119,7 +120,7 @@ class IntegrationTest {
     val query = EpisodeHeroNameQuery(Input.Present(Episode.EMPIRE))
 
     assertThat(query.name()).isEqualTo("EpisodeHeroName")
-    assertThat(query.queryDocument()).isEqualTo("query EpisodeHeroName(\$episode: Episode) { hero(episode: \$episode) { name } }")
+    assertThat(query.document()).isEqualTo("query EpisodeHeroName(\$episode: Episode) { hero(episode: \$episode) { name } }")
     assertThat(query.variablesJson(ResponseAdapterCache.DEFAULT)).isEqualTo("{\"episode\":\"EMPIRE\"}")
   }
 

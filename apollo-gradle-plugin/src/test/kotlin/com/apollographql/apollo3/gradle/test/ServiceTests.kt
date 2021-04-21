@@ -11,6 +11,7 @@ import org.gradle.testkit.runner.TaskOutcome
 import org.gradle.testkit.runner.UnexpectedBuildFailure
 import org.hamcrest.CoreMatchers.containsString
 import org.junit.Assert.assertEquals
+import org.junit.Assert.assertFalse
 import org.junit.Assert.assertNotNull
 import org.junit.Assert.assertThat
 import org.junit.Assert.assertTrue
@@ -401,39 +402,10 @@ class ServiceTests {
   }
 
   @Test
-  fun `when sealedClassesForEnumsMatching to match all - generated enum type as sealed class`() {
-    val apolloConfiguration = """
-      apollo {
-        service("githunt") {
-          sourceFolder = "githunt"
-          sealedClassesForEnumsMatching = [".*"]
-        }
-      }
-    """.trimIndent()
-    TestUtils.withProject(
-        usesKotlinDsl = false,
-        apolloConfiguration = apolloConfiguration,
-        plugins = listOf(TestUtils.kotlinJvmPlugin, TestUtils.apolloPlugin)
-    ) { dir ->
-      val source = fixturesDirectory()
-
-      val target = File(dir, "src/main/graphql/githunt")
-      File(source, "githunt").copyRecursively(target = target, overwrite = true)
-
-      File(dir, "src/main/graphql/com").deleteRecursively()
-
-      TestUtils.executeTask("build", dir)
-
-      assertTrue(dir.generatedChild("githunt/type/FeedType.kt").isFile)
-      assertThat(dir.generatedChild("githunt/type/FeedType.kt").readText(), containsString("sealed class"))
-    }
-  }
-
-  @Test
   fun `when generateFragmentImplementations is not set, it defaults to false`() {
     withSimpleProject { dir ->
       TestUtils.executeTask("generateApolloSources", dir)
-      assertTrue(!dir.generatedChild("service/com/example/fragment/SpeciesInformationImpl.kt").exists())
+      assertFalse(dir.generatedChild("service/com/example/fragment/SpeciesInformationImpl.kt").exists())
     }
   }
 

@@ -1,0 +1,36 @@
+# when generating the implementations of a nested field, it's important to inherit from the most qualified parent interface
+# In that case `Impl2Iface2`. Else we not have access to scalar2 from interfaces
+# i.e with
+#    data.iface1
+#        .asImpl1()
+#        .iface2
+#        .asImpl2Iface2() // <= this will cast to Impl2Iface2 so the interface needs to be implemented
+#        .scalar2
+#
+# This sample also demonstrate why we generate accessors as companion objects instead of using default interface methods.
+# In that case, asImpl2 is both in Iface1.Iface2 and Impl1Iface1.IFace2 and using default interface methods would yield
+# Class 'Impl1Iface1.Impl2IFace2' must override public open fun asImpl2() because it inherits multiple interface methods of it
+query TestQuery {
+    iface1 {
+      ... on Iface1 {
+          iface2 {
+              ... on Iface2 {
+                  scalar1
+              }
+              ... on Impl2 {
+                  scalar2
+              }
+          }
+      }
+      ... on Impl1 {
+          iface2 {
+              ... on Iface2 {
+                  scalar3
+              }
+              ... on Impl2 {
+                  scalar4
+              }
+          }
+      }
+    }
+}

@@ -5,7 +5,6 @@ import com.apollographql.apollo3.compiler.ApolloMetadata.Companion.merge
 import com.apollographql.apollo3.compiler.DefaultPackageNameProvider
 import com.apollographql.apollo3.compiler.GraphQLCompiler
 import com.apollographql.apollo3.compiler.GraphQLCompiler.Companion.defaultAlwaysGenerateTypesMatching
-import com.apollographql.apollo3.compiler.GraphQLCompiler.Companion.defaultEnumAsSealedClassPatternFilters
 import com.apollographql.apollo3.compiler.GraphQLCompiler.Companion.defaultFailOnWarnings
 import com.apollographql.apollo3.compiler.GraphQLCompiler.Companion.defaultGenerateAsInternal
 import com.apollographql.apollo3.compiler.GraphQLCompiler.Companion.defaultGenerateFilterNotNull
@@ -119,10 +118,6 @@ abstract class ApolloGenerateSourcesTask : DefaultTask() {
 
   @get:Input
   @get:Optional
-  abstract val sealedClassesForEnumsMatching: ListProperty<String>
-
-  @get:Input
-  @get:Optional
   abstract val generateFragmentImplementations: Property<Boolean>
 
   @get:Input
@@ -184,7 +179,6 @@ abstract class ApolloGenerateSourcesTask : DefaultTask() {
         warnOnDeprecatedUsages = warnOnDeprecatedUsages.getOrElse(defaultWarnOnDeprecatedUsages),
         failOnWarnings = failOnWarnings.getOrElse(defaultFailOnWarnings),
         packageNameProvider = packageNameProvider,
-        enumAsSealedClassPatternFilters = sealedClassesForEnumsMatching.map { it.toSet() }.getOrElse(defaultEnumAsSealedClassPatternFilters),
         generateAsInternal = generateAsInternal.getOrElse(defaultGenerateAsInternal),
         generateFilterNotNull = generateFilterNotNull.getOrElse(defaultGenerateFilterNotNull),
         generateFragmentImplementations = generateFragmentImplementations.getOrElse(defaultGenerateFragmentImplementations),
@@ -198,7 +192,6 @@ abstract class ApolloGenerateSourcesTask : DefaultTask() {
     GraphQLCompiler().write(
         operationFiles = graphqlFiles.files,
         outputDir = outputDir.asFile.get(),
-        useUnifiedIr = false,
         incomingOptions = incomingOptions,
         moduleOptions = moduleOptions,
     )

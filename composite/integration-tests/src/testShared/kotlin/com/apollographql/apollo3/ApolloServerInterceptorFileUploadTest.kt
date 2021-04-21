@@ -234,9 +234,9 @@ class ApolloServerInterceptorFileUploadTest {
     assertThat(request.url()).isEqualTo(serverUrl)
     assertThat(request.method()).isEqualTo("POST")
     assertThat(request.header(ApolloServerInterceptor.HEADER_ACCEPT_TYPE)).isEqualTo(ApolloServerInterceptor.JSON_CONTENT_TYPE)
-    assertThat(request.header(ApolloServerInterceptor.HEADER_APOLLO_OPERATION_ID)).isEqualTo(mutation.operationId())
+    assertThat(request.header(ApolloServerInterceptor.HEADER_APOLLO_OPERATION_ID)).isEqualTo(mutation.id())
     assertThat(request.header(ApolloServerInterceptor.HEADER_APOLLO_OPERATION_NAME)).isEqualTo(mutation.name())
-    assertThat(request.tag()).isEqualTo(mutation.operationId())
+    assertThat(request.tag()).isEqualTo(mutation.id())
   }
 
   private class Part(
