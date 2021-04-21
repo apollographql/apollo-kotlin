@@ -78,7 +78,7 @@ class TestQuery : Query<TestQuery.Data> {
       }
 
       companion object {
-        fun Hero.HeroDetails() = this as? HeroDetails
+        fun Hero.heroDetails() = this as? HeroDetails
       }
     }
   }

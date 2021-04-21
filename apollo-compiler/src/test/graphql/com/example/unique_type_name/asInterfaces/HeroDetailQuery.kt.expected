@@ -140,7 +140,7 @@ class HeroDetailQuery : Query<HeroDetailQuery.Data> {
           }
 
           companion object {
-            fun Friend.HeroDetails() = this as? HeroDetails
+            fun Friend.heroDetails() = this as? HeroDetails
           }
         }
       }

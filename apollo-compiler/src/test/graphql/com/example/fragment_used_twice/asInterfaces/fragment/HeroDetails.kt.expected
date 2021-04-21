@@ -22,6 +22,6 @@ interface HeroDetails : CharacterDetails {
   override val birthDate: Any
 
   companion object {
-    fun HeroDetails.CharacterDetails() = this as? CharacterDetails
+    fun HeroDetails.characterDetails() = this as? CharacterDetails
   }
 }

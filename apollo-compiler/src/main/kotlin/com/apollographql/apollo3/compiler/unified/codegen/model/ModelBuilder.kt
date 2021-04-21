@@ -96,7 +96,7 @@ class ModelBuilder(
 
   private fun IrAccessor.funName(): String {
     return when (this) {
-      is IrFragmentAccessor -> this.fragmentName
+      is IrFragmentAccessor -> this.fragmentName.decapitalize()
       is IrSubtypeAccessor -> {
         "as${upperCamelCaseIgnoringNonLetters(this.typeSet)}"
       }

@@ -28,7 +28,7 @@ interface QueryFragment {
       override val avatar: String
 
       companion object {
-        fun User.UserFragment() = this as? UserFragment
+        fun User.userFragment() = this as? UserFragment
       }
     }
   }

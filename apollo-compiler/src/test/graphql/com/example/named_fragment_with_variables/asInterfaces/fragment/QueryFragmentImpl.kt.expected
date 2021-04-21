@@ -49,7 +49,7 @@ data class QueryFragmentImpl(
         override val avatar: String
       ) : UserFragment, QueryFragment.Organization.User {
         companion object {
-          fun User.UserFragment() = this as? UserFragment
+          fun User.userFragment() = this as? UserFragment
         }
       }
     }

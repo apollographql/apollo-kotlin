@@ -47,7 +47,7 @@ class TestQuery : Query<TestQuery.Data> {
     ) : QueryFragment.Hero
 
     companion object {
-      fun Data.QueryFragment() = this as? QueryFragment
+      fun Data.queryFragment() = this as? QueryFragment
     }
   }
 

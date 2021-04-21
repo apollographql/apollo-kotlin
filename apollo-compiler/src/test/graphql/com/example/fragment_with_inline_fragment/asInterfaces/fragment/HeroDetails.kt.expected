@@ -49,7 +49,7 @@ interface HeroDetails {
   }
 
   companion object {
-    fun HeroDetails.HumanDetails() = this as? HumanDetails
+    fun HeroDetails.humanDetails() = this as? HumanDetails
 
     fun HeroDetails.asHuman() = this as? HumanHeroDetails
 

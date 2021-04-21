@@ -84,7 +84,7 @@ class TestQuery : Query<TestQuery.Data> {
     ) : QueryFragment.Human
 
     companion object {
-      fun Data.QueryFragment() = this as? QueryFragment
+      fun Data.queryFragment() = this as? QueryFragment
     }
   }
 

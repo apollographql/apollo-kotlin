@@ -44,7 +44,7 @@ class TestQuery : Query<TestQuery.Data> {
       val __typename: String
 
       companion object {
-        fun R2.HumanDetails() = this as? HumanDetails
+        fun R2.humanDetails() = this as? HumanDetails
 
         fun R2.asHuman() = this as? HumanR2
 
@@ -84,7 +84,7 @@ class TestQuery : Query<TestQuery.Data> {
       val __typename: String
 
       companion object {
-        fun Luke.HumanDetails() = this as? HumanDetails
+        fun Luke.humanDetails() = this as? HumanDetails
 
         fun Luke.asHuman() = this as? HumanLuke
 

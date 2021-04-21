@@ -17,7 +17,7 @@ interface HumanDetails {
   val name: String
 
   companion object {
-    fun HumanDetails.CharacterDetails() = this as? CharacterDetails
+    fun HumanDetails.characterDetails() = this as? CharacterDetails
 
     fun HumanDetails.asCharacter() = this as? CharacterHumanDetails
   }

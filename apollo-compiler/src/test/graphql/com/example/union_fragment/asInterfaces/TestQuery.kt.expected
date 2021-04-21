@@ -44,7 +44,7 @@ class TestQuery : Query<TestQuery.Data> {
       val __typename: String
 
       companion object {
-        fun Search.Starship() = this as? Starship
+        fun Search.starship() = this as? Starship
 
         fun Search.asStarship() = this as? StarshipSearch
       }

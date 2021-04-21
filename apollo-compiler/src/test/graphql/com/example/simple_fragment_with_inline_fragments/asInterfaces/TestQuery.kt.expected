@@ -100,7 +100,7 @@ class TestQuery : Query<TestQuery.Data> {
       ) : Friend, HeroDetails.Friend
 
       companion object {
-        fun Hero.HeroDetails() = this as? HeroDetails
+        fun Hero.heroDetails() = this as? HeroDetails
       }
     }
   }

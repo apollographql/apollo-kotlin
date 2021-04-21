@@ -37,7 +37,7 @@ class HumanDetailsImpl : Fragment<HumanDetailsImpl.Data> {
     override val name: String
 
     companion object {
-      fun Data.CharacterDetails() = this as? CharacterDetails
+      fun Data.characterDetails() = this as? CharacterDetails
 
       fun Data.asCharacter() = this as? CharacterData
     }

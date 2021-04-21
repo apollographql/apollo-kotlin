@@ -43,7 +43,7 @@ class TestQuery : Query<TestQuery.Data> {
       val __typename: String
 
       companion object {
-        fun Hero.DroidDetails() = this as? DroidDetails
+        fun Hero.droidDetails() = this as? DroidDetails
 
         fun Hero.asDroid() = this as? DroidHero
 

@@ -47,7 +47,7 @@ internal class TestQuery : Query<TestQuery.Data> {
       override val __typename: String
 
       companion object {
-        fun Hero.HeroDetails() = this as? HeroDetails
+        fun Hero.heroDetails() = this as? HeroDetails
 
         fun Hero.asHuman() = this as? HumanHero
       }

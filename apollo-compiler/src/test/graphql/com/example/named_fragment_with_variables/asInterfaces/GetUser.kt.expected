@@ -58,13 +58,13 @@ data class GetUser(
         override val avatar: String
       ) : UserFragment, QueryFragment.Organization.User {
         companion object {
-          fun User.UserFragment() = this as? UserFragment
+          fun User.userFragment() = this as? UserFragment
         }
       }
     }
 
     companion object {
-      fun Data.QueryFragment() = this as? QueryFragment
+      fun Data.queryFragment() = this as? QueryFragment
     }
   }
 

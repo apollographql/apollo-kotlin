@@ -40,7 +40,7 @@ class HeroDetailsImpl : Fragment<HeroDetailsImpl.Data> {
     override val birthDate: Any
   ) : CharacterDetails, HeroDetails, Fragment.Data {
     companion object {
-      fun Data.CharacterDetails() = this as? CharacterDetails
+      fun Data.characterDetails() = this as? CharacterDetails
     }
   }
 }

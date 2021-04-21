@@ -68,7 +68,7 @@ class HeroDetailsImpl : Fragment<HeroDetailsImpl.Data> {
     }
 
     companion object {
-      fun Data.HumanDetails() = this as? HumanDetails
+      fun Data.humanDetails() = this as? HumanDetails
 
       fun Data.asHuman() = this as? HumanData
 
