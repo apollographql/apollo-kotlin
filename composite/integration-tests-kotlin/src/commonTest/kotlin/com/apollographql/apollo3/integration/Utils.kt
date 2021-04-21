@@ -1,16 +1,10 @@
 package com.apollographql.apollo3.integration
 
-import com.apollographql.apollo3.ApolloClient
 import com.apollographql.apollo3.api.Operation
 import com.apollographql.apollo3.api.ResponseAdapterCache
-import com.apollographql.apollo3.api.ResponseField
 import com.apollographql.apollo3.api.toResponse
-import com.apollographql.apollo3.cache.normalized.CacheKey
-import com.apollographql.apollo3.cache.normalized.CacheKeyResolver
 import com.apollographql.apollo3.integration.mockserver.MockResponse
 import com.apollographql.apollo3.integration.mockserver.MockServer
-import com.apollographql.apollo3.network.http.ApolloHttpNetworkTransport
-import com.apollographql.apollo3.testing.TestHttpEngine
 import okio.ByteString.Companion.encodeUtf8
 
 
@@ -32,3 +26,4 @@ fun MockServer.enqueue(string: String) {
   ))
 }
 
+fun readResource(name: String) = readTestFixture("resources/$name")

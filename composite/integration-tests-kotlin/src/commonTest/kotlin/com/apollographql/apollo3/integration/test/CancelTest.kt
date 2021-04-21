@@ -1,17 +1,16 @@
 package com.apollographql.apollo3.integration.test
 
-import EpisodeHeroNameQuery
 import com.apollographql.apollo3.ApolloClient
 import com.apollographql.apollo3.api.Input
 import com.apollographql.apollo3.integration.mockserver.MockServer
 import com.apollographql.apollo3.integration.enqueue
-import com.apollographql.apollo3.integration.fixtureResponse
-import com.apollographql.apollo3.testing.runBlocking
+import com.apollographql.apollo3.integration.normalizer.EpisodeHeroNameQuery
+import com.apollographql.apollo3.integration.normalizer.type.Episode
+import com.apollographql.apollo3.integration.readTestFixture
 import com.apollographql.apollo3.testing.runWithMainLoop
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
-import type.Episode
 import kotlin.test.BeforeTest
 import kotlin.test.Test
 
@@ -28,7 +27,7 @@ class CancelTest {
   @Test
   @Throws(Exception::class)
   fun cancelFlow() {
-    mockServer.enqueue(fixtureResponse("resources/EpisodeHeroNameResponse.json"))
+    mockServer.enqueue(readTestFixture("resources/EpisodeHeroNameResponse.json"))
 
     runWithMainLoop {
       val job = launch {

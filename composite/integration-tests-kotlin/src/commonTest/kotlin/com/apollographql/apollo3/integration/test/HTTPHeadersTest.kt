@@ -1,25 +1,16 @@
 package com.apollographql.apollo3.integration.test
 
-import HeroNameQuery
 import com.apollographql.apollo3.ApolloClient
-import com.apollographql.apollo3.cache.normalized.ApolloStore
-import com.apollographql.apollo3.cache.normalized.CacheKeyResolver
-import com.apollographql.apollo3.cache.normalized.MemoryCacheFactory
-import com.apollographql.apollo3.cache.normalized.internal.ApolloStore
-import com.apollographql.apollo3.integration.mockserver.MockServer
 import com.apollographql.apollo3.integration.enqueue
-import com.apollographql.apollo3.interceptor.cache.isFromCache
-import com.apollographql.apollo3.interceptor.cache.normalizedCache
-import com.apollographql.apollo3.testing.runBlocking
+import com.apollographql.apollo3.integration.mockserver.MockServer
+import com.apollographql.apollo3.integration.normalizer.HeroNameQuery
 import com.apollographql.apollo3.testing.runWithMainLoop
 import kotlinx.coroutines.flow.single
 import kotlin.test.BeforeTest
 import kotlin.test.Test
 import kotlin.test.assertEquals
-import kotlin.test.assertFalse
 import kotlin.test.assertNotEquals
 import kotlin.test.assertNotNull
-import kotlin.test.assertTrue
 
 class HTTPHeadersTest {
   private lateinit var mockServer: MockServer
