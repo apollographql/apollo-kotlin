@@ -60,8 +60,6 @@ object TestQuery_ResponseAdapter {
           -> ABRoot.fromResponse(reader, responseAdapterCache, __typename)
           "AC",
           -> OtherARoot.fromResponse(reader, responseAdapterCache, __typename)
-          "BC",
-          -> OtherBRoot.fromResponse(reader, responseAdapterCache, __typename)
           else
           -> OtherRoot.fromResponse(reader, responseAdapterCache, __typename)
         }
@@ -75,7 +73,6 @@ object TestQuery_ResponseAdapter {
         when(value) {
           is TestQuery.Data.ABRoot -> ABRoot.toResponse(writer, responseAdapterCache, value)
           is TestQuery.Data.OtherARoot -> OtherARoot.toResponse(writer, responseAdapterCache, value)
-          is TestQuery.Data.OtherBRoot -> OtherBRoot.toResponse(writer, responseAdapterCache, value)
           is TestQuery.Data.OtherRoot -> OtherRoot.toResponse(writer, responseAdapterCache, value)
         }
       }
@@ -183,36 +180,6 @@ object TestQuery_ResponseAdapter {
         StringResponseAdapter.toResponse(writer, responseAdapterCache, value.__typename)
         writer.name("fieldA1")
         NullableStringResponseAdapter.toResponse(writer, responseAdapterCache, value.fieldA1)
-      }
-    }
-
-    object OtherBRoot {
-      val RESPONSE_NAMES: List<String> = listOf("__typename")
-
-      fun fromResponse(
-        reader: JsonReader,
-        responseAdapterCache: ResponseAdapterCache,
-        __typename: String
-      ): TestQuery.Data.OtherBRoot {
-        var __typename: String? = __typename
-        while(true) {
-          when (reader.selectName(RESPONSE_NAMES)) {
-            0 -> __typename = StringResponseAdapter.fromResponse(reader, responseAdapterCache)
-            else -> break
-          }
-        }
-        return TestQuery.Data.OtherBRoot(
-          __typename = __typename!!
-        )
-      }
-
-      fun toResponse(
-        writer: JsonWriter,
-        responseAdapterCache: ResponseAdapterCache,
-        value: TestQuery.Data.OtherBRoot
-      ) {
-        writer.name("__typename")
-        StringResponseAdapter.toResponse(writer, responseAdapterCache, value.__typename)
       }
     }
   }
