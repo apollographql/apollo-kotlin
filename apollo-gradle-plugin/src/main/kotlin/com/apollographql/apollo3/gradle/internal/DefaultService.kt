@@ -9,6 +9,7 @@ import com.apollographql.apollo3.gradle.internal.DefaultApolloExtension.Companio
 import org.gradle.api.Action
 import org.gradle.api.Project
 import org.gradle.api.file.Directory
+import org.gradle.api.file.DirectoryProperty
 import org.gradle.api.file.RegularFile
 import org.gradle.api.file.RegularFileProperty
 import org.gradle.api.model.ObjectFactory
@@ -46,6 +47,8 @@ abstract class DefaultService @Inject constructor(val objects: ObjectFactory, ov
   abstract override val include: ListProperty<String>
 
   abstract override val schemaFile: RegularFileProperty
+
+  abstract override val debugDir: DirectoryProperty
 
   abstract override val warnOnDeprecatedUsages: Property<Boolean>
 

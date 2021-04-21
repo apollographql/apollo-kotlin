@@ -15,6 +15,7 @@ import com.apollographql.apollo3.compiler.operationoutput.OperationDescriptor
 import com.apollographql.apollo3.compiler.operationoutput.toJson
 import com.apollographql.apollo3.compiler.unified.ir.IrBuilder
 import com.apollographql.apollo3.compiler.unified.codegen.KotlinCodeGenerator
+import com.apollographql.apollo3.compiler.unified.ir.dumpTo
 import java.io.File
 
 class GraphQLCompiler {
@@ -26,6 +27,7 @@ class GraphQLCompiler {
   fun write(
       operationFiles: Set<File>,
       outputDir: File,
+      debugDir: File? = null,
       incomingOptions: IncomingOptions,
       moduleOptions: ModuleOptions,
   ) {
@@ -33,6 +35,8 @@ class GraphQLCompiler {
 
     outputDir.deleteRecursively()
     outputDir.mkdirs()
+    debugDir?.deleteRecursively()
+    debugDir?.mkdirs()
 
     val (documents, issues) = GraphQLParser.parseExecutableFiles(
         operationFiles,
@@ -75,83 +79,6 @@ class GraphQLCompiler {
       it.withTypenameWhenNeeded(incomingOptions.schema)
     }
 
-    val generatedTypes = doWrite(
-          operations = operations,
-          fragments = fragments,
-          moduleOptions = moduleOptions,
-          incomingOptions = incomingOptions,
-          outputDir = outputDir,
-      )
-
-    val result = Result(
-        generatedEnums = generatedTypes.enums,
-        generatedInputObjects = generatedTypes.inputObjects,
-        generatedCustomScalars = incomingOptions.isFromMetadata,
-        generatedFragments = fragments.map {
-          MetadataFragment(
-              name = it.name,
-              packageName = moduleOptions.packageNameProvider.fragmentPackageName(it.sourceLocation.filePath!!),
-              definition = it
-          )
-        }
-    )
-
-    if (moduleOptions.metadataOutputFile != null) {
-      moduleOptions.metadataOutputFile.parentFile.mkdirs()
-      // Disable this check for now as we generate the metadata always as it is part of the "assemble" target
-//      check(!moduleOptions.generateAsInternal) {
-//        "Specifying 'generateAsInternal=true' does not make sense in a multi-module setup"
-//      }
-      val schema = if (incomingOptions.isFromMetadata) {
-        // There is already a schema defined in this tree
-        null
-      } else {
-        incomingOptions.schema
-      }
-
-      ApolloMetadata(
-          schema = schema,
-          customScalarsMapping = incomingOptions.customScalarsMapping,
-          generatedFragments = result.generatedFragments,
-          generatedEnums = result.generatedEnums,
-          generatedInputObjects = result.generatedInputObjects,
-          generateFragmentsAsInterfaces = incomingOptions.generateFragmentsAsInterfaces,
-          moduleName = moduleOptions.moduleName,
-          pluginVersion = VERSION,
-          schemaPackageName = incomingOptions.schemaPackageName
-      ).writeTo(moduleOptions.metadataOutputFile)
-    }
-  }
-
-  private fun checkCustomScalars(incomingOptions: IncomingOptions) {
-    /**
-     * Generate the mapping for all custom scalars
-     *
-     * If the user specified a mapping, use it, else fallback to [Any]
-     */
-    val schemaScalars = incomingOptions.schema
-        .typeDefinitions
-        .values
-        .filterIsInstance<GQLScalarTypeDefinition>()
-        .filter { !it.isBuiltIn() }
-        .map { type -> type.name }
-        .toSet()
-    val unknownScalars = incomingOptions.customScalarsMapping.keys.subtract(schemaScalars)
-    check(unknownScalars.isEmpty()) {
-      "ApolloGraphQL: unknown custom scalar(s): ${unknownScalars.joinToString(",")}"
-    }
-  }
-
-
-  private class GeneratedTypes(val enums: Set<String>, val inputObjects: Set<String>)
-
-  private fun doWrite(
-      outputDir: File,
-      operations: List<GQLOperationDefinition>,
-      fragments: List<GQLFragmentDefinition>,
-      incomingOptions: IncomingOptions,
-      moduleOptions: ModuleOptions,
-  ): GeneratedTypes {
     val ir = IrBuilder(
         schema = incomingOptions.schema,
         operationDefinitions = operations,
@@ -164,6 +91,10 @@ class GraphQLCompiler {
         metadataInputObjects = incomingOptions.metadataInputObjects,
         metadataSchema = incomingOptions.isFromMetadata
     ).build()
+
+    if (debugDir != null) {
+      ir.dumpTo(File(debugDir, "ir.json"))
+    }
 
     val operationOutput = ir.operations.map {
       OperationDescriptor(
@@ -199,10 +130,58 @@ class GraphQLCompiler {
         generateQueryDocument = moduleOptions.generateQueryDocument,
     ).write(outputDir = outputDir)
 
-    return GeneratedTypes(
-        enums = ir.enums.map { it.name }.toSet(),
-        inputObjects = ir.inputObjects.map { it.name }.toSet(),
-    )
+    if (moduleOptions.metadataOutputFile != null) {
+      moduleOptions.metadataOutputFile.parentFile.mkdirs()
+      // Disable this check for now as we generate the metadata always as it is part of the "assemble" target
+//      check(!moduleOptions.generateAsInternal) {
+//        "Specifying 'generateAsInternal=true' does not make sense in a multi-module setup"
+//      }
+      val schema = if (incomingOptions.isFromMetadata) {
+        // There is already a schema defined in this tree
+        null
+      } else {
+        incomingOptions.schema
+      }
+
+      val outgoingMetadataFragments = fragments.map {
+        MetadataFragment(
+            name = it.name,
+            packageName = moduleOptions.packageNameProvider.fragmentPackageName(it.sourceLocation.filePath!!),
+            definition = it
+        )
+      }
+
+      ApolloMetadata(
+          schema = schema,
+          customScalarsMapping = incomingOptions.customScalarsMapping,
+          generatedFragments = outgoingMetadataFragments,
+          generatedEnums = ir.enums.map { it.name }.toSet(),
+          generatedInputObjects = ir.inputObjects.map { it.name }.toSet(),
+          generateFragmentsAsInterfaces = incomingOptions.generateFragmentsAsInterfaces,
+          moduleName = moduleOptions.moduleName,
+          pluginVersion = VERSION,
+          schemaPackageName = incomingOptions.schemaPackageName
+      ).writeTo(moduleOptions.metadataOutputFile)
+    }
+  }
+
+  private fun checkCustomScalars(incomingOptions: IncomingOptions) {
+    /**
+     * Generate the mapping for all custom scalars
+     *
+     * If the user specified a mapping, use it, else fallback to [Any]
+     */
+    val schemaScalars = incomingOptions.schema
+        .typeDefinitions
+        .values
+        .filterIsInstance<GQLScalarTypeDefinition>()
+        .filter { !it.isBuiltIn() }
+        .map { type -> type.name }
+        .toSet()
+    val unknownScalars = incomingOptions.customScalarsMapping.keys.subtract(schemaScalars)
+    check(unknownScalars.isEmpty()) {
+      "ApolloGraphQL: unknown custom scalar(s): ${unknownScalars.joinToString(",")}"
+    }
   }
 
   /**
@@ -317,13 +296,6 @@ class GraphQLCompiler {
        */
       val generateQueryDocument: Boolean,
       val moduleName: String,
-  )
-
-  data class Result(
-      val generatedInputObjects: Set<String>,
-      val generatedEnums: Set<String>,
-      val generatedCustomScalars: Boolean,
-      val generatedFragments: List<MetadataFragment>,
   )
 
   companion object {
