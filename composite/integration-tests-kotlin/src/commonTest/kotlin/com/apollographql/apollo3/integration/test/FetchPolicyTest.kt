@@ -12,6 +12,7 @@ import com.apollographql.apollo3.integration.normalizer.HeroNameQuery
 import com.apollographql.apollo3.interceptor.cache.FetchPolicy
 import com.apollographql.apollo3.interceptor.cache.isFromCache
 import com.apollographql.apollo3.interceptor.cache.normalizedCache
+import com.apollographql.apollo3.interceptor.cache.withFetchPolicy
 import com.apollographql.apollo3.testing.runWithMainLoop
 import kotlinx.coroutines.flow.single
 import kotlinx.coroutines.flow.toList
@@ -68,7 +69,7 @@ class FetchPolicyTest {
       val query = HeroNameQuery()
       val data = HeroNameQuery.Data(HeroNameQuery.Data.Hero("R2-D2"))
 
-      val request = ApolloRequest(query).withExecutionContext(FetchPolicy.NetworkFirst)
+      val request = ApolloRequest(query).withFetchPolicy(FetchPolicy.NetworkFirst)
 
       mockServer.enqueue(query, data)
       var responses = apolloClient
@@ -132,7 +133,7 @@ class FetchPolicyTest {
       assertFalse(responses[0].isFromCache)
 
       // Now make the request cache only
-      request = request.withExecutionContext(FetchPolicy.CacheOnly)
+      request = request.withFetchPolicy(FetchPolicy.CacheOnly)
 
       responses = apolloClient
           .query(request)
@@ -151,8 +152,7 @@ class FetchPolicyTest {
       val query = HeroNameQuery()
       val data = HeroNameQuery.Data(HeroNameQuery.Data.Hero("R2-D2"))
 
-      val request = ApolloRequest(query)
-          .withExecutionContext(FetchPolicy.NetworkOnly)
+      val request = ApolloRequest(query).withFetchPolicy(FetchPolicy.NetworkOnly)
 
       // cache the response
       mockServer.enqueue(query, data)
@@ -183,8 +183,7 @@ class FetchPolicyTest {
       val query = HeroNameQuery()
       val data = HeroNameQuery.Data(HeroNameQuery.Data.Hero("R2-D2"))
 
-      var request = ApolloRequest(query)
-          .withExecutionContext(FetchPolicy.CacheFirst)
+      var request = ApolloRequest(query).withFetchPolicy(FetchPolicy.CacheFirst)
 
       // cache the response
       mockServer.enqueue(query, data)
@@ -197,7 +196,7 @@ class FetchPolicyTest {
       assertFalse(responses[0].isFromCache)
 
       // Now make the request cache and network
-      request = request.withExecutionContext(FetchPolicy.CacheAndNetwork)
+      request = request.withFetchPolicy(FetchPolicy.CacheAndNetwork)
 
       mockServer.enqueue(query, data)
       responses = apolloClient

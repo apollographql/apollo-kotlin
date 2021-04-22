@@ -17,8 +17,10 @@ import kotlinx.coroutines.flow.map
 class ApolloCacheInterceptor : ApolloRequestInterceptor {
 
   override fun <D : Operation.Data> intercept(request: ApolloRequest<D>, chain: ApolloInterceptorChain): Flow<ApolloResponse<D>> {
+    val cacheInput = request.executionContext[CacheInput]
+    
     return flow {
-      when (request.executionContext[FetchPolicy] ?: FetchPolicy.CacheFirst) {
+      when (cacheInput?.fetchPolicy ?: FetchPolicy.CacheFirst) {
         FetchPolicy.CacheFirst -> {
           val response = readFromCache(request, chain.responseAdapterCache)
           if (response.data != null) {

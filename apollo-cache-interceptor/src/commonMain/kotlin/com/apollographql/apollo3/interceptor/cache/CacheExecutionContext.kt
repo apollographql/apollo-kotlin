@@ -51,7 +51,7 @@ sealed class FetchPolicy {
 }
 
 internal data class CacheInput(
-    val fetchPolicy: FetchPolicy,
+    val fetchPolicy: FetchPolicy?,
     val watch: Boolean
 ): RequestContext(Key) {
   companion object Key : ExecutionContext.Key<CacheInput>
@@ -73,7 +73,14 @@ fun ApolloClient.Builder.normalizedCache(store: ApolloStore): ApolloClient.Build
   )
 }
 
+fun <D : Query.Data> ApolloRequest<D>.withFetchPolicy(fetchPolicy: FetchPolicy): ApolloRequest<D> {
+  return withExecutionContext(CacheInput(fetchPolicy = fetchPolicy, watch = false))
+}
+
 fun <D : Query.Data> ApolloClient.watch(queryRequest: ApolloRequest<D>): Flow<ApolloResponse<D>> {
-  queryRequest.executionContext[CacheInput]
-  return queryRequest.execute()
+  val cacheInput = queryRequest.executionContext[CacheInput]?.copy(
+      watch = true
+  ) ?: CacheInput(fetchPolicy = null, watch = true)
+
+  return query(queryRequest.withExecutionContext(cacheInput))
 }
