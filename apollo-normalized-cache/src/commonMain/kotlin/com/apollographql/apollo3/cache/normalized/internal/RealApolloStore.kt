@@ -10,8 +10,16 @@ import com.apollographql.apollo3.cache.normalized.ApolloStore
 import com.apollographql.apollo3.cache.normalized.CacheKey
 import com.apollographql.apollo3.cache.normalized.CacheKeyResolver
 import com.apollographql.apollo3.cache.normalized.NormalizedCacheFactory
+import com.apollographql.apollo3.cache.normalized.Platform
 import com.apollographql.apollo3.cache.normalized.Record
 import com.benasher44.uuid.Uuid
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.channels.BufferOverflow
+import kotlinx.coroutines.flow.MutableSharedFlow
+import kotlinx.coroutines.flow.asSharedFlow
+import kotlinx.coroutines.flow.collect
+import kotlinx.coroutines.launch
 import kotlin.reflect.KClass
 
 class RealApolloStore(
@@ -19,38 +27,58 @@ class RealApolloStore(
     private val cacheKeyResolver: CacheKeyResolver,
     val logger: ApolloLogger = ApolloLogger(null),
 ) : ApolloStore() {
-  private val subscribers = Guard("RealApolloStore") {
-    mutableSetOf<RecordChangeSubscriber>()
-  }
+  private val changedKeysEvents = MutableSharedFlow<Set<String>>(
+      // XXX: this is a potential code smell
+      // I'm not sure what will happen if we ever reach that capacity
+      // We need to buffer because the publish code is possibly reentrant so we can't just wait for all consumers to have received
+      // the events or we will deadlock
+      extraBufferCapacity = 10,
+      onBufferOverflow = BufferOverflow.DROP_OLDEST
+  )
+
+  override val changedKeys = changedKeysEvents.asSharedFlow()
 
   private val cacheHolder = Guard("OptimisticCache") {
     OptimisticCache().chain(normalizedCacheFactory.createChain()) as OptimisticCache
   }
 
+  /**
+   * For backward compatibility only
+   */
+  private var subscribers = Guard("subscribers") {
+    mutableListOf<Pair<RecordChangeSubscriber, Job>>()
+  }
+
   override fun subscribe(subscriber: RecordChangeSubscriber) {
+    val job = GlobalScope.launch {
+      changedKeys.collect {
+        subscriber.onCacheRecordsChanged(it)
+      }
+    }
     subscribers.access {
-      it.add(subscriber)
+      it.add(subscriber to job)
     }
   }
 
   override fun unsubscribe(subscriber: RecordChangeSubscriber) {
-    subscribers.access {
-      it.remove(subscriber)
+    val job = subscribers.access {
+      val index = it.indexOfFirst { it.first == subscriber }
+      if (index >= 0) {
+        it.removeAt(index).second
+      } else {
+        null
+      }
     }
+
+    job?.cancel()
   }
 
-  override fun publish(keys: Set<String>) {
+  override suspend fun publish(keys: Set<String>) {
     if (keys.isEmpty()) {
       return
     }
 
-    val subscribers = subscribers.access {
-      it.toList()
-    }
-
-    subscribers.forEach { subscriber ->
-      subscriber.onCacheRecordsChanged(keys)
-    }
+    changedKeysEvents.emit(keys)
   }
 
   override fun clearAll(): Boolean {
@@ -84,25 +112,36 @@ class RealApolloStore(
     }
   }
 
+  override fun <D : Operation.Data> normalize(
+      operation: Operation<D>,
+      data: D,
+      responseAdapterCache: ResponseAdapterCache,
+  ): Map<String, Record> {
+    return operation.normalize(
+        data,
+        responseAdapterCache,
+        cacheKeyResolver
+    )
+  }
+
   override suspend fun <D : Operation.Data> readOperation(
       operation: Operation<D>,
       responseAdapterCache: ResponseAdapterCache,
       cacheHeaders: CacheHeaders,
       mode: ReadMode,
   ): D? {
+    // Capture a local reference so as not to freeze "this"
+    val cacheKeyResolver = cacheKeyResolver
+
+
     return cacheHolder.access { cache ->
-      try {
-        operation.readDataFromCache(
-            responseAdapterCache = responseAdapterCache,
-            cache = cache,
-            cacheKeyResolver = cacheKeyResolver,
-            cacheHeaders = cacheHeaders,
-            mode = mode,
-        )
-      } catch (e: Exception) {
-        logger.e(e, "Failed to read cache response")
-        null
-      }
+      operation.readDataFromCache(
+          responseAdapterCache = responseAdapterCache,
+          cache = cache,
+          cacheKeyResolver = cacheKeyResolver,
+          cacheHeaders = cacheHeaders,
+          mode = mode,
+      )
     }
   }
 
@@ -112,19 +151,17 @@ class RealApolloStore(
       responseAdapterCache: ResponseAdapterCache,
       cacheHeaders: CacheHeaders,
   ): D? {
+    // Capture a local reference so as not to freeze "this"
+    val cacheKeyResolver = cacheKeyResolver
+
     return cacheHolder.access { cache ->
-      try {
-        fragment.readDataFromCache(
-            responseAdapterCache = responseAdapterCache,
-            cache = cache,
-            cacheKeyResolver = cacheKeyResolver,
-            cacheHeaders = cacheHeaders,
-            cacheKey = cacheKey
-        )
-      } catch (e: Exception) {
-        logger.e(e, "Failed to read cache response")
-        null
-      }
+      fragment.readDataFromCache(
+          responseAdapterCache = responseAdapterCache,
+          cache = cache,
+          cacheKeyResolver = cacheKeyResolver,
+          cacheHeaders = cacheHeaders,
+          cacheKey = cacheKey
+      )
     }
   }
 
@@ -157,7 +194,10 @@ class RealApolloStore(
       "ApolloGraphQL: writing a fragment requires a valid cache key"
     }
 
-    return cacheHolder.access { cache ->
+    // Capture a local reference so as not to freeze "this"
+    val cacheKeyResolver = cacheKeyResolver
+
+    val changedKeys =  cacheHolder.access { cache ->
       val records = fragment.normalize(
           data = fragmentData,
           responseAdapterCache = responseAdapterCache,
@@ -165,13 +205,14 @@ class RealApolloStore(
           rootKey = cacheKey.key
       ).values
 
-      val changedKeys = cache.merge(records, cacheHeaders)
-      if (publish) {
-        publish(changedKeys)
-      }
-
-      changedKeys
+      cache.merge(records, cacheHeaders)
     }
+
+    if (publish) {
+      publish(changedKeys)
+    }
+
+    return changedKeys
   }
 
   suspend fun <D : Operation.Data> writeOperationWithRecords(
@@ -181,6 +222,10 @@ class RealApolloStore(
       publish: Boolean,
       responseAdapterCache: ResponseAdapterCache,
   ): Pair<Set<Record>, Set<String>> {
+
+    // Capture a local reference so as not to freeze "this"
+    val cacheKeyResolver = cacheKeyResolver
+
     val (records, changedKeys) = cacheHolder.access { cache ->
       val records = operation.normalize(
           data = operationData,
@@ -204,6 +249,10 @@ class RealApolloStore(
       responseAdapterCache: ResponseAdapterCache,
       publish: Boolean,
   ): Set<String> {
+
+    // Capture a local reference so as not to freeze "this"
+    val cacheKeyResolver = cacheKeyResolver
+
     val changedKeys = cacheHolder.access { cache ->
       val records = operation.normalize(
           data = operationData,
@@ -258,7 +307,3 @@ class RealApolloStore(
   }
 }
 
-fun ApolloStore(
-    normalizedCacheFactory: NormalizedCacheFactory,
-    cacheKeyResolver: CacheKeyResolver,
-): ApolloStore = RealApolloStore(normalizedCacheFactory, cacheKeyResolver)

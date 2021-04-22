@@ -7,10 +7,8 @@ import com.apollographql.apollo3.cache.CacheHeaders
 import com.apollographql.apollo3.cache.normalized.CacheKey
 import com.apollographql.apollo3.cache.normalized.CacheKeyResolver
 import com.apollographql.apollo3.cache.normalized.CacheReference
-import com.apollographql.apollo3.cache.normalized.NormalizedCache
 import com.apollographql.apollo3.cache.normalized.ReadOnlyNormalizedCache
-import com.apollographql.apollo3.exception.FieldMissingException
-import com.apollographql.apollo3.exception.ObjectMissingException
+import com.apollographql.apollo3.exception.CacheMissException
 
 /**
  * Reads [rootFieldSets] starting at [rootKey] from [cache]
@@ -59,7 +57,7 @@ class CacheBatchReader(
       val copy = pendingReferences.toList()
       pendingReferences.clear()
       copy.forEach { pendingReference ->
-        val record = records[pendingReference.key] ?: throw ObjectMissingException(pendingReference.key)
+        val record = records[pendingReference.key] ?: throw CacheMissException(pendingReference.key)
 
         val fieldSet = pendingReference.fieldSets.firstOrNull { it.typeCondition == record["__typename"] }
             ?: pendingReference.fieldSets.first { it.typeCondition == null }
@@ -79,14 +77,14 @@ class CacheBatchReader(
               // no key provided
               val fieldName = cacheKeyBuilder.build(it, variables)
               if (!record.containsKey(fieldName)) {
-                throw FieldMissingException(record.key, fieldName, cacheKeyBuilder.build(it, variables))
+                throw CacheMissException(record.key, fieldName)
               }
               record[fieldName]
             }
           } else {
             val fieldName = cacheKeyBuilder.build(it, variables)
             if (!record.containsKey(fieldName)) {
-              throw FieldMissingException(record.key, fieldName, cacheKeyBuilder.build(it, variables))
+              throw CacheMissException(record.key, fieldName)
             }
             record[fieldName]
           }

@@ -32,9 +32,7 @@ class HTTPHeadersTest {
     mockServer.enqueue(query, data)
 
     runWithMainLoop {
-      val response = apolloClient
-          .query(query)
-          .single()
+      val response = apolloClient.query(query)
 
       assertNotNull(response.data)
 

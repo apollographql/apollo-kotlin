@@ -69,7 +69,7 @@ class FileUploadTest {
   @Test
   @Throws(Exception::class)
   fun single() = runWithMainLoop {
-    apolloClient.mutate(mutationSingle).single()
+    apolloClient.mutate(mutationSingle)
 
     val request = mockServer.takeRequest()
     val parts = request.parts()
@@ -84,7 +84,7 @@ class FileUploadTest {
   @Test
   @Throws(Exception::class)
   fun twice() = runWithMainLoop {
-    apolloClient.mutate(mutationTwice).single()
+    apolloClient.mutate(mutationTwice)
 
     val request = mockServer.takeRequest()
     val parts = request.parts()
@@ -99,7 +99,7 @@ class FileUploadTest {
   @Test
   @Throws(Exception::class)
   fun multiple() = runWithMainLoop {
-    apolloClient.mutate(mutationMultiple).single()
+    apolloClient.mutate(mutationMultiple)
 
     val request = mockServer.takeRequest()
     val parts = request.parts()
@@ -114,7 +114,7 @@ class FileUploadTest {
   @Test
   @Throws(Exception::class)
   fun nested() = runWithMainLoop {
-    apolloClient.mutate(mutationNested).single()
+    apolloClient.mutate(mutationNested)
 
     val request = mockServer.takeRequest()
     val parts = request.parts()

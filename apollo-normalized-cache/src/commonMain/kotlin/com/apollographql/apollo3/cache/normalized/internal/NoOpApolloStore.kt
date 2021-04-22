@@ -10,15 +10,19 @@ import com.apollographql.apollo3.cache.normalized.CacheKeyResolver
 import com.apollographql.apollo3.cache.normalized.NormalizedCache
 import com.apollographql.apollo3.cache.normalized.Record
 import com.benasher44.uuid.Uuid
+import kotlinx.coroutines.flow.SharedFlow
 import kotlin.reflect.KClass
 
 /**
  * An alternative to RealApolloStore for when a no-operation cache is needed.
  */
 internal class NoOpApolloStore : ApolloStore() {
+  override val changedKeys: SharedFlow<Set<String>>
+    get() = throw NotImplementedError()
+
   override fun subscribe(subscriber: RecordChangeSubscriber) {}
   override fun unsubscribe(subscriber: RecordChangeSubscriber) {}
-  override fun publish(keys: Set<String>) {}
+  override suspend fun publish(keys: Set<String>) {}
   override fun clearAll(): Boolean {
     return false
   }
@@ -29,6 +33,10 @@ internal class NoOpApolloStore : ApolloStore() {
 
   override suspend fun remove(cacheKeys: List<CacheKey>, cascade: Boolean): Int {
     return 0
+  }
+
+  override fun <D : Operation.Data> normalize(operation: Operation<D>, data: D, responseAdapterCache: ResponseAdapterCache): Map<String, Record> {
+    return emptyMap()
   }
 
   override suspend fun <D : Operation.Data> readOperation(

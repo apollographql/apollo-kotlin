@@ -1,6 +1,8 @@
 package com.apollographql.apollo3.integration.test
 
 import com.apollographql.apollo3.ApolloClient
+import com.apollographql.apollo3.ApolloRequest
+import com.apollographql.apollo3.api.ApolloResponse
 import com.apollographql.apollo3.exception.ApolloHttpException
 import com.apollographql.apollo3.exception.ApolloNetworkException
 import com.apollographql.apollo3.integration.mockserver.MockResponse
@@ -32,9 +34,7 @@ class ExceptionsTest {
     mockServer.enqueue("malformed")
 
     val result = kotlin.runCatching {
-      apolloClient
-          .query(HeroNameQuery())
-          .single()
+      apolloClient.query(HeroNameQuery())
     }
 
     assertTrue(result.exceptionOrNull() != null)
@@ -45,9 +45,7 @@ class ExceptionsTest {
     mockServer.enqueue(MockResponse(statusCode = 404))
 
     val result = kotlin.runCatching {
-      apolloClient
-          .query(HeroNameQuery())
-          .single()
+      apolloClient.query(HeroNameQuery())
     }
 
     val exception = result.exceptionOrNull()
@@ -60,9 +58,7 @@ class ExceptionsTest {
     mockServer.stop()
 
     val result = kotlin.runCatching {
-      apolloClient
-          .query(HeroNameQuery())
-          .single()
+      apolloClient.query(HeroNameQuery())
     }
 
     val exception = result.exceptionOrNull()
@@ -78,7 +74,7 @@ class ExceptionsTest {
 
     val response = runWithMainLoop {
       apolloClient
-          .query(query)
+          .queryAsFlow(ApolloRequest(query))
           .retryWhen { _, attempt -> attempt == 0L }
           .single()
     }
