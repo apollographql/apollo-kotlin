@@ -261,7 +261,7 @@ internal class ResponseHeaderRecord {
   fun response(): Response {
     var body: RequestBody? = null
     if (HttpMethod.permitsRequestBody(requestMethod)) {
-      body = RequestBody.create(MediaType.parse("application/json; charset=utf-8"), "")
+      body = RequestBody.create(MediaType.parse("application/json"), "")
     }
     val cacheRequest = Request.Builder()
         .url(url)
