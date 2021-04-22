@@ -86,7 +86,7 @@ internal object TestUtils {
    *
    * @param block: the callback to produce the result. [checkExpected] will try to find a schema
    * for [graphQLFile] by either looking for a schema with the same name or testing the first
-   * schema.[json|sdl] in the hierarchy
+   * schema.[json|sdl|graphqls] in the hierarchy
    */
   fun checkExpected(graphQLFile: File, block: (Schema?) -> String) {
     var schema = findSchema(graphQLFile.parentFile, graphQLFile.nameWithoutExtension)
