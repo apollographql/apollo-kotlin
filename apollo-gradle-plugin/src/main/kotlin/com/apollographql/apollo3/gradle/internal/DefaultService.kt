@@ -134,7 +134,7 @@ abstract class DefaultService @Inject constructor(val objects: ObjectFactory, ov
   fun resolvedSchemaProvider(project: Project): Provider<RegularFile> {
     return schemaFile.orElse(project.layout.file(project.provider {
       val candidates = graphqlSourceDirectorySet.srcDirs.flatMap { srcDir ->
-        srcDir.walkTopDown().filter { it.name == "schema.json" || it.name == "schema.sdl" }.toList()
+        srcDir.walkTopDown().filter { it.name == "schema.json" || it.name == "schema.sdl" || it.name == "schema.graphqls"}.toList()
       }
 
       check(candidates.size <= 1) {

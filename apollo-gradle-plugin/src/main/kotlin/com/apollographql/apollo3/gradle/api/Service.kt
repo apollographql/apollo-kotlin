@@ -56,10 +56,10 @@ interface Service {
   fun addGraphqlDirectory(directory: Any)
 
   /**
-   * The schema file as either a ".json" introspection schema or a ".sdl" SDL schema. You might come across schemas named "schema.graphql",
-   * these are SDL schemas most of the time that need to be renamed to "schema.sdl" to be recognized properly.
+   * The schema file as either a ".json" introspection schema or a ".sdl|.graphqls" SDL schema. You might come across schemas named "schema.graphql",
+   * these are SDL schemas most of the time that need to be renamed to "schema.graphqls" to be recognized properly.
    *
-   * By default, the plugin looks for a "schema.[json|sdl]" file in sourceDirectory
+   * By default, the plugin looks for a "schema.[json|sdl|graphqls]" file in sourceDirectory
    */
   val schemaFile: RegularFileProperty
 

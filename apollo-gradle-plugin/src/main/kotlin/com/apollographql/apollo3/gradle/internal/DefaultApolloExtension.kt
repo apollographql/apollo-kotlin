@@ -24,7 +24,10 @@ import org.gradle.util.GradleVersion
 import org.jetbrains.kotlin.gradle.dsl.KotlinMultiplatformExtension
 import java.io.File
 
-abstract class DefaultApolloExtension(private val project: Project, private val defaultService: DefaultService) : ApolloExtension, Service by defaultService {
+abstract class DefaultApolloExtension(
+    private val project: Project,
+    private val defaultService: DefaultService,
+) : ApolloExtension, Service by defaultService {
 
   private val services = mutableListOf<DefaultService>()
   private val checkVersionsTask: TaskProvider<Task>
@@ -125,20 +128,21 @@ abstract class DefaultApolloExtension(private val project: Project, private val 
     return project.tasks.register(ModelNames.checkApolloVersions()) {
       val outputFile = BuildDirLayout.versionCheck(project)
 
-      val allDeps = (
-          getDeps(project.rootProject.buildscript.configurations) +
-              getDeps(project.buildscript.configurations) +
-              getDeps(project.configurations)
-          )
-
-      val allVersions = allDeps.mapNotNull { it.version }.distinct().sorted()
-      it.inputs.property("allVersions", allVersions)
+      it.inputs.property("allVersions") {
+        val allDeps = (
+            getDeps(project.rootProject.buildscript.configurations) +
+                getDeps(project.buildscript.configurations) +
+                getDeps(project.configurations)
+            )
+        allDeps.mapNotNull { it.version }.distinct().sorted()
+      }
       it.outputs.file(outputFile)
 
       it.doLast {
+        val allVersions = it.inputs.properties["allVersions"] as List<*>
+
         check(allVersions.size <= 1) {
-          val found = allDeps.map { "${it.name}:${it.version}" }.distinct().joinToString("\n")
-          "All apollo versions should be the same. Found:\n$found"
+          "ApolloGraphQL: All apollo versions should be the same. Found:\n$allVersions"
         }
 
         val version = allVersions.firstOrNull()
@@ -264,7 +268,11 @@ abstract class DefaultApolloExtension(private val project: Project, private val 
     }
   }
 
-  private fun registerCodeGenTask(project: Project, service: DefaultService, consumerConfiguration: Configuration): TaskProvider<ApolloGenerateSourcesTask> {
+  private fun registerCodeGenTask(
+      project: Project,
+      service: DefaultService,
+      consumerConfiguration: Configuration,
+  ): TaskProvider<ApolloGenerateSourcesTask> {
     return project.tasks.register(ModelNames.generateApolloSources(service), ApolloGenerateSourcesTask::class.java) { task ->
       task.group = TASK_GROUP
       task.description = "Generate Apollo models for ${service.name} GraphQL queries"
@@ -425,7 +433,7 @@ abstract class DefaultApolloExtension(private val project: Project, private val 
 
     private fun getDeps(configurations: ConfigurationContainer): List<Dep> {
       return configurations.flatMap { configuration ->
-        configuration.incoming.dependencies
+        configuration.dependencies
             .filter {
               it.group == "com.apollographql.apollo3"
             }.map { dependency ->

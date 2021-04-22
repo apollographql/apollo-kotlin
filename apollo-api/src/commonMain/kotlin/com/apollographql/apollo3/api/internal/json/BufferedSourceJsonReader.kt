@@ -911,6 +911,7 @@ class BufferedSourceJsonReader(private val source: BufferedSource) : JsonReader 
       'b' -> '\b'
       'n' -> '\n'
       'r' -> '\r'
+      'f' -> '\u000C'
       '\n', '\'', '"', '\\', '/' -> escaped
       else -> {
         if (!lenient) throw syntaxError("Invalid escape sequence: \\$escaped")

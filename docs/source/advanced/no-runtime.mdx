@@ -22,14 +22,14 @@ To compose HTTP POST request body `Operation` provides such API:
 ```kotlin
 val query = ...
 val payload = query.composeRequestBody()
-val  mediaType = MediaType.parse("application/json; charset=utf-8");
+val  mediaType = MediaType.parse("application/json");
 val requestBody = RequestBody.create(mediaType, payload);
 ```
 
 ```java
 Query query = ...
 ByteString payload = query.composeRequestBody();
-okhttp3.MediaType mediaType = MediaType.parse("application/json; charset=utf-8");
+okhttp3.MediaType mediaType = MediaType.parse("application/json");
 okhttp3.RequestBody requestBody = RequestBody.create(mediaType, payload);
 ```
 
@@ -42,7 +42,7 @@ If GraphQL operation defines any variable with custom scalar type, you must prov
 ScalarTypeAdapters scalarTypeAdapters = new ScalarTypeAdapters(<provide your custom scalar type adapters>);
 Query query = ...
 ByteString payload = query.composeRequestBody(scalarTypeAdapters);
-okhttp3.MediaType mediaType = MediaType.parse("application/json; charset=utf-8");
+okhttp3.MediaType mediaType = MediaType.parse("application/json");
 okhttp3.RequestBody requestBody = RequestBody.create(mediaType, payload);
 ```
 
@@ -54,7 +54,7 @@ boolean autoPersistQueries = ... // encode extensions attributes required by que
 withQueryDocument = ... // encode query document or not
 ScalarTypeAdapters scalarTypeAdapters = ...
 ByteString payload = query.composeRequestBody(autoPersistQueries, withQueryDocument, scalarTypeAdapters);
-okhttp3.MediaType mediaType = MediaType.parse("application/json; charset=utf-8");
+okhttp3.MediaType mediaType = MediaType.parse("application/json");
 okhttp3.RequestBody requestBody = RequestBody.create(mediaType, payload);
 ```
 
