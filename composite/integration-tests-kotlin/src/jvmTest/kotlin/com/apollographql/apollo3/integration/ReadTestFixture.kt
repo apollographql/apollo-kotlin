@@ -9,8 +9,7 @@ actual fun readTestFixture(name: String): String {
 
 actual fun checkTestFixture(actualText: String, name: String) {
   val expectedText = try {
-    // TODO not sure why we remove the suffix there
-    readTestFixture(name).removeSuffix("\n")
+    readTestFixture(name)
   } catch (e: FileNotFoundException) {
     println("$name is not found do not throw here as we can update the fixtures below")
     ""

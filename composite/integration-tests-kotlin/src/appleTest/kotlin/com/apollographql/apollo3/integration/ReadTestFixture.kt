@@ -16,7 +16,6 @@ import kotlin.test.assertEquals
 
 actual fun readTestFixture(name: String): String {
   val file = fopen("../integration-tests/testFixtures/$name", "r")
-  println("cwd is ${cwd()}")
   check (file != null) {
     "Cannot open fixture $name"
   }

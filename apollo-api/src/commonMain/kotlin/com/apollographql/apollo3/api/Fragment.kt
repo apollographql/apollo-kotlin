@@ -8,7 +8,7 @@ import com.apollographql.apollo3.api.json.JsonWriter
  * See https://github.com/graphql/graphql-spec/issues/204
  */
 interface Fragment<D: Fragment.Data> {
-  fun serializeVariables(jsonWriter: JsonWriter, responseAdapterCache: ResponseAdapterCache)
+  fun serializeVariables(writer: JsonWriter, responseAdapterCache: ResponseAdapterCache)
 
   fun adapter(): ResponseAdapter<D>
 
