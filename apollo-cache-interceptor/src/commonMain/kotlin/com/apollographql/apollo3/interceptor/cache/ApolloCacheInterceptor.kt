@@ -6,6 +6,8 @@ import com.apollographql.apollo3.api.Operation
 import com.apollographql.apollo3.api.ResponseAdapterCache
 import com.apollographql.apollo3.cache.CacheHeaders
 import com.apollographql.apollo3.cache.normalized.ApolloStore
+import com.apollographql.apollo3.exception.ApolloCompositeException
+import com.apollographql.apollo3.exception.ApolloException
 import com.apollographql.apollo3.interceptor.ApolloInterceptorChain
 import com.apollographql.apollo3.interceptor.ApolloRequestInterceptor
 import kotlinx.coroutines.flow.Flow
@@ -13,59 +15,73 @@ import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.flow.single
 
 class ApolloCacheInterceptor : ApolloRequestInterceptor {
 
   override fun <D : Operation.Data> intercept(request: ApolloRequest<D>, chain: ApolloInterceptorChain): Flow<ApolloResponse<D>> {
     val cacheInput = request.executionContext[CacheInput]
-    
+    val fetchPolicy = cacheInput?.fetchPolicy ?: FetchPolicy.CacheFirst
+
     return flow {
-      when (cacheInput?.fetchPolicy ?: FetchPolicy.CacheFirst) {
+      when (fetchPolicy) {
         FetchPolicy.CacheFirst -> {
-          val response = readFromCache(request, chain.responseAdapterCache)
-          if (response.data != null) {
-            emit(response)
-          } else {
-            proceed(request, chain).collect { emit(it) }
-          }
-        }
-        FetchPolicy.NetworkFirst -> {
-          proceed(request, chain)
-              .catch {
-                val response = readFromCache(request, chain.responseAdapterCache)
-                if (response.data != null) {
-                  emit(response)
-                } else {
-                  // If we didn't get something in the cache, we need to signal callers that something went
-                  // wrong and rethrow the network error
-                  throw it
-                }
-              }
-              .collect {
-                emit(it)
-              }
-        }
-        FetchPolicy.CacheOnly -> {
-          val response = readFromCache(request, chain.responseAdapterCache)
-          if (response.data != null) {
-            emit(response)
-          }
-        }
-        FetchPolicy.NetworkOnly -> {
-          proceed(request, chain)
-              .collect {
-                emit(it)
-              }
-        }
-        FetchPolicy.CacheAndNetwork -> {
-          val response = readFromCache(request, chain.responseAdapterCache)
-          if (response.data != null) {
-            emit(response)
+          val cacheResult = kotlin.runCatching {
+            readFromCache(request, chain.responseAdapterCache)
           }
 
-          proceed(request, chain).collect {
-            emit(it)
+          val cacheResponse = cacheResult.getOrNull()
+          if (cacheResponse != null) {
+            emit(cacheResponse)
+            return@flow
           }
+
+          val networkResult = kotlin.runCatching {
+            proceed(request, chain).single()
+          }
+
+          val networkResponse  = networkResult.getOrNull()
+          if (networkResponse != null) {
+            emit(networkResponse)
+            return@flow
+          }
+
+          throw ApolloCompositeException(
+              cacheResult.exceptionOrNull() as ApolloException,
+              networkResult.exceptionOrNull() as ApolloException
+          )
+        }
+        FetchPolicy.NetworkFirst -> {
+          val networkResult = kotlin.runCatching {
+            proceed(request, chain).single()
+          }
+
+          val networkResponse  = networkResult.getOrNull()
+          if (networkResponse != null) {
+            emit(networkResponse)
+            return@flow
+          }
+
+          val cacheResult = kotlin.runCatching {
+            readFromCache(request, chain.responseAdapterCache)
+          }
+
+          val cacheResponse = cacheResult.getOrNull()
+          if (cacheResponse != null) {
+            emit(cacheResponse)
+            return@flow
+          }
+
+          throw ApolloCompositeException(
+              networkResult.exceptionOrNull() as ApolloException,
+              cacheResult.exceptionOrNull() as ApolloException,
+          )
+        }
+        FetchPolicy.CacheOnly -> {
+          emit(readFromCache(request, chain.responseAdapterCache))
+        }
+        FetchPolicy.NetworkOnly -> {
+          emit(proceed(request, chain).single())
         }
       }
     }
@@ -79,7 +95,6 @@ class ApolloCacheInterceptor : ApolloRequestInterceptor {
       it.setFromCache(false)
     }
   }
-
 
   private fun <D : Operation.Data> ApolloResponse<D>.setFromCache(fromCache: Boolean): ApolloResponse<D> {
     return copy(executionContext = executionContext + CacheOutput(fromCache))

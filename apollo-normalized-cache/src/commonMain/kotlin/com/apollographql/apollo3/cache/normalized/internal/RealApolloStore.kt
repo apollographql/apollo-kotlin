@@ -91,18 +91,13 @@ class RealApolloStore(
       mode: ReadMode,
   ): D? {
     return cacheHolder.access { cache ->
-      try {
-        operation.readDataFromCache(
-            responseAdapterCache = responseAdapterCache,
-            cache = cache,
-            cacheKeyResolver = cacheKeyResolver,
-            cacheHeaders = cacheHeaders,
-            mode = mode,
-        )
-      } catch (e: Exception) {
-        logger.e(e, "Failed to read cache response")
-        null
-      }
+      operation.readDataFromCache(
+          responseAdapterCache = responseAdapterCache,
+          cache = cache,
+          cacheKeyResolver = cacheKeyResolver,
+          cacheHeaders = cacheHeaders,
+          mode = mode,
+      )
     }
   }
 
@@ -113,18 +108,13 @@ class RealApolloStore(
       cacheHeaders: CacheHeaders,
   ): D? {
     return cacheHolder.access { cache ->
-      try {
-        fragment.readDataFromCache(
-            responseAdapterCache = responseAdapterCache,
-            cache = cache,
-            cacheKeyResolver = cacheKeyResolver,
-            cacheHeaders = cacheHeaders,
-            cacheKey = cacheKey
-        )
-      } catch (e: Exception) {
-        logger.e(e, "Failed to read cache response")
-        null
-      }
+      fragment.readDataFromCache(
+          responseAdapterCache = responseAdapterCache,
+          cache = cache,
+          cacheKeyResolver = cacheKeyResolver,
+          cacheHeaders = cacheHeaders,
+          cacheKey = cacheKey
+      )
     }
   }
 

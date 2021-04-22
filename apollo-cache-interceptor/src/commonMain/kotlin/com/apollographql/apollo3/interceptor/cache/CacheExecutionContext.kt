@@ -9,45 +9,33 @@ import com.apollographql.apollo3.api.Query
 import com.apollographql.apollo3.api.RequestContext
 import com.apollographql.apollo3.api.ResponseContext
 import com.apollographql.apollo3.cache.normalized.ApolloStore
+import com.apollographql.apollo3.exception.ApolloCompositeException
+import com.apollographql.apollo3.exception.ApolloException
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.flow
 
-sealed class FetchPolicy {
+enum class FetchPolicy {
   /**
-   * Fetch the data from the normalized cache first. If it's not present in the
-   * normalized cache or if an exception occurs while trying to fetch it from the normalized cache, then the data is
-   * instead fetched from the network. If an exception happens while fetching from the network, this exception will
-   * be thrown
+   * Try cache first, then network
    *
    * This is the default behaviour
    */
-  object CacheFirst : FetchPolicy()
+  CacheFirst,
 
   /**
-   * Only fetch the data from the normalized cache.
+   * Only try cache
    */
-  object CacheOnly : FetchPolicy()
+  CacheOnly,
 
   /**
-   * Fetch the data from the network firsts. If network request fails, then the
-   * data is fetched from the normalized cache. If the data is not present in the normalized cache, then the
-   * exception which led to the network request failure is rethrown.
+   * Try network first, then cache
    */
-  object NetworkFirst : FetchPolicy()
+  NetworkFirst,
 
   /**
-   * Only etch the GraphQL data from the network. If network request fails, an
-   * exception is thrown.
+   * Only try network
    */
-  object NetworkOnly : FetchPolicy()
-
-  /**
-   * Signal the apollo client to fetch the data from both the network and the cache. If cached data is not
-   * present, only network data will be returned. If cached data is available, but network experiences an error,
-   * cached data is first returned, followed by the network error. If cache data is not available, and network
-   * data is not available, the error of the network request will be propagated. If both network and cache
-   * are available, both will be returned. Cache data is guaranteed to be returned first.
-   */
-  object CacheAndNetwork : FetchPolicy()
+  NetworkOnly,
 }
 
 internal data class CacheInput(
@@ -73,8 +61,34 @@ fun ApolloClient.Builder.normalizedCache(store: ApolloStore): ApolloClient.Build
   )
 }
 
-fun <D : Query.Data> ApolloRequest<D>.withFetchPolicy(fetchPolicy: FetchPolicy): ApolloRequest<D> {
+fun <D: Query.Data> ApolloRequest<D>.withFetchPolicy(fetchPolicy: FetchPolicy): ApolloRequest<D> {
   return withExecutionContext(CacheInput(fetchPolicy = fetchPolicy, watch = false))
+}
+
+fun <D : Query.Data> ApolloClient.queryCacheAndNetwork(queryRequest: ApolloRequest<D>): Flow<ApolloResponse<D>> {
+  return flow {
+    val cacheResult = kotlin.runCatching {
+      query(queryRequest.withFetchPolicy(FetchPolicy.CacheOnly))
+    }
+    val cacheResponse = cacheResult.getOrNull()
+    if (cacheResponse != null) {
+      emit(cacheResponse)
+    }
+    val networkResult = kotlin.runCatching {
+      query(queryRequest.withFetchPolicy(FetchPolicy.NetworkOnly))
+    }
+    val networkResponse = networkResult.getOrNull()
+    if (networkResponse != null) {
+      emit(networkResponse)
+    }
+
+    if (cacheResponse == null && networkResponse == null) {
+      throw ApolloCompositeException(
+          cacheResult.exceptionOrNull() as ApolloException,
+          networkResult.exceptionOrNull() as ApolloException
+      )
+    }
+  }
 }
 
 fun <D : Query.Data> ApolloClient.watch(queryRequest: ApolloRequest<D>): Flow<ApolloResponse<D>> {
@@ -82,5 +96,5 @@ fun <D : Query.Data> ApolloClient.watch(queryRequest: ApolloRequest<D>): Flow<Ap
       watch = true
   ) ?: CacheInput(fetchPolicy = null, watch = true)
 
-  return query(queryRequest.withExecutionContext(cacheInput))
+  return queryAsFlow(queryRequest.withExecutionContext(cacheInput))
 }
