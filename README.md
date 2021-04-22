@@ -21,7 +21,7 @@ This library is designed primarily with Android in mind, but you can use it in a
 * Normalized cache
 * File uploads
 * Custom scalar types
-* Support for RxJava2, RxJava3, and Coroutines
+* Support for RxJava2, RxJava3, Coroutines and Reactor
 
 ## Getting started
 
@@ -67,7 +67,9 @@ dependencies {
   implementation("com.apollographql.apollo:apollo-normalized-cache-sqlite:x.y.z")
   // optional: for coroutines support
   implementation("com.apollographql.apollo:apollo-coroutines-support:x.y.z")
-  // optional: for RxJava3 support  
+  // optional: for Reactor support
+  implementation("com.apollographql.apollo:apollo-reactor-support:x.y.z")
+  // optional: for RxJava3 support
   implementation("com.apollographql.apollo:apollo-rx3-support:x.y.z")
   // optional: Most of apollo-android does not depend on Android in practice and runs on any JVM or on Kotlin native. apollo-android-support contains a few Android-only helper classes. For an example to send logs to logcat or run callbacks on the main thread.
   implementation("com.apollographql.apollo:apollo-android-support:x.y.z")

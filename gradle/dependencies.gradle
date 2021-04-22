@@ -19,6 +19,7 @@ def versions = [
     okHttp4               : '4.9.0',
     okHttp                : '3.12.11', // Keep this to keep supporting older Android devices
     okio                  : '2.9.0',
+    reactor               : '3.4.6',
     rxjava                : '2.2.20',
     rxjava3               : '3.0.7',
     rxandroid             : '2.0.1',
@@ -85,6 +86,9 @@ ext.dep = [
     poet                  : [
         java  : "com.squareup:javapoet:$versions.javaPoet",
         kotlin: "com.squareup:kotlinpoet:$versions.kotlinPoet",
+    ],
+    reactor               : [
+        core   : "io.projectreactor:reactor-core:$versions.reactor",
     ],
     rx                    : [
         java   : "io.reactivex.rxjava2:rxjava:$versions.rxjava",
