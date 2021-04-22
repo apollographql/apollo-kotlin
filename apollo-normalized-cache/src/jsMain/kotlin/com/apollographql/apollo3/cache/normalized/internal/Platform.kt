@@ -10,7 +10,7 @@ internal actual object Platform {
 
 actual class ReentrantReadWriteLock actual constructor()
 
-internal actual inline fun <T> ReentrantReadWriteLock.read(action: () -> T): T {
+internal actual inline fun <T> ReentrantReadWriteLock.access(action: () -> T): T {
   return action()
 }
 
