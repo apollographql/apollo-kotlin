@@ -17,8 +17,14 @@ class Error(
     /**
      * Custom attributes associated with this error
      */
-    val customAttributes: Map<String, Any?> = emptyMap()
+    val customAttributes: Map<String, Any?> = emptyMap(),
 ) {
+
+
+  override fun toString(): String {
+    return "Error(message = $message, locations = $locations, customAttributes = $customAttributes)"
+  }
+
   /**
    * Represents the location of the error in the GraphQL operation sent to the server. This location is represented in
    * terms of the line and column number.
@@ -32,6 +38,10 @@ class Error(
       /**
        * Column number of the error location.
        */
-      val column: Long
-  )
+      val column: Long,
+  ) {
+    override fun toString(): String {
+      return "Location(line = $line, column = $column)"
+    }
+  }
 }
