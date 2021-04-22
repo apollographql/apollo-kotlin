@@ -128,8 +128,6 @@ abstract class DefaultApolloExtension(
     return project.tasks.register(ModelNames.checkApolloVersions()) {
       val outputFile = BuildDirLayout.versionCheck(project)
 
-
-
       it.inputs.property("allVersions") {
         val allDeps = (
             getDeps(project.rootProject.buildscript.configurations) +
@@ -141,7 +139,7 @@ abstract class DefaultApolloExtension(
       it.outputs.file(outputFile)
 
       it.doLast {
-        val allVersions = it.inputs.properties["versions"] as List<*>
+        val allVersions = it.inputs.properties["allVersions"] as List<*>
 
         check(allVersions.size <= 1) {
           "ApolloGraphQL: All apollo versions should be the same. Found:\n$allVersions"
