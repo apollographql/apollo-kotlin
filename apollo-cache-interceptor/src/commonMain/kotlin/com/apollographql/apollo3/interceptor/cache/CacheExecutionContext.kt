@@ -4,16 +4,14 @@ import com.apollographql.apollo3.ApolloClient
 import com.apollographql.apollo3.api.ExecutionContext
 import com.apollographql.apollo3.api.Operation
 import com.apollographql.apollo3.api.ApolloResponse
-import com.apollographql.apollo3.cache.normalized.NormalizedCache
 import com.apollographql.apollo3.ApolloRequest
+import com.apollographql.apollo3.api.Query
 import com.apollographql.apollo3.api.RequestContext
 import com.apollographql.apollo3.api.ResponseContext
 import com.apollographql.apollo3.cache.normalized.ApolloStore
-import com.apollographql.apollo3.cache.normalized.CacheKeyResolver
-import com.apollographql.apollo3.cache.normalized.NormalizedCacheFactory
-import com.apollographql.apollo3.cache.normalized.internal.RealApolloStore
+import kotlinx.coroutines.flow.Flow
 
-sealed class FetchPolicy : RequestContext(Key) {
+sealed class FetchPolicy {
   /**
    * Fetch the data from the normalized cache first. If it's not present in the
    * normalized cache or if an exception occurs while trying to fetch it from the normalized cache, then the data is
@@ -50,22 +48,32 @@ sealed class FetchPolicy : RequestContext(Key) {
    * are available, both will be returned. Cache data is guaranteed to be returned first.
    */
   object CacheAndNetwork : FetchPolicy()
-
-  companion object Key : ExecutionContext.Key<FetchPolicy>
 }
 
-data class CacheInfo(
+internal data class CacheInput(
+    val fetchPolicy: FetchPolicy,
+    val watch: Boolean
+): RequestContext(Key) {
+  companion object Key : ExecutionContext.Key<CacheInput>
+}
+
+internal data class CacheOutput(
     val isFromCache: Boolean
-) : ResponseContext(CacheInfo) {
-  companion object Key : ExecutionContext.Key<CacheInfo>
+) : ResponseContext(CacheOutput) {
+  companion object Key : ExecutionContext.Key<CacheOutput>
 }
 
 val <D : Operation.Data> ApolloResponse<D>.isFromCache
-  get() = executionContext[CacheInfo]?.isFromCache ?: false
+  get() = executionContext[CacheOutput]?.isFromCache ?: false
 
 fun ApolloClient.Builder.normalizedCache(store: ApolloStore): ApolloClient.Builder {
   return addInterceptor(
       ApolloCacheInterceptor(),
       store
   )
+}
+
+fun <D : Query.Data> ApolloClient.watch(queryRequest: ApolloRequest<D>): Flow<ApolloResponse<D>> {
+  queryRequest.executionContext[CacheInput]
+  return queryRequest.execute()
 }

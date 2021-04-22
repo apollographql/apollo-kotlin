@@ -80,7 +80,7 @@ class ApolloCacheInterceptor : ApolloRequestInterceptor {
 
 
   private fun <D : Operation.Data> ApolloResponse<D>.setFromCache(fromCache: Boolean): ApolloResponse<D> {
-    return copy(executionContext = executionContext + CacheInfo(fromCache))
+    return copy(executionContext = executionContext + CacheOutput(fromCache))
   }
 
   private suspend fun <D : Operation.Data> writeToCache(request: ApolloRequest<D>, data: D, responseAdapterCache: ResponseAdapterCache) {
@@ -100,7 +100,7 @@ class ApolloCacheInterceptor : ApolloRequestInterceptor {
         requestUuid = request.requestUuid,
         operation = operation,
         data = data,
-        executionContext = request.executionContext + CacheInfo(true)
+        executionContext = request.executionContext + CacheOutput(true)
     )
   }
 }

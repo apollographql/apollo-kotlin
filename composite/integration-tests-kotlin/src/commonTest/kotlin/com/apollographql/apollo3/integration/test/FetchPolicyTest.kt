@@ -68,8 +68,7 @@ class FetchPolicyTest {
       val query = HeroNameQuery()
       val data = HeroNameQuery.Data(HeroNameQuery.Data.Hero("R2-D2"))
 
-      val request = ApolloRequest(query)
-          .withExecutionContext(FetchPolicy.NetworkFirst)
+      val request = ApolloRequest(query).withExecutionContext(FetchPolicy.NetworkFirst)
 
       mockServer.enqueue(query, data)
       var responses = apolloClient
