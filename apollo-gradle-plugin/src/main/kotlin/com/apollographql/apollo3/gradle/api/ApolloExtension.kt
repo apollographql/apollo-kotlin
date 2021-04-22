@@ -1,6 +1,7 @@
 package com.apollographql.apollo3.gradle.api
 
 import org.gradle.api.Action
+import org.gradle.api.provider.Property
 
 /**
  * The entry point for configuring the apollo plugin.
@@ -43,4 +44,6 @@ interface ApolloExtension: Service {
    * - src/$sourceSetName/graphql/Query.graphql
    */
   fun createAllKotlinJvmSourceSetServices(suffix: String, action: Action<Service> = Action<Service>{})
+
+  val linkSqlite: Property<Boolean>
 }

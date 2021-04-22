@@ -19,9 +19,11 @@ import org.gradle.api.artifacts.Configuration
 import org.gradle.api.artifacts.ConfigurationContainer
 import org.gradle.api.attributes.Usage
 import org.gradle.api.file.SourceDirectorySet
+import org.gradle.api.provider.Property
 import org.gradle.api.tasks.TaskProvider
 import org.gradle.util.GradleVersion
 import org.jetbrains.kotlin.gradle.dsl.KotlinMultiplatformExtension
+import org.jetbrains.kotlin.gradle.plugin.mpp.KotlinNativeCompilation
 import java.io.File
 
 abstract class DefaultApolloExtension(private val project: Project, private val defaultService: DefaultService) : ApolloExtension, Service by defaultService {
@@ -75,6 +77,7 @@ abstract class DefaultApolloExtension(private val project: Project, private val 
     project.tasks.register(ModelNames.convertApolloSchema(), ApolloConvertSchemaTask::class.java) { task ->
       task.group = TASK_GROUP
     }
+
     project.afterEvaluate {
       if (registerDefaultService) {
         registerService(defaultService)
@@ -106,9 +109,37 @@ abstract class DefaultApolloExtension(private val project: Project, private val 
           """.trimIndent()
         }
       }
+
+      maybeLinkSqlite()
     }
   }
 
+  private fun maybeLinkSqlite() {
+    val doLink = when (linkSqlite.orNull) {
+      false -> return // explicit opt-out
+      true -> true // explicit opt-in
+      null -> { // default: automatic detection
+        project.configurations.any {
+          it.dependencies.any {
+            // Try to detect if a native version of apollo-normalized-cache-sqlite is in the classpath
+            it.name.contains("apollo-normalized-cache-sqlite")
+                && !it.name.contains("jvm")
+                && !it.name.contains("android")
+          }
+        }
+      }
+    }
+
+    if (doLink) {
+      val extension = project.kotlinMultiplatformExtension ?: return
+      extension.targets
+          .flatMap { it.compilations }
+          .filterIsInstance<KotlinNativeCompilation>()
+          .forEach { compilationUnit ->
+            compilationUnit.kotlinOptions.freeCompilerArgs += arrayOf("-linker-options", "-lsqlite3")
+          }
+    }
+  }
   /**
    * Call from users to explicitly register a service or by the plugin to register the implicit service
    */
@@ -414,6 +445,7 @@ abstract class DefaultApolloExtension(private val project: Project, private val 
     }
   }
 
+  abstract override val linkSqlite: Property<Boolean>
 
   companion object {
     private const val TASK_GROUP = "apollo"
