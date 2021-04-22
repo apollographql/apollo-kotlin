@@ -26,7 +26,7 @@ class Socket(private val socketFd: Int) {
   private val running = AtomicInt(1)
   private val lock = SynchronizedObject()
   private val responseQueue = AtomicReference<List<MockResponse>>(emptyList())
-  private val requestQueue = AtomicReference<List<RecordedRequest>>(emptyList())
+  private val requestQueue = AtomicReference<List<MockRecordedRequest>>(emptyList())
 
   init {
     check(pipe(pipeFd) == 0) {
@@ -141,7 +141,7 @@ class Socket(private val socketFd: Int) {
     }
   }
 
-  fun takeRequest(): RecordedRequest {
+  fun takeRequest(): MockRecordedRequest {
     return synchronized(lock) {
       val requests = requestQueue.value
       check(requests.isNotEmpty())

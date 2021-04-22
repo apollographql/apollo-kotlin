@@ -25,7 +25,7 @@ import kotlin.test.assertTrue
 /**
  * A series of tests against StreamResponseParser and the generated parsers
  */
-class ResponseParserTest {
+class FromResponseTest {
 
   @Test
   @Throws(Exception::class)

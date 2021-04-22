@@ -12,6 +12,7 @@ import platform.posix.fread
 import platform.posix.fseek
 import platform.posix.ftell
 import platform.posix.rewind
+import kotlin.test.assertEquals
 
 actual fun readTestFixture(name: String): String {
   val file = fopen("../integration-tests/testFixtures/$name", "r")
@@ -29,4 +30,9 @@ actual fun readTestFixture(name: String): String {
     fread(tmp, sizeOf<ByteVar>().convert(), size.convert(), file)
     tmp.toKString()
   }
+}
+
+actual fun checkTestFixture(actualText: String, name: String) {
+  // This does not update the test fixture automatically, this is left to the JVM implementation
+  assertEquals(actualText, readTestFixture(name))
 }

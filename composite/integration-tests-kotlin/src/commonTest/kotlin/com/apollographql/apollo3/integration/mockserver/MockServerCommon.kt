@@ -30,7 +30,7 @@ fun parseHeader(line: String): Pair<String, String> {
   return line.substring(0, index).trim() to line.substring(index + 1, line.length).trim()
 }
 
-fun readRequest(source: BufferedSource): RecordedRequest {
+fun readRequest(source: BufferedSource): MockRecordedRequest {
   var line = source.readUtf8Line()
   check (line != null) {
     "Cannot read request line"
@@ -64,7 +64,7 @@ fun readRequest(source: BufferedSource): RecordedRequest {
     source.read(buffer, contentLength)
   }
 
-  return RecordedRequest(
+  return MockRecordedRequest(
       method = method,
       path = path,
       version = version,
@@ -101,7 +101,7 @@ class MockResponse(
   ) : this(statusCode, body.encodeUtf8(), headers)
 }
 
-class RecordedRequest(
+class MockRecordedRequest(
     val method: String,
     val path: String,
     val version: String,

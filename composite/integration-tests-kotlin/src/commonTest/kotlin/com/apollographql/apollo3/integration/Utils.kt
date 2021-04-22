@@ -27,3 +27,4 @@ fun MockServer.enqueue(string: String) {
 }
 
 fun readResource(name: String) = readTestFixture("resources/$name")
+

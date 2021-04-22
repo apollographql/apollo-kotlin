@@ -99,7 +99,7 @@ actual class MockServer {
     nativeHeap.free(pthreadT.rawPtr)
   }
 
-  actual fun takeRequest(): RecordedRequest {
+  actual fun takeRequest(): MockRecordedRequest {
     return socket.takeRequest()
   }
 }
