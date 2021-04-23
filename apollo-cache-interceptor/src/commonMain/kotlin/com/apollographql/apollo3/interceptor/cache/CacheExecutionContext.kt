@@ -91,6 +91,14 @@ fun <D : Query.Data> ApolloClient.queryCacheAndNetwork(queryRequest: ApolloReque
   }
 }
 
+fun <D : Query.Data> ApolloClient.watch(query: Query<D>): Flow<ApolloResponse<D>> {
+  val queryRequest = ApolloRequest(query).withExecutionContext(
+      CacheInput(fetchPolicy = null, watch = true)
+  )
+  return queryAsFlow(queryRequest)
+}
+
+
 fun <D : Query.Data> ApolloClient.watch(queryRequest: ApolloRequest<D>): Flow<ApolloResponse<D>> {
   val cacheInput = queryRequest.executionContext[CacheInput]?.copy(
       watch = true

@@ -84,6 +84,18 @@ class RealApolloStore(
     }
   }
 
+  override fun <D : Operation.Data> normalize(
+      operation: Operation<D>,
+      data: D,
+      responseAdapterCache: ResponseAdapterCache,
+  ): Map<String, Record> {
+    return operation.normalize(
+        data,
+        responseAdapterCache,
+        cacheKeyResolver
+    )
+  }
+
   override suspend fun <D : Operation.Data> readOperation(
       operation: Operation<D>,
       responseAdapterCache: ResponseAdapterCache,

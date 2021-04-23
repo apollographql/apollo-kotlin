@@ -156,6 +156,12 @@ abstract class ApolloStore: ClientContext(ApolloStore) {
    */
   abstract suspend fun remove(cacheKeys: List<CacheKey>, cascade: Boolean = true): Int
 
+  abstract fun <D : Operation.Data> normalize(
+      operation: Operation<D>,
+      data: D,
+      responseAdapterCache: ResponseAdapterCache
+  ): Map<String, Record>
+
   /**
    * @param keys A set of keys of [Record] which have changed.
    */
