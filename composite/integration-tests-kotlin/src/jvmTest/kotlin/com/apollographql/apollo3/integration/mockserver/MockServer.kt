@@ -1,4 +1,4 @@
-package com.apollographql.apollo3.integration
+package com.apollographql.apollo3.integration.mockserver
 
 import okhttp3.Headers
 import okhttp3.mockwebserver.MockWebServer
@@ -19,9 +19,9 @@ actual class MockServer {
     )
   }
 
-  actual fun takeRequest(): RecordedRequest {
+  actual fun takeRequest(): MockRecordedRequest {
     return mockWebServer.takeRequest().let {
-      RecordedRequest(
+      MockRecordedRequest(
           method = it.method,
           path = it.path,
           version = parseRequestLine(it.requestLine).third,

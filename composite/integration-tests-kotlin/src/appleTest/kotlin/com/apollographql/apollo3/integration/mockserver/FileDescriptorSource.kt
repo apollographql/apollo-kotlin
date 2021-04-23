@@ -1,4 +1,4 @@
-package com.apollographql.apollo3.integration
+package com.apollographql.apollo3.integration.mockserver
 
 import kotlinx.cinterop.ByteVar
 import kotlinx.cinterop.allocArray

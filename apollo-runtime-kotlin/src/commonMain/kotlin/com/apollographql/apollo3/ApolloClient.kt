@@ -23,7 +23,7 @@ import kotlinx.coroutines.flow.flow
 /**
  * The main entry point for the Apollo runtime. An [ApolloClient] is responsible for executing queries, mutations and subscriptions
  */
-class ApolloClient private constructor(
+class ApolloClient internal constructor(
     private val networkTransport: NetworkTransport,
     private val subscriptionNetworkTransport: NetworkTransport,
     private val responseAdapterCache: ResponseAdapterCache,
@@ -156,4 +156,16 @@ class ApolloClient private constructor(
       this.customScalarAdapters = customScalarAdapters
     }
   }
+}
+
+fun ApolloClient(serverUrl: String): ApolloClient {
+  val transport = ApolloHttpNetworkTransport(serverUrl = serverUrl)
+
+  return ApolloClient(
+      networkTransport = transport,
+      subscriptionNetworkTransport = transport,
+      responseAdapterCache = ResponseAdapterCache.DEFAULT,
+      interceptors = emptyList(),
+      executionContext = ExecutionContext.Empty
+  )
 }

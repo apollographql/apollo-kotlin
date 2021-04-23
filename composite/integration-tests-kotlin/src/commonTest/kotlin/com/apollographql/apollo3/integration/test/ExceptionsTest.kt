@@ -1,17 +1,16 @@
 package com.apollographql.apollo3.integration.test
 
-import HeroNameQuery
 import com.apollographql.apollo3.ApolloClient
 import com.apollographql.apollo3.exception.ApolloHttpException
 import com.apollographql.apollo3.exception.ApolloNetworkException
-import com.apollographql.apollo3.integration.MockResponse
-import com.apollographql.apollo3.integration.MockServer
+import com.apollographql.apollo3.integration.mockserver.MockResponse
+import com.apollographql.apollo3.integration.mockserver.MockServer
 import com.apollographql.apollo3.integration.enqueue
+import com.apollographql.apollo3.integration.normalizer.HeroNameQuery
 import com.apollographql.apollo3.testing.runWithMainLoop
 import kotlinx.coroutines.flow.retryWhen
 import kotlinx.coroutines.flow.single
 import kotlin.test.BeforeTest
-import kotlin.test.Ignore
 import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertTrue

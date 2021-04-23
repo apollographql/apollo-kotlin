@@ -1,4 +1,5 @@
 import org.gradle.api.Project
+import org.jetbrains.kotlin.gradle.dsl.KotlinMultiplatformExtension
 
 fun Project.configureMppDefaults(withJs: Boolean = true) {
   val kotlinExtension = extensions.findByName("kotlin") as? org.jetbrains.kotlin.gradle.dsl.KotlinMultiplatformExtension
@@ -40,39 +41,40 @@ fun Project.configureMppDefaults(withJs: Boolean = true) {
       macosX64("apple")
     }
 
-    /**
-     * configure tests
-     */
-    sourceSets.getByName("commonTest") {
-      it.dependencies {
-        implementation(kotlin("test-common"))
-        implementation(kotlin("test-annotations-common"))
+    addTestDependencies(withJs)
+
+    if (System.getProperty("idea.sync.active") == null) {
+      /**
+       * Evil tasks to fool IntelliJ into running the appropriate tests when clicking the green triangle in the gutter
+       * IntelliJ "sees" apple during sync but the actual tasks are macosX64
+       */
+      tasks.register("cleanAppleTest") {
+        it.dependsOn("cleanMacosX64Test")
       }
-    }
-    if (withJs) {
-      sourceSets.getByName("jsTest") {
-        it.dependencies {
-          implementation(kotlin("test-js"))
-        }
-      }
-    }
-    sourceSets.getByName("jvmTest") {
-      it.dependencies {
-        implementation(kotlin("test-junit"))
+      tasks.register("appleTest") {
+        it.dependsOn("macosX64Test")
       }
     }
   }
+}
 
-  if (System.getProperty("idea.sync.active") == null) {
-    /**
-     * Evil tasks to fool IntelliJ into running the appropriate tests when clicking the green triangle in the gutter
-     * IntelliJ "sees" apple during sync but the actual tasks are macosX64
-     */
-    tasks.register("cleanAppleTest") {
-      it.dependsOn("cleanMacosX64Test")
+fun KotlinMultiplatformExtension.addTestDependencies(withJs: Boolean) {
+  sourceSets.getByName("commonTest") {
+    it.dependencies {
+      implementation(kotlin("test-common"))
+      implementation(kotlin("test-annotations-common"))
     }
-    tasks.register("appleTest") {
-      it.dependsOn("macosX64Test")
+  }
+  if (withJs) {
+    sourceSets.getByName("jsTest") {
+      it.dependencies {
+        implementation(kotlin("test-js"))
+      }
+    }
+  }
+  sourceSets.getByName("jvmTest") {
+    it.dependencies {
+      implementation(kotlin("test-junit"))
     }
   }
 }

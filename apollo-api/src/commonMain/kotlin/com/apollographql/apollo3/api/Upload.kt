@@ -1,6 +1,8 @@
 package com.apollographql.apollo3.api
 
 import okio.BufferedSink
+import okio.BufferedSource
+import okio.ByteString.Companion.encodeUtf8
 
 /**
  * A class that represents a file upload in a multipart upload
@@ -33,4 +35,42 @@ interface Upload {
    *  Writes the content of this request to `sink`.
    */
   fun writeTo(sink: BufferedSink)
+
+  companion object {
+    fun fromString(string: String, fileName: String? = null, contentType: String = "text/plain"): Upload {
+      val byteString = string.encodeUtf8()
+      return object : Upload {
+        override val contentType = contentType
+        override val contentLength = byteString.size.toLong()
+        override val fileName = fileName
+
+        override fun writeTo(sink: BufferedSink) {
+          sink.write(byteString)
+        }
+      }
+    }
+    fun fromByteArray(byteArray: ByteArray, fileName: String? = null, contentType: String = "text/plain"): Upload {
+      return object : Upload {
+        override val contentType = contentType
+        override val contentLength = byteArray.size.toLong()
+        override val fileName = fileName
+
+        override fun writeTo(sink: BufferedSink) {
+          sink.write(byteArray)
+        }
+      }
+    }
+    fun fromSource(source: BufferedSource, contentLength: Long = -1, fileName: String? = null, contentType: String = "text/plain"): Upload {
+      return object : Upload {
+        override val contentType = contentType
+        override val contentLength = contentLength
+        override val fileName = fileName
+
+        override fun writeTo(sink: BufferedSink) {
+          sink.writeAll(source)
+        }
+      }
+    }
+  }
 }
+
