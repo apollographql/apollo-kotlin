@@ -12,6 +12,7 @@ import com.apollographql.apollo3.api.ResponseField
 import com.apollographql.apollo3.api.json.JsonWriter
 import com.apollographql.apollo3.api.obj
 import com.example.fragments_with_type_condition.adapter.TestQuery_ResponseAdapter
+import com.example.fragments_with_type_condition.fragment.DroidDetails
 import com.example.fragments_with_type_condition.fragment.HumanDetails
 import com.example.fragments_with_type_condition.responsefields.TestQuery_ResponseFields
 import kotlin.Double
@@ -46,6 +47,8 @@ class TestQuery : Query<TestQuery.Data> {
       companion object {
         fun R2.humanDetails() = this as? HumanDetails
 
+        fun R2.droidDetails() = this as? DroidDetails
+
         fun R2.asHuman() = this as? HumanR2
 
         fun R2.asDroid() = this as? DroidR2
@@ -69,12 +72,12 @@ class TestQuery : Query<TestQuery.Data> {
       /**
        * What others call this droid
        */
-      val name: String,
+      override val name: String,
       /**
        * This droid's primary function
        */
-      val primaryFunction: String?
-    ) : R2
+      override val primaryFunction: String?
+    ) : R2, DroidDetails
 
     data class OtherR2(
       override val __typename: String
@@ -85,6 +88,8 @@ class TestQuery : Query<TestQuery.Data> {
 
       companion object {
         fun Luke.humanDetails() = this as? HumanDetails
+
+        fun Luke.droidDetails() = this as? DroidDetails
 
         fun Luke.asHuman() = this as? HumanLuke
 
@@ -109,12 +114,12 @@ class TestQuery : Query<TestQuery.Data> {
       /**
        * What others call this droid
        */
-      val name: String,
+      override val name: String,
       /**
        * This droid's primary function
        */
-      val primaryFunction: String?
-    ) : Luke
+      override val primaryFunction: String?
+    ) : Luke, DroidDetails
 
     data class OtherLuke(
       override val __typename: String

@@ -51,6 +51,8 @@ interface HeroDetails {
   companion object {
     fun HeroDetails.humanDetails() = this as? HumanDetails
 
+    fun HeroDetails.droidDetails() = this as? DroidDetails
+
     fun HeroDetails.asHuman() = this as? HumanHeroDetails
 
     fun HeroDetails.asDroid() = this as? DroidHeroDetails
@@ -97,7 +99,7 @@ interface HumanHeroDetails : HeroDetails, HumanDetails {
   }
 }
 
-interface DroidHeroDetails : HeroDetails {
+interface DroidHeroDetails : HeroDetails, DroidDetails {
   override val __typename: String
 
   /**
@@ -108,7 +110,7 @@ interface DroidHeroDetails : HeroDetails {
   /**
    * This droid's primary function
    */
-  val primaryFunction: String?
+  override val primaryFunction: String?
 
   /**
    * The friends of the character exposed as a connection with edges
