@@ -5,13 +5,15 @@ import com.apollographql.apollo3.ApolloRequest
 import com.apollographql.apollo3.cache.normalized.ApolloStore
 import com.apollographql.apollo3.cache.normalized.CacheKeyResolver
 import com.apollographql.apollo3.cache.normalized.MemoryCacheFactory
-import com.apollographql.apollo3.cache.normalized.internal.ApolloStore
+import com.apollographql.apollo3.exception.ApolloCompositeException
 import com.apollographql.apollo3.integration.mockserver.MockServer
 import com.apollographql.apollo3.integration.enqueue
 import com.apollographql.apollo3.integration.normalizer.HeroNameQuery
 import com.apollographql.apollo3.interceptor.cache.FetchPolicy
 import com.apollographql.apollo3.interceptor.cache.isFromCache
 import com.apollographql.apollo3.interceptor.cache.normalizedCache
+import com.apollographql.apollo3.interceptor.cache.queryCacheAndNetwork
+import com.apollographql.apollo3.interceptor.cache.withFetchPolicy
 import com.apollographql.apollo3.testing.runWithMainLoop
 import kotlinx.coroutines.flow.single
 import kotlinx.coroutines.flow.toList
@@ -40,73 +42,71 @@ class FetchPolicyTest {
   }
 
   @Test
-  fun `CACHE_FIRST test`() {
+  fun cacheFirst() {
     val query = HeroNameQuery()
     val data = HeroNameQuery.Data(HeroNameQuery.Data.Hero("R2-D2"))
     mockServer.enqueue(query, data)
 
+    // Cache first is also the default, no need to set the fetchPolicy
     runWithMainLoop {
-      var response = apolloClient
-          .query(query)
-          .single()
+      // First query should hit the network and save in cache
+      var response = apolloClient.query(query)
 
       assertNotNull(response.data)
       assertFalse(response.isFromCache)
 
-      response = apolloClient
-          .query(query)
-          .single()
+      // Second query should only hit the cache
+      response = apolloClient.query(query)
 
       assertNotNull(response.data)
       assertTrue(response.isFromCache)
+
+      // Clear the store and offer a malformed response, we should get a composite error
+      store.clearAll()
+      mockServer.enqueue("malformed")
+      try {
+        apolloClient.query(query)
+        fail("we expected the query to fail")
+      } catch (e: Exception) {
+        assertTrue(e is ApolloCompositeException)
+      }
     }
   }
 
   @Test
-  fun `NETWORK_FIRST test`() {
+  fun networkFirst() {
     runWithMainLoop {
       val query = HeroNameQuery()
       val data = HeroNameQuery.Data(HeroNameQuery.Data.Hero("R2-D2"))
 
-      val request = ApolloRequest(query)
-          .withExecutionContext(FetchPolicy.NetworkFirst)
+      val request = ApolloRequest(query).withFetchPolicy(FetchPolicy.NetworkFirst)
 
+      // First query should hit the network and save in cache
       mockServer.enqueue(query, data)
-      var responses = apolloClient
-          .query(request)
-          .toList()
+      var response = apolloClient.query(request)
 
-      assertEquals(1, responses.size)
-      assertNotNull(responses[0].data)
-      assertFalse(responses[0].isFromCache)
+      assertNotNull(response.data)
+      assertFalse(response.isFromCache)
 
       // Now data is cached but it shouldn't be used since network will go through
       mockServer.enqueue(query, data)
-      responses = apolloClient
-          .query(request)
-          .toList()
+      response = apolloClient.query(request)
 
-      assertEquals(1, responses.size)
-      assertNotNull(responses[0].data)
-      assertFalse(responses[0].isFromCache)
+      assertNotNull(response.data)
+      assertFalse(response.isFromCache)
 
-      // Network error -> we should hit the cache
+      // Network error -> we should hit now the cache
       mockServer.enqueue("malformed")
-      responses = apolloClient
-          .query(request)
-          .toList()
+      response = apolloClient.query(request)
 
-      assertEquals(1, responses.size)
-      assertNotNull(responses[0].data)
-      assertTrue(responses[0].isFromCache)
+      assertNotNull(response.data)
+      assertTrue(response.isFromCache)
 
       // Network error and no cache -> we should get an error
       mockServer.enqueue("malformed")
       store.clearAll()
       try {
-        apolloClient
-            .query(request)
-            .toList()
+        apolloClient.query(request)
         fail("NETWORK_FIRST should throw the network exception if nothing is in the cache")
       } catch (e: Exception) {
 
@@ -115,94 +115,77 @@ class FetchPolicyTest {
   }
 
   @Test
-  fun `CACHE_ONLY test`() {
+  fun cacheOnly() {
     runWithMainLoop {
       val query = HeroNameQuery()
       val data = HeroNameQuery.Data(HeroNameQuery.Data.Hero("R2-D2"))
 
       var request = ApolloRequest(query)
 
-      // First cache the response
+      // First query should hit the network and save in cache
       mockServer.enqueue(query, data)
-      var responses = apolloClient
-          .query(request)
-          .toList()
+      var response = apolloClient.query(request)
 
-      assertEquals(1, responses.size)
-      assertNotNull(responses[0].data)
-      assertFalse(responses[0].isFromCache)
+      assertNotNull(response.data)
+      assertFalse(response.isFromCache)
 
-      // Now make the request cache only
-      request = request.withExecutionContext(FetchPolicy.CacheOnly)
+      request = request.withFetchPolicy(FetchPolicy.CacheOnly)
 
-      responses = apolloClient
-          .query(request)
-          .toList()
+      // Second query should only hit the network
+      response = apolloClient.query(request)
 
       // And make sure we don't read the network
-      assertEquals(1, responses.size)
-      assertNotNull(responses[0].data)
-      assertTrue(responses[0].isFromCache)
+      assertNotNull(response.data)
+      assertTrue(response.isFromCache)
     }
   }
 
   @Test
-  fun `NETWORK_ONLY test`() {
+  fun networkOnly() {
     runWithMainLoop {
       val query = HeroNameQuery()
       val data = HeroNameQuery.Data(HeroNameQuery.Data.Hero("R2-D2"))
 
-      val request = ApolloRequest(query)
-          .withExecutionContext(FetchPolicy.NetworkOnly)
+      val request = ApolloRequest(query).withFetchPolicy(FetchPolicy.NetworkOnly)
 
-      // cache the response
+      // First query should hit the network and save in cache
       mockServer.enqueue(query, data)
-      val responses = apolloClient
-          .query(request)
-          .toList()
+      val response = apolloClient.query(request)
 
-      assertEquals(1, responses.size)
-      assertNotNull(responses[0].data)
-      assertFalse(responses[0].isFromCache)
+      assertNotNull(response.data)
+      assertFalse(response.isFromCache)
 
       // Offer a malformed response, it should fail
       mockServer.enqueue("malformed")
-      val result = kotlin.runCatching {
-        apolloClient
-            .query(request)
-            .toList()
+      try {
+        apolloClient.query(request)
         fail("we expected a failure")
-      }
+      } catch (e: Exception) {
 
-      assertTrue(result.isFailure)
+      }
     }
   }
 
   @Test
-  fun `cache_and_network test`() {
+  fun queryCacheAndNetwork() {
     runWithMainLoop {
       val query = HeroNameQuery()
       val data = HeroNameQuery.Data(HeroNameQuery.Data.Hero("R2-D2"))
 
-      var request = ApolloRequest(query)
-          .withExecutionContext(FetchPolicy.CacheFirst)
+      val request = ApolloRequest(query).withFetchPolicy(FetchPolicy.CacheFirst)
 
       // cache the response
       mockServer.enqueue(query, data)
-      var responses = apolloClient
+      val response = apolloClient
           .query(request)
-          .toList()
 
-      assertEquals(1, responses.size)
-      assertNotNull(responses[0].data)
-      assertFalse(responses[0].isFromCache)
+      assertNotNull(response.data)
+      assertFalse(response.isFromCache)
 
       // Now make the request cache and network
-      request = request.withExecutionContext(FetchPolicy.CacheAndNetwork)
-
       mockServer.enqueue(query, data)
-      responses = apolloClient
-          .query(request)
+      val responses = apolloClient
+          .queryCacheAndNetwork(request)
           .toList()
 
       // We should have 2 responses

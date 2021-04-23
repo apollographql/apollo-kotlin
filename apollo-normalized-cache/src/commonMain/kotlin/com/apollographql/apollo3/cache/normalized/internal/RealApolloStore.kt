@@ -10,6 +10,7 @@ import com.apollographql.apollo3.cache.normalized.ApolloStore
 import com.apollographql.apollo3.cache.normalized.CacheKey
 import com.apollographql.apollo3.cache.normalized.CacheKeyResolver
 import com.apollographql.apollo3.cache.normalized.NormalizedCacheFactory
+import com.apollographql.apollo3.cache.normalized.Platform
 import com.apollographql.apollo3.cache.normalized.Record
 import com.benasher44.uuid.Uuid
 import kotlin.reflect.KClass
@@ -84,6 +85,18 @@ class RealApolloStore(
     }
   }
 
+  override fun <D : Operation.Data> normalize(
+      operation: Operation<D>,
+      data: D,
+      responseAdapterCache: ResponseAdapterCache,
+  ): Map<String, Record> {
+    return operation.normalize(
+        data,
+        responseAdapterCache,
+        cacheKeyResolver
+    )
+  }
+
   override suspend fun <D : Operation.Data> readOperation(
       operation: Operation<D>,
       responseAdapterCache: ResponseAdapterCache,
@@ -91,18 +104,13 @@ class RealApolloStore(
       mode: ReadMode,
   ): D? {
     return cacheHolder.access { cache ->
-      try {
-        operation.readDataFromCache(
-            responseAdapterCache = responseAdapterCache,
-            cache = cache,
-            cacheKeyResolver = cacheKeyResolver,
-            cacheHeaders = cacheHeaders,
-            mode = mode,
-        )
-      } catch (e: Exception) {
-        logger.e(e, "Failed to read cache response")
-        null
-      }
+      operation.readDataFromCache(
+          responseAdapterCache = responseAdapterCache,
+          cache = cache,
+          cacheKeyResolver = cacheKeyResolver,
+          cacheHeaders = cacheHeaders,
+          mode = mode,
+      )
     }
   }
 
@@ -113,18 +121,13 @@ class RealApolloStore(
       cacheHeaders: CacheHeaders,
   ): D? {
     return cacheHolder.access { cache ->
-      try {
-        fragment.readDataFromCache(
-            responseAdapterCache = responseAdapterCache,
-            cache = cache,
-            cacheKeyResolver = cacheKeyResolver,
-            cacheHeaders = cacheHeaders,
-            cacheKey = cacheKey
-        )
-      } catch (e: Exception) {
-        logger.e(e, "Failed to read cache response")
-        null
-      }
+      fragment.readDataFromCache(
+          responseAdapterCache = responseAdapterCache,
+          cache = cache,
+          cacheKeyResolver = cacheKeyResolver,
+          cacheHeaders = cacheHeaders,
+          cacheKey = cacheKey
+      )
     }
   }
 
@@ -157,7 +160,7 @@ class RealApolloStore(
       "ApolloGraphQL: writing a fragment requires a valid cache key"
     }
 
-    return cacheHolder.access { cache ->
+    val changedKeys =  cacheHolder.access { cache ->
       val records = fragment.normalize(
           data = fragmentData,
           responseAdapterCache = responseAdapterCache,
@@ -165,13 +168,14 @@ class RealApolloStore(
           rootKey = cacheKey.key
       ).values
 
-      val changedKeys = cache.merge(records, cacheHeaders)
-      if (publish) {
-        publish(changedKeys)
-      }
-
-      changedKeys
+      cache.merge(records, cacheHeaders)
     }
+
+    if (publish) {
+      publish(changedKeys)
+    }
+
+    return changedKeys
   }
 
   suspend fun <D : Operation.Data> writeOperationWithRecords(
@@ -258,7 +262,3 @@ class RealApolloStore(
   }
 }
 
-fun ApolloStore(
-    normalizedCacheFactory: NormalizedCacheFactory,
-    cacheKeyResolver: CacheKeyResolver,
-): ApolloStore = RealApolloStore(normalizedCacheFactory, cacheKeyResolver)

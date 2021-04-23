@@ -72,7 +72,7 @@ internal object CreateReviewForEpisode_ResponseAdapter {
                 responseAdapterCache)
             3 -> listOfListOfEnum = Episode_ResponseAdapter.list().list().nullable().fromResponse(reader,
                 responseAdapterCache)
-            4 -> listOfListOfCustom = responseAdapterCache.responseAdapterFor<Date>(com.example.mutation_create_review.type.CustomScalars.Date).list().list().nullable().fromResponse(reader,
+            4 -> listOfListOfCustom = responseAdapterCache.responseAdapterFor<Date>(com.example.mutation_create_review.type.Types.Date).list().list().nullable().fromResponse(reader,
                 responseAdapterCache)
             5 -> listOfListOfObject = ListOfListOfObject.obj().list().list().nullable().fromResponse(reader,
                 responseAdapterCache)
@@ -105,7 +105,7 @@ internal object CreateReviewForEpisode_ResponseAdapter {
         Episode_ResponseAdapter.list().list().nullable().toResponse(writer, responseAdapterCache,
             value.listOfListOfEnum)
         writer.name("listOfListOfCustom")
-        responseAdapterCache.responseAdapterFor<Date>(com.example.mutation_create_review.type.CustomScalars.Date).list().list().nullable().toResponse(writer,
+        responseAdapterCache.responseAdapterFor<Date>(com.example.mutation_create_review.type.Types.Date).list().list().nullable().toResponse(writer,
             responseAdapterCache, value.listOfListOfCustom)
         writer.name("listOfListOfObject")
         ListOfListOfObject.obj().list().list().nullable().toResponse(writer, responseAdapterCache,

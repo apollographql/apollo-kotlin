@@ -18,7 +18,7 @@ import com.apollographql.apollo3.cache.normalized.ReadOnlyNormalizedCache
 fun <D : Operation.Data> Operation<D>.normalize(
     data: D,
     responseAdapterCache: ResponseAdapterCache,
-    cacheKeyResolver: CacheKeyResolver
+    cacheKeyResolver: CacheKeyResolver,
 ) = normalizeInternal(
     data,
     responseAdapterCache,
@@ -32,7 +32,7 @@ fun <D : Fragment.Data> Fragment<D>.normalize(
     data: D,
     responseAdapterCache: ResponseAdapterCache,
     cacheKeyResolver: CacheKeyResolver,
-    rootKey: String
+    rootKey: String,
 ) = normalizeInternal(
     data,
     responseAdapterCache,
@@ -49,14 +49,15 @@ private fun <D> normalizeInternal(
     rootKey: String,
     adapter: ResponseAdapter<D>,
     variables: Operation.Variables,
-    fieldSets: List<ResponseField.FieldSet>
-): Map<String, Record>  {
+    fieldSets: List<ResponseField.FieldSet>,
+): Map<String, Record> {
   val writer = MapJsonWriter()
   adapter.toResponse(writer, responseAdapterCache, data)
   return Normalizer(variables) { responseField, fields ->
-    cacheKeyResolver.fromFieldRecordSet(responseField, fields).let { if (it == CacheKey.NO_KEY) null else it.key}
+    cacheKeyResolver.fromFieldRecordSet(responseField, fields).let { if (it == CacheKey.NO_KEY) null else it.key }
   }.normalize(writer.root() as Map<String, Any?>, null, rootKey, fieldSets)
 }
+
 enum class ReadMode {
   /**
    * Depth-first traversal. Resolve CacheReferences as they are encountered
@@ -93,7 +94,7 @@ fun <D : Fragment.Data> Fragment<D>.readDataFromCache(
     cache: ReadOnlyNormalizedCache,
     cacheKeyResolver: CacheKeyResolver,
     cacheHeaders: CacheHeaders,
-    mode: ReadMode = ReadMode.SEQUENTIAL
+    mode: ReadMode = ReadMode.SEQUENTIAL,
 ) = readInternal(
     cacheKey = cacheKey,
     cache = cache,
@@ -117,35 +118,32 @@ private fun <D> readInternal(
     responseAdapterCache: ResponseAdapterCache,
     mode: ReadMode = ReadMode.SEQUENTIAL,
     fieldSets: List<ResponseField.FieldSet>,
-): D? = try {
-    val map = if (mode == ReadMode.BATCH) {
-      CacheBatchReader(
-          cache = cache,
-          cacheHeaders = cacheHeaders,
-          cacheKeyResolver = cacheKeyResolver,
-          variables = variables,
-          rootKey = cacheKey.key,
-          rootFieldSets = fieldSets
-      ).toMap()
-    } else {
-      CacheSequentialReader(
-          cache = cache,
-          cacheHeaders = cacheHeaders,
-          cacheKeyResolver = cacheKeyResolver,
-          variables = variables,
-          rootKey = cacheKey.key,
-          rootFieldSets = fieldSets
-      ).toMap()
-    }
-
-    val reader = MapJsonReader(
-        root = map,
-    )
-    adapter.fromResponse(reader, responseAdapterCache)
-  } catch (e: Exception) {
-    null
+): D? {
+  val map = if (mode == ReadMode.BATCH) {
+    CacheBatchReader(
+        cache = cache,
+        cacheHeaders = cacheHeaders,
+        cacheKeyResolver = cacheKeyResolver,
+        variables = variables,
+        rootKey = cacheKey.key,
+        rootFieldSets = fieldSets
+    ).toMap()
+  } else {
+    CacheSequentialReader(
+        cache = cache,
+        cacheHeaders = cacheHeaders,
+        cacheKeyResolver = cacheKeyResolver,
+        variables = variables,
+        rootKey = cacheKey.key,
+        rootFieldSets = fieldSets
+    ).toMap()
   }
 
+  val reader = MapJsonReader(
+      root = map,
+  )
+  return adapter.fromResponse(reader, responseAdapterCache)
+}
 
 fun Collection<Record>?.dependentKeys(): Set<String> {
   return this?.flatMap {

@@ -3,7 +3,7 @@ package com.apollographql.apollo3.cache.normalized
 import com.apollographql.apollo3.cache.ApolloCacheHeaders
 import com.apollographql.apollo3.cache.CacheHeaders
 import com.apollographql.apollo3.cache.normalized.internal.LruCache
-import com.apollographql.apollo3.cache.normalized.internal.Platform
+import com.apollographql.apollo3.cache.normalized.Platform
 import okio.internal.commonAsUtf8ToByteArray
 import kotlin.reflect.KClass
 
