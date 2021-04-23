@@ -159,7 +159,7 @@ class RealApolloStore(
       "ApolloGraphQL: writing a fragment requires a valid cache key"
     }
 
-    return cacheHolder.access { cache ->
+    val changedKeys =  cacheHolder.access { cache ->
       val records = fragment.normalize(
           data = fragmentData,
           responseAdapterCache = responseAdapterCache,
@@ -167,13 +167,14 @@ class RealApolloStore(
           rootKey = cacheKey.key
       ).values
 
-      val changedKeys = cache.merge(records, cacheHeaders)
-      if (publish) {
-        publish(changedKeys)
-      }
-
-      changedKeys
+      cache.merge(records, cacheHeaders)
     }
+
+    if (publish) {
+      publish(changedKeys)
+    }
+
+    return changedKeys
   }
 
   suspend fun <D : Operation.Data> writeOperationWithRecords(

@@ -38,11 +38,15 @@ enum class FetchPolicy {
   NetworkOnly,
 }
 
-internal data class CacheInput(
+internal data class FetchPolicyContext(
     val fetchPolicy: FetchPolicy?,
-    val watch: Boolean
 ): RequestContext(Key) {
-  companion object Key : ExecutionContext.Key<CacheInput>
+  companion object Key : ExecutionContext.Key<FetchPolicyContext>
+}
+internal data class RefetchPolicyContext(
+    val refetchPolicy: FetchPolicy?,
+): RequestContext(Key) {
+  companion object Key : ExecutionContext.Key<RefetchPolicyContext>
 }
 
 internal data class CacheOutput(
@@ -62,7 +66,10 @@ fun ApolloClient.Builder.normalizedCache(store: ApolloStore): ApolloClient.Build
 }
 
 fun <D: Query.Data> ApolloRequest<D>.withFetchPolicy(fetchPolicy: FetchPolicy): ApolloRequest<D> {
-  return withExecutionContext(CacheInput(fetchPolicy = fetchPolicy, watch = false))
+  return withExecutionContext(FetchPolicyContext(fetchPolicy = fetchPolicy))
+}
+fun <D: Query.Data> ApolloRequest<D>.withRefetchPolicy(refetchPolicy: FetchPolicy): ApolloRequest<D> {
+  return withExecutionContext(RefetchPolicyContext(refetchPolicy = refetchPolicy))
 }
 
 fun <D : Query.Data> ApolloClient.queryCacheAndNetwork(queryRequest: ApolloRequest<D>): Flow<ApolloResponse<D>> {
@@ -92,17 +99,10 @@ fun <D : Query.Data> ApolloClient.queryCacheAndNetwork(queryRequest: ApolloReque
 }
 
 fun <D : Query.Data> ApolloClient.watch(query: Query<D>): Flow<ApolloResponse<D>> {
-  val queryRequest = ApolloRequest(query).withExecutionContext(
-      CacheInput(fetchPolicy = null, watch = true)
-  )
-  return queryAsFlow(queryRequest)
+  return watch(ApolloRequest(query))
 }
 
-
 fun <D : Query.Data> ApolloClient.watch(queryRequest: ApolloRequest<D>): Flow<ApolloResponse<D>> {
-  val cacheInput = queryRequest.executionContext[CacheInput]?.copy(
-      watch = true
-  ) ?: CacheInput(fetchPolicy = null, watch = true)
-
-  return queryAsFlow(queryRequest.withExecutionContext(cacheInput))
+  val refetchPolicyContext = queryRequest.executionContext[RefetchPolicyContext] ?: RefetchPolicyContext(FetchPolicy.CacheOnly)
+  return queryAsFlow(queryRequest.withExecutionContext(refetchPolicyContext))
 }

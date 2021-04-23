@@ -32,3 +32,7 @@ actual fun checkTestFixture(actualText: String, name: String) {
     }
   }
 }
+
+actual fun currentThreadId(): String {
+  return Thread.currentThread().id.toString()
+}
