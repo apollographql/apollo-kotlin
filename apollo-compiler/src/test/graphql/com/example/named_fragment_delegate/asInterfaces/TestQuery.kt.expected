@@ -13,6 +13,7 @@ import com.apollographql.apollo3.api.json.JsonWriter
 import com.apollographql.apollo3.api.obj
 import com.example.named_fragment_delegate.adapter.TestQuery_ResponseAdapter
 import com.example.named_fragment_delegate.fragment.DroidDetails
+import com.example.named_fragment_delegate.fragment.HumanDetails
 import com.example.named_fragment_delegate.responsefields.TestQuery_ResponseFields
 import kotlin.Any
 import kotlin.String
@@ -44,6 +45,8 @@ class TestQuery : Query<TestQuery.Data> {
 
       companion object {
         fun Hero.droidDetails() = this as? DroidDetails
+
+        fun Hero.humanDetails() = this as? HumanDetails
 
         fun Hero.asDroid() = this as? DroidHero
 
@@ -81,36 +84,36 @@ class TestQuery : Query<TestQuery.Data> {
       /**
        * What this human calls themselves
        */
-      val name: String,
+      override val name: String,
       /**
        * Profile link
        */
-      val profileLink: Any,
+      override val profileLink: Any,
       /**
        * The friends of the human exposed as a connection with edges
        */
-      val friendsConnection: FriendsConnection
-    ) : Hero {
+      override val friendsConnection: FriendsConnection
+    ) : Hero, HumanDetails {
       data class FriendsConnection(
         /**
          * The edges for each of the character's friends.
          */
-        val edges: List<Edge?>?
-      ) {
+        override val edges: List<Edge?>?
+      ) : HumanDetails.FriendsConnection {
         fun edgesFilterNotNull(): List<Edge>? = edges?.filterNotNull()
 
         data class Edge(
           /**
            * The character represented by this friendship edge
            */
-          val node: Node?
-        ) {
+          override val node: Node?
+        ) : HumanDetails.FriendsConnection.Edge {
           data class Node(
             /**
              * The name of the character
              */
-            val name: String
-          )
+            override val name: String
+          ) : HumanDetails.FriendsConnection.Edge.Node
         }
       }
     }

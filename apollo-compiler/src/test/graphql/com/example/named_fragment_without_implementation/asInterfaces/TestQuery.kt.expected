@@ -12,6 +12,7 @@ import com.apollographql.apollo3.api.ResponseField
 import com.apollographql.apollo3.api.json.JsonWriter
 import com.apollographql.apollo3.api.obj
 import com.example.named_fragment_without_implementation.adapter.TestQuery_ResponseAdapter
+import com.example.named_fragment_without_implementation.fragment.DroidDetails
 import com.example.named_fragment_without_implementation.fragment.HumanDetails
 import com.example.named_fragment_without_implementation.responsefields.TestQuery_ResponseFields
 import kotlin.Double
@@ -50,6 +51,8 @@ class TestQuery : Query<TestQuery.Data> {
       companion object {
         fun Hero.humanDetails() = this as? HumanDetails
 
+        fun Hero.droidDetails() = this as? DroidDetails
+
         fun Hero.asHuman() = this as? HumanHero
 
         fun Hero.asDroid() = this as? DroidHero
@@ -77,8 +80,8 @@ class TestQuery : Query<TestQuery.Data> {
       /**
        * This droid's primary function
        */
-      val primaryFunction: String?
-    ) : Hero
+      override val primaryFunction: String?
+    ) : Hero, DroidDetails
 
     data class OtherHero(
       override val __typename: String,
