@@ -6,5 +6,3 @@ package com.apollographql.apollo3.integration
 expect fun readTestFixture(name: String): String
 
 expect fun checkTestFixture(actualText: String, name: String)
-
-expect fun currentThreadId(): String

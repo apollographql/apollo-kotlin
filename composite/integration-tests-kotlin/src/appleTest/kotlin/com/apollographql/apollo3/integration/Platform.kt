@@ -38,6 +38,3 @@ actual fun checkTestFixture(actualText: String, name: String) {
   assertEquals(actualText, readTestFixture(name))
 }
 
-actual fun currentThreadId(): String {
-  return pthread_self()?.toString() ?: "?"
-}

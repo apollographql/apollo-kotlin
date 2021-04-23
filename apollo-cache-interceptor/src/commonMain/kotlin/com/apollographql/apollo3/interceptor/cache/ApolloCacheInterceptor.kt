@@ -6,6 +6,7 @@ import com.apollographql.apollo3.api.Operation
 import com.apollographql.apollo3.api.ResponseAdapterCache
 import com.apollographql.apollo3.cache.CacheHeaders
 import com.apollographql.apollo3.cache.normalized.ApolloStore
+import com.apollographql.apollo3.cache.normalized.Platform
 import com.apollographql.apollo3.cache.normalized.internal.dependentKeys
 import com.apollographql.apollo3.exception.ApolloCompositeException
 import com.apollographql.apollo3.exception.ApolloException
@@ -41,6 +42,7 @@ class ApolloCacheInterceptor : ApolloRequestInterceptor {
       val store = request.executionContext[ApolloStore] ?: error("No RealApolloStore found")
 
       val channel = Channel<Set<String>>()
+      Platform.ensureNeverFrozen(channel)
 
       val subscriber = object : ApolloStore.RecordChangeSubscriber {
         override fun onCacheRecordsChanged(changedRecordKeys: Set<String>) {
