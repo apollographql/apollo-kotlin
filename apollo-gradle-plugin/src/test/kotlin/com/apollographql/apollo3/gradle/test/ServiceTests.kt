@@ -29,7 +29,7 @@ class ServiceTests {
       }
     """.trimIndent()) { dir ->
       TestUtils.executeTask("generateApolloSources", dir)
-      TestUtils.assertFileContains(dir, "service/com/example/type/Schema.kt", "\"java.util.Date\"")
+      TestUtils.assertFileContains(dir, "service/com/example/type/Types.kt", "\"java.util.Date\"")
     }
   }
 
@@ -58,7 +58,7 @@ class ServiceTests {
       }
     """.trimIndent()) { dir ->
       TestUtils.executeTask("generateApolloSources", dir)
-      TestUtils.assertFileContains(dir, "service/com/example/type/Schema.kt", "\"java.util.Date\"")
+      TestUtils.assertFileContains(dir, "service/com/example/type/Types.kt", "\"java.util.Date\"")
     }
   }
 
@@ -74,7 +74,7 @@ class ServiceTests {
       }
     """.trimIndent()) { dir ->
       TestUtils.executeTask("generateApolloSources", dir)
-      TestUtils.assertFileContains(dir, "api/com/example/type/Schema.kt", "\"java.util.Date\"")
+      TestUtils.assertFileContains(dir, "api/com/example/type/Types.kt", "\"java.util.Date\"")
     }
   }
 
@@ -108,7 +108,7 @@ class ServiceTests {
     """.trimIndent()) { dir ->
       TestUtils.executeTask("generateApolloSources", dir)
       assertTrue(dir.generatedChild("service/com/starwars/com/example/DroidDetailsQuery.kt").isFile)
-      assertTrue(dir.generatedChild("service/com/starwars/com/example/type/Schema.kt").isFile)
+      assertTrue(dir.generatedChild("service/com/starwars/com/example/type/Types.kt").isFile)
       assertTrue(dir.generatedChild("service/com/starwars/com/example/fragment/SpeciesInformation.kt").isFile)
     }
   }
@@ -127,7 +127,7 @@ class ServiceTests {
 
       TestUtils.executeTask("generateApolloSources", dir)
       assertTrue(dir.generatedChild("starwars/DroidDetailsQuery.kt").isFile)
-      assertTrue(dir.generatedChild("starwars/type/Schema.kt").isFile)
+      assertTrue(dir.generatedChild("starwars/type/Types.kt").isFile)
       assertTrue(dir.generatedChild("starwars/fragment/SpeciesInformation.kt").isFile)
     }
   }
@@ -163,7 +163,7 @@ class ServiceTests {
       println(dir.absolutePath)
       dir.list()?.forEach(::println)
       assertTrue(dir.generatedChild("starwars/DroidDetailsQuery.kt").isFile)
-      assertTrue(dir.generatedChild("starwars/type/Schema.kt").isFile)
+      assertTrue(dir.generatedChild("starwars/type/Types.kt").isFile)
       assertTrue(dir.generatedChild("starwars/fragment/SpeciesInformation.kt").isFile)
     }
   }
@@ -393,8 +393,8 @@ class ServiceTests {
       assertTrue(dir.generatedChild("service/com/example/DroidDetailsQuery.kt").isFile)
       assertThat(dir.generatedChild("service/com/example/DroidDetailsQuery.kt").readText(), containsString("internal class"))
 
-      assertTrue(dir.generatedChild("service/com/example/type/Schema.kt").isFile)
-      assertThat(dir.generatedChild("service/com/example/type/Schema.kt").readText(), containsString("internal object CustomScalars"))
+      assertTrue(dir.generatedChild("service/com/example/type/Types.kt").isFile)
+      assertThat(dir.generatedChild("service/com/example/type/Types.kt").readText(), containsString("internal object Types"))
 
       assertTrue(dir.generatedChild("service/com/example/fragment/SpeciesInformation.kt").isFile)
       assertThat(dir.generatedChild("service/com/example/fragment/SpeciesInformation.kt").readText(), containsString("internal interface"))
