@@ -173,3 +173,8 @@ abstract class ApolloStore: ClientContext(ApolloStore) {
     val emptyApolloStore: ApolloStore = NoOpApolloStore()
   }
 }
+
+fun ApolloStore(
+    normalizedCacheFactory: NormalizedCacheFactory,
+    cacheKeyResolver: CacheKeyResolver,
+): ApolloStore = RealApolloStore(normalizedCacheFactory, cacheKeyResolver)
