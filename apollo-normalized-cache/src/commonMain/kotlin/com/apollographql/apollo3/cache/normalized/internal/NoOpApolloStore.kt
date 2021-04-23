@@ -31,10 +31,6 @@ internal class NoOpApolloStore : ApolloStore() {
     return 0
   }
 
-  override fun <D : Operation.Data> normalize(operation: Operation<D>, data: D, responseAdapterCache: ResponseAdapterCache): Map<String, Record> {
-    return emptyMap()
-  }
-
   override suspend fun <D : Operation.Data> readOperation(
       operation: Operation<D>,
       responseAdapterCache: ResponseAdapterCache,

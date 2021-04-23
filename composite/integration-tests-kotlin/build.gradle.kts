@@ -31,7 +31,6 @@ kotlin {
     val jvmTest by getting {
       dependencies {
         implementation(groovy.util.Eval.x(project, "x.dep.okHttp.mockWebServer"))
-        implementation("org.jetbrains.kotlinx:kotlinx-coroutines-debug:1.4.2")
       }
     }
   }

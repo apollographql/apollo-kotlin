@@ -7,9 +7,11 @@ import com.apollographql.apollo3.cache.CacheHeaders
 import com.apollographql.apollo3.cache.normalized.CacheKey
 import com.apollographql.apollo3.cache.normalized.CacheKeyResolver
 import com.apollographql.apollo3.cache.normalized.CacheReference
+import com.apollographql.apollo3.cache.normalized.NormalizedCache
 import com.apollographql.apollo3.cache.normalized.ReadOnlyNormalizedCache
 import com.apollographql.apollo3.cache.normalized.Record
-import com.apollographql.apollo3.exception.CacheMissException
+import com.apollographql.apollo3.exception.FieldMissingException
+import com.apollographql.apollo3.exception.ObjectMissingException
 
 class CacheSequentialReader(
     private val cache: ReadOnlyNormalizedCache,
@@ -50,14 +52,14 @@ class CacheSequentialReader(
           // no key provided
           val fieldName = cacheKeyBuilder.build(it, variables)
           if (!record.containsKey(fieldName)) {
-            throw CacheMissException(record.key, fieldName)
+            throw FieldMissingException(record.key, fieldName, cacheKeyBuilder.build(it, variables))
           }
           record[fieldName]
         }
       } else {
         val fieldName = cacheKeyBuilder.build(it, variables)
         if (!record.containsKey(fieldName)) {
-          throw CacheMissException(record.key, fieldName)
+          throw FieldMissingException(record.key, fieldName, cacheKeyBuilder.build(it, variables))
         }
         record[fieldName]
       }
@@ -71,7 +73,7 @@ class CacheSequentialReader(
       is CacheReference -> {
         val record = cache.loadRecord(key, cacheHeaders)
         if (record == null) {
-          throw CacheMissException(rootKey)
+          throw ObjectMissingException(rootKey)
         }
         resolve(record, fieldSets)
       }

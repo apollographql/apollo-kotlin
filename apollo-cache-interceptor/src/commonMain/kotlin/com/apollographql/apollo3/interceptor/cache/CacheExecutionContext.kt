@@ -4,105 +4,68 @@ import com.apollographql.apollo3.ApolloClient
 import com.apollographql.apollo3.api.ExecutionContext
 import com.apollographql.apollo3.api.Operation
 import com.apollographql.apollo3.api.ApolloResponse
+import com.apollographql.apollo3.cache.normalized.NormalizedCache
 import com.apollographql.apollo3.ApolloRequest
-import com.apollographql.apollo3.api.Query
 import com.apollographql.apollo3.api.RequestContext
 import com.apollographql.apollo3.api.ResponseContext
 import com.apollographql.apollo3.cache.normalized.ApolloStore
-import com.apollographql.apollo3.exception.ApolloCompositeException
-import com.apollographql.apollo3.exception.ApolloException
-import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.flow
+import com.apollographql.apollo3.cache.normalized.CacheKeyResolver
+import com.apollographql.apollo3.cache.normalized.NormalizedCacheFactory
+import com.apollographql.apollo3.cache.normalized.internal.RealApolloStore
 
-enum class FetchPolicy {
+sealed class FetchPolicy : RequestContext(Key) {
   /**
-   * Try cache first, then network
+   * Fetch the data from the normalized cache first. If it's not present in the
+   * normalized cache or if an exception occurs while trying to fetch it from the normalized cache, then the data is
+   * instead fetched from the network. If an exception happens while fetching from the network, this exception will
+   * be thrown
    *
    * This is the default behaviour
    */
-  CacheFirst,
+  object CacheFirst : FetchPolicy()
 
   /**
-   * Only try cache
+   * Only fetch the data from the normalized cache.
    */
-  CacheOnly,
+  object CacheOnly : FetchPolicy()
 
   /**
-   * Try network first, then cache
+   * Fetch the data from the network firsts. If network request fails, then the
+   * data is fetched from the normalized cache. If the data is not present in the normalized cache, then the
+   * exception which led to the network request failure is rethrown.
    */
-  NetworkFirst,
+  object NetworkFirst : FetchPolicy()
 
   /**
-   * Only try network
+   * Only etch the GraphQL data from the network. If network request fails, an
+   * exception is thrown.
    */
-  NetworkOnly,
+  object NetworkOnly : FetchPolicy()
+
+  /**
+   * Signal the apollo client to fetch the data from both the network and the cache. If cached data is not
+   * present, only network data will be returned. If cached data is available, but network experiences an error,
+   * cached data is first returned, followed by the network error. If cache data is not available, and network
+   * data is not available, the error of the network request will be propagated. If both network and cache
+   * are available, both will be returned. Cache data is guaranteed to be returned first.
+   */
+  object CacheAndNetwork : FetchPolicy()
+
+  companion object Key : ExecutionContext.Key<FetchPolicy>
 }
 
-internal data class FetchPolicyContext(
-    val fetchPolicy: FetchPolicy?,
-): RequestContext(Key) {
-  companion object Key : ExecutionContext.Key<FetchPolicyContext>
-}
-internal data class RefetchPolicyContext(
-    val refetchPolicy: FetchPolicy?,
-): RequestContext(Key) {
-  companion object Key : ExecutionContext.Key<RefetchPolicyContext>
-}
-
-internal data class CacheOutput(
+data class CacheInfo(
     val isFromCache: Boolean
-) : ResponseContext(CacheOutput) {
-  companion object Key : ExecutionContext.Key<CacheOutput>
+) : ResponseContext(CacheInfo) {
+  companion object Key : ExecutionContext.Key<CacheInfo>
 }
 
 val <D : Operation.Data> ApolloResponse<D>.isFromCache
-  get() = executionContext[CacheOutput]?.isFromCache ?: false
+  get() = executionContext[CacheInfo]?.isFromCache ?: false
 
 fun ApolloClient.Builder.normalizedCache(store: ApolloStore): ApolloClient.Builder {
   return addInterceptor(
       ApolloCacheInterceptor(),
       store
   )
-}
-
-fun <D: Query.Data> ApolloRequest<D>.withFetchPolicy(fetchPolicy: FetchPolicy): ApolloRequest<D> {
-  return withExecutionContext(FetchPolicyContext(fetchPolicy = fetchPolicy))
-}
-fun <D: Query.Data> ApolloRequest<D>.withRefetchPolicy(refetchPolicy: FetchPolicy): ApolloRequest<D> {
-  return withExecutionContext(RefetchPolicyContext(refetchPolicy = refetchPolicy))
-}
-
-fun <D : Query.Data> ApolloClient.queryCacheAndNetwork(queryRequest: ApolloRequest<D>): Flow<ApolloResponse<D>> {
-  return flow {
-    val cacheResult = kotlin.runCatching {
-      query(queryRequest.withFetchPolicy(FetchPolicy.CacheOnly))
-    }
-    val cacheResponse = cacheResult.getOrNull()
-    if (cacheResponse != null) {
-      emit(cacheResponse)
-    }
-    val networkResult = kotlin.runCatching {
-      query(queryRequest.withFetchPolicy(FetchPolicy.NetworkOnly))
-    }
-    val networkResponse = networkResult.getOrNull()
-    if (networkResponse != null) {
-      emit(networkResponse)
-    }
-
-    if (cacheResponse == null && networkResponse == null) {
-      throw ApolloCompositeException(
-          cacheResult.exceptionOrNull() as ApolloException,
-          networkResult.exceptionOrNull() as ApolloException
-      )
-    }
-  }
-}
-
-fun <D : Query.Data> ApolloClient.watch(query: Query<D>): Flow<ApolloResponse<D>> {
-  return watch(ApolloRequest(query))
-}
-
-fun <D : Query.Data> ApolloClient.watch(queryRequest: ApolloRequest<D>): Flow<ApolloResponse<D>> {
-  val refetchPolicyContext = queryRequest.executionContext[RefetchPolicyContext] ?: RefetchPolicyContext(FetchPolicy.CacheOnly)
-  return queryAsFlow(queryRequest.withExecutionContext(refetchPolicyContext))
 }
