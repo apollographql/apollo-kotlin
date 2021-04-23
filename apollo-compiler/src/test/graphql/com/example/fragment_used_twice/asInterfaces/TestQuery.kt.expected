@@ -12,7 +12,9 @@ import com.apollographql.apollo3.api.ResponseField
 import com.apollographql.apollo3.api.json.JsonWriter
 import com.apollographql.apollo3.api.obj
 import com.example.fragment_used_twice.adapter.TestQuery_ResponseAdapter
+import com.example.fragment_used_twice.fragment.CharacterHumanDetails
 import com.example.fragment_used_twice.fragment.HeroDetails
+import com.example.fragment_used_twice.fragment.HumanDetails
 import com.example.fragment_used_twice.responsefields.TestQuery_ResponseFields
 import kotlin.Any
 import kotlin.String
@@ -55,6 +57,8 @@ class TestQuery : Query<TestQuery.Data> {
       companion object {
         fun Hero.heroDetails() = this as? HeroDetails
 
+        fun Hero.humanDetails() = this as? HumanDetails
+
         fun Hero.asHuman() = this as? HumanHero
       }
     }
@@ -69,7 +73,7 @@ class TestQuery : Query<TestQuery.Data> {
        * The date character was born.
        */
       override val birthDate: Any
-    ) : Hero, HeroDetails
+    ) : Hero, HeroDetails, CharacterHumanDetails
 
     data class OtherHero(
       override val __typename: String,

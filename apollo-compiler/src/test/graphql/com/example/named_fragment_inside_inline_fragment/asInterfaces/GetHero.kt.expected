@@ -12,6 +12,7 @@ import com.apollographql.apollo3.api.ResponseField
 import com.apollographql.apollo3.api.json.JsonWriter
 import com.apollographql.apollo3.api.obj
 import com.example.named_fragment_inside_inline_fragment.adapter.GetHero_ResponseAdapter
+import com.example.named_fragment_inside_inline_fragment.fragment.CharacterAppearsIn
 import com.example.named_fragment_inside_inline_fragment.fragment.CharacterName
 import com.example.named_fragment_inside_inline_fragment.responsefields.GetHero_ResponseFields
 import com.example.named_fragment_inside_inline_fragment.type.Episode
@@ -48,12 +49,14 @@ class GetHero : Query<GetHero.Data> {
       /**
        * The movies this character appears in
        */
-      val appearsIn: List<Episode?>
-    ) : CharacterName {
+      override val appearsIn: List<Episode?>
+    ) : CharacterName, CharacterAppearsIn {
       fun appearsInFilterNotNull(): List<Episode> = appearsIn.filterNotNull()
 
       companion object {
         fun Hero.characterName() = this as? CharacterName
+
+        fun Hero.characterAppearsIn() = this as? CharacterAppearsIn
       }
     }
   }

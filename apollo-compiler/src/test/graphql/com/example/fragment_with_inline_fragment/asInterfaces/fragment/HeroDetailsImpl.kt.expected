@@ -70,6 +70,8 @@ class HeroDetailsImpl : Fragment<HeroDetailsImpl.Data> {
     companion object {
       fun Data.humanDetails() = this as? HumanDetails
 
+      fun Data.droidDetails() = this as? DroidDetails
+
       fun Data.asHuman() = this as? HumanData
 
       fun Data.asDroid() = this as? DroidData
@@ -129,7 +131,7 @@ class HeroDetailsImpl : Fragment<HeroDetailsImpl.Data> {
      * The friends of the character exposed as a connection with edges
      */
     override val friendsConnection: FriendsConnection
-  ) : Data, DroidHeroDetails {
+  ) : Data, DroidDetails, DroidHeroDetails {
     data class FriendsConnection(
       /**
        * The total number of friends
