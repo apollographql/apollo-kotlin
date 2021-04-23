@@ -68,7 +68,7 @@ class IrRootFieldBuilder(
         }
         // We do not recurse here as inheriting the first namedFragment will
         // inherit nested ones as well
-        is GQLFragmentSpread -> return setOf(it.name)
+        is GQLFragmentSpread -> return@flatMap setOf(it.name)
       }
     }.toSet()
   }

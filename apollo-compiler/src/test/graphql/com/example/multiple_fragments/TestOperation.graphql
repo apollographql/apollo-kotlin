@@ -1,0 +1,19 @@
+query TestQuery {
+    a {
+        ...aFragment
+    }
+}
+
+fragment aFragment on A {
+    node {
+        ...fragment1
+        ...fragment2
+    }
+}
+fragment fragment1 on ANode {
+    field1
+}
+
+fragment fragment2 on ANode {
+    field2
+}
