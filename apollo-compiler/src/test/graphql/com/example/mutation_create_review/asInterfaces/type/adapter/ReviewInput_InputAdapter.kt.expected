@@ -44,9 +44,9 @@ internal object ReviewInput_InputAdapter : ResponseAdapter<ReviewInput> {
         responseAdapterCache, value.nonNullableEnumWithDefaultValue)
     Episode_ResponseAdapter.nullable().input("nullableEnum").toResponse(writer,
         responseAdapterCache, value.nullableEnum)
-    responseAdapterCache.responseAdapterFor<Date>(com.example.mutation_create_review.type.CustomScalars.Date).nullable().list().nullable().input("listOfCustomScalar").toResponse(writer,
+    responseAdapterCache.responseAdapterFor<Date>(com.example.mutation_create_review.type.Types.Date).nullable().list().nullable().input("listOfCustomScalar").toResponse(writer,
         responseAdapterCache, value.listOfCustomScalar)
-    responseAdapterCache.responseAdapterFor<Date>(com.example.mutation_create_review.type.CustomScalars.Date).nullable().input("customScalar").toResponse(writer,
+    responseAdapterCache.responseAdapterFor<Date>(com.example.mutation_create_review.type.Types.Date).nullable().input("customScalar").toResponse(writer,
         responseAdapterCache, value.customScalar)
     Episode_ResponseAdapter.nullable().list().nullable().input("listOfEnums").toResponse(writer,
         responseAdapterCache, value.listOfEnums)
@@ -67,7 +67,7 @@ internal object ReviewInput_InputAdapter : ResponseAdapter<ReviewInput> {
         responseAdapterCache, value.listOfListOfString)
     Episode_ResponseAdapter.list().list().nullable().input("listOfListOfEnum").toResponse(writer,
         responseAdapterCache, value.listOfListOfEnum)
-    responseAdapterCache.responseAdapterFor<Date>(com.example.mutation_create_review.type.CustomScalars.Date).list().list().nullable().input("listOfListOfCustom").toResponse(writer,
+    responseAdapterCache.responseAdapterFor<Date>(com.example.mutation_create_review.type.Types.Date).list().list().nullable().input("listOfListOfCustom").toResponse(writer,
         responseAdapterCache, value.listOfListOfCustom)
     ColorInput_InputAdapter.obj().list().list().nullable().input("listOfListOfObject").toResponse(writer,
         responseAdapterCache, value.listOfListOfObject)

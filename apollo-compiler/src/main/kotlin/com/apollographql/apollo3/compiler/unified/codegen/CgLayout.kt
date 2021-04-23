@@ -107,11 +107,7 @@ class CgLayout(
   // variables keep the same case as their declared name
   internal fun variableName(name: String) = regularIdentifier(name)
   internal fun propertyName(name: String) = regularIdentifier(name)
-  internal fun customScalarsName() = "CustomScalars"
-  internal fun schemaFileName() = "Schema"
-  internal fun objectsName() = "Objects"
-  internal fun interfacesName() = "Interfaces"
-  internal fun unionsName() = "Unions"
+  internal fun typesName() = "Types"
 
   // ------------------------ Helpers ---------------------------------
   private fun regularIdentifier(name: String) = name.escapeKotlinReservedWord()

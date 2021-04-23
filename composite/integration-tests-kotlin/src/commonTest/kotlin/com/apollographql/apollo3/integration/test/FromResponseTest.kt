@@ -10,7 +10,7 @@ import com.apollographql.apollo3.api.toJson
 import com.apollographql.apollo3.integration.LocalDateResponseAdapter
 import com.apollographql.apollo3.integration.httpcache.AllFilmsQuery
 import com.apollographql.apollo3.integration.httpcache.AllPlanetsQuery
-import com.apollographql.apollo3.integration.httpcache.type.CustomScalars
+import com.apollographql.apollo3.integration.httpcache.type.Types
 import com.apollographql.apollo3.integration.normalizer.EpisodeHeroNameQuery
 import com.apollographql.apollo3.integration.normalizer.GetJsonScalarQuery
 import com.apollographql.apollo3.integration.normalizer.HeroNameQuery
@@ -93,7 +93,7 @@ class FromResponseTest {
 
     val response = AllFilmsQuery().fromResponse(
         readResource("HttpCacheTestAllFilms.json"),
-        ResponseAdapterCache(mapOf(CustomScalars.Date to LocalDateResponseAdapter))
+        ResponseAdapterCache(mapOf(Types.Date to LocalDateResponseAdapter))
     )
     assertFalse(response.hasErrors())
     assertEquals(response.data!!.allFilms?.films?.size, 6)

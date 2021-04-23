@@ -15,8 +15,8 @@ import com.apollographql.apollo3.api.list
 import com.apollographql.apollo3.api.nullable
 import com.apollographql.apollo3.api.obj
 import com.example.custom_scalar_type.TestQuery
-import com.example.custom_scalar_type.type.CustomScalars
-import com.example.custom_scalar_type.type.CustomScalars.URL
+import com.example.custom_scalar_type.type.Types
+import com.example.custom_scalar_type.type.Types.URL
 import java.util.Date
 import kotlin.Any
 import kotlin.String
@@ -64,9 +64,9 @@ object TestQuery_ResponseAdapter {
         while(true) {
           when (reader.selectName(RESPONSE_NAMES)) {
             0 -> name = StringResponseAdapter.fromResponse(reader, responseAdapterCache)
-            1 -> birthDate = responseAdapterCache.responseAdapterFor<Date>(com.example.custom_scalar_type.type.CustomScalars.Date).fromResponse(reader,
+            1 -> birthDate = responseAdapterCache.responseAdapterFor<Date>(com.example.custom_scalar_type.type.Types.Date).fromResponse(reader,
                 responseAdapterCache)
-            2 -> appearanceDates = responseAdapterCache.responseAdapterFor<Date>(com.example.custom_scalar_type.type.CustomScalars.Date).list().fromResponse(reader,
+            2 -> appearanceDates = responseAdapterCache.responseAdapterFor<Date>(com.example.custom_scalar_type.type.Types.Date).list().fromResponse(reader,
                 responseAdapterCache)
             3 -> fieldWithUnsupportedType = AnyResponseAdapter.fromResponse(reader,
                 responseAdapterCache)
@@ -95,10 +95,10 @@ object TestQuery_ResponseAdapter {
         writer.name("name")
         StringResponseAdapter.toResponse(writer, responseAdapterCache, value.name)
         writer.name("birthDate")
-        responseAdapterCache.responseAdapterFor<Date>(com.example.custom_scalar_type.type.CustomScalars.Date).toResponse(writer,
+        responseAdapterCache.responseAdapterFor<Date>(com.example.custom_scalar_type.type.Types.Date).toResponse(writer,
             responseAdapterCache, value.birthDate)
         writer.name("appearanceDates")
-        responseAdapterCache.responseAdapterFor<Date>(com.example.custom_scalar_type.type.CustomScalars.Date).list().toResponse(writer,
+        responseAdapterCache.responseAdapterFor<Date>(com.example.custom_scalar_type.type.Types.Date).list().toResponse(writer,
             responseAdapterCache, value.appearanceDates)
         writer.name("fieldWithUnsupportedType")
         AnyResponseAdapter.toResponse(writer, responseAdapterCache, value.fieldWithUnsupportedType)

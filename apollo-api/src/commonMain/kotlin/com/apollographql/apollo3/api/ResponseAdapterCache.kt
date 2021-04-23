@@ -16,7 +16,7 @@ class ResponseAdapterCache(val customScalarResponseAdapters: Map<CustomScalar, R
         // Shortcut to save users a call to `registerCustomScalarAdapter`
         UploadResponseAdapter as ResponseAdapter<T>
       }
-      else -> error("Can't map GraphQL type: `${customScalar.graphqlName}` to: `${customScalar.className}`. Did you forget to add a CustomScalarAdapter?")
+      else -> error("Can't map GraphQL type: `${customScalar.name}` to: `${customScalar.className}`. Did you forget to add a CustomScalarAdapter?")
     }
 
   }
