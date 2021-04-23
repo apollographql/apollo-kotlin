@@ -77,4 +77,5 @@ object Types {
             Review, Starship, SearchResult)
 
 
-  fun possibleTypes(type: SchemaType): List<Object> = possibleTypes(all, type)}
+  fun possibleTypes(type: SchemaType): List<Object> = possibleTypes(all, type)
+}

@@ -97,7 +97,7 @@ class MetadataTest {
     alwaysGenerateTypesMatchingTest(emptySet())
 
     // Only scalar types are generated in the root
-    rootSourcesDir.assertContents("Schema.kt")
+    rootSourcesDir.assertContents("Types.kt")
 
     // Leaf contains its referenced types but not the unused ones
     leafSourcesDir.assertContents(
@@ -125,7 +125,7 @@ class MetadataTest {
     rootSourcesDir.assertContents(
         "Body1.kt",
         "Body1_InputAdapter.kt",
-        "Schema.kt",
+        "Types.kt",
         "Encoding.kt",
         "Encoding_ResponseAdapter.kt",
         "MessageInput1.kt",
@@ -180,7 +180,7 @@ class MetadataTest {
     // Root generates the fragment
     rootSourcesDir.assertContents(
         "CharacterFragment.kt",
-        "Schema.kt",
+        "Types.kt",
         "Episode.kt",
         "Episode_ResponseAdapter.kt"
     )
@@ -225,7 +225,7 @@ class MetadataTest {
 
     rootSourcesDir.assertContents(
         "CharacterFragment.kt",
-        "Schema.kt"
+        "Types.kt"
     )
 
     leafSourcesDir.assertContents(

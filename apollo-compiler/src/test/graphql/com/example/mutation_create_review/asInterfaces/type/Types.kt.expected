@@ -117,4 +117,5 @@ internal object Types {
             Tree, TypeWithGraphQLKeywords, SearchResult)
 
 
-  fun possibleTypes(type: SchemaType): List<Object> = possibleTypes(all, type)}
+  fun possibleTypes(type: SchemaType): List<Object> = possibleTypes(all, type)
+}

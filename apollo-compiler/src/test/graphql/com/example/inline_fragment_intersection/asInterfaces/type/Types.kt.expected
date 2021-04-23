@@ -63,4 +63,5 @@ object Types {
             Query, Mutation, Anything)
 
 
-  fun possibleTypes(type: SchemaType): List<Object> = possibleTypes(all, type)}
+  fun possibleTypes(type: SchemaType): List<Object> = possibleTypes(all, type)
+}
