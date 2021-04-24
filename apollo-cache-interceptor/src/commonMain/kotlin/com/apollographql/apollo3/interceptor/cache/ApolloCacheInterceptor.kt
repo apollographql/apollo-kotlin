@@ -33,6 +33,7 @@ class ApolloCacheInterceptor(private val store: ApolloStore) : ApolloRequestInte
 
     return flow {
       var result = kotlin.runCatching {
+        @Suppress("UNCHECKED_CAST")
         fetchOne(request, chain, fetchPolicy, optimisticUpdates as D?)
       }
       val response = result.getOrNull()

@@ -71,7 +71,7 @@ class ApolloRxService(
         .subscribeOn(processScheduler)
         .observeOn(resultScheduler)
         .map { response ->
-          val headCommit = response.data?.viewer?.repository?.ref?.target as? GithubRepositoryCommitsQuery.Data.Viewer.Repository.Ref.Target.CommitTarget
+          val headCommit = response.data?.viewer?.repository?.ref?.target as? GithubRepositoryCommitsQuery.Data.Viewer.Repository.Ref.CommitTarget
           headCommit?.history?.edges?.filterNotNull().orEmpty()
         }
         .subscribe(

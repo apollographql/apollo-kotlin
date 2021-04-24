@@ -1,5 +1,6 @@
 package com.apollographql.apollo3.integration.test
 
+import com.apollographql.apollo3.ApolloClient
 import com.apollographql.apollo3.integration.httpcache.AllFilmsQuery
 import com.apollographql.apollo3.integration.readFile
 import kotlinx.serialization.json.Json
@@ -9,6 +10,11 @@ import kotlinx.serialization.json.jsonPrimitive
 import kotlin.test.Test
 import kotlin.test.assertEquals
 
+/**
+ * These tests read the operationOutput.json generated during compilation and compare it to the generated models
+ *
+ * This makes sure minification is the same between operationOutput.json and the models
+ */
 class OperationOutputTest {
   @Test
   fun operationOutputMatchesTheModels() {

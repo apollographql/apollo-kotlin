@@ -24,9 +24,7 @@ class ExceptionsTest {
   @BeforeTest
   fun setUp() {
     mockServer = MockServer()
-    apolloClient = ApolloClient.Builder()
-        .serverUrl(mockServer.url())
-        .build()
+    apolloClient = ApolloClient(mockServer.url())
   }
 
   @Test

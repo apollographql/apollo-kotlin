@@ -45,9 +45,11 @@ class FileUploadTest {
       topFileList = Input.Present(listOf(upload1, upload0))
   )
 
-  private val adapterCache = ResponseAdapterCache(mapOf(
-      CustomScalar("Upload", "com.apollographql.apollo3.api.Upload") to UploadResponseAdapter
-  ))
+  private val adapterCache = ResponseAdapterCache(
+      mapOf(
+          "Upload" to UploadResponseAdapter
+      )
+  )
 
   private lateinit var mockServer: MockServer
   private lateinit var apolloClient: ApolloClient

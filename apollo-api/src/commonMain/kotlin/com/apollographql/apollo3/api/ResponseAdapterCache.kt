@@ -5,12 +5,12 @@ package com.apollographql.apollo3.api
  *
  * @param customScalarResponseAdapters a map from [CustomScalar] to the matching runtime [ResponseAdapter]
  */
-class ResponseAdapterCache(val customScalarResponseAdapters: Map<CustomScalar, ResponseAdapter<*>>) {
+class ResponseAdapterCache(val customScalarResponseAdapters: Map<String, ResponseAdapter<*>>) {
 
   fun <T : Any> responseAdapterFor(customScalar: CustomScalar): ResponseAdapter<T> {
     return when {
-      customScalarResponseAdapters[customScalar] != null -> {
-        customScalarResponseAdapters[customScalar] as ResponseAdapter<T>
+      customScalarResponseAdapters[customScalar.name] != null -> {
+        customScalarResponseAdapters[customScalar.name] as ResponseAdapter<T>
       }
       customScalar.className == "com.apollographql.apollo3.api.Upload" -> {
         // Shortcut to save users a call to `registerCustomScalarAdapter`

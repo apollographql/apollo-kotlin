@@ -270,7 +270,7 @@ class ApolloClient internal constructor(
     var defaultHttpCachePolicy = HttpCachePolicy.NETWORK_ONLY
     var defaultResponseFetcher = ApolloResponseFetchers.CACHE_FIRST
     var defaultCacheHeaders = CacheHeaders.NONE
-    val customScalarAdapters: MutableMap<CustomScalar, ResponseAdapter<*>> = mutableMapOf()
+    val customScalarAdapters: MutableMap<String, ResponseAdapter<*>> = mutableMapOf()
     var dispatcher: Executor? = null
     var logger: Logger? = null
     val applicationInterceptors: MutableList<ApolloInterceptor> = ArrayList()
@@ -406,7 +406,7 @@ class ApolloClient internal constructor(
     </T> */
     fun <T> addCustomScalarAdapter(customScalar: CustomScalar,
                                    customScalarAdapter: ResponseAdapter<T>): Builder {
-      customScalarAdapters[customScalar] = customScalarAdapter
+      customScalarAdapters[customScalar.name] = customScalarAdapter
       return this
     }
 

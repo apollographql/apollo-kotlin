@@ -12,6 +12,7 @@ import com.apollographql.apollo3.cache.normalized.NormalizedCache
 import com.apollographql.apollo3.cache.normalized.Record
 import com.apollographql.apollo3.cache.normalized.internal.normalize
 import com.apollographql.apollo3.integration.IdFieldCacheKeyResolver
+import com.apollographql.apollo3.integration.httpcache.AllPlanetsQuery
 import com.apollographql.apollo3.integration.normalizer.EpisodeHeroNameQuery
 import com.apollographql.apollo3.integration.normalizer.HeroAndFriendsNamesQuery
 import com.apollographql.apollo3.integration.normalizer.HeroAndFriendsNamesWithIDForParentOnlyQuery
@@ -28,6 +29,9 @@ import kotlin.test.Test
 import kotlin.test.assertTrue
 import com.apollographql.apollo3.integration.assertEquals2 as assertEquals
 
+/**
+ * Tests for the normalization without an instance of [ApolloClient]
+ */
 class NormalizerTest {
   private lateinit var normalizedCache: NormalizedCache
 
@@ -214,6 +218,31 @@ class NormalizerTest {
     assertEquals(friends!![0], CacheReference("$TEST_FIELD_KEY_JEDI.friends.0"))
     assertEquals(friends[1], CacheReference("$TEST_FIELD_KEY_JEDI.friends.1"))
     assertEquals(friends[2], CacheReference("$TEST_FIELD_KEY_JEDI.friends.2"))
+  }
+
+  @Test
+  fun list_of_objects_with_null_object() {
+    val records = records(AllPlanetsQuery(), "AllPlanetsListOfObjectWithNullObject.json")
+    val fieldKey = "allPlanets({\"first\":300})"
+    var record: Record?
+
+    record = records.get("$fieldKey.planets.0")
+    assertTrue(record?.get("filmConnection") == null)
+    record = records.get("$fieldKey.planets.0.filmConnection")
+    assertTrue(record == null)
+    record = records.get("$fieldKey.planets.1.filmConnection")
+    assertTrue(record != null)
+  }
+
+
+  @Test
+  @Throws(Exception::class)
+  fun testHeroParentTypeDependentFieldHuman() {
+    val records = records(HeroParentTypeDependentFieldQuery(Input.Present(Episode.EMPIRE)), "HeroParentTypeDependentFieldHumanResponse.json")
+
+    val lukeRecord = records.get("${TEST_FIELD_KEY_EMPIRE}.friends.0")
+    assertEquals(lukeRecord!!["name"], "Han Solo")
+    assertEquals(lukeRecord["height({\"unit\":\"FOOT\"})"], 5.905512)
   }
 
   companion object {

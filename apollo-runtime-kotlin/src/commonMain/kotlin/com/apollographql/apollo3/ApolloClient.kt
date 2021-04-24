@@ -24,7 +24,7 @@ import kotlinx.coroutines.flow.single
 /**
  * The main entry point for the Apollo runtime. An [ApolloClient] is responsible for executing queries, mutations and subscriptions
  */
-class ApolloClient internal constructor(
+data class ApolloClient internal constructor(
     private val networkTransport: NetworkTransport,
     private val subscriptionNetworkTransport: NetworkTransport,
     private val responseAdapterCache: ResponseAdapterCache,
@@ -83,98 +83,30 @@ class ApolloClient internal constructor(
     }
   }
 
-  fun newBuilder(): Builder {
-    return Builder()
-        .networkTransport(networkTransport)
-        .subscriptionNetworkTransport(subscriptionNetworkTransport)
-        .scalarTypeAdapters(responseAdapterCache.customScalarResponseAdapters)
-        .interceptors(interceptors)
-        .executionContext(executionContext)
+  fun <T> withCustomScalarAdapter(graphqlName: String, customScalarAdapter: ResponseAdapter<T>): ApolloClient {
+    return copy(
+        responseAdapterCache = ResponseAdapterCache(
+            responseAdapterCache.customScalarResponseAdapters  + mapOf(graphqlName to customScalarAdapter)
+        )
+    )
   }
 
-  class Builder {
-    private var customScalarAdapters = emptyMap<CustomScalar, ResponseAdapter<*>>()
-
-    private var networkTransport: NetworkTransport? = null
-    private var subscriptionNetworkTransport: NetworkTransport? = null
-    private var interceptors: List<ApolloRequestInterceptor> = emptyList()
-    private var executionContext: ExecutionContext = ExecutionContext.Empty
-
-    fun serverUrl(serverUrl: String) = apply {
-      networkTransport(ApolloHttpNetworkTransport(serverUrl = serverUrl))
-    }
-
-    fun <T> addScalarTypeAdapter(customScalar: CustomScalar, customScalarAdapter: ResponseAdapter<T>) = apply {
-      this.customScalarAdapters = this.customScalarAdapters + (customScalar to customScalarAdapter)
-    }
-
-    fun networkTransport(networkTransport: NetworkTransport) = apply {
-      check(this.networkTransport == null) {
-        "ApolloGraphQL: networkTransport is already set. If you're using serverUrl(), you shouldn't call networkTransport() manually"
-      }
-      this.networkTransport = networkTransport
-    }
-
-    fun subscriptionNetworkTransport(subscriptionNetworkTransport: NetworkTransport) = apply {
-      check(this.subscriptionNetworkTransport == null) {
-        "ApolloGraphQL: subscriptionNetworkTransport is already set."
-      }
-      this.subscriptionNetworkTransport = subscriptionNetworkTransport
-    }
-
-    fun addInterceptor(interceptor: ApolloRequestInterceptor, executionContext: ExecutionContext = ExecutionContext.Empty) = apply {
-      interceptors = interceptors + interceptor
-      this.executionContext = this.executionContext + executionContext
-    }
-
-    fun build(): ApolloClient {
-      val transport = networkTransport
-      check(transport != null) {
-        "ApolloGraphQL: no networkTransport, either call networkTransport() or serverUrl()"
-      }
-      val subscriptionTransport = subscriptionNetworkTransport ?: transport
-
-      return ApolloClient(
-          networkTransport = transport,
-          subscriptionNetworkTransport = subscriptionTransport,
-          responseAdapterCache = ResponseAdapterCache(customScalarAdapters),
-          interceptors = interceptors,
-          executionContext = executionContext
-      )
-    }
-
-    internal fun interceptors(interceptors: List<ApolloRequestInterceptor>) = apply {
-      check(this.interceptors.isEmpty()) {
-        "ApolloGraphQL: interceptors is already set"
-      }
-      this.interceptors = interceptors
-    }
-
-    internal fun interceptors(vararg interceptors: ApolloRequestInterceptor) = apply {
-      interceptors(interceptors.toList())
-    }
-
-    internal fun executionContext(executionContext: ExecutionContext) = apply {
-      check(this.executionContext == ExecutionContext.Empty) {
-        "ApolloGraphQL: executionContext is already set."
-      }
-      this.executionContext = executionContext
-    }
-
-    internal fun scalarTypeAdapters(customScalarAdapters: Map<CustomScalar, ResponseAdapter<*>>) = apply {
-      this.customScalarAdapters = customScalarAdapters
-    }
+  fun withInterceptor(interceptor: ApolloRequestInterceptor): ApolloClient {
+    return copy(
+        interceptors = interceptors + interceptor
+    )
   }
 }
 
-fun ApolloClient(serverUrl: String): ApolloClient {
-  val transport = ApolloHttpNetworkTransport(serverUrl = serverUrl)
+fun ApolloClient(serverUrl: String)= ApolloClient(ApolloHttpNetworkTransport(serverUrl = serverUrl))
 
+fun ApolloClient(networkTransport: NetworkTransport): ApolloClient {
   return ApolloClient(
-      networkTransport = transport,
-      subscriptionNetworkTransport = transport,
+      networkTransport = networkTransport,
+      subscriptionNetworkTransport = networkTransport,
       responseAdapterCache = ResponseAdapterCache.DEFAULT,
       interceptors = emptyList(),
       executionContext = ExecutionContext.Empty
   )
 }
+

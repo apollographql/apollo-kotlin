@@ -27,6 +27,7 @@ class CacheSequentialReader(
     else -> false
   }
 
+  @Suppress("UNCHECKED_CAST")
   fun toMap(): Map<String, Any?> {
     return CacheReference(rootKey).resolve(rootFieldSets) as Map<String, Any?>
   }

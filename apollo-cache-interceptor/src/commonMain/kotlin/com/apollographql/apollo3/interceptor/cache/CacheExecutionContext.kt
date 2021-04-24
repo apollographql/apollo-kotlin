@@ -65,8 +65,8 @@ internal data class CacheOutput(
 val <D : Operation.Data> ApolloResponse<D>.isFromCache
   get() = executionContext[CacheOutput]?.isFromCache ?: false
 
-fun ApolloClient.Builder.normalizedCache(store: ApolloStore): ApolloClient.Builder {
-  return addInterceptor(ApolloCacheInterceptor(store))
+fun ApolloClient.withStore(store: ApolloStore): ApolloClient {
+  return withInterceptor(ApolloCacheInterceptor(store))
 }
 
 fun <D: Query.Data> ApolloRequest<D>.withFetchPolicy(fetchPolicy: FetchPolicy): ApolloRequest<D> {

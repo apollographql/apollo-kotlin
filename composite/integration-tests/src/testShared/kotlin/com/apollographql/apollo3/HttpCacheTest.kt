@@ -21,7 +21,7 @@ import com.apollographql.apollo3.exception.ApolloHttpException
 import com.apollographql.apollo3.integration.httpcache.AllFilmsQuery
 import com.apollographql.apollo3.integration.httpcache.AllPlanetsQuery
 import com.apollographql.apollo3.integration.httpcache.DroidDetailsQuery
-import com.apollographql.apollo3.integration.httpcache.type.CustomScalars
+import com.apollographql.apollo3.integration.httpcache.type.Types
 import com.apollographql.apollo3.rx2.Rx2Apollo
 import com.google.common.truth.Truth
 import kotlinx.coroutines.runBlocking
@@ -82,7 +82,7 @@ class HttpCacheTest {
         .serverUrl(server.url("/"))
         .okHttpClient(okHttpClient)
         .dispatcher(immediateExecutor())
-        .addCustomScalarAdapter(CustomScalars.Date, dateCustomScalarAdapter)
+        .addCustomScalarAdapter(Types.Date, dateCustomScalarAdapter)
         .httpCache(cache)
         .build()
   }
