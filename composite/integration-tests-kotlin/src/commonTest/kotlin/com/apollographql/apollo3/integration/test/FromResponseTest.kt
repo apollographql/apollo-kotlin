@@ -10,12 +10,18 @@ import com.apollographql.apollo3.api.toJson
 import com.apollographql.apollo3.integration.LocalDateResponseAdapter
 import com.apollographql.apollo3.integration.httpcache.AllFilmsQuery
 import com.apollographql.apollo3.integration.httpcache.AllPlanetsQuery
+import com.apollographql.apollo3.integration.httpcache.AllPlanetsQuery.Data.AllPlanets.Planet.Companion.planetFragment
+import com.apollographql.apollo3.integration.httpcache.AllPlanetsQuery.Data.AllPlanets.Planet.FilmConnection.Film.Companion.filmFragment
+import com.apollographql.apollo3.integration.httpcache.fragment.FilmFragment
+import com.apollographql.apollo3.integration.httpcache.fragment.PlanetFragment
 import com.apollographql.apollo3.integration.httpcache.type.Types
+import com.apollographql.apollo3.integration.normalizer.CharacterDetailsQuery
 import com.apollographql.apollo3.integration.normalizer.EpisodeHeroNameQuery
 import com.apollographql.apollo3.integration.normalizer.GetJsonScalarQuery
 import com.apollographql.apollo3.integration.normalizer.HeroNameQuery
 import com.apollographql.apollo3.integration.normalizer.type.Episode
 import com.apollographql.apollo3.integration.readResource
+import kotlinx.datetime.LocalDate
 import okio.Buffer
 import kotlin.test.Test
 import kotlin.test.assertEquals
@@ -198,5 +204,54 @@ class FromResponseTest {
     val response = query.fromResponse(query.toJson(data))
 
     assertEquals(response.data, data)
+  }
+
+  /**
+   * Nothing really specific here, it's just a bigger response
+   */
+  @Test
+  fun allPlanetQuery() {
+    val data = AllPlanetsQuery().fromResponse(readResource("HttpCacheTestAllPlanets.json")).data
+
+    assertEquals(data!!.allPlanets?.planets?.size, 60)
+    val planets = data.allPlanets?.planets?.mapNotNull {
+      (it as PlanetFragment).name
+    }
+    assertEquals(planets, ("Tatooine, Alderaan, Yavin IV, Hoth, Dagobah, Bespin, Endor, Naboo, "
+        + "Coruscant, Kamino, Geonosis, Utapau, Mustafar, Kashyyyk, Polis Massa, Mygeeto, Felucia, Cato Neimoidia, "
+        + "Saleucami, Stewjon, Eriadu, Corellia, Rodia, Nal Hutta, Dantooine, Bestine IV, Ord Mantell, unknown, "
+        + "Trandosha, Socorro, Mon Cala, Chandrila, Sullust, Toydaria, Malastare, Dathomir, Ryloth, Aleen Minor, "
+        + "Vulpter, Troiken, Tund, Haruun Kal, Cerea, Glee Anselm, Iridonia, Tholoth, Iktotch, Quermia, Dorin, "
+        + "Champala, Mirial, Serenno, Concord Dawn, Zolan, Ojom, Skako, Muunilinst, Shili, Kalee, Umbara")
+        .split(",")
+        .map { it.trim() }
+    )
+    val firstPlanet = data.allPlanets?.planets?.get(0)
+    assertEquals(firstPlanet?.planetFragment()?.climates, listOf("arid"))
+    assertEquals(firstPlanet?.planetFragment()?.surfaceWater, 1.0)
+    assertEquals(firstPlanet?.filmConnection?.totalCount, 5)
+    assertEquals(firstPlanet?.filmConnection?.films?.size, 5)
+    assertEquals(firstPlanet?.filmConnection?.films?.get(0)?.filmFragment()?.title, "A New Hope")
+    assertEquals(firstPlanet?.filmConnection?.films?.get(0)?.filmFragment()?.producers, listOf("Gary Kurtz", "Rick McCallum"))
+  }
+
+  @Test
+  fun `forgetting to add a runtime adapter for a scalar registered in the plugin fails`() {
+    val data = CharacterDetailsQuery.Data(
+        CharacterDetailsQuery.Data.HumanCharacter(
+            __typename = "Human",
+            name = "Luke",
+            birthDate = LocalDate(1970, 1, 1),
+            appearsIn = emptyList(),
+            firstAppearsIn = Episode.EMPIRE
+        )
+    )
+    val query = CharacterDetailsQuery(id = "1")
+    try {
+      query.fromResponse(query.toJson(data))
+      error("expected IllegalStateException")
+    } catch (e: IllegalStateException) {
+      assertTrue(e.message!!.contains("Can't map GraphQL type: `Date`"))
+    }
   }
 }
