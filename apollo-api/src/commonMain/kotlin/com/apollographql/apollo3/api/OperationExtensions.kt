@@ -24,21 +24,19 @@ import kotlin.jvm.JvmOverloads
  */
 
 /**
- * Serializes GraphQL operation response data into its equivalent Json representation.
+ * Serializes GraphQL operation data into its equivalent Json representation.
  * For example:
  * <pre>{@code
  *    {
- *      "data": {
- *        "allPlanets": {
- *          "__typename": "PlanetsConnection",
- *          "planets": [
- *            {
- *              "__typename": "Planet",
- *              "name": "Tatooine",
- *              "surfaceWater": 1.0
- *            }
- *          ]
- *        }
+ *      "allPlanets": {
+ *        "__typename": "PlanetsConnection",
+ *        "planets": [
+ *          {
+ *            "__typename": "Planet",
+ *            "name": "Tatooine",
+ *            "surfaceWater": 1.0
+ *          }
+ *        ]
  *      }
  *    }
  * }</pre>
@@ -55,11 +53,7 @@ fun <D : Operation.Data> Operation<D>.toJson(data: D, indent: String = "", respo
     val writer = BufferedSinkJsonWriter(buffer).apply {
       this.indent = indent
     }
-    // Do we need to wrap in data?
-    writer.beginObject()
-    writer.name("data")
     adapter().toResponse(writer, responseAdapterCache, data)
-    writer.endObject()
     buffer.readUtf8()
   } catch (e: IOException) {
     throw IllegalStateException(e)
@@ -85,7 +79,7 @@ fun <D : Operation.Data, M: Map<String, Any?>> Operation<D>.fromJson(
  *
  * throws if the Data cannot be parsed
  *
- * @param map: a [Map] representing the response data. It's typically the `data` object of a GraphQL response
+ * @param bufferedSource: a [BufferedSource] representing the response data. It's typically the `data` object of a GraphQL response
  */
 fun <D : Operation.Data> Operation<D>.fromJson(
     bufferedSource: BufferedSource,
@@ -93,6 +87,11 @@ fun <D : Operation.Data> Operation<D>.fromJson(
 ): D {
   return adapter().fromResponse(BufferedSourceJsonReader(bufferedSource), responseAdapterCache)
 }
+
+fun <D : Operation.Data> Operation<D>.fromJson(
+    string: String,
+    responseAdapterCache: ResponseAdapterCache = DEFAULT,
+): D = fromJson(Buffer().apply { writeUtf8(string) }, responseAdapterCache)
 
 /**
  * Parses GraphQL operation raw response from the [source] with provided [responseAdapterCache] and returns result [ApolloResponse]

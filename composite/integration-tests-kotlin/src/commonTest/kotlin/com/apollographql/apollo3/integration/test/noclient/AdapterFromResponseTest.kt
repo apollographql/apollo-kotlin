@@ -4,10 +4,12 @@ import com.apollographql.apollo3.adapters.LocalDateResponseAdapter
 import com.apollographql.apollo3.api.Input
 import com.apollographql.apollo3.api.ResponseAdapter
 import com.apollographql.apollo3.api.ResponseAdapterCache
+import com.apollographql.apollo3.api.fromJson
 import com.apollographql.apollo3.api.fromResponse
 import com.apollographql.apollo3.api.internal.json.BufferedSinkJsonWriter
 import com.apollographql.apollo3.api.json.use
 import com.apollographql.apollo3.api.toJson
+import com.apollographql.apollo3.api.toResponse
 import com.apollographql.apollo3.integration.httpcache.AllFilmsQuery
 import com.apollographql.apollo3.integration.httpcache.AllPlanetsQuery
 import com.apollographql.apollo3.integration.httpcache.AllPlanetsQuery.Data.AllPlanets.Planet.Companion.planetFragment
@@ -139,7 +141,7 @@ class AdapterFromResponseTest {
     val expected = readResource("OperationJsonWriter.json")
     val query = AllPlanetsQuery()
     val data = query.fromResponse(expected).data
-    val actual = query.toJson(data!!, "  ")
+    val actual = query.toResponse(data!!, "  ")
     assertEquals(actual, expected)
   }
 
@@ -200,9 +202,8 @@ class AdapterFromResponseTest {
         json = mapOf("1" to "2", "3" to listOf("a", "b"))
     )
     val query = GetJsonScalarQuery()
-    val response = query.fromResponse(query.toJson(data))
 
-    assertEquals(response.data, data)
+    assertEquals(query.fromJson(query.toJson(data)), data)
   }
 
   /**
@@ -247,7 +248,7 @@ class AdapterFromResponseTest {
     )
     val query = CharacterDetailsQuery(id = "1")
     try {
-      query.fromResponse(query.toJson(data))
+      query.fromJson(query.toJson(data))
       error("expected IllegalStateException")
     } catch (e: IllegalStateException) {
       assertTrue(e.message!!.contains("Can't map GraphQL type: `Date`"))
