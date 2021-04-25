@@ -1,4 +1,4 @@
-package com.apollographql.apollo3.integration.mockserver
+package com.apollographql.apollo3.mockserver
 
 import okhttp3.Headers
 import okhttp3.mockwebserver.MockWebServer

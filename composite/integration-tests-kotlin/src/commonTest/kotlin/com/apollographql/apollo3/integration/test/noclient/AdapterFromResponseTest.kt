@@ -1,5 +1,6 @@
 package com.apollographql.apollo3.integration.test.runtime
 
+import com.apollographql.apollo3.adapters.LocalDateResponseAdapter
 import com.apollographql.apollo3.api.Input
 import com.apollographql.apollo3.api.ResponseAdapter
 import com.apollographql.apollo3.api.ResponseAdapterCache
@@ -7,7 +8,6 @@ import com.apollographql.apollo3.api.fromResponse
 import com.apollographql.apollo3.api.internal.json.BufferedSinkJsonWriter
 import com.apollographql.apollo3.api.json.use
 import com.apollographql.apollo3.api.toJson
-import com.apollographql.apollo3.integration.LocalDateResponseAdapter
 import com.apollographql.apollo3.integration.httpcache.AllFilmsQuery
 import com.apollographql.apollo3.integration.httpcache.AllPlanetsQuery
 import com.apollographql.apollo3.integration.httpcache.AllPlanetsQuery.Data.AllPlanets.Planet.Companion.planetFragment

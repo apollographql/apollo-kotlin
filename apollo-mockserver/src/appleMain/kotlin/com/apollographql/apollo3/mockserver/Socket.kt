@@ -1,5 +1,7 @@
-package com.apollographql.apollo3.integration.mockserver
+package com.apollographql.apollo3.mockserver
 
+import kotlinx.atomicfu.locks.reentrantLock
+import kotlinx.atomicfu.locks.synchronized
 import kotlinx.cinterop.ByteVar
 import kotlinx.cinterop.IntVar
 import kotlinx.cinterop.allocArray
@@ -24,7 +26,7 @@ import kotlin.native.concurrent.freeze
 class Socket(private val socketFd: Int) {
   private val pipeFd = nativeHeap.allocArray<IntVar>(2)
   private val running = AtomicInt(1)
-  private val lock = SynchronizedObject()
+  private val lock = reentrantLock()
   private val queuedResponses = AtomicReference<List<MockResponse>>(emptyList())
   private val recordedRequests = AtomicReference<List<MockRecordedRequest>>(emptyList())
 

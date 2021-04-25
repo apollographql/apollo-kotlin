@@ -1,4 +1,4 @@
-package com.apollographql.apollo3.integration.mockserver
+package com.apollographql.apollo3.mockserver
 
 import okio.Buffer
 import okio.BufferedSink

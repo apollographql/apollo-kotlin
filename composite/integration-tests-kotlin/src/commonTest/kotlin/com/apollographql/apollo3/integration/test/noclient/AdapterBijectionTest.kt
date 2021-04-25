@@ -1,5 +1,6 @@
 package com.apollographql.apollo3.integration.test.noclient
 
+import com.apollographql.apollo3.adapters.LocalDateResponseAdapter
 import com.apollographql.apollo3.api.Fragment
 import com.apollographql.apollo3.api.Input
 import com.apollographql.apollo3.api.Operation
@@ -7,7 +8,6 @@ import com.apollographql.apollo3.api.ResponseAdapterCache
 import com.apollographql.apollo3.api.fromJson
 import com.apollographql.apollo3.api.fromResponse
 import com.apollographql.apollo3.api.toJson
-import com.apollographql.apollo3.integration.LocalDateResponseAdapter
 import com.apollographql.apollo3.integration.httpcache.type.Types
 import com.apollographql.apollo3.integration.normalizer.EpisodeHeroWithDatesQuery
 import com.apollographql.apollo3.integration.normalizer.EpisodeHeroWithInlineFragmentQuery

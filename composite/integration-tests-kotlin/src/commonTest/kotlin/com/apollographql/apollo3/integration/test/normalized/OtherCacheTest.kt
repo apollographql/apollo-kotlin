@@ -8,7 +8,7 @@ import com.apollographql.apollo3.cache.normalized.MemoryCacheFactory
 import com.apollographql.apollo3.exception.CacheMissException
 import com.apollographql.apollo3.integration.IdFieldCacheKeyResolver
 import com.apollographql.apollo3.integration.enqueue
-import com.apollographql.apollo3.integration.mockserver.MockServer
+import com.apollographql.apollo3.mockserver.MockServer
 import com.apollographql.apollo3.integration.normalizer.CharacterDetailsQuery
 import com.apollographql.apollo3.integration.normalizer.CharacterNameByIdQuery
 import com.apollographql.apollo3.integration.normalizer.EpisodeHeroNameQuery

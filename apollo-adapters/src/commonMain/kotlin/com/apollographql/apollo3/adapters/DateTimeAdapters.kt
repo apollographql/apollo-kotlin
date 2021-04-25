@@ -1,4 +1,4 @@
-package com.apollographql.apollo3.integration
+package com.apollographql.apollo3.adapters
 
 import com.apollographql.apollo3.api.ResponseAdapter
 import com.apollographql.apollo3.api.ResponseAdapterCache
@@ -7,7 +7,7 @@ import com.apollographql.apollo3.api.json.JsonWriter
 import kotlinx.datetime.Instant
 import kotlinx.datetime.LocalDate
 
-val LocalDateResponseAdapter = object : ResponseAdapter<LocalDate> {
+object LocalDateResponseAdapter : ResponseAdapter<LocalDate> {
   override fun fromResponse(reader: JsonReader, responseAdapterCache: ResponseAdapterCache): LocalDate {
     return LocalDate.parse(reader.nextString()!!)
   }
@@ -17,7 +17,7 @@ val LocalDateResponseAdapter = object : ResponseAdapter<LocalDate> {
   }
 }
 
-val InstantResponseAdapter = object : ResponseAdapter<Instant> {
+object InstantResponseAdapter : ResponseAdapter<Instant> {
   override fun fromResponse(reader: JsonReader, responseAdapterCache: ResponseAdapterCache): Instant {
     return Instant.parse(reader.nextString()!!)
   }
