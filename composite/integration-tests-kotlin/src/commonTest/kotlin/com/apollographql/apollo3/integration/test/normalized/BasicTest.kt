@@ -5,6 +5,8 @@ import com.apollographql.apollo3.ApolloRequest
 import com.apollographql.apollo3.api.ApolloResponse
 import com.apollographql.apollo3.api.Input
 import com.apollographql.apollo3.api.Query
+import com.apollographql.apollo3.api.fromJson
+import com.apollographql.apollo3.api.fromResponse
 import com.apollographql.apollo3.api.internal.json.BufferedSourceJsonReader
 import com.apollographql.apollo3.api.internal.json.Utils.readRecursively
 import com.apollographql.apollo3.cache.normalized.ApolloStore
@@ -241,28 +243,8 @@ class BasicTest {
     )
   }
 
-  private fun Any?.dump(depth: Int) {
-    when (this) {
-      null -> println("null".padStart(depth * 2))
-      is Map<*, *> -> entries.forEach {
-        println((it.key as String).padStart(depth * 2))
-        it.value.dump(depth + 1)
-      }
-      is List<*> -> forEach {
-        it.dump(depth + 1)
-      }
-      else -> println(toString().padStart(depth * 2))
-    }
-
-  }
   private fun <D : Query.Data> basicTest(resourceName: String, query: Query<D>, block: ApolloResponse<D>.() -> Unit) = runWithMainLoop {
-    val responseStr = readResource(resourceName)
-
-    val buffer = Buffer().apply { writeUtf8(responseStr) }
-    //BufferedSourceJsonReader(buffer).readRecursively().dump(0)
-
-    println(responseStr)
-    mockServer.enqueue(responseStr)
+    mockServer.enqueue(readResource(resourceName))
     var response = apolloClient.query(ApolloRequest(query).withFetchPolicy(FetchPolicy.NetworkOnly))
     response.block()
     response = apolloClient.query(ApolloRequest(query).withFetchPolicy(FetchPolicy.CacheOnly))
