@@ -1,4 +1,4 @@
-package com.apollographql.apollo3.api.internal
+package com.apollographql.apollo3
 
 import com.apollographql.apollo3.api.AnyResponseAdapter
 import com.apollographql.apollo3.api.Upload

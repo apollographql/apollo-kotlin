@@ -5,7 +5,7 @@ import com.apollographql.apollo3.api.Operation
 import com.apollographql.apollo3.api.ApolloResponse
 import com.apollographql.apollo3.api.ResponseAdapterCache
 import com.apollographql.apollo3.api.fromResponse
-import com.apollographql.apollo3.api.internal.OperationRequestBodyComposer
+import com.apollographql.apollo3.OperationRequestBodyComposer
 import com.apollographql.apollo3.api.variablesJson
 import com.apollographql.apollo3.exception.ApolloHttpException
 import com.apollographql.apollo3.exception.ApolloSerializationException

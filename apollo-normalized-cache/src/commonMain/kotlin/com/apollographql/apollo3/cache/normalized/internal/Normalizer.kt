@@ -2,7 +2,6 @@ package com.apollographql.apollo3.cache.normalized.internal
 
 import com.apollographql.apollo3.api.Operation
 import com.apollographql.apollo3.api.ResponseField
-import com.apollographql.apollo3.api.internal.shouldSkip
 import com.apollographql.apollo3.cache.normalized.CacheReference
 import com.apollographql.apollo3.cache.normalized.Record
 
