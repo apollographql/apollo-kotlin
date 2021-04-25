@@ -1,8 +1,6 @@
 package com.apollographql.apollo3.cache.normalized
 
-import com.apollographql.apollo3.api.BigDecimal
 import kotlin.test.Test
-import kotlin.test.assertEquals
 import kotlin.test.assertTrue
 
 class RecordWeigherTest {

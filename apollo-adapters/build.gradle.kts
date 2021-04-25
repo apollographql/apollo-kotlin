@@ -2,7 +2,7 @@ plugins {
   kotlin("multiplatform")
 }
 
-configureMppDefaults(withJs = false)
+configureMppDefaults()
 
 kotlin {
   sourceSets {
@@ -10,6 +10,11 @@ kotlin {
       dependencies {
         api(project(":apollo-api"))
         api(groovy.util.Eval.x(project, "x.dep.kotlinxdatetime"))
+      }
+    }
+    val jsMain by getting {
+      dependencies {
+        implementation(npm("big.js", "5.2.2"))
       }
     }
   }

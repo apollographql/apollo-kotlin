@@ -1,5 +1,8 @@
 package com.apollographql.apollo3.api
 
+import com.apollographql.apollo3.api.json.JsonReader
+import com.apollographql.apollo3.api.json.JsonWriter
+
 /**
  * A multiplatform BigDecimal
  *
@@ -23,3 +26,14 @@ expect class BigDecimal {
 }
 
 expect fun BigDecimal.toNumber(): Number
+
+object BigDecimalAdapter: ResponseAdapter<BigDecimal> {
+  override fun fromResponse(reader: JsonReader, responseAdapterCache: ResponseAdapterCache): BigDecimal {
+    return BigDecimal(reader.nextString()!!)
+  }
+
+  override fun toResponse(writer: JsonWriter, responseAdapterCache: ResponseAdapterCache, value: BigDecimal) {
+    writer.value(value.toString())
+  }
+
+}
