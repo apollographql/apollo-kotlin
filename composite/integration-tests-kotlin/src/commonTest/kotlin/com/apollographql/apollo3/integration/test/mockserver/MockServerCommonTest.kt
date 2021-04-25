@@ -1,4 +1,4 @@
-package com.apollographql.apollo3.integration.test
+package com.apollographql.apollo3.integration.test.mockserver
 
 import com.apollographql.apollo3.integration.mockserver.readRequest
 import okio.Buffer

@@ -1,4 +1,4 @@
-package com.apollographql.apollo3.integration.test
+package com.apollographql.apollo3.integration.test.runtime
 
 import com.apollographql.apollo3.api.Input
 import com.apollographql.apollo3.api.ResponseAdapter
@@ -12,7 +12,6 @@ import com.apollographql.apollo3.integration.httpcache.AllFilmsQuery
 import com.apollographql.apollo3.integration.httpcache.AllPlanetsQuery
 import com.apollographql.apollo3.integration.httpcache.AllPlanetsQuery.Data.AllPlanets.Planet.Companion.planetFragment
 import com.apollographql.apollo3.integration.httpcache.AllPlanetsQuery.Data.AllPlanets.Planet.FilmConnection.Film.Companion.filmFragment
-import com.apollographql.apollo3.integration.httpcache.fragment.FilmFragment
 import com.apollographql.apollo3.integration.httpcache.fragment.PlanetFragment
 import com.apollographql.apollo3.integration.httpcache.type.Types
 import com.apollographql.apollo3.integration.normalizer.CharacterDetailsQuery
@@ -31,7 +30,7 @@ import kotlin.test.assertTrue
 /**
  * A series of tests against StreamResponseParser and the generated parsers
  */
-class FromResponseTest {
+class AdapterFromResponseTest {
 
   @Test
   @Throws(Exception::class)

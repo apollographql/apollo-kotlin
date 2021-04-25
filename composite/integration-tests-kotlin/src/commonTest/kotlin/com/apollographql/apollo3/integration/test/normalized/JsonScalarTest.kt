@@ -1,4 +1,4 @@
-package com.apollographql.apollo3.integration.test
+package com.apollographql.apollo3.integration.test.normalized
 
 import com.apollographql.apollo3.ApolloClient
 import com.apollographql.apollo3.ApolloRequest
@@ -47,7 +47,9 @@ class JsonScalarTest {
     )
     assertEquals(expectedMap, response.data!!.json)
 
-    // Trigger a merge
+    /**
+     * Update the json value, it should be replaced, not merged
+     */
     mockServer.enqueue(readResource("JsonScalarModified.json"))
     apolloClient.query(ApolloRequest(GetJsonScalarQuery()).withFetchPolicy(FetchPolicy.NetworkFirst))
     response = apolloClient.query(ApolloRequest(GetJsonScalarQuery()).withFetchPolicy(FetchPolicy.CacheOnly))

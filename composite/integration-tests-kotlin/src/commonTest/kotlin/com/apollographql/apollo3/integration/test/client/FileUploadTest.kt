@@ -1,7 +1,6 @@
-package com.apollographql.apollo3.integration.test
+package com.apollographql.apollo3.integration.test.client
 
 import com.apollographql.apollo3.ApolloClient
-import com.apollographql.apollo3.api.CustomScalar
 import com.apollographql.apollo3.api.Input
 import com.apollographql.apollo3.api.ResponseAdapterCache
 import com.apollographql.apollo3.api.Upload
@@ -16,7 +15,6 @@ import com.apollographql.apollo3.integration.upload.SingleUploadMutation
 import com.apollographql.apollo3.integration.upload.SingleUploadTwiceMutation
 import com.apollographql.apollo3.integration.upload.type.NestedObject
 import com.apollographql.apollo3.testing.runWithMainLoop
-import kotlinx.coroutines.flow.single
 import okio.Buffer
 import kotlin.test.BeforeTest
 import kotlin.test.Test
