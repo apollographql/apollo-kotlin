@@ -16,10 +16,10 @@ import platform.posix.pthread_self
 import platform.posix.rewind
 import kotlin.test.assertEquals
 
-actual fun readTestFixture(name: String): String {
-  val file = fopen("../integration-tests/testFixtures/$name", "r")
+actual fun readFile(path: String): String {
+  val file = fopen(path, "r")
   check (file != null) {
-    "Cannot open fixture $name"
+    "Cannot open $path"
   }
 
   fseek(file, 0, SEEK_END)

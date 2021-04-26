@@ -32,7 +32,8 @@ fun MockServer.enqueue(string: String) {
   ))
 }
 
-fun readResource(name: String) = readTestFixture("resources/$name")
+fun readTestFixture(name: String) = readFile("../integration-tests/testFixtures/$name")
+fun readResource(name: String) = readFile("../integration-tests/testFixtures/resources/$name")
 
 object IdFieldCacheKeyResolver : CacheKeyResolver() {
   override fun fromFieldRecordSet(field: ResponseField, recordSet: Map<String, Any?>): CacheKey {
