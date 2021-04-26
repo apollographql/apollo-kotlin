@@ -1,7 +1,7 @@
 package com.apollographql.apollo3.compiler.frontend
 
-import com.apollographql.apollo3.compiler.backend.codegen.decapitalizeFirstLetter
-import com.apollographql.apollo3.compiler.backend.codegen.isFirstLetterUpperCase
+import com.apollographql.apollo3.compiler.codegen.decapitalizeFirstLetter
+import com.apollographql.apollo3.compiler.codegen.isFirstLetterUpperCase
 
 /**
  * @param fragmentDefinitions: all the fragments in the current compilation unit. This is required to check the type conditions as well as fields merging

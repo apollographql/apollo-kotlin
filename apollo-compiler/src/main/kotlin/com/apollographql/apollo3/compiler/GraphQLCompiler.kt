@@ -4,17 +4,15 @@ import com.apollographql.apollo3.api.QueryDocumentMinifier
 import com.apollographql.apollo3.compiler.frontend.GQLFragmentDefinition
 import com.apollographql.apollo3.compiler.frontend.GQLOperationDefinition
 import com.apollographql.apollo3.compiler.frontend.GQLScalarTypeDefinition
-import com.apollographql.apollo3.compiler.frontend.GQLTypeDefinition
 import com.apollographql.apollo3.compiler.frontend.GraphQLParser
 import com.apollographql.apollo3.compiler.frontend.Issue
 import com.apollographql.apollo3.compiler.frontend.Schema
 import com.apollographql.apollo3.compiler.frontend.SourceAwareException
 import com.apollographql.apollo3.compiler.frontend.withTypenameWhenNeeded
-import com.apollographql.apollo3.compiler.introspection.IntrospectionSchema
 import com.apollographql.apollo3.compiler.operationoutput.OperationDescriptor
 import com.apollographql.apollo3.compiler.operationoutput.toJson
 import com.apollographql.apollo3.compiler.unified.ir.IrBuilder
-import com.apollographql.apollo3.compiler.unified.codegen.KotlinCodeGenerator
+import com.apollographql.apollo3.compiler.codegen.KotlinCodeGenerator
 import com.apollographql.apollo3.compiler.unified.ir.dumpTo
 import java.io.File
 
