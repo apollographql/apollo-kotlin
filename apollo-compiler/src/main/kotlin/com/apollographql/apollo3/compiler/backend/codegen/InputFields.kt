@@ -1,6 +1,6 @@
 package com.apollographql.apollo3.compiler.backend.codegen
 
-import com.apollographql.apollo3.api.Input
+import com.apollographql.apollo3.api.Optional
 import com.apollographql.apollo3.api.ResponseAdapterCache
 import com.apollographql.apollo3.api.ResponseAdapter
 import com.apollographql.apollo3.api.json.JsonReader
@@ -22,7 +22,7 @@ import com.squareup.kotlinpoet.asTypeName
 internal fun CodeGenerationAst.InputField.asInputTypeName() = if (isRequired) {
   type.asTypeName()
 } else {
-  Input::class.asClassName().parameterizedBy(type.asTypeName())
+  Optional::class.asClassName().parameterizedBy(type.asTypeName())
 }
 
 internal fun CodeGenerationAst.InputField.toParameterSpec(): ParameterSpec {
@@ -32,7 +32,7 @@ internal fun CodeGenerationAst.InputField.toParameterSpec(): ParameterSpec {
           type = asInputTypeName()
       )
       .applyIf(description.isNotBlank()) { addKdoc("%L\n", description) }
-      .applyIf(!isRequired) { defaultValue("%T", Input.Absent::class.asClassName()) }
+      .applyIf(!isRequired) { defaultValue("%T", Optional.Absent::class.asClassName()) }
       .build()
 }
 
@@ -103,7 +103,7 @@ private fun List<CodeGenerationAst.InputField>.inputFieldsAdapterTypeSpec(
       .addCode(CodeBlock.Builder().apply {
         forEach {
           if (!it.isRequired) {
-            beginControlFlow("if (value.%L is %T)", kotlinNameForVariable(it.name), Input.Present::class)
+            beginControlFlow("if (value.%L is %T)", kotlinNameForVariable(it.name), Optional.Present::class)
             addStatement("writer.name(%S)", it.schemaName)
             addStatement(
                 "%L.toResponse(writer, ${Identifier.responseAdapterCache}, value.%L.value)",

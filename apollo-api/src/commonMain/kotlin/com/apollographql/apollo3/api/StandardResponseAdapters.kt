@@ -63,13 +63,13 @@ class NullableResponseAdapter<T : Any>(private val wrappedAdapter: ResponseAdapt
 
 
 
-class InputResponseAdapter<T>(private val wrappedAdapter: ResponseAdapter<T>, private val name: String) : ResponseAdapter<Input<T>> {
-  override fun fromResponse(reader: JsonReader, responseAdapterCache: ResponseAdapterCache): Input<T> {
+class InputResponseAdapter<T>(private val wrappedAdapter: ResponseAdapter<T>, private val name: String) : ResponseAdapter<Optional<T>> {
+  override fun fromResponse(reader: JsonReader, responseAdapterCache: ResponseAdapterCache): Optional<T> {
     error("Input value used in output position")
   }
 
-  override fun toResponse(writer: JsonWriter, responseAdapterCache: ResponseAdapterCache, value: Input<T>) {
-    if (value is Input.Present) {
+  override fun toResponse(writer: JsonWriter, responseAdapterCache: ResponseAdapterCache, value: Optional<T>) {
+    if (value is Optional.Present) {
       writer.name(name)
       wrappedAdapter.toResponse(writer, responseAdapterCache, value.value)
     }

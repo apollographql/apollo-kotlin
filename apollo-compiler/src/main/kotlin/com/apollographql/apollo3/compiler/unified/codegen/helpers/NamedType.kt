@@ -1,13 +1,11 @@
 package com.apollographql.apollo3.compiler.unified.codegen.helpers
 
-import com.apollographql.apollo3.api.Input
+import com.apollographql.apollo3.api.Optional
 import com.apollographql.apollo3.compiler.applyIf
 import com.apollographql.apollo3.compiler.unified.codegen.CgContext
 import com.apollographql.apollo3.compiler.unified.ir.IrInputField
 import com.apollographql.apollo3.compiler.unified.ir.IrType
 import com.apollographql.apollo3.compiler.unified.ir.IrVariable
-import com.squareup.kotlinpoet.CodeBlock
-import com.squareup.kotlinpoet.MemberName
 import com.squareup.kotlinpoet.ParameterSpec
 import com.squareup.kotlinpoet.ParameterizedTypeName.Companion.parameterizedBy
 import com.squareup.kotlinpoet.TypeName
@@ -23,7 +21,7 @@ class NamedType(
 
 fun NamedType.typeName(context: CgContext): TypeName {
   return if (optional) {
-    Input::class.asClassName().parameterizedBy(context.resolver.resolveType(type))
+    Optional::class.asClassName().parameterizedBy(context.resolver.resolveType(type))
   } else {
     context.resolver.resolveType(type)
   }
@@ -38,7 +36,7 @@ internal fun NamedType.toParameterSpec(context: CgContext): ParameterSpec {
           type = typeName(context)
       )
       .applyIf(description?.isNotBlank() == true) { addKdoc("%L\n", description!!) }
-      .applyIf(optional) { defaultValue("%T", Input.Absent::class.asClassName()) }
+      .applyIf(optional) { defaultValue("%T", Optional.Absent::class.asClassName()) }
       .build()
 }
 

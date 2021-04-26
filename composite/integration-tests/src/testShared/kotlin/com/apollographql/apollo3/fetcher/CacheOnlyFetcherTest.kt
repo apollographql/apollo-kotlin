@@ -1,8 +1,7 @@
 package com.apollographql.apollo3.fetcher
 
-import com.apollographql.apollo3.api.Input
+import com.apollographql.apollo3.api.Optional
 import com.apollographql.apollo3.exception.ApolloException
-import com.apollographql.apollo3.fetcher.ApolloResponseFetchers
 import com.apollographql.apollo3.integration.normalizer.EpisodeHeroNameQuery
 import com.apollographql.apollo3.integration.normalizer.type.Episode
 import com.apollographql.apollo3.isFromCache
@@ -17,7 +16,7 @@ class CacheOnlyFetcherTest : BaseFetcherTest() {
   @Test
   @Throws(IOException::class, ApolloException::class, TimeoutException::class, InterruptedException::class)
   fun enqueue() {
-    val query = EpisodeHeroNameQuery(episode = Input.Present(Episode.EMPIRE))
+    val query = EpisodeHeroNameQuery(episode = Optional.Present(Episode.EMPIRE))
     var trackingCallback: TrackingCallback
 
     // Is null when cache empty

@@ -1,7 +1,7 @@
 package com.apollographql.apollo3
 
 import com.apollographql.apollo3.Utils.readFileToString
-import com.apollographql.apollo3.api.Input
+import com.apollographql.apollo3.api.Optional
 import com.apollographql.apollo3.api.ApolloResponse
 import com.apollographql.apollo3.cache.normalized.MemoryCacheFactory
 import com.apollographql.apollo3.exception.ApolloException
@@ -43,7 +43,7 @@ class AsyncNormalizedCacheTestCase {
   @Test
   @Throws(IOException::class, InterruptedException::class, ApolloException::class)
   fun testAsync() {
-    val query: EpisodeHeroNameQuery = EpisodeHeroNameQuery(episode = Input.Present(Episode.EMPIRE))
+    val query: EpisodeHeroNameQuery = EpisodeHeroNameQuery(episode = Optional.Present(Episode.EMPIRE))
     for (i in 0..499) {
       server.enqueue(mockResponse("HeroNameResponse.json"))
     }

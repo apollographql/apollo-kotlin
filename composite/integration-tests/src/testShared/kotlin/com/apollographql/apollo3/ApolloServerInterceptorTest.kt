@@ -1,7 +1,7 @@
 package com.apollographql.apollo3
 
 import com.apollographql.apollo3.Utils.checkTestFixture
-import com.apollographql.apollo3.api.Input
+import com.apollographql.apollo3.api.Optional
 import com.apollographql.apollo3.api.ResponseAdapterCache
 import com.apollographql.apollo3.api.cache.http.HttpCache
 import com.apollographql.apollo3.api.cache.http.HttpCachePolicy
@@ -24,7 +24,7 @@ import java.util.concurrent.TimeUnit
 
 class ApolloServerInterceptorTest {
   private val serverUrl = HttpUrl.parse("http://google.com")!!
-  private val query = AllFilmsQuery(after = Input.Present("some cursor"), before = Input.Absent, first = Input.Absent, last = Input.Present(100))
+  private val query = AllFilmsQuery(after = Optional.Present("some cursor"), before = Optional.Absent, first = Optional.Absent, last = Optional.Present(100))
 
   @Test
   @Throws(Exception::class)

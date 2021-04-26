@@ -2,7 +2,7 @@ package com.apollographql.apollo3.integration.test.normalized
 
 import com.apollographql.apollo3.ApolloClient
 import com.apollographql.apollo3.ApolloRequest
-import com.apollographql.apollo3.api.Input
+import com.apollographql.apollo3.api.Optional
 import com.apollographql.apollo3.cache.normalized.ApolloStore
 import com.apollographql.apollo3.cache.normalized.CacheKey
 import com.apollographql.apollo3.cache.normalized.MemoryCacheFactory
@@ -124,7 +124,7 @@ class StoreTest {
   @Ignore
   fun readFragmentFromStore() = runWithMainLoop {
     mockServer.enqueue(readResource("HeroAndFriendsWithFragmentResponse.json"))
-    apolloClient.query(HeroAndFriendsNamesWithIDsQuery(Input.Present(Episode.NEWHOPE)))
+    apolloClient.query(HeroAndFriendsNamesWithIDsQuery(Optional.Present(Episode.NEWHOPE)))
 
     val heroWithFriendsFragment = store.readFragment(
         HeroWithFriendsFragmentImpl(),
@@ -169,7 +169,7 @@ class StoreTest {
   @Test
   fun fragments() = runWithMainLoop {
     mockServer.enqueue(readResource("HeroAndFriendsWithFragmentResponse.json"))
-    val query = HeroAndFriendsWithFragmentsQuery(Input.Present(Episode.NEWHOPE))
+    val query = HeroAndFriendsWithFragmentsQuery(Optional.Present(Episode.NEWHOPE))
     var response = apolloClient.query(query)
     assertEquals(response.data?.hero?.__typename, "Droid")
     assertEquals(response.data?.hero?.heroWithFriendsFragment()?.__typename, "Droid")
@@ -236,7 +236,7 @@ class StoreTest {
   private suspend fun storeAllFriends() {
     mockServer.enqueue(readResource("HeroAndFriendsNameWithIdsResponse.json"))
     val response = apolloClient.query(
-        ApolloRequest(HeroAndFriendsNamesWithIDsQuery(Input.Present(Episode.NEWHOPE))).withFetchPolicy(FetchPolicy.NetworkOnly)
+        ApolloRequest(HeroAndFriendsNamesWithIDsQuery(Optional.Present(Episode.NEWHOPE))).withFetchPolicy(FetchPolicy.NetworkOnly)
     )
 
     assertEquals(response.data?.hero?.name, "R2-D2")
@@ -264,7 +264,7 @@ class StoreTest {
   private suspend fun assertRootNotCached() {
     try {
       apolloClient.query(
-          ApolloRequest(HeroAndFriendsNamesWithIDsQuery(Input.Present(Episode.NEWHOPE))).withFetchPolicy(FetchPolicy.CacheOnly)
+          ApolloRequest(HeroAndFriendsNamesWithIDsQuery(Optional.Present(Episode.NEWHOPE))).withFetchPolicy(FetchPolicy.CacheOnly)
       )
       fail("A CacheMissException was expected")
     } catch (e: CacheMissException) {

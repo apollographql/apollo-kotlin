@@ -3,7 +3,7 @@ package com.apollographql.apollo3
 import com.apollographql.apollo3.Utils.immediateExecutor
 import com.apollographql.apollo3.Utils.immediateExecutorService
 import com.apollographql.apollo3.Utils.mockResponse
-import com.apollographql.apollo3.api.Input
+import com.apollographql.apollo3.api.Optional
 import com.apollographql.apollo3.api.ApolloResponse
 import com.apollographql.apollo3.cache.normalized.MemoryCacheFactory
 import com.apollographql.apollo3.fetcher.ApolloResponseFetchers.NETWORK_ONLY
@@ -50,7 +50,7 @@ class Rx3ApolloTest {
   fun callProducesValue() {
     server.enqueue(mockResponse(FILE_EPISODE_HERO_NAME_WITH_ID))
     Rx3Apollo
-        .from(apolloClient.query(EpisodeHeroNameQuery(Input.Present(EMPIRE))))
+        .from(apolloClient.query(EpisodeHeroNameQuery(Optional.Present(EMPIRE))))
         .test()
         .assertNoErrors()
         .assertComplete()
@@ -66,7 +66,7 @@ class Rx3ApolloTest {
     server.enqueue(mockResponse(FILE_EPISODE_HERO_NAME_WITH_ID))
     val testObserver = TestObserver<ApolloResponse<EpisodeHeroNameQuery.Data>>()
     val disposable: Disposable = Rx3Apollo
-        .from(apolloClient.query(EpisodeHeroNameQuery(Input.Present(EMPIRE))))
+        .from(apolloClient.query(EpisodeHeroNameQuery(Optional.Present(EMPIRE))))
         .subscribeWith(testObserver)
     disposable.dispose()
     testObserver.assertComplete()
@@ -78,7 +78,7 @@ class Rx3ApolloTest {
   fun prefetchCompletes() {
     server.enqueue(mockResponse(FILE_EPISODE_HERO_NAME_WITH_ID))
     Rx3Apollo
-        .from(apolloClient.prefetch(EpisodeHeroNameQuery(Input.Present(EMPIRE))))
+        .from(apolloClient.prefetch(EpisodeHeroNameQuery(Optional.Present(EMPIRE))))
         .test()
         .assertNoErrors()
         .assertComplete()
@@ -90,7 +90,7 @@ class Rx3ApolloTest {
     server.enqueue(mockResponse(FILE_EPISODE_HERO_NAME_WITH_ID))
     val testObserver: TestObserver<EpisodeHeroNameQuery.Data> = TestObserver<EpisodeHeroNameQuery.Data>()
     val disposable: Disposable = Rx3Apollo
-        .from(apolloClient.prefetch(EpisodeHeroNameQuery(Input.Present(EMPIRE))))
+        .from(apolloClient.prefetch(EpisodeHeroNameQuery(Optional.Present(EMPIRE))))
         .observeOn(TestScheduler())
         .subscribeWith(testObserver)
     disposable.dispose()
@@ -104,11 +104,11 @@ class Rx3ApolloTest {
     server.enqueue(mockResponse(FILE_EPISODE_HERO_NAME_WITH_ID))
     val observer = TestObserver<EpisodeHeroNameWithIdQuery.Data>()
     Rx3Apollo
-        .from(apolloClient.query(EpisodeHeroNameWithIdQuery(Input.Present(EMPIRE))).watcher())
+        .from(apolloClient.query(EpisodeHeroNameWithIdQuery(Optional.Present(EMPIRE))).watcher())
         .map { response -> response.data }
         .subscribeWith(observer)
     server.enqueue(mockResponse(FILE_EPISODE_HERO_NAME_CHANGE))
-    apolloClient.query(EpisodeHeroNameWithIdQuery(Input.Present(EMPIRE)))
+    apolloClient.query(EpisodeHeroNameWithIdQuery(Optional.Present(EMPIRE)))
         .responseFetcher(NETWORK_ONLY)
         .enqueue(null)
 
@@ -134,7 +134,7 @@ class Rx3ApolloTest {
     server.enqueue(mockResponse(FILE_EPISODE_HERO_NAME_WITH_ID))
     val observer: TestObserver<EpisodeHeroNameQuery.Data> = TestObserver<EpisodeHeroNameQuery.Data>()
     Rx3Apollo
-        .from(apolloClient.query(EpisodeHeroNameQuery(Input.Present(EMPIRE))).watcher())
+        .from(apolloClient.query(EpisodeHeroNameQuery(Optional.Present(EMPIRE))).watcher())
         .retry(1)
         .map({ response -> response.data })
         .subscribeWith(observer)
@@ -151,11 +151,11 @@ class Rx3ApolloTest {
     server.enqueue(mockResponse(FILE_EPISODE_HERO_NAME_WITH_ID))
     val observer: TestObserver<EpisodeHeroNameQuery.Data> = TestObserver<EpisodeHeroNameQuery.Data>()
     Rx3Apollo
-        .from(apolloClient.query(EpisodeHeroNameQuery(Input.Present(EMPIRE))).watcher())
+        .from(apolloClient.query(EpisodeHeroNameQuery(Optional.Present(EMPIRE))).watcher())
         .map({ response -> response.data })
         .subscribeWith(observer)
     server.enqueue(mockResponse(FILE_EPISODE_HERO_NAME_WITH_ID))
-    apolloClient.query(EpisodeHeroNameQuery(Input.Present(EMPIRE))).responseFetcher(NETWORK_ONLY)
+    apolloClient.query(EpisodeHeroNameQuery(Optional.Present(EMPIRE))).responseFetcher(NETWORK_ONLY)
         .enqueue(null)
     observer
         .assertValueCount(1)
@@ -171,11 +171,11 @@ class Rx3ApolloTest {
     server.enqueue(mockResponse(FILE_EPISODE_HERO_NAME_WITH_ID))
     val observer = TestObserver<EpisodeHeroNameWithIdQuery.Data>()
     Rx3Apollo
-        .from(apolloClient.query(EpisodeHeroNameWithIdQuery(Input.Present(EMPIRE))).watcher())
+        .from(apolloClient.query(EpisodeHeroNameWithIdQuery(Optional.Present(EMPIRE))).watcher())
         .map { response -> response.data }
         .subscribeWith(observer)
     server.enqueue(mockResponse("HeroAndFriendsNameWithIdsNameChange.json"))
-    apolloClient.query(HeroAndFriendsNamesWithIDsQuery(Input.Present(NEWHOPE))).enqueue(null)
+    apolloClient.query(HeroAndFriendsNamesWithIDsQuery(Optional.Present(NEWHOPE))).enqueue(null)
 
     // There's a race here because RealApolloStore now calls the subscribers from a Dispatchers.IO thread
     // Ultimately this should go hence the ugly workaround
@@ -200,13 +200,13 @@ class Rx3ApolloTest {
     val testObserver: TestObserver<EpisodeHeroNameQuery.Data> = TestObserver<EpisodeHeroNameQuery.Data>()
     val scheduler = TestScheduler()
     val disposable: Disposable = Rx3Apollo
-        .from(apolloClient.query(EpisodeHeroNameQuery(Input.Present(EMPIRE))).watcher())
+        .from(apolloClient.query(EpisodeHeroNameQuery(Optional.Present(EMPIRE))).watcher())
         .map({ response -> response.data })
         .observeOn(scheduler)
         .subscribeWith(testObserver)
     scheduler.triggerActions()
     server.enqueue(mockResponse(FILE_EPISODE_HERO_NAME_CHANGE))
-    apolloClient.query(EpisodeHeroNameQuery(Input.Present(EMPIRE))).responseFetcher(NETWORK_ONLY)
+    apolloClient.query(EpisodeHeroNameQuery(Optional.Present(EMPIRE))).responseFetcher(NETWORK_ONLY)
         .enqueue(null)
     disposable.dispose()
     scheduler.triggerActions()

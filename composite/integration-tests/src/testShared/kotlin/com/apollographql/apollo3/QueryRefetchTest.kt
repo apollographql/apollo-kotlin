@@ -5,7 +5,7 @@ import com.apollographql.apollo3.Utils.enqueueAndAssertResponse
 import com.apollographql.apollo3.Utils.immediateExecutor
 import com.apollographql.apollo3.Utils.immediateExecutorService
 import com.apollographql.apollo3.Utils.mockResponse
-import com.apollographql.apollo3.api.Input
+import com.apollographql.apollo3.api.Optional
 import com.apollographql.apollo3.api.ApolloResponse
 import com.apollographql.apollo3.cache.normalized.MemoryCacheFactory
 import com.apollographql.apollo3.exception.ApolloException
@@ -59,7 +59,7 @@ class QueryRefetchTest {
   fun refetchNoPreCachedQuery() {
     val mutation = CreateReviewMutation(
         Episode.EMPIRE,
-        ReviewInput(stars = 5, commentary = Input.Present("Awesome"), favoriteColor = ColorInput())
+        ReviewInput(stars = 5, commentary = Optional.Present("Awesome"), favoriteColor = ColorInput())
     )
     server.enqueue(mockResponse("CreateReviewResponse.json"))
     server.enqueue(mockResponse("ReviewsEmpireEpisodeResponse.json"))
@@ -94,7 +94,7 @@ class QueryRefetchTest {
     }
     val mutation = CreateReviewMutation(
         Episode.EMPIRE,
-        ReviewInput(stars = 5, commentary = Input.Present("Awesome"), favoriteColor = ColorInput())
+        ReviewInput(stars = 5, commentary = Optional.Present("Awesome"), favoriteColor = ColorInput())
     )
     server.enqueue(mockResponse("CreateReviewResponse.json"))
     server.enqueue(mockResponse("ReviewsEmpireEpisodeResponseUpdated.json"))
@@ -131,7 +131,7 @@ class QueryRefetchTest {
         })
     val mutation = CreateReviewMutation(
         Episode.EMPIRE,
-        ReviewInput(stars = 5, commentary = Input.Present("Awesome"), favoriteColor = ColorInput())
+        ReviewInput(stars = 5, commentary = Optional.Present("Awesome"), favoriteColor = ColorInput())
     )
     Rx2Apollo
         .from(apolloClient.mutate(mutation).refetchQueries(queryWatcher.operation().name()))

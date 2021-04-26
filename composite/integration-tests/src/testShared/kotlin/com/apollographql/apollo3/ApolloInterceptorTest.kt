@@ -5,7 +5,7 @@ import com.apollographql.apollo3.Utils.enqueueAndAssertResponse
 import com.apollographql.apollo3.Utils.immediateExecutor
 import com.apollographql.apollo3.Utils.immediateExecutorService
 import com.apollographql.apollo3.Utils.readFileToString
-import com.apollographql.apollo3.api.Input
+import com.apollographql.apollo3.api.Optional
 import com.apollographql.apollo3.api.ApolloResponse
 import com.apollographql.apollo3.exception.ApolloException
 import com.apollographql.apollo3.exception.ApolloParseException
@@ -186,7 +186,7 @@ class ApolloInterceptorTest {
   }
 
   private fun createHeroNameQuery(): EpisodeHeroNameQuery {
-    return EpisodeHeroNameQuery(episode = Input.Present(Episode.EMPIRE))
+    return EpisodeHeroNameQuery(episode = Optional.Present(Episode.EMPIRE))
   }
 
   private fun createApolloClient(interceptor: ApolloInterceptor, dispatcher: Executor = immediateExecutor()): ApolloClient {

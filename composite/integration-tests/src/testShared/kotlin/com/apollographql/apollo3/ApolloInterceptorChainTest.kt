@@ -1,7 +1,7 @@
 package com.apollographql.apollo3
 
 import com.apollographql.apollo3.Utils.immediateExecutor
-import com.apollographql.apollo3.api.Input
+import com.apollographql.apollo3.api.Optional
 import com.apollographql.apollo3.api.ApolloResponse
 import com.apollographql.apollo3.exception.ApolloException
 import com.apollographql.apollo3.exception.ApolloGenericException
@@ -138,7 +138,7 @@ class ApolloInterceptorChainTest {
   }
 
   private fun createQuery(): EpisodeHeroNameQuery {
-    return EpisodeHeroNameQuery(episode = Input.Present(Episode.EMPIRE))
+    return EpisodeHeroNameQuery(episode = Optional.Present(Episode.EMPIRE))
   }
 
   private fun prepareInterceptorResponse(query: EpisodeHeroNameQuery): InterceptorResponse {
