@@ -1,9 +1,9 @@
 package com.apollographql.apollo3.compiler
 
-import com.apollographql.apollo3.compiler.frontend.GraphQLParser
-import com.apollographql.apollo3.compiler.frontend.Schema
-import com.apollographql.apollo3.compiler.frontend.toSchema
+import com.apollographql.apollo3.graphql.ast.Schema
 import com.apollographql.apollo3.compiler.introspection.IntrospectionSchema
+import com.apollographql.apollo3.compiler.introspection.toSchema
+import com.apollographql.apollo3.graphql.ast.GraphQLParser
 import com.google.common.truth.Truth.assertThat
 import java.io.File
 import java.lang.Exception

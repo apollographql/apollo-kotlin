@@ -134,23 +134,6 @@ class CgLayout(
     return builder.toString()
   }
 
-  private fun decapitalizeFirstLetter(name: String): String {
-    val builder = StringBuilder(name.length)
-    var isDecapitalized = false
-    name.forEach {
-      builder.append(if (!isDecapitalized && it.isLetter()) {
-        isDecapitalized = true
-        it.toLowerCase()
-      } else {
-        it
-      })
-    }
-    return builder.toString()
-  }
-
-  private fun isFirstLetterUpperCase(name: String): Boolean {
-    return name.firstOrNull { it.isLetter() }?.isUpperCase() ?: true
-  }
 
   companion object {
     fun upperCamelCaseIgnoringNonLetters(strings: Collection<String>): String {

@@ -1,6 +1,6 @@
 package com.apollographql.apollo3.compiler.unified.ir
 
-import com.apollographql.apollo3.compiler.frontend.GQLSelection
+import com.apollographql.apollo3.graphql.ast.GQLSelection
 
 interface RootFieldBuilder {
   fun build(

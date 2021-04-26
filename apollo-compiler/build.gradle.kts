@@ -6,10 +6,11 @@ plugins {
 }
 
 dependencies {
+  implementation(project(":apollo-api"))
+  implementation(project(":apollo-graphql-ast"))
   implementation(groovy.util.Eval.x(project, "x.dep.moshi.adapters"))
   implementation(groovy.util.Eval.x(project, "x.dep.moshi.moshi"))
   implementation(groovy.util.Eval.x(project, "x.dep.poet.kotlin"))
-  implementation(project(":apollo-api"))
 
   ksp(groovy.util.Eval.x(project, "x.dep.moshi.kotlinCodegen"))
 
