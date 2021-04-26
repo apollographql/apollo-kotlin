@@ -14,7 +14,6 @@ dependencies {
 
   ksp(groovy.util.Eval.x(project, "x.dep.moshi.kotlinCodegen"))
 
-  testImplementation(groovy.util.Eval.x(project, "x.dep.compiletesting"))
   testImplementation(groovy.util.Eval.x(project, "x.dep.kotlinCompileTesting"))
   testImplementation(groovy.util.Eval.x(project, "x.dep.junit"))
   testImplementation(groovy.util.Eval.x(project, "x.dep.truth"))

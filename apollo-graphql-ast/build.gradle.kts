@@ -9,6 +9,8 @@ dependencies {
   antlr(groovy.util.Eval.x(project, "x.dep.antlr.antlr"))
   implementation(groovy.util.Eval.x(project, "x.dep.antlr.runtime"))
   api(groovy.util.Eval.x(project, "x.dep.okio"))
+
+  testImplementation(kotlin("test-junit"))
 }
 
 // Only expose the antlr runtime dependency

@@ -29,8 +29,12 @@ interface GQLNode {
    * Terminal nodes won't have any children.
    */
   val children: List<GQLNode>
+
   fun write(bufferedSink: BufferedSink)
+
+  fun copyWithNewChildren(container: NodeContainer): GQLNode
 }
+
 
 interface GQLNamed {
   val name: String
@@ -54,13 +58,20 @@ sealed class GQLSelection : GQLNode
  */
 data class GQLDocument(
     val definitions: List<GQLDefinition>,
-    val filePath: String?
+    val filePath: String?,
 ) : GQLNode {
   override val sourceLocation: SourceLocation = SourceLocation(0, 0, filePath)
   override val children = definitions
 
   override fun write(bufferedSink: BufferedSink) {
     definitions.join(bufferedSink = bufferedSink, separator = "\n")
+  }
+
+  override fun copyWithNewChildren(container: NodeContainer): GQLNode {
+    return GQLDocument(
+        definitions = container.take(),
+        filePath = filePath
+    )
   }
 
   companion object
@@ -73,7 +84,7 @@ data class GQLOperationDefinition(
     val variableDefinitions: List<GQLVariableDefinition>,
     val directives: List<GQLDirective>,
     val selectionSet: GQLSelectionSet,
-    override val description: String?
+    override val description: String?,
 ) : GQLDefinition, GQLDescribed {
   override val children = variableDefinitions + directives + selectionSet
 
@@ -97,6 +108,14 @@ data class GQLOperationDefinition(
       }
     }
   }
+
+  override fun copyWithNewChildren(container: NodeContainer): GQLNode {
+    return copy(
+        variableDefinitions = container.take(),
+        directives = container.take(),
+        selectionSet = container.take<GQLSelectionSet>().single(),
+    )
+  }
 }
 
 data class GQLFragmentDefinition(
@@ -105,7 +124,7 @@ data class GQLFragmentDefinition(
     val directives: List<GQLDirective>,
     val typeCondition: GQLNamedType,
     val selectionSet: GQLSelectionSet,
-    override val description: String?
+    override val description: String?,
 ) : GQLDefinition, GQLNamed, GQLDescribed {
 
   override val children = directives + selectionSet + typeCondition
@@ -123,20 +142,28 @@ data class GQLFragmentDefinition(
       }
     }
   }
+
+  override fun copyWithNewChildren(container: NodeContainer): GQLNode {
+    return copy(
+        directives = container.take(),
+        typeCondition = container.take<GQLNamedType>().single(),
+        selectionSet = container.take<GQLSelectionSet>().single(),
+    )
+  }
 }
 
 data class GQLSchemaDefinition(
     override val sourceLocation: SourceLocation = SourceLocation.UNKNOWN,
     val description: String?,
     val directives: List<GQLDirective>,
-    val rootOperationTypeDefinitions: List<GQLOperationTypeDefinition>
+    val rootOperationTypeDefinitions: List<GQLOperationTypeDefinition>,
 ) : GQLDefinition {
 
   override val children = directives + rootOperationTypeDefinitions
 
   override fun write(bufferedSink: BufferedSink) {
     with(bufferedSink) {
-      if (description != null) writeUtf8("\"\"\"${com.apollographql.apollo3.graphql.ast.GraphQLString.encodeTripleQuoted(description)}\"\"\"\n")
+      if (description != null) writeUtf8("\"\"\"${GraphQLString.encodeTripleQuoted(description)}\"\"\"\n")
       if (directives.isNotEmpty()) {
         directives.join(bufferedSink)
         writeUtf8(" ")
@@ -146,6 +173,12 @@ data class GQLSchemaDefinition(
     }
   }
 
+  override fun copyWithNewChildren(container: NodeContainer): GQLNode {
+    return copy(
+        directives = container.take(),
+        rootOperationTypeDefinitions = container.take()
+    )
+  }
 }
 
 sealed class GQLTypeDefinition : GQLDefinition, GQLNamed, GQLDescribed {
@@ -176,14 +209,14 @@ data class GQLInterfaceTypeDefinition(
     override val name: String,
     val implementsInterfaces: List<String>,
     val directives: List<GQLDirective>,
-    val fields: List<GQLFieldDefinition>
+    val fields: List<GQLFieldDefinition>,
 ) : GQLTypeDefinition() {
 
   override val children: List<GQLNode> = directives + fields
 
   override fun write(bufferedSink: BufferedSink) {
     with(bufferedSink) {
-      if (description != null) writeUtf8("\"\"\"${com.apollographql.apollo3.graphql.ast.GraphQLString.encodeTripleQuoted(description)}\"\"\"\n")
+      if (description != null) writeUtf8("\"\"\"${GraphQLString.encodeTripleQuoted(description)}\"\"\"\n")
       writeUtf8("interface $name")
       if (implementsInterfaces.isNotEmpty()) {
         writeUtf8(" implements ")
@@ -198,6 +231,13 @@ data class GQLInterfaceTypeDefinition(
         fields.join(bufferedSink, prefix = "{\n", separator = "\n", postfix = "\n}\n")
       }
     }
+  }
+
+  override fun copyWithNewChildren(container: NodeContainer): GQLNode {
+    return copy(
+        directives = container.take(),
+        fields = container.take()
+    )
   }
 }
 
@@ -214,7 +254,7 @@ data class GQLObjectTypeDefinition(
 
   override fun write(bufferedSink: BufferedSink) {
     with(bufferedSink) {
-      if (description != null) writeUtf8("\"\"\"${com.apollographql.apollo3.graphql.ast.GraphQLString.encodeTripleQuoted(description)}\"\"\"\n")
+      if (description != null) writeUtf8("\"\"\"${GraphQLString.encodeTripleQuoted(description)}\"\"\"\n")
       writeUtf8("type $name")
       if (implementsInterfaces.isNotEmpty()) {
         writeUtf8(" implements ")
@@ -229,6 +269,13 @@ data class GQLObjectTypeDefinition(
       }
     }
   }
+
+  override fun copyWithNewChildren(container: NodeContainer): GQLNode {
+    return copy(
+        directives = container.take(),
+        fields = container.take()
+    )
+  }
 }
 
 data class GQLInputObjectTypeDefinition(
@@ -236,14 +283,14 @@ data class GQLInputObjectTypeDefinition(
     override val description: String?,
     override val name: String,
     val directives: List<GQLDirective>,
-    val inputFields: List<GQLInputValueDefinition>
+    val inputFields: List<GQLInputValueDefinition>,
 ) : GQLTypeDefinition() {
 
   override val children: List<GQLNode> = directives + inputFields
 
   override fun write(bufferedSink: BufferedSink) {
     with(bufferedSink) {
-      if (description != null) writeUtf8("\"\"\"${com.apollographql.apollo3.graphql.ast.GraphQLString.encodeTripleQuoted(description)}\"\"\"\n")
+      if (description != null) writeUtf8("\"\"\"${GraphQLString.encodeTripleQuoted(description)}\"\"\"\n")
       writeUtf8("input $name")
       if (directives.isNotEmpty()) {
         writeUtf8(" ")
@@ -255,26 +302,39 @@ data class GQLInputObjectTypeDefinition(
       }
     }
   }
+
+  override fun copyWithNewChildren(container: NodeContainer): GQLNode {
+    return copy(
+        directives = container.take(),
+        inputFields = container.take()
+    )
+  }
 }
 
 data class GQLScalarTypeDefinition(
     override val sourceLocation: SourceLocation = SourceLocation.UNKNOWN,
     override val description: String?,
     override val name: String,
-    val directives: List<GQLDirective>
+    val directives: List<GQLDirective>,
 ) : GQLTypeDefinition() {
 
   override val children = directives
 
   override fun write(bufferedSink: BufferedSink) {
     with(bufferedSink) {
-      if (description != null) writeUtf8("\"\"\"${com.apollographql.apollo3.graphql.ast.GraphQLString.encodeTripleQuoted(description)}\"\"\"\n")
+      if (description != null) writeUtf8("\"\"\"${GraphQLString.encodeTripleQuoted(description)}\"\"\"\n")
       writeUtf8("scalar $name")
       if (directives.isNotEmpty()) {
         writeUtf8(" ")
         directives.join(bufferedSink)
       }
     }
+  }
+
+  override fun copyWithNewChildren(container: NodeContainer): GQLNode {
+    return copy(
+        directives = container.take()
+    )
   }
 }
 
@@ -283,14 +343,14 @@ data class GQLEnumTypeDefinition(
     override val description: String?,
     override val name: String,
     val directives: List<GQLDirective>,
-    val enumValues: List<GQLEnumValueDefinition>
+    val enumValues: List<GQLEnumValueDefinition>,
 ) : GQLTypeDefinition() {
 
   override val children: List<GQLNode> = directives + enumValues
 
   override fun write(bufferedSink: BufferedSink) {
     with(bufferedSink) {
-      if (description != null) writeUtf8("\"\"\"${com.apollographql.apollo3.graphql.ast.GraphQLString.encodeTripleQuoted(description)}\"\"\"\n")
+      if (description != null) writeUtf8("\"\"\"${GraphQLString.encodeTripleQuoted(description)}\"\"\"\n")
       writeUtf8("enum $name")
       if (directives.isNotEmpty()) {
         writeUtf8(" ")
@@ -302,6 +362,13 @@ data class GQLEnumTypeDefinition(
       }
     }
   }
+
+  override fun copyWithNewChildren(container: NodeContainer): GQLNode {
+    return copy(
+        directives = container.take(),
+        enumValues = container.take()
+    )
+  }
 }
 
 data class GQLUnionTypeDefinition(
@@ -309,14 +376,14 @@ data class GQLUnionTypeDefinition(
     override val description: String?,
     override val name: String,
     val directives: List<GQLDirective>,
-    val memberTypes: List<GQLNamedType>
+    val memberTypes: List<GQLNamedType>,
 ) : GQLTypeDefinition() {
 
   override val children: List<GQLNode> = directives + memberTypes
 
   override fun write(bufferedSink: BufferedSink) {
     with(bufferedSink) {
-      if (description != null) writeUtf8("\"\"\"${com.apollographql.apollo3.graphql.ast.GraphQLString.encodeTripleQuoted(description)}\"\"\"\n")
+      if (description != null) writeUtf8("\"\"\"${GraphQLString.encodeTripleQuoted(description)}\"\"\"\n")
       writeUtf8("union $name")
       if (directives.isNotEmpty()) {
         writeUtf8(" ")
@@ -326,6 +393,13 @@ data class GQLUnionTypeDefinition(
       memberTypes.join(bufferedSink, separator = "|")
     }
   }
+
+  override fun copyWithNewChildren(container: NodeContainer): GQLNode {
+    return copy(
+        directives = container.take(),
+        memberTypes = container.take()
+    )
+  }
 }
 
 data class GQLDirectiveDefinition(
@@ -334,14 +408,14 @@ data class GQLDirectiveDefinition(
     override val name: String,
     val arguments: List<GQLInputValueDefinition>,
     val repeatable: Boolean,
-    val locations: List<GQLDirectiveLocation>
+    val locations: List<GQLDirectiveLocation>,
 ) : GQLDefinition, GQLNamed {
 
   override val children: List<GQLNode> = arguments
 
   override fun write(bufferedSink: BufferedSink) {
     with(bufferedSink) {
-      if (description != null) writeUtf8("\"\"\"${com.apollographql.apollo3.graphql.ast.GraphQLString.encodeTripleQuoted(description)}\"\"\"\n")
+      if (description != null) writeUtf8("\"\"\"${GraphQLString.encodeTripleQuoted(description)}\"\"\"\n")
       writeUtf8("directive @$name")
       if (arguments.isNotEmpty()) {
         writeUtf8(" ")
@@ -352,6 +426,12 @@ data class GQLDirectiveDefinition(
       }
       writeUtf8(" on ${locations.joinToString("|")}")
     }
+  }
+
+  override fun copyWithNewChildren(container: NodeContainer): GQLNode {
+    return copy(
+        arguments = container.take(),
+    )
   }
 
   fun isBuiltIn(): Boolean = builtInDirectives.contains(this.name)
@@ -368,7 +448,7 @@ data class GQLDirectiveDefinition(
 data class GQLSchemaExtension(
     override val sourceLocation: SourceLocation = SourceLocation.UNKNOWN,
     val directives: List<GQLDirective>,
-    val operationTypesDefinition: List<GQLOperationTypeDefinition>
+    val operationTypesDefinition: List<GQLOperationTypeDefinition>,
 ) : GQLDefinition, GQLTypeSystemExtension {
 
   override val children = directives + operationTypesDefinition
@@ -376,13 +456,20 @@ data class GQLSchemaExtension(
   override fun write(bufferedSink: BufferedSink) {
     TODO("Not yet implemented")
   }
+
+  override fun copyWithNewChildren(container: NodeContainer): GQLNode {
+    return copy(
+        directives = container.take(),
+        operationTypesDefinition = container.take()
+    )
+  }
 }
 
 data class GQLEnumTypeExtension(
     override val sourceLocation: SourceLocation = SourceLocation.UNKNOWN,
     override val name: String,
     val directives: List<GQLDirective>,
-    val enumValues: List<GQLEnumValueDefinition>
+    val enumValues: List<GQLEnumValueDefinition>,
 ) : GQLDefinition, GQLTypeExtension {
 
   override val children: List<GQLNode> = directives + enumValues
@@ -390,13 +477,20 @@ data class GQLEnumTypeExtension(
   override fun write(bufferedSink: BufferedSink) {
     TODO("Not yet implemented")
   }
+
+  override fun copyWithNewChildren(container: NodeContainer): GQLNode {
+    return copy(
+        directives = container.take(),
+        enumValues = container.take()
+    )
+  }
 }
 
 data class GQLObjectTypeExtension(
     override val sourceLocation: SourceLocation = SourceLocation.UNKNOWN,
     override val name: String,
     val directives: List<GQLDirective>,
-    val fields: List<GQLFieldDefinition>
+    val fields: List<GQLFieldDefinition>,
 ) : GQLDefinition, GQLTypeExtension {
 
   override val children: List<GQLNode> = directives + fields
@@ -404,13 +498,20 @@ data class GQLObjectTypeExtension(
   override fun write(bufferedSink: BufferedSink) {
     TODO("Not yet implemented")
   }
+
+  override fun copyWithNewChildren(container: NodeContainer): GQLNode {
+    return copy(
+        directives = container.take(),
+        fields = container.take()
+    )
+  }
 }
 
 data class GQLInputObjectTypeExtension(
     override val sourceLocation: SourceLocation = SourceLocation.UNKNOWN,
     override val name: String,
     val directives: List<GQLDirective>,
-    val inputFields: List<GQLInputValueDefinition>
+    val inputFields: List<GQLInputValueDefinition>,
 ) : GQLDefinition, GQLTypeExtension {
 
   override val children: List<GQLNode> = directives + inputFields
@@ -418,12 +519,19 @@ data class GQLInputObjectTypeExtension(
   override fun write(bufferedSink: BufferedSink) {
     TODO("Not yet implemented")
   }
+
+  override fun copyWithNewChildren(container: NodeContainer): GQLNode {
+    return copy(
+        directives = container.take(),
+        inputFields = container.take()
+    )
+  }
 }
 
 data class GQLScalarTypeExtension(
     override val sourceLocation: SourceLocation = SourceLocation.UNKNOWN,
     override val name: String,
-    val directives: List<GQLDirective>
+    val directives: List<GQLDirective>,
 ) : GQLDefinition, GQLTypeExtension {
 
   override val children = directives
@@ -431,12 +539,18 @@ data class GQLScalarTypeExtension(
   override fun write(bufferedSink: BufferedSink) {
     TODO("Not yet implemented")
   }
+
+  override fun copyWithNewChildren(container: NodeContainer): GQLNode {
+    return copy(
+        directives = container.take()
+    )
+  }
 }
 
 data class GQLInterfaceTypeExtension(
     override val sourceLocation: SourceLocation = SourceLocation.UNKNOWN,
     override val name: String,
-    val fields: List<GQLFieldDefinition>
+    val fields: List<GQLFieldDefinition>,
 ) : GQLDefinition, GQLTypeExtension, GQLNamed {
 
   override val children = fields
@@ -444,13 +558,19 @@ data class GQLInterfaceTypeExtension(
   override fun write(bufferedSink: BufferedSink) {
     TODO("Not yet implemented")
   }
+
+  override fun copyWithNewChildren(container: NodeContainer): GQLNode {
+    return copy(
+        fields = container.take()
+    )
+  }
 }
 
 data class GQLUnionTypeExtension(
     override val sourceLocation: SourceLocation = SourceLocation.UNKNOWN,
     override val name: String,
     val directives: List<GQLDirective>,
-    val memberTypes: List<GQLNamedType>
+    val memberTypes: List<GQLNamedType>,
 ) : GQLDefinition, GQLTypeExtension {
 
   override val children: List<GQLNode> = directives + memberTypes
@@ -458,27 +578,40 @@ data class GQLUnionTypeExtension(
   override fun write(bufferedSink: BufferedSink) {
     TODO("Not yet implemented")
   }
+
+  override fun copyWithNewChildren(container: NodeContainer): GQLNode {
+    return copy(
+        directives = container.take(),
+        memberTypes = container.take()
+    )
+  }
 }
 
 data class GQLEnumValueDefinition(
     override val sourceLocation: SourceLocation = SourceLocation.UNKNOWN,
     val description: String?,
     override val name: String,
-    val directives: List<GQLDirective>
+    val directives: List<GQLDirective>,
 ) : GQLNode, GQLNamed {
 
   override val children = directives
 
   override fun write(bufferedSink: BufferedSink) {
     with(bufferedSink) {
-      if (description != null) writeUtf8("\"\"\"${com.apollographql.apollo3.graphql.ast.GraphQLString.encodeTripleQuoted(description)}\"\"\"\n")
-      writeUtf8("$name")
+      if (description != null) writeUtf8("\"\"\"${GraphQLString.encodeTripleQuoted(description)}\"\"\"\n")
+      writeUtf8(name)
       if (directives.isNotEmpty()) {
         writeUtf8(" ")
         directives.join(bufferedSink)
       }
 
     }
+  }
+
+  override fun copyWithNewChildren(container: NodeContainer): GQLNode {
+    return copy(
+        directives = container.take()
+    )
   }
 }
 
@@ -488,14 +621,14 @@ data class GQLFieldDefinition(
     override val name: String,
     val arguments: List<GQLInputValueDefinition>,
     val type: GQLType,
-    val directives: List<GQLDirective>
+    val directives: List<GQLDirective>,
 ) : GQLNode, GQLNamed {
 
   override val children: List<GQLNode> = directives + arguments
 
   override fun write(bufferedSink: BufferedSink) {
     with(bufferedSink) {
-      if (description != null) writeUtf8("\"\"\"${com.apollographql.apollo3.graphql.ast.GraphQLString.encodeTripleQuoted(description)}\"\"\"\n")
+      if (description != null) writeUtf8("\"\"\"${GraphQLString.encodeTripleQuoted(description)}\"\"\"\n")
       writeUtf8(name)
       if (arguments.isNotEmpty()) {
         writeUtf8(" ")
@@ -509,6 +642,13 @@ data class GQLFieldDefinition(
       }
     }
   }
+
+  override fun copyWithNewChildren(container: NodeContainer): GQLNode {
+    return copy(
+        directives = container.take(),
+        arguments = container.take()
+    )
+  }
 }
 
 data class GQLInputValueDefinition(
@@ -517,14 +657,14 @@ data class GQLInputValueDefinition(
     override val name: String,
     val directives: List<GQLDirective>,
     val type: GQLType,
-    val defaultValue: GQLValue?
+    val defaultValue: GQLValue?,
 ) : GQLNode, GQLNamed {
 
   override val children = directives
 
   override fun write(bufferedSink: BufferedSink) {
     with(bufferedSink) {
-      if (description != null) writeUtf8("\"\"\"${com.apollographql.apollo3.graphql.ast.GraphQLString.encodeTripleQuoted(description)}\"\"\" ")
+      if (description != null) writeUtf8("\"\"\"${GraphQLString.encodeTripleQuoted(description)}\"\"\" ")
       writeUtf8("$name: ")
       type.write(bufferedSink)
       if (defaultValue != null) {
@@ -537,6 +677,12 @@ data class GQLInputValueDefinition(
       }
     }
   }
+
+  override fun copyWithNewChildren(container: NodeContainer): GQLNode {
+    return copy(
+        directives = container.take()
+    )
+  }
 }
 
 /**
@@ -548,14 +694,10 @@ data class GQLVariableDefinition(
     val name: String,
     val type: GQLType,
     val defaultValue: GQLValue?,
-    val directives: List<GQLDirective>
+    val directives: List<GQLDirective>,
 ) : GQLNode {
 
-  override val children = mutableListOf<GQLNode>().apply {
-    if (defaultValue != null) {
-      add(defaultValue)
-    }
-  }
+  override val children = listOfNotNull(defaultValue) + directives
 
   override fun write(bufferedSink: BufferedSink) {
     with(bufferedSink) {
@@ -570,12 +712,19 @@ data class GQLVariableDefinition(
       // directives.join(bufferedSink)
     }
   }
+
+  override fun copyWithNewChildren(container: NodeContainer): GQLNode {
+    return copy(
+        directives = container.take(),
+        defaultValue = container.takeSingle()
+    )
+  }
 }
 
 data class GQLOperationTypeDefinition(
     override val sourceLocation: SourceLocation = SourceLocation.UNKNOWN,
     val operationType: String,
-    val namedType: String
+    val namedType: String,
 ) : GQLNode {
 
   override val children = emptyList<GQLNode>()
@@ -585,15 +734,19 @@ data class GQLOperationTypeDefinition(
       writeUtf8("$operationType: $namedType")
     }
   }
+
+  override fun copyWithNewChildren(container: NodeContainer): GQLNode {
+    return this
+  }
 }
 
 data class GQLDirective(
     override val sourceLocation: SourceLocation = SourceLocation.UNKNOWN,
     override val name: String,
-    val arguments: GQLArguments?
+    val arguments: GQLArguments?,
 ) : GQLNode, GQLNamed {
 
-  override val children = if (arguments != null) listOf(arguments) else emptyList()
+  override val children = listOfNotNull(arguments)
 
   override fun write(bufferedSink: BufferedSink) {
     with(bufferedSink) {
@@ -601,12 +754,18 @@ data class GQLDirective(
       arguments?.write(bufferedSink)
     }
   }
+
+  override fun copyWithNewChildren(container: NodeContainer): GQLNode {
+    return copy(
+        arguments = container.takeSingle()
+    )
+  }
 }
 
 data class GQLObjectField(
     override val sourceLocation: SourceLocation = SourceLocation.UNKNOWN,
     val name: String,
-    val value: GQLValue
+    val value: GQLValue,
 ) : GQLNode {
 
   override val children = listOf(value)
@@ -616,13 +775,19 @@ data class GQLObjectField(
       writeUtf8("$name: ")
       value.write(bufferedSink)
     }
+  }
+
+  override fun copyWithNewChildren(container: NodeContainer): GQLNode {
+    return copy(
+        value = container.takeSingle()!!
+    )
   }
 }
 
 data class GQLArgument(
     override val sourceLocation: SourceLocation = SourceLocation.UNKNOWN,
     val name: String,
-    val value: GQLValue
+    val value: GQLValue,
 ) : GQLNode {
 
   override val children = listOf(value)
@@ -633,16 +798,27 @@ data class GQLArgument(
       value.write(bufferedSink)
     }
   }
+  override fun copyWithNewChildren(container: NodeContainer): GQLNode {
+    return copy(
+        value = container.takeSingle()!!
+    )
+  }
 }
 
 data class GQLSelectionSet(
     val selections: List<GQLSelection>,
-    override val sourceLocation: SourceLocation = SourceLocation.UNKNOWN
+    override val sourceLocation: SourceLocation = SourceLocation.UNKNOWN,
 ) : GQLNode {
   override val children = selections
 
   override fun write(bufferedSink: BufferedSink) {
     selections.join(bufferedSink, prefix = "{\n", separator = "\n", postfix = "\n}")
+  }
+
+  override fun copyWithNewChildren(container: NodeContainer): GQLNode {
+    return copy(
+        selections = container.take()
+    )
   }
 }
 
@@ -655,6 +831,12 @@ data class GQLArguments(
   override fun write(bufferedSink: BufferedSink) {
     arguments.join(bufferedSink, prefix = "(", separator = ", ", postfix = ")")
   }
+
+  override fun copyWithNewChildren(container: NodeContainer): GQLNode {
+    return copy(
+        arguments = container.take()
+    )
+  }
 }
 
 data class GQLField(
@@ -663,17 +845,10 @@ data class GQLField(
     val name: String,
     val arguments: GQLArguments?,
     val directives: List<GQLDirective>,
-    val selectionSet: GQLSelectionSet?
+    val selectionSet: GQLSelectionSet?,
 ) : GQLSelection() {
 
-  override val children: List<GQLNode> = directives.toMutableList<GQLNode>().apply {
-    if (selectionSet != null) {
-      add(selectionSet)
-    }
-    if (arguments != null) {
-      add(arguments)
-    }
-  }
+  override val children: List<GQLNode> = listOfNotNull(selectionSet) + listOfNotNull(arguments)
 
   override fun write(bufferedSink: BufferedSink) {
     with(bufferedSink) {
@@ -692,13 +867,20 @@ data class GQLField(
       }
     }
   }
+
+  override fun copyWithNewChildren(container: NodeContainer): GQLNode {
+    return copy(
+        selectionSet = container.takeSingle(),
+        arguments = container.takeSingle()
+    )
+  }
 }
 
 data class GQLInlineFragment(
     override val sourceLocation: SourceLocation = SourceLocation.UNKNOWN,
     val typeCondition: GQLNamedType,
     val directives: List<GQLDirective>,
-    val selectionSet: GQLSelectionSet
+    val selectionSet: GQLSelectionSet,
 ) : GQLSelection() {
 
   override val children = directives + selectionSet + typeCondition
@@ -716,12 +898,21 @@ data class GQLInlineFragment(
       }
     }
   }
+
+  override fun copyWithNewChildren(container: NodeContainer): GQLNode {
+    return copy(
+        directives = container.take(),
+        selectionSet = container.takeSingle()!!,
+        typeCondition = container.takeSingle()!!
+
+    )
+  }
 }
 
 data class GQLFragmentSpread(
     override val sourceLocation: SourceLocation = SourceLocation.UNKNOWN,
     val name: String,
-    val directives: List<GQLDirective>
+    val directives: List<GQLDirective>,
 ) : GQLSelection() {
 
   override val children = directives
@@ -736,13 +927,19 @@ data class GQLFragmentSpread(
 
     }
   }
+
+  override fun copyWithNewChildren(container: NodeContainer): GQLNode {
+    return copy(
+        directives = container.take()
+    )
+  }
 }
 
 sealed class GQLType : GQLNode
 
 data class GQLNamedType(
     override val sourceLocation: SourceLocation = SourceLocation.UNKNOWN,
-    override val name: String
+    override val name: String,
 ) : GQLType(), GQLNamed {
 
   override val children = emptyList<GQLNode>()
@@ -752,11 +949,15 @@ data class GQLNamedType(
       writeUtf8(name)
     }
   }
+
+  override fun copyWithNewChildren(container: NodeContainer): GQLNode {
+    return this
+  }
 }
 
 data class GQLNonNullType(
     override val sourceLocation: SourceLocation = SourceLocation.UNKNOWN,
-    val type: GQLType
+    val type: GQLType,
 ) : GQLType() {
 
   override val children = listOf(type)
@@ -767,11 +968,17 @@ data class GQLNonNullType(
       writeUtf8("!")
     }
   }
+
+  override fun copyWithNewChildren(container: NodeContainer): GQLNode {
+    return copy(
+        type = container.takeSingle()!!
+    )
+  }
 }
 
 data class GQLListType(
     override val sourceLocation: SourceLocation = SourceLocation.UNKNOWN,
-    val type: GQLType
+    val type: GQLType,
 ) : GQLType() {
 
   override val children = listOf(type)
@@ -783,13 +990,19 @@ data class GQLListType(
       writeUtf8("]")
     }
   }
+
+  override fun copyWithNewChildren(container: NodeContainer): GQLNode {
+    return copy(
+        type = container.takeSingle()!!
+    )
+  }
 }
 
 
 sealed class GQLValue : GQLNode
 data class GQLVariableValue(
     override val sourceLocation: SourceLocation = SourceLocation.UNKNOWN,
-    val name: String
+    val name: String,
 ) : GQLValue() {
 
   override val children = emptyList<GQLNode>()
@@ -799,11 +1012,14 @@ data class GQLVariableValue(
       writeUtf8("${'$'}$name")
     }
   }
+  override fun copyWithNewChildren(container: NodeContainer): GQLNode {
+    return this
+  }
 }
 
 data class GQLIntValue(
     override val sourceLocation: SourceLocation = SourceLocation.UNKNOWN,
-    val value: Int
+    val value: Int,
 ) : GQLValue() {
 
   override val children = emptyList<GQLNode>()
@@ -812,12 +1028,15 @@ data class GQLIntValue(
     with(bufferedSink) {
       writeUtf8(value.toString())
     }
+  }
+  override fun copyWithNewChildren(container: NodeContainer): GQLNode {
+    return this
   }
 }
 
 data class GQLFloatValue(
     override val sourceLocation: SourceLocation = SourceLocation.UNKNOWN,
-    val value: Double
+    val value: Double,
 ) : GQLValue() {
 
   override val children = emptyList<GQLNode>()
@@ -826,26 +1045,32 @@ data class GQLFloatValue(
     with(bufferedSink) {
       writeUtf8(value.toString())
     }
+  }
+  override fun copyWithNewChildren(container: NodeContainer): GQLNode {
+    return this
   }
 }
 
 data class GQLStringValue(
     override val sourceLocation: SourceLocation = SourceLocation.UNKNOWN,
-    val value: String
+    val value: String,
 ) : GQLValue() {
 
   override val children = emptyList<GQLNode>()
 
   override fun write(bufferedSink: BufferedSink) {
     with(bufferedSink) {
-      writeUtf8("\"${com.apollographql.apollo3.graphql.ast.GraphQLString.encodeSingleQuoted(value)}\"")
+      writeUtf8("\"${GraphQLString.encodeSingleQuoted(value)}\"")
     }
+  }
+  override fun copyWithNewChildren(container: NodeContainer): GQLNode {
+    return this
   }
 }
 
 data class GQLBooleanValue(
     override val sourceLocation: SourceLocation = SourceLocation.UNKNOWN,
-    val value: Boolean
+    val value: Boolean,
 ) : GQLValue() {
 
   override val children = emptyList<GQLNode>()
@@ -855,11 +1080,14 @@ data class GQLBooleanValue(
       writeUtf8(value.toString())
     }
   }
+  override fun copyWithNewChildren(container: NodeContainer): GQLNode {
+    return this
+  }
 }
 
 data class GQLEnumValue(
     override val sourceLocation: SourceLocation = SourceLocation.UNKNOWN,
-    val value: String
+    val value: String,
 ) : GQLValue() {
 
   override val children = emptyList<GQLNode>()
@@ -869,11 +1097,14 @@ data class GQLEnumValue(
       writeUtf8(value)
     }
   }
+  override fun copyWithNewChildren(container: NodeContainer): GQLNode {
+    return this
+  }
 }
 
 data class GQLListValue(
     override val sourceLocation: SourceLocation = SourceLocation.UNKNOWN,
-    val values: List<GQLValue>
+    val values: List<GQLValue>,
 ) : GQLValue() {
 
   override val children = values
@@ -884,13 +1115,17 @@ data class GQLListValue(
       values.join(bufferedSink, ",")
       writeUtf8("]")
     }
-
+  }
+  override fun copyWithNewChildren(container: NodeContainer): GQLNode {
+    return copy(
+        values = container.take()
+    )
   }
 }
 
 data class GQLObjectValue(
     override val sourceLocation: SourceLocation = SourceLocation.UNKNOWN,
-    val fields: List<GQLObjectField>
+    val fields: List<GQLObjectField>,
 ) : GQLValue() {
 
   override val children = fields
@@ -902,6 +1137,11 @@ data class GQLObjectValue(
       writeUtf8("\n}\n")
     }
   }
+  override fun copyWithNewChildren(container: NodeContainer): GQLNode {
+    return copy(
+        fields = container.take()
+    )
+  }
 }
 
 data class GQLNullValue(override val sourceLocation: SourceLocation = SourceLocation.UNKNOWN) : GQLValue() {
@@ -912,6 +1152,9 @@ data class GQLNullValue(override val sourceLocation: SourceLocation = SourceLoca
     with(bufferedSink) {
       writeUtf8("null")
     }
+  }
+  override fun copyWithNewChildren(container: NodeContainer): GQLNode {
+    return this
   }
 }
 
@@ -949,23 +1192,40 @@ enum class GQLDirectiveLocation {
   INPUT_FIELD_DEFINITION,
 }
 
-/**
- * depth first traversal
- */
-fun GQLNode.visit(block: (GQLNode) -> Unit) {
-  block(this)
-  children.forEach {
-    it.visit(block)
+fun GQLNode.transform(block: (GQLNode) -> GQLNode?): GQLNode? {
+
+  val newChildren = children.mapNotNull {
+    it.transform(block)
   }
+  val container = NodeContainer(newChildren)
+  val ret = block(this)?.copyWithNewChildren(container)
+  container.assert()
+  return ret
 }
 
-/**
- * depth first traversal
- */
-inline fun <reified T : GQLNode> GQLNode.visitIsInstance(block: (T) -> Unit) {
-  (this as? T)?.let { block(it) }
+@Suppress("UNCHECKED_CAST")
+class NodeContainer(nodes: List<GQLNode>) {
+  var remainingNodes = nodes
 
-  children.filterIsInstance<T>().forEach {
-    block(it)
+  inline fun <reified T : GQLNode> take(): List<T> {
+    val (ret, rem) = remainingNodes.partition { it is T }
+
+    remainingNodes = rem
+    return ret as List<T>
+  }
+
+  inline fun <reified T : GQLNode> takeSingle(): T? {
+    val (ret, rem) = remainingNodes.partition { it is T }
+
+    remainingNodes = rem
+
+    check(ret.size <= 1)
+    return ret.firstOrNull() as T?
+  }
+
+  fun assert() {
+    check(remainingNodes.isEmpty()) {
+      "Remaining nodes: $remainingNodes"
+    }
   }
 }
