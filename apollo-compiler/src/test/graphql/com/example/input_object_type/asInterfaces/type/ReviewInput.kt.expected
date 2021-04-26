@@ -11,15 +11,11 @@ import java.util.Date
 import kotlin.Boolean
 import kotlin.Int
 import kotlin.String
-import kotlin.Suppress
 import kotlin.collections.List
 
 /**
  * The input object sent when someone is creating a new review
  */
-@Suppress("NAME_SHADOWING", "UNUSED_ANONYMOUS_PARAMETER", "LocalVariableName",
-    "RemoveExplicitTypeArguments", "NestedLambdaShadowedImplicitParameter", "PropertyName",
-    "RemoveRedundantQualifierName")
 data class ReviewInput(
   /**
    * 0-5 stars

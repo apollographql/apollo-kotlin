@@ -7,14 +7,10 @@ package com.example.mutation_create_review.type
 
 import com.apollographql.apollo3.api.InputObject
 import com.apollographql.apollo3.api.Optional
-import kotlin.Suppress
 
 /**
  * Circle ref to review input
  */
-@Suppress("NAME_SHADOWING", "UNUSED_ANONYMOUS_PARAMETER", "LocalVariableName",
-    "RemoveExplicitTypeArguments", "NestedLambdaShadowedImplicitParameter", "PropertyName",
-    "RemoveRedundantQualifierName")
 internal data class ReviewRefInput(
   val reviewInput: Optional<ReviewInput?>? = Optional.Absent
 ) : InputObject
