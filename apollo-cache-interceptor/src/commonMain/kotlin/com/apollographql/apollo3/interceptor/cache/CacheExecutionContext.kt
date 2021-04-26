@@ -5,6 +5,7 @@ import com.apollographql.apollo3.api.ExecutionContext
 import com.apollographql.apollo3.api.Operation
 import com.apollographql.apollo3.api.ApolloResponse
 import com.apollographql.apollo3.ApolloRequest
+import com.apollographql.apollo3.api.Mutation
 import com.apollographql.apollo3.api.Query
 import com.apollographql.apollo3.api.RequestContext
 import com.apollographql.apollo3.api.ResponseContext
@@ -49,6 +50,12 @@ internal data class RefetchPolicyContext(
   companion object Key : ExecutionContext.Key<RefetchPolicyContext>
 }
 
+internal data class OptimisticUpdates<D>(
+    val data: D
+) : RequestContext(OptimisticUpdates) {
+  companion object Key : ExecutionContext.Key<OptimisticUpdates<*>>
+}
+
 internal data class CacheOutput(
     val isFromCache: Boolean
 ) : ResponseContext(CacheOutput) {
@@ -67,6 +74,9 @@ fun <D: Query.Data> ApolloRequest<D>.withFetchPolicy(fetchPolicy: FetchPolicy): 
 }
 fun <D: Query.Data> ApolloRequest<D>.withRefetchPolicy(refetchPolicy: FetchPolicy): ApolloRequest<D> {
   return withExecutionContext(RefetchPolicyContext(refetchPolicy = refetchPolicy))
+}
+fun <D: Mutation.Data> ApolloRequest<D>.withOptimiticUpdates(data: D): ApolloRequest<D> {
+  return withExecutionContext(OptimisticUpdates(data = data))
 }
 
 fun <D : Query.Data> ApolloClient.queryCacheAndNetwork(queryRequest: ApolloRequest<D>): Flow<ApolloResponse<D>> {

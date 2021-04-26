@@ -2,7 +2,9 @@ package com.apollographql.apollo3.interceptor.cache
 
 import com.apollographql.apollo3.ApolloRequest
 import com.apollographql.apollo3.api.ApolloResponse
+import com.apollographql.apollo3.api.Mutation
 import com.apollographql.apollo3.api.Operation
+import com.apollographql.apollo3.api.Query
 import com.apollographql.apollo3.api.ResponseAdapterCache
 import com.apollographql.apollo3.cache.CacheHeaders
 import com.apollographql.apollo3.cache.normalized.ApolloStore
@@ -24,24 +26,26 @@ import kotlinx.coroutines.flow.single
 class ApolloCacheInterceptor(private val store: ApolloStore) : ApolloRequestInterceptor {
 
   override fun <D : Operation.Data> intercept(request: ApolloRequest<D>, chain: ApolloInterceptorChain): Flow<ApolloResponse<D>> {
-    val cacheInput = request.executionContext[FetchPolicyContext]
-    val fetchPolicy = cacheInput?.fetchPolicy ?: FetchPolicy.CacheFirst
+    val defaultFetchPolicy = if (request.operation is Query) FetchPolicy.CacheFirst else FetchPolicy.NetworkOnly
+    val fetchPolicy = request.executionContext[FetchPolicyContext]?.fetchPolicy ?: defaultFetchPolicy
     val refetchPolicy = request.executionContext[RefetchPolicyContext]?.refetchPolicy
+    val optimisticUpdates = request.executionContext[OptimisticUpdates]?.data
 
-    if (refetchPolicy == null) {
-      return flow {
-        emit(fetchOne(request, chain, fetchPolicy))
-      }
-    }
-    return callbackFlow {
+    return flow {
       var result = kotlin.runCatching {
-        fetchOne(request, chain, fetchPolicy)
+        fetchOne(request, chain, fetchPolicy, optimisticUpdates as D?)
       }
       val response = result.getOrNull()
-      result.exceptionOrNull()?.printStackTrace()
 
       if (response != null) {
-        offer(response)
+        emit(response)
+      }
+
+      if (refetchPolicy == null) {
+        if (result.isFailure) {
+          throw result.exceptionOrNull()!!
+        }
+        return@flow
       }
 
       var watchedKeys = if (response != null && !response.hasErrors() && response.data != null) {
@@ -53,15 +57,15 @@ class ApolloCacheInterceptor(private val store: ApolloStore) : ApolloRequestInte
       store.changedKeys.collect { changedKeys ->
         if (watchedKeys == null || changedKeys.intersect(watchedKeys!!).isNotEmpty()) {
           result = kotlin.runCatching {
-            fetchOne(request, chain, refetchPolicy)
+            fetchOne(request, chain, refetchPolicy, null)
           }
 
           val newResponse = result.getOrNull()
           if (newResponse != null) {
-            offer(newResponse)
+            emit(newResponse)
 
             if (!newResponse.hasErrors() && newResponse.data != null) {
-              watchedKeys = store.normalize(request.operation, newResponse .data!!, chain.responseAdapterCache).values.dependentKeys()
+              watchedKeys = store.normalize(request.operation, newResponse.data!!, chain.responseAdapterCache).values.dependentKeys()
             }
           }
         }
@@ -72,11 +76,52 @@ class ApolloCacheInterceptor(private val store: ApolloStore) : ApolloRequestInte
   private suspend fun <D : Operation.Data> fetchOne(
       request: ApolloRequest<D>,
       chain: ApolloInterceptorChain,
-      fetchPolicy: FetchPolicy
+      fetchPolicy: FetchPolicy,
+      optimisticUpdates: D?,
+  ): ApolloResponse<D> {
+
+    if (optimisticUpdates != null) {
+      store.writeOptimisticUpdates(
+          operation = request.operation,
+          operationData = optimisticUpdates,
+          mutationId = request.requestUuid,
+          responseAdapterCache = chain.responseAdapterCache,
+          publish = true
+      )
+    }
+
+    val result = kotlin.runCatching {
+      fetchOneMightThrow(request, chain, fetchPolicy)
+    }
+
+    if (result.isSuccess) {
+      val response = result.getOrThrow()
+
+      val optimisticKeys = if (optimisticUpdates != null) {
+        store.rollbackOptimisticUpdates(request.requestUuid, publish = false)
+      } else {
+        emptySet()
+      }
+      val cacheKeys = if (!response.isFromCache && response.data != null) {
+        store.writeOperation(request.operation, response.data!!, chain.responseAdapterCache, CacheHeaders.NONE, publish = false)
+      } else {
+        emptySet()
+      }
+      store.publish(optimisticKeys + cacheKeys)
+
+    }
+
+    return result.getOrThrow()
+  }
+
+  private suspend fun <D : Operation.Data> fetchOneMightThrow(
+      request: ApolloRequest<D>,
+      chain: ApolloInterceptorChain,
+      fetchPolicy: FetchPolicy,
   ): ApolloResponse<D> {
     when (fetchPolicy) {
       FetchPolicy.CacheFirst -> {
-                Platform.ensureNeverFrozen(store)
+        Platform.ensureNeverFrozen(store)
         val cacheResult = kotlin.runCatching {
           readFromCache(request, chain.responseAdapterCache)
         }
@@ -134,26 +179,13 @@ class ApolloCacheInterceptor(private val store: ApolloStore) : ApolloRequestInte
   }
 
   private fun <D : Operation.Data> proceed(request: ApolloRequest<D>, chain: ApolloInterceptorChain): Flow<ApolloResponse<D>> {
-    val responseAdapterCache  = chain.responseAdapterCache
-        return chain.proceed(request).map {
-      if (it.data != null) {
-        writeToCache(request, it.data!!, responseAdapterCache)
-      }
+    return chain.proceed(request).map {
       it.setFromCache(false)
     }
   }
 
   private fun <D : Operation.Data> ApolloResponse<D>.setFromCache(fromCache: Boolean): ApolloResponse<D> {
     return copy(executionContext = executionContext + CacheOutput(fromCache))
-  }
-
-  private suspend fun <D : Operation.Data> writeToCache(
-      request: ApolloRequest<D>,
-      data: D,
-      responseAdapterCache: ResponseAdapterCache,
-  ): Set<String> {
-
-    return store.writeOperation(request.operation, data, responseAdapterCache, CacheHeaders.NONE, true)
   }
 
   private suspend fun <D : Operation.Data> readFromCache(

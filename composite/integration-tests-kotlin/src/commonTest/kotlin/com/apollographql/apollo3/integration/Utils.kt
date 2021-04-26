@@ -11,6 +11,7 @@ import com.apollographql.apollo3.integration.mockserver.MockServer
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.withTimeout
 import okio.ByteString.Companion.encodeUtf8
+import kotlin.test.assertEquals
 
 
 fun <D : Operation.Data> MockServer.enqueue(
@@ -64,3 +65,8 @@ object IdFieldCacheKeyResolver : CacheKeyResolver() {
 suspend fun <T> Channel<T>.receiveOrTimeout(timeoutMillis: Long = 500) = withTimeout(timeoutMillis) {
   receive()
 }
+
+/**
+ * A helper function to reverse the order of the argument so that we can easily column edit the tests
+ */
+fun assertEquals2(actual: Any?, expected: Any?) = assertEquals(expected, actual)

@@ -48,7 +48,7 @@ class CacheMissException(val key: String, val fieldName: String? = null) : Apoll
   }
 }
 
-class ApolloCompositeException(first: Throwable?, second: Throwable?) : ApolloException(message = "multiple exceptions happened") {
+class ApolloCompositeException(first: Throwable?, second: Throwable?) : ApolloException(message = "multiple exceptions happened", second) {
   val first = (first as? ApolloException)  ?: throw RuntimeException("unexpected first exception", first)
   val second = (second as? ApolloException)  ?: throw RuntimeException("unexpected second exception", second)
 }
