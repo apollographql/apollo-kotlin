@@ -11,6 +11,8 @@ import platform.posix.fopen
 import platform.posix.fread
 import platform.posix.fseek
 import platform.posix.ftell
+import platform.posix.getpid
+import platform.posix.pthread_self
 import platform.posix.rewind
 import kotlin.test.assertEquals
 
@@ -35,3 +37,4 @@ actual fun checkTestFixture(actualText: String, name: String) {
   // This does not update the test fixture automatically, this is left to the JVM implementation
   assertEquals(actualText, readTestFixture(name))
 }
+

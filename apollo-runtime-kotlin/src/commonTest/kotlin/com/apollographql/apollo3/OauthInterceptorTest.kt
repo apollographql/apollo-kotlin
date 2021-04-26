@@ -73,7 +73,7 @@ class OauthInterceptorTest {
     val response = runBlocking {
       apolloClient(AuthenticatedNetworkTransport.VALID_ACCESS_TOKEN1,
           AuthenticatedNetworkTransport.VALID_ACCESS_TOKEN2)
-          .query(ApolloRequest(MockQuery())).single()
+          .query(ApolloRequest(MockQuery()))
     }
 
     assertNotNull(response.data)
@@ -86,7 +86,7 @@ class OauthInterceptorTest {
       kotlin.runCatching {
         apolloClient(AuthenticatedNetworkTransport.INVALID_ACCESS_TOKEN,
             AuthenticatedNetworkTransport.INVALID_ACCESS_TOKEN)
-            .query(ApolloRequest(MockQuery())).single()
+            .query(ApolloRequest(MockQuery()))
       }
     }
 
@@ -98,7 +98,7 @@ class OauthInterceptorTest {
     val response = runBlocking {
       apolloClient(AuthenticatedNetworkTransport.INVALID_ACCESS_TOKEN,
           AuthenticatedNetworkTransport.VALID_ACCESS_TOKEN2)
-          .query(ApolloRequest(MockQuery())).single()
+          .query(ApolloRequest(MockQuery()))
     }
 
     assertNotNull(response.data)

@@ -192,7 +192,9 @@ class ApolloCacheInterceptor<D : Operation.Data>(
   fun publishCacheKeys(cacheKeys: Set<String>?) {
     dispatcher.execute {
       try {
-        apolloStore.publish(cacheKeys!!)
+        runBlocking {
+          apolloStore.publish(cacheKeys!!)
+        }
       } catch (e: Exception) {
         logger.e(e, "Failed to publish cache changes")
       }

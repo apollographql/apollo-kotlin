@@ -19,6 +19,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.flow.flow
+import kotlinx.coroutines.flow.single
 
 /**
  * The main entry point for the Apollo runtime. An [ApolloClient] is responsible for executing queries, mutations and subscriptions
@@ -36,17 +37,25 @@ class ApolloClient internal constructor(
     executionContext
   }
 
-  fun <D : Query.Data> query(query: Query<D>): Flow<ApolloResponse<D>> = query(ApolloRequest(query))
+  suspend fun <D : Query.Data> query(query: Query<D>): ApolloResponse<D> = query(ApolloRequest(query))
 
-  fun <D : Mutation.Data> mutate(mutation: Mutation<D>): Flow<ApolloResponse<D>> = mutate(ApolloRequest(mutation))
+  suspend fun <D : Mutation.Data> mutate(mutation: Mutation<D>): ApolloResponse<D> = mutate(ApolloRequest(mutation))
 
   fun <D : Subscription.Data> subscribe(subscription: Subscription<D>): Flow<ApolloResponse<D>> = subscribe(ApolloRequest(subscription))
 
-  fun <D : Query.Data> query(queryRequest: ApolloRequest<D>): Flow<ApolloResponse<D>> {
+  suspend fun <D : Query.Data> query(queryRequest: ApolloRequest<D>): ApolloResponse<D> {
+    return queryRequest.execute().single()
+  }
+
+  fun <D : Query.Data> queryAsFlow(queryRequest: ApolloRequest<D>): Flow<ApolloResponse<D>> {
     return queryRequest.execute()
   }
 
-  fun <D : Mutation.Data> mutate(mutationRequest: ApolloRequest<D>): Flow<ApolloResponse<D>> {
+  suspend fun <D : Mutation.Data> mutate(mutationRequest: ApolloRequest<D>): ApolloResponse<D> {
+    return mutationRequest.execute().single()
+  }
+
+  fun <D : Mutation.Data> mutateAsFlow(mutationRequest: ApolloRequest<D>): Flow<ApolloResponse<D>> {
     return mutationRequest.execute()
   }
 

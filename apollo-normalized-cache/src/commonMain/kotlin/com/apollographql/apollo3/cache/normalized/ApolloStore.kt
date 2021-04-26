@@ -11,6 +11,7 @@ import com.apollographql.apollo3.cache.normalized.internal.NoOpApolloStore
 import com.apollographql.apollo3.cache.normalized.internal.ReadMode
 import com.apollographql.apollo3.cache.normalized.internal.RealApolloStore
 import com.benasher44.uuid.Uuid
+import kotlinx.coroutines.flow.SharedFlow
 import kotlin.reflect.KClass
 
 /**
@@ -19,7 +20,9 @@ import kotlin.reflect.KClass
  *
  * Most clients should have no need to directly interface with an [ApolloStore].
  */
-abstract class ApolloStore: ClientContext(ApolloStore) {
+abstract class ApolloStore {
+  abstract val changedKeys: SharedFlow<Set<String>>
+
   /**
    * Listens to changed record keys dispatched via [.publish].
    */
@@ -156,14 +159,25 @@ abstract class ApolloStore: ClientContext(ApolloStore) {
    */
   abstract suspend fun remove(cacheKeys: List<CacheKey>, cascade: Boolean = true): Int
 
+  abstract fun <D : Operation.Data> normalize(
+      operation: Operation<D>,
+      data: D,
+      responseAdapterCache: ResponseAdapterCache
+  ): Map<String, Record>
+
   /**
    * @param keys A set of keys of [Record] which have changed.
    */
-  abstract fun publish(keys: Set<String>)
+  abstract suspend fun publish(keys: Set<String>)
 
   abstract suspend fun dump(): Map<KClass<*>, Map<String, Record>>
 
-  companion object Key : ExecutionContext.Key<RealApolloStore> {
+  companion object {
     val emptyApolloStore: ApolloStore = NoOpApolloStore()
   }
 }
+
+fun ApolloStore(
+    normalizedCacheFactory: NormalizedCacheFactory,
+    cacheKeyResolver: CacheKeyResolver,
+): ApolloStore = RealApolloStore(normalizedCacheFactory, cacheKeyResolver)

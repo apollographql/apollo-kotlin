@@ -12,7 +12,7 @@ def versions = [
     jetbrainsAnnotations  : '13.0',
     junit                 : '4.13.1',
     kotlin                : '1.4.32',
-    kotlinCoroutines      : '1.4.2',
+    kotlinCoroutines      : '1.4.3',
     kotlinPoet            : '1.6.0',
     moshi                 : '1.11.0',
     okHttp4               : '4.9.0',

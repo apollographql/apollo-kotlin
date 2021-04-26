@@ -25,8 +25,8 @@ class Socket(private val socketFd: Int) {
   private val pipeFd = nativeHeap.allocArray<IntVar>(2)
   private val running = AtomicInt(1)
   private val lock = SynchronizedObject()
-  private val responseQueue = AtomicReference<List<MockResponse>>(emptyList())
-  private val requestQueue = AtomicReference<List<MockRecordedRequest>>(emptyList())
+  private val queuedResponses = AtomicReference<List<MockResponse>>(emptyList())
+  private val recordedRequests = AtomicReference<List<MockRecordedRequest>>(emptyList())
 
   init {
     check(pipe(pipeFd) == 0) {
@@ -99,17 +99,17 @@ class Socket(private val socketFd: Int) {
         debug("Got request: ${request.method} ${request.path}")
 
         val mockResponse = synchronized(lock) {
-          val requests = requestQueue.value
+          val requests = recordedRequests.value
           val newRequests = requests + request
-          requestQueue.value = newRequests.freeze()
+          recordedRequests.value = newRequests.freeze()
 
-          val responses = responseQueue.value
+          val responses = queuedResponses.value
           check(responses.isNotEmpty()) {
             "No response enqueued"
           }
-          val response = responses.last()
-          val newResponses = responses.dropLast(1)
-          responseQueue.value = newResponses.freeze()
+          val response = responses.first()
+          val newResponses = responses.drop(1)
+          queuedResponses.value = newResponses.freeze()
           response
         }
 
@@ -135,19 +135,19 @@ class Socket(private val socketFd: Int) {
 
   fun enqueue(mockResponse: MockResponse) {
     synchronized(lock) {
-      val responses = responseQueue.value
+      val responses = queuedResponses.value
       val newResponses = responses + mockResponse
-      responseQueue.value = newResponses.freeze()
+      queuedResponses.value = newResponses.freeze()
     }
   }
 
   fun takeRequest(): MockRecordedRequest {
     return synchronized(lock) {
-      val requests = requestQueue.value
+      val requests = recordedRequests.value
       check(requests.isNotEmpty())
 
-      val request = requests.last()
-      requestQueue.value = requests.dropLast(1)
+      val request = requests.first()
+      recordedRequests.value = requests.drop(1)
       request
     }
   }
