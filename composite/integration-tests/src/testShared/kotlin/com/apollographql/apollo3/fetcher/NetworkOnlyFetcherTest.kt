@@ -13,7 +13,7 @@ import java.net.HttpURLConnection
 class NetworkOnlyFetcherTest : BaseFetcherTest() {
   @Test
   fun enqueue() {
-    val query = EpisodeHeroNameQuery(episode = Optional.Present(Episode.EMPIRE))
+    val query = EpisodeHeroNameQuery(episode = Episode.EMPIRE)
     var trackingCallback: TrackingCallback
 
     // Has error when cache empty, and network error

@@ -5,7 +5,6 @@
 //
 package com.example.arguments_complex
 
-import com.apollographql.apollo3.api.Input
 import com.apollographql.apollo3.api.Query
 import com.apollographql.apollo3.api.ResponseAdapter
 import com.apollographql.apollo3.api.ResponseAdapterCache
@@ -22,7 +21,7 @@ import kotlin.String
 import kotlin.collections.List
 
 data class TestQuery(
-  val episode: Input<Episode?> = Input.Absent,
+  val episode: Episode?,
   val stars: Int,
   val greenValue: Double
 ) : Query<TestQuery.Data> {

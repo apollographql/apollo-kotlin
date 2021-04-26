@@ -5,8 +5,8 @@
 //
 package com.example.hero_with_review.type
 
-import com.apollographql.apollo3.api.Input
 import com.apollographql.apollo3.api.InputObject
+import com.apollographql.apollo3.api.Optional
 import kotlin.Suppress
 
 /**
@@ -16,5 +16,5 @@ import kotlin.Suppress
     "RemoveExplicitTypeArguments", "NestedLambdaShadowedImplicitParameter", "PropertyName",
     "RemoveRedundantQualifierName")
 data class ReviewRefInput(
-  val reviewInput: Input<ReviewInput?> = Input.Absent
+  val reviewInput: Optional<ReviewInput?>? = Optional.Absent
 ) : InputObject

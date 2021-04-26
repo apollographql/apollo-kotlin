@@ -5,7 +5,6 @@
 //
 package com.example.hero_name_query_long_name
 
-import com.apollographql.apollo3.api.Input
 import com.apollographql.apollo3.api.Query
 import com.apollographql.apollo3.api.ResponseAdapter
 import com.apollographql.apollo3.api.ResponseAdapterCache
@@ -21,7 +20,7 @@ import kotlin.collections.List
 
 data class TestQueryWithAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryLongName(
   val episodeAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryLongName:
-      Input<Episode?> = Input.Absent
+      Episode?
 ) :
     Query<TestQueryWithAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryLongName.Data>
     {

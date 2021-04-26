@@ -5,7 +5,6 @@
 //
 package com.example.antlr_tokens
 
-import com.apollographql.apollo3.api.Input
 import com.apollographql.apollo3.api.Query
 import com.apollographql.apollo3.api.ResponseAdapter
 import com.apollographql.apollo3.api.ResponseAdapterCache
@@ -19,7 +18,7 @@ import kotlin.String
 import kotlin.collections.List
 
 data class TestQuery(
-  val operation: Input<String?> = Input.Absent
+  val operation: String?
 ) : Query<TestQuery.Data> {
   override fun id(): String = OPERATION_ID
 

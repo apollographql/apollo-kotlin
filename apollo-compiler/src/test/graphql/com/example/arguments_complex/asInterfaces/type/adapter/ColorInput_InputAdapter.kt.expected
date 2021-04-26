@@ -8,13 +8,14 @@ package com.example.arguments_complex.type.adapter
 import com.apollographql.apollo3.api.DoubleResponseAdapter
 import com.apollographql.apollo3.api.IntResponseAdapter
 import com.apollographql.apollo3.api.NullableDoubleResponseAdapter
+import com.apollographql.apollo3.api.Optional
 import com.apollographql.apollo3.api.ResponseAdapter
 import com.apollographql.apollo3.api.ResponseAdapterCache
-import com.apollographql.apollo3.api.input
 import com.apollographql.apollo3.api.json.JsonReader
 import com.apollographql.apollo3.api.json.JsonWriter
 import com.apollographql.apollo3.api.nullable
 import com.apollographql.apollo3.api.obj
+import com.apollographql.apollo3.api.optional
 import com.example.arguments_complex.type.ColorInput
 import kotlin.IllegalStateException
 
@@ -26,13 +27,29 @@ object ColorInput_InputAdapter : ResponseAdapter<ColorInput> {
     responseAdapterCache: ResponseAdapterCache,
     value: ColorInput
   ) {
-    IntResponseAdapter.input("red").toResponse(writer, responseAdapterCache, value.red)
-    NullableDoubleResponseAdapter.input("green").toResponse(writer, responseAdapterCache,
-        value.green)
-    DoubleResponseAdapter.input("blue").toResponse(writer, responseAdapterCache, value.blue)
-    Episode_ResponseAdapter.nullable().input("enumWithDefaultValue").toResponse(writer,
-        responseAdapterCache, value.enumWithDefaultValue)
-    ReviewRefInput_InputAdapter.obj().nullable().input("reviewRefInput").toResponse(writer,
-        responseAdapterCache, value.reviewRefInput)
+    if (value.red is Optional.Present) {
+      writer.name("red")
+      IntResponseAdapter.optional().nullable().toResponse(writer, responseAdapterCache, value.red)
+    }
+    if (value.green is Optional.Present) {
+      writer.name("green")
+      NullableDoubleResponseAdapter.optional().nullable().toResponse(writer, responseAdapterCache,
+          value.green)
+    }
+    if (value.blue is Optional.Present) {
+      writer.name("blue")
+      DoubleResponseAdapter.optional().nullable().toResponse(writer, responseAdapterCache,
+          value.blue)
+    }
+    if (value.enumWithDefaultValue is Optional.Present) {
+      writer.name("enumWithDefaultValue")
+      Episode_ResponseAdapter.nullable().optional().nullable().toResponse(writer,
+          responseAdapterCache, value.enumWithDefaultValue)
+    }
+    if (value.reviewRefInput is Optional.Present) {
+      writer.name("reviewRefInput")
+      ReviewRefInput_InputAdapter.obj().nullable().optional().nullable().toResponse(writer,
+          responseAdapterCache, value.reviewRefInput)
+    }
   }
 }

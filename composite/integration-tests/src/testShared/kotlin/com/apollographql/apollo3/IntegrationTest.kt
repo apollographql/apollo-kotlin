@@ -115,7 +115,7 @@ class IntegrationTest {
   @Test
   @Throws(Exception::class)
   fun writeOperationRawRequest() {
-    val query = EpisodeHeroNameQuery(Optional.Present(Episode.EMPIRE))
+    val query = EpisodeHeroNameQuery(Episode.EMPIRE)
 
     assertThat(query.name()).isEqualTo("EpisodeHeroName")
     assertThat(query.document()).isEqualTo("query EpisodeHeroName(\$episode: Episode) { hero(episode: \$episode) { name } }")

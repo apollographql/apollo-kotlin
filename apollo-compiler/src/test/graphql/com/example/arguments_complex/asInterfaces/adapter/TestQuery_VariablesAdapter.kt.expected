@@ -9,7 +9,6 @@ import com.apollographql.apollo3.api.DoubleResponseAdapter
 import com.apollographql.apollo3.api.IntResponseAdapter
 import com.apollographql.apollo3.api.ResponseAdapter
 import com.apollographql.apollo3.api.ResponseAdapterCache
-import com.apollographql.apollo3.api.input
 import com.apollographql.apollo3.api.json.JsonReader
 import com.apollographql.apollo3.api.json.JsonWriter
 import com.apollographql.apollo3.api.nullable
@@ -25,8 +24,8 @@ object TestQuery_VariablesAdapter : ResponseAdapter<TestQuery> {
     responseAdapterCache: ResponseAdapterCache,
     value: TestQuery
   ) {
-    Episode_ResponseAdapter.nullable().input("episode").toResponse(writer, responseAdapterCache,
-        value.episode)
+    writer.name("episode")
+    Episode_ResponseAdapter.nullable().toResponse(writer, responseAdapterCache, value.episode)
     writer.name("stars")
     IntResponseAdapter.toResponse(writer, responseAdapterCache, value.stars)
     writer.name("greenValue")
