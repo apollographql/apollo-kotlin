@@ -63,9 +63,10 @@ class NullableResponseAdapter<T : Any>(private val wrappedAdapter: ResponseAdapt
 
 
 
-class InputResponseAdapter<T>(private val wrappedAdapter: ResponseAdapter<T>, private val name: String) : ResponseAdapter<Optional<T>> {
+class OptionalResponseAdapter<T>(private val wrappedAdapter: ResponseAdapter<T>, private val name: String) : ResponseAdapter<Optional<T>> {
   override fun fromResponse(reader: JsonReader, responseAdapterCache: ResponseAdapterCache): Optional<T> {
-    error("Input value used in output position")
+    // This is slightly asymmetrical as it doesn't consume the name but don't really see a way around this
+    return Optional.Present(wrappedAdapter.fromResponse(reader, responseAdapterCache))
   }
 
   override fun toResponse(writer: JsonWriter, responseAdapterCache: ResponseAdapterCache, value: Optional<T>) {
@@ -185,7 +186,7 @@ class ObjectResponseAdapter<T>(
 fun <T : Any> ResponseAdapter<T>.nullable() = NullableResponseAdapter(this)
 fun <T> ResponseAdapter<T>.list() = ListResponseAdapter(this)
 fun <T> ResponseAdapter<T>.obj(buffered: Boolean = false) = ObjectResponseAdapter(this, buffered)
-fun <T> ResponseAdapter<T>.input(name: String) = InputResponseAdapter(this, name)
+fun <T> ResponseAdapter<T>.optional(name: String) = OptionalResponseAdapter(this, name)
 
 /**
  * Global instances of nullable adapters for built-in scalar types

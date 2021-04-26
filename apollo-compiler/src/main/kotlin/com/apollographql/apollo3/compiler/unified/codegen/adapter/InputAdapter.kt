@@ -39,7 +39,7 @@ internal fun List<NamedType>.inputAdapterTypeSpec(
 private fun notImplementedFromResponseFunSpec(adaptedTypeName: TypeName) = FunSpec.builder("fromResponse")
     .addModifiers(KModifier.OVERRIDE)
     .addParameter(Identifier.reader, JsonReader::class)
-    .addParameter(Identifier.responseAdapterCache, ResponseAdapterCache::class.asTypeName())
+    .addParameter(responseAdapterCache, ResponseAdapterCache::class.asTypeName())
     .returns(adaptedTypeName)
     .addCode("throw %T(%S)", ClassName("kotlin", "IllegalStateException"), "Input type used in output position")
     .build()
@@ -52,7 +52,7 @@ private fun List<NamedType>.writeToResponseFunSpec(
   return FunSpec.builder(Identifier.toResponse)
       .addModifiers(KModifier.OVERRIDE)
       .addParameter(writer, JsonWriter::class.asTypeName())
-      .addParameter(Identifier.responseAdapterCache, ResponseAdapterCache::class)
+      .addParameter(responseAdapterCache, ResponseAdapterCache::class)
       .addParameter(Identifier.value, adaptedTypeName)
       .addCode(writeToResponseCodeBlock(context))
       .build()
@@ -72,8 +72,8 @@ private fun NamedType.writeToResponseCodeBlock(context: CgContext): CodeBlock {
   val builder = CodeBlock.builder()
 
   if (optional) {
-    val inputFun = MemberName("com.apollographql.apollo3.api", "input")
-    adapterInitializer = CodeBlock.of("%L.%M(%S)", adapterInitializer, inputFun, graphQlName)
+    val optional = MemberName("com.apollographql.apollo3.api", "optional")
+    adapterInitializer = CodeBlock.of("%L.%M(%S)", adapterInitializer, optional, graphQlName)
   } else {
     builder.addStatement("$writer.name(%S)", graphQlName)
   }
