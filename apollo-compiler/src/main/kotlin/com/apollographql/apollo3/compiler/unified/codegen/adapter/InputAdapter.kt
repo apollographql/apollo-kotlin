@@ -3,6 +3,7 @@
  */
 package com.apollographql.apollo3.compiler.unified.codegen.adapter
 
+import com.apollographql.apollo3.api.Optional
 import com.apollographql.apollo3.api.ResponseAdapter
 import com.apollographql.apollo3.api.ResponseAdapterCache
 import com.apollographql.apollo3.api.json.JsonReader
@@ -10,9 +11,11 @@ import com.apollographql.apollo3.api.json.JsonWriter
 import com.apollographql.apollo3.compiler.backend.codegen.Identifier
 import com.apollographql.apollo3.compiler.backend.codegen.Identifier.responseAdapterCache
 import com.apollographql.apollo3.compiler.backend.codegen.Identifier.toResponse
+import com.apollographql.apollo3.compiler.backend.codegen.Identifier.value
 import com.apollographql.apollo3.compiler.backend.codegen.Identifier.writer
 import com.apollographql.apollo3.compiler.unified.codegen.CgContext
 import com.apollographql.apollo3.compiler.unified.codegen.helpers.NamedType
+import com.apollographql.apollo3.compiler.unified.ir.IrOptionalType
 import com.squareup.kotlinpoet.ClassName
 import com.squareup.kotlinpoet.CodeBlock
 import com.squareup.kotlinpoet.FunSpec
@@ -21,6 +24,7 @@ import com.squareup.kotlinpoet.MemberName
 import com.squareup.kotlinpoet.ParameterizedTypeName.Companion.parameterizedBy
 import com.squareup.kotlinpoet.TypeName
 import com.squareup.kotlinpoet.TypeSpec
+import com.squareup.kotlinpoet.asClassName
 import com.squareup.kotlinpoet.asTypeName
 
 
@@ -49,11 +53,11 @@ private fun List<NamedType>.writeToResponseFunSpec(
     context: CgContext,
     adaptedTypeName: TypeName,
 ): FunSpec {
-  return FunSpec.builder(Identifier.toResponse)
+  return FunSpec.builder(toResponse)
       .addModifiers(KModifier.OVERRIDE)
       .addParameter(writer, JsonWriter::class.asTypeName())
       .addParameter(responseAdapterCache, ResponseAdapterCache::class)
-      .addParameter(Identifier.value, adaptedTypeName)
+      .addParameter(value, adaptedTypeName)
       .addCode(writeToResponseCodeBlock(context))
       .build()
 }
@@ -68,19 +72,21 @@ private fun List<NamedType>.writeToResponseCodeBlock(context: CgContext): CodeBl
 }
 
 private fun NamedType.writeToResponseCodeBlock(context: CgContext): CodeBlock {
-  var adapterInitializer = context.resolver.adapterInitializer(type)
+  val adapterInitializer = context.resolver.adapterInitializer(type)
   val builder = CodeBlock.builder()
+  val propertyName = context.layout.propertyName(graphQlName)
 
-  if (optional) {
-    val optional = MemberName("com.apollographql.apollo3.api", "optional")
-    adapterInitializer = CodeBlock.of("%L.%M(%S)", adapterInitializer, optional, graphQlName)
-  } else {
-    builder.addStatement("$writer.name(%S)", graphQlName)
+  if (type is IrOptionalType) {
+    builder.beginControlFlow("if ($value.$propertyName is %T)", Optional.Present::class.asClassName())
   }
+  builder.addStatement("$writer.name(%S)", graphQlName)
   builder.addStatement(
-      "%L.$toResponse($writer, $responseAdapterCache, value.${context.layout.propertyName(graphQlName)})",
+      "%L.$toResponse($writer, $responseAdapterCache, $value.$propertyName)",
       adapterInitializer
   )
+  if (type is IrOptionalType) {
+    builder.endControlFlow()
+  }
 
   return builder.build()
 }

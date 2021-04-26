@@ -74,7 +74,7 @@ class AdapterFromResponseTest {
   @Test
   @Throws(Exception::class)
   fun errorResponse_with_data() {
-    val response = EpisodeHeroNameQuery(Optional.Present(Episode.JEDI)).fromResponse(readResource("ResponseErrorWithData.json"))
+    val response = EpisodeHeroNameQuery(Episode.JEDI).fromResponse(readResource("ResponseErrorWithData.json"))
     val data = response.data
     val errors = response.errors
     assertTrue(data != null)
@@ -159,7 +159,7 @@ class AdapterFromResponseTest {
   @Test
   @Throws(Exception::class)
   fun parseErrorOperationRawResponse() {
-    val response = EpisodeHeroNameQuery(Optional.Present(Episode.EMPIRE)).fromResponse(
+    val response = EpisodeHeroNameQuery(Episode.EMPIRE).fromResponse(
         readResource("/ResponseErrorWithData.json"),
         ResponseAdapterCache.DEFAULT
     )

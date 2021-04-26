@@ -31,7 +31,7 @@ class CancelTest {
     runWithMainLoop {
       val job = launch {
         delay(100)
-        apolloClient.query(EpisodeHeroNameQuery(Optional.Present(Episode.EMPIRE)))
+        apolloClient.query(EpisodeHeroNameQuery(Episode.EMPIRE))
         error("The Flow should have been canceled before reaching that state")
       }
       job.cancel()

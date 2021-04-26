@@ -59,7 +59,7 @@ class BasicTest {
   @Test
   fun episodeHeroName() = basicTest(
       "HeroNameResponse.json",
-      EpisodeHeroNameQuery(Optional.Present(Episode.EMPIRE))
+      EpisodeHeroNameQuery(Episode.EMPIRE)
   ) {
 
     assertFalse(hasErrors())
@@ -70,7 +70,7 @@ class BasicTest {
   @Throws(Exception::class)
   fun heroAndFriendsNameResponse() = basicTest(
       "HeroAndFriendsNameResponse.json",
-      HeroAndFriendsNamesQuery(Optional.Present(Episode.JEDI))
+      HeroAndFriendsNamesQuery(Episode.JEDI)
   ) {
 
     assertFalse(hasErrors())
@@ -84,7 +84,7 @@ class BasicTest {
   @Test
   fun heroAndFriendsNamesWithIDs() = basicTest(
       "HeroAndFriendsNameWithIdsResponse.json",
-      HeroAndFriendsNamesWithIDsQuery(Optional.Present(Episode.NEWHOPE))
+      HeroAndFriendsNamesWithIDsQuery(Episode.NEWHOPE)
   ) {
 
     assertFalse(hasErrors())
@@ -103,7 +103,7 @@ class BasicTest {
   @Throws(Exception::class)
   fun heroAndFriendsNameWithIdsForParentOnly() = basicTest(
       "HeroAndFriendsNameWithIdsParentOnlyResponse.json",
-      HeroAndFriendsNamesWithIDForParentOnlyQuery(Optional.Present(Episode.NEWHOPE))
+      HeroAndFriendsNamesWithIDForParentOnlyQuery(Episode.NEWHOPE)
   ) {
 
     assertFalse(hasErrors())
@@ -149,7 +149,7 @@ class BasicTest {
   @Throws(Exception::class)
   fun heroParentTypeDependentField() = basicTest(
       "HeroParentTypeDependentFieldDroidResponse.json",
-      HeroParentTypeDependentFieldQuery(Optional.Present(Episode.NEWHOPE))
+      HeroParentTypeDependentFieldQuery(Episode.NEWHOPE)
   ) {
 
     assertFalse(hasErrors())
@@ -166,7 +166,7 @@ class BasicTest {
   @Test
   fun `polymorphic Droid fields get parsed to Droid`() = basicTest(
       "HeroTypeDependentAliasedFieldResponse.json",
-      HeroTypeDependentAliasedFieldQuery(Optional.Present(Episode.NEWHOPE))
+      HeroTypeDependentAliasedFieldQuery(Episode.NEWHOPE)
   ) {
 
     assertFalse(hasErrors())
@@ -177,7 +177,7 @@ class BasicTest {
   @Test
   fun `polymorphic Human fields get parsed to Human`() = basicTest(
       "HeroTypeDependentAliasedFieldResponseHuman.json",
-      HeroTypeDependentAliasedFieldQuery(Optional.Present(Episode.NEWHOPE))
+      HeroTypeDependentAliasedFieldQuery(Episode.NEWHOPE)
   ) {
 
     assertFalse(hasErrors())
@@ -210,7 +210,7 @@ class BasicTest {
   @Test
   fun readList() = basicTest(
       "HeroAndFriendsNameWithIdsResponse.json",
-      HeroAndFriendsNamesWithIDsQuery(Optional.Present(Episode.NEWHOPE))
+      HeroAndFriendsNamesWithIDsQuery(Episode.NEWHOPE)
   ) {
     assertEquals(data?.hero?.id, "2001")
     assertEquals(data?.hero?.name, "R2-D2")

@@ -38,9 +38,9 @@ class FileUploadTest {
   private val mutationTwice = SingleUploadTwiceMutation(file1 = upload1, file2 = upload2)
   private val mutationMultiple = MultipleUploadMutation(files = listOf(upload1, upload2))
   private val mutationNested = NestedUploadMutation(
-      nested = Optional.Present(nestedObject2),
-      topFile = Optional.Present(upload2),
-      topFileList = Optional.Present(listOf(upload1, upload0))
+      nested = nestedObject2,
+      topFile = upload2,
+      topFileList = listOf(upload1, upload0)
   )
 
   private val adapterCache = ResponseAdapterCache(

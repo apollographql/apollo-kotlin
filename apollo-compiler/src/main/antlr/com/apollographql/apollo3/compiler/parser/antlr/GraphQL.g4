@@ -255,7 +255,7 @@ variableDefinitions
   ;
 
 variableDefinition
-  : variable ':' type defaultValue?
+  : variable ':' type defaultValue? directives?
   ;
 
 variable
