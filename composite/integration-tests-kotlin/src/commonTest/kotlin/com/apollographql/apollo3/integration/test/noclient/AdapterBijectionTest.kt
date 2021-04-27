@@ -1,13 +1,10 @@
 package com.apollographql.apollo3.integration.test.noclient
 
-import com.apollographql.apollo3.api.Fragment
-import com.apollographql.apollo3.api.Input
+import com.apollographql.apollo3.adapters.LocalDateResponseAdapter
 import com.apollographql.apollo3.api.Operation
 import com.apollographql.apollo3.api.ResponseAdapterCache
 import com.apollographql.apollo3.api.fromJson
-import com.apollographql.apollo3.api.fromResponse
 import com.apollographql.apollo3.api.toJson
-import com.apollographql.apollo3.integration.LocalDateResponseAdapter
 import com.apollographql.apollo3.integration.httpcache.type.Types
 import com.apollographql.apollo3.integration.normalizer.EpisodeHeroWithDatesQuery
 import com.apollographql.apollo3.integration.normalizer.EpisodeHeroWithInlineFragmentQuery
@@ -15,7 +12,6 @@ import com.apollographql.apollo3.integration.normalizer.HeroAndFriendsNamesWithI
 import com.apollographql.apollo3.integration.normalizer.HeroAndFriendsWithFragmentsQuery
 import com.apollographql.apollo3.integration.normalizer.HeroNameWithEnumsQuery
 import com.apollographql.apollo3.integration.normalizer.StarshipByIdQuery
-import com.apollographql.apollo3.integration.normalizer.fragment.HeroWithFriendsFragmentImpl
 import com.apollographql.apollo3.integration.normalizer.type.Episode
 import kotlinx.datetime.LocalDate
 import okio.Buffer
@@ -202,7 +198,7 @@ class AdapterBijectionTest {
 
   private fun <D : Operation.Data> bijection(operation: Operation<D>, data: D) {
     val json = operation.toJson(data = data, responseAdapterCache = responseAdapterCache)
-    val data2 = operation.fromResponse(Buffer().apply { writeUtf8(json) }, responseAdapterCache).data
+    val data2 = operation.fromJson(Buffer().apply { writeUtf8(json) }, responseAdapterCache)
 
     assertEquals(data, data2)
   }

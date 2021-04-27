@@ -6,8 +6,8 @@ import com.apollographql.apollo3.api.ResponseField
 import com.apollographql.apollo3.api.toResponse
 import com.apollographql.apollo3.cache.normalized.CacheKey
 import com.apollographql.apollo3.cache.normalized.CacheKeyResolver
-import com.apollographql.apollo3.integration.mockserver.MockResponse
-import com.apollographql.apollo3.integration.mockserver.MockServer
+import com.apollographql.apollo3.mockserver.MockResponse
+import com.apollographql.apollo3.mockserver.MockServer
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.withTimeout
 import okio.ByteString.Companion.encodeUtf8

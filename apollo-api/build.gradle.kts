@@ -13,12 +13,6 @@ kotlin {
       }
     }
 
-    val jsMain by getting {
-      dependencies {
-        implementation(npm("big.js", "5.2.2"))
-      }
-    }
-
     val jvmTest by getting {
       dependencies {
         implementation(groovy.util.Eval.x(project, "x.dep.truth"))

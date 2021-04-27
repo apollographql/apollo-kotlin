@@ -7,8 +7,8 @@ import com.apollographql.apollo3.api.Upload
 import com.apollographql.apollo3.api.UploadResponseAdapter
 import com.apollographql.apollo3.integration.checkTestFixture
 import com.apollographql.apollo3.integration.enqueue
-import com.apollographql.apollo3.integration.mockserver.MockRecordedRequest
-import com.apollographql.apollo3.integration.mockserver.MockServer
+import com.apollographql.apollo3.mockserver.MockRecordedRequest
+import com.apollographql.apollo3.mockserver.MockServer
 import com.apollographql.apollo3.integration.upload.MultipleUploadMutation
 import com.apollographql.apollo3.integration.upload.NestedUploadMutation
 import com.apollographql.apollo3.integration.upload.SingleUploadMutation

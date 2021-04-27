@@ -98,7 +98,8 @@ ext.dep = [
     shadow                : "com.github.jengelman.gradle.plugins:shadow:6.1.0",
     kspGradlePlugin: "com.google.devtools.ksp:symbol-processing-gradle-plugin:1.4.32-1.0.0-alpha07",
     kotlinxdatetime: "org.jetbrains.kotlinx:kotlinx-datetime:0.1.1",
-    kotlinxserializationjson: "org.jetbrains.kotlinx:kotlinx-serialization-json:1.1.0"
+    kotlinxserializationjson: "org.jetbrains.kotlinx:kotlinx-serialization-json:1.1.0",
+    atomicfu: "org.jetbrains.kotlinx:atomicfu:0.15.1"
 ]
 ext.androidConfig = [
     compileSdkVersion: 30,

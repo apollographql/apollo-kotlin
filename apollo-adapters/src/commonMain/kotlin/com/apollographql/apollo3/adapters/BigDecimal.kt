@@ -1,0 +1,39 @@
+package com.apollographql.apollo3.api
+
+import com.apollographql.apollo3.api.json.JsonReader
+import com.apollographql.apollo3.api.json.JsonWriter
+
+/**
+ * A multiplatform BigDecimal
+ *
+ * It's here for historical reasons mainly as GraphQL doesn't has Big Decimal types and should be moved to a separate module
+ *
+ * BigDecimal cannot subclass `Number` in JS, as it will cause runtime trap in any compiled Kotlin/JS product in the module initialization
+ * script.
+ */
+expect class BigDecimal {
+  constructor(strVal: String)
+  constructor(doubleVal: Double)
+  constructor(intVal: Int)
+  constructor(longVal: Long)
+
+  fun add(augend: BigDecimal): BigDecimal
+  fun subtract(subtrahend: BigDecimal): BigDecimal
+  fun multiply(multiplicand: BigDecimal): BigDecimal
+  fun divide(divisor: BigDecimal): BigDecimal
+  fun negate(): BigDecimal
+  fun signum(): Int
+}
+
+expect fun BigDecimal.toNumber(): Number
+
+object BigDecimalAdapter: ResponseAdapter<BigDecimal> {
+  override fun fromResponse(reader: JsonReader, responseAdapterCache: ResponseAdapterCache): BigDecimal {
+    return BigDecimal(reader.nextString()!!)
+  }
+
+  override fun toResponse(writer: JsonWriter, responseAdapterCache: ResponseAdapterCache, value: BigDecimal) {
+    writer.value(value.toString())
+  }
+
+}

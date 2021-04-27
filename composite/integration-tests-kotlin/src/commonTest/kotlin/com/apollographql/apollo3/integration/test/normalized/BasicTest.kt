@@ -5,16 +5,11 @@ import com.apollographql.apollo3.ApolloRequest
 import com.apollographql.apollo3.api.ApolloResponse
 import com.apollographql.apollo3.api.Input
 import com.apollographql.apollo3.api.Query
-import com.apollographql.apollo3.api.fromJson
-import com.apollographql.apollo3.api.fromResponse
-import com.apollographql.apollo3.api.internal.json.BufferedSourceJsonReader
-import com.apollographql.apollo3.api.internal.json.Utils.readRecursively
 import com.apollographql.apollo3.cache.normalized.ApolloStore
 import com.apollographql.apollo3.cache.normalized.MemoryCacheFactory
 import com.apollographql.apollo3.integration.IdFieldCacheKeyResolver
 import com.apollographql.apollo3.integration.enqueue
 import com.apollographql.apollo3.integration.httpcache.AllPlanetsQuery
-import com.apollographql.apollo3.integration.mockserver.MockServer
 import com.apollographql.apollo3.integration.normalizer.EpisodeHeroNameQuery
 import com.apollographql.apollo3.integration.normalizer.HeroAndFriendsNamesQuery
 import com.apollographql.apollo3.integration.normalizer.HeroAndFriendsNamesWithIDForParentOnlyQuery
@@ -33,14 +28,14 @@ import com.apollographql.apollo3.integration.readResource
 import com.apollographql.apollo3.interceptor.cache.FetchPolicy
 import com.apollographql.apollo3.interceptor.cache.withFetchPolicy
 import com.apollographql.apollo3.interceptor.cache.withStore
+import com.apollographql.apollo3.mockserver.MockServer
 import com.apollographql.apollo3.testing.runWithMainLoop
-import okio.Buffer
 import kotlin.test.BeforeTest
 import kotlin.test.Test
-import com.apollographql.apollo3.integration.assertEquals2 as assertEquals
 import kotlin.test.assertFalse
 import kotlin.test.assertNull
 import kotlin.test.assertTrue
+import com.apollographql.apollo3.integration.assertEquals2 as assertEquals
 
 /**
  * A series of high level cache tests that use NetworkOnly to cache a json and then retrieve it with CacheOnly and make

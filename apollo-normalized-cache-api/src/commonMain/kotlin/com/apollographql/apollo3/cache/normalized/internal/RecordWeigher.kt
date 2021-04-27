@@ -1,6 +1,5 @@
 package com.apollographql.apollo3.cache.normalized.internal
 
-import com.apollographql.apollo3.api.BigDecimal
 import com.apollographql.apollo3.cache.normalized.CacheReference
 import com.apollographql.apollo3.cache.normalized.Record
 import okio.internal.commonAsUtf8ToByteArray

@@ -2,7 +2,7 @@ package com.apollographql.apollo3.integration.test.client
 
 import com.apollographql.apollo3.ApolloClient
 import com.apollographql.apollo3.api.Input
-import com.apollographql.apollo3.integration.mockserver.MockServer
+import com.apollographql.apollo3.mockserver.MockServer
 import com.apollographql.apollo3.integration.enqueue
 import com.apollographql.apollo3.integration.normalizer.EpisodeHeroNameQuery
 import com.apollographql.apollo3.integration.normalizer.type.Episode
