@@ -1,4 +1,4 @@
-package com.apollographql.apollo3.integration.test
+package com.apollographql.apollo3.integration.test.runtime
 
 import com.apollographql.apollo3.integration.normalizer.type.Types
 import kotlin.test.Test

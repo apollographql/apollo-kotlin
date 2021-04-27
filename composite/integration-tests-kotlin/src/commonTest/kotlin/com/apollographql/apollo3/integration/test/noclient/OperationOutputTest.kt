@@ -1,10 +1,8 @@
-package com.apollographql.apollo3.integration.test
+package com.apollographql.apollo3.integration.test.runtime
 
-import com.apollographql.apollo3.ApolloClient
 import com.apollographql.apollo3.integration.httpcache.AllFilmsQuery
 import com.apollographql.apollo3.integration.readFile
 import kotlinx.serialization.json.Json
-import kotlinx.serialization.json.jsonArray
 import kotlinx.serialization.json.jsonObject
 import kotlinx.serialization.json.jsonPrimitive
 import kotlin.test.Test

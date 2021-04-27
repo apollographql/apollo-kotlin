@@ -1,5 +1,7 @@
-package com.apollographql.apollo3
+package com.apollographql.apollo3.integration.test.normalized
 
+import com.apollographql.apollo3.ApolloClient
+import com.apollographql.apollo3.ApolloRequest
 import com.apollographql.apollo3.api.Input
 import com.apollographql.apollo3.cache.normalized.ApolloStore
 import com.apollographql.apollo3.cache.normalized.MemoryCacheFactory

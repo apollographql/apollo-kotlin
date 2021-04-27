@@ -1,4 +1,4 @@
-package com.apollographql.apollo3.integration.test
+package com.apollographql.apollo3.integration.test.noclient
 
 import com.apollographql.apollo3.api.Input
 import com.apollographql.apollo3.api.Operation
@@ -240,7 +240,7 @@ class NormalizerTest {
   fun testHeroParentTypeDependentFieldHuman() {
     val records = records(HeroParentTypeDependentFieldQuery(Input.Present(Episode.EMPIRE)), "HeroParentTypeDependentFieldHumanResponse.json")
 
-    val lukeRecord = records.get("${TEST_FIELD_KEY_EMPIRE}.friends.0")
+    val lukeRecord = records.get("$TEST_FIELD_KEY_EMPIRE.friends.0")
     assertEquals(lukeRecord!!["name"], "Han Solo")
     assertEquals(lukeRecord["height({\"unit\":\"FOOT\"})"], 5.905512)
   }

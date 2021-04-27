@@ -6,6 +6,7 @@ import kotlinx.cinterop.allocArray
 import kotlinx.cinterop.allocArrayOf
 import kotlinx.cinterop.convert
 import kotlinx.cinterop.memScoped
+import kotlinx.cinterop.plus
 import kotlinx.cinterop.readBytes
 import okio.Buffer
 import okio.IOException
@@ -24,23 +25,24 @@ class FileDescriptorSink(val fd: Int): Sink {
       val bufSize = 8192
 
       var written = 0L
-      var r = 0L
+      var w = 0L
       var bufMax = 0L
       var buf: CArrayPointer<ByteVar>? = null
       while (written < byteCount) {
-        if (buf == null || r == bufMax) {
+        if (buf == null || w == bufMax) {
           bufMax = minOf(bufSize.toLong(), byteCount - written)
           buf = allocArrayOf(source.readByteArray(bufMax.convert()))
-          r = 0
+          w = 0
         }
 
-        val toWrite = bufMax - r
+        val toWrite = bufMax - w
 
-        val len = platform.posix.write(fd, buf, toWrite.convert())
+        val len = platform.posix.write(fd, buf.plus(w), toWrite.convert())
         if (len < 0) {
           throw IOException("Cannot write $fd (errno = $errno)")
         }
         written += len
+        w += len
       }
     }
   }
