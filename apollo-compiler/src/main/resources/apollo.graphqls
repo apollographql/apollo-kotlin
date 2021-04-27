@@ -1,1 +1,2 @@
 directive @optional on FIELD | VARIABLE_DEFINITION
+directive @nonnull on FIELD

@@ -1,7 +1,5 @@
 package com.apollographql.apollo3.graphql.ast
 
-import java.io.File
-
 /**
  * a very thin wrapper around a schema GQLDocument
  *
@@ -23,7 +21,7 @@ class Schema(
           rootOperationTypeDefinitions = rootOperationTypeDefinition()
       ),
       filePath = null
-  ).withoutBuiltinDefinitions()
+  ).withoutExtraDefinitions()
 
   private fun rootOperationTypeDefinition(): List<GQLOperationTypeDefinition> {
     val list = mutableListOf<GQLOperationTypeDefinition>()

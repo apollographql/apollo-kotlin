@@ -150,14 +150,25 @@ object GraphQLParser {
     }
   }
 
-  fun builtinTypes(): GQLDocument {
-    val source = GQLDocument::class.java.getResourceAsStream("/builtins.graphqls")
+  fun definitionsFromResources(name: String): List<GQLDefinition> {
+    val source = GQLDocument::class.java.getResourceAsStream("/$name")!!
         .source()
         .buffer()
     return antlrParse(source, null) { it.document() }
         .orThrow()
         .toGQLDocument(null)
+        .definitions
   }
+
+  /**
+   * Definitions from the spec
+   */
+  fun builtinDefinitions() = definitionsFromResources("builtins.graphqls")
+
+  /**
+   * Extra apollo specific definitions
+   */
+  fun apolloDefinitions() = definitionsFromResources("apollo.graphqls")
 
   internal fun parseSchemaInternal(source: BufferedSource, filePath: String? = null): ParseResult<GQLDocument> {
     return parseDocument(source, filePath)
@@ -169,7 +180,7 @@ object GraphQLParser {
           // This means that it's impossible to add type extensions on built in types at the moment
           it.validateAsSchema()
         }.mapValue {
-          it.withBuiltinDefinitions()
+          it.withExtraDefinitions()
         }
   }
 
