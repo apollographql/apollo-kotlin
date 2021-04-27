@@ -7,6 +7,7 @@ import com.apollographql.apollo3.api.json.JsonReader
 import com.apollographql.apollo3.api.json.JsonWriter
 import com.apollographql.apollo3.api.internal.json.Utils
 import com.apollographql.apollo3.api.internal.json.Utils.readRecursively
+import kotlin.native.concurrent.SharedImmutable
 
 /**
  * This file contains a list of [ResponseAdapter] for standard types
@@ -189,8 +190,13 @@ fun <T> ResponseAdapter<T>.input(name: String) = InputResponseAdapter(this, name
 /**
  * Global instances of nullable adapters for built-in scalar types
  */
+@SharedImmutable
 val NullableStringResponseAdapter = StringResponseAdapter.nullable()
+@SharedImmutable
 val NullableDoubleResponseAdapter = DoubleResponseAdapter.nullable()
+@SharedImmutable
 val NullableIntResponseAdapter = IntResponseAdapter.nullable()
+@SharedImmutable
 val NullableBooleanResponseAdapter = BooleanResponseAdapter.nullable()
+@SharedImmutable
 val NullableAnyResponseAdapter = AnyResponseAdapter.nullable()

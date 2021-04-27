@@ -173,6 +173,7 @@ fun <D : Operation.Data> Operation<D>.toResponse(
 /**
  * Serializes variables to a Json Map
  */
+@Suppress("UNCHECKED_CAST")
 fun <D : Operation.Data> Operation<D>.variables(responseAdapterCache: ResponseAdapterCache): Operation.Variables {
   val valueMap = MapJsonWriter().apply {
     beginObject()
@@ -185,6 +186,7 @@ fun <D : Operation.Data> Operation<D>.variables(responseAdapterCache: ResponseAd
 /**
  * Serializes variables to a Json Map
  */
+@Suppress("UNCHECKED_CAST")
 fun <D : Fragment.Data> Fragment<D>.variables(responseAdapterCache: ResponseAdapterCache): Operation.Variables {
   val valueMap = MapJsonWriter().apply {
     beginObject()

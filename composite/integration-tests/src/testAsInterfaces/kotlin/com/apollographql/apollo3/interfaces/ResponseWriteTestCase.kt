@@ -22,17 +22,17 @@ import com.apollographql.apollo3.integration.normalizer.EpisodeHeroWithInlineFra
 import com.apollographql.apollo3.integration.normalizer.EpisodeHeroWithInlineFragmentQuery.Data.Hero.Friend.Companion.asHuman
 import com.apollographql.apollo3.integration.normalizer.HeroAndFriendsNamesWithIDsQuery
 import com.apollographql.apollo3.integration.normalizer.HeroAndFriendsWithFragmentsQuery
-import com.apollographql.apollo3.integration.normalizer.HeroAndFriendsWithFragmentsQuery.Data.Hero.Companion.HeroWithFriendsFragment
+import com.apollographql.apollo3.integration.normalizer.HeroAndFriendsWithFragmentsQuery.Data.Hero.Companion.heroWithFriendsFragment
 import com.apollographql.apollo3.integration.normalizer.HeroNameWithEnumsQuery
 import com.apollographql.apollo3.integration.normalizer.StarshipByIdQuery
 import com.apollographql.apollo3.integration.normalizer.StarshipByIdQuery.Data.Starship
 import com.apollographql.apollo3.integration.normalizer.fragment.HeroWithFriendsFragment
-import com.apollographql.apollo3.integration.normalizer.fragment.HeroWithFriendsFragment.Friend.Companion.HumanWithIdFragment
+import com.apollographql.apollo3.integration.normalizer.fragment.HeroWithFriendsFragment.Friend.Companion.humanWithIdFragment
 import com.apollographql.apollo3.integration.normalizer.fragment.HeroWithFriendsFragmentImpl
 import com.apollographql.apollo3.integration.normalizer.fragment.HumanWithIdFragment
 import com.apollographql.apollo3.integration.normalizer.fragment.HumanWithIdFragmentImpl
-import com.apollographql.apollo3.integration.normalizer.type.CustomScalars
 import com.apollographql.apollo3.integration.normalizer.type.Episode
+import com.apollographql.apollo3.integration.normalizer.type.Types
 import com.google.common.truth.Truth.assertThat
 import okhttp3.Dispatcher
 import okhttp3.OkHttpClient
@@ -60,7 +60,7 @@ class ResponseWriteTestCase {
       writer.value(DATE_TIME_FORMAT.format(value))
     }
   }
-  private val responseAdapterCache = ResponseAdapterCache(mapOf(CustomScalars.Date to dateCustomScalarAdapter))
+  private val responseAdapterCache = ResponseAdapterCache(mapOf(Types.Date.name to dateCustomScalarAdapter))
 
   @Before
   fun setUp() {
@@ -72,7 +72,7 @@ class ResponseWriteTestCase {
         .okHttpClient(okHttpClient)
         .normalizedCache(MemoryCacheFactory(maxSizeBytes = Int.MAX_VALUE), IdFieldCacheKeyResolver())
         .dispatcher(immediateExecutor())
-        .addCustomScalarAdapter(CustomScalars.Date, dateCustomScalarAdapter)
+        .addCustomScalarAdapter(Types.Date, dateCustomScalarAdapter)
         .build()
   }
 
@@ -347,19 +347,19 @@ class ResponseWriteTestCase {
         apolloClient!!.query(query)
     ) {
       assertThat(it.data?.hero?.__typename).isEqualTo("Droid")
-      assertThat(it.data?.hero?.HeroWithFriendsFragment()?.__typename)?.isEqualTo("Droid")
-      assertThat(it.data?.hero?.HeroWithFriendsFragment()?.id).isEqualTo("2001")
-      assertThat(it.data?.hero?.HeroWithFriendsFragment()?.name).isEqualTo("R2-D2")
-      assertThat(it.data?.hero?.HeroWithFriendsFragment()?.friends).hasSize(3)
-      assertThat(it.data?.hero?.HeroWithFriendsFragment()?.friends?.get(0)?.HumanWithIdFragment()?.__typename).isEqualTo("Human")
-      assertThat(it.data?.hero?.HeroWithFriendsFragment()?.friends?.get(0)?.HumanWithIdFragment()?.id).isEqualTo("1000")
-      assertThat(it.data?.hero?.HeroWithFriendsFragment()?.friends?.get(0)?.HumanWithIdFragment()?.name).isEqualTo("Luke Skywalker")
-      assertThat(it.data?.hero?.HeroWithFriendsFragment()?.friends?.get(1)?.HumanWithIdFragment()?.__typename).isEqualTo("Human")
-      assertThat(it.data?.hero?.HeroWithFriendsFragment()?.friends?.get(1)?.HumanWithIdFragment()?.id).isEqualTo("1002")
-      assertThat(it.data?.hero?.HeroWithFriendsFragment()?.friends?.get(1)?.HumanWithIdFragment()?.name).isEqualTo("Han Solo")
-      assertThat(it.data?.hero?.HeroWithFriendsFragment()?.friends?.get(2)?.HumanWithIdFragment()?.__typename).isEqualTo("Human")
-      assertThat(it.data?.hero?.HeroWithFriendsFragment()?.friends?.get(2)?.HumanWithIdFragment()?.id).isEqualTo("1003")
-      assertThat(it.data?.hero?.HeroWithFriendsFragment()?.friends?.get(2)?.HumanWithIdFragment()?.name).isEqualTo("Leia Organa")
+      assertThat(it.data?.hero?.heroWithFriendsFragment()?.__typename)?.isEqualTo("Droid")
+      assertThat(it.data?.hero?.heroWithFriendsFragment()?.id).isEqualTo("2001")
+      assertThat(it.data?.hero?.heroWithFriendsFragment()?.name).isEqualTo("R2-D2")
+      assertThat(it.data?.hero?.heroWithFriendsFragment()?.friends).hasSize(3)
+      assertThat(it.data?.hero?.heroWithFriendsFragment()?.friends?.get(0)?.humanWithIdFragment()?.__typename).isEqualTo("Human")
+      assertThat(it.data?.hero?.heroWithFriendsFragment()?.friends?.get(0)?.humanWithIdFragment()?.id).isEqualTo("1000")
+      assertThat(it.data?.hero?.heroWithFriendsFragment()?.friends?.get(0)?.humanWithIdFragment()?.name).isEqualTo("Luke Skywalker")
+      assertThat(it.data?.hero?.heroWithFriendsFragment()?.friends?.get(1)?.humanWithIdFragment()?.__typename).isEqualTo("Human")
+      assertThat(it.data?.hero?.heroWithFriendsFragment()?.friends?.get(1)?.humanWithIdFragment()?.id).isEqualTo("1002")
+      assertThat(it.data?.hero?.heroWithFriendsFragment()?.friends?.get(1)?.humanWithIdFragment()?.name).isEqualTo("Han Solo")
+      assertThat(it.data?.hero?.heroWithFriendsFragment()?.friends?.get(2)?.humanWithIdFragment()?.__typename).isEqualTo("Human")
+      assertThat(it.data?.hero?.heroWithFriendsFragment()?.friends?.get(2)?.humanWithIdFragment()?.id).isEqualTo("1003")
+      assertThat(it.data?.hero?.heroWithFriendsFragment()?.friends?.get(2)?.humanWithIdFragment()?.name).isEqualTo("Leia Organa")
     }
 
     apolloClient!!.apolloStore.writeFragment(
@@ -398,16 +398,16 @@ class ResponseWriteTestCase {
         query
     ) {
       assertThat(it.data?.hero?.__typename).isEqualTo("Droid")
-      assertThat(it.data?.hero?.HeroWithFriendsFragment()?.__typename).isEqualTo("Droid")
-      assertThat(it.data?.hero?.HeroWithFriendsFragment()?.id).isEqualTo("2001")
-      assertThat(it.data?.hero?.HeroWithFriendsFragment()?.name).isEqualTo("R222-D222")
-      assertThat(it.data?.hero?.HeroWithFriendsFragment()?.friends).hasSize(2)
-      assertThat(it.data?.hero?.HeroWithFriendsFragment()?.friends?.get(0)?.HumanWithIdFragment()?.__typename).isEqualTo("Human")
-      assertThat(it.data?.hero?.HeroWithFriendsFragment()?.friends?.get(0)?.HumanWithIdFragment()?.id).isEqualTo("1000")
-      assertThat(it.data?.hero?.HeroWithFriendsFragment()?.friends?.get(0)?.HumanWithIdFragment()?.name).isEqualTo("SuperMan")
-      assertThat(it.data?.hero?.HeroWithFriendsFragment()?.friends?.get(1)?.HumanWithIdFragment()?.__typename).isEqualTo("Human")
-      assertThat(it.data?.hero?.HeroWithFriendsFragment()?.friends?.get(1)?.HumanWithIdFragment()?.id).isEqualTo("1002")
-      assertThat(it.data?.hero?.HeroWithFriendsFragment()?.friends?.get(1)?.HumanWithIdFragment()?.name).isEqualTo("Beast")
+      assertThat(it.data?.hero?.heroWithFriendsFragment()?.__typename).isEqualTo("Droid")
+      assertThat(it.data?.hero?.heroWithFriendsFragment()?.id).isEqualTo("2001")
+      assertThat(it.data?.hero?.heroWithFriendsFragment()?.name).isEqualTo("R222-D222")
+      assertThat(it.data?.hero?.heroWithFriendsFragment()?.friends).hasSize(2)
+      assertThat(it.data?.hero?.heroWithFriendsFragment()?.friends?.get(0)?.humanWithIdFragment()?.__typename).isEqualTo("Human")
+      assertThat(it.data?.hero?.heroWithFriendsFragment()?.friends?.get(0)?.humanWithIdFragment()?.id).isEqualTo("1000")
+      assertThat(it.data?.hero?.heroWithFriendsFragment()?.friends?.get(0)?.humanWithIdFragment()?.name).isEqualTo("SuperMan")
+      assertThat(it.data?.hero?.heroWithFriendsFragment()?.friends?.get(1)?.humanWithIdFragment()?.__typename).isEqualTo("Human")
+      assertThat(it.data?.hero?.heroWithFriendsFragment()?.friends?.get(1)?.humanWithIdFragment()?.id).isEqualTo("1002")
+      assertThat(it.data?.hero?.heroWithFriendsFragment()?.friends?.get(1)?.humanWithIdFragment()?.name).isEqualTo("Beast")
     }
   }
 

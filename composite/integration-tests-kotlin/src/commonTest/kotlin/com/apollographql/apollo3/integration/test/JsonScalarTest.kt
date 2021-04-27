@@ -6,15 +6,14 @@ import com.apollographql.apollo3.api.AnyResponseAdapter
 import com.apollographql.apollo3.cache.normalized.ApolloStore
 import com.apollographql.apollo3.cache.normalized.MemoryCacheFactory
 import com.apollographql.apollo3.integration.IdFieldCacheKeyResolver
-import com.apollographql.apollo3.integration.assertEquals2
 import com.apollographql.apollo3.integration.enqueue
 import com.apollographql.apollo3.integration.mockserver.MockServer
 import com.apollographql.apollo3.integration.normalizer.GetJsonScalarQuery
 import com.apollographql.apollo3.integration.normalizer.type.Types
 import com.apollographql.apollo3.integration.readResource
 import com.apollographql.apollo3.interceptor.cache.FetchPolicy
-import com.apollographql.apollo3.interceptor.cache.normalizedCache
 import com.apollographql.apollo3.interceptor.cache.withFetchPolicy
+import com.apollographql.apollo3.interceptor.cache.withStore
 import com.apollographql.apollo3.testing.runWithMainLoop
 import kotlin.test.BeforeTest
 import kotlin.test.Test
@@ -30,11 +29,9 @@ class JsonScalarTest {
   fun setUp() {
     store = ApolloStore(MemoryCacheFactory(maxSizeBytes = Int.MAX_VALUE), IdFieldCacheKeyResolver)
     mockServer = MockServer()
-    apolloClient = ApolloClient.Builder()
-        .serverUrl(mockServer.url())
-        .addScalarTypeAdapter(Types.Json, AnyResponseAdapter)
-        .normalizedCache(store)
-        .build()
+    apolloClient = ApolloClient(mockServer.url())
+        .withStore(store)
+        .withCustomScalarAdapter(Types.Json.name, AnyResponseAdapter)
   }
 
   // see https://github.com/apollographql/apollo-android/issues/2854

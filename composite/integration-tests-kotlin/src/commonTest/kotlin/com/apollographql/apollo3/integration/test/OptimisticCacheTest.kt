@@ -2,11 +2,9 @@ package com.apollographql.apollo3
 
 import com.apollographql.apollo3.api.Input
 import com.apollographql.apollo3.cache.normalized.ApolloStore
-import com.apollographql.apollo3.cache.normalized.CacheKeyResolver
 import com.apollographql.apollo3.cache.normalized.MemoryCacheFactory
 import com.apollographql.apollo3.integration.IdFieldCacheKeyResolver
 import com.apollographql.apollo3.integration.enqueue
-import com.apollographql.apollo3.integration.assertEquals2 as assertEquals
 import com.apollographql.apollo3.integration.mockserver.MockServer
 import com.apollographql.apollo3.integration.normalizer.HeroAndFriendsNamesQuery
 import com.apollographql.apollo3.integration.normalizer.HeroAndFriendsNamesWithIDsQuery
@@ -19,11 +17,11 @@ import com.apollographql.apollo3.integration.normalizer.type.ReviewInput
 import com.apollographql.apollo3.integration.readResource
 import com.apollographql.apollo3.integration.receiveOrTimeout
 import com.apollographql.apollo3.interceptor.cache.FetchPolicy
-import com.apollographql.apollo3.interceptor.cache.normalizedCache
 import com.apollographql.apollo3.interceptor.cache.watch
 import com.apollographql.apollo3.interceptor.cache.withFetchPolicy
 import com.apollographql.apollo3.interceptor.cache.withOptimiticUpdates
 import com.apollographql.apollo3.interceptor.cache.withRefetchPolicy
+import com.apollographql.apollo3.interceptor.cache.withStore
 import com.apollographql.apollo3.testing.runWithMainLoop
 import com.benasher44.uuid.uuid4
 import kotlinx.coroutines.channels.Channel
@@ -31,6 +29,7 @@ import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
 import kotlin.test.BeforeTest
 import kotlin.test.Test
+import com.apollographql.apollo3.integration.assertEquals2 as assertEquals
 
 class OptimisticCacheTest {
   private lateinit var mockServer: MockServer
@@ -41,10 +40,7 @@ class OptimisticCacheTest {
   fun setUp() {
     store = ApolloStore(MemoryCacheFactory(maxSizeBytes = Int.MAX_VALUE), IdFieldCacheKeyResolver)
     mockServer = MockServer()
-    apolloClient = ApolloClient.Builder()
-        .serverUrl(mockServer.url())
-        .normalizedCache(store)
-        .build()
+    apolloClient = ApolloClient(mockServer.url()).withStore(store)
   }
 
 

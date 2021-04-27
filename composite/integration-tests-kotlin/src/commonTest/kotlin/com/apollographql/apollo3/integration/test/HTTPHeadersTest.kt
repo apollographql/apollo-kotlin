@@ -4,6 +4,7 @@ import com.apollographql.apollo3.ApolloClient
 import com.apollographql.apollo3.integration.enqueue
 import com.apollographql.apollo3.integration.mockserver.MockServer
 import com.apollographql.apollo3.integration.normalizer.HeroNameQuery
+import com.apollographql.apollo3.interceptor.cache.withStore
 import com.apollographql.apollo3.testing.runWithMainLoop
 import kotlinx.coroutines.flow.single
 import kotlin.test.BeforeTest
@@ -19,9 +20,7 @@ class HTTPHeadersTest {
   @BeforeTest
   fun setUp() {
     mockServer = MockServer()
-    apolloClient = ApolloClient.Builder()
-        .serverUrl(mockServer.url())
-        .build()
+    apolloClient = ApolloClient(mockServer.url())
   }
 
   @Test

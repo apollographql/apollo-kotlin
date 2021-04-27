@@ -4,9 +4,9 @@ import com.apollographql.apollo3.Utils.checkTestFixture
 import com.apollographql.apollo3.Utils.immediateExecutor
 import com.apollographql.apollo3.Utils.immediateExecutorService
 import com.apollographql.apollo3.Utils.readFileToString
+import com.apollographql.apollo3.api.ApolloResponse
 import com.apollographql.apollo3.api.Input
 import com.apollographql.apollo3.api.Operation
-import com.apollographql.apollo3.api.ApolloResponse
 import com.apollographql.apollo3.api.ResponseAdapter
 import com.apollographql.apollo3.api.ResponseAdapterCache
 import com.apollographql.apollo3.api.json.JsonReader
@@ -18,13 +18,12 @@ import com.apollographql.apollo3.exception.ApolloException
 import com.apollographql.apollo3.fetcher.ApolloResponseFetchers
 import com.apollographql.apollo3.http.OkHttpExecutionContext
 import com.apollographql.apollo3.integration.httpcache.AllPlanetsQuery
-import com.apollographql.apollo3.integration.httpcache.type.CustomScalars
 import com.apollographql.apollo3.integration.normalizer.EpisodeHeroNameQuery
 import com.apollographql.apollo3.integration.normalizer.HeroNameQuery
 import com.apollographql.apollo3.integration.normalizer.type.Episode
+import com.apollographql.apollo3.integration.normalizer.type.Types
 import com.google.common.base.Charsets
 import com.google.common.truth.Truth.assertThat
-import kotlinx.coroutines.async
 import kotlinx.coroutines.runBlocking
 import okhttp3.Dispatcher
 import okhttp3.OkHttpClient
@@ -34,7 +33,6 @@ import org.junit.Before
 import org.junit.Test
 import java.io.IOException
 import java.text.SimpleDateFormat
-import java.util.ArrayList
 import java.util.Date
 import java.util.Locale
 
@@ -59,7 +57,7 @@ class IntegrationTest {
     apolloClient = ApolloClient.builder()
         .serverUrl(server.url("/"))
         .okHttpClient(OkHttpClient.Builder().dispatcher(Dispatcher(immediateExecutorService())).build())
-        .addCustomScalarAdapter(CustomScalars.Date, dateCustomScalarAdapter)
+        .addCustomScalarAdapter(Types.Date, dateCustomScalarAdapter)
         .normalizedCache(MemoryCacheFactory(maxSizeBytes = Int.MAX_VALUE), IdFieldCacheKeyResolver())
         .defaultResponseFetcher(ApolloResponseFetchers.NETWORK_ONLY)
         .dispatcher(immediateExecutor())

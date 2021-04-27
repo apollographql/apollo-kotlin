@@ -6,19 +6,17 @@ import com.apollographql.apollo3.cache.normalized.ApolloStore
 import com.apollographql.apollo3.cache.normalized.CacheKeyResolver
 import com.apollographql.apollo3.cache.normalized.MemoryCacheFactory
 import com.apollographql.apollo3.exception.ApolloCompositeException
-import com.apollographql.apollo3.integration.mockserver.MockServer
 import com.apollographql.apollo3.integration.enqueue
+import com.apollographql.apollo3.integration.mockserver.MockServer
 import com.apollographql.apollo3.integration.normalizer.HeroNameQuery
 import com.apollographql.apollo3.interceptor.cache.FetchPolicy
 import com.apollographql.apollo3.interceptor.cache.isFromCache
-import com.apollographql.apollo3.interceptor.cache.normalizedCache
 import com.apollographql.apollo3.interceptor.cache.queryCacheAndNetwork
 import com.apollographql.apollo3.interceptor.cache.withFetchPolicy
+import com.apollographql.apollo3.interceptor.cache.withStore
 import com.apollographql.apollo3.testing.runWithMainLoop
-import kotlinx.coroutines.flow.single
 import kotlinx.coroutines.flow.toList
 import kotlin.test.BeforeTest
-import kotlin.test.Ignore
 import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertFalse
@@ -35,10 +33,7 @@ class FetchPolicyTest {
   fun setUp() {
     store = ApolloStore(MemoryCacheFactory(maxSizeBytes = Int.MAX_VALUE), CacheKeyResolver.DEFAULT)
     mockServer = MockServer()
-    apolloClient = ApolloClient.Builder()
-        .serverUrl(mockServer.url())
-        .normalizedCache(store)
-        .build()
+    apolloClient = ApolloClient(mockServer.url()).withStore(store)
   }
 
   @Test

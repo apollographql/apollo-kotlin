@@ -60,7 +60,7 @@ class CommitsActivity : AppCompatActivity() {
     dataSource.cancelFetching()
   }
 
-  private fun handleCommits(commits: List<GithubRepositoryCommitsQuery.Data.Viewer.Repository.Ref.Target.CommitTarget.History.Edges>) {
+  private fun handleCommits(commits: List<GithubRepositoryCommitsQuery.Data.Viewer.Repository.Ref.CommitTarget.History.Edge>) {
     progressBar.visibility = GONE
     adapter.setItems(commits)
   }

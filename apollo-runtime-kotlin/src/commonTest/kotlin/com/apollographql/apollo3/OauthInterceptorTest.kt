@@ -55,9 +55,7 @@ class OauthInterceptorTest {
 
   private fun apolloClient(currentAccessToken: String, newAccessToken: String): ApolloClient {
     val networkTransport = AuthenticatedNetworkTransport()
-    return ApolloClient.Builder()
-        .networkTransport(networkTransport)
-        .addInterceptor(
+    return ApolloClient(networkTransport).withInterceptor(
             BearerTokenInterceptor(
                 TestTokenProvider(
                     currentAccessToken,
@@ -65,7 +63,6 @@ class OauthInterceptorTest {
                 )
             )
         )
-        .build()
   }
 
   @Test

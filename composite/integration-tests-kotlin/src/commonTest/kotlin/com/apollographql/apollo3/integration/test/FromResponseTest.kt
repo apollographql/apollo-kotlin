@@ -93,7 +93,7 @@ class FromResponseTest {
 
     val response = AllFilmsQuery().fromResponse(
         readResource("HttpCacheTestAllFilms.json"),
-        ResponseAdapterCache(mapOf(Types.Date to LocalDateResponseAdapter))
+        ResponseAdapterCache(mapOf(Types.Date.name to LocalDateResponseAdapter))
     )
     assertFalse(response.hasErrors())
     assertEquals(response.data!!.allFilms?.films?.size, 6)

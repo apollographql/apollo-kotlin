@@ -54,6 +54,7 @@ class Normalizer(val variables: Operation.Variables, val cacheKeyForObject: (Res
 
       val unwrappedType = (it.type as? ResponseField.Type.NotNull)?.ofType ?: it.type
 
+      @Suppress("UNCHECKED_CAST")
       fieldKey to when {
         value == null -> null
         unwrappedType is ResponseField.Type.List -> (value as List<Any?>).normalize(path.append(fieldKey), it, unwrappedType)
@@ -69,6 +70,7 @@ class Normalizer(val variables: Operation.Variables, val cacheKeyForObject: (Res
   /**
    * @param fieldType this is different from field.type as it will unwrap the NonNull and List types as it goes
    */
+  @Suppress("UNCHECKED_CAST")
   private fun List<Any?>.normalize(path: String, field: ResponseField, fieldType: ResponseField.Type.List): List<Any?> {
     val unwrappedType = (fieldType.ofType as? ResponseField.Type.NotNull)?.ofType ?: fieldType.ofType
 

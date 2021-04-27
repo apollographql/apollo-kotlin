@@ -130,6 +130,11 @@ class Rx2ApolloTest {
     apolloClient.query(EpisodeHeroNameWithIdQuery(Input.Present(EMPIRE)))
         .responseFetcher(NETWORK_ONLY)
         .enqueue(null)
+
+    // There's a race here because RealApolloStore now calls the subscribers from a Dispatchers.IO thread
+    // Ultimately this should go hence the ugly workaround
+    Thread.sleep(1000)
+
     observer.assertValueCount(2)
         .assertValueAt(0) { data ->
           assertThat(data.hero?.name).isEqualTo("R2-D2")
@@ -153,6 +158,7 @@ class Rx2ApolloTest {
     server.enqueue(mockResponse(FILE_EPISODE_HERO_NAME_WITH_ID))
     apolloClient.query(EpisodeHeroNameQuery(Input.Present(EMPIRE))).responseFetcher(NETWORK_ONLY)
         .enqueue(null)
+
     observer
         .assertValueCount(1)
         .assertValueAt(0) { data ->
@@ -172,6 +178,11 @@ class Rx2ApolloTest {
         .subscribeWith(observer)
     server.enqueue(mockResponse("HeroAndFriendsNameWithIdsNameChange.json"))
     apolloClient.query(HeroAndFriendsNamesWithIDsQuery(Input.Present(NEWHOPE))).enqueue(null)
+
+    // There's a race here because RealApolloStore now calls the subscribers from a Dispatchers.IO thread
+    // Ultimately this should go hence the ugly workaround
+    Thread.sleep(1000)
+
     observer
         .assertValueCount(2)
         .assertValueAt(0) { data ->
