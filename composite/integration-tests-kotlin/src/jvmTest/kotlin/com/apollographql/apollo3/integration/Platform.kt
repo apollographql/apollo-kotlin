@@ -3,8 +3,8 @@ package com.apollographql.apollo3.integration
 import java.io.File
 import java.io.FileNotFoundException
 
-actual fun readTestFixture(name: String): String {
-  return File("../integration-tests/testFixtures/$name").readText()
+actual fun readFile(path: String): String {
+  return File(path).readText()
 }
 
 actual fun checkTestFixture(actualText: String, name: String) {

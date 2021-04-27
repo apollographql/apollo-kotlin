@@ -1,15 +1,8 @@
 package com.apollographql.apollo3.interfaces
 
-import com.apollographql.apollo3.IdFieldCacheKeyResolver
-import com.apollographql.apollo3.ResponseNormalizationTest
 import com.apollographql.apollo3.ResponseNormalizationTest.Companion.records
-import com.apollographql.apollo3.Utils
 import com.apollographql.apollo3.api.Input
-import com.apollographql.apollo3.api.Operation
-import com.apollographql.apollo3.api.ResponseAdapterCache
-import com.apollographql.apollo3.api.fromResponse
 import com.apollographql.apollo3.cache.normalized.Record
-import com.apollographql.apollo3.cache.normalized.internal.normalize
 import com.apollographql.apollo3.integration.httpcache.AllPlanetsQuery
 import com.apollographql.apollo3.integration.normalizer.HeroParentTypeDependentFieldQuery
 import com.apollographql.apollo3.integration.normalizer.type.Episode
