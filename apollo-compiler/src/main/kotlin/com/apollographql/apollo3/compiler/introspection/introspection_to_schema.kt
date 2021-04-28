@@ -31,7 +31,7 @@ import com.apollographql.apollo3.graphql.ast.GQLValue
 import com.apollographql.apollo3.graphql.ast.GraphQLParser
 import com.apollographql.apollo3.graphql.ast.Schema
 import com.apollographql.apollo3.graphql.ast.toSchema
-import com.apollographql.apollo3.graphql.ast.withBuiltinDirectives
+import com.apollographql.apollo3.graphql.ast.withExtraDefinitions
 
 private class GQLDocumentBuilder(private val introspectionSchema: IntrospectionSchema) {
 
@@ -253,7 +253,7 @@ private class GQLDocumentBuilder(private val introspectionSchema: IntrospectionS
 private fun IntrospectionSchema.toGQLDocument(): GQLDocument = GQLDocumentBuilder(this).toGQLDocument()
 
 fun IntrospectionSchema.toSchema(): Schema = toGQLDocument()
-    .withBuiltinDirectives() // no need to add the types, introspection already contains builtin types like Int, Boolean, etc...
+    .withExtraDefinitions(warn = false) // don't warn as introspection already contains builtin types like Int, Boolean, etc...
     .toSchema()
 
 

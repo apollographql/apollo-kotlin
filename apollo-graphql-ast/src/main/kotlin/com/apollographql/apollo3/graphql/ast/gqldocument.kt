@@ -1,5 +1,7 @@
 package com.apollographql.apollo3.graphql.ast
 
+import com.apollographql.apollo3.graphql.ast.GraphQLParser.apolloDefinitions
+import com.apollographql.apollo3.graphql.ast.GraphQLParser.builtinDefinitions
 import okio.Buffer
 import okio.buffer
 import okio.sink
@@ -29,40 +31,37 @@ internal fun GQLDocument.rootOperationTypeDefinition(operationType: String): GQL
       }
 }
 
-fun GQLDocument.withoutBuiltinDefinitions(): GQLDocument {
+fun GQLDocument.withoutExtraDefinitions(): GQLDocument {
+  val extraDefinitions = (builtinDefinitions() + apolloDefinitions()).map {
+    check (it is GQLNamed)
+    it.name
+  }.toSet()
+
   return copy(
       definitions = definitions.filter {
-        (it as? GQLTypeDefinition)?.isBuiltIn() != true
-            && (it as? GQLDirectiveDefinition)?.isBuiltIn() != true
+        if (it !is GQLNamed) {
+          // Can this happen?
+          return@filter true
+        }
+
+        !extraDefinitions.contains(it.name)
       }
   )
 }
 
-fun GQLDocument.withBuiltinDefinitions(): GQLDocument {
+fun GQLDocument.withExtraDefinitions(warn: Boolean = true): GQLDocument {
   val mergedDefinitions = definitions.toMutableList()
 
-  GraphQLParser.builtinTypes().definitions.forEach { builtInTypeDefinition ->
-    if (builtInTypeDefinition is GQLNamed && mergedDefinitions.any { (it as? GQLNamed)?.name == builtInTypeDefinition.name }) {
-      println("ApolloGraphQL: definition '${builtInTypeDefinition.name}' is already in the schema, skip it")
-    } else {
-      mergedDefinitions.add(builtInTypeDefinition)
+  (builtinDefinitions() + apolloDefinitions()).forEach { builtInTypeDefinition ->
+    check (builtInTypeDefinition is GQLNamed) {
+      "only extra named definitions are supported"
     }
-  }
-
-  return copy(
-      definitions = mergedDefinitions
-  )
-}
-
-
-fun GQLDocument.withBuiltinDirectives(): GQLDocument {
-  val mergedDefinitions = definitions.toMutableList()
-
-  GraphQLParser.builtinTypes().definitions
-      .filterIsInstance<GQLDirectiveDefinition>()
-      .forEach { builtInTypeDefinition ->
-    if (mergedDefinitions.any { (it as? GQLNamed)?.name == builtInTypeDefinition.name }) {
-      println("ApolloGraphQL: definition '${builtInTypeDefinition.name}' is already in the schema, skip it")
+    val existingDefinition = mergedDefinitions.firstOrNull { (it as? GQLNamed)?.name == builtInTypeDefinition.name }
+    if (existingDefinition != null ) {
+      if (warn) {
+        println("ApolloGraphQL: definition '${builtInTypeDefinition.name}' is already in the schema at " +
+            "'${existingDefinition.sourceLocation.filePath}:${existingDefinition.sourceLocation}', skip it")
+      }
     } else {
       mergedDefinitions.add(builtInTypeDefinition)
     }

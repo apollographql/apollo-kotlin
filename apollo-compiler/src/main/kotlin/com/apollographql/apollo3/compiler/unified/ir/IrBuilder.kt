@@ -375,6 +375,7 @@ class IrBuilder(
       val description: String?,
       val type: GQLType,
       val deprecationReason: String?,
+      val forceNonNull: Boolean,
 
       /**
        * Merged field will merge their conditions and selectionSets
@@ -403,6 +404,7 @@ class IrBuilder(
           type = fieldDefinition.type,
           description = fieldDefinition.description,
           deprecationReason = fieldDefinition.directives.findDeprecationReason(),
+          forceNonNull = gqlField.directives.findNonnull()
       )
     }.groupBy {
       it.responseName
@@ -425,13 +427,20 @@ class IrBuilder(
       val first = fieldsWithSameResponseName.first()
       val childSelections = fieldsWithSameResponseName.flatMap { it.selections }
 
+      val forceNonNull = fieldsWithSameResponseName.any {
+        it.forceNonNull
+      }
+      var irType = first.type.toIr()
+      if (forceNonNull && irType !is IrNonNullType) {
+        irType = IrNonNullType(irType)
+      }
       val info = IrFieldInfo(
           alias = first.alias,
           name = first.name,
           arguments = first.arguments,
           description = first.description,
           deprecationReason = first.deprecationReason,
-          type = first.type.toIr(),
+          type = irType,
           rawTypeName = first.type.leafType().name
       )
 
