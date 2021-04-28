@@ -113,3 +113,14 @@ If you'd like to contribute, please see [Contributing.md](https://github.com/apo
 - [apollographql.com](http://www.apollographql.com/) to learn about Apollo open-source and commercial tools.
 - [The Apollo blog](https://www.apollographql.com/blog/) for long-form articles about GraphQL, feature announcements for Apollo, and guest articles from the community.
 - [The Apollo Twitter account](https://twitter.com/apollographql) for in-the-moment news.
+
+## Who is Apollo?
+
+[Apollo Graph Inc.](https://apollographql.com/) is the company behind the industry's leading tools for building applications with GraphQL:
+
+- [Apollo Client](https://www.apollographql.com/apollo-client/) – most popular GraphQL client for the web. Apollo also builds and maintains [apollo-ios](https://github.com/apollographql/apollo-ios) and [apollo-android](https://github.com/apollographql/apollo-android).
+- [Apollo Server](https://www.apollographql.com/docs/apollo-server/) – build a production-ready JavaScript GraphQL server in a schema-first way.
+- [Apollo Studio](https://www.apollographql.com/studio/develop/) – a turnkey portal for your GraphQL developers with the most feature-rich GraphQL IDE available, the [Apollo Explorer](https://www.apollographql.com/docs/studio/explorer/), and intelligent schema search and documentation.
+- [Apollo Federation](https://www.apollographql.com/apollo-federation) – create and manage a single data graph comprised of subgraphs that can be controlled and managed with independent lifecycles.
+
+We are fully committed to pushing the frontier of graph development forward across our developer tools in open source frameworks, hosted software tooling, developer extensions, and more.
