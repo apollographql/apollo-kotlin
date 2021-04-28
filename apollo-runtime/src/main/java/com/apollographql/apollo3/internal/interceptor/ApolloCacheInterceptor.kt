@@ -33,7 +33,6 @@ class ApolloCacheInterceptor<D : Operation.Data>(
     private val dispatcher: Executor,
     val logger: ApolloLogger,
     private val responseCallback: AtomicReference<ApolloCall.Callback<D>?>,
-    private val writeToCacheAsynchronously: Boolean,
     private val responseAdapterCache: ResponseAdapterCache
 ) : ApolloInterceptor {
 
@@ -58,7 +57,7 @@ class ApolloCacheInterceptor<D : Operation.Data>(
         chain.proceedAsync(request, dispatcher, object : CallBack {
           override fun onResponse(response: InterceptorResponse) {
             if (disposed) return
-            cacheResponseAndPublish(request, response, writeToCacheAsynchronously)
+            cacheResponseAndPublish(request, response)
             callBack.onResponse(response)
             callBack.onCompleted()
           }
@@ -137,8 +136,8 @@ class ApolloCacheInterceptor<D : Operation.Data>(
     }
   }
 
-  fun cacheResponseAndPublish(request: InterceptorRequest, networkResponse: InterceptorResponse, async: Boolean) {
-    if (async) {
+  fun cacheResponseAndPublish(request: InterceptorRequest, networkResponse: InterceptorResponse) {
+    if (request.writeToCacheAsynchronously) {
       dispatcher.execute { cacheResponseAndPublishSynchronously(request, networkResponse) }
     } else {
       cacheResponseAndPublishSynchronously(request, networkResponse)
