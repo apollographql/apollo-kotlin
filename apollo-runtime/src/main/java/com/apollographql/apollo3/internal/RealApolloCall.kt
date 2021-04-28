@@ -69,7 +69,8 @@ class RealApolloCall<D : Operation.Data> internal constructor(builder: Builder<D
   val optimisticUpdates: Optional<Operation.Data>
   val useHttpGetMethodForQueries: Boolean
   val useHttpGetMethodForPersistedQueries: Boolean
-  val writeToNormalizedCacheAsynchronously: Boolean
+  val writeToCacheAsynchronously: Boolean
+
   override fun enqueue(responseCallback: ApolloCall.Callback<D>?) {
     try {
       activate(Optional.fromNullable(responseCallback))
@@ -86,6 +87,7 @@ class RealApolloCall<D : Operation.Data> internal constructor(builder: Builder<D
         .requestHeaders(requestHeaders)
         .fetchFromCache(false)
         .optimisticUpdates(optimisticUpdates)
+        .writeToCacheAsynchronously(writeToCacheAsynchronously)
         .useHttpGetMethodForQueries(useHttpGetMethodForQueries)
         .build()
     interceptorChain.proceedAsync(request, dispatcher!!, interceptorCallbackProxy())
@@ -247,7 +249,7 @@ class RealApolloCall<D : Operation.Data> internal constructor(builder: Builder<D
         .useHttpGetMethodForQueries(useHttpGetMethodForQueries)
         .useHttpGetMethodForPersistedQueries(useHttpGetMethodForPersistedQueries)
         .optimisticUpdates(optimisticUpdates)
-        .writeToNormalizedCacheAsynchronously(writeToNormalizedCacheAsynchronously)
+        .writeToCacheAsynchronously(writeToCacheAsynchronously)
   }
 
   @Synchronized
@@ -310,7 +312,6 @@ class RealApolloCall<D : Operation.Data> internal constructor(builder: Builder<D
         dispatcher!!,
         logger!!,
         originalCallback,
-        writeToNormalizedCacheAsynchronously,
         responseAdapterCache
     ))
     if (autoPersistedOperationsInterceptorFactory != null) {
@@ -357,7 +358,8 @@ class RealApolloCall<D : Operation.Data> internal constructor(builder: Builder<D
     var optimisticUpdates = Optional.absent<Operation.Data>()
     var useHttpGetMethodForQueries = false
     var useHttpGetMethodForPersistedQueries = false
-    var writeToNormalizedCacheAsynchronously = false
+    var writeToCacheAsynchronously = false
+
     fun operation(operation: Operation<*>?): Builder<D> {
       this.operation = operation
       return this
@@ -418,6 +420,11 @@ class RealApolloCall<D : Operation.Data> internal constructor(builder: Builder<D
       return this
     }
 
+    override fun writeToCacheAsynchronously(writeToCacheAsynchronously: Boolean): Builder<D> {
+      this.writeToCacheAsynchronously = writeToCacheAsynchronously
+      return this
+    }
+
     fun dispatcher(dispatcher: Executor?): Builder<D> {
       this.dispatcher = dispatcher
       return this
@@ -465,11 +472,6 @@ class RealApolloCall<D : Operation.Data> internal constructor(builder: Builder<D
 
     fun useHttpGetMethodForPersistedQueries(useHttpGetMethodForPersistedQueries: Boolean): Builder<D> {
       this.useHttpGetMethodForPersistedQueries = useHttpGetMethodForPersistedQueries
-      return this
-    }
-
-    fun writeToNormalizedCacheAsynchronously(writeToNormalizedCacheAsynchronously: Boolean): Builder<D> {
-      this.writeToNormalizedCacheAsynchronously = writeToNormalizedCacheAsynchronously
       return this
     }
 
@@ -526,7 +528,7 @@ class RealApolloCall<D : Operation.Data> internal constructor(builder: Builder<D
     enableAutoPersistedQueries = builder.enableAutoPersistedQueries
     useHttpGetMethodForPersistedQueries = builder.useHttpGetMethodForPersistedQueries
     optimisticUpdates = builder.optimisticUpdates
-    writeToNormalizedCacheAsynchronously = builder.writeToNormalizedCacheAsynchronously
+    writeToCacheAsynchronously = builder.writeToCacheAsynchronously
     interceptorChain = prepareInterceptorChain(operation)
   }
 }

@@ -96,8 +96,7 @@ class ApolloClient internal constructor(
     enableAutoPersistedQueries: Boolean,
     subscriptionManager: SubscriptionManager,
     useHttpGetMethodForQueries: Boolean,
-    useHttpGetMethodForPersistedQueries: Boolean,
-    writeToNormalizedCacheAsynchronously: Boolean) : ApolloQueryCall.Factory, ApolloMutationCall.Factory, ApolloPrefetch.Factory, ApolloSubscriptionCall.Factory {
+    useHttpGetMethodForPersistedQueries: Boolean) : ApolloQueryCall.Factory, ApolloMutationCall.Factory, ApolloPrefetch.Factory, ApolloSubscriptionCall.Factory {
   private val tracker = ApolloCallTracker()
   private val applicationInterceptors: List<ApolloInterceptor>
   private val applicationInterceptorFactories: List<ApolloInterceptorFactory>
@@ -110,7 +109,7 @@ class ApolloClient internal constructor(
   val subscriptionManager: SubscriptionManager
   private val useHttpGetMethodForQueries: Boolean
   private val useHttpGetMethodForPersistedQueries: Boolean
-  private val writeToNormalizedCacheAsynchronously: Boolean
+
   override fun <D : Mutation.Data> mutate(
       mutation: Mutation<D>): ApolloMutationCall<D> {
     return newCall(mutation).responseFetcher(ApolloResponseFetchers.NETWORK_ONLY)
@@ -256,7 +255,6 @@ class ApolloClient internal constructor(
         .enableAutoPersistedQueries(enableAutoPersistedQueries)
         .useHttpGetMethodForQueries(useHttpGetMethodForQueries)
         .useHttpGetMethodForPersistedQueries(useHttpGetMethodForPersistedQueries)
-        .writeToNormalizedCacheAsynchronously(writeToNormalizedCacheAsynchronously)
         .build()
   }
 
@@ -285,7 +283,6 @@ class ApolloClient internal constructor(
     var subscriptionHeartbeatTimeout: Long = -1
     var useHttpGetMethodForQueries = false
     var useHttpGetMethodForPersistedQueries = false
-    var writeToNormalizedCacheAsynchronously = false
 
     internal constructor()
     constructor(apolloClient: ApolloClient) {
@@ -306,7 +303,6 @@ class ApolloClient internal constructor(
       subscriptionManager = apolloClient.subscriptionManager
       useHttpGetMethodForQueries = apolloClient.useHttpGetMethodForQueries
       useHttpGetMethodForPersistedQueries = apolloClient.useHttpGetMethodForPersistedQueries
-      writeToNormalizedCacheAsynchronously = apolloClient.writeToNormalizedCacheAsynchronously
     }
 
     /**
@@ -369,9 +365,6 @@ class ApolloClient internal constructor(
      *
      * @param normalizedCacheFactory the [NormalizedCacheFactory] used to construct a [NormalizedCache].
      * @param keyResolver the [CacheKeyResolver] to use to normalize records
-     * @param writeToCacheAsynchronously If true returning response data will not wait on the normalized cache write. This can
-     * improve request performance, but means that subsequent requests are not guaranteed to hit the cache for data contained
-     * in previously received requests.
      * @return The [Builder] object to be used for chaining method calls
      */
     /**
@@ -389,10 +382,9 @@ class ApolloClient internal constructor(
      */
     @JvmOverloads
     fun normalizedCache(normalizedCacheFactory: NormalizedCacheFactory,
-                        keyResolver: CacheKeyResolver = CacheKeyResolver.DEFAULT, writeToCacheAsynchronously: Boolean = false): Builder {
+                        keyResolver: CacheKeyResolver = CacheKeyResolver.DEFAULT): Builder {
       cacheFactory = fromNullable(normalizedCacheFactory)
       cacheKeyResolver = fromNullable((keyResolver))
-      writeToNormalizedCacheAsynchronously = writeToCacheAsynchronously
       return this
     }
 
@@ -662,8 +654,7 @@ class ApolloClient internal constructor(
           enableAutoPersistedQueries,
           subscriptionManager,
           useHttpGetMethodForQueries,
-          useHttpGetMethodForPersistedQueries,
-          writeToNormalizedCacheAsynchronously)
+          useHttpGetMethodForPersistedQueries)
     }
 
     private fun defaultDispatcher(): Executor {
@@ -707,6 +698,5 @@ class ApolloClient internal constructor(
     this.subscriptionManager = subscriptionManager
     this.useHttpGetMethodForQueries = useHttpGetMethodForQueries
     this.useHttpGetMethodForPersistedQueries = useHttpGetMethodForPersistedQueries
-    this.writeToNormalizedCacheAsynchronously = writeToNormalizedCacheAsynchronously
   }
 }

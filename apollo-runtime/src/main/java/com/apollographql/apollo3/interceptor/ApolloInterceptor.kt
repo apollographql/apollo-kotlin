@@ -108,6 +108,7 @@ interface ApolloInterceptor {
                                                 val sendQueryDocument: Boolean,
                                                 val useHttpGetMethodForQueries: Boolean,
                                                 val autoPersistQueries: Boolean,
+                                                val writeToCacheAsynchronously: Boolean
                                                 ) {
     val uniqueId = UUID.randomUUID()
     fun toBuilder(): Builder {
@@ -119,6 +120,7 @@ interface ApolloInterceptor {
           .sendQueryDocument(sendQueryDocument)
           .useHttpGetMethodForQueries(useHttpGetMethodForQueries)
           .autoPersistQueries(autoPersistQueries)
+          .writeToCacheAsynchronously(writeToCacheAsynchronously)
     }
 
     class Builder internal constructor(operation: Operation<*>) {
@@ -130,6 +132,8 @@ interface ApolloInterceptor {
       private var sendQueryDocument = true
       private var useHttpGetMethodForQueries = false
       private var autoPersistQueries = false
+      private var writeToCacheAsynchronously = false
+
       fun cacheHeaders(cacheHeaders: CacheHeaders): Builder {
         this.cacheHeaders = cacheHeaders
         return this
@@ -170,6 +174,11 @@ interface ApolloInterceptor {
         return this
       }
 
+      fun writeToCacheAsynchronously(writeToCacheAsynchronously: Boolean): Builder {
+        this.writeToCacheAsynchronously = writeToCacheAsynchronously
+        return this
+      }
+
       fun build(): InterceptorRequest {
         return InterceptorRequest(
             operation,
@@ -180,6 +189,7 @@ interface ApolloInterceptor {
             sendQueryDocument,
             useHttpGetMethodForQueries,
             autoPersistQueries,
+            writeToCacheAsynchronously
         )
       }
 
