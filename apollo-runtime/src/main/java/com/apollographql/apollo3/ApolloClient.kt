@@ -109,6 +109,7 @@ class ApolloClient internal constructor(
   val subscriptionManager: SubscriptionManager
   private val useHttpGetMethodForQueries: Boolean
   private val useHttpGetMethodForPersistedQueries: Boolean
+
   override fun <D : Mutation.Data> mutate(
       mutation: Mutation<D>): ApolloMutationCall<D> {
     return newCall(mutation).responseFetcher(ApolloResponseFetchers.NETWORK_ONLY)

@@ -70,6 +70,7 @@ class RealApolloCall<D : Operation.Data> internal constructor(builder: Builder<D
   val useHttpGetMethodForQueries: Boolean
   val useHttpGetMethodForPersistedQueries: Boolean
   val writeToCacheAsynchronously: Boolean
+
   override fun enqueue(responseCallback: ApolloCall.Callback<D>?) {
     try {
       activate(Optional.fromNullable(responseCallback))
@@ -358,6 +359,7 @@ class RealApolloCall<D : Operation.Data> internal constructor(builder: Builder<D
     var useHttpGetMethodForQueries = false
     var useHttpGetMethodForPersistedQueries = false
     var writeToCacheAsynchronously = false
+
     fun operation(operation: Operation<*>?): Builder<D> {
       this.operation = operation
       return this
@@ -418,6 +420,11 @@ class RealApolloCall<D : Operation.Data> internal constructor(builder: Builder<D
       return this
     }
 
+    override fun writeToCacheAsynchronously(writeToCacheAsynchronously: Boolean): Builder<D> {
+      this.writeToCacheAsynchronously = writeToCacheAsynchronously
+      return this
+    }
+
     fun dispatcher(dispatcher: Executor?): Builder<D> {
       this.dispatcher = dispatcher
       return this
@@ -465,11 +472,6 @@ class RealApolloCall<D : Operation.Data> internal constructor(builder: Builder<D
 
     fun useHttpGetMethodForPersistedQueries(useHttpGetMethodForPersistedQueries: Boolean): Builder<D> {
       this.useHttpGetMethodForPersistedQueries = useHttpGetMethodForPersistedQueries
-      return this
-    }
-
-    fun writeToCacheAsynchronously(writeToCacheAsynchronously: Boolean): Builder<D> {
-      this.writeToCacheAsynchronously = writeToCacheAsynchronously
       return this
     }
 

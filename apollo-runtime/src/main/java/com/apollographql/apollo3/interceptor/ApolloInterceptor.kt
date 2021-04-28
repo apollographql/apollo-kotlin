@@ -133,6 +133,7 @@ interface ApolloInterceptor {
       private var useHttpGetMethodForQueries = false
       private var autoPersistQueries = false
       private var writeToCacheAsynchronously = false
+
       fun cacheHeaders(cacheHeaders: CacheHeaders): Builder {
         this.cacheHeaders = cacheHeaders
         return this
