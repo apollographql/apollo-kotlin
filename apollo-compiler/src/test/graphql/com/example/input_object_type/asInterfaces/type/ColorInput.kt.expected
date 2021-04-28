@@ -9,14 +9,10 @@ import com.apollographql.apollo3.api.InputObject
 import com.apollographql.apollo3.api.Optional
 import kotlin.Double
 import kotlin.Int
-import kotlin.Suppress
 
 /**
  * The input object sent when passing in a color
  */
-@Suppress("NAME_SHADOWING", "UNUSED_ANONYMOUS_PARAMETER", "LocalVariableName",
-    "RemoveExplicitTypeArguments", "NestedLambdaShadowedImplicitParameter", "PropertyName",
-    "RemoveRedundantQualifierName")
 data class ColorInput(
   /**
    * Red color

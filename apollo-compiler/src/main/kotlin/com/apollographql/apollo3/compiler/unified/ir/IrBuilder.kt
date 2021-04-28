@@ -2,48 +2,38 @@ package com.apollographql.apollo3.compiler.unified.ir
 
 import com.apollographql.apollo3.api.BooleanExpression
 import com.apollographql.apollo3.compiler.MetadataFragment
-import com.apollographql.apollo3.compiler.frontend.GQLArgument
-import com.apollographql.apollo3.compiler.frontend.GQLBooleanValue
-import com.apollographql.apollo3.compiler.frontend.GQLDirective
-import com.apollographql.apollo3.compiler.frontend.GQLEnumTypeDefinition
-import com.apollographql.apollo3.compiler.frontend.GQLEnumValue
-import com.apollographql.apollo3.compiler.frontend.GQLEnumValueDefinition
-import com.apollographql.apollo3.compiler.frontend.GQLFieldDefinition
-import com.apollographql.apollo3.compiler.frontend.GQLFloatValue
-import com.apollographql.apollo3.compiler.frontend.GQLFragmentDefinition
-import com.apollographql.apollo3.compiler.frontend.GQLInputObjectTypeDefinition
-import com.apollographql.apollo3.compiler.frontend.GQLInputValueDefinition
-import com.apollographql.apollo3.compiler.frontend.GQLIntValue
-import com.apollographql.apollo3.compiler.frontend.GQLInterfaceTypeDefinition
-import com.apollographql.apollo3.compiler.frontend.GQLListType
-import com.apollographql.apollo3.compiler.frontend.GQLListValue
-import com.apollographql.apollo3.compiler.frontend.GQLNamedType
-import com.apollographql.apollo3.compiler.frontend.GQLNonNullType
-import com.apollographql.apollo3.compiler.frontend.GQLNullValue
-import com.apollographql.apollo3.compiler.frontend.GQLObjectTypeDefinition
-import com.apollographql.apollo3.compiler.frontend.GQLObjectValue
-import com.apollographql.apollo3.compiler.frontend.GQLOperationDefinition
-import com.apollographql.apollo3.compiler.frontend.GQLScalarTypeDefinition
-import com.apollographql.apollo3.compiler.frontend.GQLSelection
-import com.apollographql.apollo3.compiler.frontend.GQLStringValue
-import com.apollographql.apollo3.compiler.frontend.GQLType
-import com.apollographql.apollo3.compiler.frontend.GQLUnionTypeDefinition
-import com.apollographql.apollo3.compiler.frontend.GQLValue
-import com.apollographql.apollo3.compiler.frontend.GQLVariableDefinition
-import com.apollographql.apollo3.compiler.frontend.GQLVariableValue
-import com.apollographql.apollo3.compiler.frontend.InputValueScope
-import com.apollographql.apollo3.compiler.frontend.Schema
-import com.apollographql.apollo3.compiler.frontend.coerce
-import com.apollographql.apollo3.compiler.frontend.definitionFromScope
-import com.apollographql.apollo3.compiler.frontend.findDeprecationReason
-import com.apollographql.apollo3.compiler.frontend.findOptional
-import com.apollographql.apollo3.compiler.frontend.inferVariables
-import com.apollographql.apollo3.compiler.frontend.leafType
-import com.apollographql.apollo3.compiler.frontend.pretty
-import com.apollographql.apollo3.compiler.frontend.responseName
-import com.apollographql.apollo3.compiler.frontend.rootTypeDefinition
-import com.apollographql.apollo3.compiler.frontend.toUtf8
-import com.apollographql.apollo3.compiler.frontend.toUtf8WithIndents
+import com.apollographql.apollo3.graphql.ast.GQLArgument
+import com.apollographql.apollo3.graphql.ast.GQLBooleanValue
+import com.apollographql.apollo3.graphql.ast.GQLDirective
+import com.apollographql.apollo3.graphql.ast.GQLEnumTypeDefinition
+import com.apollographql.apollo3.graphql.ast.GQLEnumValue
+import com.apollographql.apollo3.graphql.ast.GQLEnumValueDefinition
+import com.apollographql.apollo3.graphql.ast.GQLFieldDefinition
+import com.apollographql.apollo3.graphql.ast.GQLFloatValue
+import com.apollographql.apollo3.graphql.ast.GQLFragmentDefinition
+import com.apollographql.apollo3.graphql.ast.GQLInputObjectTypeDefinition
+import com.apollographql.apollo3.graphql.ast.GQLInputValueDefinition
+import com.apollographql.apollo3.graphql.ast.GQLIntValue
+import com.apollographql.apollo3.graphql.ast.GQLInterfaceTypeDefinition
+import com.apollographql.apollo3.graphql.ast.GQLListType
+import com.apollographql.apollo3.graphql.ast.GQLListValue
+import com.apollographql.apollo3.graphql.ast.GQLNamedType
+import com.apollographql.apollo3.graphql.ast.GQLNonNullType
+import com.apollographql.apollo3.graphql.ast.GQLNullValue
+import com.apollographql.apollo3.graphql.ast.GQLObjectTypeDefinition
+import com.apollographql.apollo3.graphql.ast.GQLObjectValue
+import com.apollographql.apollo3.graphql.ast.GQLOperationDefinition
+import com.apollographql.apollo3.graphql.ast.GQLScalarTypeDefinition
+import com.apollographql.apollo3.graphql.ast.GQLSelection
+import com.apollographql.apollo3.graphql.ast.GQLStringValue
+import com.apollographql.apollo3.graphql.ast.GQLType
+import com.apollographql.apollo3.graphql.ast.GQLUnionTypeDefinition
+import com.apollographql.apollo3.graphql.ast.GQLValue
+import com.apollographql.apollo3.graphql.ast.GQLVariableDefinition
+import com.apollographql.apollo3.graphql.ast.GQLVariableValue
+import com.apollographql.apollo3.graphql.ast.*
+import com.apollographql.apollo3.graphql.ast.Schema
+import com.apollographql.apollo3.graphql.ast.findDeprecationReason
 
 class IrBuilder(
     private val schema: Schema,
@@ -259,10 +249,10 @@ class IrBuilder(
 
     val result = modelGroupsBuilder.buildOperationModelGroups(
         field = dataField,
-        operationName = name
+        operationName = name!!
     )
     return IrOperation(
-        name = name,
+        name = name!!,
         description = description,
         operationType = IrOperationType.valueOf(operationType.capitalize()),
         typeCondition = typeDefinition.name,
@@ -516,7 +506,7 @@ internal fun GQLDirective.toBooleanExpression(): BooleanExpression? {
     throw IllegalStateException("ApolloGraphQL: wrong number of arguments for '$name' directive: ${arguments?.arguments?.size}")
   }
 
-  val argument = arguments.arguments.first()
+  val argument = arguments!!.arguments.first()
 
   return when (val value = argument.value) {
     is GQLBooleanValue -> {

@@ -1,8 +1,8 @@
 package com.apollographql.apollo3.compiler.unified.ir
 
 import com.apollographql.apollo3.api.BooleanExpression
-import com.apollographql.apollo3.compiler.unified.codegen.CgLayout.Companion.modelName
-import com.apollographql.apollo3.compiler.unified.codegen.CgLayout.Companion.upperCamelCaseIgnoringNonLetters
+import com.apollographql.apollo3.compiler.codegen.CgLayout.Companion.modelName
+import com.apollographql.apollo3.compiler.codegen.CgLayout.Companion.upperCamelCaseIgnoringNonLetters
 
 private data class FieldNode(
     val info: IrFieldInfo,

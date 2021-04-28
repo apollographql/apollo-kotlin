@@ -1,9 +1,5 @@
 package com.apollographql.apollo3.compiler.unified.ir
 
-import com.apollographql.apollo3.compiler.frontend.GQLObjectTypeDefinition
-import com.apollographql.apollo3.compiler.frontend.Schema
-import com.apollographql.apollo3.compiler.frontend.possibleTypes
-
 /**
  * A list of type conditions resulting from evaluating multiple potentially nested fragments.
  */

@@ -1,20 +1,18 @@
 package com.apollographql.apollo3.compiler
 
 import com.apollographql.apollo3.api.QueryDocumentMinifier
-import com.apollographql.apollo3.compiler.frontend.GQLFragmentDefinition
-import com.apollographql.apollo3.compiler.frontend.GQLOperationDefinition
-import com.apollographql.apollo3.compiler.frontend.GQLScalarTypeDefinition
-import com.apollographql.apollo3.compiler.frontend.GQLTypeDefinition
-import com.apollographql.apollo3.compiler.frontend.GraphQLParser
-import com.apollographql.apollo3.compiler.frontend.Issue
-import com.apollographql.apollo3.compiler.frontend.Schema
-import com.apollographql.apollo3.compiler.frontend.SourceAwareException
-import com.apollographql.apollo3.compiler.frontend.withTypenameWhenNeeded
-import com.apollographql.apollo3.compiler.introspection.IntrospectionSchema
+import com.apollographql.apollo3.graphql.ast.GQLFragmentDefinition
+import com.apollographql.apollo3.graphql.ast.*
+import com.apollographql.apollo3.graphql.ast.GQLScalarTypeDefinition
+import com.apollographql.apollo3.graphql.ast.Issue
+import com.apollographql.apollo3.graphql.ast.Schema
+import com.apollographql.apollo3.graphql.ast.SourceAwareException
 import com.apollographql.apollo3.compiler.operationoutput.OperationDescriptor
 import com.apollographql.apollo3.compiler.operationoutput.toJson
 import com.apollographql.apollo3.compiler.unified.ir.IrBuilder
-import com.apollographql.apollo3.compiler.unified.codegen.KotlinCodeGenerator
+import com.apollographql.apollo3.compiler.codegen.KotlinCodeGenerator
+import com.apollographql.apollo3.compiler.introspection.IntrospectionSchema
+import com.apollographql.apollo3.compiler.introspection.toSchema
 import com.apollographql.apollo3.compiler.unified.ir.dumpTo
 import java.io.File
 
@@ -224,7 +222,7 @@ class GraphQLCompiler {
           ""
         }
         return IncomingOptions(
-            schema = Schema.fromFile(schemaFile),
+            schema = schemaFile.toSchema(),
             schemaPackageName = "$rootPackageName.$relativeSchemaPackageName".removePrefix(".").removeSuffix("."),
             customScalarsMapping = customScalarsMapping,
             generateFragmentsAsInterfaces = generateFragmentsAsInterfaces,
@@ -234,8 +232,20 @@ class GraphQLCompiler {
             metadataFragments = emptyList(),
         )
       }
+
+      private  fun File.toSchema(): Schema {
+        if (extension == "json") {
+          return IntrospectionSchema(this).toSchema()
+        } else {
+          return GraphQLParser.parseSchema(this)
+        }
+      }
+
     }
   }
+
+
+
 
   data class ModuleOptions(
       /**

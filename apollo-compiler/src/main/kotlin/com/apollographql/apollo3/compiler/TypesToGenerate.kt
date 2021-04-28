@@ -1,11 +1,11 @@
 package com.apollographql.apollo3.compiler
 
-import com.apollographql.apollo3.compiler.frontend.GQLDocument
-import com.apollographql.apollo3.compiler.frontend.GQLEnumTypeDefinition
-import com.apollographql.apollo3.compiler.frontend.GQLInputObjectTypeDefinition
-import com.apollographql.apollo3.compiler.frontend.GQLScalarTypeDefinition
-import com.apollographql.apollo3.compiler.frontend.Schema
-import com.apollographql.apollo3.compiler.frontend.usedTypeNames
+import com.apollographql.apollo3.graphql.ast.GQLDocument
+import com.apollographql.apollo3.graphql.ast.GQLEnumTypeDefinition
+import com.apollographql.apollo3.graphql.ast.GQLInputObjectTypeDefinition
+import com.apollographql.apollo3.graphql.ast.GQLScalarTypeDefinition
+import com.apollographql.apollo3.graphql.ast.Schema
+import com.apollographql.apollo3.graphql.ast.usedTypeNames
 
 internal class TypesToGenerate(
     /**
@@ -47,7 +47,8 @@ internal fun computeTypesToGenerate(
     when (it) {
       is GQLEnumTypeDefinition,
       is GQLInputObjectTypeDefinition,
-      is GQLScalarTypeDefinition -> true
+      is GQLScalarTypeDefinition
+      -> true
       else -> false
     }
   }

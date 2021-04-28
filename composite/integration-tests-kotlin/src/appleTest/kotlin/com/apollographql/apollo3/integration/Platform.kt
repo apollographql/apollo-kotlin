@@ -4,6 +4,7 @@ import kotlinx.cinterop.ByteVar
 import kotlinx.cinterop.allocArray
 import kotlinx.cinterop.convert
 import kotlinx.cinterop.memScoped
+import kotlinx.cinterop.set
 import kotlinx.cinterop.sizeOf
 import kotlinx.cinterop.toKString
 import platform.posix.SEEK_END
@@ -26,15 +27,18 @@ actual fun readFile(path: String): String {
   val size = ftell(file)
   rewind(file)
 
+  println("size is $size")
   return memScoped {
-    val tmp = allocArray<ByteVar>(size)
+    val tmp = allocArray<ByteVar>(size + 1)
     fread(tmp, sizeOf<ByteVar>().convert(), size.convert(), file)
+    // terminate the string
+    tmp.set(size, 0)
     tmp.toKString()
   }
 }
 
 actual fun checkTestFixture(actualText: String, name: String) {
   // This does not update the test fixture automatically, this is left to the JVM implementation
-  assertEquals(actualText, readTestFixture(name))
+  assertEquals(readTestFixture(name), actualText)
 }
 

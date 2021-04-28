@@ -1,13 +1,13 @@
 package com.apollographql.apollo3.compiler
 
-import com.apollographql.apollo3.compiler.frontend.GQLDescribed
-import com.apollographql.apollo3.compiler.frontend.GQLTypeDefinition
-import com.apollographql.apollo3.compiler.frontend.GraphQLParser
-import com.apollographql.apollo3.compiler.frontend.mergeTypeExtensions
-import com.apollographql.apollo3.compiler.frontend.toSchema
-import com.apollographql.apollo3.compiler.frontend.usedTypeNames
-import com.apollographql.apollo3.compiler.frontend.validateAsSchema
-import com.apollographql.apollo3.compiler.frontend.withBuiltinDefinitions
+import com.apollographql.apollo3.graphql.ast.GQLDescribed
+import com.apollographql.apollo3.graphql.ast.GQLTypeDefinition
+import com.apollographql.apollo3.graphql.ast.GraphQLParser
+import com.apollographql.apollo3.graphql.ast.mergeTypeExtensions
+import com.apollographql.apollo3.graphql.ast.toSchema
+import com.apollographql.apollo3.graphql.ast.usedTypeNames
+import com.apollographql.apollo3.graphql.ast.validateAsSchema
+import com.apollographql.apollo3.graphql.ast.withBuiltinDefinitions
 import com.google.common.truth.Truth
 import org.junit.Test
 import org.junit.runner.RunWith
@@ -57,7 +57,7 @@ class UsedTypesTest(val name: String, val graphQLFile: File) {
     @Parameterized.Parameters(name = "{0}")
     fun data(): Collection<Array<Any>> {
       return File("src/test/usedtypes/")
-          .listFiles()
+          .listFiles()!!
           .map { arrayOf(it.nameWithoutExtension, it) }
     }
   }
