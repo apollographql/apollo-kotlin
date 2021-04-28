@@ -63,7 +63,6 @@ data class IrInputField(
     val deprecationReason: String?,
     val type: IrType,
     val defaultValue: IrValue?,
-    val optional: Boolean,
 )
 
 /**
@@ -239,7 +238,6 @@ data class IrVariable(
     val name: String,
     val defaultValue: IrValue?,
     val type: IrType,
-    val optional: Boolean,
 )
 
 data class IrArgument(
@@ -276,10 +274,20 @@ sealed class IrType {
 }
 
 data class IrNonNullType(val ofType: IrType) : IrType() {
+  init {
+    check(ofType !is IrNonNullType)
+  }
+  override fun leafType() = ofType.leafType()
+}
+
+data class IrOptionalType(val ofType: IrType) : IrType() {
   override fun leafType() = ofType.leafType()
 }
 
 data class IrListType(val ofType: IrType) : IrType() {
+  init {
+    check(ofType !is IrOptionalType)
+  }
   override fun leafType() = ofType.leafType()
 }
 

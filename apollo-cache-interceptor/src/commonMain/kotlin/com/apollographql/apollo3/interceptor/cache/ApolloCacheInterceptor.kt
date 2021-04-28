@@ -2,7 +2,6 @@ package com.apollographql.apollo3.interceptor.cache
 
 import com.apollographql.apollo3.ApolloRequest
 import com.apollographql.apollo3.api.ApolloResponse
-import com.apollographql.apollo3.api.Mutation
 import com.apollographql.apollo3.api.Operation
 import com.apollographql.apollo3.api.Query
 import com.apollographql.apollo3.api.ResponseAdapterCache
@@ -11,12 +10,10 @@ import com.apollographql.apollo3.cache.normalized.ApolloStore
 import com.apollographql.apollo3.cache.normalized.Platform
 import com.apollographql.apollo3.cache.normalized.internal.dependentKeys
 import com.apollographql.apollo3.exception.ApolloCompositeException
-import com.apollographql.apollo3.exception.ApolloException
 import com.apollographql.apollo3.interceptor.ApolloInterceptorChain
 import com.apollographql.apollo3.interceptor.ApolloRequestInterceptor
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.callbackFlow
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.map

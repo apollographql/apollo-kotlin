@@ -6,12 +6,14 @@
 package com.example.named_fragment_with_variables.type.adapter
 
 import com.apollographql.apollo3.api.NullableBooleanResponseAdapter
+import com.apollographql.apollo3.api.Optional
 import com.apollographql.apollo3.api.ResponseAdapter
 import com.apollographql.apollo3.api.ResponseAdapterCache
 import com.apollographql.apollo3.api.StringResponseAdapter
-import com.apollographql.apollo3.api.input
 import com.apollographql.apollo3.api.json.JsonReader
 import com.apollographql.apollo3.api.json.JsonWriter
+import com.apollographql.apollo3.api.nullable
+import com.apollographql.apollo3.api.optional
 import com.example.named_fragment_with_variables.type.UserQuery
 import kotlin.IllegalStateException
 
@@ -25,7 +27,10 @@ object UserQuery_InputAdapter : ResponseAdapter<UserQuery> {
   ) {
     writer.name("name")
     StringResponseAdapter.toResponse(writer, responseAdapterCache, value.name)
-    NullableBooleanResponseAdapter.input("isAdmin").toResponse(writer, responseAdapterCache,
-        value.isAdmin)
+    if (value.isAdmin is Optional.Present) {
+      writer.name("isAdmin")
+      NullableBooleanResponseAdapter.optional().nullable().toResponse(writer, responseAdapterCache,
+          value.isAdmin)
+    }
   }
 }

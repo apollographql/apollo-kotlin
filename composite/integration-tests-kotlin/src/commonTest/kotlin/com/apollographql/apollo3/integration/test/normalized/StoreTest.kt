@@ -2,14 +2,12 @@ package com.apollographql.apollo3.integration.test.normalized
 
 import com.apollographql.apollo3.ApolloClient
 import com.apollographql.apollo3.ApolloRequest
-import com.apollographql.apollo3.api.Input
 import com.apollographql.apollo3.cache.normalized.ApolloStore
 import com.apollographql.apollo3.cache.normalized.CacheKey
 import com.apollographql.apollo3.cache.normalized.MemoryCacheFactory
 import com.apollographql.apollo3.exception.CacheMissException
 import com.apollographql.apollo3.integration.IdFieldCacheKeyResolver
 import com.apollographql.apollo3.integration.enqueue
-import com.apollographql.apollo3.mockserver.MockServer
 import com.apollographql.apollo3.integration.normalizer.CharacterNameByIdQuery
 import com.apollographql.apollo3.integration.normalizer.HeroAndFriendsNamesWithIDsQuery
 import com.apollographql.apollo3.integration.normalizer.HeroAndFriendsWithFragmentsQuery
@@ -23,6 +21,7 @@ import com.apollographql.apollo3.interceptor.cache.FetchPolicy
 import com.apollographql.apollo3.interceptor.cache.isFromCache
 import com.apollographql.apollo3.interceptor.cache.withFetchPolicy
 import com.apollographql.apollo3.interceptor.cache.withStore
+import com.apollographql.apollo3.mockserver.MockServer
 import com.apollographql.apollo3.testing.runWithMainLoop
 import kotlin.test.BeforeTest
 import kotlin.test.Ignore
@@ -124,7 +123,7 @@ class StoreTest {
   @Ignore
   fun readFragmentFromStore() = runWithMainLoop {
     mockServer.enqueue(readResource("HeroAndFriendsWithFragmentResponse.json"))
-    apolloClient.query(HeroAndFriendsNamesWithIDsQuery(Input.Present(Episode.NEWHOPE)))
+    apolloClient.query(HeroAndFriendsNamesWithIDsQuery(Episode.NEWHOPE))
 
     val heroWithFriendsFragment = store.readFragment(
         HeroWithFriendsFragmentImpl(),
@@ -169,7 +168,7 @@ class StoreTest {
   @Test
   fun fragments() = runWithMainLoop {
     mockServer.enqueue(readResource("HeroAndFriendsWithFragmentResponse.json"))
-    val query = HeroAndFriendsWithFragmentsQuery(Input.Present(Episode.NEWHOPE))
+    val query = HeroAndFriendsWithFragmentsQuery()
     var response = apolloClient.query(query)
     assertEquals(response.data?.hero?.__typename, "Droid")
     assertEquals(response.data?.hero?.heroWithFriendsFragment()?.__typename, "Droid")
@@ -236,7 +235,7 @@ class StoreTest {
   private suspend fun storeAllFriends() {
     mockServer.enqueue(readResource("HeroAndFriendsNameWithIdsResponse.json"))
     val response = apolloClient.query(
-        ApolloRequest(HeroAndFriendsNamesWithIDsQuery(Input.Present(Episode.NEWHOPE))).withFetchPolicy(FetchPolicy.NetworkOnly)
+        ApolloRequest(HeroAndFriendsNamesWithIDsQuery(Episode.NEWHOPE)).withFetchPolicy(FetchPolicy.NetworkOnly)
     )
 
     assertEquals(response.data?.hero?.name, "R2-D2")
@@ -264,7 +263,7 @@ class StoreTest {
   private suspend fun assertRootNotCached() {
     try {
       apolloClient.query(
-          ApolloRequest(HeroAndFriendsNamesWithIDsQuery(Input.Present(Episode.NEWHOPE))).withFetchPolicy(FetchPolicy.CacheOnly)
+          ApolloRequest(HeroAndFriendsNamesWithIDsQuery(Episode.NEWHOPE)).withFetchPolicy(FetchPolicy.CacheOnly)
       )
       fail("A CacheMissException was expected")
     } catch (e: CacheMissException) {

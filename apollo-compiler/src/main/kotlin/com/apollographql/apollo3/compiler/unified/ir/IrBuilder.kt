@@ -36,6 +36,7 @@ import com.apollographql.apollo3.compiler.frontend.Schema
 import com.apollographql.apollo3.compiler.frontend.coerce
 import com.apollographql.apollo3.compiler.frontend.definitionFromScope
 import com.apollographql.apollo3.compiler.frontend.findDeprecationReason
+import com.apollographql.apollo3.compiler.frontend.findOptional
 import com.apollographql.apollo3.compiler.frontend.inferVariables
 import com.apollographql.apollo3.compiler.frontend.leafType
 import com.apollographql.apollo3.compiler.frontend.pretty
@@ -198,13 +199,20 @@ class IrBuilder(
   private fun GQLInputValueDefinition.toIrInputField(): IrInputField {
     val coercedDefaultValue = defaultValue?.coerce(type, schema)?.orThrow()
 
+    var irType = type.toIr()
+    if (type !is GQLNonNullType || coercedDefaultValue != null) {
+      /**
+       * Contrary to [IrVariable], we default to making input fields optional as they are out of control of the user and
+       * we don't want to force users to fill input all values to define an input object
+      */
+      irType = IrOptionalType(irType)
+    }
     return IrInputField(
         name = name,
         description = description,
         deprecationReason = directives.findDeprecationReason(),
-        type = type.toIr(),
+        type = irType,
         defaultValue = coercedDefaultValue?.toIr(),
-        optional = type !is GQLNonNullType || coercedDefaultValue != null
     )
   }
 
@@ -293,22 +301,33 @@ class IrBuilder(
   }
 
   private fun InputValueScope.VariableReference.toIr(): IrVariable {
+    var type = expectedType.toIr()
+    // This is an inferred variable from a fragment
+    if (expectedType !is GQLNonNullType) {
+      type = IrOptionalType(type)
+    }
     return IrVariable(
         name = this.variable.name,
         defaultValue = null,
-        type = expectedType.toIr(),
-        optional = expectedType !is GQLNonNullType
+        type = type,
     )
   }
 
   private fun GQLVariableDefinition.toIr(): IrVariable {
     val coercedDefaultValue = defaultValue?.coerce(type, schema)?.orThrow()
 
+    var irType = type.toIr()
+    // By default the GraphQL spec treats nullable types as optional variables but most of the times
+    // users writing query variables want to give them a value so default to making them non-optional
+    // and only make them optional if there is a defaultValue (which means the user has a use case for
+    // not sending the value) or if it's opt-in explicitely through the @optional directive
+    if (coercedDefaultValue != null || directives.findOptional()) {
+      irType = IrOptionalType(irType)
+    }
     return IrVariable(
         name = name,
         defaultValue = coercedDefaultValue?.toIr(),
-        type = type.toIr(),
-        optional = type !is GQLNonNullType || coercedDefaultValue != null
+        type = irType,
     )
   }
 
@@ -319,7 +338,7 @@ class IrBuilder(
     return when (this) {
       is GQLNonNullType -> IrNonNullType(ofType = type.toIr())
       is GQLListType -> IrListType(ofType = type.toIr())
-      is GQLNamedType -> when (val typeDefinition = schema.typeDefinition(name)) {
+      is GQLNamedType -> when (schema.typeDefinition(name)) {
         is GQLScalarTypeDefinition -> {
           when (name) {
             "String" -> IrStringType

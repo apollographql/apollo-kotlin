@@ -151,7 +151,7 @@ object GraphQLParser {
   }
 
   fun builtinTypes(): GQLDocument {
-    val source = GQLDocument::class.java.getResourceAsStream("/builtins.sdl")
+    val source = GQLDocument::class.java.getResourceAsStream("/builtins.graphqls")
         .source()
         .buffer()
     return antlrParse(source, null) { it.document() }

@@ -1,4 +1,4 @@
-query EpisodeHeroWithDates($episode: Episode) {
+query EpisodeHeroWithDates($episode: Episode = null) {
   hero(episode: $episode) {
     heroName: name
     birthDate

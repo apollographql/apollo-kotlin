@@ -3,7 +3,7 @@ package com.apollographql.apollo3.integration.test.normalized
 import com.apollographql.apollo3.ApolloClient
 import com.apollographql.apollo3.ApolloRequest
 import com.apollographql.apollo3.api.ApolloResponse
-import com.apollographql.apollo3.api.Input
+import com.apollographql.apollo3.api.Optional
 import com.apollographql.apollo3.api.Query
 import com.apollographql.apollo3.cache.normalized.ApolloStore
 import com.apollographql.apollo3.cache.normalized.MemoryCacheFactory
@@ -59,7 +59,7 @@ class BasicTest {
   @Test
   fun episodeHeroName() = basicTest(
       "HeroNameResponse.json",
-      EpisodeHeroNameQuery(Input.Present(Episode.EMPIRE))
+      EpisodeHeroNameQuery(Episode.EMPIRE)
   ) {
 
     assertFalse(hasErrors())
@@ -70,7 +70,7 @@ class BasicTest {
   @Throws(Exception::class)
   fun heroAndFriendsNameResponse() = basicTest(
       "HeroAndFriendsNameResponse.json",
-      HeroAndFriendsNamesQuery(Input.Present(Episode.JEDI))
+      HeroAndFriendsNamesQuery(Episode.JEDI)
   ) {
 
     assertFalse(hasErrors())
@@ -84,7 +84,7 @@ class BasicTest {
   @Test
   fun heroAndFriendsNamesWithIDs() = basicTest(
       "HeroAndFriendsNameWithIdsResponse.json",
-      HeroAndFriendsNamesWithIDsQuery(Input.Present(Episode.NEWHOPE))
+      HeroAndFriendsNamesWithIDsQuery(Episode.NEWHOPE)
   ) {
 
     assertFalse(hasErrors())
@@ -103,7 +103,7 @@ class BasicTest {
   @Throws(Exception::class)
   fun heroAndFriendsNameWithIdsForParentOnly() = basicTest(
       "HeroAndFriendsNameWithIdsParentOnlyResponse.json",
-      HeroAndFriendsNamesWithIDForParentOnlyQuery(Input.Present(Episode.NEWHOPE))
+      HeroAndFriendsNamesWithIDForParentOnlyQuery(Episode.NEWHOPE)
   ) {
 
     assertFalse(hasErrors())
@@ -149,7 +149,7 @@ class BasicTest {
   @Throws(Exception::class)
   fun heroParentTypeDependentField() = basicTest(
       "HeroParentTypeDependentFieldDroidResponse.json",
-      HeroParentTypeDependentFieldQuery(Input.Present(Episode.NEWHOPE))
+      HeroParentTypeDependentFieldQuery(Episode.NEWHOPE)
   ) {
 
     assertFalse(hasErrors())
@@ -166,7 +166,7 @@ class BasicTest {
   @Test
   fun `polymorphic Droid fields get parsed to Droid`() = basicTest(
       "HeroTypeDependentAliasedFieldResponse.json",
-      HeroTypeDependentAliasedFieldQuery(Input.Present(Episode.NEWHOPE))
+      HeroTypeDependentAliasedFieldQuery(Episode.NEWHOPE)
   ) {
 
     assertFalse(hasErrors())
@@ -177,7 +177,7 @@ class BasicTest {
   @Test
   fun `polymorphic Human fields get parsed to Human`() = basicTest(
       "HeroTypeDependentAliasedFieldResponseHuman.json",
-      HeroTypeDependentAliasedFieldQuery(Input.Present(Episode.NEWHOPE))
+      HeroTypeDependentAliasedFieldQuery(Episode.NEWHOPE)
   ) {
 
     assertFalse(hasErrors())
@@ -210,7 +210,7 @@ class BasicTest {
   @Test
   fun readList() = basicTest(
       "HeroAndFriendsNameWithIdsResponse.json",
-      HeroAndFriendsNamesWithIDsQuery(Input.Present(Episode.NEWHOPE))
+      HeroAndFriendsNamesWithIDsQuery(Episode.NEWHOPE)
   ) {
     assertEquals(data?.hero?.id, "2001")
     assertEquals(data?.hero?.name, "R2-D2")

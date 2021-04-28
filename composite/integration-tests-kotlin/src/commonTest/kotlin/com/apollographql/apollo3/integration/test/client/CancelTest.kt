@@ -1,7 +1,7 @@
 package com.apollographql.apollo3.integration.test.client
 
 import com.apollographql.apollo3.ApolloClient
-import com.apollographql.apollo3.api.Input
+import com.apollographql.apollo3.api.Optional
 import com.apollographql.apollo3.mockserver.MockServer
 import com.apollographql.apollo3.integration.enqueue
 import com.apollographql.apollo3.integration.normalizer.EpisodeHeroNameQuery
@@ -9,7 +9,6 @@ import com.apollographql.apollo3.integration.normalizer.type.Episode
 import com.apollographql.apollo3.integration.readTestFixture
 import com.apollographql.apollo3.testing.runWithMainLoop
 import kotlinx.coroutines.delay
-import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
 import kotlin.test.BeforeTest
 import kotlin.test.Test
@@ -32,7 +31,7 @@ class CancelTest {
     runWithMainLoop {
       val job = launch {
         delay(100)
-        apolloClient.query(EpisodeHeroNameQuery(Input.Present(Episode.EMPIRE)))
+        apolloClient.query(EpisodeHeroNameQuery(Episode.EMPIRE))
         error("The Flow should have been canceled before reaching that state")
       }
       job.cancel()

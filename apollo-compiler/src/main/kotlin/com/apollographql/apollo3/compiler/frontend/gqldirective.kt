@@ -14,3 +14,5 @@ internal fun List<GQLDirective>.findDeprecationReason() = firstOrNull { it.name 
           }
           ?: "No longer supported"
     }
+
+internal fun List<GQLDirective>.findOptional() = any { it.name == "optional" }

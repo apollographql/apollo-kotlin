@@ -9,15 +9,16 @@ import com.apollographql.apollo3.api.IntResponseAdapter
 import com.apollographql.apollo3.api.NullableBooleanResponseAdapter
 import com.apollographql.apollo3.api.NullableIntResponseAdapter
 import com.apollographql.apollo3.api.NullableStringResponseAdapter
+import com.apollographql.apollo3.api.Optional
 import com.apollographql.apollo3.api.ResponseAdapter
 import com.apollographql.apollo3.api.ResponseAdapterCache
 import com.apollographql.apollo3.api.StringResponseAdapter
-import com.apollographql.apollo3.api.input
 import com.apollographql.apollo3.api.json.JsonReader
 import com.apollographql.apollo3.api.json.JsonWriter
 import com.apollographql.apollo3.api.list
 import com.apollographql.apollo3.api.nullable
 import com.apollographql.apollo3.api.obj
+import com.apollographql.apollo3.api.optional
 import com.example.input_object_type.type.ReviewInput
 import java.util.Date
 import kotlin.IllegalStateException
@@ -32,48 +33,105 @@ object ReviewInput_InputAdapter : ResponseAdapter<ReviewInput> {
   ) {
     writer.name("stars")
     IntResponseAdapter.toResponse(writer, responseAdapterCache, value.stars)
-    NullableIntResponseAdapter.input("nullableIntFieldWithDefaultValue").toResponse(writer,
-        responseAdapterCache, value.nullableIntFieldWithDefaultValue)
-    NullableStringResponseAdapter.input("commentary").toResponse(writer, responseAdapterCache,
-        value.commentary)
+    if (value.nullableIntFieldWithDefaultValue is Optional.Present) {
+      writer.name("nullableIntFieldWithDefaultValue")
+      NullableIntResponseAdapter.optional().nullable().toResponse(writer, responseAdapterCache,
+          value.nullableIntFieldWithDefaultValue)
+    }
+    if (value.commentary is Optional.Present) {
+      writer.name("commentary")
+      NullableStringResponseAdapter.optional().nullable().toResponse(writer, responseAdapterCache,
+          value.commentary)
+    }
     writer.name("favoriteColor")
     ColorInput_InputAdapter.obj().toResponse(writer, responseAdapterCache, value.favoriteColor)
-    Episode_ResponseAdapter.nullable().input("enumWithDefaultValue").toResponse(writer,
-        responseAdapterCache, value.enumWithDefaultValue)
-    Episode_ResponseAdapter.input("nonNullableEnumWithDefaultValue").toResponse(writer,
-        responseAdapterCache, value.nonNullableEnumWithDefaultValue)
-    Episode_ResponseAdapter.nullable().input("nullableEnum").toResponse(writer,
-        responseAdapterCache, value.nullableEnum)
-    responseAdapterCache.responseAdapterFor<Date>(com.example.input_object_type.type.Types.Date).nullable().list().nullable().input("listOfCustomScalar").toResponse(writer,
-        responseAdapterCache, value.listOfCustomScalar)
-    responseAdapterCache.responseAdapterFor<Date>(com.example.input_object_type.type.Types.Date).nullable().input("customScalar").toResponse(writer,
-        responseAdapterCache, value.customScalar)
-    Episode_ResponseAdapter.nullable().list().nullable().input("listOfEnums").toResponse(writer,
-        responseAdapterCache, value.listOfEnums)
-    NullableIntResponseAdapter.list().nullable().input("listOfInt").toResponse(writer,
-        responseAdapterCache, value.listOfInt)
-    NullableStringResponseAdapter.list().nullable().input("listOfString").toResponse(writer,
-        responseAdapterCache, value.listOfString)
+    if (value.enumWithDefaultValue is Optional.Present) {
+      writer.name("enumWithDefaultValue")
+      Episode_ResponseAdapter.nullable().optional().nullable().toResponse(writer,
+          responseAdapterCache, value.enumWithDefaultValue)
+    }
+    if (value.nonNullableEnumWithDefaultValue is Optional.Present) {
+      writer.name("nonNullableEnumWithDefaultValue")
+      Episode_ResponseAdapter.optional().nullable().toResponse(writer, responseAdapterCache,
+          value.nonNullableEnumWithDefaultValue)
+    }
+    if (value.nullableEnum is Optional.Present) {
+      writer.name("nullableEnum")
+      Episode_ResponseAdapter.nullable().optional().nullable().toResponse(writer,
+          responseAdapterCache, value.nullableEnum)
+    }
+    if (value.listOfCustomScalar is Optional.Present) {
+      writer.name("listOfCustomScalar")
+      responseAdapterCache.responseAdapterFor<Date>(com.example.input_object_type.type.Types.Date).nullable().list().nullable().optional().nullable().toResponse(writer,
+          responseAdapterCache, value.listOfCustomScalar)
+    }
+    if (value.customScalar is Optional.Present) {
+      writer.name("customScalar")
+      responseAdapterCache.responseAdapterFor<Date>(com.example.input_object_type.type.Types.Date).nullable().optional().nullable().toResponse(writer,
+          responseAdapterCache, value.customScalar)
+    }
+    if (value.listOfEnums is Optional.Present) {
+      writer.name("listOfEnums")
+      Episode_ResponseAdapter.nullable().list().nullable().optional().nullable().toResponse(writer,
+          responseAdapterCache, value.listOfEnums)
+    }
+    if (value.listOfInt is Optional.Present) {
+      writer.name("listOfInt")
+      NullableIntResponseAdapter.list().nullable().optional().nullable().toResponse(writer,
+          responseAdapterCache, value.listOfInt)
+    }
+    if (value.listOfString is Optional.Present) {
+      writer.name("listOfString")
+      NullableStringResponseAdapter.list().nullable().optional().nullable().toResponse(writer,
+          responseAdapterCache, value.listOfString)
+    }
     writer.name("listOfStringNonOptional")
     NullableStringResponseAdapter.list().toResponse(writer, responseAdapterCache,
         value.listOfStringNonOptional)
-    ColorInput_InputAdapter.obj().nullable().list().nullable().input("listOfInputTypes").toResponse(writer,
-        responseAdapterCache, value.listOfInputTypes)
-    NullableBooleanResponseAdapter.input("booleanWithDefaultValue").toResponse(writer,
-        responseAdapterCache, value.booleanWithDefaultValue)
-    NullableBooleanResponseAdapter.input("booleanNonOptional").toResponse(writer,
-        responseAdapterCache, value.booleanNonOptional)
-    StringResponseAdapter.list().list().nullable().input("listOfListOfString").toResponse(writer,
-        responseAdapterCache, value.listOfListOfString)
-    Episode_ResponseAdapter.list().list().nullable().input("listOfListOfEnum").toResponse(writer,
-        responseAdapterCache, value.listOfListOfEnum)
-    responseAdapterCache.responseAdapterFor<Date>(com.example.input_object_type.type.Types.Date).list().list().nullable().input("listOfListOfCustom").toResponse(writer,
-        responseAdapterCache, value.listOfListOfCustom)
-    ColorInput_InputAdapter.obj().list().list().nullable().input("listOfListOfObject").toResponse(writer,
-        responseAdapterCache, value.listOfListOfObject)
-    NullableStringResponseAdapter.input("CapitalizedField").toResponse(writer, responseAdapterCache,
-        value.CapitalizedField)
-    NullableIntResponseAdapter.input("CapitalizedInt").toResponse(writer, responseAdapterCache,
-        value.CapitalizedInt)
+    if (value.listOfInputTypes is Optional.Present) {
+      writer.name("listOfInputTypes")
+      ColorInput_InputAdapter.obj().nullable().list().nullable().optional().nullable().toResponse(writer,
+          responseAdapterCache, value.listOfInputTypes)
+    }
+    if (value.booleanWithDefaultValue is Optional.Present) {
+      writer.name("booleanWithDefaultValue")
+      NullableBooleanResponseAdapter.optional().nullable().toResponse(writer, responseAdapterCache,
+          value.booleanWithDefaultValue)
+    }
+    if (value.booleanNonOptional is Optional.Present) {
+      writer.name("booleanNonOptional")
+      NullableBooleanResponseAdapter.optional().nullable().toResponse(writer, responseAdapterCache,
+          value.booleanNonOptional)
+    }
+    if (value.listOfListOfString is Optional.Present) {
+      writer.name("listOfListOfString")
+      StringResponseAdapter.list().list().nullable().optional().nullable().toResponse(writer,
+          responseAdapterCache, value.listOfListOfString)
+    }
+    if (value.listOfListOfEnum is Optional.Present) {
+      writer.name("listOfListOfEnum")
+      Episode_ResponseAdapter.list().list().nullable().optional().nullable().toResponse(writer,
+          responseAdapterCache, value.listOfListOfEnum)
+    }
+    if (value.listOfListOfCustom is Optional.Present) {
+      writer.name("listOfListOfCustom")
+      responseAdapterCache.responseAdapterFor<Date>(com.example.input_object_type.type.Types.Date).list().list().nullable().optional().nullable().toResponse(writer,
+          responseAdapterCache, value.listOfListOfCustom)
+    }
+    if (value.listOfListOfObject is Optional.Present) {
+      writer.name("listOfListOfObject")
+      ColorInput_InputAdapter.obj().list().list().nullable().optional().nullable().toResponse(writer,
+          responseAdapterCache, value.listOfListOfObject)
+    }
+    if (value.CapitalizedField is Optional.Present) {
+      writer.name("CapitalizedField")
+      NullableStringResponseAdapter.optional().nullable().toResponse(writer, responseAdapterCache,
+          value.CapitalizedField)
+    }
+    if (value.CapitalizedInt is Optional.Present) {
+      writer.name("CapitalizedInt")
+      NullableIntResponseAdapter.optional().nullable().toResponse(writer, responseAdapterCache,
+          value.CapitalizedInt)
+    }
   }
 }

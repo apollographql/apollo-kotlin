@@ -369,8 +369,7 @@ private class AntlrToGQLScope(val filePath: String?) {
         name = variable().name().text,
         type = type().parse(),
         defaultValue = defaultValue()?.parse(),
-        // TODO("support directives")
-        // directives = directives().parse()
+        directives = directives().parse()
     )
   }
 

@@ -7,7 +7,6 @@ package com.example.hero_name_query_long_name.adapter
 
 import com.apollographql.apollo3.api.ResponseAdapter
 import com.apollographql.apollo3.api.ResponseAdapterCache
-import com.apollographql.apollo3.api.input
 import com.apollographql.apollo3.api.json.JsonReader
 import com.apollographql.apollo3.api.json.JsonWriter
 import com.apollographql.apollo3.api.nullable
@@ -28,8 +27,8 @@ object
     responseAdapterCache: ResponseAdapterCache,
     value: TestQueryWithAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryLongName
   ) {
-    Episode_ResponseAdapter.nullable().input("episodeAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryLongName").toResponse(writer,
-        responseAdapterCache,
+    writer.name("episodeAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryLongName")
+    Episode_ResponseAdapter.nullable().toResponse(writer, responseAdapterCache,
         value.episodeAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryLongName)
   }
 }

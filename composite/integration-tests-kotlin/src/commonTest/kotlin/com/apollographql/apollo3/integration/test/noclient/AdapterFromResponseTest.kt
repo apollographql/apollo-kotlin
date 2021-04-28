@@ -1,7 +1,7 @@
 package com.apollographql.apollo3.integration.test.runtime
 
 import com.apollographql.apollo3.adapters.LocalDateResponseAdapter
-import com.apollographql.apollo3.api.Input
+import com.apollographql.apollo3.api.Optional
 import com.apollographql.apollo3.api.ResponseAdapter
 import com.apollographql.apollo3.api.ResponseAdapterCache
 import com.apollographql.apollo3.api.fromJson
@@ -74,7 +74,7 @@ class AdapterFromResponseTest {
   @Test
   @Throws(Exception::class)
   fun errorResponse_with_data() {
-    val response = EpisodeHeroNameQuery(Input.Present(Episode.JEDI)).fromResponse(readResource("ResponseErrorWithData.json"))
+    val response = EpisodeHeroNameQuery(Episode.JEDI).fromResponse(readResource("ResponseErrorWithData.json"))
     val data = response.data
     val errors = response.errors
     assertTrue(data != null)
@@ -159,7 +159,7 @@ class AdapterFromResponseTest {
   @Test
   @Throws(Exception::class)
   fun parseErrorOperationRawResponse() {
-    val response = EpisodeHeroNameQuery(Input.Present(Episode.EMPIRE)).fromResponse(
+    val response = EpisodeHeroNameQuery(Episode.EMPIRE).fromResponse(
         readResource("/ResponseErrorWithData.json"),
         ResponseAdapterCache.DEFAULT
     )

@@ -4,6 +4,7 @@ import com.apollographql.apollo3.api.AnyResponseAdapter
 import com.apollographql.apollo3.api.BooleanResponseAdapter
 import com.apollographql.apollo3.api.DoubleResponseAdapter
 import com.apollographql.apollo3.api.IntResponseAdapter
+import com.apollographql.apollo3.api.Optional
 import com.apollographql.apollo3.api.StringResponseAdapter
 import com.apollographql.apollo3.compiler.backend.codegen.obj
 import com.apollographql.apollo3.compiler.unified.ir.IrAnyType
@@ -18,6 +19,7 @@ import com.apollographql.apollo3.compiler.unified.ir.IrListType
 import com.apollographql.apollo3.compiler.unified.ir.IrModelId
 import com.apollographql.apollo3.compiler.unified.ir.IrModelType
 import com.apollographql.apollo3.compiler.unified.ir.IrNonNullType
+import com.apollographql.apollo3.compiler.unified.ir.IrOptionalType
 import com.apollographql.apollo3.compiler.unified.ir.IrStringType
 import com.apollographql.apollo3.compiler.unified.ir.IrType
 import com.squareup.kotlinpoet.ClassName
@@ -50,6 +52,7 @@ class CgResolver {
       is IrModelType -> {
         models.get(type.id)
       }
+      is IrOptionalType -> Optional::class.asClassName().parameterizedBy(resolveType(type.ofType))
     }?.copy(nullable = true)?: error("Cannot resolve $type")
   }
 
@@ -99,6 +102,10 @@ class CgResolver {
       }
       is IrModelType -> {
         CodeBlock.of("%T", modelAdapters.get(type.id) ?: error("Cannot find model '$type' adapter")).obj(false)
+      }
+      is IrOptionalType -> {
+        val optionalFun = MemberName("com.apollographql.apollo3.api", "optional")
+        CodeBlock.of("%L.%M()", adapterInitializer(type.ofType), optionalFun)
       }
     }
   }

@@ -8,7 +8,6 @@ package com.example.antlr_tokens.adapter
 import com.apollographql.apollo3.api.NullableStringResponseAdapter
 import com.apollographql.apollo3.api.ResponseAdapter
 import com.apollographql.apollo3.api.ResponseAdapterCache
-import com.apollographql.apollo3.api.input
 import com.apollographql.apollo3.api.json.JsonReader
 import com.apollographql.apollo3.api.json.JsonWriter
 import com.example.antlr_tokens.TestQuery
@@ -22,7 +21,7 @@ object TestQuery_VariablesAdapter : ResponseAdapter<TestQuery> {
     responseAdapterCache: ResponseAdapterCache,
     value: TestQuery
   ) {
-    NullableStringResponseAdapter.input("operation").toResponse(writer, responseAdapterCache,
-        value.operation)
+    writer.name("operation")
+    NullableStringResponseAdapter.toResponse(writer, responseAdapterCache, value.operation)
   }
 }

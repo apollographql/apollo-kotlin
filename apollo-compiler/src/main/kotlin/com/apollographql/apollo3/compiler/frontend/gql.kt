@@ -548,7 +548,7 @@ data class GQLVariableDefinition(
     val name: String,
     val type: GQLType,
     val defaultValue: GQLValue?,
-    //val directives: List<GQLDirective>
+    val directives: List<GQLDirective>
 ) : GQLNode {
 
   override val children = mutableListOf<GQLNode>().apply {

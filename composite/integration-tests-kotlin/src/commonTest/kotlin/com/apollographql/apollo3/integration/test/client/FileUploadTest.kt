@@ -1,7 +1,7 @@
 package com.apollographql.apollo3.integration.test.client
 
 import com.apollographql.apollo3.ApolloClient
-import com.apollographql.apollo3.api.Input
+import com.apollographql.apollo3.api.Optional
 import com.apollographql.apollo3.api.ResponseAdapterCache
 import com.apollographql.apollo3.api.Upload
 import com.apollographql.apollo3.api.UploadResponseAdapter
@@ -26,21 +26,21 @@ class FileUploadTest {
   private val upload1: Upload = Upload.fromString("content_file1", "file1.jpg", "image/jpeg")
   private val upload2: Upload = Upload.fromString("content_file2", "file2.png", "image/png")
 
-  private val nestedObject0 = NestedObject(file = Input.Present(upload0), fileList = Input.Present(listOf(upload1, upload2)))
-  private val nestedObject1 = NestedObject(file = Input.Present(upload1), fileList = Input.Present(listOf(upload0, upload2)))
+  private val nestedObject0 = NestedObject(file = Optional.Present(upload0), fileList = Optional.Present(listOf(upload1, upload2)))
+  private val nestedObject1 = NestedObject(file = Optional.Present(upload1), fileList = Optional.Present(listOf(upload0, upload2)))
   private val nestedObject2 = NestedObject(
-      file = Input.Present(upload2),
-      fileList = Input.Present(listOf(upload0, upload1)),
-      recursiveNested = Input.Present(listOf(nestedObject0, nestedObject1))
+      file = Optional.Present(upload2),
+      fileList = Optional.Present(listOf(upload0, upload1)),
+      recursiveNested = Optional.Present(listOf(nestedObject0, nestedObject1))
   )
 
   private val mutationSingle = SingleUploadMutation(file = upload1)
   private val mutationTwice = SingleUploadTwiceMutation(file1 = upload1, file2 = upload2)
   private val mutationMultiple = MultipleUploadMutation(files = listOf(upload1, upload2))
   private val mutationNested = NestedUploadMutation(
-      nested = Input.Present(nestedObject2),
-      topFile = Input.Present(upload2),
-      topFileList = Input.Present(listOf(upload1, upload0))
+      nested = nestedObject2,
+      topFile = upload2,
+      topFileList = listOf(upload1, upload0)
   )
 
   private val adapterCache = ResponseAdapterCache(

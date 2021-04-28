@@ -5,13 +5,14 @@
 //
 package com.example.arguments_hardcoded.type.adapter
 
+import com.apollographql.apollo3.api.Optional
 import com.apollographql.apollo3.api.ResponseAdapter
 import com.apollographql.apollo3.api.ResponseAdapterCache
-import com.apollographql.apollo3.api.input
 import com.apollographql.apollo3.api.json.JsonReader
 import com.apollographql.apollo3.api.json.JsonWriter
 import com.apollographql.apollo3.api.nullable
 import com.apollographql.apollo3.api.obj
+import com.apollographql.apollo3.api.optional
 import com.example.arguments_hardcoded.type.ReviewRefInput
 import kotlin.IllegalStateException
 
@@ -23,7 +24,10 @@ object ReviewRefInput_InputAdapter : ResponseAdapter<ReviewRefInput> {
     responseAdapterCache: ResponseAdapterCache,
     value: ReviewRefInput
   ) {
-    ReviewInput_InputAdapter.obj().nullable().input("reviewInput").toResponse(writer,
-        responseAdapterCache, value.reviewInput)
+    if (value.reviewInput is Optional.Present) {
+      writer.name("reviewInput")
+      ReviewInput_InputAdapter.obj().nullable().optional().nullable().toResponse(writer,
+          responseAdapterCache, value.reviewInput)
+    }
   }
 }

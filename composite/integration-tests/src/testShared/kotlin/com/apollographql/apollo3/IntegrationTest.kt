@@ -5,7 +5,7 @@ import com.apollographql.apollo3.Utils.immediateExecutor
 import com.apollographql.apollo3.Utils.immediateExecutorService
 import com.apollographql.apollo3.Utils.readFileToString
 import com.apollographql.apollo3.api.ApolloResponse
-import com.apollographql.apollo3.api.Input
+import com.apollographql.apollo3.api.Optional
 import com.apollographql.apollo3.api.Operation
 import com.apollographql.apollo3.api.ResponseAdapter
 import com.apollographql.apollo3.api.ResponseAdapterCache
@@ -115,7 +115,7 @@ class IntegrationTest {
   @Test
   @Throws(Exception::class)
   fun writeOperationRawRequest() {
-    val query = EpisodeHeroNameQuery(Input.Present(Episode.EMPIRE))
+    val query = EpisodeHeroNameQuery(Episode.EMPIRE)
 
     assertThat(query.name()).isEqualTo("EpisodeHeroName")
     assertThat(query.document()).isEqualTo("query EpisodeHeroName(\$episode: Episode) { hero(episode: \$episode) { name } }")

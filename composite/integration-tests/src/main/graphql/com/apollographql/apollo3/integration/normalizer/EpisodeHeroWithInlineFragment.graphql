@@ -1,5 +1,5 @@
-query EpisodeHeroWithInlineFragment($episode: Episode) {
-  hero(episode: $episode) {
+query EpisodeHeroWithInlineFragment {
+  hero {
     name
     friends {
       ... on Human {
