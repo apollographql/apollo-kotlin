@@ -6,7 +6,7 @@ import com.apollographql.apollo3.cache.normalized.CacheKey
 import com.apollographql.apollo3.cache.normalized.CacheKeyResolver
 
 class IdFieldCacheKeyResolver : CacheKeyResolver() {
-  override fun fromFieldRecordSet(field: ResponseField, recordSet: Map<String, Any?>): CacheKey {
+  override fun fromFieldRecordSet(field: ResponseField, variables: Operation.Variables, recordSet: Map<String, Any?>): CacheKey {
     val id = recordSet["id"]
     return if (id != null) {
       formatCacheKey(id.toString())

@@ -12,7 +12,6 @@ import com.apollographql.apollo3.api.variables
 import com.apollographql.apollo3.cache.CacheHeaders
 import com.apollographql.apollo3.cache.normalized.CacheKey
 import com.apollographql.apollo3.cache.normalized.CacheKeyResolver
-import com.apollographql.apollo3.cache.normalized.NormalizedCache
 import com.apollographql.apollo3.cache.normalized.ReadOnlyNormalizedCache
 
 fun <D : Operation.Data> Operation<D>.normalize(
@@ -54,7 +53,7 @@ private fun <D> normalizeInternal(
   val writer = MapJsonWriter()
   adapter.toResponse(writer, responseAdapterCache, data)
   return Normalizer(variables) { responseField, fields ->
-    cacheKeyResolver.fromFieldRecordSet(responseField, fields).let { if (it == CacheKey.NO_KEY) null else it.key }
+    cacheKeyResolver.fromFieldRecordSet(responseField, variables, fields).let { if (it == CacheKey.NO_KEY) null else it.key }
   }.normalize(writer.root() as Map<String, Any?>, null, rootKey, fieldSets)
 }
 

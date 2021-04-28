@@ -36,7 +36,7 @@ fun readTestFixture(name: String) = readFile("../integration-tests/testFixtures/
 fun readResource(name: String) = readFile("../integration-tests/testFixtures/resources/$name")
 
 object IdFieldCacheKeyResolver : CacheKeyResolver() {
-  override fun fromFieldRecordSet(field: ResponseField, recordSet: Map<String, Any?>): CacheKey {
+  override fun fromFieldRecordSet(field: ResponseField, variables: Operation.Variables, recordSet: Map<String, Any?>): CacheKey {
     val id = recordSet["id"]
     return if (id != null) {
       formatCacheKey(id.toString())
