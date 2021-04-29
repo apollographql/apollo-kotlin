@@ -197,7 +197,7 @@ class ApolloServerInterceptor(
 
     @Throws(IOException::class)
     fun cacheKey(operation: Operation<*>, responseAdapterCache: ResponseAdapterCache): String {
-      return DefaultHttpRequestComposer.composeOperationsJson(
+      return DefaultHttpRequestComposer.composeOperations(
           operation = operation,
           autoPersistQueries = true,
           sendDocument = true,
