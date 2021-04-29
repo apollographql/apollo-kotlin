@@ -12,6 +12,7 @@ import kotlin.jvm.JvmSuppressWildcards
 abstract class CacheKeyResolver {
   abstract fun fromFieldRecordSet(
       field: ResponseField,
+      variables: Operation.Variables,
       recordSet: Map<String, @JvmSuppressWildcards Any?>
   ): CacheKey
 
@@ -25,7 +26,7 @@ abstract class CacheKeyResolver {
 
     @JvmField
     val DEFAULT: CacheKeyResolver = object : CacheKeyResolver() {
-      override fun fromFieldRecordSet(field: ResponseField, recordSet: Map<String, Any?>) = CacheKey.NO_KEY
+      override fun fromFieldRecordSet(field: ResponseField, variables: Operation.Variables, recordSet: Map<String, Any?>) = CacheKey.NO_KEY
 
       override fun fromFieldArguments(field: ResponseField, variables: Operation.Variables) = CacheKey.NO_KEY
     }
