@@ -111,6 +111,8 @@ interface JsonWriter : Closeable {
   @Throws(IOException::class)
   fun value(value: Upload): JsonWriter
 
+  val path: String
+
   /**
    * Flushes the writer
    */

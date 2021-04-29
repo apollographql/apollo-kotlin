@@ -8,7 +8,7 @@ import com.apollographql.apollo3.api.json.JsonWriter
  *
  * Call [beginObject], [name], [value], etc... like for regular Json writing. Once you're done, get the result in [root]
  *
- * The return [Map] will contain:
+ * The returned [Map] will contain:
  * - String
  * - Int
  * - Double
@@ -104,6 +104,15 @@ class MapJsonWriter : JsonWriter {
     }
   }
 
+  override val path: String
+    get() {
+      return stack.map {
+        when(it) {
+          is State.List -> it.list.size.toString()
+          is State.Map -> it.name ?: "?" // if we don't know the name display '?' for now
+        }
+      }.joinToString(".")
+    }
   override fun value(value: String) = valueInternal(value)
 
   override fun value(value: Boolean) = valueInternal(value)

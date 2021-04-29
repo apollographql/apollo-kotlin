@@ -149,7 +149,7 @@ class Socket(private val socketFd: Int) {
       check(requests.isNotEmpty())
 
       val request = requests.first()
-      recordedRequests.value = requests.drop(1)
+      recordedRequests.value = requests.drop(1).freeze()
       request
     }
   }

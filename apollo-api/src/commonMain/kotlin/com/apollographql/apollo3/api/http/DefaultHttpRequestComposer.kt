@@ -12,11 +12,11 @@ import com.apollographql.apollo3.api.internal.json.FileUploadAwareJsonWriter
 import com.apollographql.apollo3.api.internal.json.buildJsonByteString
 import com.apollographql.apollo3.api.internal.json.buildJsonString
 import com.apollographql.apollo3.api.internal.json.writeObject
-import com.apollographql.apollo3.api.json.use
-import com.apollographql.apollo3.api.variablesJson
+import com.apollographql.apollo3.api.json.JsonWriter
 import com.benasher44.uuid.uuid4
 import okio.Buffer
 import okio.BufferedSink
+import okio.ByteString
 
 /**
  * The default HttpRequestComposer that handles
@@ -47,26 +47,12 @@ class DefaultHttpRequestComposer(val serverUrl: String, val defaultHeaders: Map<
       headers.put(it.key, it.value)
     }
 
-    val paramsMap = mutableMapOf<String, String>()
-    val (variables, uploads) = buildVariables(operation, responseAdapterCache)
-
-    paramsMap.put("operationName", operation.name())
-    paramsMap.put("variables", variables)
-    if (sendDocument) {
-      paramsMap.put("query", operation.document())
-    }
-    if (autoPersistQueries) {
-      paramsMap.put("extensions", buildExtensions(operation.id()))
-    }
 
     return when (method) {
       HttpMethod.Get -> {
-        check(uploads.isEmpty()) {
-          "GET is not supported with File Upload"
-        }
         HttpRequest(
             method = HttpMethod.Get,
-            url = serverUrl.appendQueryParameters(paramsMap),
+            url = buildGetUrl(serverUrl, operation, responseAdapterCache, autoPersistQueries, sendDocument),
             headers = headers,
             body = null
         )
@@ -76,7 +62,7 @@ class DefaultHttpRequestComposer(val serverUrl: String, val defaultHeaders: Map<
             method = HttpMethod.Post,
             url = serverUrl,
             headers = headers,
-            body = buildBody(paramsMap, uploads)
+            body = buildPostBody(operation, responseAdapterCache, autoPersistQueries, sendDocument),
         )
       }
     }
@@ -86,6 +72,102 @@ class DefaultHttpRequestComposer(val serverUrl: String, val defaultHeaders: Map<
     const val HEADER_APOLLO_OPERATION_ID = "X-APOLLO-OPERATION-ID"
     const val HEADER_APOLLO_OPERATION_NAME = "X-APOLLO-OPERATION-NAME"
 
+    private fun <D : Operation.Data> buildGetUrl(
+        serverUrl: String,
+        operation: Operation<D>,
+        responseAdapterCache: ResponseAdapterCache,
+        autoPersistQueries: Boolean,
+        sendDocument: Boolean,
+    ): String {
+      return serverUrl.appendQueryParameters(
+          composeGetParams(operation, responseAdapterCache, autoPersistQueries, sendDocument)
+      )
+    }
+
+    private fun <D : Operation.Data> composePostParams(
+        writer: JsonWriter,
+        operation: Operation<D>,
+        responseAdapterCache: ResponseAdapterCache,
+        autoPersistQueries: Boolean,
+        sendDocument: Boolean,
+    ): Map<String, Upload> {
+      val uploads: Map<String, Upload>
+      writer.writeObject {
+        name("operationName")
+        value(operation.name())
+
+        name("variables")
+        val uploadAwareWriter = FileUploadAwareJsonWriter(this)
+        uploadAwareWriter.writeObject {
+          operation.serializeVariables(this, responseAdapterCache)
+        }
+        uploads = uploadAwareWriter.collectedUploads()
+
+        if (sendDocument) {
+          name("query")
+          value(operation.document())
+        }
+
+        if (autoPersistQueries) {
+          name("extensions")
+          writeObject {
+            name("persistedQuery")
+            writeObject {
+              name("version").value(1)
+              name("sha256Hash").value(operation.id())
+            }
+          }
+        }
+      }
+
+      return uploads
+    }
+
+    /**
+     * This mostly duplicates [composePostParams] but encode variables and extensions as strings
+     * and not json elements. I tried factoring in that code but it ended up being more clunky that
+     * duplicating it
+     */
+    private fun <D : Operation.Data> composeGetParams(
+        operation: Operation<D>,
+        responseAdapterCache: ResponseAdapterCache,
+        autoPersistQueries: Boolean,
+        sendDocument: Boolean,
+    ): Map<String, String> {
+      val queryParams = mutableMapOf<String, String>()
+
+      queryParams.put("operationName", operation.name())
+
+      val variables = buildJsonString {
+        val uploadAwareWriter = FileUploadAwareJsonWriter(this)
+        uploadAwareWriter.writeObject {
+          operation.serializeVariables(this, responseAdapterCache)
+        }
+        check(uploadAwareWriter.collectedUploads().isEmpty()) {
+          "FileUpload and Http GET are not supported at the same time"
+        }
+      }
+
+      queryParams.put("variables", variables)
+
+      if (sendDocument) {
+        queryParams.put("query", operation.document())
+      }
+
+      if (autoPersistQueries) {
+        val extensions = buildJsonString {
+          writeObject {
+            name("persistedQuery")
+            writeObject {
+              name("version").value(1)
+              name("sha256Hash").value(operation.id())
+            }
+          }
+        }
+        queryParams.put("extensions", extensions)
+      }
+      return queryParams
+    }
 
     /**
      * A very simplified method to append query parameters
@@ -108,23 +190,21 @@ class DefaultHttpRequestComposer(val serverUrl: String, val defaultHeaders: Map<
     }
 
 
-    private data class BuiltVariables(val variables: String, val uploads: Map<String, Upload>)
-
-    private fun <D : Operation.Data> buildVariables(operation: Operation<D>, responseAdapterCache: ResponseAdapterCache): BuiltVariables {
-      val buffer = Buffer()
-      val jsonWriter = FileUploadAwareJsonWriter(BufferedSinkJsonWriter(buffer))
-      jsonWriter.writeObject {
-        operation.serializeVariables(this, responseAdapterCache)
-      }
-      return BuiltVariables(buffer.readUtf8(), jsonWriter.collectedUploads())
-    }
-
-    private fun buildBody(
-        paramsMap: Map<String, String>,
-        uploads: Map<String, Upload>,
+    private fun <D : Operation.Data> buildPostBody(
+        operation: Operation<D>,
+        responseAdapterCache: ResponseAdapterCache,
+        autoPersistQueries: Boolean,
+        sendDocument: Boolean,
     ): HttpBody {
+      val uploads: Map<String, Upload>
       val operationByteString = buildJsonByteString {
-        AnyResponseAdapter.toResponse(this, paramsMap)
+        uploads = composePostParams(
+            this,
+            operation,
+            responseAdapterCache,
+            autoPersistQueries,
+            sendDocument
+        )
       }
 
       if (uploads.isEmpty()) {
@@ -182,25 +262,20 @@ class DefaultHttpRequestComposer(val serverUrl: String, val defaultHeaders: Map<
       }
     }
 
-
-    private fun buildExtensions(
-        operationId: String,
-    ): String {
-      return buildJsonString {
-        writeObject {
-          name("persistedQuery")
-          writeObject {
-            name("version").value(1)
-            name("sha256Hash").value(operationId)
-          }
-        }
-      }
-    }
-
     private fun buildUploadMap(uploads: Map<String, Upload>) = buildJsonByteString {
       AnyResponseAdapter.toResponse(this, ResponseAdapterCache.DEFAULT, uploads.entries.mapIndexed { index, entry ->
         index.toString() to listOf(entry.key)
       }.toMap())
+    }
+
+
+    fun <D : Operation.Data> buildParamsMap(
+        operation: Operation<D>,
+        responseAdapterCache: ResponseAdapterCache,
+        autoPersistQueries: Boolean,
+        sendDocument: Boolean,
+    ): ByteString = buildJsonByteString {
+      composePostParams(this, operation, responseAdapterCache, autoPersistQueries, sendDocument)
     }
   }
 }
