@@ -1,11 +1,11 @@
 package com.apollographql.apollo3
 
+import com.apollographql.apollo3.api.ApolloRequest
 import com.apollographql.apollo3.api.ApolloResponse
 import com.apollographql.apollo3.api.ExecutionContext
 import com.apollographql.apollo3.api.Mutation
 import com.apollographql.apollo3.api.Operation
 import com.apollographql.apollo3.api.Query
-import com.apollographql.apollo3.api.CustomScalar
 import com.apollographql.apollo3.api.ResponseAdapter
 import com.apollographql.apollo3.api.ResponseAdapterCache
 import com.apollographql.apollo3.api.Subscription
@@ -64,7 +64,9 @@ data class ApolloClient internal constructor(
   }
 
   private fun <D : Operation.Data> ApolloRequest<D>.execute(): Flow<ApolloResponse<D>> {
-    val request = withExecutionContext(executionContextWithDefaults)
+    val executionContext = executionContextWithDefaults + responseAdapterCache + this.executionContext
+
+    val request = withExecutionContext(executionContext)
     val interceptors = interceptors + NetworkRequestInterceptor(
         networkTransport = networkTransport,
         subscriptionNetworkTransport = subscriptionNetworkTransport,
@@ -75,7 +77,6 @@ data class ApolloClient internal constructor(
           RealInterceptorChain(
               interceptors,
               0,
-              responseAdapterCache,
           )
       )
     }.flatMapLatest { interceptorChain ->

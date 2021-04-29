@@ -1,5 +1,8 @@
 package com.apollographql.apollo3.network.http
 
+import com.apollographql.apollo3.api.http.HttpMethod
+import com.apollographql.apollo3.api.http.HttpRequest
+import com.apollographql.apollo3.api.http.HttpResponse
 import com.apollographql.apollo3.exception.ApolloNetworkException
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.suspendCancellableCoroutine
@@ -40,16 +43,17 @@ actual class DefaultHttpEngine(
             if (request.method == HttpMethod.Get) {
               get()
             } else {
-              check(request.body != null) {
+              val body = request.body
+              check(body != null) {
                 "HTTP POST requires a request body"
               }
               post(object: RequestBody() {
-                override fun contentType() = MediaType.parse(request.body.contentType)
+                override fun contentType() = MediaType.parse(body.contentType)
 
-                override fun contentLength() = request.body.contentLength
+                override fun contentLength() = body.contentLength
 
                 override fun writeTo(sink: BufferedSink) {
-                  request.body.writeTo(sink)
+                  body.writeTo(sink)
                 }
               })
             }

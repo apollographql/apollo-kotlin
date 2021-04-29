@@ -1,6 +1,6 @@
 package com.apollographql.apollo3.cache.normalized.internal
 
-import com.apollographql.apollo3.api.Operation
+import com.apollographql.apollo3.api.Executable
 import com.apollographql.apollo3.api.ResponseField
 import com.apollographql.apollo3.api.Variable
 import com.apollographql.apollo3.api.internal.json.BufferedSinkJsonWriter
@@ -10,7 +10,7 @@ import okio.IOException
 
 class RealCacheKeyBuilder : CacheKeyBuilder {
 
-  override fun build(field: ResponseField, variables: Operation.Variables): String {
+  override fun build(field: ResponseField, variables: Executable.Variables): String {
     if (field.arguments.isEmpty()) {
       return field.fieldName
     }
@@ -28,7 +28,7 @@ class RealCacheKeyBuilder : CacheKeyBuilder {
   }
 
   @Suppress("UNCHECKED_CAST")
-  private fun resolveVariables(value: Any?, variables: Operation.Variables): Any? {
+  private fun resolveVariables(value: Any?, variables: Executable.Variables): Any? {
     return when (value) {
       null -> null
       is Variable -> {

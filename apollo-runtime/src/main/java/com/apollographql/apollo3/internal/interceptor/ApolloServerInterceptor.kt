@@ -1,12 +1,15 @@
 package com.apollographql.apollo3.internal.interceptor
 
-import com.apollographql.apollo3.api.ResponseAdapterCache
+import com.apollographql.apollo3.api.ApolloRequest
 import com.apollographql.apollo3.api.Operation
 import com.apollographql.apollo3.api.Query
+import com.apollographql.apollo3.api.ResponseAdapterCache
 import com.apollographql.apollo3.api.cache.http.HttpCache
 import com.apollographql.apollo3.api.cache.http.HttpCachePolicy
+import com.apollographql.apollo3.api.http.DefaultHttpRequestComposer
+import com.apollographql.apollo3.api.http.DefaultHttpRequestComposerParams
+import com.apollographql.apollo3.api.http.HttpMethod
 import com.apollographql.apollo3.api.internal.ApolloLogger
-import com.apollographql.apollo3.OperationRequestBodyComposer
 import com.apollographql.apollo3.api.internal.json.BufferedSinkJsonWriter
 import com.apollographql.apollo3.cache.ApolloCacheHeaders
 import com.apollographql.apollo3.cache.CacheHeaders
@@ -43,15 +46,19 @@ class ApolloServerInterceptor(
     private val cachePolicy: HttpCachePolicy.Policy?,
     val prefetch: Boolean,
     val responseAdapterCache: ResponseAdapterCache,
-    val logger: ApolloLogger
+    val logger: ApolloLogger,
 ) : ApolloInterceptor {
   var httpCallRef = AtomicReference<Call?>()
 
   @Volatile
   var disposed = false
 
-  override fun interceptAsync(request: InterceptorRequest, chain: ApolloInterceptorChain,
-                              dispatcher: Executor, callBack: CallBack) {
+  val composer = DefaultHttpRequestComposer(serverUrl.toString())
+
+  override fun interceptAsync(
+      request: InterceptorRequest, chain: ApolloInterceptorChain,
+      dispatcher: Executor, callBack: CallBack,
+  ) {
     dispatcher.execute { executeHttpCall(request, callBack) }
   }
 
@@ -104,8 +111,10 @@ class ApolloServerInterceptor(
   }
 
   @Throws(IOException::class)
-  fun httpGetCall(operation: Operation<*>, cacheHeaders: CacheHeaders, requestHeaders: RequestHeaders,
-                  writeQueryDocument: Boolean, autoPersistQueries: Boolean): Call {
+  fun httpGetCall(
+      operation: Operation<*>, cacheHeaders: CacheHeaders, requestHeaders: RequestHeaders,
+      writeQueryDocument: Boolean, autoPersistQueries: Boolean,
+  ): Call {
     val requestBuilder = Request.Builder()
         .url(httpGetUrl(serverUrl, operation, responseAdapterCache, writeQueryDocument, autoPersistQueries))
         .get()
@@ -114,20 +123,27 @@ class ApolloServerInterceptor(
   }
 
   @Throws(IOException::class)
-  fun httpPostCall(operation: Operation<*>, cacheHeaders: CacheHeaders, requestHeaders: RequestHeaders,
-                   writeQueryDocument: Boolean, autoPersistQueries: Boolean): Call {
-    val body = OperationRequestBodyComposer.compose(
-        operation = operation,
-        autoPersistQueries = autoPersistQueries,
-        withQueryDocument = writeQueryDocument,
-        responseAdapterCache = responseAdapterCache
-    )
+  fun httpPostCall(
+      operation: Operation<*>, cacheHeaders: CacheHeaders, requestHeaders: RequestHeaders,
+      writeQueryDocument: Boolean, autoPersistQueries: Boolean,
+  ): Call {
+    val body = composer.compose(ApolloRequest(operation)
+        .withExecutionContext(responseAdapterCache)
+        .withExecutionContext(
+            DefaultHttpRequestComposerParams(
+                method = HttpMethod.Post,
+                autoPersistQueries = autoPersistQueries,
+                sendDocument = writeQueryDocument,
+                extraHeaders = emptyMap()
+            )
+        )
+    ).body!!
 
     val requestBody = object : RequestBody() {
       override fun contentType() = MediaType.parse(body.contentType)
 
       override fun contentLength() = body.contentLength
-      
+
       override fun writeTo(sink: BufferedSink) {
         body.writeTo(bufferedSink = sink)
       }
@@ -140,8 +156,10 @@ class ApolloServerInterceptor(
   }
 
   @Throws(IOException::class)
-  fun decorateRequest(requestBuilder: Request.Builder, operation: Operation<*>, cacheHeaders: CacheHeaders,
-                      requestHeaders: RequestHeaders) {
+  fun decorateRequest(
+      requestBuilder: Request.Builder, operation: Operation<*>, cacheHeaders: CacheHeaders,
+      requestHeaders: RequestHeaders,
+  ) {
     requestBuilder
         .header(HEADER_ACCEPT_TYPE, JSON_CONTENT_TYPE)
         /**
@@ -179,18 +197,20 @@ class ApolloServerInterceptor(
 
     @Throws(IOException::class)
     fun cacheKey(operation: Operation<*>, responseAdapterCache: ResponseAdapterCache): String {
-      return OperationRequestBodyComposer.compose(
+      return DefaultHttpRequestComposer.composeOperationsJson(
           operation = operation,
           autoPersistQueries = true,
-          withQueryDocument = true,
+          sendDocument = true,
           responseAdapterCache = responseAdapterCache
-      ).operations.md5().hex()
+      ).md5().hex()
     }
 
     @Throws(IOException::class)
-    fun httpGetUrl(serverUrl: HttpUrl, operation: Operation<*>,
-                   responseAdapterCache: ResponseAdapterCache?, writeQueryDocument: Boolean,
-                   autoPersistQueries: Boolean): HttpUrl {
+    fun httpGetUrl(
+        serverUrl: HttpUrl, operation: Operation<*>,
+        responseAdapterCache: ResponseAdapterCache?, writeQueryDocument: Boolean,
+        autoPersistQueries: Boolean,
+    ): HttpUrl {
       val urlBuilder = serverUrl.newBuilder()
       if (!autoPersistQueries || writeQueryDocument) {
         urlBuilder.addQueryParameter("query", operation.document())
@@ -205,9 +225,11 @@ class ApolloServerInterceptor(
     }
 
     @Throws(IOException::class)
-    fun addVariablesUrlQueryParameter(urlBuilder: HttpUrl.Builder,
-                                      operation: Operation<*>,
-                                      responseAdapterCache: ResponseAdapterCache?) {
+    fun addVariablesUrlQueryParameter(
+        urlBuilder: HttpUrl.Builder,
+        operation: Operation<*>,
+        responseAdapterCache: ResponseAdapterCache?,
+    ) {
       val buffer = Buffer()
       val jsonWriter = BufferedSinkJsonWriter(buffer)
       jsonWriter.serializeNulls = true

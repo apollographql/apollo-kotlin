@@ -1,9 +1,8 @@
 package com.apollographql.apollo3.integration.test.noclient
 
-import com.apollographql.apollo3.api.Optional
 import com.apollographql.apollo3.api.Operation
 import com.apollographql.apollo3.api.ResponseAdapterCache
-import com.apollographql.apollo3.api.fromResponse
+import com.apollographql.apollo3.api.parseResponseBody
 import com.apollographql.apollo3.cache.CacheHeaders
 import com.apollographql.apollo3.cache.normalized.CacheKey.Companion.from
 import com.apollographql.apollo3.cache.normalized.CacheReference
@@ -247,7 +246,7 @@ class NormalizerTest {
 
   companion object {
     internal fun <D : Operation.Data> records(operation: Operation<D>, name: String): Map<String, Record> {
-      val response = operation.fromResponse(readResource(name))
+      val response = operation.parseResponseBody(readResource(name))
       return operation.normalize(data = response.data!!, ResponseAdapterCache.DEFAULT, IdFieldCacheKeyResolver)
     }
 

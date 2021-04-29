@@ -1,9 +1,9 @@
 package com.apollographql.apollo3.network.http
 
+import com.apollographql.apollo3.api.http.HttpRequest
+import com.apollographql.apollo3.api.http.HttpResponse
 import com.apollographql.apollo3.exception.ApolloException
 import com.apollographql.apollo3.exception.ApolloParseException
-import okio.BufferedSink
-import okio.BufferedSource
 
 /**
  * A wrapper around platform specific engines
@@ -33,29 +33,6 @@ expect class DefaultHttpEngine(
      */
     readTimeoutMillis: Long = 60_000,
 ): HttpEngine
-
-interface HttpBody {
-  val contentType: String
-  val contentLength: Long
-  fun writeTo(bufferedSink: BufferedSink)
-}
-
-class HttpRequest(
-    val url: String,
-    val headers: Map<String, String>,
-    val method: HttpMethod,
-    val body: HttpBody?
-)
-
-class HttpResponse(
-    val statusCode: Int,
-    val headers: Map<String, String>,
-    /**
-     * The actual body
-     * It must always be closed if not null
-     */
-    val body: BufferedSource?,
-)
 
 fun wrapThrowableIfNeeded(throwable: Throwable): ApolloException {
   return if (throwable is ApolloException) {

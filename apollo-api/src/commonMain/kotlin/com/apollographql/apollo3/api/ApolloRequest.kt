@@ -1,10 +1,5 @@
-package com.apollographql.apollo3
+package com.apollographql.apollo3.api
 
-import com.apollographql.apollo3.api.ExecutionContext
-import com.apollographql.apollo3.api.Operation
-import com.apollographql.apollo3.api.Mutation
-import com.apollographql.apollo3.api.Query
-import com.apollographql.apollo3.api.Subscription
 import com.benasher44.uuid.Uuid
 import com.benasher44.uuid.uuid4
 

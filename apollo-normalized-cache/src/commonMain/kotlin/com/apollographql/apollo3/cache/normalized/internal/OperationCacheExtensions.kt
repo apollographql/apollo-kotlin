@@ -1,5 +1,6 @@
 package com.apollographql.apollo3.cache.normalized.internal
 
+import com.apollographql.apollo3.api.Executable
 import com.apollographql.apollo3.api.ResponseAdapterCache
 import com.apollographql.apollo3.api.Fragment
 import com.apollographql.apollo3.api.Operation
@@ -47,7 +48,7 @@ private fun <D> normalizeInternal(
     cacheKeyResolver: CacheKeyResolver,
     rootKey: String,
     adapter: ResponseAdapter<D>,
-    variables: Operation.Variables,
+    variables: Executable.Variables,
     fieldSets: List<ResponseField.FieldSet>,
 ): Map<String, Record> {
   val writer = MapJsonWriter()
@@ -112,7 +113,7 @@ private fun <D> readInternal(
     cache: ReadOnlyNormalizedCache,
     cacheKeyResolver: CacheKeyResolver,
     cacheHeaders: CacheHeaders,
-    variables: Operation.Variables,
+    variables: Executable.Variables,
     adapter: ResponseAdapter<D>,
     responseAdapterCache: ResponseAdapterCache,
     mode: ReadMode = ReadMode.SEQUENTIAL,

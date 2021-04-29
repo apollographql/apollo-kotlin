@@ -1,6 +1,6 @@
 package com.apollographql.apollo3.cache.normalized.internal
 
-import com.apollographql.apollo3.api.Operation
+import com.apollographql.apollo3.api.Executable
 import com.apollographql.apollo3.api.ResponseField
 import com.apollographql.apollo3.cache.CacheHeaders
 import com.apollographql.apollo3.cache.normalized.CacheKey
@@ -20,7 +20,7 @@ import com.apollographql.apollo3.exception.CacheMissException
 class CacheBatchReader(
     private val cache: ReadOnlyNormalizedCache,
     private val rootKey: String,
-    private val variables: Operation.Variables,
+    private val variables: Executable.Variables,
     private val cacheKeyResolver: CacheKeyResolver,
     private val cacheHeaders: CacheHeaders,
     private val rootFieldSets: List<ResponseField.FieldSet>

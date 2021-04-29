@@ -3,8 +3,8 @@ package com.apollographql.apollo3.mockserver.test
 import com.apollographql.apollo3.mockserver.MockResponse
 import com.apollographql.apollo3.mockserver.MockServer
 import com.apollographql.apollo3.network.http.DefaultHttpEngine
-import com.apollographql.apollo3.network.http.HttpMethod
-import com.apollographql.apollo3.network.http.HttpRequest
+import com.apollographql.apollo3.api.http.HttpMethod
+import com.apollographql.apollo3.api.http.HttpRequest
 import com.apollographql.apollo3.testing.runWithMainLoop
 import okio.ByteString.Companion.encodeUtf8
 import kotlin.random.Random

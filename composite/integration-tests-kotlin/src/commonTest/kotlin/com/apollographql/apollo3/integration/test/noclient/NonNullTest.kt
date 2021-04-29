@@ -1,6 +1,7 @@
 package com.apollographql.apollo3.integration.test.noclient
 
 import com.apollographql.apollo3.api.fromJson
+import com.apollographql.apollo3.api.parseData
 import com.apollographql.apollo3.integration.normalizer.NonNullHeroQuery
 import com.apollographql.apollo3.integration.normalizer.NullableHeroQuery
 import kotlin.test.Test
@@ -17,7 +18,7 @@ class NonNullTest {
   @Test
   fun failsWithAnnotation() {
     try {
-      NonNullHeroQuery().fromJson(responseData)
+      NonNullHeroQuery().parseData(responseData)
       fail("An exception was expected")
     } catch (e: Exception) {
       // We might want a more personalized message at some point
@@ -27,7 +28,7 @@ class NonNullTest {
 
   @Test
   fun succeedsWithoutAnnotation() {
-    val data = NullableHeroQuery().fromJson(responseData)
+    val data = NullableHeroQuery().parseData(responseData)
     assertEquals(null, data.hero)
   }
 }
