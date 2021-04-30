@@ -9,8 +9,11 @@ import com.apollographql.apollo3.api.Query
 import com.apollographql.apollo3.api.ResponseAdapter
 import com.apollographql.apollo3.api.ResponseAdapterCache
 import com.apollographql.apollo3.api.Subscription
+import com.apollographql.apollo3.api.http.DefaultHttpRequestComposerParams
+import com.apollographql.apollo3.api.http.HttpMethod
 import com.apollographql.apollo3.dispatcher.ApolloCoroutineDispatcher
 import com.apollographql.apollo3.interceptor.ApolloRequestInterceptor
+import com.apollographql.apollo3.interceptor.AutoPersistedQueryInterceptor
 import com.apollographql.apollo3.interceptor.NetworkRequestInterceptor
 import com.apollographql.apollo3.interceptor.RealInterceptorChain
 import com.apollographql.apollo3.network.NetworkTransport
@@ -29,7 +32,7 @@ data class ApolloClient internal constructor(
     private val subscriptionNetworkTransport: NetworkTransport,
     private val responseAdapterCache: ResponseAdapterCache,
     private val interceptors: List<ApolloRequestInterceptor>,
-    private val executionContext: ExecutionContext
+    private val executionContext: ExecutionContext,
 ) {
   private val executionContextWithDefaults: ExecutionContext = if (executionContext[ApolloCoroutineDispatcher] == null) {
     executionContext + ApolloCoroutineDispatcher(Dispatchers.Default)
@@ -87,7 +90,7 @@ data class ApolloClient internal constructor(
   fun <T> withCustomScalarAdapter(graphqlName: String, customScalarAdapter: ResponseAdapter<T>): ApolloClient {
     return copy(
         responseAdapterCache = ResponseAdapterCache(
-            responseAdapterCache.customScalarResponseAdapters  + mapOf(graphqlName to customScalarAdapter)
+            responseAdapterCache.customScalarResponseAdapters + mapOf(graphqlName to customScalarAdapter)
         )
     )
   }
@@ -97,9 +100,15 @@ data class ApolloClient internal constructor(
         interceptors = interceptors + interceptor
     )
   }
+
+  fun withExecutionContext(executionContext: ExecutionContext): ApolloClient {
+    return copy(
+        executionContext = this.executionContext + executionContext
+    )
+  }
 }
 
-fun ApolloClient(serverUrl: String)= ApolloClient(ApolloHttpNetworkTransport(serverUrl = serverUrl))
+fun ApolloClient(serverUrl: String) = ApolloClient(ApolloHttpNetworkTransport(serverUrl = serverUrl))
 
 fun ApolloClient(networkTransport: NetworkTransport): ApolloClient {
   return ApolloClient(
@@ -111,3 +120,7 @@ fun ApolloClient(networkTransport: NetworkTransport): ApolloClient {
   )
 }
 
+fun ApolloClient.withAutoPersistedQueries(): ApolloClient {
+  return withInterceptor(AutoPersistedQueryInterceptor())
+      .withExecutionContext(DefaultHttpRequestComposerParams(HttpMethod.Post, true, false, emptyMap()))
+}

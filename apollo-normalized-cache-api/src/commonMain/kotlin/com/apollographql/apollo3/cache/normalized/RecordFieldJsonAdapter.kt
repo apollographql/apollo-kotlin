@@ -16,7 +16,6 @@ object RecordFieldJsonAdapter {
   fun toJson(fields: Map<String, Any?>): String {
     val buffer = Buffer()
     BufferedSinkJsonWriter(buffer).use { jsonWriter ->
-      jsonWriter.serializeNulls = true
       jsonWriter.beginObject()
       for ((key, value) in fields) {
         jsonWriter.name(key).writeJsonValue(value)

@@ -197,7 +197,7 @@ class ApolloServerInterceptor(
 
     @Throws(IOException::class)
     fun cacheKey(operation: Operation<*>, responseAdapterCache: ResponseAdapterCache): String {
-      return DefaultHttpRequestComposer.composeOperationsJson(
+      return DefaultHttpRequestComposer.buildParamsMap(
           operation = operation,
           autoPersistQueries = true,
           sendDocument = true,
@@ -232,7 +232,6 @@ class ApolloServerInterceptor(
     ) {
       val buffer = Buffer()
       val jsonWriter = BufferedSinkJsonWriter(buffer)
-      jsonWriter.serializeNulls = true
       jsonWriter.beginObject()
       operation.serializeVariables(jsonWriter, responseAdapterCache!!)
       jsonWriter.endObject()
@@ -244,7 +243,6 @@ class ApolloServerInterceptor(
     fun addExtensionsUrlQueryParameter(urlBuilder: HttpUrl.Builder, operation: Operation<*>) {
       val buffer = Buffer()
       val jsonWriter = BufferedSinkJsonWriter(buffer)
-      jsonWriter.serializeNulls = true
       jsonWriter.beginObject()
       jsonWriter.name("persistedQuery")
           .beginObject()

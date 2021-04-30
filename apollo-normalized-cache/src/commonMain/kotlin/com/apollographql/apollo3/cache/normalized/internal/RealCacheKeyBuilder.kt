@@ -18,7 +18,6 @@ class RealCacheKeyBuilder : CacheKeyBuilder {
     return try {
       val buffer = Buffer()
       val jsonWriter = BufferedSinkJsonWriter(buffer)
-      jsonWriter.serializeNulls = true
       Utils.writeToJson(resolvedArguments, jsonWriter)
       jsonWriter.close()
       "${field.fieldName}(${buffer.readUtf8()})"

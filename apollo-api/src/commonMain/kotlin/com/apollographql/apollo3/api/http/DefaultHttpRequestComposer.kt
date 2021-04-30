@@ -9,9 +9,10 @@ import com.apollographql.apollo3.api.ResponseAdapterCache
 import com.apollographql.apollo3.api.Upload
 import com.apollographql.apollo3.api.internal.json.BufferedSinkJsonWriter
 import com.apollographql.apollo3.api.internal.json.FileUploadAwareJsonWriter
+import com.apollographql.apollo3.api.internal.json.buildJsonByteString
+import com.apollographql.apollo3.api.internal.json.buildJsonString
+import com.apollographql.apollo3.api.internal.json.writeObject
 import com.apollographql.apollo3.api.json.JsonWriter
-import com.apollographql.apollo3.api.json.use
-import com.apollographql.apollo3.api.variablesJson
 import com.benasher44.uuid.uuid4
 import okio.Buffer
 import okio.BufferedSink
@@ -29,8 +30,10 @@ class DefaultHttpRequestComposer(val serverUrl: String, val defaultHeaders: Map<
   override fun <D : Operation.Data> compose(apolloRequest: ApolloRequest<D>): HttpRequest {
     val params = apolloRequest.executionContext[DefaultHttpRequestComposerParams]
     val operation = apolloRequest.operation
-    val responseAdapterCache = apolloRequest.executionContext[ResponseAdapterCache] ?: error("Cannot find a ResponseAdapterCache")
     val method = params?.method ?: HttpMethod.Post
+    val autoPersistQueries = params?.autoPersistQueries ?: false
+    val sendDocument = params?.sendDocument ?: true
+    val responseAdapterCache = apolloRequest.executionContext[ResponseAdapterCache] ?: error("Cannot find a ResponseAdapterCache")
 
     val headers = mutableMapOf(
         HEADER_APOLLO_OPERATION_ID to operation.id(),
@@ -44,16 +47,12 @@ class DefaultHttpRequestComposer(val serverUrl: String, val defaultHeaders: Map<
       headers.put(it.key, it.value)
     }
 
+
     return when (method) {
       HttpMethod.Get -> {
-        val url = serverUrl.appendQueryParameters(mapOf(
-            "query" to operation.document(),
-            "operationName" to operation.name(),
-            "variables" to operation.variablesJson(responseAdapterCache)
-        ))
-         HttpRequest(
+        HttpRequest(
             method = HttpMethod.Get,
-            url = url,
+            url = buildGetUrl(serverUrl, operation, responseAdapterCache, autoPersistQueries, sendDocument),
             headers = headers,
             body = null
         )
@@ -63,7 +62,7 @@ class DefaultHttpRequestComposer(val serverUrl: String, val defaultHeaders: Map<
             method = HttpMethod.Post,
             url = serverUrl,
             headers = headers,
-            body = getBody(apolloRequest)
+            body = buildPostBody(operation, responseAdapterCache, autoPersistQueries, sendDocument),
         )
       }
     }
@@ -73,6 +72,102 @@ class DefaultHttpRequestComposer(val serverUrl: String, val defaultHeaders: Map<
     const val HEADER_APOLLO_OPERATION_ID = "X-APOLLO-OPERATION-ID"
     const val HEADER_APOLLO_OPERATION_NAME = "X-APOLLO-OPERATION-NAME"
 
+    private fun <D : Operation.Data> buildGetUrl(
+        serverUrl: String,
+        operation: Operation<D>,
+        responseAdapterCache: ResponseAdapterCache,
+        autoPersistQueries: Boolean,
+        sendDocument: Boolean,
+    ): String {
+      return serverUrl.appendQueryParameters(
+          composeGetParams(operation, responseAdapterCache, autoPersistQueries, sendDocument)
+      )
+    }
+
+    private fun <D : Operation.Data> composePostParams(
+        writer: JsonWriter,
+        operation: Operation<D>,
+        responseAdapterCache: ResponseAdapterCache,
+        autoPersistQueries: Boolean,
+        sendDocument: Boolean,
+    ): Map<String, Upload> {
+      val uploads: Map<String, Upload>
+      writer.writeObject {
+        name("operationName")
+        value(operation.name())
+
+        name("variables")
+        val uploadAwareWriter = FileUploadAwareJsonWriter(this)
+        uploadAwareWriter.writeObject {
+          operation.serializeVariables(this, responseAdapterCache)
+        }
+        uploads = uploadAwareWriter.collectedUploads()
+
+        if (sendDocument) {
+          name("query")
+          value(operation.document())
+        }
+
+        if (autoPersistQueries) {
+          name("extensions")
+          writeObject {
+            name("persistedQuery")
+            writeObject {
+              name("version").value(1)
+              name("sha256Hash").value(operation.id())
+            }
+          }
+        }
+      }
+
+      return uploads
+    }
+
+    /**
+     * This mostly duplicates [composePostParams] but encode variables and extensions as strings
+     * and not json elements. I tried factoring in that code but it ended up being more clunky that
+     * duplicating it
+     */
+    private fun <D : Operation.Data> composeGetParams(
+        operation: Operation<D>,
+        responseAdapterCache: ResponseAdapterCache,
+        autoPersistQueries: Boolean,
+        sendDocument: Boolean,
+    ): Map<String, String> {
+      val queryParams = mutableMapOf<String, String>()
+
+      queryParams.put("operationName", operation.name())
+
+      val variables = buildJsonString {
+        val uploadAwareWriter = FileUploadAwareJsonWriter(this)
+        uploadAwareWriter.writeObject {
+          operation.serializeVariables(this, responseAdapterCache)
+        }
+        check(uploadAwareWriter.collectedUploads().isEmpty()) {
+          "FileUpload and Http GET are not supported at the same time"
+        }
+      }
+
+      queryParams.put("variables", variables)
+
+      if (sendDocument) {
+        queryParams.put("query", operation.document())
+      }
+
+      if (autoPersistQueries) {
+        val extensions = buildJsonString {
+          writeObject {
+            name("persistedQuery")
+            writeObject {
+              name("version").value(1)
+              name("sha256Hash").value(operation.id())
+            }
+          }
+        }
+        queryParams.put("extensions", extensions)
+      }
+      return queryParams
+    }
 
     /**
      * A very simplified method to append query parameters
@@ -94,68 +189,24 @@ class DefaultHttpRequestComposer(val serverUrl: String, val defaultHeaders: Map<
       }
     }
 
-    private fun <D : Operation.Data> composeOperationsJson(
-        jsonWriter: JsonWriter,
+
+    private fun <D : Operation.Data> buildPostBody(
         operation: Operation<D>,
+        responseAdapterCache: ResponseAdapterCache,
         autoPersistQueries: Boolean,
         sendDocument: Boolean,
-        responseAdapterCache: ResponseAdapterCache
-    ) {
-      jsonWriter.use { writer ->
-        with(writer) {
-          beginObject()
-          name("operationName").value(operation.name())
-          name("variables")
-          beginObject()
-          operation.serializeVariables(this, responseAdapterCache)
-          endObject()
-          if (autoPersistQueries) {
-            name("extensions")
-            beginObject()
-            name("persistedQuery")
-            beginObject()
-            name("version").value(1)
-            name("sha256Hash").value(operation.id())
-            endObject()
-            endObject()
-          }
-          if (!autoPersistQueries || sendDocument) {
-            name("query").value(operation.document())
-          }
-          endObject()
-        }
+    ): HttpBody {
+      val uploads: Map<String, Upload>
+      val operationByteString = buildJsonByteString {
+        uploads = composePostParams(
+            this,
+            operation,
+            responseAdapterCache,
+            autoPersistQueries,
+            sendDocument
+        )
       }
-    }
 
-    fun <D : Operation.Data> composeOperationsJson(
-        operation: Operation<D>,
-        autoPersistQueries: Boolean,
-        sendDocument: Boolean,
-        responseAdapterCache: ResponseAdapterCache
-    ): ByteString {
-      val buffer = Buffer()
-      val jsonWriter = BufferedSinkJsonWriter(buffer)
-
-      composeOperationsJson(jsonWriter, operation, autoPersistQueries, sendDocument, responseAdapterCache)
-
-      return buffer.readByteString()
-    }
-
-    private fun <D : Operation.Data> getBody(apolloRequest: ApolloRequest<D>): HttpBody {
-      val buffer = Buffer()
-      val jsonWriter = FileUploadAwareJsonWriter(BufferedSinkJsonWriter(buffer))
-      val operation = apolloRequest.operation
-      val params = apolloRequest.executionContext[DefaultHttpRequestComposerParams]
-      val autoPersistQueries = params?.autoPersistQueries ?: false
-      val sendDocument = params?.sendDocument ?: true
-      val responseAdapterCache = apolloRequest.executionContext[ResponseAdapterCache] ?: error("Cannot find a ResponseAdapterCache")
-
-      composeOperationsJson(jsonWriter, operation, autoPersistQueries, sendDocument, responseAdapterCache)
-
-      buffer.flush()
-      val operationByteString = buffer.readByteString()
-
-      val uploads = jsonWriter.collectedUploads()
       if (uploads.isEmpty()) {
         return object : HttpBody {
           override val contentType = "application/json"
@@ -182,13 +233,13 @@ class DefaultHttpRequestComposer(val serverUrl: String, val defaultHeaders: Map<
             bufferedSink.writeUtf8("\r\n")
             bufferedSink.write(operationByteString)
 
-            val uploadsMapBuffer = uploads.toMapBuffer()
+            val uploadsMap = buildUploadMap(uploads)
             bufferedSink.writeUtf8("\r\n--$boundary\r\n")
             bufferedSink.writeUtf8("Content-Disposition: form-data; name=\"map\"\r\n")
             bufferedSink.writeUtf8("Content-Type: application/json\r\n")
-            bufferedSink.writeUtf8("Content-Length: ${uploadsMapBuffer.size}\r\n")
+            bufferedSink.writeUtf8("Content-Length: ${uploadsMap.size}\r\n")
             bufferedSink.writeUtf8("\r\n")
-            bufferedSink.writeAll(uploadsMapBuffer)
+            bufferedSink.write(uploadsMap)
 
             uploads.values.forEachIndexed { index, upload ->
               bufferedSink.writeUtf8("\r\n--$boundary\r\n")
@@ -208,30 +259,32 @@ class DefaultHttpRequestComposer(val serverUrl: String, val defaultHeaders: Map<
             bufferedSink.writeUtf8("\r\n--$boundary--\r\n")
           }
         }
-
       }
-
     }
 
-    private fun Map<String, Upload>.toMapBuffer(): Buffer {
-      val buffer = Buffer()
+    private fun buildUploadMap(uploads: Map<String, Upload>) = buildJsonByteString {
+      AnyResponseAdapter.toResponse(this, ResponseAdapterCache.DEFAULT, uploads.entries.mapIndexed { index, entry ->
+        index.toString() to listOf(entry.key)
+      }.toMap())
+    }
 
-      BufferedSinkJsonWriter(buffer).use {
-        AnyResponseAdapter.toResponse(it, ResponseAdapterCache.DEFAULT, entries.mapIndexed { index, entry ->
-          index.toString() to listOf(entry.key)
-        }.toMap())
-      }
 
-      return buffer
+    fun <D : Operation.Data> buildParamsMap(
+        operation: Operation<D>,
+        responseAdapterCache: ResponseAdapterCache,
+        autoPersistQueries: Boolean,
+        sendDocument: Boolean,
+    ): ByteString = buildJsonByteString {
+      composePostParams(this, operation, responseAdapterCache, autoPersistQueries, sendDocument)
     }
   }
 }
 
-class DefaultHttpRequestComposerParams(
+data class DefaultHttpRequestComposerParams(
     val method: HttpMethod,
     val autoPersistQueries: Boolean,
     val sendDocument: Boolean,
-    val extraHeaders: Map<String, String>
+    val extraHeaders: Map<String, String>,
 ) : ClientContext(Key) {
   companion object Key : ExecutionContext.Key<DefaultHttpRequestComposerParams>
 }

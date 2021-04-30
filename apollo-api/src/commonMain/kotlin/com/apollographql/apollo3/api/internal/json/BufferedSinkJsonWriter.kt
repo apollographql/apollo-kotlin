@@ -50,13 +50,6 @@ class BufferedSinkJsonWriter(private val sink: BufferedSink) : JsonWriter {
    */
   private var isLenient = false
 
-  /**
-   * Sets whether object members are serialized when their value is null. This has no impact on array elements.
-   *
-   * The default is false.
-   */
-  var serializeNulls = false
-
   /** The name/value separator; either ":" or ": ".  */
   val separator: String
     get() = if (indent.isNullOrEmpty()) ":" else ": "
@@ -71,7 +64,7 @@ class BufferedSinkJsonWriter(private val sink: BufferedSink) : JsonWriter {
    * - Remove square brackets in lists. This isn't great because it doesn't allow to distinguish lists from "0" keys but
    * this is how File Upload works: https://github.com/jaydenseric/graphql-multipart-request-spec
    */
-  val path: String
+  override val path: String
     get() = JsonScope.getPath(stackSize, scopes, pathNames, pathIndices)
 
   init {
@@ -160,12 +153,7 @@ class BufferedSinkJsonWriter(private val sink: BufferedSink) : JsonWriter {
   @Throws(IOException::class)
   override fun nullValue(): JsonWriter {
     if (deferredName != null) {
-      if (serializeNulls) {
-        writeDeferredName()
-      } else {
-        deferredName = null
-        return this // skip the name and the value
-      }
+      writeDeferredName()
     }
     beforeValue()
     sink.writeUtf8("null")

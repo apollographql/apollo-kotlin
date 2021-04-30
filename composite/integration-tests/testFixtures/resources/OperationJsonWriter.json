@@ -5,7 +5,9 @@
         {
           "__typename": "Planet",
           "name": "Tatooine",
-          "surfaceWater": 1.0
+          "climates": null,
+          "surfaceWater": 1.0,
+          "filmConnection": null
         },
         {
           "__typename": "Planet",
@@ -207,6 +209,7 @@
           "climates": [
             "temperate"
           ],
+          "surfaceWater": null,
           "filmConnection": {
             "totalCount": 4,
             "films": [
@@ -372,6 +375,7 @@
           "climates": [
             "frigid"
           ],
+          "surfaceWater": null,
           "filmConnection": {
             "totalCount": 1,
             "films": [
@@ -392,6 +396,7 @@
             "hot",
             "humid"
           ],
+          "surfaceWater": null,
           "filmConnection": {
             "totalCount": 1,
             "films": [
@@ -412,6 +417,7 @@
             "temperate",
             "moist"
           ],
+          "surfaceWater": null,
           "filmConnection": {
             "totalCount": 1,
             "films": [
@@ -431,6 +437,7 @@
           "climates": [
             "hot"
           ],
+          "surfaceWater": null,
           "filmConnection": {
             "totalCount": 1,
             "films": [
@@ -450,6 +457,7 @@
           "climates": [
             "temperate"
           ],
+          "surfaceWater": null,
           "filmConnection": {
             "totalCount": 0,
             "films": []
@@ -461,6 +469,7 @@
           "climates": [
             "polluted"
           ],
+          "surfaceWater": null,
           "filmConnection": {
             "totalCount": 0,
             "films": []
@@ -496,6 +505,7 @@
           "climates": [
             "temperate"
           ],
+          "surfaceWater": null,
           "filmConnection": {
             "totalCount": 0,
             "films": []
@@ -507,6 +517,7 @@
           "climates": [
             "temperate"
           ],
+          "surfaceWater": null,
           "filmConnection": {
             "totalCount": 0,
             "films": []
@@ -551,6 +562,7 @@
           "climates": [
             "unknown"
           ],
+          "surfaceWater": null,
           "filmConnection": {
             "totalCount": 0,
             "films": []
@@ -562,6 +574,7 @@
           "climates": [
             "arid"
           ],
+          "surfaceWater": null,
           "filmConnection": {
             "totalCount": 0,
             "films": []
@@ -573,6 +586,7 @@
           "climates": [
             "arid"
           ],
+          "surfaceWater": null,
           "filmConnection": {
             "totalCount": 0,
             "films": []
@@ -620,6 +634,7 @@
           "climates": [
             "temperate"
           ],
+          "surfaceWater": null,
           "filmConnection": {
             "totalCount": 0,
             "films": []
@@ -633,6 +648,7 @@
             "temperate",
             "tropical"
           ],
+          "surfaceWater": null,
           "filmConnection": {
             "totalCount": 0,
             "films": []
@@ -644,6 +660,7 @@
           "climates": [
             "temperate"
           ],
+          "surfaceWater": null,
           "filmConnection": {
             "totalCount": 0,
             "films": []
@@ -669,6 +686,7 @@
           "climates": [
             "unknown"
           ],
+          "surfaceWater": null,
           "filmConnection": {
             "totalCount": 0,
             "films": []
@@ -681,6 +699,7 @@
             "temperate",
             "artic"
           ],
+          "surfaceWater": null,
           "filmConnection": {
             "totalCount": 0,
             "films": []
@@ -692,6 +711,7 @@
           "climates": [
             "unknown"
           ],
+          "surfaceWater": null,
           "filmConnection": {
             "totalCount": 0,
             "films": []
@@ -703,6 +723,7 @@
           "climates": [
             "unknown"
           ],
+          "surfaceWater": null,
           "filmConnection": {
             "totalCount": 0,
             "films": []
@@ -714,6 +735,7 @@
           "climates": [
             "temperate"
           ],
+          "surfaceWater": null,
           "filmConnection": {
             "totalCount": 0,
             "films": []
@@ -750,6 +772,7 @@
           "climates": [
             "unknown"
           ],
+          "surfaceWater": null,
           "filmConnection": {
             "totalCount": 0,
             "films": []
@@ -761,6 +784,7 @@
           "climates": [
             "unknown"
           ],
+          "surfaceWater": null,
           "filmConnection": {
             "totalCount": 0,
             "films": []
@@ -774,6 +798,7 @@
             "rocky",
             "windy"
           ],
+          "surfaceWater": null,
           "filmConnection": {
             "totalCount": 0,
             "films": []
@@ -785,6 +810,7 @@
           "climates": [
             "unknown"
           ],
+          "surfaceWater": null,
           "filmConnection": {
             "totalCount": 0,
             "films": []
@@ -796,6 +822,7 @@
           "climates": [
             "temperate"
           ],
+          "surfaceWater": null,
           "filmConnection": {
             "totalCount": 0,
             "films": []
@@ -807,6 +834,7 @@
           "climates": [
             "temperate"
           ],
+          "surfaceWater": null,
           "filmConnection": {
             "totalCount": 0,
             "films": []
@@ -818,6 +846,7 @@
           "climates": [
             "unknown"
           ],
+          "surfaceWater": null,
           "filmConnection": {
             "totalCount": 0,
             "films": []
@@ -829,6 +858,7 @@
           "climates": [
             "unknown"
           ],
+          "surfaceWater": null,
           "filmConnection": {
             "totalCount": 0,
             "films": []
@@ -840,6 +870,7 @@
           "climates": [
             "unknown"
           ],
+          "surfaceWater": null,
           "filmConnection": {
             "totalCount": 0,
             "films": []
@@ -851,6 +882,7 @@
           "climates": [
             "unknown"
           ],
+          "surfaceWater": null,
           "filmConnection": {
             "totalCount": 0,
             "films": []
@@ -874,6 +906,7 @@
           "climates": [
             "temperate"
           ],
+          "surfaceWater": null,
           "filmConnection": {
             "totalCount": 0,
             "films": []
@@ -897,6 +930,7 @@
           "climates": [
             "temperate"
           ],
+          "surfaceWater": null,
           "filmConnection": {
             "totalCount": 0,
             "films": []
@@ -910,6 +944,7 @@
             "temperate",
             "tropical"
           ],
+          "surfaceWater": null,
           "filmConnection": {
             "totalCount": 0,
             "films": []
@@ -921,6 +956,7 @@
           "climates": [
             "unknown"
           ],
+          "surfaceWater": null,
           "filmConnection": {
             "totalCount": 0,
             "films": []
