@@ -5,7 +5,7 @@ set -x
 
 export PATH="$ANDROID_HOME"/tools/bin:$PATH
 
-./gradlew fullCheck
+./gradlew -p composite fullCheck
 
 # check that the public API did not change with Metalava
 # reenable when the 3.x API is more stable
