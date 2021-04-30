@@ -5,7 +5,7 @@ package com.apollographql.apollo3.api
  *
  * @param customScalarResponseAdapters a map from [CustomScalar] to the matching runtime [ResponseAdapter]
  */
-class ResponseAdapterCache(val customScalarResponseAdapters: Map<String, ResponseAdapter<*>>) {
+class ResponseAdapterCache(val customScalarResponseAdapters: Map<String, ResponseAdapter<*>>): ClientContext(Key) {
 
   fun <T : Any> responseAdapterFor(customScalar: CustomScalar): ResponseAdapter<T> {
     return when {
@@ -21,7 +21,7 @@ class ResponseAdapterCache(val customScalarResponseAdapters: Map<String, Respons
 
   }
 
-  companion object {
+  companion object Key: ExecutionContext.Key<ResponseAdapterCache> {
     val DEFAULT = ResponseAdapterCache(emptyMap())
   }
 }

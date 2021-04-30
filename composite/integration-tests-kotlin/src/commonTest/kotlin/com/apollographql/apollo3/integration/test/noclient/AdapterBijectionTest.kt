@@ -197,8 +197,8 @@ class AdapterBijectionTest {
 //  )
 
   private fun <D : Operation.Data> bijection(operation: Operation<D>, data: D) {
-    val json = operation.toJson(data = data, responseAdapterCache = responseAdapterCache)
-    val data2 = operation.fromJson(Buffer().apply { writeUtf8(json) }, responseAdapterCache)
+    val json = operation.adapter().toJson(value = data, responseAdapterCache = responseAdapterCache)
+    val data2 = operation.adapter().fromJson(Buffer().apply { writeUtf8(json) }, responseAdapterCache)
 
     assertEquals(data, data2)
   }

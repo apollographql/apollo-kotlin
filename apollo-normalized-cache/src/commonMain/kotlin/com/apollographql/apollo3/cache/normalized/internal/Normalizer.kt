@@ -1,11 +1,11 @@
 package com.apollographql.apollo3.cache.normalized.internal
 
-import com.apollographql.apollo3.api.Operation
+import com.apollographql.apollo3.api.Executable
 import com.apollographql.apollo3.api.ResponseField
 import com.apollographql.apollo3.cache.normalized.CacheReference
 import com.apollographql.apollo3.cache.normalized.Record
 
-class Normalizer(val variables: Operation.Variables, val cacheKeyForObject: (ResponseField, Map<String, Any?>) -> String?) {
+class Normalizer(val variables: Executable.Variables, val cacheKeyForObject: (ResponseField, Map<String, Any?>) -> String?) {
   private val records = mutableMapOf<String, Record>()
   private val cacheKeyBuilder = RealCacheKeyBuilder()
 

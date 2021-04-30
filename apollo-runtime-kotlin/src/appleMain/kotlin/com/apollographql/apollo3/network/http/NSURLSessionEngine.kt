@@ -1,5 +1,8 @@
 package com.apollographql.apollo3.network.http
 
+import com.apollographql.apollo3.api.http.HttpMethod
+import com.apollographql.apollo3.api.http.HttpRequest
+import com.apollographql.apollo3.api.http.HttpResponse
 import com.apollographql.apollo3.exception.ApolloException
 import com.apollographql.apollo3.exception.ApolloHttpException
 import com.apollographql.apollo3.exception.ApolloNetworkException
@@ -7,7 +10,6 @@ import com.apollographql.apollo3.network.toNSData
 import kotlinx.cinterop.COpaquePointer
 import kotlinx.cinterop.StableRef
 import kotlinx.cinterop.asStableRef
-import kotlinx.cinterop.convert
 import kotlinx.cinterop.staticCFunction
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.suspendCancellableCoroutine
@@ -98,13 +100,14 @@ actual class DefaultHttpEngine(
           setHTTPMethod("GET")
         } else {
           setHTTPMethod("POST")
-          if (request.body != null) {
-            setValue(request.body.contentType, forHTTPHeaderField = "Content-Type")
+          val requestBody = request.body
+          if (requestBody != null) {
+            setValue(requestBody.contentType, forHTTPHeaderField = "Content-Type")
 
-            if (request.body.contentLength >= 0) {
-              setValue(request.body.contentLength.toString(), forHTTPHeaderField = "Content-Length")
+            if (requestBody.contentLength >= 0) {
+              setValue(requestBody.contentLength.toString(), forHTTPHeaderField = "Content-Length")
             }
-            val body = Buffer().apply { request.body.writeTo(this) }.readByteArray().toNSData()
+            val body = Buffer().apply { requestBody.writeTo(this) }.readByteArray().toNSData()
             setHTTPBody(body)
           }
         }

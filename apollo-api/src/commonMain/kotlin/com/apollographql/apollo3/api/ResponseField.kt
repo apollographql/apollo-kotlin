@@ -1,7 +1,5 @@
 package com.apollographql.apollo3.api
 
-import kotlin.jvm.JvmStatic
-
 /**
  * An abstraction for a field in a graphQL operation. Field can refer to:
  * - GraphQL
@@ -29,7 +27,7 @@ class ResponseField(
   @Suppress("UNCHECKED_CAST")
   fun resolveArgument(
       name: String,
-      variables: Operation.Variables
+      variables: Executable.Variables
   ): Any? {
     val variableValues = variables.valueMap
     val argumentValue = arguments[name]

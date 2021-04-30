@@ -1,6 +1,6 @@
 package com.apollographql.apollo3.interceptor.cache
 
-import com.apollographql.apollo3.ApolloRequest
+import com.apollographql.apollo3.api.ApolloRequest
 import com.apollographql.apollo3.api.ApolloResponse
 import com.apollographql.apollo3.api.Operation
 import com.apollographql.apollo3.api.Query
@@ -27,6 +27,7 @@ class ApolloCacheInterceptor(private val store: ApolloStore) : ApolloRequestInte
     val fetchPolicy = request.executionContext[FetchPolicyContext]?.fetchPolicy ?: defaultFetchPolicy
     val refetchPolicy = request.executionContext[RefetchPolicyContext]?.refetchPolicy
     val optimisticUpdates = request.executionContext[OptimisticUpdates]?.data
+    val responseAdapterCache = request.executionContext[ResponseAdapterCache]!!
 
     return flow {
       var result = kotlin.runCatching {
@@ -47,7 +48,7 @@ class ApolloCacheInterceptor(private val store: ApolloStore) : ApolloRequestInte
       }
 
       var watchedKeys = if (response != null && !response.hasErrors() && response.data != null) {
-        store.normalize(request.operation, response.data!!, chain.responseAdapterCache).values.dependentKeys()
+        store.normalize(request.operation, response.data!!, responseAdapterCache).values.dependentKeys()
       } else {
         null
       }
@@ -63,7 +64,7 @@ class ApolloCacheInterceptor(private val store: ApolloStore) : ApolloRequestInte
             emit(newResponse)
 
             if (!newResponse.hasErrors() && newResponse.data != null) {
-              watchedKeys = store.normalize(request.operation, newResponse.data!!, chain.responseAdapterCache).values.dependentKeys()
+              watchedKeys = store.normalize(request.operation, newResponse.data!!, responseAdapterCache).values.dependentKeys()
             }
           }
         }
@@ -77,13 +78,14 @@ class ApolloCacheInterceptor(private val store: ApolloStore) : ApolloRequestInte
       fetchPolicy: FetchPolicy,
       optimisticUpdates: D?,
   ): ApolloResponse<D> {
+    val responseAdapterCache = request.executionContext[ResponseAdapterCache]!!
 
     if (optimisticUpdates != null) {
       store.writeOptimisticUpdates(
           operation = request.operation,
           operationData = optimisticUpdates,
           mutationId = request.requestUuid,
-          responseAdapterCache = chain.responseAdapterCache,
+          responseAdapterCache = responseAdapterCache,
           publish = true
       )
     }
@@ -101,7 +103,7 @@ class ApolloCacheInterceptor(private val store: ApolloStore) : ApolloRequestInte
         emptySet()
       }
       val cacheKeys = if (!response.isFromCache && response.data != null) {
-        store.writeOperation(request.operation, response.data!!, chain.responseAdapterCache, CacheHeaders.NONE, publish = false)
+        store.writeOperation(request.operation, response.data!!, responseAdapterCache, CacheHeaders.NONE, publish = false)
       } else {
         emptySet()
       }
@@ -117,11 +119,13 @@ class ApolloCacheInterceptor(private val store: ApolloStore) : ApolloRequestInte
       chain: ApolloInterceptorChain,
       fetchPolicy: FetchPolicy,
   ): ApolloResponse<D> {
+    val responseAdapterCache = request.executionContext[ResponseAdapterCache]!!
+
     when (fetchPolicy) {
       FetchPolicy.CacheFirst -> {
         Platform.ensureNeverFrozen(store)
         val cacheResult = kotlin.runCatching {
-          readFromCache(request, chain.responseAdapterCache)
+          readFromCache(request, responseAdapterCache)
         }
 
         val cacheResponse = cacheResult.getOrNull()
@@ -154,7 +158,7 @@ class ApolloCacheInterceptor(private val store: ApolloStore) : ApolloRequestInte
         }
 
         val cacheResult = kotlin.runCatching {
-          readFromCache(request, chain.responseAdapterCache)
+          readFromCache(request, responseAdapterCache)
         }
 
         val cacheResponse = cacheResult.getOrNull()
@@ -168,7 +172,7 @@ class ApolloCacheInterceptor(private val store: ApolloStore) : ApolloRequestInte
         )
       }
       FetchPolicy.CacheOnly -> {
-        return readFromCache(request, chain.responseAdapterCache)
+        return readFromCache(request, responseAdapterCache)
       }
       FetchPolicy.NetworkOnly -> {
         return proceed(request, chain).single()

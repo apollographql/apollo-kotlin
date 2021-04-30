@@ -1,10 +1,9 @@
 package com.apollographql.apollo3.internal.subscription
 
-import com.apollographql.apollo3.api.ResponseAdapterCache
-import com.apollographql.apollo3.api.Operation
 import com.apollographql.apollo3.api.ApolloResponse
+import com.apollographql.apollo3.api.ResponseAdapterCache
 import com.apollographql.apollo3.api.Subscription
-import com.apollographql.apollo3.api.internal.MapResponseParser
+import com.apollographql.apollo3.api.internal.ResponseBodyParser
 import com.apollographql.apollo3.cache.normalized.CacheKeyResolver
 import com.apollographql.apollo3.exception.ApolloNetworkException
 import com.apollographql.apollo3.subscription.OnSubscriptionManagerStateChangeListener
@@ -13,8 +12,6 @@ import com.apollographql.apollo3.subscription.OperationServerMessage
 import com.apollographql.apollo3.subscription.SubscriptionConnectionParamsProvider
 import com.apollographql.apollo3.subscription.SubscriptionManagerState
 import com.apollographql.apollo3.subscription.SubscriptionTransport
-import java.util.ArrayList
-import java.util.LinkedHashMap
 import java.util.Timer
 import java.util.TimerTask
 import java.util.UUID
@@ -296,7 +293,7 @@ class RealSubscriptionManager(private val responseAdapterCache: ResponseAdapterC
     if (subscriptionRecord != null) {
       val subscription = subscriptionRecord!!.subscription
       try {
-        val response = MapResponseParser.parse(message.payload, subscription, responseAdapterCache)
+        val response = ResponseBodyParser.parse(message.payload, subscription, responseAdapterCache)
         subscriptionRecord!!.notifyOnResponse(response)
       } catch (e: Exception) {
         subscriptionRecord = removeSubscriptionById(subscriptionId)
@@ -331,7 +328,7 @@ class RealSubscriptionManager(private val responseAdapterCache: ResponseAdapterC
     val subscriptionRecord = removeSubscriptionById(subscriptionId)
     val resendSubscriptionWithDocument: Boolean
     resendSubscriptionWithDocument = if (autoPersistSubscription) {
-      val error = MapResponseParser.parseError(message.payload)
+      val error = ResponseBodyParser.parseError(message.payload)
       (PROTOCOL_NEGOTIATION_ERROR_NOT_FOUND.equals(error.message, ignoreCase = true)
           || PROTOCOL_NEGOTIATION_ERROR_NOT_SUPPORTED.equals(error.message, ignoreCase = true))
     } else {

@@ -1,6 +1,6 @@
 package com.apollographql.apollo3.cache.normalized.internal
 
-import com.apollographql.apollo3.api.Operation
+import com.apollographql.apollo3.api.Executable
 import com.apollographql.apollo3.api.ResponseField
 import com.apollographql.apollo3.api.Variable
 import com.google.common.truth.Truth
@@ -18,7 +18,7 @@ class CacheKeyBuilderTest {
   @Test
   fun testFieldWithNoArguments() {
     val field = createResponseField("hero", "hero")
-    val variables = Operation.Variables(emptyMap())
+    val variables = Executable.Variables(emptyMap())
 
     Truth.assertThat(cacheKeyBuilder.build(field, variables)).isEqualTo("hero")
   }
@@ -26,7 +26,7 @@ class CacheKeyBuilderTest {
   @Test
   fun testFieldWithNoArgumentsWithAlias() {
     val field = createResponseField("r2", "hero")
-    val variables = Operation.Variables(emptyMap())
+    val variables = Executable.Variables(emptyMap())
 
     Truth.assertThat(cacheKeyBuilder.build(field, variables)).isEqualTo("hero")
   }
@@ -35,7 +35,7 @@ class CacheKeyBuilderTest {
   fun testFieldWithArgument() {
     val arguments = mapOf<String, Any?>("episode" to "JEDI")
     val field = createResponseField("hero", "hero", arguments)
-    val variables = Operation.Variables(emptyMap())
+    val variables = Executable.Variables(emptyMap())
 
     Truth.assertThat(cacheKeyBuilder.build(field, variables)).isEqualTo("hero({\"episode\":\"JEDI\"})")
   }
@@ -44,7 +44,7 @@ class CacheKeyBuilderTest {
   fun testFieldWithArgumentAndAlias() {
     val arguments = mapOf<String, Any?>("episode" to "JEDI")
     val field = createResponseField("r2", "hero", arguments)
-    val variables = Operation.Variables(emptyMap())
+    val variables = Executable.Variables(emptyMap())
 
     Truth.assertThat(cacheKeyBuilder.build(field, variables)).isEqualTo("hero({\"episode\":\"JEDI\"})")
   }
@@ -55,7 +55,7 @@ class CacheKeyBuilderTest {
         "episode" to Variable("episode")
     )
     val field = createResponseField("hero", "hero", argument)
-    val variables = Operation.Variables(mapOf(
+    val variables = Executable.Variables(mapOf(
         "episode" to Episode.JEDI
     ))
 
@@ -68,7 +68,7 @@ class CacheKeyBuilderTest {
         "episode" to Variable("episode")
     )
     val field = createResponseField("hero", "hero", argument)
-    val variables = Operation.Variables(mapOf(
+    val variables = Executable.Variables(mapOf(
         "episode" to null
     ))
 
@@ -82,7 +82,7 @@ class CacheKeyBuilderTest {
         "color" to "blue"
     )
     val field = createResponseField("hero", "hero", arguments)
-    val variables = Operation.Variables(emptyMap())
+    val variables = Executable.Variables(emptyMap())
 
     Truth.assertThat(cacheKeyBuilder.build(field, variables)).isEqualTo("hero({\"color\":\"blue\",\"episode\":\"JEDI\"})")
   }
@@ -94,7 +94,7 @@ class CacheKeyBuilderTest {
         "color" to "blue"
     )
     val field = createResponseField("hero", "hero", arguments)
-    val variables = Operation.Variables(emptyMap())
+    val variables = Executable.Variables(emptyMap())
 
     val fieldTwoArguments = mapOf<String, Any?>(
         "color" to "blue",
@@ -113,7 +113,7 @@ class CacheKeyBuilderTest {
         )
     )
     val field = createResponseField("hero", "hero", arguments)
-    val variables = Operation.Variables(emptyMap())
+    val variables = Executable.Variables(emptyMap())
 
     Truth.assertThat(cacheKeyBuilder.build(field, variables)).isEqualTo("hero({\"episode\":\"JEDI\",\"nested\":{\"bar\":2,\"foo\":1}})")
   }
@@ -126,7 +126,7 @@ class CacheKeyBuilderTest {
         arguments = mapOf<String, Any?>("episode" to Episode.JEDI)
     )
 
-    val variables = Operation.Variables(emptyMap())
+    val variables = Executable.Variables(emptyMap())
     Truth.assertThat(cacheKeyBuilder.build(field, variables)).isEqualTo("hero({\"episode\":\"JEDI\"})")
   }
 
@@ -140,7 +140,7 @@ class CacheKeyBuilderTest {
         )
     )
     val field = createResponseField("hero", "hero", arguments)
-    val variables = Operation.Variables(mapOf( "stars" to 1))
+    val variables = Executable.Variables(mapOf("stars" to 1))
 
     Truth.assertThat(cacheKeyBuilder.build(field, variables)).isEqualTo("hero({\"episode\":\"JEDI\",\"nested\":{\"bar\":\"2\",\"foo\":1}})")
   }
@@ -182,7 +182,7 @@ class CacheKeyBuilderTest {
         )
     )
 
-    val variables = Operation.Variables(mapOf( "testInput" to testInput))
+    val variables = Executable.Variables(mapOf("testInput" to testInput))
 
     Truth.assertThat(cacheKeyBuilder.build(field, variables)).isEqualTo(
         "hero({\"episode\":\"JEDI\",\"nested\":{\"bar\":\"2\",\"foo\":{\"string\":\"string\",\"int\":1,\"double\":3.0,\"boolean\":true,\"custom\":\"JEDI\",\"object\":{\"string\":\"string\",\"int\":1},\"list\":[\"string\",1,3.0,true,\"JEDI\",{\"string\":\"string\",\"int\":1},[\"string\",1]]}}})")
@@ -212,7 +212,7 @@ class CacheKeyBuilderTest {
         "null" to null
     )
 
-    val variables = Operation.Variables(mapOf( "testInput" to testInput))
+    val variables = Executable.Variables(mapOf("testInput" to testInput))
 
     Truth.assertThat(cacheKeyBuilder.build(field, variables)).isEqualTo("hero({\"episode\":null,\"nested\":{\"bar\":null,\"foo\":{\"string\":null,\"int\":null,\"long\":null,\"double\":null,\"number\":null,\"boolean\":null,\"custom\":null,\"object\":null,\"listNull\":null,\"listWithNulls\":[null,null,null,null,null,null,null,null,null],\"null\":null}}})")
   }
@@ -237,8 +237,8 @@ class CacheKeyBuilderTest {
     )
 
     val field = createResponseField("hero", "hero", arguments)
-    val variables0 = Operation.Variables(mapOf( "stars" to listOf(0)))
-    val variables1 = Operation.Variables(mapOf( "stars" to listOf(1)))
+    val variables0 = Executable.Variables(mapOf("stars" to listOf(0)))
+    val variables1 = Executable.Variables(mapOf("stars" to listOf(1)))
 
     Truth.assertThat(cacheKeyBuilder.build(field, variables0)).isNotEqualTo(cacheKeyBuilder.build(field, variables1))
   }

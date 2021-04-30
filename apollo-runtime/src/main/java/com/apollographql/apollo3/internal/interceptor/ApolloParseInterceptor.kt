@@ -1,11 +1,11 @@
 package com.apollographql.apollo3.internal.interceptor
 
 import com.apollographql.apollo3.CacheInfo
-import com.apollographql.apollo3.api.ResponseAdapterCache
 import com.apollographql.apollo3.api.Operation
+import com.apollographql.apollo3.api.ResponseAdapterCache
 import com.apollographql.apollo3.api.cache.http.HttpCache
 import com.apollographql.apollo3.api.internal.ApolloLogger
-import com.apollographql.apollo3.api.fromResponse
+import com.apollographql.apollo3.api.parseResponseBody
 import com.apollographql.apollo3.exception.ApolloException
 import com.apollographql.apollo3.exception.ApolloHttpException
 import com.apollographql.apollo3.exception.ApolloParseException
@@ -16,7 +16,6 @@ import com.apollographql.apollo3.interceptor.ApolloInterceptor.FetchSourceType
 import com.apollographql.apollo3.interceptor.ApolloInterceptor.InterceptorRequest
 import com.apollographql.apollo3.interceptor.ApolloInterceptor.InterceptorResponse
 import com.apollographql.apollo3.interceptor.ApolloInterceptorChain
-import com.apollographql.apollo3.withCacheInfo
 import okhttp3.Headers
 import okhttp3.Response
 import java.io.Closeable
@@ -72,7 +71,7 @@ class ApolloParseInterceptor(private val httpCache: HttpCache?,
     return if (httpResponse.isSuccessful) {
       try {
         val httpExecutionContext = OkHttpExecutionContext(httpResponse)
-        var parsedResponse = operation.fromResponse(httpResponse.body()!!.source(), responseAdapterCache)
+        var parsedResponse = operation.parseResponseBody(httpResponse.body()!!.source(), responseAdapterCache)
 
         parsedResponse = parsedResponse.copy(
             executionContext = parsedResponse.executionContext.plus(httpExecutionContext) + CacheInfo(httpResponse.cacheResponse() != null)

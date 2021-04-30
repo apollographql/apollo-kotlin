@@ -1,60 +1,79 @@
 package com.apollographql.apollo3.api.internal
 
+import com.apollographql.apollo3.api.ApolloResponse
 import com.apollographql.apollo3.api.Error
 import com.apollographql.apollo3.api.Operation
-import com.apollographql.apollo3.api.ApolloResponse
-import com.apollographql.apollo3.api.ResponseAdapter
 import com.apollographql.apollo3.api.ResponseAdapterCache
-import com.apollographql.apollo3.api.Throws
 import com.apollographql.apollo3.api.internal.json.BufferedSourceJsonReader
-import com.apollographql.apollo3.api.json.JsonReader
+import com.apollographql.apollo3.api.internal.json.MapJsonReader
 import com.apollographql.apollo3.api.internal.json.Utils.readRecursively
+import com.apollographql.apollo3.api.json.JsonReader
 import com.apollographql.apollo3.api.json.use
 import com.apollographql.apollo3.api.nullable
 import com.benasher44.uuid.uuid4
 import okio.BufferedSource
-import okio.IOException
-import kotlin.jvm.JvmStatic
 
 /**
- * [StreamResponseParser] parses network responses, including data, errors and extensions from a [JsonReader]
+ * [ResponseBodyParser] parses network responses, including data, errors and extensions from a [JsonReader]
  *
  * That will avoid the cost of having to create an entire Map in memory
  */
-object StreamResponseParser {
-  @JvmStatic
-  @Throws(IOException::class)
+object ResponseBodyParser {
+  fun <D : Operation.Data> parse(
+      jsonReader: JsonReader,
+      operation: Operation<D>,
+      responseAdapterCache: ResponseAdapterCache
+  ): ApolloResponse<D> {
+    jsonReader.beginObject()
+
+    var data: D? = null
+    var errors: List<Error>? = null
+    var extensions: Map<String, Any?>? = null
+    while (jsonReader.hasNext()) {
+      when (jsonReader.nextName()) {
+        "data" -> data = operation.adapter().nullable().fromResponse(jsonReader, responseAdapterCache)
+        "errors" -> errors = jsonReader.readErrors()
+        "extensions" -> extensions = jsonReader.readRecursively() as Map<String, Any?>
+        else -> jsonReader.skipValue()
+      }
+    }
+
+    jsonReader.endObject()
+
+    return ApolloResponse(
+        requestUuid = uuid4(),
+        operation = operation,
+        data = data,
+        errors = errors,
+        extensions = extensions.orEmpty()
+    )
+  }
+
   fun <D : Operation.Data> parse(
       source: BufferedSource,
       operation: Operation<D>,
       responseAdapterCache: ResponseAdapterCache
   ): ApolloResponse<D> {
     return BufferedSourceJsonReader(source).use { jsonReader ->
-      jsonReader.beginObject()
-
-      var data: D? = null
-      var errors: List<Error>? = null
-      var extensions: Map<String, Any?>? = null
-      while (jsonReader.hasNext()) {
-        when (jsonReader.nextName()) {
-          "data" -> data = operation.adapter().nullable().fromResponse(jsonReader, responseAdapterCache)
-          "errors" -> errors = jsonReader.readErrors()
-          "extensions" -> extensions = jsonReader.readRecursively() as Map<String, Any?>
-          else -> jsonReader.skipValue()
-        }
-      }
-
-      jsonReader.endObject()
-
-      ApolloResponse(
-          requestUuid = uuid4(),
-          operation = operation,
-          data = data,
-          errors = errors,
-          extensions = extensions.orEmpty()
-      )
+      parse(jsonReader, operation, responseAdapterCache)
     }
   }
+
+  fun <D : Operation.Data> parse(
+      payload: Map<String, Any?>,
+      operation: Operation<D>,
+      responseAdapterCache: ResponseAdapterCache,
+  ): ApolloResponse<D> {
+    return parse(
+        MapJsonReader(payload),
+        operation = operation,
+        responseAdapterCache = responseAdapterCache
+    )
+  }
+
+  fun parseError(
+      payload: Map<String, Any?>,
+  ) = payload.readError()
 
   @Suppress("UNCHECKED_CAST")
   private fun JsonReader.readErrors(): List<Error> {

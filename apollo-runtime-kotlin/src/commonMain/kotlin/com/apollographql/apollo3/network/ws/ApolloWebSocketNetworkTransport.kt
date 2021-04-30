@@ -1,18 +1,18 @@
 package com.apollographql.apollo3.network.ws
 
-import com.apollographql.apollo3.exception.ApolloWebSocketException
-import com.apollographql.apollo3.exception.ApolloWebSocketServerException
-import com.apollographql.apollo3.api.ResponseAdapterCache
+import com.apollographql.apollo3.api.ApolloRequest
+import com.apollographql.apollo3.api.ApolloResponse
 import com.apollographql.apollo3.api.ExecutionContext
 import com.apollographql.apollo3.api.Operation
+import com.apollographql.apollo3.api.ResponseAdapterCache
 import com.apollographql.apollo3.api.Subscription
+import com.apollographql.apollo3.api.internal.json.BufferedSinkJsonWriter
 import com.apollographql.apollo3.api.internal.json.Utils
-import com.apollographql.apollo3.api.fromResponse
+import com.apollographql.apollo3.api.parseResponseBody
 import com.apollographql.apollo3.dispatcher.ApolloCoroutineDispatcher
 import com.apollographql.apollo3.exception.ApolloParseException
-import com.apollographql.apollo3.ApolloRequest
-import com.apollographql.apollo3.api.ApolloResponse
-import com.apollographql.apollo3.api.internal.json.BufferedSinkJsonWriter
+import com.apollographql.apollo3.exception.ApolloWebSocketException
+import com.apollographql.apollo3.exception.ApolloWebSocketServerException
 import com.apollographql.apollo3.network.NetworkTransport
 import com.apollographql.apollo3.subscription.ApolloOperationMessageSerializer
 import com.apollographql.apollo3.subscription.OperationClientMessage
@@ -66,8 +66,9 @@ class ApolloWebSocketNetworkTransport(
 
   override fun <D : Operation.Data> execute(
       request: ApolloRequest<D>,
-      responseAdapterCache: ResponseAdapterCache,
   ): Flow<ApolloResponse<D>> {
+    val responseAdapterCache = request.executionContext[ResponseAdapterCache]!!
+
     val dispatcherContext = requireNotNull(
         request.executionContext[ApolloCoroutineDispatcher] ?: request.executionContext[ApolloCoroutineDispatcher]
     )
@@ -121,7 +122,7 @@ class ApolloWebSocketNetworkTransport(
           }
 
           val response = try {
-            request.operation.fromResponse(
+            request.operation.parseResponseBody(
                 source = buffer,
                 responseAdapterCache = responseAdapterCache
             )
