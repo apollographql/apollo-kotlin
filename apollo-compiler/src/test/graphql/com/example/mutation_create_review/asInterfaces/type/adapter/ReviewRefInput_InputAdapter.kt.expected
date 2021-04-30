@@ -26,8 +26,8 @@ internal object ReviewRefInput_InputAdapter : ResponseAdapter<ReviewRefInput> {
   ) {
     if (value.reviewInput is Optional.Present) {
       writer.name("reviewInput")
-      ReviewInput_InputAdapter.obj().nullable().optional().nullable().toResponse(writer,
-          responseAdapterCache, value.reviewInput)
+      ReviewInput_InputAdapter.obj().nullable().optional().toResponse(writer, responseAdapterCache,
+          value.reviewInput)
     }
   }
 }

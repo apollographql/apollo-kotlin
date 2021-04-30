@@ -4,7 +4,7 @@ import com.apollographql.apollo3.api.ApolloRequest
 import com.apollographql.apollo3.api.ApolloResponse
 import com.apollographql.apollo3.api.Error
 import com.apollographql.apollo3.api.Operation
-import com.apollographql.apollo3.api.http.DefaultHttpRequestComposerParams
+import com.apollographql.apollo3.api.http.HttpRequestComposerParams
 import com.apollographql.apollo3.exception.AutoPersistedQueriesNotSupported
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
@@ -13,7 +13,7 @@ import kotlinx.coroutines.flow.single
 class AutoPersistedQueryInterceptor: ApolloRequestInterceptor {
   override fun <D : Operation.Data> intercept(request: ApolloRequest<D>, chain: ApolloInterceptorChain): Flow<ApolloResponse<D>> {
     return flow {
-      val params = request.executionContext[DefaultHttpRequestComposerParams] ?: error("no DefaultHttpRequestComposerParams found")
+      val params = request.executionContext[HttpRequestComposerParams] ?: error("no DefaultHttpRequestComposerParams found")
       var response = chain.proceed(request).single()
 
       when {

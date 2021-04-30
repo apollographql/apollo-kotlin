@@ -851,7 +851,7 @@ data class GQLField(
     val selectionSet: GQLSelectionSet?,
 ) : GQLSelection() {
 
-  override val children: List<GQLNode> = listOfNotNull(selectionSet) + listOfNotNull(arguments)
+  override val children: List<GQLNode> = listOfNotNull(selectionSet) + listOfNotNull(arguments) + directives
 
   override fun write(bufferedSink: BufferedSink) {
     with(bufferedSink) {
@@ -874,7 +874,8 @@ data class GQLField(
   override fun copyWithNewChildren(container: NodeContainer): GQLNode {
     return copy(
         selectionSet = container.takeSingle(),
-        arguments = container.takeSingle()
+        arguments = container.takeSingle(),
+        directives = container.take()
     )
   }
 }
@@ -1200,10 +1201,13 @@ fun GQLNode.transform(block: (GQLNode) -> GQLNode?): GQLNode? {
   val newChildren = children.mapNotNull {
     it.transform(block)
   }
-  val container = NodeContainer(newChildren)
-  val ret = block(this)?.copyWithNewChildren(container)
-  container.assert()
-  return ret
+
+  return block(this)?.run {
+    val container = NodeContainer(newChildren)
+    copyWithNewChildren(container).also {
+      container.assert()
+    }
+  }
 }
 
 @Suppress("UNCHECKED_CAST")

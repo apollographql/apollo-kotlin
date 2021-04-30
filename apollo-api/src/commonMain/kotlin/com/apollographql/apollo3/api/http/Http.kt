@@ -2,6 +2,8 @@ package com.apollographql.apollo3.api.http
 
 import okio.BufferedSink
 import okio.BufferedSource
+import okio.ByteString
+import okio.ByteString.Companion.encodeUtf8
 
 enum class HttpMethod {
   Get, Post
@@ -17,7 +19,7 @@ class HttpRequest(
     val url: String,
     val headers: Map<String, String>,
     val method: HttpMethod,
-    val body: HttpBody?
+    val body: HttpBody?,
 )
 
 class HttpResponse(
@@ -29,3 +31,23 @@ class HttpResponse(
      */
     val body: BufferedSource?,
 )
+
+fun HttpBody(
+    contentType: String,
+    byteString: ByteString,
+) = object : HttpBody {
+  override val contentType
+    get() = contentType
+  override val contentLength
+    get() = byteString.size.toLong()
+
+  override fun writeTo(bufferedSink: BufferedSink) {
+    bufferedSink.write(byteString)
+  }
+}
+
+fun HttpBody(
+    contentType: String,
+    string: String,
+): HttpBody = HttpBody(contentType, string.encodeUtf8())
+

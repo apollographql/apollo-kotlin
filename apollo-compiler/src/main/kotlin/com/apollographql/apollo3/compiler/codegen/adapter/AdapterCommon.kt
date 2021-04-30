@@ -1,5 +1,6 @@
 package com.apollographql.apollo3.compiler.codegen.adapter
 
+import com.apollographql.apollo3.api.Optional
 import com.apollographql.apollo3.compiler.codegen.Identifier
 import com.apollographql.apollo3.compiler.codegen.Identifier.responseAdapterCache
 import com.apollographql.apollo3.compiler.codegen.Identifier.toResponse
@@ -7,14 +8,20 @@ import com.apollographql.apollo3.compiler.codegen.Identifier.value
 import com.apollographql.apollo3.compiler.codegen.Identifier.writer
 import com.apollographql.apollo3.compiler.codegen.kotlinNameForVariable
 import com.apollographql.apollo3.compiler.codegen.CgContext
+import com.apollographql.apollo3.compiler.codegen.Identifier.typename
+import com.apollographql.apollo3.compiler.codegen.helpers.NamedType
+import com.apollographql.apollo3.compiler.codegen.helpers.writeToResponseCodeBlock
 import com.apollographql.apollo3.compiler.unified.ir.IrModel
 import com.apollographql.apollo3.compiler.unified.ir.IrNonNullType
+import com.apollographql.apollo3.compiler.unified.ir.IrOptionalType
 import com.apollographql.apollo3.compiler.unified.ir.IrProperty
+import com.apollographql.apollo3.compiler.unified.ir.isOptional
 import com.squareup.kotlinpoet.ClassName
 import com.squareup.kotlinpoet.CodeBlock
 import com.squareup.kotlinpoet.MemberName
 import com.squareup.kotlinpoet.ParameterizedTypeName.Companion.parameterizedBy
 import com.squareup.kotlinpoet.PropertySpec
+import com.squareup.kotlinpoet.asClassName
 import com.squareup.kotlinpoet.joinToCode
 
 internal fun responseNamesPropertySpec(model: IrModel): PropertySpec {
@@ -30,14 +37,20 @@ internal fun responseNamesPropertySpec(model: IrModel): PropertySpec {
 internal fun readFromResponseCodeBlock(
     model: IrModel,
     context: CgContext,
-    variableInitializer: (String) -> String
+    hasTypenameArgument: Boolean
 ): CodeBlock {
   val prefix = model.properties.map { property ->
+    val variableIntializer =  when {
+      hasTypenameArgument && property.info.responseName == "__typename" -> CodeBlock.of(typename)
+      (property.info.type is IrNonNullType && property.info.type.ofType is IrOptionalType) -> CodeBlock.of("%T", Optional.Absent::class.asClassName())
+      else -> CodeBlock.of("null")
+    }
+
     CodeBlock.of(
         "var·%L:·%T·=·%L",
         kotlinNameForVariable(property.info.responseName),
-        context.resolver.resolveType(property.info.type).copy(nullable = true),
-        variableInitializer(property.info.responseName)
+        context.resolver.resolveType(property.info.type).copy(nullable = !property.info.type.isOptional()),
+        variableIntializer
     )
   }.joinToCode(separator = "\n", suffix = "\n")
 
@@ -63,7 +76,7 @@ internal fun readFromResponseCodeBlock(
       .addStatement("return·%T(", context.resolver.resolveModel(model.id))
       .indent()
       .add(model.properties.map { property ->
-        val maybeAssertNotNull = if (property.info.type is IrNonNullType) "!!" else ""
+        val maybeAssertNotNull = if (property.info.type is IrNonNullType && !property.info.type.isOptional()) "!!" else ""
         CodeBlock.of(
             "%L·=·%L%L",
             context.layout.propertyName(property.info.responseName),
@@ -82,23 +95,16 @@ internal fun readFromResponseCodeBlock(
       .build()
 }
 
-internal fun writeToResponseCodeBlock(model: IrModel, context: CgContext): CodeBlock {
-  val builder = CodeBlock.builder()
-  model.properties.forEach {
-    builder.add(writeToResponseCodeBlock(it, context))
-  }
-  return builder.build()
+private fun IrProperty.toNamedType(): NamedType {
+  return NamedType(
+      graphQlName = info.responseName,
+      description = info.description,
+      deprecationReason = info.deprecationReason,
+      type = info.type
+  )
 }
-
-internal fun writeToResponseCodeBlock(property: IrProperty, context: CgContext): CodeBlock {
-  return CodeBlock.builder().apply {
-    val propertyName = context.layout.propertyName(property.info.responseName)
-    addStatement("$writer.name(%S)", property.info.responseName)
-    addStatement(
-        "%L.$toResponse($writer, $responseAdapterCache, $value.$propertyName)",
-        context.resolver.adapterInitializer(property.info.type)
-    )
-  }.build()
+internal fun writeToResponseCodeBlock(model: IrModel, context: CgContext): CodeBlock {
+  return model.properties.map { it.toNamedType() }.writeToResponseCodeBlock(context)
 }
 
 internal fun ClassName.Companion.from(path: List<String>) = ClassName(

@@ -19,7 +19,6 @@ import java.util.concurrent.TimeUnit
 import kotlin.coroutines.resume
 import kotlin.coroutines.resumeWithException
 
-@ExperimentalCoroutinesApi
 actual class DefaultHttpEngine(
     private val httpCallFactory: Call.Factory,
 ): HttpEngine {

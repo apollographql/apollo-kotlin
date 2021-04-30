@@ -3,27 +3,24 @@
  */
 package com.apollographql.apollo3.compiler.codegen.adapter
 
-import com.apollographql.apollo3.api.Optional
 import com.apollographql.apollo3.api.ResponseAdapter
 import com.apollographql.apollo3.api.ResponseAdapterCache
 import com.apollographql.apollo3.api.json.JsonReader
 import com.apollographql.apollo3.api.json.JsonWriter
+import com.apollographql.apollo3.compiler.codegen.CgContext
 import com.apollographql.apollo3.compiler.codegen.Identifier
 import com.apollographql.apollo3.compiler.codegen.Identifier.responseAdapterCache
 import com.apollographql.apollo3.compiler.codegen.Identifier.toResponse
 import com.apollographql.apollo3.compiler.codegen.Identifier.value
 import com.apollographql.apollo3.compiler.codegen.Identifier.writer
-import com.apollographql.apollo3.compiler.codegen.CgContext
 import com.apollographql.apollo3.compiler.codegen.helpers.NamedType
-import com.apollographql.apollo3.compiler.unified.ir.IrOptionalType
+import com.apollographql.apollo3.compiler.codegen.helpers.writeToResponseCodeBlock
 import com.squareup.kotlinpoet.ClassName
-import com.squareup.kotlinpoet.CodeBlock
 import com.squareup.kotlinpoet.FunSpec
 import com.squareup.kotlinpoet.KModifier
 import com.squareup.kotlinpoet.ParameterizedTypeName.Companion.parameterizedBy
 import com.squareup.kotlinpoet.TypeName
 import com.squareup.kotlinpoet.TypeSpec
-import com.squareup.kotlinpoet.asClassName
 import com.squareup.kotlinpoet.asTypeName
 
 
@@ -61,32 +58,4 @@ private fun List<NamedType>.writeToResponseFunSpec(
       .build()
 }
 
-
-private fun List<NamedType>.writeToResponseCodeBlock(context: CgContext): CodeBlock {
-  val builder = CodeBlock.builder()
-  forEach {
-    builder.add(it.writeToResponseCodeBlock(context))
-  }
-  return builder.build()
-}
-
-private fun NamedType.writeToResponseCodeBlock(context: CgContext): CodeBlock {
-  val adapterInitializer = context.resolver.adapterInitializer(type)
-  val builder = CodeBlock.builder()
-  val propertyName = context.layout.propertyName(graphQlName)
-
-  if (type is IrOptionalType) {
-    builder.beginControlFlow("if ($value.$propertyName is %T)", Optional.Present::class.asClassName())
-  }
-  builder.addStatement("$writer.name(%S)", graphQlName)
-  builder.addStatement(
-      "%L.$toResponse($writer, $responseAdapterCache, $value.$propertyName)",
-      adapterInitializer
-  )
-  if (type is IrOptionalType) {
-    builder.endControlFlow()
-  }
-
-  return builder.build()
-}
 

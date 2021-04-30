@@ -29,26 +29,24 @@ object ColorInput_InputAdapter : ResponseAdapter<ColorInput> {
   ) {
     if (value.red is Optional.Present) {
       writer.name("red")
-      IntResponseAdapter.optional().nullable().toResponse(writer, responseAdapterCache, value.red)
+      IntResponseAdapter.optional().toResponse(writer, responseAdapterCache, value.red)
     }
     if (value.green is Optional.Present) {
       writer.name("green")
-      NullableDoubleResponseAdapter.optional().nullable().toResponse(writer, responseAdapterCache,
-          value.green)
+      NullableDoubleResponseAdapter.optional().toResponse(writer, responseAdapterCache, value.green)
     }
     if (value.blue is Optional.Present) {
       writer.name("blue")
-      DoubleResponseAdapter.optional().nullable().toResponse(writer, responseAdapterCache,
-          value.blue)
+      DoubleResponseAdapter.optional().toResponse(writer, responseAdapterCache, value.blue)
     }
     if (value.enumWithDefaultValue is Optional.Present) {
       writer.name("enumWithDefaultValue")
-      Episode_ResponseAdapter.nullable().optional().nullable().toResponse(writer,
-          responseAdapterCache, value.enumWithDefaultValue)
+      Episode_ResponseAdapter.nullable().optional().toResponse(writer, responseAdapterCache,
+          value.enumWithDefaultValue)
     }
     if (value.reviewRefInput is Optional.Present) {
       writer.name("reviewRefInput")
-      ReviewRefInput_InputAdapter.obj().nullable().optional().nullable().toResponse(writer,
+      ReviewRefInput_InputAdapter.obj().nullable().optional().toResponse(writer,
           responseAdapterCache, value.reviewRefInput)
     }
   }

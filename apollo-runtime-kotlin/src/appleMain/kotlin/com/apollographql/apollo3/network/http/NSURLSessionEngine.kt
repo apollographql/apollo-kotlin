@@ -44,7 +44,6 @@ fun interface DataTaskFactory {
   fun dataTask(request: NSURLRequest, completionHandler: UrlSessionDataTaskCompletionHandler): NSURLSessionDataTask
 }
 
-@ExperimentalCoroutinesApi
 actual class DefaultHttpEngine(
     private val dataTaskFactory: DataTaskFactory,
     private val connectTimeoutMillis: Long = 60_000,
@@ -133,6 +132,7 @@ actual class DefaultHttpEngine(
     }
   }
 
+  @OptIn(ExperimentalUnsignedTypes::class)
   private fun <R> parse(
       data: NSData?,
       httpResponse: NSHTTPURLResponse?,
@@ -200,6 +200,7 @@ actual class DefaultHttpEngine(
     class Failure<R>(val cause: ApolloException) : Result<R>()
   }
 
+  @OptIn(ExperimentalCoroutinesApi::class)
   @Suppress("NAME_SHADOWING")
   private fun <R> Result<R>.dispatchOnMain(continuationPtr: COpaquePointer) {
     if (NSThread.isMainThread()) {
@@ -223,7 +224,6 @@ actual class DefaultHttpEngine(
 }
 
 @Suppress("NAME_SHADOWING")
-@ExperimentalCoroutinesApi
 internal fun <R> DefaultHttpEngine.Result<R>.dispatch(continuationPtr: COpaquePointer) {
   val continuationRef = continuationPtr.asStableRef<Continuation<DefaultHttpEngine.Result<R>>>()
   val continuation = continuationRef.get()

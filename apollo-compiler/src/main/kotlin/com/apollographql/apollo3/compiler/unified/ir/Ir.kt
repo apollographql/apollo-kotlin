@@ -303,6 +303,9 @@ data class IrInputObjectType(val name: String) : IrType()
 data class IrEnumType(val name: String) : IrType()
 data class IrModelType(val id: IrModelId) : IrType()
 
+fun IrType.makeOptional(): IrType = IrNonNullType(IrOptionalType(this))
+fun IrType.isOptional() = (this is IrNonNullType) && (this.ofType is IrOptionalType)
+
 /**
  * A placeholder for compound types until we assign them an id
  */

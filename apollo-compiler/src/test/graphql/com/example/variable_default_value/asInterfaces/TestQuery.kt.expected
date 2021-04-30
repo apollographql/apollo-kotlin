@@ -20,7 +20,7 @@ import kotlin.String
 import kotlin.collections.List
 
 data class TestQuery(
-  val episode: Optional<Episode>? = Optional.Absent
+  val episode: Optional<Episode> = Optional.Absent
 ) : Query<TestQuery.Data> {
   override fun id(): String = OPERATION_ID
 

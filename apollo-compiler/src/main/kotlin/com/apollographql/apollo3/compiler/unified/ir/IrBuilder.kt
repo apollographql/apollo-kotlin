@@ -195,7 +195,7 @@ class IrBuilder(
        * Contrary to [IrVariable], we default to making input fields optional as they are out of control of the user and
        * we don't want to force users to fill input all values to define an input object
       */
-      irType = IrOptionalType(irType)
+      irType = irType.makeOptional()
     }
     return IrInputField(
         name = name,
@@ -294,7 +294,7 @@ class IrBuilder(
     var type = expectedType.toIr()
     // This is an inferred variable from a fragment
     if (expectedType !is GQLNonNullType) {
-      type = IrOptionalType(type)
+      type = type.makeOptional()
     }
     return IrVariable(
         name = this.variable.name,
@@ -312,7 +312,7 @@ class IrBuilder(
     // and only make them optional if there is a defaultValue (which means the user has a use case for
     // not sending the value) or if it's opt-in explicitely through the @optional directive
     if (coercedDefaultValue != null || directives.findOptional()) {
-      irType = IrOptionalType(irType)
+      irType = irType.makeOptional()
     }
     return IrVariable(
         name = name,
@@ -376,6 +376,7 @@ class IrBuilder(
       val type: GQLType,
       val deprecationReason: String?,
       val forceNonNull: Boolean,
+      val forceOptional: Boolean,
 
       /**
        * Merged field will merge their conditions and selectionSets
@@ -404,7 +405,8 @@ class IrBuilder(
           type = fieldDefinition.type,
           description = fieldDefinition.description,
           deprecationReason = fieldDefinition.directives.findDeprecationReason(),
-          forceNonNull = gqlField.directives.findNonnull()
+          forceNonNull = gqlField.directives.findNonnull(),
+          forceOptional = gqlField.directives.findOptional(),
       )
     }.groupBy {
       it.responseName
@@ -430,9 +432,15 @@ class IrBuilder(
       val forceNonNull = fieldsWithSameResponseName.any {
         it.forceNonNull
       }
+      val forceOptional = fieldsWithSameResponseName.any {
+        it.forceOptional
+      }
       var irType = first.type.toIr()
       if (forceNonNull && irType !is IrNonNullType) {
         irType = IrNonNullType(irType)
+      }
+      if (forceOptional) {
+        irType = irType.makeOptional()
       }
       val info = IrFieldInfo(
           alias = first.alias,

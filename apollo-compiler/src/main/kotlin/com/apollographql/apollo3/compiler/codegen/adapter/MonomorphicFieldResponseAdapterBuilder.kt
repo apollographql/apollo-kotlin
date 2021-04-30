@@ -65,7 +65,7 @@ class MonomorphicFieldResponseAdapterBuilder(
         .addParameter(Identifier.reader, JsonReader::class)
         .addParameter(Identifier.responseAdapterCache, ResponseAdapterCache::class)
         .addModifiers(KModifier.OVERRIDE)
-        .addCode(readFromResponseCodeBlock(model, context) { "null" })
+        .addCode(readFromResponseCodeBlock(model, context, false))
         .build()
   }
 
