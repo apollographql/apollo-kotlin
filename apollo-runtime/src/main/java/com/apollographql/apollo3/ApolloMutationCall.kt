@@ -90,6 +90,15 @@ interface ApolloMutationCall<D : Operation.Data> : ApolloCall<D> {
      * @return The Builder
      */
     fun requestHeaders(requestHeaders: RequestHeaders): Builder<D>
+
+    /**
+     * Sets the [writeToCacheAsynchronously] boolean to use for this call. If true returning response data will not wait on the normalized
+     * cache write. This can improve request performance, but means that subsequent requests are not guaranteed to hit the cache for data
+     * contained in previously received requests.
+     *
+     * @param writeToCacheAsynchronously The [Boolean] value to use for this call.
+     */
+    fun writeToCacheAsynchronously(writeToCacheAsynchronously: Boolean): Builder<D>
   }
 
   /**
