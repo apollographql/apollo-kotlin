@@ -53,7 +53,8 @@ class ApolloCompositeException(first: Throwable?, second: Throwable?) : ApolloEx
   val second = (second as? ApolloException)  ?: throw RuntimeException("unexpected second exception", second)
 }
 
-class AutoPersistedQueriesNotSupported() : ApolloException(message = "The server does not support auto persisted queries")
+class AutoPersistedQueriesNotSupported : ApolloException(message = "The server does not support auto persisted queries")
+class MissingValueException(): ApolloException(message = "The optional doesn't have a value")
 
 /**
  * Something went wrong but it's not sure exactly what

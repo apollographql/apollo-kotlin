@@ -48,13 +48,7 @@ class ImplementationAdapterBuilder(
         .addParameter(Identifier.reader, JsonReader::class)
         .addParameter(Identifier.responseAdapterCache, ResponseAdapterCache::class)
         .addParameter(Identifier.typename, String::class)
-        .addCode(readFromResponseCodeBlock(model, context) {
-          if (it == "__typename") {
-            Identifier.typename
-          } else {
-            "null"
-          }
-        })
+        .addCode(readFromResponseCodeBlock(model, context, true))
         .build()
   }
 

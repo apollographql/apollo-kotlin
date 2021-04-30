@@ -9,7 +9,7 @@ import com.apollographql.apollo3.api.Query
 import com.apollographql.apollo3.api.ResponseAdapter
 import com.apollographql.apollo3.api.ResponseAdapterCache
 import com.apollographql.apollo3.api.Subscription
-import com.apollographql.apollo3.api.http.DefaultHttpRequestComposerParams
+import com.apollographql.apollo3.api.http.HttpRequestComposerParams
 import com.apollographql.apollo3.api.http.HttpMethod
 import com.apollographql.apollo3.dispatcher.ApolloCoroutineDispatcher
 import com.apollographql.apollo3.interceptor.ApolloRequestInterceptor
@@ -122,5 +122,5 @@ fun ApolloClient(networkTransport: NetworkTransport): ApolloClient {
 
 fun ApolloClient.withAutoPersistedQueries(): ApolloClient {
   return withInterceptor(AutoPersistedQueryInterceptor())
-      .withExecutionContext(DefaultHttpRequestComposerParams(HttpMethod.Post, true, false, emptyMap()))
+      .withExecutionContext(HttpRequestComposerParams(HttpMethod.Post, true, false, emptyMap()))
 }

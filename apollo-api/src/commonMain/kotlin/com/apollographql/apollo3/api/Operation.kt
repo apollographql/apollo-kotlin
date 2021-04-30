@@ -1,7 +1,7 @@
 package com.apollographql.apollo3.api
 
 import com.apollographql.apollo3.api.http.DefaultHttpRequestComposer
-import com.apollographql.apollo3.api.http.DefaultHttpRequestComposerParams
+import com.apollographql.apollo3.api.http.HttpRequestComposerParams
 import com.apollographql.apollo3.api.http.HttpMethod
 import com.apollographql.apollo3.api.internal.ResponseBodyParser
 import com.apollographql.apollo3.api.internal.json.BufferedSinkJsonWriter
@@ -86,7 +86,7 @@ fun <D : Operation.Data> Operation<D>.composeRequestBody(
       ApolloRequest(operation = this)
           .withExecutionContext(responseAdapterCache)
           .withExecutionContext(
-              DefaultHttpRequestComposerParams(
+              HttpRequestComposerParams(
                   method = HttpMethod.Post,
                   autoPersistQueries = false,
                   sendDocument = true,

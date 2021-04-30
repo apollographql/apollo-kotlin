@@ -7,14 +7,12 @@ import com.apollographql.apollo3.api.ExecutionContext
 import com.apollographql.apollo3.api.Operation
 import com.apollographql.apollo3.api.ResponseAdapterCache
 import com.apollographql.apollo3.api.Upload
-import com.apollographql.apollo3.api.internal.json.BufferedSinkJsonWriter
 import com.apollographql.apollo3.api.internal.json.FileUploadAwareJsonWriter
 import com.apollographql.apollo3.api.internal.json.buildJsonByteString
 import com.apollographql.apollo3.api.internal.json.buildJsonString
 import com.apollographql.apollo3.api.internal.json.writeObject
 import com.apollographql.apollo3.api.json.JsonWriter
 import com.benasher44.uuid.uuid4
-import okio.Buffer
 import okio.BufferedSink
 import okio.ByteString
 
@@ -25,10 +23,10 @@ import okio.ByteString
  * - Automatic Persisted Queries
  * - Adding the default Apollo headers
  */
-class DefaultHttpRequestComposer(val serverUrl: String, val defaultHeaders: Map<String, String> = emptyMap()) : HttpRequestComposer {
+class DefaultHttpRequestComposer(private val serverUrl: String, private val defaultHeaders: Map<String, String> = emptyMap()) : HttpRequestComposer {
 
   override fun <D : Operation.Data> compose(apolloRequest: ApolloRequest<D>): HttpRequest {
-    val params = apolloRequest.executionContext[DefaultHttpRequestComposerParams]
+    val params = apolloRequest.executionContext[HttpRequestComposerParams]
     val operation = apolloRequest.operation
     val method = params?.method ?: HttpMethod.Post
     val autoPersistQueries = params?.autoPersistQueries ?: false
@@ -47,7 +45,6 @@ class DefaultHttpRequestComposer(val serverUrl: String, val defaultHeaders: Map<
       headers.put(it.key, it.value)
     }
 
-
     return when (method) {
       HttpMethod.Get -> {
         HttpRequest(
@@ -58,11 +55,12 @@ class DefaultHttpRequestComposer(val serverUrl: String, val defaultHeaders: Map<
         )
       }
       HttpMethod.Post -> {
+        val query = if (sendDocument) operation.document() else null
         HttpRequest(
             method = HttpMethod.Post,
             url = serverUrl,
             headers = headers,
-            body = buildPostBody(operation, responseAdapterCache, autoPersistQueries, sendDocument),
+            body = buildPostBody(operation, responseAdapterCache, autoPersistQueries, query),
         )
       }
     }
@@ -89,7 +87,7 @@ class DefaultHttpRequestComposer(val serverUrl: String, val defaultHeaders: Map<
         operation: Operation<D>,
         responseAdapterCache: ResponseAdapterCache,
         autoPersistQueries: Boolean,
-        sendDocument: Boolean,
+        query: String?,
     ): Map<String, Upload> {
       val uploads: Map<String, Upload>
       writer.writeObject {
@@ -103,9 +101,9 @@ class DefaultHttpRequestComposer(val serverUrl: String, val defaultHeaders: Map<
         }
         uploads = uploadAwareWriter.collectedUploads()
 
-        if (sendDocument) {
+        if (query != null) {
           name("query")
-          value(operation.document())
+          value(query)
         }
 
         if (autoPersistQueries) {
@@ -189,12 +187,11 @@ class DefaultHttpRequestComposer(val serverUrl: String, val defaultHeaders: Map<
       }
     }
 
-
-    private fun <D : Operation.Data> buildPostBody(
+    fun <D : Operation.Data> buildPostBody(
         operation: Operation<D>,
         responseAdapterCache: ResponseAdapterCache,
         autoPersistQueries: Boolean,
-        sendDocument: Boolean,
+        query: String?,
     ): HttpBody {
       val uploads: Map<String, Upload>
       val operationByteString = buildJsonByteString {
@@ -203,7 +200,7 @@ class DefaultHttpRequestComposer(val serverUrl: String, val defaultHeaders: Map<
             operation,
             responseAdapterCache,
             autoPersistQueries,
-            sendDocument
+            query
         )
       }
 
@@ -275,16 +272,17 @@ class DefaultHttpRequestComposer(val serverUrl: String, val defaultHeaders: Map<
         autoPersistQueries: Boolean,
         sendDocument: Boolean,
     ): ByteString = buildJsonByteString {
-      composePostParams(this, operation, responseAdapterCache, autoPersistQueries, sendDocument)
+      val query = if (sendDocument) operation.document() else null
+      composePostParams(this, operation, responseAdapterCache, autoPersistQueries, query)
     }
   }
 }
 
-data class DefaultHttpRequestComposerParams(
+data class HttpRequestComposerParams(
     val method: HttpMethod,
     val autoPersistQueries: Boolean,
     val sendDocument: Boolean,
     val extraHeaders: Map<String, String>,
 ) : ClientContext(Key) {
-  companion object Key : ExecutionContext.Key<DefaultHttpRequestComposerParams>
+  companion object Key : ExecutionContext.Key<HttpRequestComposerParams>
 }

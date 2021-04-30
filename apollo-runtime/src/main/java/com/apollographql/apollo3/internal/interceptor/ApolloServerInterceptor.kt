@@ -7,7 +7,7 @@ import com.apollographql.apollo3.api.ResponseAdapterCache
 import com.apollographql.apollo3.api.cache.http.HttpCache
 import com.apollographql.apollo3.api.cache.http.HttpCachePolicy
 import com.apollographql.apollo3.api.http.DefaultHttpRequestComposer
-import com.apollographql.apollo3.api.http.DefaultHttpRequestComposerParams
+import com.apollographql.apollo3.api.http.HttpRequestComposerParams
 import com.apollographql.apollo3.api.http.HttpMethod
 import com.apollographql.apollo3.api.internal.ApolloLogger
 import com.apollographql.apollo3.api.internal.json.BufferedSinkJsonWriter
@@ -130,7 +130,7 @@ class ApolloServerInterceptor(
     val body = composer.compose(ApolloRequest(operation)
         .withExecutionContext(responseAdapterCache)
         .withExecutionContext(
-            DefaultHttpRequestComposerParams(
+            HttpRequestComposerParams(
                 method = HttpMethod.Post,
                 autoPersistQueries = autoPersistQueries,
                 sendDocument = writeQueryDocument,

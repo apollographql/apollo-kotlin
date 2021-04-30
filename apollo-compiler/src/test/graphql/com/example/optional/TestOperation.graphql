@@ -1,0 +1,6 @@
+query TestQuery {
+  hero {
+    name
+    appearsIn @optional
+  }
+}
