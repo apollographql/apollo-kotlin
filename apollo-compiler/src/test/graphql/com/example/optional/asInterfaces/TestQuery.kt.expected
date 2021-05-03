@@ -53,7 +53,7 @@ class TestQuery : Query<TestQuery.Data> {
 
   companion object {
     const val OPERATION_ID: String =
-        "98ed5e3ecc7501493ff283dae15a5bc055c1cb67bee408f8be1b65d7d9656a55"
+        "9438477e508a2037f377e235bb022f24d375a02a5bb3dc6116c20c52e30ff026"
 
     /**
      * The minimized GraphQL document being sent to the server to save a few bytes.
@@ -62,11 +62,11 @@ class TestQuery : Query<TestQuery.Data> {
      * query TestQuery {
      *   hero {
      *     name
-     *     appearsIn @optional
+     *     appearsIn
      *   }
      * }
      */
-    const val OPERATION_DOCUMENT: String = "query TestQuery { hero { name appearsIn @optional } }"
+    const val OPERATION_DOCUMENT: String = "query TestQuery { hero { name appearsIn } }"
 
     const val OPERATION_NAME: String = "TestQuery"
   }
