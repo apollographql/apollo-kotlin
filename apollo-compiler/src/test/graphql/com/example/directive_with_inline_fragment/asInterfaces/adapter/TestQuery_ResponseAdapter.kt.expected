@@ -7,7 +7,7 @@ package com.example.directive_with_inline_fragment.adapter
 
 import com.apollographql.apollo3.api.Adapter
 import com.apollographql.apollo3.api.CustomScalarAdapters
-import com.apollographql.apollo3.api.NullableStringResponseAdapter
+import com.apollographql.apollo3.api.NullableStringAdapter
 import com.apollographql.apollo3.api.StringAdapter
 import com.apollographql.apollo3.api.json.JsonReader
 import com.apollographql.apollo3.api.json.JsonWriter
@@ -95,7 +95,7 @@ object TestQuery_ResponseAdapter {
             0 -> __typename = StringAdapter.fromJson(reader, customScalarAdapters)
             1 -> id = StringAdapter.fromJson(reader, customScalarAdapters)
             2 -> name = StringAdapter.fromJson(reader, customScalarAdapters)
-            3 -> homePlanet = NullableStringResponseAdapter.fromJson(reader, customScalarAdapters)
+            3 -> homePlanet = NullableStringAdapter.fromJson(reader, customScalarAdapters)
             else -> break
           }
         }
@@ -119,7 +119,7 @@ object TestQuery_ResponseAdapter {
         writer.name("name")
         StringAdapter.toJson(writer, customScalarAdapters, value.name)
         writer.name("homePlanet")
-        NullableStringResponseAdapter.toJson(writer, customScalarAdapters, value.homePlanet)
+        NullableStringAdapter.toJson(writer, customScalarAdapters, value.homePlanet)
       }
     }
 
@@ -140,8 +140,7 @@ object TestQuery_ResponseAdapter {
             0 -> __typename = StringAdapter.fromJson(reader, customScalarAdapters)
             1 -> id = StringAdapter.fromJson(reader, customScalarAdapters)
             2 -> name = StringAdapter.fromJson(reader, customScalarAdapters)
-            3 -> primaryFunction = NullableStringResponseAdapter.fromJson(reader,
-                customScalarAdapters)
+            3 -> primaryFunction = NullableStringAdapter.fromJson(reader, customScalarAdapters)
             else -> break
           }
         }
@@ -165,7 +164,7 @@ object TestQuery_ResponseAdapter {
         writer.name("name")
         StringAdapter.toJson(writer, customScalarAdapters, value.name)
         writer.name("primaryFunction")
-        NullableStringResponseAdapter.toJson(writer, customScalarAdapters, value.primaryFunction)
+        NullableStringAdapter.toJson(writer, customScalarAdapters, value.primaryFunction)
       }
     }
 

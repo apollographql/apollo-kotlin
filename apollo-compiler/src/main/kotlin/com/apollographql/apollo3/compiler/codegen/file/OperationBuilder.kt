@@ -176,7 +176,7 @@ class OperationBuilder(
 
   private fun fieldSetsFunSpec(): FunSpec {
     return fieldSetsFunSpec(
-        context.resolver.resolveOperationResponseFields(operation.name)
+        context.resolver.resolveOperationMergedFields(operation.name)
     )
   }
 }

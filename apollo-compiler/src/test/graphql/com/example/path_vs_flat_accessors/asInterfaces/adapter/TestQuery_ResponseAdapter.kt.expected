@@ -7,7 +7,7 @@ package com.example.path_vs_flat_accessors.adapter
 
 import com.apollographql.apollo3.api.Adapter
 import com.apollographql.apollo3.api.CustomScalarAdapters
-import com.apollographql.apollo3.api.NullableStringResponseAdapter
+import com.apollographql.apollo3.api.NullableStringAdapter
 import com.apollographql.apollo3.api.StringAdapter
 import com.apollographql.apollo3.api.json.JsonReader
 import com.apollographql.apollo3.api.json.JsonWriter
@@ -95,8 +95,8 @@ object TestQuery_ResponseAdapter {
         while(true) {
           when (reader.selectName(RESPONSE_NAMES)) {
             0 -> __typename = StringAdapter.fromJson(reader, customScalarAdapters)
-            1 -> fieldB1 = NullableStringResponseAdapter.fromJson(reader, customScalarAdapters)
-            2 -> fieldB2 = NullableStringResponseAdapter.fromJson(reader, customScalarAdapters)
+            1 -> fieldB1 = NullableStringAdapter.fromJson(reader, customScalarAdapters)
+            2 -> fieldB2 = NullableStringAdapter.fromJson(reader, customScalarAdapters)
             else -> break
           }
         }
@@ -115,9 +115,9 @@ object TestQuery_ResponseAdapter {
         writer.name("__typename")
         StringAdapter.toJson(writer, customScalarAdapters, value.__typename)
         writer.name("fieldB1")
-        NullableStringResponseAdapter.toJson(writer, customScalarAdapters, value.fieldB1)
+        NullableStringAdapter.toJson(writer, customScalarAdapters, value.fieldB1)
         writer.name("fieldB2")
-        NullableStringResponseAdapter.toJson(writer, customScalarAdapters, value.fieldB2)
+        NullableStringAdapter.toJson(writer, customScalarAdapters, value.fieldB2)
       }
     }
 
@@ -194,7 +194,7 @@ object TestQuery_ResponseAdapter {
         while(true) {
           when (reader.selectName(RESPONSE_NAMES)) {
             0 -> __typename = StringAdapter.fromJson(reader, customScalarAdapters)
-            1 -> fieldB2 = NullableStringResponseAdapter.fromJson(reader, customScalarAdapters)
+            1 -> fieldB2 = NullableStringAdapter.fromJson(reader, customScalarAdapters)
             else -> break
           }
         }
@@ -212,7 +212,7 @@ object TestQuery_ResponseAdapter {
         writer.name("__typename")
         StringAdapter.toJson(writer, customScalarAdapters, value.__typename)
         writer.name("fieldB2")
-        NullableStringResponseAdapter.toJson(writer, customScalarAdapters, value.fieldB2)
+        NullableStringAdapter.toJson(writer, customScalarAdapters, value.fieldB2)
       }
     }
   }

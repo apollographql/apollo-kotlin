@@ -72,7 +72,7 @@ class FragmentBuilder(
 
   private fun IrNamedFragment.fieldSetsFunSpec(): FunSpec {
     return fieldSetsFunSpec(
-        context.resolver.resolveFragmentResponseFields(name)
+        context.resolver.resolveFragmentMergedFields(name)
     )
   }
 

@@ -60,12 +60,12 @@ class CgResolver {
   fun adapterInitializer(type: IrType): CodeBlock {
     if (type !is IrNonNullType) {
       return when (type) {
-        is IrIdType -> nullableScalarAdapter("NullableStringResponseAdapter")
-        is IrBooleanType -> nullableScalarAdapter("NullableBooleanResponseAdapter")
-        is IrStringType -> nullableScalarAdapter("NullableStringResponseAdapter")
-        is IrIntType -> nullableScalarAdapter("NullableIntResponseAdapter")
-        is IrFloatType -> nullableScalarAdapter("NullableDoubleResponseAdapter")
-        is IrAnyType -> nullableScalarAdapter("NullableAnyResponseAdapter")
+        is IrIdType -> nullableScalarAdapter("NullableStringAdapter")
+        is IrBooleanType -> nullableScalarAdapter("NullableBooleanAdapter")
+        is IrStringType -> nullableScalarAdapter("NullableStringAdapter")
+        is IrIntType -> nullableScalarAdapter("NullableIntAdapter")
+        is IrFloatType -> nullableScalarAdapter("NullableDoubleAdapter")
+        is IrAnyType -> nullableScalarAdapter("NullableAnyAdapter")
         else -> {
           val nullableFun = MemberName("com.apollographql.apollo3.api", "nullable")
           CodeBlock.of("%L.%M()", adapterInitializer(IrNonNullType(type)), nullableFun)
@@ -151,12 +151,12 @@ class CgResolver {
     return operationsVariablesAdapter.get(name)
   }
 
-  private val operationsResponseFields = mutableMapOf<String, ClassName>()
-  fun registerOperationResponseFields(name: String, className: ClassName) {
-    operationsResponseFields.put(name, className)
+  private val operationMergedFields = mutableMapOf<String, ClassName>()
+  fun registerOperationMergedFields(name: String, className: ClassName) {
+    operationMergedFields.put(name, className)
   }
-  fun resolveOperationResponseFields(name: String): ClassName {
-    return operationsResponseFields.get(name) ?: error("Cannot resolve operation '$name' response fields")
+  fun resolveOperationMergedFields(name: String): ClassName {
+    return operationMergedFields.get(name) ?: error("Cannot resolve operation '$name' response fields")
   }
 
   private val fragments = mutableMapOf<String, ClassName>()
@@ -175,12 +175,12 @@ class CgResolver {
     return fragmentsVariablesAdapter.get(name)
   }
 
-  private val fragmentsResponseFields = mutableMapOf<String, ClassName>()
-  fun registerFragmentResponseFields(name: String, className: ClassName) {
-    fragmentsResponseFields.put(name, className)
+  private val fragmentsMergedFields = mutableMapOf<String, ClassName>()
+  fun registerFragmentMergedFields(name: String, className: ClassName) {
+    fragmentsMergedFields.put(name, className)
   }
-  fun resolveFragmentResponseFields(name: String): ClassName {
-    return fragmentsResponseFields.get(name) ?: error("Cannot resolve fragment '$name' response fields")
+  fun resolveFragmentMergedFields(name: String): ClassName {
+    return fragmentsMergedFields.get(name) ?: error("Cannot resolve fragment '$name' response fields")
   }
 
   private var customScalars = mutableMapOf<String, ClassName?>()

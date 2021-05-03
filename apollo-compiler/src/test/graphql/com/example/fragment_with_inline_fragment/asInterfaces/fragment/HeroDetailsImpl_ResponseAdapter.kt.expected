@@ -7,8 +7,8 @@ package com.example.fragment_with_inline_fragment.fragment
 
 import com.apollographql.apollo3.api.Adapter
 import com.apollographql.apollo3.api.CustomScalarAdapters
-import com.apollographql.apollo3.api.NullableIntResponseAdapter
-import com.apollographql.apollo3.api.NullableStringResponseAdapter
+import com.apollographql.apollo3.api.NullableIntAdapter
+import com.apollographql.apollo3.api.NullableStringAdapter
 import com.apollographql.apollo3.api.StringAdapter
 import com.apollographql.apollo3.api.json.JsonReader
 import com.apollographql.apollo3.api.json.JsonWriter
@@ -102,7 +102,7 @@ object HeroDetailsImpl_ResponseAdapter {
         var edges: List<HeroDetailsImpl.HumanData.FriendsConnection.Edge?>? = null
         while(true) {
           when (reader.selectName(RESPONSE_NAMES)) {
-            0 -> totalCount = NullableIntResponseAdapter.fromJson(reader, customScalarAdapters)
+            0 -> totalCount = NullableIntAdapter.fromJson(reader, customScalarAdapters)
             1 -> edges = Edge.obj().nullable().list().nullable().fromJson(reader,
                 customScalarAdapters)
             else -> break
@@ -120,7 +120,7 @@ object HeroDetailsImpl_ResponseAdapter {
         value: HeroDetailsImpl.HumanData.FriendsConnection
       ) {
         writer.name("totalCount")
-        NullableIntResponseAdapter.toJson(writer, customScalarAdapters, value.totalCount)
+        NullableIntAdapter.toJson(writer, customScalarAdapters, value.totalCount)
         writer.name("edges")
         Edge.obj().nullable().list().nullable().toJson(writer, customScalarAdapters, value.edges)
       }
@@ -198,8 +198,7 @@ object HeroDetailsImpl_ResponseAdapter {
         when (reader.selectName(RESPONSE_NAMES)) {
           0 -> __typename = StringAdapter.fromJson(reader, customScalarAdapters)
           1 -> name = StringAdapter.fromJson(reader, customScalarAdapters)
-          2 -> primaryFunction = NullableStringResponseAdapter.fromJson(reader,
-              customScalarAdapters)
+          2 -> primaryFunction = NullableStringAdapter.fromJson(reader, customScalarAdapters)
           3 -> friendsConnection = FriendsConnection.obj().fromJson(reader, customScalarAdapters)
           else -> break
         }
@@ -222,7 +221,7 @@ object HeroDetailsImpl_ResponseAdapter {
       writer.name("name")
       StringAdapter.toJson(writer, customScalarAdapters, value.name)
       writer.name("primaryFunction")
-      NullableStringResponseAdapter.toJson(writer, customScalarAdapters, value.primaryFunction)
+      NullableStringAdapter.toJson(writer, customScalarAdapters, value.primaryFunction)
       writer.name("friendsConnection")
       FriendsConnection.obj().toJson(writer, customScalarAdapters, value.friendsConnection)
     }
@@ -236,7 +235,7 @@ object HeroDetailsImpl_ResponseAdapter {
         var edges: List<HeroDetailsImpl.DroidData.FriendsConnection.Edge?>? = null
         while(true) {
           when (reader.selectName(RESPONSE_NAMES)) {
-            0 -> totalCount = NullableIntResponseAdapter.fromJson(reader, customScalarAdapters)
+            0 -> totalCount = NullableIntAdapter.fromJson(reader, customScalarAdapters)
             1 -> edges = Edge.obj().nullable().list().nullable().fromJson(reader,
                 customScalarAdapters)
             else -> break
@@ -254,7 +253,7 @@ object HeroDetailsImpl_ResponseAdapter {
         value: HeroDetailsImpl.DroidData.FriendsConnection
       ) {
         writer.name("totalCount")
-        NullableIntResponseAdapter.toJson(writer, customScalarAdapters, value.totalCount)
+        NullableIntAdapter.toJson(writer, customScalarAdapters, value.totalCount)
         writer.name("edges")
         Edge.obj().nullable().list().nullable().toJson(writer, customScalarAdapters, value.edges)
       }
@@ -363,7 +362,7 @@ object HeroDetailsImpl_ResponseAdapter {
         var edges: List<HeroDetailsImpl.OtherData.FriendsConnection.Edge?>? = null
         while(true) {
           when (reader.selectName(RESPONSE_NAMES)) {
-            0 -> totalCount = NullableIntResponseAdapter.fromJson(reader, customScalarAdapters)
+            0 -> totalCount = NullableIntAdapter.fromJson(reader, customScalarAdapters)
             1 -> edges = Edge.obj().nullable().list().nullable().fromJson(reader,
                 customScalarAdapters)
             else -> break
@@ -381,7 +380,7 @@ object HeroDetailsImpl_ResponseAdapter {
         value: HeroDetailsImpl.OtherData.FriendsConnection
       ) {
         writer.name("totalCount")
-        NullableIntResponseAdapter.toJson(writer, customScalarAdapters, value.totalCount)
+        NullableIntAdapter.toJson(writer, customScalarAdapters, value.totalCount)
         writer.name("edges")
         Edge.obj().nullable().list().nullable().toJson(writer, customScalarAdapters, value.edges)
       }

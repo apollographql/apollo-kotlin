@@ -8,7 +8,7 @@ package com.example.mutation_create_review_semantic_naming.adapter
 import com.apollographql.apollo3.api.Adapter
 import com.apollographql.apollo3.api.CustomScalarAdapters
 import com.apollographql.apollo3.api.IntAdapter
-import com.apollographql.apollo3.api.NullableStringResponseAdapter
+import com.apollographql.apollo3.api.NullableStringAdapter
 import com.apollographql.apollo3.api.json.JsonReader
 import com.apollographql.apollo3.api.json.JsonWriter
 import com.apollographql.apollo3.api.nullable
@@ -55,7 +55,7 @@ object CreateReviewForEpisodeMutation_ResponseAdapter {
         while(true) {
           when (reader.selectName(RESPONSE_NAMES)) {
             0 -> stars = IntAdapter.fromJson(reader, customScalarAdapters)
-            1 -> commentary = NullableStringResponseAdapter.fromJson(reader, customScalarAdapters)
+            1 -> commentary = NullableStringAdapter.fromJson(reader, customScalarAdapters)
             else -> break
           }
         }
@@ -73,7 +73,7 @@ object CreateReviewForEpisodeMutation_ResponseAdapter {
         writer.name("stars")
         IntAdapter.toJson(writer, customScalarAdapters, value.stars)
         writer.name("commentary")
-        NullableStringResponseAdapter.toJson(writer, customScalarAdapters, value.commentary)
+        NullableStringAdapter.toJson(writer, customScalarAdapters, value.commentary)
       }
     }
   }

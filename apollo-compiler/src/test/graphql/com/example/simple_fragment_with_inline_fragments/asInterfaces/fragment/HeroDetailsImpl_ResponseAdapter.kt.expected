@@ -7,8 +7,8 @@ package com.example.simple_fragment_with_inline_fragments.fragment
 
 import com.apollographql.apollo3.api.Adapter
 import com.apollographql.apollo3.api.CustomScalarAdapters
-import com.apollographql.apollo3.api.NullableDoubleResponseAdapter
-import com.apollographql.apollo3.api.NullableStringResponseAdapter
+import com.apollographql.apollo3.api.NullableDoubleAdapter
+import com.apollographql.apollo3.api.NullableStringAdapter
 import com.apollographql.apollo3.api.StringAdapter
 import com.apollographql.apollo3.api.json.JsonReader
 import com.apollographql.apollo3.api.json.JsonWriter
@@ -109,7 +109,7 @@ object HeroDetailsImpl_ResponseAdapter {
           when (reader.selectName(RESPONSE_NAMES)) {
             0 -> __typename = StringAdapter.fromJson(reader, customScalarAdapters)
             1 -> name = StringAdapter.fromJson(reader, customScalarAdapters)
-            2 -> height = NullableDoubleResponseAdapter.fromJson(reader, customScalarAdapters)
+            2 -> height = NullableDoubleAdapter.fromJson(reader, customScalarAdapters)
             else -> break
           }
         }
@@ -130,7 +130,7 @@ object HeroDetailsImpl_ResponseAdapter {
         writer.name("name")
         StringAdapter.toJson(writer, customScalarAdapters, value.name)
         writer.name("height")
-        NullableDoubleResponseAdapter.toJson(writer, customScalarAdapters, value.height)
+        NullableDoubleAdapter.toJson(writer, customScalarAdapters, value.height)
       }
     }
 
@@ -149,8 +149,7 @@ object HeroDetailsImpl_ResponseAdapter {
           when (reader.selectName(RESPONSE_NAMES)) {
             0 -> __typename = StringAdapter.fromJson(reader, customScalarAdapters)
             1 -> name = StringAdapter.fromJson(reader, customScalarAdapters)
-            2 -> primaryFunction = NullableStringResponseAdapter.fromJson(reader,
-                customScalarAdapters)
+            2 -> primaryFunction = NullableStringAdapter.fromJson(reader, customScalarAdapters)
             else -> break
           }
         }
@@ -171,7 +170,7 @@ object HeroDetailsImpl_ResponseAdapter {
         writer.name("name")
         StringAdapter.toJson(writer, customScalarAdapters, value.name)
         writer.name("primaryFunction")
-        NullableStringResponseAdapter.toJson(writer, customScalarAdapters, value.primaryFunction)
+        NullableStringAdapter.toJson(writer, customScalarAdapters, value.primaryFunction)
       }
     }
 

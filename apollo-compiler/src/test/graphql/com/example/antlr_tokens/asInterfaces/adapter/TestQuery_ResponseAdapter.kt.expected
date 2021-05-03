@@ -7,7 +7,7 @@ package com.example.antlr_tokens.adapter
 
 import com.apollographql.apollo3.api.Adapter
 import com.apollographql.apollo3.api.CustomScalarAdapters
-import com.apollographql.apollo3.api.NullableStringResponseAdapter
+import com.apollographql.apollo3.api.NullableStringAdapter
 import com.apollographql.apollo3.api.json.JsonReader
 import com.apollographql.apollo3.api.json.JsonWriter
 import com.apollographql.apollo3.api.nullable
@@ -55,9 +55,9 @@ object TestQuery_ResponseAdapter {
         var alias: String? = null
         while(true) {
           when (reader.selectName(RESPONSE_NAMES)) {
-            0 -> on = NullableStringResponseAdapter.fromJson(reader, customScalarAdapters)
-            1 -> null_ = NullableStringResponseAdapter.fromJson(reader, customScalarAdapters)
-            2 -> alias = NullableStringResponseAdapter.fromJson(reader, customScalarAdapters)
+            0 -> on = NullableStringAdapter.fromJson(reader, customScalarAdapters)
+            1 -> null_ = NullableStringAdapter.fromJson(reader, customScalarAdapters)
+            2 -> alias = NullableStringAdapter.fromJson(reader, customScalarAdapters)
             else -> break
           }
         }
@@ -74,11 +74,11 @@ object TestQuery_ResponseAdapter {
         value: TestQuery.Data.TypeWithGraphQLKeywords
       ) {
         writer.name("on")
-        NullableStringResponseAdapter.toJson(writer, customScalarAdapters, value.on)
+        NullableStringAdapter.toJson(writer, customScalarAdapters, value.on)
         writer.name("null")
-        NullableStringResponseAdapter.toJson(writer, customScalarAdapters, value.null_)
+        NullableStringAdapter.toJson(writer, customScalarAdapters, value.null_)
         writer.name("alias")
-        NullableStringResponseAdapter.toJson(writer, customScalarAdapters, value.alias)
+        NullableStringAdapter.toJson(writer, customScalarAdapters, value.alias)
       }
     }
   }

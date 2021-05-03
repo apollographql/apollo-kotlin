@@ -189,12 +189,12 @@ fun <T> Adapter<T>.optional() = OptionalAdapter(this)
  * Global instances of nullable adapters for built-in scalar types
  */
 @SharedImmutable
-val NullableStringResponseAdapter = StringAdapter.nullable()
+val NullableStringAdapter = StringAdapter.nullable()
 @SharedImmutable
-val NullableDoubleResponseAdapter = DoubleAdapter.nullable()
+val NullableDoubleAdapter = DoubleAdapter.nullable()
 @SharedImmutable
-val NullableIntResponseAdapter = IntAdapter.nullable()
+val NullableIntAdapter = IntAdapter.nullable()
 @SharedImmutable
-val NullableBooleanResponseAdapter = BooleanAdapter.nullable()
+val NullableBooleanAdapter = BooleanAdapter.nullable()
 @SharedImmutable
-val NullableAnyResponseAdapter = AnyAdapter.nullable()
+val NullableAnyAdapter = AnyAdapter.nullable()

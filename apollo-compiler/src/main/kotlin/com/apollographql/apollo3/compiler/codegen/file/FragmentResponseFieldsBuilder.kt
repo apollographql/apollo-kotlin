@@ -16,7 +16,7 @@ class FragmentResponseFieldsBuilder(
   private val simpleName = context.layout.fragmentResponseFieldsName(fragment.name)
 
   override fun prepare() {
-    context.resolver.registerFragmentResponseFields(
+    context.resolver.registerFragmentMergedFields(
         fragment.name,
         ClassName(packageName, simpleName)
     )

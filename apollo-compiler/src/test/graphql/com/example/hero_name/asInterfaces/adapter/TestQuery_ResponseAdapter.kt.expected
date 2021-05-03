@@ -8,7 +8,7 @@ package com.example.hero_name.adapter
 import com.apollographql.apollo3.api.Adapter
 import com.apollographql.apollo3.api.AnyAdapter
 import com.apollographql.apollo3.api.CustomScalarAdapters
-import com.apollographql.apollo3.api.NullableStringResponseAdapter
+import com.apollographql.apollo3.api.NullableStringAdapter
 import com.apollographql.apollo3.api.StringAdapter
 import com.apollographql.apollo3.api.json.JsonReader
 import com.apollographql.apollo3.api.json.JsonWriter
@@ -95,8 +95,7 @@ object TestQuery_ResponseAdapter {
             0 -> __typename = StringAdapter.fromJson(reader, customScalarAdapters)
             1 -> name = StringAdapter.fromJson(reader, customScalarAdapters)
             2 -> birthDate = AnyAdapter.fromJson(reader, customScalarAdapters)
-            3 -> primaryFunction = NullableStringResponseAdapter.fromJson(reader,
-                customScalarAdapters)
+            3 -> primaryFunction = NullableStringAdapter.fromJson(reader, customScalarAdapters)
             else -> break
           }
         }
@@ -120,7 +119,7 @@ object TestQuery_ResponseAdapter {
         writer.name("birthDate")
         AnyAdapter.toJson(writer, customScalarAdapters, value.birthDate)
         writer.name("primaryFunction")
-        NullableStringResponseAdapter.toJson(writer, customScalarAdapters, value.primaryFunction)
+        NullableStringAdapter.toJson(writer, customScalarAdapters, value.primaryFunction)
       }
     }
 

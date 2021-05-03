@@ -7,7 +7,7 @@ package com.example.introspection_query.adapter
 
 import com.apollographql.apollo3.api.Adapter
 import com.apollographql.apollo3.api.CustomScalarAdapters
-import com.apollographql.apollo3.api.NullableStringResponseAdapter
+import com.apollographql.apollo3.api.NullableStringAdapter
 import com.apollographql.apollo3.api.json.JsonReader
 import com.apollographql.apollo3.api.json.JsonWriter
 import com.apollographql.apollo3.api.list
@@ -87,7 +87,7 @@ object TestQuery_ResponseAdapter {
           var name: String? = null
           while(true) {
             when (reader.selectName(RESPONSE_NAMES)) {
-              0 -> name = NullableStringResponseAdapter.fromJson(reader, customScalarAdapters)
+              0 -> name = NullableStringAdapter.fromJson(reader, customScalarAdapters)
               else -> break
             }
           }
@@ -102,7 +102,7 @@ object TestQuery_ResponseAdapter {
           value: TestQuery.Data.__Schema.QueryType
         ) {
           writer.name("name")
-          NullableStringResponseAdapter.toJson(writer, customScalarAdapters, value.name)
+          NullableStringAdapter.toJson(writer, customScalarAdapters, value.name)
         }
       }
 
@@ -114,7 +114,7 @@ object TestQuery_ResponseAdapter {
           var name: String? = null
           while(true) {
             when (reader.selectName(RESPONSE_NAMES)) {
-              0 -> name = NullableStringResponseAdapter.fromJson(reader, customScalarAdapters)
+              0 -> name = NullableStringAdapter.fromJson(reader, customScalarAdapters)
               else -> break
             }
           }
@@ -129,7 +129,7 @@ object TestQuery_ResponseAdapter {
           value: TestQuery.Data.__Schema.Type
         ) {
           writer.name("name")
-          NullableStringResponseAdapter.toJson(writer, customScalarAdapters, value.name)
+          NullableStringAdapter.toJson(writer, customScalarAdapters, value.name)
         }
       }
     }
@@ -142,7 +142,7 @@ object TestQuery_ResponseAdapter {
         var name: String? = null
         while(true) {
           when (reader.selectName(RESPONSE_NAMES)) {
-            0 -> name = NullableStringResponseAdapter.fromJson(reader, customScalarAdapters)
+            0 -> name = NullableStringAdapter.fromJson(reader, customScalarAdapters)
             else -> break
           }
         }
@@ -157,7 +157,7 @@ object TestQuery_ResponseAdapter {
         value: TestQuery.Data.__Type
       ) {
         writer.name("name")
-        NullableStringResponseAdapter.toJson(writer, customScalarAdapters, value.name)
+        NullableStringAdapter.toJson(writer, customScalarAdapters, value.name)
       }
     }
   }

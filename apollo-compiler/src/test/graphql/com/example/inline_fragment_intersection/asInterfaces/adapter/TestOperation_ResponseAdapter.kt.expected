@@ -7,9 +7,9 @@ package com.example.inline_fragment_intersection.adapter
 
 import com.apollographql.apollo3.api.Adapter
 import com.apollographql.apollo3.api.CustomScalarAdapters
-import com.apollographql.apollo3.api.NullableBooleanResponseAdapter
-import com.apollographql.apollo3.api.NullableDoubleResponseAdapter
-import com.apollographql.apollo3.api.NullableStringResponseAdapter
+import com.apollographql.apollo3.api.NullableBooleanAdapter
+import com.apollographql.apollo3.api.NullableDoubleAdapter
+import com.apollographql.apollo3.api.NullableStringAdapter
 import com.apollographql.apollo3.api.StringAdapter
 import com.apollographql.apollo3.api.json.JsonReader
 import com.apollographql.apollo3.api.json.JsonWriter
@@ -105,8 +105,7 @@ object TestOperation_ResponseAdapter {
             0 -> __typename = StringAdapter.fromJson(reader, customScalarAdapters)
             1 -> name = StringAdapter.fromJson(reader, customScalarAdapters)
             2 -> friends = Friend.obj().list().fromJson(reader, customScalarAdapters)
-            3 -> profilePictureUrl = NullableStringResponseAdapter.fromJson(reader,
-                customScalarAdapters)
+            3 -> profilePictureUrl = NullableStringAdapter.fromJson(reader, customScalarAdapters)
             else -> break
           }
         }
@@ -130,7 +129,7 @@ object TestOperation_ResponseAdapter {
         writer.name("friends")
         Friend.obj().list().toJson(writer, customScalarAdapters, value.friends)
         writer.name("profilePictureUrl")
-        NullableStringResponseAdapter.toJson(writer, customScalarAdapters, value.profilePictureUrl)
+        NullableStringAdapter.toJson(writer, customScalarAdapters, value.profilePictureUrl)
       }
 
       object Friend : Adapter<TestOperation.Data.BeingHumanRandom.Friend> {
@@ -184,9 +183,8 @@ object TestOperation_ResponseAdapter {
             when (reader.selectName(RESPONSE_NAMES)) {
               0 -> __typename = StringAdapter.fromJson(reader, customScalarAdapters)
               1 -> name = StringAdapter.fromJson(reader, customScalarAdapters)
-              2 -> lifeExpectancy = NullableDoubleResponseAdapter.fromJson(reader,
-                  customScalarAdapters)
-              3 -> isFamous = NullableBooleanResponseAdapter.fromJson(reader, customScalarAdapters)
+              2 -> lifeExpectancy = NullableDoubleAdapter.fromJson(reader, customScalarAdapters)
+              3 -> isFamous = NullableBooleanAdapter.fromJson(reader, customScalarAdapters)
               4 -> race = Race_ResponseAdapter.fromJson(reader, customScalarAdapters)
               else -> break
             }
@@ -210,9 +208,9 @@ object TestOperation_ResponseAdapter {
           writer.name("name")
           StringAdapter.toJson(writer, customScalarAdapters, value.name)
           writer.name("lifeExpectancy")
-          NullableDoubleResponseAdapter.toJson(writer, customScalarAdapters, value.lifeExpectancy)
+          NullableDoubleAdapter.toJson(writer, customScalarAdapters, value.lifeExpectancy)
           writer.name("isFamous")
-          NullableBooleanResponseAdapter.toJson(writer, customScalarAdapters, value.isFamous)
+          NullableBooleanAdapter.toJson(writer, customScalarAdapters, value.isFamous)
           writer.name("race")
           Race_ResponseAdapter.toJson(writer, customScalarAdapters, value.race)
         }
@@ -233,7 +231,7 @@ object TestOperation_ResponseAdapter {
             when (reader.selectName(RESPONSE_NAMES)) {
               0 -> __typename = StringAdapter.fromJson(reader, customScalarAdapters)
               1 -> name = StringAdapter.fromJson(reader, customScalarAdapters)
-              2 -> isFamous = NullableBooleanResponseAdapter.fromJson(reader, customScalarAdapters)
+              2 -> isFamous = NullableBooleanAdapter.fromJson(reader, customScalarAdapters)
               else -> break
             }
           }
@@ -254,7 +252,7 @@ object TestOperation_ResponseAdapter {
           writer.name("name")
           StringAdapter.toJson(writer, customScalarAdapters, value.name)
           writer.name("isFamous")
-          NullableBooleanResponseAdapter.toJson(writer, customScalarAdapters, value.isFamous)
+          NullableBooleanAdapter.toJson(writer, customScalarAdapters, value.isFamous)
         }
       }
     }
@@ -351,8 +349,7 @@ object TestOperation_ResponseAdapter {
             when (reader.selectName(RESPONSE_NAMES)) {
               0 -> __typename = StringAdapter.fromJson(reader, customScalarAdapters)
               1 -> name = StringAdapter.fromJson(reader, customScalarAdapters)
-              2 -> lifeExpectancy = NullableDoubleResponseAdapter.fromJson(reader,
-                  customScalarAdapters)
+              2 -> lifeExpectancy = NullableDoubleAdapter.fromJson(reader, customScalarAdapters)
               else -> break
             }
           }
@@ -373,7 +370,7 @@ object TestOperation_ResponseAdapter {
           writer.name("name")
           StringAdapter.toJson(writer, customScalarAdapters, value.name)
           writer.name("lifeExpectancy")
-          NullableDoubleResponseAdapter.toJson(writer, customScalarAdapters, value.lifeExpectancy)
+          NullableDoubleAdapter.toJson(writer, customScalarAdapters, value.lifeExpectancy)
         }
       }
 
@@ -392,8 +389,7 @@ object TestOperation_ResponseAdapter {
             when (reader.selectName(RESPONSE_NAMES)) {
               0 -> __typename = StringAdapter.fromJson(reader, customScalarAdapters)
               1 -> name = StringAdapter.fromJson(reader, customScalarAdapters)
-              2 -> lifeExpectancy = NullableDoubleResponseAdapter.fromJson(reader,
-                  customScalarAdapters)
+              2 -> lifeExpectancy = NullableDoubleAdapter.fromJson(reader, customScalarAdapters)
               else -> break
             }
           }
@@ -414,7 +410,7 @@ object TestOperation_ResponseAdapter {
           writer.name("name")
           StringAdapter.toJson(writer, customScalarAdapters, value.name)
           writer.name("lifeExpectancy")
-          NullableDoubleResponseAdapter.toJson(writer, customScalarAdapters, value.lifeExpectancy)
+          NullableDoubleAdapter.toJson(writer, customScalarAdapters, value.lifeExpectancy)
         }
       }
     }

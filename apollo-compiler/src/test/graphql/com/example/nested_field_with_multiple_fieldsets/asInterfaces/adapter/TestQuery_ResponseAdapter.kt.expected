@@ -7,7 +7,7 @@ package com.example.nested_field_with_multiple_fieldsets.adapter
 
 import com.apollographql.apollo3.api.Adapter
 import com.apollographql.apollo3.api.CustomScalarAdapters
-import com.apollographql.apollo3.api.NullableStringResponseAdapter
+import com.apollographql.apollo3.api.NullableStringAdapter
 import com.apollographql.apollo3.api.StringAdapter
 import com.apollographql.apollo3.api.json.JsonReader
 import com.apollographql.apollo3.api.json.JsonWriter
@@ -159,10 +159,10 @@ object TestQuery_ResponseAdapter {
           while(true) {
             when (reader.selectName(RESPONSE_NAMES)) {
               0 -> __typename = StringAdapter.fromJson(reader, customScalarAdapters)
-              1 -> scalar1 = NullableStringResponseAdapter.fromJson(reader, customScalarAdapters)
-              2 -> scalar2 = NullableStringResponseAdapter.fromJson(reader, customScalarAdapters)
-              3 -> scalar3 = NullableStringResponseAdapter.fromJson(reader, customScalarAdapters)
-              4 -> scalar4 = NullableStringResponseAdapter.fromJson(reader, customScalarAdapters)
+              1 -> scalar1 = NullableStringAdapter.fromJson(reader, customScalarAdapters)
+              2 -> scalar2 = NullableStringAdapter.fromJson(reader, customScalarAdapters)
+              3 -> scalar3 = NullableStringAdapter.fromJson(reader, customScalarAdapters)
+              4 -> scalar4 = NullableStringAdapter.fromJson(reader, customScalarAdapters)
               else -> break
             }
           }
@@ -183,13 +183,13 @@ object TestQuery_ResponseAdapter {
           writer.name("__typename")
           StringAdapter.toJson(writer, customScalarAdapters, value.__typename)
           writer.name("scalar1")
-          NullableStringResponseAdapter.toJson(writer, customScalarAdapters, value.scalar1)
+          NullableStringAdapter.toJson(writer, customScalarAdapters, value.scalar1)
           writer.name("scalar2")
-          NullableStringResponseAdapter.toJson(writer, customScalarAdapters, value.scalar2)
+          NullableStringAdapter.toJson(writer, customScalarAdapters, value.scalar2)
           writer.name("scalar3")
-          NullableStringResponseAdapter.toJson(writer, customScalarAdapters, value.scalar3)
+          NullableStringAdapter.toJson(writer, customScalarAdapters, value.scalar3)
           writer.name("scalar4")
-          NullableStringResponseAdapter.toJson(writer, customScalarAdapters, value.scalar4)
+          NullableStringAdapter.toJson(writer, customScalarAdapters, value.scalar4)
         }
       }
 
@@ -207,8 +207,8 @@ object TestQuery_ResponseAdapter {
           while(true) {
             when (reader.selectName(RESPONSE_NAMES)) {
               0 -> __typename = StringAdapter.fromJson(reader, customScalarAdapters)
-              1 -> scalar1 = NullableStringResponseAdapter.fromJson(reader, customScalarAdapters)
-              2 -> scalar3 = NullableStringResponseAdapter.fromJson(reader, customScalarAdapters)
+              1 -> scalar1 = NullableStringAdapter.fromJson(reader, customScalarAdapters)
+              2 -> scalar3 = NullableStringAdapter.fromJson(reader, customScalarAdapters)
               else -> break
             }
           }
@@ -227,9 +227,9 @@ object TestQuery_ResponseAdapter {
           writer.name("__typename")
           StringAdapter.toJson(writer, customScalarAdapters, value.__typename)
           writer.name("scalar1")
-          NullableStringResponseAdapter.toJson(writer, customScalarAdapters, value.scalar1)
+          NullableStringAdapter.toJson(writer, customScalarAdapters, value.scalar1)
           writer.name("scalar3")
-          NullableStringResponseAdapter.toJson(writer, customScalarAdapters, value.scalar3)
+          NullableStringAdapter.toJson(writer, customScalarAdapters, value.scalar3)
         }
       }
     }
@@ -315,8 +315,8 @@ object TestQuery_ResponseAdapter {
           while(true) {
             when (reader.selectName(RESPONSE_NAMES)) {
               0 -> __typename = StringAdapter.fromJson(reader, customScalarAdapters)
-              1 -> scalar1 = NullableStringResponseAdapter.fromJson(reader, customScalarAdapters)
-              2 -> scalar2 = NullableStringResponseAdapter.fromJson(reader, customScalarAdapters)
+              1 -> scalar1 = NullableStringAdapter.fromJson(reader, customScalarAdapters)
+              2 -> scalar2 = NullableStringAdapter.fromJson(reader, customScalarAdapters)
               else -> break
             }
           }
@@ -335,9 +335,9 @@ object TestQuery_ResponseAdapter {
           writer.name("__typename")
           StringAdapter.toJson(writer, customScalarAdapters, value.__typename)
           writer.name("scalar1")
-          NullableStringResponseAdapter.toJson(writer, customScalarAdapters, value.scalar1)
+          NullableStringAdapter.toJson(writer, customScalarAdapters, value.scalar1)
           writer.name("scalar2")
-          NullableStringResponseAdapter.toJson(writer, customScalarAdapters, value.scalar2)
+          NullableStringAdapter.toJson(writer, customScalarAdapters, value.scalar2)
         }
       }
 
@@ -354,7 +354,7 @@ object TestQuery_ResponseAdapter {
           while(true) {
             when (reader.selectName(RESPONSE_NAMES)) {
               0 -> __typename = StringAdapter.fromJson(reader, customScalarAdapters)
-              1 -> scalar1 = NullableStringResponseAdapter.fromJson(reader, customScalarAdapters)
+              1 -> scalar1 = NullableStringAdapter.fromJson(reader, customScalarAdapters)
               else -> break
             }
           }
@@ -372,7 +372,7 @@ object TestQuery_ResponseAdapter {
           writer.name("__typename")
           StringAdapter.toJson(writer, customScalarAdapters, value.__typename)
           writer.name("scalar1")
-          NullableStringResponseAdapter.toJson(writer, customScalarAdapters, value.scalar1)
+          NullableStringAdapter.toJson(writer, customScalarAdapters, value.scalar1)
         }
       }
     }

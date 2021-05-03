@@ -7,7 +7,7 @@ package com.example.arguments_simple.adapter
 
 import com.apollographql.apollo3.api.Adapter
 import com.apollographql.apollo3.api.CustomScalarAdapters
-import com.apollographql.apollo3.api.NullableIntResponseAdapter
+import com.apollographql.apollo3.api.NullableIntAdapter
 import com.apollographql.apollo3.api.StringAdapter
 import com.apollographql.apollo3.api.json.JsonReader
 import com.apollographql.apollo3.api.json.JsonWriter
@@ -84,7 +84,7 @@ object TestQuery_ResponseAdapter {
           var totalCount: Int? = null
           while(true) {
             when (reader.selectName(RESPONSE_NAMES)) {
-              0 -> totalCount = NullableIntResponseAdapter.fromJson(reader, customScalarAdapters)
+              0 -> totalCount = NullableIntAdapter.fromJson(reader, customScalarAdapters)
               else -> break
             }
           }
@@ -99,7 +99,7 @@ object TestQuery_ResponseAdapter {
           value: TestQuery.Data.Hero.FriendsConnection
         ) {
           writer.name("totalCount")
-          NullableIntResponseAdapter.toJson(writer, customScalarAdapters, value.totalCount)
+          NullableIntAdapter.toJson(writer, customScalarAdapters, value.totalCount)
         }
       }
     }

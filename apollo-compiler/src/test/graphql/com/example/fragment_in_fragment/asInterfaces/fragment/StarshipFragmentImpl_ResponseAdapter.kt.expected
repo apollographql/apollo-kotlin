@@ -7,7 +7,7 @@ package com.example.fragment_in_fragment.fragment
 
 import com.apollographql.apollo3.api.Adapter
 import com.apollographql.apollo3.api.CustomScalarAdapters
-import com.apollographql.apollo3.api.NullableStringResponseAdapter
+import com.apollographql.apollo3.api.NullableStringAdapter
 import com.apollographql.apollo3.api.StringAdapter
 import com.apollographql.apollo3.api.json.JsonReader
 import com.apollographql.apollo3.api.json.JsonWriter
@@ -31,7 +31,7 @@ object StarshipFragmentImpl_ResponseAdapter {
         when (reader.selectName(RESPONSE_NAMES)) {
           0 -> __typename = StringAdapter.fromJson(reader, customScalarAdapters)
           1 -> id = StringAdapter.fromJson(reader, customScalarAdapters)
-          2 -> name = NullableStringResponseAdapter.fromJson(reader, customScalarAdapters)
+          2 -> name = NullableStringAdapter.fromJson(reader, customScalarAdapters)
           3 -> pilotConnection = PilotConnection.obj().nullable().fromJson(reader,
               customScalarAdapters)
           else -> break
@@ -55,7 +55,7 @@ object StarshipFragmentImpl_ResponseAdapter {
       writer.name("id")
       StringAdapter.toJson(writer, customScalarAdapters, value.id)
       writer.name("name")
-      NullableStringResponseAdapter.toJson(writer, customScalarAdapters, value.name)
+      NullableStringAdapter.toJson(writer, customScalarAdapters, value.name)
       writer.name("pilotConnection")
       PilotConnection.obj().nullable().toJson(writer, customScalarAdapters, value.pilotConnection)
     }
@@ -124,7 +124,7 @@ object StarshipFragmentImpl_ResponseAdapter {
             while(true) {
               when (reader.selectName(RESPONSE_NAMES)) {
                 0 -> __typename = StringAdapter.fromJson(reader, customScalarAdapters)
-                1 -> name = NullableStringResponseAdapter.fromJson(reader, customScalarAdapters)
+                1 -> name = NullableStringAdapter.fromJson(reader, customScalarAdapters)
                 2 -> homeworld = Homeworld.obj().nullable().fromJson(reader, customScalarAdapters)
                 else -> break
               }
@@ -144,7 +144,7 @@ object StarshipFragmentImpl_ResponseAdapter {
             writer.name("__typename")
             StringAdapter.toJson(writer, customScalarAdapters, value.__typename)
             writer.name("name")
-            NullableStringResponseAdapter.toJson(writer, customScalarAdapters, value.name)
+            NullableStringAdapter.toJson(writer, customScalarAdapters, value.name)
             writer.name("homeworld")
             Homeworld.obj().nullable().toJson(writer, customScalarAdapters, value.homeworld)
           }
@@ -160,7 +160,7 @@ object StarshipFragmentImpl_ResponseAdapter {
               while(true) {
                 when (reader.selectName(RESPONSE_NAMES)) {
                   0 -> __typename = StringAdapter.fromJson(reader, customScalarAdapters)
-                  1 -> name = NullableStringResponseAdapter.fromJson(reader, customScalarAdapters)
+                  1 -> name = NullableStringAdapter.fromJson(reader, customScalarAdapters)
                   else -> break
                 }
               }
@@ -178,7 +178,7 @@ object StarshipFragmentImpl_ResponseAdapter {
               writer.name("__typename")
               StringAdapter.toJson(writer, customScalarAdapters, value.__typename)
               writer.name("name")
-              NullableStringResponseAdapter.toJson(writer, customScalarAdapters, value.name)
+              NullableStringAdapter.toJson(writer, customScalarAdapters, value.name)
             }
           }
         }

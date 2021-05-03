@@ -7,7 +7,7 @@ package com.example.union_inline_fragments.adapter
 
 import com.apollographql.apollo3.api.Adapter
 import com.apollographql.apollo3.api.CustomScalarAdapters
-import com.apollographql.apollo3.api.NullableStringResponseAdapter
+import com.apollographql.apollo3.api.NullableStringAdapter
 import com.apollographql.apollo3.api.StringAdapter
 import com.apollographql.apollo3.api.json.JsonReader
 import com.apollographql.apollo3.api.json.JsonWriter
@@ -184,7 +184,7 @@ object TestQuery_ResponseAdapter {
             when (reader.selectName(RESPONSE_NAMES)) {
               0 -> __typename = StringAdapter.fromJson(reader, customScalarAdapters)
               1 -> name = StringAdapter.fromJson(reader, customScalarAdapters)
-              2 -> homePlanet = NullableStringResponseAdapter.fromJson(reader, customScalarAdapters)
+              2 -> homePlanet = NullableStringAdapter.fromJson(reader, customScalarAdapters)
               3 -> friends = Friend.obj().nullable().list().nullable().fromJson(reader,
                   customScalarAdapters)
               else -> break
@@ -208,7 +208,7 @@ object TestQuery_ResponseAdapter {
           writer.name("name")
           StringAdapter.toJson(writer, customScalarAdapters, value.name)
           writer.name("homePlanet")
-          NullableStringResponseAdapter.toJson(writer, customScalarAdapters, value.homePlanet)
+          NullableStringAdapter.toJson(writer, customScalarAdapters, value.homePlanet)
           writer.name("friends")
           Friend.obj().nullable().list().nullable().toJson(writer, customScalarAdapters,
               value.friends)
@@ -264,8 +264,7 @@ object TestQuery_ResponseAdapter {
             when (reader.selectName(RESPONSE_NAMES)) {
               0 -> __typename = StringAdapter.fromJson(reader, customScalarAdapters)
               1 -> name = StringAdapter.fromJson(reader, customScalarAdapters)
-              2 -> primaryFunction = NullableStringResponseAdapter.fromJson(reader,
-                  customScalarAdapters)
+              2 -> primaryFunction = NullableStringAdapter.fromJson(reader, customScalarAdapters)
               3 -> friends = Friend.obj().nullable().list().nullable().fromJson(reader,
                   customScalarAdapters)
               else -> break
@@ -289,7 +288,7 @@ object TestQuery_ResponseAdapter {
           writer.name("name")
           StringAdapter.toJson(writer, customScalarAdapters, value.name)
           writer.name("primaryFunction")
-          NullableStringResponseAdapter.toJson(writer, customScalarAdapters, value.primaryFunction)
+          NullableStringAdapter.toJson(writer, customScalarAdapters, value.primaryFunction)
           writer.name("friends")
           Friend.obj().nullable().list().nullable().toJson(writer, customScalarAdapters,
               value.friends)

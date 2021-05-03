@@ -7,8 +7,8 @@ package com.example.directives.adapter
 
 import com.apollographql.apollo3.api.Adapter
 import com.apollographql.apollo3.api.CustomScalarAdapters
-import com.apollographql.apollo3.api.NullableIntResponseAdapter
-import com.apollographql.apollo3.api.NullableStringResponseAdapter
+import com.apollographql.apollo3.api.NullableIntAdapter
+import com.apollographql.apollo3.api.NullableStringAdapter
 import com.apollographql.apollo3.api.json.JsonReader
 import com.apollographql.apollo3.api.json.JsonWriter
 import com.apollographql.apollo3.api.nullable
@@ -54,7 +54,7 @@ object TestQuery_ResponseAdapter {
         var friendsConnection: TestQuery.Data.Hero.FriendsConnection? = null
         while(true) {
           when (reader.selectName(RESPONSE_NAMES)) {
-            0 -> name = NullableStringResponseAdapter.fromJson(reader, customScalarAdapters)
+            0 -> name = NullableStringAdapter.fromJson(reader, customScalarAdapters)
             1 -> friendsConnection = FriendsConnection.obj().nullable().fromJson(reader,
                 customScalarAdapters)
             else -> break
@@ -72,7 +72,7 @@ object TestQuery_ResponseAdapter {
         value: TestQuery.Data.Hero
       ) {
         writer.name("name")
-        NullableStringResponseAdapter.toJson(writer, customScalarAdapters, value.name)
+        NullableStringAdapter.toJson(writer, customScalarAdapters, value.name)
         writer.name("friendsConnection")
         FriendsConnection.obj().nullable().toJson(writer, customScalarAdapters,
             value.friendsConnection)
@@ -86,7 +86,7 @@ object TestQuery_ResponseAdapter {
           var totalCount: Int? = null
           while(true) {
             when (reader.selectName(RESPONSE_NAMES)) {
-              0 -> totalCount = NullableIntResponseAdapter.fromJson(reader, customScalarAdapters)
+              0 -> totalCount = NullableIntAdapter.fromJson(reader, customScalarAdapters)
               else -> break
             }
           }
@@ -101,7 +101,7 @@ object TestQuery_ResponseAdapter {
           value: TestQuery.Data.Hero.FriendsConnection
         ) {
           writer.name("totalCount")
-          NullableIntResponseAdapter.toJson(writer, customScalarAdapters, value.totalCount)
+          NullableIntAdapter.toJson(writer, customScalarAdapters, value.totalCount)
         }
       }
     }

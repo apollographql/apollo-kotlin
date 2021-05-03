@@ -7,7 +7,7 @@ package com.example.arguments_complex.adapter
 
 import com.apollographql.apollo3.api.Adapter
 import com.apollographql.apollo3.api.CustomScalarAdapters
-import com.apollographql.apollo3.api.NullableDoubleResponseAdapter
+import com.apollographql.apollo3.api.NullableDoubleAdapter
 import com.apollographql.apollo3.api.StringAdapter
 import com.apollographql.apollo3.api.json.JsonReader
 import com.apollographql.apollo3.api.json.JsonWriter
@@ -56,7 +56,7 @@ object TestQuery_ResponseAdapter {
         while(true) {
           when (reader.selectName(RESPONSE_NAMES)) {
             0 -> name = StringAdapter.fromJson(reader, customScalarAdapters)
-            1 -> height = NullableDoubleResponseAdapter.fromJson(reader, customScalarAdapters)
+            1 -> height = NullableDoubleAdapter.fromJson(reader, customScalarAdapters)
             else -> break
           }
         }
@@ -74,7 +74,7 @@ object TestQuery_ResponseAdapter {
         writer.name("name")
         StringAdapter.toJson(writer, customScalarAdapters, value.name)
         writer.name("height")
-        NullableDoubleResponseAdapter.toJson(writer, customScalarAdapters, value.height)
+        NullableDoubleAdapter.toJson(writer, customScalarAdapters, value.height)
       }
     }
   }

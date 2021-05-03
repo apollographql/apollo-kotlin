@@ -21,7 +21,7 @@ class OperationResponseFieldsBuilder(
   )
 
   override fun prepare() {
-    context.resolver.registerOperationResponseFields(
+    context.resolver.registerOperationMergedFields(
         operation.name,
         ClassName(packageName, simpleName)
     )

@@ -7,7 +7,7 @@ package com.example.antlr_tokens.adapter
 
 import com.apollographql.apollo3.api.Adapter
 import com.apollographql.apollo3.api.CustomScalarAdapters
-import com.apollographql.apollo3.api.NullableStringResponseAdapter
+import com.apollographql.apollo3.api.NullableStringAdapter
 import com.apollographql.apollo3.api.json.JsonReader
 import com.apollographql.apollo3.api.json.JsonWriter
 import com.example.antlr_tokens.TestQuery
@@ -22,6 +22,6 @@ object TestQuery_VariablesAdapter : Adapter<TestQuery> {
     value: TestQuery
   ) {
     writer.name("operation")
-    NullableStringResponseAdapter.toJson(writer, customScalarAdapters, value.operation)
+    NullableStringAdapter.toJson(writer, customScalarAdapters, value.operation)
   }
 }

@@ -7,7 +7,7 @@ package com.example.fragment_with_inline_fragment.fragment
 
 import com.apollographql.apollo3.api.Adapter
 import com.apollographql.apollo3.api.CustomScalarAdapters
-import com.apollographql.apollo3.api.NullableStringResponseAdapter
+import com.apollographql.apollo3.api.NullableStringAdapter
 import com.apollographql.apollo3.api.StringAdapter
 import com.apollographql.apollo3.api.json.JsonReader
 import com.apollographql.apollo3.api.json.JsonWriter
@@ -27,8 +27,7 @@ object DroidDetailsImpl_ResponseAdapter {
         when (reader.selectName(RESPONSE_NAMES)) {
           0 -> __typename = StringAdapter.fromJson(reader, customScalarAdapters)
           1 -> name = StringAdapter.fromJson(reader, customScalarAdapters)
-          2 -> primaryFunction = NullableStringResponseAdapter.fromJson(reader,
-              customScalarAdapters)
+          2 -> primaryFunction = NullableStringAdapter.fromJson(reader, customScalarAdapters)
           else -> break
         }
       }
@@ -49,7 +48,7 @@ object DroidDetailsImpl_ResponseAdapter {
       writer.name("name")
       StringAdapter.toJson(writer, customScalarAdapters, value.name)
       writer.name("primaryFunction")
-      NullableStringResponseAdapter.toJson(writer, customScalarAdapters, value.primaryFunction)
+      NullableStringAdapter.toJson(writer, customScalarAdapters, value.primaryFunction)
     }
   }
 }

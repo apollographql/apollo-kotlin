@@ -8,7 +8,7 @@ package com.example.mutation_create_review.adapter
 import com.apollographql.apollo3.api.Adapter
 import com.apollographql.apollo3.api.CustomScalarAdapters
 import com.apollographql.apollo3.api.IntAdapter
-import com.apollographql.apollo3.api.NullableStringResponseAdapter
+import com.apollographql.apollo3.api.NullableStringAdapter
 import com.apollographql.apollo3.api.StringAdapter
 import com.apollographql.apollo3.api.json.JsonReader
 import com.apollographql.apollo3.api.json.JsonWriter
@@ -65,7 +65,7 @@ internal object CreateReviewForEpisode_ResponseAdapter {
         while(true) {
           when (reader.selectName(RESPONSE_NAMES)) {
             0 -> stars = IntAdapter.fromJson(reader, customScalarAdapters)
-            1 -> commentary = NullableStringResponseAdapter.fromJson(reader, customScalarAdapters)
+            1 -> commentary = NullableStringAdapter.fromJson(reader, customScalarAdapters)
             2 -> listOfListOfString = StringAdapter.list().list().nullable().fromJson(reader,
                 customScalarAdapters)
             3 -> listOfListOfEnum = Episode_ResponseAdapter.list().list().nullable().fromJson(reader,
@@ -95,7 +95,7 @@ internal object CreateReviewForEpisode_ResponseAdapter {
         writer.name("stars")
         IntAdapter.toJson(writer, customScalarAdapters, value.stars)
         writer.name("commentary")
-        NullableStringResponseAdapter.toJson(writer, customScalarAdapters, value.commentary)
+        NullableStringAdapter.toJson(writer, customScalarAdapters, value.commentary)
         writer.name("listOfListOfString")
         StringAdapter.list().list().nullable().toJson(writer, customScalarAdapters,
             value.listOfListOfString)
