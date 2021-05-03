@@ -2,10 +2,6 @@ package com.apollographql.apollo3.compiler.codegen.adapter
 
 import com.apollographql.apollo3.api.Optional
 import com.apollographql.apollo3.compiler.codegen.Identifier
-import com.apollographql.apollo3.compiler.codegen.Identifier.responseAdapterCache
-import com.apollographql.apollo3.compiler.codegen.Identifier.toResponse
-import com.apollographql.apollo3.compiler.codegen.Identifier.value
-import com.apollographql.apollo3.compiler.codegen.Identifier.writer
 import com.apollographql.apollo3.compiler.codegen.kotlinNameForVariable
 import com.apollographql.apollo3.compiler.codegen.CgContext
 import com.apollographql.apollo3.compiler.codegen.Identifier.typename
@@ -60,7 +56,7 @@ internal fun readFromResponseCodeBlock(
       .add(
           model.properties.mapIndexed { index, property ->
             CodeBlock.of(
-                "%L·->·%L·=·%L.${Identifier.fromResponse}(${Identifier.reader}, ${Identifier.responseAdapterCache})",
+                "%L·->·%L·=·%L.${Identifier.fromJson}(${Identifier.reader}, ${Identifier.customScalarAdapters})",
                 index,
                 context.layout.variableName(property.info.responseName),
                 context.resolver.adapterInitializer(property.info.type)

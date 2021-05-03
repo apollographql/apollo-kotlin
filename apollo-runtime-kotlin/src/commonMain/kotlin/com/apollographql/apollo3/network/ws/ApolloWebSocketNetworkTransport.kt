@@ -4,7 +4,7 @@ import com.apollographql.apollo3.api.ApolloRequest
 import com.apollographql.apollo3.api.ApolloResponse
 import com.apollographql.apollo3.api.ExecutionContext
 import com.apollographql.apollo3.api.Operation
-import com.apollographql.apollo3.api.CustomScalarAdpaters
+import com.apollographql.apollo3.api.CustomScalarAdapters
 import com.apollographql.apollo3.api.Subscription
 import com.apollographql.apollo3.api.internal.json.BufferedSinkJsonWriter
 import com.apollographql.apollo3.api.internal.json.Utils
@@ -67,7 +67,7 @@ class ApolloWebSocketNetworkTransport(
   override fun <D : Operation.Data> execute(
       request: ApolloRequest<D>,
   ): Flow<ApolloResponse<D>> {
-    val responseAdapterCache = request.executionContext[CustomScalarAdpaters]!!
+    val responseAdapterCache = request.executionContext[CustomScalarAdapters]!!
 
     val dispatcherContext = requireNotNull(
         request.executionContext[ApolloCoroutineDispatcher] ?: request.executionContext[ApolloCoroutineDispatcher]
@@ -83,7 +83,7 @@ class ApolloWebSocketNetworkTransport(
                 OperationClientMessage.Start(
                     subscriptionId = request.requestUuid.toString(),
                     subscription = request.operation as Subscription<*>,
-                    responseAdapterCache = responseAdapterCache,
+                    customScalarAdapters = responseAdapterCache,
                     autoPersistSubscription = false,
                     sendSubscriptionDocument = true
                 )
@@ -100,7 +100,7 @@ class ApolloWebSocketNetworkTransport(
 
   private fun <D : Operation.Data> OperationServerMessage.process(
       request: ApolloRequest<D>,
-      responseAdapterCache: CustomScalarAdpaters
+      customScalarAdapters: CustomScalarAdapters
   ): ApolloResponse<D>? {
     return when (this) {
       is OperationServerMessage.Error -> {
@@ -124,7 +124,7 @@ class ApolloWebSocketNetworkTransport(
           val response = try {
             request.operation.parseResponseBody(
                 source = buffer,
-                responseAdapterCache = responseAdapterCache
+                customScalarAdapters = customScalarAdapters
             )
           } catch (e: Exception) {
             throw ApolloParseException(

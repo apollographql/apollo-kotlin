@@ -5,14 +5,14 @@
 //
 package com.example.nested_conditional_inline.type.adapter
 
-import com.apollographql.apollo3.api.ResponseAdapter
-import com.apollographql.apollo3.api.ResponseAdapterCache
+import com.apollographql.apollo3.api.Adapter
+import com.apollographql.apollo3.api.CustomScalarAdapters
 import com.apollographql.apollo3.api.json.JsonReader
 import com.apollographql.apollo3.api.json.JsonWriter
 import com.example.nested_conditional_inline.type.LengthUnit
 
-object LengthUnit_ResponseAdapter : ResponseAdapter<LengthUnit> {
-  override fun fromResponse(reader: JsonReader, responseAdapterCache: ResponseAdapterCache):
+object LengthUnit_ResponseAdapter : Adapter<LengthUnit> {
+  override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters):
       LengthUnit {
     val rawValue = reader.nextString()!!
     return when(rawValue) {
@@ -22,9 +22,9 @@ object LengthUnit_ResponseAdapter : ResponseAdapter<LengthUnit> {
     }
   }
 
-  override fun toResponse(
+  override fun toJson(
     writer: JsonWriter,
-    responseAdapterCache: ResponseAdapterCache,
+    customScalarAdapters: CustomScalarAdapters,
     value: LengthUnit
   ) {
     writer.value(value.rawValue)

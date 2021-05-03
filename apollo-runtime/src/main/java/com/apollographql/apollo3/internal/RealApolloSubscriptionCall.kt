@@ -2,7 +2,7 @@ package com.apollographql.apollo3.internal
 
 import com.apollographql.apollo3.ApolloSubscriptionCall
 import com.apollographql.apollo3.api.ApolloResponse
-import com.apollographql.apollo3.api.CustomScalarAdpaters
+import com.apollographql.apollo3.api.CustomScalarAdapters
 import com.apollographql.apollo3.api.Subscription
 import com.apollographql.apollo3.api.internal.ApolloLogger
 import com.apollographql.apollo3.cache.CacheHeaders
@@ -26,7 +26,7 @@ class RealApolloSubscriptionCall<D : Subscription.Data>(
     private val cachePolicy: ApolloSubscriptionCall.CachePolicy,
     private val dispatcher: Executor,
     private val logger: ApolloLogger,
-    private val responseAdapterCache: CustomScalarAdpaters
+    private val customScalarAdapters: CustomScalarAdapters
 ) : ApolloSubscriptionCall<D> {
   private val state = AtomicReference(CallState.IDLE)
   private var subscriptionCallback: SubscriptionManagerCallback<D>? = null
@@ -77,7 +77,7 @@ class RealApolloSubscriptionCall<D : Subscription.Data>(
   }
 
   override fun clone(): ApolloSubscriptionCall<D> {
-    return RealApolloSubscriptionCall(subscription, subscriptionManager, apolloStore, cachePolicy, dispatcher, logger, responseAdapterCache)
+    return RealApolloSubscriptionCall(subscription, subscriptionManager, apolloStore, cachePolicy, dispatcher, logger, customScalarAdapters)
   }
 
   override val isCanceled: Boolean
@@ -91,7 +91,7 @@ class RealApolloSubscriptionCall<D : Subscription.Data>(
         cachePolicy = cachePolicy,
         dispatcher = dispatcher,
         logger = logger,
-        responseAdapterCache = responseAdapterCache
+        customScalarAdapters = customScalarAdapters
     )
   }
 
@@ -115,7 +115,7 @@ class RealApolloSubscriptionCall<D : Subscription.Data>(
     val data = runBlocking {
       apolloStore.readOperation(
           subscription,
-          responseAdapterCache,
+          customScalarAdapters,
           CacheHeaders.NONE,
       )
     }
@@ -142,7 +142,7 @@ class RealApolloSubscriptionCall<D : Subscription.Data>(
             delegate!!.apolloStore.writeOperation(
                 operation = response.subscription,
                 operationData = data,
-                responseAdapterCache = delegate!!.responseAdapterCache,
+                customScalarAdapters = delegate!!.customScalarAdapters,
                 cacheHeaders = CacheHeaders.NONE,
                 publish = true,
             )

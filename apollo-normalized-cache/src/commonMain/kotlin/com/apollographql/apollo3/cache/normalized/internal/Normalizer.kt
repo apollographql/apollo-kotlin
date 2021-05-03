@@ -1,6 +1,7 @@
 package com.apollographql.apollo3.cache.normalized.internal
 
 import com.apollographql.apollo3.api.Executable
+import com.apollographql.apollo3.api.FieldSet
 import com.apollographql.apollo3.api.MergedField
 import com.apollographql.apollo3.cache.normalized.CacheReference
 import com.apollographql.apollo3.cache.normalized.Record
@@ -9,7 +10,7 @@ class Normalizer(val variables: Executable.Variables, val cacheKeyForObject: (Me
   private val records = mutableMapOf<String, Record>()
   private val cacheKeyBuilder = RealCacheKeyBuilder()
 
-  fun normalize(map: Map<String, Any?>, path: String?, rootKey: String, fieldSets: List<MergedField.FieldSet>): Map<String, Record> {
+  fun normalize(map: Map<String, Any?>, path: String?, rootKey: String, fieldSets: List<FieldSet>): Map<String, Record> {
 
     records[rootKey] = Record(rootKey, map.toFields(path, fieldSets = fieldSets))
 
@@ -32,9 +33,9 @@ class Normalizer(val variables: Executable.Variables, val cacheKeyForObject: (Me
     return CacheReference(key)
   }
 
-  private fun Map<String, Any?>.toFields(path: String?, fieldSets: List<MergedField.FieldSet>): Map<String, Any?> {
-    val fieldSet = fieldSets.firstOrNull { it.typeCondition == get("__typename") }
-        ?: fieldSets.firstOrNull { it.typeCondition == null }
+  private fun Map<String, Any?>.toFields(path: String?, fieldSets: List<FieldSet>): Map<String, Any?> {
+    val fieldSet = fieldSets.firstOrNull { it.type == get("__typename") }
+        ?: fieldSets.firstOrNull { it.type == null }
 
     check(fieldSet != null) {
       "No field set found at $path on typeCondition $this"

@@ -5,27 +5,27 @@
 //
 package com.example.directive_with_fragment.fragment
 
+import com.apollographql.apollo3.api.Adapter
+import com.apollographql.apollo3.api.CustomScalarAdapters
 import com.apollographql.apollo3.api.NullableStringResponseAdapter
-import com.apollographql.apollo3.api.ResponseAdapter
-import com.apollographql.apollo3.api.ResponseAdapterCache
-import com.apollographql.apollo3.api.StringResponseAdapter
+import com.apollographql.apollo3.api.StringAdapter
 import com.apollographql.apollo3.api.json.JsonReader
 import com.apollographql.apollo3.api.json.JsonWriter
 import kotlin.String
 import kotlin.collections.List
 
 object HumanDetailsImpl_ResponseAdapter {
-  object Data : ResponseAdapter<HumanDetailsImpl.Data> {
+  object Data : Adapter<HumanDetailsImpl.Data> {
     val RESPONSE_NAMES: List<String> = listOf("__typename", "homePlanet")
 
-    override fun fromResponse(reader: JsonReader, responseAdapterCache: ResponseAdapterCache):
+    override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters):
         HumanDetailsImpl.Data {
       var __typename: String? = null
       var homePlanet: String? = null
       while(true) {
         when (reader.selectName(RESPONSE_NAMES)) {
-          0 -> __typename = StringResponseAdapter.fromResponse(reader, responseAdapterCache)
-          1 -> homePlanet = NullableStringResponseAdapter.fromResponse(reader, responseAdapterCache)
+          0 -> __typename = StringAdapter.fromJson(reader, customScalarAdapters)
+          1 -> homePlanet = NullableStringResponseAdapter.fromJson(reader, customScalarAdapters)
           else -> break
         }
       }
@@ -35,15 +35,15 @@ object HumanDetailsImpl_ResponseAdapter {
       )
     }
 
-    override fun toResponse(
+    override fun toJson(
       writer: JsonWriter,
-      responseAdapterCache: ResponseAdapterCache,
+      customScalarAdapters: CustomScalarAdapters,
       value: HumanDetailsImpl.Data
     ) {
       writer.name("__typename")
-      StringResponseAdapter.toResponse(writer, responseAdapterCache, value.__typename)
+      StringAdapter.toJson(writer, customScalarAdapters, value.__typename)
       writer.name("homePlanet")
-      NullableStringResponseAdapter.toResponse(writer, responseAdapterCache, value.homePlanet)
+      NullableStringResponseAdapter.toJson(writer, customScalarAdapters, value.homePlanet)
     }
   }
 }

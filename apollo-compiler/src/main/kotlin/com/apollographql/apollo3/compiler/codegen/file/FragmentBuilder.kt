@@ -63,15 +63,15 @@ class FragmentBuilder(
         .makeDataClass(variables.map { it.toNamedType().toParameterSpec(context) })
         .addFunction(serializeVariablesFunSpec())
         .addFunction(adapterFunSpec())
-        .addFunction(responseFieldsFunSpec())
+        .addFunction(fieldSetsFunSpec())
         // Fragments can have multiple data shapes
         .addTypes(dataTypeSpecs())
         .build()
         .maybeAddFilterNotNull(generateFilterNotNull)
   }
 
-  private fun IrNamedFragment.responseFieldsFunSpec(): FunSpec {
-    return responseFieldsFunSpec(
+  private fun IrNamedFragment.fieldSetsFunSpec(): FunSpec {
+    return fieldSetsFunSpec(
         context.resolver.resolveFragmentResponseFields(name)
     )
   }

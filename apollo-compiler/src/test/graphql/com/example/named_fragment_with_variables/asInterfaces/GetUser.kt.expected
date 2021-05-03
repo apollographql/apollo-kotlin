@@ -5,10 +5,10 @@
 //
 package com.example.named_fragment_with_variables
 
+import com.apollographql.apollo3.api.Adapter
+import com.apollographql.apollo3.api.CustomScalarAdapters
+import com.apollographql.apollo3.api.FieldSet
 import com.apollographql.apollo3.api.Query
-import com.apollographql.apollo3.api.ResponseAdapter
-import com.apollographql.apollo3.api.ResponseAdapterCache
-import com.apollographql.apollo3.api.ResponseField
 import com.apollographql.apollo3.api.json.JsonWriter
 import com.apollographql.apollo3.api.obj
 import com.example.named_fragment_with_variables.adapter.GetUser_ResponseAdapter
@@ -32,16 +32,15 @@ data class GetUser(
 
   override fun name(): String = OPERATION_NAME
 
-  override fun serializeVariables(writer: JsonWriter, responseAdapterCache: ResponseAdapterCache) {
-    GetUser_VariablesAdapter.toResponse(writer, responseAdapterCache, this)
+  override fun serializeVariables(writer: JsonWriter, customScalarAdapters: CustomScalarAdapters) {
+    GetUser_VariablesAdapter.toJson(writer, customScalarAdapters, this)
   }
 
-  override fun adapter(): ResponseAdapter<Data> {
+  override fun adapter(): Adapter<Data> {
     return GetUser_ResponseAdapter.Data.obj()
   }
 
-  override fun responseFields(): List<ResponseField.FieldSet> =
-      GetUser_ResponseFields.fields.first().fieldSets
+  override fun fieldSets(): List<FieldSet> = GetUser_ResponseFields.fields.first().fieldSets
 
   data class Data(
     override val __typename: String,

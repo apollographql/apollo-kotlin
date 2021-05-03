@@ -5,53 +5,54 @@
 //
 package com.example.test_inline.responsefields
 
-import com.apollographql.apollo3.api.ResponseField
+import com.apollographql.apollo3.api.FieldSet
+import com.apollographql.apollo3.api.MergedField
 import com.apollographql.apollo3.api.list
 import com.apollographql.apollo3.api.notNull
 import kotlin.Array
 
 object GetPage_ResponseFields {
-  val fields: Array<ResponseField> = arrayOf(
-    ResponseField(
-      type = ResponseField.Type.Named.Object("unused"),
+  val fields: Array<MergedField> = arrayOf(
+    MergedField(
+      type = MergedField.Type.Named.Object("unused"),
       fieldName = "data",
       fieldSets = listOf(
-        ResponseField.FieldSet(null, Data.fields),
+        FieldSet(null, Data.fields),
       ),
     ),
   )
 
 
   object Data {
-    val fields: Array<ResponseField> = arrayOf(
-      ResponseField(
-        type = ResponseField.Type.Named.Object("unused").notNull(),
+    val fields: Array<MergedField> = arrayOf(
+      MergedField(
+        type = MergedField.Type.Named.Object("unused").notNull(),
         fieldName = "collection",
         fieldSets = listOf(
-          ResponseField.FieldSet(null, Collection.fields),
-          ResponseField.FieldSet("ParticularCollection", ParticularCollectionCollection.fields),
+          FieldSet(null, Collection.fields),
+          FieldSet("ParticularCollection", ParticularCollectionCollection.fields),
         ),
       ),
     )
 
 
     object Collection {
-      val fields: Array<ResponseField> = arrayOf(
-        ResponseField.Typename,
-        ResponseField(
-          type = ResponseField.Type.Named.Object("unused").notNull().list().notNull(),
+      val fields: Array<MergedField> = arrayOf(
+        MergedField.Typename,
+        MergedField(
+          type = MergedField.Type.Named.Object("unused").notNull().list().notNull(),
           fieldName = "items",
           fieldSets = listOf(
-            ResponseField.FieldSet(null, Item.fields),
+            FieldSet(null, Item.fields),
           ),
         ),
       )
 
 
       object Item {
-        val fields: Array<ResponseField> = arrayOf(
-          ResponseField(
-            type = ResponseField.Type.Named.Other("unused").notNull(),
+        val fields: Array<MergedField> = arrayOf(
+          MergedField(
+            type = MergedField.Type.Named.Other("unused").notNull(),
             fieldName = "title",
           ),
         )
@@ -60,39 +61,39 @@ object GetPage_ResponseFields {
     }
 
     object ParticularCollectionCollection {
-      val fields: Array<ResponseField> = arrayOf(
-        ResponseField.Typename,
-        ResponseField(
-          type = ResponseField.Type.Named.Object("unused").notNull().list().notNull(),
+      val fields: Array<MergedField> = arrayOf(
+        MergedField.Typename,
+        MergedField(
+          type = MergedField.Type.Named.Object("unused").notNull().list().notNull(),
           fieldName = "items",
           fieldSets = listOf(
-            ResponseField.FieldSet(null, Item.fields),
-            ResponseField.FieldSet("ParticularItem", ParticularItemItem.fields),
+            FieldSet(null, Item.fields),
+            FieldSet("ParticularItem", ParticularItemItem.fields),
           ),
         ),
       )
 
 
       object Item {
-        val fields: Array<ResponseField> = arrayOf(
-          ResponseField(
-            type = ResponseField.Type.Named.Other("unused").notNull(),
+        val fields: Array<MergedField> = arrayOf(
+          MergedField(
+            type = MergedField.Type.Named.Other("unused").notNull(),
             fieldName = "title",
           ),
-          ResponseField.Typename,
+          MergedField.Typename,
         )
 
       }
 
       object ParticularItemItem {
-        val fields: Array<ResponseField> = arrayOf(
-          ResponseField(
-            type = ResponseField.Type.Named.Other("unused").notNull(),
+        val fields: Array<MergedField> = arrayOf(
+          MergedField(
+            type = MergedField.Type.Named.Other("unused").notNull(),
             fieldName = "title",
           ),
-          ResponseField.Typename,
-          ResponseField(
-            type = ResponseField.Type.Named.Other("unused").notNull(),
+          MergedField.Typename,
+          MergedField(
+            type = MergedField.Type.Named.Other("unused").notNull(),
             fieldName = "image",
           ),
         )

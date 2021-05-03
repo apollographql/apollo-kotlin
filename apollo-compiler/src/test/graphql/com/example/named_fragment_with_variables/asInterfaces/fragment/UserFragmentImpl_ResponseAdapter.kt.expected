@@ -5,19 +5,19 @@
 //
 package com.example.named_fragment_with_variables.fragment
 
-import com.apollographql.apollo3.api.ResponseAdapter
-import com.apollographql.apollo3.api.ResponseAdapterCache
-import com.apollographql.apollo3.api.StringResponseAdapter
+import com.apollographql.apollo3.api.Adapter
+import com.apollographql.apollo3.api.CustomScalarAdapters
+import com.apollographql.apollo3.api.StringAdapter
 import com.apollographql.apollo3.api.json.JsonReader
 import com.apollographql.apollo3.api.json.JsonWriter
 import kotlin.String
 import kotlin.collections.List
 
 object UserFragmentImpl_ResponseAdapter {
-  object Data : ResponseAdapter<UserFragmentImpl.Data> {
+  object Data : Adapter<UserFragmentImpl.Data> {
     val RESPONSE_NAMES: List<String> = listOf("__typename", "firstName", "lastName", "avatar")
 
-    override fun fromResponse(reader: JsonReader, responseAdapterCache: ResponseAdapterCache):
+    override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters):
         UserFragmentImpl.Data {
       var __typename: String? = null
       var firstName: String? = null
@@ -25,10 +25,10 @@ object UserFragmentImpl_ResponseAdapter {
       var avatar: String? = null
       while(true) {
         when (reader.selectName(RESPONSE_NAMES)) {
-          0 -> __typename = StringResponseAdapter.fromResponse(reader, responseAdapterCache)
-          1 -> firstName = StringResponseAdapter.fromResponse(reader, responseAdapterCache)
-          2 -> lastName = StringResponseAdapter.fromResponse(reader, responseAdapterCache)
-          3 -> avatar = StringResponseAdapter.fromResponse(reader, responseAdapterCache)
+          0 -> __typename = StringAdapter.fromJson(reader, customScalarAdapters)
+          1 -> firstName = StringAdapter.fromJson(reader, customScalarAdapters)
+          2 -> lastName = StringAdapter.fromJson(reader, customScalarAdapters)
+          3 -> avatar = StringAdapter.fromJson(reader, customScalarAdapters)
           else -> break
         }
       }
@@ -40,19 +40,19 @@ object UserFragmentImpl_ResponseAdapter {
       )
     }
 
-    override fun toResponse(
+    override fun toJson(
       writer: JsonWriter,
-      responseAdapterCache: ResponseAdapterCache,
+      customScalarAdapters: CustomScalarAdapters,
       value: UserFragmentImpl.Data
     ) {
       writer.name("__typename")
-      StringResponseAdapter.toResponse(writer, responseAdapterCache, value.__typename)
+      StringAdapter.toJson(writer, customScalarAdapters, value.__typename)
       writer.name("firstName")
-      StringResponseAdapter.toResponse(writer, responseAdapterCache, value.firstName)
+      StringAdapter.toJson(writer, customScalarAdapters, value.firstName)
       writer.name("lastName")
-      StringResponseAdapter.toResponse(writer, responseAdapterCache, value.lastName)
+      StringAdapter.toJson(writer, customScalarAdapters, value.lastName)
       writer.name("avatar")
-      StringResponseAdapter.toResponse(writer, responseAdapterCache, value.avatar)
+      StringAdapter.toJson(writer, customScalarAdapters, value.avatar)
     }
   }
 }

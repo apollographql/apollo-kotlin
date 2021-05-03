@@ -5,62 +5,63 @@
 //
 package com.example.recursive_selection.responsefields
 
-import com.apollographql.apollo3.api.ResponseField
+import com.apollographql.apollo3.api.FieldSet
+import com.apollographql.apollo3.api.MergedField
 import com.apollographql.apollo3.api.list
 import com.apollographql.apollo3.api.notNull
 import kotlin.Array
 
 object TestQuery_ResponseFields {
-  val fields: Array<ResponseField> = arrayOf(
-    ResponseField(
-      type = ResponseField.Type.Named.Object("unused"),
+  val fields: Array<MergedField> = arrayOf(
+    MergedField(
+      type = MergedField.Type.Named.Object("unused"),
       fieldName = "data",
       fieldSets = listOf(
-        ResponseField.FieldSet(null, Data.fields),
+        FieldSet(null, Data.fields),
       ),
     ),
   )
 
 
   object Data {
-    val fields: Array<ResponseField> = arrayOf(
-      ResponseField(
-        type = ResponseField.Type.Named.Object("unused"),
+    val fields: Array<MergedField> = arrayOf(
+      MergedField(
+        type = MergedField.Type.Named.Object("unused"),
         fieldName = "tree",
         fieldSets = listOf(
-          ResponseField.FieldSet(null, Tree.fields),
+          FieldSet(null, Tree.fields),
         ),
       ),
     )
 
 
     object Tree {
-      val fields: Array<ResponseField> = arrayOf(
-        ResponseField(
-          type = ResponseField.Type.Named.Other("unused").notNull(),
+      val fields: Array<MergedField> = arrayOf(
+        MergedField(
+          type = MergedField.Type.Named.Other("unused").notNull(),
           fieldName = "name",
         ),
-        ResponseField(
-          type = ResponseField.Type.Named.Object("unused").notNull().list().notNull(),
+        MergedField(
+          type = MergedField.Type.Named.Object("unused").notNull().list().notNull(),
           fieldName = "children",
           fieldSets = listOf(
-            ResponseField.FieldSet(null, Child.fields),
+            FieldSet(null, Child.fields),
           ),
         ),
-        ResponseField(
-          type = ResponseField.Type.Named.Object("unused"),
+        MergedField(
+          type = MergedField.Type.Named.Object("unused"),
           fieldName = "parent",
           fieldSets = listOf(
-            ResponseField.FieldSet(null, Parent.fields),
+            FieldSet(null, Parent.fields),
           ),
         ),
       )
 
 
       object Child {
-        val fields: Array<ResponseField> = arrayOf(
-          ResponseField(
-            type = ResponseField.Type.Named.Other("unused").notNull(),
+        val fields: Array<MergedField> = arrayOf(
+          MergedField(
+            type = MergedField.Type.Named.Other("unused").notNull(),
             fieldName = "name",
           ),
         )
@@ -68,9 +69,9 @@ object TestQuery_ResponseFields {
       }
 
       object Parent {
-        val fields: Array<ResponseField> = arrayOf(
-          ResponseField(
-            type = ResponseField.Type.Named.Other("unused").notNull(),
+        val fields: Array<MergedField> = arrayOf(
+          MergedField(
+            type = MergedField.Type.Named.Other("unused").notNull(),
             fieldName = "name",
           ),
         )

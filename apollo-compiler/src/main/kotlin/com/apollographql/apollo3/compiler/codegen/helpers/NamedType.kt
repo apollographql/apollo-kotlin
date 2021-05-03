@@ -5,7 +5,6 @@ import com.apollographql.apollo3.compiler.applyIf
 import com.apollographql.apollo3.compiler.codegen.CgContext
 import com.apollographql.apollo3.compiler.codegen.Identifier
 import com.apollographql.apollo3.compiler.unified.ir.IrInputField
-import com.apollographql.apollo3.compiler.unified.ir.IrOptionalType
 import com.apollographql.apollo3.compiler.unified.ir.IrType
 import com.apollographql.apollo3.compiler.unified.ir.IrVariable
 import com.apollographql.apollo3.compiler.unified.ir.isOptional
@@ -67,7 +66,7 @@ internal fun NamedType.writeToResponseCodeBlock(context: CgContext): CodeBlock {
   }
   builder.addStatement("${Identifier.writer}.name(%S)", graphQlName)
   builder.addStatement(
-      "%L.${Identifier.toResponse}(${Identifier.writer}, ${Identifier.responseAdapterCache}, ${Identifier.value}.$propertyName)",
+      "%L.${Identifier.toJson}(${Identifier.writer}, ${Identifier.customScalarAdapters}, ${Identifier.value}.$propertyName)",
       adapterInitializer
   )
   if (type.isOptional()) {

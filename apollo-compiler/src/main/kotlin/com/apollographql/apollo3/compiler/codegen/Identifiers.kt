@@ -1,12 +1,12 @@
 package com.apollographql.apollo3.compiler.codegen
 
 internal object Identifier {
-  const val responseAdapterCache = "responseAdapterCache"
+  const val customScalarAdapters = "customScalarAdapters"
   const val value = "value"
   const val reader = "reader"
   const val writer = "writer"
-  const val toResponse = "toResponse"
-  const val fromResponse = "fromResponse"
+  const val toJson = "toJson"
+  const val fromJson = "fromJson"
   const val serializeVariables = "serializeVariables"
   const val fields = "fields"
   const val fieldSets = "fieldSets"

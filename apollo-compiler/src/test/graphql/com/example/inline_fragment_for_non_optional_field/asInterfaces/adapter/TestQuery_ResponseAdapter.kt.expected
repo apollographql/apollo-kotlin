@@ -5,10 +5,10 @@
 //
 package com.example.inline_fragment_for_non_optional_field.adapter
 
+import com.apollographql.apollo3.api.Adapter
+import com.apollographql.apollo3.api.CustomScalarAdapters
 import com.apollographql.apollo3.api.NullableDoubleResponseAdapter
-import com.apollographql.apollo3.api.ResponseAdapter
-import com.apollographql.apollo3.api.ResponseAdapterCache
-import com.apollographql.apollo3.api.StringResponseAdapter
+import com.apollographql.apollo3.api.StringAdapter
 import com.apollographql.apollo3.api.json.JsonReader
 import com.apollographql.apollo3.api.json.JsonWriter
 import com.apollographql.apollo3.api.obj
@@ -18,15 +18,15 @@ import kotlin.String
 import kotlin.collections.List
 
 object TestQuery_ResponseAdapter {
-  object Data : ResponseAdapter<TestQuery.Data> {
+  object Data : Adapter<TestQuery.Data> {
     val RESPONSE_NAMES: List<String> = listOf("nonOptionalHero")
 
-    override fun fromResponse(reader: JsonReader, responseAdapterCache: ResponseAdapterCache):
+    override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters):
         TestQuery.Data {
       var nonOptionalHero: TestQuery.Data.NonOptionalHero? = null
       while(true) {
         when (reader.selectName(RESPONSE_NAMES)) {
-          0 -> nonOptionalHero = NonOptionalHero.obj().fromResponse(reader, responseAdapterCache)
+          0 -> nonOptionalHero = NonOptionalHero.obj().fromJson(reader, customScalarAdapters)
           else -> break
         }
       }
@@ -35,19 +35,19 @@ object TestQuery_ResponseAdapter {
       )
     }
 
-    override fun toResponse(
+    override fun toJson(
       writer: JsonWriter,
-      responseAdapterCache: ResponseAdapterCache,
+      customScalarAdapters: CustomScalarAdapters,
       value: TestQuery.Data
     ) {
       writer.name("nonOptionalHero")
-      NonOptionalHero.obj().toResponse(writer, responseAdapterCache, value.nonOptionalHero)
+      NonOptionalHero.obj().toJson(writer, customScalarAdapters, value.nonOptionalHero)
     }
 
-    object NonOptionalHero : ResponseAdapter<TestQuery.Data.NonOptionalHero> {
+    object NonOptionalHero : Adapter<TestQuery.Data.NonOptionalHero> {
       val RESPONSE_NAMES: List<String> = listOf("__typename")
 
-      override fun fromResponse(reader: JsonReader, responseAdapterCache: ResponseAdapterCache):
+      override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters):
           TestQuery.Data.NonOptionalHero {
         reader.selectName(RESPONSE_NAMES).also {
           check(it == 0) {
@@ -57,22 +57,22 @@ object TestQuery_ResponseAdapter {
         val __typename = reader.nextString()!!
         return when(__typename) {
           "Human",
-          -> HumanNonOptionalHero.fromResponse(reader, responseAdapterCache, __typename)
+          -> HumanNonOptionalHero.fromJson(reader, customScalarAdapters, __typename)
           else
-          -> OtherNonOptionalHero.fromResponse(reader, responseAdapterCache, __typename)
+          -> OtherNonOptionalHero.fromJson(reader, customScalarAdapters, __typename)
         }
       }
 
-      override fun toResponse(
+      override fun toJson(
         writer: JsonWriter,
-        responseAdapterCache: ResponseAdapterCache,
+        customScalarAdapters: CustomScalarAdapters,
         value: TestQuery.Data.NonOptionalHero
       ) {
         when(value) {
-          is TestQuery.Data.HumanNonOptionalHero -> HumanNonOptionalHero.toResponse(writer,
-              responseAdapterCache, value)
-          is TestQuery.Data.OtherNonOptionalHero -> OtherNonOptionalHero.toResponse(writer,
-              responseAdapterCache, value)
+          is TestQuery.Data.HumanNonOptionalHero -> HumanNonOptionalHero.toJson(writer,
+              customScalarAdapters, value)
+          is TestQuery.Data.OtherNonOptionalHero -> OtherNonOptionalHero.toJson(writer,
+              customScalarAdapters, value)
         }
       }
     }
@@ -80,9 +80,9 @@ object TestQuery_ResponseAdapter {
     object HumanNonOptionalHero {
       val RESPONSE_NAMES: List<String> = listOf("__typename", "name", "height")
 
-      fun fromResponse(
+      fun fromJson(
         reader: JsonReader,
-        responseAdapterCache: ResponseAdapterCache,
+        customScalarAdapters: CustomScalarAdapters,
         typename: String
       ): TestQuery.Data.HumanNonOptionalHero {
         var __typename: String? = typename
@@ -90,9 +90,9 @@ object TestQuery_ResponseAdapter {
         var height: Double? = null
         while(true) {
           when (reader.selectName(RESPONSE_NAMES)) {
-            0 -> __typename = StringResponseAdapter.fromResponse(reader, responseAdapterCache)
-            1 -> name = StringResponseAdapter.fromResponse(reader, responseAdapterCache)
-            2 -> height = NullableDoubleResponseAdapter.fromResponse(reader, responseAdapterCache)
+            0 -> __typename = StringAdapter.fromJson(reader, customScalarAdapters)
+            1 -> name = StringAdapter.fromJson(reader, customScalarAdapters)
+            2 -> height = NullableDoubleResponseAdapter.fromJson(reader, customScalarAdapters)
             else -> break
           }
         }
@@ -103,34 +103,34 @@ object TestQuery_ResponseAdapter {
         )
       }
 
-      fun toResponse(
+      fun toJson(
         writer: JsonWriter,
-        responseAdapterCache: ResponseAdapterCache,
+        customScalarAdapters: CustomScalarAdapters,
         value: TestQuery.Data.HumanNonOptionalHero
       ) {
         writer.name("__typename")
-        StringResponseAdapter.toResponse(writer, responseAdapterCache, value.__typename)
+        StringAdapter.toJson(writer, customScalarAdapters, value.__typename)
         writer.name("name")
-        StringResponseAdapter.toResponse(writer, responseAdapterCache, value.name)
+        StringAdapter.toJson(writer, customScalarAdapters, value.name)
         writer.name("height")
-        NullableDoubleResponseAdapter.toResponse(writer, responseAdapterCache, value.height)
+        NullableDoubleResponseAdapter.toJson(writer, customScalarAdapters, value.height)
       }
     }
 
     object OtherNonOptionalHero {
       val RESPONSE_NAMES: List<String> = listOf("__typename", "name")
 
-      fun fromResponse(
+      fun fromJson(
         reader: JsonReader,
-        responseAdapterCache: ResponseAdapterCache,
+        customScalarAdapters: CustomScalarAdapters,
         typename: String
       ): TestQuery.Data.OtherNonOptionalHero {
         var __typename: String? = typename
         var name: String? = null
         while(true) {
           when (reader.selectName(RESPONSE_NAMES)) {
-            0 -> __typename = StringResponseAdapter.fromResponse(reader, responseAdapterCache)
-            1 -> name = StringResponseAdapter.fromResponse(reader, responseAdapterCache)
+            0 -> __typename = StringAdapter.fromJson(reader, customScalarAdapters)
+            1 -> name = StringAdapter.fromJson(reader, customScalarAdapters)
             else -> break
           }
         }
@@ -140,15 +140,15 @@ object TestQuery_ResponseAdapter {
         )
       }
 
-      fun toResponse(
+      fun toJson(
         writer: JsonWriter,
-        responseAdapterCache: ResponseAdapterCache,
+        customScalarAdapters: CustomScalarAdapters,
         value: TestQuery.Data.OtherNonOptionalHero
       ) {
         writer.name("__typename")
-        StringResponseAdapter.toResponse(writer, responseAdapterCache, value.__typename)
+        StringAdapter.toJson(writer, customScalarAdapters, value.__typename)
         writer.name("name")
-        StringResponseAdapter.toResponse(writer, responseAdapterCache, value.name)
+        StringAdapter.toJson(writer, customScalarAdapters, value.name)
       }
     }
   }

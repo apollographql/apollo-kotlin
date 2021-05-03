@@ -5,57 +5,58 @@
 //
 package com.example.reserved_keywords.responsefields
 
-import com.apollographql.apollo3.api.ResponseField
+import com.apollographql.apollo3.api.FieldSet
+import com.apollographql.apollo3.api.MergedField
 import com.apollographql.apollo3.api.list
 import com.apollographql.apollo3.api.notNull
 import kotlin.Array
 
 object TestQuery_ResponseFields {
-  val fields: Array<ResponseField> = arrayOf(
-    ResponseField(
-      type = ResponseField.Type.Named.Object("unused"),
+  val fields: Array<MergedField> = arrayOf(
+    MergedField(
+      type = MergedField.Type.Named.Object("unused"),
       fieldName = "data",
       fieldSets = listOf(
-        ResponseField.FieldSet(null, Data.fields),
+        FieldSet(null, Data.fields),
       ),
     ),
   )
 
 
   object Data {
-    val fields: Array<ResponseField> = arrayOf(
-      ResponseField(
-        type = ResponseField.Type.Named.Object("unused"),
+    val fields: Array<MergedField> = arrayOf(
+      MergedField(
+        type = MergedField.Type.Named.Object("unused"),
         fieldName = "hero",
         responseName = "yield",
         fieldSets = listOf(
-          ResponseField.FieldSet(null, Yield.fields),
+          FieldSet(null, Yield.fields),
         ),
       ),
-      ResponseField(
-        type = ResponseField.Type.Named.Object("unused").list(),
+      MergedField(
+        type = MergedField.Type.Named.Object("unused").list(),
         fieldName = "search",
         responseName = "objects",
         arguments = mapOf("text" to "abc"
         ),
         fieldSets = listOf(
-          ResponseField.FieldSet(null, Object.fields),
-          ResponseField.FieldSet("Droid", CharacterObject.fields),
-          ResponseField.FieldSet("Human", CharacterObject.fields),
+          FieldSet(null, Object.fields),
+          FieldSet("Droid", CharacterObject.fields),
+          FieldSet("Human", CharacterObject.fields),
         ),
       ),
     )
 
 
     object Yield {
-      val fields: Array<ResponseField> = arrayOf(
-        ResponseField(
-          type = ResponseField.Type.Named.Other("unused").notNull(),
+      val fields: Array<MergedField> = arrayOf(
+        MergedField(
+          type = MergedField.Type.Named.Other("unused").notNull(),
           fieldName = "id",
           responseName = "it",
         ),
-        ResponseField(
-          type = ResponseField.Type.Named.Other("unused").notNull(),
+        MergedField(
+          type = MergedField.Type.Named.Other("unused").notNull(),
           fieldName = "name",
         ),
       )
@@ -63,17 +64,17 @@ object TestQuery_ResponseFields {
     }
 
     object Object {
-      val fields: Array<ResponseField> = arrayOf(
-        ResponseField.Typename,
+      val fields: Array<MergedField> = arrayOf(
+        MergedField.Typename,
       )
 
     }
 
     object CharacterObject {
-      val fields: Array<ResponseField> = arrayOf(
-        ResponseField.Typename,
-        ResponseField(
-          type = ResponseField.Type.Named.Other("unused").notNull(),
+      val fields: Array<MergedField> = arrayOf(
+        MergedField.Typename,
+        MergedField(
+          type = MergedField.Type.Named.Other("unused").notNull(),
           fieldName = "name",
         ),
       )

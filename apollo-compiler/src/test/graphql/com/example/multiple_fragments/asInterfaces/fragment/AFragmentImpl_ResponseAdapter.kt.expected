@@ -5,10 +5,10 @@
 //
 package com.example.multiple_fragments.fragment
 
+import com.apollographql.apollo3.api.Adapter
+import com.apollographql.apollo3.api.CustomScalarAdapters
 import com.apollographql.apollo3.api.NullableStringResponseAdapter
-import com.apollographql.apollo3.api.ResponseAdapter
-import com.apollographql.apollo3.api.ResponseAdapterCache
-import com.apollographql.apollo3.api.StringResponseAdapter
+import com.apollographql.apollo3.api.StringAdapter
 import com.apollographql.apollo3.api.json.JsonReader
 import com.apollographql.apollo3.api.json.JsonWriter
 import com.apollographql.apollo3.api.nullable
@@ -17,17 +17,17 @@ import kotlin.String
 import kotlin.collections.List
 
 object AFragmentImpl_ResponseAdapter {
-  object Data : ResponseAdapter<AFragmentImpl.Data> {
+  object Data : Adapter<AFragmentImpl.Data> {
     val RESPONSE_NAMES: List<String> = listOf("__typename", "node")
 
-    override fun fromResponse(reader: JsonReader, responseAdapterCache: ResponseAdapterCache):
+    override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters):
         AFragmentImpl.Data {
       var __typename: String? = null
       var node: AFragmentImpl.Data.Node? = null
       while(true) {
         when (reader.selectName(RESPONSE_NAMES)) {
-          0 -> __typename = StringResponseAdapter.fromResponse(reader, responseAdapterCache)
-          1 -> node = Node.obj().nullable().fromResponse(reader, responseAdapterCache)
+          0 -> __typename = StringAdapter.fromJson(reader, customScalarAdapters)
+          1 -> node = Node.obj().nullable().fromJson(reader, customScalarAdapters)
           else -> break
         }
       }
@@ -37,21 +37,21 @@ object AFragmentImpl_ResponseAdapter {
       )
     }
 
-    override fun toResponse(
+    override fun toJson(
       writer: JsonWriter,
-      responseAdapterCache: ResponseAdapterCache,
+      customScalarAdapters: CustomScalarAdapters,
       value: AFragmentImpl.Data
     ) {
       writer.name("__typename")
-      StringResponseAdapter.toResponse(writer, responseAdapterCache, value.__typename)
+      StringAdapter.toJson(writer, customScalarAdapters, value.__typename)
       writer.name("node")
-      Node.obj().nullable().toResponse(writer, responseAdapterCache, value.node)
+      Node.obj().nullable().toJson(writer, customScalarAdapters, value.node)
     }
 
-    object Node : ResponseAdapter<AFragmentImpl.Data.Node> {
+    object Node : Adapter<AFragmentImpl.Data.Node> {
       val RESPONSE_NAMES: List<String> = listOf("__typename")
 
-      override fun fromResponse(reader: JsonReader, responseAdapterCache: ResponseAdapterCache):
+      override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters):
           AFragmentImpl.Data.Node {
         reader.selectName(RESPONSE_NAMES).also {
           check(it == 0) {
@@ -61,22 +61,20 @@ object AFragmentImpl_ResponseAdapter {
         val __typename = reader.nextString()!!
         return when(__typename) {
           "ANode",
-          -> ANodeNode.fromResponse(reader, responseAdapterCache, __typename)
+          -> ANodeNode.fromJson(reader, customScalarAdapters, __typename)
           else
-          -> OtherNode.fromResponse(reader, responseAdapterCache, __typename)
+          -> OtherNode.fromJson(reader, customScalarAdapters, __typename)
         }
       }
 
-      override fun toResponse(
+      override fun toJson(
         writer: JsonWriter,
-        responseAdapterCache: ResponseAdapterCache,
+        customScalarAdapters: CustomScalarAdapters,
         value: AFragmentImpl.Data.Node
       ) {
         when(value) {
-          is AFragmentImpl.Data.ANodeNode -> ANodeNode.toResponse(writer, responseAdapterCache,
-              value)
-          is AFragmentImpl.Data.OtherNode -> OtherNode.toResponse(writer, responseAdapterCache,
-              value)
+          is AFragmentImpl.Data.ANodeNode -> ANodeNode.toJson(writer, customScalarAdapters, value)
+          is AFragmentImpl.Data.OtherNode -> OtherNode.toJson(writer, customScalarAdapters, value)
         }
       }
     }
@@ -84,9 +82,9 @@ object AFragmentImpl_ResponseAdapter {
     object ANodeNode {
       val RESPONSE_NAMES: List<String> = listOf("__typename", "field1", "field2")
 
-      fun fromResponse(
+      fun fromJson(
         reader: JsonReader,
-        responseAdapterCache: ResponseAdapterCache,
+        customScalarAdapters: CustomScalarAdapters,
         typename: String
       ): AFragmentImpl.Data.ANodeNode {
         var __typename: String? = typename
@@ -94,9 +92,9 @@ object AFragmentImpl_ResponseAdapter {
         var field2: String? = null
         while(true) {
           when (reader.selectName(RESPONSE_NAMES)) {
-            0 -> __typename = StringResponseAdapter.fromResponse(reader, responseAdapterCache)
-            1 -> field1 = NullableStringResponseAdapter.fromResponse(reader, responseAdapterCache)
-            2 -> field2 = NullableStringResponseAdapter.fromResponse(reader, responseAdapterCache)
+            0 -> __typename = StringAdapter.fromJson(reader, customScalarAdapters)
+            1 -> field1 = NullableStringResponseAdapter.fromJson(reader, customScalarAdapters)
+            2 -> field2 = NullableStringResponseAdapter.fromJson(reader, customScalarAdapters)
             else -> break
           }
         }
@@ -107,32 +105,32 @@ object AFragmentImpl_ResponseAdapter {
         )
       }
 
-      fun toResponse(
+      fun toJson(
         writer: JsonWriter,
-        responseAdapterCache: ResponseAdapterCache,
+        customScalarAdapters: CustomScalarAdapters,
         value: AFragmentImpl.Data.ANodeNode
       ) {
         writer.name("__typename")
-        StringResponseAdapter.toResponse(writer, responseAdapterCache, value.__typename)
+        StringAdapter.toJson(writer, customScalarAdapters, value.__typename)
         writer.name("field1")
-        NullableStringResponseAdapter.toResponse(writer, responseAdapterCache, value.field1)
+        NullableStringResponseAdapter.toJson(writer, customScalarAdapters, value.field1)
         writer.name("field2")
-        NullableStringResponseAdapter.toResponse(writer, responseAdapterCache, value.field2)
+        NullableStringResponseAdapter.toJson(writer, customScalarAdapters, value.field2)
       }
     }
 
     object OtherNode {
       val RESPONSE_NAMES: List<String> = listOf("__typename")
 
-      fun fromResponse(
+      fun fromJson(
         reader: JsonReader,
-        responseAdapterCache: ResponseAdapterCache,
+        customScalarAdapters: CustomScalarAdapters,
         typename: String
       ): AFragmentImpl.Data.OtherNode {
         var __typename: String? = typename
         while(true) {
           when (reader.selectName(RESPONSE_NAMES)) {
-            0 -> __typename = StringResponseAdapter.fromResponse(reader, responseAdapterCache)
+            0 -> __typename = StringAdapter.fromJson(reader, customScalarAdapters)
             else -> break
           }
         }
@@ -141,13 +139,13 @@ object AFragmentImpl_ResponseAdapter {
         )
       }
 
-      fun toResponse(
+      fun toJson(
         writer: JsonWriter,
-        responseAdapterCache: ResponseAdapterCache,
+        customScalarAdapters: CustomScalarAdapters,
         value: AFragmentImpl.Data.OtherNode
       ) {
         writer.name("__typename")
-        StringResponseAdapter.toResponse(writer, responseAdapterCache, value.__typename)
+        StringAdapter.toJson(writer, customScalarAdapters, value.__typename)
       }
     }
   }

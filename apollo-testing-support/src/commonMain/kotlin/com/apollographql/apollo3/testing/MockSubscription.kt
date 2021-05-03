@@ -1,10 +1,10 @@
 package com.apollographql.apollo3.testing
 
-import com.apollographql.apollo3.api.CustomScalarAdpaters
-import com.apollographql.apollo3.api.MergedField
+import com.apollographql.apollo3.api.CustomScalarAdapters
 import com.apollographql.apollo3.api.Subscription
 import com.apollographql.apollo3.api.AnyAdapter
 import com.apollographql.apollo3.api.Adapter
+import com.apollographql.apollo3.api.FieldSet
 import com.apollographql.apollo3.api.json.JsonReader
 import com.apollographql.apollo3.api.json.JsonWriter
 import com.apollographql.apollo3.api.nullable
@@ -18,16 +18,16 @@ class MockSubscription(
 
   override fun document(): String = queryDocument
 
-  override fun serializeVariables(writer: JsonWriter, responseAdapterCache: CustomScalarAdpaters) {
+  override fun serializeVariables(writer: JsonWriter, customScalarAdapters: CustomScalarAdapters) {
     variables.forEach {
       writer.name(it.key)
-      AnyAdapter.nullable().toJson(writer, responseAdapterCache, it.value)
+      AnyAdapter.nullable().toJson(writer, customScalarAdapters, it.value)
     }
   }
 
   override fun adapter(): Adapter<Data> {
     return object : Adapter<Data> {
-      override fun fromJson(reader: JsonReader, responseAdapterCache: CustomScalarAdpaters): Data {
+      override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters): Data {
         reader.beginObject()
         reader.nextName()
         return Data(
@@ -37,7 +37,7 @@ class MockSubscription(
         }
       }
 
-      override fun toJson(writer: JsonWriter, responseAdapterCache: CustomScalarAdpaters, value: Data) {
+      override fun toJson(writer: JsonWriter, customScalarAdapters: CustomScalarAdapters, value: Data) {
         TODO("Not yet implemented")
       }
     }
@@ -49,7 +49,7 @@ class MockSubscription(
 
   data class Data(val name: String) : Subscription.Data
 
-  override fun responseFields(): List<MergedField.FieldSet> {
+  override fun fieldSets(): List<FieldSet> {
     return emptyList()
   }
 }

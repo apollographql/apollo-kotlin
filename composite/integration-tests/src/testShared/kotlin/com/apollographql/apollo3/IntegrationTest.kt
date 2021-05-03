@@ -7,7 +7,7 @@ import com.apollographql.apollo3.Utils.readFileToString
 import com.apollographql.apollo3.api.ApolloResponse
 import com.apollographql.apollo3.api.Operation
 import com.apollographql.apollo3.api.Adapter
-import com.apollographql.apollo3.api.CustomScalarAdpaters
+import com.apollographql.apollo3.api.CustomScalarAdapters
 import com.apollographql.apollo3.api.json.JsonReader
 import com.apollographql.apollo3.api.json.JsonWriter
 import com.apollographql.apollo3.api.variablesJson
@@ -40,11 +40,11 @@ class IntegrationTest {
   private val dateCustomScalarAdapter: Adapter<Date> = object : Adapter<Date> {
     private val DATE_FORMAT = SimpleDateFormat("yyyy-MM-dd", Locale.US)
 
-    override fun fromJson(reader: JsonReader, responseAdapterCache: CustomScalarAdpaters): Date {
+    override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters): Date {
       return DATE_FORMAT.parse(reader.nextString())
     }
 
-    override fun toJson(writer: JsonWriter, responseAdapterCache: CustomScalarAdpaters, value: Date) {
+    override fun toJson(writer: JsonWriter, customScalarAdapters: CustomScalarAdapters, value: Date) {
       writer.value(DATE_FORMAT.format(value))
     }
   }
@@ -118,7 +118,7 @@ class IntegrationTest {
 
     assertThat(query.name()).isEqualTo("EpisodeHeroName")
     assertThat(query.document()).isEqualTo("query EpisodeHeroName(\$episode: Episode) { hero(episode: \$episode) { name } }")
-    assertThat(query.variablesJson(CustomScalarAdpaters.DEFAULT)).isEqualTo("{\"episode\":\"EMPIRE\"}")
+    assertThat(query.variablesJson(CustomScalarAdapters.Empty)).isEqualTo("{\"episode\":\"EMPIRE\"}")
   }
 
   @Throws(IOException::class)

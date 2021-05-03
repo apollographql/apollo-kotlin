@@ -28,11 +28,11 @@ expect class BigDecimal {
 expect fun BigDecimal.toNumber(): Number
 
 object BigDecimalAdapter: Adapter<BigDecimal> {
-  override fun fromJson(reader: JsonReader, responseAdapterCache: CustomScalarAdpaters): BigDecimal {
+  override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters): BigDecimal {
     return BigDecimal(reader.nextString()!!)
   }
 
-  override fun toJson(writer: JsonWriter, responseAdapterCache: CustomScalarAdpaters, value: BigDecimal) {
+  override fun toJson(writer: JsonWriter, customScalarAdapters: CustomScalarAdapters, value: BigDecimal) {
     writer.value(value.toString())
   }
 

@@ -5,59 +5,60 @@
 //
 package com.example.path_vs_flat_accessors.responsefields
 
-import com.apollographql.apollo3.api.ResponseField
+import com.apollographql.apollo3.api.FieldSet
+import com.apollographql.apollo3.api.MergedField
 import kotlin.Array
 
 object TestQuery_ResponseFields {
-  val fields: Array<ResponseField> = arrayOf(
-    ResponseField(
-      type = ResponseField.Type.Named.Object("unused"),
+  val fields: Array<MergedField> = arrayOf(
+    MergedField(
+      type = MergedField.Type.Named.Object("unused"),
       fieldName = "data",
       fieldSets = listOf(
-        ResponseField.FieldSet(null, Data.fields),
+        FieldSet(null, Data.fields),
       ),
     ),
   )
 
 
   object Data {
-    val fields: Array<ResponseField> = arrayOf(
-      ResponseField(
-        type = ResponseField.Type.Named.Object("unused"),
+    val fields: Array<MergedField> = arrayOf(
+      MergedField(
+        type = MergedField.Type.Named.Object("unused"),
         fieldName = "root",
         fieldSets = listOf(
-          ResponseField.FieldSet(null, Root.fields),
-          ResponseField.FieldSet("AC", ARoot.fields),
-          ResponseField.FieldSet("ABC", ABRoot.fields),
-          ResponseField.FieldSet("BC", BRoot.fields),
+          FieldSet(null, Root.fields),
+          FieldSet("AC", ARoot.fields),
+          FieldSet("ABC", ABRoot.fields),
+          FieldSet("BC", BRoot.fields),
         ),
       ),
     )
 
 
     object Root {
-      val fields: Array<ResponseField> = arrayOf(
-        ResponseField.Typename,
+      val fields: Array<MergedField> = arrayOf(
+        MergedField.Typename,
       )
 
     }
 
     object ARoot {
-      val fields: Array<ResponseField> = arrayOf(
-        ResponseField.Typename,
+      val fields: Array<MergedField> = arrayOf(
+        MergedField.Typename,
       )
 
     }
 
     object ABRoot {
-      val fields: Array<ResponseField> = arrayOf(
-        ResponseField.Typename,
-        ResponseField(
-          type = ResponseField.Type.Named.Other("unused"),
+      val fields: Array<MergedField> = arrayOf(
+        MergedField.Typename,
+        MergedField(
+          type = MergedField.Type.Named.Other("unused"),
           fieldName = "fieldB1",
         ),
-        ResponseField(
-          type = ResponseField.Type.Named.Other("unused"),
+        MergedField(
+          type = MergedField.Type.Named.Other("unused"),
           fieldName = "fieldB2",
         ),
       )
@@ -65,10 +66,10 @@ object TestQuery_ResponseFields {
     }
 
     object BRoot {
-      val fields: Array<ResponseField> = arrayOf(
-        ResponseField.Typename,
-        ResponseField(
-          type = ResponseField.Type.Named.Other("unused"),
+      val fields: Array<MergedField> = arrayOf(
+        MergedField.Typename,
+        MergedField(
+          type = MergedField.Type.Named.Other("unused"),
           fieldName = "fieldB2",
         ),
       )

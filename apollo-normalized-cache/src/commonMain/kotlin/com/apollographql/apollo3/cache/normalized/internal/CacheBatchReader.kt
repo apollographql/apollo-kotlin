@@ -1,6 +1,7 @@
 package com.apollographql.apollo3.cache.normalized.internal
 
 import com.apollographql.apollo3.api.Executable
+import com.apollographql.apollo3.api.FieldSet
 import com.apollographql.apollo3.api.MergedField
 import com.apollographql.apollo3.cache.CacheHeaders
 import com.apollographql.apollo3.cache.normalized.CacheKey
@@ -23,13 +24,13 @@ class CacheBatchReader(
     private val variables: Executable.Variables,
     private val cacheKeyResolver: CacheKeyResolver,
     private val cacheHeaders: CacheHeaders,
-    private val rootFieldSets: List<MergedField.FieldSet>
+    private val rootFieldSets: List<FieldSet>
 ) {
   private val cacheKeyBuilder = RealCacheKeyBuilder()
 
   class PendingReference(
       val key: String,
-      val fieldSets: List<MergedField.FieldSet>
+      val fieldSets: List<FieldSet>
   )
 
   private val data = mutableMapOf<String, Map<String, Any?>>()
@@ -58,8 +59,8 @@ class CacheBatchReader(
       copy.forEach { pendingReference ->
         val record = records[pendingReference.key] ?: throw CacheMissException(pendingReference.key)
 
-        val fieldSet = pendingReference.fieldSets.firstOrNull { it.typeCondition == record["__typename"] }
-            ?: pendingReference.fieldSets.first { it.typeCondition == null }
+        val fieldSet = pendingReference.fieldSets.firstOrNull { it.type == record["__typename"] }
+            ?: pendingReference.fieldSets.first { it.type == null }
 
         val map = fieldSet.mergedFields.mapNotNull {
           if (it.shouldSkip(variables.valueMap)) {
@@ -107,7 +108,7 @@ class CacheBatchReader(
     return data[rootKey].resolveCacheReferences() as Map<String, Any?>
   }
 
-  private fun Any?.registerCacheReferences(fieldSets: List<MergedField.FieldSet>) {
+  private fun Any?.registerCacheReferences(fieldSets: List<FieldSet>) {
     when (this) {
       is CacheReference -> {
         pendingReferences.add(PendingReference(key, fieldSets))

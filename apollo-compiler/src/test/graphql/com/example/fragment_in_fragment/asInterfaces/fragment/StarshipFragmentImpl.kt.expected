@@ -5,10 +5,10 @@
 //
 package com.example.fragment_in_fragment.fragment
 
+import com.apollographql.apollo3.api.Adapter
+import com.apollographql.apollo3.api.CustomScalarAdapters
+import com.apollographql.apollo3.api.FieldSet
 import com.apollographql.apollo3.api.Fragment
-import com.apollographql.apollo3.api.ResponseAdapter
-import com.apollographql.apollo3.api.ResponseAdapterCache
-import com.apollographql.apollo3.api.ResponseField
 import com.apollographql.apollo3.api.json.JsonWriter
 import com.apollographql.apollo3.api.obj
 import com.example.fragment_in_fragment.fragment.responsefields.StarshipFragmentImpl_ResponseFields
@@ -16,15 +16,15 @@ import kotlin.String
 import kotlin.collections.List
 
 class StarshipFragmentImpl : Fragment<StarshipFragmentImpl.Data> {
-  override fun serializeVariables(writer: JsonWriter, responseAdapterCache: ResponseAdapterCache) {
+  override fun serializeVariables(writer: JsonWriter, customScalarAdapters: CustomScalarAdapters) {
     // This fragment doesn't have any variable
   }
 
-  override fun adapter(): ResponseAdapter<Data> {
+  override fun adapter(): Adapter<Data> {
     return StarshipFragmentImpl_ResponseAdapter.Data.obj()
   }
 
-  override fun responseFields(): List<ResponseField.FieldSet> =
+  override fun fieldSets(): List<FieldSet> =
       StarshipFragmentImpl_ResponseFields.fields.first().fieldSets
 
   data class Data(

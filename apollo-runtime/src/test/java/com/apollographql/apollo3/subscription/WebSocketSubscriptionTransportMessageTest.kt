@@ -1,6 +1,6 @@
 package com.apollographql.apollo3.subscription
 
-import com.apollographql.apollo3.api.CustomScalarAdpaters
+import com.apollographql.apollo3.api.CustomScalarAdapters
 import com.google.common.truth.Truth.assertThat
 import okhttp3.Protocol
 import okhttp3.Request
@@ -41,7 +41,7 @@ class WebSocketSubscriptionTransportMessageTest {
         OperationClientMessage.Start(
             subscriptionId = "subscriptionId",
             subscription = MockSubscription(),
-            responseAdapterCache = CustomScalarAdpaters.DEFAULT,
+            customScalarAdapters = CustomScalarAdapters.Empty,
             autoPersistSubscription = false,
             sendSubscriptionDocument = false)
     )
@@ -52,7 +52,7 @@ class WebSocketSubscriptionTransportMessageTest {
   @Test
   fun startSubscriptionAutoPersistSubscriptionEnabledSendDocumentEnabled() {
     subscriptionTransport.send(OperationClientMessage.Start("subscriptionId", MockSubscription(),
-        CustomScalarAdpaters.DEFAULT, autoPersistSubscription = true, sendSubscriptionDocument = true))
+        CustomScalarAdapters.Empty, autoPersistSubscription = true, sendSubscriptionDocument = true))
     val expected = """{"id":"subscriptionId","type":"start","payload":{"variables":{},"operationName":"SomeSubscription","query":"subscription{commentAdded{id  name}","extensions":{"persistedQuery":{"version":1,"sha256Hash":"someId"}}}}"""
     assertThat(webSocketFactory.webSocket.lastSentMessage).isEqualTo(expected)
   }
@@ -60,7 +60,7 @@ class WebSocketSubscriptionTransportMessageTest {
   @Test
   fun startSubscriptionAutoPersistSubscriptionEnabledSendDocumentDisabled() {
     subscriptionTransport.send(OperationClientMessage.Start("subscriptionId", MockSubscription(),
-        CustomScalarAdpaters.DEFAULT, autoPersistSubscription = true, sendSubscriptionDocument = false))
+        CustomScalarAdapters.Empty, autoPersistSubscription = true, sendSubscriptionDocument = false))
     val expected = """{"id":"subscriptionId","type":"start","payload":{"variables":{},"operationName":"SomeSubscription","extensions":{"persistedQuery":{"version":1,"sha256Hash":"someId"}}}}"""
     assertThat(webSocketFactory.webSocket.lastSentMessage).isEqualTo(expected)
   }

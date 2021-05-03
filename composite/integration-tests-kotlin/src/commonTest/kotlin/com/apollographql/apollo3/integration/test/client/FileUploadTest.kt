@@ -2,7 +2,7 @@ package com.apollographql.apollo3.integration.test.client
 
 import com.apollographql.apollo3.ApolloClient
 import com.apollographql.apollo3.api.Optional
-import com.apollographql.apollo3.api.CustomScalarAdpaters
+import com.apollographql.apollo3.api.CustomScalarAdapters
 import com.apollographql.apollo3.api.Upload
 import com.apollographql.apollo3.api.UploadAdapter
 import com.apollographql.apollo3.integration.checkTestFixture
@@ -43,7 +43,7 @@ class FileUploadTest {
       topFileList = listOf(upload1, upload0)
   )
 
-  private val adapterCache = CustomScalarAdpaters(
+  private val adapterCache = CustomScalarAdapters(
       mapOf(
           "Upload" to UploadAdapter
       )

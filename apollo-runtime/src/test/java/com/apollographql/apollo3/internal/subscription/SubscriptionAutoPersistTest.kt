@@ -1,9 +1,9 @@
 package com.apollographql.apollo3.internal.subscription
 
-import com.apollographql.apollo3.api.CustomScalarAdpaters
-import com.apollographql.apollo3.api.MergedField
+import com.apollographql.apollo3.api.CustomScalarAdapters
 import com.apollographql.apollo3.api.Subscription
 import com.apollographql.apollo3.api.Adapter
+import com.apollographql.apollo3.api.FieldSet
 import com.apollographql.apollo3.api.json.JsonWriter
 import com.apollographql.apollo3.cache.normalized.CacheKeyResolver
 import com.apollographql.apollo3.subscription.ApolloOperationMessageSerializer
@@ -30,7 +30,7 @@ class SubscriptionAutoPersistTest {
   fun setUp() {
     subscriptionTransportFactory = MockSubscriptionTransportFactory()
     subscriptionManager = RealSubscriptionManager(
-        CustomScalarAdpaters.DEFAULT,
+        CustomScalarAdapters.Empty,
         subscriptionTransportFactory!!,
         SubscriptionConnectionParamsProvider.Const(SubscriptionConnectionParams()),
         MockExecutor(),
@@ -154,7 +154,7 @@ class SubscriptionAutoPersistTest {
       return "subscription{\ncommentAdded(repoFullName:\"repo\"){\n__typename\nid\ncontent\n}\n}"
     }
 
-    override fun serializeVariables(writer: JsonWriter, responseAdapterCache: CustomScalarAdpaters) {
+    override fun serializeVariables(writer: JsonWriter, customScalarAdapters: CustomScalarAdapters) {
     }
 
     override fun adapter(): Adapter<Subscription.Data> {
@@ -169,7 +169,7 @@ class SubscriptionAutoPersistTest {
       return operationId
     }
 
-    override fun responseFields(): List<MergedField.FieldSet> {
+    override fun fieldSets(): List<FieldSet> {
       return emptyList()
     }
   }

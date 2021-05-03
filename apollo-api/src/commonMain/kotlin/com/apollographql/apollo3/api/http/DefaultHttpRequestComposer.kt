@@ -5,7 +5,7 @@ import com.apollographql.apollo3.api.ApolloRequest
 import com.apollographql.apollo3.api.ClientContext
 import com.apollographql.apollo3.api.ExecutionContext
 import com.apollographql.apollo3.api.Operation
-import com.apollographql.apollo3.api.CustomScalarAdpaters
+import com.apollographql.apollo3.api.CustomScalarAdapters
 import com.apollographql.apollo3.api.Upload
 import com.apollographql.apollo3.api.internal.json.FileUploadAwareJsonWriter
 import com.apollographql.apollo3.api.internal.json.buildJsonByteString
@@ -31,7 +31,7 @@ class DefaultHttpRequestComposer(private val serverUrl: String, private val defa
     val method = params?.method ?: HttpMethod.Post
     val autoPersistQueries = params?.autoPersistQueries ?: false
     val sendDocument = params?.sendDocument ?: true
-    val responseAdapterCache = apolloRequest.executionContext[CustomScalarAdpaters] ?: error("Cannot find a ResponseAdapterCache")
+    val responseAdapterCache = apolloRequest.executionContext[CustomScalarAdapters] ?: error("Cannot find a ResponseAdapterCache")
 
     val headers = mutableMapOf(
         HEADER_APOLLO_OPERATION_ID to operation.id(),
@@ -73,19 +73,19 @@ class DefaultHttpRequestComposer(private val serverUrl: String, private val defa
     private fun <D : Operation.Data> buildGetUrl(
         serverUrl: String,
         operation: Operation<D>,
-        responseAdapterCache: CustomScalarAdpaters,
+        customScalarAdapters: CustomScalarAdapters,
         autoPersistQueries: Boolean,
         sendDocument: Boolean,
     ): String {
       return serverUrl.appendQueryParameters(
-          composeGetParams(operation, responseAdapterCache, autoPersistQueries, sendDocument)
+          composeGetParams(operation, customScalarAdapters, autoPersistQueries, sendDocument)
       )
     }
 
     private fun <D : Operation.Data> composePostParams(
         writer: JsonWriter,
         operation: Operation<D>,
-        responseAdapterCache: CustomScalarAdpaters,
+        customScalarAdapters: CustomScalarAdapters,
         autoPersistQueries: Boolean,
         query: String?,
     ): Map<String, Upload> {
@@ -97,7 +97,7 @@ class DefaultHttpRequestComposer(private val serverUrl: String, private val defa
         name("variables")
         val uploadAwareWriter = FileUploadAwareJsonWriter(this)
         uploadAwareWriter.writeObject {
-          operation.serializeVariables(this, responseAdapterCache)
+          operation.serializeVariables(this, customScalarAdapters)
         }
         uploads = uploadAwareWriter.collectedUploads()
 
@@ -128,7 +128,7 @@ class DefaultHttpRequestComposer(private val serverUrl: String, private val defa
      */
     private fun <D : Operation.Data> composeGetParams(
         operation: Operation<D>,
-        responseAdapterCache: CustomScalarAdpaters,
+        customScalarAdapters: CustomScalarAdapters,
         autoPersistQueries: Boolean,
         sendDocument: Boolean,
     ): Map<String, String> {
@@ -139,7 +139,7 @@ class DefaultHttpRequestComposer(private val serverUrl: String, private val defa
       val variables = buildJsonString {
         val uploadAwareWriter = FileUploadAwareJsonWriter(this)
         uploadAwareWriter.writeObject {
-          operation.serializeVariables(this, responseAdapterCache)
+          operation.serializeVariables(this, customScalarAdapters)
         }
         check(uploadAwareWriter.collectedUploads().isEmpty()) {
           "FileUpload and Http GET are not supported at the same time"
@@ -189,7 +189,7 @@ class DefaultHttpRequestComposer(private val serverUrl: String, private val defa
 
     fun <D : Operation.Data> buildPostBody(
         operation: Operation<D>,
-        responseAdapterCache: CustomScalarAdpaters,
+        customScalarAdapters: CustomScalarAdapters,
         autoPersistQueries: Boolean,
         query: String?,
     ): HttpBody {
@@ -198,7 +198,7 @@ class DefaultHttpRequestComposer(private val serverUrl: String, private val defa
         uploads = composePostParams(
             this,
             operation,
-            responseAdapterCache,
+            customScalarAdapters,
             autoPersistQueries,
             query
         )
@@ -260,7 +260,7 @@ class DefaultHttpRequestComposer(private val serverUrl: String, private val defa
     }
 
     private fun buildUploadMap(uploads: Map<String, Upload>) = buildJsonByteString {
-      AnyAdapter.toJson(this, CustomScalarAdpaters.DEFAULT, uploads.entries.mapIndexed { index, entry ->
+      AnyAdapter.toJson(this, CustomScalarAdapters.Empty, uploads.entries.mapIndexed { index, entry ->
         index.toString() to listOf(entry.key)
       }.toMap())
     }
@@ -268,12 +268,12 @@ class DefaultHttpRequestComposer(private val serverUrl: String, private val defa
 
     fun <D : Operation.Data> buildParamsMap(
         operation: Operation<D>,
-        responseAdapterCache: CustomScalarAdpaters,
+        customScalarAdapters: CustomScalarAdapters,
         autoPersistQueries: Boolean,
         sendDocument: Boolean,
     ): ByteString = buildJsonByteString {
       val query = if (sendDocument) operation.document() else null
-      composePostParams(this, operation, responseAdapterCache, autoPersistQueries, query)
+      composePostParams(this, operation, customScalarAdapters, autoPersistQueries, query)
     }
   }
 }

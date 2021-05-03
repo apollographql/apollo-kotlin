@@ -5,6 +5,7 @@ import com.apollographql.apollo3.api.Variable
 import com.apollographql.apollo3.compiler.codegen.Identifier
 import com.apollographql.apollo3.compiler.codegen.CgLayout.Companion.modelName
 import com.apollographql.apollo3.api.BooleanExpression
+import com.apollographql.apollo3.api.FieldSet
 import com.apollographql.apollo3.compiler.unified.ir.IrArgument
 import com.apollographql.apollo3.compiler.unified.ir.IrBooleanValue
 import com.apollographql.apollo3.compiler.unified.ir.IrEnumValue
@@ -62,7 +63,7 @@ class ResponseFieldsBuilder(
       }.forEach { pair ->
         addStatement(
             "%T(%L, %L),",
-            MergedField.FieldSet::class,
+            FieldSet::class,
             pair.first?.let { "\"$it\"" },
             // This doesn't use %M on purpose as fields will name clash
             "${objectName(field, pair.second)}.fields"

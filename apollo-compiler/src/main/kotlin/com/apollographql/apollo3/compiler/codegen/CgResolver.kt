@@ -6,6 +6,7 @@ import com.apollographql.apollo3.api.DoubleAdapter
 import com.apollographql.apollo3.api.IntAdapter
 import com.apollographql.apollo3.api.Optional
 import com.apollographql.apollo3.api.StringAdapter
+import com.apollographql.apollo3.compiler.codegen.Identifier.customScalarAdapters
 import com.apollographql.apollo3.compiler.codegen.adapter.obj
 import com.apollographql.apollo3.compiler.unified.ir.IrAnyType
 import com.apollographql.apollo3.compiler.unified.ir.IrBooleanType
@@ -95,7 +96,7 @@ class CgResolver {
       }
       is IrCustomScalarType -> {
         CodeBlock.of(
-            "responseAdapterCache.responseAdapterFor<%T>(%M)",
+            "$customScalarAdapters.responseAdapterFor<%T>(%M)",
             customScalars.get(type.name) ?: "Cannot find custom scalar '$type'",
             customScalarConsts.get(type.name)
         )

@@ -5,59 +5,60 @@
 //
 package com.example.simple_fragment_with_inline_fragments.responsefields
 
-import com.apollographql.apollo3.api.ResponseField
+import com.apollographql.apollo3.api.FieldSet
+import com.apollographql.apollo3.api.MergedField
 import com.apollographql.apollo3.api.list
 import com.apollographql.apollo3.api.notNull
 import kotlin.Array
 
 object TestQuery_ResponseFields {
-  val fields: Array<ResponseField> = arrayOf(
-    ResponseField(
-      type = ResponseField.Type.Named.Object("unused"),
+  val fields: Array<MergedField> = arrayOf(
+    MergedField(
+      type = MergedField.Type.Named.Object("unused"),
       fieldName = "data",
       fieldSets = listOf(
-        ResponseField.FieldSet(null, Data.fields),
+        FieldSet(null, Data.fields),
       ),
     ),
   )
 
 
   object Data {
-    val fields: Array<ResponseField> = arrayOf(
-      ResponseField(
-        type = ResponseField.Type.Named.Object("unused"),
+    val fields: Array<MergedField> = arrayOf(
+      MergedField(
+        type = MergedField.Type.Named.Object("unused"),
         fieldName = "hero",
         fieldSets = listOf(
-          ResponseField.FieldSet(null, Hero.fields),
+          FieldSet(null, Hero.fields),
         ),
       ),
     )
 
 
     object Hero {
-      val fields: Array<ResponseField> = arrayOf(
-        ResponseField.Typename,
-        ResponseField(
-          type = ResponseField.Type.Named.Other("unused").notNull(),
+      val fields: Array<MergedField> = arrayOf(
+        MergedField.Typename,
+        MergedField(
+          type = MergedField.Type.Named.Other("unused").notNull(),
           fieldName = "name",
         ),
-        ResponseField(
-          type = ResponseField.Type.Named.Object("unused").list(),
+        MergedField(
+          type = MergedField.Type.Named.Object("unused").list(),
           fieldName = "friends",
           fieldSets = listOf(
-            ResponseField.FieldSet(null, Friend.fields),
-            ResponseField.FieldSet("Human", HumanFriend.fields),
-            ResponseField.FieldSet("Droid", DroidFriend.fields),
+            FieldSet(null, Friend.fields),
+            FieldSet("Human", HumanFriend.fields),
+            FieldSet("Droid", DroidFriend.fields),
           ),
         ),
       )
 
 
       object Friend {
-        val fields: Array<ResponseField> = arrayOf(
-          ResponseField.Typename,
-          ResponseField(
-            type = ResponseField.Type.Named.Other("unused").notNull(),
+        val fields: Array<MergedField> = arrayOf(
+          MergedField.Typename,
+          MergedField(
+            type = MergedField.Type.Named.Other("unused").notNull(),
             fieldName = "name",
           ),
         )
@@ -65,14 +66,14 @@ object TestQuery_ResponseFields {
       }
 
       object HumanFriend {
-        val fields: Array<ResponseField> = arrayOf(
-          ResponseField.Typename,
-          ResponseField(
-            type = ResponseField.Type.Named.Other("unused").notNull(),
+        val fields: Array<MergedField> = arrayOf(
+          MergedField.Typename,
+          MergedField(
+            type = MergedField.Type.Named.Other("unused").notNull(),
             fieldName = "name",
           ),
-          ResponseField(
-            type = ResponseField.Type.Named.Other("unused"),
+          MergedField(
+            type = MergedField.Type.Named.Other("unused"),
             fieldName = "height",
           ),
         )
@@ -80,14 +81,14 @@ object TestQuery_ResponseFields {
       }
 
       object DroidFriend {
-        val fields: Array<ResponseField> = arrayOf(
-          ResponseField.Typename,
-          ResponseField(
-            type = ResponseField.Type.Named.Other("unused").notNull(),
+        val fields: Array<MergedField> = arrayOf(
+          MergedField.Typename,
+          MergedField(
+            type = MergedField.Type.Named.Other("unused").notNull(),
             fieldName = "name",
           ),
-          ResponseField(
-            type = ResponseField.Type.Named.Other("unused"),
+          MergedField(
+            type = MergedField.Type.Named.Other("unused"),
             fieldName = "primaryFunction",
           ),
         )

@@ -5,9 +5,9 @@
 //
 package com.example.antlr_tokens.adapter
 
+import com.apollographql.apollo3.api.Adapter
+import com.apollographql.apollo3.api.CustomScalarAdapters
 import com.apollographql.apollo3.api.NullableStringResponseAdapter
-import com.apollographql.apollo3.api.ResponseAdapter
-import com.apollographql.apollo3.api.ResponseAdapterCache
 import com.apollographql.apollo3.api.json.JsonReader
 import com.apollographql.apollo3.api.json.JsonWriter
 import com.apollographql.apollo3.api.nullable
@@ -17,16 +17,16 @@ import kotlin.String
 import kotlin.collections.List
 
 object TestQuery_ResponseAdapter {
-  object Data : ResponseAdapter<TestQuery.Data> {
+  object Data : Adapter<TestQuery.Data> {
     val RESPONSE_NAMES: List<String> = listOf("typeWithGraphQLKeywords")
 
-    override fun fromResponse(reader: JsonReader, responseAdapterCache: ResponseAdapterCache):
+    override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters):
         TestQuery.Data {
       var typeWithGraphQLKeywords: TestQuery.Data.TypeWithGraphQLKeywords? = null
       while(true) {
         when (reader.selectName(RESPONSE_NAMES)) {
-          0 -> typeWithGraphQLKeywords = TypeWithGraphQLKeywords.obj().nullable().fromResponse(reader,
-              responseAdapterCache)
+          0 -> typeWithGraphQLKeywords = TypeWithGraphQLKeywords.obj().nullable().fromJson(reader,
+              customScalarAdapters)
           else -> break
         }
       }
@@ -35,29 +35,29 @@ object TestQuery_ResponseAdapter {
       )
     }
 
-    override fun toResponse(
+    override fun toJson(
       writer: JsonWriter,
-      responseAdapterCache: ResponseAdapterCache,
+      customScalarAdapters: CustomScalarAdapters,
       value: TestQuery.Data
     ) {
       writer.name("typeWithGraphQLKeywords")
-      TypeWithGraphQLKeywords.obj().nullable().toResponse(writer, responseAdapterCache,
+      TypeWithGraphQLKeywords.obj().nullable().toJson(writer, customScalarAdapters,
           value.typeWithGraphQLKeywords)
     }
 
-    object TypeWithGraphQLKeywords : ResponseAdapter<TestQuery.Data.TypeWithGraphQLKeywords> {
+    object TypeWithGraphQLKeywords : Adapter<TestQuery.Data.TypeWithGraphQLKeywords> {
       val RESPONSE_NAMES: List<String> = listOf("on", "null", "alias")
 
-      override fun fromResponse(reader: JsonReader, responseAdapterCache: ResponseAdapterCache):
+      override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters):
           TestQuery.Data.TypeWithGraphQLKeywords {
         var on: String? = null
         var null_: String? = null
         var alias: String? = null
         while(true) {
           when (reader.selectName(RESPONSE_NAMES)) {
-            0 -> on = NullableStringResponseAdapter.fromResponse(reader, responseAdapterCache)
-            1 -> null_ = NullableStringResponseAdapter.fromResponse(reader, responseAdapterCache)
-            2 -> alias = NullableStringResponseAdapter.fromResponse(reader, responseAdapterCache)
+            0 -> on = NullableStringResponseAdapter.fromJson(reader, customScalarAdapters)
+            1 -> null_ = NullableStringResponseAdapter.fromJson(reader, customScalarAdapters)
+            2 -> alias = NullableStringResponseAdapter.fromJson(reader, customScalarAdapters)
             else -> break
           }
         }
@@ -68,17 +68,17 @@ object TestQuery_ResponseAdapter {
         )
       }
 
-      override fun toResponse(
+      override fun toJson(
         writer: JsonWriter,
-        responseAdapterCache: ResponseAdapterCache,
+        customScalarAdapters: CustomScalarAdapters,
         value: TestQuery.Data.TypeWithGraphQLKeywords
       ) {
         writer.name("on")
-        NullableStringResponseAdapter.toResponse(writer, responseAdapterCache, value.on)
+        NullableStringResponseAdapter.toJson(writer, customScalarAdapters, value.on)
         writer.name("null")
-        NullableStringResponseAdapter.toResponse(writer, responseAdapterCache, value.null_)
+        NullableStringResponseAdapter.toJson(writer, customScalarAdapters, value.null_)
         writer.name("alias")
-        NullableStringResponseAdapter.toResponse(writer, responseAdapterCache, value.alias)
+        NullableStringResponseAdapter.toJson(writer, customScalarAdapters, value.alias)
       }
     }
   }

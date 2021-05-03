@@ -1,6 +1,6 @@
 package com.apollographql.apollo3.subscription
 
-import com.apollographql.apollo3.api.CustomScalarAdpaters
+import com.apollographql.apollo3.api.CustomScalarAdapters
 import com.apollographql.apollo3.api.Subscription
 
 sealed class OperationClientMessage {
@@ -13,7 +13,7 @@ sealed class OperationClientMessage {
   class Start(
       val subscriptionId: String,
       val subscription: Subscription<*>,
-      val responseAdapterCache: CustomScalarAdpaters,
+      val customScalarAdapters: CustomScalarAdapters,
       val autoPersistSubscription: Boolean,
       /**
        * whether or not to send the document. Only valid if [autoPersistSubscription] is true

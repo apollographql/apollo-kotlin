@@ -5,9 +5,9 @@
 //
 package com.example.subscriptions
 
-import com.apollographql.apollo3.api.ResponseAdapter
-import com.apollographql.apollo3.api.ResponseAdapterCache
-import com.apollographql.apollo3.api.ResponseField
+import com.apollographql.apollo3.api.Adapter
+import com.apollographql.apollo3.api.CustomScalarAdapters
+import com.apollographql.apollo3.api.FieldSet
 import com.apollographql.apollo3.api.Subscription
 import com.apollographql.apollo3.api.json.JsonWriter
 import com.apollographql.apollo3.api.obj
@@ -27,15 +27,15 @@ data class TestSubscription(
 
   override fun name(): String = OPERATION_NAME
 
-  override fun serializeVariables(writer: JsonWriter, responseAdapterCache: ResponseAdapterCache) {
-    TestSubscription_VariablesAdapter.toResponse(writer, responseAdapterCache, this)
+  override fun serializeVariables(writer: JsonWriter, customScalarAdapters: CustomScalarAdapters) {
+    TestSubscription_VariablesAdapter.toJson(writer, customScalarAdapters, this)
   }
 
-  override fun adapter(): ResponseAdapter<Data> {
+  override fun adapter(): Adapter<Data> {
     return TestSubscription_ResponseAdapter.Data.obj()
   }
 
-  override fun responseFields(): List<ResponseField.FieldSet> =
+  override fun fieldSets(): List<FieldSet> =
       TestSubscription_ResponseFields.fields.first().fieldSets
 
   data class Data(

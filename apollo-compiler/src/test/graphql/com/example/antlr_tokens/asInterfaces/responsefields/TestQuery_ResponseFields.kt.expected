@@ -5,48 +5,49 @@
 //
 package com.example.antlr_tokens.responsefields
 
-import com.apollographql.apollo3.api.ResponseField
+import com.apollographql.apollo3.api.FieldSet
+import com.apollographql.apollo3.api.MergedField
 import com.apollographql.apollo3.api.Variable
 import kotlin.Array
 
 object TestQuery_ResponseFields {
-  val fields: Array<ResponseField> = arrayOf(
-    ResponseField(
-      type = ResponseField.Type.Named.Object("unused"),
+  val fields: Array<MergedField> = arrayOf(
+    MergedField(
+      type = MergedField.Type.Named.Object("unused"),
       fieldName = "data",
       fieldSets = listOf(
-        ResponseField.FieldSet(null, Data.fields),
+        FieldSet(null, Data.fields),
       ),
     ),
   )
 
 
   object Data {
-    val fields: Array<ResponseField> = arrayOf(
-      ResponseField(
-        type = ResponseField.Type.Named.Object("unused"),
+    val fields: Array<MergedField> = arrayOf(
+      MergedField(
+        type = MergedField.Type.Named.Object("unused"),
         fieldName = "typeWithGraphQLKeywords",
         fieldSets = listOf(
-          ResponseField.FieldSet(null, TypeWithGraphQLKeywords.fields),
+          FieldSet(null, TypeWithGraphQLKeywords.fields),
         ),
       ),
     )
 
 
     object TypeWithGraphQLKeywords {
-      val fields: Array<ResponseField> = arrayOf(
-        ResponseField(
-          type = ResponseField.Type.Named.Other("unused"),
+      val fields: Array<MergedField> = arrayOf(
+        MergedField(
+          type = MergedField.Type.Named.Other("unused"),
           fieldName = "on",
         ),
-        ResponseField(
-          type = ResponseField.Type.Named.Other("unused"),
+        MergedField(
+          type = MergedField.Type.Named.Other("unused"),
           fieldName = "null",
           arguments = mapOf("fragment" to Variable("operation")
           ),
         ),
-        ResponseField(
-          type = ResponseField.Type.Named.Other("unused"),
+        MergedField(
+          type = MergedField.Type.Named.Other("unused"),
           fieldName = "null",
           responseName = "alias",
           arguments = mapOf("fragment" to """

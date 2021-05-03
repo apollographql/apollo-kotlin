@@ -2,9 +2,9 @@ package com.apollographql.apollo3.internal.reader
 
 import com.apollographql.apollo3.ApolloClient
 import com.apollographql.apollo3.IdleResourceCallback
-import com.apollographql.apollo3.api.CustomScalarAdpaters
+import com.apollographql.apollo3.api.CustomScalarAdapters
+import com.apollographql.apollo3.api.FieldSet
 import com.apollographql.apollo3.api.Query
-import com.apollographql.apollo3.api.MergedField
 import com.apollographql.apollo3.api.json.JsonWriter
 import com.apollographql.apollo3.rx2.Rx2Apollo
 import com.google.common.truth.Truth
@@ -127,7 +127,7 @@ class ApolloCallTrackerTest {
         return ""
       }
 
-      override fun serializeVariables(writer: JsonWriter, responseAdapterCache: CustomScalarAdpaters) {
+      override fun serializeVariables(writer: JsonWriter, customScalarAdapters: CustomScalarAdapters) {
       }
 
       override fun adapter() = throw UnsupportedOperationException()
@@ -140,7 +140,7 @@ class ApolloCallTrackerTest {
         return ""
       }
 
-      override fun responseFields(): List<MergedField.FieldSet> {
+      override fun fieldSets(): List<FieldSet> {
         return emptyList()
       }
     }

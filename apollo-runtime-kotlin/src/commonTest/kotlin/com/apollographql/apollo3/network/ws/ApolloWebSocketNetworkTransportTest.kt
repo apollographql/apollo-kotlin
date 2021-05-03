@@ -2,7 +2,7 @@ package com.apollographql.apollo3.network.ws
 
 import com.apollographql.apollo3.exception.ApolloWebSocketException
 import com.apollographql.apollo3.exception.ApolloWebSocketServerException
-import com.apollographql.apollo3.api.CustomScalarAdpaters
+import com.apollographql.apollo3.api.CustomScalarAdapters
 import com.apollographql.apollo3.api.Subscription
 import com.apollographql.apollo3.dispatcher.ApolloCoroutineDispatcher
 import com.apollographql.apollo3.api.ApolloRequest
@@ -36,7 +36,7 @@ class ApolloWebSocketNetworkTransportTest {
     runBlocking {
       val expectedRequest = ApolloRequest(
           operation = MockSubscription(),
-          executionContext = ApolloCoroutineDispatcher(Dispatchers.Unconfined) + CustomScalarAdpaters.DEFAULT
+          executionContext = ApolloCoroutineDispatcher(Dispatchers.Unconfined) + CustomScalarAdapters.Empty
       )
       val expectedResponses = listOf(
           "{\"data\":{\"name\":\"MockQuery1\"}}",
@@ -45,7 +45,7 @@ class ApolloWebSocketNetworkTransportTest {
       )
       val webSocketConnection = WebSocketConnectionMock(
           expectedRequest = expectedRequest,
-          responseAdapterCache = CustomScalarAdpaters.DEFAULT,
+          customScalarAdapters = CustomScalarAdapters.Empty,
           expectedOnStartResponse = expectedResponses.first()
       )
 
@@ -72,7 +72,7 @@ class ApolloWebSocketNetworkTransportTest {
     runBlocking {
       val expectedRequest = ApolloRequest(
           operation = MockSubscription(),
-          executionContext = ApolloCoroutineDispatcher(Dispatchers.Unconfined) + CustomScalarAdpaters.DEFAULT
+          executionContext = ApolloCoroutineDispatcher(Dispatchers.Unconfined) + CustomScalarAdapters.Empty
       )
 
       val result = runCatching {
@@ -97,12 +97,12 @@ class ApolloWebSocketNetworkTransportTest {
     val result = runBlocking {
       val expectedRequest = ApolloRequest(
           operation = MockSubscription(),
-          executionContext = ApolloCoroutineDispatcher(Dispatchers.Unconfined) + CustomScalarAdpaters.DEFAULT
+          executionContext = ApolloCoroutineDispatcher(Dispatchers.Unconfined) + CustomScalarAdapters.Empty
       )
       val expectedOnStartResponse = "{\"data\":{\"name\":\"MockQuery\"}}"
       val webSocketConnection = WebSocketConnectionMock(
           expectedRequest = expectedRequest,
-          responseAdapterCache = CustomScalarAdpaters.DEFAULT,
+          customScalarAdapters = CustomScalarAdapters.Empty,
           expectedOnStartResponse = expectedOnStartResponse
       )
 
@@ -132,12 +132,12 @@ class ApolloWebSocketNetworkTransportTest {
     runBlocking {
       val expectedRequest = ApolloRequest(
           operation = MockSubscription(),
-          executionContext = ApolloCoroutineDispatcher(Dispatchers.Unconfined) + CustomScalarAdpaters.DEFAULT
+          executionContext = ApolloCoroutineDispatcher(Dispatchers.Unconfined) + CustomScalarAdapters.Empty
       )
       val expectedOnStartResponse = "{\"data\":{\"name\":\"MockQuery\"}}"
       val webSocketConnection = WebSocketConnectionMock(
           expectedRequest = expectedRequest,
-          responseAdapterCache = CustomScalarAdpaters.DEFAULT,
+          customScalarAdapters = CustomScalarAdapters.Empty,
           expectedOnStartResponse = expectedOnStartResponse
       )
 
@@ -164,12 +164,12 @@ class ApolloWebSocketNetworkTransportTest {
     runBlocking {
       val expectedRequest = ApolloRequest(
           operation = MockSubscription(),
-          executionContext = ApolloCoroutineDispatcher(Dispatchers.Unconfined) + CustomScalarAdpaters.DEFAULT
+          executionContext = ApolloCoroutineDispatcher(Dispatchers.Unconfined) + CustomScalarAdapters.Empty
       )
       val expectedOnStartResponse = "{\"data\":{\"name\":\"MockQuery\"}}"
       val webSocketConnection = WebSocketConnectionMock(
           expectedRequest = expectedRequest,
-          responseAdapterCache = CustomScalarAdpaters.DEFAULT,
+          customScalarAdapters = CustomScalarAdapters.Empty,
           expectedOnStartResponse = expectedOnStartResponse
       )
 
@@ -203,7 +203,7 @@ private class FrozenWebSocketConnection(
 
 private class WebSocketConnectionMock(
     val expectedRequest: ApolloRequest<MockSubscription.Data>,
-    val responseAdapterCache: CustomScalarAdpaters,
+    val customScalarAdapters: CustomScalarAdapters,
     val expectedOnStartResponse: String,
     private val receivedMessageChannel: Channel<ByteString> = Channel(Channel.BUFFERED)
 ) : WebSocketConnection, ReceiveChannel<ByteString> by receivedMessageChannel {
@@ -220,7 +220,7 @@ private class WebSocketConnectionMock(
       OperationClientMessage.Start(
           subscriptionId =  expectedRequest.requestUuid.toString(),
           subscription = expectedRequest.operation as Subscription<*>,
-          responseAdapterCache = responseAdapterCache,
+          customScalarAdapters = customScalarAdapters,
           autoPersistSubscription = false,
           sendSubscriptionDocument = true
       ).utf8() -> {

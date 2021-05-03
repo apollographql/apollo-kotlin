@@ -2,7 +2,7 @@ package com.apollographql.apollo3.integration.test.runtime
 
 import com.apollographql.apollo3.adapters.LocalDateAdapter
 import com.apollographql.apollo3.api.Adapter
-import com.apollographql.apollo3.api.CustomScalarAdpaters
+import com.apollographql.apollo3.api.CustomScalarAdapters
 import com.apollographql.apollo3.api.composeResponseBody
 import com.apollographql.apollo3.api.fromJson
 import com.apollographql.apollo3.api.internal.json.BufferedSinkJsonWriter
@@ -88,7 +88,7 @@ class AdapterparseResponseBodyTest {
   private fun <T> Adapter<T>.toJsonString(t: T): String {
     val buffer = Buffer()
     BufferedSinkJsonWriter(buffer).use {
-      toJson(it, CustomScalarAdpaters.DEFAULT, t)
+      toJson(it, CustomScalarAdapters.Empty, t)
     }
     return buffer.readUtf8()
   }
@@ -99,7 +99,7 @@ class AdapterparseResponseBodyTest {
 
     val response = AllFilmsQuery().parseResponseBody(
         readResource("HttpCacheTestAllFilms.json"),
-        CustomScalarAdpaters(mapOf(Types.Date.name to LocalDateAdapter))
+        CustomScalarAdapters(mapOf(Types.Date.name to LocalDateAdapter))
     )
     assertFalse(response.hasErrors())
     assertEquals(response.data!!.allFilms?.films?.size, 6)
@@ -160,7 +160,7 @@ class AdapterparseResponseBodyTest {
   fun parseErrorOperationRawResponse() {
     val response = EpisodeHeroNameQuery(Episode.EMPIRE).parseResponseBody(
         readResource("/ResponseErrorWithData.json"),
-        CustomScalarAdpaters.DEFAULT
+        CustomScalarAdapters.Empty
     )
     val data = response.data
     val errors = response.errors

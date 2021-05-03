@@ -48,13 +48,16 @@ class CacheMissException(val key: String, val fieldName: String? = null) : Apoll
   }
 }
 
+/**
+ * Multiple exceptions happened, for an exemple with a [CacheFirst] fetch policy
+ */
 class ApolloCompositeException(first: Throwable?, second: Throwable?) : ApolloException(message = "multiple exceptions happened", second) {
   val first = (first as? ApolloException)  ?: throw RuntimeException("unexpected first exception", first)
   val second = (second as? ApolloException)  ?: throw RuntimeException("unexpected second exception", second)
 }
 
 class AutoPersistedQueriesNotSupported : ApolloException(message = "The server does not support auto persisted queries")
-class MissingValueException(): ApolloException(message = "The optional doesn't have a value")
+class MissingValueException : ApolloException(message = "The optional doesn't have a value")
 
 /**
  * Something went wrong but it's not sure exactly what

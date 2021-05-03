@@ -5,27 +5,27 @@
 //
 package com.example.not_all_combinations_are_needed.fragment
 
+import com.apollographql.apollo3.api.Adapter
+import com.apollographql.apollo3.api.CustomScalarAdapters
 import com.apollographql.apollo3.api.NullableStringResponseAdapter
-import com.apollographql.apollo3.api.ResponseAdapter
-import com.apollographql.apollo3.api.ResponseAdapterCache
-import com.apollographql.apollo3.api.StringResponseAdapter
+import com.apollographql.apollo3.api.StringAdapter
 import com.apollographql.apollo3.api.json.JsonReader
 import com.apollographql.apollo3.api.json.JsonWriter
 import kotlin.String
 import kotlin.collections.List
 
 object BFragmentImpl_ResponseAdapter {
-  object Data : ResponseAdapter<BFragmentImpl.Data> {
+  object Data : Adapter<BFragmentImpl.Data> {
     val RESPONSE_NAMES: List<String> = listOf("__typename", "fieldB1")
 
-    override fun fromResponse(reader: JsonReader, responseAdapterCache: ResponseAdapterCache):
+    override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters):
         BFragmentImpl.Data {
       var __typename: String? = null
       var fieldB1: String? = null
       while(true) {
         when (reader.selectName(RESPONSE_NAMES)) {
-          0 -> __typename = StringResponseAdapter.fromResponse(reader, responseAdapterCache)
-          1 -> fieldB1 = NullableStringResponseAdapter.fromResponse(reader, responseAdapterCache)
+          0 -> __typename = StringAdapter.fromJson(reader, customScalarAdapters)
+          1 -> fieldB1 = NullableStringResponseAdapter.fromJson(reader, customScalarAdapters)
           else -> break
         }
       }
@@ -35,15 +35,15 @@ object BFragmentImpl_ResponseAdapter {
       )
     }
 
-    override fun toResponse(
+    override fun toJson(
       writer: JsonWriter,
-      responseAdapterCache: ResponseAdapterCache,
+      customScalarAdapters: CustomScalarAdapters,
       value: BFragmentImpl.Data
     ) {
       writer.name("__typename")
-      StringResponseAdapter.toResponse(writer, responseAdapterCache, value.__typename)
+      StringAdapter.toJson(writer, customScalarAdapters, value.__typename)
       writer.name("fieldB1")
-      NullableStringResponseAdapter.toResponse(writer, responseAdapterCache, value.fieldB1)
+      NullableStringResponseAdapter.toJson(writer, customScalarAdapters, value.fieldB1)
     }
   }
 }

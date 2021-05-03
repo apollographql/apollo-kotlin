@@ -1,15 +1,15 @@
 package com.apollographql.apollo3.compiler.codegen.adapter
 
 import com.apollographql.apollo3.api.Adapter
-import com.apollographql.apollo3.api.CustomScalarAdpaters
+import com.apollographql.apollo3.api.CustomScalarAdapters
 import com.apollographql.apollo3.api.json.JsonReader
 import com.apollographql.apollo3.api.json.JsonWriter
 import com.apollographql.apollo3.compiler.codegen.CgContext
 import com.apollographql.apollo3.compiler.codegen.CgFile
 import com.apollographql.apollo3.compiler.codegen.CgFileBuilder
 import com.apollographql.apollo3.compiler.codegen.Identifier
-import com.apollographql.apollo3.compiler.codegen.Identifier.responseAdapterCache
-import com.apollographql.apollo3.compiler.codegen.Identifier.toResponse
+import com.apollographql.apollo3.compiler.codegen.Identifier.customScalarAdapters
+import com.apollographql.apollo3.compiler.codegen.Identifier.toJson
 import com.apollographql.apollo3.compiler.codegen.Identifier.value
 import com.apollographql.apollo3.compiler.codegen.Identifier.writer
 import com.apollographql.apollo3.compiler.unified.ir.IrEnum
@@ -49,10 +49,10 @@ class EnumResponseAdapterBuilder(
 
   private fun IrEnum.typeSpec(): TypeSpec {
     val adaptedTypeName = context.resolver.resolveEnum(enum.name)
-    val fromResponseFunSpec = FunSpec.builder(Identifier.fromResponse)
+    val fromResponseFunSpec = FunSpec.builder(Identifier.fromJson)
         .addModifiers(KModifier.OVERRIDE)
         .addParameter(Identifier.reader, JsonReader::class)
-        .addParameter(Identifier.responseAdapterCache, CustomScalarAdpaters::class)
+        .addParameter(Identifier.customScalarAdapters, CustomScalarAdapters::class)
         .returns(adaptedTypeName)
         .addCode(
             CodeBlock.builder()
@@ -82,8 +82,8 @@ class EnumResponseAdapterBuilder(
   }
 }
 
-internal fun toResponseFunSpecBuilder(typeName: TypeName) = FunSpec.builder(toResponse)
+internal fun toResponseFunSpecBuilder(typeName: TypeName) = FunSpec.builder(toJson)
     .addModifiers(KModifier.OVERRIDE)
     .addParameter(name = writer, type = JsonWriter::class.asTypeName())
-    .addParameter(name = responseAdapterCache, type = CustomScalarAdpaters::class)
+    .addParameter(name = customScalarAdapters, type = CustomScalarAdapters::class)
     .addParameter(value, typeName)

@@ -4,13 +4,14 @@
 package com.apollographql.apollo3.compiler.codegen.adapter
 
 import com.apollographql.apollo3.api.Adapter
-import com.apollographql.apollo3.api.CustomScalarAdpaters
+import com.apollographql.apollo3.api.CustomScalarAdapters
 import com.apollographql.apollo3.api.json.JsonReader
 import com.apollographql.apollo3.api.json.JsonWriter
 import com.apollographql.apollo3.compiler.codegen.CgContext
 import com.apollographql.apollo3.compiler.codegen.Identifier
-import com.apollographql.apollo3.compiler.codegen.Identifier.responseAdapterCache
-import com.apollographql.apollo3.compiler.codegen.Identifier.toResponse
+import com.apollographql.apollo3.compiler.codegen.Identifier.customScalarAdapters
+import com.apollographql.apollo3.compiler.codegen.Identifier.fromJson
+import com.apollographql.apollo3.compiler.codegen.Identifier.toJson
 import com.apollographql.apollo3.compiler.codegen.Identifier.value
 import com.apollographql.apollo3.compiler.codegen.Identifier.writer
 import com.apollographql.apollo3.compiler.codegen.helpers.NamedType
@@ -36,10 +37,10 @@ internal fun List<NamedType>.inputAdapterTypeSpec(
       .build()
 }
 
-private fun notImplementedFromResponseFunSpec(adaptedTypeName: TypeName) = FunSpec.builder("fromResponse")
+private fun notImplementedFromResponseFunSpec(adaptedTypeName: TypeName) = FunSpec.builder(fromJson)
     .addModifiers(KModifier.OVERRIDE)
     .addParameter(Identifier.reader, JsonReader::class)
-    .addParameter(responseAdapterCache, CustomScalarAdpaters::class.asTypeName())
+    .addParameter(customScalarAdapters, CustomScalarAdapters::class.asTypeName())
     .returns(adaptedTypeName)
     .addCode("throw %T(%S)", ClassName("kotlin", "IllegalStateException"), "Input type used in output position")
     .build()
@@ -49,10 +50,10 @@ private fun List<NamedType>.writeToResponseFunSpec(
     context: CgContext,
     adaptedTypeName: TypeName,
 ): FunSpec {
-  return FunSpec.builder(toResponse)
+  return FunSpec.builder(toJson)
       .addModifiers(KModifier.OVERRIDE)
       .addParameter(writer, JsonWriter::class.asTypeName())
-      .addParameter(responseAdapterCache, CustomScalarAdpaters::class)
+      .addParameter(customScalarAdapters, CustomScalarAdapters::class)
       .addParameter(value, adaptedTypeName)
       .addCode(writeToResponseCodeBlock(context))
       .build()

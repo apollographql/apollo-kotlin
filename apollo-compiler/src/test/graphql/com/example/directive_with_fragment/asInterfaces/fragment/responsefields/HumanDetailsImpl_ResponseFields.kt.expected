@@ -5,26 +5,27 @@
 //
 package com.example.directive_with_fragment.fragment.responsefields
 
-import com.apollographql.apollo3.api.ResponseField
+import com.apollographql.apollo3.api.FieldSet
+import com.apollographql.apollo3.api.MergedField
 import kotlin.Array
 
 object HumanDetailsImpl_ResponseFields {
-  val fields: Array<ResponseField> = arrayOf(
-    ResponseField(
-      type = ResponseField.Type.Named.Object("unused"),
+  val fields: Array<MergedField> = arrayOf(
+    MergedField(
+      type = MergedField.Type.Named.Object("unused"),
       fieldName = "data",
       fieldSets = listOf(
-        ResponseField.FieldSet(null, Data.fields),
+        FieldSet(null, Data.fields),
       ),
     ),
   )
 
 
   object Data {
-    val fields: Array<ResponseField> = arrayOf(
-      ResponseField.Typename,
-      ResponseField(
-        type = ResponseField.Type.Named.Other("unused"),
+    val fields: Array<MergedField> = arrayOf(
+      MergedField.Typename,
+      MergedField(
+        type = MergedField.Type.Named.Other("unused"),
         fieldName = "homePlanet",
       ),
     )

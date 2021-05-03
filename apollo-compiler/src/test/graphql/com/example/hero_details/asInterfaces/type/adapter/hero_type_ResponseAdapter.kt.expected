@@ -5,15 +5,14 @@
 //
 package com.example.hero_details.type.adapter
 
-import com.apollographql.apollo3.api.ResponseAdapter
-import com.apollographql.apollo3.api.ResponseAdapterCache
+import com.apollographql.apollo3.api.Adapter
+import com.apollographql.apollo3.api.CustomScalarAdapters
 import com.apollographql.apollo3.api.json.JsonReader
 import com.apollographql.apollo3.api.json.JsonWriter
 import com.example.hero_details.type.hero_type
 
-object hero_type_ResponseAdapter : ResponseAdapter<hero_type> {
-  override fun fromResponse(reader: JsonReader, responseAdapterCache: ResponseAdapterCache):
-      hero_type {
+object hero_type_ResponseAdapter : Adapter<hero_type> {
+  override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters): hero_type {
     val rawValue = reader.nextString()!!
     return when(rawValue) {
       "human" -> hero_type.human
@@ -22,9 +21,9 @@ object hero_type_ResponseAdapter : ResponseAdapter<hero_type> {
     }
   }
 
-  override fun toResponse(
+  override fun toJson(
     writer: JsonWriter,
-    responseAdapterCache: ResponseAdapterCache,
+    customScalarAdapters: CustomScalarAdapters,
     value: hero_type
   ) {
     writer.value(value.rawValue)

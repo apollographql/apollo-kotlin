@@ -5,25 +5,25 @@
 //
 package com.example.directives.adapter
 
-import com.apollographql.apollo3.api.BooleanResponseAdapter
-import com.apollographql.apollo3.api.ResponseAdapter
-import com.apollographql.apollo3.api.ResponseAdapterCache
+import com.apollographql.apollo3.api.Adapter
+import com.apollographql.apollo3.api.BooleanAdapter
+import com.apollographql.apollo3.api.CustomScalarAdapters
 import com.apollographql.apollo3.api.json.JsonReader
 import com.apollographql.apollo3.api.json.JsonWriter
 import com.example.directives.TestQuery
 import kotlin.IllegalStateException
 
-object TestQuery_VariablesAdapter : ResponseAdapter<TestQuery> {
-  override fun fromResponse(reader: JsonReader, responseAdapterCache: ResponseAdapterCache):
-      TestQuery = throw IllegalStateException("Input type used in output position")
-  override fun toResponse(
+object TestQuery_VariablesAdapter : Adapter<TestQuery> {
+  override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters): TestQuery =
+      throw IllegalStateException("Input type used in output position")
+  override fun toJson(
     writer: JsonWriter,
-    responseAdapterCache: ResponseAdapterCache,
+    customScalarAdapters: CustomScalarAdapters,
     value: TestQuery
   ) {
     writer.name("includeName")
-    BooleanResponseAdapter.toResponse(writer, responseAdapterCache, value.includeName)
+    BooleanAdapter.toJson(writer, customScalarAdapters, value.includeName)
     writer.name("skipFriends")
-    BooleanResponseAdapter.toResponse(writer, responseAdapterCache, value.skipFriends)
+    BooleanAdapter.toJson(writer, customScalarAdapters, value.skipFriends)
   }
 }

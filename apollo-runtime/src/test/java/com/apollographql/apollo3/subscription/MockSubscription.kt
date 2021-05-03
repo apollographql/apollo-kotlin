@@ -1,9 +1,9 @@
 package com.apollographql.apollo3.subscription
 
-import com.apollographql.apollo3.api.CustomScalarAdpaters
-import com.apollographql.apollo3.api.MergedField
+import com.apollographql.apollo3.api.CustomScalarAdapters
 import com.apollographql.apollo3.api.Subscription
 import com.apollographql.apollo3.api.AnyAdapter
+import com.apollographql.apollo3.api.FieldSet
 import com.apollographql.apollo3.api.json.JsonWriter
 import com.apollographql.apollo3.api.nullable
 
@@ -15,10 +15,10 @@ class MockSubscription(
 ) : Subscription<Subscription.Data> {
   override fun document(): String = queryDocument
 
-  override fun serializeVariables(writer: JsonWriter, responseAdapterCache: CustomScalarAdpaters) {
+  override fun serializeVariables(writer: JsonWriter, customScalarAdapters: CustomScalarAdapters) {
     variables.forEach {
       writer.name(it.key)
-      AnyAdapter.nullable().toJson(writer, responseAdapterCache, it.value)
+      AnyAdapter.nullable().toJson(writer, customScalarAdapters, it.value)
     }
   }
 
@@ -27,7 +27,7 @@ class MockSubscription(
   override fun name(): String = name
 
   override fun id(): String = operationId
-  override fun responseFields(): List<MergedField.FieldSet> {
+  override fun fieldSets(): List<FieldSet> {
     return emptyList()
   }
 }

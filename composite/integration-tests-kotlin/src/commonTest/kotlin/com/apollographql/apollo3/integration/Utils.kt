@@ -2,7 +2,7 @@ package com.apollographql.apollo3.integration
 
 import com.apollographql.apollo3.api.Executable
 import com.apollographql.apollo3.api.Operation
-import com.apollographql.apollo3.api.CustomScalarAdpaters
+import com.apollographql.apollo3.api.CustomScalarAdapters
 import com.apollographql.apollo3.api.MergedField
 import com.apollographql.apollo3.api.composeResponseBody
 import com.apollographql.apollo3.cache.normalized.CacheKey
@@ -18,9 +18,9 @@ import kotlin.test.assertEquals
 fun <D : Operation.Data> MockServer.enqueue(
     operation: Operation<D>,
     data: D,
-    responseAdapterCache: CustomScalarAdpaters = CustomScalarAdpaters.DEFAULT
+    customScalarAdapters: CustomScalarAdapters = CustomScalarAdapters.Empty
 ) {
-  val json = operation.composeResponseBody(data, responseAdapterCache = responseAdapterCache)
+  val json = operation.composeResponseBody(data, customScalarAdapters = customScalarAdapters)
   enqueue(json)
 }
 

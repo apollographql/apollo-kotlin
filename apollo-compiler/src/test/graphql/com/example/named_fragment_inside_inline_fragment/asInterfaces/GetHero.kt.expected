@@ -5,10 +5,10 @@
 //
 package com.example.named_fragment_inside_inline_fragment
 
+import com.apollographql.apollo3.api.Adapter
+import com.apollographql.apollo3.api.CustomScalarAdapters
+import com.apollographql.apollo3.api.FieldSet
 import com.apollographql.apollo3.api.Query
-import com.apollographql.apollo3.api.ResponseAdapter
-import com.apollographql.apollo3.api.ResponseAdapterCache
-import com.apollographql.apollo3.api.ResponseField
 import com.apollographql.apollo3.api.json.JsonWriter
 import com.apollographql.apollo3.api.obj
 import com.example.named_fragment_inside_inline_fragment.adapter.GetHero_ResponseAdapter
@@ -26,16 +26,15 @@ class GetHero : Query<GetHero.Data> {
 
   override fun name(): String = OPERATION_NAME
 
-  override fun serializeVariables(writer: JsonWriter, responseAdapterCache: ResponseAdapterCache) {
+  override fun serializeVariables(writer: JsonWriter, customScalarAdapters: CustomScalarAdapters) {
     // This operation doesn't have any variable
   }
 
-  override fun adapter(): ResponseAdapter<Data> {
+  override fun adapter(): Adapter<Data> {
     return GetHero_ResponseAdapter.Data.obj()
   }
 
-  override fun responseFields(): List<ResponseField.FieldSet> =
-      GetHero_ResponseFields.fields.first().fieldSets
+  override fun fieldSets(): List<FieldSet> = GetHero_ResponseFields.fields.first().fieldSets
 
   data class Data(
     val hero: Hero?

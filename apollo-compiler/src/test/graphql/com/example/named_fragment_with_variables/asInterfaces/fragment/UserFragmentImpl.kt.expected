@@ -5,10 +5,10 @@
 //
 package com.example.named_fragment_with_variables.fragment
 
+import com.apollographql.apollo3.api.Adapter
+import com.apollographql.apollo3.api.CustomScalarAdapters
+import com.apollographql.apollo3.api.FieldSet
 import com.apollographql.apollo3.api.Fragment
-import com.apollographql.apollo3.api.ResponseAdapter
-import com.apollographql.apollo3.api.ResponseAdapterCache
-import com.apollographql.apollo3.api.ResponseField
 import com.apollographql.apollo3.api.json.JsonWriter
 import com.apollographql.apollo3.api.obj
 import com.example.named_fragment_with_variables.fragment.adapter.UserFragmentImpl_VariablesAdapter
@@ -20,15 +20,15 @@ import kotlin.collections.List
 data class UserFragmentImpl(
   val size: Int
 ) : Fragment<UserFragmentImpl.Data> {
-  override fun serializeVariables(writer: JsonWriter, responseAdapterCache: ResponseAdapterCache) {
-    UserFragmentImpl_VariablesAdapter.toResponse(writer, responseAdapterCache, this)
+  override fun serializeVariables(writer: JsonWriter, customScalarAdapters: CustomScalarAdapters) {
+    UserFragmentImpl_VariablesAdapter.toJson(writer, customScalarAdapters, this)
   }
 
-  override fun adapter(): ResponseAdapter<Data> {
+  override fun adapter(): Adapter<Data> {
     return UserFragmentImpl_ResponseAdapter.Data.obj()
   }
 
-  override fun responseFields(): List<ResponseField.FieldSet> =
+  override fun fieldSets(): List<FieldSet> =
       UserFragmentImpl_ResponseFields.fields.first().fieldSets
 
   data class Data(

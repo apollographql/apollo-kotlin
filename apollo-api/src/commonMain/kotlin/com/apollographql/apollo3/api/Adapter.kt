@@ -30,11 +30,11 @@ interface Adapter<T> {
   /**
    * Deserializes the given Json to the expected Kotlin type.
    *
-   * @param [responseAdapterCache] configured instance of GraphQL operation response adapters cache. A global empty instance will be used by default.
+   * @param [customScalarAdapters] configured instance of GraphQL operation response adapters cache. A global empty instance will be used by default.
    *
    * Example:
    * ```
-   * override fun fromJson(reader: JsonReader, responseAdapterCache: ResponseAdapterCache): Hero {
+   * override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters): Hero {
    *   var name: String? = null
    *   var homeworld: String? = null
    *
@@ -51,21 +51,21 @@ interface Adapter<T> {
    *
    * Alternatively, you can use the the built-in [AnyAdapter] to simplify the parsing loop:
    * ```
-   * override fun fromJson(reader: JsonReader, responseAdapterCache: ResponseAdapterCache): Hero {
+   * override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters): Hero {
    *   val map = AnyAdapter.fromResponse(reader) as Map<String, String>
    *
    *   return Hero(map["name"]!!, map["homeworld"]!!)
    * }
    * ```
    */
-  fun fromJson(reader: JsonReader, responseAdapterCache: CustomScalarAdpaters): T
+  fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters): T
 
   /**
    * Serializes a Kotlin type into its equivalent Json representation.
    *
    * Example:
    * ```
-   * override fun toJson(writer: JsonWriter, responseAdapterCache: ResponseAdapterCache, value: Hero) {
+   * override fun toJson(writer: JsonWriter, customScalarAdapters: CustomScalarAdapters, value: Hero) {
    *   writer.name("name")
    *   writer.value(value.name)
    *   writer.name("homeworld")
@@ -75,56 +75,56 @@ interface Adapter<T> {
    *
    * Alternatively, you can use the the built-in [AnyAdapter]:
    * ```
-   * override fun toJson(writer: JsonWriter, responseAdapterCache: ResponseAdapterCache, value: Hero) {
+   * override fun toJson(writer: JsonWriter, customScalarAdapters: CustomScalarAdapters, value: Hero) {
    *   val map = mapOf("name" to value.name, "homeworld" to value.homeworld)
-   *   AnyAdapter.toJson(writer, responseAdapterCache, map)
+   *   AnyAdapter.toJson(writer, customScalarAdapters, map)
    * }
    * ```
    */
-  fun toJson(writer: JsonWriter, responseAdapterCache: CustomScalarAdpaters, value: T)
+  fun toJson(writer: JsonWriter, customScalarAdapters: CustomScalarAdapters, value: T)
 }
 
 fun <T> Adapter<T>.toJson(
     value: T,
-    responseAdapterCache: CustomScalarAdpaters = CustomScalarAdpaters.DEFAULT,
+    customScalarAdapters: CustomScalarAdapters = CustomScalarAdapters.Empty,
     indent: String = "",
 ): String {
   val buffer = Buffer()
 
-  toJson(buffer, value, responseAdapterCache, indent)
+  toJson(buffer, value, customScalarAdapters, indent)
   return buffer.readUtf8()
 }
 
 fun <T> Adapter<T>.toJson(
     sink: BufferedSink,
     value: T,
-    responseAdapterCache: CustomScalarAdpaters = CustomScalarAdpaters.DEFAULT,
+    customScalarAdapters: CustomScalarAdapters = CustomScalarAdapters.Empty,
     indent: String = "",
 ) {
   val writer = BufferedSinkJsonWriter(sink)
   writer.indent = indent
 
-  toJson(writer, responseAdapterCache, value)
+  toJson(writer, customScalarAdapters, value)
 }
 
 fun <T> Adapter<T>.fromJson(
     bufferedSource: BufferedSource,
-    responseAdapterCache: CustomScalarAdpaters = CustomScalarAdpaters.DEFAULT,
+    customScalarAdapters: CustomScalarAdapters = CustomScalarAdapters.Empty,
 ): T {
-  return fromJson(BufferedSourceJsonReader(bufferedSource), responseAdapterCache)
+  return fromJson(BufferedSourceJsonReader(bufferedSource), customScalarAdapters)
 }
 
 fun <T> Adapter<T>.fromJson(
     string: String,
-    responseAdapterCache: CustomScalarAdpaters = CustomScalarAdpaters.DEFAULT,
+    customScalarAdapters: CustomScalarAdapters = CustomScalarAdapters.Empty,
 ): T {
-  return fromJson(Buffer().apply { writeUtf8(string) }, responseAdapterCache)
+  return fromJson(Buffer().apply { writeUtf8(string) }, customScalarAdapters)
 }
 
 fun <T, M : Map<String, Any?>> Adapter<T>.fromMap(
     map: M,
-    responseAdapterCache: CustomScalarAdpaters = CustomScalarAdpaters.DEFAULT,
+    customScalarAdapters: CustomScalarAdapters = CustomScalarAdapters.Empty,
 ): T {
-  return fromJson(MapJsonReader(map), responseAdapterCache)
+  return fromJson(MapJsonReader(map), customScalarAdapters)
 }
 

@@ -5,11 +5,11 @@
 //
 package com.example.mutation_create_review.adapter
 
-import com.apollographql.apollo3.api.IntResponseAdapter
+import com.apollographql.apollo3.api.Adapter
+import com.apollographql.apollo3.api.CustomScalarAdapters
+import com.apollographql.apollo3.api.IntAdapter
 import com.apollographql.apollo3.api.NullableStringResponseAdapter
-import com.apollographql.apollo3.api.ResponseAdapter
-import com.apollographql.apollo3.api.ResponseAdapterCache
-import com.apollographql.apollo3.api.StringResponseAdapter
+import com.apollographql.apollo3.api.StringAdapter
 import com.apollographql.apollo3.api.json.JsonReader
 import com.apollographql.apollo3.api.json.JsonWriter
 import com.apollographql.apollo3.api.list
@@ -24,16 +24,15 @@ import kotlin.String
 import kotlin.collections.List
 
 internal object CreateReviewForEpisode_ResponseAdapter {
-  object Data : ResponseAdapter<CreateReviewForEpisode.Data> {
+  object Data : Adapter<CreateReviewForEpisode.Data> {
     val RESPONSE_NAMES: List<String> = listOf("createReview")
 
-    override fun fromResponse(reader: JsonReader, responseAdapterCache: ResponseAdapterCache):
+    override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters):
         CreateReviewForEpisode.Data {
       var createReview: CreateReviewForEpisode.Data.CreateReview? = null
       while(true) {
         when (reader.selectName(RESPONSE_NAMES)) {
-          0 -> createReview = CreateReview.obj().nullable().fromResponse(reader,
-              responseAdapterCache)
+          0 -> createReview = CreateReview.obj().nullable().fromJson(reader, customScalarAdapters)
           else -> break
         }
       }
@@ -42,20 +41,20 @@ internal object CreateReviewForEpisode_ResponseAdapter {
       )
     }
 
-    override fun toResponse(
+    override fun toJson(
       writer: JsonWriter,
-      responseAdapterCache: ResponseAdapterCache,
+      customScalarAdapters: CustomScalarAdapters,
       value: CreateReviewForEpisode.Data
     ) {
       writer.name("createReview")
-      CreateReview.obj().nullable().toResponse(writer, responseAdapterCache, value.createReview)
+      CreateReview.obj().nullable().toJson(writer, customScalarAdapters, value.createReview)
     }
 
-    object CreateReview : ResponseAdapter<CreateReviewForEpisode.Data.CreateReview> {
+    object CreateReview : Adapter<CreateReviewForEpisode.Data.CreateReview> {
       val RESPONSE_NAMES: List<String> = listOf("stars", "commentary", "listOfListOfString",
           "listOfListOfEnum", "listOfListOfCustom", "listOfListOfObject")
 
-      override fun fromResponse(reader: JsonReader, responseAdapterCache: ResponseAdapterCache):
+      override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters):
           CreateReviewForEpisode.Data.CreateReview {
         var stars: Int? = null
         var commentary: String? = null
@@ -65,17 +64,16 @@ internal object CreateReviewForEpisode_ResponseAdapter {
         var listOfListOfObject: List<List<CreateReviewForEpisode.Data.CreateReview.ListOfListOfObject>>? = null
         while(true) {
           when (reader.selectName(RESPONSE_NAMES)) {
-            0 -> stars = IntResponseAdapter.fromResponse(reader, responseAdapterCache)
-            1 -> commentary = NullableStringResponseAdapter.fromResponse(reader,
-                responseAdapterCache)
-            2 -> listOfListOfString = StringResponseAdapter.list().list().nullable().fromResponse(reader,
-                responseAdapterCache)
-            3 -> listOfListOfEnum = Episode_ResponseAdapter.list().list().nullable().fromResponse(reader,
-                responseAdapterCache)
-            4 -> listOfListOfCustom = responseAdapterCache.responseAdapterFor<Date>(com.example.mutation_create_review.type.Types.Date).list().list().nullable().fromResponse(reader,
-                responseAdapterCache)
-            5 -> listOfListOfObject = ListOfListOfObject.obj().list().list().nullable().fromResponse(reader,
-                responseAdapterCache)
+            0 -> stars = IntAdapter.fromJson(reader, customScalarAdapters)
+            1 -> commentary = NullableStringResponseAdapter.fromJson(reader, customScalarAdapters)
+            2 -> listOfListOfString = StringAdapter.list().list().nullable().fromJson(reader,
+                customScalarAdapters)
+            3 -> listOfListOfEnum = Episode_ResponseAdapter.list().list().nullable().fromJson(reader,
+                customScalarAdapters)
+            4 -> listOfListOfCustom = customScalarAdapters.responseAdapterFor<Date>(com.example.mutation_create_review.type.Types.Date).list().list().nullable().fromJson(reader,
+                customScalarAdapters)
+            5 -> listOfListOfObject = ListOfListOfObject.obj().list().list().nullable().fromJson(reader,
+                customScalarAdapters)
             else -> break
           }
         }
@@ -89,39 +87,39 @@ internal object CreateReviewForEpisode_ResponseAdapter {
         )
       }
 
-      override fun toResponse(
+      override fun toJson(
         writer: JsonWriter,
-        responseAdapterCache: ResponseAdapterCache,
+        customScalarAdapters: CustomScalarAdapters,
         value: CreateReviewForEpisode.Data.CreateReview
       ) {
         writer.name("stars")
-        IntResponseAdapter.toResponse(writer, responseAdapterCache, value.stars)
+        IntAdapter.toJson(writer, customScalarAdapters, value.stars)
         writer.name("commentary")
-        NullableStringResponseAdapter.toResponse(writer, responseAdapterCache, value.commentary)
+        NullableStringResponseAdapter.toJson(writer, customScalarAdapters, value.commentary)
         writer.name("listOfListOfString")
-        StringResponseAdapter.list().list().nullable().toResponse(writer, responseAdapterCache,
+        StringAdapter.list().list().nullable().toJson(writer, customScalarAdapters,
             value.listOfListOfString)
         writer.name("listOfListOfEnum")
-        Episode_ResponseAdapter.list().list().nullable().toResponse(writer, responseAdapterCache,
+        Episode_ResponseAdapter.list().list().nullable().toJson(writer, customScalarAdapters,
             value.listOfListOfEnum)
         writer.name("listOfListOfCustom")
-        responseAdapterCache.responseAdapterFor<Date>(com.example.mutation_create_review.type.Types.Date).list().list().nullable().toResponse(writer,
-            responseAdapterCache, value.listOfListOfCustom)
+        customScalarAdapters.responseAdapterFor<Date>(com.example.mutation_create_review.type.Types.Date).list().list().nullable().toJson(writer,
+            customScalarAdapters, value.listOfListOfCustom)
         writer.name("listOfListOfObject")
-        ListOfListOfObject.obj().list().list().nullable().toResponse(writer, responseAdapterCache,
+        ListOfListOfObject.obj().list().list().nullable().toJson(writer, customScalarAdapters,
             value.listOfListOfObject)
       }
 
       object ListOfListOfObject :
-          ResponseAdapter<CreateReviewForEpisode.Data.CreateReview.ListOfListOfObject> {
+          Adapter<CreateReviewForEpisode.Data.CreateReview.ListOfListOfObject> {
         val RESPONSE_NAMES: List<String> = listOf("name")
 
-        override fun fromResponse(reader: JsonReader, responseAdapterCache: ResponseAdapterCache):
+        override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters):
             CreateReviewForEpisode.Data.CreateReview.ListOfListOfObject {
           var name: String? = null
           while(true) {
             when (reader.selectName(RESPONSE_NAMES)) {
-              0 -> name = StringResponseAdapter.fromResponse(reader, responseAdapterCache)
+              0 -> name = StringAdapter.fromJson(reader, customScalarAdapters)
               else -> break
             }
           }
@@ -130,13 +128,13 @@ internal object CreateReviewForEpisode_ResponseAdapter {
           )
         }
 
-        override fun toResponse(
+        override fun toJson(
           writer: JsonWriter,
-          responseAdapterCache: ResponseAdapterCache,
+          customScalarAdapters: CustomScalarAdapters,
           value: CreateReviewForEpisode.Data.CreateReview.ListOfListOfObject
         ) {
           writer.name("name")
-          StringResponseAdapter.toResponse(writer, responseAdapterCache, value.name)
+          StringAdapter.toJson(writer, customScalarAdapters, value.name)
         }
       }
     }

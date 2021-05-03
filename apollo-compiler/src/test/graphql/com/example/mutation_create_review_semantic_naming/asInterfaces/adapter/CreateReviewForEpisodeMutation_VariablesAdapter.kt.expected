@@ -5,8 +5,8 @@
 //
 package com.example.mutation_create_review_semantic_naming.adapter
 
-import com.apollographql.apollo3.api.ResponseAdapter
-import com.apollographql.apollo3.api.ResponseAdapterCache
+import com.apollographql.apollo3.api.Adapter
+import com.apollographql.apollo3.api.CustomScalarAdapters
 import com.apollographql.apollo3.api.json.JsonReader
 import com.apollographql.apollo3.api.json.JsonWriter
 import com.apollographql.apollo3.api.obj
@@ -15,19 +15,18 @@ import com.example.mutation_create_review_semantic_naming.type.adapter.Episode_R
 import com.example.mutation_create_review_semantic_naming.type.adapter.ReviewInput_InputAdapter
 import kotlin.IllegalStateException
 
-object CreateReviewForEpisodeMutation_VariablesAdapter :
-    ResponseAdapter<CreateReviewForEpisodeMutation> {
-  override fun fromResponse(reader: JsonReader, responseAdapterCache: ResponseAdapterCache):
+object CreateReviewForEpisodeMutation_VariablesAdapter : Adapter<CreateReviewForEpisodeMutation> {
+  override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters):
       CreateReviewForEpisodeMutation = throw
       IllegalStateException("Input type used in output position")
-  override fun toResponse(
+  override fun toJson(
     writer: JsonWriter,
-    responseAdapterCache: ResponseAdapterCache,
+    customScalarAdapters: CustomScalarAdapters,
     value: CreateReviewForEpisodeMutation
   ) {
     writer.name("ep")
-    Episode_ResponseAdapter.toResponse(writer, responseAdapterCache, value.ep)
+    Episode_ResponseAdapter.toJson(writer, customScalarAdapters, value.ep)
     writer.name("review")
-    ReviewInput_InputAdapter.obj().toResponse(writer, responseAdapterCache, value.review)
+    ReviewInput_InputAdapter.obj().toJson(writer, customScalarAdapters, value.review)
   }
 }

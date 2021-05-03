@@ -1,14 +1,11 @@
 package com.apollographql.apollo3.api
 
 /**
- * An abstraction for a field in a graphQL operation. Field can refer to:
- * - GraphQL
- * - Scalar Types,
- * - Objects
- * - List,
- * - etc.
+ * A [MergedField] represents a field potentially merged as in https://spec.graphql.org/draft/#sec-Field-Selection-Merging
  *
- * For a complete list of types that a Field object can refer to see [MergedField.Type] class.
+ * Because the merging depends on the actual type being received, a [MergedField] contains multiple possible [FieldSet] for the
+ * different concrete types
+ *
  */
 class MergedField(
     val type: Type,
@@ -19,7 +16,6 @@ class MergedField(
     val fieldSets: List<FieldSet> = emptyList(),
 ) {
 
-  class FieldSet(val typeCondition: String?, val mergedFields: Array<MergedField>)
   /**
    * Resolves field argument value by [name]. If argument represents a references to the variable, it will be resolved from
    * provided operation [variables] values.
