@@ -2,7 +2,7 @@ package com.apollographql.apollo3.internal
 
 import com.apollographql.apollo3.ApolloCall
 import com.apollographql.apollo3.ApolloQueryWatcher
-import com.apollographql.apollo3.api.ResponseAdapterCache
+import com.apollographql.apollo3.api.CustomScalarAdpaters
 import com.apollographql.apollo3.api.Operation
 import com.apollographql.apollo3.api.ApolloResponse
 import com.apollographql.apollo3.api.internal.ApolloLogger
@@ -23,7 +23,7 @@ import java.util.concurrent.atomic.AtomicReference
 class RealApolloQueryWatcher<D : Operation.Data>(
     private var activeCall: RealApolloCall<D>,
     val apolloStore: ApolloStore,
-    private val responseAdapterCache: ResponseAdapterCache,
+    private val responseAdapterCache: CustomScalarAdpaters,
     val logger: ApolloLogger,
     private val tracker: ApolloCallTracker,
     private var refetchResponseFetcher: ResponseFetcher

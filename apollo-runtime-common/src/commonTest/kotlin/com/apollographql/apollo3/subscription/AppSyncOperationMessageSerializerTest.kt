@@ -1,6 +1,6 @@
 package com.apollographql.apollo3.subscription
 
-import com.apollographql.apollo3.api.ResponseAdapterCache
+import com.apollographql.apollo3.api.CustomScalarAdpaters
 import com.apollographql.apollo3.api.internal.json.BufferedSourceJsonReader
 import com.apollographql.apollo3.api.internal.json.Utils.readRecursively
 import com.apollographql.apollo3.testing.MockSubscription
@@ -36,7 +36,7 @@ class AppSyncOperationMessageSerializerTest {
             queryDocument = "subscription{commentAdded{id  name}",
             name = "SomeSubscription"
         ),
-        responseAdapterCache = ResponseAdapterCache.DEFAULT,
+        responseAdapterCache = CustomScalarAdpaters.DEFAULT,
         autoPersistSubscription = false,
         sendSubscriptionDocument = true
     )

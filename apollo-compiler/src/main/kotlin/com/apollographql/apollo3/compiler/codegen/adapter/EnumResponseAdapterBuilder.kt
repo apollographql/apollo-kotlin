@@ -1,7 +1,7 @@
 package com.apollographql.apollo3.compiler.codegen.adapter
 
-import com.apollographql.apollo3.api.ResponseAdapter
-import com.apollographql.apollo3.api.ResponseAdapterCache
+import com.apollographql.apollo3.api.Adapter
+import com.apollographql.apollo3.api.CustomScalarAdpaters
 import com.apollographql.apollo3.api.json.JsonReader
 import com.apollographql.apollo3.api.json.JsonWriter
 import com.apollographql.apollo3.compiler.codegen.CgContext
@@ -52,7 +52,7 @@ class EnumResponseAdapterBuilder(
     val fromResponseFunSpec = FunSpec.builder(Identifier.fromResponse)
         .addModifiers(KModifier.OVERRIDE)
         .addParameter(Identifier.reader, JsonReader::class)
-        .addParameter(Identifier.responseAdapterCache, ResponseAdapterCache::class)
+        .addParameter(Identifier.responseAdapterCache, CustomScalarAdpaters::class)
         .returns(adaptedTypeName)
         .addCode(
             CodeBlock.builder()
@@ -75,7 +75,7 @@ class EnumResponseAdapterBuilder(
 
     return TypeSpec
         .objectBuilder(layout.enumResponseAdapterName(name))
-        .addSuperinterface(ResponseAdapter::class.asClassName().parameterizedBy(adaptedTypeName))
+        .addSuperinterface(Adapter::class.asClassName().parameterizedBy(adaptedTypeName))
         .addFunction(fromResponseFunSpec)
         .addFunction(toResponseFunSpec)
         .build()
@@ -85,5 +85,5 @@ class EnumResponseAdapterBuilder(
 internal fun toResponseFunSpecBuilder(typeName: TypeName) = FunSpec.builder(toResponse)
     .addModifiers(KModifier.OVERRIDE)
     .addParameter(name = writer, type = JsonWriter::class.asTypeName())
-    .addParameter(name = responseAdapterCache, type = ResponseAdapterCache::class)
+    .addParameter(name = responseAdapterCache, type = CustomScalarAdpaters::class)
     .addParameter(value, typeName)

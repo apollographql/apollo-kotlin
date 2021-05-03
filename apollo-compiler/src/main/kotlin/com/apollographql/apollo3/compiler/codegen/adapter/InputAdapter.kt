@@ -3,8 +3,8 @@
  */
 package com.apollographql.apollo3.compiler.codegen.adapter
 
-import com.apollographql.apollo3.api.ResponseAdapter
-import com.apollographql.apollo3.api.ResponseAdapterCache
+import com.apollographql.apollo3.api.Adapter
+import com.apollographql.apollo3.api.CustomScalarAdpaters
 import com.apollographql.apollo3.api.json.JsonReader
 import com.apollographql.apollo3.api.json.JsonWriter
 import com.apollographql.apollo3.compiler.codegen.CgContext
@@ -30,7 +30,7 @@ internal fun List<NamedType>.inputAdapterTypeSpec(
     adaptedTypeName: TypeName,
 ): TypeSpec {
   return TypeSpec.objectBuilder(adapterName)
-      .addSuperinterface(ResponseAdapter::class.asTypeName().parameterizedBy(adaptedTypeName))
+      .addSuperinterface(Adapter::class.asTypeName().parameterizedBy(adaptedTypeName))
       .addFunction(notImplementedFromResponseFunSpec(adaptedTypeName))
       .addFunction(writeToResponseFunSpec(context, adaptedTypeName))
       .build()
@@ -39,7 +39,7 @@ internal fun List<NamedType>.inputAdapterTypeSpec(
 private fun notImplementedFromResponseFunSpec(adaptedTypeName: TypeName) = FunSpec.builder("fromResponse")
     .addModifiers(KModifier.OVERRIDE)
     .addParameter(Identifier.reader, JsonReader::class)
-    .addParameter(responseAdapterCache, ResponseAdapterCache::class.asTypeName())
+    .addParameter(responseAdapterCache, CustomScalarAdpaters::class.asTypeName())
     .returns(adaptedTypeName)
     .addCode("throw %T(%S)", ClassName("kotlin", "IllegalStateException"), "Input type used in output position")
     .build()
@@ -52,7 +52,7 @@ private fun List<NamedType>.writeToResponseFunSpec(
   return FunSpec.builder(toResponse)
       .addModifiers(KModifier.OVERRIDE)
       .addParameter(writer, JsonWriter::class.asTypeName())
-      .addParameter(responseAdapterCache, ResponseAdapterCache::class)
+      .addParameter(responseAdapterCache, CustomScalarAdpaters::class)
       .addParameter(value, adaptedTypeName)
       .addCode(writeToResponseCodeBlock(context))
       .build()

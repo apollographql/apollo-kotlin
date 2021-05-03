@@ -1,6 +1,6 @@
 package com.apollographql.apollo3.subscription
 
-import com.apollographql.apollo3.api.ResponseAdapterCache
+import com.apollographql.apollo3.api.CustomScalarAdpaters
 import com.apollographql.apollo3.api.variables
 import com.apollographql.apollo3.api.internal.json.BufferedSourceJsonReader
 import com.apollographql.apollo3.api.internal.json.Utils.readRecursively
@@ -31,21 +31,21 @@ class ApolloOperationMessageSerializerTest {
     val regularQuery = OperationClientMessage.Start(
         subscriptionId = "subscription-id",
         subscription = subscription,
-        responseAdapterCache = ResponseAdapterCache.DEFAULT,
+        responseAdapterCache = CustomScalarAdpaters.DEFAULT,
         autoPersistSubscription = false,
         sendSubscriptionDocument = true
     )
     val persistedQueryWithoutDocument = OperationClientMessage.Start(
         subscriptionId = "subscription-id",
         subscription = subscription,
-        responseAdapterCache = ResponseAdapterCache.DEFAULT,
+        responseAdapterCache = CustomScalarAdpaters.DEFAULT,
         autoPersistSubscription = true,
         sendSubscriptionDocument = false
     )
     val persistedQueryWithDocument = OperationClientMessage.Start(
         subscriptionId = "subscription-id",
         subscription = subscription,
-        responseAdapterCache = ResponseAdapterCache.DEFAULT,
+        responseAdapterCache = CustomScalarAdpaters.DEFAULT,
         autoPersistSubscription = true,
         sendSubscriptionDocument = true
     )
@@ -53,7 +53,7 @@ class ApolloOperationMessageSerializerTest {
         "id" to regularQuery.subscriptionId,
         "type" to "start",
         "payload" to mapOf(
-            "variables" to subscription.variables(ResponseAdapterCache.DEFAULT).valueMap,
+            "variables" to subscription.variables(CustomScalarAdpaters.DEFAULT).valueMap,
             "operationName" to subscription.name(),
             "query" to subscription.document()
         )
@@ -62,7 +62,7 @@ class ApolloOperationMessageSerializerTest {
         "id" to persistedQueryWithoutDocument.subscriptionId,
         "type" to "start",
         "payload" to mapOf(
-            "variables" to subscription.variables(ResponseAdapterCache.DEFAULT).valueMap,
+            "variables" to subscription.variables(CustomScalarAdpaters.DEFAULT).valueMap,
             "operationName" to subscription.name(),
             "extensions" to mapOf(
                 "persistedQuery" to mapOf(
@@ -76,7 +76,7 @@ class ApolloOperationMessageSerializerTest {
         "id" to persistedQueryWithDocument.subscriptionId,
         "type" to "start",
         "payload" to mapOf(
-            "variables" to subscription.variables(ResponseAdapterCache.DEFAULT).valueMap,
+            "variables" to subscription.variables(CustomScalarAdpaters.DEFAULT).valueMap,
             "operationName" to subscription.name(),
             "query" to subscription.document(),
             "extensions" to mapOf(

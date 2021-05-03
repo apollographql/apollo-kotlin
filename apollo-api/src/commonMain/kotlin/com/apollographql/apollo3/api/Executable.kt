@@ -6,11 +6,11 @@ import com.apollographql.apollo3.api.json.JsonWriter
 import okio.Buffer
 
 interface Executable<D: Executable.Data> {
-  fun serializeVariables(writer: JsonWriter, responseAdapterCache: ResponseAdapterCache)
+  fun serializeVariables(writer: JsonWriter, responseAdapterCache: CustomScalarAdpaters)
 
-  fun adapter(): ResponseAdapter<D>
+  fun adapter(): Adapter<D>
 
-  fun responseFields(): List<ResponseField.FieldSet>
+  fun responseFields(): List<MergedField.FieldSet>
 
   /**
    * Marker interface for generated models of this fragment
@@ -27,7 +27,7 @@ interface Executable<D: Executable.Data> {
  * Serializes variables to a Json Map
  */
 @Suppress("UNCHECKED_CAST")
-fun <D : Operation.Data> Operation<D>.variables(responseAdapterCache: ResponseAdapterCache): Executable.Variables {
+fun <D : Operation.Data> Operation<D>.variables(responseAdapterCache: CustomScalarAdpaters): Executable.Variables {
   val valueMap = MapJsonWriter().apply {
     beginObject()
     serializeVariables(this, responseAdapterCache)
@@ -40,7 +40,7 @@ fun <D : Operation.Data> Operation<D>.variables(responseAdapterCache: ResponseAd
  * Serializes variables to a Json Map
  */
 @Suppress("UNCHECKED_CAST")
-fun <D : Fragment.Data> Fragment<D>.variables(responseAdapterCache: ResponseAdapterCache): Executable.Variables {
+fun <D : Fragment.Data> Fragment<D>.variables(responseAdapterCache: CustomScalarAdpaters): Executable.Variables {
   val valueMap = MapJsonWriter().apply {
     beginObject()
     serializeVariables(this, responseAdapterCache)
@@ -52,7 +52,7 @@ fun <D : Fragment.Data> Fragment<D>.variables(responseAdapterCache: ResponseAdap
 /**
  * Serializes variables to a Json String
  */
-fun <D : Operation.Data> Operation<D>.variablesJson(responseAdapterCache: ResponseAdapterCache): String {
+fun <D : Operation.Data> Operation<D>.variablesJson(responseAdapterCache: CustomScalarAdpaters): String {
   val buffer = Buffer()
   BufferedSinkJsonWriter(buffer).apply {
     beginObject()
@@ -65,7 +65,7 @@ fun <D : Operation.Data> Operation<D>.variablesJson(responseAdapterCache: Respon
 /**
  * Serializes variables to a Json String
  */
-fun <D : Fragment.Data> Fragment<D>.variablesJson(responseAdapterCache: ResponseAdapterCache): String {
+fun <D : Fragment.Data> Fragment<D>.variablesJson(responseAdapterCache: CustomScalarAdpaters): String {
   val buffer = Buffer()
   BufferedSinkJsonWriter(buffer).apply {
     beginObject()

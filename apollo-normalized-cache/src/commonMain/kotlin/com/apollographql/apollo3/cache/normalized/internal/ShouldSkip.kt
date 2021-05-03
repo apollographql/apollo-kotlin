@@ -1,8 +1,8 @@
 package com.apollographql.apollo3.cache.normalized.internal
 
-import com.apollographql.apollo3.api.ResponseField
+import com.apollographql.apollo3.api.MergedField
 
-fun ResponseField.shouldSkip(variableValues: Map<String, Any?>): Boolean {
+fun MergedField.shouldSkip(variableValues: Map<String, Any?>): Boolean {
   val variables = variableValues.filter {
     (it.value as? Boolean) == true
   }.map { it.key }

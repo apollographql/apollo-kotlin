@@ -3,7 +3,7 @@ package com.apollographql.apollo3.internal.interceptor
 import com.apollographql.apollo3.ApolloCall
 import com.apollographql.apollo3.api.Operation
 import com.apollographql.apollo3.api.ApolloResponse
-import com.apollographql.apollo3.api.ResponseAdapterCache
+import com.apollographql.apollo3.api.CustomScalarAdpaters
 import com.apollographql.apollo3.api.internal.ApolloLogger
 import com.apollographql.apollo3.cache.ApolloCacheHeaders
 import com.apollographql.apollo3.cache.normalized.ApolloStore
@@ -33,7 +33,7 @@ class ApolloCacheInterceptor<D : Operation.Data>(
     private val dispatcher: Executor,
     val logger: ApolloLogger,
     private val responseCallback: AtomicReference<ApolloCall.Callback<D>?>,
-    private val responseAdapterCache: ResponseAdapterCache
+    private val responseAdapterCache: CustomScalarAdpaters
 ) : ApolloInterceptor {
 
   @Volatile

@@ -295,7 +295,7 @@ class GraphQLCompiler {
        */
       val generateFragmentImplementations: Boolean,
       /**
-       * Whether to generate the [com.apollographql.apollo3.api.ResponseField]s. [com.apollographql.apollo3.api.ResponseField]s are
+       * Whether to generate the [com.apollographql.apollo3.api.MergedField]s. [com.apollographql.apollo3.api.MergedField]s are
        * used to read/write from the normalized cache. Disable this option if you don't use the normalized cache to save some bytecode
        */
       val generateResponseFields: Boolean,

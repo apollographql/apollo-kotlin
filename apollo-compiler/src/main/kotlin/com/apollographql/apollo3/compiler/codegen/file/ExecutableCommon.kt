@@ -1,8 +1,8 @@
 package com.apollographql.apollo3.compiler.codegen.file
 
-import com.apollographql.apollo3.api.ResponseAdapter
-import com.apollographql.apollo3.api.ResponseAdapterCache
-import com.apollographql.apollo3.api.ResponseField
+import com.apollographql.apollo3.api.Adapter
+import com.apollographql.apollo3.api.CustomScalarAdpaters
+import com.apollographql.apollo3.api.MergedField
 import com.apollographql.apollo3.api.json.JsonWriter
 import com.apollographql.apollo3.compiler.codegen.Identifier.responseAdapterCache
 import com.apollographql.apollo3.compiler.codegen.Identifier.serializeVariables
@@ -37,7 +37,7 @@ fun serializeVariablesFunSpec(
   return FunSpec.builder(serializeVariables)
       .addModifiers(KModifier.OVERRIDE)
       .addParameter(writer, JsonWriter::class)
-      .addParameter(responseAdapterCache, ResponseAdapterCache::class.asTypeName())
+      .addParameter(responseAdapterCache, CustomScalarAdpaters::class.asTypeName())
       .addCode(body)
       .build()
 }
@@ -48,7 +48,7 @@ fun adapterFunSpec(
 ): FunSpec {
   return FunSpec.builder("adapter")
       .addModifiers(KModifier.OVERRIDE)
-      .returns(ResponseAdapter::class.asClassName().parameterizedBy(adaptedTypeName))
+      .returns(Adapter::class.asClassName().parameterizedBy(adaptedTypeName))
       .addCode(CodeBlock.of("return·%T", adapterTypeName).obj(false))
       .build()
 }
@@ -58,7 +58,7 @@ fun responseFieldsFunSpec(typeName: TypeName): FunSpec {
       .addModifiers(KModifier.OVERRIDE)
       .returns(
           List::class.asClassName().parameterizedBy(
-              ResponseField.FieldSet::class.asClassName(),
+              MergedField.FieldSet::class.asClassName(),
           )
       )
       .addCode("return %T.fields.first().fieldSets\n", typeName)

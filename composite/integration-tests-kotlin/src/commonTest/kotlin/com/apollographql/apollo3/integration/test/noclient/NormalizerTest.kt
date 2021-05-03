@@ -1,7 +1,7 @@
 package com.apollographql.apollo3.integration.test.noclient
 
 import com.apollographql.apollo3.api.Operation
-import com.apollographql.apollo3.api.ResponseAdapterCache
+import com.apollographql.apollo3.api.CustomScalarAdpaters
 import com.apollographql.apollo3.api.parseResponseBody
 import com.apollographql.apollo3.cache.CacheHeaders
 import com.apollographql.apollo3.cache.normalized.CacheKey.Companion.from
@@ -247,7 +247,7 @@ class NormalizerTest {
   companion object {
     internal fun <D : Operation.Data> records(operation: Operation<D>, name: String): Map<String, Record> {
       val response = operation.parseResponseBody(readResource(name))
-      return operation.normalize(data = response.data!!, ResponseAdapterCache.DEFAULT, IdFieldCacheKeyResolver)
+      return operation.normalize(data = response.data!!, CustomScalarAdpaters.DEFAULT, IdFieldCacheKeyResolver)
     }
 
     private const val TEST_FIELD_KEY_JEDI = "hero({\"episode\":\"JEDI\"})"

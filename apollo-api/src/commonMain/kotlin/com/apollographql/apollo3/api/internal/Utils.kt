@@ -1,6 +1,5 @@
 package com.apollographql.apollo3.api.internal
 
-import com.apollographql.apollo3.api.ResponseField
 import kotlin.jvm.JvmName
 import kotlin.jvm.JvmStatic
 

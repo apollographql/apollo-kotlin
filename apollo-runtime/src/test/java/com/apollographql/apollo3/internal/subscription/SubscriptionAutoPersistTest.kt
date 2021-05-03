@@ -1,10 +1,9 @@
 package com.apollographql.apollo3.internal.subscription
 
-import com.apollographql.apollo3.api.ResponseAdapterCache
-import com.apollographql.apollo3.api.Operation
-import com.apollographql.apollo3.api.ResponseField
+import com.apollographql.apollo3.api.CustomScalarAdpaters
+import com.apollographql.apollo3.api.MergedField
 import com.apollographql.apollo3.api.Subscription
-import com.apollographql.apollo3.api.ResponseAdapter
+import com.apollographql.apollo3.api.Adapter
 import com.apollographql.apollo3.api.json.JsonWriter
 import com.apollographql.apollo3.cache.normalized.CacheKeyResolver
 import com.apollographql.apollo3.subscription.ApolloOperationMessageSerializer
@@ -31,7 +30,7 @@ class SubscriptionAutoPersistTest {
   fun setUp() {
     subscriptionTransportFactory = MockSubscriptionTransportFactory()
     subscriptionManager = RealSubscriptionManager(
-        ResponseAdapterCache.DEFAULT,
+        CustomScalarAdpaters.DEFAULT,
         subscriptionTransportFactory!!,
         SubscriptionConnectionParamsProvider.Const(SubscriptionConnectionParams()),
         MockExecutor(),
@@ -155,10 +154,10 @@ class SubscriptionAutoPersistTest {
       return "subscription{\ncommentAdded(repoFullName:\"repo\"){\n__typename\nid\ncontent\n}\n}"
     }
 
-    override fun serializeVariables(writer: JsonWriter, responseAdapterCache: ResponseAdapterCache) {
+    override fun serializeVariables(writer: JsonWriter, responseAdapterCache: CustomScalarAdpaters) {
     }
 
-    override fun adapter(): ResponseAdapter<Subscription.Data> {
+    override fun adapter(): Adapter<Subscription.Data> {
       throw UnsupportedOperationException()
     }
 
@@ -170,7 +169,7 @@ class SubscriptionAutoPersistTest {
       return operationId
     }
 
-    override fun responseFields(): List<ResponseField.FieldSet> {
+    override fun responseFields(): List<MergedField.FieldSet> {
       return emptyList()
     }
   }

@@ -1,7 +1,7 @@
 package com.apollographql.apollo3.compiler.codegen.adapter
 
-import com.apollographql.apollo3.api.ResponseAdapter
-import com.apollographql.apollo3.api.ResponseAdapterCache
+import com.apollographql.apollo3.api.Adapter
+import com.apollographql.apollo3.api.CustomScalarAdpaters
 import com.apollographql.apollo3.api.json.JsonReader
 import com.apollographql.apollo3.api.json.JsonWriter
 import com.apollographql.apollo3.compiler.codegen.Identifier
@@ -68,7 +68,7 @@ class PolymorphicFieldResponseAdapterBuilder(
   private fun typeSpec(): TypeSpec {
     return TypeSpec.objectBuilder(adapterName)
         .addSuperinterface(
-            ResponseAdapter::class.asTypeName().parameterizedBy(adaptedClassName)
+            Adapter::class.asTypeName().parameterizedBy(adaptedClassName)
         )
         .addProperty(responseNamesPropertySpec())
         .addFunction(readFromResponseFunSpec())
@@ -86,7 +86,7 @@ class PolymorphicFieldResponseAdapterBuilder(
     return FunSpec.builder(fromResponse)
         .returns(adaptedClassName)
         .addParameter(reader, JsonReader::class)
-        .addParameter(responseAdapterCache, ResponseAdapterCache::class)
+        .addParameter(responseAdapterCache, CustomScalarAdpaters::class)
         .addModifiers(KModifier.OVERRIDE)
         .addCode(readFromResponseCodeBlock())
         .build()
@@ -125,7 +125,7 @@ class PolymorphicFieldResponseAdapterBuilder(
     return FunSpec.builder(toResponse)
         .addModifiers(KModifier.OVERRIDE)
         .addParameter(writer, JsonWriter::class.asTypeName())
-        .addParameter(responseAdapterCache, ResponseAdapterCache::class)
+        .addParameter(responseAdapterCache, CustomScalarAdpaters::class)
         .addParameter(value, adaptedClassName)
         .addCode(writeToResponseCodeBlock())
         .build()

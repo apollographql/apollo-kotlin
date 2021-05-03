@@ -1,7 +1,7 @@
 package com.apollographql.apollo3.internal
 
 import com.apollographql.apollo3.ApolloPrefetch
-import com.apollographql.apollo3.api.ResponseAdapterCache
+import com.apollographql.apollo3.api.CustomScalarAdpaters
 import com.apollographql.apollo3.api.Operation
 import com.apollographql.apollo3.api.cache.http.HttpCachePolicy
 import com.apollographql.apollo3.api.internal.ApolloLogger
@@ -29,7 +29,7 @@ class RealApolloPrefetch(
     val operation: Operation<*>,
     val serverUrl: HttpUrl,
     val httpCallFactory: Call.Factory,
-    val responseAdapterCache: ResponseAdapterCache,
+    val responseAdapterCache: CustomScalarAdpaters,
     val dispatcher: Executor,
     val logger: ApolloLogger,
     val tracker: ApolloCallTracker

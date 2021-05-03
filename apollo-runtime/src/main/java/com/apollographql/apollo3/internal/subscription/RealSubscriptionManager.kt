@@ -1,7 +1,7 @@
 package com.apollographql.apollo3.internal.subscription
 
 import com.apollographql.apollo3.api.ApolloResponse
-import com.apollographql.apollo3.api.ResponseAdapterCache
+import com.apollographql.apollo3.api.CustomScalarAdpaters
 import com.apollographql.apollo3.api.Subscription
 import com.apollographql.apollo3.api.internal.ResponseBodyParser
 import com.apollographql.apollo3.cache.normalized.CacheKeyResolver
@@ -19,7 +19,7 @@ import java.util.concurrent.CopyOnWriteArrayList
 import java.util.concurrent.Executor
 import java.util.concurrent.TimeUnit
 
-class RealSubscriptionManager(private val responseAdapterCache: ResponseAdapterCache,
+class RealSubscriptionManager(private val responseAdapterCache: CustomScalarAdpaters,
                               transportFactory: SubscriptionTransport.Factory,
                               private val connectionParams: SubscriptionConnectionParamsProvider,
                               private val dispatcher: Executor,

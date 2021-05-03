@@ -3,7 +3,7 @@ package com.apollographql.apollo3.api.internal
 import com.apollographql.apollo3.api.ApolloResponse
 import com.apollographql.apollo3.api.Error
 import com.apollographql.apollo3.api.Operation
-import com.apollographql.apollo3.api.ResponseAdapterCache
+import com.apollographql.apollo3.api.CustomScalarAdpaters
 import com.apollographql.apollo3.api.internal.json.BufferedSourceJsonReader
 import com.apollographql.apollo3.api.internal.json.MapJsonReader
 import com.apollographql.apollo3.api.internal.json.Utils.readRecursively
@@ -22,7 +22,7 @@ object ResponseBodyParser {
   fun <D : Operation.Data> parse(
       jsonReader: JsonReader,
       operation: Operation<D>,
-      responseAdapterCache: ResponseAdapterCache
+      responseAdapterCache: CustomScalarAdpaters
   ): ApolloResponse<D> {
     jsonReader.beginObject()
 
@@ -31,7 +31,7 @@ object ResponseBodyParser {
     var extensions: Map<String, Any?>? = null
     while (jsonReader.hasNext()) {
       when (jsonReader.nextName()) {
-        "data" -> data = operation.adapter().nullable().fromResponse(jsonReader, responseAdapterCache)
+        "data" -> data = operation.adapter().nullable().fromJson(jsonReader, responseAdapterCache)
         "errors" -> errors = jsonReader.readErrors()
         "extensions" -> extensions = jsonReader.readRecursively() as Map<String, Any?>
         else -> jsonReader.skipValue()
@@ -52,7 +52,7 @@ object ResponseBodyParser {
   fun <D : Operation.Data> parse(
       source: BufferedSource,
       operation: Operation<D>,
-      responseAdapterCache: ResponseAdapterCache
+      responseAdapterCache: CustomScalarAdpaters
   ): ApolloResponse<D> {
     return BufferedSourceJsonReader(source).use { jsonReader ->
       parse(jsonReader, operation, responseAdapterCache)
@@ -62,7 +62,7 @@ object ResponseBodyParser {
   fun <D : Operation.Data> parse(
       payload: Map<String, Any?>,
       operation: Operation<D>,
-      responseAdapterCache: ResponseAdapterCache,
+      responseAdapterCache: CustomScalarAdpaters,
   ): ApolloResponse<D> {
     return parse(
         MapJsonReader(payload),

@@ -1,8 +1,8 @@
 package com.apollographql.apollo3.integration.test.runtime
 
-import com.apollographql.apollo3.adapters.LocalDateResponseAdapter
-import com.apollographql.apollo3.api.ResponseAdapter
-import com.apollographql.apollo3.api.ResponseAdapterCache
+import com.apollographql.apollo3.adapters.LocalDateAdapter
+import com.apollographql.apollo3.api.Adapter
+import com.apollographql.apollo3.api.CustomScalarAdpaters
 import com.apollographql.apollo3.api.composeResponseBody
 import com.apollographql.apollo3.api.fromJson
 import com.apollographql.apollo3.api.internal.json.BufferedSinkJsonWriter
@@ -85,10 +85,10 @@ class AdapterparseResponseBodyTest {
     assertEquals(errors?.get(0)?.customAttributes?.size, 0)
   }
 
-  private fun <T> ResponseAdapter<T>.toJsonString(t: T): String {
+  private fun <T> Adapter<T>.toJsonString(t: T): String {
     val buffer = Buffer()
     BufferedSinkJsonWriter(buffer).use {
-      toResponse(it, ResponseAdapterCache.DEFAULT, t)
+      toJson(it, CustomScalarAdpaters.DEFAULT, t)
     }
     return buffer.readUtf8()
   }
@@ -99,12 +99,12 @@ class AdapterparseResponseBodyTest {
 
     val response = AllFilmsQuery().parseResponseBody(
         readResource("HttpCacheTestAllFilms.json"),
-        ResponseAdapterCache(mapOf(Types.Date.name to LocalDateResponseAdapter))
+        CustomScalarAdpaters(mapOf(Types.Date.name to LocalDateAdapter))
     )
     assertFalse(response.hasErrors())
     assertEquals(response.data!!.allFilms?.films?.size, 6)
     assertEquals(
-        response.data!!.allFilms?.films?.map { LocalDateResponseAdapter.toJsonString(it!!.releaseDate) },
+        response.data!!.allFilms?.films?.map { LocalDateAdapter.toJsonString(it!!.releaseDate) },
         listOf("1977-05-25", "1980-05-17", "1983-05-25", "1999-05-19", "2002-05-16", "2005-05-19").map { "\"$it\"" }
     )
   }
@@ -160,7 +160,7 @@ class AdapterparseResponseBodyTest {
   fun parseErrorOperationRawResponse() {
     val response = EpisodeHeroNameQuery(Episode.EMPIRE).parseResponseBody(
         readResource("/ResponseErrorWithData.json"),
-        ResponseAdapterCache.DEFAULT
+        CustomScalarAdpaters.DEFAULT
     )
     val data = response.data
     val errors = response.errors

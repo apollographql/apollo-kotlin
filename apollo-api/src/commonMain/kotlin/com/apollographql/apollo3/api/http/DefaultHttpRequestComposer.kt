@@ -1,11 +1,11 @@
 package com.apollographql.apollo3.api.http
 
-import com.apollographql.apollo3.api.AnyResponseAdapter
+import com.apollographql.apollo3.api.AnyAdapter
 import com.apollographql.apollo3.api.ApolloRequest
 import com.apollographql.apollo3.api.ClientContext
 import com.apollographql.apollo3.api.ExecutionContext
 import com.apollographql.apollo3.api.Operation
-import com.apollographql.apollo3.api.ResponseAdapterCache
+import com.apollographql.apollo3.api.CustomScalarAdpaters
 import com.apollographql.apollo3.api.Upload
 import com.apollographql.apollo3.api.internal.json.FileUploadAwareJsonWriter
 import com.apollographql.apollo3.api.internal.json.buildJsonByteString
@@ -31,7 +31,7 @@ class DefaultHttpRequestComposer(private val serverUrl: String, private val defa
     val method = params?.method ?: HttpMethod.Post
     val autoPersistQueries = params?.autoPersistQueries ?: false
     val sendDocument = params?.sendDocument ?: true
-    val responseAdapterCache = apolloRequest.executionContext[ResponseAdapterCache] ?: error("Cannot find a ResponseAdapterCache")
+    val responseAdapterCache = apolloRequest.executionContext[CustomScalarAdpaters] ?: error("Cannot find a ResponseAdapterCache")
 
     val headers = mutableMapOf(
         HEADER_APOLLO_OPERATION_ID to operation.id(),
@@ -73,7 +73,7 @@ class DefaultHttpRequestComposer(private val serverUrl: String, private val defa
     private fun <D : Operation.Data> buildGetUrl(
         serverUrl: String,
         operation: Operation<D>,
-        responseAdapterCache: ResponseAdapterCache,
+        responseAdapterCache: CustomScalarAdpaters,
         autoPersistQueries: Boolean,
         sendDocument: Boolean,
     ): String {
@@ -85,7 +85,7 @@ class DefaultHttpRequestComposer(private val serverUrl: String, private val defa
     private fun <D : Operation.Data> composePostParams(
         writer: JsonWriter,
         operation: Operation<D>,
-        responseAdapterCache: ResponseAdapterCache,
+        responseAdapterCache: CustomScalarAdpaters,
         autoPersistQueries: Boolean,
         query: String?,
     ): Map<String, Upload> {
@@ -128,7 +128,7 @@ class DefaultHttpRequestComposer(private val serverUrl: String, private val defa
      */
     private fun <D : Operation.Data> composeGetParams(
         operation: Operation<D>,
-        responseAdapterCache: ResponseAdapterCache,
+        responseAdapterCache: CustomScalarAdpaters,
         autoPersistQueries: Boolean,
         sendDocument: Boolean,
     ): Map<String, String> {
@@ -189,7 +189,7 @@ class DefaultHttpRequestComposer(private val serverUrl: String, private val defa
 
     fun <D : Operation.Data> buildPostBody(
         operation: Operation<D>,
-        responseAdapterCache: ResponseAdapterCache,
+        responseAdapterCache: CustomScalarAdpaters,
         autoPersistQueries: Boolean,
         query: String?,
     ): HttpBody {
@@ -260,7 +260,7 @@ class DefaultHttpRequestComposer(private val serverUrl: String, private val defa
     }
 
     private fun buildUploadMap(uploads: Map<String, Upload>) = buildJsonByteString {
-      AnyResponseAdapter.toResponse(this, ResponseAdapterCache.DEFAULT, uploads.entries.mapIndexed { index, entry ->
+      AnyAdapter.toJson(this, CustomScalarAdpaters.DEFAULT, uploads.entries.mapIndexed { index, entry ->
         index.toString() to listOf(entry.key)
       }.toMap())
     }
@@ -268,7 +268,7 @@ class DefaultHttpRequestComposer(private val serverUrl: String, private val defa
 
     fun <D : Operation.Data> buildParamsMap(
         operation: Operation<D>,
-        responseAdapterCache: ResponseAdapterCache,
+        responseAdapterCache: CustomScalarAdpaters,
         autoPersistQueries: Boolean,
         sendDocument: Boolean,
     ): ByteString = buildJsonByteString {

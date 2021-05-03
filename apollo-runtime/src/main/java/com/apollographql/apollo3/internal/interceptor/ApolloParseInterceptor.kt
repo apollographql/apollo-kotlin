@@ -2,7 +2,7 @@ package com.apollographql.apollo3.internal.interceptor
 
 import com.apollographql.apollo3.CacheInfo
 import com.apollographql.apollo3.api.Operation
-import com.apollographql.apollo3.api.ResponseAdapterCache
+import com.apollographql.apollo3.api.CustomScalarAdpaters
 import com.apollographql.apollo3.api.cache.http.HttpCache
 import com.apollographql.apollo3.api.internal.ApolloLogger
 import com.apollographql.apollo3.api.parseResponseBody
@@ -27,7 +27,7 @@ import java.util.concurrent.Executor
  * then parse the returned response.
  */
 class ApolloParseInterceptor(private val httpCache: HttpCache?,
-                             private val responseAdapterCache: ResponseAdapterCache,
+                             private val responseAdapterCache: CustomScalarAdpaters,
                              private val logger: ApolloLogger) : ApolloInterceptor {
   @Volatile
   var disposed = false

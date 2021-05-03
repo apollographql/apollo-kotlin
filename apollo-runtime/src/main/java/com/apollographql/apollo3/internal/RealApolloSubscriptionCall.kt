@@ -2,7 +2,7 @@ package com.apollographql.apollo3.internal
 
 import com.apollographql.apollo3.ApolloSubscriptionCall
 import com.apollographql.apollo3.api.ApolloResponse
-import com.apollographql.apollo3.api.ResponseAdapterCache
+import com.apollographql.apollo3.api.CustomScalarAdpaters
 import com.apollographql.apollo3.api.Subscription
 import com.apollographql.apollo3.api.internal.ApolloLogger
 import com.apollographql.apollo3.cache.CacheHeaders
@@ -26,7 +26,7 @@ class RealApolloSubscriptionCall<D : Subscription.Data>(
     private val cachePolicy: ApolloSubscriptionCall.CachePolicy,
     private val dispatcher: Executor,
     private val logger: ApolloLogger,
-    private val responseAdapterCache: ResponseAdapterCache
+    private val responseAdapterCache: CustomScalarAdpaters
 ) : ApolloSubscriptionCall<D> {
   private val state = AtomicReference(CallState.IDLE)
   private var subscriptionCallback: SubscriptionManagerCallback<D>? = null

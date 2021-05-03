@@ -2,8 +2,8 @@ package com.apollographql.apollo3.integration
 
 import com.apollographql.apollo3.api.Executable
 import com.apollographql.apollo3.api.Operation
-import com.apollographql.apollo3.api.ResponseAdapterCache
-import com.apollographql.apollo3.api.ResponseField
+import com.apollographql.apollo3.api.CustomScalarAdpaters
+import com.apollographql.apollo3.api.MergedField
 import com.apollographql.apollo3.api.composeResponseBody
 import com.apollographql.apollo3.cache.normalized.CacheKey
 import com.apollographql.apollo3.cache.normalized.CacheKeyResolver
@@ -18,7 +18,7 @@ import kotlin.test.assertEquals
 fun <D : Operation.Data> MockServer.enqueue(
     operation: Operation<D>,
     data: D,
-    responseAdapterCache: ResponseAdapterCache = ResponseAdapterCache.DEFAULT
+    responseAdapterCache: CustomScalarAdpaters = CustomScalarAdpaters.DEFAULT
 ) {
   val json = operation.composeResponseBody(data, responseAdapterCache = responseAdapterCache)
   enqueue(json)
@@ -37,7 +37,7 @@ fun readTestFixture(name: String) = readFile("../integration-tests/testFixtures/
 fun readResource(name: String) = readFile("../integration-tests/testFixtures/resources/$name")
 
 object IdFieldCacheKeyResolver : CacheKeyResolver() {
-  override fun fromFieldRecordSet(field: ResponseField, variables: Executable.Variables, recordSet: Map<String, Any?>): CacheKey {
+  override fun fromFieldRecordSet(field: MergedField, variables: Executable.Variables, recordSet: Map<String, Any?>): CacheKey {
     val id = recordSet["id"]
     return if (id != null) {
       formatCacheKey(id.toString())
@@ -46,7 +46,7 @@ object IdFieldCacheKeyResolver : CacheKeyResolver() {
     }
   }
 
-  override fun fromFieldArguments(field: ResponseField, variables: Executable.Variables): CacheKey {
+  override fun fromFieldArguments(field: MergedField, variables: Executable.Variables): CacheKey {
     val id = field.resolveArgument("id", variables)
     return if (id != null) {
       formatCacheKey(id.toString())

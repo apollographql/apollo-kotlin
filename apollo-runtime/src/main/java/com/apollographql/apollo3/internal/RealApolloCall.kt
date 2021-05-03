@@ -3,7 +3,7 @@ package com.apollographql.apollo3.internal
 import com.apollographql.apollo3.ApolloCall
 import com.apollographql.apollo3.ApolloMutationCall
 import com.apollographql.apollo3.ApolloQueryCall
-import com.apollographql.apollo3.api.ResponseAdapterCache
+import com.apollographql.apollo3.api.CustomScalarAdpaters
 import com.apollographql.apollo3.api.Mutation
 import com.apollographql.apollo3.api.Operation
 import com.apollographql.apollo3.api.Query
@@ -48,7 +48,7 @@ class RealApolloCall<D : Operation.Data> internal constructor(builder: Builder<D
   val httpCallFactory: Call.Factory?
   val httpCache: HttpCache?
   val httpCachePolicy: HttpCachePolicy.Policy?
-  val responseAdapterCache: ResponseAdapterCache
+  val responseAdapterCache: CustomScalarAdpaters
   val apolloStore: ApolloStore?
   val cacheHeaders: CacheHeaders?
   val requestHeaders: RequestHeaders
@@ -341,7 +341,7 @@ class RealApolloCall<D : Operation.Data> internal constructor(builder: Builder<D
     var httpCallFactory: Call.Factory? = null
     var httpCache: HttpCache? = null
     var httpCachePolicy: HttpCachePolicy.Policy? = null
-    var responseAdapterCache: ResponseAdapterCache? = null
+    var responseAdapterCache: CustomScalarAdpaters? = null
     var apolloStore: ApolloStore? = null
     var responseFetcher: ResponseFetcher? = null
     var cacheHeaders: CacheHeaders? = null
@@ -380,7 +380,7 @@ class RealApolloCall<D : Operation.Data> internal constructor(builder: Builder<D
       return this
     }
 
-    fun scalarTypeAdapters(responseAdapterCache: ResponseAdapterCache?): Builder<D> {
+    fun scalarTypeAdapters(responseAdapterCache: CustomScalarAdpaters?): Builder<D> {
       this.responseAdapterCache = responseAdapterCache
       return this
     }

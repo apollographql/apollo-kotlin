@@ -1,10 +1,9 @@
 package com.apollographql.apollo3.internal
 
 import com.apollographql.apollo3.ApolloClient
-import com.apollographql.apollo3.api.ResponseAdapterCache
-import com.apollographql.apollo3.api.Operation
+import com.apollographql.apollo3.api.CustomScalarAdpaters
 import com.apollographql.apollo3.api.Query
-import com.apollographql.apollo3.api.ResponseField
+import com.apollographql.apollo3.api.MergedField
 import com.apollographql.apollo3.api.cache.http.HttpCachePolicy
 import com.apollographql.apollo3.api.cache.http.HttpCachePolicy.FetchStrategy
 import com.apollographql.apollo3.api.json.JsonWriter
@@ -22,7 +21,7 @@ class ResponseFetcherTest {
       return ""
     }
 
-    override fun serializeVariables(writer: JsonWriter, responseAdapterCache: ResponseAdapterCache) {
+    override fun serializeVariables(writer: JsonWriter, responseAdapterCache: CustomScalarAdpaters) {
       writer.beginObject()
       writer.endObject()
     }
@@ -37,7 +36,7 @@ class ResponseFetcherTest {
       return ""
     }
 
-    override fun responseFields(): List<ResponseField.FieldSet> {
+    override fun responseFields(): List<MergedField.FieldSet> {
       return emptyList()
     }
   }

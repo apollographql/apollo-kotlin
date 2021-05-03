@@ -3,7 +3,7 @@ package com.apollographql.apollo3.cache.normalized.internal
 import com.apollographql.apollo3.api.ApolloInternal
 import com.apollographql.apollo3.api.Fragment
 import com.apollographql.apollo3.api.Operation
-import com.apollographql.apollo3.api.ResponseAdapterCache
+import com.apollographql.apollo3.api.CustomScalarAdpaters
 import com.apollographql.apollo3.api.internal.ApolloLogger
 import com.apollographql.apollo3.cache.CacheHeaders
 import com.apollographql.apollo3.cache.normalized.ApolloStore
@@ -115,7 +115,7 @@ class RealApolloStore(
   override fun <D : Operation.Data> normalize(
       operation: Operation<D>,
       data: D,
-      responseAdapterCache: ResponseAdapterCache,
+      responseAdapterCache: CustomScalarAdpaters,
   ): Map<String, Record> {
     return operation.normalize(
         data,
@@ -126,7 +126,7 @@ class RealApolloStore(
 
   override suspend fun <D : Operation.Data> readOperation(
       operation: Operation<D>,
-      responseAdapterCache: ResponseAdapterCache,
+      responseAdapterCache: CustomScalarAdpaters,
       cacheHeaders: CacheHeaders,
       mode: ReadMode,
   ): D? {
@@ -148,7 +148,7 @@ class RealApolloStore(
   override suspend fun <D : Fragment.Data> readFragment(
       fragment: Fragment<D>,
       cacheKey: CacheKey,
-      responseAdapterCache: ResponseAdapterCache,
+      responseAdapterCache: CustomScalarAdpaters,
       cacheHeaders: CacheHeaders,
   ): D? {
     // Capture a local reference so as not to freeze "this"
@@ -169,7 +169,7 @@ class RealApolloStore(
   override suspend fun <D : Operation.Data> writeOperation(
       operation: Operation<D>,
       operationData: D,
-      responseAdapterCache: ResponseAdapterCache,
+      responseAdapterCache: CustomScalarAdpaters,
       cacheHeaders: CacheHeaders,
       publish: Boolean,
   ): Set<String> {
@@ -186,7 +186,7 @@ class RealApolloStore(
       fragment: Fragment<D>,
       cacheKey: CacheKey,
       fragmentData: D,
-      responseAdapterCache: ResponseAdapterCache,
+      responseAdapterCache: CustomScalarAdpaters,
       cacheHeaders: CacheHeaders,
       publish: Boolean,
   ): Set<String> {
@@ -220,7 +220,7 @@ class RealApolloStore(
       operationData: D,
       cacheHeaders: CacheHeaders,
       publish: Boolean,
-      responseAdapterCache: ResponseAdapterCache,
+      responseAdapterCache: CustomScalarAdpaters,
   ): Pair<Set<Record>, Set<String>> {
 
     // Capture a local reference so as not to freeze "this"
@@ -246,7 +246,7 @@ class RealApolloStore(
       operation: Operation<D>,
       operationData: D,
       mutationId: Uuid,
-      responseAdapterCache: ResponseAdapterCache,
+      responseAdapterCache: CustomScalarAdpaters,
       publish: Boolean,
   ): Set<String> {
 

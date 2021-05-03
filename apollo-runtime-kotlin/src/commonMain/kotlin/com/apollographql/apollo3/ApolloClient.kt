@@ -6,8 +6,8 @@ import com.apollographql.apollo3.api.ExecutionContext
 import com.apollographql.apollo3.api.Mutation
 import com.apollographql.apollo3.api.Operation
 import com.apollographql.apollo3.api.Query
-import com.apollographql.apollo3.api.ResponseAdapter
-import com.apollographql.apollo3.api.ResponseAdapterCache
+import com.apollographql.apollo3.api.Adapter
+import com.apollographql.apollo3.api.CustomScalarAdpaters
 import com.apollographql.apollo3.api.Subscription
 import com.apollographql.apollo3.api.http.HttpRequestComposerParams
 import com.apollographql.apollo3.api.http.HttpMethod
@@ -30,7 +30,7 @@ import kotlinx.coroutines.flow.single
 data class ApolloClient internal constructor(
     private val networkTransport: NetworkTransport,
     private val subscriptionNetworkTransport: NetworkTransport,
-    private val responseAdapterCache: ResponseAdapterCache,
+    private val responseAdapterCache: CustomScalarAdpaters,
     private val interceptors: List<ApolloRequestInterceptor>,
     private val executionContext: ExecutionContext,
 ) {
@@ -87,9 +87,9 @@ data class ApolloClient internal constructor(
     }
   }
 
-  fun <T> withCustomScalarAdapter(graphqlName: String, customScalarAdapter: ResponseAdapter<T>): ApolloClient {
+  fun <T> withCustomScalarAdapter(graphqlName: String, customScalarAdapter: Adapter<T>): ApolloClient {
     return copy(
-        responseAdapterCache = ResponseAdapterCache(
+        responseAdapterCache = CustomScalarAdpaters(
             responseAdapterCache.customScalarResponseAdapters + mapOf(graphqlName to customScalarAdapter)
         )
     )
@@ -114,7 +114,7 @@ fun ApolloClient(networkTransport: NetworkTransport): ApolloClient {
   return ApolloClient(
       networkTransport = networkTransport,
       subscriptionNetworkTransport = networkTransport,
-      responseAdapterCache = ResponseAdapterCache.DEFAULT,
+      responseAdapterCache = CustomScalarAdpaters.DEFAULT,
       interceptors = emptyList(),
       executionContext = ExecutionContext.Empty
   )

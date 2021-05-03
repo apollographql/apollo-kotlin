@@ -8,11 +8,11 @@ import com.apollographql.apollo3.api.json.JsonWriter
  * See https://github.com/graphql/graphql-spec/issues/204
  */
 interface Fragment<D: Fragment.Data>: Executable<D> {
-  override fun serializeVariables(writer: JsonWriter, responseAdapterCache: ResponseAdapterCache)
+  override fun serializeVariables(writer: JsonWriter, responseAdapterCache: CustomScalarAdpaters)
 
-  override fun adapter(): ResponseAdapter<D>
+  override fun adapter(): Adapter<D>
 
-  override fun responseFields(): List<ResponseField.FieldSet>
+  override fun responseFields(): List<MergedField.FieldSet>
 
   /**
    * Marker interface for generated models of this fragment

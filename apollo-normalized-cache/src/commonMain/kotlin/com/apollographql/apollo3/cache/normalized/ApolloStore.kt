@@ -4,7 +4,7 @@ import com.apollographql.apollo3.api.ClientContext
 import com.apollographql.apollo3.api.ExecutionContext
 import com.apollographql.apollo3.api.Fragment
 import com.apollographql.apollo3.api.Operation
-import com.apollographql.apollo3.api.ResponseAdapterCache
+import com.apollographql.apollo3.api.CustomScalarAdpaters
 import com.apollographql.apollo3.cache.CacheHeaders
 import com.apollographql.apollo3.cache.normalized.ApolloStore.RecordChangeSubscriber
 import com.apollographql.apollo3.cache.normalized.internal.NoOpApolloStore
@@ -45,7 +45,7 @@ abstract class ApolloStore {
    */
   abstract suspend fun <D : Operation.Data> readOperation(
       operation: Operation<D>,
-      responseAdapterCache: ResponseAdapterCache,
+      responseAdapterCache: CustomScalarAdpaters,
       cacheHeaders: CacheHeaders = CacheHeaders.NONE,
       mode: ReadMode = ReadMode.BATCH,
   ): D?
@@ -61,7 +61,7 @@ abstract class ApolloStore {
   abstract suspend fun <D : Fragment.Data> readFragment(
       fragment: Fragment<D>,
       cacheKey: CacheKey,
-      responseAdapterCache: ResponseAdapterCache = ResponseAdapterCache.DEFAULT,
+      responseAdapterCache: CustomScalarAdpaters = CustomScalarAdpaters.DEFAULT,
       cacheHeaders: CacheHeaders = CacheHeaders.NONE,
   ): D?
 
@@ -78,7 +78,7 @@ abstract class ApolloStore {
   abstract suspend fun <D : Operation.Data> writeOperation(
       operation: Operation<D>,
       operationData: D,
-      responseAdapterCache: ResponseAdapterCache = ResponseAdapterCache.DEFAULT,
+      responseAdapterCache: CustomScalarAdpaters = CustomScalarAdpaters.DEFAULT,
       cacheHeaders: CacheHeaders = CacheHeaders.NONE,
       publish: Boolean = true,
   ): Set<String>
@@ -98,7 +98,7 @@ abstract class ApolloStore {
       fragment: Fragment<D>,
       cacheKey: CacheKey,
       fragmentData: D,
-      responseAdapterCache: ResponseAdapterCache = ResponseAdapterCache.DEFAULT,
+      responseAdapterCache: CustomScalarAdpaters = CustomScalarAdpaters.DEFAULT,
       cacheHeaders: CacheHeaders = CacheHeaders.NONE,
       publish: Boolean = true,
   ): Set<String>
@@ -115,7 +115,7 @@ abstract class ApolloStore {
       operation: Operation<D>,
       operationData: D,
       mutationId: Uuid,
-      responseAdapterCache: ResponseAdapterCache = ResponseAdapterCache.DEFAULT,
+      responseAdapterCache: CustomScalarAdpaters = CustomScalarAdpaters.DEFAULT,
       publish: Boolean = true,
   ): Set<String>
 
@@ -162,7 +162,7 @@ abstract class ApolloStore {
   abstract fun <D : Operation.Data> normalize(
       operation: Operation<D>,
       data: D,
-      responseAdapterCache: ResponseAdapterCache
+      responseAdapterCache: CustomScalarAdpaters
   ): Map<String, Record>
 
   /**

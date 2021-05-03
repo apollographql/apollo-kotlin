@@ -3,8 +3,8 @@ package com.apollographql.apollo3
 import com.apollographql.apollo3.Utils.immediateExecutor
 import com.apollographql.apollo3.Utils.immediateExecutorService
 import com.apollographql.apollo3.Utils.readFileToString
-import com.apollographql.apollo3.api.ResponseAdapter
-import com.apollographql.apollo3.api.ResponseAdapterCache
+import com.apollographql.apollo3.api.Adapter
+import com.apollographql.apollo3.api.CustomScalarAdpaters
 import com.apollographql.apollo3.api.cache.http.HttpCache
 import com.apollographql.apollo3.api.cache.http.HttpCachePolicy
 import com.apollographql.apollo3.api.json.JsonReader
@@ -56,14 +56,14 @@ class HttpCacheTest {
 
   @Before
   fun setUp() {
-    val dateCustomScalarAdapter: ResponseAdapter<Date> = object : ResponseAdapter<Date> {
+    val dateCustomScalarAdapter: Adapter<Date> = object : Adapter<Date> {
       private val DATE_FORMAT = SimpleDateFormat("yyyy-MM-dd", Locale.US)
 
-      override fun fromResponse(reader: JsonReader, responseAdapterCache: ResponseAdapterCache): Date {
+      override fun fromJson(reader: JsonReader, responseAdapterCache: CustomScalarAdpaters): Date {
         return DATE_FORMAT.parse(reader.nextString())
       }
 
-      override fun toResponse(writer: JsonWriter, responseAdapterCache: ResponseAdapterCache, value: Date) {
+      override fun toJson(writer: JsonWriter, responseAdapterCache: CustomScalarAdpaters, value: Date) {
         writer.value(DATE_FORMAT.format(value))
       }
     }

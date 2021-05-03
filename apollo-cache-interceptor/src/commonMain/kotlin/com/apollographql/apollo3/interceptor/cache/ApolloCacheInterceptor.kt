@@ -4,7 +4,7 @@ import com.apollographql.apollo3.api.ApolloRequest
 import com.apollographql.apollo3.api.ApolloResponse
 import com.apollographql.apollo3.api.Operation
 import com.apollographql.apollo3.api.Query
-import com.apollographql.apollo3.api.ResponseAdapterCache
+import com.apollographql.apollo3.api.CustomScalarAdpaters
 import com.apollographql.apollo3.cache.CacheHeaders
 import com.apollographql.apollo3.cache.normalized.ApolloStore
 import com.apollographql.apollo3.cache.normalized.Platform
@@ -27,7 +27,7 @@ class ApolloCacheInterceptor(private val store: ApolloStore) : ApolloRequestInte
     val fetchPolicy = request.executionContext[FetchPolicyContext]?.fetchPolicy ?: defaultFetchPolicy
     val refetchPolicy = request.executionContext[RefetchPolicyContext]?.refetchPolicy
     val optimisticUpdates = request.executionContext[OptimisticUpdates]?.data
-    val responseAdapterCache = request.executionContext[ResponseAdapterCache]!!
+    val responseAdapterCache = request.executionContext[CustomScalarAdpaters]!!
 
     return flow {
       var result = kotlin.runCatching {
@@ -78,7 +78,7 @@ class ApolloCacheInterceptor(private val store: ApolloStore) : ApolloRequestInte
       fetchPolicy: FetchPolicy,
       optimisticUpdates: D?,
   ): ApolloResponse<D> {
-    val responseAdapterCache = request.executionContext[ResponseAdapterCache]!!
+    val responseAdapterCache = request.executionContext[CustomScalarAdpaters]!!
 
     if (optimisticUpdates != null) {
       store.writeOptimisticUpdates(
@@ -119,7 +119,7 @@ class ApolloCacheInterceptor(private val store: ApolloStore) : ApolloRequestInte
       chain: ApolloInterceptorChain,
       fetchPolicy: FetchPolicy,
   ): ApolloResponse<D> {
-    val responseAdapterCache = request.executionContext[ResponseAdapterCache]!!
+    val responseAdapterCache = request.executionContext[CustomScalarAdpaters]!!
 
     when (fetchPolicy) {
       FetchPolicy.CacheFirst -> {
@@ -192,7 +192,7 @@ class ApolloCacheInterceptor(private val store: ApolloStore) : ApolloRequestInte
 
   private suspend fun <D : Operation.Data> readFromCache(
       request: ApolloRequest<D>,
-      responseAdapterCache: ResponseAdapterCache,
+      responseAdapterCache: CustomScalarAdpaters,
   ): ApolloResponse<D> {
     val operation = request.operation
 

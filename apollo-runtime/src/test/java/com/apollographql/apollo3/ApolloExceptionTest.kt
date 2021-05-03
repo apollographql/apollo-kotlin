@@ -1,9 +1,8 @@
 package com.apollographql.apollo3
 
-import com.apollographql.apollo3.api.ResponseAdapterCache
-import com.apollographql.apollo3.api.Operation
+import com.apollographql.apollo3.api.CustomScalarAdpaters
 import com.apollographql.apollo3.api.Query
-import com.apollographql.apollo3.api.ResponseField
+import com.apollographql.apollo3.api.MergedField
 import com.apollographql.apollo3.api.json.JsonEncodingException
 import com.apollographql.apollo3.api.json.JsonWriter
 import com.apollographql.apollo3.exception.ApolloHttpException
@@ -34,7 +33,7 @@ class ApolloExceptionTest {
       return ""
     }
 
-    override fun serializeVariables(writer: JsonWriter, responseAdapterCache: ResponseAdapterCache) {
+    override fun serializeVariables(writer: JsonWriter, responseAdapterCache: CustomScalarAdpaters) {
     }
 
     override fun adapter() = throw UnsupportedOperationException()
@@ -47,7 +46,7 @@ class ApolloExceptionTest {
       return ""
     }
 
-    override fun responseFields(): List<ResponseField.FieldSet> {
+    override fun responseFields(): List<MergedField.FieldSet> {
       return emptyList()
     }
   }

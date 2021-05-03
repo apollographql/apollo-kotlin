@@ -1,11 +1,10 @@
 package com.apollographql.apollo3.testing
 
-import com.apollographql.apollo3.api.ResponseAdapterCache
-import com.apollographql.apollo3.api.Operation
-import com.apollographql.apollo3.api.ResponseField
+import com.apollographql.apollo3.api.CustomScalarAdpaters
+import com.apollographql.apollo3.api.MergedField
 import com.apollographql.apollo3.api.Subscription
-import com.apollographql.apollo3.api.AnyResponseAdapter
-import com.apollographql.apollo3.api.ResponseAdapter
+import com.apollographql.apollo3.api.AnyAdapter
+import com.apollographql.apollo3.api.Adapter
 import com.apollographql.apollo3.api.json.JsonReader
 import com.apollographql.apollo3.api.json.JsonWriter
 import com.apollographql.apollo3.api.nullable
@@ -19,16 +18,16 @@ class MockSubscription(
 
   override fun document(): String = queryDocument
 
-  override fun serializeVariables(writer: JsonWriter, responseAdapterCache: ResponseAdapterCache) {
+  override fun serializeVariables(writer: JsonWriter, responseAdapterCache: CustomScalarAdpaters) {
     variables.forEach {
       writer.name(it.key)
-      AnyResponseAdapter.nullable().toResponse(writer, responseAdapterCache, it.value)
+      AnyAdapter.nullable().toJson(writer, responseAdapterCache, it.value)
     }
   }
 
-  override fun adapter(): ResponseAdapter<Data> {
-    return object : ResponseAdapter<Data> {
-      override fun fromResponse(reader: JsonReader, responseAdapterCache: ResponseAdapterCache): Data {
+  override fun adapter(): Adapter<Data> {
+    return object : Adapter<Data> {
+      override fun fromJson(reader: JsonReader, responseAdapterCache: CustomScalarAdpaters): Data {
         reader.beginObject()
         reader.nextName()
         return Data(
@@ -38,7 +37,7 @@ class MockSubscription(
         }
       }
 
-      override fun toResponse(writer: JsonWriter, responseAdapterCache: ResponseAdapterCache, value: Data) {
+      override fun toJson(writer: JsonWriter, responseAdapterCache: CustomScalarAdpaters, value: Data) {
         TODO("Not yet implemented")
       }
     }
@@ -50,7 +49,7 @@ class MockSubscription(
 
   data class Data(val name: String) : Subscription.Data
 
-  override fun responseFields(): List<ResponseField.FieldSet> {
+  override fun responseFields(): List<MergedField.FieldSet> {
     return emptyList()
   }
 }

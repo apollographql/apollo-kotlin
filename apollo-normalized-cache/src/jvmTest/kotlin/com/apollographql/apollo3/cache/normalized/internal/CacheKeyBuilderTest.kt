@@ -1,7 +1,7 @@
 package com.apollographql.apollo3.cache.normalized.internal
 
 import com.apollographql.apollo3.api.Executable
-import com.apollographql.apollo3.api.ResponseField
+import com.apollographql.apollo3.api.MergedField
 import com.apollographql.apollo3.api.Variable
 import com.google.common.truth.Truth
 import org.junit.Ignore
@@ -120,8 +120,8 @@ class CacheKeyBuilderTest {
 
   @Test
   fun testFieldWithNonPrimitiveValue() {
-    val field = ResponseField(
-        type = ResponseField.Type.Named.Other("String"),
+    val field = MergedField(
+        type = MergedField.Type.Named.Other("String"),
         fieldName = "hero",
         arguments = mapOf<String, Any?>("episode" to Episode.JEDI)
     )
@@ -217,9 +217,9 @@ class CacheKeyBuilderTest {
     Truth.assertThat(cacheKeyBuilder.build(field, variables)).isEqualTo("hero({\"episode\":null,\"nested\":{\"bar\":null,\"foo\":{\"string\":null,\"int\":null,\"long\":null,\"double\":null,\"number\":null,\"boolean\":null,\"custom\":null,\"object\":null,\"listNull\":null,\"listWithNulls\":[null,null,null,null,null,null,null,null,null],\"null\":null}}})")
   }
 
-  private fun createResponseField(responseName: String, fieldName: String, arguments: Map<String, Any?> = emptyMap()): ResponseField {
-    return ResponseField(
-        type = ResponseField.Type.Named.Other("String"),
+  private fun createResponseField(responseName: String, fieldName: String, arguments: Map<String, Any?> = emptyMap()): MergedField {
+    return MergedField(
+        type = MergedField.Type.Named.Other("String"),
         fieldName = fieldName,
         responseName = responseName,
         arguments = arguments

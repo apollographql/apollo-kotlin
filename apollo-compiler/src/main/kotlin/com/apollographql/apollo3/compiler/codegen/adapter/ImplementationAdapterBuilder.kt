@@ -1,6 +1,6 @@
 package com.apollographql.apollo3.compiler.codegen.adapter
 
-import com.apollographql.apollo3.api.ResponseAdapterCache
+import com.apollographql.apollo3.api.CustomScalarAdpaters
 import com.apollographql.apollo3.api.json.JsonReader
 import com.apollographql.apollo3.api.json.JsonWriter
 import com.apollographql.apollo3.compiler.codegen.Identifier
@@ -46,7 +46,7 @@ class ImplementationAdapterBuilder(
     return FunSpec.builder(Identifier.fromResponse)
         .returns(adaptedClassName)
         .addParameter(Identifier.reader, JsonReader::class)
-        .addParameter(Identifier.responseAdapterCache, ResponseAdapterCache::class)
+        .addParameter(Identifier.responseAdapterCache, CustomScalarAdpaters::class)
         .addParameter(Identifier.typename, String::class)
         .addCode(readFromResponseCodeBlock(model, context, true))
         .build()
@@ -55,7 +55,7 @@ class ImplementationAdapterBuilder(
   private fun writeToResponseFunSpec(): FunSpec {
     return FunSpec.builder(Identifier.toResponse)
         .addParameter(Identifier.writer, JsonWriter::class.asTypeName())
-        .addParameter(Identifier.responseAdapterCache, ResponseAdapterCache::class)
+        .addParameter(Identifier.responseAdapterCache, CustomScalarAdpaters::class)
         .addParameter(Identifier.value, adaptedClassName)
         .addCode(writeToResponseCodeBlock(model, context))
         .build()

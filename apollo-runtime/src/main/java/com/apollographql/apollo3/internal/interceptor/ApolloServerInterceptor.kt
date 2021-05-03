@@ -3,7 +3,7 @@ package com.apollographql.apollo3.internal.interceptor
 import com.apollographql.apollo3.api.ApolloRequest
 import com.apollographql.apollo3.api.Operation
 import com.apollographql.apollo3.api.Query
-import com.apollographql.apollo3.api.ResponseAdapterCache
+import com.apollographql.apollo3.api.CustomScalarAdpaters
 import com.apollographql.apollo3.api.cache.http.HttpCache
 import com.apollographql.apollo3.api.cache.http.HttpCachePolicy
 import com.apollographql.apollo3.api.http.DefaultHttpRequestComposer
@@ -45,7 +45,7 @@ class ApolloServerInterceptor(
     private val httpCallFactory: Call.Factory,
     private val cachePolicy: HttpCachePolicy.Policy?,
     val prefetch: Boolean,
-    val responseAdapterCache: ResponseAdapterCache,
+    val responseAdapterCache: CustomScalarAdpaters,
     val logger: ApolloLogger,
 ) : ApolloInterceptor {
   var httpCallRef = AtomicReference<Call?>()
@@ -196,7 +196,7 @@ class ApolloServerInterceptor(
     const val JSON_CONTENT_TYPE = "application/json"
 
     @Throws(IOException::class)
-    fun cacheKey(operation: Operation<*>, responseAdapterCache: ResponseAdapterCache): String {
+    fun cacheKey(operation: Operation<*>, responseAdapterCache: CustomScalarAdpaters): String {
       return DefaultHttpRequestComposer.buildParamsMap(
           operation = operation,
           autoPersistQueries = true,
@@ -208,7 +208,7 @@ class ApolloServerInterceptor(
     @Throws(IOException::class)
     fun httpGetUrl(
         serverUrl: HttpUrl, operation: Operation<*>,
-        responseAdapterCache: ResponseAdapterCache?, writeQueryDocument: Boolean,
+        responseAdapterCache: CustomScalarAdpaters?, writeQueryDocument: Boolean,
         autoPersistQueries: Boolean,
     ): HttpUrl {
       val urlBuilder = serverUrl.newBuilder()
@@ -228,7 +228,7 @@ class ApolloServerInterceptor(
     fun addVariablesUrlQueryParameter(
         urlBuilder: HttpUrl.Builder,
         operation: Operation<*>,
-        responseAdapterCache: ResponseAdapterCache?,
+        responseAdapterCache: CustomScalarAdpaters?,
     ) {
       val buffer = Buffer()
       val jsonWriter = BufferedSinkJsonWriter(buffer)

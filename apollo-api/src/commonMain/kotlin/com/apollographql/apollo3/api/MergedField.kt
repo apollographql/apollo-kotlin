@@ -8,9 +8,9 @@ package com.apollographql.apollo3.api
  * - List,
  * - etc.
  *
- * For a complete list of types that a Field object can refer to see [ResponseField.Type] class.
+ * For a complete list of types that a Field object can refer to see [MergedField.Type] class.
  */
-class ResponseField(
+class MergedField(
     val type: Type,
     val fieldName: String,
     val responseName: String = fieldName,
@@ -19,7 +19,7 @@ class ResponseField(
     val fieldSets: List<FieldSet> = emptyList(),
 ) {
 
-  class FieldSet(val typeCondition: String?, val responseFields: Array<ResponseField>)
+  class FieldSet(val typeCondition: String?, val mergedFields: Array<MergedField>)
   /**
    * Resolves field argument value by [name]. If argument represents a references to the variable, it will be resolved from
    * provided operation [variables] values.
@@ -60,10 +60,10 @@ class ResponseField(
 
   companion object {
     /**
-     * A pre-computed [ResponseField] to be used from generated code as an optimization
+     * A pre-computed [MergedField] to be used from generated code as an optimization
      * It shouldn't be used directly
      */
-    val Typename = ResponseField(
+    val Typename = MergedField(
         type = Type.NotNull(Type.Named.Other("String")),
         responseName = "__typename",
         fieldName = "__typename",
@@ -74,5 +74,5 @@ class ResponseField(
   }
 }
 
-fun ResponseField.Type.notNull() = ResponseField.Type.NotNull(this)
-fun ResponseField.Type.list() = ResponseField.Type.List(this)
+fun MergedField.Type.notNull() = MergedField.Type.NotNull(this)
+fun MergedField.Type.list() = MergedField.Type.List(this)

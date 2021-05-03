@@ -2,7 +2,7 @@ package com.apollographql.apollo3.integration.test.normalized
 
 import com.apollographql.apollo3.ApolloClient
 import com.apollographql.apollo3.api.ApolloRequest
-import com.apollographql.apollo3.api.AnyResponseAdapter
+import com.apollographql.apollo3.api.AnyAdapter
 import com.apollographql.apollo3.cache.normalized.ApolloStore
 import com.apollographql.apollo3.cache.normalized.MemoryCacheFactory
 import com.apollographql.apollo3.integration.IdFieldCacheKeyResolver
@@ -31,7 +31,7 @@ class JsonScalarTest {
     mockServer = MockServer()
     apolloClient = ApolloClient(mockServer.url())
         .withStore(store)
-        .withCustomScalarAdapter(Types.Json.name, AnyResponseAdapter)
+        .withCustomScalarAdapter(Types.Json.name, AnyAdapter)
   }
 
   // see https://github.com/apollographql/apollo-android/issues/2854

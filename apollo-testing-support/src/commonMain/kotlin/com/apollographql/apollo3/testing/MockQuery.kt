@@ -1,10 +1,9 @@
 package com.apollographql.apollo3.testing
 
-import com.apollographql.apollo3.api.ResponseAdapterCache
-import com.apollographql.apollo3.api.Operation
+import com.apollographql.apollo3.api.CustomScalarAdpaters
 import com.apollographql.apollo3.api.Query
-import com.apollographql.apollo3.api.ResponseField
-import com.apollographql.apollo3.api.ResponseAdapter
+import com.apollographql.apollo3.api.MergedField
+import com.apollographql.apollo3.api.Adapter
 import com.apollographql.apollo3.api.json.JsonReader
 import com.apollographql.apollo3.api.json.JsonWriter
 
@@ -13,12 +12,12 @@ class MockQuery : Query<MockQuery.Data> {
 
   override fun document(): String = "query MockQuery { name }"
 
-  override fun serializeVariables(writer: JsonWriter, responseAdapterCache: ResponseAdapterCache) {
+  override fun serializeVariables(writer: JsonWriter, responseAdapterCache: CustomScalarAdpaters) {
   }
 
-  override fun adapter(): ResponseAdapter<Data> {
-    return object : ResponseAdapter<Data> {
-      override fun fromResponse(reader: JsonReader, responseAdapterCache: ResponseAdapterCache): Data {
+  override fun adapter(): Adapter<Data> {
+    return object : Adapter<Data> {
+      override fun fromJson(reader: JsonReader, responseAdapterCache: CustomScalarAdpaters): Data {
         reader.beginObject()
         // consume the json stream
         while (reader.hasNext()) {
@@ -29,7 +28,7 @@ class MockQuery : Query<MockQuery.Data> {
         return Data
       }
 
-      override fun toResponse(writer: JsonWriter, responseAdapterCache: ResponseAdapterCache, value: Data) {
+      override fun toJson(writer: JsonWriter, responseAdapterCache: CustomScalarAdpaters, value: Data) {
         TODO("Not yet implemented")
       }
     }
@@ -41,7 +40,7 @@ class MockQuery : Query<MockQuery.Data> {
 
   object Data : Query.Data
 
-  override fun responseFields(): List<ResponseField.FieldSet> {
+  override fun responseFields(): List<MergedField.FieldSet> {
     return emptyList()
   }
 }

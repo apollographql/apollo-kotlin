@@ -1,11 +1,11 @@
 package com.apollographql.apollo3.compiler.codegen
 
-import com.apollographql.apollo3.api.AnyResponseAdapter
-import com.apollographql.apollo3.api.BooleanResponseAdapter
-import com.apollographql.apollo3.api.DoubleResponseAdapter
-import com.apollographql.apollo3.api.IntResponseAdapter
+import com.apollographql.apollo3.api.AnyAdapter
+import com.apollographql.apollo3.api.BooleanAdapter
+import com.apollographql.apollo3.api.DoubleAdapter
+import com.apollographql.apollo3.api.IntAdapter
 import com.apollographql.apollo3.api.Optional
-import com.apollographql.apollo3.api.StringResponseAdapter
+import com.apollographql.apollo3.api.StringAdapter
 import com.apollographql.apollo3.compiler.codegen.adapter.obj
 import com.apollographql.apollo3.compiler.unified.ir.IrAnyType
 import com.apollographql.apollo3.compiler.unified.ir.IrBooleanType
@@ -81,12 +81,12 @@ class CgResolver {
         val listFun = MemberName("com.apollographql.apollo3.api", "list")
         CodeBlock.of("%L.%M()", adapterInitializer(type.ofType), listFun)
       }
-      is IrBooleanType -> CodeBlock.of("%T", BooleanResponseAdapter::class)
-      is IrIdType -> CodeBlock.of("%T", StringResponseAdapter::class)
-      is IrStringType -> CodeBlock.of("%T", StringResponseAdapter::class)
-      is IrIntType -> CodeBlock.of("%T", IntResponseAdapter::class)
-      is IrFloatType -> CodeBlock.of("%T", DoubleResponseAdapter::class)
-      is IrAnyType -> CodeBlock.of("%T", AnyResponseAdapter::class)
+      is IrBooleanType -> CodeBlock.of("%T", BooleanAdapter::class)
+      is IrIdType -> CodeBlock.of("%T", StringAdapter::class)
+      is IrStringType -> CodeBlock.of("%T", StringAdapter::class)
+      is IrIntType -> CodeBlock.of("%T", IntAdapter::class)
+      is IrFloatType -> CodeBlock.of("%T", DoubleAdapter::class)
+      is IrAnyType -> CodeBlock.of("%T", AnyAdapter::class)
       is IrEnumType -> {
         CodeBlock.of("%T", enumAdapters.get(type.name) ?: error("Cannot find enum '$type' adapter"))
       }

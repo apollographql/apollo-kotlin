@@ -1,8 +1,8 @@
 package com.apollographql.apollo3.integration.test.noclient
 
-import com.apollographql.apollo3.adapters.LocalDateResponseAdapter
+import com.apollographql.apollo3.adapters.LocalDateAdapter
 import com.apollographql.apollo3.api.Operation
-import com.apollographql.apollo3.api.ResponseAdapterCache
+import com.apollographql.apollo3.api.CustomScalarAdpaters
 import com.apollographql.apollo3.api.fromJson
 import com.apollographql.apollo3.api.toJson
 import com.apollographql.apollo3.integration.httpcache.type.Types
@@ -27,7 +27,7 @@ import kotlin.test.assertEquals
  */
 class AdapterBijectionTest {
 
-  private val responseAdapterCache = ResponseAdapterCache(mapOf(Types.Date.name to LocalDateResponseAdapter))
+  private val responseAdapterCache = CustomScalarAdpaters(mapOf(Types.Date.name to LocalDateAdapter))
 
   @Test
   fun customScalar1() = bijection(
