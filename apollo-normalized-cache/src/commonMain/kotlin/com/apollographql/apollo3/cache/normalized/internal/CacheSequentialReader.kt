@@ -9,7 +9,7 @@ import com.apollographql.apollo3.cache.normalized.CacheKeyResolver
 import com.apollographql.apollo3.cache.normalized.CacheReference
 import com.apollographql.apollo3.cache.normalized.ReadOnlyNormalizedCache
 import com.apollographql.apollo3.cache.normalized.Record
-import com.apollographql.apollo3.exception.CacheMissException
+import com.apollographql.apollo3.api.exception.CacheMissException
 
 class CacheSequentialReader(
     private val cache: ReadOnlyNormalizedCache,

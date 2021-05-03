@@ -1,10 +1,10 @@
 package com.apollographql.apollo3
 
 import com.apollographql.apollo3.api.Operation
-import com.apollographql.apollo3.exception.ApolloCanceledException
-import com.apollographql.apollo3.exception.ApolloException
-import com.apollographql.apollo3.exception.ApolloHttpException
-import com.apollographql.apollo3.exception.ApolloNetworkException
+import com.apollographql.apollo3.api.exception.ApolloCanceledException
+import com.apollographql.apollo3.api.exception.ApolloException
+import com.apollographql.apollo3.api.exception.ApolloHttpException
+import com.apollographql.apollo3.api.exception.ApolloNetworkException
 import com.apollographql.apollo3.internal.util.Cancelable
 
 /**

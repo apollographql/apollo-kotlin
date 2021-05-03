@@ -9,7 +9,7 @@ import com.apollographql.apollo3.cache.CacheHeaders
 import com.apollographql.apollo3.cache.CacheHeaders.Companion.builder
 import com.apollographql.apollo3.cache.normalized.*
 import com.apollographql.apollo3.coroutines.await
-import com.apollographql.apollo3.exception.ApolloException
+import com.apollographql.apollo3.api.exception.ApolloException
 import com.apollographql.apollo3.integration.normalizer.HeroAndFriendsNamesQuery
 import com.apollographql.apollo3.integration.normalizer.type.Episode
 import com.apollographql.apollo3.rx2.Rx2Apollo

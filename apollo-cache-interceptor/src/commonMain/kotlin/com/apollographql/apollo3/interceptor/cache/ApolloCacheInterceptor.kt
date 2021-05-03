@@ -9,7 +9,7 @@ import com.apollographql.apollo3.cache.CacheHeaders
 import com.apollographql.apollo3.cache.normalized.ApolloStore
 import com.apollographql.apollo3.cache.normalized.Platform
 import com.apollographql.apollo3.cache.normalized.internal.dependentKeys
-import com.apollographql.apollo3.exception.ApolloCompositeException
+import com.apollographql.apollo3.api.exception.ApolloCompositeException
 import com.apollographql.apollo3.interceptor.ApolloInterceptorChain
 import com.apollographql.apollo3.interceptor.ApolloRequestInterceptor
 import kotlinx.coroutines.ExperimentalCoroutinesApi

@@ -7,8 +7,8 @@ import com.apollographql.apollo3.api.Subscription
 import com.apollographql.apollo3.api.internal.ApolloLogger
 import com.apollographql.apollo3.cache.CacheHeaders
 import com.apollographql.apollo3.cache.normalized.ApolloStore
-import com.apollographql.apollo3.exception.ApolloCanceledException
-import com.apollographql.apollo3.exception.ApolloNetworkException
+import com.apollographql.apollo3.api.exception.ApolloCanceledException
+import com.apollographql.apollo3.api.exception.ApolloNetworkException
 import com.apollographql.apollo3.internal.CallState.IllegalStateMessage.Companion.forCurrentState
 import com.apollographql.apollo3.internal.subscription.ApolloSubscriptionException
 import com.apollographql.apollo3.internal.subscription.SubscriptionManager

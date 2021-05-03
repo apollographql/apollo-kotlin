@@ -10,9 +10,9 @@ import com.apollographql.apollo3.api.internal.json.BufferedSinkJsonWriter
 import com.apollographql.apollo3.api.internal.json.Utils
 import com.apollographql.apollo3.api.parseResponseBody
 import com.apollographql.apollo3.dispatcher.ApolloCoroutineDispatcher
-import com.apollographql.apollo3.exception.ApolloParseException
-import com.apollographql.apollo3.exception.ApolloWebSocketException
-import com.apollographql.apollo3.exception.ApolloWebSocketServerException
+import com.apollographql.apollo3.api.exception.ApolloParseException
+import com.apollographql.apollo3.api.exception.ApolloWebSocketException
+import com.apollographql.apollo3.api.exception.ApolloWebSocketServerException
 import com.apollographql.apollo3.network.NetworkTransport
 import com.apollographql.apollo3.subscription.ApolloOperationMessageSerializer
 import com.apollographql.apollo3.subscription.OperationClientMessage

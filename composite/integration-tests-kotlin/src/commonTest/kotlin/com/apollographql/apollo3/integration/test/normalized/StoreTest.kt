@@ -5,7 +5,7 @@ import com.apollographql.apollo3.api.ApolloRequest
 import com.apollographql.apollo3.cache.normalized.ApolloStore
 import com.apollographql.apollo3.cache.normalized.CacheKey
 import com.apollographql.apollo3.cache.normalized.MemoryCacheFactory
-import com.apollographql.apollo3.exception.CacheMissException
+import com.apollographql.apollo3.api.exception.CacheMissException
 import com.apollographql.apollo3.integration.IdFieldCacheKeyResolver
 import com.apollographql.apollo3.integration.enqueue
 import com.apollographql.apollo3.integration.normalizer.CharacterNameByIdQuery

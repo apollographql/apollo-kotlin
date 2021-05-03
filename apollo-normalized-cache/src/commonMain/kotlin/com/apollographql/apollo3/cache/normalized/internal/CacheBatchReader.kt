@@ -8,7 +8,7 @@ import com.apollographql.apollo3.cache.normalized.CacheKey
 import com.apollographql.apollo3.cache.normalized.CacheKeyResolver
 import com.apollographql.apollo3.cache.normalized.CacheReference
 import com.apollographql.apollo3.cache.normalized.ReadOnlyNormalizedCache
-import com.apollographql.apollo3.exception.CacheMissException
+import com.apollographql.apollo3.api.exception.CacheMissException
 
 /**
  * Reads [rootFieldSets] starting at [rootKey] from [cache]

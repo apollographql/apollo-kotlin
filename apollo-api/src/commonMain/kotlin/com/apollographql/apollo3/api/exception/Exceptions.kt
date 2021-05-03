@@ -1,4 +1,4 @@
-package com.apollographql.apollo3.exception
+package com.apollographql.apollo3.api.exception
 
 /**
  * The base class for all exceptions
