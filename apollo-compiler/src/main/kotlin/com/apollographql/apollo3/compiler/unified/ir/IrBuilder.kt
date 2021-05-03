@@ -122,7 +122,6 @@ class IrBuilder(
 
     return IntermediateRepresentation(
         operations = operations,
-        // TODO: multi-module
         fragments = fragments,
         inputObjects = inputObjects,
         enums = enums,
@@ -222,6 +221,19 @@ class IrBuilder(
     )
   }
 
+  /**
+   * Strip any custom Apollo directive and format
+   */
+  private fun GQLNode.formatToString(): String {
+    return transform {
+      if (it is GQLDirective && it.isApollo()) {
+        null
+      } else {
+        it
+      }
+    }!!.toUtf8WithIndents()
+  }
+
   private fun GQLOperationDefinition.toIr(): IrOperation {
     val typeDefinition = this.rootTypeDefinition(schema)
         ?: throw IllegalStateException("ApolloGraphql: cannot find root type for '$operationType'")
@@ -241,10 +253,10 @@ class IrBuilder(
         rawTypeName = typeDefinition.name,
     )
 
-    val sourceWithFragments = (toUtf8WithIndents() + "\n" + builder.collectedFragments.joinToString(
+    val sourceWithFragments = (formatToString() + "\n" + builder.collectedFragments.joinToString(
         separator = "\n"
     ) { fragmentName ->
-      allGQLFragmentDefinitions[fragmentName]!!.toUtf8WithIndents()
+      allGQLFragmentDefinitions[fragmentName]!!.formatToString()
     }).trimEnd('\n')
 
     val result = modelGroupsBuilder.buildOperationModelGroups(

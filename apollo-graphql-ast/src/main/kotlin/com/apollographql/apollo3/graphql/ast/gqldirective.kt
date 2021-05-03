@@ -17,3 +17,5 @@ fun List<GQLDirective>.findDeprecationReason() = firstOrNull { it.name == "depre
 
 fun List<GQLDirective>.findOptional() = any { it.name == "optional" }
 fun List<GQLDirective>.findNonnull() = any { it.name == "nonnull" }
+
+fun GQLDirective.isApollo() = name in listOf("optional", "nonnull")
