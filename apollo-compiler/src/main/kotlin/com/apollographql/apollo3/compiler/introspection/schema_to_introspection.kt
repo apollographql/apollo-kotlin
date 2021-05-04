@@ -9,33 +9,35 @@ private class IntrospectionSchemaBuilder(private val schema: Schema) {
 
   fun toIntrospectionSchema(): IntrospectionSchema {
     return IntrospectionSchema(
-        queryType = schema.queryTypeDefinition.name,
-        mutationType = schema.mutationTypeDefinition?.name,
-        subscriptionType = schema.subscriptionTypeDefinition?.name,
-        types = typeDefinitions.values.map {
-          it.name to when (it) {
-            is GQLObjectTypeDefinition -> it.toSchemaType()
-            is GQLInputObjectTypeDefinition -> it.toSchemaType()
-            is GQLInterfaceTypeDefinition -> it.toSchemaType()
-            is GQLScalarTypeDefinition -> it.toSchemaType()
-            is GQLEnumTypeDefinition -> it.toSchemaType()
-            is GQLUnionTypeDefinition -> it.toSchemaType()
-          }
-        }.toMap()
+        __schema = IntrospectionSchema.Schema(
+            queryType = IntrospectionSchema.Schema.QueryType(schema.queryTypeDefinition.name),
+            mutationType = schema.mutationTypeDefinition?.name?.let { IntrospectionSchema.Schema.MutationType(it) },
+            subscriptionType = schema.subscriptionTypeDefinition?.name?.let { IntrospectionSchema.Schema.SubscriptionType(it) },
+            types = typeDefinitions.values.map {
+              when (it) {
+                is GQLObjectTypeDefinition -> it.toSchemaType()
+                is GQLInputObjectTypeDefinition -> it.toSchemaType()
+                is GQLInterfaceTypeDefinition -> it.toSchemaType()
+                is GQLScalarTypeDefinition -> it.toSchemaType()
+                is GQLEnumTypeDefinition -> it.toSchemaType()
+                is GQLUnionTypeDefinition -> it.toSchemaType()
+              }
+            }
+        )
     )
   }
 
-  private fun GQLObjectTypeDefinition.toSchemaType(): IntrospectionSchema.Type.Object {
-    return IntrospectionSchema.Type.Object(
+  private fun GQLObjectTypeDefinition.toSchemaType(): IntrospectionSchema.Schema.Type.Object {
+    return IntrospectionSchema.Schema.Type.Object(
         name = name,
         description = description,
         fields = fields.map { it.toSchemaField() }
     )
   }
 
-  private fun GQLFieldDefinition.toSchemaField(): IntrospectionSchema.Field {
+  private fun GQLFieldDefinition.toSchemaField(): IntrospectionSchema.Schema.Field {
     val deprecationReason = directives.findDeprecationReason()
-    return IntrospectionSchema.Field(
+    return IntrospectionSchema.Schema.Field(
         name = name,
         description = description,
         isDeprecated = deprecationReason != null,
@@ -45,34 +47,10 @@ private class IntrospectionSchemaBuilder(private val schema: Schema) {
     )
   }
 
-  private fun GQLDocument.typeDefinition(name: String): GQLTypeDefinition? {
-    return definitions.filterIsInstance<GQLTypeDefinition>().firstOrNull { it.name == name }
-  }
-
-
-  private fun GQLDocument.rootOperationTypeName(operationType: String): String? {
-    val schemaDefinition = definitions.filterIsInstance<GQLSchemaDefinition>()
-        .firstOrNull()
-    if (schemaDefinition == null) {
-      // 3.3.1
-      // No schema definition, look for an object type named after the operationType
-      // i.e. Query, Mutation, ...
-      return definitions.filterIsInstance<GQLObjectTypeDefinition>()
-          .firstOrNull { it.name == operationType.capitalize() }
-          ?.name
-    }
-    val namedType = schemaDefinition.rootOperationTypeDefinitions.firstOrNull {
-      it.operationType == operationType
-    }?.namedType
-
-    return namedType
-  }
-
-
-  private fun GQLInputValueDefinition.toSchemaArgument(): IntrospectionSchema.Field.Argument {
+  private fun GQLInputValueDefinition.toSchemaArgument(): IntrospectionSchema.Schema.Field.Argument {
     val deprecationReason = directives.findDeprecationReason()
 
-    return IntrospectionSchema.Field.Argument(
+    return IntrospectionSchema.Schema.Field.Argument(
         name = name,
         description = description,
         isDeprecated = deprecationReason != null,
@@ -82,17 +60,17 @@ private class IntrospectionSchemaBuilder(private val schema: Schema) {
     )
   }
 
-  private fun GQLInputObjectTypeDefinition.toSchemaType(): IntrospectionSchema.Type.InputObject {
-    return IntrospectionSchema.Type.InputObject(
+  private fun GQLInputObjectTypeDefinition.toSchemaType(): IntrospectionSchema.Schema.Type.InputObject {
+    return IntrospectionSchema.Schema.Type.InputObject(
         name = name,
         description = description,
         inputFields = inputFields.map { it.toSchemaInputField() }
     )
   }
 
-  private fun GQLInputValueDefinition.toSchemaInputField(): IntrospectionSchema.InputField {
+  private fun GQLInputValueDefinition.toSchemaInputField(): IntrospectionSchema.Schema.InputField {
     val deprecationReason = directives.findDeprecationReason()
-    return IntrospectionSchema.InputField(
+    return IntrospectionSchema.Schema.InputField(
         name = name,
         description = description,
         isDeprecated = deprecationReason != null,
@@ -102,8 +80,8 @@ private class IntrospectionSchemaBuilder(private val schema: Schema) {
     )
   }
 
-  private fun GQLInterfaceTypeDefinition.toSchemaType(): IntrospectionSchema.Type.Interface {
-    return IntrospectionSchema.Type.Interface(
+  private fun GQLInterfaceTypeDefinition.toSchemaType(): IntrospectionSchema.Schema.Type.Interface {
+    return IntrospectionSchema.Schema.Type.Interface(
         name = name,
         description = description,
         fields = fields.map { it.toSchemaField() },
@@ -112,25 +90,25 @@ private class IntrospectionSchemaBuilder(private val schema: Schema) {
               typeDefinition is GQLObjectTypeDefinition && typeDefinition.implementsInterfaces.contains(name)
             }
             .map { typeDefinition ->
-              IntrospectionSchema.TypeRef(
-                  kind = IntrospectionSchema.Kind.OBJECT,
+              IntrospectionSchema.Schema.TypeRef(
+                  kind = IntrospectionSchema.Schema.Kind.OBJECT,
                   name = typeDefinition.name
               )
             }
     )
   }
 
-  private fun GQLEnumTypeDefinition.toSchemaType(): IntrospectionSchema.Type.Enum {
-    return IntrospectionSchema.Type.Enum(
+  private fun GQLEnumTypeDefinition.toSchemaType(): IntrospectionSchema.Schema.Type.Enum {
+    return IntrospectionSchema.Schema.Type.Enum(
         name = name,
         description = description,
         enumValues = enumValues.map { it.toSchemaEnumValue() }
     )
   }
 
-  private fun GQLEnumValueDefinition.toSchemaEnumValue(): IntrospectionSchema.Type.Enum.Value {
+  private fun GQLEnumValueDefinition.toSchemaEnumValue(): IntrospectionSchema.Schema.Type.Enum.Value {
     val deprecationReason = directives.findDeprecationReason()
-    return IntrospectionSchema.Type.Enum.Value(
+    return IntrospectionSchema.Schema.Type.Enum.Value(
         name = name,
         description = description,
         isDeprecated = deprecationReason != null,
@@ -138,15 +116,15 @@ private class IntrospectionSchemaBuilder(private val schema: Schema) {
     )
   }
 
-  private fun GQLScalarTypeDefinition.toSchemaType(): IntrospectionSchema.Type.Scalar {
-    return IntrospectionSchema.Type.Scalar(
+  private fun GQLScalarTypeDefinition.toSchemaType(): IntrospectionSchema.Schema.Type.Scalar {
+    return IntrospectionSchema.Schema.Type.Scalar(
         name = this.name,
         description = this.description
     )
   }
 
-  private fun GQLUnionTypeDefinition.toSchemaType(): IntrospectionSchema.Type.Union {
-    return IntrospectionSchema.Type.Union(
+  private fun GQLUnionTypeDefinition.toSchemaType(): IntrospectionSchema.Schema.Type.Union {
+    return IntrospectionSchema.Schema.Type.Union(
         name = name,
         description = description,
         fields = null,
@@ -155,23 +133,23 @@ private class IntrospectionSchemaBuilder(private val schema: Schema) {
   }
 }
 
-internal fun GQLType.toSchemaType(schema: Schema): IntrospectionSchema.TypeRef {
+internal fun GQLType.toSchemaType(schema: Schema): IntrospectionSchema.Schema.TypeRef {
   return when (this) {
     is GQLNonNullType -> {
-      IntrospectionSchema.TypeRef(
-          kind = IntrospectionSchema.Kind.NON_NULL,
+      IntrospectionSchema.Schema.TypeRef(
+          kind = IntrospectionSchema.Schema.Kind.NON_NULL,
           name = "", // why "" and not null ?
           ofType = type.toSchemaType(schema)
       )
     }
     is GQLListType -> {
-      IntrospectionSchema.TypeRef(
-          kind = IntrospectionSchema.Kind.LIST,
+      IntrospectionSchema.Schema.TypeRef(
+          kind = IntrospectionSchema.Schema.Kind.LIST,
           name = "", // why "" and not null ?
           ofType = type.toSchemaType(schema))
     }
     is GQLNamedType -> {
-      IntrospectionSchema.TypeRef(
+      IntrospectionSchema.Schema.TypeRef(
           kind = schema.typeDefinition(name).schemaKind(),
           name = name,
           ofType = null
@@ -181,12 +159,12 @@ internal fun GQLType.toSchemaType(schema: Schema): IntrospectionSchema.TypeRef {
 }
 
 internal fun GQLTypeDefinition.schemaKind() = when (this) {
-  is GQLEnumTypeDefinition -> IntrospectionSchema.Kind.ENUM
-  is GQLUnionTypeDefinition -> IntrospectionSchema.Kind.UNION
-  is GQLObjectTypeDefinition -> IntrospectionSchema.Kind.OBJECT
-  is GQLInputObjectTypeDefinition -> IntrospectionSchema.Kind.INPUT_OBJECT
-  is GQLScalarTypeDefinition -> IntrospectionSchema.Kind.SCALAR
-  is GQLInterfaceTypeDefinition -> IntrospectionSchema.Kind.INTERFACE
+  is GQLEnumTypeDefinition -> IntrospectionSchema.Schema.Kind.ENUM
+  is GQLUnionTypeDefinition -> IntrospectionSchema.Schema.Kind.UNION
+  is GQLObjectTypeDefinition -> IntrospectionSchema.Schema.Kind.OBJECT
+  is GQLInputObjectTypeDefinition -> IntrospectionSchema.Schema.Kind.INPUT_OBJECT
+  is GQLScalarTypeDefinition -> IntrospectionSchema.Schema.Kind.SCALAR
+  is GQLInterfaceTypeDefinition -> IntrospectionSchema.Schema.Kind.INTERFACE
 }
 
 fun Schema.toIntrospectionSchema() = IntrospectionSchemaBuilder(this).toIntrospectionSchema()

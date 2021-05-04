@@ -186,7 +186,7 @@ class IrBuilder(
    * This is not named `toIr` as [GQLInputValueDefinition] also maps to variables and arguments
    */
   private fun GQLInputValueDefinition.toIrInputField(): IrInputField {
-    val coercedDefaultValue = defaultValue?.coerce(type, schema)?.orThrow()
+    val coercedDefaultValue = defaultValue?.validateAndCoerce(type, schema)?.getOrThrow()
 
     var irType = type.toIr()
     if (type !is GQLNonNullType || coercedDefaultValue != null) {
@@ -302,7 +302,7 @@ class IrBuilder(
     )
   }
 
-  private fun InputValueScope.VariableReference.toIr(): IrVariable {
+  private fun VariableReference.toIr(): IrVariable {
     var type = expectedType.toIr()
     // This is an inferred variable from a fragment
     if (expectedType !is GQLNonNullType) {
@@ -316,7 +316,7 @@ class IrBuilder(
   }
 
   private fun GQLVariableDefinition.toIr(): IrVariable {
-    val coercedDefaultValue = defaultValue?.coerce(type, schema)?.orThrow()
+    val coercedDefaultValue = defaultValue?.validateAndCoerce(type, schema)?.getOrThrow()
 
     var irType = type.toIr()
     // By default the GraphQL spec treats nullable types as optional variables but most of the times
@@ -408,6 +408,8 @@ class IrBuilder(
       check(fieldDefinition != null) {
         "cannot find field definition for field '${gqlField.responseName()}' of type '${typeDefinition.name}'"
       }
+      val forceNonNull = gqlField.directives.findNonnull() || typeDefinition.isFieldNonNull(gqlField.name)
+
       CollectedField(
           name = gqlField.name,
           alias = gqlField.alias,
@@ -417,7 +419,7 @@ class IrBuilder(
           type = fieldDefinition.type,
           description = fieldDefinition.description,
           deprecationReason = fieldDefinition.directives.findDeprecationReason(),
-          forceNonNull = gqlField.directives.findNonnull(),
+          forceNonNull = forceNonNull,
           forceOptional = gqlField.directives.findOptional(),
       )
     }.groupBy {
@@ -477,8 +479,8 @@ class IrBuilder(
 
     return IrArgument(
         name = name,
-        value = value.coerce(argumentDefinition.type, schema).orThrow().toIr(),
-        defaultValue = argumentDefinition.defaultValue?.coerce(argumentDefinition.type, schema)?.orThrow()?.toIr(),
+        value = value.validateAndCoerce(argumentDefinition.type, schema).getOrThrow().toIr(),
+        defaultValue = argumentDefinition.defaultValue?.validateAndCoerce(argumentDefinition.type, schema)?.getOrThrow()?.toIr(),
         type = argumentDefinition.type.toIr()
     )
   }

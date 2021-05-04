@@ -15,6 +15,7 @@ def versions = [
     kotlinCoroutines      : '1.4.3',
     kotlinPoet            : '1.6.0',
     moshi                 : '1.11.0',
+    moshix                : '0.10.0',
     okHttp4               : '4.9.0',
     okHttp                : '3.12.11', // Keep this to keep supporting older Android devices
     okio                  : '2.10.0',
@@ -64,7 +65,9 @@ ext.dep = [
     ],
     moshi                 : [
         adapters     : "com.squareup.moshi:moshi-adapters:$versions.moshi",
-        kotlinCodegen: "dev.zacsweers.moshix:moshi-ksp:0.10.0",
+        ksp: "dev.zacsweers.moshix:moshi-ksp:$versions.moshix",
+        sealedKsp    : "dev.zacsweers.moshix:moshi-sealed-ksp:$versions.moshix",
+        sealedRuntime: "dev.zacsweers.moshix:moshi-sealed-runtime:$versions.moshix",
         moshi        : "com.squareup.moshi:moshi:$versions.moshi",
     ],
     okHttp                : [

@@ -1,2 +1,2 @@
 directive @optional on FIELD | VARIABLE_DEFINITION
-directive @nonnull on FIELD
+directive @nonnull(fields: [String!]! = []) on OBJECT | FIELD

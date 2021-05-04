@@ -1,8 +1,9 @@
 package com.apollographql.apollo3.compiler
 
 import com.apollographql.apollo3.graphql.ast.GQLFragmentDefinition
-import com.apollographql.apollo3.graphql.ast.GraphQLParser
 import com.apollographql.apollo3.graphql.ast.Schema
+import com.apollographql.apollo3.graphql.ast.parseAsGraphQLDocument
+import com.apollographql.apollo3.graphql.ast.toGraphQLSchema
 import com.apollographql.apollo3.graphql.ast.toUtf8
 import com.squareup.moshi.JsonAdapter
 import com.squareup.moshi.JsonClass
@@ -50,17 +51,17 @@ data class ApolloMetadata(
     private val adapter by lazy {
       val schemaJsonAdapter = object : JsonAdapter<Schema>() {
         override fun fromJson(p0: JsonReader): Schema {
-          return GraphQLParser.parseSchema(p0.nextString())
+          return p0.nextString().toGraphQLSchema()
         }
 
         override fun toJson(p0: JsonWriter, p1: Schema?) {
-          p0.value(p1!!.toDocument().toUtf8())
+          p0.value(p1!!.toGQLDocument().toUtf8())
         }
       }
 
       val gqlFragmentJsonAdapter = object : JsonAdapter<GQLFragmentDefinition>() {
         override fun fromJson(p0: JsonReader): GQLFragmentDefinition {
-          return GraphQLParser.parseDocument(p0.nextString()).orThrow().definitions.first() as GQLFragmentDefinition
+          return p0.nextString().parseAsGraphQLDocument().getOrThrow().definitions.first() as GQLFragmentDefinition
         }
 
         override fun toJson(p0: JsonWriter, p1: GQLFragmentDefinition?) {

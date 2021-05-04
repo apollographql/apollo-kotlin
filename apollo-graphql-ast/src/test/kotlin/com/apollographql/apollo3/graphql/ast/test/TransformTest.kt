@@ -2,7 +2,7 @@ package com.apollographql.apollo3.graphql.ast.test
 
 import com.apollographql.apollo3.graphql.ast.GQLField
 import com.apollographql.apollo3.graphql.ast.GQLIntValue
-import com.apollographql.apollo3.graphql.ast.GraphQLParser
+import com.apollographql.apollo3.graphql.ast.parseAsGraphQLDocument
 import com.apollographql.apollo3.graphql.ast.toUtf8WithIndents
 import com.apollographql.apollo3.graphql.ast.transform
 import org.junit.Test
@@ -22,7 +22,7 @@ class TransformTest {
   @Test
   fun stripFieldsWithDirective() {
 
-    val document = GraphQLParser.parseDocument(query).orThrow()
+    val document = query.parseAsGraphQLDocument().getOrThrow()
 
     val currentVersion = 4
     val transformed = document.transform {

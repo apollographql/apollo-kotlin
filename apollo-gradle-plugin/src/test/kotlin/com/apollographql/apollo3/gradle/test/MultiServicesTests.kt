@@ -49,10 +49,10 @@ class MultiServicesTests {
     val apolloConfiguration = """
       apollo {
         service("starwars") {
-          sourceFolder = "starwars"
+          addGraphqlDirectory("src/main/graphql/starwars")
         }
         service("githunt") {
-          sourceFolder = "githunt"
+          addGraphqlDirectory("src/main/graphql/githunt")
         }
       }
     """.trimIndent()

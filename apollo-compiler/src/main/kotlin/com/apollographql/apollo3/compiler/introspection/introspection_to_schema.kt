@@ -28,24 +28,25 @@ import com.apollographql.apollo3.graphql.ast.GQLStringValue
 import com.apollographql.apollo3.graphql.ast.GQLType
 import com.apollographql.apollo3.graphql.ast.GQLUnionTypeDefinition
 import com.apollographql.apollo3.graphql.ast.GQLValue
-import com.apollographql.apollo3.graphql.ast.GraphQLParser
 import com.apollographql.apollo3.graphql.ast.Schema
+import com.apollographql.apollo3.graphql.ast.parseAsGraphQLValue
 import com.apollographql.apollo3.graphql.ast.toSchema
-import com.apollographql.apollo3.graphql.ast.withExtraDefinitions
+import com.apollographql.apollo3.graphql.ast.withBuiltinDefinitions
+import com.apollographql.apollo3.graphql.ast.withoutBuiltinDefinitions
 
 private class GQLDocumentBuilder(private val introspectionSchema: IntrospectionSchema) {
 
   fun toGQLDocument(): GQLDocument {
-    return with(introspectionSchema) {
+    return with(introspectionSchema.__schema) {
       GQLDocument(
-          definitions = types.values.map {
+          definitions = types.map {
             when (it) {
-              is IntrospectionSchema.Type.Union -> it.toGQLUnionTypeDefinition()
-              is IntrospectionSchema.Type.Interface -> it.toGQLInterfaceTypeDefinition()
-              is IntrospectionSchema.Type.Enum -> it.toGQLEnumTypeDefinition()
-              is IntrospectionSchema.Type.Object -> it.toGQLObjectTypeDefinition()
-              is IntrospectionSchema.Type.InputObject -> it.toGQLInputObjectTypeDefinition()
-              is IntrospectionSchema.Type.Scalar -> it.toGQLScalarTypeDefinition()
+              is IntrospectionSchema.Schema.Type.Union -> it.toGQLUnionTypeDefinition()
+              is IntrospectionSchema.Schema.Type.Interface -> it.toGQLInterfaceTypeDefinition()
+              is IntrospectionSchema.Schema.Type.Enum -> it.toGQLEnumTypeDefinition()
+              is IntrospectionSchema.Schema.Type.Object -> it.toGQLObjectTypeDefinition()
+              is IntrospectionSchema.Schema.Type.InputObject -> it.toGQLInputObjectTypeDefinition()
+              is IntrospectionSchema.Schema.Type.Scalar -> it.toGQLScalarTypeDefinition()
             }
           } + schemaDefinition(),
           filePath = null
@@ -53,7 +54,7 @@ private class GQLDocumentBuilder(private val introspectionSchema: IntrospectionS
     }
   }
 
-  private fun IntrospectionSchema.Type.Object.toGQLObjectTypeDefinition(): GQLObjectTypeDefinition {
+  private fun IntrospectionSchema.Schema.Type.Object.toGQLObjectTypeDefinition(): GQLObjectTypeDefinition {
     return GQLObjectTypeDefinition(
         description = description,
         name = name,
@@ -64,7 +65,7 @@ private class GQLDocumentBuilder(private val introspectionSchema: IntrospectionS
   }
 
   private fun findInterfacesImplementedBy(name: String): List<String> {
-    return introspectionSchema.types.values.filterIsInstance<IntrospectionSchema.Type.Interface>()
+    return introspectionSchema.__schema.types.filterIsInstance<IntrospectionSchema.Schema.Type.Interface>()
         .filter {
           it.possibleTypes?.map { it.name }?.contains(name) == true
         }
@@ -73,7 +74,7 @@ private class GQLDocumentBuilder(private val introspectionSchema: IntrospectionS
         }
   }
 
-  private fun IntrospectionSchema.Type.Enum.toGQLEnumTypeDefinition(): GQLEnumTypeDefinition {
+  private fun IntrospectionSchema.Schema.Type.Enum.toGQLEnumTypeDefinition(): GQLEnumTypeDefinition {
     return GQLEnumTypeDefinition(
         description = description,
         name = name,
@@ -82,7 +83,7 @@ private class GQLDocumentBuilder(private val introspectionSchema: IntrospectionS
     )
   }
 
-  private fun IntrospectionSchema.Type.Enum.Value.toGQLEnumValueDefinition(): GQLEnumValueDefinition {
+  private fun IntrospectionSchema.Schema.Type.Enum.Value.toGQLEnumValueDefinition(): GQLEnumValueDefinition {
     return GQLEnumValueDefinition(
         description = description,
         name = name,
@@ -90,7 +91,7 @@ private class GQLDocumentBuilder(private val introspectionSchema: IntrospectionS
     )
   }
 
-  private fun IntrospectionSchema.Type.Interface.toGQLInterfaceTypeDefinition(): GQLInterfaceTypeDefinition {
+  private fun IntrospectionSchema.Schema.Type.Interface.toGQLInterfaceTypeDefinition(): GQLInterfaceTypeDefinition {
     return GQLInterfaceTypeDefinition(
         name = name,
         description = description,
@@ -100,7 +101,7 @@ private class GQLDocumentBuilder(private val introspectionSchema: IntrospectionS
     )
   }
 
-  private fun IntrospectionSchema.Field.toGQLFieldDefinition(): GQLFieldDefinition {
+  private fun IntrospectionSchema.Schema.Field.toGQLFieldDefinition(): GQLFieldDefinition {
     return GQLFieldDefinition(
         name = name,
         description = description,
@@ -110,7 +111,7 @@ private class GQLDocumentBuilder(private val introspectionSchema: IntrospectionS
     )
   }
 
-  private fun IntrospectionSchema.Field.Argument.toGQLInputValueDefinition(): GQLInputValueDefinition {
+  private fun IntrospectionSchema.Schema.Field.Argument.toGQLInputValueDefinition(): GQLInputValueDefinition {
     return GQLInputValueDefinition(
         name = name,
         description = description,
@@ -127,7 +128,7 @@ private class GQLDocumentBuilder(private val introspectionSchema: IntrospectionS
     }
     try {
       if (this is String) {
-        return GraphQLParser.parseValue(this).orThrow()
+        return parseAsGraphQLValue().getOrThrow()
       }
     } catch (e: Exception) {
       println("Wrongly encoded default value: $this: ${e.message}")
@@ -163,7 +164,7 @@ private class GQLDocumentBuilder(private val introspectionSchema: IntrospectionS
     )
   }
 
-  private fun IntrospectionSchema.Type.Union.toGQLUnionTypeDefinition(): GQLUnionTypeDefinition {
+  private fun IntrospectionSchema.Schema.Type.Union.toGQLUnionTypeDefinition(): GQLUnionTypeDefinition {
     return GQLUnionTypeDefinition(
         name = name,
         description = "",
@@ -172,16 +173,16 @@ private class GQLDocumentBuilder(private val introspectionSchema: IntrospectionS
     )
   }
 
-  private fun IntrospectionSchema.TypeRef.toGQLNamedType(): GQLNamedType {
+  private fun IntrospectionSchema.Schema.TypeRef.toGQLNamedType(): GQLNamedType {
     return toGQLType() as? GQLNamedType ?: throw ConversionException("expected a NamedType")
   }
 
-  private fun IntrospectionSchema.TypeRef.toGQLType(): GQLType {
+  private fun IntrospectionSchema.Schema.TypeRef.toGQLType(): GQLType {
     return when (this.kind) {
-      IntrospectionSchema.Kind.NON_NULL -> GQLNonNullType(
+      IntrospectionSchema.Schema.Kind.NON_NULL -> GQLNonNullType(
           type = ofType?.toGQLType() ?: throw ConversionException("ofType must not be null for non null types")
       )
-      IntrospectionSchema.Kind.LIST -> GQLListType(
+      IntrospectionSchema.Schema.Kind.LIST -> GQLListType(
           type = ofType?.toGQLType() ?: throw ConversionException("ofType must not be null for list types")
       )
       else -> GQLNamedType(
@@ -190,19 +191,19 @@ private class GQLDocumentBuilder(private val introspectionSchema: IntrospectionS
     }
   }
 
-  private fun IntrospectionSchema.schemaDefinition(): GQLSchemaDefinition {
+  private fun IntrospectionSchema.Schema.schemaDefinition(): GQLSchemaDefinition {
     val rootOperationTypeDefinitions = mutableListOf<GQLOperationTypeDefinition>()
     rootOperationTypeDefinitions.add(
         GQLOperationTypeDefinition(
             operationType = "query",
-            namedType = queryType
+            namedType = queryType.name
         )
     )
     if (mutationType != null) {
       rootOperationTypeDefinitions.add(
           GQLOperationTypeDefinition(
               operationType = "mutation",
-              namedType = mutationType
+              namedType = mutationType.name
           )
       )
     }
@@ -210,7 +211,7 @@ private class GQLDocumentBuilder(private val introspectionSchema: IntrospectionS
       rootOperationTypeDefinitions.add(
           GQLOperationTypeDefinition(
               operationType = "subscription",
-              namedType = subscriptionType
+              namedType = subscriptionType.name
           )
       )
     }
@@ -222,7 +223,7 @@ private class GQLDocumentBuilder(private val introspectionSchema: IntrospectionS
     )
   }
 
-  private fun IntrospectionSchema.Type.InputObject.toGQLInputObjectTypeDefinition(): GQLInputObjectTypeDefinition {
+  private fun IntrospectionSchema.Schema.Type.InputObject.toGQLInputObjectTypeDefinition(): GQLInputObjectTypeDefinition {
     return GQLInputObjectTypeDefinition(
         description = description,
         name = name,
@@ -231,7 +232,7 @@ private class GQLDocumentBuilder(private val introspectionSchema: IntrospectionS
     )
   }
 
-  private fun IntrospectionSchema.InputField.toGQLInputValueDefinition(): GQLInputValueDefinition {
+  private fun IntrospectionSchema.Schema.InputField.toGQLInputValueDefinition(): GQLInputValueDefinition {
     return GQLInputValueDefinition(
         description = description,
         name = name,
@@ -241,7 +242,7 @@ private class GQLDocumentBuilder(private val introspectionSchema: IntrospectionS
     )
   }
 
-  private fun IntrospectionSchema.Type.Scalar.toGQLScalarTypeDefinition(): GQLScalarTypeDefinition {
+  private fun IntrospectionSchema.Schema.Type.Scalar.toGQLScalarTypeDefinition(): GQLScalarTypeDefinition {
     return GQLScalarTypeDefinition(
         description = description,
         name = name,
@@ -250,10 +251,18 @@ private class GQLDocumentBuilder(private val introspectionSchema: IntrospectionS
   }
 }
 
-private fun IntrospectionSchema.toGQLDocument(): GQLDocument = GQLDocumentBuilder(this).toGQLDocument()
+fun IntrospectionSchema.toGQLDocument(): GQLDocument = GQLDocumentBuilder(this).toGQLDocument()
 
 fun IntrospectionSchema.toSchema(): Schema = toGQLDocument()
-    .withExtraDefinitions(warn = false) // don't warn as introspection already contains builtin types like Int, Boolean, etc...
+    /**
+     * Introspection already contains builtin types like Int, Boolean, __Schema, etc...
+     * This is slightly off as it also remove directives which will have no effect here
+     * as they are not stored in introspection
+     */
+    .withoutBuiltinDefinitions()
+    /**
+     * toSchema will add the builtin types and directives
+     */
     .toSchema()
 
 

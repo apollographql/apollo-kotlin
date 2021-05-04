@@ -4,6 +4,7 @@ import com.apollographql.apollo3.compiler.OperationIdGenerator
 import com.apollographql.apollo3.compiler.OperationOutputGenerator
 import org.gradle.api.Action
 import org.gradle.api.Task
+import org.gradle.api.file.ConfigurableFileCollection
 import org.gradle.api.file.Directory
 import org.gradle.api.file.DirectoryProperty
 import org.gradle.api.file.RegularFile
@@ -25,13 +26,6 @@ interface Service {
   val name: String
 
   /**
-   * The folder containing the GraphQL operation files. They are the files that are used to define queries.
-   *
-   * Files will be searched in "src/$sourceSet/graphql/$sourceFolder"
-   */
-  val sourceFolder: Property<String>
-
-  /**
    * Files to include as in [org.gradle.api.tasks.util.PatternFilterable]
    *
    * Default: ["**&#47;*.graphql", "**&#47;*.gql"]
@@ -48,7 +42,7 @@ interface Service {
   /**
    * Adds the given directory as a GraphQL source root
    *
-   * By default, the plugin will use [sourceFolder] to search for GraphQL files under "src/$sourceSet/graphql/$sourceFolder".
+   * By default, the plugin will use "src/main/graphql/" for Android/JVM projects and "src/commonMain/graphql" for multiplatform projects.
    *
    * Use [addGraphqlDirectory] if your files are outside of "src/main/graphql" or to have them in multiple folders.
    *
@@ -62,6 +56,11 @@ interface Service {
    * By default, the plugin looks for a "schema.[json|sdl|graphqls]" file in sourceDirectory
    */
   val schemaFile: RegularFileProperty
+
+  /**
+   * A list of extra schema files where you can add extensions/custom directives. By default it will look for all '*.[sdl|graphqls]' not named "schema"
+   */
+  val extraSchemaFiles: ConfigurableFileCollection
 
   /**
    * Warn if using a deprecated field
@@ -172,7 +171,7 @@ interface Service {
    *
    * Default value: false
    */
-    val generateApolloMetadata: Property<Boolean>
+  val generateApolloMetadata: Property<Boolean>
 
   /**
    * A list of [Regex] patterns for input/scalar/enum types that should be generated whether or not they are used by queries/fragments
@@ -185,7 +184,7 @@ interface Service {
    *
    * Default value: if (generateApolloMetadata) listOf(".*") else listOf()
    */
-    val alwaysGenerateTypesMatching: SetProperty<String>
+  val alwaysGenerateTypesMatching: SetProperty<String>
 
   /**
    * Whether or not generate default implementation classes for GraphQL fragments.
@@ -200,12 +199,12 @@ interface Service {
   val generateFragmentsAsInterfaces: Property<Boolean>
 
   /**
-   * Configures the [Introspection]
+   * Configures [Introspection] to download an introspection Json schema
    */
   fun introspection(configure: Action<in Introspection>)
 
   /**
-   * Configures the [Registry]
+   * Configures [Registry] to download a SDL schema
    */
   fun registry(configure: Action<in Registry>)
 
@@ -227,7 +226,7 @@ interface Service {
        * This file can be used to upload the queries exact content and their matching operation ID to a server for whitelisting
        * or persisted queries.
        */
-      val operationOutputFile: Provider<RegularFile>
+      val operationOutputFile: Provider<RegularFile>,
   )
 
   /**
@@ -246,7 +245,7 @@ interface Service {
       /**
        * The directory where the generated models will be written
        */
-      val outputDir: Provider<Directory>
+      val outputDir: Provider<Directory>,
   )
 
   val debugDir: DirectoryProperty

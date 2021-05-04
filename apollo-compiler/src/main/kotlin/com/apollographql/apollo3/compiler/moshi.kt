@@ -14,17 +14,7 @@ import java.io.File
 import java.io.InputStream
 
 val MOSHI: Moshi by lazy {
-  Moshi.Builder()
-      .add(
-          PolymorphicJsonAdapterFactory.of(IntrospectionSchema.Type::class.java, "kind")
-              .withSubtype(IntrospectionSchema.Type.Scalar::class.java, IntrospectionSchema.Kind.SCALAR.name)
-              .withSubtype(IntrospectionSchema.Type.Object::class.java, IntrospectionSchema.Kind.OBJECT.name)
-              .withSubtype(IntrospectionSchema.Type.Interface::class.java, IntrospectionSchema.Kind.INTERFACE.name)
-              .withSubtype(IntrospectionSchema.Type.Union::class.java, IntrospectionSchema.Kind.UNION.name)
-              .withSubtype(IntrospectionSchema.Type.Enum::class.java, IntrospectionSchema.Kind.ENUM.name)
-              .withSubtype(IntrospectionSchema.Type.InputObject::class.java, IntrospectionSchema.Kind.INPUT_OBJECT.name)
-      )
-      .build()
+  Moshi.Builder().build()
 }
 
 inline fun <reified T> getJsonAdapter() = MOSHI.adapter(T::class.java)

@@ -19,6 +19,7 @@ package com.apollographql.apollo3.api.internal
 /**
  * Implementation of an [Optional] not containing a reference.
  */
+@Deprecated("This shouldn't be used anymore with Kotlin APIs")
 internal class Absent<T> private constructor() : Optional<T>() {
   override val isPresent = false
 

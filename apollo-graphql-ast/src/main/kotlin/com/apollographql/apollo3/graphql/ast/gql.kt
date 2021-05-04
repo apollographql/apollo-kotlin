@@ -13,7 +13,7 @@ import okio.BufferedSink
  * The structure of the different nodes matches closely the one of the GraphQL specification
  * (https://spec.graphql.org/June2018/#sec-Appendix-Grammar-Summary.Document)
  *
- * See [GraphQLParser] for the different ways to get a [GQLDocument].
+ * See [parse] for the different ways to get a [GQLDocument].
  *
  * Compared to the Antlr [com.apollographql.apollo3.compiler.parser.antlr.GraphQLParser.DocumentContext], a GQLDocument
  * is a lot simpler and allows for easy modifying a document (using .clone()) and outputing them to a [okio.BufferedSink].
@@ -54,7 +54,7 @@ sealed class GQLSelection : GQLNode
  * The top level node in a GraphQL document. This can be a schema document or an executable document
  * (or something else if need be)
  *
- * See [GraphQLParser] for the different ways to get a [GQLDocument].
+ * See [parse] for the different ways to get a [GQLDocument].
  */
 data class GQLDocument(
     val definitions: List<GQLDefinition>,
@@ -163,7 +163,7 @@ data class GQLSchemaDefinition(
 
   override fun write(bufferedSink: BufferedSink) {
     with(bufferedSink) {
-      if (description != null) writeUtf8("\"\"\"${GraphQLString.encodeTripleQuoted(description)}\"\"\"\n")
+      if (description != null) writeUtf8("\"\"\"${description.encodeToGraphQLTripleQuoted()}\"\"\"\n")
       if (directives.isNotEmpty()) {
         directives.join(bufferedSink)
         writeUtf8(" ")
@@ -219,7 +219,7 @@ data class GQLInterfaceTypeDefinition(
 
   override fun write(bufferedSink: BufferedSink) {
     with(bufferedSink) {
-      if (description != null) writeUtf8("\"\"\"${GraphQLString.encodeTripleQuoted(description)}\"\"\"\n")
+      if (description != null) writeUtf8("\"\"\"${description.encodeToGraphQLTripleQuoted()}\"\"\"\n")
       writeUtf8("interface $name")
       if (implementsInterfaces.isNotEmpty()) {
         writeUtf8(" implements ")
@@ -257,7 +257,7 @@ data class GQLObjectTypeDefinition(
 
   override fun write(bufferedSink: BufferedSink) {
     with(bufferedSink) {
-      if (description != null) writeUtf8("\"\"\"${GraphQLString.encodeTripleQuoted(description)}\"\"\"\n")
+      if (description != null) writeUtf8("\"\"\"${description.encodeToGraphQLTripleQuoted()}\"\"\"\n")
       writeUtf8("type $name")
       if (implementsInterfaces.isNotEmpty()) {
         writeUtf8(" implements ")
@@ -293,7 +293,7 @@ data class GQLInputObjectTypeDefinition(
 
   override fun write(bufferedSink: BufferedSink) {
     with(bufferedSink) {
-      if (description != null) writeUtf8("\"\"\"${GraphQLString.encodeTripleQuoted(description)}\"\"\"\n")
+      if (description != null) writeUtf8("\"\"\"${description.encodeToGraphQLTripleQuoted()}\"\"\"\n")
       writeUtf8("input $name")
       if (directives.isNotEmpty()) {
         writeUtf8(" ")
@@ -325,7 +325,7 @@ data class GQLScalarTypeDefinition(
 
   override fun write(bufferedSink: BufferedSink) {
     with(bufferedSink) {
-      if (description != null) writeUtf8("\"\"\"${GraphQLString.encodeTripleQuoted(description)}\"\"\"\n")
+      if (description != null) writeUtf8("\"\"\"${description.encodeToGraphQLTripleQuoted()}\"\"\"\n")
       writeUtf8("scalar $name")
       if (directives.isNotEmpty()) {
         writeUtf8(" ")
@@ -353,7 +353,7 @@ data class GQLEnumTypeDefinition(
 
   override fun write(bufferedSink: BufferedSink) {
     with(bufferedSink) {
-      if (description != null) writeUtf8("\"\"\"${GraphQLString.encodeTripleQuoted(description)}\"\"\"\n")
+      if (description != null) writeUtf8("\"\"\"${description.encodeToGraphQLTripleQuoted()}\"\"\"\n")
       writeUtf8("enum $name")
       if (directives.isNotEmpty()) {
         writeUtf8(" ")
@@ -386,7 +386,7 @@ data class GQLUnionTypeDefinition(
 
   override fun write(bufferedSink: BufferedSink) {
     with(bufferedSink) {
-      if (description != null) writeUtf8("\"\"\"${GraphQLString.encodeTripleQuoted(description)}\"\"\"\n")
+      if (description != null) writeUtf8("\"\"\"${description.encodeToGraphQLTripleQuoted()}\"\"\"\n")
       writeUtf8("union $name")
       if (directives.isNotEmpty()) {
         writeUtf8(" ")
@@ -418,7 +418,7 @@ data class GQLDirectiveDefinition(
 
   override fun write(bufferedSink: BufferedSink) {
     with(bufferedSink) {
-      if (description != null) writeUtf8("\"\"\"${GraphQLString.encodeTripleQuoted(description)}\"\"\"\n")
+      if (description != null) writeUtf8("\"\"\"${description.encodeToGraphQLTripleQuoted()}\"\"\"\n")
       writeUtf8("directive @$name")
       if (arguments.isNotEmpty()) {
         writeUtf8(" ")
@@ -601,7 +601,7 @@ data class GQLEnumValueDefinition(
 
   override fun write(bufferedSink: BufferedSink) {
     with(bufferedSink) {
-      if (description != null) writeUtf8("\"\"\"${GraphQLString.encodeTripleQuoted(description)}\"\"\"\n")
+      if (description != null) writeUtf8("\"\"\"${description.encodeToGraphQLTripleQuoted()}\"\"\"\n")
       writeUtf8(name)
       if (directives.isNotEmpty()) {
         writeUtf8(" ")
@@ -631,7 +631,7 @@ data class GQLFieldDefinition(
 
   override fun write(bufferedSink: BufferedSink) {
     with(bufferedSink) {
-      if (description != null) writeUtf8("\"\"\"${GraphQLString.encodeTripleQuoted(description)}\"\"\"\n")
+      if (description != null) writeUtf8("\"\"\"${description.encodeToGraphQLTripleQuoted()}\"\"\"\n")
       writeUtf8(name)
       if (arguments.isNotEmpty()) {
         writeUtf8(" ")
@@ -667,7 +667,7 @@ data class GQLInputValueDefinition(
 
   override fun write(bufferedSink: BufferedSink) {
     with(bufferedSink) {
-      if (description != null) writeUtf8("\"\"\"${GraphQLString.encodeTripleQuoted(description)}\"\"\" ")
+      if (description != null) writeUtf8("\"\"\"${description.encodeToGraphQLTripleQuoted()}\"\"\" ")
       writeUtf8("$name: ")
       type.write(bufferedSink)
       if (defaultValue != null) {
@@ -1064,7 +1064,7 @@ data class GQLStringValue(
 
   override fun write(bufferedSink: BufferedSink) {
     with(bufferedSink) {
-      writeUtf8("\"${GraphQLString.encodeSingleQuoted(value)}\"")
+      writeUtf8("\"${value.encodeToGraphQLSingleQuoted()}\"")
     }
   }
   override fun copyWithNewChildren(container: NodeContainer): GQLNode {
@@ -1182,7 +1182,6 @@ enum class GQLDirectiveLocation {
   FRAGMENT_SPREAD,
   INLINE_FRAGMENT,
   VARIABLE_DEFINITION,
-  TypeSystemDirectiveLocation,
   SCHEMA,
   SCALAR,
   OBJECT,

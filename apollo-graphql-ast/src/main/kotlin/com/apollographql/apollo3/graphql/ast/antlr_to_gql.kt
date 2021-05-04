@@ -1,7 +1,11 @@
 package com.apollographql.apollo3.graphql.ast
+/**
+ * Functions that wrap the antlr types to our own [GQLNode] values
+ */
 
 import com.apollographql.apollo3.compiler.parser.antlr.GraphQLParser
 import org.antlr.v4.runtime.Token
+
 
 fun GraphQLParser.DocumentContext.toGQLDocument(filePath: String? = null) = AntlrToGQLScope(filePath).parseDocumentContext(this)
 
@@ -441,8 +445,8 @@ private class AntlrToGQLScope(val filePath: String?) {
   private fun GraphQLParser.StringValueContext.parse(): GQLStringValue {
     return GQLStringValue(
         sourceLocation = sourceLocation(start),
-        value = STRING()?.text?.removePrefix("\"")?.removeSuffix("\"")?.let { GraphQLString.decodeSingleQuoted(it) }
-            ?: BLOCK_STRING()?.text?.removePrefix("\"\"\"")?.removeSuffix("\"\"\"")?.let { GraphQLString.decodeTripleQuoted(it) }
+        value = STRING()?.text?.removePrefix("\"")?.removeSuffix("\"")?.decodeAsGraphQLSingleQuoted()
+            ?: BLOCK_STRING()?.text?.removePrefix("\"\"\"")?.removeSuffix("\"\"\"")?.decodeAsGraphQLTripleQuoted()
             ?: astBuilderException("Unrecognized string", start)
     )
   }

@@ -72,6 +72,7 @@ import java.io.Serializable
  * @author Kevin Bourrillion
  * @since 10.0
 </T> */
+@Deprecated("This shouldn't be used anymore with Kotlin APIs")
 abstract class Optional<T> internal constructor() : Serializable {
   /**
    * Returns `true` if this holder contains a (non-null) instance.

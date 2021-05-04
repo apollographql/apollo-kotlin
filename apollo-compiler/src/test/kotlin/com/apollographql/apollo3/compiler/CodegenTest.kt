@@ -214,7 +214,8 @@ class CodegenTest(private val folder: File, private val fragmentsCodegenMode: Fr
           schemaFile = schemaFile,
           customScalarsMapping = customScalarsMapping,
           generateFragmentsAsInterfaces = fragmentAsInterfaces,
-          rootPackageName = "com.example.${folder.name}"
+          rootPackageName = "com.example.${folder.name}",
+          extraSchemaFiles = emptySet()
       )
 
       val moduleOptions = GraphQLCompiler.DefaultModuleOptions.copy(

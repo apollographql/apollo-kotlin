@@ -1,8 +1,10 @@
 package com.apollographql.apollo3.compiler
 
+import com.apollographql.apollo3.graphql.ast.GQLDocument
 import com.apollographql.apollo3.graphql.ast.GQLFragmentDefinition
 import com.apollographql.apollo3.graphql.ast.GQLOperationDefinition
-import com.apollographql.apollo3.graphql.ast.GraphQLParser
+import com.apollographql.apollo3.graphql.ast.toGraphQLExecutableDefinitions
+import com.apollographql.apollo3.graphql.ast.toGraphQLSchema
 import com.apollographql.apollo3.graphql.ast.toUtf8WithIndents
 import com.apollographql.apollo3.graphql.ast.withTypenameWhenNeeded
 import com.google.common.truth.Truth.assertThat
@@ -18,18 +20,19 @@ class TypenameTest(val name: String, private val graphQLFile: File) {
   @Test
   fun testTypename() {
     val schemaFile = File("src/test/graphql/schema.sdl")
-    val schema = GraphQLParser.parseSchema(schemaFile)
+    val schema = schemaFile.toGraphQLSchema()
 
-    val document = GraphQLParser.parseOperations(graphQLFile, schema).orThrow()
+    val definitions = graphQLFile.toGraphQLExecutableDefinitions(schema)
 
-    val documentWithTypename = document.copy(
-        definitions = document.definitions.map {
+    val documentWithTypename = GQLDocument(
+        definitions = definitions.map {
           when (it) {
             is GQLOperationDefinition -> it.withTypenameWhenNeeded(schema)
             is GQLFragmentDefinition -> it.withTypenameWhenNeeded(schema)
             else -> it
           }
-        }
+        },
+        filePath = null
     ).toUtf8WithIndents()
 
     val expectedFile = File(graphQLFile.parentFile, "${name}.with_typename")

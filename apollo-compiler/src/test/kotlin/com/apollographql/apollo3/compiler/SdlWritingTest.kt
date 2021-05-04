@@ -1,7 +1,7 @@
 package com.apollographql.apollo3.compiler
 
-import com.apollographql.apollo3.graphql.ast.GraphQLParser
 import com.apollographql.apollo3.graphql.ast.toFile
+import com.apollographql.apollo3.graphql.ast.toGraphQLSchema
 import org.junit.Assert
 import org.junit.Test
 import java.io.File
@@ -74,13 +74,13 @@ class SdlWritingTest {
      * - leading/trailing spaces in descriptions
      * - defaultValue coercion
      */
-    val schema1 = GraphQLParser.parseSchema(File("src/test/sdl/schema.sdl")).toDocument()
+    val schema1 = File("src/test/sdl/schema.sdl").toGraphQLSchema().toGQLDocument()
 
     val scratchFile = File("build/sdl-test/schema.sdl")
     scratchFile.parentFile.mkdirs()
     schema1.toFile(scratchFile)
 
-    val schema2 = GraphQLParser.parseSchema(scratchFile).toDocument()
+    val schema2 = scratchFile.toGraphQLSchema().toGQLDocument()
 
     val path = diff(schema1,schema2)
     if (path != null) {

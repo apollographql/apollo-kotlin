@@ -1,13 +1,6 @@
 package com.apollographql.apollo3.compiler.operationoutput
 
-import com.apollographql.apollo3.compiler.applyIf
-import com.squareup.moshi.JsonAdapter
 import com.squareup.moshi.JsonClass
-import com.squareup.moshi.Moshi
-import com.squareup.moshi.Types
-import okio.buffer
-import okio.source
-import java.io.File
 
 /**
  * [OperationOutput] is a map where the operationId is the key and [OperationDescriptor] the value

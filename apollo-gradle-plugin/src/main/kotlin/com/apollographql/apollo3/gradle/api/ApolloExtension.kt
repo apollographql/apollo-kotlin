@@ -6,7 +6,7 @@ import org.gradle.api.provider.Property
 /**
  * The entry point for configuring the apollo plugin.
  */
-interface ApolloExtension: Service {
+interface ApolloExtension : Service {
 
   /**
    * registers a new service
@@ -15,7 +15,7 @@ interface ApolloExtension: Service {
    * the different names must be unique
    * @param action: the configure action for the [Service]
    */
-  fun service(name: String, action: Action<Service> = Action<Service>{})
+  fun service(name: String, action: Action<Service> = Action<Service> {})
 
   /**
    * registers multiple services for an android project
@@ -32,8 +32,23 @@ interface ApolloExtension: Service {
    * There is no concept of "priority". It is not possible to "override" queries in narrower source sets.
    * You can use the same file names in the different source sets but the operations should be disjoint between different variants.
    * If the same operation is added multiple times, an error will be thrown like for Java/Kotlin classes.
+   *
+   * @param sourceFolder: where to look for "*.graphql" files, relative to "src/$sourceSetName/graphql". You can pass "." to
+   * look into "src/$sourceSetName/graphql"
+   *
+   * @param nameSuffix: the suffix to use to name the services. A service will be created per Android variant named "$variant${nameSuffix.capitalize()}".
+   * For an example, if `nameSuffix = starwars`, the below services will be created:
+   * - debugStarwars
+   * - releaseStarwars
+   * - debugAndroidTestStarwars
+   * - releaseAndroidTestStarwars
+   * - debugUnitTestStarwars
+   * - releaseUnitTestStarwars
+   * If your project has multiple flavours or build types, services will be created for those as well
+   *
+   * This name must be unique
    */
-  fun createAllAndroidVariantServices(suffix: String, action: Action<Service> = Action<Service>{})
+  fun createAllAndroidVariantServices(sourceFolder: String, nameSuffix: String, action: Action<Service> = Action<Service> {})
 
   /**
    * registers multiple services for a Kotlin project
@@ -41,9 +56,25 @@ interface ApolloExtension: Service {
    * This will create a GraphQL service for each source set and add the sources to the KotlinCompile task.
    *
    * Unlike Android variants, each KotlinCompile task will have a single source set so you can put your files in
-   * - src/$sourceSetName/graphql/Query.graphql
+   * - src/$sourceSetName/graphql/$sourceFolder/Query.graphql
+   *
+   * @param sourceFolder: where to look for "*.graphql" files, relative to "src/$sourceSetName/graphql". You can pass "." to
+   * look into "src/$sourceSetName/graphql"
+   *
+   * @param nameSuffix: the suffix to use to name the services. A service will be created per source set named "${sourceSet.name}{nameSuffix.capitalize()}".
+   * For an example, if `nameSuffix = starwars`, the below services will be created:
+   * - mainStarwars
+   * - testStarwars
+   *
+   * If your project has more Kotlin source sets, services will be created for those as well
    */
-  fun createAllKotlinJvmSourceSetServices(suffix: String, action: Action<Service> = Action<Service>{})
+  fun createAllKotlinJvmSourceSetServices(sourceFolder: String, nameSuffix: String, action: Action<Service> = Action<Service> {})
 
+  /**
+   * For Kotlin native projects, whether to link Sqlite (-lsqlite3). This is required by `apollo-normalized-cache-sqlite` but
+   * some projects might want to customize linker options
+   *
+   * By default, will try to detect if `apollo-normalized-cache-sqlite` is in the classpath
+   */
   val linkSqlite: Property<Boolean>
 }

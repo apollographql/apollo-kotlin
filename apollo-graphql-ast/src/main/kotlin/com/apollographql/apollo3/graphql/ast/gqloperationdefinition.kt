@@ -6,3 +6,8 @@ fun GQLOperationDefinition.rootTypeDefinition(schema: Schema) = when (operationT
   "subscription" -> schema.subscriptionTypeDefinition
   else -> null
 }
+
+fun GQLOperationDefinition.validate(
+    schema: Schema,
+    fragments: Map<String, GQLFragmentDefinition>,
+) = ExecutableValidationScope(schema, fragments).validateOperation(this)

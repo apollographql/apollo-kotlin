@@ -1,35 +1,14 @@
 package com.apollographql.apollo3.graphql.ast
 
-class InputValueScope(val schema: Schema) {
+class InputValueValidationScope(val schema: Schema) {
   private val issues = mutableListOf<Issue>()
   private val variableReferences = mutableListOf<VariableReference>()
 
-  class VariableReference(
-      val variable: GQLVariableValue,
-      val expectedType: GQLType
-  )
-
-  class Result(
-      val coercedValue: GQLValue,
-      val variableReferences: List<VariableReference>,
-      val issues: List<Issue>
-  ) {
-    fun orThrow(): GQLValue {
-      // Let warnings go through.
-      // Especially deprecation warnings are ok.
-      if (issues.any { it.severity == Issue.Severity.ERROR }) {
-        throw SourceAwareException(issues.first().message, issues.first().sourceLocation)
-      }
-      return coercedValue
-    }
-  }
-
-  fun coerce(value: GQLValue, expectedType: GQLType): Result = Result(
+  fun validateAndCoerce(value: GQLValue, expectedType: GQLType): InputValueValidationResult = InputValueValidationResult(
       coercedValue = validateAndCoerceInternal(value, expectedType),
       variableReferences = variableReferences,
       issues = issues
   )
-
 
   private fun registerIssue(value: GQLValue, expectedType: GQLType) {
     issues.add(Issue.ValidationError(message = "Value `${value.toUtf8()}` cannot be used in position expecting `${expectedType.pretty()}`", sourceLocation = value.sourceLocation))

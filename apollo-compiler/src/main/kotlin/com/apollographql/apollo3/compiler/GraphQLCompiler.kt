@@ -1,18 +1,14 @@
 package com.apollographql.apollo3.compiler
 
 import com.apollographql.apollo3.api.QueryDocumentMinifier
-import com.apollographql.apollo3.graphql.ast.GQLFragmentDefinition
-import com.apollographql.apollo3.graphql.ast.*
-import com.apollographql.apollo3.graphql.ast.GQLScalarTypeDefinition
-import com.apollographql.apollo3.graphql.ast.Issue
-import com.apollographql.apollo3.graphql.ast.Schema
-import com.apollographql.apollo3.graphql.ast.SourceAwareException
-import com.apollographql.apollo3.compiler.operationoutput.OperationDescriptor
-import com.apollographql.apollo3.compiler.unified.ir.IrBuilder
 import com.apollographql.apollo3.compiler.codegen.KotlinCodeGenerator
 import com.apollographql.apollo3.compiler.introspection.IntrospectionSchema
-import com.apollographql.apollo3.compiler.introspection.toSchema
+import com.apollographql.apollo3.compiler.introspection.toGQLDocument
+import com.apollographql.apollo3.compiler.introspection.toGraphQLIntrospectionSchema
+import com.apollographql.apollo3.compiler.operationoutput.OperationDescriptor
+import com.apollographql.apollo3.compiler.unified.ir.IrBuilder
 import com.apollographql.apollo3.compiler.unified.ir.dumpTo
+import com.apollographql.apollo3.graphql.ast.*
 import java.io.File
 
 class GraphQLCompiler {
@@ -35,23 +31,27 @@ class GraphQLCompiler {
     debugDir?.deleteRecursively()
     debugDir?.mkdirs()
 
-    val (documents, issues) = GraphQLParser.parseExecutableFiles(
-        operationFiles,
-        incomingOptions.schema,
-        incomingOptions.metadataFragments.map { it.definition }
-    )
-
-    val (errors, warnings) = issues.partition { it.severity == Issue.Severity.ERROR }
-
-    val firstError = errors.firstOrNull()
-    if (firstError != null) {
-      throw SourceAwareException(
-          error = firstError.message,
-          sourceLocation = firstError.sourceLocation,
-      )
+    val definitions = mutableListOf<GQLDefinition>()
+    val parseIssues = mutableListOf<Issue>()
+    operationFiles.map { file ->
+      when(val parseResult = file.parseAsGraphQLDocument()) {
+        is ParseResult.Success -> definitions.addAll(parseResult.value.definitions)
+        is ParseResult.Error -> parseIssues.addAll(parseResult.issues)
+      }
     }
 
+    // Parsing issues are fatal
+    parseIssues.checkNoErrors()
+
+    val validationIssues = GQLDocument(
+        definitions = definitions + incomingOptions.metadataFragments.map { it.definition },
+        filePath = null
+    ).validateAsOperations(incomingOptions.schema)
+
+    validationIssues.checkNoErrors()
+
     if (moduleOptions.warnOnDeprecatedUsages) {
+      val warnings = validationIssues.filter { it.severity == Issue.Severity.WARNING }
       warnings.forEach {
         // antlr is 0-indexed but IntelliJ is 1-indexed. Add 1 so that clicking the link will land on the correct location
         val column = it.sourceLocation.position + 1
@@ -64,15 +64,11 @@ class GraphQLCompiler {
       }
     }
 
-    val fragments = documents.flatMap {
-      it.definitions.filterIsInstance<GQLFragmentDefinition>()
-    }.map {
+    val fragments = definitions.filterIsInstance<GQLFragmentDefinition>().map {
       it.withTypenameWhenNeeded(incomingOptions.schema)
     }
 
-    val operations = documents.flatMap {
-      it.definitions.filterIsInstance<GQLOperationDefinition>()
-    }.map {
+    val operations = definitions.filterIsInstance<GQLOperationDefinition>().map {
       it.withTypenameWhenNeeded(incomingOptions.schema)
     }
 
@@ -211,6 +207,7 @@ class GraphQLCompiler {
       fun from(
           roots: Roots,
           schemaFile: File,
+          extraSchemaFiles: Set<File>,
           customScalarsMapping: Map<String, String>,
           generateFragmentsAsInterfaces: Boolean,
           rootPackageName: String,
@@ -220,8 +217,19 @@ class GraphQLCompiler {
         } catch (e: Exception) {
           ""
         }
+
+        val document = schemaFile.toGQLDocument()
+        val extraDefinitions = extraSchemaFiles.flatMap {
+          it.parseAsGraphQLDocument().getOrThrow().definitions
+        }
+
+        val schema = GQLDocument(
+            definitions = document.definitions + extraDefinitions +  apolloDefinitions(),
+            filePath = null
+        ).toSchema()
+
         return IncomingOptions(
-            schema = schemaFile.toSchema(),
+            schema = schema,
             schemaPackageName = "$rootPackageName.$relativeSchemaPackageName".removePrefix(".").removeSuffix("."),
             customScalarsMapping = customScalarsMapping,
             generateFragmentsAsInterfaces = generateFragmentsAsInterfaces,
@@ -232,18 +240,15 @@ class GraphQLCompiler {
         )
       }
 
-      private  fun File.toSchema(): Schema {
-        if (extension == "json") {
-          return IntrospectionSchema(this).toSchema()
+      private fun File.toGQLDocument(): GQLDocument {
+        return if (extension == "json") {
+           toGraphQLIntrospectionSchema().toGQLDocument()
         } else {
-          return GraphQLParser.parseSchema(this)
+           parseAsGraphQLDocument().getOrThrow()
         }
       }
-
     }
   }
-
-
 
 
   data class ModuleOptions(

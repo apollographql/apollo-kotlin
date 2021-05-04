@@ -53,14 +53,9 @@ open class SourceAwareException(
 }
 
 /**
- * Antlr found an error
- */
-class AntlrParseException(error: String, sourceLocation: SourceLocation) : SourceAwareException(error, sourceLocation)
-
-/**
  * Something went wrong while building the GraphQL AST, analyzing the schema, ...
  *
- * This most likely means an Antlr rule was added to the grammar but the Kotlin code does not handle it
+ * This most likely a bug. For an example, an Antlr rule was added to the grammar but the Kotlin code does not handle it
  */
 class UnrecognizedAntlrRule(error: String, sourceLocation: SourceLocation) : SourceAwareException(error, sourceLocation)
 

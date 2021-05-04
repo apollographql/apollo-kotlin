@@ -34,7 +34,7 @@ dependencies {
 }
 
 configure<ApolloExtension> {
-  createAllKotlinJvmSourceSetServices("example") {
+  createAllKotlinJvmSourceSetServices(".", "example") {
     schemaFile.set(file("src/main/graphql/com/example/schema.sdl"))
   }
 }
