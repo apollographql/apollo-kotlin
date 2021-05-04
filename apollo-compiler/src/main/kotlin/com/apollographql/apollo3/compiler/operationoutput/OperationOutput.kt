@@ -25,26 +25,6 @@ class OperationDescriptor(
     val source: String
 )
 
-private fun operationOutputAdapter(indent: String = ""): JsonAdapter<OperationOutput> {
-  val moshi = Moshi.Builder().build()
-  val type = Types.newParameterizedType(Map::class.java, String::class.java, OperationDescriptor::class.java)
-  return moshi.adapter<OperationOutput>(type).indent(indent)
-}
-
-fun OperationOutput.toJson(indent: String = ""): String {
-  return operationOutputAdapter(indent).toJson(this)
-}
-
-fun OperationOutput(file: File): OperationOutput {
-  return try {
-    file.source().buffer().use {
-      operationOutputAdapter().fromJson(it)!!
-    }
-  } catch (e: Exception) {
-    throw IllegalArgumentException("cannot parse operation output $file")
-  }
-}
-
 fun OperationOutput.findOperationId(name: String): String {
   val id = entries.find { it.value.name == name }?.key
   check(id != null) {
