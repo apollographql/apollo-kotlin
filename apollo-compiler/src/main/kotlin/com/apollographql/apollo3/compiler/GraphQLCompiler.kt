@@ -8,7 +8,6 @@ import com.apollographql.apollo3.graphql.ast.Issue
 import com.apollographql.apollo3.graphql.ast.Schema
 import com.apollographql.apollo3.graphql.ast.SourceAwareException
 import com.apollographql.apollo3.compiler.operationoutput.OperationDescriptor
-import com.apollographql.apollo3.compiler.operationoutput.toJson
 import com.apollographql.apollo3.compiler.unified.ir.IrBuilder
 import com.apollographql.apollo3.compiler.codegen.KotlinCodeGenerator
 import com.apollographql.apollo3.compiler.introspection.IntrospectionSchema
