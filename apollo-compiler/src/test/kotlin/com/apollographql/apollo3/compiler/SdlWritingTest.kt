@@ -1,7 +1,7 @@
 package com.apollographql.apollo3.compiler
 
-import com.apollographql.apollo3.graphql.ast.toFile
 import com.apollographql.apollo3.graphql.ast.toGraphQLSchema
+import com.apollographql.apollo3.graphql.ast.toUtf8
 import org.junit.Assert
 import org.junit.Test
 import java.io.File
@@ -78,7 +78,7 @@ class SdlWritingTest {
 
     val scratchFile = File("build/sdl-test/schema.sdl")
     scratchFile.parentFile.mkdirs()
-    schema1.toFile(scratchFile)
+    schema1.toUtf8(scratchFile)
 
     val schema2 = scratchFile.toGraphQLSchema().toGQLDocument()
 

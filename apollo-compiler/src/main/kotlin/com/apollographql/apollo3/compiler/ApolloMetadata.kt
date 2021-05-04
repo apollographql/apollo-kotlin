@@ -50,22 +50,24 @@ data class ApolloMetadata(
 
     private val adapter by lazy {
       val schemaJsonAdapter = object : JsonAdapter<Schema>() {
-        override fun fromJson(p0: JsonReader): Schema {
-          return p0.nextString().toGraphQLSchema()
+        override fun fromJson(reader: JsonReader): Schema {
+          val string = reader.nextString()
+          return string.toGraphQLSchema()
         }
 
-        override fun toJson(p0: JsonWriter, p1: Schema?) {
-          p0.value(p1!!.toGQLDocument().toUtf8())
+        override fun toJson(writer: JsonWriter, schema: Schema?) {
+          writer.value(schema!!.toGQLDocument().toUtf8())
         }
       }
 
       val gqlFragmentJsonAdapter = object : JsonAdapter<GQLFragmentDefinition>() {
-        override fun fromJson(p0: JsonReader): GQLFragmentDefinition {
-          return p0.nextString().parseAsGraphQLDocument().getOrThrow().definitions.first() as GQLFragmentDefinition
+        override fun fromJson(reader: JsonReader): GQLFragmentDefinition {
+          val string = reader.nextString()
+          return string.parseAsGraphQLDocument().getOrThrow().definitions.first() as GQLFragmentDefinition
         }
 
-        override fun toJson(p0: JsonWriter, p1: GQLFragmentDefinition?) {
-          p0.value(p1!!.toUtf8())
+        override fun toJson(writer: JsonWriter, fragmentDefinition: GQLFragmentDefinition?) {
+          writer.value(fragmentDefinition!!.toUtf8())
         }
       }
 

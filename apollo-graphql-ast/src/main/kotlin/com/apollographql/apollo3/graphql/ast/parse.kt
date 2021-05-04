@@ -160,7 +160,7 @@ private fun <T : ParserRuleContext> antlrParse(
     if (!eof && lastToken.tokenIndex > documentStopToken.tokenIndex && sameChannel) {
       issues.add(
           Issue.ParsingError(
-              "Unsupported token `${lastToken.text}`",
+              "Unsupported token (eof) `${lastToken.text}`",
               SourceLocation(lastToken.line, lastToken.charPositionInLine, filePath)
           )
       )

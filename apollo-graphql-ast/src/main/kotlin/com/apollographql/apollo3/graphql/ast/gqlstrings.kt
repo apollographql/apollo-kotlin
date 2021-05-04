@@ -59,11 +59,26 @@ fun String.decodeAsGraphQLTripleQuoted(): String {
   return replace("\\\"\"\"", "\"\"\"").trimIndent()
 }
 
+/**
+ * https://spec.graphql.org/draft/#EscapedCharacter
+ */
 fun String.encodeToGraphQLSingleQuoted(): String {
-  return this
-      .replace("\\", "\\\\")
-      .replace("\"", "\\\"")
-      .replace("\n", "\\n")
+  return buildString {
+    this@encodeToGraphQLSingleQuoted.forEach { c ->
+      when (c) {
+        '\"' -> append("\\\"")
+        '\\' -> append("\\\\")
+        '/' -> append("\\/")
+        '\b' -> append("\\b")
+        '\u000C' -> append("\\t")
+        '\n' -> append("\\n")
+        '\r' -> append("\\r")
+        '\t' -> append("\\t")
+        // TODO: handle range outside U+0020–U+FFFF
+        else -> append(c)
+      }
+    }
+  }
 }
 
 fun String.encodeToGraphQLTripleQuoted(): String {

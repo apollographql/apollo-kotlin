@@ -89,7 +89,7 @@ class TestQuery : Query<TestQuery.Data> {
 
   companion object {
     const val OPERATION_ID: String =
-        "a9a2dda27867aae4e7ec4ee3ed20374db9e0ac14f565cd293b397f8aa5580f1e"
+        "b64545209b91828f096ee0b61e3e0490fc95d83a3b40eb0fffc03e9960549925"
 
     /**
      * The minimized GraphQL document being sent to the server to save a few bytes.
@@ -99,6 +99,7 @@ class TestQuery : Query<TestQuery.Data> {
      *   __typename
      *   ...QueryFragment
      * }
+     *
      * fragment QueryFragment on Query {
      *   __typename
      *   hero {
@@ -117,10 +118,12 @@ class TestQuery : Query<TestQuery.Data> {
      *     }
      *   }
      * }
+     *
      * fragment heroFragment on Character {
      *   __typename
      *   name
      * }
+     *
      * fragment droidFragment on Droid {
      *   __typename
      *   name
@@ -128,7 +131,7 @@ class TestQuery : Query<TestQuery.Data> {
      * }
      */
     const val OPERATION_DOCUMENT: String =
-        "query TestQuery { __typename ...QueryFragment } fragment QueryFragment on Query { __typename hero { __typename ...heroFragment } droid(id: 1) { __typename ...droidFragment } human(id: 1) { __typename ... on Human { name homePlanet } } } fragment heroFragment on Character { __typename name } fragment droidFragment on Droid { __typename name primaryFunction }"
+        "query TestQuery { __typename ...QueryFragment }  fragment QueryFragment on Query { __typename hero { __typename ...heroFragment } droid(id: 1) { __typename ...droidFragment } human(id: 1) { __typename ... on Human { name homePlanet } } }  fragment heroFragment on Character { __typename name }  fragment droidFragment on Droid { __typename name primaryFunction }"
 
     const val OPERATION_NAME: String = "TestQuery"
   }

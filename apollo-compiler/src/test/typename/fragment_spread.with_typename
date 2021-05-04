@@ -4,6 +4,7 @@ query TestQuery {
     ...heroFragment
   }
 }
+
 fragment heroFragment on Character {
   __typename
   name
