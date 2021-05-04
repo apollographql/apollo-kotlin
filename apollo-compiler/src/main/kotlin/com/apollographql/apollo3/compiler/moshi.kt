@@ -70,17 +70,7 @@ inline fun <reified T> T.toJson(indent: String = ""): String {
   return getJsonAdapter<T>().indent(indent).toJson(this)
 }
 
-inline fun <reified T> T.toJson(writer: JsonWriter) {
-  getJsonAdapter<T>().toJson(writer, this)
-}
-
-inline fun <reified T> T.toJson(file: File) {
-  file.outputStream().sink().buffer().use {
-    return getJsonAdapter<T>().toJson(it, this)
-  }
-}
-
-inline fun <reified T> T.toJson(file: File, indent: String) {
+inline fun <reified T> T.toJson(file: File, indent: String = "") {
   file.outputStream().sink().buffer().use {
     return getJsonAdapter<T>().indent(indent).toJson(it, this)
   }

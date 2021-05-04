@@ -25,15 +25,13 @@ class OperationDescriptor(
     val source: String
 )
 
-private fun operationOutputAdapter(indent: String? = null): JsonAdapter<OperationOutput> {
+private fun operationOutputAdapter(indent: String = ""): JsonAdapter<OperationOutput> {
   val moshi = Moshi.Builder().build()
   val type = Types.newParameterizedType(Map::class.java, String::class.java, OperationDescriptor::class.java)
-  return moshi.adapter<OperationOutput>(type).applyIf(indent != null) {
-    this.indent(indent!!)
-  }
+  return moshi.adapter<OperationOutput>(type).indent(indent)
 }
 
-fun OperationOutput.toJson(indent: String? = null): String {
+fun OperationOutput.toJson(indent: String = ""): String {
   return operationOutputAdapter(indent).toJson(this)
 }
 
