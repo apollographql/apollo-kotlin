@@ -5,10 +5,10 @@
 //
 package com.example.arguments_complex.adapter
 
-import com.apollographql.apollo3.api.NullableDoubleResponseAdapter
-import com.apollographql.apollo3.api.ResponseAdapter
-import com.apollographql.apollo3.api.ResponseAdapterCache
-import com.apollographql.apollo3.api.StringResponseAdapter
+import com.apollographql.apollo3.api.Adapter
+import com.apollographql.apollo3.api.CustomScalarAdapters
+import com.apollographql.apollo3.api.NullableDoubleAdapter
+import com.apollographql.apollo3.api.StringAdapter
 import com.apollographql.apollo3.api.json.JsonReader
 import com.apollographql.apollo3.api.json.JsonWriter
 import com.apollographql.apollo3.api.nullable
@@ -19,16 +19,16 @@ import kotlin.String
 import kotlin.collections.List
 
 object TestQuery_ResponseAdapter {
-  object Data : ResponseAdapter<TestQuery.Data> {
+  object Data : Adapter<TestQuery.Data> {
     val RESPONSE_NAMES: List<String> = listOf("heroWithReview")
 
-    override fun fromResponse(reader: JsonReader, responseAdapterCache: ResponseAdapterCache):
+    override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters):
         TestQuery.Data {
       var heroWithReview: TestQuery.Data.HeroWithReview? = null
       while(true) {
         when (reader.selectName(RESPONSE_NAMES)) {
-          0 -> heroWithReview = HeroWithReview.obj().nullable().fromResponse(reader,
-              responseAdapterCache)
+          0 -> heroWithReview = HeroWithReview.obj().nullable().fromJson(reader,
+              customScalarAdapters)
           else -> break
         }
       }
@@ -37,26 +37,26 @@ object TestQuery_ResponseAdapter {
       )
     }
 
-    override fun toResponse(
+    override fun toJson(
       writer: JsonWriter,
-      responseAdapterCache: ResponseAdapterCache,
+      customScalarAdapters: CustomScalarAdapters,
       value: TestQuery.Data
     ) {
       writer.name("heroWithReview")
-      HeroWithReview.obj().nullable().toResponse(writer, responseAdapterCache, value.heroWithReview)
+      HeroWithReview.obj().nullable().toJson(writer, customScalarAdapters, value.heroWithReview)
     }
 
-    object HeroWithReview : ResponseAdapter<TestQuery.Data.HeroWithReview> {
+    object HeroWithReview : Adapter<TestQuery.Data.HeroWithReview> {
       val RESPONSE_NAMES: List<String> = listOf("name", "height")
 
-      override fun fromResponse(reader: JsonReader, responseAdapterCache: ResponseAdapterCache):
+      override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters):
           TestQuery.Data.HeroWithReview {
         var name: String? = null
         var height: Double? = null
         while(true) {
           when (reader.selectName(RESPONSE_NAMES)) {
-            0 -> name = StringResponseAdapter.fromResponse(reader, responseAdapterCache)
-            1 -> height = NullableDoubleResponseAdapter.fromResponse(reader, responseAdapterCache)
+            0 -> name = StringAdapter.fromJson(reader, customScalarAdapters)
+            1 -> height = NullableDoubleAdapter.fromJson(reader, customScalarAdapters)
             else -> break
           }
         }
@@ -66,15 +66,15 @@ object TestQuery_ResponseAdapter {
         )
       }
 
-      override fun toResponse(
+      override fun toJson(
         writer: JsonWriter,
-        responseAdapterCache: ResponseAdapterCache,
+        customScalarAdapters: CustomScalarAdapters,
         value: TestQuery.Data.HeroWithReview
       ) {
         writer.name("name")
-        StringResponseAdapter.toResponse(writer, responseAdapterCache, value.name)
+        StringAdapter.toJson(writer, customScalarAdapters, value.name)
         writer.name("height")
-        NullableDoubleResponseAdapter.toResponse(writer, responseAdapterCache, value.height)
+        NullableDoubleAdapter.toJson(writer, customScalarAdapters, value.height)
       }
     }
   }

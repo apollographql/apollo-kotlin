@@ -5,38 +5,39 @@
 //
 package com.example.arguments_hardcoded.responsefields
 
-import com.apollographql.apollo3.api.ResponseField
+import com.apollographql.apollo3.api.FieldSet
+import com.apollographql.apollo3.api.MergedField
 import com.apollographql.apollo3.api.list
 import com.apollographql.apollo3.api.notNull
 import kotlin.Array
 
 object TestQuery_ResponseFields {
-  val fields: Array<ResponseField> = arrayOf(
-    ResponseField(
-      type = ResponseField.Type.Named.Object("unused"),
+  val fields: Array<MergedField> = arrayOf(
+    MergedField(
+      type = MergedField.Type.Named.Object("unused"),
       fieldName = "data",
       fieldSets = listOf(
-        ResponseField.FieldSet(null, Data.fields),
+        FieldSet(null, Data.fields),
       ),
     ),
   )
 
 
   object Data {
-    val fields: Array<ResponseField> = arrayOf(
-      ResponseField(
-        type = ResponseField.Type.Named.Object("unused").list(),
+    val fields: Array<MergedField> = arrayOf(
+      MergedField(
+        type = MergedField.Type.Named.Object("unused").list(),
         fieldName = "reviews",
         arguments = mapOf("episode" to "JEDI",
           "starsInt" to 10,
           "starsFloat" to 9.9
         ),
         fieldSets = listOf(
-          ResponseField.FieldSet(null, Review.fields),
+          FieldSet(null, Review.fields),
         ),
       ),
-      ResponseField(
-        type = ResponseField.Type.Named.Other("unused").notNull(),
+      MergedField(
+        type = MergedField.Type.Named.Other("unused").notNull(),
         fieldName = "testNullableArguments",
         arguments = mapOf("int" to null,
           "string" to null,
@@ -51,13 +52,13 @@ object TestQuery_ResponseFields {
 
 
     object Review {
-      val fields: Array<ResponseField> = arrayOf(
-        ResponseField(
-          type = ResponseField.Type.Named.Other("unused").notNull(),
+      val fields: Array<MergedField> = arrayOf(
+        MergedField(
+          type = MergedField.Type.Named.Other("unused").notNull(),
           fieldName = "stars",
         ),
-        ResponseField(
-          type = ResponseField.Type.Named.Other("unused"),
+        MergedField(
+          type = MergedField.Type.Named.Other("unused"),
           fieldName = "commentary",
         ),
       )

@@ -8,7 +8,7 @@ import com.apollographql.apollo3.Utils.mockResponse
 import com.apollographql.apollo3.api.Optional
 import com.apollographql.apollo3.api.ApolloResponse
 import com.apollographql.apollo3.cache.normalized.MemoryCacheFactory
-import com.apollographql.apollo3.exception.ApolloException
+import com.apollographql.apollo3.api.exception.ApolloException
 import com.apollographql.apollo3.fetcher.ApolloResponseFetchers
 import com.apollographql.apollo3.integration.normalizer.CreateReviewMutation
 import com.apollographql.apollo3.integration.normalizer.ReviewsByEpisodeQuery

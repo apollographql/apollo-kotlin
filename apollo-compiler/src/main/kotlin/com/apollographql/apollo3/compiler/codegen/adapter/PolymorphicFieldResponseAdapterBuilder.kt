@@ -1,15 +1,15 @@
 package com.apollographql.apollo3.compiler.codegen.adapter
 
-import com.apollographql.apollo3.api.ResponseAdapter
-import com.apollographql.apollo3.api.ResponseAdapterCache
+import com.apollographql.apollo3.api.Adapter
+import com.apollographql.apollo3.api.CustomScalarAdapters
 import com.apollographql.apollo3.api.json.JsonReader
 import com.apollographql.apollo3.api.json.JsonWriter
 import com.apollographql.apollo3.compiler.codegen.Identifier
 import com.apollographql.apollo3.compiler.codegen.Identifier.__typename
-import com.apollographql.apollo3.compiler.codegen.Identifier.fromResponse
+import com.apollographql.apollo3.compiler.codegen.Identifier.fromJson
 import com.apollographql.apollo3.compiler.codegen.Identifier.reader
-import com.apollographql.apollo3.compiler.codegen.Identifier.responseAdapterCache
-import com.apollographql.apollo3.compiler.codegen.Identifier.toResponse
+import com.apollographql.apollo3.compiler.codegen.Identifier.customScalarAdapters
+import com.apollographql.apollo3.compiler.codegen.Identifier.toJson
 import com.apollographql.apollo3.compiler.codegen.Identifier.value
 import com.apollographql.apollo3.compiler.codegen.Identifier.writer
 import com.apollographql.apollo3.compiler.codegen.CgContext
@@ -68,7 +68,7 @@ class PolymorphicFieldResponseAdapterBuilder(
   private fun typeSpec(): TypeSpec {
     return TypeSpec.objectBuilder(adapterName)
         .addSuperinterface(
-            ResponseAdapter::class.asTypeName().parameterizedBy(adaptedClassName)
+            Adapter::class.asTypeName().parameterizedBy(adaptedClassName)
         )
         .addProperty(responseNamesPropertySpec())
         .addFunction(readFromResponseFunSpec())
@@ -83,10 +83,10 @@ class PolymorphicFieldResponseAdapterBuilder(
   }
 
   private fun readFromResponseFunSpec(): FunSpec {
-    return FunSpec.builder(fromResponse)
+    return FunSpec.builder(fromJson)
         .returns(adaptedClassName)
         .addParameter(reader, JsonReader::class)
-        .addParameter(responseAdapterCache, ResponseAdapterCache::class)
+        .addParameter(customScalarAdapters, CustomScalarAdapters::class)
         .addModifiers(KModifier.OVERRIDE)
         .addCode(readFromResponseCodeBlock())
         .build()
@@ -112,7 +112,7 @@ class PolymorphicFieldResponseAdapterBuilder(
         builder.addStatement("else")
       }
       builder.addStatement(
-          "-> %T.$fromResponse($reader, $responseAdapterCache, $__typename)",
+          "-> %T.$fromJson($reader, $customScalarAdapters, $__typename)",
           ClassName.from(path + model.modelName),
       )
     }
@@ -122,10 +122,10 @@ class PolymorphicFieldResponseAdapterBuilder(
   }
 
   private fun writeToResponseFunSpec(): FunSpec {
-    return FunSpec.builder(toResponse)
+    return FunSpec.builder(toJson)
         .addModifiers(KModifier.OVERRIDE)
         .addParameter(writer, JsonWriter::class.asTypeName())
-        .addParameter(responseAdapterCache, ResponseAdapterCache::class)
+        .addParameter(customScalarAdapters, CustomScalarAdapters::class)
         .addParameter(value, adaptedClassName)
         .addCode(writeToResponseCodeBlock())
         .build()
@@ -137,7 +137,7 @@ class PolymorphicFieldResponseAdapterBuilder(
     builder.beginControlFlow("when($value) {")
     implementations.sortedByDescending { it.typeSet.size }.forEach { model ->
       builder.addStatement(
-          "is %T -> %T.$toResponse($writer, $responseAdapterCache, $value)",
+          "is %T -> %T.$toJson($writer, $customScalarAdapters, $value)",
           context.resolver.resolveModel(model.id),
           ClassName.from(path + model.modelName),
       )

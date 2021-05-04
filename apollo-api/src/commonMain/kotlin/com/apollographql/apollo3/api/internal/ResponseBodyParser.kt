@@ -3,7 +3,7 @@ package com.apollographql.apollo3.api.internal
 import com.apollographql.apollo3.api.ApolloResponse
 import com.apollographql.apollo3.api.Error
 import com.apollographql.apollo3.api.Operation
-import com.apollographql.apollo3.api.ResponseAdapterCache
+import com.apollographql.apollo3.api.CustomScalarAdapters
 import com.apollographql.apollo3.api.internal.json.BufferedSourceJsonReader
 import com.apollographql.apollo3.api.internal.json.MapJsonReader
 import com.apollographql.apollo3.api.internal.json.Utils.readRecursively
@@ -15,14 +15,12 @@ import okio.BufferedSource
 
 /**
  * [ResponseBodyParser] parses network responses, including data, errors and extensions from a [JsonReader]
- *
- * That will avoid the cost of having to create an entire Map in memory
  */
 object ResponseBodyParser {
   fun <D : Operation.Data> parse(
       jsonReader: JsonReader,
       operation: Operation<D>,
-      responseAdapterCache: ResponseAdapterCache
+      customScalarAdapters: CustomScalarAdapters
   ): ApolloResponse<D> {
     jsonReader.beginObject()
 
@@ -31,7 +29,7 @@ object ResponseBodyParser {
     var extensions: Map<String, Any?>? = null
     while (jsonReader.hasNext()) {
       when (jsonReader.nextName()) {
-        "data" -> data = operation.adapter().nullable().fromResponse(jsonReader, responseAdapterCache)
+        "data" -> data = operation.adapter().nullable().fromJson(jsonReader, customScalarAdapters)
         "errors" -> errors = jsonReader.readErrors()
         "extensions" -> extensions = jsonReader.readRecursively() as Map<String, Any?>
         else -> jsonReader.skipValue()
@@ -52,22 +50,22 @@ object ResponseBodyParser {
   fun <D : Operation.Data> parse(
       source: BufferedSource,
       operation: Operation<D>,
-      responseAdapterCache: ResponseAdapterCache
+      customScalarAdapters: CustomScalarAdapters
   ): ApolloResponse<D> {
     return BufferedSourceJsonReader(source).use { jsonReader ->
-      parse(jsonReader, operation, responseAdapterCache)
+      parse(jsonReader, operation, customScalarAdapters)
     }
   }
 
   fun <D : Operation.Data> parse(
       payload: Map<String, Any?>,
       operation: Operation<D>,
-      responseAdapterCache: ResponseAdapterCache,
+      customScalarAdapters: CustomScalarAdapters,
   ): ApolloResponse<D> {
     return parse(
         MapJsonReader(payload),
         operation = operation,
-        responseAdapterCache = responseAdapterCache
+        customScalarAdapters = customScalarAdapters
     )
   }
 

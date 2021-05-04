@@ -5,8 +5,8 @@
 //
 package com.example.hero_name_query_long_name.adapter
 
-import com.apollographql.apollo3.api.ResponseAdapter
-import com.apollographql.apollo3.api.ResponseAdapterCache
+import com.apollographql.apollo3.api.Adapter
+import com.apollographql.apollo3.api.CustomScalarAdapters
 import com.apollographql.apollo3.api.json.JsonReader
 import com.apollographql.apollo3.api.json.JsonWriter
 import com.apollographql.apollo3.api.nullable
@@ -17,18 +17,18 @@ import kotlin.IllegalStateException
 object
     TestQueryWithAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryLongName_VariablesAdapter
     :
-    ResponseAdapter<TestQueryWithAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryLongName>
+    Adapter<TestQueryWithAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryLongName>
     {
-  override fun fromResponse(reader: JsonReader, responseAdapterCache: ResponseAdapterCache):
+  override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters):
       TestQueryWithAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryLongName = throw
       IllegalStateException("Input type used in output position")
-  override fun toResponse(
+  override fun toJson(
     writer: JsonWriter,
-    responseAdapterCache: ResponseAdapterCache,
+    customScalarAdapters: CustomScalarAdapters,
     value: TestQueryWithAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryLongName
   ) {
     writer.name("episodeAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryLongName")
-    Episode_ResponseAdapter.nullable().toResponse(writer, responseAdapterCache,
+    Episode_ResponseAdapter.nullable().toJson(writer, customScalarAdapters,
         value.episodeAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryLongName)
   }
 }

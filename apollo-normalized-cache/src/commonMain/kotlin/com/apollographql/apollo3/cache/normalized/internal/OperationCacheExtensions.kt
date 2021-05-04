@@ -1,14 +1,14 @@
 package com.apollographql.apollo3.cache.normalized.internal
 
 import com.apollographql.apollo3.api.Executable
-import com.apollographql.apollo3.api.ResponseAdapterCache
+import com.apollographql.apollo3.api.CustomScalarAdapters
 import com.apollographql.apollo3.api.Fragment
 import com.apollographql.apollo3.api.Operation
 import com.apollographql.apollo3.cache.normalized.Record
-import com.apollographql.apollo3.api.ResponseField
 import com.apollographql.apollo3.api.internal.json.MapJsonReader
 import com.apollographql.apollo3.api.internal.json.MapJsonWriter
-import com.apollographql.apollo3.api.ResponseAdapter
+import com.apollographql.apollo3.api.Adapter
+import com.apollographql.apollo3.api.FieldSet
 import com.apollographql.apollo3.api.variables
 import com.apollographql.apollo3.cache.CacheHeaders
 import com.apollographql.apollo3.cache.normalized.CacheKey
@@ -17,42 +17,42 @@ import com.apollographql.apollo3.cache.normalized.ReadOnlyNormalizedCache
 
 fun <D : Operation.Data> Operation<D>.normalize(
     data: D,
-    responseAdapterCache: ResponseAdapterCache,
+    customScalarAdapters: CustomScalarAdapters,
     cacheKeyResolver: CacheKeyResolver,
 ) = normalizeInternal(
     data,
-    responseAdapterCache,
+    customScalarAdapters,
     cacheKeyResolver,
     CacheKeyResolver.rootKey().key,
     adapter(),
-    variables(responseAdapterCache),
-    responseFields())
+    variables(customScalarAdapters),
+    fieldSets())
 
 fun <D : Fragment.Data> Fragment<D>.normalize(
     data: D,
-    responseAdapterCache: ResponseAdapterCache,
+    customScalarAdapters: CustomScalarAdapters,
     cacheKeyResolver: CacheKeyResolver,
     rootKey: String,
 ) = normalizeInternal(
     data,
-    responseAdapterCache,
+    customScalarAdapters,
     cacheKeyResolver,
     rootKey,
     adapter(),
-    variables(responseAdapterCache),
-    responseFields())
+    variables(customScalarAdapters),
+    fieldSets())
 
 private fun <D> normalizeInternal(
     data: D,
-    responseAdapterCache: ResponseAdapterCache,
+    customScalarAdapters: CustomScalarAdapters,
     cacheKeyResolver: CacheKeyResolver,
     rootKey: String,
-    adapter: ResponseAdapter<D>,
+    adapter: Adapter<D>,
     variables: Executable.Variables,
-    fieldSets: List<ResponseField.FieldSet>,
+    fieldSets: List<FieldSet>,
 ): Map<String, Record> {
   val writer = MapJsonWriter()
-  adapter.toResponse(writer, responseAdapterCache, data)
+  adapter.toJson(writer, customScalarAdapters, data)
   return Normalizer(variables) { responseField, fields ->
     cacheKeyResolver.fromFieldRecordSet(responseField, variables, fields).let { if (it == CacheKey.NO_KEY) null else it.key }
   }.normalize(writer.root() as Map<String, Any?>, null, rootKey, fieldSets)
@@ -71,7 +71,7 @@ enum class ReadMode {
 }
 
 fun <D : Operation.Data> Operation<D>.readDataFromCache(
-    responseAdapterCache: ResponseAdapterCache,
+    customScalarAdapters: CustomScalarAdapters,
     cache: ReadOnlyNormalizedCache,
     cacheKeyResolver: CacheKeyResolver,
     cacheHeaders: CacheHeaders,
@@ -80,17 +80,17 @@ fun <D : Operation.Data> Operation<D>.readDataFromCache(
     cache = cache,
     cacheKeyResolver = cacheKeyResolver,
     cacheHeaders = cacheHeaders,
-    variables = variables(responseAdapterCache),
+    variables = variables(customScalarAdapters),
     adapter = adapter(),
-    responseAdapterCache = responseAdapterCache,
+    customScalarAdapters = customScalarAdapters,
     mode = mode,
     cacheKey = CacheKeyResolver.rootKey(),
-    fieldSets = responseFields()
+    fieldSets = fieldSets()
 )
 
 fun <D : Fragment.Data> Fragment<D>.readDataFromCache(
     cacheKey: CacheKey,
-    responseAdapterCache: ResponseAdapterCache,
+    customScalarAdapters: CustomScalarAdapters,
     cache: ReadOnlyNormalizedCache,
     cacheKeyResolver: CacheKeyResolver,
     cacheHeaders: CacheHeaders,
@@ -100,11 +100,11 @@ fun <D : Fragment.Data> Fragment<D>.readDataFromCache(
     cache = cache,
     cacheKeyResolver = cacheKeyResolver,
     cacheHeaders = cacheHeaders,
-    variables = variables(responseAdapterCache),
+    variables = variables(customScalarAdapters),
     adapter = adapter(),
-    responseAdapterCache = responseAdapterCache,
+    customScalarAdapters = customScalarAdapters,
     mode = mode,
-    fieldSets = responseFields()
+    fieldSets = fieldSets()
 )
 
 
@@ -114,10 +114,10 @@ private fun <D> readInternal(
     cacheKeyResolver: CacheKeyResolver,
     cacheHeaders: CacheHeaders,
     variables: Executable.Variables,
-    adapter: ResponseAdapter<D>,
-    responseAdapterCache: ResponseAdapterCache,
+    adapter: Adapter<D>,
+    customScalarAdapters: CustomScalarAdapters,
     mode: ReadMode = ReadMode.SEQUENTIAL,
-    fieldSets: List<ResponseField.FieldSet>,
+    fieldSets: List<FieldSet>,
 ): D? {
   val map = if (mode == ReadMode.BATCH) {
     CacheBatchReader(
@@ -142,7 +142,7 @@ private fun <D> readInternal(
   val reader = MapJsonReader(
       root = map,
   )
-  return adapter.fromResponse(reader, responseAdapterCache)
+  return adapter.fromJson(reader, customScalarAdapters)
 }
 
 fun Collection<Record>?.dependentKeys(): Set<String> {

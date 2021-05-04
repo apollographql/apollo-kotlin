@@ -5,10 +5,10 @@
 //
 package com.example.fragment_in_fragment.fragment
 
-import com.apollographql.apollo3.api.NullableStringResponseAdapter
-import com.apollographql.apollo3.api.ResponseAdapter
-import com.apollographql.apollo3.api.ResponseAdapterCache
-import com.apollographql.apollo3.api.StringResponseAdapter
+import com.apollographql.apollo3.api.Adapter
+import com.apollographql.apollo3.api.CustomScalarAdapters
+import com.apollographql.apollo3.api.NullableStringAdapter
+import com.apollographql.apollo3.api.StringAdapter
 import com.apollographql.apollo3.api.json.JsonReader
 import com.apollographql.apollo3.api.json.JsonWriter
 import com.apollographql.apollo3.api.nullable
@@ -17,19 +17,19 @@ import kotlin.String
 import kotlin.collections.List
 
 object PilotFragmentImpl_ResponseAdapter {
-  object Data : ResponseAdapter<PilotFragmentImpl.Data> {
+  object Data : Adapter<PilotFragmentImpl.Data> {
     val RESPONSE_NAMES: List<String> = listOf("__typename", "name", "homeworld")
 
-    override fun fromResponse(reader: JsonReader, responseAdapterCache: ResponseAdapterCache):
+    override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters):
         PilotFragmentImpl.Data {
       var __typename: String? = null
       var name: String? = null
       var homeworld: PilotFragmentImpl.Data.Homeworld? = null
       while(true) {
         when (reader.selectName(RESPONSE_NAMES)) {
-          0 -> __typename = StringResponseAdapter.fromResponse(reader, responseAdapterCache)
-          1 -> name = NullableStringResponseAdapter.fromResponse(reader, responseAdapterCache)
-          2 -> homeworld = Homeworld.obj().nullable().fromResponse(reader, responseAdapterCache)
+          0 -> __typename = StringAdapter.fromJson(reader, customScalarAdapters)
+          1 -> name = NullableStringAdapter.fromJson(reader, customScalarAdapters)
+          2 -> homeworld = Homeworld.obj().nullable().fromJson(reader, customScalarAdapters)
           else -> break
         }
       }
@@ -40,30 +40,30 @@ object PilotFragmentImpl_ResponseAdapter {
       )
     }
 
-    override fun toResponse(
+    override fun toJson(
       writer: JsonWriter,
-      responseAdapterCache: ResponseAdapterCache,
+      customScalarAdapters: CustomScalarAdapters,
       value: PilotFragmentImpl.Data
     ) {
       writer.name("__typename")
-      StringResponseAdapter.toResponse(writer, responseAdapterCache, value.__typename)
+      StringAdapter.toJson(writer, customScalarAdapters, value.__typename)
       writer.name("name")
-      NullableStringResponseAdapter.toResponse(writer, responseAdapterCache, value.name)
+      NullableStringAdapter.toJson(writer, customScalarAdapters, value.name)
       writer.name("homeworld")
-      Homeworld.obj().nullable().toResponse(writer, responseAdapterCache, value.homeworld)
+      Homeworld.obj().nullable().toJson(writer, customScalarAdapters, value.homeworld)
     }
 
-    object Homeworld : ResponseAdapter<PilotFragmentImpl.Data.Homeworld> {
+    object Homeworld : Adapter<PilotFragmentImpl.Data.Homeworld> {
       val RESPONSE_NAMES: List<String> = listOf("__typename", "name")
 
-      override fun fromResponse(reader: JsonReader, responseAdapterCache: ResponseAdapterCache):
+      override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters):
           PilotFragmentImpl.Data.Homeworld {
         var __typename: String? = null
         var name: String? = null
         while(true) {
           when (reader.selectName(RESPONSE_NAMES)) {
-            0 -> __typename = StringResponseAdapter.fromResponse(reader, responseAdapterCache)
-            1 -> name = NullableStringResponseAdapter.fromResponse(reader, responseAdapterCache)
+            0 -> __typename = StringAdapter.fromJson(reader, customScalarAdapters)
+            1 -> name = NullableStringAdapter.fromJson(reader, customScalarAdapters)
             else -> break
           }
         }
@@ -73,15 +73,15 @@ object PilotFragmentImpl_ResponseAdapter {
         )
       }
 
-      override fun toResponse(
+      override fun toJson(
         writer: JsonWriter,
-        responseAdapterCache: ResponseAdapterCache,
+        customScalarAdapters: CustomScalarAdapters,
         value: PilotFragmentImpl.Data.Homeworld
       ) {
         writer.name("__typename")
-        StringResponseAdapter.toResponse(writer, responseAdapterCache, value.__typename)
+        StringAdapter.toJson(writer, customScalarAdapters, value.__typename)
         writer.name("name")
-        NullableStringResponseAdapter.toResponse(writer, responseAdapterCache, value.name)
+        NullableStringAdapter.toJson(writer, customScalarAdapters, value.name)
       }
     }
   }

@@ -10,6 +10,8 @@ abstract class ResponseContext(override val key: Key<*>): Element
 
 /**
  * A context of GraphQL operation execution, represented as a set of [Key] keys and corresponding [Element] values.
+ *
+ * It is inspired by the coroutines Context and allows to pass arbitrary data to interceptors.
  */
 interface ExecutionContext {
 

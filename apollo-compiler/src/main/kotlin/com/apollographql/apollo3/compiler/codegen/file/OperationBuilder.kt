@@ -85,7 +85,7 @@ class OperationBuilder(
         .addFunction(nameFunSpec())
         .addFunction(serializeVariablesFunSpec())
         .addFunction(adapterFunSpec())
-        .addFunction(responseFieldsFunSpec())
+        .addFunction(fieldSetsFunSpec())
         .addTypes(dataTypeSpecs())
         .addType(companionTypeSpec())
         .build()
@@ -174,9 +174,9 @@ class OperationBuilder(
         .build()
   }
 
-  private fun responseFieldsFunSpec(): FunSpec {
-    return responseFieldsFunSpec(
-        context.resolver.resolveOperationResponseFields(operation.name)
+  private fun fieldSetsFunSpec(): FunSpec {
+    return fieldSetsFunSpec(
+        context.resolver.resolveOperationMergedFields(operation.name)
     )
   }
 }

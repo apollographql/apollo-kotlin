@@ -4,8 +4,8 @@ import com.apollographql.apollo3.ApolloSubscriptionCall.Callback
 import com.apollographql.apollo3.api.Operation
 import com.apollographql.apollo3.api.ApolloResponse
 import com.apollographql.apollo3.api.Subscription
-import com.apollographql.apollo3.exception.ApolloCanceledException
-import com.apollographql.apollo3.exception.ApolloException
+import com.apollographql.apollo3.api.exception.ApolloCanceledException
+import com.apollographql.apollo3.api.exception.ApolloException
 import com.apollographql.apollo3.internal.util.Cancelable
 
 /**

@@ -10,7 +10,7 @@ import com.apollographql.apollo3.api.Query
 import com.apollographql.apollo3.api.RequestContext
 import com.apollographql.apollo3.api.ResponseContext
 import com.apollographql.apollo3.cache.normalized.ApolloStore
-import com.apollographql.apollo3.exception.ApolloCompositeException
+import com.apollographql.apollo3.api.exception.ApolloCompositeException
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
 

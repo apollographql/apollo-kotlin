@@ -6,8 +6,8 @@ import com.apollographql.apollo3.api.Logger
 import com.apollographql.apollo3.api.Mutation
 import com.apollographql.apollo3.api.Operation
 import com.apollographql.apollo3.api.Query
-import com.apollographql.apollo3.api.ResponseAdapter
-import com.apollographql.apollo3.api.ResponseAdapterCache
+import com.apollographql.apollo3.api.Adapter
+import com.apollographql.apollo3.api.CustomScalarAdapters
 import com.apollographql.apollo3.api.Subscription
 import com.apollographql.apollo3.api.cache.http.HttpCache
 import com.apollographql.apollo3.api.cache.http.HttpCachePolicy
@@ -79,9 +79,9 @@ class ApolloClient internal constructor(
      */
     val apolloStore: ApolloStore,
     /**
-     * @return The [ResponseAdapterCache] scalarTypeAdapters
+     * @return The [CustomScalarAdapters] scalarTypeAdapters
      */
-    val responseAdapterCache: ResponseAdapterCache,
+    val customScalarAdapters: CustomScalarAdapters,
     private val dispatcher: Executor?,
     private val defaultHttpCachePolicy: HttpCachePolicy.Policy,
     private val defaultResponseFetcher: ResponseFetcher,
@@ -127,7 +127,7 @@ class ApolloClient internal constructor(
 
   override fun <D : Operation.Data> prefetch(
       operation: Operation<D>): ApolloPrefetch {
-    return RealApolloPrefetch(operation, serverUrl!!, httpCallFactory!!, responseAdapterCache, dispatcher!!, logger,
+    return RealApolloPrefetch(operation, serverUrl!!, httpCallFactory!!, customScalarAdapters, dispatcher!!, logger,
         tracker)
   }
 
@@ -140,7 +140,7 @@ class ApolloClient internal constructor(
         ApolloSubscriptionCall.CachePolicy.NO_CACHE,
         dispatcher!!,
         logger,
-        responseAdapterCache
+        customScalarAdapters
     )
   }
 
@@ -240,7 +240,7 @@ class ApolloClient internal constructor(
         .httpCallFactory(httpCallFactory)
         .httpCache(httpCache)
         .httpCachePolicy(defaultHttpCachePolicy)
-        .scalarTypeAdapters(responseAdapterCache)
+        .scalarTypeAdapters(customScalarAdapters)
         .apolloStore(apolloStore)
         .responseFetcher(defaultResponseFetcher)
         .cacheHeaders(defaultCacheHeaders)
@@ -268,7 +268,7 @@ class ApolloClient internal constructor(
     var defaultHttpCachePolicy = HttpCachePolicy.NETWORK_ONLY
     var defaultResponseFetcher = ApolloResponseFetchers.CACHE_FIRST
     var defaultCacheHeaders = CacheHeaders.NONE
-    val customScalarAdapters: MutableMap<String, ResponseAdapter<*>> = mutableMapOf()
+    val customScalarAdapters: MutableMap<String, Adapter<*>> = mutableMapOf()
     var dispatcher: Executor? = null
     var logger: Logger? = null
     val applicationInterceptors: MutableList<ApolloInterceptor> = ArrayList()
@@ -293,7 +293,7 @@ class ApolloClient internal constructor(
       defaultHttpCachePolicy = apolloClient.defaultHttpCachePolicy
       defaultResponseFetcher = apolloClient.defaultResponseFetcher
       defaultCacheHeaders = apolloClient.defaultCacheHeaders
-      customScalarAdapters.putAll(apolloClient.responseAdapterCache.customScalarResponseAdapters)
+      customScalarAdapters.putAll(apolloClient.customScalarAdapters.customScalarAdapters)
       dispatcher = apolloClient.dispatcher
       logger = apolloClient.logger.logger
       applicationInterceptors.addAll(apolloClient.applicationInterceptors)
@@ -397,7 +397,7 @@ class ApolloClient internal constructor(
      * @return The [Builder] object to be used for chaining method calls
     </T> */
     fun <T> addCustomScalarAdapter(customScalar: CustomScalar,
-                                   customScalarAdapter: ResponseAdapter<T>): Builder {
+                                   customScalarAdapter: Adapter<T>): Builder {
       customScalarAdapters[customScalar.name] = customScalarAdapter
       return this
     }
@@ -619,7 +619,7 @@ class ApolloClient internal constructor(
       if (dispatcher == null) {
         dispatcher = defaultDispatcher()
       }
-      val customScalarAdapters = ResponseAdapterCache(Collections.unmodifiableMap(customScalarAdapters))
+      val customScalarAdapters = CustomScalarAdapters(Collections.unmodifiableMap(customScalarAdapters))
       var apolloStore = apolloStore
       val cacheFactory = cacheFactory
       val cacheKeyResolver = cacheKeyResolver

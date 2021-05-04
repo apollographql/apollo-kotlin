@@ -5,7 +5,7 @@ import com.apollographql.apollo3.api.ApolloResponse
 import com.apollographql.apollo3.api.Error
 import com.apollographql.apollo3.api.Operation
 import com.apollographql.apollo3.api.http.HttpRequestComposerParams
-import com.apollographql.apollo3.exception.AutoPersistedQueriesNotSupported
+import com.apollographql.apollo3.api.exception.AutoPersistedQueriesNotSupported
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.single

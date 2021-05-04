@@ -1,8 +1,8 @@
 package com.apollographql.apollo3.interceptor
 
 import com.apollographql.apollo3.api.ApolloRequest
-import com.apollographql.apollo3.exception.ApolloHttpException
-import com.apollographql.apollo3.exception.ApolloBearerTokenException
+import com.apollographql.apollo3.api.exception.ApolloHttpException
+import com.apollographql.apollo3.api.exception.ApolloBearerTokenException
 import com.apollographql.apollo3.api.Operation
 import com.apollographql.apollo3.api.ApolloResponse
 import com.apollographql.apollo3.network.http.HttpRequestParameters

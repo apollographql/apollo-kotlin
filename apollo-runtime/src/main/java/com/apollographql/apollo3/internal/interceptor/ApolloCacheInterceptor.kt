@@ -3,14 +3,14 @@ package com.apollographql.apollo3.internal.interceptor
 import com.apollographql.apollo3.ApolloCall
 import com.apollographql.apollo3.api.Operation
 import com.apollographql.apollo3.api.ApolloResponse
-import com.apollographql.apollo3.api.ResponseAdapterCache
+import com.apollographql.apollo3.api.CustomScalarAdapters
 import com.apollographql.apollo3.api.internal.ApolloLogger
 import com.apollographql.apollo3.cache.ApolloCacheHeaders
 import com.apollographql.apollo3.cache.normalized.ApolloStore
 import com.apollographql.apollo3.cache.normalized.internal.ReadMode
 import com.apollographql.apollo3.cache.normalized.internal.RealApolloStore
-import com.apollographql.apollo3.exception.ApolloException
-import com.apollographql.apollo3.exception.ApolloGenericException
+import com.apollographql.apollo3.api.exception.ApolloException
+import com.apollographql.apollo3.api.exception.ApolloGenericException
 import com.apollographql.apollo3.interceptor.ApolloInterceptor
 import com.apollographql.apollo3.interceptor.ApolloInterceptor.CallBack
 import com.apollographql.apollo3.interceptor.ApolloInterceptor.FetchSourceType
@@ -33,7 +33,7 @@ class ApolloCacheInterceptor<D : Operation.Data>(
     private val dispatcher: Executor,
     val logger: ApolloLogger,
     private val responseCallback: AtomicReference<ApolloCall.Callback<D>?>,
-    private val responseAdapterCache: ResponseAdapterCache
+    private val customScalarAdapters: CustomScalarAdapters
 ) : ApolloInterceptor {
 
   @Volatile
@@ -89,7 +89,7 @@ class ApolloCacheInterceptor<D : Operation.Data>(
       apolloStore.readOperation(
           operation = request.operation,
           cacheHeaders = request.cacheHeaders,
-          responseAdapterCache = responseAdapterCache,
+          customScalarAdapters = customScalarAdapters,
           mode = ReadMode.BATCH
       )
     }
@@ -126,7 +126,7 @@ class ApolloCacheInterceptor<D : Operation.Data>(
             data,
             request.cacheHeaders,
             false, // don't publish here, it's done later
-            responseAdapterCache
+            customScalarAdapters
         )
       }
       responseCallback.get()?.onCached(records.toList())
@@ -166,7 +166,7 @@ class ApolloCacheInterceptor<D : Operation.Data>(
                 request.operation as Operation<Operation.Data>,
                 optimisticUpdates,
                 request.uniqueId,
-                responseAdapterCache,
+                customScalarAdapters,
                 true,
             )
           }

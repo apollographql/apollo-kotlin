@@ -1,6 +1,6 @@
 package com.apollographql.apollo3.api
 
-import com.apollographql.apollo3.exception.MissingValueException
+import com.apollographql.apollo3.api.exception.MissingValueException
 
 /**
  * A sealed class that can either be [Present] or [Absent]

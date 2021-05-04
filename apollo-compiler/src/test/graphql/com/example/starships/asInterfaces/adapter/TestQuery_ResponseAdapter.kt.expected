@@ -5,10 +5,10 @@
 //
 package com.example.starships.adapter
 
-import com.apollographql.apollo3.api.DoubleResponseAdapter
-import com.apollographql.apollo3.api.ResponseAdapter
-import com.apollographql.apollo3.api.ResponseAdapterCache
-import com.apollographql.apollo3.api.StringResponseAdapter
+import com.apollographql.apollo3.api.Adapter
+import com.apollographql.apollo3.api.CustomScalarAdapters
+import com.apollographql.apollo3.api.DoubleAdapter
+import com.apollographql.apollo3.api.StringAdapter
 import com.apollographql.apollo3.api.json.JsonReader
 import com.apollographql.apollo3.api.json.JsonWriter
 import com.apollographql.apollo3.api.list
@@ -20,15 +20,15 @@ import kotlin.String
 import kotlin.collections.List
 
 object TestQuery_ResponseAdapter {
-  object Data : ResponseAdapter<TestQuery.Data> {
+  object Data : Adapter<TestQuery.Data> {
     val RESPONSE_NAMES: List<String> = listOf("starship")
 
-    override fun fromResponse(reader: JsonReader, responseAdapterCache: ResponseAdapterCache):
+    override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters):
         TestQuery.Data {
       var starship: TestQuery.Data.Starship? = null
       while(true) {
         when (reader.selectName(RESPONSE_NAMES)) {
-          0 -> starship = Starship.obj().nullable().fromResponse(reader, responseAdapterCache)
+          0 -> starship = Starship.obj().nullable().fromJson(reader, customScalarAdapters)
           else -> break
         }
       }
@@ -37,29 +37,29 @@ object TestQuery_ResponseAdapter {
       )
     }
 
-    override fun toResponse(
+    override fun toJson(
       writer: JsonWriter,
-      responseAdapterCache: ResponseAdapterCache,
+      customScalarAdapters: CustomScalarAdapters,
       value: TestQuery.Data
     ) {
       writer.name("starship")
-      Starship.obj().nullable().toResponse(writer, responseAdapterCache, value.starship)
+      Starship.obj().nullable().toJson(writer, customScalarAdapters, value.starship)
     }
 
-    object Starship : ResponseAdapter<TestQuery.Data.Starship> {
+    object Starship : Adapter<TestQuery.Data.Starship> {
       val RESPONSE_NAMES: List<String> = listOf("id", "name", "coordinates")
 
-      override fun fromResponse(reader: JsonReader, responseAdapterCache: ResponseAdapterCache):
+      override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters):
           TestQuery.Data.Starship {
         var id: String? = null
         var name: String? = null
         var coordinates: List<List<Double>>? = null
         while(true) {
           when (reader.selectName(RESPONSE_NAMES)) {
-            0 -> id = StringResponseAdapter.fromResponse(reader, responseAdapterCache)
-            1 -> name = StringResponseAdapter.fromResponse(reader, responseAdapterCache)
-            2 -> coordinates = DoubleResponseAdapter.list().list().nullable().fromResponse(reader,
-                responseAdapterCache)
+            0 -> id = StringAdapter.fromJson(reader, customScalarAdapters)
+            1 -> name = StringAdapter.fromJson(reader, customScalarAdapters)
+            2 -> coordinates = DoubleAdapter.list().list().nullable().fromJson(reader,
+                customScalarAdapters)
             else -> break
           }
         }
@@ -70,17 +70,17 @@ object TestQuery_ResponseAdapter {
         )
       }
 
-      override fun toResponse(
+      override fun toJson(
         writer: JsonWriter,
-        responseAdapterCache: ResponseAdapterCache,
+        customScalarAdapters: CustomScalarAdapters,
         value: TestQuery.Data.Starship
       ) {
         writer.name("id")
-        StringResponseAdapter.toResponse(writer, responseAdapterCache, value.id)
+        StringAdapter.toJson(writer, customScalarAdapters, value.id)
         writer.name("name")
-        StringResponseAdapter.toResponse(writer, responseAdapterCache, value.name)
+        StringAdapter.toJson(writer, customScalarAdapters, value.name)
         writer.name("coordinates")
-        DoubleResponseAdapter.list().list().nullable().toResponse(writer, responseAdapterCache,
+        DoubleAdapter.list().list().nullable().toJson(writer, customScalarAdapters,
             value.coordinates)
       }
     }

@@ -1,11 +1,12 @@
 package com.apollographql.apollo3.compiler.codegen
 
-import com.apollographql.apollo3.api.AnyResponseAdapter
-import com.apollographql.apollo3.api.BooleanResponseAdapter
-import com.apollographql.apollo3.api.DoubleResponseAdapter
-import com.apollographql.apollo3.api.IntResponseAdapter
+import com.apollographql.apollo3.api.AnyAdapter
+import com.apollographql.apollo3.api.BooleanAdapter
+import com.apollographql.apollo3.api.DoubleAdapter
+import com.apollographql.apollo3.api.IntAdapter
 import com.apollographql.apollo3.api.Optional
-import com.apollographql.apollo3.api.StringResponseAdapter
+import com.apollographql.apollo3.api.StringAdapter
+import com.apollographql.apollo3.compiler.codegen.Identifier.customScalarAdapters
 import com.apollographql.apollo3.compiler.codegen.adapter.obj
 import com.apollographql.apollo3.compiler.unified.ir.IrAnyType
 import com.apollographql.apollo3.compiler.unified.ir.IrBooleanType
@@ -59,12 +60,12 @@ class CgResolver {
   fun adapterInitializer(type: IrType): CodeBlock {
     if (type !is IrNonNullType) {
       return when (type) {
-        is IrIdType -> nullableScalarAdapter("NullableStringResponseAdapter")
-        is IrBooleanType -> nullableScalarAdapter("NullableBooleanResponseAdapter")
-        is IrStringType -> nullableScalarAdapter("NullableStringResponseAdapter")
-        is IrIntType -> nullableScalarAdapter("NullableIntResponseAdapter")
-        is IrFloatType -> nullableScalarAdapter("NullableDoubleResponseAdapter")
-        is IrAnyType -> nullableScalarAdapter("NullableAnyResponseAdapter")
+        is IrIdType -> nullableScalarAdapter("NullableStringAdapter")
+        is IrBooleanType -> nullableScalarAdapter("NullableBooleanAdapter")
+        is IrStringType -> nullableScalarAdapter("NullableStringAdapter")
+        is IrIntType -> nullableScalarAdapter("NullableIntAdapter")
+        is IrFloatType -> nullableScalarAdapter("NullableDoubleAdapter")
+        is IrAnyType -> nullableScalarAdapter("NullableAnyAdapter")
         else -> {
           val nullableFun = MemberName("com.apollographql.apollo3.api", "nullable")
           CodeBlock.of("%L.%M()", adapterInitializer(IrNonNullType(type)), nullableFun)
@@ -81,12 +82,12 @@ class CgResolver {
         val listFun = MemberName("com.apollographql.apollo3.api", "list")
         CodeBlock.of("%L.%M()", adapterInitializer(type.ofType), listFun)
       }
-      is IrBooleanType -> CodeBlock.of("%T", BooleanResponseAdapter::class)
-      is IrIdType -> CodeBlock.of("%T", StringResponseAdapter::class)
-      is IrStringType -> CodeBlock.of("%T", StringResponseAdapter::class)
-      is IrIntType -> CodeBlock.of("%T", IntResponseAdapter::class)
-      is IrFloatType -> CodeBlock.of("%T", DoubleResponseAdapter::class)
-      is IrAnyType -> CodeBlock.of("%T", AnyResponseAdapter::class)
+      is IrBooleanType -> CodeBlock.of("%T", BooleanAdapter::class)
+      is IrIdType -> CodeBlock.of("%T", StringAdapter::class)
+      is IrStringType -> CodeBlock.of("%T", StringAdapter::class)
+      is IrIntType -> CodeBlock.of("%T", IntAdapter::class)
+      is IrFloatType -> CodeBlock.of("%T", DoubleAdapter::class)
+      is IrAnyType -> CodeBlock.of("%T", AnyAdapter::class)
       is IrEnumType -> {
         CodeBlock.of("%T", enumAdapters.get(type.name) ?: error("Cannot find enum '$type' adapter"))
       }
@@ -95,7 +96,7 @@ class CgResolver {
       }
       is IrCustomScalarType -> {
         CodeBlock.of(
-            "responseAdapterCache.responseAdapterFor<%T>(%M)",
+            "$customScalarAdapters.responseAdapterFor<%T>(%M)",
             customScalars.get(type.name) ?: "Cannot find custom scalar '$type'",
             customScalarConsts.get(type.name)
         )
@@ -150,12 +151,12 @@ class CgResolver {
     return operationsVariablesAdapter.get(name)
   }
 
-  private val operationsResponseFields = mutableMapOf<String, ClassName>()
-  fun registerOperationResponseFields(name: String, className: ClassName) {
-    operationsResponseFields.put(name, className)
+  private val operationMergedFields = mutableMapOf<String, ClassName>()
+  fun registerOperationMergedFields(name: String, className: ClassName) {
+    operationMergedFields.put(name, className)
   }
-  fun resolveOperationResponseFields(name: String): ClassName {
-    return operationsResponseFields.get(name) ?: error("Cannot resolve operation '$name' response fields")
+  fun resolveOperationMergedFields(name: String): ClassName {
+    return operationMergedFields.get(name) ?: error("Cannot resolve operation '$name' response fields")
   }
 
   private val fragments = mutableMapOf<String, ClassName>()
@@ -174,12 +175,12 @@ class CgResolver {
     return fragmentsVariablesAdapter.get(name)
   }
 
-  private val fragmentsResponseFields = mutableMapOf<String, ClassName>()
-  fun registerFragmentResponseFields(name: String, className: ClassName) {
-    fragmentsResponseFields.put(name, className)
+  private val fragmentsMergedFields = mutableMapOf<String, ClassName>()
+  fun registerFragmentMergedFields(name: String, className: ClassName) {
+    fragmentsMergedFields.put(name, className)
   }
-  fun resolveFragmentResponseFields(name: String): ClassName {
-    return fragmentsResponseFields.get(name) ?: error("Cannot resolve fragment '$name' response fields")
+  fun resolveFragmentMergedFields(name: String): ClassName {
+    return fragmentsMergedFields.get(name) ?: error("Cannot resolve fragment '$name' response fields")
   }
 
   private var customScalars = mutableMapOf<String, ClassName?>()

@@ -1,5 +1,19 @@
 package com.apollographql.apollo3.api
 
+/**
+ * A schema type used to generate a slim version of the schema in Kotlin. This makes it possible to get the possibleTypes
+ * of a given type at runtime or to reference `typename` in a type safe way
+ */
+sealed class SchemaType(val name: String) {
+  override fun toString(): String {
+    return when (this) {
+      is CustomScalar -> "CustomScalar($name)"
+      is Object -> "Object($name)"
+      is Interface -> "Interface($name)"
+      is Union -> "Union($name)"
+    }
+  }
+}
 
 /**
  * Represents a mapping from a custom GraphQL scalar type to a Java/Kotlin class
@@ -31,16 +45,7 @@ class Union(
     vararg val members: Object,
 ) : SchemaType(name)
 
-sealed class SchemaType(val name: String) {
-  override fun toString(): String {
-    return when (this) {
-      is CustomScalar -> "CustomScalar($name)"
-      is Object -> "Object($name)"
-      is Interface -> "Interface($name)"
-      is Union -> "Union($name)"
-    }
-  }
-}
+
 private fun possibleTypesInternal(allTypes: List<SchemaType>, type: SchemaType): List<Object> {
   return when (type) {
     is Object -> listOf(type)

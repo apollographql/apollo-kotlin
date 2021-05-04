@@ -2,12 +2,10 @@ package com.apollographql.apollo3.cache.normalized.internal
 
 import com.apollographql.apollo3.api.Fragment
 import com.apollographql.apollo3.api.Operation
-import com.apollographql.apollo3.api.ResponseAdapterCache
+import com.apollographql.apollo3.api.CustomScalarAdapters
 import com.apollographql.apollo3.cache.CacheHeaders
 import com.apollographql.apollo3.cache.normalized.ApolloStore
 import com.apollographql.apollo3.cache.normalized.CacheKey
-import com.apollographql.apollo3.cache.normalized.CacheKeyResolver
-import com.apollographql.apollo3.cache.normalized.NormalizedCache
 import com.apollographql.apollo3.cache.normalized.Record
 import com.benasher44.uuid.Uuid
 import kotlinx.coroutines.flow.SharedFlow
@@ -35,13 +33,13 @@ internal class NoOpApolloStore : ApolloStore() {
     return 0
   }
 
-  override fun <D : Operation.Data> normalize(operation: Operation<D>, data: D, responseAdapterCache: ResponseAdapterCache): Map<String, Record> {
+  override fun <D : Operation.Data> normalize(operation: Operation<D>, data: D, customScalarAdapters: CustomScalarAdapters): Map<String, Record> {
     return emptyMap()
   }
 
   override suspend fun <D : Operation.Data> readOperation(
       operation: Operation<D>,
-      responseAdapterCache: ResponseAdapterCache,
+      customScalarAdapters: CustomScalarAdapters,
       cacheHeaders: CacheHeaders,
       mode: ReadMode,
   ): D? {
@@ -52,7 +50,7 @@ internal class NoOpApolloStore : ApolloStore() {
   override suspend fun <D : Fragment.Data> readFragment(
       fragment: Fragment<D>,
       cacheKey: CacheKey,
-      responseAdapterCache: ResponseAdapterCache,
+      customScalarAdapters: CustomScalarAdapters,
       cacheHeaders: CacheHeaders,
   ): D? {
     return null
@@ -61,7 +59,7 @@ internal class NoOpApolloStore : ApolloStore() {
   override suspend fun <D : Operation.Data> writeOperation(
       operation: Operation<D>,
       operationData: D,
-      responseAdapterCache: ResponseAdapterCache,
+      customScalarAdapters: CustomScalarAdapters,
       cacheHeaders: CacheHeaders,
       publish: Boolean,
   ): Set<String> {
@@ -72,7 +70,7 @@ internal class NoOpApolloStore : ApolloStore() {
       fragment: Fragment<D>,
       cacheKey: CacheKey,
       fragmentData: D,
-      responseAdapterCache: ResponseAdapterCache,
+      customScalarAdapters: CustomScalarAdapters,
       cacheHeaders: CacheHeaders,
       publish: Boolean,
   ): Set<String> {
@@ -84,7 +82,7 @@ internal class NoOpApolloStore : ApolloStore() {
       operation: Operation<D>,
       operationData: D,
       mutationId: Uuid,
-      responseAdapterCache: ResponseAdapterCache,
+      customScalarAdapters: CustomScalarAdapters,
       publish: Boolean,
   ): Set<String> {
     return emptySet()

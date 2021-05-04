@@ -5,8 +5,8 @@
 //
 package com.example.nested_conditional_inline.adapter
 
-import com.apollographql.apollo3.api.ResponseAdapter
-import com.apollographql.apollo3.api.ResponseAdapterCache
+import com.apollographql.apollo3.api.Adapter
+import com.apollographql.apollo3.api.CustomScalarAdapters
 import com.apollographql.apollo3.api.json.JsonReader
 import com.apollographql.apollo3.api.json.JsonWriter
 import com.apollographql.apollo3.api.nullable
@@ -14,15 +14,15 @@ import com.example.nested_conditional_inline.TestQuery
 import com.example.nested_conditional_inline.type.adapter.Episode_ResponseAdapter
 import kotlin.IllegalStateException
 
-object TestQuery_VariablesAdapter : ResponseAdapter<TestQuery> {
-  override fun fromResponse(reader: JsonReader, responseAdapterCache: ResponseAdapterCache):
-      TestQuery = throw IllegalStateException("Input type used in output position")
-  override fun toResponse(
+object TestQuery_VariablesAdapter : Adapter<TestQuery> {
+  override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters): TestQuery =
+      throw IllegalStateException("Input type used in output position")
+  override fun toJson(
     writer: JsonWriter,
-    responseAdapterCache: ResponseAdapterCache,
+    customScalarAdapters: CustomScalarAdapters,
     value: TestQuery
   ) {
     writer.name("episode")
-    Episode_ResponseAdapter.nullable().toResponse(writer, responseAdapterCache, value.episode)
+    Episode_ResponseAdapter.nullable().toJson(writer, customScalarAdapters, value.episode)
   }
 }

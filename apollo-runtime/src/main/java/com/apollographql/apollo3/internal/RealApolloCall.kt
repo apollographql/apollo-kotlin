@@ -3,7 +3,7 @@ package com.apollographql.apollo3.internal
 import com.apollographql.apollo3.ApolloCall
 import com.apollographql.apollo3.ApolloMutationCall
 import com.apollographql.apollo3.ApolloQueryCall
-import com.apollographql.apollo3.api.ResponseAdapterCache
+import com.apollographql.apollo3.api.CustomScalarAdapters
 import com.apollographql.apollo3.api.Mutation
 import com.apollographql.apollo3.api.Operation
 import com.apollographql.apollo3.api.Query
@@ -15,11 +15,11 @@ import com.apollographql.apollo3.api.internal.ApolloLogger
 import com.apollographql.apollo3.api.internal.Optional
 import com.apollographql.apollo3.cache.CacheHeaders
 import com.apollographql.apollo3.cache.normalized.ApolloStore
-import com.apollographql.apollo3.exception.ApolloCanceledException
-import com.apollographql.apollo3.exception.ApolloException
-import com.apollographql.apollo3.exception.ApolloHttpException
-import com.apollographql.apollo3.exception.ApolloNetworkException
-import com.apollographql.apollo3.exception.ApolloParseException
+import com.apollographql.apollo3.api.exception.ApolloCanceledException
+import com.apollographql.apollo3.api.exception.ApolloException
+import com.apollographql.apollo3.api.exception.ApolloHttpException
+import com.apollographql.apollo3.api.exception.ApolloNetworkException
+import com.apollographql.apollo3.api.exception.ApolloParseException
 import com.apollographql.apollo3.fetcher.ApolloResponseFetchers
 import com.apollographql.apollo3.fetcher.ResponseFetcher
 import com.apollographql.apollo3.interceptor.ApolloAutoPersistedOperationInterceptor
@@ -48,7 +48,7 @@ class RealApolloCall<D : Operation.Data> internal constructor(builder: Builder<D
   val httpCallFactory: Call.Factory?
   val httpCache: HttpCache?
   val httpCachePolicy: HttpCachePolicy.Policy?
-  val responseAdapterCache: ResponseAdapterCache
+  val customScalarAdapters: CustomScalarAdapters
   val apolloStore: ApolloStore?
   val cacheHeaders: CacheHeaders?
   val requestHeaders: RequestHeaders
@@ -94,7 +94,7 @@ class RealApolloCall<D : Operation.Data> internal constructor(builder: Builder<D
   }
 
   override fun watcher(): RealApolloQueryWatcher<D> {
-    return RealApolloQueryWatcher(clone(), apolloStore!!, responseAdapterCache!!, logger!!, tracker!!, ApolloResponseFetchers.CACHE_FIRST)
+    return RealApolloQueryWatcher(clone(), apolloStore!!, customScalarAdapters!!, logger!!, tracker!!, ApolloResponseFetchers.CACHE_FIRST)
   }
 
   override fun httpCachePolicy(httpCachePolicy: HttpCachePolicy.Policy): RealApolloCall<D> {
@@ -232,7 +232,7 @@ class RealApolloCall<D : Operation.Data> internal constructor(builder: Builder<D
         .httpCallFactory(httpCallFactory)
         .httpCache(httpCache)
         .httpCachePolicy(httpCachePolicy!!)
-        .scalarTypeAdapters(responseAdapterCache)
+        .scalarTypeAdapters(customScalarAdapters)
         .apolloStore(apolloStore)
         .cacheHeaders(cacheHeaders!!)
         .requestHeaders(requestHeaders)
@@ -312,7 +312,7 @@ class RealApolloCall<D : Operation.Data> internal constructor(builder: Builder<D
         dispatcher!!,
         logger!!,
         originalCallback,
-        responseAdapterCache
+        customScalarAdapters
     ))
     if (autoPersistedOperationsInterceptorFactory != null) {
       val interceptor = autoPersistedOperationsInterceptorFactory.newInterceptor(logger, operation)
@@ -328,9 +328,9 @@ class RealApolloCall<D : Operation.Data> internal constructor(builder: Builder<D
     }
     interceptors.add(ApolloParseInterceptor(
         httpCache,
-        responseAdapterCache,
+        customScalarAdapters,
         logger))
-    interceptors.add(ApolloServerInterceptor(serverUrl!!, httpCallFactory!!, httpCachePolicy, false, responseAdapterCache,
+    interceptors.add(ApolloServerInterceptor(serverUrl!!, httpCallFactory!!, httpCachePolicy, false, customScalarAdapters,
         logger))
     return RealApolloInterceptorChain(interceptors)
   }
@@ -341,7 +341,7 @@ class RealApolloCall<D : Operation.Data> internal constructor(builder: Builder<D
     var httpCallFactory: Call.Factory? = null
     var httpCache: HttpCache? = null
     var httpCachePolicy: HttpCachePolicy.Policy? = null
-    var responseAdapterCache: ResponseAdapterCache? = null
+    var customScalarAdapters: CustomScalarAdapters? = null
     var apolloStore: ApolloStore? = null
     var responseFetcher: ResponseFetcher? = null
     var cacheHeaders: CacheHeaders? = null
@@ -380,8 +380,8 @@ class RealApolloCall<D : Operation.Data> internal constructor(builder: Builder<D
       return this
     }
 
-    fun scalarTypeAdapters(responseAdapterCache: ResponseAdapterCache?): Builder<D> {
-      this.responseAdapterCache = responseAdapterCache
+    fun scalarTypeAdapters(customScalarAdapters: CustomScalarAdapters?): Builder<D> {
+      this.customScalarAdapters = customScalarAdapters
       return this
     }
 
@@ -493,7 +493,7 @@ class RealApolloCall<D : Operation.Data> internal constructor(builder: Builder<D
     httpCallFactory = builder.httpCallFactory
     httpCache = builder.httpCache
     httpCachePolicy = builder.httpCachePolicy
-    responseAdapterCache = builder.responseAdapterCache ?: throw IllegalArgumentException()
+    customScalarAdapters = builder.customScalarAdapters ?: throw IllegalArgumentException()
     apolloStore = builder.apolloStore
     responseFetcher = builder.responseFetcher
     cacheHeaders = builder.cacheHeaders
@@ -514,7 +514,7 @@ class RealApolloCall<D : Operation.Data> internal constructor(builder: Builder<D
           .queryWatchers(refetchQueryNames)
           .serverUrl(builder.serverUrl)
           .httpCallFactory(builder.httpCallFactory)
-          .scalarTypeAdapters(builder.responseAdapterCache)
+          .scalarTypeAdapters(builder.customScalarAdapters)
           .apolloStore(builder.apolloStore)
           .dispatcher(builder.dispatcher)
           .logger(builder.logger)

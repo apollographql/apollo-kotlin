@@ -1,8 +1,7 @@
 package com.apollographql.apollo3.internal.subscription
 
-import com.apollographql.apollo3.api.ResponseAdapterCache
-import com.apollographql.apollo3.api.Operation
-import com.apollographql.apollo3.api.ResponseField
+import com.apollographql.apollo3.api.CustomScalarAdapters
+import com.apollographql.apollo3.api.FieldSet
 import com.apollographql.apollo3.api.Subscription
 import com.apollographql.apollo3.api.json.JsonWriter
 import com.apollographql.apollo3.cache.normalized.CacheKeyResolver
@@ -30,7 +29,7 @@ class SubscriptionManagerTest {
 
   init {
     subscriptionManager = RealSubscriptionManager(
-        ResponseAdapterCache.DEFAULT,
+        CustomScalarAdapters.Empty,
         subscriptionTransportFactory,
         SubscriptionConnectionParamsProvider.Const(SubscriptionConnectionParams()),
         MockExecutor(),
@@ -354,7 +353,7 @@ class SubscriptionManagerTest {
       return "subscription {\n  commentAdded(repoFullName: \"repo\") {\n    __typename\n    id\n    content\n  }\n}"
     }
 
-    override fun serializeVariables(writer: JsonWriter, responseAdapterCache: ResponseAdapterCache) {
+    override fun serializeVariables(writer: JsonWriter, customScalarAdapters: CustomScalarAdapters) {
       writer.beginObject()
       writer.endObject()
     }
@@ -364,7 +363,7 @@ class SubscriptionManagerTest {
     override fun name(): String = "SomeSubscription"
 
     override fun id() = operationId
-    override fun responseFields(): List<ResponseField.FieldSet> {
+    override fun fieldSets(): List<FieldSet> {
       return emptyList()
     }
   }

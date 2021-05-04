@@ -8,7 +8,7 @@ import com.apollographql.apollo3.Utils.immediateExecutorService
 import com.apollographql.apollo3.Utils.readFileToString
 import com.apollographql.apollo3.api.ApolloResponse
 import com.apollographql.apollo3.cache.normalized.MemoryCacheFactory
-import com.apollographql.apollo3.exception.ApolloException
+import com.apollographql.apollo3.api.exception.ApolloException
 import com.apollographql.apollo3.integration.normalizer.EpisodeHeroNameQuery
 import okhttp3.Dispatcher
 import okhttp3.OkHttpClient

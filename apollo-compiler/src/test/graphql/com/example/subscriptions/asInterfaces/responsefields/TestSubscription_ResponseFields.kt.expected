@@ -5,45 +5,46 @@
 //
 package com.example.subscriptions.responsefields
 
-import com.apollographql.apollo3.api.ResponseField
+import com.apollographql.apollo3.api.FieldSet
+import com.apollographql.apollo3.api.MergedField
 import com.apollographql.apollo3.api.Variable
 import com.apollographql.apollo3.api.notNull
 import kotlin.Array
 
 object TestSubscription_ResponseFields {
-  val fields: Array<ResponseField> = arrayOf(
-    ResponseField(
-      type = ResponseField.Type.Named.Object("unused"),
+  val fields: Array<MergedField> = arrayOf(
+    MergedField(
+      type = MergedField.Type.Named.Object("unused"),
       fieldName = "data",
       fieldSets = listOf(
-        ResponseField.FieldSet(null, Data.fields),
+        FieldSet(null, Data.fields),
       ),
     ),
   )
 
 
   object Data {
-    val fields: Array<ResponseField> = arrayOf(
-      ResponseField(
-        type = ResponseField.Type.Named.Object("unused"),
+    val fields: Array<MergedField> = arrayOf(
+      MergedField(
+        type = MergedField.Type.Named.Object("unused"),
         fieldName = "commentAdded",
         arguments = mapOf("repoFullName" to Variable("repo")
         ),
         fieldSets = listOf(
-          ResponseField.FieldSet(null, CommentAdded.fields),
+          FieldSet(null, CommentAdded.fields),
         ),
       ),
     )
 
 
     object CommentAdded {
-      val fields: Array<ResponseField> = arrayOf(
-        ResponseField(
-          type = ResponseField.Type.Named.Other("unused").notNull(),
+      val fields: Array<MergedField> = arrayOf(
+        MergedField(
+          type = MergedField.Type.Named.Other("unused").notNull(),
           fieldName = "id",
         ),
-        ResponseField(
-          type = ResponseField.Type.Named.Other("unused").notNull(),
+        MergedField(
+          type = MergedField.Type.Named.Other("unused").notNull(),
           fieldName = "content",
         ),
       )

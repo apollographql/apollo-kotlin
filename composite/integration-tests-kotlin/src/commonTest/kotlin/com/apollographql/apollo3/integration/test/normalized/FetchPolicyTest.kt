@@ -5,7 +5,7 @@ import com.apollographql.apollo3.api.ApolloRequest
 import com.apollographql.apollo3.cache.normalized.ApolloStore
 import com.apollographql.apollo3.cache.normalized.CacheKeyResolver
 import com.apollographql.apollo3.cache.normalized.MemoryCacheFactory
-import com.apollographql.apollo3.exception.ApolloCompositeException
+import com.apollographql.apollo3.api.exception.ApolloCompositeException
 import com.apollographql.apollo3.integration.enqueue
 import com.apollographql.apollo3.mockserver.MockServer
 import com.apollographql.apollo3.integration.normalizer.HeroNameQuery

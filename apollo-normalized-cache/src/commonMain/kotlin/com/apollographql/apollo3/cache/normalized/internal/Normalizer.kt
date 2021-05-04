@@ -1,22 +1,23 @@
 package com.apollographql.apollo3.cache.normalized.internal
 
 import com.apollographql.apollo3.api.Executable
-import com.apollographql.apollo3.api.ResponseField
+import com.apollographql.apollo3.api.FieldSet
+import com.apollographql.apollo3.api.MergedField
 import com.apollographql.apollo3.cache.normalized.CacheReference
 import com.apollographql.apollo3.cache.normalized.Record
 
-class Normalizer(val variables: Executable.Variables, val cacheKeyForObject: (ResponseField, Map<String, Any?>) -> String?) {
+class Normalizer(val variables: Executable.Variables, val cacheKeyForObject: (MergedField, Map<String, Any?>) -> String?) {
   private val records = mutableMapOf<String, Record>()
   private val cacheKeyBuilder = RealCacheKeyBuilder()
 
-  fun normalize(map: Map<String, Any?>, path: String?, rootKey: String, fieldSets: List<ResponseField.FieldSet>): Map<String, Record> {
+  fun normalize(map: Map<String, Any?>, path: String?, rootKey: String, fieldSets: List<FieldSet>): Map<String, Record> {
 
     records[rootKey] = Record(rootKey, map.toFields(path, fieldSets = fieldSets))
 
     return records
   }
 
-  private fun Map<String, Any?>.normalize(path: String, field: ResponseField): CacheReference {
+  private fun Map<String, Any?>.normalize(path: String, field: MergedField): CacheReference {
     val key = cacheKeyForObject(field, this) ?: path
 
     val newRecord = Record(key, toFields(key, fieldSets = field.fieldSets))
@@ -32,14 +33,14 @@ class Normalizer(val variables: Executable.Variables, val cacheKeyForObject: (Re
     return CacheReference(key)
   }
 
-  private fun Map<String, Any?>.toFields(path: String?, fieldSets: List<ResponseField.FieldSet>): Map<String, Any?> {
-    val fieldSet = fieldSets.firstOrNull { it.typeCondition == get("__typename") }
-        ?: fieldSets.firstOrNull { it.typeCondition == null }
+  private fun Map<String, Any?>.toFields(path: String?, fieldSets: List<FieldSet>): Map<String, Any?> {
+    val fieldSet = fieldSets.firstOrNull { it.type == get("__typename") }
+        ?: fieldSets.firstOrNull { it.type == null }
 
     check(fieldSet != null) {
       "No field set found at $path on typeCondition $this"
     }
-    return fieldSet.responseFields.mapNotNull {
+    return fieldSet.mergedFields.mapNotNull {
       if (it.shouldSkip(variableValues = variables.valueMap)) {
         // The json doesn't know about skip/include so filter here
         return@mapNotNull null
@@ -47,17 +48,17 @@ class Normalizer(val variables: Executable.Variables, val cacheKeyForObject: (Re
 
       val value = get(it.responseName)
 
-      check(it.type !is ResponseField.Type.NotNull || value != null)
+      check(it.type !is MergedField.Type.NotNull || value != null)
 
       val fieldKey = cacheKeyBuilder.build(it, variables)
 
-      val unwrappedType = (it.type as? ResponseField.Type.NotNull)?.ofType ?: it.type
+      val unwrappedType = (it.type as? MergedField.Type.NotNull)?.ofType ?: it.type
 
       @Suppress("UNCHECKED_CAST")
       fieldKey to when {
         value == null -> null
-        unwrappedType is ResponseField.Type.List -> (value as List<Any?>).normalize(path.append(fieldKey), it, unwrappedType)
-        unwrappedType is ResponseField.Type.Named.Object -> (value as Map<String, Any?>).normalize(path.append(fieldKey), it)
+        unwrappedType is MergedField.Type.List -> (value as List<Any?>).normalize(path.append(fieldKey), it, unwrappedType)
+        unwrappedType is MergedField.Type.Named.Object -> (value as Map<String, Any?>).normalize(path.append(fieldKey), it)
         else -> value // scalar or enum
       }
     }.toMap()
@@ -70,14 +71,14 @@ class Normalizer(val variables: Executable.Variables, val cacheKeyForObject: (Re
    * @param fieldType this is different from field.type as it will unwrap the NonNull and List types as it goes
    */
   @Suppress("UNCHECKED_CAST")
-  private fun List<Any?>.normalize(path: String, field: ResponseField, fieldType: ResponseField.Type.List): List<Any?> {
-    val unwrappedType = (fieldType.ofType as? ResponseField.Type.NotNull)?.ofType ?: fieldType.ofType
+  private fun List<Any?>.normalize(path: String, field: MergedField, fieldType: MergedField.Type.List): List<Any?> {
+    val unwrappedType = (fieldType.ofType as? MergedField.Type.NotNull)?.ofType ?: fieldType.ofType
 
     return mapIndexed { index, value ->
       when {
         value == null -> null
-        unwrappedType is ResponseField.Type.List -> (value as List<Any?>).normalize(path.append(index.toString()), field, unwrappedType)
-        unwrappedType is ResponseField.Type.Named.Object -> (value as Map<String, Any?>).normalize(path.append(index.toString()), field)
+        unwrappedType is MergedField.Type.List -> (value as List<Any?>).normalize(path.append(index.toString()), field, unwrappedType)
+        unwrappedType is MergedField.Type.Named.Object -> (value as Map<String, Any?>).normalize(path.append(index.toString()), field)
         else -> value
       }
     }

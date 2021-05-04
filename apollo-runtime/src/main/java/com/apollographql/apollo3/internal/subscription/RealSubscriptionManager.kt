@@ -1,11 +1,11 @@
 package com.apollographql.apollo3.internal.subscription
 
 import com.apollographql.apollo3.api.ApolloResponse
-import com.apollographql.apollo3.api.ResponseAdapterCache
+import com.apollographql.apollo3.api.CustomScalarAdapters
 import com.apollographql.apollo3.api.Subscription
 import com.apollographql.apollo3.api.internal.ResponseBodyParser
 import com.apollographql.apollo3.cache.normalized.CacheKeyResolver
-import com.apollographql.apollo3.exception.ApolloNetworkException
+import com.apollographql.apollo3.api.exception.ApolloNetworkException
 import com.apollographql.apollo3.subscription.OnSubscriptionManagerStateChangeListener
 import com.apollographql.apollo3.subscription.OperationClientMessage
 import com.apollographql.apollo3.subscription.OperationServerMessage
@@ -19,7 +19,7 @@ import java.util.concurrent.CopyOnWriteArrayList
 import java.util.concurrent.Executor
 import java.util.concurrent.TimeUnit
 
-class RealSubscriptionManager(private val responseAdapterCache: ResponseAdapterCache,
+class RealSubscriptionManager(private val customScalarAdapters: CustomScalarAdapters,
                               transportFactory: SubscriptionTransport.Factory,
                               private val connectionParams: SubscriptionConnectionParamsProvider,
                               private val dispatcher: Executor,
@@ -95,7 +95,7 @@ class RealSubscriptionManager(private val responseAdapterCache: ResponseAdapterC
           transport.connect()
         } else if (state == SubscriptionManagerState.ACTIVE) {
           transport.send(
-              OperationClientMessage.Start(subscriptionId.toString(), subscription, responseAdapterCache, autoPersistSubscription, false)
+              OperationClientMessage.Start(subscriptionId.toString(), subscription, customScalarAdapters, autoPersistSubscription, false)
           )
         }
       }
@@ -293,7 +293,7 @@ class RealSubscriptionManager(private val responseAdapterCache: ResponseAdapterC
     if (subscriptionRecord != null) {
       val subscription = subscriptionRecord!!.subscription
       try {
-        val response = ResponseBodyParser.parse(message.payload, subscription, responseAdapterCache)
+        val response = ResponseBodyParser.parse(message.payload, subscription, customScalarAdapters)
         subscriptionRecord!!.notifyOnResponse(response)
       } catch (e: Exception) {
         subscriptionRecord = removeSubscriptionById(subscriptionId)
@@ -314,7 +314,7 @@ class RealSubscriptionManager(private val responseAdapterCache: ResponseAdapterC
         state = SubscriptionManagerState.ACTIVE
         for (subscriptionRecord in subscriptions.values) {
           transport.send(
-              OperationClientMessage.Start(subscriptionRecord.id.toString(), subscriptionRecord.subscription, responseAdapterCache,
+              OperationClientMessage.Start(subscriptionRecord.id.toString(), subscriptionRecord.subscription, customScalarAdapters,
                   autoPersistSubscription, false)
           )
         }
@@ -338,7 +338,7 @@ class RealSubscriptionManager(private val responseAdapterCache: ResponseAdapterC
       synchronized(this) {
         subscriptions[subscriptionRecord.id] = subscriptionRecord
         transport.send(OperationClientMessage.Start(
-            subscriptionRecord.id.toString(), subscriptionRecord.subscription, responseAdapterCache, true, true
+            subscriptionRecord.id.toString(), subscriptionRecord.subscription, customScalarAdapters, true, true
         ))
       }
     } else {

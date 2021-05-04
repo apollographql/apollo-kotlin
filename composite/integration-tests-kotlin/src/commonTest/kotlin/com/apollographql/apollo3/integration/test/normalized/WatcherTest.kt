@@ -2,7 +2,7 @@ package com.apollographql.apollo3.integration.test.normalized
 
 import com.apollographql.apollo3.ApolloClient
 import com.apollographql.apollo3.api.ApolloRequest
-import com.apollographql.apollo3.api.ResponseAdapterCache
+import com.apollographql.apollo3.api.CustomScalarAdapters
 import com.apollographql.apollo3.cache.CacheHeaders
 import com.apollographql.apollo3.cache.normalized.ApolloStore
 import com.apollographql.apollo3.cache.normalized.MemoryCacheFactory
@@ -96,7 +96,7 @@ class WatcherTest {
         )
     )
 
-    store.writeOperation(operation, data, ResponseAdapterCache.DEFAULT, CacheHeaders.NONE, true)
+    store.writeOperation(operation, data, CustomScalarAdapters.Empty, CacheHeaders.NONE, true)
 
     assertEquals(channel.receiveOrTimeout()?.hero?.name, "Artoo")
 

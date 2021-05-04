@@ -5,16 +5,15 @@ import com.apollographql.apollo3.Utils.immediateExecutor
 import com.apollographql.apollo3.Utils.immediateExecutorService
 import com.apollographql.apollo3.Utils.readFileToString
 import com.apollographql.apollo3.api.ApolloResponse
-import com.apollographql.apollo3.api.Optional
 import com.apollographql.apollo3.api.Operation
-import com.apollographql.apollo3.api.ResponseAdapter
-import com.apollographql.apollo3.api.ResponseAdapterCache
+import com.apollographql.apollo3.api.Adapter
+import com.apollographql.apollo3.api.CustomScalarAdapters
 import com.apollographql.apollo3.api.json.JsonReader
 import com.apollographql.apollo3.api.json.JsonWriter
 import com.apollographql.apollo3.api.variablesJson
 import com.apollographql.apollo3.cache.normalized.MemoryCacheFactory
 import com.apollographql.apollo3.coroutines.await
-import com.apollographql.apollo3.exception.ApolloException
+import com.apollographql.apollo3.api.exception.ApolloException
 import com.apollographql.apollo3.fetcher.ApolloResponseFetchers
 import com.apollographql.apollo3.http.OkHttpExecutionContext
 import com.apollographql.apollo3.integration.httpcache.AllPlanetsQuery
@@ -38,14 +37,14 @@ import java.util.Locale
 
 class IntegrationTest {
   private lateinit var apolloClient: ApolloClient
-  private val dateCustomScalarAdapter: ResponseAdapter<Date> = object : ResponseAdapter<Date> {
+  private val dateCustomScalarAdapter: Adapter<Date> = object : Adapter<Date> {
     private val DATE_FORMAT = SimpleDateFormat("yyyy-MM-dd", Locale.US)
 
-    override fun fromResponse(reader: JsonReader, responseAdapterCache: ResponseAdapterCache): Date {
+    override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters): Date {
       return DATE_FORMAT.parse(reader.nextString())
     }
 
-    override fun toResponse(writer: JsonWriter, responseAdapterCache: ResponseAdapterCache, value: Date) {
+    override fun toJson(writer: JsonWriter, customScalarAdapters: CustomScalarAdapters, value: Date) {
       writer.value(DATE_FORMAT.format(value))
     }
   }
@@ -119,7 +118,7 @@ class IntegrationTest {
 
     assertThat(query.name()).isEqualTo("EpisodeHeroName")
     assertThat(query.document()).isEqualTo("query EpisodeHeroName(\$episode: Episode) { hero(episode: \$episode) { name } }")
-    assertThat(query.variablesJson(ResponseAdapterCache.DEFAULT)).isEqualTo("{\"episode\":\"EMPIRE\"}")
+    assertThat(query.variablesJson(CustomScalarAdapters.Empty)).isEqualTo("{\"episode\":\"EMPIRE\"}")
   }
 
   @Throws(IOException::class)

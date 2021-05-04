@@ -3,7 +3,7 @@ package com.apollographql.apollo3.internal.interceptor
 import com.apollographql.apollo3.api.ApolloRequest
 import com.apollographql.apollo3.api.Operation
 import com.apollographql.apollo3.api.Query
-import com.apollographql.apollo3.api.ResponseAdapterCache
+import com.apollographql.apollo3.api.CustomScalarAdapters
 import com.apollographql.apollo3.api.cache.http.HttpCache
 import com.apollographql.apollo3.api.cache.http.HttpCachePolicy
 import com.apollographql.apollo3.api.http.DefaultHttpRequestComposer
@@ -13,7 +13,7 @@ import com.apollographql.apollo3.api.internal.ApolloLogger
 import com.apollographql.apollo3.api.internal.json.BufferedSinkJsonWriter
 import com.apollographql.apollo3.cache.ApolloCacheHeaders
 import com.apollographql.apollo3.cache.CacheHeaders
-import com.apollographql.apollo3.exception.ApolloNetworkException
+import com.apollographql.apollo3.api.exception.ApolloNetworkException
 import com.apollographql.apollo3.interceptor.ApolloInterceptor
 import com.apollographql.apollo3.interceptor.ApolloInterceptor.CallBack
 import com.apollographql.apollo3.interceptor.ApolloInterceptor.FetchSourceType
@@ -45,7 +45,7 @@ class ApolloServerInterceptor(
     private val httpCallFactory: Call.Factory,
     private val cachePolicy: HttpCachePolicy.Policy?,
     val prefetch: Boolean,
-    val responseAdapterCache: ResponseAdapterCache,
+    val customScalarAdapters: CustomScalarAdapters,
     val logger: ApolloLogger,
 ) : ApolloInterceptor {
   var httpCallRef = AtomicReference<Call?>()
@@ -116,7 +116,7 @@ class ApolloServerInterceptor(
       writeQueryDocument: Boolean, autoPersistQueries: Boolean,
   ): Call {
     val requestBuilder = Request.Builder()
-        .url(httpGetUrl(serverUrl, operation, responseAdapterCache, writeQueryDocument, autoPersistQueries))
+        .url(httpGetUrl(serverUrl, operation, customScalarAdapters, writeQueryDocument, autoPersistQueries))
         .get()
     decorateRequest(requestBuilder, operation, cacheHeaders, requestHeaders)
     return httpCallFactory.newCall(requestBuilder.build())
@@ -128,7 +128,7 @@ class ApolloServerInterceptor(
       writeQueryDocument: Boolean, autoPersistQueries: Boolean,
   ): Call {
     val body = composer.compose(ApolloRequest(operation)
-        .withExecutionContext(responseAdapterCache)
+        .withExecutionContext(customScalarAdapters)
         .withExecutionContext(
             HttpRequestComposerParams(
                 method = HttpMethod.Post,
@@ -177,7 +177,7 @@ class ApolloServerInterceptor(
     if (cachePolicy != null) {
       val skipCacheHttpResponse = "true".equals(cacheHeaders.headerValue(
           ApolloCacheHeaders.DO_NOT_STORE), ignoreCase = true)
-      val cacheKey = cacheKey(operation, responseAdapterCache)
+      val cacheKey = cacheKey(operation, customScalarAdapters)
       requestBuilder
           .header(HttpCache.CACHE_KEY_HEADER, cacheKey)
           .header(HttpCache.CACHE_FETCH_STRATEGY_HEADER, cachePolicy.fetchStrategy.name)
@@ -196,26 +196,26 @@ class ApolloServerInterceptor(
     const val JSON_CONTENT_TYPE = "application/json"
 
     @Throws(IOException::class)
-    fun cacheKey(operation: Operation<*>, responseAdapterCache: ResponseAdapterCache): String {
+    fun cacheKey(operation: Operation<*>, customScalarAdapters: CustomScalarAdapters): String {
       return DefaultHttpRequestComposer.buildParamsMap(
           operation = operation,
           autoPersistQueries = true,
           sendDocument = true,
-          responseAdapterCache = responseAdapterCache
+          customScalarAdapters = customScalarAdapters
       ).md5().hex()
     }
 
     @Throws(IOException::class)
     fun httpGetUrl(
         serverUrl: HttpUrl, operation: Operation<*>,
-        responseAdapterCache: ResponseAdapterCache?, writeQueryDocument: Boolean,
+        customScalarAdapters: CustomScalarAdapters?, writeQueryDocument: Boolean,
         autoPersistQueries: Boolean,
     ): HttpUrl {
       val urlBuilder = serverUrl.newBuilder()
       if (!autoPersistQueries || writeQueryDocument) {
         urlBuilder.addQueryParameter("query", operation.document())
       }
-      addVariablesUrlQueryParameter(urlBuilder, operation, responseAdapterCache)
+      addVariablesUrlQueryParameter(urlBuilder, operation, customScalarAdapters)
 
       urlBuilder.addQueryParameter("operationName", operation.name())
       if (autoPersistQueries) {
@@ -228,12 +228,12 @@ class ApolloServerInterceptor(
     fun addVariablesUrlQueryParameter(
         urlBuilder: HttpUrl.Builder,
         operation: Operation<*>,
-        responseAdapterCache: ResponseAdapterCache?,
+        customScalarAdapters: CustomScalarAdapters?,
     ) {
       val buffer = Buffer()
       val jsonWriter = BufferedSinkJsonWriter(buffer)
       jsonWriter.beginObject()
-      operation.serializeVariables(jsonWriter, responseAdapterCache!!)
+      operation.serializeVariables(jsonWriter, customScalarAdapters!!)
       jsonWriter.endObject()
       jsonWriter.close()
       urlBuilder.addQueryParameter("variables", buffer.readUtf8())

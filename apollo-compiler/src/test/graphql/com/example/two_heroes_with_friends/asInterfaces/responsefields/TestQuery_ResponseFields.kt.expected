@@ -5,94 +5,95 @@
 //
 package com.example.two_heroes_with_friends.responsefields
 
-import com.apollographql.apollo3.api.ResponseField
+import com.apollographql.apollo3.api.FieldSet
+import com.apollographql.apollo3.api.MergedField
 import com.apollographql.apollo3.api.list
 import com.apollographql.apollo3.api.notNull
 import kotlin.Array
 
 object TestQuery_ResponseFields {
-  val fields: Array<ResponseField> = arrayOf(
-    ResponseField(
-      type = ResponseField.Type.Named.Object("unused"),
+  val fields: Array<MergedField> = arrayOf(
+    MergedField(
+      type = MergedField.Type.Named.Object("unused"),
       fieldName = "data",
       fieldSets = listOf(
-        ResponseField.FieldSet(null, Data.fields),
+        FieldSet(null, Data.fields),
       ),
     ),
   )
 
 
   object Data {
-    val fields: Array<ResponseField> = arrayOf(
-      ResponseField(
-        type = ResponseField.Type.Named.Object("unused"),
+    val fields: Array<MergedField> = arrayOf(
+      MergedField(
+        type = MergedField.Type.Named.Object("unused"),
         fieldName = "hero",
         responseName = "r2",
         fieldSets = listOf(
-          ResponseField.FieldSet(null, R2.fields),
+          FieldSet(null, R2.fields),
         ),
       ),
-      ResponseField(
-        type = ResponseField.Type.Named.Object("unused"),
+      MergedField(
+        type = MergedField.Type.Named.Object("unused"),
         fieldName = "hero",
         responseName = "luke",
         arguments = mapOf("episode" to "EMPIRE"
         ),
         fieldSets = listOf(
-          ResponseField.FieldSet(null, Luke.fields),
+          FieldSet(null, Luke.fields),
         ),
       ),
     )
 
 
     object R2 {
-      val fields: Array<ResponseField> = arrayOf(
-        ResponseField(
-          type = ResponseField.Type.Named.Other("unused").notNull(),
+      val fields: Array<MergedField> = arrayOf(
+        MergedField(
+          type = MergedField.Type.Named.Other("unused").notNull(),
           fieldName = "name",
         ),
-        ResponseField(
-          type = ResponseField.Type.Named.Object("unused").notNull(),
+        MergedField(
+          type = MergedField.Type.Named.Object("unused").notNull(),
           fieldName = "friendsConnection",
           fieldSets = listOf(
-            ResponseField.FieldSet(null, FriendsConnection.fields),
+            FieldSet(null, FriendsConnection.fields),
           ),
         ),
       )
 
 
       object FriendsConnection {
-        val fields: Array<ResponseField> = arrayOf(
-          ResponseField(
-            type = ResponseField.Type.Named.Other("unused"),
+        val fields: Array<MergedField> = arrayOf(
+          MergedField(
+            type = MergedField.Type.Named.Other("unused"),
             fieldName = "totalCount",
           ),
-          ResponseField(
-            type = ResponseField.Type.Named.Object("unused").list(),
+          MergedField(
+            type = MergedField.Type.Named.Object("unused").list(),
             fieldName = "edges",
             fieldSets = listOf(
-              ResponseField.FieldSet(null, Edge.fields),
+              FieldSet(null, Edge.fields),
             ),
           ),
         )
 
 
         object Edge {
-          val fields: Array<ResponseField> = arrayOf(
-            ResponseField(
-              type = ResponseField.Type.Named.Object("unused"),
+          val fields: Array<MergedField> = arrayOf(
+            MergedField(
+              type = MergedField.Type.Named.Object("unused"),
               fieldName = "node",
               fieldSets = listOf(
-                ResponseField.FieldSet(null, Node.fields),
+                FieldSet(null, Node.fields),
               ),
             ),
           )
 
 
           object Node {
-            val fields: Array<ResponseField> = arrayOf(
-              ResponseField(
-                type = ResponseField.Type.Named.Other("unused").notNull(),
+            val fields: Array<MergedField> = arrayOf(
+              MergedField(
+                type = MergedField.Type.Named.Other("unused").notNull(),
                 fieldName = "name",
               ),
             )
@@ -103,57 +104,57 @@ object TestQuery_ResponseFields {
     }
 
     object Luke {
-      val fields: Array<ResponseField> = arrayOf(
-        ResponseField(
-          type = ResponseField.Type.Named.Other("unused").notNull(),
+      val fields: Array<MergedField> = arrayOf(
+        MergedField(
+          type = MergedField.Type.Named.Other("unused").notNull(),
           fieldName = "id",
         ),
-        ResponseField(
-          type = ResponseField.Type.Named.Other("unused").notNull(),
+        MergedField(
+          type = MergedField.Type.Named.Other("unused").notNull(),
           fieldName = "name",
         ),
-        ResponseField(
-          type = ResponseField.Type.Named.Object("unused").notNull(),
+        MergedField(
+          type = MergedField.Type.Named.Object("unused").notNull(),
           fieldName = "friendsConnection",
           fieldSets = listOf(
-            ResponseField.FieldSet(null, FriendsConnection.fields),
+            FieldSet(null, FriendsConnection.fields),
           ),
         ),
       )
 
 
       object FriendsConnection {
-        val fields: Array<ResponseField> = arrayOf(
-          ResponseField(
-            type = ResponseField.Type.Named.Other("unused"),
+        val fields: Array<MergedField> = arrayOf(
+          MergedField(
+            type = MergedField.Type.Named.Other("unused"),
             fieldName = "totalCount",
           ),
-          ResponseField(
-            type = ResponseField.Type.Named.Object("unused").list(),
+          MergedField(
+            type = MergedField.Type.Named.Object("unused").list(),
             fieldName = "edges",
             fieldSets = listOf(
-              ResponseField.FieldSet(null, Edge.fields),
+              FieldSet(null, Edge.fields),
             ),
           ),
         )
 
 
         object Edge {
-          val fields: Array<ResponseField> = arrayOf(
-            ResponseField(
-              type = ResponseField.Type.Named.Object("unused"),
+          val fields: Array<MergedField> = arrayOf(
+            MergedField(
+              type = MergedField.Type.Named.Object("unused"),
               fieldName = "node",
               fieldSets = listOf(
-                ResponseField.FieldSet(null, Node.fields),
+                FieldSet(null, Node.fields),
               ),
             ),
           )
 
 
           object Node {
-            val fields: Array<ResponseField> = arrayOf(
-              ResponseField(
-                type = ResponseField.Type.Named.Other("unused").notNull(),
+            val fields: Array<MergedField> = arrayOf(
+              MergedField(
+                type = MergedField.Type.Named.Other("unused").notNull(),
                 fieldName = "name",
               ),
             )

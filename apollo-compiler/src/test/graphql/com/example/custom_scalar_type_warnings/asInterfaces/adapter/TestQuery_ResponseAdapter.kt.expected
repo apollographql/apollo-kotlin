@@ -5,9 +5,9 @@
 //
 package com.example.custom_scalar_type_warnings.adapter
 
-import com.apollographql.apollo3.api.AnyResponseAdapter
-import com.apollographql.apollo3.api.ResponseAdapter
-import com.apollographql.apollo3.api.ResponseAdapterCache
+import com.apollographql.apollo3.api.Adapter
+import com.apollographql.apollo3.api.AnyAdapter
+import com.apollographql.apollo3.api.CustomScalarAdapters
 import com.apollographql.apollo3.api.json.JsonReader
 import com.apollographql.apollo3.api.json.JsonWriter
 import com.apollographql.apollo3.api.list
@@ -19,15 +19,15 @@ import kotlin.String
 import kotlin.collections.List
 
 object TestQuery_ResponseAdapter {
-  object Data : ResponseAdapter<TestQuery.Data> {
+  object Data : Adapter<TestQuery.Data> {
     val RESPONSE_NAMES: List<String> = listOf("hero")
 
-    override fun fromResponse(reader: JsonReader, responseAdapterCache: ResponseAdapterCache):
+    override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters):
         TestQuery.Data {
       var hero: TestQuery.Data.Hero? = null
       while(true) {
         when (reader.selectName(RESPONSE_NAMES)) {
-          0 -> hero = Hero.obj().nullable().fromResponse(reader, responseAdapterCache)
+          0 -> hero = Hero.obj().nullable().fromJson(reader, customScalarAdapters)
           else -> break
         }
       }
@@ -36,24 +36,24 @@ object TestQuery_ResponseAdapter {
       )
     }
 
-    override fun toResponse(
+    override fun toJson(
       writer: JsonWriter,
-      responseAdapterCache: ResponseAdapterCache,
+      customScalarAdapters: CustomScalarAdapters,
       value: TestQuery.Data
     ) {
       writer.name("hero")
-      Hero.obj().nullable().toResponse(writer, responseAdapterCache, value.hero)
+      Hero.obj().nullable().toJson(writer, customScalarAdapters, value.hero)
     }
 
-    object Hero : ResponseAdapter<TestQuery.Data.Hero> {
+    object Hero : Adapter<TestQuery.Data.Hero> {
       val RESPONSE_NAMES: List<String> = listOf("links")
 
-      override fun fromResponse(reader: JsonReader, responseAdapterCache: ResponseAdapterCache):
+      override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters):
           TestQuery.Data.Hero {
         var links: List<Any>? = null
         while(true) {
           when (reader.selectName(RESPONSE_NAMES)) {
-            0 -> links = AnyResponseAdapter.list().fromResponse(reader, responseAdapterCache)
+            0 -> links = AnyAdapter.list().fromJson(reader, customScalarAdapters)
             else -> break
           }
         }
@@ -62,13 +62,13 @@ object TestQuery_ResponseAdapter {
         )
       }
 
-      override fun toResponse(
+      override fun toJson(
         writer: JsonWriter,
-        responseAdapterCache: ResponseAdapterCache,
+        customScalarAdapters: CustomScalarAdapters,
         value: TestQuery.Data.Hero
       ) {
         writer.name("links")
-        AnyResponseAdapter.list().toResponse(writer, responseAdapterCache, value.links)
+        AnyAdapter.list().toJson(writer, customScalarAdapters, value.links)
       }
     }
   }

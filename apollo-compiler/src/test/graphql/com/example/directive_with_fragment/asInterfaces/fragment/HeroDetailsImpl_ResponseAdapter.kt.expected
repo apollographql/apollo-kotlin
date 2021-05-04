@@ -5,26 +5,26 @@
 //
 package com.example.directive_with_fragment.fragment
 
-import com.apollographql.apollo3.api.ResponseAdapter
-import com.apollographql.apollo3.api.ResponseAdapterCache
-import com.apollographql.apollo3.api.StringResponseAdapter
+import com.apollographql.apollo3.api.Adapter
+import com.apollographql.apollo3.api.CustomScalarAdapters
+import com.apollographql.apollo3.api.StringAdapter
 import com.apollographql.apollo3.api.json.JsonReader
 import com.apollographql.apollo3.api.json.JsonWriter
 import kotlin.String
 import kotlin.collections.List
 
 object HeroDetailsImpl_ResponseAdapter {
-  object Data : ResponseAdapter<HeroDetailsImpl.Data> {
+  object Data : Adapter<HeroDetailsImpl.Data> {
     val RESPONSE_NAMES: List<String> = listOf("__typename", "name")
 
-    override fun fromResponse(reader: JsonReader, responseAdapterCache: ResponseAdapterCache):
+    override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters):
         HeroDetailsImpl.Data {
       var __typename: String? = null
       var name: String? = null
       while(true) {
         when (reader.selectName(RESPONSE_NAMES)) {
-          0 -> __typename = StringResponseAdapter.fromResponse(reader, responseAdapterCache)
-          1 -> name = StringResponseAdapter.fromResponse(reader, responseAdapterCache)
+          0 -> __typename = StringAdapter.fromJson(reader, customScalarAdapters)
+          1 -> name = StringAdapter.fromJson(reader, customScalarAdapters)
           else -> break
         }
       }
@@ -34,15 +34,15 @@ object HeroDetailsImpl_ResponseAdapter {
       )
     }
 
-    override fun toResponse(
+    override fun toJson(
       writer: JsonWriter,
-      responseAdapterCache: ResponseAdapterCache,
+      customScalarAdapters: CustomScalarAdapters,
       value: HeroDetailsImpl.Data
     ) {
       writer.name("__typename")
-      StringResponseAdapter.toResponse(writer, responseAdapterCache, value.__typename)
+      StringAdapter.toJson(writer, customScalarAdapters, value.__typename)
       writer.name("name")
-      StringResponseAdapter.toResponse(writer, responseAdapterCache, value.name)
+      StringAdapter.toJson(writer, customScalarAdapters, value.name)
     }
   }
 }

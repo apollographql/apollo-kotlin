@@ -1,16 +1,16 @@
 package com.apollographql.apollo3.adapters
 
-import com.apollographql.apollo3.api.ResponseAdapter
-import com.apollographql.apollo3.api.ResponseAdapterCache
+import com.apollographql.apollo3.api.Adapter
+import com.apollographql.apollo3.api.CustomScalarAdapters
 import com.apollographql.apollo3.api.json.JsonReader
 import com.apollographql.apollo3.api.json.JsonWriter
 
-object LongAdapter: ResponseAdapter<Long>  {
-  override fun fromResponse(reader: JsonReader, responseAdapterCache: ResponseAdapterCache): Long {
+object LongAdapter: Adapter<Long>  {
+  override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters): Long {
     return reader.nextString()!!.toLong()
   }
 
-  override fun toResponse(writer: JsonWriter, responseAdapterCache: ResponseAdapterCache, value: Long) {
+  override fun toJson(writer: JsonWriter, customScalarAdapters: CustomScalarAdapters, value: Long) {
     writer.value(value.toString())
   }
 }

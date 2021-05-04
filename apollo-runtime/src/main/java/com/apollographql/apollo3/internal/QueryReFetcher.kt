@@ -1,7 +1,7 @@
 package com.apollographql.apollo3.internal
 
 import com.apollographql.apollo3.ApolloCall
-import com.apollographql.apollo3.api.ResponseAdapterCache
+import com.apollographql.apollo3.api.CustomScalarAdapters
 import com.apollographql.apollo3.api.Operation
 import com.apollographql.apollo3.api.Query
 import com.apollographql.apollo3.api.ApolloResponse
@@ -9,7 +9,7 @@ import com.apollographql.apollo3.api.cache.http.HttpCachePolicy
 import com.apollographql.apollo3.api.internal.ApolloLogger
 import com.apollographql.apollo3.cache.CacheHeaders
 import com.apollographql.apollo3.cache.normalized.ApolloStore
-import com.apollographql.apollo3.exception.ApolloException
+import com.apollographql.apollo3.api.exception.ApolloException
 import com.apollographql.apollo3.fetcher.ApolloResponseFetchers
 import com.apollographql.apollo3.interceptor.ApolloInterceptor
 import com.apollographql.apollo3.interceptor.ApolloInterceptorFactory
@@ -79,7 +79,7 @@ class QueryReFetcher(builder: Builder) {
     var queryWatchers: List<String> = emptyList()
     var serverUrl: HttpUrl? = null
     var httpCallFactory: Call.Factory? = null
-    var responseAdapterCache: ResponseAdapterCache? = null
+    var customScalarAdapters: CustomScalarAdapters? = null
     var apolloStore: ApolloStore? = null
     var dispatcher: Executor? = null
     var logger: ApolloLogger? = null
@@ -107,8 +107,8 @@ class QueryReFetcher(builder: Builder) {
       return this
     }
 
-    fun scalarTypeAdapters(responseAdapterCache: ResponseAdapterCache?): Builder {
-      this.responseAdapterCache = responseAdapterCache
+    fun scalarTypeAdapters(customScalarAdapters: CustomScalarAdapters?): Builder {
+      this.customScalarAdapters = customScalarAdapters
       return this
     }
 
@@ -170,7 +170,7 @@ class QueryReFetcher(builder: Builder) {
           .operation(query)
           .serverUrl(builder.serverUrl)
           .httpCallFactory(builder.httpCallFactory)
-          .scalarTypeAdapters(builder.responseAdapterCache)
+          .scalarTypeAdapters(builder.customScalarAdapters)
           .apolloStore(builder.apolloStore)
           .httpCachePolicy(HttpCachePolicy.NETWORK_ONLY)
           .responseFetcher(ApolloResponseFetchers.NETWORK_ONLY)

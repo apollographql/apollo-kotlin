@@ -1,7 +1,7 @@
 package com.apollographql.apollo3.compiler.codegen.adapter
 
-import com.apollographql.apollo3.api.ResponseAdapter
-import com.apollographql.apollo3.api.ResponseAdapterCache
+import com.apollographql.apollo3.api.Adapter
+import com.apollographql.apollo3.api.CustomScalarAdapters
 import com.apollographql.apollo3.api.json.JsonReader
 import com.apollographql.apollo3.api.json.JsonWriter
 import com.apollographql.apollo3.compiler.codegen.Identifier
@@ -48,7 +48,7 @@ class MonomorphicFieldResponseAdapterBuilder(
   private fun typeSpec(): TypeSpec {
     return TypeSpec.objectBuilder(adapterName)
         .addSuperinterface(
-            ResponseAdapter::class.asTypeName().parameterizedBy(
+            Adapter::class.asTypeName().parameterizedBy(
                 context.resolver.resolveModel(model.id)
             )
         )
@@ -60,20 +60,20 @@ class MonomorphicFieldResponseAdapterBuilder(
   }
 
   private fun readFromResponseFunSpec(): FunSpec {
-    return FunSpec.builder(Identifier.fromResponse)
+    return FunSpec.builder(Identifier.fromJson)
         .returns(adaptedClassName)
         .addParameter(Identifier.reader, JsonReader::class)
-        .addParameter(Identifier.responseAdapterCache, ResponseAdapterCache::class)
+        .addParameter(Identifier.customScalarAdapters, CustomScalarAdapters::class)
         .addModifiers(KModifier.OVERRIDE)
         .addCode(readFromResponseCodeBlock(model, context, false))
         .build()
   }
 
   private fun writeToResponseFunSpec(): FunSpec {
-    return FunSpec.builder(Identifier.toResponse)
+    return FunSpec.builder(Identifier.toJson)
         .addModifiers(KModifier.OVERRIDE)
         .addParameter(Identifier.writer, JsonWriter::class.asTypeName())
-        .addParameter(Identifier.responseAdapterCache, ResponseAdapterCache::class)
+        .addParameter(Identifier.customScalarAdapters, CustomScalarAdapters::class)
         .addParameter(Identifier.value, adaptedClassName)
         .addCode(writeToResponseCodeBlock(model, context))
         .build()

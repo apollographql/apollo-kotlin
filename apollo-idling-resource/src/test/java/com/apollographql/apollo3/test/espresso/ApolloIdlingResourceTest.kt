@@ -6,12 +6,12 @@ import com.apollographql.apollo3.ApolloClient
 import com.apollographql.apollo3.api.Operation
 import com.apollographql.apollo3.api.Query
 import com.apollographql.apollo3.api.ApolloResponse
-import com.apollographql.apollo3.api.ResponseField
-import com.apollographql.apollo3.api.ResponseAdapterCache
+import com.apollographql.apollo3.api.FieldSet
+import com.apollographql.apollo3.api.CustomScalarAdapters
 import com.apollographql.apollo3.api.json.JsonReader
 import com.apollographql.apollo3.api.json.JsonWriter
-import com.apollographql.apollo3.api.ResponseAdapter
-import com.apollographql.apollo3.exception.ApolloException
+import com.apollographql.apollo3.api.Adapter
+import com.apollographql.apollo3.api.exception.ApolloException
 import com.apollographql.apollo3.rx2.Rx2Apollo
 import com.google.common.truth.Truth
 import okhttp3.OkHttpClient
@@ -147,19 +147,19 @@ class ApolloIdlingResourceTest {
         return ""
       }
 
-      override fun serializeVariables(writer: JsonWriter, responseAdapterCache: ResponseAdapterCache) {
+      override fun serializeVariables(writer: JsonWriter, customScalarAdapters: CustomScalarAdapters) {
       }
 
-      override fun adapter(): ResponseAdapter<Query.Data> {
-        return object: ResponseAdapter<Query.Data> {
-          override fun fromResponse(reader: JsonReader, responseAdapterCache: ResponseAdapterCache): Query.Data {
+      override fun adapter(): Adapter<Query.Data> {
+        return object: Adapter<Query.Data> {
+          override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters): Query.Data {
             while (reader.selectName(emptyList()) != -1) {
               // consume the json stream
             }
             return object: Query.Data {}
           }
 
-          override fun toResponse(writer: JsonWriter, responseAdapterCache: ResponseAdapterCache, value: Query.Data) {
+          override fun toJson(writer: JsonWriter, customScalarAdapters: CustomScalarAdapters, value: Query.Data) {
             TODO("Not yet implemented")
           }
         }
@@ -170,7 +170,7 @@ class ApolloIdlingResourceTest {
       override fun id(): String {
         return ""
       }
-      override fun responseFields(): List<ResponseField.FieldSet> {
+      override fun fieldSets(): List<FieldSet> {
         return emptyList()
       }
     }

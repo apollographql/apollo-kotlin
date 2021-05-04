@@ -1,14 +1,15 @@
 package com.apollographql.apollo3.cache.normalized.internal
 
 import com.apollographql.apollo3.api.Executable
-import com.apollographql.apollo3.api.ResponseField
+import com.apollographql.apollo3.api.FieldSet
+import com.apollographql.apollo3.api.MergedField
 import com.apollographql.apollo3.cache.CacheHeaders
 import com.apollographql.apollo3.cache.normalized.CacheKey
 import com.apollographql.apollo3.cache.normalized.CacheKeyResolver
 import com.apollographql.apollo3.cache.normalized.CacheReference
 import com.apollographql.apollo3.cache.normalized.ReadOnlyNormalizedCache
 import com.apollographql.apollo3.cache.normalized.Record
-import com.apollographql.apollo3.exception.CacheMissException
+import com.apollographql.apollo3.api.exception.CacheMissException
 
 class CacheSequentialReader(
     private val cache: ReadOnlyNormalizedCache,
@@ -16,13 +17,13 @@ class CacheSequentialReader(
     private val variables: Executable.Variables,
     private val cacheKeyResolver: CacheKeyResolver,
     private val cacheHeaders: CacheHeaders,
-    private val rootFieldSets: List<ResponseField.FieldSet>) {
+    private val rootFieldSets: List<FieldSet>) {
 
   private val cacheKeyBuilder = RealCacheKeyBuilder()
 
-  private fun ResponseField.Type.isObject(): Boolean = when (this) {
-    is ResponseField.Type.NotNull -> ofType.isObject()
-    is ResponseField.Type.Named.Object -> true
+  private fun MergedField.Type.isObject(): Boolean = when (this) {
+    is MergedField.Type.NotNull -> ofType.isObject()
+    is MergedField.Type.Named.Object -> true
     else -> false
   }
 
@@ -31,11 +32,11 @@ class CacheSequentialReader(
     return CacheReference(rootKey).resolve(rootFieldSets) as Map<String, Any?>
   }
 
-  private fun resolve(record: Record, fieldSets: List<ResponseField.FieldSet>): Map<String, Any?> {
-    val fieldSet = fieldSets.firstOrNull { it.typeCondition == record["__typename"] }
-        ?: fieldSets.first { it.typeCondition == null }
+  private fun resolve(record: Record, fieldSets: List<FieldSet>): Map<String, Any?> {
+    val fieldSet = fieldSets.firstOrNull { it.type == record["__typename"] }
+        ?: fieldSets.first { it.type == null }
 
-    return fieldSet.responseFields.mapNotNull {
+    return fieldSet.mergedFields.mapNotNull {
       if (it.shouldSkip(variables.valueMap)) {
         return@mapNotNull null
       }
@@ -66,7 +67,7 @@ class CacheSequentialReader(
     }.toMap()
 
   }
-  private fun Any?.resolve(fieldSets: List<ResponseField.FieldSet>): Any? {
+  private fun Any?.resolve(fieldSets: List<FieldSet>): Any? {
     return when (this) {
       is CacheReference -> {
         val record = cache.loadRecord(key, cacheHeaders)

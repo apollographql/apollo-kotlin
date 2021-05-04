@@ -5,10 +5,10 @@
 //
 package com.example.mutation_create_review_semantic_naming
 
+import com.apollographql.apollo3.api.Adapter
+import com.apollographql.apollo3.api.CustomScalarAdapters
+import com.apollographql.apollo3.api.FieldSet
 import com.apollographql.apollo3.api.Mutation
-import com.apollographql.apollo3.api.ResponseAdapter
-import com.apollographql.apollo3.api.ResponseAdapterCache
-import com.apollographql.apollo3.api.ResponseField
 import com.apollographql.apollo3.api.json.JsonWriter
 import com.apollographql.apollo3.api.obj
 import com.example.mutation_create_review_semantic_naming.adapter.CreateReviewForEpisodeMutation_ResponseAdapter
@@ -30,15 +30,15 @@ data class CreateReviewForEpisodeMutation(
 
   override fun name(): String = OPERATION_NAME
 
-  override fun serializeVariables(writer: JsonWriter, responseAdapterCache: ResponseAdapterCache) {
-    CreateReviewForEpisodeMutation_VariablesAdapter.toResponse(writer, responseAdapterCache, this)
+  override fun serializeVariables(writer: JsonWriter, customScalarAdapters: CustomScalarAdapters) {
+    CreateReviewForEpisodeMutation_VariablesAdapter.toJson(writer, customScalarAdapters, this)
   }
 
-  override fun adapter(): ResponseAdapter<Data> {
+  override fun adapter(): Adapter<Data> {
     return CreateReviewForEpisodeMutation_ResponseAdapter.Data.obj()
   }
 
-  override fun responseFields(): List<ResponseField.FieldSet> =
+  override fun fieldSets(): List<FieldSet> =
       CreateReviewForEpisodeMutation_ResponseFields.fields.first().fieldSets
 
   data class Data(

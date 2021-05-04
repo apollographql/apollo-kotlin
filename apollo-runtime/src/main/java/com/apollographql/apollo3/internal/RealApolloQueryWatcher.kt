@@ -2,7 +2,7 @@ package com.apollographql.apollo3.internal
 
 import com.apollographql.apollo3.ApolloCall
 import com.apollographql.apollo3.ApolloQueryWatcher
-import com.apollographql.apollo3.api.ResponseAdapterCache
+import com.apollographql.apollo3.api.CustomScalarAdapters
 import com.apollographql.apollo3.api.Operation
 import com.apollographql.apollo3.api.ApolloResponse
 import com.apollographql.apollo3.api.internal.ApolloLogger
@@ -11,11 +11,11 @@ import com.apollographql.apollo3.cache.normalized.ApolloStore
 import com.apollographql.apollo3.cache.normalized.ApolloStore.RecordChangeSubscriber
 import com.apollographql.apollo3.cache.normalized.Record
 import com.apollographql.apollo3.cache.normalized.internal.dependentKeys
-import com.apollographql.apollo3.exception.ApolloCanceledException
-import com.apollographql.apollo3.exception.ApolloException
-import com.apollographql.apollo3.exception.ApolloHttpException
-import com.apollographql.apollo3.exception.ApolloNetworkException
-import com.apollographql.apollo3.exception.ApolloParseException
+import com.apollographql.apollo3.api.exception.ApolloCanceledException
+import com.apollographql.apollo3.api.exception.ApolloException
+import com.apollographql.apollo3.api.exception.ApolloHttpException
+import com.apollographql.apollo3.api.exception.ApolloNetworkException
+import com.apollographql.apollo3.api.exception.ApolloParseException
 import com.apollographql.apollo3.fetcher.ResponseFetcher
 import com.apollographql.apollo3.internal.CallState.IllegalStateMessage.Companion.forCurrentState
 import java.util.concurrent.atomic.AtomicReference
@@ -23,7 +23,7 @@ import java.util.concurrent.atomic.AtomicReference
 class RealApolloQueryWatcher<D : Operation.Data>(
     private var activeCall: RealApolloCall<D>,
     val apolloStore: ApolloStore,
-    private val responseAdapterCache: ResponseAdapterCache,
+    private val customScalarAdapters: CustomScalarAdapters,
     val logger: ApolloLogger,
     private val tracker: ApolloCallTracker,
     private var refetchResponseFetcher: ResponseFetcher
@@ -98,7 +98,7 @@ class RealApolloQueryWatcher<D : Operation.Data>(
   }
 
   override fun clone(): ApolloQueryWatcher<D> {
-    return RealApolloQueryWatcher(activeCall.clone(), apolloStore, responseAdapterCache, logger, tracker, refetchResponseFetcher)
+    return RealApolloQueryWatcher(activeCall.clone(), apolloStore, customScalarAdapters, logger, tracker, refetchResponseFetcher)
   }
 
   private fun callbackProxy(): ApolloCall.Callback<D> {

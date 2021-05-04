@@ -1,12 +1,13 @@
 package com.apollographql.apollo3.compiler.codegen.file
 
-import com.apollographql.apollo3.api.ResponseAdapter
-import com.apollographql.apollo3.api.ResponseAdapterCache
-import com.apollographql.apollo3.api.ResponseField
+import com.apollographql.apollo3.api.Adapter
+import com.apollographql.apollo3.api.CustomScalarAdapters
+import com.apollographql.apollo3.api.FieldSet
 import com.apollographql.apollo3.api.json.JsonWriter
-import com.apollographql.apollo3.compiler.codegen.Identifier.responseAdapterCache
+import com.apollographql.apollo3.compiler.codegen.Identifier.customScalarAdapters
+import com.apollographql.apollo3.compiler.codegen.Identifier.fieldSets
 import com.apollographql.apollo3.compiler.codegen.Identifier.serializeVariables
-import com.apollographql.apollo3.compiler.codegen.Identifier.toResponse
+import com.apollographql.apollo3.compiler.codegen.Identifier.toJson
 import com.apollographql.apollo3.compiler.codegen.Identifier.writer
 import com.apollographql.apollo3.compiler.codegen.adapter.obj
 import com.apollographql.apollo3.compiler.codegen.helpers.patchKotlinNativeOptionalArrayProperties
@@ -30,14 +31,14 @@ fun serializeVariablesFunSpec(
     """.trimIndent())
   } else {
     CodeBlock.of(
-        "%L.$toResponse($writer, $responseAdapterCache, this)",
+        "%L.$toJson($writer, $customScalarAdapters, this)",
             CodeBlock.of("%T", adapterClassName)
     )
   }
   return FunSpec.builder(serializeVariables)
       .addModifiers(KModifier.OVERRIDE)
       .addParameter(writer, JsonWriter::class)
-      .addParameter(responseAdapterCache, ResponseAdapterCache::class.asTypeName())
+      .addParameter(customScalarAdapters, CustomScalarAdapters::class.asTypeName())
       .addCode(body)
       .build()
 }
@@ -48,17 +49,17 @@ fun adapterFunSpec(
 ): FunSpec {
   return FunSpec.builder("adapter")
       .addModifiers(KModifier.OVERRIDE)
-      .returns(ResponseAdapter::class.asClassName().parameterizedBy(adaptedTypeName))
+      .returns(Adapter::class.asClassName().parameterizedBy(adaptedTypeName))
       .addCode(CodeBlock.of("return·%T", adapterTypeName).obj(false))
       .build()
 }
 
-fun responseFieldsFunSpec(typeName: TypeName): FunSpec {
-  return FunSpec.builder("responseFields")
+fun fieldSetsFunSpec(typeName: TypeName): FunSpec {
+  return FunSpec.builder(fieldSets)
       .addModifiers(KModifier.OVERRIDE)
       .returns(
           List::class.asClassName().parameterizedBy(
-              ResponseField.FieldSet::class.asClassName(),
+              FieldSet::class.asClassName(),
           )
       )
       .addCode("return %T.fields.first().fieldSets\n", typeName)

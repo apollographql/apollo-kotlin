@@ -5,9 +5,9 @@
 //
 package com.example.test_inline.adapter
 
-import com.apollographql.apollo3.api.ResponseAdapter
-import com.apollographql.apollo3.api.ResponseAdapterCache
-import com.apollographql.apollo3.api.StringResponseAdapter
+import com.apollographql.apollo3.api.Adapter
+import com.apollographql.apollo3.api.CustomScalarAdapters
+import com.apollographql.apollo3.api.StringAdapter
 import com.apollographql.apollo3.api.json.JsonReader
 import com.apollographql.apollo3.api.json.JsonWriter
 import com.apollographql.apollo3.api.list
@@ -17,15 +17,15 @@ import kotlin.String
 import kotlin.collections.List
 
 object GetPage_ResponseAdapter {
-  object Data : ResponseAdapter<GetPage.Data> {
+  object Data : Adapter<GetPage.Data> {
     val RESPONSE_NAMES: List<String> = listOf("collection")
 
-    override fun fromResponse(reader: JsonReader, responseAdapterCache: ResponseAdapterCache):
+    override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters):
         GetPage.Data {
       var collection: GetPage.Data.Collection? = null
       while(true) {
         when (reader.selectName(RESPONSE_NAMES)) {
-          0 -> collection = Collection.obj().fromResponse(reader, responseAdapterCache)
+          0 -> collection = Collection.obj().fromJson(reader, customScalarAdapters)
           else -> break
         }
       }
@@ -34,19 +34,19 @@ object GetPage_ResponseAdapter {
       )
     }
 
-    override fun toResponse(
+    override fun toJson(
       writer: JsonWriter,
-      responseAdapterCache: ResponseAdapterCache,
+      customScalarAdapters: CustomScalarAdapters,
       value: GetPage.Data
     ) {
       writer.name("collection")
-      Collection.obj().toResponse(writer, responseAdapterCache, value.collection)
+      Collection.obj().toJson(writer, customScalarAdapters, value.collection)
     }
 
-    object Collection : ResponseAdapter<GetPage.Data.Collection> {
+    object Collection : Adapter<GetPage.Data.Collection> {
       val RESPONSE_NAMES: List<String> = listOf("__typename")
 
-      override fun fromResponse(reader: JsonReader, responseAdapterCache: ResponseAdapterCache):
+      override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters):
           GetPage.Data.Collection {
         reader.selectName(RESPONSE_NAMES).also {
           check(it == 0) {
@@ -56,22 +56,22 @@ object GetPage_ResponseAdapter {
         val __typename = reader.nextString()!!
         return when(__typename) {
           "ParticularCollection",
-          -> ParticularCollectionCollection.fromResponse(reader, responseAdapterCache, __typename)
+          -> ParticularCollectionCollection.fromJson(reader, customScalarAdapters, __typename)
           else
-          -> OtherCollection.fromResponse(reader, responseAdapterCache, __typename)
+          -> OtherCollection.fromJson(reader, customScalarAdapters, __typename)
         }
       }
 
-      override fun toResponse(
+      override fun toJson(
         writer: JsonWriter,
-        responseAdapterCache: ResponseAdapterCache,
+        customScalarAdapters: CustomScalarAdapters,
         value: GetPage.Data.Collection
       ) {
         when(value) {
           is GetPage.Data.ParticularCollectionCollection ->
-              ParticularCollectionCollection.toResponse(writer, responseAdapterCache, value)
-          is GetPage.Data.OtherCollection -> OtherCollection.toResponse(writer,
-              responseAdapterCache, value)
+              ParticularCollectionCollection.toJson(writer, customScalarAdapters, value)
+          is GetPage.Data.OtherCollection -> OtherCollection.toJson(writer, customScalarAdapters,
+              value)
         }
       }
     }
@@ -79,17 +79,17 @@ object GetPage_ResponseAdapter {
     object ParticularCollectionCollection {
       val RESPONSE_NAMES: List<String> = listOf("__typename", "items")
 
-      fun fromResponse(
+      fun fromJson(
         reader: JsonReader,
-        responseAdapterCache: ResponseAdapterCache,
+        customScalarAdapters: CustomScalarAdapters,
         typename: String
       ): GetPage.Data.ParticularCollectionCollection {
         var __typename: String? = typename
         var items: List<GetPage.Data.ParticularCollectionCollection.Item>? = null
         while(true) {
           when (reader.selectName(RESPONSE_NAMES)) {
-            0 -> __typename = StringResponseAdapter.fromResponse(reader, responseAdapterCache)
-            1 -> items = Item.obj().list().fromResponse(reader, responseAdapterCache)
+            0 -> __typename = StringAdapter.fromJson(reader, customScalarAdapters)
+            1 -> items = Item.obj().list().fromJson(reader, customScalarAdapters)
             else -> break
           }
         }
@@ -99,21 +99,21 @@ object GetPage_ResponseAdapter {
         )
       }
 
-      fun toResponse(
+      fun toJson(
         writer: JsonWriter,
-        responseAdapterCache: ResponseAdapterCache,
+        customScalarAdapters: CustomScalarAdapters,
         value: GetPage.Data.ParticularCollectionCollection
       ) {
         writer.name("__typename")
-        StringResponseAdapter.toResponse(writer, responseAdapterCache, value.__typename)
+        StringAdapter.toJson(writer, customScalarAdapters, value.__typename)
         writer.name("items")
-        Item.obj().list().toResponse(writer, responseAdapterCache, value.items)
+        Item.obj().list().toJson(writer, customScalarAdapters, value.items)
       }
 
-      object Item : ResponseAdapter<GetPage.Data.ParticularCollectionCollection.Item> {
+      object Item : Adapter<GetPage.Data.ParticularCollectionCollection.Item> {
         val RESPONSE_NAMES: List<String> = listOf("__typename")
 
-        override fun fromResponse(reader: JsonReader, responseAdapterCache: ResponseAdapterCache):
+        override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters):
             GetPage.Data.ParticularCollectionCollection.Item {
           reader.selectName(RESPONSE_NAMES).also {
             check(it == 0) {
@@ -123,22 +123,22 @@ object GetPage_ResponseAdapter {
           val __typename = reader.nextString()!!
           return when(__typename) {
             "ParticularItem",
-            -> ParticularItemItem.fromResponse(reader, responseAdapterCache, __typename)
+            -> ParticularItemItem.fromJson(reader, customScalarAdapters, __typename)
             else
-            -> OtherItem.fromResponse(reader, responseAdapterCache, __typename)
+            -> OtherItem.fromJson(reader, customScalarAdapters, __typename)
           }
         }
 
-        override fun toResponse(
+        override fun toJson(
           writer: JsonWriter,
-          responseAdapterCache: ResponseAdapterCache,
+          customScalarAdapters: CustomScalarAdapters,
           value: GetPage.Data.ParticularCollectionCollection.Item
         ) {
           when(value) {
             is GetPage.Data.ParticularCollectionCollection.ParticularItemItem ->
-                ParticularItemItem.toResponse(writer, responseAdapterCache, value)
-            is GetPage.Data.ParticularCollectionCollection.OtherItem -> OtherItem.toResponse(writer,
-                responseAdapterCache, value)
+                ParticularItemItem.toJson(writer, customScalarAdapters, value)
+            is GetPage.Data.ParticularCollectionCollection.OtherItem -> OtherItem.toJson(writer,
+                customScalarAdapters, value)
           }
         }
       }
@@ -146,9 +146,9 @@ object GetPage_ResponseAdapter {
       object ParticularItemItem {
         val RESPONSE_NAMES: List<String> = listOf("title", "__typename", "image")
 
-        fun fromResponse(
+        fun fromJson(
           reader: JsonReader,
-          responseAdapterCache: ResponseAdapterCache,
+          customScalarAdapters: CustomScalarAdapters,
           typename: String
         ): GetPage.Data.ParticularCollectionCollection.ParticularItemItem {
           var title: String? = null
@@ -156,9 +156,9 @@ object GetPage_ResponseAdapter {
           var image: String? = null
           while(true) {
             when (reader.selectName(RESPONSE_NAMES)) {
-              0 -> title = StringResponseAdapter.fromResponse(reader, responseAdapterCache)
-              1 -> __typename = StringResponseAdapter.fromResponse(reader, responseAdapterCache)
-              2 -> image = StringResponseAdapter.fromResponse(reader, responseAdapterCache)
+              0 -> title = StringAdapter.fromJson(reader, customScalarAdapters)
+              1 -> __typename = StringAdapter.fromJson(reader, customScalarAdapters)
+              2 -> image = StringAdapter.fromJson(reader, customScalarAdapters)
               else -> break
             }
           }
@@ -169,34 +169,34 @@ object GetPage_ResponseAdapter {
           )
         }
 
-        fun toResponse(
+        fun toJson(
           writer: JsonWriter,
-          responseAdapterCache: ResponseAdapterCache,
+          customScalarAdapters: CustomScalarAdapters,
           value: GetPage.Data.ParticularCollectionCollection.ParticularItemItem
         ) {
           writer.name("title")
-          StringResponseAdapter.toResponse(writer, responseAdapterCache, value.title)
+          StringAdapter.toJson(writer, customScalarAdapters, value.title)
           writer.name("__typename")
-          StringResponseAdapter.toResponse(writer, responseAdapterCache, value.__typename)
+          StringAdapter.toJson(writer, customScalarAdapters, value.__typename)
           writer.name("image")
-          StringResponseAdapter.toResponse(writer, responseAdapterCache, value.image)
+          StringAdapter.toJson(writer, customScalarAdapters, value.image)
         }
       }
 
       object OtherItem {
         val RESPONSE_NAMES: List<String> = listOf("title", "__typename")
 
-        fun fromResponse(
+        fun fromJson(
           reader: JsonReader,
-          responseAdapterCache: ResponseAdapterCache,
+          customScalarAdapters: CustomScalarAdapters,
           typename: String
         ): GetPage.Data.ParticularCollectionCollection.OtherItem {
           var title: String? = null
           var __typename: String? = typename
           while(true) {
             when (reader.selectName(RESPONSE_NAMES)) {
-              0 -> title = StringResponseAdapter.fromResponse(reader, responseAdapterCache)
-              1 -> __typename = StringResponseAdapter.fromResponse(reader, responseAdapterCache)
+              0 -> title = StringAdapter.fromJson(reader, customScalarAdapters)
+              1 -> __typename = StringAdapter.fromJson(reader, customScalarAdapters)
               else -> break
             }
           }
@@ -206,15 +206,15 @@ object GetPage_ResponseAdapter {
           )
         }
 
-        fun toResponse(
+        fun toJson(
           writer: JsonWriter,
-          responseAdapterCache: ResponseAdapterCache,
+          customScalarAdapters: CustomScalarAdapters,
           value: GetPage.Data.ParticularCollectionCollection.OtherItem
         ) {
           writer.name("title")
-          StringResponseAdapter.toResponse(writer, responseAdapterCache, value.title)
+          StringAdapter.toJson(writer, customScalarAdapters, value.title)
           writer.name("__typename")
-          StringResponseAdapter.toResponse(writer, responseAdapterCache, value.__typename)
+          StringAdapter.toJson(writer, customScalarAdapters, value.__typename)
         }
       }
     }
@@ -222,17 +222,17 @@ object GetPage_ResponseAdapter {
     object OtherCollection {
       val RESPONSE_NAMES: List<String> = listOf("__typename", "items")
 
-      fun fromResponse(
+      fun fromJson(
         reader: JsonReader,
-        responseAdapterCache: ResponseAdapterCache,
+        customScalarAdapters: CustomScalarAdapters,
         typename: String
       ): GetPage.Data.OtherCollection {
         var __typename: String? = typename
         var items: List<GetPage.Data.OtherCollection.Item>? = null
         while(true) {
           when (reader.selectName(RESPONSE_NAMES)) {
-            0 -> __typename = StringResponseAdapter.fromResponse(reader, responseAdapterCache)
-            1 -> items = Item.obj().list().fromResponse(reader, responseAdapterCache)
+            0 -> __typename = StringAdapter.fromJson(reader, customScalarAdapters)
+            1 -> items = Item.obj().list().fromJson(reader, customScalarAdapters)
             else -> break
           }
         }
@@ -242,26 +242,26 @@ object GetPage_ResponseAdapter {
         )
       }
 
-      fun toResponse(
+      fun toJson(
         writer: JsonWriter,
-        responseAdapterCache: ResponseAdapterCache,
+        customScalarAdapters: CustomScalarAdapters,
         value: GetPage.Data.OtherCollection
       ) {
         writer.name("__typename")
-        StringResponseAdapter.toResponse(writer, responseAdapterCache, value.__typename)
+        StringAdapter.toJson(writer, customScalarAdapters, value.__typename)
         writer.name("items")
-        Item.obj().list().toResponse(writer, responseAdapterCache, value.items)
+        Item.obj().list().toJson(writer, customScalarAdapters, value.items)
       }
 
-      object Item : ResponseAdapter<GetPage.Data.OtherCollection.Item> {
+      object Item : Adapter<GetPage.Data.OtherCollection.Item> {
         val RESPONSE_NAMES: List<String> = listOf("title")
 
-        override fun fromResponse(reader: JsonReader, responseAdapterCache: ResponseAdapterCache):
+        override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters):
             GetPage.Data.OtherCollection.Item {
           var title: String? = null
           while(true) {
             when (reader.selectName(RESPONSE_NAMES)) {
-              0 -> title = StringResponseAdapter.fromResponse(reader, responseAdapterCache)
+              0 -> title = StringAdapter.fromJson(reader, customScalarAdapters)
               else -> break
             }
           }
@@ -270,13 +270,13 @@ object GetPage_ResponseAdapter {
           )
         }
 
-        override fun toResponse(
+        override fun toJson(
           writer: JsonWriter,
-          responseAdapterCache: ResponseAdapterCache,
+          customScalarAdapters: CustomScalarAdapters,
           value: GetPage.Data.OtherCollection.Item
         ) {
           writer.name("title")
-          StringResponseAdapter.toResponse(writer, responseAdapterCache, value.title)
+          StringAdapter.toJson(writer, customScalarAdapters, value.title)
         }
       }
     }

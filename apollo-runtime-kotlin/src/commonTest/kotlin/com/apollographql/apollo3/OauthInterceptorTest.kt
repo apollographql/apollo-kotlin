@@ -4,9 +4,8 @@ import com.apollographql.apollo3.api.ApolloRequest
 import com.apollographql.apollo3.api.ApolloResponse
 import com.apollographql.apollo3.api.ExecutionContext
 import com.apollographql.apollo3.api.Operation
-import com.apollographql.apollo3.api.ResponseAdapterCache
 import com.apollographql.apollo3.api.parseResponseBody
-import com.apollographql.apollo3.exception.ApolloHttpException
+import com.apollographql.apollo3.api.exception.ApolloHttpException
 import com.apollographql.apollo3.interceptor.BearerTokenInterceptor
 import com.apollographql.apollo3.network.NetworkTransport
 import com.apollographql.apollo3.network.http.HttpRequestParameters

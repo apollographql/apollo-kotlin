@@ -3,7 +3,7 @@ package com.apollographql.apollo3.network.http
 import com.apollographql.apollo3.api.http.HttpMethod
 import com.apollographql.apollo3.api.http.HttpRequest
 import com.apollographql.apollo3.api.http.HttpResponse
-import com.apollographql.apollo3.exception.ApolloNetworkException
+import com.apollographql.apollo3.api.exception.ApolloNetworkException
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.suspendCancellableCoroutine
 import okhttp3.Call

@@ -5,53 +5,54 @@
 //
 package com.example.nested_field_with_multiple_fieldsets.responsefields
 
-import com.apollographql.apollo3.api.ResponseField
+import com.apollographql.apollo3.api.FieldSet
+import com.apollographql.apollo3.api.MergedField
 import kotlin.Array
 
 object TestQuery_ResponseFields {
-  val fields: Array<ResponseField> = arrayOf(
-    ResponseField(
-      type = ResponseField.Type.Named.Object("unused"),
+  val fields: Array<MergedField> = arrayOf(
+    MergedField(
+      type = MergedField.Type.Named.Object("unused"),
       fieldName = "data",
       fieldSets = listOf(
-        ResponseField.FieldSet(null, Data.fields),
+        FieldSet(null, Data.fields),
       ),
     ),
   )
 
 
   object Data {
-    val fields: Array<ResponseField> = arrayOf(
-      ResponseField(
-        type = ResponseField.Type.Named.Object("unused"),
+    val fields: Array<MergedField> = arrayOf(
+      MergedField(
+        type = MergedField.Type.Named.Object("unused"),
         fieldName = "iface1",
         fieldSets = listOf(
-          ResponseField.FieldSet(null, Iface1.fields),
-          ResponseField.FieldSet("Impl1", Impl1Iface1.fields),
+          FieldSet(null, Iface1.fields),
+          FieldSet("Impl1", Impl1Iface1.fields),
         ),
       ),
     )
 
 
     object Iface1 {
-      val fields: Array<ResponseField> = arrayOf(
-        ResponseField.Typename,
-        ResponseField(
-          type = ResponseField.Type.Named.Object("unused"),
+      val fields: Array<MergedField> = arrayOf(
+        MergedField.Typename,
+        MergedField(
+          type = MergedField.Type.Named.Object("unused"),
           fieldName = "iface2",
           fieldSets = listOf(
-            ResponseField.FieldSet(null, Iface2.fields),
-            ResponseField.FieldSet("Impl2", Impl2Iface2.fields),
+            FieldSet(null, Iface2.fields),
+            FieldSet("Impl2", Impl2Iface2.fields),
           ),
         ),
       )
 
 
       object Iface2 {
-        val fields: Array<ResponseField> = arrayOf(
-          ResponseField.Typename,
-          ResponseField(
-            type = ResponseField.Type.Named.Other("unused"),
+        val fields: Array<MergedField> = arrayOf(
+          MergedField.Typename,
+          MergedField(
+            type = MergedField.Type.Named.Other("unused"),
             fieldName = "scalar1",
           ),
         )
@@ -59,14 +60,14 @@ object TestQuery_ResponseFields {
       }
 
       object Impl2Iface2 {
-        val fields: Array<ResponseField> = arrayOf(
-          ResponseField.Typename,
-          ResponseField(
-            type = ResponseField.Type.Named.Other("unused"),
+        val fields: Array<MergedField> = arrayOf(
+          MergedField.Typename,
+          MergedField(
+            type = MergedField.Type.Named.Other("unused"),
             fieldName = "scalar1",
           ),
-          ResponseField(
-            type = ResponseField.Type.Named.Other("unused"),
+          MergedField(
+            type = MergedField.Type.Named.Other("unused"),
             fieldName = "scalar2",
           ),
         )
@@ -75,28 +76,28 @@ object TestQuery_ResponseFields {
     }
 
     object Impl1Iface1 {
-      val fields: Array<ResponseField> = arrayOf(
-        ResponseField.Typename,
-        ResponseField(
-          type = ResponseField.Type.Named.Object("unused"),
+      val fields: Array<MergedField> = arrayOf(
+        MergedField.Typename,
+        MergedField(
+          type = MergedField.Type.Named.Object("unused"),
           fieldName = "iface2",
           fieldSets = listOf(
-            ResponseField.FieldSet(null, Iface2.fields),
-            ResponseField.FieldSet("Impl2", Impl2Iface2.fields),
+            FieldSet(null, Iface2.fields),
+            FieldSet("Impl2", Impl2Iface2.fields),
           ),
         ),
       )
 
 
       object Iface2 {
-        val fields: Array<ResponseField> = arrayOf(
-          ResponseField.Typename,
-          ResponseField(
-            type = ResponseField.Type.Named.Other("unused"),
+        val fields: Array<MergedField> = arrayOf(
+          MergedField.Typename,
+          MergedField(
+            type = MergedField.Type.Named.Other("unused"),
             fieldName = "scalar1",
           ),
-          ResponseField(
-            type = ResponseField.Type.Named.Other("unused"),
+          MergedField(
+            type = MergedField.Type.Named.Other("unused"),
             fieldName = "scalar3",
           ),
         )
@@ -104,22 +105,22 @@ object TestQuery_ResponseFields {
       }
 
       object Impl2Iface2 {
-        val fields: Array<ResponseField> = arrayOf(
-          ResponseField.Typename,
-          ResponseField(
-            type = ResponseField.Type.Named.Other("unused"),
+        val fields: Array<MergedField> = arrayOf(
+          MergedField.Typename,
+          MergedField(
+            type = MergedField.Type.Named.Other("unused"),
             fieldName = "scalar1",
           ),
-          ResponseField(
-            type = ResponseField.Type.Named.Other("unused"),
+          MergedField(
+            type = MergedField.Type.Named.Other("unused"),
             fieldName = "scalar2",
           ),
-          ResponseField(
-            type = ResponseField.Type.Named.Other("unused"),
+          MergedField(
+            type = MergedField.Type.Named.Other("unused"),
             fieldName = "scalar3",
           ),
-          ResponseField(
-            type = ResponseField.Type.Named.Other("unused"),
+          MergedField(
+            type = MergedField.Type.Named.Other("unused"),
             fieldName = "scalar4",
           ),
         )

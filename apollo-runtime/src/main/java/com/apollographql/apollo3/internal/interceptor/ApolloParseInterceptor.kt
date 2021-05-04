@@ -2,13 +2,13 @@ package com.apollographql.apollo3.internal.interceptor
 
 import com.apollographql.apollo3.CacheInfo
 import com.apollographql.apollo3.api.Operation
-import com.apollographql.apollo3.api.ResponseAdapterCache
+import com.apollographql.apollo3.api.CustomScalarAdapters
 import com.apollographql.apollo3.api.cache.http.HttpCache
 import com.apollographql.apollo3.api.internal.ApolloLogger
 import com.apollographql.apollo3.api.parseResponseBody
-import com.apollographql.apollo3.exception.ApolloException
-import com.apollographql.apollo3.exception.ApolloHttpException
-import com.apollographql.apollo3.exception.ApolloParseException
+import com.apollographql.apollo3.api.exception.ApolloException
+import com.apollographql.apollo3.api.exception.ApolloHttpException
+import com.apollographql.apollo3.api.exception.ApolloParseException
 import com.apollographql.apollo3.http.OkHttpExecutionContext
 import com.apollographql.apollo3.interceptor.ApolloInterceptor
 import com.apollographql.apollo3.interceptor.ApolloInterceptor.CallBack
@@ -27,7 +27,7 @@ import java.util.concurrent.Executor
  * then parse the returned response.
  */
 class ApolloParseInterceptor(private val httpCache: HttpCache?,
-                             private val responseAdapterCache: ResponseAdapterCache,
+                             private val customScalarAdapters: CustomScalarAdapters,
                              private val logger: ApolloLogger) : ApolloInterceptor {
   @Volatile
   var disposed = false
@@ -71,7 +71,7 @@ class ApolloParseInterceptor(private val httpCache: HttpCache?,
     return if (httpResponse.isSuccessful) {
       try {
         val httpExecutionContext = OkHttpExecutionContext(httpResponse)
-        var parsedResponse = operation.parseResponseBody(httpResponse.body()!!.source(), responseAdapterCache)
+        var parsedResponse = operation.parseResponseBody(httpResponse.body()!!.source(), customScalarAdapters)
 
         parsedResponse = parsedResponse.copy(
             executionContext = parsedResponse.executionContext.plus(httpExecutionContext) + CacheInfo(httpResponse.cacheResponse() != null)

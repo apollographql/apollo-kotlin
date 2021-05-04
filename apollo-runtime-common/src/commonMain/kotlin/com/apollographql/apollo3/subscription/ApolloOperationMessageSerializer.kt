@@ -85,7 +85,7 @@ object ApolloOperationMessageSerializer : OperationMessageSerializer {
     with(writer) {
       name(JSON_KEY_VARIABLES)
       beginObject()
-      subscription.serializeVariables(this, responseAdapterCache)
+      subscription.serializeVariables(this, customScalarAdapters)
       endObject()
       name(JSON_KEY_OPERATION_NAME).value(subscription.name())
       if (!autoPersistSubscription || sendSubscriptionDocument) {

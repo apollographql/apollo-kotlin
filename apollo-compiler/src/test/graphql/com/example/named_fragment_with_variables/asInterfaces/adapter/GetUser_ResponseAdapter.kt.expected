@@ -5,9 +5,9 @@
 //
 package com.example.named_fragment_with_variables.adapter
 
-import com.apollographql.apollo3.api.ResponseAdapter
-import com.apollographql.apollo3.api.ResponseAdapterCache
-import com.apollographql.apollo3.api.StringResponseAdapter
+import com.apollographql.apollo3.api.Adapter
+import com.apollographql.apollo3.api.CustomScalarAdapters
+import com.apollographql.apollo3.api.StringAdapter
 import com.apollographql.apollo3.api.json.JsonReader
 import com.apollographql.apollo3.api.json.JsonWriter
 import com.apollographql.apollo3.api.list
@@ -18,18 +18,17 @@ import kotlin.String
 import kotlin.collections.List
 
 object GetUser_ResponseAdapter {
-  object Data : ResponseAdapter<GetUser.Data> {
+  object Data : Adapter<GetUser.Data> {
     val RESPONSE_NAMES: List<String> = listOf("__typename", "organization")
 
-    override fun fromResponse(reader: JsonReader, responseAdapterCache: ResponseAdapterCache):
+    override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters):
         GetUser.Data {
       var __typename: String? = null
       var organization: GetUser.Data.Organization? = null
       while(true) {
         when (reader.selectName(RESPONSE_NAMES)) {
-          0 -> __typename = StringResponseAdapter.fromResponse(reader, responseAdapterCache)
-          1 -> organization = Organization.obj().nullable().fromResponse(reader,
-              responseAdapterCache)
+          0 -> __typename = StringAdapter.fromJson(reader, customScalarAdapters)
+          1 -> organization = Organization.obj().nullable().fromJson(reader, customScalarAdapters)
           else -> break
         }
       }
@@ -39,28 +38,28 @@ object GetUser_ResponseAdapter {
       )
     }
 
-    override fun toResponse(
+    override fun toJson(
       writer: JsonWriter,
-      responseAdapterCache: ResponseAdapterCache,
+      customScalarAdapters: CustomScalarAdapters,
       value: GetUser.Data
     ) {
       writer.name("__typename")
-      StringResponseAdapter.toResponse(writer, responseAdapterCache, value.__typename)
+      StringAdapter.toJson(writer, customScalarAdapters, value.__typename)
       writer.name("organization")
-      Organization.obj().nullable().toResponse(writer, responseAdapterCache, value.organization)
+      Organization.obj().nullable().toJson(writer, customScalarAdapters, value.organization)
     }
 
-    object Organization : ResponseAdapter<GetUser.Data.Organization> {
+    object Organization : Adapter<GetUser.Data.Organization> {
       val RESPONSE_NAMES: List<String> = listOf("id", "user")
 
-      override fun fromResponse(reader: JsonReader, responseAdapterCache: ResponseAdapterCache):
+      override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters):
           GetUser.Data.Organization {
         var id: String? = null
         var user: List<GetUser.Data.Organization.User>? = null
         while(true) {
           when (reader.selectName(RESPONSE_NAMES)) {
-            0 -> id = StringResponseAdapter.fromResponse(reader, responseAdapterCache)
-            1 -> user = User.obj().list().fromResponse(reader, responseAdapterCache)
+            0 -> id = StringAdapter.fromJson(reader, customScalarAdapters)
+            1 -> user = User.obj().list().fromJson(reader, customScalarAdapters)
             else -> break
           }
         }
@@ -70,21 +69,21 @@ object GetUser_ResponseAdapter {
         )
       }
 
-      override fun toResponse(
+      override fun toJson(
         writer: JsonWriter,
-        responseAdapterCache: ResponseAdapterCache,
+        customScalarAdapters: CustomScalarAdapters,
         value: GetUser.Data.Organization
       ) {
         writer.name("id")
-        StringResponseAdapter.toResponse(writer, responseAdapterCache, value.id)
+        StringAdapter.toJson(writer, customScalarAdapters, value.id)
         writer.name("user")
-        User.obj().list().toResponse(writer, responseAdapterCache, value.user)
+        User.obj().list().toJson(writer, customScalarAdapters, value.user)
       }
 
-      object User : ResponseAdapter<GetUser.Data.Organization.User> {
+      object User : Adapter<GetUser.Data.Organization.User> {
         val RESPONSE_NAMES: List<String> = listOf("__typename", "firstName", "lastName", "avatar")
 
-        override fun fromResponse(reader: JsonReader, responseAdapterCache: ResponseAdapterCache):
+        override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters):
             GetUser.Data.Organization.User {
           var __typename: String? = null
           var firstName: String? = null
@@ -92,10 +91,10 @@ object GetUser_ResponseAdapter {
           var avatar: String? = null
           while(true) {
             when (reader.selectName(RESPONSE_NAMES)) {
-              0 -> __typename = StringResponseAdapter.fromResponse(reader, responseAdapterCache)
-              1 -> firstName = StringResponseAdapter.fromResponse(reader, responseAdapterCache)
-              2 -> lastName = StringResponseAdapter.fromResponse(reader, responseAdapterCache)
-              3 -> avatar = StringResponseAdapter.fromResponse(reader, responseAdapterCache)
+              0 -> __typename = StringAdapter.fromJson(reader, customScalarAdapters)
+              1 -> firstName = StringAdapter.fromJson(reader, customScalarAdapters)
+              2 -> lastName = StringAdapter.fromJson(reader, customScalarAdapters)
+              3 -> avatar = StringAdapter.fromJson(reader, customScalarAdapters)
               else -> break
             }
           }
@@ -107,19 +106,19 @@ object GetUser_ResponseAdapter {
           )
         }
 
-        override fun toResponse(
+        override fun toJson(
           writer: JsonWriter,
-          responseAdapterCache: ResponseAdapterCache,
+          customScalarAdapters: CustomScalarAdapters,
           value: GetUser.Data.Organization.User
         ) {
           writer.name("__typename")
-          StringResponseAdapter.toResponse(writer, responseAdapterCache, value.__typename)
+          StringAdapter.toJson(writer, customScalarAdapters, value.__typename)
           writer.name("firstName")
-          StringResponseAdapter.toResponse(writer, responseAdapterCache, value.firstName)
+          StringAdapter.toJson(writer, customScalarAdapters, value.firstName)
           writer.name("lastName")
-          StringResponseAdapter.toResponse(writer, responseAdapterCache, value.lastName)
+          StringAdapter.toJson(writer, customScalarAdapters, value.lastName)
           writer.name("avatar")
-          StringResponseAdapter.toResponse(writer, responseAdapterCache, value.avatar)
+          StringAdapter.toJson(writer, customScalarAdapters, value.avatar)
         }
       }
     }

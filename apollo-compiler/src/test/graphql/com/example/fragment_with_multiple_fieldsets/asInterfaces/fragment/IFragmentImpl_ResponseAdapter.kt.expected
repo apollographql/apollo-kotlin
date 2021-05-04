@@ -5,20 +5,20 @@
 //
 package com.example.fragment_with_multiple_fieldsets.fragment
 
-import com.apollographql.apollo3.api.NullableStringResponseAdapter
-import com.apollographql.apollo3.api.ResponseAdapter
-import com.apollographql.apollo3.api.ResponseAdapterCache
-import com.apollographql.apollo3.api.StringResponseAdapter
+import com.apollographql.apollo3.api.Adapter
+import com.apollographql.apollo3.api.CustomScalarAdapters
+import com.apollographql.apollo3.api.NullableStringAdapter
+import com.apollographql.apollo3.api.StringAdapter
 import com.apollographql.apollo3.api.json.JsonReader
 import com.apollographql.apollo3.api.json.JsonWriter
 import kotlin.String
 import kotlin.collections.List
 
 object IFragmentImpl_ResponseAdapter {
-  object Data : ResponseAdapter<IFragmentImpl.Data> {
+  object Data : Adapter<IFragmentImpl.Data> {
     val RESPONSE_NAMES: List<String> = listOf("__typename")
 
-    override fun fromResponse(reader: JsonReader, responseAdapterCache: ResponseAdapterCache):
+    override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters):
         IFragmentImpl.Data {
       reader.selectName(RESPONSE_NAMES).also {
         check(it == 0) {
@@ -28,20 +28,20 @@ object IFragmentImpl_ResponseAdapter {
       val __typename = reader.nextString()!!
       return when(__typename) {
         "A",
-        -> AData.fromResponse(reader, responseAdapterCache, __typename)
+        -> AData.fromJson(reader, customScalarAdapters, __typename)
         else
-        -> OtherData.fromResponse(reader, responseAdapterCache, __typename)
+        -> OtherData.fromJson(reader, customScalarAdapters, __typename)
       }
     }
 
-    override fun toResponse(
+    override fun toJson(
       writer: JsonWriter,
-      responseAdapterCache: ResponseAdapterCache,
+      customScalarAdapters: CustomScalarAdapters,
       value: IFragmentImpl.Data
     ) {
       when(value) {
-        is IFragmentImpl.AData -> AData.toResponse(writer, responseAdapterCache, value)
-        is IFragmentImpl.OtherData -> OtherData.toResponse(writer, responseAdapterCache, value)
+        is IFragmentImpl.AData -> AData.toJson(writer, customScalarAdapters, value)
+        is IFragmentImpl.OtherData -> OtherData.toJson(writer, customScalarAdapters, value)
       }
     }
   }
@@ -49,17 +49,17 @@ object IFragmentImpl_ResponseAdapter {
   object AData {
     val RESPONSE_NAMES: List<String> = listOf("__typename", "fieldA")
 
-    fun fromResponse(
+    fun fromJson(
       reader: JsonReader,
-      responseAdapterCache: ResponseAdapterCache,
+      customScalarAdapters: CustomScalarAdapters,
       typename: String
     ): IFragmentImpl.AData {
       var __typename: String? = typename
       var fieldA: String? = null
       while(true) {
         when (reader.selectName(RESPONSE_NAMES)) {
-          0 -> __typename = StringResponseAdapter.fromResponse(reader, responseAdapterCache)
-          1 -> fieldA = NullableStringResponseAdapter.fromResponse(reader, responseAdapterCache)
+          0 -> __typename = StringAdapter.fromJson(reader, customScalarAdapters)
+          1 -> fieldA = NullableStringAdapter.fromJson(reader, customScalarAdapters)
           else -> break
         }
       }
@@ -69,30 +69,30 @@ object IFragmentImpl_ResponseAdapter {
       )
     }
 
-    fun toResponse(
+    fun toJson(
       writer: JsonWriter,
-      responseAdapterCache: ResponseAdapterCache,
+      customScalarAdapters: CustomScalarAdapters,
       value: IFragmentImpl.AData
     ) {
       writer.name("__typename")
-      StringResponseAdapter.toResponse(writer, responseAdapterCache, value.__typename)
+      StringAdapter.toJson(writer, customScalarAdapters, value.__typename)
       writer.name("fieldA")
-      NullableStringResponseAdapter.toResponse(writer, responseAdapterCache, value.fieldA)
+      NullableStringAdapter.toJson(writer, customScalarAdapters, value.fieldA)
     }
   }
 
   object OtherData {
     val RESPONSE_NAMES: List<String> = listOf("__typename")
 
-    fun fromResponse(
+    fun fromJson(
       reader: JsonReader,
-      responseAdapterCache: ResponseAdapterCache,
+      customScalarAdapters: CustomScalarAdapters,
       typename: String
     ): IFragmentImpl.OtherData {
       var __typename: String? = typename
       while(true) {
         when (reader.selectName(RESPONSE_NAMES)) {
-          0 -> __typename = StringResponseAdapter.fromResponse(reader, responseAdapterCache)
+          0 -> __typename = StringAdapter.fromJson(reader, customScalarAdapters)
           else -> break
         }
       }
@@ -101,13 +101,13 @@ object IFragmentImpl_ResponseAdapter {
       )
     }
 
-    fun toResponse(
+    fun toJson(
       writer: JsonWriter,
-      responseAdapterCache: ResponseAdapterCache,
+      customScalarAdapters: CustomScalarAdapters,
       value: IFragmentImpl.OtherData
     ) {
       writer.name("__typename")
-      StringResponseAdapter.toResponse(writer, responseAdapterCache, value.__typename)
+      StringAdapter.toJson(writer, customScalarAdapters, value.__typename)
     }
   }
 }

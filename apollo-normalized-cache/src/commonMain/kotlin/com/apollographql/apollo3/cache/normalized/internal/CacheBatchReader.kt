@@ -1,13 +1,14 @@
 package com.apollographql.apollo3.cache.normalized.internal
 
 import com.apollographql.apollo3.api.Executable
-import com.apollographql.apollo3.api.ResponseField
+import com.apollographql.apollo3.api.FieldSet
+import com.apollographql.apollo3.api.MergedField
 import com.apollographql.apollo3.cache.CacheHeaders
 import com.apollographql.apollo3.cache.normalized.CacheKey
 import com.apollographql.apollo3.cache.normalized.CacheKeyResolver
 import com.apollographql.apollo3.cache.normalized.CacheReference
 import com.apollographql.apollo3.cache.normalized.ReadOnlyNormalizedCache
-import com.apollographql.apollo3.exception.CacheMissException
+import com.apollographql.apollo3.api.exception.CacheMissException
 
 /**
  * Reads [rootFieldSets] starting at [rootKey] from [cache]
@@ -23,22 +24,22 @@ class CacheBatchReader(
     private val variables: Executable.Variables,
     private val cacheKeyResolver: CacheKeyResolver,
     private val cacheHeaders: CacheHeaders,
-    private val rootFieldSets: List<ResponseField.FieldSet>
+    private val rootFieldSets: List<FieldSet>
 ) {
   private val cacheKeyBuilder = RealCacheKeyBuilder()
 
   class PendingReference(
       val key: String,
-      val fieldSets: List<ResponseField.FieldSet>
+      val fieldSets: List<FieldSet>
   )
 
   private val data = mutableMapOf<String, Map<String, Any?>>()
 
   private val pendingReferences = mutableListOf<PendingReference>()
 
-  private fun ResponseField.Type.isObject(): Boolean = when (this) {
-    is ResponseField.Type.NotNull -> ofType.isObject()
-    is ResponseField.Type.Named.Object -> true
+  private fun MergedField.Type.isObject(): Boolean = when (this) {
+    is MergedField.Type.NotNull -> ofType.isObject()
+    is MergedField.Type.Named.Object -> true
     else -> false
   }
 
@@ -58,10 +59,10 @@ class CacheBatchReader(
       copy.forEach { pendingReference ->
         val record = records[pendingReference.key] ?: throw CacheMissException(pendingReference.key)
 
-        val fieldSet = pendingReference.fieldSets.firstOrNull { it.typeCondition == record["__typename"] }
-            ?: pendingReference.fieldSets.first { it.typeCondition == null }
+        val fieldSet = pendingReference.fieldSets.firstOrNull { it.type == record["__typename"] }
+            ?: pendingReference.fieldSets.first { it.type == null }
 
-        val map = fieldSet.responseFields.mapNotNull {
+        val map = fieldSet.mergedFields.mapNotNull {
           if (it.shouldSkip(variables.valueMap)) {
             return@mapNotNull null
           }
@@ -107,7 +108,7 @@ class CacheBatchReader(
     return data[rootKey].resolveCacheReferences() as Map<String, Any?>
   }
 
-  private fun Any?.registerCacheReferences(fieldSets: List<ResponseField.FieldSet>) {
+  private fun Any?.registerCacheReferences(fieldSets: List<FieldSet>) {
     when (this) {
       is CacheReference -> {
         pendingReferences.add(PendingReference(key, fieldSets))

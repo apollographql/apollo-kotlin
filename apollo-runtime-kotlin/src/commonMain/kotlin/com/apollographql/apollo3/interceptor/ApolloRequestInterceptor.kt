@@ -1,7 +1,6 @@
 package com.apollographql.apollo3.interceptor
 
 import com.apollographql.apollo3.api.ApolloRequest
-import com.apollographql.apollo3.api.ResponseAdapterCache
 import com.apollographql.apollo3.api.Operation
 import com.apollographql.apollo3.api.ApolloResponse
 import kotlinx.coroutines.flow.Flow

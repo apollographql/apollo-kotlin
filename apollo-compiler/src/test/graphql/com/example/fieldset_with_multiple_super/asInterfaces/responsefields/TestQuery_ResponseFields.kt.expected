@@ -5,48 +5,49 @@
 //
 package com.example.fieldset_with_multiple_super.responsefields
 
-import com.apollographql.apollo3.api.ResponseField
+import com.apollographql.apollo3.api.FieldSet
+import com.apollographql.apollo3.api.MergedField
 import kotlin.Array
 
 object TestQuery_ResponseFields {
-  val fields: Array<ResponseField> = arrayOf(
-    ResponseField(
-      type = ResponseField.Type.Named.Object("unused"),
+  val fields: Array<MergedField> = arrayOf(
+    MergedField(
+      type = MergedField.Type.Named.Object("unused"),
       fieldName = "data",
       fieldSets = listOf(
-        ResponseField.FieldSet(null, Data.fields),
+        FieldSet(null, Data.fields),
       ),
     ),
   )
 
 
   object Data {
-    val fields: Array<ResponseField> = arrayOf(
-      ResponseField(
-        type = ResponseField.Type.Named.Object("unused"),
+    val fields: Array<MergedField> = arrayOf(
+      MergedField(
+        type = MergedField.Type.Named.Object("unused"),
         fieldName = "c",
         fieldSets = listOf(
-          ResponseField.FieldSet(null, C.fields),
-          ResponseField.FieldSet("AC", AC.fields),
-          ResponseField.FieldSet("ABC", ABC.fields),
-          ResponseField.FieldSet("BC", BC.fields),
+          FieldSet(null, C.fields),
+          FieldSet("AC", AC.fields),
+          FieldSet("ABC", ABC.fields),
+          FieldSet("BC", BC.fields),
         ),
       ),
     )
 
 
     object C {
-      val fields: Array<ResponseField> = arrayOf(
-        ResponseField.Typename,
+      val fields: Array<MergedField> = arrayOf(
+        MergedField.Typename,
       )
 
     }
 
     object AC {
-      val fields: Array<ResponseField> = arrayOf(
-        ResponseField.Typename,
-        ResponseField(
-          type = ResponseField.Type.Named.Other("unused"),
+      val fields: Array<MergedField> = arrayOf(
+        MergedField.Typename,
+        MergedField(
+          type = MergedField.Type.Named.Other("unused"),
           fieldName = "fieldA1",
         ),
       )
@@ -54,22 +55,22 @@ object TestQuery_ResponseFields {
     }
 
     object ABC {
-      val fields: Array<ResponseField> = arrayOf(
-        ResponseField.Typename,
-        ResponseField(
-          type = ResponseField.Type.Named.Other("unused"),
+      val fields: Array<MergedField> = arrayOf(
+        MergedField.Typename,
+        MergedField(
+          type = MergedField.Type.Named.Other("unused"),
           fieldName = "fieldA1",
         ),
-        ResponseField(
-          type = ResponseField.Type.Named.Other("unused"),
+        MergedField(
+          type = MergedField.Type.Named.Other("unused"),
           fieldName = "fieldB1",
         ),
-        ResponseField(
-          type = ResponseField.Type.Named.Other("unused"),
+        MergedField(
+          type = MergedField.Type.Named.Other("unused"),
           fieldName = "fieldB2",
         ),
-        ResponseField(
-          type = ResponseField.Type.Named.Other("unused"),
+        MergedField(
+          type = MergedField.Type.Named.Other("unused"),
           fieldName = "fieldA2",
         ),
       )
@@ -77,10 +78,10 @@ object TestQuery_ResponseFields {
     }
 
     object BC {
-      val fields: Array<ResponseField> = arrayOf(
-        ResponseField.Typename,
-        ResponseField(
-          type = ResponseField.Type.Named.Other("unused"),
+      val fields: Array<MergedField> = arrayOf(
+        MergedField.Typename,
+        MergedField(
+          type = MergedField.Type.Named.Other("unused"),
           fieldName = "fieldB2",
         ),
       )

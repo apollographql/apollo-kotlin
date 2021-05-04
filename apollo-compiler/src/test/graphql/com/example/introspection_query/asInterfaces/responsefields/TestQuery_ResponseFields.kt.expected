@@ -5,67 +5,68 @@
 //
 package com.example.introspection_query.responsefields
 
-import com.apollographql.apollo3.api.ResponseField
+import com.apollographql.apollo3.api.FieldSet
+import com.apollographql.apollo3.api.MergedField
 import com.apollographql.apollo3.api.list
 import com.apollographql.apollo3.api.notNull
 import kotlin.Array
 
 object TestQuery_ResponseFields {
-  val fields: Array<ResponseField> = arrayOf(
-    ResponseField(
-      type = ResponseField.Type.Named.Object("unused"),
+  val fields: Array<MergedField> = arrayOf(
+    MergedField(
+      type = MergedField.Type.Named.Object("unused"),
       fieldName = "data",
       fieldSets = listOf(
-        ResponseField.FieldSet(null, Data.fields),
+        FieldSet(null, Data.fields),
       ),
     ),
   )
 
 
   object Data {
-    val fields: Array<ResponseField> = arrayOf(
-      ResponseField(
-        type = ResponseField.Type.Named.Object("unused").notNull(),
+    val fields: Array<MergedField> = arrayOf(
+      MergedField(
+        type = MergedField.Type.Named.Object("unused").notNull(),
         fieldName = "__schema",
         fieldSets = listOf(
-          ResponseField.FieldSet(null, __Schema.fields),
+          FieldSet(null, __Schema.fields),
         ),
       ),
-      ResponseField(
-        type = ResponseField.Type.Named.Object("unused").notNull(),
+      MergedField(
+        type = MergedField.Type.Named.Object("unused").notNull(),
         fieldName = "__type",
         arguments = mapOf("name" to "Vehicle"
         ),
         fieldSets = listOf(
-          ResponseField.FieldSet(null, __Type.fields),
+          FieldSet(null, __Type.fields),
         ),
       ),
     )
 
 
     object __Schema {
-      val fields: Array<ResponseField> = arrayOf(
-        ResponseField(
-          type = ResponseField.Type.Named.Object("unused").notNull(),
+      val fields: Array<MergedField> = arrayOf(
+        MergedField(
+          type = MergedField.Type.Named.Object("unused").notNull(),
           fieldName = "queryType",
           fieldSets = listOf(
-            ResponseField.FieldSet(null, QueryType.fields),
+            FieldSet(null, QueryType.fields),
           ),
         ),
-        ResponseField(
-          type = ResponseField.Type.Named.Object("unused").notNull().list().notNull(),
+        MergedField(
+          type = MergedField.Type.Named.Object("unused").notNull().list().notNull(),
           fieldName = "types",
           fieldSets = listOf(
-            ResponseField.FieldSet(null, Type.fields),
+            FieldSet(null, Type.fields),
           ),
         ),
       )
 
 
       object QueryType {
-        val fields: Array<ResponseField> = arrayOf(
-          ResponseField(
-            type = ResponseField.Type.Named.Other("unused"),
+        val fields: Array<MergedField> = arrayOf(
+          MergedField(
+            type = MergedField.Type.Named.Other("unused"),
             fieldName = "name",
           ),
         )
@@ -73,9 +74,9 @@ object TestQuery_ResponseFields {
       }
 
       object Type {
-        val fields: Array<ResponseField> = arrayOf(
-          ResponseField(
-            type = ResponseField.Type.Named.Other("unused"),
+        val fields: Array<MergedField> = arrayOf(
+          MergedField(
+            type = MergedField.Type.Named.Other("unused"),
             fieldName = "name",
           ),
         )
@@ -84,9 +85,9 @@ object TestQuery_ResponseFields {
     }
 
     object __Type {
-      val fields: Array<ResponseField> = arrayOf(
-        ResponseField(
-          type = ResponseField.Type.Named.Other("unused"),
+      val fields: Array<MergedField> = arrayOf(
+        MergedField(
+          type = MergedField.Type.Named.Other("unused"),
           fieldName = "name",
         ),
       )

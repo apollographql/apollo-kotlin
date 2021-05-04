@@ -5,23 +5,23 @@
 //
 package com.example.named_fragment_with_variables.fragment.adapter
 
-import com.apollographql.apollo3.api.IntResponseAdapter
-import com.apollographql.apollo3.api.ResponseAdapter
-import com.apollographql.apollo3.api.ResponseAdapterCache
+import com.apollographql.apollo3.api.Adapter
+import com.apollographql.apollo3.api.CustomScalarAdapters
+import com.apollographql.apollo3.api.IntAdapter
 import com.apollographql.apollo3.api.json.JsonReader
 import com.apollographql.apollo3.api.json.JsonWriter
 import com.example.named_fragment_with_variables.fragment.UserFragmentImpl
 import kotlin.IllegalStateException
 
-object UserFragmentImpl_VariablesAdapter : ResponseAdapter<UserFragmentImpl> {
-  override fun fromResponse(reader: JsonReader, responseAdapterCache: ResponseAdapterCache):
+object UserFragmentImpl_VariablesAdapter : Adapter<UserFragmentImpl> {
+  override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters):
       UserFragmentImpl = throw IllegalStateException("Input type used in output position")
-  override fun toResponse(
+  override fun toJson(
     writer: JsonWriter,
-    responseAdapterCache: ResponseAdapterCache,
+    customScalarAdapters: CustomScalarAdapters,
     value: UserFragmentImpl
   ) {
     writer.name("size")
-    IntResponseAdapter.toResponse(writer, responseAdapterCache, value.size)
+    IntAdapter.toJson(writer, customScalarAdapters, value.size)
   }
 }

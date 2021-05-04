@@ -1,10 +1,11 @@
 package com.apollographql.apollo3.compiler.codegen.responsefields
 
-import com.apollographql.apollo3.api.ResponseField
+import com.apollographql.apollo3.api.MergedField
 import com.apollographql.apollo3.api.Variable
 import com.apollographql.apollo3.compiler.codegen.Identifier
 import com.apollographql.apollo3.compiler.codegen.CgLayout.Companion.modelName
 import com.apollographql.apollo3.api.BooleanExpression
+import com.apollographql.apollo3.api.FieldSet
 import com.apollographql.apollo3.compiler.unified.ir.IrArgument
 import com.apollographql.apollo3.compiler.unified.ir.IrBooleanValue
 import com.apollographql.apollo3.compiler.unified.ir.IrEnumValue
@@ -62,7 +63,7 @@ class ResponseFieldsBuilder(
       }.forEach { pair ->
         addStatement(
             "%T(%L, %L),",
-            ResponseField.FieldSet::class,
+            FieldSet::class,
             pair.first?.let { "\"$it\"" },
             // This doesn't use %M on purpose as fields will name clash
             "${objectName(field, pair.second)}.fields"
@@ -88,7 +89,7 @@ class ResponseFieldsBuilder(
   }
 
   private fun responseFieldsPropertySpec(fields: List<IrField>): PropertySpec {
-    return PropertySpec.builder(Identifier.fields, Array::class.parameterizedBy(ResponseField::class))
+    return PropertySpec.builder(Identifier.fields, Array::class.parameterizedBy(MergedField::class))
         .initializer(responseFieldsCodeBlock(fields))
         .build()
   }
@@ -118,8 +119,8 @@ class ResponseFieldsBuilder(
         val listFun = MemberName("com.apollographql.apollo3.api", "list")
         CodeBlock.of("%L.%M()", ofType.codeBlock(), listFun)
       }
-      is IrModelType -> CodeBlock.of("%T(%S)", ResponseField.Type.Named.Object::class, "unused")
-      else -> CodeBlock.of("%T(%S)", ResponseField.Type.Named.Other::class, "unused")
+      is IrModelType -> CodeBlock.of("%T(%S)", MergedField.Type.Named.Object::class, "unused")
+      else -> CodeBlock.of("%T(%S)", MergedField.Type.Named.Other::class, "unused")
     }
   }
 
@@ -191,9 +192,9 @@ class ResponseFieldsBuilder(
 
   private fun IrField.responseFieldsCodeBlock(): CodeBlock {
     if (info.name == "__typename" && info.alias == null) {
-      return CodeBlock.of("%T.Typename", ResponseField::class.asTypeName())
+      return CodeBlock.of("%T.Typename", MergedField::class.asTypeName())
     }
-    val builder = CodeBlock.builder().add("%T(\n", ResponseField::class)
+    val builder = CodeBlock.builder().add("%T(\n", MergedField::class)
     builder.indent()
     builder.add("type = %L,\n", info.type.codeBlock())
     builder.add("fieldName = %S,\n", info.name)

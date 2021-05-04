@@ -3,12 +3,12 @@ package com.apollographql.apollo3.network.http
 import com.apollographql.apollo3.api.ApolloRequest
 import com.apollographql.apollo3.api.ApolloResponse
 import com.apollographql.apollo3.api.Operation
-import com.apollographql.apollo3.api.ResponseAdapterCache
+import com.apollographql.apollo3.api.CustomScalarAdapters
 import com.apollographql.apollo3.api.http.DefaultHttpRequestComposer
 import com.apollographql.apollo3.api.http.HttpRequestComposer
 import com.apollographql.apollo3.api.http.HttpResponse
 import com.apollographql.apollo3.api.parseResponseBody
-import com.apollographql.apollo3.exception.ApolloHttpException
+import com.apollographql.apollo3.api.exception.ApolloHttpException
 import com.apollographql.apollo3.network.NetworkTransport
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
@@ -41,7 +41,7 @@ class ApolloHttpNetworkTransport(
   override fun <D : Operation.Data> execute(
       request: ApolloRequest<D>,
   ): Flow<ApolloResponse<D>> {
-    val responseAdapterCache = request.executionContext[ResponseAdapterCache]!!
+    val responseAdapterCache = request.executionContext[CustomScalarAdapters]!!
 
     val httpRequest = httpRequestComposer.compose(request)
     return flow {
@@ -55,7 +55,7 @@ class ApolloHttpNetworkTransport(
 
   private fun <D : Operation.Data> HttpResponse.parse(
       request: ApolloRequest<D>,
-      responseAdapterCache: ResponseAdapterCache,
+      customScalarAdapters: CustomScalarAdapters,
   ): ApolloResponse<D> {
     if (statusCode !in 200..299) {
       throw ApolloHttpException(
@@ -67,7 +67,7 @@ class ApolloHttpNetworkTransport(
 
     return request.operation.parseResponseBody(
         source = body!!,
-        responseAdapterCache = responseAdapterCache
+        customScalarAdapters = customScalarAdapters
     ).copy(
         requestUuid = request.requestUuid,
         executionContext = request.executionContext + HttpResponseInfo(
