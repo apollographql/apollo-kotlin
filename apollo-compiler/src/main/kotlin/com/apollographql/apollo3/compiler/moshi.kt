@@ -66,8 +66,8 @@ inline fun <reified T> File.fromJsonList(): List<T> {
   return inputStream().fromJsonList<T>()
 }
 
-inline fun <reified T> T.toJson(): String {
-  return getJsonAdapter<T>().toJson(this)
+inline fun <reified T> T.toJson(indent: String = ""): String {
+  return getJsonAdapter<T>().indent(indent).toJson(this)
 }
 
 inline fun <reified T> T.toJson(writer: JsonWriter) {

@@ -7,7 +7,7 @@ import org.gradle.api.file.RegularFile
 import org.gradle.api.provider.Provider
 
 object BuildDirLayout {
-  internal fun operationOuput(project: Project, service: Service): Provider<RegularFile> {
+  internal fun operationOutput(project: Project, service: Service): Provider<RegularFile> {
     return project.layout.buildDirectory.file(
         "generated/operationOutput/apollo/${service.name}/operationOutput.json"
     )

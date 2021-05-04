@@ -116,7 +116,7 @@ abstract class ApolloDownloadSchemaTask : DefaultTask() {
 
     if (schema.extension.toLowerCase() == "json") {
       if (introspectionSchema == null) {
-        introspectionSchema = GraphQLParser.parseSchema(sdlSchema!!).toIntrospectionSchema().wrap().toJson()
+        introspectionSchema = GraphQLParser.parseSchema(sdlSchema!!).toIntrospectionSchema().wrap().toJson(indent = "  ")
       }
       schema.writeText(introspectionSchema)
     } else {
