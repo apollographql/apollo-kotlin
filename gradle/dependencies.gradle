@@ -11,7 +11,7 @@ def versions = [
     javaPoet              : '1.9.0',
     jetbrainsAnnotations  : '13.0',
     junit                 : '4.13.1',
-    kotlin                : '1.4.32',
+    kotlin                : '1.5.0',
     kotlinCoroutines      : '1.4.3',
     kotlinPoet            : '1.6.0',
     moshi                 : '1.11.0',
@@ -98,7 +98,7 @@ ext.dep = [
     uuid                  : "com.benasher44:uuid:0.2.2",
     benManesVersions      : "com.github.ben-manes:gradle-versions-plugin:0.33.0",
     shadow                : "com.github.jengelman.gradle.plugins:shadow:6.1.0",
-    kspGradlePlugin: "com.google.devtools.ksp:symbol-processing-gradle-plugin:1.4.32-1.0.0-alpha08",
+    kspGradlePlugin: "com.google.devtools.ksp:symbol-processing-gradle-plugin:1.5.0-1.0.0-alpha09",
     kotlinxdatetime: "org.jetbrains.kotlinx:kotlinx-datetime:0.1.1",
     kotlinxserializationjson: "org.jetbrains.kotlinx:kotlinx-serialization-json:1.1.0",
     atomicfu: "org.jetbrains.kotlinx:atomicfu:0.15.1"
