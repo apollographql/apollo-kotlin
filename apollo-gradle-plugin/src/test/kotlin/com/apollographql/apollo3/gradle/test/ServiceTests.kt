@@ -114,25 +114,6 @@ class ServiceTests {
   }
 
   @Test
-  fun `sourceFolder can be changed`() {
-    withSimpleProject("""
-      apollo {
-        service("starwars") {
-          sourceFolder = "starwars"
-        }
-      }
-    """.trimIndent()) { dir ->
-      File(dir, "src/main/graphql/com/example").copyRecursively(File(dir, "src/main/graphql/starwars"))
-      File(dir, "src/main/graphql/com").deleteRecursively()
-
-      TestUtils.executeTask("generateApolloSources", dir)
-      assertTrue(dir.generatedChild("starwars/DroidDetailsQuery.kt").isFile)
-      assertTrue(dir.generatedChild("starwars/type/Types.kt").isFile)
-      assertTrue(dir.generatedChild("starwars/fragment/SpeciesInformation.kt").isFile)
-    }
-  }
-
-  @Test
   fun `schemaFile can be an absolute path`() {
     val schema = File(System.getProperty("user.dir"), "src/test/files/starwars/schema.json")
     withSimpleProject("""
@@ -144,41 +125,6 @@ class ServiceTests {
     """.trimIndent()) { dir ->
       TestUtils.executeTask("generateApolloSources", dir)
       TestUtils.assertFileContains(dir, "starwars/com/example/DroidDetailsQuery.kt", "class DroidDetailsQuery ")
-    }
-  }
-
-  @Test
-  fun `sourceFolder can be absolute path`() {
-    val folder = File(System.getProperty("user.dir"), "src/test/files/starwars")
-    withSimpleProject("""
-      apollo {
-        service("starwars") {
-          sourceFolder = "${folder.absolutePath}"
-        }
-      }
-    """.trimIndent()) { dir ->
-      File(dir, "src/main/graphql/com").deleteRecursively()
-
-      TestUtils.executeTask("generateApolloSources", dir)
-      println(dir.absolutePath)
-      dir.list()?.forEach(::println)
-      assertTrue(dir.generatedChild("starwars/DroidDetailsQuery.kt").isFile)
-      assertTrue(dir.generatedChild("starwars/type/Types.kt").isFile)
-      assertTrue(dir.generatedChild("starwars/fragment/SpeciesInformation.kt").isFile)
-    }
-  }
-
-  @Test
-  fun `graphqlSourceDirectorySet overrides sourceFolder`() {
-    withSimpleProject("""
-      apollo {
-        sourceFolder.set("non-existing")
-        schemaFile = file("src/main/graphql/com/example/schema.json")
-        addGraphqlDirectory(file("src/main/graphql/"))
-      }
-    """.trimIndent()) { dir ->
-      TestUtils.executeTask("generateApolloSources", dir)
-      assertTrue(dir.generatedChild("service/com/example/DroidDetailsQuery.kt").isFile)
     }
   }
 

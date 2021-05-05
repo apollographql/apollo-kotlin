@@ -76,7 +76,7 @@ fun configureApollo(asInterfaces: Boolean, sourceSetName: String) {
               }
             }
 
-            sourceFolder.set("com/apollographql/apollo3/integration/${it.name}")
+            addGraphqlDirectory(file("src/main/graphql/com/apollographql/apollo3/integration/${it.name}"))
             rootPackageName.set("com.apollographql.apollo3.integration.${it.name}")
 
             generateFragmentsAsInterfaces.set(asInterfaces)

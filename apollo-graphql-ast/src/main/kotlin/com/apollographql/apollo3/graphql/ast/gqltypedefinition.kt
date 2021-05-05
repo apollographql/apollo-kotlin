@@ -30,3 +30,19 @@ fun GQLTypeDefinition.possibleTypes(typeDefinitions: Map<String, GQLTypeDefiniti
   }
 }
 
+fun GQLTypeDefinition.isFieldNonNull(fieldName: String): Boolean {
+  val directive = when (this) {
+    is GQLObjectTypeDefinition -> directives
+    is GQLInterfaceTypeDefinition -> directives
+    else -> return false
+  }.firstOrNull { it.name == "nonnull" }
+
+  if (directive == null) {
+    return false
+  }
+
+  return (directive.arguments!!.arguments.first().value as GQLListValue)
+      .values
+      .map { (it as GQLStringValue).value }
+      .contains(fieldName)
+}

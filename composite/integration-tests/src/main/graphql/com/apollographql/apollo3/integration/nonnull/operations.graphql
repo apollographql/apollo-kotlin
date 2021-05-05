@@ -1,0 +1,14 @@
+query NonNullField1 {
+    # should be made nonnull by the annotation
+    field1 @nonnull
+}
+
+query NullableField1 {
+    # should be made nullable from the schema
+    field1
+}
+
+query NonNullField2 {
+    # should be made nonnull by extra.graphqls
+    field2
+}

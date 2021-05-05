@@ -39,7 +39,8 @@ class MetadataTest {
           schemaFile = schemaFile,
           customScalarsMapping = defaultCustomScalarsMapping,
           generateFragmentsAsInterfaces = true, 
-          rootPackageName = ""
+          rootPackageName = "",
+          extraSchemaFiles = emptySet()
       )
     } else {
       val metadata = metadataFiles.map { ApolloMetadata.readFrom(it) }.merge()

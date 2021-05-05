@@ -35,6 +35,7 @@ import org.gradle.api.tasks.OutputFile
 import org.gradle.api.tasks.PathSensitive
 import org.gradle.api.tasks.PathSensitivity
 import org.gradle.api.tasks.TaskAction
+import org.jetbrains.kotlin.gradle.utils.`is`
 import javax.inject.Inject
 
 @CacheableTask
@@ -57,6 +58,10 @@ abstract class ApolloGenerateSourcesTask : DefaultTask() {
   @get:Optional
   @get:PathSensitive(PathSensitivity.RELATIVE)
   abstract val schemaFile: RegularFileProperty
+
+  @get:InputFiles
+  @get:PathSensitive(PathSensitivity.RELATIVE)
+  abstract val extraSchemaFiles: ConfigurableFileCollection
 
   @get:InputFiles
   @get:PathSensitive(PathSensitivity.RELATIVE)
@@ -146,6 +151,9 @@ abstract class ApolloGenerateSourcesTask : DefaultTask() {
       check(!schemaFile.isPresent) {
         "Specifying 'schemaFile' has no effect as an upstream module already provided a schema"
       }
+      check(extraSchemaFiles.isEmpty) {
+        "Specifying 'extraSchemaFiles' has no effect as an upstream module already provided a schema"
+      }
       check(!customScalarsMapping.isPresent) {
         "Specifying 'customScalarsMapping' has no effect as an upstream module already provided a customScalarsMapping"
       }
@@ -157,6 +165,7 @@ abstract class ApolloGenerateSourcesTask : DefaultTask() {
       GraphQLCompiler.IncomingOptions.from(
           roots = roots,
           schemaFile = schemaFile.asFile.orNull ?: error("no schemaFile found"),
+          extraSchemaFiles = extraSchemaFiles.files,
           customScalarsMapping = customScalarsMapping.getOrElse(emptyMap()),
           generateFragmentsAsInterfaces = generateFragmentsAsInterfaces.getOrElse(true),
           rootPackageName = rootPackageName

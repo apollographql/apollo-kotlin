@@ -3,7 +3,7 @@ package com.apollographql.apollo3.graphql.ast
 /**
  * @param fragmentDefinitions: all the fragments in the current compilation unit. This is required to check the type conditions as well as fields merging
  */
-private class ExecutableDocumentValidator(val schema: Schema, val fragmentDefinitions: Map<String, GQLFragmentDefinition>) {
+internal class ExecutableValidationScope(private val schema: Schema, private val fragmentDefinitions: Map<String, GQLFragmentDefinition>) {
   private val typeDefinitions = schema.typeDefinitions
 
   private val issues = mutableListOf<Issue>()
@@ -11,9 +11,9 @@ private class ExecutableDocumentValidator(val schema: Schema, val fragmentDefini
   /**
    * As the tree is walked, variable references will be put here
    */
-  private val variableReferences = mutableListOf<InputValueScope.VariableReference>()
+  private val variableReferences = mutableListOf<VariableReference>()
 
-  fun validateDocument(document: GQLDocument): List<Issue> {
+  fun validate(document: GQLDocument): List<Issue> {
     document.validateExecutable()
     document.validateFragments()
     document.validateOperations()
@@ -33,7 +33,7 @@ private class ExecutableDocumentValidator(val schema: Schema, val fragmentDefini
     return issues
   }
 
-  fun inferFragmentVariables(fragment: GQLFragmentDefinition): List<InputValueScope.VariableReference> {
+  fun inferFragmentVariables(fragment: GQLFragmentDefinition): List<VariableReference> {
     variableReferences.clear()
     fragment.validate()
 
@@ -41,7 +41,7 @@ private class ExecutableDocumentValidator(val schema: Schema, val fragmentDefini
       it.variable.name
     }.forEach {
       val types = it.value.map { it.expectedType.pretty() }.distinct()
-      check (types.size == 1) {
+      check(types.size == 1) {
         "Fragment ${fragment.name} uses different types for variable '${it.key}': ${types.joinToString()}"
       }
     }
@@ -128,11 +128,12 @@ private class ExecutableDocumentValidator(val schema: Schema, val fragmentDefini
     }
 
     directives.forEach {
-      it.validate()
+      it.validate(GQLDirectiveLocation.FIELD)
     }
   }
 
-  private fun GQLDirective.validate() {
+
+  private fun GQLDirective.validate(directiveLocation: GQLDirectiveLocation) {
     val directiveDefinition = schema.directiveDefinitions[name]
 
     if (directiveDefinition == null) {
@@ -145,8 +146,37 @@ private class ExecutableDocumentValidator(val schema: Schema, val fragmentDefini
       return
     }
 
+    if (directiveLocation !in directiveDefinition.locations) {
+      issues.add(
+          Issue.ValidationError(
+              message = "Directive '$name' cannot be applied on '$directiveLocation'",
+              sourceLocation = sourceLocation
+          )
+      )
+      return
+    }
+
     arguments?.validate(directiveDefinition.arguments, "directive '${directiveDefinition.name}'")
+
+    if (name == "nonnull") {
+      if (directiveLocation == GQLDirectiveLocation.FIELD && (arguments?.arguments?.size ?: 0) > 0) {
+        issues.add(
+            Issue.ValidationError(
+                message = "'$name' cannot have arguments when applied on a field",
+                sourceLocation = sourceLocation
+            )
+        )
+      } else if (directiveLocation == GQLDirectiveLocation.OBJECT && (arguments?.arguments?.size ?: 0) == 0) {
+        issues.add(
+            Issue.ValidationError(
+                message = "'$name' must contain a list of fields",
+                sourceLocation = sourceLocation
+            )
+        )
+      }
+    }
   }
+
 
   private fun GQLInlineFragment.validate(typeDefinitionInScope: GQLTypeDefinition) {
     val inlineFragmentTypeDefinition = typeDefinitions[typeCondition.name]
@@ -169,7 +199,7 @@ private class ExecutableDocumentValidator(val schema: Schema, val fragmentDefini
     selectionSet.validate(inlineFragmentTypeDefinition)
 
     directives.forEach {
-      it.validate()
+      it.validate(GQLDirectiveLocation.INLINE_FRAGMENT)
     }
   }
 
@@ -205,7 +235,7 @@ private class ExecutableDocumentValidator(val schema: Schema, val fragmentDefini
     fragmentDefinition.selectionSet.validate(fragmentTypeDefinition)
 
     directives.forEach {
-      it.validate()
+      it.validate(GQLDirectiveLocation.FRAGMENT_SPREAD)
     }
   }
 
@@ -571,7 +601,7 @@ private class ExecutableDocumentValidator(val schema: Schema, val fragmentDefini
     // 5.6.2 Input Object Field Names
     // Note that this does not modify the document, it calls coerce because it's easier
     // to validate at the same time but the coerced result is not used here
-    val coercionResult = value.coerce(schemaArgument.type, schema)
+    val coercionResult = value.validateAndCoerce(schemaArgument.type, schema)
     variableReferences.addAll(coercionResult.variableReferences)
     issues.addAll(coercionResult.issues)
   }
@@ -622,92 +652,4 @@ private class ExecutableDocumentValidator(val schema: Schema, val fragmentDefini
       ))
     }
   }
-}
-
-internal fun GQLFieldDefinition.isDeprecated(): Boolean {
-  return directives.firstOrNull { it.name == "deprecated" } != null
-}
-
-internal fun GQLEnumValueDefinition.isDeprecated(): Boolean {
-  return directives.firstOrNull { it.name == "deprecated" } != null
-}
-
-
-fun GQLValue.coerce(expectedType: GQLType, schema: Schema) = InputValueScope(schema).coerce(this, expectedType)
-
-
-private fun GQLDocument.checkSingleOperation(): List<Issue> {
-  val operations = definitions.filterIsInstance<GQLOperationDefinition>()
-  return when {
-    operations.isEmpty() -> listOf(Issue.ValidationError("No operation found", sourceLocation))
-    else -> emptyList()
-  }
-}
-
-internal fun List<GQLFragmentDefinition>.checkDuplicateFragments(): List<Issue> {
-  val filtered = mutableMapOf<String, GQLFragmentDefinition>()
-  val issues = mutableListOf<Issue>()
-
-  forEach {
-    val existing = filtered.putIfAbsent(it.name, it)
-    if (existing != null) {
-      issues.add(Issue.ValidationError(
-          message = "Fragment ${it.name} is already defined",
-          sourceLocation = it.sourceLocation,
-      ))
-    }
-  }
-  return issues
-}
-
-internal fun List<GQLOperationDefinition>.checkDuplicateOperations(): List<Issue> {
-  val filtered = mutableMapOf<String, GQLOperationDefinition>()
-  val issues = mutableListOf<Issue>()
-
-  forEach {
-    if (it.name == null) {
-      issues.add(Issue.ValidationError(
-          message = "Apollo does not support anonymous operations",
-          sourceLocation = it.sourceLocation,
-      ))
-      return@forEach
-    }
-    val existing = filtered.putIfAbsent(it.name, it)
-    if (existing != null) {
-      issues.add(Issue.ValidationError(
-          message = "Operation ${it.name} is already defined",
-          sourceLocation = it.sourceLocation,
-      ))
-    }
-  }
-  return issues
-}
-
-internal fun List<GQLDefinition>.checkDuplicates(): List<Issue> {
-  return filterIsInstance<GQLOperationDefinition>().checkDuplicateOperations() + filterIsInstance<GQLFragmentDefinition>().checkDuplicateFragments()
-}
-
-fun GQLOperationDefinition.validate(
-    schema: Schema,
-    fragments: Map<String, GQLFragmentDefinition>,
-) = ExecutableDocumentValidator(schema, fragments).validateOperation(this)
-
-fun GQLFragmentDefinition.validate(
-    schema: Schema,
-    fragments: Map<String, GQLFragmentDefinition>,
-) = ExecutableDocumentValidator(schema, fragments).validateFragment(this)
-
-fun GQLFragmentDefinition.inferVariables(
-    schema: Schema,
-    fragments: Map<String, GQLFragmentDefinition>,
-) = ExecutableDocumentValidator(schema, fragments).inferFragmentVariables(this)
-
-fun GQLDocument.validateAsOperations(schema: Schema): List<Issue> {
-  val fragments = definitions.filterIsInstance<GQLFragmentDefinition>().associateBy { it.name }
-  val validationIssues = ExecutableDocumentValidator(schema, fragments).validateDocument(this)
-  val duplicateIssues = definitions.checkDuplicates()
-
-  val singleOperationIssues = checkSingleOperation()
-  // check for unused fragments
-  return validationIssues + duplicateIssues + singleOperationIssues
 }

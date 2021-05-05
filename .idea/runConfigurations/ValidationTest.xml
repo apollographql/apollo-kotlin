@@ -4,7 +4,7 @@
       <option name="executionName" />
       <option name="externalProjectPath" value="$PROJECT_DIR$/.." />
       <option name="externalSystemIdString" value="GRADLE" />
-      <option name="scriptParameters" value="--tests &quot;com.apollographql.apollo.compiler.ValidationTest&quot; -DupdateTestFixtures=true -DtestFilter=DirectiveWrongArgument" />
+      <option name="scriptParameters" value="--tests &quot;com.apollographql.apollo3.compiler.ValidationTest&quot; -DupdateTestFixtures=true -DtestFilter=ArgumentNonOp" />
       <option name="taskDescriptions">
         <list />
       </option>

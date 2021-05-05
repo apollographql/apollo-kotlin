@@ -19,6 +19,7 @@ package com.apollographql.apollo3.api.internal
 /**
  * Implementation of an [Optional] containing a reference.
  */
+@Deprecated("This shouldn't be used anymore with Kotlin APIs")
 internal class Present<T>(private val reference: T) : Optional<T>() {
   override val isPresent: Boolean
     get() = true

@@ -1,17 +1,16 @@
 package com.apollographql.apollo3.gradle.internal
 
 import com.apollographql.apollo3.compiler.introspection.IntrospectionSchema
-import com.apollographql.apollo3.compiler.introspection.IntrospectionSchema.Companion.wrap
+import com.apollographql.apollo3.compiler.introspection.toGQLDocument
+import com.apollographql.apollo3.compiler.introspection.toGraphQLIntrospectionSchema
 import com.apollographql.apollo3.compiler.introspection.toIntrospectionSchema
 import com.apollographql.apollo3.compiler.introspection.toSchema
 import com.apollographql.apollo3.compiler.toJson
-import com.apollographql.apollo3.graphql.ast.GraphQLParser
+import com.apollographql.apollo3.graphql.ast.toGraphQLSchema
 import com.apollographql.apollo3.graphql.ast.toUtf8WithIndents
 import org.gradle.api.DefaultTask
 import org.gradle.api.provider.Property
 import org.gradle.api.tasks.Input
-import org.gradle.api.tasks.Optional
-import org.gradle.api.tasks.OutputFile
 import org.gradle.api.tasks.TaskAction
 import org.gradle.api.tasks.options.Option
 import java.io.File
@@ -38,17 +37,18 @@ abstract class ApolloConvertSchemaTask: DefaultTask() {
   }
 
   private fun File.isIntrospection() = extension == "json"
+
   fun convert(from: File, to: File) {
     check (from.isIntrospection() && !to.isIntrospection() || !from.isIntrospection() && to.isIntrospection()) {
       "Cannot convert from ${from.name} to ${to.name}, they are already the same format"
     }
 
     if (from.isIntrospection()) {
-      IntrospectionSchema(from).toSchema().toDocument().toUtf8WithIndents().let {
+      from.toGraphQLIntrospectionSchema().toGQLDocument().toUtf8WithIndents().let {
         to.writeText(it)
       }
     } else {
-      GraphQLParser.parseSchema(from).toIntrospectionSchema().wrap().toJson(to)
+      from.toGraphQLSchema().toIntrospectionSchema().toJson(to)
     }
   }
 
