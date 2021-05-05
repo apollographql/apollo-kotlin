@@ -4,7 +4,6 @@ buildscript {
   repositories {
     google()
     mavenCentral()
-    jcenter()
     mavenLocal()
     maven {
       url = uri("https://oss.sonatype.org/content/repositories/snapshots/")
@@ -29,7 +28,6 @@ apply(plugin = "com.google.devtools.ksp")
 repositories {
   google()
   mavenCentral()
-  jcenter()
   mavenLocal()
   maven {
     url = uri("https://oss.sonatype.org/content/repositories/snapshots/")

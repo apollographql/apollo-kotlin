@@ -155,6 +155,8 @@ abstract class DefaultApolloExtension(
     registerService(service)
   }
 
+  // Gradle will consider the task never UP-TO-DATE if we pass a lambda to doLast()
+  @Suppress("ObjectLiteralToLambda")
   private fun registerCheckVersionsTask(): TaskProvider<Task> {
     return project.tasks.register(ModelNames.checkApolloVersions()) {
       val outputFile = BuildDirLayout.versionCheck(project)
@@ -169,17 +171,19 @@ abstract class DefaultApolloExtension(
       }
       it.outputs.file(outputFile)
 
-      it.doLast {
-        val allVersions = it.inputs.properties["allVersions"] as List<*>
+      it.doLast(object: Action<Task> {
+        override fun execute(t: Task) {
+          val allVersions = it.inputs.properties["allVersions"] as List<*>
 
-        check(allVersions.size <= 1) {
-          "ApolloGraphQL: All apollo versions should be the same. Found:\n$allVersions"
+          check(allVersions.size <= 1) {
+            "ApolloGraphQL: All apollo versions should be the same. Found:\n$allVersions"
+          }
+
+          val version = allVersions.firstOrNull()
+          outputFile.get().asFile.parentFile.mkdirs()
+          outputFile.get().asFile.writeText("All versions are consistent: $version")
         }
-
-        val version = allVersions.firstOrNull()
-        outputFile.get().asFile.parentFile.mkdirs()
-        outputFile.get().asFile.writeText("All versions are consistent: $version")
-      }
+      })
     }
   }
 
