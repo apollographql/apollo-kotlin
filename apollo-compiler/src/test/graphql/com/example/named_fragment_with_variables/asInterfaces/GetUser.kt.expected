@@ -69,7 +69,7 @@ data class GetUser(
 
   companion object {
     const val OPERATION_ID: String =
-        "f00812d485d5796cfb72c796a4634df360bd6ec06f95a7ac38e322819ac20889"
+        "9569c4908500a3ee7a60b9ab7129cfaeffa2bf8465dec32b8f4f5c1c02400832"
 
     /**
      * The minimized GraphQL document being sent to the server to save a few bytes.
@@ -79,6 +79,7 @@ data class GetUser(
      *   __typename
      *   ...QueryFragment
      * }
+     *
      * fragment QueryFragment on Query {
      *   __typename
      *   organization(id: $organizationId) {
@@ -89,6 +90,7 @@ data class GetUser(
      *     }
      *   }
      * }
+     *
      * fragment UserFragment on User {
      *   __typename
      *   firstName
@@ -97,7 +99,7 @@ data class GetUser(
      * }
      */
     const val OPERATION_DOCUMENT: String =
-        "query GetUser(${'$'}organizationId: String!, ${'$'}query: UserQuery!, ${'$'}size: Int!) { __typename ...QueryFragment } fragment QueryFragment on Query { __typename organization(id: ${'$'}organizationId) { id user(query: ${'$'}query) { __typename ...UserFragment } } } fragment UserFragment on User { __typename firstName lastName avatar(size: ${'$'}size) }"
+        "query GetUser(${'$'}organizationId: String!, ${'$'}query: UserQuery!, ${'$'}size: Int!) { __typename ...QueryFragment }  fragment QueryFragment on Query { __typename organization(id: ${'$'}organizationId) { id user(query: ${'$'}query) { __typename ...UserFragment } } }  fragment UserFragment on User { __typename firstName lastName avatar(size: ${'$'}size) }"
 
     const val OPERATION_NAME: String = "GetUser"
   }

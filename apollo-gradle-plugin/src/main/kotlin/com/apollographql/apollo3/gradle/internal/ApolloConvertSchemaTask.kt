@@ -7,7 +7,7 @@ import com.apollographql.apollo3.compiler.introspection.toIntrospectionSchema
 import com.apollographql.apollo3.compiler.introspection.toSchema
 import com.apollographql.apollo3.compiler.toJson
 import com.apollographql.apollo3.graphql.ast.toGraphQLSchema
-import com.apollographql.apollo3.graphql.ast.toUtf8WithIndents
+import com.apollographql.apollo3.graphql.ast.toUtf8
 import org.gradle.api.DefaultTask
 import org.gradle.api.provider.Property
 import org.gradle.api.tasks.Input
@@ -44,9 +44,7 @@ abstract class ApolloConvertSchemaTask: DefaultTask() {
     }
 
     if (from.isIntrospection()) {
-      from.toGraphQLIntrospectionSchema().toGQLDocument().toUtf8WithIndents().let {
-        to.writeText(it)
-      }
+      from.toGraphQLIntrospectionSchema().toGQLDocument().toUtf8(to)
     } else {
       from.toGraphQLSchema().toIntrospectionSchema().toJson(to)
     }

@@ -68,7 +68,7 @@ class TestQuery : Query<TestQuery.Data> {
 
   companion object {
     const val OPERATION_ID: String =
-        "d4a6d31ad35c54ad2ee3efa9f9519c167df5da584fc9cce8f8db71c9f9a46ce6"
+        "ec6d8d89a97a6fcc70ea1d1b7df0da779dd3fab0791532586486701fdaae1fe1"
 
     /**
      * The minimized GraphQL document being sent to the server to save a few bytes.
@@ -87,13 +87,14 @@ class TestQuery : Query<TestQuery.Data> {
      *     }
      *   }
      * }
+     *
      * fragment bFragment on B {
      *   __typename
      *   fieldB1
      * }
      */
     const val OPERATION_DOCUMENT: String =
-        "query TestQuery { root { __typename ... on A { __typename fieldA1 ... on B { __typename ...bFragment } } } } fragment bFragment on B { __typename fieldB1 }"
+        "query TestQuery { root { __typename ... on A { __typename fieldA1 ... on B { __typename ...bFragment } } } }  fragment bFragment on B { __typename fieldB1 }"
 
     const val OPERATION_NAME: String = "TestQuery"
   }

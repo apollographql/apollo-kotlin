@@ -231,7 +231,7 @@ class IrBuilder(
       } else {
         it
       }
-    }!!.toUtf8WithIndents()
+    }!!.toUtf8()
   }
 
   private fun GQLOperationDefinition.toIr(): IrOperation {

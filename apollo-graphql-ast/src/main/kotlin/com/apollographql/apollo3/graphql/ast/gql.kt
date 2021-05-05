@@ -1,11 +1,10 @@
+package com.apollographql.apollo3.graphql.ast
+
 /**
  * The GraphQL AST definition
  *
  * This is all in one file so we can use sealed classes. Extensions are in gqlxyz.kt
  */
-package com.apollographql.apollo3.graphql.ast
-
-import okio.BufferedSink
 
 /**
  * A node in the GraphQL AST.
@@ -13,7 +12,7 @@ import okio.BufferedSink
  * The structure of the different nodes matches closely the one of the GraphQL specification
  * (https://spec.graphql.org/June2018/#sec-Appendix-Grammar-Summary.Document)
  *
- * See [parse] for the different ways to get a [GQLDocument].
+ * See [parseAsGraphQLDocument].
  *
  * Compared to the Antlr [com.apollographql.apollo3.compiler.parser.antlr.GraphQLParser.DocumentContext], a GQLDocument
  * is a lot simpler and allows for easy modifying a document (using .clone()) and outputing them to a [okio.BufferedSink].
@@ -30,7 +29,13 @@ interface GQLNode {
    */
   val children: List<GQLNode>
 
-  fun write(bufferedSink: BufferedSink)
+  /**
+   * Write the node to the given writer
+   *
+   * The general convention is that [GQLNode] should output their trailing line if they know
+   * they will need one
+   */
+  fun write(writer: SDLWriter)
 
   fun copyWithNewChildren(container: NodeContainer): GQLNode
 }
@@ -54,7 +59,7 @@ sealed class GQLSelection : GQLNode
  * The top level node in a GraphQL document. This can be a schema document or an executable document
  * (or something else if need be)
  *
- * See [parse] for the different ways to get a [GQLDocument].
+ * See [parseAsGraphQLDocument].
  */
 data class GQLDocument(
     val definitions: List<GQLDefinition>,
@@ -63,8 +68,8 @@ data class GQLDocument(
   override val sourceLocation: SourceLocation = SourceLocation(0, 0, filePath)
   override val children = definitions
 
-  override fun write(bufferedSink: BufferedSink) {
-    definitions.join(bufferedSink = bufferedSink, separator = "\n")
+  override fun write(writer: SDLWriter) {
+    definitions.join(writer = writer, separator = "\n")
   }
 
   override fun copyWithNewChildren(container: NodeContainer): GQLNode {
@@ -88,23 +93,23 @@ data class GQLOperationDefinition(
 ) : GQLDefinition, GQLDescribed {
   override val children = variableDefinitions + directives + selectionSet
 
-  override fun write(bufferedSink: BufferedSink) {
-    with(bufferedSink) {
-      writeUtf8(operationType)
+  override fun write(writer: SDLWriter) {
+    with(writer) {
+      write(operationType)
       if (name != null) {
-        writeUtf8(" ")
-        writeUtf8(name)
+        write(" ")
+        write(name)
         if (variableDefinitions.isNotEmpty()) {
-          variableDefinitions.join(bufferedSink = bufferedSink, separator = ", ", prefix = "(", postfix = ")")
+          variableDefinitions.join(writer = writer, separator = ", ", prefix = "(", postfix = ")")
         }
       }
       if (directives.isNotEmpty()) {
-        writeUtf8(" ")
-        directives.join(bufferedSink)
+        write(" ")
+        directives.join(writer)
       }
       if (selectionSet.selections.isNotEmpty()) {
-        writeUtf8(" ")
-        selectionSet.write(bufferedSink)
+        write(" ")
+        selectionSet.write(writer)
       }
     }
   }
@@ -129,16 +134,16 @@ data class GQLFragmentDefinition(
 
   override val children = directives + selectionSet + typeCondition
 
-  override fun write(bufferedSink: BufferedSink) {
-    with(bufferedSink) {
-      writeUtf8("fragment $name on ${typeCondition.name}")
+  override fun write(writer: SDLWriter) {
+    with(writer) {
+      write("fragment $name on ${typeCondition.name}")
       if (directives.isNotEmpty()) {
-        writeUtf8(" ")
-        directives.join(bufferedSink)
+        write(" ")
+        directives.join(writer)
       }
       if (selectionSet.selections.isNotEmpty()) {
-        writeUtf8(" ")
-        selectionSet.write(bufferedSink)
+        write(" ")
+        selectionSet.write(writer)
       }
     }
   }
@@ -161,15 +166,19 @@ data class GQLSchemaDefinition(
 
   override val children = directives + rootOperationTypeDefinitions
 
-  override fun write(bufferedSink: BufferedSink) {
-    with(bufferedSink) {
-      if (description != null) writeUtf8("\"\"\"${description.encodeToGraphQLTripleQuoted()}\"\"\"\n")
+  override fun write(writer: SDLWriter) {
+    with(writer) {
+      writeDescription(description)
       if (directives.isNotEmpty()) {
-        directives.join(bufferedSink)
-        writeUtf8(" ")
+        directives.join(writer)
+        write(" ")
       }
-      writeUtf8("schema ")
-      rootOperationTypeDefinitions.join(bufferedSink, prefix = "{\n", separator = "\n", postfix = "\n}\n")
+      write("schema ")
+      write("{\n")
+      indent()
+      rootOperationTypeDefinitions.join(writer,  separator = "",)
+      unindent()
+      write("}\n")
     }
   }
 
@@ -217,21 +226,25 @@ data class GQLInterfaceTypeDefinition(
 
   override val children: List<GQLNode> = directives + fields
 
-  override fun write(bufferedSink: BufferedSink) {
-    with(bufferedSink) {
-      if (description != null) writeUtf8("\"\"\"${description.encodeToGraphQLTripleQuoted()}\"\"\"\n")
-      writeUtf8("interface $name")
+  override fun write(writer: SDLWriter) {
+    with(writer) {
+      writeDescription(description)
+      write("interface $name")
       if (implementsInterfaces.isNotEmpty()) {
-        writeUtf8(" implements ")
-        writeUtf8(implementsInterfaces.joinToString(" "))
+        write(" implements ")
+        write(implementsInterfaces.joinToString(" "))
       }
       if (directives.isNotEmpty()) {
-        writeUtf8(" ")
-        directives.join(bufferedSink)
+        write(" ")
+        directives.join(writer)
       }
       if (fields.isNotEmpty()) {
-        writeUtf8(" ")
-        fields.join(bufferedSink, prefix = "{\n", separator = "\n", postfix = "\n}\n")
+        write(" ")
+        write("{\n")
+        indent()
+        fields.join(writer, separator = "\n\n")
+        unindent()
+        write("\n}\n")
       }
     }
   }
@@ -255,20 +268,25 @@ data class GQLObjectTypeDefinition(
 
   override val children: List<GQLNode> = directives + fields
 
-  override fun write(bufferedSink: BufferedSink) {
-    with(bufferedSink) {
-      if (description != null) writeUtf8("\"\"\"${description.encodeToGraphQLTripleQuoted()}\"\"\"\n")
-      writeUtf8("type $name")
+  override fun write(writer: SDLWriter) {
+    with(writer) {
+      writeDescription(description)
+      write("type $name")
       if (implementsInterfaces.isNotEmpty()) {
-        writeUtf8(" implements ")
-        writeUtf8(implementsInterfaces.joinToString(" "))
+        write(" implements ")
+        write(implementsInterfaces.joinToString(" "))
       }
       if (directives.isNotEmpty()) {
-        writeUtf8(" ")
-        directives.join(bufferedSink)
+        write(" ")
+        directives.join(writer)
       }
       if (fields.isNotEmpty()) {
-        fields.join(bufferedSink, prefix = " {\n", separator = "\n", postfix = "\n}\n")
+        write(" ")
+        write("{\n")
+        indent()
+        fields.join(writer, separator = "\n\n")
+        unindent()
+        write("\n}\n")
       }
     }
   }
@@ -291,17 +309,21 @@ data class GQLInputObjectTypeDefinition(
 
   override val children: List<GQLNode> = directives + inputFields
 
-  override fun write(bufferedSink: BufferedSink) {
-    with(bufferedSink) {
-      if (description != null) writeUtf8("\"\"\"${description.encodeToGraphQLTripleQuoted()}\"\"\"\n")
-      writeUtf8("input $name")
+  override fun write(writer: SDLWriter) {
+    with(writer) {
+      writeDescription(description)
+      write("input $name")
       if (directives.isNotEmpty()) {
-        writeUtf8(" ")
-        directives.join(bufferedSink)
+        write(" ")
+        directives.join(writer)
       }
       if (inputFields.isNotEmpty()) {
-        writeUtf8(" ")
-        inputFields.join(bufferedSink, prefix = "{\n", separator = "\n", postfix = "\n}\n")
+        write(" ")
+        write("{\n")
+        indent()
+        inputFields.join(writer, separator = "\n")
+        unindent()
+        write("}\n")
       }
     }
   }
@@ -323,14 +345,15 @@ data class GQLScalarTypeDefinition(
 
   override val children = directives
 
-  override fun write(bufferedSink: BufferedSink) {
-    with(bufferedSink) {
-      if (description != null) writeUtf8("\"\"\"${description.encodeToGraphQLTripleQuoted()}\"\"\"\n")
-      writeUtf8("scalar $name")
+  override fun write(writer: SDLWriter) {
+    with(writer) {
+      writeDescription(description)
+      write("scalar $name")
       if (directives.isNotEmpty()) {
-        writeUtf8(" ")
-        directives.join(bufferedSink)
+        write(" ")
+        directives.join(writer)
       }
+      write("\n")
     }
   }
 
@@ -351,17 +374,21 @@ data class GQLEnumTypeDefinition(
 
   override val children: List<GQLNode> = directives + enumValues
 
-  override fun write(bufferedSink: BufferedSink) {
-    with(bufferedSink) {
-      if (description != null) writeUtf8("\"\"\"${description.encodeToGraphQLTripleQuoted()}\"\"\"\n")
-      writeUtf8("enum $name")
+  override fun write(writer: SDLWriter) {
+    with(writer) {
+      writeDescription(description)
+      write("enum $name")
       if (directives.isNotEmpty()) {
-        writeUtf8(" ")
-        directives.join(bufferedSink)
+        write(" ")
+        directives.join(writer)
       }
       if (enumValues.isNotEmpty()) {
-        writeUtf8(" ")
-        enumValues.join(bufferedSink, prefix = "{\n", separator = "\n", postfix = "\n}\n")
+        write(" ")
+        write("{\n")
+        indent()
+        enumValues.join(writer, separator = "\n",)
+        unindent()
+        write("}\n")
       }
     }
   }
@@ -384,16 +411,17 @@ data class GQLUnionTypeDefinition(
 
   override val children: List<GQLNode> = directives + memberTypes
 
-  override fun write(bufferedSink: BufferedSink) {
-    with(bufferedSink) {
-      if (description != null) writeUtf8("\"\"\"${description.encodeToGraphQLTripleQuoted()}\"\"\"\n")
-      writeUtf8("union $name")
+  override fun write(writer: SDLWriter) {
+    with(writer) {
+      writeDescription(description)
+      write("union $name")
       if (directives.isNotEmpty()) {
-        writeUtf8(" ")
-        directives.join(bufferedSink)
+        write(" ")
+        directives.join(writer)
       }
-      writeUtf8(" = ")
-      memberTypes.join(bufferedSink, separator = "|")
+      write(" = ")
+      memberTypes.join(writer, separator = "|")
+      write("\n")
     }
   }
 
@@ -416,18 +444,21 @@ data class GQLDirectiveDefinition(
 
   override val children: List<GQLNode> = arguments
 
-  override fun write(bufferedSink: BufferedSink) {
-    with(bufferedSink) {
-      if (description != null) writeUtf8("\"\"\"${description.encodeToGraphQLTripleQuoted()}\"\"\"\n")
-      writeUtf8("directive @$name")
+  override fun write(writer: SDLWriter) {
+    with(writer) {
+      writeDescription(description)
+      write("directive @$name")
       if (arguments.isNotEmpty()) {
-        writeUtf8(" ")
-        arguments.join(bufferedSink, prefix = "(", separator = ", ", postfix = ")")
+        write(" ")
+        arguments.join(writer, prefix = "(", separator = ", ", postfix = ")") {
+          it.write(writer, true)
+        }
       }
       if (repeatable) {
-        writeUtf8(" repeatable")
+        write(" repeatable")
       }
-      writeUtf8(" on ${locations.joinToString("|")}")
+      write(" on ${locations.joinToString("|")}")
+      write("\n")
     }
   }
 
@@ -456,7 +487,7 @@ data class GQLSchemaExtension(
 
   override val children = directives + operationTypesDefinition
 
-  override fun write(bufferedSink: BufferedSink) {
+  override fun write(writer: SDLWriter) {
     TODO("Not yet implemented")
   }
 
@@ -477,7 +508,7 @@ data class GQLEnumTypeExtension(
 
   override val children: List<GQLNode> = directives + enumValues
 
-  override fun write(bufferedSink: BufferedSink) {
+  override fun write(writer: SDLWriter) {
     TODO("Not yet implemented")
   }
 
@@ -498,7 +529,7 @@ data class GQLObjectTypeExtension(
 
   override val children: List<GQLNode> = directives + fields
 
-  override fun write(bufferedSink: BufferedSink) {
+  override fun write(writer: SDLWriter) {
     TODO("Not yet implemented")
   }
 
@@ -519,7 +550,7 @@ data class GQLInputObjectTypeExtension(
 
   override val children: List<GQLNode> = directives + inputFields
 
-  override fun write(bufferedSink: BufferedSink) {
+  override fun write(writer: SDLWriter) {
     TODO("Not yet implemented")
   }
 
@@ -539,7 +570,7 @@ data class GQLScalarTypeExtension(
 
   override val children = directives
 
-  override fun write(bufferedSink: BufferedSink) {
+  override fun write(writer: SDLWriter) {
     TODO("Not yet implemented")
   }
 
@@ -558,7 +589,7 @@ data class GQLInterfaceTypeExtension(
 
   override val children = fields
 
-  override fun write(bufferedSink: BufferedSink) {
+  override fun write(writer: SDLWriter) {
     TODO("Not yet implemented")
   }
 
@@ -578,7 +609,7 @@ data class GQLUnionTypeExtension(
 
   override val children: List<GQLNode> = directives + memberTypes
 
-  override fun write(bufferedSink: BufferedSink) {
+  override fun write(writer: SDLWriter) {
     TODO("Not yet implemented")
   }
 
@@ -599,15 +630,15 @@ data class GQLEnumValueDefinition(
 
   override val children = directives
 
-  override fun write(bufferedSink: BufferedSink) {
-    with(bufferedSink) {
-      if (description != null) writeUtf8("\"\"\"${description.encodeToGraphQLTripleQuoted()}\"\"\"\n")
-      writeUtf8(name)
+  override fun write(writer: SDLWriter) {
+    with(writer) {
+      writeDescription(description)
+      write(name)
       if (directives.isNotEmpty()) {
-        writeUtf8(" ")
-        directives.join(bufferedSink)
+        write(" ")
+        directives.join(writer)
       }
-
+      write("\n")
     }
   }
 
@@ -629,19 +660,20 @@ data class GQLFieldDefinition(
 
   override val children: List<GQLNode> = directives + arguments
 
-  override fun write(bufferedSink: BufferedSink) {
-    with(bufferedSink) {
-      if (description != null) writeUtf8("\"\"\"${description.encodeToGraphQLTripleQuoted()}\"\"\"\n")
-      writeUtf8(name)
+  override fun write(writer: SDLWriter) {
+    with(writer) {
+      writeDescription(description)
+      write(name)
       if (arguments.isNotEmpty()) {
-        writeUtf8(" ")
-        arguments.join(bufferedSink, prefix = "(", separator = ", ", postfix = ")")
+        arguments.join(writer, prefix = "(", separator = ", ", postfix = ")") {
+          it.write(writer, true)
+        }
       }
-      writeUtf8(": ")
-      type.write(bufferedSink)
+      write(": ")
+      type.write(writer)
       if (directives.isNotEmpty()) {
-        writeUtf8(" ")
-        directives.join(bufferedSink)
+        write(" ")
+        directives.join(writer)
       }
     }
   }
@@ -665,20 +697,38 @@ data class GQLInputValueDefinition(
 
   override val children = directives
 
-  override fun write(bufferedSink: BufferedSink) {
-    with(bufferedSink) {
-      if (description != null) writeUtf8("\"\"\"${description.encodeToGraphQLTripleQuoted()}\"\"\" ")
-      writeUtf8("$name: ")
-      type.write(bufferedSink)
+  /**
+   * @param inline whether the input value definition is used inline (for an example a field argument)
+   * or as a block (for an example for input fields)
+   */
+  fun write(writer: SDLWriter, inline: Boolean) {
+    with(writer) {
+      if (inline) {
+        writeInlineString(description)
+        if (description != null) {
+          write(" ")
+        }
+      } else {
+        writeDescription(description)
+      }
+      write("$name: ")
+      type.write(writer)
       if (defaultValue != null) {
-        writeUtf8(" = ")
-        defaultValue.write(bufferedSink)
+        write(" = ")
+        defaultValue.write(writer)
       }
       if (directives.isNotEmpty()) {
-        writeUtf8(" ")
-        directives.join(bufferedSink)
+        write(" ")
+        directives.join(writer)
+      }
+      if (!inline) {
+        write("\n")
       }
     }
+  }
+  
+  override fun write(writer: SDLWriter) {
+    write(writer, false)
   }
 
   override fun copyWithNewChildren(container: NodeContainer): GQLNode {
@@ -702,17 +752,17 @@ data class GQLVariableDefinition(
 
   override val children = listOfNotNull(defaultValue) + directives
 
-  override fun write(bufferedSink: BufferedSink) {
-    with(bufferedSink) {
-      writeUtf8("${'$'}$name: ")
-      type.write(bufferedSink)
+  override fun write(writer: SDLWriter) {
+    with(writer) {
+      write("${'$'}$name: ")
+      type.write(writer)
       if (defaultValue != null) {
-        writeUtf8(" = ")
-        defaultValue.write(bufferedSink)
-        writeUtf8(" ")
+        write(" = ")
+        defaultValue.write(writer)
+        write(" ")
       }
       // TODO("support variable directives")
-      // directives.join(bufferedSink)
+      // directives.join(writer)
     }
   }
 
@@ -732,9 +782,9 @@ data class GQLOperationTypeDefinition(
 
   override val children = emptyList<GQLNode>()
 
-  override fun write(bufferedSink: BufferedSink) {
-    with(bufferedSink) {
-      writeUtf8("$operationType: $namedType")
+  override fun write(writer: SDLWriter) {
+    with(writer) {
+      write("$operationType: $namedType\n")
     }
   }
 
@@ -751,10 +801,10 @@ data class GQLDirective(
 
   override val children = listOfNotNull(arguments)
 
-  override fun write(bufferedSink: BufferedSink) {
-    with(bufferedSink) {
-      writeUtf8("@$name")
-      arguments?.write(bufferedSink)
+  override fun write(writer: SDLWriter) {
+    with(writer) {
+      write("@$name")
+      arguments?.write(writer)
     }
   }
 
@@ -773,10 +823,10 @@ data class GQLObjectField(
 
   override val children = listOf(value)
 
-  override fun write(bufferedSink: BufferedSink) {
-    with(bufferedSink) {
-      writeUtf8("$name: ")
-      value.write(bufferedSink)
+  override fun write(writer: SDLWriter) {
+    with(writer) {
+      write("$name: ")
+      value.write(writer)
     }
   }
 
@@ -795,12 +845,13 @@ data class GQLArgument(
 
   override val children = listOf(value)
 
-  override fun write(bufferedSink: BufferedSink) {
-    with(bufferedSink) {
-      writeUtf8("$name: ")
-      value.write(bufferedSink)
+  override fun write(writer: SDLWriter) {
+    with(writer) {
+      write("$name: ")
+      value.write(writer)
     }
   }
+
   override fun copyWithNewChildren(container: NodeContainer): GQLNode {
     return copy(
         value = container.takeSingle()!!
@@ -814,8 +865,14 @@ data class GQLSelectionSet(
 ) : GQLNode {
   override val children = selections
 
-  override fun write(bufferedSink: BufferedSink) {
-    selections.join(bufferedSink, prefix = "{\n", separator = "\n", postfix = "\n}")
+  override fun write(writer: SDLWriter) {
+    with(writer) {
+      write("{\n")
+      indent()
+      selections.join(writer, separator = "")
+      unindent()
+      write("}\n")
+    }
   }
 
   override fun copyWithNewChildren(container: NodeContainer): GQLNode {
@@ -831,8 +888,8 @@ data class GQLArguments(
 ) : GQLNode {
   override val children: List<GQLNode> = arguments
 
-  override fun write(bufferedSink: BufferedSink) {
-    arguments.join(bufferedSink, prefix = "(", separator = ", ", postfix = ")")
+  override fun write(writer: SDLWriter) {
+    arguments.join(writer, prefix = "(", separator = ", ", postfix = ")")
   }
 
   override fun copyWithNewChildren(container: NodeContainer): GQLNode {
@@ -853,20 +910,22 @@ data class GQLField(
 
   override val children: List<GQLNode> = listOfNotNull(selectionSet) + listOfNotNull(arguments) + directives
 
-  override fun write(bufferedSink: BufferedSink) {
-    with(bufferedSink) {
+  override fun write(writer: SDLWriter) {
+    with(writer) {
       if (alias != null) {
-        writeUtf8("$alias: ")
+        write("$alias: ")
       }
-      writeUtf8(name)
-      arguments?.write(bufferedSink)
+      write(name)
+      arguments?.write(writer)
       if (directives.isNotEmpty()) {
-        writeUtf8(" ")
-        directives.join(bufferedSink)
+        write(" ")
+        directives.join(writer)
       }
       if (selectionSet != null) {
-        writeUtf8(" ")
-        selectionSet.write(bufferedSink)
+        write(" ")
+        selectionSet.write(writer)
+      } else {
+        write("\n")
       }
     }
   }
@@ -889,16 +948,16 @@ data class GQLInlineFragment(
 
   override val children = directives + selectionSet + typeCondition
 
-  override fun write(bufferedSink: BufferedSink) {
-    with(bufferedSink) {
-      writeUtf8("... on ${typeCondition.name}")
+  override fun write(writer: SDLWriter) {
+    with(writer) {
+      write("... on ${typeCondition.name}")
       if (directives.isNotEmpty()) {
-        writeUtf8(" ")
-        directives.join(bufferedSink)
+        write(" ")
+        directives.join(writer)
       }
       if (selectionSet.selections.isNotEmpty()) {
-        writeUtf8(" ")
-        selectionSet.write(bufferedSink)
+        write(" ")
+        selectionSet.write(writer)
       }
     }
   }
@@ -921,14 +980,14 @@ data class GQLFragmentSpread(
 
   override val children = directives
 
-  override fun write(bufferedSink: BufferedSink) {
-    with(bufferedSink) {
-      writeUtf8("...${name}")
+  override fun write(writer: SDLWriter) {
+    with(writer) {
+      write("...${name}")
       if (directives.isNotEmpty()) {
-        writeUtf8(" ")
-        directives.join(bufferedSink)
+        write(" ")
+        directives.join(writer)
       }
-
+      write("\n")
     }
   }
 
@@ -948,9 +1007,9 @@ data class GQLNamedType(
 
   override val children = emptyList<GQLNode>()
 
-  override fun write(bufferedSink: BufferedSink) {
-    with(bufferedSink) {
-      writeUtf8(name)
+  override fun write(writer: SDLWriter) {
+    with(writer) {
+      write(name)
     }
   }
 
@@ -966,10 +1025,10 @@ data class GQLNonNullType(
 
   override val children = listOf(type)
 
-  override fun write(bufferedSink: BufferedSink) {
-    with(bufferedSink) {
-      type.write(bufferedSink)
-      writeUtf8("!")
+  override fun write(writer: SDLWriter) {
+    with(writer) {
+      type.write(writer)
+      write("!")
     }
   }
 
@@ -987,11 +1046,11 @@ data class GQLListType(
 
   override val children = listOf(type)
 
-  override fun write(bufferedSink: BufferedSink) {
-    with(bufferedSink) {
-      writeUtf8("[")
-      type.write(bufferedSink)
-      writeUtf8("]")
+  override fun write(writer: SDLWriter) {
+    with(writer) {
+      write("[")
+      type.write(writer)
+      write("]")
     }
   }
 
@@ -1011,11 +1070,12 @@ data class GQLVariableValue(
 
   override val children = emptyList<GQLNode>()
 
-  override fun write(bufferedSink: BufferedSink) {
-    with(bufferedSink) {
-      writeUtf8("${'$'}$name")
+  override fun write(writer: SDLWriter) {
+    with(writer) {
+      write("${'$'}$name")
     }
   }
+
   override fun copyWithNewChildren(container: NodeContainer): GQLNode {
     return this
   }
@@ -1028,11 +1088,12 @@ data class GQLIntValue(
 
   override val children = emptyList<GQLNode>()
 
-  override fun write(bufferedSink: BufferedSink) {
-    with(bufferedSink) {
-      writeUtf8(value.toString())
+  override fun write(writer: SDLWriter) {
+    with(writer) {
+      write(value.toString())
     }
   }
+
   override fun copyWithNewChildren(container: NodeContainer): GQLNode {
     return this
   }
@@ -1045,11 +1106,12 @@ data class GQLFloatValue(
 
   override val children = emptyList<GQLNode>()
 
-  override fun write(bufferedSink: BufferedSink) {
-    with(bufferedSink) {
-      writeUtf8(value.toString())
+  override fun write(writer: SDLWriter) {
+    with(writer) {
+      write(value.toString())
     }
   }
+
   override fun copyWithNewChildren(container: NodeContainer): GQLNode {
     return this
   }
@@ -1062,11 +1124,12 @@ data class GQLStringValue(
 
   override val children = emptyList<GQLNode>()
 
-  override fun write(bufferedSink: BufferedSink) {
-    with(bufferedSink) {
-      writeUtf8("\"${value.encodeToGraphQLSingleQuoted()}\"")
+  override fun write(writer: SDLWriter) {
+    with(writer) {
+      write("\"${value.encodeToGraphQLSingleQuoted()}\"")
     }
   }
+
   override fun copyWithNewChildren(container: NodeContainer): GQLNode {
     return this
   }
@@ -1079,11 +1142,12 @@ data class GQLBooleanValue(
 
   override val children = emptyList<GQLNode>()
 
-  override fun write(bufferedSink: BufferedSink) {
-    with(bufferedSink) {
-      writeUtf8(value.toString())
+  override fun write(writer: SDLWriter) {
+    with(writer) {
+      write(value.toString())
     }
   }
+
   override fun copyWithNewChildren(container: NodeContainer): GQLNode {
     return this
   }
@@ -1096,11 +1160,12 @@ data class GQLEnumValue(
 
   override val children = emptyList<GQLNode>()
 
-  override fun write(bufferedSink: BufferedSink) {
-    with(bufferedSink) {
-      writeUtf8(value)
+  override fun write(writer: SDLWriter) {
+    with(writer) {
+      write(value)
     }
   }
+
   override fun copyWithNewChildren(container: NodeContainer): GQLNode {
     return this
   }
@@ -1113,13 +1178,14 @@ data class GQLListValue(
 
   override val children = values
 
-  override fun write(bufferedSink: BufferedSink) {
-    with(bufferedSink) {
-      writeUtf8("[")
-      values.join(bufferedSink, ",")
-      writeUtf8("]")
+  override fun write(writer: SDLWriter) {
+    with(writer) {
+      write("[")
+      values.join(writer, ",")
+      write("]")
     }
   }
+
   override fun copyWithNewChildren(container: NodeContainer): GQLNode {
     return copy(
         values = container.take()
@@ -1134,13 +1200,16 @@ data class GQLObjectValue(
 
   override val children = fields
 
-  override fun write(bufferedSink: BufferedSink) {
-    with(bufferedSink) {
-      writeUtf8("{\n")
-      fields.join(bufferedSink = bufferedSink, "\n")
-      writeUtf8("\n}\n")
+  override fun write(writer: SDLWriter) {
+    with(writer) {
+      write("{\n")
+      indent()
+      fields.join(writer = writer, "\n")
+      unindent()
+      write("\n}\n")
     }
   }
+
   override fun copyWithNewChildren(container: NodeContainer): GQLNode {
     return copy(
         fields = container.take()
@@ -1152,25 +1221,32 @@ data class GQLNullValue(override val sourceLocation: SourceLocation = SourceLoca
 
   override val children = emptyList<GQLNode>()
 
-  override fun write(bufferedSink: BufferedSink) {
-    with(bufferedSink) {
-      writeUtf8("null")
+  override fun write(writer: SDLWriter) {
+    with(writer) {
+      write("null")
     }
   }
+
   override fun copyWithNewChildren(container: NodeContainer): GQLNode {
     return this
   }
 }
 
-private fun <T : GQLNode> List<T>.join(bufferedSink: BufferedSink, separator: String = " ", prefix: String = "", postfix: String = "") {
-  bufferedSink.writeUtf8(prefix)
+private fun <T : GQLNode> List<T>.join(
+    writer: SDLWriter,
+    separator: String = " ",
+    prefix: String = "",
+    postfix: String = "",
+    block: (T) -> Unit = {it.write(writer)}
+) {
+  writer.write(prefix)
   forEachIndexed { index, t ->
-    t.write(bufferedSink)
+    block(t)
     if (index < size - 1) {
-      bufferedSink.writeUtf8(separator)
+      writer.write(separator)
     }
   }
-  bufferedSink.writeUtf8(postfix)
+  writer.write(postfix)
 }
 
 enum class GQLDirectiveLocation {

@@ -72,7 +72,7 @@ data class TestQuery(
      *       green: $greenValue
      *       blue: 0
      *     }
-     *     
+     *
      *     booleanNonOptional: false
      *     listOfStringNonOptional: []
      *   }

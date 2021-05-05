@@ -3,7 +3,7 @@ package com.apollographql.apollo3.graphql.ast.test
 import com.apollographql.apollo3.graphql.ast.GQLField
 import com.apollographql.apollo3.graphql.ast.GQLIntValue
 import com.apollographql.apollo3.graphql.ast.parseAsGraphQLDocument
-import com.apollographql.apollo3.graphql.ast.toUtf8WithIndents
+import com.apollographql.apollo3.graphql.ast.toUtf8
 import com.apollographql.apollo3.graphql.ast.transform
 import org.junit.Test
 import kotlin.test.assertEquals
@@ -40,9 +40,10 @@ class TransformTest {
           newFieldInVersion3 @since(version: 3) @optional
         }
       }
+      
     """.trimIndent()
 
-    assertEquals(expected, transformed!!.toUtf8WithIndents())
+    assertEquals(expected, transformed!!.toUtf8())
   }
 
   private fun GQLField.minVersion(): Int? {

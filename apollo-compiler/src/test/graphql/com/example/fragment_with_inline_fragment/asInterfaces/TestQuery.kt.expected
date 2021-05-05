@@ -236,7 +236,7 @@ class TestQuery : Query<TestQuery.Data> {
 
   companion object {
     const val OPERATION_ID: String =
-        "e01fcc7b255552f79419f653def959b6a7ab9bffd519c57e826d91ffc2c7fb1f"
+        "afff585eff532d6c5b1f4ec80c0d32e74b8c0416b5dd8edcd42728cb3f458d7c"
 
     /**
      * The minimized GraphQL document being sent to the server to save a few bytes.
@@ -250,6 +250,7 @@ class TestQuery : Query<TestQuery.Data> {
      *     appearsIn
      *   }
      * }
+     *
      * fragment HeroDetails on Character {
      *   __typename
      *   ...HumanDetails
@@ -267,10 +268,12 @@ class TestQuery : Query<TestQuery.Data> {
      *     }
      *   }
      * }
+     *
      * fragment HumanDetails on Human {
      *   __typename
      *   name
      * }
+     *
      * fragment DroidDetails on Droid {
      *   __typename
      *   name
@@ -278,7 +281,7 @@ class TestQuery : Query<TestQuery.Data> {
      * }
      */
     const val OPERATION_DOCUMENT: String =
-        "query TestQuery { hero { __typename name ...HeroDetails appearsIn } } fragment HeroDetails on Character { __typename ...HumanDetails ... on Droid { __typename ...DroidDetails } name friendsConnection { totalCount edges { node { name } } } } fragment HumanDetails on Human { __typename name } fragment DroidDetails on Droid { __typename name primaryFunction }"
+        "query TestQuery { hero { __typename name ...HeroDetails appearsIn } }  fragment HeroDetails on Character { __typename ...HumanDetails ... on Droid { __typename ...DroidDetails } name friendsConnection { totalCount edges { node { name } } } }  fragment HumanDetails on Human { __typename name }  fragment DroidDetails on Droid { __typename name primaryFunction }"
 
     const val OPERATION_NAME: String = "TestQuery"
   }

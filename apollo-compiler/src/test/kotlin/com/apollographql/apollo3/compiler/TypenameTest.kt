@@ -5,7 +5,7 @@ import com.apollographql.apollo3.graphql.ast.GQLFragmentDefinition
 import com.apollographql.apollo3.graphql.ast.GQLOperationDefinition
 import com.apollographql.apollo3.graphql.ast.toGraphQLExecutableDefinitions
 import com.apollographql.apollo3.graphql.ast.toGraphQLSchema
-import com.apollographql.apollo3.graphql.ast.toUtf8WithIndents
+import com.apollographql.apollo3.graphql.ast.toUtf8
 import com.apollographql.apollo3.graphql.ast.withTypenameWhenNeeded
 import com.google.common.truth.Truth.assertThat
 import org.junit.Test
@@ -33,7 +33,7 @@ class TypenameTest(val name: String, private val graphQLFile: File) {
           }
         },
         filePath = null
-    ).toUtf8WithIndents()
+    ).toUtf8()
 
     val expectedFile = File(graphQLFile.parentFile, "${name}.with_typename")
 
