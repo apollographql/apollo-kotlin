@@ -1,17 +1,13 @@
 package com.apollographql.apollo3.network.http
 
+import com.apollographql.apollo3.api.exception.ApolloHttpException
+import com.apollographql.apollo3.api.exception.ApolloNetworkException
 import com.apollographql.apollo3.api.http.HttpMethod
 import com.apollographql.apollo3.api.http.HttpRequest
 import com.apollographql.apollo3.api.http.HttpResponse
-import com.apollographql.apollo3.api.exception.ApolloException
-import com.apollographql.apollo3.api.exception.ApolloHttpException
-import com.apollographql.apollo3.api.exception.ApolloNetworkException
+import com.apollographql.apollo3.network.dispatchOnMain
 import com.apollographql.apollo3.network.toNSData
-import kotlinx.cinterop.COpaquePointer
 import kotlinx.cinterop.StableRef
-import kotlinx.cinterop.asStableRef
-import kotlinx.cinterop.staticCFunction
-import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.suspendCancellableCoroutine
 import okio.Buffer
 import okio.IOException
@@ -32,10 +28,6 @@ import platform.Foundation.dataTaskWithRequest
 import platform.Foundation.setHTTPBody
 import platform.Foundation.setHTTPMethod
 import platform.Foundation.setValue
-import platform.darwin.dispatch_async_f
-import platform.darwin.dispatch_get_main_queue
-import kotlin.coroutines.Continuation
-import kotlin.coroutines.resume
 import kotlin.native.concurrent.freeze
 
 typealias UrlSessionDataTaskCompletionHandler = (NSData?, NSURLResponse?, NSError?) -> Unit
@@ -113,23 +105,14 @@ actual class DefaultHttpEngine(
         setCachePolicy(NSURLRequestReloadIgnoringCacheData)
       }
 
-      dataTaskFactory.dataTask(nsMutableURLRequest.freeze(), delegate.freeze())
-          .also { task ->
-            continuation.invokeOnCancellation {
-              task.cancel()
-            }
-          }
-          .resume()
+      val task = dataTaskFactory.dataTask(nsMutableURLRequest.freeze(), delegate.freeze())
+      continuation.invokeOnCancellation {
+        task.cancel()
+      }
+      task.resume()
     }
 
-    when (result) {
-      is Result.Success -> {
-        return result.response
-      }
-      is Result.Failure -> {
-        throw result.cause
-      }
-    }
+    return result.getOrThrow()
   }
 
   @OptIn(ExperimentalUnsignedTypes::class)
@@ -141,8 +124,8 @@ actual class DefaultHttpEngine(
   ): Result<R> {
 
     if (error != null) {
-      return Result.Failure(
-          cause = ApolloNetworkException(
+      return Result.failure(
+          ApolloNetworkException(
               message = "Failed to execute GraphQL http network request",
               cause = IOException(error.localizedDescription)
           )
@@ -150,8 +133,8 @@ actual class DefaultHttpEngine(
     }
 
     if (httpResponse == null) {
-      return Result.Failure(
-          cause = ApolloNetworkException("Failed to parse GraphQL http network response: EOF")
+      return Result.failure(
+          ApolloNetworkException("Failed to parse GraphQL http network response: EOF")
       )
     }
 
@@ -167,8 +150,8 @@ actual class DefaultHttpEngine(
      * So fail early instead
      */
     if (data == null || data.length.toInt() == 0) {
-      return Result.Failure(
-          cause = ApolloHttpException(
+      return Result.failure(
+          ApolloHttpException(
               statusCode = httpResponse.statusCode.toInt(),
               headers = httpHeaders,
               message = "Failed to parse GraphQL http network response: EOF"
@@ -187,47 +170,11 @@ actual class DefaultHttpEngine(
               body = Buffer().write(data.toByteString()))
       )
     }
-    return if (result.isSuccess) {
-      Result.Success(result.getOrNull()!!)
+
+    return if (result.isFailure) {
+      Result.failure(wrapThrowableIfNeeded(result.exceptionOrNull()!!))
     } else {
-      Result.Failure(wrapThrowableIfNeeded(result.exceptionOrNull()!!))
+      result
     }
   }
-
-  sealed class Result<R> {
-    class Success<R>(val response: R) : Result<R>()
-
-    class Failure<R>(val cause: ApolloException) : Result<R>()
-  }
-
-  @OptIn(ExperimentalCoroutinesApi::class)
-  @Suppress("NAME_SHADOWING")
-  private fun <R> Result<R>.dispatchOnMain(continuationPtr: COpaquePointer) {
-    if (NSThread.isMainThread()) {
-      dispatch(continuationPtr)
-    } else {
-      val continuationWithResultRef = StableRef.create((continuationPtr to this).freeze())
-
-      dispatch_async_f(
-          queue = dispatch_get_main_queue(),
-          context = continuationWithResultRef.asCPointer(),
-          work = staticCFunction { ptr ->
-            val continuationWithResultRef = ptr!!.asStableRef<Pair<COpaquePointer, Result<R>>>()
-            val (continuationPtr, result) = continuationWithResultRef.get()
-            continuationWithResultRef.dispose()
-
-            result.dispatch(continuationPtr)
-          }
-      )
-    }
-  }
-}
-
-@Suppress("NAME_SHADOWING")
-internal fun <R> DefaultHttpEngine.Result<R>.dispatch(continuationPtr: COpaquePointer) {
-  val continuationRef = continuationPtr.asStableRef<Continuation<DefaultHttpEngine.Result<R>>>()
-  val continuation = continuationRef.get()
-  continuationRef.dispose()
-
-  continuation.resume(this)
 }

@@ -1,7 +1,7 @@
 package com.apollographql.apollo3.network.ws
 
-import com.apollographql.apollo3.api.exception.ApolloWebSocketException
 import com.apollographql.apollo3.network.toNSData
+import com.apollographql.apollo3.api.exception.ApolloNetworkException
 import kotlinx.cinterop.COpaquePointer
 import kotlinx.cinterop.StableRef
 import kotlinx.cinterop.asStableRef
@@ -47,18 +47,11 @@ interface WebSocketConnectionListener {
 typealias NSWebSocketFactory = (NSURLRequest, WebSocketConnectionListener) -> NSURLSessionWebSocketTask
 
 @ExperimentalCoroutinesApi
-actual class ApolloWebSocketFactory(
-    private val serverUrl: NSURL,
-    private val headers: Map<String, String>,
+actual class DefaultWebSocketEngine(
     private val webSocketFactory: NSWebSocketFactory
-) : WebSocketFactory {
+) : WebSocketEngine {
 
-  actual constructor(
-      serverUrl: String,
-      headers: Map<String, String>
-  ) : this(
-      serverUrl = NSURL(string = serverUrl),
-      headers = headers,
+  actual constructor() : this(
       webSocketFactory = { request, connectionListener ->
         NSURLSession.sessionWithConfiguration(
             configuration = NSURLSessionConfiguration.defaultSessionConfiguration,
@@ -68,13 +61,16 @@ actual class ApolloWebSocketFactory(
       }
   )
 
-  override suspend fun open(headers: Map<String, String>): WebSocketConnection {
+  override suspend fun open(
+      url: String,
+      headers: Map<String, String>,
+  ): WebSocketConnection {
     assert(NSThread.isMainThread())
 
+    val serverUrl = NSURL(string = url)
+
     val request = NSMutableURLRequest.requestWithURL(serverUrl).apply {
-      this@ApolloWebSocketFactory.headers
-          .plus(headers)
-          .forEach { (key, value) -> setValue(value, forHTTPHeaderField = key) }
+      headers.forEach { (key, value) -> setValue(value, forHTTPHeaderField = key) }
       setHTTPMethod("GET")
     }
 
@@ -114,20 +110,22 @@ actual class ApolloWebSocketFactory(
 private class WebSocketConnectionImpl(
     val webSocket: NSURLSessionWebSocketTask,
     val messageChannel: Channel<ByteString>
-) : WebSocketConnection, ReceiveChannel<ByteString> by messageChannel {
-
+) : WebSocketConnection {
   init {
     messageChannel.invokeOnClose {
       webSocket.cancelWithCloseCode(
-          closeCode = 1001,
+          closeCode = CLOSE_NORMAL.toLong(),
           reason = null
       )
     }
     receiveNext()
   }
 
-  @Suppress("NAME_SHADOWING")
-  override fun send(data: ByteString) {
+  override suspend fun receive(): ByteString {
+    return messageChannel.receive()
+  }
+
+  override suspend fun send(data: ByteString) {
     assert(NSThread.isMainThread())
     if (!messageChannel.isClosedForReceive) {
       val message = NSURLSessionWebSocketMessage(data.toByteArray().toNSData())
@@ -145,8 +143,7 @@ private class WebSocketConnectionImpl(
     messageChannel.close()
   }
 
-  @Suppress("NAME_SHADOWING")
-  internal fun receiveNext() {
+  fun receiveNext() {
     assert(NSThread.isMainThread())
 
     val webSocketConnectionPtr = StableRef.create(this).asCPointer()
@@ -186,7 +183,7 @@ private fun NSError.dispatch(webSocketConnectionPtr: COpaquePointer) {
   webSocketConnectionRef.dispose()
 
   webSocketConnection.messageChannel.close(
-      ApolloWebSocketException(
+      ApolloNetworkException(
           message = "Web socket communication error",
           cause = IOException(localizedDescription)
       )

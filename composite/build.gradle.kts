@@ -10,11 +10,9 @@ buildscript {
   }
 
   dependencies {
-    classpath(groovy.util.Eval.x(project, "x.dep.oneEightPlugin"))
-    classpath(groovy.util.Eval.x(project, "x.dep.android.plugin"))
-    classpath(groovy.util.Eval.x(project, "x.dep.kotlin.plugin"))
     classpath("com.apollographql.apollo3:apollo-gradle-plugin")
     classpath("com.apollographql.apollo:build-logic")
+    classpath("org.jetbrains.kotlin:kotlin-allopen:1.5.0")
   }
 }
 
@@ -22,11 +20,6 @@ subprojects {
   repositories {
     google()
     mavenCentral()
-    jcenter {
-      content {
-        includeGroup("org.jetbrains.trove4j")
-      }
-    }
   }
 
   afterEvaluate {

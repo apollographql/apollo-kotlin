@@ -9,6 +9,7 @@ import com.apollographql.apollo3.api.CustomScalarAdapters
 import com.apollographql.apollo3.api.Upload
 import com.apollographql.apollo3.api.internal.json.FileUploadAwareJsonWriter
 import com.apollographql.apollo3.api.internal.json.buildJsonByteString
+import com.apollographql.apollo3.api.internal.json.buildJsonMap
 import com.apollographql.apollo3.api.internal.json.buildJsonString
 import com.apollographql.apollo3.api.internal.json.writeObject
 import com.apollographql.apollo3.api.json.JsonWriter
@@ -31,7 +32,7 @@ class DefaultHttpRequestComposer(private val serverUrl: String, private val defa
     val method = params?.method ?: HttpMethod.Post
     val autoPersistQueries = params?.autoPersistQueries ?: false
     val sendDocument = params?.sendDocument ?: true
-    val responseAdapterCache = apolloRequest.executionContext[CustomScalarAdapters] ?: error("Cannot find a ResponseAdapterCache")
+    val customScalarAdapters = apolloRequest.executionContext[CustomScalarAdapters] ?: error("Cannot find a ResponseAdapterCache")
 
     val headers = mutableMapOf(
         HEADER_APOLLO_OPERATION_ID to operation.id(),
@@ -49,7 +50,7 @@ class DefaultHttpRequestComposer(private val serverUrl: String, private val defa
       HttpMethod.Get -> {
         HttpRequest(
             method = HttpMethod.Get,
-            url = buildGetUrl(serverUrl, operation, responseAdapterCache, autoPersistQueries, sendDocument),
+            url = buildGetUrl(serverUrl, operation, customScalarAdapters, autoPersistQueries, sendDocument),
             headers = headers,
             body = null
         )
@@ -60,7 +61,7 @@ class DefaultHttpRequestComposer(private val serverUrl: String, private val defa
             method = HttpMethod.Post,
             url = serverUrl,
             headers = headers,
-            body = buildPostBody(operation, responseAdapterCache, autoPersistQueries, query),
+            body = buildPostBody(operation, customScalarAdapters, autoPersistQueries, query),
         )
       }
     }
@@ -274,6 +275,23 @@ class DefaultHttpRequestComposer(private val serverUrl: String, private val defa
     ): ByteString = buildJsonByteString {
       val query = if (sendDocument) operation.document() else null
       composePostParams(this, operation, customScalarAdapters, autoPersistQueries, query)
+    }
+
+    
+    @Suppress("UNCHECKED_CAST")
+    fun <D : Operation.Data> composePayload(
+        apolloRequest: ApolloRequest<D>
+    ): Map<String, Any?> {
+      val params = apolloRequest.executionContext[HttpRequestComposerParams]
+      val operation = apolloRequest.operation
+      val autoPersistQueries = params?.autoPersistQueries ?: false
+      val sendDocument = params?.sendDocument ?: true
+      val customScalarAdapters = apolloRequest.executionContext[CustomScalarAdapters] ?: error("Cannot find a ResponseAdapterCache")
+
+      val query = if (sendDocument) operation.document() else null
+      return buildJsonMap {
+        composePostParams(this, operation, customScalarAdapters, autoPersistQueries, query)
+      } as Map<String, Any?>
     }
   }
 }

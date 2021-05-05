@@ -1,0 +1,2 @@
+graphql:
+  packages: "com.apollographql.apollo.sample.server"

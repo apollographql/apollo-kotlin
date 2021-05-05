@@ -37,9 +37,8 @@ actual fun <T> runWithMainLoop(context: CoroutineContext, block: suspend Corouti
 
 actual fun <T> runBlocking(context: CoroutineContext, block: suspend CoroutineScope.() -> T) = kotlinx.coroutines.runBlocking { block() }
 
-
 @OptIn(InternalCoroutinesApi::class)
-private object MainLoopDispatcher : CoroutineDispatcher(), Delay {
+actual val MainLoopDispatcher: CoroutineDispatcher = object : CoroutineDispatcher(), Delay {
 
   override fun dispatch(context: CoroutineContext, block: Runnable) {
     dispatch_async(dispatch_get_main_queue()) {

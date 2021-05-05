@@ -50,3 +50,14 @@ inline fun buildJsonByteString(crossinline block: JsonWriter.() -> Unit): ByteSt
   BufferedSinkJsonWriter(buffer).block()
   return buffer.readByteString()
 }
+
+@OptIn(ExperimentalContracts::class)
+inline fun buildJsonMap(crossinline block: JsonWriter.() -> Unit): Any? {
+  contract {
+    callsInPlace(block, InvocationKind.EXACTLY_ONCE)
+  }
+
+  val writer = MapJsonWriter()
+  writer.block()
+  return writer.root()
+}

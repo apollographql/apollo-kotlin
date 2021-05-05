@@ -18,6 +18,7 @@ import com.apollographql.apollo3.interceptor.NetworkRequestInterceptor
 import com.apollographql.apollo3.interceptor.RealInterceptorChain
 import com.apollographql.apollo3.network.NetworkTransport
 import com.apollographql.apollo3.network.http.ApolloHttpNetworkTransport
+import com.apollographql.apollo3.network.ws.ApolloWebSocketNetworkTransport
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flatMapLatest
@@ -108,12 +109,15 @@ data class ApolloClient internal constructor(
   }
 }
 
-fun ApolloClient(serverUrl: String) = ApolloClient(ApolloHttpNetworkTransport(serverUrl = serverUrl))
+fun ApolloClient(serverUrl: String) = ApolloClient(
+    networkTransport = ApolloHttpNetworkTransport(serverUrl = serverUrl),
+    subscriptionNetworkTransport = ApolloWebSocketNetworkTransport(serverUrl = serverUrl)
+)
 
-fun ApolloClient(networkTransport: NetworkTransport): ApolloClient {
+fun ApolloClient(networkTransport: NetworkTransport, subscriptionNetworkTransport: NetworkTransport = networkTransport): ApolloClient {
   return ApolloClient(
       networkTransport = networkTransport,
-      subscriptionNetworkTransport = networkTransport,
+      subscriptionNetworkTransport = subscriptionNetworkTransport,
       customScalarAdapters = CustomScalarAdapters.Empty,
       interceptors = emptyList(),
       executionContext = ExecutionContext.Empty
