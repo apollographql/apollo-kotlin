@@ -54,7 +54,8 @@ class ApolloWebSocketNetworkTransport(
     private val connectionParams: Map<String, Any?> = emptyMap(),
     private val connectionAcknowledgeTimeoutMs: Long = 10_000,
     private val idleTimeoutMs: Long = 60_000,
-    private val connectionKeepAliveTimeoutMs: Long = -1
+    private val connectionKeepAliveTimeoutMs: Long = -1,
+    private val channelCapacity: Int = Channel.CONFLATED
 ) : NetworkTransport {
   private val mutex = Mutex()
   private var graphQLWebsocketConnection: GraphQLWebsocketConnection? = null
@@ -155,6 +156,7 @@ class ApolloWebSocketNetworkTransport(
             webSocketConnection = webSocketConnection,
             idleTimeoutMs = idleTimeoutMs,
             connectionKeepAliveTimeoutMs = connectionKeepAliveTimeoutMs,
+            channelCapacity = channelCapacity,
             defaultDispatcher = dispatcherContext.default
         )
       }
@@ -175,9 +177,10 @@ class ApolloWebSocketNetworkTransport(
       val webSocketConnection: WebSocketConnection,
       val idleTimeoutMs: Long,
       val connectionKeepAliveTimeoutMs: Long,
+      channelCapacity: Int = Channel.CONFLATED,
       defaultDispatcher: CoroutineDispatcher
   ) {
-    private val messageChannel: BroadcastChannel<ByteString> = webSocketConnection.broadcast(Channel.CONFLATED)
+    private val messageChannel: BroadcastChannel<ByteString> = webSocketConnection.broadcast(channelCapacity)
     private val coroutineScope = CoroutineScope(SupervisorJob() + defaultDispatcher)
     private val mutex = Mutex()
     private var activeSubscriptionCount = 0
