@@ -62,18 +62,4 @@ configure<com.android.build.gradle.LibraryExtension> {
   useLibrary("android.test.base")
 }
 
-tasks.withType<org.jetbrains.kotlin.gradle.tasks.KotlinCompile> {
-  kotlinOptions {
-    jvmTarget = JavaVersion.VERSION_1_8.toString()
-  }
-}
 
-plugins.withType(org.gradle.api.plugins.JavaPlugin::class.java) {
-  extensions.configure(JavaPluginExtension::class.java) {
-    sourceCompatibility = JavaVersion.VERSION_1_8
-    targetCompatibility = JavaVersion.VERSION_1_8
-  }
-}
-
-configure<com.apollographql.apollo3.gradle.api.ApolloExtension> {
-}

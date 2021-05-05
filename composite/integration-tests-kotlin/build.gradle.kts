@@ -3,7 +3,6 @@ import com.apollographql.apollo3.gradle.api.kotlinMultiplatformExtension
 
 plugins {
   id("com.apollographql.apollo3")
-  id("net.mbonnin.one.eight")
   kotlin("multiplatform")
 }
 
