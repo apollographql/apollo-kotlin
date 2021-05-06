@@ -9,7 +9,7 @@ buildscript {
       url = uri("../../../build/localMaven")
     }
     google()
-    jcenter()
+    mavenCentral()
   }
   dependencies {
     classpath(groovy.util.Eval.x(project, "x.dep.android.plugin"))
@@ -29,7 +29,6 @@ repositories {
   }
   google()
   mavenCentral()
-  jcenter()
 }
 
 dependencies {

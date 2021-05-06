@@ -18,7 +18,7 @@ dependencies {
   implementation(groovy.util.Eval.x(project, "x.dep.moshi.moshi"))
 
   compileOnly(groovy.util.Eval.x(project, "x.dep.kotlin.reflect").toString()) {
-    because("AGP pulls kotlin-reflect 1.3.72 and that triggers a warning in the Kotlin compiler.")
+    because("AGP pulls kotlin-reflect with an older version and that triggers a warning in the Kotlin compiler.")
   }
 
   // We add all the plugins to the classpath here so that they are loaded with proper conflict resolution

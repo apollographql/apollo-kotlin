@@ -75,14 +75,6 @@ object TestUtils {
         buildscript = buildscript.replace("// ADD ANDROID CONFIGURATION HERE", androidConfiguration)
       }
 
-      if (hasKotlin) {
-        buildscript += """
-          tasks.withType<org.jetbrains.kotlin.gradle.tasks.KotlinCompile> {
-              kotlinOptions.jvmTarget = JavaVersion.VERSION_1_8.toString()
-          }
-        """.trimIndent()
-      }
-
       File(dest, "build.gradle.kts").writeText(buildscript)
     } else {
       val applyLines = plugins.map { "apply plugin: \"${it.id}\"" }.joinToString("\n")
@@ -122,14 +114,6 @@ object TestUtils {
       """.trimMargin()
 
         buildscript = buildscript.replace("// ADD ANDROID CONFIGURATION HERE", androidConfiguration)
-      }
-
-      if (hasKotlin) {
-        buildscript += """
-          tasks.withType(org.jetbrains.kotlin.gradle.tasks.KotlinCompile) {
-              kotlinOptions.jvmTarget = JavaVersion.VERSION_1_8
-          }
-        """.trimIndent()
       }
 
       File(dest, "build.gradle").writeText(buildscript)

@@ -95,7 +95,6 @@ fun configureApollo(asInterfaces: Boolean, sourceSetName: String) {
 tasks.withType(org.jetbrains.kotlin.gradle.tasks.KotlinCompile::class.java) {
   kotlinOptions {
     freeCompilerArgs = freeCompilerArgs + "-Xopt-in=kotlin.RequiresOptIn"
-    jvmTarget = JavaVersion.VERSION_1_8.toString()
   }
 }
 
