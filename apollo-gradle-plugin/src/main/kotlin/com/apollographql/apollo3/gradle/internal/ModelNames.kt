@@ -24,9 +24,16 @@ object ModelNames {
   fun checkApolloDuplicates(service: Service) = camelCase("check", service.name, "ApolloDuplicates")
   fun convertApolloSchema() = "convertApolloSchema"
 
-  // Configuration names
+  // Configuration names. See https://docs.gradle.org/current/userguide/declaring_dependencies.html#sec:resolvable-consumable-configs
+  /**
+   * A bucket configuration
+   */
   fun apolloConfiguration() = "apolloMetadata" // not just 'apollo' to avoid name clashing with the apollo {} extension
   fun producerConfiguration(service: Service) = camelCase("apollo", service.name, "Producer")
   fun consumerConfiguration(service: Service) = camelCase("apollo", service.name, "Consumer")
+
+  /**
+   * A resolvable configuration that will collect all metadata for a given service name
+   */
   fun duplicatesConsumerConfiguration(service: Service) = camelCase("apollo", service.name, "DuplicatesConsumer")
 }

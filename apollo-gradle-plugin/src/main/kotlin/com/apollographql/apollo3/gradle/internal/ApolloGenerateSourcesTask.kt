@@ -45,6 +45,7 @@ abstract class ApolloGenerateSourcesTask : DefaultTask() {
   abstract val operationOutputFile: RegularFileProperty
 
   @get:OutputFile
+  @get:Optional
   abstract val metadataOutputFile: RegularFileProperty
 
   @get:InputFiles

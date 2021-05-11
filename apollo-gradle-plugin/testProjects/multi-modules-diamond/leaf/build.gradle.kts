@@ -11,7 +11,6 @@ dependencies {
 
   implementation(project(":node1"))
   implementation(project(":node2"))
-  implementation(project(":root"))
 
   apolloMetadata(project(":node1"))
   apolloMetadata(project(":node2"))
