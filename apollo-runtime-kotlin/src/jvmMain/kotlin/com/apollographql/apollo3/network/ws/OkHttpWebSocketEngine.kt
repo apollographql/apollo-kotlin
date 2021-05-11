@@ -41,7 +41,7 @@ actual class DefaultWebSocketEngine(
       }
 
       override fun onMessage(webSocket: WebSocket, text: String) {
-        println("receivedText: ${text}")
+        //println("receivedText: ${text}")
         runBlocking {
           kotlin.runCatching {
             messageChannel.send(text.toByteArray().toByteString())
@@ -50,7 +50,7 @@ actual class DefaultWebSocketEngine(
       }
 
       override fun onMessage(webSocket: WebSocket, bytes: ByteString) {
-        println("receivedBytes: ${bytes.utf8()}")
+        //println("receivedBytes: ${bytes.utf8()}")
         runBlocking {
           kotlin.runCatching {
             messageChannel.send(bytes)
@@ -87,7 +87,7 @@ actual class DefaultWebSocketEngine(
        * OkHttp always succeeds
        */
       override suspend fun send(data: ByteString) {
-        println("send: ${data.utf8()}")
+        //println("send: ${data.utf8()}")
         while(!webSocket.send(data)) {
           delay(100)
         }
