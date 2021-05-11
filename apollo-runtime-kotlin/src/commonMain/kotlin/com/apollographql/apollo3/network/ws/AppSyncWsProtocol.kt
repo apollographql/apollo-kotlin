@@ -12,7 +12,8 @@ import okio.Buffer
  * A [WsProtocol] for https://docs.aws.amazon.com/appsync/latest/devguide/real-time-websocket-client.html
  */
 class AppSyncWsProtocol(
-    private val authorization: Map<String, Any?>
+    private val authorization: Map<String, Any?>,
+    override val frameType: WsFrameType = WsFrameType.Binary
 ): WsProtocol {
   override val name: String
     get() = "graphql-ws"

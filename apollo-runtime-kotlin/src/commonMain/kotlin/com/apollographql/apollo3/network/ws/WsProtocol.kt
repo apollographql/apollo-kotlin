@@ -4,6 +4,7 @@ import com.apollographql.apollo3.api.ApolloRequest
 import com.apollographql.apollo3.api.Operation
 
 interface WsProtocol {
+  val frameType: WsFrameType
   val name: String
   fun connectionInit(): Map<String, Any?>
   fun connectionTerminate(): Map<String, Any?>?
@@ -13,6 +14,10 @@ interface WsProtocol {
   fun parseMessage(string: String): WsMessage
 }
 
+enum class WsFrameType {
+  Text,
+  Binary
+}
 sealed class WsMessage {
   object ConnectionAck : WsMessage()
   class ConnectionError(val payload: Map<String, Any?>?) : WsMessage()

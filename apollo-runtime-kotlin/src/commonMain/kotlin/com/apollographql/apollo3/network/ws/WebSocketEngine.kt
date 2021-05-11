@@ -22,6 +22,10 @@ interface WebSocketConnection {
    * May throw ApolloNetworkException
    */
   suspend fun send(data: ByteString)
+  /**
+   * May throw ApolloNetworkException
+   */
+  suspend fun send(string: String)
 
   /**
    * Should not throw

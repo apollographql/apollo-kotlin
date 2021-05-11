@@ -83,12 +83,18 @@ actual class DefaultWebSocketEngine(
         return messageChannel.receive()
       }
 
-      /**
-       * OkHttp always succeeds
-       */
       override suspend fun send(data: ByteString) {
         //println("send: ${data.utf8()}")
         while(!webSocket.send(data)) {
+          // Wait until the queue has some data available
+          delay(100)
+        }
+      }
+
+      override suspend fun send(string: String) {
+        //println("send: $string")
+        while(!webSocket.send(string)) {
+          // Wait until the queue has some data available
           delay(100)
         }
       }

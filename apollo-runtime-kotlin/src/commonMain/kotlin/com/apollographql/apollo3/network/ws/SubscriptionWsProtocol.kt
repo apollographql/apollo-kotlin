@@ -11,7 +11,10 @@ import okio.Buffer
 /**
  * A [WsProtocol] for https://github.com/apollographql/subscriptions-transport-ws/blob/master/PROTOCOL.md
  */
-class SubscriptionWsProtocol(private val connectionPayload: Map<String, Any?>? = null): WsProtocol {
+class SubscriptionWsProtocol(
+    private val connectionPayload: Map<String, Any?>? = null,
+    override val frameType: WsFrameType = WsFrameType.Binary
+): WsProtocol {
   override val name: String
     get() = "graphql-ws"
 

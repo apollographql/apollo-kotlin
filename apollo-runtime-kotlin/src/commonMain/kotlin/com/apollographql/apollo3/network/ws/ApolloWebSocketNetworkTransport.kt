@@ -59,6 +59,8 @@ class ApolloWebSocketNetworkTransport(
       protocol
   )
 
+  private val sendMessage: suspend WebSocketConnection.(Map<String, Any?>) -> Unit
+
   private interface Command
   class StartOperation<D : Operation.Data>(val request: ApolloRequest<D>) : Command
   class StopOperation<D : Operation.Data>(val request: ApolloRequest<D>) : Command
@@ -78,6 +80,19 @@ class ApolloWebSocketNetworkTransport(
   val subscriptionCount = mutableEvents.subscriptionCount
 
   init {
+    /**
+     * When receiving, we can always convert as required.
+     * When sending, some servers might be sensitive to the type of frame so
+     * this is configurable
+     */
+    sendMessage = when(protocol.frameType) {
+      WsFrameType.Binary -> { message ->
+        send(message.toByteString())
+      }
+      WsFrameType.Text -> { message ->
+        send(message.toUtf8())
+      }
+    }
     coroutineScope.launch {
       var currentConnection: WebSocketConnection? = null
       var readJob: Job? = null
@@ -117,18 +132,18 @@ class ApolloWebSocketNetworkTransport(
                 }
               }
             }
-            currentConnection?.send(protocol.operationStart(command.request).toByteString())
+            currentConnection?.sendMessage(protocol.operationStart(command.request))
           }
           is StopOperation<*> -> {
             subscribers.remove(command.request.requestUuid.toString())
-            currentConnection?.send(protocol.operationStop(command.request).toByteString())
+            currentConnection?.sendMessage(protocol.operationStop(command.request))
             if (subscribers.isEmpty()) {
               idleJob?.cancel()
               idleJob = launch {
                 delay(idleTimeoutMillis)
                 check(subscribers.isEmpty())
                 protocol.connectionTerminate()?.let {
-                  currentConnection?.send(it.toByteString())
+                  currentConnection?.sendMessage(it)
                 }
                 currentConnection?.close()
                 currentConnection = null
@@ -177,7 +192,7 @@ class ApolloWebSocketNetworkTransport(
     )
     try {
       withTimeout(connectionAcknowledgeTimeoutMs) {
-        webSocketConnection.send(protocol.connectionInit().toByteString())
+        webSocketConnection.sendMessage(protocol.connectionInit())
         while (true) {
           val payload = webSocketConnection.receive()
 

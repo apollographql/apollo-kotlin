@@ -12,7 +12,9 @@ import okio.Buffer
  * An [WsProtocol] that uses https://github.com/enisdenjo/graphql-ws/blob/master/PROTOCOL.md
  * It can carry queries in addition to subscriptions over the websocket
  */
-class GraphQLWsProtocol(): WsProtocol {
+class GraphQLWsProtocol(
+    override val frameType: WsFrameType = WsFrameType.Binary
+) : WsProtocol {
   override val name: String
     get() = "graphql-transport-ws"
 

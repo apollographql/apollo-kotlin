@@ -10,6 +10,7 @@ import kotlinx.coroutines.CompletableDeferred
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.channels.ReceiveChannel
+import kotlinx.coroutines.delay
 import okio.ByteString
 import okio.ByteString.Companion.toByteString
 import okio.IOException
@@ -129,6 +130,19 @@ private class WebSocketConnectionImpl(
     assert(NSThread.isMainThread())
     if (!messageChannel.isClosedForReceive) {
       val message = NSURLSessionWebSocketMessage(data.toByteArray().toNSData())
+      val webSocketConnectionPtr = StableRef.create(this).asCPointer()
+      val completionHandler = { error: NSError? ->
+        error?.dispatchOnMain(webSocketConnectionPtr)
+        Unit
+      }.freeze()
+      webSocket.sendMessage(message, completionHandler)
+    }
+  }
+
+  override suspend fun send(string: String) {
+    assert(NSThread.isMainThread())
+    if (!messageChannel.isClosedForReceive) {
+      val message = NSURLSessionWebSocketMessage(string)
       val webSocketConnectionPtr = StableRef.create(this).asCPointer()
       val completionHandler = { error: NSError? ->
         error?.dispatchOnMain(webSocketConnectionPtr)
