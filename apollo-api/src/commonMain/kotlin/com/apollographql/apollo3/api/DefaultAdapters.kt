@@ -144,7 +144,7 @@ object UploadAdapter : Adapter<Upload> {
 
 class ObjectAdapter<T>(
     private val wrappedAdapter: Adapter<T>,
-    private val buffered: Boolean
+    private val buffered: Boolean,
 ) : Adapter<T> {
   override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters): T {
     val actualReader = if (buffered) {

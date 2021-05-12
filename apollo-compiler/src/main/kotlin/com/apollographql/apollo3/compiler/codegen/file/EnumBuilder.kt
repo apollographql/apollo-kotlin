@@ -5,7 +5,7 @@ import com.apollographql.apollo3.compiler.codegen.CgContext
 import com.apollographql.apollo3.compiler.codegen.CgFile
 import com.apollographql.apollo3.compiler.codegen.CgFileBuilder
 import com.apollographql.apollo3.compiler.codegen.helpers.deprecatedAnnotation
-import com.apollographql.apollo3.compiler.unified.ir.IrEnum
+import com.apollographql.apollo3.compiler.ir.IrEnum
 import com.apollographql.apollo3.compiler.codegen.helpers.maybeAddDescription
 import com.squareup.kotlinpoet.ClassName
 import com.squareup.kotlinpoet.FunSpec

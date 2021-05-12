@@ -23,7 +23,6 @@ private val typeNameField = GQLField(
 )
 
 private fun GQLSelectionSet.withTypenameWhenNeeded(schema: Schema, force: Boolean = false): GQLSelectionSet {
-
   var newSelections = selections.map {
     when (it) {
       is GQLInlineFragment -> {
@@ -38,7 +37,7 @@ private fun GQLSelectionSet.withTypenameWhenNeeded(schema: Schema, force: Boolea
     }
   }
 
-  val hasFragment = selections.filter { it is GQLFragmentSpread || it is GQLInlineFragment }.isNotEmpty()
+  val hasFragment = selections.any { it is GQLFragmentSpread || it is GQLInlineFragment }
 
   newSelections = if (force || hasFragment) {
     // remove the __typename if it exists

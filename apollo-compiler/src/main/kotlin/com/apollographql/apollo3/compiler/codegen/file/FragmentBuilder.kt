@@ -8,8 +8,9 @@ import com.apollographql.apollo3.compiler.codegen.CgFileBuilder
 import com.apollographql.apollo3.compiler.codegen.helpers.maybeAddDescription
 import com.apollographql.apollo3.compiler.codegen.helpers.toNamedType
 import com.apollographql.apollo3.compiler.codegen.helpers.toParameterSpec
+import com.apollographql.apollo3.compiler.codegen.maybeFlatten
 import com.apollographql.apollo3.compiler.codegen.model.ModelBuilder
-import com.apollographql.apollo3.compiler.unified.ir.IrNamedFragment
+import com.apollographql.apollo3.compiler.ir.IrNamedFragment
 import com.squareup.kotlinpoet.ClassName
 import com.squareup.kotlinpoet.FunSpec
 import com.squareup.kotlinpoet.ParameterizedTypeName.Companion.parameterizedBy
@@ -27,15 +28,18 @@ class FragmentBuilder(
   private val packageName = layout.fragmentPackageName(fragment.filePath)
   private val simpleName = layout.fragmentName(fragment.name)
 
-  private val modelBuilders = fragment.implementationModelGroups.flatMap {
-    it.models
-  }.map {
-    ModelBuilder(
-        context = context,
-        model = it,
-        superClassName = if (it.id == fragment.implementationId) Fragment.Data::class.asClassName() else null,
-        path = listOf(packageName, simpleName)
-    )
+  private val modelBuilders = if (fragment.interfaceModelGroup != null) {
+    fragment.dataModelGroup.maybeFlatten(false).flatMap { it.models }.map {
+      ModelBuilder(
+          context = context,
+          model = it,
+          superClassName = if (it.id == fragment.dataModelGroup.baseModelId) Fragment.Data::class.asClassName() else null,
+          path = listOf(packageName, simpleName)
+      )
+    }
+  } else {
+    // The data models are written outside the fragment
+    emptyList()
   }
 
   override fun prepare() {
@@ -83,8 +87,8 @@ class FragmentBuilder(
 
   private fun IrNamedFragment.adapterFunSpec(): FunSpec {
     return adapterFunSpec(
-        adapterTypeName = context.resolver.resolveModelAdapter(implementationId),
-        adaptedTypeName = context.resolver.resolveModel(implementationId)
+        adapterTypeName = context.resolver.resolveModelAdapter(dataModelGroup.baseModelId),
+        adaptedTypeName = context.resolver.resolveModel(dataModelGroup.baseModelId)
     )
   }
 
@@ -94,7 +98,7 @@ class FragmentBuilder(
 
   private fun superInterfaceType(): TypeName {
     return Fragment::class.asTypeName().parameterizedBy(
-        context.resolver.resolveModel(fragment.implementationId)
+        context.resolver.resolveModel(fragment.dataModelGroup.baseModelId)
     )
   }
 }

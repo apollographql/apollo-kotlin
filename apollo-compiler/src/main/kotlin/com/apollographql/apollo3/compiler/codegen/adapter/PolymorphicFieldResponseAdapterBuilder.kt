@@ -13,7 +13,7 @@ import com.apollographql.apollo3.compiler.codegen.Identifier.toJson
 import com.apollographql.apollo3.compiler.codegen.Identifier.value
 import com.apollographql.apollo3.compiler.codegen.Identifier.writer
 import com.apollographql.apollo3.compiler.codegen.CgContext
-import com.apollographql.apollo3.compiler.unified.ir.IrModelGroup
+import com.apollographql.apollo3.compiler.ir.IrModelGroup
 import com.squareup.kotlinpoet.ClassName
 import com.squareup.kotlinpoet.CodeBlock
 import com.squareup.kotlinpoet.FunSpec

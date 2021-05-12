@@ -1,7 +1,0 @@
-query TestQuery {
-  hero {
-    name
-    appearsIn
-    firstAppearsIn
-  }
-}

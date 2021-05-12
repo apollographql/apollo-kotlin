@@ -3,8 +3,8 @@ package com.apollographql.apollo3.compiler.codegen.file
 import com.apollographql.apollo3.compiler.codegen.CgContext
 import com.apollographql.apollo3.compiler.codegen.CgFile
 import com.apollographql.apollo3.compiler.codegen.CgFileBuilder
-import com.apollographql.apollo3.compiler.codegen.responsefields.ResponseFieldsBuilder
-import com.apollographql.apollo3.compiler.unified.ir.IrOperation
+import com.apollographql.apollo3.compiler.codegen.compiledfield.CompiledFieldsBuilder
+import com.apollographql.apollo3.compiler.ir.IrOperation
 import com.squareup.kotlinpoet.ClassName
 import com.squareup.kotlinpoet.TypeSpec
 
@@ -15,8 +15,8 @@ class OperationResponseFieldsBuilder(
   private val packageName = context.layout.operationResponseFieldsPackageName(operation.filePath)
   private val simpleName = context.layout.operationResponseFieldsName(operation)
 
-  private val responseFieldsBuilder = ResponseFieldsBuilder(
-      rootField = operation.field,
+  private val responseFieldsBuilder = CompiledFieldsBuilder(
+      rootCompiledField = operation.compiledField,
       rootName = simpleName
   )
 

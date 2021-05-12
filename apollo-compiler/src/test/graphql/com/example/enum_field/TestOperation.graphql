@@ -1,0 +1,8 @@
+# A field with an enum
+query TestQuery {
+  hero {
+    name
+    appearsIn
+    firstAppearsIn
+  }
+}

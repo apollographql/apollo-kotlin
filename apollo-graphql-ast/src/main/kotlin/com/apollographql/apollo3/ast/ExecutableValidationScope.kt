@@ -190,7 +190,7 @@ internal class ExecutableValidationScope(private val schema: Schema, private val
       return
     }
 
-    if (!inlineFragmentTypeDefinition.sharesPossibleTypesWith(other = typeDefinitionInScope, typeDefinitions = typeDefinitions)) {
+    if (!inlineFragmentTypeDefinition.sharesPossibleTypesWith(other = typeDefinitionInScope, schema = schema)) {
       issues.add(Issue.ValidationError(
           message = "Inline fragment cannot be spread here as result can never be of type `${typeCondition.name}`",
           sourceLocation = typeCondition.sourceLocation
@@ -226,7 +226,7 @@ internal class ExecutableValidationScope(private val schema: Schema, private val
       return
     }
 
-    if (!fragmentTypeDefinition.sharesPossibleTypesWith(other = typeDefinitionInScope, typeDefinitions = typeDefinitions)) {
+    if (!fragmentTypeDefinition.sharesPossibleTypesWith(other = typeDefinitionInScope, schema = schema)) {
       issues.add(Issue.ValidationError(
           message = "Fragment `$name` cannot be spread here as result can never be of type `${typeDefinitionInScope.name}`",
           sourceLocation = sourceLocation

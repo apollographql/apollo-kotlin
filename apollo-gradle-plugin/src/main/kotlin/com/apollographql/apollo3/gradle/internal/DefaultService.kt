@@ -74,7 +74,7 @@ abstract class DefaultService @Inject constructor(val objects: ObjectFactory, ov
 
   abstract override val generateFragmentImplementations: Property<Boolean>
 
-  abstract override val generateFragmentsAsInterfaces: Property<Boolean>
+  abstract override val codegenModels: Property<String>
 
   val graphqlSourceDirectorySet = objects.sourceDirectorySet("graphql", "graphql")
 

@@ -1,11 +1,15 @@
 rootProject.name = "composite"
 
 // Integration Tests
-include(":integration-tests")
-include(":integration-tests-kotlin")
+File(rootProject.projectDir, "tests")
+    .listFiles()!!
+    .filter { it.isDirectory && File(it, "build.gradle.kts").exists() }
+    .forEach {
+        include(":tests:${it.name}")
+    }
+
 
 include(":sample-server")
-include(":websockets")
 
 // Samples
 include(":multiplatform")

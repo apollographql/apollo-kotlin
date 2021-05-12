@@ -195,8 +195,9 @@ interface Service {
   val generateFragmentImplementations: Property<Boolean>
 
   /**
+   *
    */
-  val generateFragmentsAsInterfaces: Property<Boolean>
+  val codegenModels: Property<String>
 
   /**
    * Configures [Introspection] to download an introspection Json schema

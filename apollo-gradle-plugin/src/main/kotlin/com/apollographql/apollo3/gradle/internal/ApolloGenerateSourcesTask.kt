@@ -5,6 +5,7 @@ import com.apollographql.apollo3.compiler.ApolloMetadata.Companion.merge
 import com.apollographql.apollo3.compiler.DefaultPackageNameProvider
 import com.apollographql.apollo3.compiler.GraphQLCompiler
 import com.apollographql.apollo3.compiler.GraphQLCompiler.Companion.defaultAlwaysGenerateTypesMatching
+import com.apollographql.apollo3.compiler.GraphQLCompiler.Companion.defaultCodegenModels
 import com.apollographql.apollo3.compiler.GraphQLCompiler.Companion.defaultFailOnWarnings
 import com.apollographql.apollo3.compiler.GraphQLCompiler.Companion.defaultGenerateAsInternal
 import com.apollographql.apollo3.compiler.GraphQLCompiler.Companion.defaultGenerateFilterNotNull
@@ -35,7 +36,6 @@ import org.gradle.api.tasks.OutputFile
 import org.gradle.api.tasks.PathSensitive
 import org.gradle.api.tasks.PathSensitivity
 import org.gradle.api.tasks.TaskAction
-import org.jetbrains.kotlin.gradle.utils.`is`
 import javax.inject.Inject
 
 @CacheableTask
@@ -132,7 +132,7 @@ abstract class ApolloGenerateSourcesTask : DefaultTask() {
 
   @get:Input
   @get:Optional
-  abstract val generateFragmentsAsInterfaces: Property<Boolean>
+  abstract val codegenModels: Property<String>
 
   @get:Inject
   abstract val objectFactory: ObjectFactory
@@ -158,7 +158,7 @@ abstract class ApolloGenerateSourcesTask : DefaultTask() {
       check(!customScalarsMapping.isPresent) {
         "Specifying 'customScalarsMapping' has no effect as an upstream module already provided a customScalarsMapping"
       }
-      check(!generateFragmentsAsInterfaces.isPresent) {
+      check(!codegenModels.isPresent) {
         "Specifying 'generateFragmentsAsInterfaces' has no effect as an upstream module already provided a generateFragmentsAsInterfaces"
       }
       GraphQLCompiler.IncomingOptions.fromMetadata(metadata)
@@ -168,7 +168,7 @@ abstract class ApolloGenerateSourcesTask : DefaultTask() {
           schemaFile = schemaFile.asFile.orNull ?: error("no schemaFile found"),
           extraSchemaFiles = extraSchemaFiles.files,
           customScalarsMapping = customScalarsMapping.getOrElse(emptyMap()),
-          generateFragmentsAsInterfaces = generateFragmentsAsInterfaces.getOrElse(true),
+          codegenModels = codegenModels.getOrElse(defaultCodegenModels),
           rootPackageName = rootPackageName
       )
     }

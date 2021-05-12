@@ -184,7 +184,7 @@ fun GQLValue.toKotlinValue(constContext: Boolean): Any? {
       if (constContext) {
         throw ConversionException("Value cannot be a variable in a const context", sourceLocation)
       } else {
-        BooleanExpression.Variable(name)
+        BooleanExpression.Element(name)
       }
     }
   }

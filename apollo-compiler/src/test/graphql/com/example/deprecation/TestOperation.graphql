@@ -1,3 +1,4 @@
+# deprecated fields should have a @Deprecated annotation
 query TestQuery($episode: Episode) {
   hero(episode: $episode) {
     name

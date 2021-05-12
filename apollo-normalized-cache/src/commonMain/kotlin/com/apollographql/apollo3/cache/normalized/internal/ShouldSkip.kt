@@ -1,6 +1,7 @@
 package com.apollographql.apollo3.cache.normalized.internal
 
 import com.apollographql.apollo3.api.MergedField
+import com.apollographql.apollo3.api.evaluate
 
 fun MergedField.shouldSkip(variableValues: Map<String, Any?>): Boolean {
   val variables = variableValues.filter {
@@ -8,7 +9,5 @@ fun MergedField.shouldSkip(variableValues: Map<String, Any?>): Boolean {
   }.map { it.key }
       .toSet()
 
-   val shouldSkip = !condition.evaluate(variables, emptySet())
-
-  return shouldSkip
+  return !condition.evaluate { variables.contains(it.name) }
 }

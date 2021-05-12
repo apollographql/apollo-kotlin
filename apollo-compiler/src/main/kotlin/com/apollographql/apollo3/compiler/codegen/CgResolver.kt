@@ -8,21 +8,21 @@ import com.apollographql.apollo3.api.Optional
 import com.apollographql.apollo3.api.StringAdapter
 import com.apollographql.apollo3.compiler.codegen.Identifier.customScalarAdapters
 import com.apollographql.apollo3.compiler.codegen.adapter.obj
-import com.apollographql.apollo3.compiler.unified.ir.IrAnyType
-import com.apollographql.apollo3.compiler.unified.ir.IrBooleanType
-import com.apollographql.apollo3.compiler.unified.ir.IrCustomScalarType
-import com.apollographql.apollo3.compiler.unified.ir.IrEnumType
-import com.apollographql.apollo3.compiler.unified.ir.IrFloatType
-import com.apollographql.apollo3.compiler.unified.ir.IrIdType
-import com.apollographql.apollo3.compiler.unified.ir.IrInputObjectType
-import com.apollographql.apollo3.compiler.unified.ir.IrIntType
-import com.apollographql.apollo3.compiler.unified.ir.IrListType
-import com.apollographql.apollo3.compiler.unified.ir.IrModelId
-import com.apollographql.apollo3.compiler.unified.ir.IrModelType
-import com.apollographql.apollo3.compiler.unified.ir.IrNonNullType
-import com.apollographql.apollo3.compiler.unified.ir.IrOptionalType
-import com.apollographql.apollo3.compiler.unified.ir.IrStringType
-import com.apollographql.apollo3.compiler.unified.ir.IrType
+import com.apollographql.apollo3.compiler.ir.IrAnyType
+import com.apollographql.apollo3.compiler.ir.IrBooleanType
+import com.apollographql.apollo3.compiler.ir.IrCustomScalarType
+import com.apollographql.apollo3.compiler.ir.IrEnumType
+import com.apollographql.apollo3.compiler.ir.IrFloatType
+import com.apollographql.apollo3.compiler.ir.IrIdType
+import com.apollographql.apollo3.compiler.ir.IrInputObjectType
+import com.apollographql.apollo3.compiler.ir.IrIntType
+import com.apollographql.apollo3.compiler.ir.IrListType
+import com.apollographql.apollo3.compiler.ir.IrModelId
+import com.apollographql.apollo3.compiler.ir.IrModelType
+import com.apollographql.apollo3.compiler.ir.IrNonNullType
+import com.apollographql.apollo3.compiler.ir.IrOptionalType
+import com.apollographql.apollo3.compiler.ir.IrStringType
+import com.apollographql.apollo3.compiler.ir.IrType
 import com.squareup.kotlinpoet.ClassName
 import com.squareup.kotlinpoet.CodeBlock
 import com.squareup.kotlinpoet.MemberName
@@ -57,7 +57,7 @@ class CgResolver {
     }?.copy(nullable = true)?: error("Cannot resolve $type")
   }
 
-  fun adapterInitializer(type: IrType): CodeBlock {
+  fun adapterInitializer(type: IrType, requiresBuffering: Boolean): CodeBlock {
     if (type !is IrNonNullType) {
       return when (type) {
         is IrIdType -> nullableScalarAdapter("NullableStringAdapter")
@@ -68,19 +68,19 @@ class CgResolver {
         is IrAnyType -> nullableScalarAdapter("NullableAnyAdapter")
         else -> {
           val nullableFun = MemberName("com.apollographql.apollo3.api", "nullable")
-          CodeBlock.of("%L.%M()", adapterInitializer(IrNonNullType(type)), nullableFun)
+          CodeBlock.of("%L.%M()", adapterInitializer(IrNonNullType(type), requiresBuffering), nullableFun)
         }
       }
     }
-    return nonNullableAdapterInitializer(type.ofType)
+    return nonNullableAdapterInitializer(type.ofType, requiresBuffering)
   }
 
-  private fun nonNullableAdapterInitializer(type: IrType): CodeBlock {
+  private fun nonNullableAdapterInitializer(type: IrType, requiresBuffering: Boolean): CodeBlock {
     return when (type) {
       is IrNonNullType -> error("")
       is IrListType -> {
         val listFun = MemberName("com.apollographql.apollo3.api", "list")
-        CodeBlock.of("%L.%M()", adapterInitializer(type.ofType), listFun)
+        CodeBlock.of("%L.%M()", adapterInitializer(type.ofType, requiresBuffering), listFun)
       }
       is IrBooleanType -> CodeBlock.of("%T", BooleanAdapter::class)
       is IrIdType -> CodeBlock.of("%T", StringAdapter::class)
@@ -92,7 +92,7 @@ class CgResolver {
         CodeBlock.of("%T", enumAdapters.get(type.name) ?: error("Cannot find enum '$type' adapter"))
       }
       is IrInputObjectType ->{
-        CodeBlock.of("%T", inputObjectAdapters.get(type.name) ?: error("Cannot find inputObject '$type' adapter")).obj(false)
+        CodeBlock.of("%T", inputObjectAdapters.get(type.name) ?: error("Cannot find inputObject '$type' adapter")).obj(requiresBuffering)
       }
       is IrCustomScalarType -> {
         CodeBlock.of(
@@ -102,11 +102,11 @@ class CgResolver {
         )
       }
       is IrModelType -> {
-        CodeBlock.of("%T", modelAdapters.get(type.id) ?: error("Cannot find model '$type' adapter")).obj(false)
+        CodeBlock.of("%T", modelAdapters.get(type.id) ?: error("Cannot find model '$type' adapter")).obj(requiresBuffering)
       }
       is IrOptionalType -> {
         val optionalFun = MemberName("com.apollographql.apollo3.api", "optional")
-        CodeBlock.of("%L.%M()", adapterInitializer(type.ofType), optionalFun)
+        CodeBlock.of("%L.%M()", adapterInitializer(type.ofType, requiresBuffering), optionalFun)
       }
     }
   }

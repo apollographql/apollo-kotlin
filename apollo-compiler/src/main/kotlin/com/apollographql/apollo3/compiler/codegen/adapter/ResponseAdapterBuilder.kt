@@ -1,7 +1,7 @@
 package com.apollographql.apollo3.compiler.codegen.adapter
 
 import com.apollographql.apollo3.compiler.codegen.CgContext
-import com.apollographql.apollo3.compiler.unified.ir.IrModelGroup
+import com.apollographql.apollo3.compiler.ir.IrModelGroup
 import com.squareup.kotlinpoet.TypeSpec
 
 

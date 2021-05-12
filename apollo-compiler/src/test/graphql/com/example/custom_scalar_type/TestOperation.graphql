@@ -1,3 +1,4 @@
+# multiple scalar fields
 query TestQuery {
   hero {
     name

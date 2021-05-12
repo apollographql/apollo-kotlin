@@ -11,7 +11,7 @@ class PossibleTypesTest {
   fun testPossibleTypes() {
     val schema = File("src/test/sdl/schema.sdl").toSchema()
 
-    val possibleTypes = schema.typeDefinition("Node").possibleTypes(schema.typeDefinitions)
+    val possibleTypes = schema.possibleTypes("Node")
 
     assertThat(possibleTypes).isEqualTo(setOf("Empire", "Rebellion"))
   }

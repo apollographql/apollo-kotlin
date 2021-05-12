@@ -251,7 +251,7 @@ class MapJsonReader(val root: Map<String, Any?>) : JsonReader {
   /**
    * Rewinds to the beginning of the current object.
    */
-  fun rewind() {
+  override fun rewind() {
     currentIndex = 0
     currentName = null
   }

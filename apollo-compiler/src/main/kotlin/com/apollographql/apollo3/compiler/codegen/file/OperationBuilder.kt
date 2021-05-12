@@ -18,9 +18,10 @@ import com.apollographql.apollo3.compiler.codegen.helpers.makeDataClass
 import com.apollographql.apollo3.compiler.codegen.helpers.maybeAddDescription
 import com.apollographql.apollo3.compiler.codegen.helpers.toNamedType
 import com.apollographql.apollo3.compiler.codegen.helpers.toParameterSpec
+import com.apollographql.apollo3.compiler.codegen.maybeFlatten
 import com.apollographql.apollo3.compiler.codegen.model.ModelBuilder
-import com.apollographql.apollo3.compiler.unified.ir.IrOperation
-import com.apollographql.apollo3.compiler.unified.ir.IrOperationType
+import com.apollographql.apollo3.compiler.ir.IrOperation
+import com.apollographql.apollo3.compiler.ir.IrOperationType
 import com.squareup.kotlinpoet.ClassName
 import com.squareup.kotlinpoet.FunSpec
 import com.squareup.kotlinpoet.KModifier
@@ -48,13 +49,13 @@ class OperationBuilder(
     IrOperationType.Subscription -> Subscription.Data::class
   }.asClassName()
 
-  val modelBuilders = operation.modelGroups.flatMap {
+  private val modelBuilders = operation.dataModelGroup.maybeFlatten(false).flatMap {
     it.models
   }.map {
     ModelBuilder(
         context = context,
         model = it,
-        superClassName = if (it.id == operation.dataModelId) dataSuperClassName else null,
+        superClassName = if (it.id == operation.dataModelGroup.baseModelId) dataSuperClassName else null,
         path = listOf(packageName, simpleName)
     )
   }
@@ -99,8 +100,8 @@ class OperationBuilder(
 
   private fun adapterFunSpec(): FunSpec {
     return adapterFunSpec(
-        adapterTypeName = context.resolver.resolveModelAdapter(operation.dataModelId),
-        adaptedTypeName = context.resolver.resolveModel(operation.dataModelId)
+        adapterTypeName = context.resolver.resolveModelAdapter(operation.dataModelGroup.baseModelId),
+        adaptedTypeName = context.resolver.resolveModel(operation.dataModelGroup.baseModelId)
     )
   }
 
@@ -116,7 +117,7 @@ class OperationBuilder(
       IrOperationType.Mutation -> Mutation::class.asTypeName()
       IrOperationType.Subscription -> Subscription::class.asTypeName()
     }.parameterizedBy(
-        context.resolver.resolveModel(operation.dataModelId)
+        context.resolver.resolveModel(operation.dataModelGroup.baseModelId)
     )
   }
 

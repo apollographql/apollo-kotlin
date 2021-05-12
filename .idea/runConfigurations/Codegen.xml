@@ -2,9 +2,9 @@
   <configuration default="false" name="Codegen" type="GradleRunConfiguration" factoryName="Gradle">
     <ExternalSystemSettings>
       <option name="executionName" />
-      <option name="externalProjectPath" value="$PROJECT_DIR$/.." />
+      <option name="externalProjectPath" value="$PROJECT_DIR$" />
       <option name="externalSystemIdString" value="GRADLE" />
-      <option name="scriptParameters" value="--tests &quot;*CodegenTest*&quot; -DupdateTestFixtures=true -DfragmentsCodegenMode= -DtestFilter=optional" />
+      <option name="scriptParameters" value="--tests &quot;*CodegenTest*&quot; -DupdateTestFixtures=true -DcodegenModels=operationBased -DtestFilter=optional" />
       <option name="taskDescriptions">
         <list />
       </option>

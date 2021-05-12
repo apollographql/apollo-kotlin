@@ -58,6 +58,25 @@ fun Project.configureMppDefaults(withJs: Boolean = true) {
   }
 }
 
+/**
+ * Same as [configureMppDefaults] but without iOS targets. Tests only run on the JVM and MacOS
+ */
+fun Project.configureMppTestsDefaults() {
+  val kotlinExtension = extensions.findByName("kotlin") as? org.jetbrains.kotlin.gradle.dsl.KotlinMultiplatformExtension
+  check(kotlinExtension != null) {
+    "No multiplatform extension found"
+  }
+  kotlinExtension.apply {
+    /**
+     * configure targets
+     */
+    jvm()
+    macosX64("apple")
+
+    addTestDependencies(false)
+  }
+}
+
 fun KotlinMultiplatformExtension.addTestDependencies(withJs: Boolean) {
   sourceSets.getByName("commonTest") {
     it.dependencies {

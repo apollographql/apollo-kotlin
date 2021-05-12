@@ -2,7 +2,7 @@
 # - A, B, C type conditions
 # - a shape that satisfies [A, B, C]
 # - a shape that satisfies [B, C]
-# Even though there's a shape that satifies [B, C], we don't want to generate a data class for this
+# Even though there's a shape that satisfies [B, C], we don't want to generate a data class for this
 # as collecting fields on [B, C] would not find fieldB1 despite [B, C] potentially implementing bFragment
 query TestQuery {
     root {

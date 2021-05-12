@@ -44,7 +44,7 @@ data class ApolloMetadata(
     val moduleName: String,
     val pluginVersion: String,
     val customScalarsMapping: Map<String, String>,
-    val generateFragmentsAsInterfaces: Boolean
+    val codegenModels: String
 ) {
   companion object {
 

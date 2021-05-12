@@ -6,6 +6,10 @@ import com.apollographql.apollo3.api.MergedField
 import com.apollographql.apollo3.cache.normalized.CacheReference
 import com.apollographql.apollo3.cache.normalized.Record
 
+/**
+ * A [Normalizer] takes a [Map]<String, Any?> and turns them into a flat list of [Record]
+ * The id of each [Record] is given by [cacheKeyForObject] or defaults to using the path
+ */
 class Normalizer(val variables: Executable.Variables, val cacheKeyForObject: (MergedField, Map<String, Any?>) -> String?) {
   private val records = mutableMapOf<String, Record>()
   private val cacheKeyBuilder = RealCacheKeyBuilder()
@@ -23,7 +27,11 @@ class Normalizer(val variables: Executable.Variables, val cacheKeyForObject: (Me
     val newRecord = Record(key, toFields(key, fieldSets = field.fieldSets))
 
     val existingRecord = records[key]
+
     val mergedRecord = if (existingRecord != null) {
+      /**
+       * A query might contain the same object twice, we don't want to lose some fields when that happens
+       */
       existingRecord.mergeWith(newRecord).first
     } else {
       newRecord

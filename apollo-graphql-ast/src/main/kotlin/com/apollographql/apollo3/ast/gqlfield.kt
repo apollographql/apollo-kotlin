@@ -33,6 +33,11 @@ private val typeMetaFieldDefinition = GQLFieldDefinition(
     description = ""
 )
 
+fun GQLField.definitionFromScope(schema: Schema, rawTypename: String): GQLFieldDefinition? {
+  val typeDefinitionInScope = schema.typeDefinition(rawTypename)
+  return definitionFromScope(schema, typeDefinitionInScope)
+}
+
 fun GQLField.definitionFromScope(schema: Schema, typeDefinitionInScope: GQLTypeDefinition): GQLFieldDefinition? {
   return when {
     name == "__typename" -> listOf(typenameMetaFieldDefinition)

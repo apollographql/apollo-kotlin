@@ -8,10 +8,10 @@ import com.apollographql.apollo3.compiler.codegen.helpers.makeDataClassFromPrope
 import com.apollographql.apollo3.compiler.codegen.helpers.maybeAddDeprecation
 import com.apollographql.apollo3.compiler.codegen.helpers.maybeAddDescription
 import com.apollographql.apollo3.compiler.decapitalizeFirstLetter
-import com.apollographql.apollo3.compiler.unified.ir.IrAccessor
-import com.apollographql.apollo3.compiler.unified.ir.IrFragmentAccessor
-import com.apollographql.apollo3.compiler.unified.ir.IrModel
-import com.apollographql.apollo3.compiler.unified.ir.IrSubtypeAccessor
+import com.apollographql.apollo3.compiler.ir.IrAccessor
+import com.apollographql.apollo3.compiler.ir.IrFragmentAccessor
+import com.apollographql.apollo3.compiler.ir.IrModel
+import com.apollographql.apollo3.compiler.ir.IrSubtypeAccessor
 import com.squareup.kotlinpoet.ClassName
 import com.squareup.kotlinpoet.FunSpec
 import com.squareup.kotlinpoet.KModifier
@@ -62,7 +62,6 @@ class ModelBuilder(
     val superInterfaces = implements.map {
       context.resolver.resolveModel(it)
     } + listOfNotNull(superClassName)
-
 
     val typeSpecBuilder = if (isInterface) {
       TypeSpec.interfaceBuilder(modelName)

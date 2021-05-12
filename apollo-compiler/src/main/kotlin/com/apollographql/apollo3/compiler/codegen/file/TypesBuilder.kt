@@ -10,10 +10,10 @@ import com.apollographql.apollo3.compiler.codegen.CgFile
 import com.apollographql.apollo3.compiler.codegen.CgFileBuilder
 import com.apollographql.apollo3.compiler.codegen.helpers.maybeAddDeprecation
 import com.apollographql.apollo3.compiler.codegen.helpers.maybeAddDescription
-import com.apollographql.apollo3.compiler.unified.ir.IrCustomScalar
-import com.apollographql.apollo3.compiler.unified.ir.IrInterface
-import com.apollographql.apollo3.compiler.unified.ir.IrObject
-import com.apollographql.apollo3.compiler.unified.ir.IrUnion
+import com.apollographql.apollo3.compiler.ir.IrCustomScalar
+import com.apollographql.apollo3.compiler.ir.IrInterface
+import com.apollographql.apollo3.compiler.ir.IrObject
+import com.apollographql.apollo3.compiler.ir.IrUnion
 import com.squareup.kotlinpoet.ClassName
 import com.squareup.kotlinpoet.CodeBlock
 import com.squareup.kotlinpoet.FunSpec

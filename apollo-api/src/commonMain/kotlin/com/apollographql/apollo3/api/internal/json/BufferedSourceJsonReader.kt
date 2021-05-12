@@ -920,6 +920,9 @@ class BufferedSourceJsonReader(private val source: BufferedSource) : JsonReader 
     }
   }
 
+  override fun rewind() {
+    error("BufferedSourceJsonReader cannot rewind.")
+  }
   /**
    * Returns a new exception with the given message and a context snippet with this reader's content.
    */

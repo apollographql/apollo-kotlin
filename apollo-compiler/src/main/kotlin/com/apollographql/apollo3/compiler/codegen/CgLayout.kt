@@ -3,14 +3,17 @@ package com.apollographql.apollo3.compiler.codegen
 import com.apollographql.apollo3.compiler.PackageNameProvider
 import com.apollographql.apollo3.compiler.capitalizeFirstLetter
 import com.apollographql.apollo3.compiler.escapeKotlinReservedWord
+import com.apollographql.apollo3.compiler.ir.IrCompiledField
+import com.apollographql.apollo3.compiler.ir.IrCompiledType
+import com.apollographql.apollo3.compiler.ir.IrFieldInfo
+import com.apollographql.apollo3.compiler.ir.IrListCompiledType
+import com.apollographql.apollo3.compiler.ir.IrListType
+import com.apollographql.apollo3.compiler.ir.IrNonNullCompiledType
+import com.apollographql.apollo3.compiler.ir.IrNonNullType
+import com.apollographql.apollo3.compiler.ir.IrOperation
+import com.apollographql.apollo3.compiler.ir.IrType
+import com.apollographql.apollo3.compiler.ir.TypeSet
 import com.apollographql.apollo3.compiler.singularize
-import com.apollographql.apollo3.compiler.unified.ir.IrFieldInfo
-import com.apollographql.apollo3.compiler.unified.ir.IrListType
-import com.apollographql.apollo3.compiler.unified.ir.IrNonNullType
-import com.apollographql.apollo3.compiler.unified.ir.IrOperation
-import com.apollographql.apollo3.compiler.unified.ir.IrType
-import com.apollographql.apollo3.compiler.unified.ir.TypeSet
-import java.util.Locale
 
 /**
  * The central place where the names/packages of the different classes are decided and escape rules done.
@@ -46,7 +49,7 @@ class CgLayout(
 
   // ------------------------ FileNames ---------------------------------
 
-  internal fun fragmentInterfaceFileName(name: String) = capitalizedIdentifier(name)
+  internal fun fragmentModelsFileName(name: String) = capitalizedIdentifier(name)
 
   // ------------------------ PackageNames ---------------------------------
 
@@ -131,15 +134,42 @@ class CgLayout(
       }
     }
 
-    fun modelName(info: IrFieldInfo, typeSet: TypeSet, isOther: Boolean): String {
+    private fun IrCompiledType.isList(): Boolean {
+      return when (this) {
+        is IrListCompiledType -> true
+        is IrNonNullCompiledType -> ofType.isList()
+        else -> false
+      }
+    }
+
+    fun modelName(compiledField: IrCompiledField, typeSet: TypeSet): String {
+      var responseName = compiledField.alias ?: compiledField.name
+      if (compiledField.type.isList()) {
+        responseName = responseName.singularize()
+      }
+
+      val rawTypename = compiledField.type.leafType().name
+      return upperCamelCaseIgnoringNonLetters((typeSet - rawTypename).sorted() + responseName)
+    }
+
+    fun modelName(info: IrFieldInfo, typeSet: TypeSet, rawTypename: String, isOther: Boolean): String {
       val responseName = if (info.type.isList()) {
         info.responseName.singularize()
       } else {
         info.responseName
       }
-      val name = upperCamelCaseIgnoringNonLetters((typeSet - info.rawTypeName).sorted() + responseName)
+      val name = upperCamelCaseIgnoringNonLetters((typeSet - rawTypename).sorted() + responseName)
 
       return (if (isOther) "Other" else "") + name
+    }
+
+    fun modelName(info: IrFieldInfo): String {
+      val responseName = if (info.type.isList()) {
+        info.responseName.singularize()
+      } else {
+        info.responseName
+      }
+      return upperCamelCaseIgnoringNonLetters(setOf(responseName))
     }
   }
 }
