@@ -1,6 +1,5 @@
 package com.apollographql.apollo3.gradle.internal
 
-import com.android.build.gradle.internal.crash.afterEvaluate
 import com.apollographql.apollo3.compiler.OperationIdGenerator
 import com.apollographql.apollo3.compiler.OperationOutputGenerator
 import com.apollographql.apollo3.gradle.api.AndroidProject
