@@ -74,9 +74,9 @@ data class TestQuery(
      *     }
      *
      *     booleanNonOptional: false
-     *     listOfStringNonOptional: []
+     *     listOfStringNonOptional: \[\]
      *   }
-     *   , listOfInts: [$stars,$stars]) {
+     *   , listOfInts: \[$stars,$stars\]) {
      *     name
      *     height(unit: FOOT)
      *   }

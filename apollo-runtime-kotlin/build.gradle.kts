@@ -9,7 +9,6 @@ kotlin {
     val commonMain by getting {
       dependencies {
         api(project(":apollo-api"))
-        api(project(":apollo-runtime-common"))
         api(groovy.util.Eval.x(project, "x.dep.okio"))
         api(groovy.util.Eval.x(project, "x.dep.uuid"))
         api(groovy.util.Eval.x(project, "x.dep.kotlin.coroutines"))
@@ -24,7 +23,6 @@ kotlin {
 
     val appleMain by getting {
       dependencies {
-        api(project(":apollo-runtime-common"))
       }
     }
 

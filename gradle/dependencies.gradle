@@ -51,15 +51,16 @@ ext.dep = [
     cache                 : "com.nytimes.android:cache:$versions.cache",
     gradleJapiCmpPlugin   : "me.champeau.gradle:japicmp-gradle-plugin:0.2.8",
     gradleMetalavaPlugin  : "me.tylerbwong.gradle:metalava-gradle:0.1.5",
-    oneEightPlugin        : "gradle.plugin.net.mbonnin:one-eight:0.1",
     vespene               : "net.mbonnin.vespene:vespene-lib:0.5",
     gradlePublishPlugin   : "com.gradle.publish:plugin-publish-plugin:0.12.0",
     guavaJre              : "com.google.guava:guava:$versions.guava",
     jetbrainsAnnotations  : "org.jetbrains:annotations:$versions.jetbrainsAnnotations",
     junit                 : "junit:junit:$versions.junit",
+    kotlinJunit           : "org.jetbrains.kotlin:kotlin-test", // the Kotlin plugin resolves the version
     kotlin                : [
         plugin             : "org.jetbrains.kotlin:kotlin-gradle-plugin:$versions.kotlin",
         coroutines         : "org.jetbrains.kotlinx:kotlinx-coroutines-core:$versions.kotlinCoroutines",
+        coroutinesReactive : "org.jetbrains.kotlinx:kotlinx-coroutines-reactive:$versions.kotlinCoroutines",
         coroutinesAndroid  : "org.jetbrains.kotlinx:kotlinx-coroutines-android:$versions.kotlinCoroutines",
         reflect            : "org.jetbrains.kotlin:kotlin-reflect:$versions.kotlin"
     ],

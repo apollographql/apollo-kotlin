@@ -1,4 +1,3 @@
-import com.android.build.gradle.internal.tasks.factory.dependsOn
 import com.apollographql.apollo3.gradle.api.kotlinMultiplatformExtension
 
 plugins {
@@ -12,13 +11,17 @@ kotlin {
   macosX64("apple")
 
   sourceSets {
+    val commonMain by getting {
+      dependencies {
+        implementation("com.apollographql.apollo3:apollo-runtime-kotlin")
+      }
+    }
 
     addTestDependencies(false)
 
     val commonTest by getting {
       dependencies {
         implementation("com.apollographql.apollo3:apollo-api")
-        implementation("com.apollographql.apollo3:apollo-runtime-kotlin")
         implementation("com.apollographql.apollo3:apollo-normalized-cache")
         implementation("com.apollographql.apollo3:apollo-cache-interceptor")
         implementation("com.apollographql.apollo3:apollo-testing-support")

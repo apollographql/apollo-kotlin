@@ -20,11 +20,6 @@ buildscript {
     }
     google()
     mavenCentral()
-    jcenter {
-      content {
-        includeGroup("org.jetbrains.trove4j")
-      }
-    }
   }
   dependencies {
     // ADD BUILDSCRIPT DEPENDENCIES HERE
@@ -52,11 +47,6 @@ repositories {
   }
   google() // for aapt2
   mavenCentral()
-  jcenter {
-    content {
-      includeGroup("org.jetbrains.trove4j")
-    }
-  }
 }
 
 dependencies {
