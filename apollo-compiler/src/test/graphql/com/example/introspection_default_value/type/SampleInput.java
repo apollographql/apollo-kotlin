@@ -11,6 +11,8 @@ import com.apollographql.apollo.api.internal.InputFieldMarshaller;
 import com.apollographql.apollo.api.internal.InputFieldWriter;
 import com.apollographql.apollo.api.internal.Utils;
 import java.io.IOException;
+import java.lang.Double;
+import java.lang.Integer;
 import java.lang.Object;
 import java.lang.Override;
 import java.lang.String;
@@ -20,16 +22,37 @@ import org.jetbrains.annotations.Nullable;
 public final class SampleInput implements InputType {
   private final Input<String> user;
 
+  private final Input<Integer> age;
+
+  private final Input<Double> mood;
+
+  private final Input<Double> hunger;
+
   private transient volatile int $hashCode;
 
   private transient volatile boolean $hashCodeMemoized;
 
-  SampleInput(Input<String> user) {
+  SampleInput(Input<String> user, Input<Integer> age, Input<Double> mood, Input<Double> hunger) {
     this.user = user;
+    this.age = age;
+    this.mood = mood;
+    this.hunger = hunger;
   }
 
   public @Nullable String user() {
     return this.user.value;
+  }
+
+  public @Nullable Integer age() {
+    return this.age.value;
+  }
+
+  public @Nullable Double mood() {
+    return this.mood.value;
+  }
+
+  public @Nullable Double hunger() {
+    return this.hunger.value;
   }
 
   public static Builder builder() {
@@ -44,6 +67,15 @@ public final class SampleInput implements InputType {
         if (user.defined) {
           writer.writeString("user", user.value);
         }
+        if (age.defined) {
+          writer.writeInt("age", age.value);
+        }
+        if (mood.defined) {
+          writer.writeDouble("mood", mood.value);
+        }
+        if (hunger.defined) {
+          writer.writeDouble("hunger", hunger.value);
+        }
       }
     };
   }
@@ -54,6 +86,12 @@ public final class SampleInput implements InputType {
       int h = 1;
       h *= 1000003;
       h ^= user.hashCode();
+      h *= 1000003;
+      h ^= age.hashCode();
+      h *= 1000003;
+      h ^= mood.hashCode();
+      h *= 1000003;
+      h ^= hunger.hashCode();
       $hashCode = h;
       $hashCodeMemoized = true;
     }
@@ -67,13 +105,22 @@ public final class SampleInput implements InputType {
     }
     if (o instanceof SampleInput) {
       SampleInput that = (SampleInput) o;
-      return this.user.equals(that.user);
+      return this.user.equals(that.user)
+       && this.age.equals(that.age)
+       && this.mood.equals(that.mood)
+       && this.hunger.equals(that.hunger);
     }
     return false;
   }
 
   public static final class Builder {
     private Input<String> user = Input.fromNullable("me");
+
+    private Input<Integer> age = Input.fromNullable(20);
+
+    private Input<Double> mood = Input.fromNullable(1.0);
+
+    private Input<Double> hunger = Input.fromNullable(0.5);
 
     Builder() {
     }
@@ -83,13 +130,43 @@ public final class SampleInput implements InputType {
       return this;
     }
 
+    public Builder age(@Nullable Integer age) {
+      this.age = Input.fromNullable(age);
+      return this;
+    }
+
+    public Builder mood(@Nullable Double mood) {
+      this.mood = Input.fromNullable(mood);
+      return this;
+    }
+
+    public Builder hunger(@Nullable Double hunger) {
+      this.hunger = Input.fromNullable(hunger);
+      return this;
+    }
+
     public Builder userInput(@NotNull Input<String> user) {
       this.user = Utils.checkNotNull(user, "user == null");
       return this;
     }
 
+    public Builder ageInput(@NotNull Input<Integer> age) {
+      this.age = Utils.checkNotNull(age, "age == null");
+      return this;
+    }
+
+    public Builder moodInput(@NotNull Input<Double> mood) {
+      this.mood = Utils.checkNotNull(mood, "mood == null");
+      return this;
+    }
+
+    public Builder hungerInput(@NotNull Input<Double> hunger) {
+      this.hunger = Utils.checkNotNull(hunger, "hunger == null");
+      return this;
+    }
+
     public SampleInput build() {
-      return new SampleInput(user);
+      return new SampleInput(user, age, mood, hunger);
     }
   }
 }

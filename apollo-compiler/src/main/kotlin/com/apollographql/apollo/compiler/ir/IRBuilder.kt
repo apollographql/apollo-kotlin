@@ -139,7 +139,7 @@ class IRBuilder(private val schema: IntrospectionSchema,
     }
 
     return try {
-      antlrParse(this, "").value().toKotlin()
+      antlrParse(this, "").value().toKotlin(type)
     } catch (e: Exception) {
       // seatbelt mode on, catch anything that can go wrong and use the previous behavour as fallback
       normalizeValue(type)
@@ -147,27 +147,26 @@ class IRBuilder(private val schema: IntrospectionSchema,
   }
 
   /**
-   * This doesn't validate against the expected type, we're assuming the introspection schema is good
+   * Converts a GraphQLParser.ValueContext to its corresponding native type
    */
-  private fun GraphQLParser.ValueContext.toKotlin(): Any? {
+  private fun GraphQLParser.ValueContext.toKotlin(type: IntrospectionSchema.TypeRef): Any? {
     return when(this) {
       is GraphQLParser.StringValueContext -> this.STRING()?.text?.trimStart('\"')?.trimEnd('\"')
       is GraphQLParser.BooleanValueContext -> this.BOOLEAN()?.text?.toBoolean()
       is GraphQLParser.InlineInputTypeValueContext -> {
         this.inlineInputType().inlineInputTypeField().map {
-          it.NAME() to it.valueOrVariable()?.value()?.toKotlin()
+          it.NAME() to it.valueOrVariable()?.value()?.toKotlin(type)
         }.toMap()
       }
-      is GraphQLParser.NumberValueContext -> if (
-          NUMBER().text.contains('.') ||
-          NUMBER().text.contains("e")) {
-        NUMBER().text.toDouble()
-      } else {
-        NUMBER().text.toInt()
-      }
+      is GraphQLParser.NumberValueContext ->
+        when (ScalarType.forName(type.name ?: "")) {
+          ScalarType.INT -> NUMBER().text.toInt()
+          ScalarType.FLOAT -> NUMBER().text.toDouble()
+          else -> throw ParseException("Unexpected number type")
+        }
       is GraphQLParser.ArrayValueContext -> {
         this.arrayValueType().valueOrVariable()?.map {
-          it.value()?.toKotlin()
+          it.value()?.toKotlin(type)
         } ?: emptyList<Any?>()
       }
       is GraphQLParser.LiteralValueContext -> {
@@ -183,6 +182,7 @@ class IRBuilder(private val schema: IntrospectionSchema,
       }
     }
   }
+
   private fun Any?.normalizeValue(type: IntrospectionSchema.TypeRef): Any? {
     if (this == null) {
       return null

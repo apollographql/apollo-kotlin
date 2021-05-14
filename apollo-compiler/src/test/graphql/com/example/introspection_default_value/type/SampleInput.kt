@@ -8,17 +8,31 @@ package com.example.introspection_default_value.type
 import com.apollographql.apollo.api.Input
 import com.apollographql.apollo.api.InputType
 import com.apollographql.apollo.api.internal.InputFieldMarshaller
+import kotlin.Double
+import kotlin.Int
 import kotlin.String
 import kotlin.Suppress
 
 @Suppress("NAME_SHADOWING", "UNUSED_ANONYMOUS_PARAMETER", "LocalVariableName",
     "RemoveExplicitTypeArguments", "NestedLambdaShadowedImplicitParameter")
 data class SampleInput(
-  val user: Input<String> = Input.optional("me")
+  val user: Input<String> = Input.optional("me"),
+  val age: Input<Int> = Input.optional(20),
+  val mood: Input<Double> = Input.optional(1.0),
+  val hunger: Input<Double> = Input.optional(0.5)
 ) : InputType {
   override fun marshaller(): InputFieldMarshaller = InputFieldMarshaller.invoke { writer ->
     if (this@SampleInput.user.defined) {
       writer.writeString("user", this@SampleInput.user.value)
+    }
+    if (this@SampleInput.age.defined) {
+      writer.writeInt("age", this@SampleInput.age.value)
+    }
+    if (this@SampleInput.mood.defined) {
+      writer.writeDouble("mood", this@SampleInput.mood.value)
+    }
+    if (this@SampleInput.hunger.defined) {
+      writer.writeDouble("hunger", this@SampleInput.hunger.value)
     }
   }
 }
