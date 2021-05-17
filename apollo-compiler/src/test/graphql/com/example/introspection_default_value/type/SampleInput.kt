@@ -8,10 +8,12 @@ package com.example.introspection_default_value.type
 import com.apollographql.apollo.api.Input
 import com.apollographql.apollo.api.InputType
 import com.apollographql.apollo.api.internal.InputFieldMarshaller
+import com.apollographql.apollo.api.internal.InputFieldWriter
 import kotlin.Double
 import kotlin.Int
 import kotlin.String
 import kotlin.Suppress
+import kotlin.collections.List
 
 @Suppress("NAME_SHADOWING", "UNUSED_ANONYMOUS_PARAMETER", "LocalVariableName",
     "RemoveExplicitTypeArguments", "NestedLambdaShadowedImplicitParameter")
@@ -19,7 +21,8 @@ data class SampleInput(
   val user: Input<String> = Input.optional("me"),
   val age: Input<Int> = Input.optional(20),
   val mood: Input<Double> = Input.optional(1.0),
-  val hunger: Input<Double> = Input.optional(0.5)
+  val hunger: Input<Double> = Input.optional(0.5),
+  val listOfFloats: Input<List<Double?>> = Input.optional(listOf(1.0, 2.0, 3.0))
 ) : InputType {
   override fun marshaller(): InputFieldMarshaller = InputFieldMarshaller.invoke { writer ->
     if (this@SampleInput.user.defined) {
@@ -33,6 +36,15 @@ data class SampleInput(
     }
     if (this@SampleInput.hunger.defined) {
       writer.writeDouble("hunger", this@SampleInput.hunger.value)
+    }
+    if (this@SampleInput.listOfFloats.defined) {
+      writer.writeList("listOfFloats", this@SampleInput.listOfFloats.value?.let { value ->
+        InputFieldWriter.ListWriter { listItemWriter ->
+          value.forEach { value ->
+            listItemWriter.writeDouble(value)
+          }
+        }
+      })
     }
   }
 }

@@ -48,6 +48,19 @@
               "name": "Float"
             },
             "defaultValue": "0.5"
+          },
+          {
+            "name": "listOfFloats",
+            "description": "",
+            "isDeprecated": false,
+            "type": {
+              "kind": "LIST",
+              "ofType": {
+                "kind": "SCALAR",
+                "name": "Float"
+              }
+            },
+            "defaultValue": "[1 2 3]"
           }
         ]
       },

@@ -16,6 +16,8 @@ import java.lang.Integer;
 import java.lang.Object;
 import java.lang.Override;
 import java.lang.String;
+import java.util.Arrays;
+import java.util.List;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -28,15 +30,19 @@ public final class SampleInput implements InputType {
 
   private final Input<Double> hunger;
 
+  private final Input<List<Double>> listOfFloats;
+
   private transient volatile int $hashCode;
 
   private transient volatile boolean $hashCodeMemoized;
 
-  SampleInput(Input<String> user, Input<Integer> age, Input<Double> mood, Input<Double> hunger) {
+  SampleInput(Input<String> user, Input<Integer> age, Input<Double> mood, Input<Double> hunger,
+      Input<List<Double>> listOfFloats) {
     this.user = user;
     this.age = age;
     this.mood = mood;
     this.hunger = hunger;
+    this.listOfFloats = listOfFloats;
   }
 
   public @Nullable String user() {
@@ -53,6 +59,10 @@ public final class SampleInput implements InputType {
 
   public @Nullable Double hunger() {
     return this.hunger.value;
+  }
+
+  public @Nullable List<Double> listOfFloats() {
+    return this.listOfFloats.value;
   }
 
   public static Builder builder() {
@@ -76,6 +86,16 @@ public final class SampleInput implements InputType {
         if (hunger.defined) {
           writer.writeDouble("hunger", hunger.value);
         }
+        if (listOfFloats.defined) {
+          writer.writeList("listOfFloats", listOfFloats.value != null ? new InputFieldWriter.ListWriter() {
+            @Override
+            public void write(InputFieldWriter.ListItemWriter listItemWriter) throws IOException {
+              for (final Double $item : listOfFloats.value) {
+                listItemWriter.writeDouble($item);
+              }
+            }
+          } : null);
+        }
       }
     };
   }
@@ -92,6 +112,8 @@ public final class SampleInput implements InputType {
       h ^= mood.hashCode();
       h *= 1000003;
       h ^= hunger.hashCode();
+      h *= 1000003;
+      h ^= listOfFloats.hashCode();
       $hashCode = h;
       $hashCodeMemoized = true;
     }
@@ -108,7 +130,8 @@ public final class SampleInput implements InputType {
       return this.user.equals(that.user)
        && this.age.equals(that.age)
        && this.mood.equals(that.mood)
-       && this.hunger.equals(that.hunger);
+       && this.hunger.equals(that.hunger)
+       && this.listOfFloats.equals(that.listOfFloats);
     }
     return false;
   }
@@ -121,6 +144,8 @@ public final class SampleInput implements InputType {
     private Input<Double> mood = Input.fromNullable(1.0);
 
     private Input<Double> hunger = Input.fromNullable(0.5);
+
+    private Input<List<Double>> listOfFloats = Input.fromNullable(Arrays.<Double>asList(1.0, 2.0, 3.0));
 
     Builder() {
     }
@@ -145,6 +170,11 @@ public final class SampleInput implements InputType {
       return this;
     }
 
+    public Builder listOfFloats(@Nullable List<Double> listOfFloats) {
+      this.listOfFloats = Input.fromNullable(listOfFloats);
+      return this;
+    }
+
     public Builder userInput(@NotNull Input<String> user) {
       this.user = Utils.checkNotNull(user, "user == null");
       return this;
@@ -165,8 +195,13 @@ public final class SampleInput implements InputType {
       return this;
     }
 
+    public Builder listOfFloatsInput(@NotNull Input<List<Double>> listOfFloats) {
+      this.listOfFloats = Utils.checkNotNull(listOfFloats, "listOfFloats == null");
+      return this;
+    }
+
     public SampleInput build() {
-      return new SampleInput(user, age, mood, hunger);
+      return new SampleInput(user, age, mood, hunger, listOfFloats);
     }
   }
 }

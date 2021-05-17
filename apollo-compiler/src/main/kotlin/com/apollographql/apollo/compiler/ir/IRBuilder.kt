@@ -166,7 +166,7 @@ class IRBuilder(private val schema: IntrospectionSchema,
         }
       is GraphQLParser.ArrayValueContext -> {
         this.arrayValueType().valueOrVariable()?.map {
-          it.value()?.toKotlin(type)
+          it.value()?.toKotlin(type.ofType!!)
         } ?: emptyList<Any?>()
       }
       is GraphQLParser.LiteralValueContext -> {
