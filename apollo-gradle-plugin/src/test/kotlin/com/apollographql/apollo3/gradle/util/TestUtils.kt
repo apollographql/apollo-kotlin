@@ -28,7 +28,7 @@ object TestUtils {
 
     // See https://github.com/apollographql/apollo-android/issues/2184
     dest.mkdirs()
-    File(dest, "gradle.properties").writeText("org.gradle.jvmargs=-XX:MaxMetaspaceSize=1g")
+    File(dest, "gradle.properties").writeText("org.gradle.jvmargs=-Xmx3g -XX:MaxMetaspaceSize=1g")
 
     block(dest)
 

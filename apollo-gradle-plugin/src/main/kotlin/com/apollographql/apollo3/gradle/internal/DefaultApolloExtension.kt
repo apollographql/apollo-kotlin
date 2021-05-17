@@ -143,6 +143,7 @@ abstract class DefaultApolloExtension(
           }
     }
   }
+
   /**
    * Call from users to explicitly register a service or by the plugin to register the implicit service
    */
@@ -171,7 +172,7 @@ abstract class DefaultApolloExtension(
       }
       it.outputs.file(outputFile)
 
-      it.doLast(object: Action<Task> {
+      it.doLast(object : Action<Task> {
         override fun execute(t: Task) {
           val allVersions = it.inputs.properties["allVersions"] as List<*>
 
@@ -199,6 +200,9 @@ abstract class DefaultApolloExtension(
       it.isCanBeConsumed = true
       it.isCanBeResolved = false
 
+      /**
+       * Expose transitive dependencies to downstream consumers
+       */
       it.extendsFrom(apolloConfiguration)
 
       it.attributes {
@@ -221,8 +225,12 @@ abstract class DefaultApolloExtension(
 
     val codegenProvider = registerCodeGenTask(project, service, consumerConfiguration)
 
-    project.artifacts {
-      it.add(producerConfigurationName, codegenProvider.flatMap { it.metadataOutputFile })
+    project.afterEvaluate {
+      if (shouldGenerateMetadata(service)) {
+        project.artifacts {
+          it.add(producerConfigurationName, codegenProvider.flatMap { it.metadataOutputFile })
+        }
+      }
     }
 
     codegenProvider.configure {
@@ -236,7 +244,7 @@ abstract class DefaultApolloExtension(
     project.rootProject.dependencies.apply {
       add(
           ModelNames.duplicatesConsumerConfiguration(service),
-          project(mapOf("path" to project.path, "configuration" to producerConfigurationName))
+          project(mapOf("path" to project.path))
       )
     }
 
@@ -267,6 +275,17 @@ abstract class DefaultApolloExtension(
     }
 
     registerDownloadSchemaTasks(service)
+  }
+
+  /**
+   * Generate metadata
+   * - if the user opted in
+   * - or if this project belongs to a multi-module build
+   * The last case is needed to check for potential duplicate types
+   */
+  private fun shouldGenerateMetadata(service: DefaultService): Boolean {
+    return service.generateApolloMetadata.getOrElse(false)
+        || apolloConfiguration.dependencies.isNotEmpty()
   }
 
   /**
@@ -354,11 +373,11 @@ abstract class DefaultApolloExtension(
           disallowChanges()
         }
       }
-      // always set `metadataOutputFile` as the `metadata` task is part of `assemble` (see https://github.com/gradle/gradle/issues/14065)
-      // and we don't want it to fail if it is ever called by the user
-      task.metadataOutputFile.apply {
-        set(BuildDirLayout.metadata(project, service))
-        disallowChanges()
+      if (shouldGenerateMetadata(service)) {
+        task.metadataOutputFile.apply {
+          set(BuildDirLayout.metadata(project, service))
+          disallowChanges()
+        }
       }
 
       task.metadataFiles.from(consumerConfiguration)
