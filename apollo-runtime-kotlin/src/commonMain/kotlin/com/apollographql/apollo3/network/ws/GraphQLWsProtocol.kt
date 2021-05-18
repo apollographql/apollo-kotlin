@@ -11,9 +11,12 @@ import okio.Buffer
 /**
  * An [WsProtocol] that uses https://github.com/enisdenjo/graphql-ws/blob/master/PROTOCOL.md
  * It can carry queries in addition to subscriptions over the websocket
+ *
+ * @param connectionPayload a map of additional parameters to send in the "connection_init" message
  */
 class GraphQLWsProtocol(
-    override val frameType: WsFrameType = WsFrameType.Binary
+    private val connectionPayload: Map<String, Any?>? = null,
+    override val frameType: WsFrameType = WsFrameType.Binary,
 ) : WsProtocol {
   override val name: String
     get() = "graphql-transport-ws"
@@ -22,6 +25,9 @@ class GraphQLWsProtocol(
     val map = mutableMapOf<String, Any?>(
         "type" to "connection_init",
     )
+    if (connectionPayload != null) {
+      map.put("payload", connectionPayload)
+    }
     return map
   }
 
