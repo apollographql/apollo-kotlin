@@ -1,13 +1,12 @@
 package com.apollographql.apollo3.interceptor
 
 import com.apollographql.apollo3.api.ApolloRequest
-import com.apollographql.apollo3.api.exception.ApolloHttpException
-import com.apollographql.apollo3.api.exception.ApolloBearerTokenException
-import com.apollographql.apollo3.api.Operation
 import com.apollographql.apollo3.api.ApolloResponse
+import com.apollographql.apollo3.api.Operation
+import com.apollographql.apollo3.api.exception.ApolloBearerTokenException
+import com.apollographql.apollo3.api.exception.ApolloHttpException
 import com.apollographql.apollo3.network.http.HttpRequestParameters
 import com.apollographql.apollo3.network.http.withHeader
-import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.FlowPreview
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.catch
@@ -34,7 +33,6 @@ class BearerTokenInterceptor(private val tokenProvider: TokenProvider) : ApolloR
   }
 
   @FlowPreview
-  @ExperimentalCoroutinesApi
   override fun <D : Operation.Data> intercept(request: ApolloRequest<D>, chain: ApolloInterceptorChain): Flow<ApolloResponse<D>> {
     return flow {
       val token = mutex.withLock { tokenProvider.currentToken() }

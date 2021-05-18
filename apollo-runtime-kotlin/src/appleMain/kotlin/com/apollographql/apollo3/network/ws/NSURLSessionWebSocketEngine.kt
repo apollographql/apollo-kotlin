@@ -1,7 +1,7 @@
 package com.apollographql.apollo3.network.ws
 
-import com.apollographql.apollo3.network.toNSData
 import com.apollographql.apollo3.api.exception.ApolloNetworkException
+import com.apollographql.apollo3.network.toNSData
 import kotlinx.cinterop.COpaquePointer
 import kotlinx.cinterop.StableRef
 import kotlinx.cinterop.asStableRef
@@ -9,8 +9,6 @@ import kotlinx.cinterop.staticCFunction
 import kotlinx.coroutines.CompletableDeferred
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.channels.Channel
-import kotlinx.coroutines.channels.ReceiveChannel
-import kotlinx.coroutines.delay
 import okio.ByteString
 import okio.ByteString.Companion.toByteString
 import okio.IOException
@@ -47,7 +45,6 @@ interface WebSocketConnectionListener {
 
 typealias NSWebSocketFactory = (NSURLRequest, WebSocketConnectionListener) -> NSURLSessionWebSocketTask
 
-@ExperimentalCoroutinesApi
 actual class DefaultWebSocketEngine(
     private val webSocketFactory: NSWebSocketFactory
 ) : WebSocketEngine {
@@ -107,7 +104,7 @@ actual class DefaultWebSocketEngine(
   }
 }
 
-@ExperimentalCoroutinesApi
+@OptIn(ExperimentalCoroutinesApi::class)
 private class WebSocketConnectionImpl(
     val webSocket: NSURLSessionWebSocketTask,
     val messageChannel: Channel<ByteString>
@@ -170,7 +167,6 @@ private class WebSocketConnectionImpl(
 }
 
 @Suppress("NAME_SHADOWING")
-@ExperimentalCoroutinesApi
 private fun NSError.dispatchOnMain(webSocketConnectionPtr: COpaquePointer) {
   if (NSThread.isMainThread) {
     dispatch(webSocketConnectionPtr)
@@ -190,7 +186,6 @@ private fun NSError.dispatchOnMain(webSocketConnectionPtr: COpaquePointer) {
   }
 }
 
-@ExperimentalCoroutinesApi
 private fun NSError.dispatch(webSocketConnectionPtr: COpaquePointer) {
   val webSocketConnectionRef = webSocketConnectionPtr.asStableRef<WebSocketConnectionImpl>()
   val webSocketConnection = webSocketConnectionRef.get()
@@ -206,7 +201,6 @@ private fun NSError.dispatch(webSocketConnectionPtr: COpaquePointer) {
 }
 
 @Suppress("NAME_SHADOWING")
-@ExperimentalCoroutinesApi
 private fun NSURLSessionWebSocketMessage.dispatchOnMainAndRequestNext(webSocketConnectionPtr: COpaquePointer) {
   if (NSThread.isMainThread) {
     dispatchAndRequestNext(webSocketConnectionPtr)
@@ -226,7 +220,6 @@ private fun NSURLSessionWebSocketMessage.dispatchOnMainAndRequestNext(webSocketC
   }
 }
 
-@ExperimentalCoroutinesApi
 private fun NSURLSessionWebSocketMessage.dispatchAndRequestNext(webSocketConnectionPtr: COpaquePointer) {
   val webSocketConnectionRef = webSocketConnectionPtr.asStableRef<WebSocketConnectionImpl>()
   val webSocketConnection = webSocketConnectionRef.get()
@@ -245,7 +238,7 @@ private fun NSURLSessionWebSocketMessage.dispatchAndRequestNext(webSocketConnect
   }
 
   try {
-    if (data != null) webSocketConnection.messageChannel.offer(data)
+    if (data != null) webSocketConnection.messageChannel.trySend(data)
   } catch (e: Exception) {
     webSocketConnection.webSocket.cancel()
     return

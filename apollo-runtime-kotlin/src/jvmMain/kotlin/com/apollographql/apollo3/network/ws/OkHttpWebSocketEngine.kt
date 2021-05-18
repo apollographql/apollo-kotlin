@@ -14,7 +14,7 @@ import okhttp3.WebSocketListener
 import okio.ByteString
 import okio.ByteString.Companion.toByteString
 
-@ExperimentalCoroutinesApi
+@OptIn(ExperimentalCoroutinesApi::class)
 actual class DefaultWebSocketEngine(
     private val webSocketFactory: WebSocket.Factory
 ) : WebSocketEngine {

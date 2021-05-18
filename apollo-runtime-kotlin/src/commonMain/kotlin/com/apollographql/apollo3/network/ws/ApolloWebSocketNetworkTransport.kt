@@ -13,7 +13,6 @@ import com.apollographql.apollo3.api.internal.json.buildJsonString
 import com.apollographql.apollo3.api.toJson
 import com.apollographql.apollo3.network.NetworkTransport
 import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.TimeoutCancellationException
