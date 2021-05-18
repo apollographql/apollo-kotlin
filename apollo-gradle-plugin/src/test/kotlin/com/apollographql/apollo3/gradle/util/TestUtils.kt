@@ -162,6 +162,7 @@ object TestUtils {
         .forwardStdOutput(System.out.writer())
         .forwardStdError(System.err.writer())
         .withProjectDir(projectDir)
+        .withDebug(true)
         .withArguments("--stacktrace", *args)
         .apply {
           if (gradleVersion != null) {
