@@ -113,7 +113,7 @@ fun Project.configurePublishing() {
   if (javadocTask == null && android != null) {
     // create the Android javadoc if needed
     javadocTask = tasks.create("javadoc", Javadoc::class.java) {
-      source = android.sourceSets["main"].java.sourceFiles
+      source = android.sourceSets.getByName("main").java.getSourceFiles()
       classpath += project.files(android.bootClasspath.joinToString(File.pathSeparator))
 
       (android as? com.android.build.gradle.LibraryExtension)?.libraryVariants?.configureEach {
@@ -134,14 +134,14 @@ fun Project.configurePublishing() {
   }
 
   val javaPluginConvention = project.convention.findPlugin(JavaPluginConvention::class.java)
-  val sourcesJarTaskProvider = tasks.register("sourcesJar", org.gradle.jvm.tasks.Jar::class.java) {
+  val sourcesJarTaskProvider = tasks.register("apolloSourcesJar", org.gradle.jvm.tasks.Jar::class.java) {
     archiveClassifier.set("sources")
     when {
       javaPluginConvention != null && android == null -> {
         from(javaPluginConvention.sourceSets.get("main").allSource)
       }
       android != null -> {
-        from(android.sourceSets["main"].java.sourceFiles)
+        from(android.sourceSets.getByName("main").java.getSourceFiles())
       }
     }
   }
@@ -168,10 +168,6 @@ fun Project.configurePublishing() {
           withType<MavenPublication> {
             // multiplatform doesn't add javadoc by default so add it here
             artifact(javadocJarTaskProvider.get())
-            if (name == "kotlinMultiplatform") {
-              // sources are added for each platform but not for the common module
-              artifact(sourcesJarTaskProvider.get())
-            }
           }
         }
         plugins.hasPlugin("java-gradle-plugin") -> {

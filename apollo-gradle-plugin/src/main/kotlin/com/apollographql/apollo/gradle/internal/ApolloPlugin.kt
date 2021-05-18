@@ -5,6 +5,7 @@ import com.apollographql.apollo.compiler.OperationOutputGenerator
 import com.apollographql.apollo.gradle.api.ApolloAttributes
 import com.apollographql.apollo.gradle.api.ApolloExtension
 import okhttp3.HttpUrl.Companion.toHttpUrl
+import org.gradle.api.Action
 import org.gradle.api.Plugin
 import org.gradle.api.Project
 import org.gradle.api.Task
@@ -325,17 +326,20 @@ open class ApolloPlugin : Plugin<Project> {
                   .sorted()
         }
 
-        it.doLast {
-          val allVersions = it.inputs.properties["versions"] as List<String>
+        it.doLast(object: Action<Task> {
+          override fun execute(t: Task) {
+            val allVersions = it.inputs.properties["versions"] as List<String>
 
-          check(allVersions.size <= 1) {
-            "ApolloGraphQL: All apollo versions should be the same. Found:\n$allVersions"
+            check(allVersions.size <= 1) {
+              "ApolloGraphQL: All apollo versions should be the same. Found:\n$allVersions"
+            }
+
+            val version = allVersions.firstOrNull()
+            outputFile.get().asFile.parentFile.mkdirs()
+            outputFile.get().asFile.writeText("All versions are consistent: $version")
+
           }
-
-          val version = allVersions.firstOrNull()
-          outputFile.get().asFile.parentFile.mkdirs()
-          outputFile.get().asFile.writeText("All versions are consistent: $version")
-        }
+        })
       }
 
     }

@@ -14,7 +14,7 @@ dependencies {
   api(groovy.util.Eval.x(project, "x.dep.okHttp.okHttp"))
 
   add("testCompileOnly", groovy.util.Eval.x(project, "x.dep.jetbrainsAnnotations"))
-  add("testCompile", groovy.util.Eval.x(project, "x.dep.mockito"))
+  add("testImplementation", groovy.util.Eval.x(project, "x.dep.mockito"))
   add("testImplementation", groovy.util.Eval.x(project, "x.dep.junit"))
   add("testImplementation", groovy.util.Eval.x(project, "x.dep.truth"))
   add("testImplementation", groovy.util.Eval.x(project, "x.dep.okHttp.mockWebServer"))
