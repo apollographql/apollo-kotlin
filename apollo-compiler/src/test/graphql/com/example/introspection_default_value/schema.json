@@ -18,6 +18,49 @@
               "name": "String"
             },
             "defaultValue": "\"me\""
+          },
+          {
+            "name": "age",
+            "description": "",
+            "isDeprecated": false,
+            "type": {
+              "kind": "SCALAR",
+              "name": "Int"
+            },
+            "defaultValue": "20"
+          },
+          {
+            "name": "mood",
+            "description": "",
+            "isDeprecated": false,
+            "type": {
+              "kind": "SCALAR",
+              "name": "Float"
+            },
+            "defaultValue": "1"
+          },
+          {
+            "name": "hunger",
+            "description": "",
+            "isDeprecated": false,
+            "type": {
+              "kind": "SCALAR",
+              "name": "Float"
+            },
+            "defaultValue": "0.5"
+          },
+          {
+            "name": "listOfFloats",
+            "description": "",
+            "isDeprecated": false,
+            "type": {
+              "kind": "LIST",
+              "ofType": {
+                "kind": "SCALAR",
+                "name": "Float"
+              }
+            },
+            "defaultValue": "[1 2 3]"
           }
         ]
       },

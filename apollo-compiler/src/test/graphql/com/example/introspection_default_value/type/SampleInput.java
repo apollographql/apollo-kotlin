@@ -11,25 +11,58 @@ import com.apollographql.apollo.api.internal.InputFieldMarshaller;
 import com.apollographql.apollo.api.internal.InputFieldWriter;
 import com.apollographql.apollo.api.internal.Utils;
 import java.io.IOException;
+import java.lang.Double;
+import java.lang.Integer;
 import java.lang.Object;
 import java.lang.Override;
 import java.lang.String;
+import java.util.Arrays;
+import java.util.List;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 public final class SampleInput implements InputType {
   private final Input<String> user;
 
+  private final Input<Integer> age;
+
+  private final Input<Double> mood;
+
+  private final Input<Double> hunger;
+
+  private final Input<List<Double>> listOfFloats;
+
   private transient volatile int $hashCode;
 
   private transient volatile boolean $hashCodeMemoized;
 
-  SampleInput(Input<String> user) {
+  SampleInput(Input<String> user, Input<Integer> age, Input<Double> mood, Input<Double> hunger,
+      Input<List<Double>> listOfFloats) {
     this.user = user;
+    this.age = age;
+    this.mood = mood;
+    this.hunger = hunger;
+    this.listOfFloats = listOfFloats;
   }
 
   public @Nullable String user() {
     return this.user.value;
+  }
+
+  public @Nullable Integer age() {
+    return this.age.value;
+  }
+
+  public @Nullable Double mood() {
+    return this.mood.value;
+  }
+
+  public @Nullable Double hunger() {
+    return this.hunger.value;
+  }
+
+  public @Nullable List<Double> listOfFloats() {
+    return this.listOfFloats.value;
   }
 
   public static Builder builder() {
@@ -44,6 +77,25 @@ public final class SampleInput implements InputType {
         if (user.defined) {
           writer.writeString("user", user.value);
         }
+        if (age.defined) {
+          writer.writeInt("age", age.value);
+        }
+        if (mood.defined) {
+          writer.writeDouble("mood", mood.value);
+        }
+        if (hunger.defined) {
+          writer.writeDouble("hunger", hunger.value);
+        }
+        if (listOfFloats.defined) {
+          writer.writeList("listOfFloats", listOfFloats.value != null ? new InputFieldWriter.ListWriter() {
+            @Override
+            public void write(InputFieldWriter.ListItemWriter listItemWriter) throws IOException {
+              for (final Double $item : listOfFloats.value) {
+                listItemWriter.writeDouble($item);
+              }
+            }
+          } : null);
+        }
       }
     };
   }
@@ -54,6 +106,14 @@ public final class SampleInput implements InputType {
       int h = 1;
       h *= 1000003;
       h ^= user.hashCode();
+      h *= 1000003;
+      h ^= age.hashCode();
+      h *= 1000003;
+      h ^= mood.hashCode();
+      h *= 1000003;
+      h ^= hunger.hashCode();
+      h *= 1000003;
+      h ^= listOfFloats.hashCode();
       $hashCode = h;
       $hashCodeMemoized = true;
     }
@@ -67,13 +127,25 @@ public final class SampleInput implements InputType {
     }
     if (o instanceof SampleInput) {
       SampleInput that = (SampleInput) o;
-      return this.user.equals(that.user);
+      return this.user.equals(that.user)
+       && this.age.equals(that.age)
+       && this.mood.equals(that.mood)
+       && this.hunger.equals(that.hunger)
+       && this.listOfFloats.equals(that.listOfFloats);
     }
     return false;
   }
 
   public static final class Builder {
     private Input<String> user = Input.fromNullable("me");
+
+    private Input<Integer> age = Input.fromNullable(20);
+
+    private Input<Double> mood = Input.fromNullable(1.0);
+
+    private Input<Double> hunger = Input.fromNullable(0.5);
+
+    private Input<List<Double>> listOfFloats = Input.fromNullable(Arrays.<Double>asList(1.0, 2.0, 3.0));
 
     Builder() {
     }
@@ -83,13 +155,53 @@ public final class SampleInput implements InputType {
       return this;
     }
 
+    public Builder age(@Nullable Integer age) {
+      this.age = Input.fromNullable(age);
+      return this;
+    }
+
+    public Builder mood(@Nullable Double mood) {
+      this.mood = Input.fromNullable(mood);
+      return this;
+    }
+
+    public Builder hunger(@Nullable Double hunger) {
+      this.hunger = Input.fromNullable(hunger);
+      return this;
+    }
+
+    public Builder listOfFloats(@Nullable List<Double> listOfFloats) {
+      this.listOfFloats = Input.fromNullable(listOfFloats);
+      return this;
+    }
+
     public Builder userInput(@NotNull Input<String> user) {
       this.user = Utils.checkNotNull(user, "user == null");
       return this;
     }
 
+    public Builder ageInput(@NotNull Input<Integer> age) {
+      this.age = Utils.checkNotNull(age, "age == null");
+      return this;
+    }
+
+    public Builder moodInput(@NotNull Input<Double> mood) {
+      this.mood = Utils.checkNotNull(mood, "mood == null");
+      return this;
+    }
+
+    public Builder hungerInput(@NotNull Input<Double> hunger) {
+      this.hunger = Utils.checkNotNull(hunger, "hunger == null");
+      return this;
+    }
+
+    public Builder listOfFloatsInput(@NotNull Input<List<Double>> listOfFloats) {
+      this.listOfFloats = Utils.checkNotNull(listOfFloats, "listOfFloats == null");
+      return this;
+    }
+
     public SampleInput build() {
-      return new SampleInput(user);
+      return new SampleInput(user, age, mood, hunger, listOfFloats);
     }
   }
 }
