@@ -1,4 +1,4 @@
-// Signature format: 3.0
+// Signature format: 4.0
 package com.apollographql.apollo {
 
   public interface ApolloCall<T> {
@@ -98,6 +98,8 @@ package com.apollographql.apollo {
     method public String getClientName();
     method public String getClientVersion();
     method public okhttp3.Response intercept(okhttp3.Interceptor.Chain chain);
+    property public final String clientName;
+    property public final String clientVersion;
   }
 
   public interface ApolloMutationCall<T> extends com.apollographql.apollo.ApolloCall<T> {
@@ -381,7 +383,7 @@ package com.apollographql.apollo.subscription {
 
   public final class AppSyncOperationMessageSerializer implements com.apollographql.apollo.subscription.OperationMessageSerializer {
     ctor public AppSyncOperationMessageSerializer(java.util.Map<java.lang.String,?> authorization);
-    method public static String buildWebSocketUrl(String baseWebSocketUrl, java.util.Map<java.lang.String,?> authorization, java.util.Map<java.lang.String,?> payload = emptyMap());
+    method public static String buildWebSocketUrl(String baseWebSocketUrl, java.util.Map<java.lang.String,?> authorization, optional java.util.Map<java.lang.String,?> payload);
     method public static String buildWebSocketUrl(String baseWebSocketUrl, java.util.Map<java.lang.String,?> authorization);
     method @kotlin.jvm.Throws(exceptionClasses=IOException::class) public com.apollographql.apollo.subscription.OperationServerMessage readServerMessage(okio.BufferedSource source);
     method @kotlin.jvm.Throws(exceptionClasses=IOException::class) public void writeClientMessage(com.apollographql.apollo.subscription.OperationClientMessage message, okio.BufferedSink sink);
@@ -389,7 +391,7 @@ package com.apollographql.apollo.subscription {
   }
 
   public static final class AppSyncOperationMessageSerializer.Companion {
-    method public String buildWebSocketUrl(String baseWebSocketUrl, java.util.Map<java.lang.String,?> authorization, java.util.Map<java.lang.String,?> payload = emptyMap());
+    method public String buildWebSocketUrl(String baseWebSocketUrl, java.util.Map<java.lang.String,?> authorization, optional java.util.Map<java.lang.String,?> payload);
     method public String buildWebSocketUrl(String baseWebSocketUrl, java.util.Map<java.lang.String,?> authorization);
   }
 

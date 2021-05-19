@@ -1,4 +1,4 @@
-// Signature format: 3.0
+// Signature format: 4.0
 package com.apollographql.apollo.cache {
 
   public final class ApolloCacheHeaders {
@@ -40,6 +40,7 @@ package com.apollographql.apollo.cache.normalized {
     method public int hashCode();
     method @Deprecated public String key();
     method public String toString();
+    property public final String key;
     field public static final com.apollographql.apollo.cache.normalized.CacheKey.Companion Companion;
     field public static final com.apollographql.apollo.cache.normalized.CacheKey NO_KEY;
   }
@@ -71,6 +72,7 @@ package com.apollographql.apollo.cache.normalized {
     method @Deprecated public String key();
     method public String serialize();
     method public String toString();
+    property public final String key;
     field public static final com.apollographql.apollo.cache.normalized.CacheReference.Companion Companion;
   }
 
@@ -126,6 +128,7 @@ package com.apollographql.apollo.cache.normalized {
     method public com.apollographql.apollo.cache.normalized.Record.Builder toBuilder();
     method public String toString();
     property public final java.util.Map<java.lang.String,java.lang.Object> fields;
+    property public final String key;
     property public final java.util.UUID? mutationId;
     field public static final com.apollographql.apollo.cache.normalized.Record.Companion Companion;
   }
@@ -138,6 +141,7 @@ package com.apollographql.apollo.cache.normalized {
     method public String getKey();
     method @Deprecated public String key();
     method public com.apollographql.apollo.cache.normalized.Record.Builder mutationId(java.util.UUID? mutationId);
+    property public final String key;
   }
 
   public static final class Record.Companion {

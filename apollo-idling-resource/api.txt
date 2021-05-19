@@ -1,4 +1,4 @@
-// Signature format: 3.0
+// Signature format: 4.0
 package com.apollographql.apollo.test.espresso {
 
   public final class ApolloIdlingResource implements androidx.test.espresso.IdlingResource {

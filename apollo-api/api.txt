@@ -1,4 +1,4 @@
-// Signature format: 3.0
+// Signature format: 4.0
 package com.apollographql.apollo {
 
   public interface Logger {
@@ -19,7 +19,7 @@ package com.apollographql.apollo {
 
 package com.apollographql.apollo.api {
 
-  @kotlin.RequiresOptIn(level=RequiresOptIn.Level.WARNING) @kotlin.annotation.MustBeDocumented @kotlin.annotation.Retention(AnnotationRetention.BINARY) public @interface ApolloExperimental {
+  @kotlin.RequiresOptIn(level=kotlin.RequiresOptIn.Level) @kotlin.annotation.MustBeDocumented @kotlin.annotation.Retention(kotlin.annotation.AnnotationRetention) public @interface ApolloExperimental {
   }
 
   public final class BigDecimal {
@@ -146,6 +146,9 @@ package com.apollographql.apollo.api {
     method @Deprecated public java.util.List<com.apollographql.apollo.api.Error.Location> locations();
     method @Deprecated public String? message();
     method public String toString();
+    property public final java.util.Map<java.lang.String,java.lang.Object> customAttributes;
+    property public final java.util.List<com.apollographql.apollo.api.Error.Location> locations;
+    property public final String message;
   }
 
   public static final class Error.Location {
@@ -157,6 +160,8 @@ package com.apollographql.apollo.api {
     method public int hashCode();
     method @Deprecated public long line();
     method public String toString();
+    property public final long column;
+    property public final long line;
   }
 
   @com.apollographql.apollo.api.ApolloExperimental public interface ExecutionContext {
@@ -189,6 +194,8 @@ package com.apollographql.apollo.api {
     method public final String? getFilePath();
     method public final String getMimetype();
     method public void writeTo(okio.BufferedSink sink);
+    property public final String? filePath;
+    property public final String mimetype;
     field public static final com.apollographql.apollo.api.FileUpload.Companion Companion;
   }
 
@@ -264,8 +271,8 @@ package com.apollographql.apollo.api {
   }
 
   public final class OperationDataJsonSerializer {
-    method public static String serialize(com.apollographql.apollo.api.Operation.Data, String indent = "", com.apollographql.apollo.api.ScalarTypeAdapters scalarTypeAdapters = com.apollographql.apollo.api.ScalarTypeAdapters.DEFAULT);
-    method public static String serialize(com.apollographql.apollo.api.Operation.Data, String indent = "");
+    method public static String serialize(com.apollographql.apollo.api.Operation.Data, optional String indent, optional com.apollographql.apollo.api.ScalarTypeAdapters scalarTypeAdapters);
+    method public static String serialize(com.apollographql.apollo.api.Operation.Data, optional String indent);
     method public static String serialize(com.apollographql.apollo.api.Operation.Data);
   }
 
@@ -307,7 +314,14 @@ package com.apollographql.apollo.api {
     method @Deprecated public com.apollographql.apollo.api.Operation<?,?,?> operation();
     method public com.apollographql.apollo.api.Response.Builder<T> toBuilder();
     method public String toString();
+    property public final T? data;
+    property public final java.util.Set<java.lang.String> dependentKeys;
+    property public final java.util.List<com.apollographql.apollo.api.Error>? errors;
+    property public final com.apollographql.apollo.api.ExecutionContext executionContext;
+    property public final java.util.Map<java.lang.String,java.lang.Object> extensions;
     property @Deprecated public final boolean fromCache;
+    property public final boolean isFromCache;
+    property public final com.apollographql.apollo.api.Operation<?,?,?> operation;
     field public static final com.apollographql.apollo.api.Response.Companion Companion;
   }
 
@@ -352,6 +366,12 @@ package com.apollographql.apollo.api {
     method public final Object? resolveArgument(String name, com.apollographql.apollo.api.Operation.Variables variables);
     method @Deprecated public final String responseName();
     method @Deprecated public final com.apollographql.apollo.api.ResponseField.Type type();
+    property public final java.util.Map<java.lang.String,java.lang.Object> arguments;
+    property public final java.util.List<com.apollographql.apollo.api.ResponseField.Condition> conditions;
+    property public final String fieldName;
+    property public final boolean optional;
+    property public final String responseName;
+    property public final com.apollographql.apollo.api.ResponseField.Type type;
     field public static final com.apollographql.apollo.api.ResponseField.Companion Companion;
     field public static final String VARIABLE_NAME_KEY = "variableName";
   }
@@ -365,6 +385,8 @@ package com.apollographql.apollo.api {
     method public boolean isInverted();
     method @Deprecated public String variableName();
     property @Deprecated public final boolean inverted;
+    property public final boolean isInverted;
+    property public final String variableName;
   }
 
   public static final class ResponseField.Companion {
@@ -395,11 +417,10 @@ package com.apollographql.apollo.api {
   public static final class ResponseField.CustomTypeField extends com.apollographql.apollo.api.ResponseField {
     method public com.apollographql.apollo.api.ScalarType getScalarType();
     method @Deprecated public com.apollographql.apollo.api.ScalarType scalarType();
+    property public final com.apollographql.apollo.api.ScalarType scalarType;
   }
 
   public enum ResponseField.Type {
-    method public static com.apollographql.apollo.api.ResponseField.Type valueOf(String name);
-    method public static com.apollographql.apollo.api.ResponseField.Type[] values();
     enum_constant public static final com.apollographql.apollo.api.ResponseField.Type BOOLEAN;
     enum_constant public static final com.apollographql.apollo.api.ResponseField.Type CUSTOM;
     enum_constant public static final com.apollographql.apollo.api.ResponseField.Type DOUBLE;
@@ -418,6 +439,7 @@ package com.apollographql.apollo.api {
     method public java.util.List<java.lang.String> getTypeNames();
     method public int hashCode();
     method @Deprecated public java.util.List<java.lang.String> typeNames();
+    property public final java.util.List<java.lang.String> typeNames;
   }
 
   public interface ScalarType {
@@ -429,6 +451,7 @@ package com.apollographql.apollo.api {
     ctor public ScalarTypeAdapters(java.util.Map<com.apollographql.apollo.api.ScalarType,? extends com.apollographql.apollo.api.CustomTypeAdapter<?>> customAdapters);
     method public <T> com.apollographql.apollo.api.CustomTypeAdapter<T> adapterFor(com.apollographql.apollo.api.ScalarType scalarType);
     method public java.util.Map<com.apollographql.apollo.api.ScalarType,com.apollographql.apollo.api.CustomTypeAdapter<?>> getCustomAdapters();
+    property public final java.util.Map<com.apollographql.apollo.api.ScalarType,com.apollographql.apollo.api.CustomTypeAdapter<?>> customAdapters;
     field public static final com.apollographql.apollo.api.ScalarTypeAdapters.Companion Companion;
     field public static final com.apollographql.apollo.api.ScalarTypeAdapters DEFAULT;
   }
