@@ -8,17 +8,17 @@ package com.apollographql.apollo.cache.http {
     method public okhttp3.Interceptor! interceptor();
     method public okhttp3.Response! read(String);
     method public okhttp3.Response! read(String, boolean);
-    method public void remove(String);
+    method public void remove(String) throws java.io.IOException;
     method public void removeQuietly(String);
   }
 
   public final class DiskLruHttpCacheStore {
-    ctor public DiskLruHttpCacheStore(File, long);
-    ctor public DiskLruHttpCacheStore(com.apollographql.apollo.cache.http.internal.FileSystem, File, long);
-    method public HttpCacheRecord cacheRecord(String);
-    method public HttpCacheRecordEditor cacheRecordEditor(String);
-    method public void delete();
-    method public void remove(String);
+    ctor public DiskLruHttpCacheStore(java.io.File, long);
+    ctor public DiskLruHttpCacheStore(com.apollographql.apollo.cache.http.internal.FileSystem, java.io.File, long);
+    method public HttpCacheRecord cacheRecord(String) throws java.io.IOException;
+    method public HttpCacheRecordEditor cacheRecordEditor(String) throws java.io.IOException;
+    method public void delete() throws java.io.IOException;
+    method public void remove(String) throws java.io.IOException;
   }
 
 }
