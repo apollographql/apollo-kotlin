@@ -50,6 +50,7 @@ val pluginVersionTaskProvider = tasks.register("pluginVersion", GeneratePluginVe
 tasks.withType(KotlinCompile::class.java) {
   val versionFileProvider = pluginVersionTaskProvider.flatMap { it.outputFile }
   source(versionFileProvider)
+  dependsOn("generateGrammarSource")
 }
 
 tasks.withType<Checkstyle> {

@@ -1,4 +1,4 @@
-// Signature format: 3.0
+// Signature format: 4.0
 package com.apollographql.apollo.api.cache.http {
 
   public interface HttpCache {
@@ -6,7 +6,7 @@ package com.apollographql.apollo.api.cache.http {
     method public okhttp3.Interceptor interceptor();
     method public okhttp3.Response? read(String cacheKey);
     method public okhttp3.Response? read(String cacheKey, boolean expireAfterRead);
-    method @kotlin.jvm.Throws(exceptionClasses=IOException::class) public void remove(String cacheKey);
+    method @kotlin.jvm.Throws(exceptionClasses=IOException::class) public void remove(String cacheKey) throws java.io.IOException;
     method public void removeQuietly(String cacheKey);
     field public static final String CACHE_DO_NOT_STORE = "X-APOLLO-CACHE-DO-NOT-STORE";
     field public static final String CACHE_EXPIRE_AFTER_READ_HEADER = "X-APOLLO-EXPIRE-AFTER-READ";
@@ -39,13 +39,11 @@ package com.apollographql.apollo.api.cache.http {
   }
 
   public static final class HttpCachePolicy.ExpirePolicy extends com.apollographql.apollo.api.cache.http.HttpCachePolicy.Policy {
-    method public com.apollographql.apollo.api.cache.http.HttpCachePolicy.ExpirePolicy expireAfter(long expireTimeout, error.NonExistentClass expireTimeUnit);
+    method public com.apollographql.apollo.api.cache.http.HttpCachePolicy.ExpirePolicy expireAfter(long expireTimeout, java.util.concurrent.TimeUnit expireTimeUnit);
     method public com.apollographql.apollo.api.cache.http.HttpCachePolicy.ExpirePolicy expireAfterRead();
   }
 
   public enum HttpCachePolicy.FetchStrategy {
-    method public static com.apollographql.apollo.api.cache.http.HttpCachePolicy.FetchStrategy valueOf(String name);
-    method public static com.apollographql.apollo.api.cache.http.HttpCachePolicy.FetchStrategy[] values();
     enum_constant public static final com.apollographql.apollo.api.cache.http.HttpCachePolicy.FetchStrategy CACHE_FIRST;
     enum_constant public static final com.apollographql.apollo.api.cache.http.HttpCachePolicy.FetchStrategy CACHE_ONLY;
     enum_constant public static final com.apollographql.apollo.api.cache.http.HttpCachePolicy.FetchStrategy NETWORK_FIRST;
@@ -53,10 +51,10 @@ package com.apollographql.apollo.api.cache.http {
   }
 
   public static class HttpCachePolicy.Policy {
-    ctor public HttpCachePolicy.Policy(com.apollographql.apollo.api.cache.http.HttpCachePolicy.FetchStrategy fetchStrategy, long expireTimeout, error.NonExistentClass? expireTimeUnit, boolean expireAfterRead);
+    ctor public HttpCachePolicy.Policy(com.apollographql.apollo.api.cache.http.HttpCachePolicy.FetchStrategy fetchStrategy, long expireTimeout, java.util.concurrent.TimeUnit? expireTimeUnit, boolean expireAfterRead);
     method public final long expireTimeoutMs();
     field public final boolean expireAfterRead;
-    field public final error.NonExistentClass? expireTimeUnit;
+    field public final java.util.concurrent.TimeUnit? expireTimeUnit;
     field public final long expireTimeout;
     field public final com.apollographql.apollo.api.cache.http.HttpCachePolicy.FetchStrategy fetchStrategy;
   }
@@ -68,17 +66,17 @@ package com.apollographql.apollo.api.cache.http {
   }
 
   public interface HttpCacheRecordEditor {
-    method @kotlin.jvm.Throws(exceptionClasses=IOException::class) public void abort();
+    method @kotlin.jvm.Throws(exceptionClasses=IOException::class) public void abort() throws java.io.IOException;
     method public okio.Sink bodySink();
-    method @kotlin.jvm.Throws(exceptionClasses=IOException::class) public void commit();
+    method @kotlin.jvm.Throws(exceptionClasses=IOException::class) public void commit() throws java.io.IOException;
     method public okio.Sink headerSink();
   }
 
   public interface HttpCacheStore {
-    method @kotlin.jvm.Throws(exceptionClasses=IOException::class) public com.apollographql.apollo.api.cache.http.HttpCacheRecord? cacheRecord(String cacheKey);
-    method @kotlin.jvm.Throws(exceptionClasses=IOException::class) public com.apollographql.apollo.api.cache.http.HttpCacheRecordEditor? cacheRecordEditor(String cacheKey);
-    method @kotlin.jvm.Throws(exceptionClasses=IOException::class) public void delete();
-    method @kotlin.jvm.Throws(exceptionClasses=IOException::class) public void remove(String cacheKey);
+    method @kotlin.jvm.Throws(exceptionClasses=IOException::class) public com.apollographql.apollo.api.cache.http.HttpCacheRecord? cacheRecord(String cacheKey) throws java.io.IOException;
+    method @kotlin.jvm.Throws(exceptionClasses=IOException::class) public com.apollographql.apollo.api.cache.http.HttpCacheRecordEditor? cacheRecordEditor(String cacheKey) throws java.io.IOException;
+    method @kotlin.jvm.Throws(exceptionClasses=IOException::class) public void delete() throws java.io.IOException;
+    method @kotlin.jvm.Throws(exceptionClasses=IOException::class) public void remove(String cacheKey) throws java.io.IOException;
   }
 
 }

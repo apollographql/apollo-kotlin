@@ -32,7 +32,7 @@ object MainLoopDispatcher : CoroutineDispatcher(), Delay {
   }
 
   @InternalCoroutinesApi
-  override fun invokeOnTimeout(timeMillis: Long, block: Runnable): DisposableHandle {
+  override fun invokeOnTimeout(timeMillis: Long, block: Runnable, context: CoroutineContext): DisposableHandle {
     val handle = object : DisposableHandle {
       var disposed = false
         private set

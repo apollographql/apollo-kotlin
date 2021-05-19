@@ -1,4 +1,4 @@
-// Signature format: 3.0
+// Signature format: 4.0
 package com.apollographql.apollo.coroutines {
 
   public final class CoroutinesExtensionsKt {

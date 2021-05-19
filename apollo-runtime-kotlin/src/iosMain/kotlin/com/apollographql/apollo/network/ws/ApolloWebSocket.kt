@@ -46,7 +46,6 @@ interface WebSocketConnectionListener {
 
 typealias NSWebSocketFactory = (NSURLRequest, WebSocketConnectionListener) -> NSURLSessionWebSocketTask
 
-@ExperimentalCoroutinesApi
 actual class ApolloWebSocketFactory(
     private val serverUrl: NSURL,
     private val headers: Map<String, String>,
@@ -110,7 +109,6 @@ actual class ApolloWebSocketFactory(
   }
 }
 
-@ExperimentalCoroutinesApi
 private class WebSocketConnectionImpl(
     val webSocket: NSURLSessionWebSocketTask,
     val messageChannel: Channel<ByteString>
@@ -159,7 +157,6 @@ private class WebSocketConnectionImpl(
 }
 
 @Suppress("NAME_SHADOWING")
-@ExperimentalCoroutinesApi
 private fun NSError.dispatchOnMain(webSocketConnectionPtr: COpaquePointer) {
   if (NSThread.isMainThread) {
     dispatch(webSocketConnectionPtr)
@@ -179,7 +176,6 @@ private fun NSError.dispatchOnMain(webSocketConnectionPtr: COpaquePointer) {
   }
 }
 
-@ExperimentalCoroutinesApi
 private fun NSError.dispatch(webSocketConnectionPtr: COpaquePointer) {
   val webSocketConnectionRef = webSocketConnectionPtr.asStableRef<WebSocketConnectionImpl>()
   val webSocketConnection = webSocketConnectionRef.get()
@@ -195,7 +191,6 @@ private fun NSError.dispatch(webSocketConnectionPtr: COpaquePointer) {
 }
 
 @Suppress("NAME_SHADOWING")
-@ExperimentalCoroutinesApi
 private fun NSURLSessionWebSocketMessage.dispatchOnMainAndRequestNext(webSocketConnectionPtr: COpaquePointer) {
   if (NSThread.isMainThread) {
     dispatchAndRequestNext(webSocketConnectionPtr)
@@ -215,7 +210,6 @@ private fun NSURLSessionWebSocketMessage.dispatchOnMainAndRequestNext(webSocketC
   }
 }
 
-@ExperimentalCoroutinesApi
 private fun NSURLSessionWebSocketMessage.dispatchAndRequestNext(webSocketConnectionPtr: COpaquePointer) {
   val webSocketConnectionRef = webSocketConnectionPtr.asStableRef<WebSocketConnectionImpl>()
   val webSocketConnection = webSocketConnectionRef.get()

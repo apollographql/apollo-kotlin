@@ -27,10 +27,10 @@ extensions.findByType(BaseExtension::class.java)!!.apply {
   // Only in java samples. This is something to do with composite builds + Kotlin Multiplatform
   buildTypes {
     getByName("debug") {
-      matchingFallbacks = listOf("release")
+      matchingFallbacks.add("release")
     }
     getByName("release") {
-      matchingFallbacks = listOf("debug")
+      matchingFallbacks.add("debug")
     }
   }
 }

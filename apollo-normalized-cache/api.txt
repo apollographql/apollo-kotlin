@@ -1,4 +1,4 @@
-// Signature format: 3.0
+// Signature format: 4.0
 package com.apollographql.apollo.cache.normalized {
 
   public interface ApolloStore {
@@ -88,6 +88,12 @@ package com.apollographql.apollo.cache.normalized.lru {
     method public Long? getMaxSizeBytes();
     method @Deprecated public com.apollographql.apollo.api.internal.Optional<java.lang.Long> maxEntries();
     method @Deprecated public com.apollographql.apollo.api.internal.Optional<java.lang.Long> maxSizeBytes();
+    property public final Long? expireAfterAccess;
+    property public final error.NonExistentClass? expireAfterAccessTimeUnit;
+    property public final Long? expireAfterWrite;
+    property public final error.NonExistentClass? expireAfterWriteTimeUnit;
+    property public final Long? maxEntries;
+    property public final Long? maxSizeBytes;
     field public static final com.apollographql.apollo.cache.normalized.lru.EvictionPolicy.Companion Companion;
     field public static final com.apollographql.apollo.cache.normalized.lru.EvictionPolicy NO_EVICTION;
   }
