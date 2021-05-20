@@ -121,5 +121,14 @@ public interface ApolloQueryCall<T> extends ApolloCall<T> {
      * @return prepared {@link ApolloQueryCall} call to be executed at some point in the future
      */
     <D extends Query.Data, T, V extends Query.Variables> ApolloQueryCall<T> query(@NotNull Query<D, T, V> query);
+
+    /**
+     * Creates and prepares a new {@link ApolloQueryCall} call that will be sent to the server as part of a batched
+     * HTTP call. Requires enabling batching in {@link com.apollographql.apollo.internal.batch.BatchConfig}.
+     *
+     * @param query the operation which needs to be performed
+     * @return prepared {@link ApolloQueryCall} call to be executed at some point in the future
+     */
+    <D extends Query.Data, T, V extends Query.Variables> ApolloQueryCall<T> batchQuery(@NotNull Query<D, T, V> query);
   }
 }
