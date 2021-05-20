@@ -4,7 +4,6 @@ import kotlinx.cinterop.COpaquePointer
 import kotlinx.cinterop.StableRef
 import kotlinx.cinterop.asStableRef
 import kotlinx.cinterop.staticCFunction
-import kotlinx.coroutines.ExperimentalCoroutinesApi
 import platform.Foundation.NSThread
 import platform.darwin.dispatch_async_f
 import platform.darwin.dispatch_get_main_queue
@@ -17,9 +16,8 @@ import kotlin.native.concurrent.freeze
  * that the Apple coroutines run in the main thread and "tunnels" the continuation through
  * an opaquePointer without freezing so that it can be resumed later on
  *
- * @param a [Continuation] opaque pointer obtained with `StableRef.create(continuation).asCPointer()`
+ * @param continuationPtr a [Continuation] opaque pointer obtained with `StableRef.create(continuation).asCPointer()`
  */
-@OptIn(ExperimentalCoroutinesApi::class)
 internal fun <R> Result<R>.dispatchOnMain(continuationPtr: COpaquePointer) {
   if (NSThread.isMainThread()) {
     dispatch(continuationPtr)
