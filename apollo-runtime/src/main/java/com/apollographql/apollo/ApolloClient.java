@@ -30,7 +30,9 @@ import com.apollographql.apollo.internal.RealApolloSubscriptionCall;
 import com.apollographql.apollo.internal.RealApolloStore;
 import com.apollographql.apollo.cache.normalized.internal.ResponseNormalizer;
 import com.apollographql.apollo.internal.batch.BatchConfig;
+import com.apollographql.apollo.internal.batch.BatchHttpCallFactoryImpl;
 import com.apollographql.apollo.internal.batch.BatchPoller;
+import com.apollographql.apollo.internal.batch.PeriodicJobSchedulerImpl;
 import com.apollographql.apollo.internal.subscription.NoOpSubscriptionManager;
 import com.apollographql.apollo.internal.subscription.RealSubscriptionManager;
 import com.apollographql.apollo.internal.subscription.SubscriptionManager;
@@ -146,8 +148,9 @@ public final class ApolloClient implements ApolloQueryCall.Factory, ApolloMutati
     this.useHttpGetMethodForPersistedQueries = useHttpGetMethodForPersistedQueries;
     this.writeToNormalizedCacheAsynchronously = writeToNormalizedCacheAsynchronously;
     this.batchConfig = batchConfig;
-    this.batchPoller = batchConfig.getBatchingEnabled() ? new BatchPoller(serverUrl, httpCallFactory, scalarTypeAdapters,
-        logger, batchConfig, dispatcher, Executors.newSingleThreadScheduledExecutor()) : null;
+    this.batchPoller = batchConfig.getBatchingEnabled() ? new BatchPoller(batchConfig, dispatcher,
+            new BatchHttpCallFactoryImpl(serverUrl, httpCallFactory, scalarTypeAdapters), logger,
+            new PeriodicJobSchedulerImpl()) : null;
   }
 
   @Override
