@@ -419,7 +419,11 @@ public final class RealApolloCall<T> implements ApolloQueryCall<T>, ApolloMutati
     }
     interceptors.add(new ApolloParseInterceptor(httpCache, apolloStore.networkResponseNormalizer(), responseFieldMapper,
         scalarTypeAdapters, logger));
+
     if (batchPoller != null) {
+      if (useHttpGetMethodForQueries || useHttpGetMethodForPersistedQueries) {
+        throw new ApolloException("Batching is not supported when using HTTP Get method queries");
+      }
       interceptors.add(new ApolloBatchingInterceptor(batchPoller));
     } else {
       interceptors.add(new ApolloServerInterceptor(serverUrl, httpCallFactory, httpCachePolicy, false,

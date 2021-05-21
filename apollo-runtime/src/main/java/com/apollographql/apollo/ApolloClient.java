@@ -422,7 +422,7 @@ public final class ApolloClient implements ApolloQueryCall.Factory, ApolloMutati
         .useHttpGetMethodForQueries(useHttpGetMethodForQueries)
         .useHttpGetMethodForPersistedQueries(useHttpGetMethodForPersistedQueries)
         .writeToNormalizedCacheAsynchronously(writeToNormalizedCacheAsynchronously)
-        .batchPoller(batchConfig.getBatchingEnabled() && canBeBatched ? batchPoller : null)
+        .batchPoller(canBeBatched ? batchPoller : null)
         .build();
   }
 

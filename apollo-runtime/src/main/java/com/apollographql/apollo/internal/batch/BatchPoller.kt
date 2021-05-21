@@ -35,7 +35,7 @@ class BatchPoller(
   fun start() {
     stop()
     pollDisposable = scheduledExecutorService.scheduleAtFixedRate({
-      maybeExecuteBatchQuery(queryQueue)
+      maybeExecuteBatchQuery()
     }, 0, batchConfig.batchIntervalMs, TimeUnit.MILLISECONDS)
   }
 
@@ -48,26 +48,35 @@ class BatchPoller(
     if (pollDisposable == null) {
       throw ApolloException("Trying to batch queries without calling ApolloClient.startBatchPoller() first")
     }
-    queryQueue.add(query)
-    logger.d("Enqueued Query: ${query.request.operation.name().name()} for batching")
+    val newQueueSize = synchronized(this) {
+      queryQueue.add(query)
+      logger.d("Enqueued Query: ${query.request.operation.name().name()} for batching")
+      queryQueue.size
+    }
+    // When the amount of queries in the queue reaches the max batch size, trigger the HTTP request without waiting for the batch interval
+    if (newQueueSize >= batchConfig.maxBatchSize) {
+      maybeExecuteBatchQuery()
+    }
   }
 
   fun removeFromQueue(query: QueryToBatch) {
-    queryQueue.remove(query)
+    synchronized(this) {
+      queryQueue.remove(query)
+    }
   }
 
-  private fun maybeExecuteBatchQuery(queryQueue: Queue<QueryToBatch>) {
-    if (queryQueue.isEmpty()) {
-      return
-    }
-    // copy and clear the current queue
-    val queryList = ArrayList(queryQueue)
-    queryQueue.clear()
-    // split into batches
-    val batches = queryList.chunked(batchConfig.maxBatchSize)
-    logger.d("Executing ${queryList.size} Queries in ${batches.size} Batch(es)")
-    for (batch in batches) {
-      dispatcher.execute { createBatchHttpCall(batch).execute() }
+  private fun maybeExecuteBatchQuery() {
+    synchronized(this) {
+      if (queryQueue.isEmpty()) return
+      // copy and clear the current queue
+      val queryList = ArrayList(queryQueue)
+      queryQueue.clear()
+      // split into batches
+      val batches = queryList.chunked(batchConfig.maxBatchSize)
+      logger.d("Executing ${queryList.size} Queries in ${batches.size} Batch(es)")
+      for (batch in batches) {
+        dispatcher.execute { createBatchHttpCall(batch).execute() }
+      }
     }
   }
 

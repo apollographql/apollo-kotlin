@@ -55,7 +55,7 @@ class BatchHttpCall(
         ApolloServerInterceptor.MEDIA_TYPE,
         createBatchRequestJsonBody(queryRequestBodyList)
     )
-    // TODO assumes all queries are POST (does GET even make sense for batch HTTP calls?)
+    // Batching is only supported for POST Calls, and doesn't support HTTP cache
     val requestBuilder = Request.Builder()
         .url(serverUrl)
         .header(ApolloServerInterceptor.HEADER_ACCEPT_TYPE, ApolloServerInterceptor.ACCEPT_TYPE)
@@ -67,8 +67,6 @@ class BatchHttpCall(
       val value = firstRequest.requestHeaders.headerValue(header)
       requestBuilder.header(header, value)
     }
-
-    // TODO add http cache headers (does it make sense for batch HTTP calls?)
 
     // execute the batch http call
     val httpCall = httpCallFactory.newCall(requestBuilder.build())
