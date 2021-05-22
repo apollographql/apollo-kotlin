@@ -1,4 +1,4 @@
-package com.apollographql.apollo3.graphql.ast
+package com.apollographql.apollo3.ast
 
 /**
  * @param fragmentDefinitions: all the fragments in the current compilation unit. This is required to check the type conditions as well as fields merging

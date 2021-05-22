@@ -1,7 +1,7 @@
 package com.apollographql.apollo3.compiler
 
-import com.apollographql.apollo3.graphql.ast.possibleTypes
-import com.apollographql.apollo3.graphql.ast.toSchema
+import com.apollographql.apollo3.ast.possibleTypes
+import com.apollographql.apollo3.ast.toSchema
 import com.google.common.truth.Truth.assertThat
 import org.junit.Test
 import java.io.File

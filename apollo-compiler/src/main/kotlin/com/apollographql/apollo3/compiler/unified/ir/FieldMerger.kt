@@ -1,8 +1,8 @@
 package com.apollographql.apollo3.compiler.unified.ir
 
 import com.apollographql.apollo3.api.BooleanExpression
-import com.apollographql.apollo3.graphql.ast.GQLField
-import com.apollographql.apollo3.graphql.ast.GQLSelection
+import com.apollographql.apollo3.ast.GQLField
+import com.apollographql.apollo3.ast.GQLSelection
 
 interface FieldMerger {
   fun merge(fields: List<FieldWithParent>): List<MergedField>

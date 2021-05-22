@@ -1,12 +1,12 @@
 package com.apollographql.apollo3.compiler
 
-import com.apollographql.apollo3.graphql.ast.GQLDocument
-import com.apollographql.apollo3.graphql.ast.GQLFragmentDefinition
-import com.apollographql.apollo3.graphql.ast.GQLOperationDefinition
-import com.apollographql.apollo3.graphql.ast.toExecutableGQLDefinitions
-import com.apollographql.apollo3.graphql.ast.toSchema
-import com.apollographql.apollo3.graphql.ast.toUtf8
-import com.apollographql.apollo3.graphql.ast.withTypenameWhenNeeded
+import com.apollographql.apollo3.ast.GQLDocument
+import com.apollographql.apollo3.ast.GQLFragmentDefinition
+import com.apollographql.apollo3.ast.GQLOperationDefinition
+import com.apollographql.apollo3.ast.toExecutableGQLDefinitions
+import com.apollographql.apollo3.ast.toSchema
+import com.apollographql.apollo3.ast.toUtf8
+import com.apollographql.apollo3.ast.withTypenameWhenNeeded
 import com.google.common.truth.Truth.assertThat
 import org.junit.Test
 import org.junit.runner.RunWith

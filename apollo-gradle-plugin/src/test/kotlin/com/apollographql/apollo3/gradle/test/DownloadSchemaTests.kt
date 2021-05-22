@@ -95,7 +95,16 @@ class DownloadSchemaTests {
   fun `manually downloading a schema is working`() {
 
     withSimpleProject(apolloConfiguration = "") { dir ->
-      val content = "schema should be here"
+      val content = """
+        {
+          "__schema": {
+            "queryType": {
+              "name": "foo"
+            },
+            "types": []
+          }
+        }
+      """.trimIndent()
       val mockResponse = MockResponse().setBody(content)
       mockServer.enqueue(mockResponse)
 

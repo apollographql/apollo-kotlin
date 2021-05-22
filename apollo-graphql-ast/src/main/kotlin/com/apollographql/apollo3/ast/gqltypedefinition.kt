@@ -1,4 +1,4 @@
-package com.apollographql.apollo3.graphql.ast
+package com.apollographql.apollo3.ast
 
 // 5.5.2.3 Fragment spread is possible
 internal fun GQLTypeDefinition.sharesPossibleTypesWith(other: GQLTypeDefinition, typeDefinitions: Map<String, GQLTypeDefinition>): Boolean {

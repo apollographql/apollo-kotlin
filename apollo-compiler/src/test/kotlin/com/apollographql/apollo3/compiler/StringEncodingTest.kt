@@ -1,6 +1,6 @@
 package com.apollographql.apollo3.compiler
 
-import com.apollographql.apollo3.graphql.ast.encodeToGraphQLSingleQuoted
+import com.apollographql.apollo3.ast.encodeToGraphQLSingleQuoted
 import com.google.common.truth.Truth
 import org.junit.Test
 

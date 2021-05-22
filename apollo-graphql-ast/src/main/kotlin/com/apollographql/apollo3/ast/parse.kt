@@ -3,7 +3,7 @@
  *
  * Entry point for parsing GraphQL strings into a GraphQL AST based on [GQLNode](s)
  */
-package com.apollographql.apollo3.graphql.ast
+package com.apollographql.apollo3.ast
 
 import com.apollographql.apollo3.compiler.parser.antlr.GraphQLLexer
 import com.apollographql.apollo3.compiler.parser.antlr.GraphQLParser as AntlrGraphQLParser

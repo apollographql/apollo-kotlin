@@ -1,4 +1,4 @@
-package com.apollographql.apollo3.graphql.ast
+package com.apollographql.apollo3.ast
 
 fun String.decodeAsGraphQLSingleQuoted(): String {
   val writer = StringBuilder(length)

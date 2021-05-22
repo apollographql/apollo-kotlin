@@ -8,7 +8,7 @@ import com.apollographql.apollo3.compiler.introspection.toIntrospectionSchema
 import com.apollographql.apollo3.compiler.operationoutput.OperationDescriptor
 import com.apollographql.apollo3.compiler.unified.ir.IrBuilder
 import com.apollographql.apollo3.compiler.unified.ir.dumpTo
-import com.apollographql.apollo3.graphql.ast.*
+import com.apollographql.apollo3.ast.*
 import java.io.File
 
 class GraphQLCompiler {

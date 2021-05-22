@@ -1,7 +1,7 @@
 package com.apollographql.apollo3.compiler
 
-import com.apollographql.apollo3.graphql.ast.toSchema
-import com.apollographql.apollo3.graphql.ast.toUtf8
+import com.apollographql.apollo3.ast.toSchema
+import com.apollographql.apollo3.ast.toUtf8
 import org.junit.Assert
 import org.junit.Test
 import java.io.File

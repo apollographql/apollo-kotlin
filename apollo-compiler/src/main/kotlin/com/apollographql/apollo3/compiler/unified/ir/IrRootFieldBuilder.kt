@@ -1,14 +1,14 @@
 package com.apollographql.apollo3.compiler.unified.ir
 
 import com.apollographql.apollo3.api.BooleanExpression
-import com.apollographql.apollo3.graphql.ast.GQLField
-import com.apollographql.apollo3.graphql.ast.GQLFragmentDefinition
-import com.apollographql.apollo3.graphql.ast.GQLFragmentSpread
-import com.apollographql.apollo3.graphql.ast.GQLInlineFragment
-import com.apollographql.apollo3.graphql.ast.GQLSelection
-import com.apollographql.apollo3.graphql.ast.GQLTypeDefinition
-import com.apollographql.apollo3.graphql.ast.Schema
-import com.apollographql.apollo3.graphql.ast.possibleTypes
+import com.apollographql.apollo3.ast.GQLField
+import com.apollographql.apollo3.ast.GQLFragmentDefinition
+import com.apollographql.apollo3.ast.GQLFragmentSpread
+import com.apollographql.apollo3.ast.GQLInlineFragment
+import com.apollographql.apollo3.ast.GQLSelection
+import com.apollographql.apollo3.ast.GQLTypeDefinition
+import com.apollographql.apollo3.ast.Schema
+import com.apollographql.apollo3.ast.possibleTypes
 
 /**
  * For a list of selections collect all the typeConditions.
