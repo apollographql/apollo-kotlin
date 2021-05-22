@@ -13,7 +13,7 @@ fun parseRequestLine(line: String): Triple<String, String, String> {
     "Cannot match request line: $line"
   }
 
-  val method = match.groupValues[1].toUpperCase()
+  val method = match.groupValues[1].uppercase()
   check (method in listOf("GET", "POST", "PUT", "DELETE", "HEAD", "OPTIONS", "PATCH")) {
     "Unkown method $method"
   }
@@ -54,7 +54,7 @@ fun readRequest(source: BufferedSource): MockRecordedRequest {
   }
 
   val contentLength = headers["Content-Length"]?.toLongOrNull() ?: 0
-  val transferEncoding = headers["Transfer-Encoding"]?.toLowerCase()
+  val transferEncoding = headers["Transfer-Encoding"]?.lowercase()
   check(transferEncoding == null || transferEncoding == "identity") {
     "Transfer-Encoding $transferEncoding is not supported"
   }

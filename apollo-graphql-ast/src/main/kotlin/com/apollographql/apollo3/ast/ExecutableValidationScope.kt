@@ -1,5 +1,7 @@
 package com.apollographql.apollo3.ast
 
+import java.util.Locale
+
 /**
  * @param fragmentDefinitions: all the fragments in the current compilation unit. This is required to check the type conditions as well as fields merging
  */
@@ -54,9 +56,9 @@ internal class ExecutableValidationScope(private val schema: Schema, private val
     name.forEach {
       builder.append(if (!isDecapitalized && it.isLetter()) {
         isDecapitalized = true
-        it.toLowerCase()
+        it.toString().toLowerCase(Locale.US)
       } else {
-        it
+        it.toString()
       })
     }
     return builder.toString()

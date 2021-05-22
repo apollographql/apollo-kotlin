@@ -10,6 +10,7 @@ import org.gradle.plugins.signing.Sign
 import org.gradle.plugins.signing.SigningExtension
 import kotlinx.coroutines.runBlocking
 import org.gradle.api.plugins.ExtraPropertiesExtension
+import java.util.Locale
 
 fun Project.configurePublishing() {
   apply {
@@ -88,7 +89,7 @@ private fun Project.configurePublishingDelayed() {
             mavenPublication.artifact(emptyJavadocJarTaskProvider.get())
             // Only add sources for the main publication
             // XXX: is there a nicer way to do this?
-            if (!mavenPublication.name.toLowerCase().contains("marker")) {
+            if (!mavenPublication.name.toLowerCase(Locale.US).contains("marker")) {
               mavenPublication.artifact(createJavaSourcesTask())
             }
           }
