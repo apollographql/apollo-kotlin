@@ -2,11 +2,11 @@ package com.apollographql.apollo3.gradle.internal
 
 import com.apollographql.apollo3.compiler.introspection.IntrospectionSchema
 import com.apollographql.apollo3.compiler.introspection.toGQLDocument
-import com.apollographql.apollo3.compiler.introspection.toGraphQLIntrospectionSchema
+import com.apollographql.apollo3.compiler.introspection.toIntrospectionSchema
 import com.apollographql.apollo3.compiler.introspection.toIntrospectionSchema
 import com.apollographql.apollo3.compiler.toJson
 import com.apollographql.apollo3.graphql.ast.GQLDocument
-import com.apollographql.apollo3.graphql.ast.parseAsGraphQLDocument
+import com.apollographql.apollo3.graphql.ast.parseAsGQLDocument
 import com.apollographql.apollo3.graphql.ast.toSchema
 import com.apollographql.apollo3.graphql.ast.toUtf8
 import org.gradle.api.DefaultTask
@@ -96,7 +96,7 @@ abstract class ApolloDownloadSchemaTask : DefaultTask() {
         introspectionSchema = SchemaDownloader.downloadIntrospection(
             endpoint = endpointUrl,
             headers = headers,
-        ).toGraphQLIntrospectionSchema()
+        ).toIntrospectionSchema()
       }
       graph != null -> {
         check (key != null) {
@@ -107,7 +107,7 @@ abstract class ApolloDownloadSchemaTask : DefaultTask() {
             key = key,
             variant = graphVariant ?: "current",
             endpoint = registryUrl.orNull ?: "https://graphql.api.apollographql.com/api/graphql"
-        ).parseAsGraphQLDocument().getOrThrow()
+        ).parseAsGQLDocument().getOrThrow()
       }
       else -> {
         throw IllegalArgumentException("ApolloGraphQL: either --endpoint or --graph is required")

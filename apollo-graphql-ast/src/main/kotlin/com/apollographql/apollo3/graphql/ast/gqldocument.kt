@@ -64,7 +64,7 @@ private fun definitionsFromResources(name: String): List<GQLDefinition> {
   return GQLDocument::class.java.getResourceAsStream("/$name")!!
       .source()
       .buffer()
-      .parseAsGraphQLDocument()
+      .parseAsGQLDocument()
       .getOrThrow()
       .definitions
 }

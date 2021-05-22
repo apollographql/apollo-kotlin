@@ -1,6 +1,6 @@
 package com.apollographql.apollo3.compiler
 
-import com.apollographql.apollo3.compiler.introspection.toGraphQLIntrospectionSchema
+import com.apollographql.apollo3.compiler.introspection.toIntrospectionSchema
 import com.apollographql.apollo3.compiler.introspection.toSchema
 import com.apollographql.apollo3.graphql.ast.Schema
 import com.apollographql.apollo3.graphql.ast.toGraphQLSchema
@@ -72,7 +72,7 @@ internal object TestUtils {
       return schema
     }
     return File(parent, "$nameWithoutExtension.json")
-        .takeIf { it.exists() }?.toGraphQLIntrospectionSchema()?.toSchema()
+        .takeIf { it.exists() }?.toIntrospectionSchema()?.toSchema()
   }
 
   /**

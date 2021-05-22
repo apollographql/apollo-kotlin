@@ -4,7 +4,7 @@ import com.apollographql.apollo3.compiler.TestUtils.checkExpected
 import com.apollographql.apollo3.compiler.TestUtils.testParametersForGraphQLFilesIn
 import com.apollographql.apollo3.graphql.ast.Issue
 import com.apollographql.apollo3.graphql.ast.ParseResult
-import com.apollographql.apollo3.graphql.ast.parseAsGraphQLDocument
+import com.apollographql.apollo3.graphql.ast.parseAsGQLDocument
 import com.apollographql.apollo3.graphql.ast.validateAsOperations
 import com.apollographql.apollo3.graphql.ast.validateAsSchema
 import org.junit.Test
@@ -25,14 +25,14 @@ class ValidationTest(name: String, private val graphQLFile: File) {
   @Test
   fun testValidation() = checkExpected(graphQLFile) { schema ->
     val issues = if (graphQLFile.parentFile.name == "operation") {
-      val parseResult = graphQLFile.parseAsGraphQLDocument()
+      val parseResult = graphQLFile.parseAsGQLDocument()
 
       when (parseResult) {
         is ParseResult.Error -> parseResult.issues
         is ParseResult.Success -> parseResult.value.validateAsOperations(schema!!)
       }
     } else {
-      val parseResult = graphQLFile.parseAsGraphQLDocument()
+      val parseResult = graphQLFile.parseAsGQLDocument()
 
       when (parseResult) {
         is ParseResult.Error -> parseResult.issues

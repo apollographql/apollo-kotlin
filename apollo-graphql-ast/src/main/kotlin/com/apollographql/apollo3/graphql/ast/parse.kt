@@ -66,7 +66,7 @@ sealed class ParseResult<out V:Any> {
  *
  * @return a [ParseResult] with either a non-null [GQLDocument] or a list of issues.
  */
-fun BufferedSource.parseAsGraphQLDocument(filePath: String? = null): ParseResult<GQLDocument> = use {
+fun BufferedSource.parseAsGQLDocument(filePath: String? = null): ParseResult<GQLDocument> = use {
   return antlrParse(it, filePath) { parser ->
     parser.document()
   }.map { documentContext ->
@@ -75,20 +75,37 @@ fun BufferedSource.parseAsGraphQLDocument(filePath: String? = null): ParseResult
 }
 
 /**
- * See [parseAsGraphQLDocument]
+ * See [parseAsGQLDocument]
  */
-fun File.parseAsGraphQLDocument() = source().buffer().parseAsGraphQLDocument(absolutePath)
+fun File.parseAsGQLDocument() = source().buffer().parseAsGQLDocument(absolutePath)
 
 /**
- * See [parseAsGraphQLDocument]
+ * See [parseAsGQLDocument]
  */
-fun String.parseAsGraphQLDocument() = byteInputStream().source().buffer().parseAsGraphQLDocument()
+fun String.parseAsGQLDocument() = byteInputStream().source().buffer().parseAsGQLDocument()
 
+/**
+ * Parses the [BufferedSource] into a [GQLDocument]
+ *
+ * Throw if the document syntax is not correct but doesn't do additional validation
+ *
+ */
+fun BufferedSource.toGQLDocument() = parseAsGQLDocument().getOrThrow()
+
+/**
+ * See [toGQLDocument]
+ */
+fun File.toGQLDocument() = parseAsGQLDocument().getOrThrow()
+
+/**
+ * See [toGQLDocument]
+ */
+fun String.toGQLDocument() = parseAsGQLDocument().getOrThrow()
 
 /**
  * Parses a GraphQL value to a [GQLValue], validating the grammar but not the contents of the value.
  */
-fun BufferedSource.parseAsGraphQLValue(filePath: String? = null): ParseResult<GQLValue> = use {
+fun BufferedSource.parseAsGQLValue(filePath: String? = null): ParseResult<GQLValue> = use {
   return antlrParse(it, filePath) { parser ->
     parser.value()
   }.map { valueContext ->
@@ -97,14 +114,14 @@ fun BufferedSource.parseAsGraphQLValue(filePath: String? = null): ParseResult<GQ
 }
 
 /**
- * See [parseAsGraphQLValue]
+ * See [parseAsGQLValue]
  */
-fun File.parseAsGraphQLValue() = source().buffer().parseAsGraphQLValue(absolutePath)
+fun File.parseAsGQLValue() = source().buffer().parseAsGQLValue(absolutePath)
 
 /**
- * See [parseAsGraphQLValue]
+ * See [parseAsGQLValue]
  */
-fun String.parseAsGraphQLValue() = byteInputStream().source().buffer().parseAsGraphQLValue()
+fun String.parseAsGQLValue() = byteInputStream().source().buffer().parseAsGQLValue()
 
 /**
  * Plain parsing, without validation or adding the builtin types

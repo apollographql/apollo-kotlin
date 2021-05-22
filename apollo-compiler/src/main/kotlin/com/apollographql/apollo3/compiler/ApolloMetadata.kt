@@ -2,7 +2,7 @@ package com.apollographql.apollo3.compiler
 
 import com.apollographql.apollo3.graphql.ast.GQLFragmentDefinition
 import com.apollographql.apollo3.graphql.ast.Schema
-import com.apollographql.apollo3.graphql.ast.parseAsGraphQLDocument
+import com.apollographql.apollo3.graphql.ast.parseAsGQLDocument
 import com.apollographql.apollo3.graphql.ast.toGraphQLSchema
 import com.apollographql.apollo3.graphql.ast.toUtf8
 import com.squareup.moshi.JsonAdapter
@@ -63,7 +63,7 @@ data class ApolloMetadata(
       val gqlFragmentJsonAdapter = object : JsonAdapter<GQLFragmentDefinition>() {
         override fun fromJson(reader: JsonReader): GQLFragmentDefinition {
           val string = reader.nextString()
-          return string.parseAsGraphQLDocument().getOrThrow().definitions.first() as GQLFragmentDefinition
+          return string.parseAsGQLDocument().getOrThrow().definitions.first() as GQLFragmentDefinition
         }
 
         override fun toJson(writer: JsonWriter, fragmentDefinition: GQLFragmentDefinition?) {

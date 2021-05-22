@@ -12,10 +12,10 @@ import java.io.File
  *
  * Throws if the input is not a valid schema.
  *
- * For more fine grained control, look at [parseAsGraphQLDocument] and [validateAsSchema]
+ * For more fine grained control, look at [parseAsGQLDocument] and [validateAsSchema]
  */
 fun BufferedSource.toGraphQLSchema(filePath: String? = null): Schema {
-  val document = parseAsGraphQLDocument(filePath)
+  val document = parseAsGQLDocument(filePath)
       .getOrThrow()
 
   document.validateAsSchema().checkNoErrors()
@@ -38,13 +38,13 @@ fun String.toGraphQLSchema() = byteInputStream().source().buffer().toGraphQLSche
  *
  * throws if the input is not a valid executable document
  *
- * For more fine grained control, look at [parseAsGraphQLDocument] and [validateAsSchema]
+ * For more fine grained control, look at [parseAsGQLDocument] and [validateAsSchema]
  *
  * @param schema a [Schema] used to validate the operations and fragments
  * @param filePath an optional path that will be displayed in errors for better troubleshooting
  */
 fun BufferedSource.toGraphQLExecutableDefinitions(schema: Schema, filePath: String? = null): List<GQLDefinition> {
-  val document = parseAsGraphQLDocument(filePath)
+  val document = parseAsGQLDocument(filePath)
       .getOrThrow()
 
   document.validateAsOperations(schema)

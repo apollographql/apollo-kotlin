@@ -29,7 +29,7 @@ import com.apollographql.apollo3.graphql.ast.GQLType
 import com.apollographql.apollo3.graphql.ast.GQLUnionTypeDefinition
 import com.apollographql.apollo3.graphql.ast.GQLValue
 import com.apollographql.apollo3.graphql.ast.Schema
-import com.apollographql.apollo3.graphql.ast.parseAsGraphQLValue
+import com.apollographql.apollo3.graphql.ast.parseAsGQLValue
 import com.apollographql.apollo3.graphql.ast.toSchema
 import com.apollographql.apollo3.graphql.ast.withBuiltinDefinitions
 import com.apollographql.apollo3.graphql.ast.withoutBuiltinDefinitions
@@ -128,7 +128,7 @@ private class GQLDocumentBuilder(private val introspectionSchema: IntrospectionS
     }
     try {
       if (this is String) {
-        return parseAsGraphQLValue().getOrThrow()
+        return parseAsGQLValue().getOrThrow()
       }
     } catch (e: Exception) {
       println("Wrongly encoded default value: $this: ${e.message}")
@@ -252,7 +252,7 @@ private class GQLDocumentBuilder(private val introspectionSchema: IntrospectionS
 }
 
 /**
- * Transforms the [IntrospectionSchema] into a [GQLDocument]
+ * Parses the [IntrospectionSchema] into a [GQLDocument]
  *
  * The returned [GQLDocument] does not contain any of the builtin definitions (scalars, directives, introspection)
  *
