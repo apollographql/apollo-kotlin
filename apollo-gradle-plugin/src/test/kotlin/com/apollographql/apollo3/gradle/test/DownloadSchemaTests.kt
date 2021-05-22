@@ -11,9 +11,21 @@ import org.junit.Test
 import java.io.File
 
 class DownloadSchemaTests {
-  val mockServer = MockWebServer()
+  private val mockServer = MockWebServer()
+  private val schemaString1 = """
+        {
+          "__schema": {
+            "queryType": {
+              "name": "foo"
+            },
+            "types": []
+          }
+        }
+      """.trimIndent()
 
-  val apolloConfiguration = """
+  private val schemaString2 = schemaString1.replace("foo", "bar")
+
+  private val apolloConfiguration = """
       apollo {
         service("mock") {
           schemaFile = file("src/main/graphql/com/example/schema.json")
@@ -28,13 +40,12 @@ class DownloadSchemaTests {
   fun `schema is downloaded correctly`() {
 
     withSimpleProject(apolloConfiguration = apolloConfiguration) { dir ->
-      val content = "schema should be here"
-      val mockResponse = MockResponse().setBody(content)
+      val mockResponse = MockResponse().setBody(schemaString1)
       mockServer.enqueue(mockResponse)
 
       TestUtils.executeTask("downloadMockApolloSchemaFromIntrospection", dir)
 
-      assertEquals(content, File(dir, "src/main/graphql/com/example/schema.json").readText())
+      assertEquals(schemaString1, File(dir, "src/main/graphql/com/example/schema.json").readText())
     }
   }
 
@@ -42,8 +53,7 @@ class DownloadSchemaTests {
   fun `download schema is never up-to-date`() {
 
     withSimpleProject(apolloConfiguration = apolloConfiguration) { dir ->
-      val content = "schema should be here"
-      val mockResponse = MockResponse().setBody(content)
+      val mockResponse = MockResponse().setBody(schemaString1)
       mockServer.enqueue(mockResponse)
 
       var result = TestUtils.executeTask("downloadMockApolloSchemaFromIntrospection", dir)
@@ -55,7 +65,7 @@ class DownloadSchemaTests {
       result = TestUtils.executeTask("downloadMockApolloSchemaFromIntrospection", dir)
       assertEquals(TaskOutcome.SUCCESS, result.task(":downloadMockApolloSchemaFromIntrospection")?.outcome)
 
-      assertEquals(content, File(dir, "src/main/graphql/com/example/schema.json").readText())
+      assertEquals(schemaString1, File(dir, "src/main/graphql/com/example/schema.json").readText())
     }
   }
 
@@ -77,17 +87,15 @@ class DownloadSchemaTests {
 
       val schemaFile = File(dir, "src/main/graphql/com/example/schema.json")
 
-      val content1 = "schema1"
-      mockServer.enqueue(MockResponse().setBody(content1))
+      mockServer.enqueue(MockResponse().setBody(schemaString1))
 
       TestUtils.executeTask("downloadMockApolloSchemaFromIntrospection", dir, "--build-cache")
-      assertEquals(content1, schemaFile.readText())
+      assertEquals(schemaString1, schemaFile.readText())
 
-      val content2 = "schema2"
-      mockServer.enqueue(MockResponse().setBody(content2))
+      mockServer.enqueue(MockResponse().setBody(schemaString2))
 
       TestUtils.executeTask("downloadMockApolloSchemaFromIntrospection", dir, "--build-cache")
-      assertEquals(content2, schemaFile.readText())
+      assertEquals(schemaString2, schemaFile.readText())
     }
   }
 
@@ -95,17 +103,7 @@ class DownloadSchemaTests {
   fun `manually downloading a schema is working`() {
 
     withSimpleProject(apolloConfiguration = "") { dir ->
-      val content = """
-        {
-          "__schema": {
-            "queryType": {
-              "name": "foo"
-            },
-            "types": []
-          }
-        }
-      """.trimIndent()
-      val mockResponse = MockResponse().setBody(content)
+      val mockResponse = MockResponse().setBody(schemaString1)
       mockServer.enqueue(mockResponse)
 
       // Tests can run from any working directory.
@@ -118,7 +116,7 @@ class DownloadSchemaTests {
           "--schema=${schema.absolutePath}",
           "--endpoint=${mockServer.url("/")}")
 
-      assertEquals(content, schema.readText())
+      assertEquals(schemaString1, schema.readText())
     }
   }
 }
