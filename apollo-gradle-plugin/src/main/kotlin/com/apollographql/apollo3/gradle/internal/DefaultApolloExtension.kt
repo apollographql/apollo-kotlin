@@ -2,6 +2,7 @@ package com.apollographql.apollo3.gradle.internal
 
 import com.apollographql.apollo3.compiler.OperationIdGenerator
 import com.apollographql.apollo3.compiler.OperationOutputGenerator
+import com.apollographql.apollo3.compiler.capitalizeFirstLetter
 import com.apollographql.apollo3.gradle.api.AndroidProject
 import com.apollographql.apollo3.gradle.api.ApolloAttributes
 import com.apollographql.apollo3.gradle.api.ApolloExtension
@@ -423,7 +424,7 @@ abstract class DefaultApolloExtension(
     registerDefaultService = false
 
     AndroidProject.onEachVariant(project = project, withTestVariants = true) { variant ->
-      val name = "${variant.name}${nameSuffix.capitalize()}"
+      val name = "${variant.name}${nameSuffix.capitalizeFirstLetter()}"
 
       val service = project.objects.newInstance(DefaultService::class.java, project.objects, name)
       action.execute(service)
@@ -451,7 +452,7 @@ abstract class DefaultApolloExtension(
     registerDefaultService = false
 
     KotlinJvmProject.onEachSourceSet(project) { kotlinSourceSet ->
-      val name = "${kotlinSourceSet.name}${nameSuffix.capitalize()}"
+      val name = "${kotlinSourceSet.name}${nameSuffix.capitalizeFirstLetter()}"
 
       val service = project.objects.newInstance(DefaultService::class.java, project.objects, name)
       action.execute(service)

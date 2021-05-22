@@ -7,6 +7,7 @@ import com.apollographql.apollo3.compiler.codegen.adapter.from
 import com.apollographql.apollo3.compiler.codegen.helpers.makeDataClassFromProperties
 import com.apollographql.apollo3.compiler.codegen.helpers.maybeAddDeprecation
 import com.apollographql.apollo3.compiler.codegen.helpers.maybeAddDescription
+import com.apollographql.apollo3.compiler.decapitalizeFirstLetter
 import com.apollographql.apollo3.compiler.unified.ir.IrAccessor
 import com.apollographql.apollo3.compiler.unified.ir.IrFragmentAccessor
 import com.apollographql.apollo3.compiler.unified.ir.IrModel
@@ -96,7 +97,7 @@ class ModelBuilder(
 
   private fun IrAccessor.funName(): String {
     return when (this) {
-      is IrFragmentAccessor -> this.fragmentName.decapitalize()
+      is IrFragmentAccessor -> this.fragmentName.decapitalizeFirstLetter()
       is IrSubtypeAccessor -> {
         "as${upperCamelCaseIgnoringNonLetters(this.typeSet)}"
       }

@@ -115,26 +115,6 @@ class CgLayout(
     return capitalizeFirstLetter(name).escapeKotlinReservedWord()
   }
 
-  /**
-   * A variation of [String.capitalize] that skips initial underscore, especially found in introspection queries
-   *
-   * There can still be name clashes if a property starts with an upper case letter
-   */
-  private fun capitalizeFirstLetter(name: String): String {
-    val builder = StringBuilder(name.length)
-    var isCapitalized = false
-    name.forEach {
-      builder.append(if (!isCapitalized && it.isLetter()) {
-        isCapitalized = true
-        it.toUpperCase()
-      } else {
-        it
-      })
-    }
-    return builder.toString()
-  }
-
-
   companion object {
     fun upperCamelCaseIgnoringNonLetters(strings: Collection<String>): String {
       return strings.map {

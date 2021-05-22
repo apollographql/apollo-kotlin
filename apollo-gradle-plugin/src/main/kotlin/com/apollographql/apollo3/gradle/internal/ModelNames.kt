@@ -1,12 +1,13 @@
 package com.apollographql.apollo3.gradle.internal
 
+import com.apollographql.apollo3.compiler.capitalizeFirstLetter
 import com.apollographql.apollo3.gradle.api.Service
 
 object ModelNames {
   private fun camelCase(vararg elements: String): String {
     return elements.mapIndexed { index, s ->
       if (index != 0) {
-        s.capitalize()
+        s.capitalizeFirstLetter()
       } else {
         s
       }

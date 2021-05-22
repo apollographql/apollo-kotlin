@@ -16,7 +16,7 @@ internal fun String.singularize(): String {
   val capitalized = first().isUpperCase()
   val irregular = irregular.firstOrNull { this.toLowerCase() == it.component2() }
   if (irregular != null) return irregular.component1().let {
-    if (capitalized) it.capitalize() else it
+    if (capitalized) it.capitalizeFirstLetter() else it
   }
 
   val rule = singularizationRules.lastOrNull { it.component1().matcher(this).find() }

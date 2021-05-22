@@ -26,14 +26,11 @@ class Schema(
       .associateBy { it.name }
 
   val queryTypeDefinition: GQLTypeDefinition = document
-      .rootOperationTypeDefinition("query")
-      ?: throw SchemaValidationException("No query root type found")
+      .rootOperationTypeDefinition("query") ?: throw SchemaValidationException("No query root type found")
 
-  val mutationTypeDefinition: GQLTypeDefinition? = document
-      .rootOperationTypeDefinition("mutation")
+  val mutationTypeDefinition: GQLTypeDefinition? = document.rootOperationTypeDefinition("mutation")
 
-  val subscriptionTypeDefinition: GQLTypeDefinition? = document
-      .rootOperationTypeDefinition("subscription")
+  val subscriptionTypeDefinition: GQLTypeDefinition? = document.rootOperationTypeDefinition("subscription")
 
   fun toGQLDocument(): GQLDocument = GQLDocument(
       definitions = typeDefinitions.values.toList() + directiveDefinitions.values.toList() + GQLSchemaDefinition(

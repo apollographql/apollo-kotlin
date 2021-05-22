@@ -1,5 +1,6 @@
 package com.apollographql.apollo3.compiler.unified.ir
 
+import com.apollographql.apollo3.compiler.capitalizeFirstLetter
 import com.squareup.moshi.Moshi
 import okio.buffer
 import okio.sink
@@ -27,7 +28,8 @@ private fun IrField.toMap(): Map<String, Any?> {
   )
 }
 
-private fun IrFieldSet.name() = typeSet.sorted().map { it.capitalize() }.joinToString("")
+private fun IrFieldSet.name() = typeSet.sorted().map { it.capitalizeFirstLetter() }.joinToString("")
+
 private fun IrFieldSet.toMap(): Map<String, Any?> {
   return mapOf(
       "typeSet" to name(),
