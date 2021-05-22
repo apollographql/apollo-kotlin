@@ -251,18 +251,23 @@ private class GQLDocumentBuilder(private val introspectionSchema: IntrospectionS
   }
 }
 
-fun IntrospectionSchema.toGQLDocument(): GQLDocument = GQLDocumentBuilder(this).toGQLDocument()
-
-fun IntrospectionSchema.toSchema(): Schema = toGQLDocument()
+/**
+ * Transforms the [IntrospectionSchema] into a [GQLDocument]
+ *
+ * The returned [GQLDocument] does not contain any of the builtin definitions (scalars, directives, introspection)
+ *
+ * See https://spec.graphql.org/draft/#sel-GAHXJHABuCB_Dn6F
+ */
+fun IntrospectionSchema.toGQLDocument(): GQLDocument = GQLDocumentBuilder(this)
+    .toGQLDocument()
     /**
      * Introspection already contains builtin types like Int, Boolean, __Schema, etc...
-     * This is slightly off as it also remove directives which will have no effect here
-     * as they are not stored in introspection
      */
     .withoutBuiltinDefinitions()
-    /**
-     * toSchema will add the builtin types and directives
-     */
-    .toSchema()
 
-
+/**
+ * Transforms the [IntrospectionSchema] into a [Schema] that contains builtin definitions
+ *
+ * In the process, the builtin definitions are removed and added again.
+ */
+fun IntrospectionSchema.toSchema(): Schema = toGQLDocument().toSchema()
