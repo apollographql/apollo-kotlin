@@ -6,15 +6,14 @@ import okio.source
 import java.io.File
 
 
-
 /**
  * Parses a the [BufferedSource] to a [Schema] and validates the result.
  *
  * Throws if the input is not a valid schema.
  *
- * For more fine grained control, look at [parseAsGQLDocument] and [validateAsSchema]
+ * For more fine grained control, see [parseAsGQLDocument] and [validateAsSchema]
  */
-fun BufferedSource.toGraphQLSchema(filePath: String? = null): Schema {
+fun BufferedSource.toSchema(filePath: String? = null): Schema {
   val document = parseAsGQLDocument(filePath)
       .getOrThrow()
 
@@ -24,14 +23,14 @@ fun BufferedSource.toGraphQLSchema(filePath: String? = null): Schema {
 }
 
 /**
- * See [toGraphQLSchema]
+ * See [toSchema]
  */
-fun File.toGraphQLSchema() = source().buffer().toGraphQLSchema(absolutePath)
+fun File.toSchema() = source().buffer().toSchema(absolutePath)
 
 /**
- * See [toGraphQLSchema]
+ * See [toSchema]
  */
-fun String.toGraphQLSchema() = byteInputStream().source().buffer().toGraphQLSchema()
+fun String.toSchema() = byteInputStream().source().buffer().toSchema()
 
 /**
  * Parses a the [BufferedSource] to a List<[GQLDefinition]> and validates the result
@@ -43,7 +42,7 @@ fun String.toGraphQLSchema() = byteInputStream().source().buffer().toGraphQLSche
  * @param schema a [Schema] used to validate the operations and fragments
  * @param filePath an optional path that will be displayed in errors for better troubleshooting
  */
-fun BufferedSource.toGraphQLExecutableDefinitions(schema: Schema, filePath: String? = null): List<GQLDefinition> {
+fun BufferedSource.toExecutableGQLDefinitions(schema: Schema, filePath: String? = null): List<GQLDefinition> {
   val document = parseAsGQLDocument(filePath)
       .getOrThrow()
 
@@ -53,11 +52,11 @@ fun BufferedSource.toGraphQLExecutableDefinitions(schema: Schema, filePath: Stri
 }
 
 /**
- * See [toGraphQLExecutableDefinitions]
+ * See [toExecutableGQLDefinitions]
  */
-fun File.toGraphQLExecutableDefinitions(schema: Schema) = source().buffer().toGraphQLExecutableDefinitions(schema, absolutePath)
+fun File.toExecutableGQLDefinitions(schema: Schema) = source().buffer().toExecutableGQLDefinitions(schema, absolutePath)
 
 /**
- * See [toGraphQLExecutableDefinitions]
+ * See [toExecutableGQLDefinitions]
  */
-fun String.toGraphQLExecutableDefinitions(schema: Schema) = byteInputStream().source().buffer().toGraphQLExecutableDefinitions(schema)
+fun String.toExecutableGQLDefinitions(schema: Schema) = byteInputStream().source().buffer().toExecutableGQLDefinitions(schema)

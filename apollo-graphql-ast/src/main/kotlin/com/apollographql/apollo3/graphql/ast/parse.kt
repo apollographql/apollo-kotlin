@@ -60,8 +60,8 @@ sealed class ParseResult<out V:Any> {
 /**
  * Parses a GraphQL document to a [GQLDocument], validating the grammar but not the contents of the document.
  *
- * Use [toGraphQLSchema] to parse and validate a [Schema] in one call.
- * Use [toGraphQLExecutableDefinitions] to parse and validate an executable document containing one or several
+ * Use [toSchema] to parse and validate a [Schema] in one call.
+ * Use [toExecutableGQLDefinitions] to parse and validate an executable document containing one or several
  * operation in one call.
  *
  * @return a [ParseResult] with either a non-null [GQLDocument] or a list of issues.

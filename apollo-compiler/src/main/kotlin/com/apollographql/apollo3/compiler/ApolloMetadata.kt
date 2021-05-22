@@ -3,7 +3,7 @@ package com.apollographql.apollo3.compiler
 import com.apollographql.apollo3.graphql.ast.GQLFragmentDefinition
 import com.apollographql.apollo3.graphql.ast.Schema
 import com.apollographql.apollo3.graphql.ast.parseAsGQLDocument
-import com.apollographql.apollo3.graphql.ast.toGraphQLSchema
+import com.apollographql.apollo3.graphql.ast.toSchema
 import com.apollographql.apollo3.graphql.ast.toUtf8
 import com.squareup.moshi.JsonAdapter
 import com.squareup.moshi.JsonClass
@@ -52,7 +52,7 @@ data class ApolloMetadata(
       val schemaJsonAdapter = object : JsonAdapter<Schema>() {
         override fun fromJson(reader: JsonReader): Schema {
           val string = reader.nextString()
-          return string.toGraphQLSchema()
+          return string.toSchema()
         }
 
         override fun toJson(writer: JsonWriter, schema: Schema?) {

@@ -3,8 +3,8 @@ package com.apollographql.apollo3.compiler
 import com.apollographql.apollo3.graphql.ast.GQLDocument
 import com.apollographql.apollo3.graphql.ast.GQLFragmentDefinition
 import com.apollographql.apollo3.graphql.ast.GQLOperationDefinition
-import com.apollographql.apollo3.graphql.ast.toGraphQLExecutableDefinitions
-import com.apollographql.apollo3.graphql.ast.toGraphQLSchema
+import com.apollographql.apollo3.graphql.ast.toExecutableGQLDefinitions
+import com.apollographql.apollo3.graphql.ast.toSchema
 import com.apollographql.apollo3.graphql.ast.toUtf8
 import com.apollographql.apollo3.graphql.ast.withTypenameWhenNeeded
 import com.google.common.truth.Truth.assertThat
@@ -20,9 +20,9 @@ class TypenameTest(val name: String, private val graphQLFile: File) {
   @Test
   fun testTypename() {
     val schemaFile = File("src/test/graphql/schema.sdl")
-    val schema = schemaFile.toGraphQLSchema()
+    val schema = schemaFile.toSchema()
 
-    val definitions = graphQLFile.toGraphQLExecutableDefinitions(schema)
+    val definitions = graphQLFile.toExecutableGQLDefinitions(schema)
 
     val documentWithTypename = GQLDocument(
         definitions = definitions.map {
