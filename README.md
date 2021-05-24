@@ -107,6 +107,7 @@ If you'd like to contribute, please see [Contributing.md](https://github.com/apo
 
 ## Additional resources
 
+- [MortyComposeKMM](https://github.com/joreilly/MortyComposeKMM): A Kotlin Multiplatform Github template using Apollo Android, SwiftUI and Jetpack Compose.
 - [A journey to Kotlin multiplatform](https://www.youtube.com/watch?v=GN6LHrqyimI): how the project was moved to Kotlin multiplatform, talk given at Kotliners in June 2020.
 - [#125, Fragmented Podcast](http://fragmentedpodcast.com/episodes/125/): Why's and How's about Apollo Android and the entire journey.
 - [GraphQL.org](http://graphql.org) for an introduction and reference to GraphQL itself.
