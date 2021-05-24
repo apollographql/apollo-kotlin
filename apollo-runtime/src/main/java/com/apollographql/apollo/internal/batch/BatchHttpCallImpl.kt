@@ -72,19 +72,26 @@ class BatchHttpCallImpl(
     val httpCall = httpCallFactory.newCall(requestBuilder.build())
     httpCall.enqueue(object : Callback {
       override fun onResponse(call: Call, response: Response) {
-        // Extract individual responses from the batch response body
-        val responseBodies = extractResponseListFromBody(response)
+        try {
+          // Extract individual responses from the batch response body
+          val responseBodies = extractResponseListFromBody(response)
 
-        // Assert that we got as many responses than we asked for
-        if (responseBodies.size != queryList.size) {
-          throw ApolloException("Batch response has missing data, expected ${queryList.size}, got ${responseBodies.size}")
-        }
+          // Assert that we got as many responses than we asked for
+          if (responseBodies.size != queryList.size) {
+            throw ApolloException("Batch response has missing data, expected ${queryList.size}, got ${responseBodies.size}")
+          }
 
-        // Callback individual interceptor chains with the corresponding extracted responses
-        queryList.forEachIndexed { index, queryToBatch ->
-          responseBodies[index].let { response ->
-            queryToBatch.callback.onResponse(ApolloInterceptor.InterceptorResponse(response))
-            queryToBatch.callback.onCompleted()
+          // Callback individual interceptor chains with the corresponding extracted responses
+          queryList.forEachIndexed { index, queryToBatch ->
+            responseBodies[index].let { response ->
+              queryToBatch.callback.onResponse(ApolloInterceptor.InterceptorResponse(response))
+              queryToBatch.callback.onCompleted()
+            }
+          }
+        } catch (exception: Exception) {
+          queryList.forEach {
+            val message = "Failed to parse batch http response for operation '${it.request.operation.name().name()}'"
+            it.callback.onFailure(ApolloException(message, exception))
           }
         }
       }
