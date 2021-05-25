@@ -16,6 +16,7 @@ import org.gradle.api.tasks.Optional
 import org.gradle.api.tasks.TaskAction
 import org.gradle.api.tasks.options.Option
 import java.io.File
+import java.util.Locale
 
 /**
  * A task to download a schema either from introspection or from the registry.
@@ -116,7 +117,7 @@ abstract class ApolloDownloadSchemaTask : DefaultTask() {
 
     schema.parentFile?.mkdirs()
 
-    if (schema.extension.toLowerCase() == "json") {
+    if (schema.extension.toLowerCase(Locale.US) == "json") {
       if (introspectionSchema == null) {
         introspectionSchema = gqlSchema!!.toSchema().toIntrospectionSchema()
       }

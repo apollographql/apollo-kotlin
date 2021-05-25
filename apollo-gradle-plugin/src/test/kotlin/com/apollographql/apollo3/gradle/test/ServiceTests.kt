@@ -260,7 +260,7 @@ class ServiceTests {
     withSimpleProject("""
       apollo { 
         withOperationOutput {
-          tasks.register("customTask" + name.capitalize()) {
+          tasks.register("customTaskService") {
             inputs.file(operationOutputFile)
           }
         }

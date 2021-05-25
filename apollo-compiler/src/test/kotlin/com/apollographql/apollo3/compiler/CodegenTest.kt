@@ -63,10 +63,10 @@ class CodegenTest(private val folder: File, private val fragmentsCodegenMode: Fr
       it.isFile && it.name != "metadata"
     }
 
-    val expectedFiles = folder.resolve(fragmentsCodegenMode.name.decapitalize()).walk().filter { it.isFile && it.extension == "expected" }
+    val expectedFiles = folder.resolve(fragmentsCodegenMode.name.decapitalizeFirstLetter()).walk().filter { it.isFile && it.extension == "expected" }
 
     expectedFiles.forEach { expected ->
-      val relativePath = expected.relativeTo(folder.resolve(fragmentsCodegenMode.name.decapitalize())).path.removeSuffix(".expected")
+      val relativePath = expected.relativeTo(folder.resolve(fragmentsCodegenMode.name.decapitalizeFirstLetter())).path.removeSuffix(".expected")
 
       val actual = actualRoot.resolve(expectedRelativeRoot).resolve(relativePath)
       if (!actual.exists()) {
@@ -86,7 +86,7 @@ class CodegenTest(private val folder: File, private val fragmentsCodegenMode: Fr
 
     actualFiles.forEach { actual ->
       val relativePath = actual.relativeTo(actualRoot).relativeTo(expectedRelativeRoot).path
-      val expected = expectedRoot.resolve(expectedRelativeRoot).resolve(fragmentsCodegenMode.name.decapitalize()).resolve("$relativePath.expected")
+      val expected = expectedRoot.resolve(expectedRelativeRoot).resolve(fragmentsCodegenMode.name.decapitalizeFirstLetter()).resolve("$relativePath.expected")
       if (!expected.exists()) {
         if (shouldUpdateTestFixtures()) {
           println("adding expected file: ${actual.absolutePath} - ${actual.path}")

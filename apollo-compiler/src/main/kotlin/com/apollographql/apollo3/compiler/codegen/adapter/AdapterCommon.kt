@@ -2,7 +2,6 @@ package com.apollographql.apollo3.compiler.codegen.adapter
 
 import com.apollographql.apollo3.api.Optional
 import com.apollographql.apollo3.compiler.codegen.Identifier
-import com.apollographql.apollo3.compiler.codegen.kotlinNameForVariable
 import com.apollographql.apollo3.compiler.codegen.CgContext
 import com.apollographql.apollo3.compiler.codegen.Identifier.typename
 import com.apollographql.apollo3.compiler.codegen.helpers.NamedType
@@ -44,7 +43,7 @@ internal fun readFromResponseCodeBlock(
 
     CodeBlock.of(
         "var·%L:·%T·=·%L",
-        kotlinNameForVariable(property.info.responseName),
+        context.layout.variableName(property.info.responseName),
         context.resolver.resolveType(property.info.type).copy(nullable = !property.info.type.isOptional()),
         variableIntializer
     )

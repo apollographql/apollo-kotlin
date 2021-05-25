@@ -5,6 +5,7 @@ import com.android.build.gradle.BaseExtension
 import com.android.build.gradle.LibraryExtension
 import com.android.build.gradle.TestedExtension
 import com.android.build.gradle.api.BaseVariant
+import com.apollographql.apollo3.compiler.capitalizeFirstLetter
 import com.apollographql.apollo3.gradle.internal.ApolloGenerateSourcesTask
 import org.gradle.api.Project
 import org.gradle.api.Task
@@ -55,7 +56,7 @@ object AndroidProject {
     // TODO: make this lazy (https://github.com/apollographql/apollo-android/issues/1454)
     variant.addJavaSourceFoldersToModel(wire.outputDir.get().asFile)
     // Tell the kotlin compiler to compile our files
-    tasks.named("compile${variant.name.capitalize()}Kotlin").configure {
+    tasks.named("compile${variant.name.capitalizeFirstLetter()}Kotlin").configure {
       it.dependsOn(wire.task)
       (it as KotlinCompile).source(wire.outputDir.get())
     }

@@ -1,6 +1,7 @@
 package com.apollographql.apollo3.compiler.codegen
 
 import com.apollographql.apollo3.compiler.PackageNameProvider
+import com.apollographql.apollo3.compiler.capitalizeFirstLetter
 import com.apollographql.apollo3.compiler.escapeKotlinReservedWord
 import com.apollographql.apollo3.compiler.singularize
 import com.apollographql.apollo3.compiler.unified.ir.IrFieldInfo
@@ -9,6 +10,7 @@ import com.apollographql.apollo3.compiler.unified.ir.IrNonNullType
 import com.apollographql.apollo3.compiler.unified.ir.IrOperation
 import com.apollographql.apollo3.compiler.unified.ir.IrType
 import com.apollographql.apollo3.compiler.unified.ir.TypeSet
+import java.util.Locale
 
 /**
  * The central place where the names/packages of the different classes are decided and escape rules done.
@@ -110,35 +112,14 @@ class CgLayout(
 
   // ------------------------ Helpers ---------------------------------
   private fun regularIdentifier(name: String) = name.escapeKotlinReservedWord()
-  private fun upperCaseIdentifier(name: String) = name.toUpperCase().escapeKotlinReservedWord()
   private fun capitalizedIdentifier(name: String): String {
-    return capitalizeFirstLetter(name).escapeKotlinReservedWord()
+    return name.capitalizeFirstLetter().escapeKotlinReservedWord()
   }
-
-  /**
-   * A variation of [String.capitalize] that skips initial underscore, especially found in introspection queries
-   *
-   * There can still be name clashes if a property starts with an upper case letter
-   */
-  private fun capitalizeFirstLetter(name: String): String {
-    val builder = StringBuilder(name.length)
-    var isCapitalized = false
-    name.forEach {
-      builder.append(if (!isCapitalized && it.isLetter()) {
-        isCapitalized = true
-        it.toUpperCase()
-      } else {
-        it
-      })
-    }
-    return builder.toString()
-  }
-
 
   companion object {
     fun upperCamelCaseIgnoringNonLetters(strings: Collection<String>): String {
       return strings.map {
-        capitalizeFirstLetter(it)
+        it.capitalizeFirstLetter()
       }.joinToString("")
     }
 

@@ -152,10 +152,15 @@ internal fun GQLDocument.rootOperationTypeDefinition(operationType: String): GQL
       .firstOrNull()
   if (schemaDefinition == null) {
     // 3.3.1
-    // No schema definition, look for an object type named after the operationType
+    // If there is no schema definition, look for an object type named after the operationType
     // i.e. Query, Mutation, ...
-    return definitions.filterIsInstance<GQLObjectTypeDefinition>()
-        .firstOrNull { it.name == operationType.capitalize() }
+    val typeName = when (operationType) {
+      "query" -> "Query"
+      "mutation" -> "Mutation"
+      "subscription" -> "Subscription"
+      else -> error("Unknown operationType $operationType")
+    }
+    return definitions.filterIsInstance<GQLObjectTypeDefinition>().firstOrNull { it.name == typeName }
   }
   return schemaDefinition.rootOperationTypeDefinitions.firstOrNull {
     it.operationType == operationType

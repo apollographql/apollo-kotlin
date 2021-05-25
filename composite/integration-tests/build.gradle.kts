@@ -1,5 +1,6 @@
 import com.android.build.gradle.internal.tasks.factory.dependsOn
 import com.apollographql.apollo3.gradle.api.ApolloExtension
+import java.util.Locale
 
 plugins {
   id("com.apollographql.apollo3")
@@ -52,10 +53,10 @@ addTests(true, "testAsInterfaces", true)
 
 fun configureApollo(asInterfaces: Boolean, sourceSetName: String) {
   configure<ApolloExtension> {
-    file("src/main/graphql/com/apollographql/apollo3/integration").listFiles()
+    file("src/main/graphql/com/apollographql/apollo3/integration").listFiles()!!
         .filter { it.isDirectory }
         .forEach {
-          service("${it.name}${sourceSetName.capitalize()}") {
+          service("${it.name}${sourceSetName.capitalize(Locale.US)}") {
             when (it.name) {
               "httpcache" -> {
                 withOperationOutput {}
@@ -82,7 +83,7 @@ fun configureApollo(asInterfaces: Boolean, sourceSetName: String) {
             generateFragmentsAsInterfaces.set(asInterfaces)
 
             withOutputDir {
-              tasks.named("compile${sourceSetName.capitalize()}Kotlin").dependsOn(this.task)
+              tasks.named("compile${sourceSetName.capitalize(Locale.US)}Kotlin").dependsOn(this.task)
               kotlin.sourceSets.named(sourceSetName).configure {
                 kotlin.srcDir(outputDir)
               }

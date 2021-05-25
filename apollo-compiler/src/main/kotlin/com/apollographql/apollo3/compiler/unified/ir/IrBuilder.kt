@@ -193,7 +193,7 @@ class IrBuilder(
       /**
        * Contrary to [IrVariable], we default to making input fields optional as they are out of control of the user and
        * we don't want to force users to fill input all values to define an input object
-      */
+       */
       irType = irType.makeOptional()
     }
     return IrInputField(
@@ -266,7 +266,7 @@ class IrBuilder(
     return IrOperation(
         name = name!!,
         description = description,
-        operationType = IrOperationType.valueOf(operationType.capitalize()),
+        operationType = operationType.toIrOperationType(),
         typeCondition = typeDefinition.name,
         variables = variableDefinitions.map { it.toIr() },
         field = dataField,
@@ -277,6 +277,12 @@ class IrBuilder(
     )
   }
 
+  private fun String.toIrOperationType() = when (this) {
+    "query" -> IrOperationType.Query
+    "mutation" -> IrOperationType.Mutation
+    "subscription" -> IrOperationType.Subscription
+    else -> error("unknown operation $this")
+  }
 
   private fun GQLFragmentDefinition.toIr(): IrNamedFragment {
     val typeDefinition = schema.typeDefinition(typeCondition.name)
