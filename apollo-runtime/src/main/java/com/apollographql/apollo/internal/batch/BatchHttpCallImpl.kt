@@ -61,7 +61,7 @@ class BatchHttpCallImpl(
         .header(ApolloServerInterceptor.HEADER_ACCEPT_TYPE, ApolloServerInterceptor.ACCEPT_TYPE)
         .header(ApolloServerInterceptor.HEADER_CONTENT_TYPE, ApolloServerInterceptor.CONTENT_TYPE)
         .post(batchRequestBody)
-    // For the prototype, assumes all queries have the same header
+    // Assumes all queries in the batch have the same headers
     val firstRequest = queryList.asSequence().map { it.request }.first()
     for (header in firstRequest.requestHeaders.headers()) {
       val value = firstRequest.requestHeaders.headerValue(header)

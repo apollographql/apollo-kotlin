@@ -21,7 +21,7 @@ import org.junit.Test
 import java.net.HttpURLConnection
 import java.util.concurrent.TimeUnit
 
-class BatchHttpCallTest {
+class BatchHttpResponseTest {
 
   lateinit var apolloClient: ApolloClient
   lateinit var server: MockWebServer
