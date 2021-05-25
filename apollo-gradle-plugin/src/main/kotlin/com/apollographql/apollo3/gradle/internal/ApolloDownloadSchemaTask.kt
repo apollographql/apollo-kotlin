@@ -1,11 +1,14 @@
 package com.apollographql.apollo3.gradle.internal
 
+import com.apollographql.apollo3.compiler.introspection.IntrospectionSchema
 import com.apollographql.apollo3.compiler.introspection.toGQLDocument
-import com.apollographql.apollo3.compiler.introspection.toGraphQLIntrospectionSchema
+import com.apollographql.apollo3.compiler.introspection.toIntrospectionSchema
 import com.apollographql.apollo3.compiler.introspection.toIntrospectionSchema
 import com.apollographql.apollo3.compiler.toJson
-import com.apollographql.apollo3.graphql.ast.toGraphQLSchema
-import com.apollographql.apollo3.graphql.ast.toUtf8
+import com.apollographql.apollo3.ast.GQLDocument
+import com.apollographql.apollo3.ast.parseAsGQLDocument
+import com.apollographql.apollo3.ast.toSchema
+import com.apollographql.apollo3.ast.toUtf8
 import org.gradle.api.DefaultTask
 import org.gradle.api.provider.Property
 import org.gradle.api.tasks.Input
@@ -75,8 +78,8 @@ abstract class ApolloDownloadSchemaTask : DefaultTask() {
     }
     val headers = header.toMap()
 
-    var introspectionSchema: String? = null
-    var sdlSchema: String? = null
+    var introspectionSchema: IntrospectionSchema? = null
+    var gqlSchema: GQLDocument? = null
 
     val key = key.orNull
     var graph = graph.orNull
@@ -93,18 +96,18 @@ abstract class ApolloDownloadSchemaTask : DefaultTask() {
         introspectionSchema = SchemaDownloader.downloadIntrospection(
             endpoint = endpointUrl,
             headers = headers,
-        )
+        ).toIntrospectionSchema()
       }
       graph != null -> {
         check (key != null) {
           "ApolloGraphQL: please define --key to download graph $graph"
         }
-        sdlSchema = SchemaDownloader.downloadRegistry(
+        gqlSchema = SchemaDownloader.downloadRegistry(
             graph = graph,
             key = key,
             variant = graphVariant ?: "current",
             endpoint = registryUrl.orNull ?: "https://graphql.api.apollographql.com/api/graphql"
-        )
+        ).parseAsGQLDocument().getOrThrow()
       }
       else -> {
         throw IllegalArgumentException("ApolloGraphQL: either --endpoint or --graph is required")
@@ -115,14 +118,14 @@ abstract class ApolloDownloadSchemaTask : DefaultTask() {
 
     if (schema.extension.toLowerCase() == "json") {
       if (introspectionSchema == null) {
-        introspectionSchema = sdlSchema!!.toGraphQLSchema().toIntrospectionSchema().toJson(indent = "  ")
+        introspectionSchema = gqlSchema!!.toSchema().toIntrospectionSchema()
       }
-      schema.writeText(introspectionSchema)
+      schema.writeText(introspectionSchema.toJson(indent = "  "))
     } else {
-      if (sdlSchema == null) {
-        sdlSchema = introspectionSchema!!.toGraphQLIntrospectionSchema().toGQLDocument().toUtf8()
+      if (gqlSchema == null) {
+        gqlSchema = introspectionSchema!!.toGQLDocument()
       }
-      schema.writeText(sdlSchema)
+      schema.writeText(gqlSchema.toUtf8(indent = "  "))
     }
   }
 

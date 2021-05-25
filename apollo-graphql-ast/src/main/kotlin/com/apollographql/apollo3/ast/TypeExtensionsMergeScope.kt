@@ -1,4 +1,4 @@
-package com.apollographql.apollo3.graphql.ast
+package com.apollographql.apollo3.ast
 
 internal class TypeExtensionsMergeScope {
   private val issues = mutableListOf<Issue>()

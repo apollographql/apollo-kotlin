@@ -1,4 +1,4 @@
-package com.apollographql.apollo3.graphql.ast
+package com.apollographql.apollo3.ast
 
 import okio.BufferedSink
 
@@ -33,7 +33,7 @@ class SDLWriter(
 }
 
 internal fun SDLWriter.writeDescription(description: String?) {
-  if (description != null) {
+  if (!description.isNullOrBlank()) {
     write("\"\"\"${description.encodeToGraphQLTripleQuoted()}\"\"\"\n")
   }
 }

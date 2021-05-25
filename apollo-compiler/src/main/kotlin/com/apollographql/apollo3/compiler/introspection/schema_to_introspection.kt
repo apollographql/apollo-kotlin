@@ -2,7 +2,7 @@ package com.apollographql.apollo3.compiler.introspection
 
 import com.apollographql.apollo3.api.BooleanExpression
 import com.apollographql.apollo3.compiler.introspection.IntrospectionSchema
-import com.apollographql.apollo3.graphql.ast.*
+import com.apollographql.apollo3.ast.*
 
 private class IntrospectionSchemaBuilder(private val schema: Schema) {
   private val typeDefinitions = schema.typeDefinitions

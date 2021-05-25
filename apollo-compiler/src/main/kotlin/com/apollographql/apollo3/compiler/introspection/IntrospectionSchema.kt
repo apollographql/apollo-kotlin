@@ -147,7 +147,7 @@ data class IntrospectionSchema(
 /**
  *
  */
-fun BufferedSource.toGraphQLIntrospectionSchema(origin: String = ""): IntrospectionSchema {
+fun BufferedSource.toIntrospectionSchema(origin: String = ""): IntrospectionSchema {
   val bom = "EFBBBF".decodeHex()
 
   if (rangeEquals(0, bom)) {
@@ -163,9 +163,9 @@ fun BufferedSource.toGraphQLIntrospectionSchema(origin: String = ""): Introspect
   }
 }
 
-fun File.toGraphQLIntrospectionSchema() = inputStream().source().buffer().toGraphQLIntrospectionSchema("from `$this`")
+fun File.toIntrospectionSchema() = inputStream().source().buffer().toIntrospectionSchema("from `$this`")
 
-fun String.toGraphQLIntrospectionSchema() = Buffer().writeUtf8(this).toGraphQLIntrospectionSchema()
+fun String.toIntrospectionSchema() = Buffer().writeUtf8(this).toIntrospectionSchema()
 
 private fun JsonReader.locateSchemaRootNode(): JsonReader {
   beginObject()

@@ -1,4 +1,4 @@
-package com.apollographql.apollo3.graphql.ast
+package com.apollographql.apollo3.ast
 /**
  * Functions that wrap the antlr types to our own [GQLNode] values
  */

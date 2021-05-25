@@ -1,4 +1,4 @@
-package com.apollographql.apollo3.graphql.ast
+package com.apollographql.apollo3.ast
 
 /**
  * For a [GQLValue] used in input position, validate that it can be coerced to [expectedType] and coerce it at the same time.

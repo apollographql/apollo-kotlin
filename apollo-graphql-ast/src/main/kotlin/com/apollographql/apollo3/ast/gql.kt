@@ -1,4 +1,4 @@
-package com.apollographql.apollo3.graphql.ast
+package com.apollographql.apollo3.ast
 
 /**
  * The GraphQL AST definition
@@ -12,7 +12,7 @@ package com.apollographql.apollo3.graphql.ast
  * The structure of the different nodes matches closely the one of the GraphQL specification
  * (https://spec.graphql.org/June2018/#sec-Appendix-Grammar-Summary.Document)
  *
- * See [parseAsGraphQLDocument].
+ * See [parseAsGQLDocument].
  *
  * Compared to the Antlr [com.apollographql.apollo3.compiler.parser.antlr.GraphQLParser.DocumentContext], a GQLDocument
  * is a lot simpler and allows for easy modifying a document (using .clone()) and outputing them to a [okio.BufferedSink].
@@ -59,7 +59,7 @@ sealed class GQLSelection : GQLNode
  * The top level node in a GraphQL document. This can be a schema document or an executable document
  * (or something else if need be)
  *
- * See [parseAsGraphQLDocument].
+ * See [parseAsGQLDocument].
  */
 data class GQLDocument(
     val definitions: List<GQLDefinition>,

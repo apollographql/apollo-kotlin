@@ -4,11 +4,11 @@ import com.apollographql.apollo3.api.QueryDocumentMinifier
 import com.apollographql.apollo3.compiler.codegen.KotlinCodeGenerator
 import com.apollographql.apollo3.compiler.introspection.IntrospectionSchema
 import com.apollographql.apollo3.compiler.introspection.toGQLDocument
-import com.apollographql.apollo3.compiler.introspection.toGraphQLIntrospectionSchema
+import com.apollographql.apollo3.compiler.introspection.toIntrospectionSchema
 import com.apollographql.apollo3.compiler.operationoutput.OperationDescriptor
 import com.apollographql.apollo3.compiler.unified.ir.IrBuilder
 import com.apollographql.apollo3.compiler.unified.ir.dumpTo
-import com.apollographql.apollo3.graphql.ast.*
+import com.apollographql.apollo3.ast.*
 import java.io.File
 
 class GraphQLCompiler {
@@ -34,7 +34,7 @@ class GraphQLCompiler {
     val definitions = mutableListOf<GQLDefinition>()
     val parseIssues = mutableListOf<Issue>()
     operationFiles.map { file ->
-      when(val parseResult = file.parseAsGraphQLDocument()) {
+      when(val parseResult = file.parseAsGQLDocument()) {
         is ParseResult.Success -> definitions.addAll(parseResult.value.definitions)
         is ParseResult.Error -> parseIssues.addAll(parseResult.issues)
       }
@@ -220,7 +220,7 @@ class GraphQLCompiler {
 
         val document = schemaFile.toGQLDocument()
         val extraDefinitions = extraSchemaFiles.flatMap {
-          it.parseAsGraphQLDocument().getOrThrow().definitions
+          it.parseAsGQLDocument().getOrThrow().definitions
         }
 
         val schema = GQLDocument(
@@ -242,9 +242,9 @@ class GraphQLCompiler {
 
       private fun File.toGQLDocument(): GQLDocument {
         return if (extension == "json") {
-           toGraphQLIntrospectionSchema().toGQLDocument()
+           toIntrospectionSchema().toGQLDocument()
         } else {
-           parseAsGraphQLDocument().getOrThrow()
+           parseAsGQLDocument().getOrThrow()
         }
       }
     }

@@ -1,38 +1,38 @@
 package com.apollographql.apollo3.compiler.introspection
 
-import com.apollographql.apollo3.graphql.ast.ConversionException
-import com.apollographql.apollo3.graphql.ast.GQLArgument
-import com.apollographql.apollo3.graphql.ast.GQLArguments
-import com.apollographql.apollo3.graphql.ast.GQLBooleanValue
-import com.apollographql.apollo3.graphql.ast.GQLDirective
-import com.apollographql.apollo3.graphql.ast.GQLDocument
-import com.apollographql.apollo3.graphql.ast.GQLEnumTypeDefinition
-import com.apollographql.apollo3.graphql.ast.GQLEnumValueDefinition
-import com.apollographql.apollo3.graphql.ast.GQLFieldDefinition
-import com.apollographql.apollo3.graphql.ast.GQLFloatValue
-import com.apollographql.apollo3.graphql.ast.GQLInputObjectTypeDefinition
-import com.apollographql.apollo3.graphql.ast.GQLInputValueDefinition
-import com.apollographql.apollo3.graphql.ast.GQLIntValue
-import com.apollographql.apollo3.graphql.ast.GQLInterfaceTypeDefinition
-import com.apollographql.apollo3.graphql.ast.GQLListType
-import com.apollographql.apollo3.graphql.ast.GQLListValue
-import com.apollographql.apollo3.graphql.ast.GQLNamedType
-import com.apollographql.apollo3.graphql.ast.GQLNonNullType
-import com.apollographql.apollo3.graphql.ast.GQLObjectField
-import com.apollographql.apollo3.graphql.ast.GQLObjectTypeDefinition
-import com.apollographql.apollo3.graphql.ast.GQLObjectValue
-import com.apollographql.apollo3.graphql.ast.GQLOperationTypeDefinition
-import com.apollographql.apollo3.graphql.ast.GQLScalarTypeDefinition
-import com.apollographql.apollo3.graphql.ast.GQLSchemaDefinition
-import com.apollographql.apollo3.graphql.ast.GQLStringValue
-import com.apollographql.apollo3.graphql.ast.GQLType
-import com.apollographql.apollo3.graphql.ast.GQLUnionTypeDefinition
-import com.apollographql.apollo3.graphql.ast.GQLValue
-import com.apollographql.apollo3.graphql.ast.Schema
-import com.apollographql.apollo3.graphql.ast.parseAsGraphQLValue
-import com.apollographql.apollo3.graphql.ast.toSchema
-import com.apollographql.apollo3.graphql.ast.withBuiltinDefinitions
-import com.apollographql.apollo3.graphql.ast.withoutBuiltinDefinitions
+import com.apollographql.apollo3.ast.ConversionException
+import com.apollographql.apollo3.ast.GQLArgument
+import com.apollographql.apollo3.ast.GQLArguments
+import com.apollographql.apollo3.ast.GQLBooleanValue
+import com.apollographql.apollo3.ast.GQLDirective
+import com.apollographql.apollo3.ast.GQLDocument
+import com.apollographql.apollo3.ast.GQLEnumTypeDefinition
+import com.apollographql.apollo3.ast.GQLEnumValueDefinition
+import com.apollographql.apollo3.ast.GQLFieldDefinition
+import com.apollographql.apollo3.ast.GQLFloatValue
+import com.apollographql.apollo3.ast.GQLInputObjectTypeDefinition
+import com.apollographql.apollo3.ast.GQLInputValueDefinition
+import com.apollographql.apollo3.ast.GQLIntValue
+import com.apollographql.apollo3.ast.GQLInterfaceTypeDefinition
+import com.apollographql.apollo3.ast.GQLListType
+import com.apollographql.apollo3.ast.GQLListValue
+import com.apollographql.apollo3.ast.GQLNamedType
+import com.apollographql.apollo3.ast.GQLNonNullType
+import com.apollographql.apollo3.ast.GQLObjectField
+import com.apollographql.apollo3.ast.GQLObjectTypeDefinition
+import com.apollographql.apollo3.ast.GQLObjectValue
+import com.apollographql.apollo3.ast.GQLOperationTypeDefinition
+import com.apollographql.apollo3.ast.GQLScalarTypeDefinition
+import com.apollographql.apollo3.ast.GQLSchemaDefinition
+import com.apollographql.apollo3.ast.GQLStringValue
+import com.apollographql.apollo3.ast.GQLType
+import com.apollographql.apollo3.ast.GQLUnionTypeDefinition
+import com.apollographql.apollo3.ast.GQLValue
+import com.apollographql.apollo3.ast.Schema
+import com.apollographql.apollo3.ast.parseAsGQLValue
+import com.apollographql.apollo3.ast.toSchema
+import com.apollographql.apollo3.ast.withBuiltinDefinitions
+import com.apollographql.apollo3.ast.withoutBuiltinDefinitions
 
 private class GQLDocumentBuilder(private val introspectionSchema: IntrospectionSchema) {
 
@@ -128,7 +128,7 @@ private class GQLDocumentBuilder(private val introspectionSchema: IntrospectionS
     }
     try {
       if (this is String) {
-        return parseAsGraphQLValue().getOrThrow()
+        return parseAsGQLValue().getOrThrow()
       }
     } catch (e: Exception) {
       println("Wrongly encoded default value: $this: ${e.message}")
@@ -251,18 +251,23 @@ private class GQLDocumentBuilder(private val introspectionSchema: IntrospectionS
   }
 }
 
-fun IntrospectionSchema.toGQLDocument(): GQLDocument = GQLDocumentBuilder(this).toGQLDocument()
-
-fun IntrospectionSchema.toSchema(): Schema = toGQLDocument()
+/**
+ * Parses the [IntrospectionSchema] into a [GQLDocument]
+ *
+ * The returned [GQLDocument] does not contain any of the builtin definitions (scalars, directives, introspection)
+ *
+ * See https://spec.graphql.org/draft/#sel-GAHXJHABuCB_Dn6F
+ */
+fun IntrospectionSchema.toGQLDocument(): GQLDocument = GQLDocumentBuilder(this)
+    .toGQLDocument()
     /**
      * Introspection already contains builtin types like Int, Boolean, __Schema, etc...
-     * This is slightly off as it also remove directives which will have no effect here
-     * as they are not stored in introspection
      */
     .withoutBuiltinDefinitions()
-    /**
-     * toSchema will add the builtin types and directives
-     */
-    .toSchema()
 
-
+/**
+ * Transforms the [IntrospectionSchema] into a [Schema] that contains builtin definitions
+ *
+ * In the process, the builtin definitions are removed and added again.
+ */
+fun IntrospectionSchema.toSchema(): Schema = toGQLDocument().toSchema()

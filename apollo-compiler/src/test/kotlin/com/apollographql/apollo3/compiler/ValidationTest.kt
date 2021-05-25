@@ -2,11 +2,11 @@ package com.apollographql.apollo3.compiler
 
 import com.apollographql.apollo3.compiler.TestUtils.checkExpected
 import com.apollographql.apollo3.compiler.TestUtils.testParametersForGraphQLFilesIn
-import com.apollographql.apollo3.graphql.ast.Issue
-import com.apollographql.apollo3.graphql.ast.ParseResult
-import com.apollographql.apollo3.graphql.ast.parseAsGraphQLDocument
-import com.apollographql.apollo3.graphql.ast.validateAsOperations
-import com.apollographql.apollo3.graphql.ast.validateAsSchema
+import com.apollographql.apollo3.ast.Issue
+import com.apollographql.apollo3.ast.ParseResult
+import com.apollographql.apollo3.ast.parseAsGQLDocument
+import com.apollographql.apollo3.ast.validateAsOperations
+import com.apollographql.apollo3.ast.validateAsSchema
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.junit.runners.Parameterized
@@ -25,14 +25,14 @@ class ValidationTest(name: String, private val graphQLFile: File) {
   @Test
   fun testValidation() = checkExpected(graphQLFile) { schema ->
     val issues = if (graphQLFile.parentFile.name == "operation") {
-      val parseResult = graphQLFile.parseAsGraphQLDocument()
+      val parseResult = graphQLFile.parseAsGQLDocument()
 
       when (parseResult) {
         is ParseResult.Error -> parseResult.issues
         is ParseResult.Success -> parseResult.value.validateAsOperations(schema!!)
       }
     } else {
-      val parseResult = graphQLFile.parseAsGraphQLDocument()
+      val parseResult = graphQLFile.parseAsGQLDocument()
 
       when (parseResult) {
         is ParseResult.Error -> parseResult.issues

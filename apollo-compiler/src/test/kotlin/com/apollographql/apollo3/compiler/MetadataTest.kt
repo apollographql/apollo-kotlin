@@ -2,7 +2,7 @@ package com.apollographql.apollo3.compiler
 
 import com.apollographql.apollo3.compiler.ApolloMetadata.Companion.merge
 import com.apollographql.apollo3.compiler.GraphQLCompiler.Companion.defaultCustomScalarsMapping
-import com.apollographql.apollo3.graphql.ast.SourceAwareException
+import com.apollographql.apollo3.ast.SourceAwareException
 import com.google.common.truth.Truth
 import org.junit.Assert.fail
 import org.junit.Before
