@@ -80,6 +80,7 @@ public final class RealApolloCall<T> implements ApolloQueryCall<T>, ApolloMutati
   final boolean useHttpGetMethodForQueries;
   final boolean useHttpGetMethodForPersistedQueries;
   final boolean writeToNormalizedCacheAsynchronously;
+  final boolean canBeBatched;
   final BatchPoller batchPoller;
 
   public static <T> Builder<T> builder() {
@@ -129,6 +130,7 @@ public final class RealApolloCall<T> implements ApolloQueryCall<T>, ApolloMutati
     useHttpGetMethodForPersistedQueries = builder.useHttpGetMethodForPersistedQueries;
     optimisticUpdates = builder.optimisticUpdates;
     writeToNormalizedCacheAsynchronously = builder.writeToNormalizedCacheAsynchronously;
+    canBeBatched = builder.canBeBatched;
     batchPoller = builder.batchPoller;
     interceptorChain = prepareInterceptorChain(operation);
   }
@@ -420,7 +422,7 @@ public final class RealApolloCall<T> implements ApolloQueryCall<T>, ApolloMutati
     interceptors.add(new ApolloParseInterceptor(httpCache, apolloStore.networkResponseNormalizer(), responseFieldMapper,
         scalarTypeAdapters, logger));
 
-    if (batchPoller != null) {
+    if (canBeBatched && batchPoller != null) {
       if (useHttpGetMethodForQueries || useHttpGetMethodForPersistedQueries) {
         throw new ApolloException("Batching is not supported when using HTTP Get method queries");
       }
@@ -457,6 +459,7 @@ public final class RealApolloCall<T> implements ApolloQueryCall<T>, ApolloMutati
     boolean useHttpGetMethodForQueries;
     boolean useHttpGetMethodForPersistedQueries;
     boolean writeToNormalizedCacheAsynchronously;
+    boolean canBeBatched;
     BatchPoller batchPoller;
 
     public Builder<T> operation(Operation operation) {
@@ -514,6 +517,11 @@ public final class RealApolloCall<T> implements ApolloQueryCall<T>, ApolloMutati
 
     @NotNull @Override public Builder<T> requestHeaders(@NotNull RequestHeaders requestHeaders) {
       this.requestHeaders = requestHeaders;
+      return this;
+    }
+
+    @NotNull @Override public Builder<T> canBeBatched(boolean canBeBatched) {
+      this.canBeBatched = canBeBatched;
       return this;
     }
 

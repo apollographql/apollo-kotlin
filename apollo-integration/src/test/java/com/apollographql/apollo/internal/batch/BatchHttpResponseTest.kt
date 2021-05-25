@@ -38,7 +38,7 @@ class BatchHttpResponseTest {
         .serverUrl(server.url("/"))
         .okHttpClient(okHttpClient)
         .dispatcher(immediateExecutor())
-        .batchingConfiguration(BatchConfig(batchingEnabled = true, batchIntervalMs = 50, maxBatchSize = 10))
+        .batchingConfiguration(BatchConfig(batchingEnabled = true, batchIntervalMs = 2000, maxBatchSize = 2))
         .build()
     apolloClient.startBatchPoller()
   }
@@ -50,6 +50,24 @@ class BatchHttpResponseTest {
   }
 
   @Test
+  fun testBatchingDisabled() {
+    val planetsQuery = AllPlanetsQuery()
+    val episodeQuery = EpisodeHeroNameQuery.builder().episode(Episode.EMPIRE).build()
+    val planetsCallback = PlanetsCallback()
+    val episodeCallback = EpisodeCallback()
+
+    server.enqueue(mockResponse("AllPlanetsNullableField.json"))
+    apolloClient.query(planetsQuery).toBuilder().canBeBatched(false).build().enqueue(planetsCallback)
+    assertThat(planetsCallback.exceptions).isEmpty()
+    assertThat(planetsCallback.responseList[0].data?.allPlanets()?.planets()?.size).isEqualTo(60)
+
+    server.enqueue(mockResponse("EpisodeHeroNameResponse.json"))
+    apolloClient.query(episodeQuery).toBuilder().canBeBatched(false).build().enqueue(episodeCallback)
+    assertThat(episodeCallback.exceptions).isEmpty()
+    assertThat(episodeCallback.responseList[0].data?.hero()?.name()).isEqualTo("R2-D2")
+  }
+
+  @Test
   fun testMultipleQueryBatchingSuccess() {
     val planetsQuery = AllPlanetsQuery()
     val episodeQuery = EpisodeHeroNameQuery.builder().episode(Episode.EMPIRE).build()
@@ -57,11 +75,8 @@ class BatchHttpResponseTest {
     val episodeCallback = EpisodeCallback()
 
     server.enqueue(mockResponse("BatchQueryResponse.json"))
-    apolloClient.batchQuery(planetsQuery).enqueue(planetsCallback)
-    apolloClient.batchQuery(episodeQuery).enqueue(episodeCallback)
-    assertThat(planetsCallback.responseList).isEmpty()
-    assertThat(episodeCallback.responseList).isEmpty()
-    Thread.sleep(100) // wait for batch call to trigger
+    apolloClient.query(planetsQuery).toBuilder().canBeBatched(true).build().enqueue(planetsCallback)
+    apolloClient.query(episodeQuery).toBuilder().canBeBatched(true).build().enqueue(episodeCallback)
     assertThat(planetsCallback.exceptions).isEmpty()
     assertThat(episodeCallback.exceptions).isEmpty()
     assertThat(planetsCallback.responseList[0].data?.allPlanets()?.planets()?.size).isEqualTo(60)
@@ -76,9 +91,8 @@ class BatchHttpResponseTest {
     val episodeCallback = EpisodeCallback()
 
     server.enqueue(MockResponse().setResponseCode(HttpURLConnection.HTTP_INTERNAL_ERROR).setBody("Server Error"))
-    apolloClient.batchQuery(planetsQuery).enqueue(planetsCallback)
-    apolloClient.batchQuery(episodeQuery).enqueue(episodeCallback)
-    Thread.sleep(100) // wait for batch call to trigger
+    apolloClient.query(planetsQuery).toBuilder().canBeBatched(true).build().enqueue(planetsCallback)
+    apolloClient.query(episodeQuery).toBuilder().canBeBatched(true).build().enqueue(episodeCallback)
     assertThat(planetsCallback.exceptions.size).isEqualTo(1)
     assertThat(episodeCallback.exceptions.size).isEqualTo(1)
   }

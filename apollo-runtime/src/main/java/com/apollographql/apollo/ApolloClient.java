@@ -168,12 +168,7 @@ public final class ApolloClient implements ApolloQueryCall.Factory, ApolloMutati
 
   @Override
   public <D extends Query.Data, T, V extends Query.Variables> ApolloQueryCall<T> query(@NotNull Query<D, T, V> query) {
-    return newCall(query, /* canBeBatched */ false);
-  }
-
-  @Override
-  public <D extends Query.Data, T, V extends Query.Variables> ApolloQueryCall<T> batchQuery(@NotNull Query<D, T, V> query) {
-    return newCall(query, /* canBeBatched */ true);
+    return newCall(query);
   }
 
   @Override
@@ -397,11 +392,6 @@ public final class ApolloClient implements ApolloQueryCall.Factory, ApolloMutati
 
   private <D extends Operation.Data, T, V extends Operation.Variables> RealApolloCall<T> newCall(
       @NotNull Operation<D, T, V> operation) {
-    return newCall(operation, false);
-  }
-
-  private <D extends Operation.Data, T, V extends Operation.Variables> RealApolloCall<T> newCall(
-      @NotNull Operation<D, T, V> operation, boolean canBeBatched) {
     return RealApolloCall.<T>builder()
         .operation(operation)
         .serverUrl(serverUrl)
@@ -424,7 +414,7 @@ public final class ApolloClient implements ApolloQueryCall.Factory, ApolloMutati
         .useHttpGetMethodForQueries(useHttpGetMethodForQueries)
         .useHttpGetMethodForPersistedQueries(useHttpGetMethodForPersistedQueries)
         .writeToNormalizedCacheAsynchronously(writeToNormalizedCacheAsynchronously)
-        .batchPoller(canBeBatched ? batchPoller : null)
+        .batchPoller(batchPoller)
         .build();
   }
 
