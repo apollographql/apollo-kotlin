@@ -31,12 +31,8 @@ internal object SchemaHelper {
         .readTimeout(readTimeoutSeconds, TimeUnit.SECONDS)
         .build()
   }
-
-  /**
-   * @param variables a map representing the variable as Json values
-   */
-  internal fun executeQuery(query: String, variables: Map<String, Any>, url: String, headers: Map<String, String>): Response {
-    val body = mapOf("query" to query, "variables" to variables).toJson().toByteArray().toRequestBody("application/json".toMediaTypeOrNull())
+  internal fun executeQuery(map: Map<String, Any?>, url: String, headers: Map<String, String>): Response {
+    val body = map.toJson().toByteArray().toRequestBody("application/json".toMediaTypeOrNull())
     val request = Request.Builder()
         .post(body)
         .apply {
@@ -56,5 +52,11 @@ internal object SchemaHelper {
     }
 
     return response
+  }
+  /**
+   * @param variables a map representing the variable as Json values
+   */
+  internal fun executeQuery(query: String, variables: Map<String, Any>, url: String, headers: Map<String, String>): Response {
+    return executeQuery(mapOf("query" to query, "variables" to variables), url, headers)
   }
 }
