@@ -37,7 +37,6 @@ package com.apollographql.apollo {
     method public int activeCallsCount();
     method public void addOnSubscriptionManagerStateChangeListener(com.apollographql.apollo.subscription.OnSubscriptionManagerStateChangeListener);
     method @Deprecated public com.apollographql.apollo.cache.normalized.ApolloStore! apolloStore();
-    method public <D extends com.apollographql.apollo.api.Operation.Data, T, V extends com.apollographql.apollo.api.Operation.Variables> com.apollographql.apollo.ApolloQueryCall<T!>! batchQuery(com.apollographql.apollo.api.Query<D!,T!,V!>);
     method public static com.apollographql.apollo.ApolloClient.Builder! builder();
     method public void clearHttpCache();
     method public void clearNormalizedCache(com.apollographql.apollo.cache.normalized.ApolloStoreOperation.Callback<java.lang.Boolean!>);
@@ -161,13 +160,13 @@ package com.apollographql.apollo {
   public static interface ApolloQueryCall.Builder<T> extends com.apollographql.apollo.ApolloCall.Builder<T> {
     method public com.apollographql.apollo.ApolloQueryCall<T!> build();
     method public com.apollographql.apollo.ApolloQueryCall.Builder<T!> cacheHeaders(com.apollographql.apollo.cache.CacheHeaders);
+    method public com.apollographql.apollo.ApolloQueryCall.Builder<T!> canBeBatched(boolean);
     method public com.apollographql.apollo.ApolloQueryCall.Builder<T!> httpCachePolicy(HttpCachePolicy.Policy);
     method public com.apollographql.apollo.ApolloQueryCall.Builder<T!> requestHeaders(com.apollographql.apollo.request.RequestHeaders);
     method public com.apollographql.apollo.ApolloQueryCall.Builder<T!> responseFetcher(com.apollographql.apollo.fetcher.ResponseFetcher);
   }
 
   public static interface ApolloQueryCall.Factory {
-    method public <D extends com.apollographql.apollo.api.Operation.Data, T, V extends com.apollographql.apollo.api.Operation.Variables> com.apollographql.apollo.ApolloQueryCall<T!>! batchQuery(com.apollographql.apollo.api.Query<D!,T!,V!>);
     method public <D extends com.apollographql.apollo.api.Operation.Data, T, V extends com.apollographql.apollo.api.Operation.Variables> com.apollographql.apollo.ApolloQueryCall<T!>! query(com.apollographql.apollo.api.Query<D!,T!,V!>);
   }
 
