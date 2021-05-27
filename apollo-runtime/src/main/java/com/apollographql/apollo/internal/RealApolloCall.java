@@ -26,6 +26,8 @@ import com.apollographql.apollo.interceptor.ApolloInterceptor;
 import com.apollographql.apollo.interceptor.ApolloInterceptorChain;
 import com.apollographql.apollo.interceptor.ApolloInterceptorFactory;
 import com.apollographql.apollo.interceptor.ApolloAutoPersistedOperationInterceptor;
+import com.apollographql.apollo.internal.batch.BatchPoller;
+import com.apollographql.apollo.internal.interceptor.ApolloBatchingInterceptor;
 import com.apollographql.apollo.internal.interceptor.ApolloCacheInterceptor;
 import com.apollographql.apollo.internal.interceptor.ApolloParseInterceptor;
 import com.apollographql.apollo.internal.interceptor.ApolloServerInterceptor;
@@ -78,6 +80,8 @@ public final class RealApolloCall<T> implements ApolloQueryCall<T>, ApolloMutati
   final boolean useHttpGetMethodForQueries;
   final boolean useHttpGetMethodForPersistedQueries;
   final boolean writeToNormalizedCacheAsynchronously;
+  final boolean canBeBatched;
+  final BatchPoller batchPoller;
 
   public static <T> Builder<T> builder() {
     return new Builder<>();
@@ -126,6 +130,8 @@ public final class RealApolloCall<T> implements ApolloQueryCall<T>, ApolloMutati
     useHttpGetMethodForPersistedQueries = builder.useHttpGetMethodForPersistedQueries;
     optimisticUpdates = builder.optimisticUpdates;
     writeToNormalizedCacheAsynchronously = builder.writeToNormalizedCacheAsynchronously;
+    canBeBatched = builder.canBeBatched;
+    batchPoller = builder.batchPoller;
     interceptorChain = prepareInterceptorChain(operation);
   }
 
@@ -322,7 +328,8 @@ public final class RealApolloCall<T> implements ApolloQueryCall<T>, ApolloMutati
         .useHttpGetMethodForQueries(useHttpGetMethodForQueries)
         .useHttpGetMethodForPersistedQueries(useHttpGetMethodForPersistedQueries)
         .optimisticUpdates(optimisticUpdates)
-        .writeToNormalizedCacheAsynchronously(writeToNormalizedCacheAsynchronously);
+        .writeToNormalizedCacheAsynchronously(writeToNormalizedCacheAsynchronously)
+        .batchPoller(batchPoller);
   }
 
   @SuppressWarnings("ResultOfMethodCallIgnored")
@@ -414,8 +421,16 @@ public final class RealApolloCall<T> implements ApolloQueryCall<T>, ApolloMutati
     }
     interceptors.add(new ApolloParseInterceptor(httpCache, apolloStore.networkResponseNormalizer(), responseFieldMapper,
         scalarTypeAdapters, logger));
-    interceptors.add(new ApolloServerInterceptor(serverUrl, httpCallFactory, httpCachePolicy, false, scalarTypeAdapters,
-        logger));
+
+    if (canBeBatched && batchPoller != null) {
+      if (useHttpGetMethodForQueries || useHttpGetMethodForPersistedQueries) {
+        throw new ApolloException("Batching is not supported when using HTTP Get method queries");
+      }
+      interceptors.add(new ApolloBatchingInterceptor(batchPoller));
+    } else {
+      interceptors.add(new ApolloServerInterceptor(serverUrl, httpCallFactory, httpCachePolicy, false,
+          scalarTypeAdapters, logger));
+    }
 
     return new RealApolloInterceptorChain(interceptors);
   }
@@ -444,6 +459,8 @@ public final class RealApolloCall<T> implements ApolloQueryCall<T>, ApolloMutati
     boolean useHttpGetMethodForQueries;
     boolean useHttpGetMethodForPersistedQueries;
     boolean writeToNormalizedCacheAsynchronously;
+    boolean canBeBatched;
+    BatchPoller batchPoller;
 
     public Builder<T> operation(Operation operation) {
       this.operation = operation;
@@ -500,6 +517,11 @@ public final class RealApolloCall<T> implements ApolloQueryCall<T>, ApolloMutati
 
     @NotNull @Override public Builder<T> requestHeaders(@NotNull RequestHeaders requestHeaders) {
       this.requestHeaders = requestHeaders;
+      return this;
+    }
+
+    @NotNull @Override public Builder<T> canBeBatched(boolean canBeBatched) {
+      this.canBeBatched = canBeBatched;
       return this;
     }
 
@@ -565,6 +587,11 @@ public final class RealApolloCall<T> implements ApolloQueryCall<T>, ApolloMutati
 
     public Builder<T> writeToNormalizedCacheAsynchronously(boolean writeToNormalizedCacheAsynchronously) {
       this.writeToNormalizedCacheAsynchronously = writeToNormalizedCacheAsynchronously;
+      return this;
+    }
+
+    public Builder<T> batchPoller(BatchPoller batchPoller) {
+      this.batchPoller = batchPoller;
       return this;
     }
 

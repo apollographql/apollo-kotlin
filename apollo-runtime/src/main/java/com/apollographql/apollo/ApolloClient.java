@@ -29,6 +29,10 @@ import com.apollographql.apollo.internal.RealApolloPrefetch;
 import com.apollographql.apollo.internal.RealApolloSubscriptionCall;
 import com.apollographql.apollo.internal.RealApolloStore;
 import com.apollographql.apollo.cache.normalized.internal.ResponseNormalizer;
+import com.apollographql.apollo.internal.batch.BatchConfig;
+import com.apollographql.apollo.internal.batch.BatchHttpCallFactoryImpl;
+import com.apollographql.apollo.internal.batch.BatchPoller;
+import com.apollographql.apollo.internal.batch.PeriodicJobSchedulerImpl;
 import com.apollographql.apollo.internal.subscription.NoOpSubscriptionManager;
 import com.apollographql.apollo.internal.subscription.RealSubscriptionManager;
 import com.apollographql.apollo.internal.subscription.SubscriptionManager;
@@ -98,6 +102,8 @@ public final class ApolloClient implements ApolloQueryCall.Factory, ApolloMutati
   private final boolean useHttpGetMethodForQueries;
   private final boolean useHttpGetMethodForPersistedQueries;
   private final boolean writeToNormalizedCacheAsynchronously;
+  private final BatchPoller batchPoller;
+  private final BatchConfig batchConfig;
 
   ApolloClient(HttpUrl serverUrl,
       Call.Factory httpCallFactory,
@@ -116,7 +122,8 @@ public final class ApolloClient implements ApolloQueryCall.Factory, ApolloMutati
       SubscriptionManager subscriptionManager,
       boolean useHttpGetMethodForQueries,
       boolean useHttpGetMethodForPersistedQueries,
-      boolean writeToNormalizedCacheAsynchronously) {
+      boolean writeToNormalizedCacheAsynchronously,
+      BatchConfig batchConfig) {
     this.serverUrl = serverUrl;
     this.httpCallFactory = httpCallFactory;
     this.httpCache = httpCache;
@@ -139,6 +146,10 @@ public final class ApolloClient implements ApolloQueryCall.Factory, ApolloMutati
     this.useHttpGetMethodForQueries = useHttpGetMethodForQueries;
     this.useHttpGetMethodForPersistedQueries = useHttpGetMethodForPersistedQueries;
     this.writeToNormalizedCacheAsynchronously = writeToNormalizedCacheAsynchronously;
+    this.batchConfig = batchConfig;
+    this.batchPoller = batchConfig.getBatchingEnabled() ? new BatchPoller(batchConfig, dispatcher,
+            new BatchHttpCallFactoryImpl(serverUrl, httpCallFactory, scalarTypeAdapters), logger,
+            new PeriodicJobSchedulerImpl()) : null;
   }
 
   @Override
@@ -224,6 +235,26 @@ public final class ApolloClient implements ApolloQueryCall.Factory, ApolloMutati
    */
   public void disableSubscriptions() {
     subscriptionManager.stop();
+  }
+
+  /**
+   * Starts the polling mechanism to check for queued queries to batch and send as a single HTTP call.
+   * Requires enabling batching in {@link BatchConfig}.
+   */
+  public void startBatchPoller() {
+    if (batchPoller != null) {
+      batchPoller.start();
+    }
+  }
+
+  /**
+   * Stops the polling mechanism to check for queued queries to batch.
+   * Requires enabling batching in {@link BatchConfig}.
+   */
+  public void stopBatchPoller() {
+    if (batchPoller != null) {
+      batchPoller.stop();
+    }
   }
 
   /**
@@ -383,6 +414,7 @@ public final class ApolloClient implements ApolloQueryCall.Factory, ApolloMutati
         .useHttpGetMethodForQueries(useHttpGetMethodForQueries)
         .useHttpGetMethodForPersistedQueries(useHttpGetMethodForPersistedQueries)
         .writeToNormalizedCacheAsynchronously(writeToNormalizedCacheAsynchronously)
+        .batchPoller(batchPoller)
         .build();
   }
 
@@ -415,6 +447,8 @@ public final class ApolloClient implements ApolloQueryCall.Factory, ApolloMutati
     boolean useHttpGetMethodForQueries;
     boolean useHttpGetMethodForPersistedQueries;
     boolean writeToNormalizedCacheAsynchronously;
+    boolean enableQueryBatching;
+    BatchConfig batchConfig;
 
     Builder() {
     }
@@ -438,6 +472,7 @@ public final class ApolloClient implements ApolloQueryCall.Factory, ApolloMutati
       useHttpGetMethodForQueries = apolloClient.useHttpGetMethodForQueries;
       useHttpGetMethodForPersistedQueries = apolloClient.useHttpGetMethodForPersistedQueries;
       writeToNormalizedCacheAsynchronously = apolloClient.writeToNormalizedCacheAsynchronously;
+      batchConfig = apolloClient.batchConfig;
     }
 
     /**
@@ -511,7 +546,7 @@ public final class ApolloClient implements ApolloQueryCall.Factory, ApolloMutati
      */
     public Builder normalizedCache(@NotNull NormalizedCacheFactory normalizedCacheFactory,
         @NotNull CacheKeyResolver keyResolver) {
-        return normalizedCache(normalizedCacheFactory, keyResolver, false);
+      return normalizedCache(normalizedCacheFactory, keyResolver, false);
     }
 
     /**
@@ -633,7 +668,6 @@ public final class ApolloClient implements ApolloQueryCall.Factory, ApolloMutati
     /**
      * <p>Sets the interceptor to use for auto persisted operations.</p>
      *
-     *
      * @param interceptorFactory interceptor to set
      * @return The {@link Builder} object to be used for chaining method calls
      */
@@ -643,9 +677,9 @@ public final class ApolloClient implements ApolloQueryCall.Factory, ApolloMutati
     }
 
     /**
-       * @param enableAutoPersistedQueries True if ApolloClient should enable Automatic Persisted Queries support. Default: false.
-       * @return The {@link Builder} object to be used for chaining method calls
-       */
+     * @param enableAutoPersistedQueries True if ApolloClient should enable Automatic Persisted Queries support. Default: false.
+     * @return The {@link Builder} object to be used for chaining method calls
+     */
     public Builder enableAutoPersistedQueries(boolean enableAutoPersistedQueries) {
       this.enableAutoPersistedQueries = enableAutoPersistedQueries;
       return this;
@@ -735,6 +769,17 @@ public final class ApolloClient implements ApolloQueryCall.Factory, ApolloMutati
     }
 
     /**
+     * Enable/Disable batching multiple queries into a single HTTP call by passing your own {@link BatchConfig}
+     * Allows configuring the polling interval and the max number of queries per batch
+     * @param batchConfig the batching configuration object
+     * @return The {@link Builder} object to be used for chaining method calls
+     */
+    public Builder batchingConfiguration(BatchConfig batchConfig) {
+      this.batchConfig = batchConfig;
+      return this;
+    }
+
+    /**
      * Builds the {@link ApolloClient} instance using the configured values.
      * <p>
      * Note that if the {@link #dispatcher} is not called, then a default {@link Executor} is used.
@@ -785,6 +830,11 @@ public final class ApolloClient implements ApolloQueryCall.Factory, ApolloMutati
             subscriptionConnectionParams, dispatcher, subscriptionHeartbeatTimeout, responseNormalizer, enableAutoPersistedSubscriptions);
       }
 
+      BatchConfig batchConfig = this.batchConfig;
+      if (batchConfig == null) {
+        batchConfig = new BatchConfig();
+      }
+
       return new ApolloClient(serverUrl,
           callFactory,
           httpCache,
@@ -802,7 +852,8 @@ public final class ApolloClient implements ApolloQueryCall.Factory, ApolloMutati
           subscriptionManager,
           useHttpGetMethodForQueries,
           useHttpGetMethodForPersistedQueries,
-          writeToNormalizedCacheAsynchronously);
+          writeToNormalizedCacheAsynchronously,
+          batchConfig);
     }
 
     private Executor defaultDispatcher() {

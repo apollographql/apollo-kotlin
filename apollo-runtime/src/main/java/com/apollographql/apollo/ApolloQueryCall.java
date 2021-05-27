@@ -108,6 +108,14 @@ public interface ApolloQueryCall<T> extends ApolloCall<T> {
      * @return The Builder
      */
     @NotNull Builder<T> requestHeaders(@NotNull RequestHeaders requestHeaders);
+
+    /**
+     * Allows this query to be part of a batch HTTP call to improve performance
+     *
+     * @param canBeBatched whether this query can be batched with others or not
+     * @return The Builder
+     */
+    @NotNull Builder<T> canBeBatched(boolean canBeBatched);
   }
 
   /**
