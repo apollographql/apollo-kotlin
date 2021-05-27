@@ -6,6 +6,10 @@ subscription CountString($to: Int!, $delayMillis: Int!)  {
   countString(to: $to, delayMillis: $delayMillis)
 }
 
-query CountQuery {
-  count
+subscription TimeSubscription  {
+  time
+}
+
+query TimeQuery {
+  time
 }
