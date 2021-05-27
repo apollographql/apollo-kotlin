@@ -10,9 +10,11 @@ import org.springframework.stereotype.Component
 import reactor.core.publisher.Flux
 import java.time.Duration
 
+
 @Component
 class RootQuery : Query {
   fun random(): Int = 42
+  fun count(): Int = 0
 }
 
 @Component

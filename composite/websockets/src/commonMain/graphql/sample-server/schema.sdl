@@ -1,6 +1,7 @@
 
 type Query {
   random: Int!
+  count: Int!
 }
 
 type Subscription {

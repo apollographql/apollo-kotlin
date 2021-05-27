@@ -124,7 +124,7 @@ class MemoryCache(
 }
 
 class MemoryCacheFactory(
-    private val maxSizeBytes: Int,
+    private val maxSizeBytes: Int = Int.MAX_VALUE,
     private val expireAfterMillis: Long = -1,
 ) : NormalizedCacheFactory() {
 

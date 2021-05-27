@@ -5,3 +5,7 @@ subscription Count($to: Int!, $delayMillis: Int!)  {
 subscription CountString($to: Int!, $delayMillis: Int!)  {
   countString(to: $to, delayMillis: $delayMillis)
 }
+
+query CountQuery {
+  count
+}
