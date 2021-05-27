@@ -95,7 +95,7 @@ actual class DefaultWebSocketEngine(
       isOpen.await()
       return WebSocketConnectionImpl(
           webSocket = webSocket,
-          messageChannel = messageChannel.apply { ensureNeverFrozen() }
+          messageChannel = messageChannel
       )
     } catch (e: Exception) {
       webSocket.cancel()
