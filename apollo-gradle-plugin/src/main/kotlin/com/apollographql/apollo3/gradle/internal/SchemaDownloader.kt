@@ -8,7 +8,11 @@ object SchemaDownloader {
       headers: Map<String, String>
   ): String {
 
-    val response = SchemaHelper.executeQuery(introspectionQuery, emptyMap(), endpoint, headers)
+    val body = mapOf(
+        "query" to introspectionQuery,
+        "operationName" to "IntrospectionQuery"
+    )
+    val response = SchemaHelper.executeQuery(body, endpoint, headers)
 
     return response.body.use { responseBody ->
       responseBody!!.string()
