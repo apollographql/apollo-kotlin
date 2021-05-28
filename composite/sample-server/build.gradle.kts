@@ -6,7 +6,9 @@ plugins {
 
 dependencies {
   api("com.expediagroup:graphql-kotlin-spring-server:4.1.0")
-  implementation(groovy.util.Eval.x(project, "x.dep.kotlin.coroutinesReactive"))
+  implementation(groovy.util.Eval.x(project, "x.dep.kotlin.coroutinesReactor").toString()) {
+    because("reactor must have the same version as the coroutines version")
+  }
 }
 
 application {

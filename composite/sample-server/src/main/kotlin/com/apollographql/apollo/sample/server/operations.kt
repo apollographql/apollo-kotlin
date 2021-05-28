@@ -10,9 +10,11 @@ import org.springframework.stereotype.Component
 import reactor.core.publisher.Flux
 import java.time.Duration
 
+
 @Component
 class RootQuery : Query {
   fun random(): Int = 42
+  fun time(): Int = 0
 }
 
 @Component
@@ -32,6 +34,13 @@ class RootSubscription : Subscription {
       if (delayMillis > 0) {
         delay(delayMillis.toLong())
       }
+    }
+  }.asPublisher()
+
+  fun time() = flow {
+    repeat(100) {
+      emit(it)
+      delay(100)
     }
   }.asPublisher()
 }

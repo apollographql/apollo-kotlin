@@ -61,6 +61,7 @@ ext.dep = [
         plugin             : "org.jetbrains.kotlin:kotlin-gradle-plugin:$versions.kotlin",
         coroutines         : "org.jetbrains.kotlinx:kotlinx-coroutines-core:$versions.kotlinCoroutines",
         coroutinesReactive : "org.jetbrains.kotlinx:kotlinx-coroutines-reactive:$versions.kotlinCoroutines",
+        coroutinesReactor  : "org.jetbrains.kotlinx:kotlinx-coroutines-reactor:$versions.kotlinCoroutines",
         coroutinesAndroid  : "org.jetbrains.kotlinx:kotlinx-coroutines-android:$versions.kotlinCoroutines",
         reflect            : "org.jetbrains.kotlin:kotlin-reflect:$versions.kotlin"
     ],

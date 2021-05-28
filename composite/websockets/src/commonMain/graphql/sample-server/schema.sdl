@@ -1,14 +1,11 @@
 
 type Query {
   random: Int!
+  time: Int!
 }
 
 type Subscription {
-  countString(to: Int!, delayMillis: Int!): String!
-  count(to: Int!, delayMillis: Int!): Int!
-}
-
-schema {
-  query: Query
-  subscription: Subscription
+  count(delayMillis: Int!, to: Int!): Int!
+  countString(delayMillis: Int!, to: Int!): String!
+  time: Int!
 }

@@ -5,6 +5,7 @@ import com.apollographql.apollo3.api.ApolloResponse
 import com.apollographql.apollo3.api.CustomScalarAdapters
 import com.apollographql.apollo3.api.Operation
 import com.apollographql.apollo3.api.Query
+import com.apollographql.apollo3.api.Subscription
 import com.apollographql.apollo3.api.exception.ApolloCompositeException
 import com.apollographql.apollo3.cache.CacheHeaders
 import com.apollographql.apollo3.cache.normalized.ApolloStore
@@ -16,6 +17,7 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.flow.single
 
 class ApolloCacheInterceptor(private val store: ApolloStore) : ApolloRequestInterceptor {
@@ -26,6 +28,17 @@ class ApolloCacheInterceptor(private val store: ApolloStore) : ApolloRequestInte
     val refetchPolicy = request.executionContext[RefetchPolicyContext]?.refetchPolicy
     val optimisticUpdates = request.executionContext[OptimisticUpdates]?.data
     val responseAdapterCache = request.executionContext[CustomScalarAdapters]!!
+
+    if (request.operation is Subscription) {
+      return proceed(request, chain).onEach { response ->
+        val cacheKeys = if (!response.isFromCache && response.data != null) {
+          store.writeOperation(request.operation, response.data!!, responseAdapterCache, CacheHeaders.NONE, publish = false)
+        } else {
+          emptySet()
+        }
+        store.publish(cacheKeys)
+      }
+    }
 
     return flow {
       var result = kotlin.runCatching {
@@ -106,7 +119,6 @@ class ApolloCacheInterceptor(private val store: ApolloStore) : ApolloRequestInte
         emptySet()
       }
       store.publish(optimisticKeys + cacheKeys)
-
     }
 
     return result.getOrThrow()
