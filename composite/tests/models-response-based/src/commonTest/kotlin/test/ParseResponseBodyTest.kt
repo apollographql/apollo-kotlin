@@ -4,6 +4,7 @@ import codegen.models.AllPlanetsQuery
 import codegen.models.AllPlanetsQuery.Data.AllPlanets.Planet.Companion.planetFragment
 import codegen.models.AllPlanetsQuery.Data.AllPlanets.Planet.FilmConnection.Film.Companion.filmFragment
 import codegen.models.fragment.PlanetFragment
+import com.apollographql.apollo3.api.composeResponseBody
 import com.apollographql.apollo3.api.parseResponseBody
 import readJson
 import kotlin.test.Test
@@ -37,5 +38,15 @@ class ParseResponseBodyTest {
     assertEquals(firstPlanet?.filmConnection?.films?.size, 5)
     assertEquals(firstPlanet?.filmConnection?.films?.get(0)?.filmFragment()?.title, "A New Hope")
     assertEquals(firstPlanet?.filmConnection?.films?.get(0)?.filmFragment()?.producers, listOf("Gary Kurtz", "Rick McCallum"))
+  }
+
+  @Test
+  @Throws(Exception::class)
+  fun operationJsonWriter() {
+    val expected = readJson("OperationJsonWriter.json")
+    val query = AllPlanetsQuery()
+    val data = query.parseResponseBody(expected).data
+    val actual = query.composeResponseBody(data!!, indent = "  ")
+    assertEquals(actual, expected)
   }
 }

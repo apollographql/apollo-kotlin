@@ -61,7 +61,7 @@ configure<com.apollographql.apollo3.gradle.api.ApolloExtension> {
           addGraphqlDirectory(file("../integration-tests/src/main/graphql/com/apollographql/apollo3/integration/${it.name}/"))
           rootPackageName.set("com.apollographql.apollo3.integration.${it.name}")
 
-          codegenModels.set("responseBased")
+          codegenModels.set("operationBased")
           withOutputDir {
             val kotlinMultiplatformExtension = project.kotlinMultiplatformExtension!!
 

@@ -1,7 +1,12 @@
 package test
 
 import codegen.models.AllPlanetsQuery
+import com.apollographql.apollo3.api.AnyAdapter
+import com.apollographql.apollo3.api.composeResponseBody
+import com.apollographql.apollo3.api.internal.json.BufferedSourceJsonReader
 import com.apollographql.apollo3.api.parseResponseBody
+import okio.Buffer
+import okio.BufferedSource
 import readJson
 import kotlin.test.Test
 import kotlin.test.assertEquals
@@ -34,5 +39,26 @@ class ParseResponseBodyTest {
     assertEquals(firstPlanet?.filmConnection?.films?.size, 5)
     assertEquals(firstPlanet?.filmConnection?.films?.get(0)?.filmFragment?.title, "A New Hope")
     assertEquals(firstPlanet?.filmConnection?.films?.get(0)?.filmFragment?.producers, listOf("Gary Kurtz", "Rick McCallum"))
+  }
+
+  @Test
+  @Throws(Exception::class)
+  fun operationJsonWriter() {
+    val expected = readJson("OperationJsonWriter.json")
+    val query = AllPlanetsQuery()
+    val data = query.parseResponseBody(expected).data
+    val actual = query.composeResponseBody(data!!, indent = "  ")
+
+    /**
+     * operationBased models do not respect the order of fields
+     * when fragments are involved so just check for Map equivalence
+     */
+    val expectedMap = AnyAdapter.fromResponse(
+        BufferedSourceJsonReader(Buffer().writeUtf8(expected))
+    )
+    val actualMap = AnyAdapter.fromResponse(
+        BufferedSourceJsonReader(Buffer().writeUtf8(actual))
+    )
+    assertEquals(expectedMap, actualMap)
   }
 }

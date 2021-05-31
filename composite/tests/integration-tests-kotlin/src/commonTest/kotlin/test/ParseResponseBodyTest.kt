@@ -133,16 +133,6 @@ class ParseResponseBodyTest {
 
   @Test
   @Throws(Exception::class)
-  fun operationJsonWriter() {
-    val expected = readResource("OperationJsonWriter.json")
-    val query = AllPlanetsQuery()
-    val data = query.parseResponseBody(expected).data
-    val actual = query.composeResponseBody(data!!, indent = "  ")
-    assertEquals(actual, expected)
-  }
-
-  @Test
-  @Throws(Exception::class)
   fun parseSuccessOperationRawResponse() {
     val query = AllPlanetsQuery()
     val response = query.parseResponseBody(readResource("AllPlanetsNullableField.json"))
