@@ -197,6 +197,11 @@ interface Service {
   /**
    *
    */
+  val generateKotlinModels: Property<Boolean>
+
+  /**
+   *
+   */
   val codegenModels: Property<String>
 
   /**
