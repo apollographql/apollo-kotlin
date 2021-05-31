@@ -3,6 +3,7 @@ package com.apollographql.apollo3.compiler.codegen.adapter
 import com.apollographql.apollo3.api.BTerm
 import com.apollographql.apollo3.api.BooleanExpression
 import com.apollographql.apollo3.api.Optional
+import com.apollographql.apollo3.compiler.applyIf
 import com.apollographql.apollo3.compiler.codegen.Identifier
 import com.apollographql.apollo3.compiler.codegen.CgContext
 import com.apollographql.apollo3.compiler.codegen.Identifier.RESPONSE_NAMES
@@ -48,7 +49,7 @@ internal fun readFromResponseCodeBlock(
     hasTypenameArgument: Boolean,
 ): CodeBlock {
   val (regularProperties, syntheticProperties) = model.properties.partition { !it.isSynthetic }
-  val prefix = model.properties.map { property ->
+  val prefix = regularProperties.map { property ->
     val variableInitializer = when {
       hasTypenameArgument && property.info.responseName == "__typename" -> CodeBlock.of(typename)
       (property.info.type is IrNonNullType && property.info.type.ofType is IrOptionalType) -> CodeBlock.of("%T", Optional.Absent::class.asClassName())
@@ -84,10 +85,13 @@ internal fun readFromResponseCodeBlock(
       .endControlFlow()
       .build()
 
+  val checkedProperties = mutableSetOf<String>()
+
   /**
    * Read the synthetic properties
    */
   val checkTypename = if (syntheticProperties.isNotEmpty()) {
+    checkedProperties.add(__typename)
     CodeBlock.builder()
         .beginControlFlow("check($__typename·!=·null)")
         .add("%S\n", "__typename was not found")
@@ -100,8 +104,20 @@ internal fun readFromResponseCodeBlock(
   val syntheticLoop = syntheticProperties.map { property ->
     val evaluate = MemberName("com.apollographql.apollo3.api", "evaluate")
     CodeBlock.builder()
-        .beginControlFlow("if(%L.%M(emptySet(),·$__typename))", property.condition.codeBlock(), evaluate)
         .add("$reader.rewind()\n")
+        .apply {
+          if(property.condition != BooleanExpression.True) {
+            add(
+                "var·%L:·%T·=·null\n",
+                context.layout.variableName(property.info.responseName),
+                context.resolver.resolveType(property.info.type).copy(nullable = !property.info.type.isOptional()),
+            )
+            beginControlFlow("if·(%L.%M(emptySet(),·$__typename))", property.condition.codeBlock(), evaluate)
+          } else {
+            checkedProperties.add(property.info.responseName)
+            add("val·")
+          }
+        }
         .add(
             CodeBlock.of(
                 "%L·=·%L.$fromJson($reader, $customScalarAdapters)\n",
@@ -109,7 +125,9 @@ internal fun readFromResponseCodeBlock(
                 context.resolver.resolveModelAdapter(property.info.type.modelId())
             )
         )
-        .endControlFlow()
+        .applyIf(property.condition != BooleanExpression.True) {
+          endControlFlow()
+        }
         .build()
   }.joinToCode("\n")
 
@@ -117,7 +135,15 @@ internal fun readFromResponseCodeBlock(
       .addStatement("return·%T(", context.resolver.resolveModel(model.id))
       .indent()
       .add(model.properties.filter { !it.hidden }.map { property ->
-        val maybeAssertNotNull = if (property.info.type is IrNonNullType && !property.info.type.isOptional()) "!!" else ""
+        val maybeAssertNotNull = if (
+            property.info.type is IrNonNullType
+            && !property.info.type.isOptional()
+            && !checkedProperties.contains(property.info.responseName)
+        ) {
+          "!!"
+        } else {
+          ""
+        }
         CodeBlock.of(
             "%L·=·%L%L",
             context.layout.propertyName(property.info.responseName),
@@ -131,9 +157,13 @@ internal fun readFromResponseCodeBlock(
 
   return CodeBlock.builder()
       .add(prefix)
+      .add("\n")
       .add(loop)
+      .add("\n")
       .add(checkTypename)
+      .add("\n")
       .add(syntheticLoop)
+      .add("\n")
       .add(suffix)
       .build()
 }
@@ -167,12 +197,16 @@ private fun IrProperty.writeToResponseCodeBlock(context: CgContext): CodeBlock {
     /**
      * Output types do not distinguish between null and absent
      */
-    builder.beginControlFlow("if·($value.$propertyName·!=·null)")
+    if (this.info.type !is IrNonNullType) {
+      builder.beginControlFlow("if·($value.$propertyName·!=·null)")
+    }
     builder.addStatement(
         "%L.${Identifier.toJson}($writer, $customScalarAdapters, $value.$propertyName)",
         adapterInitializer
     )
-    builder.endControlFlow()
+    if (this.info.type !is IrNonNullType) {
+      builder.endControlFlow()
+    }
   }
 
   return builder.build()
