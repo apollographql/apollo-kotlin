@@ -157,13 +157,13 @@ internal fun readFromResponseCodeBlock(
 
   return CodeBlock.builder()
       .add(prefix)
-      .add("\n")
+      .applyIf(prefix.isNotEmpty()) { add("\n") }
       .add(loop)
-      .add("\n")
+      .applyIf(loop.isNotEmpty()) { add("\n") }
       .add(checkTypename)
-      .add("\n")
+      .applyIf(checkTypename.isNotEmpty()) { add("\n") }
       .add(syntheticLoop)
-      .add("\n")
+      .applyIf(syntheticLoop.isNotEmpty()) { add("\n") }
       .add(suffix)
       .build()
 }
