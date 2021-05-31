@@ -53,11 +53,12 @@ class BasicTest {
     assertFalse(hasErrors())
     assertEquals(data?.hero?.name, "R2-D2")
     assertEquals(data?.hero?.name, "R2-D2")
-    val hero = data?.hero?.onDroid!!
+    val hero = data?.hero?.asDroid!!
     assertEquals(hero.friends?.size, 3)
+    assertEquals(hero.name, "R2-D2")
     assertEquals(hero.friends?.get(0)?.name, "Luke Skywalker")
     assertEquals(hero.friends?.get(0)?.name, "Luke Skywalker")
-    assertEquals((hero.friends?.get(0)?.onHuman)?.height, 1.72)
+    assertEquals((hero.friends?.get(0)?.asHuman)?.height, 1.72)
   }
 
 
@@ -67,8 +68,9 @@ class BasicTest {
       MergedFieldWithSameShapeQuery(Episode.NEWHOPE)
   ) {
     assertFalse(hasErrors())
-    assertTrue(data?.hero?.onDroid != null)
-    assertEquals(data?.hero?.onDroid?.property, "Astromech")
+    assertTrue(data?.hero?.asDroid != null)
+    assertEquals(data?.hero?.asDroid?.__typename, "Droid")
+    assertEquals(data?.hero?.asDroid?.property, "Astromech")
   }
 
   @Test
@@ -77,7 +79,8 @@ class BasicTest {
       MergedFieldWithSameShapeQuery(Episode.NEWHOPE)
   ) {
     assertFalse(hasErrors())
-    assertTrue(data?.hero?.onHuman != null)
-    assertEquals(data?.hero?.onHuman?.property, "Tatooine")
+    assertTrue(data?.hero?.asHuman != null)
+    assertEquals(data?.hero?.asHuman?.__typename, "Human")
+    assertEquals(data?.hero?.asHuman?.property, "Tatooine")
   }
 }

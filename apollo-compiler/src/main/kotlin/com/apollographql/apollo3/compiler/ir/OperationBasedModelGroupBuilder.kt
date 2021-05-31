@@ -176,8 +176,10 @@ internal class OperationBasedModelGroupBuilder(
         }.entries.map { entry ->
           val inlineFragmentsWithSameKey = entry.value
           val typeCondition = entry.key.typeCondition
+          val prefix = if (collectAllInlineFragmentFields) "as" else "on"
+
           val childInfo = IrFieldInfo(
-              responseName = "on${entry.key.toName()}",
+              responseName = "$prefix${entry.key.toName()}",
               description = "Synthetic field for inline fragment on $typeCondition",
               deprecationReason = null,
               type = IrModelType(IrUnknownModelId)
@@ -186,7 +188,11 @@ internal class OperationBasedModelGroupBuilder(
           val possibleTypes = schema.possibleTypes(typeCondition)
           val childCondition = entry.key.condition.and(BooleanExpression.Element(BPossibleTypes(possibleTypes))).simplify()
 
-          val childSelections = inlineFragmentsWithSameKey.flatMap { it.selectionSet.selections }
+          val childSelections = inlineFragmentsWithSameKey.flatMap { it.selectionSet.selections }.toMutableList()
+          if (collectAllInlineFragmentFields) {
+            childSelections.addAll(selections.filterIsInstance<GQLField>())
+          }
+
           buildField(
               root = root,
               path = selfPath,
