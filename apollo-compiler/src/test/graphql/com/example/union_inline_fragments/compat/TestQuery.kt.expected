@@ -40,79 +40,16 @@ class TestQuery : Query<TestQuery.Data> {
     fun searchFilterNotNull(): List<Search>? = search?.filterNotNull()
   }
 
-  data class AsCharacter1(
-    /**
-     * The name of the character
-     */
-    val name: String,
-    val __typename: String
-  )
-
-  data class AsCharacter2(
-    /**
-     * The movie this character first appears in
-     */
-    val firstAppearsIn: Episode,
-    val __typename: String
-  )
-
-  data class Friend1(
+  data class Search(
     val __typename: String,
     /**
      * Synthetic field for inline fragment on Character
      */
-    val asCharacter: AsCharacter2?
-  )
-
-  data class AsHuman(
+    val asCharacter: AsCharacter?,
     /**
-     * The home planet of the human, or null if unknown
+     * Synthetic field for inline fragment on Starship
      */
-    val homePlanet: String?,
-    /**
-     * This human's friends, or an empty list if they have none
-     */
-    val friends: List<Friend1?>?,
-    val __typename: String
-  ) {
-    fun friendsFilterNotNull(): List<Friend1>? = friends?.filterNotNull()
-  }
-
-  data class Friend2(
-    /**
-     * The ID of the character
-     */
-    val id: String
-  )
-
-  data class AsDroid(
-    /**
-     * This droid's primary function
-     */
-    val primaryFunction: String?,
-    /**
-     * This droid's friends, or an empty list if they have none
-     */
-    val friends: List<Friend2?>?,
-    val __typename: String
-  ) {
-    fun friendsFilterNotNull(): List<Friend2>? = friends?.filterNotNull()
-  }
-
-  data class Friend(
-    val __typename: String,
-    /**
-     * Synthetic field for inline fragment on Character
-     */
-    val asCharacter: AsCharacter1?,
-    /**
-     * Synthetic field for inline fragment on Human
-     */
-    val asHuman: AsHuman?,
-    /**
-     * Synthetic field for inline fragment on Droid
-     */
-    val asDroid: AsDroid?
+    val asStarship: AsStarship?
   )
 
   data class AsCharacter(
@@ -127,11 +64,78 @@ class TestQuery : Query<TestQuery.Data> {
     /**
      * The friends of the character, or an empty list if they have none
      */
-    val friends: List<Friend?>?,
+    val friends: List<Friend2?>?,
     val __typename: String
+  ) {
+    fun friendsFilterNotNull(): List<Friend2>? = friends?.filterNotNull()
+  }
+
+  data class Friend2(
+    val __typename: String,
+    /**
+     * The name of the character
+     */
+    val name: String,
+    /**
+     * Synthetic field for inline fragment on Human
+     */
+    val asHuman: AsHuman?,
+    /**
+     * Synthetic field for inline fragment on Droid
+     */
+    val asDroid: AsDroid?
+  )
+
+  data class AsHuman(
+    /**
+     * The home planet of the human, or null if unknown
+     */
+    val homePlanet: String?,
+    /**
+     * This human's friends, or an empty list if they have none
+     */
+    val friends: List<Friend?>?,
+    val __typename: String,
+    /**
+     * The name of the character
+     */
+    val name: String
   ) {
     fun friendsFilterNotNull(): List<Friend>? = friends?.filterNotNull()
   }
+
+  data class Friend(
+    val __typename: String,
+    /**
+     * The movie this character first appears in
+     */
+    val firstAppearsIn: Episode
+  )
+
+  data class AsDroid(
+    /**
+     * This droid's primary function
+     */
+    val primaryFunction: String?,
+    /**
+     * This droid's friends, or an empty list if they have none
+     */
+    val friends: List<Friend1?>?,
+    val __typename: String,
+    /**
+     * The name of the character
+     */
+    val name: String
+  ) {
+    fun friendsFilterNotNull(): List<Friend1>? = friends?.filterNotNull()
+  }
+
+  data class Friend1(
+    /**
+     * The ID of the character
+     */
+    val id: String
+  )
 
   data class AsStarship(
     /**
@@ -139,18 +143,6 @@ class TestQuery : Query<TestQuery.Data> {
      */
     val name: String,
     val __typename: String
-  )
-
-  data class Search(
-    val __typename: String,
-    /**
-     * Synthetic field for inline fragment on Character
-     */
-    val asCharacter: AsCharacter?,
-    /**
-     * Synthetic field for inline fragment on Starship
-     */
-    val asStarship: AsStarship?
   )
 
   companion object {

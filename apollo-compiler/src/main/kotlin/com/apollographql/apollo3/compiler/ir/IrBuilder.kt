@@ -75,14 +75,16 @@ internal class IrBuilder(
         allFragmentDefinitions = allFragmentDefinitions,
         fieldMerger = this,
         insertFragmentSyntheticField = false,
-        collectAllInlineFragmentFields = false
+        collectAllInlineFragmentFields = false,
+        mergeTrivialInlineFragments = false,
     )
     MODELS_COMPAT -> OperationBasedModelGroupBuilder(
         schema = schema,
         allFragmentDefinitions = allFragmentDefinitions,
         fieldMerger = this,
         insertFragmentSyntheticField = true,
-        collectAllInlineFragmentFields = true
+        collectAllInlineFragmentFields = true,
+        mergeTrivialInlineFragments = true
     )
     else -> error("Unknown codegenModels: '$codegenModels'")
   }

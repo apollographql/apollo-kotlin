@@ -118,7 +118,7 @@ object TestQuery_ResponseAdapter {
             TestQuery.AsCharacter {
           var id: String? = null
           var name: String? = null
-          var friends: List<TestQuery.Friend?>? = null
+          var friends: List<TestQuery.Friend2?>? = null
           var __typename: String? = null
 
           while(true) {
@@ -159,29 +159,24 @@ object TestQuery_ResponseAdapter {
           StringAdapter.toJson(writer, customScalarAdapters, value.__typename)
         }
 
-        object Friend : Adapter<TestQuery.Friend> {
-          val RESPONSE_NAMES: List<String> = listOf("__typename")
+        object Friend : Adapter<TestQuery.Friend2> {
+          val RESPONSE_NAMES: List<String> = listOf("__typename", "name")
 
           override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters):
-              TestQuery.Friend {
+              TestQuery.Friend2 {
             var __typename: String? = null
+            var name: String? = null
 
             while(true) {
               when (reader.selectName(RESPONSE_NAMES)) {
                 0 -> __typename = StringAdapter.fromJson(reader, customScalarAdapters)
+                1 -> name = StringAdapter.fromJson(reader, customScalarAdapters)
                 else -> break
               }
             }
 
             check(__typename != null) {
               "__typename was not found"
-            }
-
-            reader.rewind()
-            var asCharacter: TestQuery.AsCharacter1? = null
-            if (possibleTypes("Droid","Human").evaluate(emptySet(), __typename)) {
-              asCharacter = com.example.union_inline_fragments.adapter.TestQuery_ResponseAdapter.Data.Search.AsCharacter.Friend.AsCharacter.fromJson(reader,
-                  customScalarAdapters)
             }
 
             reader.rewind()
@@ -198,9 +193,9 @@ object TestQuery_ResponseAdapter {
                   customScalarAdapters)
             }
 
-            return TestQuery.Friend(
+            return TestQuery.Friend2(
               __typename = __typename,
-              asCharacter = asCharacter,
+              name = name!!,
               asHuman = asHuman,
               asDroid = asDroid
             )
@@ -209,15 +204,13 @@ object TestQuery_ResponseAdapter {
           override fun toJson(
             writer: JsonWriter,
             customScalarAdapters: CustomScalarAdapters,
-            value: TestQuery.Friend
+            value: TestQuery.Friend2
           ) {
             writer.name("__typename")
             StringAdapter.toJson(writer, customScalarAdapters, value.__typename)
 
-            if (value.asCharacter != null) {
-              com.example.union_inline_fragments.adapter.TestQuery_ResponseAdapter.Data.Search.AsCharacter.Friend.AsCharacter.toJson(writer,
-                  customScalarAdapters, value.asCharacter)
-            }
+            writer.name("name")
+            StringAdapter.toJson(writer, customScalarAdapters, value.name)
 
             if (value.asHuman != null) {
               com.example.union_inline_fragments.adapter.TestQuery_ResponseAdapter.Data.Search.AsCharacter.Friend.AsHuman.toJson(writer,
@@ -230,56 +223,23 @@ object TestQuery_ResponseAdapter {
             }
           }
 
-          object AsCharacter : Adapter<TestQuery.AsCharacter1> {
-            val RESPONSE_NAMES: List<String> = listOf("name", "__typename")
-
-            override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters):
-                TestQuery.AsCharacter1 {
-              var name: String? = null
-              var __typename: String? = null
-
-              while(true) {
-                when (reader.selectName(RESPONSE_NAMES)) {
-                  0 -> name = StringAdapter.fromJson(reader, customScalarAdapters)
-                  1 -> __typename = StringAdapter.fromJson(reader, customScalarAdapters)
-                  else -> break
-                }
-              }
-
-              return TestQuery.AsCharacter1(
-                name = name!!,
-                __typename = __typename!!
-              )
-            }
-
-            override fun toJson(
-              writer: JsonWriter,
-              customScalarAdapters: CustomScalarAdapters,
-              value: TestQuery.AsCharacter1
-            ) {
-              writer.name("name")
-              StringAdapter.toJson(writer, customScalarAdapters, value.name)
-
-              writer.name("__typename")
-              StringAdapter.toJson(writer, customScalarAdapters, value.__typename)
-            }
-          }
-
           object AsHuman : Adapter<TestQuery.AsHuman> {
-            val RESPONSE_NAMES: List<String> = listOf("homePlanet", "friends", "__typename")
+            val RESPONSE_NAMES: List<String> = listOf("homePlanet", "friends", "__typename", "name")
 
             override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters):
                 TestQuery.AsHuman {
               var homePlanet: String? = null
-              var friends: List<TestQuery.Friend1?>? = null
+              var friends: List<TestQuery.Friend?>? = null
               var __typename: String? = null
+              var name: String? = null
 
               while(true) {
                 when (reader.selectName(RESPONSE_NAMES)) {
                   0 -> homePlanet = NullableStringAdapter.fromJson(reader, customScalarAdapters)
-                  1 -> friends = Friend.obj(true).nullable().list().nullable().fromJson(reader,
+                  1 -> friends = Friend.obj().nullable().list().nullable().fromJson(reader,
                       customScalarAdapters)
                   2 -> __typename = StringAdapter.fromJson(reader, customScalarAdapters)
+                  3 -> name = StringAdapter.fromJson(reader, customScalarAdapters)
                   else -> break
                 }
               }
@@ -287,7 +247,8 @@ object TestQuery_ResponseAdapter {
               return TestQuery.AsHuman(
                 homePlanet = homePlanet,
                 friends = friends,
-                __typename = __typename!!
+                __typename = __typename!!,
+                name = name!!
               )
             }
 
@@ -300,104 +261,63 @@ object TestQuery_ResponseAdapter {
               NullableStringAdapter.toJson(writer, customScalarAdapters, value.homePlanet)
 
               writer.name("friends")
-              Friend.obj(true).nullable().list().nullable().toJson(writer, customScalarAdapters,
+              Friend.obj().nullable().list().nullable().toJson(writer, customScalarAdapters,
                   value.friends)
 
               writer.name("__typename")
               StringAdapter.toJson(writer, customScalarAdapters, value.__typename)
+
+              writer.name("name")
+              StringAdapter.toJson(writer, customScalarAdapters, value.name)
             }
 
-            object Friend : Adapter<TestQuery.Friend1> {
-              val RESPONSE_NAMES: List<String> = listOf("__typename")
+            object Friend : Adapter<TestQuery.Friend> {
+              val RESPONSE_NAMES: List<String> = listOf("__typename", "firstAppearsIn")
 
               override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters):
-                  TestQuery.Friend1 {
+                  TestQuery.Friend {
                 var __typename: String? = null
+                var firstAppearsIn: Episode? = null
 
                 while(true) {
                   when (reader.selectName(RESPONSE_NAMES)) {
                     0 -> __typename = StringAdapter.fromJson(reader, customScalarAdapters)
+                    1 -> firstAppearsIn = Episode_ResponseAdapter.fromJson(reader,
+                        customScalarAdapters)
                     else -> break
                   }
                 }
 
-                check(__typename != null) {
-                  "__typename was not found"
-                }
-
-                reader.rewind()
-                var asCharacter: TestQuery.AsCharacter2? = null
-                if (possibleTypes("Droid","Human").evaluate(emptySet(), __typename)) {
-                  asCharacter = com.example.union_inline_fragments.adapter.TestQuery_ResponseAdapter.Data.Search.AsCharacter.Friend.AsHuman.Friend.AsCharacter.fromJson(reader,
-                      customScalarAdapters)
-                }
-
-                return TestQuery.Friend1(
-                  __typename = __typename,
-                  asCharacter = asCharacter
+                return TestQuery.Friend(
+                  __typename = __typename!!,
+                  firstAppearsIn = firstAppearsIn!!
                 )
               }
 
               override fun toJson(
                 writer: JsonWriter,
                 customScalarAdapters: CustomScalarAdapters,
-                value: TestQuery.Friend1
+                value: TestQuery.Friend
               ) {
                 writer.name("__typename")
                 StringAdapter.toJson(writer, customScalarAdapters, value.__typename)
 
-                if (value.asCharacter != null) {
-                  com.example.union_inline_fragments.adapter.TestQuery_ResponseAdapter.Data.Search.AsCharacter.Friend.AsHuman.Friend.AsCharacter.toJson(writer,
-                      customScalarAdapters, value.asCharacter)
-                }
-              }
-
-              object AsCharacter : Adapter<TestQuery.AsCharacter2> {
-                val RESPONSE_NAMES: List<String> = listOf("firstAppearsIn", "__typename")
-
-                override fun fromJson(reader: JsonReader,
-                    customScalarAdapters: CustomScalarAdapters): TestQuery.AsCharacter2 {
-                  var firstAppearsIn: Episode? = null
-                  var __typename: String? = null
-
-                  while(true) {
-                    when (reader.selectName(RESPONSE_NAMES)) {
-                      0 -> firstAppearsIn = Episode_ResponseAdapter.fromJson(reader,
-                          customScalarAdapters)
-                      1 -> __typename = StringAdapter.fromJson(reader, customScalarAdapters)
-                      else -> break
-                    }
-                  }
-
-                  return TestQuery.AsCharacter2(
-                    firstAppearsIn = firstAppearsIn!!,
-                    __typename = __typename!!
-                  )
-                }
-
-                override fun toJson(
-                  writer: JsonWriter,
-                  customScalarAdapters: CustomScalarAdapters,
-                  value: TestQuery.AsCharacter2
-                ) {
-                  writer.name("firstAppearsIn")
-                  Episode_ResponseAdapter.toJson(writer, customScalarAdapters, value.firstAppearsIn)
-
-                  writer.name("__typename")
-                  StringAdapter.toJson(writer, customScalarAdapters, value.__typename)
-                }
+                writer.name("firstAppearsIn")
+                Episode_ResponseAdapter.toJson(writer, customScalarAdapters, value.firstAppearsIn)
               }
             }
           }
 
           object AsDroid : Adapter<TestQuery.AsDroid> {
-            val RESPONSE_NAMES: List<String> = listOf("primaryFunction", "friends", "__typename")
+            val RESPONSE_NAMES: List<String> = listOf("primaryFunction", "friends", "__typename",
+                "name")
 
             override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters):
                 TestQuery.AsDroid {
               var primaryFunction: String? = null
-              var friends: List<TestQuery.Friend2?>? = null
+              var friends: List<TestQuery.Friend1?>? = null
               var __typename: String? = null
+              var name: String? = null
 
               while(true) {
                 when (reader.selectName(RESPONSE_NAMES)) {
@@ -406,6 +326,7 @@ object TestQuery_ResponseAdapter {
                   1 -> friends = Friend.obj().nullable().list().nullable().fromJson(reader,
                       customScalarAdapters)
                   2 -> __typename = StringAdapter.fromJson(reader, customScalarAdapters)
+                  3 -> name = StringAdapter.fromJson(reader, customScalarAdapters)
                   else -> break
                 }
               }
@@ -413,7 +334,8 @@ object TestQuery_ResponseAdapter {
               return TestQuery.AsDroid(
                 primaryFunction = primaryFunction,
                 friends = friends,
-                __typename = __typename!!
+                __typename = __typename!!,
+                name = name!!
               )
             }
 
@@ -431,13 +353,16 @@ object TestQuery_ResponseAdapter {
 
               writer.name("__typename")
               StringAdapter.toJson(writer, customScalarAdapters, value.__typename)
+
+              writer.name("name")
+              StringAdapter.toJson(writer, customScalarAdapters, value.name)
             }
 
-            object Friend : Adapter<TestQuery.Friend2> {
+            object Friend : Adapter<TestQuery.Friend1> {
               val RESPONSE_NAMES: List<String> = listOf("id")
 
               override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters):
-                  TestQuery.Friend2 {
+                  TestQuery.Friend1 {
                 var id: String? = null
 
                 while(true) {
@@ -447,7 +372,7 @@ object TestQuery_ResponseAdapter {
                   }
                 }
 
-                return TestQuery.Friend2(
+                return TestQuery.Friend1(
                   id = id!!
                 )
               }
@@ -455,7 +380,7 @@ object TestQuery_ResponseAdapter {
               override fun toJson(
                 writer: JsonWriter,
                 customScalarAdapters: CustomScalarAdapters,
-                value: TestQuery.Friend2
+                value: TestQuery.Friend1
               ) {
                 writer.name("id")
                 StringAdapter.toJson(writer, customScalarAdapters, value.id)

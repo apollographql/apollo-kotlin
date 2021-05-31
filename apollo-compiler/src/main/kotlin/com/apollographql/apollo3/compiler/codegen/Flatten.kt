@@ -14,34 +14,42 @@ private fun resolveNameClashes(usedNames: MutableSet<String>, modelName: String)
 }
 
 private class State {
-  val usedNames = mutableSetOf<String>()
-  val collectedIrModelGroups = mutableListOf<IrModelGroup>()
 }
 
 private fun List<IrModelGroup>.flatten(): List<IrModelGroup> {
-  val state = State()
+  val usedNames = mutableSetOf<String>()
+  val collectedIrModelGroups = mutableListOf<IrModelGroup>()
+
   return map {
-    it.walk2(state)
-  } + state.collectedIrModelGroups
+    it.walk2(usedNames, collectedIrModelGroups)
+  } + collectedIrModelGroups
 }
 
 /**
  * walk2 potentially detaches the model groups
  */
-private fun IrModelGroup.walk2(state: State): IrModelGroup {
+private fun IrModelGroup.walk2(usedNames: MutableSet<String>, collectedIrModelGroups: MutableList<IrModelGroup>): IrModelGroup {
   return copy(
       models = models.map { model ->
-        val name = resolveNameClashes(state.usedNames, model.modelName)
         val nestedModelGroups = mutableListOf<IrModelGroup>()
         model.modelGroups.forEach { modelGroup ->
           if (modelGroup.models.singleOrNull()?.modelName == "Fragments") {
             nestedModelGroups.add(modelGroup)
           } else {
-            state.collectedIrModelGroups.add(modelGroup.walk2(state))
+            /**
+             * output the models in pre-order
+             */
+            val collected = mutableListOf<IrModelGroup>()
+            collectedIrModelGroups.add(modelGroup.walk2(usedNames, collected))
+            collectedIrModelGroups.addAll(collected)
           }
         }
         model.copy(
-            modelName = name,
+            /**
+             * This tries to mimic the 2.x name resolution, which is slightly counter intuitive as the models encountered first
+             * will have a larger index
+             */
+            modelName = resolveNameClashes(usedNames, model.modelName),
             modelGroups = nestedModelGroups
         )
       }

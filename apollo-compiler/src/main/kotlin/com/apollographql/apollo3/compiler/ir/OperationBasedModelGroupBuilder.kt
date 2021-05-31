@@ -13,6 +13,7 @@ import com.apollographql.apollo3.ast.GQLFragmentSpread
 import com.apollographql.apollo3.ast.GQLInlineFragment
 import com.apollographql.apollo3.ast.GQLSelection
 import com.apollographql.apollo3.ast.Schema
+import com.apollographql.apollo3.ast.mergeTrivialInlineFragments
 
 internal class OperationBasedModelGroupBuilder(
     private val schema: Schema,
@@ -20,7 +21,9 @@ internal class OperationBasedModelGroupBuilder(
     private val fieldMerger: FieldMerger,
     private val insertFragmentSyntheticField: Boolean,
     private val collectAllInlineFragmentFields: Boolean,
+    private val mergeTrivialInlineFragments: Boolean
 ) : ModelGroupBuilder {
+
   override fun buildOperationData(selections: List<GQLSelection>, rawTypeName: String, operationName: String): IrModelGroup {
     val root = IrModelRoot(
         IrRootKind.OperationData,
@@ -33,11 +36,16 @@ internal class OperationBasedModelGroupBuilder(
         deprecationReason = null
     )
 
+    val mergedSelections = if (mergeTrivialInlineFragments) {
+      selections.mergeTrivialInlineFragments(schema, rawTypeName)
+    } else {
+      selections
+    }
     return buildField(
         root = root,
         path = "",
         info = info,
-        selections = selections.map { SelectionWithParent(it, rawTypeName) },
+        selections = mergedSelections.map { SelectionWithParent(it, rawTypeName) },
         condition = BooleanExpression.True,
         isSynthetic = false
     ).toModelGroup()!!
@@ -60,11 +68,18 @@ internal class OperationBasedModelGroupBuilder(
     )
 
     val fragmentDefinition = allFragmentDefinitions[fragmentName]!!
+
+    val mergedSelections = if (mergeTrivialInlineFragments) {
+      fragmentDefinition.selectionSet.selections.mergeTrivialInlineFragments(schema, fragmentDefinition.typeCondition.name)
+    } else {
+      fragmentDefinition.selectionSet.selections
+    }
+
     return buildField(
         root = root,
         path = "",
         info = info,
-        selections = fragmentDefinition.selectionSet.selections.map { SelectionWithParent(it, fragmentDefinition.typeCondition.name) },
+        selections = mergedSelections.map { SelectionWithParent(it, fragmentDefinition.typeCondition.name) },
         condition = BooleanExpression.True,
         isSynthetic = false
     ).toModelGroup()!!
@@ -123,7 +138,7 @@ internal class OperationBasedModelGroupBuilder(
      */
     val fieldsWithParent = selections.mapNotNull {
       if (it.selection is GQLField) {
-        FieldWithParent(it.selection as GQLField, it.parent)
+        FieldWithParent(it.selection, it.parent)
       } else {
         null
       }

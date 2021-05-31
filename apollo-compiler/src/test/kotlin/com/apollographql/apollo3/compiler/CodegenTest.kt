@@ -146,9 +146,9 @@ class CodegenTest(private val folder: File, private val codegenModels: String, p
           "%-50s %-20s %20s %20s %20s\n",
           "aggregate",
           name,
-          filtered.map { it.linesOfCode }.reduce { acc, i -> acc + i }.toString(),
-          filtered.map { it.codegenDuration }.reduce { acc, measurement -> acc + measurement }.toString(),
-          filtered.map { it.compileDuration }.reduce { acc, measurement -> acc + measurement }.toString(),
+          filtered.map { it.linesOfCode }.fold(0L) { acc, i -> acc + i }.toString(),
+          filtered.map { it.codegenDuration }.fold(Duration.ZERO) { acc, measurement -> acc + measurement }.toString(),
+          filtered.map { it.compileDuration }.fold(Duration.ZERO) { acc, measurement -> acc + measurement }.toString(),
       )
     }
     @AfterClass
