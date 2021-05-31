@@ -21,7 +21,7 @@ class ParseResponseBodyTest {
 
     assertEquals(data!!.allPlanets?.planets?.size, 60)
     val planets = data.allPlanets?.planets?.mapNotNull {
-      it?.planetFragment?.name
+      it?.fragments?.planetFragment?.name
     }
     assertEquals(planets, ("Tatooine, Alderaan, Yavin IV, Hoth, Dagobah, Bespin, Endor, Naboo, "
         + "Coruscant, Kamino, Geonosis, Utapau, Mustafar, Kashyyyk, Polis Massa, Mygeeto, Felucia, Cato Neimoidia, "
@@ -33,12 +33,12 @@ class ParseResponseBodyTest {
         .map { it.trim() }
     )
     val firstPlanet = data.allPlanets?.planets?.get(0)
-    assertEquals(firstPlanet?.planetFragment?.climates, listOf("arid"))
-    assertEquals(firstPlanet?.planetFragment?.surfaceWater, 1.0)
+    assertEquals(firstPlanet?.fragments?.planetFragment?.climates, listOf("arid"))
+    assertEquals(firstPlanet?.fragments?.planetFragment?.surfaceWater, 1.0)
     assertEquals(firstPlanet?.filmConnection?.totalCount, 5)
     assertEquals(firstPlanet?.filmConnection?.films?.size, 5)
-    assertEquals(firstPlanet?.filmConnection?.films?.get(0)?.filmFragment?.title, "A New Hope")
-    assertEquals(firstPlanet?.filmConnection?.films?.get(0)?.filmFragment?.producers, listOf("Gary Kurtz", "Rick McCallum"))
+    assertEquals(firstPlanet?.filmConnection?.films?.get(0)?.fragments?.filmFragment?.title, "A New Hope")
+    assertEquals(firstPlanet?.filmConnection?.films?.get(0)?.fragments?.filmFragment?.producers, listOf("Gary Kurtz", "Rick McCallum"))
   }
 
   @Test

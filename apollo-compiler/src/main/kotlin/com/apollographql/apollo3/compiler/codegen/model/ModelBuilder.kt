@@ -22,8 +22,8 @@ class ModelBuilder(
     private val context: CgContext,
     private val model: IrModel,
     private val superClassName: ClassName?,
-    private val path: List<String>
-)  {
+    private val path: List<String>,
+) {
   private val nestedBuilders = model.modelGroups.flatMap {
     it.models.map {
       ModelBuilder(
@@ -48,7 +48,7 @@ class ModelBuilder(
   }
 
   fun IrModel.typeSpec(): TypeSpec {
-    val properties = properties.map {
+    val properties = properties.filter { !it.hidden }.map {
       PropertySpec.builder(
           context.layout.propertyName(it.info.responseName),
           context.resolver.resolveType(it.info.type)
@@ -83,15 +83,15 @@ class ModelBuilder(
   }
 
   private fun companionTypeSpec(model: IrModel): TypeSpec {
-      val funSpecs = model.accessors.map { accessor ->
-        FunSpec.builder(accessor.funName())
-            .receiver(context.resolver.resolveModel(model.id))
-            .addCode("return this as? %T\n", context.resolver.resolveModel(accessor.returnedModelId))
-            .build()
-      }
-      return TypeSpec.companionObjectBuilder()
-          .addFunctions(funSpecs)
+    val funSpecs = model.accessors.map { accessor ->
+      FunSpec.builder(accessor.funName())
+          .receiver(context.resolver.resolveModel(model.id))
+          .addCode("return this as? %T\n", context.resolver.resolveModel(accessor.returnedModelId))
           .build()
+    }
+    return TypeSpec.companionObjectBuilder()
+        .addFunctions(funSpecs)
+        .build()
   }
 
   private fun IrAccessor.funName(): String {

@@ -5,9 +5,6 @@ import com.apollographql.apollo3.api.BTerm
 import com.apollographql.apollo3.api.BVariable
 import com.apollographql.apollo3.api.BooleanExpression
 import com.apollographql.apollo3.api.and
-import com.apollographql.apollo3.api.not
-import com.apollographql.apollo3.api.possibleTypes
-import com.apollographql.apollo3.api.variable
 import com.apollographql.apollo3.compiler.codegen.CgLayout.Companion.modelName
 import com.apollographql.apollo3.compiler.escapeKotlinReservedWord
 import com.apollographql.apollo3.ast.GQLField
@@ -111,11 +108,12 @@ internal class OperationBasedModelGroupBuilder(
       isSynthetic: Boolean,
   ): OperationField {
     if (selections.isEmpty()) {
-       return OperationField(
+      return OperationField(
           info = info,
           condition = condition,
           fieldSet = null,
           isSynthetic = isSynthetic,
+          hide = false,
       )
     }
 
@@ -250,7 +248,7 @@ internal class OperationBasedModelGroupBuilder(
 
       val fragmentsFieldSet = OperationFieldSet(
           id = IrModelId(root, childPath),
-          fields = listOf(typenameField) + fragmentSpreadFields
+          fields = listOf(hiddenTypenameField) + fragmentSpreadFields
       )
 
       val fragmentsFieldInfo = IrFieldInfo(
@@ -266,6 +264,7 @@ internal class OperationBasedModelGroupBuilder(
               condition = BooleanExpression.True,
               fieldSet = fragmentsFieldSet,
               isSynthetic = true,
+              hide = false
           )
       )
     } else {
@@ -283,13 +282,14 @@ internal class OperationBasedModelGroupBuilder(
         condition = condition,
         fieldSet = fieldSet,
         isSynthetic = isSynthetic,
+        hide = false
     )
   }
 
   companion object {
     const val FRAGMENTS_SYNTHETIC_FIELD = "fragments"
 
-    private val typenameField by lazy {
+    private val hiddenTypenameField by lazy {
       val info = IrFieldInfo(
           responseName = "__typename",
           description = null,
@@ -297,10 +297,11 @@ internal class OperationBasedModelGroupBuilder(
           type = IrNonNullType(IrStringType)
       )
       OperationField(
-        info = info,
+          info = info,
           condition = BooleanExpression.True,
           fieldSet = null,
-          isSynthetic = false
+          isSynthetic = false,
+          hide = true
       )
     }
 
@@ -312,6 +313,7 @@ private class OperationField(
     val condition: BooleanExpression<BTerm>,
     val fieldSet: OperationFieldSet?,
     val isSynthetic: Boolean,
+    val hide: Boolean,
 )
 
 private data class OperationFieldSet(
@@ -352,6 +354,7 @@ private fun OperationField.toProperty(): IrProperty {
       isSynthetic = isSynthetic,
       override = false,
       condition = condition,
-      requiresBuffering = fieldSet?.fields?.any { it.isSynthetic } ?: false
+      requiresBuffering = fieldSet?.fields?.any { it.isSynthetic } ?: false,
+      hidden = hide
   )
 }

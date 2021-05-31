@@ -21,14 +21,12 @@ class AdapterBijectionTest {
           HeroAndFriendsWithFragmentsQuery.Data.Hero(
               __typename = "Droid",
               heroWithFriendsFragment = HeroWithFriendsFragment(
-                  __typename = "Droid",
                   id = "2001",
                   name = "R222-D222",
                   friends = listOf(
                       HeroWithFriendsFragment.Friend(
                           __typename = "Human",
                           humanWithIdFragment = HumanWithIdFragment(
-                              __typename = "Human",
                               id = "1006",
                               name = "SuperMan"
                           )
@@ -36,7 +34,6 @@ class AdapterBijectionTest {
                       HeroWithFriendsFragment.Friend(
                           __typename = "Human",
                           humanWithIdFragment = HumanWithIdFragment(
-                              __typename = "Human",
                               id = "1004",
                               name = "Beast"
                           )

@@ -116,7 +116,7 @@ internal fun readFromResponseCodeBlock(
   val suffix = CodeBlock.builder()
       .addStatement("return·%T(", context.resolver.resolveModel(model.id))
       .indent()
-      .add(model.properties.map { property ->
+      .add(model.properties.filter { !it.hidden }.map { property ->
         val maybeAssertNotNull = if (property.info.type is IrNonNullType && !property.info.type.isOptional()) "!!" else ""
         CodeBlock.of(
             "%L·=·%L%L",
@@ -147,7 +147,7 @@ private fun IrType.modelId(): IrModelId {
 }
 
 internal fun writeToResponseCodeBlock(model: IrModel, context: CgContext): CodeBlock {
-  return model.properties.map { it.writeToResponseCodeBlock(context) }.joinToCode("\n")
+  return model.properties.filter { !it.hidden }.map { it.writeToResponseCodeBlock(context) }.joinToCode("\n")
 }
 
 private fun IrProperty.writeToResponseCodeBlock(context: CgContext): CodeBlock {

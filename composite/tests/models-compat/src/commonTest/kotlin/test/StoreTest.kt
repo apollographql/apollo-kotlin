@@ -49,12 +49,12 @@ class StoreTest {
     assertEquals(heroWithFriendsFragment.id, "2001")
     assertEquals(heroWithFriendsFragment.name, "R2-D2")
     assertEquals(heroWithFriendsFragment.friends?.size, 3)
-    assertEquals(heroWithFriendsFragment.friends?.get(0)?.humanWithIdFragment?.id, "1000")
-    assertEquals(heroWithFriendsFragment.friends?.get(0)?.humanWithIdFragment?.name, "Luke Skywalker")
-    assertEquals(heroWithFriendsFragment.friends?.get(1)?.humanWithIdFragment?.id, "1002")
-    assertEquals(heroWithFriendsFragment.friends?.get(1)?.humanWithIdFragment?.name, "Han Solo")
-    assertEquals(heroWithFriendsFragment.friends?.get(2)?.humanWithIdFragment?.id, "1003")
-    assertEquals(heroWithFriendsFragment.friends?.get(2)?.humanWithIdFragment?.name, "Leia Organa")
+    assertEquals(heroWithFriendsFragment.friends?.get(0)?.fragments?.humanWithIdFragment?.id, "1000")
+    assertEquals(heroWithFriendsFragment.friends?.get(0)?.fragments?.humanWithIdFragment?.name, "Luke Skywalker")
+    assertEquals(heroWithFriendsFragment.friends?.get(1)?.fragments?.humanWithIdFragment?.id, "1002")
+    assertEquals(heroWithFriendsFragment.friends?.get(1)?.fragments?.humanWithIdFragment?.name, "Han Solo")
+    assertEquals(heroWithFriendsFragment.friends?.get(2)?.fragments?.humanWithIdFragment?.id, "1003")
+    assertEquals(heroWithFriendsFragment.friends?.get(2)?.fragments?.humanWithIdFragment?.name, "Leia Organa")
 
     var fragment = store.readFragment(
         HumanWithIdFragmentImpl(),
@@ -88,42 +88,39 @@ class StoreTest {
     val query = HeroAndFriendsWithFragmentsQuery()
     var response = apolloClient.query(query)
     assertEquals(response.data?.hero?.__typename, "Droid")
-    assertEquals(response.data?.hero?.heroWithFriendsFragment?.__typename, "Droid")
-    assertEquals(response.data?.hero?.heroWithFriendsFragment?.id, "2001")
-    assertEquals(response.data?.hero?.heroWithFriendsFragment?.name, "R2-D2")
-    assertEquals(response.data?.hero?.heroWithFriendsFragment?.friends?.size, 3)
-    assertEquals(response.data?.hero?.heroWithFriendsFragment?.friends?.get(0)?.humanWithIdFragment?.__typename, "Human")
-    assertEquals(response.data?.hero?.heroWithFriendsFragment?.friends?.get(0)?.humanWithIdFragment?.id, "1000")
-    assertEquals(response.data?.hero?.heroWithFriendsFragment?.friends?.get(0)?.humanWithIdFragment?.name, "Luke Skywalker")
-    assertEquals(response.data?.hero?.heroWithFriendsFragment?.friends?.get(1)?.humanWithIdFragment?.__typename, "Human")
-    assertEquals(response.data?.hero?.heroWithFriendsFragment?.friends?.get(1)?.humanWithIdFragment?.id, "1002")
-    assertEquals(response.data?.hero?.heroWithFriendsFragment?.friends?.get(1)?.humanWithIdFragment?.name, "Han Solo")
-    assertEquals(response.data?.hero?.heroWithFriendsFragment?.friends?.get(2)?.humanWithIdFragment?.__typename, "Human")
-    assertEquals(response.data?.hero?.heroWithFriendsFragment?.friends?.get(2)?.humanWithIdFragment?.id, "1003")
-    assertEquals(response.data?.hero?.heroWithFriendsFragment?.friends?.get(2)?.humanWithIdFragment?.name, "Leia Organa")
+    assertEquals(response.data?.hero?.fragments?.heroWithFriendsFragment?.id, "2001")
+    assertEquals(response.data?.hero?.fragments?.heroWithFriendsFragment?.name, "R2-D2")
+    assertEquals(response.data?.hero?.fragments?.heroWithFriendsFragment?.friends?.size, 3)
+    assertEquals(response.data?.hero?.fragments?.heroWithFriendsFragment?.friends?.get(0)?.fragments?.humanWithIdFragment?.id, "1000")
+    assertEquals(response.data?.hero?.fragments?.heroWithFriendsFragment?.friends?.get(0)?.fragments?.humanWithIdFragment?.name, "Luke Skywalker")
+    assertEquals(response.data?.hero?.fragments?.heroWithFriendsFragment?.friends?.get(1)?.fragments?.humanWithIdFragment?.id, "1002")
+    assertEquals(response.data?.hero?.fragments?.heroWithFriendsFragment?.friends?.get(1)?.fragments?.humanWithIdFragment?.name, "Han Solo")
+    assertEquals(response.data?.hero?.fragments?.heroWithFriendsFragment?.friends?.get(2)?.fragments?.humanWithIdFragment?.id, "1003")
+    assertEquals(response.data?.hero?.fragments?.heroWithFriendsFragment?.friends?.get(2)?.fragments?.humanWithIdFragment?.name, "Leia Organa")
 
     store.writeFragment(
         HeroWithFriendsFragmentImpl(),
         CacheKey.from("2001"),
         HeroWithFriendsFragment(
-            __typename = "Droid",
             id = "2001",
             name = "R222-D222",
             friends = listOf(
                 HeroWithFriendsFragment.Friend(
                     __typename = "Human",
-                    humanWithIdFragment = HumanWithIdFragment(
-                        __typename = "Human",
-                        id = "1000",
-                        name = "SuperMan"
+                    fragments = HeroWithFriendsFragment.Friend.Fragments(
+                        humanWithIdFragment = HumanWithIdFragment(
+                            id = "1000",
+                            name = "SuperMan"
+                        )
                     )
                 ),
                 HeroWithFriendsFragment.Friend(
                     __typename = "Human",
-                    humanWithIdFragment = HumanWithIdFragment(
-                        __typename = "Human",
-                        id = "1002",
-                        name = "Han Solo"
+                    fragments = HeroWithFriendsFragment.Friend.Fragments(
+                        humanWithIdFragment = HumanWithIdFragment(
+                            id = "1002",
+                            name = "Han Solo"
+                        )
                     )
                 ),
             )
@@ -134,7 +131,6 @@ class StoreTest {
         HumanWithIdFragmentImpl(),
         CacheKey.from("1002"),
         HumanWithIdFragment(
-            __typename = "Human",
             id = "1002",
             name = "Beast"
         ),
@@ -143,15 +139,12 @@ class StoreTest {
     // Values should have changed
     response = apolloClient.query(query)
     assertEquals(response.data?.hero?.__typename, "Droid")
-    assertEquals(response.data?.hero?.heroWithFriendsFragment?.__typename, "Droid")
-    assertEquals(response.data?.hero?.heroWithFriendsFragment?.id, "2001")
-    assertEquals(response.data?.hero?.heroWithFriendsFragment?.name, "R222-D222")
-    assertEquals(response.data?.hero?.heroWithFriendsFragment?.friends?.size, 2)
-    assertEquals(response.data?.hero?.heroWithFriendsFragment?.friends?.get(0)?.humanWithIdFragment?.__typename, "Human")
-    assertEquals(response.data?.hero?.heroWithFriendsFragment?.friends?.get(0)?.humanWithIdFragment?.id, "1000")
-    assertEquals(response.data?.hero?.heroWithFriendsFragment?.friends?.get(0)?.humanWithIdFragment?.name, "SuperMan")
-    assertEquals(response.data?.hero?.heroWithFriendsFragment?.friends?.get(1)?.humanWithIdFragment?.__typename, "Human")
-    assertEquals(response.data?.hero?.heroWithFriendsFragment?.friends?.get(1)?.humanWithIdFragment?.id, "1002")
-    assertEquals(response.data?.hero?.heroWithFriendsFragment?.friends?.get(1)?.humanWithIdFragment?.name, "Beast")
+    assertEquals(response.data?.hero?.fragments?.heroWithFriendsFragment?.id, "2001")
+    assertEquals(response.data?.hero?.fragments?.heroWithFriendsFragment?.name, "R222-D222")
+    assertEquals(response.data?.hero?.fragments?.heroWithFriendsFragment?.friends?.size, 2)
+    assertEquals(response.data?.hero?.fragments?.heroWithFriendsFragment?.friends?.get(0)?.fragments?.humanWithIdFragment?.id, "1000")
+    assertEquals(response.data?.hero?.fragments?.heroWithFriendsFragment?.friends?.get(0)?.fragments?.humanWithIdFragment?.name, "SuperMan")
+    assertEquals(response.data?.hero?.fragments?.heroWithFriendsFragment?.friends?.get(1)?.fragments?.humanWithIdFragment?.id, "1002")
+    assertEquals(response.data?.hero?.fragments?.heroWithFriendsFragment?.friends?.get(1)?.fragments?.humanWithIdFragment?.name, "Beast")
   }
 }

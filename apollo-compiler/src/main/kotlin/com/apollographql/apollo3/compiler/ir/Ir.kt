@@ -163,13 +163,16 @@ data class IrModel(
  * @param condition a condition for reading the property
  * @param isSynthetic synthetic properties are special as we need to rewind the reader before reading them
  * @param requiresBuffering true if this property contains synthetic properties
+ * @param hidden allows to hide a property from the model but still send it to the server and have it in the response
+ * This is used for typename for an example
  */
 data class IrProperty(
     val info: IrFieldInfo,
     val override: Boolean,
     val condition: BooleanExpression<BTerm>,
     val isSynthetic: Boolean,
-    val requiresBuffering: Boolean
+    val requiresBuffering: Boolean,
+    val hidden: Boolean
 )
 
 data class IrModelGroup(
