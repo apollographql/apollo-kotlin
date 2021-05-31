@@ -43,11 +43,11 @@ data class HeroDetails(
   data class AsDroid(
     val __typename: String,
     /**
-     * What others call this droid
+     * The name of the character
      */
     val name: String,
     /**
-     * The friends of the droid exposed as a connection with edges
+     * The friends of the character exposed as a connection with edges
      */
     val friendsConnection: FriendsConnection1,
     /**

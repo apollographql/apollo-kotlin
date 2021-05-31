@@ -92,7 +92,7 @@ class HeroDetailQuery : Query<HeroDetailQuery.Data> {
     val friends: List<Friend1?>?,
     val __typename: String,
     /**
-     * What this human calls themselves
+     * The name of the character
      */
     val name: String
   ) {

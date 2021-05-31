@@ -59,7 +59,7 @@ class TestQuery : Query<TestQuery.Data> {
     val friends: List<Friend?>?,
     val __typename: String,
     /**
-     * What this human calls themselves
+     * The name of the character
      */
     val name: String
   ) {
@@ -84,7 +84,7 @@ class TestQuery : Query<TestQuery.Data> {
     val friends: List<Friend1?>?,
     val __typename: String,
     /**
-     * What others call this droid
+     * The name of the character
      */
     val name: String
   ) {

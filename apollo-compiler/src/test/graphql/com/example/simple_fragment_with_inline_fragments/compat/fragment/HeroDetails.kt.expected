@@ -43,7 +43,7 @@ data class HeroDetails(
     val height: Double?,
     val __typename: String,
     /**
-     * What this human calls themselves
+     * The name of the character
      */
     val name: String
   )
@@ -55,7 +55,7 @@ data class HeroDetails(
     val primaryFunction: String?,
     val __typename: String,
     /**
-     * What others call this droid
+     * The name of the character
      */
     val name: String
   )

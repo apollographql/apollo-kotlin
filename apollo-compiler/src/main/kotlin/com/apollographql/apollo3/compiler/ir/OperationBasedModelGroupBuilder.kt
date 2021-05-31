@@ -37,8 +37,7 @@ internal class OperationBasedModelGroupBuilder(
         root = root,
         path = "",
         info = info,
-        selections = selections,
-        rawTypename = rawTypeName,
+        selections = selections.map { SelectionWithParent(it, rawTypeName) },
         condition = BooleanExpression.True,
         isSynthetic = false
     ).toModelGroup()!!
@@ -65,8 +64,7 @@ internal class OperationBasedModelGroupBuilder(
         root = root,
         path = "",
         info = info,
-        selections = fragmentDefinition.selectionSet.selections,
-        rawTypename = fragmentDefinition.typeCondition.name,
+        selections = fragmentDefinition.selectionSet.selections.map { SelectionWithParent(it, fragmentDefinition.typeCondition.name) },
         condition = BooleanExpression.True,
         isSynthetic = false
     ).toModelGroup()!!
@@ -95,6 +93,8 @@ internal class OperationBasedModelGroupBuilder(
     }
   }
 
+  private class SelectionWithParent(val selection: GQLSelection, val parent: String)
+
   /**
    * @param path the path up to but not including this field
    */
@@ -102,8 +102,7 @@ internal class OperationBasedModelGroupBuilder(
       root: IrModelRoot,
       path: String,
       info: IrFieldInfo,
-      selections: List<GQLSelection>,
-      rawTypename: String,
+      selections: List<SelectionWithParent>,
       condition: BooleanExpression<BTerm>,
       isSynthetic: Boolean,
   ): OperationField {
@@ -122,8 +121,13 @@ internal class OperationBasedModelGroupBuilder(
     /**
      * Merge fields with the same response name in the selectionSet
      */
-    val fieldsWithParent = selections.filterIsInstance<GQLField>()
-        .map { FieldWithParent(it, rawTypename) }
+    val fieldsWithParent = selections.mapNotNull {
+      if (it.selection is GQLField) {
+        FieldWithParent(it.selection as GQLField, it.parent)
+      } else {
+        null
+      }
+    }
     val fields = fieldMerger.merge(fieldsWithParent).map { mergedField ->
       val childInfo = mergedField.info.maybeNullable(mergedField.condition != BooleanExpression.True)
 
@@ -131,8 +135,7 @@ internal class OperationBasedModelGroupBuilder(
           root = root,
           path = selfPath,
           info = childInfo,
-          selections = mergedField.selections,
-          rawTypename = mergedField.rawTypeName,
+          selections = mergedField.selections.map { SelectionWithParent(it, mergedField.rawTypeName) },
           condition = BooleanExpression.True,
           isSynthetic = false
       )
@@ -170,7 +173,7 @@ internal class OperationBasedModelGroupBuilder(
      * (for an example both firstName = null and lastName = null)
      *
      */
-    val inlineFragmentsFields = selections.filterIsInstance<GQLInlineFragment>()
+    val inlineFragmentsFields = selections.map { it.selection }.filterIsInstance<GQLInlineFragment>()
         .groupBy {
           InlineFragmentKey(it.typeCondition.name, it.directives.toBooleanExpression())
         }.entries.map { entry ->
@@ -188,9 +191,11 @@ internal class OperationBasedModelGroupBuilder(
           val possibleTypes = schema.possibleTypes(typeCondition)
           val childCondition = entry.key.condition.and(BooleanExpression.Element(BPossibleTypes(possibleTypes))).simplify()
 
-          val childSelections = inlineFragmentsWithSameKey.flatMap { it.selectionSet.selections }.toMutableList()
+          val childSelections = inlineFragmentsWithSameKey.flatMap {
+            it.selectionSet.selections.map { SelectionWithParent(it, typeCondition) }
+          }.toMutableList()
           if (collectAllInlineFragmentFields) {
-            childSelections.addAll(selections.filterIsInstance<GQLField>())
+            childSelections.addAll(selections.filter { it.selection is GQLField})
           }
 
           buildField(
@@ -198,7 +203,6 @@ internal class OperationBasedModelGroupBuilder(
               path = selfPath,
               info = childInfo,
               selections = childSelections,
-              rawTypename = typeCondition,
               condition = childCondition,
               isSynthetic = true
           )
@@ -209,7 +213,7 @@ internal class OperationBasedModelGroupBuilder(
      *
      * Since they all have the same shape, it's ok
      */
-    val fragmentSpreadFields = selections.filterIsInstance<GQLFragmentSpread>()
+    val fragmentSpreadFields = selections.map { it.selection }.filterIsInstance<GQLFragmentSpread>()
         .groupBy {
           it.name
         }.values.map { fragmentSpreadsWithSameName ->
@@ -243,7 +247,6 @@ internal class OperationBasedModelGroupBuilder(
               path = p,
               info = childInfo,
               selections = emptyList(), // Don't create a model for fragments spreads
-              rawTypename = typeCondition,
               condition = childCondition,
               isSynthetic = true
           )

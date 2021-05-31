@@ -50,11 +50,11 @@ class TestQuery : Query<TestQuery.Data> {
     val height: Double?,
     val __typename: String,
     /**
-     * What this human calls themselves
+     * The name of the character
      */
     val name: String,
     /**
-     * The movies this human appears in
+     * The movies this character appears in
      */
     val appearsIn: List<Episode?>
   ) {

@@ -12,16 +12,18 @@ import org.junit.Test
 import org.junit.runner.RunWith
 import org.junit.runners.Parameterized
 import java.io.File
+import java.util.concurrent.TimeUnit
 import kotlin.time.Duration
 import kotlin.time.ExperimentalTime
 import kotlin.time.measureTime
 
 @RunWith(Parameterized::class)
 @OptIn(ExperimentalTime::class)
-class CodegenTest(private val folder: File, private val codegenModels: String) {
+class CodegenTest(private val folder: File, private val codegenModels: String, private val hasFragments: Boolean) {
   private class Measurement(
       val name: String,
       val codegenModels: String,
+      val hasFragments: Boolean,
       val linesOfCode: Int,
       val codegenDuration: Duration,
       val compileDuration: Duration,
@@ -42,10 +44,10 @@ class CodegenTest(private val folder: File, private val codegenModels: String) {
         folder = folder,
         codegenModels = codegenModels,
     )
-    generateExpectedClasses(args)
+    generateExpectedClasses(args, hasFragments)
   }
 
-  private fun generateExpectedClasses(options: Options) {
+  private fun generateExpectedClasses(options: Options, hasFragments: Boolean) {
     options.outputDir.deleteRecursively()
 
     val codegenDuration = measureTime {
@@ -121,6 +123,7 @@ class CodegenTest(private val folder: File, private val codegenModels: String) {
             linesOfCode = totalLineOfCode,
             codegenDuration = codegenDuration,
             compileDuration = compileDuration,
+            hasFragments = hasFragments,
         )
     )
   }
@@ -137,6 +140,17 @@ class CodegenTest(private val folder: File, private val codegenModels: String) {
   companion object {
     private val measurements = mutableListOf<Measurement>()
 
+    private fun aggregate(name: String, filter: (Measurement) -> Boolean): String {
+      val filtered = measurements.filter { filter(it) }
+      return String.format(
+          "%-50s %-20s %20s %20s %20s\n",
+          "aggregate",
+          name,
+          filtered.map { it.linesOfCode }.reduce { acc, i -> acc + i }.toString(),
+          filtered.map { it.codegenDuration }.reduce { acc, measurement -> acc + measurement }.toString(),
+          filtered.map { it.compileDuration }.reduce { acc, measurement -> acc + measurement }.toString(),
+      )
+    }
     @AfterClass
     @JvmStatic
     fun dumpTimes() {
@@ -144,31 +158,29 @@ class CodegenTest(private val folder: File, private val codegenModels: String) {
         File("src/test/graphql/com/example/measurements").apply {
           writeText(
               String.format(
-                  "%-70s %20s %20s %20s\n",
+                  "%-50s %-20s %20s %20s\n",
                   "Test:",
+                  "CodegenModels:",
                   "Total LOC:",
-                  "Codegen:",
-                  "Compilation:",
+                  "Codegen (ms):",
+                  "Compilation (ms):",
               )
           )
-          appendText(
-              String.format(
-                  "%-70s %20s %20s %20s\n",
-                  "aggregate",
-                  measurements.map { it.linesOfCode }.reduce { acc, i -> acc + i }.toString(),
-                  measurements.map { it.codegenDuration }.reduce { acc, measurement -> acc + measurement }.toString(),
-                  measurements.map { it.compileDuration }.reduce { acc, measurement -> acc + measurement }.toString(),
-              )
-          )
+          appendText(aggregate("all") { true })
+          appendText(aggregate("responseBased") { it.codegenModels == "responseBased" && it.hasFragments})
+          appendText(aggregate("operationBased") { it.codegenModels == "operationBased"&& it.hasFragments })
+          appendText(aggregate("compat") { it.codegenModels == "compat" && it.hasFragments})
+          appendText(aggregate("no-fragments") { !it.hasFragments})
           appendText("\n")
           appendText(
               measurements.sortedByDescending { it.linesOfCode }
                   .joinToString("\n") { measurement ->
                     String.format(
-                        "%-70s %20s %20s %20s",
-                        "${measurement.name} (${measurement.codegenModels})",
+                        "%-50s %-20s %20s %20s %20s",
+                        measurement.name,
+                        measurement.codegenModels,
                         measurement.linesOfCode.toString(),
-                        measurement.codegenDuration.toString(),
+                        measurement.codegenDuration.toLong(TimeUnit.MILLISECONDS).toString(),
                         measurement.compileDuration.toString(),
                     )
                   }
@@ -265,19 +277,19 @@ class CodegenTest(private val folder: File, private val codegenModels: String) {
             when {
               codegenModels != null -> {
                 listOf(
-                    arrayOf(file, codegenModels),
+                    arrayOf(file, codegenModels, true),
                 )
               }
               hasFragments -> {
                 listOf(
-                    arrayOf(file, MODELS_OPERATION_BASED),
-                    arrayOf(file, MODELS_RESPONSE_BASED),
-                    arrayOf(file, MODELS_COMPAT)
+                    arrayOf(file, MODELS_OPERATION_BASED, true),
+                    arrayOf(file, MODELS_RESPONSE_BASED, true),
+                    arrayOf(file, MODELS_COMPAT, true)
                 )
               }
               else -> {
                 listOf(
-                    arrayOf(file, MODELS_RESPONSE_BASED)
+                    arrayOf(file, MODELS_RESPONSE_BASED, false)
                 )
               }
             }
