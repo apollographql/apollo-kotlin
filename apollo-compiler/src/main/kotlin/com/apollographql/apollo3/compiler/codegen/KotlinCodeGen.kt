@@ -39,6 +39,7 @@ class KotlinCodeGen(
     private val enumsToSkip: Set<String>,
     private val inputObjectsToSkip: Set<String>,
     private val generateSchema: Boolean,
+    private val flatten: Boolean,
 ) {
   fun write(outputDir: File) {
     val layout = CgLayout(
@@ -94,7 +95,8 @@ class KotlinCodeGen(
               context,
               fragment,
               (fragment.interfaceModelGroup ?: fragment.dataModelGroup),
-              fragment.interfaceModelGroup == null
+              fragment.interfaceModelGroup == null,
+              flatten
           )
       )
       if (fragmentsToSkip.contains(fragment.name)) {
@@ -109,11 +111,14 @@ class KotlinCodeGen(
       }
 
       if (generateFragmentImplementations) {
-        builders.add(FragmentBuilder(
-            context,
-            generateFilterNotNull,
-            fragment,
-        ))
+        builders.add(
+            FragmentBuilder(
+                context,
+                generateFilterNotNull,
+                fragment,
+                flatten
+            )
+        )
         if (fragmentsToSkip.contains(fragment.name)) {
           ignoredBuilders.add(builders.last())
         }
@@ -139,13 +144,16 @@ class KotlinCodeGen(
       builders.add(OperationResponseFieldsBuilder(context, operation))
       builders.add(OperationResponseAdapterBuilder(context, operation))
 
-      builders.add(OperationBuilder(
-          context,
-          generateFilterNotNull,
-          operationOutput.findOperationId(operation.name),
-          generateQueryDocument,
-          operation,
-      ))
+      builders.add(
+          OperationBuilder(
+              context,
+              generateFilterNotNull,
+              operationOutput.findOperationId(operation.name),
+              generateQueryDocument,
+              operation,
+              flatten
+          )
+      )
     }
 
     builders.forEach { it.prepare() }
@@ -170,8 +178,8 @@ class KotlinCodeGen(
               """.trimIndent()
           )
 
-          it.typeSpecs.map { it.internal(generateAsInternal) }.forEach {
-            builder.addType(it)
+          it.typeSpecs.map { typeSpec -> typeSpec.internal(generateAsInternal) }.forEach { typeSpec ->
+            builder.addType(typeSpec)
           }
           builder
               .build()

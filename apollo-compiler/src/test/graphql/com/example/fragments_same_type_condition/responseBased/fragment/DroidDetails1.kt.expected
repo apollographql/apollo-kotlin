@@ -8,8 +8,6 @@ package com.example.fragments_same_type_condition.fragment
 import kotlin.String
 
 interface DroidDetails1 {
-  val __typename: String
-
   /**
    * What others call this droid
    */

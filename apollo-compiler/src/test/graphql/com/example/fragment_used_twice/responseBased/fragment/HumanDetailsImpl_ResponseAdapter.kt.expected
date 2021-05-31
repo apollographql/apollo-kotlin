@@ -59,6 +59,7 @@ object HumanDetailsImpl_ResponseAdapter {
       var __typename: String? = typename
       var name: String? = null
       var birthDate: Any? = null
+
       while(true) {
         when (reader.selectName(RESPONSE_NAMES)) {
           0 -> __typename = StringAdapter.fromJson(reader, customScalarAdapters)
@@ -67,6 +68,7 @@ object HumanDetailsImpl_ResponseAdapter {
           else -> break
         }
       }
+
       return HumanDetailsImpl.CharacterData(
         __typename = __typename!!,
         name = name!!,
@@ -100,6 +102,7 @@ object HumanDetailsImpl_ResponseAdapter {
     ): HumanDetailsImpl.OtherData {
       var __typename: String? = typename
       var name: String? = null
+
       while(true) {
         when (reader.selectName(RESPONSE_NAMES)) {
           0 -> __typename = StringAdapter.fromJson(reader, customScalarAdapters)
@@ -107,6 +110,7 @@ object HumanDetailsImpl_ResponseAdapter {
           else -> break
         }
       }
+
       return HumanDetailsImpl.OtherData(
         __typename = __typename!!,
         name = name!!

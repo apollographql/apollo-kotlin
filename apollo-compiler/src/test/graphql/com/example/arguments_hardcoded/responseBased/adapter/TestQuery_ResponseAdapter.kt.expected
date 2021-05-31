@@ -27,6 +27,7 @@ object TestQuery_ResponseAdapter {
         TestQuery.Data {
       var reviews: List<TestQuery.Data.Review?>? = null
       var testNullableArguments: Int? = null
+
       while(true) {
         when (reader.selectName(RESPONSE_NAMES)) {
           0 -> reviews = Review.obj().nullable().list().nullable().fromJson(reader,
@@ -35,6 +36,7 @@ object TestQuery_ResponseAdapter {
           else -> break
         }
       }
+
       return TestQuery.Data(
         reviews = reviews,
         testNullableArguments = testNullableArguments!!
@@ -60,6 +62,7 @@ object TestQuery_ResponseAdapter {
           TestQuery.Data.Review {
         var stars: Int? = null
         var commentary: String? = null
+
         while(true) {
           when (reader.selectName(RESPONSE_NAMES)) {
             0 -> stars = IntAdapter.fromJson(reader, customScalarAdapters)
@@ -67,6 +70,7 @@ object TestQuery_ResponseAdapter {
             else -> break
           }
         }
+
         return TestQuery.Data.Review(
           stars = stars!!,
           commentary = commentary

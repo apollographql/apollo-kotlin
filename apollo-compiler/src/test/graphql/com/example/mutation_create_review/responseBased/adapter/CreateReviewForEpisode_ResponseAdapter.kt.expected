@@ -30,12 +30,14 @@ internal object CreateReviewForEpisode_ResponseAdapter {
     override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters):
         CreateReviewForEpisode.Data {
       var createReview: CreateReviewForEpisode.Data.CreateReview? = null
+
       while(true) {
         when (reader.selectName(RESPONSE_NAMES)) {
           0 -> createReview = CreateReview.obj().nullable().fromJson(reader, customScalarAdapters)
           else -> break
         }
       }
+
       return CreateReviewForEpisode.Data(
         createReview = createReview
       )
@@ -62,6 +64,7 @@ internal object CreateReviewForEpisode_ResponseAdapter {
         var listOfListOfEnum: List<List<Episode>>? = null
         var listOfListOfCustom: List<List<Date>>? = null
         var listOfListOfObject: List<List<CreateReviewForEpisode.Data.CreateReview.ListOfListOfObject>>? = null
+
         while(true) {
           when (reader.selectName(RESPONSE_NAMES)) {
             0 -> stars = IntAdapter.fromJson(reader, customScalarAdapters)
@@ -77,6 +80,7 @@ internal object CreateReviewForEpisode_ResponseAdapter {
             else -> break
           }
         }
+
         return CreateReviewForEpisode.Data.CreateReview(
           stars = stars!!,
           commentary = commentary,
@@ -122,12 +126,14 @@ internal object CreateReviewForEpisode_ResponseAdapter {
         override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters):
             CreateReviewForEpisode.Data.CreateReview.ListOfListOfObject {
           var name: String? = null
+
           while(true) {
             when (reader.selectName(RESPONSE_NAMES)) {
               0 -> name = StringAdapter.fromJson(reader, customScalarAdapters)
               else -> break
             }
           }
+
           return CreateReviewForEpisode.Data.CreateReview.ListOfListOfObject(
             name = name!!
           )

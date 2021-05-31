@@ -28,6 +28,7 @@ object TestQuery_ResponseAdapter {
         TestQuery.Data {
       var r2: TestQuery.Data.R2? = null
       var luke: TestQuery.Data.Luke? = null
+
       while(true) {
         when (reader.selectName(RESPONSE_NAMES)) {
           0 -> r2 = R2.obj(true).nullable().fromJson(reader, customScalarAdapters)
@@ -35,6 +36,7 @@ object TestQuery_ResponseAdapter {
           else -> break
         }
       }
+
       return TestQuery.Data(
         r2 = r2,
         luke = luke
@@ -59,30 +61,34 @@ object TestQuery_ResponseAdapter {
       override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters):
           TestQuery.Data.R2 {
         var __typename: String? = null
-        var humanDetails: HumanDetails? = null
-        var droidDetails: DroidDetails? = null
+
         while(true) {
           when (reader.selectName(RESPONSE_NAMES)) {
             0 -> __typename = StringAdapter.fromJson(reader, customScalarAdapters)
             else -> break
           }
         }
+
         check(__typename != null) {
           "__typename was not found"
         }
-        if(possibleTypes("Human").evaluate(emptySet(), __typename)) {
-          reader.rewind()
+
+        reader.rewind()
+        var humanDetails: HumanDetails? = null
+        if (possibleTypes("Human").evaluate(emptySet(), __typename)) {
           humanDetails = com.example.fragments_with_type_condition.fragment.HumanDetailsImpl_ResponseAdapter.HumanDetails.fromJson(reader,
               customScalarAdapters)
         }
 
-        if(possibleTypes("Droid").evaluate(emptySet(), __typename)) {
-          reader.rewind()
+        reader.rewind()
+        var droidDetails: DroidDetails? = null
+        if (possibleTypes("Droid").evaluate(emptySet(), __typename)) {
           droidDetails = com.example.fragments_with_type_condition.fragment.DroidDetailsImpl_ResponseAdapter.DroidDetails.fromJson(reader,
               customScalarAdapters)
         }
+
         return TestQuery.Data.R2(
-          __typename = __typename!!,
+          __typename = __typename,
           humanDetails = humanDetails,
           droidDetails = droidDetails
         )
@@ -114,30 +120,34 @@ object TestQuery_ResponseAdapter {
       override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters):
           TestQuery.Data.Luke {
         var __typename: String? = null
-        var humanDetails: HumanDetails? = null
-        var droidDetails: DroidDetails? = null
+
         while(true) {
           when (reader.selectName(RESPONSE_NAMES)) {
             0 -> __typename = StringAdapter.fromJson(reader, customScalarAdapters)
             else -> break
           }
         }
+
         check(__typename != null) {
           "__typename was not found"
         }
-        if(possibleTypes("Human").evaluate(emptySet(), __typename)) {
-          reader.rewind()
+
+        reader.rewind()
+        var humanDetails: HumanDetails? = null
+        if (possibleTypes("Human").evaluate(emptySet(), __typename)) {
           humanDetails = com.example.fragments_with_type_condition.fragment.HumanDetailsImpl_ResponseAdapter.HumanDetails.fromJson(reader,
               customScalarAdapters)
         }
 
-        if(possibleTypes("Droid").evaluate(emptySet(), __typename)) {
-          reader.rewind()
+        reader.rewind()
+        var droidDetails: DroidDetails? = null
+        if (possibleTypes("Droid").evaluate(emptySet(), __typename)) {
           droidDetails = com.example.fragments_with_type_condition.fragment.DroidDetailsImpl_ResponseAdapter.DroidDetails.fromJson(reader,
               customScalarAdapters)
         }
+
         return TestQuery.Data.Luke(
-          __typename = __typename!!,
+          __typename = __typename,
           humanDetails = humanDetails,
           droidDetails = droidDetails
         )

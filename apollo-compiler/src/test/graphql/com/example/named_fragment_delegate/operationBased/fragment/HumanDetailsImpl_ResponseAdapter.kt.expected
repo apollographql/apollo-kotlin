@@ -20,26 +20,24 @@ import kotlin.collections.List
 
 object HumanDetailsImpl_ResponseAdapter {
   object HumanDetails : Adapter<com.example.named_fragment_delegate.fragment.HumanDetails> {
-    val RESPONSE_NAMES: List<String> = listOf("__typename", "name", "profileLink",
-        "friendsConnection")
+    val RESPONSE_NAMES: List<String> = listOf("name", "profileLink", "friendsConnection")
 
     override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters):
         com.example.named_fragment_delegate.fragment.HumanDetails {
-      var __typename: String? = null
       var name: String? = null
       var profileLink: Any? = null
       var friendsConnection: com.example.named_fragment_delegate.fragment.HumanDetails.FriendsConnection? = null
+
       while(true) {
         when (reader.selectName(RESPONSE_NAMES)) {
-          0 -> __typename = StringAdapter.fromJson(reader, customScalarAdapters)
-          1 -> name = StringAdapter.fromJson(reader, customScalarAdapters)
-          2 -> profileLink = AnyAdapter.fromJson(reader, customScalarAdapters)
-          3 -> friendsConnection = FriendsConnection.obj().fromJson(reader, customScalarAdapters)
+          0 -> name = StringAdapter.fromJson(reader, customScalarAdapters)
+          1 -> profileLink = AnyAdapter.fromJson(reader, customScalarAdapters)
+          2 -> friendsConnection = FriendsConnection.obj().fromJson(reader, customScalarAdapters)
           else -> break
         }
       }
+
       return com.example.named_fragment_delegate.fragment.HumanDetails(
-        __typename = __typename!!,
         name = name!!,
         profileLink = profileLink!!,
         friendsConnection = friendsConnection!!
@@ -51,9 +49,6 @@ object HumanDetailsImpl_ResponseAdapter {
       customScalarAdapters: CustomScalarAdapters,
       value: com.example.named_fragment_delegate.fragment.HumanDetails
     ) {
-      writer.name("__typename")
-      StringAdapter.toJson(writer, customScalarAdapters, value.__typename)
-
       writer.name("name")
       StringAdapter.toJson(writer, customScalarAdapters, value.name)
 
@@ -71,6 +66,7 @@ object HumanDetailsImpl_ResponseAdapter {
       override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters):
           com.example.named_fragment_delegate.fragment.HumanDetails.FriendsConnection {
         var edges: List<com.example.named_fragment_delegate.fragment.HumanDetails.FriendsConnection.Edge?>? = null
+
         while(true) {
           when (reader.selectName(RESPONSE_NAMES)) {
             0 -> edges = Edge.obj().nullable().list().nullable().fromJson(reader,
@@ -78,6 +74,7 @@ object HumanDetailsImpl_ResponseAdapter {
             else -> break
           }
         }
+
         return com.example.named_fragment_delegate.fragment.HumanDetails.FriendsConnection(
           edges = edges
         )
@@ -100,12 +97,14 @@ object HumanDetailsImpl_ResponseAdapter {
         override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters):
             com.example.named_fragment_delegate.fragment.HumanDetails.FriendsConnection.Edge {
           var node: com.example.named_fragment_delegate.fragment.HumanDetails.FriendsConnection.Edge.Node? = null
+
           while(true) {
             when (reader.selectName(RESPONSE_NAMES)) {
               0 -> node = Node.obj().nullable().fromJson(reader, customScalarAdapters)
               else -> break
             }
           }
+
           return com.example.named_fragment_delegate.fragment.HumanDetails.FriendsConnection.Edge(
             node = node
           )
@@ -128,12 +127,14 @@ object HumanDetailsImpl_ResponseAdapter {
           override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters):
               com.example.named_fragment_delegate.fragment.HumanDetails.FriendsConnection.Edge.Node {
             var name: String? = null
+
             while(true) {
               when (reader.selectName(RESPONSE_NAMES)) {
                 0 -> name = StringAdapter.fromJson(reader, customScalarAdapters)
                 else -> break
               }
             }
+
             return com.example.named_fragment_delegate.fragment.HumanDetails.FriendsConnection.Edge.Node(
               name = name!!
             )

@@ -11,7 +11,7 @@ import kotlin.String
 internal data class HeroDetails(
   val __typename: String,
   /**
-   * Synthetic field for fragment spread on Human
+   * Synthetic field for 'HumanDetails'
    */
   val humanDetails: HumanDetails?
 ) : Fragment.Data

@@ -24,12 +24,14 @@ object TestQuery_ResponseAdapter {
     override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters):
         TestQuery.Data {
       var hero: TestQuery.Data.Hero? = null
+
       while(true) {
         when (reader.selectName(RESPONSE_NAMES)) {
           0 -> hero = Hero.obj().nullable().fromJson(reader, customScalarAdapters)
           else -> break
         }
       }
+
       return TestQuery.Data(
         hero = hero
       )
@@ -86,6 +88,7 @@ object TestQuery_ResponseAdapter {
         var __typename: String? = typename
         var name: String? = null
         var primaryFunction: String? = null
+
         while(true) {
           when (reader.selectName(RESPONSE_NAMES)) {
             0 -> __typename = StringAdapter.fromJson(reader, customScalarAdapters)
@@ -94,6 +97,7 @@ object TestQuery_ResponseAdapter {
             else -> break
           }
         }
+
         return TestQuery.Data.DroidHero(
           __typename = __typename!!,
           name = name!!,
@@ -126,12 +130,14 @@ object TestQuery_ResponseAdapter {
         typename: String
       ): TestQuery.Data.OtherHero {
         var __typename: String? = typename
+
         while(true) {
           when (reader.selectName(RESPONSE_NAMES)) {
             0 -> __typename = StringAdapter.fromJson(reader, customScalarAdapters)
             else -> break
           }
         }
+
         return TestQuery.Data.OtherHero(
           __typename = __typename!!
         )

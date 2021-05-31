@@ -41,11 +41,11 @@ class TestQuery : Query<TestQuery.Data> {
     data class Hero(
       val __typename: String,
       /**
-       * Synthetic field for fragment spread on Character
+       * Synthetic field for 'HeroDetails'
        */
       val heroDetails: HeroDetails?,
       /**
-       * Synthetic field for fragment spread on Human
+       * Synthetic field for 'HumanDetails'
        */
       val humanDetails: HumanDetails?
     )
@@ -53,7 +53,7 @@ class TestQuery : Query<TestQuery.Data> {
 
   companion object {
     const val OPERATION_ID: String =
-        "31c28382665334e0cd84c09439dc5b7ea965b6ddb3798fc4cfdf9769ffecd14b"
+        "3ce8d3cdf93a9d2ae1ff2b9c9e316ceb787911cfee20beb974b2238f02758d1d"
 
     /**
      * The minimized GraphQL document being sent to the server to save a few bytes.
@@ -68,7 +68,6 @@ class TestQuery : Query<TestQuery.Data> {
      * }
      *
      * fragment CharacterDetails on Character {
-     *   __typename
      *   name
      *   birthDate
      * }
@@ -80,7 +79,6 @@ class TestQuery : Query<TestQuery.Data> {
      * }
      *
      * fragment CharacterDetails on Character {
-     *   __typename
      *   name
      *   birthDate
      * }
@@ -92,7 +90,7 @@ class TestQuery : Query<TestQuery.Data> {
      * }
      */
     const val OPERATION_DOCUMENT: String =
-        "query TestQuery { hero { __typename ...HeroDetails ...HumanDetails } }  fragment CharacterDetails on Character { __typename name birthDate }  fragment HeroDetails on Character { __typename name ...CharacterDetails }  fragment CharacterDetails on Character { __typename name birthDate }  fragment HumanDetails on Human { __typename name ...CharacterDetails }"
+        "query TestQuery { hero { __typename ...HeroDetails ...HumanDetails } }  fragment CharacterDetails on Character { name birthDate }  fragment HeroDetails on Character { __typename name ...CharacterDetails }  fragment CharacterDetails on Character { name birthDate }  fragment HumanDetails on Human { __typename name ...CharacterDetails }"
 
     const val OPERATION_NAME: String = "TestQuery"
   }

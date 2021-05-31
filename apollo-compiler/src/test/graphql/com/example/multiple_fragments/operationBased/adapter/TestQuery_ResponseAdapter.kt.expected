@@ -26,12 +26,14 @@ object TestQuery_ResponseAdapter {
     override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters):
         TestQuery.Data {
       var a: TestQuery.Data.A? = null
+
       while(true) {
         when (reader.selectName(RESPONSE_NAMES)) {
           0 -> a = A.obj(true).nullable().fromJson(reader, customScalarAdapters)
           else -> break
         }
       }
+
       return TestQuery.Data(
         a = a
       )
@@ -52,23 +54,27 @@ object TestQuery_ResponseAdapter {
       override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters):
           TestQuery.Data.A {
         var __typename: String? = null
-        var aFragment: AFragment? = null
+
         while(true) {
           when (reader.selectName(RESPONSE_NAMES)) {
             0 -> __typename = StringAdapter.fromJson(reader, customScalarAdapters)
             else -> break
           }
         }
+
         check(__typename != null) {
           "__typename was not found"
         }
-        if(possibleTypes("A").evaluate(emptySet(), __typename)) {
-          reader.rewind()
+
+        reader.rewind()
+        var aFragment: AFragment? = null
+        if (possibleTypes("A").evaluate(emptySet(), __typename)) {
           aFragment = com.example.multiple_fragments.fragment.AFragmentImpl_ResponseAdapter.AFragment.fromJson(reader,
               customScalarAdapters)
         }
+
         return TestQuery.Data.A(
-          __typename = __typename!!,
+          __typename = __typename,
           aFragment = aFragment
         )
       }

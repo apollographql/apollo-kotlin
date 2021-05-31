@@ -24,23 +24,27 @@ object GetUser_ResponseAdapter {
     override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters):
         GetUser.Data {
       var __typename: String? = null
-      var queryFragment: QueryFragment? = null
+
       while(true) {
         when (reader.selectName(RESPONSE_NAMES)) {
           0 -> __typename = StringAdapter.fromJson(reader, customScalarAdapters)
           else -> break
         }
       }
+
       check(__typename != null) {
         "__typename was not found"
       }
-      if(possibleTypes("Query").evaluate(emptySet(), __typename)) {
-        reader.rewind()
+
+      reader.rewind()
+      var queryFragment: QueryFragment? = null
+      if (possibleTypes("Query").evaluate(emptySet(), __typename)) {
         queryFragment = com.example.named_fragment_with_variables.fragment.QueryFragmentImpl_ResponseAdapter.QueryFragment.fromJson(reader,
             customScalarAdapters)
       }
+
       return GetUser.Data(
-        __typename = __typename!!,
+        __typename = __typename,
         queryFragment = queryFragment
       )
     }

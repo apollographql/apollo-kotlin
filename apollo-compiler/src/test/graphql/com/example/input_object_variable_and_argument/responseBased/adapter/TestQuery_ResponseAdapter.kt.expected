@@ -25,6 +25,7 @@ object TestQuery_ResponseAdapter {
     override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters):
         TestQuery.Data {
       var heroWithReview: TestQuery.Data.HeroWithReview? = null
+
       while(true) {
         when (reader.selectName(RESPONSE_NAMES)) {
           0 -> heroWithReview = HeroWithReview.obj().nullable().fromJson(reader,
@@ -32,6 +33,7 @@ object TestQuery_ResponseAdapter {
           else -> break
         }
       }
+
       return TestQuery.Data(
         heroWithReview = heroWithReview
       )
@@ -53,6 +55,7 @@ object TestQuery_ResponseAdapter {
           TestQuery.Data.HeroWithReview {
         var name: String? = null
         var height: Double? = null
+
         while(true) {
           when (reader.selectName(RESPONSE_NAMES)) {
             0 -> name = StringAdapter.fromJson(reader, customScalarAdapters)
@@ -60,6 +63,7 @@ object TestQuery_ResponseAdapter {
             else -> break
           }
         }
+
         return TestQuery.Data.HeroWithReview(
           name = name!!,
           height = height

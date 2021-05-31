@@ -25,12 +25,14 @@ object CreateReviewForEpisodeMutation_ResponseAdapter {
     override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters):
         CreateReviewForEpisodeMutation.Data {
       var createReview: CreateReviewForEpisodeMutation.Data.CreateReview? = null
+
       while(true) {
         when (reader.selectName(RESPONSE_NAMES)) {
           0 -> createReview = CreateReview.obj().nullable().fromJson(reader, customScalarAdapters)
           else -> break
         }
       }
+
       return CreateReviewForEpisodeMutation.Data(
         createReview = createReview
       )
@@ -52,6 +54,7 @@ object CreateReviewForEpisodeMutation_ResponseAdapter {
           CreateReviewForEpisodeMutation.Data.CreateReview {
         var stars: Int? = null
         var commentary: String? = null
+
         while(true) {
           when (reader.selectName(RESPONSE_NAMES)) {
             0 -> stars = IntAdapter.fromJson(reader, customScalarAdapters)
@@ -59,6 +62,7 @@ object CreateReviewForEpisodeMutation_ResponseAdapter {
             else -> break
           }
         }
+
         return CreateReviewForEpisodeMutation.Data.CreateReview(
           stars = stars!!,
           commentary = commentary

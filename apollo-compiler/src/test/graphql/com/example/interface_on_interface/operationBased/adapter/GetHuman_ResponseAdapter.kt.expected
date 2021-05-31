@@ -27,6 +27,7 @@ object GetHuman_ResponseAdapter {
         GetHuman.Data {
       var human: GetHuman.Data.Human? = null
       var node: GetHuman.Data.Node? = null
+
       while(true) {
         when (reader.selectName(RESPONSE_NAMES)) {
           0 -> human = Human.obj().fromJson(reader, customScalarAdapters)
@@ -34,6 +35,7 @@ object GetHuman_ResponseAdapter {
           else -> break
         }
       }
+
       return GetHuman.Data(
         human = human!!,
         node = node!!
@@ -60,6 +62,7 @@ object GetHuman_ResponseAdapter {
         var id: String? = null
         var name: String? = null
         var height: Double? = null
+
         while(true) {
           when (reader.selectName(RESPONSE_NAMES)) {
             0 -> id = StringAdapter.fromJson(reader, customScalarAdapters)
@@ -68,6 +71,7 @@ object GetHuman_ResponseAdapter {
             else -> break
           }
         }
+
         return GetHuman.Data.Human(
           id = id!!,
           name = name!!,
@@ -97,23 +101,27 @@ object GetHuman_ResponseAdapter {
       override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters):
           GetHuman.Data.Node {
         var __typename: String? = null
-        var onHuman: GetHuman.Data.Node.OnHuman? = null
+
         while(true) {
           when (reader.selectName(RESPONSE_NAMES)) {
             0 -> __typename = StringAdapter.fromJson(reader, customScalarAdapters)
             else -> break
           }
         }
+
         check(__typename != null) {
           "__typename was not found"
         }
-        if(possibleTypes("Human").evaluate(emptySet(), __typename)) {
-          reader.rewind()
+
+        reader.rewind()
+        var onHuman: GetHuman.Data.Node.OnHuman? = null
+        if (possibleTypes("Human").evaluate(emptySet(), __typename)) {
           onHuman = com.example.interface_on_interface.adapter.GetHuman_ResponseAdapter.Data.Node.OnHuman.fromJson(reader,
               customScalarAdapters)
         }
+
         return GetHuman.Data.Node(
-          __typename = __typename!!,
+          __typename = __typename,
           onHuman = onHuman
         )
       }
@@ -138,12 +146,14 @@ object GetHuman_ResponseAdapter {
         override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters):
             GetHuman.Data.Node.OnHuman {
           var height: Double? = null
+
           while(true) {
             when (reader.selectName(RESPONSE_NAMES)) {
               0 -> height = DoubleAdapter.fromJson(reader, customScalarAdapters)
               else -> break
             }
           }
+
           return GetHuman.Data.Node.OnHuman(
             height = height!!
           )

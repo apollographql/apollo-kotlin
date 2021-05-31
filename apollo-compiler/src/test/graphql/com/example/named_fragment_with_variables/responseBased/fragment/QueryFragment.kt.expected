@@ -9,8 +9,6 @@ import kotlin.String
 import kotlin.collections.List
 
 interface QueryFragment {
-  val __typename: String
-
   val organization: Organization?
 
   interface Organization {
@@ -19,7 +17,7 @@ interface QueryFragment {
     val user: List<User>
 
     interface User : UserFragment {
-      override val __typename: String
+      val __typename: String
 
       override val firstName: String
 

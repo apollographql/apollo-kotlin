@@ -16,23 +16,22 @@ import kotlin.collections.List
 
 object DroidFragmentImpl_ResponseAdapter {
   object Data : Adapter<DroidFragmentImpl.Data> {
-    val RESPONSE_NAMES: List<String> = listOf("__typename", "name", "primaryFunction")
+    val RESPONSE_NAMES: List<String> = listOf("name", "primaryFunction")
 
     override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters):
         DroidFragmentImpl.Data {
-      var __typename: String? = null
       var name: String? = null
       var primaryFunction: String? = null
+
       while(true) {
         when (reader.selectName(RESPONSE_NAMES)) {
-          0 -> __typename = StringAdapter.fromJson(reader, customScalarAdapters)
-          1 -> name = StringAdapter.fromJson(reader, customScalarAdapters)
-          2 -> primaryFunction = NullableStringAdapter.fromJson(reader, customScalarAdapters)
+          0 -> name = StringAdapter.fromJson(reader, customScalarAdapters)
+          1 -> primaryFunction = NullableStringAdapter.fromJson(reader, customScalarAdapters)
           else -> break
         }
       }
+
       return DroidFragmentImpl.Data(
-        __typename = __typename!!,
         name = name!!,
         primaryFunction = primaryFunction
       )
@@ -43,9 +42,6 @@ object DroidFragmentImpl_ResponseAdapter {
       customScalarAdapters: CustomScalarAdapters,
       value: DroidFragmentImpl.Data
     ) {
-      writer.name("__typename")
-      StringAdapter.toJson(writer, customScalarAdapters, value.__typename)
-
       writer.name("name")
       StringAdapter.toJson(writer, customScalarAdapters, value.name)
 

@@ -28,12 +28,14 @@ object TestQuery_ResponseAdapter {
     override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters):
         TestQuery.Data {
       var hero: TestQuery.Data.Hero? = null
+
       while(true) {
         when (reader.selectName(RESPONSE_NAMES)) {
           0 -> hero = Hero.obj(true).nullable().fromJson(reader, customScalarAdapters)
           else -> break
         }
       }
+
       return TestQuery.Data(
         hero = hero
       )
@@ -56,7 +58,7 @@ object TestQuery_ResponseAdapter {
         var __typename: String? = null
         var name: String? = null
         var birthDate: Any? = null
-        var onDroid: TestQuery.Data.Hero.OnDroid? = null
+
         while(true) {
           when (reader.selectName(RESPONSE_NAMES)) {
             0 -> __typename = StringAdapter.fromJson(reader, customScalarAdapters)
@@ -65,16 +67,20 @@ object TestQuery_ResponseAdapter {
             else -> break
           }
         }
+
         check(__typename != null) {
           "__typename was not found"
         }
-        if(possibleTypes("Droid").evaluate(emptySet(), __typename)) {
-          reader.rewind()
+
+        reader.rewind()
+        var onDroid: TestQuery.Data.Hero.OnDroid? = null
+        if (possibleTypes("Droid").evaluate(emptySet(), __typename)) {
           onDroid = com.example.hero_name.adapter.TestQuery_ResponseAdapter.Data.Hero.OnDroid.fromJson(reader,
               customScalarAdapters)
         }
+
         return TestQuery.Data.Hero(
-          __typename = __typename!!,
+          __typename = __typename,
           name = name!!,
           birthDate = birthDate!!,
           onDroid = onDroid
@@ -107,12 +113,14 @@ object TestQuery_ResponseAdapter {
         override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters):
             TestQuery.Data.Hero.OnDroid {
           var primaryFunction: String? = null
+
           while(true) {
             when (reader.selectName(RESPONSE_NAMES)) {
               0 -> primaryFunction = NullableStringAdapter.fromJson(reader, customScalarAdapters)
               else -> break
             }
           }
+
           return TestQuery.Data.Hero.OnDroid(
             primaryFunction = primaryFunction
           )

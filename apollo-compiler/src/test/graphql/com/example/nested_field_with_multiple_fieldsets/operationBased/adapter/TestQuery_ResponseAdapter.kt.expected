@@ -26,12 +26,14 @@ object TestQuery_ResponseAdapter {
     override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters):
         TestQuery.Data {
       var iface1: TestQuery.Data.Iface1? = null
+
       while(true) {
         when (reader.selectName(RESPONSE_NAMES)) {
           0 -> iface1 = Iface1.obj(true).nullable().fromJson(reader, customScalarAdapters)
           else -> break
         }
       }
+
       return TestQuery.Data(
         iface1 = iface1
       )
@@ -52,30 +54,34 @@ object TestQuery_ResponseAdapter {
       override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters):
           TestQuery.Data.Iface1 {
         var __typename: String? = null
-        var onIface1: TestQuery.Data.Iface1.OnIface1? = null
-        var onImpl1: TestQuery.Data.Iface1.OnImpl1? = null
+
         while(true) {
           when (reader.selectName(RESPONSE_NAMES)) {
             0 -> __typename = StringAdapter.fromJson(reader, customScalarAdapters)
             else -> break
           }
         }
+
         check(__typename != null) {
           "__typename was not found"
         }
-        if(possibleTypes("Impl1").evaluate(emptySet(), __typename)) {
-          reader.rewind()
+
+        reader.rewind()
+        var onIface1: TestQuery.Data.Iface1.OnIface1? = null
+        if (possibleTypes("Impl1").evaluate(emptySet(), __typename)) {
           onIface1 = com.example.nested_field_with_multiple_fieldsets.adapter.TestQuery_ResponseAdapter.Data.Iface1.OnIface1.fromJson(reader,
               customScalarAdapters)
         }
 
-        if(possibleTypes("Impl1").evaluate(emptySet(), __typename)) {
-          reader.rewind()
+        reader.rewind()
+        var onImpl1: TestQuery.Data.Iface1.OnImpl1? = null
+        if (possibleTypes("Impl1").evaluate(emptySet(), __typename)) {
           onImpl1 = com.example.nested_field_with_multiple_fieldsets.adapter.TestQuery_ResponseAdapter.Data.Iface1.OnImpl1.fromJson(reader,
               customScalarAdapters)
         }
+
         return TestQuery.Data.Iface1(
-          __typename = __typename!!,
+          __typename = __typename,
           onIface1 = onIface1,
           onImpl1 = onImpl1
         )
@@ -106,12 +112,14 @@ object TestQuery_ResponseAdapter {
         override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters):
             TestQuery.Data.Iface1.OnIface1 {
           var iface2: TestQuery.Data.Iface1.OnIface1.Iface2? = null
+
           while(true) {
             when (reader.selectName(RESPONSE_NAMES)) {
               0 -> iface2 = Iface2.obj(true).nullable().fromJson(reader, customScalarAdapters)
               else -> break
             }
           }
+
           return TestQuery.Data.Iface1.OnIface1(
             iface2 = iface2
           )
@@ -132,30 +140,34 @@ object TestQuery_ResponseAdapter {
           override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters):
               TestQuery.Data.Iface1.OnIface1.Iface2 {
             var __typename: String? = null
-            var onIface2: TestQuery.Data.Iface1.OnIface1.Iface2.OnIface2? = null
-            var onImpl2: TestQuery.Data.Iface1.OnIface1.Iface2.OnImpl2? = null
+
             while(true) {
               when (reader.selectName(RESPONSE_NAMES)) {
                 0 -> __typename = StringAdapter.fromJson(reader, customScalarAdapters)
                 else -> break
               }
             }
+
             check(__typename != null) {
               "__typename was not found"
             }
-            if(possibleTypes("Impl2").evaluate(emptySet(), __typename)) {
-              reader.rewind()
+
+            reader.rewind()
+            var onIface2: TestQuery.Data.Iface1.OnIface1.Iface2.OnIface2? = null
+            if (possibleTypes("Impl2").evaluate(emptySet(), __typename)) {
               onIface2 = com.example.nested_field_with_multiple_fieldsets.adapter.TestQuery_ResponseAdapter.Data.Iface1.OnIface1.Iface2.OnIface2.fromJson(reader,
                   customScalarAdapters)
             }
 
-            if(possibleTypes("Impl2").evaluate(emptySet(), __typename)) {
-              reader.rewind()
+            reader.rewind()
+            var onImpl2: TestQuery.Data.Iface1.OnIface1.Iface2.OnImpl2? = null
+            if (possibleTypes("Impl2").evaluate(emptySet(), __typename)) {
               onImpl2 = com.example.nested_field_with_multiple_fieldsets.adapter.TestQuery_ResponseAdapter.Data.Iface1.OnIface1.Iface2.OnImpl2.fromJson(reader,
                   customScalarAdapters)
             }
+
             return TestQuery.Data.Iface1.OnIface1.Iface2(
-              __typename = __typename!!,
+              __typename = __typename,
               onIface2 = onIface2,
               onImpl2 = onImpl2
             )
@@ -186,12 +198,14 @@ object TestQuery_ResponseAdapter {
             override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters):
                 TestQuery.Data.Iface1.OnIface1.Iface2.OnIface2 {
               var scalar1: String? = null
+
               while(true) {
                 when (reader.selectName(RESPONSE_NAMES)) {
                   0 -> scalar1 = NullableStringAdapter.fromJson(reader, customScalarAdapters)
                   else -> break
                 }
               }
+
               return TestQuery.Data.Iface1.OnIface1.Iface2.OnIface2(
                 scalar1 = scalar1
               )
@@ -213,12 +227,14 @@ object TestQuery_ResponseAdapter {
             override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters):
                 TestQuery.Data.Iface1.OnIface1.Iface2.OnImpl2 {
               var scalar2: String? = null
+
               while(true) {
                 when (reader.selectName(RESPONSE_NAMES)) {
                   0 -> scalar2 = NullableStringAdapter.fromJson(reader, customScalarAdapters)
                   else -> break
                 }
               }
+
               return TestQuery.Data.Iface1.OnIface1.Iface2.OnImpl2(
                 scalar2 = scalar2
               )
@@ -242,12 +258,14 @@ object TestQuery_ResponseAdapter {
         override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters):
             TestQuery.Data.Iface1.OnImpl1 {
           var iface2: TestQuery.Data.Iface1.OnImpl1.Iface2? = null
+
           while(true) {
             when (reader.selectName(RESPONSE_NAMES)) {
               0 -> iface2 = Iface2.obj(true).nullable().fromJson(reader, customScalarAdapters)
               else -> break
             }
           }
+
           return TestQuery.Data.Iface1.OnImpl1(
             iface2 = iface2
           )
@@ -268,30 +286,34 @@ object TestQuery_ResponseAdapter {
           override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters):
               TestQuery.Data.Iface1.OnImpl1.Iface2 {
             var __typename: String? = null
-            var onIface2: TestQuery.Data.Iface1.OnImpl1.Iface2.OnIface2? = null
-            var onImpl2: TestQuery.Data.Iface1.OnImpl1.Iface2.OnImpl2? = null
+
             while(true) {
               when (reader.selectName(RESPONSE_NAMES)) {
                 0 -> __typename = StringAdapter.fromJson(reader, customScalarAdapters)
                 else -> break
               }
             }
+
             check(__typename != null) {
               "__typename was not found"
             }
-            if(possibleTypes("Impl2").evaluate(emptySet(), __typename)) {
-              reader.rewind()
+
+            reader.rewind()
+            var onIface2: TestQuery.Data.Iface1.OnImpl1.Iface2.OnIface2? = null
+            if (possibleTypes("Impl2").evaluate(emptySet(), __typename)) {
               onIface2 = com.example.nested_field_with_multiple_fieldsets.adapter.TestQuery_ResponseAdapter.Data.Iface1.OnImpl1.Iface2.OnIface2.fromJson(reader,
                   customScalarAdapters)
             }
 
-            if(possibleTypes("Impl2").evaluate(emptySet(), __typename)) {
-              reader.rewind()
+            reader.rewind()
+            var onImpl2: TestQuery.Data.Iface1.OnImpl1.Iface2.OnImpl2? = null
+            if (possibleTypes("Impl2").evaluate(emptySet(), __typename)) {
               onImpl2 = com.example.nested_field_with_multiple_fieldsets.adapter.TestQuery_ResponseAdapter.Data.Iface1.OnImpl1.Iface2.OnImpl2.fromJson(reader,
                   customScalarAdapters)
             }
+
             return TestQuery.Data.Iface1.OnImpl1.Iface2(
-              __typename = __typename!!,
+              __typename = __typename,
               onIface2 = onIface2,
               onImpl2 = onImpl2
             )
@@ -322,12 +344,14 @@ object TestQuery_ResponseAdapter {
             override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters):
                 TestQuery.Data.Iface1.OnImpl1.Iface2.OnIface2 {
               var scalar3: String? = null
+
               while(true) {
                 when (reader.selectName(RESPONSE_NAMES)) {
                   0 -> scalar3 = NullableStringAdapter.fromJson(reader, customScalarAdapters)
                   else -> break
                 }
               }
+
               return TestQuery.Data.Iface1.OnImpl1.Iface2.OnIface2(
                 scalar3 = scalar3
               )
@@ -349,12 +373,14 @@ object TestQuery_ResponseAdapter {
             override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters):
                 TestQuery.Data.Iface1.OnImpl1.Iface2.OnImpl2 {
               var scalar4: String? = null
+
               while(true) {
                 when (reader.selectName(RESPONSE_NAMES)) {
                   0 -> scalar4 = NullableStringAdapter.fromJson(reader, customScalarAdapters)
                   else -> break
                 }
               }
+
               return TestQuery.Data.Iface1.OnImpl1.Iface2.OnImpl2(
                 scalar4 = scalar4
               )

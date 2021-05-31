@@ -24,12 +24,14 @@ object TestQuery_ResponseAdapter {
     override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters):
         TestQuery.Data {
       var i: TestQuery.Data.I? = null
+
       while(true) {
         when (reader.selectName(RESPONSE_NAMES)) {
           0 -> i = I.obj().nullable().fromJson(reader, customScalarAdapters)
           else -> break
         }
       }
+
       return TestQuery.Data(
         i = i
       )
@@ -85,6 +87,7 @@ object TestQuery_ResponseAdapter {
       ): TestQuery.Data.AI {
         var __typename: String? = typename
         var fieldA: String? = null
+
         while(true) {
           when (reader.selectName(RESPONSE_NAMES)) {
             0 -> __typename = StringAdapter.fromJson(reader, customScalarAdapters)
@@ -92,6 +95,7 @@ object TestQuery_ResponseAdapter {
             else -> break
           }
         }
+
         return TestQuery.Data.AI(
           __typename = __typename!!,
           fieldA = fieldA
@@ -120,12 +124,14 @@ object TestQuery_ResponseAdapter {
         typename: String
       ): TestQuery.Data.OtherI {
         var __typename: String? = typename
+
         while(true) {
           when (reader.selectName(RESPONSE_NAMES)) {
             0 -> __typename = StringAdapter.fromJson(reader, customScalarAdapters)
             else -> break
           }
         }
+
         return TestQuery.Data.OtherI(
           __typename = __typename!!
         )

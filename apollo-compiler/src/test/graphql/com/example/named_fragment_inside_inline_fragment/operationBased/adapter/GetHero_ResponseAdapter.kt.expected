@@ -27,12 +27,14 @@ object GetHero_ResponseAdapter {
     override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters):
         GetHero.Data {
       var hero: GetHero.Data.Hero? = null
+
       while(true) {
         when (reader.selectName(RESPONSE_NAMES)) {
           0 -> hero = Hero.obj(true).nullable().fromJson(reader, customScalarAdapters)
           else -> break
         }
       }
+
       return GetHero.Data(
         hero = hero
       )
@@ -53,23 +55,27 @@ object GetHero_ResponseAdapter {
       override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters):
           GetHero.Data.Hero {
         var __typename: String? = null
-        var onCharacter: GetHero.Data.Hero.OnCharacter? = null
+
         while(true) {
           when (reader.selectName(RESPONSE_NAMES)) {
             0 -> __typename = StringAdapter.fromJson(reader, customScalarAdapters)
             else -> break
           }
         }
+
         check(__typename != null) {
           "__typename was not found"
         }
-        if(possibleTypes("Droid","Human").evaluate(emptySet(), __typename)) {
-          reader.rewind()
+
+        reader.rewind()
+        var onCharacter: GetHero.Data.Hero.OnCharacter? = null
+        if (possibleTypes("Droid","Human").evaluate(emptySet(), __typename)) {
           onCharacter = com.example.named_fragment_inside_inline_fragment.adapter.GetHero_ResponseAdapter.Data.Hero.OnCharacter.fromJson(reader,
               customScalarAdapters)
         }
+
         return GetHero.Data.Hero(
-          __typename = __typename!!,
+          __typename = __typename,
           onCharacter = onCharacter
         )
       }
@@ -94,30 +100,34 @@ object GetHero_ResponseAdapter {
         override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters):
             GetHero.Data.Hero.OnCharacter {
           var __typename: String? = null
-          var characterName: CharacterName? = null
-          var characterAppearsIn: CharacterAppearsIn? = null
+
           while(true) {
             when (reader.selectName(RESPONSE_NAMES)) {
               0 -> __typename = StringAdapter.fromJson(reader, customScalarAdapters)
               else -> break
             }
           }
+
           check(__typename != null) {
             "__typename was not found"
           }
-          if(possibleTypes("Droid","Human").evaluate(emptySet(), __typename)) {
-            reader.rewind()
+
+          reader.rewind()
+          var characterName: CharacterName? = null
+          if (possibleTypes("Droid","Human").evaluate(emptySet(), __typename)) {
             characterName = com.example.named_fragment_inside_inline_fragment.fragment.CharacterNameImpl_ResponseAdapter.CharacterName.fromJson(reader,
                 customScalarAdapters)
           }
 
-          if(possibleTypes("Droid","Human").evaluate(emptySet(), __typename)) {
-            reader.rewind()
+          reader.rewind()
+          var characterAppearsIn: CharacterAppearsIn? = null
+          if (possibleTypes("Droid","Human").evaluate(emptySet(), __typename)) {
             characterAppearsIn = com.example.named_fragment_inside_inline_fragment.fragment.CharacterAppearsInImpl_ResponseAdapter.CharacterAppearsIn.fromJson(reader,
                 customScalarAdapters)
           }
+
           return GetHero.Data.Hero.OnCharacter(
-            __typename = __typename!!,
+            __typename = __typename,
             characterName = characterName,
             characterAppearsIn = characterAppearsIn
           )

@@ -45,11 +45,11 @@ internal class TestQuery : Query<TestQuery.Data> {
     data class Hero(
       val __typename: String,
       /**
-       * Synthetic field for fragment spread on Character
+       * Synthetic field for 'HeroDetails'
        */
       val heroDetails: HeroDetails?,
       /**
-       * Synthetic field for fragment spread on Human
+       * Synthetic field for 'HumanDetails'
        */
       val humanDetails: HumanDetails?
     )

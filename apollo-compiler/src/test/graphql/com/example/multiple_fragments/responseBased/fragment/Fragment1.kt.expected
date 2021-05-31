@@ -8,7 +8,5 @@ package com.example.multiple_fragments.fragment
 import kotlin.String
 
 interface Fragment1 {
-  val __typename: String
-
   val field1: String?
 }

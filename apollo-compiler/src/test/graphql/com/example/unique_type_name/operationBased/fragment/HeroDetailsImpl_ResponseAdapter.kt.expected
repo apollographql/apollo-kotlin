@@ -20,23 +20,22 @@ import kotlin.collections.List
 
 object HeroDetailsImpl_ResponseAdapter {
   object HeroDetails : Adapter<com.example.unique_type_name.fragment.HeroDetails> {
-    val RESPONSE_NAMES: List<String> = listOf("__typename", "name", "friendsConnection")
+    val RESPONSE_NAMES: List<String> = listOf("name", "friendsConnection")
 
     override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters):
         com.example.unique_type_name.fragment.HeroDetails {
-      var __typename: String? = null
       var name: String? = null
       var friendsConnection: com.example.unique_type_name.fragment.HeroDetails.FriendsConnection? = null
+
       while(true) {
         when (reader.selectName(RESPONSE_NAMES)) {
-          0 -> __typename = StringAdapter.fromJson(reader, customScalarAdapters)
-          1 -> name = StringAdapter.fromJson(reader, customScalarAdapters)
-          2 -> friendsConnection = FriendsConnection.obj().fromJson(reader, customScalarAdapters)
+          0 -> name = StringAdapter.fromJson(reader, customScalarAdapters)
+          1 -> friendsConnection = FriendsConnection.obj().fromJson(reader, customScalarAdapters)
           else -> break
         }
       }
+
       return com.example.unique_type_name.fragment.HeroDetails(
-        __typename = __typename!!,
         name = name!!,
         friendsConnection = friendsConnection!!
       )
@@ -47,9 +46,6 @@ object HeroDetailsImpl_ResponseAdapter {
       customScalarAdapters: CustomScalarAdapters,
       value: com.example.unique_type_name.fragment.HeroDetails
     ) {
-      writer.name("__typename")
-      StringAdapter.toJson(writer, customScalarAdapters, value.__typename)
-
       writer.name("name")
       StringAdapter.toJson(writer, customScalarAdapters, value.name)
 
@@ -65,6 +61,7 @@ object HeroDetailsImpl_ResponseAdapter {
           com.example.unique_type_name.fragment.HeroDetails.FriendsConnection {
         var totalCount: Int? = null
         var edges: List<com.example.unique_type_name.fragment.HeroDetails.FriendsConnection.Edge?>? = null
+
         while(true) {
           when (reader.selectName(RESPONSE_NAMES)) {
             0 -> totalCount = NullableIntAdapter.fromJson(reader, customScalarAdapters)
@@ -73,6 +70,7 @@ object HeroDetailsImpl_ResponseAdapter {
             else -> break
           }
         }
+
         return com.example.unique_type_name.fragment.HeroDetails.FriendsConnection(
           totalCount = totalCount,
           edges = edges
@@ -98,12 +96,14 @@ object HeroDetailsImpl_ResponseAdapter {
         override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters):
             com.example.unique_type_name.fragment.HeroDetails.FriendsConnection.Edge {
           var node: com.example.unique_type_name.fragment.HeroDetails.FriendsConnection.Edge.Node? = null
+
           while(true) {
             when (reader.selectName(RESPONSE_NAMES)) {
               0 -> node = Node.obj().nullable().fromJson(reader, customScalarAdapters)
               else -> break
             }
           }
+
           return com.example.unique_type_name.fragment.HeroDetails.FriendsConnection.Edge(
             node = node
           )
@@ -125,12 +125,14 @@ object HeroDetailsImpl_ResponseAdapter {
           override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters):
               com.example.unique_type_name.fragment.HeroDetails.FriendsConnection.Edge.Node {
             var name: String? = null
+
             while(true) {
               when (reader.selectName(RESPONSE_NAMES)) {
                 0 -> name = StringAdapter.fromJson(reader, customScalarAdapters)
                 else -> break
               }
             }
+
             return com.example.unique_type_name.fragment.HeroDetails.FriendsConnection.Edge.Node(
               name = name!!
             )

@@ -27,6 +27,7 @@ object TestQuery_ResponseAdapter {
       var hero: TestQuery.Data.Hero? = null
       var droid: TestQuery.Data.Droid? = null
       var human: TestQuery.Data.Human? = null
+
       while(true) {
         when (reader.selectName(RESPONSE_NAMES)) {
           0 -> __typename = StringAdapter.fromJson(reader, customScalarAdapters)
@@ -36,6 +37,7 @@ object TestQuery_ResponseAdapter {
           else -> break
         }
       }
+
       return TestQuery.Data(
         __typename = __typename!!,
         hero = hero,
@@ -69,6 +71,7 @@ object TestQuery_ResponseAdapter {
           TestQuery.Data.Hero {
         var __typename: String? = null
         var name: String? = null
+
         while(true) {
           when (reader.selectName(RESPONSE_NAMES)) {
             0 -> __typename = StringAdapter.fromJson(reader, customScalarAdapters)
@@ -76,6 +79,7 @@ object TestQuery_ResponseAdapter {
             else -> break
           }
         }
+
         return TestQuery.Data.Hero(
           __typename = __typename!!,
           name = name!!
@@ -103,6 +107,7 @@ object TestQuery_ResponseAdapter {
         var __typename: String? = null
         var name: String? = null
         var primaryFunction: String? = null
+
         while(true) {
           when (reader.selectName(RESPONSE_NAMES)) {
             0 -> __typename = StringAdapter.fromJson(reader, customScalarAdapters)
@@ -111,6 +116,7 @@ object TestQuery_ResponseAdapter {
             else -> break
           }
         }
+
         return TestQuery.Data.Droid(
           __typename = __typename!!,
           name = name!!,
@@ -142,6 +148,7 @@ object TestQuery_ResponseAdapter {
         var __typename: String? = null
         var name: String? = null
         var homePlanet: String? = null
+
         while(true) {
           when (reader.selectName(RESPONSE_NAMES)) {
             0 -> __typename = StringAdapter.fromJson(reader, customScalarAdapters)
@@ -150,6 +157,7 @@ object TestQuery_ResponseAdapter {
             else -> break
           }
         }
+
         return TestQuery.Data.Human(
           __typename = __typename!!,
           name = name!!,

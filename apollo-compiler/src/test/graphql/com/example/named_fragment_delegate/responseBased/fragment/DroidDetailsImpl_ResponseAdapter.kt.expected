@@ -19,26 +19,25 @@ import kotlin.collections.List
 
 object DroidDetailsImpl_ResponseAdapter {
   object Data : Adapter<DroidDetailsImpl.Data> {
-    val RESPONSE_NAMES: List<String> = listOf("__typename", "name", "primaryFunction", "friends")
+    val RESPONSE_NAMES: List<String> = listOf("name", "primaryFunction", "friends")
 
     override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters):
         DroidDetailsImpl.Data {
-      var __typename: String? = null
       var name: String? = null
       var primaryFunction: String? = null
       var friends: List<DroidDetailsImpl.Data.Friend?>? = null
+
       while(true) {
         when (reader.selectName(RESPONSE_NAMES)) {
-          0 -> __typename = StringAdapter.fromJson(reader, customScalarAdapters)
-          1 -> name = StringAdapter.fromJson(reader, customScalarAdapters)
-          2 -> primaryFunction = NullableStringAdapter.fromJson(reader, customScalarAdapters)
-          3 -> friends = Friend.obj().nullable().list().nullable().fromJson(reader,
+          0 -> name = StringAdapter.fromJson(reader, customScalarAdapters)
+          1 -> primaryFunction = NullableStringAdapter.fromJson(reader, customScalarAdapters)
+          2 -> friends = Friend.obj().nullable().list().nullable().fromJson(reader,
               customScalarAdapters)
           else -> break
         }
       }
+
       return DroidDetailsImpl.Data(
-        __typename = __typename!!,
         name = name!!,
         primaryFunction = primaryFunction,
         friends = friends
@@ -50,9 +49,6 @@ object DroidDetailsImpl_ResponseAdapter {
       customScalarAdapters: CustomScalarAdapters,
       value: DroidDetailsImpl.Data
     ) {
-      writer.name("__typename")
-      StringAdapter.toJson(writer, customScalarAdapters, value.__typename)
-
       writer.name("name")
       StringAdapter.toJson(writer, customScalarAdapters, value.name)
 
@@ -69,12 +65,14 @@ object DroidDetailsImpl_ResponseAdapter {
       override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters):
           DroidDetailsImpl.Data.Friend {
         var name: String? = null
+
         while(true) {
           when (reader.selectName(RESPONSE_NAMES)) {
             0 -> name = StringAdapter.fromJson(reader, customScalarAdapters)
             else -> break
           }
         }
+
         return DroidDetailsImpl.Data.Friend(
           name = name!!
         )

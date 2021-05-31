@@ -25,6 +25,7 @@ object TestQuery_ResponseAdapter {
     override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters):
         TestQuery.Data {
       var search: List<TestQuery.Data.Search?>? = null
+
       while(true) {
         when (reader.selectName(RESPONSE_NAMES)) {
           0 -> search = Search.obj().nullable().list().nullable().fromJson(reader,
@@ -32,6 +33,7 @@ object TestQuery_ResponseAdapter {
           else -> break
         }
       }
+
       return TestQuery.Data(
         search = search
       )
@@ -93,6 +95,7 @@ object TestQuery_ResponseAdapter {
         var __typename: String? = typename
         var name: String? = null
         var homePlanet: String? = null
+
         while(true) {
           when (reader.selectName(RESPONSE_NAMES)) {
             0 -> __typename = StringAdapter.fromJson(reader, customScalarAdapters)
@@ -101,6 +104,7 @@ object TestQuery_ResponseAdapter {
             else -> break
           }
         }
+
         return TestQuery.Data.CharacterHumanSearch(
           __typename = __typename!!,
           name = name!!,
@@ -135,6 +139,7 @@ object TestQuery_ResponseAdapter {
         var __typename: String? = typename
         var name: String? = null
         var primaryFunction: String? = null
+
         while(true) {
           when (reader.selectName(RESPONSE_NAMES)) {
             0 -> __typename = StringAdapter.fromJson(reader, customScalarAdapters)
@@ -143,6 +148,7 @@ object TestQuery_ResponseAdapter {
             else -> break
           }
         }
+
         return TestQuery.Data.CharacterDroidSearch(
           __typename = __typename!!,
           name = name!!,
@@ -175,12 +181,14 @@ object TestQuery_ResponseAdapter {
         typename: String
       ): TestQuery.Data.OtherSearch {
         var __typename: String? = typename
+
         while(true) {
           when (reader.selectName(RESPONSE_NAMES)) {
             0 -> __typename = StringAdapter.fromJson(reader, customScalarAdapters)
             else -> break
           }
         }
+
         return TestQuery.Data.OtherSearch(
           __typename = __typename!!
         )

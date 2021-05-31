@@ -30,12 +30,14 @@ object TestQuery_ResponseAdapter {
     override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters):
         TestQuery.Data {
       var hero: TestQuery.Data.Hero? = null
+
       while(true) {
         when (reader.selectName(RESPONSE_NAMES)) {
           0 -> hero = Hero.obj(true).nullable().fromJson(reader, customScalarAdapters)
           else -> break
         }
       }
+
       return TestQuery.Data(
         hero = hero
       )
@@ -57,8 +59,7 @@ object TestQuery_ResponseAdapter {
           TestQuery.Data.Hero {
         var __typename: String? = null
         var id: String? = null
-        var heroDetails: HeroDetails? = null
-        var humanDetails: HumanDetails? = null
+
         while(true) {
           when (reader.selectName(RESPONSE_NAMES)) {
             0 -> __typename = StringAdapter.fromJson(reader, customScalarAdapters)
@@ -66,22 +67,27 @@ object TestQuery_ResponseAdapter {
             else -> break
           }
         }
+
         check(__typename != null) {
           "__typename was not found"
         }
-        if(and(possibleTypes("Droid","Human"),and(variable("withDetails"),not(variable("skipHumanDetails")))).evaluate(emptySet(), __typename)) {
-          reader.rewind()
+
+        reader.rewind()
+        var heroDetails: HeroDetails? = null
+        if (and(possibleTypes("Droid","Human"),and(variable("withDetails"),not(variable("skipHumanDetails")))).evaluate(emptySet(), __typename)) {
           heroDetails = com.example.fragment_spread_with_include_directive.fragment.HeroDetailsImpl_ResponseAdapter.HeroDetails.fromJson(reader,
               customScalarAdapters)
         }
 
-        if(and(possibleTypes("Human"),variable("withDetails")).evaluate(emptySet(), __typename)) {
-          reader.rewind()
+        reader.rewind()
+        var humanDetails: HumanDetails? = null
+        if (and(possibleTypes("Human"),variable("withDetails")).evaluate(emptySet(), __typename)) {
           humanDetails = com.example.fragment_spread_with_include_directive.fragment.HumanDetailsImpl_ResponseAdapter.HumanDetails.fromJson(reader,
               customScalarAdapters)
         }
+
         return TestQuery.Data.Hero(
-          __typename = __typename!!,
+          __typename = __typename,
           id = id!!,
           heroDetails = heroDetails,
           humanDetails = humanDetails

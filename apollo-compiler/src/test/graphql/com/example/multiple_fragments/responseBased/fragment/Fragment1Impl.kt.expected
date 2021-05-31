@@ -27,7 +27,6 @@ class Fragment1Impl : Fragment<Fragment1Impl.Data> {
   override fun fieldSets(): List<FieldSet> = Fragment1Impl_ResponseFields.fields.first().fieldSets
 
   data class Data(
-    override val __typename: String,
     override val field1: String?
   ) : Fragment1, Fragment.Data
 }

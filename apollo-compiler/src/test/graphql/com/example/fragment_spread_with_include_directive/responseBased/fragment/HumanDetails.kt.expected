@@ -8,8 +8,6 @@ package com.example.fragment_spread_with_include_directive.fragment
 import kotlin.String
 
 interface HumanDetails {
-  val __typename: String
-
   /**
    * The home planet of the human, or null if unknown
    */

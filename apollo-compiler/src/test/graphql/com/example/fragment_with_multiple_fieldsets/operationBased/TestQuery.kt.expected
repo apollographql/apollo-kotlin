@@ -40,7 +40,7 @@ class TestQuery : Query<TestQuery.Data> {
     data class I(
       val __typename: String,
       /**
-       * Synthetic field for fragment spread on I
+       * Synthetic field for 'iFragment'
        */
       val iFragment: IFragment?
     )

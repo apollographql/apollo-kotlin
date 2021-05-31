@@ -6,12 +6,9 @@
 package com.example.named_fragment_inside_inline_fragment.fragment
 
 import com.example.named_fragment_inside_inline_fragment.type.Episode
-import kotlin.String
 import kotlin.collections.List
 
 interface CharacterAppearsIn {
-  val __typename: String
-
   /**
    * The movies this character appears in
    */

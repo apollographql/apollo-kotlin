@@ -28,7 +28,6 @@ class PlanetFragmentImpl : Fragment<PlanetFragmentImpl.Data> {
       PlanetFragmentImpl_ResponseFields.fields.first().fieldSets
 
   data class Data(
-    override val __typename: String,
     /**
      * The name of this planet.
      */

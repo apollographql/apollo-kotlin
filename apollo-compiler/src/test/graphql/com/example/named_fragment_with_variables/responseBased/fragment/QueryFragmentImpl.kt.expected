@@ -35,7 +35,6 @@ data class QueryFragmentImpl(
       QueryFragmentImpl_ResponseFields.fields.first().fieldSets
 
   data class Data(
-    override val __typename: String,
     override val organization: Organization?
   ) : QueryFragment, Fragment.Data {
     data class Organization(

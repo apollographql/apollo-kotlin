@@ -27,12 +27,14 @@ object TestQuery_ResponseAdapter {
     override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters):
         TestQuery.Data {
       var root: TestQuery.Data.Root? = null
+
       while(true) {
         when (reader.selectName(RESPONSE_NAMES)) {
           0 -> root = Root.obj(true).nullable().fromJson(reader, customScalarAdapters)
           else -> break
         }
       }
+
       return TestQuery.Data(
         root = root
       )
@@ -53,23 +55,27 @@ object TestQuery_ResponseAdapter {
       override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters):
           TestQuery.Data.Root {
         var __typename: String? = null
-        var onA: TestQuery.Data.Root.OnA? = null
+
         while(true) {
           when (reader.selectName(RESPONSE_NAMES)) {
             0 -> __typename = StringAdapter.fromJson(reader, customScalarAdapters)
             else -> break
           }
         }
+
         check(__typename != null) {
           "__typename was not found"
         }
-        if(possibleTypes("ABC").evaluate(emptySet(), __typename)) {
-          reader.rewind()
+
+        reader.rewind()
+        var onA: TestQuery.Data.Root.OnA? = null
+        if (possibleTypes("ABC").evaluate(emptySet(), __typename)) {
           onA = com.example.not_all_combinations_are_needed.adapter.TestQuery_ResponseAdapter.Data.Root.OnA.fromJson(reader,
               customScalarAdapters)
         }
+
         return TestQuery.Data.Root(
-          __typename = __typename!!,
+          __typename = __typename,
           onA = onA
         )
       }
@@ -95,7 +101,7 @@ object TestQuery_ResponseAdapter {
             TestQuery.Data.Root.OnA {
           var __typename: String? = null
           var fieldA1: String? = null
-          var onB: TestQuery.Data.Root.OnA.OnB? = null
+
           while(true) {
             when (reader.selectName(RESPONSE_NAMES)) {
               0 -> __typename = StringAdapter.fromJson(reader, customScalarAdapters)
@@ -103,16 +109,20 @@ object TestQuery_ResponseAdapter {
               else -> break
             }
           }
+
           check(__typename != null) {
             "__typename was not found"
           }
-          if(possibleTypes("ABC","SomeBC").evaluate(emptySet(), __typename)) {
-            reader.rewind()
+
+          reader.rewind()
+          var onB: TestQuery.Data.Root.OnA.OnB? = null
+          if (possibleTypes("ABC","SomeBC").evaluate(emptySet(), __typename)) {
             onB = com.example.not_all_combinations_are_needed.adapter.TestQuery_ResponseAdapter.Data.Root.OnA.OnB.fromJson(reader,
                 customScalarAdapters)
           }
+
           return TestQuery.Data.Root.OnA(
-            __typename = __typename!!,
+            __typename = __typename,
             fieldA1 = fieldA1,
             onB = onB
           )
@@ -141,23 +151,27 @@ object TestQuery_ResponseAdapter {
           override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters):
               TestQuery.Data.Root.OnA.OnB {
             var __typename: String? = null
-            var bFragment: BFragment? = null
+
             while(true) {
               when (reader.selectName(RESPONSE_NAMES)) {
                 0 -> __typename = StringAdapter.fromJson(reader, customScalarAdapters)
                 else -> break
               }
             }
+
             check(__typename != null) {
               "__typename was not found"
             }
-            if(possibleTypes("ABC","SomeBC").evaluate(emptySet(), __typename)) {
-              reader.rewind()
+
+            reader.rewind()
+            var bFragment: BFragment? = null
+            if (possibleTypes("ABC","SomeBC").evaluate(emptySet(), __typename)) {
               bFragment = com.example.not_all_combinations_are_needed.fragment.BFragmentImpl_ResponseAdapter.BFragment.fromJson(reader,
                   customScalarAdapters)
             }
+
             return TestQuery.Data.Root.OnA.OnB(
-              __typename = __typename!!,
+              __typename = __typename,
               bFragment = bFragment
             )
           }

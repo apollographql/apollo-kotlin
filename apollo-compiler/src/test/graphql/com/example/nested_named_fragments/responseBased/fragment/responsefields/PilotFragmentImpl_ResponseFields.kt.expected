@@ -23,7 +23,6 @@ object PilotFragmentImpl_ResponseFields {
 
   object Data {
     val fields: Array<MergedField> = arrayOf(
-      MergedField.Typename,
       MergedField(
         type = MergedField.Type.Named.Other("unused"),
         fieldName = "name",

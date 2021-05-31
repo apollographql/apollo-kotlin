@@ -24,12 +24,14 @@ object TestQuery_ResponseAdapter {
     override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters):
         TestQuery.Data {
       var c: TestQuery.Data.C? = null
+
       while(true) {
         when (reader.selectName(RESPONSE_NAMES)) {
           0 -> c = C.obj().nullable().fromJson(reader, customScalarAdapters)
           else -> break
         }
       }
+
       return TestQuery.Data(
         c = c
       )
@@ -95,6 +97,7 @@ object TestQuery_ResponseAdapter {
         var fieldB1: String? = null
         var fieldB2: String? = null
         var fieldA2: String? = null
+
         while(true) {
           when (reader.selectName(RESPONSE_NAMES)) {
             0 -> __typename = StringAdapter.fromJson(reader, customScalarAdapters)
@@ -105,6 +108,7 @@ object TestQuery_ResponseAdapter {
             else -> break
           }
         }
+
         return TestQuery.Data.ABC(
           __typename = __typename!!,
           fieldA1 = fieldA1,
@@ -145,12 +149,14 @@ object TestQuery_ResponseAdapter {
         typename: String
       ): TestQuery.Data.OtherC {
         var __typename: String? = typename
+
         while(true) {
           when (reader.selectName(RESPONSE_NAMES)) {
             0 -> __typename = StringAdapter.fromJson(reader, customScalarAdapters)
             else -> break
           }
         }
+
         return TestQuery.Data.OtherC(
           __typename = __typename!!
         )
@@ -176,6 +182,7 @@ object TestQuery_ResponseAdapter {
       ): TestQuery.Data.OtherAC {
         var __typename: String? = typename
         var fieldA1: String? = null
+
         while(true) {
           when (reader.selectName(RESPONSE_NAMES)) {
             0 -> __typename = StringAdapter.fromJson(reader, customScalarAdapters)
@@ -183,6 +190,7 @@ object TestQuery_ResponseAdapter {
             else -> break
           }
         }
+
         return TestQuery.Data.OtherAC(
           __typename = __typename!!,
           fieldA1 = fieldA1
@@ -212,6 +220,7 @@ object TestQuery_ResponseAdapter {
       ): TestQuery.Data.OtherBC {
         var __typename: String? = typename
         var fieldB2: String? = null
+
         while(true) {
           when (reader.selectName(RESPONSE_NAMES)) {
             0 -> __typename = StringAdapter.fromJson(reader, customScalarAdapters)
@@ -219,6 +228,7 @@ object TestQuery_ResponseAdapter {
             else -> break
           }
         }
+
         return TestQuery.Data.OtherBC(
           __typename = __typename!!,
           fieldB2 = fieldB2

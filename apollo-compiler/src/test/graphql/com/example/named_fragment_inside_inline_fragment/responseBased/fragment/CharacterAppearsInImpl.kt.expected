@@ -13,7 +13,6 @@ import com.apollographql.apollo3.api.json.JsonWriter
 import com.apollographql.apollo3.api.obj
 import com.example.named_fragment_inside_inline_fragment.fragment.responsefields.CharacterAppearsInImpl_ResponseFields
 import com.example.named_fragment_inside_inline_fragment.type.Episode
-import kotlin.String
 import kotlin.collections.List
 
 class CharacterAppearsInImpl : Fragment<CharacterAppearsInImpl.Data> {
@@ -29,7 +28,6 @@ class CharacterAppearsInImpl : Fragment<CharacterAppearsInImpl.Data> {
       CharacterAppearsInImpl_ResponseFields.fields.first().fieldSets
 
   data class Data(
-    override val __typename: String,
     /**
      * The movies this character appears in
      */

@@ -6,11 +6,8 @@
 package com.example.named_fragment_without_implementation.fragment
 
 import kotlin.Double
-import kotlin.String
 
 interface HumanDetails {
-  val __typename: String
-
   /**
    * Height in the preferred unit, default is meters
    */

@@ -23,6 +23,7 @@ object TestQuery_ResponseAdapter {
     override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters):
         TestQuery.Data {
       var typeWithGraphQLKeywords: TestQuery.Data.TypeWithGraphQLKeywords? = null
+
       while(true) {
         when (reader.selectName(RESPONSE_NAMES)) {
           0 -> typeWithGraphQLKeywords = TypeWithGraphQLKeywords.obj().nullable().fromJson(reader,
@@ -30,6 +31,7 @@ object TestQuery_ResponseAdapter {
           else -> break
         }
       }
+
       return TestQuery.Data(
         typeWithGraphQLKeywords = typeWithGraphQLKeywords
       )
@@ -53,6 +55,7 @@ object TestQuery_ResponseAdapter {
         var on: String? = null
         var null_: String? = null
         var alias: String? = null
+
         while(true) {
           when (reader.selectName(RESPONSE_NAMES)) {
             0 -> on = NullableStringAdapter.fromJson(reader, customScalarAdapters)
@@ -61,6 +64,7 @@ object TestQuery_ResponseAdapter {
             else -> break
           }
         }
+
         return TestQuery.Data.TypeWithGraphQLKeywords(
           on = on,
           null_ = null_,

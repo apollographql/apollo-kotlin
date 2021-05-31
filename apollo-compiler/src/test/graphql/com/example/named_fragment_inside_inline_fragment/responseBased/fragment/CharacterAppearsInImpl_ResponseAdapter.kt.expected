@@ -7,7 +7,6 @@ package com.example.named_fragment_inside_inline_fragment.fragment
 
 import com.apollographql.apollo3.api.Adapter
 import com.apollographql.apollo3.api.CustomScalarAdapters
-import com.apollographql.apollo3.api.StringAdapter
 import com.apollographql.apollo3.api.json.JsonReader
 import com.apollographql.apollo3.api.json.JsonWriter
 import com.apollographql.apollo3.api.list
@@ -19,22 +18,21 @@ import kotlin.collections.List
 
 object CharacterAppearsInImpl_ResponseAdapter {
   object Data : Adapter<CharacterAppearsInImpl.Data> {
-    val RESPONSE_NAMES: List<String> = listOf("__typename", "appearsIn")
+    val RESPONSE_NAMES: List<String> = listOf("appearsIn")
 
     override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters):
         CharacterAppearsInImpl.Data {
-      var __typename: String? = null
       var appearsIn: List<Episode?>? = null
+
       while(true) {
         when (reader.selectName(RESPONSE_NAMES)) {
-          0 -> __typename = StringAdapter.fromJson(reader, customScalarAdapters)
-          1 -> appearsIn = Episode_ResponseAdapter.nullable().list().fromJson(reader,
+          0 -> appearsIn = Episode_ResponseAdapter.nullable().list().fromJson(reader,
               customScalarAdapters)
           else -> break
         }
       }
+
       return CharacterAppearsInImpl.Data(
-        __typename = __typename!!,
         appearsIn = appearsIn!!
       )
     }
@@ -44,9 +42,6 @@ object CharacterAppearsInImpl_ResponseAdapter {
       customScalarAdapters: CustomScalarAdapters,
       value: CharacterAppearsInImpl.Data
     ) {
-      writer.name("__typename")
-      StringAdapter.toJson(writer, customScalarAdapters, value.__typename)
-
       writer.name("appearsIn")
       Episode_ResponseAdapter.nullable().list().toJson(writer, customScalarAdapters,
           value.appearsIn)

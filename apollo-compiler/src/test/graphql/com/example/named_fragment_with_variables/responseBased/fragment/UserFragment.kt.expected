@@ -8,8 +8,6 @@ package com.example.named_fragment_with_variables.fragment
 import kotlin.String
 
 interface UserFragment {
-  val __typename: String
-
   val firstName: String
 
   val lastName: String

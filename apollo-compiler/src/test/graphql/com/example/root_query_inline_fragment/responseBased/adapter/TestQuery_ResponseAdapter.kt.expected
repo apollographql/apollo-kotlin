@@ -31,6 +31,7 @@ object TestQuery_ResponseAdapter {
       var __typename: String? = null
       var hero: TestQuery.Data.Hero? = null
       var droid: TestQuery.Data.Droid? = null
+
       while(true) {
         when (reader.selectName(RESPONSE_NAMES)) {
           0 -> __typename = StringAdapter.fromJson(reader, customScalarAdapters)
@@ -39,6 +40,7 @@ object TestQuery_ResponseAdapter {
           else -> break
         }
       }
+
       return TestQuery.Data(
         __typename = __typename!!,
         hero = hero,
@@ -104,6 +106,7 @@ object TestQuery_ResponseAdapter {
         var name: String? = null
         var appearsIn: List<Episode?>? = null
         var height: Double? = null
+
         while(true) {
           when (reader.selectName(RESPONSE_NAMES)) {
             0 -> __typename = StringAdapter.fromJson(reader, customScalarAdapters)
@@ -114,6 +117,7 @@ object TestQuery_ResponseAdapter {
             else -> break
           }
         }
+
         return TestQuery.Data.HumanHero(
           __typename = __typename!!,
           name = name!!,
@@ -153,6 +157,7 @@ object TestQuery_ResponseAdapter {
         var __typename: String? = typename
         var name: String? = null
         var appearsIn: List<Episode?>? = null
+
         while(true) {
           when (reader.selectName(RESPONSE_NAMES)) {
             0 -> __typename = StringAdapter.fromJson(reader, customScalarAdapters)
@@ -162,6 +167,7 @@ object TestQuery_ResponseAdapter {
             else -> break
           }
         }
+
         return TestQuery.Data.OtherHero(
           __typename = __typename!!,
           name = name!!,
@@ -194,6 +200,7 @@ object TestQuery_ResponseAdapter {
         var __typename: String? = null
         var name: String? = null
         var primaryFunction: String? = null
+
         while(true) {
           when (reader.selectName(RESPONSE_NAMES)) {
             0 -> __typename = StringAdapter.fromJson(reader, customScalarAdapters)
@@ -202,6 +209,7 @@ object TestQuery_ResponseAdapter {
             else -> break
           }
         }
+
         return TestQuery.Data.Droid(
           __typename = __typename!!,
           name = name!!,

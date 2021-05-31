@@ -56,6 +56,7 @@ object IFragmentImpl_ResponseAdapter {
     ): IFragmentImpl.AData {
       var __typename: String? = typename
       var fieldA: String? = null
+
       while(true) {
         when (reader.selectName(RESPONSE_NAMES)) {
           0 -> __typename = StringAdapter.fromJson(reader, customScalarAdapters)
@@ -63,6 +64,7 @@ object IFragmentImpl_ResponseAdapter {
           else -> break
         }
       }
+
       return IFragmentImpl.AData(
         __typename = __typename!!,
         fieldA = fieldA
@@ -91,12 +93,14 @@ object IFragmentImpl_ResponseAdapter {
       typename: String
     ): IFragmentImpl.OtherData {
       var __typename: String? = typename
+
       while(true) {
         when (reader.selectName(RESPONSE_NAMES)) {
           0 -> __typename = StringAdapter.fromJson(reader, customScalarAdapters)
           else -> break
         }
       }
+
       return IFragmentImpl.OtherData(
         __typename = __typename!!
       )

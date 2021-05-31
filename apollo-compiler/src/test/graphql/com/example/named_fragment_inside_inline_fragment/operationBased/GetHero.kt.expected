@@ -48,11 +48,11 @@ class GetHero : Query<GetHero.Data> {
       data class OnCharacter(
         val __typename: String,
         /**
-         * Synthetic field for fragment spread on Character
+         * Synthetic field for 'characterName'
          */
         val characterName: CharacterName?,
         /**
-         * Synthetic field for fragment spread on Character
+         * Synthetic field for 'characterAppearsIn'
          */
         val characterAppearsIn: CharacterAppearsIn?
       )
@@ -61,7 +61,7 @@ class GetHero : Query<GetHero.Data> {
 
   companion object {
     const val OPERATION_ID: String =
-        "bfb165cdd2507b6f3da8abd1c61a81e413567a827d48980239b5fc1f6ef766a9"
+        "9885eef2193cd56885e6e1bacd7f02b712820858880de6fb29b3f3b04458c831"
 
     /**
      * The minimized GraphQL document being sent to the server to save a few bytes.
@@ -79,17 +79,15 @@ class GetHero : Query<GetHero.Data> {
      * }
      *
      * fragment characterName on Character {
-     *   __typename
      *   name
      * }
      *
      * fragment characterAppearsIn on Character {
-     *   __typename
      *   appearsIn
      * }
      */
     const val OPERATION_DOCUMENT: String =
-        "query GetHero { hero { __typename ... on Character { __typename ...characterName ...characterAppearsIn } } }  fragment characterName on Character { __typename name }  fragment characterAppearsIn on Character { __typename appearsIn }"
+        "query GetHero { hero { __typename ... on Character { __typename ...characterName ...characterAppearsIn } } }  fragment characterName on Character { name }  fragment characterAppearsIn on Character { appearsIn }"
 
     const val OPERATION_NAME: String = "GetHero"
   }

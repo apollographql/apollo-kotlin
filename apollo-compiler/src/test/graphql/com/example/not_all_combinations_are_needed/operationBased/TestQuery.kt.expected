@@ -55,7 +55,7 @@ class TestQuery : Query<TestQuery.Data> {
         data class OnB(
           val __typename: String,
           /**
-           * Synthetic field for fragment spread on B
+           * Synthetic field for 'bFragment'
            */
           val bFragment: BFragment?
         )
@@ -65,7 +65,7 @@ class TestQuery : Query<TestQuery.Data> {
 
   companion object {
     const val OPERATION_ID: String =
-        "ec6d8d89a97a6fcc70ea1d1b7df0da779dd3fab0791532586486701fdaae1fe1"
+        "16500a4d2f3e21ea2357fd3532aff655fc2b37e893570d1e8d1944c4af4f9f1d"
 
     /**
      * The minimized GraphQL document being sent to the server to save a few bytes.
@@ -86,12 +86,11 @@ class TestQuery : Query<TestQuery.Data> {
      * }
      *
      * fragment bFragment on B {
-     *   __typename
      *   fieldB1
      * }
      */
     const val OPERATION_DOCUMENT: String =
-        "query TestQuery { root { __typename ... on A { __typename fieldA1 ... on B { __typename ...bFragment } } } }  fragment bFragment on B { __typename fieldB1 }"
+        "query TestQuery { root { __typename ... on A { __typename fieldA1 ... on B { __typename ...bFragment } } } }  fragment bFragment on B { fieldB1 }"
 
     const val OPERATION_NAME: String = "TestQuery"
   }

@@ -18,9 +18,9 @@ class AdapterBijectionTest {
   fun namedFragments() = bijection(
       HeroAndFriendsWithFragmentsQuery(),
       HeroAndFriendsWithFragmentsQuery.Data(
-          HeroAndFriendsWithFragmentsQuery.Data.Hero(
+          HeroAndFriendsWithFragmentsQuery.Hero(
               __typename = "Droid",
-              fragments = HeroAndFriendsWithFragmentsQuery.Data.Hero.Fragments(
+              fragments = HeroAndFriendsWithFragmentsQuery.Hero.Fragments(
                   heroWithFriendsFragment = HeroWithFriendsFragment(
                       id = "2001",
                       name = "R222-D222",

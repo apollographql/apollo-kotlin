@@ -25,6 +25,7 @@ object GetHuman_ResponseAdapter {
         GetHuman.Data {
       var human: GetHuman.Data.Human? = null
       var node: GetHuman.Data.Node? = null
+
       while(true) {
         when (reader.selectName(RESPONSE_NAMES)) {
           0 -> human = Human.obj().fromJson(reader, customScalarAdapters)
@@ -32,6 +33,7 @@ object GetHuman_ResponseAdapter {
           else -> break
         }
       }
+
       return GetHuman.Data(
         human = human!!,
         node = node!!
@@ -58,6 +60,7 @@ object GetHuman_ResponseAdapter {
         var id: String? = null
         var name: String? = null
         var height: Double? = null
+
         while(true) {
           when (reader.selectName(RESPONSE_NAMES)) {
             0 -> id = StringAdapter.fromJson(reader, customScalarAdapters)
@@ -66,6 +69,7 @@ object GetHuman_ResponseAdapter {
             else -> break
           }
         }
+
         return GetHuman.Data.Human(
           id = id!!,
           name = name!!,
@@ -130,6 +134,7 @@ object GetHuman_ResponseAdapter {
       ): GetHuman.Data.HumanNode {
         var __typename: String? = typename
         var height: Double? = null
+
         while(true) {
           when (reader.selectName(RESPONSE_NAMES)) {
             0 -> __typename = StringAdapter.fromJson(reader, customScalarAdapters)
@@ -137,6 +142,7 @@ object GetHuman_ResponseAdapter {
             else -> break
           }
         }
+
         return GetHuman.Data.HumanNode(
           __typename = __typename!!,
           height = height!!
@@ -165,12 +171,14 @@ object GetHuman_ResponseAdapter {
         typename: String
       ): GetHuman.Data.OtherNode {
         var __typename: String? = typename
+
         while(true) {
           when (reader.selectName(RESPONSE_NAMES)) {
             0 -> __typename = StringAdapter.fromJson(reader, customScalarAdapters)
             else -> break
           }
         }
+
         return GetHuman.Data.OtherNode(
           __typename = __typename!!
         )

@@ -8,8 +8,6 @@ package com.example.named_fragment_inside_inline_fragment.fragment
 import kotlin.String
 
 interface CharacterName {
-  val __typename: String
-
   /**
    * The name of the character
    */

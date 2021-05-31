@@ -26,12 +26,14 @@ object TestQuery_ResponseAdapter {
     override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters):
         TestQuery.Data {
       var root: TestQuery.Data.Root? = null
+
       while(true) {
         when (reader.selectName(RESPONSE_NAMES)) {
           0 -> root = Root.obj(true).nullable().fromJson(reader, customScalarAdapters)
           else -> break
         }
       }
+
       return TestQuery.Data(
         root = root
       )
@@ -52,30 +54,34 @@ object TestQuery_ResponseAdapter {
       override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters):
           TestQuery.Data.Root {
         var __typename: String? = null
-        var onA: TestQuery.Data.Root.OnA? = null
-        var onB: TestQuery.Data.Root.OnB? = null
+
         while(true) {
           when (reader.selectName(RESPONSE_NAMES)) {
             0 -> __typename = StringAdapter.fromJson(reader, customScalarAdapters)
             else -> break
           }
         }
+
         check(__typename != null) {
           "__typename was not found"
         }
-        if(possibleTypes("ABC","AC").evaluate(emptySet(), __typename)) {
-          reader.rewind()
+
+        reader.rewind()
+        var onA: TestQuery.Data.Root.OnA? = null
+        if (possibleTypes("ABC","AC").evaluate(emptySet(), __typename)) {
           onA = com.example.path_vs_flat_accessors.adapter.TestQuery_ResponseAdapter.Data.Root.OnA.fromJson(reader,
               customScalarAdapters)
         }
 
-        if(possibleTypes("ABC","BC").evaluate(emptySet(), __typename)) {
-          reader.rewind()
+        reader.rewind()
+        var onB: TestQuery.Data.Root.OnB? = null
+        if (possibleTypes("ABC","BC").evaluate(emptySet(), __typename)) {
           onB = com.example.path_vs_flat_accessors.adapter.TestQuery_ResponseAdapter.Data.Root.OnB.fromJson(reader,
               customScalarAdapters)
         }
+
         return TestQuery.Data.Root(
-          __typename = __typename!!,
+          __typename = __typename,
           onA = onA,
           onB = onB
         )
@@ -106,23 +112,27 @@ object TestQuery_ResponseAdapter {
         override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters):
             TestQuery.Data.Root.OnA {
           var __typename: String? = null
-          var onB: TestQuery.Data.Root.OnA.OnB? = null
+
           while(true) {
             when (reader.selectName(RESPONSE_NAMES)) {
               0 -> __typename = StringAdapter.fromJson(reader, customScalarAdapters)
               else -> break
             }
           }
+
           check(__typename != null) {
             "__typename was not found"
           }
-          if(possibleTypes("ABC","BC").evaluate(emptySet(), __typename)) {
-            reader.rewind()
+
+          reader.rewind()
+          var onB: TestQuery.Data.Root.OnA.OnB? = null
+          if (possibleTypes("ABC","BC").evaluate(emptySet(), __typename)) {
             onB = com.example.path_vs_flat_accessors.adapter.TestQuery_ResponseAdapter.Data.Root.OnA.OnB.fromJson(reader,
                 customScalarAdapters)
           }
+
           return TestQuery.Data.Root.OnA(
-            __typename = __typename!!,
+            __typename = __typename,
             onB = onB
           )
         }
@@ -147,12 +157,14 @@ object TestQuery_ResponseAdapter {
           override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters):
               TestQuery.Data.Root.OnA.OnB {
             var fieldB1: String? = null
+
             while(true) {
               when (reader.selectName(RESPONSE_NAMES)) {
                 0 -> fieldB1 = NullableStringAdapter.fromJson(reader, customScalarAdapters)
                 else -> break
               }
             }
+
             return TestQuery.Data.Root.OnA.OnB(
               fieldB1 = fieldB1
             )
@@ -175,12 +187,14 @@ object TestQuery_ResponseAdapter {
         override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters):
             TestQuery.Data.Root.OnB {
           var fieldB2: String? = null
+
           while(true) {
             when (reader.selectName(RESPONSE_NAMES)) {
               0 -> fieldB2 = NullableStringAdapter.fromJson(reader, customScalarAdapters)
               else -> break
             }
           }
+
           return TestQuery.Data.Root.OnB(
             fieldB2 = fieldB2
           )

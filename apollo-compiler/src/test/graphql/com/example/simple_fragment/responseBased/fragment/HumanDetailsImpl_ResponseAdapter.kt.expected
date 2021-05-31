@@ -21,6 +21,7 @@ internal object HumanDetailsImpl_ResponseAdapter {
         HumanDetailsImpl.Data {
       var __typename: String? = null
       var name: String? = null
+
       while(true) {
         when (reader.selectName(RESPONSE_NAMES)) {
           0 -> __typename = StringAdapter.fromJson(reader, customScalarAdapters)
@@ -28,6 +29,7 @@ internal object HumanDetailsImpl_ResponseAdapter {
           else -> break
         }
       }
+
       return HumanDetailsImpl.Data(
         __typename = __typename!!,
         name = name!!

@@ -17,7 +17,7 @@ data class QueryFragment(
   data class Hero(
     val __typename: String,
     /**
-     * Synthetic field for fragment spread on Character
+     * Synthetic field for 'heroFragment'
      */
     val heroFragment: HeroFragment?
   )
@@ -25,7 +25,7 @@ data class QueryFragment(
   data class Droid(
     val __typename: String,
     /**
-     * Synthetic field for fragment spread on Droid
+     * Synthetic field for 'droidFragment'
      */
     val droidFragment: DroidFragment?
   )

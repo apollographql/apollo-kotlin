@@ -9,7 +9,7 @@ import kotlin.Any
 import kotlin.String
 
 interface HeroDetails : CharacterDetails {
-  override val __typename: String
+  val __typename: String
 
   /**
    * The name of the character

@@ -27,6 +27,7 @@ object TestQuery_ResponseAdapter {
     override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters):
         TestQuery.Data {
       var search: List<TestQuery.Data.Search?>? = null
+
       while(true) {
         when (reader.selectName(RESPONSE_NAMES)) {
           0 -> search = Search.obj(true).nullable().list().nullable().fromJson(reader,
@@ -34,6 +35,7 @@ object TestQuery_ResponseAdapter {
           else -> break
         }
       }
+
       return TestQuery.Data(
         search = search
       )
@@ -55,30 +57,34 @@ object TestQuery_ResponseAdapter {
       override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters):
           TestQuery.Data.Search {
         var __typename: String? = null
-        var onStarship: TestQuery.Data.Search.OnStarship? = null
-        var starship: Starship? = null
+
         while(true) {
           when (reader.selectName(RESPONSE_NAMES)) {
             0 -> __typename = StringAdapter.fromJson(reader, customScalarAdapters)
             else -> break
           }
         }
+
         check(__typename != null) {
           "__typename was not found"
         }
-        if(possibleTypes("Starship").evaluate(emptySet(), __typename)) {
-          reader.rewind()
+
+        reader.rewind()
+        var onStarship: TestQuery.Data.Search.OnStarship? = null
+        if (possibleTypes("Starship").evaluate(emptySet(), __typename)) {
           onStarship = com.example.union_fragment.adapter.TestQuery_ResponseAdapter.Data.Search.OnStarship.fromJson(reader,
               customScalarAdapters)
         }
 
-        if(possibleTypes("Starship").evaluate(emptySet(), __typename)) {
-          reader.rewind()
+        reader.rewind()
+        var starship: Starship? = null
+        if (possibleTypes("Starship").evaluate(emptySet(), __typename)) {
           starship = com.example.union_fragment.fragment.StarshipImpl_ResponseAdapter.Starship.fromJson(reader,
               customScalarAdapters)
         }
+
         return TestQuery.Data.Search(
-          __typename = __typename!!,
+          __typename = __typename,
           onStarship = onStarship,
           starship = starship
         )
@@ -109,12 +115,14 @@ object TestQuery_ResponseAdapter {
         override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters):
             TestQuery.Data.Search.OnStarship {
           var id: String? = null
+
           while(true) {
             when (reader.selectName(RESPONSE_NAMES)) {
               0 -> id = StringAdapter.fromJson(reader, customScalarAdapters)
               else -> break
             }
           }
+
           return TestQuery.Data.Search.OnStarship(
             id = id!!
           )

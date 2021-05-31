@@ -26,12 +26,14 @@ object GetHero_ResponseAdapter {
     override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters):
         GetHero.Data {
       var hero: GetHero.Data.Hero? = null
+
       while(true) {
         when (reader.selectName(RESPONSE_NAMES)) {
           0 -> hero = Hero.obj().nullable().fromJson(reader, customScalarAdapters)
           else -> break
         }
       }
+
       return GetHero.Data(
         hero = hero
       )
@@ -54,6 +56,7 @@ object GetHero_ResponseAdapter {
         var __typename: String? = null
         var name: String? = null
         var appearsIn: List<Episode?>? = null
+
         while(true) {
           when (reader.selectName(RESPONSE_NAMES)) {
             0 -> __typename = StringAdapter.fromJson(reader, customScalarAdapters)
@@ -63,6 +66,7 @@ object GetHero_ResponseAdapter {
             else -> break
           }
         }
+
         return GetHero.Data.Hero(
           __typename = __typename!!,
           name = name!!,

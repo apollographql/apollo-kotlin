@@ -28,12 +28,14 @@ object TestQuery_ResponseAdapter {
     override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters):
         TestQuery.Data {
       var hero: TestQuery.Data.Hero? = null
+
       while(true) {
         when (reader.selectName(RESPONSE_NAMES)) {
           0 -> hero = Hero.obj(true).nullable().fromJson(reader, customScalarAdapters)
           else -> break
         }
       }
+
       return TestQuery.Data(
         hero = hero
       )
@@ -54,37 +56,41 @@ object TestQuery_ResponseAdapter {
       override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters):
           TestQuery.Data.Hero {
         var __typename: String? = null
-        var onCharacter: TestQuery.Data.Hero.OnCharacter? = null
-        var onHuman: TestQuery.Data.Hero.OnHuman? = null
-        var onDroid: TestQuery.Data.Hero.OnDroid? = null
+
         while(true) {
           when (reader.selectName(RESPONSE_NAMES)) {
             0 -> __typename = StringAdapter.fromJson(reader, customScalarAdapters)
             else -> break
           }
         }
+
         check(__typename != null) {
           "__typename was not found"
         }
-        if(possibleTypes("Droid","Human").evaluate(emptySet(), __typename)) {
-          reader.rewind()
+
+        reader.rewind()
+        var onCharacter: TestQuery.Data.Hero.OnCharacter? = null
+        if (possibleTypes("Droid","Human").evaluate(emptySet(), __typename)) {
           onCharacter = com.example.simple_inline_fragment.adapter.TestQuery_ResponseAdapter.Data.Hero.OnCharacter.fromJson(reader,
               customScalarAdapters)
         }
 
-        if(possibleTypes("Human").evaluate(emptySet(), __typename)) {
-          reader.rewind()
+        reader.rewind()
+        var onHuman: TestQuery.Data.Hero.OnHuman? = null
+        if (possibleTypes("Human").evaluate(emptySet(), __typename)) {
           onHuman = com.example.simple_inline_fragment.adapter.TestQuery_ResponseAdapter.Data.Hero.OnHuman.fromJson(reader,
               customScalarAdapters)
         }
 
-        if(possibleTypes("Droid").evaluate(emptySet(), __typename)) {
-          reader.rewind()
+        reader.rewind()
+        var onDroid: TestQuery.Data.Hero.OnDroid? = null
+        if (possibleTypes("Droid").evaluate(emptySet(), __typename)) {
           onDroid = com.example.simple_inline_fragment.adapter.TestQuery_ResponseAdapter.Data.Hero.OnDroid.fromJson(reader,
               customScalarAdapters)
         }
+
         return TestQuery.Data.Hero(
-          __typename = __typename!!,
+          __typename = __typename,
           onCharacter = onCharacter,
           onHuman = onHuman,
           onDroid = onDroid
@@ -122,7 +128,7 @@ object TestQuery_ResponseAdapter {
             TestQuery.Data.Hero.OnCharacter {
           var __typename: String? = null
           var id: String? = null
-          var onCharacter: TestQuery.Data.Hero.OnCharacter.OnCharacter? = null
+
           while(true) {
             when (reader.selectName(RESPONSE_NAMES)) {
               0 -> __typename = StringAdapter.fromJson(reader, customScalarAdapters)
@@ -130,16 +136,20 @@ object TestQuery_ResponseAdapter {
               else -> break
             }
           }
+
           check(__typename != null) {
             "__typename was not found"
           }
-          if(possibleTypes("Droid","Human").evaluate(emptySet(), __typename)) {
-            reader.rewind()
+
+          reader.rewind()
+          var onCharacter: TestQuery.Data.Hero.OnCharacter.OnCharacter? = null
+          if (possibleTypes("Droid","Human").evaluate(emptySet(), __typename)) {
             onCharacter = com.example.simple_inline_fragment.adapter.TestQuery_ResponseAdapter.Data.Hero.OnCharacter.OnCharacter.fromJson(reader,
                 customScalarAdapters)
           }
+
           return TestQuery.Data.Hero.OnCharacter(
-            __typename = __typename!!,
+            __typename = __typename,
             id = id!!,
             onCharacter = onCharacter
           )
@@ -168,12 +178,14 @@ object TestQuery_ResponseAdapter {
           override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters):
               TestQuery.Data.Hero.OnCharacter.OnCharacter {
             var name: String? = null
+
             while(true) {
               when (reader.selectName(RESPONSE_NAMES)) {
                 0 -> name = StringAdapter.fromJson(reader, customScalarAdapters)
                 else -> break
               }
             }
+
             return TestQuery.Data.Hero.OnCharacter.OnCharacter(
               name = name!!
             )
@@ -196,12 +208,14 @@ object TestQuery_ResponseAdapter {
         override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters):
             TestQuery.Data.Hero.OnHuman {
           var height: Double? = null
+
           while(true) {
             when (reader.selectName(RESPONSE_NAMES)) {
               0 -> height = NullableDoubleAdapter.fromJson(reader, customScalarAdapters)
               else -> break
             }
           }
+
           return TestQuery.Data.Hero.OnHuman(
             height = height
           )
@@ -223,12 +237,14 @@ object TestQuery_ResponseAdapter {
         override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters):
             TestQuery.Data.Hero.OnDroid {
           var primaryFunction: String? = null
+
           while(true) {
             when (reader.selectName(RESPONSE_NAMES)) {
               0 -> primaryFunction = NullableStringAdapter.fromJson(reader, customScalarAdapters)
               else -> break
             }
           }
+
           return TestQuery.Data.Hero.OnDroid(
             primaryFunction = primaryFunction
           )

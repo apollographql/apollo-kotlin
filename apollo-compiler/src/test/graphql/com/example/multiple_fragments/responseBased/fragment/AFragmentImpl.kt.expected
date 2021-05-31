@@ -27,7 +27,6 @@ class AFragmentImpl : Fragment<AFragmentImpl.Data> {
   override fun fieldSets(): List<FieldSet> = AFragmentImpl_ResponseFields.fields.first().fieldSets
 
   data class Data(
-    override val __typename: String,
     override val node: Node?
   ) : AFragment, Fragment.Data {
     interface Node : AFragment.Node {

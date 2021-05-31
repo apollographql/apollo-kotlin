@@ -41,11 +41,11 @@ class TestQuery : Query<TestQuery.Data> {
     data class Hero(
       val __typename: String,
       /**
-       * Synthetic field for fragment spread on Droid
+       * Synthetic field for 'DroidDetails1'
        */
       val droidDetails1: DroidDetails1?,
       /**
-       * Synthetic field for fragment spread on Droid
+       * Synthetic field for 'DroidDetails2'
        */
       val droidDetails2: DroidDetails2?
     )
@@ -53,7 +53,7 @@ class TestQuery : Query<TestQuery.Data> {
 
   companion object {
     const val OPERATION_ID: String =
-        "177a8a5e253e9555bec784bb414bd323cf9504bcbb8119f1d0e9d4d3b79f0f87"
+        "c3225dc1a6a27daa930abab4a098121fed0a7bc2e955c3cb931002dc1e1900c3"
 
     /**
      * The minimized GraphQL document being sent to the server to save a few bytes.
@@ -68,17 +68,15 @@ class TestQuery : Query<TestQuery.Data> {
      * }
      *
      * fragment DroidDetails1 on Droid {
-     *   __typename
      *   name
      * }
      *
      * fragment DroidDetails2 on Droid {
-     *   __typename
      *   primaryFunction
      * }
      */
     const val OPERATION_DOCUMENT: String =
-        "query TestQuery { hero { __typename ...DroidDetails1 ...DroidDetails2 } }  fragment DroidDetails1 on Droid { __typename name }  fragment DroidDetails2 on Droid { __typename primaryFunction }"
+        "query TestQuery { hero { __typename ...DroidDetails1 ...DroidDetails2 } }  fragment DroidDetails1 on Droid { name }  fragment DroidDetails2 on Droid { primaryFunction }"
 
     const val OPERATION_NAME: String = "TestQuery"
   }

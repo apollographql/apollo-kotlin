@@ -25,12 +25,14 @@ object TestQuery_ResponseAdapter {
     override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters):
         TestQuery.Data {
       var hero: TestQuery.Data.Hero? = null
+
       while(true) {
         when (reader.selectName(RESPONSE_NAMES)) {
           0 -> hero = Hero.obj().nullable().fromJson(reader, customScalarAdapters)
           else -> break
         }
       }
+
       return TestQuery.Data(
         hero = hero
       )
@@ -52,6 +54,7 @@ object TestQuery_ResponseAdapter {
           TestQuery.Data.Hero {
         var name: String? = null
         var friendsConnection: TestQuery.Data.Hero.FriendsConnection? = null
+
         while(true) {
           when (reader.selectName(RESPONSE_NAMES)) {
             0 -> name = NullableStringAdapter.fromJson(reader, customScalarAdapters)
@@ -60,6 +63,7 @@ object TestQuery_ResponseAdapter {
             else -> break
           }
         }
+
         return TestQuery.Data.Hero(
           name = name,
           friendsConnection = friendsConnection
@@ -85,12 +89,14 @@ object TestQuery_ResponseAdapter {
         override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters):
             TestQuery.Data.Hero.FriendsConnection {
           var totalCount: Int? = null
+
           while(true) {
             when (reader.selectName(RESPONSE_NAMES)) {
               0 -> totalCount = NullableIntAdapter.fromJson(reader, customScalarAdapters)
               else -> break
             }
           }
+
           return TestQuery.Data.Hero.FriendsConnection(
             totalCount = totalCount
           )

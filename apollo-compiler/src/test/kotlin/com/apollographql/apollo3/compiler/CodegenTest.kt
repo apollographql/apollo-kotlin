@@ -271,7 +271,8 @@ class CodegenTest(private val folder: File, private val codegenModels: String) {
               hasFragments -> {
                 listOf(
                     arrayOf(file, MODELS_OPERATION_BASED),
-                    arrayOf(file, MODELS_RESPONSE_BASED)
+                    arrayOf(file, MODELS_RESPONSE_BASED),
+                    arrayOf(file, MODELS_COMPAT)
                 )
               }
               else -> {

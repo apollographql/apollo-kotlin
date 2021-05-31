@@ -29,6 +29,7 @@ object TestQuery_ResponseAdapter {
     override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters):
         TestQuery.Data {
       var search: List<TestQuery.Data.Search?>? = null
+
       while(true) {
         when (reader.selectName(RESPONSE_NAMES)) {
           0 -> search = Search.obj(true).nullable().list().nullable().fromJson(reader,
@@ -36,6 +37,7 @@ object TestQuery_ResponseAdapter {
           else -> break
         }
       }
+
       return TestQuery.Data(
         search = search
       )
@@ -57,30 +59,34 @@ object TestQuery_ResponseAdapter {
       override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters):
           TestQuery.Data.Search {
         var __typename: String? = null
-        var onCharacter: TestQuery.Data.Search.OnCharacter? = null
-        var onStarship: TestQuery.Data.Search.OnStarship? = null
+
         while(true) {
           when (reader.selectName(RESPONSE_NAMES)) {
             0 -> __typename = StringAdapter.fromJson(reader, customScalarAdapters)
             else -> break
           }
         }
+
         check(__typename != null) {
           "__typename was not found"
         }
-        if(possibleTypes("Droid","Human").evaluate(emptySet(), __typename)) {
-          reader.rewind()
+
+        reader.rewind()
+        var onCharacter: TestQuery.Data.Search.OnCharacter? = null
+        if (possibleTypes("Droid","Human").evaluate(emptySet(), __typename)) {
           onCharacter = com.example.union_inline_fragments.adapter.TestQuery_ResponseAdapter.Data.Search.OnCharacter.fromJson(reader,
               customScalarAdapters)
         }
 
-        if(possibleTypes("Starship").evaluate(emptySet(), __typename)) {
-          reader.rewind()
+        reader.rewind()
+        var onStarship: TestQuery.Data.Search.OnStarship? = null
+        if (possibleTypes("Starship").evaluate(emptySet(), __typename)) {
           onStarship = com.example.union_inline_fragments.adapter.TestQuery_ResponseAdapter.Data.Search.OnStarship.fromJson(reader,
               customScalarAdapters)
         }
+
         return TestQuery.Data.Search(
-          __typename = __typename!!,
+          __typename = __typename,
           onCharacter = onCharacter,
           onStarship = onStarship
         )
@@ -113,6 +119,7 @@ object TestQuery_ResponseAdapter {
           var id: String? = null
           var name: String? = null
           var friends: List<TestQuery.Data.Search.OnCharacter.Friend?>? = null
+
           while(true) {
             when (reader.selectName(RESPONSE_NAMES)) {
               0 -> id = StringAdapter.fromJson(reader, customScalarAdapters)
@@ -122,6 +129,7 @@ object TestQuery_ResponseAdapter {
               else -> break
             }
           }
+
           return TestQuery.Data.Search.OnCharacter(
             id = id!!,
             name = name!!,
@@ -151,37 +159,41 @@ object TestQuery_ResponseAdapter {
           override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters):
               TestQuery.Data.Search.OnCharacter.Friend {
             var __typename: String? = null
-            var onCharacter: TestQuery.Data.Search.OnCharacter.Friend.OnCharacter? = null
-            var onHuman: TestQuery.Data.Search.OnCharacter.Friend.OnHuman? = null
-            var onDroid: TestQuery.Data.Search.OnCharacter.Friend.OnDroid? = null
+
             while(true) {
               when (reader.selectName(RESPONSE_NAMES)) {
                 0 -> __typename = StringAdapter.fromJson(reader, customScalarAdapters)
                 else -> break
               }
             }
+
             check(__typename != null) {
               "__typename was not found"
             }
-            if(possibleTypes("Droid","Human").evaluate(emptySet(), __typename)) {
-              reader.rewind()
+
+            reader.rewind()
+            var onCharacter: TestQuery.Data.Search.OnCharacter.Friend.OnCharacter? = null
+            if (possibleTypes("Droid","Human").evaluate(emptySet(), __typename)) {
               onCharacter = com.example.union_inline_fragments.adapter.TestQuery_ResponseAdapter.Data.Search.OnCharacter.Friend.OnCharacter.fromJson(reader,
                   customScalarAdapters)
             }
 
-            if(possibleTypes("Human").evaluate(emptySet(), __typename)) {
-              reader.rewind()
+            reader.rewind()
+            var onHuman: TestQuery.Data.Search.OnCharacter.Friend.OnHuman? = null
+            if (possibleTypes("Human").evaluate(emptySet(), __typename)) {
               onHuman = com.example.union_inline_fragments.adapter.TestQuery_ResponseAdapter.Data.Search.OnCharacter.Friend.OnHuman.fromJson(reader,
                   customScalarAdapters)
             }
 
-            if(possibleTypes("Droid").evaluate(emptySet(), __typename)) {
-              reader.rewind()
+            reader.rewind()
+            var onDroid: TestQuery.Data.Search.OnCharacter.Friend.OnDroid? = null
+            if (possibleTypes("Droid").evaluate(emptySet(), __typename)) {
               onDroid = com.example.union_inline_fragments.adapter.TestQuery_ResponseAdapter.Data.Search.OnCharacter.Friend.OnDroid.fromJson(reader,
                   customScalarAdapters)
             }
+
             return TestQuery.Data.Search.OnCharacter.Friend(
-              __typename = __typename!!,
+              __typename = __typename,
               onCharacter = onCharacter,
               onHuman = onHuman,
               onDroid = onDroid
@@ -218,12 +230,14 @@ object TestQuery_ResponseAdapter {
             override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters):
                 TestQuery.Data.Search.OnCharacter.Friend.OnCharacter {
               var name: String? = null
+
               while(true) {
                 when (reader.selectName(RESPONSE_NAMES)) {
                   0 -> name = StringAdapter.fromJson(reader, customScalarAdapters)
                   else -> break
                 }
               }
+
               return TestQuery.Data.Search.OnCharacter.Friend.OnCharacter(
                 name = name!!
               )
@@ -246,6 +260,7 @@ object TestQuery_ResponseAdapter {
                 TestQuery.Data.Search.OnCharacter.Friend.OnHuman {
               var homePlanet: String? = null
               var friends: List<TestQuery.Data.Search.OnCharacter.Friend.OnHuman.Friend?>? = null
+
               while(true) {
                 when (reader.selectName(RESPONSE_NAMES)) {
                   0 -> homePlanet = NullableStringAdapter.fromJson(reader, customScalarAdapters)
@@ -254,6 +269,7 @@ object TestQuery_ResponseAdapter {
                   else -> break
                 }
               }
+
               return TestQuery.Data.Search.OnCharacter.Friend.OnHuman(
                 homePlanet = homePlanet,
                 friends = friends
@@ -279,23 +295,27 @@ object TestQuery_ResponseAdapter {
               override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters):
                   TestQuery.Data.Search.OnCharacter.Friend.OnHuman.Friend {
                 var __typename: String? = null
-                var onCharacter: TestQuery.Data.Search.OnCharacter.Friend.OnHuman.Friend.OnCharacter? = null
+
                 while(true) {
                   when (reader.selectName(RESPONSE_NAMES)) {
                     0 -> __typename = StringAdapter.fromJson(reader, customScalarAdapters)
                     else -> break
                   }
                 }
+
                 check(__typename != null) {
                   "__typename was not found"
                 }
-                if(possibleTypes("Droid","Human").evaluate(emptySet(), __typename)) {
-                  reader.rewind()
+
+                reader.rewind()
+                var onCharacter: TestQuery.Data.Search.OnCharacter.Friend.OnHuman.Friend.OnCharacter? = null
+                if (possibleTypes("Droid","Human").evaluate(emptySet(), __typename)) {
                   onCharacter = com.example.union_inline_fragments.adapter.TestQuery_ResponseAdapter.Data.Search.OnCharacter.Friend.OnHuman.Friend.OnCharacter.fromJson(reader,
                       customScalarAdapters)
                 }
+
                 return TestQuery.Data.Search.OnCharacter.Friend.OnHuman.Friend(
-                  __typename = __typename!!,
+                  __typename = __typename,
                   onCharacter = onCharacter
                 )
               }
@@ -322,6 +342,7 @@ object TestQuery_ResponseAdapter {
                     customScalarAdapters: CustomScalarAdapters):
                     TestQuery.Data.Search.OnCharacter.Friend.OnHuman.Friend.OnCharacter {
                   var firstAppearsIn: Episode? = null
+
                   while(true) {
                     when (reader.selectName(RESPONSE_NAMES)) {
                       0 -> firstAppearsIn = Episode_ResponseAdapter.fromJson(reader,
@@ -329,6 +350,7 @@ object TestQuery_ResponseAdapter {
                       else -> break
                     }
                   }
+
                   return TestQuery.Data.Search.OnCharacter.Friend.OnHuman.Friend.OnCharacter(
                     firstAppearsIn = firstAppearsIn!!
                   )
@@ -353,6 +375,7 @@ object TestQuery_ResponseAdapter {
                 TestQuery.Data.Search.OnCharacter.Friend.OnDroid {
               var primaryFunction: String? = null
               var friends: List<TestQuery.Data.Search.OnCharacter.Friend.OnDroid.Friend?>? = null
+
               while(true) {
                 when (reader.selectName(RESPONSE_NAMES)) {
                   0 -> primaryFunction = NullableStringAdapter.fromJson(reader,
@@ -362,6 +385,7 @@ object TestQuery_ResponseAdapter {
                   else -> break
                 }
               }
+
               return TestQuery.Data.Search.OnCharacter.Friend.OnDroid(
                 primaryFunction = primaryFunction,
                 friends = friends
@@ -387,12 +411,14 @@ object TestQuery_ResponseAdapter {
               override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters):
                   TestQuery.Data.Search.OnCharacter.Friend.OnDroid.Friend {
                 var id: String? = null
+
                 while(true) {
                   when (reader.selectName(RESPONSE_NAMES)) {
                     0 -> id = StringAdapter.fromJson(reader, customScalarAdapters)
                     else -> break
                   }
                 }
+
                 return TestQuery.Data.Search.OnCharacter.Friend.OnDroid.Friend(
                   id = id!!
                 )
@@ -417,12 +443,14 @@ object TestQuery_ResponseAdapter {
         override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters):
             TestQuery.Data.Search.OnStarship {
           var name: String? = null
+
           while(true) {
             when (reader.selectName(RESPONSE_NAMES)) {
               0 -> name = StringAdapter.fromJson(reader, customScalarAdapters)
               else -> break
             }
           }
+
           return TestQuery.Data.Search.OnStarship(
             name = name!!
           )

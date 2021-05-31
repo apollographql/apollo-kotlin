@@ -9,7 +9,6 @@ import com.apollographql.apollo3.api.Fragment
 import kotlin.String
 
 data class PilotFragment(
-  val __typename: String,
   /**
    * The name of this person.
    */
@@ -22,7 +21,7 @@ data class PilotFragment(
   data class Homeworld(
     val __typename: String,
     /**
-     * Synthetic field for fragment spread on Planet
+     * Synthetic field for 'planetFragment'
      */
     val planetFragment: PlanetFragment?
   )

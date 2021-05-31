@@ -27,6 +27,7 @@ object
     override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters):
         TestQueryWithAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryLongName.Data {
       var heroAVeryAVeryAVeryAVeryAVeryAVeryAV: TestQueryWithAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryLongName.Data.HeroAVeryAVeryAVeryAVeryAVeryAVeryAV? = null
+
       while(true) {
         when (reader.selectName(RESPONSE_NAMES)) {
           0 -> heroAVeryAVeryAVeryAVeryAVeryAVeryAV = HeroAVeryAVeryAVeryAVeryAVeryAVeryAV.obj().nullable().fromJson(reader,
@@ -34,6 +35,7 @@ object
           else -> break
         }
       }
+
       return TestQueryWithAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryLongName.Data(
         heroAVeryAVeryAVeryAVeryAVeryAVeryAV = heroAVeryAVeryAVeryAVeryAVeryAVeryAV
       )
@@ -58,6 +60,7 @@ object
       override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters):
           TestQueryWithAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryLongName.Data.HeroAVeryAVeryAVeryAVeryAVeryAVeryAV {
         var nameAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryLongName: String? = null
+
         while(true) {
           when (reader.selectName(RESPONSE_NAMES)) {
             0 -> nameAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryLongName = StringAdapter.fromJson(reader,
@@ -65,6 +68,7 @@ object
             else -> break
           }
         }
+
         return TestQueryWithAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryLongName.Data.HeroAVeryAVeryAVeryAVeryAVeryAVeryAV(
           nameAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryLongName = nameAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryLongName!!
         )

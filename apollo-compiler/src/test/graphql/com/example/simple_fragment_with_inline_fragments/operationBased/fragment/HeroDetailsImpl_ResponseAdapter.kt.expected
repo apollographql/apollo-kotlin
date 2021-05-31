@@ -24,24 +24,23 @@ import kotlin.collections.List
 object HeroDetailsImpl_ResponseAdapter {
   object HeroDetails :
       Adapter<com.example.simple_fragment_with_inline_fragments.fragment.HeroDetails> {
-    val RESPONSE_NAMES: List<String> = listOf("__typename", "name", "friends")
+    val RESPONSE_NAMES: List<String> = listOf("name", "friends")
 
     override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters):
         com.example.simple_fragment_with_inline_fragments.fragment.HeroDetails {
-      var __typename: String? = null
       var name: String? = null
       var friends: List<com.example.simple_fragment_with_inline_fragments.fragment.HeroDetails.Friend?>? = null
+
       while(true) {
         when (reader.selectName(RESPONSE_NAMES)) {
-          0 -> __typename = StringAdapter.fromJson(reader, customScalarAdapters)
-          1 -> name = StringAdapter.fromJson(reader, customScalarAdapters)
-          2 -> friends = Friend.obj(true).nullable().list().nullable().fromJson(reader,
+          0 -> name = StringAdapter.fromJson(reader, customScalarAdapters)
+          1 -> friends = Friend.obj(true).nullable().list().nullable().fromJson(reader,
               customScalarAdapters)
           else -> break
         }
       }
+
       return com.example.simple_fragment_with_inline_fragments.fragment.HeroDetails(
-        __typename = __typename!!,
         name = name!!,
         friends = friends
       )
@@ -52,9 +51,6 @@ object HeroDetailsImpl_ResponseAdapter {
       customScalarAdapters: CustomScalarAdapters,
       value: com.example.simple_fragment_with_inline_fragments.fragment.HeroDetails
     ) {
-      writer.name("__typename")
-      StringAdapter.toJson(writer, customScalarAdapters, value.__typename)
-
       writer.name("name")
       StringAdapter.toJson(writer, customScalarAdapters, value.name)
 
@@ -71,8 +67,7 @@ object HeroDetailsImpl_ResponseAdapter {
           com.example.simple_fragment_with_inline_fragments.fragment.HeroDetails.Friend {
         var __typename: String? = null
         var name: String? = null
-        var onHuman: com.example.simple_fragment_with_inline_fragments.fragment.HeroDetails.Friend.OnHuman? = null
-        var onDroid: com.example.simple_fragment_with_inline_fragments.fragment.HeroDetails.Friend.OnDroid? = null
+
         while(true) {
           when (reader.selectName(RESPONSE_NAMES)) {
             0 -> __typename = StringAdapter.fromJson(reader, customScalarAdapters)
@@ -80,22 +75,27 @@ object HeroDetailsImpl_ResponseAdapter {
             else -> break
           }
         }
+
         check(__typename != null) {
           "__typename was not found"
         }
-        if(possibleTypes("Human").evaluate(emptySet(), __typename)) {
-          reader.rewind()
+
+        reader.rewind()
+        var onHuman: com.example.simple_fragment_with_inline_fragments.fragment.HeroDetails.Friend.OnHuman? = null
+        if (possibleTypes("Human").evaluate(emptySet(), __typename)) {
           onHuman = com.example.simple_fragment_with_inline_fragments.fragment.HeroDetailsImpl_ResponseAdapter.HeroDetails.Friend.OnHuman.fromJson(reader,
               customScalarAdapters)
         }
 
-        if(possibleTypes("Droid").evaluate(emptySet(), __typename)) {
-          reader.rewind()
+        reader.rewind()
+        var onDroid: com.example.simple_fragment_with_inline_fragments.fragment.HeroDetails.Friend.OnDroid? = null
+        if (possibleTypes("Droid").evaluate(emptySet(), __typename)) {
           onDroid = com.example.simple_fragment_with_inline_fragments.fragment.HeroDetailsImpl_ResponseAdapter.HeroDetails.Friend.OnDroid.fromJson(reader,
               customScalarAdapters)
         }
+
         return com.example.simple_fragment_with_inline_fragments.fragment.HeroDetails.Friend(
-          __typename = __typename!!,
+          __typename = __typename,
           name = name!!,
           onHuman = onHuman,
           onDroid = onDroid
@@ -132,12 +132,14 @@ object HeroDetailsImpl_ResponseAdapter {
         override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters):
             com.example.simple_fragment_with_inline_fragments.fragment.HeroDetails.Friend.OnHuman {
           var height: Double? = null
+
           while(true) {
             when (reader.selectName(RESPONSE_NAMES)) {
               0 -> height = NullableDoubleAdapter.fromJson(reader, customScalarAdapters)
               else -> break
             }
           }
+
           return com.example.simple_fragment_with_inline_fragments.fragment.HeroDetails.Friend.OnHuman(
             height = height
           )
@@ -161,12 +163,14 @@ object HeroDetailsImpl_ResponseAdapter {
         override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters):
             com.example.simple_fragment_with_inline_fragments.fragment.HeroDetails.Friend.OnDroid {
           var primaryFunction: String? = null
+
           while(true) {
             when (reader.selectName(RESPONSE_NAMES)) {
               0 -> primaryFunction = NullableStringAdapter.fromJson(reader, customScalarAdapters)
               else -> break
             }
           }
+
           return com.example.simple_fragment_with_inline_fragments.fragment.HeroDetails.Friend.OnDroid(
             primaryFunction = primaryFunction
           )

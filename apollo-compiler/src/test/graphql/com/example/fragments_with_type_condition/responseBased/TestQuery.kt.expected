@@ -127,7 +127,7 @@ class TestQuery : Query<TestQuery.Data> {
 
   companion object {
     const val OPERATION_ID: String =
-        "5807a8b7637fbd424d24397e062ecd8b8de0eb77da757d4e5ee6764a9f0fbb62"
+        "5057706235493438a01a2f438daacd21d3ea95f56960716f43934cc931481a25"
 
     /**
      * The minimized GraphQL document being sent to the server to save a few bytes.
@@ -147,31 +147,27 @@ class TestQuery : Query<TestQuery.Data> {
      * }
      *
      * fragment HumanDetails on Human {
-     *   __typename
      *   name
      *   height
      * }
      *
      * fragment DroidDetails on Droid {
-     *   __typename
      *   name
      *   primaryFunction
      * }
      *
      * fragment HumanDetails on Human {
-     *   __typename
      *   name
      *   height
      * }
      *
      * fragment DroidDetails on Droid {
-     *   __typename
      *   name
      *   primaryFunction
      * }
      */
     const val OPERATION_DOCUMENT: String =
-        "query TestQuery { r2: hero { __typename ...HumanDetails ...DroidDetails } luke: hero { __typename ...HumanDetails ...DroidDetails } }  fragment HumanDetails on Human { __typename name height }  fragment DroidDetails on Droid { __typename name primaryFunction }  fragment HumanDetails on Human { __typename name height }  fragment DroidDetails on Droid { __typename name primaryFunction }"
+        "query TestQuery { r2: hero { __typename ...HumanDetails ...DroidDetails } luke: hero { __typename ...HumanDetails ...DroidDetails } }  fragment HumanDetails on Human { name height }  fragment DroidDetails on Droid { name primaryFunction }  fragment HumanDetails on Human { name height }  fragment DroidDetails on Droid { name primaryFunction }"
 
     const val OPERATION_NAME: String = "TestQuery"
   }

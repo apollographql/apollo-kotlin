@@ -14,12 +14,16 @@ class FragmentModelsBuilder(
     val context: CgContext,
     val fragment: IrNamedFragment,
     modelGroup: IrModelGroup,
-    private val addSuperInterface: Boolean
+    private val addSuperInterface: Boolean,
+    private val flatten: Boolean
 ) : CgFileBuilder {
 
   private val packageName = context.layout.fragmentPackageName(fragment.filePath)
 
-  private val modelBuilders = modelGroup.maybeFlatten(false).flatMap { it.models }
+  /**
+   * Fragments need to be flattened at depth 1 to avoid having all classes poluting the fragments package name
+   */
+  private val modelBuilders = modelGroup.maybeFlatten(flatten, 1).flatMap { it.models }
       .map {
         ModelBuilder(
             context = context,

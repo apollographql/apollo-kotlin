@@ -40,7 +40,7 @@ class TestQuery : Query<TestQuery.Data> {
     data class Hero(
       val __typename: String,
       /**
-       * Synthetic field for fragment spread on Character
+       * Synthetic field for 'HeroDetails'
        */
       val heroDetails: HeroDetails?
     )
@@ -48,7 +48,7 @@ class TestQuery : Query<TestQuery.Data> {
 
   companion object {
     const val OPERATION_ID: String =
-        "2183aea0a46e49a1f2c473aca0c685b656ebfcc4d50045f6606aaf84d2783a53"
+        "e21794a17c37fd41b0530e7df079fae9a579bc77435bb811a2e869909de32a55"
 
     /**
      * The minimized GraphQL document being sent to the server to save a few bytes.
@@ -62,7 +62,6 @@ class TestQuery : Query<TestQuery.Data> {
      * }
      *
      * fragment HeroDetails on Character {
-     *   __typename
      *   name
      *   friendsConnection {
      *     totalCount
@@ -75,7 +74,7 @@ class TestQuery : Query<TestQuery.Data> {
      * }
      */
     const val OPERATION_DOCUMENT: String =
-        "query TestQuery { hero { __typename ...HeroDetails } }  fragment HeroDetails on Character { __typename name friendsConnection { totalCount edges { node { name } } } }"
+        "query TestQuery { hero { __typename ...HeroDetails } }  fragment HeroDetails on Character { name friendsConnection { totalCount edges { node { name } } } }"
 
     const val OPERATION_NAME: String = "TestQuery"
   }

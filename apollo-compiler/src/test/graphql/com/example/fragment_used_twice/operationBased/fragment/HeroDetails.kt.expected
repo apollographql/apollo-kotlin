@@ -15,7 +15,7 @@ data class HeroDetails(
    */
   val name: String,
   /**
-   * Synthetic field for fragment spread on Character
+   * Synthetic field for 'CharacterDetails'
    */
   val characterDetails: CharacterDetails?
 ) : Fragment.Data

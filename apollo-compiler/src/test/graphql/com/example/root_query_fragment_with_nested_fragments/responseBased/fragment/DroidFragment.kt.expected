@@ -8,8 +8,6 @@ package com.example.root_query_fragment_with_nested_fragments.fragment
 import kotlin.String
 
 interface DroidFragment {
-  val __typename: String
-
   /**
    * What others call this droid
    */

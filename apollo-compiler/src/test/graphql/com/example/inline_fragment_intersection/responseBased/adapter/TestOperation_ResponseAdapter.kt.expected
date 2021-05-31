@@ -30,12 +30,14 @@ object TestOperation_ResponseAdapter {
     override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters):
         TestOperation.Data {
       var random: TestOperation.Data.Random? = null
+
       while(true) {
         when (reader.selectName(RESPONSE_NAMES)) {
           0 -> random = Random.obj().fromJson(reader, customScalarAdapters)
           else -> break
         }
       }
+
       return TestOperation.Data(
         random = random!!
       )
@@ -100,6 +102,7 @@ object TestOperation_ResponseAdapter {
         var name: String? = null
         var friends: List<TestOperation.Data.BeingHumanRandom.Friend>? = null
         var profilePictureUrl: String? = null
+
         while(true) {
           when (reader.selectName(RESPONSE_NAMES)) {
             0 -> __typename = StringAdapter.fromJson(reader, customScalarAdapters)
@@ -109,6 +112,7 @@ object TestOperation_ResponseAdapter {
             else -> break
           }
         }
+
         return TestOperation.Data.BeingHumanRandom(
           __typename = __typename!!,
           name = name!!,
@@ -182,6 +186,7 @@ object TestOperation_ResponseAdapter {
           var lifeExpectancy: Double? = null
           var isFamous: Boolean? = null
           var race: Race? = null
+
           while(true) {
             when (reader.selectName(RESPONSE_NAMES)) {
               0 -> __typename = StringAdapter.fromJson(reader, customScalarAdapters)
@@ -192,6 +197,7 @@ object TestOperation_ResponseAdapter {
               else -> break
             }
           }
+
           return TestOperation.Data.BeingHumanRandom.WookieFriend(
             __typename = __typename!!,
             name = name!!,
@@ -234,6 +240,7 @@ object TestOperation_ResponseAdapter {
           var __typename: String? = typename
           var name: String? = null
           var isFamous: Boolean? = null
+
           while(true) {
             when (reader.selectName(RESPONSE_NAMES)) {
               0 -> __typename = StringAdapter.fromJson(reader, customScalarAdapters)
@@ -242,6 +249,7 @@ object TestOperation_ResponseAdapter {
               else -> break
             }
           }
+
           return TestOperation.Data.BeingHumanRandom.OtherFriend(
             __typename = __typename!!,
             name = name!!,
@@ -278,6 +286,7 @@ object TestOperation_ResponseAdapter {
         var name: String? = null
         var friends: List<TestOperation.Data.BeingWookieRandom.Friend>? = null
         var race: Race? = null
+
         while(true) {
           when (reader.selectName(RESPONSE_NAMES)) {
             0 -> __typename = StringAdapter.fromJson(reader, customScalarAdapters)
@@ -287,6 +296,7 @@ object TestOperation_ResponseAdapter {
             else -> break
           }
         }
+
         return TestOperation.Data.BeingWookieRandom(
           __typename = __typename!!,
           name = name!!,
@@ -357,6 +367,7 @@ object TestOperation_ResponseAdapter {
           var __typename: String? = typename
           var name: String? = null
           var lifeExpectancy: Double? = null
+
           while(true) {
             when (reader.selectName(RESPONSE_NAMES)) {
               0 -> __typename = StringAdapter.fromJson(reader, customScalarAdapters)
@@ -365,6 +376,7 @@ object TestOperation_ResponseAdapter {
               else -> break
             }
           }
+
           return TestOperation.Data.BeingWookieRandom.WookieFriend(
             __typename = __typename!!,
             name = name!!,
@@ -399,6 +411,7 @@ object TestOperation_ResponseAdapter {
           var __typename: String? = typename
           var name: String? = null
           var lifeExpectancy: Double? = null
+
           while(true) {
             when (reader.selectName(RESPONSE_NAMES)) {
               0 -> __typename = StringAdapter.fromJson(reader, customScalarAdapters)
@@ -407,6 +420,7 @@ object TestOperation_ResponseAdapter {
               else -> break
             }
           }
+
           return TestOperation.Data.BeingWookieRandom.OtherFriend(
             __typename = __typename!!,
             name = name!!,
@@ -440,12 +454,14 @@ object TestOperation_ResponseAdapter {
         typename: String
       ): TestOperation.Data.OtherRandom {
         var __typename: String? = typename
+
         while(true) {
           when (reader.selectName(RESPONSE_NAMES)) {
             0 -> __typename = StringAdapter.fromJson(reader, customScalarAdapters)
             else -> break
           }
         }
+
         return TestOperation.Data.OtherRandom(
           __typename = __typename!!
         )

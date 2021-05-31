@@ -20,26 +20,24 @@ import kotlin.collections.List
 
 object HumanDetailsImpl_ResponseAdapter {
   object Data : Adapter<HumanDetailsImpl.Data> {
-    val RESPONSE_NAMES: List<String> = listOf("__typename", "name", "profileLink",
-        "friendsConnection")
+    val RESPONSE_NAMES: List<String> = listOf("name", "profileLink", "friendsConnection")
 
     override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters):
         HumanDetailsImpl.Data {
-      var __typename: String? = null
       var name: String? = null
       var profileLink: Any? = null
       var friendsConnection: HumanDetailsImpl.Data.FriendsConnection? = null
+
       while(true) {
         when (reader.selectName(RESPONSE_NAMES)) {
-          0 -> __typename = StringAdapter.fromJson(reader, customScalarAdapters)
-          1 -> name = StringAdapter.fromJson(reader, customScalarAdapters)
-          2 -> profileLink = AnyAdapter.fromJson(reader, customScalarAdapters)
-          3 -> friendsConnection = FriendsConnection.obj().fromJson(reader, customScalarAdapters)
+          0 -> name = StringAdapter.fromJson(reader, customScalarAdapters)
+          1 -> profileLink = AnyAdapter.fromJson(reader, customScalarAdapters)
+          2 -> friendsConnection = FriendsConnection.obj().fromJson(reader, customScalarAdapters)
           else -> break
         }
       }
+
       return HumanDetailsImpl.Data(
-        __typename = __typename!!,
         name = name!!,
         profileLink = profileLink!!,
         friendsConnection = friendsConnection!!
@@ -51,9 +49,6 @@ object HumanDetailsImpl_ResponseAdapter {
       customScalarAdapters: CustomScalarAdapters,
       value: HumanDetailsImpl.Data
     ) {
-      writer.name("__typename")
-      StringAdapter.toJson(writer, customScalarAdapters, value.__typename)
-
       writer.name("name")
       StringAdapter.toJson(writer, customScalarAdapters, value.name)
 
@@ -70,6 +65,7 @@ object HumanDetailsImpl_ResponseAdapter {
       override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters):
           HumanDetailsImpl.Data.FriendsConnection {
         var edges: List<HumanDetailsImpl.Data.FriendsConnection.Edge?>? = null
+
         while(true) {
           when (reader.selectName(RESPONSE_NAMES)) {
             0 -> edges = Edge.obj().nullable().list().nullable().fromJson(reader,
@@ -77,6 +73,7 @@ object HumanDetailsImpl_ResponseAdapter {
             else -> break
           }
         }
+
         return HumanDetailsImpl.Data.FriendsConnection(
           edges = edges
         )
@@ -97,12 +94,14 @@ object HumanDetailsImpl_ResponseAdapter {
         override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters):
             HumanDetailsImpl.Data.FriendsConnection.Edge {
           var node: HumanDetailsImpl.Data.FriendsConnection.Edge.Node? = null
+
           while(true) {
             when (reader.selectName(RESPONSE_NAMES)) {
               0 -> node = Node.obj().nullable().fromJson(reader, customScalarAdapters)
               else -> break
             }
           }
+
           return HumanDetailsImpl.Data.FriendsConnection.Edge(
             node = node
           )
@@ -123,12 +122,14 @@ object HumanDetailsImpl_ResponseAdapter {
           override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters):
               HumanDetailsImpl.Data.FriendsConnection.Edge.Node {
             var name: String? = null
+
             while(true) {
               when (reader.selectName(RESPONSE_NAMES)) {
                 0 -> name = StringAdapter.fromJson(reader, customScalarAdapters)
                 else -> break
               }
             }
+
             return HumanDetailsImpl.Data.FriendsConnection.Edge.Node(
               name = name!!
             )

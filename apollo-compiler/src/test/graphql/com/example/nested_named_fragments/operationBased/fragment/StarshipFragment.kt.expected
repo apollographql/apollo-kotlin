@@ -10,7 +10,6 @@ import kotlin.String
 import kotlin.collections.List
 
 data class StarshipFragment(
-  val __typename: String,
   /**
    * The ID of an object
    */
@@ -36,7 +35,7 @@ data class StarshipFragment(
       data class Node(
         val __typename: String,
         /**
-         * Synthetic field for fragment spread on Person
+         * Synthetic field for 'pilotFragment'
          */
         val pilotFragment: PilotFragment?
       )

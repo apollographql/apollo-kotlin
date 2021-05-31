@@ -9,8 +9,6 @@ import kotlin.String
 import kotlin.collections.List
 
 interface StarshipFragment {
-  val __typename: String
-
   /**
    * The ID of an object
    */
@@ -36,7 +34,7 @@ interface StarshipFragment {
       val node: Node?
 
       interface Node : PilotFragment {
-        override val __typename: String
+        val __typename: String
 
         /**
          * The name of this person.

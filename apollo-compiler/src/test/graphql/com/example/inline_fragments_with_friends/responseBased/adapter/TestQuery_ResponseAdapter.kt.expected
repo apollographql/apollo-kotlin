@@ -29,12 +29,14 @@ object TestQuery_ResponseAdapter {
     override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters):
         TestQuery.Data {
       var hero: TestQuery.Data.Hero? = null
+
       while(true) {
         when (reader.selectName(RESPONSE_NAMES)) {
           0 -> hero = Hero.obj().nullable().fromJson(reader, customScalarAdapters)
           else -> break
         }
       }
+
       return TestQuery.Data(
         hero = hero
       )
@@ -95,6 +97,7 @@ object TestQuery_ResponseAdapter {
         var name: String? = null
         var height: Double? = null
         var friends: List<TestQuery.Data.HumanHero.Friend?>? = null
+
         while(true) {
           when (reader.selectName(RESPONSE_NAMES)) {
             0 -> __typename = StringAdapter.fromJson(reader, customScalarAdapters)
@@ -105,6 +108,7 @@ object TestQuery_ResponseAdapter {
             else -> break
           }
         }
+
         return TestQuery.Data.HumanHero(
           __typename = __typename!!,
           name = name!!,
@@ -138,6 +142,7 @@ object TestQuery_ResponseAdapter {
         override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters):
             TestQuery.Data.HumanHero.Friend {
           var appearsIn: List<Episode?>? = null
+
           while(true) {
             when (reader.selectName(RESPONSE_NAMES)) {
               0 -> appearsIn = Episode_ResponseAdapter.nullable().list().fromJson(reader,
@@ -145,6 +150,7 @@ object TestQuery_ResponseAdapter {
               else -> break
             }
           }
+
           return TestQuery.Data.HumanHero.Friend(
             appearsIn = appearsIn!!
           )
@@ -174,6 +180,7 @@ object TestQuery_ResponseAdapter {
         var name: String? = null
         var primaryFunction: String? = null
         var friends: List<TestQuery.Data.DroidHero.Friend?>? = null
+
         while(true) {
           when (reader.selectName(RESPONSE_NAMES)) {
             0 -> __typename = StringAdapter.fromJson(reader, customScalarAdapters)
@@ -184,6 +191,7 @@ object TestQuery_ResponseAdapter {
             else -> break
           }
         }
+
         return TestQuery.Data.DroidHero(
           __typename = __typename!!,
           name = name!!,
@@ -217,12 +225,14 @@ object TestQuery_ResponseAdapter {
         override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters):
             TestQuery.Data.DroidHero.Friend {
           var id: String? = null
+
           while(true) {
             when (reader.selectName(RESPONSE_NAMES)) {
               0 -> id = StringAdapter.fromJson(reader, customScalarAdapters)
               else -> break
             }
           }
+
           return TestQuery.Data.DroidHero.Friend(
             id = id!!
           )
@@ -249,6 +259,7 @@ object TestQuery_ResponseAdapter {
       ): TestQuery.Data.OtherHero {
         var __typename: String? = typename
         var name: String? = null
+
         while(true) {
           when (reader.selectName(RESPONSE_NAMES)) {
             0 -> __typename = StringAdapter.fromJson(reader, customScalarAdapters)
@@ -256,6 +267,7 @@ object TestQuery_ResponseAdapter {
             else -> break
           }
         }
+
         return TestQuery.Data.OtherHero(
           __typename = __typename!!,
           name = name!!

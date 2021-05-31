@@ -27,6 +27,7 @@ object TestQuery_ResponseAdapter {
         TestQuery.Data {
       var yield_: TestQuery.Data.Yield? = null
       var objects: List<TestQuery.Data.Object?>? = null
+
       while(true) {
         when (reader.selectName(RESPONSE_NAMES)) {
           0 -> yield_ = Yield.obj().nullable().fromJson(reader, customScalarAdapters)
@@ -35,6 +36,7 @@ object TestQuery_ResponseAdapter {
           else -> break
         }
       }
+
       return TestQuery.Data(
         yield_ = yield_,
         objects = objects
@@ -61,6 +63,7 @@ object TestQuery_ResponseAdapter {
           TestQuery.Data.Yield {
         var it_: String? = null
         var name: String? = null
+
         while(true) {
           when (reader.selectName(RESPONSE_NAMES)) {
             0 -> it_ = StringAdapter.fromJson(reader, customScalarAdapters)
@@ -68,6 +71,7 @@ object TestQuery_ResponseAdapter {
             else -> break
           }
         }
+
         return TestQuery.Data.Yield(
           it_ = it_!!,
           name = name!!
@@ -93,23 +97,27 @@ object TestQuery_ResponseAdapter {
       override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters):
           TestQuery.Data.Object {
         var __typename: String? = null
-        var onCharacter: TestQuery.Data.Object.OnCharacter? = null
+
         while(true) {
           when (reader.selectName(RESPONSE_NAMES)) {
             0 -> __typename = StringAdapter.fromJson(reader, customScalarAdapters)
             else -> break
           }
         }
+
         check(__typename != null) {
           "__typename was not found"
         }
-        if(possibleTypes("Droid","Human").evaluate(emptySet(), __typename)) {
-          reader.rewind()
+
+        reader.rewind()
+        var onCharacter: TestQuery.Data.Object.OnCharacter? = null
+        if (possibleTypes("Droid","Human").evaluate(emptySet(), __typename)) {
           onCharacter = com.example.reserved_kotlin_keywords.adapter.TestQuery_ResponseAdapter.Data.Object.OnCharacter.fromJson(reader,
               customScalarAdapters)
         }
+
         return TestQuery.Data.Object(
-          __typename = __typename!!,
+          __typename = __typename,
           onCharacter = onCharacter
         )
       }
@@ -134,12 +142,14 @@ object TestQuery_ResponseAdapter {
         override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters):
             TestQuery.Data.Object.OnCharacter {
           var name: String? = null
+
           while(true) {
             when (reader.selectName(RESPONSE_NAMES)) {
               0 -> name = StringAdapter.fromJson(reader, customScalarAdapters)
               else -> break
             }
           }
+
           return TestQuery.Data.Object.OnCharacter(
             name = name!!
           )

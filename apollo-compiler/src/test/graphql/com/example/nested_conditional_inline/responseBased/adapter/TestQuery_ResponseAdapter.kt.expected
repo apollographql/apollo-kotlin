@@ -26,12 +26,14 @@ object TestQuery_ResponseAdapter {
     override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters):
         TestQuery.Data {
       var hero: TestQuery.Data.Hero? = null
+
       while(true) {
         when (reader.selectName(RESPONSE_NAMES)) {
           0 -> hero = Hero.obj().nullable().fromJson(reader, customScalarAdapters)
           else -> break
         }
       }
+
       return TestQuery.Data(
         hero = hero
       )
@@ -91,6 +93,7 @@ object TestQuery_ResponseAdapter {
         var __typename: String? = typename
         var name: String? = null
         var friends: List<TestQuery.Data.HumanHero.Friend?>? = null
+
         while(true) {
           when (reader.selectName(RESPONSE_NAMES)) {
             0 -> __typename = StringAdapter.fromJson(reader, customScalarAdapters)
@@ -100,6 +103,7 @@ object TestQuery_ResponseAdapter {
             else -> break
           }
         }
+
         return TestQuery.Data.HumanHero(
           __typename = __typename!!,
           name = name!!,
@@ -167,6 +171,7 @@ object TestQuery_ResponseAdapter {
           var __typename: String? = typename
           var name: String? = null
           var height: Double? = null
+
           while(true) {
             when (reader.selectName(RESPONSE_NAMES)) {
               0 -> __typename = StringAdapter.fromJson(reader, customScalarAdapters)
@@ -175,6 +180,7 @@ object TestQuery_ResponseAdapter {
               else -> break
             }
           }
+
           return TestQuery.Data.HumanHero.HumanFriend(
             __typename = __typename!!,
             name = name!!,
@@ -208,6 +214,7 @@ object TestQuery_ResponseAdapter {
         ): TestQuery.Data.HumanHero.OtherFriend {
           var __typename: String? = typename
           var name: String? = null
+
           while(true) {
             when (reader.selectName(RESPONSE_NAMES)) {
               0 -> __typename = StringAdapter.fromJson(reader, customScalarAdapters)
@@ -215,6 +222,7 @@ object TestQuery_ResponseAdapter {
               else -> break
             }
           }
+
           return TestQuery.Data.HumanHero.OtherFriend(
             __typename = __typename!!,
             name = name!!
@@ -246,6 +254,7 @@ object TestQuery_ResponseAdapter {
         var __typename: String? = typename
         var name: String? = null
         var friends: List<TestQuery.Data.DroidHero.Friend?>? = null
+
         while(true) {
           when (reader.selectName(RESPONSE_NAMES)) {
             0 -> __typename = StringAdapter.fromJson(reader, customScalarAdapters)
@@ -255,6 +264,7 @@ object TestQuery_ResponseAdapter {
             else -> break
           }
         }
+
         return TestQuery.Data.DroidHero(
           __typename = __typename!!,
           name = name!!,
@@ -322,6 +332,7 @@ object TestQuery_ResponseAdapter {
           var __typename: String? = typename
           var name: String? = null
           var height: Double? = null
+
           while(true) {
             when (reader.selectName(RESPONSE_NAMES)) {
               0 -> __typename = StringAdapter.fromJson(reader, customScalarAdapters)
@@ -330,6 +341,7 @@ object TestQuery_ResponseAdapter {
               else -> break
             }
           }
+
           return TestQuery.Data.DroidHero.HumanFriend(
             __typename = __typename!!,
             name = name!!,
@@ -363,6 +375,7 @@ object TestQuery_ResponseAdapter {
         ): TestQuery.Data.DroidHero.OtherFriend {
           var __typename: String? = typename
           var name: String? = null
+
           while(true) {
             when (reader.selectName(RESPONSE_NAMES)) {
               0 -> __typename = StringAdapter.fromJson(reader, customScalarAdapters)
@@ -370,6 +383,7 @@ object TestQuery_ResponseAdapter {
               else -> break
             }
           }
+
           return TestQuery.Data.DroidHero.OtherFriend(
             __typename = __typename!!,
             name = name!!
@@ -400,6 +414,7 @@ object TestQuery_ResponseAdapter {
       ): TestQuery.Data.OtherHero {
         var __typename: String? = typename
         var name: String? = null
+
         while(true) {
           when (reader.selectName(RESPONSE_NAMES)) {
             0 -> __typename = StringAdapter.fromJson(reader, customScalarAdapters)
@@ -407,6 +422,7 @@ object TestQuery_ResponseAdapter {
             else -> break
           }
         }
+
         return TestQuery.Data.OtherHero(
           __typename = __typename!!,
           name = name!!

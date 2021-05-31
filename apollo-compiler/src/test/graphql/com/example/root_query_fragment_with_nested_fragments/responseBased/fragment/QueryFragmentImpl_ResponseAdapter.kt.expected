@@ -26,6 +26,7 @@ object QueryFragmentImpl_ResponseAdapter {
       var hero: QueryFragmentImpl.Data.Hero? = null
       var droid: QueryFragmentImpl.Data.Droid? = null
       var human: QueryFragmentImpl.Data.Human? = null
+
       while(true) {
         when (reader.selectName(RESPONSE_NAMES)) {
           0 -> __typename = StringAdapter.fromJson(reader, customScalarAdapters)
@@ -35,6 +36,7 @@ object QueryFragmentImpl_ResponseAdapter {
           else -> break
         }
       }
+
       return QueryFragmentImpl.Data(
         __typename = __typename!!,
         hero = hero,
@@ -68,6 +70,7 @@ object QueryFragmentImpl_ResponseAdapter {
           QueryFragmentImpl.Data.Hero {
         var __typename: String? = null
         var name: String? = null
+
         while(true) {
           when (reader.selectName(RESPONSE_NAMES)) {
             0 -> __typename = StringAdapter.fromJson(reader, customScalarAdapters)
@@ -75,6 +78,7 @@ object QueryFragmentImpl_ResponseAdapter {
             else -> break
           }
         }
+
         return QueryFragmentImpl.Data.Hero(
           __typename = __typename!!,
           name = name!!
@@ -102,6 +106,7 @@ object QueryFragmentImpl_ResponseAdapter {
         var __typename: String? = null
         var name: String? = null
         var primaryFunction: String? = null
+
         while(true) {
           when (reader.selectName(RESPONSE_NAMES)) {
             0 -> __typename = StringAdapter.fromJson(reader, customScalarAdapters)
@@ -110,6 +115,7 @@ object QueryFragmentImpl_ResponseAdapter {
             else -> break
           }
         }
+
         return QueryFragmentImpl.Data.Droid(
           __typename = __typename!!,
           name = name!!,
@@ -141,6 +147,7 @@ object QueryFragmentImpl_ResponseAdapter {
         var __typename: String? = null
         var name: String? = null
         var homePlanet: String? = null
+
         while(true) {
           when (reader.selectName(RESPONSE_NAMES)) {
             0 -> __typename = StringAdapter.fromJson(reader, customScalarAdapters)
@@ -149,6 +156,7 @@ object QueryFragmentImpl_ResponseAdapter {
             else -> break
           }
         }
+
         return QueryFragmentImpl.Data.Human(
           __typename = __typename!!,
           name = name!!,

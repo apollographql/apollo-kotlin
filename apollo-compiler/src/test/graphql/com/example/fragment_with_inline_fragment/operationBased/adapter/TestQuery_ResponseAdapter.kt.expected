@@ -29,12 +29,14 @@ object TestQuery_ResponseAdapter {
     override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters):
         TestQuery.Data {
       var hero: TestQuery.Data.Hero? = null
+
       while(true) {
         when (reader.selectName(RESPONSE_NAMES)) {
           0 -> hero = Hero.obj(true).nullable().fromJson(reader, customScalarAdapters)
           else -> break
         }
       }
+
       return TestQuery.Data(
         hero = hero
       )
@@ -57,7 +59,7 @@ object TestQuery_ResponseAdapter {
         var __typename: String? = null
         var name: String? = null
         var appearsIn: List<Episode?>? = null
-        var heroDetails: HeroDetails? = null
+
         while(true) {
           when (reader.selectName(RESPONSE_NAMES)) {
             0 -> __typename = StringAdapter.fromJson(reader, customScalarAdapters)
@@ -67,16 +69,20 @@ object TestQuery_ResponseAdapter {
             else -> break
           }
         }
+
         check(__typename != null) {
           "__typename was not found"
         }
-        if(possibleTypes("Droid","Human").evaluate(emptySet(), __typename)) {
-          reader.rewind()
+
+        reader.rewind()
+        var heroDetails: HeroDetails? = null
+        if (possibleTypes("Droid","Human").evaluate(emptySet(), __typename)) {
           heroDetails = com.example.fragment_with_inline_fragment.fragment.HeroDetailsImpl_ResponseAdapter.HeroDetails.fromJson(reader,
               customScalarAdapters)
         }
+
         return TestQuery.Data.Hero(
-          __typename = __typename!!,
+          __typename = __typename,
           name = name!!,
           appearsIn = appearsIn!!,
           heroDetails = heroDetails

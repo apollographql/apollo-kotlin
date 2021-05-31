@@ -27,12 +27,14 @@ object AllStarships_ResponseAdapter {
     override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters):
         com.example.nested_named_fragments.AllStarships.Data {
       var allStarships: com.example.nested_named_fragments.AllStarships.Data.AllStarships? = null
+
       while(true) {
         when (reader.selectName(RESPONSE_NAMES)) {
           0 -> allStarships = AllStarships.obj().nullable().fromJson(reader, customScalarAdapters)
           else -> break
         }
       }
+
       return com.example.nested_named_fragments.AllStarships.Data(
         allStarships = allStarships
       )
@@ -54,6 +56,7 @@ object AllStarships_ResponseAdapter {
       override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters):
           com.example.nested_named_fragments.AllStarships.Data.AllStarships {
         var edges: List<com.example.nested_named_fragments.AllStarships.Data.AllStarships.Edge?>? = null
+
         while(true) {
           when (reader.selectName(RESPONSE_NAMES)) {
             0 -> edges = Edge.obj().nullable().list().nullable().fromJson(reader,
@@ -61,6 +64,7 @@ object AllStarships_ResponseAdapter {
             else -> break
           }
         }
+
         return com.example.nested_named_fragments.AllStarships.Data.AllStarships(
           edges = edges
         )
@@ -82,12 +86,14 @@ object AllStarships_ResponseAdapter {
         override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters):
             com.example.nested_named_fragments.AllStarships.Data.AllStarships.Edge {
           var node: com.example.nested_named_fragments.AllStarships.Data.AllStarships.Edge.Node? = null
+
           while(true) {
             when (reader.selectName(RESPONSE_NAMES)) {
               0 -> node = Node.obj(true).nullable().fromJson(reader, customScalarAdapters)
               else -> break
             }
           }
+
           return com.example.nested_named_fragments.AllStarships.Data.AllStarships.Edge(
             node = node
           )
@@ -109,23 +115,27 @@ object AllStarships_ResponseAdapter {
           override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters):
               com.example.nested_named_fragments.AllStarships.Data.AllStarships.Edge.Node {
             var __typename: String? = null
-            var starshipFragment: StarshipFragment? = null
+
             while(true) {
               when (reader.selectName(RESPONSE_NAMES)) {
                 0 -> __typename = StringAdapter.fromJson(reader, customScalarAdapters)
                 else -> break
               }
             }
+
             check(__typename != null) {
               "__typename was not found"
             }
-            if(possibleTypes("Starship").evaluate(emptySet(), __typename)) {
-              reader.rewind()
+
+            reader.rewind()
+            var starshipFragment: StarshipFragment? = null
+            if (possibleTypes("Starship").evaluate(emptySet(), __typename)) {
               starshipFragment = com.example.nested_named_fragments.fragment.StarshipFragmentImpl_ResponseAdapter.StarshipFragment.fromJson(reader,
                   customScalarAdapters)
             }
+
             return com.example.nested_named_fragments.AllStarships.Data.AllStarships.Edge.Node(
-              __typename = __typename!!,
+              __typename = __typename,
               starshipFragment = starshipFragment
             )
           }

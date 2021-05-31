@@ -28,7 +28,6 @@ class DroidDetailsImpl : Fragment<DroidDetailsImpl.Data> {
       DroidDetailsImpl_ResponseFields.fields.first().fieldSets
 
   data class Data(
-    override val __typename: String,
     /**
      * What others call this droid
      */

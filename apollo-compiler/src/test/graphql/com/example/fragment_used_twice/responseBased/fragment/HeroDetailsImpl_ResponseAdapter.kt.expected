@@ -24,6 +24,7 @@ object HeroDetailsImpl_ResponseAdapter {
       var __typename: String? = null
       var name: String? = null
       var birthDate: Any? = null
+
       while(true) {
         when (reader.selectName(RESPONSE_NAMES)) {
           0 -> __typename = StringAdapter.fromJson(reader, customScalarAdapters)
@@ -32,6 +33,7 @@ object HeroDetailsImpl_ResponseAdapter {
           else -> break
         }
       }
+
       return HeroDetailsImpl.Data(
         __typename = __typename!!,
         name = name!!,

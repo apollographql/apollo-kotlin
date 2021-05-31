@@ -8,8 +8,6 @@ package com.example.fragment_with_inline_fragment.fragment
 import kotlin.String
 
 interface DroidDetails {
-  val __typename: String
-
   /**
    * What others call this droid
    */

@@ -37,7 +37,7 @@ class TestQuery : Query<TestQuery.Data> {
   data class Data(
     val __typename: String,
     /**
-     * Synthetic field for fragment spread on Query
+     * Synthetic field for 'QueryFragment'
      */
     val queryFragment: QueryFragment?
   ) : Query.Data

@@ -55,6 +55,7 @@ internal object HeroDetailsImpl_ResponseAdapter {
     ): HeroDetailsImpl.HumanData {
       var __typename: String? = typename
       var name: String? = null
+
       while(true) {
         when (reader.selectName(RESPONSE_NAMES)) {
           0 -> __typename = StringAdapter.fromJson(reader, customScalarAdapters)
@@ -62,6 +63,7 @@ internal object HeroDetailsImpl_ResponseAdapter {
           else -> break
         }
       }
+
       return HeroDetailsImpl.HumanData(
         __typename = __typename!!,
         name = name!!
@@ -90,12 +92,14 @@ internal object HeroDetailsImpl_ResponseAdapter {
       typename: String
     ): HeroDetailsImpl.OtherData {
       var __typename: String? = typename
+
       while(true) {
         when (reader.selectName(RESPONSE_NAMES)) {
           0 -> __typename = StringAdapter.fromJson(reader, customScalarAdapters)
           else -> break
         }
       }
+
       return HeroDetailsImpl.OtherData(
         __typename = __typename!!
       )

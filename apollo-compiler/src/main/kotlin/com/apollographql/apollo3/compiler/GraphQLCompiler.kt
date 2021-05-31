@@ -119,6 +119,7 @@ class GraphQLCompiler {
         enumsToSkip = incomingOptions.metadataEnums,
         inputObjectsToSkip = incomingOptions.metadataInputObjects,
         generateSchema = !incomingOptions.isFromMetadata,
+        flatten = incomingOptions.codegenModels == MODELS_COMPAT
     ).write(outputDir = outputDir)
 
     /**

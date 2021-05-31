@@ -24,12 +24,14 @@ object TestQuery_ResponseAdapter {
     override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters):
         TestQuery.Data {
       var root: TestQuery.Data.Root? = null
+
       while(true) {
         when (reader.selectName(RESPONSE_NAMES)) {
           0 -> root = Root.obj().nullable().fromJson(reader, customScalarAdapters)
           else -> break
         }
       }
+
       return TestQuery.Data(
         root = root
       )
@@ -89,6 +91,7 @@ object TestQuery_ResponseAdapter {
         var __typename: String? = typename
         var fieldA1: String? = null
         var fieldB1: String? = null
+
         while(true) {
           when (reader.selectName(RESPONSE_NAMES)) {
             0 -> __typename = StringAdapter.fromJson(reader, customScalarAdapters)
@@ -97,6 +100,7 @@ object TestQuery_ResponseAdapter {
             else -> break
           }
         }
+
         return TestQuery.Data.ABRoot(
           __typename = __typename!!,
           fieldA1 = fieldA1,
@@ -129,12 +133,14 @@ object TestQuery_ResponseAdapter {
         typename: String
       ): TestQuery.Data.OtherRoot {
         var __typename: String? = typename
+
         while(true) {
           when (reader.selectName(RESPONSE_NAMES)) {
             0 -> __typename = StringAdapter.fromJson(reader, customScalarAdapters)
             else -> break
           }
         }
+
         return TestQuery.Data.OtherRoot(
           __typename = __typename!!
         )
@@ -160,6 +166,7 @@ object TestQuery_ResponseAdapter {
       ): TestQuery.Data.OtherARoot {
         var __typename: String? = typename
         var fieldA1: String? = null
+
         while(true) {
           when (reader.selectName(RESPONSE_NAMES)) {
             0 -> __typename = StringAdapter.fromJson(reader, customScalarAdapters)
@@ -167,6 +174,7 @@ object TestQuery_ResponseAdapter {
             else -> break
           }
         }
+
         return TestQuery.Data.OtherARoot(
           __typename = __typename!!,
           fieldA1 = fieldA1

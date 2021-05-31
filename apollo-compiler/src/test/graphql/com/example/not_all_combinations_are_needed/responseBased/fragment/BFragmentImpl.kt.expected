@@ -27,7 +27,6 @@ class BFragmentImpl : Fragment<BFragmentImpl.Data> {
   override fun fieldSets(): List<FieldSet> = BFragmentImpl_ResponseFields.fields.first().fieldSets
 
   data class Data(
-    override val __typename: String,
     override val fieldB1: String?
   ) : BFragment, Fragment.Data
 }

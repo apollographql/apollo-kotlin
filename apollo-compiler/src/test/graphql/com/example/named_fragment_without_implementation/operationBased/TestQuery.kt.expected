@@ -45,11 +45,11 @@ class TestQuery : Query<TestQuery.Data> {
        */
       val name: String,
       /**
-       * Synthetic field for fragment spread on Human
+       * Synthetic field for 'HumanDetails'
        */
       val humanDetails: HumanDetails?,
       /**
-       * Synthetic field for fragment spread on Droid
+       * Synthetic field for 'DroidDetails'
        */
       val droidDetails: DroidDetails?
     )
@@ -57,7 +57,7 @@ class TestQuery : Query<TestQuery.Data> {
 
   companion object {
     const val OPERATION_ID: String =
-        "ad4a952391a4d8bbf6d5c8b36df648431b3c842f150ce924d0a0195e2eb7a004"
+        "bd506c9c818f2163b34753c735df7794c16d135e4a8e6d24e2930e63eacf01df"
 
     /**
      * The minimized GraphQL document being sent to the server to save a few bytes.
@@ -73,17 +73,15 @@ class TestQuery : Query<TestQuery.Data> {
      * }
      *
      * fragment HumanDetails on Human {
-     *   __typename
      *   height
      * }
      *
      * fragment DroidDetails on Droid {
-     *   __typename
      *   primaryFunction
      * }
      */
     const val OPERATION_DOCUMENT: String =
-        "query TestQuery { hero { __typename name ...HumanDetails ...DroidDetails } }  fragment HumanDetails on Human { __typename height }  fragment DroidDetails on Droid { __typename primaryFunction }"
+        "query TestQuery { hero { __typename name ...HumanDetails ...DroidDetails } }  fragment HumanDetails on Human { height }  fragment DroidDetails on Droid { primaryFunction }"
 
     const val OPERATION_NAME: String = "TestQuery"
   }

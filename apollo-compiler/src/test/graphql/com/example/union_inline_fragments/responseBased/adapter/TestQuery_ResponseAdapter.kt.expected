@@ -27,6 +27,7 @@ object TestQuery_ResponseAdapter {
     override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters):
         TestQuery.Data {
       var search: List<TestQuery.Data.Search?>? = null
+
       while(true) {
         when (reader.selectName(RESPONSE_NAMES)) {
           0 -> search = Search.obj().nullable().list().nullable().fromJson(reader,
@@ -34,6 +35,7 @@ object TestQuery_ResponseAdapter {
           else -> break
         }
       }
+
       return TestQuery.Data(
         search = search
       )
@@ -97,6 +99,7 @@ object TestQuery_ResponseAdapter {
         var id: String? = null
         var name: String? = null
         var friends: List<TestQuery.Data.CharacterSearch.Friend?>? = null
+
         while(true) {
           when (reader.selectName(RESPONSE_NAMES)) {
             0 -> __typename = StringAdapter.fromJson(reader, customScalarAdapters)
@@ -107,6 +110,7 @@ object TestQuery_ResponseAdapter {
             else -> break
           }
         }
+
         return TestQuery.Data.CharacterSearch(
           __typename = __typename!!,
           id = id!!,
@@ -183,6 +187,7 @@ object TestQuery_ResponseAdapter {
           var name: String? = null
           var homePlanet: String? = null
           var friends: List<TestQuery.Data.CharacterSearch.HumanFriend.Friend?>? = null
+
           while(true) {
             when (reader.selectName(RESPONSE_NAMES)) {
               0 -> __typename = StringAdapter.fromJson(reader, customScalarAdapters)
@@ -193,6 +198,7 @@ object TestQuery_ResponseAdapter {
               else -> break
             }
           }
+
           return TestQuery.Data.CharacterSearch.HumanFriend(
             __typename = __typename!!,
             name = name!!,
@@ -227,6 +233,7 @@ object TestQuery_ResponseAdapter {
               TestQuery.Data.CharacterSearch.HumanFriend.Friend {
             var __typename: String? = null
             var firstAppearsIn: Episode? = null
+
             while(true) {
               when (reader.selectName(RESPONSE_NAMES)) {
                 0 -> __typename = StringAdapter.fromJson(reader, customScalarAdapters)
@@ -234,6 +241,7 @@ object TestQuery_ResponseAdapter {
                 else -> break
               }
             }
+
             return TestQuery.Data.CharacterSearch.HumanFriend.Friend(
               __typename = __typename!!,
               firstAppearsIn = firstAppearsIn!!
@@ -267,6 +275,7 @@ object TestQuery_ResponseAdapter {
           var name: String? = null
           var primaryFunction: String? = null
           var friends: List<TestQuery.Data.CharacterSearch.DroidFriend.Friend?>? = null
+
           while(true) {
             when (reader.selectName(RESPONSE_NAMES)) {
               0 -> __typename = StringAdapter.fromJson(reader, customScalarAdapters)
@@ -277,6 +286,7 @@ object TestQuery_ResponseAdapter {
               else -> break
             }
           }
+
           return TestQuery.Data.CharacterSearch.DroidFriend(
             __typename = __typename!!,
             name = name!!,
@@ -310,12 +320,14 @@ object TestQuery_ResponseAdapter {
           override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters):
               TestQuery.Data.CharacterSearch.DroidFriend.Friend {
             var id: String? = null
+
             while(true) {
               when (reader.selectName(RESPONSE_NAMES)) {
                 0 -> id = StringAdapter.fromJson(reader, customScalarAdapters)
                 else -> break
               }
             }
+
             return TestQuery.Data.CharacterSearch.DroidFriend.Friend(
               id = id!!
             )
@@ -342,6 +354,7 @@ object TestQuery_ResponseAdapter {
         ): TestQuery.Data.CharacterSearch.OtherFriend {
           var __typename: String? = typename
           var name: String? = null
+
           while(true) {
             when (reader.selectName(RESPONSE_NAMES)) {
               0 -> __typename = StringAdapter.fromJson(reader, customScalarAdapters)
@@ -349,6 +362,7 @@ object TestQuery_ResponseAdapter {
               else -> break
             }
           }
+
           return TestQuery.Data.CharacterSearch.OtherFriend(
             __typename = __typename!!,
             name = name!!
@@ -379,6 +393,7 @@ object TestQuery_ResponseAdapter {
       ): TestQuery.Data.StarshipSearch {
         var __typename: String? = typename
         var name: String? = null
+
         while(true) {
           when (reader.selectName(RESPONSE_NAMES)) {
             0 -> __typename = StringAdapter.fromJson(reader, customScalarAdapters)
@@ -386,6 +401,7 @@ object TestQuery_ResponseAdapter {
             else -> break
           }
         }
+
         return TestQuery.Data.StarshipSearch(
           __typename = __typename!!,
           name = name!!
@@ -414,12 +430,14 @@ object TestQuery_ResponseAdapter {
         typename: String
       ): TestQuery.Data.OtherSearch {
         var __typename: String? = typename
+
         while(true) {
           when (reader.selectName(RESPONSE_NAMES)) {
             0 -> __typename = StringAdapter.fromJson(reader, customScalarAdapters)
             else -> break
           }
         }
+
         return TestQuery.Data.OtherSearch(
           __typename = __typename!!
         )

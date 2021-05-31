@@ -28,7 +28,6 @@ class HeroFragmentImpl : Fragment<HeroFragmentImpl.Data> {
       HeroFragmentImpl_ResponseFields.fields.first().fieldSets
 
   data class Data(
-    override val __typename: String,
     /**
      * The name of the character
      */

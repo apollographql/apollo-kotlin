@@ -43,7 +43,7 @@ data class GetUser(
   override fun fieldSets(): List<FieldSet> = GetUser_ResponseFields.fields.first().fieldSets
 
   data class Data(
-    override val __typename: String,
+    val __typename: String,
     override val organization: Organization?
   ) : QueryFragment, Query.Data {
     data class Organization(
@@ -69,7 +69,7 @@ data class GetUser(
 
   companion object {
     const val OPERATION_ID: String =
-        "7ff54301fd9799b8a49d3edcb9e770354cd564fb5804c6e2eae2e1578de84add"
+        "1314916fa3163a17df2b7a0173e55fef34621507824242308b3006e9ab4740b4"
 
     /**
      * The minimized GraphQL document being sent to the server to save a few bytes.
@@ -81,14 +81,12 @@ data class GetUser(
      * }
      *
      * fragment UserFragment on User {
-     *   __typename
      *   firstName
      *   lastName
      *   avatar(size: $size)
      * }
      *
      * fragment QueryFragment on Query {
-     *   __typename
      *   organization(id: $organizationId) {
      *     id
      *     user(query: $query) {
@@ -99,7 +97,7 @@ data class GetUser(
      * }
      */
     const val OPERATION_DOCUMENT: String =
-        "query GetUser(${'$'}organizationId: String!, ${'$'}query: UserQuery!, ${'$'}size: Int!) { __typename ...QueryFragment }  fragment UserFragment on User { __typename firstName lastName avatar(size: ${'$'}size) }  fragment QueryFragment on Query { __typename organization(id: ${'$'}organizationId) { id user(query: ${'$'}query) { __typename ...UserFragment } } }"
+        "query GetUser(${'$'}organizationId: String!, ${'$'}query: UserQuery!, ${'$'}size: Int!) { __typename ...QueryFragment }  fragment UserFragment on User { firstName lastName avatar(size: ${'$'}size) }  fragment QueryFragment on Query { organization(id: ${'$'}organizationId) { id user(query: ${'$'}query) { __typename ...UserFragment } } }"
 
     const val OPERATION_NAME: String = "GetUser"
   }

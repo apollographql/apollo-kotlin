@@ -26,7 +26,6 @@ object QueryFragmentImpl_ResponseFields {
 
   object Data {
     val fields: Array<MergedField> = arrayOf(
-      MergedField.Typename,
       MergedField(
         type = MergedField.Type.Named.Object("unused"),
         fieldName = "organization",

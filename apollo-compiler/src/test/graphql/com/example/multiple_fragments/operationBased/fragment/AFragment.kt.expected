@@ -9,17 +9,16 @@ import com.apollographql.apollo3.api.Fragment
 import kotlin.String
 
 data class AFragment(
-  val __typename: String,
   val node: Node?
 ) : Fragment.Data {
   data class Node(
     val __typename: String,
     /**
-     * Synthetic field for fragment spread on ANode
+     * Synthetic field for 'fragment1'
      */
     val fragment1: Fragment1?,
     /**
-     * Synthetic field for fragment spread on ANode
+     * Synthetic field for 'fragment2'
      */
     val fragment2: Fragment2?
   )

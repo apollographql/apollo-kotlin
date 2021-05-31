@@ -18,21 +18,20 @@ import kotlin.collections.List
 
 object QueryFragmentImpl_ResponseAdapter {
   object Data : Adapter<QueryFragmentImpl.Data> {
-    val RESPONSE_NAMES: List<String> = listOf("__typename", "organization")
+    val RESPONSE_NAMES: List<String> = listOf("organization")
 
     override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters):
         QueryFragmentImpl.Data {
-      var __typename: String? = null
       var organization: QueryFragmentImpl.Data.Organization? = null
+
       while(true) {
         when (reader.selectName(RESPONSE_NAMES)) {
-          0 -> __typename = StringAdapter.fromJson(reader, customScalarAdapters)
-          1 -> organization = Organization.obj().nullable().fromJson(reader, customScalarAdapters)
+          0 -> organization = Organization.obj().nullable().fromJson(reader, customScalarAdapters)
           else -> break
         }
       }
+
       return QueryFragmentImpl.Data(
-        __typename = __typename!!,
         organization = organization
       )
     }
@@ -42,9 +41,6 @@ object QueryFragmentImpl_ResponseAdapter {
       customScalarAdapters: CustomScalarAdapters,
       value: QueryFragmentImpl.Data
     ) {
-      writer.name("__typename")
-      StringAdapter.toJson(writer, customScalarAdapters, value.__typename)
-
       writer.name("organization")
       Organization.obj().nullable().toJson(writer, customScalarAdapters, value.organization)
     }
@@ -56,6 +52,7 @@ object QueryFragmentImpl_ResponseAdapter {
           QueryFragmentImpl.Data.Organization {
         var id: String? = null
         var user: List<QueryFragmentImpl.Data.Organization.User>? = null
+
         while(true) {
           when (reader.selectName(RESPONSE_NAMES)) {
             0 -> id = StringAdapter.fromJson(reader, customScalarAdapters)
@@ -63,6 +60,7 @@ object QueryFragmentImpl_ResponseAdapter {
             else -> break
           }
         }
+
         return QueryFragmentImpl.Data.Organization(
           id = id!!,
           user = user!!
@@ -90,6 +88,7 @@ object QueryFragmentImpl_ResponseAdapter {
           var firstName: String? = null
           var lastName: String? = null
           var avatar: String? = null
+
           while(true) {
             when (reader.selectName(RESPONSE_NAMES)) {
               0 -> __typename = StringAdapter.fromJson(reader, customScalarAdapters)
@@ -99,6 +98,7 @@ object QueryFragmentImpl_ResponseAdapter {
               else -> break
             }
           }
+
           return QueryFragmentImpl.Data.Organization.User(
             __typename = __typename!!,
             firstName = firstName!!,

@@ -25,12 +25,14 @@ object TestQuery_ResponseAdapter {
     override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters):
         TestQuery.Data {
       var foo: TestQuery.Data.Foo? = null
+
       while(true) {
         when (reader.selectName(RESPONSE_NAMES)) {
           0 -> foo = Foo.obj(true).nullable().fromJson(reader, customScalarAdapters)
           else -> break
         }
       }
+
       return TestQuery.Data(
         foo = foo
       )
@@ -52,7 +54,7 @@ object TestQuery_ResponseAdapter {
           TestQuery.Data.Foo {
         var __typename: String? = null
         var foo: String? = null
-        var onBar: TestQuery.Data.Foo.OnBar? = null
+
         while(true) {
           when (reader.selectName(RESPONSE_NAMES)) {
             0 -> __typename = StringAdapter.fromJson(reader, customScalarAdapters)
@@ -60,16 +62,20 @@ object TestQuery_ResponseAdapter {
             else -> break
           }
         }
+
         check(__typename != null) {
           "__typename was not found"
         }
-        if(possibleTypes("BarObject","FooBar").evaluate(emptySet(), __typename)) {
-          reader.rewind()
+
+        reader.rewind()
+        var onBar: TestQuery.Data.Foo.OnBar? = null
+        if (possibleTypes("BarObject","FooBar").evaluate(emptySet(), __typename)) {
           onBar = com.example.inline_fragment_type_coercion.adapter.TestQuery_ResponseAdapter.Data.Foo.OnBar.fromJson(reader,
               customScalarAdapters)
         }
+
         return TestQuery.Data.Foo(
-          __typename = __typename!!,
+          __typename = __typename,
           foo = foo!!,
           onBar = onBar
         )
@@ -98,12 +104,14 @@ object TestQuery_ResponseAdapter {
         override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters):
             TestQuery.Data.Foo.OnBar {
           var bar: String? = null
+
           while(true) {
             when (reader.selectName(RESPONSE_NAMES)) {
               0 -> bar = StringAdapter.fromJson(reader, customScalarAdapters)
               else -> break
             }
           }
+
           return TestQuery.Data.Foo.OnBar(
             bar = bar!!
           )

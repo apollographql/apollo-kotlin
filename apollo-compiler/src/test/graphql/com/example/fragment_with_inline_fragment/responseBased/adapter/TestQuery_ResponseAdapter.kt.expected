@@ -29,12 +29,14 @@ object TestQuery_ResponseAdapter {
     override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters):
         TestQuery.Data {
       var hero: TestQuery.Data.Hero? = null
+
       while(true) {
         when (reader.selectName(RESPONSE_NAMES)) {
           0 -> hero = Hero.obj().nullable().fromJson(reader, customScalarAdapters)
           else -> break
         }
       }
+
       return TestQuery.Data(
         hero = hero
       )
@@ -96,6 +98,7 @@ object TestQuery_ResponseAdapter {
         var name: String? = null
         var friendsConnection: TestQuery.Data.HumanHero.FriendsConnection? = null
         var appearsIn: List<Episode?>? = null
+
         while(true) {
           when (reader.selectName(RESPONSE_NAMES)) {
             0 -> __typename = StringAdapter.fromJson(reader, customScalarAdapters)
@@ -106,6 +109,7 @@ object TestQuery_ResponseAdapter {
             else -> break
           }
         }
+
         return TestQuery.Data.HumanHero(
           __typename = __typename!!,
           name = name!!,
@@ -140,6 +144,7 @@ object TestQuery_ResponseAdapter {
             TestQuery.Data.HumanHero.FriendsConnection {
           var totalCount: Int? = null
           var edges: List<TestQuery.Data.HumanHero.FriendsConnection.Edge?>? = null
+
           while(true) {
             when (reader.selectName(RESPONSE_NAMES)) {
               0 -> totalCount = NullableIntAdapter.fromJson(reader, customScalarAdapters)
@@ -148,6 +153,7 @@ object TestQuery_ResponseAdapter {
               else -> break
             }
           }
+
           return TestQuery.Data.HumanHero.FriendsConnection(
             totalCount = totalCount,
             edges = edges
@@ -172,12 +178,14 @@ object TestQuery_ResponseAdapter {
           override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters):
               TestQuery.Data.HumanHero.FriendsConnection.Edge {
             var node: TestQuery.Data.HumanHero.FriendsConnection.Edge.Node? = null
+
             while(true) {
               when (reader.selectName(RESPONSE_NAMES)) {
                 0 -> node = Node.obj().nullable().fromJson(reader, customScalarAdapters)
                 else -> break
               }
             }
+
             return TestQuery.Data.HumanHero.FriendsConnection.Edge(
               node = node
             )
@@ -198,12 +206,14 @@ object TestQuery_ResponseAdapter {
             override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters):
                 TestQuery.Data.HumanHero.FriendsConnection.Edge.Node {
               var name: String? = null
+
               while(true) {
                 when (reader.selectName(RESPONSE_NAMES)) {
                   0 -> name = StringAdapter.fromJson(reader, customScalarAdapters)
                   else -> break
                 }
               }
+
               return TestQuery.Data.HumanHero.FriendsConnection.Edge.Node(
                 name = name!!
               )
@@ -236,6 +246,7 @@ object TestQuery_ResponseAdapter {
         var primaryFunction: String? = null
         var friendsConnection: TestQuery.Data.DroidHero.FriendsConnection? = null
         var appearsIn: List<Episode?>? = null
+
         while(true) {
           when (reader.selectName(RESPONSE_NAMES)) {
             0 -> __typename = StringAdapter.fromJson(reader, customScalarAdapters)
@@ -247,6 +258,7 @@ object TestQuery_ResponseAdapter {
             else -> break
           }
         }
+
         return TestQuery.Data.DroidHero(
           __typename = __typename!!,
           name = name!!,
@@ -285,6 +297,7 @@ object TestQuery_ResponseAdapter {
             TestQuery.Data.DroidHero.FriendsConnection {
           var totalCount: Int? = null
           var edges: List<TestQuery.Data.DroidHero.FriendsConnection.Edge?>? = null
+
           while(true) {
             when (reader.selectName(RESPONSE_NAMES)) {
               0 -> totalCount = NullableIntAdapter.fromJson(reader, customScalarAdapters)
@@ -293,6 +306,7 @@ object TestQuery_ResponseAdapter {
               else -> break
             }
           }
+
           return TestQuery.Data.DroidHero.FriendsConnection(
             totalCount = totalCount,
             edges = edges
@@ -317,12 +331,14 @@ object TestQuery_ResponseAdapter {
           override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters):
               TestQuery.Data.DroidHero.FriendsConnection.Edge {
             var node: TestQuery.Data.DroidHero.FriendsConnection.Edge.Node? = null
+
             while(true) {
               when (reader.selectName(RESPONSE_NAMES)) {
                 0 -> node = Node.obj().nullable().fromJson(reader, customScalarAdapters)
                 else -> break
               }
             }
+
             return TestQuery.Data.DroidHero.FriendsConnection.Edge(
               node = node
             )
@@ -343,12 +359,14 @@ object TestQuery_ResponseAdapter {
             override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters):
                 TestQuery.Data.DroidHero.FriendsConnection.Edge.Node {
               var name: String? = null
+
               while(true) {
                 when (reader.selectName(RESPONSE_NAMES)) {
                   0 -> name = StringAdapter.fromJson(reader, customScalarAdapters)
                   else -> break
                 }
               }
+
               return TestQuery.Data.DroidHero.FriendsConnection.Edge.Node(
                 name = name!!
               )
@@ -380,6 +398,7 @@ object TestQuery_ResponseAdapter {
         var name: String? = null
         var friendsConnection: TestQuery.Data.OtherHero.FriendsConnection? = null
         var appearsIn: List<Episode?>? = null
+
         while(true) {
           when (reader.selectName(RESPONSE_NAMES)) {
             0 -> __typename = StringAdapter.fromJson(reader, customScalarAdapters)
@@ -390,6 +409,7 @@ object TestQuery_ResponseAdapter {
             else -> break
           }
         }
+
         return TestQuery.Data.OtherHero(
           __typename = __typename!!,
           name = name!!,
@@ -424,6 +444,7 @@ object TestQuery_ResponseAdapter {
             TestQuery.Data.OtherHero.FriendsConnection {
           var totalCount: Int? = null
           var edges: List<TestQuery.Data.OtherHero.FriendsConnection.Edge?>? = null
+
           while(true) {
             when (reader.selectName(RESPONSE_NAMES)) {
               0 -> totalCount = NullableIntAdapter.fromJson(reader, customScalarAdapters)
@@ -432,6 +453,7 @@ object TestQuery_ResponseAdapter {
               else -> break
             }
           }
+
           return TestQuery.Data.OtherHero.FriendsConnection(
             totalCount = totalCount,
             edges = edges
@@ -456,12 +478,14 @@ object TestQuery_ResponseAdapter {
           override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters):
               TestQuery.Data.OtherHero.FriendsConnection.Edge {
             var node: TestQuery.Data.OtherHero.FriendsConnection.Edge.Node? = null
+
             while(true) {
               when (reader.selectName(RESPONSE_NAMES)) {
                 0 -> node = Node.obj().nullable().fromJson(reader, customScalarAdapters)
                 else -> break
               }
             }
+
             return TestQuery.Data.OtherHero.FriendsConnection.Edge(
               node = node
             )
@@ -482,12 +506,14 @@ object TestQuery_ResponseAdapter {
             override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters):
                 TestQuery.Data.OtherHero.FriendsConnection.Edge.Node {
               var name: String? = null
+
               while(true) {
                 when (reader.selectName(RESPONSE_NAMES)) {
                   0 -> name = StringAdapter.fromJson(reader, customScalarAdapters)
                   else -> break
                 }
               }
+
               return TestQuery.Data.OtherHero.FriendsConnection.Edge.Node(
                 name = name!!
               )

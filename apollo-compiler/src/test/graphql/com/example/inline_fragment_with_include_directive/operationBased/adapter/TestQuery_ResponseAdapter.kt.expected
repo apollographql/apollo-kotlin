@@ -29,12 +29,14 @@ object TestQuery_ResponseAdapter {
     override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters):
         TestQuery.Data {
       var hero: TestQuery.Data.Hero? = null
+
       while(true) {
         when (reader.selectName(RESPONSE_NAMES)) {
           0 -> hero = Hero.obj(true).nullable().fromJson(reader, customScalarAdapters)
           else -> break
         }
       }
+
       return TestQuery.Data(
         hero = hero
       )
@@ -56,9 +58,7 @@ object TestQuery_ResponseAdapter {
           TestQuery.Data.Hero {
         var __typename: String? = null
         var id: String? = null
-        var onHumanIfWithDetailsAndNotSkipHumanDetails: TestQuery.Data.Hero.OnHumanIfWithDetailsAndNotSkipHumanDetails? = null
-        var onDroidIfWithDetails: TestQuery.Data.Hero.OnDroidIfWithDetails? = null
-        var onCharacterIfWithDetails: TestQuery.Data.Hero.OnCharacterIfWithDetails? = null
+
         while(true) {
           when (reader.selectName(RESPONSE_NAMES)) {
             0 -> __typename = StringAdapter.fromJson(reader, customScalarAdapters)
@@ -66,28 +66,34 @@ object TestQuery_ResponseAdapter {
             else -> break
           }
         }
+
         check(__typename != null) {
           "__typename was not found"
         }
-        if(and(possibleTypes("Human"),and(variable("withDetails"),not(variable("skipHumanDetails")))).evaluate(emptySet(), __typename)) {
-          reader.rewind()
+
+        reader.rewind()
+        var onHumanIfWithDetailsAndNotSkipHumanDetails: TestQuery.Data.Hero.OnHumanIfWithDetailsAndNotSkipHumanDetails? = null
+        if (and(possibleTypes("Human"),and(variable("withDetails"),not(variable("skipHumanDetails")))).evaluate(emptySet(), __typename)) {
           onHumanIfWithDetailsAndNotSkipHumanDetails = com.example.inline_fragment_with_include_directive.adapter.TestQuery_ResponseAdapter.Data.Hero.OnHumanIfWithDetailsAndNotSkipHumanDetails.fromJson(reader,
               customScalarAdapters)
         }
 
-        if(and(possibleTypes("Droid"),variable("withDetails")).evaluate(emptySet(), __typename)) {
-          reader.rewind()
+        reader.rewind()
+        var onDroidIfWithDetails: TestQuery.Data.Hero.OnDroidIfWithDetails? = null
+        if (and(possibleTypes("Droid"),variable("withDetails")).evaluate(emptySet(), __typename)) {
           onDroidIfWithDetails = com.example.inline_fragment_with_include_directive.adapter.TestQuery_ResponseAdapter.Data.Hero.OnDroidIfWithDetails.fromJson(reader,
               customScalarAdapters)
         }
 
-        if(and(possibleTypes("Droid","Human"),variable("withDetails")).evaluate(emptySet(), __typename)) {
-          reader.rewind()
+        reader.rewind()
+        var onCharacterIfWithDetails: TestQuery.Data.Hero.OnCharacterIfWithDetails? = null
+        if (and(possibleTypes("Droid","Human"),variable("withDetails")).evaluate(emptySet(), __typename)) {
           onCharacterIfWithDetails = com.example.inline_fragment_with_include_directive.adapter.TestQuery_ResponseAdapter.Data.Hero.OnCharacterIfWithDetails.fromJson(reader,
               customScalarAdapters)
         }
+
         return TestQuery.Data.Hero(
-          __typename = __typename!!,
+          __typename = __typename,
           id = id!!,
           onHumanIfWithDetailsAndNotSkipHumanDetails = onHumanIfWithDetailsAndNotSkipHumanDetails,
           onDroidIfWithDetails = onDroidIfWithDetails,
@@ -130,6 +136,7 @@ object TestQuery_ResponseAdapter {
             TestQuery.Data.Hero.OnHumanIfWithDetailsAndNotSkipHumanDetails {
           var name: String? = null
           var homePlanet: String? = null
+
           while(true) {
             when (reader.selectName(RESPONSE_NAMES)) {
               0 -> name = StringAdapter.fromJson(reader, customScalarAdapters)
@@ -137,6 +144,7 @@ object TestQuery_ResponseAdapter {
               else -> break
             }
           }
+
           return TestQuery.Data.Hero.OnHumanIfWithDetailsAndNotSkipHumanDetails(
             name = name!!,
             homePlanet = homePlanet
@@ -163,6 +171,7 @@ object TestQuery_ResponseAdapter {
             TestQuery.Data.Hero.OnDroidIfWithDetails {
           var name: String? = null
           var primaryFunction: String? = null
+
           while(true) {
             when (reader.selectName(RESPONSE_NAMES)) {
               0 -> name = StringAdapter.fromJson(reader, customScalarAdapters)
@@ -170,6 +179,7 @@ object TestQuery_ResponseAdapter {
               else -> break
             }
           }
+
           return TestQuery.Data.Hero.OnDroidIfWithDetails(
             name = name!!,
             primaryFunction = primaryFunction
@@ -195,12 +205,14 @@ object TestQuery_ResponseAdapter {
         override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters):
             TestQuery.Data.Hero.OnCharacterIfWithDetails {
           var name: String? = null
+
           while(true) {
             when (reader.selectName(RESPONSE_NAMES)) {
               0 -> name = StringAdapter.fromJson(reader, customScalarAdapters)
               else -> break
             }
           }
+
           return TestQuery.Data.Hero.OnCharacterIfWithDetails(
             name = name!!
           )

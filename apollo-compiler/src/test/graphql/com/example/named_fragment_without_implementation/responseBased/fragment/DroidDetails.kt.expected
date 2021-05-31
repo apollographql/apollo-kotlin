@@ -8,8 +8,6 @@ package com.example.named_fragment_without_implementation.fragment
 import kotlin.String
 
 interface DroidDetails {
-  val __typename: String
-
   /**
    * This droid's primary function
    */

@@ -9,8 +9,6 @@ import kotlin.Double
 import kotlin.String
 
 interface HumanDetails {
-  val __typename: String
-
   /**
    * What this human calls themselves
    */

@@ -29,7 +29,6 @@ class HumanDetailsImpl : Fragment<HumanDetailsImpl.Data> {
       HumanDetailsImpl_ResponseFields.fields.first().fieldSets
 
   data class Data(
-    override val __typename: String,
     /**
      * What this human calls themselves
      */

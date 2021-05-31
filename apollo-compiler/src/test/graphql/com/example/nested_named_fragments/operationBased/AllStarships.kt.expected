@@ -54,7 +54,7 @@ class AllStarships : Query<AllStarships.Data> {
         data class Node(
           val __typename: String,
           /**
-           * Synthetic field for fragment spread on Starship
+           * Synthetic field for 'starshipFragment'
            */
           val starshipFragment: StarshipFragment?
         )
@@ -64,7 +64,7 @@ class AllStarships : Query<AllStarships.Data> {
 
   companion object {
     const val OPERATION_ID: String =
-        "559eb7ebe10eddeb9550c8c7d27873887aee2367f0623f0bca7a39828681f182"
+        "a76ec26a83546f1113b4f2d763d67118a12a70958ef57d44d3f33dedaf90ff72"
 
     /**
      * The minimized GraphQL document being sent to the server to save a few bytes.
@@ -82,12 +82,10 @@ class AllStarships : Query<AllStarships.Data> {
      * }
      *
      * fragment planetFragment on Planet {
-     *   __typename
      *   name
      * }
      *
      * fragment pilotFragment on Person {
-     *   __typename
      *   name
      *   homeworld {
      *     __typename
@@ -96,7 +94,6 @@ class AllStarships : Query<AllStarships.Data> {
      * }
      *
      * fragment starshipFragment on Starship {
-     *   __typename
      *   id
      *   name
      *   pilotConnection {
@@ -110,7 +107,7 @@ class AllStarships : Query<AllStarships.Data> {
      * }
      */
     const val OPERATION_DOCUMENT: String =
-        "query AllStarships { allStarships(first: 7) { edges { node { __typename ...starshipFragment } } } }  fragment planetFragment on Planet { __typename name }  fragment pilotFragment on Person { __typename name homeworld { __typename ...planetFragment } }  fragment starshipFragment on Starship { __typename id name pilotConnection { edges { node { __typename ...pilotFragment } } } }"
+        "query AllStarships { allStarships(first: 7) { edges { node { __typename ...starshipFragment } } } }  fragment planetFragment on Planet { name }  fragment pilotFragment on Person { name homeworld { __typename ...planetFragment } }  fragment starshipFragment on Starship { id name pilotConnection { edges { node { __typename ...pilotFragment } } } }"
 
     const val OPERATION_NAME: String = "AllStarships"
   }

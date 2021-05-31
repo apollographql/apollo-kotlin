@@ -18,23 +18,22 @@ import kotlin.collections.List
 
 object PilotFragmentImpl_ResponseAdapter {
   object Data : Adapter<PilotFragmentImpl.Data> {
-    val RESPONSE_NAMES: List<String> = listOf("__typename", "name", "homeworld")
+    val RESPONSE_NAMES: List<String> = listOf("name", "homeworld")
 
     override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters):
         PilotFragmentImpl.Data {
-      var __typename: String? = null
       var name: String? = null
       var homeworld: PilotFragmentImpl.Data.Homeworld? = null
+
       while(true) {
         when (reader.selectName(RESPONSE_NAMES)) {
-          0 -> __typename = StringAdapter.fromJson(reader, customScalarAdapters)
-          1 -> name = NullableStringAdapter.fromJson(reader, customScalarAdapters)
-          2 -> homeworld = Homeworld.obj().nullable().fromJson(reader, customScalarAdapters)
+          0 -> name = NullableStringAdapter.fromJson(reader, customScalarAdapters)
+          1 -> homeworld = Homeworld.obj().nullable().fromJson(reader, customScalarAdapters)
           else -> break
         }
       }
+
       return PilotFragmentImpl.Data(
-        __typename = __typename!!,
         name = name,
         homeworld = homeworld
       )
@@ -45,9 +44,6 @@ object PilotFragmentImpl_ResponseAdapter {
       customScalarAdapters: CustomScalarAdapters,
       value: PilotFragmentImpl.Data
     ) {
-      writer.name("__typename")
-      StringAdapter.toJson(writer, customScalarAdapters, value.__typename)
-
       writer.name("name")
       NullableStringAdapter.toJson(writer, customScalarAdapters, value.name)
 
@@ -62,6 +58,7 @@ object PilotFragmentImpl_ResponseAdapter {
           PilotFragmentImpl.Data.Homeworld {
         var __typename: String? = null
         var name: String? = null
+
         while(true) {
           when (reader.selectName(RESPONSE_NAMES)) {
             0 -> __typename = StringAdapter.fromJson(reader, customScalarAdapters)
@@ -69,6 +66,7 @@ object PilotFragmentImpl_ResponseAdapter {
             else -> break
           }
         }
+
         return PilotFragmentImpl.Data.Homeworld(
           __typename = __typename!!,
           name = name

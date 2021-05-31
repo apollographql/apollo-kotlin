@@ -10,7 +10,6 @@ import kotlin.String
 import kotlin.collections.List
 
 data class QueryFragment(
-  val __typename: String,
   val organization: Organization?
 ) : Fragment.Data {
   data class Organization(
@@ -20,7 +19,7 @@ data class QueryFragment(
     data class User(
       val __typename: String,
       /**
-       * Synthetic field for fragment spread on User
+       * Synthetic field for 'UserFragment'
        */
       val userFragment: UserFragment?
     )
