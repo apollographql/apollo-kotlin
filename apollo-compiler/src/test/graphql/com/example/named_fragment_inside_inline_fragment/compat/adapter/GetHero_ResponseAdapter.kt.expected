@@ -68,15 +68,12 @@ object GetHero_ResponseAdapter {
         }
 
         reader.rewind()
-        var asCharacter: GetHero.AsCharacter? = null
-        if (possibleTypes("Droid","Human").evaluate(emptySet(), __typename)) {
-          asCharacter = com.example.named_fragment_inside_inline_fragment.adapter.GetHero_ResponseAdapter.Data.Hero.AsCharacter.fromJson(reader,
-              customScalarAdapters)
-        }
+        val fragments = com.example.named_fragment_inside_inline_fragment.adapter.GetHero_ResponseAdapter.Data.Hero.Fragments.fromJson(reader,
+            customScalarAdapters)
 
         return GetHero.Hero(
           __typename = __typename,
-          asCharacter = asCharacter
+          fragments = fragments
         )
       }
 
@@ -88,17 +85,15 @@ object GetHero_ResponseAdapter {
         writer.name("__typename")
         StringAdapter.toJson(writer, customScalarAdapters, value.__typename)
 
-        if (value.asCharacter != null) {
-          com.example.named_fragment_inside_inline_fragment.adapter.GetHero_ResponseAdapter.Data.Hero.AsCharacter.toJson(writer,
-              customScalarAdapters, value.asCharacter)
-        }
+        com.example.named_fragment_inside_inline_fragment.adapter.GetHero_ResponseAdapter.Data.Hero.Fragments.toJson(writer,
+            customScalarAdapters, value.fragments)
       }
 
-      object AsCharacter : Adapter<GetHero.AsCharacter> {
+      object Fragments : Adapter<GetHero.Hero.Fragments> {
         val RESPONSE_NAMES: List<String> = listOf("__typename")
 
         override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters):
-            GetHero.AsCharacter {
+            GetHero.Hero.Fragments {
           var __typename: String? = null
 
           while(true) {
@@ -113,79 +108,38 @@ object GetHero_ResponseAdapter {
           }
 
           reader.rewind()
-          val fragments = com.example.named_fragment_inside_inline_fragment.adapter.GetHero_ResponseAdapter.Data.Hero.AsCharacter.Fragments.fromJson(reader,
-              customScalarAdapters)
+          var characterName: CharacterName? = null
+          if (possibleTypes("Droid","Human").evaluate(emptySet(), __typename)) {
+            characterName = com.example.named_fragment_inside_inline_fragment.fragment.CharacterNameImpl_ResponseAdapter.CharacterName.fromJson(reader,
+                customScalarAdapters)
+          }
 
-          return GetHero.AsCharacter(
-            __typename = __typename,
-            fragments = fragments
+          reader.rewind()
+          var characterAppearsIn: CharacterAppearsIn? = null
+          if (possibleTypes("Droid","Human").evaluate(emptySet(), __typename)) {
+            characterAppearsIn = com.example.named_fragment_inside_inline_fragment.fragment.CharacterAppearsInImpl_ResponseAdapter.CharacterAppearsIn.fromJson(reader,
+                customScalarAdapters)
+          }
+
+          return GetHero.Hero.Fragments(
+            characterName = characterName,
+            characterAppearsIn = characterAppearsIn
           )
         }
 
         override fun toJson(
           writer: JsonWriter,
           customScalarAdapters: CustomScalarAdapters,
-          value: GetHero.AsCharacter
+          value: GetHero.Hero.Fragments
         ) {
-          writer.name("__typename")
-          StringAdapter.toJson(writer, customScalarAdapters, value.__typename)
-
-          com.example.named_fragment_inside_inline_fragment.adapter.GetHero_ResponseAdapter.Data.Hero.AsCharacter.Fragments.toJson(writer,
-              customScalarAdapters, value.fragments)
-        }
-
-        object Fragments : Adapter<GetHero.AsCharacter.Fragments> {
-          val RESPONSE_NAMES: List<String> = listOf("__typename")
-
-          override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters):
-              GetHero.AsCharacter.Fragments {
-            var __typename: String? = null
-
-            while(true) {
-              when (reader.selectName(RESPONSE_NAMES)) {
-                0 -> __typename = StringAdapter.fromJson(reader, customScalarAdapters)
-                else -> break
-              }
-            }
-
-            check(__typename != null) {
-              "__typename was not found"
-            }
-
-            reader.rewind()
-            var characterName: CharacterName? = null
-            if (possibleTypes("Droid","Human").evaluate(emptySet(), __typename)) {
-              characterName = com.example.named_fragment_inside_inline_fragment.fragment.CharacterNameImpl_ResponseAdapter.CharacterName.fromJson(reader,
-                  customScalarAdapters)
-            }
-
-            reader.rewind()
-            var characterAppearsIn: CharacterAppearsIn? = null
-            if (possibleTypes("Droid","Human").evaluate(emptySet(), __typename)) {
-              characterAppearsIn = com.example.named_fragment_inside_inline_fragment.fragment.CharacterAppearsInImpl_ResponseAdapter.CharacterAppearsIn.fromJson(reader,
-                  customScalarAdapters)
-            }
-
-            return GetHero.AsCharacter.Fragments(
-              characterName = characterName,
-              characterAppearsIn = characterAppearsIn
-            )
+          if (value.characterName != null) {
+            com.example.named_fragment_inside_inline_fragment.fragment.CharacterNameImpl_ResponseAdapter.CharacterName.toJson(writer,
+                customScalarAdapters, value.characterName)
           }
 
-          override fun toJson(
-            writer: JsonWriter,
-            customScalarAdapters: CustomScalarAdapters,
-            value: GetHero.AsCharacter.Fragments
-          ) {
-            if (value.characterName != null) {
-              com.example.named_fragment_inside_inline_fragment.fragment.CharacterNameImpl_ResponseAdapter.CharacterName.toJson(writer,
-                  customScalarAdapters, value.characterName)
-            }
-
-            if (value.characterAppearsIn != null) {
-              com.example.named_fragment_inside_inline_fragment.fragment.CharacterAppearsInImpl_ResponseAdapter.CharacterAppearsIn.toJson(writer,
-                  customScalarAdapters, value.characterAppearsIn)
-            }
+          if (value.characterAppearsIn != null) {
+            com.example.named_fragment_inside_inline_fragment.fragment.CharacterAppearsInImpl_ResponseAdapter.CharacterAppearsIn.toJson(writer,
+                customScalarAdapters, value.characterAppearsIn)
           }
         }
       }

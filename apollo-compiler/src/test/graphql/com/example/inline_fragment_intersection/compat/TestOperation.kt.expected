@@ -40,10 +40,26 @@ class TestOperation : Query<TestOperation.Data> {
     val random: Random
   ) : Query.Data
 
-  data class AsWookie(
-    val lifeExpectancy: Double?,
+  data class Random(
     val __typename: String,
-    val name: String
+    /**
+     * Synthetic field for inline fragment on Being
+     */
+    val asBeing: AsBeing?,
+    /**
+     * Synthetic field for inline fragment on Wookie
+     */
+    val asWookie: AsWookie2?
+  )
+
+  data class AsBeing(
+    val __typename: String,
+    val name: String,
+    val friends: List<Friend>,
+    /**
+     * Synthetic field for inline fragment on Human
+     */
+    val asHuman: AsHuman?
   )
 
   data class Friend(
@@ -55,11 +71,16 @@ class TestOperation : Query<TestOperation.Data> {
     val asWookie: AsWookie?
   )
 
-  data class AsWookie1(
-    val race: Race,
+  data class AsWookie(
     val lifeExpectancy: Double?,
     val __typename: String,
-    val isFamous: Boolean?,
+    val name: String
+  )
+
+  data class AsHuman(
+    val profilePictureUrl: String?,
+    val friends: List<Friend1>,
+    val __typename: String,
     val name: String
   )
 
@@ -73,25 +94,12 @@ class TestOperation : Query<TestOperation.Data> {
     val asWookie: AsWookie1?
   )
 
-  data class AsHuman(
-    val profilePictureUrl: String?,
-    val friends: List<Friend1>,
+  data class AsWookie1(
+    val race: Race,
+    val lifeExpectancy: Double?,
     val __typename: String,
+    val isFamous: Boolean?,
     val name: String
-  )
-
-  data class AsBeing(
-    val __typename: String,
-    val name: String,
-    val friends: List<Friend>,
-    /**
-     * Synthetic field for inline fragment on Human
-     */
-    val asHuman: AsHuman?
-  )
-
-  data class Friend2(
-    val lifeExpectancy: Double?
   )
 
   data class AsWookie2(
@@ -100,16 +108,8 @@ class TestOperation : Query<TestOperation.Data> {
     val __typename: String
   )
 
-  data class Random(
-    val __typename: String,
-    /**
-     * Synthetic field for inline fragment on Being
-     */
-    val asBeing: AsBeing?,
-    /**
-     * Synthetic field for inline fragment on Wookie
-     */
-    val asWookie: AsWookie2?
+  data class Friend2(
+    val lifeExpectancy: Double?
   )
 
   companion object {

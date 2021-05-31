@@ -51,20 +51,20 @@ class TestQuery : Query<TestQuery.Data> {
     val name: String
   )
 
-  data class AsCharacter(
-    /**
-     * The name of the character
-     */
-    val name: String,
-    val __typename: String
-  )
-
   data class Object(
     val __typename: String,
     /**
      * Synthetic field for inline fragment on Character
      */
     val asCharacter: AsCharacter?
+  )
+
+  data class AsCharacter(
+    /**
+     * The name of the character
+     */
+    val name: String,
+    val __typename: String
   )
 
   companion object {

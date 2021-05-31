@@ -39,7 +39,7 @@ class GetHero : Query<GetHero.Data> {
     val hero: Hero?
   ) : Query.Data
 
-  data class AsCharacter(
+  data class Hero(
     val __typename: String,
     /**
      * Synthetic field for grouping fragments
@@ -57,14 +57,6 @@ class GetHero : Query<GetHero.Data> {
       val characterAppearsIn: CharacterAppearsIn?
     )
   }
-
-  data class Hero(
-    val __typename: String,
-    /**
-     * Synthetic field for inline fragment on Character
-     */
-    val asCharacter: AsCharacter?
-  )
 
   companion object {
     const val OPERATION_ID: String =

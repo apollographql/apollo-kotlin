@@ -38,18 +38,6 @@ class TestQuery : Query<TestQuery.Data> {
     val nonOptionalHero: NonOptionalHero
   ) : Query.Data
 
-  data class AsHuman(
-    /**
-     * Height in the preferred unit, default is meters
-     */
-    val height: Double?,
-    val __typename: String,
-    /**
-     * The name of the character
-     */
-    val name: String
-  )
-
   data class NonOptionalHero(
     val __typename: String,
     /**
@@ -60,6 +48,18 @@ class TestQuery : Query<TestQuery.Data> {
      * Synthetic field for inline fragment on Human
      */
     val asHuman: AsHuman?
+  )
+
+  data class AsHuman(
+    /**
+     * Height in the preferred unit, default is meters
+     */
+    val height: Double?,
+    val __typename: String,
+    /**
+     * The name of the character
+     */
+    val name: String
   )
 
   companion object {

@@ -38,6 +38,23 @@ class TestQuery : Query<TestQuery.Data> {
     val root: Root?
   ) : Query.Data
 
+  data class Root(
+    val __typename: String,
+    /**
+     * Synthetic field for inline fragment on A
+     */
+    val asA: AsA?
+  )
+
+  data class AsA(
+    val __typename: String,
+    val fieldA1: String?,
+    /**
+     * Synthetic field for inline fragment on B
+     */
+    val asB: AsB?
+  )
+
   data class AsB(
     val __typename: String,
     val fieldA1: String?,
@@ -53,23 +70,6 @@ class TestQuery : Query<TestQuery.Data> {
       val bFragment: BFragment?
     )
   }
-
-  data class AsA(
-    val __typename: String,
-    val fieldA1: String?,
-    /**
-     * Synthetic field for inline fragment on B
-     */
-    val asB: AsB?
-  )
-
-  data class Root(
-    val __typename: String,
-    /**
-     * Synthetic field for inline fragment on A
-     */
-    val asA: AsA?
-  )
 
   companion object {
     const val OPERATION_ID: String =

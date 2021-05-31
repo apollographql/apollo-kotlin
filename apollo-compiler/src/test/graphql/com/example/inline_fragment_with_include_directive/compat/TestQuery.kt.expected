@@ -42,6 +42,26 @@ data class TestQuery(
     val hero: Hero?
   ) : Query.Data
 
+  data class Hero(
+    val __typename: String,
+    /**
+     * The ID of the character
+     */
+    val id: String,
+    /**
+     * The name of the character
+     */
+    val name: String,
+    /**
+     * Synthetic field for inline fragment on Human
+     */
+    val asHumanIfWithDetailsAndNotSkipHumanDetails: AsHumanIfWithDetailsAndNotSkipHumanDetails?,
+    /**
+     * Synthetic field for inline fragment on Droid
+     */
+    val asDroidIfWithDetails: AsDroidIfWithDetails?
+  )
+
   data class AsHumanIfWithDetailsAndNotSkipHumanDetails(
     /**
      * What this human calls themselves
@@ -72,38 +92,6 @@ data class TestQuery(
      * The ID of the character
      */
     val id: String
-  )
-
-  data class AsCharacterIfWithDetails(
-    /**
-     * The name of the character
-     */
-    val name: String,
-    val __typename: String,
-    /**
-     * The ID of the character
-     */
-    val id: String
-  )
-
-  data class Hero(
-    val __typename: String,
-    /**
-     * The ID of the character
-     */
-    val id: String,
-    /**
-     * Synthetic field for inline fragment on Human
-     */
-    val asHumanIfWithDetailsAndNotSkipHumanDetails: AsHumanIfWithDetailsAndNotSkipHumanDetails?,
-    /**
-     * Synthetic field for inline fragment on Droid
-     */
-    val asDroidIfWithDetails: AsDroidIfWithDetails?,
-    /**
-     * Synthetic field for inline fragment on Character
-     */
-    val asCharacterIfWithDetails: AsCharacterIfWithDetails?
   )
 
   companion object {

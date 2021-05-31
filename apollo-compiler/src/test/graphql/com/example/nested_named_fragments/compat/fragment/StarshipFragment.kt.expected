@@ -27,6 +27,13 @@ data class StarshipFragment(
     val edges: List<Edge?>?
   )
 
+  data class Edge(
+    /**
+     * The item at the end of the edge
+     */
+    val node: Node?
+  )
+
   data class Node(
     val __typename: String,
     /**
@@ -41,11 +48,4 @@ data class StarshipFragment(
       val pilotFragment: PilotFragment?
     )
   }
-
-  data class Edge(
-    /**
-     * The item at the end of the edge
-     */
-    val node: Node?
-  )
 }

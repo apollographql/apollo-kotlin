@@ -45,17 +45,17 @@ class GetHuman : Query<GetHuman.Data> {
     val height: Double
   )
 
-  data class AsHuman(
-    val height: Double,
-    val __typename: String
-  )
-
   data class Node(
     val __typename: String,
     /**
      * Synthetic field for inline fragment on Human
      */
     val asHuman: AsHuman?
+  )
+
+  data class AsHuman(
+    val height: Double,
+    val __typename: String
   )
 
   companion object {

@@ -40,65 +40,6 @@ class HeroDetailQuery : Query<HeroDetailQuery.Data> {
     val heroDetailQuery: HeroDetailQuery?
   ) : Query.Data
 
-  data class Friend(
-    /**
-     * The name of the character
-     */
-    val name: String
-  )
-
-  data class Friend2(
-    val __typename: String,
-    /**
-     * Synthetic field for grouping fragments
-     */
-    val fragments: Fragments
-  ) {
-    data class Fragments(
-      /**
-       * Synthetic field for 'HeroDetails'
-       */
-      val heroDetails: HeroDetails?
-    )
-  }
-
-  data class Friend1(
-    /**
-     * The movies this character appears in
-     */
-    val appearsIn: List<Episode?>,
-    /**
-     * The friends of the character, or an empty list if they have none
-     */
-    val friends: List<Friend2?>?,
-    /**
-     * The name of the character
-     */
-    val name: String
-  ) {
-    fun appearsInFilterNotNull(): List<Episode> = appearsIn.filterNotNull()
-
-    fun friendsFilterNotNull(): List<Friend2>? = friends?.filterNotNull()
-  }
-
-  data class AsHuman(
-    /**
-     * Height in the preferred unit, default is meters
-     */
-    val height: Double?,
-    /**
-     * This human's friends, or an empty list if they have none
-     */
-    val friends: List<Friend1?>?,
-    val __typename: String,
-    /**
-     * The name of the character
-     */
-    val name: String
-  ) {
-    fun friendsFilterNotNull(): List<Friend1>? = friends?.filterNotNull()
-  }
-
   data class HeroDetailQuery(
     val __typename: String,
     /**
@@ -115,6 +56,65 @@ class HeroDetailQuery : Query<HeroDetailQuery.Data> {
     val asHuman: AsHuman?
   ) {
     fun friendsFilterNotNull(): List<Friend>? = friends?.filterNotNull()
+  }
+
+  data class Friend(
+    /**
+     * The name of the character
+     */
+    val name: String
+  )
+
+  data class AsHuman(
+    /**
+     * Height in the preferred unit, default is meters
+     */
+    val height: Double?,
+    /**
+     * This human's friends, or an empty list if they have none
+     */
+    val friends: List<Friend2?>?,
+    val __typename: String,
+    /**
+     * The name of the character
+     */
+    val name: String
+  ) {
+    fun friendsFilterNotNull(): List<Friend2>? = friends?.filterNotNull()
+  }
+
+  data class Friend2(
+    /**
+     * The movies this character appears in
+     */
+    val appearsIn: List<Episode?>,
+    /**
+     * The friends of the character, or an empty list if they have none
+     */
+    val friends: List<Friend1?>?,
+    /**
+     * The name of the character
+     */
+    val name: String
+  ) {
+    fun appearsInFilterNotNull(): List<Episode> = appearsIn.filterNotNull()
+
+    fun friendsFilterNotNull(): List<Friend1>? = friends?.filterNotNull()
+  }
+
+  data class Friend1(
+    val __typename: String,
+    /**
+     * Synthetic field for grouping fragments
+     */
+    val fragments: Fragments
+  ) {
+    data class Fragments(
+      /**
+       * Synthetic field for 'HeroDetails'
+       */
+      val heroDetails: HeroDetails?
+    )
   }
 
   companion object {

@@ -37,10 +37,12 @@ class TestQuery : Query<TestQuery.Data> {
     val root: Root?
   ) : Query.Data
 
-  data class AsB(
-    val fieldB1: String?,
+  data class Root(
     val __typename: String,
-    val fieldA1: String?
+    /**
+     * Synthetic field for inline fragment on A
+     */
+    val asA: AsA?
   )
 
   data class AsA(
@@ -52,12 +54,10 @@ class TestQuery : Query<TestQuery.Data> {
     val asB: AsB?
   )
 
-  data class Root(
+  data class AsB(
+    val fieldB1: String?,
     val __typename: String,
-    /**
-     * Synthetic field for inline fragment on A
-     */
-    val asA: AsA?
+    val fieldA1: String?
   )
 
   companion object {

@@ -70,13 +70,6 @@ data class HeroDetails(
     val humanDetails: HumanDetails?
   )
 
-  data class Node(
-    /**
-     * The name of the character
-     */
-    val name: String
-  )
-
   data class Edge(
     /**
      * The character represented by this friendship edge
@@ -84,18 +77,11 @@ data class HeroDetails(
     val node: Node?
   )
 
-  data class Node1(
+  data class Node(
     /**
      * The name of the character
      */
     val name: String
-  )
-
-  data class Edge1(
-    /**
-     * The character represented by this friendship edge
-     */
-    val node: Node1?
   )
 
   data class FriendsConnection1(
@@ -107,5 +93,19 @@ data class HeroDetails(
      * The edges for each of the character's friends.
      */
     val edges: List<Edge1?>?
+  )
+
+  data class Edge1(
+    /**
+     * The character represented by this friendship edge
+     */
+    val node: Node1?
+  )
+
+  data class Node1(
+    /**
+     * The name of the character
+     */
+    val name: String
   )
 }

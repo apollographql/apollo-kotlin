@@ -31,17 +31,17 @@ data class HumanDetails(
     val edges: List<Edge?>?
   )
 
-  data class Node(
-    /**
-     * The name of the character
-     */
-    val name: String
-  )
-
   data class Edge(
     /**
      * The character represented by this friendship edge
      */
     val node: Node?
+  )
+
+  data class Node(
+    /**
+     * The name of the character
+     */
+    val name: String
   )
 }

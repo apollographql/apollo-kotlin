@@ -35,7 +35,7 @@ object QueryFragmentImpl_ResponseAdapter {
           0 -> __typename = StringAdapter.fromJson(reader, customScalarAdapters)
           1 -> hero = Hero.obj(true).nullable().fromJson(reader, customScalarAdapters)
           2 -> droid = Droid.obj(true).nullable().fromJson(reader, customScalarAdapters)
-          3 -> human = Human.obj(true).nullable().fromJson(reader, customScalarAdapters)
+          3 -> human = Human.obj().nullable().fromJson(reader, customScalarAdapters)
           else -> break
         }
       }
@@ -63,7 +63,7 @@ object QueryFragmentImpl_ResponseAdapter {
       Droid.obj(true).nullable().toJson(writer, customScalarAdapters, value.droid)
 
       writer.name("human")
-      Human.obj(true).nullable().toJson(writer, customScalarAdapters, value.human)
+      Human.obj().nullable().toJson(writer, customScalarAdapters, value.human)
     }
 
     object Hero :
@@ -242,33 +242,27 @@ object QueryFragmentImpl_ResponseAdapter {
     object Human :
         Adapter<com.example.root_query_fragment_with_nested_fragments.fragment.QueryFragment.Human>
         {
-      val RESPONSE_NAMES: List<String> = listOf("__typename")
+      val RESPONSE_NAMES: List<String> = listOf("__typename", "name", "homePlanet")
 
       override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters):
           com.example.root_query_fragment_with_nested_fragments.fragment.QueryFragment.Human {
         var __typename: String? = null
+        var name: String? = null
+        var homePlanet: String? = null
 
         while(true) {
           when (reader.selectName(RESPONSE_NAMES)) {
             0 -> __typename = StringAdapter.fromJson(reader, customScalarAdapters)
+            1 -> name = StringAdapter.fromJson(reader, customScalarAdapters)
+            2 -> homePlanet = NullableStringAdapter.fromJson(reader, customScalarAdapters)
             else -> break
           }
         }
 
-        check(__typename != null) {
-          "__typename was not found"
-        }
-
-        reader.rewind()
-        var asHuman: com.example.root_query_fragment_with_nested_fragments.fragment.QueryFragment.AsHuman? = null
-        if (possibleTypes("Human").evaluate(emptySet(), __typename)) {
-          asHuman = com.example.root_query_fragment_with_nested_fragments.fragment.QueryFragmentImpl_ResponseAdapter.QueryFragment.Human.AsHuman.fromJson(reader,
-              customScalarAdapters)
-        }
-
         return com.example.root_query_fragment_with_nested_fragments.fragment.QueryFragment.Human(
-          __typename = __typename,
-          asHuman = asHuman
+          __typename = __typename!!,
+          name = name!!,
+          homePlanet = homePlanet
         )
       }
 
@@ -280,53 +274,11 @@ object QueryFragmentImpl_ResponseAdapter {
         writer.name("__typename")
         StringAdapter.toJson(writer, customScalarAdapters, value.__typename)
 
-        if (value.asHuman != null) {
-          com.example.root_query_fragment_with_nested_fragments.fragment.QueryFragmentImpl_ResponseAdapter.QueryFragment.Human.AsHuman.toJson(writer,
-              customScalarAdapters, value.asHuman)
-        }
-      }
+        writer.name("name")
+        StringAdapter.toJson(writer, customScalarAdapters, value.name)
 
-      object AsHuman :
-          Adapter<com.example.root_query_fragment_with_nested_fragments.fragment.QueryFragment.AsHuman>
-          {
-        val RESPONSE_NAMES: List<String> = listOf("name", "homePlanet", "__typename")
-
-        override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters):
-            com.example.root_query_fragment_with_nested_fragments.fragment.QueryFragment.AsHuman {
-          var name: String? = null
-          var homePlanet: String? = null
-          var __typename: String? = null
-
-          while(true) {
-            when (reader.selectName(RESPONSE_NAMES)) {
-              0 -> name = StringAdapter.fromJson(reader, customScalarAdapters)
-              1 -> homePlanet = NullableStringAdapter.fromJson(reader, customScalarAdapters)
-              2 -> __typename = StringAdapter.fromJson(reader, customScalarAdapters)
-              else -> break
-            }
-          }
-
-          return com.example.root_query_fragment_with_nested_fragments.fragment.QueryFragment.AsHuman(
-            name = name!!,
-            homePlanet = homePlanet,
-            __typename = __typename!!
-          )
-        }
-
-        override fun toJson(
-          writer: JsonWriter,
-          customScalarAdapters: CustomScalarAdapters,
-          value: com.example.root_query_fragment_with_nested_fragments.fragment.QueryFragment.AsHuman
-        ) {
-          writer.name("name")
-          StringAdapter.toJson(writer, customScalarAdapters, value.name)
-
-          writer.name("homePlanet")
-          NullableStringAdapter.toJson(writer, customScalarAdapters, value.homePlanet)
-
-          writer.name("__typename")
-          StringAdapter.toJson(writer, customScalarAdapters, value.__typename)
-        }
+        writer.name("homePlanet")
+        NullableStringAdapter.toJson(writer, customScalarAdapters, value.homePlanet)
       }
     }
   }

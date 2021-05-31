@@ -40,12 +40,6 @@ class TestQuery : Query<TestQuery.Data> {
     val foo: Foo?
   ) : Query.Data
 
-  data class AsBar(
-    val bar: String,
-    val __typename: String,
-    val foo: String
-  )
-
   data class Foo(
     val __typename: String,
     val foo: String,
@@ -53,6 +47,12 @@ class TestQuery : Query<TestQuery.Data> {
      * Synthetic field for inline fragment on Bar
      */
     val asBar: AsBar?
+  )
+
+  data class AsBar(
+    val bar: String,
+    val __typename: String,
+    val foo: String
   )
 
   companion object {

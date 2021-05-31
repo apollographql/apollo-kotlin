@@ -40,14 +40,6 @@ class TestQuery : Query<TestQuery.Data> {
     fun searchFilterNotNull(): List<Search>? = search?.filterNotNull()
   }
 
-  data class AsStarship(
-    /**
-     * The ID of the starship
-     */
-    val id: String,
-    val __typename: String
-  )
-
   data class Search(
     val __typename: String,
     /**
@@ -66,6 +58,14 @@ class TestQuery : Query<TestQuery.Data> {
       val starship: Starship?
     )
   }
+
+  data class AsStarship(
+    /**
+     * The ID of the starship
+     */
+    val id: String,
+    val __typename: String
+  )
 
   companion object {
     const val OPERATION_ID: String =

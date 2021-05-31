@@ -42,19 +42,7 @@ data class TestQuery(
     val hero: Hero?
   ) : Query.Data
 
-  data class AsHuman1(
-    /**
-     * Height in the preferred unit, default is meters
-     */
-    val height: Double?,
-    val __typename: String,
-    /**
-     * The name of the character
-     */
-    val name: String
-  )
-
-  data class Friend(
+  data class Hero(
     val __typename: String,
     /**
      * The name of the character
@@ -63,10 +51,14 @@ data class TestQuery(
     /**
      * Synthetic field for inline fragment on Human
      */
-    val asHuman: AsHuman1?
+    val asHuman: AsHuman1?,
+    /**
+     * Synthetic field for inline fragment on Droid
+     */
+    val asDroid: AsDroid?
   )
 
-  data class AsHuman(
+  data class AsHuman1(
     /**
      * This human's friends, or an empty list if they have none
      */
@@ -80,7 +72,19 @@ data class TestQuery(
     fun friendsFilterNotNull(): List<Friend>? = friends?.filterNotNull()
   }
 
-  data class AsHuman2(
+  data class Friend(
+    val __typename: String,
+    /**
+     * The name of the character
+     */
+    val name: String,
+    /**
+     * Synthetic field for inline fragment on Human
+     */
+    val asHuman: AsHuman?
+  )
+
+  data class AsHuman(
     /**
      * Height in the preferred unit, default is meters
      */
@@ -90,18 +94,6 @@ data class TestQuery(
      * The name of the character
      */
     val name: String
-  )
-
-  data class Friend1(
-    val __typename: String,
-    /**
-     * The name of the character
-     */
-    val name: String,
-    /**
-     * Synthetic field for inline fragment on Human
-     */
-    val asHuman: AsHuman2?
   )
 
   data class AsDroid(
@@ -118,7 +110,7 @@ data class TestQuery(
     fun friendsFilterNotNull(): List<Friend1>? = friends?.filterNotNull()
   }
 
-  data class Hero(
+  data class Friend1(
     val __typename: String,
     /**
      * The name of the character
@@ -127,11 +119,19 @@ data class TestQuery(
     /**
      * Synthetic field for inline fragment on Human
      */
-    val asHuman: AsHuman?,
+    val asHuman: AsHuman2?
+  )
+
+  data class AsHuman2(
     /**
-     * Synthetic field for inline fragment on Droid
+     * Height in the preferred unit, default is meters
      */
-    val asDroid: AsDroid?
+    val height: Double?,
+    val __typename: String,
+    /**
+     * The name of the character
+     */
+    val name: String
   )
 
   companion object {

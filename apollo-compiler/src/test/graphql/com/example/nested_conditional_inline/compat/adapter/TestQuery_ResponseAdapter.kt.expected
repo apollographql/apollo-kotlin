@@ -71,7 +71,7 @@ object TestQuery_ResponseAdapter {
         }
 
         reader.rewind()
-        var asHuman: TestQuery.AsHuman? = null
+        var asHuman: TestQuery.AsHuman1? = null
         if (possibleTypes("Human").evaluate(emptySet(), __typename)) {
           asHuman = com.example.nested_conditional_inline.adapter.TestQuery_ResponseAdapter.Data.Hero.AsHuman.fromJson(reader,
               customScalarAdapters)
@@ -114,11 +114,11 @@ object TestQuery_ResponseAdapter {
         }
       }
 
-      object AsHuman : Adapter<TestQuery.AsHuman> {
+      object AsHuman : Adapter<TestQuery.AsHuman1> {
         val RESPONSE_NAMES: List<String> = listOf("friends", "__typename", "name")
 
         override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters):
-            TestQuery.AsHuman {
+            TestQuery.AsHuman1 {
           var friends: List<TestQuery.Friend?>? = null
           var __typename: String? = null
           var name: String? = null
@@ -133,7 +133,7 @@ object TestQuery_ResponseAdapter {
             }
           }
 
-          return TestQuery.AsHuman(
+          return TestQuery.AsHuman1(
             friends = friends,
             __typename = __typename!!,
             name = name!!
@@ -143,7 +143,7 @@ object TestQuery_ResponseAdapter {
         override fun toJson(
           writer: JsonWriter,
           customScalarAdapters: CustomScalarAdapters,
-          value: TestQuery.AsHuman
+          value: TestQuery.AsHuman1
         ) {
           writer.name("friends")
           Friend.obj(true).nullable().list().nullable().toJson(writer, customScalarAdapters,
@@ -177,7 +177,7 @@ object TestQuery_ResponseAdapter {
             }
 
             reader.rewind()
-            var asHuman: TestQuery.AsHuman1? = null
+            var asHuman: TestQuery.AsHuman? = null
             if (possibleTypes("Human").evaluate(emptySet(), __typename)) {
               asHuman = com.example.nested_conditional_inline.adapter.TestQuery_ResponseAdapter.Data.Hero.AsHuman.Friend.AsHuman.fromJson(reader,
                   customScalarAdapters)
@@ -207,11 +207,11 @@ object TestQuery_ResponseAdapter {
             }
           }
 
-          object AsHuman : Adapter<TestQuery.AsHuman1> {
+          object AsHuman : Adapter<TestQuery.AsHuman> {
             val RESPONSE_NAMES: List<String> = listOf("height", "__typename", "name")
 
             override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters):
-                TestQuery.AsHuman1 {
+                TestQuery.AsHuman {
               var height: Double? = null
               var __typename: String? = null
               var name: String? = null
@@ -225,7 +225,7 @@ object TestQuery_ResponseAdapter {
                 }
               }
 
-              return TestQuery.AsHuman1(
+              return TestQuery.AsHuman(
                 height = height,
                 __typename = __typename!!,
                 name = name!!
@@ -235,7 +235,7 @@ object TestQuery_ResponseAdapter {
             override fun toJson(
               writer: JsonWriter,
               customScalarAdapters: CustomScalarAdapters,
-              value: TestQuery.AsHuman1
+              value: TestQuery.AsHuman
             ) {
               writer.name("height")
               NullableDoubleAdapter.toJson(writer, customScalarAdapters, value.height)

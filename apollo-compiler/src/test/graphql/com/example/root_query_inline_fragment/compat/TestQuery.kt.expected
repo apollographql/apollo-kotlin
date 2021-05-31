@@ -37,29 +37,9 @@ class TestQuery : Query<TestQuery.Data> {
 
   data class Data(
     val __typename: String,
-    /**
-     * Synthetic field for inline fragment on Query
-     */
-    val asQuery: AsQuery?
+    val hero: Hero?,
+    val droid: Droid?
   ) : Query.Data
-
-  data class AsHuman(
-    /**
-     * Height in the preferred unit, default is meters
-     */
-    val height: Double?,
-    val __typename: String,
-    /**
-     * The name of the character
-     */
-    val name: String,
-    /**
-     * The movies this character appears in
-     */
-    val appearsIn: List<Episode?>
-  ) {
-    fun appearsInFilterNotNull(): List<Episode> = appearsIn.filterNotNull()
-  }
 
   data class Hero(
     val __typename: String,
@@ -79,7 +59,26 @@ class TestQuery : Query<TestQuery.Data> {
     fun appearsInFilterNotNull(): List<Episode> = appearsIn.filterNotNull()
   }
 
-  data class AsDroid(
+  data class AsHuman(
+    /**
+     * Height in the preferred unit, default is meters
+     */
+    val height: Double?,
+    val __typename: String,
+    /**
+     * The name of the character
+     */
+    val name: String,
+    /**
+     * The movies this character appears in
+     */
+    val appearsIn: List<Episode?>
+  ) {
+    fun appearsInFilterNotNull(): List<Episode> = appearsIn.filterNotNull()
+  }
+
+  data class Droid(
+    val __typename: String,
     /**
      * What others call this droid
      */
@@ -87,22 +86,7 @@ class TestQuery : Query<TestQuery.Data> {
     /**
      * This droid's primary function
      */
-    val primaryFunction: String?,
-    val __typename: String
-  )
-
-  data class Droid(
-    val __typename: String,
-    /**
-     * Synthetic field for inline fragment on Droid
-     */
-    val asDroid: AsDroid?
-  )
-
-  data class AsQuery(
-    val __typename: String,
-    val hero: Hero?,
-    val droid: Droid?
+    val primaryFunction: String?
   )
 
   companion object {

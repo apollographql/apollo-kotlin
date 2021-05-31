@@ -39,14 +39,21 @@ class TestQuery : Query<TestQuery.Data> {
     val hero: Hero?
   ) : Query.Data
 
-  data class Friend(
+  data class Hero(
+    val __typename: String,
     /**
-     * The movies this character appears in
+     * The name of the character
      */
-    val appearsIn: List<Episode?>
-  ) {
-    fun appearsInFilterNotNull(): List<Episode> = appearsIn.filterNotNull()
-  }
+    val name: String,
+    /**
+     * Synthetic field for inline fragment on Human
+     */
+    val asHuman: AsHuman?,
+    /**
+     * Synthetic field for inline fragment on Droid
+     */
+    val asDroid: AsDroid?
+  )
 
   data class AsHuman(
     /**
@@ -66,12 +73,14 @@ class TestQuery : Query<TestQuery.Data> {
     fun friendsFilterNotNull(): List<Friend>? = friends?.filterNotNull()
   }
 
-  data class Friend1(
+  data class Friend(
     /**
-     * The ID of the character
+     * The movies this character appears in
      */
-    val id: String
-  )
+    val appearsIn: List<Episode?>
+  ) {
+    fun appearsInFilterNotNull(): List<Episode> = appearsIn.filterNotNull()
+  }
 
   data class AsDroid(
     /**
@@ -91,20 +100,11 @@ class TestQuery : Query<TestQuery.Data> {
     fun friendsFilterNotNull(): List<Friend1>? = friends?.filterNotNull()
   }
 
-  data class Hero(
-    val __typename: String,
+  data class Friend1(
     /**
-     * The name of the character
+     * The ID of the character
      */
-    val name: String,
-    /**
-     * Synthetic field for inline fragment on Human
-     */
-    val asHuman: AsHuman?,
-    /**
-     * Synthetic field for inline fragment on Droid
-     */
-    val asDroid: AsDroid?
+    val id: String
   )
 
   companion object {

@@ -38,6 +38,22 @@ class AllStarships : Query<AllStarships.Data> {
     val allStarships: AllStarships?
   ) : Query.Data
 
+  data class AllStarships(
+    /**
+     * A list of edges.
+     */
+    val edges: List<Edge?>?
+  ) {
+    fun edgesFilterNotNull(): List<Edge>? = edges?.filterNotNull()
+  }
+
+  data class Edge(
+    /**
+     * The item at the end of the edge
+     */
+    val node: Node?
+  )
+
   data class Node(
     val __typename: String,
     /**
@@ -51,22 +67,6 @@ class AllStarships : Query<AllStarships.Data> {
        */
       val starshipFragment: StarshipFragment?
     )
-  }
-
-  data class Edge(
-    /**
-     * The item at the end of the edge
-     */
-    val node: Node?
-  )
-
-  data class AllStarships(
-    /**
-     * A list of edges.
-     */
-    val edges: List<Edge?>?
-  ) {
-    fun edgesFilterNotNull(): List<Edge>? = edges?.filterNotNull()
   }
 
   companion object {

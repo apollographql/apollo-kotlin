@@ -37,10 +37,16 @@ class TestQuery : Query<TestQuery.Data> {
     val c: C?
   ) : Query.Data
 
-  data class AsB(
-    val fieldB1: String?,
+  data class C(
     val __typename: String,
-    val fieldA1: String?
+    /**
+     * Synthetic field for inline fragment on A
+     */
+    val asA: AsA?,
+    /**
+     * Synthetic field for inline fragment on B
+     */
+    val asB: AsB1?
   )
 
   data class AsA(
@@ -52,10 +58,10 @@ class TestQuery : Query<TestQuery.Data> {
     val asB: AsB?
   )
 
-  data class AsA1(
-    val fieldA2: String?,
+  data class AsB(
+    val fieldB1: String?,
     val __typename: String,
-    val fieldB2: String?
+    val fieldA1: String?
   )
 
   data class AsB1(
@@ -67,16 +73,10 @@ class TestQuery : Query<TestQuery.Data> {
     val asA: AsA1?
   )
 
-  data class C(
+  data class AsA1(
+    val fieldA2: String?,
     val __typename: String,
-    /**
-     * Synthetic field for inline fragment on A
-     */
-    val asA: AsA?,
-    /**
-     * Synthetic field for inline fragment on B
-     */
-    val asB: AsB1?
+    val fieldB2: String?
   )
 
   companion object {

@@ -37,14 +37,22 @@ class GetPage : Query<GetPage.Data> {
     val collection: Collection
   ) : Query.Data
 
+  data class Collection(
+    val __typename: String,
+    val items: List<Item>,
+    /**
+     * Synthetic field for inline fragment on ParticularCollection
+     */
+    val asParticularCollection: AsParticularCollection?
+  )
+
   data class Item(
     val title: String
   )
 
-  data class AsParticularItem(
-    val image: String,
-    val __typename: String,
-    val title: String
+  data class AsParticularCollection(
+    val items: List<Item1>,
+    val __typename: String
   )
 
   data class Item1(
@@ -56,18 +64,10 @@ class GetPage : Query<GetPage.Data> {
     val asParticularItem: AsParticularItem?
   )
 
-  data class AsParticularCollection(
-    val items: List<Item1>,
-    val __typename: String
-  )
-
-  data class Collection(
+  data class AsParticularItem(
+    val image: String,
     val __typename: String,
-    val items: List<Item>,
-    /**
-     * Synthetic field for inline fragment on ParticularCollection
-     */
-    val asParticularCollection: AsParticularCollection?
+    val title: String
   )
 
   companion object {

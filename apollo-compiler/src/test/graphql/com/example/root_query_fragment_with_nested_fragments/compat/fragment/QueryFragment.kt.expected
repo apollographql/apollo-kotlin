@@ -47,20 +47,12 @@ data class QueryFragment(
   data class Human(
     val __typename: String,
     /**
-     * Synthetic field for inline fragment on Human
-     */
-    val asHuman: AsHuman?
-  )
-
-  data class AsHuman(
-    /**
      * What this human calls themselves
      */
     val name: String,
     /**
      * The home planet of the human, or null if unknown
      */
-    val homePlanet: String?,
-    val __typename: String
+    val homePlanet: String?
   )
 }

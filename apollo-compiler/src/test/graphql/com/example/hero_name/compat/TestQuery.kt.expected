@@ -38,22 +38,6 @@ class TestQuery : Query<TestQuery.Data> {
     val hero: Hero?
   ) : Query.Data
 
-  data class AsDroid(
-    /**
-     * This droid's primary function
-     */
-    val primaryFunction: String?,
-    val __typename: String,
-    /**
-     * The name of the character
-     */
-    val name: String,
-    /**
-     * The date character was born.
-     */
-    val birthDate: Any
-  )
-
   data class Hero(
     val __typename: String,
     /**
@@ -68,6 +52,22 @@ class TestQuery : Query<TestQuery.Data> {
      * Synthetic field for inline fragment on Droid
      */
     val asDroid: AsDroid?
+  )
+
+  data class AsDroid(
+    /**
+     * This droid's primary function
+     */
+    val primaryFunction: String?,
+    val __typename: String,
+    /**
+     * The name of the character
+     */
+    val name: String,
+    /**
+     * The date character was born.
+     */
+    val birthDate: Any
   )
 
   companion object {

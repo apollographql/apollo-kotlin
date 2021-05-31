@@ -39,6 +39,18 @@ class TestQuery : Query<TestQuery.Data> {
     val __typename: String
   ) : Query.Data
 
+  data class Hero(
+    val __typename: String,
+    /**
+     * Synthetic field for inline fragment on Human
+     */
+    val asHuman: AsHuman?,
+    /**
+     * Synthetic field for inline fragment on Droid
+     */
+    val asDroid: AsDroid?
+  )
+
   data class AsHuman(
     /**
      * Height in the preferred unit, default is meters
@@ -57,18 +69,6 @@ class TestQuery : Query<TestQuery.Data> {
      * This droid's primary function
      */
     val primaryFunction: String?
-  )
-
-  data class Hero(
-    val __typename: String,
-    /**
-     * Synthetic field for inline fragment on Human
-     */
-    val asHuman: AsHuman?,
-    /**
-     * Synthetic field for inline fragment on Droid
-     */
-    val asDroid: AsDroid?
   )
 
   companion object {
