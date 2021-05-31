@@ -1,7 +1,8 @@
 package com.apollographql.apollo3.compiler.ir
 
+import com.apollographql.apollo3.api.BVariable
 import com.apollographql.apollo3.api.BooleanExpression
-import com.apollographql.apollo3.compiler.MetadataFragment
+import com.apollographql.apollo3.api.not
 import com.apollographql.apollo3.ast.GQLArgument
 import com.apollographql.apollo3.ast.GQLBooleanValue
 import com.apollographql.apollo3.ast.GQLDirective
@@ -18,6 +19,7 @@ import com.apollographql.apollo3.ast.GQLInterfaceTypeDefinition
 import com.apollographql.apollo3.ast.GQLListType
 import com.apollographql.apollo3.ast.GQLListValue
 import com.apollographql.apollo3.ast.GQLNamedType
+import com.apollographql.apollo3.ast.GQLNode
 import com.apollographql.apollo3.ast.GQLNonNullType
 import com.apollographql.apollo3.ast.GQLNullValue
 import com.apollographql.apollo3.ast.GQLObjectTypeDefinition
@@ -31,11 +33,23 @@ import com.apollographql.apollo3.ast.GQLUnionTypeDefinition
 import com.apollographql.apollo3.ast.GQLValue
 import com.apollographql.apollo3.ast.GQLVariableDefinition
 import com.apollographql.apollo3.ast.GQLVariableValue
-import com.apollographql.apollo3.ast.*
 import com.apollographql.apollo3.ast.Schema
+import com.apollographql.apollo3.ast.VariableReference
+import com.apollographql.apollo3.ast.definitionFromScope
 import com.apollographql.apollo3.ast.findDeprecationReason
-import com.apollographql.apollo3.api.BVariable
-import com.apollographql.apollo3.api.not
+import com.apollographql.apollo3.ast.findNonnull
+import com.apollographql.apollo3.ast.findOptional
+import com.apollographql.apollo3.ast.inferVariables
+import com.apollographql.apollo3.ast.isApollo
+import com.apollographql.apollo3.ast.isFieldNonNull
+import com.apollographql.apollo3.ast.leafType
+import com.apollographql.apollo3.ast.pretty
+import com.apollographql.apollo3.ast.responseName
+import com.apollographql.apollo3.ast.rootTypeDefinition
+import com.apollographql.apollo3.ast.toUtf8
+import com.apollographql.apollo3.ast.transform
+import com.apollographql.apollo3.ast.validateAndCoerce
+import com.apollographql.apollo3.compiler.MODELS_COMPAT
 import com.apollographql.apollo3.compiler.MODELS_OPERATION_BASED
 import com.apollographql.apollo3.compiler.MODELS_RESPONSE_BASED
 
@@ -57,9 +71,18 @@ internal class IrBuilder(
         this
     )
     MODELS_OPERATION_BASED -> OperationBasedModelGroupBuilder(
-        schema,
-        allFragmentDefinitions,
-        this
+        schema = schema,
+        allFragmentDefinitions = allFragmentDefinitions,
+        fieldMerger = this,
+        insertFragmentSyntheticField = false,
+        collectAllInlineFragmentFields = false
+    )
+    MODELS_COMPAT -> OperationBasedModelGroupBuilder(
+        schema = schema,
+        allFragmentDefinitions = allFragmentDefinitions,
+        fieldMerger = this,
+        insertFragmentSyntheticField = true,
+        collectAllInlineFragmentFields = true
     )
     else -> error("Unknown codegenModels: '$codegenModels'")
   }

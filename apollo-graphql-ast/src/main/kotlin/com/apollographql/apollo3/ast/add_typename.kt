@@ -8,8 +8,7 @@ fun GQLOperationDefinition.withTypenameWhenNeeded(schema: Schema): GQLOperationD
 
 fun GQLFragmentDefinition.withTypenameWhenNeeded(schema: Schema): GQLFragmentDefinition {
   return copy(
-      // Force the typename on all Fragments
-      selectionSet = selectionSet.withTypenameWhenNeeded(schema, true)
+      selectionSet = selectionSet.withTypenameWhenNeeded(schema)
   )
 }
 
@@ -22,7 +21,7 @@ private val typeNameField = GQLField(
     alias = null
 )
 
-private fun GQLSelectionSet.withTypenameWhenNeeded(schema: Schema, force: Boolean = false): GQLSelectionSet {
+private fun GQLSelectionSet.withTypenameWhenNeeded(schema: Schema): GQLSelectionSet {
   var newSelections = selections.map {
     when (it) {
       is GQLInlineFragment -> {
@@ -39,7 +38,7 @@ private fun GQLSelectionSet.withTypenameWhenNeeded(schema: Schema, force: Boolea
 
   val hasFragment = selections.any { it is GQLFragmentSpread || it is GQLInlineFragment }
 
-  newSelections = if (force || hasFragment) {
+  newSelections = if (hasFragment) {
     // remove the __typename if it exists
     // and add it again at the top so we're guaranteed to have it at the beginning of json parsing
     listOf(typeNameField) + newSelections.filterNot { (it as? GQLField)?.name == "__typename" }

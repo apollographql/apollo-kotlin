@@ -21,6 +21,8 @@ internal class OperationBasedModelGroupBuilder(
     private val schema: Schema,
     private val allFragmentDefinitions: Map<String, GQLFragmentDefinition>,
     private val fieldMerger: FieldMerger,
+    private val insertFragmentSyntheticField: Boolean,
+    private val collectAllInlineFragmentFields: Boolean,
 ) : ModelGroupBuilder {
   override fun buildOperationData(selections: List<GQLSelection>, rawTypeName: String, operationName: String): IrModelGroup {
     val root = IrModelRoot(
@@ -212,7 +214,6 @@ internal class OperationBasedModelGroupBuilder(
           val fragmentDefinition = allFragmentDefinitions[first.name]!!
           val typeCondition = fragmentDefinition.typeCondition.name
 
-
           val possibleTypes = schema.possibleTypes(typeCondition)
           val childCondition = BooleanExpression.Or(fragmentSpreadsWithSameName.map { it.directives.toBooleanExpression() }.toSet())
               .simplify()
@@ -223,14 +224,19 @@ internal class OperationBasedModelGroupBuilder(
 
           val childInfo = IrFieldInfo(
               responseName = first.name.decapitalize().escapeKotlinReservedWord(),
-              description = "Synthetic field for fragment spread on $typeCondition",
+              description = "Synthetic field for '${first.name}'",
               deprecationReason = null,
               type = IrModelType(fragmentModelId)
           )
 
+          val p = if (insertFragmentSyntheticField) {
+            "$selfPath.$FRAGMENTS_SYNTHETIC_FIELD"
+          } else {
+            selfPath
+          }
           buildField(
               root = root,
-              path = selfPath,
+              path = p,
               info = childInfo,
               selections = emptyList(), // Don't create a model for fragments spreads
               rawTypename = typeCondition,
@@ -239,9 +245,35 @@ internal class OperationBasedModelGroupBuilder(
           )
         }
 
+    val fragmentsFields = if (insertFragmentSyntheticField && fragmentSpreadFields.isNotEmpty()) {
+      val childPath = "$selfPath.$FRAGMENTS_SYNTHETIC_FIELD"
+
+      val fragmentsFieldSet = OperationFieldSet(
+          id = IrModelId(root, childPath),
+          fields = listOf(typenameField) + fragmentSpreadFields
+      )
+
+      val fragmentsFieldInfo = IrFieldInfo(
+          responseName = FRAGMENTS_SYNTHETIC_FIELD,
+          description = "Synthetic field for grouping fragments",
+          deprecationReason = null,
+          type = IrNonNullType(IrModelType(fragmentsFieldSet.id))
+      )
+
+      listOf(
+          OperationField(
+              info = fragmentsFieldInfo,
+              condition = BooleanExpression.True,
+              fieldSet = fragmentsFieldSet,
+              isSynthetic = true,
+          )
+      )
+    } else {
+      fragmentSpreadFields
+    }
     val fieldSet = OperationFieldSet(
         id = IrModelId(root, selfPath),
-        fields = fields + inlineFragmentsFields + fragmentSpreadFields
+        fields = fields + inlineFragmentsFields + fragmentsFields
     )
 
     val patchedInfo = info.copy(type = info.type.replacePlaceholder(fieldSet.id))
@@ -252,6 +284,26 @@ internal class OperationBasedModelGroupBuilder(
         fieldSet = fieldSet,
         isSynthetic = isSynthetic,
     )
+  }
+
+  companion object {
+    const val FRAGMENTS_SYNTHETIC_FIELD = "fragments"
+
+    private val typenameField by lazy {
+      val info = IrFieldInfo(
+          responseName = "__typename",
+          description = null,
+          deprecationReason = null,
+          type = IrNonNullType(IrStringType)
+      )
+      OperationField(
+        info = info,
+          condition = BooleanExpression.True,
+          fieldSet = null,
+          isSynthetic = false
+      )
+    }
+
   }
 }
 

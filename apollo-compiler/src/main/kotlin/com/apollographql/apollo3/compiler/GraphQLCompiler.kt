@@ -358,3 +358,4 @@ class GraphQLCompiler {
 
 const val MODELS_RESPONSE_BASED = "responseBased"
 const val MODELS_OPERATION_BASED = "operationBased"
+const val MODELS_COMPAT = "compat"

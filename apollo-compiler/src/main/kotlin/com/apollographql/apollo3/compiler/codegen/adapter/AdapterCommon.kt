@@ -96,6 +96,7 @@ internal fun readFromResponseCodeBlock(
   } else {
     CodeBlock.of("")
   }
+
   val syntheticLoop = syntheticProperties.map { property ->
     val evaluate = MemberName("com.apollographql.apollo3.api", "evaluate")
     CodeBlock.builder()
