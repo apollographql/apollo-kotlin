@@ -170,6 +170,11 @@ abstract class ApolloStore {
 
   abstract suspend fun dump(): Map<KClass<*>, Map<String, Record>>
 
+  /**
+   * releases resources associated with this store.
+   */
+  abstract fun dispose()
+
   companion object {
     val emptyApolloStore: ApolloStore = NoOpApolloStore()
   }

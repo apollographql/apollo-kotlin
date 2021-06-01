@@ -304,5 +304,10 @@ class RealApolloStore(
       cache.dump()
     }
   }
+
+  override fun dispose() {
+    cacheHolder.dispose()
+    subscribers.dispose()
+  }
 }
 
