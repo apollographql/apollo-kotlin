@@ -11,11 +11,11 @@ def versions = [
     javaPoet              : '1.9.0',
     jetbrainsAnnotations  : '13.0',
     junit                 : '4.13.2',
-    kotlin                : '1.5.0',
+    kotlin                : '1.5.10',
     kotlinCoroutines      : '1.5.0',
     kotlinPoet            : '1.6.0',
     moshi                 : '1.11.0',
-    moshix                : '0.10.0',
+    moshix                : '0.11.0',
     okHttp4               : '4.9.0',
     okHttp                : '3.12.11', // Keep this to keep supporting older Android devices
     okio                  : '2.10.0',
@@ -100,7 +100,7 @@ ext.dep = [
     uuid                  : "com.benasher44:uuid:0.2.2",
     benManesVersions      : "com.github.ben-manes:gradle-versions-plugin:0.33.0",
     shadow                : "com.github.jengelman.gradle.plugins:shadow:6.1.0",
-    kspGradlePlugin: "com.google.devtools.ksp:symbol-processing-gradle-plugin:1.5.0-1.0.0-alpha09",
+    kspGradlePlugin: "com.google.devtools.ksp:symbol-processing-gradle-plugin:1.5.0-1.0.0-alpha10",
     kotlinxdatetime: "org.jetbrains.kotlinx:kotlinx-datetime:0.1.1",
     kotlinxserializationjson: "org.jetbrains.kotlinx:kotlinx-serialization-json:1.1.0",
     atomicfu: "org.jetbrains.kotlinx:atomicfu:0.15.1"

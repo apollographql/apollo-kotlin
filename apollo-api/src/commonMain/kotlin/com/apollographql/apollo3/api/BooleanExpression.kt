@@ -1,54 +1,41 @@
 package com.apollographql.apollo3.api
 
 /**
- * A condition.
- * It initially comes from @include/@skip directives but is extended to account for variables, type conditions and any combination
+ * A boolean expression
+ *
+ * @param T the type of the variable elements. This allows representing BooleanExpression that only contain variables and
+ * other that may also contain possibleTypes
  */
-sealed class BooleanExpression {
-  abstract fun evaluate(variables: Set<String>, typeConditions: Set<String>): Boolean
-
+sealed class BooleanExpression<out T : Any> {
   /**
    * This is not super well defined but works well enough for our simple use cases
    */
-  abstract fun simplify(): BooleanExpression
+  abstract fun simplify(): BooleanExpression<T>
 
-  fun or(vararg other: BooleanExpression) = Or((other.toList() + this).toSet())
-  fun and(vararg other: BooleanExpression) = And((other.toList() + this).toSet())
-  fun not() = Not(this)
-
-  object True : BooleanExpression() {
-    override fun evaluate(variables: Set<String>, typeConditions: Set<String>) = true
+  object True : BooleanExpression<Nothing>() {
     override fun simplify() = this
-    override fun toString() = "true"
   }
 
-  object False : BooleanExpression() {
-    override fun evaluate(variables: Set<String>, typeConditions: Set<String>) = false
+  object False : BooleanExpression<Nothing>() {
     override fun simplify() = this
-    override fun toString() = "false"
   }
 
-  data class Not(val booleanExpression: BooleanExpression): BooleanExpression() {
-    override fun evaluate(variables: Set<String>, typeConditions: Set<String>) = !booleanExpression.evaluate(variables, typeConditions)
-    override fun simplify() = when(this.booleanExpression) {
+  data class Not<out T : Any>(val operand: BooleanExpression<T>) : BooleanExpression<T>() {
+    override fun simplify() = when (this.operand) {
       is True -> False
       is False -> True
       else -> this
     }
-    override fun toString() = "!$booleanExpression"
   }
 
-  data class Or(val booleanExpressions: Set<BooleanExpression>) : BooleanExpression() {
+  data class Or<T : Any>(val operands: Set<BooleanExpression<T>>) : BooleanExpression<T>() {
     init {
-      check(booleanExpressions.isNotEmpty()) {
+      check(operands.isNotEmpty()) {
         "ApolloGraphQL: cannot create a 'Or' condition from an empty list"
       }
     }
 
-    override fun evaluate(variables: Set<String>, typeConditions: Set<String>) =
-        booleanExpressions.firstOrNull { it.evaluate(variables, typeConditions) } != null
-
-    override fun simplify() = booleanExpressions.filter {
+    override fun simplify() = operands.filter {
       it != False
     }.map { it.simplify() }
         .let {
@@ -62,20 +49,17 @@ sealed class BooleanExpression {
           }
         }
 
-    override fun toString() = booleanExpressions.joinToString(" | ")
+    override fun toString() = operands.joinToString(" | ")
   }
 
-  data class And(val booleanExpressions: Set<BooleanExpression>) : BooleanExpression() {
+  data class And<T : Any>(val operands: Set<BooleanExpression<T>>) : BooleanExpression<T>() {
     init {
-      check(booleanExpressions.isNotEmpty()) {
+      check(operands.isNotEmpty()) {
         "ApolloGraphQL: cannot create a 'And' condition from an empty list"
       }
     }
 
-    override fun evaluate(variables: Set<String>, typeConditions: Set<String>) =
-        booleanExpressions.firstOrNull { !it.evaluate(variables, typeConditions) } == null
-
-    override fun simplify() = booleanExpressions.filter {
+    override fun simplify() = operands.filter {
       it != True
     }.map { it.simplify() }
         .let {
@@ -88,25 +72,45 @@ sealed class BooleanExpression {
             }
           }
         }
-    override fun toString() = booleanExpressions.joinToString(" & ")
   }
 
-
-  data class Variable(
-      val name: String,
-  ) : BooleanExpression() {
-    override fun evaluate(variables: Set<String>, typeConditions: Set<String>) = variables.contains(name)
+  data class Element<out T : Any>(
+      val value: T,
+  ) : BooleanExpression<T>() {
     override fun simplify() = this
-    override fun toString() = "Var($name)"
-  }
-
-  data class Type(
-      val name: String,
-  ) : BooleanExpression() {
-    override fun evaluate(variables: Set<String>, typeConditions: Set<String>) = typeConditions.contains(name)
-
-    override fun simplify() = this
-
-    override fun toString() = "Type($name)"
   }
 }
+
+fun <T : Any> BooleanExpression<T>.or(vararg other: BooleanExpression<T>): BooleanExpression<T> = BooleanExpression.Or((other.toList() + this).toSet())
+fun <T : Any> BooleanExpression<T>.and(vararg other: BooleanExpression<T>): BooleanExpression<T> = BooleanExpression.And((other.toList() + this).toSet())
+
+fun <T : Any> or(vararg other: BooleanExpression<T>): BooleanExpression<T> = BooleanExpression.Or((other.toList()).toSet())
+fun <T : Any> and(vararg other: BooleanExpression<T>): BooleanExpression<T> = BooleanExpression.And((other.toList()).toSet())
+fun <T : Any> not(other: BooleanExpression<T>): BooleanExpression<T> = BooleanExpression.Not(other)
+fun variable(name: String): BooleanExpression<BVariable> = BooleanExpression.Element(BVariable(name))
+fun possibleTypes(vararg typenames: String): BooleanExpression<BPossibleTypes> = BooleanExpression.Element(BPossibleTypes(typenames.toSet()))
+
+fun <T : Any> BooleanExpression<T>.evaluate(block: (T) -> Boolean): Boolean {
+  return when (this) {
+    BooleanExpression.True -> true
+    BooleanExpression.False -> false
+    is BooleanExpression.Not -> !operand.evaluate(block)
+    is BooleanExpression.Or -> operands.any { it.evaluate(block) }
+    is BooleanExpression.And -> operands.all { it.evaluate(block) }
+    is BooleanExpression.Element -> block(value)
+  }
+}
+
+fun BooleanExpression<BTerm>.evaluate(variables: Set<String>, typename: String): Boolean {
+  return evaluate {
+    when(it) {
+      is BVariable -> variables.contains(it.name)
+      is BPossibleTypes -> it.possibleTypes.contains(typename)
+    }
+  }
+}
+
+sealed class BTerm
+data class BVariable(val name: String) : BTerm()
+data class BPossibleTypes(val possibleTypes: Set<String>) : BTerm()
+

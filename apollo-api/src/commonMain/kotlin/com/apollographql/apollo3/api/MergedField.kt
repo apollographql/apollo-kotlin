@@ -12,7 +12,7 @@ class MergedField(
     val fieldName: String,
     val responseName: String = fieldName,
     val arguments: Map<String, Any?> = emptyMap(),
-    val condition: BooleanExpression = BooleanExpression.True,
+    val condition: BooleanExpression<BVariable> = BooleanExpression.True,
     val fieldSets: List<FieldSet> = emptyList(),
 ) {
 

@@ -1,0 +1,33 @@
+# A named fragment that includes another one
+query AllStarships {
+  allStarships(first: 7) {
+    edges {
+      node {
+        ...starshipFragment
+      }
+    }
+  }
+}
+
+fragment starshipFragment on Starship {
+  id
+  name
+  pilotConnection {
+    edges {
+      node {
+        ...pilotFragment
+      }
+    }
+  }
+}
+
+fragment pilotFragment on Person {
+  name
+  homeworld {
+    ...planetFragment
+  }
+}
+
+fragment planetFragment on Planet {
+  name
+}

@@ -1,14 +1,13 @@
 package com.apollographql.apollo3.compiler
 
 import com.apollographql.apollo3.api.QueryDocumentMinifier
-import com.apollographql.apollo3.compiler.codegen.KotlinCodeGenerator
-import com.apollographql.apollo3.compiler.introspection.IntrospectionSchema
+import com.apollographql.apollo3.compiler.codegen.KotlinCodeGen
 import com.apollographql.apollo3.compiler.introspection.toGQLDocument
 import com.apollographql.apollo3.compiler.introspection.toIntrospectionSchema
 import com.apollographql.apollo3.compiler.operationoutput.OperationDescriptor
-import com.apollographql.apollo3.compiler.unified.ir.IrBuilder
-import com.apollographql.apollo3.compiler.unified.ir.dumpTo
 import com.apollographql.apollo3.ast.*
+import com.apollographql.apollo3.compiler.ir.IrBuilder
+import com.apollographql.apollo3.compiler.ir.dumpTo
 import java.io.File
 
 class GraphQLCompiler {
@@ -72,17 +71,15 @@ class GraphQLCompiler {
       it.withTypenameWhenNeeded(incomingOptions.schema)
     }
 
+    val allFragmentDefinitions = (fragments + incomingOptions.metadataFragments.map { it.definition }).associateBy { it.name }
+
     val ir = IrBuilder(
         schema = incomingOptions.schema,
         operationDefinitions = operations,
-        fragmentDefinitions = fragments,
+        allFragmentDefinitions = allFragmentDefinitions,
         alwaysGenerateTypesMatching = moduleOptions.alwaysGenerateTypesMatching,
         customScalarToKotlinName = incomingOptions.customScalarsMapping,
-        generateFragmentAsInterfaces = incomingOptions.generateFragmentsAsInterfaces,
-        metadataFragments = incomingOptions.metadataFragments,
-        metadataEnums = incomingOptions.metadataEnums,
-        metadataInputObjects = incomingOptions.metadataInputObjects,
-        metadataSchema = incomingOptions.isFromMetadata
+        codegenModels = incomingOptions.codegenModels,
     ).build()
 
     if (debugDir != null) {
@@ -108,27 +105,29 @@ class GraphQLCompiler {
       moduleOptions.operationOutputFile.writeText(operationOutput.toJson("  "))
     }
 
-    KotlinCodeGenerator(
+    KotlinCodeGen(
         ir = ir,
         generateAsInternal = moduleOptions.generateAsInternal,
         operationOutput = operationOutput,
         useSemanticNaming = moduleOptions.useSemanticNaming,
         packageNameProvider = moduleOptions.packageNameProvider,
         typePackageName = "${incomingOptions.schemaPackageName}.type",
-        generateSchema = !incomingOptions.isFromMetadata,
         generateFilterNotNull = moduleOptions.generateFilterNotNull,
-        generateFragmentsAsInterfaces = incomingOptions.generateFragmentsAsInterfaces,
         generateFragmentImplementations = moduleOptions.generateFragmentImplementations,
-        generateResponseFields = moduleOptions.generateResponseFields,
         generateQueryDocument = moduleOptions.generateQueryDocument,
+        fragmentsToSkip = incomingOptions.metadataFragments.map { it.name }.toSet(),
+        enumsToSkip = incomingOptions.metadataEnums,
+        inputObjectsToSkip = incomingOptions.metadataInputObjects,
+        generateSchema = !incomingOptions.isFromMetadata,
+        flatten = incomingOptions.flattenModels,
+        flattenNamesInOrder = incomingOptions.codegenModels != MODELS_COMPAT
     ).write(outputDir = outputDir)
 
+    /**
+     * Write the metadata
+     */
     if (moduleOptions.metadataOutputFile != null) {
       moduleOptions.metadataOutputFile.parentFile.mkdirs()
-      // Disable this check for now as we generate the metadata always as it is part of the "assemble" target
-//      check(!moduleOptions.generateAsInternal) {
-//        "Specifying 'generateAsInternal=true' does not make sense in a multi-module setup"
-//      }
       val schema = if (incomingOptions.isFromMetadata) {
         // There is already a schema defined in this tree
         null
@@ -150,7 +149,8 @@ class GraphQLCompiler {
           generatedFragments = outgoingMetadataFragments,
           generatedEnums = ir.enums.map { it.name }.toSet(),
           generatedInputObjects = ir.inputObjects.map { it.name }.toSet(),
-          generateFragmentsAsInterfaces = incomingOptions.generateFragmentsAsInterfaces,
+          codegenModels = incomingOptions.codegenModels,
+          flattenModels = incomingOptions.flattenModels,
           moduleName = moduleOptions.moduleName,
           pluginVersion = VERSION,
           schemaPackageName = incomingOptions.schemaPackageName
@@ -184,7 +184,8 @@ class GraphQLCompiler {
       val schema: Schema,
       val schemaPackageName: String,
       val customScalarsMapping: Map<String, String>,
-      val generateFragmentsAsInterfaces: Boolean,
+      val codegenModels: String,
+      val flattenModels: Boolean,
       val metadataInputObjects: Set<String>,
       val metadataEnums: Set<String>,
       val isFromMetadata: Boolean,
@@ -196,7 +197,8 @@ class GraphQLCompiler {
             schema = metadata.schema!!,
             schemaPackageName = metadata.schemaPackageName,
             customScalarsMapping = metadata.customScalarsMapping,
-            generateFragmentsAsInterfaces = metadata.generateFragmentsAsInterfaces,
+            codegenModels = metadata.codegenModels,
+            flattenModels = metadata.flattenModels,
             metadataInputObjects = metadata.generatedInputObjects,
             metadataEnums = metadata.generatedEnums,
             isFromMetadata = true,
@@ -209,8 +211,9 @@ class GraphQLCompiler {
           schemaFile: File,
           extraSchemaFiles: Set<File>,
           customScalarsMapping: Map<String, String>,
-          generateFragmentsAsInterfaces: Boolean,
+          codegenModels: String,
           rootPackageName: String,
+          flattenModels: Boolean,
       ): IncomingOptions {
         val relativeSchemaPackageName = try {
           roots.filePackageName(schemaFile.absolutePath)
@@ -224,7 +227,7 @@ class GraphQLCompiler {
         }
 
         val schema = GQLDocument(
-            definitions = document.definitions + extraDefinitions +  apolloDefinitions(),
+            definitions = document.definitions + extraDefinitions + apolloDefinitions(),
             filePath = null
         ).toSchema()
 
@@ -232,7 +235,8 @@ class GraphQLCompiler {
             schema = schema,
             schemaPackageName = "$rootPackageName.$relativeSchemaPackageName".removePrefix(".").removeSuffix("."),
             customScalarsMapping = customScalarsMapping,
-            generateFragmentsAsInterfaces = generateFragmentsAsInterfaces,
+            codegenModels = codegenModels,
+            flattenModels = flattenModels,
             metadataInputObjects = emptySet(),
             metadataEnums = emptySet(),
             isFromMetadata = false,
@@ -313,32 +317,30 @@ class GraphQLCompiler {
   )
 
   companion object {
-    val NoOpLogger = object : Logger {
+    private val NoOpLogger = object : Logger {
       override fun warning(message: String) {
       }
     }
 
     val defaultMetadataFragments = emptyList<MetadataFragment>()
-    val defaultMetadataInputObjects = emptySet<String>()
-    val defaultMetadataEnums = emptySet<String>()
-    val defaultMetadataCustomScalars = false
-    val defaultPackageNameProvider = PackageNameProvider.Flat("com.apollographql.generated")
+    private val defaultPackageNameProvider = PackageNameProvider.Flat("com.apollographql.generated")
     val defaultAlwaysGenerateTypesMatching = emptySet<String>()
-    val defaultOperationOutputFile = null
-    val defaultOperationOutputGenerator = OperationOutputGenerator.Default(OperationIdGenerator.Sha256)
+    private val defaultOperationOutputFile = null
+    private val defaultOperationOutputGenerator = OperationOutputGenerator.Default(OperationIdGenerator.Sha256)
     val defaultCustomScalarsMapping = emptyMap<String, String>()
-    val defaultUseSemanticNaming = true
-    val defaultWarnOnDeprecatedUsages = true
-    val defaultFailOnWarnings = false
-    val defaultLogger = NoOpLogger
-    val defaultGenerateAsInternal = false
-    val defaultGenerateFilterNotNull = false
-    val defaultGenerateFragmentsAsInterfaces = false
-    val defaultGenerateFragmentImplementations = false
-    val defaultGenerateResponseFields = true
-    val defaultGenerateQueryDocument = true
-    val defaultModuleName = "apollographql"
-    val defaultMetadataOutputFile = null
+    const val defaultUseSemanticNaming = true
+    const val defaultWarnOnDeprecatedUsages = true
+    const val defaultFailOnWarnings = false
+    private val defaultLogger = NoOpLogger
+    const val defaultGenerateAsInternal = false
+    const val defaultGenerateFilterNotNull = false
+    const val defaultGenerateFragmentsAsInterfaces = false
+    const val defaultGenerateFragmentImplementations = false
+    const val defaultGenerateResponseFields = true
+    const val defaultGenerateQueryDocument = true
+    private const val defaultModuleName = "apollographql"
+    const val defaultCodegenModels = MODELS_RESPONSE_BASED
+    private val defaultMetadataOutputFile = null
 
     val DefaultModuleOptions = ModuleOptions(
         alwaysGenerateTypesMatching = defaultAlwaysGenerateTypesMatching,
@@ -360,3 +362,7 @@ class GraphQLCompiler {
     )
   }
 }
+
+const val MODELS_RESPONSE_BASED = "responseBased"
+const val MODELS_OPERATION_BASED = "operationBased"
+const val MODELS_COMPAT = "compat"

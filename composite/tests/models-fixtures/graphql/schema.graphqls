@@ -1,0 +1,527 @@
+"""
+The query type, represents all of the entry points into our object graph
+"""
+type Query {
+
+    hero ( episode: Episode): Character
+
+    heroDetailQuery: Character
+
+    heroWithReview ( episode: Episode,  review: ReviewInput): Human
+
+    reviews ( episode: Episode!): [Review]
+
+    search ( text: String): [SearchResult]
+
+    character ( id: ID!): Character
+
+    droid ( id: ID!): Droid
+
+    human ( id: ID!): Human
+
+    starship ( id: ID!): Starship
+
+    allPlanets(after: String, first: Int, before: String, last: Int): PlanetsConnection
+}
+
+"""
+The episodes in the Star Wars trilogy
+"""
+enum Episode {
+    """
+    Star Wars Episode IV: A New Hope, released in 1977.
+    """
+    NEWHOPE
+    """
+    Star Wars Episode V: The Empire Strikes Back, released in 1980.
+    """
+    EMPIRE
+    """
+    Star Wars Episode VI: Return of the Jedi, released in 1983.
+    """
+    JEDI
+}
+
+"""
+A character from the Star Wars universe
+"""
+interface Character {
+    """
+    The ID of the character
+    """
+    id: ID!
+    """
+    The name of the character
+    """
+    name: String!
+    """
+    The friends of the character, or an empty list if they have none
+    """
+    friends: [Character]
+    """
+    The friends of the character exposed as a connection with edges
+    """
+    friendsConnection ( first: Int,  after: ID): FriendsConnection!
+    """
+    The movies this character appears in
+    """
+    appearsIn: [Episode]!
+    """
+    The movie this character first appears in
+    """
+    firstAppearsIn: Episode!
+    """
+    The date character was born.
+    """
+    birthDate: Date!
+    """
+    The date character was born.
+    """
+    fieldWithUnsupportedType: UnsupportedType!
+    """
+    The dates of appearances
+    """
+    appearanceDates: [Date!]!
+}
+
+"""
+The `Date` scalar type represents date format.
+"""
+scalar Date
+"""
+UnsupportedType for testing
+"""
+scalar UnsupportedType
+"""
+A connection object for a character's friends
+"""
+type FriendsConnection {
+    """
+    The total number of friends
+    """
+    totalCount: Int
+    """
+    The edges for each of the character's friends.
+    """
+    edges: [FriendsEdge]
+    """
+    A list of the friends, as a convenience when edges are not needed.
+    """
+    friends: [Character]
+    """
+    Information for paginating this connection
+    """
+    pageInfo: PageInfo!
+}
+
+"""
+An edge object for a character's friends
+"""
+type FriendsEdge {
+    """
+    A cursor used for pagination
+    """
+    cursor: ID!
+    """
+    The character represented by this friendship edge
+    """
+    node: Character
+}
+
+"""
+Information for paginating this connection
+"""
+type PageInfo {
+
+    startCursor: ID
+
+    endCursor: ID
+
+    hasNextPage: Boolean!
+}
+
+"""
+Represents a review for a movie
+"""
+type Review {
+    """
+    The ID of the review
+    """
+    id: ID!
+    """
+    The number of stars this review gave, 1-5
+    """
+    stars: Int!
+    """
+    Comment about the movie
+    """
+    commentary: String
+}
+
+
+union SearchResult = Human|Droid|Starship
+"""
+A humanoid creature from the Star Wars universe
+"""
+type Human implements Character {
+    """
+    The ID of the human
+    """
+    id: ID!
+    """
+    What this human calls themselves
+    """
+    name: String!
+    """
+    The home planet of the human, or null if unknown
+    """
+    homePlanet: String
+    """
+    Height in the preferred unit, default is meters
+    """
+    height ( unit: LengthUnit = METER): Float
+    """
+    Mass in kilograms, or null if unknown
+    """
+    mass: Float
+    """
+    This human's friends, or an empty list if they have none
+    """
+    friends: [Character]
+    """
+    The friends of the human exposed as a connection with edges
+    """
+    friendsConnection ( first: Int,  after: ID): FriendsConnection!
+    """
+    The movies this human appears in
+    """
+    appearsIn: [Episode]!
+    """
+    The movie this character first appears in
+    """
+    firstAppearsIn: Episode!
+    """
+    The date character was born.
+    """
+    birthDate: Date!
+    """
+    The date character was born.
+    """
+    fieldWithUnsupportedType: UnsupportedType!
+    """
+    The dates of appearances
+    """
+    appearanceDates: [Date!]!
+    """
+    A list of starships this person has piloted, or an empty list if none
+    """
+    starships: [Starship]
+}
+
+"""
+Units of height
+"""
+enum LengthUnit {
+    """
+    The standard unit around the world
+    """
+    METER
+    """
+    Primarily used in the United States
+    """
+    FOOT
+}
+
+
+type Starship {
+    """
+    The ID of the starship
+    """
+    id: ID!
+    """
+    The name of the starship
+    """
+    name: String!
+    """
+    Length of the starship, along the longest axis
+    """
+    length ( unit: LengthUnit = METER): Float
+
+    coordinates: [[Float!]!]
+}
+
+"""
+An autonomous mechanical character in the Star Wars universe
+"""
+type Droid implements Character {
+    """
+    The ID of the droid
+    """
+    id: ID!
+    """
+    What others call this droid
+    """
+    name: String!
+    """
+    This droid's friends, or an empty list if they have none
+    """
+    friends: [Character]
+    """
+    The friends of the droid exposed as a connection with edges
+    """
+    friendsConnection ( first: Int,  after: ID): FriendsConnection!
+    """
+    The movies this droid appears in
+    """
+    appearsIn: [Episode]!
+    """
+    The movie this character first appears in
+    """
+    firstAppearsIn: Episode!
+    """
+    The date droid was created.
+    """
+    birthDate: Date!
+    """
+    The date character was born.
+    """
+    fieldWithUnsupportedType: UnsupportedType!
+    """
+    The dates of appearances
+    """
+    appearanceDates: [Date!]!
+    """
+    This droid's primary function
+    """
+    primaryFunction: String
+}
+
+"""
+The mutation type, represents all updates we can make to our data
+"""
+type Mutation {
+
+    createReview ( episode: Episode,  review: ReviewInput!): Review
+
+    updateReview ( id: ID!,  review: ReviewInput!): Review
+}
+
+"""
+The input object sent when someone is creating a new review
+"""
+input ReviewInput {
+    """
+    0-5 stars
+    """ stars: Int!
+    """
+    Comment about the movie, optional
+    """ commentary: String
+    """
+    Favorite color, optional
+    """ favoriteColor: ColorInput!
+}
+
+"""
+The input object sent when passing in a color
+"""
+input ColorInput {
+    red: Int! = 1
+    green: Float = 0.0
+    blue: Float! = 1.5
+}
+
+
+"""
+A connection to a list of items.
+"""
+type PlanetsConnection {
+    """
+    Information to aid in pagination.
+    """
+    pageInfo: PageInfo!
+    """
+    Information to aid in pagination.
+    """
+    edges: [PlanetsEdge]
+    """
+    A count of the total number of objects in this connection, ignoring pagination.
+    This allows a client to fetch the first five objects by passing "5" as the
+    argument to "first", then fetch the total count so it could display "5 of 83",
+    for example.
+    """
+    totalCount: Int
+    """
+    A list of all of the objects returned in the connection. This is a convenience
+    field provided for quickly exploring the API; rather than querying for
+    "{ edges { node } }" when no edge data is needed, this field can be be used
+    instead. Note that when clients like Relay need to fetch the "cursor" field on
+    the edge to enable efficient pagination, this shortcut cannot be used, and the
+    full "{ edges { node } }" version should be used instead.
+    """
+    planets: [Planet]
+}
+
+"""
+An edge in a connection.
+"""
+type PlanetsEdge {
+    """
+    The item at the end of the edge
+    """
+    node: Planet
+    """
+    A cursor for use in pagination
+    """
+    cursor: String!
+}
+
+
+"""
+A large mass, planet or planetoid in the Star Wars Universe, at the time of
+0 ABY.
+"""
+type Planet {
+    """
+    The name of this planet.
+    """
+    name: String
+    """
+    The diameter of this planet in kilometers.
+    """
+    diameter: Int
+    """
+    The number of standard hours it takes for this planet to complete a single
+    rotation on its axis.
+    """
+    rotationPeriod: Int
+    """
+    The number of standard days it takes for this planet to complete a single orbit
+    of its local star.
+    """
+    orbitalPeriod: Int
+    """
+    A number denoting the gravity of this planet, where "1" is normal or 1 standard
+    G. "2" is twice or 2 standard Gs. "0.5" is half or 0.5 standard Gs.
+    """
+    gravity: String
+    """
+    The average population of sentient beings inhabiting this planet.
+    """
+    population: Int
+    """
+    The climates of this planet.
+    """
+    climates: [String]
+    """
+    The terrains of this planet.
+    """
+    terrains: [String]
+    """
+    The percentage of the planet surface that is naturally occuring water or bodies
+    of water.
+    """
+    surfaceWater: Float
+    filmConnection(after: String, first: Int, before: String, last: Int): PlanetFilmsConnection
+    """
+    The ISO 8601 date format of the time that this resource was created.
+    """
+    created: String
+    """
+    The ISO 8601 date format of the time that this resource was edited.
+    """
+    edited: String
+    """
+    The ID of an object
+    """
+    id: ID!
+}
+
+
+
+"""
+A connection to a list of items.
+"""
+type PlanetFilmsConnection {
+    """
+    Information to aid in pagination.
+    """
+    pageInfo: PageInfo!
+    """
+    Information to aid in pagination.
+    """
+    edges: [PlanetFilmsEdge]
+    """
+    A count of the total number of objects in this connection, ignoring pagination.
+    This allows a client to fetch the first five objects by passing "5" as the
+    argument to "first", then fetch the total count so it could display "5 of 83",
+    for example.
+    """
+    totalCount: Int
+    """
+    A list of all of the objects returned in the connection. This is a convenience
+    field provided for quickly exploring the API; rather than querying for
+    "{ edges { node } }" when no edge data is needed, this field can be be used
+    instead. Note that when clients like Relay need to fetch the "cursor" field on
+    the edge to enable efficient pagination, this shortcut cannot be used, and the
+    full "{ edges { node } }" version should be used instead.
+    """
+    films: [Film]
+}
+
+"""
+An edge in a connection.
+"""
+type PlanetFilmsEdge {
+    """
+    The item at the end of the edge
+    """
+    node: Film
+    """
+    A cursor for use in pagination
+    """
+    cursor: String!
+}
+
+
+"""
+A single film.
+"""
+type Film  {
+    """
+    The title of this film.
+    """
+    title: String
+    """
+    The episode number of this film.
+    """
+    episodeID: Int
+    """
+    The opening paragraphs at the beginning of this film.
+    """
+    openingCrawl: String
+    """
+    The name of the director of this film.
+    """
+    director: String
+    """
+    The name(s) of the producer(s) of this film.
+    """
+    producers: [String]
+    """
+    The ISO 8601 date format of film release at original creator country.
+    """
+    releaseDate: Date!
+    planetConnection(after: String, first: Int, before: String, last: Int): FilmPlanetsConnection
+    """
+    The ISO 8601 date format of the time that this resource was created.
+    """
+    created: String
+    """
+    The ISO 8601 date format of the time that this resource was edited.
+    """
+    edited: String
+    """
+    The ID of an object
+    """
+    id: ID!
+}

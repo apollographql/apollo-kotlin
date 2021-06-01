@@ -5,6 +5,7 @@ import com.apollographql.apollo3.compiler.ApolloMetadata.Companion.merge
 import com.apollographql.apollo3.compiler.DefaultPackageNameProvider
 import com.apollographql.apollo3.compiler.GraphQLCompiler
 import com.apollographql.apollo3.compiler.GraphQLCompiler.Companion.defaultAlwaysGenerateTypesMatching
+import com.apollographql.apollo3.compiler.GraphQLCompiler.Companion.defaultCodegenModels
 import com.apollographql.apollo3.compiler.GraphQLCompiler.Companion.defaultFailOnWarnings
 import com.apollographql.apollo3.compiler.GraphQLCompiler.Companion.defaultGenerateAsInternal
 import com.apollographql.apollo3.compiler.GraphQLCompiler.Companion.defaultGenerateFilterNotNull
@@ -13,6 +14,7 @@ import com.apollographql.apollo3.compiler.GraphQLCompiler.Companion.defaultGener
 import com.apollographql.apollo3.compiler.GraphQLCompiler.Companion.defaultGenerateResponseFields
 import com.apollographql.apollo3.compiler.GraphQLCompiler.Companion.defaultUseSemanticNaming
 import com.apollographql.apollo3.compiler.GraphQLCompiler.Companion.defaultWarnOnDeprecatedUsages
+import com.apollographql.apollo3.compiler.MODELS_COMPAT
 import com.apollographql.apollo3.compiler.OperationOutputGenerator
 import com.apollographql.apollo3.compiler.Roots
 import org.gradle.api.DefaultTask
@@ -35,7 +37,6 @@ import org.gradle.api.tasks.OutputFile
 import org.gradle.api.tasks.PathSensitive
 import org.gradle.api.tasks.PathSensitivity
 import org.gradle.api.tasks.TaskAction
-import org.jetbrains.kotlin.gradle.utils.`is`
 import javax.inject.Inject
 
 @CacheableTask
@@ -132,7 +133,11 @@ abstract class ApolloGenerateSourcesTask : DefaultTask() {
 
   @get:Input
   @get:Optional
-  abstract val generateFragmentsAsInterfaces: Property<Boolean>
+  abstract val codegenModels: Property<String>
+
+  @get:Input
+  @get:Optional
+  abstract val flattenModels: Property<Boolean>
 
   @get:Inject
   abstract val objectFactory: ObjectFactory
@@ -158,17 +163,23 @@ abstract class ApolloGenerateSourcesTask : DefaultTask() {
       check(!customScalarsMapping.isPresent) {
         "Specifying 'customScalarsMapping' has no effect as an upstream module already provided a customScalarsMapping"
       }
-      check(!generateFragmentsAsInterfaces.isPresent) {
-        "Specifying 'generateFragmentsAsInterfaces' has no effect as an upstream module already provided a generateFragmentsAsInterfaces"
+      check(!codegenModels.isPresent) {
+        "Specifying 'codegenModels' has no effect as an upstream module already provided a codegenModels"
+      }
+      check(!flattenModels.isPresent) {
+        "Specifying 'flattenModels' has no effect as an upstream module already provided a flattenModels"
       }
       GraphQLCompiler.IncomingOptions.fromMetadata(metadata)
     } else {
+      val codegenModels = codegenModels.getOrElse(defaultCodegenModels)
+      val defaultFlattenModels = flattenModels.getOrElse(codegenModels == MODELS_COMPAT)
       GraphQLCompiler.IncomingOptions.from(
           roots = roots,
           schemaFile = schemaFile.asFile.orNull ?: error("no schemaFile found"),
           extraSchemaFiles = extraSchemaFiles.files,
           customScalarsMapping = customScalarsMapping.getOrElse(emptyMap()),
-          generateFragmentsAsInterfaces = generateFragmentsAsInterfaces.getOrElse(true),
+          codegenModels = codegenModels,
+          flattenModels = flattenModels.getOrElse(defaultFlattenModels),
           rootPackageName = rootPackageName
       )
     }

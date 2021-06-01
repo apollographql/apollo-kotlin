@@ -195,8 +195,15 @@ interface Service {
   val generateFragmentImplementations: Property<Boolean>
 
   /**
+   *
    */
-  val generateFragmentsAsInterfaces: Property<Boolean>
+  val generateKotlinModels: Property<Boolean>
+
+  /**
+   *
+   */
+  val codegenModels: Property<String>
+  val flattenModels: Property<Boolean>
 
   /**
    * Configures [Introspection] to download an introspection Json schema

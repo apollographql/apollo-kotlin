@@ -5,7 +5,7 @@ import com.apollographql.apollo3.compiler.codegen.CgFile
 import com.apollographql.apollo3.compiler.codegen.CgFileBuilder
 import com.apollographql.apollo3.compiler.codegen.adapter.inputAdapterTypeSpec
 import com.apollographql.apollo3.compiler.codegen.helpers.toNamedType
-import com.apollographql.apollo3.compiler.unified.ir.IrInputObject
+import com.apollographql.apollo3.compiler.ir.IrInputObject
 import com.squareup.kotlinpoet.ClassName
 import com.squareup.kotlinpoet.TypeSpec
 

@@ -1,0 +1,1 @@
+{"operationName":"AllPlanets","variables":{},"query":"query AllPlanets { allPlanets(first: 300) { planets { __typename ...PlanetFragment filmConnection { totalCount films { __typename title ...FilmFragment } } } } }  fragment PlanetFragment on Planet { name climates surfaceWater }  fragment FilmFragment on Film { title producers }"}

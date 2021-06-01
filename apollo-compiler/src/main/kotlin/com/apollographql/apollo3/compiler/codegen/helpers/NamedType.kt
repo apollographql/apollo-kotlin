@@ -4,10 +4,10 @@ import com.apollographql.apollo3.api.Optional
 import com.apollographql.apollo3.compiler.applyIf
 import com.apollographql.apollo3.compiler.codegen.CgContext
 import com.apollographql.apollo3.compiler.codegen.Identifier
-import com.apollographql.apollo3.compiler.unified.ir.IrInputField
-import com.apollographql.apollo3.compiler.unified.ir.IrType
-import com.apollographql.apollo3.compiler.unified.ir.IrVariable
-import com.apollographql.apollo3.compiler.unified.ir.isOptional
+import com.apollographql.apollo3.compiler.ir.IrInputField
+import com.apollographql.apollo3.compiler.ir.IrType
+import com.apollographql.apollo3.compiler.ir.IrVariable
+import com.apollographql.apollo3.compiler.ir.isOptional
 import com.squareup.kotlinpoet.CodeBlock
 import com.squareup.kotlinpoet.ParameterSpec
 import com.squareup.kotlinpoet.asClassName
@@ -57,7 +57,7 @@ internal fun List<NamedType>.writeToResponseCodeBlock(context: CgContext): CodeB
 }
 
 internal fun NamedType.writeToResponseCodeBlock(context: CgContext): CodeBlock {
-  val adapterInitializer = context.resolver.adapterInitializer(type)
+  val adapterInitializer = context.resolver.adapterInitializer(type, false)
   val builder = CodeBlock.builder()
   val propertyName = context.layout.propertyName(graphQlName)
 

@@ -8,10 +8,10 @@ import com.apollographql.apollo3.compiler.codegen.helpers.makeDataClassFromPrope
 import com.apollographql.apollo3.compiler.codegen.helpers.maybeAddDeprecation
 import com.apollographql.apollo3.compiler.codegen.helpers.maybeAddDescription
 import com.apollographql.apollo3.compiler.decapitalizeFirstLetter
-import com.apollographql.apollo3.compiler.unified.ir.IrAccessor
-import com.apollographql.apollo3.compiler.unified.ir.IrFragmentAccessor
-import com.apollographql.apollo3.compiler.unified.ir.IrModel
-import com.apollographql.apollo3.compiler.unified.ir.IrSubtypeAccessor
+import com.apollographql.apollo3.compiler.ir.IrAccessor
+import com.apollographql.apollo3.compiler.ir.IrFragmentAccessor
+import com.apollographql.apollo3.compiler.ir.IrModel
+import com.apollographql.apollo3.compiler.ir.IrSubtypeAccessor
 import com.squareup.kotlinpoet.ClassName
 import com.squareup.kotlinpoet.FunSpec
 import com.squareup.kotlinpoet.KModifier
@@ -22,8 +22,8 @@ class ModelBuilder(
     private val context: CgContext,
     private val model: IrModel,
     private val superClassName: ClassName?,
-    private val path: List<String>
-)  {
+    private val path: List<String>,
+) {
   private val nestedBuilders = model.modelGroups.flatMap {
     it.models.map {
       ModelBuilder(
@@ -48,7 +48,7 @@ class ModelBuilder(
   }
 
   fun IrModel.typeSpec(): TypeSpec {
-    val properties = properties.map {
+    val properties = properties.filter { !it.hidden }.map {
       PropertySpec.builder(
           context.layout.propertyName(it.info.responseName),
           context.resolver.resolveType(it.info.type)
@@ -62,7 +62,6 @@ class ModelBuilder(
     val superInterfaces = implements.map {
       context.resolver.resolveModel(it)
     } + listOfNotNull(superClassName)
-
 
     val typeSpecBuilder = if (isInterface) {
       TypeSpec.interfaceBuilder(modelName)
@@ -84,15 +83,15 @@ class ModelBuilder(
   }
 
   private fun companionTypeSpec(model: IrModel): TypeSpec {
-      val funSpecs = model.accessors.map { accessor ->
-        FunSpec.builder(accessor.funName())
-            .receiver(context.resolver.resolveModel(model.id))
-            .addCode("return this as? %T\n", context.resolver.resolveModel(accessor.returnedModelId))
-            .build()
-      }
-      return TypeSpec.companionObjectBuilder()
-          .addFunctions(funSpecs)
+    val funSpecs = model.accessors.map { accessor ->
+      FunSpec.builder(accessor.funName())
+          .receiver(context.resolver.resolveModel(model.id))
+          .addCode("return this as? %T\n", context.resolver.resolveModel(accessor.returnedModelId))
           .build()
+    }
+    return TypeSpec.companionObjectBuilder()
+        .addFunctions(funSpecs)
+        .build()
   }
 
   private fun IrAccessor.funName(): String {

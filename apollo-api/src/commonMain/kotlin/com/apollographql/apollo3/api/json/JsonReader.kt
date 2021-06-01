@@ -139,6 +139,8 @@ interface JsonReader : Closeable {
 
   fun selectName(names: List<String>): Int
 
+  fun rewind()
+
   /**
    * A structure, name, or value type in a JSON-encoded string.
    */

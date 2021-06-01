@@ -3,7 +3,7 @@ package com.apollographql.apollo3.compiler.codegen.file
 import com.apollographql.apollo3.compiler.codegen.CgContext
 import com.apollographql.apollo3.compiler.codegen.CgFile
 import com.apollographql.apollo3.compiler.codegen.CgFileBuilder
-import com.apollographql.apollo3.compiler.unified.ir.IrNamedFragment
+import com.apollographql.apollo3.compiler.ir.IrNamedFragment
 import com.apollographql.apollo3.compiler.codegen.adapter.inputAdapterTypeSpec
 import com.apollographql.apollo3.compiler.codegen.helpers.toNamedType
 import com.squareup.kotlinpoet.ClassName

@@ -1,6 +1,7 @@
 package com.apollographql.apollo3.compiler
 
 import com.apollographql.apollo3.compiler.ApolloMetadata.Companion.merge
+import com.apollographql.apollo3.compiler.GraphQLCompiler.Companion.defaultCodegenModels
 import com.apollographql.apollo3.compiler.GraphQLCompiler.Companion.defaultCustomScalarsMapping
 import com.apollographql.apollo3.ast.SourceAwareException
 import com.google.common.truth.Truth
@@ -37,10 +38,11 @@ class MetadataTest {
       GraphQLCompiler.IncomingOptions.from(
           roots = Roots(rootFolders),
           schemaFile = schemaFile,
+          extraSchemaFiles = emptySet(),
           customScalarsMapping = defaultCustomScalarsMapping,
-          generateFragmentsAsInterfaces = true, 
+          codegenModels = defaultCodegenModels,
           rootPackageName = "",
-          extraSchemaFiles = emptySet()
+          flattenModels = false
       )
     } else {
       val metadata = metadataFiles.map { ApolloMetadata.readFrom(it) }.merge()

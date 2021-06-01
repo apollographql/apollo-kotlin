@@ -73,4 +73,28 @@ class Schema(
     return typeDefinitions[name]
         ?: throw SchemaValidationException("Cannot find type `$name`")
   }
+
+  fun possibleTypes(typeDefinition: GQLTypeDefinition): Set<String> {
+    return when (typeDefinition) {
+      is GQLUnionTypeDefinition -> typeDefinition.memberTypes.map { it.name }.toSet()
+      is GQLInterfaceTypeDefinition -> typeDefinitions.values.filter {
+        it is GQLObjectTypeDefinition && it.implementsInterfaces.contains(typeDefinition.name)
+            || it is GQLInterfaceTypeDefinition && it.implementsInterfaces.contains(typeDefinition.name)
+      }.flatMap {
+        // Recurse until we reach the concrete types
+        // This could certainly be improved
+        possibleTypes(it).toList()
+      }.toSet()
+      is GQLObjectTypeDefinition -> setOf(typeDefinition.name)
+      is GQLScalarTypeDefinition -> setOf(typeDefinition.name)
+      is GQLEnumTypeDefinition -> typeDefinition.enumValues.map { it.name }.toSet()
+      else -> {
+        throw SchemaValidationException("Cannot determine possibleTypes of $typeDefinition.name")
+      }
+    }
+  }
+
+  fun possibleTypes(name: String): Set<String> {
+    return possibleTypes(typeDefinition(name))
+  }
 }

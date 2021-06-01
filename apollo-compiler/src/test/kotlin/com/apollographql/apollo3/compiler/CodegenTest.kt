@@ -1,5 +1,9 @@
 package com.apollographql.apollo3.compiler
 
+import com.apollographql.apollo3.ast.GQLFragmentSpread
+import com.apollographql.apollo3.ast.GQLInlineFragment
+import com.apollographql.apollo3.ast.GQLNode
+import com.apollographql.apollo3.ast.parseAsGQLDocument
 import com.apollographql.apollo3.compiler.TestUtils.checkTestFixture
 import com.apollographql.apollo3.compiler.TestUtils.shouldUpdateMeasurements
 import com.apollographql.apollo3.compiler.TestUtils.shouldUpdateTestFixtures
@@ -8,21 +12,22 @@ import org.junit.Test
 import org.junit.runner.RunWith
 import org.junit.runners.Parameterized
 import java.io.File
+import java.util.concurrent.TimeUnit
 import kotlin.time.Duration
 import kotlin.time.ExperimentalTime
 import kotlin.time.measureTime
 
 @RunWith(Parameterized::class)
 @OptIn(ExperimentalTime::class)
-class CodegenTest(private val folder: File, private val fragmentsCodegenMode: FragmentsCodegenMode) {
+class CodegenTest(private val folder: File, private val codegenModels: String, private val hasFragments: Boolean) {
   private class Measurement(
       val name: String,
-      val fragmentsCodegenMode: FragmentsCodegenMode,
-      val totalLineOfCode: Int,
+      val codegenModels: String,
+      val hasFragments: Boolean,
+      val linesOfCode: Int,
       val codegenDuration: Duration,
       val compileDuration: Duration,
   )
-
 
   private class Options(
       val operationFiles: Set<File>,
@@ -37,12 +42,12 @@ class CodegenTest(private val folder: File, private val fragmentsCodegenMode: Fr
   fun generateExpectedClasses() {
     val args = arguments(
         folder = folder,
-        fragmentAsInterfaces = fragmentsCodegenMode == FragmentsCodegenMode.AsInterfaces,
+        codegenModels = codegenModels,
     )
-    generateExpectedClasses(args)
+    generateExpectedClasses(args, hasFragments)
   }
 
-  private fun generateExpectedClasses(options: Options) {
+  private fun generateExpectedClasses(options: Options, hasFragments: Boolean) {
     options.outputDir.deleteRecursively()
 
     val codegenDuration = measureTime {
@@ -63,10 +68,10 @@ class CodegenTest(private val folder: File, private val fragmentsCodegenMode: Fr
       it.isFile && it.name != "metadata"
     }
 
-    val expectedFiles = folder.resolve(fragmentsCodegenMode.name.decapitalizeFirstLetter()).walk().filter { it.isFile && it.extension == "expected" }
+    val expectedFiles = folder.resolve(codegenModels).walk().filter { it.isFile && it.extension == "expected" }
 
     expectedFiles.forEach { expected ->
-      val relativePath = expected.relativeTo(folder.resolve(fragmentsCodegenMode.name.decapitalizeFirstLetter())).path.removeSuffix(".expected")
+      val relativePath = expected.relativeTo(folder.resolve(codegenModels)).path.removeSuffix(".expected")
 
       val actual = actualRoot.resolve(expectedRelativeRoot).resolve(relativePath)
       if (!actual.exists()) {
@@ -86,7 +91,7 @@ class CodegenTest(private val folder: File, private val fragmentsCodegenMode: Fr
 
     actualFiles.forEach { actual ->
       val relativePath = actual.relativeTo(actualRoot).relativeTo(expectedRelativeRoot).path
-      val expected = expectedRoot.resolve(expectedRelativeRoot).resolve(fragmentsCodegenMode.name.decapitalizeFirstLetter()).resolve("$relativePath.expected")
+      val expected = expectedRoot.resolve(expectedRelativeRoot).resolve(codegenModels).resolve("$relativePath.expected")
       if (!expected.exists()) {
         if (shouldUpdateTestFixtures()) {
           println("adding expected file: ${actual.absolutePath} - ${actual.path}")
@@ -114,10 +119,11 @@ class CodegenTest(private val folder: File, private val fragmentsCodegenMode: Fr
     measurements.add(
         Measurement(
             name = options.moduleOptions.moduleName,
-            fragmentsCodegenMode = fragmentsCodegenMode,
-            totalLineOfCode = totalLineOfCode,
+            codegenModels = codegenModels,
+            linesOfCode = totalLineOfCode,
             codegenDuration = codegenDuration,
             compileDuration = compileDuration,
+            hasFragments = hasFragments,
         )
     )
   }
@@ -130,13 +136,21 @@ class CodegenTest(private val folder: File, private val fragmentsCodegenMode: Fr
         )
     )
   }
-  enum class FragmentsCodegenMode {
-    AsInterfaces, AsClasses
-  }
 
   companion object {
     private val measurements = mutableListOf<Measurement>()
 
+    private fun aggregate(name: String, filter: (Measurement) -> Boolean): String {
+      val filtered = measurements.filter { filter(it) }
+      return String.format(
+          "%-50s %-20s %20s %20s %20s\n",
+          "aggregate",
+          name,
+          filtered.map { it.linesOfCode }.fold(0L) { acc, i -> acc + i }.toString(),
+          filtered.map { it.codegenDuration }.fold(Duration.ZERO) { acc, measurement -> acc + measurement }.toString(),
+          filtered.map { it.compileDuration }.fold(Duration.ZERO) { acc, measurement -> acc + measurement }.toString(),
+      )
+    }
     @AfterClass
     @JvmStatic
     fun dumpTimes() {
@@ -144,29 +158,38 @@ class CodegenTest(private val folder: File, private val fragmentsCodegenMode: Fr
         File("src/test/graphql/com/example/measurements").apply {
           writeText(
               String.format(
-                  "%-70s %20s %20s %20s\n",
+                  "%-50s %-20s %20s %20s\n",
                   "Test:",
+                  "CodegenModels:",
                   "Total LOC:",
-                  "Codegen:",
-                  "Compilation:",
+                  "Codegen (ms):",
+                  "Compilation (ms):",
               )
           )
+          appendText(aggregate("all") { true })
+          appendText(aggregate("responseBased") { it.codegenModels == "responseBased" && it.hasFragments})
+          appendText(aggregate("operationBased") { it.codegenModels == "operationBased"&& it.hasFragments })
+          appendText(aggregate("compat") { it.codegenModels == "compat" && it.hasFragments})
+          appendText(aggregate("no-fragments") { !it.hasFragments})
+          appendText("\n")
           appendText(
-              measurements.joinToString("\n") { measurement ->
-                String.format(
-                    "%-70s %20s %20s %20s",
-                    "${measurement.name} (${measurement.fragmentsCodegenMode})",
-                    measurement.totalLineOfCode.toString(),
-                    measurement.codegenDuration.toString(),
-                    measurement.compileDuration.toString(),
-                )
-              }
+              measurements.sortedByDescending { it.linesOfCode }
+                  .joinToString("\n") { measurement ->
+                    String.format(
+                        "%-50s %-20s %20s %20s %20s",
+                        measurement.name,
+                        measurement.codegenModels,
+                        measurement.linesOfCode.toString(),
+                        measurement.codegenDuration.toLong(TimeUnit.MILLISECONDS).toString(),
+                        measurement.compileDuration.toString(),
+                    )
+                  }
           )
         }
       }
     }
 
-    private fun arguments(folder: File, fragmentAsInterfaces: Boolean): Options {
+    private fun arguments(folder: File, codegenModels: String): Options {
       val customScalarsMapping = if (folder.name in listOf(
               "custom_scalar_type",
               "input_object_type",
@@ -212,10 +235,11 @@ class CodegenTest(private val folder: File, private val fragmentsCodegenMode: Fr
       val incomingOptions = GraphQLCompiler.IncomingOptions.from(
           roots = Roots(listOf(folder)),
           schemaFile = schemaFile,
+          extraSchemaFiles = emptySet(),
           customScalarsMapping = customScalarsMapping,
-          generateFragmentsAsInterfaces = fragmentAsInterfaces,
+          codegenModels = codegenModels,
           rootPackageName = "com.example.${folder.name}",
-          extraSchemaFiles = emptySet()
+          flattenModels = codegenModels == MODELS_COMPAT
       )
 
       val moduleOptions = GraphQLCompiler.DefaultModuleOptions.copy(
@@ -239,7 +263,6 @@ class CodegenTest(private val folder: File, private val fragmentsCodegenMode: Fr
     @JvmStatic
     @Parameterized.Parameters(name = "{0} ({1})")
     fun data(): Collection<*> {
-      val fragmentsCodegenMode = System.getProperty("fragmentsCodegenMode")?.trim()?.let { kotlin.runCatching { FragmentsCodegenMode.valueOf(it) }.getOrNull() }
       return File("src/test/graphql/com/example/")
           .listFiles()!!
           .filter { it.isDirectory }
@@ -248,26 +271,37 @@ class CodegenTest(private val folder: File, private val fragmentsCodegenMode: Fr
             TestUtils.testFilterMatches(file.absolutePath)
           }
           .flatMap { file ->
+            val codegenModels = System.getProperty("codegenModels")?.trim()
             val queryFile = checkNotNull(file.walk().find { it.extension == "graphql" })
-            val hasNamedFragments = queryFile.readText().contains("fragment\\s\\w*\\son\\s\\w*".toRegex())
-            val hasInlineFragments = queryFile.readText().contains("\\.\\.\\.\\s*on\\s\\w*\\s*".toRegex())
-            if (false && (hasNamedFragments || hasInlineFragments)) {
-              if (fragmentsCodegenMode == null) {
+            val hasFragments = queryFile.parseAsGQLDocument().getOrThrow().hasFragments()
+
+            when {
+              codegenModels != null -> {
                 listOf(
-                    arrayOf(file, FragmentsCodegenMode.AsInterfaces),
-                    arrayOf(file, FragmentsCodegenMode.AsClasses)
-                )
-              } else {
-                listOf(
-                    arrayOf(file, fragmentsCodegenMode)
+                    arrayOf(file, codegenModels, true),
                 )
               }
-            } else {
-              listOf(
-                  arrayOf(file, FragmentsCodegenMode.AsInterfaces),
-              )
+              hasFragments -> {
+                listOf(
+                    arrayOf(file, MODELS_OPERATION_BASED, true),
+                    arrayOf(file, MODELS_RESPONSE_BASED, true),
+                    arrayOf(file, MODELS_COMPAT, true)
+                )
+              }
+              else -> {
+                listOf(
+                    arrayOf(file, MODELS_RESPONSE_BASED, false)
+                )
+              }
             }
           }
+    }
+
+    private fun GQLNode.hasFragments(): Boolean {
+      if (this is GQLInlineFragment || this is GQLFragmentSpread) {
+        return true
+      }
+      return children.any { it.hasFragments() }
     }
   }
 }

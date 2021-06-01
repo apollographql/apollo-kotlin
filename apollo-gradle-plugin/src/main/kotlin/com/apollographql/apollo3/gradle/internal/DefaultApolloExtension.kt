@@ -383,13 +383,17 @@ abstract class DefaultApolloExtension(
 
       task.metadataFiles.from(consumerConfiguration)
 
+      if (service.generateKotlinModels.orNull == false) {
+        println("ApolloGraphQL: setting `generateKotlinModels.set(false)` has no effect. Follow https://github.com/apollographql/apollo-android/issues/2616 for Java codegen")
+      }
       task.rootPackageName.set(service.rootPackageName)
       task.generateAsInternal.set(service.generateAsInternal)
       task.generateFilterNotNull.set(project.isKotlinMultiplatform)
       task.alwaysGenerateTypesMatching.set(service.alwaysGenerateTypesMatching)
       task.projectName.set(project.name)
       task.generateFragmentImplementations.set(service.generateFragmentImplementations)
-      task.generateFragmentsAsInterfaces.set(service.generateFragmentsAsInterfaces)
+      task.codegenModels.set(service.codegenModels)
+      task.flattenModels.set(service.flattenModels)
     }
   }
 
