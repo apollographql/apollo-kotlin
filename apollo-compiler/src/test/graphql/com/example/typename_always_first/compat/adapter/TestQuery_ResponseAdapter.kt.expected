@@ -55,140 +55,140 @@ object TestQuery_ResponseAdapter {
       writer.name("__typename")
       StringAdapter.toJson(writer, customScalarAdapters, value.__typename)
     }
+  }
 
-    object Hero : Adapter<TestQuery.Hero> {
-      val RESPONSE_NAMES: List<String> = listOf("__typename")
+  object Hero : Adapter<TestQuery.Hero> {
+    val RESPONSE_NAMES: List<String> = listOf("__typename")
 
-      override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters):
-          TestQuery.Hero {
-        var __typename: String? = null
+    override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters):
+        TestQuery.Hero {
+      var __typename: String? = null
 
-        while(true) {
-          when (reader.selectName(RESPONSE_NAMES)) {
-            0 -> __typename = StringAdapter.fromJson(reader, customScalarAdapters)
-            else -> break
-          }
-        }
-
-        check(__typename != null) {
-          "__typename was not found"
-        }
-
-        reader.rewind()
-        var asHuman: TestQuery.AsHuman? = null
-        if (possibleTypes("Human").evaluate(emptySet(), __typename)) {
-          asHuman = com.example.typename_always_first.adapter.TestQuery_ResponseAdapter.Data.Hero.AsHuman.fromJson(reader,
-              customScalarAdapters)
-        }
-
-        reader.rewind()
-        var asDroid: TestQuery.AsDroid? = null
-        if (possibleTypes("Droid").evaluate(emptySet(), __typename)) {
-          asDroid = com.example.typename_always_first.adapter.TestQuery_ResponseAdapter.Data.Hero.AsDroid.fromJson(reader,
-              customScalarAdapters)
-        }
-
-        return TestQuery.Hero(
-          __typename = __typename,
-          asHuman = asHuman,
-          asDroid = asDroid
-        )
-      }
-
-      override fun toJson(
-        writer: JsonWriter,
-        customScalarAdapters: CustomScalarAdapters,
-        value: TestQuery.Hero
-      ) {
-        writer.name("__typename")
-        StringAdapter.toJson(writer, customScalarAdapters, value.__typename)
-
-        if (value.asHuman != null) {
-          com.example.typename_always_first.adapter.TestQuery_ResponseAdapter.Data.Hero.AsHuman.toJson(writer,
-              customScalarAdapters, value.asHuman)
-        }
-
-        if (value.asDroid != null) {
-          com.example.typename_always_first.adapter.TestQuery_ResponseAdapter.Data.Hero.AsDroid.toJson(writer,
-              customScalarAdapters, value.asDroid)
+      while(true) {
+        when (reader.selectName(RESPONSE_NAMES)) {
+          0 -> __typename = StringAdapter.fromJson(reader, customScalarAdapters)
+          else -> break
         }
       }
 
-      object AsHuman : Adapter<TestQuery.AsHuman> {
-        val RESPONSE_NAMES: List<String> = listOf("height", "__typename")
+      check(__typename != null) {
+        "__typename was not found"
+      }
 
-        override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters):
-            TestQuery.AsHuman {
-          var height: Double? = null
-          var __typename: String? = null
+      reader.rewind()
+      var asHuman: TestQuery.AsHuman? = null
+      if (possibleTypes("Human").evaluate(emptySet(), __typename)) {
+        asHuman = com.example.typename_always_first.adapter.TestQuery_ResponseAdapter.AsHuman.fromJson(reader,
+            customScalarAdapters)
+      }
 
-          while(true) {
-            when (reader.selectName(RESPONSE_NAMES)) {
-              0 -> height = NullableDoubleAdapter.fromJson(reader, customScalarAdapters)
-              1 -> __typename = StringAdapter.fromJson(reader, customScalarAdapters)
-              else -> break
-            }
-          }
+      reader.rewind()
+      var asDroid: TestQuery.AsDroid? = null
+      if (possibleTypes("Droid").evaluate(emptySet(), __typename)) {
+        asDroid = com.example.typename_always_first.adapter.TestQuery_ResponseAdapter.AsDroid.fromJson(reader,
+            customScalarAdapters)
+      }
 
-          return TestQuery.AsHuman(
-            height = height,
-            __typename = __typename!!
-          )
-        }
+      return TestQuery.Hero(
+        __typename = __typename,
+        asHuman = asHuman,
+        asDroid = asDroid
+      )
+    }
 
-        override fun toJson(
-          writer: JsonWriter,
-          customScalarAdapters: CustomScalarAdapters,
-          value: TestQuery.AsHuman
-        ) {
-          writer.name("height")
-          NullableDoubleAdapter.toJson(writer, customScalarAdapters, value.height)
+    override fun toJson(
+      writer: JsonWriter,
+      customScalarAdapters: CustomScalarAdapters,
+      value: TestQuery.Hero
+    ) {
+      writer.name("__typename")
+      StringAdapter.toJson(writer, customScalarAdapters, value.__typename)
 
-          writer.name("__typename")
-          StringAdapter.toJson(writer, customScalarAdapters, value.__typename)
+      if (value.asHuman != null) {
+        com.example.typename_always_first.adapter.TestQuery_ResponseAdapter.AsHuman.toJson(writer,
+            customScalarAdapters, value.asHuman)
+      }
+
+      if (value.asDroid != null) {
+        com.example.typename_always_first.adapter.TestQuery_ResponseAdapter.AsDroid.toJson(writer,
+            customScalarAdapters, value.asDroid)
+      }
+    }
+  }
+
+  object AsHuman : Adapter<TestQuery.AsHuman> {
+    val RESPONSE_NAMES: List<String> = listOf("height", "__typename")
+
+    override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters):
+        TestQuery.AsHuman {
+      var height: Double? = null
+      var __typename: String? = null
+
+      while(true) {
+        when (reader.selectName(RESPONSE_NAMES)) {
+          0 -> height = NullableDoubleAdapter.fromJson(reader, customScalarAdapters)
+          1 -> __typename = StringAdapter.fromJson(reader, customScalarAdapters)
+          else -> break
         }
       }
 
-      object AsDroid : Adapter<TestQuery.AsDroid> {
-        val RESPONSE_NAMES: List<String> = listOf("name", "__typename", "primaryFunction")
+      return TestQuery.AsHuman(
+        height = height,
+        __typename = __typename!!
+      )
+    }
 
-        override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters):
-            TestQuery.AsDroid {
-          var name: String? = null
-          var __typename: String? = null
-          var primaryFunction: String? = null
+    override fun toJson(
+      writer: JsonWriter,
+      customScalarAdapters: CustomScalarAdapters,
+      value: TestQuery.AsHuman
+    ) {
+      writer.name("height")
+      NullableDoubleAdapter.toJson(writer, customScalarAdapters, value.height)
 
-          while(true) {
-            when (reader.selectName(RESPONSE_NAMES)) {
-              0 -> name = StringAdapter.fromJson(reader, customScalarAdapters)
-              1 -> __typename = StringAdapter.fromJson(reader, customScalarAdapters)
-              2 -> primaryFunction = NullableStringAdapter.fromJson(reader, customScalarAdapters)
-              else -> break
-            }
-          }
+      writer.name("__typename")
+      StringAdapter.toJson(writer, customScalarAdapters, value.__typename)
+    }
+  }
 
-          return TestQuery.AsDroid(
-            name = name!!,
-            __typename = __typename!!,
-            primaryFunction = primaryFunction
-          )
-        }
+  object AsDroid : Adapter<TestQuery.AsDroid> {
+    val RESPONSE_NAMES: List<String> = listOf("name", "__typename", "primaryFunction")
 
-        override fun toJson(
-          writer: JsonWriter,
-          customScalarAdapters: CustomScalarAdapters,
-          value: TestQuery.AsDroid
-        ) {
-          writer.name("name")
-          StringAdapter.toJson(writer, customScalarAdapters, value.name)
+    override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters):
+        TestQuery.AsDroid {
+      var name: String? = null
+      var __typename: String? = null
+      var primaryFunction: String? = null
 
-          writer.name("__typename")
-          StringAdapter.toJson(writer, customScalarAdapters, value.__typename)
-
-          writer.name("primaryFunction")
-          NullableStringAdapter.toJson(writer, customScalarAdapters, value.primaryFunction)
+      while(true) {
+        when (reader.selectName(RESPONSE_NAMES)) {
+          0 -> name = StringAdapter.fromJson(reader, customScalarAdapters)
+          1 -> __typename = StringAdapter.fromJson(reader, customScalarAdapters)
+          2 -> primaryFunction = NullableStringAdapter.fromJson(reader, customScalarAdapters)
+          else -> break
         }
       }
+
+      return TestQuery.AsDroid(
+        name = name!!,
+        __typename = __typename!!,
+        primaryFunction = primaryFunction
+      )
+    }
+
+    override fun toJson(
+      writer: JsonWriter,
+      customScalarAdapters: CustomScalarAdapters,
+      value: TestQuery.AsDroid
+    ) {
+      writer.name("name")
+      StringAdapter.toJson(writer, customScalarAdapters, value.name)
+
+      writer.name("__typename")
+      StringAdapter.toJson(writer, customScalarAdapters, value.__typename)
+
+      writer.name("primaryFunction")
+      NullableStringAdapter.toJson(writer, customScalarAdapters, value.primaryFunction)
     }
   }
 }

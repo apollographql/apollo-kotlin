@@ -54,12 +54,53 @@ object TestQuery_ResponseAdapter {
       writer.name("luke")
       Luke.obj(true).nullable().toJson(writer, customScalarAdapters, value.luke)
     }
+  }
 
-    object R2 : Adapter<TestQuery.R2> {
+  object R2 : Adapter<TestQuery.R2> {
+    val RESPONSE_NAMES: List<String> = listOf("__typename")
+
+    override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters):
+        TestQuery.R2 {
+      var __typename: String? = null
+
+      while(true) {
+        when (reader.selectName(RESPONSE_NAMES)) {
+          0 -> __typename = StringAdapter.fromJson(reader, customScalarAdapters)
+          else -> break
+        }
+      }
+
+      check(__typename != null) {
+        "__typename was not found"
+      }
+
+      reader.rewind()
+      val fragments = com.example.fragments_with_type_condition.adapter.TestQuery_ResponseAdapter.R2.Fragments.fromJson(reader,
+          customScalarAdapters)
+
+      return TestQuery.R2(
+        __typename = __typename,
+        fragments = fragments
+      )
+    }
+
+    override fun toJson(
+      writer: JsonWriter,
+      customScalarAdapters: CustomScalarAdapters,
+      value: TestQuery.R2
+    ) {
+      writer.name("__typename")
+      StringAdapter.toJson(writer, customScalarAdapters, value.__typename)
+
+      com.example.fragments_with_type_condition.adapter.TestQuery_ResponseAdapter.R2.Fragments.toJson(writer,
+          customScalarAdapters, value.fragments)
+    }
+
+    object Fragments : Adapter<TestQuery.R2.Fragments> {
       val RESPONSE_NAMES: List<String> = listOf("__typename")
 
       override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters):
-          TestQuery.R2 {
+          TestQuery.R2.Fragments {
         var __typename: String? = null
 
         while(true) {
@@ -74,88 +115,88 @@ object TestQuery_ResponseAdapter {
         }
 
         reader.rewind()
-        val fragments = com.example.fragments_with_type_condition.adapter.TestQuery_ResponseAdapter.Data.R2.Fragments.fromJson(reader,
-            customScalarAdapters)
+        var humanDetails: HumanDetails? = null
+        if (possibleTypes("Human").evaluate(emptySet(), __typename)) {
+          humanDetails = com.example.fragments_with_type_condition.fragment.HumanDetailsImpl_ResponseAdapter.HumanDetails.fromJson(reader,
+              customScalarAdapters)
+        }
 
-        return TestQuery.R2(
-          __typename = __typename,
-          fragments = fragments
+        reader.rewind()
+        var droidDetails: DroidDetails? = null
+        if (possibleTypes("Droid").evaluate(emptySet(), __typename)) {
+          droidDetails = com.example.fragments_with_type_condition.fragment.DroidDetailsImpl_ResponseAdapter.DroidDetails.fromJson(reader,
+              customScalarAdapters)
+        }
+
+        return TestQuery.R2.Fragments(
+          humanDetails = humanDetails,
+          droidDetails = droidDetails
         )
       }
 
       override fun toJson(
         writer: JsonWriter,
         customScalarAdapters: CustomScalarAdapters,
-        value: TestQuery.R2
+        value: TestQuery.R2.Fragments
       ) {
-        writer.name("__typename")
-        StringAdapter.toJson(writer, customScalarAdapters, value.__typename)
-
-        com.example.fragments_with_type_condition.adapter.TestQuery_ResponseAdapter.Data.R2.Fragments.toJson(writer,
-            customScalarAdapters, value.fragments)
-      }
-
-      object Fragments : Adapter<TestQuery.R2.Fragments> {
-        val RESPONSE_NAMES: List<String> = listOf("__typename")
-
-        override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters):
-            TestQuery.R2.Fragments {
-          var __typename: String? = null
-
-          while(true) {
-            when (reader.selectName(RESPONSE_NAMES)) {
-              0 -> __typename = StringAdapter.fromJson(reader, customScalarAdapters)
-              else -> break
-            }
-          }
-
-          check(__typename != null) {
-            "__typename was not found"
-          }
-
-          reader.rewind()
-          var humanDetails: HumanDetails? = null
-          if (possibleTypes("Human").evaluate(emptySet(), __typename)) {
-            humanDetails = com.example.fragments_with_type_condition.fragment.HumanDetailsImpl_ResponseAdapter.HumanDetails.fromJson(reader,
-                customScalarAdapters)
-          }
-
-          reader.rewind()
-          var droidDetails: DroidDetails? = null
-          if (possibleTypes("Droid").evaluate(emptySet(), __typename)) {
-            droidDetails = com.example.fragments_with_type_condition.fragment.DroidDetailsImpl_ResponseAdapter.DroidDetails.fromJson(reader,
-                customScalarAdapters)
-          }
-
-          return TestQuery.R2.Fragments(
-            humanDetails = humanDetails,
-            droidDetails = droidDetails
-          )
+        if (value.humanDetails != null) {
+          com.example.fragments_with_type_condition.fragment.HumanDetailsImpl_ResponseAdapter.HumanDetails.toJson(writer,
+              customScalarAdapters, value.humanDetails)
         }
 
-        override fun toJson(
-          writer: JsonWriter,
-          customScalarAdapters: CustomScalarAdapters,
-          value: TestQuery.R2.Fragments
-        ) {
-          if (value.humanDetails != null) {
-            com.example.fragments_with_type_condition.fragment.HumanDetailsImpl_ResponseAdapter.HumanDetails.toJson(writer,
-                customScalarAdapters, value.humanDetails)
-          }
-
-          if (value.droidDetails != null) {
-            com.example.fragments_with_type_condition.fragment.DroidDetailsImpl_ResponseAdapter.DroidDetails.toJson(writer,
-                customScalarAdapters, value.droidDetails)
-          }
+        if (value.droidDetails != null) {
+          com.example.fragments_with_type_condition.fragment.DroidDetailsImpl_ResponseAdapter.DroidDetails.toJson(writer,
+              customScalarAdapters, value.droidDetails)
         }
       }
     }
+  }
 
-    object Luke : Adapter<TestQuery.Luke> {
+  object Luke : Adapter<TestQuery.Luke> {
+    val RESPONSE_NAMES: List<String> = listOf("__typename")
+
+    override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters):
+        TestQuery.Luke {
+      var __typename: String? = null
+
+      while(true) {
+        when (reader.selectName(RESPONSE_NAMES)) {
+          0 -> __typename = StringAdapter.fromJson(reader, customScalarAdapters)
+          else -> break
+        }
+      }
+
+      check(__typename != null) {
+        "__typename was not found"
+      }
+
+      reader.rewind()
+      val fragments = com.example.fragments_with_type_condition.adapter.TestQuery_ResponseAdapter.Luke.Fragments.fromJson(reader,
+          customScalarAdapters)
+
+      return TestQuery.Luke(
+        __typename = __typename,
+        fragments = fragments
+      )
+    }
+
+    override fun toJson(
+      writer: JsonWriter,
+      customScalarAdapters: CustomScalarAdapters,
+      value: TestQuery.Luke
+    ) {
+      writer.name("__typename")
+      StringAdapter.toJson(writer, customScalarAdapters, value.__typename)
+
+      com.example.fragments_with_type_condition.adapter.TestQuery_ResponseAdapter.Luke.Fragments.toJson(writer,
+          customScalarAdapters, value.fragments)
+    }
+
+    object Fragments : Adapter<TestQuery.Luke.Fragments> {
       val RESPONSE_NAMES: List<String> = listOf("__typename")
 
       override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters):
-          TestQuery.Luke {
+          TestQuery.Luke.Fragments {
         var __typename: String? = null
 
         while(true) {
@@ -170,79 +211,38 @@ object TestQuery_ResponseAdapter {
         }
 
         reader.rewind()
-        val fragments = com.example.fragments_with_type_condition.adapter.TestQuery_ResponseAdapter.Data.Luke.Fragments.fromJson(reader,
-            customScalarAdapters)
+        var humanDetails: HumanDetails? = null
+        if (possibleTypes("Human").evaluate(emptySet(), __typename)) {
+          humanDetails = com.example.fragments_with_type_condition.fragment.HumanDetailsImpl_ResponseAdapter.HumanDetails.fromJson(reader,
+              customScalarAdapters)
+        }
 
-        return TestQuery.Luke(
-          __typename = __typename,
-          fragments = fragments
+        reader.rewind()
+        var droidDetails: DroidDetails? = null
+        if (possibleTypes("Droid").evaluate(emptySet(), __typename)) {
+          droidDetails = com.example.fragments_with_type_condition.fragment.DroidDetailsImpl_ResponseAdapter.DroidDetails.fromJson(reader,
+              customScalarAdapters)
+        }
+
+        return TestQuery.Luke.Fragments(
+          humanDetails = humanDetails,
+          droidDetails = droidDetails
         )
       }
 
       override fun toJson(
         writer: JsonWriter,
         customScalarAdapters: CustomScalarAdapters,
-        value: TestQuery.Luke
+        value: TestQuery.Luke.Fragments
       ) {
-        writer.name("__typename")
-        StringAdapter.toJson(writer, customScalarAdapters, value.__typename)
-
-        com.example.fragments_with_type_condition.adapter.TestQuery_ResponseAdapter.Data.Luke.Fragments.toJson(writer,
-            customScalarAdapters, value.fragments)
-      }
-
-      object Fragments : Adapter<TestQuery.Luke.Fragments> {
-        val RESPONSE_NAMES: List<String> = listOf("__typename")
-
-        override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters):
-            TestQuery.Luke.Fragments {
-          var __typename: String? = null
-
-          while(true) {
-            when (reader.selectName(RESPONSE_NAMES)) {
-              0 -> __typename = StringAdapter.fromJson(reader, customScalarAdapters)
-              else -> break
-            }
-          }
-
-          check(__typename != null) {
-            "__typename was not found"
-          }
-
-          reader.rewind()
-          var humanDetails: HumanDetails? = null
-          if (possibleTypes("Human").evaluate(emptySet(), __typename)) {
-            humanDetails = com.example.fragments_with_type_condition.fragment.HumanDetailsImpl_ResponseAdapter.HumanDetails.fromJson(reader,
-                customScalarAdapters)
-          }
-
-          reader.rewind()
-          var droidDetails: DroidDetails? = null
-          if (possibleTypes("Droid").evaluate(emptySet(), __typename)) {
-            droidDetails = com.example.fragments_with_type_condition.fragment.DroidDetailsImpl_ResponseAdapter.DroidDetails.fromJson(reader,
-                customScalarAdapters)
-          }
-
-          return TestQuery.Luke.Fragments(
-            humanDetails = humanDetails,
-            droidDetails = droidDetails
-          )
+        if (value.humanDetails != null) {
+          com.example.fragments_with_type_condition.fragment.HumanDetailsImpl_ResponseAdapter.HumanDetails.toJson(writer,
+              customScalarAdapters, value.humanDetails)
         }
 
-        override fun toJson(
-          writer: JsonWriter,
-          customScalarAdapters: CustomScalarAdapters,
-          value: TestQuery.Luke.Fragments
-        ) {
-          if (value.humanDetails != null) {
-            com.example.fragments_with_type_condition.fragment.HumanDetailsImpl_ResponseAdapter.HumanDetails.toJson(writer,
-                customScalarAdapters, value.humanDetails)
-          }
-
-          if (value.droidDetails != null) {
-            com.example.fragments_with_type_condition.fragment.DroidDetailsImpl_ResponseAdapter.DroidDetails.toJson(writer,
-                customScalarAdapters, value.droidDetails)
-          }
+        if (value.droidDetails != null) {
+          com.example.fragments_with_type_condition.fragment.DroidDetailsImpl_ResponseAdapter.DroidDetails.toJson(writer,
+              customScalarAdapters, value.droidDetails)
         }
       }
     }

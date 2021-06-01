@@ -11,11 +11,13 @@ import com.squareup.kotlinpoet.TypeSpec
 class OperationResponseAdapterBuilder(
     val context: CgContext,
     val operation: IrOperation,
+    val flatten: Boolean,
+    val flattenNamesInOrder: Boolean
 ) : CgFileBuilder {
   private val packageName = context.layout.operationAdapterPackageName(operation.filePath)
   private val simpleName = context.layout.operationResponseAdapterWrapperName(operation)
 
-  private val responseAdapterBuilders = operation.dataModelGroup.maybeFlatten(false).map {
+  private val responseAdapterBuilders = operation.dataModelGroup.maybeFlatten(flatten, flattenNamesInOrder).map {
     ResponseAdapterBuilder.create(
         context = context,
         modelGroup = it,

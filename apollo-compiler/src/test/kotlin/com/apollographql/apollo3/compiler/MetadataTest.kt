@@ -42,7 +42,7 @@ class MetadataTest {
           customScalarsMapping = defaultCustomScalarsMapping,
           codegenModels = defaultCodegenModels,
           rootPackageName = "",
-          flattenModels = flattenModels.getOrElse(defaultFlattenModels)
+          flattenModels = false
       )
     } else {
       val metadata = metadataFiles.map { ApolloMetadata.readFrom(it) }.merge()

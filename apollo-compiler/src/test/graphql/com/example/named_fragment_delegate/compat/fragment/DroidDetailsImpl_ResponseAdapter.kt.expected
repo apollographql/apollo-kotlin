@@ -58,34 +58,34 @@ object DroidDetailsImpl_ResponseAdapter {
       writer.name("friends")
       Friend.obj().nullable().list().nullable().toJson(writer, customScalarAdapters, value.friends)
     }
+  }
 
-    object Friend : Adapter<com.example.named_fragment_delegate.fragment.DroidDetails.Friend> {
-      val RESPONSE_NAMES: List<String> = listOf("name")
+  object Friend : Adapter<com.example.named_fragment_delegate.fragment.DroidDetails.Friend> {
+    val RESPONSE_NAMES: List<String> = listOf("name")
 
-      override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters):
-          com.example.named_fragment_delegate.fragment.DroidDetails.Friend {
-        var name: String? = null
+    override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters):
+        com.example.named_fragment_delegate.fragment.DroidDetails.Friend {
+      var name: String? = null
 
-        while(true) {
-          when (reader.selectName(RESPONSE_NAMES)) {
-            0 -> name = StringAdapter.fromJson(reader, customScalarAdapters)
-            else -> break
-          }
+      while(true) {
+        when (reader.selectName(RESPONSE_NAMES)) {
+          0 -> name = StringAdapter.fromJson(reader, customScalarAdapters)
+          else -> break
         }
-
-        return com.example.named_fragment_delegate.fragment.DroidDetails.Friend(
-          name = name!!
-        )
       }
 
-      override fun toJson(
-        writer: JsonWriter,
-        customScalarAdapters: CustomScalarAdapters,
-        value: com.example.named_fragment_delegate.fragment.DroidDetails.Friend
-      ) {
-        writer.name("name")
-        StringAdapter.toJson(writer, customScalarAdapters, value.name)
-      }
+      return com.example.named_fragment_delegate.fragment.DroidDetails.Friend(
+        name = name!!
+      )
+    }
+
+    override fun toJson(
+      writer: JsonWriter,
+      customScalarAdapters: CustomScalarAdapters,
+      value: com.example.named_fragment_delegate.fragment.DroidDetails.Friend
+    ) {
+      writer.name("name")
+      StringAdapter.toJson(writer, customScalarAdapters, value.name)
     }
   }
 }

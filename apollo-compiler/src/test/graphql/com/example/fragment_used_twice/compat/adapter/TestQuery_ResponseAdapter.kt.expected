@@ -48,12 +48,53 @@ object TestQuery_ResponseAdapter {
       writer.name("hero")
       Hero.obj(true).nullable().toJson(writer, customScalarAdapters, value.hero)
     }
+  }
 
-    object Hero : Adapter<TestQuery.Hero> {
+  object Hero : Adapter<TestQuery.Hero> {
+    val RESPONSE_NAMES: List<String> = listOf("__typename")
+
+    override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters):
+        TestQuery.Hero {
+      var __typename: String? = null
+
+      while(true) {
+        when (reader.selectName(RESPONSE_NAMES)) {
+          0 -> __typename = StringAdapter.fromJson(reader, customScalarAdapters)
+          else -> break
+        }
+      }
+
+      check(__typename != null) {
+        "__typename was not found"
+      }
+
+      reader.rewind()
+      val fragments = com.example.fragment_used_twice.adapter.TestQuery_ResponseAdapter.Hero.Fragments.fromJson(reader,
+          customScalarAdapters)
+
+      return TestQuery.Hero(
+        __typename = __typename,
+        fragments = fragments
+      )
+    }
+
+    override fun toJson(
+      writer: JsonWriter,
+      customScalarAdapters: CustomScalarAdapters,
+      value: TestQuery.Hero
+    ) {
+      writer.name("__typename")
+      StringAdapter.toJson(writer, customScalarAdapters, value.__typename)
+
+      com.example.fragment_used_twice.adapter.TestQuery_ResponseAdapter.Hero.Fragments.toJson(writer,
+          customScalarAdapters, value.fragments)
+    }
+
+    object Fragments : Adapter<TestQuery.Hero.Fragments> {
       val RESPONSE_NAMES: List<String> = listOf("__typename")
 
       override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters):
-          TestQuery.Hero {
+          TestQuery.Hero.Fragments {
         var __typename: String? = null
 
         while(true) {
@@ -68,79 +109,38 @@ object TestQuery_ResponseAdapter {
         }
 
         reader.rewind()
-        val fragments = com.example.fragment_used_twice.adapter.TestQuery_ResponseAdapter.Data.Hero.Fragments.fromJson(reader,
-            customScalarAdapters)
+        var heroDetails: HeroDetails? = null
+        if (possibleTypes("Droid","Human").evaluate(emptySet(), __typename)) {
+          heroDetails = com.example.fragment_used_twice.fragment.HeroDetailsImpl_ResponseAdapter.HeroDetails.fromJson(reader,
+              customScalarAdapters)
+        }
 
-        return TestQuery.Hero(
-          __typename = __typename,
-          fragments = fragments
+        reader.rewind()
+        var humanDetails: HumanDetails? = null
+        if (possibleTypes("Human").evaluate(emptySet(), __typename)) {
+          humanDetails = com.example.fragment_used_twice.fragment.HumanDetailsImpl_ResponseAdapter.HumanDetails.fromJson(reader,
+              customScalarAdapters)
+        }
+
+        return TestQuery.Hero.Fragments(
+          heroDetails = heroDetails,
+          humanDetails = humanDetails
         )
       }
 
       override fun toJson(
         writer: JsonWriter,
         customScalarAdapters: CustomScalarAdapters,
-        value: TestQuery.Hero
+        value: TestQuery.Hero.Fragments
       ) {
-        writer.name("__typename")
-        StringAdapter.toJson(writer, customScalarAdapters, value.__typename)
-
-        com.example.fragment_used_twice.adapter.TestQuery_ResponseAdapter.Data.Hero.Fragments.toJson(writer,
-            customScalarAdapters, value.fragments)
-      }
-
-      object Fragments : Adapter<TestQuery.Hero.Fragments> {
-        val RESPONSE_NAMES: List<String> = listOf("__typename")
-
-        override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters):
-            TestQuery.Hero.Fragments {
-          var __typename: String? = null
-
-          while(true) {
-            when (reader.selectName(RESPONSE_NAMES)) {
-              0 -> __typename = StringAdapter.fromJson(reader, customScalarAdapters)
-              else -> break
-            }
-          }
-
-          check(__typename != null) {
-            "__typename was not found"
-          }
-
-          reader.rewind()
-          var heroDetails: HeroDetails? = null
-          if (possibleTypes("Droid","Human").evaluate(emptySet(), __typename)) {
-            heroDetails = com.example.fragment_used_twice.fragment.HeroDetailsImpl_ResponseAdapter.HeroDetails.fromJson(reader,
-                customScalarAdapters)
-          }
-
-          reader.rewind()
-          var humanDetails: HumanDetails? = null
-          if (possibleTypes("Human").evaluate(emptySet(), __typename)) {
-            humanDetails = com.example.fragment_used_twice.fragment.HumanDetailsImpl_ResponseAdapter.HumanDetails.fromJson(reader,
-                customScalarAdapters)
-          }
-
-          return TestQuery.Hero.Fragments(
-            heroDetails = heroDetails,
-            humanDetails = humanDetails
-          )
+        if (value.heroDetails != null) {
+          com.example.fragment_used_twice.fragment.HeroDetailsImpl_ResponseAdapter.HeroDetails.toJson(writer,
+              customScalarAdapters, value.heroDetails)
         }
 
-        override fun toJson(
-          writer: JsonWriter,
-          customScalarAdapters: CustomScalarAdapters,
-          value: TestQuery.Hero.Fragments
-        ) {
-          if (value.heroDetails != null) {
-            com.example.fragment_used_twice.fragment.HeroDetailsImpl_ResponseAdapter.HeroDetails.toJson(writer,
-                customScalarAdapters, value.heroDetails)
-          }
-
-          if (value.humanDetails != null) {
-            com.example.fragment_used_twice.fragment.HumanDetailsImpl_ResponseAdapter.HumanDetails.toJson(writer,
-                customScalarAdapters, value.humanDetails)
-          }
+        if (value.humanDetails != null) {
+          com.example.fragment_used_twice.fragment.HumanDetailsImpl_ResponseAdapter.HumanDetails.toJson(writer,
+              customScalarAdapters, value.humanDetails)
         }
       }
     }

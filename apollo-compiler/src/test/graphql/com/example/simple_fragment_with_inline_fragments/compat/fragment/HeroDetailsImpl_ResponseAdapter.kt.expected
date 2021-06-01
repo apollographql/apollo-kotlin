@@ -58,155 +58,155 @@ object HeroDetailsImpl_ResponseAdapter {
       Friend.obj(true).nullable().list().nullable().toJson(writer, customScalarAdapters,
           value.friends)
     }
+  }
 
-    object Friend :
-        Adapter<com.example.simple_fragment_with_inline_fragments.fragment.HeroDetails.Friend> {
-      val RESPONSE_NAMES: List<String> = listOf("__typename", "name")
+  object Friend :
+      Adapter<com.example.simple_fragment_with_inline_fragments.fragment.HeroDetails.Friend> {
+    val RESPONSE_NAMES: List<String> = listOf("__typename", "name")
 
-      override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters):
-          com.example.simple_fragment_with_inline_fragments.fragment.HeroDetails.Friend {
-        var __typename: String? = null
-        var name: String? = null
+    override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters):
+        com.example.simple_fragment_with_inline_fragments.fragment.HeroDetails.Friend {
+      var __typename: String? = null
+      var name: String? = null
 
-        while(true) {
-          when (reader.selectName(RESPONSE_NAMES)) {
-            0 -> __typename = StringAdapter.fromJson(reader, customScalarAdapters)
-            1 -> name = StringAdapter.fromJson(reader, customScalarAdapters)
-            else -> break
-          }
-        }
-
-        check(__typename != null) {
-          "__typename was not found"
-        }
-
-        reader.rewind()
-        var asHuman: com.example.simple_fragment_with_inline_fragments.fragment.HeroDetails.AsHuman? = null
-        if (possibleTypes("Human").evaluate(emptySet(), __typename)) {
-          asHuman = com.example.simple_fragment_with_inline_fragments.fragment.HeroDetailsImpl_ResponseAdapter.HeroDetails.Friend.AsHuman.fromJson(reader,
-              customScalarAdapters)
-        }
-
-        reader.rewind()
-        var asDroid: com.example.simple_fragment_with_inline_fragments.fragment.HeroDetails.AsDroid? = null
-        if (possibleTypes("Droid").evaluate(emptySet(), __typename)) {
-          asDroid = com.example.simple_fragment_with_inline_fragments.fragment.HeroDetailsImpl_ResponseAdapter.HeroDetails.Friend.AsDroid.fromJson(reader,
-              customScalarAdapters)
-        }
-
-        return com.example.simple_fragment_with_inline_fragments.fragment.HeroDetails.Friend(
-          __typename = __typename,
-          name = name!!,
-          asHuman = asHuman,
-          asDroid = asDroid
-        )
-      }
-
-      override fun toJson(
-        writer: JsonWriter,
-        customScalarAdapters: CustomScalarAdapters,
-        value: com.example.simple_fragment_with_inline_fragments.fragment.HeroDetails.Friend
-      ) {
-        writer.name("__typename")
-        StringAdapter.toJson(writer, customScalarAdapters, value.__typename)
-
-        writer.name("name")
-        StringAdapter.toJson(writer, customScalarAdapters, value.name)
-
-        if (value.asHuman != null) {
-          com.example.simple_fragment_with_inline_fragments.fragment.HeroDetailsImpl_ResponseAdapter.HeroDetails.Friend.AsHuman.toJson(writer,
-              customScalarAdapters, value.asHuman)
-        }
-
-        if (value.asDroid != null) {
-          com.example.simple_fragment_with_inline_fragments.fragment.HeroDetailsImpl_ResponseAdapter.HeroDetails.Friend.AsDroid.toJson(writer,
-              customScalarAdapters, value.asDroid)
+      while(true) {
+        when (reader.selectName(RESPONSE_NAMES)) {
+          0 -> __typename = StringAdapter.fromJson(reader, customScalarAdapters)
+          1 -> name = StringAdapter.fromJson(reader, customScalarAdapters)
+          else -> break
         }
       }
 
-      object AsHuman :
-          Adapter<com.example.simple_fragment_with_inline_fragments.fragment.HeroDetails.AsHuman> {
-        val RESPONSE_NAMES: List<String> = listOf("height", "__typename", "name")
+      check(__typename != null) {
+        "__typename was not found"
+      }
 
-        override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters):
-            com.example.simple_fragment_with_inline_fragments.fragment.HeroDetails.AsHuman {
-          var height: Double? = null
-          var __typename: String? = null
-          var name: String? = null
+      reader.rewind()
+      var asHuman: com.example.simple_fragment_with_inline_fragments.fragment.HeroDetails.AsHuman? = null
+      if (possibleTypes("Human").evaluate(emptySet(), __typename)) {
+        asHuman = com.example.simple_fragment_with_inline_fragments.fragment.HeroDetailsImpl_ResponseAdapter.AsHuman.fromJson(reader,
+            customScalarAdapters)
+      }
 
-          while(true) {
-            when (reader.selectName(RESPONSE_NAMES)) {
-              0 -> height = NullableDoubleAdapter.fromJson(reader, customScalarAdapters)
-              1 -> __typename = StringAdapter.fromJson(reader, customScalarAdapters)
-              2 -> name = StringAdapter.fromJson(reader, customScalarAdapters)
-              else -> break
-            }
-          }
+      reader.rewind()
+      var asDroid: com.example.simple_fragment_with_inline_fragments.fragment.HeroDetails.AsDroid? = null
+      if (possibleTypes("Droid").evaluate(emptySet(), __typename)) {
+        asDroid = com.example.simple_fragment_with_inline_fragments.fragment.HeroDetailsImpl_ResponseAdapter.AsDroid.fromJson(reader,
+            customScalarAdapters)
+      }
 
-          return com.example.simple_fragment_with_inline_fragments.fragment.HeroDetails.AsHuman(
-            height = height,
-            __typename = __typename!!,
-            name = name!!
-          )
-        }
+      return com.example.simple_fragment_with_inline_fragments.fragment.HeroDetails.Friend(
+        __typename = __typename,
+        name = name!!,
+        asHuman = asHuman,
+        asDroid = asDroid
+      )
+    }
 
-        override fun toJson(
-          writer: JsonWriter,
-          customScalarAdapters: CustomScalarAdapters,
-          value: com.example.simple_fragment_with_inline_fragments.fragment.HeroDetails.AsHuman
-        ) {
-          writer.name("height")
-          NullableDoubleAdapter.toJson(writer, customScalarAdapters, value.height)
+    override fun toJson(
+      writer: JsonWriter,
+      customScalarAdapters: CustomScalarAdapters,
+      value: com.example.simple_fragment_with_inline_fragments.fragment.HeroDetails.Friend
+    ) {
+      writer.name("__typename")
+      StringAdapter.toJson(writer, customScalarAdapters, value.__typename)
 
-          writer.name("__typename")
-          StringAdapter.toJson(writer, customScalarAdapters, value.__typename)
+      writer.name("name")
+      StringAdapter.toJson(writer, customScalarAdapters, value.name)
 
-          writer.name("name")
-          StringAdapter.toJson(writer, customScalarAdapters, value.name)
+      if (value.asHuman != null) {
+        com.example.simple_fragment_with_inline_fragments.fragment.HeroDetailsImpl_ResponseAdapter.AsHuman.toJson(writer,
+            customScalarAdapters, value.asHuman)
+      }
+
+      if (value.asDroid != null) {
+        com.example.simple_fragment_with_inline_fragments.fragment.HeroDetailsImpl_ResponseAdapter.AsDroid.toJson(writer,
+            customScalarAdapters, value.asDroid)
+      }
+    }
+  }
+
+  object AsHuman :
+      Adapter<com.example.simple_fragment_with_inline_fragments.fragment.HeroDetails.AsHuman> {
+    val RESPONSE_NAMES: List<String> = listOf("height", "__typename", "name")
+
+    override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters):
+        com.example.simple_fragment_with_inline_fragments.fragment.HeroDetails.AsHuman {
+      var height: Double? = null
+      var __typename: String? = null
+      var name: String? = null
+
+      while(true) {
+        when (reader.selectName(RESPONSE_NAMES)) {
+          0 -> height = NullableDoubleAdapter.fromJson(reader, customScalarAdapters)
+          1 -> __typename = StringAdapter.fromJson(reader, customScalarAdapters)
+          2 -> name = StringAdapter.fromJson(reader, customScalarAdapters)
+          else -> break
         }
       }
 
-      object AsDroid :
-          Adapter<com.example.simple_fragment_with_inline_fragments.fragment.HeroDetails.AsDroid> {
-        val RESPONSE_NAMES: List<String> = listOf("primaryFunction", "__typename", "name")
+      return com.example.simple_fragment_with_inline_fragments.fragment.HeroDetails.AsHuman(
+        height = height,
+        __typename = __typename!!,
+        name = name!!
+      )
+    }
 
-        override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters):
-            com.example.simple_fragment_with_inline_fragments.fragment.HeroDetails.AsDroid {
-          var primaryFunction: String? = null
-          var __typename: String? = null
-          var name: String? = null
+    override fun toJson(
+      writer: JsonWriter,
+      customScalarAdapters: CustomScalarAdapters,
+      value: com.example.simple_fragment_with_inline_fragments.fragment.HeroDetails.AsHuman
+    ) {
+      writer.name("height")
+      NullableDoubleAdapter.toJson(writer, customScalarAdapters, value.height)
 
-          while(true) {
-            when (reader.selectName(RESPONSE_NAMES)) {
-              0 -> primaryFunction = NullableStringAdapter.fromJson(reader, customScalarAdapters)
-              1 -> __typename = StringAdapter.fromJson(reader, customScalarAdapters)
-              2 -> name = StringAdapter.fromJson(reader, customScalarAdapters)
-              else -> break
-            }
-          }
+      writer.name("__typename")
+      StringAdapter.toJson(writer, customScalarAdapters, value.__typename)
 
-          return com.example.simple_fragment_with_inline_fragments.fragment.HeroDetails.AsDroid(
-            primaryFunction = primaryFunction,
-            __typename = __typename!!,
-            name = name!!
-          )
-        }
+      writer.name("name")
+      StringAdapter.toJson(writer, customScalarAdapters, value.name)
+    }
+  }
 
-        override fun toJson(
-          writer: JsonWriter,
-          customScalarAdapters: CustomScalarAdapters,
-          value: com.example.simple_fragment_with_inline_fragments.fragment.HeroDetails.AsDroid
-        ) {
-          writer.name("primaryFunction")
-          NullableStringAdapter.toJson(writer, customScalarAdapters, value.primaryFunction)
+  object AsDroid :
+      Adapter<com.example.simple_fragment_with_inline_fragments.fragment.HeroDetails.AsDroid> {
+    val RESPONSE_NAMES: List<String> = listOf("primaryFunction", "__typename", "name")
 
-          writer.name("__typename")
-          StringAdapter.toJson(writer, customScalarAdapters, value.__typename)
+    override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters):
+        com.example.simple_fragment_with_inline_fragments.fragment.HeroDetails.AsDroid {
+      var primaryFunction: String? = null
+      var __typename: String? = null
+      var name: String? = null
 
-          writer.name("name")
-          StringAdapter.toJson(writer, customScalarAdapters, value.name)
+      while(true) {
+        when (reader.selectName(RESPONSE_NAMES)) {
+          0 -> primaryFunction = NullableStringAdapter.fromJson(reader, customScalarAdapters)
+          1 -> __typename = StringAdapter.fromJson(reader, customScalarAdapters)
+          2 -> name = StringAdapter.fromJson(reader, customScalarAdapters)
+          else -> break
         }
       }
+
+      return com.example.simple_fragment_with_inline_fragments.fragment.HeroDetails.AsDroid(
+        primaryFunction = primaryFunction,
+        __typename = __typename!!,
+        name = name!!
+      )
+    }
+
+    override fun toJson(
+      writer: JsonWriter,
+      customScalarAdapters: CustomScalarAdapters,
+      value: com.example.simple_fragment_with_inline_fragments.fragment.HeroDetails.AsDroid
+    ) {
+      writer.name("primaryFunction")
+      NullableStringAdapter.toJson(writer, customScalarAdapters, value.primaryFunction)
+
+      writer.name("__typename")
+      StringAdapter.toJson(writer, customScalarAdapters, value.__typename)
+
+      writer.name("name")
+      StringAdapter.toJson(writer, customScalarAdapters, value.name)
     }
   }
 }

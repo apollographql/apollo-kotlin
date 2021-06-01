@@ -47,12 +47,53 @@ object TestQuery_ResponseAdapter {
       writer.name("a")
       A.obj(true).nullable().toJson(writer, customScalarAdapters, value.a)
     }
+  }
 
-    object A : Adapter<TestQuery.A> {
+  object A : Adapter<TestQuery.A> {
+    val RESPONSE_NAMES: List<String> = listOf("__typename")
+
+    override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters):
+        TestQuery.A {
+      var __typename: String? = null
+
+      while(true) {
+        when (reader.selectName(RESPONSE_NAMES)) {
+          0 -> __typename = StringAdapter.fromJson(reader, customScalarAdapters)
+          else -> break
+        }
+      }
+
+      check(__typename != null) {
+        "__typename was not found"
+      }
+
+      reader.rewind()
+      val fragments = com.example.multiple_fragments.adapter.TestQuery_ResponseAdapter.A.Fragments.fromJson(reader,
+          customScalarAdapters)
+
+      return TestQuery.A(
+        __typename = __typename,
+        fragments = fragments
+      )
+    }
+
+    override fun toJson(
+      writer: JsonWriter,
+      customScalarAdapters: CustomScalarAdapters,
+      value: TestQuery.A
+    ) {
+      writer.name("__typename")
+      StringAdapter.toJson(writer, customScalarAdapters, value.__typename)
+
+      com.example.multiple_fragments.adapter.TestQuery_ResponseAdapter.A.Fragments.toJson(writer,
+          customScalarAdapters, value.fragments)
+    }
+
+    object Fragments : Adapter<TestQuery.A.Fragments> {
       val RESPONSE_NAMES: List<String> = listOf("__typename")
 
       override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters):
-          TestQuery.A {
+          TestQuery.A.Fragments {
         var __typename: String? = null
 
         while(true) {
@@ -67,66 +108,25 @@ object TestQuery_ResponseAdapter {
         }
 
         reader.rewind()
-        val fragments = com.example.multiple_fragments.adapter.TestQuery_ResponseAdapter.Data.A.Fragments.fromJson(reader,
-            customScalarAdapters)
+        var aFragment: AFragment? = null
+        if (possibleTypes("A").evaluate(emptySet(), __typename)) {
+          aFragment = com.example.multiple_fragments.fragment.AFragmentImpl_ResponseAdapter.AFragment.fromJson(reader,
+              customScalarAdapters)
+        }
 
-        return TestQuery.A(
-          __typename = __typename,
-          fragments = fragments
+        return TestQuery.A.Fragments(
+          aFragment = aFragment
         )
       }
 
       override fun toJson(
         writer: JsonWriter,
         customScalarAdapters: CustomScalarAdapters,
-        value: TestQuery.A
+        value: TestQuery.A.Fragments
       ) {
-        writer.name("__typename")
-        StringAdapter.toJson(writer, customScalarAdapters, value.__typename)
-
-        com.example.multiple_fragments.adapter.TestQuery_ResponseAdapter.Data.A.Fragments.toJson(writer,
-            customScalarAdapters, value.fragments)
-      }
-
-      object Fragments : Adapter<TestQuery.A.Fragments> {
-        val RESPONSE_NAMES: List<String> = listOf("__typename")
-
-        override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters):
-            TestQuery.A.Fragments {
-          var __typename: String? = null
-
-          while(true) {
-            when (reader.selectName(RESPONSE_NAMES)) {
-              0 -> __typename = StringAdapter.fromJson(reader, customScalarAdapters)
-              else -> break
-            }
-          }
-
-          check(__typename != null) {
-            "__typename was not found"
-          }
-
-          reader.rewind()
-          var aFragment: AFragment? = null
-          if (possibleTypes("A").evaluate(emptySet(), __typename)) {
-            aFragment = com.example.multiple_fragments.fragment.AFragmentImpl_ResponseAdapter.AFragment.fromJson(reader,
-                customScalarAdapters)
-          }
-
-          return TestQuery.A.Fragments(
-            aFragment = aFragment
-          )
-        }
-
-        override fun toJson(
-          writer: JsonWriter,
-          customScalarAdapters: CustomScalarAdapters,
-          value: TestQuery.A.Fragments
-        ) {
-          if (value.aFragment != null) {
-            com.example.multiple_fragments.fragment.AFragmentImpl_ResponseAdapter.AFragment.toJson(writer,
-                customScalarAdapters, value.aFragment)
-          }
+        if (value.aFragment != null) {
+          com.example.multiple_fragments.fragment.AFragmentImpl_ResponseAdapter.AFragment.toJson(writer,
+              customScalarAdapters, value.aFragment)
         }
       }
     }

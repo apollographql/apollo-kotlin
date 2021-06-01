@@ -49,342 +49,342 @@ object TestQuery_ResponseAdapter {
       writer.name("hero")
       Hero.obj(true).nullable().toJson(writer, customScalarAdapters, value.hero)
     }
+  }
 
-    object Hero : Adapter<TestQuery.Hero> {
-      val RESPONSE_NAMES: List<String> = listOf("__typename", "name")
+  object Hero : Adapter<TestQuery.Hero> {
+    val RESPONSE_NAMES: List<String> = listOf("__typename", "name")
 
-      override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters):
-          TestQuery.Hero {
-        var __typename: String? = null
-        var name: String? = null
+    override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters):
+        TestQuery.Hero {
+      var __typename: String? = null
+      var name: String? = null
 
-        while(true) {
-          when (reader.selectName(RESPONSE_NAMES)) {
-            0 -> __typename = StringAdapter.fromJson(reader, customScalarAdapters)
-            1 -> name = StringAdapter.fromJson(reader, customScalarAdapters)
-            else -> break
-          }
+      while(true) {
+        when (reader.selectName(RESPONSE_NAMES)) {
+          0 -> __typename = StringAdapter.fromJson(reader, customScalarAdapters)
+          1 -> name = StringAdapter.fromJson(reader, customScalarAdapters)
+          else -> break
         }
+      }
 
-        check(__typename != null) {
-          "__typename was not found"
-        }
+      check(__typename != null) {
+        "__typename was not found"
+      }
 
-        reader.rewind()
-        var asHuman: TestQuery.AsHuman1? = null
-        if (possibleTypes("Human").evaluate(emptySet(), __typename)) {
-          asHuman = com.example.nested_conditional_inline.adapter.TestQuery_ResponseAdapter.Data.Hero.AsHuman.fromJson(reader,
+      reader.rewind()
+      var asHuman: TestQuery.AsHuman1? = null
+      if (possibleTypes("Human").evaluate(emptySet(), __typename)) {
+        asHuman = com.example.nested_conditional_inline.adapter.TestQuery_ResponseAdapter.AsHuman1.fromJson(reader,
+            customScalarAdapters)
+      }
+
+      reader.rewind()
+      var asDroid: TestQuery.AsDroid? = null
+      if (possibleTypes("Droid").evaluate(emptySet(), __typename)) {
+        asDroid = com.example.nested_conditional_inline.adapter.TestQuery_ResponseAdapter.AsDroid.fromJson(reader,
+            customScalarAdapters)
+      }
+
+      return TestQuery.Hero(
+        __typename = __typename,
+        name = name!!,
+        asHuman = asHuman,
+        asDroid = asDroid
+      )
+    }
+
+    override fun toJson(
+      writer: JsonWriter,
+      customScalarAdapters: CustomScalarAdapters,
+      value: TestQuery.Hero
+    ) {
+      writer.name("__typename")
+      StringAdapter.toJson(writer, customScalarAdapters, value.__typename)
+
+      writer.name("name")
+      StringAdapter.toJson(writer, customScalarAdapters, value.name)
+
+      if (value.asHuman != null) {
+        com.example.nested_conditional_inline.adapter.TestQuery_ResponseAdapter.AsHuman1.toJson(writer,
+            customScalarAdapters, value.asHuman)
+      }
+
+      if (value.asDroid != null) {
+        com.example.nested_conditional_inline.adapter.TestQuery_ResponseAdapter.AsDroid.toJson(writer,
+            customScalarAdapters, value.asDroid)
+      }
+    }
+  }
+
+  object AsHuman1 : Adapter<TestQuery.AsHuman1> {
+    val RESPONSE_NAMES: List<String> = listOf("friends", "__typename", "name")
+
+    override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters):
+        TestQuery.AsHuman1 {
+      var friends: List<TestQuery.Friend?>? = null
+      var __typename: String? = null
+      var name: String? = null
+
+      while(true) {
+        when (reader.selectName(RESPONSE_NAMES)) {
+          0 -> friends = Friend.obj(true).nullable().list().nullable().fromJson(reader,
               customScalarAdapters)
+          1 -> __typename = StringAdapter.fromJson(reader, customScalarAdapters)
+          2 -> name = StringAdapter.fromJson(reader, customScalarAdapters)
+          else -> break
         }
+      }
 
-        reader.rewind()
-        var asDroid: TestQuery.AsDroid? = null
-        if (possibleTypes("Droid").evaluate(emptySet(), __typename)) {
-          asDroid = com.example.nested_conditional_inline.adapter.TestQuery_ResponseAdapter.Data.Hero.AsDroid.fromJson(reader,
+      return TestQuery.AsHuman1(
+        friends = friends,
+        __typename = __typename!!,
+        name = name!!
+      )
+    }
+
+    override fun toJson(
+      writer: JsonWriter,
+      customScalarAdapters: CustomScalarAdapters,
+      value: TestQuery.AsHuman1
+    ) {
+      writer.name("friends")
+      Friend.obj(true).nullable().list().nullable().toJson(writer, customScalarAdapters,
+          value.friends)
+
+      writer.name("__typename")
+      StringAdapter.toJson(writer, customScalarAdapters, value.__typename)
+
+      writer.name("name")
+      StringAdapter.toJson(writer, customScalarAdapters, value.name)
+    }
+  }
+
+  object Friend : Adapter<TestQuery.Friend> {
+    val RESPONSE_NAMES: List<String> = listOf("__typename", "name")
+
+    override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters):
+        TestQuery.Friend {
+      var __typename: String? = null
+      var name: String? = null
+
+      while(true) {
+        when (reader.selectName(RESPONSE_NAMES)) {
+          0 -> __typename = StringAdapter.fromJson(reader, customScalarAdapters)
+          1 -> name = StringAdapter.fromJson(reader, customScalarAdapters)
+          else -> break
+        }
+      }
+
+      check(__typename != null) {
+        "__typename was not found"
+      }
+
+      reader.rewind()
+      var asHuman: TestQuery.AsHuman? = null
+      if (possibleTypes("Human").evaluate(emptySet(), __typename)) {
+        asHuman = com.example.nested_conditional_inline.adapter.TestQuery_ResponseAdapter.AsHuman.fromJson(reader,
+            customScalarAdapters)
+      }
+
+      return TestQuery.Friend(
+        __typename = __typename,
+        name = name!!,
+        asHuman = asHuman
+      )
+    }
+
+    override fun toJson(
+      writer: JsonWriter,
+      customScalarAdapters: CustomScalarAdapters,
+      value: TestQuery.Friend
+    ) {
+      writer.name("__typename")
+      StringAdapter.toJson(writer, customScalarAdapters, value.__typename)
+
+      writer.name("name")
+      StringAdapter.toJson(writer, customScalarAdapters, value.name)
+
+      if (value.asHuman != null) {
+        com.example.nested_conditional_inline.adapter.TestQuery_ResponseAdapter.AsHuman.toJson(writer,
+            customScalarAdapters, value.asHuman)
+      }
+    }
+  }
+
+  object AsHuman : Adapter<TestQuery.AsHuman> {
+    val RESPONSE_NAMES: List<String> = listOf("height", "__typename", "name")
+
+    override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters):
+        TestQuery.AsHuman {
+      var height: Double? = null
+      var __typename: String? = null
+      var name: String? = null
+
+      while(true) {
+        when (reader.selectName(RESPONSE_NAMES)) {
+          0 -> height = NullableDoubleAdapter.fromJson(reader, customScalarAdapters)
+          1 -> __typename = StringAdapter.fromJson(reader, customScalarAdapters)
+          2 -> name = StringAdapter.fromJson(reader, customScalarAdapters)
+          else -> break
+        }
+      }
+
+      return TestQuery.AsHuman(
+        height = height,
+        __typename = __typename!!,
+        name = name!!
+      )
+    }
+
+    override fun toJson(
+      writer: JsonWriter,
+      customScalarAdapters: CustomScalarAdapters,
+      value: TestQuery.AsHuman
+    ) {
+      writer.name("height")
+      NullableDoubleAdapter.toJson(writer, customScalarAdapters, value.height)
+
+      writer.name("__typename")
+      StringAdapter.toJson(writer, customScalarAdapters, value.__typename)
+
+      writer.name("name")
+      StringAdapter.toJson(writer, customScalarAdapters, value.name)
+    }
+  }
+
+  object AsDroid : Adapter<TestQuery.AsDroid> {
+    val RESPONSE_NAMES: List<String> = listOf("friends", "__typename", "name")
+
+    override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters):
+        TestQuery.AsDroid {
+      var friends: List<TestQuery.Friend1?>? = null
+      var __typename: String? = null
+      var name: String? = null
+
+      while(true) {
+        when (reader.selectName(RESPONSE_NAMES)) {
+          0 -> friends = Friend1.obj(true).nullable().list().nullable().fromJson(reader,
               customScalarAdapters)
-        }
-
-        return TestQuery.Hero(
-          __typename = __typename,
-          name = name!!,
-          asHuman = asHuman,
-          asDroid = asDroid
-        )
-      }
-
-      override fun toJson(
-        writer: JsonWriter,
-        customScalarAdapters: CustomScalarAdapters,
-        value: TestQuery.Hero
-      ) {
-        writer.name("__typename")
-        StringAdapter.toJson(writer, customScalarAdapters, value.__typename)
-
-        writer.name("name")
-        StringAdapter.toJson(writer, customScalarAdapters, value.name)
-
-        if (value.asHuman != null) {
-          com.example.nested_conditional_inline.adapter.TestQuery_ResponseAdapter.Data.Hero.AsHuman.toJson(writer,
-              customScalarAdapters, value.asHuman)
-        }
-
-        if (value.asDroid != null) {
-          com.example.nested_conditional_inline.adapter.TestQuery_ResponseAdapter.Data.Hero.AsDroid.toJson(writer,
-              customScalarAdapters, value.asDroid)
+          1 -> __typename = StringAdapter.fromJson(reader, customScalarAdapters)
+          2 -> name = StringAdapter.fromJson(reader, customScalarAdapters)
+          else -> break
         }
       }
 
-      object AsHuman : Adapter<TestQuery.AsHuman1> {
-        val RESPONSE_NAMES: List<String> = listOf("friends", "__typename", "name")
+      return TestQuery.AsDroid(
+        friends = friends,
+        __typename = __typename!!,
+        name = name!!
+      )
+    }
 
-        override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters):
-            TestQuery.AsHuman1 {
-          var friends: List<TestQuery.Friend?>? = null
-          var __typename: String? = null
-          var name: String? = null
+    override fun toJson(
+      writer: JsonWriter,
+      customScalarAdapters: CustomScalarAdapters,
+      value: TestQuery.AsDroid
+    ) {
+      writer.name("friends")
+      Friend1.obj(true).nullable().list().nullable().toJson(writer, customScalarAdapters,
+          value.friends)
 
-          while(true) {
-            when (reader.selectName(RESPONSE_NAMES)) {
-              0 -> friends = Friend.obj(true).nullable().list().nullable().fromJson(reader,
-                  customScalarAdapters)
-              1 -> __typename = StringAdapter.fromJson(reader, customScalarAdapters)
-              2 -> name = StringAdapter.fromJson(reader, customScalarAdapters)
-              else -> break
-            }
-          }
+      writer.name("__typename")
+      StringAdapter.toJson(writer, customScalarAdapters, value.__typename)
 
-          return TestQuery.AsHuman1(
-            friends = friends,
-            __typename = __typename!!,
-            name = name!!
-          )
-        }
+      writer.name("name")
+      StringAdapter.toJson(writer, customScalarAdapters, value.name)
+    }
+  }
 
-        override fun toJson(
-          writer: JsonWriter,
-          customScalarAdapters: CustomScalarAdapters,
-          value: TestQuery.AsHuman1
-        ) {
-          writer.name("friends")
-          Friend.obj(true).nullable().list().nullable().toJson(writer, customScalarAdapters,
-              value.friends)
+  object Friend1 : Adapter<TestQuery.Friend1> {
+    val RESPONSE_NAMES: List<String> = listOf("__typename", "name")
 
-          writer.name("__typename")
-          StringAdapter.toJson(writer, customScalarAdapters, value.__typename)
+    override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters):
+        TestQuery.Friend1 {
+      var __typename: String? = null
+      var name: String? = null
 
-          writer.name("name")
-          StringAdapter.toJson(writer, customScalarAdapters, value.name)
-        }
-
-        object Friend : Adapter<TestQuery.Friend> {
-          val RESPONSE_NAMES: List<String> = listOf("__typename", "name")
-
-          override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters):
-              TestQuery.Friend {
-            var __typename: String? = null
-            var name: String? = null
-
-            while(true) {
-              when (reader.selectName(RESPONSE_NAMES)) {
-                0 -> __typename = StringAdapter.fromJson(reader, customScalarAdapters)
-                1 -> name = StringAdapter.fromJson(reader, customScalarAdapters)
-                else -> break
-              }
-            }
-
-            check(__typename != null) {
-              "__typename was not found"
-            }
-
-            reader.rewind()
-            var asHuman: TestQuery.AsHuman? = null
-            if (possibleTypes("Human").evaluate(emptySet(), __typename)) {
-              asHuman = com.example.nested_conditional_inline.adapter.TestQuery_ResponseAdapter.Data.Hero.AsHuman.Friend.AsHuman.fromJson(reader,
-                  customScalarAdapters)
-            }
-
-            return TestQuery.Friend(
-              __typename = __typename,
-              name = name!!,
-              asHuman = asHuman
-            )
-          }
-
-          override fun toJson(
-            writer: JsonWriter,
-            customScalarAdapters: CustomScalarAdapters,
-            value: TestQuery.Friend
-          ) {
-            writer.name("__typename")
-            StringAdapter.toJson(writer, customScalarAdapters, value.__typename)
-
-            writer.name("name")
-            StringAdapter.toJson(writer, customScalarAdapters, value.name)
-
-            if (value.asHuman != null) {
-              com.example.nested_conditional_inline.adapter.TestQuery_ResponseAdapter.Data.Hero.AsHuman.Friend.AsHuman.toJson(writer,
-                  customScalarAdapters, value.asHuman)
-            }
-          }
-
-          object AsHuman : Adapter<TestQuery.AsHuman> {
-            val RESPONSE_NAMES: List<String> = listOf("height", "__typename", "name")
-
-            override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters):
-                TestQuery.AsHuman {
-              var height: Double? = null
-              var __typename: String? = null
-              var name: String? = null
-
-              while(true) {
-                when (reader.selectName(RESPONSE_NAMES)) {
-                  0 -> height = NullableDoubleAdapter.fromJson(reader, customScalarAdapters)
-                  1 -> __typename = StringAdapter.fromJson(reader, customScalarAdapters)
-                  2 -> name = StringAdapter.fromJson(reader, customScalarAdapters)
-                  else -> break
-                }
-              }
-
-              return TestQuery.AsHuman(
-                height = height,
-                __typename = __typename!!,
-                name = name!!
-              )
-            }
-
-            override fun toJson(
-              writer: JsonWriter,
-              customScalarAdapters: CustomScalarAdapters,
-              value: TestQuery.AsHuman
-            ) {
-              writer.name("height")
-              NullableDoubleAdapter.toJson(writer, customScalarAdapters, value.height)
-
-              writer.name("__typename")
-              StringAdapter.toJson(writer, customScalarAdapters, value.__typename)
-
-              writer.name("name")
-              StringAdapter.toJson(writer, customScalarAdapters, value.name)
-            }
-          }
+      while(true) {
+        when (reader.selectName(RESPONSE_NAMES)) {
+          0 -> __typename = StringAdapter.fromJson(reader, customScalarAdapters)
+          1 -> name = StringAdapter.fromJson(reader, customScalarAdapters)
+          else -> break
         }
       }
 
-      object AsDroid : Adapter<TestQuery.AsDroid> {
-        val RESPONSE_NAMES: List<String> = listOf("friends", "__typename", "name")
+      check(__typename != null) {
+        "__typename was not found"
+      }
 
-        override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters):
-            TestQuery.AsDroid {
-          var friends: List<TestQuery.Friend1?>? = null
-          var __typename: String? = null
-          var name: String? = null
+      reader.rewind()
+      var asHuman: TestQuery.AsHuman2? = null
+      if (possibleTypes("Human").evaluate(emptySet(), __typename)) {
+        asHuman = com.example.nested_conditional_inline.adapter.TestQuery_ResponseAdapter.AsHuman2.fromJson(reader,
+            customScalarAdapters)
+      }
 
-          while(true) {
-            when (reader.selectName(RESPONSE_NAMES)) {
-              0 -> friends = Friend.obj(true).nullable().list().nullable().fromJson(reader,
-                  customScalarAdapters)
-              1 -> __typename = StringAdapter.fromJson(reader, customScalarAdapters)
-              2 -> name = StringAdapter.fromJson(reader, customScalarAdapters)
-              else -> break
-            }
-          }
+      return TestQuery.Friend1(
+        __typename = __typename,
+        name = name!!,
+        asHuman = asHuman
+      )
+    }
 
-          return TestQuery.AsDroid(
-            friends = friends,
-            __typename = __typename!!,
-            name = name!!
-          )
-        }
+    override fun toJson(
+      writer: JsonWriter,
+      customScalarAdapters: CustomScalarAdapters,
+      value: TestQuery.Friend1
+    ) {
+      writer.name("__typename")
+      StringAdapter.toJson(writer, customScalarAdapters, value.__typename)
 
-        override fun toJson(
-          writer: JsonWriter,
-          customScalarAdapters: CustomScalarAdapters,
-          value: TestQuery.AsDroid
-        ) {
-          writer.name("friends")
-          Friend.obj(true).nullable().list().nullable().toJson(writer, customScalarAdapters,
-              value.friends)
+      writer.name("name")
+      StringAdapter.toJson(writer, customScalarAdapters, value.name)
 
-          writer.name("__typename")
-          StringAdapter.toJson(writer, customScalarAdapters, value.__typename)
+      if (value.asHuman != null) {
+        com.example.nested_conditional_inline.adapter.TestQuery_ResponseAdapter.AsHuman2.toJson(writer,
+            customScalarAdapters, value.asHuman)
+      }
+    }
+  }
 
-          writer.name("name")
-          StringAdapter.toJson(writer, customScalarAdapters, value.name)
-        }
+  object AsHuman2 : Adapter<TestQuery.AsHuman2> {
+    val RESPONSE_NAMES: List<String> = listOf("height", "__typename", "name")
 
-        object Friend : Adapter<TestQuery.Friend1> {
-          val RESPONSE_NAMES: List<String> = listOf("__typename", "name")
+    override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters):
+        TestQuery.AsHuman2 {
+      var height: Double? = null
+      var __typename: String? = null
+      var name: String? = null
 
-          override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters):
-              TestQuery.Friend1 {
-            var __typename: String? = null
-            var name: String? = null
-
-            while(true) {
-              when (reader.selectName(RESPONSE_NAMES)) {
-                0 -> __typename = StringAdapter.fromJson(reader, customScalarAdapters)
-                1 -> name = StringAdapter.fromJson(reader, customScalarAdapters)
-                else -> break
-              }
-            }
-
-            check(__typename != null) {
-              "__typename was not found"
-            }
-
-            reader.rewind()
-            var asHuman: TestQuery.AsHuman2? = null
-            if (possibleTypes("Human").evaluate(emptySet(), __typename)) {
-              asHuman = com.example.nested_conditional_inline.adapter.TestQuery_ResponseAdapter.Data.Hero.AsDroid.Friend.AsHuman.fromJson(reader,
-                  customScalarAdapters)
-            }
-
-            return TestQuery.Friend1(
-              __typename = __typename,
-              name = name!!,
-              asHuman = asHuman
-            )
-          }
-
-          override fun toJson(
-            writer: JsonWriter,
-            customScalarAdapters: CustomScalarAdapters,
-            value: TestQuery.Friend1
-          ) {
-            writer.name("__typename")
-            StringAdapter.toJson(writer, customScalarAdapters, value.__typename)
-
-            writer.name("name")
-            StringAdapter.toJson(writer, customScalarAdapters, value.name)
-
-            if (value.asHuman != null) {
-              com.example.nested_conditional_inline.adapter.TestQuery_ResponseAdapter.Data.Hero.AsDroid.Friend.AsHuman.toJson(writer,
-                  customScalarAdapters, value.asHuman)
-            }
-          }
-
-          object AsHuman : Adapter<TestQuery.AsHuman2> {
-            val RESPONSE_NAMES: List<String> = listOf("height", "__typename", "name")
-
-            override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters):
-                TestQuery.AsHuman2 {
-              var height: Double? = null
-              var __typename: String? = null
-              var name: String? = null
-
-              while(true) {
-                when (reader.selectName(RESPONSE_NAMES)) {
-                  0 -> height = NullableDoubleAdapter.fromJson(reader, customScalarAdapters)
-                  1 -> __typename = StringAdapter.fromJson(reader, customScalarAdapters)
-                  2 -> name = StringAdapter.fromJson(reader, customScalarAdapters)
-                  else -> break
-                }
-              }
-
-              return TestQuery.AsHuman2(
-                height = height,
-                __typename = __typename!!,
-                name = name!!
-              )
-            }
-
-            override fun toJson(
-              writer: JsonWriter,
-              customScalarAdapters: CustomScalarAdapters,
-              value: TestQuery.AsHuman2
-            ) {
-              writer.name("height")
-              NullableDoubleAdapter.toJson(writer, customScalarAdapters, value.height)
-
-              writer.name("__typename")
-              StringAdapter.toJson(writer, customScalarAdapters, value.__typename)
-
-              writer.name("name")
-              StringAdapter.toJson(writer, customScalarAdapters, value.name)
-            }
-          }
+      while(true) {
+        when (reader.selectName(RESPONSE_NAMES)) {
+          0 -> height = NullableDoubleAdapter.fromJson(reader, customScalarAdapters)
+          1 -> __typename = StringAdapter.fromJson(reader, customScalarAdapters)
+          2 -> name = StringAdapter.fromJson(reader, customScalarAdapters)
+          else -> break
         }
       }
+
+      return TestQuery.AsHuman2(
+        height = height,
+        __typename = __typename!!,
+        name = name!!
+      )
+    }
+
+    override fun toJson(
+      writer: JsonWriter,
+      customScalarAdapters: CustomScalarAdapters,
+      value: TestQuery.AsHuman2
+    ) {
+      writer.name("height")
+      NullableDoubleAdapter.toJson(writer, customScalarAdapters, value.height)
+
+      writer.name("__typename")
+      StringAdapter.toJson(writer, customScalarAdapters, value.__typename)
+
+      writer.name("name")
+      StringAdapter.toJson(writer, customScalarAdapters, value.name)
     }
   }
 }

@@ -40,6 +40,7 @@ class KotlinCodeGen(
     private val inputObjectsToSkip: Set<String>,
     private val generateSchema: Boolean,
     private val flatten: Boolean,
+    private val flattenNamesInOrder: Boolean,
 ) {
   fun write(outputDir: File) {
     val layout = CgLayout(
@@ -96,7 +97,8 @@ class KotlinCodeGen(
               fragment,
               (fragment.interfaceModelGroup ?: fragment.dataModelGroup),
               fragment.interfaceModelGroup == null,
-              flatten
+              flatten,
+              flattenNamesInOrder
           )
       )
       if (fragmentsToSkip.contains(fragment.name)) {
@@ -104,7 +106,7 @@ class KotlinCodeGen(
       }
 
       if (generateFragmentImplementations || fragment.interfaceModelGroup == null) {
-        builders.add(FragmentResponseAdapterBuilder(context, fragment))
+        builders.add(FragmentResponseAdapterBuilder(context, fragment, flatten, flattenNamesInOrder))
         if (fragmentsToSkip.contains(fragment.name)) {
           ignoredBuilders.add(builders.last())
         }
@@ -116,7 +118,8 @@ class KotlinCodeGen(
                 context,
                 generateFilterNotNull,
                 fragment,
-                flatten
+                flatten,
+                flattenNamesInOrder
             )
         )
         if (fragmentsToSkip.contains(fragment.name)) {
@@ -142,7 +145,7 @@ class KotlinCodeGen(
       }
 
       builders.add(OperationResponseFieldsBuilder(context, operation))
-      builders.add(OperationResponseAdapterBuilder(context, operation))
+      builders.add(OperationResponseAdapterBuilder(context, operation, flatten, flattenNamesInOrder))
 
       builders.add(
           OperationBuilder(
@@ -151,7 +154,8 @@ class KotlinCodeGen(
               operationOutput.findOperationId(operation.name),
               generateQueryDocument,
               operation,
-              flatten
+              flatten,
+              flattenNamesInOrder
           )
       )
     }

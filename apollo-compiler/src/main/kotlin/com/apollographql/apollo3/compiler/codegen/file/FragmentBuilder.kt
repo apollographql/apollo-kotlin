@@ -23,14 +23,15 @@ class FragmentBuilder(
     private val context: CgContext,
     private val generateFilterNotNull: Boolean,
     private val fragment: IrNamedFragment,
-    private val flatten: Boolean
+    flatten: Boolean,
+    flattenNamesInOrder: Boolean,
 ) : CgFileBuilder {
   private val layout = context.layout
   private val packageName = layout.fragmentPackageName(fragment.filePath)
   private val simpleName = layout.fragmentName(fragment.name)
 
   private val modelBuilders = if (fragment.interfaceModelGroup != null) {
-    fragment.dataModelGroup.maybeFlatten(flatten).flatMap { it.models }.map {
+    fragment.dataModelGroup.maybeFlatten(flatten, flattenNamesInOrder).flatMap { it.models }.map {
       ModelBuilder(
           context = context,
           model = it,

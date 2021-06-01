@@ -65,13 +65,56 @@ object QueryFragmentImpl_ResponseAdapter {
       writer.name("human")
       Human.obj().nullable().toJson(writer, customScalarAdapters, value.human)
     }
+  }
 
-    object Hero :
-        Adapter<com.example.root_query_fragment_with_nested_fragments.fragment.QueryFragment.Hero> {
+  object Hero :
+      Adapter<com.example.root_query_fragment_with_nested_fragments.fragment.QueryFragment.Hero> {
+    val RESPONSE_NAMES: List<String> = listOf("__typename")
+
+    override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters):
+        com.example.root_query_fragment_with_nested_fragments.fragment.QueryFragment.Hero {
+      var __typename: String? = null
+
+      while(true) {
+        when (reader.selectName(RESPONSE_NAMES)) {
+          0 -> __typename = StringAdapter.fromJson(reader, customScalarAdapters)
+          else -> break
+        }
+      }
+
+      check(__typename != null) {
+        "__typename was not found"
+      }
+
+      reader.rewind()
+      val fragments = com.example.root_query_fragment_with_nested_fragments.fragment.QueryFragmentImpl_ResponseAdapter.Hero.Fragments.fromJson(reader,
+          customScalarAdapters)
+
+      return com.example.root_query_fragment_with_nested_fragments.fragment.QueryFragment.Hero(
+        __typename = __typename,
+        fragments = fragments
+      )
+    }
+
+    override fun toJson(
+      writer: JsonWriter,
+      customScalarAdapters: CustomScalarAdapters,
+      value: com.example.root_query_fragment_with_nested_fragments.fragment.QueryFragment.Hero
+    ) {
+      writer.name("__typename")
+      StringAdapter.toJson(writer, customScalarAdapters, value.__typename)
+
+      com.example.root_query_fragment_with_nested_fragments.fragment.QueryFragmentImpl_ResponseAdapter.Hero.Fragments.toJson(writer,
+          customScalarAdapters, value.fragments)
+    }
+
+    object Fragments :
+        Adapter<com.example.root_query_fragment_with_nested_fragments.fragment.QueryFragment.Hero.Fragments>
+        {
       val RESPONSE_NAMES: List<String> = listOf("__typename")
 
       override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters):
-          com.example.root_query_fragment_with_nested_fragments.fragment.QueryFragment.Hero {
+          com.example.root_query_fragment_with_nested_fragments.fragment.QueryFragment.Hero.Fragments {
         var __typename: String? = null
 
         while(true) {
@@ -86,79 +129,78 @@ object QueryFragmentImpl_ResponseAdapter {
         }
 
         reader.rewind()
-        val fragments = com.example.root_query_fragment_with_nested_fragments.fragment.QueryFragmentImpl_ResponseAdapter.QueryFragment.Hero.Fragments.fromJson(reader,
-            customScalarAdapters)
+        var heroFragment: HeroFragment? = null
+        if (possibleTypes("Droid","Human").evaluate(emptySet(), __typename)) {
+          heroFragment = com.example.root_query_fragment_with_nested_fragments.fragment.HeroFragmentImpl_ResponseAdapter.HeroFragment.fromJson(reader,
+              customScalarAdapters)
+        }
 
-        return com.example.root_query_fragment_with_nested_fragments.fragment.QueryFragment.Hero(
-          __typename = __typename,
-          fragments = fragments
+        return com.example.root_query_fragment_with_nested_fragments.fragment.QueryFragment.Hero.Fragments(
+          heroFragment = heroFragment
         )
       }
 
       override fun toJson(
         writer: JsonWriter,
         customScalarAdapters: CustomScalarAdapters,
-        value: com.example.root_query_fragment_with_nested_fragments.fragment.QueryFragment.Hero
+        value: com.example.root_query_fragment_with_nested_fragments.fragment.QueryFragment.Hero.Fragments
       ) {
-        writer.name("__typename")
-        StringAdapter.toJson(writer, customScalarAdapters, value.__typename)
-
-        com.example.root_query_fragment_with_nested_fragments.fragment.QueryFragmentImpl_ResponseAdapter.QueryFragment.Hero.Fragments.toJson(writer,
-            customScalarAdapters, value.fragments)
-      }
-
-      object Fragments :
-          Adapter<com.example.root_query_fragment_with_nested_fragments.fragment.QueryFragment.Hero.Fragments>
-          {
-        val RESPONSE_NAMES: List<String> = listOf("__typename")
-
-        override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters):
-            com.example.root_query_fragment_with_nested_fragments.fragment.QueryFragment.Hero.Fragments {
-          var __typename: String? = null
-
-          while(true) {
-            when (reader.selectName(RESPONSE_NAMES)) {
-              0 -> __typename = StringAdapter.fromJson(reader, customScalarAdapters)
-              else -> break
-            }
-          }
-
-          check(__typename != null) {
-            "__typename was not found"
-          }
-
-          reader.rewind()
-          var heroFragment: HeroFragment? = null
-          if (possibleTypes("Droid","Human").evaluate(emptySet(), __typename)) {
-            heroFragment = com.example.root_query_fragment_with_nested_fragments.fragment.HeroFragmentImpl_ResponseAdapter.HeroFragment.fromJson(reader,
-                customScalarAdapters)
-          }
-
-          return com.example.root_query_fragment_with_nested_fragments.fragment.QueryFragment.Hero.Fragments(
-            heroFragment = heroFragment
-          )
-        }
-
-        override fun toJson(
-          writer: JsonWriter,
-          customScalarAdapters: CustomScalarAdapters,
-          value: com.example.root_query_fragment_with_nested_fragments.fragment.QueryFragment.Hero.Fragments
-        ) {
-          if (value.heroFragment != null) {
-            com.example.root_query_fragment_with_nested_fragments.fragment.HeroFragmentImpl_ResponseAdapter.HeroFragment.toJson(writer,
-                customScalarAdapters, value.heroFragment)
-          }
+        if (value.heroFragment != null) {
+          com.example.root_query_fragment_with_nested_fragments.fragment.HeroFragmentImpl_ResponseAdapter.HeroFragment.toJson(writer,
+              customScalarAdapters, value.heroFragment)
         }
       }
     }
+  }
 
-    object Droid :
-        Adapter<com.example.root_query_fragment_with_nested_fragments.fragment.QueryFragment.Droid>
+  object Droid :
+      Adapter<com.example.root_query_fragment_with_nested_fragments.fragment.QueryFragment.Droid> {
+    val RESPONSE_NAMES: List<String> = listOf("__typename")
+
+    override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters):
+        com.example.root_query_fragment_with_nested_fragments.fragment.QueryFragment.Droid {
+      var __typename: String? = null
+
+      while(true) {
+        when (reader.selectName(RESPONSE_NAMES)) {
+          0 -> __typename = StringAdapter.fromJson(reader, customScalarAdapters)
+          else -> break
+        }
+      }
+
+      check(__typename != null) {
+        "__typename was not found"
+      }
+
+      reader.rewind()
+      val fragments = com.example.root_query_fragment_with_nested_fragments.fragment.QueryFragmentImpl_ResponseAdapter.Droid.Fragments.fromJson(reader,
+          customScalarAdapters)
+
+      return com.example.root_query_fragment_with_nested_fragments.fragment.QueryFragment.Droid(
+        __typename = __typename,
+        fragments = fragments
+      )
+    }
+
+    override fun toJson(
+      writer: JsonWriter,
+      customScalarAdapters: CustomScalarAdapters,
+      value: com.example.root_query_fragment_with_nested_fragments.fragment.QueryFragment.Droid
+    ) {
+      writer.name("__typename")
+      StringAdapter.toJson(writer, customScalarAdapters, value.__typename)
+
+      com.example.root_query_fragment_with_nested_fragments.fragment.QueryFragmentImpl_ResponseAdapter.Droid.Fragments.toJson(writer,
+          customScalarAdapters, value.fragments)
+    }
+
+    object Fragments :
+        Adapter<com.example.root_query_fragment_with_nested_fragments.fragment.QueryFragment.Droid.Fragments>
         {
       val RESPONSE_NAMES: List<String> = listOf("__typename")
 
       override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters):
-          com.example.root_query_fragment_with_nested_fragments.fragment.QueryFragment.Droid {
+          com.example.root_query_fragment_with_nested_fragments.fragment.QueryFragment.Droid.Fragments {
         var __typename: String? = null
 
         while(true) {
@@ -173,113 +215,69 @@ object QueryFragmentImpl_ResponseAdapter {
         }
 
         reader.rewind()
-        val fragments = com.example.root_query_fragment_with_nested_fragments.fragment.QueryFragmentImpl_ResponseAdapter.QueryFragment.Droid.Fragments.fromJson(reader,
-            customScalarAdapters)
+        var droidFragment: DroidFragment? = null
+        if (possibleTypes("Droid").evaluate(emptySet(), __typename)) {
+          droidFragment = com.example.root_query_fragment_with_nested_fragments.fragment.DroidFragmentImpl_ResponseAdapter.DroidFragment.fromJson(reader,
+              customScalarAdapters)
+        }
 
-        return com.example.root_query_fragment_with_nested_fragments.fragment.QueryFragment.Droid(
-          __typename = __typename,
-          fragments = fragments
+        return com.example.root_query_fragment_with_nested_fragments.fragment.QueryFragment.Droid.Fragments(
+          droidFragment = droidFragment
         )
       }
 
       override fun toJson(
         writer: JsonWriter,
         customScalarAdapters: CustomScalarAdapters,
-        value: com.example.root_query_fragment_with_nested_fragments.fragment.QueryFragment.Droid
+        value: com.example.root_query_fragment_with_nested_fragments.fragment.QueryFragment.Droid.Fragments
       ) {
-        writer.name("__typename")
-        StringAdapter.toJson(writer, customScalarAdapters, value.__typename)
-
-        com.example.root_query_fragment_with_nested_fragments.fragment.QueryFragmentImpl_ResponseAdapter.QueryFragment.Droid.Fragments.toJson(writer,
-            customScalarAdapters, value.fragments)
-      }
-
-      object Fragments :
-          Adapter<com.example.root_query_fragment_with_nested_fragments.fragment.QueryFragment.Droid.Fragments>
-          {
-        val RESPONSE_NAMES: List<String> = listOf("__typename")
-
-        override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters):
-            com.example.root_query_fragment_with_nested_fragments.fragment.QueryFragment.Droid.Fragments {
-          var __typename: String? = null
-
-          while(true) {
-            when (reader.selectName(RESPONSE_NAMES)) {
-              0 -> __typename = StringAdapter.fromJson(reader, customScalarAdapters)
-              else -> break
-            }
-          }
-
-          check(__typename != null) {
-            "__typename was not found"
-          }
-
-          reader.rewind()
-          var droidFragment: DroidFragment? = null
-          if (possibleTypes("Droid").evaluate(emptySet(), __typename)) {
-            droidFragment = com.example.root_query_fragment_with_nested_fragments.fragment.DroidFragmentImpl_ResponseAdapter.DroidFragment.fromJson(reader,
-                customScalarAdapters)
-          }
-
-          return com.example.root_query_fragment_with_nested_fragments.fragment.QueryFragment.Droid.Fragments(
-            droidFragment = droidFragment
-          )
-        }
-
-        override fun toJson(
-          writer: JsonWriter,
-          customScalarAdapters: CustomScalarAdapters,
-          value: com.example.root_query_fragment_with_nested_fragments.fragment.QueryFragment.Droid.Fragments
-        ) {
-          if (value.droidFragment != null) {
-            com.example.root_query_fragment_with_nested_fragments.fragment.DroidFragmentImpl_ResponseAdapter.DroidFragment.toJson(writer,
-                customScalarAdapters, value.droidFragment)
-          }
+        if (value.droidFragment != null) {
+          com.example.root_query_fragment_with_nested_fragments.fragment.DroidFragmentImpl_ResponseAdapter.DroidFragment.toJson(writer,
+              customScalarAdapters, value.droidFragment)
         }
       }
     }
+  }
 
-    object Human :
-        Adapter<com.example.root_query_fragment_with_nested_fragments.fragment.QueryFragment.Human>
-        {
-      val RESPONSE_NAMES: List<String> = listOf("__typename", "name", "homePlanet")
+  object Human :
+      Adapter<com.example.root_query_fragment_with_nested_fragments.fragment.QueryFragment.Human> {
+    val RESPONSE_NAMES: List<String> = listOf("__typename", "name", "homePlanet")
 
-      override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters):
-          com.example.root_query_fragment_with_nested_fragments.fragment.QueryFragment.Human {
-        var __typename: String? = null
-        var name: String? = null
-        var homePlanet: String? = null
+    override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters):
+        com.example.root_query_fragment_with_nested_fragments.fragment.QueryFragment.Human {
+      var __typename: String? = null
+      var name: String? = null
+      var homePlanet: String? = null
 
-        while(true) {
-          when (reader.selectName(RESPONSE_NAMES)) {
-            0 -> __typename = StringAdapter.fromJson(reader, customScalarAdapters)
-            1 -> name = StringAdapter.fromJson(reader, customScalarAdapters)
-            2 -> homePlanet = NullableStringAdapter.fromJson(reader, customScalarAdapters)
-            else -> break
-          }
+      while(true) {
+        when (reader.selectName(RESPONSE_NAMES)) {
+          0 -> __typename = StringAdapter.fromJson(reader, customScalarAdapters)
+          1 -> name = StringAdapter.fromJson(reader, customScalarAdapters)
+          2 -> homePlanet = NullableStringAdapter.fromJson(reader, customScalarAdapters)
+          else -> break
         }
-
-        return com.example.root_query_fragment_with_nested_fragments.fragment.QueryFragment.Human(
-          __typename = __typename!!,
-          name = name!!,
-          homePlanet = homePlanet
-        )
       }
 
-      override fun toJson(
-        writer: JsonWriter,
-        customScalarAdapters: CustomScalarAdapters,
-        value: com.example.root_query_fragment_with_nested_fragments.fragment.QueryFragment.Human
-      ) {
-        writer.name("__typename")
-        StringAdapter.toJson(writer, customScalarAdapters, value.__typename)
+      return com.example.root_query_fragment_with_nested_fragments.fragment.QueryFragment.Human(
+        __typename = __typename!!,
+        name = name!!,
+        homePlanet = homePlanet
+      )
+    }
 
-        writer.name("name")
-        StringAdapter.toJson(writer, customScalarAdapters, value.name)
+    override fun toJson(
+      writer: JsonWriter,
+      customScalarAdapters: CustomScalarAdapters,
+      value: com.example.root_query_fragment_with_nested_fragments.fragment.QueryFragment.Human
+    ) {
+      writer.name("__typename")
+      StringAdapter.toJson(writer, customScalarAdapters, value.__typename)
 
-        writer.name("homePlanet")
-        NullableStringAdapter.toJson(writer, customScalarAdapters, value.homePlanet)
-      }
+      writer.name("name")
+      StringAdapter.toJson(writer, customScalarAdapters, value.name)
+
+      writer.name("homePlanet")
+      NullableStringAdapter.toJson(writer, customScalarAdapters, value.homePlanet)
     }
   }
 }

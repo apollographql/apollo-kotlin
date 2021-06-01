@@ -53,127 +53,127 @@ object GetHuman_ResponseAdapter {
       writer.name("node")
       Node.obj(true).toJson(writer, customScalarAdapters, value.node)
     }
+  }
 
-    object Human : Adapter<GetHuman.Human> {
-      val RESPONSE_NAMES: List<String> = listOf("id", "name", "height")
+  object Human : Adapter<GetHuman.Human> {
+    val RESPONSE_NAMES: List<String> = listOf("id", "name", "height")
 
-      override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters):
-          GetHuman.Human {
-        var id: String? = null
-        var name: String? = null
-        var height: Double? = null
+    override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters):
+        GetHuman.Human {
+      var id: String? = null
+      var name: String? = null
+      var height: Double? = null
 
-        while(true) {
-          when (reader.selectName(RESPONSE_NAMES)) {
-            0 -> id = StringAdapter.fromJson(reader, customScalarAdapters)
-            1 -> name = StringAdapter.fromJson(reader, customScalarAdapters)
-            2 -> height = DoubleAdapter.fromJson(reader, customScalarAdapters)
-            else -> break
-          }
+      while(true) {
+        when (reader.selectName(RESPONSE_NAMES)) {
+          0 -> id = StringAdapter.fromJson(reader, customScalarAdapters)
+          1 -> name = StringAdapter.fromJson(reader, customScalarAdapters)
+          2 -> height = DoubleAdapter.fromJson(reader, customScalarAdapters)
+          else -> break
         }
-
-        return GetHuman.Human(
-          id = id!!,
-          name = name!!,
-          height = height!!
-        )
       }
 
-      override fun toJson(
-        writer: JsonWriter,
-        customScalarAdapters: CustomScalarAdapters,
-        value: GetHuman.Human
-      ) {
-        writer.name("id")
-        StringAdapter.toJson(writer, customScalarAdapters, value.id)
-
-        writer.name("name")
-        StringAdapter.toJson(writer, customScalarAdapters, value.name)
-
-        writer.name("height")
-        DoubleAdapter.toJson(writer, customScalarAdapters, value.height)
-      }
+      return GetHuman.Human(
+        id = id!!,
+        name = name!!,
+        height = height!!
+      )
     }
 
-    object Node : Adapter<GetHuman.Node> {
-      val RESPONSE_NAMES: List<String> = listOf("__typename")
+    override fun toJson(
+      writer: JsonWriter,
+      customScalarAdapters: CustomScalarAdapters,
+      value: GetHuman.Human
+    ) {
+      writer.name("id")
+      StringAdapter.toJson(writer, customScalarAdapters, value.id)
 
-      override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters):
-          GetHuman.Node {
-        var __typename: String? = null
+      writer.name("name")
+      StringAdapter.toJson(writer, customScalarAdapters, value.name)
 
-        while(true) {
-          when (reader.selectName(RESPONSE_NAMES)) {
-            0 -> __typename = StringAdapter.fromJson(reader, customScalarAdapters)
-            else -> break
-          }
-        }
+      writer.name("height")
+      DoubleAdapter.toJson(writer, customScalarAdapters, value.height)
+    }
+  }
 
-        check(__typename != null) {
-          "__typename was not found"
-        }
+  object Node : Adapter<GetHuman.Node> {
+    val RESPONSE_NAMES: List<String> = listOf("__typename")
 
-        reader.rewind()
-        var asHuman: GetHuman.AsHuman? = null
-        if (possibleTypes("Human").evaluate(emptySet(), __typename)) {
-          asHuman = com.example.interface_on_interface.adapter.GetHuman_ResponseAdapter.Data.Node.AsHuman.fromJson(reader,
-              customScalarAdapters)
-        }
+    override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters):
+        GetHuman.Node {
+      var __typename: String? = null
 
-        return GetHuman.Node(
-          __typename = __typename,
-          asHuman = asHuman
-        )
-      }
-
-      override fun toJson(
-        writer: JsonWriter,
-        customScalarAdapters: CustomScalarAdapters,
-        value: GetHuman.Node
-      ) {
-        writer.name("__typename")
-        StringAdapter.toJson(writer, customScalarAdapters, value.__typename)
-
-        if (value.asHuman != null) {
-          com.example.interface_on_interface.adapter.GetHuman_ResponseAdapter.Data.Node.AsHuman.toJson(writer,
-              customScalarAdapters, value.asHuman)
+      while(true) {
+        when (reader.selectName(RESPONSE_NAMES)) {
+          0 -> __typename = StringAdapter.fromJson(reader, customScalarAdapters)
+          else -> break
         }
       }
 
-      object AsHuman : Adapter<GetHuman.AsHuman> {
-        val RESPONSE_NAMES: List<String> = listOf("height", "__typename")
+      check(__typename != null) {
+        "__typename was not found"
+      }
 
-        override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters):
-            GetHuman.AsHuman {
-          var height: Double? = null
-          var __typename: String? = null
+      reader.rewind()
+      var asHuman: GetHuman.AsHuman? = null
+      if (possibleTypes("Human").evaluate(emptySet(), __typename)) {
+        asHuman = com.example.interface_on_interface.adapter.GetHuman_ResponseAdapter.AsHuman.fromJson(reader,
+            customScalarAdapters)
+      }
 
-          while(true) {
-            when (reader.selectName(RESPONSE_NAMES)) {
-              0 -> height = DoubleAdapter.fromJson(reader, customScalarAdapters)
-              1 -> __typename = StringAdapter.fromJson(reader, customScalarAdapters)
-              else -> break
-            }
-          }
+      return GetHuman.Node(
+        __typename = __typename,
+        asHuman = asHuman
+      )
+    }
 
-          return GetHuman.AsHuman(
-            height = height!!,
-            __typename = __typename!!
-          )
-        }
+    override fun toJson(
+      writer: JsonWriter,
+      customScalarAdapters: CustomScalarAdapters,
+      value: GetHuman.Node
+    ) {
+      writer.name("__typename")
+      StringAdapter.toJson(writer, customScalarAdapters, value.__typename)
 
-        override fun toJson(
-          writer: JsonWriter,
-          customScalarAdapters: CustomScalarAdapters,
-          value: GetHuman.AsHuman
-        ) {
-          writer.name("height")
-          DoubleAdapter.toJson(writer, customScalarAdapters, value.height)
+      if (value.asHuman != null) {
+        com.example.interface_on_interface.adapter.GetHuman_ResponseAdapter.AsHuman.toJson(writer,
+            customScalarAdapters, value.asHuman)
+      }
+    }
+  }
 
-          writer.name("__typename")
-          StringAdapter.toJson(writer, customScalarAdapters, value.__typename)
+  object AsHuman : Adapter<GetHuman.AsHuman> {
+    val RESPONSE_NAMES: List<String> = listOf("height", "__typename")
+
+    override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters):
+        GetHuman.AsHuman {
+      var height: Double? = null
+      var __typename: String? = null
+
+      while(true) {
+        when (reader.selectName(RESPONSE_NAMES)) {
+          0 -> height = DoubleAdapter.fromJson(reader, customScalarAdapters)
+          1 -> __typename = StringAdapter.fromJson(reader, customScalarAdapters)
+          else -> break
         }
       }
+
+      return GetHuman.AsHuman(
+        height = height!!,
+        __typename = __typename!!
+      )
+    }
+
+    override fun toJson(
+      writer: JsonWriter,
+      customScalarAdapters: CustomScalarAdapters,
+      value: GetHuman.AsHuman
+    ) {
+      writer.name("height")
+      DoubleAdapter.toJson(writer, customScalarAdapters, value.height)
+
+      writer.name("__typename")
+      StringAdapter.toJson(writer, customScalarAdapters, value.__typename)
     }
   }
 }

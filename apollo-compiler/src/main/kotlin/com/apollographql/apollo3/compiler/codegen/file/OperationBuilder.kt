@@ -38,7 +38,8 @@ class OperationBuilder(
     private val operationId: String,
     private val generateQueryDocument: Boolean,
     private val operation: IrOperation,
-    private val flatten: Boolean
+    flatten: Boolean,
+    flattenNamesInOrder: Boolean
 ): CgFileBuilder {
   private val layout = context.layout
   private val packageName = layout.operationPackageName(operation.filePath)
@@ -50,7 +51,7 @@ class OperationBuilder(
     IrOperationType.Subscription -> Subscription.Data::class
   }.asClassName()
 
-  private val modelBuilders = operation.dataModelGroup.maybeFlatten(flatten).flatMap {
+  private val modelBuilders = operation.dataModelGroup.maybeFlatten(flatten, flattenNamesInOrder).flatMap {
     it.models
   }.map {
     ModelBuilder(

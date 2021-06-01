@@ -239,7 +239,7 @@ class CodegenTest(private val folder: File, private val codegenModels: String, p
           customScalarsMapping = customScalarsMapping,
           codegenModels = codegenModels,
           rootPackageName = "com.example.${folder.name}",
-          flattenModels = flattenModels.getOrElse(defaultFlattenModels)
+          flattenModels = codegenModels == MODELS_COMPAT
       )
 
       val moduleOptions = GraphQLCompiler.DefaultModuleOptions.copy(

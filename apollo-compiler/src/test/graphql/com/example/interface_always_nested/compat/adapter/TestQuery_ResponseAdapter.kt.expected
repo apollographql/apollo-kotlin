@@ -47,144 +47,144 @@ object TestQuery_ResponseAdapter {
       writer.name("root")
       Root.obj(true).nullable().toJson(writer, customScalarAdapters, value.root)
     }
+  }
 
-    object Root : Adapter<TestQuery.Root> {
-      val RESPONSE_NAMES: List<String> = listOf("__typename")
+  object Root : Adapter<TestQuery.Root> {
+    val RESPONSE_NAMES: List<String> = listOf("__typename")
 
-      override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters):
-          TestQuery.Root {
-        var __typename: String? = null
+    override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters):
+        TestQuery.Root {
+      var __typename: String? = null
 
-        while(true) {
-          when (reader.selectName(RESPONSE_NAMES)) {
-            0 -> __typename = StringAdapter.fromJson(reader, customScalarAdapters)
-            else -> break
-          }
-        }
-
-        check(__typename != null) {
-          "__typename was not found"
-        }
-
-        reader.rewind()
-        var asA: TestQuery.AsA? = null
-        if (possibleTypes("ABC","AC").evaluate(emptySet(), __typename)) {
-          asA = com.example.interface_always_nested.adapter.TestQuery_ResponseAdapter.Data.Root.AsA.fromJson(reader,
-              customScalarAdapters)
-        }
-
-        return TestQuery.Root(
-          __typename = __typename,
-          asA = asA
-        )
-      }
-
-      override fun toJson(
-        writer: JsonWriter,
-        customScalarAdapters: CustomScalarAdapters,
-        value: TestQuery.Root
-      ) {
-        writer.name("__typename")
-        StringAdapter.toJson(writer, customScalarAdapters, value.__typename)
-
-        if (value.asA != null) {
-          com.example.interface_always_nested.adapter.TestQuery_ResponseAdapter.Data.Root.AsA.toJson(writer,
-              customScalarAdapters, value.asA)
+      while(true) {
+        when (reader.selectName(RESPONSE_NAMES)) {
+          0 -> __typename = StringAdapter.fromJson(reader, customScalarAdapters)
+          else -> break
         }
       }
 
-      object AsA : Adapter<TestQuery.AsA> {
-        val RESPONSE_NAMES: List<String> = listOf("__typename", "fieldA1")
+      check(__typename != null) {
+        "__typename was not found"
+      }
 
-        override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters):
-            TestQuery.AsA {
-          var __typename: String? = null
-          var fieldA1: String? = null
+      reader.rewind()
+      var asA: TestQuery.AsA? = null
+      if (possibleTypes("ABC","AC").evaluate(emptySet(), __typename)) {
+        asA = com.example.interface_always_nested.adapter.TestQuery_ResponseAdapter.AsA.fromJson(reader,
+            customScalarAdapters)
+      }
 
-          while(true) {
-            when (reader.selectName(RESPONSE_NAMES)) {
-              0 -> __typename = StringAdapter.fromJson(reader, customScalarAdapters)
-              1 -> fieldA1 = NullableStringAdapter.fromJson(reader, customScalarAdapters)
-              else -> break
-            }
-          }
+      return TestQuery.Root(
+        __typename = __typename,
+        asA = asA
+      )
+    }
 
-          check(__typename != null) {
-            "__typename was not found"
-          }
+    override fun toJson(
+      writer: JsonWriter,
+      customScalarAdapters: CustomScalarAdapters,
+      value: TestQuery.Root
+    ) {
+      writer.name("__typename")
+      StringAdapter.toJson(writer, customScalarAdapters, value.__typename)
 
-          reader.rewind()
-          var asB: TestQuery.AsB? = null
-          if (possibleTypes("ABC","BC").evaluate(emptySet(), __typename)) {
-            asB = com.example.interface_always_nested.adapter.TestQuery_ResponseAdapter.Data.Root.AsA.AsB.fromJson(reader,
-                customScalarAdapters)
-          }
+      if (value.asA != null) {
+        com.example.interface_always_nested.adapter.TestQuery_ResponseAdapter.AsA.toJson(writer,
+            customScalarAdapters, value.asA)
+      }
+    }
+  }
 
-          return TestQuery.AsA(
-            __typename = __typename,
-            fieldA1 = fieldA1,
-            asB = asB
-          )
-        }
+  object AsA : Adapter<TestQuery.AsA> {
+    val RESPONSE_NAMES: List<String> = listOf("__typename", "fieldA1")
 
-        override fun toJson(
-          writer: JsonWriter,
-          customScalarAdapters: CustomScalarAdapters,
-          value: TestQuery.AsA
-        ) {
-          writer.name("__typename")
-          StringAdapter.toJson(writer, customScalarAdapters, value.__typename)
+    override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters):
+        TestQuery.AsA {
+      var __typename: String? = null
+      var fieldA1: String? = null
 
-          writer.name("fieldA1")
-          NullableStringAdapter.toJson(writer, customScalarAdapters, value.fieldA1)
-
-          if (value.asB != null) {
-            com.example.interface_always_nested.adapter.TestQuery_ResponseAdapter.Data.Root.AsA.AsB.toJson(writer,
-                customScalarAdapters, value.asB)
-          }
-        }
-
-        object AsB : Adapter<TestQuery.AsB> {
-          val RESPONSE_NAMES: List<String> = listOf("fieldB1", "__typename", "fieldA1")
-
-          override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters):
-              TestQuery.AsB {
-            var fieldB1: String? = null
-            var __typename: String? = null
-            var fieldA1: String? = null
-
-            while(true) {
-              when (reader.selectName(RESPONSE_NAMES)) {
-                0 -> fieldB1 = NullableStringAdapter.fromJson(reader, customScalarAdapters)
-                1 -> __typename = StringAdapter.fromJson(reader, customScalarAdapters)
-                2 -> fieldA1 = NullableStringAdapter.fromJson(reader, customScalarAdapters)
-                else -> break
-              }
-            }
-
-            return TestQuery.AsB(
-              fieldB1 = fieldB1,
-              __typename = __typename!!,
-              fieldA1 = fieldA1
-            )
-          }
-
-          override fun toJson(
-            writer: JsonWriter,
-            customScalarAdapters: CustomScalarAdapters,
-            value: TestQuery.AsB
-          ) {
-            writer.name("fieldB1")
-            NullableStringAdapter.toJson(writer, customScalarAdapters, value.fieldB1)
-
-            writer.name("__typename")
-            StringAdapter.toJson(writer, customScalarAdapters, value.__typename)
-
-            writer.name("fieldA1")
-            NullableStringAdapter.toJson(writer, customScalarAdapters, value.fieldA1)
-          }
+      while(true) {
+        when (reader.selectName(RESPONSE_NAMES)) {
+          0 -> __typename = StringAdapter.fromJson(reader, customScalarAdapters)
+          1 -> fieldA1 = NullableStringAdapter.fromJson(reader, customScalarAdapters)
+          else -> break
         }
       }
+
+      check(__typename != null) {
+        "__typename was not found"
+      }
+
+      reader.rewind()
+      var asB: TestQuery.AsB? = null
+      if (possibleTypes("ABC","BC").evaluate(emptySet(), __typename)) {
+        asB = com.example.interface_always_nested.adapter.TestQuery_ResponseAdapter.AsB.fromJson(reader,
+            customScalarAdapters)
+      }
+
+      return TestQuery.AsA(
+        __typename = __typename,
+        fieldA1 = fieldA1,
+        asB = asB
+      )
+    }
+
+    override fun toJson(
+      writer: JsonWriter,
+      customScalarAdapters: CustomScalarAdapters,
+      value: TestQuery.AsA
+    ) {
+      writer.name("__typename")
+      StringAdapter.toJson(writer, customScalarAdapters, value.__typename)
+
+      writer.name("fieldA1")
+      NullableStringAdapter.toJson(writer, customScalarAdapters, value.fieldA1)
+
+      if (value.asB != null) {
+        com.example.interface_always_nested.adapter.TestQuery_ResponseAdapter.AsB.toJson(writer,
+            customScalarAdapters, value.asB)
+      }
+    }
+  }
+
+  object AsB : Adapter<TestQuery.AsB> {
+    val RESPONSE_NAMES: List<String> = listOf("fieldB1", "__typename", "fieldA1")
+
+    override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters):
+        TestQuery.AsB {
+      var fieldB1: String? = null
+      var __typename: String? = null
+      var fieldA1: String? = null
+
+      while(true) {
+        when (reader.selectName(RESPONSE_NAMES)) {
+          0 -> fieldB1 = NullableStringAdapter.fromJson(reader, customScalarAdapters)
+          1 -> __typename = StringAdapter.fromJson(reader, customScalarAdapters)
+          2 -> fieldA1 = NullableStringAdapter.fromJson(reader, customScalarAdapters)
+          else -> break
+        }
+      }
+
+      return TestQuery.AsB(
+        fieldB1 = fieldB1,
+        __typename = __typename!!,
+        fieldA1 = fieldA1
+      )
+    }
+
+    override fun toJson(
+      writer: JsonWriter,
+      customScalarAdapters: CustomScalarAdapters,
+      value: TestQuery.AsB
+    ) {
+      writer.name("fieldB1")
+      NullableStringAdapter.toJson(writer, customScalarAdapters, value.fieldB1)
+
+      writer.name("__typename")
+      StringAdapter.toJson(writer, customScalarAdapters, value.__typename)
+
+      writer.name("fieldA1")
+      NullableStringAdapter.toJson(writer, customScalarAdapters, value.fieldA1)
     }
   }
 }

@@ -60,147 +60,147 @@ object StarshipFragmentImpl_ResponseAdapter {
       writer.name("pilotConnection")
       PilotConnection.obj().nullable().toJson(writer, customScalarAdapters, value.pilotConnection)
     }
+  }
 
-    object PilotConnection :
-        Adapter<com.example.nested_named_fragments.fragment.StarshipFragment.PilotConnection> {
-      val RESPONSE_NAMES: List<String> = listOf("edges")
+  object PilotConnection :
+      Adapter<com.example.nested_named_fragments.fragment.StarshipFragment.PilotConnection> {
+    val RESPONSE_NAMES: List<String> = listOf("edges")
+
+    override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters):
+        com.example.nested_named_fragments.fragment.StarshipFragment.PilotConnection {
+      var edges: List<com.example.nested_named_fragments.fragment.StarshipFragment.Edge?>? = null
+
+      while(true) {
+        when (reader.selectName(RESPONSE_NAMES)) {
+          0 -> edges = Edge.obj().nullable().list().nullable().fromJson(reader,
+              customScalarAdapters)
+          else -> break
+        }
+      }
+
+      return com.example.nested_named_fragments.fragment.StarshipFragment.PilotConnection(
+        edges = edges
+      )
+    }
+
+    override fun toJson(
+      writer: JsonWriter,
+      customScalarAdapters: CustomScalarAdapters,
+      value: com.example.nested_named_fragments.fragment.StarshipFragment.PilotConnection
+    ) {
+      writer.name("edges")
+      Edge.obj().nullable().list().nullable().toJson(writer, customScalarAdapters, value.edges)
+    }
+  }
+
+  object Edge : Adapter<com.example.nested_named_fragments.fragment.StarshipFragment.Edge> {
+    val RESPONSE_NAMES: List<String> = listOf("node")
+
+    override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters):
+        com.example.nested_named_fragments.fragment.StarshipFragment.Edge {
+      var node: com.example.nested_named_fragments.fragment.StarshipFragment.Node? = null
+
+      while(true) {
+        when (reader.selectName(RESPONSE_NAMES)) {
+          0 -> node = Node.obj(true).nullable().fromJson(reader, customScalarAdapters)
+          else -> break
+        }
+      }
+
+      return com.example.nested_named_fragments.fragment.StarshipFragment.Edge(
+        node = node
+      )
+    }
+
+    override fun toJson(
+      writer: JsonWriter,
+      customScalarAdapters: CustomScalarAdapters,
+      value: com.example.nested_named_fragments.fragment.StarshipFragment.Edge
+    ) {
+      writer.name("node")
+      Node.obj(true).nullable().toJson(writer, customScalarAdapters, value.node)
+    }
+  }
+
+  object Node : Adapter<com.example.nested_named_fragments.fragment.StarshipFragment.Node> {
+    val RESPONSE_NAMES: List<String> = listOf("__typename")
+
+    override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters):
+        com.example.nested_named_fragments.fragment.StarshipFragment.Node {
+      var __typename: String? = null
+
+      while(true) {
+        when (reader.selectName(RESPONSE_NAMES)) {
+          0 -> __typename = StringAdapter.fromJson(reader, customScalarAdapters)
+          else -> break
+        }
+      }
+
+      check(__typename != null) {
+        "__typename was not found"
+      }
+
+      reader.rewind()
+      val fragments = com.example.nested_named_fragments.fragment.StarshipFragmentImpl_ResponseAdapter.Node.Fragments.fromJson(reader,
+          customScalarAdapters)
+
+      return com.example.nested_named_fragments.fragment.StarshipFragment.Node(
+        __typename = __typename,
+        fragments = fragments
+      )
+    }
+
+    override fun toJson(
+      writer: JsonWriter,
+      customScalarAdapters: CustomScalarAdapters,
+      value: com.example.nested_named_fragments.fragment.StarshipFragment.Node
+    ) {
+      writer.name("__typename")
+      StringAdapter.toJson(writer, customScalarAdapters, value.__typename)
+
+      com.example.nested_named_fragments.fragment.StarshipFragmentImpl_ResponseAdapter.Node.Fragments.toJson(writer,
+          customScalarAdapters, value.fragments)
+    }
+
+    object Fragments :
+        Adapter<com.example.nested_named_fragments.fragment.StarshipFragment.Node.Fragments> {
+      val RESPONSE_NAMES: List<String> = listOf("__typename")
 
       override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters):
-          com.example.nested_named_fragments.fragment.StarshipFragment.PilotConnection {
-        var edges: List<com.example.nested_named_fragments.fragment.StarshipFragment.Edge?>? = null
+          com.example.nested_named_fragments.fragment.StarshipFragment.Node.Fragments {
+        var __typename: String? = null
 
         while(true) {
           when (reader.selectName(RESPONSE_NAMES)) {
-            0 -> edges = Edge.obj().nullable().list().nullable().fromJson(reader,
-                customScalarAdapters)
+            0 -> __typename = StringAdapter.fromJson(reader, customScalarAdapters)
             else -> break
           }
         }
 
-        return com.example.nested_named_fragments.fragment.StarshipFragment.PilotConnection(
-          edges = edges
+        check(__typename != null) {
+          "__typename was not found"
+        }
+
+        reader.rewind()
+        var pilotFragment: PilotFragment? = null
+        if (possibleTypes("Person").evaluate(emptySet(), __typename)) {
+          pilotFragment = com.example.nested_named_fragments.fragment.PilotFragmentImpl_ResponseAdapter.PilotFragment.fromJson(reader,
+              customScalarAdapters)
+        }
+
+        return com.example.nested_named_fragments.fragment.StarshipFragment.Node.Fragments(
+          pilotFragment = pilotFragment
         )
       }
 
       override fun toJson(
         writer: JsonWriter,
         customScalarAdapters: CustomScalarAdapters,
-        value: com.example.nested_named_fragments.fragment.StarshipFragment.PilotConnection
+        value: com.example.nested_named_fragments.fragment.StarshipFragment.Node.Fragments
       ) {
-        writer.name("edges")
-        Edge.obj().nullable().list().nullable().toJson(writer, customScalarAdapters, value.edges)
-      }
-
-      object Edge : Adapter<com.example.nested_named_fragments.fragment.StarshipFragment.Edge> {
-        val RESPONSE_NAMES: List<String> = listOf("node")
-
-        override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters):
-            com.example.nested_named_fragments.fragment.StarshipFragment.Edge {
-          var node: com.example.nested_named_fragments.fragment.StarshipFragment.Node? = null
-
-          while(true) {
-            when (reader.selectName(RESPONSE_NAMES)) {
-              0 -> node = Node.obj(true).nullable().fromJson(reader, customScalarAdapters)
-              else -> break
-            }
-          }
-
-          return com.example.nested_named_fragments.fragment.StarshipFragment.Edge(
-            node = node
-          )
-        }
-
-        override fun toJson(
-          writer: JsonWriter,
-          customScalarAdapters: CustomScalarAdapters,
-          value: com.example.nested_named_fragments.fragment.StarshipFragment.Edge
-        ) {
-          writer.name("node")
-          Node.obj(true).nullable().toJson(writer, customScalarAdapters, value.node)
-        }
-
-        object Node : Adapter<com.example.nested_named_fragments.fragment.StarshipFragment.Node> {
-          val RESPONSE_NAMES: List<String> = listOf("__typename")
-
-          override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters):
-              com.example.nested_named_fragments.fragment.StarshipFragment.Node {
-            var __typename: String? = null
-
-            while(true) {
-              when (reader.selectName(RESPONSE_NAMES)) {
-                0 -> __typename = StringAdapter.fromJson(reader, customScalarAdapters)
-                else -> break
-              }
-            }
-
-            check(__typename != null) {
-              "__typename was not found"
-            }
-
-            reader.rewind()
-            val fragments = com.example.nested_named_fragments.fragment.StarshipFragmentImpl_ResponseAdapter.StarshipFragment.PilotConnection.Edge.Node.Fragments.fromJson(reader,
-                customScalarAdapters)
-
-            return com.example.nested_named_fragments.fragment.StarshipFragment.Node(
-              __typename = __typename,
-              fragments = fragments
-            )
-          }
-
-          override fun toJson(
-            writer: JsonWriter,
-            customScalarAdapters: CustomScalarAdapters,
-            value: com.example.nested_named_fragments.fragment.StarshipFragment.Node
-          ) {
-            writer.name("__typename")
-            StringAdapter.toJson(writer, customScalarAdapters, value.__typename)
-
-            com.example.nested_named_fragments.fragment.StarshipFragmentImpl_ResponseAdapter.StarshipFragment.PilotConnection.Edge.Node.Fragments.toJson(writer,
-                customScalarAdapters, value.fragments)
-          }
-
-          object Fragments :
-              Adapter<com.example.nested_named_fragments.fragment.StarshipFragment.Node.Fragments> {
-            val RESPONSE_NAMES: List<String> = listOf("__typename")
-
-            override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters):
-                com.example.nested_named_fragments.fragment.StarshipFragment.Node.Fragments {
-              var __typename: String? = null
-
-              while(true) {
-                when (reader.selectName(RESPONSE_NAMES)) {
-                  0 -> __typename = StringAdapter.fromJson(reader, customScalarAdapters)
-                  else -> break
-                }
-              }
-
-              check(__typename != null) {
-                "__typename was not found"
-              }
-
-              reader.rewind()
-              var pilotFragment: PilotFragment? = null
-              if (possibleTypes("Person").evaluate(emptySet(), __typename)) {
-                pilotFragment = com.example.nested_named_fragments.fragment.PilotFragmentImpl_ResponseAdapter.PilotFragment.fromJson(reader,
-                    customScalarAdapters)
-              }
-
-              return com.example.nested_named_fragments.fragment.StarshipFragment.Node.Fragments(
-                pilotFragment = pilotFragment
-              )
-            }
-
-            override fun toJson(
-              writer: JsonWriter,
-              customScalarAdapters: CustomScalarAdapters,
-              value: com.example.nested_named_fragments.fragment.StarshipFragment.Node.Fragments
-            ) {
-              if (value.pilotFragment != null) {
-                com.example.nested_named_fragments.fragment.PilotFragmentImpl_ResponseAdapter.PilotFragment.toJson(writer,
-                    customScalarAdapters, value.pilotFragment)
-              }
-            }
-          }
+        if (value.pilotFragment != null) {
+          com.example.nested_named_fragments.fragment.PilotFragmentImpl_ResponseAdapter.PilotFragment.toJson(writer,
+              customScalarAdapters, value.pilotFragment)
         }
       }
     }

@@ -50,12 +50,66 @@ object TestQuery_ResponseAdapter {
       Search.obj(true).nullable().list().nullable().toJson(writer, customScalarAdapters,
           value.search)
     }
+  }
 
-    object Search : Adapter<TestQuery.Search> {
+  object Search : Adapter<TestQuery.Search> {
+    val RESPONSE_NAMES: List<String> = listOf("__typename")
+
+    override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters):
+        TestQuery.Search {
+      var __typename: String? = null
+
+      while(true) {
+        when (reader.selectName(RESPONSE_NAMES)) {
+          0 -> __typename = StringAdapter.fromJson(reader, customScalarAdapters)
+          else -> break
+        }
+      }
+
+      check(__typename != null) {
+        "__typename was not found"
+      }
+
+      reader.rewind()
+      var asStarship: TestQuery.AsStarship? = null
+      if (possibleTypes("Starship").evaluate(emptySet(), __typename)) {
+        asStarship = com.example.union_fragment.adapter.TestQuery_ResponseAdapter.AsStarship.fromJson(reader,
+            customScalarAdapters)
+      }
+
+      reader.rewind()
+      val fragments = com.example.union_fragment.adapter.TestQuery_ResponseAdapter.Search.Fragments.fromJson(reader,
+          customScalarAdapters)
+
+      return TestQuery.Search(
+        __typename = __typename,
+        asStarship = asStarship,
+        fragments = fragments
+      )
+    }
+
+    override fun toJson(
+      writer: JsonWriter,
+      customScalarAdapters: CustomScalarAdapters,
+      value: TestQuery.Search
+    ) {
+      writer.name("__typename")
+      StringAdapter.toJson(writer, customScalarAdapters, value.__typename)
+
+      if (value.asStarship != null) {
+        com.example.union_fragment.adapter.TestQuery_ResponseAdapter.AsStarship.toJson(writer,
+            customScalarAdapters, value.asStarship)
+      }
+
+      com.example.union_fragment.adapter.TestQuery_ResponseAdapter.Search.Fragments.toJson(writer,
+          customScalarAdapters, value.fragments)
+    }
+
+    object Fragments : Adapter<TestQuery.Search.Fragments> {
       val RESPONSE_NAMES: List<String> = listOf("__typename")
 
       override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters):
-          TestQuery.Search {
+          TestQuery.Search.Fragments {
         var __typename: String? = null
 
         while(true) {
@@ -70,116 +124,62 @@ object TestQuery_ResponseAdapter {
         }
 
         reader.rewind()
-        var asStarship: TestQuery.AsStarship? = null
+        var starship: Starship? = null
         if (possibleTypes("Starship").evaluate(emptySet(), __typename)) {
-          asStarship = com.example.union_fragment.adapter.TestQuery_ResponseAdapter.Data.Search.AsStarship.fromJson(reader,
+          starship = com.example.union_fragment.fragment.StarshipImpl_ResponseAdapter.Starship.fromJson(reader,
               customScalarAdapters)
         }
 
-        reader.rewind()
-        val fragments = com.example.union_fragment.adapter.TestQuery_ResponseAdapter.Data.Search.Fragments.fromJson(reader,
-            customScalarAdapters)
-
-        return TestQuery.Search(
-          __typename = __typename,
-          asStarship = asStarship,
-          fragments = fragments
+        return TestQuery.Search.Fragments(
+          starship = starship
         )
       }
 
       override fun toJson(
         writer: JsonWriter,
         customScalarAdapters: CustomScalarAdapters,
-        value: TestQuery.Search
+        value: TestQuery.Search.Fragments
       ) {
-        writer.name("__typename")
-        StringAdapter.toJson(writer, customScalarAdapters, value.__typename)
-
-        if (value.asStarship != null) {
-          com.example.union_fragment.adapter.TestQuery_ResponseAdapter.Data.Search.AsStarship.toJson(writer,
-              customScalarAdapters, value.asStarship)
+        if (value.starship != null) {
+          com.example.union_fragment.fragment.StarshipImpl_ResponseAdapter.Starship.toJson(writer,
+              customScalarAdapters, value.starship)
         }
-
-        com.example.union_fragment.adapter.TestQuery_ResponseAdapter.Data.Search.Fragments.toJson(writer,
-            customScalarAdapters, value.fragments)
       }
+    }
+  }
 
-      object AsStarship : Adapter<TestQuery.AsStarship> {
-        val RESPONSE_NAMES: List<String> = listOf("id", "__typename")
+  object AsStarship : Adapter<TestQuery.AsStarship> {
+    val RESPONSE_NAMES: List<String> = listOf("id", "__typename")
 
-        override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters):
-            TestQuery.AsStarship {
-          var id: String? = null
-          var __typename: String? = null
+    override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters):
+        TestQuery.AsStarship {
+      var id: String? = null
+      var __typename: String? = null
 
-          while(true) {
-            when (reader.selectName(RESPONSE_NAMES)) {
-              0 -> id = StringAdapter.fromJson(reader, customScalarAdapters)
-              1 -> __typename = StringAdapter.fromJson(reader, customScalarAdapters)
-              else -> break
-            }
-          }
-
-          return TestQuery.AsStarship(
-            id = id!!,
-            __typename = __typename!!
-          )
-        }
-
-        override fun toJson(
-          writer: JsonWriter,
-          customScalarAdapters: CustomScalarAdapters,
-          value: TestQuery.AsStarship
-        ) {
-          writer.name("id")
-          StringAdapter.toJson(writer, customScalarAdapters, value.id)
-
-          writer.name("__typename")
-          StringAdapter.toJson(writer, customScalarAdapters, value.__typename)
+      while(true) {
+        when (reader.selectName(RESPONSE_NAMES)) {
+          0 -> id = StringAdapter.fromJson(reader, customScalarAdapters)
+          1 -> __typename = StringAdapter.fromJson(reader, customScalarAdapters)
+          else -> break
         }
       }
 
-      object Fragments : Adapter<TestQuery.Search.Fragments> {
-        val RESPONSE_NAMES: List<String> = listOf("__typename")
+      return TestQuery.AsStarship(
+        id = id!!,
+        __typename = __typename!!
+      )
+    }
 
-        override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters):
-            TestQuery.Search.Fragments {
-          var __typename: String? = null
+    override fun toJson(
+      writer: JsonWriter,
+      customScalarAdapters: CustomScalarAdapters,
+      value: TestQuery.AsStarship
+    ) {
+      writer.name("id")
+      StringAdapter.toJson(writer, customScalarAdapters, value.id)
 
-          while(true) {
-            when (reader.selectName(RESPONSE_NAMES)) {
-              0 -> __typename = StringAdapter.fromJson(reader, customScalarAdapters)
-              else -> break
-            }
-          }
-
-          check(__typename != null) {
-            "__typename was not found"
-          }
-
-          reader.rewind()
-          var starship: Starship? = null
-          if (possibleTypes("Starship").evaluate(emptySet(), __typename)) {
-            starship = com.example.union_fragment.fragment.StarshipImpl_ResponseAdapter.Starship.fromJson(reader,
-                customScalarAdapters)
-          }
-
-          return TestQuery.Search.Fragments(
-            starship = starship
-          )
-        }
-
-        override fun toJson(
-          writer: JsonWriter,
-          customScalarAdapters: CustomScalarAdapters,
-          value: TestQuery.Search.Fragments
-        ) {
-          if (value.starship != null) {
-            com.example.union_fragment.fragment.StarshipImpl_ResponseAdapter.Starship.toJson(writer,
-                customScalarAdapters, value.starship)
-          }
-        }
-      }
+      writer.name("__typename")
+      StringAdapter.toJson(writer, customScalarAdapters, value.__typename)
     }
   }
 }

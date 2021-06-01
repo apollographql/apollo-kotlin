@@ -52,100 +52,100 @@ object HeroDetailsImpl_ResponseAdapter {
       writer.name("friendsConnection")
       FriendsConnection.obj().toJson(writer, customScalarAdapters, value.friendsConnection)
     }
+  }
 
-    object FriendsConnection :
-        Adapter<com.example.unique_type_name.fragment.HeroDetails.FriendsConnection> {
-      val RESPONSE_NAMES: List<String> = listOf("totalCount", "edges")
+  object FriendsConnection :
+      Adapter<com.example.unique_type_name.fragment.HeroDetails.FriendsConnection> {
+    val RESPONSE_NAMES: List<String> = listOf("totalCount", "edges")
 
-      override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters):
-          com.example.unique_type_name.fragment.HeroDetails.FriendsConnection {
-        var totalCount: Int? = null
-        var edges: List<com.example.unique_type_name.fragment.HeroDetails.Edge?>? = null
+    override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters):
+        com.example.unique_type_name.fragment.HeroDetails.FriendsConnection {
+      var totalCount: Int? = null
+      var edges: List<com.example.unique_type_name.fragment.HeroDetails.Edge?>? = null
 
-        while(true) {
-          when (reader.selectName(RESPONSE_NAMES)) {
-            0 -> totalCount = NullableIntAdapter.fromJson(reader, customScalarAdapters)
-            1 -> edges = Edge.obj().nullable().list().nullable().fromJson(reader,
-                customScalarAdapters)
-            else -> break
-          }
-        }
-
-        return com.example.unique_type_name.fragment.HeroDetails.FriendsConnection(
-          totalCount = totalCount,
-          edges = edges
-        )
-      }
-
-      override fun toJson(
-        writer: JsonWriter,
-        customScalarAdapters: CustomScalarAdapters,
-        value: com.example.unique_type_name.fragment.HeroDetails.FriendsConnection
-      ) {
-        writer.name("totalCount")
-        NullableIntAdapter.toJson(writer, customScalarAdapters, value.totalCount)
-
-        writer.name("edges")
-        Edge.obj().nullable().list().nullable().toJson(writer, customScalarAdapters, value.edges)
-      }
-
-      object Edge : Adapter<com.example.unique_type_name.fragment.HeroDetails.Edge> {
-        val RESPONSE_NAMES: List<String> = listOf("node")
-
-        override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters):
-            com.example.unique_type_name.fragment.HeroDetails.Edge {
-          var node: com.example.unique_type_name.fragment.HeroDetails.Node? = null
-
-          while(true) {
-            when (reader.selectName(RESPONSE_NAMES)) {
-              0 -> node = Node.obj().nullable().fromJson(reader, customScalarAdapters)
-              else -> break
-            }
-          }
-
-          return com.example.unique_type_name.fragment.HeroDetails.Edge(
-            node = node
-          )
-        }
-
-        override fun toJson(
-          writer: JsonWriter,
-          customScalarAdapters: CustomScalarAdapters,
-          value: com.example.unique_type_name.fragment.HeroDetails.Edge
-        ) {
-          writer.name("node")
-          Node.obj().nullable().toJson(writer, customScalarAdapters, value.node)
-        }
-
-        object Node : Adapter<com.example.unique_type_name.fragment.HeroDetails.Node> {
-          val RESPONSE_NAMES: List<String> = listOf("name")
-
-          override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters):
-              com.example.unique_type_name.fragment.HeroDetails.Node {
-            var name: String? = null
-
-            while(true) {
-              when (reader.selectName(RESPONSE_NAMES)) {
-                0 -> name = StringAdapter.fromJson(reader, customScalarAdapters)
-                else -> break
-              }
-            }
-
-            return com.example.unique_type_name.fragment.HeroDetails.Node(
-              name = name!!
-            )
-          }
-
-          override fun toJson(
-            writer: JsonWriter,
-            customScalarAdapters: CustomScalarAdapters,
-            value: com.example.unique_type_name.fragment.HeroDetails.Node
-          ) {
-            writer.name("name")
-            StringAdapter.toJson(writer, customScalarAdapters, value.name)
-          }
+      while(true) {
+        when (reader.selectName(RESPONSE_NAMES)) {
+          0 -> totalCount = NullableIntAdapter.fromJson(reader, customScalarAdapters)
+          1 -> edges = Edge.obj().nullable().list().nullable().fromJson(reader,
+              customScalarAdapters)
+          else -> break
         }
       }
+
+      return com.example.unique_type_name.fragment.HeroDetails.FriendsConnection(
+        totalCount = totalCount,
+        edges = edges
+      )
+    }
+
+    override fun toJson(
+      writer: JsonWriter,
+      customScalarAdapters: CustomScalarAdapters,
+      value: com.example.unique_type_name.fragment.HeroDetails.FriendsConnection
+    ) {
+      writer.name("totalCount")
+      NullableIntAdapter.toJson(writer, customScalarAdapters, value.totalCount)
+
+      writer.name("edges")
+      Edge.obj().nullable().list().nullable().toJson(writer, customScalarAdapters, value.edges)
+    }
+  }
+
+  object Edge : Adapter<com.example.unique_type_name.fragment.HeroDetails.Edge> {
+    val RESPONSE_NAMES: List<String> = listOf("node")
+
+    override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters):
+        com.example.unique_type_name.fragment.HeroDetails.Edge {
+      var node: com.example.unique_type_name.fragment.HeroDetails.Node? = null
+
+      while(true) {
+        when (reader.selectName(RESPONSE_NAMES)) {
+          0 -> node = Node.obj().nullable().fromJson(reader, customScalarAdapters)
+          else -> break
+        }
+      }
+
+      return com.example.unique_type_name.fragment.HeroDetails.Edge(
+        node = node
+      )
+    }
+
+    override fun toJson(
+      writer: JsonWriter,
+      customScalarAdapters: CustomScalarAdapters,
+      value: com.example.unique_type_name.fragment.HeroDetails.Edge
+    ) {
+      writer.name("node")
+      Node.obj().nullable().toJson(writer, customScalarAdapters, value.node)
+    }
+  }
+
+  object Node : Adapter<com.example.unique_type_name.fragment.HeroDetails.Node> {
+    val RESPONSE_NAMES: List<String> = listOf("name")
+
+    override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters):
+        com.example.unique_type_name.fragment.HeroDetails.Node {
+      var name: String? = null
+
+      while(true) {
+        when (reader.selectName(RESPONSE_NAMES)) {
+          0 -> name = StringAdapter.fromJson(reader, customScalarAdapters)
+          else -> break
+        }
+      }
+
+      return com.example.unique_type_name.fragment.HeroDetails.Node(
+        name = name!!
+      )
+    }
+
+    override fun toJson(
+      writer: JsonWriter,
+      customScalarAdapters: CustomScalarAdapters,
+      value: com.example.unique_type_name.fragment.HeroDetails.Node
+    ) {
+      writer.name("name")
+      StringAdapter.toJson(writer, customScalarAdapters, value.name)
     }
   }
 }

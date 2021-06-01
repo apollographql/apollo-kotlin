@@ -48,19 +48,64 @@ object TestQuery_ResponseAdapter {
       writer.name("hero")
       Hero.obj(true).nullable().toJson(writer, customScalarAdapters, value.hero)
     }
+  }
 
-    object Hero : Adapter<TestQuery.Hero> {
-      val RESPONSE_NAMES: List<String> = listOf("__typename", "name")
+  object Hero : Adapter<TestQuery.Hero> {
+    val RESPONSE_NAMES: List<String> = listOf("__typename", "name")
+
+    override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters):
+        TestQuery.Hero {
+      var __typename: String? = null
+      var name: String? = null
+
+      while(true) {
+        when (reader.selectName(RESPONSE_NAMES)) {
+          0 -> __typename = StringAdapter.fromJson(reader, customScalarAdapters)
+          1 -> name = StringAdapter.fromJson(reader, customScalarAdapters)
+          else -> break
+        }
+      }
+
+      check(__typename != null) {
+        "__typename was not found"
+      }
+
+      reader.rewind()
+      val fragments = com.example.named_fragment_without_implementation.adapter.TestQuery_ResponseAdapter.Hero.Fragments.fromJson(reader,
+          customScalarAdapters)
+
+      return TestQuery.Hero(
+        __typename = __typename,
+        name = name!!,
+        fragments = fragments
+      )
+    }
+
+    override fun toJson(
+      writer: JsonWriter,
+      customScalarAdapters: CustomScalarAdapters,
+      value: TestQuery.Hero
+    ) {
+      writer.name("__typename")
+      StringAdapter.toJson(writer, customScalarAdapters, value.__typename)
+
+      writer.name("name")
+      StringAdapter.toJson(writer, customScalarAdapters, value.name)
+
+      com.example.named_fragment_without_implementation.adapter.TestQuery_ResponseAdapter.Hero.Fragments.toJson(writer,
+          customScalarAdapters, value.fragments)
+    }
+
+    object Fragments : Adapter<TestQuery.Hero.Fragments> {
+      val RESPONSE_NAMES: List<String> = listOf("__typename")
 
       override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters):
-          TestQuery.Hero {
+          TestQuery.Hero.Fragments {
         var __typename: String? = null
-        var name: String? = null
 
         while(true) {
           when (reader.selectName(RESPONSE_NAMES)) {
             0 -> __typename = StringAdapter.fromJson(reader, customScalarAdapters)
-            1 -> name = StringAdapter.fromJson(reader, customScalarAdapters)
             else -> break
           }
         }
@@ -70,83 +115,38 @@ object TestQuery_ResponseAdapter {
         }
 
         reader.rewind()
-        val fragments = com.example.named_fragment_without_implementation.adapter.TestQuery_ResponseAdapter.Data.Hero.Fragments.fromJson(reader,
-            customScalarAdapters)
+        var humanDetails: HumanDetails? = null
+        if (possibleTypes("Human").evaluate(emptySet(), __typename)) {
+          humanDetails = com.example.named_fragment_without_implementation.fragment.HumanDetailsImpl_ResponseAdapter.HumanDetails.fromJson(reader,
+              customScalarAdapters)
+        }
 
-        return TestQuery.Hero(
-          __typename = __typename,
-          name = name!!,
-          fragments = fragments
+        reader.rewind()
+        var droidDetails: DroidDetails? = null
+        if (possibleTypes("Droid").evaluate(emptySet(), __typename)) {
+          droidDetails = com.example.named_fragment_without_implementation.fragment.DroidDetailsImpl_ResponseAdapter.DroidDetails.fromJson(reader,
+              customScalarAdapters)
+        }
+
+        return TestQuery.Hero.Fragments(
+          humanDetails = humanDetails,
+          droidDetails = droidDetails
         )
       }
 
       override fun toJson(
         writer: JsonWriter,
         customScalarAdapters: CustomScalarAdapters,
-        value: TestQuery.Hero
+        value: TestQuery.Hero.Fragments
       ) {
-        writer.name("__typename")
-        StringAdapter.toJson(writer, customScalarAdapters, value.__typename)
-
-        writer.name("name")
-        StringAdapter.toJson(writer, customScalarAdapters, value.name)
-
-        com.example.named_fragment_without_implementation.adapter.TestQuery_ResponseAdapter.Data.Hero.Fragments.toJson(writer,
-            customScalarAdapters, value.fragments)
-      }
-
-      object Fragments : Adapter<TestQuery.Hero.Fragments> {
-        val RESPONSE_NAMES: List<String> = listOf("__typename")
-
-        override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters):
-            TestQuery.Hero.Fragments {
-          var __typename: String? = null
-
-          while(true) {
-            when (reader.selectName(RESPONSE_NAMES)) {
-              0 -> __typename = StringAdapter.fromJson(reader, customScalarAdapters)
-              else -> break
-            }
-          }
-
-          check(__typename != null) {
-            "__typename was not found"
-          }
-
-          reader.rewind()
-          var humanDetails: HumanDetails? = null
-          if (possibleTypes("Human").evaluate(emptySet(), __typename)) {
-            humanDetails = com.example.named_fragment_without_implementation.fragment.HumanDetailsImpl_ResponseAdapter.HumanDetails.fromJson(reader,
-                customScalarAdapters)
-          }
-
-          reader.rewind()
-          var droidDetails: DroidDetails? = null
-          if (possibleTypes("Droid").evaluate(emptySet(), __typename)) {
-            droidDetails = com.example.named_fragment_without_implementation.fragment.DroidDetailsImpl_ResponseAdapter.DroidDetails.fromJson(reader,
-                customScalarAdapters)
-          }
-
-          return TestQuery.Hero.Fragments(
-            humanDetails = humanDetails,
-            droidDetails = droidDetails
-          )
+        if (value.humanDetails != null) {
+          com.example.named_fragment_without_implementation.fragment.HumanDetailsImpl_ResponseAdapter.HumanDetails.toJson(writer,
+              customScalarAdapters, value.humanDetails)
         }
 
-        override fun toJson(
-          writer: JsonWriter,
-          customScalarAdapters: CustomScalarAdapters,
-          value: TestQuery.Hero.Fragments
-        ) {
-          if (value.humanDetails != null) {
-            com.example.named_fragment_without_implementation.fragment.HumanDetailsImpl_ResponseAdapter.HumanDetails.toJson(writer,
-                customScalarAdapters, value.humanDetails)
-          }
-
-          if (value.droidDetails != null) {
-            com.example.named_fragment_without_implementation.fragment.DroidDetailsImpl_ResponseAdapter.DroidDetails.toJson(writer,
-                customScalarAdapters, value.droidDetails)
-          }
+        if (value.droidDetails != null) {
+          com.example.named_fragment_without_implementation.fragment.DroidDetailsImpl_ResponseAdapter.DroidDetails.toJson(writer,
+              customScalarAdapters, value.droidDetails)
         }
       }
     }
