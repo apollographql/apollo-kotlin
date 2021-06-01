@@ -8,6 +8,7 @@
 **/.idea/$PRODUCT_WORKSPACE_FILE$
 **/.idea/.gitignore
 **/.idea/artifacts/
+**/.idea/sonarlint/
 *.iml
 build
 local.properties
