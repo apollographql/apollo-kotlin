@@ -78,6 +78,8 @@ abstract class DefaultService @Inject constructor(val objects: ObjectFactory, ov
 
   abstract override val codegenModels: Property<String>
 
+  abstract override val flattenModels: Property<Boolean>
+
   val graphqlSourceDirectorySet = objects.sourceDirectorySet("graphql", "graphql")
 
   override fun addGraphqlDirectory(directory: Any) {

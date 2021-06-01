@@ -149,6 +149,7 @@ class GraphQLCompiler {
           generatedEnums = ir.enums.map { it.name }.toSet(),
           generatedInputObjects = ir.inputObjects.map { it.name }.toSet(),
           codegenModels = incomingOptions.codegenModels,
+          flattenModels = incomingOptions.flattenModels,
           moduleName = moduleOptions.moduleName,
           pluginVersion = VERSION,
           schemaPackageName = incomingOptions.schemaPackageName
@@ -183,6 +184,7 @@ class GraphQLCompiler {
       val schemaPackageName: String,
       val customScalarsMapping: Map<String, String>,
       val codegenModels: String,
+      val flattenModels: Boolean,
       val metadataInputObjects: Set<String>,
       val metadataEnums: Set<String>,
       val isFromMetadata: Boolean,
@@ -195,6 +197,7 @@ class GraphQLCompiler {
             schemaPackageName = metadata.schemaPackageName,
             customScalarsMapping = metadata.customScalarsMapping,
             codegenModels = metadata.codegenModels,
+            flattenModels = metadata.flattenModels,
             metadataInputObjects = metadata.generatedInputObjects,
             metadataEnums = metadata.generatedEnums,
             isFromMetadata = true,
@@ -209,6 +212,7 @@ class GraphQLCompiler {
           customScalarsMapping: Map<String, String>,
           codegenModels: String,
           rootPackageName: String,
+          flattenModels: Boolean,
       ): IncomingOptions {
         val relativeSchemaPackageName = try {
           roots.filePackageName(schemaFile.absolutePath)
@@ -231,6 +235,7 @@ class GraphQLCompiler {
             schemaPackageName = "$rootPackageName.$relativeSchemaPackageName".removePrefix(".").removeSuffix("."),
             customScalarsMapping = customScalarsMapping,
             codegenModels = codegenModels,
+            flattenModels = flattenModels,
             metadataInputObjects = emptySet(),
             metadataEnums = emptySet(),
             isFromMetadata = false,

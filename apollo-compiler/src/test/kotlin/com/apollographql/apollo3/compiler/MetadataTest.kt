@@ -38,10 +38,11 @@ class MetadataTest {
       GraphQLCompiler.IncomingOptions.from(
           roots = Roots(rootFolders),
           schemaFile = schemaFile,
+          extraSchemaFiles = emptySet(),
           customScalarsMapping = defaultCustomScalarsMapping,
           codegenModels = defaultCodegenModels,
           rootPackageName = "",
-          extraSchemaFiles = emptySet()
+          flattenModels = flattenModels.getOrElse(defaultFlattenModels)
       )
     } else {
       val metadata = metadataFiles.map { ApolloMetadata.readFrom(it) }.merge()

@@ -235,10 +235,11 @@ class CodegenTest(private val folder: File, private val codegenModels: String, p
       val incomingOptions = GraphQLCompiler.IncomingOptions.from(
           roots = Roots(listOf(folder)),
           schemaFile = schemaFile,
+          extraSchemaFiles = emptySet(),
           customScalarsMapping = customScalarsMapping,
           codegenModels = codegenModels,
           rootPackageName = "com.example.${folder.name}",
-          extraSchemaFiles = emptySet()
+          flattenModels = flattenModels.getOrElse(defaultFlattenModels)
       )
 
       val moduleOptions = GraphQLCompiler.DefaultModuleOptions.copy(

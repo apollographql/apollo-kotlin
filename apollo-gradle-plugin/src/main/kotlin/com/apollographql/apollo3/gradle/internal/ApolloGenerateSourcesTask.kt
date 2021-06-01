@@ -14,6 +14,7 @@ import com.apollographql.apollo3.compiler.GraphQLCompiler.Companion.defaultGener
 import com.apollographql.apollo3.compiler.GraphQLCompiler.Companion.defaultGenerateResponseFields
 import com.apollographql.apollo3.compiler.GraphQLCompiler.Companion.defaultUseSemanticNaming
 import com.apollographql.apollo3.compiler.GraphQLCompiler.Companion.defaultWarnOnDeprecatedUsages
+import com.apollographql.apollo3.compiler.MODELS_COMPAT
 import com.apollographql.apollo3.compiler.OperationOutputGenerator
 import com.apollographql.apollo3.compiler.Roots
 import org.gradle.api.DefaultTask
@@ -134,6 +135,10 @@ abstract class ApolloGenerateSourcesTask : DefaultTask() {
   @get:Optional
   abstract val codegenModels: Property<String>
 
+  @get:Input
+  @get:Optional
+  abstract val flattenModels: Property<Boolean>
+
   @get:Inject
   abstract val objectFactory: ObjectFactory
 
@@ -159,16 +164,22 @@ abstract class ApolloGenerateSourcesTask : DefaultTask() {
         "Specifying 'customScalarsMapping' has no effect as an upstream module already provided a customScalarsMapping"
       }
       check(!codegenModels.isPresent) {
-        "Specifying 'generateFragmentsAsInterfaces' has no effect as an upstream module already provided a generateFragmentsAsInterfaces"
+        "Specifying 'codegenModels' has no effect as an upstream module already provided a codegenModels"
+      }
+      check(!flattenModels.isPresent) {
+        "Specifying 'flattenModels' has no effect as an upstream module already provided a flattenModels"
       }
       GraphQLCompiler.IncomingOptions.fromMetadata(metadata)
     } else {
+      val codegenModels = codegenModels.getOrElse(defaultCodegenModels)
+      val defaultFlattenModels = flattenModels.getOrElse(codegenModels == MODELS_COMPAT)
       GraphQLCompiler.IncomingOptions.from(
           roots = roots,
           schemaFile = schemaFile.asFile.orNull ?: error("no schemaFile found"),
           extraSchemaFiles = extraSchemaFiles.files,
           customScalarsMapping = customScalarsMapping.getOrElse(emptyMap()),
-          codegenModels = codegenModels.getOrElse(defaultCodegenModels),
+          codegenModels = codegenModels,
+          flattenModels = flattenModels.getOrElse(defaultFlattenModels),
           rootPackageName = rootPackageName
       )
     }

@@ -393,6 +393,7 @@ abstract class DefaultApolloExtension(
       task.projectName.set(project.name)
       task.generateFragmentImplementations.set(service.generateFragmentImplementations)
       task.codegenModels.set(service.codegenModels)
+      task.flattenModels.set(service.flattenModels)
     }
   }
 

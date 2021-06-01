@@ -44,7 +44,8 @@ data class ApolloMetadata(
     val moduleName: String,
     val pluginVersion: String,
     val customScalarsMapping: Map<String, String>,
-    val codegenModels: String
+    val codegenModels: String,
+    val flattenModels: Boolean
 ) {
   companion object {
 
