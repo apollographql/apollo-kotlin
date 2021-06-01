@@ -54,13 +54,13 @@ class RealApolloStore(
         subscriber.onCacheRecordsChanged(it)
       }
     }
-    subscribers.access {
+    subscribers.blockingAccess {
       it.add(subscriber to job)
     }
   }
 
   override fun unsubscribe(subscriber: RecordChangeSubscriber) {
-    val job = subscribers.access {
+    val job = subscribers.blockingAccess {
       val index = it.indexOfFirst { it.first == subscriber }
       if (index >= 0) {
         it.removeAt(index).second
