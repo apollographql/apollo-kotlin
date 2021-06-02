@@ -45,7 +45,8 @@ module.exports = {
           'Languages & Extensions': [
             'advanced/coroutines',
             'advanced/rxjava2',
-            'advanced/rxjava3'
+            'advanced/rxjava3',
+            'advanced/reactor'
           ],
           Reference: [
             'essentials/plugin-configuration',
