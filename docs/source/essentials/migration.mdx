@@ -15,6 +15,11 @@ Apollo Android now generates Kotlin models by default
 
 The generated code now uses interfaces for Fragments (https://github.com/apollographql/apollo-android/issues/1854)
 
+### Enums
+
+Enums are generated as sealed classes by default.
+Enums keep the case of their GraphQL definition (instead of always being transformed to uppercase in 2.x). See https://github.com/apollographql/apollo-android/issues/3035
+
 ## Migrating to 2.0
 
 ### Kotlin Multiplatform
