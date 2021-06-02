@@ -98,4 +98,7 @@ internal class NoOpApolloStore : ApolloStore() {
   override suspend fun dump(): Map<KClass<*>, Map<String, Record>> {
     return emptyMap()
   }
+
+  override fun dispose() {
+  }
 }
