@@ -7,9 +7,12 @@ import com.apollographql.apollo.Utils.immediateExecutorService
 import com.apollographql.apollo.Utils.mockResponse
 import com.apollographql.apollo.api.Response
 import com.apollographql.apollo.exception.ApolloException
+import com.apollographql.apollo.fetcher.ApolloResponseFetchers
+import com.apollographql.apollo.fetcher.ResponseFetcher
 import com.apollographql.apollo.integration.httpcache.AllPlanetsQuery
 import com.apollographql.apollo.integration.normalizer.EpisodeHeroNameQuery
 import com.apollographql.apollo.integration.normalizer.type.Episode
+import com.apollographql.apollo.request.RequestHeaders
 import com.google.common.truth.Truth.assertThat
 import okhttp3.Dispatcher
 import okhttp3.OkHttpClient
@@ -77,6 +80,24 @@ class BatchHttpResponseTest {
     server.enqueue(mockResponse("BatchQueryResponse.json"))
     apolloClient.query(planetsQuery).toBuilder().canBeBatched(true).build().enqueue(planetsCallback)
     apolloClient.query(episodeQuery).toBuilder().canBeBatched(true).build().enqueue(episodeCallback)
+    assertThat(planetsCallback.exceptions).isEmpty()
+    assertThat(episodeCallback.exceptions).isEmpty()
+    assertThat(planetsCallback.responseList[0].data?.allPlanets()?.planets()?.size).isEqualTo(60)
+    assertThat(episodeCallback.responseList[0].data?.hero()?.name()).isEqualTo("R2-D2")
+  }
+
+  @Test
+  fun testMultipleClonedQueryBatchingSuccess() {
+    val planetsQuery = AllPlanetsQuery()
+    val episodeQuery = EpisodeHeroNameQuery.builder().episode(Episode.EMPIRE).build()
+    val planetsCallback = PlanetsCallback()
+    val episodeCallback = EpisodeCallback()
+    val ogPlanetQuery = apolloClient.query(planetsQuery).toBuilder().canBeBatched(true).build()
+    val ogEpisodeQuery = apolloClient.query(episodeQuery).toBuilder().canBeBatched(true).build()
+
+    server.enqueue(mockResponse("BatchQueryResponse.json"))
+    ogPlanetQuery.toBuilder().responseFetcher(ApolloResponseFetchers.NETWORK_FIRST).build().enqueue(planetsCallback)
+    ogEpisodeQuery.toBuilder().requestHeaders(RequestHeaders.NONE).build().enqueue(episodeCallback)
     assertThat(planetsCallback.exceptions).isEmpty()
     assertThat(episodeCallback.exceptions).isEmpty()
     assertThat(planetsCallback.responseList[0].data?.allPlanets()?.planets()?.size).isEqualTo(60)
