@@ -6,13 +6,13 @@
 package com.example.interface_on_interface
 
 import com.apollographql.apollo3.api.Adapter
+import com.apollographql.apollo3.api.CompiledSelection
 import com.apollographql.apollo3.api.CustomScalarAdapters
-import com.apollographql.apollo3.api.FieldSet
 import com.apollographql.apollo3.api.Query
 import com.apollographql.apollo3.api.json.JsonWriter
 import com.apollographql.apollo3.api.obj
 import com.example.interface_on_interface.adapter.GetHuman_ResponseAdapter
-import com.example.interface_on_interface.responsefields.GetHuman_ResponseFields
+import com.example.interface_on_interface.selections.GetHumanSelections
 import kotlin.Double
 import kotlin.String
 import kotlin.collections.List
@@ -32,7 +32,7 @@ class GetHuman : Query<GetHuman.Data> {
     return GetHuman_ResponseAdapter.Data.obj()
   }
 
-  override fun fieldSets(): List<FieldSet> = GetHuman_ResponseFields.fields.first().fieldSets
+  override fun selections(): List<CompiledSelection> = GetHumanSelections
 
   data class Data(
     val human: Human,

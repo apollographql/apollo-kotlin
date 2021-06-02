@@ -6,12 +6,12 @@
 package com.example.fragment_used_twice.fragment
 
 import com.apollographql.apollo3.api.Adapter
+import com.apollographql.apollo3.api.CompiledSelection
 import com.apollographql.apollo3.api.CustomScalarAdapters
-import com.apollographql.apollo3.api.FieldSet
 import com.apollographql.apollo3.api.Fragment
 import com.apollographql.apollo3.api.json.JsonWriter
 import com.apollographql.apollo3.api.obj
-import com.example.fragment_used_twice.fragment.responsefields.CharacterDetailsImpl_ResponseFields
+import com.example.fragment_used_twice.fragment.selections.CharacterDetailsSelections
 import kotlin.collections.List
 
 class CharacterDetailsImpl : Fragment<CharacterDetails> {
@@ -23,6 +23,5 @@ class CharacterDetailsImpl : Fragment<CharacterDetails> {
     return CharacterDetailsImpl_ResponseAdapter.CharacterDetails.obj()
   }
 
-  override fun fieldSets(): List<FieldSet> =
-      CharacterDetailsImpl_ResponseFields.fields.first().fieldSets
+  override fun selections(): List<CompiledSelection> = CharacterDetailsSelections
 }

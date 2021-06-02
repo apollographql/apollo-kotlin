@@ -6,12 +6,12 @@
 package com.example.simple_fragment_with_inline_fragments.fragment
 
 import com.apollographql.apollo3.api.Adapter
+import com.apollographql.apollo3.api.CompiledSelection
 import com.apollographql.apollo3.api.CustomScalarAdapters
-import com.apollographql.apollo3.api.FieldSet
 import com.apollographql.apollo3.api.Fragment
 import com.apollographql.apollo3.api.json.JsonWriter
 import com.apollographql.apollo3.api.obj
-import com.example.simple_fragment_with_inline_fragments.fragment.responsefields.HeroDetailsImpl_ResponseFields
+import com.example.simple_fragment_with_inline_fragments.fragment.selections.HeroDetailsSelections
 import kotlin.Double
 import kotlin.String
 import kotlin.collections.List
@@ -25,7 +25,7 @@ class HeroDetailsImpl : Fragment<HeroDetailsImpl.Data> {
     return HeroDetailsImpl_ResponseAdapter.Data.obj()
   }
 
-  override fun fieldSets(): List<FieldSet> = HeroDetailsImpl_ResponseFields.fields.first().fieldSets
+  override fun selections(): List<CompiledSelection> = HeroDetailsSelections
 
   data class Data(
     /**

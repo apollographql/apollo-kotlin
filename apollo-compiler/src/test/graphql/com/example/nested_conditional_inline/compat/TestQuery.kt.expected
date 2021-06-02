@@ -6,14 +6,14 @@
 package com.example.nested_conditional_inline
 
 import com.apollographql.apollo3.api.Adapter
+import com.apollographql.apollo3.api.CompiledSelection
 import com.apollographql.apollo3.api.CustomScalarAdapters
-import com.apollographql.apollo3.api.FieldSet
 import com.apollographql.apollo3.api.Query
 import com.apollographql.apollo3.api.json.JsonWriter
 import com.apollographql.apollo3.api.obj
 import com.example.nested_conditional_inline.adapter.TestQuery_ResponseAdapter
 import com.example.nested_conditional_inline.adapter.TestQuery_VariablesAdapter
-import com.example.nested_conditional_inline.responsefields.TestQuery_ResponseFields
+import com.example.nested_conditional_inline.selections.TestQuerySelections
 import com.example.nested_conditional_inline.type.Episode
 import kotlin.Double
 import kotlin.String
@@ -36,7 +36,7 @@ data class TestQuery(
     return TestQuery_ResponseAdapter.Data.obj()
   }
 
-  override fun fieldSets(): List<FieldSet> = TestQuery_ResponseFields.fields.first().fieldSets
+  override fun selections(): List<CompiledSelection> = TestQuerySelections
 
   data class Data(
     val hero: Hero?

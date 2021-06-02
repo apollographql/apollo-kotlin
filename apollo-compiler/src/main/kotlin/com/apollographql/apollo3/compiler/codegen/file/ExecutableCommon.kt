@@ -1,11 +1,11 @@
 package com.apollographql.apollo3.compiler.codegen.file
 
 import com.apollographql.apollo3.api.Adapter
+import com.apollographql.apollo3.api.CompiledSelection
 import com.apollographql.apollo3.api.CustomScalarAdapters
-import com.apollographql.apollo3.api.FieldSet
 import com.apollographql.apollo3.api.json.JsonWriter
 import com.apollographql.apollo3.compiler.codegen.Identifier.customScalarAdapters
-import com.apollographql.apollo3.compiler.codegen.Identifier.fieldSets
+import com.apollographql.apollo3.compiler.codegen.Identifier.selections
 import com.apollographql.apollo3.compiler.codegen.Identifier.serializeVariables
 import com.apollographql.apollo3.compiler.codegen.Identifier.toJson
 import com.apollographql.apollo3.compiler.codegen.Identifier.writer
@@ -14,6 +14,7 @@ import com.apollographql.apollo3.compiler.codegen.helpers.patchKotlinNativeOptio
 import com.squareup.kotlinpoet.CodeBlock
 import com.squareup.kotlinpoet.FunSpec
 import com.squareup.kotlinpoet.KModifier
+import com.squareup.kotlinpoet.MemberName
 import com.squareup.kotlinpoet.ParameterizedTypeName.Companion.parameterizedBy
 import com.squareup.kotlinpoet.TypeName
 import com.squareup.kotlinpoet.TypeSpec
@@ -54,15 +55,11 @@ fun adapterFunSpec(
       .build()
 }
 
-fun fieldSetsFunSpec(typeName: TypeName): FunSpec {
-  return FunSpec.builder(fieldSets)
+fun selectionsFunSpec(memberName: MemberName): FunSpec {
+  return FunSpec.builder(selections)
       .addModifiers(KModifier.OVERRIDE)
-      .returns(
-          List::class.asClassName().parameterizedBy(
-              FieldSet::class.asClassName(),
-          )
-      )
-      .addCode("return %T.fields.first().fieldSets\n", typeName)
+      .returns(List::class.parameterizedBy(CompiledSelection::class))
+      .addCode("return %M\n", memberName)
       .build()
 }
 

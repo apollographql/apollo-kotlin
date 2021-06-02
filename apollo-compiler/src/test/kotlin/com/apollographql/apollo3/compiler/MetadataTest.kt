@@ -111,7 +111,7 @@ class MetadataTest {
         "MessageInput0_InputAdapter.kt",
         "SendMessageMutation.kt",
         "SendMessageMutation_ResponseAdapter.kt",
-        "SendMessageMutation_ResponseFields.kt",
+        "SendMessageMutationSelections.kt",
         "SendMessageMutation_VariablesAdapter.kt",
         "User0.kt",
         "User0_InputAdapter.kt"
@@ -145,7 +145,7 @@ class MetadataTest {
         "MessageInput0_InputAdapter.kt",
         "SendMessageMutation.kt",
         "SendMessageMutation_ResponseAdapter.kt",
-        "SendMessageMutation_ResponseFields.kt",
+        "SendMessageMutationSelections.kt",
         "SendMessageMutation_VariablesAdapter.kt",
         "User0.kt",
         "User0_InputAdapter.kt"
@@ -182,6 +182,7 @@ class MetadataTest {
     // Root generates the fragment
     rootSourcesDir.assertContents(
         "CharacterFragment.kt",
+        "CharacterFragmentSelections.kt",
         "Types.kt",
         "Episode.kt",
         "Episode_ResponseAdapter.kt"
@@ -191,7 +192,7 @@ class MetadataTest {
     leafSourcesDir.assertContents(
         "GetHeroQuery.kt",
         "GetHeroQuery_ResponseAdapter.kt",
-        "GetHeroQuery_ResponseFields.kt"
+        "GetHeroQuerySelections.kt"
     )
   }
 
@@ -227,6 +228,7 @@ class MetadataTest {
 
     rootSourcesDir.assertContents(
         "CharacterFragment.kt",
+        "CharacterFragmentSelections.kt",
         "Types.kt"
     )
 
@@ -235,8 +237,9 @@ class MetadataTest {
         "Episode_ResponseAdapter.kt",
         "GetHeroQuery.kt",
         "GetHeroQuery_ResponseAdapter.kt",
-        "GetHeroQuery_ResponseFields.kt",
+        "GetHeroQuerySelections.kt",
         "HumanFragment.kt",
+        "HumanFragmentSelections.kt",
     )
   }
 

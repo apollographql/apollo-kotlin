@@ -6,14 +6,14 @@
 package com.example.nested_named_fragments
 
 import com.apollographql.apollo3.api.Adapter
+import com.apollographql.apollo3.api.CompiledSelection
 import com.apollographql.apollo3.api.CustomScalarAdapters
-import com.apollographql.apollo3.api.FieldSet
 import com.apollographql.apollo3.api.Query
 import com.apollographql.apollo3.api.json.JsonWriter
 import com.apollographql.apollo3.api.obj
 import com.example.nested_named_fragments.adapter.AllStarships_ResponseAdapter
 import com.example.nested_named_fragments.fragment.StarshipFragment
-import com.example.nested_named_fragments.responsefields.AllStarships_ResponseFields
+import com.example.nested_named_fragments.selections.AllStarshipsSelections
 import kotlin.String
 import kotlin.collections.List
 
@@ -32,7 +32,7 @@ class AllStarships : Query<AllStarships.Data> {
     return AllStarships_ResponseAdapter.Data.obj()
   }
 
-  override fun fieldSets(): List<FieldSet> = AllStarships_ResponseFields.fields.first().fieldSets
+  override fun selections(): List<CompiledSelection> = AllStarshipsSelections
 
   data class Data(
     val allStarships: AllStarships?

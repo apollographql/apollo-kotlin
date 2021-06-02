@@ -151,12 +151,12 @@ class CgResolver {
     return operationsVariablesAdapter.get(name)
   }
 
-  private val operationMergedFields = mutableMapOf<String, ClassName>()
-  fun registerOperationMergedFields(name: String, className: ClassName) {
-    operationMergedFields.put(name, className)
+  private val operationSelections = mutableMapOf<String, MemberName>()
+  fun registerOperationSelections(name: String, memberName: MemberName) {
+    operationSelections.put(name, memberName)
   }
-  fun resolveOperationMergedFields(name: String): ClassName {
-    return operationMergedFields.get(name) ?: error("Cannot resolve operation '$name' response fields")
+  fun resolveOperationSelections(name: String): MemberName {
+    return operationSelections.get(name) ?: error("Cannot resolve operation '$name' response fields")
   }
 
   private val fragments = mutableMapOf<String, ClassName>()
@@ -175,12 +175,13 @@ class CgResolver {
     return fragmentsVariablesAdapter.get(name)
   }
 
-  private val fragmentsMergedFields = mutableMapOf<String, ClassName>()
-  fun registerFragmentMergedFields(name: String, className: ClassName) {
-    fragmentsMergedFields.put(name, className)
+  private val fragmentSelections = mutableMapOf<String, MemberName>()
+  fun registerFragmentSelections(name: String, memberName: MemberName) {
+    fragmentSelections.put(name, memberName)
   }
-  fun resolveFragmentMergedFields(name: String): ClassName {
-    return fragmentsMergedFields.get(name) ?: error("Cannot resolve fragment '$name' response fields")
+
+  fun resolveFragmentSelections(name: String): MemberName {
+    return fragmentSelections.get(name) ?: error("Cannot resolve fragment '$name' selections")
   }
 
   private var customScalars = mutableMapOf<String, ClassName?>()

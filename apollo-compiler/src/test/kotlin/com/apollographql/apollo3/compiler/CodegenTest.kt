@@ -276,7 +276,7 @@ class CodegenTest(private val folder: File, private val codegenModels: String, p
             val hasFragments = queryFile.parseAsGQLDocument().getOrThrow().hasFragments()
 
             when {
-              codegenModels != null -> {
+              !codegenModels.isNullOrBlank() -> {
                 listOf(
                     arrayOf(file, codegenModels, true),
                 )

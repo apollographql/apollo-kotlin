@@ -3,12 +3,8 @@ package com.apollographql.apollo3.compiler.codegen
 import com.apollographql.apollo3.compiler.PackageNameProvider
 import com.apollographql.apollo3.compiler.capitalizeFirstLetter
 import com.apollographql.apollo3.compiler.escapeKotlinReservedWord
-import com.apollographql.apollo3.compiler.ir.IrCompiledField
-import com.apollographql.apollo3.compiler.ir.IrCompiledType
 import com.apollographql.apollo3.compiler.ir.IrFieldInfo
-import com.apollographql.apollo3.compiler.ir.IrListCompiledType
 import com.apollographql.apollo3.compiler.ir.IrListType
-import com.apollographql.apollo3.compiler.ir.IrNonNullCompiledType
 import com.apollographql.apollo3.compiler.ir.IrNonNullType
 import com.apollographql.apollo3.compiler.ir.IrOperation
 import com.apollographql.apollo3.compiler.ir.IrType
@@ -20,25 +16,6 @@ import com.apollographql.apollo3.compiler.singularize
  *
  * Inputs should always be GraphQL identifiers and outputs are valid Kotlin identifiers.
  *
- * By default, the layout is like:
- *
- * - com.example.TestQuery <- the query
- * - com.example.TestQuery.Data <- the data for the query
- * - com.example.TestQuery.Data.Hero <- nested compound fields as required
- * - com.example.adapter.TestQuery_ResponseAdapter <- a wrapper object to namespace the adapters
- * - com.example.adapter.TestQuery_ResponseAdapter.Data <- the response adapter for TestQuery
- * - com.example.adapter.TestQuery_VariablesAdapter <- the variables adapter for TestQuery
- * - com.example.responsefields.TestQuery_ResponseFields <- the response fields for TestQuery
- *
- * - com.example.fragment.HeroDetails <- the fragment interface
- * - com.example.fragment.HeroDetailsImpl <- the fragment implementation
- * - com.example.fragment.HeroDetailsImpl.Data <- the data for the fragment implementation
- * - com.example.fragment.adapter.HeroDetailsImpl <- a wrapper object to name space the adapters
- * - com.example.fragment.adapter.HeroDetailsImpl.Data <- the response adapter for the fragment
- *
- * - com.example.type.CustomScalars <- all the custom scalars
- * - com.example.type.ReviewInput <- an input type
- * - com.example.type.Episode <- an enum
  */
 
 class CgLayout(
@@ -58,14 +35,14 @@ class CgLayout(
 
   fun operationPackageName(filePath: String) = packageNameProvider.operationPackageName(filePath)
   fun operationAdapterPackageName(filePath: String) = "${packageNameProvider.operationPackageName(filePath)}.adapter".stripDots()
-  fun operationResponseFieldsPackageName(filePath: String) = "${packageNameProvider.operationPackageName(filePath)}.responsefields".stripDots()
+  fun operationResponseFieldsPackageName(filePath: String) = "${packageNameProvider.operationPackageName(filePath)}.selections".stripDots()
 
   fun fragmentPackageName(filePath: String?): String {
     return packageNameProvider.fragmentPackageName(filePath)
   }
 
   fun fragmentAdapterPackageName(filePath: String?) = "${fragmentPackageName(filePath)}.adapter".stripDots()
-  fun fragmentResponseFieldsPackageName(filePath: String?) = "${fragmentPackageName(filePath)}.responsefields".stripDots()
+  fun fragmentResponseFieldsPackageName(filePath: String?) = "${fragmentPackageName(filePath)}.selections".stripDots()
 
   private fun String.stripDots() = this.removePrefix(".").removeSuffix(".")
 
@@ -98,12 +75,12 @@ class CgLayout(
 
   fun operationResponseAdapterWrapperName(operation: IrOperation) = operationName(operation) + "_ResponseAdapter"
   fun operationVariablesAdapterName(operation: IrOperation) = operationName(operation) + "_VariablesAdapter"
-  fun operationResponseFieldsName(operation: IrOperation) = operationName(operation) + "_ResponseFields"
+  fun operationSelectionsName(operation: IrOperation) = operationName(operation) + "Selections"
 
   internal fun fragmentName(name: String) = capitalizedIdentifier(name) + "Impl"
   internal fun fragmentResponseAdapterWrapperName(name: String) = fragmentName(name) + "_ResponseAdapter"
   internal fun fragmentVariablesAdapterName(name: String) = fragmentName(name) + "_VariablesAdapter"
-  internal fun fragmentResponseFieldsName(name: String) = fragmentName(name) + "_ResponseFields"
+  internal fun fragmentSelectionsName(name: String) = regularIdentifier(name) + "Selections"
 
   internal fun inputObjectName(name: String) = capitalizedIdentifier(name)
   internal fun inputObjectAdapterName(name: String) = capitalizedIdentifier(name) + "_InputAdapter"
@@ -132,24 +109,6 @@ class CgLayout(
         is IrNonNullType -> ofType.isList()
         else -> false
       }
-    }
-
-    private fun IrCompiledType.isList(): Boolean {
-      return when (this) {
-        is IrListCompiledType -> true
-        is IrNonNullCompiledType -> ofType.isList()
-        else -> false
-      }
-    }
-
-    fun modelName(compiledField: IrCompiledField, typeSet: TypeSet): String {
-      var responseName = compiledField.alias ?: compiledField.name
-      if (compiledField.type.isList()) {
-        responseName = responseName.singularize()
-      }
-
-      val rawTypename = compiledField.type.leafType().name
-      return upperCamelCaseIgnoringNonLetters((typeSet - rawTypename).sorted() + responseName)
     }
 
     fun modelName(info: IrFieldInfo, typeSet: TypeSet, rawTypename: String, isOther: Boolean): String {

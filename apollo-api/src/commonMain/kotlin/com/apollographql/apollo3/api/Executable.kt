@@ -22,7 +22,7 @@ interface Executable<D: Executable.Data> {
    * A list of [FieldSet]. Used when reading from the cache and/or normalizing a model.
    * Use [com.apollographql.apollo3.cache.normalized.Store.readOperation] for a higher level API
    */
-  fun fieldSets(): List<FieldSet>
+  fun selections(): List<CompiledSelection>
 
   /**
    * Marker interface for generated models

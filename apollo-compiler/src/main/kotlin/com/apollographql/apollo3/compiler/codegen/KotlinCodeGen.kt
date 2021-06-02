@@ -16,7 +16,7 @@ import com.apollographql.apollo3.compiler.codegen.file.InputObjectAdapterBuilder
 import com.apollographql.apollo3.compiler.codegen.file.InputObjectBuilder
 import com.apollographql.apollo3.compiler.codegen.file.OperationBuilder
 import com.apollographql.apollo3.compiler.codegen.file.OperationResponseAdapterBuilder
-import com.apollographql.apollo3.compiler.codegen.file.OperationResponseFieldsBuilder
+import com.apollographql.apollo3.compiler.codegen.file.OperationSelectionsBuilder
 import com.apollographql.apollo3.compiler.codegen.file.OperationVariablesAdapterBuilder
 import com.apollographql.apollo3.compiler.ir.Ir
 import com.squareup.kotlinpoet.FileSpec
@@ -105,6 +105,11 @@ class KotlinCodeGen(
         ignoredBuilders.add(builders.last())
       }
 
+      builders.add(FragmentResponseFieldsBuilder(context, fragment, ir.schema, ir.allFragmentDefinitions))
+      if (fragmentsToSkip.contains(fragment.name)) {
+        ignoredBuilders.add(builders.last())
+      }
+
       if (generateFragmentImplementations || fragment.interfaceModelGroup == null) {
         builders.add(FragmentResponseAdapterBuilder(context, fragment, flatten, flattenNamesInOrder))
         if (fragmentsToSkip.contains(fragment.name)) {
@@ -131,11 +136,6 @@ class KotlinCodeGen(
             ignoredBuilders.add(builders.last())
           }
         }
-
-        builders.add(FragmentResponseFieldsBuilder(context, fragment))
-        if (fragmentsToSkip.contains(fragment.name)) {
-          ignoredBuilders.add(builders.last())
-        }
       }
     }
 
@@ -144,7 +144,7 @@ class KotlinCodeGen(
         builders.add(OperationVariablesAdapterBuilder(context, operation))
       }
 
-      builders.add(OperationResponseFieldsBuilder(context, operation))
+      builders.add(OperationSelectionsBuilder(context, operation, ir.schema, ir.allFragmentDefinitions))
       builders.add(OperationResponseAdapterBuilder(context, operation, flatten, flattenNamesInOrder))
 
       builders.add(
@@ -184,6 +184,9 @@ class KotlinCodeGen(
 
           it.typeSpecs.map { typeSpec -> typeSpec.internal(generateAsInternal) }.forEach { typeSpec ->
             builder.addType(typeSpec)
+          }
+          it.propertySpecs.forEach {
+            builder.addProperty(it)
           }
           builder
               .build()

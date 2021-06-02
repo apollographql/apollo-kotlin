@@ -6,14 +6,14 @@
 package com.example.simple_fragment_with_inline_fragments
 
 import com.apollographql.apollo3.api.Adapter
+import com.apollographql.apollo3.api.CompiledSelection
 import com.apollographql.apollo3.api.CustomScalarAdapters
-import com.apollographql.apollo3.api.FieldSet
 import com.apollographql.apollo3.api.Query
 import com.apollographql.apollo3.api.json.JsonWriter
 import com.apollographql.apollo3.api.obj
 import com.example.simple_fragment_with_inline_fragments.adapter.TestQuery_ResponseAdapter
 import com.example.simple_fragment_with_inline_fragments.fragment.HeroDetails
-import com.example.simple_fragment_with_inline_fragments.responsefields.TestQuery_ResponseFields
+import com.example.simple_fragment_with_inline_fragments.selections.TestQuerySelections
 import kotlin.String
 import kotlin.collections.List
 
@@ -32,7 +32,7 @@ class TestQuery : Query<TestQuery.Data> {
     return TestQuery_ResponseAdapter.Data.obj()
   }
 
-  override fun fieldSets(): List<FieldSet> = TestQuery_ResponseFields.fields.first().fieldSets
+  override fun selections(): List<CompiledSelection> = TestQuerySelections
 
   data class Data(
     val hero: Hero?

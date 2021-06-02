@@ -6,12 +6,12 @@
 package com.example.named_fragment_inside_inline_fragment.fragment
 
 import com.apollographql.apollo3.api.Adapter
+import com.apollographql.apollo3.api.CompiledSelection
 import com.apollographql.apollo3.api.CustomScalarAdapters
-import com.apollographql.apollo3.api.FieldSet
 import com.apollographql.apollo3.api.Fragment
 import com.apollographql.apollo3.api.json.JsonWriter
 import com.apollographql.apollo3.api.obj
-import com.example.named_fragment_inside_inline_fragment.fragment.responsefields.CharacterAppearsInImpl_ResponseFields
+import com.example.named_fragment_inside_inline_fragment.fragment.selections.characterAppearsInSelections
 import com.example.named_fragment_inside_inline_fragment.type.Episode
 import kotlin.collections.List
 
@@ -24,8 +24,7 @@ class CharacterAppearsInImpl : Fragment<CharacterAppearsInImpl.Data> {
     return CharacterAppearsInImpl_ResponseAdapter.Data.obj()
   }
 
-  override fun fieldSets(): List<FieldSet> =
-      CharacterAppearsInImpl_ResponseFields.fields.first().fieldSets
+  override fun selections(): List<CompiledSelection> = characterAppearsInSelections
 
   data class Data(
     /**

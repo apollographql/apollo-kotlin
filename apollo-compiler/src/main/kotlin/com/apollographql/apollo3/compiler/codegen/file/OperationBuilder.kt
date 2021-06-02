@@ -185,8 +185,8 @@ class OperationBuilder(
   }
 
   private fun fieldSetsFunSpec(): FunSpec {
-    return fieldSetsFunSpec(
-        context.resolver.resolveOperationMergedFields(operation.name)
+    return selectionsFunSpec(
+        context.resolver.resolveOperationSelections(operation.name)
     )
   }
 }

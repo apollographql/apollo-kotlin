@@ -6,15 +6,15 @@
 package com.example.named_fragment_with_variables
 
 import com.apollographql.apollo3.api.Adapter
+import com.apollographql.apollo3.api.CompiledSelection
 import com.apollographql.apollo3.api.CustomScalarAdapters
-import com.apollographql.apollo3.api.FieldSet
 import com.apollographql.apollo3.api.Query
 import com.apollographql.apollo3.api.json.JsonWriter
 import com.apollographql.apollo3.api.obj
 import com.example.named_fragment_with_variables.adapter.GetUser_ResponseAdapter
 import com.example.named_fragment_with_variables.adapter.GetUser_VariablesAdapter
 import com.example.named_fragment_with_variables.fragment.QueryFragment
-import com.example.named_fragment_with_variables.responsefields.GetUser_ResponseFields
+import com.example.named_fragment_with_variables.selections.GetUserSelections
 import com.example.named_fragment_with_variables.type.UserQuery
 import kotlin.Int
 import kotlin.String
@@ -39,7 +39,7 @@ data class GetUser(
     return GetUser_ResponseAdapter.Data.obj()
   }
 
-  override fun fieldSets(): List<FieldSet> = GetUser_ResponseFields.fields.first().fieldSets
+  override fun selections(): List<CompiledSelection> = GetUserSelections
 
   data class Data(
     val __typename: String,

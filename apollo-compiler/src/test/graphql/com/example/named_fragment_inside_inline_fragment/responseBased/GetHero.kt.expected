@@ -6,15 +6,15 @@
 package com.example.named_fragment_inside_inline_fragment
 
 import com.apollographql.apollo3.api.Adapter
+import com.apollographql.apollo3.api.CompiledSelection
 import com.apollographql.apollo3.api.CustomScalarAdapters
-import com.apollographql.apollo3.api.FieldSet
 import com.apollographql.apollo3.api.Query
 import com.apollographql.apollo3.api.json.JsonWriter
 import com.apollographql.apollo3.api.obj
 import com.example.named_fragment_inside_inline_fragment.adapter.GetHero_ResponseAdapter
 import com.example.named_fragment_inside_inline_fragment.fragment.CharacterAppearsIn
 import com.example.named_fragment_inside_inline_fragment.fragment.CharacterName
-import com.example.named_fragment_inside_inline_fragment.responsefields.GetHero_ResponseFields
+import com.example.named_fragment_inside_inline_fragment.selections.GetHeroSelections
 import com.example.named_fragment_inside_inline_fragment.type.Episode
 import kotlin.String
 import kotlin.collections.List
@@ -34,7 +34,7 @@ class GetHero : Query<GetHero.Data> {
     return GetHero_ResponseAdapter.Data.obj()
   }
 
-  override fun fieldSets(): List<FieldSet> = GetHero_ResponseFields.fields.first().fieldSets
+  override fun selections(): List<CompiledSelection> = GetHeroSelections
 
   data class Data(
     val hero: Hero?

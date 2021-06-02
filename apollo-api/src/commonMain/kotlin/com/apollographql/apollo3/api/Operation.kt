@@ -38,7 +38,7 @@ interface Operation<D : Operation.Data> : Executable<D> {
 
   override fun serializeVariables(writer: JsonWriter, customScalarAdapters: CustomScalarAdapters)
 
-  override fun fieldSets(): List<FieldSet>
+  override fun selections(): List<CompiledSelection>
 
   /**
    * Marker interface for generated models built from data returned by the server in response to this operation.

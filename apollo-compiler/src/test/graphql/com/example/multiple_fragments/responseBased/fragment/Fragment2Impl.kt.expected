@@ -6,12 +6,12 @@
 package com.example.multiple_fragments.fragment
 
 import com.apollographql.apollo3.api.Adapter
+import com.apollographql.apollo3.api.CompiledSelection
 import com.apollographql.apollo3.api.CustomScalarAdapters
-import com.apollographql.apollo3.api.FieldSet
 import com.apollographql.apollo3.api.Fragment
 import com.apollographql.apollo3.api.json.JsonWriter
 import com.apollographql.apollo3.api.obj
-import com.example.multiple_fragments.fragment.responsefields.Fragment2Impl_ResponseFields
+import com.example.multiple_fragments.fragment.selections.fragment2Selections
 import kotlin.String
 import kotlin.collections.List
 
@@ -24,7 +24,7 @@ class Fragment2Impl : Fragment<Fragment2Impl.Data> {
     return Fragment2Impl_ResponseAdapter.Data.obj()
   }
 
-  override fun fieldSets(): List<FieldSet> = Fragment2Impl_ResponseFields.fields.first().fieldSets
+  override fun selections(): List<CompiledSelection> = fragment2Selections
 
   data class Data(
     override val field2: String?

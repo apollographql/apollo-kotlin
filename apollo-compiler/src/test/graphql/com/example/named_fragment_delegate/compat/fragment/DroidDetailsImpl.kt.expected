@@ -6,12 +6,12 @@
 package com.example.named_fragment_delegate.fragment
 
 import com.apollographql.apollo3.api.Adapter
+import com.apollographql.apollo3.api.CompiledSelection
 import com.apollographql.apollo3.api.CustomScalarAdapters
-import com.apollographql.apollo3.api.FieldSet
 import com.apollographql.apollo3.api.Fragment
 import com.apollographql.apollo3.api.json.JsonWriter
 import com.apollographql.apollo3.api.obj
-import com.example.named_fragment_delegate.fragment.responsefields.DroidDetailsImpl_ResponseFields
+import com.example.named_fragment_delegate.fragment.selections.DroidDetailsSelections
 import kotlin.collections.List
 
 class DroidDetailsImpl : Fragment<DroidDetails> {
@@ -23,6 +23,5 @@ class DroidDetailsImpl : Fragment<DroidDetails> {
     return DroidDetailsImpl_ResponseAdapter.DroidDetails.obj()
   }
 
-  override fun fieldSets(): List<FieldSet> =
-      DroidDetailsImpl_ResponseFields.fields.first().fieldSets
+  override fun selections(): List<CompiledSelection> = DroidDetailsSelections
 }

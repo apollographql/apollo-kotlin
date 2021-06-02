@@ -6,13 +6,13 @@
 package com.example.inline_fragment_intersection
 
 import com.apollographql.apollo3.api.Adapter
+import com.apollographql.apollo3.api.CompiledSelection
 import com.apollographql.apollo3.api.CustomScalarAdapters
-import com.apollographql.apollo3.api.FieldSet
 import com.apollographql.apollo3.api.Query
 import com.apollographql.apollo3.api.json.JsonWriter
 import com.apollographql.apollo3.api.obj
 import com.example.inline_fragment_intersection.adapter.TestOperation_ResponseAdapter
-import com.example.inline_fragment_intersection.responsefields.TestOperation_ResponseFields
+import com.example.inline_fragment_intersection.selections.TestOperationSelections
 import com.example.inline_fragment_intersection.type.Race
 import kotlin.Boolean
 import kotlin.Double
@@ -34,7 +34,7 @@ class TestOperation : Query<TestOperation.Data> {
     return TestOperation_ResponseAdapter.Data.obj()
   }
 
-  override fun fieldSets(): List<FieldSet> = TestOperation_ResponseFields.fields.first().fieldSets
+  override fun selections(): List<CompiledSelection> = TestOperationSelections
 
   data class Data(
     val random: Random
