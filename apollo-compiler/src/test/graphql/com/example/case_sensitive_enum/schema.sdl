@@ -1,0 +1,10 @@
+type Query {
+  enum: Enum
+}
+
+enum Enum {
+    north @deprecated
+    North @deprecated
+    NORTH
+    SOUTH
+}
