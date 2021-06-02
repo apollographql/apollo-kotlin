@@ -14,7 +14,7 @@ internal fun usedFragments(
     allFragmentDefinitions: Map<String, GQLFragmentDefinition>,
     selections: List<GQLSelection>,
     rawTypename: String,
-): List<String> {
+): Set<String> {
   return selections.flatMap {
     when (it) {
       is GQLField -> {
@@ -29,5 +29,5 @@ internal fun usedFragments(
         usedFragments(schema, allFragmentDefinitions, fragmentDefinition.selectionSet.selections, fragmentDefinition.typeCondition.name) + it.name
       }
     }
-  }
+  }.toSet()
 }
