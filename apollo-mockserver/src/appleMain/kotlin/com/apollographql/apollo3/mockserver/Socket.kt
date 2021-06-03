@@ -10,6 +10,7 @@ import kotlinx.cinterop.get
 import kotlinx.cinterop.memScoped
 import kotlinx.cinterop.nativeHeap
 import okio.buffer
+import platform.Foundation.NSMutableArray
 import platform.posix.POLLIN
 import platform.posix.accept
 import platform.posix.close
@@ -27,8 +28,8 @@ class Socket(private val socketFd: Int) {
   private val pipeFd = nativeHeap.allocArray<IntVar>(2)
   private val running = AtomicInt(1)
   private val lock = reentrantLock()
-  private val queuedResponses = AtomicReference<List<MockResponse>>(emptyList())
-  private val recordedRequests = AtomicReference<List<MockRecordedRequest>>(emptyList())
+  private val queuedResponses = NSMutableArray()
+  private val recordedRequests = NSMutableArray()
 
   init {
     check(pipe(pipeFd) == 0) {
@@ -94,25 +95,23 @@ class Socket(private val socketFd: Int) {
           return@memScoped
         }
 
-        debug("Read request")
+        debug("'$connectionFd': Read request")
 
         val request = readRequest(source)
+        if (request == null) {
+          debug("'$connectionFd': Connection closed")
+          return
+        }
 
         debug("Got request: ${request.method} ${request.path}")
 
         val mockResponse = synchronized(lock) {
-          val requests = recordedRequests.value
-          val newRequests = requests + request
-          recordedRequests.value = newRequests.freeze()
+          recordedRequests.addObject(request.freeze())
 
-          val responses = queuedResponses.value
-          check(responses.isNotEmpty()) {
-            "No response enqueued"
-          }
-          val response = responses.first()
-          val newResponses = responses.drop(1)
-          queuedResponses.value = newResponses.freeze()
-          response
+          check(queuedResponses.count.toInt() > 0)
+          queuedResponses.objectAtIndex(0).also {
+            queuedResponses.removeObjectAtIndex(0)
+          } as MockResponse
         }
 
         debug("Write response: ${mockResponse.statusCode}")
@@ -137,20 +136,16 @@ class Socket(private val socketFd: Int) {
 
   fun enqueue(mockResponse: MockResponse) {
     synchronized(lock) {
-      val responses = queuedResponses.value
-      val newResponses = responses + mockResponse
-      queuedResponses.value = newResponses.freeze()
+      queuedResponses.addObject(mockResponse.freeze())
     }
   }
 
   fun takeRequest(): MockRecordedRequest {
     return synchronized(lock) {
-      val requests = recordedRequests.value
-      check(requests.isNotEmpty())
-
-      val request = requests.first()
-      recordedRequests.value = requests.drop(1).freeze()
-      request
+      check(recordedRequests.count.toInt() > 0)
+      recordedRequests.objectAtIndex(0).also {
+        recordedRequests.removeObjectAtIndex(0)
+      } as MockRecordedRequest
     }
   }
 }
