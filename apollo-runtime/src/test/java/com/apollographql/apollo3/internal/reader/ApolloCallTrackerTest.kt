@@ -2,8 +2,8 @@ package com.apollographql.apollo3.internal.reader
 
 import com.apollographql.apollo3.ApolloClient
 import com.apollographql.apollo3.IdleResourceCallback
+import com.apollographql.apollo3.api.CompiledSelection
 import com.apollographql.apollo3.api.CustomScalarAdapters
-import com.apollographql.apollo3.api.FieldSet
 import com.apollographql.apollo3.api.Query
 import com.apollographql.apollo3.api.json.JsonWriter
 import com.apollographql.apollo3.rx2.Rx2Apollo
@@ -140,7 +140,7 @@ class ApolloCallTrackerTest {
         return ""
       }
 
-      override fun fieldSets(): List<FieldSet> {
+      override fun selections(): List<CompiledSelection> {
         return emptyList()
       }
     }

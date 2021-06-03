@@ -1,8 +1,10 @@
 package com.apollographql.apollo3.compiler.ir
 
 import com.apollographql.apollo3.api.BTerm
-import com.apollographql.apollo3.api.BVariable
 import com.apollographql.apollo3.api.BooleanExpression
+import com.apollographql.apollo3.ast.GQLFragmentDefinition
+import com.apollographql.apollo3.ast.GQLSelection
+import com.apollographql.apollo3.ast.Schema
 
 /*
 * IR.
@@ -29,6 +31,8 @@ data class Ir(
     val objects: List<IrObject>,
     val unions: List<IrUnion>,
     val interfaces: List<IrInterface>,
+    val allFragmentDefinitions: Map<String, GQLFragmentDefinition>,
+    val schema: Schema
 )
 
 data class IrEnum(
@@ -48,10 +52,9 @@ data class IrEnum(
 /**
  * An input field
  *
- * Note: [IrInputField], [IrCompiledArgument] and [IrVariable] are all very similar since they all share
+ * Note: [IrInputField],  and [IrVariable] are all very similar since they all share
  * the [com.apollographql.apollo3.ast.GQLInputValueDefinition] type but they also
  * have differences which is why they are different IR models:
- * - [IrCompiledArgument] also has a value in addition to the type definition
  * - [IrVariable] doesn't have a description
  */
 data class IrInputField(
@@ -71,7 +74,7 @@ data class IrOperation(
     val typeCondition: String,
     val variables: List<IrVariable>,
     val description: String?,
-    val compiledField: IrCompiledField,
+    val selections: List<GQLSelection>,
     val sourceWithFragments: String,
     val filePath: String,
     val dataModelGroup: IrModelGroup,
@@ -87,7 +90,7 @@ data class IrNamedFragment(
      */
     val variables: List<IrVariable>,
     val typeCondition: String,
-    val compiledField: IrCompiledField,
+    val selections: List<GQLSelection>,
     val interfaceModelGroup: IrModelGroup?,
     val dataModelGroup: IrModelGroup,
 )
@@ -178,68 +181,6 @@ data class IrProperty(
 data class IrModelGroup(
     val baseModelId: IrModelId,
     val models: List<IrModel>,
-)
-
-/**
- * A compiled field used to execute an operation. The tree of IrField is used to build the [MergedField]
- * and execute the operation from the cache.
- *
- * Because execution only cares about the response shape, the fragments information is discarded and this
- * cannot be used to generate the models themselves that need to carry this information operation-based models.
- */
-data class IrCompiledField(
-    val name: String,
-    val alias: String?,
-    val arguments: List<IrCompiledArgument>,
-    val type: IrCompiledType,
-    val condition: BooleanExpression<BVariable>,
-    val fieldSets: List<IrCompiledFieldSet>,
-)
-
-/**
- * A compiled argument.
- */
-data class IrCompiledArgument(
-    val name: String,
-    /**
-     * the GQLValue coerced so that for an example, Ints used in Float positions are correctly transformed
-     */
-    val value: IrValue,
-    /**
-     * The defaultValue from the GQLArgumentDefinition, coerced
-     */
-    val defaultValue: IrValue?,
-    val type: IrCompiledType,
-)
-
-/**
- * [IrCompiledField] maps 1:1 with [com.apollographql.apollo3.ast.GQLType]
- */
-sealed class IrCompiledType {
-  abstract fun leafType(): IrNamedCompiledType
-}
-
-data class IrNonNullCompiledType(val ofType: IrCompiledType) : IrCompiledType() {
-  override fun leafType() = ofType.leafType()
-}
-
-data class IrListCompiledType(val ofType: IrCompiledType) : IrCompiledType() {
-  override fun leafType() = ofType.leafType()
-}
-
-data class IrNamedCompiledType(val name: String, val compound: Boolean) : IrCompiledType() {
-  override fun leafType() = this
-}
-
-/**
- * An [IrCompiledFieldSet] is a list of fields satisfying some conditions.
- *
- * @param possibleTypes: the possibleTypes that will map to this [IrCompiledFieldSet].
- */
-data class IrCompiledFieldSet(
-    val typeSet: TypeSet,
-    val compiledFields: List<IrCompiledField>,
-    val possibleTypes: Set<String>,
 )
 
 data class IrInputObject(

@@ -6,7 +6,7 @@ import com.apollographql.apollo3.ApolloAndroidLogger
 import com.apollographql.apollo3.ApolloClient
 import com.apollographql.apollo3.api.Operation
 import com.apollographql.apollo3.api.Executable
-import com.apollographql.apollo3.api.MergedField
+import com.apollographql.apollo3.api.CompiledField
 import com.apollographql.apollo3.api.cache.http.HttpCachePolicy
 import com.apollographql.apollo3.cache.http.ApolloHttpCache
 import com.apollographql.apollo3.cache.http.DiskLruHttpCacheStore
@@ -46,7 +46,7 @@ class KotlinSampleApp : Application() {
 
     val sqlNormalizedCacheFactory = SqlNormalizedCacheFactory(this, "github_cache")
     val cacheKeyResolver = object : CacheKeyResolver() {
-      override fun fromFieldRecordSet(field: MergedField, variables: Executable.Variables, recordSet: Map<String, Any?>): CacheKey {
+      override fun fromFieldRecordSet(field: CompiledField, variables: Executable.Variables, recordSet: Map<String, Any?>): CacheKey {
         return if (recordSet["__typename"] == "Repository") {
           CacheKey(recordSet["id"] as String)
         } else {
@@ -54,7 +54,7 @@ class KotlinSampleApp : Application() {
         }
       }
 
-      override fun fromFieldArguments(field: MergedField, variables: Executable.Variables): CacheKey {
+      override fun fromFieldArguments(field: CompiledField, variables: Executable.Variables): CacheKey {
         return CacheKey.NO_KEY
       }
     }

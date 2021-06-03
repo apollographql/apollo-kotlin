@@ -6,7 +6,7 @@ import com.apollographql.apollo3.ApolloClient
 import com.apollographql.apollo3.api.Operation
 import com.apollographql.apollo3.api.Query
 import com.apollographql.apollo3.api.ApolloResponse
-import com.apollographql.apollo3.api.FieldSet
+import com.apollographql.apollo3.api.CompiledSelection
 import com.apollographql.apollo3.api.CustomScalarAdapters
 import com.apollographql.apollo3.api.json.JsonReader
 import com.apollographql.apollo3.api.json.JsonWriter
@@ -166,11 +166,10 @@ class ApolloIdlingResourceTest {
       }
 
       override fun name(): String = "EmptyQuery"
-
       override fun id(): String {
         return ""
       }
-      override fun fieldSets(): List<FieldSet> {
+      override fun selections(): List<CompiledSelection> {
         return emptyList()
       }
     }

@@ -6,13 +6,13 @@
 package com.example.nested_field_with_multiple_fieldsets
 
 import com.apollographql.apollo3.api.Adapter
+import com.apollographql.apollo3.api.CompiledSelection
 import com.apollographql.apollo3.api.CustomScalarAdapters
-import com.apollographql.apollo3.api.FieldSet
 import com.apollographql.apollo3.api.Query
 import com.apollographql.apollo3.api.json.JsonWriter
 import com.apollographql.apollo3.api.obj
 import com.example.nested_field_with_multiple_fieldsets.adapter.TestQuery_ResponseAdapter
-import com.example.nested_field_with_multiple_fieldsets.responsefields.TestQuery_ResponseFields
+import com.example.nested_field_with_multiple_fieldsets.selections.TestQuerySelections
 import kotlin.String
 import kotlin.collections.List
 
@@ -31,7 +31,7 @@ class TestQuery : Query<TestQuery.Data> {
     return TestQuery_ResponseAdapter.Data.obj()
   }
 
-  override fun fieldSets(): List<FieldSet> = TestQuery_ResponseFields.fields.first().fieldSets
+  override fun selections(): List<CompiledSelection> = TestQuerySelections.root
 
   data class Data(
     val iface1: Iface1?

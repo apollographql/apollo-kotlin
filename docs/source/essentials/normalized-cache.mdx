@@ -208,12 +208,12 @@ To do this, specify a `CacheKeyResolver` when configuring your `NormalizedCacheF
 
 ```kotlin:title=Kotlin
 val resolver: CacheKeyResolver = object : CacheKeyResolver() {
-  override fun fromFieldRecordSet(field: ResponseField, recordSet: Map<String, Any>): CacheKey {
+  override fun fromFieldRecordSet(field: CompiledField, recordSet: Map<String, Any>): CacheKey {
     // Retrieve the id from the object itself
     return CacheKey.from(recordSet["id"] as String)
   }
 
-  override fun fromFieldArguments(field: ResponseField, variables: Operation.Variables): CacheKey {
+  override fun fromFieldArguments(field: CompiledField, variables: Operation.Variables): CacheKey {
     // Retrieve the id from the field arguments.
     // In the example, this allows to know that `author(id: "author1")` will retrieve `author1`
     // That sounds straightforward but without this, the cache would have no way of finding the id before executing the request on the

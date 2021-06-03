@@ -7,16 +7,17 @@ import com.apollographql.apollo3.api.json.JsonWriter
  * Fragments do not have variables per the GraphQL spec but they are inferred from arguments and used when reading the cache
  * See https://github.com/graphql/graphql-spec/issues/204
  */
-interface Fragment<D: Fragment.Data>: Executable<D> {
+interface Fragment<D : Fragment.Data> : Executable<D> {
   override fun serializeVariables(writer: JsonWriter, customScalarAdapters: CustomScalarAdapters)
 
   override fun adapter(): Adapter<D>
 
-  override fun fieldSets(): List<FieldSet>
+  override fun selections(): List<CompiledSelection>
 
   /**
    * Marker interface for generated models of this fragment
    */
-  interface Data: Executable.Data
+  interface Data : Executable.Data
 }
+
 

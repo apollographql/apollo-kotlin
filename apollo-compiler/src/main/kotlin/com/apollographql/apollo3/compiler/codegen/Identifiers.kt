@@ -9,7 +9,7 @@ internal object Identifier {
   const val fromJson = "fromJson"
   const val serializeVariables = "serializeVariables"
   const val fields = "fields"
-  const val fieldSets = "fieldSets"
+  const val selections = "selections"
   @Suppress("ObjectPropertyName")
   const val __typename = "__typename"
   const val typename = "typename"

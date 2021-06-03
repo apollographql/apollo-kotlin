@@ -3,13 +3,11 @@ package com.apollographql.apollo3.compiler.ir
 import com.apollographql.apollo3.api.BVariable
 import com.apollographql.apollo3.api.BooleanExpression
 import com.apollographql.apollo3.api.not
-import com.apollographql.apollo3.ast.GQLArgument
 import com.apollographql.apollo3.ast.GQLBooleanValue
 import com.apollographql.apollo3.ast.GQLDirective
 import com.apollographql.apollo3.ast.GQLEnumTypeDefinition
 import com.apollographql.apollo3.ast.GQLEnumValue
 import com.apollographql.apollo3.ast.GQLEnumValueDefinition
-import com.apollographql.apollo3.ast.GQLFieldDefinition
 import com.apollographql.apollo3.ast.GQLFloatValue
 import com.apollographql.apollo3.ast.GQLFragmentDefinition
 import com.apollographql.apollo3.ast.GQLInputObjectTypeDefinition
@@ -148,6 +146,8 @@ internal class IrBuilder(
         objects = objects,
         interfaces = interfaces,
         unions = unions,
+        allFragmentDefinitions = allFragmentDefinitions,
+        schema = schema
     )
   }
 
@@ -257,13 +257,6 @@ internal class IrBuilder(
       "Apollo doesn't support anonymous operation."
     }
 
-    val compiledField = compileField(
-        schema = schema,
-        allGQLFragmentDefinitions = allFragmentDefinitions,
-        selections = selectionSet.selections,
-        rawTypeName = typeDefinition.name,
-    )
-
     val usedFragments = usedFragments(
         schema = schema,
         allFragmentDefinitions,
@@ -289,7 +282,7 @@ internal class IrBuilder(
         operationType = operationType.toIrOperationType(),
         typeCondition = typeDefinition.name,
         variables = variableDefinitions.map { it.toIr() },
-        compiledField = compiledField,
+        selections = selectionSet.selections,
         sourceWithFragments = sourceWithFragments,
         filePath = sourceLocation.filePath!!,
         dataModelGroup = dataModelGroup
@@ -308,13 +301,6 @@ internal class IrBuilder(
 
     val variableDefinitions = inferVariables(schema, allFragmentDefinitions)
 
-    val field = compileField(
-        schema,
-        allFragmentDefinitions,
-        selections = selectionSet.selections,
-        rawTypeName = typeDefinition.name,
-    )
-
     val interfaceModelGroup = modelGroupBuilder.buildFragmentInterface(
         fragmentName = name
     )
@@ -329,7 +315,7 @@ internal class IrBuilder(
         filePath = sourceLocation.filePath,
         typeCondition = typeDefinition.name,
         variables = variableDefinitions.map { it.toIr() },
-        compiledField = field,
+        selections = selectionSet.selections,
         interfaceModelGroup = interfaceModelGroup,
         dataModelGroup = dataModelGroup,
     )
@@ -500,34 +486,6 @@ internal class IrBuilder(
           selections = childSelections,
           rawTypeName = first.type.leafType().name,
       )
-    }
-  }
-}
-
-internal fun GQLArgument.toIrCompiledArgument(schema: Schema, fieldDefinition: GQLFieldDefinition): IrCompiledArgument {
-  val argumentDefinition = fieldDefinition.arguments.first { it.name == name }
-
-  return IrCompiledArgument(
-      name = name,
-      value = value.validateAndCoerce(argumentDefinition.type, schema).getOrThrow().toIrValue(),
-      defaultValue = argumentDefinition.defaultValue?.validateAndCoerce(argumentDefinition.type, schema)?.getOrThrow()?.toIrValue(),
-      type = argumentDefinition.type.toCompiledIrType(schema)
-  )
-}
-
-internal fun GQLType.toCompiledIrType(schema: Schema): IrCompiledType {
-  return when (this) {
-    is GQLNonNullType -> IrNonNullCompiledType(ofType = type.toCompiledIrType(schema))
-    is GQLListType -> IrListCompiledType(ofType = type.toCompiledIrType(schema))
-    is GQLNamedType -> {
-      val compound = when (schema.typeDefinition(name)) {
-        is GQLObjectTypeDefinition,
-        is GQLInterfaceTypeDefinition,
-        is GQLUnionTypeDefinition,
-        -> true
-        else -> false
-      }
-      IrNamedCompiledType(name, compound)
     }
   }
 }

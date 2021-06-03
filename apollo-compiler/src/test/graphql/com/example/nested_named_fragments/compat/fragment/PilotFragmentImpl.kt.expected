@@ -6,12 +6,12 @@
 package com.example.nested_named_fragments.fragment
 
 import com.apollographql.apollo3.api.Adapter
+import com.apollographql.apollo3.api.CompiledSelection
 import com.apollographql.apollo3.api.CustomScalarAdapters
-import com.apollographql.apollo3.api.FieldSet
 import com.apollographql.apollo3.api.Fragment
 import com.apollographql.apollo3.api.json.JsonWriter
 import com.apollographql.apollo3.api.obj
-import com.example.nested_named_fragments.fragment.responsefields.PilotFragmentImpl_ResponseFields
+import com.example.nested_named_fragments.fragment.selections.pilotFragmentSelections
 import kotlin.collections.List
 
 class PilotFragmentImpl : Fragment<PilotFragment> {
@@ -23,6 +23,5 @@ class PilotFragmentImpl : Fragment<PilotFragment> {
     return PilotFragmentImpl_ResponseAdapter.PilotFragment.obj()
   }
 
-  override fun fieldSets(): List<FieldSet> =
-      PilotFragmentImpl_ResponseFields.fields.first().fieldSets
+  override fun selections(): List<CompiledSelection> = pilotFragmentSelections.root
 }

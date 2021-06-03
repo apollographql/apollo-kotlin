@@ -1,5 +1,6 @@
 package test
 
+import assertEquals2
 import com.apollographql.apollo3.ApolloClient
 import com.apollographql.apollo3.api.ApolloRequest
 import com.apollographql.apollo3.cache.normalized.ApolloStore
@@ -125,8 +126,8 @@ class StoreTest {
     val characterResponse = apolloClient.query(
         ApolloRequest(CharacterNameByIdQuery(id)).withFetchPolicy(FetchPolicy.CacheOnly)
     )
-    assertEquals(characterResponse.isFromCache, true)
-    assertEquals(characterResponse.data?.character?.name, name)
+    assertEquals2(characterResponse.isFromCache, true)
+    assertEquals2(characterResponse.data?.character?.name, name)
   }
 
   private suspend fun assertFriendIsNotCached(id: String) {

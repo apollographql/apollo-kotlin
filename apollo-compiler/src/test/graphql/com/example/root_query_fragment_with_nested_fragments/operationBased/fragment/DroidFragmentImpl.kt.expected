@@ -6,12 +6,12 @@
 package com.example.root_query_fragment_with_nested_fragments.fragment
 
 import com.apollographql.apollo3.api.Adapter
+import com.apollographql.apollo3.api.CompiledSelection
 import com.apollographql.apollo3.api.CustomScalarAdapters
-import com.apollographql.apollo3.api.FieldSet
 import com.apollographql.apollo3.api.Fragment
 import com.apollographql.apollo3.api.json.JsonWriter
 import com.apollographql.apollo3.api.obj
-import com.example.root_query_fragment_with_nested_fragments.fragment.responsefields.DroidFragmentImpl_ResponseFields
+import com.example.root_query_fragment_with_nested_fragments.fragment.selections.droidFragmentSelections
 import kotlin.collections.List
 
 class DroidFragmentImpl : Fragment<DroidFragment> {
@@ -23,6 +23,5 @@ class DroidFragmentImpl : Fragment<DroidFragment> {
     return DroidFragmentImpl_ResponseAdapter.DroidFragment.obj()
   }
 
-  override fun fieldSets(): List<FieldSet> =
-      DroidFragmentImpl_ResponseFields.fields.first().fieldSets
+  override fun selections(): List<CompiledSelection> = droidFragmentSelections.root
 }

@@ -6,14 +6,14 @@
 package com.example.subscriptions
 
 import com.apollographql.apollo3.api.Adapter
+import com.apollographql.apollo3.api.CompiledSelection
 import com.apollographql.apollo3.api.CustomScalarAdapters
-import com.apollographql.apollo3.api.FieldSet
 import com.apollographql.apollo3.api.Subscription
 import com.apollographql.apollo3.api.json.JsonWriter
 import com.apollographql.apollo3.api.obj
 import com.example.subscriptions.adapter.TestSubscription_ResponseAdapter
 import com.example.subscriptions.adapter.TestSubscription_VariablesAdapter
-import com.example.subscriptions.responsefields.TestSubscription_ResponseFields
+import com.example.subscriptions.selections.TestSubscriptionSelections
 import kotlin.Int
 import kotlin.String
 import kotlin.collections.List
@@ -35,8 +35,7 @@ data class TestSubscription(
     return TestSubscription_ResponseAdapter.Data.obj()
   }
 
-  override fun fieldSets(): List<FieldSet> =
-      TestSubscription_ResponseFields.fields.first().fieldSets
+  override fun selections(): List<CompiledSelection> = TestSubscriptionSelections.root
 
   data class Data(
     /**

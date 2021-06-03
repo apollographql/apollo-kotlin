@@ -6,14 +6,14 @@
 package com.example.mutation_create_review
 
 import com.apollographql.apollo3.api.Adapter
+import com.apollographql.apollo3.api.CompiledSelection
 import com.apollographql.apollo3.api.CustomScalarAdapters
-import com.apollographql.apollo3.api.FieldSet
 import com.apollographql.apollo3.api.Mutation
 import com.apollographql.apollo3.api.json.JsonWriter
 import com.apollographql.apollo3.api.obj
 import com.example.mutation_create_review.adapter.CreateReviewForEpisode_ResponseAdapter
 import com.example.mutation_create_review.adapter.CreateReviewForEpisode_VariablesAdapter
-import com.example.mutation_create_review.responsefields.CreateReviewForEpisode_ResponseFields
+import com.example.mutation_create_review.selections.CreateReviewForEpisodeSelections
 import com.example.mutation_create_review.type.Episode
 import com.example.mutation_create_review.type.ReviewInput
 import java.util.Date
@@ -39,8 +39,7 @@ internal data class CreateReviewForEpisode(
     return CreateReviewForEpisode_ResponseAdapter.Data.obj()
   }
 
-  override fun fieldSets(): List<FieldSet> =
-      CreateReviewForEpisode_ResponseFields.fields.first().fieldSets
+  override fun selections(): List<CompiledSelection> = CreateReviewForEpisodeSelections.root
 
   data class Data(
     val createReview: CreateReview?
