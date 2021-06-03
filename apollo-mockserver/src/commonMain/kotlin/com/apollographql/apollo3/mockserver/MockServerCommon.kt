@@ -30,10 +30,11 @@ fun parseHeader(line: String): Pair<String, String> {
   return line.substring(0, index).trim() to line.substring(index + 1, line.length).trim()
 }
 
-fun readRequest(source: BufferedSource): MockRecordedRequest {
+fun readRequest(source: BufferedSource): MockRecordedRequest? {
   var line = source.readUtf8Line()
-  check (line != null) {
-    "Cannot read request line"
+  if (line == null) {
+    // the connection was closed
+    return null
   }
 
   val (method, path, version) = parseRequestLine(line)

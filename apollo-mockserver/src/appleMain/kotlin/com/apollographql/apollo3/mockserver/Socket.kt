@@ -94,9 +94,13 @@ class Socket(private val socketFd: Int) {
           return@memScoped
         }
 
-        debug("Read request")
+        debug("'$connectionFd': Read request")
 
         val request = readRequest(source)
+        if (request == null) {
+          debug("'$connectionFd': Connection closed")
+          return
+        }
 
         debug("Got request: ${request.method} ${request.path}")
 
