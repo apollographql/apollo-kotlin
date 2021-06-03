@@ -45,6 +45,7 @@ import com.apollographql.apollo3.compiler.capitalizeFirstLetter
 import com.apollographql.apollo3.compiler.codegen.CgContext
 import com.apollographql.apollo3.compiler.codegen.helpers.codeBlock
 import com.apollographql.apollo3.compiler.ir.toBooleanExpression
+import com.squareup.kotlinpoet.ClassName
 import com.squareup.kotlinpoet.CodeBlock
 import com.squareup.kotlinpoet.KModifier
 import com.squareup.kotlinpoet.MemberName
@@ -88,6 +89,7 @@ class CompiledSelectionsBuilder(
 
     val property = PropertySpec.builder(propertyName, List::class.parameterizedBy(CompiledSelection::class))
         .initializer(builder.build())
+        .addAnnotation(ClassName("kotlin.native", "SharedImmutable"))
         .applyIf(private) {
           addModifiers(KModifier.PRIVATE)
         }
