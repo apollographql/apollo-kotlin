@@ -5,7 +5,6 @@ import com.apollographql.apollo3.api.Subscription
 import com.apollographql.apollo3.api.AnyAdapter
 import com.apollographql.apollo3.api.Adapter
 import com.apollographql.apollo3.api.CompiledSelection
-import com.apollographql.apollo3.api.FieldSet
 import com.apollographql.apollo3.api.json.JsonReader
 import com.apollographql.apollo3.api.json.JsonWriter
 import com.apollographql.apollo3.api.nullable

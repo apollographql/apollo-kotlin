@@ -1,21 +1,16 @@
 package com.apollographql.apollo3.compiler.codegen.selections
 
-import com.apollographql.apollo3.api.BTerm
 import com.apollographql.apollo3.api.BVariable
 import com.apollographql.apollo3.api.BooleanExpression
 import com.apollographql.apollo3.api.CompiledCompoundType
 import com.apollographql.apollo3.api.CompiledCondition
 import com.apollographql.apollo3.api.CompiledField
 import com.apollographql.apollo3.api.CompiledFragment
-import com.apollographql.apollo3.api.CompiledNamedType
 import com.apollographql.apollo3.api.CompiledOtherType
 import com.apollographql.apollo3.api.CompiledSelection
-import com.apollographql.apollo3.api.MergedField
 import com.apollographql.apollo3.api.Variable
-import com.apollographql.apollo3.api.not
 import com.apollographql.apollo3.ast.GQLArgument
 import com.apollographql.apollo3.ast.GQLBooleanValue
-import com.apollographql.apollo3.ast.GQLDirective
 import com.apollographql.apollo3.ast.GQLEnumValue
 import com.apollographql.apollo3.ast.GQLField
 import com.apollographql.apollo3.ast.GQLFloatValue
@@ -43,9 +38,7 @@ import com.apollographql.apollo3.ast.leafType
 import com.apollographql.apollo3.compiler.applyIf
 import com.apollographql.apollo3.compiler.capitalizeFirstLetter
 import com.apollographql.apollo3.compiler.codegen.CgContext
-import com.apollographql.apollo3.compiler.codegen.helpers.codeBlock
 import com.apollographql.apollo3.compiler.ir.toBooleanExpression
-import com.squareup.kotlinpoet.ClassName
 import com.squareup.kotlinpoet.CodeBlock
 import com.squareup.kotlinpoet.KModifier
 import com.squareup.kotlinpoet.MemberName

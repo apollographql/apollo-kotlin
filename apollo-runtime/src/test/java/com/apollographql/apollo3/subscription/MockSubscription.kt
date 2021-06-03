@@ -4,7 +4,6 @@ import com.apollographql.apollo3.api.CustomScalarAdapters
 import com.apollographql.apollo3.api.Subscription
 import com.apollographql.apollo3.api.AnyAdapter
 import com.apollographql.apollo3.api.CompiledSelection
-import com.apollographql.apollo3.api.FieldSet
 import com.apollographql.apollo3.api.json.JsonWriter
 import com.apollographql.apollo3.api.nullable
 

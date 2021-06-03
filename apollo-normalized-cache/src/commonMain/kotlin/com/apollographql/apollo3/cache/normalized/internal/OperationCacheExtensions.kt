@@ -9,7 +9,6 @@ import com.apollographql.apollo3.api.internal.json.MapJsonReader
 import com.apollographql.apollo3.api.internal.json.MapJsonWriter
 import com.apollographql.apollo3.api.Adapter
 import com.apollographql.apollo3.api.CompiledSelection
-import com.apollographql.apollo3.api.FieldSet
 import com.apollographql.apollo3.api.variables
 import com.apollographql.apollo3.cache.CacheHeaders
 import com.apollographql.apollo3.cache.normalized.CacheKey

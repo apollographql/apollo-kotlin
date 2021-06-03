@@ -2,7 +2,6 @@ package com.apollographql.apollo3.cache.normalized.internal
 
 import com.apollographql.apollo3.api.CompiledField
 import com.apollographql.apollo3.api.Executable
-import com.apollographql.apollo3.api.MergedField
 import com.apollographql.apollo3.api.Variable
 import com.apollographql.apollo3.api.internal.json.BufferedSinkJsonWriter
 import com.apollographql.apollo3.api.internal.json.Utils

@@ -2,7 +2,6 @@ package com.apollographql.apollo3.cache.normalized
 
 import com.apollographql.apollo3.api.CompiledField
 import com.apollographql.apollo3.api.Executable
-import com.apollographql.apollo3.api.MergedField
 import kotlin.jvm.JvmField
 import kotlin.jvm.JvmStatic
 import kotlin.jvm.JvmSuppressWildcards

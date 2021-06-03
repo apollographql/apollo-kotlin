@@ -3,7 +3,6 @@ package com.apollographql.apollo3.cache.normalized.internal
 import com.apollographql.apollo3.api.CompiledField
 import com.apollographql.apollo3.api.CompiledOtherType
 import com.apollographql.apollo3.api.Executable
-import com.apollographql.apollo3.api.MergedField
 import com.apollographql.apollo3.api.Variable
 import com.google.common.truth.Truth
 import org.junit.Ignore

@@ -7,7 +7,6 @@ import com.apollographql.apollo3.api.CompiledListType
 import com.apollographql.apollo3.api.CompiledNotNullType
 import com.apollographql.apollo3.api.CompiledSelection
 import com.apollographql.apollo3.api.Executable
-import com.apollographql.apollo3.api.MergedField
 import com.apollographql.apollo3.cache.normalized.CacheReference
 import com.apollographql.apollo3.cache.normalized.Record
 

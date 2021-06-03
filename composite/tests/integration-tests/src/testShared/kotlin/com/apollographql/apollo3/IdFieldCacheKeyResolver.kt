@@ -2,7 +2,6 @@ package com.apollographql.apollo3
 
 import com.apollographql.apollo3.api.CompiledField
 import com.apollographql.apollo3.api.Executable
-import com.apollographql.apollo3.api.MergedField
 import com.apollographql.apollo3.cache.normalized.CacheKey
 import com.apollographql.apollo3.cache.normalized.CacheKeyResolver
 
