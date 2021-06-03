@@ -9,6 +9,7 @@ import kotlinx.cinterop.ptr
 import kotlinx.cinterop.staticCFunction
 import kotlinx.cinterop.value
 import kotlinx.coroutines.runBlocking
+import platform.Foundation.NSMutableArray
 import platform.Foundation.NSThread
 import platform.darwin.dispatch_async_f
 import platform.darwin.dispatch_get_main_queue
@@ -28,14 +29,13 @@ import platform.posix.pthread_tVar
 import kotlin.coroutines.Continuation
 import kotlin.coroutines.resume
 import kotlin.coroutines.suspendCoroutine
-import kotlin.native.concurrent.AtomicReference
 import kotlin.native.concurrent.freeze
 
 
 actual class Guard<R: Any> actual constructor(name: String, private val producer: () -> R) {
-  private val queue = AtomicReference<List<Callback<R>?>>(emptyList())
+  private val queue = NSMutableArray()
 
-  private val pthreadT = nativeHeap.alloc<pthread_tVar>()
+  private val pthread = nativeHeap.alloc<pthread_tVar>()
   private val mutex = nativeHeap.alloc<pthread_mutex_t>()
   private val cond = nativeHeap.alloc<pthread_cond_t>()
 
@@ -45,7 +45,7 @@ actual class Guard<R: Any> actual constructor(name: String, private val producer
 
     val stableRef = StableRef.create(this.freeze())
 
-    pthread_create(pthreadT.ptr, null, staticCFunction { arg ->
+    pthread_create(pthread.ptr, null, staticCFunction { arg ->
       initRuntimeIfNeeded()
 
       val ref = arg!!.asStableRef<Guard<R>>()
@@ -61,9 +61,7 @@ actual class Guard<R: Any> actual constructor(name: String, private val producer
 
   private fun enqueue(callback: Callback<R>?) {
     pthread_mutex_lock(mutex.ptr)
-    var items = queue.value
-    items += callback
-    queue.value = items.freeze()
+    queue.addObject(callback.freeze())
     pthread_cond_broadcast(cond.ptr)
     pthread_mutex_unlock(mutex.ptr)
   }
@@ -71,8 +69,8 @@ actual class Guard<R: Any> actual constructor(name: String, private val producer
   actual fun dispose() {
     enqueue(null)
 
-    pthread_join(pthreadT.value, null)
-    nativeHeap.free(pthreadT.rawPtr)
+    pthread_join(pthread.value, null)
+    nativeHeap.free(pthread.rawPtr)
     pthread_mutex_destroy(mutex.ptr)
     pthread_cond_destroy(cond.ptr)
   }
@@ -115,29 +113,13 @@ actual class Guard<R: Any> actual constructor(name: String, private val producer
       val state = producer()
 
       while (true) {
-        var callback: Callback<S>? = null
 
         pthread_mutex_lock(mutex.ptr)
-        while (true) {
-          var items = queue.value
-          if (items.isNotEmpty()) {
-            callback = items.first()
-            if (callback == null) {
-              /**
-               * We were told to terminate
-               */
-              return
-            }
-            items = items.drop(1)
-            queue.value = items.freeze()
-          }
-
-          if (callback == null) {
-            pthread_cond_wait(cond.ptr, mutex.ptr)
-          } else {
-            break
-          }
+        while (queue.count.toInt() == 0) {
+          pthread_cond_wait(cond.ptr, mutex.ptr)
         }
+        val callback = queue.objectAtIndex(0) as Callback<S>?
+        queue.removeObjectAtIndex(0)
         pthread_mutex_unlock(mutex.ptr)
 
         callback?.run?.invoke(state)
