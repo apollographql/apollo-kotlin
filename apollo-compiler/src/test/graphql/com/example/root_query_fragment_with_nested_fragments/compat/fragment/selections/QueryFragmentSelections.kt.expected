@@ -19,7 +19,7 @@ private val hero: List<CompiledSelection> = listOf(
         type = CompiledOtherType("unused").notNull()
       ),
       CompiledFragment(
-        typeCondition = "Character",
+        possibleTypes = listOf("Droid", "Human"),
         selections = heroFragmentSelections
       )
     )
@@ -30,7 +30,7 @@ private val droid: List<CompiledSelection> = listOf(
         type = CompiledOtherType("unused").notNull()
       ),
       CompiledFragment(
-        typeCondition = "Droid",
+        possibleTypes = listOf("Droid"),
         selections = droidFragmentSelections
       )
     )
@@ -52,7 +52,7 @@ private val human: List<CompiledSelection> = listOf(
         type = CompiledOtherType("unused").notNull()
       ),
       CompiledFragment(
-        typeCondition = "Human",
+        possibleTypes = listOf("Human"),
         selections = onHuman
       )
     )
@@ -79,6 +79,6 @@ val QueryFragmentSelections: List<CompiledSelection> = listOf(
         type = CompiledCompoundType("unused"),
         arguments = mapOf("id" to 1
         ),
-        selections = onHuman
+        selections = human
       )
     )

@@ -1,5 +1,6 @@
 import com.apollographql.apollo.sample.server.DefaultApplication
 import com.apollographql.apollo3.ApolloClient
+import com.apollographql.apollo3.api.CompiledField
 import com.apollographql.apollo3.api.Executable
 import com.apollographql.apollo3.api.MergedField
 import com.apollographql.apollo3.cache.normalized.ApolloStore
@@ -51,11 +52,11 @@ class CachedSubscriptionTest {
     val store = ApolloStore(
         MemoryCacheFactory(Int.MAX_VALUE),
         object : CacheKeyResolver() {
-          override fun fromFieldRecordSet(field: MergedField, variables: Executable.Variables, recordSet: Map<String, Any?>): CacheKey {
+          override fun fromFieldRecordSet(field: CompiledField, variables: Executable.Variables, recordSet: Map<String, Any?>): CacheKey {
             return CacheKey.from(field.responseName)
           }
 
-          override fun fromFieldArguments(field: MergedField, variables: Executable.Variables): CacheKey {
+          override fun fromFieldArguments(field: CompiledField, variables: Executable.Variables): CacheKey {
             return CacheKey.NO_KEY
           }
         }

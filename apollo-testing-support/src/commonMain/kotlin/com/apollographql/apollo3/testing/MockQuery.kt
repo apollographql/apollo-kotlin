@@ -3,6 +3,7 @@ package com.apollographql.apollo3.testing
 import com.apollographql.apollo3.api.CustomScalarAdapters
 import com.apollographql.apollo3.api.Query
 import com.apollographql.apollo3.api.Adapter
+import com.apollographql.apollo3.api.CompiledSelection
 import com.apollographql.apollo3.api.FieldSet
 import com.apollographql.apollo3.api.json.JsonReader
 import com.apollographql.apollo3.api.json.JsonWriter
@@ -40,7 +41,7 @@ class MockQuery : Query<MockQuery.Data> {
 
   object Data : Query.Data
 
-  override fun fieldSets(): List<FieldSet> {
+  override fun selections(): List<CompiledSelection> {
     return emptyList()
   }
 }

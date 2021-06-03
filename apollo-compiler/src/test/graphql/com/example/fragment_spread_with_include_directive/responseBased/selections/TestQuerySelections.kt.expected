@@ -26,14 +26,14 @@ private val hero: List<CompiledSelection> = listOf(
         type = CompiledOtherType("unused").notNull()
       ),
       CompiledFragment(
-        condition = listOf(CompiledCondition("BVariable(name=withDetails)", false),
-            CompiledCondition("BVariable(name=skipHumanDetails)", true)),
-        typeCondition = "Character",
+        condition = listOf(CompiledCondition("withDetails", false),
+            CompiledCondition("skipHumanDetails", true)),
+        possibleTypes = listOf("Droid", "Human"),
         selections = HeroDetailsSelections
       ),
       CompiledFragment(
-        condition = listOf(CompiledCondition("BVariable(name=withDetails)", false)),
-        typeCondition = "Human",
+        condition = listOf(CompiledCondition("withDetails", false)),
+        possibleTypes = listOf("Human"),
         selections = HumanDetailsSelections
       )
     )

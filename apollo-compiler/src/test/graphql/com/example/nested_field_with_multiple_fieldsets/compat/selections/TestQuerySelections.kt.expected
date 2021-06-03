@@ -33,11 +33,11 @@ private val iface2: List<CompiledSelection> = listOf(
         type = CompiledOtherType("unused").notNull()
       ),
       CompiledFragment(
-        typeCondition = "Iface2",
+        possibleTypes = listOf("Impl2"),
         selections = onIface2
       ),
       CompiledFragment(
-        typeCondition = "Impl2",
+        possibleTypes = listOf("Impl2"),
         selections = onImpl2
       )
     )
@@ -46,7 +46,7 @@ private val onIface1: List<CompiledSelection> = listOf(
       CompiledField(
         name = "iface2",
         type = CompiledCompoundType("unused"),
-        selections = onIface2
+        selections = iface2
       )
     )
 
@@ -70,11 +70,11 @@ private val iface21: List<CompiledSelection> = listOf(
         type = CompiledOtherType("unused").notNull()
       ),
       CompiledFragment(
-        typeCondition = "Iface2",
+        possibleTypes = listOf("Impl2"),
         selections = onIface21
       ),
       CompiledFragment(
-        typeCondition = "Impl2",
+        possibleTypes = listOf("Impl2"),
         selections = onImpl21
       )
     )
@@ -83,7 +83,7 @@ private val onImpl1: List<CompiledSelection> = listOf(
       CompiledField(
         name = "iface2",
         type = CompiledCompoundType("unused"),
-        selections = onIface21
+        selections = iface21
       )
     )
 
@@ -93,12 +93,12 @@ private val iface1: List<CompiledSelection> = listOf(
         type = CompiledOtherType("unused").notNull()
       ),
       CompiledFragment(
-        typeCondition = "Iface1",
-        selections = onIface2
+        possibleTypes = listOf("Impl1"),
+        selections = onIface1
       ),
       CompiledFragment(
-        typeCondition = "Impl1",
-        selections = onIface21
+        possibleTypes = listOf("Impl1"),
+        selections = onImpl1
       )
     )
 
@@ -106,6 +106,6 @@ val TestQuerySelections: List<CompiledSelection> = listOf(
       CompiledField(
         name = "iface1",
         type = CompiledCompoundType("unused"),
-        selections = onIface2
+        selections = iface1
       )
     )

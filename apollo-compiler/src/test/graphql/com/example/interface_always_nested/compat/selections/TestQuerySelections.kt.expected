@@ -30,7 +30,7 @@ private val onA: List<CompiledSelection> = listOf(
         type = CompiledOtherType("unused")
       ),
       CompiledFragment(
-        typeCondition = "B",
+        possibleTypes = listOf("ABC", "BC"),
         selections = onB
       )
     )
@@ -41,8 +41,8 @@ private val root: List<CompiledSelection> = listOf(
         type = CompiledOtherType("unused").notNull()
       ),
       CompiledFragment(
-        typeCondition = "A",
-        selections = onB
+        possibleTypes = listOf("ABC", "AC"),
+        selections = onA
       )
     )
 
@@ -50,6 +50,6 @@ val TestQuerySelections: List<CompiledSelection> = listOf(
       CompiledField(
         name = "root",
         type = CompiledCompoundType("unused"),
-        selections = onB
+        selections = root
       )
     )

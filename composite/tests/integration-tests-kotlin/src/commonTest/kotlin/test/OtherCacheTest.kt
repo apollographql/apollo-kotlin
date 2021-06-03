@@ -1,5 +1,6 @@
 package test
 
+import assertEquals2
 import com.apollographql.apollo3.ApolloClient
 import com.apollographql.apollo3.api.ApolloRequest
 import com.apollographql.apollo3.cache.normalized.ApolloStore
@@ -103,27 +104,27 @@ class OtherCacheTest {
         ApolloRequest(HeroAndFriendsDirectivesQuery(episode = Episode.JEDI, includeName = true, skipFriends = false))
             .withFetchPolicy(FetchPolicy.CacheOnly)
     )
-    assertEquals(response.data?.hero?.name, "R2-D2")
-    assertEquals(response.data?.hero?.friends?.size, 3)
-    assertEquals(response.data?.hero?.friends?.get(0)?.name, "Luke Skywalker")
-    assertEquals(response.data?.hero?.friends?.get(1)?.name, "Han Solo")
-    assertEquals(response.data?.hero?.friends?.get(2)?.name, "Leia Organa")
+    assertEquals2(response.data?.hero?.name, "R2-D2")
+    assertEquals2(response.data?.hero?.friends?.size, 3)
+    assertEquals2(response.data?.hero?.friends?.get(0)?.name, "Luke Skywalker")
+    assertEquals2(response.data?.hero?.friends?.get(1)?.name, "Han Solo")
+    assertEquals2(response.data?.hero?.friends?.get(2)?.name, "Leia Organa")
 
     response = apolloClient.query(
         ApolloRequest(HeroAndFriendsDirectivesQuery(episode = Episode.JEDI, includeName = false, skipFriends = false))
             .withFetchPolicy(FetchPolicy.CacheOnly)
     )
     assertNull(response.data?.hero?.name)
-    assertEquals(response.data?.hero?.friends?.size, 3)
-    assertEquals(response.data?.hero?.friends?.get(0)?.name, "Luke Skywalker")
-    assertEquals(response.data?.hero?.friends?.get(1)?.name, "Han Solo")
-    assertEquals(response.data?.hero?.friends?.get(2)?.name, "Leia Organa")
+    assertEquals2(response.data?.hero?.friends?.size, 3)
+    assertEquals2(response.data?.hero?.friends?.get(0)?.name, "Luke Skywalker")
+    assertEquals2(response.data?.hero?.friends?.get(1)?.name, "Han Solo")
+    assertEquals2(response.data?.hero?.friends?.get(2)?.name, "Leia Organa")
 
     response = apolloClient.query(
         ApolloRequest(HeroAndFriendsDirectivesQuery(episode = Episode.JEDI, includeName = true, skipFriends = true))
             .withFetchPolicy(FetchPolicy.CacheOnly)
     )
-    assertEquals(response.data?.hero?.name, "R2-D2")
+    assertEquals2(response.data?.hero?.name, "R2-D2")
     assertNull(response.data?.hero?.friends)
   }
 

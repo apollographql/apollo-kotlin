@@ -53,19 +53,19 @@ private val hero: List<CompiledSelection> = listOf(
         type = CompiledOtherType("unused").notNull()
       ),
       CompiledFragment(
-        typeCondition = "Human",
-        condition = listOf(CompiledCondition("BVariable(name=withDetails)", false),
-            CompiledCondition("BVariable(name=skipHumanDetails)", true)),
+        possibleTypes = listOf("Human"),
+        condition = listOf(CompiledCondition("withDetails", false),
+            CompiledCondition("skipHumanDetails", true)),
         selections = onHuman
       ),
       CompiledFragment(
-        typeCondition = "Droid",
-        condition = listOf(CompiledCondition("BVariable(name=withDetails)", false)),
+        possibleTypes = listOf("Droid"),
+        condition = listOf(CompiledCondition("withDetails", false)),
         selections = onDroid
       ),
       CompiledFragment(
-        typeCondition = "Character",
-        condition = listOf(CompiledCondition("BVariable(name=withDetails)", false)),
+        possibleTypes = listOf("Droid", "Human"),
+        condition = listOf(CompiledCondition("withDetails", false)),
         selections = onCharacter
       )
     )
@@ -74,6 +74,6 @@ val TestQuerySelections: List<CompiledSelection> = listOf(
       CompiledField(
         name = "hero",
         type = CompiledCompoundType("unused"),
-        selections = onHuman
+        selections = hero
       )
     )

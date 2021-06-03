@@ -33,7 +33,7 @@ private val friendsConnection: List<CompiledSelection> = listOf(
       CompiledField(
         name = "edges",
         type = CompiledCompoundType("unused").list(),
-        selections = node
+        selections = edges
       )
     )
 
@@ -56,7 +56,7 @@ private val friendsConnection1: List<CompiledSelection> = listOf(
       CompiledField(
         name = "edges",
         type = CompiledCompoundType("unused").list(),
-        selections = node1
+        selections = edges1
       )
     )
 
@@ -72,7 +72,7 @@ private val onCharacter: List<CompiledSelection> = listOf(
       CompiledField(
         name = "friendsConnection",
         type = CompiledCompoundType("unused").notNull(),
-        selections = node1
+        selections = friendsConnection1
       )
     )
 
@@ -88,11 +88,11 @@ private val hero: List<CompiledSelection> = listOf(
       CompiledField(
         name = "friendsConnection",
         type = CompiledCompoundType("unused").notNull(),
-        selections = node
+        selections = friendsConnection
       ),
       CompiledFragment(
-        typeCondition = "Character",
-        selections = node1
+        possibleTypes = listOf("Droid", "Human"),
+        selections = onCharacter
       )
     )
 
@@ -100,6 +100,6 @@ val TestQuerySelections: List<CompiledSelection> = listOf(
       CompiledField(
         name = "hero",
         type = CompiledCompoundType("unused"),
-        selections = node
+        selections = hero
       )
     )

@@ -28,11 +28,11 @@ private val search: List<CompiledSelection> = listOf(
         type = CompiledOtherType("unused").notNull()
       ),
       CompiledFragment(
-        typeCondition = "Starship",
+        possibleTypes = listOf("Starship"),
         selections = onStarship
       ),
       CompiledFragment(
-        typeCondition = "Starship",
+        possibleTypes = listOf("Starship"),
         selections = StarshipSelections
       )
     )
@@ -43,6 +43,6 @@ val TestQuerySelections: List<CompiledSelection> = listOf(
         type = CompiledCompoundType("unused").list(),
         arguments = mapOf("text" to "test"
         ),
-        selections = onStarship
+        selections = search
       )
     )

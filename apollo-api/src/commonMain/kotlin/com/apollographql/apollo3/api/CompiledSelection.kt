@@ -9,16 +9,37 @@ class CompiledField(
     val condition: List<CompiledCondition> = emptyList(),
     val arguments: Map<String, Any?> = emptyMap(),
     val selections: List<CompiledSelection> = emptyList(),
-) : CompiledSelection()
+) : CompiledSelection() {
+  val responseName: String
+    get() = alias ?: name
+
+  /**
+   * Resolves field argument value by [name]. If argument represents a references to the variable, it will be resolved from
+   * provided operation [variables] values.
+   */
+  @Suppress("UNCHECKED_CAST")
+  fun resolveArgument(
+      name: String,
+      variables: Executable.Variables
+  ): Any? {
+    val variableValues = variables.valueMap
+    val argumentValue = arguments[name]
+    return if (argumentValue is Variable) {
+      variableValues[argumentValue.name]
+    } else {
+      argumentValue
+    }
+  }
+}
 
 class CompiledFragment(
-    val typeCondition: String,
+    val possibleTypes: List<String>,
     val condition: List<CompiledCondition> = emptyList(),
     val selections: List<CompiledSelection> = emptyList(),
 ) : CompiledSelection()
 
 
-class CompiledCondition(val name: String, val inverted: Boolean)
+data class CompiledCondition(val name: String, val inverted: Boolean)
 
 sealed class CompiledType
 

@@ -20,7 +20,7 @@ private val onDroid: List<CompiledSelection> = listOf(
         type = CompiledOtherType("unused").notNull()
       ),
       CompiledFragment(
-        typeCondition = "Droid",
+        possibleTypes = listOf("Droid"),
         selections = DroidDetailsSelections
       )
     )
@@ -48,7 +48,7 @@ private val friendsConnection: List<CompiledSelection> = listOf(
       CompiledField(
         name = "edges",
         type = CompiledCompoundType("unused").list(),
-        selections = node
+        selections = edges
       )
     )
 
@@ -58,11 +58,11 @@ val HeroDetailsSelections: List<CompiledSelection> = listOf(
         type = CompiledOtherType("unused").notNull()
       ),
       CompiledFragment(
-        typeCondition = "Human",
+        possibleTypes = listOf("Human"),
         selections = HumanDetailsSelections
       ),
       CompiledFragment(
-        typeCondition = "Droid",
+        possibleTypes = listOf("Droid"),
         selections = onDroid
       ),
       CompiledField(
@@ -72,6 +72,6 @@ val HeroDetailsSelections: List<CompiledSelection> = listOf(
       CompiledField(
         name = "friendsConnection",
         type = CompiledCompoundType("unused").notNull(),
-        selections = node
+        selections = friendsConnection
       )
     )

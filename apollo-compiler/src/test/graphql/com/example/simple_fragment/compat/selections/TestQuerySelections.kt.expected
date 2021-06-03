@@ -21,11 +21,11 @@ private val hero: List<CompiledSelection> = listOf(
         type = CompiledOtherType("unused").notNull()
       ),
       CompiledFragment(
-        typeCondition = "Character",
+        possibleTypes = listOf("Droid", "Human"),
         selections = HeroDetailsSelections
       ),
       CompiledFragment(
-        typeCondition = "Human",
+        possibleTypes = listOf("Human"),
         selections = HumanDetailsSelections
       )
     )

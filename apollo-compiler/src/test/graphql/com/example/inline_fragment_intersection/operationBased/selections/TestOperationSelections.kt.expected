@@ -31,7 +31,7 @@ private val friends: List<CompiledSelection> = listOf(
         type = CompiledOtherType("unused").notNull()
       ),
       CompiledFragment(
-        typeCondition = "Wookie",
+        possibleTypes = listOf("Wookie"),
         selections = onWookie
       )
     )
@@ -53,7 +53,7 @@ private val friends1: List<CompiledSelection> = listOf(
         type = CompiledOtherType("unused")
       ),
       CompiledFragment(
-        typeCondition = "Wookie",
+        possibleTypes = listOf("Wookie"),
         selections = onWookie1
       )
     )
@@ -66,7 +66,7 @@ private val onHuman: List<CompiledSelection> = listOf(
       CompiledField(
         name = "friends",
         type = CompiledCompoundType("unused").notNull().list().notNull(),
-        selections = onWookie1
+        selections = friends1
       )
     )
 
@@ -82,11 +82,11 @@ private val onBeing: List<CompiledSelection> = listOf(
       CompiledField(
         name = "friends",
         type = CompiledCompoundType("unused").notNull().list().notNull(),
-        selections = onWookie
+        selections = friends
       ),
       CompiledFragment(
-        typeCondition = "Human",
-        selections = onWookie1
+        possibleTypes = listOf("Human"),
+        selections = onHuman
       )
     )
 
@@ -122,7 +122,7 @@ private val friends3: List<CompiledSelection> = listOf(
         type = CompiledOtherType("unused").notNull()
       ),
       CompiledFragment(
-        typeCondition = "Wookie",
+        possibleTypes = listOf("Wookie"),
         selections = onWookie3
       )
     )
@@ -131,7 +131,7 @@ private val onBeing1: List<CompiledSelection> = listOf(
       CompiledField(
         name = "friends",
         type = CompiledCompoundType("unused").notNull().list().notNull(),
-        selections = onWookie3
+        selections = friends3
       )
     )
 
@@ -141,16 +141,16 @@ private val random: List<CompiledSelection> = listOf(
         type = CompiledOtherType("unused").notNull()
       ),
       CompiledFragment(
-        typeCondition = "Being",
-        selections = onWookie
+        possibleTypes = listOf("Human", "Wookie"),
+        selections = onBeing
       ),
       CompiledFragment(
-        typeCondition = "Wookie",
-        selections = friends2
+        possibleTypes = listOf("Wookie"),
+        selections = onWookie2
       ),
       CompiledFragment(
-        typeCondition = "Being",
-        selections = onWookie3
+        possibleTypes = listOf("Human", "Wookie"),
+        selections = onBeing1
       )
     )
 
@@ -158,6 +158,6 @@ val TestOperationSelections: List<CompiledSelection> = listOf(
       CompiledField(
         name = "random",
         type = CompiledCompoundType("unused").notNull(),
-        selections = onWookie
+        selections = random
       )
     )

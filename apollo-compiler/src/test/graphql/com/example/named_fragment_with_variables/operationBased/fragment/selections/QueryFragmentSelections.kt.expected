@@ -21,7 +21,7 @@ private val user: List<CompiledSelection> = listOf(
         type = CompiledOtherType("unused").notNull()
       ),
       CompiledFragment(
-        typeCondition = "User",
+        possibleTypes = listOf("User"),
         selections = UserFragmentSelections
       )
     )
@@ -46,6 +46,6 @@ val QueryFragmentSelections: List<CompiledSelection> = listOf(
         type = CompiledCompoundType("unused"),
         arguments = mapOf("id" to Variable("organizationId")
         ),
-        selections = user
+        selections = organization
       )
     )

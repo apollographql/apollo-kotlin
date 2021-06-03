@@ -41,7 +41,7 @@ private val node: List<CompiledSelection> = listOf(
         type = CompiledOtherType("unused").notNull()
       ),
       CompiledFragment(
-        typeCondition = "Human",
+        possibleTypes = listOf("Human"),
         selections = onHuman
       )
     )
@@ -55,6 +55,6 @@ val GetHumanSelections: List<CompiledSelection> = listOf(
       CompiledField(
         name = "node",
         type = CompiledCompoundType("unused").notNull(),
-        selections = onHuman
+        selections = node
       )
     )

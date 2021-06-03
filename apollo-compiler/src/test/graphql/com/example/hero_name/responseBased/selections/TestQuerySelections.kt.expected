@@ -34,7 +34,7 @@ private val hero: List<CompiledSelection> = listOf(
         type = CompiledOtherType("unused").notNull()
       ),
       CompiledFragment(
-        typeCondition = "Droid",
+        possibleTypes = listOf("Droid"),
         selections = onDroid
       )
     )
@@ -43,6 +43,6 @@ val TestQuerySelections: List<CompiledSelection> = listOf(
       CompiledField(
         name = "hero",
         type = CompiledCompoundType("unused"),
-        selections = onDroid
+        selections = hero
       )
     )

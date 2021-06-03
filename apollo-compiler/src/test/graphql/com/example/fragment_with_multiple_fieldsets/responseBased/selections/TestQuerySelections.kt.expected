@@ -20,7 +20,7 @@ private val i: List<CompiledSelection> = listOf(
         type = CompiledOtherType("unused").notNull()
       ),
       CompiledFragment(
-        typeCondition = "I",
+        possibleTypes = listOf("A", "B"),
         selections = iFragmentSelections
       )
     )

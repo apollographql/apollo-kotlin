@@ -39,7 +39,7 @@ private val objects: List<CompiledSelection> = listOf(
         type = CompiledOtherType("unused").notNull()
       ),
       CompiledFragment(
-        typeCondition = "Character",
+        possibleTypes = listOf("Droid", "Human"),
         selections = onCharacter
       )
     )
@@ -57,6 +57,6 @@ val TestQuerySelections: List<CompiledSelection> = listOf(
         type = CompiledCompoundType("unused").list(),
         arguments = mapOf("text" to "abc"
         ),
-        selections = onCharacter
+        selections = objects
       )
     )

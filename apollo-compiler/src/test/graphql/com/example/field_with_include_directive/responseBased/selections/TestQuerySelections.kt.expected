@@ -24,12 +24,12 @@ private val hero: List<CompiledSelection> = listOf(
       CompiledField(
         name = "name",
         type = CompiledOtherType("unused").notNull(),
-        condition = listOf(CompiledCondition("BVariable(name=includeName)", false))
+        condition = listOf(CompiledCondition("includeName", false))
       ),
       CompiledField(
         name = "friendsConnection",
         type = CompiledCompoundType("unused").notNull(),
-        condition = listOf(CompiledCondition("BVariable(name=skipFriends)", true)),
+        condition = listOf(CompiledCondition("skipFriends", true)),
         selections = friendsConnection
       )
     )
@@ -38,6 +38,6 @@ val TestQuerySelections: List<CompiledSelection> = listOf(
       CompiledField(
         name = "hero",
         type = CompiledCompoundType("unused"),
-        selections = friendsConnection
+        selections = hero
       )
     )

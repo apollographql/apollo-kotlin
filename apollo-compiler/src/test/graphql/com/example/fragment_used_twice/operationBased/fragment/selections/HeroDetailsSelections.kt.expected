@@ -22,7 +22,7 @@ val HeroDetailsSelections: List<CompiledSelection> = listOf(
         type = CompiledOtherType("unused").notNull()
       ),
       CompiledFragment(
-        typeCondition = "Character",
+        possibleTypes = listOf("Droid", "Human"),
         selections = CharacterDetailsSelections
       )
     )

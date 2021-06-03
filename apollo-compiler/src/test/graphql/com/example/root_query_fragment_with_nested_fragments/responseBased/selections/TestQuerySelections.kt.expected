@@ -19,7 +19,7 @@ val TestQuerySelections: List<CompiledSelection> = listOf(
         type = CompiledOtherType("unused").notNull()
       ),
       CompiledFragment(
-        typeCondition = "Query",
+        possibleTypes = listOf("Query"),
         selections = QueryFragmentSelections
       )
     )

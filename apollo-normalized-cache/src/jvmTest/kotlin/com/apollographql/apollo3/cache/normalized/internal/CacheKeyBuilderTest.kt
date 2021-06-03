@@ -1,5 +1,7 @@
 package com.apollographql.apollo3.cache.normalized.internal
 
+import com.apollographql.apollo3.api.CompiledField
+import com.apollographql.apollo3.api.CompiledOtherType
 import com.apollographql.apollo3.api.Executable
 import com.apollographql.apollo3.api.MergedField
 import com.apollographql.apollo3.api.Variable
@@ -17,7 +19,7 @@ class CacheKeyBuilderTest {
 
   @Test
   fun testFieldWithNoArguments() {
-    val field = createResponseField("hero", "hero")
+    val field = createCompiledField("hero", "hero")
     val variables = Executable.Variables(emptyMap())
 
     Truth.assertThat(cacheKeyBuilder.build(field, variables)).isEqualTo("hero")
@@ -25,7 +27,7 @@ class CacheKeyBuilderTest {
 
   @Test
   fun testFieldWithNoArgumentsWithAlias() {
-    val field = createResponseField("r2", "hero")
+    val field = createCompiledField("r2", "hero")
     val variables = Executable.Variables(emptyMap())
 
     Truth.assertThat(cacheKeyBuilder.build(field, variables)).isEqualTo("hero")
@@ -34,7 +36,7 @@ class CacheKeyBuilderTest {
   @Test
   fun testFieldWithArgument() {
     val arguments = mapOf<String, Any?>("episode" to "JEDI")
-    val field = createResponseField("hero", "hero", arguments)
+    val field = createCompiledField("hero", "hero", arguments)
     val variables = Executable.Variables(emptyMap())
 
     Truth.assertThat(cacheKeyBuilder.build(field, variables)).isEqualTo("hero({\"episode\":\"JEDI\"})")
@@ -43,7 +45,7 @@ class CacheKeyBuilderTest {
   @Test
   fun testFieldWithArgumentAndAlias() {
     val arguments = mapOf<String, Any?>("episode" to "JEDI")
-    val field = createResponseField("r2", "hero", arguments)
+    val field = createCompiledField("r2", "hero", arguments)
     val variables = Executable.Variables(emptyMap())
 
     Truth.assertThat(cacheKeyBuilder.build(field, variables)).isEqualTo("hero({\"episode\":\"JEDI\"})")
@@ -54,7 +56,7 @@ class CacheKeyBuilderTest {
     val argument = mapOf<String, Any?>(
         "episode" to Variable("episode")
     )
-    val field = createResponseField("hero", "hero", argument)
+    val field = createCompiledField("hero", "hero", argument)
     val variables = Executable.Variables(mapOf(
         "episode" to Episode.JEDI
     ))
@@ -67,7 +69,7 @@ class CacheKeyBuilderTest {
     val argument = mapOf<String, Any?>(
         "episode" to Variable("episode")
     )
-    val field = createResponseField("hero", "hero", argument)
+    val field = createCompiledField("hero", "hero", argument)
     val variables = Executable.Variables(mapOf(
         "episode" to null
     ))
@@ -81,7 +83,7 @@ class CacheKeyBuilderTest {
         "episode" to "JEDI",
         "color" to "blue"
     )
-    val field = createResponseField("hero", "hero", arguments)
+    val field = createCompiledField("hero", "hero", arguments)
     val variables = Executable.Variables(emptyMap())
 
     Truth.assertThat(cacheKeyBuilder.build(field, variables)).isEqualTo("hero({\"color\":\"blue\",\"episode\":\"JEDI\"})")
@@ -93,13 +95,13 @@ class CacheKeyBuilderTest {
         "episode" to "JEDI",
         "color" to "blue"
     )
-    val field = createResponseField("hero", "hero", arguments)
+    val field = createCompiledField("hero", "hero", arguments)
     val variables = Executable.Variables(emptyMap())
 
     val fieldTwoArguments = mapOf<String, Any?>(
         "color" to "blue",
         "episode" to "JEDI")
-    val fieldTwo = createResponseField("hero", "hero", fieldTwoArguments)
+    val fieldTwo = createCompiledField("hero", "hero", fieldTwoArguments)
     Truth.assertThat(cacheKeyBuilder.build(fieldTwo, variables)).isEqualTo(cacheKeyBuilder.build(field, variables))
   }
 
@@ -112,7 +114,7 @@ class CacheKeyBuilderTest {
             "bar" to 2
         )
     )
-    val field = createResponseField("hero", "hero", arguments)
+    val field = createCompiledField("hero", "hero", arguments)
     val variables = Executable.Variables(emptyMap())
 
     Truth.assertThat(cacheKeyBuilder.build(field, variables)).isEqualTo("hero({\"episode\":\"JEDI\",\"nested\":{\"bar\":2,\"foo\":1}})")
@@ -120,9 +122,9 @@ class CacheKeyBuilderTest {
 
   @Test
   fun testFieldWithNonPrimitiveValue() {
-    val field = MergedField(
-        type = MergedField.Type.Named.Other("String"),
-        fieldName = "hero",
+    val field = CompiledField(
+        type = CompiledOtherType("String"),
+        name = "hero",
         arguments = mapOf<String, Any?>("episode" to Episode.JEDI)
     )
 
@@ -139,7 +141,7 @@ class CacheKeyBuilderTest {
             "bar" to "2"
         )
     )
-    val field = createResponseField("hero", "hero", arguments)
+    val field = createCompiledField("hero", "hero", arguments)
     val variables = Executable.Variables(mapOf("stars" to 1))
 
     Truth.assertThat(cacheKeyBuilder.build(field, variables)).isEqualTo("hero({\"episode\":\"JEDI\",\"nested\":{\"bar\":\"2\",\"foo\":1}})")
@@ -154,7 +156,7 @@ class CacheKeyBuilderTest {
             "bar" to "2"
         )
     )
-    val field = createResponseField("hero", "hero", arguments)
+    val field = createCompiledField("hero", "hero", arguments)
     val testInput = mapOf(
         "string" to "string",
         "int" to 1,
@@ -197,7 +199,7 @@ class CacheKeyBuilderTest {
             "bar" to null
         )
     )
-    val field = createResponseField("hero", "hero", arguments)
+    val field = createCompiledField("hero", "hero", arguments)
     val testInput = mapOf(
         "string" to null,
         "int" to null,
@@ -217,11 +219,11 @@ class CacheKeyBuilderTest {
     Truth.assertThat(cacheKeyBuilder.build(field, variables)).isEqualTo("hero({\"episode\":null,\"nested\":{\"bar\":null,\"foo\":{\"string\":null,\"int\":null,\"long\":null,\"double\":null,\"number\":null,\"boolean\":null,\"custom\":null,\"object\":null,\"listNull\":null,\"listWithNulls\":[null,null,null,null,null,null,null,null,null],\"null\":null}}})")
   }
 
-  private fun createResponseField(responseName: String, fieldName: String, arguments: Map<String, Any?> = emptyMap()): MergedField {
-    return MergedField(
-        type = MergedField.Type.Named.Other("String"),
-        fieldName = fieldName,
-        responseName = responseName,
+  private fun createCompiledField(responseName: String, fieldName: String, arguments: Map<String, Any?> = emptyMap()): CompiledField {
+    return CompiledField(
+        type = CompiledOtherType("String"),
+        name = fieldName,
+        alias = responseName,
         arguments = arguments
     )
   }
@@ -236,7 +238,7 @@ class CacheKeyBuilderTest {
         )
     )
 
-    val field = createResponseField("hero", "hero", arguments)
+    val field = createCompiledField("hero", "hero", arguments)
     val variables0 = Executable.Variables(mapOf("stars" to listOf(0)))
     val variables1 = Executable.Variables(mapOf("stars" to listOf(1)))
 

@@ -51,7 +51,7 @@ val TestQuerySelections: List<CompiledSelection> = listOf(
       CompiledField(
         name = "__schema",
         type = CompiledCompoundType("unused").notNull(),
-        selections = queryType
+        selections = __schema
       ),
       CompiledField(
         name = "__type",

@@ -21,7 +21,7 @@ private val node: List<CompiledSelection> = listOf(
         type = CompiledOtherType("unused").notNull()
       ),
       CompiledFragment(
-        typeCondition = "Starship",
+        possibleTypes = listOf("Starship"),
         selections = starshipFragmentSelections
       )
     )
@@ -38,7 +38,7 @@ private val allStarships: List<CompiledSelection> = listOf(
       CompiledField(
         name = "edges",
         type = CompiledCompoundType("unused").list(),
-        selections = node
+        selections = edges
       )
     )
 
@@ -48,6 +48,6 @@ val AllStarshipsSelections: List<CompiledSelection> = listOf(
         type = CompiledCompoundType("unused"),
         arguments = mapOf("first" to 7
         ),
-        selections = node
+        selections = allStarships
       )
     )

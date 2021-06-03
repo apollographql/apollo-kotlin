@@ -56,6 +56,6 @@ val CreateReviewForEpisodeSelections: List<CompiledSelection> = listOf(
         arguments = mapOf("episode" to Variable("ep"),
           "review" to Variable("review")
         ),
-        selections = listOfListOfObject
+        selections = createReview
       )
     )

@@ -48,6 +48,6 @@ val TestQuerySelections: List<CompiledSelection> = listOf(
       CompiledField(
         name = "tree",
         type = CompiledCompoundType("unused"),
-        selections = children
+        selections = tree
       )
     )

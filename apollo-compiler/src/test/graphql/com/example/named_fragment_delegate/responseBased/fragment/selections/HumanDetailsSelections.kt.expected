@@ -32,7 +32,7 @@ private val friendsConnection: List<CompiledSelection> = listOf(
       CompiledField(
         name = "edges",
         type = CompiledCompoundType("unused").list(),
-        selections = node
+        selections = edges
       )
     )
 
@@ -48,6 +48,6 @@ val HumanDetailsSelections: List<CompiledSelection> = listOf(
       CompiledField(
         name = "friendsConnection",
         type = CompiledCompoundType("unused").notNull(),
-        selections = node
+        selections = friendsConnection
       )
     )

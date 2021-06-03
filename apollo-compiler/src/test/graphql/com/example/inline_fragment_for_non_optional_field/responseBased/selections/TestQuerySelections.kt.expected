@@ -30,7 +30,7 @@ private val nonOptionalHero: List<CompiledSelection> = listOf(
         type = CompiledOtherType("unused").notNull()
       ),
       CompiledFragment(
-        typeCondition = "Human",
+        possibleTypes = listOf("Human"),
         selections = onHuman
       )
     )
@@ -41,6 +41,6 @@ val TestQuerySelections: List<CompiledSelection> = listOf(
         type = CompiledCompoundType("unused").notNull(),
         arguments = mapOf("episode" to "EMPIRE"
         ),
-        selections = onHuman
+        selections = nonOptionalHero
       )
     )

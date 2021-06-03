@@ -8,6 +8,7 @@ import com.apollographql.apollo3.cache.normalized.Record
 import com.apollographql.apollo3.api.internal.json.MapJsonReader
 import com.apollographql.apollo3.api.internal.json.MapJsonWriter
 import com.apollographql.apollo3.api.Adapter
+import com.apollographql.apollo3.api.CompiledSelection
 import com.apollographql.apollo3.api.FieldSet
 import com.apollographql.apollo3.api.variables
 import com.apollographql.apollo3.cache.CacheHeaders
@@ -26,7 +27,7 @@ fun <D : Operation.Data> Operation<D>.normalize(
     CacheKeyResolver.rootKey().key,
     adapter(),
     variables(customScalarAdapters),
-    fieldSets())
+    selections())
 
 fun <D : Fragment.Data> Fragment<D>.normalize(
     data: D,
@@ -40,7 +41,7 @@ fun <D : Fragment.Data> Fragment<D>.normalize(
     rootKey,
     adapter(),
     variables(customScalarAdapters),
-    fieldSets())
+    selections())
 
 private fun <D> normalizeInternal(
     data: D,
@@ -49,13 +50,13 @@ private fun <D> normalizeInternal(
     rootKey: String,
     adapter: Adapter<D>,
     variables: Executable.Variables,
-    fieldSets: List<FieldSet>,
+    selections: List<CompiledSelection>,
 ): Map<String, Record> {
   val writer = MapJsonWriter()
   adapter.toJson(writer, customScalarAdapters, data)
-  return Normalizer(variables) { responseField, fields ->
-    cacheKeyResolver.fromFieldRecordSet(responseField, variables, fields).let { if (it == CacheKey.NO_KEY) null else it.key }
-  }.normalize(writer.root() as Map<String, Any?>, null, rootKey, fieldSets)
+  return Normalizer(variables) { compiledField, fields ->
+    cacheKeyResolver.fromFieldRecordSet(compiledField, variables, fields).let { if (it == CacheKey.NO_KEY) null else it.key }
+  }.normalize(writer.root() as Map<String, Any?>, null, rootKey, selections)
 }
 
 enum class ReadMode {
@@ -85,7 +86,7 @@ fun <D : Operation.Data> Operation<D>.readDataFromCache(
     customScalarAdapters = customScalarAdapters,
     mode = mode,
     cacheKey = CacheKeyResolver.rootKey(),
-    fieldSets = fieldSets()
+    selections = selections()
 )
 
 fun <D : Fragment.Data> Fragment<D>.readDataFromCache(
@@ -104,7 +105,7 @@ fun <D : Fragment.Data> Fragment<D>.readDataFromCache(
     adapter = adapter(),
     customScalarAdapters = customScalarAdapters,
     mode = mode,
-    fieldSets = fieldSets()
+    selections = selections()
 )
 
 
@@ -117,27 +118,16 @@ private fun <D> readInternal(
     adapter: Adapter<D>,
     customScalarAdapters: CustomScalarAdapters,
     mode: ReadMode = ReadMode.SEQUENTIAL,
-    fieldSets: List<FieldSet>,
+    selections: List<CompiledSelection>,
 ): D? {
-  val map = if (mode == ReadMode.BATCH) {
-    CacheBatchReader(
-        cache = cache,
-        cacheHeaders = cacheHeaders,
-        cacheKeyResolver = cacheKeyResolver,
-        variables = variables,
-        rootKey = cacheKey.key,
-        rootFieldSets = fieldSets
-    ).toMap()
-  } else {
-    CacheSequentialReader(
-        cache = cache,
-        cacheHeaders = cacheHeaders,
-        cacheKeyResolver = cacheKeyResolver,
-        variables = variables,
-        rootKey = cacheKey.key,
-        rootFieldSets = fieldSets
-    ).toMap()
-  }
+  val map = CacheBatchReader(
+      cache = cache,
+      cacheHeaders = cacheHeaders,
+      cacheKeyResolver = cacheKeyResolver,
+      variables = variables,
+      rootKey = cacheKey.key,
+      rootSelections = selections
+  ).toMap()
 
   val reader = MapJsonReader(
       root = map,

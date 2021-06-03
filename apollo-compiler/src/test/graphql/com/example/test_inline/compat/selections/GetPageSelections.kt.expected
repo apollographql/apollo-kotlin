@@ -34,7 +34,7 @@ private val items1: List<CompiledSelection> = listOf(
         type = CompiledOtherType("unused").notNull()
       ),
       CompiledFragment(
-        typeCondition = "ParticularItem",
+        possibleTypes = listOf("ParticularItem"),
         selections = onParticularItem
       )
     )
@@ -43,7 +43,7 @@ private val onParticularCollection: List<CompiledSelection> = listOf(
       CompiledField(
         name = "items",
         type = CompiledCompoundType("unused").notNull().list().notNull(),
-        selections = onParticularItem
+        selections = items1
       )
     )
 
@@ -58,8 +58,8 @@ private val collection: List<CompiledSelection> = listOf(
         selections = items
       ),
       CompiledFragment(
-        typeCondition = "ParticularCollection",
-        selections = onParticularItem
+        possibleTypes = listOf("ParticularCollection"),
+        selections = onParticularCollection
       )
     )
 
@@ -67,6 +67,6 @@ val GetPageSelections: List<CompiledSelection> = listOf(
       CompiledField(
         name = "collection",
         type = CompiledCompoundType("unused").notNull(),
-        selections = items
+        selections = collection
       )
     )

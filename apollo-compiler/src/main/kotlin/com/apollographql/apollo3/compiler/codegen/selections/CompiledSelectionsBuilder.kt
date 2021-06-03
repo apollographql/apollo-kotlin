@@ -129,7 +129,7 @@ class CompiledSelectionsBuilder(
 
     check(expression is BooleanExpression.Element)
 
-    return CodeBlock.of("%T(%S,·%L)", CompiledCondition::class.asTypeName(), expression.value, inverted.toString())
+    return CodeBlock.of("%T(%S,·%L)", CompiledCondition::class.asTypeName(), expression.value.name, inverted.toString())
   }
 
   private fun GQLField.walk(private: Boolean, parentType: String): SelectionResult? {
@@ -172,7 +172,7 @@ class CompiledSelectionsBuilder(
     val selections = selectionSet?.selections ?: emptyList()
     if (selections.isNotEmpty()) {
       nestededPropertySpecs = selections.walk(alias ?: name, private, typeDefinition.type.leafType().name)
-      parameters.add(CodeBlock.of("selections·=·%L", nestededPropertySpecs.first().name))
+      parameters.add(CodeBlock.of("selections·=·%L", nestededPropertySpecs.last().name))
     }
 
     val builder = CodeBlock.builder()
@@ -193,7 +193,7 @@ class CompiledSelectionsBuilder(
 
     val parameters = mutableListOf<CodeBlock>()
     val name = "on${typeCondition.name.capitalizeFirstLetter()}"
-    parameters.add(CodeBlock.of("typeCondition·=·%S", typeCondition.name))
+    parameters.add(CodeBlock.of("possibleTypes·=·%L", possibleTypesCodeBlock(typeCondition.name)))
     if (expression !is BooleanExpression.True) {
       parameters.add(
           CodeBlock.of(
@@ -207,7 +207,7 @@ class CompiledSelectionsBuilder(
     val selections = selectionSet.selections
     if (selections.isNotEmpty()) {
       nestededPropertySpecs = selections.walk(name, private, typeCondition.name)
-      parameters.add(CodeBlock.of("selections·=·%L", nestededPropertySpecs.first().name))
+      parameters.add(CodeBlock.of("selections·=·%L", nestededPropertySpecs.last().name))
     }
 
     val builder = CodeBlock.builder()
@@ -237,7 +237,7 @@ class CompiledSelectionsBuilder(
     }
 
     val fragmentDefinition = allFragmentDefinitions[name]!!
-    parameters.add(CodeBlock.of("typeCondition·=·%S", fragmentDefinition.typeCondition.name))
+    parameters.add(CodeBlock.of("possibleTypes·=·%L", possibleTypesCodeBlock(fragmentDefinition.typeCondition.name)))
     parameters.add(CodeBlock.of("selections·=·%M", context.resolver.resolveFragmentSelections(name)))
 
     val builder = CodeBlock.builder()
@@ -250,9 +250,12 @@ class CompiledSelectionsBuilder(
     return SelectionResult(builder.build(), emptyList())
   }
 
-
-  private fun CompiledCondition.codeBlock(): CodeBlock {
-    return CodeBlock.of("%T(%S, %L)", CompiledCondition::class.asTypeName(), name, inverted.toString())
+  private fun possibleTypesCodeBlock(typeCondition: String): CodeBlock {
+    val builder = CodeBlock.builder()
+    builder.add("listOf(")
+    builder.add("%L", schema.possibleTypes(typeCondition).map { CodeBlock.of("%S", it) }.joinToCode(", "))
+    builder.add(")")
+    return builder.build()
   }
 
   private fun GQLType.codeBlock(): CodeBlock {

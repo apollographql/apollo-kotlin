@@ -38,11 +38,11 @@ private val onCharacter: List<CompiledSelection> = listOf(
         type = CompiledOtherType("unused").notNull()
       ),
       CompiledFragment(
-        typeCondition = "Human",
+        possibleTypes = listOf("Human"),
         selections = onHuman
       ),
       CompiledFragment(
-        typeCondition = "Droid",
+        possibleTypes = listOf("Droid"),
         selections = onDroid
       )
     )
@@ -53,8 +53,8 @@ private val search: List<CompiledSelection> = listOf(
         type = CompiledOtherType("unused").notNull()
       ),
       CompiledFragment(
-        typeCondition = "Character",
-        selections = onHuman
+        possibleTypes = listOf("Droid", "Human"),
+        selections = onCharacter
       )
     )
 
@@ -64,6 +64,6 @@ val TestQuerySelections: List<CompiledSelection> = listOf(
         type = CompiledCompoundType("unused").list(),
         arguments = mapOf("text" to "bla-bla"
         ),
-        selections = onHuman
+        selections = search
       )
     )

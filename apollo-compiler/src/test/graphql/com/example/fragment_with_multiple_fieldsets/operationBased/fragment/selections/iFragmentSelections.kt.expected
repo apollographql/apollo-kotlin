@@ -25,7 +25,7 @@ val iFragmentSelections: List<CompiledSelection> = listOf(
         type = CompiledOtherType("unused").notNull()
       ),
       CompiledFragment(
-        typeCondition = "A",
+        possibleTypes = listOf("A"),
         selections = onA
       )
     )

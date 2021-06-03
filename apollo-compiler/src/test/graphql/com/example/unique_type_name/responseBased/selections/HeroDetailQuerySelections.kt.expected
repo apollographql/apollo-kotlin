@@ -28,7 +28,7 @@ private val friends2: List<CompiledSelection> = listOf(
         type = CompiledOtherType("unused").notNull()
       ),
       CompiledFragment(
-        typeCondition = "Character",
+        possibleTypes = listOf("Droid", "Human"),
         selections = HeroDetailsSelections
       )
     )
@@ -53,7 +53,7 @@ private val onHuman: List<CompiledSelection> = listOf(
       CompiledField(
         name = "friends",
         type = CompiledCompoundType("unused").list(),
-        selections = friends2
+        selections = friends1
       )
     )
 
@@ -72,8 +72,8 @@ private val heroDetailQuery: List<CompiledSelection> = listOf(
         selections = friends
       ),
       CompiledFragment(
-        typeCondition = "Human",
-        selections = friends2
+        possibleTypes = listOf("Human"),
+        selections = onHuman
       )
     )
 
@@ -81,6 +81,6 @@ val HeroDetailQuerySelections: List<CompiledSelection> = listOf(
       CompiledField(
         name = "heroDetailQuery",
         type = CompiledCompoundType("unused"),
-        selections = friends
+        selections = heroDetailQuery
       )
     )

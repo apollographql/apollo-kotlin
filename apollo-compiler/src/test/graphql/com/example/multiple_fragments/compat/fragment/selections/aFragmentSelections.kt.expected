@@ -19,11 +19,11 @@ private val node: List<CompiledSelection> = listOf(
         type = CompiledOtherType("unused").notNull()
       ),
       CompiledFragment(
-        typeCondition = "ANode",
+        possibleTypes = listOf("ANode"),
         selections = fragment1Selections
       ),
       CompiledFragment(
-        typeCondition = "ANode",
+        possibleTypes = listOf("ANode"),
         selections = fragment2Selections
       )
     )
